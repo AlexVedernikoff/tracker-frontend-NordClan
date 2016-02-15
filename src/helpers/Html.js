@@ -12,6 +12,7 @@ import Helmet from 'react-helmet';
  * HTML doctype declaration, which is added to the rendered output
  * by the server.js file.
  */
+
 export default class Html extends Component {
   static propTypes = {
     assets: PropTypes.object,
@@ -35,6 +36,7 @@ export default class Html extends Component {
 
           <link rel="shortcut icon" href="/favicon.ico" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,500&subset=latin,cyrillic" rel="stylesheet" type="text/css" />
           {/* styles (will be present only in production with webpack extract text plugin) */}
           {Object.keys(assets.styles).map((style, key) =>
             <link href={assets.styles[style]} key={key} media="screen, projection"

@@ -1,3 +1,5 @@
+@import "../../theme/normalize.css";
+
 .app {
   .brand {
     position: absolute;
@@ -16,7 +18,4 @@
     font-size: 2em;
     line-height: 20px;
   }
-}
-.appContent {
-  margin: 50px 0; // for fixed navbar
 }
