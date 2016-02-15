@@ -14,7 +14,7 @@ export default class Home extends Component {
     return (
       <div className={styles.home}>
         <Helmet title="Home"/>
-         <FlatButton label="rewr" primary={primary} />
+         <FlatButton label="qwertu" primary={primary} />
         <div className={styles.masthead}>
         </div>
 

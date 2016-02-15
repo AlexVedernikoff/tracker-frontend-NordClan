@@ -79,9 +79,10 @@ module.exports = {
   resolve: {
     modulesDirectories: [
       'src',
-      'node_modules'
+      'node_modules',
+       path.resolve(__dirname, './node_modules')
     ],
-    extensions: ['', '.json', '.js', '.jsx']
+    extensions: ['', '.json', '.js', '.jsx', '.scss']
   },
   plugins: [
     // hot reload
