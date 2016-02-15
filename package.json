@@ -103,6 +103,7 @@
     "query-string": "^3.0.0",
     "react": "^0.14.2",
     "react-dom": "^0.14.1",
+    "react-flexbox-grid": "^0.9.4",
     "react-helmet": "^2.2.0",
     "react-inline-css": "^2.0.0",
     "react-redux": "^4.0.0",

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { IndexLink } from 'react-router';
+// import { IndexLink } from 'react-router';
 import Helmet from 'react-helmet';
 import { isLoaded as isInfoLoaded, load as loadInfo } from 'redux/modules/info';
 import { isLoaded as isAuthLoaded, load as loadAuth, logout } from 'redux/modules/auth';
@@ -10,10 +10,10 @@ import connectData from 'helpers/connectData';
 import config from '../../config';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
-//Needed for onTouchTap
-//Can go away when react 1.0 release
-//Check this repo:
-//https://github.com/zilverline/react-tap-event-plugin
+// Needed for onTouchTap
+// Can go away when react 1.0 release
+// Check this repo:
+// https://github.com/zilverline/react-tap-event-plugin
 injectTapEventPlugin();
 
 function fetchData(getState, dispatch) {
@@ -59,7 +59,7 @@ export default class App extends Component {
   }
 
   render() {
-    const {user} = this.props;
+  //  const {user} = this.props;
     const styles = require('./App.scss');
 
     return (
