@@ -14,6 +14,7 @@ import ThemeDecorator from 'material-ui/lib/styles/theme-decorator';
 import ColorTheme from '../../theme/theme';
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
+import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 
 // Needed for onTouchTap
 // Can go away when react 1.0 release
@@ -75,8 +76,14 @@ export default class App extends Component {
         <div className={styles.appContent}>
           {this.props.children}
         </div>
+        <Grid fluid>
+          <Row>
+            <Col xs={12} sm={3} md={2} lg={1} > <div className={styles.appContent}>a</div></Col>
+              <Col xs={6} sm={6} md={8} lg={10} > <div className={styles.appContent}>a</div></Col>
+              <Col xs={6} sm={3} md={2} lg={1} > <div className={styles.appContent}>a</div></Col>
+          </Row>
+        </Grid>
         <InfoBar/>
-
       </div>
     );
   }
