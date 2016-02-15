@@ -10,7 +10,6 @@ import connectData from 'helpers/connectData';
 import config from '../../config';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
-import { Box } from 'components';
 
 // Needed for onTouchTap
 // Can go away when react 1.0 release
@@ -72,20 +71,12 @@ export default class App extends Component {
         </div>
         <Grid fluid>
           <Row>
-            <Col xs={12} sm={3} md={2} lg={1} > <div  className={styles.appContent}>cvbcvbcvbcvb</div></Col>
-              <Col xs={6} sm={6} md={8} lg={10} > <div className={styles.appContent}>cvbcvbcvbcvb</div></Col>
-              <Col xs={6} sm={3} md={2} lg={1} > <div className={styles.appContent}>vcbcvbcvbcvbcbvcb</div></Col>
+            <Col xs={12} sm={3} md={2} lg={1} > <div className={styles.appContent}>a</div></Col>
+              <Col xs={6} sm={6} md={8} lg={10} > <div className={styles.appContent}>a</div></Col>
+              <Col xs={6} sm={3} md={2} lg={1} > <div className={styles.appContent}>a</div></Col>
           </Row>
-
         </Grid>
         <InfoBar/>
-
-        <div className="well text-center">
-          Have questions? Ask for help <a
-          href="https://github.com/erikras/react-redux-universal-hot-example/issues"
-          target="_blank">on Github</a> or in the <a
-          href="https://discord.gg/0ZcbPKXt5bZZb1Ko" target="_blank">#react-redux-universal</a> Discord channel.
-        </div>
       </div>
     );
   }
