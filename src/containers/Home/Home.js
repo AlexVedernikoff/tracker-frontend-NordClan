@@ -4,7 +4,8 @@ import React, { Component } from 'react';
 // import config from '../../config';
 import Helmet from 'react-helmet';
 import FlatButton from 'material-ui/lib/flat-button';
-import {AppHead} from 'components';
+
+import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 
 export default class Home extends Component {
   render() {
@@ -14,13 +15,17 @@ export default class Home extends Component {
   //  const logoImage = require('./logo.png');
     return (
       <div>
-        <AppHead />
         <div className={styles.home}>
           <Helmet title="Home"/>
-           <FlatButton label="rew" primary={primary} />
-          <div className={styles.masthead}>
-          </div>
         </div>
+        <Grid fluid>
+          <Row center="md">
+            <Col md={3} ><FlatButton label="rew" primary={primary} /></Col>
+            <Col md={3} ><FlatButton label="rew" primary={primary} /></Col>
+            <Col md={3} ><FlatButton label="rew" primary={primary} /></Col>
+            <Col md={3} ><FlatButton label="rew" primary={primary} /></Col>
+          </Row>
+        </Grid>
       </div>
     );
   }
