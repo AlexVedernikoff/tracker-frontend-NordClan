@@ -3,7 +3,8 @@ const LOAD_SUCCESS = 'redux-example/LOAD_SUCCESS';
 const LOAD_FAIL = 'redux-example/LOAD_FAIL';
 
 const initialState = {
-  loaded: false
+  loaded: false,
+  data: []
 };
 
 export default function info(state = initialState, action = {}) {

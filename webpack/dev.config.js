@@ -51,7 +51,6 @@ module.exports = {
   entry: {
     'main': [
       'webpack-hot-middleware/client?path=http://' + host + ':' + port + '/__webpack_hmr',
-      // 'font-awesome-webpack!./src/theme/font-awesome.config.js',
       './src/client.js'
     ]
   },
@@ -80,9 +79,9 @@ module.exports = {
     modulesDirectories: [
       'src',
       'node_modules',
-       path.resolve(__dirname, './node_modules')
+      path.resolve(__dirname, './node_modules')
     ],
-    extensions: ['', '.json', '.js', '.jsx', '.scss']
+    extensions: ['', '.json', '.js', '.jsx', '.scss', '.css']
   },
   plugins: [
     // hot reload

@@ -1,43 +1,21 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 // import { IndexLink } from 'react-router';
+import { AppHead } from 'components';
 import Helmet from 'react-helmet';
 import { isLoaded as isInfoLoaded, load as loadInfo } from 'redux/modules/info';
 import { isLoaded as isAuthLoaded, load as loadAuth, logout } from 'redux/modules/auth';
 import { InfoBar } from 'components';
-import { pushState } from 'redux-router';
-import connectData from 'helpers/connectData';
+import { routeActions } from 'react-router-redux';
 import config from '../../config';
-import {AppHead} from 'components';
-
-import ThemeManager from 'material-ui/lib/styles/theme-manager';
-import ThemeDecorator from 'material-ui/lib/styles/theme-decorator';
+import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
+import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
 import ColorTheme from '../../theme/theme';
 
-import injectTapEventPlugin from 'react-tap-event-plugin';
-// Needed for onTouchTap
-// Can go away when react 1.0 release
-// Check this repo:
-// https://github.com/zilverline/react-tap-event-plugin
-injectTapEventPlugin();
 
-function fetchData(getState, dispatch) {
-  const promises = [];
-  if (!isInfoLoaded(getState())) {
-    promises.push(dispatch(loadInfo()));
-  }
-  if (!isAuthLoaded(getState())) {
-    promises.push(dispatch(loadAuth()));
-  }
-  return Promise.all(promises);
-}
-
-@connectData(fetchData)
 @connect(
   state => ({user: state.auth.user}),
-  {logout, pushState})
-
-@ThemeDecorator(ThemeManager.getMuiTheme(ColorTheme))
+  {logout, pushState: routeActions.push})
 export default class App extends Component {
   static propTypes = {
     children: PropTypes.object.isRequired,
@@ -53,31 +31,53 @@ export default class App extends Component {
   componentWillReceiveProps(nextProps) {
     if (!this.props.user && nextProps.user) {
       // login
-      this.props.pushState(null, '/loginSuccess');
+      this.props.pushState('/loginSuccess');
     } else if (this.props.user && !nextProps.user) {
       // logout
-      this.props.pushState(null, '/');
+      this.props.pushState('/');
     }
+  }
+
+  static reduxAsyncConnect(params, store) {
+    const {dispatch, getState} = store;
+    const promises = [];
+
+    if (!isInfoLoaded(getState())) {
+      promises.push(dispatch(loadInfo()));
+    }
+    if (!isAuthLoaded(getState())) {
+      promises.push(dispatch(loadAuth()));
+    }
+
+    return Promise.all(promises);
   }
 
   handleLogout = (event) => {
     event.preventDefault();
     this.props.logout();
-  }
+  };
 
   render() {
-  //  const {user} = this.props;
+    // const {user} = this.props;
     const styles = require('./App.scss');
-
+    const muiTheme = getMuiTheme(ColorTheme);
     return (
-      <div className={styles.app}>
-        <AppHead />
-        <div className={styles.wrapper}>
+      <MuiThemeProvider muiTheme={muiTheme}>
+        <div className={styles.app}>
           <Helmet {...config.app.head}/>
-          {this.props.children}
+          <AppHead />
+          <div className={styles.appContent}>
+            {this.props.children}
+          </div>
           <InfoBar/>
+          <div className="well text-center">
+            Have questions? Ask for help <a
+            href="https://github.com/erikras/react-redux-universal-hot-example/issues"
+            target="_blank">on Github</a> or in the <a
+            href="https://discord.gg/0ZcbPKXt5bZZb1Ko" target="_blank">#react-redux-universal</a> Discord channel.
+          </div>
         </div>
-      </div>
+      </MuiThemeProvider>
     );
   }
 }

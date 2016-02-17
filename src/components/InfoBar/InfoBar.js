@@ -2,13 +2,23 @@ import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {load} from 'redux/modules/info';
+import List from 'material-ui/lib/lists/list';
+import ListItem from 'material-ui/lib/lists/list-item';
 
 @connect(
     state => ({info: state.info.data}),
     dispatch => bindActionCreators({load}, dispatch))
+
 export default class InfoBar extends Component {
   static propTypes = {
-    info: PropTypes.object,
+    info: PropTypes.arrayOf(PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      isActive: PropTypes.bool.isRequired,
+      status: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      about: PropTypes.string.isRequired,
+      deadline: PropTypes.string.isRequired
+    })),
     load: PropTypes.func.isRequired
   }
 
@@ -17,14 +27,12 @@ export default class InfoBar extends Component {
     const styles = require('./InfoBar.scss');
     return (
       <div className={styles.infoBar + ' well'}>
-        <div className="container">
-          This is an info bar
-          {' '}
-          <strong>{info ? info.message : 'no info!'}</strong>
-          <span className={styles.time}>{info && new Date(info.time).toString()}</span>
+        <List>
+          {info.map(todo => <ListItem primaryText={todo.name} secondaryText={todo.deadline} />)}
+
+        </List>
           <button className="btn btn-primary" onClick={load}>Reload from server</button>
         </div>
-      </div>
     );
   }
 }

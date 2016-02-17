@@ -7,12 +7,12 @@ import {load} from 'redux/modules/info';
 import AppBar from 'material-ui/lib/app-bar';
 
 // AutoComplete
-import AutoComplete from 'material-ui/lib/auto-complete';
+// import AutoComplete from 'material-ui/lib/auto-complete';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 
 // Icons
 import SocialPerson from 'material-ui/lib/svg-icons/social/person';
-import ActionHome from 'material-ui/lib/svg-icons/action/home';
+// import ActionHome from 'material-ui/lib/svg-icons/action/home';
 import NavigationMenu from 'material-ui/lib/svg-icons/navigation/menu';
 import ActionSearch from 'material-ui/lib/svg-icons/action/search';
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
@@ -28,45 +28,40 @@ import Avatar from 'material-ui/lib/avatar';
 import Divider from 'material-ui/lib/divider';
 
 // Test data
-const fruit = [
-  'Apple', 'Apricot', 'Avocado',
-  'Banana', 'Bilberry', 'Blackberry', 'Blackcurrant', 'Blueberry',
-  'Boysenberry', 'Blood Orange',
-  'Cantaloupe', 'Currant', 'Cherry', 'Cherimoya', 'Cloudberry',
-  'Coconut', 'Cranberry', 'Clementine',
-  'Damson', 'Date', 'Dragonfruit', 'Durian',
-  'Elderberry',
-  'Feijoa', 'Fig',
-  'Goji berry', 'Gooseberry', 'Grape', 'Grapefruit', 'Guava',
-  'Honeydew', 'Huckleberry',
-  'Jabouticaba', 'Jackfruit', 'Jambul', 'Jujube', 'Juniper berry',
-  'Kiwi fruit', 'Kumquat',
-  'Lemon', 'Lime', 'Loquat', 'Lychee',
-  'Nectarine',
-  'Mango', 'Marion berry', 'Melon', 'Miracle fruit', 'Mulberry', 'Mandarine',
-  'Olive', 'Orange',
-  'Papaya', 'Passionfruit', 'Peach', 'Pear', 'Persimmon', 'Physalis', 'Plum', 'Pineapple',
-  'Pumpkin', 'Pomegranate', 'Pomelo', 'Purple Mangosteen',
-  'Quince',
-  'Raspberry', 'Raisin', 'Rambutan', 'Redcurrant',
-  'Salal berry', 'Satsuma', 'Star fruit', 'Strawberry', 'Squash', 'Salmonberry',
-  'Tamarillo', 'Tamarind', 'Tomato', 'Tangerine',
-  'Ugli fruit',
-  'Watermelon',
-];
-
-const styles2 = {
-  popover: {
-    padding: 0,
-  },
-};
-
+// const fruit = [
+//   'Apple', 'Apricot', 'Avocado',
+//   'Banana', 'Bilberry', 'Blackberry', 'Blackcurrant', 'Blueberry',
+//   'Boysenberry', 'Blood Orange',
+//   'Cantaloupe', 'Currant', 'Cherry', 'Cherimoya', 'Cloudberry',
+//   'Coconut', 'Cranberry', 'Clementine',
+//   'Damson', 'Date', 'Dragonfruit', 'Durian',
+//   'Elderberry',
+//   'Feijoa', 'Fig',
+//   'Goji berry', 'Gooseberry', 'Grape', 'Grapefruit', 'Guava',
+//   'Honeydew', 'Huckleberry',
+//   'Jabouticaba', 'Jackfruit', 'Jambul', 'Jujube', 'Juniper berry',
+//   'Kiwi fruit', 'Kumquat',
+//   'Lemon', 'Lime', 'Loquat', 'Lychee',
+//   'Nectarine',
+//   'Mango', 'Marion berry', 'Melon', 'Miracle fruit', 'Mulberry', 'Mandarine',
+//   'Olive', 'Orange',
+//   'Papaya', 'Passionfruit', 'Peach', 'Pear', 'Persimmon', 'Physalis', 'Plum', 'Pineapple',
+//   'Pumpkin', 'Pomegranate', 'Pomelo', 'Purple Mangosteen',
+//   'Quince',
+//   'Raspberry', 'Raisin', 'Rambutan', 'Redcurrant',
+//   'Salal berry', 'Satsuma', 'Star fruit', 'Strawberry', 'Squash', 'Salmonberry',
+//   'Tamarillo', 'Tamarind', 'Tomato', 'Tangerine',
+//   'Ugli fruit',
+//   'Watermelon',
+// ];
+//
 @connect(
-    state => ({info: state.info.data}),
+    // state => ({info: state.info.data}),
     dispatch => bindActionCreators({load}, dispatch))
+
 export default class AppHead extends Component {
   static propTypes = {
-    info: PropTypes.object,
+    // info: PropTypes.object,
     load: PropTypes.func.isRequired
   }
 
@@ -94,7 +89,7 @@ export default class AppHead extends Component {
 
 
   render() {
-    const {info, load} = this.props; // eslint-disable-line no-shadow
+    // const { load } = this.props; // eslint-disable-line no-shadow
     const styles = require('./AppHead.scss');
 
     const appBarIcons = (
@@ -111,10 +106,10 @@ export default class AppHead extends Component {
           onRequestClose={this.handleRequestClose}
           animation={PopoverAnimationFromTop}
         >
-          <div style={styles2.popover}>
+          <div style={styles.popover}>
           <List>
             <ListItem
-              disabled={true}
+              disabled
               leftAvatar={
                 <Avatar src={require('./vincent.jpg')} />
               }
