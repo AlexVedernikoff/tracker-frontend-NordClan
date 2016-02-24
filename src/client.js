@@ -11,7 +11,6 @@ import {Provider} from 'react-redux';
 import { Router, browserHistory } from 'react-router';
 import { ReduxAsyncConnect } from 'redux-async-connect';
 import useScroll from 'scroll-behavior/lib/useStandardScroll';
-
 import getRoutes from './routes';
 
 const client = new ApiClient();

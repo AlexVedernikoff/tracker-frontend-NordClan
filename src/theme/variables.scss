@@ -5,6 +5,7 @@
  *  http://getbootstrap.com/customize/
  *
  */
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500&subset=latin,cyrillic);
 
 // Custom Colors
 $cyan: #33e0ff;
@@ -21,4 +22,10 @@ $brand-info: #5bc0de;
 $text-color: #333;
 
 $font-size-base: 14px;
-$font-family-sans-serif: "Helvetica Neue", Helvetica, sans-serif;
+
+body {
+  font-family: Roboto, sans-serif;
+  background-color: #ECECEC;
+  margin: 0;
+}
+

@@ -9,7 +9,7 @@ import ListItem from 'material-ui/lib/lists/list-item';
     state => ({info: state.info.data}),
     dispatch => bindActionCreators({load}, dispatch))
 
-export default class InfoBar extends Component {
+export default class TasksList extends Component {
   static propTypes = {
     info: PropTypes.arrayOf(PropTypes.shape({
       _id: PropTypes.string.isRequired,
@@ -24,11 +24,11 @@ export default class InfoBar extends Component {
 
   render() {
     const {info, load} = this.props; // eslint-disable-line no-shadow
-    const styles = require('./InfoBar.scss');
+    const styles = require('./TasksList.scss');
     return (
       <div className={styles.infoBar + ' well'}>
         <List>
-          {info.map(todo => <ListItem primaryText={todo.name} secondaryText={todo.deadline} />)}
+          {info.map(todo => <ListItem primaryText={todo.name} secondaryText={todo.deadline} key={todo._id} />)}
 
         </List>
           <button className="btn btn-primary" onClick={load}>Reload from server</button>

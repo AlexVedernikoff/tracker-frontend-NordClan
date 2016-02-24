@@ -6,8 +6,8 @@ import {reducer as reduxAsyncConnect} from 'redux-async-connect';
 import auth from './auth';
 import counter from './counter';
 import {reducer as form} from 'redux-form';
-import info from './info';
-import widgets from './widgets';
+import info from './tasks';
+import widgets from './task';
 
 export default combineReducers({
   routing: routeReducer,

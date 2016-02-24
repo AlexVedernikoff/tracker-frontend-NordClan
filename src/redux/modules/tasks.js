@@ -1,13 +1,11 @@
-const LOAD = 'redux-example/LOAD';
-const LOAD_SUCCESS = 'redux-example/LOAD_SUCCESS';
-const LOAD_FAIL = 'redux-example/LOAD_FAIL';
+import Constants from '../../constants/ActionTypes';
 
 const initialState = {
   loaded: false,
   data: []
 };
 
-export default function info(state = initialState, action = {}) {
+export default function tasks(state = initialState, action = {}) {
   switch (action.type) {
     case LOAD:
       return {

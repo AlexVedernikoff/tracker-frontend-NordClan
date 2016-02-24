@@ -1,16 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 // import { IndexLink } from 'react-router';
-import { AppHead } from 'components';
 import Helmet from 'react-helmet';
 import { isLoaded as isInfoLoaded, load as loadInfo } from 'redux/modules/info';
 import { isLoaded as isAuthLoaded, load as loadAuth, logout } from 'redux/modules/auth';
-import { InfoBar } from 'components';
 import { routeActions } from 'react-router-redux';
 import config from '../../config';
 import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
 import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
 import ColorTheme from '../../theme/theme';
+import { AppHead } from 'components';
 
 
 @connect(
@@ -59,25 +58,18 @@ export default class App extends Component {
 
   render() {
     // const {user} = this.props;
-    const styles = require('./App.scss');
+    // const styles = require('./App.scss');
     const muiTheme = getMuiTheme(ColorTheme);
     return (
-      <MuiThemeProvider muiTheme={muiTheme}>
-        <div className={styles.app}>
-          <Helmet {...config.app.head}/>
-          <AppHead />
-          <div className={styles.appContent}>
+      <div>
+        <Helmet {...config.app.head}/>
+        <MuiThemeProvider muiTheme={muiTheme}>
+          <div>
+            <AppHead />
             {this.props.children}
           </div>
-          <InfoBar/>
-          <div className="well text-center">
-            Have questions? Ask for help <a
-            href="https://github.com/erikras/react-redux-universal-hot-example/issues"
-            target="_blank">on Github</a> or in the <a
-            href="https://discord.gg/0ZcbPKXt5bZZb1Ko" target="_blank">#react-redux-universal</a> Discord channel.
-          </div>
-        </div>
-      </MuiThemeProvider>
+        </MuiThemeProvider>
+      </div>
     );
   }
 }
