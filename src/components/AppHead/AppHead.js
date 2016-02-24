@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {load} from 'redux/modules/info';
+import {load} from 'redux/modules/tasks';
 
 // AppBar
 import AppBar from 'material-ui/lib/app-bar';
@@ -56,12 +56,12 @@ import Divider from 'material-ui/lib/divider';
 // ];
 //
 @connect(
-    // state => ({info: state.info.data}),
+    // state => ({tasks: state.tasks.data}),
     dispatch => bindActionCreators({load}, dispatch))
 
 export default class AppHead extends Component {
   static propTypes = {
-    // info: PropTypes.object,
+    // tasks: PropTypes.object,
     load: PropTypes.func.isRequired
   }
 

@@ -1,16 +1,17 @@
 const LOAD = 'redux-example/widgets/LOAD';
-const LOAD_SUCCESS = 'redux-example/widgets/LOAD_SUCCESS';
 const LOAD_FAIL = 'redux-example/widgets/LOAD_FAIL';
 const EDIT_START = 'redux-example/widgets/EDIT_START';
 const EDIT_STOP = 'redux-example/widgets/EDIT_STOP';
 const SAVE = 'redux-example/widgets/SAVE';
 const SAVE_SUCCESS = 'redux-example/widgets/SAVE_SUCCESS';
 const SAVE_FAIL = 'redux-example/widgets/SAVE_FAIL';
+import types from '../../constants/ActionTypes';
 
 const initialState = {
   loaded: false,
   editing: {},
-  saveError: {}
+  saveError: {},
+  data: {}
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -20,12 +21,12 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         loading: true
       };
-    case LOAD_SUCCESS:
+    case types.SET_CURRENT_TASK:
       return {
         ...state,
         loading: false,
         loaded: true,
-        data: action.result,
+        data: action.data,
         error: null
       };
     case LOAD_FAIL:
@@ -82,15 +83,13 @@ export default function reducer(state = initialState, action = {}) {
   }
 }
 
-export function isLoaded(globalState) {
-  return globalState.widgets && globalState.widgets.loaded;
+export function isCurrentTaskLoaded(globalState) {
+  return globalState.currentTask && globalState.currentTask.loaded;
 }
 
-export function load() {
-  return {
-    types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('/widget/load/param1/param2') // params not used, just shown as demonstration
-  };
+export function setCurrentTask(globalState, id) {
+  const data = globalState.tasks.data.filter((task) => task._id === id)[0];
+  return { type: types.SET_CURRENT_TASK, data };
 }
 
 export function save(widget) {

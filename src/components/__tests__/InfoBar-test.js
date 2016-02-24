@@ -11,7 +11,7 @@ const client = new ApiClient();
 
 describe('InfoBar', () => {
   const mockStore = {
-    info: {
+    tasks: {
       load: () => {},
       loaded: true,
       loading: false,
@@ -35,7 +35,7 @@ describe('InfoBar', () => {
 
   it('should render with correct value', () => {
     const text = dom.getElementsByTagName('strong')[0].textContent;
-    expect(text).to.equal(mockStore.info.data.message);
+    expect(text).to.equal(mockStore.tasks.data.message);
   });
 
   it('should render with a reload button', () => {

@@ -1,4 +1,5 @@
-export default function loadInfo() {
+export default function loadTasks() {
+  console.info('Loading tasks');
   return new Promise((resolve) => {
     resolve([
       {

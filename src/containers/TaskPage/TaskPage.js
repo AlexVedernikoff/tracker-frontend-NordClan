@@ -3,9 +3,9 @@
  */
 
 import React, {Component, PropTypes} from 'react';
-import {bindActionCreators} from 'redux';
+// import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {load} from 'redux/modules/info';
+import {setCurrentTask, isCurrentTaskLoaded} from 'redux/modules/current_task';
 // import { Link } from 'react-router';
 // import config from '../../config';
 // import Helmet from 'react-helmet';
@@ -19,11 +19,10 @@ import ContentInbox from 'material-ui/lib/svg-icons/content/inbox';
 import ContentDrafts from 'material-ui/lib/svg-icons/content/drafts';
 import ContentSend from 'material-ui/lib/svg-icons/content/send';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
-import getTaskById from '../../utils/TaskHelpers';
+// import getTaskById from '../../utils/TaskHelpers';
 
 @connect(
-  state => ({tasks: state.info.data}),
-  dispatch => bindActionCreators({load}, dispatch)
+  state => ({task: state.current_task.data})
 )
 
 export default class TaskPage extends Component {
@@ -38,45 +37,52 @@ export default class TaskPage extends Component {
     }),
     params: PropTypes.object.isRequired
   }
-  componentDidMount() {
-    this.init(this.props.params.taskId);
-  }
-
-  //componentWillReceiveProps(nextProps) {
-  //  base.removeBinding(this.ref);
-  //  this.init(nextProps.params.username);
+  //componentDidMount() {
+  //  const {dispatch, getState} = this.props;
+  //  const state = getState();
+  //  console.log('state', state);
+  //  if (!isCurrentTaskLoaded(state)) {
+  //    return dispatch(setCurrentTask(state, params.taskId));
+  //  }
   //}
 
-  componentWillUnmount() {
-    //base.removeBinding(this.ref);
-  }
+  // componentWillReceiveProps(nextProps) {
+  //  base.removeBinding(this.ref);
+  //  this.init(nextProps.params.username);
+  // }
 
-  init(taskId) {
-    //this.ref = base.bindToState(username, {
-    //  context: this,
-    //  asArrray: true,
-    //  state: 'notes'
-    //});
+  /*  componentWillUnmount() {
+   // base.removeBinding(this.ref);
+   }*/
+  //static reduxAsyncConnect(params, store) {
+  //
+  //}
 
-    getTaskById(taskId, this.context.)
-    getGithubInfo(username)
-      .then(function (data) {
-        this.setState({
-          bio: data.bio,
-          repos: data.repos
-        })
-      }.bind(this))
-  }
+  /*  init(taskId) {
+   //this.ref = base.bindToState(username, {
+   //  context: this,
+   //  asArrray: true,
+   //  state: 'notes'
+   //});
+
+   /!*  //  getTaskById(taskId, this.context.)
+   getGithubInfo(username)
+   .then(function (data) {
+   this.setState({
+   bio: data.bio,
+   repos: data.repos
+   })
+   }.bind(this))*!/
+   }*/
 
   render() {
     const styles = require('./TaskPage.scss');
-    const {tasks} = this.props;
+    const {task} = this.props;
     return (
       <Grid>
         <Paper className={styles.paper}>
           <Row>
             <Col xs={3}>
-              {this.props.params.taskId}
               <FlatButton label="Edit"/>
             </Col>
             <Col xs={9}>
@@ -90,8 +96,8 @@ export default class TaskPage extends Component {
           <Divider />
           <Row between="xs">
             <Col xs={9}>
-              <h3>{tasks[0].name}</h3>
-              <span >{tasks[0].about}</span>
+              <h3>{task.name}</h3>
+              <span >{task.about}</span>
               <Row middle="xs"/>
               <List subheader="Comments">
                 <ListItem
@@ -163,10 +169,10 @@ export default class TaskPage extends Component {
               </Row>
               <Row>
                 <List subheader="Details">
-                  <ListItem primaryText={tasks[0].deadline} leftIcon={<ContentSend />}/>
-                  <ListItem primaryText={tasks[0].deadline} leftIcon={<ContentDrafts />}/>
+                  <ListItem primaryText={task.deadline} leftIcon={<ContentSend />}/>
+                  <ListItem primaryText={task.deadline} leftIcon={<ContentDrafts />}/>
                   <ListItem
-                    primaryText={tasks[0].status}
+                    primaryText={task.status}
                     leftIcon={<ContentInbox />}
                   />
                 </List>

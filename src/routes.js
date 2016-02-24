@@ -2,13 +2,13 @@ import React from 'react';
 import {IndexRoute, Route} from 'react-router';
 import { isLoaded as isAuthLoaded, load as loadAuth } from 'redux/modules/auth';
 import {
-    App,
-    Home,
-    Login,
-    LoginSuccess,
-    TaskPage,
-    NotFound,
-  } from 'containers';
+  App,
+  Login,
+  LoginSuccess,
+  TaskPage,
+  TasksList,
+  NotFound,
+} from 'containers';
 
 export default (store) => {
   const requireLogin = (nextState, replaceState, cb) => {
@@ -34,7 +34,7 @@ export default (store) => {
   return (
     <Route path="/" component={App}>
       { /* Home (main) route */ }
-      <IndexRoute component={Home}/>
+      <IndexRoute component={TasksList}/>
 
       { /* Routes requiring login */ }
       <Route onEnter={requireLogin}>
@@ -46,7 +46,7 @@ export default (store) => {
       <Route path="task/:taskId" component={TaskPage}/>
 
       { /* Catch all route */ }
-      <Route path="*" component={NotFound} status={404} />
+      <Route path="*" component={NotFound} status={404}/>
     </Route>
   );
 };

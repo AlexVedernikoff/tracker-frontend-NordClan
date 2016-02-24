@@ -5,4 +5,3 @@
  *
  */
 export AppHead from './AppHead/AppHead';
-export InfoBar from './TasksList/TasksList';

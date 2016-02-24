@@ -1,25 +1,26 @@
-import Constants from '../../constants/ActionTypes';
+import types from '../../constants/ActionTypes';
 
 const initialState = {
   loaded: false,
   data: []
 };
 
-export default function tasks(state = initialState, action = {}) {
+export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
-    case LOAD:
+    case types.LOAD_TASKS:
+      console.error('LOAD TASKS REDUCER');
       return {
         ...state,
         loading: true
       };
-    case LOAD_SUCCESS:
+    case types.LOAD_TASKS_SUCCESS:
       return {
         ...state,
         loading: false,
         loaded: true,
         data: action.result
       };
-    case LOAD_FAIL:
+    case types.LOAD_TASKS_FAIL:
       return {
         ...state,
         loading: false,
@@ -32,12 +33,12 @@ export default function tasks(state = initialState, action = {}) {
 }
 
 export function isLoaded(globalState) {
-  return globalState.info && globalState.info.loaded;
+  return globalState.tasks && globalState.tasks.loaded;
 }
 
 export function load() {
   return {
-    types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('/loadInfo')
+    types: [types.LOAD_TASKS, types.LOAD_TASKS_SUCCESS, types.LOAD_TASKS_FAIL],
+    promise: (client) => client.get('/loadTasks')
   };
 }
