@@ -8,7 +8,6 @@ const initialState = {
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case types.LOAD_TASKS:
-      console.error('LOAD TASKS REDUCER');
       return {
         ...state,
         loading: true

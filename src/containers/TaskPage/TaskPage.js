@@ -19,10 +19,9 @@ import ContentInbox from 'material-ui/lib/svg-icons/content/inbox';
 import ContentDrafts from 'material-ui/lib/svg-icons/content/drafts';
 import ContentSend from 'material-ui/lib/svg-icons/content/send';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
-// import getTaskById from '../../utils/TaskHelpers';
 
 @connect(
-  state => ({task: state.current_task.data})
+  state => ({task: state.currentTask.data})
 )
 
 export default class TaskPage extends Component {
@@ -37,43 +36,13 @@ export default class TaskPage extends Component {
     }),
     params: PropTypes.object.isRequired
   }
-  //componentDidMount() {
-  //  const {dispatch, getState} = this.props;
-  //  const state = getState();
-  //  console.log('state', state);
-  //  if (!isCurrentTaskLoaded(state)) {
-  //    return dispatch(setCurrentTask(state, params.taskId));
-  //  }
-  //}
 
-  // componentWillReceiveProps(nextProps) {
-  //  base.removeBinding(this.ref);
-  //  this.init(nextProps.params.username);
-  // }
-
-  /*  componentWillUnmount() {
-   // base.removeBinding(this.ref);
-   }*/
-  //static reduxAsyncConnect(params, store) {
-  //
-  //}
-
-  /*  init(taskId) {
-   //this.ref = base.bindToState(username, {
-   //  context: this,
-   //  asArrray: true,
-   //  state: 'notes'
-   //});
-
-   /!*  //  getTaskById(taskId, this.context.)
-   getGithubInfo(username)
-   .then(function (data) {
-   this.setState({
-   bio: data.bio,
-   repos: data.repos
-   })
-   }.bind(this))*!/
-   }*/
+  static reduxAsyncConnect(params, store) {
+    const {dispatch, getState} = store;
+    if (!isCurrentTaskLoaded(getState())) {
+      return dispatch(setCurrentTask(params.taskId));
+    }
+  }
 
   render() {
     const styles = require('./TaskPage.scss');
@@ -109,6 +78,7 @@ export default class TaskPage extends Component {
                   </p>
                 }
                   secondaryTextLines={2}
+                  key={1}
                 />
                 <ListItem
                   leftAvatar={<Avatar src="" />}
@@ -118,6 +88,7 @@ export default class TaskPage extends Component {
                 }
                   secondaryTextLines={2}
                   initiallyOpen
+                  key={2}
                   nestedItems={[
                     <ListItem
                       leftAvatar={<Avatar src="" />}
@@ -136,6 +107,7 @@ export default class TaskPage extends Component {
                         <p>Wish I could come, but I&apos;m out of town this weekend.</p>
                       }
                       secondaryTextLines={2}
+                      key={1}
                       nestedItems={[
                         <ListItem
                           leftAvatar={<Avatar src="" />}
@@ -150,6 +122,7 @@ export default class TaskPage extends Component {
                         <ListItem
                           leftAvatar={<Avatar src="" />}
                           primaryText="Scott Jennifer"
+                          key={2}
                           secondaryText={
                             <p>Wish I could come, but I&apos;m out of town this weekend.</p>
                           }
@@ -169,12 +142,9 @@ export default class TaskPage extends Component {
               </Row>
               <Row>
                 <List subheader="Details">
-                  <ListItem primaryText={task.deadline} leftIcon={<ContentSend />}/>
-                  <ListItem primaryText={task.deadline} leftIcon={<ContentDrafts />}/>
-                  <ListItem
-                    primaryText={task.status}
-                    leftIcon={<ContentInbox />}
-                  />
+                  <ListItem primaryText={task.deadline} leftIcon={<ContentSend />} key={1}/>
+                  <ListItem primaryText={task.deadline} leftIcon={<ContentDrafts />} key={2}/>
+                  <ListItem primaryText={task.status} leftIcon={<ContentInbox />} key={3}/>
                 </List>
               </Row>
             </Col>

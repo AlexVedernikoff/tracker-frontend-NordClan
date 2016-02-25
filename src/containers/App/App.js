@@ -9,6 +9,7 @@ import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
 import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
 import ColorTheme from '../../theme/theme';
 import { AppHead } from 'components';
+import  from 'App.scss';
 
 
 @connect(
