@@ -7,7 +7,17 @@ import ListItem from '../../../node_modules/material-ui/lib/lists/list-item';
 import Paper from '../../../node_modules/material-ui/lib/paper';
 import { isLoaded as isTasksLoaded, load as loadTasks } from 'redux/modules/tasks';
 import { Link } from 'react-router';
+import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
+import { asyncConnect } from 'redux-async-connect';
 
+@asyncConnect([{
+  deferred: true,
+  promise: ({store: {dispatch, getState}}) => {
+    if (!isTasksLoaded(getState())) {
+      return dispatch(loadTasks());
+    }
+  }
+}])
 @connect(
   state => ({tasks: state.tasks.data}),
   dispatch => bindActionCreators({load}, dispatch))
@@ -24,21 +34,27 @@ export default class TasksList extends Component {
     })),
     load: PropTypes.func.isRequired
   }
-  static reduxAsyncConnect(params, store) {
-    const {dispatch, getState} = store;
-    if (!isTasksLoaded(getState())) {
-      return dispatch(loadTasks());
-    }
-  }
+  static contextTypes = {
+    store: PropTypes.object.isRequired
+  };
+
+
   render() {
     const {tasks} = this.props; // eslint-disable-line no-shadow
     // const styles = require('./TasksList.scss');
     return (
-      <Paper zDepth={1}>
-        <List>
-          {tasks.map(task => <ListItem primaryText={<Link to={`/task/${task._id}`}>task.name</Link>} secondaryText={task.deadline} key={task._id}/>)}
-        </List>
-      </Paper>
+      <Grid>
+        <Row>
+          <Col xs={12}>
+            <Paper zDepth={1}>
+              <List>
+                {tasks.map(task => <ListItem primaryText={<Link to={`/task/${task._id}`}>task.name</Link>}
+                                             secondaryText={task.deadline} key={task._id}/>)}
+              </List>
+            </Paper>
+          </Col>
+        </Row>
+      </Grid>
     );
   }
 }

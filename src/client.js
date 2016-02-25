@@ -1,7 +1,7 @@
 /**
  * THIS IS THE ENTRY POINT FOR THE CLIENT, JUST LIKE server.js IS THE ENTRY POINT FOR THE SERVER.
  */
-import 'babel/polyfill';
+import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import createStore from './redux/create';
@@ -11,12 +11,14 @@ import {Provider} from 'react-redux';
 import { Router, browserHistory } from 'react-router';
 import { ReduxAsyncConnect } from 'redux-async-connect';
 import useScroll from 'scroll-behavior/lib/useStandardScroll';
+
 import getRoutes from './routes';
 
 const client = new ApiClient();
 const history = useScroll(() => browserHistory)();
 const dest = document.getElementById('content');
 const store = createStore(history, client, window.__data);
+
 
 // Needed for onTouchTap
 // Can go away when react 1.0 release
@@ -26,7 +28,7 @@ injectTapEventPlugin();
 
 const component = (
   <Router render={(props) =>
-        <ReduxAsyncConnect {...props} helpers={{client}} />
+        <ReduxAsyncConnect {...props} helpers={{client}} filter={item => !item.deferred} />
       } history={history}>
     {getRoutes(store)}
   </Router>

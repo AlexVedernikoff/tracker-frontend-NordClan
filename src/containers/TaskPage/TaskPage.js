@@ -19,6 +19,16 @@ import ContentInbox from 'material-ui/lib/svg-icons/content/inbox';
 import ContentDrafts from 'material-ui/lib/svg-icons/content/drafts';
 import ContentSend from 'material-ui/lib/svg-icons/content/send';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
+import { asyncConnect } from 'redux-async-connect';
+
+@asyncConnect([{
+  deferred: true,
+  promise: ({store: {dispatch, getState}}) => {
+    if (!isCurrentTaskLoaded(getState())) {
+      return dispatch(setCurrentTask());
+    }
+  }
+}])
 
 @connect(
   state => ({task: state.currentTask.data})
@@ -36,13 +46,10 @@ export default class TaskPage extends Component {
     }),
     params: PropTypes.object.isRequired
   }
+  static contextTypes = {
+    store: PropTypes.object.isRequired
+  };
 
-  static reduxAsyncConnect(params, store) {
-    const {dispatch, getState} = store;
-    if (!isCurrentTaskLoaded(getState())) {
-      return dispatch(setCurrentTask(params.taskId));
-    }
-  }
 
   render() {
     const styles = require('./TaskPage.scss');

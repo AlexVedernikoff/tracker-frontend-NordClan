@@ -1,6 +1,8 @@
 @import '../../theme/normalize.css';
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500&subset=latin,cyrillic);
+
 body {
-  margin: 0l
+  font-family: Roboto, sans-serif;
+  background-color: #ECECEC;
+  margin: 0;
 }
-
-

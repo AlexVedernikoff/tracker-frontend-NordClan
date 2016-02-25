@@ -9,9 +9,16 @@ import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
 import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
 import ColorTheme from '../../theme/theme';
 import { AppHead } from 'components';
-import  from 'App.scss';
+import { asyncConnect } from 'redux-async-connect';
 
-
+@asyncConnect([{
+  deferred: true,
+  promise: ({store: {dispatch, getState}}) => {
+    if (!isAuthLoaded(getState())) {
+      return dispatch(loadAuth());
+    }
+  }
+}])
 @connect(
   state => ({user: state.auth.user}),
   {logout, pushState: routeActions.push})
@@ -37,17 +44,6 @@ export default class App extends Component {
     }
   }
 
-  static reduxAsyncConnect(params, store) {
-    const {dispatch, getState} = store;
-    const promises = [];
-
-    if (!isAuthLoaded(getState())) {
-      promises.push(dispatch(loadAuth()));
-    }
-
-    return Promise.all(promises);
-  }
-
   handleLogout = (event) => {
     event.preventDefault();
     this.props.logout();
@@ -55,10 +51,10 @@ export default class App extends Component {
 
   render() {
     // const {user} = this.props;
-    // const styles = require('./App.scss');
+    const styles = require('./App.scss');
     const muiTheme = getMuiTheme(ColorTheme);
     return (
-      <div>
+      <div className={styles.body}>
         <Helmet {...config.app.head}/>
         <MuiThemeProvider muiTheme={muiTheme}>
           <div>
