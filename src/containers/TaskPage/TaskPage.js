@@ -23,9 +23,9 @@ import { asyncConnect } from 'redux-async-connect';
 
 @asyncConnect([{
   deferred: true,
-  promise: ({store: {dispatch, getState}}) => {
+  promise: ({store: {dispatch, getState}, params}) => {
     if (!isCurrentTaskLoaded(getState())) {
-      return dispatch(setCurrentTask());
+      return dispatch(setCurrentTask(params.taskId));
     }
   }
 }])
