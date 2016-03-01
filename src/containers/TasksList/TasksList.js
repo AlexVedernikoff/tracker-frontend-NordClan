@@ -48,7 +48,7 @@ export default class TasksList extends Component {
           <Col xs={12}>
             <Paper zDepth={1}>
               <List>
-                {tasks.map(task => <ListItem primaryText={<Link to={`/task/${task._id}`}>task.name</Link>}
+                {tasks.map(task => <ListItem primaryText={<Link to={`/task/${task._id}`}>{task.name}</Link>}
                                              secondaryText={task.deadline} key={task._id}/>)}
               </List>
             </Paper>
