@@ -1,10 +1,9 @@
 import React from 'react';
-import {IndexRoute, Route} from 'react-router';
+import {IndexRedirect, Route} from 'react-router';
 import { isLoaded as isAuthLoaded, load as loadAuth } from 'redux/modules/auth';
 import {
   App,
   Login,
-  LoginSuccess,
   TaskPage,
   TasksList,
   NotFound,
@@ -16,7 +15,7 @@ export default (store) => {
       const { auth: { user }} = store.getState();
       if (!user) {
         // oops, not logged in, so can't be here!
-        replace('/');
+        replace('/login');
       }
       cb();
     }
@@ -34,17 +33,14 @@ export default (store) => {
   return (
     <Route path="/" component={App}>
       { /* Home (main) route */ }
-      <IndexRoute component={TasksList}/>
-
-      { /* Routes requiring login */ }
-      <Route onEnter={requireLogin}>
-        <Route path="loginSuccess" component={LoginSuccess}/>
-      </Route>
-
+      <IndexRedirect to="tasks"/>
       { /* Routes */ }
       <Route path="login" component={Login}/>
-      <Route path="task/:taskId" component={TaskPage}/>
-
+      { /* Routes requiring login */ }
+      <Route onEnter={requireLogin}>
+        <Route path="task/:taskId" component={TaskPage}/>
+        <Route path="tasks" component={TasksList}/>
+      </Route>
       { /* Catch all route */ }
       <Route path="*" component={NotFound} status={404}/>
     </Route>
