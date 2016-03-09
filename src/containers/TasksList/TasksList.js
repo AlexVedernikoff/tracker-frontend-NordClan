@@ -9,6 +9,7 @@ import { isLoaded as isTasksLoaded, load as loadTasks } from 'redux/modules/task
 import { Link } from 'react-router';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import { asyncConnect } from 'redux-async-connect';
+import AppHead from '../../components/AppHead/AppHead';
 
 @asyncConnect([{
   deferred: true,
@@ -43,18 +44,21 @@ export default class TasksList extends Component {
     const {tasks} = this.props; // eslint-disable-line no-shadow
     // const styles = require('./TasksList.scss');
     return (
-      <Grid>
-        <Row>
-          <Col xs={12}>
-            <Paper zDepth={1}>
-              <List>
-                {tasks.map(task => <ListItem primaryText={<Link to={`/task/${task._id}`}>{task.name}</Link>}
-                                             secondaryText={task.deadline} key={task._id}/>)}
-              </List>
-            </Paper>
-          </Col>
-        </Row>
-      </Grid>
+      <div>
+        <AppHead/>
+        <Grid>
+          <Row>
+            <Col xs={12}>
+              <Paper zDepth={1}>
+                <List>
+                  {tasks.map(task => <ListItem primaryText={<Link to={`/task/${task._id}`}>{task.name}</Link>}
+                                               secondaryText={task.deadline} key={task._id}/>)}
+                </List>
+              </Paper>
+            </Col>
+          </Row>
+        </Grid>
+      </div>
     );
   }
 }

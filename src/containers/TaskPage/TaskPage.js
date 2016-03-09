@@ -20,6 +20,7 @@ import ContentDrafts from 'material-ui/lib/svg-icons/content/drafts';
 import ContentSend from 'material-ui/lib/svg-icons/content/send';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import { asyncConnect } from 'redux-async-connect';
+import AppHead from '../../components/AppHead/AppHead';
 
 @asyncConnect([{
   deferred: true,
@@ -55,109 +56,112 @@ export default class TaskPage extends Component {
     const styles = require('./TaskPage.scss');
     const {task} = this.props;
     return (
-      <Grid>
-        <Paper className={styles.paper}>
-          <Row>
-            <Col xs={3}>
-              <FlatButton label="Edit"/>
-            </Col>
-            <Col xs={9}>
-              <Row start="xs">
-                <FlatButton label="Assign"/>
-                <FlatButton label="Start"/>
-                <FlatButton label="Close"/>
-              </Row>
-            </Col>
-          </Row>
-          <Divider />
-          <Row between="xs">
-            <Col xs={9}>
-              <h3>{task.name}</h3>
-              <span >{task.about}</span>
-              <Row middle="xs"/>
-              <List subheader="Comments">
-                <ListItem
-                  leftAvatar={<Avatar src="" />}
-                  primaryText="Brendan Lim"
-                  secondaryText={
+      <div>
+        <AppHead/>
+        <Grid>
+          <Paper className={styles.paper}>
+            <Row>
+              <Col xs={3}>
+                <FlatButton label="Edit"/>
+              </Col>
+              <Col xs={9}>
+                <Row start="xs">
+                  <FlatButton label="Assign"/>
+                  <FlatButton label="Start"/>
+                  <FlatButton label="Close"/>
+                </Row>
+              </Col>
+            </Row>
+            <Divider />
+            <Row between="xs">
+              <Col xs={9}>
+                <h3>{task.name}</h3>
+                <span >{task.about}</span>
+                <Row middle="xs"/>
+                <List subheader="Comments">
+                  <ListItem
+                    leftAvatar={<Avatar src="" />}
+                    primaryText="Brendan Lim"
+                    secondaryText={
                   <p>
                     I&apos;ll be in your neighborhood doing errands this weekend. Do you want to grab brunch?
                   </p>
                 }
-                  secondaryTextLines={2}
-                  key={1}
-                />
-                <ListItem
-                  leftAvatar={<Avatar src="" />}
-                  primaryText="Scott Jennifer"
-                  secondaryText={
+                    secondaryTextLines={2}
+                    key={1}
+                  />
+                  <ListItem
+                    leftAvatar={<Avatar src="" />}
+                    primaryText="Scott Jennifer"
+                    secondaryText={
                   <p>Wish I could come, but I&apos;m out of town this weekend.</p>
                 }
-                  secondaryTextLines={2}
-                  initiallyOpen
-                  key={2}
-                  nestedItems={[
-                    <ListItem
-                      leftAvatar={<Avatar src="" />}
-                      primaryText="Brendan Lim"
-                      secondaryText={
-                        <p>
-                          I&apos;ll be in your neighborhood doing errands this weekend. Do you want to grab brunch?
-                        </p>
-                      }
-                      secondaryTextLines={2}
-                    />,
-                    <ListItem
-                      leftAvatar={<Avatar src="" />}
-                      primaryText="Scott Jennifer"
-                      secondaryText={
-                        <p>Wish I could come, but I&apos;m out of town this weekend.</p>
-                      }
-                      secondaryTextLines={2}
-                      key={1}
-                      nestedItems={[
-                        <ListItem
-                          leftAvatar={<Avatar src="" />}
-                          primaryText="Brendan Lim"
-                          secondaryText={
-                            <p>
-                              I&apos;ll be in your neighborhood doing errands this weekend. Do you want to grab brunch?
-                            </p>
-                          }
-                          secondaryTextLines={2}
-                        />,
-                        <ListItem
-                          leftAvatar={<Avatar src="" />}
-                          primaryText="Scott Jennifer"
-                          key={2}
-                          secondaryText={
-                            <p>Wish I could come, but I&apos;m out of town this weekend.</p>
-                          }
-                          secondaryTextLines={2}
-                        />
-                      ]}
+                    secondaryTextLines={2}
+                    initiallyOpen
+                    key={2}
+                    nestedItems={[
+                      <ListItem
+                        leftAvatar={<Avatar src="" />}
+                        primaryText="Brendan Lim"
+                        secondaryText={
+                          <p>
+                            I&apos;ll be in your neighborhood doing errands this weekend. Do you want to grab brunch?
+                          </p>
+                        }
+                        secondaryTextLines={2}
+                      />,
+                      <ListItem
+                        leftAvatar={<Avatar src="" />}
+                        primaryText="Scott Jennifer"
+                        secondaryText={
+                          <p>Wish I could come, but I&apos;m out of town this weekend.</p>
+                        }
+                        secondaryTextLines={2}
+                        key={1}
+                        nestedItems={[
+                          <ListItem
+                            leftAvatar={<Avatar src="" />}
+                            primaryText="Brendan Lim"
+                            secondaryText={
+                              <p>
+                                I&apos;ll be in your neighborhood doing errands this weekend. Do you want to grab brunch?
+                              </p>
+                            }
+                            secondaryTextLines={2}
+                          />,
+                          <ListItem
+                            leftAvatar={<Avatar src="" />}
+                            primaryText="Scott Jennifer"
+                            key={2}
+                            secondaryText={
+                              <p>Wish I could come, but I&apos;m out of town this weekend.</p>
+                            }
+                            secondaryTextLines={2}
+                          />
+                        ]}
                       />
-                  ]}
-                />
-              </List>
-            </Col>
-            <Col xs={3}>
-              <Row>
+                    ]}
+                  />
+                </List>
+              </Col>
+              <Col xs={3}>
+                <Row>
                 <span>Status:
                   <FlatButton primary label="Open"/>
                 </span>
-              </Row>
-              <Row>
-                <List subheader="Details">
-                  <ListItem primaryText={task.deadline} leftIcon={<ContentSend />} key={1}/>
-                  <ListItem primaryText={task.deadline} leftIcon={<ContentDrafts />} key={2}/>
-                  <ListItem primaryText={task.status} leftIcon={<ContentInbox />} key={3}/>
-                </List>
-              </Row>
-            </Col>
-          </Row>
-        </Paper>
-      </Grid>
+                </Row>
+                <Row>
+                  <List subheader="Details">
+                    <ListItem primaryText={task.deadline} leftIcon={<ContentSend />} key={1}/>
+                    <ListItem primaryText={task.deadline} leftIcon={<ContentDrafts />} key={2}/>
+                    <ListItem primaryText={task.status} leftIcon={<ContentInbox />} key={3}/>
+                  </List>
+                </Row>
+              </Col>
+            </Row>
+          </Paper>
+        </Grid>
+      </div>
     );
   }
 }
