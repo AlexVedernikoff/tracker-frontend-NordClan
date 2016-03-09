@@ -3,7 +3,7 @@ import ColorManipulator from 'material-ui/lib/utils/color-manipulator';
 import Spacing from 'material-ui/lib/styles/spacing';
 import zIndex from 'material-ui/lib/styles/zIndex';
 
-export default function(theme) {
+export default function(theme = 'default') {
   const defaultTheme = {
     spacing: Spacing,
     zIndex: zIndex,
