@@ -17,7 +17,7 @@ export default function(theme = 'default') {
       accent3Color: Colors.grey500,
       textColor: Colors.darkBlack,
       alternateTextColor: Colors.white,
-      canvasColor: Colors.white,
+      canvasColor: Colors.grey100,
       borderColor: Colors.grey300,
       disabledColor: ColorManipulator.fade(Colors.darkBlack, 0.3),
       pickerHeaderColor: Colors.cyan500

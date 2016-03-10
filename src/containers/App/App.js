@@ -31,7 +31,7 @@ export default class App extends Component {
 
   static contextTypes = {
     store: PropTypes.object.isRequired
-  };
+  }
 
   componentWillReceiveProps(nextProps) {
     if (!this.props.user && nextProps.user) {
@@ -49,11 +49,10 @@ export default class App extends Component {
   };
 
   render() {
-    // const {user} = this.props;
-    const styles = require('./App.scss');
-    const muiTheme = getMuiTheme(getColorTheme('indigo'));
+    require('./App.scss');
+    const muiTheme = getMuiTheme(getColorTheme());
     return (
-      <div className={styles.body}>
+      <div>
         <Helmet {...config.app.head}/>
         <MuiThemeProvider muiTheme={muiTheme}>
             {this.props.children}
