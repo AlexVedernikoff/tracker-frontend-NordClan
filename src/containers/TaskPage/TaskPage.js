@@ -9,13 +9,12 @@ import {setCurrentTask, isCurrentTaskLoaded} from 'redux/modules/current_task';
 // import { Link } from 'react-router';
 // import config from '../../config';
 // import Helmet from 'react-helmet';
-import FlatButton from 'material-ui/lib/flat-button';
 import List from 'material-ui/lib/lists/list';
 import ListItem from 'material-ui/lib/lists/list-item';
+import AvPlayCircleFilled from 'material-ui/lib/svg-icons/av/play-circle-filled';
 import Avatar from 'material-ui/lib/avatar';
-import ContentInbox from 'material-ui/lib/svg-icons/content/inbox';
-import ContentDrafts from 'material-ui/lib/svg-icons/content/drafts';
-import ContentSend from 'material-ui/lib/svg-icons/content/send';
+import Tabs from 'material-ui/lib/tabs/tabs';
+import Tab from 'material-ui/lib/tabs/tab';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import { asyncConnect } from 'redux-async-connect';
 import AppHead from '../../components/AppHead/AppHead';
@@ -55,28 +54,40 @@ export default class TaskPage extends Component {
     store: PropTypes.object.isRequired,
     muiTheme: PropTypes.object.isRequired
   }
+  constructor(props, context) {
+    super(props, context);
+    this.state = {
+      slideIndex: 0,
+    };
+  }
   getStyles() {
     const theme = this.context.muiTheme;
     console.log('theme', theme, Typography);
     const styles = {
       root: {
-      //  backgroundColor: Colors.cyan500,
+        //  backgroundColor: Colors.cyan500,
         overflow: 'hidden',
       },
       h1: {
         color: theme.rawTheme.palette.primary1Color,
         fontWeight: Typography.fontWeightMedium,
-        fontSize: 20,
+        fontSize: '34px',
         paddingTop: 19,
-        marginBottom: 13,
-        letterSpacing: 0
+        marginTop: 55,
+        WebkitMarginAfter: '0em'
       },
-      h2: {
-        fontSize: '14px',
-        lineHeight: '28px',
-        paddingTop: 19,
-        marginBottom: 13,
+      p: {
+        fontSize: '12px',
+        lineHeight: '48px',
+        // paddingTop: 20,
+        // marginBottom: 20,
         letterSpacing: 0,
+        WebkitMarginBefore: '0em',
+        WebkitMarginAfter: '0em'
+      },
+      description: {
+        fontSize: '14px',
+        lineHeight: '24px'
       },
       nowrap: {
         whiteSpace: 'nowrap',
@@ -87,16 +98,26 @@ export default class TaskPage extends Component {
       h1WhenLarge: {
         fontSize: 56,
       },
-      h2WhenLarge: {
-        fontSize: 24,
-        lineHeight: '32px',
-        paddingTop: 16,
-        marginBottom: 12,
+      tabsLabel: {
+        backgroundColor: theme.rawTheme.palette.canvasColor
       },
+      tabsLabelText: {
+        color: Typography.textDarkBlack
+      },
+      tabInkBar: {
+        backgroundColor: theme.rawTheme.palette.primary1Color
+      },
+      icon: {
+        color: theme.rawTheme.palette.primary1Color
+      }
     };
     return styles;
   }
-
+  handleChangeTabs = (value) => {
+    this.setState({
+      slideIndex: value,
+    });
+  };
   render() {
     // const styles = require('./TaskPage.scss');
 
@@ -109,54 +130,102 @@ export default class TaskPage extends Component {
         <Grid>
           <Row>
             <Col xs={12}>
-              <h1 style={styles.h1}>{task.name}</h1>
+              <h1 style={styles.h1}>#42413 Нарисовать макет страницы "О проекте"</h1>
+              <p style={styles.p}>Simtrack, создал(а) Татьяна Бабич 28 мая 2016, выполнит - Карандашева Анна, Денис
+                Скориков</p>
             </Col>
           </Row>
           <Row between="xs">
-            <Col xs={9}>
-              <Row>
-                <h2 style={styles.h2}>Описание</h2>
-                <span >{task.about}</span>
-              </Row>
-              <Row middle="xs">
-                <List subheader="Comments">
-                  <ListItem
-                    leftAvatar={<Avatar src="" />}
-                    primaryText="Brendan Lim"
-                    secondaryText={
-                  <p>
-                    I&apos;ll be in your neighborhood doing errands this weekend. Do you want to grab brunch?
-                  </p>
-                }
-                    secondaryTextLines={2}
-                    key={1}
-                  />
-                  <ListItem
-                    leftAvatar={<Avatar src="" />}
-                    primaryText="Scott Jennifer"
-                    secondaryText={
-                  <p>Wish I could come, but I&apos;m out of town this weekend.</p>
-                }
-                    secondaryTextLines={2}
-                    initiallyOpen
-                    key={2}
-                  />
-                </List>
-              </Row>
+            <Col xs={8}>
+              <p style={styles.description}>Описание</p>
+              <span style={styles.description}>{task.about}</span>
+              <p style={styles.description}>Изображения</p>
+              <Tabs
+                onChange={this.handleChangeTabs}
+                value={this.state.slideIndex}
+                tabItemContainerStyle={styles.tabsLabel}
+                inkBarStyle={styles.tabInkBar}
+              >
+                <Tab label="Комментарии" value={0} style={styles.tabsLabelText}>
+                  <List>
+                    <ListItem
+                      leftAvatar={<Avatar src="" />}
+                      primaryText="Brendan Lim"
+                      secondaryText={
+                        <p>
+                          I&apos;ll be in your neighborhood doing errands this weekend. Do you want to grab brunch?
+                        </p>
+                      }
+                      secondaryTextLines={2}
+                      key={1}
+                    />
+                    <ListItem
+                      leftAvatar={<Avatar src="" />}
+                      primaryText="Scott Jennifer"
+                      secondaryText={
+                        <p>Wish I could come, but I&apos;m out of town this weekend.</p>
+                      }
+                      secondaryTextLines={2}
+                      initiallyOpen
+                      key={2}
+                      nestedItems={[
+                        <ListItem
+                          leftAvatar={<Avatar src="" />}
+                          primaryText="Brendan Lim"
+                          secondaryText={
+                            <p>
+                              I&apos;ll be in your neighborhood doing errands this weekend. Do you want to grab brunch?
+                            </p>
+                          }
+                          secondaryTextLines={2}
+                        />,
+                        <ListItem
+                          leftAvatar={<Avatar src="" />}
+                          primaryText="Scott Jennifer"
+                          secondaryText={
+                            <p>Wish I could come, but I&apos;m out of town this weekend.</p>
+                          }
+                          secondaryTextLines={2}
+                          key={1}
+                          nestedItems={[
+                            <ListItem
+                              leftAvatar={<Avatar src="" />}
+                              primaryText="Brendan Lim"
+                              secondaryText={
+                                <p>
+                                  I&apos;ll be in your neighborhood doing errands this weekend. Do you want to grab brunch?
+                                </p>
+                              }
+                              secondaryTextLines={2}
+                            />,
+                            <ListItem
+                              leftAvatar={<Avatar src="" />}
+                              primaryText="Scott Jennifer"
+                              key={2}
+                              secondaryText={
+                                <p>Wish I could come, but I&apos;m out of town this weekend.</p>
+                              }
+                              secondaryTextLines={2}
+                            />
+                          ]}
+                        />
+                      ]}
+                    />
+                  </List>
+                </Tab>
+                <Tab label="История" value={1} style={styles.tabsLabelText}/>
+              </Tabs>
             </Col>
             <Col xs={3}>
-              <Row>
-              <span>Status:
-                <FlatButton primary label="Open"/>
-              </span>
-              </Row>
-              <Row>
-                <List subheader="Details">
-                  <ListItem primaryText={task.deadline} leftIcon={<ContentSend />} key={1}/>
-                  <ListItem primaryText={task.deadline} leftIcon={<ContentDrafts />} key={2}/>
-                  <ListItem primaryText={task.status} leftIcon={<ContentInbox />} key={3}/>
-                </List>
-              </Row>
+              <List subheader="Детали">
+                <ListItem
+                  secondaryText="Статус"
+                  rightIcon={<AvPlayCircleFilled color={styles.icon.color}/>}
+                />
+                <ListItem
+                  secondaryText="Квалификация"
+                  rightIcon={<AvPlayCircleFilled />}/>
+              </List>
             </Col>
           </Row>
         </Grid>

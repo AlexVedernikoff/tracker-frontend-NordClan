@@ -25,6 +25,7 @@
 ## Installation
 
 ```bash
+npm install -g concurrently
 npm install
 ```
 
