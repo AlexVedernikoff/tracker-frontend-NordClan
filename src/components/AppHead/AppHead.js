@@ -26,10 +26,12 @@ import List from 'material-ui/lib/lists/list';
 import ListItem from 'material-ui/lib/lists/list-item';
 import Avatar from 'material-ui/lib/avatar';
 import Divider from 'material-ui/lib/divider';
+import Tabs from 'material-ui/lib/tabs/tabs';
+import Tab from 'material-ui/lib/tabs/tab';
 
 @connect(
-    // state => ({tasks: state.tasks.data}),
-    dispatch => bindActionCreators({load}, dispatch))
+  // state => ({tasks: state.tasks.data}),
+  dispatch => bindActionCreators({load}, dispatch))
 
 export default class AppHead extends Component {
   static propTypes = {
@@ -66,9 +68,9 @@ export default class AppHead extends Component {
 
     const appBarIcons = (
       <div>
-        <IconButton><ActionSearch color={Colors.white} /></IconButton>
+        <IconButton><ActionSearch color={Colors.white}/></IconButton>
         <IconButton onTouchTap={this.handleTouchTap}>
-          <SocialPerson color={Colors.white} />
+          <SocialPerson color={Colors.white}/>
         </IconButton>
         <Popover
           open={this.state.open}
@@ -79,16 +81,16 @@ export default class AppHead extends Component {
           animation={PopoverAnimationFromTop}
         >
           <div style={styles.popover}>
-          <List>
-            <ListItem
-              disabled
-              leftAvatar={
+            <List>
+              <ListItem
+                disabled
+                leftAvatar={
                 <Avatar src={require('./vincent.jpg')} />
               }
-            >
-              Mega User
-            </ListItem>
-          </List>
+              >
+                Mega User
+              </ListItem>
+            </List>
           </div>
         </Popover>
         <IconMenu
@@ -98,18 +100,19 @@ export default class AppHead extends Component {
           targetOrigin={{horizontal: 'right', vertical: 'top'}}
           anchorOrigin={{horizontal: 'right', vertical: 'top'}}
         >
-          <MenuItem primaryText="Refresh" />
-          <MenuItem primaryText="Help" />
+          <MenuItem primaryText="Refresh"/>
+          <MenuItem primaryText="Help"/>
           <Divider />
-          <MenuItem primaryText="Sign out" />
+          <MenuItem primaryText="Sign out"/>
         </IconMenu>
       </div>
     );
 
     return (
-      <AppBar
-        title="SimTracker"
-        iconElementLeft={
+      <div>
+        <AppBar
+          title="SimTracker"
+          iconElementLeft={
           <IconMenu
             iconButtonElement={
               <IconButton><NavigationMenu color={Colors.white} /></IconButton>
@@ -122,8 +125,20 @@ export default class AppHead extends Component {
             <MenuItem href="about" primaryText="О нас" />
           </IconMenu>
         }
-        iconElementRight={appBarIcons}
-      />
+          iconElementRight={appBarIcons}
+        />
+        <AppBar showMenuIconButton={false} style={{minHeight: 0}}>
+          <Tabs>
+            <Tab
+              label="Item One"/>
+            <Tab
+              label="Item Two"/>
+            <Tab
+              label="onActive"
+              route="/home"/>
+          </Tabs>
+        </AppBar>
+      </div>
     );
   }
 }

@@ -73,7 +73,6 @@ export default class TaskPage extends Component {
 
   getStyles() {
     const theme = this.context.muiTheme;
-    console.log('theme', theme, Typography);
     const styles = {
       root: {
         //  backgroundColor: Colors.cyan500,
@@ -210,6 +209,8 @@ export default class TaskPage extends Component {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between'
+      },
+      box: {
       }
     };
     return styles;
@@ -234,262 +235,266 @@ export default class TaskPage extends Component {
       <div>
         <AppHead/>
         <Grid>
-          <Row xs={12}>
-            <h1 style={styles.h1}>#42413 Нарисовать макет страницы "О проекте"</h1>
-            <p style={styles.p}><Link to="#" style={styles.a}>Simtrack</Link>, создал(а) <Link to="#" style={styles.a}>Татьяна
-              Бабич</Link> 28 мая 2016, выполнит - <Link to="#" style={styles.a}>Карандашева Анна</Link> , <Link to="#"
-                                                                                                                 style={styles.a}>Денис
-              Скориков</Link></p>
-          </Row>
-          <Row between="xs">
-            <Col xs={7}>
-              <Row>
-                <p style={styles.header}>Описание</p>
-                <span style={styles.description}>{task.about}</span>
-              </Row>
-              <Row>
-                <p style={styles.header}>Изображения</p>
-              </Row>
-              <Row between="xs">
-                <Col>
-                  <div style={styles.container}>
-                    <img style={styles.img}
-                         src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
-                  </div>
-                </Col>
-                <Col>
-                  <div style={styles.container}>
-                    <img style={styles.img}
-                         src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
-                  </div>
-                </Col>
-                <Col>
-                  <div style={styles.container}>
-                    <img style={styles.img}
-                         src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
-                  </div>
-                </Col>
-              </Row>
-              <Row>
-                <Tabs
-                  onChange={this.handleChangeTabs}
-                  value={this.state.slideIndex}
-                  tabItemContainerStyle={styles.tabsLabel}
-                  inkBarStyle={styles.tabInkBar}
-                >
-                  <Tab label="Комментарии" value={0} style={styles.tabsLabelText}>
-                    <List>
-                      <ListItem
-                        leftAvatar={<Avatar src="" />}
-                        primaryText="Brendan Lim"
-                        secondaryText={
+          <div style={styles.box}>
+            <Row xs={12}>
+              <h1 style={styles.h1}>#42413 Нарисовать макет страницы "О проекте"</h1>
+              <p style={styles.p}><Link to="#" style={styles.a}>Simtrack</Link>, создал(а) <Link to="#"
+                                                                                                 style={styles.a}>Татьяна
+                Бабич</Link> 28 мая 2016, выполнит - <Link to="#" style={styles.a}>Карандашева Анна</Link> , <Link
+                to="#"
+                style={styles.a}>Денис
+                Скориков</Link></p>
+            </Row>
+            <Row between="xs">
+              <Col xs={7}>
+                <Row>
+                  <p style={styles.header}>Описание</p>
+                  <span style={styles.description}>{task.about}</span>
+                </Row>
+                <Row>
+                  <p style={styles.header}>Изображения</p>
+                </Row>
+                <Row between="xs">
+                  <Col>
+                    <div style={styles.container}>
+                      <img style={styles.img}
+                           src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
+                    </div>
+                  </Col>
+                  <Col>
+                    <div style={styles.container}>
+                      <img style={styles.img}
+                           src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
+                    </div>
+                  </Col>
+                  <Col>
+                    <div style={styles.container}>
+                      <img style={styles.img}
+                           src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
+                    </div>
+                  </Col>
+                </Row>
+                <Row>
+                  <Tabs
+                    onChange={this.handleChangeTabs}
+                    value={this.state.slideIndex}
+                    tabItemContainerStyle={styles.tabsLabel}
+                    inkBarStyle={styles.tabInkBar}
+                  >
+                    <Tab label="Комментарии" value={0} style={styles.tabsLabelText}>
+                      <List>
+                        <ListItem
+                          leftAvatar={<Avatar src="" />}
+                          primaryText="Brendan Lim"
+                          secondaryText={
                         <p>
                           I&apos;ll be in your neighborhood doing errands this weekend. Do you want to grab brunch?
                         </p>
                       }
-                        secondaryTextLines={2}
-                        key={1}
-                      />
-                      <ListItem
-                        leftAvatar={<Avatar src="" />}
-                        primaryText="Scott Jennifer"
-                        secondaryText={
+                          secondaryTextLines={2}
+                          key={1}
+                        />
+                        <ListItem
+                          leftAvatar={<Avatar src="" />}
+                          primaryText="Scott Jennifer"
+                          secondaryText={
                         <p>Wish I could come, but I&apos;m out of town this weekend.</p>
                       }
-                        secondaryTextLines={2}
-                        initiallyOpen
-                        key={2}
-                        nestedItems={[
-                          <ListItem
-                            leftAvatar={<Avatar src="" />}
-                            primaryText="Brendan Lim"
-                            secondaryText={
-                              <p>
-                                I&apos;ll be in your neighborhood doing errands this weekend. Do you want to grab brunch?
-                              </p>
-                            }
-                            secondaryTextLines={2}
-                          />,
-                          <ListItem
-                            leftAvatar={<Avatar src="" />}
-                            primaryText="Scott Jennifer"
-                            secondaryText={
-                              <p>Wish I could come, but I&apos;m out of town this weekend.</p>
-                            }
-                            secondaryTextLines={2}
-                            key={1}
-                            nestedItems={[
-                              <ListItem
-                                leftAvatar={<Avatar src="" />}
-                                primaryText="Brendan Lim"
-                                secondaryText={
-                                  <p>
-                                    I&apos;ll be in your neighborhood doing errands this weekend. Do you want to grab brunch?
-                                  </p>
-                                }
-                                secondaryTextLines={2}
-                              />,
-                              <ListItem
-                                leftAvatar={<Avatar src="" />}
-                                primaryText="Scott Jennifer"
-                                key={2}
-                                secondaryText={
-                                  <p>Wish I could come, but I&apos;m out of town this weekend.</p>
-                                }
-                                secondaryTextLines={2}
-                              />
-                            ]}
-                          />
-                        ]}
-                      />
-                    </List>
-                  </Tab>
-                  <Tab label="История" value={1} style={styles.tabsLabelText}/>
-                </Tabs>
-              </Row>
-            </Col>
-            <Col xs={4}>
-              <Row>
-                <Col xs>
-                  <p style={styles.header}>Детали</p>
-                  <div style={{marginBottom: 20}}>
+                          secondaryTextLines={2}
+                          initiallyOpen
+                          key={2}
+                          nestedItems={[
+                            <ListItem
+                              leftAvatar={<Avatar src="" />}
+                              primaryText="Brendan Lim"
+                              secondaryText={
+                                <p>
+                                  I&apos;ll be in your neighborhood doing errands this weekend. Do you want to grab brunch?
+                                </p>
+                              }
+                              secondaryTextLines={2}
+                            />,
+                            <ListItem
+                              leftAvatar={<Avatar src="" />}
+                              primaryText="Scott Jennifer"
+                              secondaryText={
+                                <p>Wish I could come, but I&apos;m out of town this weekend.</p>
+                              }
+                              secondaryTextLines={2}
+                              key={1}
+                              nestedItems={[
+                                <ListItem
+                                  leftAvatar={<Avatar src="" />}
+                                  primaryText="Brendan Lim"
+                                  secondaryText={
+                                    <p>
+                                      I&apos;ll be in your neighborhood doing errands this weekend. Do you want to grab brunch?
+                                    </p>
+                                  }
+                                  secondaryTextLines={2}
+                                />,
+                                <ListItem
+                                  leftAvatar={<Avatar src="" />}
+                                  primaryText="Scott Jennifer"
+                                  key={2}
+                                  secondaryText={
+                                    <p>Wish I could come, but I&apos;m out of town this weekend.</p>
+                                  }
+                                  secondaryTextLines={2}
+                                />
+                              ]}
+                            />
+                          ]}
+                        />
+                      </List>
+                    </Tab>
+                    <Tab label="История" value={1} style={styles.tabsLabelText}/>
+                  </Tabs>
+                </Row>
+              </Col>
+              <Col xs={4}>
+                <Row>
+                  <Col xs>
+                    <p style={styles.header}>Детали</p>
+                    <div style={{marginBottom: 20}}>
+                      <div style={styles.deadlineContainer}>
+                        <div>
+                          <p style={{...styles.labelDateOfDeadline, marginTop: 21}}>Статус</p>
+                        </div>
+                        <div>
+                          <DropDownMenu value={this.state.dropDownIndex} onChange={this.handleChangeDropDown}
+                                        underlineStyle={{display: 'none'}}>
+                            <MenuItem value={0} primaryText="Line spacing" leftIcon={<ArrowDropRight />}/>
+                            <MenuItem value={2} primaryText="Every Night" leftIcon={<ArrowDropRight />}/>
+                            <MenuItem value={3} primaryText="Weeknights" leftIcon={<ArrowDropRight />}/>
+                            <MenuItem value={4} primaryText="Weekends" leftIcon={<ArrowDropRight />}/>
+                            <MenuItem value={5} primaryText="Weekly" leftIcon={<ArrowDropRight />}/>
+                          </DropDownMenu>
+                        </div>
+                      </div>
+                      <div style={styles.deadlineContainer}>
+                        <div>
+                          <p style={{...styles.labelDateOfDeadline, marginTop: 21}}>Квалификация</p>
+                        </div>
+                        <div>
+                          <DropDownMenu value={this.state.dropDownIndex} onChange={this.handleChangeDropDown}
+                                        underlineStyle={{display: 'none'}}>
+                            <MenuItem value={0} primaryText="Line spacing" leftIcon={<ArrowDropRight />}/>
+                            <MenuItem value={2} primaryText="Every Night" leftIcon={<ArrowDropRight />}/>
+                            <MenuItem value={3} primaryText="Weeknights" leftIcon={<ArrowDropRight />}/>
+                            <MenuItem value={4} primaryText="Weekends" leftIcon={<ArrowDropRight />}/>
+                            <MenuItem value={5} primaryText="Weekly" leftIcon={<ArrowDropRight />}/>
+                          </DropDownMenu>
+                        </div>
+                      </div>
+                      <div style={styles.deadlineContainer}>
+                        <div>
+                          <p style={{...styles.labelDateOfDeadline, marginTop: 21}}>Приоритет</p>
+                        </div>
+                        <div>
+                          <ContentAdd/>
+                          <span style={styles.executor}>Среднее</span>
+                        </div>
+                      </div>
+                    </div>
+                    <Divider/>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs>
+                    <p style={styles.header}>Сроки</p>
                     <div style={styles.deadlineContainer}>
-                      <div>
-                        <p style={{...styles.labelDateOfDeadline, marginTop: 21}}>Статус</p>
+                      <div style={styles.progressBar}>
+                        <p style={styles.labelDateOfDeadline}>Потрачено / Запланировано</p>
+                        <p style={styles.labelHoursOfDeadline}>10/50</p>
+                        <LinearProgress mode="determinate" value={50}/>
                       </div>
-                      <div>
-                        <DropDownMenu value={this.state.dropDownIndex} onChange={this.handleChangeDropDown}
-                                      underlineStyle={{display: 'none'}}>
-                          <MenuItem value={0} primaryText="Line spacing" leftIcon={<ArrowDropRight />}/>
-                          <MenuItem value={2} primaryText="Every Night" leftIcon={<ArrowDropRight />}/>
-                          <MenuItem value={3} primaryText="Weeknights" leftIcon={<ArrowDropRight />}/>
-                          <MenuItem value={4} primaryText="Weekends" leftIcon={<ArrowDropRight />}/>
-                          <MenuItem value={5} primaryText="Weekly" leftIcon={<ArrowDropRight />}/>
-                        </DropDownMenu>
+                      <div style={styles.dateDeadlineBar}>
+                        <p style={styles.labelDateOfDeadline}>Релиз</p>
+                        <p style={{...styles.labelHoursOfDeadline, margin: '3px'}}>16</p>
+                        <p style={{fontSize: '12px', margin: 0}}>сентября</p>
                       </div>
                     </div>
-                    <div style={styles.deadlineContainer}>
-                      <div>
-                        <p style={{...styles.labelDateOfDeadline, marginTop: 21}}>Квалификация</p>
+                    <Divider/>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs>
+                    <p style={styles.header}>Исполнители</p>
+                    <div style={{marginBottom: 20}}>
+                      <div
+                        style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: '14'}}>
+                        <ContentAdd style={{marginTop: 'auto', marginBottom: 'auto'}}/>
+                        <div style={{margin: 'auto 5px', flexGrow: '2', flexShrink: '2'}}>
+                          <span style={styles.executor}>Иватина Ирина</span>
+                        </div>
+                        <div style={{marginTop: 'auto'}}>
+                          <span style={styles.executor}>12 апреля</span>
+                        </div>
                       </div>
-                      <div>
-                        <DropDownMenu value={this.state.dropDownIndex} onChange={this.handleChangeDropDown}
-                                      underlineStyle={{display: 'none'}}>
-                          <MenuItem value={0} primaryText="Line spacing" leftIcon={<ArrowDropRight />}/>
-                          <MenuItem value={2} primaryText="Every Night" leftIcon={<ArrowDropRight />}/>
-                          <MenuItem value={3} primaryText="Weeknights" leftIcon={<ArrowDropRight />}/>
-                          <MenuItem value={4} primaryText="Weekends" leftIcon={<ArrowDropRight />}/>
-                          <MenuItem value={5} primaryText="Weekly" leftIcon={<ArrowDropRight />}/>
-                        </DropDownMenu>
+                      <div
+                        style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: '14'}}>
+                        <ContentAdd style={{marginTop: 'auto', marginBottom: 'auto'}}/>
+                        <div style={{margin: 'auto 5px', flexGrow: '2', flexShrink: '2'}}>
+                          <span style={styles.executor}>Иватина Ирина</span>
+                        </div>
+                        <div style={{marginTop: 'auto'}}>
+                          <span style={styles.executor}>12 апреля</span>
+                        </div>
                       </div>
-                    </div>
-                    <div style={styles.deadlineContainer}>
-                      <div>
-                        <p style={{...styles.labelDateOfDeadline, marginTop: 21}}>Приоритет</p>
+                      <div
+                        style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: '14'}}>
+                        <ContentAdd style={{marginTop: 'auto', marginBottom: 'auto'}}/>
+                        <div style={{margin: 'auto 5px', flexGrow: '2', flexShrink: '2'}}>
+                          <span style={styles.executor}>Иватина Ирина</span>
+                        </div>
+                        <div style={{marginTop: 'auto'}}>
+                          <span style={styles.executor}>12 апреля</span>
+                        </div>
                       </div>
-                      <div>
-                        <ContentAdd/>
-                        <span style={styles.executor}>Среднее</span>
-                      </div>
-                    </div>
-                  </div>
-                  <Divider/>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs>
-                  <p style={styles.header}>Сроки</p>
-                  <div style={styles.deadlineContainer}>
-                    <div style={styles.progressBar}>
-                      <p style={styles.labelDateOfDeadline}>Потрачено / Запланировано</p>
-                      <p style={styles.labelHoursOfDeadline}>10/50</p>
-                      <LinearProgress mode="determinate" value={50}/>
-                    </div>
-                    <div style={styles.dateDeadlineBar}>
-                      <p style={styles.labelDateOfDeadline}>Релиз</p>
-                      <p style={{...styles.labelHoursOfDeadline, margin: '3px'}}>16</p>
-                      <p style={{fontSize: '12px', margin: 0}}>сентября</p>
-                    </div>
-                  </div>
-                  <Divider/>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs>
-                  <p style={styles.header}>Исполнители</p>
-                  <div style={{marginBottom: 20}}>
-                    <div
-                      style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: '14'}}>
-                      <ContentAdd style={{marginTop: 'auto', marginBottom: 'auto'}}/>
-                      <div style={{margin: 'auto 5px', flexGrow: '2', flexShrink: '2'}}>
-                        <span style={styles.executor}>Иватина Ирина</span>
-                      </div>
-                      <div style={{marginTop: 'auto'}}>
-                        <span style={styles.executor}>12 апреля</span>
+                      <div
+                        style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: '14'}}>
+                        <ContentAdd style={{marginTop: 'auto', marginBottom: 'auto'}}/>
+                        <div style={{margin: 'auto 5px', flexGrow: '2', flexShrink: '2'}}>
+                          <span style={styles.executor}>Иватина Ирина</span>
+                        </div>
+                        <div style={{marginTop: 'auto'}}>
+                          <span style={styles.executor}>12 апреля</span>
+                        </div>
                       </div>
                     </div>
-                    <div
-                      style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: '14'}}>
-                      <ContentAdd style={{marginTop: 'auto', marginBottom: 'auto'}}/>
-                      <div style={{margin: 'auto 5px', flexGrow: '2', flexShrink: '2'}}>
-                        <span style={styles.executor}>Иватина Ирина</span>
-                      </div>
-                      <div style={{marginTop: 'auto'}}>
-                        <span style={styles.executor}>12 апреля</span>
-                      </div>
+                    <Divider/>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs>
+                    <p style={styles.header}>Документы</p>
+                    <div style={styles.documentsContainer}>
+                      <div style={styles.documentsIconContainer}><AttachFile style={styles.documentsIcon}
+                                                                             color={styles.documentsIcon.color}/></div>
+                      <div style={styles.documentsLabelContainer}><Link
+                        to="#" style={styles.documents}>Сводная таблица технических требований</Link><span
+                        style={styles.documentsExtensions}> (.xls)</span></div>
                     </div>
-                    <div
-                      style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: '14'}}>
-                      <ContentAdd style={{marginTop: 'auto', marginBottom: 'auto'}}/>
-                      <div style={{margin: 'auto 5px', flexGrow: '2', flexShrink: '2'}}>
-                        <span style={styles.executor}>Иватина Ирина</span>
-                      </div>
-                      <div style={{marginTop: 'auto'}}>
-                        <span style={styles.executor}>12 апреля</span>
-                      </div>
+                    <div style={styles.documentsContainer}>
+                      <div style={styles.documentsIconContainer}><AttachFile style={styles.documentsIcon}
+                                                                             color={styles.documentsIcon.color}/></div>
+                      <div style={styles.documentsLabelContainer}><Link
+                        to="#" style={styles.documents}>Сводная таблица технических требований</Link><span
+                        style={styles.documentsExtensions}> (.xls)</span></div>
                     </div>
-                    <div
-                      style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: '14'}}>
-                      <ContentAdd style={{marginTop: 'auto', marginBottom: 'auto'}}/>
-                      <div style={{margin: 'auto 5px', flexGrow: '2', flexShrink: '2'}}>
-                        <span style={styles.executor}>Иватина Ирина</span>
-                      </div>
-                      <div style={{marginTop: 'auto'}}>
-                        <span style={styles.executor}>12 апреля</span>
-                      </div>
+                    <div style={styles.documentsContainer}>
+                      <div style={styles.documentsIconContainer}><AttachFile style={styles.documentsIcon}
+                                                                             color={styles.documentsIcon.color}/></div>
+                      <div style={styles.documentsLabelContainer}><Link
+                        to="#" style={styles.documents}>Сводная таблица технических требований</Link><span
+                        style={styles.documentsExtensions}> (.xls)</span></div>
                     </div>
-                  </div>
-                  <Divider/>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs>
-                  <p style={styles.header}>Документы</p>
-                  <div style={styles.documentsContainer}>
-                    <div style={styles.documentsIconContainer}><AttachFile style={styles.documentsIcon}
-                                                                           color={styles.documentsIcon.color}/></div>
-                    <div style={styles.documentsLabelContainer}><Link
-                      to="#" style={styles.documents}>Сводная таблица технических требований</Link><span
-                      style={styles.documentsExtensions}> (.xls)</span></div>
-                  </div>
-                  <div style={styles.documentsContainer}>
-                    <div style={styles.documentsIconContainer}><AttachFile style={styles.documentsIcon}
-                                                                           color={styles.documentsIcon.color}/></div>
-                    <div style={styles.documentsLabelContainer}><Link
-                      to="#" style={styles.documents}>Сводная таблица технических требований</Link><span
-                      style={styles.documentsExtensions}> (.xls)</span></div>
-                  </div>
-                  <div style={styles.documentsContainer}>
-                    <div style={styles.documentsIconContainer}><AttachFile style={styles.documentsIcon}
-                                                                           color={styles.documentsIcon.color}/></div>
-                    <div style={styles.documentsLabelContainer}><Link
-                      to="#" style={styles.documents}>Сводная таблица технических требований</Link><span
-                      style={styles.documentsExtensions}> (.xls)</span></div>
-                  </div>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          </div>
         </Grid>
         <FloatingActionButton style={styles.FAB}>
           <EditorModeEdit />

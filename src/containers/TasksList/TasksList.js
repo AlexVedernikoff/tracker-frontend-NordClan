@@ -50,7 +50,7 @@ export default class TasksList extends Component {
           <Row>
             <Col xs={12}>
               <Paper zDepth={1}>
-                <List>
+                <List style={{backgroundColor: 'white'}}>
                   {tasks.map(task => <ListItem primaryText={<Link to={`/task/${task._id}`}>{task.name}</Link>}
                                                secondaryText={task.deadline} key={task._id}/>)}
                 </List>
