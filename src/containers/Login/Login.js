@@ -2,6 +2,11 @@ import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import Helmet from 'react-helmet';
 import * as authActions from 'redux/modules/auth';
+import TextField from 'material-ui/lib/text-field';
+import FlatButton from 'material-ui/lib/flat-button';
+import ActionAndroid from 'material-ui/lib/svg-icons/action/android';
+import AppBar from 'material-ui/lib/app-bar';
+import Paper from 'material-ui/lib/paper';
 
 @connect(
   state => ({user: state.auth.user}),
@@ -16,27 +21,37 @@ export default class Login extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
     const input = this.refs.username;
-    this.props.login(input.value);
-    input.value = '';
+    this.props.login(input.getValue());
   }
 
   render() {
     const {user, logout} = this.props;
     const styles = require('./Login.scss');
     return (
-      <div className={styles.loginPage + ' container'}>
+      <Paper className={styles.loginPage}
+             style={{width: '20rem', height: '20rem', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, margin: 'auto', backgroundColor: 'white', textAlign: 'center'}}>
         <Helmet title="Login"/>
-        <h1>Login</h1>
+        <AppBar title="Login" showMenuIconButton={false}/>
         {!user &&
-        <div>
-          <form className="login-form form-inline" onSubmit={this.handleSubmit}>
-            <div className="form-group">
-              <input type="text" ref="username" placeholder="Enter a username" className="form-control"/>
-            </div>
-            <button className="btn btn-success" onClick={this.handleSubmit}><i className="fa fa-sign-in"/>{' '}Log In
-            </button>
-          </form>
-          <p>This will "log you in" as this user, storing the username in the session of the API server.</p>
+        <div style={{marginTop: '2rem'}}>
+          <TextField
+            hintText="Enter name"
+            floatingLabelText="Name"
+            ref="username"
+          /><br/>
+          <TextField
+            hintText="Enter password"
+            floatingLabelText="Password"
+            type="password"
+          /><br/>
+          <FlatButton
+            label="Sign in"
+            labelPosition="before"
+            primary
+            icon={<ActionAndroid />}
+            onClick={this.handleSubmit}
+          />
+          <p style={{margin: 0, fontSize: 12, color: 'rgba(0,0,0,0.54)'}}>P.S. please, enter any name and press button</p>
         </div>
         }
         {user &&
@@ -48,7 +63,7 @@ export default class Login extends Component {
           </div>
         </div>
         }
-      </div>
+      </Paper>
     );
   }
 }
