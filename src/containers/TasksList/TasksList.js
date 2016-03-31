@@ -10,6 +10,7 @@ import { Link } from 'react-router';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import { asyncConnect } from 'redux-async-connect';
 import AppHead from '../../components/AppHead/AppHead';
+import Helmet from 'react-helmet';
 
 @asyncConnect([{
   deferred: true,
@@ -46,6 +47,7 @@ export default class TasksList extends Component {
     return (
       <div>
         <AppHead/>
+        <Helmet title="Task List"/>
         <Grid>
           <Row>
             <Col xs={12}>

@@ -30,6 +30,7 @@ import LinearProgress from 'material-ui/lib/linear-progress';
 import DropDownMenu from 'material-ui/lib/DropDownMenu';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import ArrowDropRight from 'material-ui/lib/svg-icons/navigation-arrow-drop-right';
+import Helmet from 'react-helmet';
 
 @asyncConnect([{
   deferred: true,
@@ -234,6 +235,7 @@ export default class TaskPage extends Component {
     return (
       <div>
         <AppHead/>
+        <Helmet title="Task"/>
         <Grid>
           <div style={styles.box}>
             <Row xs={12}>
