@@ -12,10 +12,9 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 
 // Icons
 import SocialPerson from 'material-ui/lib/svg-icons/social/person';
-// import ActionHome from 'material-ui/lib/svg-icons/action/home';
+import ActionExitToApp from 'material-ui/lib/svg-icons/action/exit-to-app';
+import Settings from 'material-ui/lib/svg-icons/action/settings';
 import NavigationMenu from 'material-ui/lib/svg-icons/navigation/menu';
-import ActionSearch from 'material-ui/lib/svg-icons/action/search';
-import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
 
 import IconMenu from 'material-ui/lib/menus/icon-menu';
 import IconButton from 'material-ui/lib/icon-button';
@@ -68,7 +67,6 @@ export default class AppHead extends Component {
 
     const appBarIcons = (
       <div>
-        <IconButton><ActionSearch color={Colors.white}/></IconButton>
         <IconButton onTouchTap={this.handleTouchTap}>
           <SocialPerson color={Colors.white}/>
         </IconButton>
@@ -95,7 +93,7 @@ export default class AppHead extends Component {
         </Popover>
         <IconMenu
           iconButtonElement={
-            <IconButton><MoreVertIcon color={Colors.white} /></IconButton>
+            <IconButton><Settings color={Colors.white} /></IconButton>
           }
           targetOrigin={{horizontal: 'right', vertical: 'top'}}
           anchorOrigin={{horizontal: 'right', vertical: 'top'}}
@@ -105,6 +103,9 @@ export default class AppHead extends Component {
           <Divider />
           <MenuItem primaryText="Sign out"/>
         </IconMenu>
+        <IconButton>
+          <ActionExitToApp color={Colors.white}/>
+        </IconButton>
       </div>
     );
 

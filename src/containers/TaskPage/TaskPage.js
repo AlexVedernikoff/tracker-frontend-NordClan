@@ -56,8 +56,7 @@ export default class TaskPage extends Component {
       about: PropTypes.string.isRequired,
       deadline: PropTypes.string.isRequired
     }),
-    params: PropTypes.object.isRequired,
-    muiTheme: React.PropTypes.object.isRequired
+    params: PropTypes.object.isRequired
   }
   static contextTypes = {
     store: PropTypes.object.isRequired,
