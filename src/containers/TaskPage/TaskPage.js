@@ -231,11 +231,14 @@ export default class TaskPage extends Component {
     const styles = this.getStyles();
 
     const {task} = this.props;
+
+    const grid = require('./TaskPage.scss');
+
     return (
       <div>
         <AppHead/>
         <Helmet title="Task"/>
-        <Grid>
+        <Grid fluid className={grid.layout}>
           <div style={styles.box}>
             <Row xs={12}>
               <h1 style={styles.h1}>#42413 Нарисовать макет страницы "О проекте"</h1>
