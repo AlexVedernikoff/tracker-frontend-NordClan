@@ -26,11 +26,12 @@ import FloatingActionButton from 'material-ui/lib/floating-action-button';
 import ContentAdd from 'material-ui/lib/svg-icons/content/add';
 import EditorModeEdit from 'material-ui/lib/svg-icons/editor/mode-edit';
 import AttachFile from 'material-ui/lib/svg-icons/editor/attach-file';
-import LinearProgress from 'material-ui/lib/linear-progress';
 import DropDownMenu from 'material-ui/lib/DropDownMenu';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import ArrowDropRight from 'material-ui/lib/svg-icons/navigation-arrow-drop-right';
 import Helmet from 'react-helmet';
+import DeadlineDate from '../../components/DeadlineDate/DeadlineDate';
+import TaskProgressBar from '../../components/TaskProgressBar/TaskProgressBar';
 
 @asyncConnect([{
   deferred: true,
@@ -208,7 +209,8 @@ export default class TaskPage extends Component {
       deadlineContainer: {
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        paddingBottom: 10
       },
       box: {
       }
@@ -408,15 +410,10 @@ export default class TaskPage extends Component {
                   <Col xs>
                     <p style={styles.header}>Сроки</p>
                     <div style={styles.deadlineContainer}>
-                      <div style={styles.progressBar}>
-                        <p style={styles.labelDateOfDeadline}>Потрачено / Запланировано</p>
-                        <p style={styles.labelHoursOfDeadline}>10/50</p>
-                        <LinearProgress mode="determinate" value={50}/>
-                      </div>
+                      <TaskProgressBar spent={1000} planned={100} spentLabel={'Потрачено'} plannedLabel={'Планируемое'}/>
                       <div style={styles.dateDeadlineBar}>
                         <p style={styles.labelDateOfDeadline}>Релиз</p>
-                        <p style={{...styles.labelHoursOfDeadline, margin: '3px'}}>16</p>
-                        <p style={{fontSize: '12px', margin: 0}}>сентября</p>
+                        <DeadlineDate date={{day: 16, month: 'май'}}/>
                       </div>
                     </div>
                     <Divider/>
