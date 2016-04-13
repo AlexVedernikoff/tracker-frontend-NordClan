@@ -1,3 +1,4 @@
+/* Редьюсер для выбора текущей задачи, снизу создатель асинхронного action */
 import types from '../../constants/ActionTypes';
 
 const initialState = {

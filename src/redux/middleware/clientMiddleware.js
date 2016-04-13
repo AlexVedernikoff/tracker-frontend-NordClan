@@ -1,3 +1,4 @@
+/* Релиализация прослойки для возможности в action передавать promise, что дает возможность делать асинхронные запросы */
 export default function clientMiddleware(client) {
   return ({dispatch, getState}) => {
     return next => action => {

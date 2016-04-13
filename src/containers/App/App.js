@@ -1,6 +1,6 @@
+/* Главный компонент приложения, проверяется авторизация пользователя, реализуется функционал тем для приложения */
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-// import { IndexLink } from 'react-router';
 import Helmet from 'react-helmet';
 import { isLoaded as isAuthLoaded, load as loadAuth, logout } from 'redux/modules/auth';
 import { routeActions } from 'react-router-redux';
