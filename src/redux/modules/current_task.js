@@ -1,4 +1,4 @@
-/* Редьюсер для выбора текущей задачи, снизу создатель асинхронного action */
+/* Редьюсер для выбора текущей задачи, создатель асинхронного действия */
 import types from '../../constants/ActionTypes';
 
 const initialState = {
@@ -36,8 +36,8 @@ export default function reducer(state = initialState, action = {}) {
   }
 }
 
-export function isCurrentTaskLoaded(globalState) {
-  return globalState.currentTask && globalState.currentTask.loaded;
+export function isCurrentTaskLoaded(state) {
+  return state.currentTask && state.currentTask.loaded;
 }
 
 export function setCurrentTask(id) {
