@@ -11,13 +11,15 @@ import {Provider} from 'react-redux';
 import { Router, browserHistory } from 'react-router';
 import { ReduxAsyncConnect } from 'redux-async-connect';
 import useScroll from 'scroll-behavior/lib/useStandardScroll';
+import { syncHistoryWithStore } from 'react-router-redux';
 
 import getRoutes from './routes';
 
 const client = new ApiClient();
-const history = useScroll(() => browserHistory)();
+const routerHistory = useScroll(() => browserHistory)();
 const dest = document.getElementById('content');
-const store = createStore(history, client, window.__data);
+const store = createStore(routerHistory, client, window.__data);
+const history = syncHistoryWithStore(routerHistory, store);
 
 
 // Needed for onTouchTap

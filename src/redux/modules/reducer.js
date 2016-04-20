@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { routeReducer } from 'react-router-redux';
+import { routerReducer } from 'react-router-redux';
 import {reducer as reduxAsyncConnect} from 'redux-async-connect';
 
 import auth from './auth';
@@ -8,7 +8,7 @@ import tasks from './tasks';
 import currentTask from './current_task';
 
 export default combineReducers({
-  routing: routeReducer,
+  routing: routerReducer,
   reduxAsyncConnect,
   auth,
   form,

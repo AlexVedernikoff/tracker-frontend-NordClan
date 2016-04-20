@@ -11,6 +11,7 @@ import ApiClient from './helpers/ApiClient';
 import Html from './helpers/Html';
 import PrettyError from 'pretty-error';
 import http from 'http';
+import { syncHistoryWithStore } from 'react-router-redux';
 
 import { match } from 'react-router';
 import { ReduxAsyncConnect, loadOnServer } from 'redux-async-connect';
@@ -58,9 +59,10 @@ app.use((req, res) => {
     webpackIsomorphicTools.refresh();
   }
   const client = new ApiClient(req);
-  const history = createHistory(req.originalUrl);
+  const browserHistory = createHistory(req.originalUrl);
 
   const store = createStore(history, client);
+  const history = syncHistoryWithStore(browserHistory, store);
 
   function hydrateOnClient() {
     res.send('<!doctype html>\n' +
