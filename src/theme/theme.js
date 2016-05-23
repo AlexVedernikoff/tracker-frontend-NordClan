@@ -20,7 +20,11 @@ export default function(theme = 'default') {
       canvasColor: Colors.grey100,
       borderColor: Colors.grey300,
       disabledColor: ColorManipulator.fade(Colors.darkBlack, 0.3),
-      pickerHeaderColor: Colors.cyan500
+      pickerHeaderColor: Colors.cyan500,
+
+      backgroundColor: '#f5f5f5',
+      activeIcon: '#689F37'
+
     }
   };
   switch (theme) {

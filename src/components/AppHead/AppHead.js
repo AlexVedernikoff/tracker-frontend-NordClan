@@ -83,8 +83,8 @@ export default class AppHead extends Component {
               <ListItem
                 disabled
                 leftAvatar={
-                <Avatar src={require('./vincent.jpg')} />
-              }
+                  <Avatar src={require('./vincent.jpg')} />
+                }
               >
                 Mega User
               </ListItem>

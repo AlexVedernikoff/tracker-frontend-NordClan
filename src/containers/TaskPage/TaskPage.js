@@ -1,8 +1,5 @@
-/**
- * Created by ira on 18.02.16.
- */
-
 import React, {Component, PropTypes} from 'react';
+import ReactDom from 'react-dom';
 // import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {setCurrentTask, isCurrentTaskLoaded} from 'redux/modules/current_task';
@@ -11,6 +8,7 @@ import {setCurrentTask, isCurrentTaskLoaded} from 'redux/modules/current_task';
 // import Helmet from 'react-helmet';
 import List from 'material-ui/lib/lists/list';
 import ListItem from 'material-ui/lib/lists/list-item';
+import IconButton from 'material-ui/lib/icon-button';
 // import AvPlayCircleFilled from 'material-ui/lib/svg-icons/av/play-circle-filled';
 import Avatar from 'material-ui/lib/avatar';
 import Tabs from 'material-ui/lib/tabs/tabs';
@@ -18,20 +16,49 @@ import Tab from 'material-ui/lib/tabs/tab';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import { asyncConnect } from 'redux-async-connect';
 import AppHead from '../../components/AppHead/AppHead';
-import Divider from 'material-ui/lib/divider';
+// import Divider from 'material-ui/lib/divider';
 import {Styles} from 'material-ui';
 const {Typography} = Styles;
 import { Link } from 'react-router';
 import FloatingActionButton from 'material-ui/lib/floating-action-button';
-import ContentAdd from 'material-ui/lib/svg-icons/content/add';
+// import ContentAdd from 'material-ui/lib/svg-icons/content/add';
 import EditorModeEdit from 'material-ui/lib/svg-icons/editor/mode-edit';
-import AttachFile from 'material-ui/lib/svg-icons/editor/attach-file';
+
+// Images
+// import Slider from 'react-slick';
+
+// Upload Files
+import DropZone from '../../components/DropZone/DropZone';
+
+// Details
 import DropDownMenu from 'material-ui/lib/DropDownMenu';
 import MenuItem from 'material-ui/lib/menus/menu-item';
-import ArrowDropRight from 'material-ui/lib/svg-icons/navigation-arrow-drop-right';
+import IconFrozen from 'material-ui/lib/svg-icons/av/pause-circle-filled';
+import IconRejected from 'material-ui/lib/svg-icons/alert/error';
+import IconAccepted from 'material-ui/lib/svg-icons/action/check-circle';
+
 import Helmet from 'react-helmet';
 import DeadlineDate from '../../components/DeadlineDate/DeadlineDate';
 import TaskProgressBar from '../../components/TaskProgressBar/TaskProgressBar';
+
+// Documents icons
+import AttachFile from 'material-ui/lib/svg-icons/editor/attach-file';
+import DownloadFile from 'material-ui/lib/svg-icons/file/file-download';
+import CloudDownload from 'material-ui/lib/svg-icons/file/cloud-download';
+import NavCancel from 'material-ui/lib/svg-icons/navigation/cancel';
+
+// Executors
+// -- Executors icons
+import IconInProcess from 'material-ui/lib/svg-icons/av/play-circle-filled';
+import IconPaused from 'material-ui/lib/svg-icons/toggle/radio-button-checked';
+import IconCompleted from 'material-ui/lib/svg-icons/action/check-circle';
+import IconSeparatorDown from 'material-ui/lib/svg-icons/navigation/expand-more';
+import IconSeparatorUp from 'material-ui/lib/svg-icons/navigation/expand-less';
+
+// Animation
+// import CSSTransitionGroup from 'react-addons-css-transition-group';
+
+// import {FormattedDate} from 'react-intl';
 
 @asyncConnect([{
   deferred: true,
@@ -68,45 +95,52 @@ export default class TaskPage extends Component {
     super(props, context);
     this.state = {
       slideIndex: 0,
-      dropDownIndex: 0
+      dropDownIndex: 1,
+
+      // Executors component
+      executorsExpand: true
     };
   }
 
   getStyles() {
     const theme = this.context.muiTheme;
+    console.log(theme);
     const styles = {
       root: {
-        //  backgroundColor: Colors.cyan500,
+        // backgroundColor: theme.rawTheme.palette.backgroundColor,
         overflow: 'hidden',
       },
-      h1: {
+      wrapper: {
+        marginTop: '120px'
+      },
+      main: {
+        paddingRight: '5%'
+      },
+      sidebar: {
+
+      },
+      title: {
         color: theme.rawTheme.palette.primary1Color,
         fontWeight: Typography.fontWeightMedium,
         fontSize: '34px',
-        paddingTop: 19,
-        marginTop: 55,
-        WebkitMarginAfter: '0em'
-      },
-      p: {
-        fontSize: '12px',
-        lineHeight: '48px',
-        // paddingTop: 20,
-        // marginBottom: 20,
-        letterSpacing: 0,
-        WebkitMarginBefore: '0em',
-        WebkitMarginAfter: '0em'
+        paddingTop: 20,
+        margin: 0
       },
       description: {
         fontSize: '14px',
-        lineHeight: '24px'
+        lineHeight: '1.6',
+        margin: '0 0 80px'
+      },
+      info: {
+        fontSize: '12px',
+        color: theme.rawTheme.palette.accent3Color,
+        marginBottom: '30px'
       },
       header: {
         fontSize: '16px',
         lineHeight: '48px',
-        letterSpacing: 0,
-        WebkitMarginBefore: '0em',
-        WebkitMarginAfter: '0em',
-        marginTop: '20px'
+        marginBottom: '14px',
+        marginTop: '-1px'
       },
       nowrap: {
         whiteSpace: 'nowrap',
@@ -147,7 +181,7 @@ export default class TaskPage extends Component {
       documentsIcon: {
         fontSize: '12px',
         lineHeight: '20px',
-        color: theme.rawTheme.palette.primary3Color
+        color: theme.rawTheme.palette.primary3ColorbackgroundColor
       },
       documentsIconContainer: {
         display: 'inline-block',
@@ -170,49 +204,188 @@ export default class TaskPage extends Component {
         bottom: 35,
         right: 60
       },
-      img: {
-        width: '100%',
-        height: 'auto'
+
+
+      // Slider
+      slider: {
+        marginBottom: '40px'
       },
-      container: {
-        width: 150,
-        height: 150,
-        overflow: 'hidden'
+      sliderItem: {
+        position: 'relative'
       },
-      progressBar: {
-        width: '60%',
-        marginBottom: 10
+      sliderItemImg: {
+        height: '100%',
+        width: '100%'
       },
-      executor: {
-        fontSize: '14px'
-        // lineHeight: '48px'
+      sliderRemoveBtn: {
+        position: 'absolute',
+        top: '-15px',
+        right: '-15px',
+        fill: '#a5a5a5'
       },
-      labelDateOfDeadline: {
-        fontSize: '12px',
-        color: theme.rawTheme.palette.primary3Color,
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        width: '100%',
-        whiteSpace: 'nowrap'
+      sliderRemoveIco: {
+        cursor: 'pointer',
+        fill: '#a5a5a5',
+        border: '2px solid transparent',
+        borderColor: theme.rawTheme.palette.backgroundColor,
+        borderRadius: '50%',
+        background: theme.rawTheme.palette.backgroundColor
       },
-      labelHoursOfDeadline: {
-        fontSize: '20px',
-        margin: '10px',
-        lineHeight: '14px',
-        textAlign: 'center'
+
+      // Upload
+      uploadBlock: {
+
       },
-      dateDeadlineBar: {
-        width: '30%',
-        marginBottom: 10,
-        textAlign: 'center'
+
+      // Details
+      detailsBlock: {
+        marginBottom: '42px'
       },
-      deadlineContainer: {
+      detailsList: {},
+      detailsText: {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingBottom: 10
+        alignItems: 'center',
+        color: theme.rawTheme.palette.accent3Color
       },
-      box: {
+      detailsTextRigth: {
+        color: theme.rawTheme.palette.textColor,
+        display: 'flex',
+        alignItems: 'center'
+      },
+      detailsPriorityIco: {
+        marginRight: '-10px',
+        borderRadius: '50%',
+        color: theme.rawTheme.palette.canvasColor,
+        backgroundColor: theme.rawTheme.palette.primary2Color,
+        textShadow: '1px 1px 1px rgba(0, 0, 0, 0.15)',
+        width: '20px',
+        height: '20px',
+        fontSize: '12px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      },
+      detailsStatusIco: {
+        marginRight: '-10px',
+        fill: theme.rawTheme.palette.activeIcon
+      },
+      detailsMenuIco: {
+        fill: theme.rawTheme.palette.accent3Color
+      },
+      detailsRight: {
+        marginRight: '-10px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      },
+      detailsDD: {
+        top: '-4px'
+      },
+
+      // Time block
+      timeBlock: {
+        marginBottom: '42px'
+      },
+      timeHeader: {
+        color: 'rgba(0, 0, 0, 0.54)',
+        fontSize: '14px',
+        fontWeight: '500',
+        lineHeight: '48px',
+        paddingLeft: '16px'
+      },
+      timeDeadlineBlock: {
+        padding: '0 16px',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 16,
+        marginTop: 15
+      },
+      timeDeadlineTitle: {
+        color: theme.rawTheme.palette.primary3Color,
+        fontSize: '14px',
+        marginBottom: '20px'
+      },
+
+      // Document items styles
+      docItem: {
+        // lineHeight: '24px',
+        // marginLeft: '-23px;',
+        // marginRight: '-17px',
+        // background: '#f5f5f5'
+      },
+      testStyle: {
+        textDecoration: 'underline'
+      },
+      docItemLeftIco: {
+        // fill: Typography.textDarkBlack
+      },
+      docItemRightIco: {
+        fill: theme.rawTheme.palette.accent3Color
+      },
+      docItemWrap: {
+        // overflow: 'hidden'
+      },
+
+      // Executors styles
+      execBlock: {
+        position: 'relative'
+      },
+      execWrap: {
+        maxHeight: '560px',
+        overflowY: 'hidden',
+        transition: 'all 800ms cubic-bezier(0, 1, 0.5, 1)'
+      },
+      execWrapExpand: {
+        maxHeight: '248px'
+      },
+      execLine: {
+        position: 'absolute',
+        top: '-16px',
+        left: '27px',
+        height: '32px',
+        width: '1px',
+        backgroundColor: theme.rawTheme.palette.borderColor
+      },
+      execList: {
+        // marginBottom: 42
+      },
+      execItem: {
+        position: 'relative',
+        backgroundColor: theme.rawTheme.palette.backgroundColor
+      },
+      execPrimaryText: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+      },
+      execIconActive: {
+        fill: theme.rawTheme.palette.activeIcon
+      },
+      execDate: {
+        textAlign: 'right'
+      },
+      execSeparator: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        position: 'relative',
+        paddingTop: '24px',
+        marginBottom: '42px'
+      },
+      execSeparatorLine: {
+        height: '1px',
+        width: '100%',
+        backgroundColor: theme.rawTheme.palette.borderColor
+      },
+      execSeparatorBtn: {
+        position: 'absolute',
+        top: 0,
+        left: '50%',
+        marginLeft: '-24px',
+        backgroundColor: theme.rawTheme.palette.backgroundColor
       }
     };
     return styles;
@@ -228,6 +401,24 @@ export default class TaskPage extends Component {
       dropDownIndex: value,
     });
   };
+  handleSliderRemoveItem = () => {
+    console.log('Remove slider item');
+  };
+  handleMouseEnter = () => {};
+  handleMouseLeave = () => {};
+  handleTouchTap = (event) => {
+    console.log('event.target', event.target);
+    console.log('DOWNLOAD attached file', event.target.id);
+  };
+  handleRemoveDocItem = (event) => {
+    console.log('REMOVE attached file', event.target.id);
+  };
+  handleExecutorsExpand = () => {
+    this.setState({
+      executorsExpand: !this.state.executorsExpand
+    });
+    console.log('Expand', this.state.executorsExpand);
+  };
 
   render() {
     const styles = this.getStyles();
@@ -236,263 +427,449 @@ export default class TaskPage extends Component {
 
     const grid = require('./TaskPage.scss');
 
+    const listItemRemoveIcon = (
+      <IconButton tooltip="Удалить" tooltipPosition="bottom-right" onClick={this.handleRemoveDocItem}>
+        <NavCancel style={styles.docItemRightIco}/>
+      </IconButton>
+    );
+
+    // const sliderSettings = {
+    //   dots: true,
+    //   infinite: true,
+    //   speed: 500,
+    //   slidesToShow: 3,
+    //   slidesToScroll: 1,
+    //
+    //   arrows: true,
+    //   adaptiveHeight: true,
+    //   draggable: true,
+    //   lazyLoad: true,
+    // };
+
     return (
-      <div>
+      <div id="task-page">
         <AppHead/>
         <Helmet title="Task"/>
         <Grid fluid className={grid.layout}>
-          <div style={styles.box}>
-            <Row xs={12}>
-              <h1 style={styles.h1}>#42413 Нарисовать макет страницы "О проекте"</h1>
-              <p style={styles.p}><Link to="#" style={styles.a}>Simtrack</Link>, создал(а) <Link to="#"
-                                                                                                 style={styles.a}>Татьяна
-                Бабич</Link> 28 мая 2016, выполнит - <Link to="#" style={styles.a}>Карандашева Анна</Link> , <Link
-                to="#"
-                style={styles.a}>Денис
-                Скориков</Link></p>
+          <div style={styles.wrapper}>
+            <Row>
+              <Col xs={12}>
+                <h1 style={styles.title}>#42413 Нарисовать макет страницы "О проекте"</h1>
+                <p style={styles.info}>
+                  <Link to="#" style={styles.a}>Simtrack</Link>, создал(а)
+                  <Link to="#" style={styles.a}> Татьяна Бабич</Link> 28 мая 2016, выполнит -
+                  <Link to="#" style={styles.a}> Карандашева Анна</Link>,
+                  <Link to="#" style={styles.a}> Денис Скориков</Link>
+                </p>
+              </Col>
             </Row>
-            <Row between="xs">
-              <Col xs={7}>
-                <Row>
-                  <p style={styles.header}>Описание</p>
-                  <span style={styles.description}>{task.about}</span>
-                </Row>
-                <Row>
-                  <p style={styles.header}>Изображения</p>
-                </Row>
-                <Row between="xs">
-                  <Col>
-                    <div style={styles.container}>
-                      <img style={styles.img}
-                           src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
-                    </div>
-                  </Col>
-                  <Col>
-                    <div style={styles.container}>
-                      <img style={styles.img}
-                           src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
-                    </div>
-                  </Col>
-                  <Col>
-                    <div style={styles.container}>
-                      <img style={styles.img}
-                           src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
-                    </div>
-                  </Col>
-                </Row>
-                <Row>
-                  <Tabs
-                    onChange={this.handleChangeTabs}
-                    value={this.state.slideIndex}
-                    tabItemContainerStyle={styles.tabsLabel}
-                    inkBarStyle={styles.tabInkBar}
-                  >
-                    <Tab label="Комментарии" value={0} style={styles.tabsLabelText}>
-                      <List>
-                        <ListItem
-                          leftAvatar={<Avatar src="" />}
-                          primaryText="Brendan Lim"
-                          secondaryText={
-                        <p>
-                          I&apos;ll be in your neighborhood doing errands this weekend. Do you want to grab brunch?
-                        </p>
-                      }
-                          secondaryTextLines={2}
-                          key={1}
-                        />
-                        <ListItem
-                          leftAvatar={<Avatar src="" />}
-                          primaryText="Scott Jennifer"
-                          secondaryText={
-                        <p>Wish I could come, but I&apos;m out of town this weekend.</p>
-                      }
-                          secondaryTextLines={2}
-                          initiallyOpen
-                          key={2}
-                          nestedItems={[
-                            <ListItem
-                              leftAvatar={<Avatar src="" />}
-                              primaryText="Brendan Lim"
-                              secondaryText={
-                                <p>
-                                  I&apos;ll be in your neighborhood doing errands this weekend. Do you want to grab brunch?
-                                </p>
-                              }
-                              secondaryTextLines={2}
-                            />,
-                            <ListItem
-                              leftAvatar={<Avatar src="" />}
-                              primaryText="Scott Jennifer"
-                              secondaryText={
-                                <p>Wish I could come, but I&apos;m out of town this weekend.</p>
-                              }
-                              secondaryTextLines={2}
-                              key={1}
-                              nestedItems={[
-                                <ListItem
-                                  leftAvatar={<Avatar src="" />}
-                                  primaryText="Brendan Lim"
-                                  secondaryText={
-                                    <p>
-                                      I&apos;ll be in your neighborhood doing errands this weekend. Do you want to grab brunch?
-                                    </p>
-                                  }
-                                  secondaryTextLines={2}
-                                />,
-                                <ListItem
-                                  leftAvatar={<Avatar src="" />}
-                                  primaryText="Scott Jennifer"
-                                  key={2}
-                                  secondaryText={
-                                    <p>Wish I could come, but I&apos;m out of town this weekend.</p>
-                                  }
-                                  secondaryTextLines={2}
-                                />
-                              ]}
+            <Row>
+              <Col xs={8}>
+                <main style={styles.main}>
+                  <div style={styles.header}>Описание</div>
+                  <p style={styles.description}>{task.about}</p>
+                  <div style={styles.header}>Изображения</div>
+
+                  {/*
+                  <Slider {...sliderSettings}>
+                    <img style={styles.sliderItemImg} src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
+                    <img style={styles.sliderItemImg} src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
+                    <img style={styles.sliderItemImg} src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
+                    <img style={styles.sliderItemImg} src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
+                    <img style={styles.sliderItemImg} src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
+                  </Slider>
+                  */}
+                  <div style={styles.slider}>
+                    <Row between="sm">
+                      <Col sm={3}>
+                        <div style={styles.sliderItem}>
+                          <img style={styles.sliderItemImg}
+                               src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
+                          <div style={styles.sliderRemoveBtn}>
+                            <NavCancel style={styles.sliderRemoveIco}
+                              onClick={this.handleSliderRemoveItem}
                             />
-                          ]}
-                        />
-                      </List>
-                    </Tab>
-                    <Tab label="История" value={1} style={styles.tabsLabelText}/>
-                  </Tabs>
-                </Row>
+                          </div>
+                        </div>
+                      </Col>
+                      <Col sm={3}>
+                        <div style={styles.sliderItem}>
+                          <img style={styles.sliderItemImg}
+                               src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
+                          <div style={styles.sliderRemoveBtn}>
+                            <NavCancel style={styles.sliderRemoveIco}
+                              onClick={this.handleSliderRemoveItem}
+                            />
+                          </div>
+                        </div>
+                      </Col>
+                      <Col sm={3}>
+                        <div style={styles.sliderItem}>
+                          <img style={styles.sliderItemImg}
+                               src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
+                          <div style={styles.sliderRemoveBtn}>
+                            <NavCancel style={styles.sliderRemoveIco}
+                              onClick={this.handleSliderRemoveItem}
+                            />
+                          </div>
+                        </div>
+                      </Col>
+                      <Col sm={3}>
+                        <div style={styles.sliderItem}>
+                          <img style={styles.sliderItemImg}
+                               src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
+                          <div style={styles.sliderRemoveBtn}>
+                            <NavCancel style={styles.sliderRemoveIco}
+                              onClick={this.handleSliderRemoveItem}
+                            />
+                          </div>
+                        </div>
+                      </Col>
+                    </Row>
+                  </div>
+                  <div style={styles.uploadBlock}>
+                    <DropZone />
+                  </div>
+
+                  <Row>
+                    <Tabs
+                      onChange={this.handleChangeTabs}
+                      value={this.state.slideIndex}
+                      tabItemContainerStyle={styles.tabsLabel}
+                      inkBarStyle={styles.tabInkBar}
+                    >
+                      <Tab label="Комментарии" value={0} style={styles.tabsLabelText}>
+                        <List>
+                          <ListItem
+                            leftAvatar={<Avatar src="" />}
+                            primaryText="Brendan Lim"
+                            secondaryText={
+                          <p>
+                            I&apos;ll be in your neighborhood doing errands this weekend. Do you want to grab brunch?
+                          </p>
+                        }
+                            secondaryTextLines={2}
+                            key={1}
+                          />
+                          <ListItem
+                            leftAvatar={<Avatar src="" />}
+                            primaryText="Scott Jennifer"
+                            secondaryText={
+                          <p>Wish I could come, but I&apos;m out of town this weekend.</p>
+                        }
+                            secondaryTextLines={2}
+                            initiallyOpen
+                            key={2}
+                            nestedItems={[
+                              <ListItem
+                                leftAvatar={<Avatar src="" />}
+                                primaryText="Brendan Lim"
+                                secondaryText={
+                                  <p>
+                                    I&apos;ll be in your neighborhood doing errands this weekend. Do you want to grab brunch?
+                                  </p>
+                                }
+                                secondaryTextLines={2}
+                              />,
+                              <ListItem
+                                leftAvatar={<Avatar src="" />}
+                                primaryText="Scott Jennifer"
+                                secondaryText={
+                                  <p>Wish I could come, but I&apos;m out of town this weekend.</p>
+                                }
+                                secondaryTextLines={2}
+                                key={1}
+                                nestedItems={[
+                                  <ListItem
+                                    leftAvatar={<Avatar src="" />}
+                                    primaryText="Brendan Lim"
+                                    secondaryText={
+                                      <p>
+                                        I&apos;ll be in your neighborhood doing errands this weekend. Do you want to grab brunch?
+                                      </p>
+                                    }
+                                    secondaryTextLines={2}
+                                  />,
+                                  <ListItem
+                                    leftAvatar={<Avatar src="" />}
+                                    primaryText="Scott Jennifer"
+                                    key={2}
+                                    secondaryText={
+                                      <p>Wish I could come, but I&apos;m out of town this weekend.</p>
+                                    }
+                                    secondaryTextLines={2}
+                                  />
+                                ]}
+                              />
+                            ]}
+                          />
+                        </List>
+                      </Tab>
+                      <Tab label="История" value={1} style={styles.tabsLabelText}/>
+                    </Tabs>
+                  </Row>
+                </main>
               </Col>
               <Col xs={4}>
-                <Row>
-                  <Col xs>
-                    <p style={styles.header}>Детали</p>
-                    <div style={{marginBottom: 20}}>
-                      <div style={styles.deadlineContainer}>
-                        <div>
-                          <p style={{...styles.labelDateOfDeadline, marginTop: 21}}>Статус</p>
+                <aside style={styles.sidebar}>
+                  <Row>
+                    <Col xs>
+                      <div style={styles.detailsBlock}>
+                        <List subheader="Детали" style={styles.detailsList}>
+                          <ListItem
+                            disabled
+                            primaryText={
+                              <div style={styles.detailsText}>Статус
+                                {/* <span style={styles.detailsTextRigth}>
+                                  <IconInProcess style={styles.detailsStatusIco}/>
+                                  в процессе
+                                </span> */}
+                              </div>
+                            }
+                            rightIconButton={
+                              <div style={styles.detailsRight}>
+                                <IconInProcess style={styles.detailsStatusIco}/>
+                                <DropDownMenu style={styles.detailsDD} value={this.state.dropDownIndex} onChange={this.handleChangeDropDown} underlineStyle={{display: 'none'}}>
+                                  <MenuItem value={1} primaryText="Новый" leftIcon={<IconInProcess style={styles.detailsMenuIco}/>} />
+                                  <MenuItem value={2} primaryText="Назначен" leftIcon={<IconInProcess style={styles.detailsMenuIco}/>} />
+                                  <MenuItem value={3} primaryText="В процессе" leftIcon={<IconInProcess style={styles.detailsMenuIco}/>} />
+                                  <MenuItem value={4} primaryText="Готов" leftIcon={<IconAccepted style={styles.detailsMenuIco}/>} />
+                                  <MenuItem value={5} primaryText="Остановлен" leftIcon={<IconFrozen style={styles.detailsMenuIco}/>} />
+                                  <MenuItem value={6} primaryText="Отменен" leftIcon={<IconRejected style={styles.detailsMenuIco}/>} />
+                                </DropDownMenu>
+                              </div>
+                            }
+                          />
+                          <ListItem
+                            disabled
+                            primaryText={
+                              <div style={styles.detailsText}>Тип задачи
+                                {/* <span style={styles.detailsTextRigth}>Фича/Задача</span> */}
+                              </div>
+                            }
+                            rightIconButton={
+                              <div style={styles.detailsRight}>
+                                <DropDownMenu style={styles.detailsDD} value={this.state.dropDownIndex} onChange={this.handleChangeDropDown} underlineStyle={{display: 'none'}}>
+                                  <MenuItem value={1} primaryText="Фича/Задача"/>
+                                  <MenuItem value={2} primaryText="Баг"/>
+                                  <MenuItem value={3} primaryText="Изменение ТЗ"/>
+                                  <MenuItem value={4} primaryText="Неучтенная задача"/>
+                                </DropDownMenu>
+                              </div>
+                            }
+                          />
+                          <ListItem
+                            disabled
+                            primaryText={
+                              <div style={styles.detailsText}>Приоритет
+                                {/* <span style={styles.detailsTextRigth}>
+                                  <span style={styles.detailsPriorityIco}>3</span>
+                                  Avierage
+                                </span> */}
+                              </div>
+                            }
+                            rightIconButton={
+                              <div style={styles.detailsRight}>
+                                <span style={styles.detailsPriorityIco}>{this.state.dropDownIndex}</span>
+                                <DropDownMenu style={styles.detailsDD} value={this.state.dropDownIndex} onChange={this.handleChangeDropDown} underlineStyle={{display: 'none'}}>
+                                  <MenuItem value={1} primaryText="Срочный"/>
+                                  <MenuItem value={2} primaryText="Высокий"/>
+                                  <MenuItem value={3} primaryText="Нормальный"/>
+                                  <MenuItem value={4} primaryText="Низкий"/>
+                                  <MenuItem value={5} primaryText="Незначительный"/>
+                                </DropDownMenu>
+                              </div>
+                            }
+                          />
+                        </List>
+                        {/* <Divider/> */}
+                      </div>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col xs>
+                      <div style={styles.timeBlock}>
+                        <div style={styles.timeHeader}>Сроки</div>
+                        <div style={styles.timeDeadlineBlock}>
+
+                          <div style={{}}>
+                            <div style={styles.timeDeadlineTitle}>Потрачено/Запланировано</div>
+                            <TaskProgressBar spent={1000} planned={100} spentLabel={'Потрачено'} plannedLabel={'Планируемое'}/>
+                          </div>
+
+                          <div style={{}}>
+                            <div style={styles.timeDeadlineTitle}>Релиз</div>
+                            <DeadlineDate date={{day: 16, month: 'май'}}/>
+
+                          </div>
+
                         </div>
-                        <div>
-                          <DropDownMenu value={this.state.dropDownIndex} onChange={this.handleChangeDropDown}
-                                        underlineStyle={{display: 'none'}}>
-                            <MenuItem value={0} primaryText="Line spacing" leftIcon={<ArrowDropRight />}/>
-                            <MenuItem value={2} primaryText="Every Night" leftIcon={<ArrowDropRight />}/>
-                            <MenuItem value={3} primaryText="Weeknights" leftIcon={<ArrowDropRight />}/>
-                            <MenuItem value={4} primaryText="Weekends" leftIcon={<ArrowDropRight />}/>
-                            <MenuItem value={5} primaryText="Weekly" leftIcon={<ArrowDropRight />}/>
-                          </DropDownMenu>
+                        <List style={styles.execList}>
+                          <ListItem
+                            disabled
+                            primaryText={<div style={styles.execPrimaryText}>Спринт 1 <span style={styles.execDate}>11 марта</span></div>}
+                          />
+                          <ListItem
+                            disabled
+                            primaryText={<div style={styles.execPrimaryText}>Спринт 2 <span style={styles.execDate}>25 марта</span></div>}
+                          />
+                          <ListItem
+                            disabled
+                            primaryText={<div style={styles.execPrimaryText}>Спринт 3 <span style={styles.execDate}>8 апреля</span></div>}
+                          />
+                        </List>
+                        {/* <Divider/> */}
+                      </div>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col xs>
+                      <div style={styles.execBlock}>
+                        <div style={
+                          this.state.executorsExpand ?
+                          Object.assign({}, styles.execWrap, styles.execWrapExpand) :
+                          Object.assign({}, styles.execWrap, {maxHeight: ReactDom.findDOMNode(this.refs.executorsList).offsetHeight})
+                        }>
+                          <List ref="executorsList" subheader="Исполнители" style={styles.execList}>
+                            <ListItem
+                              // disabled={true}
+                              disabled
+                              style={styles.execItem}
+                              primaryText={<div style={styles.execPrimaryText}>Иватина Ирина <span style={styles.execDate}>12 апреля</span></div>}
+                              secondaryText={<div><span>js - разработчик</span></div>}
+                              secondaryTextLines={1}
+                              leftIcon={<IconInProcess style={styles.execIconActive}/>}
+                              onMouseEnter={this.handleMouseEnter}
+                              onMouseLeave={this.handleMouseLeave}
+                              onTouchTap={this.handleTouchTap}
+                            />
+                            <ListItem
+                              disabled
+                              style={styles.execItem}
+                              primaryText={<div style={styles.execPrimaryText}>Иватина Ирина <span style={styles.execDate}>10 апреля</span></div>}
+                              secondaryText={<div><span style={styles.execLine}></span><span>js - разработчик</span></div>}
+                              secondaryTextLines={1}
+                              leftIcon={<IconPaused style={styles.docItemLeftIco}/>}
+                              onMouseEnter={this.handleMouseEnter}
+                              onMouseLeave={this.handleMouseLeave}
+                              onTouchTap={this.handleTouchTap}
+                            />
+                            <ListItem
+                              disabled
+                              style={styles.execItem}
+                              primaryText={<div style={styles.execPrimaryText}>Иватина Ирина <span style={styles.execDate}>24 марта</span></div>}
+                              secondaryText={<div><span style={styles.execLine}></span><span>js - разработчик</span></div>}
+                              secondaryTextLines={1}
+                              leftIcon={<IconPaused style={styles.docItemLeftIco}/>}
+                              onMouseEnter={this.handleMouseEnter}
+                              onMouseLeave={this.handleMouseLeave}
+                              onTouchTap={this.handleTouchTap}
+                            />
+                            <ListItem
+                              disabled
+                              style={styles.execItem}
+                              primaryText={<div style={styles.execPrimaryText}>Иватина Ирина <span style={styles.execDate}>21 марта</span></div>}
+                              secondaryText={<div><span style={styles.execLine}></span><span>js - разработчик</span></div>}
+                              secondaryTextLines={1}
+                              leftIcon={<IconPaused style={styles.docItemLeftIco}/>}
+                              onMouseEnter={this.handleMouseEnter}
+                              onMouseLeave={this.handleMouseLeave}
+                              onTouchTap={this.handleTouchTap}
+                            />
+                            <ListItem
+                              disabled
+                              style={styles.execItem}
+                              primaryText={<div style={styles.execPrimaryText}>Иватина Ирина <span style={styles.execDate}>21 марта</span></div>}
+                              secondaryText={<div><span style={styles.execLine}></span><span>js - разработчик</span></div>}
+                              secondaryTextLines={1}
+                              leftIcon={<IconPaused style={styles.docItemLeftIco}/>}
+                              onMouseEnter={this.handleMouseEnter}
+                              onMouseLeave={this.handleMouseLeave}
+                              onTouchTap={this.handleTouchTap}
+                            />
+                            <ListItem
+                              disabled
+                              style={styles.execItem}
+                              primaryText={<div style={styles.execPrimaryText}>Иватина Ирина <span style={styles.execDate}>21 марта</span></div>}
+                              secondaryText={<div><span style={styles.execLine}></span><span>js - разработчик</span></div>}
+                              secondaryTextLines={1}
+                              leftIcon={<IconPaused style={styles.docItemLeftIco}/>}
+                              onMouseEnter={this.handleMouseEnter}
+                              onMouseLeave={this.handleMouseLeave}
+                              onTouchTap={this.handleTouchTap}
+                            />
+                            <ListItem
+                              disabled
+                              style={styles.execItem}
+                              primaryText={<div style={styles.execPrimaryText}>Иватина Ирина <span style={styles.execDate}>8 марта</span></div>}
+                              secondaryText={<div><span style={styles.execLine}></span><span>js - разработчик</span></div>}
+                              secondaryTextLines={1}
+                              leftIcon={<IconCompleted style={styles.docItemLeftIco}/>}
+                              onMouseEnter={this.handleMouseEnter}
+                              onMouseLeave={this.handleMouseLeave}
+                              onTouchTap={this.handleTouchTap}
+                            />
+                          </List>
+                        </div>
+                        <div style={styles.execSeparator}>
+                          <IconButton tooltip={this.state.executorsExpand ? 'Развернуть' : 'Свернуть'} style={styles.execSeparatorBtn} onClick={this.handleExecutorsExpand}>
+                            {this.state.executorsExpand ? <IconSeparatorDown/> : <IconSeparatorUp/>}
+                          </IconButton>
+                          <div style={styles.execSeparatorLine}></div>
                         </div>
                       </div>
-                      <div style={styles.deadlineContainer}>
-                        <div>
-                          <p style={{...styles.labelDateOfDeadline, marginTop: 21}}>Квалификация</p>
-                        </div>
-                        <div>
-                          <DropDownMenu value={this.state.dropDownIndex} onChange={this.handleChangeDropDown}
-                                        underlineStyle={{display: 'none'}}>
-                            <MenuItem value={0} primaryText="Line spacing" leftIcon={<ArrowDropRight />}/>
-                            <MenuItem value={2} primaryText="Every Night" leftIcon={<ArrowDropRight />}/>
-                            <MenuItem value={3} primaryText="Weeknights" leftIcon={<ArrowDropRight />}/>
-                            <MenuItem value={4} primaryText="Weekends" leftIcon={<ArrowDropRight />}/>
-                            <MenuItem value={5} primaryText="Weekly" leftIcon={<ArrowDropRight />}/>
-                          </DropDownMenu>
-                        </div>
-                      </div>
-                      <div style={styles.deadlineContainer}>
-                        <div>
-                          <p style={{...styles.labelDateOfDeadline, marginTop: 21}}>Приоритет</p>
-                        </div>
-                        <div>
-                          <ContentAdd/>
-                          <span style={styles.executor}>Среднее</span>
-                        </div>
-                      </div>
-                    </div>
-                    <Divider/>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xs>
-                    <p style={styles.header}>Сроки</p>
-                    <div style={styles.deadlineContainer}>
-                      <TaskProgressBar spent={1000} planned={100} spentLabel={'Потрачено'} plannedLabel={'Планируемое'}/>
-                      <div style={styles.dateDeadlineBar}>
-                        <p style={styles.labelDateOfDeadline}>Релиз</p>
-                        <DeadlineDate date={{day: 16, month: 'май'}}/>
-                      </div>
-                    </div>
-                    <Divider/>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xs>
-                    <p style={styles.header}>Исполнители</p>
-                    <div style={{marginBottom: 20}}>
-                      <div
-                        style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: '14'}}>
-                        <ContentAdd style={{marginTop: 'auto', marginBottom: 'auto'}}/>
-                        <div style={{margin: 'auto 5px', flexGrow: '2', flexShrink: '2'}}>
-                          <span style={styles.executor}>Иватина Ирина</span>
-                        </div>
-                        <div style={{marginTop: 'auto'}}>
-                          <span style={styles.executor}>12 апреля</span>
-                        </div>
-                      </div>
-                      <div
-                        style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: '14'}}>
-                        <ContentAdd style={{marginTop: 'auto', marginBottom: 'auto'}}/>
-                        <div style={{margin: 'auto 5px', flexGrow: '2', flexShrink: '2'}}>
-                          <span style={styles.executor}>Иватина Ирина</span>
-                        </div>
-                        <div style={{marginTop: 'auto'}}>
-                          <span style={styles.executor}>12 апреля</span>
-                        </div>
-                      </div>
-                      <div
-                        style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: '14'}}>
-                        <ContentAdd style={{marginTop: 'auto', marginBottom: 'auto'}}/>
-                        <div style={{margin: 'auto 5px', flexGrow: '2', flexShrink: '2'}}>
-                          <span style={styles.executor}>Иватина Ирина</span>
-                        </div>
-                        <div style={{marginTop: 'auto'}}>
-                          <span style={styles.executor}>12 апреля</span>
-                        </div>
-                      </div>
-                      <div
-                        style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: '14'}}>
-                        <ContentAdd style={{marginTop: 'auto', marginBottom: 'auto'}}/>
-                        <div style={{margin: 'auto 5px', flexGrow: '2', flexShrink: '2'}}>
-                          <span style={styles.executor}>Иватина Ирина</span>
-                        </div>
-                        <div style={{marginTop: 'auto'}}>
-                          <span style={styles.executor}>12 апреля</span>
-                        </div>
-                      </div>
-                    </div>
-                    <Divider/>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xs>
-                    <p style={styles.header}>Документы</p>
-                    <div style={styles.documentsContainer}>
-                      <div style={styles.documentsIconContainer}><AttachFile style={styles.documentsIcon}
-                                                                             color={styles.documentsIcon.color}/></div>
-                      <div style={styles.documentsLabelContainer}><Link
-                        to="#" style={styles.documents}>Сводная таблица технических требований</Link><span
-                        style={styles.documentsExtensions}> (.xls)</span></div>
-                    </div>
-                    <div style={styles.documentsContainer}>
-                      <div style={styles.documentsIconContainer}><AttachFile style={styles.documentsIcon}
-                                                                             color={styles.documentsIcon.color}/></div>
-                      <div style={styles.documentsLabelContainer}><Link
-                        to="#" style={styles.documents}>Сводная таблица технических требований</Link><span
-                        style={styles.documentsExtensions}> (.xls)</span></div>
-                    </div>
-                    <div style={styles.documentsContainer}>
-                      <div style={styles.documentsIconContainer}><AttachFile style={styles.documentsIcon}
-                                                                             color={styles.documentsIcon.color}/></div>
-                      <div style={styles.documentsLabelContainer}><Link
-                        to="#" style={styles.documents}>Сводная таблица технических требований</Link><span
-                        style={styles.documentsExtensions}> (.xls)</span></div>
-                    </div>
-                  </Col>
-                </Row>
+                      {/* <Divider/> */}
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col xs>
+                      {/* <p style={styles.header}>Документы</p> */}
+                      <List subheader="Документы" style={styles.docItemWrap}>
+                        <ListItem
+                          style={styles.docItem}
+                          disabled
+                          primaryText={<span>Сводная таблица технических требований</span>}
+                          secondaryText="XLS" secondaryTextLines={1}
+                          leftIcon={<DownloadFile style={styles.docItemLeftIco}/>}
+                          rightIconButton={listItemRemoveIcon}
+                          onMouseEnter={this.handleMouseEnter}
+                          onMouseLeave={this.handleMouseLeave}
+                          onTouchTap={this.handleTouchTap}
+                        />
+                        <ListItem
+                          style={styles.docItem}
+                          primaryText={<span>Технические требования по использованию предоставленных материалов</span>}
+                          secondaryText="PDF" secondaryTextLines={1}
+                          leftIcon={<DownloadFile style={styles.docItemLeftIco}/>}
+                          onMouseEnter={this.handleMouseEnter}
+                          onMouseLeave={this.handleMouseLeave}
+                          onTouchTap={this.handleTouchTap}
+                        />
+                        <ListItem
+                          style={styles.docItem}
+                          primaryText={<span>Сводная таблица технических требований</span>}
+                          secondaryText="(.xls)" secondaryTextLines={1}
+                          leftIcon={<CloudDownload style={styles.docItemLeftIco}/>}
+                          rightIconButton={listItemRemoveIcon}
+                          onMouseEnter={this.handleMouseEnter}
+                          onMouseLeave={this.handleMouseLeave}
+                          onTouchTap={this.handleTouchTap}
+                        />
+                        <ListItem
+                          style={styles.docItem}
+                          primaryText={<span>Сводная таблица технических требований</span>}
+                          secondaryText="(.xls)" secondaryTextLines={1}
+                          leftIcon={<AttachFile style={styles.docItemLeftIco}/>}
+                          rightIconButton={listItemRemoveIcon}
+                          nestedListStyle={styles.testStyle}
+                          onMouseEnter={this.handleMouseEnter}
+                          onMouseLeave={this.handleMouseLeave}
+                          onTouchTap={this.handleTouchTap}
+                        />
+                      </List>
+                    </Col>
+                  </Row>
+                </aside>
               </Col>
             </Row>
           </div>
@@ -501,7 +878,6 @@ export default class TaskPage extends Component {
           <EditorModeEdit />
         </FloatingActionButton>
       </div>
-    )
-      ;
+    );
   }
 }

@@ -11,7 +11,7 @@ const DeadlineDate = (props) => {
     },
     labelDayOfDeadline: {
       lineHeight: '14px',
-      margin: 0
+      marginBottom: '5px'
     },
     labelMonthOfDeadline: {
       fontSize: '12px',

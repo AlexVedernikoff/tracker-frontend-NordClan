@@ -52,7 +52,7 @@ export default class App extends Component {
     require('./App.scss');
     const muiTheme = getMuiTheme(getColorTheme());
     return (
-      <div>
+      <div id="app">
         <Helmet {...config.app.head}/>
         <MuiThemeProvider muiTheme={muiTheme}>
             {this.props.children}

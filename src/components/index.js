@@ -9,3 +9,4 @@ export DeadlineDate from './DeadlineDate/DeadlineDate';
 export TaskProgressBar from './TaskProgressBar/TaskProgressBar';
 export NewCommentBage from './NewCommentBage/NewCommentBage';
 export {AccountSwitch} from './Icons/Icons';
+export DropZone from './DropZone/DropZone';
