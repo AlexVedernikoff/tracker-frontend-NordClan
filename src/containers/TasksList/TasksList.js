@@ -162,13 +162,13 @@ export default class TasksList extends Component {
                           <div>ID</div>
                         </div>
                       </TableHeaderColumn>
-                      <TableHeaderColumn tooltip="The Name" style={{...styles.tableHeader, width: 64}}>
+                      <TableHeaderColumn tooltip="The Status" style={{...styles.tableHeader, width: 64}}>
                         <div style={{cursor: 'pointer', display: 'flex'}}><ArrowDownward style={{height: 16}}
                                                                                          color={"rgba(0, 0, 0, 0.87)"}/>
                           <div>Статус</div>
                         </div>
                       </TableHeaderColumn>
-                      <TableHeaderColumn tooltip="The Status" style={{...styles.tableHeader, width: 310}}>
+                      <TableHeaderColumn tooltip="The Name" style={{...styles.tableHeader, minWidth: 310}}>
                         <div style={{display: 'flex'}}>
                           <div>Название </div>
                           <div style={{cursor: 'pointer', display: 'flex'}}><ArrowUpward style={{height: 16}}
@@ -187,7 +187,7 @@ export default class TasksList extends Component {
                         </div>
                       </TableHeaderColumn>
                       <TableHeaderColumn tooltip="The Status" style={{...styles.tableHeader, width: 50}}/>
-                      <TableHeaderColumn style={{...styles.tableHeader, minWidth: 75, maxWidth: 75}}>
+                      <TableHeaderColumn style={{...styles.tableHeader, width: 75}}>
                         <div style={{display: 'flex', justifyContent: 'flex-end'}}>
                           <IconMenu
                             iconButtonElement={<IconButton style={{paddingTop: 20, paddingBottom: 0}}><MoreVertIcon style={{marginBottom: -4}} color={"rgba(0, 0, 0, 0.54)"}/></IconButton>}
