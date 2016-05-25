@@ -1,6 +1,6 @@
 /* компонент для отображения прогрессбара с временем задачи */
 import React, {PropTypes} from 'react';
-import LinearProgress from 'material-ui/lib/linear-progress';
+import LinearProgress from 'material-ui/LinearProgress';
 
 const TaskProgressBar = (props, context) => {
   const {style, spentLabel, spent, plannedLabel, planned} = props;

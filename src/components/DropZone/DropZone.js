@@ -3,9 +3,9 @@
 */
 
 import React, {Component, PropTypes} from 'react';
-import IconAddFile from 'material-ui/lib/svg-icons/content/add-circle';
-import IconRemove from 'material-ui/lib/svg-icons/navigation/cancel';
-import FlatButton from 'material-ui/lib/flat-button';
+import IconAddFile from 'material-ui/svg-icons/content/add-circle';
+import IconRemove from 'material-ui/svg-icons/navigation/cancel';
+import FlatButton from 'material-ui/FlatButton';
 import Dropzone from 'react-dropzone';
 
 class DropZoneBlock extends Component {

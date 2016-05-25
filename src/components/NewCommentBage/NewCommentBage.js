@@ -1,7 +1,7 @@
 import React from 'react';
-import Badge from 'material-ui/lib/badge';
-import IconButton from 'material-ui/lib/icon-button';
-import ChatBubbleOutline from 'material-ui/lib/svg-icons/communication/chat-bubble-outline';
+import Badge from 'material-ui/Badge';
+import IconButton from 'material-ui/IconButton';
+import ChatBubbleOutline from 'material-ui/svg-icons/communication/chat-bubble-outline';
 
 const NewCommentBage = () => (
   <div>

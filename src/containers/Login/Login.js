@@ -2,11 +2,11 @@ import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import Helmet from 'react-helmet';
 import * as authActions from 'redux/modules/auth';
-import TextField from 'material-ui/lib/text-field';
-import FlatButton from 'material-ui/lib/flat-button';
-import ActionAndroid from 'material-ui/lib/svg-icons/action/android';
-import AppBar from 'material-ui/lib/app-bar';
-import Paper from 'material-ui/lib/paper';
+import TextField from 'material-ui/TextField';
+import FlatButton from 'material-ui/FlatButton';
+import ActionAndroid from 'material-ui/svg-icons/action/android';
+import AppBar from 'material-ui/AppBar';
+import Paper from 'material-ui/Paper';
 
 @connect(
   state => ({user: state.auth.user}),

@@ -3,26 +3,19 @@ import ReactDom from 'react-dom';
 // import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {setCurrentTask, isCurrentTaskLoaded} from 'redux/modules/current_task';
-// import { Link } from 'react-router';
-// import config from '../../config';
-// import Helmet from 'react-helmet';
-import List from 'material-ui/lib/lists/list';
-import ListItem from 'material-ui/lib/lists/list-item';
-import IconButton from 'material-ui/lib/icon-button';
-// import AvPlayCircleFilled from 'material-ui/lib/svg-icons/av/play-circle-filled';
-import Avatar from 'material-ui/lib/avatar';
-import Tabs from 'material-ui/lib/tabs/tabs';
-import Tab from 'material-ui/lib/tabs/tab';
+import List from 'material-ui/List/List';
+import ListItem from 'material-ui/List/ListItem';
+import IconButton from 'material-ui/IconButton';
+import Avatar from 'material-ui/Avatar';
+import Tabs from 'material-ui/Tabs/Tabs';
+import Tab from 'material-ui/Tabs/Tab';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import { asyncConnect } from 'redux-async-connect';
 import AppHead from '../../components/AppHead/AppHead';
-// import Divider from 'material-ui/lib/divider';
-import {Styles} from 'material-ui';
-const {Typography} = Styles;
+import Typography from 'material-ui/styles/typography';
 import { Link } from 'react-router';
-import FloatingActionButton from 'material-ui/lib/floating-action-button';
-// import ContentAdd from 'material-ui/lib/svg-icons/content/add';
-import EditorModeEdit from 'material-ui/lib/svg-icons/editor/mode-edit';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import EditorModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 
 // Images
 // import Slider from 'react-slick';
@@ -30,30 +23,26 @@ import EditorModeEdit from 'material-ui/lib/svg-icons/editor/mode-edit';
 // Upload Files
 import DropZone from '../../components/DropZone/DropZone';
 
-// Details
-import DropDownMenu from 'material-ui/lib/DropDownMenu';
-import MenuItem from 'material-ui/lib/menus/menu-item';
-import IconFrozen from 'material-ui/lib/svg-icons/av/pause-circle-filled';
-import IconRejected from 'material-ui/lib/svg-icons/alert/error';
-import IconAccepted from 'material-ui/lib/svg-icons/action/check-circle';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
+import IconFrozen from 'material-ui/svg-icons/av/pause-circle-filled';
+import IconRejected from 'material-ui/svg-icons/alert/error';
+import IconAccepted from 'material-ui/svg-icons/action/check-circle';
 
 import Helmet from 'react-helmet';
 import DeadlineDate from '../../components/DeadlineDate/DeadlineDate';
 import TaskProgressBar from '../../components/TaskProgressBar/TaskProgressBar';
 
-// Documents icons
-import AttachFile from 'material-ui/lib/svg-icons/editor/attach-file';
-import DownloadFile from 'material-ui/lib/svg-icons/file/file-download';
-import CloudDownload from 'material-ui/lib/svg-icons/file/cloud-download';
-import NavCancel from 'material-ui/lib/svg-icons/navigation/cancel';
+import AttachFile from 'material-ui/svg-icons/editor/attach-file';
+import DownloadFile from 'material-ui/svg-icons/file/file-download';
+import CloudDownload from 'material-ui/svg-icons/file/cloud-download';
+import NavCancel from 'material-ui/svg-icons/navigation/cancel';
 
-// Executors
-// -- Executors icons
-import IconInProcess from 'material-ui/lib/svg-icons/av/play-circle-filled';
-import IconPaused from 'material-ui/lib/svg-icons/toggle/radio-button-checked';
-import IconCompleted from 'material-ui/lib/svg-icons/action/check-circle';
-import IconSeparatorDown from 'material-ui/lib/svg-icons/navigation/expand-more';
-import IconSeparatorUp from 'material-ui/lib/svg-icons/navigation/expand-less';
+import IconInProcess from 'material-ui/svg-icons/av/play-circle-filled';
+import IconPaused from 'material-ui/svg-icons/toggle/radio-button-checked';
+import IconCompleted from 'material-ui/svg-icons/action/check-circle';
+import IconSeparatorDown from 'material-ui/svg-icons/navigation/expand-more';
+import IconSeparatorUp from 'material-ui/svg-icons/navigation/expand-less';
 
 // Animation
 // import CSSTransitionGroup from 'react-addons-css-transition-group';

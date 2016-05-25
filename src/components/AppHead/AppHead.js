@@ -3,30 +3,26 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {load} from 'redux/modules/tasks';
 
-// AppBar
-import AppBar from 'material-ui/lib/app-bar';
+import AppBar from 'material-ui/AppBar';
 
-// AutoComplete
-// import AutoComplete from 'material-ui/lib/auto-complete';
-import MenuItem from 'material-ui/lib/menus/menu-item';
+import MenuItem from 'material-ui/MenuItem';
 
-// Icons
-import SocialPerson from 'material-ui/lib/svg-icons/social/person';
-import ActionExitToApp from 'material-ui/lib/svg-icons/action/exit-to-app';
-import Settings from 'material-ui/lib/svg-icons/action/settings';
-import NavigationMenu from 'material-ui/lib/svg-icons/navigation/menu';
+import SocialPerson from 'material-ui/svg-icons/social/person';
+import ActionExitToApp from 'material-ui/svg-icons/action/exit-to-app';
+import Settings from 'material-ui/svg-icons/action/settings';
+import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
 
-import IconMenu from 'material-ui/lib/menus/icon-menu';
-import IconButton from 'material-ui/lib/icon-button';
-import Colors from 'material-ui/lib/styles/colors';
-import Popover from 'material-ui/lib/popover/popover';
-import PopoverAnimationFromTop from 'material-ui/lib/popover/popover-animation-from-top';
-import List from 'material-ui/lib/lists/list';
-import ListItem from 'material-ui/lib/lists/list-item';
-import Avatar from 'material-ui/lib/avatar';
-import Divider from 'material-ui/lib/divider';
-import Tabs from 'material-ui/lib/tabs/tabs';
-import Tab from 'material-ui/lib/tabs/tab';
+import IconMenu from 'material-ui/IconMenu';
+import IconButton from 'material-ui/IconButton';
+import * as Colors from 'material-ui/styles/colors';
+import Popover from 'material-ui/Popover';
+import PopoverAnimationFromTop from 'material-ui/Popover/PopoverAnimationVertical';
+import List from 'material-ui/List/List';
+import ListItem from 'material-ui/List/ListItem';
+import Avatar from 'material-ui/Avatar';
+import Divider from 'material-ui/Divider';
+import Tabs from 'material-ui/Tabs/Tabs';
+import Tab from 'material-ui/Tabs/Tab';
 
 @connect(
   // state => ({tasks: state.tasks.data}),
