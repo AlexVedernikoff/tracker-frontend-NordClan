@@ -8,32 +8,25 @@ import TableRow from 'material-ui/Table/TableRow';
 import TableHeader from 'material-ui/Table/TableHeader';
 import TableRowColumn from 'material-ui/Table/TableRowColumn';
 import TableBody from 'material-ui/Table/TableBody';
-// import TableFooter from 'material-ui/lib/table/table-footer';
 import {isLoaded as isTasksLoaded, load as loadTasks} from 'redux/modules/tasks';
-import { Link } from 'react-router';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
 import {asyncConnect} from 'redux-async-connect';
 import AppHead from '../../components/AppHead/AppHead';
-import DeadlineDate from '../../components/DeadlineDate/DeadlineDate';
 import FilterSearchBar from '../../components/FilterSearchBar/FilterSearchBar';
 import FilterPanel from '../../components/FilterPanel/FilterPanel';
 import FilterSwitch from '../../components/FilterSwitch/FilterSwitch';
 import SortOrderSwitch from '../../components/SortOrderSwitch/SortOrderSwitch';
+import TaskItem from '../../components/TaskItem/TaskItem';
 import Helmet from 'react-helmet';
 import Paper from 'material-ui/Paper';
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
-// import Search from 'material-ui/svg-icons/action/search';
 import Typography from 'material-ui/styles/typography';
 import Add from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-// import * as Colors from 'material-ui/styles/colors';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import TaskProgressBar from '../../components/TaskProgressBar/TaskProgressBar';
-import NewCommentBage from '../../components/NewCommentBage/NewCommentBage';
-import {AccountSwitch} from '../../components/Icons/Icons';
 
 @asyncConnect([{
   deferred: true,
@@ -71,21 +64,7 @@ export default class TasksList extends Component {
     const styles = {
       border: {borderBottom: '2px solid #707070', marginLeft: '-20px', maxWidth: 250},
       allBorder: {borderBottom: 'none'},
-      status: {
-        height: '100%',
-        borderLeftColor: theme.rawTheme.palette.primary1Color,
-        borderLeftWidth: '5px',
-        borderLeftStyle: 'solid',
-        position: 'relative',
-        color: 'white'
-      },
-      statusBage: {
-        backgroundColor: theme.rawTheme.palette.primary1Color,
-        height: 20,
-        textAlign: 'center',
-        borderBottomRightRadius: 2,
-        borderTopRightRadius: 2
-      },
+
       statusSortBadge: {
         marginBottom: '-2px',
         backgroundColor: '#BDBDBD',
@@ -210,41 +189,11 @@ export default class TasksList extends Component {
                       <TableRowColumn style={{width: 60, padding: '0px 5px'}}/>
                       <TableRowColumn style={{width: 60, padding: '0px 5px'}}/>
                     </TableRow>
-                    {tasks.map((row, index, arr) => (
-                      <TableRow key={index} selectable
-                                displayBorder={(index !== arr.length - 1 && row.status !== arr[index + 1].status)}
-                      >
-                        <TableRowColumn style={{width: 20, padding: 0}}>
-                          <div
-                            style={styles.status}>
-                            {(index === 0 || row.status !== arr[index - 1].status) &&
-                            <div style={styles.statusBage}>2</div>
-                            }
-                          </div>
-                        </TableRowColumn>
-                        <TableRowColumn style={{padding: 0, minWidth: 50}}>{index}12343</TableRowColumn>
-                        <TableRowColumn style={{minWidth: 64, padding: 5, textAlign: 'center'}}><Add /></TableRowColumn>
-                        <TableRowColumn style={{minWidth: 310, padding: 0}}>
-                          <div style={{display: 'flex', flexDirection: 'column'}}>
-                            <Link to={`/task/${row._id}`} style={{color: 'rgba(0, 0, 0, 0.87)'}}>Нарисовать макет сайта под все разрешения</Link>
-                            <div style={{color: 'rgba(0, 0, 0, 0.54)'}}>Создал(а) задачу {row.name}</div>
-                          </div>
-                        </TableRowColumn>
-                        <TableRowColumn style={{minWidth: 110, padding: 0}}>
-                          <TaskProgressBar spent={10} planned={100} spentLabel={'Потрачено'}
-                                           plannedLabel={'Планируемое'}
-                                           style={{marginBottom: 10}}/>
-                        </TableRowColumn>
-                        <TableRowColumn style={{width: 210, minWidth: 110, padding: '0px 5px', textAlign: 'center'}}>
-                          <DeadlineDate date={{day: 16, month: 'мая'}} style={{fontSize: 18}}/>
-                        </TableRowColumn>
-                        <TableRowColumn style={{minWidth: 60, padding: '0px 5px', textAlign: 'center'}}>
-                          <NewCommentBage/>
-                        </TableRowColumn>
-                        <TableRowColumn style={{minWidth: 60, padding: '0px 5px', textAlign: 'center'}}>
-                          <AccountSwitch/>
-                        </TableRowColumn>
-                      </TableRow>
+                    {tasks.map((task, index, arr) => (
+                      <TaskItem task={task} key={index} index={index}
+                        displayBorder={(index !== arr.length - 1 && task.status !== arr[index + 1].status)}
+                        hasSamePriorityAsPrevious={(index === 0 || task.status !== arr[index - 1].status)}
+                      />
                     ))}
                   </TableBody>
                 </Table>

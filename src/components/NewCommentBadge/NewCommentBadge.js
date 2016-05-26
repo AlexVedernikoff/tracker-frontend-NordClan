@@ -3,7 +3,7 @@ import Badge from 'material-ui/Badge';
 import IconButton from 'material-ui/IconButton';
 import ChatBubbleOutline from 'material-ui/svg-icons/communication/chat-bubble-outline';
 
-const NewCommentBage = () => (
+const NewCommentBadge = () => (
   <div>
     <Badge
       badgeContent={10}
@@ -17,4 +17,4 @@ const NewCommentBage = () => (
   </div>
 );
 
-export default NewCommentBage;
+export default NewCommentBadge;
