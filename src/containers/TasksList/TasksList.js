@@ -15,14 +15,17 @@ import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
 import {asyncConnect} from 'redux-async-connect';
 import AppHead from '../../components/AppHead/AppHead';
 import DeadlineDate from '../../components/DeadlineDate/DeadlineDate';
+import FilterSearchBar from '../../components/FilterSearchBar/FilterSearchBar';
+import FilterPanel from '../../components/FilterPanel/FilterPanel';
+import FilterSwitch from '../../components/FilterSwitch/FilterSwitch';
 import Helmet from 'react-helmet';
 import Paper from 'material-ui/Paper';
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
-import Search from 'material-ui/svg-icons/action/search';
+// import Search from 'material-ui/svg-icons/action/search';
 import Typography from 'material-ui/styles/typography';
 import Add from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import * as Colors from 'material-ui/styles/colors';
+// import * as Colors from 'material-ui/styles/colors';
 import ArrowUpward from 'material-ui/svg-icons/navigation/arrow-upward';
 import ArrowDownward from 'material-ui/svg-icons/navigation/arrow-downward';
 import IconMenu from 'material-ui/IconMenu';
@@ -125,21 +128,13 @@ export default class TasksList extends Component {
           <Row>
             <Col xs={12}>
               <h1 style={styles.h1}>Мои задачи</h1>
-              <Paper zDepth={1} style={{marginTop: 50, backgroundColor: 'white', height: 50, display: 'flex'}}>
-                <Search color={theme.rawTheme.palette.primary1Color} style={{margin: '12px 20px'}}/>
-                <input type="text" style={{width: '100%', border: 'none', boxShadow: 'none', outline: 'none'}}
-                       placeholder="Введите текст"></input>
-              </Paper>
-              <div style={{marginBottom: 50, display: 'flex', padding: '0px 20px', justifyContent: 'flex-start' }}>
-                <span style={{fontSize: '12', color: theme.rawTheme.palette.accent3Color, padding: 5}}>Фильтр:</span>
-                <span style={{fontSize: 13, display: 'block', padding: '5px 10px', marginRight: 2, cursor: 'pointer'}}>название</span>
-                <span
-                  style={{color: theme.rawTheme.palette.alternateTextColor, backgroundColor: Colors.purple700, fontSize: 13, display: 'block', padding: '5px 10px', marginRight: 2, cursor: 'pointer', marginTop: 1, boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.12)'}}>дата</span>
-                <span
-                  style={{color: theme.rawTheme.palette.alternateTextColor, backgroundColor: Colors.purple700, fontSize: 13, display: 'block', padding: '5px 10px', marginRight: 2, cursor: 'pointer', marginTop: 1, boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.12)'}}>автор</span>
-                <span
-                  style={{color: theme.rawTheme.palette.alternateTextColor, backgroundColor: Colors.purple700, fontSize: 13, display: 'block', padding: '5px 10px', marginRight: 2, cursor: 'pointer', marginTop: 1, boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.12)'}}>исполнитель</span>
-              </div>
+              <FilterSearchBar />
+              <FilterPanel label="Фильтр:">
+                <FilterSwitch checked name="название" />
+                <FilterSwitch name="дата" />
+                <FilterSwitch name="автор" />
+                <FilterSwitch name="исполнитель" />
+              </FilterPanel>
 
               <Paper zDepth={1} rounded={false} style={{marginBottom: 100}}>
                 <Table
