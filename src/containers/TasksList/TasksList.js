@@ -18,6 +18,7 @@ import DeadlineDate from '../../components/DeadlineDate/DeadlineDate';
 import FilterSearchBar from '../../components/FilterSearchBar/FilterSearchBar';
 import FilterPanel from '../../components/FilterPanel/FilterPanel';
 import FilterSwitch from '../../components/FilterSwitch/FilterSwitch';
+import SortOrderSwitch from '../../components/SortOrderSwitch/SortOrderSwitch';
 import Helmet from 'react-helmet';
 import Paper from 'material-ui/Paper';
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
@@ -26,8 +27,6 @@ import Typography from 'material-ui/styles/typography';
 import Add from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 // import * as Colors from 'material-ui/styles/colors';
-import ArrowUpward from 'material-ui/svg-icons/navigation/arrow-upward';
-import ArrowDownward from 'material-ui/svg-icons/navigation/arrow-downward';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
@@ -87,11 +86,14 @@ export default class TasksList extends Component {
         borderBottomRightRadius: 2,
         borderTopRightRadius: 2
       },
-      statusSortBage: {
+      statusSortBadge: {
+        marginBottom: '-2px',
         backgroundColor: '#BDBDBD',
-        height: 20,
+        height: 16,
+        padding: 2,
         textAlign: 'center',
-        borderRadius: 2,
+        borderTopRightRadius: 2,
+        borderBottomRightRadius: 2,
         cursor: 'pointer'
       },
       projectName: {
@@ -139,7 +141,6 @@ export default class TasksList extends Component {
               <Paper zDepth={1} rounded={false} style={{marginBottom: 100}}>
                 <Table
                   fixedHeader
-                  fixedFooter
                   selectable
                   multiSelectable={false}
                   style={{backgroundColor: 'white'}}
@@ -147,42 +148,28 @@ export default class TasksList extends Component {
                   <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                     <TableRow>
                       <TableHeaderColumn tooltip="Статус" style={{width: 20, padding: 0, ...styles.tableHeader}}>
-                        <div style={styles.statusSortBage}>
-                          <ArrowUpward style={{height: 16, width: 16, padding: 2}} color={"#FFFFFF"}/>
-                        </div>
+                        <SortOrderSwitch style={styles.statusSortBadge} color="#FFFFFF" />
                       </TableHeaderColumn>
                       <TableHeaderColumn tooltip="The ID" style={{...styles.tableHeader, width: 50}}>
-                        <div style={{cursor: 'pointer', display: 'flex'}}><ArrowUpward style={{height: 16}}
-                                                                                       color={"rgba(0, 0, 0, 0.54)"}/>
-                          <div>ID</div>
-                        </div>
+                        <SortOrderSwitch label="ID" order="asc" />
                       </TableHeaderColumn>
                       <TableHeaderColumn tooltip="The Status" style={{...styles.tableHeader, width: 64}}>
-                        <div style={{cursor: 'pointer', display: 'flex'}}><ArrowDownward style={{height: 16}}
-                                                                                         color={"rgba(0, 0, 0, 0.87)"}/>
-                          <div>Статус</div>
-                        </div>
+                        <SortOrderSwitch label="Статус" order="desc" />
                       </TableHeaderColumn>
                       <TableHeaderColumn tooltip="The Name" style={{...styles.tableHeader, minWidth: 310}}>
                         <div style={{display: 'flex'}}>
                           <div>Название </div>
-                          <div style={{cursor: 'pointer', display: 'flex'}}><ArrowUpward style={{height: 16}}
-                                                                        color={"rgba(0, 0, 0, 0.54)"}/>
-                            <div>Автор</div>
-                          </div>
+                          <SortOrderSwitch label="Автор" />
                         </div>
                       </TableHeaderColumn>
-                      <TableHeaderColumn tooltip="The Status" style={{...styles.tableHeader, width: 100}}>
-                        <div>Часы</div>
+                      <TableHeaderColumn tooltip="The Status" style={{...styles.tableHeader, width: 110}}>
+                        <div style={{textAlign: 'center'}} >Часы</div>
                       </TableHeaderColumn>
-                      <TableHeaderColumn tooltip="The Status" style={{...styles.tableHeader, width: 75}}>
-                        <div style={{cursor: 'pointer', display: 'flex'}}><ArrowUpward style={{height: 16}}
-                                                                                       color={"rgba(0, 0, 0, 0.54)"}/>
-                          <div>Дата</div>
-                        </div>
+                      <TableHeaderColumn tooltip="The Status" style={{...styles.tableHeader, width: 70}}>
+                        <SortOrderSwitch label="Дата" style={{textAlign: 'center'}} />
                       </TableHeaderColumn>
-                      <TableHeaderColumn tooltip="The Status" style={{...styles.tableHeader, width: 50}}/>
-                      <TableHeaderColumn style={{...styles.tableHeader, width: 75}}>
+                      <TableHeaderColumn tooltip="The Status" style={{...styles.tableHeader, width: 70}}/>
+                      <TableHeaderColumn style={{...styles.tableHeader, width: 70}}>
                         <div style={{display: 'flex', justifyContent: 'flex-end'}}>
                           <IconMenu
                             iconButtonElement={<IconButton style={{paddingTop: 20, paddingBottom: 0}}><MoreVertIcon style={{marginBottom: -4}} color={"rgba(0, 0, 0, 0.54)"}/></IconButton>}
@@ -223,17 +210,6 @@ export default class TasksList extends Component {
                       <TableRowColumn style={{width: 60, padding: '0px 5px'}}/>
                       <TableRowColumn style={{width: 60, padding: '0px 5px'}}/>
                     </TableRow>
-                    { /* <TableRow style={{height: 70}} displayBorder={false}>
-                     <TableRowColumn colspan={7} style={{paddingLeft: 0, overflow: 'visible'}}>
-                     <div style={{display: 'flex', flexDirection: 'column'}}>
-                     <div style={{...styles.projectNameContainer}}>
-                     <KeyboardArrowDown color={"rgba(0, 0, 0, 0.54)"}/>
-                     <div style={styles.projectName}>Simtrack</div>
-                     </div>
-                     <div style={styles.border}/>
-                     </div>
-                     </TableRowColumn>
-                     </TableRow> */}
                     {tasks.map((row, index, arr) => (
                       <TableRow key={index} selectable
                                 displayBorder={(index !== arr.length - 1 && row.status !== arr[index + 1].status)}
