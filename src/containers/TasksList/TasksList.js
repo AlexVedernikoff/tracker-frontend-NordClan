@@ -43,12 +43,14 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 export default class TasksList extends Component {
   static propTypes = {
     tasks: PropTypes.arrayOf(PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      isActive: PropTypes.bool.isRequired,
+      _id: PropTypes.number.isRequired,
       status: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
-      about: PropTypes.string.isRequired,
-      deadline: PropTypes.string.isRequired
+      priority: PropTypes.number.isRequired,
+      creator: PropTypes.string.isRequired,
+      planned_time: PropTypes.number.isRequired,
+      current_time: PropTypes.number.isRequired,
+      plan_end_date: PropTypes.string.isRequired
     })),
     load: PropTypes.func.isRequired
   }
@@ -190,9 +192,9 @@ export default class TasksList extends Component {
                       <TableRowColumn style={{width: 60, padding: '0px 5px'}}/>
                     </TableRow>
                     {tasks.map((task, index, arr) => (
-                      <TaskItem task={task} key={index} index={index}
-                        displayBorder={(index !== arr.length - 1 && task.status !== arr[index + 1].status)}
-                        hasSamePriorityAsPrevious={(index === 0 || task.status !== arr[index - 1].status)}
+                      <TaskItem task={task} key={index}
+                        displayBorder={(index !== arr.length - 1 && task.priority !== arr[index + 1].priority)}
+                        displayPriorityBadge={(index === 0 || task.priority !== arr[index - 1].priority)}
                       />
                     ))}
                   </TableBody>

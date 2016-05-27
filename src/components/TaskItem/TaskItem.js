@@ -9,7 +9,7 @@ import NewCommentBadge from '../../components/NewCommentBadge/NewCommentBadge';
 import {AccountSwitch} from '../../components/Icons/Icons';
 
 const TaskItem = (props, context) => {
-  const { index, task, displayBorder, hasSamePriorityAsPrevious } = props;
+  const { task, displayBorder, displayPriorityBadge } = props;
   const { muiTheme } = context;
   const styles = {
     status: {
@@ -33,27 +33,23 @@ const TaskItem = (props, context) => {
       overflow: 'hidden'
     }
   };
-
   return (
     <TableRow selectable displayBorder={displayBorder}>
       <TableRowColumn style={{width: 20, padding: 0}}>
         <div style={styles.status}>
-          {
-            hasSamePriorityAsPrevious &&
-            <div style={styles.statusBadge}>2</div>
-          }
+            <div style={displayPriorityBadge ? styles.statusBadge : {}}>{task.priority}</div>
         </div>
       </TableRowColumn>
-      <TableRowColumn style={{padding: 0, minWidth: 50}}>{index}1234</TableRowColumn>
+      <TableRowColumn style={{padding: 0, minWidth: 50}}>{task._id}</TableRowColumn>
       <TableRowColumn style={{minWidth: 64, padding: 5, textAlign: 'center'}}><Add /></TableRowColumn>
       <TableRowColumn style={{minWidth: 310, padding: 0}}>
         <div style={{display: 'flex', flexDirection: 'column'}}>
-          <Link to={`/task/${task._id}`} style={styles.taskLink}>{task.about}</Link>
-          <div style={{color: 'rgba(0, 0, 0, 0.54)'}}>Создал(а) задачу {task.name}</div>
+          <Link to={`/task/${task._id}`} style={styles.taskLink}>{task.name}</Link>
+          <div style={{color: 'rgba(0, 0, 0, 0.54)'}}>Создал(а) задачу {task.creator}</div>
         </div>
       </TableRowColumn>
       <TableRowColumn style={{minWidth: 110, padding: 0}}>
-        <TaskProgressBar spent={10} planned={100} spentLabel={'Потрачено'}
+        <TaskProgressBar spent={task.current_time} planned={task.planned_time} spentLabel={'Потрачено'}
                          plannedLabel={'Планируемое'}
                          style={{marginBottom: 10}}/>
       </TableRowColumn>
@@ -71,17 +67,18 @@ const TaskItem = (props, context) => {
 };
 
 TaskItem.propTypes = {
-  index: PropTypes.number,
   task: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    isActive: PropTypes.bool.isRequired,
+    _id: PropTypes.number.isRequired,
     status: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    about: PropTypes.string.isRequired,
-    deadline: PropTypes.string.isRequired
+    priority: PropTypes.number.isRequired,
+    creator: PropTypes.string.isRequired,
+    planned_time: PropTypes.number.isRequired,
+    current_time: PropTypes.number.isRequired,
+    plan_end_date: PropTypes.string.isRequired
   }),
   displayBorder: PropTypes.bool,
-  hasSamePriorityAsPrevious: PropTypes.bool
+  displayPriorityBadge: PropTypes.bool
 };
 
 TaskItem.contextTypes = {
