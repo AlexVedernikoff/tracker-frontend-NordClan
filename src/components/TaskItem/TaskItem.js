@@ -15,7 +15,7 @@ const TaskItem = (props, context) => {
     status: {
       height: '100%',
       borderLeftColor: muiTheme.rawTheme.palette.primary1Color,
-      borderLeftWidth: '5px',
+      borderLeftWidth: 5,
       borderLeftStyle: 'solid',
       position: 'relative',
       color: 'white'
@@ -27,6 +27,11 @@ const TaskItem = (props, context) => {
       borderBottomRightRadius: 2,
       borderTopRightRadius: 2
     },
+    taskLink: {
+      color: 'rgba(0, 0, 0, 0.87)',
+      textOverflow: 'ellipsis',
+      overflow: 'hidden'
+    }
   };
 
   return (
@@ -43,7 +48,7 @@ const TaskItem = (props, context) => {
       <TableRowColumn style={{minWidth: 64, padding: 5, textAlign: 'center'}}><Add /></TableRowColumn>
       <TableRowColumn style={{minWidth: 310, padding: 0}}>
         <div style={{display: 'flex', flexDirection: 'column'}}>
-          <Link to={`/task/${task._id}`} style={{color: 'rgba(0, 0, 0, 0.87)'}}>Нарисовать макет сайта под все разрешения</Link>
+          <Link to={`/task/${task._id}`} style={styles.taskLink}>{task.about}</Link>
           <div style={{color: 'rgba(0, 0, 0, 0.54)'}}>Создал(а) задачу {task.name}</div>
         </div>
       </TableRowColumn>
