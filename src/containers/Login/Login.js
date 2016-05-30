@@ -33,7 +33,7 @@ export default class Login extends Component {
         <Helmet title="Login"/>
         <AppBar title="Login" showMenuIconButton={false}/>
         {!user &&
-        <div style={{marginTop: '2rem'}}>
+        <form style={{marginTop: '2rem'}} onSubmit={this.handleSubmit}>
           <TextField
             hintText="Enter name"
             floatingLabelText="Name"
@@ -45,14 +45,14 @@ export default class Login extends Component {
             type="password"
           /><br/>
           <FlatButton
+            type="submit"
             label="Sign in"
             labelPosition="before"
             primary
             icon={<ActionAndroid />}
-            onClick={this.handleSubmit}
           />
           <p style={{margin: 0, fontSize: 12, color: 'rgba(0,0,0,0.54)'}}>P.S. please, enter any name and press button</p>
-        </div>
+        </form>
         }
         {user &&
         <div>
