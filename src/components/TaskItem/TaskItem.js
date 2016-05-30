@@ -2,9 +2,9 @@ import React, {PropTypes} from 'react';
 import { Link } from 'react-router';
 import TableRow from 'material-ui/Table/TableRow';
 import TableRowColumn from 'material-ui/Table/TableRowColumn';
+import ButtonChangeStatus from '../../components/ButtonChangeStatus/ButtonChangeStatus';
 import TaskProgressBar from '../../components/TaskProgressBar/TaskProgressBar';
 import DeadlineDate from '../../components/DeadlineDate/DeadlineDate';
-import Add from 'material-ui/svg-icons/content/add';
 import NewCommentBadge from '../../components/NewCommentBadge/NewCommentBadge';
 import {AccountSwitch} from '../../components/Icons/Icons';
 
@@ -41,7 +41,9 @@ const TaskItem = (props, context) => {
         </div>
       </TableRowColumn>
       <TableRowColumn style={{padding: 0, minWidth: 50}}>{task._id}</TableRowColumn>
-      <TableRowColumn style={{minWidth: 64, padding: 5, textAlign: 'center'}}><Add /></TableRowColumn>
+      <TableRowColumn style={{minWidth: 64, padding: 5, textAlign: 'center'}}>
+        <ButtonChangeStatus status={task.status} />
+      </TableRowColumn>
       <TableRowColumn style={{minWidth: 310, padding: 0}}>
         <div style={{display: 'flex', flexDirection: 'column'}}>
           <Link to={`/task/${task._id}`} style={styles.taskLink}>{task.name}</Link>
