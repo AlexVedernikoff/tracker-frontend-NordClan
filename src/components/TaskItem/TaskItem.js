@@ -12,7 +12,7 @@ const TaskItem = (props, context) => {
   const { task, displayBorder, displayPriorityBadge } = props;
   const { muiTheme } = context;
   const styles = {
-    status: {
+    priority: {
       height: '100%',
       borderLeftColor: muiTheme.rawTheme.palette.primary1Color,
       borderLeftWidth: 5,
@@ -20,7 +20,7 @@ const TaskItem = (props, context) => {
       position: 'relative',
       color: 'white'
     },
-    statusBadge: {
+    priorityBadge: {
       backgroundColor: muiTheme.rawTheme.palette.primary1Color,
       height: 20,
       textAlign: 'center',
@@ -36,8 +36,8 @@ const TaskItem = (props, context) => {
   return (
     <TableRow selectable displayBorder={displayBorder}>
       <TableRowColumn style={{width: 20, padding: 0}}>
-        <div style={styles.status}>
-            <div style={displayPriorityBadge ? styles.statusBadge : {}}>{task.priority}</div>
+        <div style={styles.priority}>
+            <div style={displayPriorityBadge ? styles.priorityBadge : {}}>{task.priority}</div>
         </div>
       </TableRowColumn>
       <TableRowColumn style={{padding: 0, minWidth: 50}}>{task._id}</TableRowColumn>
