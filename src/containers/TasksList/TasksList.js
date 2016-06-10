@@ -17,16 +17,13 @@ import FilterPanel from '../../components/FilterPanel/FilterPanel';
 import FilterSwitch from '../../components/FilterSwitch/FilterSwitch';
 import SortOrderSwitch from '../../components/SortOrderSwitch/SortOrderSwitch';
 import TaskItem from '../../components/TaskItem/TaskItem';
+import TasksListViewSettings from '../../components/TasksListViewSettings/TasksListViewSettings';
 import Helmet from 'react-helmet';
 import Paper from 'material-ui/Paper';
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
 import Typography from 'material-ui/styles/typography';
 import Add from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 @asyncConnect([{
   deferred: true,
@@ -151,19 +148,7 @@ export default class TasksList extends Component {
                       </TableHeaderColumn>
                       <TableHeaderColumn tooltip="The Status" style={{...styles.tableHeader, width: 70}}/>
                       <TableHeaderColumn style={{...styles.tableHeader, width: 70}}>
-                        <div style={{display: 'flex', justifyContent: 'flex-end'}}>
-                          <IconMenu
-                            iconButtonElement={<IconButton style={{paddingTop: 20, paddingBottom: 0}}><MoreVertIcon style={{marginBottom: -4}} color={"rgba(0, 0, 0, 0.54)"}/></IconButton>}
-                            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                            targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                          >
-                            <MenuItem primaryText="Refresh"/>
-                            <MenuItem primaryText="Send feedback"/>
-                            <MenuItem primaryText="Settings"/>
-                            <MenuItem primaryText="Help"/>
-                            <MenuItem primaryText="Sign out"/>
-                          </IconMenu>
-                        </div>
+                        <TasksListViewSettings />
                       </TableHeaderColumn>
                     </TableRow>
                   </TableHeader>
