@@ -47,6 +47,7 @@ class TasksListViewSettings extends React.Component {
             <ListItem
               primaryText="Отображение задач"
               rightToggle={<IconToggle name="view-mode-grid" stateOnIcon={<ActionViewModule/>} stateOffIcon={<ActionViewList/>} />}
+              innerDivStyle={{paddingRight: 130}}
             />
             <ListItem
               primaryText="Группировка по проектам"
