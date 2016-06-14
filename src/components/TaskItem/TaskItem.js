@@ -6,7 +6,7 @@ import ButtonChangeStatus from '../../components/ButtonChangeStatus/ButtonChange
 import TaskProgressBar from '../../components/TaskProgressBar/TaskProgressBar';
 import DeadlineDate from '../../components/DeadlineDate/DeadlineDate';
 import NewCommentBadge from '../../components/NewCommentBadge/NewCommentBadge';
-import {AccountSwitch} from '../../components/Icons/Icons';
+import TaskReassignWidget from '../../components/TaskReassignWidget/TaskReassignWidget';
 
 const TaskItem = (props, context) => {
   const { task, displayBorder, displayPriorityBadge } = props;
@@ -62,7 +62,7 @@ const TaskItem = (props, context) => {
         <NewCommentBadge/>
       </TableRowColumn>
       <TableRowColumn style={{minWidth: 60, padding: '0px 5px', textAlign: 'center'}}>
-        <AccountSwitch/>
+        <TaskReassignWidget taskName={task.name} projectName={task.name} taskExpertise="Some expertise" />
       </TableRowColumn>
     </TableRow>
   );
