@@ -121,7 +121,6 @@ export default class TasksList extends Component {
                   fixedHeader
                   selectable
                   multiSelectable={false}
-                  style={{backgroundColor: 'white'}}
                 >
                   <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                     <TableRow>
@@ -134,14 +133,14 @@ export default class TasksList extends Component {
                       <TableHeaderColumn tooltip="The Status" style={{...styles.tableHeader, width: 64}}>
                         <SortOrderSwitch label="Статус" order="desc" />
                       </TableHeaderColumn>
-                      <TableHeaderColumn tooltip="The Name" style={{...styles.tableHeader, minWidth: 310}}>
+                      <TableHeaderColumn tooltip="The Name" style={{...styles.tableHeader}}>
                         <div style={{display: 'flex'}}>
                           <div>Название </div>
                           <SortOrderSwitch label="Автор" />
                         </div>
                       </TableHeaderColumn>
-                      <TableHeaderColumn tooltip="The Status" style={{...styles.tableHeader, width: 110}}>
-                        <div style={{textAlign: 'center'}} >Часы</div>
+                      <TableHeaderColumn tooltip="The Status" style={{...styles.tableHeader, width: 110, textAlign: 'center'}}>
+                        Часы
                       </TableHeaderColumn>
                       <TableHeaderColumn tooltip="The Status" style={{...styles.tableHeader, width: 70}}>
                         <SortOrderSwitch label="Дата" style={{textAlign: 'center'}} />
@@ -170,7 +169,7 @@ export default class TasksList extends Component {
                         </div>
                       </TableRowColumn>
                       <TableRowColumn style={{width: 64, padding: 0}}/>
-                      <TableRowColumn style={{minWidth: 310, padding: 0}}/>
+                      <TableRowColumn />
                       <TableRowColumn style={{ width: 110, maxWidth: 310, padding: 0}}/>
                       <TableRowColumn style={{width: 60, padding: '0px 5px'}}/>
                       <TableRowColumn style={{width: 60, padding: '0px 5px'}}/>

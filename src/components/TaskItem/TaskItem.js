@@ -44,7 +44,7 @@ const TaskItem = (props, context) => {
       <TableRowColumn style={{minWidth: 64, padding: 5, textAlign: 'center'}}>
         <ButtonChangeStatus status={task.status} />
       </TableRowColumn>
-      <TableRowColumn style={{minWidth: 310, padding: 0}}>
+      <TableRowColumn style={{padding: 0}}>
         <div style={{display: 'flex', flexDirection: 'column'}}>
           <Link to={`/task/${task._id}`} style={styles.taskLink}>{task.name}</Link>
           <div style={{color: 'rgba(0, 0, 0, 0.54)'}}>Создал(а) задачу {task.creator}</div>
