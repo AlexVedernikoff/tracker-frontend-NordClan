@@ -15,7 +15,7 @@ const FilterPanel = (props, context) => {
       justifyContent: 'flex-start'
     },
     label: {
-      fontSize: '12',
+      fontSize: 12,
       color: muiTheme.rawTheme.palette.accent3Color,
       padding: 5
     }
