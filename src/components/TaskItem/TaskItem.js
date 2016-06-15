@@ -59,7 +59,7 @@ const TaskItem = (props, context) => {
         <DeadlineDate date={{day: 16, month: 'мая'}} style={{fontSize: 18}}/>
       </TableRowColumn>
       <TableRowColumn style={{minWidth: 60, padding: '0px 5px', textAlign: 'center'}}>
-        <NewCommentBadge/>
+        <NewCommentBadge count={10} />
       </TableRowColumn>
       <TableRowColumn style={{minWidth: 60, padding: '0px 5px', textAlign: 'center'}}>
         <TaskReassignWidget taskName={task.name} projectName={task.name} taskExpertise="Some expertise" />
