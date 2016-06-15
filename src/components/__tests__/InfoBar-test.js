@@ -4,15 +4,14 @@ import {renderIntoDocument} from 'react-addons-test-utils';
 import { expect} from 'chai';
 import { InfoBar } from 'components';
 import { Provider } from 'react-redux';
-import {reduxReactRouter} from 'redux-router';
-import createHistory from 'history/lib/createMemoryHistory';
+import { browserHistory } from 'react-router';
 import createStore from 'redux/create';
 import ApiClient from 'helpers/ApiClient';
 const client = new ApiClient();
 
 describe('InfoBar', () => {
   const mockStore = {
-    info: {
+    tasks: {
       load: () => {},
       loaded: true,
       loading: false,
@@ -22,8 +21,7 @@ describe('InfoBar', () => {
       }
     }
   };
-
-  const store = createStore(reduxReactRouter, null, createHistory, client, mockStore);
+  const store = createStore(browserHistory, client, mockStore);
   const renderer = renderIntoDocument(
     <Provider store={store} key="provider">
       <InfoBar/>
@@ -37,7 +35,7 @@ describe('InfoBar', () => {
 
   it('should render with correct value', () => {
     const text = dom.getElementsByTagName('strong')[0].textContent;
-    expect(text).to.equal(mockStore.info.data.message);
+    expect(text).to.equal(mockStore.tasks.data.message);
   });
 
   it('should render with a reload button', () => {
@@ -46,7 +44,7 @@ describe('InfoBar', () => {
   });
 
   it('should render the correct className', () => {
-    const styles = require('components/InfoBar/InfoBar.scss');
+    const styles = require('components/TasksList/TasksList.scss');
     expect(styles.infoBar).to.be.a('string');
     expect(dom.className).to.include(styles.infoBar);
   });

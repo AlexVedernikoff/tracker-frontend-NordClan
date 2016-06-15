@@ -1,3 +1,4 @@
+/* Релиализация прослойки для возможности в action передавать promise, что дает возможность делать асинхронные запросы */
 export default function clientMiddleware(client) {
   return ({dispatch, getState}) => {
     return next => action => {
@@ -12,13 +13,17 @@ export default function clientMiddleware(client) {
 
       const [REQUEST, SUCCESS, FAILURE] = types;
       next({...rest, type: REQUEST});
-      return promise(client).then(
+
+      const actionPromise = promise(client);
+      actionPromise.then(
         (result) => next({...rest, result, type: SUCCESS}),
         (error) => next({...rest, error, type: FAILURE})
       ).catch((error)=> {
         console.error('MIDDLEWARE ERROR:', error);
         next({...rest, error, type: FAILURE});
       });
+
+      return actionPromise;
     };
   };
 }

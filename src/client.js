@@ -1,46 +1,39 @@
 /**
  * THIS IS THE ENTRY POINT FOR THE CLIENT, JUST LIKE server.js IS THE ENTRY POINT FOR THE SERVER.
  */
-import 'babel/polyfill';
+import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import createHistory from 'history/lib/createBrowserHistory';
-import useScroll from 'scroll-behavior/lib/useStandardScroll';
 import createStore from './redux/create';
 import ApiClient from './helpers/ApiClient';
-import io from 'socket.io-client';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 import {Provider} from 'react-redux';
-import {reduxReactRouter, ReduxRouter} from 'redux-router';
+import { Router, browserHistory } from 'react-router';
+import { ReduxAsyncConnect } from 'redux-async-connect';
+import useScroll from 'scroll-behavior/lib/useStandardScroll';
+import { syncHistoryWithStore } from 'react-router-redux';
 
 import getRoutes from './routes';
-import makeRouteHooksSafe from './helpers/makeRouteHooksSafe';
 
 const client = new ApiClient();
-
-// Three different types of scroll behavior available.
-// Documented here: https://github.com/rackt/scroll-behavior
-const scrollableHistory = useScroll(createHistory);
-
+const routerHistory = useScroll(() => browserHistory)();
 const dest = document.getElementById('content');
-const store = createStore(reduxReactRouter, makeRouteHooksSafe(getRoutes), scrollableHistory, client, window.__data);
+const store = createStore(routerHistory, client, window.__data);
+const history = syncHistoryWithStore(routerHistory, store);
 
-function initSocket() {
-  const socket = io('', {path: '/ws'});
-  socket.on('news', (data) => {
-    console.log(data);
-    socket.emit('my other event', { my: 'data from client' });
-  });
-  socket.on('msg', (data) => {
-    console.log(data);
-  });
 
-  return socket;
-}
-
-global.socket = initSocket();
+// Needed for onTouchTap
+// Can go away when react 1.0 release
+// Check this repo:
+// https://github.com/zilverline/react-tap-event-plugin
+injectTapEventPlugin();
 
 const component = (
-  <ReduxRouter routes={getRoutes(store)} />
+  <Router render={(props) =>
+        <ReduxAsyncConnect {...props} helpers={{client}} filter={item => !item.deferred} />
+      } history={history}>
+    {getRoutes(store)}
+  </Router>
 );
 
 ReactDOM.render(

@@ -1,37 +1,26 @@
+/* Главный компонент приложения, проверяется авторизация пользователя, реализуется функционал тем для приложения */
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-// import { IndexLink } from 'react-router';
 import Helmet from 'react-helmet';
-import { isLoaded as isInfoLoaded, load as loadInfo } from 'redux/modules/info';
 import { isLoaded as isAuthLoaded, load as loadAuth, logout } from 'redux/modules/auth';
-import { InfoBar } from 'components';
-import { pushState } from 'redux-router';
-import connectData from 'helpers/connectData';
+import { push } from 'react-router-redux';
 import config from '../../config';
-import injectTapEventPlugin from 'react-tap-event-plugin';
-import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import getColorTheme from '../../theme/theme';
+import { asyncConnect } from 'redux-async-connect';
 
-// Needed for onTouchTap
-// Can go away when react 1.0 release
-// Check this repo:
-// https://github.com/zilverline/react-tap-event-plugin
-injectTapEventPlugin();
-
-function fetchData(getState, dispatch) {
-  const promises = [];
-  if (!isInfoLoaded(getState())) {
-    promises.push(dispatch(loadInfo()));
+@asyncConnect([{
+  deferred: true,
+  promise: ({store: {dispatch, getState}}) => {
+    if (!isAuthLoaded(getState())) {
+      return dispatch(loadAuth());
+    }
   }
-  if (!isAuthLoaded(getState())) {
-    promises.push(dispatch(loadAuth()));
-  }
-  return Promise.all(promises);
-}
-
-@connectData(fetchData)
+}])
 @connect(
   state => ({user: state.auth.user}),
-  {logout, pushState})
+  {logout, pushState: push})
 export default class App extends Component {
   static propTypes = {
     children: PropTypes.object.isRequired,
@@ -42,41 +31,32 @@ export default class App extends Component {
 
   static contextTypes = {
     store: PropTypes.object.isRequired
-  };
+  }
 
   componentWillReceiveProps(nextProps) {
     if (!this.props.user && nextProps.user) {
       // login
-      this.props.pushState(null, '/loginSuccess');
+      this.props.pushState('/tasks');
     } else if (this.props.user && !nextProps.user) {
       // logout
-      this.props.pushState(null, '/');
+      this.props.pushState('/login');
     }
   }
 
   handleLogout = (event) => {
     event.preventDefault();
     this.props.logout();
-  }
+  };
 
   render() {
-  //  const {user} = this.props;
-    const styles = require('./App.scss');
-
+    require('./App.scss');
+    const muiTheme = getMuiTheme(getColorTheme());
     return (
-      <div className={styles.app}>
+      <div id="app">
         <Helmet {...config.app.head}/>
-        <div className={styles.appContent}>
-          {this.props.children}
-        </div>
-        <Grid fluid>
-          <Row>
-            <Col xs={12} sm={3} md={2} lg={1} > <div className={styles.appContent}>a</div></Col>
-              <Col xs={6} sm={6} md={8} lg={10} > <div className={styles.appContent}>a</div></Col>
-              <Col xs={6} sm={3} md={2} lg={1} > <div className={styles.appContent}>a</div></Col>
-          </Row>
-        </Grid>
-        <InfoBar/>
+        <MuiThemeProvider muiTheme={muiTheme}>
+            {this.props.children}
+        </MuiThemeProvider>
       </div>
     );
   }

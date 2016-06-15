@@ -17,7 +17,7 @@ export default class Html extends Component {
     assets: PropTypes.object,
     component: PropTypes.node,
     store: PropTypes.object
-  }
+  };
 
   render() {
     const {assets, component, store} = this.props;
@@ -41,11 +41,13 @@ export default class Html extends Component {
                   rel="stylesheet" type="text/css" charSet="UTF-8"/>
           )}
 
+          {/* <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.3.15/slick.css" /> */}
+
           {/* (will be present only in development mode) */}
           {/* outputs a <style/> tag with all bootstrap styles + App.scss + it could be CurrentPage.scss. */}
           {/* can smoothen the initial style flash (flicker) on page load in development mode. */}
           {/* ideally one could also include here the style for the current page (Home.scss, About.scss, etc) */}
-          { Object.keys(assets.styles).length === 0 ? <style dangerouslySetInnerHTML={{__html: require('../containers/App/App.scss')._style}}/> : null }
+          { Object.keys(assets.styles).length === 0 ? <style dangerouslySetInnerHTML={{__html: require('theme/normalize.css')._style + require('../containers/App/App.scss')._style}}/> : null }
         </head>
         <body>
           <div id="content" dangerouslySetInnerHTML={{__html: content}}/>

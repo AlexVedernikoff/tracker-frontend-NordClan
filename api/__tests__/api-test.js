@@ -23,7 +23,7 @@ describe('mapUrl', () => {
   it('extracts nothing if nothing was found', () => {
     const url = '/widget/load/?foo=bar';
     const splittedUrlPath = url.split('?')[0].split('/').slice(1);
-    const availableActions = {a: 1, info: {c: 1, load: () => 'baz'}};
+    const availableActions = {a: 1, tasks: {c: 1, load: () => 'baz'}};
 
     expect(mapUrl(availableActions, splittedUrlPath)).to.deep.equal({
       action: null,

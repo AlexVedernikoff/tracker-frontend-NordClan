@@ -11,22 +11,20 @@ import ApiClient from './helpers/ApiClient';
 import Html from './helpers/Html';
 import PrettyError from 'pretty-error';
 import http from 'http';
+import { syncHistoryWithStore } from 'react-router-redux';
 
-import {ReduxRouter} from 'redux-router';
-import createHistory from 'history/lib/createMemoryHistory';
-import {reduxReactRouter, match} from 'redux-router/server';
+import { match } from 'react-router';
+import { ReduxAsyncConnect, loadOnServer } from 'redux-async-connect';
+import createHistory from 'react-router/lib/createMemoryHistory';
 import {Provider} from 'react-redux';
-import qs from 'query-string';
 import getRoutes from './routes';
-import getStatusFromRoutes from './helpers/getStatusFromRoutes';
 
 const targetUrl = 'http://' + config.apiHost + ':' + config.apiPort;
 const pretty = new PrettyError();
 const app = new Express();
 const server = new http.Server(app);
 const proxy = httpProxy.createProxyServer({
-  target: targetUrl,
-  ws: true
+  target: targetUrl
 });
 
 app.use(compression());
@@ -39,13 +37,6 @@ app.use('/api', (req, res) => {
   proxy.web(req, res, {target: targetUrl});
 });
 
-app.use('/ws', (req, res) => {
-  proxy.web(req, res, {target: targetUrl + '/ws'});
-});
-
-server.on('upgrade', (req, socket, head) => {
-  proxy.ws(req, socket, head);
-});
 
 // added the error handling to avoid https://github.com/nodejitsu/node-http-proxy/issues/527
 proxy.on('error', (error, req, res) => {
@@ -68,8 +59,10 @@ app.use((req, res) => {
     webpackIsomorphicTools.refresh();
   }
   const client = new ApiClient(req);
+  const browserHistory = createHistory(req.originalUrl);
 
-  const store = createStore(reduxReactRouter, getRoutes, createHistory, client);
+  const store = createStore(history, client);
+  const history = syncHistoryWithStore(browserHistory, store);
 
   function hydrateOnClient() {
     res.send('<!doctype html>\n' +
@@ -81,44 +74,34 @@ app.use((req, res) => {
     return;
   }
 
-  store.dispatch(match(req.originalUrl, (error, redirectLocation, routerState) => {
+  match({ history, routes: getRoutes(store), location: req.originalUrl }, (error, redirectLocation, renderProps) => {
     if (redirectLocation) {
       res.redirect(redirectLocation.pathname + redirectLocation.search);
     } else if (error) {
       console.error('ROUTER ERROR:', pretty.render(error));
       res.status(500);
       hydrateOnClient();
-    } else if (!routerState) {
-      res.status(500);
-      hydrateOnClient();
-    } else {
-      // Workaround redux-router query string issue:
-      // https://github.com/rackt/redux-router/issues/106
-      if (routerState.location.search && !routerState.location.query) {
-        routerState.location.query = qs.parse(routerState.location.search);
-      }
-
-      store.getState().router.then(() => {
+    } else if (renderProps) {
+      loadOnServer({...renderProps, store, helpers: {client}}).then(() => {
         const component = (
           <Provider store={store} key="provider">
-            <ReduxRouter/>
+            <ReduxAsyncConnect {...renderProps} />
           </Provider>
         );
 
-        const status = getStatusFromRoutes(routerState.routes);
-        if (status) {
-          res.status(status);
-        }
+        res.status(200);
+
+        global.navigator = {userAgent: req.headers['user-agent']};
+
         res.send('<!doctype html>\n' +
           ReactDOM.renderToString(<Html assets={webpackIsomorphicTools.assets()} component={component} store={store}/>));
-      }).catch((err) => {
-        console.error('DATA FETCHING ERROR:', pretty.render(err));
-        res.status(500);
-        hydrateOnClient();
       });
+    } else {
+      res.status(404).send('Not found');
     }
-  }));
+  });
 });
+
 
 if (config.port) {
   server.listen(config.port, (err) => {
