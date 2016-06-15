@@ -56,6 +56,9 @@ export default class TasksList extends Component {
     muiTheme: PropTypes.object.isRequired
   };
 
+  onFilterChange = (value) => {
+    // TODO смена стейта фильтра
+  };
 
   render() {
     const {tasks} = this.props; // eslint-disable-line no-shadow
@@ -109,11 +112,11 @@ export default class TasksList extends Component {
             <Col xs={12}>
               <h1 style={styles.h1}>Мои задачи</h1>
               <FilterSearchBar />
-              <FilterPanel label="Фильтр:">
-                <FilterSwitch checked name="название" />
-                <FilterSwitch name="дата" />
-                <FilterSwitch name="автор" />
-                <FilterSwitch name="исполнитель" />
+              <FilterPanel label="Фильтр:" onFilterChange={this.onFilterChange} >
+                <FilterSwitch value="name" label="название" />
+                <FilterSwitch value="date" label="дата" />
+                <FilterSwitch value="author" label="автор" />
+                <FilterSwitch value="assignee" label="исполнитель" />
               </FilterPanel>
 
               <Paper zDepth={1} rounded={false} style={{marginBottom: 100}}>

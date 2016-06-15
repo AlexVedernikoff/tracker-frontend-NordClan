@@ -5,7 +5,7 @@
 import React, { PropTypes } from 'react';
 
 const FilterPanel = (props, context) => {
-  const { label } = props;
+  const { label, onFilterChange } = props;
   const { muiTheme } = context;
   const styles = {
     block: {
@@ -24,14 +24,17 @@ const FilterPanel = (props, context) => {
   return (
     <div style={styles.block}>
       <span style={styles.label}>{label}</span>
-      {props.children}
+      {React.Children.map(props.children, (child) => {
+        return React.cloneElement(child, { onChange: onFilterChange });
+      })}
     </div>
   );
 };
 
 FilterPanel.propTypes = {
   children: PropTypes.array,
-  label: PropTypes.string
+  label: PropTypes.string,
+  onFilterChange: PropTypes.func
 };
 
 FilterPanel.contextTypes = {
