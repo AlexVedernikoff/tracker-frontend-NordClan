@@ -7,6 +7,6 @@
 export AppHead from './AppHead/AppHead';
 export DeadlineDate from './DeadlineDate/DeadlineDate';
 export TaskProgressBar from './TaskProgressBar/TaskProgressBar';
-export NewCommentBage from './NewCommentBage/NewCommentBage';
+export NewCommentBadge from './NewCommentBadge/NewCommentBadge';
 export {AccountSwitch} from './Icons/Icons';
 export DropZone from './DropZone/DropZone';
