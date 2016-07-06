@@ -39,16 +39,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 
 export default class TasksList extends Component {
   static propTypes = {
-    tasks: PropTypes.arrayOf(PropTypes.shape({
-      _id: PropTypes.number.isRequired,
-      status: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      priority: PropTypes.number.isRequired,
-      creator: PropTypes.string.isRequired,
-      planned_time: PropTypes.number.isRequired,
-      current_time: PropTypes.number.isRequired,
-      plan_end_date: PropTypes.string.isRequired
-    })),
+    tasks: PropTypes.array.isRequired,
     load: PropTypes.func.isRequired
   }
   static contextTypes = {
