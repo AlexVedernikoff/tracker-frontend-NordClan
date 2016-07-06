@@ -56,7 +56,7 @@ const TaskItem = (props, context) => {
                          style={{marginBottom: 10}}/>
       </TableRowColumn>
       <TableRowColumn style={{width: 210, minWidth: 110, padding: '0px 5px', textAlign: 'center'}}>
-        <DeadlineDate date={{day: 16, month: 'мая'}} style={{fontSize: 18}}/>
+        <DeadlineDate date={task.planEndDate} style={{fontSize: 18}}/>
       </TableRowColumn>
       <TableRowColumn style={{minWidth: 60, padding: '0px 5px', textAlign: 'center'}}>
         <NewCommentBadge count={10} comment="Стоит ли оставлять комментарии, если их никто не читает" author="Яков Плэйсхолдер" date={task.planEndDate} />
