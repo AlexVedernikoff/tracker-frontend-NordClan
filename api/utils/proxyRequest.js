@@ -1,21 +1,21 @@
-import request from 'request';
+import request from 'request-promise';
 
 /**
  * Типовая обертка для http(s) запросов (чтобы костыли в одном месте лежали)
+ * @see https://www.npmjs.com/package/request-promise
  * @param {string} url Относительный урл запроса
  * @param {object} params Дополнительные параметры запроса
- * @param {function} callback Обработчик завершенного запроса
+ * @returns {Promise}
 */
-const proxyRequest = (url, params, callback) => {
+const proxyRequest = (url, params) => {
   return request({
       ...params,
-      url: 'http://portaltest.simbirsoft:8080/default/rest/' + url,
+      uri: 'http://portaltest.simbirsoft:8080/default/rest/' + url,
       headers: {
         'Authorization': 'Basic c2VydmljZW1hbjpGZEtnJiRiKilGZUF7'
-      }
-    },
-    callback
-  );
+      },
+      json: true
+    });
 }
 
 export default proxyRequest;
