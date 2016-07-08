@@ -69,6 +69,7 @@ export default class TaskPage extends Component {
     task: PropTypes.shape({
       id: PropTypes.string.isRequired,
       idProj: PropTypes.string.isRequired,
+      projectName: PropTypes.string.isRequired,
       status: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       creator: PropTypes.string.isRequired,
@@ -464,7 +465,7 @@ export default class TaskPage extends Component {
               <Col xs={12}>
                 <h1 style={styles.title}>{task.id} {task.name}</h1>
                 <p style={styles.info}>
-                  <Link to="#" style={styles.a}> {task.idProj}</Link>, создал(а)
+                  <Link to="#" style={styles.a}> {task.projectName}</Link>, создал(а)
                   <Link to="#" style={styles.a}> {task.creator}</Link> 28 мая 2016, выполнит -
                   <Link to="#" style={styles.a}> {task.owner}</Link>
                 </p>
