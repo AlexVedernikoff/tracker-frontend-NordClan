@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import {setCurrentTask, isCurrentTaskLoaded} from 'redux/modules/current_task';
 import List from 'material-ui/List/List';
 import ListItem from 'material-ui/List/ListItem';
+import Subheader from 'material-ui/Subheader/Subheader';
 import IconButton from 'material-ui/IconButton';
 import Avatar from 'material-ui/Avatar';
 import Tabs from 'material-ui/Tabs/Tabs';
@@ -621,7 +622,8 @@ export default class TaskPage extends Component {
                   <Row>
                     <Col xs>
                       <div style={styles.detailsBlock}>
-                        <List subheader="Детали" style={styles.detailsList}>
+                        <List style={styles.detailsList}>
+                          <Subheader>Детали</Subheader>
                           <ListItem
                             disabled
                             primaryText={
@@ -736,7 +738,8 @@ export default class TaskPage extends Component {
                           Object.assign({}, styles.execWrap, styles.execWrapExpand) :
                           Object.assign({}, styles.execWrap, {maxHeight: ReactDom.findDOMNode(this.refs.executorsList).offsetHeight})
                         }>
-                          <List ref="executorsList" subheader="Исполнители" style={styles.execList}>
+                          <List ref="executorsList" style={styles.execList}>
+                            <Subheader>Исполнители</Subheader>
                             <ListItem
                               // disabled={true}
                               disabled
@@ -830,7 +833,8 @@ export default class TaskPage extends Component {
                   <Row>
                     <Col xs>
                       {/* <p style={styles.header}>Документы</p> */}
-                      <List subheader="Документы" style={styles.docItemWrap}>
+                      <List style={styles.docItemWrap}>
+                        <Subheader>Документы</Subheader>
                         <ListItem
                           style={styles.docItem}
                           disabled
