@@ -9,7 +9,7 @@ import ApiClient from './helpers/ApiClient';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import {Provider} from 'react-redux';
 import { Router, browserHistory } from 'react-router';
-import { ReduxAsyncConnect } from 'redux-async-connect';
+import { ReduxAsyncConnect } from 'redux-connect';
 import useScroll from 'scroll-behavior/lib/useStandardScroll';
 import { syncHistoryWithStore } from 'react-router-redux';
 

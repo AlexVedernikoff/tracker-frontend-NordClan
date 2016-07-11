@@ -10,7 +10,7 @@ import TableRowColumn from 'material-ui/Table/TableRowColumn';
 import TableBody from 'material-ui/Table/TableBody';
 import {isLoaded as isTasksLoaded, load as loadTasks} from 'redux/modules/tasks';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
-import {asyncConnect} from 'redux-async-connect';
+import {asyncConnect} from 'redux-connect';
 import AppHead from '../../components/AppHead/AppHead';
 import FilterSearchBar from '../../components/FilterSearchBar/FilterSearchBar';
 import FilterPanel from '../../components/FilterPanel/FilterPanel';

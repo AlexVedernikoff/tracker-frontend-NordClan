@@ -8,7 +8,7 @@ import config from '../../config';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import getColorTheme from '../../theme/theme';
-import { asyncConnect } from 'redux-async-connect';
+import { asyncConnect } from 'redux-connect';
 
 @asyncConnect([{
   deferred: true,
