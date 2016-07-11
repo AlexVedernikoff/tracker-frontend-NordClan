@@ -113,7 +113,6 @@ export default class TaskPage extends Component {
 
   getStyles() {
     const theme = this.context.muiTheme;
-    console.log(theme);
     const styles = {
       root: {
         // backgroundColor: theme.rawTheme.palette.backgroundColor,
