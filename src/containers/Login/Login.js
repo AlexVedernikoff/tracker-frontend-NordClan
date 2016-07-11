@@ -38,11 +38,13 @@ export default class Login extends Component {
             hintText="Enter name"
             floatingLabelText="Name"
             ref="username"
+            id="loginField"
           /><br/>
           <TextField
             hintText="Enter password"
             floatingLabelText="Password"
             type="password"
+            id="passwordField"
           /><br/>
           <FlatButton
             type="submit"
