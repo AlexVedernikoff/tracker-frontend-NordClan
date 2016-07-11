@@ -3,9 +3,10 @@ import loadProjectsTree from './loadProjectsTree';
 
 export default function loadTask(req, params) {
   return proxyRequest('tasks/' + params[0], {}).then(task => {
-    //TODO Переписать с поддержкой дерева проектов
-    return loadProjectsTree(task.idProj).then(project => {
-      task.projectName = project.name;
+    return loadProjectsTree([task.idProj]).then(projects => {
+      if (projects && projects[0]) {
+        task.projectName = projects[0].name;
+      }
       return task;
     })
   });

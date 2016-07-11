@@ -1,9 +1,11 @@
 import proxyRequest from '../utils/proxyRequest';
 
 export default function loadProjectsTree (req, params) {
-  const projectId = (params && params[0]) ? params[0] : req;
-  //TODO переписать под запрос данных по многим проектам одним запросом
-  return proxyRequest('projects/tree/', {qs: {id: projectId}}).then(projects => {
+  if (!(req instanceof Array) && !(params && params[0])) {
+    return Promise.reject('No request ids specified');
+  }
+  const projectIds = (params && params[0]) ? params[0] : req.join(',');
+  return proxyRequest('projects/tree/', {qs: {id: projectIds}}).then(projects => {
     return projects;
   });
 }
