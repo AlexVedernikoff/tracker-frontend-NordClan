@@ -7,19 +7,18 @@ import ReactDOM from 'react-dom';
 import createStore from './redux/create';
 import ApiClient from './helpers/ApiClient';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import {Provider} from 'react-redux';
-import { Router, browserHistory } from 'react-router';
-import { ReduxAsyncConnect } from 'redux-async-connect';
-import useScroll from 'scroll-behavior/lib/useStandardScroll';
+import { Provider } from 'react-redux';
+import { Router, applyRouterMiddleware, browserHistory } from 'react-router';
+import { ReduxAsyncConnect } from 'redux-connect';
+import useScroll from 'react-router-scroll';
 import { syncHistoryWithStore } from 'react-router-redux';
 
 import getRoutes from './routes';
 
 const client = new ApiClient();
-const routerHistory = useScroll(() => browserHistory)();
 const dest = document.getElementById('content');
-const store = createStore(routerHistory, client, window.__data);
-const history = syncHistoryWithStore(routerHistory, store);
+const store = createStore(browserHistory, client, window.__data);
+const history = syncHistoryWithStore(browserHistory, store);
 
 
 // Needed for onTouchTap
@@ -30,10 +29,11 @@ injectTapEventPlugin();
 
 const component = (
   <Router render={(props) =>
-        <ReduxAsyncConnect {...props} helpers={{client}} filter={item => !item.deferred} />
-      } history={history}>
-    {getRoutes(store)}
-  </Router>
+        <ReduxAsyncConnect {...props} helpers={{client}} filter={item => !item.deferred}
+          render={applyRouterMiddleware(useScroll())} />
+      }
+      history={history} routes={getRoutes(store)}
+  />
 );
 
 ReactDOM.render(

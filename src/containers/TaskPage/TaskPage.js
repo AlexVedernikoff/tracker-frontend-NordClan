@@ -11,7 +11,7 @@ import Avatar from 'material-ui/Avatar';
 import Tabs from 'material-ui/Tabs/Tabs';
 import Tab from 'material-ui/Tabs/Tab';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
-import { asyncConnect } from 'redux-async-connect';
+import { asyncConnect } from 'redux-connect';
 import AppHead from '../../components/AppHead/AppHead';
 import Typography from 'material-ui/styles/typography';
 import { Link } from 'react-router';

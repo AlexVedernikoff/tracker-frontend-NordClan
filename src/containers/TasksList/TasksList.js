@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {load} from 'redux/modules/tasks';
 import Table from 'material-ui/Table/Table';
 import TableHeaderColumn from 'material-ui/Table/TableHeaderColumn';
 import TableRow from 'material-ui/Table/TableRow';
@@ -10,7 +9,7 @@ import TableRowColumn from 'material-ui/Table/TableRowColumn';
 import TableBody from 'material-ui/Table/TableBody';
 import {isLoaded as isTasksLoaded, load as loadTasks} from 'redux/modules/tasks';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
-import {asyncConnect} from 'redux-async-connect';
+import {asyncConnect} from 'redux-connect';
 import AppHead from '../../components/AppHead/AppHead';
 import FilterSearchBar from '../../components/FilterSearchBar/FilterSearchBar';
 import FilterPanel from '../../components/FilterPanel/FilterPanel';
@@ -26,21 +25,22 @@ import Add from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 
 @asyncConnect([{
-  deferred: true,
+  // deferred: true, //TODO загрузка данных после роутинга (если придумается зачем)
+  key: 'tasks',
   promise: ({store: {dispatch, getState}}) => {
     if (!isTasksLoaded(getState())) {
       return dispatch(loadTasks());
     }
-  }
-}])
-@connect(
+    return Promise.resolve(getState().tasks);
+  }}],
   state => ({tasks: state.tasks.data}),
-  dispatch => bindActionCreators({load}, dispatch))
+  dispatch => bindActionCreators({loadTasks}, dispatch)
+)
 
 export default class TasksList extends Component {
   static propTypes = {
     tasks: PropTypes.array.isRequired,
-    load: PropTypes.func.isRequired
+    loadTasks: PropTypes.func.isRequired
   }
   static contextTypes = {
     store: PropTypes.object.isRequired,
@@ -169,7 +169,7 @@ export default class TasksList extends Component {
                       <TableRowColumn style={{width: 60, padding: '0px 5px'}}/>
                       <TableRowColumn style={{width: 60, padding: '0px 5px'}}/>
                     </TableRow>
-                    {tasks.map((task, index, arr) => (
+                    {tasks && tasks.map((task, index, arr) => (
                       <TaskItem task={task} key={index}
                         displayBorder={(index !== arr.length - 1 && task.priority !== arr[index + 1].priority)}
                         displayPriorityBadge={(index === 0 || task.priority !== arr[index - 1].priority)}
