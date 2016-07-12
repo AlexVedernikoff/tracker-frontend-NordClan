@@ -5,12 +5,13 @@ import {connect} from 'react-redux';
 import {setCurrentTask, isCurrentTaskLoaded} from 'redux/modules/current_task';
 import List from 'material-ui/List/List';
 import ListItem from 'material-ui/List/ListItem';
+import Subheader from 'material-ui/Subheader/Subheader';
 import IconButton from 'material-ui/IconButton';
 import Avatar from 'material-ui/Avatar';
 import Tabs from 'material-ui/Tabs/Tabs';
 import Tab from 'material-ui/Tabs/Tab';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
-import { asyncConnect } from 'redux-async-connect';
+import { asyncConnect } from 'redux-connect';
 import AppHead from '../../components/AppHead/AppHead';
 import Typography from 'material-ui/styles/typography';
 import { Link } from 'react-router';
@@ -66,18 +67,37 @@ export default class TaskPage extends Component {
 
   static propTypes = {
     task: PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      isActive: PropTypes.bool.isRequired,
+      id: PropTypes.string.isRequired,
+      idProj: PropTypes.string.isRequired,
+      projectName: PropTypes.string.isRequired,
       status: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
-      about: PropTypes.string.isRequired,
-      deadline: PropTypes.string.isRequired
+      creator: PropTypes.string.isRequired,
+      owner: PropTypes.string.isRequired,
+      // TODO не возвращается сервером
+      isActive: PropTypes.bool,
+      about: PropTypes.string,
+      deadline: PropTypes.string,
+      // TODO не используется
+      attachments: PropTypes.array.isRequired,
+      beginDate: PropTypes.number.isRequired,
+      currentTime: PropTypes.number.isRequired,
+      gainTime: PropTypes.number.isRequired,
+      plannedTime: PropTypes.number.isRequired,
+      priority: PropTypes.number.isRequired,
+      type: PropTypes.string.isRequired,
+      updateDate: PropTypes.number.isRequired
     }),
     params: PropTypes.object.isRequired
   }
   static contextTypes = {
     store: PropTypes.object.isRequired,
     muiTheme: PropTypes.object.isRequired
+  }
+  static defaultProps = {
+    isActive: true,
+    about: 'No about',
+    deadline: 'No deadline',
   }
 
   constructor(props, context) {
@@ -93,7 +113,6 @@ export default class TaskPage extends Component {
 
   getStyles() {
     const theme = this.context.muiTheme;
-    console.log(theme);
     const styles = {
       root: {
         // backgroundColor: theme.rawTheme.palette.backgroundColor,
@@ -443,12 +462,11 @@ export default class TaskPage extends Component {
           <div style={styles.wrapper}>
             <Row>
               <Col xs={12}>
-                <h1 style={styles.title}>#42413 Нарисовать макет страницы "О проекте"</h1>
+                <h1 style={styles.title}>{task.id} {task.name}</h1>
                 <p style={styles.info}>
-                  <Link to="#" style={styles.a}>Simtrack</Link>, создал(а)
-                  <Link to="#" style={styles.a}> Татьяна Бабич</Link> 28 мая 2016, выполнит -
-                  <Link to="#" style={styles.a}> Карандашева Анна</Link>,
-                  <Link to="#" style={styles.a}> Денис Скориков</Link>
+                  <Link to="#" style={styles.a}> {task.projectName}</Link>, создал(а)
+                  <Link to="#" style={styles.a}> {task.creator}</Link> 28 мая 2016, выполнит -
+                  <Link to="#" style={styles.a}> {task.owner}</Link>
                 </p>
               </Col>
             </Row>
@@ -604,7 +622,8 @@ export default class TaskPage extends Component {
                   <Row>
                     <Col xs>
                       <div style={styles.detailsBlock}>
-                        <List subheader="Детали" style={styles.detailsList}>
+                        <List style={styles.detailsList}>
+                          <Subheader>Детали</Subheader>
                           <ListItem
                             disabled
                             primaryText={
@@ -688,7 +707,7 @@ export default class TaskPage extends Component {
 
                           <div style={{}}>
                             <div style={styles.timeDeadlineTitle}>Релиз</div>
-                            <DeadlineDate date={{day: 16, month: 'май'}}/>
+                            <DeadlineDate date={0}/>
 
                           </div>
 
@@ -719,7 +738,8 @@ export default class TaskPage extends Component {
                           Object.assign({}, styles.execWrap, styles.execWrapExpand) :
                           Object.assign({}, styles.execWrap, {maxHeight: ReactDom.findDOMNode(this.refs.executorsList).offsetHeight})
                         }>
-                          <List ref="executorsList" subheader="Исполнители" style={styles.execList}>
+                          <List ref="executorsList" style={styles.execList}>
+                            <Subheader>Исполнители</Subheader>
                             <ListItem
                               // disabled={true}
                               disabled
@@ -813,7 +833,8 @@ export default class TaskPage extends Component {
                   <Row>
                     <Col xs>
                       {/* <p style={styles.header}>Документы</p> */}
-                      <List subheader="Документы" style={styles.docItemWrap}>
+                      <List style={styles.docItemWrap}>
+                        <Subheader>Документы</Subheader>
                         <ListItem
                           style={styles.docItem}
                           disabled

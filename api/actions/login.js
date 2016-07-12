@@ -1,7 +1,9 @@
+import proxyRequest from '../utils/proxyRequest';
+import loadUser from './loadUser';
+
 export default function login(req) {
-  const user = {
-    name: req.body.name
-  };
-  req.session.user = user;
-  return Promise.resolve(user);
+  return loadUser(req.body.name).then((user) => {
+    req.session.user = user;
+    return user;
+  });
 }

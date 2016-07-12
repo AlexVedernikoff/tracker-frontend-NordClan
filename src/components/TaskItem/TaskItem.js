@@ -40,26 +40,26 @@ const TaskItem = (props, context) => {
             <div style={displayPriorityBadge ? styles.priorityBadge : {}}>{task.priority}</div>
         </div>
       </TableRowColumn>
-      <TableRowColumn style={{padding: 0, minWidth: 50}}>{task._id}</TableRowColumn>
+      <TableRowColumn style={{padding: 0, minWidth: 50}}>{task.id}</TableRowColumn>
       <TableRowColumn style={{minWidth: 64, padding: 5, textAlign: 'center'}}>
         <ButtonChangeStatus status={task.status} />
       </TableRowColumn>
       <TableRowColumn style={{padding: 0}}>
         <div style={{display: 'flex', flexDirection: 'column'}}>
-          <Link to={`/task/${task._id}`} style={styles.taskLink}>{task.name}</Link>
-          <div style={{color: 'rgba(0, 0, 0, 0.54)'}}>Создал(а) задачу {task.creator}</div>
+          <Link to={`/task/${task.id}`} style={styles.taskLink}>{task.name}</Link>
+          <div style={{color: 'rgba(0, 0, 0, 0.54)'}}>Создал(а) задачу {task.creatorName}</div>
         </div>
       </TableRowColumn>
       <TableRowColumn style={{minWidth: 110, padding: 0}}>
-        <TaskProgressBar spent={task.current_time} planned={task.planned_time} spentLabel={'Потрачено'}
+        <TaskProgressBar spent={task.currentTime} planned={task.plannedTime} spentLabel={'Потрачено'}
                          plannedLabel={'Планируемое'}
                          style={{marginBottom: 10}}/>
       </TableRowColumn>
       <TableRowColumn style={{width: 210, minWidth: 110, padding: '0px 5px', textAlign: 'center'}}>
-        <DeadlineDate date={{day: 16, month: 'мая'}} style={{fontSize: 18}}/>
+        <DeadlineDate date={task.planEndDate} style={{fontSize: 18}}/>
       </TableRowColumn>
       <TableRowColumn style={{minWidth: 60, padding: '0px 5px', textAlign: 'center'}}>
-        <NewCommentBadge count={10} comment="Стоит ли оставлять комментарии, если их никто не читает" author="Яков Плэйсхолдер" date={task.plan_end_date} />
+        <NewCommentBadge count={10} comment="Стоит ли оставлять комментарии, если их никто не читает" author="Яков Плэйсхолдер" date={task.planEndDate} />
       </TableRowColumn>
       <TableRowColumn style={{minWidth: 60, padding: '0px 5px', textAlign: 'center'}}>
         <TaskReassignWidget taskName={task.name} projectName={task.name} taskExpertise="Some expertise" />
@@ -70,14 +70,25 @@ const TaskItem = (props, context) => {
 
 TaskItem.propTypes = {
   task: PropTypes.shape({
-    _id: PropTypes.number.isRequired,
+    id: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     priority: PropTypes.number.isRequired,
     creator: PropTypes.string.isRequired,
-    planned_time: PropTypes.number.isRequired,
-    current_time: PropTypes.number.isRequired,
-    plan_end_date: PropTypes.string.isRequired
+    plannedTime: PropTypes.number.isRequired,
+    currentTime: PropTypes.number.isRequired,
+    planEndDate: PropTypes.number,
+    creatorName: PropTypes.string.isRequired,
+    // TODO Еще не поддерживаются или не используются
+    type: PropTypes.string,
+    gainTime: PropTypes.number,
+    complete: PropTypes.boolean,
+    owner: PropTypes.string,
+    beginDate: PropTypes.number,
+    factEndDate: PropTypes.number,
+    updateDate: PropTypes.number,
+    idProj: PropTypes.string,
+    attachments: PropTypes.array
   }),
   displayBorder: PropTypes.bool,
   displayPriorityBadge: PropTypes.bool
