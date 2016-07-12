@@ -29,10 +29,11 @@ injectTapEventPlugin();
 
 const component = (
   <Router render={(props) =>
-        <ReduxAsyncConnect {...props} helpers={{client}} filter={item => !item.deferred} />
-      } history={history} render={applyRouterMiddleware(useScroll())}>
-    {getRoutes(store)}
-  </Router>
+        <ReduxAsyncConnect {...props} helpers={{client}} filter={item => !item.deferred}
+          render={applyRouterMiddleware(useScroll())} />
+      }
+      history={history} routes={getRoutes(store)}
+  />
 );
 
 ReactDOM.render(
