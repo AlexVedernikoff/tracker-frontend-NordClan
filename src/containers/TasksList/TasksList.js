@@ -54,44 +54,11 @@ export default class TasksList extends Component {
   render() {
     const {tasks} = this.props; // eslint-disable-line no-shadow
     const theme = this.context.muiTheme;
+    const css = require('./TasksList.scss');
     const styles = {
-      border: {borderBottom: '2px solid #707070', marginLeft: '-20px', maxWidth: 250},
-      allBorder: {borderBottom: 'none'},
-
-      statusSortBadge: {
-        marginBottom: '-2px',
-        backgroundColor: '#BDBDBD',
-        height: 16,
-        padding: 2,
-        textAlign: 'center',
-        borderTopRightRadius: 2,
-        borderBottomRightRadius: 2,
-        cursor: 'pointer'
-      },
-      projectName: {
-        fontSize: 18,
-        marginLeft: 10,
-        overflow: 'hidden',
-        whiteSpace: 'nowrap',
-        textOverflow: 'ellipsis'
-      },
-      projectNameContainer: {
-        display: 'flex',
-        paddingBottom: 10,
-        maxWidth: 230
-      },
       h1: {
         color: theme.rawTheme.palette.primary1Color,
-        fontWeight: Typography.fontWeightMedium,
-        fontSize: '34px',
-        paddingTop: 19,
-        marginTop: 55,
-        WebkitMarginAfter: '0em'
-      },
-      tableHeader: {
-        verticalAlign: 'bottom',
-        padding: 0,
-        paddingBottom: 5
+        fontWeight: Typography.fontWeightMedium
       }
     };
     return (
@@ -101,7 +68,7 @@ export default class TasksList extends Component {
         <Grid>
           <Row>
             <Col xs={12}>
-              <h1 style={styles.h1}>Мои задачи</h1>
+              <h1 className={css.h1} style={styles.h1}>Мои задачи</h1>
               <FilterSearchBar />
               <FilterPanel label="Фильтр:" onFilterChange={this.onFilterChange} >
                 <FilterSwitch value="name" label="название" />
@@ -118,29 +85,29 @@ export default class TasksList extends Component {
                 >
                   <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                     <TableRow>
-                      <TableHeaderColumn tooltip="Статус" style={{width: 20, padding: 0, ...styles.tableHeader}}>
-                        <SortOrderSwitch style={styles.statusSortBadge} color="#FFFFFF" />
+                      <TableHeaderColumn tooltip="Статус" className={css.tableHeader} style={{width: 20, padding: 0}}>
+                        <SortOrderSwitch className={css.statusSortBadge} color="#FFFFFF" />
                       </TableHeaderColumn>
-                      <TableHeaderColumn tooltip="The ID" style={{...styles.tableHeader, width: 50}}>
+                      <TableHeaderColumn tooltip="The ID" className={css.tableHeader} style={{width: 50}}>
                         <SortOrderSwitch label="ID" order="asc" />
                       </TableHeaderColumn>
-                      <TableHeaderColumn tooltip="The Status" style={{...styles.tableHeader, width: 64}}>
+                      <TableHeaderColumn tooltip="The Status" className={css.tableHeader} style={{width: 64}}>
                         <SortOrderSwitch label="Статус" order="desc" />
                       </TableHeaderColumn>
-                      <TableHeaderColumn tooltip="The Name" style={{...styles.tableHeader}}>
+                      <TableHeaderColumn tooltip="The Name" className={css.tableHeader}>
                         <div style={{display: 'flex'}}>
                           <div>Название </div>
                           <SortOrderSwitch label="Автор" />
                         </div>
                       </TableHeaderColumn>
-                      <TableHeaderColumn tooltip="The Status" style={{...styles.tableHeader, width: 110, textAlign: 'center'}}>
+                      <TableHeaderColumn tooltip="The Status" className={css.tableHeader} style={{width: 110, textAlign: 'center'}}>
                         Часы
                       </TableHeaderColumn>
-                      <TableHeaderColumn tooltip="The Status" style={{...styles.tableHeader, width: 70}}>
+                      <TableHeaderColumn tooltip="The Status" className={css.tableHeader} style={{width: 70}}>
                         <SortOrderSwitch label="Дата" style={{textAlign: 'center'}} />
                       </TableHeaderColumn>
-                      <TableHeaderColumn tooltip="The Status" style={{...styles.tableHeader, width: 70}}/>
-                      <TableHeaderColumn style={{...styles.tableHeader, width: 70}}>
+                      <TableHeaderColumn tooltip="The Status" className={css.tableHeader} style={{width: 70}}/>
+                      <TableHeaderColumn className={css.tableHeader} style={{width: 70}}>
                         <TasksListViewSettings />
                       </TableHeaderColumn>
                     </TableRow>
@@ -155,11 +122,11 @@ export default class TasksList extends Component {
                       <TableRowColumn style={{width: 20, padding: 0}}/>
                       <TableRowColumn style={{width: 50, padding: 0, paddingBottom: 10, overflow: 'visible'}}>
                         <div style={{display: 'flex', flexDirection: 'column', position: 'absolute', width: 500}}>
-                          <div style={{...styles.projectNameContainer}}>
+                          <div className={css.projectNameContainer}>
                             <KeyboardArrowDown color={"rgba(0, 0, 0, 0.54)"}/>
-                            <div style={styles.projectName}>Simtrack</div>
+                            <div className={css.projectName}>Simtrack</div>
                           </div>
-                          <div style={styles.border}/>
+                          <div className={css.border}/>
                         </div>
                       </TableRowColumn>
                       <TableRowColumn style={{width: 64, padding: 0}}/>
