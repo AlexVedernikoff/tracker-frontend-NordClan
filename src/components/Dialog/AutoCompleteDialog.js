@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react';
 import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
 import Dialog from 'material-ui/Dialog/Dialog';
-import NavigationClose from 'material-ui/svg-icons/Navigation/close';
+import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import AutoComplete from 'material-ui/AutoComplete/AutoComplete';
 
 const AutoCompleteDialog = (props) => {

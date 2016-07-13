@@ -7,7 +7,7 @@ import TableRow from 'material-ui/Table/TableRow';
 import TableHeader from 'material-ui/Table/TableHeader';
 import TableRowColumn from 'material-ui/Table/TableRowColumn';
 import TableBody from 'material-ui/Table/TableBody';
-import {isLoaded as isTasksLoaded, load as loadTasks} from 'redux/modules/tasks';
+import {isLoaded as isTasksLoaded, load as loadTasks} from '../../redux/modules/tasks';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
 import {asyncConnect} from 'redux-connect';
 import AppHead from '../../components/AppHead/AppHead';
