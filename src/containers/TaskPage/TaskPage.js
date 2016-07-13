@@ -17,6 +17,7 @@ import Typography from 'material-ui/styles/typography';
 import { Link } from 'react-router';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import EditorModeEdit from 'material-ui/svg-icons/editor/mode-edit';
+import ButtonChangeStatus from '../../components/ButtonChangeStatus/ButtonChangeStatus';
 
 // Images
 // import Slider from 'react-slick';
@@ -26,9 +27,6 @@ import DropZone from '../../components/DropZone/DropZone';
 
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
-import IconFrozen from 'material-ui/svg-icons/av/pause-circle-filled';
-import IconRejected from 'material-ui/svg-icons/alert/error';
-import IconAccepted from 'material-ui/svg-icons/action/check-circle';
 
 import Helmet from 'react-helmet';
 import DeadlineDate from '../../components/DeadlineDate/DeadlineDate';
@@ -627,25 +625,10 @@ export default class TaskPage extends Component {
                           <ListItem
                             disabled
                             primaryText={
-                              <div style={styles.detailsText}>Статус
-                                {/* <span style={styles.detailsTextRigth}>
-                                  <IconInProcess style={styles.detailsStatusIco}/>
-                                  в процессе
-                                </span> */}
-                              </div>
+                              <div style={styles.detailsText}>Статус</div>
                             }
                             rightIconButton={
-                              <div style={styles.detailsRight}>
-                                <IconInProcess style={styles.detailsStatusIco}/>
-                                <DropDownMenu style={styles.detailsDD} value={this.state.dropDownIndex} onChange={this.handleChangeDropDown} underlineStyle={{display: 'none'}}>
-                                  <MenuItem value={1} primaryText="Новый" leftIcon={<IconInProcess style={styles.detailsMenuIco}/>} />
-                                  <MenuItem value={2} primaryText="Назначен" leftIcon={<IconInProcess style={styles.detailsMenuIco}/>} />
-                                  <MenuItem value={3} primaryText="В процессе" leftIcon={<IconInProcess style={styles.detailsMenuIco}/>} />
-                                  <MenuItem value={4} primaryText="Готов" leftIcon={<IconAccepted style={styles.detailsMenuIco}/>} />
-                                  <MenuItem value={5} primaryText="Остановлен" leftIcon={<IconFrozen style={styles.detailsMenuIco}/>} />
-                                  <MenuItem value={6} primaryText="Отменен" leftIcon={<IconRejected style={styles.detailsMenuIco}/>} />
-                                </DropDownMenu>
-                              </div>
+                                <ButtonChangeStatus style={styles.detailsRight} status={task.status} />
                             }
                           />
                           <ListItem
