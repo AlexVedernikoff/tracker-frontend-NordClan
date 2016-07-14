@@ -46,7 +46,7 @@ const ButtonChangeStatus = (props) => {
 ButtonChangeStatus.propTypes = {
   status: PropTypes.string.isRequired,
   style: PropTypes.object,
-  compact: PropTypes.boolean
+  compact: PropTypes.bool
 };
 
 ButtonChangeStatus.defaultProps = {
