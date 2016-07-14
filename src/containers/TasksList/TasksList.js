@@ -9,7 +9,6 @@ import TableRowColumn from 'material-ui/Table/TableRowColumn';
 import TableBody from 'material-ui/Table/TableBody';
 import {isLoaded as isTasksLoaded, load as loadTasks} from '../../redux/modules/tasks';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
-import {asyncConnect} from 'redux-connect';
 import AppHead from '../../components/AppHead/AppHead';
 import FilterSearchBar from '../../components/FilterSearchBar/FilterSearchBar';
 import FilterPanel from '../../components/FilterPanel/FilterPanel';
@@ -24,15 +23,7 @@ import Typography from 'material-ui/styles/typography';
 import Add from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 
-@asyncConnect([{
-  // deferred: true, //TODO загрузка данных после роутинга (если придумается зачем)
-  key: 'tasks',
-  promise: ({store: {dispatch, getState}}) => {
-    if (!isTasksLoaded(getState())) {
-      return dispatch(loadTasks());
-    }
-    return Promise.resolve(getState().tasks);
-  }}],
+@connect(
   state => ({tasks: state.tasks.data}),
   dispatch => bindActionCreators({loadTasks}, dispatch)
 )
@@ -46,6 +37,13 @@ export default class TasksList extends Component {
     store: PropTypes.object.isRequired,
     muiTheme: PropTypes.object.isRequired
   };
+
+  componentDidMount() {
+    const {store} = this.context;
+    if (!isTasksLoaded(store.getState())) {
+      this.props.loadTasks();
+    }
+  }
 
   onFilterChange = (value) => {
     // TODO смена стейта фильтра

@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import {bindActionCreators} from 'redux';
 import ReactDom from 'react-dom';
 // import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -11,7 +12,6 @@ import Avatar from 'material-ui/Avatar';
 import Tabs from 'material-ui/Tabs/Tabs';
 import Tab from 'material-ui/Tabs/Tab';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
-import { asyncConnect } from 'redux-connect';
 import AppHead from '../../components/AppHead/AppHead';
 import Typography from 'material-ui/styles/typography';
 import { Link } from 'react-router';
@@ -48,19 +48,10 @@ import IconSeparatorUp from 'material-ui/svg-icons/navigation/expand-less';
 
 // import {FormattedDate} from 'react-intl';
 
-@asyncConnect([{
-  deferred: true,
-  promise: ({store: {dispatch, getState}, params}) => {
-    if (!isCurrentTaskLoaded(getState())) {
-      return dispatch(setCurrentTask(params.taskId));
-    }
-  }
-}])
-
 @connect(
-  state => ({task: state.currentTask.data})
+  state => ({task: state.currentTask.data}),
+  dispatch => bindActionCreators({setCurrentTask}, dispatch)
 )
-
 export default class TaskPage extends Component {
 
   static propTypes = {
@@ -86,6 +77,7 @@ export default class TaskPage extends Component {
       type: PropTypes.string.isRequired,
       updateDate: PropTypes.number.isRequired
     }),
+    setCurrentTask: PropTypes.func.isRequired,
     params: PropTypes.object.isRequired
   }
   static contextTypes = {
@@ -107,6 +99,14 @@ export default class TaskPage extends Component {
       // Executors component
       executorsExpand: true
     };
+  }
+
+  componentDidMount() {
+    const {taskId} = this.props.params;
+    const {store} = this.context;
+    if (!isCurrentTaskLoaded(store.getState(), taskId)) {
+      this.props.setCurrentTask(taskId);
+    }
   }
 
   getStyles() {
@@ -457,6 +457,8 @@ export default class TaskPage extends Component {
         <AppHead/>
         <Helmet title="Task"/>
         <Grid fluid className={grid.layout}>
+        {
+          task &&
           <div style={styles.wrapper}>
             <Row>
               <Col xs={12}>
@@ -866,6 +868,7 @@ export default class TaskPage extends Component {
               </Col>
             </Row>
           </div>
+        }
         </Grid>
         <FloatingActionButton style={styles.FAB}>
           <EditorModeEdit />
