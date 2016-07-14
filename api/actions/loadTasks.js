@@ -1,14 +1,13 @@
 import proxyRequest from '../utils/proxyRequest';
 import loadProjectsTree from './loadProjectsTree';
 import loadUser from './loadUser';
+import {findUniques} from '../utils/collections';
 
 export default function loadTasks(req) {
   return proxyRequest('tasks/user/' + req.session.user.login, {}).then((tasks) => {
 // TODO растащить макароны
     let promises = [];
-    tasks.map(task => (task.creator)).filter((value, index, self) => {
-      return self.indexOf(value) === index;
-    }).forEach(userName => {
+    findUniques(tasks, 'creator').forEach(userName => {
       promises.push(
         loadUser(userName).then(user => {
           tasks.forEach(task => {
@@ -19,9 +18,7 @@ export default function loadTasks(req) {
         })
       );
     });
-    tasks.map(task => (task.idProj)).filter((value, index, self) => {
-      return self.indexOf(value) === index;
-    }).forEach(projectId => {
+    findUniques(tasks, 'idProj').forEach(projectId => {
       promises.push(
         loadProjectsTree([projectId]).then(projects => {
           if (projects && projects[0]) {
