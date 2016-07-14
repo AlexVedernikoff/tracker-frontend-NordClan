@@ -24,13 +24,47 @@ import Add from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 
 @connect(
-  state => ({tasks: state.tasks.data}),
+  state => {
+    // TODO растащить лапшу по утилитам
+    const sortedTasks = state.tasks.data.sort((prev, next) => {
+      if (prev.idProj > next.idProj) {
+        return 1;
+      }
+      if (prev.idProj < next.idProj) {
+        return -1;
+      }
+      if (prev.priority > next.priority) {
+        return 1;
+      }
+      if (prev.priority < next.priority) {
+        return -1;
+      }
+      return 0;
+    });
+    const groupedTasks = sortedTasks.slice(0);
+    const groupedTasksProjects = groupedTasks.map(task => (task.idProj));
+    sortedTasks.map(task => (task.idProj)).filter((value, index, self) => {
+      return self.indexOf(value) === index;
+    }).map((projectId, index) => {
+      const delimiterPosition = groupedTasksProjects.indexOf(projectId) + index;
+      groupedTasks.splice(delimiterPosition, 0, {
+        delimiter: true,
+        idProj: projectId,
+        projectName: groupedTasks[delimiterPosition].projectName
+      });
+    });
+    return {
+      tasks: state.tasks.data,
+      groupedTasks: groupedTasks
+    };
+  },
   dispatch => bindActionCreators({loadTasks}, dispatch)
 )
 
 export default class TasksList extends Component {
   static propTypes = {
     tasks: PropTypes.array.isRequired,
+    groupedTasks: PropTypes.array.isRequired,
     loadTasks: PropTypes.func.isRequired
   }
   static contextTypes = {
@@ -50,7 +84,7 @@ export default class TasksList extends Component {
   };
 
   render() {
-    const {tasks} = this.props; // eslint-disable-line no-shadow
+    const {tasks, groupedTasks} = this.props; // eslint-disable-line no-shadow
     const theme = this.context.muiTheme;
     const css = require('./TasksList.scss');
     const styles = {
@@ -111,36 +145,40 @@ export default class TasksList extends Component {
                     </TableRow>
                   </TableHeader>
                   <TableBody
+
                     deselectOnClickaway
                     showRowHover
                     stripedRows={false}
                     displayRowCheckbox={false}
                   >
-                    <TableRow style={{height: 70}} displayBorder={false}>
-                      <TableRowColumn style={{width: 20, padding: 0}}/>
-                      <TableRowColumn style={{width: 50, padding: 0, paddingBottom: 10, overflow: 'visible'}}>
-                        <div style={{display: 'flex', flexDirection: 'column', position: 'absolute', width: 500}}>
-                          <div className={css.projectNameContainer}>
-                            <KeyboardArrowDown color={"rgba(0, 0, 0, 0.54)"}/>
-                            <div className={css.projectName}>Simtrack</div>
-                          </div>
-                          <div className={css.border}/>
-                        </div>
-                      </TableRowColumn>
-                      <TableRowColumn style={{width: 64, padding: 0}}/>
-                      <TableRowColumn />
-                      <TableRowColumn style={{ width: 110, maxWidth: 310, padding: 0}}/>
-                      <TableRowColumn style={{width: 60, padding: '0px 5px'}}/>
-                      <TableRowColumn style={{width: 60, padding: '0px 5px'}}/>
-                      <TableRowColumn style={{width: 60, padding: '0px 5px'}}/>
-                    </TableRow>
-                    {tasks && tasks.map((task, index, arr) => (
-                      <TaskItem task={task} key={index}
+                    {groupedTasks.map((task, index, arr) => {
+                      if (task.delimiter) {
+                        return (<TableRow style={{height: 70}} displayBorder={false}>
+                          <TableRowColumn style={{width: 20, padding: 0}}/>
+                          <TableRowColumn style={{width: 50, padding: 0, paddingBottom: 10, overflow: 'visible'}}>
+                            <div style={{display: 'flex', flexDirection: 'column', position: 'absolute', width: 500}}>
+                              <div className={css.projectNameContainer}>
+                                <KeyboardArrowDown color={"rgba(0, 0, 0, 0.54)"}/>
+                                <div className={css.projectName}>{task.projectName}</div>
+                              </div>
+                              <div className={css.border}/>
+                            </div>
+                          </TableRowColumn>
+                          <TableRowColumn style={{width: 64, padding: 0}}/>
+                          <TableRowColumn />
+                          <TableRowColumn style={{ width: 110, maxWidth: 310, padding: 0}}/>
+                          <TableRowColumn style={{width: 60, padding: '0px 5px'}}/>
+                          <TableRowColumn style={{width: 60, padding: '0px 5px'}}/>
+                          <TableRowColumn style={{width: 60, padding: '0px 5px'}}/>
+                        </TableRow>);
+                      }
+                      return (<TaskItem task={task} key={index}
                         displayBorder={(index !== arr.length - 1 && task.priority !== arr[index + 1].priority)}
                         displayPriorityBadge={(index === 0 || task.priority !== arr[index - 1].priority)}
-                      />
-                    ))}
+                      />);
+                    })}
                   </TableBody>
+                ))}
                 </Table>
               </Paper>
             </Col>
