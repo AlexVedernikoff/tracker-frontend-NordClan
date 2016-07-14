@@ -1,7 +1,4 @@
 import React, {Component, PropTypes} from 'react';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
-import {load} from '../../redux/modules/tasks';
 
 import AppBar from 'material-ui/AppBar';
 
@@ -24,16 +21,10 @@ import Divider from 'material-ui/Divider';
 import Tabs from 'material-ui/Tabs/Tabs';
 import Tab from 'material-ui/Tabs/Tab';
 
-@connect(
-  // state => ({tasks: state.tasks.data}),
-  dispatch => bindActionCreators({load}, dispatch))
-
 export default class AppHead extends Component {
-  static propTypes = {
-    // tasks: PropTypes.object,
-    load: PropTypes.func.isRequired
+  static contextTypes = {
+    user: PropTypes.object.isRequired
   }
-
 
   constructor(props) {
     super(props);
@@ -60,6 +51,7 @@ export default class AppHead extends Component {
   render() {
     // const { load } = this.props; // eslint-disable-line no-shadow
     const styles = require('./AppHead.scss');
+    const {user} = this.context;
 
     const appBarIcons = (
       <div>
@@ -78,11 +70,9 @@ export default class AppHead extends Component {
             <List>
               <ListItem
                 disabled
-                leftAvatar={
-                  <Avatar src={require('./vincent.jpg')} />
-                }
+                leftAvatar={<Avatar src={user.photo} />}
               >
-                Mega User
+                {user.firstNameRu} {user.lastNameRu}
               </ListItem>
             </List>
           </div>
