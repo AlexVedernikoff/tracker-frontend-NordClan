@@ -63,6 +63,8 @@ export default class TaskPage extends Component {
       name: PropTypes.string.isRequired,
       creator: PropTypes.string.isRequired,
       owner: PropTypes.string.isRequired,
+      creatorName: PropTypes.string.isRequired,
+      ownerName: PropTypes.string.isRequired,
       // TODO не возвращается сервером
       isActive: PropTypes.bool,
       about: PropTypes.string,
@@ -465,8 +467,8 @@ export default class TaskPage extends Component {
                 <h1 style={styles.title}>{task.id} {task.name}</h1>
                 <p style={styles.info}>
                   <Link to="#" style={styles.a}> {task.projectName}</Link>, создал(а)
-                  <Link to="#" style={styles.a}> {task.creator}</Link> 28 мая 2016, выполнит -
-                  <Link to="#" style={styles.a}> {task.owner}</Link>
+                  <Link to="#" style={styles.a}> {task.creatorName}</Link> 28 мая 2016, выполнит -
+                  <Link to="#" style={styles.a}> {task.ownerName}</Link>
                 </p>
               </Col>
             </Row>
