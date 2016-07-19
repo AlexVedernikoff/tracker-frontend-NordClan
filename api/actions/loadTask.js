@@ -12,10 +12,10 @@ export default function loadTask(req, params) {
       }
     });
     queue.add(loadUser, task.creator).then(creator => {
-      task.creatorName = [creator.firstNameRu, creator.lastNameRu].join(' ');
+      task.creatorName = creator.fullNameRu;
     });
     queue.add(loadUser, task.owner).then(owner => {
-      task.ownerName = [owner.firstNameRu, owner.lastNameRu].join(' ');
+      task.ownerName = owner.fullNameRu;
     });
     return Promise.all(queue).then(() => {
       return task;
