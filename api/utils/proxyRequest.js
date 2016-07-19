@@ -7,7 +7,7 @@ import request from 'request-promise';
  * @param {object} params Дополнительные параметры запроса
  * @returns {Promise}
 */
-const proxyRequest = (url, params) => {
+export default function proxyRequest (url, params) {
   return request({
       ...params,
       uri: 'http://portaltest.simbirsoft:8080/default/rest/' + url,
@@ -16,6 +16,4 @@ const proxyRequest = (url, params) => {
       },
       json: true
     });
-}
-
-export default proxyRequest;
+};
