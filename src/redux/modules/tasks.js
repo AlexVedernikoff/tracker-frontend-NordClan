@@ -2,7 +2,8 @@ import types from '../../constants/ActionTypes';
 
 const initialState = {
   loaded: false,
-  data: []
+  data: [],
+  searchString: ''
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -26,6 +27,11 @@ export default function reducer(state = initialState, action = {}) {
         loaded: false,
         error: action.error
       };
+    case types.SET_TASKS_SEARCH_STRING:
+      return {
+        ...state,
+        searchString: action.searchString
+      };
     default:
       return state;
   }
@@ -39,5 +45,12 @@ export function load() {
   return {
     types: [types.LOAD_TASKS, types.LOAD_TASKS_SUCCESS, types.LOAD_TASKS_FAIL],
     promise: (client) => client.get('/loadTasks')
+  };
+}
+
+export function setSearchString(searchString) {
+  return {
+    type: types.SET_TASKS_SEARCH_STRING,
+    searchString
   };
 }
