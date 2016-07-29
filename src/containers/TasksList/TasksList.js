@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import { autobind } from 'core-decorators';
 import {isLoaded as isTasksLoaded, load as loadTasks, setSearchString} from '../../redux/modules/tasks';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
+import sequentialComparator from '../../utils/sequentialComparator';
 import AppHead from '../../components/AppHead/AppHead';
 import FilterSearchBar from '../../components/FilterSearchBar/FilterSearchBar';
 import FilterPanel from '../../components/FilterPanel/FilterPanel';
@@ -52,37 +53,29 @@ export default class TasksList extends Component {
     // TODO смена стейта фильтра
   };
 
-  getTasksOrderedBy() {
+  get filteredTasks() {
+    const {searchString: str} = this.props;
+    const query = new RegExp(str, 'ig');
+    return this.sortedTasks.filter(task => (!str || str && query.test(task.name)));
+  }
+
+  get sortedTasks() {
     const {tasks: tasksList} = this.props;
+    // TODO перенести фильтрацию в state и прицепить на виджет
+    const defaultChain = [
+      {key: 'idProj', order: 'desc'},
+      {key: 'priority'}
+    ];
     return tasksList.sort((prev, next) => {
-      if (prev.idProj > next.idProj) {
-        return 1;
-      }
-      if (prev.idProj < next.idProj) {
-        return -1;
-      }
-      if (prev.priority > next.priority) {
-        return 1;
-      }
-      if (prev.priority < next.priority) {
-        return -1;
-      }
-      return 0;
+      return sequentialComparator(prev, next, defaultChain);
     });
   }
 
-  getTasksFilteredBy() {
-    const {searchString: str} = this.props;
-    const query = new RegExp(str, 'ig');
-    return this.getTasksOrderedBy()
-      .filter(task => (!str || str && query.test(task.name)));
-  }
-
   get tasksByProject() {
-    // TODO растащить лапшу по утилитам
-    const filtered = this.getTasksFilteredBy();
+    const filtered = this.filteredTasks;
     const groupedTasks = filtered.slice(0);
     const filteredTasksProjects = filtered.map(task => (task.idProj));
+    // TODO растащить лапшу по утилитам
     filtered.map(task => (task.idProj)).filter((value, index, self) => {
       return self.indexOf(value) === index;
     }).map((projectId, index) => {
