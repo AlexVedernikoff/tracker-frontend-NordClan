@@ -3,7 +3,10 @@ import types from '../../constants/ActionTypes';
 const initialState = {
   loaded: false,
   data: [],
-  searchString: ''
+  filter: {
+    search: '',
+    field: 'name'
+  }
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -30,7 +33,18 @@ export default function reducer(state = initialState, action = {}) {
     case types.SET_TASKS_SEARCH_STRING:
       return {
         ...state,
-        searchString: action.searchString
+        filter: {
+          ...state.filter,
+          search: action.searchString,
+        }
+      };
+    case types.SET_TASKS_FILTER_FIELD:
+      return {
+        ...state,
+        filter: {
+          ...state.filter,
+          field: action.field
+        }
       };
     default:
       return state;
@@ -52,5 +66,12 @@ export function setSearchString(searchString) {
   return {
     type: types.SET_TASKS_SEARCH_STRING,
     searchString
+  };
+}
+
+export function setFilterField(field) {
+  return {
+    type: types.SET_TASKS_FILTER_FIELD,
+    field
   };
 }

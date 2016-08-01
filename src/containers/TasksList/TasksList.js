@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { autobind } from 'core-decorators';
-import {isLoaded as isTasksLoaded, load as loadTasks, setSearchString} from '../../redux/modules/tasks';
+import {isLoaded as isTasksLoaded, load as loadTasks, setSearchString, setFilterField} from '../../redux/modules/tasks';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
 import sequentialComparator from '../../utils/sequentialComparator';
 import AppHead from '../../components/AppHead/AppHead';
@@ -19,18 +19,22 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
   state => {
     return {
       tasks: state.tasks.data,
-      searchString: state.tasks.searchString
+      filter: state.tasks.filter
     };
   },
-  dispatch => bindActionCreators({loadTasks, setSearchString}, dispatch)
+  dispatch => bindActionCreators({loadTasks, setSearchString, setFilterField}, dispatch)
 )
 
 export default class TasksList extends Component {
   static propTypes = {
     tasks: PropTypes.array.isRequired,
-    searchString: PropTypes.string.isRequired,
+    filter: PropTypes.shape({
+      search: PropTypes.string.isRequired,
+      field: PropTypes.string.isRequired
+    }),
     loadTasks: PropTypes.func.isRequired,
-    setSearchString: PropTypes.func.isRequired
+    setSearchString: PropTypes.func.isRequired,
+    setFilterField: PropTypes.func.isRequired
   }
   static contextTypes = {
     store: PropTypes.object.isRequired,
@@ -49,22 +53,23 @@ export default class TasksList extends Component {
     this.props.setSearchString(event.target.value);
   }
 
-  onFilterChange = (value) => {
-    // TODO смена стейта фильтра
-  };
+  @autobind
+  onFilterChange(value) {
+    this.props.setFilterField(value);
+  }
 
   get filteredTasks() {
-    const {searchString: str} = this.props;
-    const query = new RegExp(str, 'ig');
-    return this.sortedTasks.filter(task => (!str || str && query.test(task.name)));
+    const {filter} = this.props;
+    const query = new RegExp(filter.search, 'ig');
+    return this.sortedTasks.filter(task => (!filter.search || filter.search && query.test(task[filter.field])));
   }
 
   get sortedTasks() {
     const {tasks: tasksList} = this.props;
-    // TODO перенести фильтрацию в state и прицепить на виджет
+    // TODO перенести сортировку в state и прицепить на виджет
     const defaultChain = [
       {key: 'idProj', order: 'desc'},
-      {key: 'priority'}
+      {key: 'priority', order: 'asc'}
     ];
     return tasksList.sort((prev, next) => {
       return sequentialComparator(prev, next, defaultChain);
@@ -90,7 +95,7 @@ export default class TasksList extends Component {
   }
 
   render() {
-    const {searchString} = this.props; // eslint-disable-line no-shadow
+    const {filter} = this.props; // eslint-disable-line no-shadow
     const theme = this.context.muiTheme;
     const css = require('./TasksList.scss');
     const styles = {
@@ -107,12 +112,12 @@ export default class TasksList extends Component {
           <Row>
             <Col xs={12}>
               <h1 className={css.h1} style={styles.h1}>Мои задачи</h1>
-              <FilterSearchBar value={searchString} onSearchStringChange = {this.onSearchStringChange} />
+              <FilterSearchBar value={filter.search} onSearchStringChange = {this.onSearchStringChange} />
               <FilterPanel label="Фильтр:" onFilterChange={this.onFilterChange} >
-                <FilterSwitch value="name" label="название" />
-                <FilterSwitch value="date" label="дата" />
-                <FilterSwitch value="author" label="автор" />
-                <FilterSwitch value="assignee" label="исполнитель" />
+                <FilterSwitch active={filter.field} value="projectName" label="проект" />
+                <FilterSwitch active={filter.field} value="name" label="название" />
+                <FilterSwitch active={filter.field} value="creatorName" label="автор" />
+                <FilterSwitch active={filter.field} value="status" label="статус" />
               </FilterPanel>
 
               <TasksTable tasks={this.tasksByProject} />
