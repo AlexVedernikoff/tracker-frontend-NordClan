@@ -1,11 +1,8 @@
+import sortOrder from './sortOrder';
+
 /**
  * @exports sequentialComparator - функция-компаратор для последовательного сравнения по нескольким полям
  */
-
-const SORT_ORDER_SIGN = {
-  ASC: 1,
-  DESC: -1
-};
 
 /* eslint-disable id-length*/
 /**
@@ -30,15 +27,16 @@ const sequentialComparator = (a, b, sequence) => {
   }
   const subsequence = sequence.slice(0);
   const next = subsequence.shift();
-  const {key, order = 'ASC'} = next;
-  if (typeof a[key] === 'undefined' || typeof b[key] === 'undefined' || !SORT_ORDER_SIGN.hasOwnProperty(order.toUpperCase())) {
+  const {key} = next;
+  const order = sortOrder.sign(next.order);
+  if (typeof a[key] === 'undefined' || typeof b[key] === 'undefined' || !order) {
     return 0;
   }
   if (a[key] > b[key]) {
-    return SORT_ORDER_SIGN[order.toUpperCase()];
+    return order;
   }
   if (a[key] < b[key]) {
-    return -1 * SORT_ORDER_SIGN[order.toUpperCase()];
+    return -1 * order;
   }
   return sequentialComparator(a, b, subsequence);
 };

@@ -2,9 +2,10 @@ import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { autobind } from 'core-decorators';
-import {isLoaded as isTasksLoaded, load as loadTasks, setSearchString, setFilterField} from '../../redux/modules/tasks';
+import {isLoaded as isTasksLoaded, load as loadTasks, setSearchString, setFilterField, toggleTasksSortOrder} from '../../redux/modules/tasks';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
 import sequentialComparator from '../../utils/sequentialComparator';
+import sortOrder from '../../utils/sortOrder';
 import AppHead from '../../components/AppHead/AppHead';
 import FilterSearchBar from '../../components/FilterSearchBar/FilterSearchBar';
 import FilterPanel from '../../components/FilterPanel/FilterPanel';
@@ -19,10 +20,11 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
   state => {
     return {
       tasks: state.tasks.data,
-      filter: state.tasks.filter
+      filter: state.tasks.filter,
+      order: state.tasks.order
     };
   },
-  dispatch => bindActionCreators({loadTasks, setSearchString, setFilterField}, dispatch)
+  dispatch => bindActionCreators({loadTasks, setSearchString, setFilterField, toggleTasksSortOrder}, dispatch)
 )
 
 export default class TasksList extends Component {
@@ -32,9 +34,11 @@ export default class TasksList extends Component {
       search: PropTypes.string.isRequired,
       field: PropTypes.string.isRequired
     }),
+    order: PropTypes.object.isRequired,
     loadTasks: PropTypes.func.isRequired,
     setSearchString: PropTypes.func.isRequired,
-    setFilterField: PropTypes.func.isRequired
+    setFilterField: PropTypes.func.isRequired,
+    toggleTasksSortOrder: PropTypes.func.isRequired
   }
   static contextTypes = {
     store: PropTypes.object.isRequired,
@@ -58,6 +62,11 @@ export default class TasksList extends Component {
     this.props.setFilterField(value);
   }
 
+  @autobind
+  onSortOrderToggle(column) {
+    this.props.toggleTasksSortOrder(column);
+  }
+
   get filteredTasks() {
     const {filter} = this.props;
     const query = new RegExp(filter.search, 'ig');
@@ -65,15 +74,17 @@ export default class TasksList extends Component {
   }
 
   get sortedTasks() {
-    const {tasks: tasksList} = this.props;
-    // TODO перенести сортировку в state и прицепить на виджет
-    const defaultChain = [
-      {key: 'idProj', order: 'desc'},
-      {key: 'priority'},
-      {key: 'name'}
-    ];
+    const {tasks: tasksList, order} = this.props;
+    const orderChain = [];
+    [
+      'projectName', 'priority', 'id', 'status', 'name', 'creatorName', 'planEndDate'
+    ].forEach(key => {
+      if (order.hasOwnProperty(key) && sortOrder.isSignificant(order[key])) {
+        orderChain.push({key, order: order[key]});
+      }
+    });
     return tasksList.sort((prev, next) => {
-      return sequentialComparator(prev, next, defaultChain);
+      return sequentialComparator(prev, next, orderChain);
     });
   }
 
@@ -96,7 +107,7 @@ export default class TasksList extends Component {
   }
 
   render() {
-    const {filter} = this.props; // eslint-disable-line no-shadow
+    const {filter, order: tasksOrder} = this.props; // eslint-disable-line no-shadow
     const theme = this.context.muiTheme;
     const css = require('./TasksList.scss');
     const styles = {
@@ -121,7 +132,7 @@ export default class TasksList extends Component {
                 <FilterSwitch active={filter.field} value="status" label="статус" />
               </FilterPanel>
 
-              <TasksTable tasks={this.tasksByProject} />
+              <TasksTable tasks={this.tasksByProject} onSortOrderToggle={this.onSortOrderToggle} order={tasksOrder}/>
 
             </Col>
           </Row>

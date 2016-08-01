@@ -1,4 +1,5 @@
 import types from '../../constants/ActionTypes';
+import sortOrder from '../../utils/sortOrder';
 
 const initialState = {
   loaded: false,
@@ -6,6 +7,14 @@ const initialState = {
   filter: {
     search: '',
     field: 'name'
+  },
+  order: {
+    'projectName': sortOrder.DIRECTION.ASC,
+    'priority': sortOrder.DIRECTION.ASC,
+    'id': sortOrder.DIRECTION.NONE,
+    'status': sortOrder.DIRECTION.NONE,
+    'creatorName': sortOrder.DIRECTION.NONE,
+    'planEndDate': sortOrder.DIRECTION.NONE
   }
 };
 
@@ -46,6 +55,14 @@ export default function reducer(state = initialState, action = {}) {
           field: action.field
         }
       };
+    case types.TOGGLE_TASKS_SORT_ORDER:
+      return {
+        ...state,
+        order: {
+          ...state.order,
+          [action.column]: sortOrder.next(state.order[action.column])
+        }
+      };
     default:
       return state;
   }
@@ -73,5 +90,12 @@ export function setFilterField(field) {
   return {
     type: types.SET_TASKS_FILTER_FIELD,
     field
+  };
+}
+
+export function toggleTasksSortOrder(column) {
+  return {
+    type: types.TOGGLE_TASKS_SORT_ORDER,
+    column
   };
 }

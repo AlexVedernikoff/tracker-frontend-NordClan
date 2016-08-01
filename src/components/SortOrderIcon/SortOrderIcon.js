@@ -1,4 +1,5 @@
 import React, {PropTypes} from 'react';
+import sortOrder from '../../utils/sortOrder';
 import ArrowUpward from 'material-ui/svg-icons/navigation/arrow-upward';
 import ArrowDownward from 'material-ui/svg-icons/navigation/arrow-downward';
 
@@ -11,8 +12,8 @@ const SortOrderIcon = (props) => {
     }
   };
 
-  const Icon = (order === 'desc') ? ArrowUpward : ArrowDownward;
-  const arrowColor = (color) || (order === 'none' ? 'rgba(0, 0, 0, 0.54)' : 'rgba(0, 0, 0, 0.87)');
+  const Icon = (order === sortOrder.DIRECTION.ASC) ? ArrowUpward : ArrowDownward;
+  const arrowColor = (color) || (order === sortOrder.DIRECTION.NONE ? 'rgba(0, 0, 0, 0.54)' : 'rgba(0, 0, 0, 0.87)');
 
   return (
     <Icon color={arrowColor} style={styles.arrowBlock} />
@@ -20,14 +21,13 @@ const SortOrderIcon = (props) => {
 };
 
 SortOrderIcon.propTypes = {
-  // TODO: вынести в качестве общей сущности
-  order: PropTypes.oneOf(['none', 'asc', 'desc']),
+  order: PropTypes.oneOf(sortOrder.SEQUENCE),
   style: PropTypes.object,
   color: PropTypes.string
 };
 
 SortOrderIcon.defaultProps = {
-  order: 'none'
+  order: sortOrder.DIRECTION.NONE
 };
 
 export default SortOrderIcon;

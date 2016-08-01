@@ -12,7 +12,7 @@ import TasksListViewSettings from '../../components/TasksListViewSettings/TasksL
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
 
 const TasksTable = (props) => {
-  const {tasks} = props;
+  const {tasks, order, onSortOrderToggle} = props;
   const css = require('./TasksTable.scss');
   return (
     <Paper zDepth={1} rounded={false} style={{marginBottom: 100}}>
@@ -24,25 +24,25 @@ const TasksTable = (props) => {
         <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
           <TableRow>
             <TableHeaderColumn tooltip="Статус" className={css.tableHeader} style={{width: 20, padding: 0}}>
-              <SortOrderSwitch className={css.statusSortBadge} color="#FFFFFF" />
+              <SortOrderSwitch order={order} value="priority" onChange={onSortOrderToggle} className={css.statusSortBadge} color="#FFFFFF" />
             </TableHeaderColumn>
             <TableHeaderColumn tooltip="The ID" className={css.tableHeader} style={{width: 50}}>
-              <SortOrderSwitch label="ID" order="asc" />
+              <SortOrderSwitch label="ID" order={order} value="id" onChange={onSortOrderToggle}/>
             </TableHeaderColumn>
             <TableHeaderColumn tooltip="The Status" className={css.tableHeader} style={{width: 64}}>
-              <SortOrderSwitch label="Статус" order="desc" />
+              <SortOrderSwitch label="Статус" order={order} value="status" onChange={onSortOrderToggle} />
             </TableHeaderColumn>
             <TableHeaderColumn tooltip="The Name" className={css.tableHeader}>
               <div style={{display: 'flex'}}>
-                <div>Название </div>
-                <SortOrderSwitch label="Автор" />
+                <SortOrderSwitch label="Название" order={order} value="name" onChange={onSortOrderToggle}/>
+                <SortOrderSwitch label="Автор" order={order} value="creatorName" onChange={onSortOrderToggle}/>
               </div>
             </TableHeaderColumn>
             <TableHeaderColumn tooltip="The Status" className={css.tableHeader} style={{width: 110, textAlign: 'center'}}>
               Часы
             </TableHeaderColumn>
             <TableHeaderColumn tooltip="The Status" className={css.tableHeader} style={{width: 70}}>
-              <SortOrderSwitch label="Дата" style={{textAlign: 'center'}} />
+              <SortOrderSwitch label="Дата" order={order} value="planEndDate" onChange={onSortOrderToggle} style={{textAlign: 'center'}} />
             </TableHeaderColumn>
             <TableHeaderColumn tooltip="The Status" className={css.tableHeader} style={{width: 70}}/>
             <TableHeaderColumn className={css.tableHeader} style={{width: 70}}>
@@ -91,6 +91,8 @@ const TasksTable = (props) => {
 
 TasksTable.propTypes = {
   tasks: PropTypes.array.isRequired,
+  onSortOrderToggle: PropTypes.func.isRequired,
+  order: PropTypes.object.isRequired
 };
 
 export default TasksTable;
