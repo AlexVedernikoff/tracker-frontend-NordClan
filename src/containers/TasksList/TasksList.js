@@ -69,7 +69,8 @@ export default class TasksList extends Component {
     // TODO перенести сортировку в state и прицепить на виджет
     const defaultChain = [
       {key: 'idProj', order: 'desc'},
-      {key: 'priority', order: 'asc'}
+      {key: 'priority'},
+      {key: 'name'}
     ];
     return tasksList.sort((prev, next) => {
       return sequentialComparator(prev, next, defaultChain);

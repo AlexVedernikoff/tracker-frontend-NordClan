@@ -28,7 +28,8 @@ const sequentialComparator = (a, b, sequence) => {
   ) {
     return 0;
   }
-  const next = sequence.shift();
+  const subsequence = sequence.slice(0);
+  const next = subsequence.shift();
   const {key, order = 'ASC'} = next;
   if (typeof a[key] === 'undefined' || typeof b[key] === 'undefined' || !SORT_ORDER_SIGN.hasOwnProperty(order.toUpperCase())) {
     return 0;
@@ -39,7 +40,7 @@ const sequentialComparator = (a, b, sequence) => {
   if (a[key] < b[key]) {
     return -1 * SORT_ORDER_SIGN[order.toUpperCase()];
   }
-  return sequentialComparator(a, b, sequence);
+  return sequentialComparator(a, b, subsequence);
 };
 /* eslint-enable id-length*/
 
