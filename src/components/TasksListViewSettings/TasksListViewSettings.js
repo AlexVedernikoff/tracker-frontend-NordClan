@@ -23,14 +23,6 @@ class TasksListViewSettings extends React.Component {
     };
   }
 
-  handleGroupToggle = () => {
-    this.props.onGroupVisibilityToggle();
-  }
-
-  handleLayoutToggle = () => {
-    this.props.onLayoutToggle();
-  }
-
   handleTouchTap = (event) => {
     event.preventDefault();
     this.setState({
@@ -46,7 +38,7 @@ class TasksListViewSettings extends React.Component {
   }
 
   render() {
-    const {showGroups, tableLayout} = this.props;
+    const {showGroups, tableLayout, onGroupVisibilityToggle, onLayoutToggle} = this.props;
     return (
       <div style={{display: 'flex', justifyContent: 'flex-end'}}>
         <IconButton style={{paddingTo: 20, paddingBottom: 0}} onTouchTap={this.handleTouchTap} >
@@ -64,13 +56,13 @@ class TasksListViewSettings extends React.Component {
               primaryText="Отображение задач"
               rightToggle={<IconToggle name="view-mode-grid"
                 stateOnIcon={<ActionViewModule/>} stateOffIcon={<ActionViewList/>}
-                toggled={tableLayout} onChange={this.handleLayoutToggle}
+                toggled={tableLayout} onChange={onLayoutToggle}
               />}
               innerDivStyle={{paddingRight: 130}}
             />
             <ListItem
               primaryText="Группировка по проектам"
-              rightToggle={<Toggle toggled={showGroups} onToggle={this.handleGroupToggle}/>}
+              rightToggle={<Toggle toggled={showGroups} onToggle={onGroupVisibilityToggle}/>}
             />
           </List>
         </Popover>
