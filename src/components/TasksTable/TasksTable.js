@@ -8,11 +8,10 @@ import TableRowColumn from 'material-ui/Table/TableRowColumn';
 import TableBody from 'material-ui/Table/TableBody';
 import SortOrderSwitch from '../../components/SortOrderSwitch/SortOrderSwitch';
 import TaskItem from '../../components/TaskItem/TaskItem';
-import TasksListViewSettings from '../../components/TasksListViewSettings/TasksListViewSettings';
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
 
 const TasksTable = (props) => {
-  const {tasks, order, showGroups, tableLayout, onSortOrderToggle, onGroupVisibilityToggle, onLayoutToggle} = props;
+  const {tasks, order, onSortOrderToggle, viewSettings} = props;
   const css = require('./TasksTable.scss');
   return (
     <Paper zDepth={1} rounded={false} style={{marginBottom: 100}}>
@@ -46,10 +45,7 @@ const TasksTable = (props) => {
             </TableHeaderColumn>
             <TableHeaderColumn tooltip="The Status" className={css.tableHeader} style={{width: 70}}/>
             <TableHeaderColumn className={css.tableHeader} style={{width: 70}}>
-              <TasksListViewSettings
-                showGroups={showGroups} onGroupVisibilityToggle={onGroupVisibilityToggle}
-                tableLayout={tableLayout} onLayoutToggle={onLayoutToggle}
-              />
+              {viewSettings}
             </TableHeaderColumn>
           </TableRow>
         </TableHeader>
@@ -94,12 +90,9 @@ const TasksTable = (props) => {
 
 TasksTable.propTypes = {
   tasks: PropTypes.array.isRequired,
-  onSortOrderToggle: PropTypes.func.isRequired,
-  onGroupVisibilityToggle: PropTypes.func.isRequired,
-  onLayoutToggle: PropTypes.func.isRequired,
   order: PropTypes.object.isRequired,
-  showGroups: PropTypes.bool.isRequired,
-  tableLayout: PropTypes.bool.isRequired
+  onSortOrderToggle: PropTypes.func.isRequired,
+  viewSettings: PropTypes.object
 };
 
 TasksTable.defaultProps = {

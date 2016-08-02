@@ -14,6 +14,7 @@ import Helmet from 'react-helmet';
 import Typography from 'material-ui/styles/typography';
 import TasksBoard from '../../components/TasksBoard/TasksBoard';
 import TasksTable from '../../components/TasksTable/TasksTable';
+import TasksListViewSettings from '../../components/TasksListViewSettings/TasksListViewSettings';
 import Add from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 
@@ -140,6 +141,10 @@ export default class TasksList extends Component {
         fontWeight: Typography.fontWeightMedium
       }
     };
+    const viewSettings = (<TasksListViewSettings
+      showGroups={showGroups} onGroupVisibilityToggle={this.onGroupVisibilityToggle}
+      tableLayout={tableLayout} onLayoutToggle={this.onLayoutToggle}
+    />);
     return (
       <div>
         <AppHead/>
@@ -160,13 +165,12 @@ export default class TasksList extends Component {
                   tasks={this.tasksByProject}
                   onSortOrderToggle={this.onSortOrderToggle}
                   order={tasksOrder}
-                  showGroups={showGroups}
-                  tableLayout={tableLayout}
-                  onGroupVisibilityToggle={this.onGroupVisibilityToggle}
-                  onLayoutToggle={this.onLayoutToggle}
+                  viewSettings={viewSettings}
                 />
               ) || (
-                <TasksBoard />
+                <TasksBoard
+                  viewSettings={viewSettings}
+                />
               )}
             </Col>
           </Row>
