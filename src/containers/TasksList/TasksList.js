@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { autobind } from 'core-decorators';
-import {isLoaded as isTasksLoaded, load as loadTasks, setSearchString, setFilterField, toggleTasksSortOrder} from '../../redux/modules/tasks';
+import {isLoaded as isTasksLoaded, load as loadTasks, setSearchString, setFilterField, toggleTasksSortOrder, toggleTasksGroups} from '../../redux/modules/tasks';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
 import sequentialComparator from '../../utils/sequentialComparator';
 import sortOrder from '../../utils/sortOrder';
@@ -21,10 +21,13 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
     return {
       tasks: state.tasks.data,
       filter: state.tasks.filter,
-      order: state.tasks.order
+      order: state.tasks.order,
+      showGroups: state.tasks.showGroups
     };
   },
-  dispatch => bindActionCreators({loadTasks, setSearchString, setFilterField, toggleTasksSortOrder}, dispatch)
+  dispatch => bindActionCreators({
+    loadTasks, setSearchString, setFilterField, toggleTasksSortOrder, toggleTasksGroups
+  }, dispatch)
 )
 
 export default class TasksList extends Component {
@@ -35,10 +38,12 @@ export default class TasksList extends Component {
       field: PropTypes.string.isRequired
     }),
     order: PropTypes.object.isRequired,
+    showGroups: PropTypes.bool.isRequired,
     loadTasks: PropTypes.func.isRequired,
     setSearchString: PropTypes.func.isRequired,
     setFilterField: PropTypes.func.isRequired,
-    toggleTasksSortOrder: PropTypes.func.isRequired
+    toggleTasksSortOrder: PropTypes.func.isRequired,
+    toggleTasksGroups: PropTypes.func.isRequired
   }
   static contextTypes = {
     store: PropTypes.object.isRequired,
@@ -67,6 +72,11 @@ export default class TasksList extends Component {
     this.props.toggleTasksSortOrder(column);
   }
 
+  @autobind
+  onGroupVisibilityToggle() {
+    this.props.toggleTasksGroups();
+  }
+
   get filteredTasks() {
     const {filter} = this.props;
     const query = new RegExp(filter.search, 'ig');
@@ -89,7 +99,11 @@ export default class TasksList extends Component {
   }
 
   get tasksByProject() {
+    const {showGroups} = this.props;
     const filtered = this.filteredTasks;
+    if (!showGroups) {
+      return filtered;
+    }
     const groupedTasks = filtered.slice(0);
     const filteredTasksProjects = filtered.map(task => (task.idProj));
     // TODO растащить лапшу по утилитам
@@ -107,7 +121,7 @@ export default class TasksList extends Component {
   }
 
   render() {
-    const {filter, order: tasksOrder} = this.props; // eslint-disable-line no-shadow
+    const {filter, showGroups, order: tasksOrder} = this.props; // eslint-disable-line no-shadow
     const theme = this.context.muiTheme;
     const css = require('./TasksList.scss');
     const styles = {
@@ -132,7 +146,13 @@ export default class TasksList extends Component {
                 <FilterSwitch active={filter.field} value="status" label="статус" />
               </FilterPanel>
 
-              <TasksTable tasks={this.tasksByProject} onSortOrderToggle={this.onSortOrderToggle} order={tasksOrder}/>
+              <TasksTable
+                tasks={this.tasksByProject}
+                onSortOrderToggle={this.onSortOrderToggle}
+                order={tasksOrder}
+                showGroups={showGroups}
+                onGroupVisibilityToggle={this.onGroupVisibilityToggle}
+              />
 
             </Col>
           </Row>

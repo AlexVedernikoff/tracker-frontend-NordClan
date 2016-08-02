@@ -12,7 +12,7 @@ import TasksListViewSettings from '../../components/TasksListViewSettings/TasksL
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
 
 const TasksTable = (props) => {
-  const {tasks, order, onSortOrderToggle} = props;
+  const {tasks, order, showGroups, onSortOrderToggle, onGroupVisibilityToggle} = props;
   const css = require('./TasksTable.scss');
   return (
     <Paper zDepth={1} rounded={false} style={{marginBottom: 100}}>
@@ -46,7 +46,7 @@ const TasksTable = (props) => {
             </TableHeaderColumn>
             <TableHeaderColumn tooltip="The Status" className={css.tableHeader} style={{width: 70}}/>
             <TableHeaderColumn className={css.tableHeader} style={{width: 70}}>
-              <TasksListViewSettings />
+              <TasksListViewSettings showGroups={showGroups} onGroupVisibilityToggle={onGroupVisibilityToggle}/>
             </TableHeaderColumn>
           </TableRow>
         </TableHeader>
@@ -92,7 +92,13 @@ const TasksTable = (props) => {
 TasksTable.propTypes = {
   tasks: PropTypes.array.isRequired,
   onSortOrderToggle: PropTypes.func.isRequired,
-  order: PropTypes.object.isRequired
+  onGroupVisibilityToggle: PropTypes.func.isRequired,
+  order: PropTypes.object.isRequired,
+  showGroups: PropTypes.bool.isRequired
+};
+
+TasksTable.defaultProps = {
+  showGroups: true
 };
 
 export default TasksTable;

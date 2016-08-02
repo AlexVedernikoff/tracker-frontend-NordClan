@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import Popover from 'material-ui/Popover';
@@ -9,11 +9,20 @@ import ActionViewList from 'material-ui/svg-icons/action/view-list';
 import ActionViewModule from 'material-ui/svg-icons/action/view-module';
 
 class TasksListViewSettings extends React.Component {
+  static propTypes = {
+    showGroups: PropTypes.bool.isRequired,
+    onGroupVisibilityToggle: PropTypes.func
+  }
+
   constructor(props) {
     super(props);
     this.state = {
       open: false
     };
+  }
+
+  handleGroupToggle = () => {
+    this.props.onGroupVisibilityToggle();
   }
 
   handleTouchTap = (event) => {
@@ -31,6 +40,7 @@ class TasksListViewSettings extends React.Component {
   }
 
   render() {
+    const {showGroups} = this.props;
     return (
       <div style={{display: 'flex', justifyContent: 'flex-end'}}>
         <IconButton style={{paddingTo: 20, paddingBottom: 0}} onTouchTap={this.handleTouchTap} >
@@ -51,7 +61,7 @@ class TasksListViewSettings extends React.Component {
             />
             <ListItem
               primaryText="Группировка по проектам"
-              rightToggle={<Toggle />}
+              rightToggle={<Toggle toggled={showGroups} onToggle={this.handleGroupToggle}/>}
             />
           </List>
         </Popover>

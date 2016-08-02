@@ -15,7 +15,8 @@ const initialState = {
     'status': sortOrder.DIRECTION.NONE,
     'creatorName': sortOrder.DIRECTION.NONE,
     'planEndDate': sortOrder.DIRECTION.NONE
-  }
+  },
+  showGroups: true
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -63,6 +64,11 @@ export default function reducer(state = initialState, action = {}) {
           [action.column]: sortOrder.next(state.order[action.column])
         }
       };
+    case types.TOGGLE_TASKS_GROUPS:
+      return {
+        ...state,
+        showGroups: Boolean(!state.showGroups)
+      };
     default:
       return state;
   }
@@ -97,5 +103,11 @@ export function toggleTasksSortOrder(column) {
   return {
     type: types.TOGGLE_TASKS_SORT_ORDER,
     column
+  };
+}
+
+export function toggleTasksGroups() {
+  return {
+    type: types.TOGGLE_TASKS_GROUPS
   };
 }
