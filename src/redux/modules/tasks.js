@@ -16,7 +16,8 @@ const initialState = {
     'creatorName': sortOrder.DIRECTION.NONE,
     'planEndDate': sortOrder.DIRECTION.NONE
   },
-  showGroups: true
+  showGroups: true,
+  tableLayout: true
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -69,6 +70,11 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         showGroups: Boolean(!state.showGroups)
       };
+    case types.TOGGLE_TASKS_TABLE_LAYOUT:
+      return {
+        ...state,
+        tableLayout: Boolean(!state.tableLayout)
+      };
     default:
       return state;
   }
@@ -109,5 +115,11 @@ export function toggleTasksSortOrder(column) {
 export function toggleTasksGroups() {
   return {
     type: types.TOGGLE_TASKS_GROUPS
+  };
+}
+
+export function toggleTasksTableLayout() {
+  return {
+    type: types.TOGGLE_TASKS_TABLE_LAYOUT
   };
 }

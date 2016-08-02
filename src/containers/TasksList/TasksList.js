@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { autobind } from 'core-decorators';
-import {isLoaded as isTasksLoaded, load as loadTasks, setSearchString, setFilterField, toggleTasksSortOrder, toggleTasksGroups} from '../../redux/modules/tasks';
+import {isLoaded as isTasksLoaded, load as loadTasks, setSearchString, setFilterField, toggleTasksSortOrder, toggleTasksGroups, toggleTasksTableLayout} from '../../redux/modules/tasks';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
 import sequentialComparator from '../../utils/sequentialComparator';
 import sortOrder from '../../utils/sortOrder';
@@ -12,6 +12,7 @@ import FilterPanel from '../../components/FilterPanel/FilterPanel';
 import FilterSwitch from '../../components/FilterSwitch/FilterSwitch';
 import Helmet from 'react-helmet';
 import Typography from 'material-ui/styles/typography';
+import TasksBoard from '../../components/TasksBoard/TasksBoard';
 import TasksTable from '../../components/TasksTable/TasksTable';
 import Add from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
@@ -22,11 +23,13 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
       tasks: state.tasks.data,
       filter: state.tasks.filter,
       order: state.tasks.order,
-      showGroups: state.tasks.showGroups
+      showGroups: state.tasks.showGroups,
+      tableLayout: state.tasks.tableLayout
     };
   },
   dispatch => bindActionCreators({
-    loadTasks, setSearchString, setFilterField, toggleTasksSortOrder, toggleTasksGroups
+    loadTasks, setSearchString, setFilterField,
+    toggleTasksSortOrder, toggleTasksGroups, toggleTasksTableLayout
   }, dispatch)
 )
 
@@ -39,11 +42,13 @@ export default class TasksList extends Component {
     }),
     order: PropTypes.object.isRequired,
     showGroups: PropTypes.bool.isRequired,
+    tableLayout: PropTypes.bool.isRequired,
     loadTasks: PropTypes.func.isRequired,
     setSearchString: PropTypes.func.isRequired,
     setFilterField: PropTypes.func.isRequired,
     toggleTasksSortOrder: PropTypes.func.isRequired,
-    toggleTasksGroups: PropTypes.func.isRequired
+    toggleTasksGroups: PropTypes.func.isRequired,
+    toggleTasksTableLayout: PropTypes.func.isRequired
   }
   static contextTypes = {
     store: PropTypes.object.isRequired,
@@ -77,6 +82,11 @@ export default class TasksList extends Component {
     this.props.toggleTasksGroups();
   }
 
+  @autobind
+  onLayoutToggle() {
+    this.props.toggleTasksTableLayout();
+  }
+
   get filteredTasks() {
     const {filter} = this.props;
     const query = new RegExp(filter.search, 'ig');
@@ -99,9 +109,9 @@ export default class TasksList extends Component {
   }
 
   get tasksByProject() {
-    const {showGroups} = this.props;
+    const {showGroups, tableLayout} = this.props;
     const filtered = this.filteredTasks;
-    if (!showGroups) {
+    if (!showGroups || !tableLayout) {
       return filtered;
     }
     const groupedTasks = filtered.slice(0);
@@ -121,7 +131,7 @@ export default class TasksList extends Component {
   }
 
   render() {
-    const {filter, showGroups, order: tasksOrder} = this.props; // eslint-disable-line no-shadow
+    const {filter, showGroups, tableLayout, order: tasksOrder} = this.props; // eslint-disable-line no-shadow
     const theme = this.context.muiTheme;
     const css = require('./TasksList.scss');
     const styles = {
@@ -145,15 +155,19 @@ export default class TasksList extends Component {
                 <FilterSwitch active={filter.field} value="creatorName" label="автор" />
                 <FilterSwitch active={filter.field} value="status" label="статус" />
               </FilterPanel>
-
-              <TasksTable
-                tasks={this.tasksByProject}
-                onSortOrderToggle={this.onSortOrderToggle}
-                order={tasksOrder}
-                showGroups={showGroups}
-                onGroupVisibilityToggle={this.onGroupVisibilityToggle}
-              />
-
+              {tableLayout && (
+                <TasksTable
+                  tasks={this.tasksByProject}
+                  onSortOrderToggle={this.onSortOrderToggle}
+                  order={tasksOrder}
+                  showGroups={showGroups}
+                  tableLayout={tableLayout}
+                  onGroupVisibilityToggle={this.onGroupVisibilityToggle}
+                  onLayoutToggle={this.onLayoutToggle}
+                />
+              ) || (
+                <TasksBoard />
+              )}
             </Col>
           </Row>
         </Grid>

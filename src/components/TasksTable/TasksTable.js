@@ -12,7 +12,7 @@ import TasksListViewSettings from '../../components/TasksListViewSettings/TasksL
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
 
 const TasksTable = (props) => {
-  const {tasks, order, showGroups, onSortOrderToggle, onGroupVisibilityToggle} = props;
+  const {tasks, order, showGroups, tableLayout, onSortOrderToggle, onGroupVisibilityToggle, onLayoutToggle} = props;
   const css = require('./TasksTable.scss');
   return (
     <Paper zDepth={1} rounded={false} style={{marginBottom: 100}}>
@@ -46,7 +46,10 @@ const TasksTable = (props) => {
             </TableHeaderColumn>
             <TableHeaderColumn tooltip="The Status" className={css.tableHeader} style={{width: 70}}/>
             <TableHeaderColumn className={css.tableHeader} style={{width: 70}}>
-              <TasksListViewSettings showGroups={showGroups} onGroupVisibilityToggle={onGroupVisibilityToggle}/>
+              <TasksListViewSettings
+                showGroups={showGroups} onGroupVisibilityToggle={onGroupVisibilityToggle}
+                tableLayout={tableLayout} onLayoutToggle={onLayoutToggle}
+              />
             </TableHeaderColumn>
           </TableRow>
         </TableHeader>
@@ -93,12 +96,15 @@ TasksTable.propTypes = {
   tasks: PropTypes.array.isRequired,
   onSortOrderToggle: PropTypes.func.isRequired,
   onGroupVisibilityToggle: PropTypes.func.isRequired,
+  onLayoutToggle: PropTypes.func.isRequired,
   order: PropTypes.object.isRequired,
-  showGroups: PropTypes.bool.isRequired
+  showGroups: PropTypes.bool.isRequired,
+  tableLayout: PropTypes.bool.isRequired
 };
 
 TasksTable.defaultProps = {
-  showGroups: true
+  showGroups: true,
+  tableLayout: true
 };
 
 export default TasksTable;

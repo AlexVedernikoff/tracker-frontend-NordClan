@@ -11,7 +11,9 @@ import ActionViewModule from 'material-ui/svg-icons/action/view-module';
 class TasksListViewSettings extends React.Component {
   static propTypes = {
     showGroups: PropTypes.bool.isRequired,
-    onGroupVisibilityToggle: PropTypes.func
+    tableLayout: PropTypes.bool.isRequired,
+    onGroupVisibilityToggle: PropTypes.func.isRequired,
+    onLayoutToggle: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -23,6 +25,10 @@ class TasksListViewSettings extends React.Component {
 
   handleGroupToggle = () => {
     this.props.onGroupVisibilityToggle();
+  }
+
+  handleLayoutToggle = () => {
+    this.props.onLayoutToggle();
   }
 
   handleTouchTap = (event) => {
@@ -40,7 +46,7 @@ class TasksListViewSettings extends React.Component {
   }
 
   render() {
-    const {showGroups} = this.props;
+    const {showGroups, tableLayout} = this.props;
     return (
       <div style={{display: 'flex', justifyContent: 'flex-end'}}>
         <IconButton style={{paddingTo: 20, paddingBottom: 0}} onTouchTap={this.handleTouchTap} >
@@ -56,7 +62,10 @@ class TasksListViewSettings extends React.Component {
           <List>
             <ListItem
               primaryText="Отображение задач"
-              rightToggle={<IconToggle name="view-mode-grid" stateOnIcon={<ActionViewModule/>} stateOffIcon={<ActionViewList/>} />}
+              rightToggle={<IconToggle name="view-mode-grid"
+                stateOnIcon={<ActionViewModule/>} stateOffIcon={<ActionViewList/>}
+                toggled={tableLayout} onChange={this.handleLayoutToggle}
+              />}
               innerDivStyle={{paddingRight: 130}}
             />
             <ListItem
