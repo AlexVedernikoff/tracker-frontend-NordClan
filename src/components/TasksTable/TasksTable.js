@@ -7,7 +7,7 @@ import TableHeader from 'material-ui/Table/TableHeader';
 import TableRowColumn from 'material-ui/Table/TableRowColumn';
 import TableBody from 'material-ui/Table/TableBody';
 import SortOrderSwitch from '../../components/SortOrderSwitch/SortOrderSwitch';
-import TaskItem from '../../components/TaskItem/TaskItem';
+import TaskItem from './TaskItem';
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
 
 const TasksTable = (props) => {
@@ -70,7 +70,7 @@ const TasksTable = (props) => {
                 </TableRowColumn>
                 <TableRowColumn style={{width: 64, padding: 0}}/>
                 <TableRowColumn />
-                <TableRowColumn style={{ width: 110, maxWidth: 310, padding: 0}}/>
+                <TableRowColumn style={{width: 110, maxWidth: 310, padding: 0}}/>
                 <TableRowColumn style={{width: 60, padding: '0px 5px'}}/>
                 <TableRowColumn style={{width: 60, padding: '0px 5px'}}/>
                 <TableRowColumn style={{width: 60, padding: '0px 5px'}}/>

@@ -12,7 +12,7 @@ const SortOrderIcon = (props) => {
     }
   };
 
-  const Icon = (order === sortOrder.DIRECTION.ASC) ? ArrowUpward : ArrowDownward;
+  const Icon = (order === sortOrder.DIRECTION.ASC) ? ArrowDownward : ArrowUpward;
   const arrowColor = (color) || (order === sortOrder.DIRECTION.NONE ? 'rgba(0, 0, 0, 0.54)' : 'rgba(0, 0, 0, 0.87)');
 
   return (

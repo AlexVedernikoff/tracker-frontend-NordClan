@@ -95,10 +95,10 @@ export default class TasksList extends Component {
   }
 
   get sortedTasks() {
-    const {tasks: tasksList, order} = this.props;
-    const orderChain = [];
+    const {tasks: tasksList, order, showGroups} = this.props;
+    const orderChain = showGroups ? ['projectName'] : [];
     [
-      'projectName', 'priority', 'id', 'status', 'name', 'creatorName', 'planEndDate'
+      'priority', 'id', 'status', 'name', 'creatorName', 'planEndDate'
     ].forEach(key => {
       if (order.hasOwnProperty(key) && sortOrder.isSignificant(order[key])) {
         orderChain.push({key, order: order[key]});
