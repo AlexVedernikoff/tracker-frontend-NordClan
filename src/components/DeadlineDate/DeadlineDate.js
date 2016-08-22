@@ -1,4 +1,4 @@
-/* компонент для отображения даты дедлайна, принимает дату и стили для контейнера*/
+/* компонент для отображения даты дедлайна, принимает дату (в Unix timestamp) и стили для контейнера*/
 import React, { PropTypes } from 'react';
 
 const DeadlineDate = (props) => {
@@ -18,21 +18,27 @@ const DeadlineDate = (props) => {
       margin: 0
     }
   };
+  const dateObj = new Date(date);
+  const day = new Intl.DateTimeFormat('ru', {day: 'numeric'}).format(dateObj);
+  const month = new Intl.DateTimeFormat('ru', {month: 'long'}).format(dateObj);
 
-  return (
+  return (date) ? (
     <div style={styles.dateDeadlineBar}>
-      <p style={styles.labelDayOfDeadline}>{date.day}</p>
-      <p style={styles.labelMonthOfDeadline}>{date.month}</p>
+      <p style={styles.labelDayOfDeadline}>{day}</p>
+      <p style={styles.labelMonthOfDeadline}>{month}</p>
     </div>
+  ) : (
+    <div style={styles.dateDeadlineBar}>&mdash;</div>
   );
 };
 
 DeadlineDate.propTypes = {
-  date: PropTypes.shape({
-    day: PropTypes.number,
-    month: PropTypes.string
-  }),
+  date: PropTypes.number,
   style: PropTypes.object
+};
+
+DeadlineDate.defaultProps = {
+  date: 0
 };
 
 export default DeadlineDate;

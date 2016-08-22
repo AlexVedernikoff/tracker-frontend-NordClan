@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import Helmet from 'react-helmet';
-import * as authActions from 'redux/modules/auth';
+import * as authActions from '../../redux/modules/auth';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import ActionAndroid from 'material-ui/svg-icons/action/android';
@@ -38,11 +38,13 @@ export default class Login extends Component {
             hintText="Enter name"
             floatingLabelText="Name"
             ref="username"
+            id="loginField"
           /><br/>
           <TextField
             hintText="Enter password"
             floatingLabelText="Password"
             type="password"
+            id="passwordField"
           /><br/>
           <FlatButton
             type="submit"

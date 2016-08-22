@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {load} from 'redux/modules/tasks';
+import {load} from '../../redux/modules/tasks';
 
 import AppBar from 'material-ui/AppBar';
 

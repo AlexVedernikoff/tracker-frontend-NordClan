@@ -5,8 +5,8 @@ import { expect} from 'chai';
 import { InfoBar } from 'components';
 import { Provider } from 'react-redux';
 import { browserHistory } from 'react-router';
-import createStore from 'redux/create';
-import ApiClient from 'helpers/ApiClient';
+import createStore from '../../redux/create';
+import ApiClient from '../../helpers/ApiClient';
 const client = new ApiClient();
 
 describe('InfoBar', () => {
@@ -44,7 +44,7 @@ describe('InfoBar', () => {
   });
 
   it('should render the correct className', () => {
-    const styles = require('components/TasksList/TasksList.scss');
+    const styles = require('../TasksList/TasksList.scss');
     expect(styles.infoBar).to.be.a('string');
     expect(dom.className).to.include(styles.infoBar);
   });

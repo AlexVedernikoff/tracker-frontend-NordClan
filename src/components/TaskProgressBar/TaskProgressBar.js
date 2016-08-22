@@ -38,11 +38,16 @@ const TaskProgressBar = (props, context) => {
 };
 
 TaskProgressBar.propTypes = {
-  spent: PropTypes.number.isRequired,
-  planned: PropTypes.number.isRequired,
+  spent: PropTypes.number,
+  planned: PropTypes.number,
   spentLabel: PropTypes.string.isRequired,
   plannedLabel: PropTypes.string.isRequired,
   style: PropTypes.object
+};
+
+TaskProgressBar.defaultProps = {
+  spent: 0,
+  planned: 0
 };
 
 TaskProgressBar.contextTypes = {
