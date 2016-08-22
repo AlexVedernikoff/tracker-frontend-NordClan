@@ -18,10 +18,13 @@ const FilterSearchBar = (props, context) => {
       display: 'flex'
     },
     search: {
-      margin: '12px 20px'
+      margin: '12px 20px',
+      verticalAlign: 'top'
     },
     input: {
-      width: '100%',
+      width: 'calc(100% - 64px)',
+      verticalAlign: 'top',
+      boxSizing: 'border-box'
       // border: 'none',
       // boxShadow: 'none',
       // outline: 'none'
