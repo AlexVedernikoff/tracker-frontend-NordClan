@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import Popover from 'material-ui/Popover';
@@ -9,6 +9,13 @@ import ActionViewList from 'material-ui/svg-icons/action/view-list';
 import ActionViewModule from 'material-ui/svg-icons/action/view-module';
 
 class TasksListViewSettings extends React.Component {
+  static propTypes = {
+    showGroups: PropTypes.bool.isRequired,
+    tableLayout: PropTypes.bool.isRequired,
+    onGroupVisibilityToggle: PropTypes.func.isRequired,
+    onLayoutToggle: PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -31,6 +38,7 @@ class TasksListViewSettings extends React.Component {
   }
 
   render() {
+    const {showGroups, tableLayout, onGroupVisibilityToggle, onLayoutToggle} = this.props;
     return (
       <div style={{display: 'flex', justifyContent: 'flex-end'}}>
         <IconButton style={{paddingTo: 20, paddingBottom: 0}} onTouchTap={this.handleTouchTap} >
@@ -46,12 +54,15 @@ class TasksListViewSettings extends React.Component {
           <List>
             <ListItem
               primaryText="Отображение задач"
-              rightToggle={<IconToggle name="view-mode-grid" stateOnIcon={<ActionViewModule/>} stateOffIcon={<ActionViewList/>} />}
+              rightToggle={<IconToggle name="view-mode-grid"
+                stateOnIcon={<ActionViewModule/>} stateOffIcon={<ActionViewList/>}
+                toggled={tableLayout} onChange={onLayoutToggle}
+              />}
               innerDivStyle={{paddingRight: 130}}
             />
             <ListItem
               primaryText="Группировка по проектам"
-              rightToggle={<Toggle />}
+              rightToggle={<Toggle toggled={showGroups} onToggle={onGroupVisibilityToggle}/>}
             />
           </List>
         </Popover>

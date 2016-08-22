@@ -33,6 +33,16 @@ export default class App extends Component {
     store: PropTypes.object.isRequired
   }
 
+  static childContextTypes = {
+    user: PropTypes.object
+  }
+
+  getChildContext() {
+    return {
+      user: this.props.user
+    };
+  }
+
   componentWillReceiveProps(nextProps) {
     if (!this.props.user && nextProps.user) {
       // login

@@ -3,36 +3,54 @@ import IconMenu from 'material-ui/IconMenu/IconMenu';
 import IconButton from 'material-ui/IconButton/IconButton';
 import MenuItem from 'material-ui/MenuItem/MenuItem';
 import Add from 'material-ui/svg-icons/content/add';
-import ActionCheckCircle from 'material-ui/svg-icons/action/check-circle';
-import AlertWarning from 'material-ui/svg-icons/alert/warning';
-import AvPauseCircleFilled from 'material-ui/svg-icons/av/pause-circle-filled';
-import AvPlayCircleFilled from 'material-ui/svg-icons/av/play-circle-filled';
-import ImageAdjust from 'material-ui/svg-icons/image/adjust';
-import ImagePanoramaFishEye from 'material-ui/svg-icons/image/panorama-fish-eye';
-import NotificationDoNotDisturbOn from 'material-ui/svg-icons/notification/do-not-disturb-on';
+import TaskStatusPresentation from '../../constants/TaskStatusPresentation';
 
-const ButtonChangeStatus = (props, context) => {
-  const {status} = props;
-
-  // TODO: вынести наружу перечень доступных статусов, их локализацию и отображение
+const ButtonChangeStatus = (props) => {
+  const {status, compact, style} = props;
+  const styles = {
+    label: {
+      cursor: 'pointer',
+      padding: '12px 0',
+      display: 'inline-block',
+      verticalAlign: 'top',
+      lineHeight: '24px'
+    }
+  };
+  const currentStatus = TaskStatusPresentation.find(stat => (stat.key === status));
   return (
-    <IconMenu
-      tooltip={status}
-      iconButtonElement={<IconButton><Add /></IconButton>}
-    >
-       <MenuItem primaryText="Новый" leftIcon={<ImagePanoramaFishEye />} />
-       <MenuItem primaryText="В процессе" leftIcon={<AvPlayCircleFilled />} />
-       <MenuItem primaryText="На проверке" leftIcon={<ImageAdjust />} />
-       <MenuItem primaryText="Требует внимания" leftIcon={<AlertWarning />} />
-       <MenuItem primaryText="Остановлен" leftIcon={<AvPauseCircleFilled />} />
-       <MenuItem primaryText="Завершен" leftIcon={<ActionCheckCircle />} />
-       <MenuItem primaryText="Отклонен" leftIcon={<NotificationDoNotDisturbOn />} />
-    </IconMenu>
+    <div style={style}>
+      <IconMenu
+        tooltip={status}
+        iconButtonElement={
+          <div>
+            {!compact && currentStatus && <span style={styles.label}>
+              {currentStatus.label}
+            </span>}
+            <IconButton>
+              {currentStatus && <currentStatus.icon {...currentStatus.iconProps} /> || <Add/> }
+            </IconButton>
+        </div>
+      }
+      >
+        {TaskStatusPresentation.map((stat) => (
+          <MenuItem key={stat.key}
+            primaryText={stat.label} leftIcon={<stat.icon {...stat.iconProps} />}
+            style={{cursor: 'pointer'}}
+          />
+        ))}
+      </IconMenu>
+    </div>
   );
 };
 
 ButtonChangeStatus.propTypes = {
-  status: PropTypes.string.isRequired
+  status: PropTypes.string.isRequired,
+  style: PropTypes.object,
+  compact: PropTypes.bool
+};
+
+ButtonChangeStatus.defaultProps = {
+  compact: false
 };
 
 export default ButtonChangeStatus;

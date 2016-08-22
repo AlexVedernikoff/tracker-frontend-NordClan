@@ -98,6 +98,7 @@
     "clean-webpack-plugin": "^0.1.6",
     "compression": "^1.6.0",
     "concurrently": "^0.1.1",
+    "core-decorators": "^0.12.3",
     "express": "^4.13.3",
     "express-session": "^1.12.1",
     "extract-text-webpack-plugin": "^0.9.1",

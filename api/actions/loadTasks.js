@@ -1,27 +1,29 @@
 import proxyRequest from '../utils/proxyRequest';
+import PromiseQueue from '../utils/promiseQueue';
+import loadProjectsTree from './loadProjectsTree';
 import loadUser from './loadUser';
+import {findUnique, conditionalForEach} from '../utils/collections';
 
 export default function loadTasks(req) {
   return proxyRequest('tasks/user/' + req.session.user.login, {}).then((tasks) => {
-
-    let userRequests = [];
-    tasks.map(task => {
-      return task.creator;
-    }).filter((value, index, self) => {
-      return self.indexOf(value) === index;
-    }).forEach(userName => {
-      userRequests.push(
-        loadUser(userName).then(user => {
-          tasks.forEach(task => {
-            if (task.creator == user.login) {
-              task.creatorName =  [user.firstNameRu, user.lastNameRu].join(' ');
-            }
-          });
-        })
-      );
+    let queue = new PromiseQueue();
+    findUnique(tasks, 'creator').forEach(userName => {
+      queue.add(loadUser, userName).then(user => {
+        conditionalForEach(tasks, user,
+          (task, user)=>(task.creator === user.login),
+          (task, user)=>{task.creatorName = user.fullNameRu}
+        );
+      })
     });
-
-    return Promise.all(userRequests).then(() => {
+    findUnique(tasks, 'idProj').forEach(projectId => {
+      queue.add(loadProjectsTree, [projectId]).then(projects => {
+        conditionalForEach(tasks, projects[0],
+          (task, project)=>(!!project && (task.idProj == projectId)),
+          (task, project)=>{task.projectName =  project.name}
+        )
+      })
+    });
+    return Promise.all(queue).then(() => {
       return tasks;
     });
   });

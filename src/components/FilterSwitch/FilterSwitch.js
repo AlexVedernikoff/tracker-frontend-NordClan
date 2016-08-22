@@ -8,7 +8,8 @@ import React, { PropTypes } from 'react';
 import FlatButton from 'material-ui/FlatButton/FlatButton';
 
 const FilterSwitch = (props, context) => {
-  const { checked, label, value, onChange } = props;
+  const { active, label, value, onChange } = props;
+  const checked = (active === value);
   const { muiTheme } = context;
   const styles = {
     switch: {
@@ -39,12 +40,8 @@ const FilterSwitch = (props, context) => {
   );
 };
 
-FilterSwitch.defaultProps = {
-  checked: false
-};
-
 FilterSwitch.propTypes = {
-  checked: PropTypes.bool.isRequired,
+  active: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func

@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import {bindActionCreators} from 'redux';
 import ReactDom from 'react-dom';
 // import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -11,12 +12,12 @@ import Avatar from 'material-ui/Avatar';
 import Tabs from 'material-ui/Tabs/Tabs';
 import Tab from 'material-ui/Tabs/Tab';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
-import { asyncConnect } from 'redux-connect';
 import AppHead from '../../components/AppHead/AppHead';
 import Typography from 'material-ui/styles/typography';
 import { Link } from 'react-router';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import EditorModeEdit from 'material-ui/svg-icons/editor/mode-edit';
+import ButtonChangeStatus from '../../components/ButtonChangeStatus/ButtonChangeStatus';
 
 // Images
 // import Slider from 'react-slick';
@@ -26,9 +27,6 @@ import DropZone from '../../components/DropZone/DropZone';
 
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
-import IconFrozen from 'material-ui/svg-icons/av/pause-circle-filled';
-import IconRejected from 'material-ui/svg-icons/alert/error';
-import IconAccepted from 'material-ui/svg-icons/action/check-circle';
 
 import Helmet from 'react-helmet';
 import DeadlineDate from '../../components/DeadlineDate/DeadlineDate';
@@ -50,19 +48,10 @@ import IconSeparatorUp from 'material-ui/svg-icons/navigation/expand-less';
 
 // import {FormattedDate} from 'react-intl';
 
-@asyncConnect([{
-  deferred: true,
-  promise: ({store: {dispatch, getState}, params}) => {
-    if (!isCurrentTaskLoaded(getState())) {
-      return dispatch(setCurrentTask(params.taskId));
-    }
-  }
-}])
-
 @connect(
-  state => ({task: state.currentTask.data})
+  state => ({task: state.currentTask.data}),
+  dispatch => bindActionCreators({setCurrentTask}, dispatch)
 )
-
 export default class TaskPage extends Component {
 
   static propTypes = {
@@ -74,6 +63,8 @@ export default class TaskPage extends Component {
       name: PropTypes.string.isRequired,
       creator: PropTypes.string.isRequired,
       owner: PropTypes.string.isRequired,
+      creatorName: PropTypes.string.isRequired,
+      ownerName: PropTypes.string.isRequired,
       // TODO не возвращается сервером
       isActive: PropTypes.bool,
       about: PropTypes.string,
@@ -88,6 +79,7 @@ export default class TaskPage extends Component {
       type: PropTypes.string.isRequired,
       updateDate: PropTypes.number.isRequired
     }),
+    setCurrentTask: PropTypes.func.isRequired,
     params: PropTypes.object.isRequired
   }
   static contextTypes = {
@@ -109,6 +101,14 @@ export default class TaskPage extends Component {
       // Executors component
       executorsExpand: true
     };
+  }
+
+  componentDidMount() {
+    const {taskId} = this.props.params;
+    const {store} = this.context;
+    if (!isCurrentTaskLoaded(store.getState(), taskId)) {
+      this.props.setCurrentTask(taskId);
+    }
   }
 
   getStyles() {
@@ -459,14 +459,16 @@ export default class TaskPage extends Component {
         <AppHead/>
         <Helmet title="Task"/>
         <Grid fluid className={grid.layout}>
+        {
+          task &&
           <div style={styles.wrapper}>
             <Row>
               <Col xs={12}>
                 <h1 style={styles.title}>{task.id} {task.name}</h1>
                 <p style={styles.info}>
                   <Link to="#" style={styles.a}> {task.projectName}</Link>, создал(а)
-                  <Link to="#" style={styles.a}> {task.creator}</Link> 28 мая 2016, выполнит -
-                  <Link to="#" style={styles.a}> {task.owner}</Link>
+                  <Link to="#" style={styles.a}> {task.creatorName}</Link> 28 мая 2016, выполнит -
+                  <Link to="#" style={styles.a}> {task.ownerName}</Link>
                 </p>
               </Col>
             </Row>
@@ -627,25 +629,10 @@ export default class TaskPage extends Component {
                           <ListItem
                             disabled
                             primaryText={
-                              <div style={styles.detailsText}>Статус
-                                {/* <span style={styles.detailsTextRigth}>
-                                  <IconInProcess style={styles.detailsStatusIco}/>
-                                  в процессе
-                                </span> */}
-                              </div>
+                              <div style={styles.detailsText}>Статус</div>
                             }
                             rightIconButton={
-                              <div style={styles.detailsRight}>
-                                <IconInProcess style={styles.detailsStatusIco}/>
-                                <DropDownMenu style={styles.detailsDD} value={this.state.dropDownIndex} onChange={this.handleChangeDropDown} underlineStyle={{display: 'none'}}>
-                                  <MenuItem value={1} primaryText="Новый" leftIcon={<IconInProcess style={styles.detailsMenuIco}/>} />
-                                  <MenuItem value={2} primaryText="Назначен" leftIcon={<IconInProcess style={styles.detailsMenuIco}/>} />
-                                  <MenuItem value={3} primaryText="В процессе" leftIcon={<IconInProcess style={styles.detailsMenuIco}/>} />
-                                  <MenuItem value={4} primaryText="Готов" leftIcon={<IconAccepted style={styles.detailsMenuIco}/>} />
-                                  <MenuItem value={5} primaryText="Остановлен" leftIcon={<IconFrozen style={styles.detailsMenuIco}/>} />
-                                  <MenuItem value={6} primaryText="Отменен" leftIcon={<IconRejected style={styles.detailsMenuIco}/>} />
-                                </DropDownMenu>
-                              </div>
+                                <ButtonChangeStatus style={styles.detailsRight} status={task.status} />
                             }
                           />
                           <ListItem
@@ -883,6 +870,7 @@ export default class TaskPage extends Component {
               </Col>
             </Row>
           </div>
+        }
         </Grid>
         <FloatingActionButton style={styles.FAB}>
           <EditorModeEdit />
