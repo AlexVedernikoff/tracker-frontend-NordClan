@@ -3,7 +3,7 @@ import TasksBoardItem from '../TasksBoardItem/TasksBoardItem';
 import {GridList} from 'material-ui/GridList';
 
 const TasksBoard = (props) => {
-  const { viewSettings, tasks } = props;
+  const { viewSettings, tasks, theme } = props;
 
   const gridListStyles = {
     'width': '100%',
@@ -11,14 +11,14 @@ const TasksBoard = (props) => {
   };
 
   const taskList = tasks.map( (item, key) => {
-    return <TasksBoardItem key={key} itemData={item} containerElement="span" />;
+    return <TasksBoardItem key={key} itemData={item} theme={theme}/>;
   });
 
   return (
     <div>
       {viewSettings}
       <div className="tasksBoardWrap">
-        <GridList cols={ 3 } padding={ 10 } style={gridListStyles} children={ taskList } />
+        <GridList cols={3} padding={10} style={gridListStyles} children={taskList} cellHeight={180}/>
       </div>
     </div>
   );
@@ -26,6 +26,7 @@ const TasksBoard = (props) => {
 
 TasksBoard.propTypes = {
   viewSettings: PropTypes.object,
+  theme: PropTypes.object,
   tasks: PropTypes.array
 };
 
