@@ -1,24 +1,52 @@
 import React, {PropTypes} from 'react';
 import TasksBoardItem from '../TasksBoardItem/TasksBoardItem';
-import {GridList} from 'material-ui/GridList';
 
 const TasksBoard = (props) => {
   const { viewSettings, tasks, theme } = props;
 
   const gridListStyles = {
-    'width': '100%',
-    'marginBottom': 24
+    width: '100%',
+    marginBottom: 24,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start'
   };
 
-  const taskList = tasks.map( (item, key) => {
-    return <TasksBoardItem key={key} itemData={item} theme={theme}/>;
+  const firstColumn = [];
+  const middleColumn = [];
+  const lastColumn = [];
+
+  tasks.map( (item, key) => {
+    switch (item.priority) {
+      case 1:
+      case 2:
+        firstColumn.push(<TasksBoardItem key={key} itemData={item} theme={theme}/>);
+        break;
+      case 3:
+        middleColumn.push(<TasksBoardItem key={key} itemData={item} theme={theme}/>);
+        break;
+      case 4:
+      case 5:
+        lastColumn.push(<TasksBoardItem key={key} itemData={item} theme={theme}/>);
+        break;
+      default:
+        break;
+    }
   });
 
   return (
     <div>
       {viewSettings}
-      <div className="tasksBoardWrap">
-        <GridList cols={3} padding={10} style={gridListStyles} children={taskList} cellHeight={180}/>
+      <div style={gridListStyles}>
+        <div style={{width: '30%'}}>
+          {firstColumn.map((jsxItem) => jsxItem)}
+        </div>
+        <div style={{width: '30%'}}>
+          {middleColumn.map((jsxItem) => jsxItem)}
+        </div>
+        <div style={{width: '30%'}}>
+          {lastColumn.map((jsxItem) => jsxItem)}
+        </div>
       </div>
     </div>
   );
