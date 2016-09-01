@@ -169,7 +169,9 @@ export default class TasksList extends Component {
                 />
               ) || (
                 <TasksBoard
+                  tasks={this.tasksByProject}
                   viewSettings={viewSettings}
+                  theme={theme}
                 />
               )}
             </Col>

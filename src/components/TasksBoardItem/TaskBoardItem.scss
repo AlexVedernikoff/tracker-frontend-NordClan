@@ -1,0 +1,59 @@
+.itemContent {
+  padding: 10px 15px 10px 30px;
+
+  a {
+    color: inherit;
+  }
+}
+
+.itemId {
+  float: left;
+  width: 60px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.itemDate {
+  float: right;
+}
+
+.itemHead {
+  padding-bottom: 10px;
+
+  &:after {
+    content: '';
+    width: 100%;
+    clear: both;
+    display: block;
+  }
+}
+
+.itemProgressBar, .itemInfo, .statusButton, .itemActionsInner {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.itemInfo {
+  width: 85%;
+}
+
+.itemProgressBar {
+  width: 50%;
+  max-width: 120px;
+}
+
+.itemActions{
+  float: right;
+  margin-top: 10px;
+}
+
+.itemActionsInner{
+  text-align: right;
+}
+
+@media all and (max-width: 1199px) {
+  .itemInfo {
+    width: 75%;
+  }
+}
