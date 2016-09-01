@@ -19,6 +19,11 @@ export default function(theme = 'default') {
       alternateTextColor: Colors.white,
       canvasColor: Colors.grey100,
       borderColor: Colors.grey300,
+      priority1Color: Colors.pink800,
+      priority2Color: Colors.pink400,
+      priority3Color: Colors.purple900,
+      priority4Color: Colors.grey400,
+      priority5Color: Colors.grey300,
       disabledColor: ColorManipulator.fade(Colors.darkBlack, 0.3),
       pickerHeaderColor: Colors.cyan500,
 

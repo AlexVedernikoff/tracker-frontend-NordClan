@@ -36,8 +36,8 @@ export default function reducer(state = initialState, action = {}) {
   }
 }
 
-export function isCurrentTaskLoaded(state) {
-  return state.currentTask && state.currentTask.loaded;
+export function isCurrentTaskLoaded(state, id) {
+  return state.currentTask && state.currentTask.loaded && state.currentTask.data.id === id;
 }
 
 export function setCurrentTask(id) {

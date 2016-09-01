@@ -42,7 +42,7 @@ const TaskItem = (props, context) => {
       </TableRowColumn>
       <TableRowColumn style={{padding: 0, minWidth: 50}}>{task.id}</TableRowColumn>
       <TableRowColumn style={{minWidth: 64, padding: 5, textAlign: 'center'}}>
-        <ButtonChangeStatus status={task.status} />
+        <ButtonChangeStatus status={task.status} compact/>
       </TableRowColumn>
       <TableRowColumn style={{padding: 0}}>
         <div style={{display: 'flex', flexDirection: 'column'}}>

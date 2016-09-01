@@ -1,33 +1,46 @@
 import React, {PropTypes} from 'react';
 import SortOrderIcon from '../../components/SortOrderIcon/SortOrderIcon';
+import sortOrder from '../../utils/sortOrder';
+import IconButton from 'material-ui/IconButton';
 
 const SortOrderSwitch = (props) => {
-  const { order, label, color, style } = props;
+  const { order, value, onChange, label, color, style } = props;
   const styles = {
     switch: {
       cursor: 'pointer',
       display: 'flex',
       ...style
+    },
+    label: {
+      lineHeight: '48px'
     }
+  };
+
+  const touchTapHandler = () => {
+    onChange(value);
   };
 
   return (
     <div style={styles.switch}>
-      <SortOrderIcon color={color} order={order}/>
-      <div>{label}</div>
+      <IconButton onTouchTap={touchTapHandler}>
+        <SortOrderIcon color={color} order={order[value]}/>
+      </IconButton>
+      <div style={styles.label}>{label}</div>
     </div>
   );
 };
 
 SortOrderSwitch.propTypes = {
-  order: PropTypes.oneOf(['none', 'asc', 'desc']),
+  order: PropTypes.object.isRequired,
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
   label: PropTypes.string,
   color: PropTypes.string,
   style: PropTypes.object
 };
 
 SortOrderSwitch.defaultProps = {
-  order: 'none'
+  order: sortOrder.DIRECTION.NONE
 };
 
 export default SortOrderSwitch;

@@ -1,0 +1,37 @@
+.border {
+  border-top: 1px solid #e0e0e0;
+  border-bottom: 2px solid #707070;
+  margin-left: -20px;
+  max-width: 250px;
+}
+
+.projectName {
+  font-size: 18px;
+  margin-left: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.projectNameContainer {
+  display: flex;
+  padding-bottom: 10px;
+  max-width: 230px;
+}
+
+.statusSortBadge {
+  margin-bottom: -2px;
+  background-color: #BDBDBD;
+  height: 16px;
+  padding: 2px;
+  text-align: center;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+  cursor: pointer;
+}
+
+.table-header {
+  vertical-align: bottom;
+  padding: 0;
+  padding-bottom: 5px;
+}
