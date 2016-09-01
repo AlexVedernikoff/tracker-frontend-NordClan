@@ -50,7 +50,8 @@ const TaskBoardItem = (props) => {
     paper: {
       backgroundColor: theme.rawTheme.palette.alternateTextColor,
       height: 160,
-      position: 'relative'
+      position: 'relative',
+      marginBottom: 2
     }
   };
 
