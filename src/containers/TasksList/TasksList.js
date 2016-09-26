@@ -96,7 +96,10 @@ export default class TasksList extends Component {
 
   get sortedTasks() {
     const {tasks: tasksList, order, showGroups} = this.props;
-    const orderChain = showGroups ? ['projectName'] : [];
+    const orderChain = showGroups ? [{
+      key: 'projectName',
+      order: 'ASC'
+    }] : [];
     [
       'priority', 'id', 'status', 'name', 'creatorName', 'planEndDate'
     ].forEach(key => {
