@@ -14,11 +14,10 @@ import Tab from 'material-ui/Tabs/Tab';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import AppHead from '../../components/AppHead/AppHead';
 import Typography from 'material-ui/styles/typography';
-import { Link } from 'react-router';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import EditorModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 import ButtonChangeStatus from '../../components/ButtonChangeStatus/ButtonChangeStatus';
-
+import TaskCardHeader from '../../components/TaskCard/TaskCardHeader';
 // Images
 // import Slider from 'react-slick';
 
@@ -56,15 +55,13 @@ export default class TaskPage extends Component {
 
   static propTypes = {
     task: PropTypes.shape({
-      id: PropTypes.string.isRequired,
+      // id: PropTypes.string.isRequired,
       idProj: PropTypes.string.isRequired,
       projectName: PropTypes.string.isRequired,
       status: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
-      creator: PropTypes.string.isRequired,
-      owner: PropTypes.string.isRequired,
-      creatorName: PropTypes.string.isRequired,
-      ownerName: PropTypes.string.isRequired,
+      creator: PropTypes.object.isRequired,
+      owner: PropTypes.object.isRequired,
       // TODO не возвращается сервером
       isActive: PropTypes.bool,
       about: PropTypes.string,
@@ -127,22 +124,10 @@ export default class TaskPage extends Component {
       sidebar: {
 
       },
-      title: {
-        color: theme.rawTheme.palette.primary1Color,
-        fontWeight: Typography.fontWeightMedium,
-        fontSize: '34px',
-        paddingTop: 20,
-        margin: 0
-      },
       description: {
         fontSize: '14px',
         lineHeight: '1.6',
         margin: '0 0 80px'
-      },
-      info: {
-        fontSize: '12px',
-        color: theme.rawTheme.palette.accent3Color,
-        marginBottom: '30px'
       },
       header: {
         fontSize: '16px',
@@ -170,10 +155,6 @@ export default class TaskPage extends Component {
       },
       icon: {
         color: theme.rawTheme.palette.primary1Color
-      },
-      a: {
-        color: theme.rawTheme.palette.primary1Color,
-        textDecoration: 'none'
       },
       documents: {
         color: theme.rawTheme.palette.primary1Color,
@@ -464,12 +445,7 @@ export default class TaskPage extends Component {
           <div style={styles.wrapper}>
             <Row>
               <Col xs={12}>
-                <h1 style={styles.title}>{task.id} {task.name}</h1>
-                <p style={styles.info}>
-                  <Link to="#" style={styles.a}> {task.projectName}</Link>, создал(а)
-                  <Link to="#" style={styles.a}> {task.creatorName}</Link> 28 мая 2016, выполнит -
-                  <Link to="#" style={styles.a}> {task.ownerName}</Link>
-                </p>
+                <TaskCardHeader task={task}/>
               </Col>
             </Row>
             <Row>

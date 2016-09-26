@@ -17,8 +17,6 @@ const TasksTable = (props) => {
     <Paper zDepth={1} rounded={false} style={{marginBottom: 100}}>
       <Table
         fixedHeader
-        selectable
-        multiSelectable={false}
       >
         <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
           <TableRow>

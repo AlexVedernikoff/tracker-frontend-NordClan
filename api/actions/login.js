@@ -1,9 +1,11 @@
 import proxyRequest from '../utils/proxyRequest';
-import loadUser from './loadUser';
+import loadUsers from './loadUsers';
 
 export default function login(req) {
-  return loadUser(req.body.name).then((user) => {
-    req.session.user = user;
-    return user;
+  return loadUsers(req.body.name).then((user) => {
+    if (user.length) {
+      req.session.user = user[0];
+    }
+    return user[0];
   });
 }

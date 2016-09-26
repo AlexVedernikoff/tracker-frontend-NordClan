@@ -47,7 +47,7 @@ const TaskItem = (props, context) => {
       <TableRowColumn style={{padding: 0}}>
         <div style={{display: 'flex', flexDirection: 'column'}}>
           <Link to={`/task/${task.id}`} style={styles.taskLink}>{task.name}</Link>
-          <div style={{color: 'rgba(0, 0, 0, 0.54)'}}>Создал(а) задачу {task.creatorName}</div>
+          <div style={{color: 'rgba(0, 0, 0, 0.54)'}}>Создал(а) задачу {task.creator.name}</div>
         </div>
       </TableRowColumn>
       <TableRowColumn style={{minWidth: 110, padding: 0}}>
@@ -74,16 +74,15 @@ TaskItem.propTypes = {
     status: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     priority: PropTypes.number.isRequired,
-    creator: PropTypes.string.isRequired,
+    creator: PropTypes.object.isRequired,
     plannedTime: PropTypes.number.isRequired,
     currentTime: PropTypes.number.isRequired,
     planEndDate: PropTypes.number,
-    creatorName: PropTypes.string.isRequired,
     // TODO Еще не поддерживаются или не используются
     type: PropTypes.string,
     gainTime: PropTypes.number,
     complete: PropTypes.boolean,
-    owner: PropTypes.string,
+    owner: PropTypes.object,
     beginDate: PropTypes.number,
     factEndDate: PropTypes.number,
     updateDate: PropTypes.number,
