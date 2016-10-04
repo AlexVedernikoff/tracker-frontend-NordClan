@@ -99,6 +99,7 @@ export default class AppHead extends Component {
       <div>
         <AppBar
           title="SimTracker"
+          style={{boxShadow: 'none'}}
           iconElementLeft={
           <IconMenu
             iconButtonElement={
@@ -114,17 +115,16 @@ export default class AppHead extends Component {
         }
           iconElementRight={appBarIcons}
         />
-        <AppBar showMenuIconButton={false} style={{minHeight: 0}}>
-          <Tabs style={{width: 500}}>
-            <Tab
-              label="Item One"/>
-            <Tab
-              label="Item Two"/>
-            <Tab
-              label="onActive"
-              route="/home"/>
-          </Tabs>
-        </AppBar>
+        <AppBar
+          iconElementLeft={
+            <Tabs style={{width: 650, marginTop: 10}}>
+              <Tab label='scrum' />
+              <Tab label='мои проекты' />
+              <Tab label='мои задачи' />
+              <Tab label='отчет по времени' />
+            </Tabs>
+          }
+        />
       </div>
     );
   }
