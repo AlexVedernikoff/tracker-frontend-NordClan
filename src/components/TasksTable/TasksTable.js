@@ -26,10 +26,10 @@ const TasksTable = (props) => {
             <TableHeaderColumn tooltip="The ID" className={css.tableHeader} style={{width: 50}}>
               <SortOrderSwitch label="ID" order={order} value="id" onChange={onSortOrderToggle}/>
             </TableHeaderColumn>
-            <TableHeaderColumn tooltip="The Status" className={css.tableHeader} style={{width: 64}}>
+            <TableHeaderColumn tooltip="Статус" className={css.tableHeader} style={{width: 64}}>
               <SortOrderSwitch label="Статус" order={order} value="status" onChange={onSortOrderToggle} />
             </TableHeaderColumn>
-            <TableHeaderColumn tooltip="The Name" className={css.tableHeader}>
+            <TableHeaderColumn tooltip="Автор" className={css.tableHeader}>
               <div style={{display: 'flex'}}>
                 <SortOrderSwitch label="Название" order={order} value="name" onChange={onSortOrderToggle}/>
                 <SortOrderSwitch label="Автор" order={order} value="creatorName" onChange={onSortOrderToggle}/>
@@ -38,7 +38,7 @@ const TasksTable = (props) => {
             <TableHeaderColumn tooltip="The Status" className={css.tableHeader} style={{width: 110, textAlign: 'center'}}>
               Часы
             </TableHeaderColumn>
-            <TableHeaderColumn tooltip="The Status" className={css.tableHeader} style={{width: 70}}>
+            <TableHeaderColumn tooltip="Дата" className={css.tableHeader} style={{width: 70}}>
               <SortOrderSwitch label="Дата" order={order} value="planEndDate" onChange={onSortOrderToggle} style={{textAlign: 'center'}} />
             </TableHeaderColumn>
             <TableHeaderColumn tooltip="The Status" className={css.tableHeader} style={{width: 70}}/>

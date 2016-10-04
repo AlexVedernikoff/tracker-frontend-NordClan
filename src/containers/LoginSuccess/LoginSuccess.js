@@ -19,7 +19,7 @@ class LoginSuccess extends Component {
         <h1>Login Success</h1>
 
         <div>
-          <p>Hi, {user.name}. You have just successfully logged in, and were forwarded here
+          <p>Привет, {user.name}. You have just successfully logged in, and were forwarded here
             by <code>componentWillReceiveProps()</code> in <code>App.js</code>, which is listening to
             the auth reducer via redux <code>@connect</code>. How exciting!
           </p>
@@ -29,7 +29,7 @@ class LoginSuccess extends Component {
           </p>
 
           <div>
-            <button className="btn btn-danger" onClick={logout}><i className="fa fa-sign-out"/>{' '}Log Out</button>
+            <button className="btn btn-danger" onClick={logout}><i className="fa fa-sign-out"/>{' '}Выйти</button>
           </div>
         </div>
       </div>

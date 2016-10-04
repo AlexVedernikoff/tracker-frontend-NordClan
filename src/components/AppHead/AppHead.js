@@ -115,7 +115,7 @@ export default class AppHead extends Component {
           iconElementRight={appBarIcons}
         />
         <AppBar showMenuIconButton={false} style={{minHeight: 0}}>
-          <Tabs>
+          <Tabs style={{width: 500}}>
             <Tab
               label="Item One"/>
             <Tab
