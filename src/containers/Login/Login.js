@@ -53,7 +53,7 @@ export default class Login extends Component {
             labelPosition="before"
             primary
           />
-          <p style={{margin: 0, fontSize: 12, color: 'rgba(0,0,0,0.54)'}}>Введите любой имя и нажмите войти</p>
+          <p style={{margin: 0, fontSize: 12, color: 'rgba(0,0,0,0.54)'}}>Введите любое имя и нажмите войти</p>
         </form>
         }
         {user &&
