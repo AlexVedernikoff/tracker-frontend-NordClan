@@ -12,5 +12,10 @@
     :global(.btn) {
       margin-left: 10px;
     }
+
+    input:-webkit-autofill {
+      background: transparent;
+      -webkit-box-shadow: 0 0 0px 1000px white inset;
+    }
   }
 }

@@ -7,6 +7,18 @@ import FlatButton from 'material-ui/FlatButton';
 import AppBar from 'material-ui/AppBar';
 import Paper from 'material-ui/Paper';
 
+import styles from './Login.scss'
+
+styles.paper = {
+  width: '20rem', 
+  height: '20rem', 
+  position: 'absolute', 
+  top: 0, bottom: 0, left: 0, right: 0, 
+  margin: 'auto', 
+  backgroundColor: 'white', 
+  textAlign: 'center'
+}
+
 @connect(
   state => ({user: state.auth.user}),
   authActions)
@@ -25,23 +37,20 @@ export default class Login extends Component {
 
   render() {
     const {user, logout} = this.props;
-    const styles = require('./Login.scss');
+
     return (
-      <Paper className={styles.loginPage}
-             style={{width: '20rem', height: '20rem', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, margin: 'auto', backgroundColor: 'white', textAlign: 'center'}}>
+      <Paper className={styles.loginPage} style={styles.paper}>
         <Helmet title="Войти" />
         <AppBar title="Войти" showMenuIconButton={false}/>
         {!user &&
-        <form autoComplete="off" style={{marginTop: '2rem'}} onSubmit={this.handleSubmit}>
+        <form className={styles.loginForm} onSubmit={this.handleSubmit}>
           <TextField
-            autoComplete="off"
             hintText="Введите имя"
             floatingLabelText="Имя"
             ref="username"
             id="loginField"
           /><br/>
           <TextField
-            autoComplete="on"
             hintText="Введите пароль"
             floatingLabelText="Пароль"
             type="password"
