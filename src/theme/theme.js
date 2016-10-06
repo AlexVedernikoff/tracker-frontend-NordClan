@@ -51,6 +51,24 @@ export default function(theme = 'default') {
           pickerHeaderColor: Colors.cyan500
         }
       };
+    case 'cyan':
+      return {
+        ...defaultTheme,
+        palette: {
+          primary1Color: Colors.cyan800,
+          primary2Color: Colors.cyan500,
+          primary3Color: Colors.lightBlack,
+          accent1Color: Colors.pinkA100,
+          accent2Color: Colors.grey100,
+          accent3Color: Colors.grey500,
+          textColor: Colors.darkBlack,
+          alternateTextColor: Colors.white,
+          canvasColor: Colors.white,
+          borderColor: Colors.grey300,
+          disabledColor: ColorManipulator.fade(Colors.darkBlack, 0.3),
+          pickerHeaderColor: Colors.cyan500
+        }
+      };
     default:
       return defaultTheme;
   }
