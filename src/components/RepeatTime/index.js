@@ -5,7 +5,7 @@ export default class Scrum extends Component {
 	render() {
 		return (
 			<div>
-				<AppHead activeTab='scrum' />
+				<AppHead activeTab="repeat" />
 				<h1>Repeat Time</h1>
 			</div>
 		);

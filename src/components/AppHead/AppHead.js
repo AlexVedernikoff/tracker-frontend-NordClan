@@ -63,103 +63,68 @@ export default class AppHead extends Component {
     // const { load } = this.props; // eslint-disable-line no-shadow
     const {user} = this.context;
 
-    const appBarIcons = (
+    const renderAppIconsBarLeft = (
+      <IconMenu
+        iconButtonElement={
+          <IconButton><NavigationMenu color={Colors.white} /></IconButton>
+        }
+        targetOrigin={{horizontal: 'left', vertical: 'top'}}
+        anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}>
+
+        <MenuItem href="/" primaryText="Главная" />
+        <MenuItem href="login" primaryText="Логин" />
+        <MenuItem href="about" primaryText="О нас" />
+      </IconMenu>
+    );
+
+    const renderAppIconsBarRight = (
       <div>
-        <IconButton onTouchTap={this.handleTouchTap}>
-          <SocialPerson color={Colors.white} />
-        </IconButton>
-        <Popover
-          open={this.state.open}
-          anchorEl={this.state.anchorEl}
-          anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-          targetOrigin={{horizontal: 'left', vertical: 'top'}}
-          onRequestClose={this.handleRequestClose}
-          animation={PopoverAnimationFromTop}
-        >
-          <div style={styles.popover}>
-            <List>
-              <ListItem
-                disabled
-                leftAvatar={<Avatar src={user.photo} />}
-              >
-                {user.firstNameRu} {user.lastNameRu}
-              </ListItem>
-            </List>
-          </div>
-        </Popover>
+        <IconButton><Search color={Colors.white} /></IconButton>
         <IconMenu
           iconButtonElement={
-            <IconButton><Settings color={Colors.white} /></IconButton>
+            <IconButton><MoreVertIcon color={Colors.white} /></IconButton>
           }
           targetOrigin={{horizontal: 'right', vertical: 'top'}}
           anchorOrigin={{horizontal: 'right', vertical: 'top'}}
         >
-          <MenuItem primaryText="Refresh"/>
-          <MenuItem primaryText="Help"/>
-          <Divider />
-          <MenuItem primaryText="Sign out"/>
+          <MenuItem primaryText={user.login} />
+          <MenuItem primaryText="Выйти" />
         </IconMenu>
-        <IconButton>
-          <ActionExitToApp color={Colors.white}/>
-        </IconButton>
       </div>
+    );
+
+    const renderAppMenuBar = (
+      <AppBar
+        iconElementLeft={
+        <Tabs className={styles.tabs} value={location.pathname}>
+          <Tab label="scrum" value="/scrum"
+            containerElement={<Link to="/scrum" />}
+            onActive={this.handleActive} />
+
+          <Tab label="мои проекты" value="/project"
+            containerElement={<Link to="/project" />}
+            onActive={this.handleActive} />
+
+          <Tab label="мои задачи" value="/tasks"
+            containerElement={<Link to="/tasks" />}
+            onActive={this.handleActive} />
+
+          <Tab label="отчет по времени" value="/repeat"
+            containerElement={<Link to="отчет по времени" />}
+            onActive={this.handleActive} />
+        </Tabs>
+        } />
     );
 
     return (
       <div>
         <AppBar
           title="SimTracker"
-          style={{boxShadow: 'none'}}
-          iconElementLeft={
-          <IconMenu
-            iconButtonElement={
-              <IconButton><NavigationMenu color={Colors.white} /></IconButton>
-            }
-            targetOrigin={{horizontal: 'left', vertical: 'top'}}
-            anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-          >
-            <MenuItem href="/" primaryText="Главная" />
-            <MenuItem href="login" primaryText="Логин" />
-            <MenuItem href="about" primaryText="О нас" />
-          </IconMenu>
-        }
-          iconElementRight={
-            <div>
-              <IconButton><Search color={Colors.white} /></IconButton>
-              <IconMenu
-                iconButtonElement={
-                  <IconButton><MoreVertIcon color={Colors.white} /></IconButton>
-                }
-                targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-              >
-                <MenuItem primaryText={user.login} />
-                <MenuItem primaryText="Выйти" />
-              </IconMenu>
-            </div>
-          }
+          style={{boxShadow: "none"}}
+          iconElementLeft={renderAppIconsBarLeft}
+          iconElementRight={renderAppIconsBarRight}
         />
-        <AppBar
-          iconElementLeft={
-            <Tabs className={styles.tabs} value={location.pathname}>
-              <Tab label='scrum' value='/scrum'
-                containerElement={<Link to='/scrum'/>}
-                onActive={this.handleActive} />
-
-              <Tab label='мои проекты' value='/project'
-                containerElement={<Link to='/project'/>}
-                onActive={this.handleActive} />
-
-              <Tab label='мои задачи' value='/tasks'
-                containerElement={<Link to='/tasks'/>}
-                onActive={this.handleActive} />
-
-              <Tab label='отчет по времени' value='/repeat'
-                containerElement={<Link to='/repeat'/>}
-                onActive={this.handleActive} />
-            </Tabs>
-          }
-        />
+        {renderAppMenuBar}
       </div>
     );
   }

@@ -38,11 +38,11 @@ export default (store) => {
       <IndexRedirect to="tasks"/>
       <Route path="login" component={Login}/>
       <Route onEnter={requireLogin}>
-        <Route path='scrum' component={Scrum} />
-        <Route path='project' component={Project} />
+        <Route path="scrum" component={Scrum} />
+        <Route path="project" component={Project} />
         <Route path="task/:taskId" component={TaskPage}/>
         <Route path="tasks" component={TasksList}/>
-        <Route path='repeat' component={RepeatTime} />
+        <Route path="repeat" component={RepeatTime} />
       </Route>
       <Route path="*" component={NotFound} status={404}/>
     </Route>

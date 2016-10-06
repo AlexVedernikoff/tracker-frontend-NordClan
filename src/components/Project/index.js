@@ -5,7 +5,7 @@ export default class Project extends Component {
 	render() {
 		return (
 			<div>
-				<AppHead activeTab='project' />
+				<AppHead activeTab="project" />
 				<h1>Project</h1>
 			</div>
 		);
