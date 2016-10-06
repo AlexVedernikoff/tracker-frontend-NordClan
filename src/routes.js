@@ -8,6 +8,9 @@ import {
   TasksList,
   NotFound,
 } from './containers';
+import Scrum from './components/Scrum'
+import Project from './components/Project'
+import RepeatTime from './components/RepeatTime'
 
 export default (store) => {
   const requireLogin = (nextState, replace, cb) => {
@@ -32,16 +35,15 @@ export default (store) => {
    */
   return (
     <Route path="/" component={App}>
-      { /* Home (main) route */ }
       <IndexRedirect to="tasks"/>
-      { /* Routes */ }
       <Route path="login" component={Login}/>
-      { /* Routes requiring login */ }
       <Route onEnter={requireLogin}>
+        <Route path="scrum" component={Scrum} />
+        <Route path="project" component={Project} />
         <Route path="task/:taskId" component={TaskPage}/>
         <Route path="tasks" component={TasksList}/>
+        <Route path="repeat" component={RepeatTime} />
       </Route>
-      { /* Catch all route */ }
       <Route path="*" component={NotFound} status={404}/>
     </Route>
   );
