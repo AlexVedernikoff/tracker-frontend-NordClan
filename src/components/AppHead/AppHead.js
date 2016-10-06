@@ -94,7 +94,7 @@ export default class AppHead extends Component {
     );
 
     const renderAppMenuBar = (
-      <AppBar
+      <AppBar style={{boxShadow: "rgba(0, 0, 0, 0.117647) 0px 2px 3px, rgba(0, 0, 0, 0.117647) 0px 2px 3px"}}
         iconElementLeft={
         <Tabs className={styles.tabs} value={location.pathname}>
           <Tab label="scrum" value="/scrum"
@@ -110,7 +110,7 @@ export default class AppHead extends Component {
             onActive={this.handleActive} />
 
           <Tab label="отчет по времени" value="/repeat"
-            containerElement={<Link to="отчет по времени" />}
+            containerElement={<Link to="repeat" />}
             onActive={this.handleActive} />
         </Tabs>
         } />
