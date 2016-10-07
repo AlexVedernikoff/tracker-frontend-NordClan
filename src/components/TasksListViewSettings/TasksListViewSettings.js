@@ -41,7 +41,7 @@ class TasksListViewSettings extends React.Component {
     const {showGroups, tableLayout, onGroupVisibilityToggle, onLayoutToggle} = this.props;
     return (
       <div style={{display: 'flex', justifyContent: 'flex-end'}}>
-        <IconButton style={{paddingTo: 20, paddingBottom: 0}} onTouchTap={this.handleTouchTap} >
+        <IconButton onTouchTap={this.handleTouchTap} >
           <MoreVertIcon style={{marginBottom: -4}} color={"rgba(0, 0, 0, 0.54)"}/>
         </IconButton>
         <Popover
