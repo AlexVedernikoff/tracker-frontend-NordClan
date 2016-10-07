@@ -167,8 +167,7 @@ export default class TasksList extends Component {
               <h1 className={css.h1} style={styles.h1}>Мои задачи</h1>
               
               <FilterSearchBar value={filter.search} 
-                onSearchStringChange = {this.onSearchStringChange} 
-                onFocus={this.onFocus} onBlur={this.onBlur} />
+                onSearchStringChange = {this.onSearchStringChange} />
 
               {renderFilterTask}
 
