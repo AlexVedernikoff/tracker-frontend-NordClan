@@ -160,7 +160,6 @@ export default class TasksList extends Component {
 
     return (
       <div>
-        <AppHead/>
         <Helmet title="Мои задачи"/>
         <Grid>
           <Row>
