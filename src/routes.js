@@ -8,9 +8,9 @@ import {
   TasksList,
   NotFound,
 } from './containers';
-import Scrum from './components/Scrum'
-import Project from './components/Project'
-import RepeatTime from './components/RepeatTime'
+import Scrum from './components/Scrum';
+import Project from './components/Project';
+import RepeatTime from './components/RepeatTime';
 
 export default (store) => {
   const requireLogin = (nextState, replace, cb) => {

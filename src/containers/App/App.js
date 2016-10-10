@@ -9,7 +9,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import getColorTheme from '../../theme/theme';
 import { asyncConnect } from 'redux-connect';
-import AppHead from '../../components/AppHead/AppHead'
+import AppHead from '../../components/AppHead/AppHead';
 
 @asyncConnect([{
   deferred: true,
@@ -62,7 +62,7 @@ export default class App extends Component {
   render() {
     require('./App.scss');
     const muiTheme = getMuiTheme(getColorTheme('cyan'));
-    
+
     return (
       <div id="app">
         <Helmet {...config.app.head}/>

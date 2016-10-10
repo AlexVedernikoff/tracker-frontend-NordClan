@@ -5,26 +5,26 @@ import MenuItem from 'material-ui/MenuItem';
 import IconMenu from 'material-ui/IconMenu';
 import IconButton from 'material-ui/IconButton';
 import * as Colors from 'material-ui/styles/colors';
-import Popover from 'material-ui/Popover';
-import PopoverAnimationFromTop from 'material-ui/Popover/PopoverAnimationVertical';
-import List from 'material-ui/List/List';
-import ListItem from 'material-ui/List/ListItem';
-import Avatar from 'material-ui/Avatar';
-import Divider from 'material-ui/Divider';
+// import Popover from 'material-ui/Popover';
+// import PopoverAnimationFromTop from 'material-ui/Popover/PopoverAnimationVertical';
+// import List from 'material-ui/List/List';
+// import ListItem from 'material-ui/List/ListItem';
+// import Avatar from 'material-ui/Avatar';
+// import Divider from 'material-ui/Divider';
 
 import Tabs from 'material-ui/Tabs/Tabs';
 import Tab from 'material-ui/Tabs/Tab';
 
-import SocialPerson from 'material-ui/svg-icons/social/person';
+// import SocialPerson from 'material-ui/svg-icons/social/person';
 import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import ActionExitToApp from 'material-ui/svg-icons/action/exit-to-app';
-import Settings from 'material-ui/svg-icons/action/settings';
+// import ActionExitToApp from 'material-ui/svg-icons/action/exit-to-app';
+// import Settings from 'material-ui/svg-icons/action/settings';
 import Search from 'material-ui/svg-icons/action/search';
 
-import { Link } from 'react-router'
+import { Link } from 'react-router';
 
-import styles from  './appHead.css';
+import styles from './appHead.css';
 
 export default class AppHead extends Component {
   static contextTypes = {
@@ -56,7 +56,7 @@ export default class AppHead extends Component {
   handleActive = tab => {
     this.setState({
       pathname: tab
-    })
+    });
   }
 
   render() {
@@ -94,7 +94,7 @@ export default class AppHead extends Component {
     );
 
     const renderAppMenuBar = (
-      <AppBar style={{boxShadow: "rgba(0, 0, 0, 0.117647) 0px 2px 3px, rgba(0, 0, 0, 0.117647) 0px 2px 3px"}}
+      <AppBar style={{boxShadow: 'rgba(0, 0, 0, 0.117647) 0px 2px 3px, rgba(0, 0, 0, 0.117647) 0px 2px 3px'}}
         iconElementLeft={
         <Tabs className={styles.tabs} value={location.pathname}>
           <Tab label="scrum" value="/scrum"
@@ -120,7 +120,7 @@ export default class AppHead extends Component {
       <div>
         <AppBar
           title="SimTracker"
-          style={{boxShadow: "none"}}
+          style={{boxShadow: 'none'}}
           iconElementLeft={renderAppIconsBarLeft}
           iconElementRight={renderAppIconsBarRight}
         />

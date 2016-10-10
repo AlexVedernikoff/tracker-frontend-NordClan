@@ -26,103 +26,106 @@ const width = {
   oneHundredTwenty: {
     width: 120
   }
-}
+};
 
 const styles = {
   header: {
-      display: 'flex',
-      flexDirection: 'column',
-      position: 'absolute',
-      width: 500,
-      left: 0,
-      right: 680,
-      margin: '0px auto'
-    }
-}
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'absolute',
+    width: 500,
+    left: 0,
+    right: 680,
+    margin: '0px auto'
+  }
+};
 
 const TasksTable = (props) => {
   const {tasks, order, onSortOrderToggle, viewSettings} = props;
   const css = require('./TasksTable.scss');
   return (
-    <Paper zDepth={1} rounded={false} style={{marginBottom: 100}}>
-      <Table
-        fixedHeader
-      >
-        <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
-          <TableRow>
-            <TableHeaderColumn tooltip="Статус" className={css.tableHeader} style={{width: 30, padding: 0}}>
-              <SortOrderSwitch order={order} value="priority" onChange={onSortOrderToggle} className={css.statusSortBadge} color="#FFFFFF" />
-            </TableHeaderColumn>
+      <Paper zDepth={1} rounded={false} style={{marginBottom: 100}}>
+        <Table
+            fixedHeader
+            >
+          <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+            <TableRow>
+              <TableHeaderColumn tooltip="Статус" className={css.tableHeader} style={{width: 30, padding: 0}}>
+                <SortOrderSwitch order={order} value="priority" onChange={onSortOrderToggle}
+                                 className={css.statusSortBadge} color="#FFFFFF"/>
+              </TableHeaderColumn>
 
-            <TableHeaderColumn tooltip="The ID" className={css.tableHeader} style={{width: 60, padding: 0}}>
-              <SortOrderSwitch label="ID" order={order} value="id" onChange={onSortOrderToggle}/>
-            </TableHeaderColumn>
+              <TableHeaderColumn tooltip="The ID" className={css.tableHeader} style={{width: 60, padding: 0}}>
+                <SortOrderSwitch label="ID" order={order} value="id" onChange={onSortOrderToggle}/>
+              </TableHeaderColumn>
 
-            <TableHeaderColumn tooltip="Статус" className={css.tableHeader} style={width.fifty}>
-              <SortOrderSwitch label="Статус" order={order} value="status" onChange={onSortOrderToggle} />
-            </TableHeaderColumn>
+              <TableHeaderColumn tooltip="Статус" className={css.tableHeader} style={width.fifty}>
+                <SortOrderSwitch label="Статус" order={order} value="status" onChange={onSortOrderToggle}/>
+              </TableHeaderColumn>
 
-            <TableHeaderColumn tooltip="Название" className={css.tableHeader} style={width.seventy}>
-              <SortOrderSwitch label="Название" order={order} value="name" onChange={onSortOrderToggle}/>
-            </TableHeaderColumn>
+              <TableHeaderColumn tooltip="Название" className={css.tableHeader} style={width.seventy}>
+                <SortOrderSwitch label="Название" order={order} value="name" onChange={onSortOrderToggle}/>
+              </TableHeaderColumn>
 
-            <TableHeaderColumn tooltip="Автор" className={css.tableHeader} style={width.seventy}>
+              <TableHeaderColumn tooltip="Автор" className={css.tableHeader} style={width.seventy}>
                 <SortOrderSwitch label="Автор" order={order} value="creatorName" onChange={onSortOrderToggle}/>
-            </TableHeaderColumn>
+              </TableHeaderColumn>
 
-            <TableHeaderColumn />
+              <TableHeaderColumn />
 
-            <TableHeaderColumn tooltip="Часы" className={css.tableHeader} style={width.ten}>
-              Часы
-            </TableHeaderColumn>
+              <TableHeaderColumn tooltip="Часы" className={css.tableHeader} style={width.ten}>
+                Часы
+              </TableHeaderColumn>
 
-            <TableHeaderColumn tooltip="Дата" className={css.tableHeader} style={width.oneHundredTwenty}>
-              <SortOrderSwitch label="Дата" order={order} value="planEndDate" onChange={onSortOrderToggle} style={{textAlign: 'center'}} />
-            </TableHeaderColumn>
+              <TableHeaderColumn tooltip="Дата" className={css.tableHeader} style={width.oneHundredTwenty}>
+                <SortOrderSwitch label="Дата" order={order} value="planEndDate" onChange={onSortOrderToggle}
+                                 style={{textAlign: 'center'}}/>
+              </TableHeaderColumn>
 
-            <TableHeaderColumn tooltip="Настройки" className={css.tableHeader} style={width.seventy}>
-              {viewSettings}
-            </TableHeaderColumn>
+              <TableHeaderColumn tooltip="Настройки" className={css.tableHeader} style={width.seventy}>
+                {viewSettings}
+              </TableHeaderColumn>
 
-          </TableRow>
-        </TableHeader>
-        <TableBody
-          deselectOnClickaway
-          showRowHover
-          stripedRows={false}
-          displayRowCheckbox={false}
-        >
-          {tasks.map((task, index, arr) => {
-            console.log('task', task)
-            if (task.delimiter) {
-              return (<TableRow style={{height: 70}} displayBorder={false} key={index}>
-                <TableRowColumn style={{width: 20, padding: 0}} />
-                <TableRowColumn style={{width: 50}}/>
-                <TableRowColumn style={{width: 50, padding: 0, textAlign: 'center'}} />
-                <TableRowColumn style={{width: 500, paddingBottom: 10}}>
-                  <div style={styles.header}>
-                    <div className={css.projectNameContainer}>
-                      <KeyboardArrowDown color={"rgba(0, 0, 0, 0.54)"}/>
-                      <div className={css.projectName}>{task.projectName}</div>
+            </TableRow>
+          </TableHeader>
+          <TableBody
+              deselectOnClickaway
+              showRowHover
+              stripedRows={false}
+              displayRowCheckbox={false}
+              >
+            {tasks.map((task, index, arr) => {
+              console.log('task', task);
+              if (task.delimiter) {
+                return (<TableRow style={{height: 70}} displayBorder={false} key={index}>
+                  <TableRowColumn style={{width: 20, padding: 0}}/>
+                  <TableRowColumn style={{width: 50}}/>
+                  <TableRowColumn style={{width: 50, padding: 0, textAlign: 'center'}}/>
+                  <TableRowColumn style={{width: 500, paddingBottom: 10}}>
+                    <div style={styles.header}>
+                      <div className={css.projectNameContainer}>
+                        <KeyboardArrowDown color={"rgba(0, 0, 0, 0.54)"}/>
+
+                        <div className={css.projectName}>{task.projectName}</div>
+                      </div>
+                      <div className={css.border}/>
                     </div>
-                    <div className={css.border}/>
-                  </div>
-                </TableRowColumn>
-                <TableRowColumn style={{width: 70, padding: 0, textAlign: 'center'}}/>
-                <TableRowColumn style={{width: 70, padding: 0, textAlign: 'center'}}/>
-                <TableRowColumn style={{width: 70, padding: 0, textAlign: 'center'}}/>
-                <TableRowColumn style={{width: 70, padding: 0, textAlign: 'center'}}/>
-              </TableRow>);
-            }
-            return (<TaskItem task={task} key={index}
-              displayBorder={(index !== arr.length - 1 && task.priority !== arr[index + 1].priority)}
-              displayPriorityBadge={(index === 0 || task.priority !== arr[index - 1].priority)}
-            />);
-          })}
-        </TableBody>
-      ))}
-      </Table>
-    </Paper>
+                  </TableRowColumn>
+                  <TableRowColumn style={{width: 70, padding: 0, textAlign: 'center'}}/>
+                  <TableRowColumn style={{width: 70, padding: 0, textAlign: 'center'}}/>
+                  <TableRowColumn style={{width: 70, padding: 0, textAlign: 'center'}}/>
+                  <TableRowColumn style={{width: 70, padding: 0, textAlign: 'center'}}/>
+                </TableRow>);
+              }
+              return (<TaskItem task={task} key={index}
+                                displayBorder={(index !== arr.length - 1 && task.priority !== arr[index + 1].priority)}
+                                displayPriorityBadge={(index === 0 || task.priority !== arr[index - 1].priority)}
+                  />);
+            })}
+          </TableBody>
+          ))}
+        </Table>
+      </Paper>
   );
 };
 
