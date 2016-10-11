@@ -6,7 +6,6 @@ import {isLoaded as isTasksLoaded, load as loadTasks, setSearchString, setFilter
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
 import sequentialComparator from '../../utils/sequentialComparator';
 import sortOrder from '../../utils/sortOrder';
-import AppHead from '../../components/AppHead/AppHead';
 import FilterSearchBar from '../../components/FilterSearchBar/FilterSearchBar';
 import FilterPanel from '../../components/FilterPanel/FilterPanel';
 import FilterSwitch from '../../components/FilterSwitch/FilterSwitch';
@@ -56,6 +55,14 @@ export default class TasksList extends Component {
     muiTheme: PropTypes.object.isRequired
   };
 
+  constructor() {
+    super();
+
+    this.state = {
+      showTasks: {}
+    };
+  }
+
   componentDidMount() {
     const {store} = this.context;
     if (!isTasksLoaded(store.getState())) {
@@ -86,6 +93,26 @@ export default class TasksList extends Component {
   @autobind
   onLayoutToggle() {
     this.props.toggleTasksTableLayout();
+  }
+
+  @autobind
+  handleClick(task) {
+    const state = this.state.showTasks;
+
+    if (state[task] !== undefined) {
+      state[task] = !state[task];
+    } else {
+      state[task] = false;
+    }
+
+    this.setState({showTasks: state});
+
+    //При нажатии на заголовок проекта, выводим все таски проекта
+    //Пока не используется
+    //const tasksProject = this.tasksByProject;
+    // const taskToggle = Object.keys(tasksProject)
+    //   .filter(id => tasksProject[id].idProj === task && tasksProject[id].id !== undefined)
+    //   .map(taskToggle => tasksProject[taskToggle].id);
   }
 
   get filteredTasks() {
@@ -148,23 +175,33 @@ export default class TasksList extends Component {
       showGroups={showGroups} onGroupVisibilityToggle={this.onGroupVisibilityToggle}
       tableLayout={tableLayout} onLayoutToggle={this.onLayoutToggle}
     />);
+
+    const renderFilterTask = (
+      <FilterPanel label="Фильтр:" onFilterChange={this.onFilterChange} >
+        <FilterSwitch active={filter.field} value="projectName" label="проект" />
+        <FilterSwitch active={filter.field} value="name" label="название" />
+        <FilterSwitch active={filter.field} value="creatorName" label="автор" />
+        <FilterSwitch active={filter.field} value="status" label="статус" />
+      </FilterPanel>
+    );
+
     return (
       <div>
-        <AppHead/>
-        <Helmet title="Task List"/>
+        <Helmet title="Мои задачи"/>
         <Grid>
           <Row>
             <Col xs={12}>
               <h1 className={css.h1} style={styles.h1}>Мои задачи</h1>
-              <FilterSearchBar value={filter.search} onSearchStringChange = {this.onSearchStringChange} />
-              <FilterPanel label="Фильтр:" onFilterChange={this.onFilterChange} >
-                <FilterSwitch active={filter.field} value="projectName" label="проект" />
-                <FilterSwitch active={filter.field} value="name" label="название" />
-                <FilterSwitch active={filter.field} value="creatorName" label="автор" />
-                <FilterSwitch active={filter.field} value="status" label="статус" />
-              </FilterPanel>
+
+              <FilterSearchBar value={filter.search}
+                onSearchStringChange = {this.onSearchStringChange} />
+
+              {renderFilterTask}
+
               {tableLayout && (
                 <TasksTable
+                  showTasks={this.state.showTasks}
+                  handleClick={this.handleClick}
                   tasks={this.tasksByProject}
                   onSortOrderToggle={this.onSortOrderToggle}
                   order={tasksOrder}
@@ -180,7 +217,7 @@ export default class TasksList extends Component {
             </Col>
           </Row>
         </Grid>
-        <FloatingActionButton style={{position: 'fixed', bottom: 35, right: 60}}>
+        <FloatingActionButton style={{position: 'fixed', bottom: 35, right: 60}} backgroundColor="#F06292">
           <Add />
         </FloatingActionButton>
       </div>

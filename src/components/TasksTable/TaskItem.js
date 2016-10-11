@@ -9,7 +9,7 @@ import NewCommentBadge from '../../components/NewCommentBadge/NewCommentBadge';
 import TaskReassignWidget from '../../components/TaskReassignWidget/TaskReassignWidget';
 
 const TaskItem = (props, context) => {
-  const { task, displayBorder, displayPriorityBadge } = props;
+  const { task, displayBorder, displayPriorityBadge, showTasks } = props;
   const { muiTheme } = context;
   const styles = {
     priority: {
@@ -31,39 +31,55 @@ const TaskItem = (props, context) => {
       color: 'rgba(0, 0, 0, 0.87)',
       textOverflow: 'ellipsis',
       overflow: 'hidden'
+    },
+    seventy: {
+      width: 70,
+      padding: 0,
+      textAlign: 'center'
     }
   };
+
   return (
-    <TableRow selectable displayBorder={displayBorder}>
+    <TableRow selectable displayBorder={displayBorder}
+      style={showTasks.hasOwnProperty(task.idProj) && !showTasks[task.idProj] ? {display: 'none'} : ''}>
+
       <TableRowColumn style={{width: 20, padding: 0}}>
         <div style={styles.priority}>
             <div style={displayPriorityBadge ? styles.priorityBadge : {}}>{task.priority}</div>
         </div>
       </TableRowColumn>
-      <TableRowColumn style={{padding: 0, minWidth: 50}}>{task.id}</TableRowColumn>
-      <TableRowColumn style={{minWidth: 64, padding: 5, textAlign: 'center'}}>
+
+      <TableRowColumn style={{width: 50}}>{task.id}</TableRowColumn>
+
+      <TableRowColumn style={{width: 50, padding: 0, textAlign: 'center'}}>
         <ButtonChangeStatus status={task.status} compact/>
       </TableRowColumn>
-      <TableRowColumn style={{padding: 0}}>
+
+      <TableRowColumn style={{width: 500}}>
         <div style={{display: 'flex', flexDirection: 'column'}}>
           <Link to={`/task/${task.id}`} style={styles.taskLink}>{task.name}</Link>
           <div style={{color: 'rgba(0, 0, 0, 0.54)'}}>Создал(а) задачу {task.creator.name}</div>
         </div>
       </TableRowColumn>
-      <TableRowColumn style={{minWidth: 110, padding: 0}}>
+
+      <TableRowColumn style={styles.seventy}>
         <TaskProgressBar spent={task.currentTime} planned={task.plannedTime} spentLabel={'Потрачено'}
                          plannedLabel={'Планируемое'}
                          style={{marginBottom: 10}}/>
       </TableRowColumn>
-      <TableRowColumn style={{width: 210, minWidth: 110, padding: '0px 5px', textAlign: 'center'}}>
+
+      <TableRowColumn style={styles.seventy}>
         <DeadlineDate date={task.planEndDate} style={{fontSize: 18}}/>
       </TableRowColumn>
-      <TableRowColumn style={{minWidth: 60, padding: '0px 5px', textAlign: 'center'}}>
-        <NewCommentBadge count={10} comment="Стоит ли оставлять комментарии, если их никто не читает" author="Яков Плэйсхолдер" date={task.planEndDate} />
+
+      <TableRowColumn style={styles.seventy}>
+        <NewCommentBadge count={10} comment="И стоит ли оставлять комментарии, если их никто не читает" author="Яков Плэйсхолдер" date={task.planEndDate} />
       </TableRowColumn>
-      <TableRowColumn style={{minWidth: 60, padding: '0px 5px', textAlign: 'center'}}>
+
+      <TableRowColumn style={styles.seventy}>
         <TaskReassignWidget taskName={task.name} projectName={task.name} taskExpertise="Some expertise" />
       </TableRowColumn>
+
     </TableRow>
   );
 };
@@ -90,7 +106,8 @@ TaskItem.propTypes = {
     attachments: PropTypes.array
   }),
   displayBorder: PropTypes.bool,
-  displayPriorityBadge: PropTypes.bool
+  displayPriorityBadge: PropTypes.bool,
+  showTasks: PropTypes.object
 };
 
 TaskItem.contextTypes = {

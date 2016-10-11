@@ -4,7 +4,6 @@ import Helmet from 'react-helmet';
 import * as authActions from '../../actions/auth';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
-import ActionAndroid from 'material-ui/svg-icons/action/android';
 import AppBar from 'material-ui/AppBar';
 import Paper from 'material-ui/Paper';
 
@@ -30,38 +29,43 @@ export default class Login extends Component {
     return (
       <Paper className={styles.loginPage}
              style={{width: '20rem', height: '20rem', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, margin: 'auto', backgroundColor: 'white', textAlign: 'center'}}>
-        <Helmet title="Login"/>
-        <AppBar title="Login" showMenuIconButton={false}/>
+        <Helmet title="Войти" />
+        <AppBar title="Войти" showMenuIconButton={false}/>
         {!user &&
-        <form style={{marginTop: '2rem'}} onSubmit={this.handleSubmit}>
+        <form autoComplete="off" style={{marginTop: '2rem'}} onSubmit={this.handleSubmit}>
           <TextField
-            hintText="Enter name"
-            floatingLabelText="Name"
+            autoComplete="off"
+            hintText="Введите имя"
+            floatingLabelText="Имя"
             ref="username"
             id="loginField"
           /><br/>
           <TextField
-            hintText="Enter password"
-            floatingLabelText="Password"
+            autoComplete="on"
+            hintText="Введите пароль"
+            floatingLabelText="Пароль"
             type="password"
             id="passwordField"
           /><br/>
           <FlatButton
             type="submit"
-            label="Sign in"
+            label="Войти"
             labelPosition="before"
             primary
-            icon={<ActionAndroid />}
           />
-          <p style={{margin: 0, fontSize: 12, color: 'rgba(0,0,0,0.54)'}}>P.S. please, enter any name and press button</p>
+          <p style={{margin: 0, fontSize: 12, color: 'rgba(0,0,0,0.54)'}}>Введите любой имя и нажмите войти</p>
         </form>
         }
         {user &&
         <div>
-          <p>You are currently logged in as {user.name}.</p>
+          <p>Вы вошли в систему как {user.name}.</p>
 
           <div>
-            <button className="btn btn-danger" onClick={logout}><i className="fa fa-sign-out"/>{' '}Log Out</button>
+             <FlatButton
+                type="submit"
+                label="Выйти"
+                className="btn btn-danger" onClick={logout}
+                secondary />
           </div>
         </div>
         }
