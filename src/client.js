@@ -32,7 +32,6 @@ const component = (
   />
 );
 
-console.log(component)
 ReactDOM.render(
   <Provider store={store} key="provider">
     {component}

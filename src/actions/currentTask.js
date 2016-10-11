@@ -10,4 +10,3 @@ export function setCurrentTask(id) {
     promise: (client) => client.get(`/loadTask/${id}`)
   };
 }
-
