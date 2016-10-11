@@ -20,7 +20,6 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 
 @connect(
   state => {
-    console.log('state', state)
     return {
       tasks: state.tasks.data,
       filter: state.tasks.filter,
@@ -99,16 +98,16 @@ export default class TasksList extends Component {
 
   @autobind
   handleClick(task) {
-    let tasksProject = this.tasksByProject
-    let state = this.state.showTasks
+    let tasksProject = this.tasksByProject;
+    let state = this.state.showTasks;
 
     if(state[task] !== undefined) {
-      state[task] = !state[task]
+      state[task] = !state[task];
     } else {
-      state[task] = false
+      state[task] = false;
     }
 
-    this.setState({taskToggle: state})
+    this.setState({showTasks: state});
 
     //При нажатии на заголовок проекта, выводим все таски проекта
     //Пока не используется
