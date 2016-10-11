@@ -180,7 +180,7 @@ export default class TasksList extends Component {
             </Col>
           </Row>
         </Grid>
-        <FloatingActionButton style={{position: 'fixed', bottom: 35, right: 60}}>
+        <FloatingActionButton style={{position: 'fixed', bottom: 35, right: 60}} backgroundColor='#F06292'>
           <Add />
         </FloatingActionButton>
       </div>
