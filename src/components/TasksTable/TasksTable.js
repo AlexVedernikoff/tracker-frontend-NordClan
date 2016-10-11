@@ -28,7 +28,7 @@ const width = {
   oneHundredTwenty: {
     width: 120
   }
-}
+};
 
 const styles = {
   header: {
@@ -45,7 +45,7 @@ const styles = {
     left: 10
   },
   titleIconBottomColor: 'rgba(0, 0, 0, 0.54)'
-}
+};
 
 const TasksTable = (props) => {
   const {tasks, order, onSortOrderToggle, viewSettings, handleClick, showTasks} = props;
