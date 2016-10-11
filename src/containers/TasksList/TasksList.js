@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { autobind } from 'core-decorators';
-import {isLoaded as isTasksLoaded, load as loadTasks, setSearchString, setFilterField, toggleTasksSortOrder, toggleTasksGroups, toggleTasksTableLayout} from '../../redux/modules/tasks';
+import {isLoaded as isTasksLoaded, load as loadTasks, setSearchString, setFilterField, toggleTasksSortOrder, toggleTasksGroups, toggleTasksTableLayout} from '../../actions/tasks';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
 import sequentialComparator from '../../utils/sequentialComparator';
 import sortOrder from '../../utils/sortOrder';
