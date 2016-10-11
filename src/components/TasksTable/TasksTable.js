@@ -9,6 +9,8 @@ import TableBody from 'material-ui/Table/TableBody';
 import SortOrderSwitch from '../../components/SortOrderSwitch/SortOrderSwitch';
 import TaskItem from './TaskItem';
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
+import KeyboardArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up';
+import IconButton from 'material-ui/IconButton';
 
 const width = {
   ten: {
@@ -30,18 +32,23 @@ const width = {
 
 const styles = {
   header: {
-      display: 'flex',
-      flexDirection: 'column',
-      position: 'absolute',
-      width: 500,
-      left: 0,
-      right: 680,
-      margin: '0px auto'
-    }
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'absolute',
+    width: 500,
+    left: 0,
+    right: 680,
+    margin: '0px auto'
+  },
+  titleIconBottom: {
+    top: '-12px',
+    left: 10
+  },
+  titleIconBottomColor: 'rgba(0, 0, 0, 0.54)'
 }
 
 const TasksTable = (props) => {
-  const {tasks, order, onSortOrderToggle, viewSettings} = props;
+  const {tasks, order, onSortOrderToggle, viewSettings, handleClick, showTasks} = props;
   const css = require('./TasksTable.scss');
   return (
     <Paper zDepth={1} rounded={false} style={{marginBottom: 100}}>
@@ -93,16 +100,21 @@ const TasksTable = (props) => {
           displayRowCheckbox={false}
         >
           {tasks.map((task, index, arr) => {
-            console.log('task', task)
+            const iconArrow = <IconButton style={styles.titleIconBottom}>
+              {showTasks[task.idProj] ?
+                <KeyboardArrowDown color={styles.titleIconBottomColor} /> :
+                <KeyboardArrowUp color={styles.titleIconBottomColor} />                          
+              }
+            </IconButton>
             if (task.delimiter) {
               return (<TableRow style={{height: 70}} displayBorder={false} key={index}>
                 <TableRowColumn style={{width: 20, padding: 0}} />
                 <TableRowColumn style={{width: 50}}/>
                 <TableRowColumn style={{width: 50, padding: 0, textAlign: 'center'}} />
-                <TableRowColumn style={{width: 500, paddingBottom: 10}}>
-                  <div style={styles.header}>
+                <TableRowColumn style={{width: 500, paddingBottom: 10, cursor: 'pointer'}}>
+                  <div style={styles.header} onClick={() => handleClick(task.idProj)}>
                     <div className={css.projectNameContainer}>
-                      <KeyboardArrowDown color={"rgba(0, 0, 0, 0.54)"}/>
+                      {iconArrow}
                       <div className={css.projectName}>{task.projectName}</div>
                     </div>
                     <div className={css.border}/>
@@ -114,7 +126,7 @@ const TasksTable = (props) => {
                 <TableRowColumn style={{width: 70, padding: 0, textAlign: 'center'}}/>
               </TableRow>);
             }
-            return (<TaskItem task={task} key={index}
+            return (<TaskItem task={task} key={index} showTasks={showTasks}
               displayBorder={(index !== arr.length - 1 && task.priority !== arr[index + 1].priority)}
               displayPriorityBadge={(index === 0 || task.priority !== arr[index - 1].priority)}
             />);

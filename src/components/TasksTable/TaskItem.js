@@ -9,7 +9,7 @@ import NewCommentBadge from '../../components/NewCommentBadge/NewCommentBadge';
 import TaskReassignWidget from '../../components/TaskReassignWidget/TaskReassignWidget';
 
 const TaskItem = (props, context) => {
-  const { task, displayBorder, displayPriorityBadge } = props;
+  const { task, displayBorder, displayPriorityBadge, showTasks } = props;
   const { muiTheme } = context;
   const styles = {
     priority: {
@@ -40,7 +40,9 @@ const TaskItem = (props, context) => {
   };
 
   return (
-    <TableRow selectable displayBorder={displayBorder}>
+    <TableRow selectable displayBorder={displayBorder}
+      style={showTasks[task.idProj] !== undefined ? showTasks[task.idProj] ? {} : 
+        {display: 'none', transition: 'none 0.5s linear'} : ''}>
 
       <TableRowColumn style={{width: 20, padding: 0}}>
         <div style={styles.priority}>

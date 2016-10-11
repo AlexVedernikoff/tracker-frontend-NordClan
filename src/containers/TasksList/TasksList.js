@@ -20,6 +20,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 
 @connect(
   state => {
+    console.log('state', state)
     return {
       tasks: state.tasks.data,
       filter: state.tasks.filter,
@@ -56,6 +57,14 @@ export default class TasksList extends Component {
     muiTheme: PropTypes.object.isRequired
   };
 
+  constructor() {
+    super()
+
+    this.state = {
+      showTasks: {}
+    }
+  }
+
   componentDidMount() {
     const {store} = this.context;
     if (!isTasksLoaded(store.getState())) {
@@ -86,6 +95,26 @@ export default class TasksList extends Component {
   @autobind
   onLayoutToggle() {
     this.props.toggleTasksTableLayout();
+  }
+
+  @autobind
+  handleClick(task) {
+    let tasksProject = this.tasksByProject
+    let state = this.state.showTasks
+
+    if(state[task] !== undefined) {
+      state[task] = !state[task]
+    } else {
+      state[task] = false
+    }
+
+    this.setState({taskToggle: state})
+
+    //При нажатии на заголовок проекта, выводим все таски проекта
+    //Пока не используется
+    let taskToggle = Object.keys(tasksProject)
+      .filter(id => tasksProject[id].idProj == task && tasksProject[id].id !== undefined)
+      .map(taskToggle => tasksProject[taskToggle].id)
   }
 
   get filteredTasks() {
@@ -173,6 +202,8 @@ export default class TasksList extends Component {
 
               {tableLayout && (
                 <TasksTable
+                  showTasks={this.state.showTasks}
+                  handleClick={this.handleClick}
                   tasks={this.tasksByProject}
                   onSortOrderToggle={this.onSortOrderToggle}
                   order={tasksOrder}
