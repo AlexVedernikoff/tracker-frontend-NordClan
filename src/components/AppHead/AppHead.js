@@ -63,6 +63,48 @@ export default class AppHead extends Component {
     // const { load } = this.props; // eslint-disable-line no-shadow
     const {user} = this.context;
 
+    const appBarIcons = (
+      <div>
+        <IconButton onTouchTap={this.handleTouchTap}>
+          <SocialPerson color={Colors.white}/>
+        </IconButton>
+        <Popover
+          open={this.state.open}
+          anchorEl={this.state.anchorEl}
+          anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+          targetOrigin={{horizontal: 'left', vertical: 'top'}}
+          onRequestClose={this.handleRequestClose}
+          animation={PopoverAnimationFromTop}
+        >
+          <div style={styles.popover}>
+            <List>
+              <ListItem
+                disabled
+                leftAvatar={<Avatar src={user.photo} />}
+              >
+                {user.firstNameRu} {user.lastNameRu}
+              </ListItem>
+            </List>
+          </div>
+        </Popover>
+        <IconMenu
+          iconButtonElement={
+            <IconButton><Settings color={Colors.white} /></IconButton>
+          }
+          targetOrigin={{horizontal: 'right', vertical: 'top'}}
+          anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+        >
+          <MenuItem primaryText="Refresh"/>
+          <MenuItem primaryText="Help"/>
+          <Divider />
+          <MenuItem primaryText="Sign out"/>
+        </IconMenu>
+        <IconButton>
+          <ActionExitToApp color={Colors.white}/>
+        </IconButton>
+      </div>
+    );
+
     const renderAppIconsBarLeft = (
       <IconMenu
         iconButtonElement={
