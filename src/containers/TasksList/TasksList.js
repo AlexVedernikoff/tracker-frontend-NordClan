@@ -148,21 +148,31 @@ export default class TasksList extends Component {
       showGroups={showGroups} onGroupVisibilityToggle={this.onGroupVisibilityToggle}
       tableLayout={tableLayout} onLayoutToggle={this.onLayoutToggle}
     />);
+
+    const renderFilterTask = (
+      <FilterPanel label="Фильтр:" onFilterChange={this.onFilterChange} >
+        <FilterSwitch active={filter.field} value="projectName" label="проект" />
+        <FilterSwitch active={filter.field} value="name" label="название" />
+        <FilterSwitch active={filter.field} value="creatorName" label="автор" />
+        <FilterSwitch active={filter.field} value="status" label="статус" />
+      </FilterPanel>
+    );
+
     return (
       <div>
         <AppHead/>
-        <Helmet title="Task List"/>
+        <Helmet title="Мои задачи"/>
         <Grid>
           <Row>
             <Col xs={12}>
               <h1 className={css.h1} style={styles.h1}>Мои задачи</h1>
-              <FilterSearchBar value={filter.search} onSearchStringChange = {this.onSearchStringChange} />
-              <FilterPanel label="Фильтр:" onFilterChange={this.onFilterChange} >
-                <FilterSwitch active={filter.field} value="projectName" label="проект" />
-                <FilterSwitch active={filter.field} value="name" label="название" />
-                <FilterSwitch active={filter.field} value="creatorName" label="автор" />
-                <FilterSwitch active={filter.field} value="status" label="статус" />
-              </FilterPanel>
+              
+              <FilterSearchBar value={filter.search} 
+                onSearchStringChange = {this.onSearchStringChange} 
+                onFocus={this.onFocus} onBlur={this.onBlur} />
+
+              {renderFilterTask}
+
               {tableLayout && (
                 <TasksTable
                   tasks={this.tasksByProject}
