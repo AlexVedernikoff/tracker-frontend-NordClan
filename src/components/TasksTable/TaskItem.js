@@ -41,8 +41,7 @@ const TaskItem = (props, context) => {
 
   return (
     <TableRow selectable displayBorder={displayBorder}
-      style={showTasks[task.idProj] !== undefined ? showTasks[task.idProj] ? {} : 
-        {display: 'none', transition: 'none 0.5s linear'} : ''}>
+      style={showTasks.hasOwnProperty(task.idProj) && !showTasks[task.idProj] ? {display: 'none'} : ''}>
 
       <TableRowColumn style={{width: 20, padding: 0}}>
         <div style={styles.priority}>
@@ -107,7 +106,8 @@ TaskItem.propTypes = {
     attachments: PropTypes.array
   }),
   displayBorder: PropTypes.bool,
-  displayPriorityBadge: PropTypes.bool
+  displayPriorityBadge: PropTypes.bool,
+  showTasks: PropTypes.object
 };
 
 TaskItem.contextTypes = {

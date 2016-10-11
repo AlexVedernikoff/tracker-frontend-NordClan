@@ -6,7 +6,6 @@ import {isLoaded as isTasksLoaded, load as loadTasks, setSearchString, setFilter
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
 import sequentialComparator from '../../utils/sequentialComparator';
 import sortOrder from '../../utils/sortOrder';
-import AppHead from '../../components/AppHead/AppHead';
 import FilterSearchBar from '../../components/FilterSearchBar/FilterSearchBar';
 import FilterPanel from '../../components/FilterPanel/FilterPanel';
 import FilterSwitch from '../../components/FilterSwitch/FilterSwitch';
@@ -57,11 +56,11 @@ export default class TasksList extends Component {
   };
 
   constructor() {
-    super()
+    super();
 
     this.state = {
       showTasks: {}
-    }
+    };
   }
 
   componentDidMount() {
@@ -98,10 +97,9 @@ export default class TasksList extends Component {
 
   @autobind
   handleClick(task) {
-    let tasksProject = this.tasksByProject;
-    let state = this.state.showTasks;
+    const state = this.state.showTasks;
 
-    if(state[task] !== undefined) {
+    if (state[task] !== undefined) {
       state[task] = !state[task];
     } else {
       state[task] = false;
@@ -111,9 +109,10 @@ export default class TasksList extends Component {
 
     //При нажатии на заголовок проекта, выводим все таски проекта
     //Пока не используется
-    let taskToggle = Object.keys(tasksProject)
-      .filter(id => tasksProject[id].idProj == task && tasksProject[id].id !== undefined)
-      .map(taskToggle => tasksProject[taskToggle].id)
+    //const tasksProject = this.tasksByProject;
+    // const taskToggle = Object.keys(tasksProject)
+    //   .filter(id => tasksProject[id].idProj === task && tasksProject[id].id !== undefined)
+    //   .map(taskToggle => tasksProject[taskToggle].id);
   }
 
   get filteredTasks() {
@@ -193,8 +192,8 @@ export default class TasksList extends Component {
           <Row>
             <Col xs={12}>
               <h1 className={css.h1} style={styles.h1}>Мои задачи</h1>
-              
-              <FilterSearchBar value={filter.search} 
+
+              <FilterSearchBar value={filter.search}
                 onSearchStringChange = {this.onSearchStringChange} />
 
               {renderFilterTask}
@@ -218,7 +217,7 @@ export default class TasksList extends Component {
             </Col>
           </Row>
         </Grid>
-        <FloatingActionButton style={{position: 'fixed', bottom: 35, right: 60}} backgroundColor='#F06292'>
+        <FloatingActionButton style={{position: 'fixed', bottom: 35, right: 60}} backgroundColor="#F06292">
           <Add />
         </FloatingActionButton>
       </div>

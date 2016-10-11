@@ -73,5 +73,3 @@ export default class Login extends Component {
     );
   }
 }
-
-const old = <button ><i className="fa fa-sign-out"/>{' '}Выйти</button>;

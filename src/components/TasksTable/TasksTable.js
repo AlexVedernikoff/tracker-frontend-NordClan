@@ -28,7 +28,7 @@ const width = {
   oneHundredTwenty: {
     width: 120
   }
-}
+};
 
 const styles = {
   header: {
@@ -45,7 +45,7 @@ const styles = {
     left: 10
   },
   titleIconBottomColor: 'rgba(0, 0, 0, 0.54)'
-}
+};
 
 const TasksTable = (props) => {
   const {tasks, order, onSortOrderToggle, viewSettings, handleClick, showTasks} = props;
@@ -100,12 +100,12 @@ const TasksTable = (props) => {
           displayRowCheckbox={false}
         >
           {tasks.map((task, index, arr) => {
-            const iconArrow = <IconButton style={styles.titleIconBottom}>
+            const iconArrow = (<IconButton style={styles.titleIconBottom}>
               {showTasks[task.idProj] ?
                 <KeyboardArrowDown color={styles.titleIconBottomColor} /> :
-                <KeyboardArrowUp color={styles.titleIconBottomColor} />                          
+                <KeyboardArrowUp color={styles.titleIconBottomColor} />
               }
-            </IconButton>
+            </IconButton>);
             if (task.delimiter) {
               return (<TableRow style={{height: 70}} displayBorder={false} key={index}>
                 <TableRowColumn style={{width: 20, padding: 0}} />
@@ -142,7 +142,9 @@ TasksTable.propTypes = {
   tasks: PropTypes.array.isRequired,
   order: PropTypes.object.isRequired,
   onSortOrderToggle: PropTypes.func.isRequired,
-  viewSettings: PropTypes.object
+  viewSettings: PropTypes.object,
+  handleClick: PropTypes.func.isRequired,
+  showTasks: PropTypes.object
 };
 
 TasksTable.defaultProps = {
