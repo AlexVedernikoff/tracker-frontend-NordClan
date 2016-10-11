@@ -11,15 +11,13 @@ import * as Colors from 'material-ui/styles/colors';
 // import ListItem from 'material-ui/List/ListItem';
 // import Avatar from 'material-ui/Avatar';
 // import Divider from 'material-ui/Divider';
-
+// import Settings from 'material-ui/svg-icons/action/settings';
+// import SocialPerson from 'material-ui/svg-icons/social/person';
+// import ActionExitToApp from 'material-ui/svg-icons/action/exit-to-app';
 import Tabs from 'material-ui/Tabs/Tabs';
 import Tab from 'material-ui/Tabs/Tab';
-
-// import SocialPerson from 'material-ui/svg-icons/social/person';
 import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-// import ActionExitToApp from 'material-ui/svg-icons/action/exit-to-app';
-// import Settings from 'material-ui/svg-icons/action/settings';
 import Search from 'material-ui/svg-icons/action/search';
 
 import { Link } from 'react-router';
@@ -57,53 +55,53 @@ export default class AppHead extends Component {
     this.setState({
       pathname: tab
     });
-  }
+  };
 
   render() {
     // const { load } = this.props; // eslint-disable-line no-shadow
     const {user} = this.context;
 
-    const appBarIcons = (
-      <div>
-        <IconButton onTouchTap={this.handleTouchTap}>
-          <SocialPerson color={Colors.white}/>
-        </IconButton>
-        <Popover
-          open={this.state.open}
-          anchorEl={this.state.anchorEl}
-          anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-          targetOrigin={{horizontal: 'left', vertical: 'top'}}
-          onRequestClose={this.handleRequestClose}
-          animation={PopoverAnimationFromTop}
-        >
-          <div style={styles.popover}>
-            <List>
-              <ListItem
-                disabled
-                leftAvatar={<Avatar src={user.photo} />}
-              >
-                {user.firstNameRu} {user.lastNameRu}
-              </ListItem>
-            </List>
-          </div>
-        </Popover>
-        <IconMenu
-          iconButtonElement={
-            <IconButton><Settings color={Colors.white} /></IconButton>
-          }
-          targetOrigin={{horizontal: 'right', vertical: 'top'}}
-          anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-        >
-          <MenuItem primaryText="Refresh"/>
-          <MenuItem primaryText="Help"/>
-          <Divider />
-          <MenuItem primaryText="Sign out"/>
-        </IconMenu>
-        <IconButton>
-          <ActionExitToApp color={Colors.white}/>
-        </IconButton>
-      </div>
-    );
+    // const appBarIcons = (
+    //   <div>
+    //     <IconButton onTouchTap={this.handleTouchTap}>
+    //       <SocialPerson color={Colors.white}/>
+    //     </IconButton>
+    //     <Popover
+    //       open={this.state.open}
+    //       anchorEl={this.state.anchorEl}
+    //       anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+    //       targetOrigin={{horizontal: 'left', vertical: 'top'}}
+    //       onRequestClose={this.handleRequestClose}
+    //       animation={PopoverAnimationFromTop}
+    //     >
+    //       <div style={styles.popover}>
+    //         <List>
+    //           <ListItem
+    //             disabled
+    //             leftAvatar={<Avatar src={user.photo} />}
+    //           >
+    //             {user.firstNameRu} {user.lastNameRu}
+    //           </ListItem>
+    //         </List>
+    //       </div>
+    //     </Popover>
+    //     <IconMenu
+    //       iconButtonElement={
+    //         <IconButton><Settings color={Colors.white} /></IconButton>
+    //       }
+    //       targetOrigin={{horizontal: 'right', vertical: 'top'}}
+    //       anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+    //     >
+    //       <MenuItem primaryText="Refresh"/>
+    //       <MenuItem primaryText="Help"/>
+    //       <Divider />
+    //       <MenuItem primaryText="Sign out"/>
+    //     </IconMenu>
+    //     <IconButton>
+    //       <ActionExitToApp color={Colors.white}/>
+    //     </IconButton>
+    //   </div>
+    // );
 
     const renderAppIconsBarLeft = (
       <IconMenu

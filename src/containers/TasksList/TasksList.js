@@ -6,7 +6,6 @@ import {isLoaded as isTasksLoaded, load as loadTasks, setSearchString, setFilter
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
 import sequentialComparator from '../../utils/sequentialComparator';
 import sortOrder from '../../utils/sortOrder';
-// import AppHead from '../../components/AppHead/AppHead';
 import FilterSearchBar from '../../components/FilterSearchBar/FilterSearchBar';
 import FilterPanel from '../../components/FilterPanel/FilterPanel';
 import FilterSwitch from '../../components/FilterSwitch/FilterSwitch';
@@ -56,6 +55,14 @@ export default class TasksList extends Component {
     muiTheme: PropTypes.object.isRequired
   };
 
+  constructor() {
+    super();
+
+    this.state = {
+      showTasks: {}
+    };
+  }
+
   componentDidMount() {
     const {store} = this.context;
     if (!isTasksLoaded(store.getState())) {
@@ -86,6 +93,26 @@ export default class TasksList extends Component {
   @autobind
   onLayoutToggle() {
     this.props.toggleTasksTableLayout();
+  }
+
+  @autobind
+  handleClick(task) {
+    const state = this.state.showTasks;
+
+    if (state[task] !== undefined) {
+      state[task] = !state[task];
+    } else {
+      state[task] = false;
+    }
+
+    this.setState({showTasks: state});
+
+    //При нажатии на заголовок проекта, выводим все таски проекта
+    //Пока не используется
+    //const tasksProject = this.tasksByProject;
+    // const taskToggle = Object.keys(tasksProject)
+    //   .filter(id => tasksProject[id].idProj === task && tasksProject[id].id !== undefined)
+    //   .map(taskToggle => tasksProject[taskToggle].id);
   }
 
   get filteredTasks() {
@@ -173,6 +200,8 @@ export default class TasksList extends Component {
 
               {tableLayout && (
                 <TasksTable
+                  showTasks={this.state.showTasks}
+                  handleClick={this.handleClick}
                   tasks={this.tasksByProject}
                   onSortOrderToggle={this.onSortOrderToggle}
                   order={tasksOrder}
