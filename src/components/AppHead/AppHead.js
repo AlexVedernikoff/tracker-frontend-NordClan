@@ -63,6 +63,48 @@ export default class AppHead extends Component {
     // const { load } = this.props; // eslint-disable-line no-shadow
     const {user} = this.context;
 
+    const appBarIcons = (
+      <div>
+        <IconButton onTouchTap={this.handleTouchTap}>
+          <SocialPerson color={Colors.white}/>
+        </IconButton>
+        <Popover
+          open={this.state.open}
+          anchorEl={this.state.anchorEl}
+          anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+          targetOrigin={{horizontal: 'left', vertical: 'top'}}
+          onRequestClose={this.handleRequestClose}
+          animation={PopoverAnimationFromTop}
+        >
+          <div style={styles.popover}>
+            <List>
+              <ListItem
+                disabled
+                leftAvatar={<Avatar src={user.photo} />}
+              >
+                {user.firstNameRu} {user.lastNameRu}
+              </ListItem>
+            </List>
+          </div>
+        </Popover>
+        <IconMenu
+          iconButtonElement={
+            <IconButton><Settings color={Colors.white} /></IconButton>
+          }
+          targetOrigin={{horizontal: 'right', vertical: 'top'}}
+          anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+        >
+          <MenuItem primaryText="Refresh"/>
+          <MenuItem primaryText="Help"/>
+          <Divider />
+          <MenuItem primaryText="Sign out"/>
+        </IconMenu>
+        <IconButton>
+          <ActionExitToApp color={Colors.white}/>
+        </IconButton>
+      </div>
+    );
+
     const renderAppIconsBarLeft = (
       <IconMenu
         iconButtonElement={
@@ -94,7 +136,7 @@ export default class AppHead extends Component {
     );
 
     const renderAppMenuBar = (
-      <AppBar
+      <AppBar style={{boxShadow: "rgba(0, 0, 0, 0.117647) 0px 2px 3px, rgba(0, 0, 0, 0.117647) 0px 2px 3px"}}
         iconElementLeft={
         <Tabs className={styles.tabs} value={location.pathname}>
           <Tab label="scrum" value="/scrum"
@@ -110,7 +152,7 @@ export default class AppHead extends Component {
             onActive={this.handleActive} />
 
           <Tab label="отчет по времени" value="/repeat"
-            containerElement={<Link to="отчет по времени" />}
+            containerElement={<Link to="repeat" />}
             onActive={this.handleActive} />
         </Tabs>
         } />
