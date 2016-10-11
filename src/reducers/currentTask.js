@@ -1,5 +1,4 @@
-/* Редьюсер для выбора текущей задачи, создатель асинхронного действия */
-import types from '../../constants/ActionTypes';
+import types from '../constants/ActionTypes';
 
 const initialState = {
   loaded: false,
@@ -35,15 +34,3 @@ export default function reducer(state = initialState, action = {}) {
       return state;
   }
 }
-
-export function isCurrentTaskLoaded(state, id) {
-  return state.currentTask && state.currentTask.loaded && state.currentTask.data.id === id;
-}
-
-export function setCurrentTask(id) {
-  return {
-    types: [types.LOAD_CURRENT_TASK, types.LOAD_CURRENT_TASK_SUCCESS, types.LOAD_CURRENT_TASK_FAIL],
-    promise: (client) => client.get(`/loadTask/${id}`)
-  };
-}
-

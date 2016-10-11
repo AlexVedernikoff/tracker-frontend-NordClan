@@ -3,7 +3,7 @@ import {bindActionCreators} from 'redux';
 import ReactDom from 'react-dom';
 // import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {setCurrentTask, isCurrentTaskLoaded} from '../../redux/modules/current_task';
+import {setCurrentTask, isCurrentTaskLoaded} from '../../actions/currentTask';
 import List from 'material-ui/List/List';
 import ListItem from 'material-ui/List/ListItem';
 import Subheader from 'material-ui/Subheader/Subheader';

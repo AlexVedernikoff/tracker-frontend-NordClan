@@ -24,8 +24,18 @@ const Constants = {
 
   LOAD_CURRENT_TASK: 'LOAD_CURRENT_TASK',
   LOAD_CURRENT_TASK_SUCCESS: 'LOAD_CURRENT_TASK_SUCCESS',
-  LOAD_CURRENT_TASK_FAIL: 'LOAD_CURRENT_TASK_FAIL'
+  LOAD_CURRENT_TASK_FAIL: 'LOAD_CURRENT_TASK_FAIL',
 
+  // auth
+  LOAD: 'redux-example/auth/LOAD',
+  LOAD_SUCCESS: 'redux-example/auth/LOAD_SUCCESS',
+  LOAD_FAIL: 'redux-example/auth/LOAD_FAIL',
+  LOGIN: 'redux-example/auth/LOGIN',
+  LOGIN_SUCCESS: 'redux-example/auth/LOGIN_SUCCESS',
+  LOGIN_FAIL: 'redux-example/auth/LOGIN_FAIL',
+  LOGOUT: 'redux-example/auth/LOGOUT',
+  LOGOUT_SUCCESS: 'redux-example/auth/LOGOUT_SUCCESS',
+  LOGOUT_FAIL: 'redux-example/auth/LOGOUT_FAIL',
 };
 
 export default Constants;

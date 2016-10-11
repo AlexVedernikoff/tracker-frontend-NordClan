@@ -2,7 +2,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
-import { isLoaded as isAuthLoaded, load as loadAuth, logout } from '../../redux/modules/auth';
+import { isLoaded as isAuthLoaded, load as loadAuth, logout } from '../../actions/auth';
 import { push } from 'react-router-redux';
 import config from '../../config';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';

@@ -1,5 +1,5 @@
-import types from '../../constants/ActionTypes';
-import sortOrder from '../../utils/sortOrder';
+import types from '../constants/ActionTypes';
+import sortOrder from '../utils/sortOrder';
 
 const initialState = {
   loaded: false,
@@ -78,48 +78,4 @@ export default function reducer(state = initialState, action = {}) {
     default:
       return state;
   }
-}
-
-export function isLoaded(globalState) {
-  return globalState.tasks && globalState.tasks.loaded;
-}
-
-export function load() {
-  return {
-    types: [types.LOAD_TASKS, types.LOAD_TASKS_SUCCESS, types.LOAD_TASKS_FAIL],
-    promise: (client) => client.get('/loadTasks')
-  };
-}
-
-export function setSearchString(searchString) {
-  return {
-    type: types.SET_TASKS_SEARCH_STRING,
-    searchString
-  };
-}
-
-export function setFilterField(field) {
-  return {
-    type: types.SET_TASKS_FILTER_FIELD,
-    field
-  };
-}
-
-export function toggleTasksSortOrder(column) {
-  return {
-    type: types.TOGGLE_TASKS_SORT_ORDER,
-    column
-  };
-}
-
-export function toggleTasksGroups() {
-  return {
-    type: types.TOGGLE_TASKS_GROUPS
-  };
-}
-
-export function toggleTasksTableLayout() {
-  return {
-    type: types.TOGGLE_TASKS_TABLE_LAYOUT
-  };
 }

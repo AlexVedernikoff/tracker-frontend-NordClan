@@ -6,7 +6,7 @@ import favicon from 'serve-favicon';
 import compression from 'compression';
 import httpProxy from 'http-proxy';
 import path from 'path';
-import createStore from './redux/create';
+import createStore from './store/create';
 import ApiClient from './helpers/ApiClient';
 import Html from './helpers/Html';
 import PrettyError from 'pretty-error';
@@ -78,6 +78,7 @@ app.use((req, res) => {
     if (redirectLocation) {
       res.redirect(redirectLocation.pathname + redirectLocation.search);
     } else if (error) {
+      console.log('error', error)
       console.error('ROUTER ERROR:', pretty.render(error));
       res.status(500);
       hydrateOnClient();

@@ -1,6 +1,6 @@
 import React from 'react';
 import {IndexRedirect, Route} from 'react-router';
-import { isLoaded as isAuthLoaded, load as loadAuth } from './redux/modules/auth';
+import { isLoaded as isAuthLoaded, load as loadAuth } from './actions/auth';
 import {
   App,
   Login,
