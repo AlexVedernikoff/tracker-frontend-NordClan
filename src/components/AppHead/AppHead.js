@@ -5,21 +5,21 @@ import MenuItem from 'material-ui/MenuItem';
 import IconMenu from 'material-ui/IconMenu';
 import IconButton from 'material-ui/IconButton';
 import * as Colors from 'material-ui/styles/colors';
-// import Popover from 'material-ui/Popover';
-// import PopoverAnimationFromTop from 'material-ui/Popover/PopoverAnimationVertical';
-// import List from 'material-ui/List/List';
-// import ListItem from 'material-ui/List/ListItem';
-// import Avatar from 'material-ui/Avatar';
-// import Divider from 'material-ui/Divider';
+import Popover from 'material-ui/Popover';
+import PopoverAnimationFromTop from 'material-ui/Popover/PopoverAnimationVertical';
+import List from 'material-ui/List/List';
+import ListItem from 'material-ui/List/ListItem';
+import Avatar from 'material-ui/Avatar';
+import Divider from 'material-ui/Divider';
 
 import Tabs from 'material-ui/Tabs/Tabs';
 import Tab from 'material-ui/Tabs/Tab';
 
-// import SocialPerson from 'material-ui/svg-icons/social/person';
+import SocialPerson from 'material-ui/svg-icons/social/person';
 import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-// import ActionExitToApp from 'material-ui/svg-icons/action/exit-to-app';
-// import Settings from 'material-ui/svg-icons/action/settings';
+import ActionExitToApp from 'material-ui/svg-icons/action/exit-to-app';
+import Settings from 'material-ui/svg-icons/action/settings';
 import Search from 'material-ui/svg-icons/action/search';
 
 import { Link } from 'react-router';
