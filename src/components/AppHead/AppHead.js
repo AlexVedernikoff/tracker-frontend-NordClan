@@ -25,6 +25,10 @@ import Search from 'material-ui/svg-icons/action/search';
 import styles from './appHead.css';
 
 export default class AppHead extends Component {
+  static propTypes = {
+    pathname: PropTypes.string.isRequired
+  }
+
   static contextTypes = {
     user: PropTypes.object.isRequired
   }
@@ -53,6 +57,7 @@ export default class AppHead extends Component {
   render() {
     // const { load } = this.props; // eslint-disable-line no-shadow
     const {user} = this.context;
+    const { pathname } = this.props;
 
     // const appBarIcons = (
     //   <div>
@@ -129,7 +134,7 @@ export default class AppHead extends Component {
     const renderAppMenuBar = (
       <AppBar className={styles.renderAppMenuBar}
         iconElementLeft={
-        <Tabs className={styles.tabs} value={this.props.pathname}>
+        <Tabs className={styles.tabs} value={pathname}>
           <Tab label="scrum" value="/scrum"
             containerElement={<Link to="/scrum" />} />
 
