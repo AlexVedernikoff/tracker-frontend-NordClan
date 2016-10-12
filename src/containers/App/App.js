@@ -20,14 +20,18 @@ import AppHead from '../../components/AppHead/AppHead';
   }
 }])
 @connect(
-  state => ({user: state.auth.user}),
+  state => ({
+    user: state.auth.user,
+    pathname: state.routing.locationBeforeTransitions.pathname
+  }),
   {logout, pushState: push})
 export default class App extends Component {
   static propTypes = {
     children: PropTypes.object.isRequired,
     user: PropTypes.object,
     logout: PropTypes.func.isRequired,
-    pushState: PropTypes.func.isRequired
+    pushState: PropTypes.func.isRequired,
+    pathname: PropTypes.string
   };
 
   static contextTypes = {
@@ -68,7 +72,7 @@ export default class App extends Component {
         <Helmet {...config.app.head}/>
         <MuiThemeProvider muiTheme={muiTheme}>
           <div>
-            {this.props.user !== null ? <AppHead /> : ''}
+            {this.props.user !== null ? <AppHead pathname={this.props.pathname} /> : ''}
             {this.props.children}
           </div>
         </MuiThemeProvider>
