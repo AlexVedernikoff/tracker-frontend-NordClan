@@ -26,8 +26,8 @@ import styles from './appHead.css';
 
 export default class AppHead extends Component {
   static contextTypes = {
-    user: PropTypes.object.isRequired
-  }
+    user: PropTypes.object
+  };
 
   constructor(props) {
     super(props);
@@ -53,6 +53,10 @@ export default class AppHead extends Component {
   render() {
     // const { load } = this.props; // eslint-disable-line no-shadow
     const {user} = this.context;
+
+    if (!user) {
+      return null;
+    }
 
     // const appBarIcons = (
     //   <div>
