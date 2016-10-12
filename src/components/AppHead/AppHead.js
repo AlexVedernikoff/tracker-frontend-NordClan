@@ -26,8 +26,8 @@ import styles from './appHead.css';
 
 export default class AppHead extends Component {
   static propTypes = {
-    pathname: PropTypes.string.isRequired
-  }
+    pathname: PropTypes.string
+  };
 
   static contextTypes = {
     user: PropTypes.object
