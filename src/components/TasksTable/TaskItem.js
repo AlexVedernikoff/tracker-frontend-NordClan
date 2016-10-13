@@ -8,6 +8,8 @@ import DeadlineDate from '../../components/DeadlineDate/DeadlineDate';
 import NewCommentBadge from '../../components/NewCommentBadge/NewCommentBadge';
 import TaskReassignWidget from '../../components/TaskReassignWidget/TaskReassignWidget';
 
+import css from './TasksTable.scss';
+
 const TaskItem = (props, context) => {
   const { task, displayBorder, displayPriorityBadge, showTasks } = props;
   const { muiTheme } = context;
@@ -26,16 +28,6 @@ const TaskItem = (props, context) => {
       textAlign: 'center',
       borderBottomRightRadius: 2,
       borderTopRightRadius: 2
-    },
-    taskLink: {
-      color: 'rgba(0, 0, 0, 0.87)',
-      textOverflow: 'ellipsis',
-      overflow: 'hidden'
-    },
-    seventy: {
-      width: 70,
-      padding: 0,
-      textAlign: 'center'
     }
   };
 
@@ -43,40 +35,40 @@ const TaskItem = (props, context) => {
     <TableRow selectable displayBorder={displayBorder}
       style={showTasks.hasOwnProperty(task.idProj) && !showTasks[task.idProj] ? {display: 'none'} : ''}>
 
-      <TableRowColumn style={{width: 20, padding: 0}}>
+      <TableRowColumn className={css.priorityBadge}>
         <div style={styles.priority}>
             <div style={displayPriorityBadge ? styles.priorityBadge : {}}>{task.priority}</div>
         </div>
       </TableRowColumn>
 
-      <TableRowColumn style={{width: 50}}>{task.id}</TableRowColumn>
+      <TableRowColumn className={css.width_50}>{task.id}</TableRowColumn>
 
-      <TableRowColumn style={{width: 50, padding: 0, textAlign: 'center'}}>
+      <TableRowColumn className={css.columnTask}>
         <ButtonChangeStatus status={task.status} compact/>
       </TableRowColumn>
 
-      <TableRowColumn style={{width: 500}}>
-        <div style={{display: 'flex', flexDirection: 'column'}}>
-          <Link to={`/task/${task.id}`} style={styles.taskLink}>{task.name}</Link>
+      <TableRowColumn className={css.width_500}>
+        <div>
+          <Link to={`/task/${task.id}`} className={css.taskLink}>{task.name}</Link>
           <div style={{color: 'rgba(0, 0, 0, 0.54)'}}>Создал(а) задачу {task.creator.name}</div>
         </div>
       </TableRowColumn>
 
-      <TableRowColumn style={styles.seventy}>
+      <TableRowColumn className={css.columnDefault}>
         <TaskProgressBar spent={task.currentTime} planned={task.plannedTime} spentLabel={'Потрачено'}
                          plannedLabel={'Планируемое'}
                          style={{marginBottom: 10}}/>
       </TableRowColumn>
 
-      <TableRowColumn style={styles.seventy}>
+      <TableRowColumn className={css.columnDefault}>
         <DeadlineDate date={task.planEndDate} style={{fontSize: 18}}/>
       </TableRowColumn>
 
-      <TableRowColumn style={styles.seventy}>
+      <TableRowColumn className={css.columnDefault}>
         <NewCommentBadge count={10} comment="И стоит ли оставлять комментарии, если их никто не читает" author="Яков Плэйсхолдер" date={task.planEndDate} />
       </TableRowColumn>
 
-      <TableRowColumn style={styles.seventy}>
+      <TableRowColumn className={css.columnDefault}>
         <TaskReassignWidget taskName={task.name} projectName={task.name} taskExpertise="Some expertise" />
       </TableRowColumn>
 

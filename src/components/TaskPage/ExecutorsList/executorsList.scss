@@ -1,0 +1,43 @@
+.execBlock {
+  position: relative;
+}
+
+.execWrap {
+  max-height: 560px;
+  overflow-y: hidden;
+  transition: all 800ms cubic-bezier(0, 1, 0.5, 1);
+}
+
+.execPrimaryText {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.execSeparatorBtn {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  margin-left: -24px;
+}
+
+.execSeparator {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  position: relative;
+  padding-top: 24px;
+  margin-bottom: 42px;
+}
+
+.execDate {
+  text-align: right;
+}
+
+.execLine {
+  position: absolute;
+  top: -16px;
+  left: 27px;
+  height: 32px;
+  width: 1px;
+}

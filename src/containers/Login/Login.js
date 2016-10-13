@@ -27,8 +27,7 @@ export default class Login extends Component {
     const {user, logout} = this.props;
     const styles = require('./Login.scss');
     return (
-      <Paper className={styles.loginPage}
-             style={{width: '20rem', height: '20rem', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, margin: 'auto', backgroundColor: 'white', textAlign: 'center'}}>
+      <Paper className={styles.loginPage}>
         <Helmet title="Войти" />
         <AppBar title="Войти" showMenuIconButton={false}/>
         {!user &&
@@ -53,7 +52,7 @@ export default class Login extends Component {
             labelPosition="before"
             primary
           />
-          <p style={{margin: 0, fontSize: 12, color: 'rgba(0,0,0,0.54)'}}>Введите любой имя и нажмите войти</p>
+          <p className={styles.loginTextHint}>Введите любой имя и нажмите войти</p>
         </form>
         }
         {user &&

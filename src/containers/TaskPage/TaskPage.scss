@@ -4,3 +4,94 @@
 .layout{
   max-width: 1200px;
 }
+
+.main {
+  padding-right: 5%;
+}
+
+.header {
+  font-size: 16px;
+  line-height: 48px;
+  margin-bottom: 14px;
+  margin-top: -1px;
+}
+
+.wrapper {
+  margin-top: 120px;
+}
+
+.description {
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 80px;
+}
+
+.slider {
+  margin-bottom: 40px;
+}
+
+.sliderItem {
+  position: relative;
+}
+
+.sliderItemImg {
+  height: 100%;
+  width: 100%;
+}
+
+.sliderRemoveBtn {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  fill: '#a5a5a5';
+}
+
+.execDate {
+  text-align: right;
+}
+
+.execPrimaryText {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.execBlock {
+  position: relative;
+}
+
+.execWrap {
+  max-height: 560px;
+  overflow-y: hidden;
+  transition: all 800ms cubic-bezier(0, 1, 0.5, 1);
+}
+
+.execLine {
+  position: absolute;
+  top: -16px;
+  left: 27px;
+  height: 32px;
+  width: 1px;
+}
+
+.execSeparator {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  position: relative;
+  padding-top: 24px;
+  margin-bottom: 42px;
+}
+
+.execSeparatorBtn {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  margin-left: -24px;
+}
+
+.taskPage_actionButton {
+  position: fixed;
+  bottom: 35px;
+  right: 60px;
+}
