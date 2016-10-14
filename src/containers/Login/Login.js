@@ -31,16 +31,14 @@ export default class Login extends Component {
         <Helmet title="Войти" />
         <AppBar title="Войти" showMenuIconButton={false}/>
         {!user &&
-        <form autoComplete="off" style={{marginTop: '2rem'}} onSubmit={this.handleSubmit}>
+        <form style={{marginTop: '2rem'}} onSubmit={this.handleSubmit}>
           <TextField
-            autoComplete="off"
             hintText="Введите имя"
             floatingLabelText="Имя"
             ref="username"
             id="loginField"
           /><br/>
           <TextField
-            autoComplete="on"
             hintText="Введите пароль"
             floatingLabelText="Пароль"
             type="password"

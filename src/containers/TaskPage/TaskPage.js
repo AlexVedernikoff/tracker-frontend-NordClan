@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import Helmet from 'react-helmet';
 import {connect} from 'react-redux';
-import {setCurrentTask, isCurrentTaskLoaded} from '../../redux/modules/current_task';
+import {setCurrentTask, isCurrentTaskLoaded} from '../../actions/currentTask';
 // import {bindActionCreators} from 'redux';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
