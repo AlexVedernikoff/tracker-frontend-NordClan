@@ -12,107 +12,68 @@ import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-dow
 import KeyboardArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up';
 import IconButton from 'material-ui/IconButton';
 
-const width = {
-  ten: {
-    width: 10
-  },
-  thirty: {
-    width: 30
-  },
-  fifty: {
-    width: 50
-  },
-  seventy: {
-    width: 70
-  },
-  oneHundredTwenty: {
-    width: 120
-  }
-};
-
-const styles = {
-  header: {
-    display: 'flex',
-    flexDirection: 'column',
-    position: 'absolute',
-    width: 500,
-    left: 0,
-    right: 680,
-    margin: '0px auto'
-  },
-  titleIconBottom: {
-    top: '-12px',
-    left: 10
-  },
-  titleIconBottomColor: 'rgba(0, 0, 0, 0.54)'
-};
-
 const TasksTable = (props) => {
   const {tasks, order, onSortOrderToggle, viewSettings, handleClick, showTasks} = props;
+  const titleIconBottomColor = 'rgba(0, 0, 0, 0.54)';
   const css = require('./TasksTable.scss');
   return (
-    <Paper zDepth={1} rounded={false} style={{marginBottom: 100}}>
-      <Table
-        fixedHeader
-      >
+    <Paper zDepth={1} rounded={false} className={css.paper}>
+      <Table fixedHeader>
         <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
           <TableRow>
-            <TableHeaderColumn tooltip="Статус" className={css.tableHeader} style={{width: 30, padding: 0}}>
+            <TableHeaderColumn tooltip="Статус" className={css.emptyColumn}>
               <SortOrderSwitch order={order} value="priority" onChange={onSortOrderToggle} className={css.statusSortBadge} color="#FFFFFF" />
             </TableHeaderColumn>
 
-            <TableHeaderColumn tooltip="The ID" className={css.tableHeader} style={{width: 60, padding: 0}}>
+            <TableHeaderColumn tooltip="The ID" className={css.width_30}>
               <SortOrderSwitch label="ID" order={order} value="id" onChange={onSortOrderToggle}/>
             </TableHeaderColumn>
 
-            <TableHeaderColumn tooltip="Статус" className={css.tableHeader} style={width.fifty}>
+            <TableHeaderColumn tooltip="Статус" className={css.width_50}>
               <SortOrderSwitch label="Статус" order={order} value="status" onChange={onSortOrderToggle} />
             </TableHeaderColumn>
 
-            <TableHeaderColumn tooltip="Название" className={css.tableHeader} style={width.seventy}>
+            <TableHeaderColumn tooltip="Название" className={css.width_70}>
               <SortOrderSwitch label="Название" order={order} value="name" onChange={onSortOrderToggle}/>
             </TableHeaderColumn>
 
-            <TableHeaderColumn tooltip="Автор" className={css.tableHeader} style={width.seventy}>
+            <TableHeaderColumn tooltip="Автор" className={css.width_70}>
                 <SortOrderSwitch label="Автор" order={order} value="creatorName" onChange={onSortOrderToggle}/>
             </TableHeaderColumn>
 
             <TableHeaderColumn />
 
-            <TableHeaderColumn tooltip="Часы" className={css.tableHeader} style={width.ten}>
+            <TableHeaderColumn tooltip="Часы" className={css.width_10}>
               Часы
             </TableHeaderColumn>
 
-            <TableHeaderColumn tooltip="Дата" className={css.tableHeader} style={width.oneHundredTwenty}>
+            <TableHeaderColumn tooltip="Дата" className={css.width_120}>
               <SortOrderSwitch label="Дата" order={order} value="planEndDate" onChange={onSortOrderToggle} style={{textAlign: 'center'}} />
             </TableHeaderColumn>
 
-            <TableHeaderColumn tooltip="Настройки" className={css.tableHeader} style={width.seventy}>
+            <TableHeaderColumn tooltip="Настройки" className={css.width_70}>
               {viewSettings}
             </TableHeaderColumn>
 
           </TableRow>
         </TableHeader>
-        <TableBody
-          deselectOnClickaway
-          showRowHover
+        <TableBody deselectOnClickaway showRowHover
           stripedRows={false}
-          displayRowCheckbox={false}
-        >
+          displayRowCheckbox={false}>
           {tasks.map((task, index, arr) => {
-            const iconArrow = (<IconButton style={styles.titleIconBottom}>
+            const iconArrow = (<IconButton className={css.titleIconBottom}>
               {showTasks[task.idProj] ?
-                <KeyboardArrowDown color={styles.titleIconBottomColor} /> :
-                <KeyboardArrowUp color={styles.titleIconBottomColor} />
+                <KeyboardArrowDown color={titleIconBottomColor} /> :
+                <KeyboardArrowUp color={titleIconBottomColor} />
               }
             </IconButton>);
             if (task.delimiter) {
-              return (<TableRow style={{height: 70}} displayBorder={false} key={index}>
-                <TableRowColumn style={{width: 20, padding: 0}} />
-                <TableRowColumn style={{width: 50}}/>
-                <TableRowColumn style={{width: 50, padding: 0, textAlign: 'center'}} />
-                <TableRowColumn style={{width: 500, paddingBottom: 10, cursor: 'pointer'}}>
-                  <div style={styles.header} onClick={() => handleClick(task.idProj)}>
+              return (<TableRow className={css.height_70} displayBorder={false} key={index}>
+                <TableRowColumn className={css.emptyColumn} />
+                <TableRowColumn className={css.width_50} />
+                <TableRowColumn className={css.headerStatus} />
+                <TableRowColumn className={css.tableRowColumnTitle}>
+                  <div className={css.header} onClick={() => handleClick(task.idProj)}>
                     <div className={css.projectNameContainer}>
                       {iconArrow}
                       <div className={css.projectName}>{task.projectName}</div>
@@ -120,10 +81,10 @@ const TasksTable = (props) => {
                     <div className={css.border}/>
                   </div>
                 </TableRowColumn>
-                <TableRowColumn style={{width: 70, padding: 0, textAlign: 'center'}}/>
-                <TableRowColumn style={{width: 70, padding: 0, textAlign: 'center'}}/>
-                <TableRowColumn style={{width: 70, padding: 0, textAlign: 'center'}}/>
-                <TableRowColumn style={{width: 70, padding: 0, textAlign: 'center'}}/>
+                <TableRowColumn className={css.tableRowColumnDefault} />
+                <TableRowColumn className={css.tableRowColumnDefault} />
+                <TableRowColumn className={css.tableRowColumnDefault} />
+                <TableRowColumn className={css.tableRowColumnDefault} />
               </TableRow>);
             }
             return (<TaskItem task={task} key={index} showTasks={showTasks}

@@ -107,9 +107,9 @@ export default class TasksList extends Component {
 
     this.setState({showTasks: state});
 
-    //При нажатии на заголовок проекта, выводим все таски проекта
-    //Пока не используется
-    //const tasksProject = this.tasksByProject;
+    // При нажатии на заголовок проекта, выводим все таски проекта
+    // Пока не используется
+    // const tasksProject = this.tasksByProject;
     // const taskToggle = Object.keys(tasksProject)
     //   .filter(id => tasksProject[id].idProj === task && tasksProject[id].id !== undefined)
     //   .map(taskToggle => tasksProject[taskToggle].id);
@@ -217,7 +217,7 @@ export default class TasksList extends Component {
             </Col>
           </Row>
         </Grid>
-        <FloatingActionButton style={{position: 'fixed', bottom: 35, right: 60}} backgroundColor="#F06292">
+        <FloatingActionButton className={css.actionButton} backgroundColor="#F06292">
           <Add />
         </FloatingActionButton>
       </div>

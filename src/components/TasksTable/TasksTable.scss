@@ -34,4 +34,102 @@
   vertical-align: bottom;
   padding: 0;
   padding-bottom: 5px;
+  width: 30px;
+  padding: 0;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  width: 500px;
+  left: 0;
+  right: 677px;
+  margin: 0px auto;
+}
+
+.titleIconBottom {
+  top: -12px;
+  left: 10px;
+}
+
+.tableRowColumnDefault {
+  width: 70px;
+  padding: 0 !important;
+  text-align: center !important;
+}
+
+.headerStatus {
+  width: 50px;
+  padding: 0 !important;
+}
+
+.tableRowColumnTitle {
+  width: 500px;
+  padding-bottom: 15px; 
+  cursor: pointer;
+}
+
+.paper {
+  margin-bottom: 100px;
+}
+
+.emptyColumn {
+  width: 10px;
+  padding: 0 !important;  
+}
+
+.width_10 {
+  width: 10px;
+}
+
+.width_20 {
+  width: 20px;
+}
+
+.width_30 {
+  width: 30px;
+}
+
+.width_50 {
+  width: 50px;
+}
+
+.width_70 {
+  width: 70px;
+}
+
+.width_120 {
+  width: 120px;
+}
+
+.width_500 {
+  width: 500px;  
+}
+
+.height_70 {
+  height: 70px;
+}
+
+.columnDefault {
+  width: 70px;
+  padding: 0 !important;
+  text-align: center !important;
+}
+
+.columnTask {
+  width: 50px;
+  padding: 0 !important;
+  text-align: center !important;
+}
+
+.taskLink {
+  color: rgba(0, 0, 0, 0.87);
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.priorityBadge {
+  width: 20px;
+  padding: 0 !important;
 }
