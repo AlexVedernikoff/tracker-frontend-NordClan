@@ -1,10 +1,17 @@
 import React, {Component, PropTypes} from 'react';
+import { Link } from 'react-router';
 
 import AppBar from 'material-ui/AppBar';
 import MenuItem from 'material-ui/MenuItem';
 import IconMenu from 'material-ui/IconMenu';
 import IconButton from 'material-ui/IconButton';
 import * as Colors from 'material-ui/styles/colors';
+import Tabs from 'material-ui/Tabs/Tabs';
+import Tab from 'material-ui/Tabs/Tab';
+import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import Search from 'material-ui/svg-icons/action/search';
+
 // import Popover from 'material-ui/Popover';
 // import PopoverAnimationFromTop from 'material-ui/Popover/PopoverAnimationVertical';
 // import List from 'material-ui/List/List';
@@ -14,17 +21,14 @@ import * as Colors from 'material-ui/styles/colors';
 // import Settings from 'material-ui/svg-icons/action/settings';
 // import SocialPerson from 'material-ui/svg-icons/social/person';
 // import ActionExitToApp from 'material-ui/svg-icons/action/exit-to-app';
-import Tabs from 'material-ui/Tabs/Tabs';
-import Tab from 'material-ui/Tabs/Tab';
-import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import Search from 'material-ui/svg-icons/action/search';
-
-import { Link } from 'react-router';
 
 import styles from './appHead.css';
 
 export default class AppHead extends Component {
+  static propTypes = {
+    pathname: PropTypes.string.isRequired
+  }
+
   static contextTypes = {
     user: PropTypes.object.isRequired
   }
@@ -34,7 +38,6 @@ export default class AppHead extends Component {
 
     this.state = {
       open: false,
-      pathname: '/scrum'
     };
   }
 
@@ -51,15 +54,10 @@ export default class AppHead extends Component {
     });
   };
 
-  handleActive = tab => {
-    this.setState({
-      pathname: tab
-    });
-  };
-
   render() {
     // const { load } = this.props; // eslint-disable-line no-shadow
     const {user} = this.context;
+    const { pathname } = this.props;
 
     // const appBarIcons = (
     //   <div>
@@ -134,33 +132,28 @@ export default class AppHead extends Component {
     );
 
     const renderAppMenuBar = (
-      <AppBar style={{boxShadow: 'rgba(0, 0, 0, 0.117647) 0px 2px 3px, rgba(0, 0, 0, 0.117647) 0px 2px 3px'}}
+      <AppBar className={styles.renderAppMenuBar}
         iconElementLeft={
-        <Tabs className={styles.tabs} value={location.pathname}>
+        <Tabs className={styles.tabs} value={pathname}>
           <Tab label="scrum" value="/scrum"
-            containerElement={<Link to="/scrum" />}
-            onActive={this.handleActive} />
+            containerElement={<Link to="/scrum" />} />
 
           <Tab label="мои проекты" value="/project"
-            containerElement={<Link to="/project" />}
-            onActive={this.handleActive} />
+            containerElement={<Link to="/project" />} />
 
           <Tab label="мои задачи" value="/tasks"
-            containerElement={<Link to="/tasks" />}
-            onActive={this.handleActive} />
+            containerElement={<Link to="/tasks" />} />
 
           <Tab label="отчет по времени" value="/repeat"
-            containerElement={<Link to="repeat" />}
-            onActive={this.handleActive} />
+            containerElement={<Link to="/repeat" />} />
         </Tabs>
         } />
     );
-
     return (
       <div>
         <AppBar
           title="SimTracker"
-          style={{boxShadow: 'none'}}
+          className={styles.topAppBar}
           iconElementLeft={renderAppIconsBarLeft}
           iconElementRight={renderAppIconsBarRight}
         />
