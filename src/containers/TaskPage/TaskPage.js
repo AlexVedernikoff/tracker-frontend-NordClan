@@ -4,7 +4,6 @@ import Helmet from 'react-helmet';
 import {connect} from 'react-redux';
 import {setCurrentTask, isCurrentTaskLoaded} from '../../redux/modules/current_task';
 // import {bindActionCreators} from 'redux';
-import NavCancel from 'material-ui/svg-icons/navigation/cancel';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import EditorModeEdit from 'material-ui/svg-icons/editor/mode-edit';
@@ -16,13 +15,13 @@ import DocumentList from '../../components/TaskPage/DocumentList';
 import Terms from '../../components/TaskPage/Terms';
 import Details from '../../components/TaskPage/Details';
 import Comments from '../../components/TaskPage/Comments';
+import Slider from '../../components/TaskPage/Slider';
 
 @connect(
   state => ({task: state.currentTask.data}),
   dispatch => bindActionCreators({setCurrentTask}, dispatch)
 )
 export default class TaskPage extends Component {
-
   static propTypes = {
     task: PropTypes.shape({
       // id: PropTypes.string.isRequired,
@@ -51,7 +50,6 @@ export default class TaskPage extends Component {
   }
   static contextTypes = {
     store: PropTypes.object.isRequired,
-    muiTheme: PropTypes.object.isRequired
   }
   static defaultProps = {
     isActive: true,
@@ -74,61 +72,11 @@ export default class TaskPage extends Component {
     }
   }
 
-  getStyles() {
-    const theme = this.context.muiTheme;
-    const styles = {
-      sliderRemoveIco: {
-        cursor: 'pointer',
-        fill: '#a5a5a5',
-        border: '2px solid transparent',
-        borderColor: theme.rawTheme.palette.backgroundColor,
-        borderRadius: '50%',
-        background: theme.rawTheme.palette.backgroundColor
-      }
-    };
-    return styles;
-  }
-
-  handleSliderRemoveItem = () => {
-    console.log('Remove slider item');
-  };
-  handleMouseEnter = () => {};
-  handleMouseLeave = () => {};
-  handleTouchTap = (event) => {
-    console.log('event.target', event.target);
-    console.log('DOWNLOAD attached file', event.target.id);
-  };
-
   render() {
-    const styles = this.getStyles();
-
     const {task} = this.props;
 
     const grid = require('./TaskPage.scss');
     const css = require('./TaskPage.scss');
-
-    // const sliderSettings = {
-    //   dots: true,
-    //   infinite: true,
-    //   speed: 500,
-    //   slidesToShow: 3,
-    //   slidesToScroll: 1,
-    //
-    //   arrows: true,
-    //   adaptiveHeight: true,
-    //   draggable: true,
-    //   lazyLoad: true,
-    // };
-    const sliderImg = (<Col sm={3}>
-      <div className={css.sliderItem}>
-        <img className={css.sliderItemImg}
-        src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
-        <div className={css.sliderRemoveBtn}>
-          <NavCancel style={styles.sliderRemoveIco}
-          onClick={this.handleSliderRemoveItem} />
-        </div>
-      </div>
-      </Col>);
 
     const dataExecutors = {
       0: {
@@ -196,7 +144,7 @@ export default class TaskPage extends Component {
     };
     return (
       <div id="task-page">
-        <Helmet title="Task"/>
+        <Helmet title={task.name} />
         <Grid fluid className={grid.layout}>
         {
           task &&
@@ -212,21 +160,12 @@ export default class TaskPage extends Component {
                   <div className={css.header}>Описание</div>
                   <p className={css.description}>{task.about}</p>
                   <div className={css.header}>Изображения</div>
-                  {/*
-                  <Slider {...sliderSettings}>
-                    <img style={styles.sliderItemImg} src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
-                    <img style={styles.sliderItemImg} src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
-                    <img style={styles.sliderItemImg} src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
-                    <img style={styles.sliderItemImg} src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
-                    <img style={styles.sliderItemImg} src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
-                  </Slider>
-                  */}
                   <div className={css.slider}>
                     <Row between="sm">
-                      {sliderImg}
-                      {sliderImg}
-                      {sliderImg}
-                      {sliderImg}
+                      <Slider />
+                      <Slider />
+                      <Slider />
+                      <Slider />
                     </Row>
                   </div>
                   <div>

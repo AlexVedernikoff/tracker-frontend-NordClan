@@ -8,7 +8,8 @@ export default class ExecutorsListItem extends Component {
   static propTypes = {
     date: PropTypes.string,
     name: PropTypes.string,
-    status: PropTypes.string
+    status: PropTypes.string,
+    index: PropTypes.string
   }
 
   static contextTypes = {
@@ -42,23 +43,20 @@ export default class ExecutorsListItem extends Component {
   render() {
     const styles = this.getStyles();
     const css = require('./executorsList.scss');
-    const { date, name, status } = this.props;
-
+    const { date, name, status, index } = this.props;
     const icon = {
       iconPaused: <IconPaused />,
       iconInProcess: <IconInProcess style={styles.activeIcon} />,
       iconCompleted: <IconCompleted />
     };
+    const line = <span className={css.execLine} style={styles.background}></span>;
 
     return (
-      <ListItem
+      <ListItem className={css.execListItem}
         disabled
         style={styles.backgroundColor}
         primaryText={<div className={css.execPrimaryText}>{name}<span className={css.execDate}>{date}</span></div>}
-        secondaryText={
-          <div><span className={css.execLine} style={styles.background}></span>
-            <span>js - разработчик</span></div>
-        }
+        secondaryText={<div>{+index !== 0 ? line : ''}<span>js - разработчик</span></div>}
         secondaryTextLines={1}
         leftIcon={icon[status]}
         onMouseEnter={this.handleMouseEnter}

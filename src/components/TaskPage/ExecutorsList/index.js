@@ -59,6 +59,7 @@ export default class ExecutorsList extends Component {
     const css = require('./executorsList.scss');
     const data = this.props.data;
 
+
     return (
       <Col xs>
       <div className={css.execBlock}>
@@ -71,6 +72,7 @@ export default class ExecutorsList extends Component {
             {Object.keys(data).map(key => {
               return (
                 <ExecutorsListItem key={key}
+                  index={key}
                   date={data[key].date}
                   name={data[key].name}
                   status={data[key].status} />

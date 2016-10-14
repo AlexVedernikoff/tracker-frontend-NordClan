@@ -38,9 +38,62 @@ export default class Comments extends Component {
       slideIndex: value,
     });
   };
+
+  mapListItem(data){
+    let child = [];
+
+    child = data.map((item,key) => {
+      let nestedItems = [];
+       if (item.nestedItems) {
+         nestedItems = this.mapListItem(item.nestedItems);
+       }
+       return (<ListItem
+           leftAvatar={<Avatar src="" />}
+           primaryText={item.author}
+           secondaryText={<p>{item.text}</p>}
+           secondaryTextLines={2}
+           initiallyOpen key={key}
+           nestedItems={nestedItems} />);
+    })
+    return child;
+  }
+
   render() {
     const styles = this.getStyles();
-
+    const data = [
+      {
+        author: 'Brendan Lim',
+        text: 'Do you want to grab brunch?'
+      },
+      {
+        author: 'Scott Jennifer',
+        text: 'Do you want to grab brunch?',
+        nestedItems: [
+          {
+            author: 'Brendan Lim',
+            text: 'Do you want to grab brunch?'
+          },
+          {
+            author: 'Scott Jennifer',
+            text: 'Do you want to grab brunch?',
+            nestedItems: [
+              {
+                author: 'Scott Jennifer',
+                text: 'Wish I could come, but I&apos;m out of town this weekend.'
+              },
+            ]
+          },
+          {
+            author: 'Brendan Lim',
+            text: 'Do you want to grab brunch?',
+          },
+        ]
+      },
+      {
+        author: 'Brendan Lim',
+        text: 'Wish I could come.'
+      }
+    ];
     return (
       <Tabs onChange={this.handleChangeTabs}
         value={this.state.slideIndex}
@@ -49,50 +102,7 @@ export default class Comments extends Component {
         style={{width: '80%'}}>
         <Tab label="Комментарии" value={0} style={styles.tabsLabelText}>
           <List>
-            <ListItem
-              leftAvatar={<Avatar src="" />}
-              primaryText="Brendan Lim"
-              secondaryText={<p>Do you want to grab brunch?</p>}
-              secondaryTextLines={2}
-              key={1} />
-
-            <ListItem
-              leftAvatar={<Avatar src="" />}
-              primaryText="Scott Jennifer"
-              secondaryText={<p>Wish I could come.</p>}
-              secondaryTextLines={2}
-              initiallyOpen
-              key={2}
-              nestedItems={[
-                <ListItem
-                  leftAvatar={<Avatar src="" />}
-                  primaryText="Brendan Lim"
-                  secondaryText={<p>Do you want to grab brunch?</p>}
-                  secondaryTextLines={2}
-                />,
-                <ListItem
-                  leftAvatar={<Avatar src="" />}
-                  primaryText="Scott Jennifer"
-                  secondaryText={<p>Wish I could come, but I&apos;m out of town this weekend.</p>}
-                  secondaryTextLines={2}
-                  key={1}
-                  nestedItems={[
-                    <ListItem
-                      leftAvatar={<Avatar src="" />}
-                      primaryText="Brendan Lim"
-                      secondaryText={<p>Do you want to grab brunch?</p>}
-                      secondaryTextLines={2} />,
-                    <ListItem
-                      leftAvatar={<Avatar src="" />}
-                      primaryText="Scott Jennifer"
-                      key={2}
-                      secondaryText={<p>Wish I could come.</p>}
-                      secondaryTextLines={2}
-                    />
-                  ]}
-                />
-              ]}
-            />
+            {this.mapListItem(data)}
           </List>
         </Tab>
         <Tab label="История" value={1} style={styles.tabsLabelText} />

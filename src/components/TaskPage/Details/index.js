@@ -42,12 +42,6 @@ export default class Details extends Component {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center'
-      },
-      detailsRight: {
-        marginRight: '-10px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
       }
     };
     return styles;
@@ -64,7 +58,6 @@ export default class Details extends Component {
     const styles = this.getStyles();
     const css = require('./details.scss');
 
-    console.log('status', status);
     return (
       <Col xs>
         <div className={css.detailsBlock}>
@@ -73,17 +66,17 @@ export default class Details extends Component {
             <ListItem
               disabled
               primaryText={
-                <div className={css.detailsText} style={styles.detailsText}>Статус</div>
+                <div style={styles.detailsText}>Статус</div>
               }
               rightIconButton={
-                  <ButtonChangeStatus className={css.detailsRight} status={status} />
+                  <ButtonChangeStatus status={status} />
               }
             />
             <ListItem
               disabled
               primaryText={<div style={styles.detailsText}>Тип задачи</div>}
               rightIconButton={
-                <div style={styles.detailsRight}>
+                <div className={css.detailsRight}>
                   <DropDownMenu className={css.detailsDD} value={this.state.dropDownIndex} onChange={this.handleChangeDropDown} underlineStyle={{display: 'none'}}>
                     <MenuItem value={1} primaryText="Фича/Задача"/>
                     <MenuItem value={2} primaryText="Баг"/>
@@ -97,7 +90,7 @@ export default class Details extends Component {
               disabled
               primaryText={<div style={styles.detailsText}>Приоритет</div>}
               rightIconButton={
-                <div style={styles.detailsRight}>
+                <div className={css.detailsRight}>
                   <span style={styles.detailsPriorityIco}>{this.state.dropDownIndex}</span>
                   <DropDownMenu className={css.detailsDD} value={this.state.dropDownIndex} onChange={this.handleChangeDropDown} underlineStyle={{display: 'none'}}>
                     <MenuItem value={1} primaryText="Срочный"/>
