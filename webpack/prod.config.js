@@ -30,6 +30,7 @@ module.exports = {
   },
   module: {
     loaders: [
+     // { test: /\.css$/, loader: "style-loader!css-loader!postcss-loader" },
       { test: /\.jsx?$/, exclude: /node_modules/, loaders: [strip.loader('debug'), 'babel']},
       { test: /\.json$/, loader: 'json-loader' },
       { test: /(\.scss|\.css)$/, loader: ExtractTextPlugin.extract('style-loader', 'css?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass?sourceMap')},

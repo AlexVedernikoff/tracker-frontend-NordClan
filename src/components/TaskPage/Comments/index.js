@@ -39,22 +39,22 @@ export default class Comments extends Component {
     });
   };
 
-  mapListItem(data){
+  mapListItem(data) {
     let child = [];
 
-    child = data.map((item,key) => {
+    child = data.map((item, key) => {
       let nestedItems = [];
-       if (item.nestedItems) {
-         nestedItems = this.mapListItem(item.nestedItems);
-       }
-       return (<ListItem
-           leftAvatar={<Avatar src="" />}
-           primaryText={item.author}
-           secondaryText={<p>{item.text}</p>}
-           secondaryTextLines={2}
-           initiallyOpen key={key}
-           nestedItems={nestedItems} />);
-    })
+      if (item.nestedItems) {
+        nestedItems = this.mapListItem(item.nestedItems);
+      }
+      return (<ListItem
+        leftAvatar={<Avatar src="" />}
+        primaryText={item.author}
+        secondaryText={<p>{item.text}</p>}
+        secondaryTextLines={2}
+        initiallyOpen key={key}
+        nestedItems={nestedItems} />);
+    });
     return child;
   }
 
