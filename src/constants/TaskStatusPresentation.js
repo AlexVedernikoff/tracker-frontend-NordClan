@@ -20,14 +20,14 @@
  * @property {object} [iconProps] - набор props для компонента иконки (color, hoverColor и style)
  */
  const TaskStatusPresentation = [
-  {key: 'Новый', label: 'Новый', icon: ImagePanoramaFishEye},
-  {key: 'В процессе', label: 'В процессе', icon: AvPlayCircleFilled, iconProps: {color: 'green'}},
-  {key: 'На проверке', label: 'На проверке', icon: ImageAdjust},
-  {key: 'Требует внимания', label: 'Требует внимания', icon: AlertWarning, iconProps: {color: 'orange'}},
-  {key: 'Прерван', label: 'Прерван', icon: AvPauseCircleFilled},
-  {key: 'Заморожен', label: 'Заморожен', icon: PlacesAcUnit, iconProps: {color: 'blue'}},
-  {key: 'Завершен', label: 'Завершен', icon: ActionCheckCircle},
-  {key: 'Отклонен', label: 'Отклонен', icon: NotificationDoNotDisturbOn}
+  {key: 'New', label: 'Новый', icon: ImagePanoramaFishEye},
+  {key: 'In Process', label: 'В процессе', icon: AvPlayCircleFilled, iconProps: {color: 'green'}},
+  {key: 'Proposed', label: 'На проверке', icon: ImageAdjust},
+  {key: 'Needs Attention', label: 'Требует внимания', icon: AlertWarning, iconProps: {color: 'orange'}},
+  {key: 'Interrupted', label: 'Прерван', icon: AvPauseCircleFilled},
+  {key: 'Deferred', label: 'Заморожен', icon: PlacesAcUnit, iconProps: {color: 'blue'}},
+  {key: 'Completed', label: 'Завершен', icon: ActionCheckCircle},
+  {key: 'Off Track', label: 'Отклонен', icon: NotificationDoNotDisturbOn}
  ];
 
  export default TaskStatusPresentation;

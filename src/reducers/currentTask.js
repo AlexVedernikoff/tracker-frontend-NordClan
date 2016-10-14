@@ -30,6 +30,31 @@ export default function reducer(state = initialState, action = {}) {
         data: null,
         error: action.error
       };
+    case types.SET_CURRENT_TASK_PRIORITY:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          priority: action.id
+        }
+      };
+    case types.SET_CURRENT_TYPE_TASK:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          type: action.id
+        }
+      };
+
+    case types.SET_CURRENT_TASK_STATUS:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          status: action.id
+        }
+      };
     default:
       return state;
   }

@@ -9,7 +9,12 @@ import MenuItem from 'material-ui/MenuItem';
 
 export default class Details extends Component {
   static propTypes = {
-    status: PropTypes.string
+    status: PropTypes.string,
+    priority: PropTypes.number,
+    type: PropTypes.number,
+    handleChangeType: PropTypes.func,
+    handleChangePriority: PropTypes.func,
+    handleChangeStatus: PropTypes.func
   }
 
   static contextTypes = {
@@ -18,9 +23,6 @@ export default class Details extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.state = {
-      dropDownIndex: 1
-    };
   }
 
   getStyles() {
@@ -47,14 +49,9 @@ export default class Details extends Component {
     return styles;
   }
 
-  handleChangeDropDown = (event, index, value) => {
-    this.setState({
-      dropDownIndex: value,
-    });
-  };
-
   render() {
-    const { status } = this.props;
+    const { status, priority, type } = this.props;
+    const { handleChangeType, handleChangePriority, handleChangeStatus } = this.props;
     const styles = this.getStyles();
     const css = require('./details.scss');
 
@@ -69,7 +66,7 @@ export default class Details extends Component {
                 <div style={styles.detailsText}>Статус</div>
               }
               rightIconButton={
-                  <ButtonChangeStatus status={status} />
+                  <ButtonChangeStatus status={status} handleChangeStatus={handleChangeStatus}/>
               }
             />
             <ListItem
@@ -77,7 +74,7 @@ export default class Details extends Component {
               primaryText={<div style={styles.detailsText}>Тип задачи</div>}
               rightIconButton={
                 <div className={css.detailsRight}>
-                  <DropDownMenu className={css.detailsDD} value={this.state.dropDownIndex} onChange={this.handleChangeDropDown} underlineStyle={{display: 'none'}}>
+                  <DropDownMenu className={css.detailsDD} value={type} onChange={handleChangeType} underlineStyle={{display: 'none'}}>
                     <MenuItem value={1} primaryText="Фича/Задача"/>
                     <MenuItem value={2} primaryText="Баг"/>
                     <MenuItem value={3} primaryText="Изменение ТЗ"/>
@@ -91,8 +88,8 @@ export default class Details extends Component {
               primaryText={<div style={styles.detailsText}>Приоритет</div>}
               rightIconButton={
                 <div className={css.detailsRight}>
-                  <span style={styles.detailsPriorityIco}>{this.state.dropDownIndex}</span>
-                  <DropDownMenu className={css.detailsDD} value={this.state.dropDownIndex} onChange={this.handleChangeDropDown} underlineStyle={{display: 'none'}}>
+                  <span style={styles.detailsPriorityIco}>{priority}</span>
+                  <DropDownMenu className={css.detailsDD} value={priority} onChange={handleChangePriority} underlineStyle={{display: 'none'}}>
                     <MenuItem value={1} primaryText="Срочный"/>
                     <MenuItem value={2} primaryText="Высокий"/>
                     <MenuItem value={3} primaryText="Нормальный"/>

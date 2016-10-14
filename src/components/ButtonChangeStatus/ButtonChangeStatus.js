@@ -6,7 +6,7 @@ import Add from 'material-ui/svg-icons/content/add';
 import TaskStatusPresentation from '../../constants/TaskStatusPresentation';
 
 const ButtonChangeStatus = (props) => {
-  const {status, compact, style} = props;
+  const { status, compact, style, handleChangeStatus } = props;
   const styles = {
     label: {
       cursor: 'pointer',
@@ -17,10 +17,18 @@ const ButtonChangeStatus = (props) => {
     }
   };
   const currentStatus = TaskStatusPresentation.find(stat => (stat.key === status));
+
+  let menuItem = [];
+  menuItem = TaskStatusPresentation.map((stat) => (
+    <MenuItem key={stat.key} value={stat.key}
+      primaryText={stat.label} leftIcon={<stat.icon {...stat.iconProps} />}
+      style={{cursor: 'pointer'}}
+    />
+  ));
+
   return (
     <div style={style}>
       <IconMenu
-        tooltip={status}
         iconButtonElement={
           <div>
             {!compact && currentStatus && <span style={styles.label}>
@@ -30,14 +38,8 @@ const ButtonChangeStatus = (props) => {
               {currentStatus && <currentStatus.icon {...currentStatus.iconProps} /> || <Add/> }
             </IconButton>
         </div>
-      }
-      >
-        {TaskStatusPresentation.map((stat) => (
-          <MenuItem key={stat.key}
-            primaryText={stat.label} leftIcon={<stat.icon {...stat.iconProps} />}
-            style={{cursor: 'pointer'}}
-          />
-        ))}
+      } onChange={handleChangeStatus}>
+        {menuItem}
       </IconMenu>
     </div>
   );
@@ -46,7 +48,8 @@ const ButtonChangeStatus = (props) => {
 ButtonChangeStatus.propTypes = {
   status: PropTypes.string.isRequired,
   style: PropTypes.object,
-  compact: PropTypes.bool
+  compact: PropTypes.bool,
+  handleChangeStatus: PropTypes.func
 };
 
 ButtonChangeStatus.defaultProps = {
