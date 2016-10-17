@@ -1,5 +1,5 @@
 .itemContent {
-  padding: 10px 15px 10px 30px;
+  padding: 3px 7px 10px 35px;
 
   a {
     color: inherit;
@@ -12,14 +12,16 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  font-size: 12px;
 }
 
 .itemDate {
   float: right;
+  font-size: 12px;
 }
 
 .itemHead {
-  padding-bottom: 10px;
+  padding-bottom: 20px;
 
   &:after {
     content: '';
@@ -35,21 +37,37 @@
 }
 
 .itemInfo {
-  width: 85%;
+  width: 84%;
 }
 
 .itemProgressBar {
   width: 50%;
   max-width: 120px;
+  margin-top: 17px;
 }
 
 .itemActions{
   float: right;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 .itemActionsInner{
   text-align: right;
+  position: relative;
+  left: 10px;
+}
+
+.creatorText {
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 0.75em;
+  margin-top: 5;
+}
+
+.taskLink {
+  color: rgba(0, 0, 0, 0.87);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 @media all and (max-width: 1199px) {

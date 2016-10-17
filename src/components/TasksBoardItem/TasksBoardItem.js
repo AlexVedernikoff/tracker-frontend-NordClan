@@ -23,30 +23,28 @@ const TaskBoardItem = (props) => {
       top: 0,
       left: 0,
       color: theme.rawTheme.palette.alternateTextColor,
-      width: 20
+      width: 16,
+      borderTopLeftRadius: 2,
+      fontSize: 13
     },
     priorityBadge: {
       backgroundColor: priorityColors[itemData.priority-1],
-      height: 20,
+      height: 18,
       textAlign: 'center',
       borderBottomRightRadius: 2,
-      borderTopRightRadius: 2
-    },
-    taskLink: {
-      color: 'rgba(0, 0, 0, 0.87)',
-      textOverflow: 'ellipsis',
-      overflow: 'hidden',
-      whiteSpace: 'nowrap'
-    },
-    creatorText: {
-      color: 'rgba(0, 0, 0, 0.54)',
-      fontSize: '0.75em'
+      borderTopRightRadius: 2,
+      paddingTop: 2
     },
     paper: {
       backgroundColor: theme.rawTheme.palette.alternateTextColor,
-      height: 160,
+      height: 150,
       position: 'relative',
-      marginBottom: 2
+      marginBottom: 3
+    },
+    ButtonChangeStatus: {
+      left: 15,
+      position: 'relative',
+      top: '-10px'
     }
   };
 
@@ -64,12 +62,12 @@ const TaskBoardItem = (props) => {
       </div>
       <div className={styles.itemInfo}>
         <Link to={`/task/${itemData.id}`}>
-          <div style={inlineStyles.taskLink}>{itemData.name}</div>
+          <div className={styles.taskLink}>{itemData.name}</div>
         </Link>
-        <div style={inlineStyles.creatorText}>{`${itemData.projectName}, ${itemData.creatorName}`}</div>
+        <div className={styles.creatorText}>{`${itemData.projectName}, ${itemData.creatorName}`}</div>
       </div>
       <div className={styles.statusButton}>
-        <ButtonChangeStatus status={itemData.status} compact />
+        <ButtonChangeStatus status={itemData.status} compact style={inlineStyles.ButtonChangeStatus} />
       </div>
       <div className={styles.itemProgressBar}>
         <TaskProgressBar
@@ -81,15 +79,15 @@ const TaskBoardItem = (props) => {
       </div>
       <div className={styles.itemActions}>
         <div className={styles.itemActionsInner}>
+          <TaskReassignWidget taskName={itemData.name} projectName={itemData.name} taskExpertise="Some expertise" />
+        </div>
+        <div className={styles.itemActionsInner}>
           <NewCommentBadge
             count={10}
             comment="Стоит ли оставлять комментарии, если их никто не читает"
             author="Яков Плэйсхолдер"
             date={itemData.planEndDate}
           />
-        </div>
-        <div className={styles.itemActionsInner}>
-          <TaskReassignWidget taskName={itemData.name} projectName={itemData.name} taskExpertise="Some expertise" />
         </div>
       </div>
     </div>
