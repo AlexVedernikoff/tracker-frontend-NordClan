@@ -6,15 +6,9 @@ import Subheader from 'material-ui/Subheader/Subheader';
 import ButtonChangeStatus from '../../ButtonChangeStatus/ButtonChangeStatus';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
+import { grey300, grey400, cyan700, pink300, pink700 } from 'material-ui/styles/colors';
 
-
-const priorityBgColor = {
-  5: '#E0E0E0', // grey300
-  4: '#BDBDBD', // grey400
-  3: '#0097A7', // cyan700
-  2: '#F06292', // pink300
-  1: '#C2185B', // pink700
-}
+const priorityColors = [pink700, pink300, cyan700, grey400, grey300];
 
 export default class Details extends Component {
   static propTypes = {
@@ -83,7 +77,7 @@ export default class Details extends Component {
               primaryText={<div style={styles.detailsText}>Приоритет</div>}
               rightIconButton={
                 <div className={css.detailsRight}>
-                  <span className={css.detailsPriorityIco} style={{backgroundColor: priorityBgColor[priority]}}>{priority}</span>
+                  <span className={css.detailsPriorityIco} style={{backgroundColor: priorityColors[priority-1]}}>{priority}</span>
                   <DropDownMenu className={css.detailsDD} value={priority} onChange={handleChangePriority} underlineStyle={{display: 'none'}}>
                     <MenuItem value={1} primaryText="Срочный"/>
                     <MenuItem value={2} primaryText="Высокий"/>

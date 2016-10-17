@@ -6,21 +6,16 @@ import ButtonChangeStatus from '../../components/ButtonChangeStatus/ButtonChange
 import TaskProgressBar from '../../components/TaskProgressBar/TaskProgressBar';
 import NewCommentBadge from '../../components/NewCommentBadge/NewCommentBadge';
 import TaskReassignWidget from '../../components/TaskReassignWidget/TaskReassignWidget';
+import { grey300, grey400, cyan700, pink300, pink700 } from 'material-ui/styles/colors';
 
 const TaskBoardItem = (props) => {
   const {itemData, theme} = props;
   const styles = require('./TaskBoardItem.scss');
-  const priorityColors = [
-    theme.rawTheme.palette.priority1Color,
-    theme.rawTheme.palette.priority2Color,
-    theme.rawTheme.palette.priority3Color,
-    theme.rawTheme.palette.priority4Color,
-    theme.rawTheme.palette.priority5Color
-  ];
+  const priorityColors = [pink700, pink300, cyan700, grey400, grey300];
   const inlineStyles = {
     priority: {
       height: '100%',
-      borderLeftColor: priorityColors[itemData.priority - 1],
+      borderLeftColor: priorityColors[itemData.priority-1],
       borderLeftWidth: 5,
       borderLeftStyle: 'solid',
       position: 'absolute',
@@ -31,7 +26,7 @@ const TaskBoardItem = (props) => {
       width: 20
     },
     priorityBadge: {
-      backgroundColor: priorityColors[itemData.priority - 1],
+      backgroundColor: priorityColors[itemData.priority-1],
       height: 20,
       textAlign: 'center',
       borderBottomRightRadius: 2,

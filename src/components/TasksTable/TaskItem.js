@@ -7,16 +7,11 @@ import TaskProgressBar from '../../components/TaskProgressBar/TaskProgressBar';
 import DeadlineDate from '../../components/DeadlineDate/DeadlineDate';
 import NewCommentBadge from '../../components/NewCommentBadge/NewCommentBadge';
 import TaskReassignWidget from '../../components/TaskReassignWidget/TaskReassignWidget';
+import { grey300, grey400, cyan700, pink300, pink700 } from 'material-ui/styles/colors';
 
 import css from './TasksTable.scss';
 
-const priorityBgColor = {
-  5: '#E0E0E0', // grey300
-  4: '#BDBDBD', // grey400
-  3: '#0097A7', // cyan700
-  2: '#F06292', // pink300
-  1: '#C2185B', // pink700
-}
+const priorityColors = [pink700, pink300, cyan700, grey400, grey300];
 
 const TaskItem = (props, context) => {
   const { task, displayBorder, displayPriorityBadge, showTasks } = props;
@@ -24,7 +19,7 @@ const TaskItem = (props, context) => {
   const styles = {
     priority: {
       height: '100%',
-      borderLeftColor: priorityBgColor[task.priority],
+      borderLeftColor: priorityColors[task.priority-1],
       borderLeftWidth: 5,
       borderLeftStyle: 'solid',
       position: 'relative',
@@ -37,7 +32,7 @@ const TaskItem = (props, context) => {
 
       <TableRowColumn className={css.priorityBadge}>
         <div style={styles.priority}>
-            <div style={displayPriorityBadge ? {backgroundColor: priorityBgColor[task.priority]} : {}}
+            <div style={displayPriorityBadge ? {backgroundColor: priorityColors[task.priority-1]} : {}}
               className={displayPriorityBadge ? css.displayTaskPriority : ''}>{task.priority}</div>
         </div>
       </TableRowColumn>
