@@ -7,6 +7,15 @@ import ButtonChangeStatus from '../../ButtonChangeStatus/ButtonChangeStatus';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 
+
+const priorityBgColor = {
+  5: '#E0E0E0', // grey300
+  4: '#BDBDBD', // grey400
+  3: '#0097A7', // cyan700
+  2: '#F06292', // pink300
+  1: '#C2185B', // pink700
+}
+
 export default class Details extends Component {
   static propTypes = {
     status: PropTypes.string,
@@ -30,20 +39,6 @@ export default class Details extends Component {
     const styles = {
       detailsText: {
         color: theme.rawTheme.palette.accent3Color
-      },
-      detailsPriorityIco: {
-        marginRight: '-10px',
-        marginTop: '7px',
-        borderRadius: '50%',
-        color: theme.rawTheme.palette.canvasColor,
-        backgroundColor: theme.rawTheme.palette.primary2Color,
-        textShadow: '1px 1px 1px rgba(0, 0, 0, 0.15)',
-        width: '20px',
-        height: '20px',
-        fontSize: '12px',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
       }
     };
     return styles;
@@ -88,7 +83,7 @@ export default class Details extends Component {
               primaryText={<div style={styles.detailsText}>Приоритет</div>}
               rightIconButton={
                 <div className={css.detailsRight}>
-                  <span style={styles.detailsPriorityIco}>{priority}</span>
+                  <span className={css.detailsPriorityIco} style={{backgroundColor: priorityBgColor[priority]}}>{priority}</span>
                   <DropDownMenu className={css.detailsDD} value={priority} onChange={handleChangePriority} underlineStyle={{display: 'none'}}>
                     <MenuItem value={1} primaryText="Срочный"/>
                     <MenuItem value={2} primaryText="Высокий"/>

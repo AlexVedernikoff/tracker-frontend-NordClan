@@ -10,41 +10,42 @@ import TaskReassignWidget from '../../components/TaskReassignWidget/TaskReassign
 
 import css from './TasksTable.scss';
 
+const priorityBgColor = {
+  5: '#E0E0E0', // grey300
+  4: '#BDBDBD', // grey400
+  3: '#0097A7', // cyan700
+  2: '#F06292', // pink300
+  1: '#C2185B', // pink700
+}
+
 const TaskItem = (props, context) => {
   const { task, displayBorder, displayPriorityBadge, showTasks } = props;
-  const { muiTheme } = context;
+  const { muiTheme, handleChangeStatus } = context;
   const styles = {
     priority: {
       height: '100%',
-      borderLeftColor: muiTheme.rawTheme.palette.primary1Color,
+      borderLeftColor: priorityBgColor[task.priority],
       borderLeftWidth: 5,
       borderLeftStyle: 'solid',
       position: 'relative',
       color: 'white'
-    },
-    priorityBadge: {
-      backgroundColor: muiTheme.rawTheme.palette.primary1Color,
-      height: 20,
-      textAlign: 'center',
-      borderBottomRightRadius: 2,
-      borderTopRightRadius: 2
     }
   };
-
   return (
     <TableRow selectable displayBorder={displayBorder}
       style={showTasks.hasOwnProperty(task.idProj) && !showTasks[task.idProj] ? {display: 'none'} : ''}>
 
       <TableRowColumn className={css.priorityBadge}>
         <div style={styles.priority}>
-            <div style={displayPriorityBadge ? styles.priorityBadge : {}}>{task.priority}</div>
+            <div style={displayPriorityBadge ? {backgroundColor: priorityBgColor[task.priority]} : {}}
+              className={displayPriorityBadge ? css.displayTaskPriority : ''}>{task.priority}</div>
         </div>
       </TableRowColumn>
 
       <TableRowColumn className={css.width_50}>{task.id}</TableRowColumn>
 
       <TableRowColumn className={css.columnTask}>
-        <ButtonChangeStatus status={task.status} compact/>
+        <ButtonChangeStatus status={task.status} compact handleChangeStatus={handleChangeStatus}/>
       </TableRowColumn>
 
       <TableRowColumn className={css.width_500}>
@@ -99,11 +100,13 @@ TaskItem.propTypes = {
   }),
   displayBorder: PropTypes.bool,
   displayPriorityBadge: PropTypes.bool,
-  showTasks: PropTypes.object
+  showTasks: PropTypes.object,
+  handleChangeStatus: PropTypes.func
 };
 
 TaskItem.contextTypes = {
-  muiTheme: PropTypes.object.isRequired
+  muiTheme: PropTypes.object.isRequired,
+  handleChangeStatus: PropTypes.func
 };
 
 export default TaskItem;

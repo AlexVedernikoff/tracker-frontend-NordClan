@@ -66,7 +66,7 @@
 
 .tableRowColumnTitle {
   width: 500px;
-  padding-bottom: 15px; 
+  padding-bottom: 15px;
   cursor: pointer;
 }
 
@@ -76,7 +76,7 @@
 
 .emptyColumn {
   width: 10px;
-  padding: 0 !important;  
+  padding: 0 !important;
 }
 
 .width_10 {
@@ -104,7 +104,7 @@
 }
 
 .width_500 {
-  width: 500px;  
+  width: 500px;
 }
 
 .height_70 {
@@ -132,4 +132,19 @@
 .priorityBadge {
   width: 20px;
   padding: 0 !important;
+}
+
+.linePriority {
+  height: 100%;
+  border-left-width: 5px;
+  border-left-style: solid;
+  position: relative;
+  color: white;
+}
+
+.displayTaskPriority {
+  height: 20px;
+  text-align: center;
+  border-bottom-right-radius: 2px;
+  border-top-right-radius: 2px;
 }
