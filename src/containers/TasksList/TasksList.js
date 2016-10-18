@@ -125,7 +125,7 @@ export default class TasksList extends Component {
     //   .map(taskToggle => tasksProject[taskToggle].id);
   }
 
-  handleChangeStatus = (event, index) => this.props.setStatus(index);
+  handleChangeStatus = (buttonProps, event, status) => this.props.setStatus(buttonProps.id, status);
 
   get filteredTasks() {
     const {filter} = this.props;
@@ -224,6 +224,7 @@ export default class TasksList extends Component {
                 <TasksBoard
                   tasks={this.tasksByProject}
                   viewSettings={viewSettings}
+                  handleChangeStatus={this.handleChangeStatus}
                   theme={theme}
                 />
               )}

@@ -77,11 +77,9 @@ export default function reducer(state = initialState, action = {}) {
       };
     case types.SET_CURRENT_TASK_STATUS:
       let data = [];
-      console.log('reducer', action);
-
       data = state.data.map(item => {
-        if (item.id === 'o2k187g0000l3rhd0le0000000') {
-          item.status = action.id;
+        if (item.id === action.id) {
+          item.status = action.status;
         }
         return item;
       });
