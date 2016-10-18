@@ -26,21 +26,26 @@ const ButtonChangeStatus = (props) => {
     />
   ));
 
+  const renderLabel = !compact && currentStatus &&
+    <span style={styles.label}>
+      {currentStatus.label}
+    </span>;
+
+  const renderIconMenu = (<IconMenu
+    iconButtonElement={
+      <div>
+        {renderLabel}
+        <IconButton>
+          {currentStatus && <currentStatus.icon {...currentStatus.iconProps} /> || <Add/> }
+        </IconButton>
+      </div>
+    } onChange={handleChangeStatus}>
+      {menuItem}
+    </IconMenu>);
+
   return (
     <div style={style}>
-      <IconMenu
-        iconButtonElement={
-          <div>
-            {!compact && currentStatus && <span style={styles.label}>
-              {currentStatus.label}
-            </span>}
-            <IconButton>
-              {currentStatus && <currentStatus.icon {...currentStatus.iconProps} /> || <Add/> }
-            </IconButton>
-        </div>
-      } onChange={handleChangeStatus}>
-        {menuItem}
-      </IconMenu>
+      {renderIconMenu}
     </div>
   );
 };
@@ -49,7 +54,8 @@ ButtonChangeStatus.propTypes = {
   status: PropTypes.string.isRequired,
   style: PropTypes.object,
   compact: PropTypes.bool,
-  handleChangeStatus: PropTypes.func
+  handleChangeStatus: PropTypes.func,
+  id: PropTypes.func
 };
 
 ButtonChangeStatus.defaultProps = {
