@@ -43,3 +43,11 @@ export function toggleTasksTableLayout() {
     type: types.TOGGLE_TASKS_TABLE_LAYOUT
   };
 }
+
+export function setStatus(id, status) {
+  return {
+    type: types.SET_CURRENT_TASK_STATUS,
+    id: id,
+    status: status
+  };
+}

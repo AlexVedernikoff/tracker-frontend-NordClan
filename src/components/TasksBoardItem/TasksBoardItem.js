@@ -15,7 +15,7 @@ const TaskBoardItem = (props) => {
   const inlineStyles = {
     priority: {
       height: '100%',
-      borderLeftColor: priorityColors[itemData.priority-1],
+      borderLeftColor: priorityColors[itemData.priority - 1],
       borderLeftWidth: 5,
       borderLeftStyle: 'solid',
       position: 'absolute',
@@ -28,7 +28,7 @@ const TaskBoardItem = (props) => {
       fontSize: 13
     },
     priorityBadge: {
-      backgroundColor: priorityColors[itemData.priority-1],
+      backgroundColor: priorityColors[itemData.priority - 1],
       height: 18,
       textAlign: 'center',
       borderBottomRightRadius: 2,

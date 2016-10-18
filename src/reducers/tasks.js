@@ -75,6 +75,20 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         tableLayout: Boolean(!state.tableLayout)
       };
+    case types.SET_CURRENT_TASK_STATUS:
+      let data = [];
+      console.log('reducer', action);
+
+      data = state.data.map(item => {
+        if (item.id === 'o2k187g0000l3rhd0le0000000') {
+          item.status = action.id;
+        }
+        return item;
+      });
+      return {
+        ...state,
+        data: data
+      };
     default:
       return state;
   }

@@ -15,11 +15,11 @@ const priorityColors = [pink700, pink300, cyan700, grey400, grey300];
 
 const TaskItem = (props, context) => {
   const { task, displayBorder, displayPriorityBadge, showTasks } = props;
-  const { muiTheme, handleChangeStatus } = context;
+  const { handleChangeStatus } = context;
   const styles = {
     priority: {
       height: '100%',
-      borderLeftColor: priorityColors[task.priority-1],
+      borderLeftColor: priorityColors[task.priority - 1],
       borderLeftWidth: 5,
       borderLeftStyle: 'solid',
       position: 'relative',
@@ -32,7 +32,7 @@ const TaskItem = (props, context) => {
 
       <TableRowColumn className={css.priorityBadge}>
         <div style={styles.priority}>
-            <div style={displayPriorityBadge ? {backgroundColor: priorityColors[task.priority-1]} : {}}
+            <div style={displayPriorityBadge ? {backgroundColor: priorityColors[task.priority - 1]} : {}}
               className={displayPriorityBadge ? css.displayTaskPriority : ''}>{task.priority}</div>
         </div>
       </TableRowColumn>
@@ -100,7 +100,6 @@ TaskItem.propTypes = {
 };
 
 TaskItem.contextTypes = {
-  muiTheme: PropTypes.object.isRequired,
   handleChangeStatus: PropTypes.func
 };
 

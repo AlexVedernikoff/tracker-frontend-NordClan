@@ -77,7 +77,7 @@ export default class Details extends Component {
               primaryText={<div style={styles.detailsText}>Приоритет</div>}
               rightIconButton={
                 <div className={css.detailsRight}>
-                  <span className={css.detailsPriorityIco} style={{backgroundColor: priorityColors[priority-1]}}>{priority}</span>
+                  <span className={css.detailsPriorityIco} style={{backgroundColor: priorityColors[priority - 1]}}>{priority}</span>
                   <DropDownMenu className={css.detailsDD} value={priority} onChange={handleChangePriority} underlineStyle={{display: 'none'}}>
                     <MenuItem value={1} primaryText="Срочный"/>
                     <MenuItem value={2} primaryText="Высокий"/>

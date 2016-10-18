@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { autobind } from 'core-decorators';
-import {isLoaded as isTasksLoaded, load as loadTasks, setSearchString, setFilterField, toggleTasksSortOrder, toggleTasksGroups, toggleTasksTableLayout} from '../../actions/tasks';
+import {isLoaded as isTasksLoaded, load as loadTasks, setSearchString, setFilterField, toggleTasksSortOrder, toggleTasksGroups, toggleTasksTableLayout, setStatus} from '../../actions/tasks';
 import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
 import sequentialComparator from '../../utils/sequentialComparator';
 import sortOrder from '../../utils/sortOrder';
@@ -29,7 +29,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
   },
   dispatch => bindActionCreators({
     loadTasks, setSearchString, setFilterField,
-    toggleTasksSortOrder, toggleTasksGroups, toggleTasksTableLayout
+    toggleTasksSortOrder, toggleTasksGroups, toggleTasksTableLayout, setStatus
   }, dispatch)
 )
 
@@ -48,11 +48,15 @@ export default class TasksList extends Component {
     setFilterField: PropTypes.func.isRequired,
     toggleTasksSortOrder: PropTypes.func.isRequired,
     toggleTasksGroups: PropTypes.func.isRequired,
-    toggleTasksTableLayout: PropTypes.func.isRequired
-  }
+    toggleTasksTableLayout: PropTypes.func.isRequired,
+    setStatus: PropTypes.func
+  };
   static contextTypes = {
     store: PropTypes.object.isRequired,
     muiTheme: PropTypes.object.isRequired
+  };
+  static childContextTypes = {
+    handleChangeStatus: PropTypes.func
   };
 
   constructor() {
@@ -60,6 +64,12 @@ export default class TasksList extends Component {
 
     this.state = {
       showTasks: {}
+    };
+  }
+
+  getChildContext() {
+    return {
+      handleChangeStatus: this.handleChangeStatus
     };
   }
 
@@ -114,6 +124,7 @@ export default class TasksList extends Component {
     //   .filter(id => tasksProject[id].idProj === task && tasksProject[id].id !== undefined)
     //   .map(taskToggle => tasksProject[taskToggle].id);
   }
+  handleChangeStatus = (event, index) => this.props.setStatus(index);
 
   get filteredTasks() {
     const {filter} = this.props;
@@ -206,7 +217,9 @@ export default class TasksList extends Component {
                   onSortOrderToggle={this.onSortOrderToggle}
                   order={tasksOrder}
                   viewSettings={viewSettings}
-                />
+                  handleChangeStatus={this.handleChangeStatus}
+                  // onClick={getTaskId()}
+                  />
               ) || (
                 <TasksBoard
                   tasks={this.tasksByProject}
