@@ -40,7 +40,7 @@ const TaskItem = (props, context) => {
       <TableRowColumn className={css.width_50}>{task.id}</TableRowColumn>
 
       <TableRowColumn className={css.columnTask}>
-        <ButtonChangeStatus status={task.status} compact handleChangeStatus={handleChangeStatus}/>
+        <ButtonChangeStatus status={task.status} compact id={task.id} handleChangeStatus={handleChangeStatus}/>
       </TableRowColumn>
 
       <TableRowColumn className={css.width_500}>
