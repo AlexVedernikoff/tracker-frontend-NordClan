@@ -79,7 +79,7 @@ export default class TaskPage extends Component {
 
   handleChangeType = (event, index, value) => this.props.setTypeTask(value);
   handleChangePriority = (event, index, value) => this.props.setPriority(value);
-  handleChangeStatus = (event, index) => this.props.setStatus(index);
+  handleChangeStatus = (buttonProps, event, status) => this.props.setStatus(status);
 
   render() {
     const grid = require('./TaskPage.scss');

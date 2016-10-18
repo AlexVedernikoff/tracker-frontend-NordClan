@@ -19,7 +19,7 @@ const renderIcon = (currentStatus) => {
 };
 
 const ButtonChangeStatus = (props) => {
-  const { status, compact, style, handleChangeStatus } = props;
+  const { status, compact, style, handleChangeStatus} = props;
   const currentStatus = TaskStatusPresentation.find(stat => (stat.key === status));
 
   let menuItem = [];
@@ -38,7 +38,7 @@ const ButtonChangeStatus = (props) => {
         {label}
         <IconButton>{icon}</IconButton>
       </div>
-      } onChange={handleChangeStatus}>
+    } onChange={handleChangeStatus.bind(this, props)}>
         {menuItem}
     </IconMenu>);
 
@@ -53,8 +53,7 @@ ButtonChangeStatus.propTypes = {
   status: PropTypes.string.isRequired,
   style: PropTypes.object,
   compact: PropTypes.bool,
-  handleChangeStatus: PropTypes.func,
-  id: PropTypes.func
+  handleChangeStatus: PropTypes.func
 };
 
 ButtonChangeStatus.defaultProps = {

@@ -8,8 +8,9 @@ import NewCommentBadge from '../../components/NewCommentBadge/NewCommentBadge';
 import TaskReassignWidget from '../../components/TaskReassignWidget/TaskReassignWidget';
 import { grey300, grey400, cyan700, pink300, pink700 } from 'material-ui/styles/colors';
 
-const TaskBoardItem = (props) => {
+const TaskBoardItem = (props, context) => {
   const {itemData, theme} = props;
+  const { handleChangeStatus } = context;
   const styles = require('./TaskBoardItem.scss');
   const priorityColors = [pink700, pink300, cyan700, grey400, grey300];
   const inlineStyles = {
@@ -67,7 +68,8 @@ const TaskBoardItem = (props) => {
         <div className={styles.creatorText}>{`${itemData.projectName}, ${itemData.creatorName}`}</div>
       </div>
       <div className={styles.statusButton}>
-        <ButtonChangeStatus status={itemData.status} compact style={inlineStyles.ButtonChangeStatus} />
+        <ButtonChangeStatus status={itemData.status} compact id={itemData.id}
+          style={inlineStyles.ButtonChangeStatus} handleChangeStatus={handleChangeStatus} />
       </div>
       <div className={styles.itemProgressBar}>
         <TaskProgressBar
@@ -96,7 +98,12 @@ const TaskBoardItem = (props) => {
 
 TaskBoardItem.propTypes = {
   itemData: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  handleChangeStatus: PropTypes.func
+};
+
+TaskBoardItem.contextTypes = {
+  handleChangeStatus: PropTypes.func
 };
 
 export default TaskBoardItem;
