@@ -124,6 +124,7 @@ export default class TasksList extends Component {
     //   .filter(id => tasksProject[id].idProj === task && tasksProject[id].id !== undefined)
     //   .map(taskToggle => tasksProject[taskToggle].id);
   }
+
   handleChangeStatus = (event, index) => this.props.setStatus(index);
 
   get filteredTasks() {
@@ -201,7 +202,7 @@ export default class TasksList extends Component {
         <Helmet title="Мои задачи"/>
         <Grid>
           <Row>
-            <Col xs={12}>
+            <Col xs={12} lg={12}>
               <h1 className={css.h1} style={styles.h1}>Мои задачи</h1>
 
               <FilterSearchBar value={filter.search}
@@ -218,7 +219,6 @@ export default class TasksList extends Component {
                   order={tasksOrder}
                   viewSettings={viewSettings}
                   handleChangeStatus={this.handleChangeStatus}
-                  // onClick={getTaskId()}
                   />
               ) || (
                 <TasksBoard

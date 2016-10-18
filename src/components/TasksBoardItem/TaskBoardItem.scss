@@ -70,8 +70,49 @@
   white-space: nowrap;
 }
 
-@media all and (max-width: 1199px) {
+@media only screen and (max-width: 1023px) {
   .itemInfo {
-    width: 75%;
+    height: 33px;
+    overflow: hidden;
+    font-size: 13px;
+  }
+
+  .statusButton {
+    float: right;
+    position: relative;
+    right: 5px;
+    top: -35px;
+  }
+
+  .itemActions {
+    margin-top: -50px;
+  }
+
+  .itemProgressBar {
+    margin-top: 30px;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .itemInfo {
+    width: 80%;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .itemInfo {
+    width: 82%;
+  }
+}
+
+@media only screen and (min-width: 1280px) {
+  .itemInfo {
+    width: 84%;
+  }
+}
+
+@media only screen and (min-width: 1600px) {
+  .itemActionsInner {
+    left: -4px;
   }
 }
