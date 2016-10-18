@@ -5,17 +5,21 @@ import MenuItem from 'material-ui/MenuItem/MenuItem';
 import Add from 'material-ui/svg-icons/content/add';
 import TaskStatusPresentation from '../../constants/TaskStatusPresentation';
 
+import styles from './ButtonChangeStatus.scss';
+
+const renderLabel = (isCompact, currentStatus) => {
+  if (!isCompact && currentStatus) {
+    return <span className={styles.label}>{currentStatus.label}</span>;
+  }
+  return null;
+};
+
+const renderIcon = (currentStatus) => {
+  return currentStatus ? <currentStatus.icon {...currentStatus.iconProps} /> : <Add/>;
+};
+
 const ButtonChangeStatus = (props) => {
   const { status, compact, style, handleChangeStatus } = props;
-  const styles = {
-    label: {
-      cursor: 'pointer',
-      padding: '12px 0',
-      display: 'inline-block',
-      verticalAlign: 'top',
-      lineHeight: '24px'
-    }
-  };
   const currentStatus = TaskStatusPresentation.find(stat => (stat.key === status));
 
   let menuItem = [];
@@ -26,21 +30,16 @@ const ButtonChangeStatus = (props) => {
     />
   ));
 
-  const renderLabel = !compact && currentStatus &&
-    <span style={styles.label}>
-      {currentStatus.label}
-    </span>;
-
-  const renderIconMenu = (<IconMenu
-    iconButtonElement={
+  const label = renderLabel(compact, currentStatus);
+  const icon = renderIcon(currentStatus);
+  const renderIconMenu = (
+    <IconMenu iconButtonElement={
       <div>
-        {renderLabel}
-        <IconButton>
-          {currentStatus && <currentStatus.icon {...currentStatus.iconProps} /> || <Add/> }
-        </IconButton>
+        {label}
+        <IconButton>{icon}</IconButton>
       </div>
-    } onChange={handleChangeStatus}>
-      {menuItem}
+      } onChange={handleChangeStatus}>
+        {menuItem}
     </IconMenu>);
 
   return (
