@@ -10,3 +10,24 @@ export function setCurrentTask(id) {
     promise: (client) => client.get(`/loadTask/${id}`)
   };
 }
+
+export function setPriority(id) {
+  return {
+    type: types.SET_CURRENT_TASK_PRIORITY,
+    id: id
+  };
+}
+
+export function setTypeTask(id) {
+  return {
+    type: types.SET_CURRENT_TYPE_TASK,
+    id: id
+  };
+}
+
+export function setStatus(id) {
+  return {
+    type: types.SET_CURRENT_TASK_STATUS,
+    id: id
+  };
+}

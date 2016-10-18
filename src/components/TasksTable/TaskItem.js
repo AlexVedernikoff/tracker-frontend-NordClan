@@ -7,44 +7,40 @@ import TaskProgressBar from '../../components/TaskProgressBar/TaskProgressBar';
 import DeadlineDate from '../../components/DeadlineDate/DeadlineDate';
 import NewCommentBadge from '../../components/NewCommentBadge/NewCommentBadge';
 import TaskReassignWidget from '../../components/TaskReassignWidget/TaskReassignWidget';
+import { grey300, grey400, cyan700, pink300, pink700 } from 'material-ui/styles/colors';
 
 import css from './TasksTable.scss';
 
+const priorityColors = [pink700, pink300, cyan700, grey400, grey300];
+
 const TaskItem = (props, context) => {
   const { task, displayBorder, displayPriorityBadge, showTasks } = props;
-  const { muiTheme } = context;
+  const { handleChangeStatus } = context;
   const styles = {
     priority: {
       height: '100%',
-      borderLeftColor: muiTheme.rawTheme.palette.primary1Color,
+      borderLeftColor: priorityColors[task.priority - 1],
       borderLeftWidth: 5,
       borderLeftStyle: 'solid',
       position: 'relative',
       color: 'white'
-    },
-    priorityBadge: {
-      backgroundColor: muiTheme.rawTheme.palette.primary1Color,
-      height: 20,
-      textAlign: 'center',
-      borderBottomRightRadius: 2,
-      borderTopRightRadius: 2
     }
   };
-
   return (
     <TableRow selectable displayBorder={displayBorder}
       style={showTasks.hasOwnProperty(task.idProj) && !showTasks[task.idProj] ? {display: 'none'} : ''}>
 
       <TableRowColumn className={css.priorityBadge}>
         <div style={styles.priority}>
-            <div style={displayPriorityBadge ? styles.priorityBadge : {}}>{task.priority}</div>
+            <div style={displayPriorityBadge ? {backgroundColor: priorityColors[task.priority - 1]} : {}}
+              className={displayPriorityBadge ? css.displayTaskPriority : ''}>{task.priority}</div>
         </div>
       </TableRowColumn>
 
       <TableRowColumn className={css.width_50}>{task.id}</TableRowColumn>
 
       <TableRowColumn className={css.columnTask}>
-        <ButtonChangeStatus status={task.status} compact/>
+        <ButtonChangeStatus status={task.status} compact handleChangeStatus={handleChangeStatus}/>
       </TableRowColumn>
 
       <TableRowColumn className={css.width_500}>
@@ -99,11 +95,12 @@ TaskItem.propTypes = {
   }),
   displayBorder: PropTypes.bool,
   displayPriorityBadge: PropTypes.bool,
-  showTasks: PropTypes.object
+  showTasks: PropTypes.object,
+  handleChangeStatus: PropTypes.func
 };
 
 TaskItem.contextTypes = {
-  muiTheme: PropTypes.object.isRequired
+  handleChangeStatus: PropTypes.func
 };
 
 export default TaskItem;

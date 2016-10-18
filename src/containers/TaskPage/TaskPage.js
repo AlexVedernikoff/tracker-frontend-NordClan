@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import Helmet from 'react-helmet';
 import {connect} from 'react-redux';
-import {setCurrentTask, isCurrentTaskLoaded} from '../../actions/currentTask';
+import {setCurrentTask, isCurrentTaskLoaded, setPriority, setTypeTask, setStatus} from '../../actions/currentTask';
 // import {bindActionCreators} from 'redux';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
@@ -19,7 +19,9 @@ import Slider from '../../components/TaskPage/Slider';
 
 @connect(
   state => ({task: state.currentTask.data}),
-  dispatch => bindActionCreators({setCurrentTask}, dispatch)
+  dispatch => bindActionCreators({
+    setCurrentTask, setPriority, setTypeTask, setStatus
+  }, dispatch)
 )
 export default class TaskPage extends Component {
   static propTypes = {
@@ -46,6 +48,9 @@ export default class TaskPage extends Component {
       updateDate: PropTypes.number.isRequired
     }),
     setCurrentTask: PropTypes.func.isRequired,
+    setPriority: PropTypes.func.isRequired,
+    setTypeTask: PropTypes.func.isRequired,
+    setStatus: PropTypes.func.isRequired,
     params: PropTypes.object.isRequired
   }
   static contextTypes = {
@@ -72,11 +77,21 @@ export default class TaskPage extends Component {
     }
   }
 
-  render() {
-    const {task} = this.props;
+  handleChangeType = (event, index, value) => this.props.setTypeTask(value);
+  handleChangePriority = (event, index, value) => this.props.setPriority(value);
+  handleChangeStatus = (event, index) => this.props.setStatus(index);
 
+  render() {
     const grid = require('./TaskPage.scss');
     const css = require('./TaskPage.scss');
+
+    const { task } = this.props;
+    const { priority, status } = task;
+    let { type } = task;
+
+    if (typeof type === 'string') { // временное приведение типа, пока рест не будет отдавать id
+      type = 1;
+    }
 
     const dataExecutors = {
       0: {
@@ -179,7 +194,12 @@ export default class TaskPage extends Component {
               <Col xs={4}>
                 <aside>
                   <Row>
-                    <Details status={task.status} />
+                    <Details status={status}
+                      priority={priority} type={type}
+                      handleChangePriority={this.handleChangePriority}
+                      handleChangeType={this.handleChangeType}
+                      handleChangeStatus={this.handleChangeStatus}
+                    />
                   </Row>
                   <Row>
                     <Terms />
