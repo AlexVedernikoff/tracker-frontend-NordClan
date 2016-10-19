@@ -44,7 +44,7 @@
   position: absolute;
   width: 1000px;
   left: 0;
-  right: 480px;
+  right: 180px;
   margin: 0px auto;
 }
 
@@ -72,6 +72,10 @@
 
 .paper {
   margin-bottom: 100px;
+}
+
+.tableTaskList {
+  position: relative;
 }
 
 .emptyColumn {
@@ -147,18 +151,6 @@
   text-align: center;
   border-bottom-right-radius: 2px;
   border-top-right-radius: 2px;
-}
-
-@media only screen and(max-width: 1599px) {
-  .header {
-    right: 205px;
-  }
-}
-
-@media only screen and(max-width: 1599px) {
-  .header {
-    right: 130px;
-  }
 }
 
 @media only screen and(max-width: 1199px) {
