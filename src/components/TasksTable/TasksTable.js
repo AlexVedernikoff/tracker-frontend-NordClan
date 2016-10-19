@@ -18,7 +18,7 @@ const TasksTable = (props) => {
   const css = require('./TasksTable.scss');
   return (
     <Paper zDepth={1} rounded={false} className={css.paper}>
-      <Table fixedHeader>
+      <Table fixedHeader className={css.tableTaskList}>
         <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
           <TableRow>
             <TableHeaderColumn tooltip="Статус" className={css.emptyColumn}>
