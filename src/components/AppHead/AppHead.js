@@ -24,12 +24,12 @@ import Search from 'material-ui/svg-icons/action/search';
 
 export default class AppHead extends Component {
   static propTypes = {
-    pathname: PropTypes.string.isRequired
-  }
+    pathname: PropTypes.string
+  };
 
   static contextTypes = {
-    user: PropTypes.object.isRequired
-  }
+    user: PropTypes.object
+  };
 
   constructor(props) {
     super(props);
@@ -57,6 +57,10 @@ export default class AppHead extends Component {
     const styles = require('./appHead.scss');
     const {user} = this.context;
     const { pathname } = this.props;
+
+    if (!user) {
+      return null;
+    }
 
     // const appBarIcons = (
     //   <div>

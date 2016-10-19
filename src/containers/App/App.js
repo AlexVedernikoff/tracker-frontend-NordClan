@@ -72,7 +72,7 @@ export default class App extends Component {
         <Helmet {...config.app.head}/>
         <MuiThemeProvider muiTheme={muiTheme}>
           <div>
-            {this.props.user !== null ? <AppHead pathname={this.props.pathname} /> : ''}
+            <AppHead pathname={this.props.pathname} />
             {this.props.children}
           </div>
         </MuiThemeProvider>

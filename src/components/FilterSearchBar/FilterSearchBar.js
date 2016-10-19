@@ -35,6 +35,7 @@ const FilterSearchBar = (props, context) => {
     <Paper zDepth={1} style={styles.paper}>
       <Search color={muiTheme.rawTheme.palette.primary1Color} style={styles.search}/>
       <TextField
+        id="search-field"
         hintText="Введите текст"
         onChange = {onSearchStringChange}
         style = {styles.input}
