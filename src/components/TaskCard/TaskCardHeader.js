@@ -5,29 +5,24 @@ import { Link } from 'react-router';
 const TaskCardHeader = (props, context) => {
   const {task} = props;
   const {muiTheme} = context;
+  const css = require('./cardHeader.scss');
   const styles = {
     title: {
       color: muiTheme.rawTheme.palette.primary1Color,
-      fontWeight: Typography.fontWeightMedium,
-      fontSize: '34px',
-      paddingTop: 20,
-      margin: 0
+      fontWeight: Typography.fontWeightMedium
     },
     info: {
-      fontSize: '12px',
-      color: muiTheme.rawTheme.palette.accent3Color,
-      marginBottom: '30px'
+      color: muiTheme.rawTheme.palette.accent3Color
     },
     a: {
-      color: muiTheme.rawTheme.palette.primary1Color,
-      textDecoration: 'none'
+      color: muiTheme.rawTheme.palette.primary1Color
     }
   };
 
   return (
     <div>
-      <h1 style={styles.title}>{task.id} {task.name}</h1>
-      <p style={styles.info}>
+      <h1 className={css.title} style={styles.title}>{task.id} {task.name}</h1>
+      <p className={css.info} style={styles.info}>
         <Link to="#" style={styles.a}> {task.projectName}</Link>, создал(а)
         <Link to="#" style={styles.a}> {task.creator ? task.creator.name : ''}</Link> 28 мая 2016, выполнит -
         <Link to="#" style={styles.a}> {task.owner ? task.owner.name : ''}</Link>

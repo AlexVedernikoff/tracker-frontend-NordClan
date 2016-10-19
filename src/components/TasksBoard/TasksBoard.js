@@ -3,14 +3,7 @@ import TasksBoardItem from '../TasksBoardItem/TasksBoardItem';
 
 const TasksBoard = (props) => {
   const { viewSettings, tasks, theme } = props;
-
-  const gridListStyles = {
-    width: '100%',
-    marginBottom: 24,
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start'
-  };
+  const styles = require('./taskBoard.scss');
 
   const firstColumn = [];
   const middleColumn = [];
@@ -37,7 +30,7 @@ const TasksBoard = (props) => {
   return (
     <div>
       {viewSettings}
-      <div style={gridListStyles}>
+      <div className={styles.gridListStyles}>
         <div style={{width: '30%'}}>
           {firstColumn.map((jsxItem) => jsxItem)}
         </div>

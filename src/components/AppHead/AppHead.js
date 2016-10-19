@@ -22,8 +22,6 @@ import Search from 'material-ui/svg-icons/action/search';
 // import SocialPerson from 'material-ui/svg-icons/social/person';
 // import ActionExitToApp from 'material-ui/svg-icons/action/exit-to-app';
 
-import styles from './appHead.css';
-
 export default class AppHead extends Component {
   static propTypes = {
     pathname: PropTypes.string.isRequired
@@ -56,6 +54,7 @@ export default class AppHead extends Component {
 
   render() {
     // const { load } = this.props; // eslint-disable-line no-shadow
+    const styles = require('./appHead.scss');
     const {user} = this.context;
     const { pathname } = this.props;
 

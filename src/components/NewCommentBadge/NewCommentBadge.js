@@ -43,50 +43,28 @@ class NewCommentBadge extends React.Component {
 
   render() {
     const theme = this.context.muiTheme;
+    const css = require('./newCommentBadge.scss');
     const styles = {
       badge: {
-        top: '-3px',
+        top: '-2px',
         width: '100%',
         height: '100%',
         fontSize: 10,
         borderRadius: 'none',
-        backgroundColor: 'none',
-      },
-      root: {
-        padding: '0px',
-        backgroundColor: 'none',
-        cursor: 'pointer'
-      },
-      button: {
-        padding: 0
-      },
-      icon: {
-        width: 36,
-        height: 36
-      },
-      comment: {
-        margin: 0,
-        fontSize: '0.9em'
+        backgroundColor: 'none'
       },
       commentInfo: {
-        color: theme.rawTheme.palette.accent3Color,
-        fontSize: 12,
-      },
-      ellipsis: {
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
+        color: theme.rawTheme.palette.accent3Color
       }
     };
-
     return (
       <div>
         <Badge
-          badgeContent={this.props.count} badgeStyle={styles.badge} style={styles.root}
+          badgeContent={this.props.count} badgeStyle={styles.badge} className={css.root}
           onMouseOver={this.mouseEnterHandler} onMouseOut={this.mouseLeaveHandler}
         >
-          <IconButton style={styles.button}>
-            <ChatBubbleOutline style={styles.icon}/>
+          <IconButton className={css.button}>
+            <ChatBubbleOutline className={css.icon}/>
           </IconButton>
         </Badge>
         <Popover
@@ -97,8 +75,8 @@ class NewCommentBadge extends React.Component {
           animated={false} useLayerForClickAway={false}
         >
           <ContentCrate style={{maxWidth: 300}}>
-            <p style={{...styles.comment, ...styles.ellipsis}}>{this.props.comment}</p>
-            <span style={{...styles.commentInfo, ...styles.ellipsis}}>{this.props.author}, {this.props.date}</span>
+            <p className={css.comment}>{this.props.comment}</p>
+            <span className={css.commentInfo} style={styles.commentInfo}>{this.props.author}, {this.props.date}</span>
           </ContentCrate>
         </Popover>
       </div>

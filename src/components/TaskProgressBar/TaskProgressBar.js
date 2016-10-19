@@ -3,36 +3,29 @@ import React, {PropTypes} from 'react';
 import LinearProgress from 'material-ui/LinearProgress';
 
 const TaskProgressBar = (props, context) => {
+  const css = require('./progressBar.scss');
   const {style, spentLabel, spent, plannedLabel, planned} = props;
   const {muiTheme} = context;
-  const styles = {
-    container: {
-      width: '100%',
-      textAlign: 'center',
-      ...style
-    },
-    label: {
-      fontSize: 12,
-      color: muiTheme.rawTheme.palette.primary3Color,
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap',
-      margin: 0
-    },
-    hours: {
-      fontSize: 20,
-      lineHeight: '14px',
-      marginBottom: 10
-    }
+  const palette = muiTheme.rawTheme.palette;
+  const labelStyle = {
+    color: palette.primary3Color,
   };
+
+  const renderLabel = (
+    <p className={css.label} style={labelStyle}>{spentLabel} / {plannedLabel}</p>
+  );
+  const renderLinearProgress = (
+    <LinearProgress mode="determinate" min={0} max={planned} value={spent}
+      color={(planned < spent) ? palette.accent1Color : palette.primary1Color }/>
+  );
+
   return (
-    <div style={styles.container}>
+    <div className={css.container} style={{...style}}>
       {() => {
-        if (spentLabel && plannedLabel) return (<p style={styles.label}>{spentLabel} / {plannedLabel}</p>);
+        if (spentLabel && plannedLabel) return (renderLabel);
       }}
-      <p style={styles.hours}>{spent}/{planned}</p>
-      <LinearProgress mode="determinate" min={0} max={planned} value={spent}
-                      color={(planned < spent) ? muiTheme.rawTheme.palette.accent1Color : muiTheme.rawTheme.palette.primary1Color }/>
+      <p className={css.hours}>{spent}/{planned}</p>
+      {renderLinearProgress}
     </div>
   );
 };

@@ -47,20 +47,15 @@ class TaskReassignWidget extends React.Component {
   render() {
     const {taskName, projectName, taskExpertise} = this.props;
     const theme = this.context.muiTheme;
-    const styles = {
-      header: {
-        color: theme.rawTheme.palette.primary1Color
-      },
-      subheader: {
-        display: 'block',
-        fontSize: 12
-      }
+    const headerColor = {
+      color: theme.rawTheme.palette.primary1Color
     };
+    const styles = require('./reassignWidget.scss');
 
     const header = (
       <div>
-        <span style={styles.header}>{taskName}</span>
-        <span style={styles.subheader}>{projectName}, {taskExpertise}</span>
+        <span style={headerColor}>{taskName}</span>
+        <span className={styles.subheader}>{projectName}, {taskExpertise}</span>
       </div>
     );
 

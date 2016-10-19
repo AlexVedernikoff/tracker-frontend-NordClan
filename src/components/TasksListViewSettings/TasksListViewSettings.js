@@ -38,11 +38,13 @@ class TasksListViewSettings extends React.Component {
   }
 
   render() {
+    const styles = require('./tasksListViewSettings.scss');
+    const color = 'rgba(0, 0, 0, 0.54)';
     const {showGroups, tableLayout, onGroupVisibilityToggle, onLayoutToggle} = this.props;
     return (
-      <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+      <div className={styles.viewSettings}>
         <IconButton onTouchTap={this.handleTouchTap} >
-          <MoreVertIcon style={{marginBottom: -4}} color={"rgba(0, 0, 0, 0.54)"}/>
+          <MoreVertIcon className={styles.verticalIcon} color={color}/>
         </IconButton>
         <Popover
           open={this.state.open}

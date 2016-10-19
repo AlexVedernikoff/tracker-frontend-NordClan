@@ -5,8 +5,6 @@ import { Col } from 'react-flexbox-grid/lib/index';
 import DeadlineDate from '../../DeadlineDate/DeadlineDate';
 import TaskProgressBar from '../../TaskProgressBar/TaskProgressBar';
 
-import css from './terms.css';
-
 export default class Terms extends Component {
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired
@@ -22,6 +20,7 @@ export default class Terms extends Component {
     return styles;
   }
   render() {
+    const css = require('./terms.scss');
     const styles = this.getStyles();
 
     return (
