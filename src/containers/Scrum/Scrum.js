@@ -14,7 +14,7 @@ export default class Scrum extends Component {
   };
   onFilterChange = value => console.log(value);
   render() {
-    const css = require('./scrum.scss');
+    const { css } = this.props;
     const theme = this.context.muiTheme;
     const h1 = {
       color: theme.rawTheme.palette.primary1Color,
@@ -50,3 +50,7 @@ export default class Scrum extends Component {
     );
   }
 }
+
+Scrum.defaultProps = {
+  css: require('./scrum.scss')
+};
