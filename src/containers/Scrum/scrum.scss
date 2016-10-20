@@ -1,0 +1,30 @@
+.h1 {
+  font-size: 34px;
+  padding-top: 19px;
+  margin-top: 55px;
+  -webkit-margin-after: 0em;
+}
+
+.actionButton {
+  position: fixed;
+  bottom: 35px;
+  right: 60px;
+}
+
+@media only screen and (min-width: 75em) {
+  .container {
+    width: 73rem;
+  }
+}
+
+@media only screen and (min-width: 80em) {
+  .container {
+    width: 78rem;
+  }
+}
+
+@media only screen and (min-width: 100em) {
+  .container {
+    width: 95rem;
+  }
+}
