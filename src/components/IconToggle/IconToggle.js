@@ -3,40 +3,20 @@ import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 
 const IconToggle = (props) => {
   const {name, stateOnIcon, stateOffIcon, toggled, onChange} = props;
-
-  const styles = {
-    group: {
-      position: 'absolute',
-      display: 'block',
-      width: 112,
-      top: 13,
-      right: 8
-    },
-    radio: {
-      float: 'right',
-      width: 'auto',
-      marginLeft: 16
-    },
-    icon: {
-    }
-  };
+  const css = require('./iconToggle.scss');
 
   return (
-    <RadioButtonGroup name={name} style={styles.group} valueSelected={Number(toggled).toString()} labelPostion= "left" onChange={onChange}>
+    <RadioButtonGroup name={name} className={css.group} valueSelected={Number(toggled).toString()} labelPostion= "left" onChange={onChange}>
       <RadioButton
         value="0"
-        style={styles.radio}
-        iconStyle={styles.icon}
-        checkedIcon={stateOnIcon}
-        uncheckedIcon={stateOnIcon}
-      />
+        className={css.radio}
+        checkedIcon={stateOffIcon}
+        uncheckedIcon={stateOffIcon} />
       <RadioButton
         value="1"
-        style={styles.radio}
-        iconStyle={styles.icon}
-        checkedIcon={stateOffIcon}
-        uncheckedIcon={stateOffIcon}
-      />
+        className={css.radio}
+        checkedIcon={stateOnIcon}
+        uncheckedIcon={stateOnIcon} />
     </RadioButtonGroup>
   );
 };

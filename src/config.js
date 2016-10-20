@@ -1,5 +1,5 @@
 require('babel-polyfill');
-const localConfig = require('./config.local');
+// const localConfig = require('./config.local');
 
 const environment = {
   development: {
@@ -34,4 +34,5 @@ module.exports = Object.assign({
       ]
     }
   }
-}, localConfig || {}, environment);
+}, environment);
+// }, localConfig || {}, environment);

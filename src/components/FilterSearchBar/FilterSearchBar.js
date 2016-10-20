@@ -9,36 +9,17 @@ import Search from 'material-ui/svg-icons/action/search';
 
 const FilterSearchBar = (props, context) => {
   const { onSearchStringChange } = props;
+  const css = require('./filterSearchBar.scss');
   const { muiTheme } = context;
-  const styles = {
-    paper: {
-      marginTop: 50,
-      backgroundColor: 'white',
-      height: 50,
-      display: 'flex'
-    },
-    search: {
-      margin: '12px 20px',
-      verticalAlign: 'top'
-    },
-    input: {
-      width: 'calc(100% - 64px)',
-      verticalAlign: 'top',
-      boxSizing: 'border-box'
-      // border: 'none',
-      // boxShadow: 'none',
-      // outline: 'none'
-    }
-  };
 
   return (
-    <Paper zDepth={1} style={styles.paper}>
-      <Search color={muiTheme.rawTheme.palette.primary1Color} style={styles.search}/>
+    <Paper zDepth={1} className={css.paper}>
+      <Search color={muiTheme.rawTheme.palette.primary1Color} className={css.search}/>
       <TextField
         id="search-field"
         hintText="Введите текст"
         onChange = {onSearchStringChange}
-        style = {styles.input}
+        className={css.input}
       />
     </Paper>
   );

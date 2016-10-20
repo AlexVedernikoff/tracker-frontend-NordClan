@@ -7,14 +7,7 @@ import AutoComplete from 'material-ui/AutoComplete/AutoComplete';
 
 const AutoCompleteDialog = (props) => {
   const {open, header, closeHandler, changeHandler, data} = props;
-
-  const styles = {
-    closeIcon: {
-      position: 'absolute',
-      top: 0,
-      right: 0
-    }
-  };
+  const css = require('./autoCompleteDialog.scss');
 
   return (
     <Dialog
@@ -26,7 +19,7 @@ const AutoCompleteDialog = (props) => {
       open={open}
       onRequestClose={closeHandler}
     >
-      <IconButton onTouchTap={closeHandler} style={styles.closeIcon} >
+      <IconButton onTouchTap={closeHandler} className={css.closeIcon} >
         <NavigationClose />
       </IconButton>
       <AutoComplete
