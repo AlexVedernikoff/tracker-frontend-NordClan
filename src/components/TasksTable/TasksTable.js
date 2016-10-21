@@ -13,9 +13,8 @@ import KeyboardArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up';
 import IconButton from 'material-ui/IconButton';
 
 const TasksTable = (props) => {
-  const {tasks, order, onSortOrderToggle, viewSettings, handleClick, showTasks} = props;
+  const {tasks, order, onSortOrderToggle, viewSettings, handleClick, showTasks, css} = props;
   const titleIconBottomColor = 'rgba(0, 0, 0, 0.54)';
-  const css = require('./TasksTable.scss');
   return (
     <Paper zDepth={1} rounded={false} className={css.paper}>
       <Table fixedHeader className={css.tableTaskList}>
@@ -105,12 +104,14 @@ TasksTable.propTypes = {
   onSortOrderToggle: PropTypes.func.isRequired,
   viewSettings: PropTypes.object,
   handleClick: PropTypes.func.isRequired,
-  showTasks: PropTypes.object
+  showTasks: PropTypes.object,
+  css: PropTypes.object
 };
 
 TasksTable.defaultProps = {
   showGroups: true,
-  tableLayout: true
+  tableLayout: true,
+  css: require('./TasksTable.scss')
 };
 
 export default TasksTable;

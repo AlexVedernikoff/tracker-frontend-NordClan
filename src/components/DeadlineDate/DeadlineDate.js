@@ -2,43 +2,31 @@
 import React, { PropTypes } from 'react';
 
 const DeadlineDate = (props) => {
-  const { date, style } = props;
-  const styles = {
-    dateDeadlineBar: {
-      textAlign: 'center',
-      fontSize: 20,
-      ...style
-    },
-    labelDayOfDeadline: {
-      lineHeight: '14px',
-      marginBottom: '5px'
-    },
-    labelMonthOfDeadline: {
-      fontSize: '12px',
-      margin: 0
-    }
-  };
+  const { date, style, css } = props;
+
   const dateObj = new Date(date);
   const day = new Intl.DateTimeFormat('ru', {day: 'numeric'}).format(dateObj);
   const month = new Intl.DateTimeFormat('ru', {month: 'long'}).format(dateObj);
 
   return (date) ? (
-    <div style={styles.dateDeadlineBar}>
-      <p style={styles.labelDayOfDeadline}>{day}</p>
-      <p style={styles.labelMonthOfDeadline}>{month}</p>
+    <div className={css.dateDeadlineBar} style={{...style}}>
+      <p className={css.labelDayOfDeadline}>{day}</p>
+      <p className={css.labelMonthOfDeadline}>{month}</p>
     </div>
   ) : (
-    <div style={styles.dateDeadlineBar}>&mdash;</div>
+    <div className={css.dateDeadlineBar} style={{...style}}>&mdash;</div>
   );
 };
 
 DeadlineDate.propTypes = {
   date: PropTypes.number,
-  style: PropTypes.object
+  style: PropTypes.object,
+  css: PropTypes.object
 };
 
 DeadlineDate.defaultProps = {
-  date: 0
+  date: 0,
+  css: require('./deadlineDate.scss')
 };
 
 export default DeadlineDate;

@@ -2,41 +2,20 @@ import React, {PropTypes} from 'react';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 
 const IconToggle = (props) => {
-  const {name, stateOnIcon, stateOffIcon, toggled, onChange} = props;
-
-  const styles = {
-    group: {
-      position: 'absolute',
-      display: 'block',
-      width: 112,
-      top: 13,
-      right: 8
-    },
-    radio: {
-      float: 'right',
-      width: 'auto',
-      marginLeft: 16
-    },
-    icon: {
-    }
-  };
+  const {name, stateOnIcon, stateOffIcon, toggled, onChange, css} = props;
 
   return (
-    <RadioButtonGroup name={name} style={styles.group} valueSelected={Number(toggled).toString()} labelPostion= "left" onChange={onChange}>
+    <RadioButtonGroup name={name} className={css.group} valueSelected={Number(toggled).toString()} labelPostion= "left" onChange={onChange}>
       <RadioButton
         value="0"
-        style={styles.radio}
-        iconStyle={styles.icon}
-        checkedIcon={stateOnIcon}
-        uncheckedIcon={stateOnIcon}
-      />
+        className={css.radio}
+        checkedIcon={stateOffIcon}
+        uncheckedIcon={stateOffIcon} />
       <RadioButton
         value="1"
-        style={styles.radio}
-        iconStyle={styles.icon}
-        checkedIcon={stateOffIcon}
-        uncheckedIcon={stateOffIcon}
-      />
+        className={css.radio}
+        checkedIcon={stateOnIcon}
+        uncheckedIcon={stateOnIcon} />
     </RadioButtonGroup>
   );
 };
@@ -46,11 +25,13 @@ IconToggle.propTypes = {
   stateOnIcon: PropTypes.object.isRequired,
   stateOffIcon: PropTypes.object.isRequired,
   toggled: PropTypes.bool.isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  css: PropTypes.object
 };
 
 IconToggle.defaultProps = {
-  toggled: false
+  toggled: false,
+  css: require('./iconToggle.scss')
 };
 
 export default IconToggle;

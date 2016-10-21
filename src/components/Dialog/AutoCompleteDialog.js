@@ -6,15 +6,7 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import AutoComplete from 'material-ui/AutoComplete/AutoComplete';
 
 const AutoCompleteDialog = (props) => {
-  const {open, header, closeHandler, changeHandler, data} = props;
-
-  const styles = {
-    closeIcon: {
-      position: 'absolute',
-      top: 0,
-      right: 0
-    }
-  };
+  const {open, header, closeHandler, changeHandler, data, css} = props;
 
   return (
     <Dialog
@@ -26,7 +18,7 @@ const AutoCompleteDialog = (props) => {
       open={open}
       onRequestClose={closeHandler}
     >
-      <IconButton onTouchTap={closeHandler} style={styles.closeIcon} >
+      <IconButton onTouchTap={closeHandler} className={css.closeIcon} >
         <NavigationClose />
       </IconButton>
       <AutoComplete
@@ -39,12 +31,17 @@ const AutoCompleteDialog = (props) => {
   );
 };
 
+AutoCompleteDialog.defaultProps = {
+  css: require('./autoCompleteDialog.scss')
+};
+
 AutoCompleteDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   header: PropTypes.object,
   closeHandler: PropTypes.func,
   changeHandler: PropTypes.func,
-  data: PropTypes.array
+  data: PropTypes.array,
+  css: PropTypes.object
 };
 
 export default AutoCompleteDialog;

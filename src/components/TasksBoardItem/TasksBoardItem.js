@@ -9,52 +9,28 @@ import TaskReassignWidget from '../../components/TaskReassignWidget/TaskReassign
 import { grey300, grey400, cyan700, pink300, pink700 } from 'material-ui/styles/colors';
 
 const TaskBoardItem = (props, context) => {
-  const {itemData, theme} = props;
+  const {itemData, theme, styles} = props;
   const { handleChangeStatus } = context;
-  const styles = require('./TaskBoardItem.scss');
   const priorityColors = [pink700, pink300, cyan700, grey400, grey300];
   const inlineStyles = {
     priority: {
-      height: '100%',
       borderLeftColor: priorityColors[itemData.priority - 1],
-      borderLeftWidth: 5,
-      borderLeftStyle: 'solid',
-      position: 'absolute',
-      zIndex: 2,
-      top: 0,
-      left: 0,
       color: theme.rawTheme.palette.alternateTextColor,
-      width: 16,
-      borderTopLeftRadius: 2,
-      fontSize: 13
     },
     priorityBadge: {
-      backgroundColor: priorityColors[itemData.priority - 1],
-      height: 18,
-      textAlign: 'center',
-      borderBottomRightRadius: 2,
-      borderTopRightRadius: 2,
-      paddingTop: 2
+      backgroundColor: priorityColors[itemData.priority - 1]
     },
     paper: {
-      backgroundColor: theme.rawTheme.palette.alternateTextColor,
-      height: 150,
-      position: 'relative',
-      marginBottom: 3
-    },
-    ButtonChangeStatus: {
-      left: 15,
-      position: 'relative',
-      top: '-10px'
+      backgroundColor: theme.rawTheme.palette.alternateTextColor
     }
   };
 
   let date = new Date(itemData.beginDate);
   date = MonthNames[date.getMonth()] + ', ' + date.getDate();
 
-  return (<Paper rounded={false} style={inlineStyles.paper}>
-    <div style={inlineStyles.priority}>
-      <div style={inlineStyles.priorityBadge}>{itemData.priority}</div>
+  return (<Paper rounded={false} className={styles.paper} style={inlineStyles.paper}>
+    <div className={styles.priority} style={inlineStyles.priority}>
+      <div className={styles.priorityBadge} style={inlineStyles.priorityBadge}>{itemData.priority}</div>
     </div>
     <div className={styles.itemContent}>
       <div className={styles.itemHead}>
@@ -68,8 +44,7 @@ const TaskBoardItem = (props, context) => {
         <div className={styles.creatorText}>{`${itemData.projectName}, ${itemData.creatorName}`}</div>
       </div>
       <div className={styles.statusButton}>
-        <ButtonChangeStatus status={itemData.status} compact id={itemData.id}
-          style={inlineStyles.ButtonChangeStatus} handleChangeStatus={handleChangeStatus} />
+        <ButtonChangeStatus status={itemData.status} compact id={itemData.id} handleChangeStatus={handleChangeStatus} />
       </div>
       <div className={styles.itemProgressBar}>
         <TaskProgressBar
@@ -99,11 +74,16 @@ const TaskBoardItem = (props, context) => {
 TaskBoardItem.propTypes = {
   itemData: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
-  handleChangeStatus: PropTypes.func
+  handleChangeStatus: PropTypes.func,
+  styles: PropTypes.object
 };
 
 TaskBoardItem.contextTypes = {
   handleChangeStatus: PropTypes.func
+};
+
+TaskBoardItem.defaultProps = {
+  styles: require('./TaskBoardItem.scss')
 };
 
 export default TaskBoardItem;

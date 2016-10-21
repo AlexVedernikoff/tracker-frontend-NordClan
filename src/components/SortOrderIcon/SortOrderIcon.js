@@ -5,18 +5,12 @@ import ArrowDownward from 'material-ui/svg-icons/navigation/arrow-downward';
 
 const SortOrderIcon = (props) => {
   const { order, style, color } = props;
-  const styles = {
-    arrowBlock: {
-      height: 16,
-      ...style
-    }
-  };
 
   const Icon = (order === sortOrder.DIRECTION.ASC) ? ArrowDownward : ArrowUpward;
   const arrowColor = (color) || (order === sortOrder.DIRECTION.NONE ? 'rgba(0, 0, 0, 0.54)' : 'rgba(0, 0, 0, 0.87)');
 
   return (
-    <Icon color={arrowColor} style={styles.arrowBlock} />
+    <Icon color={arrowColor} style={{height: 16, ...style}} />
   );
 };
 

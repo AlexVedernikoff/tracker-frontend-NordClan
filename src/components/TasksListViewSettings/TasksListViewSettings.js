@@ -13,7 +13,8 @@ class TasksListViewSettings extends React.Component {
     showGroups: PropTypes.bool.isRequired,
     tableLayout: PropTypes.bool.isRequired,
     onGroupVisibilityToggle: PropTypes.func.isRequired,
-    onLayoutToggle: PropTypes.func.isRequired
+    onLayoutToggle: PropTypes.func.isRequired,
+    styles: PropTypes.object
   }
 
   constructor(props) {
@@ -38,11 +39,12 @@ class TasksListViewSettings extends React.Component {
   }
 
   render() {
-    const {showGroups, tableLayout, onGroupVisibilityToggle, onLayoutToggle} = this.props;
+    const color = 'rgba(0, 0, 0, 0.54)';
+    const {showGroups, tableLayout, onGroupVisibilityToggle, onLayoutToggle, styles} = this.props;
     return (
-      <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+      <div className={styles.viewSettings}>
         <IconButton onTouchTap={this.handleTouchTap} >
-          <MoreVertIcon style={{marginBottom: -4}} color={"rgba(0, 0, 0, 0.54)"}/>
+          <MoreVertIcon className={styles.verticalIcon} color={color}/>
         </IconButton>
         <Popover
           open={this.state.open}
@@ -70,5 +72,9 @@ class TasksListViewSettings extends React.Component {
     );
   }
 }
+
+TasksListViewSettings.defaultProps = {
+  styles: require('./tasksListViewSettings.scss')
+};
 
 export default TasksListViewSettings;

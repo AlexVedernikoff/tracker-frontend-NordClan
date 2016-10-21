@@ -3,6 +3,9 @@ import { Col } from 'react-flexbox-grid/lib/index';
 import NavCancel from 'material-ui/svg-icons/navigation/cancel';
 
 export default class Slider extends Component {
+  static propTypes = {
+    css: PropTypes.object
+  }
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired
   }
@@ -25,7 +28,7 @@ export default class Slider extends Component {
   };
   render() {
     const styles = this.getStyles();
-    const css = require('./slider.scss');
+    const { css } = this.props;
     // const sliderSettings = {
     //   dots: true,
     //   infinite: true,
@@ -61,3 +64,7 @@ export default class Slider extends Component {
     );
   }
 }
+
+Slider.defaultProps = {
+  css: require('./slider.scss')
+};

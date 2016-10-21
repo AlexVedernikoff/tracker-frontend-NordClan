@@ -2,16 +2,7 @@ import React, {PropTypes} from 'react';
 import TasksBoardItem from '../TasksBoardItem/TasksBoardItem';
 
 const TasksBoard = (props) => {
-  const { viewSettings, tasks, theme } = props;
-
-  const gridListStyles = {
-    width: '100%',
-    marginBottom: 24,
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start'
-  };
-
+  const { viewSettings, tasks, theme, styles } = props;
   const firstColumn = [];
   const middleColumn = [];
   const lastColumn = [];
@@ -37,7 +28,7 @@ const TasksBoard = (props) => {
   return (
     <div>
       {viewSettings}
-      <div style={gridListStyles}>
+      <div className={styles.gridListStyles}>
         <div style={{width: '30%'}}>
           {firstColumn.map((jsxItem) => jsxItem)}
         </div>
@@ -55,7 +46,12 @@ const TasksBoard = (props) => {
 TasksBoard.propTypes = {
   viewSettings: PropTypes.object,
   theme: PropTypes.object,
-  tasks: PropTypes.array
+  tasks: PropTypes.array,
+  styles: PropTypes.object
+};
+
+TasksBoard.defaultProps = {
+  styles: require('./taskBoard.scss')
 };
 
 export default TasksBoard;

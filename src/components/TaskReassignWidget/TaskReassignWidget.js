@@ -7,7 +7,8 @@ class TaskReassignWidget extends React.Component {
   static propTypes = {
     taskName: PropTypes.string.isRequired,
     projectName: PropTypes.string.isRequired,
-    taskExpertise: PropTypes.string
+    taskExpertise: PropTypes.string,
+    styles: PropTypes.object
   };
 
   static contextTypes = {
@@ -45,22 +46,15 @@ class TaskReassignWidget extends React.Component {
   }
 
   render() {
-    const {taskName, projectName, taskExpertise} = this.props;
+    const {taskName, projectName, taskExpertise, styles} = this.props;
     const theme = this.context.muiTheme;
-    const styles = {
-      header: {
-        color: theme.rawTheme.palette.primary1Color
-      },
-      subheader: {
-        display: 'block',
-        fontSize: 12
-      }
+    const headerColor = {
+      color: theme.rawTheme.palette.primary1Color
     };
-
     const header = (
       <div>
-        <span style={styles.header}>{taskName}</span>
-        <span style={styles.subheader}>{projectName}, {taskExpertise}</span>
+        <span style={headerColor}>{taskName}</span>
+        <span className={styles.subheader}>{projectName}, {taskExpertise}</span>
       </div>
     );
 
@@ -81,5 +75,9 @@ class TaskReassignWidget extends React.Component {
     );
   }
 }
+
+TaskReassignWidget.defaultProps = {
+  styles: require('./reassignWidget.scss')
+};
 
 export default TaskReassignWidget;

@@ -5,25 +5,14 @@
 import React, { PropTypes } from 'react';
 
 const FilterPanel = (props, context) => {
-  const { label, onFilterChange } = props;
+  const { label, onFilterChange, css } = props;
   const { muiTheme } = context;
-  const styles = {
-    block: {
-      marginBottom: 50,
-      display: 'flex',
-      padding: '0px 20px',
-      justifyContent: 'flex-start'
-    },
-    label: {
-      fontSize: 12,
-      color: muiTheme.rawTheme.palette.accent3Color,
-      padding: 5
-    }
+  const labelColor = {
+    color: muiTheme.rawTheme.palette.accent3Color
   };
-
   return (
-    <div style={styles.block}>
-      <span style={styles.label}>{label}</span>
+    <div className={css.block}>
+      <span className={css.label} style={labelColor}>{label}</span>
       {React.Children.map(props.children, (child) => {
         return React.cloneElement(child, { onChange: onFilterChange });
       })}
@@ -34,11 +23,16 @@ const FilterPanel = (props, context) => {
 FilterPanel.propTypes = {
   children: PropTypes.array,
   label: PropTypes.string,
-  onFilterChange: PropTypes.func
+  onFilterChange: PropTypes.func,
+  css: PropTypes.object
 };
 
 FilterPanel.contextTypes = {
   muiTheme: PropTypes.object.isRequired
+};
+
+FilterPanel.defaultProps = {
+  css: require('./filterPanel.scss')
 };
 
 export default FilterPanel;
