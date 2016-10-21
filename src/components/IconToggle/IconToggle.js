@@ -2,8 +2,7 @@ import React, {PropTypes} from 'react';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 
 const IconToggle = (props) => {
-  const {name, stateOnIcon, stateOffIcon, toggled, onChange} = props;
-  const css = require('./iconToggle.scss');
+  const {name, stateOnIcon, stateOffIcon, toggled, onChange, css} = props;
 
   return (
     <RadioButtonGroup name={name} className={css.group} valueSelected={Number(toggled).toString()} labelPostion= "left" onChange={onChange}>
@@ -26,11 +25,13 @@ IconToggle.propTypes = {
   stateOnIcon: PropTypes.object.isRequired,
   stateOffIcon: PropTypes.object.isRequired,
   toggled: PropTypes.bool.isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  css: PropTypes.object
 };
 
 IconToggle.defaultProps = {
-  toggled: false
+  toggled: false,
+  css: require('./iconToggle.scss')
 };
 
 export default IconToggle;

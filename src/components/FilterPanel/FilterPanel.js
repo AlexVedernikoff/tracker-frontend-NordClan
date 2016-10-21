@@ -5,8 +5,7 @@
 import React, { PropTypes } from 'react';
 
 const FilterPanel = (props, context) => {
-  const { label, onFilterChange } = props;
-  const css = require('./filterPanel.scss');
+  const { label, onFilterChange, css } = props;
   const { muiTheme } = context;
   const labelColor = {
     color: muiTheme.rawTheme.palette.accent3Color
@@ -24,11 +23,16 @@ const FilterPanel = (props, context) => {
 FilterPanel.propTypes = {
   children: PropTypes.array,
   label: PropTypes.string,
-  onFilterChange: PropTypes.func
+  onFilterChange: PropTypes.func,
+  css: PropTypes.object
 };
 
 FilterPanel.contextTypes = {
   muiTheme: PropTypes.object.isRequired
+};
+
+FilterPanel.defaultProps = {
+  css: require('./filterPanel.scss')
 };
 
 export default FilterPanel;

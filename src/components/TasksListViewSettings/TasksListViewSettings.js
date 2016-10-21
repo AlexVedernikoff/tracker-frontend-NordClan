@@ -13,7 +13,8 @@ class TasksListViewSettings extends React.Component {
     showGroups: PropTypes.bool.isRequired,
     tableLayout: PropTypes.bool.isRequired,
     onGroupVisibilityToggle: PropTypes.func.isRequired,
-    onLayoutToggle: PropTypes.func.isRequired
+    onLayoutToggle: PropTypes.func.isRequired,
+    styles: PropTypes.object
   }
 
   constructor(props) {
@@ -38,9 +39,8 @@ class TasksListViewSettings extends React.Component {
   }
 
   render() {
-    const styles = require('./tasksListViewSettings.scss');
     const color = 'rgba(0, 0, 0, 0.54)';
-    const {showGroups, tableLayout, onGroupVisibilityToggle, onLayoutToggle} = this.props;
+    const {showGroups, tableLayout, onGroupVisibilityToggle, onLayoutToggle, styles} = this.props;
     return (
       <div className={styles.viewSettings}>
         <IconButton onTouchTap={this.handleTouchTap} >
@@ -72,5 +72,9 @@ class TasksListViewSettings extends React.Component {
     );
   }
 }
+
+TasksListViewSettings.defaultProps = {
+  styles: require('./tasksListViewSettings.scss')
+};
 
 export default TasksListViewSettings;

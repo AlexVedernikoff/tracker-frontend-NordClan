@@ -8,8 +8,7 @@ import TextField from 'material-ui/TextField';
 import Search from 'material-ui/svg-icons/action/search';
 
 const FilterSearchBar = (props, context) => {
-  const { onSearchStringChange } = props;
-  const css = require('./filterSearchBar.scss');
+  const { onSearchStringChange, css } = props;
   const { muiTheme } = context;
 
   return (
@@ -26,11 +25,16 @@ const FilterSearchBar = (props, context) => {
 };
 
 FilterSearchBar.propTypes = {
-  onSearchStringChange: PropTypes.func.isRequired
+  onSearchStringChange: PropTypes.func.isRequired,
+  css: PropTypes.object
 };
 
 FilterSearchBar.contextTypes = {
   muiTheme: PropTypes.object.isRequired
+};
+
+FilterSearchBar.defaultProps = {
+  css: require('./filterSearchBar.scss')
 };
 
 export default FilterSearchBar;

@@ -10,7 +10,8 @@ class NewCommentBadge extends React.Component {
     count: PropTypes.number,
     comment: PropTypes.string,
     author: PropTypes.string,
-    date: PropTypes.string
+    date: PropTypes.string,
+    css: PropTypes.object
   };
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired
@@ -43,7 +44,7 @@ class NewCommentBadge extends React.Component {
 
   render() {
     const theme = this.context.muiTheme;
-    const css = require('./newCommentBadge.scss');
+    const { css } = this.props;
     const styles = {
       badge: {
         top: '-2px',
@@ -83,5 +84,9 @@ class NewCommentBadge extends React.Component {
     );
   }
 }
+
+NewCommentBadge.defaultProps = {
+  css: require('./newCommentBadge.scss')
+};
 
 export default NewCommentBadge;

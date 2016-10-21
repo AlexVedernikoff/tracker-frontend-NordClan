@@ -17,7 +17,8 @@ export default class Details extends Component {
     type: PropTypes.number,
     handleChangeType: PropTypes.func,
     handleChangePriority: PropTypes.func,
-    handleChangeStatus: PropTypes.func
+    handleChangeStatus: PropTypes.func,
+    css: PropTypes.object
   }
 
   static contextTypes = {
@@ -39,10 +40,9 @@ export default class Details extends Component {
   }
 
   render() {
-    const { status, priority, type } = this.props;
+    const { status, priority, type, css } = this.props;
     const { handleChangeType, handleChangePriority, handleChangeStatus } = this.props;
     const styles = this.getStyles();
-    const css = require('./details.scss');
 
     return (
       <Col xs>
@@ -94,3 +94,7 @@ export default class Details extends Component {
     );
   }
 }
+
+Details.defaultProps = {
+  css: require('./details.scss')
+};

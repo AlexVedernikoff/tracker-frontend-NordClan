@@ -9,9 +9,8 @@ import TaskReassignWidget from '../../components/TaskReassignWidget/TaskReassign
 import { grey300, grey400, cyan700, pink300, pink700 } from 'material-ui/styles/colors';
 
 const TaskBoardItem = (props, context) => {
-  const {itemData, theme} = props;
+  const {itemData, theme, styles} = props;
   const { handleChangeStatus } = context;
-  const styles = require('./TaskBoardItem.scss');
   const priorityColors = [pink700, pink300, cyan700, grey400, grey300];
   const inlineStyles = {
     priority: {
@@ -75,11 +74,16 @@ const TaskBoardItem = (props, context) => {
 TaskBoardItem.propTypes = {
   itemData: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
-  handleChangeStatus: PropTypes.func
+  handleChangeStatus: PropTypes.func,
+  styles: PropTypes.object
 };
 
 TaskBoardItem.contextTypes = {
   handleChangeStatus: PropTypes.func
+};
+
+TaskBoardItem.defaultProps = {
+  styles: require('./TaskBoardItem.scss')
 };
 
 export default TaskBoardItem;

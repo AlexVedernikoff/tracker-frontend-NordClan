@@ -12,7 +12,8 @@ import ExecutorsListItem from './ExecutorsListItem';
 
 export default class ExecutorsList extends Component {
   static propTypes = {
-    data: PropTypes.object.isRequired
+    data: PropTypes.object.isRequired,
+    css: PropTypes.object
   }
 
   static contextTypes = {
@@ -56,9 +57,7 @@ export default class ExecutorsList extends Component {
 
   render() {
     const styles = this.getStyles();
-    const css = require('./executorsList.scss');
-    const data = this.props.data;
-
+    const { css, data } = this.props;
 
     return (
       <Col xs>
@@ -92,3 +91,7 @@ export default class ExecutorsList extends Component {
     );
   }
 }
+
+ExecutorsList.defaultProps = {
+  css: require('./executorsList.scss')
+};

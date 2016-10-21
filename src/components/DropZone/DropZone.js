@@ -36,7 +36,7 @@ class DropZoneBlock extends Component {
 
   render() {
     const theme = this.context.muiTheme;
-    const css = require('./dropZone.scss');
+    const { css } = this.props;
 
     const styles = {
       dropZone: {
@@ -98,9 +98,13 @@ class DropZoneBlock extends Component {
     );
   }
 }
+DropZoneBlock.defaultProps = {
+  css: require('./dropZone.scss')
+};
 
 DropZoneBlock.propTypes = {
-  style: PropTypes.object
+  style: PropTypes.object,
+  css: PropTypes.object
 };
 
 DropZoneBlock.contextTypes = {

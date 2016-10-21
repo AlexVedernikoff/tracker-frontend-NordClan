@@ -6,8 +6,7 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import AutoComplete from 'material-ui/AutoComplete/AutoComplete';
 
 const AutoCompleteDialog = (props) => {
-  const {open, header, closeHandler, changeHandler, data} = props;
-  const css = require('./autoCompleteDialog.scss');
+  const {open, header, closeHandler, changeHandler, data, css} = props;
 
   return (
     <Dialog
@@ -32,12 +31,17 @@ const AutoCompleteDialog = (props) => {
   );
 };
 
+AutoCompleteDialog.defaultProps = {
+  css: require('./autoCompleteDialog.scss')
+};
+
 AutoCompleteDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   header: PropTypes.object,
   closeHandler: PropTypes.func,
   changeHandler: PropTypes.func,
-  data: PropTypes.array
+  data: PropTypes.array,
+  css: PropTypes.object
 };
 
 export default AutoCompleteDialog;

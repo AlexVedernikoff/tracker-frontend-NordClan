@@ -2,9 +2,7 @@ import React, {PropTypes} from 'react';
 import TasksBoardItem from '../TasksBoardItem/TasksBoardItem';
 
 const TasksBoard = (props) => {
-  const { viewSettings, tasks, theme } = props;
-  const styles = require('./taskBoard.scss');
-
+  const { viewSettings, tasks, theme, styles } = props;
   const firstColumn = [];
   const middleColumn = [];
   const lastColumn = [];
@@ -48,7 +46,12 @@ const TasksBoard = (props) => {
 TasksBoard.propTypes = {
   viewSettings: PropTypes.object,
   theme: PropTypes.object,
-  tasks: PropTypes.array
+  tasks: PropTypes.array,
+  styles: PropTypes.object
+};
+
+TasksBoard.defaultProps = {
+  styles: require('./taskBoard.scss')
 };
 
 export default TasksBoard;

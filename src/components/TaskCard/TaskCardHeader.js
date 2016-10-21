@@ -3,9 +3,8 @@ import Typography from 'material-ui/styles/typography';
 import { Link } from 'react-router';
 
 const TaskCardHeader = (props, context) => {
-  const {task} = props;
+  const {task, css} = props;
   const {muiTheme} = context;
-  const css = require('./cardHeader.scss');
   const styles = {
     title: {
       color: muiTheme.rawTheme.palette.primary1Color,
@@ -32,11 +31,16 @@ const TaskCardHeader = (props, context) => {
 };
 
 TaskCardHeader.propTypes = {
-  task: PropTypes.object.isRequired
+  task: PropTypes.object.isRequired,
+  css: PropTypes.object
 };
 
 TaskCardHeader.contextTypes = {
   muiTheme: PropTypes.object.isRequired
+};
+
+TaskCardHeader.defaultProps = {
+  css: require('./cardHeader.scss')
 };
 
 export default TaskCardHeader;

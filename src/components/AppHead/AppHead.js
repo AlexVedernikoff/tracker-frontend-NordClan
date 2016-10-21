@@ -24,7 +24,8 @@ import Search from 'material-ui/svg-icons/action/search';
 
 export default class AppHead extends Component {
   static propTypes = {
-    pathname: PropTypes.string
+    pathname: PropTypes.string,
+    styles: PropTypes.object
   };
 
   static contextTypes = {
@@ -54,14 +55,11 @@ export default class AppHead extends Component {
 
   render() {
     // const { load } = this.props; // eslint-disable-line no-shadow
-    const styles = require('./appHead.scss');
     const {user} = this.context;
-    const { pathname } = this.props;
-
+    const { pathname, styles } = this.props;
     if (!user) {
       return null;
     }
-
     // const appBarIcons = (
     //   <div>
     //     <IconButton onTouchTap={this.handleTouchTap}>
@@ -165,3 +163,7 @@ export default class AppHead extends Component {
     );
   }
 }
+
+AppHead.defaultProps = {
+  styles: require('./appHead.scss')
+};

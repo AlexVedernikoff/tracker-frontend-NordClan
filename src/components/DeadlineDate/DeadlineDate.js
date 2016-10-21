@@ -2,8 +2,7 @@
 import React, { PropTypes } from 'react';
 
 const DeadlineDate = (props) => {
-  const { date, style } = props;
-  const css = require('./deadlineDate.scss');
+  const { date, style, css } = props;
 
   const dateObj = new Date(date);
   const day = new Intl.DateTimeFormat('ru', {day: 'numeric'}).format(dateObj);
@@ -21,11 +20,13 @@ const DeadlineDate = (props) => {
 
 DeadlineDate.propTypes = {
   date: PropTypes.number,
-  style: PropTypes.object
+  style: PropTypes.object,
+  css: PropTypes.object
 };
 
 DeadlineDate.defaultProps = {
-  date: 0
+  date: 0,
+  css: require('./deadlineDate.scss')
 };
 
 export default DeadlineDate;

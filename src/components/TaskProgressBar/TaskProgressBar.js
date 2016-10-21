@@ -3,8 +3,7 @@ import React, {PropTypes} from 'react';
 import LinearProgress from 'material-ui/LinearProgress';
 
 const TaskProgressBar = (props, context) => {
-  const css = require('./progressBar.scss');
-  const {style, spentLabel, spent, plannedLabel, planned} = props;
+  const {style, spentLabel, spent, plannedLabel, planned, css} = props;
   const {muiTheme} = context;
   const palette = muiTheme.rawTheme.palette;
   const labelStyle = {
@@ -35,12 +34,14 @@ TaskProgressBar.propTypes = {
   planned: PropTypes.number,
   spentLabel: PropTypes.string.isRequired,
   plannedLabel: PropTypes.string.isRequired,
-  style: PropTypes.object
+  style: PropTypes.object,
+  css: PropTypes.object
 };
 
 TaskProgressBar.defaultProps = {
   spent: 0,
-  planned: 0
+  planned: 0,
+  css: require('./progressBar.scss')
 };
 
 TaskProgressBar.contextTypes = {
