@@ -7,9 +7,9 @@ import {
   TaskPage,
   TasksList,
   NotFound,
+  Scrum,
+  Project
 } from './containers';
-import Scrum from './components/Scrum';
-import Project from './components/Project';
 import RepeatTime from './components/RepeatTime';
 
 export default (store) => {
