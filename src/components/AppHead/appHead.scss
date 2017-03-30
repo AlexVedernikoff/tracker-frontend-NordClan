@@ -1,13 +1,18 @@
-.tabs {
-  width: 650px;
-  margin-top: 10px;
-  background-color: rgb(74, 20, 140);
+@import "../../theme/variables.scss";
+
+.toppanel {
+  height: 56px;
+  background: $color-dark;
 }
 
-.renderAppMenuBar {
-	box-shadow: rgba(0, 0, 0, 0.117647) 0px 2px 3px, rgba(0, 0, 0, 0.117647) 0px 2px 3px !important;
-}
+.logo {
+  padding: 16px 32px;
+  font-size: 20px;
+  color: #ebebeb;
+  display: block;
+  text-decoration: none;
 
-.topAppBar {
-	box-shadow: none !important;
+  span {
+    color: $color-orange;
+  }
 }

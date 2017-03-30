@@ -69,6 +69,24 @@ export default function(theme = 'default') {
           pickerHeaderColor: Colors.cyan500
         }
       };
+    case 'diver':
+      return {
+        ...defaultTheme,
+        palette: {
+          primary1Color: '#046380',
+          primary2Color: '#002F2F',
+          primary3Color: Colors.lightBlack,
+          accent1Color: Colors.pinkA100,
+          accent2Color: Colors.grey100,
+          accent3Color: Colors.grey500,
+          textColor: Colors.darkBlack,
+          alternateTextColor: Colors.white,
+          canvasColor: Colors.white,
+          borderColor: Colors.grey300,
+          disabledColor: ColorManipulator.fade(Colors.darkBlack, 0.3),
+          pickerHeaderColor: Colors.cyan500
+        }
+      };
     default:
       return defaultTheme;
   }

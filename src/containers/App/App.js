@@ -10,6 +10,8 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import getColorTheme from '../../theme/theme';
 import { asyncConnect } from 'redux-connect';
 import AppHead from '../../components/AppHead/AppHead';
+import Sidebar from 'react-sidebar';
+import NavMenu from '../../components/NavMenu/NavMenu';
 
 @asyncConnect([{
   deferred: true,
@@ -65,15 +67,28 @@ export default class App extends Component {
 
   render() {
     require('./App.scss');
-    const muiTheme = getMuiTheme(getColorTheme('cyan'));
+    const muiTheme = getMuiTheme(getColorTheme('diver'));
+
+    let sidebar = <NavMenu user={this.props.user} />;
+
+    let sidebarDocked = true;
+    if (!this.props.user) {
+      sidebarDocked = false;
+      sidebar = null;
+    }
 
     return (
       <div id="app">
         <Helmet {...config.app.head}/>
         <MuiThemeProvider muiTheme={muiTheme}>
           <div>
-            <AppHead pathname={this.props.pathname} />
-            {this.props.children}
+            <Sidebar sidebar={sidebar}
+                     shadow={false}
+                     docked={sidebarDocked}
+                     >
+              <AppHead pathname={this.props.pathname} />
+              {this.props.children}
+            </Sidebar>
           </div>
         </MuiThemeProvider>
       </div>

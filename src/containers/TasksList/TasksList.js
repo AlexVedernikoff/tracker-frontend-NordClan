@@ -181,6 +181,10 @@ export default class TasksList extends Component {
       h1: {
         color: theme.rawTheme.palette.primary1Color,
         fontWeight: Typography.fontWeightMedium
+      },
+
+      fab: {
+        backgroundColor: theme.rawTheme.palette.primary1Color
       }
     };
     const viewSettings = (<TasksListViewSettings
@@ -231,7 +235,7 @@ export default class TasksList extends Component {
             </Col>
           </Row>
         </Grid>
-        <FloatingActionButton className={css.actionButton} backgroundColor="#F06292">
+        <FloatingActionButton className={css.actionButton} style={styles.fab}>
           <Add />
         </FloatingActionButton>
       </div>

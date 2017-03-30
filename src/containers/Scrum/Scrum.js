@@ -9,9 +9,13 @@ import Add from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 
 export default class Scrum extends Component {
+  static propTypes = {
+    css: PropTypes.object
+  };
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired
   };
+
   onFilterChange = value => console.log(value);
   render() {
     const { css } = this.props;

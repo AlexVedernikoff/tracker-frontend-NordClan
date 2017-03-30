@@ -9,6 +9,9 @@ import Add from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 
 export default class Project extends Component {
+  static propTypes = {
+    css: PropTypes.object
+  };
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired
   };
