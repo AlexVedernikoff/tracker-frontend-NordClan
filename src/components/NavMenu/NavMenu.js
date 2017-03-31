@@ -17,13 +17,18 @@ export default class NavMenu extends Component {
       (<li className={styles.sidebarItem}><Link className={styles.sidebarLink} activeClassName={styles.activeLink} to="/repeat">Отчеты по времени</Link></li>)
     ];
 
+    const userGroups = this.user.groups.name.map(function(item) {
+      return <span>{item.name}</span>
+    });
+
     const sidebarHeader = (
       <div className={styles.sidebarHeader}>
         <div className={styles.userAvatar}>
           <img src={this.props.user.photo} alt=""/>
         </div>
         <div className={styles.userNameContainer}>
-          {this.props.user.firstNameRu} {this.props.user.lastNameRu}
+          <div>{this.props.user.firstNameRu} {this.props.user.lastNameRu}</div>
+          <div>{userGroups}</div>
         </div>
         <div className={styles.logoutButton}></div>
       </div>

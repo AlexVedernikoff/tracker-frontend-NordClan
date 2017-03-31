@@ -31,7 +31,8 @@
 
   &:visited,
   &:active,
-  &:focus, {
+  &:focus,
+  & {
     color: inherit;
   }
 
@@ -58,4 +59,8 @@
     border-radius: 50%;
     object-fit: cover;
   }
+}
+
+.userNameContainer {
+  color: $color-lightgray;
 }
