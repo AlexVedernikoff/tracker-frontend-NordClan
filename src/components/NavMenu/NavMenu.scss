@@ -17,12 +17,38 @@
 }
 
 .sidebarItem {
+  position: relative;
   list-style-type: none;
+
+  button {
+    position: absolute;
+    display: flex;
+    top: 0;
+    bottom: 0;
+    width: 48px;
+    border: none;
+    background: none;
+    color: rgba(black, 0.4);
+    justify-content: center;
+    align-items: center;
+    transition: 0.3s ease-out 0s;
+
+    &:focus,
+    &:active,
+    &:hover {
+      outline: none;
+    }
+
+    &:hover {
+      background: rgba(black, 0.1);
+      transition: 0.3s ease-out 0s;
+    }
+  }
 }
 
 .sidebarLink {
   display: block;
-  padding: 16px 32px;
+  padding: 16px 16px 16px 56px;
   font-size: 14px;
   line-height: 16px;
   text-decoration: none;
@@ -50,8 +76,9 @@
 .userAvatar {
   width: 56px;
   height: 56px;
-  padding: 8px;
+  padding: 12px;
   box-sizing: border-box;
+  flex-shrink: 0;
 
   img {
     width: 100%;
@@ -62,5 +89,56 @@
 }
 
 .userNameContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: center;
+  width: calc(100% - 112px);
+  box-sizing: border-box;
+  flex-shrink: 0;
+  flex-grow: 0;
   color: $color-lightgray;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.userName {
+  max-width: 100%;
+  margin-bottom: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 14px;
+}
+
+.userGroups {
+  max-width: 100%;
+  overflow: hidden;
+  opacity: 0.5;
+  font-size: 10px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.logoutButton {
+  display: flex;
+  height: 56px;
+  width: 56px;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s ease-out 0s;
+  color: $color-lightgray;
+
+  svg {
+    opacity: 0.4;
+  }
+
+  &:hover {
+    background: rgba(white, 0.1);
+    transition: 0.3s ease-out 0s;
+
+    svg {
+      opacity: 1;
+    }
+  }
 }

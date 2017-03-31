@@ -1,0 +1,40 @@
+@import '../../theme/variables.scss';
+
+.title {
+  font-size: 34px;
+  padding-top: 8px;
+  margin: 0;
+  color: $color-black;
+  font-weight: 300;
+}
+
+.info {
+  font-size: 12px;
+  margin-bottom: 30px;
+  color: lighten($color-black, 40%);
+}
+
+.info a {
+  text-decoration: none;
+  display: inline-block;
+
+}
+
+.taskId {
+  color: lighten($color-black, 40%);
+  font-size: 14px;
+}
+
+.status {
+  display: inline-block;
+  margin-right: 8px;
+  color: white;
+  padding: 0 8px;
+  line-height: 16px;
+  font-size: 12px;
+  background: gray;
+
+  &.inProgress {
+    background: $color-green;
+  }
+}

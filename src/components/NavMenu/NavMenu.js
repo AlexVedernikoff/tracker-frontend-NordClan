@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
+import {IconExitApp} from '../../components/Icons/Icons';
+import {IconPlus} from '../../components/Icons/Icons';
 import { Link } from 'react-router';
-
-import styles from './NavMenu.scss';
 
 export default class NavMenu extends Component {
   static propTypes = {
@@ -10,32 +10,43 @@ export default class NavMenu extends Component {
   };
 
   render() {
+    const css = require('./NavMenu.scss');
+
+    const iconStyles = {
+      width: 16,
+      height: 16,
+      color: 'inherit',
+      fill: 'currentColor'
+    };
+
     const links = [
-      (<li className={styles.sidebarItem}><Link className={styles.sidebarLink} activeClassName={styles.activeLink} to="/scrum">Scrum</Link></li>),
-      (<li className={styles.sidebarItem}><Link className={styles.sidebarLink} activeClassName={styles.activeLink} to="/project">Мои проекты</Link></li>),
-      (<li className={styles.sidebarItem}><Link className={styles.sidebarLink} activeClassName={styles.activeLink} to="/tasks">Мои задачи</Link></li>),
-      (<li className={styles.sidebarItem}><Link className={styles.sidebarLink} activeClassName={styles.activeLink} to="/repeat">Отчеты по времени</Link></li>)
+      (<li className={css.sidebarItem}><Link className={css.sidebarLink} activeClassName={css.activeLink} to="/scrum">Scrum</Link></li>),
+      (<li className={css.sidebarItem}><Link className={css.sidebarLink} activeClassName={css.activeLink} to="/project">Мои проекты</Link></li>),
+      (<li className={css.sidebarItem}><button><IconPlus style={iconStyles} /></button><Link className={css.sidebarLink} activeClassName={css.activeLink} to="/tasks">Мои задачи</Link></li>),
+      (<li className={css.sidebarItem}><Link className={css.sidebarLink} activeClassName={css.activeLink} to="/repeat">Отчеты по времени</Link></li>)
     ];
 
-    const userGroups = this.user.groups.name.map(function(item) {
-      return <span>{item.name}</span>
+    const userGroups = this.props.user.groups.map(function createList(item, index) {
+      return (<span key={index}>{item.name}, </span>);
     });
 
     const sidebarHeader = (
-      <div className={styles.sidebarHeader}>
-        <div className={styles.userAvatar}>
+      <div className={css.sidebarHeader}>
+        <div className={css.userAvatar}>
           <img src={this.props.user.photo} alt=""/>
         </div>
-        <div className={styles.userNameContainer}>
-          <div>{this.props.user.firstNameRu} {this.props.user.lastNameRu}</div>
-          <div>{userGroups}</div>
+        <div className={css.userNameContainer}>
+          <div className={css.userName}>{this.props.user.firstNameRu} {this.props.user.lastNameRu}</div>
+          <div className={css.userGroups}>{userGroups}</div>
         </div>
-        <div className={styles.logoutButton}></div>
+        <a href="/" className={css.logoutButton}>
+          <IconExitApp style={iconStyles} />
+        </a>
       </div>
     );
 
     return (
-      <div className={styles.navigation}>
+      <div className={css.navigation}>
         {sidebarHeader}
         {links}
       </div>
