@@ -7,7 +7,7 @@ export default class StatusDropdown extends React.Component {
 
     return (
       <span>
-        <span className={css.status + ' ' + css.inProgress}>В процессе</span>
+        <span className={css.status + ' ' + css.inProgress}>Статус: В процессе</span>
       </span>
     );
   }

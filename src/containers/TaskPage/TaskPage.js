@@ -86,7 +86,7 @@ export default class TaskPage extends Component {
     const css = require('./TaskPage.scss');
 
     const { task } = this.props;
-    const { priority, status } = task;
+    // const { priority, status } = task;
     let { type } = task;
 
     if (typeof type === 'string') { // временное приведение типа, пока рест не будет отдавать id
@@ -165,7 +165,7 @@ export default class TaskPage extends Component {
           task &&
           <div className={css.wrapper}>
             <Row>
-              <Col xs={9}>
+              <Col xs={8}>
                 <TaskCardHeader task={task}/>
                 <main className={css.main}>
                   <div className={css.header}>Описание</div>
@@ -187,16 +187,9 @@ export default class TaskPage extends Component {
                   </Row>
                 </main>
               </Col>
-              <Col xs={3}>
+              <Col xs={4}>
                 <aside>
-                  <Row>
-                    <Details status={status}
-                      priority={priority} type={type}
-                      handleChangePriority={this.handleChangePriority}
-                      handleChangeType={this.handleChangeType}
-                      handleChangeStatus={this.handleChangeStatus}
-                    />
-                  </Row>
+                  <Details task={task} />
                   <Row>
                     <Terms />
                   </Row>

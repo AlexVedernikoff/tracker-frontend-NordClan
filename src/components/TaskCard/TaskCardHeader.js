@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
-import { Link } from 'react-router';
 import StatusDropdown from '../StatusDropdown/StatusDropdown';
+import PriorityDropdown from '../PriorityDropdown/PriorityDropdown';
 
 const TaskCardHeader = (props) => {
   const {task} = props;
@@ -14,17 +14,11 @@ const TaskCardHeader = (props) => {
         <div>
           <span>Фича / Задача</span>
         </div>
-        <div>
-          <StatusDropdown />
-        </div>
       </div>
       <h1 className={css.title}> {task.name}</h1>
+        <StatusDropdown />
+        <PriorityDropdown />
       <hr className={css.hr} />
-      <p className={css.info}>
-        <Link to="#"> {task.projectName}</Link>, создал(а)
-        <Link to="#"> {task.creator ? task.creator.name : ''}</Link> 28 мая 2016, выполнит -
-        <Link to="#"> {task.owner ? task.owner.name : ''}</Link>
-      </p>
     </div>
   );
 };

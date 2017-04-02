@@ -2,6 +2,41 @@
 
 .detailsBlock {
   margin-left: 16px;
-  padding: 16px;
-  background: lighten($color-black, 80%);
+  background: lighten($color-black, 75%);
+  font-size: 13px;
+  color: lighten($color-black, 20%);
+}
+
+.detailTable {
+  width: 100%;
+
+  td {
+    padding: 8px;
+
+    &:first-child {
+      padding-left: 16px;
+    }
+
+    &:last-child {
+      padding-right: 16px;
+    }
+  }
+
+  tr {
+    &:first-child {
+      td {
+        padding-top: 16px;
+      }
+    }
+
+    &:last-child {
+      td {
+        padding-bottom: 16px;
+      }
+    }
+  }
+
+  a {
+    text-decoration: none;
+  }
 }
