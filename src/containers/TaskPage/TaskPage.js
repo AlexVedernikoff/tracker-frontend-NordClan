@@ -165,12 +165,8 @@ export default class TaskPage extends Component {
           task &&
           <div className={css.wrapper}>
             <Row>
-              <Col xs={12}>
+              <Col xs={9}>
                 <TaskCardHeader task={task}/>
-              </Col>
-            </Row>
-            <Row>
-              <Col xs={8}>
                 <main className={css.main}>
                   <div className={css.header}>Описание</div>
                   <p className={css.description}>{task.about}</p>
@@ -191,7 +187,7 @@ export default class TaskPage extends Component {
                   </Row>
                 </main>
               </Col>
-              <Col xs={4}>
+              <Col xs={3}>
                 <aside>
                   <Row>
                     <Details status={status}

@@ -1,0 +1,15 @@
+@import '../../theme/variables.scss';
+
+.status {
+  display: inline-block;
+  margin-right: 8px;
+  color: white;
+  padding: 0 8px;
+  line-height: 16px;
+  font-size: 12px;
+  background: gray;
+
+  &.inProgress {
+    background: $color-green;
+  }
+}

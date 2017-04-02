@@ -9,12 +9,17 @@ const TaskCardHeader = (props) => {
 
   return (
     <div>
-      <div className={css.taskId}>
-        <StatusDropdown />
-        <span className={css.status + ' ' + css.inProgress}>В процессе</span>
-        PPJ-56321
+      <div className={css.taskTopInfo}>
+        <div>PPJ-56321</div>
+        <div>
+          <span>Фича / Задача</span>
+        </div>
+        <div>
+          <StatusDropdown />
+        </div>
       </div>
       <h1 className={css.title}> {task.name}</h1>
+      <hr className={css.hr} />
       <p className={css.info}>
         <Link to="#"> {task.projectName}</Link>, создал(а)
         <Link to="#"> {task.creator ? task.creator.name : ''}</Link> 28 мая 2016, выполнит -
