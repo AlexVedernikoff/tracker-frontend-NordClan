@@ -31,13 +31,13 @@ export default class Details extends React.Component {
             <tr className={css.detailProject}>
               <td>Запланировано:</td>
               <td>
-                10ч.
+                10 ч.
               </td>
             </tr>
             <tr className={css.detailProject}>
               <td>Потрачено:</td>
               <td>
-                100ч.
+                <span className={css.alert}>100 ч.</span>
               </td>
             </tr>
             <tr className={css.detailProject}>

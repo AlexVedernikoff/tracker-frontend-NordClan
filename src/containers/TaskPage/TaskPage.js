@@ -5,17 +5,15 @@ import {connect} from 'react-redux';
 import {setCurrentTask, isCurrentTaskLoaded, setPriority, setTypeTask, setStatus} from '../../actions/currentTask';
 // import {bindActionCreators} from 'redux';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import EditorModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 
 import TaskCardHeader from '../../components/TaskCard/TaskCardHeader';
-import DropZone from '../../components/DropZone/DropZone';
-import ExecutorsList from '../../components/TaskPage/ExecutorsList';
-import DocumentList from '../../components/TaskPage/DocumentList';
-import Terms from '../../components/TaskPage/Terms';
 import Details from '../../components/TaskPage/Details';
+import RelatedTasks from '../../components/TaskPage/RelatedTasks';
+import TaskHistory from '../../components/TaskPage/TaskHistory';
+import Attachments from '../../components/TaskPage/Attachments';
+// import DropZone from '../../components/DropZone/DropZone';
 import Comments from '../../components/TaskPage/Comments';
-import Slider from '../../components/TaskPage/Slider';
+// import Slider from '../../components/TaskPage/Slider';
 
 @connect(
   state => ({task: state.currentTask.data}),
@@ -93,70 +91,70 @@ export default class TaskPage extends Component {
       type = 1;
     }
 
-    const dataExecutors = {
-      0: {
-        name: 'Иватина Ирина',
-        date: '10 апреля',
-        status: 'iconPaused'
-      },
-      1: {
-        name: 'Иватина Ирина',
-        date: '12 апреля',
-        status: 'iconPaused'
-      },
-      2: {
-        name: 'Иватина Ирина',
-        date: '20 апреля',
-        status: 'iconInProcess'
-      },
-      3: {
-        name: 'Иватина Ирина',
-        date: '10 марта',
-        status: 'iconPaused'
-      },
-      4: {
-        name: 'Иватина Ирина',
-        date: '27 марта',
-        status: 'iconPaused'
-      },
-      5: {
-        name: 'Иватина Ирина',
-        date: '10 мая',
-        status: 'iconPaused'
-      },
-      6: {
-        name: 'Иватина Ирина',
-        date: '6 апреля',
-        status: 'iconCompleted'
-      },
-      7: {
-        name: 'Иватина Ирина',
-        date: '10 марта',
-        status: 'iconCompleted'
-      }
-    };
-    const dataDocuments = {
-      0: {
-        title: 'Сводная таблица технических требований',
-        format: 'XLS',
-        type: 'DownloadFile'
-      },
-      1: {
-        title: 'Технические требования по использованию предоставленных материалов',
-        format: 'PDF',
-        type: 'DownloadFile'
-      },
-      2: {
-        title: 'Сводная таблица технических требований',
-        format: '(.xls)',
-        type: 'CloudDownload'
-      },
-      3: {
-        title: 'Сводная таблица технических требований',
-        format: '(.xls)',
-        type: 'AttachFile'
-      },
-    };
+    // const dataExecutors = {
+    //   0: {
+    //     name: 'Иватина Ирина',
+    //     date: '10 апреля',
+    //     status: 'iconPaused'
+    //   },
+    //   1: {
+    //     name: 'Иватина Ирина',
+    //     date: '12 апреля',
+    //     status: 'iconPaused'
+    //   },
+    //   2: {
+    //     name: 'Иватина Ирина',
+    //     date: '20 апреля',
+    //     status: 'iconInProcess'
+    //   },
+    //   3: {
+    //     name: 'Иватина Ирина',
+    //     date: '10 марта',
+    //     status: 'iconPaused'
+    //   },
+    //   4: {
+    //     name: 'Иватина Ирина',
+    //     date: '27 марта',
+    //     status: 'iconPaused'
+    //   },
+    //   5: {
+    //     name: 'Иватина Ирина',
+    //     date: '10 мая',
+    //     status: 'iconPaused'
+    //   },
+    //   6: {
+    //     name: 'Иватина Ирина',
+    //     date: '6 апреля',
+    //     status: 'iconCompleted'
+    //   },
+    //   7: {
+    //     name: 'Иватина Ирина',
+    //     date: '10 марта',
+    //     status: 'iconCompleted'
+    //   }
+    // };
+    // const dataDocuments = {
+    //   0: {
+    //     title: 'Сводная таблица технических требований',
+    //     format: 'XLS',
+    //     type: 'DownloadFile'
+    //   },
+    //   1: {
+    //     title: 'Технические требования по использованию предоставленных материалов',
+    //     format: 'PDF',
+    //     type: 'DownloadFile'
+    //   },
+    //   2: {
+    //     title: 'Сводная таблица технических требований',
+    //     format: '(.xls)',
+    //     type: 'CloudDownload'
+    //   },
+    //   3: {
+    //     title: 'Сводная таблица технических требований',
+    //     format: '(.xls)',
+    //     type: 'AttachFile'
+    //   },
+    // };
     return (
       <div id="task-page">
         <Helmet title={task.name} />
@@ -168,46 +166,26 @@ export default class TaskPage extends Component {
               <Col xs={8}>
                 <TaskCardHeader task={task}/>
                 <main className={css.main}>
-                  <div className={css.header}>Описание</div>
-                  <p className={css.description}>{task.about}</p>
-                  <div className={css.header}>Изображения</div>
-                  <div className={css.slider}>
-                    <Row between="sm">
-                      <Slider />
-                      <Slider />
-                      <Slider />
-                      <Slider />
-                    </Row>
+                  <div className={css.description}>
+                    Описание задачи, которое довольно часто может составлять пару предложений.
                   </div>
-                  <div>
-                    <DropZone />
-                  </div>
-                  <Row>
-                    <Comments />
-                  </Row>
+                  <hr />
+                  <Attachments task={task} />
+                  <hr />
+                  <Comments />
                 </main>
               </Col>
               <Col xs={4}>
                 <aside>
                   <Details task={task} />
-                  <Row>
-                    <Terms />
-                  </Row>
-                  <Row>
-                    <ExecutorsList data={dataExecutors} />
-                  </Row>
-                  <Row>
-                    <DocumentList data={dataDocuments} />
-                  </Row>
+                  <RelatedTasks task={task} />
+                  <TaskHistory task={task} />
                 </aside>
               </Col>
             </Row>
           </div>
         }
         </Grid>
-        <FloatingActionButton className={css.taskPage_actionButton}>
-          <EditorModeEdit />
-        </FloatingActionButton>
       </div>
     );
   }

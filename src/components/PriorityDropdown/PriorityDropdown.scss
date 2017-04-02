@@ -1,6 +1,6 @@
 @import '../../theme/variables.scss';
 
-.status {
+.priority {
   display: inline-block;
   margin-right: 8px;
   color: white;
@@ -9,7 +9,7 @@
   font-size: 12px;
   background: gray;
 
-  &.inProgress {
-    background: $color-green;
+  &.third {
+    background: lighten($color-dark, 10%);
   }
 }

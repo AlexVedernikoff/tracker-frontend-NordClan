@@ -1,112 +1,78 @@
-import React, { Component, PropTypes } from 'react';
-import Tabs from 'material-ui/Tabs/Tabs';
-import Tab from 'material-ui/Tabs/Tab';
-import List from 'material-ui/List/List';
-import ListItem from 'material-ui/List/ListItem';
-import Avatar from 'material-ui/Avatar';
-import Typography from 'material-ui/styles/typography';
+import React, { Component } from 'react';
+import { Link } from 'react-router';
 
 export default class Comments extends Component {
-  static contextTypes = {
-    muiTheme: PropTypes.object.isRequired
-  }
-  constructor(props, context) {
-    super(props, context);
-    this.state = {
-      slideIndex: 0,
-    };
-  }
-
-  getStyles() {
-    const theme = this.context.muiTheme;
-    const styles = {
-      tabsLabel: {
-        backgroundColor: theme.rawTheme.palette.canvasColor
-      },
-      tabInkBar: {
-        backgroundColor: theme.rawTheme.palette.primary1Color
-      },
-      tabsLabelText: {
-        color: Typography.textDarkBlack
-      },
-    };
-    return styles;
-  }
-
-  handleChangeTabs = (value) => {
-    this.setState({
-      slideIndex: value,
-    });
-  };
-
-  mapListItem(data) {
-    let child = [];
-
-    child = data.map((item, key) => {
-      let nestedItems = [];
-      if (item.nestedItems) {
-        nestedItems = this.mapListItem(item.nestedItems);
-      }
-      return (<ListItem
-        leftAvatar={<Avatar src="" />}
-        primaryText={item.author}
-        secondaryText={<p>{item.text}</p>}
-        secondaryTextLines={2}
-        initiallyOpen key={key}
-        nestedItems={nestedItems} />);
-    });
-    return child;
-  }
 
   render() {
-    const styles = this.getStyles();
-    const data = [
-      {
-        author: 'Brendan Lim',
-        text: 'Do you want to grab brunch?'
-      },
-      {
-        author: 'Scott Jennifer',
-        text: 'Do you want to grab brunch?',
-        nestedItems: [
-          {
-            author: 'Brendan Lim',
-            text: 'Do you want to grab brunch?'
-          },
-          {
-            author: 'Scott Jennifer',
-            text: 'Do you want to grab brunch?',
-            nestedItems: [
-              {
-                author: 'Scott Jennifer',
-                text: 'Wish I could come, but I&apos;m out of town this weekend.'
-              },
-            ]
-          },
-          {
-            author: 'Brendan Lim',
-            text: 'Do you want to grab brunch?',
-          },
-        ]
-      },
-      {
-        author: 'Brendan Lim',
-        text: 'Wish I could come.'
-      }
-    ];
+    const css = require('./Comments.scss');
     return (
-      <Tabs onChange={this.handleChangeTabs}
-        value={this.state.slideIndex}
-        tabItemContainerStyle={styles.tabsLabel}
-        inkBarStyle={styles.tabInkBar}
-        style={{width: '80%'}}>
-        <Tab label="Комментарии" value={0} style={styles.tabsLabelText}>
-          <List>
-            {this.mapListItem(data)}
-          </List>
-        </Tab>
-        <Tab label="История" value={1} style={styles.tabsLabelText} />
-      </Tabs>
+      <div className="css.comments">
+        <h3 className={css.commentsTitle}>Комментарии</h3>
+        <ul className={css.commentList}>
+          <li className={css.commentContainer}>
+            <div className={css.comment}>
+              <div className={css.ava}>
+                <img src="http://lorempixel.com/56/56/people/" alt=""/>
+              </div>
+              <div className={css.commentBody}>
+                <div className={css.commentMeta}><Link to="#">Автор Автор</Link>, 17.03.2016</div>
+                <div className={css.commentText}>Лучше бы вложить их в один контейнер</div>
+                <div className={css.commentAction}>
+                  <Link to="#">Ответить</Link>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li className={css.commentContainer}>
+            <div className={css.commentContainer}>
+              <div className={css.comment}>
+                <div className={css.ava}>
+                  АЮ
+                </div>
+                <div className={css.commentBody}>
+                  <div className={css.commentMeta}><Link to="#">Андрей Юдин</Link>, 17.03.2016</div>
+                  <div className={css.commentText}>А вот в этом комментарии можно посмотреть как круто выглядит аватара с буквами вместо лица. Вот бы в жизни так было.</div>
+                  <div className={css.commentAction}>
+                    <Link to="#">Ответить</Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <ul className={css.commentList}>
+              <li className={css.commentContainer}>
+                <div className={css.comment}>
+                  <div className={css.ava}>
+                    МШ
+                  </div>
+                  <div className={css.commentBody}>
+                    <div className={css.commentMeta}><Link to="#">Максим Шотландский</Link>, 17.03.2016</div>
+                    <div className={css.commentText}>Это начало ветки комментариев. И вовь вы можете лицезреть аватарку из букв, в этот раз для примера я использовал другую пару символов</div>
+                    <div className={css.commentAction}>
+                      <Link to="#">Ответить</Link>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li className={css.commentContainer}>
+                <div className={css.commentContainer}>
+                  <div className={css.comment}>
+                    <div className={css.ava}>
+                      АЮ
+                    </div>
+                    <div className={css.commentBody}>
+                      <div className={css.commentMeta}><Link to="#">Андрей Юдин</Link>, 17.03.2016</div>
+                      <div className={css.commentText}>Просто комментарий</div>
+                      <div className={css.commentAction}>
+                        <Link to="#">Ответить</Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
     );
   }
 }

@@ -1,0 +1,66 @@
+@import '../../../theme/variables.scss';
+
+.relatedTasks {
+  padding: 16px 16px 0 16px;
+}
+
+.taskList {
+  padding: 0;
+  margin: 0;
+  font-size: 13px;
+}
+
+.task {
+  display: flex;
+  list-style-type: none;
+  padding: 16px;
+  transition: background 0.3s ease-out 0s;
+  border-top: 1px solid $color-gray;
+
+  .taskLabel {
+    padding-right: 8px;
+    width: 72px;
+    color: lighten($color-black, 20%);
+    flex-shrink: 0;
+  }
+
+  a {
+    text-decoration: none;
+    flex-grow: 0;
+  }
+
+  &:hover {
+    background: rgba($color-black, 0.05);
+    transition: background 0.3s ease-out 0s;
+  }
+}
+
+.add {
+  position: relative;
+  box-sizing: border-box;
+  height: 48px;
+  font-size: 13px;
+  color: lighten($color-black, 40%);
+  text-align: center;
+  text-decoration: none;
+  justify-content: center;
+  border-bottom: 1px solid $color-gray;
+
+  .tooltip {
+    display: none;
+  }
+
+  &:hover {
+    .tooltip {
+      display: block;
+    }
+    svg {
+      display: none !important;
+    }
+  }
+}
+
+
+.taskListHeader {
+  font-weight: 300;
+}

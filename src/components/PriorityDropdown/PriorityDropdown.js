@@ -6,7 +6,7 @@ export default class PriorityDropdown extends React.Component {
     const css = require('./PriorityDropdown.scss');
 
     return (
-      <span className={css.status + ' ' + css.inProgress}>
+      <span className={css.priority + ' ' + css.third}>
         <span>Приоритет: </span><span>3</span>
       </span>
     );

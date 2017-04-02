@@ -18,7 +18,7 @@ const TaskCardHeader = (props) => {
       <h1 className={css.title}> {task.name}</h1>
         <StatusDropdown />
         <PriorityDropdown />
-      <hr className={css.hr} />
+      <hr />
     </div>
   );
 };

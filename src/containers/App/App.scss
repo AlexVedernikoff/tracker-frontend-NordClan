@@ -11,3 +11,9 @@ body {
 a {
   color: lighten($color-dark, 30%);
 }
+
+hr {
+  border: none;
+  border-bottom: 1px solid $color-gray;
+  margin: 32px 0;
+}

@@ -48,7 +48,9 @@ export default class NavMenu extends Component {
     return (
       <div className={css.navigation}>
         {sidebarHeader}
-        {links}
+        <ul className={css.sidebarLinks}>
+          {links}
+        </ul>
       </div>
     );
   }
