@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react';
-import {IconExitApp} from '../../components/Icons/Icons';
-import {IconPlus} from '../../components/Icons/Icons';
 import { Link } from 'react-router';
+import {IconPlus} from '../../components/Icons/Icons';
 
 export default class NavMenu extends Component {
   static propTypes = {
@@ -39,9 +38,6 @@ export default class NavMenu extends Component {
           <div className={css.userName}>{this.props.user.firstNameRu} {this.props.user.lastNameRu}</div>
           <div className={css.userGroups}>{userGroups}</div>
         </div>
-        <a href="/" className={css.logoutButton}>
-          <IconExitApp style={iconStyles} />
-        </a>
       </div>
     );
 

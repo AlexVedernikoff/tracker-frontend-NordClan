@@ -1,6 +1,9 @@
 import React, {Component, PropTypes} from 'react';
+import { Link } from 'react-router';
+import {IconExitApp} from '../../components/Icons/Icons';
+import {IconSearch} from '../../components/Icons/Icons';
 
-import styles from './appHead.scss';
+import css from './appHead.scss';
 
 export default class AppHead extends Component {
 
@@ -9,16 +12,33 @@ export default class AppHead extends Component {
   };
 
   render() {
+    const iconStyles = {
+      width: 16,
+      height: 16,
+      color: 'inherit',
+      fill: 'currentColor'
+    };
+
     const { user } = this.context;
+
     if (!user) {
       return null;
     }
 
     return (
-      <div className={styles.toppanel}>
-        <a href="/" className={styles.logo}>
+      <div className={css.toppanel}>
+        <Link to="/" className={css.logo}>
           <span>Sim</span>Track
-        </a>
+        </Link>
+        <div className={css.search}>
+          <input type="text" id="mainSearch" className={css.searchInput} placeholder="Поиск по названию" />
+          <label htmlFor="mainSearch" className={css.searchButton}>
+            <IconSearch style={iconStyles} />
+          </label>
+        </div>
+        <Link to="/" className={css.logoutButton}>
+          <IconExitApp style={iconStyles} />
+        </Link>
       </div>
     );
   }

@@ -3,6 +3,8 @@
 .toppanel {
   height: 56px;
   background: $color-dark;
+  display: flex;
+  justify-content: space-between;
 }
 
 .logo {
@@ -14,5 +16,85 @@
 
   span {
     color: $color-orange;
+  }
+}
+
+.logoutButton {
+  display: flex;
+  height: 56px;
+  width: 56px;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s ease-out 0s;
+  color: $color-lightgray;
+  flex-shrink: 0;
+
+  svg {
+    opacity: 0.4;
+  }
+
+  &:hover {
+    background: rgba(white, 0.1);
+    transition: 0.3s ease-out 0s;
+
+    svg {
+      opacity: 1;
+    }
+  }
+}
+
+.search {
+  flex-grow: 1;
+  flex-basis: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.searchButton {
+  display: flex;
+  height: 56px;
+  width: 56px;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s ease-out 0s;
+  color: $color-lightgray;
+  cursor: pointer;
+
+  svg {
+    opacity: 0.4;
+  }
+
+  &:hover {
+    background: rgba(white, 0.1);
+    transition: 0.3s ease-out 0s;
+
+    svg {
+      opacity: 1;
+    }
+  }
+}
+
+.searchInput {
+  box-sizing: border-box;
+  width: 0;
+  opacity: 0;
+  padding: 16px 32px;
+  background: rgba(white, .1);
+  color: $color-lightgray;
+  border: none;
+  font-size: 14px;
+  font-weight: 300;
+  transition: all 0.3s ease-out 0s;
+
+  &::-webkit-input-placeholder {color:lighten(rgba(white, .5));}
+  &::-moz-placeholder          {color:lighten(rgba(white, .5));}/* Firefox 19+ */
+  &:-moz-placeholder           {color:lighten(rgba(white, .5));}/* Firefox 18- */
+  &:-ms-input-placeholder      {color:lighten(rgba(white, .5));}
+
+  &:focus {
+    outline: none;
+    width: calc(100% - 56px);
+    opacity: 1;
+    transition: all 0.3s ease-out 0s;
   }
 }
