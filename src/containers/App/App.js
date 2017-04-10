@@ -50,7 +50,7 @@ export default class App extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!this.props.user && nextProps.user) {
-      // login
+      // login1
       this.props.pushState('/tasks');
     } else if (this.props.user && !nextProps.user) {
       // logout
