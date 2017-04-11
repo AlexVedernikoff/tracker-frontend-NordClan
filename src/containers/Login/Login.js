@@ -50,7 +50,7 @@ export default class Login extends Component {
             labelPosition="before"
             primary
           />
-          <p className={styles.loginTextHint}>Введите любой имя и нажмите войти</p>
+          <p className={styles.loginTextHint}>Введите любое имя и нажмите войти</p>
         </form>
         }
         {user &&

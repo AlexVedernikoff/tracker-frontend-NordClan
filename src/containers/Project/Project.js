@@ -37,7 +37,7 @@ export default class Project extends Component {
         <Grid>
           <Row>
             <Col xs={12} lg={12}>
-              <h1 className={css.h1} style={h1}>Мои проекты!</h1>
+              <h1 className={css.h1} style={h1}>Мои проекты</h1>
               <FilterSearchBar />
               {renderFilterProject}
             </Col>
