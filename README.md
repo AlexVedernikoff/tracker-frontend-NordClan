@@ -218,7 +218,9 @@ To keep watching your test suites that you are working on, just set `singleRun: 
 
 Nginx нужен для форвардинга 80 порта на 8080. Для этого нужно создать новый конфиг.
 
-```server {
+```
+
+server {
        listen 80;
        location / {
            proxy_set_header   X-Forwarded-For $remote_addr;
@@ -226,6 +228,8 @@ Nginx нужен для форвардинга 80 порта на 8080. Для �
            proxy_pass         http://127.0.0.1:8080;
        }
    }
+   
+   
 ```
 
 

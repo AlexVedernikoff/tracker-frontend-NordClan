@@ -51,6 +51,10 @@ export default class Project extends Component {
   }
 }
 
+Project.propTypes = {
+  css: PropTypes.object
+};
+
 Project.defaultProps = {
   css: require('./project.scss')
 };

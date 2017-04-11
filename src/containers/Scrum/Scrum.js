@@ -51,6 +51,10 @@ export default class Scrum extends Component {
   }
 }
 
+Scrum.propTypes = {
+  css: PropTypes.object
+};
+
 Scrum.defaultProps = {
   css: require('./scrum.scss')
 };
