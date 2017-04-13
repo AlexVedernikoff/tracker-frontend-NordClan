@@ -9,7 +9,8 @@ var host = config.host || 'localhost';
 var port = (Number(config.port) + 1) || 3001;
 var serverOptions = {
   contentBase: 'http://' + host + ':' + port,
-  quiet: true,
+  quiet: true, // set to false to display errors at console
+  overlay: false, // set to false to disable error overlay
   noInfo: true,
   hot: true,
   inline: true,
