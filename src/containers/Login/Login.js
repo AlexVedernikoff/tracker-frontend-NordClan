@@ -1,5 +1,5 @@
-import React, {Component, PropTypes} from 'react';
-import {connect} from 'react-redux';
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
 import * as authActions from '../../actions/auth';
 import TextField from 'material-ui/TextField';
@@ -8,7 +8,7 @@ import AppBar from 'material-ui/AppBar';
 import Paper from 'material-ui/Paper';
 
 @connect(
-  state => ({user: state.auth.user}),
+  state => ({ user: state.auth.user }),
   authActions)
 export default class Login extends Component {
   static propTypes = {
@@ -24,26 +24,26 @@ export default class Login extends Component {
   }
 
   render() {
-    const {user, logout} = this.props;
+    const { user, logout } = this.props;
     const styles = require('./Login.scss');
     return (
       <Paper className={styles.loginPage}>
         <Helmet title="Войти" />
-        <AppBar title="Войти" showMenuIconButton={false}/>
+        <AppBar title="Войти" showMenuIconButton={false} />
         {!user &&
-        <form style={{marginTop: '2rem'}} onSubmit={this.handleSubmit}>
+        <form style={{ marginTop: '2rem' }} onSubmit={this.handleSubmit}>
           <TextField
             hintText="Введите имя"
             floatingLabelText="Имя"
             ref="username"
             id="loginField"
-          /><br/>
+          /><br />
           <TextField
             hintText="Введите пароль"
             floatingLabelText="Пароль"
             type="password"
             id="passwordField"
-          /><br/>
+          /><br />
           <FlatButton
             type="submit"
             label="Войти"
@@ -58,11 +58,12 @@ export default class Login extends Component {
           <p>Вы вошли в систему как {user.name}.</p>
 
           <div>
-             <FlatButton
-                type="submit"
-                label="Выйти"
-                className="btn btn-danger" onClick={logout}
-                secondary />
+            <FlatButton
+              type="submit"
+              label="Выйти"
+              className="btn btn-danger" onClick={logout}
+              secondary
+            />
           </div>
         </div>
         }

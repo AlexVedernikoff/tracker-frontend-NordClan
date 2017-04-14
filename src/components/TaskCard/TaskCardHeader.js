@@ -1,10 +1,10 @@
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 import Typography from 'material-ui/styles/typography';
 import { Link } from 'react-router';
 
 const TaskCardHeader = (props, context) => {
-  const {task, css} = props;
-  const {muiTheme} = context;
+  const { task, css } = props;
+  const { muiTheme } = context;
   const styles = {
     title: {
       color: muiTheme.rawTheme.palette.primary1Color,

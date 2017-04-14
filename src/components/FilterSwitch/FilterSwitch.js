@@ -36,7 +36,12 @@ const FilterSwitch = (props, context) => {
   };
 
   return (
-    <FlatButton label={label} style={styles.switch} labelStyle={styles.label} onTouchTap={touchTapHandler} />
+    <FlatButton
+      label={label}
+      style={styles.switch}
+      labelStyle={styles.label}
+      onTouchTap={touchTapHandler}
+    />
   );
 };
 
@@ -45,6 +50,10 @@ FilterSwitch.propTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func
+};
+
+FilterSwitch.defaultProps = {
+  onChange: () => null
 };
 
 FilterSwitch.contextTypes = {

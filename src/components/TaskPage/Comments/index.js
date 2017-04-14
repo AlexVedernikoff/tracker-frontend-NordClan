@@ -53,7 +53,8 @@ export default class Comments extends Component {
         secondaryText={<p>{item.text}</p>}
         secondaryTextLines={2}
         initiallyOpen key={key}
-        nestedItems={nestedItems} />);
+        nestedItems={nestedItems}
+      />);
     });
     return child;
   }
@@ -95,11 +96,13 @@ export default class Comments extends Component {
       }
     ];
     return (
-      <Tabs onChange={this.handleChangeTabs}
+      <Tabs
+        onChange={this.handleChangeTabs}
         value={this.state.slideIndex}
         tabItemContainerStyle={styles.tabsLabel}
         inkBarStyle={styles.tabInkBar}
-        style={{width: '80%'}}>
+        style={{ width: '80%' }}
+      >
         <Tab label="Комментарии" value={0} style={styles.tabsLabelText}>
           <List>
             {this.mapListItem(data)}

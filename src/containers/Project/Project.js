@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import FilterPanel from '../../components/FilterPanel/FilterPanel';
 import FilterSwitch from '../../components/FilterSwitch/FilterSwitch';
-import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
+import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import Helmet from 'react-helmet';
 import FilterSearchBar from '../../components/FilterSearchBar/FilterSearchBar';
 import Typography from 'material-ui/styles/typography';
@@ -33,7 +33,7 @@ export default class Project extends Component {
     );
     return (
       <div>
-        <Helmet title="My Project"/>
+        <Helmet title="My Project" />
         <Grid>
           <Row>
             <Col xs={12} lg={12}>

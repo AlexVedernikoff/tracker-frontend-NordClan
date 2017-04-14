@@ -30,29 +30,43 @@ export default class Terms extends Component {
       <Col xs>
         <div className={css.timeBlock}>
           <div className={css.timeHeader}>Сроки</div>
-            <div className={css.timeDeadlineBlock}>
+          <div className={css.timeDeadlineBlock}>
             <div>
-              <div className={css.timeDeadlineTitle} style={styles.timeDeadlineTitle}>Потрачено/Запланировано</div>
-              <TaskProgressBar spent={1000} planned={100} spentLabel={'Потрачено'} plannedLabel={'Планируемое'}/>
+              <div
+                className={css.timeDeadlineTitle}
+                style={styles.timeDeadlineTitle}
+              >
+                Потрачено/Запланировано
+              </div>
+              <TaskProgressBar spent={1000} planned={100} spentLabel={'Потрачено'} plannedLabel={'Планируемое'} />
             </div>
-          <div>
-            <div className={css.timeDeadlineTitle} style={styles.timeDeadlineTitle}>Релиз</div>
-            <DeadlineDate date={0} />
+            <div>
+              <div className={css.timeDeadlineTitle} style={styles.timeDeadlineTitle}>Релиз</div>
+              <DeadlineDate date={0} />
+            </div>
           </div>
-        </div>
           <List>
             <ListItem
               disabled
               primaryText={
-              <div className={css.execPrimaryText}>Спринт 1 <span className={css.execDate}>11 марта</span></div>} />
+                <div className={css.execPrimaryText}>
+                  Спринт 1 <span className={css.execDate}>11 марта</span>
+                </div>}
+            />
             <ListItem
               disabled
               primaryText={
-              <div className={css.execPrimaryText}>Спринт 2 <span className={css.execDate}>25 марта</span></div>} />
+                <div className={css.execPrimaryText}>
+                  Спринт 2 <span className={css.execDate}>25 марта</span>
+                </div>}
+            />
             <ListItem
               disabled
               primaryText={
-              <div className={css.execPrimaryText}>Спринт 3 <span className={css.execDate}>8 апреля</span></div>} />
+                <div className={css.execPrimaryText}>
+                  Спринт 3 <span className={css.execDate}>8 апреля</span>
+                </div>}
+            />
           </List>
         </div>
       </Col>

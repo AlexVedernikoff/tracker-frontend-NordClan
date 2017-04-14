@@ -1,6 +1,6 @@
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 import IconButton from 'material-ui/IconButton';
-import {AccountSwitch} from '../../components/Icons/Icons';
+import { AccountSwitch } from '../../components/Icons/Icons';
 import AutoCompleteDialog from '../../components/Dialog/AutoCompleteDialog';
 
 class TaskReassignWidget extends React.Component {
@@ -46,7 +46,7 @@ class TaskReassignWidget extends React.Component {
   }
 
   render() {
-    const {taskName, projectName, taskExpertise, styles} = this.props;
+    const { taskName, projectName, taskExpertise, styles } = this.props;
     const theme = this.context.muiTheme;
     const headerColor = {
       color: theme.rawTheme.palette.primary1Color
@@ -61,7 +61,7 @@ class TaskReassignWidget extends React.Component {
     return (
       <div>
         <IconButton onTouchTap={this.handleTouchTap}>
-          <AccountSwitch/>
+          <AccountSwitch />
         </IconButton>
         <AutoCompleteDialog
           open={this.state.open}

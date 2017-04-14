@@ -1,4 +1,4 @@
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 import Paper from 'material-ui/Paper';
 import Table from 'material-ui/Table/Table';
 import TableHeaderColumn from 'material-ui/Table/TableHeaderColumn';
@@ -13,7 +13,7 @@ import KeyboardArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up';
 import IconButton from 'material-ui/IconButton';
 
 const TasksTable = (props) => {
-  const {tasks, order, onSortOrderToggle, viewSettings, handleClick, showTasks, css} = props;
+  const { tasks, order, onSortOrderToggle, viewSettings, handleClick, showTasks, css } = props;
   const titleIconBottomColor = 'rgba(0, 0, 0, 0.54)';
   return (
     <Paper zDepth={1} rounded={false} className={css.paper}>
@@ -25,7 +25,7 @@ const TasksTable = (props) => {
             </TableHeaderColumn>
 
             <TableHeaderColumn tooltip="The ID" className={css.width_30}>
-              <SortOrderSwitch label="ID" order={order} value="id" onChange={onSortOrderToggle}/>
+              <SortOrderSwitch label="ID" order={order} value="id" onChange={onSortOrderToggle} />
             </TableHeaderColumn>
 
             <TableHeaderColumn tooltip="Статус" className={css.width_50}>
@@ -33,11 +33,11 @@ const TasksTable = (props) => {
             </TableHeaderColumn>
 
             <TableHeaderColumn tooltip="Название" className={css.width_70}>
-              <SortOrderSwitch label="Название" order={order} value="name" onChange={onSortOrderToggle}/>
+              <SortOrderSwitch label="Название" order={order} value="name" onChange={onSortOrderToggle} />
             </TableHeaderColumn>
 
             <TableHeaderColumn tooltip="Автор" className={css.width_70}>
-                <SortOrderSwitch label="Автор" order={order} value="creatorName" onChange={onSortOrderToggle}/>
+              <SortOrderSwitch label="Автор" order={order} value="creatorName" onChange={onSortOrderToggle} />
             </TableHeaderColumn>
 
             <TableHeaderColumn />
@@ -47,7 +47,7 @@ const TasksTable = (props) => {
             </TableHeaderColumn>
 
             <TableHeaderColumn tooltip="Дата" className={css.width_120}>
-              <SortOrderSwitch label="Дата" order={order} value="planEndDate" onChange={onSortOrderToggle} style={{textAlign: 'center'}} />
+              <SortOrderSwitch label="Дата" order={order} value="planEndDate" onChange={onSortOrderToggle} style={{ textAlign: 'center' }} />
             </TableHeaderColumn>
 
             <TableHeaderColumn tooltip="Настройки" className={css.width_70}>
@@ -56,9 +56,11 @@ const TasksTable = (props) => {
 
           </TableRow>
         </TableHeader>
-        <TableBody deselectOnClickaway showRowHover
+        <TableBody
+          deselectOnClickaway showRowHover
           stripedRows={false}
-          displayRowCheckbox={false}>
+          displayRowCheckbox={false}
+        >
           {tasks.map((task, index, arr) => {
             const iconArrow = (<IconButton className={css.titleIconBottom}>
               {showTasks[task.idProj] ?
@@ -77,7 +79,7 @@ const TasksTable = (props) => {
                       {iconArrow}
                       <div className={css.projectName}>{task.projectName}</div>
                     </div>
-                    <div className={css.border}/>
+                    <div className={css.border} />
                   </div>
                 </TableRowColumn>
                 <TableRowColumn className={css.tableRowColumnDefault} />
@@ -86,7 +88,8 @@ const TasksTable = (props) => {
                 <TableRowColumn className={css.tableRowColumnDefault} />
               </TableRow>);
             }
-            return (<TaskItem task={task} key={index} showTasks={showTasks}
+            return (<TaskItem
+              task={task} key={index} showTasks={showTasks}
               displayBorder={(index !== arr.length - 1 && task.priority !== arr[index + 1].priority)}
               displayPriorityBadge={(index === 0 || task.priority !== arr[index - 1].priority)}
             />);

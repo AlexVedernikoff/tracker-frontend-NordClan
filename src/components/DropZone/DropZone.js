@@ -2,7 +2,7 @@
 /* Компонент загрузки файлов Drag-and-Drop
 */
 
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import IconAddFile from 'material-ui/svg-icons/content/add-circle';
 import IconRemove from 'material-ui/svg-icons/navigation/cancel';
 import FlatButton from 'material-ui/FlatButton';
@@ -18,18 +18,18 @@ class DropZoneBlock extends Component {
 
   onDrop = (files) => {
     this.setState({
-      files: files
+      files
     });
     console.log('Received files: ', files);
   };
 
   onOpenClick = () => {
-    this.refs.dropzone.open();
+    this.refs.dropzone.open(); // eslint-disable-line react/no-string-refs
   };
 
   removeImage = (index) => {
     this.setState({
-      files: this.state.files.filter((file, id) => id !== index )
+      files: this.state.files.filter((file, id) => id !== index)
     });
     console.log('Remove image with index', index);
   };
@@ -61,11 +61,14 @@ class DropZoneBlock extends Component {
         label="Загрузить файлы"
         secondary
         icon={<IconAddFile />}
-        onClick={this.onOpenClick} />
+        onClick={this.onOpenClick}
+      />
     );
     const renderDropzone = (
-      <Dropzone ref="dropzone" style={styles.dropZone} className={css.dropZone}
-        onDrop={this.onDrop} activeStyle={styles.dropZoneActive}>
+      <Dropzone
+        ref="dropzone" style={styles.dropZone} className={css.dropZone} // eslint-disable-line react/no-string-refs
+        onDrop={this.onDrop} activeStyle={styles.dropZoneActive}
+      >
         <span className={css.dropZoneText} style={styles.dropZoneText}>
           Перетащите файл(ы) сюда или кликните, чтобы выбрать файлы для загрузки
         </span>
@@ -81,18 +84,20 @@ class DropZoneBlock extends Component {
         </div>
         {renderDropzone}
         {this.state.files.length > 0 ?
-        <div>
-          <div>Добавлен {this.state.files.length} файл...</div>
-          <div className={css.imagesBlock}>
-            {this.state.files.map((file, id) =>
-              <div className={css.imageItem} data-image-id={id} key={id}>
-                <img className={css.imageImg} key={id} src={file.preview} />
-                <IconRemove style={styles.iconRemove} className={css.iconRemove}
-                  onClick={this.removeImage.bind(this, id)} />
-              </div>
+          <div>
+            <div>Добавлен {this.state.files.length} файл...</div>
+            <div className={css.imagesBlock}>
+              {this.state.files.map((file, id) =>
+                <div className={css.imageItem} data-image-id={id} key={id}>
+                  <img className={css.imageImg} key={id} src={file.preview} alt="" />
+                  <IconRemove
+                    style={styles.iconRemove} className={css.iconRemove}
+                    onClick={this.removeImage(id)}
+                  />
+                </div>
             )}
-          </div>
-        </div> :
+            </div>
+          </div> :
         null}
       </div>
     );
@@ -103,7 +108,6 @@ DropZoneBlock.defaultProps = {
 };
 
 DropZoneBlock.propTypes = {
-  style: PropTypes.object,
   css: PropTypes.object
 };
 

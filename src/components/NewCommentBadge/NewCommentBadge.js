@@ -1,4 +1,4 @@
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 import Badge from 'material-ui/Badge';
 import IconButton from 'material-ui/IconButton';
 import ChatBubbleOutline from 'material-ui/svg-icons/communication/chat-bubble-outline';
@@ -65,17 +65,17 @@ class NewCommentBadge extends React.Component {
           onMouseOver={this.mouseEnterHandler} onMouseOut={this.mouseLeaveHandler}
         >
           <IconButton className={css.button}>
-            <ChatBubbleOutline className={css.icon}/>
+            <ChatBubbleOutline className={css.icon} />
           </IconButton>
         </Badge>
         <Popover
           open={this.state.open} anchorEl={this.state.anchorEl}
-          anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
-          targetOrigin={{horizontal: 'right', vertical: 'top'}}
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+          targetOrigin={{ horizontal: 'right', vertical: 'top' }}
           onRequestClose={this.mouseLeaveHandler}
           animated={false} useLayerForClickAway={false}
         >
-          <ContentCrate style={{maxWidth: 300}}>
+          <ContentCrate style={{ maxWidth: 300 }}>
             <p className={css.comment}>{this.props.comment}</p>
             <span className={css.commentInfo} style={styles.commentInfo}>{this.props.author}, {this.props.date}</span>
           </ContentCrate>

@@ -61,33 +61,37 @@ export default class ExecutorsList extends Component {
 
     return (
       <Col xs>
-      <div className={css.execBlock}>
-        <div className={css.execWrap} style={
+        <div className={css.execBlock}>
+          <div
+            className={css.execWrap} style={
           this.state.executorsExpand ? styles.execWrapExpand :
-          {maxHeight: findDOMNode(this.refs.executorsList).offsetHeight}
-        }>
-          <List ref="executorsList">
-            <Subheader>Исполнители</Subheader>
-            {Object.keys(data).map(key => {
-              return (
-                <ExecutorsListItem key={key}
+          { maxHeight: findDOMNode(this.refs.executorsList).offsetHeight }
+        }
+          >
+            <List ref="executorsList">
+              <Subheader>Исполнители</Subheader>
+              {Object.keys(data).map(key => (
+                <ExecutorsListItem
+                  key={key}
                   index={key}
                   date={data[key].date}
                   name={data[key].name}
-                  status={data[key].status} />
-              );
-            })}
-          </List>
+                  status={data[key].status}
+                />
+              ))}
+            </List>
+          </div>
+          <div className={css.execSeparator}>
+            <IconButton
+              tooltip={this.state.executorsExpand ? 'Развернуть' : 'Свернуть'}
+              className={css.execSeparatorBtn} style={styles.execSeparatorBtn} onClick={this.handleExecutorsExpand}
+            >
+              {this.state.executorsExpand ? <IconSeparatorDown /> : <IconSeparatorUp />}
+            </IconButton>
+            <div style={styles.execSeparatorLine} />
+          </div>
         </div>
-        <div className={css.execSeparator}>
-          <IconButton tooltip={this.state.executorsExpand ? 'Развернуть' : 'Свернуть'}
-            className={css.execSeparatorBtn} style={styles.execSeparatorBtn} onClick={this.handleExecutorsExpand}>
-            {this.state.executorsExpand ? <IconSeparatorDown/> : <IconSeparatorUp/>}
-          </IconButton>
-          <div style={styles.execSeparatorLine}></div>
-        </div>
-      </div>
-    </Col>
+      </Col>
     );
   }
 }

@@ -9,6 +9,7 @@ export default class Slider extends Component {
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired
   }
+
   getStyles() {
     const theme = this.context.muiTheme;
     const styles = {
@@ -23,9 +24,11 @@ export default class Slider extends Component {
     };
     return styles;
   }
+
   handleSliderRemoveItem = () => {
     console.log('Remove slider item');
   };
+
   render() {
     const styles = this.getStyles();
     const { css } = this.props;
@@ -42,22 +45,23 @@ export default class Slider extends Component {
     //   lazyLoad: true,
     // };
     /*
-    <Slider {...sliderSettings}>
-      <img style={styles.sliderItemImg} src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
-      <img style={styles.sliderItemImg} src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
-      <img style={styles.sliderItemImg} src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
-      <img style={styles.sliderItemImg} src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
-      <img style={styles.sliderItemImg} src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
-    </Slider>
-    */
+     <Slider {...sliderSettings}>
+     <img style={styles.sliderItemImg} src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
+     <img style={styles.sliderItemImg} src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
+     <img style={styles.sliderItemImg} src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
+     <img style={styles.sliderItemImg} src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
+     <img style={styles.sliderItemImg} src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
+     </Slider>
+     */
     return (
       <Col sm={3}>
         <div className={css.sliderItem}>
-          <img className={css.sliderItemImg}
-          src="http://www1-lw.xda-cdn.com/wp-content/uploads/2015/01/Ultimate-Material-Lollipop-Collection-28.jpg"/>
+          <img className={css.sliderItemImg} alt="" />
           <div className={css.sliderRemoveBtn}>
-            <NavCancel style={styles.sliderRemoveIco}
-            onClick={this.handleSliderRemoveItem} />
+            <NavCancel
+              style={styles.sliderRemoveIco}
+              onClick={this.handleSliderRemoveItem}
+            />
           </div>
         </div>
       </Col>

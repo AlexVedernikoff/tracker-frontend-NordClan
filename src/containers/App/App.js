@@ -1,22 +1,25 @@
-/* Главный компонент приложения, проверяется авторизация пользователя, реализуется функционал тем для приложения */
+/* Главный компонент приложения,
+ проверяется авторизация пользователя, реализуется функционал тем для приложения */
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
-import { isLoaded as isAuthLoaded, load as loadAuth, logout } from '../../actions/auth';
-import { push } from 'react-router-redux';
-import config from '../../config';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import getColorTheme from '../../theme/theme';
+import { push } from 'react-router-redux';
 import { asyncConnect } from 'redux-connect';
+import { isLoaded as isAuthLoaded, load as loadAuth, logout } from '../../actions/auth';
+import config from '../../config';
+
+import getColorTheme from '../../theme/theme';
 import AppHead from '../../components/AppHead/AppHead';
 
 @asyncConnect([{
   deferred: true,
-  promise: ({store: {dispatch, getState}}) => {
+  promise: ({ store: { dispatch, getState } }) => {
     if (!isAuthLoaded(getState())) {
       return dispatch(loadAuth());
     }
+    return false;
   }
 }])
 @connect(
@@ -24,7 +27,7 @@ import AppHead from '../../components/AppHead/AppHead';
     user: state.auth.user,
     pathname: state.routing.locationBeforeTransitions.pathname
   }),
-  {logout, pushState: push})
+  { logout, pushState: push })
 export default class App extends Component {
   static propTypes = {
     children: PropTypes.object.isRequired,
@@ -32,6 +35,11 @@ export default class App extends Component {
     logout: PropTypes.func.isRequired,
     pushState: PropTypes.func.isRequired,
     pathname: PropTypes.string
+  };
+
+  static defaultProps = {
+    user: null,
+    pathname: ''
   };
 
   static contextTypes = {
@@ -69,7 +77,7 @@ export default class App extends Component {
 
     return (
       <div id="app">
-        <Helmet {...config.app.head}/>
+        <Helmet {...config.app.head} />
         <MuiThemeProvider muiTheme={muiTheme}>
           <div>
             <AppHead pathname={this.props.pathname} />

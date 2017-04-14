@@ -27,7 +27,7 @@ const sequentialComparator = (a, b, sequence) => {
   }
   const subsequence = sequence.slice(0);
   const next = subsequence.shift();
-  const {key} = next;
+  const { key } = next;
   const order = sortOrder.sign(next.order);
   if (typeof a[key] === 'undefined' || typeof b[key] === 'undefined' || !order) {
     return 0;

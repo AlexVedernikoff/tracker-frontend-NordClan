@@ -1,4 +1,4 @@
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 import SortOrderIcon from '../../components/SortOrderIcon/SortOrderIcon';
 import sortOrder from '../../utils/sortOrder';
 import IconButton from 'material-ui/IconButton';
@@ -11,9 +11,9 @@ const SortOrderSwitch = (props) => {
   };
 
   return (
-    <div className={css.switch} style={{...style}}>
+    <div className={css.switch} style={{ ...style }}>
       <IconButton onTouchTap={touchTapHandler}>
-        <SortOrderIcon color={color} order={order[value]}/>
+        <SortOrderIcon color={color} order={order[value]} />
       </IconButton>
       <div className={css.label}>{label}</div>
     </div>

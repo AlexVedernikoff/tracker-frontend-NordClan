@@ -3,10 +3,10 @@ import { Col } from 'react-flexbox-grid/lib/index';
 import List from 'material-ui/List/List';
 import ListItem from 'material-ui/List/ListItem';
 import Subheader from 'material-ui/Subheader/Subheader';
-import ButtonChangeStatus from '../../ButtonChangeStatus/ButtonChangeStatus';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import { grey300, grey400, cyan700, pink300, pink700 } from 'material-ui/styles/colors';
+import ButtonChangeStatus from '../../ButtonChangeStatus/ButtonChangeStatus';
 
 const priorityColors = [pink700, pink300, cyan700, grey400, grey300];
 
@@ -21,12 +21,18 @@ export default class Details extends Component {
     css: PropTypes.object
   }
 
-  static contextTypes = {
-    muiTheme: PropTypes.object.isRequired
+  static defaultProps = {
+    status: '',
+    priority: null,
+    type: null,
+    handleChangeType: () => null,
+    handleChangePriority: () => null,
+    handleChangeStatus: () => null,
+    css: require('./details.scss')
   }
 
-  constructor(props, context) {
-    super(props, context);
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired
   }
 
   getStyles() {
@@ -55,7 +61,7 @@ export default class Details extends Component {
                 <div style={styles.detailsText}>Статус</div>
               }
               rightIconButton={
-                  <ButtonChangeStatus status={status} handleChangeStatus={handleChangeStatus}/>
+                <ButtonChangeStatus status={status} handleChangeStatus={handleChangeStatus} />
               }
             />
             <ListItem
@@ -63,11 +69,11 @@ export default class Details extends Component {
               primaryText={<div style={styles.detailsText}>Тип задачи</div>}
               rightIconButton={
                 <div className={css.detailsRight}>
-                  <DropDownMenu className={css.detailsDD} value={type} onChange={handleChangeType} underlineStyle={{display: 'none'}}>
-                    <MenuItem value={1} primaryText="Фича/Задача"/>
-                    <MenuItem value={2} primaryText="Баг"/>
-                    <MenuItem value={3} primaryText="Изменение ТЗ"/>
-                    <MenuItem value={4} primaryText="Неучтенная задача"/>
+                  <DropDownMenu className={css.detailsDD} value={type} onChange={handleChangeType} underlineStyle={{ display: 'none' }}>
+                    <MenuItem value={1} primaryText="Фича/Задача" />
+                    <MenuItem value={2} primaryText="Баг" />
+                    <MenuItem value={3} primaryText="Изменение ТЗ" />
+                    <MenuItem value={4} primaryText="Неучтенная задача" />
                   </DropDownMenu>
                 </div>
               }
@@ -77,13 +83,18 @@ export default class Details extends Component {
               primaryText={<div style={styles.detailsText}>Приоритет</div>}
               rightIconButton={
                 <div className={css.detailsRight}>
-                  <span className={css.detailsPriorityIco} style={{backgroundColor: priorityColors[priority - 1]}}>{priority}</span>
-                  <DropDownMenu className={css.detailsDD} value={priority} onChange={handleChangePriority} underlineStyle={{display: 'none'}}>
-                    <MenuItem value={1} primaryText="Срочный"/>
-                    <MenuItem value={2} primaryText="Высокий"/>
-                    <MenuItem value={3} primaryText="Нормальный"/>
-                    <MenuItem value={4} primaryText="Низкий"/>
-                    <MenuItem value={5} primaryText="Незначительный"/>
+                  <span
+                    className={css.detailsPriorityIco}
+                    style={{ backgroundColor: priorityColors[priority - 1] }}
+                  >
+                    {priority}
+                  </span>
+                  <DropDownMenu className={css.detailsDD} value={priority} onChange={handleChangePriority} underlineStyle={{ display: 'none' }}>
+                    <MenuItem value={1} primaryText="Срочный" />
+                    <MenuItem value={2} primaryText="Высокий" />
+                    <MenuItem value={3} primaryText="Нормальный" />
+                    <MenuItem value={4} primaryText="Низкий" />
+                    <MenuItem value={5} primaryText="Незначительный" />
                   </DropDownMenu>
                 </div>
               }
@@ -94,7 +105,3 @@ export default class Details extends Component {
     );
   }
 }
-
-Details.defaultProps = {
-  css: require('./details.scss')
-};

@@ -1,9 +1,9 @@
-import React, {Component, PropTypes} from 'react';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
+import React, { Component, PropTypes } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { autobind } from 'core-decorators';
-import {isLoaded as isTasksLoaded, load as loadTasks, setSearchString, setFilterField, toggleTasksSortOrder, toggleTasksGroups, toggleTasksTableLayout, setStatus} from '../../actions/tasks';
-import {Grid, Row, Col} from 'react-flexbox-grid/lib/index';
+import { isLoaded as isTasksLoaded, load as loadTasks, setSearchString, setFilterField, toggleTasksSortOrder, toggleTasksGroups, toggleTasksTableLayout, setStatus } from '../../actions/tasks';
+import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import sequentialComparator from '../../utils/sequentialComparator';
 import sortOrder from '../../utils/sortOrder';
 import FilterSearchBar from '../../components/FilterSearchBar/FilterSearchBar';
@@ -18,18 +18,21 @@ import Add from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 
 @connect(
-  state => {
-    return {
-      tasks: state.tasks.data,
-      filter: state.tasks.filter,
-      order: state.tasks.order,
-      showGroups: state.tasks.showGroups,
-      tableLayout: state.tasks.tableLayout
-    };
-  },
+  state => ({
+    tasks: state.tasks.data,
+    filter: state.tasks.filter,
+    order: state.tasks.order,
+    showGroups: state.tasks.showGroups,
+    tableLayout: state.tasks.tableLayout
+  }),
   dispatch => bindActionCreators({
-    loadTasks, setSearchString, setFilterField,
-    toggleTasksSortOrder, toggleTasksGroups, toggleTasksTableLayout, setStatus
+    loadTasks,
+    setSearchString,
+    setFilterField,
+    toggleTasksSortOrder,
+    toggleTasksGroups,
+    toggleTasksTableLayout,
+    setStatus
   }, dispatch)
 )
 
@@ -74,7 +77,7 @@ export default class TasksList extends Component {
   }
 
   componentDidMount() {
-    const {store} = this.context;
+    const { store } = this.context;
     if (!isTasksLoaded(store.getState())) {
       this.props.loadTasks();
     }
@@ -115,7 +118,7 @@ export default class TasksList extends Component {
       state[task] = false;
     }
 
-    this.setState({showTasks: state});
+    this.setState({ showTasks: state });
 
     // При нажатии на заголовок проекта, выводим все таски проекта
     // Пока не используется
@@ -128,31 +131,29 @@ export default class TasksList extends Component {
   handleChangeStatus = (buttonProps, event, status) => this.props.setStatus(buttonProps.id, status);
 
   get filteredTasks() {
-    const {filter} = this.props;
+    const { filter } = this.props;
     const query = new RegExp(filter.search, 'ig');
     return this.sortedTasks.filter(task => (!filter.search || filter.search && query.test(task[filter.field])));
   }
 
   get sortedTasks() {
-    const {tasks: tasksList, order, showGroups} = this.props;
+    const { tasks: tasksList, order, showGroups } = this.props;
     const orderChain = showGroups ? [{
       key: 'projectName',
       order: 'ASC'
     }] : [];
     [
       'priority', 'id', 'status', 'name', 'creatorName', 'planEndDate'
-    ].forEach(key => {
+    ].forEach((key) => {
       if (order.hasOwnProperty(key) && sortOrder.isSignificant(order[key])) {
-        orderChain.push({key, order: order[key]});
+        orderChain.push({ key, order: order[key] });
       }
     });
-    return tasksList.sort((prev, next) => {
-      return sequentialComparator(prev, next, orderChain);
-    });
+    return tasksList.sort((prev, next) => sequentialComparator(prev, next, orderChain));
   }
 
   get tasksByProject() {
-    const {showGroups, tableLayout} = this.props;
+    const { showGroups, tableLayout } = this.props;
     const filtered = this.filteredTasks;
     if (!showGroups || !tableLayout) {
       return filtered;
@@ -160,9 +161,7 @@ export default class TasksList extends Component {
     const groupedTasks = filtered.slice(0);
     const filteredTasksProjects = filtered.map(task => (task.idProj));
     // TODO растащить лапшу по утилитам
-    filtered.map(task => (task.idProj)).filter((value, index, self) => {
-      return self.indexOf(value) === index;
-    }).map((projectId, index) => {
+    filtered.map(task => (task.idProj)).filter((value, index, self) => self.indexOf(value) === index).map((projectId, index) => {
       const delimiterPosition = filteredTasksProjects.indexOf(projectId) + index;
       groupedTasks.splice(delimiterPosition, 0, {
         delimiter: true,
@@ -174,7 +173,7 @@ export default class TasksList extends Component {
   }
 
   render() {
-    const {filter, showGroups, tableLayout, order: tasksOrder} = this.props; // eslint-disable-line no-shadow
+    const { filter, showGroups, tableLayout, order: tasksOrder } = this.props; // eslint-disable-line no-shadow
     const theme = this.context.muiTheme;
     const css = require('./TasksList.scss');
     const styles = {
@@ -199,14 +198,16 @@ export default class TasksList extends Component {
 
     return (
       <div>
-        <Helmet title="Мои задачи"/>
+        <Helmet title="Мои задачи" />
         <Grid>
           <Row>
             <Col xs={12} lg={12}>
               <h1 className={css.h1} style={styles.h1}>Мои задачи</h1>
 
-              <FilterSearchBar value={filter.search}
-                onSearchStringChange = {this.onSearchStringChange} />
+              <FilterSearchBar
+                value={filter.search}
+                onSearchStringChange={this.onSearchStringChange}
+              />
 
               {renderFilterTask}
 
@@ -219,7 +220,7 @@ export default class TasksList extends Component {
                   order={tasksOrder}
                   viewSettings={viewSettings}
                   handleChangeStatus={this.handleChangeStatus}
-                  />
+                />
               ) || (
                 <TasksBoard
                   tasks={this.tasksByProject}

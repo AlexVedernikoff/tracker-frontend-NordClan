@@ -1,21 +1,29 @@
-import React, {PropTypes} from 'react';
-import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
+import React, { PropTypes } from 'react';
+import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 
 const IconToggle = (props) => {
-  const {name, stateOnIcon, stateOffIcon, toggled, onChange, css} = props;
+  const { name, stateOnIcon, stateOffIcon, toggled, onChange, css } = props;
 
   return (
-    <RadioButtonGroup name={name} className={css.group} valueSelected={Number(toggled).toString()} labelPostion= "left" onChange={onChange}>
+    <RadioButtonGroup
+      name={name}
+      className={css.group}
+      valueSelected={Number(toggled).toString()}
+      labelPostion="left"
+      onChange={onChange}
+    >
       <RadioButton
         value="0"
         className={css.radio}
         checkedIcon={stateOffIcon}
-        uncheckedIcon={stateOffIcon} />
+        uncheckedIcon={stateOffIcon}
+      />
       <RadioButton
         value="1"
         className={css.radio}
         checkedIcon={stateOnIcon}
-        uncheckedIcon={stateOnIcon} />
+        uncheckedIcon={stateOnIcon}
+      />
     </RadioButtonGroup>
   );
 };

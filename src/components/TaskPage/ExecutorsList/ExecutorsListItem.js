@@ -12,12 +12,15 @@ export default class ExecutorsListItem extends Component {
     index: PropTypes.string
   }
 
-  static contextTypes = {
-    muiTheme: PropTypes.object.isRequired
+  static defaultProps = {
+    date: '',
+    name: '',
+    status: '',
+    index: ''
   }
 
-  constructor(props, context) {
-    super(props, context);
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired
   }
 
   getStyles() {
@@ -49,19 +52,25 @@ export default class ExecutorsListItem extends Component {
       iconInProcess: <IconInProcess style={styles.activeIcon} />,
       iconCompleted: <IconCompleted />
     };
-    const line = <span className={css.execLine} style={styles.background}></span>;
+    const line = <span className={css.execLine} style={styles.background} />;
 
     return (
-      <ListItem className={css.execListItem}
+      <ListItem
+        className={css.execListItem}
         disabled
         style={styles.backgroundColor}
-        primaryText={<div className={css.execPrimaryText}>{name}<span className={css.execDate}>{date}</span></div>}
+        primaryText={
+          <div className={css.execPrimaryText}>{name}
+            <span className={css.execDate}>{date}</span>
+          </div>
+        }
         secondaryText={<div>{+index !== 0 ? line : ''}<span>js - разработчик</span></div>}
         secondaryTextLines={1}
         leftIcon={icon[status]}
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
-        onTouchTap={this.handleTouchTap} />
+        onTouchTap={this.handleTouchTap}
+      />
     );
   }
 }

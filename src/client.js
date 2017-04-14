@@ -4,19 +4,20 @@
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import createStore from './store/create';
-import ApiClient from './helpers/ApiClient';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import { Provider } from 'react-redux';
 import { Router, applyRouterMiddleware, browserHistory } from 'react-router';
 import useScroll from 'react-router-scroll';
 import { syncHistoryWithStore } from 'react-router-redux';
+import createStore from './store/create';
+import ApiClient from './helpers/ApiClient';
 
 import getRoutes from './routes';
 
 const client = new ApiClient();
 const dest = document.getElementById('content');
-const store = createStore(browserHistory, client, window.__data);
+const store =
+  createStore(browserHistory, client, window.__data); // eslint-disable-line no-underscore-dangle
 const history = syncHistoryWithStore(browserHistory, store);
 
 
@@ -27,8 +28,9 @@ const history = syncHistoryWithStore(browserHistory, store);
 injectTapEventPlugin();
 
 const component = (
-  <Router render={applyRouterMiddleware(useScroll())} helpers={{client}}
-      history={history} routes={getRoutes(store)}
+  <Router
+    render={applyRouterMiddleware(useScroll())} helpers={{ client }}
+    history={history} routes={getRoutes(store)}
   />
 );
 

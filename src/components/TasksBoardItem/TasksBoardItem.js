@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
-import {Link} from 'react-router';
+import { Link } from 'react-router';
 import Paper from 'material-ui/Paper';
-import {MonthNames} from '../../constants/MonthNames';
+import { MonthNames } from '../../constants/MonthNames';
 import ButtonChangeStatus from '../../components/ButtonChangeStatus/ButtonChangeStatus';
 import TaskProgressBar from '../../components/TaskProgressBar/TaskProgressBar';
 import NewCommentBadge from '../../components/NewCommentBadge/NewCommentBadge';
@@ -9,7 +9,7 @@ import TaskReassignWidget from '../../components/TaskReassignWidget/TaskReassign
 import { grey300, grey400, cyan700, pink300, pink700 } from 'material-ui/styles/colors';
 
 const TaskBoardItem = (props, context) => {
-  const {itemData, theme, styles} = props;
+  const { itemData, theme, styles } = props;
   const { handleChangeStatus } = context;
   const priorityColors = [pink700, pink300, cyan700, grey400, grey300];
   const inlineStyles = {
@@ -26,7 +26,7 @@ const TaskBoardItem = (props, context) => {
   };
 
   let date = new Date(itemData.beginDate);
-  date = MonthNames[date.getMonth()] + ', ' + date.getDate();
+  date = `${MonthNames[date.getMonth()]}, ${date.getDate()}`;
 
   return (<Paper rounded={false} className={styles.paper} style={inlineStyles.paper}>
     <div className={styles.priority} style={inlineStyles.priority}>
@@ -51,7 +51,7 @@ const TaskBoardItem = (props, context) => {
           spent={itemData.currentTime} planned={itemData.plannedTime}
           spentLabel={'Потрачено'}
           plannedLabel={'Планируемое'}
-          style={{marginBottom: 10}}
+          style={{ marginBottom: 10 }}
         />
       </div>
       <div className={styles.itemActions}>

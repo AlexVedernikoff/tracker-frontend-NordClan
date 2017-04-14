@@ -13,9 +13,8 @@ const FilterPanel = (props, context) => {
   return (
     <div className={css.block}>
       <span className={css.label} style={labelColor}>{label}</span>
-      {React.Children.map(props.children, (child) => {
-        return React.cloneElement(child, { onChange: onFilterChange });
-      })}
+      {React.Children.map(props.children, child =>
+        React.cloneElement(child, { onChange: onFilterChange }))}
     </div>
   );
 };
@@ -32,6 +31,9 @@ FilterPanel.contextTypes = {
 };
 
 FilterPanel.defaultProps = {
+  children: null,
+  label: '',
+  onFilterChange: () => null,
   css: require('./filterPanel.scss')
 };
 

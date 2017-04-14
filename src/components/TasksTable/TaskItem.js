@@ -1,4 +1,4 @@
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import TableRow from 'material-ui/Table/TableRow';
 import TableRowColumn from 'material-ui/Table/TableRowColumn';
@@ -27,37 +27,43 @@ const TaskItem = (props, context) => {
     }
   };
   return (
-    <TableRow selectable displayBorder={displayBorder}
-      style={showTasks.hasOwnProperty(task.idProj) && !showTasks[task.idProj] ? {display: 'none'} : ''}>
+    <TableRow
+      selectable displayBorder={displayBorder}
+      style={showTasks.hasOwnProperty(task.idProj) && !showTasks[task.idProj] ? { display: 'none' } : ''}
+    >
 
       <TableRowColumn className={css.priorityBadge}>
         <div style={styles.priority}>
-            <div style={displayPriorityBadge ? {backgroundColor: priorityColors[task.priority - 1]} : {}}
-              className={displayPriorityBadge ? css.displayTaskPriority : ''}>{task.priority}</div>
+          <div
+            style={displayPriorityBadge ? { backgroundColor: priorityColors[task.priority - 1] } : {}}
+            className={displayPriorityBadge ? css.displayTaskPriority : ''}
+          >{task.priority}</div>
         </div>
       </TableRowColumn>
 
       <TableRowColumn className={css.width_50}>{task.id}</TableRowColumn>
 
       <TableRowColumn className={css.columnTask}>
-        <ButtonChangeStatus status={task.status} compact id={task.id} handleChangeStatus={handleChangeStatus}/>
+        <ButtonChangeStatus status={task.status} compact id={task.id} handleChangeStatus={handleChangeStatus} />
       </TableRowColumn>
 
       <TableRowColumn className={css.width_500}>
         <div>
           <Link to={`/task/${task.id}`} className={css.taskLink}>{task.name}</Link>
-          <div style={{color: 'rgba(0, 0, 0, 0.54)'}}>Создал(а) задачу {task.creator.name}</div>
+          <div style={{ color: 'rgba(0, 0, 0, 0.54)' }}>Создал(а) задачу {task.creator.name}</div>
         </div>
       </TableRowColumn>
 
       <TableRowColumn className={css.columnDefault}>
-        <TaskProgressBar spent={task.currentTime} planned={task.plannedTime} spentLabel={'Потрачено'}
-                         plannedLabel={'Планируемое'}
-                         style={{marginBottom: 10}}/>
+        <TaskProgressBar
+          spent={task.currentTime} planned={task.plannedTime} spentLabel={'Потрачено'}
+          plannedLabel={'Планируемое'}
+          style={{ marginBottom: 10 }}
+        />
       </TableRowColumn>
 
       <TableRowColumn className={css.columnDefault}>
-        <DeadlineDate date={task.planEndDate} style={{fontSize: 18}}/>
+        <DeadlineDate date={task.planEndDate} style={{ fontSize: 18 }} />
       </TableRowColumn>
 
       <TableRowColumn className={css.columnDefault}>

@@ -13,11 +13,11 @@ const FilterSearchBar = (props, context) => {
 
   return (
     <Paper zDepth={1} className={css.paper}>
-      <Search color={muiTheme.rawTheme.palette.primary1Color} className={css.search}/>
+      <Search color={muiTheme.rawTheme.palette.primary1Color} className={css.search} />
       <TextField
         id="search-field"
         hintText="Введите текст"
-        onChange = {onSearchStringChange}
+        onChange={onSearchStringChange}
         className={css.input}
       />
     </Paper>

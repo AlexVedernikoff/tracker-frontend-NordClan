@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 
 import AppBar from 'material-ui/AppBar';
@@ -28,6 +28,11 @@ export default class AppHead extends Component {
     styles: PropTypes.object
   };
 
+  static defaultProps = {
+    pathname: '',
+    styles: null
+  };
+
   static contextTypes = {
     user: PropTypes.object
   };
@@ -55,7 +60,7 @@ export default class AppHead extends Component {
 
   render() {
     // const { load } = this.props; // eslint-disable-line no-shadow
-    const {user} = this.context;
+    const { user } = this.context;
     const { pathname, styles } = this.props;
     if (!user) {
       return null;
@@ -107,8 +112,9 @@ export default class AppHead extends Component {
         iconButtonElement={
           <IconButton><NavigationMenu color={Colors.white} /></IconButton>
         }
-        targetOrigin={{horizontal: 'left', vertical: 'top'}}
-        anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}>
+        targetOrigin={{ horizontal: 'left', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+      >
 
         <MenuItem href="/" primaryText="Главная" />
         <MenuItem href="login" primaryText="Логин" />
@@ -123,8 +129,8 @@ export default class AppHead extends Component {
           iconButtonElement={
             <IconButton><MoreVertIcon color={Colors.white} /></IconButton>
           }
-          targetOrigin={{horizontal: 'right', vertical: 'top'}}
-          anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+          targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+          anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
         >
           <MenuItem primaryText={user.login} />
           <MenuItem primaryText="Выйти" />
@@ -133,22 +139,32 @@ export default class AppHead extends Component {
     );
 
     const renderAppMenuBar = (
-      <AppBar className={styles.renderAppMenuBar}
+      <AppBar
+        className={styles.renderAppMenuBar}
         iconElementLeft={
-        <Tabs className={styles.tabs} value={pathname}>
-          <Tab label="scrum" value="/scrum"
-            containerElement={<Link to="/scrum" />} />
+          <Tabs className={styles.tabs} value={pathname}>
+            <Tab
+              label="scrum" value="/scrum"
+              containerElement={<Link to="/scrum" />}
+            />
 
-          <Tab label="мои проекты" value="/project"
-            containerElement={<Link to="/project" />} />
+            <Tab
+              label="мои проекты" value="/project"
+              containerElement={<Link to="/project" />}
+            />
 
-          <Tab label="мои задачи" value="/tasks"
-            containerElement={<Link to="/tasks" />} />
+            <Tab
+              label="мои задачи" value="/tasks"
+              containerElement={<Link to="/tasks" />}
+            />
 
-          <Tab label="отчет по времени" value="/repeat"
-            containerElement={<Link to="/repeat" />} />
-        </Tabs>
-        } />
+            <Tab
+              label="отчет по времени" value="/repeat"
+              containerElement={<Link to="/repeat" />}
+            />
+          </Tabs>
+        }
+      />
     );
     return (
       <div>

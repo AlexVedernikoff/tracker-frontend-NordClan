@@ -1,28 +1,28 @@
-import React from 'react';
-import {ClearFix, Mixins, Styles} from 'material-ui';
-const {StyleResizable} = Mixins;
+import React, { Component, PropTypes } from 'react';
+import { ClearFix, Mixins, Styles } from 'material-ui';
+import reactMixin from 'react-mixin';
+
+const { StyleResizable } = Mixins;
 const desktopGutter = Styles.Spacing.desktopGutter;
 
-const FullWidthSection = React.createClass({
+@reactMixin.decorate(StyleResizable)
+class FullWidthSection extends Component {
 
-  propTypes: {
-    children: React.PropTypes.node,
-    contentStyle: React.PropTypes.object,
-    contentType: React.PropTypes.string,
-    style: React.PropTypes.object,
-    useContent: React.PropTypes.bool,
-  },
+  static propTypes = {
+    children: PropTypes.node,
+    contentStyle: PropTypes.object,
+    contentType: PropTypes.string,
+    style: PropTypes.object,
+    useContent: PropTypes.bool
+  }
 
-  mixins: [
-    StyleResizable,
-  ],
-
-  getDefaultProps() {
-    return {
-      useContent: false,
-      contentType: 'div',
-    };
-  },
+  static defaultProps = {
+    children: null,
+    contentStyle: null,
+    contentType: 'div',
+    style: null,
+    useContent: false
+  }
 
   getStyles() {
     return {
@@ -43,7 +43,7 @@ const FullWidthSection = React.createClass({
         paddingBottom: desktopGutter * 3,
       },
     };
-  },
+  }
 
   render() {
     const {
@@ -51,7 +51,7 @@ const FullWidthSection = React.createClass({
       useContent,
       contentType,
       contentStyle,
-      ...other,
+      ...other
       } = this.props;
 
     const styles = this.getStyles();
@@ -61,7 +61,7 @@ const FullWidthSection = React.createClass({
       content =
         React.createElement(
           contentType,
-          {style: Object.assign(styles.content, contentStyle)},
+          { style: Object.assign(styles.content, contentStyle) },
           this.props.children
         );
     } else {
@@ -80,7 +80,7 @@ const FullWidthSection = React.createClass({
         {content}
       </ClearFix>
     );
-  },
-});
+  }
+}
 
 export default FullWidthSection;

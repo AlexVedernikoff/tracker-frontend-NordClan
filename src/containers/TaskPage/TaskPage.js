@@ -1,8 +1,8 @@
-import React, {Component, PropTypes} from 'react';
-import {bindActionCreators} from 'redux';
+import React, { Component, PropTypes } from 'react';
+import { bindActionCreators } from 'redux';
 import Helmet from 'react-helmet';
-import {connect} from 'react-redux';
-import {setCurrentTask, isCurrentTaskLoaded, setPriority, setTypeTask, setStatus} from '../../actions/currentTask';
+import { connect } from 'react-redux';
+import { setCurrentTask, isCurrentTaskLoaded, setPriority, setTypeTask, setStatus } from '../../actions/currentTask';
 // import {bindActionCreators} from 'redux';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
@@ -18,7 +18,7 @@ import Comments from '../../components/TaskPage/Comments';
 import Slider from '../../components/TaskPage/Slider';
 
 @connect(
-  state => ({task: state.currentTask.data}),
+  state => ({ task: state.currentTask.data }),
   dispatch => bindActionCreators({
     setCurrentTask, setPriority, setTypeTask, setStatus
   }, dispatch)
@@ -70,8 +70,8 @@ export default class TaskPage extends Component {
   }
 
   componentDidMount() {
-    const {taskId} = this.props.params;
-    const {store} = this.context;
+    const { taskId } = this.props.params;
+    const { store } = this.context;
     if (!isCurrentTaskLoaded(store.getState(), taskId)) {
       this.props.setCurrentTask(taskId);
     }
@@ -161,12 +161,12 @@ export default class TaskPage extends Component {
       <div id="task-page">
         <Helmet title={task.name} />
         <Grid fluid className={grid.layout}>
-        {
+          {
           task &&
           <div className={css.wrapper}>
             <Row>
               <Col xs={12}>
-                <TaskCardHeader task={task}/>
+                <TaskCardHeader task={task} />
               </Col>
             </Row>
             <Row>
@@ -194,7 +194,8 @@ export default class TaskPage extends Component {
               <Col xs={4}>
                 <aside>
                   <Row>
-                    <Details status={status}
+                    <Details
+                      status={status}
                       priority={priority} type={type}
                       handleChangePriority={this.handleChangePriority}
                       handleChangeType={this.handleChangeType}

@@ -1,10 +1,10 @@
 /* компонент для отображения прогрессбара с временем задачи */
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 import LinearProgress from 'material-ui/LinearProgress';
 
 const TaskProgressBar = (props, context) => {
-  const {style, spentLabel, spent, plannedLabel, planned, css} = props;
-  const {muiTheme} = context;
+  const { style, spentLabel, spent, plannedLabel, planned, css } = props;
+  const { muiTheme } = context;
   const palette = muiTheme.rawTheme.palette;
   const labelStyle = {
     color: palette.primary3Color,
@@ -14,12 +14,14 @@ const TaskProgressBar = (props, context) => {
     <p className={css.label} style={labelStyle}>{spentLabel} / {plannedLabel}</p>
   );
   const renderLinearProgress = (
-    <LinearProgress mode="determinate" min={0} max={planned} value={spent}
-      color={(planned < spent) ? palette.accent1Color : palette.primary1Color }/>
+    <LinearProgress
+      mode="determinate" min={0} max={planned} value={spent}
+      color={(planned < spent) ? palette.accent1Color : palette.primary1Color}
+    />
   );
 
   return (
-    <div className={css.container} style={{...style}}>
+    <div className={css.container} style={{ ...style }}>
       {() => {
         if (spentLabel && plannedLabel) return (renderLabel);
       }}

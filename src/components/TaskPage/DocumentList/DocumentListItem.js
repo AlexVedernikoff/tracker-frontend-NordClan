@@ -13,6 +13,12 @@ export default class DocumentListItem extends Component {
     type: PropTypes.string
   };
 
+  static defaultProps = {
+    title: '',
+    format: '',
+    type: ''
+  };
+
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired
   };
@@ -44,7 +50,7 @@ export default class DocumentListItem extends Component {
 
     const listItemRemoveIcon = (
       <IconButton tooltip="Удалить" tooltipPosition="bottom-right" onClick={this.handleRemoveDocItem}>
-        <NavCancel style={styles.docItemRightIco}/>
+        <NavCancel style={styles.docItemRightIco} />
       </IconButton>
     );
 

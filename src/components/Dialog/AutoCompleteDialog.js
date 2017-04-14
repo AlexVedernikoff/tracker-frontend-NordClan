@@ -1,4 +1,4 @@
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
 import Dialog from 'material-ui/Dialog/Dialog';
@@ -6,7 +6,7 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import AutoComplete from 'material-ui/AutoComplete/AutoComplete';
 
 const AutoCompleteDialog = (props) => {
-  const {open, header, closeHandler, changeHandler, data, css} = props;
+  const { open, header, closeHandler, changeHandler, data, css } = props;
 
   return (
     <Dialog
@@ -32,6 +32,10 @@ const AutoCompleteDialog = (props) => {
 };
 
 AutoCompleteDialog.defaultProps = {
+  header: null,
+  closeHandler: () => null,
+  changeHandler: () => null,
+  data: null,
   css: require('./autoCompleteDialog.scss')
 };
 
