@@ -20,7 +20,7 @@ export default class PromiseQueue extends Array {
      * @see https://phabricator.babeljs.io/T1424
      * @see https://stackoverflow.com/questions/33832646/extending-built-in-natives-in-es6-with-babel
      */
-    this.add = (builder) => {
+    this.add = function (builder) { // eslint-disable-line
       const args = Array.prototype.slice.call(arguments, 1); // eslint-disable-line
       const promise = (args.length) ? builder(...args) : builder();
       this.push(promise);
