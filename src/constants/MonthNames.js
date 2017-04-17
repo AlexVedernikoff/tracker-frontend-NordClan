@@ -1,4 +1,5 @@
-const MonthNames = [
+/* eslint-disable */
+export const MonthNames = [
   'январь',
   'февраль',
   'март',
@@ -12,5 +13,3 @@ const MonthNames = [
   'ноябрь',
   'декабрь'
 ];
-
-export default MonthNames;
