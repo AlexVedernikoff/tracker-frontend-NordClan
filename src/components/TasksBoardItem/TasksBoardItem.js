@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import Paper from 'material-ui/Paper';
 import { grey300, grey400, cyan700, pink300, pink700 } from 'material-ui/styles/colors';
-import { MonthNames } from '../../constants/MonthNames';
+import MonthNames from '../../constants/MonthNames';
 import ButtonChangeStatus from '../../components/ButtonChangeStatus/ButtonChangeStatus';
 import TaskProgressBar from '../../components/TaskProgressBar/TaskProgressBar';
 import NewCommentBadge from '../../components/NewCommentBadge/NewCommentBadge';
