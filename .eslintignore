@@ -2,3 +2,5 @@ webpack/*
 karma.conf.js
 tests.webpack.js
 src/components/__tests__/*
+api/__tests__/*
+api/actions/__tests__/*

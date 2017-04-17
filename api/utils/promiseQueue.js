@@ -8,7 +8,7 @@
  * Promise.all(queue).then(func3);
  */
 export default class PromiseQueue extends Array {
-  constructor (...args) {
+  constructor(...args) {
     super(...args);
     /**
      * @method add
@@ -20,11 +20,11 @@ export default class PromiseQueue extends Array {
      * @see https://phabricator.babeljs.io/T1424
      * @see https://stackoverflow.com/questions/33832646/extending-built-in-natives-in-es6-with-babel
      */
-    this.add = function (builder) {
-      const args = Array.prototype.slice.call(arguments, 1);
-      const promise = (args.length) ? builder.apply(null, args) : builder();
+    this.add = (builder) => {
+      const args = Array.prototype.slice.call(arguments, 1); // eslint-disable-line
+      const promise = (args.length) ? builder(...args) : builder();
       this.push(promise);
       return promise;
-    }
+    };
   }
-};
+}

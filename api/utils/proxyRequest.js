@@ -7,13 +7,13 @@ import request from 'request-promise';
  * @param {object} params Дополнительные параметры запроса
  * @returns {Promise}
 */
-export default function proxyRequest (url, params) {
+export default function proxyRequest(url, params) {
   return request({
-      ...params,
-      uri: 'http://portaltest.simbirsoft:8080/default/rest/' + url,
-      headers: {
-        'Authorization': 'Basic c2VydmljZW1hbjpGZEtnJiRiKilGZUF7'
-      },
-      json: true
-    });
-};
+    ...params,
+    uri: `http://portaltest.simbirsoft:8080/default/rest/${url}`,
+    headers: {
+      Authorization: 'Basic c2VydmljZW1hbjpGZEtnJiRiKilGZUF7'
+    },
+    json: true
+  });
+}

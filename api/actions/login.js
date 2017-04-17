@@ -1,4 +1,3 @@
-import proxyRequest from '../utils/proxyRequest';
 import loadUsers from './loadUsers';
 
 export default function login(req) {
