@@ -2,13 +2,12 @@ import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import TableRow from 'material-ui/Table/TableRow';
 import TableRowColumn from 'material-ui/Table/TableRowColumn';
+import { grey300, grey400, cyan700, pink300, pink700 } from 'material-ui/styles/colors';
 import ButtonChangeStatus from '../../components/ButtonChangeStatus/ButtonChangeStatus';
 import TaskProgressBar from '../../components/TaskProgressBar/TaskProgressBar';
 import DeadlineDate from '../../components/DeadlineDate/DeadlineDate';
 import NewCommentBadge from '../../components/NewCommentBadge/NewCommentBadge';
 import TaskReassignWidget from '../../components/TaskReassignWidget/TaskReassignWidget';
-import { grey300, grey400, cyan700, pink300, pink700 } from 'material-ui/styles/colors';
-
 import css from './TasksTable.scss';
 
 const priorityColors = [pink700, pink300, cyan700, grey400, grey300];
@@ -35,7 +34,8 @@ const TaskItem = (props, context) => {
       <TableRowColumn className={css.priorityBadge}>
         <div style={styles.priority}>
           <div
-            style={displayPriorityBadge ? { backgroundColor: priorityColors[task.priority - 1] } : {}}
+            style={displayPriorityBadge ?
+              { backgroundColor: priorityColors[task.priority - 1] } : {}}
             className={displayPriorityBadge ? css.displayTaskPriority : ''}
           >{task.priority}</div>
         </div>
@@ -44,7 +44,11 @@ const TaskItem = (props, context) => {
       <TableRowColumn className={css.width_50}>{task.id}</TableRowColumn>
 
       <TableRowColumn className={css.columnTask}>
-        <ButtonChangeStatus status={task.status} compact id={task.id} handleChangeStatus={handleChangeStatus} />
+        <ButtonChangeStatus
+          status={task.status}
+          compact id={task.id}
+          handleChangeStatus={handleChangeStatus}
+        />
       </TableRowColumn>
 
       <TableRowColumn className={css.width_500}>
@@ -102,7 +106,15 @@ TaskItem.propTypes = {
   displayBorder: PropTypes.bool,
   displayPriorityBadge: PropTypes.bool,
   showTasks: PropTypes.object,
-  handleChangeStatus: PropTypes.func
+  //handleChangeStatus: PropTypes.func
+};
+
+TaskItem.defaultProps = {
+  task: null,
+  displayBorder: false,
+  displayPriorityBadge: false,
+  showTasks: null,
+  //handleChangeStatus: () => null
 };
 
 TaskItem.contextTypes = {

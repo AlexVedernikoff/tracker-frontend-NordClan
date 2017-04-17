@@ -23,6 +23,7 @@ const TasksBoard = (props) => {
       default:
         break;
     }
+    return null;
   });
 
   return (
@@ -51,6 +52,9 @@ TasksBoard.propTypes = {
 };
 
 TasksBoard.defaultProps = {
+  viewSettings: null,
+  theme: null,
+  tasks: null,
   styles: require('./taskBoard.scss')
 };
 

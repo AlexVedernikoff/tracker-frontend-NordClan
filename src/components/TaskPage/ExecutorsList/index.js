@@ -84,7 +84,9 @@ export default class ExecutorsList extends Component {
           <div className={css.execSeparator}>
             <IconButton
               tooltip={this.state.executorsExpand ? 'Развернуть' : 'Свернуть'}
-              className={css.execSeparatorBtn} style={styles.execSeparatorBtn} onClick={this.handleExecutorsExpand}
+              className={css.execSeparatorBtn}
+              style={styles.execSeparatorBtn}
+              onClick={this.handleExecutorsExpand}
             >
               {this.state.executorsExpand ? <IconSeparatorDown /> : <IconSeparatorUp />}
             </IconButton>

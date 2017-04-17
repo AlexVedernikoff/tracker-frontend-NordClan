@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 import { browserHistory } from 'react-router';
 import createStore from '../../redux/create';
 import ApiClient from '../../helpers/ApiClient';
+
 const client = new ApiClient();
 
 describe('InfoBar', () => {

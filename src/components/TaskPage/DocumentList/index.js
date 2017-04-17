@@ -1,29 +1,30 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import List from 'material-ui/List/List';
 import Subheader from 'material-ui/Subheader/Subheader';
 import { Col } from 'react-flexbox-grid/lib/index';
 import DocumentListItem from './DocumentListItem';
 
-export default class DocumentList extends Component {
-  static propTypes = {
-    data: PropTypes.object.isRequired
-  };
+const DocumentList = (props) => {
+  const { data } = props;
+  return (
+    <Col xs>
+      <List>
+        <Subheader>Документы</Subheader>
+        {Object.keys(data).map(key => (
+          <DocumentListItem
+            key={key}
+            title={data[key].title}
+            format={data[key].format}
+            type={data[key].type}
+          />
+        ))}
+      </List>
+    </Col>
+  );
+};
 
-  render() {
-    const { data } = this.props;
+DocumentList.propTypes = {
+  data: PropTypes.object.isRequired
+};
 
-    return (
-      <Col xs>
-        <List>
-          <Subheader>Документы</Subheader>
-          {Object.keys(data).map(key => {
-            return (<DocumentListItem key={key}
-              title={data[key].title}
-              format={data[key].format}
-              type={data[key].type} />);
-          })}
-        </List>
-      </Col>
-    );
-  }
-}
+export default DocumentList;

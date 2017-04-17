@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
-import * as authActions from '../../actions/auth';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import AppBar from 'material-ui/AppBar';
 import Paper from 'material-ui/Paper';
+import * as authActions from '../../actions/auth';
 
 @connect(
   state => ({ user: state.auth.user }),
@@ -15,6 +15,12 @@ export default class Login extends Component {
     user: PropTypes.object,
     login: PropTypes.func,
     logout: PropTypes.func
+  }
+
+  static defaultProps = {
+    user: null,
+    login: () => null,
+    logout: () => null
   }
 
   handleSubmit = (event) => {

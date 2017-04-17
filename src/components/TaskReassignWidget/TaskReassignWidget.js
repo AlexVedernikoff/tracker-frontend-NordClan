@@ -77,6 +77,7 @@ class TaskReassignWidget extends React.Component {
 }
 
 TaskReassignWidget.defaultProps = {
+  taskExpertise: '',
   styles: require('./reassignWidget.scss')
 };
 

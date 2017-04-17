@@ -9,12 +9,12 @@ const initialState = {
     field: 'name'
   },
   order: {
-    'projectName': sortOrder.DIRECTION.ASC,
-    'priority': sortOrder.DIRECTION.ASC,
-    'id': sortOrder.DIRECTION.NONE,
-    'status': sortOrder.DIRECTION.NONE,
-    'creatorName': sortOrder.DIRECTION.NONE,
-    'planEndDate': sortOrder.DIRECTION.NONE
+    projectName: sortOrder.DIRECTION.ASC,
+    priority: sortOrder.DIRECTION.ASC,
+    id: sortOrder.DIRECTION.NONE,
+    status: sortOrder.DIRECTION.NONE,
+    creatorName: sortOrder.DIRECTION.NONE,
+    planEndDate: sortOrder.DIRECTION.NONE
   },
   showGroups: true,
   tableLayout: true
@@ -77,7 +77,7 @@ export default function reducer(state = initialState, action = {}) {
       };
     case types.SET_CURRENT_TASK_STATUS:
       let data = [];
-      data = state.data.map(item => {
+      data = state.data.map((item) => {
         if (item.id === action.id) {
           item.status = action.status;
         }
@@ -85,7 +85,7 @@ export default function reducer(state = initialState, action = {}) {
       });
       return {
         ...state,
-        data: data
+        data
       };
     default:
       return state;

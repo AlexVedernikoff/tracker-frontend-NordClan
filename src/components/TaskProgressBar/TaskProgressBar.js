@@ -24,6 +24,7 @@ const TaskProgressBar = (props, context) => {
     <div className={css.container} style={{ ...style }}>
       {() => {
         if (spentLabel && plannedLabel) return (renderLabel);
+        return false;
       }}
       <p className={css.hours}>{spent}/{planned}</p>
       {renderLinearProgress}
@@ -43,6 +44,7 @@ TaskProgressBar.propTypes = {
 TaskProgressBar.defaultProps = {
   spent: 0,
   planned: 0,
+  style: null,
   css: require('./progressBar.scss')
 };
 

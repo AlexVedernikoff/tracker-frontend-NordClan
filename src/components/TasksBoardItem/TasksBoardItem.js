@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import Paper from 'material-ui/Paper';
+import { grey300, grey400, cyan700, pink300, pink700 } from 'material-ui/styles/colors';
 import { MonthNames } from '../../constants/MonthNames';
 import ButtonChangeStatus from '../../components/ButtonChangeStatus/ButtonChangeStatus';
 import TaskProgressBar from '../../components/TaskProgressBar/TaskProgressBar';
 import NewCommentBadge from '../../components/NewCommentBadge/NewCommentBadge';
 import TaskReassignWidget from '../../components/TaskReassignWidget/TaskReassignWidget';
-import { grey300, grey400, cyan700, pink300, pink700 } from 'material-ui/styles/colors';
 
 const TaskBoardItem = (props, context) => {
   const { itemData, theme, styles } = props;
@@ -30,7 +30,11 @@ const TaskBoardItem = (props, context) => {
 
   return (<Paper rounded={false} className={styles.paper} style={inlineStyles.paper}>
     <div className={styles.priority} style={inlineStyles.priority}>
-      <div className={styles.priorityBadge} style={inlineStyles.priorityBadge}>{itemData.priority}</div>
+      <div
+        className={styles.priorityBadge}
+        style={inlineStyles.priorityBadge}
+      >
+        {itemData.priority}</div>
     </div>
     <div className={styles.itemContent}>
       <div className={styles.itemHead}>
@@ -44,7 +48,11 @@ const TaskBoardItem = (props, context) => {
         <div className={styles.creatorText}>{`${itemData.projectName}, ${itemData.creatorName}`}</div>
       </div>
       <div className={styles.statusButton}>
-        <ButtonChangeStatus status={itemData.status} compact id={itemData.id} handleChangeStatus={handleChangeStatus} />
+        <ButtonChangeStatus
+          status={itemData.status}
+          compact id={itemData.id}
+          handleChangeStatus={handleChangeStatus}
+        />
       </div>
       <div className={styles.itemProgressBar}>
         <TaskProgressBar
@@ -74,7 +82,7 @@ const TaskBoardItem = (props, context) => {
 TaskBoardItem.propTypes = {
   itemData: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
-  handleChangeStatus: PropTypes.func,
+  // handleChangeStatus: PropTypes.func,
   styles: PropTypes.object
 };
 
@@ -83,6 +91,7 @@ TaskBoardItem.contextTypes = {
 };
 
 TaskBoardItem.defaultProps = {
+  // handleChangeStatus: () => null,
   styles: require('./TaskBoardItem.scss')
 };
 

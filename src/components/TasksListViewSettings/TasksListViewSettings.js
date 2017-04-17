@@ -4,9 +4,9 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import Popover from 'material-ui/Popover';
 import { List, ListItem } from 'material-ui/List';
 import Toggle from 'material-ui/Toggle/Toggle';
-import IconToggle from '../../components/IconToggle/IconToggle';
 import ActionViewList from 'material-ui/svg-icons/action/view-list';
 import ActionViewModule from 'material-ui/svg-icons/action/view-module';
+import IconToggle from '../../components/IconToggle/IconToggle';
 
 class TasksListViewSettings extends React.Component {
   static propTypes = {

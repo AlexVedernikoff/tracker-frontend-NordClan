@@ -3,10 +3,10 @@ import * as ColorManipulator from 'material-ui/utils/colorManipulator';
 import Spacing from 'material-ui/styles/spacing';
 import zIndex from 'material-ui/styles/zIndex';
 
-export default function(theme = 'default') {
+export default function (theme = 'default') {
   const defaultTheme = {
     spacing: Spacing,
-    zIndex: zIndex,
+    zIndex,
     fontFamily: 'Roboto, sans-serif',
     palette: {
       primary1Color: Colors.purple900,

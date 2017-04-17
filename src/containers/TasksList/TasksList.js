@@ -2,20 +2,20 @@ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { autobind } from 'core-decorators';
-import { isLoaded as isTasksLoaded, load as loadTasks, setSearchString, setFilterField, toggleTasksSortOrder, toggleTasksGroups, toggleTasksTableLayout, setStatus } from '../../actions/tasks';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
+import Helmet from 'react-helmet';
+import Typography from 'material-ui/styles/typography';
+import Add from 'material-ui/svg-icons/content/add';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import { isLoaded as isTasksLoaded, load as loadTasks, setSearchString, setFilterField, toggleTasksSortOrder, toggleTasksGroups, toggleTasksTableLayout, setStatus } from '../../actions/tasks';
+import TasksBoard from '../../components/TasksBoard/TasksBoard';
+import TasksTable from '../../components/TasksTable/TasksTable';
+import TasksListViewSettings from '../../components/TasksListViewSettings/TasksListViewSettings';
 import sequentialComparator from '../../utils/sequentialComparator';
 import sortOrder from '../../utils/sortOrder';
 import FilterSearchBar from '../../components/FilterSearchBar/FilterSearchBar';
 import FilterPanel from '../../components/FilterPanel/FilterPanel';
 import FilterSwitch from '../../components/FilterSwitch/FilterSwitch';
-import Helmet from 'react-helmet';
-import Typography from 'material-ui/styles/typography';
-import TasksBoard from '../../components/TasksBoard/TasksBoard';
-import TasksTable from '../../components/TasksTable/TasksTable';
-import TasksListViewSettings from '../../components/TasksListViewSettings/TasksListViewSettings';
-import Add from 'material-ui/svg-icons/content/add';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
 
 @connect(
   state => ({
@@ -54,6 +54,12 @@ export default class TasksList extends Component {
     toggleTasksTableLayout: PropTypes.func.isRequired,
     setStatus: PropTypes.func
   };
+
+  static defaultProps = {
+    filter: null,
+    setStatus: () => null
+  }
+
   static contextTypes = {
     store: PropTypes.object.isRequired,
     muiTheme: PropTypes.object.isRequired
@@ -130,10 +136,12 @@ export default class TasksList extends Component {
 
   handleChangeStatus = (buttonProps, event, status) => this.props.setStatus(buttonProps.id, status);
 
+  /* eslint-disable */
   get filteredTasks() {
     const { filter } = this.props;
     const query = new RegExp(filter.search, 'ig');
-    return this.sortedTasks.filter(task => (!filter.search || filter.search && query.test(task[filter.field])));
+    return this.sortedTasks.filter(task =>
+      (!filter.search || filter.search && query.test(task[filter.field])));
   }
 
   get sortedTasks() {
@@ -158,22 +166,27 @@ export default class TasksList extends Component {
     if (!showGroups || !tableLayout) {
       return filtered;
     }
+    /* eslint-enable */
+
     const groupedTasks = filtered.slice(0);
     const filteredTasksProjects = filtered.map(task => (task.idProj));
     // TODO растащить лапшу по утилитам
-    filtered.map(task => (task.idProj)).filter((value, index, self) => self.indexOf(value) === index).map((projectId, index) => {
+    filtered.map(task => (task.idProj)).filter((value, index, self) =>
+    self.indexOf(value) === index).map((projectId, index) => {
       const delimiterPosition = filteredTasksProjects.indexOf(projectId) + index;
       groupedTasks.splice(delimiterPosition, 0, {
         delimiter: true,
         idProj: projectId,
         projectName: groupedTasks[delimiterPosition].projectName
       });
+      return null;
     });
     return groupedTasks;
   }
 
   render() {
-    const { filter, showGroups, tableLayout, order: tasksOrder } = this.props; // eslint-disable-line no-shadow
+    const { filter, showGroups, tableLayout, order: tasksOrder } =
+      this.props; // eslint-disable-line no-shadow
     const theme = this.context.muiTheme;
     const css = require('./TasksList.scss');
     const styles = {
@@ -210,7 +223,7 @@ export default class TasksList extends Component {
               />
 
               {renderFilterTask}
-
+              {/* eslint-disable */}
               {tableLayout && (
                 <TasksTable
                   showTasks={this.state.showTasks}
@@ -229,6 +242,7 @@ export default class TasksList extends Component {
                   theme={theme}
                 />
               )}
+              {/* eslint-enable */}
             </Col>
           </Row>
         </Grid>

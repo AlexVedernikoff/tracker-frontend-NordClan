@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
+import IconButton from 'material-ui/IconButton';
 import SortOrderIcon from '../../components/SortOrderIcon/SortOrderIcon';
 import sortOrder from '../../utils/sortOrder';
-import IconButton from 'material-ui/IconButton';
 
 const SortOrderSwitch = (props) => {
   const { order, value, onChange, label, color, style, css } = props;
@@ -32,6 +32,9 @@ SortOrderSwitch.propTypes = {
 
 SortOrderSwitch.defaultProps = {
   order: sortOrder.DIRECTION.NONE,
+  label: '',
+  color: '',
+  style: null,
   css: require('./sortOrderSwitch.scss')
 };
 

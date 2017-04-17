@@ -6,11 +6,11 @@ import TableRow from 'material-ui/Table/TableRow';
 import TableHeader from 'material-ui/Table/TableHeader';
 import TableRowColumn from 'material-ui/Table/TableRowColumn';
 import TableBody from 'material-ui/Table/TableBody';
-import SortOrderSwitch from '../../components/SortOrderSwitch/SortOrderSwitch';
-import TaskItem from './TaskItem';
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
 import KeyboardArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up';
 import IconButton from 'material-ui/IconButton';
+import SortOrderSwitch from '../../components/SortOrderSwitch/SortOrderSwitch';
+import TaskItem from './TaskItem';
 
 const TasksTable = (props) => {
   const { tasks, order, onSortOrderToggle, viewSettings, handleClick, showTasks, css } = props;
@@ -74,7 +74,9 @@ const TasksTable = (props) => {
                 <TableRowColumn className={css.width_50} />
                 <TableRowColumn className={css.headerStatus} />
                 <TableRowColumn className={css.tableRowColumnTitle}>
+                  {/* eslint-disable */}
                   <div className={css.header} onClick={() => handleClick(task.idProj)}>
+                    {/* eslint-enable */}
                     <div className={css.projectNameContainer}>
                       {iconArrow}
                       <div className={css.projectName}>{task.projectName}</div>
@@ -90,12 +92,12 @@ const TasksTable = (props) => {
             }
             return (<TaskItem
               task={task} key={index} showTasks={showTasks}
-              displayBorder={(index !== arr.length - 1 && task.priority !== arr[index + 1].priority)}
+              displayBorder={(index !== arr.length - 1 &&
+              task.priority !== arr[index + 1].priority)}
               displayPriorityBadge={(index === 0 || task.priority !== arr[index - 1].priority)}
             />);
           })}
         </TableBody>
-      ))}
       </Table>
     </Paper>
   );
@@ -112,6 +114,8 @@ TasksTable.propTypes = {
 };
 
 TasksTable.defaultProps = {
+  viewSettings: null,
+  showTasks: null,
   showGroups: true,
   tableLayout: true,
   css: require('./TasksTable.scss')

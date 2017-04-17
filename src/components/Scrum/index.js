@@ -1,13 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import styles from './scrum.scss';
 
-export default class Scrum extends Component {
-  render() {
-    return (
-      <div>
-        <h1 className={styles.scrum}>Scrum</h1>
-      </div>
-    );
-  }
-}
+const Scrum = () => (
+  <div>
+    <h1 className={styles.scrum}>Scrum</h1>
+  </div>
+);
+
+export default Scrum;

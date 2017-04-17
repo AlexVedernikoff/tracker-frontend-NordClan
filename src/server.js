@@ -40,7 +40,6 @@ app.use('/api', (req, res) => {
 
 // added the error handling to avoid https://github.com/nodejitsu/node-http-proxy/issues/527
 proxy.on('error', (error, req, res) => {
-  let json;
   if (error.code !== 'ECONNRESET') {
     console.error('proxy error', error);
   }
@@ -48,7 +47,7 @@ proxy.on('error', (error, req, res) => {
     res.writeHead(500, { 'content-type': 'application/json' });
   }
 
-  json = { error: 'proxy_error', reason: error.message };
+  const json = { error: 'proxy_error', reason: error.message };
   res.end(JSON.stringify(json));
 });
 
@@ -74,33 +73,34 @@ app.use((req, res) => {
     return;
   }
 
-  match({ history, routes: getRoutes(store), location: req.originalUrl }, (error, redirectLocation, renderProps) => {
-    if (redirectLocation) {
-      res.redirect(redirectLocation.pathname + redirectLocation.search);
-    } else if (error) {
-      console.log('error', error);
-      console.error('ROUTER ERROR:', pretty.render(error));
-      res.status(500);
-      hydrateOnClient();
-    } else if (renderProps) {
-      loadOnServer({ ...renderProps, store, helpers: { client } }).then(() => {
-        const component = (
-          <Provider store={store} key="provider">
-            <ReduxAsyncConnect {...renderProps} />
-          </Provider>
+  match({ history, routes: getRoutes(store), location: req.originalUrl },
+    (error, redirectLocation, renderProps) => {
+      if (redirectLocation) {
+        res.redirect(redirectLocation.pathname + redirectLocation.search);
+      } else if (error) {
+        console.log('error', error);
+        console.error('ROUTER ERROR:', pretty.render(error));
+        res.status(500);
+        hydrateOnClient();
+      } else if (renderProps) {
+        loadOnServer({ ...renderProps, store, helpers: { client } }).then(() => {
+          const component = (
+            <Provider store={store} key="provider">
+              <ReduxAsyncConnect {...renderProps} />
+            </Provider>
         );
 
-        res.status(200);
+          res.status(200);
 
-        global.navigator = { userAgent: req.headers['user-agent'] };
+          global.navigator = { userAgent: req.headers['user-agent'] };
 
-        res.send(`<!doctype html>\n${
+          res.send(`<!doctype html>\n${
           ReactDOM.renderToString(<Html assets={webpackIsomorphicTools.assets()} component={component} store={store} />)}`);
-      });
-    } else {
-      res.status(404).send('Not found');
-    }
-  });
+        });
+      } else {
+        res.status(404).send('Not found');
+      }
+    });
 });
 
 

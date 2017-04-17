@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
-import sortOrder from '../../utils/sortOrder';
 import ArrowUpward from 'material-ui/svg-icons/navigation/arrow-upward';
 import ArrowDownward from 'material-ui/svg-icons/navigation/arrow-downward';
+import sortOrder from '../../utils/sortOrder';
 
 const SortOrderIcon = (props) => {
   const { order, style, color } = props;
@@ -21,7 +21,9 @@ SortOrderIcon.propTypes = {
 };
 
 SortOrderIcon.defaultProps = {
-  order: sortOrder.DIRECTION.NONE
+  order: sortOrder.DIRECTION.NONE,
+  style: null,
+  color: ''
 };
 
 export default SortOrderIcon;

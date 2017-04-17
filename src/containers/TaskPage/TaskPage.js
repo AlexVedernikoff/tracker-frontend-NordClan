@@ -2,12 +2,11 @@ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
-import { setCurrentTask, isCurrentTaskLoaded, setPriority, setTypeTask, setStatus } from '../../actions/currentTask';
 // import {bindActionCreators} from 'redux';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import EditorModeEdit from 'material-ui/svg-icons/editor/mode-edit';
-
+import { setCurrentTask, isCurrentTaskLoaded, setPriority, setTypeTask, setStatus } from '../../actions/currentTask';
 import TaskCardHeader from '../../components/TaskCard/TaskCardHeader';
 import DropZone from '../../components/DropZone/DropZone';
 import ExecutorsList from '../../components/TaskPage/ExecutorsList';
@@ -57,6 +56,7 @@ export default class TaskPage extends Component {
     store: PropTypes.object.isRequired,
   }
   static defaultProps = {
+    task: null,
     isActive: true,
     about: 'No about',
     deadline: 'No deadline',

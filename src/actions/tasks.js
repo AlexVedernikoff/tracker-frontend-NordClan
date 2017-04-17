@@ -7,7 +7,7 @@ export function isLoaded(globalState) {
 export function load() {
   return {
     types: [types.LOAD_TASKS, types.LOAD_TASKS_SUCCESS, types.LOAD_TASKS_FAIL],
-    promise: (client) => client.get('/loadTasks')
+    promise: client => client.get('/loadTasks')
   };
 }
 
@@ -47,7 +47,7 @@ export function toggleTasksTableLayout() {
 export function setStatus(id, status) {
   return {
     type: types.SET_CURRENT_TASK_STATUS,
-    id: id,
-    status: status
+    id,
+    status
   };
 }

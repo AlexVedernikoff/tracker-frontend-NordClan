@@ -16,8 +16,13 @@ class NewCommentBadge extends React.Component {
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired
   };
+
   static defaultProps = {
-    count: 0
+    count: 0,
+    comment: PropTypes.string,
+    author: PropTypes.string,
+    date: PropTypes.string,
+    css: require('./newCommentBadge.scss')
   };
 
   constructor(props) {
@@ -77,16 +82,16 @@ class NewCommentBadge extends React.Component {
         >
           <ContentCrate style={{ maxWidth: 300 }}>
             <p className={css.comment}>{this.props.comment}</p>
-            <span className={css.commentInfo} style={styles.commentInfo}>{this.props.author}, {this.props.date}</span>
+            <span
+              className={css.commentInfo}
+              style={styles.commentInfo}
+            >
+              {this.props.author}, {this.props.date}</span>
           </ContentCrate>
         </Popover>
       </div>
     );
   }
 }
-
-NewCommentBadge.defaultProps = {
-  css: require('./newCommentBadge.scss')
-};
 
 export default NewCommentBadge;

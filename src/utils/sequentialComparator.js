@@ -1,14 +1,16 @@
 import sortOrder from './sortOrder';
 
 /**
- * @exports sequentialComparator - функция-компаратор для последовательного сравнения по нескольким полям
+ * @exports sequentialComparator - функция-компаратор для последовательного
+ * сравнения по нескольким полям
  */
 
 /* eslint-disable id-length*/
 /**
  * @param {object} a - сравниваемый объект
  * @param {object} b - сравниваемый объект
- * @param {array} sequence - последовательность применяемых правил сравнения в формате {key: 'propertyName', order: 'asc|desc'}
+ * @param {array} sequence - последовательность применяемых правил
+ * сравнения в формате {key: 'propertyName', order: 'asc|desc'}
  * order по-умолчанию - asc (сортировка по возрастанию)
  * @example
  * someArray.sort((item1, item2) => sequentialComparator(item1, item2, [

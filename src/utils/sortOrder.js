@@ -23,14 +23,12 @@ const sortOrder = {
 
   SIGN: SORT_SIGN,
 
-  isSignificant: (order) => {
-    return (order === SORT_DIRECTION.ASC) || (order === SORT_DIRECTION.DESC);
-  },
-
+  isSignificant: order =>
+    (order === SORT_DIRECTION.ASC) || (order === SORT_DIRECTION.DESC),
   sign: (order) => {
     const key = (typeof order === 'string' || order instanceof String) ?
       order.toUpperCase() : SORT_DIRECTION.NONE;
-    return SORT_SIGN.hasOwnProperty(key) ? SORT_SIGN[key] : 0;
+    return SORT_SIGN.hasOwnProperty(key) ? SORT_SIGN[key] : 0; // eslint-disable-line
   },
 
   next: (current) => {
