@@ -86,10 +86,21 @@
   font-weight: 300;
   transition: all 0.3s ease-out 0s;
 
-  &::-webkit-input-placeholder {color:lighten(rgba(white, .5));}
-  &::-moz-placeholder          {color:lighten(rgba(white, .5));}/* Firefox 19+ */
-  &:-moz-placeholder           {color:lighten(rgba(white, .5));}/* Firefox 18- */
-  &:-ms-input-placeholder      {color:lighten(rgba(white, .5));}
+  &::-webkit-input-placeholder {
+    color:lighten(rgba(white, .5), 0%);
+  }
+
+  &::-moz-placeholder {
+    color:lighten(rgba(white, .5), 0%);
+  }
+
+  &:-moz-placeholder {
+    color:lighten(rgba(white, .5), 0%);
+  }
+  
+  &:-ms-input-placeholder {
+    color:lighten(rgba(white, .5), 0%);
+  }
 
   &:focus {
     outline: none;
