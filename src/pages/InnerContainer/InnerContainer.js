@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Sidebar from 'react-sidebar';
 import AppHead from './AppHead';
 import NavMenu from './NavMenu';
-import './InnerContainer.scss';
+import * as css from './InnerContainer.scss';
 
 export default class InnerContainer extends Component {
   static propTypes = {
@@ -28,7 +28,9 @@ export default class InnerContainer extends Component {
             styles={{sidebar: {width: 240}}}
           >
             <AppHead />
-            {this.props.children}
+              <div className={css.content}>
+                {this.props.children}
+              </div>
             <div/>
           </Sidebar>
         </div>

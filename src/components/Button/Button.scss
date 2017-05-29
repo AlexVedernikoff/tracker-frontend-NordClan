@@ -1,0 +1,36 @@
+@import '../../styles/variables';
+
+.btn {
+  display: inline-block;
+  border: 0;
+  background-color: gray;
+  color: rgba(white, 0.9);
+  font-size: 13px;
+  padding: 8px 16px;
+  cursor: pointer;
+  line-height: 16px;
+
+  &:focus,
+  &:active {
+    outline: none;
+  }
+}
+
+@mixin btn-type($color) {
+  background-color: $color;
+  transition: $transition;
+
+  &:hover {
+    background-color: lighten($color, 10%);
+    transition: $transition;
+  }
+
+  &:active {
+    background-color: lighten($color, 15%);
+    transition: $transition;
+  }
+}
+
+.default { @include btn-type(gray); }
+.primary { @include btn-type($color-dark); }
+.secondary { @include btn-type($color-orange); }

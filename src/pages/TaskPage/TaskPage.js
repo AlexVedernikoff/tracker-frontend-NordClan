@@ -33,8 +33,6 @@ export default class TaskPage extends Component {
     return (
       <div id="task-page">
         <h1 title="Название задачи" />
-        <Grid fluid className={css.layout}>
-          <div className={css.wrapper}>
             <Row>
               <Col xs={8}>
                 <TaskCardHeader task={task}/>
@@ -56,8 +54,6 @@ export default class TaskPage extends Component {
                 </aside>
               </Col>
             </Row>
-          </div>
-        </Grid>
       </div>
     );
   }

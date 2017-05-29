@@ -66,13 +66,10 @@ const settings = {
           {
             loader: "css-loader",
             options: {
-              modules: true,
-              sourceMap: true,
-              importLoaders: 1,
-              localIdentName: "[name]--[local]--[hash:base64:8]"
+              modules: false,
+              sourceMap: true
             }
           },
-          "postcss-loader"
         ]
       }
     ]

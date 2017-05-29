@@ -1,6 +1,5 @@
 import React, {PropTypes} from 'react';
-import StatusDropdown from '../StatusDropdown';
-import PriorityDropdown from '../PriorityDropdown';
+import Button from '../../../components/Button';
 
 const TaskCardHeader = (props) => {
   const {task} = props;
@@ -15,8 +14,9 @@ const TaskCardHeader = (props) => {
         </div>
       </div>
       <h1 className={css.title}> {task.name}</h1>
-        <StatusDropdown />
-        <PriorityDropdown />
+        <Button text="Предыдущий статус" type="primary" />
+        <Button text="Текущий статус" type="secondary" />
+        <Button text="Следующий статус" type="primary" />
       <hr />
     </div>
   );
