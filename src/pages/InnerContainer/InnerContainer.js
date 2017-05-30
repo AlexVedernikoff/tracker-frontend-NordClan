@@ -13,7 +13,6 @@ export default class InnerContainer extends Component {
 
 
   render () {
-    console.log(this.props.children);
     const sidebar = <NavMenu />;
 
     const sidebarDocked = true;

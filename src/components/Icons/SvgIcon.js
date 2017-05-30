@@ -25,8 +25,6 @@ class SvgIcon extends Component {
     const mergedStyles = {
       display: 'inline-block',
       fill: 'currentColor',
-      height: 24,
-      width: 24,
       userSelect: 'none',
       ...style
     };

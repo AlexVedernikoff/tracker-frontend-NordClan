@@ -20,7 +20,7 @@ export default class TaskPage extends Component {
     // Mocks
 
     const task = {
-      name: 'Название задачи',
+      name: 'UI. Подготовка к демонстрации. Краткая проверка функционала',
       projectName: 'Название проекта',
       creator: {
         name: 'Имя создателя'

@@ -2,6 +2,8 @@
 
 .btn {
   display: inline-block;
+  vertical-align: middle;
+  position: relative;
   border: 0;
   background-color: gray;
   color: rgba(white, 0.9);
@@ -9,11 +11,37 @@
   padding: 8px 16px;
   cursor: pointer;
   line-height: 16px;
+  height: 32px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   &:focus,
   &:active {
     outline: none;
   }
+}
+
+.withIcon {
+  padding-left: 32px;
+}
+
+.onlyIcon {
+  padding-right: 8px;
+  padding-left: 8px;
+
+  .icon {
+    position: static;
+    display: inline-block;
+  }
+}
+
+.icon {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  height: 16px;
+  width: 16px;
 }
 
 @mixin btn-type($color) {
@@ -33,4 +61,24 @@
 
 .default { @include btn-type(gray); }
 .primary { @include btn-type($color-dark); }
+.primary-lighten { @include btn-type(lighten($color-dark, 10%)); }
 .secondary { @include btn-type($color-orange); }
+.green { @include btn-type($color-green); }
+.green-lighten { @include btn-type(lighten($color-green, 10%)); }
+
+.bordered {
+  border-width: 1px;
+  border-style: solid;
+  border-color: $color-dark;
+  padding: 7px 15px;
+  background-color: transparent;
+  color: $color-dark;
+  transition: $transition;
+
+  &:hover {
+    background-color: lighten($color-dark, 10%);
+    border-color: lighten($color-dark, 10%);
+    color: white;
+    transition: $transition;
+  }
+}
