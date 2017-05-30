@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react';
 import Button from '../../../components/Button';
+import Priority from '../Priority';
 import ButtonGroup from '../../../components/ButtonGroup';
 
 const TaskCardHeader = (props) => {
@@ -13,14 +14,15 @@ const TaskCardHeader = (props) => {
         <div>
           <span>Фича / Задача</span>
         </div>
+        <Priority/>
       </div>
       <h1 className={css.title}> {task.name}</h1>
-      <ButtonGroup type="lifecircle" stage="middle">
+      <ButtonGroup type="lifecircle" stage="middle" style={{marginRight: 32}}>
         <Button text="Develop" type="bordered" />
-        <div style={{display: 'inline-block'}}>
+        <ButtonGroup>
           <Button text="Code Review" type="green" icon='IconPlay' />
           <Button type="green-lighten" icon='IconClose' />
-        </div>
+        </ButtonGroup>
         <Button text="QA" type="bordered" />
       </ButtonGroup>
       <hr />

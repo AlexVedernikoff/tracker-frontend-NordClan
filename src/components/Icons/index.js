@@ -21,6 +21,13 @@ export const IconPlus = (props) => (
   </SvgIcon>
 );
 
+export const IconMinus = (props) => (
+  <SvgIcon {...props}>
+    <path d="M19 13H5v-2h14v2z"/>
+    <path d="M0 0h24v24H0z" fill="none"/>
+  </SvgIcon>
+);
+
 export const IconFileDocument = (props) => (
   <SvgIcon {...props}>
     <path d="M13,9V3.5L18.5,9M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z" />

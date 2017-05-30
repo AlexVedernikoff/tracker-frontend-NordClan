@@ -1,15 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import * as css from './ButtonGroup.scss';
 
 const ButtonGroup = (props) => {
 
   let childrens = props.children;
 
-  if (props.children.length) {
+  const {
+    children,
+    stage,
+    type,
+    ...other
+  } = props;
+
+  if (children.length) {
     childrens = props.children.map(function (item, i) {
       return (
-        <div className={css.unit} key={i}>
+        <div
+          className={classnames({
+            [css.buttonContainer]: true,
+            [css.unit]: (type === 'lifecircle')
+          })}
+          key={i}>
           {item}
         </div>
       );
@@ -17,7 +30,12 @@ const ButtonGroup = (props) => {
   }
 
   return (
-    <div className={css[props.stage]}>
+    <div
+      {...other}
+      className={classnames({
+        [css[stage]]: true,
+        [css.buttonGroup]: true
+      })}>
       {childrens}
     </div>
   );
@@ -25,7 +43,6 @@ const ButtonGroup = (props) => {
 
 ButtonGroup.propTypes = {
   children: PropTypes.array,
-  length: PropTypes.number,
   stage: PropTypes.string,
   type: PropTypes.string
 };

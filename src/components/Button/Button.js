@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as css from './Button.scss';
 import classnames from 'classnames';
+import * as css from './Button.scss';
 import * as icons from '../Icons';
 
 const Button = (props) => {

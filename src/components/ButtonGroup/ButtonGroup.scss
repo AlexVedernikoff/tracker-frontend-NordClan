@@ -1,7 +1,11 @@
 @import '../../styles/variables';
 
-.unit {
+.buttonGroup,
+.buttonContainer {
   display: inline-block;
+}
+
+.unit {
   position: relative;
 
   &:after,

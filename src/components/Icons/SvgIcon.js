@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import * as css from './Icons.scss';
 
 class SvgIcon extends Component {
 
   static propTypes = {
     children: PropTypes.node,
+    className: PropTypes.string,
     color: PropTypes.string,
     style: PropTypes.object,
     viewBox: PropTypes.string
@@ -19,21 +22,18 @@ class SvgIcon extends Component {
       children,
       style,
       viewBox,
+      className,
       ...other
     } = this.props;
-
-    const mergedStyles = {
-      display: 'inline-block',
-      fill: 'currentColor',
-      userSelect: 'none',
-      ...style
-    };
 
     return (
       <svg
         {...other}
-        style={mergedStyles}
+        style={style}
         viewBox={viewBox}
+        className={classnames(
+          className, css.icon
+        )}
       >
         {children}
       </svg>

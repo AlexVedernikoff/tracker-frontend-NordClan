@@ -13,7 +13,7 @@
   color: lighten($color-black, 40%);
   font-size: 13px;
 
-  div {
+  & > div {
     display: inline-block;
     padding-right: 16px;
 
