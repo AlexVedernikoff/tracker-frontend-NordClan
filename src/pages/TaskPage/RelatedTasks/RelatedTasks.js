@@ -16,7 +16,14 @@ export default class RelatedTasks extends React.Component {
 
     return (
       <div className={css.relatedTasks}>
-        <h3 className={css.taskListHeader}>Связанные задачи</h3>
+        <h3 className={css.taskListHeader}>
+          {
+            this.props.type === 'related'
+            ? 'Связанные задачи'
+            : this.props.type === 'children'
+            ? 'Подзадачи' : null
+          }
+        </h3>
         <ul className={css.taskList}>
           <li className={css.task}>
             <span className={css.taskLabel}>PPJ-56321</span>
@@ -38,7 +45,12 @@ export default class RelatedTasks extends React.Component {
         <Link to="#" className={css.task + ' ' + css.add}>
           <IconPlus style={iconStyles} />
           <div className={css.tooltip}>
-            Добавить связанную задачу
+            {
+              this.props.type === 'related'
+              ? 'Связать с другой задачей'
+              : this.props.type === 'children'
+              ? 'Добавить подзадачу' : null
+            }
           </div>
         </Link>
       </div>
@@ -47,5 +59,6 @@ export default class RelatedTasks extends React.Component {
 }
 
 RelatedTasks.propTypes = {
-  task: PropTypes.object.isRequired
+  task: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired
 };

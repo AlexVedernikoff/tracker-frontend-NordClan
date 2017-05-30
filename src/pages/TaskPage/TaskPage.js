@@ -27,6 +27,10 @@ export default class TaskPage extends Component {
       },
       owner: {
         name: 'Имя исполнителя'
+      },
+      parentTask: {
+        name: 'UI: Add to gulp build tasks for css and js minification',
+        prefix: ''
       }
     };
 
@@ -49,7 +53,8 @@ export default class TaskPage extends Component {
               <Col xs={4}>
                 <aside>
                   <Details task={task} />
-                  <RelatedTasks task={task} />
+                  <RelatedTasks task={task} type='related' />
+                  <RelatedTasks task={task} type='children' />
                   <TaskHistory task={task} />
                 </aside>
               </Col>
