@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Sidebar from 'react-sidebar';
+import ReactTooltip from 'react-tooltip';
 import AppHead from './AppHead';
 import NavMenu from './NavMenu';
 import * as css from './InnerContainer.scss';
@@ -33,6 +34,7 @@ export default class InnerContainer extends Component {
             <div/>
           </Sidebar>
         </div>
+        <ReactTooltip className={css.tooltip}/>
       </div>
     );
   }

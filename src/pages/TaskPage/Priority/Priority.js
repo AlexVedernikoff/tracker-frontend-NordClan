@@ -8,9 +8,9 @@ const Priority = (props) => {
     <div className={css.priority}>
       Приоритет:
       <span className={css.count}>
-        <IconPlus className={css.icon}/>
+        <IconPlus className={css.icon} data-tip="Увеличить приоритет"/>
         <span>3</span>
-        <IconMinus className={css.icon}/>
+        <IconMinus className={css.icon} data-tip="Уменьшить приоритет" data-place='bottom'/>
       </span>
     </div>
   );

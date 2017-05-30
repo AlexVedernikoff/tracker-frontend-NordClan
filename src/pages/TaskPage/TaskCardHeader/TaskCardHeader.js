@@ -18,12 +18,12 @@ const TaskCardHeader = (props) => {
       </div>
       <h1 className={css.title}> {task.name}</h1>
       <ButtonGroup type="lifecircle" stage="middle" style={{marginRight: 32}}>
-        <Button text="Develop" type="bordered" />
+        <Button text="Develop" type="bordered" data-tip="Вернуть" data-place='bottom' />
         <ButtonGroup>
-          <Button text="Code Review" type="green" icon='IconPlay' />
-          <Button type="green-lighten" icon='IconClose' />
+          <Button text="Code Review" type="green" icon='IconPause' data-tip="Приостановить" data-place='bottom' />
+          <Button type="green-lighten" icon='IconClose' data-tip="Отменить" data-place='bottom' />
         </ButtonGroup>
-        <Button text="QA" type="bordered" />
+        <Button text="QA" type="bordered" data-tip="Перевести в следующую стадию" data-place='bottom' />
       </ButtonGroup>
       <hr />
     </div>

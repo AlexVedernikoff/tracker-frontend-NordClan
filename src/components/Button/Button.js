@@ -6,20 +6,28 @@ import * as icons from '../Icons';
 
 const Button = (props) => {
 
-  const Icon = props.icon ? icons[props.icon] : null;
+  const {
+    icon,
+    type,
+    text,
+    ...other
+  } = props;
+
+  const Icon = icon ? icons[icon] : null;
 
   return (
     <button
+      {...other}
       className={classnames({
         [css.btn]: true,
-        [css[props.type]]: !!props.type,
-        [css.withIcon]: !!props.icon,
-        [css.onlyIcon]: !!props.icon && !props.text
+        [css[type]]: !!type,
+        [css.withIcon]: !!icon,
+        [css.onlyIcon]: !!icon && !text
       })}>
-      {props.icon
+      {icon
         ? <Icon className={css.icon}/>
         : null}
-      {props.text}
+      {text}
     </button>
   );
 };
