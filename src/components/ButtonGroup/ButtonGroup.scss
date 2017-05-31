@@ -35,6 +35,19 @@
   }
 }
 
+.full {
+  .unit:first-child {
+    &:before {
+      display: none;
+    }
+  }
+  .unit:last-child {
+    &:after {
+      display: none;
+    }
+  }
+}
+
 .middle {
   margin-left: -8px;
 }
