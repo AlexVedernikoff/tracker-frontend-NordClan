@@ -1,11 +1,10 @@
 import React, {PropTypes} from 'react';
 import { Link } from 'react-router';
+import * as css from './Details.scss';
 
 export default class Details extends React.Component {
 
   render () {
-    const css = require('./Details.scss');
-
     return (
       <div className={css.detailsBlock}>
         <table className={css.detailTable}>
@@ -17,9 +16,21 @@ export default class Details extends React.Component {
               </td>
             </tr>
             <tr className={css.detailProject}>
+              <td>Спринт:</td>
+              <td>
+                <Link to="#">{this.props.task.sprint}</Link>
+              </td>
+            </tr>
+            <tr className={css.detailProject}>
               <td>Автор:</td>
               <td>
                 <Link to="#">{this.props.task.creator ? this.props.task.creator.name : ''}</Link>
+              </td>
+            </tr>
+            <tr className={css.detailProject}>
+              <td>Исполнитель:</td>
+              <td>
+                <Link to="#">{this.props.task.owner ? this.props.task.owner.name : ''}</Link>
               </td>
             </tr>
             <tr className={css.detailProject}>
@@ -38,12 +49,6 @@ export default class Details extends React.Component {
               <td>Потрачено:</td>
               <td>
                 <span className={css.alert}>100 ч.</span>
-              </td>
-            </tr>
-            <tr className={css.detailProject}>
-              <td>Исполнитель:</td>
-              <td>
-                <Link to="#">{this.props.task.owner ? this.props.task.owner.name : ''}</Link>
               </td>
             </tr>
           </tbody>

@@ -9,8 +9,11 @@ const TaskCardHeader = (props) => {
 
   return (
     <div>
+      <div className={css.parentTask}>
+        <div className={css.prefix} data-tip="Родительская задача ">PPJ-56320</div><a href="#" className={css.parentTaskName}>UI: Add to gulp build tasks for css and js minification</a>
+      </div>
       <div className={css.taskTopInfo}>
-        <div>PPJ-56321</div>
+        <div className={css.prefix}>PPJ-56321</div>
         <div>
           <span>Фича / Задача</span>
         </div>

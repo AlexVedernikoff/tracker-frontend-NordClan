@@ -23,3 +23,51 @@
     }
   }
 }
+
+.parentTask {
+  color: lighten($color-black, 40%);
+  margin-bottom: 16px;
+
+  &:hover {
+    .parentTaskName {
+      opacity: 1;
+    }
+  }
+
+  .prefix {
+    margin-right: 8px;
+    cursor: pointer;
+
+    &:before {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 1px;
+      height: 32px;
+      right: calc(100% + 8px);
+      top: 50%;
+      background-color: lighten($color-black, 40%);
+    }
+  }
+}
+
+.parentTaskName {
+  opacity: 0;
+  transition: $transition;
+}
+
+.prefix {
+  display: inline-block;
+  position: relative;
+
+  &:after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 4px;
+    height: 1px;
+    right: calc(100% + 4px);
+    top: 50%;
+    background-color: lighten($color-black, 40%);
+  }
+}

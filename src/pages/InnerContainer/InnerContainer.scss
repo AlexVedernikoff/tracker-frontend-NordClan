@@ -1,3 +1,4 @@
+@import '../../styles/variables';
 .content {
   max-width: 1200px;
   padding: 64px 32px;
@@ -5,6 +6,13 @@
 }
 
 .tooltip {
-  border-radius: 0;
-  font-size: 11px;
+  border-radius: 0 !important;
+  font-size: 11px !important;
+  background-color: $color-dark !important;
+  opacity: 0.8 !important;
+
+  &:after {
+    border-bottom-color: $color-dark !important;
+    border-top-color: $color-dark !important;
+  }
 }

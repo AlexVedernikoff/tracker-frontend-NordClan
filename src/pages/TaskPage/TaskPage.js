@@ -21,12 +21,15 @@ export default class TaskPage extends Component {
 
     const task = {
       name: 'UI. Подготовка к демонстрации. Краткая проверка функционала',
+      description: 'Описание задачи, которое довольно часто может составлять пару предложений, а то и вовсе отсутствовать.',
       projectName: 'Название проекта',
+      sprint: 'Спринт 1',
+      tags: ['UI', 'Рефакторинг', 'Демо'],
       creator: {
-        name: 'Имя создателя'
+        name: 'Виссарион Одноклассница'
       },
       owner: {
-        name: 'Имя исполнителя'
+        name: 'Андрей Юдин'
       },
       parentTask: {
         name: 'UI: Add to gulp build tasks for css and js minification',
@@ -42,7 +45,7 @@ export default class TaskPage extends Component {
                 <TaskCardHeader task={task}/>
                 <main className={css.main}>
                   <div className={css.description}>
-                    Описание задачи, которое довольно часто может составлять пару предложений.
+                    {task.description}
                   </div>
                   <hr />
                   <Attachments task={task} />
