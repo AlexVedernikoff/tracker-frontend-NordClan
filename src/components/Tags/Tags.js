@@ -13,7 +13,7 @@ const Tags = (props) => {
   return (
     <div>
       {children}
-       <Tag create data-tip="Добавить тег" data-place="bottom"/>
+       <Tag create data-tip="Добавить тег" data-place="bottom" />
     </div>
   );
 };

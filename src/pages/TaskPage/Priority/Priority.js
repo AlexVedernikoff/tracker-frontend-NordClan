@@ -1,16 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as css from './Priority.scss';
-import { IconMinus, IconPlus } from '../../../components/Icons';
 
 const Priority = (props) => {
   return (
     <div className={css.priority}>
       Приоритет:
       <span className={css.count}>
-        <IconPlus className={css.icon} data-tip="Увеличить приоритет"/>
-        <span>3</span>
-        <IconMinus className={css.icon} data-tip="Уменьшить приоритет" data-place='bottom'/>
+        <span>1</span>
+        <span>2</span>
+        <span className={css.active}>3</span>
+        <span>4</span>
+        <span>5</span>
       </span>
     </div>
   );
