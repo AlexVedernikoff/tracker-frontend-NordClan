@@ -20,7 +20,7 @@ export default class Details extends React.Component {
             <tr>
               <td>Проект:</td>
               <td>
-                <Link to="#">{this.props.task.projectName}</Link>
+                <Link to={'/projects/' + this.props.task.projectId}>{this.props.task.projectName}</Link>
               </td>
             </tr>
             <tr>

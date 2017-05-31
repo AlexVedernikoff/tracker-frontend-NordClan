@@ -19,7 +19,10 @@ const Tags = (props) => {
 };
 
 Tags.propTypes = {
-  children: PropTypes.oneOfType
+  children: PropTypes.oneOfType([
+    PropTypes.node,
+    PropTypes.array
+  ])
 };
 
 export default Tags;

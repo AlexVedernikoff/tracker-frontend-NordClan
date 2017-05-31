@@ -22,7 +22,8 @@ export default class TaskPage extends Component {
     const task = {
       name: 'UI. Подготовка к демонстрации. Краткая проверка функционала',
       description: 'Описание задачи, которое довольно часто может составлять пару предложений, а то и вовсе отсутствовать.',
-      projectName: 'Название проекта',
+      projectName: 'MakeTalents',
+      projectId: 123,
       sprint: 'Спринт 1',
       tags: ['UI', 'ReFactor', 'Demo'],
       creator: {
@@ -39,29 +40,28 @@ export default class TaskPage extends Component {
 
     return (
       <div id="task-page">
-        <h1 title="Название задачи" />
-            <Row>
-              <Col xs={8}>
-                <TaskCardHeader task={task}/>
-                <main className={css.main}>
-                  <div className={css.description}>
-                    {task.description}
-                  </div>
-                  <hr />
-                  <Attachments task={task} />
-                  <hr />
-                  <Comments />
-                </main>
-              </Col>
-              <Col xs={4}>
-                <aside>
-                  <Details task={task} />
-                  <RelatedTasks task={task} type='related' />
-                  <RelatedTasks task={task} type='children' />
-                  <TaskHistory task={task} />
-                </aside>
-              </Col>
-            </Row>
+        <Row>
+          <Col xs={8}>
+            <TaskCardHeader task={task}/>
+            <main className={css.main}>
+              <div className={css.description}>
+                {task.description}
+              </div>
+              <hr />
+              <Attachments task={task} />
+              <hr />
+              <Comments />
+            </main>
+          </Col>
+          <Col xs={4}>
+            <aside>
+              <Details task={task} />
+              <RelatedTasks task={task} type='related' />
+              <RelatedTasks task={task} type='children' />
+              <TaskHistory task={task} />
+            </aside>
+          </Col>
+        </Row>
       </div>
     );
   }

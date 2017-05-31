@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import { Link } from 'react-router';
-import { IconPlus } from '../../../components/Icons';
+import { IconPlus, IconLink } from '../../../components/Icons';
 
 export default class RelatedTasks extends React.Component {
 
@@ -43,7 +43,12 @@ export default class RelatedTasks extends React.Component {
           </li>
         </ul>
         <Link to="#" className={css.task + ' ' + css.add}>
-          <IconPlus style={iconStyles} />
+          {
+            this.props.type === 'related'
+            ? <IconLink style={iconStyles} />
+            : this.props.type === 'children'
+            ? <IconPlus style={iconStyles} /> : null
+          }
           <div className={css.tooltip}>
             {
               this.props.type === 'related'
