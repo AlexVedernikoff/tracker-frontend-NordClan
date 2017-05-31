@@ -1,0 +1,68 @@
+.paper {
+  padding: 8px;
+}
+
+.header {
+  font-size: 16px;
+  line-height: 48px;
+  margin-bottom: 14px;
+  margin-top: -1px;
+}
+
+.description {
+  line-height: 1.6;
+}
+
+.slider {
+  margin-bottom: 40px;
+}
+
+.execDate {
+  text-align: right;
+}
+
+.execPrimaryText {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.execBlock {
+  position: relative;
+}
+
+.execWrap {
+  max-height: 560px;
+  overflow-y: hidden;
+  transition: all 800ms cubic-bezier(0, 1, 0.5, 1);
+}
+
+.execLine {
+  position: absolute;
+  top: -16px;
+  left: 27px;
+  height: 32px;
+  width: 1px;
+}
+
+.execSeparator {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  position: relative;
+  padding-top: 24px;
+  margin-bottom: 42px;
+}
+
+.execSeparatorBtn {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  margin-left: -24px;
+}
+
+.taskPage_actionButton {
+  position: fixed;
+  bottom: 35px;
+  right: 60px;
+}

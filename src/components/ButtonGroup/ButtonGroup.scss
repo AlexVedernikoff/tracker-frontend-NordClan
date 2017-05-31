@@ -1,0 +1,40 @@
+@import '../../styles/variables';
+
+.buttonGroup,
+.buttonContainer {
+  display: inline-block;
+}
+
+.unit {
+  position: relative;
+
+  &:after,
+  &:before {
+    content: '';
+    display: inline-block;
+    vertical-align: middle;
+    height: 1px;
+    width: 8px;
+    background-color: $color-dark;
+  }
+}
+
+.start {
+  .unit:first-child {
+    &:before {
+      display: none;
+    }
+  }
+}
+
+.end {
+  .unit:last-child {
+    &:after {
+      display: none;
+    }
+  }
+}
+
+.middle {
+  margin-left: -8px;
+}

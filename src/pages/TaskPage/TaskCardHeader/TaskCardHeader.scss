@@ -1,0 +1,73 @@
+@import '../../../styles/variables.scss';
+
+.title {
+  font-size: 34px;
+  padding-top: 8px;
+  padding-bottom: 16px;
+  margin: 0;
+  color: $color-black;
+  font-weight: 300;
+}
+
+.taskTopInfo {
+  color: lighten($color-black, 40%);
+  font-size: 13px;
+
+  & > div {
+    display: inline-block;
+    padding-right: 16px;
+
+    & + div {
+      padding-left: 16px;
+      border-left: 1px solid lighten($color-black, 60%);
+    }
+  }
+}
+
+.parentTask {
+  color: lighten($color-black, 40%);
+  margin-bottom: 16px;
+
+  &:hover {
+    .parentTaskName {
+      opacity: 1;
+    }
+  }
+
+  .prefix {
+    margin-right: 8px;
+    cursor: pointer;
+
+    &:before {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 1px;
+      height: 32px;
+      right: calc(100% + 8px);
+      top: 50%;
+      background-color: lighten($color-black, 40%);
+    }
+  }
+}
+
+.parentTaskName {
+  opacity: 0;
+  transition: $transition;
+}
+
+.prefix {
+  display: inline-block;
+  position: relative;
+
+  &:after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 4px;
+    height: 1px;
+    right: calc(100% + 4px);
+    top: 50%;
+    background-color: lighten($color-black, 40%);
+  }
+}

@@ -1,0 +1,44 @@
+@import '../../../styles/variables.scss';
+
+.priority {
+  &:hover {
+    .icon {
+      opacity: 1;
+    }
+  }
+}
+
+.count {
+  display: inline-block;
+  position: relative;
+  width: 16px;
+  text-align: center;
+}
+
+.icon {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  // background-color: lighten(black, 90%);
+  color: $color-dark;
+  transition: $transition;
+
+  &:hover {
+    color: $color-orange;
+    transition: $transition;
+  }
+
+  &:first-child {
+    bottom: 100%;
+    left: 0;
+    right: 0;
+  }
+
+  &:last-child {
+    top: 100%;
+    left: 0;
+    right: 0;
+  }
+}
