@@ -4,6 +4,7 @@ import { AppContainer } from 'react-hot-loader';
 import AppRoute from './Router';
 
 import 'normalize-css';
+import './styles/hooks.css';
 import './styles/App.scss';
 
 const rootEl = document.getElementById('app');

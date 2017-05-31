@@ -1,0 +1,11 @@
+.tooltip {
+  border-radius: 0 !important;
+  font-size: 11px !important;
+  background-color: #2b3e50 !important;
+  opacity: 0.8 !important;
+}
+
+.tooltip.place-bottom:after {border-bottom-color: #2b3e50 !important;}
+.tooltip.place-top:after {border-top-color: #2b3e50 !important;}
+.tooltip.place-left:after {border-left-color: #2b3e50 !important;}
+.tooltip.place-right:after {border-right-color: #2b3e50 !important;}

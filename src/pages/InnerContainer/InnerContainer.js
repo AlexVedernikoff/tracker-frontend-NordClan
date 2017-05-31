@@ -34,7 +34,7 @@ export default class InnerContainer extends Component {
             <div/>
           </Sidebar>
         </div>
-        <ReactTooltip className={css.tooltip}/>
+        <ReactTooltip className="tooltip"/>
       </div>
     );
   }

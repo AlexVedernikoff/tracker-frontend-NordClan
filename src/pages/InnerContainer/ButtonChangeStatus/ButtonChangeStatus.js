@@ -1,4 +1,4 @@
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 import IconMenu from 'material-ui/IconMenu/IconMenu';
 import IconButton from 'material-ui/IconButton/IconButton';
 import MenuItem from 'material-ui/MenuItem/MenuItem';
@@ -14,32 +14,34 @@ const renderLabel = (isCompact, currentStatus) => {
   return null;
 };
 
-const renderIcon = (currentStatus) => {
-  return currentStatus ? <currentStatus.icon {...currentStatus.iconProps} /> : <Add/>;
-};
+const renderIcon = currentStatus => currentStatus ?
+  <currentStatus.icon {...currentStatus.iconProps} /> : <Add />;
 
 const ButtonChangeStatus = (props) => {
-  const { status, compact, style, handleChangeStatus} = props;
+  const { status, compact, style, handleChangeStatus } = props;
   const currentStatus = TaskStatusPresentation.find(stat => (stat.key === status));
 
   let menuItem = [];
-  menuItem = TaskStatusPresentation.map((stat) => (
-    <MenuItem key={stat.key} value={stat.key}
+  menuItem = TaskStatusPresentation.map(stat => (
+    <MenuItem
+      key={stat.key} value={stat.key}
       primaryText={stat.label} leftIcon={<stat.icon {...stat.iconProps} />}
-      style={{cursor: 'pointer'}}
+      style={{ cursor: 'pointer' }}
     />
   ));
 
   const label = renderLabel(compact, currentStatus);
   const icon = renderIcon(currentStatus);
   const renderIconMenu = (
-    <IconMenu iconButtonElement={
-      <div>
-        {label}
-        <IconButton>{icon}</IconButton>
-      </div>
-    } onChange={handleChangeStatus.bind(this, props)}>
-        {menuItem}
+    <IconMenu
+      iconButtonElement={
+        <div>
+          {label}
+          <IconButton>{icon}</IconButton>
+        </div>
+    } onChange={() => handleChangeStatus}
+    >
+      {menuItem}
     </IconMenu>);
 
   return (

@@ -9,36 +9,55 @@
 }
 
 .count {
-  display: inline-block;
+  display: inline-flex;
+  align-items: stretch;
   position: relative;
-  width: 16px;
   text-align: center;
+  margin-left: 4px;
+
+  > span {
+    display: block;
+    position: relative;
+    flex: 1;
+    align-items: center;
+    font-size: 11px;
+    padding: 0 4px;
+    background-color: $color-dark;
+    color: white;
+    cursor: pointer;
+
+    &:hover:not(.active) {
+      &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        z-index: 1;
+        top: -6px;
+        left: calc(50% - 3px);
+        border-top: 6px solid lighten(black, 70%);
+        border-left: 3px solid transparent;
+        border-right: 3px solid transparent;
+      }
+    }
+
+    &:nth-child(1) { background-color: lighten($color-dark, 50%); }
+    &:nth-child(2) { background-color: lighten($color-dark, 40%); }
+    &:nth-child(3) { background-color: lighten($color-dark, 30%); }
+    &:nth-child(4) { background-color: lighten($color-dark, 20%); }
+    &:nth-child(5) { background-color: lighten($color-dark, 10%); }
+  }
 }
 
-.icon {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  width: 16px;
-  height: 16px;
-  // background-color: lighten(black, 90%);
-  color: $color-dark;
-  transition: $transition;
-
-  &:hover {
-    color: $color-orange;
-    transition: $transition;
-  }
-
-  &:first-child {
-    bottom: 100%;
-    left: 0;
-    right: 0;
-  }
-
-  &:last-child {
-    top: 100%;
-    left: 0;
-    right: 0;
+.active {
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    z-index: 2;
+    top: -6px;
+    left: calc(50% - 3px);
+    border-top: 6px solid $color-dark;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
   }
 }
