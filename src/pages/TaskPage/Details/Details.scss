@@ -14,6 +14,12 @@
   td {
     padding: 8px;
 
+    &.tags {
+      padding-top: 6px;
+      padding-bottom: 6px;
+      padding-left: 6px;
+    }
+
     &:first-child {
       padding-left: 16px;
     }

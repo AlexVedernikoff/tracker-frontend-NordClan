@@ -24,7 +24,7 @@ export default class TaskPage extends Component {
       description: 'Описание задачи, которое довольно часто может составлять пару предложений, а то и вовсе отсутствовать.',
       projectName: 'Название проекта',
       sprint: 'Спринт 1',
-      tags: ['UI', 'Рефакторинг', 'Демо'],
+      tags: ['UI', 'ReFactor', 'Demo'],
       creator: {
         name: 'Виссарион Одноклассница'
       },
