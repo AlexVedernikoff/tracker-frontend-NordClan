@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 
-import TaskCardHeader from './TaskCardHeader';
+import TaskHeader from './TaskHeader';
 import Details from './Details';
 import RelatedTasks from './RelatedTasks';
 import TaskHistory from './TaskHistory';
@@ -42,7 +42,7 @@ export default class TaskPage extends Component {
       <div id="task-page">
         <Row>
           <Col xs={8}>
-            <TaskCardHeader task={task}/>
+            <TaskHeader task={task}/>
             <main className={css.main}>
               <div className={css.description}>
                 {task.description}
