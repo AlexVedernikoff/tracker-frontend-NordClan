@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
+import {Tabs, Tab, LeftTabs} from 'pui-react-tabs';
 
 import TaskCard from '../../components/TaskCard';
-
 import * as css from './ProjectPage.scss';
 
 export default class ProjectPage extends Component {
@@ -59,101 +59,110 @@ export default class ProjectPage extends Component {
     return (
       <div id="project-page">
         <h1>{project.name}</h1>
-        <hr/>
-        <Row>
-          <Col xs={2}>
-            <h2>BackLog</h2>
-            <div>
-              <TaskCard task={project.backLog[0]}/>
-              <TaskCard task={project.backLog[0]}/>
-              <TaskCard task={project.backLog[0]}/>
-              <TaskCard task={project.backLog[0]}/>
-              <TaskCard task={project.backLog[0]}/>
-              <TaskCard task={project.backLog[0]}/>
-            </div>
-          </Col>
-          <Col xs={10}>
-            <h2>{project.activeSprint.name} ({project.activeSprint.dateStart} - {project.activeSprint.dateEnd})</h2>
-            <h3>Мои задачи</h3>
+        <Tabs defaultActiveKey={1}>
+          <Tab className={css.tab} eventKey={1} title="Доска">
             <Row>
-              <Col xs>
-                <h4>New</h4>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+              <Col xs={2}>
+                <h2>BackLog</h2>
+                <div>
+                  <TaskCard task={project.backLog[0]}/>
+                  <TaskCard task={project.backLog[0]}/>
+                  <TaskCard task={project.backLog[0]}/>
+                  <TaskCard task={project.backLog[0]}/>
+                  <TaskCard task={project.backLog[0]}/>
+                  <TaskCard task={project.backLog[0]}/>
+                </div>
               </Col>
-              <Col xs>
-                <h4>Develop</h4>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-              </Col>
-              <Col xs>
-                <h4>Code Review</h4>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-              </Col>
-              <Col xs>
-                <h4>QA</h4>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-              </Col>
-              <Col xs>
-                <h4>Done</h4>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+              <Col xs={10}>
+                <h2>{project.activeSprint.name} ({project.activeSprint.dateStart} - {project.activeSprint.dateEnd})</h2>
+                <h3>Мои задачи</h3>
+                <Row>
+                  <Col xs>
+                    <h4>New</h4>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                  </Col>
+                  <Col xs>
+                    <h4>Develop</h4>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                  </Col>
+                  <Col xs>
+                    <h4>Code Review</h4>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                  </Col>
+                  <Col xs>
+                    <h4>QA</h4>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                  </Col>
+                  <Col xs>
+                    <h4>Done</h4>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                  </Col>
+                </Row>
+                <h3>Прочие</h3>
+                <Row>
+                  <Col xs>
+                    <h4>New</h4>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                  </Col>
+                  <Col xs>
+                    <h4>Develop</h4>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                  </Col>
+                  <Col xs>
+                    <h4>Code Review</h4>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                  </Col>
+                  <Col xs>
+                    <h4>QA</h4>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                  </Col>
+                  <Col xs>
+                    <h4>Done</h4>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                    <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
+                  </Col>
+                </Row>
               </Col>
             </Row>
-            <h3>Прочие</h3>
-            <Row>
-              <Col xs>
-                <h4>New</h4>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-              </Col>
-              <Col xs>
-                <h4>Develop</h4>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-              </Col>
-              <Col xs>
-                <h4>Code Review</h4>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-              </Col>
-              <Col xs>
-                <h4>QA</h4>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-              </Col>
-              <Col xs>
-                <h4>Done</h4>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-                <TaskCard task={project.activeSprint.tasksMine.new[0]}/>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
+          </Tab>
+          <Tab eventKey={2} title="Информация и файлы">
+            <div>Информация</div>
+          </Tab>
+          <Tab eventKey={3} title="Настройки">
+            <div>Настройки</div>
+          </Tab>
+        </Tabs>
       </div>
     );
   }
