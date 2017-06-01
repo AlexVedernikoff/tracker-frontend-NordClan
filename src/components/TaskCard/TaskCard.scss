@@ -1,0 +1,22 @@
+@import '../../styles/variables';
+
+.taskCard {
+  border: 1px solid;
+  padding: 8px 16px;
+  margin-bottom: 8px;
+
+  h5 {
+    margin: 0;
+    margin-bottom: 8px;
+    font-size: 1em;
+  }
+
+  p {
+    margin: 0;
+    margin-bottom: 8px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
