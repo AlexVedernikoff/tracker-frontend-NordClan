@@ -1,9 +1,22 @@
 @import '../../styles/variables';
 
 .taskCard {
-  border: 1px solid;
+  border: 1px solid $color-gray;
+  border-left-width: 4px;
   padding: 8px 16px;
   margin-bottom: 8px;
+
+  h5 {
+    font-weight: normal;
+  }
+
+  &.priority {
+    &-5 { border-left-color: lighten($color-dark, 50%); };
+    &-4 { border-left-color: lighten($color-dark, 40%); };
+    &-3 { border-left-color: lighten($color-dark, 30%); };
+    &-2 { border-left-color: lighten($color-dark, 20%); };
+    &-1 { border-left-color: lighten($color-dark, 10%); };
+  }
 
   h5 {
     margin: 0;

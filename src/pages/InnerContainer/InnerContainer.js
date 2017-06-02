@@ -25,7 +25,7 @@ export default class InnerContainer extends Component {
             sidebar={sidebar}
             shadow={false}
             docked={sidebarDocked}
-            styles={{sidebar: {width: 240}}}
+            styles={{sidebar: {width: 240}, content: {overflowY: 'scroll'}}}
           >
             <AppHead />
               <div className={css.content}>

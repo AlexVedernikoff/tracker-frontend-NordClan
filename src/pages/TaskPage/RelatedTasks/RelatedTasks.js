@@ -5,7 +5,7 @@ import { IconPlus, IconLink } from '../../../components/Icons';
 export default class RelatedTasks extends React.Component {
 
   render () {
-    const css = require('./relatedTasks.scss');
+    const css = require('./RelatedTasks.scss');
 
     const iconStyles = {
       width: 16,
@@ -16,7 +16,7 @@ export default class RelatedTasks extends React.Component {
 
     return (
       <div className={css.relatedTasks}>
-        <h3 className={css.taskListHeader}>
+        <h3>
           {
             this.props.type === 'related'
             ? 'Связанные задачи'
