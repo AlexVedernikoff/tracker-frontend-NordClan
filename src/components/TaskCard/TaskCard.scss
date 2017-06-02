@@ -1,6 +1,7 @@
 @import '../../styles/variables';
 
 .taskCard {
+  position: relative;
   border: 1px solid $color-gray;
   border-left-width: 4px;
   padding: 8px 16px;
@@ -26,10 +27,70 @@
 
   p {
     margin: 0;
-    margin-bottom: 8px;
 
     &:last-child {
       margin-bottom: 0;
     }
   }
 }
+
+.taskName {
+  display: block;
+  margin-bottom: 8px;
+  @include link-reset;
+}
+
+.taskMeta {
+  font-size: 11px;
+  color: gray;
+
+  span {
+    display: inline-block;
+
+    & + span {
+      margin-left: 4px;
+    }
+  }
+}
+
+.status {
+  position: absolute;
+  top: -2px;
+  left: -10px;
+  background-color: $color-dark;
+  color: white;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+
+  svg {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.inhold { background-color: $color-dark; }
+.inprogress { background-color: $color-green; }
+
+.progressBar {
+  position: absolute;
+  bottom: -1px;
+  right: 0;
+  left: -4px;
+  height: 2px;
+  margin-top: 8px;
+  background-color: $color-gray;
+
+  & > div {
+    height: 2px;
+  }
+}
+
+.green { background-color: $color-green }
+.red { background-color: $color-red }
