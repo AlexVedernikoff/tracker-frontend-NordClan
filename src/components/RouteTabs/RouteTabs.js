@@ -10,8 +10,8 @@ const RouteTabs = (props) => {
     ...other
   } = props;
 
-  const modifyChildren = children.map((element) => {
-    return React.cloneElement(element, {activeClassName: css.active});
+  const modifyChildren = children.map((element, i) => {
+    return React.cloneElement(element, {activeClassName: css.active, key: i});
   });
 
   return (
