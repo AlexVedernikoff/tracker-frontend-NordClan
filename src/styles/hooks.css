@@ -9,3 +9,12 @@
 .tooltip.place-top:after {border-top-color: #2b3e50 !important;}
 .tooltip.place-left:after {border-left-color: #2b3e50 !important;}
 .tooltip.place-right:after {border-right-color: #2b3e50 !important;}
+
+.tab-pane {
+  padding: 0;
+  background: none;
+}
+
+.tab-simple>.tab-content { background: none; }
+.tab-simple>.nav>li>a { color: gray; font-weight: normal; }
+.tab-simple>.nav>li.active>a { color: #333; }

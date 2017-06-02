@@ -40,11 +40,11 @@
       }
     }
 
-    &:nth-child(1) { background-color: lighten($color-dark, 50%); }
-    &:nth-child(2) { background-color: lighten($color-dark, 40%); }
+    &:nth-child(5) { background-color: lighten($color-dark, 50%); }
+    &:nth-child(4) { background-color: lighten($color-dark, 40%); }
     &:nth-child(3) { background-color: lighten($color-dark, 30%); }
-    &:nth-child(4) { background-color: lighten($color-dark, 20%); }
-    &:nth-child(5) { background-color: lighten($color-dark, 10%); }
+    &:nth-child(2) { background-color: lighten($color-dark, 20%); }
+    &:nth-child(1) { background-color: lighten($color-dark, 10%); }
   }
 }
 

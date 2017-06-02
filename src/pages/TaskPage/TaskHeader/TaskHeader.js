@@ -3,9 +3,9 @@ import Button from '../../../components/Button';
 import Priority from '../Priority';
 import ButtonGroup from '../../../components/ButtonGroup';
 
-const TaskCardHeader = (props) => {
+const TaskHeader = (props) => {
   const {task} = props;
-  const css = require('./TaskCardHeader.scss');
+  const css = require('./TaskHeader.scss');
 
   return (
     <div>
@@ -35,9 +35,9 @@ const TaskCardHeader = (props) => {
   );
 };
 
-TaskCardHeader.propTypes = {
+TaskHeader.propTypes = {
   css: PropTypes.object,
   task: PropTypes.object.isRequired
 };
 
-export default TaskCardHeader;
+export default TaskHeader;

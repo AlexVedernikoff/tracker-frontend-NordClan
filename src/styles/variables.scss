@@ -21,3 +21,13 @@ $font-size-base: 13px;
 
 // Transitions
 $transition: all 0.3s ease-out 0s;
+
+// Utils
+@mixin link-reset {
+  &:active,
+  &:focus,
+  &:visited, & {
+    color: inherit;
+    text-decoration: none;
+  }
+}
