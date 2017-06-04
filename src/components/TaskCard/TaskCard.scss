@@ -47,8 +47,8 @@
   span {
     display: inline-block;
 
-    & + span {
-      margin-left: 4px;
+    &:first-child {
+      margin-right: 4px;
     }
   }
 }

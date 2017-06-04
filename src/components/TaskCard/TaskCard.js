@@ -33,6 +33,10 @@ const TaskCard = (props) => {
         <span>{task.subtasks}</span>
       </p>
       <p className={css.taskMeta}>
+        <span>Связанных задач:</span>
+        <span>{task.linkedTasks}</span>
+      </p>
+      <p className={css.taskMeta}>
         <span>Исполнитель:</span>
         <span><Link to={`users/${5}`}>{task.executor}</Link></span>
       </p>
