@@ -1,12 +1,22 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
+import Dropdown from 'react-dropdown';
 
 import TaskCard from '../../../components/TaskCard';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 import * as css from './AgileBoard.scss';
 
 //Mocks
+
+const sprints = [
+  { value: 'sprint1', label: 'Спринт №1 (01.06.2017 - 30.06.2017)' },
+  { value: 'sprint2', label: 'Спринт №2 (01.06.2017 - 30.06.2017)' },
+  { value: 'sprint3', label: 'Спринт №3 (01.06.2017 - 30.06.2017)' },
+  { value: 'sprint4', label: 'Спринт №4 (01.06.2017 - 30.06.2017)' }
+];
+
+const activeSprint = sprints[0];
 
 const tasks = [];
 const getRandomString = (arr) => {
@@ -36,21 +46,12 @@ for (let i = 0; i < 50; i++) {
   });
 }
 
-const sprint = {
-  id: 123,
-  name: 'Спринт №1',
-  dateStart: '01.06.2017',
-  dateEnd: '30.06.2017',
-  status: 'active',
-  tasks: tasks
-};
-
 const mine = [];
 const other = [];
 const mineSorted = { new: [], dev: [], codeReview: [], qa: [], done: [] };
 const otherSorted = { new: [], dev: [], codeReview: [], qa: [], done: [] };
 
-sprint.tasks.forEach((element) => {
+tasks.forEach((element) => {
   if (element.executorId === 2) {
     mine.push(element);
   } else {
@@ -127,7 +128,9 @@ export default class AgileBoard extends Component {
   render () {
     return (
       <section className={css.agileBoard}>
-        <h2>{sprint.name} ({sprint.dateStart} - {sprint.dateEnd})</h2>
+        <h2>
+          <Dropdown className="test" options={sprints} onChange={this._onSelect} value={activeSprint} placeholder="Выберите спринт" />
+        </h2>
         <hr/>
         <h3 onClick={() => this.toggleSection('myTasks')} className={css.taskSectionTitle}>
           { this.state.isSectionOpen.myTasks ? <IconArrowDown/> : <IconArrowRight/> } Мои задачи
