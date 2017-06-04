@@ -27,7 +27,7 @@ const TaskCard = (props) => {
           : <IconPlay/>
         }
       </div>
-      <Link to={`/tasks/${task.id}`} className={css.taskName}>{task.name}</Link>
+      <Link to={`projects/5/tasks/${task.id}`} className={css.taskName}>{task.name}</Link>
       <p className={css.taskMeta}>
         <span>Подзадач:</span>
         <span>{task.subtasks}</span>

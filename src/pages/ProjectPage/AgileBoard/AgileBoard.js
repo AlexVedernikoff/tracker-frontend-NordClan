@@ -128,7 +128,7 @@ export default class AgileBoard extends Component {
   render () {
     return (
       <section className={css.agileBoard}>
-        <h2>
+        <h2 style={{display: 'inline-block'}}>
           <Dropdown className="test" options={sprints} onChange={this._onSelect} value={activeSprint} placeholder="Выберите спринт" />
         </h2>
         <hr/>
