@@ -1,0 +1,50 @@
+@import '../../styles/variables';
+
+.sprintCard {
+  display: block;
+  position: relative;
+  padding: 8px 16px;
+  border: 1px solid $color-lightgray;
+  border-left: 4px solid $color-dark;
+}
+
+.sprintTitle {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.sprintMeta {
+  font-size: 11px;
+  color: gray;
+  margin: 0;
+
+  span {
+    display: inline-block;
+
+    &:first-child {
+      margin-right: 4px;
+    }
+  }
+}
+
+.status {
+  position: absolute;
+  top: -2px;
+  left: -10px;
+  background-color: $color-green;
+  color: white;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+
+  svg {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+  }
+}

@@ -6,7 +6,7 @@ import TaskHeader from './TaskHeader';
 import Details from './Details';
 import RelatedTasks from './RelatedTasks';
 import TaskHistory from './TaskHistory';
-import Attachments from './Attachments';
+import Attachments from '../../components/Attachments';
 import Comments from './Comments';
 
 import * as css from './TaskPage.scss';
@@ -23,7 +23,7 @@ export default class TaskPage extends Component {
       name: 'UI. Подготовка к демонстрации. Краткая проверка функционала',
       description: 'Описание задачи, которое довольно часто может составлять пару предложений, а то и вовсе отсутствовать.',
       projectName: 'MakeTalents',
-      projectId: 123,
+      projectId: 1,
       sprint: 'Спринт 1',
       tags: ['UI', 'ReFactor', 'Demo'],
       creator: {

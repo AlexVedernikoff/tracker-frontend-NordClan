@@ -2,21 +2,14 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import Dropdown from 'react-dropdown';
+import classnames from 'classnames';
 
 import TaskCard from '../../../components/TaskCard';
+import SelectDropdown from '../../../components/SelectDropdown';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 import * as css from './AgileBoard.scss';
 
 //Mocks
-
-const sprints = [
-  { value: 'sprint1', label: 'Спринт №1 (01.06.2017 - 30.06.2017)' },
-  { value: 'sprint2', label: 'Спринт №2 (01.06.2017 - 30.06.2017)' },
-  { value: 'sprint3', label: 'Спринт №3 (01.06.2017 - 30.06.2017)' },
-  { value: 'sprint4', label: 'Спринт №4 (01.06.2017 - 30.06.2017)' }
-];
-
-const activeSprint = sprints[0];
 
 const tasks = [];
 const getRandomString = (arr) => {
@@ -110,7 +103,8 @@ export default class AgileBoard extends Component {
       isSectionOpen: {
         myTasks: true,
         otherTasks: true
-      }
+      },
+      filterTags: []
     };
   }
 
@@ -125,15 +119,42 @@ export default class AgileBoard extends Component {
     });
   }
 
+  setTags = (filterTags) => {
+    this.setState({ filterTags });
+  }
+
   render () {
     return (
       <section className={css.agileBoard}>
         <h2 style={{display: 'inline-block'}}>
-          <Dropdown className="test" options={sprints} onChange={this._onSelect} value={activeSprint} placeholder="Выберите спринт" />
+          <Dropdown
+          className="test"
+          options={[
+            { value: 'sprint1', label: 'Спринт №1 (01.06.2017 - 30.06.2017)' },
+            { value: 'sprint2', label: 'Спринт №2 (01.06.2017 - 30.06.2017)' },
+            { value: 'sprint3', label: 'Спринт №3 (01.06.2017 - 30.06.2017)' },
+            { value: 'sprint4', label: 'Спринт №4 (01.06.2017 - 30.06.2017)' }
+          ]}
+          value={{ value: 'sprint1', label: 'Спринт №1 (01.06.2017 - 30.06.2017)' }}
+          placeholder="Выберите спринт" />
         </h2>
+        <SelectDropdown
+          name="filter-tags"
+          multi
+          value={this.state.filterTags}
+          onChange={(e) => this.setTags(e)}
+          options={[
+            {value: 'develop', label: 'develop'},
+            {value: 'frontend', label: 'frontend'},
+            {value: 'backend', label: 'backend'}
+          ]}
+        />
         <hr/>
         <h3 onClick={() => this.toggleSection('myTasks')} className={css.taskSectionTitle}>
-          { this.state.isSectionOpen.myTasks ? <IconArrowDown/> : <IconArrowRight/> } Мои задачи
+          <IconArrowDown className={classnames({
+            [css.close]: !this.state.isSectionOpen.myTasks,
+            [css.open]: this.state.isSectionOpen.myTasks
+          })} /> Мои задачи
         </h3>
         {
           this.state.isSectionOpen.myTasks
@@ -163,7 +184,10 @@ export default class AgileBoard extends Component {
         }
         <hr/>
         <h3 onClick={() => this.toggleSection('otherTasks')} className={css.taskSectionTitle}>
-          { this.state.isSectionOpen.otherTasks ? <IconArrowDown/> : <IconArrowRight/> } Прочие
+          <IconArrowDown className={classnames({
+            [css.close]: !this.state.isSectionOpen.otherTasks,
+            [css.open]: this.state.isSectionOpen.otherTasks
+          })} /> Прочие
         </h3>
         {
           this.state.isSectionOpen.otherTasks
@@ -191,6 +215,7 @@ export default class AgileBoard extends Component {
           </Row>
           : null
         }
+        <hr/>
       </section>
     );
   }

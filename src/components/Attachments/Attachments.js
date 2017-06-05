@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import { Link } from 'react-router';
-import { IconFileDocument, IconFilePdf, IconDelete, IconDownload, IconPlus, IconEye } from '../../../components/Icons';
+import { IconFileDocument, IconFilePdf, IconDelete, IconDownload, IconPlus, IconEye } from '../Icons';
 
 export default class Attachments extends React.Component {
 
@@ -81,5 +81,5 @@ export default class Attachments extends React.Component {
 }
 
 Attachments.propTypes = {
-  task: PropTypes.object.isRequired
+  // task: PropTypes.object
 };

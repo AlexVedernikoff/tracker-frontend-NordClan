@@ -1,0 +1,38 @@
+@import '../../../styles/variables.scss';
+
+.property {
+  margin-top: 24px;
+
+  &:before {
+    content: "";
+    display: table;
+  }
+}
+
+.memberRow {
+
+  &:hover {
+    background-color: $color-lightgray;
+  }
+
+  label {
+    display: block;
+  }
+
+  .cell {
+    padding: 8px;
+  }
+
+  h4 {
+    margin: 0;
+  }
+}
+
+.memberColumn {
+  // text-align: right;
+}
+
+.memberHeader {
+  background-color: $color-gray;
+  margin-bottom: 8px;
+}
