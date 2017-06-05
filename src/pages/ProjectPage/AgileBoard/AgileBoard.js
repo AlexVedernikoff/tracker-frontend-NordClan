@@ -104,7 +104,8 @@ export default class AgileBoard extends Component {
         myTasks: true,
         otherTasks: true
       },
-      filterTags: []
+      filterTags: [],
+      changedSprint: 'sprint1'
     };
   }
 
@@ -119,36 +120,46 @@ export default class AgileBoard extends Component {
     });
   }
 
-  setTags = (filterTags) => {
-    this.setState({ filterTags });
+  selectValue = (e, name) => {
+    this.setState({[name]: e});
   }
 
   render () {
     return (
       <section className={css.agileBoard}>
-        <h2 style={{display: 'inline-block'}}>
-          <Dropdown
-          className="test"
-          options={[
-            { value: 'sprint1', label: 'Спринт №1 (01.06.2017 - 30.06.2017)' },
-            { value: 'sprint2', label: 'Спринт №2 (01.06.2017 - 30.06.2017)' },
-            { value: 'sprint3', label: 'Спринт №3 (01.06.2017 - 30.06.2017)' },
-            { value: 'sprint4', label: 'Спринт №4 (01.06.2017 - 30.06.2017)' }
-          ]}
-          value={{ value: 'sprint1', label: 'Спринт №1 (01.06.2017 - 30.06.2017)' }}
-          placeholder="Выберите спринт" />
-        </h2>
-        <SelectDropdown
-          name="filter-tags"
-          multi
-          value={this.state.filterTags}
-          onChange={(e) => this.setTags(e)}
-          options={[
-            {value: 'develop', label: 'develop'},
-            {value: 'frontend', label: 'frontend'},
-            {value: 'backend', label: 'backend'}
-          ]}
-        />
+        {/*<h2 style={{display: 'inline-block'}}>Спринт №1 (01.06.2017 - 30.06.2017)</h2>*/}
+        <Row>
+          <Col xs>
+            <SelectDropdown
+              name="changedSprint"
+              placeholder="Введите название спринта..."
+              multi={false}
+              value={this.state.changedSprint}
+              onChange={(e) => this.selectValue(e, 'changedSprint')}
+              options={[
+                { value: 'sprint1', label: 'Спринт №1 (01.06.2017 - 30.06.2017)' },
+                { value: 'sprint2', label: 'Спринт №2 (01.06.2017 - 30.06.2017)' },
+                { value: 'sprint3', label: 'Спринт №3 (01.06.2017 - 30.06.2017)' },
+                { value: 'sprint4', label: 'Спринт №4 (01.06.2017 - 30.06.2017)' }
+              ]}
+            />
+          </Col>
+          <Col xs>
+            <SelectDropdown
+              name="filterTags"
+              multi
+              placeholder="Введите название тега..."
+              backspaceToRemoveMessage="Нажмите BackSpace для очистки поля"
+              value={this.state.filterTags}
+              onChange={(e) => this.selectValue(e, 'filterTags')}
+              options={[
+                {value: 'develop', label: 'develop'},
+                {value: 'frontend', label: 'frontend'},
+                {value: 'backend', label: 'backend'}
+              ]}
+            />
+          </Col>
+        </Row>
         <hr/>
         <h3 onClick={() => this.toggleSection('myTasks')} className={css.taskSectionTitle}>
           <IconArrowDown className={classnames({
