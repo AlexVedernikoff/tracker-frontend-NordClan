@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
-import Dropdown from 'react-dropdown';
 import classnames from 'classnames';
 
 import TaskCard from '../../../components/TaskCard';
