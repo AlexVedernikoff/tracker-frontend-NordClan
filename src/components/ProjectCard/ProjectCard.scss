@@ -1,0 +1,51 @@
+@import '../../styles/variables';
+
+.projectCard {
+  padding: 16px;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+  height: calc(100% - 16px);
+  border: 1px solid darken($color-gray, 5%);
+
+  h3 {
+    margin: 0;
+    margin-bottom: 16px;
+  }
+}
+
+.meta {
+  font-size: 11px;
+  color: gray;
+  margin: 0;
+
+  span {
+    display: inline-block;
+
+    &:first-child {
+      margin-right: 4px;
+    }
+  }
+}
+
+.tags {
+  margin: 16px 0;
+  margin-left: -2px;
+}
+
+.statusMarker {
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+  background-color: lightgray;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+
+  &.INPROGRESS { background-color: $color-green; }
+  &.INHOLD { background-color: $color-blue; }
+  &.FINISHED { background-color: $color-dark; }
+}
+
+.title {
+  display: flex;
+}

@@ -5,6 +5,42 @@ import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './Projects.scss';
 import Tag from '../../components/Tag';
 import SelectDropdown from '../../components/SelectDropdown';
+import ProjectCard from '../../components/ProjectCard';
+
+// Mocks
+
+const projects = [];
+const getRandomString = (arr) => {
+  return arr[Math.floor(Math.random() * arr.length)];
+};
+const getSomeRandomString = (arr) => {
+  return arr[Math.round(Math.random() * (arr.length - 1))];
+};
+
+for (let i = 0; i < 15; i++) {
+  projects.push({
+    name: getRandomString(['MakeTalents', 'SimTrack', 'Qiwi-Artek', 'ПроРейтинг - HR-инструмент', 'Корпоративные сайты SimbirSoft', 'Аудит информационной безопасности', 'Онлайн-опросы (ООО "Top of Mind Research")', 'ИП Хабибрахманов Р.Р. - ФЛЭТ CRM Битрикс24']),
+    tags: [
+      getSomeRandomString(['frontend', 'java', 'C++', 'php'])
+      // getRandomString(['angular.js', 'angular', 'react']),
+      // getRandomString(['mobile', 'web', 'desktop app']),
+      // getRandomString(['2017', '2016', '2015']),
+      // getRandomString(['внутренний', 'коммерческий'])
+    ],
+    dateStart: '06.06.2017',
+    dateEnd: '26.12.2017',
+    activeSprint: {
+      name: getRandomString(['Спринт №1', 'Спринт №2', 'Спринт №3', 'Спринт №4']),
+      dateStart: '06.06.2017',
+      dateEnd: '26.12.2017'
+    },
+    status: getRandomString(['INPROGRESS', 'INHOLD', 'FINISHED'])
+  });
+}
+
+const projectList = projects.map(
+  (element, i) => <Col xs={4} key={i}><ProjectCard project={element}/></Col>
+);
 
 export default class Projects extends Component {
   static propTypes = {
@@ -52,109 +88,7 @@ export default class Projects extends Component {
             />
           </div>
           <Row>
-            <Col xs={4}>
-              <div className={css.projectCard}>
-                <h3>
-                  <Link to="/projects/1">ПроРейтинг - HR-инструмент</Link>
-                </h3>
-                <div className={css.tags}>
-                  <Tag name="design" blocked />
-                  <Tag name="react" blocked />
-                  <Tag name="redux" blocked />
-                  <Tag name="java" blocked />
-                  <Tag name="коммерческий" blocked />
-                </div>
-                <div className={css.meta}>
-                  <span>Сроки:</span>
-                  <span>06.06.2017 - 23.12.2018</span>
-                </div>
-                <div className={css.meta}>
-                  <span>Текущий спринт:</span>
-                  <span>Спринт №1 (06.06.2017 - 23.12.2018)</span>
-                </div>
-                <div className={css.meta}>
-                  <span>Участников:</span>
-                  <span>5</span>
-                </div>
-              </div>
-            </Col>
-            <Col xs={4}>
-              <div className={css.projectCard}>
-                <h3>
-                  <Link to="/projects/1">MakeTalents</Link>
-                </h3>
-                <div className={css.tags}>
-                  <Tag name="frontend" blocked />
-                  <Tag name="angular.js" blocked />
-                  <Tag name="java" blocked />
-                  <Tag name="внутренний" blocked />
-                </div>
-                <div className={css.meta}>
-                  <span>Сроки:</span>
-                  <span>06.06.2017 - 23.12.2018</span>
-                </div>
-                <div className={css.meta}>
-                  <span>Текущий спринт:</span>
-                  <span>Спринт №1 (06.06.2017 - 23.12.2018)</span>
-                </div>
-                <div className={css.meta}>
-                  <span>Участников:</span>
-                  <span>5</span>
-                </div>
-              </div>
-            </Col>
-            <Col xs={4}>
-              <div className={css.projectCard}>
-                <h3>
-                  <Link to="/projects/1">SimTrack</Link>
-                </h3>
-                <div className={css.tags}>
-                  <Tag name="frontend" blocked />
-                  <Tag name="react" blocked />
-                  <Tag name="redux" blocked />
-                  <Tag name="node.js" blocked />
-                  <Tag name="внутренний" blocked />
-                </div>
-                <div className={css.meta}>
-                  <span>Сроки:</span>
-                  <span>06.06.2017 - 23.12.2018</span>
-                </div>
-                <div className={css.meta}>
-                  <span>Текущий спринт:</span>
-                  <span>Спринт №1 (06.06.2017 - 23.12.2018)</span>
-                </div>
-                <div className={css.meta}>
-                  <span>Участников:</span>
-                  <span>5</span>
-                </div>
-              </div>
-            </Col>
-            <Col xs={4}>
-              <div className={css.projectCard}>
-                <h3>
-                  <Link to="/projects/1">Qiwi-Artek</Link>
-                </h3>
-                <div className={css.tags}>
-                  <Tag name="frontend" blocked />
-                  <Tag name="react" blocked />
-                  <Tag name="redux" blocked />
-                  <Tag name="java" blocked />
-                  <Tag name="коммерческий" blocked />
-                </div>
-                <div className={css.meta}>
-                  <span>Сроки:</span>
-                  <span>06.06.2017 - 23.12.2018</span>
-                </div>
-                <div className={css.meta}>
-                  <span>Текущий спринт:</span>
-                  <span>Спринт №1 (06.06.2017 - 23.12.2018)</span>
-                </div>
-                <div className={css.meta}>
-                  <span>Участников:</span>
-                  <span>5</span>
-                </div>
-              </div>
-            </Col>
+            {projectList}
           </Row>
         </section>
       </div>
