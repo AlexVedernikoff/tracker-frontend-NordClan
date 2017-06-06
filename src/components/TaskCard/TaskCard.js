@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Link } from 'react-router';
 
-import { IconPlay, IconPause } from '../Icons';
+import { IconPlay, IconPause, IconTime } from '../Icons';
 import * as css from './TaskCard.scss';
 
 const TaskCard = (props) => {
@@ -46,22 +46,29 @@ const TaskCard = (props) => {
         <span><Link to={`users/${5}`}>{task.executor}</Link></span>
       </p>
       {
-        task.stage !== 'NEW' && task.stage !== 'DONE'
-        ? <p className={css.taskMeta}>
-          <span>Время:</span>
-          <span>({task.factTime} ч. из {task.plannedTime})</span>
+        task.stage !== 'NEW'
+        ? <p className={css.time}>
+          <IconTime className={classnames({
+            [css.green]: (task.factTime / task.plannedTime) <= 1,
+            [css.red]: (task.factTime / task.plannedTime) > 1
+          })} />
+          <span>{task.factTime} из {task.plannedTime}</span>
         </p>
         : null
       }
-      <div className={css.progressBar}>
-        <div
-          style={{width: (task.factTime / task.plannedTime) < 1 ? (task.factTime / task.plannedTime) * 100 + '%' : '100%'}}
-          className={classnames({
-            [css.green]: (task.factTime / task.plannedTime) <= 1,
-            [css.red]: (task.factTime / task.plannedTime) > 1
-          })}
-          />
-      </div>
+      {
+        task.stage !== 'NEW'
+        ? <div className={css.progressBar}>
+          <div
+            style={{width: (task.factTime / task.plannedTime) < 1 ? (task.factTime / task.plannedTime) * 100 + '%' : '100%'}}
+            className={classnames({
+              [css.green]: (task.factTime / task.plannedTime) <= 1,
+              [css.red]: (task.factTime / task.plannedTime) > 1
+            })}
+            />
+        </div>
+        : null
+      }
     </div>
   );
 };

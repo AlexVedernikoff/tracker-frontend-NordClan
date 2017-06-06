@@ -2,10 +2,10 @@
 
 .taskCard {
   position: relative;
-  border: 1px solid $color-gray;
+  border: 1px solid darken($color-gray, 5%);
   border-left-width: 4px;
-  padding: 8px 16px;
-  margin-bottom: 8px;
+  padding: 8px 16px 16px;
+  margin-bottom: 16px;
 
   h5 {
     font-weight: normal;
@@ -82,7 +82,7 @@
 .progressBar {
   position: absolute;
   bottom: -1px;
-  right: 0;
+  right: 48px;
   left: -4px;
   height: 2px;
   margin-top: 8px;
@@ -93,5 +93,26 @@
   }
 }
 
-.green { background-color: $color-green }
-.red { background-color: $color-red }
+.green { background-color: $color-green; }
+.red { background-color: $color-red; }
+
+svg.green { background-color: transparent; fill: $color-green; }
+svg.red { background-color: transparent; fill: $color-red; }
+
+.time {
+  position: absolute;
+  bottom: -8px;
+  right: -8px;
+  font-size: 11px;
+  color: gray;
+  background-color: white;
+  border: 1px solid darken($color-gray, 5%);
+  border-radius: 10px;
+  z-index: 3;
+  padding: 2px 4px;
+
+  svg {
+    vertical-align: top;
+    margin-right: 4px;
+  }
+}

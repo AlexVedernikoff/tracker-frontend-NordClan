@@ -29,7 +29,7 @@ for (let i = 0; i < 50; i++) {
     id: i,
     status: getRandomString(['INHOLD', 'INPROGRESS']),
     stage: getRandomString(['NEW', 'DEVELOP', 'QA', 'CODE_REVIEW', 'QA', 'DONE']),
-    executor: getRandomString(['Андрей', 'Сергей', 'Бронисав', 'Ксенофонт']) + ' ' + getRandomString(['Юдин', 'Джугашвили', 'Прорезов', 'Багодетель']),
+    executor: getRandomString(['Андрей Юдин', 'Александра Одноклассница', 'Иосиф Джугашвили', 'Ксенофонт Арабский', 'Не назначено']),
     executorId: getRandomString([1, 2, 3, 4, 5]),
     priority: getRandomString([1, 2, 3, 4, 5]),
     plannedTime: getRandomString([8, 9, 10, 11, 12, 13, 14, 15, 16]),
