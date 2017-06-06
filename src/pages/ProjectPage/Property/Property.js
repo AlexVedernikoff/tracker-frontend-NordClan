@@ -7,11 +7,45 @@ import classnames from 'classnames';
 import * as css from './Property.scss';
 import SprintCard from '../../../components/SprintCard';
 import Button from '../../../components/Button';
+
+//Mocks
+
+const sprints = [
+  {
+    name: 'Спринт №1',
+    dateStart: '06.06.2017',
+    dateEnd: '12.06.2017',
+    tasksTotal: '35',
+    tasksDone: '34',
+    status: 'INHOLD'
+  },
+  {
+    name: 'Спринт №2',
+    dateStart: '12.06.2017',
+    dateEnd: '24.06.2017',
+    tasksTotal: '35',
+    tasksDone: '1',
+    status: 'INPROGRESS'
+  },
+  {
+    name: 'Спринт №3',
+    dateStart: '24.06.2017',
+    dateEnd: '01.07.2017',
+    tasksTotal: '40',
+    tasksDone: '0',
+    status: 'INHOLD'
+  }
+];
+
 export default class Property extends Component {
   static propTypes = {
   }
 
   render () {
+
+    const sprintList = sprints.map((element, i) => {
+      return <Col xs={3} key={i}><SprintCard sprint={element}/></Col>;
+    });
 
     return (
       <div className={css.property}>
@@ -163,15 +197,7 @@ export default class Property extends Component {
         <hr/>
         <h3>Спринты / Фазы</h3>
         <Row>
-          <Col xs={3}>
-            <SprintCard/>
-          </Col>
-          <Col xs={3}>
-            <SprintCard/>
-          </Col>
-          <Col xs={3}>
-            <SprintCard/>
-          </Col>
+          {sprintList}
         </Row>
         <Button text="Создать спринт" type="primary" style={{marginTop: 16}} icon="IconPlus"/>
       </div>

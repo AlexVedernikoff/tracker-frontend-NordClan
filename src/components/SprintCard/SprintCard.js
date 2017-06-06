@@ -14,25 +14,31 @@ const SprintCard = (props) => {
 
   return (
     <div className={css.sprintCard} {...other}>
-      <Link to="/projects/1/sprints/1" className={css.sprintTitle}>Спринт №1</Link>
+      <Link to="/projects/1/sprints/1" className={css.sprintTitle}>{sprint.name}</Link>
       <p className={css.sprintMeta}>
         <span>Дата начала:</span>
-        <span>05.06.2017</span>
+        <span>{sprint.dateStart}</span>
       </p>
       <p className={css.sprintMeta}>
         <span>Дата окончания:</span>
-        <span>30.06.2017</span>
+        <span>{sprint.dateEnd}</span>
       </p>
       <p className={css.sprintMeta}>
         <span>Всего задач:</span>
-        <span>35</span>
+        <span>{sprint.tasksTotal}</span>
       </p>
       <p className={css.sprintMeta}>
         <span>Выполнено:</span>
-        <span>11</span>
+        <span>{sprint.tasksDone}</span>
       </p>
-      <div className={css.status}>
-        <IconPlay/>
+      <div
+        className={classnames({
+          [css.status]: true,
+          [css.inprogress]: sprint.status === 'INPROGRESS',
+          [css.inhold]: sprint.status === 'INHOLD'
+        })}
+        data-tip={sprint.status === 'INPROGRESS' ? 'Остановить' : 'Запустить'}>
+        { sprint.status === 'INPROGRESS' ? <IconPause/> : <IconPlay/> }
       </div>
     </div>
   );
@@ -40,6 +46,17 @@ const SprintCard = (props) => {
 
 SprintCard.propTypes = {
   sprint: PropTypes.object
+};
+
+SprintCard.defaultProps = {
+  sprint: {
+    name: 'Название спринта',
+    dateStart: '00.00.00',
+    dateEnd: '00.00.00',
+    tasksTotal: '00',
+    tasksDone: '00',
+    status: 'INPROGRESS'
+  }
 };
 
 export default SprintCard;

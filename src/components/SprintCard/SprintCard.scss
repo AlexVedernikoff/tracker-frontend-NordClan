@@ -4,7 +4,7 @@
   display: block;
   position: relative;
   padding: 8px 16px;
-  border: 1px solid $color-lightgray;
+  border: 1px solid darken($color-gray, 5%);
   border-left: 4px solid $color-dark;
 }
 
@@ -29,6 +29,7 @@
 
 .status {
   position: absolute;
+  cursor: pointer;
   top: -2px;
   left: -10px;
   background-color: $color-green;
@@ -48,3 +49,6 @@
     width: 100%;
   }
 }
+
+.inprogress { background-color: $color-green };
+.inhold { background-color: $color-dark };
