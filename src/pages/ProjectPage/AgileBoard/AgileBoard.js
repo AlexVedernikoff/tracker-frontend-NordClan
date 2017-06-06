@@ -136,6 +136,7 @@ export default class AgileBoard extends Component {
               multi={false}
               value={this.state.changedSprint}
               onChange={(e) => this.selectValue(e, 'changedSprint')}
+              noResultsText="Нет результатов"
               options={[
                 { value: 'sprint1', label: 'Спринт №1 (01.06.2017 - 30.06.2017)' },
                 { value: 'sprint2', label: 'Спринт №2 (01.06.2017 - 30.06.2017)' },
@@ -152,6 +153,7 @@ export default class AgileBoard extends Component {
               backspaceToRemoveMessage="Нажмите BackSpace для очистки поля"
               value={this.state.filterTags}
               onChange={(e) => this.selectValue(e, 'filterTags')}
+              noResultsText="Нет результатов"
               options={[
                 {value: 'develop', label: 'develop'},
                 {value: 'frontend', label: 'frontend'},

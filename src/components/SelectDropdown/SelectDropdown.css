@@ -1,10 +1,13 @@
 .Select {
   position: relative;
   border: 1px solid #e6e6e6;
-  padding: 7px 15px;
   line-height: 16px;
   box-sizing: border-box;
   transition: 0.3s ease-out 0s;
+}
+
+.Select-control {
+  padding: 7px 15px;
 }
 
 .Select-clear-zone {
@@ -100,4 +103,8 @@
 .Select--multi .Select-multi-value-wrapper .Select-value:hover .Select-value-icon {
   opacity: 1;
   transition: 0.3s ease-out 0s;
+}
+
+.Select-noresults {
+  padding: 7px 15px;
 }
