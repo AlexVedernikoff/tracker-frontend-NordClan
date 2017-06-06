@@ -1,0 +1,35 @@
+@import '../../styles/variables';
+
+.projectCard {
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid darken($color-gray, 5%);
+
+  h3 {
+    margin: 0;
+    margin-bottom: 16px;
+  }
+}
+
+.meta {
+  font-size: 11px;
+  color: gray;
+  margin: 0;
+
+  span {
+    display: inline-block;
+
+    &:first-child {
+      margin-right: 4px;
+    }
+  }
+}
+
+.tags {
+  margin: 16px 0;
+  margin-left: -2px;
+}
+
+.filters {
+  margin-bottom: 24px;
+}
