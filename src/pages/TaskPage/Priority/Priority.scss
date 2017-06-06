@@ -40,11 +40,11 @@
       }
     }
 
-    &:nth-child(5) { background-color: lighten($color-dark, 50%); }
-    &:nth-child(4) { background-color: lighten($color-dark, 40%); }
-    &:nth-child(3) { background-color: lighten($color-dark, 30%); }
-    &:nth-child(2) { background-color: lighten($color-dark, 20%); }
-    &:nth-child(1) { background-color: lighten($color-dark, 10%); }
+    &:nth-child(1) { background-color: $priority1; border-color: $priority1; }
+    &:nth-child(2) { background-color: $priority2; border-color: $priority2; }
+    &:nth-child(3) { background-color: $priority3; border-color: $priority3; }
+    &:nth-child(4) { background-color: $priority4; border-color: $priority4; }
+    &:nth-child(5) { background-color: $priority5; border-color: $priority5; }
   }
 }
 
@@ -57,6 +57,7 @@
     top: -6px;
     left: calc(50% - 3px);
     border-top: 6px solid $color-dark;
+    // border-top-color: inherit;
     border-left: 3px solid transparent;
     border-right: 3px solid transparent;
   }

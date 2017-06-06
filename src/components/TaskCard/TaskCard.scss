@@ -12,11 +12,11 @@
   }
 
   &.priority {
-    &-5 { border-left-color: lighten($color-dark, 50%); };
-    &-4 { border-left-color: lighten($color-dark, 40%); };
-    &-3 { border-left-color: lighten($color-dark, 30%); };
-    &-2 { border-left-color: lighten($color-dark, 20%); };
-    &-1 { border-left-color: lighten($color-dark, 10%); };
+    &-1 { border-left-color: $priority1; };
+    &-2 { border-left-color: $priority2; };
+    &-3 { border-left-color: $priority3; };
+    &-4 { border-left-color: $priority4; };
+    &-5 { border-left-color: $priority5; };
   }
 
   h5 {
@@ -106,13 +106,26 @@ svg.red { background-color: transparent; fill: $color-red; }
   font-size: 11px;
   color: gray;
   background-color: white;
-  border: 1px solid darken($color-gray, 5%);
+  border: 1px solid darken($color-gray, 10%);
   border-radius: 10px;
   z-index: 3;
-  padding: 2px 4px;
+  padding: 2px;
+  transition: $transition;
+  overflow: hidden;
 
   svg {
     vertical-align: top;
-    margin-right: 4px;
+    width: 13px;
+    height: 13px;
   }
+
+  span {
+    margin: 0 4px;
+  }
+}
+
+.prefix {
+  display: inline-block;
+  margin-right: 4px;
+  color: lighten($color-black, 40%);
 }
