@@ -28,6 +28,7 @@ export default class AppRouter extends Component {
             <IndexRedirect to="agile-board"/>
           </Route>
           <Route path="projects/:projectId/tasks/:taskId" component={TaskPage} />
+          <IndexRedirect to="projects"/>
         </Route>
       </Router>
     );

@@ -149,7 +149,7 @@ export default class AgileBoard extends Component {
               name="filterTags"
               multi
               placeholder="Введите название тега..."
-              backspaceToRemoveMessage="Нажмите BackSpace для очистки поля"
+              backspaceToRemoveMessage="BackSpace для очистки поля"
               value={this.state.filterTags}
               onChange={(e) => this.selectValue(e, 'filterTags')}
               noResultsText="Нет результатов"
