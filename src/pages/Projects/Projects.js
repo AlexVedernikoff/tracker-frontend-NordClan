@@ -4,6 +4,8 @@ import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 
 import * as css from './Projects.scss';
 import SelectDropdown from '../../components/SelectDropdown';
+import Button from '../../components/Button';
+import DatepickerDropdown from '../../components/DatepickerDropdown';
 import Input from '../../components/Input';
 import ProjectCard from '../../components/ProjectCard';
 import StatusCheckbox from './StatusCheckbox';
@@ -64,7 +66,6 @@ export default class Projects extends Component {
 
   check = (name) => {
     const oldValue = this.state[name];
-    console.log(name, this.state[name]);
     this.setState({
       [name]: !oldValue
     });
@@ -80,19 +81,30 @@ export default class Projects extends Component {
     return (
       <div>
         <section>
-          <h1>Мои проекты</h1>
+          <header className={css.title}>
+            <h1 className={css.title}>Мои проекты</h1>
+            <Button text="Создать проект" type="primary" icon="IconPlus" />
+          </header>
           <hr/>
           <div className={css.projectsHeader}>
+            <div className={css.statusFilters}>
+              <StatusCheckbox type="INPROGRESS" checked={filteredInProgress} onClick={() => this.check('filteredInProgress')} label="В процессе"/>
+              <StatusCheckbox type="INHOLD" checked={filteredInHold} onClick={() => this.check('filteredInHold')} label="Приостановлен"/>
+              <StatusCheckbox type="FINISHED" checked={filteredFinished} onClick={() => this.check('filteredFinished')} label="Завершен"/>
+            </div>
             <Row>
               <Col xs>
                 <Input placeholder="Введите название проекта..." />
-                <div className={css.statusFilters}>
-                  <StatusCheckbox type="INPROGRESS" checked={filteredInProgress} onClick={() => this.check('filteredInProgress')} label="В процессе"/>
-                  <StatusCheckbox type="INHOLD" checked={filteredInHold} onClick={() => this.check('filteredInHold')} label="Приостановлен"/>
-                  <StatusCheckbox type="FINISHED" checked={filteredFinished} onClick={() => this.check('filteredFinished')} label="Завершен"/>
-                </div>
               </Col>
               <Col xs>
+                <Row>
+                  <Col xs>
+                    <DatepickerDropdown locale="ru" placeholderText="От" />
+                  </Col>
+                  <Col xs>
+                    <DatepickerDropdown locale="ru" placeholderText="До" />
+                  </Col>
+                </Row>
               </Col>
               <Col xs>
                 <SelectDropdown
