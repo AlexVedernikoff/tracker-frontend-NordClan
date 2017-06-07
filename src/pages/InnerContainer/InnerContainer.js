@@ -12,6 +12,9 @@ export default class InnerContainer extends Component {
     user: PropTypes.object
   };
 
+  componentDidUpdate () {
+    ReactTooltip.rebuild();
+  }
 
   render () {
     const sidebar = <NavMenu />;
