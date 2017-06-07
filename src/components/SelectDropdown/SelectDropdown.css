@@ -1,0 +1,110 @@
+.Select {
+  position: relative;
+  border: 1px solid #e6e6e6;
+  line-height: 16px;
+  box-sizing: border-box;
+  transition: 0.3s ease-out 0s;
+}
+
+.Select-control {
+  padding: 7px 15px;
+}
+
+.Select-clear-zone {
+  cursor: pointer;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 32px;
+}
+
+.Select--multi.Select:hover { cursor: text; }
+.Select--single.Select:hover { cursor: pointer; }
+
+.Select.is-focused {
+  border-color: lightgray;
+  transition: 0.3s ease-out 0s;
+}
+
+.Select-placeholder,
+.Select-input,
+.Select-multi-value-wrapper,
+.Select-multi-value-wrapper .Select-value {
+  display: inline-block;
+}
+
+.Select-placeholder, .Select-aria-only {
+  color: silver;
+}
+
+.Select-input input {
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.Select-menu-outer {
+  position: absolute;
+  z-index: 2;
+  background-color: white;
+  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.17);
+  top: calc(100% + 1px);
+  left: -1px;
+  right: -1px;
+}
+
+.Select-option {
+  padding: 7px 15px;
+  cursor: pointer;
+  transition: 0.3s ease-out 0s;
+}
+
+.Select-option.is-focused {
+  background-color: #f1f1f1;
+  transition: 0.3s ease-out 0s;
+}
+
+.Select--multi .Select-multi-value-wrapper .Select-value {
+  font-size: 11px;
+  vertical-align: bottom;
+  color: white;
+  background-color: #88a4bf;
+  height: 16px;
+  padding: 0 14px;
+  margin-right: 4px;
+  position: relative;
+  cursor: pointer;
+}
+
+.Select--multi .Select-multi-value-wrapper .Select-value .Select-value-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 16px;
+  opacity: 0;
+  transition: 0.3s ease-out 0s;
+}
+
+.Select--multi .Select-multi-value-wrapper .Select-value:hover {
+  background-color: #4f7192;
+  transition: 0.3s ease-out 0s;
+}
+
+.Select--multi .Select-multi-value-wrapper .Select-value:hover .Select-value-icon {
+  opacity: 1;
+  transition: 0.3s ease-out 0s;
+}
+
+.Select-noresults {
+  padding: 7px 15px;
+}

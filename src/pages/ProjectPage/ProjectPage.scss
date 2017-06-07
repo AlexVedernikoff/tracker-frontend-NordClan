@@ -1,0 +1,14 @@
+@import '../../styles/variables.scss';
+
+.projectTitle {
+  display: flex;
+  align-items: center;
+}
+
+.projectPic {
+  width: 56px;
+  height: 56px;
+  margin-right: 16px;
+  box-sizing: border-box;
+  object-fit: contain;
+}

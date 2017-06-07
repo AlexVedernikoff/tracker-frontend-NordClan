@@ -1,21 +1,22 @@
 @import '../../styles/variables';
 
 .taskCard {
-  border: 1px solid $color-gray;
+  position: relative;
+  border: 1px solid darken($color-gray, 5%);
   border-left-width: 4px;
-  padding: 8px 16px;
-  margin-bottom: 8px;
+  padding: 8px 16px 16px;
+  margin-bottom: 16px;
 
   h5 {
     font-weight: normal;
   }
 
   &.priority {
-    &-5 { border-left-color: lighten($color-dark, 50%); };
-    &-4 { border-left-color: lighten($color-dark, 40%); };
-    &-3 { border-left-color: lighten($color-dark, 30%); };
-    &-2 { border-left-color: lighten($color-dark, 20%); };
-    &-1 { border-left-color: lighten($color-dark, 10%); };
+    &-1 { border-left-color: $priority1; };
+    &-2 { border-left-color: $priority2; };
+    &-3 { border-left-color: $priority3; };
+    &-4 { border-left-color: $priority4; };
+    &-5 { border-left-color: $priority5; };
   }
 
   h5 {
@@ -26,10 +27,105 @@
 
   p {
     margin: 0;
-    margin-bottom: 8px;
 
     &:last-child {
       margin-bottom: 0;
     }
   }
+}
+
+.taskName {
+  display: block;
+  margin-bottom: 8px;
+  @include link-reset;
+}
+
+.taskMeta {
+  font-size: 11px;
+  color: gray;
+
+  span {
+    display: inline-block;
+
+    &:first-child {
+      margin-right: 4px;
+    }
+  }
+}
+
+.status {
+  position: absolute;
+  cursor: pointer;
+  top: -2px;
+  left: -10px;
+  background-color: $color-dark;
+  color: white;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+
+  svg {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.inhold { background-color: $color-dark; }
+.inprogress { background-color: $color-green; }
+
+.progressBar {
+  position: absolute;
+  bottom: -1px;
+  right: 48px;
+  left: -4px;
+  height: 2px;
+  margin-top: 8px;
+  background-color: $color-gray;
+
+  & > div {
+    height: 2px;
+  }
+}
+
+.green { background-color: $color-green; }
+.red { background-color: $color-red; }
+
+svg.green { background-color: transparent; fill: $color-green; }
+svg.red { background-color: transparent; fill: $color-red; }
+
+.time {
+  position: absolute;
+  bottom: -8px;
+  right: -8px;
+  font-size: 11px;
+  color: gray;
+  background-color: white;
+  border: 1px solid darken($color-gray, 10%);
+  border-radius: 10px;
+  z-index: 3;
+  padding: 2px;
+  transition: $transition;
+  overflow: hidden;
+
+  svg {
+    vertical-align: top;
+    width: 13px;
+    height: 13px;
+  }
+
+  span {
+    margin: 0 4px;
+  }
+}
+
+.prefix {
+  display: inline-block;
+  margin-right: 4px;
+  color: lighten($color-black, 40%);
 }

@@ -3,3 +3,18 @@
 .agileBoard {
   margin-top: 24px;
 }
+
+.taskSectionTitle {
+  cursor: pointer;
+  margin-left: -4px;
+}
+
+.close {
+  transform: rotate(-90deg);
+  transition: $transition;
+}
+
+.open {
+  transform: rotate(0);
+  transition: $transition;
+}

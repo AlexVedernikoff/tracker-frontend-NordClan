@@ -104,3 +104,25 @@ export const IconLink = (props) => (
     <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
   </SvgIcon>
 );
+
+export const IconArrowRight = (props) => (
+  <SvgIcon {...props}>
+    <path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"/>
+    <path d="M0-.25h24v24H0z" fill="none"/>
+  </SvgIcon>
+);
+
+export const IconArrowDown = (props) => (
+  <SvgIcon {...props}>
+    <path d="M7.41 7.84L12 12.42l4.59-4.58L18 9.25l-6 6-6-6z"/>
+    <path d="M0-.75h24v24H0z" fill="none"/>
+  </SvgIcon>
+);
+
+export const IconTime = (props) => (
+  <SvgIcon {...props}>
+    <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+    <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+  </SvgIcon>
+);

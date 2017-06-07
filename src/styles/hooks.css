@@ -1,3 +1,5 @@
+/* Tooltips ===> */
+
 .tooltip {
   border-radius: 0 !important;
   font-size: 11px !important;
@@ -18,3 +20,5 @@
 .tab-simple>.tab-content { background: none; }
 .tab-simple>.nav>li>a { color: gray; font-weight: normal; }
 .tab-simple>.nav>li.active>a { color: #333; }
+
+/* <=== Tooltips */
