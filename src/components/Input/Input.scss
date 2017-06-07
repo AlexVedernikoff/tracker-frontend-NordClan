@@ -1,0 +1,18 @@
+@import '../../styles/variables';
+
+.input {
+  display: block;
+  width: 100%;
+  padding: 7px 15px;
+  line-height: 1rem;
+  border: 1px solid $color-gray;
+  transition: $transition;
+
+  &:focus {
+    border-color: darken($color-gray, 10%);
+  }
+
+  &::placeholder {
+    color: silver;
+  }
+}
