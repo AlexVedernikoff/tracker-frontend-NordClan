@@ -1,13 +1,14 @@
 .Select {
   position: relative;
   border: 1px solid #e6e6e6;
-  line-height: 16px;
+  line-height: 1rem;
   box-sizing: border-box;
   transition: 0.3s ease-out 0s;
 }
 
 .Select-control {
   padding: 7px 15px;
+  padding-right: 32px;
 }
 
 .Select-clear-zone {
@@ -25,8 +26,14 @@
 .Select--multi.Select:hover { cursor: text; }
 .Select--single.Select:hover { cursor: pointer; }
 
+.Select--multi .Select-control {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 13px;
+}
+
 .Select.is-focused {
-  border-color: lightgray;
+  border-color: #d8d8d8;
   transition: 0.3s ease-out 0s;
 }
 
@@ -39,6 +46,7 @@
 
 .Select-placeholder, .Select-aria-only {
   color: silver;
+  vertical-align: middle;
 }
 
 .Select-input input {
@@ -75,11 +83,15 @@
   vertical-align: bottom;
   color: white;
   background-color: #88a4bf;
-  height: 16px;
+  height: 1rem;
   padding: 0 14px;
-  margin-right: 4px;
+  margin: 2px 4px 2px 0;
   position: relative;
   cursor: pointer;
+}
+
+.Select--multi .Select-input {
+  margin: 2px;
 }
 
 .Select--multi .Select-multi-value-wrapper .Select-value .Select-value-icon {
@@ -90,7 +102,7 @@
   top: 0;
   right: 0;
   bottom: 0;
-  width: 16px;
+  width: 1rem;
   opacity: 0;
   transition: 0.3s ease-out 0s;
 }

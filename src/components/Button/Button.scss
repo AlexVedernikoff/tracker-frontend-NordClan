@@ -8,9 +8,9 @@
   background-color: gray;
   color: rgba(white, 0.9);
   font-size: 13px;
-  padding: 8px 16px;
+  padding: 0.5rem 1rem;
   cursor: pointer;
-  line-height: 16px;
+  line-height: 1rem;
   height: 32px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -40,8 +40,8 @@
   position: absolute;
   left: 8px;
   top: 8px;
-  height: 16px;
-  width: 16px;
+  height: 1rem;
+  width: 1rem;
 }
 
 @mixin btn-type($color) {

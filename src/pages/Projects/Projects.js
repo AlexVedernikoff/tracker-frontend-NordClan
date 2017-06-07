@@ -3,9 +3,12 @@ import { Link } from 'react-router';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 
 import * as css from './Projects.scss';
-import Tag from '../../components/Tag';
 import SelectDropdown from '../../components/SelectDropdown';
+import Button from '../../components/Button';
+import DatepickerDropdown from '../../components/DatepickerDropdown';
+import Input from '../../components/Input';
 import ProjectCard from '../../components/ProjectCard';
+import StatusCheckbox from './StatusCheckbox';
 
 // Mocks
 
@@ -24,7 +27,7 @@ const mockTags = [];
 
 for (let i = 0; i < 15; i++) {
   projects.push({
-    name: getRandomString(['MakeTalents', 'SimTrack', 'Qiwi-Artek', 'ПроРейтинг - HR-инструмент', 'Корпоративные сайты SimbirSoft', 'Аудит информационной безопасности', 'Онлайн-опросы (ООО "Top of Mind Research")', 'ИП Хабибрахманов Р.Р. - ФЛЭТ CRM Битрикс24']),
+    name: getRandomString(['MakeTalents', 'Киви-Банк - {Всем', 'Грехов И.В.- "BookReview"', 'SimTrack', 'Qiwi-Artek', 'ПроРейтинг - HR-инструмент', 'Корпоративные сайты SimbirSoft', 'Аудит информационной безопасности', 'Онлайн-опросы (ООО "Top of Mind Research")', 'ИП Хабибрахманов Р.Р. - ФЛЭТ CRM Битрикс24']),
     tags: mockTags.concat(getSomeRandomString(['frontend', 'java', 'C++', 'php', 'angular.js', 'angular', 'react']), getRandomString(['2017', '2016', '2015']), getRandomString(['внутренний', 'коммерческий'])),
     dateStart: '06.06.2017',
     dateEnd: '26.12.2017',
@@ -33,12 +36,14 @@ for (let i = 0; i < 15; i++) {
       dateStart: '06.06.2017',
       dateEnd: '26.12.2017'
     },
-    status: getRandomString(['INPROGRESS', 'INHOLD', 'FINISHED'])
+    status: getRandomString(['INPROGRESS', 'INHOLD', 'FINISHED']),
+    members: getRandomString(['5', '15', '20'])
   });
 }
 
 const projectList = projects.map(
-  (element, i) => <Col xs={4} key={i}><ProjectCard project={element}/></Col>
+  // (element, i) => <Col xs={4} key={i}><ProjectCard project={element}/></Col>
+  (element, i) => <ProjectCard key={i} project={element}/>
 );
 
 export default class Projects extends Component {
@@ -53,8 +58,17 @@ export default class Projects extends Component {
         otherTasks: true
       },
       filterTags: [],
-      changedSprint: 'sprint1'
+      filteredInProgress: false,
+      filteredInHold: false,
+      filteredFinished: false
     };
+  }
+
+  check = (name) => {
+    const oldValue = this.state[name];
+    this.setState({
+      [name]: !oldValue
+    });
   }
 
   selectValue = (e, name) => {
@@ -62,33 +76,60 @@ export default class Projects extends Component {
   }
 
   render () {
+    const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
+
     return (
       <div>
         <section>
-          <h1>Мои проекты</h1>
+          <header className={css.title}>
+            <h1 className={css.title}>Мои проекты</h1>
+            <Button text="Создать проект" type="primary" icon="IconPlus" />
+          </header>
           <hr/>
-          <div className={css.filters}>
-            <SelectDropdown
-              name="filterTags"
-              multi
-              placeholder="Введите название тега..."
-              backspaceToRemoveMessage="BackSpace для очистки поля"
-              value={this.state.filterTags}
-              onChange={(e) => this.selectValue(e, 'filterTags')}
-              noResultsText="Нет результатов"
-              options={[
-                {value: 'develop', label: 'develop'},
-                {value: 'frontend', label: 'frontend'},
-                {value: 'inner', label: 'внутренний'},
-                {value: 'commerce', label: 'коммерческий'},
-                {value: 'frontend', label: 'frontend'},
-                {value: 'backend', label: 'backend'}
-              ]}
-            />
+          <div className={css.projectsHeader}>
+            <div className={css.statusFilters}>
+              <StatusCheckbox type="INPROGRESS" checked={filteredInProgress} onClick={() => this.check('filteredInProgress')} label="В процессе"/>
+              <StatusCheckbox type="INHOLD" checked={filteredInHold} onClick={() => this.check('filteredInHold')} label="Приостановлен"/>
+              <StatusCheckbox type="FINISHED" checked={filteredFinished} onClick={() => this.check('filteredFinished')} label="Завершен"/>
+            </div>
+            <Row>
+              <Col xs>
+                <Input placeholder="Введите название проекта..." />
+              </Col>
+              <Col xs>
+                <Row>
+                  <Col xs>
+                    <DatepickerDropdown locale="ru" placeholderText="От" />
+                  </Col>
+                  <Col xs>
+                    <DatepickerDropdown locale="ru" placeholderText="До" />
+                  </Col>
+                </Row>
+              </Col>
+              <Col xs>
+                <SelectDropdown
+                  name="filterTags"
+                  multi
+                  placeholder="Введите название тега..."
+                  backspaceToRemoveMessage="BackSpace для очистки поля"
+                  value={this.state.filterTags}
+                  onChange={(e) => this.selectValue(e, 'filterTags')}
+                  noResultsText="Нет результатов"
+                  options={[
+                    {value: 'develop', label: 'develop'},
+                    {value: 'frontend', label: 'frontend'},
+                    {value: 'inner', label: 'внутренний'},
+                    {value: 'commerce', label: 'коммерческий'},
+                    {value: 'frontend', label: 'frontend'},
+                    {value: 'backend', label: 'backend'}
+                  ]}
+                />
+              </Col>
+            </Row>
           </div>
-          <Row>
+          <div>
             {projectList}
-          </Row>
+          </div>
         </section>
       </div>
     );
