@@ -13,20 +13,19 @@ const projects = [];
 const getRandomString = (arr) => {
   return arr[Math.floor(Math.random() * arr.length)];
 };
+
 const getSomeRandomString = (arr) => {
-  return arr[Math.round(Math.random() * (arr.length - 1))];
+  const start = Math.floor(Math.random() * arr.length);
+  const end = arr.length - start;
+  return arr.splice(start, end);
 };
+
+const mockTags = [];
 
 for (let i = 0; i < 15; i++) {
   projects.push({
     name: getRandomString(['MakeTalents', 'SimTrack', 'Qiwi-Artek', 'ПроРейтинг - HR-инструмент', 'Корпоративные сайты SimbirSoft', 'Аудит информационной безопасности', 'Онлайн-опросы (ООО "Top of Mind Research")', 'ИП Хабибрахманов Р.Р. - ФЛЭТ CRM Битрикс24']),
-    tags: [
-      getSomeRandomString(['frontend', 'java', 'C++', 'php'])
-      // getRandomString(['angular.js', 'angular', 'react']),
-      // getRandomString(['mobile', 'web', 'desktop app']),
-      // getRandomString(['2017', '2016', '2015']),
-      // getRandomString(['внутренний', 'коммерческий'])
-    ],
+    tags: mockTags.concat(getSomeRandomString(['frontend', 'java', 'C++', 'php', 'angular.js', 'angular', 'react']), getRandomString(['2017', '2016', '2015']), getRandomString(['внутренний', 'коммерческий'])),
     dateStart: '06.06.2017',
     dateEnd: '26.12.2017',
     activeSprint: {
