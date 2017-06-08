@@ -36,11 +36,11 @@ export default class ProjectPage extends Component {
 
         <RouteTabs>
           <Link activeClassName="active" to={`/projects/${project.id}/agile-board`}>Доска</Link>
+          <Link activeClassName="active" to={`/projects/${project.id}/tasks`}>Список задач</Link>
+          <Link activeClassName="active" to={`/projects/${project.id}/planning`}>Планирование</Link>
           <Link activeClassName="active" to={`/projects/${project.id}/info`}>Информация</Link>
           <Link activeClassName="active" to={`/projects/${project.id}/property`}>Настройки</Link>
-          <Link activeClassName="active" to={`/projects/${project.id}/planning`}>Планирование</Link>
           <Link activeClassName="active" to={`/projects/${project.id}/analitics`}>Аналитика</Link>
-          <Link activeClassName="active" to={`/projects/${project.id}/tasks`}>Задачи</Link>
         </RouteTabs>
 
         <div className={css.tabContent}>
