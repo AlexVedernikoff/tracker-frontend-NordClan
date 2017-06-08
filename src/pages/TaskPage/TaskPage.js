@@ -48,6 +48,7 @@ export default class TaskPage extends Component {
                 {task.description}
               </div>
               <hr />
+              <h3>Прикрепленные файлы:</h3>
               <Attachments task={task} />
               <hr />
               <Comments />

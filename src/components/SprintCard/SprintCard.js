@@ -13,7 +13,7 @@ const SprintCard = (props) => {
   } = props;
 
   return (
-    <div className={css.sprintCard} {...other}>
+    <div className={classnames([css.sprintCard], [css[sprint.status]])} {...other}>
       <Link to="/projects/1/sprints/1" className={css.sprintTitle}>{sprint.name}</Link>
       <p className={css.sprintMeta}>
         <span>Дата начала:</span>

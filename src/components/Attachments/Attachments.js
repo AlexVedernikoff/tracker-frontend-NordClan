@@ -16,7 +16,6 @@ export default class Attachments extends React.Component {
 
     return (
       <div className={css.attachments}>
-        <h3>Прикрепленные файлы:</h3>
         <ul className={css.attachmentsContainer}>
           <li className={css.attachment}>
             <Link to="#">

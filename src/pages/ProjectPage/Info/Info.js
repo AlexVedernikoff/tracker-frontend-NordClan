@@ -4,6 +4,8 @@ import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './Info.scss';
 
 import Attachments from '../../../components/Attachments';
+import Tag from '../../../components/Tag';
+import Tags from '../../../components/Tags';
 
 export default class Info extends Component {
   static propTypes = {
@@ -13,7 +15,21 @@ export default class Info extends Component {
 
     return (
       <div className={css.info}>
-        <h2>Информация и файлы</h2>
+        <h2>Теги проекта</h2>
+        {/*<hr/>*/}
+        <Tags>
+          <Tag name="angular.js" />
+          <Tag name="web" />
+          <Tag name="android" />
+          <Tag name="java" />
+          <Tag name="iOS" />
+          <Tag name="2015" />
+          <Tag name="2016" />
+          <Tag name="2017" />
+          <Tag name="Внутренний" />
+        </Tags>
+        <hr/>
+        <h2>Описание</h2>
         <hr/>
           <div className={css.projectDesc}>
             <div className="wiki">
@@ -71,6 +87,8 @@ export default class Info extends Component {
               </ul></div>
           </div>
         <hr/>
+        <h2>Файлы</h2>
+        {/*<hr/>*/}
         <Attachments/>
       </div>
     );

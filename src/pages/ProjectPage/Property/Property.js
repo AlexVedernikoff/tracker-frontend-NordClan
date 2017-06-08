@@ -49,9 +49,7 @@ export default class Property extends Component {
 
     return (
       <div className={css.property}>
-        <h2>Настройки</h2>
-        <hr/>
-        <h3>Участники:</h3>
+        <h2>Участники</h2>
         <Row className={classnames(css.memberRow, css.memberHeader)}>
           <Col xs={9} xsOffset={3}>
             <Row>
@@ -69,6 +67,9 @@ export default class Property extends Component {
               </Col>
               <Col xs>
                 <h4><div className={css.cell}>QA</div></h4>
+              </Col>
+              <Col xs>
+                <h4><div className={css.cell}>Unbillable</div></h4>
               </Col>
             </Row>
           </Col>
@@ -94,6 +95,9 @@ export default class Property extends Component {
               <Col xs>
                 <label className={css.cell}><input type="checkbox"/></label>
               </Col>
+              <Col xs>
+                <label className={css.cell}><input type="checkbox"/></label>
+              </Col>
             </Row>
           </Col>
         </Row>
@@ -108,6 +112,9 @@ export default class Property extends Component {
               </Col>
               <Col xs>
                 <label className={css.cell}><input type="checkbox" checked/></label>
+              </Col>
+              <Col xs>
+                <label className={css.cell}><input type="checkbox"/></label>
               </Col>
               <Col xs>
                 <label className={css.cell}><input type="checkbox"/></label>
@@ -142,6 +149,9 @@ export default class Property extends Component {
               <Col xs>
                 <label className={css.cell}><input type="checkbox" checked/></label>
               </Col>
+              <Col xs>
+                <label className={css.cell}><input type="checkbox" checked/></label>
+              </Col>
             </Row>
           </Col>
         </Row>
@@ -159,6 +169,9 @@ export default class Property extends Component {
               </Col>
               <Col xs>
                 <label className={css.cell}><input type="checkbox" checked/></label>
+              </Col>
+              <Col xs>
+                <label className={css.cell}><input type="checkbox"/></label>
               </Col>
               <Col xs>
                 <label className={css.cell}><input type="checkbox"/></label>
@@ -190,12 +203,15 @@ export default class Property extends Component {
               <Col xs>
                 <label className={css.cell}><input type="checkbox"/></label>
               </Col>
+              <Col xs>
+                <label className={css.cell}><input type="checkbox"/></label>
+              </Col>
             </Row>
           </Col>
         </Row>
         <Button text="Добавить участника" type="primary" style={{marginTop: 16}} icon="IconPlus"/>
         <hr/>
-        <h3>Спринты / Фазы</h3>
+        <h2>Спринты / Фазы</h2>
         <Row>
           {sprintList}
         </Row>
