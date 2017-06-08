@@ -10,11 +10,6 @@
   &:hover {
     background-color: $color-lightgray;
   }
-
-  h3 {
-    margin: 0;
-    margin-bottom: 1rem;
-  }
 }
 
 .meta {
@@ -58,8 +53,14 @@
 
 .title {
   display: flex;
+  margin-top: 0;
+  margin-bottom: 1rem;
 
   a {
     text-decoration: none;
   }
+}
+
+.child {
+  margin-left: 1.5rem;
 }

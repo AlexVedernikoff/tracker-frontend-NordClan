@@ -36,16 +36,7 @@ const TaskCard = (props) => {
         <span className={css.prefix}>{task.prefix}.</span>
         {task.name}
       </Link>
-      {/*<p className={css.taskMeta}>
-        <span>Подзадач:</span>
-        <span>{task.subtasks}</span>
-      </p>*/}
-      {/*<p className={css.taskMeta}>
-        <span>Связанных задач:</span>
-        <span>{task.linkedTasks}</span>
-      </p>*/}
       <p className={css.taskMeta}>
-        {/*<span>Исполнитель:</span>*/}
         <span><Link to={`users/${5}`}>{task.executor}</Link></span>
       </p>
       {
@@ -72,6 +63,7 @@ const TaskCard = (props) => {
         </div>
         : null
       }
+      <div className={css.priorityMarker} data-tip={`Приоритет: ${task.priority}`}/>
     </div>
   );
 };

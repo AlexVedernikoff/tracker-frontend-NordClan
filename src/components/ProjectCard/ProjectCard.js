@@ -19,6 +19,8 @@ const ProjectCard = (props) => {
     ...other
   } = props.project;
 
+  const { isChild } = props;
+
   const tagList = tags.map((element, i) =>
     <Tag name={element} blocked key={i} />
   );
@@ -41,11 +43,13 @@ const ProjectCard = (props) => {
       statusTooltip = 'Завершен';
   }
 
+  console.log(isChild);
+
   return (
     <div className={css.projectCard} {...other}>
       <Row>
         <Col xs>
-          <h3 className={css.title}>
+          <h3 className={classnames({[css.title]: true, [css.child]: isChild})}>
             <div className={classnames(css.statusMarker, css[status])} data-tip={statusTooltip} data-place="left"/>
             <Link to="/projects/1">{name}</Link>
           </h3>
@@ -77,6 +81,7 @@ const ProjectCard = (props) => {
 };
 
 ProjectCard.propTypes = {
+  isChild: PropTypes.bool,
   project: PropTypes.object
 };
 

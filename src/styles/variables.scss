@@ -1,13 +1,14 @@
 // Custom Colors
+$color-black: #333;
 $color-dark: #2b3e50;
-$color-lightgray: #fafafa;
+$color-red: #d9534f;
+$color-orange: #ff7800;
+$color-yellow: #f0ad4e;
+$color-gold: #d2dc0f;
+$color-green: #5cb85c;
 $color-blue: #46b8da;
 $color-gray: #f1f1f1;
-$color-orange: #ff7800;
-$color-red: #d9534f;
-$color-yellow: #f0ad4e;
-$color-black: #333;
-$color-green: #5cb85c;
+$color-lightgray: #fafafa;
 
 $text-color: $color-black;
 
@@ -31,6 +32,6 @@ $transition: all 0.3s ease-out 0s;
 // Priority
 $priority1: $color-red;
 $priority2: $color-orange;
-$priority3: $color-yellow;
-$priority4: lighten($color-green, 20%);
-$priority5: lighten($color-dark, 50%);
+$priority3: lighten($color-yellow, 5%);
+$priority4: $color-gold;
+$priority5: lighten($color-green, 20%);
