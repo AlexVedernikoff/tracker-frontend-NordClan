@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
-import TaskCard from '../../../components/TaskCard';
+import TaskRow from '../../../components/TaskRow';
+import Input from '../../../components/Input';
 import * as css from './TaskList.scss';
 
 //Mocks
@@ -10,7 +11,15 @@ const getRandomString = (arr) => {
   return arr[Math.floor(Math.random() * arr.length)];
 };
 
+const getSomeRandomString = (arr) => {
+  const start = Math.floor(Math.random() * arr.length);
+  const end = arr.length - start;
+  return arr.splice(start, end);
+};
+
 for (let i = 0; i < 50; i++) {
+  const mockTags = [];
+
   tasks.push({
     name: getRandomString([
     'Back. REST для просмотра товаров на голосовании, выбора товара для голосования, покупки товара',
@@ -20,9 +29,12 @@ for (let i = 0; i < 50; i++) {
     'TASK: Перевод денег из семьи члену семьи',
     'UI. Интеграции таба со счетами для страницы пользователя'
   ]),
+    tags: mockTags.concat(getSomeRandomString(['refactor', 'верстка', 'demo', 'release', 'design', 'совещание']), getRandomString(['UI', 'backend'])),
     prefix: getRandomString(['MT-12', 'MT-254', 'MT-1245']),
+    sprint: getRandomString(['Спринт №1', 'Спринт №1', 'Спринт №1']),
     id: i,
     status: getRandomString(['INHOLD', 'INPROGRESS']),
+    type: getRandomString(['Фича / Задача', 'Баг']),
     stage: getRandomString(['NEW', 'NEW', 'NEW', 'DEVELOP', 'DEVELOP', 'DEVELOP', 'QA', 'CODE_REVIEW', 'QA', 'DONE', 'DONE', 'DONE']),
     executor: getRandomString(['Андрей Юдин', 'Александра Одноклассница', 'Иосиф Джугашвили', 'Ксенофонт Арабский', 'Не назначено']),
     executorId: getRandomString([1, 2, 3, 4, 5]),
@@ -52,7 +64,7 @@ const sortTasks = (sortedArr) => {
     if (a.priority < b.priority) return -1;
   });
   return sortedArr.map((element) => {
-    return <TaskCard key={element.id} task={element}/>;
+    return <TaskRow key={element.id} task={element}/>;
   });
 };
 
@@ -65,10 +77,14 @@ export default class TaskList extends Component {
     return (
       <div>
         <section>
-          <h2>Все задачи</h2>
-          <h3>Мои</h3>
+          <Input placeholder="Поиск по названию задачи"/>
+          <hr/>
+          <h2>Мои задачи</h2>
+          <hr/>
           {mine}
-          <h3>Прочие</h3>
+          <hr/>
+          <h2>Прочие Задачи</h2>
+          <hr/>
           {other}
         </section>
       </div>

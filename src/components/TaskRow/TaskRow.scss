@@ -1,0 +1,133 @@
+@import '../../styles/variables';
+
+.taskCard {
+  position: relative;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  transition: $transition;
+
+  &:hover {
+    background-color: $color-lightgray;
+    transition: $transition;
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    display: flex;
+    color: lighten($color-black, 40%);
+    font-size: 11px;
+
+    & > div {
+      padding-right: 0.5rem;
+
+      & + div {
+        padding-left: 0.5rem;
+        border-left: 1px solid lighten($color-black, 50%);
+      }
+    }
+  }
+
+  h4 {
+    margin: 0;
+    font-weight: normal;
+  }
+
+  .priorityMarker {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1rem;
+    height: 1rem;
+    box-sizing: border-box;
+    color: white;
+  }
+
+  &.priority {
+    &-1 .priorityMarker { background-color: $priority1; };
+    &-2 .priorityMarker { background-color: $priority2; };
+    &-3 .priorityMarker { background-color: $priority3; };
+    &-4 .priorityMarker { background-color: $priority4; };
+    &-5 .priorityMarker { background-color: $priority5; };
+  }
+
+  h5 {
+    margin: 0;
+    margin-bottom: 8px;
+    font-size: 1em;
+  }
+}
+
+.taskName {
+  display: block;
+  text-decoration: none;
+}
+
+.metabox, .tagbox {
+  padding-left: 1rem;
+  height: 100%;
+  border-left: 1px solid $color-gray;
+}
+
+.taskMeta {
+  font-size: 11px;
+  color: gray;
+  margin-bottom: 1px;
+  margin-top: 0;
+
+  span {
+    display: inline-block;
+
+    &:first-child {
+      margin-right: 4px;
+    }
+  }
+}
+
+.status {
+  position: absolute;
+  z-index: 1;
+  cursor: pointer;
+  bottom: -7px;
+  left: -1px;
+  background-color: $color-dark;
+  color: white;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+
+  svg {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.inhold { background-color: $color-dark; }
+.inprogress { background-color: $color-green; }
+
+.progressBar {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  height: 1px;
+  margin-top: 8px;
+  background-color: darken($color-gray, 10%);
+
+  & > div {
+    height: 1px;
+  }
+}
+
+.green { background-color: $color-green; }
+.red { background-color: $color-red; }
+
+svg.green { background-color: transparent; fill: $color-green; }
+svg.red { background-color: transparent; fill: $color-red; }
