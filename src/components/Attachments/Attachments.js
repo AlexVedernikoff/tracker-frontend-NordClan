@@ -1,19 +1,26 @@
-import React, {PropTypes} from 'react';
-import { Link } from 'react-router';
-import AttachedFile from "../AttachedFile"
-import { IconFileDocument, IconFilePdf, IconDelete, IconDownload, IconPlus, IconEye } from '../Icons';
+import React, { PropTypes } from "react";
+import { Link } from "react-router";
+import AttachedFile from "../AttachedFile";
+import {
+  IconFileDocument,
+  IconFilePdf,
+  IconDelete,
+  IconDownload,
+  IconPlus,
+  IconEye
+} from "../Icons";
 import FileViewer from "react-file-viewer";
 
 export default class Attachments extends React.Component {
-
-  render () {
-    const css = require('./Attachments.scss');
+  render() {
+    const css = require("./Attachments.scss");
+    const fileDirectory = __dirname + "src/";
 
     const iconStyles = {
       width: 24,
       height: 24,
-      color: 'inherit',
-      fill: 'currentColor'
+      color: "inherit",
+      fill: "currentColor"
     };
 
     // MOCKS
@@ -21,27 +28,35 @@ export default class Attachments extends React.Component {
     const files = [
       {
         fileType: "pdf",
-        fileName: "sample-file.pdf"
+        fileName: "sample-file.pdf",
+        filePath: fileDirectory + "sample-file.pdf"
       },
       {
         fileType: "docx",
-        fileName: "sample-file.docx"
+        fileName: "sample-file.docx",
+        filePath: fileDirectory + "sample-file.docx"
       },
       {
         fileType: "jpg",
-        fileName: "sample-file.jpg"
+        fileName: "sample-file.jpg",
+        filePath: fileDirectory + "sample-file.jpg"
       }
-    ]
+    ];
 
     return (
       <div className={css.attachments}>
         <ul className={css.attachmentsContainer}>
 
-          {
-            files.map((file, index) => {
-              return <AttachedFile key={index} fileName={file.fileName} />
-            })
-          }
+          {files.map((file, index) => {
+            return (
+              <AttachedFile
+                key={index}
+                fileType={file.fileType}
+                fileName={file.fileName}
+                filePath={file.filePath}
+              />
+            );
+          })}
 
           {/* TODO:: FILE UPLOAD Component */}
 

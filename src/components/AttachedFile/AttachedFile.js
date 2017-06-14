@@ -4,40 +4,50 @@ import { Link } from 'react-router';
 import { IconFileDocument, IconFilePdf, IconDelete, IconDownload, IconPlus, IconEye } from '../Icons';
 import FileViewer from "react-file-viewer";
 
-const AttachedFile = (props) => {
+export default class AttachedFile extends React.Component {
 
-  const css = require('./AttachedFile.scss');
+  constructor(props) {
+    super(props);
+    this.state = {
+      isOpen: false
+    }
+  }
 
-  const iconStyles = {
-    width: 24,
-    height: 24,
-    color: 'inherit',
-    fill: 'currentColor'
-  };
+  render() {
 
-  const {
-    fileName
-  } = props;
+    const css = require('./AttachedFile.scss');
 
-  return (
-    <li className={css.attachment}>
-      <Link to="#">
-        <div className={css.attachmentIcon}>
-          <IconFilePdf style={iconStyles} />
-          <div className={css.actions}>
-            <button>
-              <IconDownload style={iconStyles} />
-            </button>
-            <button>
-              <IconDelete style={iconStyles} />
-            </button>
+    const iconStyles = {
+      width: 24,
+      height: 24,
+      color: 'inherit',
+      fill: 'currentColor'
+    };
+
+    const {
+      fileName,
+      filePath,
+      fileType
+    } = this.props;
+
+    return (
+      <li className={css.attachment}>
+        <Link to="#">
+          <div className={css.attachmentIcon}>
+            <IconFilePdf style={iconStyles} />
+            <div className={css.actions}>
+              <button>
+                <IconDownload style={iconStyles} />
+              </button>
+              <button>
+                <IconDelete style={iconStyles} />
+              </button>
+            </div>
           </div>
-        </div>
-        <div className={css.attachmentName}>{fileName}</div>
-      </Link>
-    </li>
-  )
+          <div className={css.attachmentName}>{fileName}</div>
+        </Link>
+      </li>
+    )
+  }
 
 }
-
-export default AttachedFile;
