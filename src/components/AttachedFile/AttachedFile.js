@@ -66,6 +66,7 @@ export default class AttachedFile extends React.Component {
           contentLabel="Minimal Modal Example"
         >
           <button onClick={this.handleModal}>Close Modal</button>
+          <FileViewer fileType={fileType} filePath={filePath} />
         </ReactModal>
       </li>
     );

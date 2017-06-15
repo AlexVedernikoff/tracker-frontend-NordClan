@@ -78,6 +78,7 @@
     "eslint": "~3.14.0",
     "eslint-plugin-babel": "~4.0.1",
     "eslint-plugin-react": "^6.9.0",
+    "file-loader": "^0.11.2",
     "node-sass": "^4.5.2",
     "postcss-cssnext": "^2.9.0",
     "postcss-each": "^0.9.3",
