@@ -20,18 +20,8 @@ const files = [
     filePath: require("../example_files/360photo.jpg")
   },
   {
-    fileType: "avi",
-    fileName: "drop.avi",
-    filePath: require("../example_files/drop.avi")
-  },
-  {
     fileType: "mp3",
     fileName: "sample.mp3",
-    filePath: require("../example_files/sample.mp3")
-  },
-  {
-    fileType: "wexbim",
-    fileName: "SampleHouse.wexbim",
     filePath: require("../example_files/sample.mp3")
   },
   {
@@ -48,8 +38,12 @@ const files = [
     fileType: "csv",
     fileName: "Total_Crime.csv",
     filePath: require("../example_files/Total_Crime.csv")
+  },
+  {
+    fileType: "mp4",
+    fileName: "small.mp4",
+    filePath: require("../example_files/Total_Crime.csv")
   }
 ];
-
 
 export { files };

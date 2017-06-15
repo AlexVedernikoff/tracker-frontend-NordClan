@@ -72,3 +72,9 @@ export default class AttachedFile extends React.Component {
     );
   }
 }
+
+AttachedFile.PropTypes = {
+  fileType: PropTypes.string,
+  filePath: PropTypes.string,
+  fileName: PropTypes.string
+};
