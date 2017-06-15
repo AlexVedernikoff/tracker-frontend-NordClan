@@ -10,11 +10,11 @@ import {
   IconEye
 } from "../Icons";
 import FileViewer from "react-file-viewer";
+import { files } from "../../../mocks/Files";
 
 export default class Attachments extends React.Component {
   render() {
     const css = require("./Attachments.scss");
-    const fileDirectory = __dirname + "src/";
 
     const iconStyles = {
       width: 24,
@@ -22,26 +22,6 @@ export default class Attachments extends React.Component {
       color: "inherit",
       fill: "currentColor"
     };
-
-    // MOCKS
-
-    const files = [
-      {
-        fileType: "pdf",
-        fileName: "sample-file.pdf",
-        filePath: fileDirectory + "sample-file.pdf"
-      },
-      {
-        fileType: "docx",
-        fileName: "sample-file.docx",
-        filePath: fileDirectory + "sample-file.docx"
-      },
-      {
-        fileType: "jpg",
-        fileName: "sample-file.jpg",
-        filePath: fileDirectory + "sample-file.jpg"
-      }
-    ];
 
     return (
       <div className={css.attachments}>

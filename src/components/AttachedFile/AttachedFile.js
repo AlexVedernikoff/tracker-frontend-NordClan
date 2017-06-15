@@ -25,7 +25,6 @@ export default class AttachedFile extends React.Component {
   }
 
   handleModal() {
-    console.log("setting modal state");
     this.setState({ isModalOpen: !this.state.isModalOpen });
   }
 
@@ -42,21 +41,23 @@ export default class AttachedFile extends React.Component {
     const { fileName, filePath, fileType } = this.props;
 
     return (
-      <li className={css.attachment}>
-        <Link to="#">
-          <div className={css.attachmentIcon}>
-            <IconFilePdf style={iconStyles} />
-            <div className={css.actions}>
+      <li className={css.attachment} onClick={this.handleModal}>
+        <div className={css.attachmentIcon}>
+          <IconFilePdf style={iconStyles} />
+          <div className={css.actions}>
+            <Link to="#">
               <button>
                 <IconDownload style={iconStyles} />
               </button>
+            </Link>
+            <Link to="#">
               <button>
                 <IconDelete style={iconStyles} />
               </button>
-            </div>
+            </Link>
           </div>
-        </Link>
-        <div className={css.attachmentName} onClick={this.handleModal}>
+        </div>
+        <div className={css.attachmentName}>
           {fileName}
         </div>
 
