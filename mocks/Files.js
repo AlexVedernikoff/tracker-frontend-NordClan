@@ -42,7 +42,7 @@ const files = [
   {
     fileType: "mp4",
     fileName: "small.mp4",
-    filePath: require("../example_files/Total_Crime.csv")
+    filePath: require("../example_files/small.mp4")
   }
 ];
 

@@ -9,7 +9,6 @@ import {
   IconPlus,
   IconEye
 } from "../Icons";
-import FileViewer from "react-file-viewer";
 import ReactModal from "react-modal";
 
 ReactModal.defaultStyles.content.left = "260px";
@@ -26,6 +25,10 @@ export default class AttachedFile extends React.Component {
 
   handleModal() {
     this.setState({ isModalOpen: !this.state.isModalOpen });
+  }
+
+  stopBubbling(e) {
+    e.stopPropagation()
   }
 
   render() {
@@ -45,12 +48,12 @@ export default class AttachedFile extends React.Component {
         <div className={css.attachmentIcon}>
           <IconFilePdf style={iconStyles} />
           <div className={css.actions}>
-            <Link to="#">
+            <a target="_blank" href={`${filePath}`} onClick={this.stopBubbling}>
               <button>
                 <IconDownload style={iconStyles} />
               </button>
-            </Link>
-            <Link to="#">
+            </a>
+            <Link to={`${filePath}`}>
               <button>
                 <IconDelete style={iconStyles} />
               </button>
@@ -66,7 +69,6 @@ export default class AttachedFile extends React.Component {
           contentLabel="Minimal Modal Example"
         >
           <button onClick={this.handleModal}>Close Modal</button>
-          <FileViewer fileType={fileType} filePath={filePath} />
         </ReactModal>
       </li>
     );

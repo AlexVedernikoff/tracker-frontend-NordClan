@@ -9,13 +9,11 @@ import {
   IconPlus,
   IconEye
 } from "../Icons";
-import FileViewer from "react-file-viewer";
 import { files } from "../../../mocks/Files";
 
 export default class Attachments extends React.Component {
   render() {
     const css = require("./Attachments.scss");
-    console.log(files);
 
     const iconStyles = {
       width: 24,
