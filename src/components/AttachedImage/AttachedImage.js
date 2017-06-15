@@ -1,19 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router";
-import {
-  IconFileDocument,
-  IconFilePdf,
-  IconDelete,
-  IconDownload,
-  IconPlus,
-  IconEye
-} from "../Icons";
+import { IconDelete, IconDownload, IconPlus, IconEye } from "../Icons";
 import ReactModal from "react-modal";
 
 ReactModal.defaultStyles.content.left = "260px";
 
-export default class AttachedFile extends React.Component {
+export default class AttachedImage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -28,11 +21,11 @@ export default class AttachedFile extends React.Component {
   }
 
   stopBubbling(e) {
-    e.stopPropagation()
+    e.stopPropagation();
   }
 
   render() {
-    const css = require("./AttachedFile.scss");
+    const css = require("./AttachedImage.scss");
 
     const iconStyles = {
       width: 24,
@@ -41,41 +34,51 @@ export default class AttachedFile extends React.Component {
       fill: "currentColor"
     };
 
+    const imageStyles = {
+      width: "80%",
+      height: "80%"
+    }
+
     const { fileName, filePath, fileType } = this.props;
 
     return (
       <li className={css.attachment} onClick={this.handleModal}>
+        <div className={css.actions}>
+          <a
+            target="_blank"
+            href={`${filePath}`}
+            onClick={this.stopBubbling}
+            download
+          >
+            <button>
+              <IconDownload style={iconStyles} />
+            </button>
+          </a>
+          <Link to={`${filePath}`}>
+            <button>
+              <IconDelete style={iconStyles} />
+            </button>
+          </Link>
+        </div>
         <div className={css.attachmentIcon}>
-          <IconFilePdf style={iconStyles} />
-          <div className={css.actions}>
-            <a target="_blank" href={`${filePath}`} onClick={this.stopBubbling}>
-              <button>
-                <IconDownload style={iconStyles} />
-              </button>
-            </a>
-            <Link to={`${filePath}`}>
-              <button>
-                <IconDelete style={iconStyles} />
-              </button>
-            </Link>
-          </div>
+          <img src={`${filePath}`} alt="" className={css.screen} />
         </div>
         <div className={css.attachmentName}>
           {fileName}
         </div>
-
         <ReactModal
           isOpen={this.state.isModalOpen}
           contentLabel="Minimal Modal Example"
         >
           <button onClick={this.handleModal}>Close Modal</button>
+          <img src={`${filePath}`} alt="" style={imageStyles} />
         </ReactModal>
       </li>
     );
   }
 }
 
-AttachedFile.PropTypes = {
+AttachedImage.PropTypes = {
   fileType: PropTypes.string,
   filePath: PropTypes.string,
   fileName: PropTypes.string

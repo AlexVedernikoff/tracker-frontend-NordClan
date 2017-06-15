@@ -1,6 +1,8 @@
-import React, { PropTypes } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router";
-import AttachedFile from "../AttachedFile";
+import AttachedDocument from "../AttachedDocument";
+import AttachedImage from "../AttachedImage";
 import {
   IconFileDocument,
   IconFilePdf,
@@ -12,6 +14,11 @@ import {
 import { files } from "../../../mocks/Files";
 
 export default class Attachments extends React.Component {
+  isPicture(fileType) {
+    const regexp = /(gif|jpe?g|tiff|png)/i;
+    return regexp.test(fileType);
+  }
+
   render() {
     const css = require("./Attachments.scss");
 
@@ -27,14 +34,9 @@ export default class Attachments extends React.Component {
         <ul className={css.attachmentsContainer}>
 
           {files.map((file, index) => {
-            return (
-              <AttachedFile
-                key={index}
-                fileType={file.fileType}
-                fileName={file.fileName}
-                filePath={file.filePath}
-              />
-            );
+            return this.isPicture(file.fileType)
+              ? <AttachedImage key={`attached-document-${index}`} {...file} />
+              : <AttachedDocument key={`attached-picture-${index}`} {...file} />;
           })}
 
           {/* TODO:: FILE UPLOAD Component */}
