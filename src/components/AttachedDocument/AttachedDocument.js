@@ -9,14 +9,42 @@ import {
   IconPlus,
   IconEye
 } from "../Icons";
+import ConfirmDelete from "react-modal";
+
+const ConfirmDeleteStyles = {
+  content: {
+    top: "40%",
+    left: "40%",
+    right: "40%",
+    bottom: "40%"
+  },
+  overlay: {
+    zIndex: 5
+  }
+};
 
 export default class AttachedDocument extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      isConfirmDeleteOpen: false
+    };
+
+    this.handleOpenConfirmDelete = this.handleOpenConfirmDelete.bind(this);
+    this.handleCloseConfirmDelete = this.handleCloseConfirmDelete.bind(this);
   }
 
   stopBubbling(e) {
     e.stopPropagation();
+  }
+
+  handleOpenConfirmDelete(e) {
+    e.stopPropagation();
+    this.setState({ ...this.state.isModalOpen, isConfirmDeleteOpen: true });
+  }
+
+  handleCloseConfirmDelete() {
+    this.setState({ ...this.state.isModalOpen, isConfirmDeleteOpen: false });
   }
 
   render() {
@@ -39,11 +67,9 @@ export default class AttachedDocument extends React.Component {
               <IconDownload style={iconStyles} />
             </button>
           </a>
-          <Link to={`${filePath}`}>
-            <button>
-              <IconDelete style={iconStyles} />
-            </button>
-          </Link>
+          <button onClick={this.handleOpenConfirmDelete}>
+            <IconDelete style={iconStyles} />
+          </button>
         </div>
         <a target="_blank" href={`${filePath}`}>
           <div className={css.attachmentIcon}>
@@ -55,6 +81,14 @@ export default class AttachedDocument extends React.Component {
             {fileName}
           </div>
         </a>
+
+        <ConfirmDelete
+          isOpen={this.state.isConfirmDeleteOpen}
+          style={ConfirmDeleteStyles}
+        >
+          <p>Are you sure want to delete this file?</p>
+          <button onClick={this.handleCloseConfirmDelete}>No</button>
+        </ConfirmDelete>
       </li>
     );
   }

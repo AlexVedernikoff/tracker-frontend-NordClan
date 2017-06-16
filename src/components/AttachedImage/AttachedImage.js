@@ -17,6 +17,18 @@ const ReactModalStyles = {
   }
 };
 
+const ConfirmDeleteStyles = {
+  content: {
+    top: "40%",
+    left: "40%",
+    right: "40%",
+    bottom: "40%"
+  },
+  overlay: {
+    zIndex: 5
+  }
+};
+
 export default class AttachedImage extends React.Component {
   constructor(props) {
     super(props);
@@ -27,6 +39,8 @@ export default class AttachedImage extends React.Component {
 
     this.handleOpenModal = this.handleOpenModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
+    this.handleOpenConfirmDelete = this.handleOpenConfirmDelete.bind(this);
+    this.handleCloseConfirmDelete = this.handleCloseConfirmDelete.bind(this);
   }
 
   handleOpenModal() {
@@ -35,6 +49,15 @@ export default class AttachedImage extends React.Component {
 
   handleCloseModal() {
     this.setState({ isModalOpen: false });
+  }
+
+  handleOpenConfirmDelete(e) {
+    e.stopPropagation();
+    this.setState({ ...this.state.isModalOpen, isConfirmDeleteOpen: true });
+  }
+
+  handleCloseConfirmDelete() {
+    this.setState({ ...this.state.isModalOpen, isConfirmDeleteOpen: false});
   }
 
   stopBubbling(e) {
@@ -52,7 +75,7 @@ export default class AttachedImage extends React.Component {
     };
 
     const imageStyles = {
-      maxHeight: 830
+      maxHeight: 775
     };
 
     const { fileName, filePath, fileType } = this.props;
@@ -70,11 +93,9 @@ export default class AttachedImage extends React.Component {
               <IconDownload style={iconStyles} />
             </button>
           </a>
-          <Link to={filePath}>
-            <button>
-              <IconDelete style={iconStyles} />
-            </button>
-          </Link>
+          <button onClick={this.handleOpenConfirmDelete}>
+            <IconDelete style={iconStyles} />
+          </button>
         </div>
         <div className={css.attachmentIcon}>
           <img src={filePath} alt="" className={css.screen} />
@@ -85,7 +106,6 @@ export default class AttachedImage extends React.Component {
 
         <ReactModal
           isOpen={this.state.isModalOpen}
-          contentLabel="Minimal Modal Example"
           style={ReactModalStyles}
           onRequestClose={this.handleCloseModal}
         >
@@ -96,6 +116,14 @@ export default class AttachedImage extends React.Component {
           />
           <img src={filePath} alt="" style={imageStyles} />
         </ReactModal>
+
+        <ConfirmDelete
+          isOpen={this.state.isConfirmDeleteOpen}
+          style={ConfirmDeleteStyles}
+        >
+          <p>Are you sure want to delete this file?</p>
+          <button onClick={this.handleCloseConfirmDelete}>No</button>
+        </ConfirmDelete>
 
       </li>
     );
