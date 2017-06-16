@@ -1,17 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router";
 import AttachedDocument from "../AttachedDocument";
 import AttachedImage from "../AttachedImage";
 import FileUpload from "../FileUpload";
-import {
-  IconFileDocument,
-  IconFilePdf,
-  IconDelete,
-  IconDownload,
-  IconPlus,
-  IconEye
-} from "../Icons";
 import { files } from "../../../mocks/Files";
 import _ from "lodash";
 
@@ -23,7 +14,7 @@ export default class Attachments extends React.Component {
 
   render() {
     const css = require("./Attachments.scss");
-    const files_shuffled = _.shuffle(files);
+    const filesShuffled = _.shuffle(files);
 
     const iconStyles = {
       width: 24,
@@ -36,7 +27,7 @@ export default class Attachments extends React.Component {
       <div className={css.attachments}>
         <ul className={css.attachmentsContainer}>
 
-          {files_shuffled.map((file, index) => {
+          {filesShuffled.map((file, index) => {
             return this.isPicture(file.fileType)
               ? <AttachedImage key={`attached-document-${index}`} {...file} />
               : <AttachedDocument key={`attached-picture-${index}`} {...file} />;

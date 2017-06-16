@@ -1,13 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router";
 import {
   IconFileDocument,
   IconFilePdf,
   IconDelete,
-  IconDownload,
-  IconPlus,
-  IconEye
+  IconDownload
 } from "../Icons";
 import ConfirmDelete from "react-modal";
 
@@ -62,7 +59,7 @@ export default class AttachedDocument extends React.Component {
     return (
       <li className={css.attachment}>
         <div className={css.actions}>
-          <a href={`${filePath}`} onClick={this.stopBubbling} download>
+          <a href={filePath} onClick={this.stopBubbling} download>
             <button>
               <IconDownload style={iconStyles} />
             </button>
@@ -71,7 +68,7 @@ export default class AttachedDocument extends React.Component {
             <IconDelete style={iconStyles} />
           </button>
         </div>
-        <a target="_blank" href={`${filePath}`}>
+        <a target="_blank" href={filePath}>
           <div className={css.attachmentIcon}>
             {fileType === "pdf"
               ? <IconFilePdf style={iconStyles} />
@@ -84,6 +81,7 @@ export default class AttachedDocument extends React.Component {
 
         <ConfirmDelete
           isOpen={this.state.isConfirmDeleteOpen}
+          contentLabel="modal"
           style={ConfirmDeleteStyles}
         >
           <p>Are you sure want to delete this file?</p>

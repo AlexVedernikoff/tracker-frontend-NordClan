@@ -82,6 +82,7 @@ export default class AttachedImage extends React.Component {
 
     return (
       <li className={css.attachment} onClick={this.handleOpenModal}>
+
         <div className={css.actions}>
           <a
             target="_blank"
@@ -97,7 +98,8 @@ export default class AttachedImage extends React.Component {
             <IconDelete style={iconStyles} />
           </button>
         </div>
-        <div className={css.attachmentIcon}>
+        
+        <div className={css.imagePreview}>
           <img src={filePath} alt="" className={css.screen} />
         </div>
         <div className={css.attachmentName}>
@@ -107,6 +109,7 @@ export default class AttachedImage extends React.Component {
         <ReactModal
           isOpen={this.state.isModalOpen}
           style={ReactModalStyles}
+          contentLabel="modal"
           onRequestClose={this.handleCloseModal}
         >
           <IconClose
@@ -119,6 +122,7 @@ export default class AttachedImage extends React.Component {
 
         <ConfirmDelete
           isOpen={this.state.isConfirmDeleteOpen}
+          contentLabel="modal"
           style={ConfirmDeleteStyles}
         >
           <p>Are you sure want to delete this file?</p>
