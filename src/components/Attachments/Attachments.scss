@@ -3,8 +3,9 @@
 .attachmentsContainer {
   padding: 0;
   margin: 0;
-  display: flex;
-  flex-wrap: wrap;
+  display: inline-flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
 }
 
 .attachment {
@@ -80,9 +81,6 @@
 
   }
 
-  & + .attachment {
-    margin-left: 1rem;
-  }
 }
 
 .attachmentIcon {

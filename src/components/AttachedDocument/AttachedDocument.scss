@@ -75,10 +75,6 @@
     width: 50px;
     height: 50px;
   }
-
-  & + .attachment {
-    margin-left: 1rem;
-  }
 }
 
 .attachmentIcon {
@@ -98,6 +94,7 @@
 
 .attachmentName {
   word-wrap: break-word;
+  width: 100px;
 }
 
 .screen {

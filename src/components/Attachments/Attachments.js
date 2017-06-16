@@ -12,6 +12,7 @@ import {
   IconEye
 } from "../Icons";
 import { files } from "../../../mocks/Files";
+import _ from "lodash";
 
 export default class Attachments extends React.Component {
   isPicture(fileType) {
@@ -21,6 +22,7 @@ export default class Attachments extends React.Component {
 
   render() {
     const css = require("./Attachments.scss");
+    const files_shuffled = _.shuffle(files);
 
     const iconStyles = {
       width: 24,
@@ -33,7 +35,7 @@ export default class Attachments extends React.Component {
       <div className={css.attachments}>
         <ul className={css.attachmentsContainer}>
 
-          {files.map((file, index) => {
+          {files_shuffled.map((file, index) => {
             return this.isPicture(file.fileType)
               ? <AttachedImage key={`attached-document-${index}`} {...file} />
               : <AttachedDocument key={`attached-picture-${index}`} {...file} />;

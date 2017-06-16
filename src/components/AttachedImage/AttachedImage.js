@@ -37,7 +37,7 @@ export default class AttachedImage extends React.Component {
     const imageStyles = {
       width: "80%",
       height: "80%"
-    }
+    };
 
     const { fileName, filePath, fileType } = this.props;
 
