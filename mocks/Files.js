@@ -5,6 +5,11 @@ const files = [
     filePath: require("../example_files/pdf.pdf")
   },
   {
+    fileType: "png",
+    fileName: "image-small.png",
+    filePath: require("../example_files/small-image.png")
+  },
+  {
     fileType: "docx",
     fileName: "sample-file.docx",
     filePath: require("../example_files/SampleSpec.docx")
@@ -13,11 +18,6 @@ const files = [
     fileType: "jpg",
     fileName: "sample-file.jpg",
     filePath: require("../example_files/picture.jpg")
-  },
-  {
-    fileType: "jpg",
-    fileName: "360photo.jpg",
-    filePath: require("../example_files/360photo.jpg")
   },
   {
     fileType: "mp3",
@@ -43,6 +43,11 @@ const files = [
     fileType: "mp4",
     fileName: "small.mp4",
     filePath: require("../example_files/small.mp4")
+  },
+  {
+    fileType: "jpg",
+    fileName: "vertical-image.jpg",
+    filePath: require("../example_files/vertical-image.jpg")
   }
 ];
 

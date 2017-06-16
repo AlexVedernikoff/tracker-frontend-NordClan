@@ -79,7 +79,8 @@ const settings = {
           /\.webm$/,
           /\.mov$/,
           /\.mp3$/,
-          /\.pdf$/
+          /\.pdf$/,
+          /\.png$/
         ],
         loader: "file-loader"
       }

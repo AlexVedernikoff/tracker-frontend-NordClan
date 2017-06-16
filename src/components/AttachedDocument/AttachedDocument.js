@@ -15,7 +15,7 @@ export default class AttachedDocument extends React.Component {
     super(props);
   }
 
-  stopBubbling() {
+  stopBubbling(e) {
     e.stopPropagation();
   }
 
