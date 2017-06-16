@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Link } from "react-router";
 import AttachedDocument from "../AttachedDocument";
 import AttachedImage from "../AttachedImage";
+import FileUpload from "../FileUpload";
 import {
   IconFileDocument,
   IconFilePdf,
@@ -41,16 +42,7 @@ export default class Attachments extends React.Component {
               : <AttachedDocument key={`attached-picture-${index}`} {...file} />;
           })}
 
-          {/* TODO:: FILE UPLOAD Component */}
-
-          <li className={css.attachment}>
-            <Link to="#">
-              <div className={css.attachmentIcon}>
-                <IconPlus style={iconStyles} />
-              </div>
-              <div className={css.attachmentName}>Добавить файл</div>
-            </Link>
-          </li>
+          <FileUpload />
         </ul>
       </div>
     );
