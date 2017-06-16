@@ -1,10 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router";
-import { IconDelete, IconDownload, IconPlus, IconEye } from "../Icons";
+import { IconDelete, IconDownload, IconClose } from "../Icons";
 import ReactModal from "react-modal";
 
+// TODO: fix these styles
+
 ReactModal.defaultStyles.content.left = "260px";
+ReactModal.defaultStyles.content.display = "flex";
+ReactModal.defaultStyles.content.alignItems = "center";
+ReactModal.defaultStyles.content.justifyContent = "center";
 
 export default class AttachedImage extends React.Component {
   constructor(props) {
@@ -70,7 +75,7 @@ export default class AttachedImage extends React.Component {
           isOpen={this.state.isModalOpen}
           contentLabel="Minimal Modal Example"
         >
-          <button onClick={this.handleModal}>Close Modal</button>
+          <IconClose style={iconStyles} className={css.iconClose} onClick={this.handleModal}></IconClose>
           <img src={`${filePath}`} alt="" style={imageStyles} />
         </ReactModal>
       </li>
