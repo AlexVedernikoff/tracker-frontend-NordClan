@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router";
 import { IconDelete, IconDownload, IconClose } from "../Icons";
 import ReactModal from "react-modal";
 import ConfirmDelete from "react-modal";
@@ -98,7 +97,7 @@ export default class AttachedImage extends React.Component {
             <IconDelete style={iconStyles} />
           </button>
         </div>
-        
+
         <div className={css.imagePreview}>
           <img src={filePath} alt="" className={css.screen} />
         </div>

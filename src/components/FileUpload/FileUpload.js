@@ -1,6 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { Link } from "react-router";
 import { IconPlus } from "../Icons";
 import Dropzone from "react-dropzone";
 
