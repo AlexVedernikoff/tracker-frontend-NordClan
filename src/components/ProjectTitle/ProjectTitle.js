@@ -12,6 +12,7 @@ export default class ProjectTitle extends Component {
 
     this.toggleTitleEditing = this.toggleTitleEditing.bind(this);
     this.changeTitle = this.changeTitle.bind(this);
+    this.keyDown = this.keyDown.bind(this);
   }
 
   toggleTitleEditing() {
@@ -24,16 +25,34 @@ export default class ProjectTitle extends Component {
     this.setState(change);
   }
 
+  keyDown(e) {
+    if (e.keyCode === 13) {
+      this.setState({editingTitle : false});
+    } else if (e.keyCode === 27) {
+      this.setState({editingTitle : false, name: this.props.name, prefix: this.props.prefix})
+    }
+  }
+
   render() {
     return (
       <div className={css.projectTitle}>
         <img src={this.state.pic} className={css.projectPic} />
         {this.state.editingTitle
-          ? <input name="name" value={this.state.name} onChange={this.changeTitle.bind(this, 'name')} />
+          ? <input
+              name="name"
+              onKeyDown={this.keyDown}
+              value={this.state.name}
+              onChange={this.changeTitle.bind(this, "name")}
+            />
           : <span>{this.state.name}</span>}
 
         {this.state.editingTitle
-          ? <input name="prefix" value={this.state.prefix} onChange={this.changeTitle.bind(this, 'prefix')} />
+          ? <input
+              name="prefix"
+              onKeyDown={this.keyDown}
+              value={this.state.prefix}
+              onChange={this.changeTitle.bind(this, "prefix")}
+            />
           : <span className={css.prefix}>
               ({this.state.prefix})
             </span>}
