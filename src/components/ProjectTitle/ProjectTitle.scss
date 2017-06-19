@@ -37,3 +37,14 @@
     transition: $transition;
   }
 }
+
+input {
+  &:nth-child(2) {
+    width: 400px;
+  }
+
+  &:nth-child(3) {
+    width: 100px;
+    margin-left: 50px;
+  }
+}
