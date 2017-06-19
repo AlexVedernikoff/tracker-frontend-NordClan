@@ -52,11 +52,11 @@ export default class AttachedImage extends React.Component {
 
   handleOpenConfirmDelete(e) {
     e.stopPropagation();
-    this.setState({ ...this.state.isModalOpen, isConfirmDeleteOpen: true });
+    this.setState({ isConfirmDeleteOpen: true });
   }
 
   handleCloseConfirmDelete() {
-    this.setState({ ...this.state.isModalOpen, isConfirmDeleteOpen: false});
+    this.setState({ isConfirmDeleteOpen: false });
   }
 
   stopBubbling(e) {
