@@ -84,6 +84,7 @@
     "prop-types": "^15.5.10",
     "react-hot-loader": "^3.0.0-beta.6",
     "redux-devtools-extension": "^1.0.0",
+    "riek": "^1.1.0",
     "sass-loader": "^6.0.3",
     "style-loader": "^0.13.1",
     "webpack": "^2.2.0",
