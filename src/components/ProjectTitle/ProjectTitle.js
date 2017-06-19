@@ -2,21 +2,34 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { IconEdit } from "../Icons";
 import * as css from "./ProjectTitle.scss";
-import { RIEInput } from "riek";
-import _ from "lodash";
 
 export default class ProjectTitle extends Component {
   constructor(props) {
     super(props);
     this.state = { ...props, editingTitle: false };
 
-    this.toggleTitleEditing = this.toggleTitleEditing.bind(this);
+    this.startEditing = this.startEditing.bind(this);
+    this.stopEditing = this.stopEditing.bind(this);
+    this.editIconClickHandler = this.editIconClickHandler.bind(this);
+
     this.changeTitle = this.changeTitle.bind(this);
     this.keyDown = this.keyDown.bind(this);
   }
 
-  toggleTitleEditing() {
-    this.setState({ editingTitle: !this.state.editingTitle });
+  editIconClickHandler() {
+    if (this.state.editingTitle) {
+      this.stopEditing();
+    } else {
+      this.startEditing();
+    }
+  }
+
+  startEditing() {
+    this.setState({ editingTitle: true });
+  }
+
+  stopEditing() {
+    this.setState({ editingTitle: false });
   }
 
   changeTitle(name, e) {
@@ -27,9 +40,13 @@ export default class ProjectTitle extends Component {
 
   keyDown(e) {
     if (e.keyCode === 13) {
-      this.setState({editingTitle : false});
+      this.setState({ editingTitle: false });
     } else if (e.keyCode === 27) {
-      this.setState({editingTitle : false, name: this.props.name, prefix: this.props.prefix})
+      this.setState({
+        editingTitle: false,
+        name: this.props.name,
+        prefix: this.props.prefix
+      });
     }
   }
 
@@ -39,24 +56,24 @@ export default class ProjectTitle extends Component {
         <img src={this.state.pic} className={css.projectPic} />
         {this.state.editingTitle
           ? <input
-              name="name"
               onKeyDown={this.keyDown}
               value={this.state.name}
               onChange={this.changeTitle.bind(this, "name")}
             />
           : <span>{this.state.name}</span>}
 
-        {this.state.editingTitle
-          ? <input
-              name="prefix"
-              onKeyDown={this.keyDown}
-              value={this.state.prefix}
-              onChange={this.changeTitle.bind(this, "prefix")}
-            />
-          : <span className={css.prefix}>
-              ({this.state.prefix})
-            </span>}
-        <IconEdit className={css.edit} onClick={this.toggleTitleEditing} />
+        <span className={css.prefix}>
+          ({this.state.editingTitle
+            ? <input
+                onKeyDown={this.keyDown}
+                value={this.state.prefix}
+                onChange={this.changeTitle.bind(this, "prefix")}
+                onBlur={e => console.log(e.target)}
+              />
+            : this.state.prefix})
+        </span>
+
+        <IconEdit className={css.edit} onClick={this.editIconClickHandler} />
       </div>
     );
   }
