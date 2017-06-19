@@ -7,16 +7,9 @@ export default class ProjectTitle extends Component {
   constructor(props) {
     super(props);
     this.state = { ...props, editingTitle: false };
-
-    this.startEditing = this.startEditing.bind(this);
-    this.stopEditing = this.stopEditing.bind(this);
-    this.editIconClickHandler = this.editIconClickHandler.bind(this);
-
-    this.changeTitle = this.changeTitle.bind(this);
-    this.keyDown = this.keyDown.bind(this);
   }
 
-  editIconClickHandler() {
+  editIconClickHandler = () => {
     if (this.state.editingTitle) {
       this.stopEditing();
     } else {
@@ -24,21 +17,21 @@ export default class ProjectTitle extends Component {
     }
   }
 
-  startEditing() {
+  startEditing = () => {
     this.setState({ editingTitle: true });
   }
 
-  stopEditing() {
+  stopEditing = () => {
     this.setState({ editingTitle: false });
   }
 
-  changeTitle(name, e) {
+  changeTitle = (name, e) => {
     const change = {};
     change[name] = e.target.value;
     this.setState(change);
   }
 
-  keyDown(e) {
+  keyDown = (e) => {
     if (e.keyCode === 13) {
       this.setState({ editingTitle: false });
     } else if (e.keyCode === 27) {
@@ -68,7 +61,6 @@ export default class ProjectTitle extends Component {
                 onKeyDown={this.keyDown}
                 value={this.state.prefix}
                 onChange={this.changeTitle.bind(this, "prefix")}
-                onBlur={e => console.log(e.target)}
               />
             : this.state.prefix})
         </span>
