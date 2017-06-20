@@ -1,7 +1,7 @@
-import React from "react";
-import { IconPlus } from "../Icons";
-import PropTypes from "prop-types";
-import Dropzone from "react-dropzone";
+import React from 'react';
+import { IconPlus } from '../Icons';
+import PropTypes from 'prop-types';
+import Dropzone from 'react-dropzone';
 
 export default class FileUpload extends React.Component {
   constructor(props) {
@@ -9,13 +9,13 @@ export default class FileUpload extends React.Component {
   }
 
   render() {
-    const css = require("./FileUpload.scss");
+    const css = require('./FileUpload.scss');
 
     const iconStyles = {
       width: 24,
       height: 24,
-      color: "inherit",
-      fill: "currentColor"
+      color: 'inherit',
+      fill: 'currentColor'
     };
 
     return (
@@ -33,4 +33,4 @@ export default class FileUpload extends React.Component {
 
 FileUpload.PropTypes = {
   onDrop: PropTypes.func.isRequired
-}
+};

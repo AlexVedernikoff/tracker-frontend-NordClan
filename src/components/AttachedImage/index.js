@@ -1,3 +1,3 @@
-import AttachedImage from "./AttachedImage"
+import AttachedImage from './AttachedImage';
 
 export default AttachedImage;

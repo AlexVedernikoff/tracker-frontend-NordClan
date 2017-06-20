@@ -1,15 +1,15 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { IconDelete, IconDownload, IconClose } from "../Icons";
-import ReactModal from "react-modal";
-import ConfirmDelete from "react-modal";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { IconDelete, IconDownload, IconClose } from '../Icons';
+import ReactModal from 'react-modal';
+import ConfirmDelete from 'react-modal';
 
 const ReactModalStyles = {
   content: {
-    left: "260px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
+    left: '260px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   overlay: {
     zIndex: 5
@@ -18,10 +18,10 @@ const ReactModalStyles = {
 
 const ConfirmDeleteStyles = {
   content: {
-    top: "40%",
-    left: "40%",
-    right: "40%",
-    bottom: "40%"
+    top: '40%',
+    left: '40%',
+    right: '40%',
+    bottom: '40%'
   },
   overlay: {
     zIndex: 5
@@ -39,38 +39,38 @@ export default class AttachedImage extends React.Component {
 
   handleOpenModal = () => {
     this.setState({ isModalOpen: true });
-  }
+  };
 
   handleCloseModal = () => {
     this.setState({ isModalOpen: false });
-  }
+  };
 
   handleOpenConfirmDelete = event => {
     event.stopPropagation();
     this.setState({ isConfirmDeleteOpen: true });
-  }
+  };
 
   handleCloseConfirmDelete = () => {
     this.setState({ isConfirmDeleteOpen: false });
-  }
+  };
 
   stopBubbling = event => {
     event.stopPropagation();
-  }
+  };
 
   render() {
-    const css = require("./AttachedImage.scss");
+    const css = require('./AttachedImage.scss');
 
     const iconStyles = {
       width: 24,
       height: 24,
-      color: "inherit",
-      fill: "currentColor"
+      color: 'inherit',
+      fill: 'currentColor'
     };
 
     const imageStyles = {
-      maxHeight: "90%",
-      maxWidth: "100%"
+      maxHeight: '90%',
+      maxWidth: '100%'
     };
 
     const { fileName, filePath, fileType } = this.props;

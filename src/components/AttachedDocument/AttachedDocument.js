@@ -1,19 +1,19 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 import {
   IconFileDocument,
   IconFilePdf,
   IconDelete,
   IconDownload
-} from "../Icons";
-import ConfirmDelete from "react-modal";
+} from '../Icons';
+import ConfirmDelete from 'react-modal';
 
 const ConfirmDeleteStyles = {
   content: {
-    top: "40%",
-    left: "40%",
-    right: "40%",
-    bottom: "40%"
+    top: '40%',
+    left: '40%',
+    right: '40%',
+    bottom: '40%'
   },
   overlay: {
     zIndex: 5
@@ -42,13 +42,13 @@ export default class AttachedDocument extends React.Component {
   };
 
   render() {
-    const css = require("./AttachedDocument.scss");
+    const css = require('./AttachedDocument.scss');
 
     const iconStyles = {
       width: 24,
       height: 24,
-      color: "inherit",
-      fill: "currentColor"
+      color: 'inherit',
+      fill: 'currentColor'
     };
 
     const { fileName, filePath, fileType } = this.props;
@@ -67,7 +67,7 @@ export default class AttachedDocument extends React.Component {
         </div>
         <a target="_blank" href={filePath}>
           <div className={css.attachmentIcon}>
-            {fileType === "pdf"
+            {fileType === 'pdf'
               ? <IconFilePdf style={iconStyles} />
               : <IconFileDocument style={iconStyles} />}
           </div>
