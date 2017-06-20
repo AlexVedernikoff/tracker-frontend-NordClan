@@ -21,14 +21,14 @@ const ConfirmDeleteStyles = {
 };
 
 export default class AttachedDocument extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       isConfirmDeleteOpen: false
     };
   }
 
-  stopBubbling(event) {
+  stopBubbling (event) {
     event.stopPropagation();
   }
 
@@ -41,7 +41,7 @@ export default class AttachedDocument extends React.Component {
     this.setState({ isConfirmDeleteOpen: false });
   };
 
-  render() {
+  render () {
     const css = require('./AttachedDocument.scss');
 
     const iconStyles = {
@@ -65,7 +65,7 @@ export default class AttachedDocument extends React.Component {
             <IconDelete style={iconStyles} />
           </button>
         </div>
-        <a target="_blank" href={filePath}>
+        <a target="_blank" href={filePath} className={css.iconWrapper}>
           <div className={css.attachmentIcon}>
             {fileType === 'pdf'
               ? <IconFilePdf style={iconStyles} />
@@ -78,7 +78,7 @@ export default class AttachedDocument extends React.Component {
 
         {this.state.isConfirmDeleteOpen
           ? <ConfirmDelete
-              isOpen={true}
+              isOpen
               contentLabel="modal"
               style={ConfirmDeleteStyles}
             >
@@ -91,8 +91,8 @@ export default class AttachedDocument extends React.Component {
   }
 }
 
-AttachedDocument.PropTypes = {
-  fileType: PropTypes.string.isRequired,
+AttachedDocument.propTypes = {
+  fileName: PropTypes.string.isRequired,
   filePath: PropTypes.string.isRequired,
-  fileName: PropTypes.string.isRequired
+  fileType: PropTypes.string.isRequired
 };
