@@ -10,12 +10,13 @@
   &:hover {
     transform: rotate(360deg);
     transition: $transition;
-    color: black;
   }
 }
 
-textarea {
-  font-size: 34px;
-  padding: 5px;
-  margin: 10px 0 10px 0;
+.projectName {
+  display: inline-block;
+  width: 75%;
+  &[contenteditable="true"] {
+    background-color: lightblue;
+  }
 }
