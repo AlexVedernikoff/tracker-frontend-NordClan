@@ -23,22 +23,7 @@ const settings = {
       {
         test: /\.js?$/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
-        options: {
-          presets: [
-            ["es2015", { modules: false }],
-            "stage-2",
-            "react"
-          ],
-          plugins: [
-            "transform-node-env-inline"
-          ],
-          env: {
-            development: {
-              plugins: ["react-hot-loader/babel"]
-            }
-          }
-        }
+        loader: 'babel-loader'
       },
       {
         test: /\.scss$/,
