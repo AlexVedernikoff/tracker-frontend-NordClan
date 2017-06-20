@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 
 import TaskRow from '../../../components/TaskRow';
 import Input from '../../../components/Input';
+import Checkbox from '../../../components/Checkbox';
 import * as css from './TaskList.scss';
 
 //Mocks
@@ -46,30 +48,17 @@ for (let i = 0; i < 50; i++) {
   });
 }
 
-let mine = [];
-let other = [];
-
-
-tasks.forEach((element) => {
-  if (element.executorId === 2) {
-    mine.push(element);
-  } else {
-    other.push(element);
-  }
-});
-
 const sortTasks = (sortedArr) => {
-  sortedArr.sort((a, b) => {
-    if (a.priority > b.priority) return 1;
-    if (a.priority < b.priority) return -1;
-  });
+  // tasks.sort((a, b) => {
+  //   if (a.priority > b.priority) return 1;
+  //   if (a.priority < b.priority) return -1;
+  // });
   return sortedArr.map((element) => {
     return <TaskRow key={element.id} task={element}/>;
   });
 };
 
-mine = sortTasks(mine);
-other = sortTasks(other);
+const sortedTasks = sortTasks(tasks);
 
 export default class TaskList extends Component {
 
@@ -77,15 +66,30 @@ export default class TaskList extends Component {
     return (
       <div>
         <section>
-          <Input placeholder="Поиск по названию задачи"/>
-          <hr/>
-          <h2>Мои задачи</h2>
-          <hr/>
-          {mine}
-          <hr/>
-          <h2>Прочие Задачи</h2>
-          <hr/>
-          {other}
+          <div className={css.filters}>
+            <div className={css.checkedFilters}>
+              <Checkbox label="Баг"/>
+              <Checkbox label="Фича / Задача"/>
+              <Checkbox label="New"/>
+              <Checkbox label="Develop"/>
+              <Checkbox label="Code Review"/>
+              <Checkbox label="QA"/>
+              <Checkbox label="Done"/>
+              <Checkbox label="В процессе"/>
+            </div>
+            <Row>
+              <Col xs={6}>
+                <Input placeholder="Название задачи"/>
+              </Col>
+              <Col xs={3}>
+                <Input placeholder="Имя исполнителя"/>
+              </Col>
+              <Col xs={3}>
+                <Input placeholder="Теги" />
+              </Col>
+            </Row>
+          </div>
+          {sortedTasks}
         </section>
       </div>
     );

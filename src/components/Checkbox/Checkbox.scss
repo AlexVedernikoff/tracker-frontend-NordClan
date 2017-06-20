@@ -1,8 +1,42 @@
 @import '../../styles/variables';
 
 .wrapper {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  color: silver;
   cursor: pointer;
+
+  & + .wrapper {
+    margin-left: 16px;
+  }
+
+  input {
+    display: none;
+
+    &:checked {
+      & + .pseudoSquare {
+        background-color: $color-green;
+        border-color: $color-green;  
+
+        svg {
+          opacity: 1;
+          transform: scale(1);
+          transition: $transition;
+        }
+      }
+
+      & ~ span {
+        color: $color-black
+      }
+    }
+  }
+
+  &:hover {
+    .pseudoSquare {
+      background: lighten($color-black, 70%);
+      transition: $transition;
+    }
+  }
 }
 
 .pseudoSquare {
@@ -10,15 +44,10 @@
   width: 16px;
   height: 16px;
   border: 1px solid lighten($color-black, 60%);
-  transition: $transition;
   display: flex;
   justify-content: center;
   align-items: center;
-
-  &:hover {
-    background: lighten($color-black, 70%);
-    transition: $transition;
-  }
+  transition: $transition;
 
   svg {
     opacity: 0;
@@ -30,17 +59,6 @@
   }
 }
 
-input {
-  display: none;
-
-  &:checked + .pseudoSquare {
-    background-color: $color-green;
-    border-color: $color-green;  
-
-    svg {
-      opacity: 1;
-      transform: scale(1);
-      transition: $transition;
-    }
-  }
+.withText {
+  margin-right: 8px;
 }

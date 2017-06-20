@@ -31,22 +31,6 @@ export default class TaskRow extends React.Component {
 
     return (
       <div className={classnames([css.taskCard], [css[classPriority]])} {...other}>
-      {
-        task.stage !== 'NEW' && task.stage !== 'DONE'
-        ? <div
-        className={classnames({
-          [css.status]: true,
-          [css.inhold]: task.status === 'INHOLD',
-          [css.inprogress]: task.status === 'INPROGRESS'
-        })}>
-          {
-            task.status === 'INHOLD'
-            ? <IconPlay data-tip="Начать"/>
-            : <IconPause data-tip="Приостановить"/>
-          }
-        </div>
-        : null
-      }
         <Row>
           <Col xs={6}>
             <div className={css.header}>
@@ -71,6 +55,13 @@ export default class TaskRow extends React.Component {
                   : null
                 }
               </div>
+              <div>
+                {
+                  task.status === 'INPROGRESS'
+                  ? <span className={css.greenText}>В процессе</span>
+                  : 'Приостановлено'
+                }
+              </div>
             </div>
             <Link to={`/projects/5/tasks/${task.id}`} className={css.taskName}>
               <h4>
@@ -87,7 +78,14 @@ export default class TaskRow extends React.Component {
                 <span>Исполнитель:</span><span><Link to={`users/${5}`}>{task.executor}</Link></span>
               </p>
               <p className={css.taskMeta}>
-                <span>Время:</span><span>{task.factTime} ч. из {task.plannedTime}</span>
+                {
+                  task.stage !== 'NEW'
+                  ? <span className={css.time}>
+                    <span>Время: </span>
+                    <span className={classnames({[css.redText]: task.plannedTime < task.factTime, [css.greenText]: task.plannedTime > task.factTime})}>{task.factTime} ч. из {task.plannedTime}</span>
+                  </span>
+                  : null
+                }
               </p>
             </div>
           </Col>
@@ -106,7 +104,7 @@ export default class TaskRow extends React.Component {
             </div>
           </Col>
         </Row>
-        <div className={css.progressBar}>
+        {/*<div className={css.progressBar}>
           <div
             style={{width: (task.stage === 'NEW') ? 0 : ((task.factTime / task.plannedTime) < 1) ? (task.factTime / task.plannedTime) * 100 + '%' : '100%'}}
             className={classnames({
@@ -114,7 +112,7 @@ export default class TaskRow extends React.Component {
               [css.red]: (task.factTime / task.plannedTime) > 1
             })}
             />
-        </div>
+        </div>*/}
       </div>
     );
   }

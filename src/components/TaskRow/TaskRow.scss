@@ -3,7 +3,8 @@
 .taskCard {
   position: relative;
   padding: 1rem;
-  margin-bottom: 1rem;
+  // margin-bottom: 1rem;
+  border-top: 1px solid $color-gray;
   transition: $transition;
 
   &:hover {
@@ -137,6 +138,16 @@
 
 .green { background-color: $color-green; }
 .red { background-color: $color-red; }
+
+.greenText {
+  color: $color-green;
+  font-weight: bold;
+}
+
+.redText {
+  color: $color-red;
+  font-weight: bold;
+}
 
 svg.green { background-color: transparent; fill: $color-green; }
 svg.red { background-color: transparent; fill: $color-red; }
