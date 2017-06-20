@@ -7,6 +7,17 @@ import { files } from "../../../mocks/Files";
 import _ from "lodash";
 
 export default class Attachments extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      files: files
+    };
+  }
+
+  onDrop = (acceptedFiles, rejectedFiles) => {
+    console.log(acceptedFiles);
+  }
+
   isPicture(fileType) {
     const regexp = /(gif|jpe?g|tiff|png)/i;
     return regexp.test(fileType);
@@ -27,13 +38,13 @@ export default class Attachments extends React.Component {
       <div className={css.attachments}>
         <ul className={css.attachmentsContainer}>
 
-          {filesShuffled.map((file, index) => {
+          {this.state.files.map((file, index) => {
             return this.isPicture(file.fileType)
               ? <AttachedImage key={`attached-document-${index}`} {...file} />
               : <AttachedDocument key={`attached-picture-${index}`} {...file} />;
           })}
 
-          <FileUpload />
+          <FileUpload onDrop={this.onDrop} />
         </ul>
       </div>
     );

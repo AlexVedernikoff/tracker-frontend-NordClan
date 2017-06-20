@@ -26,23 +26,20 @@ export default class AttachedDocument extends React.Component {
     this.state = {
       isConfirmDeleteOpen: false
     };
-
-    this.handleOpenConfirmDelete = this.handleOpenConfirmDelete.bind(this);
-    this.handleCloseConfirmDelete = this.handleCloseConfirmDelete.bind(this);
   }
 
-  stopBubbling(e) {
-    e.stopPropagation();
+  stopBubbling(event) {
+    event.stopPropagation();
   }
 
-  handleOpenConfirmDelete(e) {
-    e.stopPropagation();
+  handleOpenConfirmDelete = event => {
+    event.stopPropagation();
     this.setState({ isConfirmDeleteOpen: true });
-  }
+  };
 
-  handleCloseConfirmDelete() {
+  handleCloseConfirmDelete = () => {
     this.setState({ isConfirmDeleteOpen: false });
-  }
+  };
 
   render() {
     const css = require("./AttachedDocument.scss");
@@ -93,7 +90,7 @@ export default class AttachedDocument extends React.Component {
 }
 
 AttachedDocument.PropTypes = {
-  fileType: PropTypes.string,
-  filePath: PropTypes.string,
-  fileName: PropTypes.string
+  fileType: PropTypes.string.isRequired,
+  filePath: PropTypes.string.isRequired,
+  fileName: PropTypes.string.isRequired
 };

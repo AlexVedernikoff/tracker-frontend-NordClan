@@ -35,32 +35,27 @@ export default class AttachedImage extends React.Component {
       isModalOpen: false,
       isConfirmDeleteOpen: false
     };
-
-    this.handleOpenModal = this.handleOpenModal.bind(this);
-    this.handleCloseModal = this.handleCloseModal.bind(this);
-    this.handleOpenConfirmDelete = this.handleOpenConfirmDelete.bind(this);
-    this.handleCloseConfirmDelete = this.handleCloseConfirmDelete.bind(this);
   }
 
-  handleOpenModal() {
+  handleOpenModal = () => {
     this.setState({ isModalOpen: true });
   }
 
-  handleCloseModal() {
+  handleCloseModal = () => {
     this.setState({ isModalOpen: false });
   }
 
-  handleOpenConfirmDelete(e) {
-    e.stopPropagation();
+  handleOpenConfirmDelete = event => {
+    event.stopPropagation();
     this.setState({ isConfirmDeleteOpen: true });
   }
 
-  handleCloseConfirmDelete() {
+  handleCloseConfirmDelete = () => {
     this.setState({ isConfirmDeleteOpen: false });
   }
 
-  stopBubbling(e) {
-    e.stopPropagation();
+  stopBubbling = event => {
+    event.stopPropagation();
   }
 
   render() {
@@ -74,7 +69,8 @@ export default class AttachedImage extends React.Component {
     };
 
     const imageStyles = {
-      maxHeight: 775
+      maxHeight: "90%",
+      maxWidth: "100%"
     };
 
     const { fileName, filePath, fileType } = this.props;
@@ -134,7 +130,7 @@ export default class AttachedImage extends React.Component {
 }
 
 AttachedImage.PropTypes = {
-  fileType: PropTypes.string,
-  filePath: PropTypes.string,
-  fileName: PropTypes.string
+  fileType: PropTypes.string.isRequired,
+  filePath: PropTypes.string.isRequired,
+  fileName: PropTypes.string.isRequired
 };

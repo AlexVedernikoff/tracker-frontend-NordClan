@@ -1,19 +1,11 @@
 import React from "react";
 import { IconPlus } from "../Icons";
+import PropTypes from "prop-types";
 import Dropzone from "react-dropzone";
 
 export default class FileUpload extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      files: []
-    }
-
-    this.onDrop = this.onDrop.bind(this);
-  }
-
-  onDrop(acceptedFiles, rejectedFiles) {
-    console.log(acceptedFiles);
   }
 
   render() {
@@ -27,7 +19,7 @@ export default class FileUpload extends React.Component {
     };
 
     return (
-      <Dropzone onDrop={this.onDrop} style={{}}>
+      <Dropzone onDrop={this.props.onDrop} style={{}}>
         <li className={css.attachment}>
           <div className={css.attachmentIcon}>
             <IconPlus style={iconStyles} />
@@ -37,4 +29,8 @@ export default class FileUpload extends React.Component {
       </Dropzone>
     );
   }
+}
+
+FileUpload.PropTypes = {
+  onDrop: PropTypes.func.isRequired
 }
