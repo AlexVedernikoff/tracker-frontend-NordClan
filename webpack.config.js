@@ -38,7 +38,7 @@ const settings = {
               localIdentName: "[name]--[local]--[hash:base64:8]"
             }
           },
-          "postcss-loader",
+          { loader: 'postcss-loader', options: { sourceMap: true } },
           {
             loader: "sass-loader", options: {
               sourceMap: true
