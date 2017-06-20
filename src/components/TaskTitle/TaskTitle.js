@@ -32,15 +32,10 @@ class TaskTitle extends Component {
   render() {
     return (
       <div className={css.title}>
-        {this.state.editing
-          ? <textarea rows="3" cols="33" value={this.state.name} />
-          : <h1>
-              {this.state.name}
-              <IconEdit
-                onClick={this.editIconClickHandler}
-                className={css.edit}
-              />
-            </h1>}
+        <h1 contentEditable={this.state.editing} onBlur={this.stopEditing}>
+          {this.state.name}
+          <IconEdit onClick={this.editIconClickHandler} className={css.edit} />
+        </h1>
       </div>
     );
   }
