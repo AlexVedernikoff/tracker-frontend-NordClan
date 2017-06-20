@@ -1,32 +1,32 @@
-const path = require("path");
-const webpack = require("webpack");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
+const path = require('path');
+const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const settings = {
   entry: {
-    bundle: ["react-hot-loader/patch", "./src/App.js"]
+    bundle: ['react-hot-loader/patch', './src/App.js']
   },
   output: {
-    filename: "[name].js",
-    publicPath: "/",
-    path: path.resolve("build")
+    filename: '[name].js',
+    publicPath: '/',
+    path: path.resolve('build')
   },
   resolve: {
-    extensions: [".js", ".json", ".css"]
+    extensions: ['.js', '.json', '.css']
   },
-  devtool: "eval-source-map",
+  devtool: 'eval-source-map',
   module: {
     rules: [
       {
         test: /\.js?$/,
         exclude: /node_modules/,
-        loader: "babel-loader",
+        loader: 'babel-loader',
         options: {
-          presets: [["es2015", { modules: false }], "stage-2", "react"],
-          plugins: ["transform-node-env-inline"],
+          presets: [['es2015', { modules: false }], 'stage-2', 'react'],
+          plugins: ['transform-node-env-inline'],
           env: {
             development: {
-              plugins: ["react-hot-loader/babel"]
+              plugins: ['react-hot-loader/babel']
             }
           }
         }
@@ -34,19 +34,19 @@ const settings = {
       {
         test: /\.scss$/,
         use: [
-          "style-loader",
+          'style-loader',
           {
-            loader: "css-loader",
+            loader: 'css-loader',
             options: {
               modules: true,
               sourceMap: true,
               importLoaders: 1,
-              localIdentName: "[name]--[local]--[hash:base64:8]"
+              localIdentName: '[name]--[local]--[hash:base64:8]'
             }
           },
-          "postcss-loader",
+          'postcss-loader',
           {
-            loader: "sass-loader",
+            loader: 'sass-loader',
             options: {
               sourceMap: true
             }
@@ -56,9 +56,9 @@ const settings = {
       {
         test: /\.css$/,
         use: [
-          "style-loader",
+          'style-loader',
           {
-            loader: "css-loader",
+            loader: 'css-loader',
             options: {
               modules: false,
               sourceMap: true
@@ -82,13 +82,13 @@ const settings = {
           /\.pdf$/,
           /\.png$/
         ],
-        loader: "file-loader"
+        loader: 'file-loader'
       }
     ]
   },
   devServer: {
-    contentBase: path.resolve("src/www"),
-    publicPath: "http://localhost:8080/", // full URL is necessary for Hot Module Replacement if additional path will be added.
+    contentBase: path.resolve('src/www'),
+    publicPath: 'http://localhost:8080/', // full URL is necessary for Hot Module Replacement if additional path will be added.
     quiet: false,
     hot: true,
     historyApiFallback: true,
@@ -100,7 +100,7 @@ const settings = {
     new webpack.LoaderOptionsPlugin({
       debug: true
     }),
-    new CopyWebpackPlugin([{ from: "./src/www", to: "./" }])
+    new CopyWebpackPlugin([{ from: './src/www', to: './' }])
   ]
 };
 
