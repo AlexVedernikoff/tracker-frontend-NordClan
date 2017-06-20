@@ -4,6 +4,7 @@ import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import classnames from 'classnames';
 
 import TaskCard from '../../../components/TaskCard';
+import PhaseCollumn from '../../../components/PhaseCollumn';
 import SelectDropdown from '../../../components/SelectDropdown';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 import * as css from './AgileBoard.scss';
@@ -46,8 +47,10 @@ const otherSorted = { new: [], dev: [], codeReview: [], qa: [], done: [] };
 
 tasks.forEach((element) => {
   if (element.executorId === 2) {
+    element.section = 'mine';
     mine.push(element);
   } else {
+    element.section = 'other';
     other.push(element);
   }
 });
@@ -124,112 +127,130 @@ export default class AgileBoard extends Component {
     this.setState({[name]: e});
   }
 
+  dropTask = (taskId, section, phase) => {
+    let obj, task;
+
+    switch (section) {
+      case 'mine':
+        obj = mineSorted;
+        break;
+      case 'other':
+        obj = otherSorted;
+        break;
+      default:
+        break;
+    }
+
+    for (const key in obj) {
+      obj[key].forEach((element, i) => {
+        if (element.props.task.id === taskId.id) {
+          task = obj[key].splice(i, 1)[0];
+        }
+      });
+    }
+
+    task.props.task.stage = phase;
+
+    switch (phase) {
+      case 'NEW':
+        obj.new.push(task);
+        break;
+      case 'DEVELOP':
+        obj.dev.push(task);
+        break;
+      case 'CODE_REVIEW':
+        obj.codeReview.push(task);
+        break;
+      case 'QA':
+        obj.qa.push(task);
+        break;
+      case 'DONE':
+        obj.done.push(task);
+        break;
+      default:
+        break;
+    }
+
+    this.forceUpdate();
+  }
+
+
   render () {
     return (
-      <section className={css.agileBoard}>
-        {/*<h2 style={{display: 'inline-block'}}>Спринт №1 (01.06.2017 - 30.06.2017)</h2>*/}
-        <Row>
-          <Col xs>
-            <SelectDropdown
-              name="changedSprint"
-              placeholder="Введите название спринта..."
-              multi={false}
-              value={this.state.changedSprint}
-              onChange={(e) => this.selectValue(e, 'changedSprint')}
-              noResultsText="Нет результатов"
-              options={[
-                { value: 'sprint1', label: 'Спринт №1 (01.06.2017 - 30.06.2017)' },
-                { value: 'sprint2', label: 'Спринт №2 (01.06.2017 - 30.06.2017)' },
-                { value: 'sprint3', label: 'Спринт №3 (01.06.2017 - 30.06.2017)' },
-                { value: 'sprint4', label: 'Спринт №4 (01.06.2017 - 30.06.2017)' }
-              ]}
-            />
-          </Col>
-          <Col xs>
-            <SelectDropdown
-              name="filterTags"
-              multi
-              placeholder="Введите название тега..."
-              backspaceToRemoveMessage="BackSpace для очистки поля"
-              value={this.state.filterTags}
-              onChange={(e) => this.selectValue(e, 'filterTags')}
-              noResultsText="Нет результатов"
-              options={[
-                {value: 'develop', label: 'develop'},
-                {value: 'frontend', label: 'frontend'},
-                {value: 'backend', label: 'backend'}
-              ]}
-            />
-          </Col>
-        </Row>
-        <hr/>
-        <h3 onClick={() => this.toggleSection('myTasks')} className={css.taskSectionTitle}>
-          <IconArrowDown className={classnames({
-            [css.close]: !this.state.isSectionOpen.myTasks,
-            [css.open]: this.state.isSectionOpen.myTasks
-          })} /> Мои задачи
-        </h3>
-        {
-          this.state.isSectionOpen.myTasks
-          ? <Row>
+        <section className={css.agileBoard}>
+          {/*<h2 style={{display: 'inline-block'}}>Спринт №1 (01.06.2017 - 30.06.2017)</h2>*/}
+          <Row>
             <Col xs>
-              <h4>New</h4>
-              {mineSorted.new}
+              <SelectDropdown
+                name="changedSprint"
+                placeholder="Введите название спринта..."
+                multi={false}
+                value={this.state.changedSprint}
+                onChange={(e) => this.selectValue(e, 'changedSprint')}
+                noResultsText="Нет результатов"
+                options={[
+                  { value: 'sprint1', label: 'Спринт №1 (01.06.2017 - 30.06.2017)' },
+                  { value: 'sprint2', label: 'Спринт №2 (01.06.2017 - 30.06.2017)' },
+                  { value: 'sprint3', label: 'Спринт №3 (01.06.2017 - 30.06.2017)' },
+                  { value: 'sprint4', label: 'Спринт №4 (01.06.2017 - 30.06.2017)' }
+                ]}
+              />
             </Col>
             <Col xs>
-              <h4>Develop</h4>
-              {mineSorted.dev}
-            </Col>
-            <Col xs>
-              <h4>Code Review</h4>
-              {mineSorted.codeReview}
-            </Col>
-            <Col xs>
-              <h4>QA</h4>
-              {mineSorted.qa}
-            </Col>
-            <Col xs>
-              <h4>Done</h4>
-              {mineSorted.done}
+              <SelectDropdown
+                name="filterTags"
+                multi
+                placeholder="Введите название тега..."
+                backspaceToRemoveMessage="BackSpace для очистки поля"
+                value={this.state.filterTags}
+                onChange={(e) => this.selectValue(e, 'filterTags')}
+                noResultsText="Нет результатов"
+                options={[
+                  {value: 'develop', label: 'develop'},
+                  {value: 'frontend', label: 'frontend'},
+                  {value: 'backend', label: 'backend'}
+                ]}
+              />
             </Col>
           </Row>
-          : null
-        }
-        <hr/>
-        <h3 onClick={() => this.toggleSection('otherTasks')} className={css.taskSectionTitle}>
-          <IconArrowDown className={classnames({
-            [css.close]: !this.state.isSectionOpen.otherTasks,
-            [css.open]: this.state.isSectionOpen.otherTasks
-          })} /> Прочие
-        </h3>
-        {
-          this.state.isSectionOpen.otherTasks
-          ? <Row>
-            <Col xs>
-              <h4>New</h4>
-              {otherSorted.new}
-            </Col>
-            <Col xs>
-              <h4>Develop</h4>
-              {otherSorted.dev}
-            </Col>
-            <Col xs>
-              <h4>Code Review</h4>
-              {otherSorted.codeReview}
-            </Col>
-            <Col xs>
-              <h4>QA</h4>
-              {otherSorted.qa}
-            </Col>
-            <Col xs>
-              <h4>Done</h4>
-              {otherSorted.done}
-            </Col>
-          </Row>
-          : null
-        }
-        <hr/>
-      </section>
+          <hr/>
+          <h3 onClick={() => this.toggleSection('myTasks')} className={css.taskSectionTitle}>
+            <IconArrowDown className={classnames({
+              [css.close]: !this.state.isSectionOpen.myTasks,
+              [css.open]: this.state.isSectionOpen.myTasks
+            })} /> Мои задачи
+          </h3>
+          {
+            this.state.isSectionOpen.myTasks
+            ? <Row>
+                <PhaseCollumn onDrop={this.dropTask} section={'mine'} phase={'NEW'} title={'New'} tasks={mineSorted.new}/>
+                <PhaseCollumn onDrop={this.dropTask} section={'mine'} phase={'DEVELOP'} title={'Dev'} tasks={mineSorted.dev}/>
+                <PhaseCollumn onDrop={this.dropTask} section={'mine'} phase={'CODE_REVIEW'} title={'Code Review'} tasks={mineSorted.codeReview}/>
+                <PhaseCollumn onDrop={this.dropTask} section={'mine'} phase={'QA'} title={'QA'} tasks={mineSorted.qa}/>
+                <PhaseCollumn onDrop={this.dropTask} section={'mine'} phase={'DONE'} title={'Done'} tasks={mineSorted.done}/>
+              </Row>
+            : null
+          }
+          <hr/>
+          <h3 onClick={() => this.toggleSection('otherTasks')} className={css.taskSectionTitle}>
+            <IconArrowDown className={classnames({
+              [css.close]: !this.state.isSectionOpen.otherTasks,
+              [css.open]: this.state.isSectionOpen.otherTasks
+            })} /> Прочие
+          </h3>
+          {
+            this.state.isSectionOpen.otherTasks
+            ? <Row>
+                <PhaseCollumn onDrop={this.dropTask} section={'other'} phase={'NEW'} title={'New'} tasks={otherSorted.new}/>
+                <PhaseCollumn onDrop={this.dropTask} section={'other'} phase={'DEVELOP'} title={'Dev'} tasks={otherSorted.dev}/>
+                <PhaseCollumn onDrop={this.dropTask} section={'other'} phase={'CODE_REVIEW'} title={'Code Review'} tasks={otherSorted.codeReview}/>
+                <PhaseCollumn onDrop={this.dropTask} section={'other'} phase={'QA'} title={'QA'} tasks={otherSorted.qa}/>
+                <PhaseCollumn onDrop={this.dropTask} section={'other'} phase={'DONE'} title={'Done'} tasks={otherSorted.done}/>
+              </Row>
+            : null
+          }
+          <hr/>
+        </section>
     );
   }
 }
