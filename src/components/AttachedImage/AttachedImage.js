@@ -101,28 +101,32 @@ export default class AttachedImage extends React.Component {
           {fileName}
         </div>
 
-        <ReactModal
-          isOpen={this.state.isModalOpen}
-          style={ReactModalStyles}
-          contentLabel="modal"
-          onRequestClose={this.handleCloseModal}
-        >
-          <IconClose
-            style={iconStyles}
-            className={css.iconClose}
-            onClick={this.handleCloseModal}
-          />
-          <img src={filePath} alt="" style={imageStyles} />
-        </ReactModal>
+        {this.state.isModalOpen
+          ? <ReactModal
+              isOpen={true}
+              style={ReactModalStyles}
+              contentLabel="modal"
+              onRequestClose={this.handleCloseModal}
+            >
+              <IconClose
+                style={iconStyles}
+                className={css.iconClose}
+                onClick={this.handleCloseModal}
+              />
+              <img src={filePath} alt="" style={imageStyles} />
+            </ReactModal>
+          : null}
 
-        <ConfirmDelete
-          isOpen={this.state.isConfirmDeleteOpen}
-          contentLabel="modal"
-          style={ConfirmDeleteStyles}
-        >
-          <p>Are you sure want to delete this file?</p>
-          <button onClick={this.handleCloseConfirmDelete}>No</button>
-        </ConfirmDelete>
+        {this.state.isConfirmDeleteOpen
+          ? <ConfirmDelete
+              isOpen={true}
+              contentLabel="modal"
+              style={ConfirmDeleteStyles}
+            >
+              <p>Are you sure want to delete this file?</p>
+              <button onClick={this.handleCloseConfirmDelete}>No</button>
+            </ConfirmDelete>
+          : null}
 
       </li>
     );
