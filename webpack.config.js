@@ -1,13 +1,10 @@
-const path = require('path');
-const webpack = require('webpack');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const path = require("path");
+const webpack = require("webpack");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const settings = {
   entry: {
-    bundle: [
-      "react-hot-loader/patch",
-      "./src/App.js"
-    ]
+    bundle: ["react-hot-loader/patch", "./src/App.js"]
   },
   output: {
     filename: "[name].js",
@@ -22,16 +19,11 @@ const settings = {
     rules: [
       {
         test: /\.js?$/,
-        loader: 'babel-loader',
+        exclude: /node_modules/,
+        loader: "babel-loader",
         options: {
-          presets: [
-            ["es2015", { modules: false }],
-            "stage-2",
-            "react"
-          ],
-          plugins: [
-            "transform-node-env-inline"
-          ],
+          presets: [["es2015", { modules: false }], "stage-2", "react"],
+          plugins: ["transform-node-env-inline"],
           env: {
             development: {
               plugins: ["react-hot-loader/babel"]
@@ -54,7 +46,8 @@ const settings = {
           },
           "postcss-loader",
           {
-            loader: "sass-loader", options: {
+            loader: "sass-loader",
+            options: {
               sourceMap: true
             }
           }
@@ -70,8 +63,26 @@ const settings = {
               modules: false,
               sourceMap: true
             }
-          },
+          }
         ]
+      },
+      {
+        test: [
+          /\.wexbim$/,
+          /\.jpg$/,
+          /\.docx$/,
+          /\.csv$/,
+          /\.mp4$/,
+          /\.xlsx$/,
+          /\.doc$/,
+          /\.avi$/,
+          /\.webm$/,
+          /\.mov$/,
+          /\.mp3$/,
+          /\.pdf$/,
+          /\.png$/
+        ],
+        loader: "file-loader"
       }
     ]
   },
@@ -89,10 +100,8 @@ const settings = {
     new webpack.LoaderOptionsPlugin({
       debug: true
     }),
-    new CopyWebpackPlugin([
-      { from: './src/www', to: './' }
-    ])
-  ],
+    new CopyWebpackPlugin([{ from: "./src/www", to: "./" }])
+  ]
 };
 
 module.exports = settings;
