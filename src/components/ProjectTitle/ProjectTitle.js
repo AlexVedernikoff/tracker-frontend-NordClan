@@ -92,3 +92,9 @@ export default class ProjectTitle extends Component {
     );
   }
 }
+
+ProjectTitle.PropTypes = {
+  name: PropTypes.string.isRequired,
+  pic: PropTypes.string.isRequired,
+  prefix: PropTypes.string.isRequired
+}
