@@ -103,7 +103,7 @@ export default class AttachedImage extends React.Component {
 
         {this.state.isModalOpen
           ? <ReactModal
-              isOpen={true}
+              isOpen
               style={ReactModalStyles}
               contentLabel="modal"
               onRequestClose={this.handleCloseModal}
@@ -119,7 +119,7 @@ export default class AttachedImage extends React.Component {
 
         {this.state.isConfirmDeleteOpen
           ? <ConfirmDelete
-              isOpen={true}
+              isOpen
               contentLabel="modal"
               style={ConfirmDeleteStyles}
             >

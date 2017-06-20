@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import Dropzone from 'react-dropzone';
 
 export default class FileUpload extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
   }
 
-  render() {
+  render () {
     const css = require('./FileUpload.scss');
 
     const iconStyles = {
@@ -31,6 +31,6 @@ export default class FileUpload extends React.Component {
   }
 }
 
-FileUpload.PropTypes = {
+FileUpload.propTypes = {
   onDrop: PropTypes.func.isRequired
 };
