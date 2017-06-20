@@ -10,6 +10,10 @@
   font-weight: 300;
   margin-top: 16px;
   margin-bottom: 24px;
+
+  span[contenteditable="true"] {
+    background-color: lightblue;
+  }
 }
 
 .projectPic {
@@ -24,10 +28,6 @@
   display: inline-block;
   margin-left: 8px;
   color: silver;
-
-  input {
-    width: 100px;
-  }
 }
 
 .edit {

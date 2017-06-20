@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import classnames from "classnames";
+import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import * as css from './TaskTitle.scss';
 import { IconEdit, IconCheck } from '../Icons';
@@ -58,29 +58,25 @@ class TaskTitle extends Component {
   };
 
   render() {
-    // const style = {
-    //   backgroundColor: '#f46542'
-    // };
-
     return (
       <div className={css.title}>
         <h1>
           <span
-            className={
-              classnames({ [css.projectName]: true, [css.wrong] : this.state.submitError})
-            }
+            className={classnames({
+              [css.projectName]: true,
+              [css.wrong]: this.state.submitError
+            })}
             contentEditable={this.state.editing}
             onBlur={this.validateAndSubmit}
             onKeyDown={this.handleEnterClick}
             onInput={this.titleChangeHandler}
-            // style={this.state.submitError ? style : {}}
           >
             {this.state.name}
           </span>
           {this.state.editing
             ? <IconCheck
                 onClick={this.editIconClickHandler}
-                className={css.edit + " " + css.submitIcon}
+                className={css.edit}
               />
             : <IconEdit
                 onClick={this.editIconClickHandler}

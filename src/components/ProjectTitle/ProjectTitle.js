@@ -1,17 +1,17 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { IconEdit } from "../Icons";
-import * as css from "./ProjectTitle.scss";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { IconEdit } from '../Icons';
+import * as css from './ProjectTitle.scss';
 
 export default class ProjectTitle extends Component {
   constructor(props) {
     super(props);
-    this.state = { ...props, editingTitle: false };
+    this.state = { ...props, editing: false };
   }
 
-  editIconClickHandler = (event) => {
+  editIconClickHandler = event => {
     event.stopPropagation();
-    if (this.state.editingTitle) {
+    if (this.state.editing) {
       this.stopEditing();
     } else {
       this.startEditing();
@@ -19,11 +19,11 @@ export default class ProjectTitle extends Component {
   };
 
   startEditing = () => {
-    this.setState({ editingTitle: true });
+    this.setState({ editing: true });
   };
 
   stopEditing = () => {
-    this.setState({ editingTitle: false });
+    this.setState({ editing: false });
   };
 
   changeTitle = (name, event) => {
@@ -32,15 +32,9 @@ export default class ProjectTitle extends Component {
     this.setState(change);
   };
 
-  keyDown = event => {
-    if (event.keyCode === 13) {
-      this.setState({ editingTitle: false });
-    } else if (event.keyCode === 27) {
-      this.setState({
-        editingTitle: false,
-        name: this.props.name,
-        prefix: this.props.prefix
-      });
+  handleEnterClick = event => {
+    if (this.state.editing && event.keyCode === 13) {
+      event.preventDefault();
     }
   };
 
@@ -55,36 +49,33 @@ export default class ProjectTitle extends Component {
     }
   };
 
-  componentDidMount() {
-    window.addEventListener("click", this.outsideClickHandler);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("click", this.outsideClickHandler);
-  }
+  // componentDidMount() {
+  //   window.addEventListener('click', this.outsideClickHandler);
+  // }
+  //
+  // componentWillUnmount() {
+  //   window.removeEventListener('click', this.outsideClickHandler);
+  // }
 
   render() {
     return (
       <div className={css.projectTitle}>
         <img src={this.state.pic} className={css.projectPic} />
-        {this.state.editingTitle
-          ? <input
-              ref="projectName"
-              onKeyDown={this.keyDown}
-              value={this.state.name}
-              onChange={this.changeTitle.bind(this, "name")}
-            />
-          : <span>{this.state.name}</span>}
-
+        <span
+          contentEditable={this.state.editing}
+          onKeyDown={this.handleEnterClick}
+        >
+          {this.state.name}
+        </span>
         <span className={css.prefix}>
-          ({this.state.editingTitle
-            ? <input
-                ref="projectPrefix"
-                onKeyDown={this.keyDown}
-                value={this.state.prefix}
-                onChange={this.changeTitle.bind(this, "prefix")}
-              />
-            : this.state.prefix})
+          <span>(</span>
+          <span
+            contentEditable={this.state.editing}
+            onKeyDown={this.handleEnterClick}
+          >
+            {this.state.prefix}
+          </span>
+          <span>)</span>
         </span>
 
         <IconEdit className={css.edit} onClick={this.editIconClickHandler} />
@@ -93,8 +84,8 @@ export default class ProjectTitle extends Component {
   }
 }
 
-ProjectTitle.PropTypes = {
+ProjectTitle.propTypes = {
   name: PropTypes.string.isRequired,
   pic: PropTypes.string.isRequired,
   prefix: PropTypes.string.isRequired
-}
+};
