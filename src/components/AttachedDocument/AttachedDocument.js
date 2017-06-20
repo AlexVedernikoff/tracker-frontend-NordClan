@@ -76,14 +76,16 @@ export default class AttachedDocument extends React.Component {
           </div>
         </a>
 
-        <ConfirmDelete
-          isOpen={this.state.isConfirmDeleteOpen}
-          contentLabel="modal"
-          style={ConfirmDeleteStyles}
-        >
-          <p>Are you sure want to delete this file?</p>
-          <button onClick={this.handleCloseConfirmDelete}>No</button>
-        </ConfirmDelete>
+        {this.state.isConfirmDeleteOpen
+          ? <ConfirmDelete
+              isOpen={true}
+              contentLabel="modal"
+              style={ConfirmDeleteStyles}
+            >
+              <p>Are you sure want to delete this file?</p>
+              <button onClick={this.handleCloseConfirmDelete}>No</button>
+            </ConfirmDelete>
+          : null}
       </li>
     );
   }
