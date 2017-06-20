@@ -17,7 +17,6 @@ const TaskRow = (props) => {
 
   const classPriority = 'priority-' + task.priority;
   const tags = task.tags.map((element, i) => <Tag key={i} name={element}/>);
-  console.log(task.tags);
 
   return (
     <div className={classnames([css.taskCard], [css[classPriority]])} {...other}>
@@ -83,7 +82,11 @@ const TaskRow = (props) => {
         </Col>
         <Col xs>
           <div className={css.tagbox}>
-            <Tags>{tags}</Tags>
+            <Tags>{
+              tags.length < 7
+              ? tags
+              : tags.slice(0, 6)
+              }</Tags>
           </div>
         </Col>
       </Row>
