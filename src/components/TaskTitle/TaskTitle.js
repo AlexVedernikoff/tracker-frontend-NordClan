@@ -8,7 +8,9 @@ class TaskTitle extends Component {
     super(props);
     this.state = {
       ...props,
-      editing: false
+      editing: false,
+      loading: false,
+      submitError: false
     };
   }
 
@@ -29,24 +31,42 @@ class TaskTitle extends Component {
     this.setState({ editing: false });
   };
 
+  validateAndSubmit = event => {
+    if (event.target.innerHTML.length < 4) {
+      this.setState({ submitError: true });
+    } else {
+      this.setState({
+        submitError: false,
+        editing: false,
+        name: event.target.innerText
+      });
+    }
+  };
+
   handleEnterClick = event => {
     if (this.state.editing && event.keyCode === 13) {
       event.preventDefault();
-      this.setState({ name: event.target.innerHTML });
-      this.stopEditing();
+      this.validateAndSubmit(event);
     }
   };
 
   render() {
+    const style = {
+      backgroundColor: '#f46542'
+    };
+
     return (
       <div className={css.title}>
         <h1>
           <span
-            className={css.projectName}
+            className={
+              `${css.projectName}` + (this.state.submitError ? ' wrong' : '')
+            }
             contentEditable={this.state.editing}
-            onBlur={this.stopEditing}
+            onBlur={this.validateAndSubmit}
             onKeyDown={this.handleEnterClick}
             onInput={this.titleChangeHandler}
+            style={this.state.submitError ? style : {}}
           >
             {this.state.name}
           </span>

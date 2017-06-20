@@ -15,8 +15,12 @@
 
 .projectName {
   display: inline-block;
-  width: 75%;
+  width: 65%;
   &[contenteditable="true"] {
     background-color: lightblue;
   }
+}
+
+.wrong {
+  background-color: red !important;
 }
