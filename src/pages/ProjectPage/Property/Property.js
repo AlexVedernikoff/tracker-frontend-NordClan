@@ -6,6 +6,7 @@ import classnames from 'classnames';
 
 import * as css from './Property.scss';
 import SprintCard from '../../../components/SprintCard';
+import Checkbox from '../../../components/Checkbox';
 import Button from '../../../components/Button';
 
 //Mocks
@@ -81,22 +82,22 @@ export default class Property extends Component {
           <Col xs={9}>
             <Row>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox" checked/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox" checked/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
             </Row>
           </Col>
@@ -108,22 +109,22 @@ export default class Property extends Component {
           <Col xs={9}>
             <Row>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox" checked/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
             </Row>
           </Col>
@@ -135,22 +136,22 @@ export default class Property extends Component {
           <Col xs={9}>
             <Row>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox" checked/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox" checked/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
             </Row>
           </Col>
@@ -162,22 +163,22 @@ export default class Property extends Component {
           <Col xs={9}>
             <Row>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox" checked/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox" checked/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
             </Row>
           </Col>
@@ -189,22 +190,22 @@ export default class Property extends Component {
           <Col xs={9}>
             <Row>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
               <Col xs>
-                <label className={css.cell}><input type="checkbox"/></label>
+                <label className={css.cell}><Checkbox/></label>
               </Col>
             </Row>
           </Col>

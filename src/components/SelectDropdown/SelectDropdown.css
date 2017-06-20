@@ -46,7 +46,7 @@
 
 .Select-placeholder, .Select-aria-only {
   color: silver;
-  vertical-align: middle;
+  /*vertical-align: middle;*/
 }
 
 .Select-input input {
