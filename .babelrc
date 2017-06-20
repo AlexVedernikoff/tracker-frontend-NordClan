@@ -1,6 +1,9 @@
 {
-	"presets": ["env", "stage-2", "react"],
-  "plugins": ["transform-node-env-inline"],
+	"presets": [
+		["env", {
+			"modules": false
+		}], "stage-2", "react"
+	],
 	"env": {
 		"development": {
 			"plugins": ["react-hot-loader/babel"]

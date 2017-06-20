@@ -21,8 +21,7 @@
   &[contenteditable="true"] {
     background-color: lightblue;
   }
-}
-
-.wrong {
-  background-color: red !important;
+  &.wrong {
+    background-color: red !important;
+  }
 }
