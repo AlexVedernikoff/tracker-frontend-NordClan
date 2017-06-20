@@ -29,7 +29,7 @@ const ConfirmDeleteStyles = {
 };
 
 export default class AttachedImage extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       isModalOpen: false,
@@ -58,7 +58,7 @@ export default class AttachedImage extends React.Component {
     event.stopPropagation();
   };
 
-  render() {
+  render () {
     const css = require('./AttachedImage.scss');
 
     const iconStyles = {
@@ -133,8 +133,8 @@ export default class AttachedImage extends React.Component {
   }
 }
 
-AttachedImage.PropTypes = {
-  fileType: PropTypes.string.isRequired,
+AttachedImage.propTypes = {
+  fileName: PropTypes.string.isRequired,
   filePath: PropTypes.string.isRequired,
-  fileName: PropTypes.string.isRequired
+  fileType: PropTypes.string.isRequired
 };
