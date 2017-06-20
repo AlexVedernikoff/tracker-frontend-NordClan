@@ -9,7 +9,8 @@ export default class ProjectTitle extends Component {
     this.state = { ...props, editingTitle: false };
   }
 
-  editIconClickHandler = () => {
+  editIconClickHandler = (event) => {
+    event.stopPropagation();
     if (this.state.editingTitle) {
       this.stopEditing();
     } else {
@@ -25,16 +26,16 @@ export default class ProjectTitle extends Component {
     this.setState({ editingTitle: false });
   };
 
-  changeTitle = (name, e) => {
+  changeTitle = (name, event) => {
     const change = {};
-    change[name] = e.target.value;
+    change[name] = event.target.value;
     this.setState(change);
   };
 
-  keyDown = e => {
-    if (e.keyCode === 13) {
+  keyDown = event => {
+    if (event.keyCode === 13) {
       this.setState({ editingTitle: false });
-    } else if (e.keyCode === 27) {
+    } else if (event.keyCode === 27) {
       this.setState({
         editingTitle: false,
         name: this.props.name,
@@ -43,30 +44,26 @@ export default class ProjectTitle extends Component {
     }
   };
 
-  onblurHandler = e => {
+  outsideClickHandler = event => {
     if (this.state.editingTitle) {
       if (
-        e.target !== this.refs.projectName &&
-        e.target !== this.refs.projectPrefix &&
-        e.target.tagName !== "svg"
+        event.target !== this.refs.projectName &&
+        event.target !== this.refs.projectPrefix
       ) {
-        this.setState({ editingTitle: false });
+        this.stopEditing();
       }
     }
   };
 
   componentDidMount() {
-    window.addEventListener("click", this.onblurHandler);
+    window.addEventListener("click", this.outsideClickHandler);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("click", this.onblurHandler);
+    window.removeEventListener("click", this.outsideClickHandler);
   }
 
   render() {
-    if (this.state.editingTitle) {
-      window.addEventListener("click", this.onblurHandler);
-    }
     return (
       <div className={css.projectTitle}>
         <img src={this.state.pic} className={css.projectPic} />
