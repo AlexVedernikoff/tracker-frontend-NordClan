@@ -180,7 +180,7 @@ export default class Planning extends Component {
             </div>
           </div>
           <Row>
-            <Col xs={6}>
+            <Col xs={4}>
               <h2 className={css.boardTitle}>
                 Backlog
                 <Button type="primary" text="Создать задачу" icon="IconPlus" style={{marginLeft: 16}}/>
@@ -189,8 +189,8 @@ export default class Planning extends Component {
                 {sortedTasks.slice(3, 6)}
               </div>
             </Col>
-            <Col xs={6}>
-              <h2>Спринт №3</h2>
+            <Col xs={8}>
+              <h2 className={css.boardTitle}>Спринт №3</h2>
               <div>
                 {sortedTasks}
               </div>
