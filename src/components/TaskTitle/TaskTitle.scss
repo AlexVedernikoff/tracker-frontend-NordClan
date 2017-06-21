@@ -14,15 +14,20 @@
 }
 
 .projectName {
-  display: inline-block;
+  // display: inline-block;
   width: auto;
   min-width: 100px;
   max-width: 65%;
   &[contenteditable="true"] {
     background-color: lightblue;
+
+    &:empty {
+        display: inline-block;
+        width: 100px;    
+    }
   }
 }
 
 .wrong {
-  background-color: red !important;
+  background-color: #c64949 !important;
 }

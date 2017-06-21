@@ -33,7 +33,8 @@ class TaskTitle extends Component {
   };
 
   validateAndSubmit = event => {
-    if (event.target.innerHTML.length < 4) {
+    event.target.innerText = event.target.innerText.trim();
+    if (event.target.innerText.length < 4) {
       this.setState({ submitError: true });
     } else {
       this.setState({
@@ -44,7 +45,12 @@ class TaskTitle extends Component {
     }
   };
 
-  handleEnterClick = event => {
+  handleKeyPress = event => {
+    if (event.target.innerText.length > 300) {
+      // TODO: add exceptions for backspace and other needed keys
+      event.preventDefault();
+    }
+
     if (this.state.editing && event.keyCode === 13) {
       event.preventDefault();
       this.validateAndSubmit(event);
@@ -68,7 +74,7 @@ class TaskTitle extends Component {
             })}
             contentEditable={this.state.editing}
             onBlur={this.validateAndSubmit}
-            onKeyDown={this.handleEnterClick}
+            onKeyDown={this.handleKeyPress}
             onInput={this.titleChangeHandler}
           >
             {this.state.name}
