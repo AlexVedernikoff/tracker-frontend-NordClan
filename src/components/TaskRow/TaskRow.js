@@ -73,7 +73,7 @@ export default class TaskRow extends React.Component {
           </Col>
           {
             !shortcut
-            ? <Col xs={3}>
+            ? <Col xs>
               <div className={css.metabox}>
                 <p className={css.taskMeta}>
                   <span>Спринт:</span><span><Link to="/projects/1">{task.sprint}</Link></span>
