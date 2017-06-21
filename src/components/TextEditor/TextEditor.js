@@ -1,20 +1,33 @@
 import React, { Component } from 'react';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
+
+import { Editor } from 'react-draft-wysiwyg';
+import { EditorState, ContentState, convertFromHTML } from 'draft-js';
 
 class TextEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      content: this.props.content;
+      editorState: EditorState.createWithContent(
+        ContentState.createFromBlockArray(convertFromHTML(this.props.content))
+      )
     };
   }
 
+  onEditorStateChange = editorState => {
+    this.setState({
+      editorState
+    });
+  };
+
   render() {
     return (
-      <div></div>
+      <Editor
+        editorState={this.state.editorState}
+        onEditorStateChange={this.onEditorStateChange}
+      />
     );
   }
-
 }
 
 export default TextEditor;
