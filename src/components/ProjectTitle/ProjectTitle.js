@@ -32,29 +32,62 @@ export default class ProjectTitle extends Component {
     this.setState({ editing: false });
   };
 
-  validateSubmit = () => {
-    this.projectName.innerText = this.projectName.innerText.trim();
-    this.projectPrefix.innerText = this.projectPrefix.innerText.trim();
-
+  handleIncorrectInput() {
     if (this.projectName.innerText.length < 4) {
       this.setState({ nameIsIncorrect: true });
-      return false;
-    } else {
+    } else if (this.state.nameIsIncorrect) {
       this.setState({ nameIsIncorrect: false });
     }
 
     if (this.projectPrefix.innerText.length < 2) {
       this.setState({ prefixIsIncorrect: true });
-      return false;
-    } else {
+    } else if (this.state.prefixIsIncorrect) {
       this.setState({ prefixIsIncorrect: false });
+    }
+
+    return false;
+  }
+
+  submitInput() {
+    this.setState({
+      editing: false,
+      prefixIsIncorrect: false,
+      nameIsIncorrect: false,
+      name: this.projectName.innerText,
+      prefix: this.projectPrefix.innerText
+    });
+  }
+
+  validateSubmit = () => {
+    this.projectName.innerText = this.projectName.innerText.trim();
+    this.projectPrefix.innerText = this.projectPrefix.innerText.trim();
+
+    if (
+      this.projectName.innerText.length < 4 ||
+      this.projectPrefix.innerText.length < 2
+    ) {
+      this.handleIncorrectInput();
+    } else {
+      this.submitInput();
     }
   };
 
-  handleEnterClick = event => {
-    if (this.state.editing && event.keyCode === 13) {
-      event.preventDefault();
-      this.validateSubmit();
+  handleKeyPress = event => {
+    if (this.state.editing) {
+      if (event.keyCode === 13) {
+        event.preventDefault();
+        this.validateSubmit();
+      } else if (event.keyCode === 27) {
+        event.preventDefault();
+        this.setState({
+          editing: false,
+          prefixIsIncorrect: false,
+          nameIsIncorrect: false
+        });
+
+        this.projectName.innerText = this.state.name;
+        this.projectPrefix.innerText = this.state.prefix;
+      }
     }
   };
 
@@ -64,7 +97,7 @@ export default class ProjectTitle extends Component {
         event.target !== this.projectName &&
         event.target !== this.projectPrefix
       ) {
-        this.validateSubmit()
+        this.validateSubmit();
       }
     }
   };
@@ -86,7 +119,7 @@ export default class ProjectTitle extends Component {
           className={this.state.nameIsIncorrect ? css.wrong : ''}
           ref={ref => (this.projectName = ref)}
           contentEditable={this.state.editing}
-          onKeyDown={this.handleEnterClick}
+          onKeyDown={this.handleKeyPress}
         >
           {this.state.name}
         </span>
@@ -97,7 +130,7 @@ export default class ProjectTitle extends Component {
             className={this.state.prefixIsIncorrect ? css.wrong : ''}
             ref={ref => (this.projectPrefix = ref)}
             contentEditable={this.state.editing}
-            onKeyDown={this.handleEnterClick}
+            onKeyDown={this.handleKeyPress}
           >
             {this.state.prefix}
           </span>
