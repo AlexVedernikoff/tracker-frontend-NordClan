@@ -21,6 +21,7 @@ export default class TaskRow extends React.Component {
   render () {
     const {
       task,
+      shortcut,
       ...other
     } = this.props;
 
@@ -32,7 +33,7 @@ export default class TaskRow extends React.Component {
     return (
       <div className={classnames([css.taskCard], [css[classPriority]])} {...other}>
         <Row>
-          <Col xs={6}>
+          <Col xs={shortcut ? 12 : 6}>
             <div className={css.header}>
               <div>
                 <div className={css.priorityMarker} data-tip={`Приоритет: ${task.priority}`}>{task.priority}</div>
@@ -69,40 +70,50 @@ export default class TaskRow extends React.Component {
               </h4>
             </Link>
           </Col>
-          <Col xs={3}>
-            <div className={css.metabox}>
-              <p className={css.taskMeta}>
-                <span>Спринт:</span><span><Link to="/projects/1">{task.sprint}</Link></span>
-              </p>
-              <p className={css.taskMeta}>
-                <span>Исполнитель:</span><span><Link to={`users/${5}`}>{task.executor}</Link></span>
-              </p>
-              <p className={css.taskMeta}>
+          {
+            !shortcut
+            ? <Col xs={3}>
+              <div className={css.metabox}>
+                <p className={css.taskMeta}>
+                  <span>Спринт:</span><span><Link to="/projects/1">{task.sprint}</Link></span>
+                </p>
+                <p className={css.taskMeta}>
+                  <span>Исполнитель:</span><span><Link to={`users/${5}`}>{task.executor}</Link></span>
+                </p>
+                <p className={css.taskMeta}>
+                  {
+                    task.stage !== 'NEW'
+                    ? <span className={css.time}>
+                      <span>Время: </span>
+                      <span className={classnames({[css.redText]: task.plannedTime < task.factTime, [css.greenText]: task.plannedTime > task.factTime})}>{task.factTime} ч. из {task.plannedTime}</span>
+                    </span>
+                    : null
+                  }
+                </p>
+              </div>
+            </Col>
+            : null
+          }
+
+          {
+            !shortcut
+            ? <Col xs>
+              <div className={css.tagbox}>
+                <Tags>{
+                  !cutTags
+                  ? tags
+                  : sliceTags
+                }</Tags>
                 {
-                  task.stage !== 'NEW'
-                  ? <span className={css.time}>
-                    <span>Время: </span>
-                    <span className={classnames({[css.redText]: task.plannedTime < task.factTime, [css.greenText]: task.plannedTime > task.factTime})}>{task.factTime} ч. из {task.plannedTime}</span>
-                  </span>
+                  cutTags
+                  ? <span className={css.loadMore} onClick={() => this.setState({cutTags: false})}>Показать все {task.tags.length}</span>
                   : null
                 }
-              </p>
-            </div>
-          </Col>
-          <Col xs>
-            <div className={css.tagbox}>
-              <Tags>{
-                !cutTags
-                ? tags
-                : sliceTags
-              }</Tags>
-              {
-                cutTags
-                ? <span className={css.loadMore} onClick={() => this.setState({cutTags: false})}>Показать все {task.tags.length}</span>
-                : null
-              }
-            </div>
-          </Col>
+              </div>
+            </Col>
+            : null
+          }
+
         </Row>
         {/*<div className={css.progressBar}>
           <div
@@ -119,5 +130,6 @@ export default class TaskRow extends React.Component {
 };
 
 TaskRow.propTypes = {
+  shortcut: PropTypes.bool,
   task: PropTypes.object
 };
