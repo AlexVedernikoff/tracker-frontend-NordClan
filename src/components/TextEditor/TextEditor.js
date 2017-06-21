@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState, ContentState, convertFromHTML } from 'draft-js';
+require("./textEditor.css");
 
 class TextEditor extends Component {
   constructor(props) {
