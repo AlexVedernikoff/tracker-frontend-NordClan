@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ReactTooltip from 'react-tooltip';
 import { DropTarget } from 'react-dnd';
 import { ItemTypes } from '../Constants';
 
@@ -10,6 +11,7 @@ const collumnTarget = {
 
   drop (props, monitor) {
     props.onDrop(monitor.getItem(), props.section, props.phase);
+    ReactTooltip.rebuild();
   }
 };
 
