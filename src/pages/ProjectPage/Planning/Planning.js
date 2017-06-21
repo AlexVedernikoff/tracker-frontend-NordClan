@@ -53,7 +53,7 @@ const sortTasks = (sortedArr) => {
   //   if (a.priority < b.priority) return -1;
   // });
   return sortedArr.map((element) => {
-    return <TaskRow key={element.id} task={element} shortcut/>;
+    return <TaskRow key={element.id} task={element} shortcut card/>;
   });
 };
 
@@ -180,7 +180,7 @@ export default class Planning extends Component {
             </div>
           </div>
           <Row>
-            <Col xs={4}>
+            <Col xs={6}>
               <h2 className={css.boardTitle}>
                 Backlog
                 <Button type="primary" text="Создать задачу" icon="IconPlus" style={{marginLeft: 16}}/>
@@ -189,7 +189,7 @@ export default class Planning extends Component {
                 {sortedTasks.slice(3, 6)}
               </div>
             </Col>
-            <Col xs={8}>
+            <Col xs={6}>
               <h2 className={css.boardTitle}>Спринт №3</h2>
               <div>
                 {sortedTasks}

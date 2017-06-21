@@ -22,6 +22,7 @@ export default class TaskRow extends React.Component {
     const {
       task,
       shortcut,
+      card,
       ...other
     } = this.props;
 
@@ -31,7 +32,7 @@ export default class TaskRow extends React.Component {
     const { cutTags } = this.state;
 
     return (
-      <div className={classnames([css.taskCard], [css[classPriority]])} {...other}>
+      <div className={classnames({[css.taskCard]: true, [css[classPriority]]: true, [css.card]: card})} {...other}>
         <Row>
           <Col xs={shortcut ? 12 : 6}>
             <div className={css.header}>
@@ -130,6 +131,7 @@ export default class TaskRow extends React.Component {
 };
 
 TaskRow.propTypes = {
+  card: PropTypes.bool,
   shortcut: PropTypes.bool,
   task: PropTypes.object
 };

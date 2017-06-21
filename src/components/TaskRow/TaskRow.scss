@@ -7,6 +7,11 @@
   border-top: 1px solid $color-gray;
   transition: $transition;
 
+  &.card {
+    border: 1px solid $color-gray;
+    margin-bottom: 1rem;
+  }
+
   &:hover {
     background-color: $color-lightgray;
     transition: $transition;
