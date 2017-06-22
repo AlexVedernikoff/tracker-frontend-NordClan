@@ -7,6 +7,7 @@ import { DragDropContextProvider } from 'react-dnd';
 import RouteTabs from '../../components/RouteTabs';
 import { IconEdit } from '../../components/Icons';
 import * as css from './ProjectPage.scss';
+import ProjectTitle from "./ProjectTitle";
 
 export default class ProjectPage extends Component {
   static propTypes = {
@@ -27,13 +28,7 @@ export default class ProjectPage extends Component {
       <DragDropContextProvider backend={HTML5Backend}>
         <div id="project-page">
 
-          <h1 className={css.projectTitle}><img src={project.pic} className={css.projectPic}/>
-            {project.name}
-            <span className={css.prefix}>
-              ({project.prefix})
-            </span>
-            <IconEdit className={css.edit} />
-          </h1>
+          <ProjectTitle {...project} />
 
           <RouteTabs>
             <Link activeClassName="active" to={`/projects/${project.id}/agile-board`}>Доска</Link>

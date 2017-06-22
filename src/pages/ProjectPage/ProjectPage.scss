@@ -1,36 +1,5 @@
 @import '../../styles/variables.scss';
 
-.projectTitle {
-  display: flex;
-  align-items: center;
-}
-
-.projectPic {
-  width: 56px;
-  height: 56px;
-  margin-right: 16px;
-  box-sizing: border-box;
-  object-fit: contain;
-}
-
-.prefix {
-  display: inline-block;
-  margin-left: 8px;
-  color: silver;
-}
-
-.edit {
-  color: silver;
-  cursor: pointer;
-  margin-left: 8px;
-  transition: $transition;
-
-  &:hover {
-    transform: rotate(360deg);
-    transition: $transition;
-  }
-}
-
 .tabContent {
   padding: 24px 0;
 }

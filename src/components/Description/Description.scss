@@ -1,0 +1,14 @@
+@import '../../styles/variables.scss';
+
+.edit {
+  color: silver;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: $transition;
+
+  &:hover {
+    transform: rotate(360deg);
+    transition: $transition;
+    color: black;
+  }
+}
