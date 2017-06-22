@@ -34,8 +34,8 @@ class GanttChart extends Component {
   componentDidMount() {
     gantt.init(this.ganttContainer);
     gantt.parse(this.state.tasks);
+    this.forceUpdate();
   }
-
 
   render() {
     return (
@@ -43,7 +43,7 @@ class GanttChart extends Component {
         ref={ref => {
           this.ganttContainer = ref;
         }}
-        style={{ height: 500 }}
+        style={{width: 1200, height: 550}}
       />
     );
   }
