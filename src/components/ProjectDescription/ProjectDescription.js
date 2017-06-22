@@ -4,6 +4,7 @@ import * as css from './ProjectDescription.scss';
 import { projectDescriptionText } from '../../mocks/descriptionText';
 import { IconEdit, IconCheck } from '../Icons';
 import TextEditor from '../TextEditor';
+import { stateToHTML } from 'draft-js-export-html';
 
 class ProjectDescription extends Component {
   constructor(props) {
@@ -16,6 +17,7 @@ class ProjectDescription extends Component {
 
   toggleEditing = () => {
     if (this.state.editing) {
+      this.updateText();
       this.stopEditing();
     } else {
       this.startEditing();
@@ -30,6 +32,12 @@ class ProjectDescription extends Component {
     this.setState({ editing: false });
   };
 
+  updateText = () => {
+    this.setState({
+      text: { __html: stateToHTML(this.TextEditor.state.contentState) }
+    });
+  };
+
   render() {
     return (
       <div className={css.projectDesc}>
@@ -40,7 +48,10 @@ class ProjectDescription extends Component {
             : <IconEdit className={css.edit} onClick={this.toggleEditing} />}
         </h2>
         {this.state.editing
-          ? <TextEditor content={this.state.text["__html"]} />
+          ? <TextEditor
+              ref={ref => (this.TextEditor = ref)}
+              content={this.state.text['__html']}
+            />
           : <div className="wiki" dangerouslySetInnerHTML={this.state.text} />}
       </div>
     );
