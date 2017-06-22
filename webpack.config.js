@@ -1,13 +1,10 @@
-const path = require('path');
-const webpack = require('webpack');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const path = require("path");
+const webpack = require("webpack");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const settings = {
   entry: {
-    bundle: [
-      "react-hot-loader/patch",
-      "./src/App.js"
-    ]
+    bundle: ["react-hot-loader/patch", "./src/App.js"]
   },
   output: {
     filename: "[name].js",
@@ -40,7 +37,8 @@ const settings = {
           },
           { loader: 'postcss-loader', options: { sourceMap: true } },
           {
-            loader: "sass-loader", options: {
+            loader: "sass-loader",
+            options: {
               sourceMap: true
             }
           }
@@ -56,8 +54,26 @@ const settings = {
               modules: false,
               sourceMap: true
             }
-          },
+          }
         ]
+      },
+      {
+        test: [
+          /\.wexbim$/,
+          /\.jpg$/,
+          /\.docx$/,
+          /\.csv$/,
+          /\.mp4$/,
+          /\.xlsx$/,
+          /\.doc$/,
+          /\.avi$/,
+          /\.webm$/,
+          /\.mov$/,
+          /\.mp3$/,
+          /\.pdf$/,
+          /\.png$/
+        ],
+        loader: "file-loader"
       }
     ]
   },
@@ -75,10 +91,8 @@ const settings = {
     new webpack.LoaderOptionsPlugin({
       debug: true
     }),
-    new CopyWebpackPlugin([
-      { from: './src/www', to: './' }
-    ])
-  ],
+    new CopyWebpackPlugin([{ from: "./src/www", to: "./" }])
+  ]
 };
 
 module.exports = settings;

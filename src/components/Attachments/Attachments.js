@@ -1,78 +1,41 @@
-import React, {PropTypes} from 'react';
-import { Link } from 'react-router';
-import { IconFileDocument, IconFilePdf, IconDelete, IconDownload, IconPlus, IconEye } from '../Icons';
+import React from "react";
+import PropTypes from "prop-types";
+import AttachedDocument from "../AttachedDocument";
+import AttachedImage from "../AttachedImage";
+import FileUpload from "../FileUpload";
+import { files } from "../../../mocks/Files";
 
 export default class Attachments extends React.Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      files: files
+    };
+  }
+
+  onDrop = (acceptedFiles, rejectedFiles) => {
+    console.log(acceptedFiles);
+  }
+
+  isPicture (fileType) {
+    const regexp = /(gif|jpe?g|tiff|png)/i;
+    return regexp.test(fileType);
+  }
 
   render () {
-    const css = require('./Attachments.scss');
-
-    const iconStyles = {
-      width: 24,
-      height: 24,
-      color: 'inherit',
-      fill: 'currentColor'
-    };
+    const css = require("./Attachments.scss");
 
     return (
       <div className={css.attachments}>
         <ul className={css.attachmentsContainer}>
-          <li className={css.attachment}>
-            <Link to="#">
-              <div className={css.attachmentIcon}>
-                <IconFilePdf style={iconStyles} />
-                <div className={css.actions}>
-                  <button>
-                    <IconDownload style={iconStyles} />
-                  </button>
-                  <button>
-                    <IconDelete style={iconStyles} />
-                  </button>
-                </div>
-              </div>
-              <div className={css.attachmentName}>document.pdf</div>
-            </Link>
-          </li>
-          <li className={css.attachment}>
-            <Link to="#">
-              <div className={css.attachmentIcon}>
-                <IconFileDocument style={iconStyles} />
-                <div className={css.actions}>
-                  <button>
-                    <IconDownload style={iconStyles} />
-                  </button>
-                  <button>
-                    <IconDelete style={iconStyles} />
-                  </button>
-                </div>
-              </div>
-              <div className={css.attachmentName}>Сводная таблица технических требований.doc</div>
-            </Link>
-          </li>
-          <li className={css.attachment}>
-            <Link to="#">
-              <div className={css.attachmentIcon}>
-                <img src="http://lorempixel.com/100/100/" alt="" className={css.screen} />
-                <div className={css.actions}>
-                  <button>
-                    <IconEye style={iconStyles} />
-                  </button>
-                  <button>
-                    <IconDelete style={iconStyles} />
-                  </button>
-                </div>
-              </div>
-              <div className={css.attachmentName}>ScreenShot.png</div>
-            </Link>
-          </li>
-          <li className={css.attachment}>
-            <Link to="#">
-              <div className={css.attachmentIcon}>
-                <IconPlus style={iconStyles} />
-              </div>
-              <div className={css.attachmentName}>Добавить файл</div>
-            </Link>
-          </li>
+
+          {this.state.files.map((file, index) => {
+            return this.isPicture(file.fileType)
+              ? <AttachedImage key={`attached-document-${index}`} {...file} />
+              : <AttachedDocument key={`attached-picture-${index}`} {...file} />;
+          })}
+
+          <FileUpload onDrop={this.onDrop} />
         </ul>
       </div>
     );
