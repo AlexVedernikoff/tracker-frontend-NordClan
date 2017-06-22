@@ -22,7 +22,7 @@ class TextEditor extends Component {
   };
 
   render() {
-    return 
+    return (
       <Editor
         editorState={this.state.editorState}
         onEditorStateChange={this.onEditorStateChange}
