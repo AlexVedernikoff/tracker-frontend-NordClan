@@ -5,6 +5,9 @@
   border: 1px solid darken($color-gray, 5%);
   padding: 0.5rem 1rem 1rem;
   margin-bottom: 1rem;
+  transition-property: opacity;
+  transition-duration: 0.2s;
+  background-color: white;
 
   .priorityMarker {
     content: "";
@@ -141,4 +144,10 @@ svg.red { background-color: transparent; fill: $color-red; }
   display: inline-block;
   margin-right: 4px;
   color: lighten($color-black, 40%);
+}
+
+.dropped {
+  opacity: 0.3;
+  transition-property: opacity;
+  transition-duration: 0.2s;
 }
