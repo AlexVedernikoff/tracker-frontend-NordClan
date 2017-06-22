@@ -67,7 +67,6 @@ class GanttChart extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log(nextState);
     return this.props.zoom !== nextState.zoom;
   }
 
@@ -83,6 +82,7 @@ class GanttChart extends Component {
   };
 
   render() {
+    this.setZoom(this.state.zoom);
     return (
       <div>
         <Toolbar zoom={this.state.zoom} onZoomChange={this.handleZoomChange} />
