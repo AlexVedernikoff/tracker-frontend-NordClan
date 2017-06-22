@@ -8,6 +8,8 @@ import RelatedTasks from './RelatedTasks';
 import TaskHistory from './TaskHistory';
 import Attachments from '../../components/Attachments';
 import Comments from './Comments';
+import Description from "../../components/Description";
+import { TaskDescriptionText } from "../../mocks/descriptionText";
 
 import * as css from './TaskPage.scss';
 
@@ -44,9 +46,7 @@ export default class TaskPage extends Component {
           <Col xs={8}>
             <TaskHeader task={task}/>
             <main className={css.main}>
-              <div className={css.description}>
-                {task.description}
-              </div>
+              <Description text={TaskDescriptionText} />
               <hr />
               <h3>Прикрепленные файлы:</h3>
               <Attachments task={task} />

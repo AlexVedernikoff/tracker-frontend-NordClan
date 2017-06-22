@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import AttachedDocument from "../AttachedDocument";
 import AttachedImage from "../AttachedImage";
 import FileUpload from "../FileUpload";
-import { files } from "../../../mocks/Files";
+import { files } from "../../mocks/Files";
 
 export default class Attachments extends React.Component {
   constructor (props) {

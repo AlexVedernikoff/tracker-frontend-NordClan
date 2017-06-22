@@ -20,16 +20,7 @@ const settings = {
       {
         test: /\.js?$/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
-        options: {
-          presets: [['es2015', { modules: false }], 'stage-2', 'react'],
-          plugins: ['transform-node-env-inline'],
-          env: {
-            development: {
-              plugins: ['react-hot-loader/babel']
-            }
-          }
-        }
+        loader: 'babel-loader'
       },
       {
         test: /\.scss$/,
@@ -44,7 +35,7 @@ const settings = {
               localIdentName: '[name]--[local]--[hash:base64:8]'
             }
           },
-          'postcss-loader',
+          { loader: 'postcss-loader', options: { sourceMap: true } },
           {
             loader: 'sass-loader',
             options: {

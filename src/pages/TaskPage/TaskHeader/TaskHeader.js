@@ -2,6 +2,7 @@ import React, {PropTypes} from 'react';
 import Button from '../../../components/Button';
 import Priority from '../Priority';
 import ButtonGroup from '../../../components/ButtonGroup';
+import TaskTitle from '../TaskTitle';
 
 const TaskHeader = (props) => {
   const {task} = props;
@@ -19,7 +20,7 @@ const TaskHeader = (props) => {
         </div>
         <Priority/>
       </div>
-      <h1 className={css.title}> {task.name}</h1>
+      <TaskTitle name={task.name} />
       <ButtonGroup type="lifecircle" stage="full" style={{marginRight: 32}}>
         <Button text="New" type="bordered" data-tip="Перевести в стадию New" data-place='bottom' />
         <Button text="Develop" type="bordered" data-tip="Перевести в стадию Develop" data-place='bottom' />
