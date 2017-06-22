@@ -27,24 +27,72 @@ class GanttChart extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tasks: data
+      tasks: data,
+      zoom: "Days"
     };
   }
 
   componentDidMount() {
     gantt.init(this.ganttContainer);
     gantt.parse(this.state.tasks);
-    this.forceUpdate();
   }
+
+  setZoom(value) {
+    switch (value) {
+      case 'Hours':
+        gantt.config.scale_unit = 'day';
+        gantt.config.date_scale = '%d %M';
+
+        gantt.config.scale_height = 60;
+        gantt.config.min_column_width = 30;
+        gantt.config.subscales = [{ unit: 'hour', step: 1, date: '%H' }];
+        break;
+      case 'Days':
+        gantt.config.min_column_width = 70;
+        gantt.config.scale_unit = 'week';
+        gantt.config.date_scale = '#%W';
+        gantt.config.subscales = [{ unit: 'day', step: 1, date: '%d %M' }];
+        gantt.config.scale_height = 60;
+        break;
+      case 'Months':
+        gantt.config.min_column_width = 70;
+        gantt.config.scale_unit = 'month';
+        gantt.config.date_scale = '%F';
+        gantt.config.scale_height = 60;
+        gantt.config.subscales = [{ unit: 'week', step: 1, date: '#%W' }];
+        break;
+      default:
+        break;
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log(nextState);
+    return this.props.zoom !== nextState.zoom;
+  }
+
+  componentDidUpdate() {
+    gantt.render();
+  }
+
+  handleZoomChange = zoom => {
+    console.log(zoom);
+    this.setState({
+      zoom: zoom
+    });
+  };
 
   render() {
     return (
-      <div
-        ref={ref => {
-          this.ganttContainer = ref;
-        }}
-        style={{width: 1200, height: 550}}
-      />
+      <div>
+        <Toolbar zoom={this.state.zoom} onZoomChange={this.handleZoomChange} />
+        <div
+          ref={ref => {
+            this.ganttContainer = ref;
+          }}
+          style={{ width: 1200, height: 550 }}
+        />
+      </div>
     );
   }
 }
