@@ -1,32 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { IconDelete, IconDownload, IconClose } from '../Icons';
-import ReactModal from 'react-modal';
-import ConfirmDelete from 'react-modal';
-
-const ReactModalStyles = {
-  content: {
-    left: '260px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  overlay: {
-    zIndex: 5
-  }
-};
-
-const ConfirmDeleteStyles = {
-  content: {
-    top: '40%',
-    left: '40%',
-    right: '40%',
-    bottom: '40%'
-  },
-  overlay: {
-    zIndex: 5
-  }
-};
+import Modal from '../Modal';
+import ConfirmModal from '../ConfirmModal';
 
 export default class AttachedImage extends React.Component {
   constructor (props) {
@@ -69,8 +45,9 @@ export default class AttachedImage extends React.Component {
     };
 
     const imageStyles = {
-      maxHeight: '90%',
-      maxWidth: '100%'
+      maxHeight: '100%',
+      maxWidth: '100%',
+      display: 'block'
     };
 
     const { fileName, filePath, fileType } = this.props;
@@ -102,30 +79,24 @@ export default class AttachedImage extends React.Component {
         </div>
 
         {this.state.isModalOpen
-          ? <ReactModal
+          ? <Modal
               isOpen
-              style={ReactModalStyles}
               contentLabel="modal"
               onRequestClose={this.handleCloseModal}
             >
-              <IconClose
-                style={iconStyles}
-                className={css.iconClose}
-                onClick={this.handleCloseModal}
-              />
               <img src={filePath} alt="" style={imageStyles} />
-            </ReactModal>
+            </Modal>
           : null}
 
         {this.state.isConfirmDeleteOpen
-          ? <ConfirmDelete
+          ? <ConfirmModal
               isOpen
               contentLabel="modal"
-              style={ConfirmDeleteStyles}
-            >
-              <p>Are you sure want to delete this file?</p>
-              <button onClick={this.handleCloseConfirmDelete}>No</button>
-            </ConfirmDelete>
+              onRequestClose={this.handleCloseConfirmDelete}
+              onConfirm={() => console.log('Йеп')}
+              onCancel={this.handleCloseConfirmDelete}
+              text="Вы уверены, что хотите удалить этот файл?"
+            />
           : null}
 
       </li>

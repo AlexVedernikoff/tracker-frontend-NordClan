@@ -1,0 +1,34 @@
+@import '../../styles/variables';
+
+.iconClose {
+  position: absolute;
+  z-index: 2;
+  right: 1rem;
+  top: 1rem;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    transform: rotate(90deg);
+    transition: $transition;
+  }
+}
+
+@keyframes modalAnimation {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.container {
+  max-height: 100%;
+  overflow: auto;
+  position: relative;
+  z-index: 0;
+  padding: 2rem;
+}
