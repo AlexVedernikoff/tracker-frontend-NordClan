@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './ProjectDescription.scss';
-import { projectDescriptionText } from '../../mocks/descriptionText';
+import * as css from './Description.scss';
 import { IconEdit, IconCheck } from '../Icons';
 import TextEditor from '../TextEditor';
 import { stateToHTML } from 'draft-js-export-html';
 
-class ProjectDescription extends Component {
+class Description extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      text: projectDescriptionText,
+      text: this.props.text,
       editing: false
     };
   }
@@ -72,4 +71,4 @@ class ProjectDescription extends Component {
   }
 }
 
-export default ProjectDescription;
+export default Description;

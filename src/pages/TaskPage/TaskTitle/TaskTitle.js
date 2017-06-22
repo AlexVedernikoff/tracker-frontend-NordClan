@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import * as css from './TaskTitle.scss';
-import { IconEdit, IconCheck } from '../Icons';
+import { IconEdit, IconCheck } from '../../../components/Icons';
 
 class TaskTitle extends Component {
   constructor(props) {

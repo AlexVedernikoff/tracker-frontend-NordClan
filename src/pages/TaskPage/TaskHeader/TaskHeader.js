@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react';
 import Button from '../../../components/Button';
 import Priority from '../Priority';
 import ButtonGroup from '../../../components/ButtonGroup';
-import TaskTitle from '../../../components/TaskTitle';
+import TaskTitle from '../TaskTitle';
 
 const TaskHeader = (props) => {
   const {task} = props;

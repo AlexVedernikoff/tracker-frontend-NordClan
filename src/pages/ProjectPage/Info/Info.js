@@ -5,7 +5,8 @@ import * as css from './Info.scss';
 import Attachments from '../../../components/Attachments';
 import Tag from '../../../components/Tag';
 import Tags from '../../../components/Tags';
-import ProjectDescription from '../../../components/ProjectDescription';
+import Description from '../../../components/Description';
+import { DescriptionText } from '../../../mocks/descriptionText';
 
 export default class Info extends Component {
   static propTypes = {};
@@ -27,7 +28,7 @@ export default class Info extends Component {
           <Tag name="Внутренний" />
         </Tags>
         <hr />
-        <ProjectDescription />
+        <Description text={DescriptionText} />
         <hr />
         <h2>Файлы</h2>
         {/*<hr/>*/}

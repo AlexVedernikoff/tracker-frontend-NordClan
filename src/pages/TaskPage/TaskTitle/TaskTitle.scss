@@ -1,4 +1,4 @@
-@import '../../styles/variables.scss';
+@import '../../../styles/variables.scss';
 
 .edit {
   color: silver;
@@ -23,7 +23,7 @@
 
     &:empty {
         display: inline-block;
-        width: 100px;    
+        width: 100px;
     }
   }
 }
