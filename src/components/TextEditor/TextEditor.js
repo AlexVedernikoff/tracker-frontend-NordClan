@@ -11,16 +11,13 @@ class TextEditor extends Component {
     this.state = {
       editorState: EditorState.createWithContent(
         ContentState.createFromBlockArray(convertFromHTML(this.props.content))
-      ),
-      contentState: ContentState.createFromBlockArray(
-        convertFromHTML(this.props.content)
       )
     };
   }
 
   onEditorStateChange = editorState => {
     this.setState({
-      editorState, contentState: editorState.getCurrentContent()
+      editorState
     });
   };
 

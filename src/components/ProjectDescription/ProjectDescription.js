@@ -32,9 +32,23 @@ class ProjectDescription extends Component {
     this.setState({ editing: false });
   };
 
+  checkEscapeKeyPress = (event) => {
+    if (event.keyCode === 27 && this.state.editing) {
+      this.stopEditing();
+    }
+  };
+
+  componentDidMount() {
+    window.addEventListener("keydown", this.checkEscapeKeyPress);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("keydown", this.checkEscapeKeyPress);
+  }
+
   updateText = () => {
     this.setState({
-      text: { __html: stateToHTML(this.TextEditor.state.contentState) }
+      text: { __html: stateToHTML(this.TextEditor.state.editorState.getCurrentContent()) }
     });
   };
 
