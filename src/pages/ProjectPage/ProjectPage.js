@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import { Link } from 'react-router';
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContextProvider } from 'react-dnd';
 
 import RouteTabs from '../../components/RouteTabs';
 import { IconEdit } from '../../components/Icons';
-import AgileBoard from './AgileBoard';
 import * as css from './ProjectPage.scss';
 
 export default class ProjectPage extends Component {
@@ -24,30 +24,32 @@ export default class ProjectPage extends Component {
     };
 
     return (
-      <div id="project-page">
+      <DragDropContextProvider backend={HTML5Backend}>
+        <div id="project-page">
 
-        <h1 className={css.projectTitle}><img src={project.pic} className={css.projectPic}/>
-          {project.name}
-          <span className={css.prefix}>
-            ({project.prefix})
-          </span>
-          <IconEdit className={css.edit} />
-        </h1>
+          <h1 className={css.projectTitle}><img src={project.pic} className={css.projectPic}/>
+            {project.name}
+            <span className={css.prefix}>
+              ({project.prefix})
+            </span>
+            <IconEdit className={css.edit} />
+          </h1>
 
-        <RouteTabs>
-          <Link activeClassName="active" to={`/projects/${project.id}/agile-board`}>Доска</Link>
-          <Link activeClassName="active" to={`/projects/${project.id}/tasks`}>Список задач</Link>
-          <Link activeClassName="active" to={`/projects/${project.id}/planning`}>Планирование</Link>
-          <Link activeClassName="active" to={`/projects/${project.id}/info`}>Информация</Link>
-          <Link activeClassName="active" to={`/projects/${project.id}/property`}>Настройки</Link>
-          <Link activeClassName="active" to={`/projects/${project.id}/analitics`}>Аналитика</Link>
-        </RouteTabs>
+          <RouteTabs>
+            <Link activeClassName="active" to={`/projects/${project.id}/agile-board`}>Доска</Link>
+            <Link activeClassName="active" to={`/projects/${project.id}/tasks`}>Список задач</Link>
+            <Link activeClassName="active" to={`/projects/${project.id}/planning`}>Планирование</Link>
+            <Link activeClassName="active" to={`/projects/${project.id}/info`}>Информация</Link>
+            <Link activeClassName="active" to={`/projects/${project.id}/property`}>Настройки</Link>
+            <Link activeClassName="active" to={`/projects/${project.id}/analitics`}>Аналитика</Link>
+          </RouteTabs>
 
-        <div className={css.tabContent}>
-          {this.props.children}
+          <div className={css.tabContent}>
+            {this.props.children}
+          </div>
+
         </div>
-
-      </div>
+      </DragDropContextProvider>
     );
   }
 }
