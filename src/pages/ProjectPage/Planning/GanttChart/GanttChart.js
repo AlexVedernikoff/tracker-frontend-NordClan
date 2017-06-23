@@ -3,6 +3,8 @@ import Toolbar from './Toolbar';
 import 'dhtmlx-gantt';
 import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
 
+// tutorial https://dhtmlx.com/blog/create-react-gantt-chart-component-dhtmlxgantt/
+
 const data = {
   data: [
     {
