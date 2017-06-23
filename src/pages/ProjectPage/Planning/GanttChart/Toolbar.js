@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import * as css from "./GanttChart.scss";
+import classnames from "classnames";
 
 export default class Toolbar extends Component {
   constructor(props) {
@@ -17,7 +19,10 @@ export default class Toolbar extends Component {
       return (
         <label
           key={value}
-          className={`radio-label ${isActive ? 'radio-label-active' : ''}`}
+          className={classnames({
+            [css.radioLabel]: true,
+            [css.radioLabelActive] : isActive
+          })}
         >
           <input
             type="radio"
@@ -31,7 +36,7 @@ export default class Toolbar extends Component {
     });
 
     return (
-      <div className="zoom-bar">
+      <div className="zoom-bar" style={{ marginBottom: 10 }}>
         <b>Zooming: </b>
         {zoomRadios}
       </div>

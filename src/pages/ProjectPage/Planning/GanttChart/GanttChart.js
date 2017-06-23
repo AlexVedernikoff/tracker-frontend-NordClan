@@ -28,13 +28,49 @@ class GanttChart extends Component {
     super(props);
     this.state = {
       tasks: data,
-      zoom: "Days"
+      zoom: 'Days'
     };
   }
 
   componentDidMount() {
     gantt.init(this.ganttContainer);
     gantt.parse(this.state.tasks);
+
+    gantt.attachEvent('onAfterTaskAdd', (id, task) => {
+      if (this.props.onTaskUpdated) {
+        this.props.onTaskUpdated(id, 'inserted', task);
+      }
+    });
+
+    gantt.attachEvent('onAfterTaskUpdate', (id, task) => {
+      if (this.props.onTaskUpdated) {
+        this.props.onTaskUpdated(id, 'updated', task);
+      }
+    });
+
+    gantt.attachEvent('onAfterTaskDelete', id => {
+      if (this.props.onTaskUpdated) {
+        this.props.onTaskUpdated(id, 'deleted');
+      }
+    });
+
+    gantt.attachEvent('onAfterLinkAdd', (id, link) => {
+      if (this.props.onLinkUpdated) {
+        this.props.onLinkUpdated(id, 'inserted', link);
+      }
+    });
+
+    gantt.attachEvent('onAfterLinkUpdate', (id, link) => {
+      if (this.props.onLinkUpdated) {
+        this.props.onLinkUpdated(id, 'updated', link);
+      }
+    });
+
+    gantt.attachEvent('onAfterLinkDelete', (id, link) => {
+      if (this.props.onLinkUpdated) {
+        this.props.onLinkUpdated(id, 'deleted');
+      }
+    });
   }
 
   setZoom(value) {
@@ -82,10 +118,14 @@ class GanttChart extends Component {
   };
 
   render() {
+    console.log(this.props);
     this.setZoom(this.state.zoom);
     return (
       <div>
-        <Toolbar zoom={this.state.zoom} onZoomChange={this.handleZoomChange} />
+        <Toolbar
+          zoom={this.state.zoom}
+          onZoomChange={this.handleZoomChange}
+        />
         <div
           ref={ref => {
             this.ganttContainer = ref;
