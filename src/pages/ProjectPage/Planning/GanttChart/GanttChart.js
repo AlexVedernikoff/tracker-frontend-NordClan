@@ -111,14 +111,12 @@ class GanttChart extends Component {
   }
 
   handleZoomChange = zoom => {
-    console.log(zoom);
     this.setState({
       zoom: zoom
     });
   };
 
   render() {
-    console.log(this.props);
     this.setZoom(this.state.zoom);
     return (
       <div>
