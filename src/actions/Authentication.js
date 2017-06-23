@@ -20,7 +20,7 @@ export function doAuthentication(username, password) {
   return dispatch => dispatch(startAuthentication());
   axios
     .post(url, { login: username, ...password })
-    .catch(error => AuthenticationError(error))
+    .catch(error => dispatch(AuthenticationError(error)))
     .then(response => {
       if (!response) {
         return;
