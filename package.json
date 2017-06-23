@@ -39,6 +39,7 @@
     "npm": ">=4.0.1"
   },
   "dependencies": {
+    "dhtmlx-gantt": "^4.1.0",
     "draft-js": "^0.10.1",
     "draft-js-export-html": "^0.5.4",
     "normalize-css": "^2.3.1",

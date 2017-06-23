@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Toolbar from './Toolbar';
-import '../../../../dhtmlx-gantt';
-import '../../../../dhtmlx-gantt/codebase/dhtmlxgantt.css';
+import 'dhtmlx-gantt';
+import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
 
 const data = {
   data: [
