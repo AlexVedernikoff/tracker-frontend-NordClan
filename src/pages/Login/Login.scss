@@ -1,0 +1,50 @@
+@import '../../styles/variables';
+
+$n: 5;
+$x: 17.5%;
+$y: (100% - $n * $x) / ($n - 1);
+
+@keyframes carousel {
+  @for $i from 0 to 101 { // 0, 1, 2, 3, 4
+   #{$i * 1%} {background-image: linear-gradient(#{$i * 14.4deg}, rgb(random(255), random(255), random(255)), rgb(random(255), random(255), random(255)));}
+  }
+}
+
+.formWrapper {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // animation-name: carousel;
+  // animation-duration: 10s;
+  // animation-iteration-count: infinite;
+  // animation-timing-function: ease-out;
+}
+
+.loginForm {
+  position: fixed;
+  width: 100%;
+  max-width: 20rem;
+}
+
+.inputWrapper {
+  margin: 1rem 0;
+
+  & > input {
+    border-bottom-color: darken($color-gray, 10%);
+  }
+}
+
+.buttonWrapper {
+  width: 100%;
+
+  & > button {
+    position: relative;
+    width: 50%;
+    box-sizing: border-box;
+  }
+}
