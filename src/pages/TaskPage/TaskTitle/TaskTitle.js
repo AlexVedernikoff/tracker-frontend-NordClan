@@ -5,7 +5,7 @@ import * as css from './TaskTitle.scss';
 import { IconEdit, IconCheck } from '../../../components/Icons';
 
 class TaskTitle extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       ...props,
@@ -63,13 +63,13 @@ class TaskTitle extends Component {
     }
   };
 
-  render() {
+  render () {
     return (
       <div className={css.title}>
-        <h1>
+        <h1 className={css.titleWrapper}>
           <span
             className={classnames({
-              [css.projectName]: true,
+              [css.taskName]: true,
               [css.wrong]: this.state.submitError
             })}
             contentEditable={this.state.editing}
@@ -82,7 +82,7 @@ class TaskTitle extends Component {
           {this.state.editing
             ? <IconCheck
                 onClick={this.editIconClickHandler}
-                className={css.edit}
+                className={css.save}
               />
             : <IconEdit
                 onClick={this.editIconClickHandler}

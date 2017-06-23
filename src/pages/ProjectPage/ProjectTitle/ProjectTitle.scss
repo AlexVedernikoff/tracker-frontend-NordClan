@@ -9,6 +9,12 @@
   margin-top: 1rem;
   margin-bottom: 1.5rem;
 
+  &:hover {
+    .edit, .save {
+      opacity: 1;
+    }
+  }
+
   span[contenteditable="true"] {
     background-color: $color-gray;
   }
@@ -34,14 +40,44 @@
 }
 
 .edit {
+  display: inline-block;
+  vertical-align: center;
   color: silver;
   cursor: pointer;
+  padding: 7px;
   margin-left: 0.5rem;
+  font-size: 1rem;
+  background-color: white;
+  border: 1px solid lighten($color-black, 70%);
+  border-radius: 50%;
+  opacity: 0;
   transition: $transition;
 
   &:hover {
-    transform: rotate(360deg);
-    transition: $transition;
+    background-color: $color-lightgray;
+    fill: $color-dark;
+    border-color: $color-dark;
+  }
+}
+
+.save {
+  display: inline-block;
+  vertical-align: center;
+  color: $color-green;
+  cursor: pointer;
+  padding: 7px;
+  margin-left: 0.5rem;
+  font-size: 1rem;
+  background-color: white;
+  border: 1px solid $color-green;
+  border-radius: 50%;
+  opacity: 1;
+  transition: $transition;
+
+  &:hover {
+    background-color: $color-green;
+    fill: white;
+    border-color: $color-green;
   }
 }
 

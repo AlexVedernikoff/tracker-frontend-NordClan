@@ -4,14 +4,20 @@ import * as css from './Description.scss';
 import { IconEdit, IconCheck } from '../Icons';
 import TextEditor from '../TextEditor';
 import { stateToHTML } from 'draft-js-export-html';
+import ReactTooltip from 'react-tooltip';
+import classnames from 'classnames';
 
 class Description extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       text: this.props.text,
       editing: false
     };
+  }
+
+  componentDidUpdate () {
+    ReactTooltip.rebuild();
   }
 
   toggleEditing = () => {
@@ -37,11 +43,11 @@ class Description extends Component {
     }
   };
 
-  componentDidMount() {
+  componentDidMount () {
     window.addEventListener("keydown", this.checkEscapeKeyPress);
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     window.removeEventListener("keydown", this.checkEscapeKeyPress);
   }
 
@@ -51,24 +57,30 @@ class Description extends Component {
     });
   };
 
-  render() {
+  render () {
     return (
-      <div className={css.projectDesc}>
+      <div className={classnames({[css.desc]: true, [css.edited]: this.state.editing})}>
         <h2>
-          Описание{' '}
-          {this.state.editing
-            ? <IconCheck className={css.edit} onClick={this.toggleEditing} />
-            : <IconEdit className={css.edit} onClick={this.toggleEditing} />}
+          Описание
         </h2>
         {this.state.editing
           ? <TextEditor
               ref={ref => (this.TextEditor = ref)}
               content={this.state.text['__html']}
             />
-          : <div className="wiki" dangerouslySetInnerHTML={this.state.text} />}
+          : <div className={css.wiki} dangerouslySetInnerHTML={this.state.text}/>}
+        <div className={css.editBorder}>
+          {this.state.editing
+            ? <IconCheck className={css.save} onClick={this.toggleEditing} data-tip="Сохранить"/>
+            : <IconEdit className={css.edit} onClick={this.toggleEditing} data-tip="Редактировать"/>}
+        </div>
       </div>
     );
   }
 }
+
+Description.propTypes = {
+  text: PropTypes.object
+};
 
 export default Description;
