@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 import { DropTarget } from 'react-dnd';
 import { ItemTypes } from '../Constants';
+import classnames from 'classnames';
+
+import * as css from './PhaseCollumn.scss';
 
 const collumnTarget = {
   canDrop (props, monitor) {
@@ -24,20 +27,6 @@ function collect (connect, monitor) {
 }
 
 class PhaseCollumn extends React.Component {
-  renderOverlay (color) {
-    return (
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        height: '100%',
-        width: '100%',
-        zIndex: 1,
-        opacity: 0.5,
-        backgroundColor: color
-      }} />
-    );
-  }
 
   render () {
       const {
@@ -50,11 +39,9 @@ class PhaseCollumn extends React.Component {
 
       return (
         connectDropTarget(
-        <div className="col-xs" style={{position: 'relative', width: '100%', height: 'inherit'}} >
+        <div className={classnames({'col-xs': true, [css.dropColumn]: true, [css.canDropColumn]: isOver && canDrop, [css.cantDropColumn]: isOver && !canDrop})} style={{position: 'relative', width: '100%', height: 'inherit'}} >
           <h4>{title}</h4>
           {tasks}
-          {isOver && !canDrop && this.renderOverlay('red')}
-          {isOver && canDrop && this.renderOverlay('yellow')}
         </div>
         )
       );

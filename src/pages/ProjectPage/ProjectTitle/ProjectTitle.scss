@@ -3,46 +3,85 @@
 .projectTitle {
   display: flex;
   align-items: center;
-  font-size: 34px;
-  line-height: 1.2;
   margin: 0;
-  color: #333;
+  color: $color-black;
   font-weight: 300;
-  margin-top: 16px;
-  margin-bottom: 24px;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+
+  &:hover {
+    .edit, .save {
+      opacity: 1;
+    }
+  }
 
   span[contenteditable="true"] {
-    background-color: lightblue;
+    background-color: $color-gray;
+  }
+
+  span:empty {
+    display: inline-block;
+    min-width: 0.5rem;
   }
 }
 
 .projectPic {
-  width: 56px;
-  height: 56px;
-  margin-right: 16px;
+  width: 3.5rem;
+  height: 3.5rem;
+  margin-right: 1rem;
   box-sizing: border-box;
   object-fit: contain;
 }
 
 .prefix {
   display: inline-block;
-  margin-left: 8px;
+  margin-left: 0.5rem;
   color: silver;
 }
 
 .edit {
+  display: inline-block;
+  vertical-align: center;
   color: silver;
   cursor: pointer;
-  margin-left: 8px;
+  padding: 7px;
+  margin-left: 0.5rem;
+  font-size: 1rem;
+  background-color: white;
+  border: 1px solid lighten($color-black, 70%);
+  border-radius: 50%;
+  opacity: 0;
   transition: $transition;
 
   &:hover {
-    transform: rotate(360deg);
-    transition: $transition;
-    color: black;
+    background-color: $color-lightgray;
+    fill: $color-dark;
+    border-color: $color-dark;
+  }
+}
+
+.save {
+  display: inline-block;
+  vertical-align: center;
+  color: $color-green;
+  cursor: pointer;
+  padding: 7px;
+  margin-left: 0.5rem;
+  font-size: 1rem;
+  background-color: white;
+  border: 1px solid $color-green;
+  border-radius: 50%;
+  opacity: 1;
+  transition: $transition;
+
+  &:hover {
+    background-color: $color-green;
+    fill: white;
+    border-color: $color-green;
   }
 }
 
 .wrong {
-  background-color: #c64949 !important;
+  background-color: $color-red !important;
+  color: white;
 }

@@ -22,3 +22,61 @@
 .tab-simple>.nav>li.active>a { color: #333; }
 
 /* <=== Tooltips */
+
+/* Animations ===> */
+
+@keyframes fadeIn {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+}
+
+@keyframes hiddenOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* <=== Animations */
+
+/* Modal ===> */
+
+.ReactModal__Overlay
+.ReactModal__Content {
+  animation-name: fadeIn;
+  animation-duration: 0.2s;
+}
+
+.ReactModal__Overlay--before-close
+.ReactModal__Content {
+  animation-name: fadeOut;
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+}
+
+.ReactModal__Overlay--before-close {
+  animation-name: hiddenOut;
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+}
+
+/* <=== Modal */

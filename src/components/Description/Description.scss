@@ -1,14 +1,82 @@
 @import '../../styles/variables.scss';
 
 .edit {
+  display: inline-block;
   color: silver;
   cursor: pointer;
-  margin-left: 8px;
+  padding: 7px;
+  position: absolute;
+  top: -1rem;
+  left: -1rem;
+  font-size: 1rem;
+  background-color: white;
+  border: 1px solid lighten($color-black, 70%);
+  border-radius: 50%;
   transition: $transition;
 
   &:hover {
-    transform: rotate(360deg);
-    transition: $transition;
-    color: black;
+    background-color: $color-lightgray;
+    fill: $color-dark;
+    border-color: $color-dark;
   }
+}
+
+.save {
+  display: inline-block;
+  color: $color-green;
+  cursor: pointer;
+  padding: 7px;
+  position: absolute;
+  top: -1rem;
+  left: -1rem;
+  font-size: 1rem;
+  background-color: white;
+  border: 1px solid $color-green;
+  border-radius: 50%;
+  transition: $transition;
+
+  &:hover {
+    background-color: $color-green;
+    fill: white;
+    border-color: $color-green;
+  }
+}
+
+.desc {
+  position: relative;
+  padding-bottom: 0.5rem;
+
+   &.edited .editBorder {
+     opacity: 1;
+     background-color: transparent;
+   }
+
+  h2 {
+    position: relative;
+    z-index: 2;
+  }
+
+  &:hover {
+    .editBorder {
+      opacity: 1;
+      transition: $transition;
+    }
+  }
+}
+
+.editBorder {
+  position: absolute;
+  border: 1px solid $color-gray;
+  background-color: $color-lightgray;
+  top: -1rem;
+  bottom: -0.5rem;
+  left: -0.5rem;
+  right: -0.5rem;
+  opacity: 0;
+  transition: $transition;
+}
+
+.wiki {
+  position: relative;
+  z-index: 2;
 }

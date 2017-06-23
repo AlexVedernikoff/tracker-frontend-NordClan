@@ -1,3 +1,3 @@
-import AttachedDocument from "./AttachedDocument"
+import AttachedDocument from './AttachedDocument';
 
 export default AttachedDocument;

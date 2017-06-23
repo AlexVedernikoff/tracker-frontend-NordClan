@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { IconEdit, IconCheck } from '../../../components/Icons';
 import * as css from './ProjectTitle.scss';
+import ReactTooltip from 'react-tooltip';
 
 export default class ProjectTitle extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       ...props,
@@ -13,6 +14,10 @@ export default class ProjectTitle extends Component {
       prefixIsIncorrect: false,
       nameIsIncorrect: false
     };
+  }
+
+  componentDidUpdate () {
+    ReactTooltip.rebuild();
   }
 
   editIconClickHandler = event => {
@@ -32,7 +37,7 @@ export default class ProjectTitle extends Component {
     this.setState({ editing: false });
   };
 
-  handleIncorrectInput() {
+  handleIncorrectInput () {
     if (this.projectName.innerText.length < 4) {
       this.setState({ nameIsIncorrect: true });
     } else if (this.state.nameIsIncorrect) {
@@ -48,7 +53,7 @@ export default class ProjectTitle extends Component {
     return false;
   }
 
-  submitInput() {
+  submitInput () {
     this.setState({
       editing: false,
       prefixIsIncorrect: false,
@@ -63,8 +68,8 @@ export default class ProjectTitle extends Component {
     this.projectPrefix.innerText = this.projectPrefix.innerText.trim();
 
     if (
-      this.projectName.innerText.length < 4 ||
-      this.projectPrefix.innerText.length < 2
+      this.projectName.innerText.length < 4
+      || this.projectPrefix.innerText.length < 2
     ) {
       this.handleIncorrectInput();
     } else {
@@ -94,25 +99,25 @@ export default class ProjectTitle extends Component {
   outsideClickHandler = event => {
     if (this.state.editing) {
       if (
-        event.target !== this.projectName &&
-        event.target !== this.projectPrefix
+        event.target !== this.projectName
+        && event.target !== this.projectPrefix
       ) {
         this.validateSubmit();
       }
     }
   };
 
-  componentDidMount() {
+  componentDidMount () {
     window.addEventListener('click', this.outsideClickHandler);
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     window.removeEventListener('click', this.outsideClickHandler);
   }
 
-  render() {
+  render () {
     return (
-      <div className={css.projectTitle}>
+      <h1 className={css.projectTitle}>
         <img src={this.state.pic} className={css.projectPic} />
         <span
           id="projectName"
@@ -138,14 +143,16 @@ export default class ProjectTitle extends Component {
         </span>
         {this.state.editing
           ? <IconCheck
-              className={css.edit}
+              className={css.save}
+              data-tip="Сохранить"
               onClick={this.editIconClickHandler}
             />
           : <IconEdit
               className={css.edit}
+              data-tip="Редактировать"
               onClick={this.editIconClickHandler}
             />}
-      </div>
+      </h1>
     );
   }
 }

@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState, ContentState, convertFromHTML } from 'draft-js';
-require('./textEditor.css');
+require('./TextEditor.css');
 
 class TextEditor extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       editorState: EditorState.createWithContent(
@@ -21,13 +21,13 @@ class TextEditor extends Component {
     });
   };
 
-  render() {
+  render () {
     return (
       <Editor
         editorState={this.state.editorState}
         onEditorStateChange={this.onEditorStateChange}
         toolbar={{
-          options: ['inline', 'blockType', 'fontSize', 'list', 'history']
+          options: ['inline', 'blockType', 'list', 'history']
         }}
       />
     );

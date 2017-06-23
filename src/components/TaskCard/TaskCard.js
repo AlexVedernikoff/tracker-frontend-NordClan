@@ -36,9 +36,7 @@ const TaskCard = (props) => {
 
   return (
     connectDragSource(
-      <div className={classnames([css.taskCard], [css[classPriority]])} {...other}
-          style = {{ opacity: isDragging ? 0.3 : 1,
-                    'background-color': isDragging ? 'cyan' : ''}}>
+      <div className={classnames({[css.taskCard]: true, [css[classPriority]]: true, [css.dropped]: isDragging})} {...other}>
         {
           task.stage !== 'NEW' && task.stage !== 'DONE'
           ? <div
