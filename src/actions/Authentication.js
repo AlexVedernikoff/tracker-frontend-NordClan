@@ -14,9 +14,10 @@ function AuthenticationError(message) {
   };
 }
 
-function AuthenticationReceived() {
+function AuthenticationReceived(user) {
   return {
-    type: AuthActions.AUTHENTICATION_RECEIVED
+    type: AuthActions.AUTHENTICATION_RECEIVED,
+    data: user
   };
 }
 
@@ -32,7 +33,7 @@ export function doAuthentication(username, password) {
         return;
       } else {
         window.localStorage.setItem('simTrackAuthToken', response.data.token);
-        dispatch(dispatch(AuthenticationReceived()));
+        dispatch(dispatch(AuthenticationReceived(data.user)));
       }
     });
 }

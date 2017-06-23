@@ -22,7 +22,8 @@ function Auth(state = InitialState, action) {
 
     case AuthActions.AUTHENTICATION_RECEIVED:
       return {
-        ...state
+        ...state,
+        user: action.data
       }
   }
 }
