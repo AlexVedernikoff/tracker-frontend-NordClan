@@ -14,6 +14,12 @@ function AuthenticationError(message) {
   };
 }
 
+function AuthenticationReceived() {
+  return {
+    type: AuthActions.AUTHENTICATION_RECEIVED
+  };
+}
+
 export function doAuthentication(username, password) {
   const URL = `http://sim-track.simbirsoft/api/auth/login`;
 
@@ -25,7 +31,8 @@ export function doAuthentication(username, password) {
       if (!response) {
         return;
       } else {
-        console.log(response);
+        window.localStorage.setItem('simTrackAuthToken', response.data.token);
+        dispatch(dispatch(AuthenticationReceived()));
       }
     });
 }
