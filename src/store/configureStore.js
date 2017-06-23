@@ -1,23 +1,14 @@
-import { createStore, applyMiddleware, compose } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
-import logger from 'redux-logger';
-import rootReducer from '../reducers';
+import { createLogger } from 'redux-logger';
+import rootReducer from './reducers';
 
-console.log('NODE_ENV:', process.env.NODE_ENV); // eslint-disable-line
+const loggerMiddleware = createLogger();
 
-let middleware = [thunkMiddleware];
-if (process.env.NODE_ENV === 'development') {
-  middleware = [...middleware, logger];
-}
-
-/* eslint-disable no-underscore-dangle */
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-/* eslint-enable */
-
-export default function configureStore() {
+export default function configureStore(preloadedState) {
   return createStore(
-        rootReducer,
-        /* preloadedState, */
-        composeEnhancers(applyMiddleware(...middleware)),
-    );
+    rootReducer,
+    preloadedState,
+    applyMiddleware(thunkMiddleware, loggerMiddleware)
+  );
 }
