@@ -33,6 +33,7 @@ class GanttChart extends Component {
   }
 
   componentDidMount() {
+    console.log(gantt.config);
     gantt.init(this.ganttContainer);
     gantt.parse(this.state.tasks);
 
@@ -120,10 +121,7 @@ class GanttChart extends Component {
     this.setZoom(this.state.zoom);
     return (
       <div>
-        <Toolbar
-          zoom={this.state.zoom}
-          onZoomChange={this.handleZoomChange}
-        />
+        <Toolbar zoom={this.state.zoom} onZoomChange={this.handleZoomChange} />
         <div
           ref={ref => {
             this.ganttContainer = ref;

@@ -18,7 +18,7 @@ export default class ProjectTitle extends Component {
   editIconClickHandler = event => {
     event.stopPropagation();
     if (this.state.editing) {
-      this.stopEditing();
+      this.validateSubmit();
     } else {
       this.startEditing();
     }
