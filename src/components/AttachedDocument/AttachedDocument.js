@@ -6,19 +6,7 @@ import {
   IconDelete,
   IconDownload
 } from '../Icons';
-import ConfirmDelete from 'react-modal';
-
-const ConfirmDeleteStyles = {
-  content: {
-    top: '40%',
-    left: '40%',
-    right: '40%',
-    bottom: '40%'
-  },
-  overlay: {
-    zIndex: 5
-  }
-};
+import ConfirmModal from '../ConfirmModal';
 
 export default class AttachedDocument extends React.Component {
   constructor (props) {
@@ -77,14 +65,13 @@ export default class AttachedDocument extends React.Component {
         </a>
 
         {this.state.isConfirmDeleteOpen
-          ? <ConfirmDelete
+          ? <ConfirmModal
               isOpen
               contentLabel="modal"
-              style={ConfirmDeleteStyles}
-            >
-              <p>Are you sure want to delete this file?</p>
-              <button onClick={this.handleCloseConfirmDelete}>No</button>
-            </ConfirmDelete>
+              text="Вы действительно хотите удалить этот файл?"
+              onCancel={this.handleCloseConfirmDelete}
+              onRequestClose={this.handleCloseConfirmDelete}
+            />
           : null}
       </li>
     );

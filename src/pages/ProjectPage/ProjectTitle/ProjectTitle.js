@@ -5,7 +5,7 @@ import { IconEdit, IconCheck } from '../../../components/Icons';
 import * as css from './ProjectTitle.scss';
 
 export default class ProjectTitle extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       ...props,
@@ -32,7 +32,7 @@ export default class ProjectTitle extends Component {
     this.setState({ editing: false });
   };
 
-  handleIncorrectInput() {
+  handleIncorrectInput () {
     if (this.projectName.innerText.length < 4) {
       this.setState({ nameIsIncorrect: true });
     } else if (this.state.nameIsIncorrect) {
@@ -48,7 +48,7 @@ export default class ProjectTitle extends Component {
     return false;
   }
 
-  submitInput() {
+  submitInput () {
     this.setState({
       editing: false,
       prefixIsIncorrect: false,
@@ -94,25 +94,25 @@ export default class ProjectTitle extends Component {
   outsideClickHandler = event => {
     if (this.state.editing) {
       if (
-        event.target !== this.projectName &&
-        event.target !== this.projectPrefix
+        event.target !== this.projectName
+        && event.target !== this.projectPrefix
       ) {
         this.validateSubmit();
       }
     }
   };
 
-  componentDidMount() {
+  componentDidMount () {
     window.addEventListener('click', this.outsideClickHandler);
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     window.removeEventListener('click', this.outsideClickHandler);
   }
 
-  render() {
+  render () {
     return (
-      <div className={css.projectTitle}>
+      <h1 className={css.projectTitle}>
         <img src={this.state.pic} className={css.projectPic} />
         <span
           id="projectName"
@@ -145,7 +145,7 @@ export default class ProjectTitle extends Component {
               className={css.edit}
               onClick={this.editIconClickHandler}
             />}
-      </div>
+      </h1>
     );
   }
 }
