@@ -1,6 +1,5 @@
 import * as AuthActions from '../constants/Authentication';
 import axios from 'axios';
-console.warn(AuthActions);
 function startAuthentication() {
   return {
     type: AuthActions.AUTHENTICATION_START
@@ -21,10 +20,11 @@ function AuthenticationReceived(user) {
   };
 }
 
-export function doAuthentication(username, password) {
+export function doAuthentication({ username, password }) {
   const URL = `http://sim-track.simbirsoft/api/auth/login`;
 
   return dispatch => {
+    console.log("epta");
     dispatch(startAuthentication());
     axios
       .post(URL, { login: username, ...password })

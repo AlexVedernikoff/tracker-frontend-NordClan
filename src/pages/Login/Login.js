@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
+import PropTypes from "prop-types";
 import * as css from './Login.scss';
 import Logo from '../../components/Logo';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import bg from './bg.jpg';
+import { connect } from "react-redux";
+import { doAuthentication } from "../../actions/Authentication";
 
-export default class Login extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
       username: '',
-      password: ''
+      password: '',
+      errorMessage: ""
     };
   }
 
@@ -18,6 +22,11 @@ export default class Login extends Component {
     this.setState({
       [event.target.name]: event.target.value
     });
+  };
+
+  onSubmit = event => {
+    event.preventDefault();
+    doAuthentication(this.state)(this.props.dispatch);
   };
 
   render() {
@@ -49,10 +58,26 @@ export default class Login extends Component {
             />
           </div>
           <div className={css.buttonWrapper}>
-            <Button text="Войти" type="borderedInverse" />
+            <Button
+              onClick={this.onSubmit}
+              text="Войти"
+              type="borderedInverse"
+            />
           </div>
         </div>
       </div>
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    errorMessage: state.Auth.errorMessage
+  }
+}
+
+Login.propTypes = {
+  doAuthentication: PropTypes.string
+}
+
+export default connect(mapStateToProps)(Login);

@@ -3,7 +3,8 @@ import * as AuthActions from '../constants/Authentication';
 const InitialState = {
   isAuthSending: false,
   data: {},
-  isLogoutSending: false
+  isLogoutSending: false,
+  errorMessage: ""
 };
 
 function Auth(state = InitialState, action) {
