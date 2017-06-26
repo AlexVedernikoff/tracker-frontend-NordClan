@@ -24,23 +24,16 @@ export function doAuthentication({ username, password }) {
   const URL = `http://sim-track.simbirsoft/api/auth/login`;
 
   return dispatch => {
-    console.log("epta");
     dispatch(startAuthentication());
     axios
-      .post(URL, { login: username, ...password })
-      .catch(error => dispatch(AuthenticationError(error)))
+      .post(URL, { login: username, password })
+      .catch(error => dispatch(AuthenticationError(error.message)))
       .then(response => {
         if (!response) {
           return;
         } else if (response.status === 200) {
           window.localStorage.setItem('simTrackAuthToken', response.data.token);
           dispatch(AuthenticationReceived(response.data.user));
-        } else {
-          const errorMessage = {
-            ...response.jsonData,
-            status: response.status
-          };
-          dispatch(AuthenticationError(errorMessage));
         }
       });
   };

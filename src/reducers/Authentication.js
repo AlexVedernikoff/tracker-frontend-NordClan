@@ -18,13 +18,15 @@ function Auth(state = InitialState, action) {
     case AuthActions.AUTHENTICATION_ERROR:
       return {
         ...state,
-        isAuthSending: false
+        isAuthSending: false,
+        errorMessage: action.errorMessage
       };
 
     case AuthActions.AUTHENTICATION_RECEIVED:
       return {
         ...state,
-        user: action.data
+        user: action.data,
+        isAuthSending: false
       };
     default:
       return state
