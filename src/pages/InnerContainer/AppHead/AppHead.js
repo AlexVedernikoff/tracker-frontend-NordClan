@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+
 import {IconExitApp} from '../../../components/Icons';
 import {IconSearch} from '../../../components/Icons';
 import Logo from '../../../components/Logo';
+import Loader from './Loader';
+import './Loader/Loader.css';
 
-import * as css from './AppHead.scss';
+import * as css from './AppHead.scss'; // Стили для плавного появления и скрытия лоадера
 
 export default class AppHead extends Component {
 
@@ -13,14 +17,21 @@ export default class AppHead extends Component {
     user: PropTypes.object
   };
 
+  constructor (props) {
+    super(props);
+    this.state = {loading: false};
+  }
+
+  testLoad = () => {
+    this.setState({loading: true});
+    setTimeout(() => this.setState({loading: false}), 3000);
+  }
+
   render () {
     const iconStyles = {
       width: 16,
-      height: 16,
-      color: 'inherit'
+      height: 16
     };
-
-    // console.log(Link);
 
     return (
       <div className={css.toppanel}>
@@ -33,9 +44,16 @@ export default class AppHead extends Component {
             <IconSearch style={iconStyles} />
           </label>
         </div>
-        <Link to="/" className={css.logoutButton}>
+        <Link className={css.logoutButton} onClick={this.testLoad}>
           <IconExitApp style={iconStyles} />
         </Link>
+        <ReactCSSTransitionGroup transitionName="animatedLoader" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
+          {
+            this.state.loading
+            ? <Loader/>
+            : null
+          }
+        </ReactCSSTransitionGroup>
       </div>
     );
   }

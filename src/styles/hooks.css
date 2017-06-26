@@ -47,7 +47,16 @@
   }
 }
 
-@keyframes hiddenOut {
+@keyframes showIn {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes showOut {
   from {
     opacity: 1;
   }
@@ -74,7 +83,7 @@
 }
 
 .ReactModal__Overlay--before-close {
-  animation-name: hiddenOut;
+  animation-name: showOut;
   animation-duration: 0.2s;
   animation-fill-mode: forwards;
 }
