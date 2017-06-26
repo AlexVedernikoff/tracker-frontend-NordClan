@@ -1,3 +1,4 @@
+
 import React from "react";
 import PropTypes from "prop-types";
 import AttachedDocument from "../AttachedDocument";
@@ -15,12 +16,13 @@ export default class Attachments extends React.Component {
 
   onDrop = (acceptedFiles, rejectedFiles) => {
     console.log(acceptedFiles);
-  }
+  };
 
   isPicture (fileType) {
     const regexp = /(gif|jpe?g|tiff|png)/i;
     return regexp.test(fileType);
   }
+
 
   render () {
     const css = require("./Attachments.scss");
@@ -32,7 +34,10 @@ export default class Attachments extends React.Component {
           {this.state.files.map((file, index) => {
             return this.isPicture(file.fileType)
               ? <AttachedImage key={`attached-document-${index}`} {...file} />
-              : <AttachedDocument key={`attached-picture-${index}`} {...file} />;
+              : <AttachedDocument
+                  key={`attached-picture-${index}`}
+                  {...file}
+                />;
           })}
 
           <FileUpload onDrop={this.onDrop} />

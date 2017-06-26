@@ -1,35 +1,11 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { IconDelete, IconDownload, IconClose } from "../Icons";
-import ReactModal from "react-modal";
-import ConfirmDelete from "react-modal";
-
-const ReactModalStyles = {
-  content: {
-    left: "260px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  overlay: {
-    zIndex: 5
-  }
-};
-
-const ConfirmDeleteStyles = {
-  content: {
-    top: "40%",
-    left: "40%",
-    right: "40%",
-    bottom: "40%"
-  },
-  overlay: {
-    zIndex: 5
-  }
-};
+import React from 'react';
+import PropTypes from 'prop-types';
+import { IconDelete, IconDownload, IconClose } from '../Icons';
+import Modal from '../Modal';
+import ConfirmModal from '../ConfirmModal';
 
 export default class AttachedImage extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       isModalOpen: false,
@@ -39,38 +15,39 @@ export default class AttachedImage extends React.Component {
 
   handleOpenModal = () => {
     this.setState({ isModalOpen: true });
-  }
+  };
 
   handleCloseModal = () => {
     this.setState({ isModalOpen: false });
-  }
+  };
 
   handleOpenConfirmDelete = event => {
     event.stopPropagation();
     this.setState({ isConfirmDeleteOpen: true });
-  }
+  };
 
   handleCloseConfirmDelete = () => {
     this.setState({ isConfirmDeleteOpen: false });
-  }
+  };
 
   stopBubbling = event => {
     event.stopPropagation();
-  }
+  };
 
-  render() {
-    const css = require("./AttachedImage.scss");
+  render () {
+    const css = require('./AttachedImage.scss');
 
     const iconStyles = {
       width: 24,
       height: 24,
-      color: "inherit",
-      fill: "currentColor"
+      color: 'inherit',
+      fill: 'currentColor'
     };
 
     const imageStyles = {
-      maxHeight: "90%",
-      maxWidth: "100%"
+      maxHeight: '100%',
+      maxWidth: '100%',
+      display: 'block'
     };
 
     const { fileName, filePath, fileType } = this.props;
@@ -101,36 +78,34 @@ export default class AttachedImage extends React.Component {
           {fileName}
         </div>
 
-        <ReactModal
-          isOpen={this.state.isModalOpen}
-          style={ReactModalStyles}
-          contentLabel="modal"
-          onRequestClose={this.handleCloseModal}
-        >
-          <IconClose
-            style={iconStyles}
-            className={css.iconClose}
-            onClick={this.handleCloseModal}
-          />
-          <img src={filePath} alt="" style={imageStyles} />
-        </ReactModal>
+        {this.state.isModalOpen
+          ? <Modal
+              isOpen
+              contentLabel="modal"
+              onRequestClose={this.handleCloseModal}
+            >
+              <img src={filePath} alt="" style={imageStyles} />
+            </Modal>
+          : null}
 
-        <ConfirmDelete
-          isOpen={this.state.isConfirmDeleteOpen}
-          contentLabel="modal"
-          style={ConfirmDeleteStyles}
-        >
-          <p>Are you sure want to delete this file?</p>
-          <button onClick={this.handleCloseConfirmDelete}>No</button>
-        </ConfirmDelete>
+        {this.state.isConfirmDeleteOpen
+          ? <ConfirmModal
+              isOpen
+              contentLabel="modal"
+              onRequestClose={this.handleCloseConfirmDelete}
+              onConfirm={() => console.log('Йеп')}
+              onCancel={this.handleCloseConfirmDelete}
+              text="Вы уверены, что хотите удалить этот файл?"
+            />
+          : null}
 
       </li>
     );
   }
 }
 
-AttachedImage.PropTypes = {
-  fileType: PropTypes.string.isRequired,
+AttachedImage.propTypes = {
+  fileName: PropTypes.string.isRequired,
   filePath: PropTypes.string.isRequired,
-  fileName: PropTypes.string.isRequired
+  fileType: PropTypes.string.isRequired
 };

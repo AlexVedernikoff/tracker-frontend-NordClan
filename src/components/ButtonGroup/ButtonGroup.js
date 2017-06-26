@@ -33,7 +33,7 @@ const ButtonGroup = (props) => {
     <div
       {...other}
       className={classnames({
-        [css[stage]]: true,
+        [css[stage]]: !!css[stage],
         [css.buttonGroup]: true
       })}>
       {childrens}

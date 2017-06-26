@@ -22,7 +22,7 @@ export default class InnerContainer extends Component {
     const sidebarDocked = true;
 
     return (
-      <div id="app">
+      <div>
         <div>
           <Sidebar
             sidebar={sidebar}

@@ -1,33 +1,70 @@
 @import '../../../styles/variables.scss';
 
-.edit {
-  color: silver;
-  cursor: pointer;
-  margin-left: 8px;
-  transition: $transition;
-  margin-bottom: -4px;
 
+.titleWrapper {
   &:hover {
-    transform: rotate(360deg);
-    transition: $transition;
+    .edit, .save {
+      opacity: 1;
+    }
   }
 }
 
-.projectName {
-  // display: inline-block;
+.taskName {
   width: auto;
-  min-width: 100px;
   max-width: 65%;
   &[contenteditable="true"] {
-    background-color: lightblue;
+    background-color: $color-gray;
 
     &:empty {
-        display: inline-block;
-        width: 100px;
+      display: inline-block;
+      width: 0.5rem;
     }
   }
 }
 
 .wrong {
-  background-color: #c64949 !important;
+  background-color: $color-red !important;
+  color: white;
+}
+
+.edit {
+  display: inline-block;
+  vertical-align: middle;
+  color: silver;
+  cursor: pointer;
+  padding: 7px;
+  margin-left: 0.5rem;
+  font-size: 1rem;
+  background-color: white;
+  border: 1px solid lighten($color-black, 70%);
+  border-radius: 50%;
+  opacity: 0;
+  transition: $transition;
+
+  &:hover {
+    background-color: $color-lightgray;
+    fill: $color-dark;
+    border-color: $color-dark;
+  }
+}
+
+.save {
+  display: inline-block;
+  vertical-align: middle;
+  color: $color-green;
+  cursor: pointer;
+  padding: 7px;
+  margin-left: 0.5rem;
+  font-size: 1rem;
+  background-color: white;
+  border: 1px solid $color-green;
+  border-radius: 50%;
+  opacity: 1;
+  transition: $transition;
+
+  &:hover {
+    background-color: $color-green;
+    fill: white;
+    border-color: $color-green;
+  }
 }

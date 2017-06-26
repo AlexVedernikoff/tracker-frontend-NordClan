@@ -189,10 +189,10 @@ export default class AgileBoard extends Component {
                 onChange={(e) => this.selectValue(e, 'changedSprint')}
                 noResultsText="Нет результатов"
                 options={[
-                  { value: 'sprint1', label: 'Спринт №1 (01.06.2017 - 30.06.2017)' },
-                  { value: 'sprint2', label: 'Спринт №2 (01.06.2017 - 30.06.2017)' },
-                  { value: 'sprint3', label: 'Спринт №3 (01.06.2017 - 30.06.2017)' },
-                  { value: 'sprint4', label: 'Спринт №4 (01.06.2017 - 30.06.2017)' }
+                  { value: 'sprint1', label: 'Спринт №1 (01.06.2017 - 30.06.2017)', className: classnames({[css.INPROGRESS]: true, [css.sprintMarker]: true }) },
+                  { value: 'sprint2', label: 'Спринт №2 (01.06.2017 - 30.06.2017)', className: classnames({[css.PLANNED]: true, [css.sprintMarker]: true }) },
+                  { value: 'sprint3', label: 'Спринт №3 (01.06.2017 - 30.06.2017)', className: classnames({[css.FINISHED]: true, [css.sprintMarker]: true }) },
+                  { value: 'sprint4', label: 'Спринт №4 (01.06.2017 - 30.06.2017)', className: classnames({[css.FINISHED]: true, [css.sprintMarker]: true }) }
                 ]}
               />
             </Col>

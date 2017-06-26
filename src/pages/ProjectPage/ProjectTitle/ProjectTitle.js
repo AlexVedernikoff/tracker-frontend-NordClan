@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { IconEdit, IconCheck } from '../../../components/Icons';
 import * as css from './ProjectTitle.scss';
+import ReactTooltip from 'react-tooltip';
 
 export default class ProjectTitle extends Component {
   constructor(props) {
@@ -13,6 +14,10 @@ export default class ProjectTitle extends Component {
       prefixIsIncorrect: false,
       nameIsIncorrect: false
     };
+  }
+
+  componentDidUpdate() {
+    ReactTooltip.rebuild();
   }
 
   editIconClickHandler = event => {
@@ -112,7 +117,7 @@ export default class ProjectTitle extends Component {
 
   render() {
     return (
-      <div className={css.projectTitle}>
+      <h1 className={css.projectTitle}>
         <img src={this.state.pic} className={css.projectPic} />
         <span
           id="projectName"
@@ -138,14 +143,16 @@ export default class ProjectTitle extends Component {
         </span>
         {this.state.editing
           ? <IconCheck
-              className={css.edit}
+              className={css.save}
+              data-tip="Сохранить"
               onClick={this.editIconClickHandler}
             />
           : <IconEdit
               className={css.edit}
+              data-tip="Редактировать"
               onClick={this.editIconClickHandler}
             />}
-      </div>
+      </h1>
     );
   }
 }

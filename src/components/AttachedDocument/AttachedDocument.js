@@ -1,34 +1,22 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 import {
   IconFileDocument,
   IconFilePdf,
   IconDelete,
   IconDownload
-} from "../Icons";
-import ConfirmDelete from "react-modal";
-
-const ConfirmDeleteStyles = {
-  content: {
-    top: "40%",
-    left: "40%",
-    right: "40%",
-    bottom: "40%"
-  },
-  overlay: {
-    zIndex: 5
-  }
-};
+} from '../Icons';
+import ConfirmModal from '../ConfirmModal';
 
 export default class AttachedDocument extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       isConfirmDeleteOpen: false
     };
   }
 
-  stopBubbling(event) {
+  stopBubbling (event) {
     event.stopPropagation();
   }
 
@@ -41,14 +29,14 @@ export default class AttachedDocument extends React.Component {
     this.setState({ isConfirmDeleteOpen: false });
   };
 
-  render() {
-    const css = require("./AttachedDocument.scss");
+  render () {
+    const css = require('./AttachedDocument.scss');
 
     const iconStyles = {
       width: 24,
       height: 24,
-      color: "inherit",
-      fill: "currentColor"
+      color: 'inherit',
+      fill: 'currentColor'
     };
 
     const { fileName, filePath, fileType } = this.props;
@@ -65,9 +53,9 @@ export default class AttachedDocument extends React.Component {
             <IconDelete style={iconStyles} />
           </button>
         </div>
-        <a target="_blank" href={filePath}>
+        <a target="_blank" href={filePath} className={css.iconWrapper}>
           <div className={css.attachmentIcon}>
-            {fileType === "pdf"
+            {fileType === 'pdf'
               ? <IconFilePdf style={iconStyles} />
               : <IconFileDocument style={iconStyles} />}
           </div>
@@ -76,21 +64,22 @@ export default class AttachedDocument extends React.Component {
           </div>
         </a>
 
-        <ConfirmDelete
-          isOpen={this.state.isConfirmDeleteOpen}
-          contentLabel="modal"
-          style={ConfirmDeleteStyles}
-        >
-          <p>Are you sure want to delete this file?</p>
-          <button onClick={this.handleCloseConfirmDelete}>No</button>
-        </ConfirmDelete>
+        {this.state.isConfirmDeleteOpen
+          ? <ConfirmModal
+              isOpen
+              contentLabel="modal"
+              text="Вы действительно хотите удалить этот файл?"
+              onCancel={this.handleCloseConfirmDelete}
+              onRequestClose={this.handleCloseConfirmDelete}
+            />
+          : null}
       </li>
     );
   }
 }
 
-AttachedDocument.PropTypes = {
-  fileType: PropTypes.string.isRequired,
+AttachedDocument.propTypes = {
+  fileName: PropTypes.string.isRequired,
   filePath: PropTypes.string.isRequired,
-  fileName: PropTypes.string.isRequired
+  fileType: PropTypes.string.isRequired
 };
