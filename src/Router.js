@@ -28,7 +28,7 @@ import configureStore from './store/configureStore';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { Provider } from 'react-redux';
 
-const store = configureStore();
+export const store = configureStore();
 export const history = syncHistoryWithStore(browserHistory, store);
 
 const requireAuth = () => {
@@ -38,6 +38,13 @@ const requireAuth = () => {
   }
 };
 
+const isLogged = () => {
+  if (localStorage.getItem(`simTrackAuthToken`)) {
+    history.push('/projects');
+    return false;
+  }
+}
+
 export default class AppRouter extends Component {
   render() {
     return (
@@ -46,7 +53,7 @@ export default class AppRouter extends Component {
 
           <Route path="/" component={MainContainer}>
 
-            <Route path="login" component={Login} />
+            <Route path="login" component={Login} onEnter={isLogged} />
 
             <Route path="/" component={InnerContainer} onEnter={requireAuth}>
 
