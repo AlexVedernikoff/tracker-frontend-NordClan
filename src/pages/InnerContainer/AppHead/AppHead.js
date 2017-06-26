@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import {IconExitApp} from '../../../components/Icons';
 import {IconSearch} from '../../../components/Icons';
+import Logo from '../../../components/Logo';
 
 import * as css from './AppHead.scss';
 
@@ -23,8 +24,8 @@ export default class AppHead extends Component {
 
     return (
       <div className={css.toppanel}>
-        <Link to="/" className={css.logo}>
-          <span>Sim</span>Track
+        <Link to="/" style={{textDecoration: 'none'}}>
+          <Logo/>
         </Link>
         <div className={css.search}>
           <input type="text" id="mainSearch" className={css.searchInput} placeholder="Поиск по названию" />

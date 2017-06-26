@@ -82,3 +82,20 @@
     transition: $transition;
   }
 }
+
+.borderedInverse {
+  border-width: 1px;
+  border-style: solid;
+  border-color: white;
+  padding: 7px 15px;
+  background-color: transparent;
+  color: white;
+  transition: $transition;
+
+  &:hover {
+    background-color: lighten($color-dark, 10%);
+    border-color: lighten($color-dark, 10%);
+    color: white;
+    transition: $transition;
+  }
+}
