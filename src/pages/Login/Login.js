@@ -14,7 +14,8 @@ class Login extends Component {
     this.state = {
       username: '',
       password: '',
-      errorMessage: ""
+      errorMessage: "",
+      isAuthenticating: this.props.isAuthenticating
     };
   }
 
@@ -26,7 +27,8 @@ class Login extends Component {
 
   onSubmit = event => {
     event.preventDefault();
-    doAuthentication(this.state)(this.props.dispatch);
+    const { dispatch } = this.props;
+    dispatch(doAuthentication(this.state));
   };
 
   render() {
@@ -72,7 +74,8 @@ class Login extends Component {
 
 const mapStateToProps = state => {
   return {
-    errorMessage: state.Auth.errorMessage
+    errorMessage: state.Auth.errorMessage,
+    isAuthenticating: state.Auth.isAuthSending
   }
 }
 
