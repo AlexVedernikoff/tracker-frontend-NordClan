@@ -4,7 +4,8 @@ import {
   Route,
   browserHistory,
   IndexRoute,
-  IndexRedirect
+  IndexRedirect,
+  Redirect
 } from 'react-router';
 
 import MainContainer from './pages/MainContainer';
@@ -27,9 +28,15 @@ import configureStore from './store/configureStore';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { Provider } from 'react-redux';
 
-const isAuthenticated = () => localStorage.getItem(`simTrackAuthToken`);
 const store = configureStore();
-const history = syncHistoryWithStore(browserHistory, store);
+export const history = syncHistoryWithStore(browserHistory, store);
+
+const requireAuth = () => {
+  if (!localStorage.getItem(`simTrackAuthToken`)) {
+    history.push('/login');
+    return false;
+  }
+};
 
 export default class AppRouter extends Component {
   render() {
@@ -41,7 +48,7 @@ export default class AppRouter extends Component {
 
             <Route path="login" component={Login} />
 
-            <Route path="/" component={InnerContainer}>
+            <Route path="/" component={InnerContainer} onEnter={requireAuth}>
 
               <Route path="dashboard" component={Dashboard} />
               <Route path="repeat" component={Repeat} />
