@@ -41,6 +41,54 @@ export const IconFilePdf = (props) => (
   </SvgIcon>
 );
 
+export const IconFileWord = (props) => (
+  <SvgIcon {...props}>
+    <path d="M6,2H14L20,8V20C20,21.1 19.1,22 18,22H6C4.9,22 4,21.1 4,20V4C4,2.9 4.9,2 6,2M13,3.5V9H18.5L13,3.5M7,13L8.5,20H10.5L12,17L13.5,20H15.5L17,13H18V11H14V13H15L14.1,17.2L13,15V15H11V15L9.9,17.2L9,13H10V11H6V13H7Z"/>
+  </SvgIcon>
+);
+
+export const IconFileVideo = (props) => (
+  <SvgIcon {...props}>
+    <path d="M13,9H18.5L13,3.5V9M6,2H14L20,8V20C20,21.1 19.1,22 18,22H6C4.89,22 4,21.1 4,20V4C4,2.89 4.89,2 6,2M17,19V13L14,15.2V13H7V19H14V16.8L17,19Z"/>
+  </SvgIcon>
+);
+
+export const IconFilePowerPoint = (props) => (
+  <SvgIcon {...props}>
+    <path d="M6,2H14L20,8V20C20,21.1 19.1,22 18,22H6C4.9,22 4,21.1 4,20V4C4,2.9 4.9,2 6,2M13,3.5V9H18.5L13,3.5M8,11V13H9V19H8V20H12V19H11V17H13C14.66,17 16,15.66 16,14C16,12.34 14.66,11 13,11H8M13,13C13.55,13 14,13.45 14,14C14,14.55 13.55,15 13,15H11V13H13Z"/>
+  </SvgIcon>
+);
+
+export const IconFileAudio = (props) => (
+  <SvgIcon {...props}>
+    <path d="M13,9H18.5L13,3.5V9M6,2H14L20,8V20C20,21.1 19.1,22 18,22H6C4.89,22 4,21.1 4,20V4C4,2.89 4.89,2 6,2M9,16C7.9,16 7,16.9 7,18C7,19.1 7.9,20 9,20C10.1,20 11,19.1 11,18V13H14V11H10V16.27C9.71,16.1 9.36,16 9,16Z"/>
+  </SvgIcon>
+);
+
+export const IconFileChart = (props) => (
+  <SvgIcon {...props}>
+    <path d="M13,9H18.5L13,3.5V9M6,2H14L20,8V20C20,21.1 19.1,22 18,22H6C4.89,22 4,21.1 4,20V4C4,2.89 4.89,2 6,2M7,20H9V14H7V20M11,20H13V12H11V20M15,20H17V16H15V20Z"/>
+  </SvgIcon>
+);
+
+export const IconFileImage = (props) => (
+  <SvgIcon {...props}>
+    <path d="M13,9H18.5L13,3.5V9M6,2H14L20,8V20C20,21.1 19.1,22 18,22H6C4.89,22 4,21.1 4,20V4C4,2.89 4.89,2 6,2M6,20H15L18,20V12L14,16L12,14L6,20M8,9C6.9,9 6,9.9 6,11C6,12.1 6.9,13 8,13C9.1,13 10,12.1 10,11C10,9.9 9.1,9 8,9Z"/>
+  </SvgIcon>
+);
+
+export const IconFileText = (props) => (
+  <SvgIcon {...props}>
+    <path d="M13,9H18.5L13,3.5V9M6,2H14L20,8V20C20,21.1 19.1,22 18,22H6C4.89,22 4,21.1 4,20V4C4,2.89 4.89,2 6,2M15,18V16H6V18H15M18,14V12H6V14H18Z"/>
+  </SvgIcon>
+);
+
+export const IconFileExel = (props) => (
+  <SvgIcon {...props}>
+    <path d="M6,2H14L20,8V20C20,21.1 19.1,22 18,22H6C4.9,22 4,21.1 4,20V4C4,2.9 4.9,2 6,2M13,3.5V9H18.5L13,3.5M17,11H13V13H14L12,14.67L10,13H11V11H7V13H8L11,15.5L8,18H7V20H11V18H10L12,16.33L14,18H13V20H17V18H16L13,15.5L16,13H17V11Z"/>
+  </SvgIcon>
+);
+
 export const IconDelete = (props) => (
   <SvgIcon {...props}>
     <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
