@@ -1,7 +1,7 @@
 import * as AuthActions from '../constants/Authentication';
 import axios from 'axios';
-import { store } from "../Router";
-import { history } from "../Router";
+import { store } from '../Router';
+import { history } from '../Router';
 
 function startAuthentication() {
   return {
@@ -29,7 +29,11 @@ export function doAuthentication({ username, password }) {
   return dispatch => {
     dispatch(startAuthentication());
     axios
-      .post(URL, { login: username, password })
+      .post(
+        URL,
+        { login: username, password: password },
+        { withCredentials: true }
+      )
       .catch(error => dispatch(AuthenticationError(error.message)))
       .then(response => {
         if (!response) {
@@ -37,7 +41,7 @@ export function doAuthentication({ username, password }) {
         } else if (response.status === 200) {
           window.localStorage.setItem('simTrackAuthToken', response.data.token);
           dispatch(AuthenticationReceived(response.data.user));
-          history.push("/projects");
+          history.push('/projects');
         }
       });
   };

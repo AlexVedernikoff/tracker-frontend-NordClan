@@ -32,6 +32,7 @@ export const store = configureStore();
 export const history = syncHistoryWithStore(browserHistory, store);
 
 const requireAuth = () => {
+  console.log(document.cookie);
   if (!localStorage.getItem(`simTrackAuthToken`)) {
     history.push('/login');
     return false;
