@@ -5,3 +5,28 @@
   width: 1em;
   height: 1em;
 }
+
+.stroked {
+  stroke: currentColor;
+}
+
+.demoContainer {
+  display: flex;
+  margin: 3rem auto;
+  width: 100%;
+  max-width: 960px;
+  flex-wrap: wrap;
+  font-size: 3rem;
+  color: gray;
+}
+
+.demoIcon {
+  width: 20%;
+  box-sizing: border-box;
+  margin: 2rem 0;
+  text-align: center;
+
+  & > div {
+    font-size: 1rem;
+  }
+}

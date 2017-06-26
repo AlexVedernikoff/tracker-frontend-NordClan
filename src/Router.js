@@ -16,6 +16,7 @@ import Login from './pages/Login';
 import Projects from './pages/Projects';
 import Dashboard from './pages/Dashboard';
 import Repeat from './pages/Repeat';
+import DemoPage from './components/Icons/DemoPage';
 
 export default class AppRouter extends Component {
   render () {
@@ -25,6 +26,7 @@ export default class AppRouter extends Component {
         <Route path="/" component={MainContainer}>
 
           <Route path="login" component={Login} />
+          <Route path="icons" component={DemoPage} />
 
           <Route path="/" component={InnerContainer}>
 
