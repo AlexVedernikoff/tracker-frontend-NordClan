@@ -1,6 +1,6 @@
 import * as AuthActions from '../constants/Authentication';
 import axios from 'axios';
-
+console.warn(AuthActions);
 function startAuthentication() {
   return {
     type: AuthActions.AUTHENTICATION_START

@@ -18,12 +18,14 @@ function Auth(state = InitialState, action) {
       return {
         ...state,
         isAuthSending: false
-      }
+      };
 
     case AuthActions.AUTHENTICATION_RECEIVED:
       return {
         ...state,
         user: action.data
-      }
+      };
   }
 }
+
+export default Auth;

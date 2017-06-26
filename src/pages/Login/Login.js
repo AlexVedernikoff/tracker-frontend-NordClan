@@ -5,23 +5,32 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 import bg from './bg.jpg';
 
-const Login = () => (
-  <div className={css.formWrapper} style={{backgroundImage: `url(${bg})`}}>
+const Login = () =>
+  <div className={css.formWrapper} style={{ backgroundImage: `url(${bg})` }}>
     <div className={css.loginForm}>
       <div className={css.logoWrapper}>
-        <Logo onLight={false} style={{fontSize: '3rem', padding: 0, textAlign: 'center'}}/>
+        <Logo
+          onLight={false}
+          style={{ fontSize: '3rem', padding: 0, textAlign: 'center' }}
+        />
       </div>
       <div className={css.inputWrapper}>
-        <Input placeholder="Имя пользователя"/>
+        <Input
+          placeholder="Имя пользователя"
+          ref={ref => (this.username = ref)}
+        />
       </div>
       <div className={css.inputWrapper}>
-        <Input placeholder="Пароль" type="password"/>
+        <Input
+          placeholder="Пароль"
+          type="password"
+          ref={ref => (this.password = ref)}
+        />
       </div>
       <div className={css.buttonWrapper}>
-        <Button text="Войти" type="borderedInverse"/>
+        <Button text="Войти" type="borderedInverse" />
       </div>
     </div>
-  </div>
-);
+  </div>;
 
 export default Login;
