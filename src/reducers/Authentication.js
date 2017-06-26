@@ -1,4 +1,4 @@
-import * as AuthActions from '../actions/Authentication';
+import * as AuthActions from '../constants/Authentication';
 
 const InitialState = {
   isAuthSending: false,
@@ -25,6 +25,8 @@ function Auth(state = InitialState, action) {
         ...state,
         user: action.data
       };
+    default:
+      return state
   }
 }
 
