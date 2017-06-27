@@ -43,7 +43,7 @@ const isLogged = () => {
     history.push('/projects');
     return false;
   }
-}
+};
 
 export default class AppRouter extends Component {
   render() {

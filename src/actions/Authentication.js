@@ -54,15 +54,13 @@ export function doLogout() {
   return dispatch => {
     dispatch(startLogout());
     axios
-      .delete(URL, {
-        params: { token: window.localStorage.getItem('simTrackAuthToken') }
-      })
+      .delete(URL, {}, { withCredentials: true })
       .catch(error => dispatch(AuthenticationError(error)))
       .then(response => {
         if (!response) {
           return;
         } else {
-          window.localStorage.removeItem('simTrackAuthToken');
+          console.log(document.cookie);
           dispatch(LogoutComplete());
         }
       });
