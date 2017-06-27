@@ -7,7 +7,6 @@ import {IconExitApp} from '../../../components/Icons';
 import {IconSearch} from '../../../components/Icons';
 import Logo from '../../../components/Logo';
 import Loader from './Loader';
-import './Loader/Loader.css';
 
 import * as css from './AppHead.scss'; // Стили для плавного появления и скрытия лоадера
 
@@ -47,7 +46,7 @@ export default class AppHead extends Component {
         <Link className={css.logoutButton} onClick={this.testLoad}>
           <IconExitApp style={iconStyles} />
         </Link>
-        <ReactCSSTransitionGroup transitionName="animatedLoader" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
+        <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
           {
             this.state.loading
             ? <Loader/>

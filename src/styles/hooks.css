@@ -88,4 +88,22 @@
   animation-fill-mode: forwards;
 }
 
+.animatedElement-enter {
+  opacity: 0.01;
+}
+
+.animatedElement-enter.animatedElement-enter-active {
+  opacity: 1;
+  transition: opacity 300ms ease-in;
+}
+
+.animatedElement-leave {
+  opacity: 1;
+}
+
+.animatedElement-leave.animatedElement-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}
+
 /* <=== Modal */

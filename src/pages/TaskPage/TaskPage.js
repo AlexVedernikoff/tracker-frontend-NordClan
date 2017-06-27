@@ -50,8 +50,8 @@ export default class TaskPage extends Component {
               <h3>Прикрепленные файлы:</h3>
               <Attachments task={task} />
               <RouteTabs style={{marginTop: '2rem', marginBottom: '2rem'}}>
-                <Link to={`/projects/${task.projectId}/tasks/${task.id}/comments`}><h3 style={{margin: 0}}>Комментарии</h3></Link>
-                <Link to={`/projects/${task.projectId}/tasks/${task.id}/history`}><h3 style={{margin: 0}}>История</h3></Link>
+                <Link to={`/projects/${task.projectId}/tasks/${task.id}/comments`}>Комментарии</Link>
+                <Link to={`/projects/${task.projectId}/tasks/${task.id}/history`}>История</Link>
               </RouteTabs>
               {this.props.children}
             </main>
