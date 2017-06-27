@@ -4,6 +4,8 @@ import { Router, Route, browserHistory, IndexRoute, IndexRedirect } from 'react-
 import MainContainer from './pages/MainContainer';
 import InnerContainer from './pages/InnerContainer';
 import TaskPage from './pages/TaskPage';
+  import Comments from './pages/TaskPage/Comments';
+  import TaskHistory from './pages/TaskPage/TaskHistory';
 import ProjectPage from './pages/ProjectPage';
   import AgileBoard from './pages/ProjectPage/AgileBoard';
   import Info from './pages/ProjectPage/Info';
@@ -45,7 +47,11 @@ export default class AppRouter extends Component {
               <IndexRedirect to="agile-board"/>
             </Route>
 
-            <Route path="projects/:projectId/tasks/:taskId" component={TaskPage} />
+            <Route path="projects/:projectId/tasks/:taskId" component={TaskPage}>
+              <Route path="comments" component={Comments}/>
+              <Route path="history" component={TaskHistory}/>
+              <IndexRedirect to="comments"/>
+            </Route>
 
             <IndexRedirect to="projects"/>
 

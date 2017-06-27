@@ -8,7 +8,6 @@ export default class TaskHistory extends React.Component {
 
     return (
       <div className={css.history}>
-        <h3>История изменений</h3>
         <div className={css.historyEvent}>
           <span className={css.time}>17.02.2017 13:15</span>
           <div className={css.historyAction}>
@@ -51,5 +50,5 @@ export default class TaskHistory extends React.Component {
 }
 
 TaskHistory.propTypes = {
-  task: PropTypes.object.isRequired
+  task: PropTypes.object
 };

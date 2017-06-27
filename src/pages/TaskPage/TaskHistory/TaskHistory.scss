@@ -1,7 +1,7 @@
 @import '../../../styles/variables.scss';
 
 .history {
-  padding: 16px 16px 0 16px;
+  // padding: 16px 16px 0 16px;
 }
 
 .historyEvent {
@@ -20,7 +20,7 @@
 }
 
 .historyAction {
-  padding: 8px;
+  padding: 0.5rem;
 
   a {
     text-decoration: none;

@@ -1,27 +1,26 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
+import { Link } from 'react-router';
 
 import TaskHeader from './TaskHeader';
 import Details from './Details';
 import RelatedTasks from './RelatedTasks';
-import TaskHistory from './TaskHistory';
 import Attachments from '../../components/Attachments';
-import Comments from './Comments';
-import Description from "../../components/Description";
-import { TaskDescriptionText } from "../../mocks/descriptionText";
+import Description from '../../components/Description';
+import RouteTabs from '../../components/RouteTabs';
+import { TaskDescriptionText } from '../../mocks/descriptionText';
 
 import * as css from './TaskPage.scss';
 
 export default class TaskPage extends Component {
-  static propTypes = {
-  }
 
   render () {
 
     // Mocks
 
     const task = {
+      id: 1,
       name: 'UI. Подготовка к демонстрации. Краткая проверка функционала',
       description: 'Описание задачи, которое довольно часто может составлять пару предложений, а то и вовсе отсутствовать.',
       projectName: 'MakeTalents',
@@ -46,12 +45,15 @@ export default class TaskPage extends Component {
           <Col xs={8}>
             <TaskHeader task={task}/>
             <main className={css.main}>
-              <Description text={TaskDescriptionText} />
+              <Description text={TaskDescriptionText} headerType="h3" headerText="Описание:" />
               <hr />
               <h3>Прикрепленные файлы:</h3>
               <Attachments task={task} />
-              <hr />
-              <Comments />
+              <RouteTabs style={{marginTop: '2rem', marginBottom: '2rem'}}>
+                <Link to={`/projects/${task.projectId}/tasks/${task.id}/comments`}><h3 style={{margin: 0}}>Комментарии</h3></Link>
+                <Link to={`/projects/${task.projectId}/tasks/${task.id}/history`}><h3 style={{margin: 0}}>История</h3></Link>
+              </RouteTabs>
+              {this.props.children}
             </main>
           </Col>
           <Col xs={4}>
@@ -59,7 +61,6 @@ export default class TaskPage extends Component {
               <Details task={task} />
               <RelatedTasks task={task} type='related' />
               <RelatedTasks task={task} type='children' />
-              <TaskHistory task={task} />
             </aside>
           </Col>
         </Row>
@@ -67,3 +68,7 @@ export default class TaskPage extends Component {
     );
   }
 }
+
+TaskPage.propTypes = {
+  children: PropTypes.object
+};

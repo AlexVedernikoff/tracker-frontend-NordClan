@@ -7,7 +7,6 @@ export default class Comments extends Component {
     const css = require('./Comments.scss');
     return (
       <div className="css.comments">
-        <h3>Комментарии</h3>
         <ul className={css.commentList}>
           <li className={css.commentContainer}>
             <div className={css.comment}>
