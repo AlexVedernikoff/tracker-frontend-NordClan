@@ -4,7 +4,7 @@ const InitialState = {
   isAuthSending: false,
   data: {},
   isLogoutSending: false,
-  errorMessage: ""
+  errorMessage: ''
 };
 
 function Auth(state = InitialState, action) {
@@ -26,10 +26,32 @@ function Auth(state = InitialState, action) {
       return {
         ...state,
         user: action.data,
+        errorMessage: "",
         isAuthSending: false
       };
+
+    case AuthActions.LOGOUT_START:
+      return {
+        ...state,
+        isLogoutSending: true
+      };
+
+    case AuthActions.LOGOUT_ERROR:
+      return {
+        ...state,
+        errorMessage: action.errorMessage
+      };
+
+    case AuthActions.LOGOUT_COMPLETE:
+      return {
+        ...state,
+        errorMessage: "",
+        isLogoutSending: false
+      }
+
+
     default:
-      return state
+      return state;
   }
 }
 

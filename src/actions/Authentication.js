@@ -23,6 +23,25 @@ function AuthenticationReceived(user) {
   };
 }
 
+function startLogout() {
+  return {
+    type: AuthActions.LOGOUT_START
+  }
+}
+
+function LogoutError(message) {
+  return {
+    type: AuthActions.LOGOUT_ERROR,
+    errorMessage: message
+  }
+}
+
+function LogoutComplete() {
+  return {
+    type: AuthActions.LOGOUT_COMPLETE
+  }
+}
+
 export function doAuthentication({ username, password }) {
   const URL = `http://sim-track.simbirsoft/api/auth/login`;
 
@@ -59,8 +78,9 @@ export function doLogout() {
         if (!response) {
           return;
         } else {
-          console.log(document.cookie);
+          window.localStorage.removeItem('simTrackAuthToken');
           dispatch(LogoutComplete());
+          history.push("/login");
         }
       });
   };
