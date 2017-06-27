@@ -21,12 +21,13 @@ const TaskHeader = (props) => {
         <Priority/>
       </div>
       <TaskTitle name={task.name} />
+      <Button type="bordered" icon='IconClose' data-tip="Отменить" data-place='bottom' style={{marginRight: '1rem'}} />
       <ButtonGroup type="lifecircle" stage="full" style={{marginRight: 32}}>
         <Button text="New" type="bordered" data-tip="Перевести в стадию New" data-place='bottom' />
         <Button text="Develop" type="bordered" data-tip="Перевести в стадию Develop" data-place='bottom' />
         <ButtonGroup>
           <Button text="Code Review" type="green" icon='IconPause' data-tip="Приостановить" data-place='bottom' />
-          <Button type="green-lighten" icon='IconClose' data-tip="Отменить" data-place='bottom' />
+          {/*<Button type="green-lighten" icon='IconClose' data-tip="Отменить" data-place='bottom' />*/}
         </ButtonGroup>
         <Button text="QA" type="bordered" data-tip="Перевести в стадию QA" data-place='bottom' />
         <Button text="Done" type="bordered" data-tip="Перевести в стадию Done" data-place='bottom' />
