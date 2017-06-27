@@ -43,7 +43,7 @@ function LogoutComplete() {
 }
 
 export function doAuthentication({ username, password }) {
-  const URL = `http://sim-track.simbirsoft/api/auth/login`;
+  const URL = `/api/auth/login`;
 
   return dispatch => {
     dispatch(startAuthentication());
@@ -67,7 +67,7 @@ export function doAuthentication({ username, password }) {
 }
 
 export function doLogout() {
-  const URL = `http://sim-track.simbirsoft/api/auth/logout`;
+  const URL = `/api/auth/logout`;
 
   return dispatch => {
     dispatch(startLogout());

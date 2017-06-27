@@ -79,11 +79,24 @@ const settings = {
   },
   devServer: {
     contentBase: path.resolve('src/www'),
-    publicPath: 'http://localhost:8080/', // full URL is necessary for Hot Module Replacement if additional path will be added.
+    publicPath: 'http://192.168.72.151:8080/', // full URL is necessary for Hot Module Replacement if additional path will be added.
     quiet: false,
     hot: true,
     historyApiFallback: true,
-    inline: true
+    inline: true,
+    disableHostCheck: true,
+    proxy: {
+      '/api/**': {
+        target: {
+          host: 'sim-track.simbirsoft',
+          protocol: 'http:',
+          port: 80
+        },
+        // ignorePath: true,
+        changeOrigin: true,
+        secure: false
+      }
+    }
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
