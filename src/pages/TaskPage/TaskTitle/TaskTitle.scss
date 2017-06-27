@@ -29,6 +29,7 @@
 
 .edit {
   display: inline-block;
+  box-sizing: content-box;
   vertical-align: middle;
   color: silver;
   cursor: pointer;
@@ -49,18 +50,10 @@
 }
 
 .save {
-  display: inline-block;
-  vertical-align: middle;
+  @extend .edit;
   color: $color-green;
-  cursor: pointer;
-  padding: 7px;
-  margin-left: 0.5rem;
-  font-size: 1rem;
-  background-color: white;
   border: 1px solid $color-green;
-  border-radius: 50%;
   opacity: 1;
-  transition: $transition;
 
   &:hover {
     background-color: $color-green;

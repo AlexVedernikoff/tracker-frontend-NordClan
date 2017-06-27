@@ -2,6 +2,7 @@
 
 .edit {
   display: inline-block;
+  box-sizing: content-box;
   color: silver;
   cursor: pointer;
   padding: 7px;
@@ -22,18 +23,9 @@
 }
 
 .save {
-  display: inline-block;
+  @extend .edit; 
   color: $color-green;
-  cursor: pointer;
-  padding: 7px;
-  position: absolute;
-  top: -1rem;
-  left: -1rem;
-  font-size: 1rem;
-  background-color: white;
   border: 1px solid $color-green;
-  border-radius: 50%;
-  transition: $transition;
 
   &:hover {
     background-color: $color-green;
