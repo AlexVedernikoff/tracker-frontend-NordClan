@@ -4,6 +4,7 @@ import * as css from './Planning.scss';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import TaskRow from '../../../components/TaskRow';
 import Button from '../../../components/Button';
+import SelectDropdown from '../../../components/SelectDropdown';
 
 //Mocks
 
@@ -60,6 +61,17 @@ const sortTasks = (sortedArr) => {
 const sortedTasks = sortTasks(tasks);
 
 export default class Planning extends Component {
+
+  constructor (props) {
+    super(props);
+    this.state = {
+      changedSprint: 'sprint1'
+    };
+  }
+
+  selectValue = (e, name) => {
+    this.setState({[name]: e});
+  }
 
   render () {
 
@@ -181,16 +193,57 @@ export default class Planning extends Component {
           </div>
           <Row>
             <Col xs={6}>
-              <h2 className={css.boardTitle}>
-                Backlog
-                <Button type="primary" text="Создать задачу" icon="IconPlus" style={{marginLeft: 16}}/>
-              </h2>
+              <div className={css.headerColumn}>
+                <div className={css.selectWrapper}>
+                  <SelectDropdown
+                    name="leftColumn"
+                    placeholder="Введите название спринта..."
+                    multi={false}
+                    value={this.state.leftColumn}
+                    onChange={(e) => this.selectValue(e, 'leftColumn')}
+                    noResultsText="Нет результатов"
+                    options={[
+                      { value: 'sprint1', label: 'Спринт №1 (01.06.2017 - 30.06.2017)', className: classnames({[css.INPROGRESS]: true, [css.sprintMarker]: true }) },
+                      { value: 'sprint2', label: 'Спринт №2 (01.06.2017 - 30.06.2017)', className: classnames({[css.PLANNED]: true, [css.sprintMarker]: true }) },
+                      { value: 'sprint3', label: 'Спринт №3 (01.06.2017 - 30.06.2017)', className: classnames({[css.FINISHED]: true, [css.sprintMarker]: true }) },
+                      { value: 'sprint4', label: 'Спринт №4 (01.06.2017 - 30.06.2017)', className: classnames({[css.FINISHED]: true, [css.sprintMarker]: true }) },
+                      { value: 'backlog', label: 'Backlog', className: classnames({[css.INPROGRESS]: true, [css.sprintMarker]: true }) }
+                    ]}
+                  />
+                </div>
+                <Button type="bordered" text="Создать задачу" icon="IconPlus" style={{marginLeft: 16}}/>
+              </div>
+              <div className={css.progressBarWrapper} data-tip="Суммарное время задач: 795 ч. из 500">
+                <div className={classnames({[css.progressBar]: true, [css.exceeded]: true})} style={{width: '100%'}}/>
+              </div>
               <div>
                 {sortedTasks.slice(3, 6)}
               </div>
             </Col>
             <Col xs={6}>
-              <h2 className={css.boardTitle}>Спринт №3</h2>
+              <div className={css.headerColumn}>
+                <div className={css.selectWrapper}>
+                  <SelectDropdown
+                    name="rightColumn"
+                    placeholder="Введите название спринта..."
+                    multi={false}
+                    value={this.state.rightColumn}
+                    onChange={(e) => this.selectValue(e, 'rightColumn')}
+                    noResultsText="Нет результатов"
+                    options={[
+                      { value: 'sprint1', label: 'Спринт №1 (01.06.2017 - 30.06.2017)', className: classnames({[css.INPROGRESS]: true, [css.sprintMarker]: true }) },
+                      { value: 'sprint2', label: 'Спринт №2 (01.06.2017 - 30.06.2017)', className: classnames({[css.PLANNED]: true, [css.sprintMarker]: true }) },
+                      { value: 'sprint3', label: 'Спринт №3 (01.06.2017 - 30.06.2017)', className: classnames({[css.FINISHED]: true, [css.sprintMarker]: true }) },
+                      { value: 'sprint4', label: 'Спринт №4 (01.06.2017 - 30.06.2017)', className: classnames({[css.FINISHED]: true, [css.sprintMarker]: true }) },
+                      { value: 'backlog', label: 'Backlog', className: classnames({[css.INPROGRESS]: true, [css.sprintMarker]: true }) }
+                    ]}
+                  />
+                </div>
+                <Button type="bordered" text="Создать задачу" icon="IconPlus" style={{marginLeft: 16}}/>
+              </div>
+              <div className={css.progressBarWrapper} data-tip="Суммарное время задач: 257 ч. из 500">
+                <div className={classnames({[css.progressBar]: true, [css.exceeded]: false})} style={{width: '58%'}}/>
+              </div>
               <div>
                 {sortedTasks}
               </div>
