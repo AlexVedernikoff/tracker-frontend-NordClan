@@ -14,8 +14,7 @@ class Login extends Component {
     this.state = {
       username: '',
       password: '',
-      errorMessage: '',
-      isAuthenticating: this.props.isAuthenticating
+      errorMessage: ''
     };
   }
 
@@ -76,13 +75,12 @@ class Login extends Component {
 
 const mapStateToProps = state => {
   return {
-    errorMessage: state.Auth.errorMessage,
     isAuthenticating: state.Auth.isAuthSending
   };
 };
 
 Login.propTypes = {
-  doAuthentication: PropTypes.string
+  isAuthenticating: PropTypes.bool.isRequired
 };
 
 export default connect(mapStateToProps)(Login);

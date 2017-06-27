@@ -98,7 +98,7 @@
     "webpack-dev-server": "^2.5.0"
   },
   "scripts": {
-    "start": "node_modules/.bin/cross-env NODE_ENV=development webpack-dev-server --colors --config webpack.config.js",
+    "start": "node_modules/.bin/cross-env NODE_ENV=development webpack-dev-server --host 192.168.72.151 --colors --config webpack.config.js",
     "build": "node_modules/.bin/cross-env NODE_ENV=development UV_THREADPOOL_SIZE=100 webpack --config webpack.config.js",
     "deploy": "gh-pages -d build"
   },

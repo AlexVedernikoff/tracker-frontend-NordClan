@@ -12,6 +12,9 @@ import * as css from './AppHead.scss';
 class AppHead extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      isLogoutSending: this.props.isLogoutSending
+    }
   }
 
   handleLogout = event => {
@@ -51,4 +54,10 @@ class AppHead extends Component {
   }
 }
 
-export default connect(null)(AppHead);
+const mapStateToProps = state => {
+  return {
+    isLogoutSending: state.Auth.isLogoutSending
+  };
+};
+
+export default connect(mapStateToProps)(AppHead);
