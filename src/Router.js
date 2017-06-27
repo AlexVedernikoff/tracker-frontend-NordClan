@@ -31,6 +31,23 @@ import { Provider } from 'react-redux';
 export const store = configureStore();
 export const history = syncHistoryWithStore(browserHistory, store);
 
+
+// Проверяется наличие token в localStorage, т.к кука не ставится для localhost
+const requireAuth = () => {
+  if (!localStorage.getItem(`simTrackAuthToken`)) {
+    history.push('/login');
+    return false;
+  }
+};
+
+const isLogged = () => {
+  if (localStorage.getItem(`simTrackAuthToken`)) {
+    history.push('/projects');
+    return false;
+  }
+}
+
+
 export default class AppRouter extends Component {
   render() {
     return (
@@ -39,9 +56,9 @@ export default class AppRouter extends Component {
 
           <Route path="/" component={MainContainer}>
 
-            <Route path="login" component={Login} />
+          <Route path="login" component={Login} onEnter={isLogged} />
 
-            <Route path="/" component={InnerContainer} />
+          <Route path="/" component={InnerContainer} onEnter={requireAuth}>
 
               <Route path="dashboard" component={Dashboard} />
               <Route path="repeat" component={Repeat} />

@@ -39,7 +39,6 @@ export function doAuthentication({ username, password }) {
         if (!response) {
           return;
         } else if (response.status === 200) {
-          console.log(response);
           window.localStorage.setItem('simTrackAuthToken', response.data.token);
           dispatch(AuthenticationReceived(response.data.user));
           history.push('/projects');
