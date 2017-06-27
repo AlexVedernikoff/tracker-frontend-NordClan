@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import UserCard from '../../../components/UserCard';
 
@@ -72,7 +71,9 @@ export default class TaskHistory extends React.Component {
       return <div className={css.historyEvent} key={i}>
         <span className={css.time}>{element.time}</span>
         <div className={css.historyAction}>
-          <Link onClick={() => this.showUserCard(element.userId)} onBlur={() => this.hideUserCard()}>{element.user}</Link> {element.event}
+          <UserCard id={element.userId}>
+            <Link>{element.user}</Link>
+          </UserCard> {element.event}
         </div>
       </div>;
     });
@@ -81,13 +82,6 @@ export default class TaskHistory extends React.Component {
       <div className={css.history}>
         <h3>История изменений</h3>
         {eventList}
-        <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
-          {
-            this.state.isUserCardVisible
-            ? <UserCard id={this.state.userId}/>
-            : null
-          }
-        </ReactCSSTransitionGroup>
       </div>
     );
   }

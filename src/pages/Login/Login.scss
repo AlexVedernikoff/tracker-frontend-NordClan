@@ -1,11 +1,5 @@
 @import '../../styles/variables';
 
-// @keyframes carousel {
-//   @for $i from 0 to 101 { // 0, 1, 2, 3, 4
-//    #{$i * 1%} {background-image: linear-gradient(#{$i * 14.4deg}, rgb(random(255), random(255), random(255)), rgb(random(255), random(255), random(255)));}
-//   }
-// }
-
 .formWrapper {
   padding-bottom: 10vh;
   position: fixed;
@@ -18,11 +12,6 @@
   justify-content: center;
   background-size: cover;
   background-color: $color-dark;
-  // background-color: $color-lightgray;
-  // animation-name: carousel;
-  // animation-duration: 10s;
-  // animation-iteration-count: infinite;
-  // animation-timing-function: ease-out;
 }
 
 .loginForm {
@@ -30,16 +19,12 @@
   width: 100%;
   max-width: 19rem;
   padding: 2rem;
-  // background-color: rgba($color-dark, 0.7);
-  // border: 1px solid $color-gray;
-  // box-shadow: 0px 0px 800px rgba(0,0,0,0.15);
 }
 
 .inputWrapper {
   margin: 1rem 0;
 
   & > input {
-    // border-bottom-color: darken($color-gray, 10%);
     background-color: transparent;
     color:white;
   }
