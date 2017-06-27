@@ -72,7 +72,7 @@ export function doLogout() {
   return dispatch => {
     dispatch(startLogout());
     axios
-      .delete(URL, {}, { withCredentials: true })
+      .delete(URL, { withCredentials: true })
       .catch(error => dispatch(AuthenticationError(error)))
       .then(response => {
         if (!response) {

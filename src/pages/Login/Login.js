@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 import * as css from './Login.scss';
 import Logo from '../../components/Logo';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import bg from './bg.jpg';
-import { connect } from "react-redux";
-import { doAuthentication } from "../../actions/Authentication";
+import { connect } from 'react-redux';
+import { doAuthentication } from '../../actions/Authentication';
 
 class Login extends Component {
   constructor(props) {
@@ -14,7 +14,7 @@ class Login extends Component {
     this.state = {
       username: '',
       password: '',
-      errorMessage: "",
+      errorMessage: '',
       isAuthenticating: this.props.isAuthenticating
     };
   }
@@ -44,28 +44,30 @@ class Login extends Component {
               style={{ fontSize: '3rem', padding: 0, textAlign: 'center' }}
             />
           </div>
-          <div className={css.inputWrapper}>
-            <Input
-              name="username"
-              placeholder="Имя пользователя"
-              onChange={this.handleChange}
-            />
-          </div>
-          <div className={css.inputWrapper}>
-            <Input
-              name="password"
-              placeholder="Пароль"
-              type="password"
-              onChange={this.handleChange}
-            />
-          </div>
-          <div className={css.buttonWrapper}>
-            <Button
-              onClick={this.onSubmit}
-              text="Войти"
-              type="borderedInverse"
-            />
-          </div>
+          <form onSubmit={this.onSubmit}>
+            <div className={css.inputWrapper}>
+              <Input
+                name="username"
+                placeholder="Имя пользователя"
+                onChange={this.handleChange}
+              />
+            </div>
+            <div className={css.inputWrapper}>
+              <Input
+                name="password"
+                placeholder="Пароль"
+                type="password"
+                onChange={this.handleChange}
+              />
+            </div>
+            <div className={css.buttonWrapper}>
+              <Button
+                onClick={this.onSubmit}
+                text="Войти"
+                type="borderedInverse"
+              />
+            </div>
+          </form>
         </div>
       </div>
     );
@@ -76,11 +78,11 @@ const mapStateToProps = state => {
   return {
     errorMessage: state.Auth.errorMessage,
     isAuthenticating: state.Auth.isAuthSending
-  }
-}
+  };
+};
 
 Login.propTypes = {
   doAuthentication: PropTypes.string
-}
+};
 
 export default connect(mapStateToProps)(Login);
