@@ -31,20 +31,6 @@ import { Provider } from 'react-redux';
 export const store = configureStore();
 export const history = syncHistoryWithStore(browserHistory, store);
 
-const requireAuth = () => {
-  if (!document.cookie) {
-    history.push('/login');
-    return false;
-  }
-};
-
-const isLogged = () => {
-  if (document.cookie) {
-    history.push('/projects');
-    return false;
-  }
-};
-
 export default class AppRouter extends Component {
   render() {
     return (
@@ -53,9 +39,9 @@ export default class AppRouter extends Component {
 
           <Route path="/" component={MainContainer}>
 
-            <Route path="login" component={Login} onEnter={isLogged} />
+            <Route path="login" component={Login} />
 
-            <Route path="/" component={InnerContainer} onEnter={requireAuth}>
+            <Route path="/" component={InnerContainer} />
 
               <Route path="dashboard" component={Dashboard} />
               <Route path="repeat" component={Repeat} />
