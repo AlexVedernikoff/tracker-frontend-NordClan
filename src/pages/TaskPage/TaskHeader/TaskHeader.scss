@@ -63,3 +63,27 @@
     background-color: lighten($color-black, 40%);
   }
 }
+
+.buttonCancel {
+  border-style: dashed;
+  margin-right: 1rem;
+  border-color: $color-red;
+  color: $color-red;
+
+  &:hover {
+    border-color: $color-red;
+    background-color: $color-red;
+  }
+}
+
+.buttonOk {
+  border-style: dashed;
+  margin-left: 1rem;
+  border-color: $color-green;
+  color: $color-green;
+
+  &:hover {
+    border-color: $color-green;
+    background-color: $color-green;
+  }
+}

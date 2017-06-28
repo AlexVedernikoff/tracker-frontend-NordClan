@@ -11,6 +11,7 @@ const Button = (props) => {
     type,
     text,
     loading,
+    addedClassNames,
     ...other
   } = props;
 
@@ -23,7 +24,8 @@ const Button = (props) => {
         [css.btn]: true,
         [css[type]]: !!type,
         [css.withIcon]: !!icon || loading,
-        [css.onlyIcon]: !!icon && !text
+        [css.onlyIcon]: !!icon && !text,
+        ...addedClassNames
       })}>
       {icon && !loading
         ? <Icon className={css.icon}/>
@@ -37,6 +39,7 @@ const Button = (props) => {
 };
 
 Button.propTypes = {
+  addedClassNames: PropTypes.object,
   icon: PropTypes.string,
   loading: PropTypes.bool,
   text: PropTypes.string,
