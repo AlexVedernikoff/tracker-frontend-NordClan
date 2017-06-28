@@ -20,7 +20,7 @@ const ReactModalStyles = {
     boxSizing: 'border-box',
     backgroundColor: 'rgba(43, 62, 80, 0.8)',
     zIndex: 2,
-    overflow: 'auto'
+    overflow: 'visible'
   },
   content: {
     position: 'relative',
@@ -31,7 +31,7 @@ const ReactModalStyles = {
     boxSizing: 'border-box',
     border: 'none',
     background: '#fff',
-    overflow: 'auto',
+    overflow: 'visible',
     WebkitOverflowScrolling: 'touch',
     borderRadius: 0,
     outline: 'none',
