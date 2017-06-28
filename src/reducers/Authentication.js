@@ -48,7 +48,6 @@ function Auth(state = InitialState, action) {
         isLogoutSending: false
       }
 
-
     default:
       return state;
   }

@@ -45,7 +45,7 @@ export function getProjects(pageSize = 25, currentPage = 1, tags = '') {
         if (!response) {
           return;
         } else if (response.status === 200) {;
-          dispatch(AuthenticationReceived(response.data));
+          dispatch(ProjectsReceived(response.data));
         }
       });
   };

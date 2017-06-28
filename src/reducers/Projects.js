@@ -1,4 +1,4 @@
-import * as ProjectActions from '../actions/Projects';
+import * as ProjectActions from '../constants/Projects';
 
 const InitialState = {
   projects: [],
@@ -26,5 +26,10 @@ function Projects(state = InitialState, action) {
         ...state,
         projects: action
       };
+
+    default:
+      return state;
   }
 }
+
+export default Projects;
