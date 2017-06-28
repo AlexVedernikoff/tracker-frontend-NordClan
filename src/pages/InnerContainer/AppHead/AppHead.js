@@ -15,7 +15,8 @@ class AppHead extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLogoutSending: this.props.isLogoutSending
+      isLogoutSending: this.props.isLogoutSending,
+      loading: false
     }
   }
 
@@ -23,11 +24,6 @@ class AppHead extends Component {
     event.preventDefault();
     const { dispatch } = this.props;
     dispatch(doLogout());
-  }
-
-  constructor (props) {
-    super(props);
-    this.state = {loading: false};
   }
 
   testLoad = () => {
@@ -63,8 +59,8 @@ class AppHead extends Component {
         <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
           {
             this.state.loading
-            : null
             ? <Loader/>
+            : null
           }
         </ReactCSSTransitionGroup>
       </div>
