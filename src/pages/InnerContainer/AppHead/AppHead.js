@@ -1,20 +1,29 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-
-import {IconExitApp} from '../../../components/Icons';
 import {IconSearch} from '../../../components/Icons';
+import {IconExitApp} from '../../../components/Icons';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Logo from '../../../components/Logo';
 import Loader from './Loader';
+import { doLogout } from "../../../actions/Authentication";
+import { connect } from "react-redux";
 
 import * as css from './AppHead.scss'; // Стили для плавного появления и скрытия лоадера
 
-export default class AppHead extends Component {
+class AppHead extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLogoutSending: this.props.isLogoutSending
+    }
+  }
 
-  static contextTypes = {
-    user: PropTypes.object
-  };
+  handleLogout = event => {
+    event.preventDefault();
+    const { dispatch } = this.props;
+    dispatch(doLogout());
+  }
 
   constructor (props) {
     super(props);
@@ -34,23 +43,28 @@ export default class AppHead extends Component {
 
     return (
       <div className={css.toppanel}>
-        <Link to="/" style={{textDecoration: 'none'}}>
-          <Logo/>
+        <Link to="/" style={{ textDecoration: 'none' }}>
+          <Logo />
         </Link>
         <div className={css.search}>
-          <input type="text" id="mainSearch" className={css.searchInput} placeholder="Поиск по названию" />
+          <input
+            type="text"
+            id="mainSearch"
+            className={css.searchInput}
+            placeholder="Поиск по названию"
+          />
           <label htmlFor="mainSearch" className={css.searchButton}>
             <IconSearch style={iconStyles} />
           </label>
         </div>
-        <Link className={css.logoutButton} onClick={this.testLoad}>
+        <div className={css.logoutButton} onClick={this.handleLogout}>
           <IconExitApp style={iconStyles} />
-        </Link>
+        </div>
         <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
           {
             this.state.loading
-            ? <Loader/>
             : null
+            ? <Loader/>
           }
         </ReactCSSTransitionGroup>
       </div>
@@ -58,3 +72,10 @@ export default class AppHead extends Component {
   }
 }
 
+const mapStateToProps = state => {
+  return {
+    isLogoutSending: state.Auth.isLogoutSending
+  };
+};
+
+export default connect(mapStateToProps)(AppHead);
