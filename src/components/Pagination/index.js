@@ -43,7 +43,7 @@ const Pagination = (props) => {
   const items = [];
   for (let i = 0; i < itemsCount; i++) {
     const index = i + 1;
-    items.push(<li key={i} className={cn('page-item', {
+    items.push(<li key={i} className={classname(css["page-item"], {
           'active': activePage === index
         })}
         onClick={(e) => handleClick({ activePage: index }, e)}
@@ -53,16 +53,16 @@ const Pagination = (props) => {
   }
 
   return (
-    <ul className={cn('pagination', className)}>
-      <li className={cn('page-item', {
+    <ul className={css.pagination}>
+      <li className={classname(css["page-item"], {
         'disabled': activePage === 1
-      })} onClick={(e) => handleClick({ isPrev: true }, e)}><a className="page-link" href="#">{prevText || 'Пред.'}</a></li>
+      })} onClick={(e) => handleClick({ isPrev: true }, e)}><a className={css["page-link"]} href="#">{prevText || 'Пред.'}</a></li>
       {
         itemsCount && items
       }
-      <li className={cn('page-item', {
+      <li className={classname(css["page-item"], {
         'disabled': activePage === itemsCount
-      })} onClick={(e) => handleClick({ isNext: true }, e)}><a className="page-link" href="#">{nextText || 'След.'}</a></li>
+      })} onClick={(e) => handleClick({ isNext: true }, e)}><a className={css["page-link"]} href="#">{nextText || 'След.'}</a></li>
     </ul>
   );
 };

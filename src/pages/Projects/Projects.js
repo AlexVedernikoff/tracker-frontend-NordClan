@@ -10,15 +10,16 @@ import DatepickerDropdown from '../../components/DatepickerDropdown';
 import Input from '../../components/Input';
 import ProjectCard from '../../components/ProjectCard';
 import StatusCheckbox from './StatusCheckbox';
+import Pagination from "../../components/Pagination";
 
 // Mocks
 
 const projects = [];
-const getRandomString = (arr) => {
+const getRandomString = arr => {
   return arr[Math.floor(Math.random() * arr.length)];
 };
 
-const getSomeRandomString = (arr) => {
+const getSomeRandomString = arr => {
   const start = Math.floor(Math.random() * arr.length);
   const end = arr.length - start;
   return arr.splice(start, end);
@@ -29,12 +30,40 @@ const mockTags = [];
 for (let i = 0; i < 15; i++) {
   projects.push({
     id: i,
-    name: getRandomString(['MakeTalents', 'Киви-Банк - {Всем', 'Грехов И.В.- "BookReview"', 'SimTrack', 'Qiwi-Artek', 'ПроРейтинг - HR-инструмент', 'Корпоративные сайты SimbirSoft', 'Аудит информационной безопасности', 'Онлайн-опросы (ООО "Top of Mind Research")', 'ИП Хабибрахманов Р.Р. - ФЛЭТ CRM Битрикс24']),
-    tags: mockTags.concat(getSomeRandomString(['frontend', 'java', 'C++', 'php', 'angular.js', 'angular', 'react']), getRandomString(['2017', '2016', '2015']), getRandomString(['внутренний', 'коммерческий'])),
+    name: getRandomString([
+      'MakeTalents',
+      'Киви-Банк - {Всем',
+      'Грехов И.В.- "BookReview"',
+      'SimTrack',
+      'Qiwi-Artek',
+      'ПроРейтинг - HR-инструмент',
+      'Корпоративные сайты SimbirSoft',
+      'Аудит информационной безопасности',
+      'Онлайн-опросы (ООО "Top of Mind Research")',
+      'ИП Хабибрахманов Р.Р. - ФЛЭТ CRM Битрикс24'
+    ]),
+    tags: mockTags.concat(
+      getSomeRandomString([
+        'frontend',
+        'java',
+        'C++',
+        'php',
+        'angular.js',
+        'angular',
+        'react'
+      ]),
+      getRandomString(['2017', '2016', '2015']),
+      getRandomString(['внутренний', 'коммерческий'])
+    ),
     dateStart: '06.06.2017',
     dateEnd: '26.12.2017',
     activeSprint: {
-      name: getRandomString(['Спринт №1', 'Спринт №2', 'Спринт №3', 'Спринт №4']),
+      name: getRandomString([
+        'Спринт №1',
+        'Спринт №2',
+        'Спринт №3',
+        'Спринт №4'
+      ]),
       dateStart: '06.06.2017',
       dateEnd: '26.12.2017'
     },
@@ -91,20 +120,25 @@ const projectFolder = {
   ]
 };
 
-const projectList = projects.map((element, i) => <ProjectCard key={i} project={element}/>);
-const projectFolderNode = <div style={{marginBottom: 24}} key={321654}>
-  <h2 style={{marginBottom: 32}}>{/*<IconFolderOpen style={{color: 'silver'}} />*/} {projectFolder.name}</h2>
-  <ProjectCard project={projectFolder.children[0]} isChild key={1}/>
-  <ProjectCard project={projectFolder.children[1]} isChild key={2}/>
-  <ProjectCard project={projectFolder.children[2]} isChild key={3}/>
-</div>;
+const projectList = projects.map((element, i) =>
+  <ProjectCard key={i} project={element} />
+);
+const projectFolderNode = (
+  <div style={{ marginBottom: 24 }} key={321654}>
+    <h2 style={{ marginBottom: 32 }}>
+      {/*<IconFolderOpen style={{color: 'silver'}} />*/} {projectFolder.name}
+    </h2>
+    <ProjectCard project={projectFolder.children[0]} isChild key={1} />
+    <ProjectCard project={projectFolder.children[1]} isChild key={2} />
+    <ProjectCard project={projectFolder.children[2]} isChild key={3} />
+  </div>
+);
 projectList[3] = projectFolderNode;
 
 export default class Projects extends Component {
-  static propTypes = {
-  }
+  static propTypes = {};
 
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       isSectionOpen: {
@@ -118,18 +152,22 @@ export default class Projects extends Component {
     };
   }
 
-  check = (name) => {
+  check = name => {
     const oldValue = this.state[name];
     this.setState({
       [name]: !oldValue
     });
-  }
+  };
 
   selectValue = (e, name) => {
-    this.setState({[name]: e});
+    this.setState({ [name]: e });
+  };
+
+  handlePaginationClick = (e) => {
+    e.preventDefault;
   }
 
-  render () {
+  render() {
     const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
 
     return (
@@ -140,12 +178,27 @@ export default class Projects extends Component {
             <Button text="Создать проект" type="primary" icon="IconPlus" />
             <Button text="Создать портфель" type="primary" icon="IconPlus" />
           </header>
-          <hr/>
+          <hr />
           <div className={css.projectsHeader}>
             <div className={css.statusFilters}>
-              <StatusCheckbox type="INPROGRESS" checked={filteredInProgress} onClick={() => this.check('filteredInProgress')} label="В процессе"/>
-              <StatusCheckbox type="INHOLD" checked={filteredInHold} onClick={() => this.check('filteredInHold')} label="Приостановлен"/>
-              <StatusCheckbox type="FINISHED" checked={filteredFinished} onClick={() => this.check('filteredFinished')} label="Завершен"/>
+              <StatusCheckbox
+                type="INPROGRESS"
+                checked={filteredInProgress}
+                onClick={() => this.check('filteredInProgress')}
+                label="В процессе"
+              />
+              <StatusCheckbox
+                type="INHOLD"
+                checked={filteredInHold}
+                onClick={() => this.check('filteredInHold')}
+                label="Приостановлен"
+              />
+              <StatusCheckbox
+                type="FINISHED"
+                checked={filteredFinished}
+                onClick={() => this.check('filteredFinished')}
+                label="Завершен"
+              />
             </div>
             <Row>
               <Col xs>
@@ -168,15 +221,15 @@ export default class Projects extends Component {
                   placeholder="Введите название тега..."
                   backspaceToRemoveMessage="BackSpace для очистки поля"
                   value={this.state.filterTags}
-                  onChange={(e) => this.selectValue(e, 'filterTags')}
+                  onChange={e => this.selectValue(e, 'filterTags')}
                   noResultsText="Нет результатов"
                   options={[
-                    {value: 'develop', label: 'develop'},
-                    {value: 'frontend', label: 'frontend'},
-                    {value: 'inner', label: 'внутренний'},
-                    {value: 'commerce', label: 'коммерческий'},
-                    {value: 'frontend', label: 'frontend'},
-                    {value: 'backend', label: 'backend'}
+                    { value: 'develop', label: 'develop' },
+                    { value: 'frontend', label: 'frontend' },
+                    { value: 'inner', label: 'внутренний' },
+                    { value: 'commerce', label: 'коммерческий' },
+                    { value: 'frontend', label: 'frontend' },
+                    { value: 'backend', label: 'backend' }
                   ]}
                 />
               </Col>
@@ -185,9 +238,16 @@ export default class Projects extends Component {
           <div>
             {projectList}
           </div>
+          <hr/>
+          {2 > 1
+            ? <Pagination
+                itemsCount={3}
+                activePage={3}
+                onItemClick={this.handlePaginationClick}
+              />
+            : null}
         </section>
       </div>
     );
   }
 }
-
