@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import SelectDropdown from '../SelectDropdown';
+import {Creatable} from 'react-select';
 import Button from '../Button';
 import classnames from 'classnames';
 import * as css from './Tags.scss';
@@ -24,43 +24,53 @@ export default class Tags extends Component {
     }
 
     showDropdownMenu = (e) => {
-        this.setState({ visible: !this.state.visible});
+        this.setState({visible: !this.state.visible});
     }
 
     selectValue = (e, name) => {
         this.setState({[name]: e});
     }
 
+    sendNewTags = (e) => {
+        console.log(this.state.newTags);
+        alert('Я сделяль!');
+    }
+
     render() {
         return (
             <div>
                 {this.props.children}
-                <Tag create
-                     data-tip="Добавить тег"
-                     data-place="bottom"
-                     onClick={this.showDropdownMenu}
-                />
-                <div className={css.tagPopup
-                }
-                     style={{display: this.state.visible ? 'block' : 'none'}}>
-                    
-                    <SelectDropdown name="filterTags"
-                                    multi
-                                    placeholder="Добавить тег..."
-                                    backspaceToRemoveMessage="BackSpace для очистки поля"
-                                    value={this.state.filterTags}
-                                    onChange={(e) => this.selectValue(e, 'filterTags')}
-                                    noResultsText="Нет результатов"
-                                    options={[
-                  {value: 'develop', label: 'develop'},
-                  {value: 'frontend', label: 'frontend'},
-                  {value: 'backend', label: 'backend'}
-                ]}
+                <span className={css.wrapperAddTags}>
+                    <Tag create
+                         data-tip="Добавить тег"
+                         data-place="bottom"
+                         onClick={this.showDropdownMenu}
                     />
-                    <Button text="Добавить"
-                            type="green"
-                    />
-                </div>
+                    {this.state.visible ?
+                        <div className={css.tagPopup}>
+                            <Creatable className={css.tagsInput}
+                                       name="newTags"
+                                       multi
+                                       placeholder="Добавить тег..."
+                                       backspaceToRemoveMessage="BackSpace для очистки поля"
+                                       value={this.state.newTags}
+                                       onChange={(e) => this.selectValue(e, 'newTags')}
+                                       noResultsText="Нет результатов"
+                                       options={[
+                                              {value: 'develop', label: 'develop'},
+                                              {value: 'frontend', label: 'frontend'},
+                                              {value: 'backend', label: 'backend'}
+                                            ]}
+                            />
+                            <Button className={css.tagsButton}
+                                    text="Добавить"
+                                    type="green"
+                                    onClick={this.sendNewTags}
+                            />
+                        </div>
+                        : null
+                    }
+                </span>
             </div>
         );
     }

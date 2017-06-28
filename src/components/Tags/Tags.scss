@@ -1,6 +1,17 @@
 @import '../../styles/variables';
 
+.wrapperAddTags {
+  position: relative;
+}
 .tagPopup {
   position: absolute;
-  z-index: 100;
+  right: 0;
+  z-index: 3;
+  background-color: white;
+}
+.tagsInput {
+  min-width: 150px;
+}
+.tagsButton {
+  min-width: 150px;
 }
