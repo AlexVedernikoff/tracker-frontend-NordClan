@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import GanttChart from "./GanttChart";
 import classnames from 'classnames';
 import * as css from './Planning.scss';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
@@ -197,6 +198,7 @@ export default class Planning extends Component {
             </Col>
           </Row>
         </section>
+        <GanttChart />
       </div>
     );
   }

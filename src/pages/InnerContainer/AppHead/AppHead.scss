@@ -16,6 +16,7 @@
   transition: 0.3s ease-out 0s;
   color: $color-lightgray;
   flex-shrink: 0;
+  cursor: pointer;
 
   svg {
     opacity: 0.4;
@@ -84,7 +85,7 @@
   &:-moz-placeholder {
     color:lighten(rgba(white, .5), 0%);
   }
-  
+
   &:-ms-input-placeholder {
     color:lighten(rgba(white, .5), 0%);
   }
