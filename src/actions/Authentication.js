@@ -77,7 +77,7 @@ export function doLogout() {
       .then(response => {
         if (!response) {
           return;
-        } else {
+        } else if (response.status === 200) {
           window.localStorage.removeItem('simTrackAuthToken');
           dispatch(LogoutComplete());
           history.push("/login");
