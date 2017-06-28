@@ -168,3 +168,51 @@
   display: flex;
   align-items: center;
 }
+
+
+.sprintMarker:before {
+  content: "";
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: silver;
+  margin-right: 0.5rem;
+  vertical-align: text-top;
+}
+
+.INPROGRESS:before {
+  background-color: $color-green;
+}
+
+.PLANNED:before {
+  background-color: lighten($color-dark, 10%);
+}
+
+.FINISHED:before {
+  background-color: darken($color-gray, 10%);
+}
+
+.headerColumn {
+  display: flex;
+  margin-bottom: 1rem;
+
+  .selectWrapper {
+    flex-grow: 1;
+  }
+}
+
+.progressBarWrapper {
+  height: 8px;
+  background: silver;
+  margin-bottom: 2rem;
+
+  .progressBar {
+    height: 100%;
+    background-color: $color-green;
+
+    &.exceeded {
+      background-color: $color-red;
+    }
+  }
+}

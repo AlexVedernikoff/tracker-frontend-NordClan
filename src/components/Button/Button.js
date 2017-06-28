@@ -10,6 +10,8 @@ const Button = (props) => {
     icon,
     type,
     text,
+    loading,
+    addedClassNames,
     ...other
   } = props;
 
@@ -21,11 +23,15 @@ const Button = (props) => {
       className={classnames({
         [css.btn]: true,
         [css[type]]: !!type,
-        [css.withIcon]: !!icon,
-        [css.onlyIcon]: !!icon && !text
+        [css.withIcon]: !!icon || loading,
+        [css.onlyIcon]: !!icon && !text,
+        ...addedClassNames
       })}>
-      {icon
+      {icon && !loading
         ? <Icon className={css.icon}/>
+        : null}
+      {loading
+        ? <icons.IconPreloader className={css.icon}/>
         : null}
       {text}
     </button>
@@ -33,7 +39,9 @@ const Button = (props) => {
 };
 
 Button.propTypes = {
+  addedClassNames: PropTypes.object,
   icon: PropTypes.string,
+  loading: PropTypes.bool,
   text: PropTypes.string,
   type: PropTypes.string
 };
