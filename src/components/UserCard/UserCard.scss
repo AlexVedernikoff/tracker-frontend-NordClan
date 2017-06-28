@@ -4,17 +4,77 @@
   position: absolute;
   bottom: calc(100% + 0.5rem);
   left: 50%;
-  margin-left: -120px;
-  width: 240px;
+  margin-left: -7.5rem;
+  width: 15rem;
   padding: 1rem;
   border: 1px solid $color-gray;
   background-color: white;
   text-align: center;
   z-index: 1;
   box-shadow: $box-shadow;
+
+  &:before {
+    content: "";
+    display: block;
+    height: 5rem;
+    background-color: silver;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
 }
 
 .wrapper {
   position: relative;
   display: inline-block;
+}
+
+.photoWrapper {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1rem;
+
+  img {
+    width: 7rem;
+    height: 7rem;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+  }
+}
+
+.name {
+  font-size: 1.5em;
+  margin-bottom: 1rem;
+}
+
+.meta {
+  display: flex;
+  text-align: left;
+
+  &:hover {
+    span:first-child {
+      color: lighten($color-dark, 30%);
+      transition: $transition;
+    }
+  }
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 0.5rem 0.25rem 0;
+    transition: $transition;
+    // font-size: 12px;
+
+    &:first-child {
+      display: block;
+      color: silver;
+      flex-shrink: 0;
+      text-align: right;
+      width: 10%;
+    }
+  }
 }
