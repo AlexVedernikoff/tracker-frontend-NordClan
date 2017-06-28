@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
-import shortid from 'shortid';
 
 import * as css from './Projects.scss';
 import SelectDropdown from '../../components/SelectDropdown';
