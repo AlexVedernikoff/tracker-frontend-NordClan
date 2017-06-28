@@ -175,7 +175,6 @@ export default class Projects extends Component {
                     {value: 'frontend', label: 'frontend'},
                     {value: 'inner', label: 'внутренний'},
                     {value: 'commerce', label: 'коммерческий'},
-                    {value: 'frontend', label: 'frontend'},
                     {value: 'backend', label: 'backend'}
                   ]}
                 />

@@ -45,7 +45,7 @@ export default class AttachedImage extends React.Component {
     };
 
     const imageStyles = {
-      maxHeight: '100%',
+      maxHeight: 'calc(100vh - 2rem)',
       maxWidth: '100%',
       display: 'block'
     };

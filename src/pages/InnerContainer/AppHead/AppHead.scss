@@ -1,6 +1,9 @@
 @import "../../../styles/variables.scss";
 
 .toppanel {
+  position: relative;
+  flex-shrink: 0;
+  width: 100%;
   height: 56px;
   background: $color-dark;
   display: flex;
@@ -96,4 +99,8 @@
     opacity: 1;
     transition: all 0.3s ease-out 0s;
   }
+}
+
+.animateLoader {
+  opacity: 1;
 }

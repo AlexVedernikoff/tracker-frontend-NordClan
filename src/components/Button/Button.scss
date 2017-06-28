@@ -22,20 +22,6 @@
   }
 }
 
-.withIcon {
-  padding-left: 32px;
-}
-
-.onlyIcon {
-  padding-right: 8px;
-  padding-left: 8px;
-
-  .icon {
-    position: static;
-    display: inline-block;
-  }
-}
-
 .icon {
   position: absolute;
   left: 8px;
@@ -97,5 +83,19 @@
     border-color: lighten($color-dark, 10%);
     color: white;
     transition: $transition;
+  }
+}
+
+.withIcon {
+  padding-left: 32px;
+}
+
+.onlyIcon {
+  padding-right: 8px;
+  padding-left: 8px;
+
+  .icon {
+    position: static;
+    display: inline-block;
   }
 }
