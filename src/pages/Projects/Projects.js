@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
+import shortid from 'shortid';
 
 import * as css from './Projects.scss';
 import SelectDropdown from '../../components/SelectDropdown';
@@ -26,7 +27,8 @@ class Projects extends Component {
       filterTags: [],
       filteredInProgress: false,
       filteredInHold: false,
-      filteredFinished: false
+      filteredFinished: false,
+      projects: []
     };
   }
 
@@ -45,7 +47,7 @@ class Projects extends Component {
     e.preventDefault;
   };
 
-  componentWillMount() {
+  componentDidMount() {
     const { dispatch } = this.props;
     dispatch(getProjects(25, 1, ''));
   }
@@ -118,7 +120,13 @@ class Projects extends Component {
               </Col>
             </Row>
           </div>
-          <div />
+          <div>
+            {this.props.projectList.map((project, i) => {
+              if (project.elemType !== 'portfolio') {
+                return <ProjectCard key={project.id} project={project} />;
+              }
+            })}
+          </div>
           <hr />
           {2 > 1
             ? <Pagination
@@ -134,10 +142,7 @@ class Projects extends Component {
 }
 
 const mapStateToProps = state => {
-  return {
-    isReceiving: state.Projects.isReceiving,
-    projects: state.Projects.isReceiving
-  };
+  return { projectList: state.Projects.projects };
 };
 
 export default connect(mapStateToProps)(Projects);

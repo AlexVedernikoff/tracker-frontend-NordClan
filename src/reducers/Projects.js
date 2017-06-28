@@ -18,13 +18,15 @@ function Projects(state = InitialState, action) {
 
     case ProjectActions.PROJECTS_RECEIVE_ERROR:
       return {
-        ...state
+        ...state,
+        isReceiving: false
       };
 
     case ProjectActions.PROJECTS_RECEIVE_SUCCESS:
       return {
         ...state,
-        projects: action
+        projects: action.data.data,
+        isReceiving: false
       };
 
     default:

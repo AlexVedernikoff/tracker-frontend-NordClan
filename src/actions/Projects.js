@@ -24,7 +24,7 @@ function ProjectsReceived(projects) {
 }
 
 export function getProjects(pageSize = 25, currentPage = 1, tags = '') {
-  const URL = `/project`;
+  const URL = `/api/project`;
 
   return dispatch => {
     dispatch(startProjectsReceive());
