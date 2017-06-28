@@ -5,25 +5,25 @@ import { history } from '../Router';
 
 function startProjectsReceive() {
   return {
-    type: AuthActions.PROJECTS_RECEIVE_START
+    type: ProjectActions.PROJECTS_RECEIVE_START
   };
 }
 
 function ProjectsReceiveError(message) {
   return {
-    type: AuthActions.PROJECTS_RECEIVE_ERROR,
+    type: ProjectActions.PROJECTS_RECEIVE_ERROR,
     errorMessage: message
   };
 }
 
 function ProjectsReceived(projects) {
   return {
-    type: AuthActions.PROJECTS_RECEIVE_SUCCESS,
+    type: ProjectActions.PROJECTS_RECEIVE_SUCCESS,
     data: projects
   };
 }
 
-export function getProjects(pageSize, currentPage, tags) {
+export function getProjects(pageSize = 25, currentPage = 1, tags = '') {
   const URL = `/project`;
 
   return dispatch => {
@@ -31,17 +31,21 @@ export function getProjects(pageSize, currentPage, tags) {
     axios
       .get(
         URL,
-        { login: username, password: password },
+        {
+          params: {
+            pageSize: pageSize,
+            currentPage: currentPage,
+            tags: tags
+          }
+        },
         { withCredentials: true }
       )
-      .catch(error => dispatch(AuthenticationError(error.message)))
+      .catch(error => dispatch(ProjectsReceiveError(error.message)))
       .then(response => {
         if (!response) {
           return;
-        } else if (response.status === 200) {
-          window.localStorage.setItem('simTrackAuthToken', response.data.token);
-          dispatch(AuthenticationReceived(response.data.user));
-          history.push('/projects');
+        } else if (response.status === 200) {;
+          dispatch(AuthenticationReceived(response.data));
         }
       });
   };
