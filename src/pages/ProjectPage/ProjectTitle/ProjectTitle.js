@@ -6,7 +6,7 @@ import * as css from './ProjectTitle.scss';
 import ReactTooltip from 'react-tooltip';
 
 export default class ProjectTitle extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       ...props,
@@ -16,14 +16,14 @@ export default class ProjectTitle extends Component {
     };
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     ReactTooltip.rebuild();
   }
 
   editIconClickHandler = event => {
     event.stopPropagation();
     if (this.state.editing) {
-      this.stopEditing();
+      this.validateSubmit();
     } else {
       this.startEditing();
     }
@@ -37,7 +37,7 @@ export default class ProjectTitle extends Component {
     this.setState({ editing: false });
   };
 
-  handleIncorrectInput () {
+  handleIncorrectInput() {
     if (this.projectName.innerText.length < 4) {
       this.setState({ nameIsIncorrect: true });
     } else if (this.state.nameIsIncorrect) {
@@ -53,7 +53,7 @@ export default class ProjectTitle extends Component {
     return false;
   }
 
-  submitInput () {
+  submitInput() {
     this.setState({
       editing: false,
       prefixIsIncorrect: false,
@@ -68,8 +68,8 @@ export default class ProjectTitle extends Component {
     this.projectPrefix.innerText = this.projectPrefix.innerText.trim();
 
     if (
-      this.projectName.innerText.length < 4
-      || this.projectPrefix.innerText.length < 2
+      this.projectName.innerText.length < 4 ||
+      this.projectPrefix.innerText.length < 2
     ) {
       this.handleIncorrectInput();
     } else {
@@ -99,23 +99,23 @@ export default class ProjectTitle extends Component {
   outsideClickHandler = event => {
     if (this.state.editing) {
       if (
-        event.target !== this.projectName
-        && event.target !== this.projectPrefix
+        event.target !== this.projectName &&
+        event.target !== this.projectPrefix
       ) {
         this.validateSubmit();
       }
     }
   };
 
-  componentDidMount () {
+  componentDidMount() {
     window.addEventListener('click', this.outsideClickHandler);
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     window.removeEventListener('click', this.outsideClickHandler);
   }
 
-  render () {
+  render() {
     return (
       <h1 className={css.projectTitle}>
         <img src={this.state.pic} className={css.projectPic} />
