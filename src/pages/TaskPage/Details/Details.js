@@ -66,14 +66,14 @@ export default class Details extends React.Component {
               <td>
                 <span data-tip data-place="right" data-for='time' className={classnames({[css.alert]: true, [css.factTime]: true})}>100 ч.</span>
               </td>
-              <ReactTooltip id='time' aria-haspopup='true' className="tooltip">
-                <div className={css.timeString}><span>Develop:</span><span>1 ч.</span></div>
-                <div className={css.timeString}><span>Code Review:</span>27 ч.</div>
-                <div className={css.timeString}><span>QA:</span>59 ч.</div>
-              </ReactTooltip>
             </tr>
           </tbody>
         </table>
+        <ReactTooltip id='time' aria-haspopup='true' className="tooltip">
+          <div className={css.timeString}><span>Develop:</span><span>1 ч.</span></div>
+          <div className={css.timeString}><span>Code Review:</span>27 ч.</div>
+          <div className={css.timeString}><span>QA:</span>59 ч.</div>
+        </ReactTooltip>
       </div>
     );
   }

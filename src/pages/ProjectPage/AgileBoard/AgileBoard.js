@@ -112,7 +112,6 @@ export default class AgileBoard extends Component {
     };
   }
 
-
   toggleSection = (sectionName) => {
     const otherSectionsStatus = this.state.isSectionOpen;
     this.setState({

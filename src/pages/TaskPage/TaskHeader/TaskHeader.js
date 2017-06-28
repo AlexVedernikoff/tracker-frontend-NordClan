@@ -52,9 +52,7 @@ export default class TaskHeader extends Component {
         <ButtonGroup type="lifecircle" stage="full">
           <Button text="New" type="bordered" data-tip="Перевести в стадию New" data-place='bottom' onClick={this.handleOpenModal} />
           <Button text="Develop" type="bordered" data-tip="Перевести в стадию Develop" data-place='bottom' onClick={this.handleOpenModal} />
-          <ButtonGroup>
-            <Button text="Code Review" type="green" icon='IconPause' data-tip="Приостановить" data-place='bottom' />
-          </ButtonGroup>
+          <Button text="Code Review" type="green" icon='IconPause' data-tip="Приостановить" data-place='bottom' />
           <Button text="QA" type="bordered" data-tip="Перевести в стадию QA" data-place='bottom' onClick={this.handleOpenModal} />
           <Button text="Done" type="bordered" data-tip="Перевести в стадию Done" data-place='bottom' onClick={this.handleOpenModal} />
         </ButtonGroup>
