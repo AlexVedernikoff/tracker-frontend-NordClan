@@ -79,7 +79,7 @@ const settings = {
   },
   devServer: {
     contentBase: path.resolve('src/www'),
-    publicPath: 'http://192.168.72.151:8080/', // full URL is necessary for Hot Module Replacement if additional path will be added.
+    publicPath: 'http://localhost:8080/', // full URL is necessary for Hot Module Replacement if additional path will be added.
     quiet: false,
     hot: true,
     historyApiFallback: true,
