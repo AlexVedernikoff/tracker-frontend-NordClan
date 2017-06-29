@@ -7,9 +7,10 @@ import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import Tag from '../Tag';
 import * as css from './ProjectCard.scss';
 
-const ProjectCard = (props) => {
+const ProjectCard = props => {
   const {
     name,
+    createdAt,
     dateStart,
     dateEnd,
     activeSprint,
@@ -18,6 +19,7 @@ const ProjectCard = (props) => {
     status,
     ...other
   } = props.project;
+  console.log(props.project);
 
   const { isChild } = props;
 
@@ -49,21 +51,37 @@ const ProjectCard = (props) => {
     <div className={css.projectCard} {...other}>
       <Row>
         <Col xs>
-          <h3 className={classnames({[css.title]: true, [css.child]: isChild})}>
-            <div className={classnames(css.statusMarker, css[status])} data-tip={statusTooltip} data-place="left"/>
+          <h3
+            className={classnames({ [css.title]: true, [css.child]: isChild })}
+          >
+            <div
+              className={classnames(css.statusMarker, css[status])}
+              data-tip={statusTooltip}
+              data-place="left"
+            />
             <Link to="/projects/1">{name}</Link>
           </h3>
         </Col>
         <Col xs>
           <div className={css.metaBox}>
-            <div className={css.meta}>
-              <span>Сроки:</span>
-              <span>{dateStart} - {dateEnd}</span>
-            </div>
-            <div className={css.meta}>
-              <span>Текущий спринт:</span>
-              <span>{activeSprint.name} ({activeSprint.dateStart} - {activeSprint.dateEnd})</span>
-            </div>
+
+            {createdAt
+              ? <div className={css.meta}>
+                  <span>Сроки:</span>
+                  <span>{createdAt} - {}</span>
+                </div>
+              : null}
+
+            {activeSprint
+              ? <div className={css.meta}>
+                  <span>Текущий спринт:</span>
+                  <span>
+                    {activeSprint.name} ({activeSprint.dateStart} -{' '}
+                    {activeSprint.dateEnd})
+                  </span>
+                </div>
+              : null}
+
             <div className={css.meta}>
               <span>Участников:</span>
               <span>{members}</span>
