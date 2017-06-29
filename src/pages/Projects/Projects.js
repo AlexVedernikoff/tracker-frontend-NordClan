@@ -29,7 +29,9 @@ class Projects extends Component {
       filteredInHold: false,
       filteredFinished: false,
       projects: [],
-      filterByName: ''
+      filterByName: '',
+      dateFrom: '',
+      dateTo: ''
     };
   }
 
@@ -62,6 +64,10 @@ class Projects extends Component {
       () => dispatch(getProjects(25, 1, '', this.state.filterByName))
     );
   };
+
+  handleDayFromChange(day, modifiers) {
+    console.log(day);
+  }
 
   render() {
     const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
@@ -106,10 +112,18 @@ class Projects extends Component {
               <Col xs>
                 <Row>
                   <Col xs>
-                    <DatepickerDropdown placeholder="От" />
+                    <DatepickerDropdown
+                      name="dateFrom"
+                      onDayChange={this.handleDayFromChange}
+                      placeholder="От"
+                    />
                   </Col>
                   <Col xs>
-                    <DatepickerDropdown placeholder="До" />
+                    <DatepickerDropdown
+                      name="dateTo"
+                      onDayChange={this.handleDayFromChange}
+                      placeholder="До"
+                    />
                   </Col>
                 </Row>
               </Col>
