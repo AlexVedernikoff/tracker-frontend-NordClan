@@ -3,6 +3,7 @@
 .commentList {
   padding: 0;
   margin: 0;
+  margin-top: 1.5rem;
 
   li {
     list-style-type: none;
@@ -14,12 +15,12 @@
 }
 
 .commentContainer {
-  // padding: 0.5rem;
+  padding: 0.5rem;
+  transition: $transition;
 }
 
 .comment {
   display: flex;
-  margin-top: 24px;
 
   &:hover {
     .commentAction {
@@ -101,5 +102,38 @@
 }
 
 .selected {
-  background-color: $color-lightgray;
+  background-color: $color-gray;
+  transition: $transition;
+}
+
+.answerLine {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+
+  button {
+    flex-shrink: 0;
+  }
+
+  textarea {
+    flex-grow: 1;
+  }
+}
+
+.answerInfo {
+  width: 100%;
+  margin-top: 4px;
+  padding-left: 1rem;
+  font-size: 12px;
+  line-height: 12px;
+  color: silver;
+}
+
+.quoteCancel {
+  // vertical-align: text-bottom;
+  cursor: pointer;
+
+  &:hover {
+    color: $color-dark;
+  }
 }
