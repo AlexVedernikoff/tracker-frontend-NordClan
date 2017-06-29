@@ -7,6 +7,7 @@
   padding: 5px;
   min-width: 25px;
   height: 20px;
+  box-sizing: content-box;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -52,7 +53,7 @@
   transition: 0.3s ease-out 0s;
 }
 .rdw-dropdown-wrapper:active {
-  box-shadow: 1px 1px 0px #BFBDBD inset;
+  /*box-shadow: 1px 1px 0px #BFBDBD inset;*/
 }
 .rdw-dropdown-carettoopen {
   height: 0px;
@@ -80,7 +81,7 @@
   position: relative;
   height: 100%;
   align-items: center;
-  padding: 0 5px;
+  padding: 0 0.5rem;
 }
 .rdw-dropdown-optionwrapper {
   z-index: 100;

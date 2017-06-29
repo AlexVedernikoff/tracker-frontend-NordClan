@@ -18,7 +18,16 @@ export default class InnerContainer extends Component {
 
   render () {
     const sidebar = <NavMenu />;
-
+    const sidebarStyles = {
+      sidebar: {
+        width: 240
+      },
+      content: {
+        overflowY: 'hidden',
+        display: 'flex',
+        flexDirection: 'column'
+      }
+    };
     const sidebarDocked = true;
 
     return (
@@ -28,12 +37,14 @@ export default class InnerContainer extends Component {
             sidebar={sidebar}
             shadow={false}
             docked={sidebarDocked}
-            styles={{sidebar: {width: 240}, content: {overflowY: 'scroll'}}}
+            styles={sidebarStyles}
           >
             <AppHead />
+            <div className={css.contentWrapper}>
               <div className={css.content}>
                 {this.props.children}
               </div>
+            </div>
             <div/>
           </Sidebar>
         </div>

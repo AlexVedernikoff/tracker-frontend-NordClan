@@ -52,3 +52,27 @@
 .alert {
   color: $color-red;
 }
+
+.factTime {
+  cursor: pointer;
+}
+
+.timeString {
+  display: flex;
+
+  span {
+    display: block;
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding-right: 0.5rem;
+    // text-align: right;
+
+    &:first-child {
+      width: 5rem;
+    }
+
+    &:nth-child(2) {
+      width: 2rem;
+    }
+  }
+}

@@ -11,7 +11,7 @@ import { DescriptionText } from '../../../mocks/descriptionText';
 export default class Info extends Component {
   static propTypes = {};
 
-  render() {
+  render () {
     return (
       <div className={css.info}>
         <h2>Теги проекта</h2>
@@ -28,7 +28,7 @@ export default class Info extends Component {
           <Tag name="Внутренний" />
         </Tags>
         <hr />
-        <Description text={DescriptionText} />
+        <Description text={DescriptionText} headerType="h2" headerText="Описание" />
         <hr />
         <h2>Файлы</h2>
         {/*<hr/>*/}

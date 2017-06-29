@@ -10,7 +10,7 @@
   margin-bottom: 1.5rem;
 
   &:hover {
-    .edit, .save {
+    .edit {
       opacity: 1;
     }
   }
@@ -41,6 +41,7 @@
 
 .edit {
   display: inline-block;
+  box-sizing: content-box;
   vertical-align: center;
   color: silver;
   cursor: pointer;
@@ -61,18 +62,10 @@
 }
 
 .save {
-  display: inline-block;
-  vertical-align: center;
-  color: $color-green;
-  cursor: pointer;
-  padding: 7px;
-  margin-left: 0.5rem;
-  font-size: 1rem;
-  background-color: white;
-  border: 1px solid $color-green;
-  border-radius: 50%;
+  @extend .edit;
   opacity: 1;
-  transition: $transition;
+  color: $color-green;
+  border: 1px solid $color-green;
 
   &:hover {
     background-color: $color-green;
