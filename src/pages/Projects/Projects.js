@@ -28,7 +28,8 @@ class Projects extends Component {
       filteredInProgress: false,
       filteredInHold: false,
       filteredFinished: false,
-      projects: []
+      projects: [],
+      filterByName: ''
     };
   }
 
@@ -51,6 +52,16 @@ class Projects extends Component {
     const { dispatch } = this.props;
     dispatch(getProjects(25, 1, ''));
   }
+
+  changeNameFilter = event => {
+    const { dispatch } = this.props;
+    this.setState(
+      {
+        filterByName: event.target.value
+      },
+      () => dispatch(getProjects(25, 1, '', this.state.filterByName))
+    );
+  };
 
   render() {
     const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
@@ -87,7 +98,10 @@ class Projects extends Component {
             </div>
             <Row>
               <Col xs>
-                <Input placeholder="Введите название проекта..." />
+                <Input
+                  onChange={this.changeNameFilter}
+                  placeholder="Введите название проекта..."
+                />
               </Col>
               <Col xs>
                 <Row>
@@ -123,9 +137,19 @@ class Projects extends Component {
           <div>
             {this.props.projectList.map((project, i) => {
               if (project.elemType !== 'portfolio') {
-                return <ProjectCard key={`project-${project.id}`} project={project} />;
+                return (
+                  <ProjectCard
+                    key={`project-${project.id}`}
+                    project={project}
+                  />
+                );
               } else {
-                return <Portfolio key={`portfolio-${project.id}`} portfolio={project} />;
+                return (
+                  <Portfolio
+                    key={`portfolio-${project.id}`}
+                    portfolio={project}
+                  />
+                );
               }
             })}
           </div>

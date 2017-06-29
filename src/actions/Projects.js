@@ -23,9 +23,9 @@ function ProjectsReceived(projects) {
   };
 }
 
-export function getProjects(pageSize = 25, currentPage = 1, tags = '') {
+export function getProjects(pageSize = 25, currentPage = 1, tags = '', name = "") {
   const URL = `/api/project`;
-
+  console.log("oopa");
   return dispatch => {
     dispatch(startProjectsReceive());
     axios
@@ -36,6 +36,7 @@ export function getProjects(pageSize = 25, currentPage = 1, tags = '') {
             pageSize: pageSize,
             currentPage: currentPage,
             tags: tags,
+            name: name,
             fields: "name, statusId, createdAt"
           }
         },

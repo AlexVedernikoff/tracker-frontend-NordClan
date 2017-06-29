@@ -19,9 +19,7 @@ const ProjectCard = props => {
     statusId
   } = props.project;
   const { isChild } = props;
-
-  console.log('PROPS PROJECT', props.project);
-
+  
   const tagList = tags.map((element, i) =>
     <Tag name={element} blocked key={`${i}-tag`} />
   );
