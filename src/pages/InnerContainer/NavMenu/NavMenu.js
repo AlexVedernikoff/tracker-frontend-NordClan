@@ -71,7 +71,7 @@ class NavMenu extends Component {
           <img src={photo} alt="" />
         </div>
         <div className={css.userNameContainer}>
-          <div className={css.userName}>{this.props.firstNameRu} {this.proskype.lastNameRu}</div>
+          <div className={css.userName}>{this.props.firstNameRu} {this.props.lastNameRu}</div>
           <div className={css.userGroups}>{userGroups}</div>
         </div>
       </div>
