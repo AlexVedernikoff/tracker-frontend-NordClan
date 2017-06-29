@@ -16,7 +16,7 @@ export default class Info extends Component {
       <div className={css.info}>
         <h2>Теги проекта</h2>
         {/*<hr/>*/}
-        <Tags>
+        <Tags taggable='project'>
           <Tag name="angular.js" />
           <Tag name="web" />
           <Tag name="android" />

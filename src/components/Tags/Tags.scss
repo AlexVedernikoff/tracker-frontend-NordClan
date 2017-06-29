@@ -4,6 +4,7 @@
   position: relative;
 }
 .tagPopup {
+  display: flex;
   position: absolute;
   right: 0;
   z-index: 3;
@@ -13,5 +14,4 @@
   min-width: 150px;
 }
 .tagsButton {
-  min-width: 150px;
 }
