@@ -23,7 +23,13 @@ function ProjectsReceived(projects) {
   };
 }
 
-export function getProjects(pageSize = 25, currentPage = 1, tags = '', name = "") {
+export function getProjects(
+  pageSize = 25,
+  currentPage = 1,
+  tags = '',
+  name = '',
+  dateSprintBegin = ''
+) {
   const URL = `/api/project`;
   return dispatch => {
     dispatch(startProjectsReceive());
@@ -36,7 +42,8 @@ export function getProjects(pageSize = 25, currentPage = 1, tags = '', name = ""
             currentPage: currentPage,
             tags: tags,
             name: name,
-            fields: "name, statusId, createdAt"
+            fields: 'name, statusId, createdAt',
+            dateSprintBegin: dateSprintBegin
           }
         },
         { withCredentials: true }
@@ -45,7 +52,7 @@ export function getProjects(pageSize = 25, currentPage = 1, tags = '', name = ""
       .then(response => {
         if (!response) {
           return;
-        } else if (response.status === 200) {;
+        } else if (response.status === 200) {
           dispatch(ProjectsReceived(response.data));
         }
       });

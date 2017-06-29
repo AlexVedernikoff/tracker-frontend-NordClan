@@ -21,10 +21,6 @@ class Projects extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isSectionOpen: {
-        myTasks: true,
-        otherTasks: true
-      },
       filterTags: [],
       filteredInProgress: false,
       filteredInHold: false,
@@ -67,7 +63,18 @@ class Projects extends Component {
   };
 
   handleDayFromChange = (dateFrom, modifiers) => {
-    this.setState({ dateFrom });
+    const { dispatch } = this.props;
+    this.setState({ dateFrom }, () =>
+      dispatch(
+        getProjects(
+          25,
+          1,
+          '',
+          this.state.filterByName,
+          moment(this.state.dateFrom).format('YYYY-MM-DD')
+        )
+      )
+    );
   };
 
   handleDayToChange = (dateTo, modifiers) => {
