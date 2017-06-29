@@ -8,23 +8,15 @@ import * as css from './DatepickerDropdown.scss';
 export default class DatepickerDropdown extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      selectedDay: null
-    };
   }
 
   render() {
     const { ...other } = this.props;
 
-    const datePickerProps = {
-      locale: moment.locale('ru')
-    };
-
     return (
       <DayPickerInput
         {...other}
         clickUnselectsDay
-        dayPickerProps={datePickerProps}
         className={css.dropdown}
         format="DD.MM.YYYY"
       />

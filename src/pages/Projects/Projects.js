@@ -13,6 +13,7 @@ import ProjectCard from './ProjectCard';
 import StatusCheckbox from './StatusCheckbox';
 import Pagination from '../../components/Pagination';
 import Portfolio from './Portfolio';
+import moment from 'moment';
 
 import { getProjects } from '../../actions/Projects';
 
@@ -30,8 +31,8 @@ class Projects extends Component {
       filteredFinished: false,
       projects: [],
       filterByName: '',
-      dateFrom: '',
-      dateTo: ''
+      dateFrom: undefined,
+      dateTo: undefined
     };
   }
 
@@ -65,12 +66,22 @@ class Projects extends Component {
     );
   };
 
-  handleDayFromChange(day, modifiers) {
-    console.log(day);
-  }
+  handleDayFromChange = (dateFrom, modifiers) => {
+    this.setState({ dateFrom });
+  };
+
+  handleDayToChange = (dateTo, modifiers) => {
+    this.setState({ dateTo });
+  };
 
   render() {
     const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
+    const formattedDayFrom = this.state.dateFrom
+      ? moment(this.state.dateFrom).format('DD.MM.YYYY')
+      : '';
+    const formattedDayTo = this.state.dateTo
+      ? moment(this.state.dateTo).format('DD.MM.YYYY')
+      : '';
 
     return (
       <div>
@@ -114,6 +125,7 @@ class Projects extends Component {
                   <Col xs>
                     <DatepickerDropdown
                       name="dateFrom"
+                      value={formattedDayFrom}
                       onDayChange={this.handleDayFromChange}
                       placeholder="От"
                     />
@@ -121,7 +133,8 @@ class Projects extends Component {
                   <Col xs>
                     <DatepickerDropdown
                       name="dateTo"
-                      onDayChange={this.handleDayFromChange}
+                      value={formattedDayTo}
+                      onDayChange={this.handleDayToChange}
                       placeholder="До"
                     />
                   </Col>
