@@ -3,8 +3,18 @@ import { PropTypes } from 'prop-types';
 import { Link } from 'react-router';
 import { IconPlus } from '../../../components/Icons';
 import { connect } from 'react-redux';
+import { getInfoAboutMe } from "../../../actions/UserInfo";
 
 class NavMenu extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch(getInfoAboutMe());
+  }
+
   render() {
     const css = require('./NavMenu.scss');
 
@@ -71,7 +81,7 @@ class NavMenu extends Component {
           <img src={photo} alt="" />
         </div>
         <div className={css.userNameContainer}>
-          <div className={css.userName}>{this.props.firstNameRu} {this.props.lastNameRu}</div>
+          <div className={css.userName}>{this.props.user.firstNameRu} {this.props.user.lastNameRu}</div>
           <div className={css.userGroups}>{userGroups}</div>
         </div>
       </div>
@@ -89,8 +99,9 @@ class NavMenu extends Component {
 }
 
 const mapStateToProps = state => {
+  console.log(state);
   return {
-    user: state.Auth.user
+    user: state.UserInfo.user
   };
 };
 

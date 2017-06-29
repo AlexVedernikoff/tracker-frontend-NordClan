@@ -1,0 +1,35 @@
+import * as UserInfoActions from '../constants/UserInfo';
+
+const InitialState = {
+  isReceiving: false,
+  user: {}
+};
+
+function UserInfo(state = InitialState, action) {
+  console.log(action.user);
+  switch (action.type) {
+    case UserInfoActions.USER_INFO_RECEIVE_START:
+      return {
+        ...state,
+        isReceiving: true
+      };
+
+    case UserInfoActions.USER_INFO_RECEIVE_ERROR:
+      return {
+        ...state,
+        isReceiving: false
+      };
+
+    case UserInfoActions.USER_INFO_RECEIVE_SUCCESS:
+      return {
+        ...state,
+        isReceiving: false,
+        user: action.user
+      };
+
+    default:
+      return state;
+  }
+}
+
+export default UserInfo;
