@@ -35,7 +35,8 @@ export function getProjects(pageSize = 25, currentPage = 1, tags = '') {
           params: {
             pageSize: pageSize,
             currentPage: currentPage,
-            tags: tags
+            tags: tags,
+            fields: "name, statusId, createdAt"
           }
         },
         { withCredentials: true }

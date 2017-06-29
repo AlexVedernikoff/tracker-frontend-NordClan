@@ -3,28 +3,27 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Link } from 'react-router';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
+import moment from 'moment';
 
 import Tag from '../Tag';
 import * as css from './ProjectCard.scss';
 
 const ProjectCard = props => {
   const {
+    id,
     name,
     createdAt,
-    factStartDate,
-    factEndDate,
-    activeSprint,
-    members,
+    attaches,
+    currentSprints,
     tags,
-    status,
-    ...other
+    statusId
   } = props.project;
-  console.log("PROPS PROJECT", props.project);
-
   const { isChild } = props;
 
+  console.log('PROPS PROJECT', props.project);
+
   const tagList = tags.map((element, i) =>
-    <Tag name={element} blocked key={i} />
+    <Tag name={element} blocked key={`${i}-tag`} />
   );
 
   let statusTooltip = '';
@@ -45,10 +44,8 @@ const ProjectCard = props => {
       statusTooltip = 'Завершен';
   }
 
-  console.log(isChild);
-
   return (
-    <div className={css.projectCard} {...other}>
+    <div className={css.projectCard}>
       <Row>
         <Col xs>
           <h3
@@ -59,32 +56,41 @@ const ProjectCard = props => {
               data-tip={statusTooltip}
               data-place="left"
             />
-            <Link to="/projects/1">{name}</Link>
+            <Link to={`/projects/${id}`}>
+              {name}
+            </Link>
           </h3>
         </Col>
         <Col xs>
           <div className={css.metaBox}>
-
             {createdAt
               ? <div className={css.meta}>
                   <span>Сроки:</span>
-                  <span>{createdAt} - {}</span>
+                  <span>
+                    {moment(createdAt).format("DD/MM/YYYY")} - {}
+                  </span>
                 </div>
               : null}
 
-            {activeSprint
+            {currentSprints.length
               ? <div className={css.meta}>
-                  <span>Текущий спринт:</span>
-                  <span>
-                    {activeSprint.name} ({activeSprint.dateStart} -{' '}
-                    {activeSprint.dateEnd})
-                  </span>
+                  <span>Текущие спринты:</span>
+                  {currentSprints.map((sprint, i) =>
+                    <span key={`sprint${i}`}>
+                      {sprint.name} ({moment(sprint.factStartDate).format(
+                        'DD/MM/YYYY'
+                      )}
+                      - {moment(sprint.factEndDate).format('DD/MM/YYYY')})
+                    </span>
+                  )}
                 </div>
               : null}
 
             <div className={css.meta}>
               <span>Участников:</span>
-              <span>{members}</span>
+              <span>
+                {attaches ? attaches.length : 0}
+              </span>
             </div>
           </div>
         </Col>
@@ -100,7 +106,7 @@ const ProjectCard = props => {
 
 ProjectCard.propTypes = {
   isChild: PropTypes.bool,
-  project: PropTypes.object
+  project: PropTypes.object.isRequired
 };
 
 export default ProjectCard;
