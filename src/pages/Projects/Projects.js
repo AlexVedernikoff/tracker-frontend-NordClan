@@ -9,7 +9,7 @@ import { IconFolderOpen } from '../../components/Icons';
 import Button from '../../components/Button';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
 import Input from '../../components/Input';
-import ProjectCard from '../../components/ProjectCard';
+import ProjectCard from './ProjectCard';
 import StatusCheckbox from './StatusCheckbox';
 import Pagination from '../../components/Pagination';
 import Portfolio from './Portfolio';
@@ -123,9 +123,9 @@ class Projects extends Component {
           <div>
             {this.props.projectList.map((project, i) => {
               if (project.elemType !== 'portfolio') {
-                return <ProjectCard key={project.id} project={project} />;
+                return <ProjectCard key={`project-${project.id}`} project={project} />;
               } else {
-                return <Portfolio key={project.id} portfolio={project} />;
+                return <Portfolio key={`portfolio-${project.id}`} portfolio={project} />;
               }
             })}
           </div>

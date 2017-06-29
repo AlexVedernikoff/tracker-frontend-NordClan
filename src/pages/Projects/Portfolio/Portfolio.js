@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ProjectCard from "../ProjectCard";
 
 class Portfolio extends Component {
   constructor(props) {
@@ -9,7 +10,7 @@ class Portfolio extends Component {
     return (
       <div style={{ marginBottom: 24 }}>
 
-        <h2 style={{ marginBottom: 32 }}>
+        <h2 style={{ marginBottom: 16 }}>
           {this.props.portfolio.name}
         </h2>
 

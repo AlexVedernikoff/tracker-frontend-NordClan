@@ -5,7 +5,7 @@ import { Link } from 'react-router';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import moment from 'moment';
 
-import Tag from '../Tag';
+import Tag from '../../../components/Tag';
 import * as css from './ProjectCard.scss';
 
 const ProjectCard = props => {
