@@ -12,6 +12,7 @@ import Input from '../../components/Input';
 import ProjectCard from '../../components/ProjectCard';
 import StatusCheckbox from './StatusCheckbox';
 import Pagination from '../../components/Pagination';
+import Portfolio from './Portfolio';
 
 import { getProjects } from '../../actions/Projects';
 
@@ -123,6 +124,8 @@ class Projects extends Component {
             {this.props.projectList.map((project, i) => {
               if (project.elemType !== 'portfolio') {
                 return <ProjectCard key={project.id} project={project} />;
+              } else {
+                return <Portfolio key={project.id} portfolio={project} />;
               }
             })}
           </div>
