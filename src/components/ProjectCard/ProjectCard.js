@@ -11,15 +11,15 @@ const ProjectCard = props => {
   const {
     name,
     createdAt,
-    dateStart,
-    dateEnd,
+    factStartDate,
+    factEndDate,
     activeSprint,
     members,
     tags,
     status,
     ...other
   } = props.project;
-  console.log(props.project);
+  console.log("PROPS PROJECT", props.project);
 
   const { isChild } = props;
 

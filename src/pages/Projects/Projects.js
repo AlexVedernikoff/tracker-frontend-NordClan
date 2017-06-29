@@ -91,10 +91,10 @@ class Projects extends Component {
               <Col xs>
                 <Row>
                   <Col xs>
-                    <DatepickerDropdown locale="ru" placeholderText="От" />
+                    <DatepickerDropdown placeholder="От" />
                   </Col>
                   <Col xs>
-                    <DatepickerDropdown locale="ru" placeholderText="До" />
+                    <DatepickerDropdown placeholder="До" />
                   </Col>
                 </Row>
               </Col>
