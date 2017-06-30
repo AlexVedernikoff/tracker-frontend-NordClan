@@ -82,7 +82,7 @@ class NavMenu extends Component {
         </div>
         <div className={css.userNameContainer}>
           <div className={css.userName}>{this.props.user.firstNameRu} {this.props.user.lastNameRu}</div>
-          <div className={css.userGroups}>{userGroups}</div>
+          <div className={css.userGroups}>{this.props.user.department}</div>
         </div>
       </div>
     );
