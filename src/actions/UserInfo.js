@@ -31,7 +31,6 @@ export function getInfoAboutMe() {
       .get(URL, {}, { withCredentials: true })
       .catch(error => {
         dispatch(ReceiveUserInfoError(error.message));
-        history.push('/login');
       })
       .then(response => {
         if (!response) {
