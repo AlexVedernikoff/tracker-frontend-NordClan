@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Creatable} from 'react-select';
 import Button from '../Button';
 import classnames from 'classnames';
 import * as css from './Tags.scss';
@@ -13,8 +12,9 @@ class Tags extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            tags: this.props.children,
             visible: false,
-            newTags: []
+            tag: ''
         };
     };
 
@@ -23,30 +23,24 @@ class Tags extends Component {
     };
 
     showDropdownMenu = (e) => {
-        console.log(this.props.taggable);
-        //console.log(project.id);
         this.setState({visible: !this.state.visible});
     };
 
-    selectValue = (e, name) => {
-        this.setState({[name]: e});
+    onChangeHandler = (e) => {
+        this.setState({tag: e.target.value})
     };
 
     sendNewTags = (e) => {
+        e.preventDefault();
+        this.setState({visible: !this.state.visible});
+
         const URL = '/api/tag';
-        let tags = '';
-        let taggable = this.props.taggable;
+        const self = this;
+        let tags = this.state.tag;
+        let prevTags = this.state.tags;
+        let taggable = this.props.taggable || 'task';
 
-        this.state.newTags.forEach(function (tag) {
-            if (tag.value) {
-                tags += tag.value.trim() + ',';
-            }
-        });
-
-        if (this.state.newTags.length) {
-            tags = tags.substring(0, tags.length - 1);
-            tags.trim();
-        }
+        tags = tags.trim();
 
         if (tags && taggable) {
             axios.post(URL, {
@@ -54,8 +48,15 @@ class Tags extends Component {
                     taggableId: 1,
                     tag: tags
                 })
-                .catch((error) => {
-                    console.error(error);
+                .then((res) => {
+                    // prevTags = prevTags.map(function (t) {
+                    //     return t;
+                    // });
+                    // prevTags.push((<Tag name={tags}/>));
+                    // self.setState({tags: prevTags});
+                })
+                .catch((err) => {
+                    console.error(err);
                 });
         }
     };
@@ -63,7 +64,7 @@ class Tags extends Component {
     render() {
         return (
             <div>
-                {this.props.children}
+                {this.state.tags}
                 <span className={css.wrapperAddTags}>
                     <Tag create
                          data-tip="Добавить тег"
@@ -71,27 +72,20 @@ class Tags extends Component {
                          onClick={this.showDropdownMenu}
                     />
                     {this.state.visible ?
-                        <div className={css.tagPopup}>
-                            <Creatable className={css.tagsInput}
-                                       name="newTags"
-                                       multi
-                                       placeholder="Добавить тег..."
-                                       backspaceToRemoveMessage="BackSpace для очистки поля"
-                                       value={this.state.newTags}
-                                       onChange={(e) => this.selectValue(e, 'newTags')}
-                                       noResultsText="Нет результатов"
-                                       options={[
-                                              {value: 'develop', label: 'develop'},
-                                              {value: 'frontend', label: 'frontend'},
-                                              {value: 'backend', label: 'backend'}
-                                            ]}
-                            />
+                        <form className={css.tagPopup}
+                              onSubmit={this.sendNewTags}>
+                            <input type="text"
+                                   placeholder="Добавить тег"
+                                   className={css.tagsInput}
+                                   defaultValue=''
+                                   onChange={this.onChangeHandler}
+                                   ref='tagInput'/>
                             <Button addedClassNames={{[css.tagsButton]: true}}
                                     text="+"
                                     type="green"
                                     onClick={this.sendNewTags}
                             />
-                        </div>
+                        </form>
                         : null
                     }
                 </span>
