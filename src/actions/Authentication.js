@@ -71,7 +71,6 @@ export function doLogout() {
 
   return dispatch => {
     window.localStorage.removeItem('simTrackAuthToken');
-    history.push("/login");
     dispatch(startLogout());
     axios
       .delete(URL, { withCredentials: true })
@@ -81,6 +80,7 @@ export function doLogout() {
           return;
         } else if (response.status === 200) {
           dispatch(LogoutComplete());
+          history.push("/login");
         }
       });
   };
