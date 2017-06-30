@@ -23,7 +23,7 @@ export default class InnerContainer extends Component {
         width: 240
       },
       content: {
-        // overflowY: 'scroll',
+        overflowY: 'hidden',
         display: 'flex',
         flexDirection: 'column'
       }

@@ -46,7 +46,7 @@ class PhaseCollumn extends React.Component {
         )
       );
   }
-};
+}
 
 PhaseCollumn.propTypes = {
   canDrop: PropTypes.bool.isRequired,

@@ -87,7 +87,7 @@ class UserCard extends React.Component {
       </div>
     );
   }
-};
+}
 
 UserCard.propTypes = {
   children: PropTypes.object,

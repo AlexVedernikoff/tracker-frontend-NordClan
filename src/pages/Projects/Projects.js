@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
+import { connect } from 'react-redux';
 
 import * as css from './Projects.scss';
 import SelectDropdown from '../../components/SelectDropdown';
@@ -8,129 +9,86 @@ import { IconFolderOpen } from '../../components/Icons';
 import Button from '../../components/Button';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
 import Input from '../../components/Input';
-import ProjectCard from '../../components/ProjectCard';
+import ProjectCard from './ProjectCard';
 import StatusCheckbox from './StatusCheckbox';
+import Pagination from '../../components/Pagination';
+import Portfolio from './Portfolio';
+import moment from 'moment';
 
-// Mocks
+import { getProjects } from '../../actions/Projects';
 
-const projects = [];
-const getRandomString = (arr) => {
-  return arr[Math.floor(Math.random() * arr.length)];
-};
-
-const getSomeRandomString = (arr) => {
-  const start = Math.floor(Math.random() * arr.length);
-  const end = arr.length - start;
-  return arr.splice(start, end);
-};
-
-const mockTags = [];
-
-for (let i = 0; i < 15; i++) {
-  projects.push({
-    id: i,
-    name: getRandomString(['MakeTalents', 'Киви-Банк - {Всем', 'Грехов И.В.- "BookReview"', 'SimTrack', 'Qiwi-Artek', 'ПроРейтинг - HR-инструмент', 'Корпоративные сайты SimbirSoft', 'Аудит информационной безопасности', 'Онлайн-опросы (ООО "Top of Mind Research")', 'ИП Хабибрахманов Р.Р. - ФЛЭТ CRM Битрикс24']),
-    tags: mockTags.concat(getSomeRandomString(['frontend', 'java', 'C++', 'php', 'angular.js', 'angular', 'react']), getRandomString(['2017', '2016', '2015']), getRandomString(['внутренний', 'коммерческий'])),
-    dateStart: '06.06.2017',
-    dateEnd: '26.12.2017',
-    activeSprint: {
-      name: getRandomString(['Спринт №1', 'Спринт №2', 'Спринт №3', 'Спринт №4']),
-      dateStart: '06.06.2017',
-      dateEnd: '26.12.2017'
-    },
-    status: getRandomString(['INPROGRESS', 'INHOLD', 'FINISHED']),
-    members: getRandomString(['5', '15', '20'])
-  });
-}
-
-const projectFolder = {
-  name: 'MakeTalents new UI',
-  children: [
-    {
-      id: 0,
-      name: 'MakeTalents - Android',
-      tags: ['android', 'angular.js', 'frontend', '2016', 'внутренний'],
-      dateStart: '06.06.2017',
-      dateEnd: '26.12.2017',
-      activeSprint: {
-        name: 'Спринт №36',
-        dateStart: '06.06.2017',
-        dateEnd: '26.12.2017'
-      },
-      status: 'INPROGRESS',
-      members: '20'
-    },
-    {
-      id: 1,
-      name: 'MakeTalents - iOS',
-      tags: ['iOS', 'angular.js', 'frontend', '2016', 'внутренний'],
-      dateStart: '06.06.2017',
-      dateEnd: '26.12.2017',
-      activeSprint: {
-        name: 'Спринт №36',
-        dateStart: '06.06.2017',
-        dateEnd: '26.12.2017'
-      },
-      status: 'INPROGRESS',
-      members: '20'
-    },
-    {
-      id: 1,
-      name: 'MakeTalents - web',
-      tags: ['web', 'angular.js', 'frontend', '2016', 'внутренний'],
-      dateStart: '06.06.2017',
-      dateEnd: '26.12.2017',
-      activeSprint: {
-        name: 'Спринт №36',
-        dateStart: '06.06.2017',
-        dateEnd: '26.12.2017'
-      },
-      status: 'INPROGRESS',
-      members: '20'
-    }
-  ]
-};
-
-const projectList = projects.map((element, i) => <ProjectCard key={i} project={element}/>);
-const projectFolderNode = <div style={{marginBottom: 24}} key={321654}>
-  <h2 style={{marginBottom: 32}}>{/*<IconFolderOpen style={{color: 'silver'}} />*/} {projectFolder.name}</h2>
-  <ProjectCard project={projectFolder.children[0]} isChild key={1}/>
-  <ProjectCard project={projectFolder.children[1]} isChild key={2}/>
-  <ProjectCard project={projectFolder.children[2]} isChild key={3}/>
-</div>;
-projectList[3] = projectFolderNode;
-
-export default class Projects extends Component {
-  static propTypes = {
-  }
-
+class Projects extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      isSectionOpen: {
-        myTasks: true,
-        otherTasks: true
-      },
       filterTags: [],
       filteredInProgress: false,
       filteredInHold: false,
-      filteredFinished: false
+      filteredFinished: false,
+      projects: [],
+      filterByName: '',
+      dateFrom: undefined,
+      dateTo: undefined
     };
   }
 
-  check = (name) => {
+  check = name => {
     const oldValue = this.state[name];
     this.setState({
       [name]: !oldValue
     });
-  }
+  };
 
   selectValue = (e, name) => {
-    this.setState({[name]: e});
+    this.setState({ [name]: e });
+  };
+
+  handlePaginationClick = e => {
+    e.preventDefault;
+  };
+
+  componentDidMount () {
+    const { dispatch } = this.props;
+    dispatch(getProjects(25, 1, ''));
   }
+
+  changeNameFilter = event => {
+    const { dispatch } = this.props;
+    this.setState(
+      {
+        filterByName: event.target.value
+      },
+      () => dispatch(getProjects(25, 1, '', this.state.filterByName))
+    );
+  };
+
+  handleDayFromChange = (dateFrom, modifiers) => {
+    const { dispatch } = this.props;
+    this.setState({ dateFrom }, () =>
+      dispatch(
+        getProjects(
+          25,
+          1,
+          '',
+          this.state.filterByName,
+          moment(this.state.dateFrom).format('YYYY-MM-DD')
+        )
+      )
+    );
+  };
+
+  handleDayToChange = (dateTo, modifiers) => {
+    this.setState({ dateTo });
+  };
 
   render () {
     const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
+    const formattedDayFrom = this.state.dateFrom
+      ? moment(this.state.dateFrom).format('DD.MM.YYYY')
+      : '';
+    const formattedDayTo = this.state.dateTo
+      ? moment(this.state.dateTo).format('DD.MM.YYYY')
+      : '';
 
     return (
       <div>
@@ -140,24 +98,52 @@ export default class Projects extends Component {
             <Button text="Создать проект" type="primary" icon="IconPlus" />
             <Button text="Создать портфель" type="primary" icon="IconPlus" />
           </header>
-          <hr/>
+          <hr />
           <div className={css.projectsHeader}>
             <div className={css.statusFilters}>
-              <StatusCheckbox type="INPROGRESS" checked={filteredInProgress} onClick={() => this.check('filteredInProgress')} label="В процессе"/>
-              <StatusCheckbox type="INHOLD" checked={filteredInHold} onClick={() => this.check('filteredInHold')} label="Приостановлен"/>
-              <StatusCheckbox type="FINISHED" checked={filteredFinished} onClick={() => this.check('filteredFinished')} label="Завершен"/>
+              <StatusCheckbox
+                type="INPROGRESS"
+                checked={filteredInProgress}
+                onClick={() => this.check('filteredInProgress')}
+                label="В процессе"
+              />
+              <StatusCheckbox
+                type="INHOLD"
+                checked={filteredInHold}
+                onClick={() => this.check('filteredInHold')}
+                label="Приостановлен"
+              />
+              <StatusCheckbox
+                type="FINISHED"
+                checked={filteredFinished}
+                onClick={() => this.check('filteredFinished')}
+                label="Завершен"
+              />
             </div>
             <Row>
               <Col xs>
-                <Input placeholder="Введите название проекта..." />
+                <Input
+                  onChange={this.changeNameFilter}
+                  placeholder="Введите название проекта..."
+                />
               </Col>
               <Col xs>
                 <Row>
                   <Col xs>
-                    <DatepickerDropdown locale="ru" placeholderText="От" />
+                    <DatepickerDropdown
+                      name="dateFrom"
+                      value={formattedDayFrom}
+                      onDayChange={this.handleDayFromChange}
+                      placeholder="От"
+                    />
                   </Col>
                   <Col xs>
-                    <DatepickerDropdown locale="ru" placeholderText="До" />
+                    <DatepickerDropdown
+                      name="dateTo"
+                      value={formattedDayTo}
+                      onDayChange={this.handleDayToChange}
+                      placeholder="До"
+                    />
                   </Col>
                 </Row>
               </Col>
@@ -168,7 +154,7 @@ export default class Projects extends Component {
                   placeholder="Введите название тега..."
                   backspaceToRemoveMessage="BackSpace для очистки поля"
                   value={this.state.filterTags}
-                  onChange={(e) => this.selectValue(e, 'filterTags')}
+                  onChange={e => this.selectValue(e, 'filterTags')}
                   noResultsText="Нет результатов"
                   options={[
                     {value: 'develop', label: 'develop'},
@@ -182,11 +168,40 @@ export default class Projects extends Component {
             </Row>
           </div>
           <div>
-            {projectList}
+            {this.props.projectList.map((project, i) => {
+              if (project.elemType !== 'portfolio') {
+                return (
+                  <ProjectCard
+                    key={`project-${project.id}`}
+                    project={project}
+                  />
+                );
+              } else {
+                return (
+                  <Portfolio
+                    key={`portfolio-${project.id}`}
+                    portfolio={project}
+                  />
+                );
+              }
+            })}
           </div>
+          <hr />
+          {2 > 1
+            ? <Pagination
+                itemsCount={3}
+                activePage={3}
+                onItemClick={this.handlePaginationClick}
+              />
+            : null}
         </section>
       </div>
     );
   }
 }
 
+const mapStateToProps = state => {
+  return { projectList: state.Projects.projects };
+};
+
+export default connect(mapStateToProps)(Projects);

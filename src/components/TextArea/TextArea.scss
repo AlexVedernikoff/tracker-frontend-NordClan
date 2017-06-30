@@ -1,0 +1,21 @@
+@import '../../styles/variables';
+
+.textarea {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 7px 15px;
+  height: 2rem;
+  line-height: 1rem;
+  border: 1px solid $color-gray;
+  transition: border-color 0.3s ease-out 0s;
+
+  &:focus {
+    border-color: darken($color-gray, 10%);
+    transition: 0.3s ease-out 0s;
+  }
+
+  &::placeholder {
+    color: silver;
+  }
+}

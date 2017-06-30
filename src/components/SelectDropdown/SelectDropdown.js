@@ -20,6 +20,7 @@ export default class SelectDropdown extends Component {
       <Select
         name={name}
         options={options}
+        onFocus={e => e.stopPropagation()}
         {...other}
       />
     );
