@@ -2,6 +2,7 @@ import * as UserInfoActions from '../constants/UserInfo';
 
 const InitialState = {
   isReceiving: false,
+  isLoggedIn: false,
   user: {}
 };
 
@@ -23,7 +24,8 @@ function UserInfo(state = InitialState, action) {
       return {
         ...state,
         isReceiving: false,
-        user: action.user
+        user: action.user,
+        isLoggedIn: true
       };
 
     default:
