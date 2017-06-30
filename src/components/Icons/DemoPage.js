@@ -15,5 +15,5 @@ export default class DemoPage extends Component {
       </section>
     );
   }
-};
+}
 

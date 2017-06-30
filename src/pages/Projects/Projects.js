@@ -18,7 +18,7 @@ import moment from 'moment';
 import { getProjects } from '../../actions/Projects';
 
 class Projects extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       filterTags: [],
@@ -47,7 +47,7 @@ class Projects extends Component {
     e.preventDefault;
   };
 
-  componentDidMount() {
+  componentDidMount () {
     const { dispatch } = this.props;
     dispatch(getProjects(25, 1, ''));
   }
@@ -81,7 +81,7 @@ class Projects extends Component {
     this.setState({ dateTo });
   };
 
-  render() {
+  render () {
     const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
     const formattedDayFrom = this.state.dateFrom
       ? moment(this.state.dateFrom).format('DD.MM.YYYY')

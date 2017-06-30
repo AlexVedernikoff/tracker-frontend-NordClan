@@ -6,11 +6,11 @@ import 'react-day-picker/lib/style.css';
 import * as css from './DatepickerDropdown.scss';
 
 export default class DatepickerDropdown extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
   }
 
-  render() {
+  render () {
     const { ...other } = this.props;
 
     return (

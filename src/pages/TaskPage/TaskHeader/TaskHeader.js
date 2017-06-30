@@ -91,7 +91,7 @@ export default class TaskHeader extends Component {
       </div>
     );
   }
-};
+}
 
 TaskHeader.propTypes = {
   css: PropTypes.object,

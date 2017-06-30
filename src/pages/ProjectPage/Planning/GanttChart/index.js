@@ -1,3 +1,3 @@
-import GanttChart from "./GanttChart";
+import GanttChart from './GanttChart';
 
 export default GanttChart;

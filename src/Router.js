@@ -36,28 +36,28 @@ export const store = configureStore();
 export const history = syncHistoryWithStore(browserHistory, store);
 
 // Auth check for Auth-required pages
-const requireAuth = function(nextState, replace, cb) {
-  axios.get(`/api/user/me`, {}, { withCredentials: true })
+const requireAuth = function (nextState, replace, cb) {
+  axios.get('/api/user/me', {}, { withCredentials: true })
   .catch(err => {
-    replace(`login`);
+    replace('login');
     cb();
   })
-  .then(response => cb())
+  .then(response => cb());
 };
 
 // Auth check for login page
-const isLogged = function(nextState, replace, cb) {
+const isLogged = function (nextState, replace, cb) {
   axios
-    .get(`/api/user/me`, {}, { withCredentials: true })
+    .get('/api/user/me', {}, { withCredentials: true })
     .then(response => {
-      if (response.status === 200) replace(`projects`);
+      if (response.status === 200) replace('projects');
       cb();
     })
     .catch(error => cb());
 };
 
 export default class AppRouter extends Component {
-  render() {
+  render () {
     return (
       <Provider store={store}>
         <Router key={Math.random()} history={history}>

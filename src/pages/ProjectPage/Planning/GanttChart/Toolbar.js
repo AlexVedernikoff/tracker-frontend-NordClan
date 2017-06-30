@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import * as css from "./GanttChart.scss";
-import classnames from "classnames";
+import * as css from './GanttChart.scss';
+import classnames from 'classnames';
 
 export default class Toolbar extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
   }
 
@@ -13,15 +13,15 @@ export default class Toolbar extends Component {
     }
   };
 
-  render() {
-    let zoomRadios = ['Hours', 'Days', 'Months'].map(value => {
-      let isActive = this.props.zoom === value;
+  render () {
+    const zoomRadios = ['Hours', 'Days', 'Months'].map(value => {
+      const isActive = this.props.zoom === value;
       return (
         <label
           key={value}
           className={classnames({
             [css.radioLabel]: true,
-            [css.radioLabelActive] : isActive
+            [css.radioLabelActive]: isActive
           })}
         >
           <input

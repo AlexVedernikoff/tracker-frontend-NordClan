@@ -6,18 +6,18 @@ import {IconExitApp} from '../../../components/Icons';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Logo from '../../../components/Logo';
 import Loader from './Loader';
-import { doLogout } from "../../../actions/Authentication";
-import { connect } from "react-redux";
+import { doLogout } from '../../../actions/Authentication';
+import { connect } from 'react-redux';
 
 import * as css from './AppHead.scss'; // Стили для плавного появления и скрытия лоадера
 
 class AppHead extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       isLogoutSending: this.props.isLogoutSending,
       loading: false
-    }
+    };
   }
 
   handleLogout = event => {

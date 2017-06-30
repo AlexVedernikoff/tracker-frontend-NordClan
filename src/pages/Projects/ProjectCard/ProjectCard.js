@@ -19,7 +19,7 @@ const ProjectCard = props => {
     statusId
   } = props.project;
   const { isChild } = props;
-  
+
   const tagList = tags.map((element, i) =>
     <Tag name={element} blocked key={`${i}-tag`} />
   );
@@ -65,7 +65,7 @@ const ProjectCard = props => {
               ? <div className={css.meta}>
                   <span>Сроки:</span>
                   <span>
-                    {moment(createdAt).format("DD/MM/YYYY")} - {}
+                    {moment(createdAt).format('DD/MM/YYYY')} - {}
                   </span>
                 </div>
               : null}

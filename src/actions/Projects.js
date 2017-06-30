@@ -3,34 +3,34 @@ import axios from 'axios';
 import { store } from '../Router';
 import { history } from '../Router';
 
-function startProjectsReceive() {
+function startProjectsReceive () {
   return {
     type: ProjectActions.PROJECTS_RECEIVE_START
   };
 }
 
-function ProjectsReceiveError(message) {
+function ProjectsReceiveError (message) {
   return {
     type: ProjectActions.PROJECTS_RECEIVE_ERROR,
     errorMessage: message
   };
 }
 
-function ProjectsReceived(projects) {
+function ProjectsReceived (projects) {
   return {
     type: ProjectActions.PROJECTS_RECEIVE_SUCCESS,
     data: projects
   };
 }
 
-export function getProjects(
+export function getProjects (
   pageSize = 25,
   currentPage = 1,
   tags = '',
   name = '',
   dateSprintBegin = ''
 ) {
-  const URL = `/api/project`;
+  const URL = '/api/project';
   return dispatch => {
     dispatch(startProjectsReceive());
     axios

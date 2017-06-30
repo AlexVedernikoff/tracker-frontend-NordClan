@@ -3,10 +3,10 @@ import * as AuthActions from '../constants/Authentication';
 const InitialState = {
   isAuthSending: false,
   isLogoutSending: false,
-  errorMessage: ""
+  errorMessage: ''
 };
 
-function Auth(state = InitialState, action) {
+function Auth (state = InitialState, action) {
   switch (action.type) {
     case AuthActions.AUTHENTICATION_START:
       return {
@@ -24,7 +24,7 @@ function Auth(state = InitialState, action) {
     case AuthActions.AUTHENTICATION_RECEIVED:
       return {
         ...state,
-        errorMessage: "",
+        errorMessage: '',
         isAuthSending: false
       };
 
@@ -43,9 +43,9 @@ function Auth(state = InitialState, action) {
     case AuthActions.LOGOUT_COMPLETE:
       return {
         ...state,
-        errorMessage: "",
+        errorMessage: '',
         isLogoutSending: false
-      }
+      };
 
     default:
       return state;

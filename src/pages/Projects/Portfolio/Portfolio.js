@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import ProjectCard from "../ProjectCard";
+import ProjectCard from '../ProjectCard';
 
 class Portfolio extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
   }
 
-  render() {
+  render () {
     return (
       <div style={{ marginBottom: 24 }}>
 

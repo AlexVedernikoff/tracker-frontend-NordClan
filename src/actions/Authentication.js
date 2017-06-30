@@ -3,47 +3,47 @@ import axios from 'axios';
 import { store } from '../Router';
 import { history } from '../Router';
 
-function startAuthentication() {
+function startAuthentication () {
   return {
     type: AuthActions.AUTHENTICATION_START
   };
 }
 
-function AuthenticationError(message) {
+function AuthenticationError (message) {
   return {
     type: AuthActions.AUTHENTICATION_ERROR,
     errorMessage: message
   };
 }
 
-function AuthenticationReceived(user) {
+function AuthenticationReceived (user) {
   return {
     type: AuthActions.AUTHENTICATION_RECEIVED,
     data: user
   };
 }
 
-function startLogout() {
+function startLogout () {
   return {
     type: AuthActions.LOGOUT_START
-  }
+  };
 }
 
-function LogoutError(message) {
+function LogoutError (message) {
   return {
     type: AuthActions.LOGOUT_ERROR,
     errorMessage: message
-  }
+  };
 }
 
-function LogoutComplete() {
+function LogoutComplete () {
   return {
     type: AuthActions.LOGOUT_COMPLETE
-  }
+  };
 }
 
-export function doAuthentication({ username, password }) {
-  const URL = `/api/auth/login`;
+export function doAuthentication ({ username, password }) {
+  const URL = '/api/auth/login';
 
   return dispatch => {
     dispatch(startAuthentication());
@@ -66,8 +66,8 @@ export function doAuthentication({ username, password }) {
   };
 }
 
-export function doLogout() {
-  const URL = `/api/auth/logout`;
+export function doLogout () {
+  const URL = '/api/auth/logout';
 
   return dispatch => {
     window.localStorage.removeItem('simTrackAuthToken');
@@ -80,7 +80,7 @@ export function doLogout() {
           return;
         } else if (response.status === 200) {
           dispatch(LogoutComplete());
-          history.push("/login");
+          history.push('/login');
         }
       });
   };

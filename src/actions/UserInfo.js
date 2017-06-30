@@ -2,28 +2,28 @@ import * as UserInfoActions from '../constants/UserInfo';
 import axios from 'axios';
 import { history } from '../Router';
 
-function startReceiveUserInfo() {
+function startReceiveUserInfo () {
   return {
     type: UserInfoActions.USER_INFO_RECEIVE_START
   };
 }
 
-function ReceiveUserInfoError(message) {
+function ReceiveUserInfoError (message) {
   return {
     type: UserInfoActions.USER_INFO_RECEIVE_ERROR,
     errorMessage: message
   };
 }
 
-function UserInfoReceived(user) {
+function UserInfoReceived (user) {
   return {
     type: UserInfoActions.USER_INFO_RECEIVE_SUCCESS,
     user: user
   };
 }
 
-export function getInfoAboutMe() {
-  const URL = `/api/user/me`;
+export function getInfoAboutMe () {
+  const URL = '/api/user/me';
 
   return dispatch => {
     dispatch(startReceiveUserInfo());

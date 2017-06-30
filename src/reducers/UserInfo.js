@@ -6,7 +6,7 @@ const InitialState = {
   user: {}
 };
 
-function UserInfo(state = InitialState, action) {
+function UserInfo (state = InitialState, action) {
   switch (action.type) {
     case UserInfoActions.USER_INFO_RECEIVE_START:
       return {

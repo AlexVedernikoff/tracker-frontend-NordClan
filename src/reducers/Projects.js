@@ -8,7 +8,7 @@ const InitialState = {
   isReceiving: false
 };
 
-function Projects(state = InitialState, action) {
+function Projects (state = InitialState, action) {
   switch (action.type) {
     case ProjectActions.PROJECTS_RECEIVE_START:
       return {

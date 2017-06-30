@@ -7,7 +7,7 @@ import { DragDropContextProvider } from 'react-dnd';
 import RouteTabs from '../../components/RouteTabs';
 import { IconEdit } from '../../components/Icons';
 import * as css from './ProjectPage.scss';
-import ProjectTitle from "./ProjectTitle";
+import ProjectTitle from './ProjectTitle';
 
 export default class ProjectPage extends Component {
   static propTypes = {
