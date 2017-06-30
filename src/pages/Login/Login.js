@@ -6,10 +6,12 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 import bg from './bg.jpg';
 import { connect } from 'react-redux';
+import { history } from '../../Router';
 import { doAuthentication } from '../../actions/Authentication';
+import { getInfoAboutMe } from '../../actions/UserInfo';
 
 class Login extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       username: '',
@@ -30,7 +32,7 @@ class Login extends Component {
     dispatch(doAuthentication(this.state));
   };
 
-  render() {
+  render () {
     return (
       <div
         className={css.formWrapper}

@@ -1,10 +1,10 @@
 
-import React from "react";
-import PropTypes from "prop-types";
-import AttachedDocument from "../AttachedDocument";
-import AttachedImage from "../AttachedImage";
-import FileUpload from "../FileUpload";
-import { files } from "../../mocks/Files";
+import React from 'react';
+import PropTypes from 'prop-types';
+import AttachedDocument from '../AttachedDocument';
+import AttachedImage from '../AttachedImage';
+import FileUpload from '../FileUpload';
+import { files } from '../../mocks/Files';
 
 export default class Attachments extends React.Component {
   constructor (props) {
@@ -25,7 +25,7 @@ export default class Attachments extends React.Component {
 
 
   render () {
-    const css = require("./Attachments.scss");
+    const css = require('./Attachments.scss');
 
     return (
       <div className={css.attachments}>

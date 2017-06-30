@@ -1,24 +1,30 @@
 import React, { Component } from 'react';
-import DatePicker from 'react-datepicker';
 import PropTypes from 'prop-types';
-import 'react-datepicker/dist/react-datepicker.css';
-
+import DayPickerInput from 'react-day-picker/DayPickerInput';
+import moment from 'moment';
+import 'react-day-picker/lib/style.css';
 import * as css from './DatepickerDropdown.scss';
-import './DatepickerDropdown.css';
 
 export default class DatepickerDropdown extends Component {
-  static propTypes = {
-    name: PropTypes.string,
-    options: PropTypes.array
-  };
+  constructor (props) {
+    super(props);
+  }
 
   render () {
-    const {
-      ...other
-    } = this.props;
+    const { ...other } = this.props;
 
     return (
-      <DatePicker {...other} className={css.dropdown}/>
+      <DayPickerInput
+        {...other}
+        clickUnselectsDay
+        className={css.dropdown}
+        format="DD.MM.YYYY"
+      />
     );
   }
 }
+
+DatepickerDropdown.propTypes = {
+  name: PropTypes.string,
+  options: PropTypes.array
+};

@@ -17,7 +17,7 @@ class Description extends Component {
   }
 
   componentDidMount () {
-    window.addEventListener("keydown", this.checkEscapeKeyPress);
+    window.addEventListener('keydown', this.checkEscapeKeyPress);
   }
 
   componentDidUpdate () {
@@ -25,7 +25,7 @@ class Description extends Component {
   }
 
   componentWillUnmount () {
-    window.removeEventListener("keydown", this.checkEscapeKeyPress);
+    window.removeEventListener('keydown', this.checkEscapeKeyPress);
   }
 
   toggleEditing = () => {
@@ -85,7 +85,7 @@ class Description extends Component {
 
       default:
         header = null;
-    };
+    }
 
     return (
       <div className={classnames({[css.desc]: true, [css.edited]: this.state.editing})}>
@@ -93,7 +93,7 @@ class Description extends Component {
         {this.state.editing
           ? <TextEditor
               ref={ref => (this.TextEditor = ref)}
-              content={this.state.text['__html']}
+              content={this.state.text.__html}
             />
           : <div className={css.wiki} dangerouslySetInnerHTML={this.state.text}/>}
         <div className={css.editBorder}>

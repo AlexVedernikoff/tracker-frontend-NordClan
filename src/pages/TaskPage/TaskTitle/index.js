@@ -1,3 +1,3 @@
-import TaskTitle from "./TaskTitle";
+import TaskTitle from './TaskTitle';
 
 export default TaskTitle;

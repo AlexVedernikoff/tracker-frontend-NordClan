@@ -12,4 +12,4 @@ export default class Analitics extends Component {
       </div>
     );
   }
-};
+}

@@ -26,7 +26,7 @@ const data = {
 };
 
 class GanttChart extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       tasks: data,
@@ -34,7 +34,7 @@ class GanttChart extends Component {
     };
   }
 
-  componentDidMount() {
+  componentDidMount () {
     console.log(gantt.config);
     gantt.init(this.ganttContainer);
     gantt.parse(this.state.tasks);
@@ -76,7 +76,7 @@ class GanttChart extends Component {
     });
   }
 
-  setZoom(value) {
+  setZoom (value) {
     switch (value) {
       case 'Hours':
         gantt.config.scale_unit = 'day';
@@ -105,11 +105,11 @@ class GanttChart extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate (nextProps, nextState) {
     return this.props.zoom !== nextState.zoom;
   }
 
-  componentDidUpdate() {
+  componentDidUpdate () {
     gantt.render();
   }
 
@@ -119,7 +119,7 @@ class GanttChart extends Component {
     });
   };
 
-  render() {
+  render () {
     this.setZoom(this.state.zoom);
     return (
       <div>

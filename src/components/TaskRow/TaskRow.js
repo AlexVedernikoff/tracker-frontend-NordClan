@@ -128,7 +128,7 @@ export default class TaskRow extends React.Component {
       </div>
     );
   }
-};
+}
 
 TaskRow.propTypes = {
   card: PropTypes.bool,

@@ -1,3 +1,3 @@
-import ProjectTitle from "./ProjectTitle";
+import ProjectTitle from './ProjectTitle';
 
 export default ProjectTitle;

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import GanttChart from "./GanttChart";
+import GanttChart from './GanttChart';
 import classnames from 'classnames';
 import * as css from './Planning.scss';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
@@ -83,8 +83,8 @@ export default class Planning extends Component {
           <div className={css.graph}>
             <div className={css.wrapper}>
               <div className={css.sprintNames}>
-                <div></div>
-                <div></div>
+                <div />
+                <div />
                 <div><span className={css.selection}/><span className={css.name}>Спринт №1</span></div>
                 <div><span className={css.selection}/><span className={css.name}>Спринт №2</span></div>
                 <div><span className={css.selection}/><span className={css.name}>Спринт №3</span></div>
@@ -98,7 +98,7 @@ export default class Planning extends Component {
                   <div className={css.year}>2018</div>
                 </div>
                 <div className={css.tr}>
-                  <div className={css.nameHeader}></div>
+                  <div className={css.nameHeader} />
                   <div className={css.month}>Январь</div>
                   <div className={css.month}>Февраль</div>
                   <div className={css.month}>Март</div>
@@ -137,19 +137,19 @@ export default class Planning extends Component {
                   <div className={css.month}>Декабрь</div>
                 </div>
                 <div className={css.tr}>
-                  <div className={classnames({[css.sprintBar]: true, [css.finished]: true})} style={{left: '13%', right: '83%'}}></div>
+                  <div className={classnames({[css.sprintBar]: true, [css.finished]: true})} style={{left: '13%', right: '83%'}} />
                 </div>
                 <div className={css.tr}>
-                  <div className={classnames({[css.sprintBar]: true, [css.finished]: true})} style={{left: '17%', right: '81%'}}></div>
+                  <div className={classnames({[css.sprintBar]: true, [css.finished]: true})} style={{left: '17%', right: '81%'}} />
                 </div>
                 <div className={css.tr}>
-                  <div className={classnames({[css.sprintBar]: true, [css.active]: true})} style={{left: '19%', right: '79%'}}></div>
+                  <div className={classnames({[css.sprintBar]: true, [css.active]: true})} style={{left: '19%', right: '79%'}} />
                 </div>
                 <div className={css.tr}>
-                  <div className={classnames({[css.sprintBar]: true, [css.future]: true})} style={{left: '21%', right: '75%'}}></div>
+                  <div className={classnames({[css.sprintBar]: true, [css.future]: true})} style={{left: '21%', right: '75%'}} />
                 </div>
                 <div className={css.tr}>
-                  <div className={classnames({[css.sprintBar]: true, [css.future]: true})} style={{left: '25%', right: '72%'}}></div>
+                  <div className={classnames({[css.sprintBar]: true, [css.future]: true})} style={{left: '25%', right: '72%'}} />
                 </div>
                 <div className={css.grid}>
                   <span/>
@@ -255,4 +255,4 @@ export default class Planning extends Component {
       </div>
     );
   }
-};
+}
