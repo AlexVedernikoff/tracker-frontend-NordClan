@@ -1,6 +1,5 @@
 import * as AuthActions from '../constants/Authentication';
 import axios from 'axios';
-import { store } from '../Router';
 import { history } from '../Router';
 
 function startAuthentication () {

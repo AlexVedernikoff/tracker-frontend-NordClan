@@ -2,8 +2,9 @@ import * as ProjectActions from '../constants/Projects';
 import axios from 'axios';
 import { store } from '../Router';
 import { history } from '../Router';
+import { StartLoading, FinishLoading } from './Loading';
 
-function startProjectsReceive () {
+function StartProjectsReceive () {
   return {
     type: ProjectActions.PROJECTS_RECEIVE_START
   };
@@ -32,7 +33,8 @@ export function getProjects (
 ) {
   const URL = '/api/project';
   return dispatch => {
-    dispatch(startProjectsReceive());
+    dispatch(StartProjectsReceive());
+    dispatch(StartLoading());
     axios
       .get(
         URL,
@@ -48,12 +50,16 @@ export function getProjects (
         },
         { withCredentials: true }
       )
-      .catch(error => dispatch(ProjectsReceiveError(error.message)))
+      .catch(error => {
+        dispatch(ProjectsReceiveError(error.message));
+        dispatch(FinishLoading());
+      })
       .then(response => {
         if (!response) {
           return;
         } else if (response.status === 200) {
           dispatch(ProjectsReceived(response.data));
+          dispatch(FinishLoading());
         }
       });
   };
