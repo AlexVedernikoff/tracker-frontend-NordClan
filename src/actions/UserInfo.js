@@ -1,5 +1,6 @@
 import * as UserInfoActions from '../constants/UserInfo';
-import axios from "axios";
+import axios from 'axios';
+import { history } from '../Router';
 
 function startReceiveUserInfo() {
   return {
@@ -28,7 +29,10 @@ export function getInfoAboutMe() {
     dispatch(startReceiveUserInfo());
     axios
       .get(URL, {}, { withCredentials: true })
-      .catch(error => dispatch(ReceiveUserInfoError(error.message)))
+      .catch(error => {
+        dispatch(ReceiveUserInfoError(error.message));
+        history.push('/login');
+      })
       .then(response => {
         if (!response) {
           return;
