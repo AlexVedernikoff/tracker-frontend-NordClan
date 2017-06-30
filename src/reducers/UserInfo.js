@@ -6,7 +6,6 @@ const InitialState = {
 };
 
 function UserInfo(state = InitialState, action) {
-  console.log(action.user);
   switch (action.type) {
     case UserInfoActions.USER_INFO_RECEIVE_START:
       return {
