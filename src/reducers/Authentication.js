@@ -2,7 +2,8 @@ import * as AuthActions from '../constants/Authentication';
 
 const InitialState = {
   isAuthSending: false,
-  isLogoutSending: false
+  isLogoutSending: false,
+  errorMessage: ""
 };
 
 function Auth(state = InitialState, action) {
@@ -23,7 +24,6 @@ function Auth(state = InitialState, action) {
     case AuthActions.AUTHENTICATION_RECEIVED:
       return {
         ...state,
-        user: action.data,
         errorMessage: "",
         isAuthSending: false
       };

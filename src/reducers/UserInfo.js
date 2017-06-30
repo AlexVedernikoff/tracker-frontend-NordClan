@@ -17,7 +17,8 @@ function UserInfo(state = InitialState, action) {
     case UserInfoActions.USER_INFO_RECEIVE_ERROR:
       return {
         ...state,
-        isReceiving: false
+        isReceiving: false,
+        user: {}
       };
 
     case UserInfoActions.USER_INFO_RECEIVE_SUCCESS:
