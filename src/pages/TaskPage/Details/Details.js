@@ -1,5 +1,7 @@
 import React, {PropTypes} from 'react';
 import { Link } from 'react-router';
+import classnames from 'classnames';
+import ReactTooltip from 'react-tooltip';
 import Tag from '../../../components/Tag';
 import Tags from '../../../components/Tags';
 import * as css from './Details.scss';
@@ -62,11 +64,16 @@ export default class Details extends React.Component {
             <tr>
               <td>Потрачено:</td>
               <td>
-                <span className={css.alert}>100 ч.</span>
+                <span data-tip data-place="right" data-for='time' className={classnames({[css.alert]: true, [css.factTime]: true})}>100 ч.</span>
               </td>
             </tr>
           </tbody>
         </table>
+        <ReactTooltip id='time' aria-haspopup='true' className="tooltip">
+          <div className={css.timeString}><span>Develop:</span><span>1 ч.</span></div>
+          <div className={css.timeString}><span>Code Review:</span>27 ч.</div>
+          <div className={css.timeString}><span>QA:</span>59 ч.</div>
+        </ReactTooltip>
       </div>
     );
   }

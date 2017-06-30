@@ -18,6 +18,7 @@ $font-size-base: 13px;
 
 // Transitions
 $transition: all 0.3s ease-out 0s;
+$box-shadow: 4px 4px 0 rgba(0,0,0,0.17);
 
 // Utils
 @mixin link-reset {

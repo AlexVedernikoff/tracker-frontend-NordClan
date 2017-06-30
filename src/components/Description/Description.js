@@ -16,8 +16,16 @@ class Description extends Component {
     };
   }
 
+  componentDidMount () {
+    window.addEventListener("keydown", this.checkEscapeKeyPress);
+  }
+
   componentDidUpdate () {
     ReactTooltip.rebuild();
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener("keydown", this.checkEscapeKeyPress);
   }
 
   toggleEditing = () => {
@@ -43,14 +51,6 @@ class Description extends Component {
     }
   };
 
-  componentDidMount () {
-    window.addEventListener("keydown", this.checkEscapeKeyPress);
-  }
-
-  componentWillUnmount () {
-    window.removeEventListener("keydown", this.checkEscapeKeyPress);
-  }
-
   updateText = () => {
     this.setState({
       text: { __html: stateToHTML(this.TextEditor.state.editorState.getCurrentContent()) }
@@ -58,11 +58,38 @@ class Description extends Component {
   };
 
   render () {
+    const { headerType, headerText } = this.props;
+
+    let header = null;
+
+    switch (headerType) {
+      case 'h1':
+        header = <h1>{headerText}</h1>;
+        break;
+
+      case 'h2':
+        header = <h2>{headerText}</h2>;
+        break;
+
+      case 'h3':
+        header = <h3>{headerText}</h3>;
+        break;
+
+      case 'h4':
+        header = <h4>{headerText}</h4>;
+        break;
+
+      case 'h5':
+        header = <h5>{headerText}</h5>;
+        break;
+
+      default:
+        header = null;
+    };
+
     return (
       <div className={classnames({[css.desc]: true, [css.edited]: this.state.editing})}>
-        <h2>
-          Описание
-        </h2>
+        {header}
         {this.state.editing
           ? <TextEditor
               ref={ref => (this.TextEditor = ref)}
@@ -80,6 +107,8 @@ class Description extends Component {
 }
 
 Description.propTypes = {
+  headerText: PropTypes.string,
+  headerType: PropTypes.string,
   text: PropTypes.object
 };
 

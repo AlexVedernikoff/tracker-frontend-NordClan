@@ -1,6 +1,15 @@
 @import '../../styles/variables';
+
+.contentWrapper {
+  flex-shrink: 0;
+  flex-grow: 1;
+  flex-basis: calc(100% - 3.5rem);
+  overflow-y: scroll;
+}
+
 .content {
-  max-width: 1200px;
+  max-width: 1264px;
+  min-width: 960px;
   padding: 64px 32px;
   margin: 0 auto;
 }

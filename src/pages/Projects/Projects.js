@@ -157,12 +157,11 @@ class Projects extends Component {
                   onChange={e => this.selectValue(e, 'filterTags')}
                   noResultsText="Нет результатов"
                   options={[
-                    { value: 'develop', label: 'develop' },
-                    { value: 'frontend', label: 'frontend' },
-                    { value: 'inner', label: 'внутренний' },
-                    { value: 'commerce', label: 'коммерческий' },
-                    { value: 'frontend', label: 'frontend' },
-                    { value: 'backend', label: 'backend' }
+                    {value: 'develop', label: 'develop'},
+                    {value: 'frontend', label: 'frontend'},
+                    {value: 'inner', label: 'внутренний'},
+                    {value: 'commerce', label: 'коммерческий'},
+                    {value: 'backend', label: 'backend'}
                   ]}
                 />
               </Col>
