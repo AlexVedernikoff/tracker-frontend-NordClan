@@ -5,7 +5,8 @@ import Auth from './Authentication';
 import Projects from './Projects';
 import UserInfo from './UserInfo';
 import Loading from './Loading';
+import ProjectInfo from './ProjectInfo';
 
-const rootReducer = combineReducers({ Auth, Loading, Projects, UserInfo, routing: routerReducer });
+const rootReducer = combineReducers({ Auth, Loading, ProjectInfo, Projects, UserInfo, routing: routerReducer });
 
 export default rootReducer;
