@@ -11,24 +11,25 @@ const Tag = (props) => {
         create,
         blocked,
         taggable,
+        taggableId,
         ...other
     } = props;
 
     let deleteTag = (e) => {
-        console.log(taggable);
-        console.log(name);
-
         const URL = '/api/tag';
-        axios.delete(URL, {
+
+        if (taggable && taggableId && name) {
+            axios.delete(URL, {data: {
             taggable: taggable,
-            taggableId: 1,
+            taggableId: taggableId,
             tag: name
-        })
+        }})
             .then((res) => {
             })
             .catch((err) => {
                 console.error(err);
             });
+        }
     };
 
     return (

@@ -38,14 +38,13 @@ class Tags extends Component {
         const self = this;
         let tags = this.state.tag;
         let prevTags = this.state.tags;
-        let taggable = this.props.taggable || 'task';
 
         tags = tags.trim();
 
-        if (tags && taggable) {
+        if (tags && this.props.taggable && this.props.taggableId) {
             axios.post(URL, {
-                    taggable: taggable,
-                    taggableId: 1,
+                    taggable: this.props.taggable,
+                    taggableId: this.props.taggableId,
                     tag: tags
                 })
                 .then((res) => {
@@ -66,11 +65,10 @@ class Tags extends Component {
             <div>
                 {this.state.tags}
                 <span className={css.wrapperAddTags}>
-                    <Tag create
-                         data-tip="Добавить тег"
-                         data-place="bottom"
-                         onClick={this.showDropdownMenu}
-                    />
+                    { this.props.create ? <Tag create
+                                            data-tip="Добавить тег"
+                                            data-place="bottom"
+                                            onClick={this.showDropdownMenu}/> : null}
                     {this.state.visible ?
                         <form className={css.tagPopup}
                               onSubmit={this.sendNewTags}>

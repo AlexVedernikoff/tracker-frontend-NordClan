@@ -30,7 +30,7 @@ export default class Info extends Component {
             <div className={css.info}>
                 <h2>Теги проекта</h2>
                 {/*<hr/>*/}
-                <Tags taggable='project'>
+                <Tags create taggable='project'>
                     <Tag name="angular.js"
                          taggable="project"/>
                     <Tag name="web"
