@@ -15,23 +15,24 @@ class Info extends Component {
   }
 
   render () {
-    const { description, tags } = this.props;
-
     return (
       <div className={css.info}>
         <h2>Теги проекта</h2>
-        {/*<hr/>*/}
         <Tags>
-          {tags.map((element, i) =>
-            <Tag name={element} blocked key={`${i}-tag`} />
-          )}
+          {this.props.tags
+            ? this.props.tags.map((element, i) =>
+                <Tag name={element} blocked key={`${i}-tag`} />
+              )
+            : null}
         </Tags>
         <hr />
-        <Description
-          text={DescriptionText}
-          headerType="h2"
-          headerText="Описание"
-        />
+        {this.props.description
+          ? <Description
+              text={{ __html: this.props.description }}
+              headerType="h2"
+              headerText="Описание"
+            />
+          : null}
         <hr />
         <h2>Файлы</h2>
         {/*<hr/>*/}
