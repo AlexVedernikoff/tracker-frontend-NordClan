@@ -14,7 +14,7 @@ const rootReducer = combineReducers({
   Loading,
   ProjectInfo,
   Projects,
-  UserInfo
+  UserInfo,
   routing: routerReducer
 });
 
