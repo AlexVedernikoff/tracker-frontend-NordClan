@@ -4,25 +4,19 @@ import { store } from '../Router';
 import { history } from '../Router';
 import { StartLoading, FinishLoading } from './Loading';
 
-const StartProjectsReceive = () => {
-  return {
-    type: ProjectActions.PROJECTS_RECEIVE_START
-  };
-}
+const StartProjectsReceive = () => ({
+  type: ProjectActions.PROJECTS_RECEIVE_START
+});
 
-const ProjectsReceiveError = message => {
-  return {
-    type: ProjectActions.PROJECTS_RECEIVE_ERROR,
-    errorMessage: message
-  };
-}
+const ProjectsReceiveError = message => ({
+  type: ProjectActions.PROJECTS_RECEIVE_ERROR,
+  errorMessage: message
+});
 
-const ProjectsReceived = projects => {
-  return {
-    type: ProjectActions.PROJECTS_RECEIVE_SUCCESS,
-    data: projects
-  };
-}
+const ProjectsReceived = projects => ({
+  type: ProjectActions.PROJECTS_RECEIVE_SUCCESS,
+  data: projects
+});
 
 export const getProjects = (
   pageSize = 25,
@@ -65,4 +59,4 @@ export const getProjects = (
         }
       });
   };
-}
+};

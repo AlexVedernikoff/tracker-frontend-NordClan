@@ -2,25 +2,19 @@ import * as ProjectInfoActions from '../constants/GetProjectInfo';
 import axios from 'axios';
 import { StartLoading, FinishLoading } from './Loading';
 
-const GettingProjectInfoStart = () => {
-  return {
-    type: ProjectInfoActions.PROJECT_INFO_RECEIVE_START
-  };
-};
+const GettingProjectInfoStart = () => ({
+  type: ProjectInfoActions.PROJECT_INFO_RECEIVE_START
+});
 
-const GettingProjectInfoError = message => {
-  return {
-    type: ProjectInfoActions.PROJECT_INFO_RECEIVE_ERROR,
-    message: message
-  };
-};
+const GettingProjectInfoError = message => ({
+  type: ProjectInfoActions.PROJECT_INFO_RECEIVE_ERROR,
+  message: message
+});
 
-const GettingProjectInfoSuccess = project => {
-  return {
-    type: ProjectInfoActions.PROJECT_INFO_RECEIVE_SUCCESS,
-    project: project
-  };
-};
+const GettingProjectInfoSuccess = project => ({
+  type: ProjectInfoActions.PROJECT_INFO_RECEIVE_SUCCESS,
+  project: project
+});
 
 const GetProjectInfo = id => {
   const URL = `/api/project/${id}`;

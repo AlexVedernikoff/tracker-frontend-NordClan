@@ -3,25 +3,19 @@ import axios from 'axios';
 import { history } from '../Router';
 import { StartLoading, FinishLoading } from './Loading';
 
-const startReceiveUserInfo = () => {
-  return {
-    type: UserInfoActions.USER_INFO_RECEIVE_START
-  };
-};
+const startReceiveUserInfo = () => ({
+  type: UserInfoActions.USER_INFO_RECEIVE_START
+});
 
-const ReceiveUserInfoError = message => {
-  return {
-    type: UserInfoActions.USER_INFO_RECEIVE_ERROR,
-    errorMessage: message
-  };
-};
+const ReceiveUserInfoError = message => ({
+  type: UserInfoActions.USER_INFO_RECEIVE_ERROR,
+  errorMessage: message
+});
 
-const UserInfoReceived = user => {
-  return {
-    type: UserInfoActions.USER_INFO_RECEIVE_SUCCESS,
-    user: user
-  };
-};
+const UserInfoReceived = user => ({
+  type: UserInfoActions.USER_INFO_RECEIVE_SUCCESS,
+  user: user
+});
 
 export const getInfoAboutMe = () => {
   const URL = '/api/user/me';

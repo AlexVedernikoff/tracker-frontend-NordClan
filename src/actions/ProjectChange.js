@@ -2,23 +2,17 @@ import * as ProjectChangeActions from '../constants/ProjectChange';
 import axios from 'axios';
 import { StartLoading, FinishLoading } from './Loading';
 
-const StartProjectChange = () => {
-  return {
-    type: ProjectChangeActions.PROJECT_CHANGE_START
-  };
-};
+const StartProjectChange = () => ({
+  type: ProjectChangeActions.PROJECT_CHANGE_START
+});
 
-const ProjectChangeError = message => {
-  return {
-    type: ProjectChangeActions.PROJECT_CHANGE_ERROR
-  };
-};
+const ProjectChangeError = message => ({
+  type: ProjectChangeActions.PROJECT_CHANGE_ERROR
+});
 
-const ProjectChangeSuccess = () => {
-  return {
-    type: ProjectChangeActions.PROJECT_CHANGE_SUCCESS
-  };
-};
+const ProjectChangeSuccess = () => ({
+  type: ProjectChangeActions.PROJECT_CHANGE_SUCCESS
+});
 
 export const ChangeProject = (
   id,

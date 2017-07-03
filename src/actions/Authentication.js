@@ -2,44 +2,32 @@ import * as AuthActions from '../constants/Authentication';
 import axios from 'axios';
 import { history } from '../Router';
 
-const startAuthentication = () => {
-  return {
-    type: AuthActions.AUTHENTICATION_START
-  };
-};
+const startAuthentication = () => ({
+  type: AuthActions.AUTHENTICATION_START
+});
 
-const AuthenticationError = message => {
-  return {
-    type: AuthActions.AUTHENTICATION_ERROR,
-    errorMessage: message
-  };
-};
+const AuthenticationError = message => ({
+  type: AuthActions.AUTHENTICATION_ERROR,
+  errorMessage: message
+});
 
-const AuthenticationReceived = user => {
-  return {
-    type: AuthActions.AUTHENTICATION_RECEIVED,
-    data: user
-  };
-};
+const AuthenticationReceived = user => ({
+  type: AuthActions.AUTHENTICATION_RECEIVED,
+  data: user
+});
 
-const startLogout = () => {
-  return {
-    type: AuthActions.LOGOUT_START
-  };
-};
+const startLogout = () => ({
+  type: AuthActions.LOGOUT_START
+});
 
-const LogoutError = message => {
-  return {
-    type: AuthActions.LOGOUT_ERROR,
-    errorMessage: message
-  };
-};
+const LogoutError = message => ({
+  type: AuthActions.LOGOUT_ERROR,
+  errorMessage: message
+});
 
-const LogoutComplete = () => {
-  return {
-    type: AuthActions.LOGOUT_COMPLETE
-  };
-};
+const LogoutComplete = () => ({
+  type: AuthActions.LOGOUT_COMPLETE
+});
 
 export const doAuthentication = ({ username, password }) => {
   const URL = '/api/auth/login';
