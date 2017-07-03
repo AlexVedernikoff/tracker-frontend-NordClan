@@ -2,25 +2,25 @@ import * as ProjectChangeActions from '../constants/ProjectChange';
 import axios from 'axios';
 import { StartLoading, FinishLoading } from './Loading';
 
-function StartProjectChange () {
+const StartProjectChange = () => {
   return {
     type: ProjectChangeActions.PROJECT_CHANGE_START
   };
-}
+};
 
-function ProjectChangeError (message) {
+const ProjectChangeError = message => {
   return {
     type: ProjectChangeActions.PROJECT_CHANGE_ERROR
   };
-}
+};
 
-function ProjectChangeSuccess () {
+const ProjectChangeSuccess = () => {
   return {
     type: ProjectChangeActions.PROJECT_CHANGE_SUCCESS
   };
-}
+};
 
-export function ChangeProject (
+export const ChangeProject = (
   id,
   name,
   prefix,
@@ -29,7 +29,7 @@ export function ChangeProject (
   notbillable,
   budget,
   riskBudget
-) {
+) => {
   if (!id) {
     return;
   }
@@ -54,4 +54,4 @@ export function ChangeProject (
       withCredentials: true
     });
   };
-}
+};

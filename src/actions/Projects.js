@@ -4,35 +4,34 @@ import { store } from '../Router';
 import { history } from '../Router';
 import { StartLoading, FinishLoading } from './Loading';
 
-function StartProjectsReceive () {
+const StartProjectsReceive = () => {
   return {
     type: ProjectActions.PROJECTS_RECEIVE_START
   };
 }
 
-function ProjectsReceiveError (message) {
+const ProjectsReceiveError = message => {
   return {
     type: ProjectActions.PROJECTS_RECEIVE_ERROR,
     errorMessage: message
   };
 }
 
-function ProjectsReceived (projects) {
+const ProjectsReceived = projects => {
   return {
     type: ProjectActions.PROJECTS_RECEIVE_SUCCESS,
     data: projects
   };
 }
 
-export function getProjects (
+export const getProjects = (
   pageSize = 25,
   currentPage = 1,
   tags = '',
   name = '',
   dateSprintBegin = '',
   dateSprintEnd = ''
-) {
-  console.log(dateSprintBegin);
+) => {
   const URL = '/api/project';
   return dispatch => {
     dispatch(StartProjectsReceive());

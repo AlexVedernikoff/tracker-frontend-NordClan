@@ -1,29 +1,29 @@
 import * as UserInfoActions from '../constants/UserInfo';
 import axios from 'axios';
 import { history } from '../Router';
-import { StartLoading, FinishLoading } from "./Loading";
+import { StartLoading, FinishLoading } from './Loading';
 
-function startReceiveUserInfo () {
+const startReceiveUserInfo = () => {
   return {
     type: UserInfoActions.USER_INFO_RECEIVE_START
   };
-}
+};
 
-function ReceiveUserInfoError (message) {
+const ReceiveUserInfoError = message => {
   return {
     type: UserInfoActions.USER_INFO_RECEIVE_ERROR,
     errorMessage: message
   };
-}
+};
 
-function UserInfoReceived (user) {
+const UserInfoReceived = user => {
   return {
     type: UserInfoActions.USER_INFO_RECEIVE_SUCCESS,
     user: user
   };
-}
+};
 
-export function getInfoAboutMe () {
+export const getInfoAboutMe = () => {
   const URL = '/api/user/me';
 
   return dispatch => {
@@ -40,8 +40,8 @@ export function getInfoAboutMe () {
           return;
         } else if (response.status === 200) {
           dispatch(UserInfoReceived(response.data));
-          dispatch(FinishLoading());;
+          dispatch(FinishLoading());
         }
       });
   };
-}
+};

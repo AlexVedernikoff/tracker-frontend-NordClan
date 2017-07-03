@@ -35,7 +35,6 @@ class Info extends Component {
           : null}
         <hr />
         <h2>Файлы</h2>
-        {/*<hr/>*/}
         <Attachments />
       </div>
     );

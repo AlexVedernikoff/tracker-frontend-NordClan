@@ -2,27 +2,27 @@ import * as ProjectInfoActions from '../constants/GetProjectInfo';
 import axios from 'axios';
 import { StartLoading, FinishLoading } from './Loading';
 
-function GettingProjectInfoStart () {
+const GettingProjectInfoStart = () => {
   return {
     type: ProjectInfoActions.PROJECT_INFO_RECEIVE_START
   };
-}
+};
 
-function GettingProjectInfoError (message) {
+const GettingProjectInfoError = message => {
   return {
     type: ProjectInfoActions.PROJECT_INFO_RECEIVE_ERROR,
     message: message
   };
-}
+};
 
-function GettingProjectInfoSuccess (project) {
+const GettingProjectInfoSuccess = project => {
   return {
     type: ProjectInfoActions.PROJECT_INFO_RECEIVE_SUCCESS,
     project: project
   };
-}
+};
 
-export default function GetProjectInfo (id) {
+const GetProjectInfo = id => {
   const URL = `/api/project/${id}`;
 
   return dispatch => {
@@ -43,4 +43,6 @@ export default function GetProjectInfo (id) {
         }
       });
   };
-}
+};
+
+export default GetProjectInfo;

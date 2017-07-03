@@ -1,15 +1,15 @@
-import * as LoadingActions from "../constants/Loading";
+import * as LoadingActions from '../constants/Loading';
 
-function StartLoading () {
+const StartLoading = () => {
   return {
     type: LoadingActions.LOADING_START
-  }
-}
+  };
+};
 
-function FinishLoading () {
+const FinishLoading = () => {
   return {
     type: LoadingActions.LOADING_FINISH
-  }
-}
+  };
+};
 
 export { StartLoading, FinishLoading };

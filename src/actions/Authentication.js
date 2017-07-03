@@ -2,46 +2,46 @@ import * as AuthActions from '../constants/Authentication';
 import axios from 'axios';
 import { history } from '../Router';
 
-function startAuthentication () {
+const startAuthentication = () => {
   return {
     type: AuthActions.AUTHENTICATION_START
   };
-}
+};
 
-function AuthenticationError (message) {
+const AuthenticationError = message => {
   return {
     type: AuthActions.AUTHENTICATION_ERROR,
     errorMessage: message
   };
-}
+};
 
-function AuthenticationReceived (user) {
+const AuthenticationReceived = user => {
   return {
     type: AuthActions.AUTHENTICATION_RECEIVED,
     data: user
   };
-}
+};
 
-function startLogout () {
+const startLogout = () => {
   return {
     type: AuthActions.LOGOUT_START
   };
-}
+};
 
-function LogoutError (message) {
+const LogoutError = message => {
   return {
     type: AuthActions.LOGOUT_ERROR,
     errorMessage: message
   };
-}
+};
 
-function LogoutComplete () {
+const LogoutComplete = () => {
   return {
     type: AuthActions.LOGOUT_COMPLETE
   };
-}
+};
 
-export function doAuthentication ({ username, password }) {
+export const doAuthentication = ({ username, password }) => {
   const URL = '/api/auth/login';
 
   return dispatch => {
@@ -63,9 +63,9 @@ export function doAuthentication ({ username, password }) {
         }
       });
   };
-}
+};
 
-export function doLogout () {
+export const doLogout = () => {
   const URL = '/api/auth/logout';
 
   return dispatch => {
@@ -83,4 +83,4 @@ export function doLogout () {
         }
       });
   };
-}
+};
