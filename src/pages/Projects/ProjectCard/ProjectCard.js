@@ -65,7 +65,7 @@ const ProjectCard = props => {
               ? <div className={css.meta}>
                   <span>Сроки:</span>
                   <span>
-                    {moment(createdAt).format('DD/MM/YYYY')} - {}
+                    {moment(createdAt).format('DD.MM.YYYY')}
                   </span>
                 </div>
               : null}
@@ -74,11 +74,11 @@ const ProjectCard = props => {
               ? <div className={css.meta}>
                   <span>Текущие спринты:</span>
                   {currentSprints.map((sprint, i) =>
-                    <span key={`sprint${i}`}>
+                    <span key={`sprint-${i}`}>
                       {sprint.name} ({moment(sprint.factStartDate).format(
-                        'DD/MM/YYYY'
+                        'DD.MM.YYYY'
                       )}
-                      - {moment(sprint.factEndDate).format('DD/MM/YYYY')})
+                      - {moment(sprint.factEndDate).format('DD.MM.YYYY')})
                     </span>
                   )}
                 </div>

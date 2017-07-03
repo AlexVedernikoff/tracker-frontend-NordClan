@@ -64,17 +64,18 @@ class Projects extends Component {
 
   handleDayFromChange = (dateFrom, modifiers) => {
     const { dispatch } = this.props;
-    this.setState({ dateFrom }, () =>
+    this.setState({ dateFrom }, () => {
       dispatch(
         getProjects(
           25,
           1,
           '',
           this.state.filterByName,
-          moment(this.state.dateFrom).format('YYYY-MM-DD')
+          (() =>
+            dateFrom ? moment(this.state.dateFrom).format('YYYY-MM-DD') : '')()
         )
-      )
-    );
+      );
+    });
   };
 
   handleDayToChange = (dateTo, modifiers) => {
@@ -157,11 +158,11 @@ class Projects extends Component {
                   onChange={e => this.selectValue(e, 'filterTags')}
                   noResultsText="Нет результатов"
                   options={[
-                    {value: 'develop', label: 'develop'},
-                    {value: 'frontend', label: 'frontend'},
-                    {value: 'inner', label: 'внутренний'},
-                    {value: 'commerce', label: 'коммерческий'},
-                    {value: 'backend', label: 'backend'}
+                    { value: 'develop', label: 'develop' },
+                    { value: 'frontend', label: 'frontend' },
+                    { value: 'inner', label: 'внутренний' },
+                    { value: 'commerce', label: 'коммерческий' },
+                    { value: 'backend', label: 'backend' }
                   ]}
                 />
               </Col>

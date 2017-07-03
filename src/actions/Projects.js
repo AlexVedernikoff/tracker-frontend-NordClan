@@ -31,6 +31,7 @@ export function getProjects (
   name = '',
   dateSprintBegin = ''
 ) {
+  console.log(dateSprintBegin);
   const URL = '/api/project';
   return dispatch => {
     dispatch(StartProjectsReceive());

@@ -15,7 +15,6 @@ import GetProjectInfo from '../../actions/GetProjectInfo';
 class ProjectPage extends Component {
   constructor (props) {
     super(props);
-    console.log(this.props);
   }
 
   componentDidMount () {
