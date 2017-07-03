@@ -126,7 +126,7 @@ export default class ProjectTitle extends Component {
           contentEditable={this.state.editing}
           onKeyDown={this.handleKeyPress}
         >
-          {this.state.name}
+          {this.props.name}
         </span>
         <span className={css.prefix}>
           <span>(</span>
@@ -137,7 +137,7 @@ export default class ProjectTitle extends Component {
             contentEditable={this.state.editing}
             onKeyDown={this.handleKeyPress}
           >
-            {this.state.prefix}
+            {this.props.prefix}
           </span>
           <span>)</span>
         </span>

@@ -10,60 +10,67 @@ import { IconEdit } from '../../components/Icons';
 import * as css from './ProjectPage.scss';
 import ProjectTitle from './ProjectTitle';
 
-import GetProjectInfo from "../../actions/GetProjectInfo";
+import GetProjectInfo from '../../actions/GetProjectInfo';
 
 class ProjectPage extends Component {
   constructor (props) {
     super(props);
+    console.log(this.props);
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const { dispatch } = this.props;
     dispatch(GetProjectInfo(this.props.params.projectId));
   }
 
   render () {
     // Mocks
-    const project = {
-      name: 'MakeTalents',
-      prefix: 'MT',
-      pic: 'https://static.qiwi.com/img/qiwi_com/favicon/favicon-192x192.png',
-      id: 1
-    };
+    const pic
+      = 'https://static.qiwi.com/img/qiwi_com/favicon/favicon-192x192.png';
 
     return (
       <DragDropContextProvider backend={HTML5Backend}>
         <div id="project-page">
-          <ProjectTitle {...project} />
+          <ProjectTitle
+            pic={pic}
+            name={this.props.project.name || ''}
+            prefix={this.props.project.prefix || ''}
+          />
 
           <RouteTabs>
             <Link
               activeClassName="active"
-              to={`/projects/${project.id}/agile-board`}
+              to={`/projects/${this.props.params.projectId}/agile-board`}
             >
               Доска
             </Link>
-            <Link activeClassName="active" to={`/projects/${project.id}/tasks`}>
+            <Link
+              activeClassName="active"
+              to={`/projects/${this.props.params.projectId}/tasks`}
+            >
               Список задач
             </Link>
             <Link
               activeClassName="active"
-              to={`/projects/${project.id}/planning`}
+              to={`/projects/${this.props.params.projectId}/planning`}
             >
               Планирование
             </Link>
-            <Link activeClassName="active" to={`/projects/${project.id}/info`}>
+            <Link
+              activeClassName="active"
+              to={`/projects/${this.props.params.projectId}/info`}
+            >
               Информация
             </Link>
             <Link
               activeClassName="active"
-              to={`/projects/${project.id}/property`}
+              to={`/projects/${this.props.params.projectId}/property`}
             >
               Настройки
             </Link>
             <Link
               activeClassName="active"
-              to={`/projects/${project.id}/analitics`}
+              to={`/projects/${this.props.params.projectId}/analitics`}
             >
               Аналитика
             </Link>
