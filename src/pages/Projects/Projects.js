@@ -65,7 +65,9 @@ class Projects extends Component {
         const dateTo = this.state.dateTo
           ? moment(this.state.dateTo).format('YYYY-MM-DD')
           : '';
-        dispatch(getProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo));
+        dispatch(
+          getProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo)
+        );
       }
     );
   };
