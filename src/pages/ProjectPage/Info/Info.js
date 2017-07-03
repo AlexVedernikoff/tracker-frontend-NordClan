@@ -28,8 +28,11 @@ class Info extends Component {
         <hr />
         {this.props.description
           ? <Description
-              text={{ __html: this.props.description }}
+              text={
+                this.props.description ? { __html: this.props.description } : {}
+              }
               headerType="h2"
+              id={this.props.id}
               headerText="Описание"
             />
           : null}
@@ -42,6 +45,7 @@ class Info extends Component {
 }
 
 const mapStateToProps = state => ({
+  id: state.ProjectInfo.project.id,
   tags: state.ProjectInfo.project.tags,
   description: state.ProjectInfo.project.description
 });
