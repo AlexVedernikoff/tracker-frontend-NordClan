@@ -88,10 +88,8 @@ ProjectPage.propTypes = {
   children: PropTypes.object
 };
 
-const mapStateToProps = state => {
-  return {
-    project: state.ProjectInfo.project
-  };
-};
+const mapStateToProps = state => ({
+  project: state.ProjectInfo.project
+});
 
 export default connect(mapStateToProps)(ProjectPage);

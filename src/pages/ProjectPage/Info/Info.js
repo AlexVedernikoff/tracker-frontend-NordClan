@@ -41,11 +41,9 @@ class Info extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    tags: state.ProjectInfo.project.tags,
-    description: state.ProjectInfo.project.description
-  };
-};
+const mapStateToProps = state => ({
+  tags: state.ProjectInfo.project.tags,
+  description: state.ProjectInfo.project.description
+});
 
 export default connect(mapStateToProps)(Info);

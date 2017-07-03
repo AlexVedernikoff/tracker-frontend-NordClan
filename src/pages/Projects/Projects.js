@@ -219,8 +219,6 @@ class Projects extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return { projectList: state.Projects.projects };
-};
+const mapStateToProps = state => ({ projectList: state.Projects.projects });
 
 export default connect(mapStateToProps)(Projects);

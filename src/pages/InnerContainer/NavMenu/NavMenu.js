@@ -41,7 +41,9 @@ class NavMenu extends Component {
         </Link>
       </li>,
       <li key="projects" className={css.sidebarItem}>
-        <button><IconPlus style={iconStyles} /></button>
+        <button>
+          <IconPlus style={iconStyles} />
+        </button>
         <Link
           className={css.sidebarLink}
           activeClassName={css.activeLink}
@@ -51,7 +53,9 @@ class NavMenu extends Component {
         </Link>
       </li>,
       <li key="tasks" className={css.sidebarItem}>
-        <button><IconPlus style={iconStyles} /></button>
+        <button>
+          <IconPlus style={iconStyles} />
+        </button>
         <Link
           className={css.sidebarLink}
           activeClassName={css.activeLink}
@@ -72,7 +76,11 @@ class NavMenu extends Component {
     ];
 
     const userGroups = groups.map(function createList (item, index) {
-      return <span key={index}>{item.name}</span>;
+      return (
+        <span key={index}>
+          {item.name}
+        </span>
+      );
     });
 
     const sidebarHeader = (
@@ -81,8 +89,12 @@ class NavMenu extends Component {
           <img src={photo} alt="" />
         </div>
         <div className={css.userNameContainer}>
-          <div className={css.userName}>{this.props.user.firstNameRu} {this.props.user.lastNameRu}</div>
-          <div className={css.userGroups}>{this.props.user.department}</div>
+          <div className={css.userName}>
+            {this.props.user.firstNameRu} {this.props.user.lastNameRu}
+          </div>
+          <div className={css.userGroups}>
+            {this.props.user.department}
+          </div>
         </div>
       </div>
     );
@@ -98,11 +110,9 @@ class NavMenu extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    user: state.UserInfo.user
-  };
-};
+const mapStateToProps = state => ({
+  user: state.UserInfo.user
+});
 
 NavMenu.propTypes = {
   user: PropTypes.object
