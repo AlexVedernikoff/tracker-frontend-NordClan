@@ -25,21 +25,25 @@ const ProjectCard = props => {
   );
 
   let statusTooltip = '';
-  switch (status) {
-    case 'INPROGRESS':
+  let status = '';
+  switch (statusId) {
+    case 1:
       statusTooltip = 'В процессе';
-      break;
+      status = 'INPROGRESS'.break;
 
-    case 'INHOLD':
+    case 2:
       statusTooltip = 'Приостановлен';
+      status = 'INHOLD';
       break;
 
-    case 'FINISHED':
+    case 3:
       statusTooltip = 'Завершен';
+      status = 'FINISHED';
       break;
 
     default:
       statusTooltip = 'Завершен';
+      status = 'FINISHED';
   }
 
   return (

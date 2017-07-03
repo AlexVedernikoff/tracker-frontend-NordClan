@@ -50,15 +50,8 @@ export function ChangeProject (
     dispatch(StartLoading());
 
     axios.put(URL, {
-      params: {
-        name: name || null,
-        prefix: prefix || null,
-        description: description || null,
-        statusId: statusId || null,
-        notbillable: notbillable || null,
-        budget: budget || null,
-        riskbudget: riskbudget || null
-      }
+      params: params,
+      withCredentials: true
     });
   };
 }

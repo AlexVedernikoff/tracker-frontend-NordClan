@@ -63,6 +63,10 @@ class Projects extends Component {
   };
 
   handleDayFromChange = (dateFrom, modifiers) => {
+
+    // IIFE is used because if this.state.dateFrom is undefined
+    // moment.js sends current date instead of undefined
+
     const { dispatch } = this.props;
     this.setState({ dateFrom }, () => {
       dispatch(
