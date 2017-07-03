@@ -10,11 +10,11 @@ import ChangeProject from './Projects';
 
 const rootReducer = combineReducers({
   Auth,
+  ChangeProject,
   Loading,
   ProjectInfo,
   Projects,
-  UserInfo,
-  ChangeProject,
+  UserInfo
   routing: routerReducer
 });
 
