@@ -14,38 +14,34 @@ const ProjectChangeSuccess = () => ({
   type: ProjectChangeActions.PROJECT_CHANGE_SUCCESS
 });
 
-export const ChangeProject = (
-  id,
-  name,
-  prefix,
-  description,
-  statusId,
-  notbillable,
-  budget,
-  riskBudget
-) => {
-  if (!id) {
+const ChangeProject = ChangedProperties => {
+  if (!ChangedProperties.id) {
     return;
   }
 
-  const URL = `/api/project/${id}`;
-  const params = mkobj(
-    ['name', name],
-    ['prefix', prefix],
-    ['description', description],
-    ['statusId', statusId],
-    ['notbillable', notbillable],
-    ['budget', budget],
-    ['riskBudget', riskBudget]
-  );
+  const URL = `/api/project/${ChangedProperties.id}`;
 
   return dispatch => {
     dispatch(StartProjectChange());
     dispatch(StartLoading());
 
-    axios.put(URL, {
-      params: params,
-      withCredentials: true
-    });
+    axios
+      .put(URL, ChangedProperties, {
+        withCredentials: true
+      })
+      .catch(err => {
+        dispatch(ProjectChangeError);
+        dispatch(StartLoading);
+      })
+      .then(response => {
+        if (!response) {
+          return;
+        } else if ((response.status = 200)) {
+          dispatch(ProjectChangeSuccess());
+          dispatch(FinishLoading());
+        }
+      });
   };
 };
+
+export default ChangeProject;

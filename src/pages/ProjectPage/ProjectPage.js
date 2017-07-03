@@ -34,6 +34,7 @@ class ProjectPage extends Component {
             pic={pic}
             name={this.props.project.name || ''}
             prefix={this.props.project.prefix || ''}
+            id={this.props.project.id || ''}
           />
 
           <RouteTabs>

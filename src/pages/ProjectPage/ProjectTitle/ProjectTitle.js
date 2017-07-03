@@ -4,8 +4,10 @@ import classnames from 'classnames';
 import { IconEdit, IconCheck } from '../../../components/Icons';
 import * as css from './ProjectTitle.scss';
 import ReactTooltip from 'react-tooltip';
+import ChangeProject from '../../../actions/ProjectChange';
+import { connect } from 'react-redux';
 
-export default class ProjectTitle extends Component {
+class ProjectTitle extends Component {
   constructor (props) {
     super(props);
     this.state = {
@@ -54,13 +56,25 @@ export default class ProjectTitle extends Component {
   }
 
   submitInput () {
-    this.setState({
-      editing: false,
-      prefixIsIncorrect: false,
-      nameIsIncorrect: false,
-      name: this.projectName.innerText,
-      prefix: this.projectPrefix.innerText
-    });
+    const { dispatch } = this.props;
+    this.setState(
+      {
+        editing: false,
+        prefixIsIncorrect: false,
+        nameIsIncorrect: false,
+        name: this.projectName.innerText,
+        prefix: this.projectPrefix.innerText
+      },
+      () => {
+        dispatch(
+          ChangeProject({
+            id: this.props.id,
+            name: this.state.name,
+            prefix: this.state.prefix
+          })
+        );
+      }
+    );
   }
 
   validateSubmit = () => {
@@ -162,3 +176,5 @@ ProjectTitle.propTypes = {
   pic: PropTypes.string.isRequired,
   prefix: PropTypes.string.isRequired
 };
+
+export default connect(null)(ProjectTitle);
