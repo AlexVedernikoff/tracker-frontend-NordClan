@@ -6,6 +6,7 @@ import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import moment from 'moment';
 
 import Tag from '../../../components/Tag';
+import Tags from '../../../components/Tags';
 import * as css from './ProjectCard.scss';
 
 const ProjectCard = props => {
@@ -98,7 +99,9 @@ const ProjectCard = props => {
         </Col>
         <Col xs>
           <div className={css.tags}>
-            {tagList}
+            <Tags>
+              {tagList}
+            </Tags>
           </div>
         </Col>
       </Row>
