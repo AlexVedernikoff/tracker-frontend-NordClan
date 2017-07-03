@@ -29,7 +29,8 @@ export function getProjects (
   currentPage = 1,
   tags = '',
   name = '',
-  dateSprintBegin = ''
+  dateSprintBegin = '',
+  dateSprintEnd = ''
 ) {
   console.log(dateSprintBegin);
   const URL = '/api/project';
@@ -46,7 +47,8 @@ export function getProjects (
             tags: tags,
             name: name,
             fields: 'name, statusId, createdAt',
-            dateSprintBegin: dateSprintBegin
+            dateSprintBegin: dateSprintBegin,
+            dateSprintEnd: dateSprintEnd
           }
         },
         { withCredentials: true }

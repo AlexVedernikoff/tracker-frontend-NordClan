@@ -58,32 +58,44 @@ class Projects extends Component {
       {
         filterByName: event.target.value
       },
-      () => dispatch(getProjects(25, 1, '', this.state.filterByName))
+      () => {
+        const dateFrom = this.state.dateFrom
+          ? moment(this.state.dateFrom).format('YYYY-MM-DD')
+          : '';
+        const dateTo = this.state.dateTo
+          ? moment(this.state.dateTo).format('YYYY-MM-DD')
+          : '';
+        dispatch(getProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo));
+      }
     );
   };
 
   handleDayFromChange = (dateFrom, modifiers) => {
-
-    // IIFE is used because if this.state.dateFrom is undefined
-    // moment.js sends current date instead of undefined
-
     const { dispatch } = this.props;
     this.setState({ dateFrom }, () => {
+      dateFrom = dateFrom
+        ? moment(this.state.dateFrom).format('YYYY-MM-DD')
+        : '';
+      const dateTo = this.state.dateTo
+        ? moment(this.state.dateTo).format('YYYY-MM-DD')
+        : '';
       dispatch(
-        getProjects(
-          25,
-          1,
-          '',
-          this.state.filterByName,
-          (() =>
-            dateFrom ? moment(this.state.dateFrom).format('YYYY-MM-DD') : '')()
-        )
+        getProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo)
       );
     });
   };
 
   handleDayToChange = (dateTo, modifiers) => {
-    this.setState({ dateTo });
+    const { dispatch } = this.props;
+    this.setState({ dateTo }, () => {
+      const dateFrom = this.state.dateFrom
+        ? moment(this.state.dateFrom).format('YYYY-MM-DD')
+        : '';
+      dateTo = dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
+      dispatch(
+        getProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo)
+      );
+    });
   };
 
   render () {
