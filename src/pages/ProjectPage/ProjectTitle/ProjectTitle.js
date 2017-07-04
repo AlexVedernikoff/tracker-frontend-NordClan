@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { IconEdit, IconCheck } from '../../../components/Icons';
 import * as css from './ProjectTitle.scss';
 import ReactTooltip from 'react-tooltip';
-import ChangeProject from '../../../actions/ProjectChange';
+import { ChangeProject } from '../../../actions/Project';
 import { connect } from 'react-redux';
 
 class ProjectTitle extends Component {

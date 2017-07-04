@@ -10,7 +10,7 @@ import { IconEdit } from '../../components/Icons';
 import * as css from './ProjectPage.scss';
 import ProjectTitle from './ProjectTitle';
 
-import GetProjectInfo from '../../actions/GetProjectInfo';
+import { GetProjectInfo } from '../../actions/Project';
 
 class ProjectPage extends Component {
   constructor (props) {
@@ -90,7 +90,7 @@ ProjectPage.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  project: state.ProjectInfo.project
+  project: state.Project.project
 });
 
 export default connect(mapStateToProps)(ProjectPage);

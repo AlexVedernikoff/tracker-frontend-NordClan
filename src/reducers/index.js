@@ -5,14 +5,12 @@ import Auth from './Authentication';
 import Projects from './Projects';
 import UserInfo from './UserInfo';
 import Loading from './Loading';
-import ProjectInfo from './ProjectInfo';
-import ChangeProject from './Projects';
+import Project from './Project';
 
 const rootReducer = combineReducers({
   Auth,
-  ChangeProject,
   Loading,
-  ProjectInfo,
+  Project,
   Projects,
   UserInfo,
   routing: routerReducer

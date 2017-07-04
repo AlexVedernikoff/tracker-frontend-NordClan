@@ -7,7 +7,7 @@ import { stateToHTML } from 'draft-js-export-html';
 import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
-import ChangeProject from '../../actions/ProjectChange';
+import { ChangeProject } from '../../actions/Project';
 
 class Description extends Component {
   constructor (props) {
