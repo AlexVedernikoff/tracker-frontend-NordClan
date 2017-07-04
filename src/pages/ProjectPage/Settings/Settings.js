@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import classnames from 'classnames';
 
-import * as css from './Property.scss';
+import * as css from './Settings.scss';
 import SprintCard from '../../../components/SprintCard';
 import Checkbox from '../../../components/Checkbox';
 import Button from '../../../components/Button';
@@ -38,7 +38,7 @@ const sprints = [
   }
 ];
 
-export default class Property extends Component {
+export default class Settings extends Component {
   static propTypes = {
   }
 
