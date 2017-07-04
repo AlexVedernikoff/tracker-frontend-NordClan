@@ -26,16 +26,14 @@ class Info extends Component {
             : null}
         </Tags>
         <hr />
-        {this.props.description
-          ? <Description
-              text={
-                this.props.description ? { __html: this.props.description } : {}
-              }
-              headerType="h2"
-              id={this.props.id}
-              headerText="Описание"
-            />
-          : null}
+        <Description
+          text={{
+            __html: this.props.description ? this.props.description : ''
+          }}
+          headerType="h2"
+          id={this.props.id}
+          headerText="Описание"
+        />
         <hr />
         <h2>Файлы</h2>
         <Attachments />

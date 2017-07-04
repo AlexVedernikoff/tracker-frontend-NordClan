@@ -26,6 +26,13 @@ class Description extends Component {
     ReactTooltip.rebuild();
   }
 
+  componentWillReceiveProps(nextProps) {
+    console.log(nextProps);
+    this.setState({
+      text: nextProps.text
+    })
+  }
+
   componentWillUnmount () {
     window.removeEventListener('keydown', this.checkEscapeKeyPress);
   }

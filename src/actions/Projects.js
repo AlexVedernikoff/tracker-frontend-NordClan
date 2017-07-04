@@ -18,7 +18,7 @@ const ProjectsReceived = projects => ({
   data: projects
 });
 
-export const getProjects = (
+const GetProjects = (
   pageSize = 25,
   currentPage = 1,
   tags = '',
@@ -60,3 +60,5 @@ export const getProjects = (
       });
   };
 };
+
+export default GetProjects;

@@ -15,7 +15,7 @@ import Pagination from '../../components/Pagination';
 import Portfolio from './Portfolio';
 import moment from 'moment';
 
-import { getProjects } from '../../actions/Projects';
+import GetProjects from '../../actions/Projects';
 
 class Projects extends Component {
   constructor (props) {
@@ -49,7 +49,7 @@ class Projects extends Component {
 
   componentDidMount () {
     const { dispatch } = this.props;
-    dispatch(getProjects(25, 1, ''));
+    dispatch(GetProjects(25, 1, ''));
   }
 
   changeNameFilter = event => {
@@ -66,7 +66,7 @@ class Projects extends Component {
           ? moment(this.state.dateTo).format('YYYY-MM-DD')
           : '';
         dispatch(
-          getProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo)
+          GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo)
         );
       }
     );
@@ -82,7 +82,7 @@ class Projects extends Component {
         ? moment(this.state.dateTo).format('YYYY-MM-DD')
         : '';
       dispatch(
-        getProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo)
+        GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo)
       );
     });
   };
@@ -95,7 +95,7 @@ class Projects extends Component {
         : '';
       dateTo = dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
       dispatch(
-        getProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo)
+        GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo)
       );
     });
   };
