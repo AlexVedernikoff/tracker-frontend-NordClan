@@ -24,8 +24,9 @@ const ProjectChangeError = message => ({
   type: ProjectActions.PROJECT_CHANGE_ERROR
 });
 
-const ProjectChangeSuccess = () => ({
-  type: ProjectActions.PROJECT_CHANGE_SUCCESS
+const ProjectChangeSuccess = response => ({
+  type: ProjectActions.PROJECT_CHANGE_SUCCESS,
+  changedFields: response
 });
 
 const GetProjectInfo = id => {
@@ -74,7 +75,7 @@ const ChangeProject = ChangedProperties => {
         if (!response) {
           return;
         } else if ((response.status = 200)) {
-          dispatch(ProjectChangeSuccess());
+          dispatch(ProjectChangeSuccess(response.data));
           dispatch(FinishLoading());
         }
       });

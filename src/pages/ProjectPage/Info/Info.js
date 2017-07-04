@@ -45,9 +45,9 @@ class Info extends Component {
 }
 
 const mapStateToProps = state => ({
-  id: state.ProjectInfo.project.id,
-  tags: state.ProjectInfo.project.tags,
-  description: state.ProjectInfo.project.description
+  id: state.Project.project.id,
+  tags: state.Project.project.tags,
+  description: state.Project.project.description
 });
 
 export default connect(mapStateToProps)(Info);

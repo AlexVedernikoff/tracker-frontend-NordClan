@@ -35,8 +35,13 @@ export default function Project(state = InitialState, action) {
       };
 
     case ProjectActions.PROJECT_CHANGE_SUCCESS:
+      console.log(action.changedFields);
       return {
-        ...state
+        ...state,
+        project: {
+          ...state.project,
+          ...action.changedFields
+        }
       };
 
     default:
