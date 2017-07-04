@@ -3,7 +3,7 @@ import { PropTypes } from 'prop-types';
 import { Link } from 'react-router';
 import { IconPlus } from '../../../components/Icons';
 import { connect } from 'react-redux';
-import { getInfoAboutMe } from '../../../actions/UserInfo';
+import { getInfoAboutMe } from '../../../actions/Authentication';
 
 class NavMenu extends Component {
   constructor (props) {
@@ -99,7 +99,7 @@ class NavMenu extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.UserInfo.user
+  user: state.Auth.user
 });
 
 NavMenu.propTypes = {

@@ -1,8 +1,9 @@
 import * as AuthActions from '../constants/Authentication';
 import axios from 'axios';
 import { history } from '../Router';
+import { StartLoading, FinishLoading } from './Loading';
 
-const startAuthentication = () => ({
+const StartAuthentication = () => ({
   type: AuthActions.AUTHENTICATION_START
 });
 
@@ -16,7 +17,7 @@ const AuthenticationReceived = user => ({
   data: user
 });
 
-const startLogout = () => ({
+const StartLogout = () => ({
   type: AuthActions.LOGOUT_START
 });
 
@@ -29,11 +30,25 @@ const LogoutComplete = () => ({
   type: AuthActions.LOGOUT_COMPLETE
 });
 
+const StartReceiveUserInfo = () => ({
+  type: AuthActions.USER_INFO_RECEIVE_START
+});
+
+const ReceiveUserInfoError = message => ({
+  type: AuthActions.USER_INFO_RECEIVE_ERROR,
+  errorMessage: message
+});
+
+const UserInfoReceived = user => ({
+  type: AuthActions.USER_INFO_RECEIVE_SUCCESS,
+  user: user
+});
+
 export const doAuthentication = ({ username, password }) => {
   const URL = '/api/auth/login';
 
   return dispatch => {
-    dispatch(startAuthentication());
+    dispatch(StartAuthentication());
     axios
       .post(
         URL,
@@ -58,7 +73,7 @@ export const doLogout = () => {
 
   return dispatch => {
     window.localStorage.removeItem('simTrackAuthToken');
-    dispatch(startLogout());
+    dispatch(StartLogout());
     axios
       .delete(URL, { withCredentials: true })
       .catch(error => dispatch(AuthenticationError(error)))
@@ -68,6 +83,29 @@ export const doLogout = () => {
         } else if (response.status === 200) {
           dispatch(LogoutComplete());
           history.push('/login');
+        }
+      });
+  };
+};
+
+export const getInfoAboutMe = () => {
+  const URL = '/api/user/me';
+
+  return dispatch => {
+    dispatch(StartReceiveUserInfo());
+    dispatch(StartLoading());
+    axios
+      .get(URL, {}, { withCredentials: true })
+      .catch(error => {
+        dispatch(ReceiveUserInfoError(error.message));
+        dispatch(FinishLoading());
+      })
+      .then(response => {
+        if (!response) {
+          return;
+        } else if (response.status === 200) {
+          dispatch(UserInfoReceived(response.data));
+          dispatch(FinishLoading());
         }
       });
   };

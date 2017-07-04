@@ -3,7 +3,6 @@ import { routerReducer } from 'react-router-redux';
 
 import Auth from './Authentication';
 import Projects from './Projects';
-import UserInfo from './UserInfo';
 import Loading from './Loading';
 import Project from './Project';
 
@@ -12,7 +11,6 @@ const rootReducer = combineReducers({
   Loading,
   Project,
   Projects,
-  UserInfo,
   routing: routerReducer
 });
 
