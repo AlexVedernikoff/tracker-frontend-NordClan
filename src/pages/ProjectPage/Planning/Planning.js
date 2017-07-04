@@ -6,6 +6,7 @@ import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import TaskRow from '../../../components/TaskRow';
 import Button from '../../../components/Button';
 import SelectDropdown from '../../../components/SelectDropdown';
+import SprintColumn from '../../../components/SprintColumn';
 
 //Mocks
 
@@ -20,7 +21,7 @@ const getSomeRandomString = (arr) => {
   return arr.splice(start, end);
 };
 
-for (let i = 0; i < 15; i++) {
+for (let i = 0; i < 30; i++) {
   const mockTags = [];
 
   tasks.push({
@@ -34,7 +35,7 @@ for (let i = 0; i < 15; i++) {
   ]),
     tags: mockTags.concat(getSomeRandomString(['refactor', 'верстка', 'demo', 'release', 'design', 'совещание']), getRandomString(['UI', 'backend'])),
     prefix: getRandomString(['MT-12', 'MT-254', 'MT-1245']),
-    sprint: getRandomString(['Спринт №1', 'Спринт №1', 'Спринт №1']),
+    sprint: getRandomString(['sprint1', 'sprint2', 'sprint3', 'sprint4', 'backlog']),
     id: i,
     status: getRandomString(['INHOLD', 'INPROGRESS']),
     type: getRandomString(['Фича / Задача', 'Баг']),
@@ -49,29 +50,74 @@ for (let i = 0; i < 15; i++) {
   });
 }
 
-const sortTasks = (sortedArr) => {
-  // tasks.sort((a, b) => {
-  //   if (a.priority > b.priority) return 1;
-  //   if (a.priority < b.priority) return -1;
-  // });
-  return sortedArr.map((element) => {
-    return <TaskRow key={element.id} task={element} shortcut card/>;
-  });
+//const sortTasks = (sortedArr) => {
+//   tasks.sort((a, b) => {
+//     if (a.priority > b.priority) return 1;
+//     if (a.priority < b.priority) return -1;
+//   });
+//   return sortedArr.map((element) => {
+//     return <TaskRow key={element.id} task={element} shortcut card/>;
+//   });
+// };
+
+//const sortedTasks = sortTasks(tasks);
+
+const sprintTasks = {
+  sprint1: [],
+  sprint2: [],
+  sprint3: [],
+  sprint4: [],
+  backlog: []
 };
 
-const sortedTasks = sortTasks(tasks);
+tasks.map((element) => {
+    sprintTasks[element.sprint].push(<TaskRow key={element.id} task={element} shortcut card/>);
+});
 
 export default class Planning extends Component {
 
   constructor (props) {
     super(props);
     this.state = {
-      changedSprint: 'sprint1'
+      changedSprint: 'sprint1',
+      leftColumn: 'backlog',
+      rightColumn: 'sprint1'
     };
   }
 
   selectValue = (e, name) => {
-    this.setState({[name]: e});
+    this.setState({[name]: e ? e.value : null});
+  }
+
+  getSprints = (column) => {
+    const secondColumn = column === 'leftColumn' ? 'rightColumn' : 'leftColumn';
+    const sprints = [
+      { value: 'sprint1', label: 'Спринт №1 (01.06.2017 - 30.06.2017)', className: classnames({[css.INPROGRESS]: true, [css.sprintMarker]: true }) },
+      { value: 'sprint2', label: 'Спринт №2 (01.06.2017 - 30.06.2017)', className: classnames({[css.PLANNED]: true, [css.sprintMarker]: true }) },
+      { value: 'sprint3', label: 'Спринт №3 (01.06.2017 - 30.06.2017)', className: classnames({[css.FINISHED]: true, [css.sprintMarker]: true }) },
+      { value: 'sprint4', label: 'Спринт №4 (01.06.2017 - 30.06.2017)', className: classnames({[css.FINISHED]: true, [css.sprintMarker]: true }) },
+      { value: 'backlog', label: 'Backlog', className: classnames({[css.INPROGRESS]: true, [css.sprintMarker]: true }) }
+    ];
+
+    sprints.forEach((sprint) => {
+      sprint.disabled = sprint.value === this.state[secondColumn];
+    });
+
+    return sprints;
+  }
+
+  dropTask = (task, sprint) => {
+    let i, movedTask;
+
+    for (i in sprintTasks[task.previousSprint]) {
+      if (sprintTasks[task.previousSprint][i].props.task.id === task.id) {
+        movedTask = sprintTasks[task.previousSprint].splice(i, 1)[0];
+      }
+    }
+
+    movedTask.props.task.sprint = sprint;
+    sprintTasks[sprint].push(movedTask);
+    this.forceUpdate();
   }
 
   render () {
@@ -203,13 +249,7 @@ export default class Planning extends Component {
                     value={this.state.leftColumn}
                     onChange={(e) => this.selectValue(e, 'leftColumn')}
                     noResultsText="Нет результатов"
-                    options={[
-                      { value: 'sprint1', label: 'Спринт №1 (01.06.2017 - 30.06.2017)', className: classnames({[css.INPROGRESS]: true, [css.sprintMarker]: true }) },
-                      { value: 'sprint2', label: 'Спринт №2 (01.06.2017 - 30.06.2017)', className: classnames({[css.PLANNED]: true, [css.sprintMarker]: true }) },
-                      { value: 'sprint3', label: 'Спринт №3 (01.06.2017 - 30.06.2017)', className: classnames({[css.FINISHED]: true, [css.sprintMarker]: true }) },
-                      { value: 'sprint4', label: 'Спринт №4 (01.06.2017 - 30.06.2017)', className: classnames({[css.FINISHED]: true, [css.sprintMarker]: true }) },
-                      { value: 'backlog', label: 'Backlog', className: classnames({[css.INPROGRESS]: true, [css.sprintMarker]: true }) }
-                    ]}
+                    options={this.getSprints('leftColumn')}
                   />
                 </div>
                 <Button type="bordered" text="Создать задачу" icon="IconPlus" style={{marginLeft: 16}}/>
@@ -217,9 +257,7 @@ export default class Planning extends Component {
               <div className={css.progressBarWrapper} data-tip="Суммарное время задач: 795 ч. из 500">
                 <div className={classnames({[css.progressBar]: true, [css.exceeded]: true})} style={{width: '100%'}}/>
               </div>
-              <div>
-                {sortedTasks.slice(3, 6)}
-              </div>
+              <SprintColumn onDrop={this.dropTask} sprint={this.state.leftColumn} tasks={sprintTasks[this.state.leftColumn]}/>
             </Col>
             <Col xs={6}>
               <div className={css.headerColumn}>
@@ -231,13 +269,7 @@ export default class Planning extends Component {
                     value={this.state.rightColumn}
                     onChange={(e) => this.selectValue(e, 'rightColumn')}
                     noResultsText="Нет результатов"
-                    options={[
-                      { value: 'sprint1', label: 'Спринт №1 (01.06.2017 - 30.06.2017)', className: classnames({[css.INPROGRESS]: true, [css.sprintMarker]: true }) },
-                      { value: 'sprint2', label: 'Спринт №2 (01.06.2017 - 30.06.2017)', className: classnames({[css.PLANNED]: true, [css.sprintMarker]: true }) },
-                      { value: 'sprint3', label: 'Спринт №3 (01.06.2017 - 30.06.2017)', className: classnames({[css.FINISHED]: true, [css.sprintMarker]: true }) },
-                      { value: 'sprint4', label: 'Спринт №4 (01.06.2017 - 30.06.2017)', className: classnames({[css.FINISHED]: true, [css.sprintMarker]: true }) },
-                      { value: 'backlog', label: 'Backlog', className: classnames({[css.INPROGRESS]: true, [css.sprintMarker]: true }) }
-                    ]}
+                    options={this.getSprints('rightColumn')}
                   />
                 </div>
                 <Button type="bordered" text="Создать задачу" icon="IconPlus" style={{marginLeft: 16}}/>
@@ -245,9 +277,7 @@ export default class Planning extends Component {
               <div className={css.progressBarWrapper} data-tip="Суммарное время задач: 257 ч. из 500">
                 <div className={classnames({[css.progressBar]: true, [css.exceeded]: false})} style={{width: '58%'}}/>
               </div>
-              <div>
-                {sortedTasks}
-              </div>
+              <SprintColumn onDrop={this.dropTask} sprint={this.state.rightColumn} tasks={sprintTasks[this.state.rightColumn]}/>
             </Col>
           </Row>
         </section>

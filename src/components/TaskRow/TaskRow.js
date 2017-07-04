@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Link } from 'react-router';
+import { DragSource } from 'react-dnd';
+import { ItemTypes } from '../Constants';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 
 import { IconPlay, IconPause, IconTime } from '../Icons';
@@ -9,7 +11,23 @@ import Tags from '../Tags';
 import Tag from '../Tag';
 import * as css from './TaskRow.scss';
 
-export default class TaskRow extends React.Component {
+const taskRowSource = {
+  beginDrag (props) {
+    return {
+      id: props.task.id,
+      previousSprint: props.task.sprint
+    };
+  }
+};
+
+function collect (connect, monitor) {
+  return {
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging()
+  };
+}
+
+class TaskRow extends React.Component {
 
   constructor (props) {
     super(props);
@@ -23,6 +41,8 @@ export default class TaskRow extends React.Component {
       task,
       shortcut,
       card,
+      connectDragSource,
+      isDragging,
       ...other
     } = this.props;
 
@@ -32,7 +52,8 @@ export default class TaskRow extends React.Component {
     const { cutTags } = this.state;
 
     return (
-      <div className={classnames({[css.taskCard]: true, [css[classPriority]]: true, [css.card]: card})} {...other}>
+      connectDragSource(
+      <div className={classnames({[css.taskCard]: true, [css[classPriority]]: true, [css.card]: card, [css.dropped]: isDragging})} {...other}>
         <Row>
           <Col xs={shortcut ? 12 : 6}>
             <div className={css.header}>
@@ -126,12 +147,17 @@ export default class TaskRow extends React.Component {
             />
         </div>*/}
       </div>
+      )
     );
   }
 }
 
 TaskRow.propTypes = {
   card: PropTypes.bool,
+  connectDragSource: PropTypes.func.isRequired,
+  isDragging: PropTypes.bool.isRequired,
   shortcut: PropTypes.bool,
   task: PropTypes.object
 };
+
+export default DragSource(ItemTypes.TASK_ROW, taskRowSource, collect)(TaskRow);
