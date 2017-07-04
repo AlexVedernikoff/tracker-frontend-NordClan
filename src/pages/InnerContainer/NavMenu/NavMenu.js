@@ -18,13 +18,6 @@ class NavMenu extends Component {
   render () {
     const css = require('./NavMenu.scss');
 
-    // Mocks
-
-    const groups = [{ name: 'Название группы' }];
-    const photo = 'http://lorempixel.com/200/200/people/';
-    const firstNameRu = 'Андрей';
-    const lastNameRu = 'Юдин';
-
     const iconStyles = {
       width: 16,
       height: 16
@@ -75,18 +68,13 @@ class NavMenu extends Component {
       </li>
     ];
 
-    const userGroups = groups.map(function createList (item, index) {
-      return (
-        <span key={index}>
-          {item.name}
-        </span>
-      );
-    });
-
     const sidebarHeader = (
       <div className={css.sidebarHeader}>
-        <div className={css.userAvatar}>
-          <img src={photo} alt="" />
+        <div className={css.ava}>
+          {this.props.user.photo
+            ? <img src={this.props.user.photo} alt="" />
+            : `${(this.props.user.firstNameRu.slice(0, 1) || "")
+                + this.props.user.lastNameRu.slice(0, 1)}`}
         </div>
         <div className={css.userNameContainer}>
           <div className={css.userName}>

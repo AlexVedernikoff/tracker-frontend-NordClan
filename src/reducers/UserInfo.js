@@ -3,7 +3,10 @@ import * as UserInfoActions from '../constants/UserInfo';
 const InitialState = {
   isReceiving: false,
   isLoggedIn: false,
-  user: {}
+  user: {
+    firstNameRu: "",
+    lastNameRu: ""
+  }
 };
 
 function UserInfo (state = InitialState, action) {
