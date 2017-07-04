@@ -1,7 +1,9 @@
 import * as ProjectActions from "../constants/Project";
 
 const InitialState = {
-  project: {}
+  project: {},
+  editingTitle: false,
+  editingDescription: false
 }
 
 export default function Project(state = InitialState, action) {
@@ -35,7 +37,6 @@ export default function Project(state = InitialState, action) {
       };
 
     case ProjectActions.PROJECT_CHANGE_SUCCESS:
-      console.log(action.changedFields);
       return {
         ...state,
         project: {
@@ -43,6 +44,18 @@ export default function Project(state = InitialState, action) {
           ...action.changedFields
         }
       };
+
+    case ProjectActions.EDIT_START:
+      return {
+        ...state,
+        [`${action.target}IsEditing`]: true
+      }
+
+    case ProjectActions.EDIT_FINISH:
+      return {
+        ...state,
+        [`${action.target}IsEditing`]: false
+      }
 
     default:
       return {

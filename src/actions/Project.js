@@ -29,6 +29,16 @@ const ProjectChangeSuccess = response => ({
   changedFields: response
 });
 
+export const StartEditing = target => ({
+  type: ProjectActions.EDIT_START,
+  target: target
+});
+
+export const StopEditing = target => ({
+  type: ProjectActions.EDIT_FINISH,
+  target: target
+});
+
 const GetProjectInfo = id => {
   const URL = `/api/project/${id}`;
 
@@ -52,7 +62,7 @@ const GetProjectInfo = id => {
   };
 };
 
-const ChangeProject = ChangedProperties => {
+const ChangeProject = (ChangedProperties, target) => {
   if (!ChangedProperties.id) {
     return;
   }
@@ -68,8 +78,8 @@ const ChangeProject = ChangedProperties => {
         withCredentials: true
       })
       .catch(err => {
-        dispatch(ProjectChangeError);
-        dispatch(StartLoading);
+        dispatch(ProjectChangeError());
+        dispatch(FinishLoading());
       })
       .then(response => {
         if (!response) {
@@ -77,6 +87,7 @@ const ChangeProject = ChangedProperties => {
         } else if ((response.status = 200)) {
           dispatch(ProjectChangeSuccess(response.data));
           dispatch(FinishLoading());
+          dispatch(StopEditing(target));
         }
       });
   };

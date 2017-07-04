@@ -4,7 +4,11 @@ import classnames from 'classnames';
 import { IconEdit, IconCheck } from '../../../components/Icons';
 import * as css from './ProjectTitle.scss';
 import ReactTooltip from 'react-tooltip';
-import { ChangeProject } from '../../../actions/Project';
+import {
+  ChangeProject,
+  StartEditing,
+  StopEditing
+} from '../../../actions/Project';
 import { connect } from 'react-redux';
 
 class ProjectTitle extends Component {
@@ -12,7 +16,6 @@ class ProjectTitle extends Component {
     super(props);
     this.state = {
       ...props,
-      editing: false,
       prefixIsIncorrect: false,
       nameIsIncorrect: false
     };
@@ -24,19 +27,21 @@ class ProjectTitle extends Component {
 
   editIconClickHandler = event => {
     event.stopPropagation();
-    if (this.state.editing) {
+    if (this.props.titleIsEditing) {
       this.validateSubmit();
     } else {
-      this.startEditing();
+      this.startTitleEditing();
     }
   };
 
-  startEditing = () => {
-    this.setState({ editing: true });
+  startTitleEditing = () => {
+    const { dispatch } = this.props;
+    dispatch(StartEditing('Title'));
   };
 
-  stopEditing = () => {
-    this.setState({ editing: false });
+  stopTitleEditing = () => {
+    const { dispatch } = this.props;
+    dispatch(StopEditing('Title'));
   };
 
   handleIncorrectInput () {
@@ -59,7 +64,6 @@ class ProjectTitle extends Component {
     const { dispatch } = this.props;
     this.setState(
       {
-        editing: false,
         prefixIsIncorrect: false,
         nameIsIncorrect: false,
         name: this.projectName.innerText,
@@ -67,11 +71,14 @@ class ProjectTitle extends Component {
       },
       () => {
         dispatch(
-          ChangeProject({
-            id: this.props.id,
-            name: this.state.name,
-            prefix: this.state.prefix
-          })
+          ChangeProject(
+            {
+              id: this.props.id,
+              name: this.state.name,
+              prefix: this.state.prefix
+            },
+            'Title'
+          )
         );
       }
     );
@@ -92,7 +99,9 @@ class ProjectTitle extends Component {
   };
 
   handleKeyPress = event => {
-    if (this.state.editing) {
+    const { dispatch } = this.props;
+
+    if (this.props.titleIsEditing) {
       if (event.keyCode === 13) {
         event.preventDefault();
         this.validateSubmit();
@@ -104,8 +113,9 @@ class ProjectTitle extends Component {
           nameIsIncorrect: false
         });
 
-        this.projectName.innerText = this.state.name;
-        this.projectPrefix.innerText = this.state.prefix;
+        this.projectName.innerText = this.props.name;
+        this.projectPrefix.innerText = this.props.prefix;
+        dispatch(StopEditing('Title'));
       }
     }
   };
@@ -137,7 +147,7 @@ class ProjectTitle extends Component {
           id="projectName"
           className={this.state.nameIsIncorrect ? css.wrong : ''}
           ref={ref => (this.projectName = ref)}
-          contentEditable={this.state.editing}
+          contentEditable={this.props.titleIsEditing}
           onKeyDown={this.handleKeyPress}
         >
           {this.props.name}
@@ -148,14 +158,14 @@ class ProjectTitle extends Component {
             id="projectPrefix"
             className={this.state.prefixIsIncorrect ? css.wrong : ''}
             ref={ref => (this.projectPrefix = ref)}
-            contentEditable={this.state.editing}
+            contentEditable={this.props.titleIsEditing}
             onKeyDown={this.handleKeyPress}
           >
             {this.props.prefix}
           </span>
           <span>)</span>
         </span>
-        {this.state.editing
+        {this.props.titleIsEditing
           ? <IconCheck
               className={css.save}
               data-tip="Сохранить"
@@ -171,10 +181,14 @@ class ProjectTitle extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  titleIsEditing: state.Project.TitleIsEditing
+});
+
 ProjectTitle.propTypes = {
   name: PropTypes.string.isRequired,
   pic: PropTypes.string.isRequired,
   prefix: PropTypes.string.isRequired
 };
 
-export default connect(null)(ProjectTitle);
+export default connect(mapStateToProps)(ProjectTitle);

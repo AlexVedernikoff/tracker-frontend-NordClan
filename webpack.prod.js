@@ -94,7 +94,8 @@ const settings = {
         drop_console: true,
         unsafe: true
       }
-    })
+    }),
+    new webpack.optimize.ModuleConcatenationPlugin()
   ]
 };
 

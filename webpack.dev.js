@@ -30,16 +30,16 @@ const settings = {
             loader: 'css-loader',
             options: {
               modules: true,
-              sourceMap: !isProductionMode,
+              sourceMap: true,
               importLoaders: 1,
               localIdentName: '[name]--[local]--[hash:base64:8]'
             }
           },
-          { loader: 'postcss-loader', options: { sourceMap: !isProductionMode } },
+          { loader: 'postcss-loader', options: { sourceMap: true } },
           {
             loader: 'sass-loader',
             options: {
-              sourceMap: !isProductionMode
+              sourceMap: true
             }
           }
         ]
@@ -52,7 +52,7 @@ const settings = {
             loader: 'css-loader',
             options: {
               modules: false,
-              sourceMap: !isProductionMode
+              sourceMap: true
             }
           }
         ]
@@ -112,28 +112,10 @@ const settings = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
     new webpack.LoaderOptionsPlugin({
-      debug: !isProductionMode
+      debug: true
     }),
     new CopyWebpackPlugin([{ from: './src/www', to: './' }])
   ]
 };
-
-if (isProductionMode) {
-  settings.plugins.push(
-    new webpack.optimize.UglifyJsPlugin({
-      beautify: false,
-      comments: false,
-      compress: {
-        sequences: true,
-        booleans: true,
-        loops: true,
-        unused: true,
-        warnings: false,
-        drop_console: true,
-        unsafe: true
-      }
-    })
-  );
-}
 
 module.exports = settings;
