@@ -7,14 +7,17 @@ import { stateToHTML } from 'draft-js-export-html';
 import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
-import { ChangeProject } from '../../actions/Project';
+import {
+  ChangeProject,
+  StartEditing,
+  StopEditing
+} from '../../actions/Project';
 
 class Description extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      text: this.props.text,
-      editing: false
+      text: this.props.text
     };
   }
 
@@ -26,11 +29,10 @@ class Description extends Component {
     ReactTooltip.rebuild();
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log(nextProps);
+  componentWillReceiveProps (nextProps) {
     this.setState({
       text: nextProps.text
-    })
+    });
   }
 
   componentWillUnmount () {
@@ -38,7 +40,7 @@ class Description extends Component {
   }
 
   toggleEditing = () => {
-    if (this.state.editing) {
+    if (this.props.DescriptionIsEditing) {
       this.updateText();
       this.stopEditing();
     } else {
@@ -47,15 +49,17 @@ class Description extends Component {
   };
 
   startEditing = () => {
-    this.setState({ editing: true });
+    const { dispatch } = this.props;
+    dispatch(StartEditing('Description'));
   };
 
   stopEditing = () => {
-    this.setState({ editing: false });
+    const { dispatch } = this.props;
+    dispatch(StopEditing('Description'));
   };
 
   checkEscapeKeyPress = event => {
-    if (event.keyCode === 27 && this.state.editing) {
+    if (event.keyCode === 27 && this.props.DescriptionIsEditing) {
       this.stopEditing();
     }
   };
@@ -72,10 +76,13 @@ class Description extends Component {
       },
       () => {
         dispatch(
-          ChangeProject({
-            id: this.props.id,
-            description: this.state.text.__html
-          })
+          ChangeProject(
+            {
+              id: this.props.id,
+              description: this.state.text.__html
+            },
+            'Description'
+          )
         );
       }
     );
@@ -135,11 +142,11 @@ class Description extends Component {
       <div
         className={classnames({
           [css.desc]: true,
-          [css.edited]: this.state.editing
+          [css.edited]: this.props.DescriptionIsEditing
         })}
       >
         {header}
-        {this.state.editing
+        {this.props.DescriptionIsEditing
           ? <TextEditor
               ref={ref => (this.TextEditor = ref)}
               content={this.state.text.__html}
@@ -149,7 +156,7 @@ class Description extends Component {
               dangerouslySetInnerHTML={this.state.text}
             />}
         <div className={css.editBorder}>
-          {this.state.editing
+          {this.props.DescriptionIsEditing
             ? <IconCheck
                 className={css.save}
                 onClick={this.toggleEditing}
@@ -166,10 +173,14 @@ class Description extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  DescriptionIsEditing: state.Project.DescriptionIsEditing
+});
+
 Description.propTypes = {
   headerText: PropTypes.string,
   headerType: PropTypes.string,
   text: PropTypes.object
 };
 
-export default connect(null)(Description);
+export default connect(mapStateToProps)(Description);
