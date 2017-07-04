@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 import { DropTarget } from 'react-dnd';
-import { ItemTypes } from '../Constants';
+import { TASK_CARD } from '../../../../constants/DragAndDrop';
 import classnames from 'classnames';
 
 import * as css from './PhaseColumn.scss';
@@ -59,4 +59,4 @@ PhaseColumn.propTypes = {
   title: PropTypes.string.isRequired
 };
 
-export default DropTarget(ItemTypes.TASK_CARD, columnTarget, collect)(PhaseColumn);
+export default DropTarget(TASK_CARD, columnTarget, collect)(PhaseColumn);

@@ -4,7 +4,7 @@ import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import classnames from 'classnames';
 
 import TaskCard from '../../../components/TaskCard';
-import PhaseColumn from '../../../components/PhaseColumn';
+import PhaseColumn from './PhaseColumn';
 import SelectDropdown from '../../../components/SelectDropdown';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 import * as css from './AgileBoard.scss';

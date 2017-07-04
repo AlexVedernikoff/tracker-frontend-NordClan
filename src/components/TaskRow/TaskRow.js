@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Link } from 'react-router';
 import { DragSource } from 'react-dnd';
-import { ItemTypes } from '../Constants';
+import { TASK_ROW } from '../../constants/DragAndDrop';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 
 import { IconPlay, IconPause, IconTime } from '../Icons';
@@ -160,4 +160,4 @@ TaskRow.propTypes = {
   task: PropTypes.object
 };
 
-export default DragSource(ItemTypes.TASK_ROW, taskRowSource, collect)(TaskRow);
+export default DragSource(TASK_ROW, taskRowSource, collect)(TaskRow);

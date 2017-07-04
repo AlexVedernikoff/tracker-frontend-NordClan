@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { DropTarget } from 'react-dnd';
-import { ItemTypes } from '../Constants';
+import { TASK_ROW } from '../../../../constants/DragAndDrop';
 import classnames from 'classnames';
 
 import * as css from './SprintColumn.scss';
@@ -46,4 +46,4 @@ SprintColumn.propTypes = {
   tasks: PropTypes.array.isRequired
 };
 
-export default DropTarget(ItemTypes.TASK_ROW, columnTarget, collect)(SprintColumn);
+export default DropTarget(TASK_ROW, columnTarget, collect)(SprintColumn);

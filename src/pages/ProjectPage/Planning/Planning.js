@@ -6,7 +6,7 @@ import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import TaskRow from '../../../components/TaskRow';
 import Button from '../../../components/Button';
 import SelectDropdown from '../../../components/SelectDropdown';
-import SprintColumn from '../../../components/SprintColumn';
+import SprintColumn from './SprintColumn';
 
 //Mocks
 
