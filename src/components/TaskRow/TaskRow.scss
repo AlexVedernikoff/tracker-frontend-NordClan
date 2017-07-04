@@ -154,5 +154,11 @@
   font-weight: bold;
 }
 
+.dropped {
+  opacity: 0.3;
+  transition-property: opacity;
+  transition-duration: 0.2s;
+}
+
 svg.green { background-color: transparent; fill: $color-green; }
 svg.red { background-color: transparent; fill: $color-red; }

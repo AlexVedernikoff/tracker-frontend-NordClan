@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Link } from 'react-router';
 import { DragSource } from 'react-dnd';
-import { ItemTypes } from '../Constants';
+import { TASK_CARD } from '../../constants/DragAndDrop';
 
 import { IconPlay, IconPause, IconTime } from '../Icons';
 import * as css from './TaskCard.scss';
@@ -96,4 +96,4 @@ TaskCard.propTypes = {
   task: PropTypes.object
 };
 
-export default DragSource(ItemTypes.TASK_CARD, taskCardSource, collect)(TaskCard);
+export default DragSource(TASK_CARD, taskCardSource, collect)(TaskCard);

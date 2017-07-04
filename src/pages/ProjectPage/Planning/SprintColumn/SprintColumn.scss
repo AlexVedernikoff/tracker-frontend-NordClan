@@ -1,4 +1,4 @@
-@import '../../styles/variables';
+@import '../../../../styles/variables';
 
 .dropColumn {
   box-sizing: border-box;
@@ -6,6 +6,8 @@
   transition-property: background-color;
   transition-duration: 0.3s;
   position: relative;
+  width: 100%;
+  height: 100%;
 
   h4 {
     margin-top: 0.5rem;
@@ -16,10 +18,4 @@
   transition-property: background-color;
   transition-duration: 0.3s;
   background-color: lighten($color-dark, 73%);
-}
-
-.cantDropColumn {
-  transition-property: background-color;
-  transition-duration: 0.3s;
-  background-color: lighten($color-red, 40%);
 }
