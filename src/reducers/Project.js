@@ -2,8 +2,8 @@ import * as ProjectActions from "../constants/Project";
 
 const InitialState = {
   project: {},
-  editingTitle: false,
-  editingDescription: false
+  TitleIsEditing: false,
+  DescriptionIsEditing: false
 }
 
 export default function Project(state = InitialState, action) {

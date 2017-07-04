@@ -121,7 +121,7 @@ class ProjectTitle extends Component {
   };
 
   outsideClickHandler = event => {
-    if (this.state.editing) {
+    if (this.props.titleIsEditing) {
       if (
         event.target !== this.projectName
         && event.target !== this.projectPrefix
