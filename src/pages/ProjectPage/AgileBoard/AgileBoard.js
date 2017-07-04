@@ -4,7 +4,7 @@ import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import classnames from 'classnames';
 
 import TaskCard from '../../../components/TaskCard';
-import PhaseCollumn from '../../../components/PhaseCollumn';
+import PhaseColumn from './PhaseColumn';
 import SelectDropdown from '../../../components/SelectDropdown';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 import * as css from './AgileBoard.scss';
@@ -222,11 +222,11 @@ export default class AgileBoard extends Component {
           {
             this.state.isSectionOpen.myTasks
             ? <Row>
-                <PhaseCollumn onDrop={this.dropTask} section={'mine'} phase={'NEW'} title={'New'} tasks={mineSorted.new}/>
-                <PhaseCollumn onDrop={this.dropTask} section={'mine'} phase={'DEVELOP'} title={'Dev'} tasks={mineSorted.dev}/>
-                <PhaseCollumn onDrop={this.dropTask} section={'mine'} phase={'CODE_REVIEW'} title={'Code Review'} tasks={mineSorted.codeReview}/>
-                <PhaseCollumn onDrop={this.dropTask} section={'mine'} phase={'QA'} title={'QA'} tasks={mineSorted.qa}/>
-                <PhaseCollumn onDrop={this.dropTask} section={'mine'} phase={'DONE'} title={'Done'} tasks={mineSorted.done}/>
+                <PhaseColumn onDrop={this.dropTask} section={'mine'} phase={'NEW'} title={'New'} tasks={mineSorted.new}/>
+                <PhaseColumn onDrop={this.dropTask} section={'mine'} phase={'DEVELOP'} title={'Dev'} tasks={mineSorted.dev}/>
+                <PhaseColumn onDrop={this.dropTask} section={'mine'} phase={'CODE_REVIEW'} title={'Code Review'} tasks={mineSorted.codeReview}/>
+                <PhaseColumn onDrop={this.dropTask} section={'mine'} phase={'QA'} title={'QA'} tasks={mineSorted.qa}/>
+                <PhaseColumn onDrop={this.dropTask} section={'mine'} phase={'DONE'} title={'Done'} tasks={mineSorted.done}/>
               </Row>
             : null
           }
@@ -240,11 +240,11 @@ export default class AgileBoard extends Component {
           {
             this.state.isSectionOpen.otherTasks
             ? <Row>
-                <PhaseCollumn onDrop={this.dropTask} section={'other'} phase={'NEW'} title={'New'} tasks={otherSorted.new}/>
-                <PhaseCollumn onDrop={this.dropTask} section={'other'} phase={'DEVELOP'} title={'Dev'} tasks={otherSorted.dev}/>
-                <PhaseCollumn onDrop={this.dropTask} section={'other'} phase={'CODE_REVIEW'} title={'Code Review'} tasks={otherSorted.codeReview}/>
-                <PhaseCollumn onDrop={this.dropTask} section={'other'} phase={'QA'} title={'QA'} tasks={otherSorted.qa}/>
-                <PhaseCollumn onDrop={this.dropTask} section={'other'} phase={'DONE'} title={'Done'} tasks={otherSorted.done}/>
+                <PhaseColumn onDrop={this.dropTask} section={'other'} phase={'NEW'} title={'New'} tasks={otherSorted.new}/>
+                <PhaseColumn onDrop={this.dropTask} section={'other'} phase={'DEVELOP'} title={'Dev'} tasks={otherSorted.dev}/>
+                <PhaseColumn onDrop={this.dropTask} section={'other'} phase={'CODE_REVIEW'} title={'Code Review'} tasks={otherSorted.codeReview}/>
+                <PhaseColumn onDrop={this.dropTask} section={'other'} phase={'QA'} title={'QA'} tasks={otherSorted.qa}/>
+                <PhaseColumn onDrop={this.dropTask} section={'other'} phase={'DONE'} title={'Done'} tasks={otherSorted.done}/>
               </Row>
             : null
           }

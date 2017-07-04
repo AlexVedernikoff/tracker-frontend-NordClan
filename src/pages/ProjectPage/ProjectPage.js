@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
-import HTML5Backend from 'react-dnd-html5-backend';
-import { DragDropContextProvider } from 'react-dnd';
 import { connect } from 'react-redux';
 
 import RouteTabs from '../../components/RouteTabs';
@@ -28,59 +26,57 @@ class ProjectPage extends Component {
       = 'https://static.qiwi.com/img/qiwi_com/favicon/favicon-192x192.png';
 
     return (
-      <DragDropContextProvider backend={HTML5Backend}>
-        <div id="project-page">
-          <ProjectTitle
-            pic={pic}
-            name={this.props.project.name || ''}
-            prefix={this.props.project.prefix || ''}
-            id={this.props.project.id || ''}
-          />
+      <div id="project-page">
+        <ProjectTitle
+          pic={pic}
+          name={this.props.project.name || ''}
+          prefix={this.props.project.prefix || ''}
+          id={this.props.project.id || ''}
+        />
 
-          <RouteTabs>
-            <Link
-              activeClassName="active"
-              to={`/projects/${this.props.params.projectId}/agile-board`}
-            >
-              Доска
-            </Link>
-            <Link
-              activeClassName="active"
-              to={`/projects/${this.props.params.projectId}/tasks`}
-            >
-              Список задач
-            </Link>
-            <Link
-              activeClassName="active"
-              to={`/projects/${this.props.params.projectId}/planning`}
-            >
-              Планирование
-            </Link>
-            <Link
-              activeClassName="active"
-              to={`/projects/${this.props.params.projectId}/info`}
-            >
-              Информация
-            </Link>
-            <Link
-              activeClassName="active"
-              to={`/projects/${this.props.params.projectId}/property`}
-            >
-              Настройки
-            </Link>
-            <Link
-              activeClassName="active"
-              to={`/projects/${this.props.params.projectId}/analitics`}
-            >
-              Аналитика
-            </Link>
-          </RouteTabs>
+        <RouteTabs>
+          <Link
+            activeClassName="active"
+            to={`/projects/${this.props.params.projectId}/agile-board`}
+          >
+            Доска
+          </Link>
+          <Link
+            activeClassName="active"
+            to={`/projects/${this.props.params.projectId}/tasks`}
+          >
+            Список задач
+          </Link>
+          <Link
+            activeClassName="active"
+            to={`/projects/${this.props.params.projectId}/planning`}
+          >
+            Планирование
+          </Link>
+          <Link
+            activeClassName="active"
+            to={`/projects/${this.props.params.projectId}/info`}
+          >
+            Информация
+          </Link>
+          <Link
+            activeClassName="active"
+            to={`/projects/${this.props.params.projectId}/property`}
+          >
+            Настройки
+          </Link>
+          <Link
+            activeClassName="active"
+            to={`/projects/${this.props.params.projectId}/analitics`}
+          >
+            Аналитика
+          </Link>
+        </RouteTabs>
 
-          <div className={css.tabContent}>
-            {this.props.children}
-          </div>
+        <div className={css.tabContent}>
+          {this.props.children}
         </div>
-      </DragDropContextProvider>
+      </div>
     );
   }
 }

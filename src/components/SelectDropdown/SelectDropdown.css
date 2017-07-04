@@ -78,6 +78,10 @@
   transition: 0.3s ease-out 0s;
 }
 
+.Select-option.is-disabled {
+  opacity: 0.3;
+}
+
 .Select--multi .Select-multi-value-wrapper .Select-value {
   font-size: 11px;
   vertical-align: bottom;
