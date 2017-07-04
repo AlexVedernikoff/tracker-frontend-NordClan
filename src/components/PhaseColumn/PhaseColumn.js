@@ -5,9 +5,9 @@ import { DropTarget } from 'react-dnd';
 import { ItemTypes } from '../Constants';
 import classnames from 'classnames';
 
-import * as css from './PhaseCollumn.scss';
+import * as css from './PhaseColumn.scss';
 
-const collumnTarget = {
+const columnTarget = {
   canDrop (props, monitor) {
     return props.section === monitor.getItem().section;
   },
@@ -26,7 +26,7 @@ function collect (connect, monitor) {
   };
 }
 
-class PhaseCollumn extends React.Component {
+class PhaseColumn extends React.Component {
 
   render () {
       const {
@@ -39,7 +39,7 @@ class PhaseCollumn extends React.Component {
 
       return (
         connectDropTarget(
-        <div className={classnames({'col-xs': true, [css.dropColumn]: true, [css.canDropColumn]: isOver && canDrop, [css.cantDropColumn]: isOver && !canDrop})} style={{position: 'relative', width: '100%', height: 'inherit'}} >
+        <div className={classnames({'col-xs': true, [css.dropColumn]: true, [css.canDropColumn]: isOver && canDrop, [css.cantDropColumn]: isOver && !canDrop})} >
           <h4>{title}</h4>
           {tasks}
         </div>
@@ -48,7 +48,7 @@ class PhaseCollumn extends React.Component {
   }
 }
 
-PhaseCollumn.propTypes = {
+PhaseColumn.propTypes = {
   canDrop: PropTypes.bool.isRequired,
   connectDropTarget: PropTypes.func.isRequired,
   isOver: PropTypes.bool.isRequired,
@@ -59,4 +59,4 @@ PhaseCollumn.propTypes = {
   title: PropTypes.string.isRequired
 };
 
-export default DropTarget(ItemTypes.TASK_CARD, collumnTarget, collect)(PhaseCollumn);
+export default DropTarget(ItemTypes.TASK_CARD, columnTarget, collect)(PhaseColumn);

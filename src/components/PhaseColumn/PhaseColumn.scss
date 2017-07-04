@@ -6,6 +6,8 @@
   transition-property: background-color;
   transition-duration: 0.3s;
   position: relative;
+  width: 100%;
+  height: inherit;
 
   h4 {
     margin-top: 0.5rem;
