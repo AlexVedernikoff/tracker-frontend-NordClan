@@ -95,7 +95,17 @@ const settings = {
         // ignorePath: true,
         changeOrigin: true,
         secure: false
-      }
+      },
+      '/uploads/**': {
+        target: {
+          host: 'sim-track.simbirsoft',
+          protocol: 'http:',
+          port: 80
+        },
+        // ignorePath: true,
+        changeOrigin: true,
+        secure: false
+      },
     }
   },
   plugins: [

@@ -35,7 +35,7 @@ class TextEditor extends Component {
 }
 
 TextEditor.propTypes = {
-  content: PropTypes.object
+  content: PropTypes.string
 };
 
 export default TextEditor;

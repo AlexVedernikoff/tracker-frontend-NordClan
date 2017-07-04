@@ -8,7 +8,6 @@ import bg from './bg.jpg';
 import { connect } from 'react-redux';
 import { history } from '../../Router';
 import { doAuthentication } from '../../actions/Authentication';
-import { getInfoAboutMe } from '../../actions/UserInfo';
 
 class Login extends Component {
   constructor (props) {
@@ -75,14 +74,4 @@ class Login extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    isAuthenticating: state.Auth.isAuthSending
-  };
-};
-
-Login.propTypes = {
-  isAuthenticating: PropTypes.bool.isRequired
-};
-
-export default connect(mapStateToProps)(Login);
+export default connect(null)(Login);

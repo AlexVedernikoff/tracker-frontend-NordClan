@@ -58,7 +58,7 @@ class AppHead extends Component {
         </div>
         <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
           {
-            this.state.loading
+            this.props.loading
             ? <Loader/>
             : null
           }
@@ -70,7 +70,8 @@ class AppHead extends Component {
 
 const mapStateToProps = state => {
   return {
-    isLogoutSending: state.Auth.isLogoutSending
+    isLogoutSending: state.Auth.isLogoutSending,
+    loading: state.Loading.loading
   };
 };
 

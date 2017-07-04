@@ -15,7 +15,7 @@ import Pagination from '../../components/Pagination';
 import Portfolio from './Portfolio';
 import moment from 'moment';
 
-import { getProjects } from '../../actions/Projects';
+import GetProjects from '../../actions/Projects';
 
 class Projects extends Component {
   constructor (props) {
@@ -49,7 +49,7 @@ class Projects extends Component {
 
   componentDidMount () {
     const { dispatch } = this.props;
-    dispatch(getProjects(25, 1, ''));
+    dispatch(GetProjects(25, 1, ''));
   }
 
   changeNameFilter = event => {
@@ -58,27 +58,46 @@ class Projects extends Component {
       {
         filterByName: event.target.value
       },
-      () => dispatch(getProjects(25, 1, '', this.state.filterByName))
+      () => {
+        const dateFrom = this.state.dateFrom
+          ? moment(this.state.dateFrom).format('YYYY-MM-DD')
+          : '';
+        const dateTo = this.state.dateTo
+          ? moment(this.state.dateTo).format('YYYY-MM-DD')
+          : '';
+        dispatch(
+          GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo)
+        );
+      }
     );
   };
 
   handleDayFromChange = (dateFrom, modifiers) => {
     const { dispatch } = this.props;
-    this.setState({ dateFrom }, () =>
+    this.setState({ dateFrom }, () => {
+      dateFrom = dateFrom
+        ? moment(this.state.dateFrom).format('YYYY-MM-DD')
+        : '';
+      const dateTo = this.state.dateTo
+        ? moment(this.state.dateTo).format('YYYY-MM-DD')
+        : '';
       dispatch(
-        getProjects(
-          25,
-          1,
-          '',
-          this.state.filterByName,
-          moment(this.state.dateFrom).format('YYYY-MM-DD')
-        )
-      )
-    );
+        GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo)
+      );
+    });
   };
 
   handleDayToChange = (dateTo, modifiers) => {
-    this.setState({ dateTo });
+    const { dispatch } = this.props;
+    this.setState({ dateTo }, () => {
+      const dateFrom = this.state.dateFrom
+        ? moment(this.state.dateFrom).format('YYYY-MM-DD')
+        : '';
+      dateTo = dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
+      dispatch(
+        GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo)
+      );
+    });
   };
 
   render () {
@@ -157,11 +176,11 @@ class Projects extends Component {
                   onChange={e => this.selectValue(e, 'filterTags')}
                   noResultsText="Нет результатов"
                   options={[
-                    {value: 'develop', label: 'develop'},
-                    {value: 'frontend', label: 'frontend'},
-                    {value: 'inner', label: 'внутренний'},
-                    {value: 'commerce', label: 'коммерческий'},
-                    {value: 'backend', label: 'backend'}
+                    { value: 'develop', label: 'develop' },
+                    { value: 'frontend', label: 'frontend' },
+                    { value: 'inner', label: 'внутренний' },
+                    { value: 'commerce', label: 'коммерческий' },
+                    { value: 'backend', label: 'backend' }
                   ]}
                 />
               </Col>
@@ -200,8 +219,6 @@ class Projects extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return { projectList: state.Projects.projects };
-};
+const mapStateToProps = state => ({ projectList: state.Projects.projects });
 
 export default connect(mapStateToProps)(Projects);

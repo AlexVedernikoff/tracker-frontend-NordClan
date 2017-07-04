@@ -1,52 +1,54 @@
 import * as AuthActions from '../constants/Authentication';
 import axios from 'axios';
-import { store } from '../Router';
 import { history } from '../Router';
+import { StartLoading, FinishLoading } from './Loading';
 
-function startAuthentication () {
-  return {
-    type: AuthActions.AUTHENTICATION_START
-  };
-}
+const StartAuthentication = () => ({
+  type: AuthActions.AUTHENTICATION_START
+});
 
-function AuthenticationError (message) {
-  return {
-    type: AuthActions.AUTHENTICATION_ERROR,
-    errorMessage: message
-  };
-}
+const AuthenticationError = message => ({
+  type: AuthActions.AUTHENTICATION_ERROR,
+  errorMessage: message
+});
 
-function AuthenticationReceived (user) {
-  return {
-    type: AuthActions.AUTHENTICATION_RECEIVED,
-    data: user
-  };
-}
+const AuthenticationReceived = user => ({
+  type: AuthActions.AUTHENTICATION_RECEIVED,
+  data: user
+});
 
-function startLogout () {
-  return {
-    type: AuthActions.LOGOUT_START
-  };
-}
+const StartLogout = () => ({
+  type: AuthActions.LOGOUT_START
+});
 
-function LogoutError (message) {
-  return {
-    type: AuthActions.LOGOUT_ERROR,
-    errorMessage: message
-  };
-}
+const LogoutError = message => ({
+  type: AuthActions.LOGOUT_ERROR,
+  errorMessage: message
+});
 
-function LogoutComplete () {
-  return {
-    type: AuthActions.LOGOUT_COMPLETE
-  };
-}
+const LogoutComplete = () => ({
+  type: AuthActions.LOGOUT_COMPLETE
+});
 
-export function doAuthentication ({ username, password }) {
+const StartReceiveUserInfo = () => ({
+  type: AuthActions.USER_INFO_RECEIVE_START
+});
+
+const ReceiveUserInfoError = message => ({
+  type: AuthActions.USER_INFO_RECEIVE_ERROR,
+  errorMessage: message
+});
+
+const UserInfoReceived = user => ({
+  type: AuthActions.USER_INFO_RECEIVE_SUCCESS,
+  user: user
+});
+
+export const doAuthentication = ({ username, password }) => {
   const URL = '/api/auth/login';
 
   return dispatch => {
-    dispatch(startAuthentication());
+    dispatch(StartAuthentication());
     axios
       .post(
         URL,
@@ -64,14 +66,14 @@ export function doAuthentication ({ username, password }) {
         }
       });
   };
-}
+};
 
-export function doLogout () {
+export const doLogout = () => {
   const URL = '/api/auth/logout';
 
   return dispatch => {
     window.localStorage.removeItem('simTrackAuthToken');
-    dispatch(startLogout());
+    dispatch(StartLogout());
     axios
       .delete(URL, { withCredentials: true })
       .catch(error => dispatch(AuthenticationError(error)))
@@ -84,4 +86,27 @@ export function doLogout () {
         }
       });
   };
-}
+};
+
+export const getInfoAboutMe = () => {
+  const URL = '/api/user/me';
+
+  return dispatch => {
+    dispatch(StartReceiveUserInfo());
+    dispatch(StartLoading());
+    axios
+      .get(URL, {}, { withCredentials: true })
+      .catch(error => {
+        dispatch(ReceiveUserInfoError(error.message));
+        dispatch(FinishLoading());
+      })
+      .then(response => {
+        if (!response) {
+          return;
+        } else if (response.status === 200) {
+          dispatch(UserInfoReceived(response.data));
+          dispatch(FinishLoading());
+        }
+      });
+  };
+};

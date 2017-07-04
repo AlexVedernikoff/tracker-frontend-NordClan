@@ -2,37 +2,34 @@ import * as ProjectActions from '../constants/Projects';
 import axios from 'axios';
 import { store } from '../Router';
 import { history } from '../Router';
+import { StartLoading, FinishLoading } from './Loading';
 
-function startProjectsReceive () {
-  return {
-    type: ProjectActions.PROJECTS_RECEIVE_START
-  };
-}
+const StartProjectsReceive = () => ({
+  type: ProjectActions.PROJECTS_RECEIVE_START
+});
 
-function ProjectsReceiveError (message) {
-  return {
-    type: ProjectActions.PROJECTS_RECEIVE_ERROR,
-    errorMessage: message
-  };
-}
+const ProjectsReceiveError = message => ({
+  type: ProjectActions.PROJECTS_RECEIVE_ERROR,
+  errorMessage: message
+});
 
-function ProjectsReceived (projects) {
-  return {
-    type: ProjectActions.PROJECTS_RECEIVE_SUCCESS,
-    data: projects
-  };
-}
+const ProjectsReceived = projects => ({
+  type: ProjectActions.PROJECTS_RECEIVE_SUCCESS,
+  data: projects
+});
 
-export function getProjects (
+const GetProjects = (
   pageSize = 25,
   currentPage = 1,
   tags = '',
   name = '',
-  dateSprintBegin = ''
-) {
+  dateSprintBegin = '',
+  dateSprintEnd = ''
+) => {
   const URL = '/api/project';
   return dispatch => {
-    dispatch(startProjectsReceive());
+    dispatch(StartProjectsReceive());
+    dispatch(StartLoading());
     axios
       .get(
         URL,
@@ -43,18 +40,25 @@ export function getProjects (
             tags: tags,
             name: name,
             fields: 'name, statusId, createdAt',
-            dateSprintBegin: dateSprintBegin
+            dateSprintBegin: dateSprintBegin,
+            dateSprintEnd: dateSprintEnd
           }
         },
         { withCredentials: true }
       )
-      .catch(error => dispatch(ProjectsReceiveError(error.message)))
+      .catch(error => {
+        dispatch(ProjectsReceiveError(error.message));
+        dispatch(FinishLoading());
+      })
       .then(response => {
         if (!response) {
           return;
         } else if (response.status === 200) {
           dispatch(ProjectsReceived(response.data));
+          dispatch(FinishLoading());
         }
       });
   };
-}
+};
+
+export default GetProjects;

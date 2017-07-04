@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as css from './Info.scss';
+import { connect } from 'react-redux';
 
 import Attachments from '../../../components/Attachments';
 import Tag from '../../../components/Tag';
@@ -8,32 +9,43 @@ import Tags from '../../../components/Tags';
 import Description from '../../../components/Description';
 import { DescriptionText } from '../../../mocks/descriptionText';
 
-export default class Info extends Component {
-  static propTypes = {};
+class Info extends Component {
+  constructor (props) {
+    super(props);
+  }
 
   render () {
     return (
       <div className={css.info}>
         <h2>Теги проекта</h2>
-        {/*<hr/>*/}
         <Tags>
-          <Tag name="angular.js" />
-          <Tag name="web" />
-          <Tag name="android" />
-          <Tag name="java" />
-          <Tag name="iOS" />
-          <Tag name="2015" />
-          <Tag name="2016" />
-          <Tag name="2017" />
-          <Tag name="Внутренний" />
+          {this.props.tags
+            ? this.props.tags.map((element, i) =>
+                <Tag name={element} blocked key={`${i}-tag`} />
+              )
+            : null}
         </Tags>
         <hr />
-        <Description text={DescriptionText} headerType="h2" headerText="Описание" />
+        <Description
+          text={{
+            __html: this.props.description ? this.props.description : ''
+          }}
+          headerType="h2"
+          id={this.props.id}
+          headerText="Описание"
+        />
         <hr />
         <h2>Файлы</h2>
-        {/*<hr/>*/}
         <Attachments />
       </div>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  id: state.Project.project.id,
+  tags: state.Project.project.tags,
+  description: state.Project.project.description
+});
+
+export default connect(mapStateToProps)(Info);

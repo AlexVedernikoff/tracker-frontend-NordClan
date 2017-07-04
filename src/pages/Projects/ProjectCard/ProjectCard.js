@@ -6,6 +6,7 @@ import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import moment from 'moment';
 
 import Tag from '../../../components/Tag';
+import Tags from '../../../components/Tags';
 import * as css from './ProjectCard.scss';
 
 const ProjectCard = props => {
@@ -25,21 +26,25 @@ const ProjectCard = props => {
   );
 
   let statusTooltip = '';
-  switch (status) {
-    case 'INPROGRESS':
+  let status = '';
+  switch (statusId) {
+    case 1:
       statusTooltip = 'В процессе';
-      break;
+      status = 'INPROGRESS'.break;
 
-    case 'INHOLD':
+    case 2:
       statusTooltip = 'Приостановлен';
+      status = 'INHOLD';
       break;
 
-    case 'FINISHED':
+    case 3:
       statusTooltip = 'Завершен';
+      status = 'FINISHED';
       break;
 
     default:
       statusTooltip = 'Завершен';
+      status = 'FINISHED';
   }
 
   return (
@@ -65,7 +70,7 @@ const ProjectCard = props => {
               ? <div className={css.meta}>
                   <span>Сроки:</span>
                   <span>
-                    {moment(createdAt).format('DD/MM/YYYY')} - {}
+                    {moment(createdAt).format('DD.MM.YYYY')}
                   </span>
                 </div>
               : null}
@@ -74,11 +79,11 @@ const ProjectCard = props => {
               ? <div className={css.meta}>
                   <span>Текущие спринты:</span>
                   {currentSprints.map((sprint, i) =>
-                    <span key={`sprint${i}`}>
+                    <span key={`sprint-${i}`}>
                       {sprint.name} ({moment(sprint.factStartDate).format(
-                        'DD/MM/YYYY'
+                        'DD.MM.YYYY'
                       )}
-                      - {moment(sprint.factEndDate).format('DD/MM/YYYY')})
+                      - {moment(sprint.factEndDate).format('DD.MM.YYYY')})
                     </span>
                   )}
                 </div>
@@ -94,7 +99,9 @@ const ProjectCard = props => {
         </Col>
         <Col xs>
           <div className={css.tags}>
-            {tagList}
+            <Tags>
+              {tagList}
+            </Tags>
           </div>
         </Col>
       </Row>

@@ -6,6 +6,8 @@ import TextEditor from '../TextEditor';
 import { stateToHTML } from 'draft-js-export-html';
 import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
+import { connect } from 'react-redux';
+import { ChangeProject } from '../../actions/Project';
 
 class Description extends Component {
   constructor (props) {
@@ -22,6 +24,13 @@ class Description extends Component {
 
   componentDidUpdate () {
     ReactTooltip.rebuild();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log(nextProps);
+    this.setState({
+      text: nextProps.text
+    })
   }
 
   componentWillUnmount () {
@@ -45,16 +54,31 @@ class Description extends Component {
     this.setState({ editing: false });
   };
 
-  checkEscapeKeyPress = (event) => {
+  checkEscapeKeyPress = event => {
     if (event.keyCode === 27 && this.state.editing) {
       this.stopEditing();
     }
   };
 
   updateText = () => {
-    this.setState({
-      text: { __html: stateToHTML(this.TextEditor.state.editorState.getCurrentContent()) }
-    });
+    const { dispatch } = this.props;
+    this.setState(
+      {
+        text: {
+          __html: stateToHTML(
+            this.TextEditor.state.editorState.getCurrentContent()
+          )
+        }
+      },
+      () => {
+        dispatch(
+          ChangeProject({
+            id: this.props.id,
+            description: this.state.text.__html
+          })
+        );
+      }
+    );
   };
 
   render () {
@@ -64,23 +88,43 @@ class Description extends Component {
 
     switch (headerType) {
       case 'h1':
-        header = <h1>{headerText}</h1>;
+        header = (
+          <h1>
+            {headerText}
+          </h1>
+        );
         break;
 
       case 'h2':
-        header = <h2>{headerText}</h2>;
+        header = (
+          <h2>
+            {headerText}
+          </h2>
+        );
         break;
 
       case 'h3':
-        header = <h3>{headerText}</h3>;
+        header = (
+          <h3>
+            {headerText}
+          </h3>
+        );
         break;
 
       case 'h4':
-        header = <h4>{headerText}</h4>;
+        header = (
+          <h4>
+            {headerText}
+          </h4>
+        );
         break;
 
       case 'h5':
-        header = <h5>{headerText}</h5>;
+        header = (
+          <h5>
+            {headerText}
+          </h5>
+        );
         break;
 
       default:
@@ -88,18 +132,34 @@ class Description extends Component {
     }
 
     return (
-      <div className={classnames({[css.desc]: true, [css.edited]: this.state.editing})}>
+      <div
+        className={classnames({
+          [css.desc]: true,
+          [css.edited]: this.state.editing
+        })}
+      >
         {header}
         {this.state.editing
           ? <TextEditor
               ref={ref => (this.TextEditor = ref)}
               content={this.state.text.__html}
             />
-          : <div className={css.wiki} dangerouslySetInnerHTML={this.state.text}/>}
+          : <div
+              className={css.wiki}
+              dangerouslySetInnerHTML={this.state.text}
+            />}
         <div className={css.editBorder}>
           {this.state.editing
-            ? <IconCheck className={css.save} onClick={this.toggleEditing} data-tip="Сохранить"/>
-            : <IconEdit className={css.edit} onClick={this.toggleEditing} data-tip="Редактировать"/>}
+            ? <IconCheck
+                className={css.save}
+                onClick={this.toggleEditing}
+                data-tip="Сохранить"
+              />
+            : <IconEdit
+                className={css.edit}
+                onClick={this.toggleEditing}
+                data-tip="Редактировать"
+              />}
         </div>
       </div>
     );
@@ -112,4 +172,4 @@ Description.propTypes = {
   text: PropTypes.object
 };
 
-export default Description;
+export default connect(null)(Description);
