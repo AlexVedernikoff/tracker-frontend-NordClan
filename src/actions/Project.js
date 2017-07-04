@@ -1,31 +1,31 @@
-import * as ProjectInfoActions from '../constants/Project';
+import * as ProjectActions from '../constants/Project';
 import axios from 'axios';
 import { StartLoading, FinishLoading } from './Loading';
 
 const GettingProjectInfoStart = () => ({
-  type: ProjectInfoActions.PROJECT_INFO_RECEIVE_START
+  type: ProjectActions.PROJECT_INFO_RECEIVE_START
 });
 
 const GettingProjectInfoError = message => ({
-  type: ProjectInfoActions.PROJECT_INFO_RECEIVE_ERROR,
+  type: ProjectActions.PROJECT_INFO_RECEIVE_ERROR,
   message: message
 });
 
 const GettingProjectInfoSuccess = project => ({
-  type: ProjectInfoActions.PROJECT_INFO_RECEIVE_SUCCESS,
+  type: ProjectActions.PROJECT_INFO_RECEIVE_SUCCESS,
   project: project
 });
 
 const StartProjectChange = () => ({
-  type: ProjectChangeActions.PROJECT_CHANGE_START
+  type: ProjectActions.PROJECT_CHANGE_START
 });
 
 const ProjectChangeError = message => ({
-  type: ProjectChangeActions.PROJECT_CHANGE_ERROR
+  type: ProjectActions.PROJECT_CHANGE_ERROR
 });
 
 const ProjectChangeSuccess = () => ({
-  type: ProjectChangeActions.PROJECT_CHANGE_SUCCESS
+  type: ProjectActions.PROJECT_CHANGE_SUCCESS
 });
 
 const GetProjectInfo = id => {
