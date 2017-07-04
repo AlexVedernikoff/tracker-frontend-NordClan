@@ -100,7 +100,8 @@ export default class TaskRow extends React.Component {
             !shortcut
             ? <Col xs>
               <div className={css.tagbox}>
-                <Tags>{
+                <Tags taggable="task"
+                      create>{
                   !cutTags
                   ? tags
                   : sliceTags

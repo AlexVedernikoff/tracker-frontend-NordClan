@@ -34,7 +34,7 @@ export default class Details extends React.Component {
             <tr>
               <td>Теги:</td>
               <td className={css.tags}>
-                <Tags>{tags}</Tags>
+                <Tags create taggable="task">{tags}</Tags>
               </td>
             </tr>
             <tr>
