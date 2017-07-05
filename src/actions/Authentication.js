@@ -57,10 +57,7 @@ export const doAuthentication = ({ username, password }) => {
       )
       .catch(error => dispatch(AuthenticationError(error.message)))
       .then(response => {
-        if (!response) {
-          return;
-        } else if (response.status === 200) {
-          window.localStorage.setItem('simTrackAuthToken', response.data.token);
+        if (response.status === 200) {
           dispatch(AuthenticationReceived(response.data.user));
           history.push('/projects');
         }
@@ -78,9 +75,7 @@ export const doLogout = () => {
       .delete(URL, { withCredentials: true })
       .catch(error => dispatch(AuthenticationError(error)))
       .then(response => {
-        if (!response) {
-          return;
-        } else if (response.status === 200) {
+        if (response.status === 200) {
           dispatch(LogoutComplete());
           history.push('/login');
         }
@@ -101,9 +96,7 @@ export const getInfoAboutMe = () => {
         dispatch(FinishLoading());
       })
       .then(response => {
-        if (!response) {
-          return;
-        } else if (response.status === 200) {
+        if (response.status === 200) {
           dispatch(UserInfoReceived(response.data));
           dispatch(FinishLoading());
         }

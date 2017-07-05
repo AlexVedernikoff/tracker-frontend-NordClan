@@ -22,7 +22,7 @@ const ProjectChangeSuccess = response => ({
 
 const StartGettingProjectSprints = () => ({
   type: ProjectActions.PROJECT_SPRINTS_RECEIVE_START
-})
+});
 
 const GettingProjectSprintsSuccess = sprints => ({
   type: ProjectActions.PROJECT_SPRINTS_RECEIVE_SUCCESS,
@@ -52,9 +52,7 @@ const GetProjectInfo = id => {
         dispatch(FinishLoading());
       })
       .then(response => {
-        if (!response) {
-          return;
-        } else if (response.status === 200) {
+        if (response.status === 200) {
           dispatch(GettingProjectInfoSuccess(response.data));
           dispatch(FinishLoading());
         }
@@ -71,11 +69,11 @@ const GetProjectSprints = id => {
     axios
       .get(
         URL,
-        {
-          data: {
-            projectId: id
-          }
-        },
+      {
+        data: {
+          projectId: id
+        }
+      },
         { withCredentials: true }
       )
       .catch(error => {
