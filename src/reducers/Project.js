@@ -1,7 +1,9 @@
 import * as ProjectActions from '../constants/Project';
 
 const InitialState = {
-  project: {},
+  project: {
+    sprints: []
+  },
   TitleIsEditing: false,
   DescriptionIsEditing: false
 };

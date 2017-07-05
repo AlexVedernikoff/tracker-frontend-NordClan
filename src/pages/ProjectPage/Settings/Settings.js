@@ -41,14 +41,6 @@ const sprints = [
 
 class Settings extends Component {
   render () {
-    const sprintList = sprints.map((element, i) => {
-      return (
-        <Col xs={3} key={i}>
-          <SprintCard sprint={element} />
-        </Col>
-      );
-    });
-
     return (
       <div className={css.property}>
         <h2>Участники</h2>
@@ -309,11 +301,19 @@ class Settings extends Component {
           style={{ marginTop: 16 }}
           icon="IconPlus"
         />
-        <hr />
-        <h2>Спринты / Фазы</h2>
-        <Row>
-          {sprintList}
-        </Row>
+        {this.props.sprints
+          ? <div>
+              <hr />
+              <h2>Спринты / Фазы</h2>
+              <Row>
+                {this.props.sprints.map((element, i) =>
+                  <Col xs={3} key={`sprint-${i}`}>
+                    <SprintCard sprint={element} />
+                  </Col>
+                )}
+              </Row>
+            </div>
+          : null}
         <Button
           text="Создать спринт"
           type="primary"
@@ -326,7 +326,7 @@ class Settings extends Component {
 }
 
 const mapStateToProps = state => ({
-  sprints: state.Project.project.sprintList
+  sprints: state.Project.project.sprints
 });
 
 Settings.propTypes = {

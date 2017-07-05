@@ -30,9 +30,11 @@ class Description extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    this.setState({
-      text: nextProps.text
-    });
+    if (this.props.text !== nextProps.text) {
+      this.setState({
+        text: nextProps.text
+      });
+    }
   }
 
   componentWillUnmount () {
@@ -66,6 +68,9 @@ class Description extends Component {
 
   updateText = () => {
     const { dispatch } = this.props;
+    console.log(
+      stateToHTML(this.TextEditor.state.editorState.getCurrentContent())
+    );
     this.setState(
       {
         text: {

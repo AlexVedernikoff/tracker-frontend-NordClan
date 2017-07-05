@@ -16,6 +16,7 @@ class TextEditor extends Component {
   }
 
   onEditorStateChange = editorState => {
+    console.log(editorState);
     this.setState({
       editorState
     });
