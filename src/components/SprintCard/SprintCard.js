@@ -48,10 +48,10 @@ const SprintCard = props => {
       <div
         className={classnames({
           [css.status]: true,
-          [css.inprogress]: sprint.status === 'INPROGRESS',
-          [css.inhold]: sprint.status === 'INHOLD'
+          [css.inprogress]: sprint.statusId === 1,
+          [css.inhold]: sprint.statusId === 2
         })}
-        data-tip={sprint.status === 'INPROGRESS' ? 'Остановить' : 'Запустить'}
+        data-tip={sprint.statusId === 1 ? 'Остановить' : 'Запустить'}
       >
         {sprint.status === 'INPROGRESS' ? <IconPause /> : <IconPlay />}
       </div>

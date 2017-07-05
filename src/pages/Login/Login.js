@@ -27,8 +27,8 @@ class Login extends Component {
 
   onSubmit = event => {
     event.preventDefault();
-    const { dispatch } = this.props;
-    dispatch(doAuthentication(this.state));
+    const { doAuthentication } = this.props;
+    doAuthentication(this.state);
   };
 
   render () {
@@ -74,4 +74,8 @@ class Login extends Component {
   }
 }
 
-export default connect(null)(Login);
+const mapDispatchToProps = {
+  doAuthentication
+};
+
+export default connect(null, mapDispatchToProps)(Login);
