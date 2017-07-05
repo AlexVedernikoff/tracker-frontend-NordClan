@@ -8,7 +8,7 @@ import { IconEdit } from '../../components/Icons';
 import * as css from './ProjectPage.scss';
 import ProjectTitle from './ProjectTitle';
 
-import { GetProjectInfo } from '../../actions/Project';
+import { GetProjectInfo, GetProjectSprints } from '../../actions/Project';
 
 class ProjectPage extends Component {
   constructor (props) {
@@ -18,6 +18,7 @@ class ProjectPage extends Component {
   componentDidMount () {
     const { dispatch } = this.props;
     dispatch(GetProjectInfo(this.props.params.projectId));
+    dispatch(GetProjectSprints(this.props.params.projectId));
   }
 
   render () {
