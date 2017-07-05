@@ -6,11 +6,6 @@ const GettingProjectInfoStart = () => ({
   type: ProjectActions.PROJECT_INFO_RECEIVE_START
 });
 
-const GettingProjectInfoError = message => ({
-  type: ProjectActions.PROJECT_INFO_RECEIVE_ERROR,
-  message: message
-});
-
 const GettingProjectInfoSuccess = project => ({
   type: ProjectActions.PROJECT_INFO_RECEIVE_SUCCESS,
   project: project
@@ -20,14 +15,18 @@ const StartProjectChange = () => ({
   type: ProjectActions.PROJECT_CHANGE_START
 });
 
-const ProjectChangeError = message => ({
-  type: ProjectActions.PROJECT_CHANGE_ERROR
-});
-
 const ProjectChangeSuccess = response => ({
   type: ProjectActions.PROJECT_CHANGE_SUCCESS,
   changedFields: response
 });
+
+const StartGettingProjectSprints = () => ({
+  type: ProjectActions.PROJECT_SPRINTS_RECEIVE_START
+})
+
+const GettingProjectSprintsSuccess = () => ({
+  type: ProjectActions.PROJECT_SPRINTS_RECEIVE_SUCCESS
+})
 
 export const StartEditing = target => ({
   type: ProjectActions.EDIT_START,
