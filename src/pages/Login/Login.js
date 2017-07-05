@@ -78,4 +78,8 @@ const mapDispatchToProps = {
   doAuthentication
 };
 
+Login.propTypes = {
+  doAuthentication: PropTypes.func.isRequired
+}
+
 export default connect(null, mapDispatchToProps)(Login);

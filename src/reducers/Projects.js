@@ -25,7 +25,7 @@ function Projects (state = InitialState, action) {
     case ProjectActions.PROJECTS_RECEIVE_SUCCESS:
       return {
         ...state,
-        projects: action.data.data,
+        projects: action.data,
         isReceiving: false
       };
 

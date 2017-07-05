@@ -70,7 +70,7 @@ const GetProjectSprints = id => {
       .get(
         URL,
       {
-        data: {
+        params: {
           projectId: id
         }
       },

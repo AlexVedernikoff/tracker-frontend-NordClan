@@ -52,7 +52,7 @@ const GetProjects = (
       })
       .then(response => {
         if (response.status === 200) {
-          dispatch(ProjectsReceived(response.data));
+          dispatch(ProjectsReceived(response.data.data));
           dispatch(FinishLoading());
         }
       });
