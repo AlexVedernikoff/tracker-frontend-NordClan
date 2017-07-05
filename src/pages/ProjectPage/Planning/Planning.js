@@ -257,7 +257,11 @@ export default class Planning extends Component {
               <div className={css.progressBarWrapper} data-tip="Суммарное время задач: 795 ч. из 500">
                 <div className={classnames({[css.progressBar]: true, [css.exceeded]: true})} style={{width: '100%'}}/>
               </div>
-              <SprintColumn onDrop={this.dropTask} sprint={this.state.leftColumn} tasks={sprintTasks[this.state.leftColumn]}/>
+              {
+                  this.state.leftColumn
+                  ? <SprintColumn onDrop={this.dropTask} sprint={this.state.leftColumn} tasks={sprintTasks[this.state.leftColumn]}/>
+                  : null
+              }
             </Col>
             <Col xs={6}>
               <div className={css.headerColumn}>
@@ -277,7 +281,11 @@ export default class Planning extends Component {
               <div className={css.progressBarWrapper} data-tip="Суммарное время задач: 257 ч. из 500">
                 <div className={classnames({[css.progressBar]: true, [css.exceeded]: false})} style={{width: '58%'}}/>
               </div>
-              <SprintColumn onDrop={this.dropTask} sprint={this.state.rightColumn} tasks={sprintTasks[this.state.rightColumn]}/>
+              {
+                  this.state.rightColumn
+                  ? <SprintColumn onDrop={this.dropTask} sprint={this.state.rightColumn} tasks={sprintTasks[this.state.rightColumn]}/>
+                  : null
+              }
             </Col>
           </Row>
         </section>
