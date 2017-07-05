@@ -120,7 +120,7 @@ class Planning extends Component {
     this.state = {
       changedSprint: 'sprint1',
       leftColumn: 'backlog',
-      rightColumn: 'sprint1'
+      rightColumn: `sprint${0}`
     };
   }
 
