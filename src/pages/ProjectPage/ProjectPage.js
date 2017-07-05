@@ -16,9 +16,9 @@ class ProjectPage extends Component {
   }
 
   componentDidMount () {
-    const { dispatch } = this.props;
-    dispatch(GetProjectInfo(this.props.params.projectId));
-    dispatch(GetProjectSprints(this.props.params.projectId));
+    const { GetProjectInfo, GetProjectSprints } = this.props;
+    GetProjectInfo(this.props.params.projectId);
+    GetProjectSprints(this.props.params.projectId);
   }
 
   render () {
@@ -90,4 +90,9 @@ const mapStateToProps = state => ({
   project: state.Project.project
 });
 
-export default connect(mapStateToProps)(ProjectPage);
+const mapDispatchToProps = {
+  GetProjectInfo,
+  GetProjectSprints
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectPage);
