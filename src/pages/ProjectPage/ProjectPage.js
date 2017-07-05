@@ -83,7 +83,9 @@ class ProjectPage extends Component {
 }
 
 ProjectPage.propTypes = {
-  children: PropTypes.object
+  children: PropTypes.object,
+  GetProjectInfo: PropTypes.func.isRequired,
+  GetProjectSprints: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
