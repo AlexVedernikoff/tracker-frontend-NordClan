@@ -15,14 +15,12 @@ export default function Project(state = InitialState, action) {
 
     case ProjectActions.PROJECT_INFO_RECEIVE_ERROR:
       return {
-        ...state,
-        errorMessage: action.message
+        ...state
       }
 
     case ProjectActions.PROJECT_INFO_RECEIVE_SUCCESS:
       return {
         ...state,
-        errorMessage: '',
         project: action.project
       }
 
