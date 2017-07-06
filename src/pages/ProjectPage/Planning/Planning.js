@@ -7,15 +7,18 @@ import TaskRow from '../../../components/TaskRow';
 import Button from '../../../components/Button';
 import SelectDropdown from '../../../components/SelectDropdown';
 import SprintColumn from './SprintColumn';
+import _ from 'lodash';
+import { connect } from 'react-redux';
+import moment from 'moment';
 
 //Mocks
 
 const tasks = [];
-const getRandomString = (arr) => {
+const getRandomString = arr => {
   return arr[Math.floor(Math.random() * arr.length)];
 };
 
-const getSomeRandomString = (arr) => {
+const getSomeRandomString = arr => {
   const start = Math.floor(Math.random() * arr.length);
   const end = arr.length - start;
   return arr.splice(start, end);
@@ -26,21 +29,56 @@ for (let i = 0; i < 30; i++) {
 
   tasks.push({
     name: getRandomString([
-    'Back. REST для просмотра товаров на голосовании, выбора товара для голосования, покупки товара',
-    'Back. Голосование, снятие голоса", "UI. Интеграции таба со счетами для страницы пользователя',
-    'Киви-Банк - Артек: Ретроспектива 02.06.17',
-    'Bug: При покупке семейного товара в раздел Голосование профиля семьи не подтягивается значение полей Название и Стоимость товара',
-    'TASK: Перевод денег из семьи члену семьи',
-    'UI. Интеграции таба со счетами для страницы пользователя'
-  ]),
-    tags: mockTags.concat(getSomeRandomString(['refactor', 'верстка', 'demo', 'release', 'design', 'совещание']), getRandomString(['UI', 'backend'])),
+      'Back. REST для просмотра товаров на голосовании, выбора товара для голосования, покупки товара',
+      'Back. Голосование, снятие голоса", "UI. Интеграции таба со счетами для страницы пользователя',
+      'Киви-Банк - Артек: Ретроспектива 02.06.17',
+      'Bug: При покупке семейного товара в раздел Голосование профиля семьи не подтягивается значение полей Название и Стоимость товара',
+      'TASK: Перевод денег из семьи члену семьи',
+      'UI. Интеграции таба со счетами для страницы пользователя'
+    ]),
+    tags: mockTags.concat(
+      getSomeRandomString([
+        'refactor',
+        'верстка',
+        'demo',
+        'release',
+        'design',
+        'совещание'
+      ]),
+      getRandomString(['UI', 'backend'])
+    ),
     prefix: getRandomString(['MT-12', 'MT-254', 'MT-1245']),
-    sprint: getRandomString(['sprint1', 'sprint2', 'sprint3', 'sprint4', 'backlog']),
+    sprint: getRandomString([
+      'sprint1',
+      'sprint2',
+      'sprint3',
+      'sprint4',
+      'backlog'
+    ]),
     id: i,
     status: getRandomString(['INHOLD', 'INPROGRESS']),
     type: getRandomString(['Фича / Задача', 'Баг']),
-    stage: getRandomString(['NEW', 'NEW', 'NEW', 'DEVELOP', 'DEVELOP', 'DEVELOP', 'QA', 'CODE_REVIEW', 'QA', 'DONE', 'DONE', 'DONE']),
-    executor: getRandomString(['Андрей Юдин', 'Александра Одноклассница', 'Иосиф Джугашвили', 'Ксенофонт Арабский', 'Не назначено']),
+    stage: getRandomString([
+      'NEW',
+      'NEW',
+      'NEW',
+      'DEVELOP',
+      'DEVELOP',
+      'DEVELOP',
+      'QA',
+      'CODE_REVIEW',
+      'QA',
+      'DONE',
+      'DONE',
+      'DONE'
+    ]),
+    executor: getRandomString([
+      'Андрей Юдин',
+      'Александра Одноклассница',
+      'Иосиф Джугашвили',
+      'Ксенофонт Арабский',
+      'Не назначено'
+    ]),
     executorId: getRandomString([1, 2, 3, 4, 5]),
     priority: getRandomString([1, 2, 3, 3, 3, 3, 3, 4, 5]),
     plannedTime: getRandomString([8, 9, 10, 11, 12, 13, 14, 15, 16]),
@@ -70,41 +108,62 @@ const sprintTasks = {
   backlog: []
 };
 
-tasks.map((element) => {
-    sprintTasks[element.sprint].push(<TaskRow key={element.id} task={element} shortcut card/>);
+tasks.map(element => {
+  sprintTasks[element.sprint].push(
+    <TaskRow key={element.id} task={element} shortcut card />
+  );
 });
 
-export default class Planning extends Component {
-
+class Planning extends Component {
   constructor (props) {
     super(props);
     this.state = {
       changedSprint: 'sprint1',
       leftColumn: 'backlog',
-      rightColumn: 'sprint1'
+      rightColumn: `sprint0`
     };
   }
 
   selectValue = (e, name) => {
-    this.setState({[name]: e ? e.value : null});
-  }
+    this.setState({ [name]: e ? e.value : null });
+  };
 
-  getSprints = (column) => {
+  getSprints = column => {
     const secondColumn = column === 'leftColumn' ? 'rightColumn' : 'leftColumn';
-    const sprints = [
-      { value: 'sprint1', label: 'Спринт №1 (01.06.2017 - 30.06.2017)', className: classnames({[css.INPROGRESS]: true, [css.sprintMarker]: true }) },
-      { value: 'sprint2', label: 'Спринт №2 (01.06.2017 - 30.06.2017)', className: classnames({[css.PLANNED]: true, [css.sprintMarker]: true }) },
-      { value: 'sprint3', label: 'Спринт №3 (01.06.2017 - 30.06.2017)', className: classnames({[css.FINISHED]: true, [css.sprintMarker]: true }) },
-      { value: 'sprint4', label: 'Спринт №4 (01.06.2017 - 30.06.2017)', className: classnames({[css.FINISHED]: true, [css.sprintMarker]: true }) },
-      { value: 'backlog', label: 'Backlog', className: classnames({[css.INPROGRESS]: true, [css.sprintMarker]: true }) }
-    ];
-
-    sprints.forEach((sprint) => {
-      sprint.disabled = sprint.value === this.state[secondColumn];
+    let sprints = _.sortBy(this.props.sprints, sprint => {
+      return new moment(sprint.factFinishDate);
     });
 
+    sprints = sprints.map((sprint, i) => ({
+      value: `sprint${i}`,
+      label: `${sprint.name} (${moment(sprint.factStartDate).format(
+        'DD.MM.YYYY'
+      )} ${sprint.factFinishDate
+        ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}`
+        : '- ...'})`,
+      statusId: sprint.statusId,
+      className: classnames({
+        [css.INPROGRESS]: sprint.statusId === 1,
+        [css.sprintMarker]: true,
+        [css.FINISHED]: sprint.statusId === 2
+      })
+    }));
+
+    sprints.push({
+      value: 'backlog',
+      label: 'Backlog',
+      className: classnames({
+        [css.INPROGRESS]: true,
+        [css.sprintMarker]: true
+      })
+    });
+
+    // sprints.forEach(sprint => {
+    //   sprint.disabled = sprint.value === this.state[secondColumn];
+    // });
+
     return sprints;
-  }
+  };
 
   dropTask = (task, sprint) => {
     let i, movedTask;
@@ -118,24 +177,45 @@ export default class Planning extends Component {
     movedTask.props.task.sprint = sprint;
     sprintTasks[sprint].push(movedTask);
     this.forceUpdate();
-  }
+  };
 
   render () {
-
     return (
       <div>
         <section>
-          <Button type="primary" text="Создать спринт" icon="IconPlus" style={{marginBottom: 16}}/>
+          <Button
+            type="primary"
+            text="Создать спринт"
+            icon="IconPlus"
+            style={{ marginBottom: 16 }}
+          />
           <div className={css.graph}>
             <div className={css.wrapper}>
               <div className={css.sprintNames}>
                 <div />
                 <div />
-                <div><span className={css.selection}/><span className={css.name}>Спринт №1</span></div>
-                <div><span className={css.selection}/><span className={css.name}>Спринт №2</span></div>
-                <div><span className={css.selection}/><span className={css.name}>Спринт №3</span></div>
-                <div><span className={css.selection}/><span className={css.name}>Спринт №4</span></div>
-                <div><span className={css.selection}/><span className={css.name}>Очень длинное название спринта</span></div>
+                <div>
+                  <span className={css.selection} />
+                  <span className={css.name}>Спринт №1</span>
+                </div>
+                <div>
+                  <span className={css.selection} />
+                  <span className={css.name}>Спринт №2</span>
+                </div>
+                <div>
+                  <span className={css.selection} />
+                  <span className={css.name}>Спринт №3</span>
+                </div>
+                <div>
+                  <span className={css.selection} />
+                  <span className={css.name}>Спринт №4</span>
+                </div>
+                <div>
+                  <span className={css.selection} />
+                  <span className={css.name}>
+                    Очень длинное название спринта
+                  </span>
+                </div>
               </div>
               <div className={css.table}>
                 <div className={css.tr}>
@@ -183,57 +263,87 @@ export default class Planning extends Component {
                   <div className={css.month}>Декабрь</div>
                 </div>
                 <div className={css.tr}>
-                  <div className={classnames({[css.sprintBar]: true, [css.finished]: true})} style={{left: '13%', right: '83%'}} />
+                  <div
+                    className={classnames({
+                      [css.sprintBar]: true,
+                      [css.finished]: true
+                    })}
+                    style={{ left: '13%', right: '83%' }}
+                  />
                 </div>
                 <div className={css.tr}>
-                  <div className={classnames({[css.sprintBar]: true, [css.finished]: true})} style={{left: '17%', right: '81%'}} />
+                  <div
+                    className={classnames({
+                      [css.sprintBar]: true,
+                      [css.finished]: true
+                    })}
+                    style={{ left: '17%', right: '81%' }}
+                  />
                 </div>
                 <div className={css.tr}>
-                  <div className={classnames({[css.sprintBar]: true, [css.active]: true})} style={{left: '19%', right: '79%'}} />
+                  <div
+                    className={classnames({
+                      [css.sprintBar]: true,
+                      [css.active]: true
+                    })}
+                    style={{ left: '19%', right: '79%' }}
+                  />
                 </div>
                 <div className={css.tr}>
-                  <div className={classnames({[css.sprintBar]: true, [css.future]: true})} style={{left: '21%', right: '75%'}} />
+                  <div
+                    className={classnames({
+                      [css.sprintBar]: true,
+                      [css.future]: true
+                    })}
+                    style={{ left: '21%', right: '75%' }}
+                  />
                 </div>
                 <div className={css.tr}>
-                  <div className={classnames({[css.sprintBar]: true, [css.future]: true})} style={{left: '25%', right: '72%'}} />
+                  <div
+                    className={classnames({
+                      [css.sprintBar]: true,
+                      [css.future]: true
+                    })}
+                    style={{ left: '25%', right: '72%' }}
+                  />
                 </div>
                 <div className={css.grid}>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
-                  <span/>
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
                 </div>
               </div>
             </div>
@@ -247,15 +357,29 @@ export default class Planning extends Component {
                     placeholder="Введите название спринта..."
                     multi={false}
                     value={this.state.leftColumn}
-                    onChange={(e) => this.selectValue(e, 'leftColumn')}
+                    onChange={e => this.selectValue(e, 'leftColumn')}
                     noResultsText="Нет результатов"
                     options={this.getSprints('leftColumn')}
                   />
                 </div>
-                <Button type="bordered" text="Создать задачу" icon="IconPlus" style={{marginLeft: 16}}/>
+                <Button
+                  type="bordered"
+                  text="Создать задачу"
+                  icon="IconPlus"
+                  style={{ marginLeft: 16 }}
+                />
               </div>
-              <div className={css.progressBarWrapper} data-tip="Суммарное время задач: 795 ч. из 500">
-                <div className={classnames({[css.progressBar]: true, [css.exceeded]: true})} style={{width: '100%'}}/>
+              <div
+                className={css.progressBarWrapper}
+                data-tip="Суммарное время задач: 795 ч. из 500"
+              >
+                <div
+                  className={classnames({
+                    [css.progressBar]: true,
+                    [css.exceeded]: true
+                  })}
+                  style={{ width: '100%' }}
+                />
               </div>
               {
                   this.state.leftColumn
@@ -271,15 +395,29 @@ export default class Planning extends Component {
                     placeholder="Введите название спринта..."
                     multi={false}
                     value={this.state.rightColumn}
-                    onChange={(e) => this.selectValue(e, 'rightColumn')}
+                    onChange={e => this.selectValue(e, 'rightColumn')}
                     noResultsText="Нет результатов"
                     options={this.getSprints('rightColumn')}
                   />
                 </div>
-                <Button type="bordered" text="Создать задачу" icon="IconPlus" style={{marginLeft: 16}}/>
+                <Button
+                  type="bordered"
+                  text="Создать задачу"
+                  icon="IconPlus"
+                  style={{ marginLeft: 16 }}
+                />
               </div>
-              <div className={css.progressBarWrapper} data-tip="Суммарное время задач: 257 ч. из 500">
-                <div className={classnames({[css.progressBar]: true, [css.exceeded]: false})} style={{width: '58%'}}/>
+              <div
+                className={css.progressBarWrapper}
+                data-tip="Суммарное время задач: 257 ч. из 500"
+              >
+                <div
+                  className={classnames({
+                    [css.progressBar]: true,
+                    [css.exceeded]: false
+                  })}
+                  style={{ width: '58%' }}
+                />
               </div>
               {
                   this.state.rightColumn
@@ -294,3 +432,9 @@ export default class Planning extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  sprints: state.Project.project.sprints
+});
+
+export default connect(mapStateToProps)(Planning);

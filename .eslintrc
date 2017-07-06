@@ -167,6 +167,7 @@
     "quote-props": [0],
     "radix": [0],
     "semi": [2],
+    "indent": ["error", 2],
     "sort-vars": [0],
     "keyword-spacing": [2, {"after": true}],
     "space-before-function-paren": [2, { "anonymous": "always", "named": "always" }],

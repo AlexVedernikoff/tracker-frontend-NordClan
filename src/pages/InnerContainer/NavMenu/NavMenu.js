@@ -11,8 +11,8 @@ class NavMenu extends Component {
   }
 
   componentDidMount () {
-    const { dispatch } = this.props;
-    dispatch(getInfoAboutMe());
+    const { getInfoAboutMe } = this.props;
+    getInfoAboutMe();
   }
 
   render () {
@@ -98,12 +98,17 @@ class NavMenu extends Component {
   }
 }
 
+NavMenu.propTypes = {
+  user: PropTypes.object,
+  getInfoAboutMe: PropTypes.func.isRequired
+};
+
 const mapStateToProps = state => ({
   user: state.Auth.user
 });
 
-NavMenu.propTypes = {
-  user: PropTypes.object
+const mapDispatchToProps = {
+  getInfoAboutMe
 };
 
-export default connect(mapStateToProps)(NavMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(NavMenu);

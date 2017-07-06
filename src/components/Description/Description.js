@@ -30,9 +30,11 @@ class Description extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    this.setState({
-      text: nextProps.text
-    });
+    if (this.props.text !== nextProps.text) {
+      this.setState({
+        text: nextProps.text
+      });
+    }
   }
 
   componentWillUnmount () {
@@ -49,13 +51,13 @@ class Description extends Component {
   };
 
   startEditing = () => {
-    const { dispatch } = this.props;
-    dispatch(StartEditing('Description'));
+    const { StartEditing } = this.props;
+    StartEditing('Description');
   };
 
   stopEditing = () => {
-    const { dispatch } = this.props;
-    dispatch(StopEditing('Description'));
+    const { StopEditing } = this.props;
+    StopEditing('Description');
   };
 
   checkEscapeKeyPress = event => {
@@ -65,7 +67,7 @@ class Description extends Component {
   };
 
   updateText = () => {
-    const { dispatch } = this.props;
+    const { ChangeProject } = this.props;
     this.setState(
       {
         text: {
@@ -75,14 +77,12 @@ class Description extends Component {
         }
       },
       () => {
-        dispatch(
-          ChangeProject(
-            {
-              id: this.props.id,
-              description: this.state.text.__html
-            },
-            'Description'
-          )
+        ChangeProject(
+          {
+            id: this.props.id,
+            description: this.state.text.__html
+          },
+          'Description'
         );
       }
     );
@@ -94,48 +94,48 @@ class Description extends Component {
     let header = null;
 
     switch (headerType) {
-      case 'h1':
-        header = (
+    case 'h1':
+      header = (
           <h1>
             {headerText}
           </h1>
         );
-        break;
+      break;
 
-      case 'h2':
-        header = (
+    case 'h2':
+      header = (
           <h2>
             {headerText}
           </h2>
         );
-        break;
+      break;
 
-      case 'h3':
-        header = (
+    case 'h3':
+      header = (
           <h3>
             {headerText}
           </h3>
         );
-        break;
+      break;
 
-      case 'h4':
-        header = (
+    case 'h4':
+      header = (
           <h4>
             {headerText}
           </h4>
         );
-        break;
+      break;
 
-      case 'h5':
-        header = (
+    case 'h5':
+      header = (
           <h5>
             {headerText}
           </h5>
         );
-        break;
+      break;
 
-      default:
-        header = null;
+    default:
+      header = null;
     }
 
     return (
@@ -173,14 +173,24 @@ class Description extends Component {
   }
 }
 
+Description.propTypes = {
+  headerText: PropTypes.string,
+  headerType: PropTypes.string,
+  text: PropTypes.object,
+  DescriptionIsEditing: PropTypes.bool.isRequired,
+  ChangeProject: PropTypes.func.isRequired,
+  StartEditing: PropTypes.func.isRequired,
+  StopEditing: PropTypes.func.isRequired
+};
+
 const mapStateToProps = state => ({
   DescriptionIsEditing: state.Project.DescriptionIsEditing
 });
 
-Description.propTypes = {
-  headerText: PropTypes.string,
-  headerType: PropTypes.string,
-  text: PropTypes.object
+const mapDispatchToProps = {
+  ChangeProject,
+  StartEditing,
+  StopEditing
 };
 
-export default connect(mapStateToProps)(Description);
+export default connect(mapStateToProps, mapDispatchToProps)(Description);

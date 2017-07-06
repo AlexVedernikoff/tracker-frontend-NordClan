@@ -80,7 +80,7 @@ const ProjectCard = props => {
               ? <div className={css.meta}>
                   <span>Текущие спринты:</span>
                   {currentSprints.map((sprint, i) =>
-                    <span key={`sprint-${i}`}>
+                    <span key={`sprint-${i}`} className={css.sprint}>
                       {sprint.name} ({moment(sprint.factStartDate).format(
                         'DD.MM.YYYY'
                       )}

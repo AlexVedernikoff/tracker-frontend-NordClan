@@ -16,6 +16,10 @@
   font-size: 11px;
   color: gray;
   margin: 0;
+  
+  .sprint + .sprint {
+    margin-left: 6.15rem;
+  }
 
   span {
     display: inline-block;

@@ -6,11 +6,6 @@ const GettingProjectInfoStart = () => ({
   type: ProjectActions.PROJECT_INFO_RECEIVE_START
 });
 
-const GettingProjectInfoError = message => ({
-  type: ProjectActions.PROJECT_INFO_RECEIVE_ERROR,
-  message: message
-});
-
 const GettingProjectInfoSuccess = project => ({
   type: ProjectActions.PROJECT_INFO_RECEIVE_SUCCESS,
   project: project
@@ -20,13 +15,18 @@ const StartProjectChange = () => ({
   type: ProjectActions.PROJECT_CHANGE_START
 });
 
-const ProjectChangeError = message => ({
-  type: ProjectActions.PROJECT_CHANGE_ERROR
-});
-
 const ProjectChangeSuccess = response => ({
   type: ProjectActions.PROJECT_CHANGE_SUCCESS,
   changedFields: response
+});
+
+const StartGettingProjectSprints = () => ({
+  type: ProjectActions.PROJECT_SPRINTS_RECEIVE_START
+});
+
+const GettingProjectSprintsSuccess = sprints => ({
+  type: ProjectActions.PROJECT_SPRINTS_RECEIVE_SUCCESS,
+  sprints: sprints
 });
 
 export const StartEditing = target => ({
@@ -52,10 +52,38 @@ const GetProjectInfo = id => {
         dispatch(FinishLoading());
       })
       .then(response => {
+        if (response.status === 200) {
+          dispatch(GettingProjectInfoSuccess(response.data));
+          dispatch(FinishLoading());
+        }
+      });
+  };
+};
+
+const GetProjectSprints = id => {
+  const URL = '/api/sprint/';
+
+  return dispatch => {
+    dispatch(StartGettingProjectSprints());
+    dispatch(StartLoading());
+    axios
+      .get(
+        URL,
+      {
+        params: {
+          projectId: id
+        }
+      },
+        { withCredentials: true }
+      )
+      .catch(error => {
+        dispatch(FinishLoading());
+      })
+      .then(response => {
         if (!response) {
           return;
         } else if (response.status === 200) {
-          dispatch(GettingProjectInfoSuccess(response.data));
+          dispatch(GettingProjectSprintsSuccess(response.data.data));
           dispatch(FinishLoading());
         }
       });
@@ -84,7 +112,7 @@ const ChangeProject = (ChangedProperties, target) => {
       .then(response => {
         if (!response) {
           return;
-        } else if ((response.status = 200)) {
+        } else if (response.status === 200) {
           dispatch(ProjectChangeSuccess(response.data));
           dispatch(FinishLoading());
           dispatch(StopEditing(target));
@@ -93,4 +121,4 @@ const ChangeProject = (ChangedProperties, target) => {
   };
 };
 
-export { GetProjectInfo, ChangeProject };
+export { GetProjectInfo, ChangeProject, GetProjectSprints };

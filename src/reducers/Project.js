@@ -2,7 +2,9 @@ import * as ProjectActions from '../constants/Project';
 import * as TagsActions from '../constants/Tags';
 
 const InitialState = {
-  project: {},
+  project: {
+    sprints: []
+  },
   TitleIsEditing: false,
   DescriptionIsEditing: false
 };
@@ -41,16 +43,10 @@ export default function Project (state = InitialState, action) {
     case ProjectActions.PROJECT_INFO_RECEIVE_SUCCESS:
       return {
         ...state,
-        errorMessage: '',
         project: action.project
       };
 
     case ProjectActions.PROJECT_CHANGE_START:
-      return {
-        ...state
-      };
-
-    case ProjectActions.PROJECT_CHANGE_ERROR:
       return {
         ...state
       };
@@ -74,6 +70,20 @@ export default function Project (state = InitialState, action) {
       return {
         ...state,
         [`${action.target}IsEditing`]: false
+      };
+
+    case ProjectActions.PROJECT_SPRINTS_RECEIVE_START:
+      return {
+        ...state
+      };
+
+    case ProjectActions.PROJECT_SPRINTS_RECEIVE_SUCCESS:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          sprints: action.sprints
+        }
       };
 
     default:
