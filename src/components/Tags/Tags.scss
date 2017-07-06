@@ -1,1 +1,30 @@
 @import '../../styles/variables';
+
+.wrapperAddTags {
+  position: relative;
+}
+.tagPopup {
+  display: flex;
+  position: relative; //fix me
+  z-index: 3;
+  background-color: white;
+}
+.tagsButton {
+}
+.tagsInput {
+  box-sizing: border-box;
+  width: 150px;
+  padding: 7px 15px;
+  line-height: 1rem;
+  border: 1px solid $color-gray;
+  transition: 0.3s ease-out 0s;
+
+  &:focus {
+    border-color: darken($color-gray, 10%);
+    transition: 0.3s ease-out 0s;
+  }
+
+  &::placeholder {
+    color: silver;
+  }
+}
