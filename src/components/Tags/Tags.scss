@@ -5,8 +5,7 @@
 }
 .tagPopup {
   display: flex;
-  position: absolute;
-  right: 0;
+  position: relative; //fix me
   z-index: 3;
   background-color: white;
 }
