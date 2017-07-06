@@ -75,7 +75,6 @@ export const doLogout = () => {
   const URL = '/api/auth/logout';
 
   return dispatch => {
-    window.localStorage.removeItem('simTrackAuthToken');
     dispatch(StartLogout());
     axios
       .delete(URL, { withCredentials: true })
