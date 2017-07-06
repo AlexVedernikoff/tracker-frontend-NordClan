@@ -30,7 +30,8 @@ const ProjectCard = props => {
   switch (statusId) {
     case 1:
       statusTooltip = 'В процессе';
-      status = 'INPROGRESS'.break;
+      status = 'INPROGRESS';
+      break;
 
     case 2:
       statusTooltip = 'Приостановлен';
