@@ -18,7 +18,7 @@ const ShowNotification = notification => {
 
     setTimeout(() => {
       dispatch(RemoveNotification(notification))
-    }, 1000)
+    }, 1500)
   }
 }
 
