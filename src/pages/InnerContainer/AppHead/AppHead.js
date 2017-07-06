@@ -22,8 +22,8 @@ class AppHead extends Component {
 
   handleLogout = event => {
     event.preventDefault();
-    const { dispatch } = this.props;
-    dispatch(doLogout());
+    const { doLogout } = this.props;
+    doLogout();
   }
 
   testLoad = () => {
@@ -75,4 +75,8 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(AppHead);
+const mapDispatchToProps = {
+  doLogout
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppHead);

@@ -35,13 +35,13 @@ class ProjectTitle extends Component {
   };
 
   startTitleEditing = () => {
-    const { dispatch } = this.props;
-    dispatch(StartEditing('Title'));
+    const { StartEditing } = this.props;
+    StartEditing('Title');
   };
 
   stopTitleEditing = () => {
-    const { dispatch } = this.props;
-    dispatch(StopEditing('Title'));
+    const { StopEditing } = this.props;
+    StopEditing('Title');
   };
 
   handleIncorrectInput () {
@@ -61,7 +61,7 @@ class ProjectTitle extends Component {
   }
 
   submitInput () {
-    const { dispatch } = this.props;
+    const { ChangeProject } = this.props;
     this.setState(
       {
         prefixIsIncorrect: false,
@@ -70,15 +70,13 @@ class ProjectTitle extends Component {
         prefix: this.projectPrefix.innerText
       },
       () => {
-        dispatch(
-          ChangeProject(
-            {
-              id: this.props.id,
-              name: this.state.name,
-              prefix: this.state.prefix
-            },
-            'Title'
-          )
+        ChangeProject(
+          {
+            id: this.props.id,
+            name: this.state.name,
+            prefix: this.state.prefix
+          },
+          'Title'
         );
       }
     );
@@ -181,14 +179,23 @@ class ProjectTitle extends Component {
   }
 }
 
+ProjectTitle.propTypes = {
+  name: PropTypes.string.isRequired,
+  pic: PropTypes.string.isRequired,
+  prefix: PropTypes.string.isRequired,
+  ChangeProject: PropTypes.func.isRequired,
+  StartEditing: PropTypes.func.isRequired,
+  StopEditing: PropTypes.func.isRequired
+};
+
 const mapStateToProps = state => ({
   titleIsEditing: state.Project.TitleIsEditing
 });
 
-ProjectTitle.propTypes = {
-  name: PropTypes.string.isRequired,
-  pic: PropTypes.string.isRequired,
-  prefix: PropTypes.string.isRequired
+const mapDispatchToProps = {
+  ChangeProject,
+  StartEditing,
+  StopEditing
 };
 
-export default connect(mapStateToProps)(ProjectTitle);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectTitle);
