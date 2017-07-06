@@ -112,7 +112,7 @@ const ChangeProject = (ChangedProperties, target) => {
       .then(response => {
         if (!response) {
           return;
-        } else if ((response.status = 200)) {
+        } else if (response.status === 200) {
           dispatch(ProjectChangeSuccess(response.data));
           dispatch(FinishLoading());
           dispatch(StopEditing(target));
