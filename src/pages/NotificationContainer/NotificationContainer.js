@@ -1,20 +1,33 @@
 import React, { Component } from 'react';
-import * as css from "./NotificationContainer.scss";
-import Notification from "../../components/Notification";
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import * as css from './NotificationContainer.scss';
+import Notification from '../../components/Notification';
 
 class NotificationContainer extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
   }
 
-  render() {
+  render () {
     return (
       <div className={css.NotificationContainer}>
-        <Notification />
+        {this.props.notifications
+          ? this.props.notifications.map((notification, i) => {
+            return <Notification notification={notification} />;
+          })
+          : null}
       </div>
     );
   }
 }
 
+const mapStateToProps = state => ({
+  notifications: state.Notifications.Notifications
+});
 
-export default NotificationContainer;
+NotificationContainer.propTypes = {
+  notifications: PropTypes.array.isRequired
+};
+
+export default connect(mapStateToProps)(NotificationContainer);

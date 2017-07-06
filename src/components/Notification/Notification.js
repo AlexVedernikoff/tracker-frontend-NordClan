@@ -12,7 +12,7 @@ class Notification extends Component {
       <div className={css.Notification}>
         <IconError style={{ width: 50, height: 50 }} />
         <p className={css.NotificationMessage}>
-          {this.props.message || "Lorem Ipsum Ekam Saedi Neppah"}
+          {this.props.notification.message}
         </p>
       </div>
     );

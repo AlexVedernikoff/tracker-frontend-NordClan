@@ -1,6 +1,7 @@
 import * as TaskActions from '../constants/Task';
 import axios from 'axios';
 import { StartLoading, FinishLoading } from './Loading';
+import { ShowNotification } from './Notifications';
 
 const GetTaskStart = () => ({
   type: TaskActions.GET_TASK_REQUEST_SENT
@@ -40,6 +41,7 @@ const GetTask = id => {
     axios
       .get(URL, {}, { withCredentials: true })
       .catch(error => {
+        dispatch(ShowNotification({ message: error.message, type: 'error' }));
         dispatch(FinishLoading());
       })
       .then(response => {
