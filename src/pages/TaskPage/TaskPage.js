@@ -16,6 +16,18 @@ import { GetTask } from '../../actions/Task';
 import * as css from './TaskPage.scss';
 
 class TaskPage extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    // TODO: change this to this.props.params.taskId
+    const id = 4;
+
+    const { GetTask } = this.props;
+    GetTask(id);
+  }
+
   render () {
     // Mocks
 
