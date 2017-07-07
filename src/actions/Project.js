@@ -20,15 +20,6 @@ const ProjectChangeSuccess = response => ({
   changedFields: response
 });
 
-const StartGettingProjectSprints = () => ({
-  type: ProjectActions.PROJECT_SPRINTS_RECEIVE_START
-});
-
-const GettingProjectSprintsSuccess = sprints => ({
-  type: ProjectActions.PROJECT_SPRINTS_RECEIVE_SUCCESS,
-  sprints: sprints
-});
-
 export const StartEditing = target => ({
   type: ProjectActions.EDIT_START,
   target: target
@@ -89,4 +80,4 @@ const ChangeProject = (ChangedProperties, target) => {
   };
 };
 
-export { GetProjectInfo, ChangeProject, GetProjectSprints };
+export { GetProjectInfo, ChangeProject };
