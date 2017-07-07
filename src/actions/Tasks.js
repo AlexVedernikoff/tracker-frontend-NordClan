@@ -18,28 +18,22 @@ const TasksReceived = tasks => ({
   data: tasks
 });
 
-const GetTasks = (
-  projectId,
-  name = '',
-  pageSize = 25,
-  currentPage = 1,
-  tags = ''
-) => {
+const GetTasks = (options) => {
   const URL = '/api/task';
   return dispatch => {
     dispatch(StartTasksReceive());
     dispatch(StartLoading());
     axios
       .get(URL, {
-            params: {
-              pageSize: pageSize,
-              currentPage: currentPage,
-              tags: tags,
-              name: name,
-              projectId: projectId,
-              fields: 'FactExecutionTime,PlannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId'
-            }
-        },
+        params: {
+          name: '',
+          pageSize: 25,
+          currentPage: 1,
+          tags: '',
+          ...options,
+          fields: 'FactExecutionTime,PlannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId'
+        }
+      },
         { withCredentials: true }
       )
       .catch(error => {

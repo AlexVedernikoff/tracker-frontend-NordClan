@@ -29,18 +29,21 @@ class TaskList extends Component {
   }
 
   componentDidMount () {
-    this.props.GetTasks(this.props.project.id);
+    this.props.GetTasks({projectId: this.props.project.id});
   }
 
   changeNameFilter = event => {
-      this.setState(
-        {
-          filterByName: event.target.value
-        },
-        () => {
-            this.props.GetTasks(this.props.project.id, this.state.filterByName);
-        }
-      );
+    this.setState(
+      {
+        filterByName: event.target.value
+      },
+      () => {
+        this.props.GetTasks({
+          projectId: this.props.project.id,
+          name: this.state.filterByName
+        });
+      }
+    );
   }
 
   render () {
@@ -75,7 +78,8 @@ class TaskList extends Component {
               </Col>
             </Row>
           </div>
-          {tasks.map((task) => {
+          {
+            tasks.map((task) => {
               return <TaskRow
                 key={`task-${task.id}`}
                 task={task}

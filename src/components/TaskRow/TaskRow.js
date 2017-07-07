@@ -125,7 +125,7 @@ class TaskRow extends React.Component {
 
 TaskRow.propTypes = {
   card: PropTypes.bool,
-  isDragging: PropTypes.bool.isRequired,
+  isDragging: PropTypes.bool,
   prefix: PropTypes.string.isRequired,
   shortcut: PropTypes.bool,
   task: PropTypes.object
