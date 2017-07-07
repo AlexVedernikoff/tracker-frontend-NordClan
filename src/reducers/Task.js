@@ -33,6 +33,20 @@ export default function Task (state = InitialState, action) {
         [`${action.target}IsEditing`]: false
       }
 
+    case TaskActions.TASK_CHANGE_REQUEST_SENT:
+      return {
+        ...state
+      }
+
+    case TaskActions.TASK_CHANGE_REQUEST_SUCCESS:
+      return {
+        ...state,
+        task: {
+          ...state.task,
+          ...action.changedFields
+        }
+      }
+
     default:
       return {
         ...state

@@ -44,7 +44,6 @@ class Description extends Component {
   toggleEditing = () => {
     if (this.props.isEditing) {
       this.updateText();
-      this.stopEditing();
     } else {
       this.startEditing();
     }
