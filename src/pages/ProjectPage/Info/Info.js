@@ -18,10 +18,15 @@ class Info extends Component {
     return (
       <div className={css.info}>
         <h2>Теги проекта</h2>
-        <Tags>
+        <Tags taggable="project"
+              taggableId={this.props.id}
+              create>
           {this.props.tags
             ? this.props.tags.map((element, i) =>
-                <Tag name={element} blocked key={`${i}-tag`} />
+                <Tag name={element}
+                     key={`${i}-tag`}
+                     taggable="project"
+                     taggableId={this.props.id}/>
               )
             : null}
         </Tags>

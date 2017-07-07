@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Link } from 'react-router';
-import { DragSource } from 'react-dnd';
-import { TASK_ROW } from '../../constants/DragAndDrop';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 
 import { IconPlay, IconPause, IconTime } from '../Icons';
@@ -11,23 +9,7 @@ import Tags from '../Tags';
 import Tag from '../Tag';
 import * as css from './TaskRow.scss';
 
-const taskRowSource = {
-  beginDrag (props) {
-    return {
-      id: props.task.id,
-      previousSprint: props.task.sprint
-    };
-  }
-};
-
-function collect (connect, monitor) {
-  return {
-    connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
-  };
-}
-
-class TaskRow extends React.Component {
+export default class TaskRow extends React.Component {
 
   constructor (props) {
     super(props);
@@ -41,8 +23,6 @@ class TaskRow extends React.Component {
       task,
       shortcut,
       card,
-      connectDragSource,
-      isDragging,
       ...other
     } = this.props;
 
@@ -52,8 +32,7 @@ class TaskRow extends React.Component {
     const { cutTags } = this.state;
 
     return (
-      connectDragSource(
-      <div className={classnames({[css.taskCard]: true, [css[classPriority]]: true, [css.card]: card, [css.dropped]: isDragging})} {...other}>
+      <div className={classnames({[css.taskCard]: true, [css[classPriority]]: true, [css.card]: card})} {...other}>
         <Row>
           <Col xs={shortcut ? 12 : 6}>
             <div className={css.header}>
@@ -66,23 +45,23 @@ class TaskRow extends React.Component {
                 На стадии:
                 {
                   task.stage === 'NEW'
-                  ? ' New'
-                  : task.stage === 'DEVELOP'
-                  ? ' Develop'
-                  : task.stage === 'CODE_REVIEW'
-                  ? ' Code Review'
-                  : task.stage === 'QA'
-                  ? ' QA'
-                  : task.stage === 'DONE'
-                  ? ' Done'
-                  : null
+                    ? ' New'
+                    : task.stage === 'DEVELOP'
+                    ? ' Develop'
+                    : task.stage === 'CODE_REVIEW'
+                    ? ' Code Review'
+                    : task.stage === 'QA'
+                    ? ' QA'
+                    : task.stage === 'DONE'
+                    ? ' Done'
+                    : null
                 }
               </div>
               <div>
                 {
                   task.status === 'INPROGRESS'
-                  ? <span className={css.greenText}>В процессе</span>
-                  : 'Приостановлено'
+                    ? <span className={css.greenText}>В процессе</span>
+                    : 'Приостановлено'
                 }
               </div>
             </div>
@@ -94,7 +73,7 @@ class TaskRow extends React.Component {
           </Col>
           {
             !shortcut
-            ? <Col xs>
+              ? <Col xs>
               <div className={css.metabox}>
                 <p className={css.taskMeta}>
                   <span>Спринт:</span><span><Link to="/projects/1">{task.sprint}</Link></span>
@@ -105,59 +84,56 @@ class TaskRow extends React.Component {
                 <p className={css.taskMeta}>
                   {
                     task.stage !== 'NEW'
-                    ? <span className={css.time}>
+                      ? <span className={css.time}>
                       <span>Время: </span>
                       <span className={classnames({[css.redText]: task.plannedTime < task.factTime, [css.greenText]: task.plannedTime > task.factTime})}>{task.factTime} ч. из {task.plannedTime}</span>
                     </span>
-                    : null
+                      : null
                   }
                 </p>
               </div>
             </Col>
-            : null
+              : null
           }
 
           {
             !shortcut
-            ? <Col xs>
+              ? <Col xs>
               <div className={css.tagbox}>
-                <Tags>{
+                <Tags taggable="task"
+                      taggableId={task.id}
+                      create>{
                   !cutTags
-                  ? tags
-                  : sliceTags
+                    ? tags
+                    : sliceTags
                 }</Tags>
                 {
                   cutTags
-                  ? <span className={css.loadMore} onClick={() => this.setState({cutTags: false})}>Показать все {task.tags.length}</span>
-                  : null
+                    ? <span className={css.loadMore} onClick={() => this.setState({cutTags: false})}>Показать все {task.tags.length}</span>
+                    : null
                 }
               </div>
             </Col>
-            : null
+              : null
           }
 
         </Row>
         {/*<div className={css.progressBar}>
-          <div
-            style={{width: (task.stage === 'NEW') ? 0 : ((task.factTime / task.plannedTime) < 1) ? (task.factTime / task.plannedTime) * 100 + '%' : '100%'}}
-            className={classnames({
-              [css.green]: (task.factTime / task.plannedTime) <= 1,
-              [css.red]: (task.factTime / task.plannedTime) > 1
-            })}
-            />
-        </div>*/}
+         <div
+         style={{width: (task.stage === 'NEW') ? 0 : ((task.factTime / task.plannedTime) < 1) ? (task.factTime / task.plannedTime) * 100 + '%' : '100%'}}
+         className={classnames({
+         [css.green]: (task.factTime / task.plannedTime) <= 1,
+         [css.red]: (task.factTime / task.plannedTime) > 1
+         })}
+         />
+         </div>*/}
       </div>
-      )
     );
   }
 }
 
 TaskRow.propTypes = {
   card: PropTypes.bool,
-  connectDragSource: PropTypes.func.isRequired,
-  isDragging: PropTypes.bool.isRequired,
   shortcut: PropTypes.bool,
   task: PropTypes.object
 };
-
-export default DragSource(TASK_ROW, taskRowSource, collect)(TaskRow);

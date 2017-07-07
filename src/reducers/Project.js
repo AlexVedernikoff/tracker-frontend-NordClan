@@ -1,4 +1,5 @@
 import * as ProjectActions from '../constants/Project';
+import * as TagsActions from '../constants/Tags';
 
 const InitialState = {
   project: {
@@ -10,9 +11,33 @@ const InitialState = {
 
 export default function Project (state = InitialState, action) {
   switch (action.type) {
+    case TagsActions.TAGS_DELETE_SUCCESS:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          tags: action.data.tags
+        }
+      };
+
+    case TagsActions.TAGS_CREATE_SUCCESS:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          tags: action.data.tags
+        }
+      };
+
     case ProjectActions.PROJECT_INFO_RECEIVE_START:
       return {
         ...state
+      };
+
+    case ProjectActions.PROJECT_INFO_RECEIVE_ERROR:
+      return {
+        ...state,
+        errorMessage: action.message
       };
 
     case ProjectActions.PROJECT_INFO_RECEIVE_SUCCESS:
