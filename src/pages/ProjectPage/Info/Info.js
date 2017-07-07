@@ -46,6 +46,7 @@ class Info extends Component {
           onEditStart={this.props.StartEditing}
           onEditFinish={this.props.StopEditing}
           onEditSubmit={this.props.ChangeProject}
+          isEditing={this.props.DescriptionIsEditing}
         />
         <hr />
         <h2>Файлы</h2>
@@ -58,7 +59,8 @@ class Info extends Component {
 const mapStateToProps = state => ({
   id: state.Project.project.id,
   tags: state.Project.project.tags,
-  description: state.Project.project.description
+  description: state.Project.project.description,
+  DescriptionIsEditing: state.Project.DescriptionIsEditing
 });
 
 const mapDispatchToProps = {

@@ -74,11 +74,11 @@ const changeTask = (ChangedProperties, target) => {
       .then(response => {
         if (response && response.status === 200) {
           dispatch(successTaskChange(response.data));
-          dispatcH(FinishLoading());
+          dispatch(FinishLoading());
           dispatch(stopTaskEditing(target));
         }
       });
   };
 };
 
-export { getTask, startTaskEditing, stopTaskEditing };
+export { getTask, startTaskEditing, stopTaskEditing, changeTask };

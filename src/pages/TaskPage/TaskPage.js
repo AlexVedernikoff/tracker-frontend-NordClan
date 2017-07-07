@@ -11,7 +11,7 @@ import Attachments from '../../components/Attachments';
 import Description from '../../components/Description';
 import RouteTabs from '../../components/RouteTabs';
 import { TaskDescriptionText } from '../../mocks/descriptionText';
-import { getTask } from '../../actions/Task';
+import { getTask, startTaskEditing, stopTaskEditing, changeTask } from '../../actions/Task';
 
 import * as css from './TaskPage.scss';
 
@@ -61,7 +61,12 @@ class TaskPage extends Component {
               <Description
                 text={{ __html: this.props.task.description }}
                 headerType="h3"
+                id={4}
                 headerText="Описание:"
+                onEditStart={this.props.startTaskEditing}
+                onEditFinish={this.props.stopTaskEditing}
+                onEditSubmit={this.props.changeTask}
+                isEditing={this.props.DescriptionIsEditing}
               />
               <hr />
               <h3>Прикрепленные файлы:</h3>
@@ -104,7 +109,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  getTask
+  getTask,
+  startTaskEditing,
+  stopTaskEditing,
+  changeTask
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskPage);
