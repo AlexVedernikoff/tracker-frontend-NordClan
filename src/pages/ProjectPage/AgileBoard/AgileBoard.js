@@ -1,13 +1,19 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
+import { Row, Col } from 'react-flexbox-grid/lib/index';
 import classnames from 'classnames';
+import { connect } from 'react-redux';
+import moment from 'moment';
+import _ from 'lodash';
 
 import TaskCard from '../../../components/TaskCard';
 import PhaseColumn from './PhaseColumn';
 import SelectDropdown from '../../../components/SelectDropdown';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 import * as css from './AgileBoard.scss';
+
+import GetTasks from '../../../actions/Tasks';
+
 
 //Mocks
 
@@ -96,9 +102,9 @@ const sortTasks = (sortedObject) => {
 
 sortTasks(mineSorted);
 sortTasks(otherSorted);
-export default class AgileBoard extends Component {
-  static propTypes = {
-  }
+
+
+class AgileBoard extends Component {
 
   constructor (props) {
     super(props);
@@ -108,7 +114,7 @@ export default class AgileBoard extends Component {
         otherTasks: true
       },
       filterTags: [],
-      changedSprint: 'sprint1'
+      changedSprint: 0
     };
   }
 
@@ -123,7 +129,13 @@ export default class AgileBoard extends Component {
   }
 
   selectValue = (e, name) => {
-    this.setState({[name]: e});
+    this.setState({[name]: e}, () => {
+      this.props.GetTasks({
+        projectId: this.props.projectId,
+        sprintId: this.state.changedSprint
+      });
+    });
+    console.log(this.state.changedSprint);
   }
 
   dropTask = (taskId, section, phase) => {
@@ -173,8 +185,38 @@ export default class AgileBoard extends Component {
     this.forceUpdate();
   }
 
+  getSprints = () => {
+    let sprints = _.sortBy(this.props.sprints, sprint => {
+      return new moment(sprint.factFinishDate);
+    });
+
+    sprints = sprints.map((sprint, i) => ({
+      value: sprint.id,
+      label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${sprint.factFinishDate
+        ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}`
+        : '- ...'})`,
+      statusId: sprint.statusId,
+      className: classnames({
+        [css.INPROGRESS]: sprint.statusId === 1,
+        [css.sprintMarker]: true,
+        [css.FINISHED]: sprint.statusId === 2
+      })
+    }));
+
+    sprints.push({
+      value: '0',
+      label: 'Backlog',
+      className: classnames({
+        [css.INPROGRESS]: true,
+        [css.sprintMarker]: true
+      })
+    });
+    return sprints;
+  };
+
 
   render () {
+
     return (
         <section className={css.agileBoard}>
           {/*<h2 style={{display: 'inline-block'}}>Спринт №1 (01.06.2017 - 30.06.2017)</h2>*/}
@@ -185,14 +227,9 @@ export default class AgileBoard extends Component {
                 placeholder="Введите название спринта..."
                 multi={false}
                 value={this.state.changedSprint}
-                onChange={(e) => this.selectValue(e, 'changedSprint')}
+                onChange={(e) => this.selectValue(e ? e.value : null, 'changedSprint')}
                 noResultsText="Нет результатов"
-                options={[
-                  { value: 'sprint1', label: 'Спринт №1 (01.06.2017 - 30.06.2017)', className: classnames({[css.INPROGRESS]: true, [css.sprintMarker]: true }) },
-                  { value: 'sprint2', label: 'Спринт №2 (01.06.2017 - 30.06.2017)', className: classnames({[css.PLANNED]: true, [css.sprintMarker]: true }) },
-                  { value: 'sprint3', label: 'Спринт №3 (01.06.2017 - 30.06.2017)', className: classnames({[css.FINISHED]: true, [css.sprintMarker]: true }) },
-                  { value: 'sprint4', label: 'Спринт №4 (01.06.2017 - 30.06.2017)', className: classnames({[css.FINISHED]: true, [css.sprintMarker]: true }) }
-                ]}
+                options={this.getSprints()}
               />
             </Col>
             <Col xs>
@@ -235,7 +272,7 @@ export default class AgileBoard extends Component {
             <IconArrowDown className={classnames({
               [css.close]: !this.state.isSectionOpen.otherTasks,
               [css.open]: this.state.isSectionOpen.otherTasks
-            })} /> Прочие
+            })} /> Все задачи
           </h3>
           {
             this.state.isSectionOpen.otherTasks
@@ -253,3 +290,19 @@ export default class AgileBoard extends Component {
     );
   }
 }
+
+AgileBoard.propTypes = {
+  GetTasks: PropTypes.func.isRequired,
+  sprints: PropTypes.array,
+  projectId: PropTypes.number
+};
+
+const mapStateToProps = state => ({
+  tasksList: state.Tasks.tasks,
+  sprints: state.Project.project.sprints,
+  projectId: state.Project.project.id
+});
+
+const mapDispatchToProps = { GetTasks };
+
+export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);
