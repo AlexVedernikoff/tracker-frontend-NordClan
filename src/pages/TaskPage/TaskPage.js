@@ -83,7 +83,7 @@ class TaskPage extends Component {
           </Col>
           <Col xs={4}>
             <aside>
-              <Details task={task} />
+              <Details task={this.props.task} />
               <RelatedTasks task={task} type="related" />
               <RelatedTasks task={task} type="children" />
             </aside>

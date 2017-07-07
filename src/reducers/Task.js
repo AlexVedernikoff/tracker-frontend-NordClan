@@ -1,7 +1,9 @@
 import * as TaskActions from '../constants/Task';
 
 const InitialState = {
-  task: {},
+  task: {
+    tags: []
+  },
   TitleIsEditing: false,
   DescriptionIsEditing: false
 };

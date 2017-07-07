@@ -8,6 +8,11 @@ import Modal from '../../../components/Modal';
 import Priority from '../Priority';
 import ButtonGroup from '../../../components/ButtonGroup';
 import TaskTitle from '../TaskTitle';
+import {
+  StartTaskEditing,
+  FinishTaskEditing,
+  RequestTaskChange
+} from '../../../actions/Task';
 
 export default class TaskHeader extends Component {
   constructor (props) {
