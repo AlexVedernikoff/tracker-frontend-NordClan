@@ -60,34 +60,6 @@ const GetProjectInfo = id => {
   };
 };
 
-const GetProjectSprints = id => {
-  const URL = '/api/sprint/';
-
-  return dispatch => {
-    dispatch(StartGettingProjectSprints());
-    dispatch(StartLoading());
-    axios
-      .get(
-        URL,
-      {
-        params: {
-          projectId: id
-        }
-      },
-        { withCredentials: true }
-      )
-      .catch(error => {
-        dispatch(FinishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(GettingProjectSprintsSuccess(response.data.data));
-          dispatch(FinishLoading());
-        }
-      });
-  };
-};
-
 const ChangeProject = (ChangedProperties, target) => {
   if (!ChangedProperties.id) {
     return;

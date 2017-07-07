@@ -8,7 +8,7 @@ import { IconEdit } from '../../components/Icons';
 import * as css from './ProjectPage.scss';
 import ProjectTitle from './ProjectTitle';
 
-import { GetProjectInfo, GetProjectSprints } from '../../actions/Project';
+import { GetProjectInfo } from '../../actions/Project';
 
 class ProjectPage extends Component {
   constructor (props) {
@@ -18,7 +18,6 @@ class ProjectPage extends Component {
   componentDidMount () {
     const { GetProjectInfo, GetProjectSprints } = this.props;
     GetProjectInfo(this.props.params.projectId);
-    GetProjectSprints(this.props.params.projectId);
   }
 
   render () {
@@ -84,8 +83,7 @@ class ProjectPage extends Component {
 
 ProjectPage.propTypes = {
   children: PropTypes.object,
-  GetProjectInfo: PropTypes.func.isRequired,
-  GetProjectSprints: PropTypes.func.isRequired
+  GetProjectInfo: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -93,8 +91,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  GetProjectInfo,
-  GetProjectSprints
+  GetProjectInfo
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectPage);
