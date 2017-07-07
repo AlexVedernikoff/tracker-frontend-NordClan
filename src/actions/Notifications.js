@@ -1,4 +1,5 @@
 import * as NotificationsActions from '../constants/Notifications';
+import shortid from "shortid";
 
 const AddNotification = notification => {
   return {
@@ -14,6 +15,7 @@ const RemoveNotification = notification => ({
 
 const ShowNotification = notification => {
   return dispatch => {
+    notification.id = shortid.generate();
     dispatch(AddNotification(notification));
 
     setTimeout(() => {
