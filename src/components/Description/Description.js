@@ -178,9 +178,9 @@ Description.propTypes = {
   headerType: PropTypes.string,
   text: PropTypes.object,
   DescriptionIsEditing: PropTypes.bool.isRequired,
-  onEditSubmit: PropTypes.func,
-  onEditFinish: PropTypes.func,
-  onEditStart: PropTypes.func
+  onEditSubmit: PropTypes.func.isRequired,
+  onEditFinish: PropTypes.func.isRequired,
+  onEditStart: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
