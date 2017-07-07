@@ -16,7 +16,7 @@ import TaskHistory from './pages/TaskPage/TaskHistory';
 import ProjectPage from './pages/ProjectPage';
 import AgileBoard from './pages/ProjectPage/AgileBoard';
 import Info from './pages/ProjectPage/Info';
-import Property from './pages/ProjectPage/Property';
+import Settings from './pages/ProjectPage/Settings';
 import Planning from './pages/ProjectPage/Planning';
 import Analitics from './pages/ProjectPage/Analitics';
 import TaskList from './pages/ProjectPage/TaskList';
@@ -74,7 +74,7 @@ export default class AppRouter extends Component {
               <Route path="projects/:projectId" component={ProjectPage}>
                 <Route path="agile-board" component={AgileBoard} />
                 <Route path="info" component={Info} />
-                <Route path="property" component={Property} />
+                <Route path="property" component={Settings} />
                 <Route path="planning" component={Planning} />
                 <Route path="analitics" component={Analitics} />
                 <Route path="tasks" component={TaskList} />

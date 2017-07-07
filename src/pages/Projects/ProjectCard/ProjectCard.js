@@ -28,23 +28,24 @@ const ProjectCard = props => {
   let statusTooltip = '';
   let status = '';
   switch (statusId) {
-    case 1:
-      statusTooltip = 'В процессе';
-      status = 'INPROGRESS'.break;
+  case 1:
+    statusTooltip = 'В процессе';
+    status = 'INPROGRESS';
+    break;
 
-    case 2:
-      statusTooltip = 'Приостановлен';
-      status = 'INHOLD';
-      break;
+  case 2:
+    statusTooltip = 'Приостановлен';
+    status = 'INHOLD';
+    break;
 
-    case 3:
-      statusTooltip = 'Завершен';
-      status = 'FINISHED';
-      break;
+  case 3:
+    statusTooltip = 'Завершен';
+    status = 'FINISHED';
+    break;
 
-    default:
-      statusTooltip = 'Завершен';
-      status = 'FINISHED';
+  default:
+    statusTooltip = 'Завершен';
+    status = 'FINISHED';
   }
 
   return (
@@ -76,16 +77,23 @@ const ProjectCard = props => {
               : null}
 
             {currentSprints.length
-              ? <div className={css.meta}>
-                  <span>Текущие спринты:</span>
-                  {currentSprints.map((sprint, i) =>
-                    <span key={`sprint-${i}`}>
-                      {sprint.name} ({moment(sprint.factStartDate).format(
-                        'DD.MM.YYYY'
-                      )}
-                      - {moment(sprint.factEndDate).format('DD.MM.YYYY')})
-                    </span>
-                  )}
+              ? <div
+                  className={classnames({
+                    [css.meta]: true,
+                    [css.metaSprints]: true
+                  })}
+                >
+                  <span className={css.sprintsMetaText}>Текущие спринты:</span>
+                  <div className={css.currentSprints}>
+                    {currentSprints.map((sprint, i) =>
+                      <span key={`sprint-${i}`} className={css.sprint}>
+                        {sprint.name} ({moment(sprint.factStartDate).format(
+                          'DD.MM.YYYY'
+                        )}
+                        - {moment(sprint.factEndDate).format('DD.MM.YYYY')})
+                      </span>
+                    )}
+                  </div>
                 </div>
               : null}
 

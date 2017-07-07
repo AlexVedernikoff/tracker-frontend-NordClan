@@ -26,6 +26,15 @@
   }
 }
 
+.metaSprints {
+  display: flex;
+  align-items: stretch;
+
+  .sprintsMetaText {
+    white-space: nowrap;
+  }
+}
+
 .tags {
   border-left: 1px solid $color-gray;
   height: 100%;

@@ -33,17 +33,17 @@ const GetProjects = (
     axios
       .get(
         URL,
-        {
-          params: {
-            pageSize: pageSize,
-            currentPage: currentPage,
-            tags: tags,
-            name: name,
-            fields: 'name, statusId, createdAt',
-            dateSprintBegin: dateSprintBegin,
-            dateSprintEnd: dateSprintEnd
-          }
-        },
+      {
+        params: {
+          pageSize: pageSize,
+          currentPage: currentPage,
+          tags: tags,
+          name: name,
+          fields: 'name, statusId, createdAt',
+          dateSprintBegin: dateSprintBegin,
+          dateSprintEnd: dateSprintEnd
+        }
+      },
         { withCredentials: true }
       )
       .catch(error => {
@@ -51,10 +51,8 @@ const GetProjects = (
         dispatch(FinishLoading());
       })
       .then(response => {
-        if (!response) {
-          return;
-        } else if (response.status === 200) {
-          dispatch(ProjectsReceived(response.data));
+        if (response && response.status === 200) {
+          dispatch(ProjectsReceived(response.data.data));
           dispatch(FinishLoading());
         }
       });

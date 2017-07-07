@@ -6,11 +6,6 @@ const GettingProjectInfoStart = () => ({
   type: ProjectActions.PROJECT_INFO_RECEIVE_START
 });
 
-const GettingProjectInfoError = message => ({
-  type: ProjectActions.PROJECT_INFO_RECEIVE_ERROR,
-  message: message
-});
-
 const GettingProjectInfoSuccess = project => ({
   type: ProjectActions.PROJECT_INFO_RECEIVE_SUCCESS,
   project: project
@@ -18,10 +13,6 @@ const GettingProjectInfoSuccess = project => ({
 
 const StartProjectChange = () => ({
   type: ProjectActions.PROJECT_CHANGE_START
-});
-
-const ProjectChangeError = message => ({
-  type: ProjectActions.PROJECT_CHANGE_ERROR
 });
 
 const ProjectChangeSuccess = response => ({
@@ -52,9 +43,7 @@ const GetProjectInfo = id => {
         dispatch(FinishLoading());
       })
       .then(response => {
-        if (!response) {
-          return;
-        } else if (response.status === 200) {
+        if (response && response.status === 200) {
           dispatch(GettingProjectInfoSuccess(response.data));
           dispatch(FinishLoading());
         }
@@ -82,9 +71,7 @@ const ChangeProject = (ChangedProperties, target) => {
         dispatch(FinishLoading());
       })
       .then(response => {
-        if (!response) {
-          return;
-        } else if ((response.status = 200)) {
+        if (response && response.status === 200) {
           dispatch(ProjectChangeSuccess(response.data));
           dispatch(FinishLoading());
           dispatch(StopEditing(target));
