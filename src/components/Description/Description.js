@@ -51,13 +51,13 @@ class Description extends Component {
   };
 
   startEditing = () => {
-    const { StartEditing } = this.props;
-    StartEditing('Description');
+    const { onEditStart } = this.props;
+    onEditStart('Description');
   };
 
   stopEditing = () => {
-    const { StopEditing } = this.props;
-    StopEditing('Description');
+    const { onEditFinish } = this.props;
+    onEditFinish('Description');
   };
 
   checkEscapeKeyPress = event => {
@@ -67,7 +67,7 @@ class Description extends Component {
   };
 
   updateText = () => {
-    const { ChangeProject } = this.props;
+    const { onEditSubmit } = this.props;
     this.setState(
       {
         text: {
@@ -77,7 +77,7 @@ class Description extends Component {
         }
       },
       () => {
-        ChangeProject(
+        onEditSubmit(
           {
             id: this.props.id,
             description: this.state.text.__html
@@ -178,19 +178,13 @@ Description.propTypes = {
   headerType: PropTypes.string,
   text: PropTypes.object,
   DescriptionIsEditing: PropTypes.bool.isRequired,
-  ChangeProject: PropTypes.func.isRequired,
-  StartEditing: PropTypes.func.isRequired,
-  StopEditing: PropTypes.func.isRequired
+  onEditSubmit: PropTypes.func,
+  onEditFinish: PropTypes.func,
+  onEditStart: PropTypes.func
 };
 
 const mapStateToProps = state => ({
   DescriptionIsEditing: state.Project.DescriptionIsEditing
 });
 
-const mapDispatchToProps = {
-  ChangeProject,
-  StartEditing,
-  StopEditing
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Description);
+export default connect(mapStateToProps)(Description);
