@@ -58,8 +58,7 @@ class Tags extends Component {
                    placeholder="Добавить тег"
                    className={css.tagsInput}
                    defaultValue=''
-                   onChange={this.onChangeHandler}
-                   ref='tagInput'/>
+                   onChange={this.onChangeHandler}/>
             <Button addedClassNames={{[css.tagsButton]: true}}
                     text="+"
                     type="green"
