@@ -2,9 +2,7 @@ import * as ProjectActions from '../constants/Project';
 import * as TagsActions from '../constants/Tags';
 
 const InitialState = {
-  project: {
-    sprints: []
-  },
+  project: {},
   TitleIsEditing: false,
   DescriptionIsEditing: false
 };
@@ -70,20 +68,6 @@ export default function Project (state = InitialState, action) {
       return {
         ...state,
         [`${action.target}IsEditing`]: false
-      };
-
-    case ProjectActions.PROJECT_SPRINTS_RECEIVE_START:
-      return {
-        ...state
-      };
-
-    case ProjectActions.PROJECT_SPRINTS_RECEIVE_SUCCESS:
-      return {
-        ...state,
-        project: {
-          ...state.project,
-          sprints: action.sprints
-        }
       };
 
     default:

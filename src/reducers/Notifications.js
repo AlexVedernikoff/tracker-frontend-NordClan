@@ -15,7 +15,7 @@ function Notifications (state = InitialState, action) {
     case NotificationsActions.REMOVE_NOTIFICATION:
       return {
         Notifications: state.Notifications.filter(
-            notification => !_.isEqual(notification, action.notification)
+            notification => notification.id !== action.notification.id
           )
       };
 

@@ -20,15 +20,6 @@ const ProjectChangeSuccess = response => ({
   changedFields: response
 });
 
-const StartGettingProjectSprints = () => ({
-  type: ProjectActions.PROJECT_SPRINTS_RECEIVE_START
-});
-
-const GettingProjectSprintsSuccess = sprints => ({
-  type: ProjectActions.PROJECT_SPRINTS_RECEIVE_SUCCESS,
-  sprints: sprints
-});
-
 export const StartEditing = target => ({
   type: ProjectActions.EDIT_START,
   target: target
@@ -54,34 +45,6 @@ const GetProjectInfo = id => {
       .then(response => {
         if (response && response.status === 200) {
           dispatch(GettingProjectInfoSuccess(response.data));
-          dispatch(FinishLoading());
-        }
-      });
-  };
-};
-
-const GetProjectSprints = id => {
-  const URL = '/api/sprint/';
-
-  return dispatch => {
-    dispatch(StartGettingProjectSprints());
-    dispatch(StartLoading());
-    axios
-      .get(
-        URL,
-      {
-        params: {
-          projectId: id
-        }
-      },
-        { withCredentials: true }
-      )
-      .catch(error => {
-        dispatch(FinishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(GettingProjectSprintsSuccess(response.data.data));
           dispatch(FinishLoading());
         }
       });
@@ -117,4 +80,4 @@ const ChangeProject = (ChangedProperties, target) => {
   };
 };
 
-export { GetProjectInfo, ChangeProject, GetProjectSprints };
+export { GetProjectInfo, ChangeProject };
