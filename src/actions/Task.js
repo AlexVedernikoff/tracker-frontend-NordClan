@@ -3,39 +3,39 @@ import axios from 'axios';
 import { StartLoading, FinishLoading } from './Loading';
 import { ShowNotification } from './Notifications';
 
-const GetTaskStart = () => ({
+const getTaskStart = () => ({
   type: TaskActions.GET_TASK_REQUEST_SENT
 });
 
-const GetTaskSuccess = task => ({
+const getTaskSuccess = task => ({
   type: TaskActions.GET_TASK_REQUEST_SUCCESS,
   data: task
 });
 
-const RequestTaskChange = () => ({
+const requestTaskChange = () => ({
   type: TaskActions.TASK_CHANGE_REQUEST_SENT
 });
 
-const SuccessTaskChange = changedFields => ({
+const successTaskChange = changedFields => ({
   type: TaskActions.TASK_CHANGE_REQUEST_SUCCESS,
   changedFields
 });
 
-const StartTaskEditing = target => ({
+const startTaskEditing = target => ({
   type: TaskActions.TASK_EDIT_START,
   target
 });
 
-const FinishTaskEditing = () => ({
+const stopTaskEditing = target => ({
   type: TaskActions.TASK_EDIT_FINISH,
   target
 });
 
-const GetTask = id => {
+const getTask = id => {
   const URL = `/api/task/${id}`;
 
   return dispatch => {
-    dispatch(GetTaskStart());
+    dispatch(getTaskStart());
     dispatch(StartLoading());
 
     axios
@@ -46,14 +46,14 @@ const GetTask = id => {
       })
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(GetTaskSuccess(response.data));
+          dispatch(getTaskSuccess(response.data));
           dispatch(FinishLoading());
         }
       });
   };
 };
 
-const ChangeTask = (ChangedProperties, target) => {
+const changeTask = (ChangedProperties, target) => {
   if (!ChangedProperties.id) {
     return;
   }
@@ -61,7 +61,7 @@ const ChangeTask = (ChangedProperties, target) => {
   const URL = `/api/task/${ChangedProperties.id}`;
 
   return dispatch => {
-    dispatch(RequestTaskChange());
+    dispatch(requestTaskChange());
     dispatch(StartLoading());
 
     axios
@@ -73,12 +73,12 @@ const ChangeTask = (ChangedProperties, target) => {
       })
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(SuccessTaskChange(response.data));
+          dispatch(successTaskChange(response.data));
           dispatcH(FinishLoading());
-          dispatch(StopEditing(target));
+          dispatch(stopTaskEditing(target));
         }
       });
   };
 };
 
-export { GetTask };
+export { getTask, startTaskEditing, stopTaskEditing };

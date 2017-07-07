@@ -9,6 +9,11 @@ import * as css from './ProjectPage.scss';
 import ProjectTitle from './ProjectTitle';
 
 import { GetProjectInfo } from '../../actions/Project';
+import {
+  ChangeProject,
+  StartEditing,
+  StopEditing
+} from '../../actions/Project';
 
 class ProjectPage extends Component {
   constructor (props) {

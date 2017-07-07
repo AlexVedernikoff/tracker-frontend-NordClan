@@ -11,7 +11,7 @@ import Attachments from '../../components/Attachments';
 import Description from '../../components/Description';
 import RouteTabs from '../../components/RouteTabs';
 import { TaskDescriptionText } from '../../mocks/descriptionText';
-import { GetTask } from '../../actions/Task';
+import { getTask } from '../../actions/Task';
 
 import * as css from './TaskPage.scss';
 
@@ -24,8 +24,8 @@ class TaskPage extends Component {
     // TODO: change this to this.props.params.taskId
     const id = 4;
 
-    const { GetTask } = this.props;
-    GetTask(id);
+    const { getTask } = this.props;
+    getTask(id);
   }
 
   render () {
@@ -99,11 +99,12 @@ TaskPage.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  task: state.Task.task
+  task: state.Task.task,
+  DescriptionIsEditing: state.Task.DescriptionIsEditing
 });
 
 const mapDispatchToProps = {
-  GetTask
+  getTask
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskPage);

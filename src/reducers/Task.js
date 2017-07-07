@@ -21,6 +21,18 @@ export default function Task (state = InitialState, action) {
         task: action.data
       };
 
+    case TaskActions.TASK_EDIT_START:
+      return {
+        ...state,
+        [`${action.target}IsEditing`]: true
+      }
+
+    case TaskActions.TASK_EDIT_FINISH:
+      return {
+        ...state,
+        [`${action.target}IsEditing`]: false
+      }
+
     default:
       return {
         ...state

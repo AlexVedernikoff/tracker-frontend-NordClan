@@ -3,21 +3,20 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import * as css from './TaskTitle.scss';
 import { IconEdit, IconCheck } from '../../../components/Icons';
+import { connect } from 'react-redux';
+import { startTaskEditing, stopTaskEditing } from '../../../actions/Task';
 
 class TaskTitle extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      ...props,
-      editing: false,
-      loading: false,
       submitError: false
     };
   }
 
   editIconClickHandler = event => {
     event.stopPropagation();
-    if (this.state.editing) {
+    if (this.props.TitleIsEditing) {
       this.stopEditing();
     } else {
       this.startEditing();
@@ -25,11 +24,13 @@ class TaskTitle extends Component {
   };
 
   startEditing = () => {
-    this.setState({ editing: true });
+    const { startTaskEditing } = this.props;
+    startTaskEditing('Title');
   };
 
   stopEditing = () => {
-    this.setState({ editing: false });
+    const { stopTaskEditing } = this.props;
+    stopTaskEditing('Title');
   };
 
   validateAndSubmit = event => {
@@ -72,14 +73,14 @@ class TaskTitle extends Component {
               [css.taskName]: true,
               [css.wrong]: this.state.submitError
             })}
-            contentEditable={this.state.editing}
+            contentEditable={this.props.TitleIsEditing}
             onBlur={this.validateAndSubmit}
             onKeyDown={this.handleKeyPress}
             onInput={this.titleChangeHandler}
           >
             {this.props.name}
           </span>
-          {this.state.editing
+          {this.props.TitleIsEditing
             ? <IconCheck
                 onClick={this.editIconClickHandler}
                 className={css.save}
@@ -94,4 +95,13 @@ class TaskTitle extends Component {
   }
 }
 
-export default TaskTitle;
+const mapStateToProps = state => ({
+  TitleIsEditing: state.Task.TitleIsEditing
+});
+
+const mapDispatchToProps = {
+  startTaskEditing,
+  stopTaskEditing
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TaskTitle);
