@@ -2,16 +2,21 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContextProvider } from 'react-dnd';
+import { connect } from 'react-redux';
 import * as css from './MainContainer.scss';
 import NotificationContainer from '../NotificationContainer';
 
-export default class MainContainer extends Component {
+class MainContainer extends Component {
   render () {
+    const { notifications } = this.props;
+
     return (
       <DragDropContextProvider backend={HTML5Backend}>
         <div id="app">
           {this.props.children}
-          <NotificationContainer />
+          {notifications.length
+            ? <NotificationContainer notifications={notifications} />
+            : null}
         </div>
       </DragDropContextProvider>
     );
@@ -21,3 +26,9 @@ export default class MainContainer extends Component {
 MainContainer.propTypes = {
   children: PropTypes.object
 };
+
+const mapStateToProps = state => ({
+  notifications: state.Notifications.Notifications
+});
+
+export default connect(mapStateToProps)(MainContainer);

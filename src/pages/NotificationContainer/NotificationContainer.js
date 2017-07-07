@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as css from './NotificationContainer.scss';
 import Notification from '../../components/Notification';
@@ -34,12 +33,8 @@ class NotificationContainer extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  notifications: state.Notifications.Notifications
-});
-
 NotificationContainer.propTypes = {
-  notifications: PropTypes.array.isRequired
+  notifications: PropTypes.array
 };
 
-export default connect(mapStateToProps)(NotificationContainer);
+export default NotificationContainer;

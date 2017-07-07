@@ -52,7 +52,7 @@ const GetProjectInfo = id => {
         dispatch(FinishLoading());
       })
       .then(response => {
-        if (response.status === 200) {
+        if (response && response.status === 200) {
           dispatch(GettingProjectInfoSuccess(response.data));
           dispatch(FinishLoading());
         }
@@ -80,9 +80,7 @@ const GetProjectSprints = id => {
         dispatch(FinishLoading());
       })
       .then(response => {
-        if (!response) {
-          return;
-        } else if (response.status === 200) {
+        if (response && response.status === 200) {
           dispatch(GettingProjectSprintsSuccess(response.data.data));
           dispatch(FinishLoading());
         }
@@ -110,9 +108,7 @@ const ChangeProject = (ChangedProperties, target) => {
         dispatch(FinishLoading());
       })
       .then(response => {
-        if (!response) {
-          return;
-        } else if (response.status === 200) {
+        if (response && response.status === 200) {
           dispatch(ProjectChangeSuccess(response.data));
           dispatch(FinishLoading());
           dispatch(StopEditing(target));

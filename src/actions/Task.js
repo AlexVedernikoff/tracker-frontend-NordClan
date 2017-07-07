@@ -45,9 +45,7 @@ const GetTask = id => {
         dispatch(FinishLoading());
       })
       .then(response => {
-        if (!response) {
-          return;
-        } else if (response.status === 200) {
+        if (response && response.status === 200) {
           dispatch(GetTaskSuccess(response.data.data));
           dispatch(FinishLoading());
         }
@@ -74,9 +72,7 @@ const ChangeTask = (ChangedProperties, target) => {
         dispatch(FinishLoading());
       })
       .then(response => {
-        if (!response) {
-          return;
-        } else if (response.status === 200) {
+        if (response && response.status === 200) {
           dispatch(SuccessTaskChange(response.data));
           dispatcH(FinishLoading());
           dispatch(StopEditing(target));
