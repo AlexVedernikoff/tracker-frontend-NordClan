@@ -3,7 +3,7 @@ import GanttChart from './GanttChart';
 import classnames from 'classnames';
 import * as css from './Planning.scss';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
-import TaskRow from '../../../components/TaskRow';
+import DraggableTaskRow from './DraggableTaskRow';
 import Button from '../../../components/Button';
 import SelectDropdown from '../../../components/SelectDropdown';
 import SprintColumn from './SprintColumn';
@@ -71,7 +71,7 @@ const sprintTasks = {
 };
 
 tasks.map((element) => {
-    sprintTasks[element.sprint].push(<TaskRow key={element.id} task={element} shortcut card/>);
+    sprintTasks[element.sprint].push(<DraggableTaskRow key={element.id} task={element} shortcut card/>);
 });
 
 export default class Planning extends Component {
