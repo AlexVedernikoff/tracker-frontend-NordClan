@@ -16,11 +16,11 @@ import { GetTask } from '../../actions/Task';
 import * as css from './TaskPage.scss';
 
 class TaskPage extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
   }
 
-  componentDidMount() {
+  componentDidMount () {
     // TODO: change this to this.props.params.taskId
     const id = 4;
 
@@ -56,10 +56,10 @@ class TaskPage extends Component {
       <div id="task-page">
         <Row>
           <Col xs={8}>
-            <TaskHeader task={task} />
+            <TaskHeader task={this.props.task} />
             <main className={css.main}>
               <Description
-                text={TaskDescriptionText}
+                text={{ __html: this.props.task.description }}
                 headerType="h3"
                 headerText="Описание:"
               />

@@ -77,7 +77,7 @@ class TaskTitle extends Component {
             onKeyDown={this.handleKeyPress}
             onInput={this.titleChangeHandler}
           >
-            {this.state.name}
+            {this.props.name}
           </span>
           {this.state.editing
             ? <IconCheck

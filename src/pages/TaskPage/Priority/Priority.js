@@ -1,24 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import * as css from './Priority.scss';
 
-const Priority = (props) => {
+const Priority = props => {
   return (
     <div className={css.priority}>
       Приоритет:
       <span className={css.count}>
-        <span>1</span>
-        <span>2</span>
-        <span className={css.active}>3</span>
-        <span>4</span>
-        <span>5</span>
+        {[1, 2, 3, 4, 5].map((priorityId, i) => {
+          return (
+            <span key={`priority-${i}`}
+              className={classnames({
+                [css.active]: i + 1 === props.priority
+              })}
+            >
+              {priorityId}
+            </span>
+          );
+        })}
       </span>
     </div>
   );
 };
 
-Priority.propTypes = {
-
-};
+Priority.propTypes = {};
 
 export default Priority;
