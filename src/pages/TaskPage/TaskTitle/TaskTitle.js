@@ -4,7 +4,11 @@ import PropTypes from 'prop-types';
 import * as css from './TaskTitle.scss';
 import { IconEdit, IconCheck } from '../../../components/Icons';
 import { connect } from 'react-redux';
-import { startTaskEditing, stopTaskEditing } from '../../../actions/Task';
+import {
+  startTaskEditing,
+  stopTaskEditing,
+  changeTask
+} from '../../../actions/Task';
 
 class TaskTitle extends Component {
   constructor (props) {
@@ -17,7 +21,7 @@ class TaskTitle extends Component {
   editIconClickHandler = event => {
     event.stopPropagation();
     if (this.props.TitleIsEditing) {
-      this.stopEditing();
+      this.validateAndSubmit();
     } else {
       this.startEditing();
     }
@@ -33,16 +37,19 @@ class TaskTitle extends Component {
     stopTaskEditing('Title');
   };
 
-  validateAndSubmit = event => {
-    event.target.innerText = event.target.innerText.trim();
-    if (event.target.innerText.length < 4) {
+  validateAndSubmit = () => {
+    this.taskName.innerText = this.taskName.innerText.trim();
+    if (this.taskName.innerText.length < 4) {
       this.setState({ submitError: true });
     } else {
-      this.setState({
-        submitError: false,
-        editing: false,
-        name: event.target.innerText
-      });
+      const { changeTask } = this.props;
+      changeTask(
+        {
+          id: 4,
+          name: this.taskName.innerText
+        },
+        'Title'
+      );
     }
   };
 
@@ -58,7 +65,6 @@ class TaskTitle extends Component {
     } else if (event.keyCode === 27) {
       event.target.innerText = this.state.name;
       this.setState({
-        editing: false,
         submitError: false
       });
     }
@@ -73,6 +79,7 @@ class TaskTitle extends Component {
               [css.taskName]: true,
               [css.wrong]: this.state.submitError
             })}
+            ref={ref => (this.taskName = ref)}
             contentEditable={this.props.TitleIsEditing}
             onBlur={this.validateAndSubmit}
             onKeyDown={this.handleKeyPress}
@@ -101,7 +108,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   startTaskEditing,
-  stopTaskEditing
+  stopTaskEditing,
+  changeTask
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskTitle);
