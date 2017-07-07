@@ -51,7 +51,7 @@ const GetProjects = (
         dispatch(FinishLoading());
       })
       .then(response => {
-        if (response.status === 200) {
+        if (response && response.status === 200) {
           dispatch(ProjectsReceived(response.data.data));
           dispatch(FinishLoading());
         }

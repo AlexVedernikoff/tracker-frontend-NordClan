@@ -1,6 +1,7 @@
 import * as TaskActions from '../constants/Task';
 import axios from 'axios';
 import { StartLoading, FinishLoading } from './Loading';
+import { ShowNotification } from './Notifications';
 
 const GetTaskStart = () => ({
   type: TaskActions.GET_TASK_REQUEST_SENT
@@ -40,12 +41,11 @@ const GetTask = id => {
     axios
       .get(URL, {}, { withCredentials: true })
       .catch(error => {
+        dispatch(ShowNotification({ message: error.message, type: 'error' }));
         dispatch(FinishLoading());
       })
       .then(response => {
-        if (!response) {
-          return;
-        } else if (response.status === 200) {
+        if (response && response.status === 200) {
           dispatch(GetTaskSuccess(response.data.data));
           dispatch(FinishLoading());
         }
@@ -72,9 +72,7 @@ const ChangeTask = (ChangedProperties, target) => {
         dispatch(FinishLoading());
       })
       .then(response => {
-        if (!response) {
-          return;
-        } else if (response.status === 200) {
+        if (response && response.status === 200) {
           dispatch(SuccessTaskChange(response.data));
           dispatcH(FinishLoading());
           dispatch(StopEditing(target));

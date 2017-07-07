@@ -2,6 +2,7 @@ import * as AuthActions from '../constants/Authentication';
 import axios from 'axios';
 import { history } from '../Router';
 import { StartLoading, FinishLoading } from './Loading';
+import { ShowNotification } from './Notifications';
 
 const StartAuthentication = () => ({
   type: AuthActions.AUTHENTICATION_START
@@ -55,9 +56,12 @@ export const doAuthentication = ({ username, password }) => {
         { login: username, password: password },
         { withCredentials: true }
       )
-      .catch(error => dispatch(AuthenticationError(error.message)))
+      .catch(error => {
+        dispatch(ShowNotification({ message: error.message, type: 'error' }));
+        dispatch(AuthenticationError(error.message));
+      })
       .then(response => {
-        if (response.status === 200) {
+        if (response && response.status === 200) {
           dispatch(AuthenticationReceived(response.data.user));
           history.push('/projects');
         }
@@ -69,13 +73,12 @@ export const doLogout = () => {
   const URL = '/api/auth/logout';
 
   return dispatch => {
-    window.localStorage.removeItem('simTrackAuthToken');
     dispatch(StartLogout());
     axios
       .delete(URL, { withCredentials: true })
       .catch(error => dispatch(AuthenticationError(error)))
       .then(response => {
-        if (response.status === 200) {
+        if (response && response.status === 200) {
           dispatch(LogoutComplete());
           history.push('/login');
         }
@@ -92,11 +95,11 @@ export const getInfoAboutMe = () => {
     axios
       .get(URL, {}, { withCredentials: true })
       .catch(error => {
-        dispatch(ReceiveUserInfoError(error.message));
+        dispatch(ShowNotification({ message: error.message, type: 'error' }));
         dispatch(FinishLoading());
       })
       .then(response => {
-        if (response.status === 200) {
+        if (response && response.status === 200) {
           dispatch(UserInfoReceived(response.data));
           dispatch(FinishLoading());
         }
