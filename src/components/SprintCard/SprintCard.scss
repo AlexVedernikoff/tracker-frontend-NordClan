@@ -11,7 +11,12 @@
 
 .sprintTitle {
   display: block;
-  margin-bottom: 8px;
+  margin: 0 0 8px 0;
+  text-decoration: underline;
+  color: #5ea5e0;
+}
+.sprintTitle:hover {
+  cursor: pointer;
 }
 
 .sprintMeta {
@@ -52,4 +57,22 @@
 
   &.inprogress { background-color: $color-green };
   &.inhold { background-color: $color-dark };
+}
+
+.iconClose {
+  position: absolute;
+  z-index: 2;
+  right: 1rem;
+  top: 1rem;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    transform: rotate(90deg);
+    transition: $transition;
+  }
+}
+
+.createButton {
+  margin: 15px 0 10px 0;
 }

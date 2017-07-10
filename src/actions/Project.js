@@ -30,38 +30,6 @@ export const StopEditing = target => ({
   target: target
 });
 
-const createSprintStart = () => ({
-  type: ProjectActions.PROJECT_SPRINTS_CREATE_START
-});
-
-const createSprintSuccess = sprints => ({
-  type: ProjectActions.PROJECT_SPRINTS_CREATE_SUCCESS,
-  sprints: sprints
-});
-
-const createSprint = (name, id, dateForm, dateTo) => {
-  const URL = '/api/sprint/';
-
-  return dispatch => {
-    dispatch(createSprintStart());
-    dispatch(StartLoading());
-    axios.post(URL, {
-      name: name,
-      projectId: id,
-      factStartDate: dateForm,
-      factFinishDate: dateTo
-    },
-        { withCredentials: true })
-        .then(response => {
-          if (response.data) {
-            console.log(response.data);
-            dispatch(createSprintSuccess(response.data.data));
-            dispatch(FinishLoading());
-          }
-        });
-  };
-};
-
 const GetProjectInfo = id => {
   const URL = `/api/project/${id}`;
 
@@ -112,4 +80,4 @@ const ChangeProject = (ChangedProperties, target) => {
   };
 };
 
-export { GetProjectInfo, ChangeProject, createSprint };
+export { GetProjectInfo, ChangeProject };

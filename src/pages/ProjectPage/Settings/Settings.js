@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
-import { createSprint } from '../../../actions/Project';
+import { createSprint } from '../../../actions/Sprint';
 
 import * as css from './Settings.scss';
 import SprintCard from '../../../components/SprintCard';
