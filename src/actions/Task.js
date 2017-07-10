@@ -46,7 +46,6 @@ const getTask = id => {
       })
       .then(response => {
         if (response && response.status === 200) {
-          console.log(response);
           dispatch(getTaskSuccess(response.data));
           dispatch(FinishLoading());
         }
@@ -58,7 +57,7 @@ const changeTask = (ChangedProperties, target) => {
   if (!ChangedProperties.id) {
     return;
   }
-
+  
   const URL = `/api/task/${ChangedProperties.id}`;
 
   return dispatch => {

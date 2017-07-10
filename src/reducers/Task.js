@@ -5,7 +5,8 @@ const InitialState = {
     tags: []
   },
   TitleIsEditing: false,
-  DescriptionIsEditing: false
+  DescriptionIsEditing: false,
+  PriorityIsEditing: false
 };
 
 export default function Task (state = InitialState, action) {
