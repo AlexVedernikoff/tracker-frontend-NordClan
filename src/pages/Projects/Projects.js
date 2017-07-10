@@ -14,6 +14,7 @@ import StatusCheckbox from './StatusCheckbox';
 import Pagination from '../../components/Pagination';
 import Portfolio from './Portfolio';
 import moment from 'moment';
+import CreateProject from './CreateProject';
 
 import GetProjects from '../../actions/Projects';
 
@@ -21,6 +22,7 @@ class Projects extends Component {
   constructor (props) {
     super(props);
     this.state = {
+      isCreateProjectModalOpen: false,
       filterTags: [],
       filteredInProgress: false,
       filteredInHold: false,
@@ -100,6 +102,12 @@ class Projects extends Component {
     });
   };
 
+  handleModal = () => {
+    this.setState({
+      isCreateProjectModalOpen: !this.state.isCreateProjectModalOpen
+    })
+  }
+
   render () {
     const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
     const formattedDayFrom = this.state.dateFrom
@@ -114,7 +122,7 @@ class Projects extends Component {
         <section>
           <header className={css.title}>
             <h1 className={css.title}>Мои проекты</h1>
-            <Button text="Создать проект" type="primary" icon="IconPlus" />
+            <Button onClick={this.handleModal} text="Создать проект" type="primary" icon="IconPlus" />
             <Button text="Создать портфель" type="primary" icon="IconPlus" />
           </header>
           <hr />
@@ -214,6 +222,7 @@ class Projects extends Component {
               />
             : null}
         </section>
+        <CreateProject isOpen={this.state.isCreateProjectModalOpen} onRequestClose={this.handleModal}/>
       </div>
     );
   }

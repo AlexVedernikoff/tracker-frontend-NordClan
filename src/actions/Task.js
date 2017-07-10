@@ -57,7 +57,7 @@ const changeTask = (ChangedProperties, target) => {
   if (!ChangedProperties.id) {
     return;
   }
-  
+
   const URL = `/api/task/${ChangedProperties.id}`;
 
   return dispatch => {
