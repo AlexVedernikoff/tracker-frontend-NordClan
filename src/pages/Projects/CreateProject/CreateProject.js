@@ -3,12 +3,14 @@ import ReactModal from 'react-modal';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
+import * as css from './CreateProject.scss';
 
 class CreateProject extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      projectName: ''
+      projectName: '',
+      prefix: ''
     };
   }
 
@@ -23,13 +25,11 @@ class CreateProject extends Component {
   closeModal = event => {
     event.preventDefault();
     const { onRequestClose } = this.props;
-    this.setState({projectName: ''});
+    this.setState({ projectName: '', prefix: '' });
     onRequestClose();
   };
 
   render () {
-    const css = require('./CreateProject.scss');
-
     const { isOpen, onRequestClose } = this.props;
     const ReactModalStyles = {
       overlay: {
@@ -77,7 +77,7 @@ class CreateProject extends Component {
         style={ReactModalStyles}
       >
         <form className={css.createProjectForm}>
-          <label>
+          <label className={css.formField}>
             <Row>
               <Col xs={4} className={css['col-xs-4']}>
                 <p>Название проекта:</p>
@@ -87,6 +87,20 @@ class CreateProject extends Component {
                   onChange={this.handleChange}
                   name="projectName"
                   placeholder="Название проекта"
+                />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={4} className={css['col-xs-4']}>
+                <p>Префикс проекта:</p>
+              </Col>
+              <Col xs={8}>
+                <Input
+                  onChange={this.handleChange}
+                  name="prefix"
+                  placeholder="Префикс проекта"
                 />
               </Col>
             </Row>

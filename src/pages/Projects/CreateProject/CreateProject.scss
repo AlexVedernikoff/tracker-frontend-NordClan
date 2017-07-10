@@ -10,3 +10,11 @@
 .col-xs-4 {
   text-align: right;
 }
+
+.formField {
+  display: block;
+
+  & + & {
+    margin-top: 10px;
+  }
+}
