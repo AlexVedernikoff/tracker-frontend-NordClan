@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import ReactModal from 'react-modal';
+import Button from '../../../components/Button';
 import Input from '../../../components/Input';
+import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 
 class CreateProject extends Component {
   constructor (props) {
@@ -8,6 +10,8 @@ class CreateProject extends Component {
   }
 
   render () {
+    const css = require('./CreateProject.scss');
+
     const { isOpen, onRequestClose } = this.props;
     const ReactModalStyles = {
       overlay: {
@@ -54,9 +58,28 @@ class CreateProject extends Component {
         closeTimeoutMS={200}
         style={ReactModalStyles}
       >
-        <form>
-          <h3>Название проекта</h3>
-          <Input placeholder='Название проекта'/>
+        <form className={css.createProjectForm}>
+          <label>
+            <Row>
+              <Col xs={4} className={css['col-xs-4']}>
+                <p>Название проекта:</p>
+              </Col>
+              <Col xs={8}>
+                <Input placeholder="Название проекта" />
+              </Col>
+            </Row>
+          </label>
+          <Button
+            text="Создать проект"
+            type="green"
+            style={{ width: '50%' }}
+          />
+          <Button
+            text="Назад"
+            type="primary"
+            style={{ width: '50%' }}
+            onClick={onRequestClose}
+          />
         </form>
       </ReactModal>
     );

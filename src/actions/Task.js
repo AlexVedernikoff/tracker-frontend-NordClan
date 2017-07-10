@@ -69,6 +69,7 @@ const changeTask = (ChangedProperties, target) => {
         withCredentials: true
       })
       .catch(err => {
+        dispatch(ShowNotification({ message: error.message, type: 'error' }));
         dispatch(FinishLoading());
       })
       .then(response => {

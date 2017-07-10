@@ -46,7 +46,7 @@ class Projects extends Component {
   };
 
   handlePaginationClick = e => {
-    e.preventDefault;
+    e.preventDefault();
   };
 
   componentDidMount () {
@@ -102,11 +102,12 @@ class Projects extends Component {
     });
   };
 
-  handleModal = () => {
+  handleModal = event => {
+    event.preventDefault();
     this.setState({
       isCreateProjectModalOpen: !this.state.isCreateProjectModalOpen
-    })
-  }
+    });
+  };
 
   render () {
     const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
@@ -122,7 +123,12 @@ class Projects extends Component {
         <section>
           <header className={css.title}>
             <h1 className={css.title}>Мои проекты</h1>
-            <Button onClick={this.handleModal} text="Создать проект" type="primary" icon="IconPlus" />
+            <Button
+              onClick={this.handleModal}
+              text="Создать проект"
+              type="primary"
+              icon="IconPlus"
+            />
             <Button text="Создать портфель" type="primary" icon="IconPlus" />
           </header>
           <hr />
@@ -222,7 +228,10 @@ class Projects extends Component {
               />
             : null}
         </section>
-        <CreateProject isOpen={this.state.isCreateProjectModalOpen} onRequestClose={this.handleModal}/>
+        <CreateProject
+          isOpen={this.state.isCreateProjectModalOpen}
+          onRequestClose={this.handleModal}
+        />
       </div>
     );
   }

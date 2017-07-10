@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ReactModal from 'react-modal';
 import classnames from 'classnames';
 import Button from '../Button';
-import ButtonGroup from '../ButtonGroup';
 import * as css from './ConfirmModal.scss';
 
 const ReactModalStyles = {

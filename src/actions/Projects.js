@@ -3,14 +3,10 @@ import axios from 'axios';
 import { store } from '../Router';
 import { history } from '../Router';
 import { StartLoading, FinishLoading } from './Loading';
+import { ShowNotification } from './Notifications';
 
 const StartProjectsReceive = () => ({
   type: ProjectActions.PROJECTS_RECEIVE_START
-});
-
-const ProjectsReceiveError = message => ({
-  type: ProjectActions.PROJECTS_RECEIVE_ERROR,
-  errorMessage: message
 });
 
 const ProjectsReceived = projects => ({
@@ -47,8 +43,8 @@ const GetProjects = (
         { withCredentials: true }
       )
       .catch(error => {
-        dispatch(ProjectsReceiveError(error.message));
         dispatch(FinishLoading());
+        dispatch(ShowNotification({ message: error.message, type: 'error' }));
       })
       .then(response => {
         if (response && response.status === 200) {

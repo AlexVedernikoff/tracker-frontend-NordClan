@@ -4,29 +4,20 @@ const InitialState = {
   projects: [],
   pageSize: 25,
   currentPage: 1,
-  tags: '',
-  isReceiving: false
+  tags: ''
 };
 
 function Projects (state = InitialState, action) {
   switch (action.type) {
     case ProjectActions.PROJECTS_RECEIVE_START:
       return {
-        ...state,
-        isReceiving: true
-      };
-
-    case ProjectActions.PROJECTS_RECEIVE_ERROR:
-      return {
-        ...state,
-        isReceiving: false
+        ...state
       };
 
     case ProjectActions.PROJECTS_RECEIVE_SUCCESS:
       return {
         ...state,
-        projects: action.data,
-        isReceiving: false
+        projects: action.data
       };
 
     default:
