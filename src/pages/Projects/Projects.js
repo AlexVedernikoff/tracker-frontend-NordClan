@@ -103,7 +103,6 @@ class Projects extends Component {
   };
 
   handleModal = event => {
-    event.preventDefault();
     this.setState({
       isCreateProjectModalOpen: !this.state.isCreateProjectModalOpen
     });

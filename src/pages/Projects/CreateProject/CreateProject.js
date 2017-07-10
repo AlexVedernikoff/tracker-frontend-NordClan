@@ -7,7 +7,25 @@ import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 class CreateProject extends Component {
   constructor (props) {
     super(props);
+    this.state = {
+      projectName: ''
+    };
   }
+
+  handleChange = event => {
+    const { target } = event;
+    const { name } = event.target;
+    this.setState({
+      [name]: target.value
+    });
+  };
+
+  closeModal = event => {
+    event.preventDefault();
+    const { onRequestClose } = this.props;
+    this.setState({projectName: ''});
+    onRequestClose();
+  };
 
   render () {
     const css = require('./CreateProject.scss');
@@ -65,20 +83,20 @@ class CreateProject extends Component {
                 <p>Название проекта:</p>
               </Col>
               <Col xs={8}>
-                <Input placeholder="Название проекта" />
+                <Input
+                  onChange={this.handleChange}
+                  name="projectName"
+                  placeholder="Название проекта"
+                />
               </Col>
             </Row>
           </label>
-          <Button
-            text="Создать проект"
-            type="green"
-            style={{ width: '50%' }}
-          />
+          <Button text="Создать проект" type="green" style={{ width: '50%' }} />
           <Button
             text="Назад"
             type="primary"
             style={{ width: '50%' }}
-            onClick={onRequestClose}
+            onClick={this.closeModal}
           />
         </form>
       </ReactModal>
