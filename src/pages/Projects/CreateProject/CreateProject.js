@@ -29,6 +29,10 @@ class CreateProject extends Component {
     onRequestClose();
   };
 
+  createProject = event => {
+    event.preventDefault();
+  };
+
   render () {
     const { isOpen, onRequestClose } = this.props;
     const ReactModalStyles = {

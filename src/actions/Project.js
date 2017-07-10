@@ -30,6 +30,15 @@ export const StopEditing = target => ({
   target: target
 });
 
+export const requestProjectCreate = () => ({
+  type: ProjectActions.PROJECT_CREATE_START
+})
+
+export const projectCreateSucces = project => ({
+  type: ProjectActions.PROJECT_CHANGE_SUCCESS,
+  createdProject: project
+})
+
 const GetProjectInfo = id => {
   const URL = `/api/project/${id}`;
 

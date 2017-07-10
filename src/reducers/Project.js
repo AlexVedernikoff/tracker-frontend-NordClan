@@ -32,12 +32,6 @@ export default function Project (state = InitialState, action) {
         ...state
       };
 
-    case ProjectActions.PROJECT_INFO_RECEIVE_ERROR:
-      return {
-        ...state,
-        errorMessage: action.message
-      };
-
     case ProjectActions.PROJECT_INFO_RECEIVE_SUCCESS:
       return {
         ...state,
