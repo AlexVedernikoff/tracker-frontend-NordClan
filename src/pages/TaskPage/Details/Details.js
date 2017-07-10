@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import classnames from 'classnames';
 import ReactTooltip from 'react-tooltip';
@@ -7,13 +8,14 @@ import Tags from '../../../components/Tags';
 import * as css from './Details.scss';
 import moment from 'moment';
 
-export default class Details extends React.Component {
+export default class Details extends Component {
   constructor (props) {
     super(props);
   }
 
   render () {
-    const tags = this.props.task.tags.map((tag, i) => {
+    const { task } = this.props;
+    const tags = task.tags.map((tag, i) => {
       return <Tag key={i} name={tag} />;
     });
 
@@ -21,22 +23,26 @@ export default class Details extends React.Component {
       <div className={css.detailsBlock}>
         <table className={css.detailTable}>
           <tbody>
-            <tr>
-              <td>Проект:</td>
-              <td>
-                <Link to={'/projects/' + this.props.task.projectId}>
-                  {this.props.task.projectName}
-                </Link>
-              </td>
-            </tr>
-            <tr>
-              <td>Спринт:</td>
-              <td>
-                <Link to="#">
-                  {this.props.task.sprint}
-                </Link>
-              </td>
-            </tr>
+            {task.project
+              ? <tr>
+                  <td>Проект:</td>
+                  <td>
+                    <Link to={'/projects/' + this.props.task.projectId}>
+                      {task.projectName}
+                    </Link>
+                  </td>
+                </tr>
+              : null}
+            {task.sprint
+              ? <tr>
+                  <td>Спринт:</td>
+                  <td>
+                    <Link to="#">
+                      {this.props.task.sprint}
+                    </Link>
+                  </td>
+                </tr>
+              : null}
             <tr>
               <td>Теги:</td>
               <td className={css.tags}>
@@ -45,22 +51,28 @@ export default class Details extends React.Component {
                 </Tags>
               </td>
             </tr>
-            <tr>
-              <td>Автор:</td>
-              <td>
-                <Link to="#">
-                  {this.props.task.creator ? this.props.task.creator.name : ''}
-                </Link>
-              </td>
-            </tr>
-            <tr>
-              <td>Исполнитель:</td>
-              <td>
-                <Link to="#">
-                  {this.props.task.owner ? this.props.task.owner.name : ''}
-                </Link>
-              </td>
-            </tr>
+            {task.author
+              ? <tr>
+                  <td>Автор:</td>
+                  <td>
+                    <Link to="#">
+                      {this.props.task.creator
+                        ? this.props.task.creator.name
+                        : ''}
+                    </Link>
+                  </td>
+                </tr>
+              : null}
+            {task.executor
+              ? <tr>
+                  <td>Исполнитель:</td>
+                  <td>
+                    <Link to="#">
+                      {this.props.task.owner ? this.props.task.owner.name : ''}
+                    </Link>
+                  </td>
+                </tr>
+              : null}
             <tr>
               <td>Дата создания:</td>
               <td>
