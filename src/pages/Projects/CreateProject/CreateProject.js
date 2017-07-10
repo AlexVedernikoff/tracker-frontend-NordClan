@@ -63,7 +63,7 @@ class CreateProject extends Component {
         outline: 'none',
         padding: 0,
         width: 500,
-        height: 800,
+        height: 165,
         maxHeight: '100%'
       }
     };
@@ -105,13 +105,19 @@ class CreateProject extends Component {
               </Col>
             </Row>
           </label>
-          <Button text="Создать проект" type="green" style={{ width: '50%' }} />
-          <Button
-            text="Назад"
-            type="primary"
-            style={{ width: '50%' }}
-            onClick={this.closeModal}
-          />
+          <div className={css.buttonsContainer}>
+            <Button
+              text="Создать проект"
+              type="green"
+              style={{ width: '50%' }}
+            />
+            <Button
+              text="Назад"
+              type="primary"
+              style={{ width: '50%' }}
+              onClick={this.closeModal}
+            />
+          </div>
         </form>
       </ReactModal>
     );
