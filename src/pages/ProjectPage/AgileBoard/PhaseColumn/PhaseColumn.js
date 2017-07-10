@@ -13,7 +13,7 @@ const columnTarget = {
   },
 
   drop (props, monitor) {
-    props.onDrop(monitor.getItem(), props.section, props.phase);
+    props.onDrop(monitor.getItem(), props.section, props.title);
     ReactTooltip.rebuild();
   }
 };
@@ -29,22 +29,22 @@ function collect (connect, monitor) {
 class PhaseColumn extends React.Component {
 
   render () {
-      const {
-        tasks,
-        title,
-        connectDropTarget,
-        canDrop,
-        isOver
-      } = this.props;
+    const {
+      tasks,
+      title,
+      connectDropTarget,
+      canDrop,
+      isOver
+    } = this.props;
 
-      return (
-        connectDropTarget(
-        <div className={classnames({'col-xs': true, [css.dropColumn]: true, [css.canDropColumn]: isOver && canDrop, [css.cantDropColumn]: isOver && !canDrop})} >
-          <h4>{title}</h4>
-          {tasks}
-        </div>
-        )
-      );
+    return (
+      connectDropTarget(
+      <div className={classnames({'col-xs': true, [css.dropColumn]: true, [css.canDropColumn]: isOver && canDrop, [css.cantDropColumn]: isOver && !canDrop})} >
+        <h4>{title}</h4>
+        {tasks}
+      </div>
+      )
+    );
   }
 }
 
@@ -53,9 +53,8 @@ PhaseColumn.propTypes = {
   connectDropTarget: PropTypes.func.isRequired,
   isOver: PropTypes.bool.isRequired,
   onDrop: PropTypes.func.isRequired,
-  phase: PropTypes.string.isRequired,
   section: PropTypes.string.isRequired,
-  tasks: PropTypes.array.isRequired,
+  tasks: PropTypes.array,
   title: PropTypes.string.isRequired
 };
 

@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import classnames from 'classnames';
@@ -14,94 +15,46 @@ import * as css from './AgileBoard.scss';
 
 import GetTasks from '../../../actions/Tasks';
 
-
-//Mocks
-
-const tasks = [];
-const getRandomString = (arr) => {
-  return arr[Math.floor(Math.random() * arr.length)];
-};
-
-for (let i = 0; i < 50; i++) {
-  tasks.push({
-    name: getRandomString([
-    'Back. REST для просмотра товаров на голосовании, выбора товара для голосования, покупки товара',
-    'Back. Голосование, снятие голоса", "UI. Интеграции таба со счетами для страницы пользователя',
-    'Киви-Банк - Артек: Ретроспектива 02.06.17',
-    'Bug: При покупке семейного товара в раздел Голосование профиля семьи не подтягивается значение полей Название и Стоимость товара',
-    'TASK: Перевод денег из семьи члену семьи',
-    'UI. Интеграции таба со счетами для страницы пользователя'
-  ]),
-    prefix: getRandomString(['MT-12', 'MT-254', 'MT-1245']),
-    id: i,
-    status: getRandomString(['INHOLD', 'INPROGRESS']),
-    stage: getRandomString(['NEW', 'NEW', 'NEW', 'DEVELOP', 'DEVELOP', 'DEVELOP', 'QA', 'CODE_REVIEW', 'QA', 'DONE', 'DONE', 'DONE']),
-    executor: getRandomString(['Андрей Юдин', 'Александра Одноклассница', 'Иосиф Джугашвили', 'Ксенофонт Арабский', 'Не назначено']),
-    executorId: getRandomString([1, 2, 3, 4, 5]),
-    priority: getRandomString([1, 2, 3, 3, 3, 3, 3, 4, 5]),
-    plannedTime: getRandomString([8, 9, 10, 11, 12, 13, 14, 15, 16]),
-    factTime: getRandomString([4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]),
-    subtasks: getRandomString([1, 2, 3, 4, 5]),
-    linkedTasks: getRandomString([1, 2, 3, 4, 5])
-  });
-}
-
-const mine = [];
-const other = [];
-const mineSorted = { new: [], dev: [], codeReview: [], qa: [], done: [] };
-const otherSorted = { new: [], dev: [], codeReview: [], qa: [], done: [] };
-
-tasks.forEach((element) => {
-  if (element.executorId === 2) {
-    element.section = 'mine';
-    mine.push(element);
-  } else {
-    element.section = 'other';
-    other.push(element);
-  }
-});
-
 const filterTasks = (array, sortedObject) => {
   array.forEach((element) => {
-    switch (element.stage) {
-      case 'NEW':
-        sortedObject.new.push(element);
-        break;
-      case 'DEVELOP':
-        sortedObject.dev.push(element);
-        break;
-      case 'CODE_REVIEW':
-        sortedObject.codeReview.push(element);
-        break;
-      case 'QA':
-        sortedObject.qa.push(element);
-        break;
-      case 'DONE':
-        sortedObject.done.push(element);
-        break;
-      default:
-        break;
+    switch (element.statusId) {
+    case 1: sortedObject.new.push(element);
+            break;
+    case 2: sortedObject.dev.push(element);
+            break;
+    case 3: sortedObject.dev.push(element);
+            break;
+    case 4: sortedObject.codeReview.push(element);
+            break;
+    case 5: sortedObject.codeReview.push(element);
+            break;
+    case 6: sortedObject.qa.push(element);
+            break;
+    case 7: sortedObject.qa.push(element);
+            break;
+    case 8: sortedObject.done.push(element);
+            break;
+    default: break;
     }
   });
 };
 
-filterTasks(mine, mineSorted);
-filterTasks(other, otherSorted);
-
-const sortTasks = (sortedObject) => {
+const sortTasks = (sortedObject, prefix, section) => {
   for (const key in sortedObject) {
     sortedObject[key].sort((a, b) => {
       if (a.priority > b.priority) return 1;
       if (a.priority < b.priority) return -1;
     });
-    sortedObject[key] = sortedObject[key].map((element) => {
-      return <TaskCard key={element.id} task={element}/>;
+    sortedObject[key] = sortedObject[key].map((task) => {
+      return <TaskCard
+        key={`task-${task.id}`}
+        task={task}
+        prefix={prefix}
+        section={section}
+      />;
     });
   }
 };
-
-sortTasks(mineSorted);
-sortTasks(otherSorted);
 
 
 class AgileBoard extends Component {
@@ -110,8 +63,8 @@ class AgileBoard extends Component {
     super(props);
     this.state = {
       isSectionOpen: {
-        myTasks: true,
-        otherTasks: true
+        myTasks: false,
+        allTasks: true
       },
       filterTags: [],
       changedSprint: 0
@@ -119,10 +72,10 @@ class AgileBoard extends Component {
   }
 
   toggleSection = (sectionName) => {
-    const otherSectionsStatus = this.state.isSectionOpen;
+    const allSectionsStatus = this.state.isSectionOpen;
     this.setState({
       isSectionOpen: {
-        ...otherSectionsStatus,
+        ...allSectionsStatus,
         [sectionName]: !this.state.isSectionOpen[sectionName]
       }
     });
@@ -131,58 +84,57 @@ class AgileBoard extends Component {
   selectValue = (e, name) => {
     this.setState({[name]: e}, () => {
       this.props.GetTasks({
-        projectId: this.props.projectId,
+        projectId: this.props.project.Id,
         sprintId: this.state.changedSprint
       });
     });
-    console.log(this.state.changedSprint);
   }
 
   dropTask = (taskId, section, phase) => {
-    let obj, task;
+    // let obj, task;
 
-    switch (section) {
-      case 'mine':
-        obj = mineSorted;
-        break;
-      case 'other':
-        obj = otherSorted;
-        break;
-      default:
-        break;
-    }
+    // switch (section) {
+    //   case 'mine':
+    //     obj = mineSorted;
+    //     break;
+    //   case 'all':
+    //     obj = allSorted;
+    //     break;
+    //   default:
+    //     break;
+    // }
 
-    for (const key in obj) {
-      obj[key].forEach((element, i) => {
-        if (element.props.task.id === taskId.id) {
-          task = obj[key].splice(i, 1)[0];
-        }
-      });
-    }
+    // for (const key in obj) {
+    //   obj[key].forEach((element, i) => {
+    //     if (element.props.task.id === taskId.id) {
+    //       task = obj[key].splice(i, 1)[0];
+    //     }
+    //   });
+    // }
 
-    task.props.task.stage = phase;
+    // task.props.task.stage = phase;
 
-    switch (phase) {
-      case 'NEW':
-        obj.new.push(task);
-        break;
-      case 'DEVELOP':
-        obj.dev.push(task);
-        break;
-      case 'CODE_REVIEW':
-        obj.codeReview.push(task);
-        break;
-      case 'QA':
-        obj.qa.push(task);
-        break;
-      case 'DONE':
-        obj.done.push(task);
-        break;
-      default:
-        break;
-    }
+    // switch (phase) {
+    //   case 'NEW':
+    //     obj.new.push(task);
+    //     break;
+    //   case 'DEVELOP':
+    //     obj.dev.push(task);
+    //     break;
+    //   case 'CODE_REVIEW':
+    //     obj.codeReview.push(task);
+    //     break;
+    //   case 'QA':
+    //     obj.qa.push(task);
+    //     break;
+    //   case 'DONE':
+    //     obj.done.push(task);
+    //     break;
+    //   default:
+    //     break;
+    // }
 
-    this.forceUpdate();
+    // this.forceUpdate();
   }
 
   getSprints = () => {
@@ -204,7 +156,7 @@ class AgileBoard extends Component {
     }));
 
     sprints.push({
-      value: '0',
+      value: 0,
       label: 'Backlog',
       className: classnames({
         [css.INPROGRESS]: true,
@@ -214,8 +166,41 @@ class AgileBoard extends Component {
     return sprints;
   };
 
+  componentWillMount () {
+    this.selectValue(0, 'changedSprint');
+  }
+
+  componentDidUpdate () {
+    ReactTooltip.rebuild();
+  }
 
   render () {
+    const allSorted = {
+      new: [],
+      dev: [],
+      codeReview: [],
+      qa: [],
+      done: []
+    };
+
+    filterTasks(this.props.sprintTasks, allSorted);
+    sortTasks(allSorted, this.props.project.prefix, 'all');
+
+    const mineSorted = {
+      new: [],
+      dev: [],
+      codeReview: [],
+      qa: [],
+      done: []
+    };
+
+    const myTasks = this.props.sprintTasks.filter((task) => {
+      // заменить на проверку id исполнителя
+      return true;
+    });
+
+    filterTasks(myTasks, mineSorted);
+    sortTasks(mineSorted, this.props.project.prefix, 'mine');
 
     return (
         <section className={css.agileBoard}>
@@ -259,29 +244,29 @@ class AgileBoard extends Component {
           {
             this.state.isSectionOpen.myTasks
             ? <Row>
-                <PhaseColumn onDrop={this.dropTask} section={'mine'} phase={'NEW'} title={'New'} tasks={mineSorted.new}/>
-                <PhaseColumn onDrop={this.dropTask} section={'mine'} phase={'DEVELOP'} title={'Dev'} tasks={mineSorted.dev}/>
-                <PhaseColumn onDrop={this.dropTask} section={'mine'} phase={'CODE_REVIEW'} title={'Code Review'} tasks={mineSorted.codeReview}/>
-                <PhaseColumn onDrop={this.dropTask} section={'mine'} phase={'QA'} title={'QA'} tasks={mineSorted.qa}/>
-                <PhaseColumn onDrop={this.dropTask} section={'mine'} phase={'DONE'} title={'Done'} tasks={mineSorted.done}/>
+                <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'New'} tasks={mineSorted.new}/>
+                <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Dev'} tasks={mineSorted.dev}/>
+                <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Code Review'} tasks={mineSorted.codeReview}/>
+                <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'QA'} tasks={mineSorted.qa}/>
+                <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Done'} tasks={mineSorted.done}/>
               </Row>
             : null
           }
           <hr/>
-          <h3 onClick={() => this.toggleSection('otherTasks')} className={css.taskSectionTitle}>
+          <h3 onClick={() => this.toggleSection('allTasks')} className={css.taskSectionTitle}>
             <IconArrowDown className={classnames({
-              [css.close]: !this.state.isSectionOpen.otherTasks,
-              [css.open]: this.state.isSectionOpen.otherTasks
+              [css.close]: !this.state.isSectionOpen.allTasks,
+              [css.open]: this.state.isSectionOpen.allTasks
             })} /> Все задачи
           </h3>
           {
-            this.state.isSectionOpen.otherTasks
+            this.state.isSectionOpen.allTasks
             ? <Row>
-                <PhaseColumn onDrop={this.dropTask} section={'other'} phase={'NEW'} title={'New'} tasks={otherSorted.new}/>
-                <PhaseColumn onDrop={this.dropTask} section={'other'} phase={'DEVELOP'} title={'Dev'} tasks={otherSorted.dev}/>
-                <PhaseColumn onDrop={this.dropTask} section={'other'} phase={'CODE_REVIEW'} title={'Code Review'} tasks={otherSorted.codeReview}/>
-                <PhaseColumn onDrop={this.dropTask} section={'other'} phase={'QA'} title={'QA'} tasks={otherSorted.qa}/>
-                <PhaseColumn onDrop={this.dropTask} section={'other'} phase={'DONE'} title={'Done'} tasks={otherSorted.done}/>
+                <PhaseColumn onDrop={this.dropTask} section={'all'} title={'New'} tasks={allSorted.new}/>
+                <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Dev'} tasks={allSorted.dev} />
+                <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Code Review'} tasks={allSorted.codeReview} />
+                <PhaseColumn onDrop={this.dropTask} section={'all'} title={'QA'} tasks={allSorted.qa} />
+                <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Done'} tasks={allSorted.done} />
               </Row>
             : null
           }
@@ -293,14 +278,15 @@ class AgileBoard extends Component {
 
 AgileBoard.propTypes = {
   GetTasks: PropTypes.func.isRequired,
-  sprints: PropTypes.array,
-  projectId: PropTypes.number
+  project: PropTypes.object,
+  sprintTasks: PropTypes.array,
+  sprints: PropTypes.array
 };
 
 const mapStateToProps = state => ({
-  tasksList: state.Tasks.tasks,
+  sprintTasks: state.Tasks.tasks,
   sprints: state.Project.project.sprints,
-  projectId: state.Project.project.id
+  project: state.Project.project
 });
 
 const mapDispatchToProps = { GetTasks };
