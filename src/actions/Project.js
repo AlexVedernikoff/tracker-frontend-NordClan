@@ -1,5 +1,6 @@
-import * as ProjectActions from '../constants/Project';
 import axios from 'axios';
+import * as ProjectActions from '../constants/Project';
+import { ShowNotification } from './Notifications';
 import { StartLoading, FinishLoading } from './Loading';
 
 const GettingProjectInfoStart = () => ({
@@ -32,12 +33,12 @@ export const StopEditing = target => ({
 
 export const requestProjectCreate = () => ({
   type: ProjectActions.PROJECT_CREATE_START
-})
+});
 
-export const projectCreateSucces = project => ({
+export const projectCreateSuccess = project => ({
   type: ProjectActions.PROJECT_CHANGE_SUCCESS,
   createdProject: project
-})
+});
 
 const GetProjectInfo = id => {
   const URL = `/api/project/${id}`;
@@ -48,7 +49,7 @@ const GetProjectInfo = id => {
     axios
       .get(URL, {}, { withCredentials: true })
       .catch(error => {
-        dispatch(GettingProjectInfoError(error.message));
+        dispatch(ShowNotification({ message: error.message, type: 'error' }));
         dispatch(FinishLoading());
       })
       .then(response => {
@@ -76,7 +77,7 @@ const ChangeProject = (ChangedProperties, target) => {
         withCredentials: true
       })
       .catch(err => {
-        dispatch(ProjectChangeError());
+        dispatch(ShowNotification({ message: error.message, type: 'error' }));
         dispatch(FinishLoading());
       })
       .then(response => {
@@ -89,4 +90,29 @@ const ChangeProject = (ChangedProperties, target) => {
   };
 };
 
-export { GetProjectInfo, ChangeProject };
+const CreateProject = project => {
+  if (!project.name) {
+    return;
+  }
+
+  const URL = '/api/project';
+
+  return dispatch => {
+    dispatch(StartLoading());
+
+    axios.post(URL, project, {
+      withCredentials: true
+    });
+    .catch(error => {
+      dispatch(ShowNotification({ message: error.message, type: 'error' }));
+    })
+    .then(response => {
+      if (response && response.status === 200) {
+        dispatch(FinishLoading());
+        dispatch(projectCreateSuccess(response.data));
+      }
+    })
+  };
+};
+
+export { GetProjectInfo, ChangeProject, CreateProject };
