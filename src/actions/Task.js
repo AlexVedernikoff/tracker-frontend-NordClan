@@ -46,6 +46,7 @@ const getTask = id => {
       })
       .then(response => {
         if (response && response.status === 200) {
+          console.log(response);
           dispatch(getTaskSuccess(response.data));
           dispatch(FinishLoading());
         }

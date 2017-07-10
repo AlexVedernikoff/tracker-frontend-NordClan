@@ -13,6 +13,7 @@ import {
   FinishTaskEditing,
   RequestTaskChange
 } from '../../../actions/Task';
+import TaskStatuses from '../../../constants/TaskStatuses';
 
 export default class TaskHeader extends Component {
   constructor (props) {
@@ -41,20 +42,32 @@ export default class TaskHeader extends Component {
 
     return (
       <div>
-        <div className={css.parentTask}>
-          <div className={css.prefix} data-tip="Родительская задача ">
-            PPJ-56320
-          </div>
-          <a href="#" className={css.parentTaskName}>
-            UI: Add to gulp build tasks for css and js minification
-          </a>
-        </div>
+        {task.parentId
+          ? <div className={css.parentTask}>
+              <div className={css.prefix} data-tip="Родительская задача ">
+                PPJ-56320
+              </div>
+              <a href="#" className={css.parentTaskName}>
+                UI: Add to gulp build tasks for css and js minification
+              </a>
+              <div className={css.parentTaskLink}>
+                <div className={css.tasksPointers} />
+              </div>
+            </div>
+          : null}
+
         <div className={css.taskTopInfo}>
-          <div className={css.prefix}>PPJ-56321</div>
-          <div>
-            <span>Фича / Задача</span>
+          <div className={css.prefix}>
+            PPJ-{task.id}
           </div>
-          <Priority priority={task.prioritiesId} />
+          {task.typeId && TaskStatuses[task.typeId]
+            ? <div>
+                <span>
+                  {TaskStatuses[task.typeId]}
+                </span>
+              </div>
+            : null}
+          {task.prioritiesId ? <Priority priority={task.prioritiesId} /> : null}
         </div>
         <TaskTitle name={task.name} />
         <Button

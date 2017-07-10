@@ -12,7 +12,7 @@ const Priority = props => {
           return (
             <span key={`priority-${i}`}
               className={classnames({
-                [css.active]: i + 1 === props.priority
+                [css.active]: priorityId === props.priority
               })}
             >
               {priorityId}
