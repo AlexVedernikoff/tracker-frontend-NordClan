@@ -19,10 +19,6 @@ class CreateProject extends Component {
     onRequestClose();
   };
 
-  createProject = event => {
-    event.preventDefault();
-  };
-
   render () {
     const { isOpen, onRequestClose } = this.props;
     const ReactModalStyles = {
@@ -110,7 +106,7 @@ class CreateProject extends Component {
                 <p>Открыть страницу проекта</p>
               </Col>
               <Col xs={formLayout.secondCol} className={css.rightColumn}>
-                <Checkbox />
+                <Checkbox name='openProjectPage' onChange={this.props.handleCheckBox} />
               </Col>
             </Row>
           </label>

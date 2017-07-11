@@ -35,7 +35,8 @@ class Projects extends Component {
       dateFrom: '',
       dateTo: '',
       projectName: '',
-      projectPrefix: ''
+      projectPrefix: '',
+      openProjectPage: false
     };
   }
 
@@ -130,6 +131,13 @@ class Projects extends Component {
       name: this.state.projectName,
       prefix: this.state.projectPrefix
     });
+  };
+
+  handleModalCheckBoxChange = event => {
+    const { target } = event;
+    this.setState({
+      openProjectPage: target.checked
+    })
   };
 
   render () {
@@ -256,6 +264,7 @@ class Projects extends Component {
           onRequestClose={this.handleModal}
           onChange={this.handleModalChange}
           onSubmit={this.sendRequest}
+          handleCheckBox={this.handleModalCheckBoxChange}
         />
       </div>
     );
