@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
-import { deleteSprint } from '../../actions/Sprint';
+import { deleteSprint, editSprint } from '../../actions/Sprint';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal';
@@ -34,12 +34,43 @@ class SprintCard extends Component {
     this.setState({ isModalOpen: false });
   };
 
-  editSprint = () => {
-    console.log('edit');
+  onChangeTime = (e) => {
+    this.setState({ sprintTime: e.target.value });
+  };
+
+  onChangeName = (e) => {
+    this.setState({ sprintName: e.target.value });
+  };
+
+  handleDayFromChange = (date) => {
+    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD')});
+  };
+
+  handleDayToChange = (date) => {
+    this.setState({ dateTo: moment(date).format('YYYY-MM-DD')});
+  };
+
+  changeStatus = () => {
+    const statusId = this.props.sprint.statusId === 1 ? 2 : 1;
+    this.props.editSprint(
+      this.props.sprint.id,
+      statusId
+    );
   };
 
   render () {
-    const { sprint, deleteSprint, ...other } = this.props;
+    const { sprint, deleteSprint: dS, editSprint: eS, ...other } = this.props;
+
+    const edit = () => {
+      this.setState({ isModalOpen: false });
+      eS(
+        sprint.id,
+        null,
+        this.state.sprintName.trim(),
+        this.state.dateFrom,
+        this.state.dateTo
+      );
+    };
 
     const formattedDayFrom = this.state.dateFrom
       ? moment(this.state.dateFrom).format('DD.MM.YYYY')
@@ -54,7 +85,7 @@ class SprintCard extends Component {
       >
         <IconClose
           className={css.iconClose}
-          onClick={() => {deleteSprint(sprint.id);}}
+          onClick={() => {dS(sprint.id);}}
         />
         <p className={css.sprintTitle}
            onClick={this.handleOpenModal}>
@@ -88,6 +119,7 @@ class SprintCard extends Component {
         </span>
         </p>
         <div
+          onClick={this.changeStatus}
           className={classnames({
             [css.status]: true,
             [css.inprogress]: sprint.statusId === 2,
@@ -110,7 +142,8 @@ class SprintCard extends Component {
                        xs={10}>
                     <h3>Редактирование спринта</h3>
                     <Input
-                      placeholder="Введите название спринта..."
+                      placeholder="Новое название спринта..."
+                      defaultValue={sprint.name}
                       onChange={this.onChangeName}
                     />
                   </Col>
@@ -121,13 +154,13 @@ class SprintCard extends Component {
                       name="dateFrom"
                       value={formattedDayFrom}
                       onDayChange={this.handleDayFromChange}
-                      placeholder="Дата начала"
+                      placeholder={moment(sprint.factStartDate).format('DD.MM.YYYY')}
                     />
                     <DatepickerDropdown
                       name="dateTo"
                       value={formattedDayTo}
                       onDayChange={this.handleDayToChange}
-                      placeholder="Дата окончания"
+                      placeholder={moment(sprint.factFinishDate).format('DD.MM.YYYY')}
                     />
                   </Col>
                 </Row>
@@ -144,8 +177,8 @@ class SprintCard extends Component {
                      center="xs">
                   <Col xs>
                     <Button type="green"
-                            text="Создать"
-                            onClick={this.editSprint}/>
+                            text="Изменить"
+                            onClick={edit}/>
                   </Col>
                 </Row>
               </div>
@@ -160,6 +193,7 @@ class SprintCard extends Component {
 
 SprintCard.propTypes = {
   deleteSprint: PropTypes.func.isRequired,
+  editSprint: PropTypes.func.isRequired,
   sprint: PropTypes.object
 };
 
@@ -175,7 +209,8 @@ SprintCard.defaultProps = {
 };
 
 const mapDispatchToProps = {
-  deleteSprint
+  deleteSprint,
+  editSprint
 };
 
 export default connect(null, mapDispatchToProps)(SprintCard);

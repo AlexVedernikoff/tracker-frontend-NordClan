@@ -20,6 +20,39 @@ const deleteSprintSuccess = sprints => ({
   sprints: sprints
 });
 
+const editSprintStart = () => ({
+  type: SprintActions.SPRINTS_EDIT_START
+});
+
+const editSprintSuccess = sprints => ({
+  type: SprintActions.SPRINTS_EDIT_SUCCESS,
+  sprints: sprints
+});
+
+export const editSprint = (id, statusId, name, dateForm, dateTo) => {
+  const URL = `/api/sprint/${id}`;
+  const params = {};
+  if (name) params.name = name;
+  if (dateForm) params.factStartDate = dateForm;
+  if (dateTo) params.factFinishDate = dateTo;
+  if (statusId) params.statusId = statusId;
+
+  return dispatch => {
+    if (!id || !(statusId || name || dateForm || dateTo)) {
+      return;
+    }
+    dispatch(editSprintStart());
+    dispatch(StartLoading());
+    axios.put(URL, params)
+      .then(response => {
+        if (response.data) {
+          dispatch(editSprintSuccess(response.data));
+          dispatch(FinishLoading());
+        }
+      });
+  };
+};
+
 export const deleteSprint = (id) => {
   const URL = `/api/sprint/${id}`;
 
@@ -47,13 +80,12 @@ export const createSprint = (name, id, dateForm, dateTo) => {
       projectId: id,
       factStartDate: dateForm,
       factFinishDate: dateTo
-    },
-        { withCredentials: true })
-        .then(response => {
-          if (response.data) {
-            dispatch(createSprintSuccess(response.data.sprints));
-            dispatch(FinishLoading());
-          }
-        });
+    })
+      .then(response => {
+        if (response.data) {
+          dispatch(createSprintSuccess(response.data.sprints));
+          dispatch(FinishLoading());
+        }
+      });
   };
 };

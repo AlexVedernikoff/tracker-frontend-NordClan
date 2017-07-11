@@ -35,12 +35,12 @@ class Settings extends Component {
     this.setState({ isModalOpen: false });
   };
 
-  onChangeName = (e) => {
-    this.setState({ sprintName: e.target.value });
-  };
-
   onChangeTime = (e) => {
     this.setState({ sprintTime: e.target.value });
+  };
+
+  onChangeName = (e) => {
+    this.setState({ sprintName: e.target.value });
   };
 
   handleDayFromChange = (date) => {
@@ -54,7 +54,7 @@ class Settings extends Component {
   createSprint = () => {
     this.setState({ isModalOpen: false });
     this.props.createSprint(
-        this.state.sprintName,
+        this.state.sprintName.trim(),
         this.props.id,
         this.state.dateFrom,
         this.state.dateTo
@@ -410,6 +410,12 @@ class Settings extends Component {
   }
 }
 
+Settings.propTypes = {
+  createSprint: PropTypes.func.isRequired,
+  id: PropTypes.number,
+  sprints: PropTypes.array.isRequired
+};
+
 const mapStateToProps = state => ({
   sprints: state.Project.project.sprints,
   id: state.Project.project.id
@@ -417,12 +423,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   createSprint
-};
-
-Settings.propTypes = {
-  createSprint: PropTypes.func.isRequired,
-  id: PropTypes.number,
-  sprints: PropTypes.array.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Settings);
