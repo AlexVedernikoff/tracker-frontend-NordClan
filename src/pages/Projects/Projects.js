@@ -14,15 +14,18 @@ import StatusCheckbox from './StatusCheckbox';
 import Pagination from '../../components/Pagination';
 import Portfolio from './Portfolio';
 import moment from 'moment';
-import CreateProject from './CreateProject';
 
-import GetProjects from '../../actions/Projects';
+import CreateProject from './CreateProject';
+import GetProjects, {
+  requestProjectCreate,
+  openCreateProjectModal,
+  closeCreateProjectModal
+} from '../../actions/Projects';
 
 class Projects extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      isCreateProjectModalOpen: false,
       filterTags: [],
       filteredInProgress: false,
       filteredInHold: false,
@@ -50,8 +53,8 @@ class Projects extends Component {
   };
 
   componentDidMount () {
-    const { dispatch } = this.props;
-    dispatch(GetProjects(25, 1, ''));
+    const { GetProjects} = this.props;
+    GetProjects(25, 1, '');
   }
 
   changeNameFilter = event => {
@@ -103,9 +106,16 @@ class Projects extends Component {
   };
 
   handleModal = event => {
-    this.setState({
-      isCreateProjectModalOpen: !this.state.isCreateProjectModalOpen
-    });
+    const {
+      isCreateProjectModalOpen,
+      openCreateProjectModal,
+      closeCreateProjectModal
+    } = this.props;
+    if (isCreateProjectModalOpen) {
+      closeCreateProjectModal();
+    } else {
+      openCreateProjectModal();
+    }
   };
 
   render () {
@@ -228,7 +238,7 @@ class Projects extends Component {
             : null}
         </section>
         <CreateProject
-          isOpen={this.state.isCreateProjectModalOpen}
+          isOpen={this.props.isCreateProjectModalOpen}
           onRequestClose={this.handleModal}
         />
       </div>
@@ -236,6 +246,16 @@ class Projects extends Component {
   }
 }
 
-const mapStateToProps = state => ({ projectList: state.Projects.projects });
+const mapStateToProps = state => ({
+  projectList: state.Projects.projects,
+  isCreateProjectModalOpen: state.Projects.isCreateProjectModalOpen
+});
 
-export default connect(mapStateToProps)(Projects);
+const mapDispatchToProps = {
+  requestProjectCreate,
+  openCreateProjectModal,
+  closeCreateProjectModal,
+  GetProjects
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Projects);

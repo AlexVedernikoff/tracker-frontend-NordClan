@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import ReactModal from 'react-modal';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './CreateProject.scss';
+import { CreateProjectRequest } from '../../../actions/Project';
 
 class CreateProject extends Component {
   constructor (props) {
@@ -127,5 +129,9 @@ class CreateProject extends Component {
     );
   }
 }
+
+const mapDispatchToProps = {
+  CreateProject
+};
 
 export default CreateProject;

@@ -31,15 +31,6 @@ export const StopEditing = target => ({
   target: target
 });
 
-export const requestProjectCreate = () => ({
-  type: ProjectActions.PROJECT_CREATE_START
-});
-
-export const projectCreateSuccess = project => ({
-  type: ProjectActions.PROJECT_CHANGE_SUCCESS,
-  createdProject: project
-});
-
 const GetProjectInfo = id => {
   const URL = `/api/project/${id}`;
 
@@ -90,29 +81,6 @@ const ChangeProject = (ChangedProperties, target) => {
   };
 };
 
-const CreateProject = project => {
-  if (!project.name) {
-    return;
-  }
 
-  const URL = '/api/project';
 
-  return dispatch => {
-    dispatch(StartLoading());
-
-    axios.post(URL, project, {
-      withCredentials: true
-    });
-    .catch(error => {
-      dispatch(ShowNotification({ message: error.message, type: 'error' }));
-    })
-    .then(response => {
-      if (response && response.status === 200) {
-        dispatch(FinishLoading());
-        dispatch(projectCreateSuccess(response.data));
-      }
-    })
-  };
-};
-
-export { GetProjectInfo, ChangeProject, CreateProject };
+export { GetProjectInfo, ChangeProject };

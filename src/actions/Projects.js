@@ -14,6 +14,23 @@ const ProjectsReceived = projects => ({
   data: projects
 });
 
+const startProjectCreate = () => ({
+  type: ProjectActions.PROJECT_CREATE_START
+});
+
+const projectCreateSuccess = project => ({
+  type: ProjectActions.PROJECT_CREATE_SUCCESS,
+  createdProject: project
+});
+
+export const openCreateProjectModal = () => ({
+  type: ProjectActions.OPEN_CREATE_PROJECT_MODAL
+});
+
+export const closeCreateProjectModal = () => ({
+  type: ProjectActions.CLOSE_CREATE_PROJECT_MODAL
+});
+
 const GetProjects = (
   pageSize = 25,
   currentPage = 1,
@@ -50,6 +67,33 @@ const GetProjects = (
         if (response && response.status === 200) {
           dispatch(ProjectsReceived(response.data.data));
           dispatch(FinishLoading());
+        }
+      });
+  };
+};
+
+export const requestProjectCreate = project => {
+  if (!project.name) {
+    return;
+  }
+
+  const URL = '/api/project';
+
+  return dispatch => {
+    dispatch(StartLoading());
+    dispatch(startProjectCreate());
+
+    axios
+      .post(URL, project, {
+        withCredentials: true
+      })
+      .catch(error => {
+        dispatch(ShowNotification({ message: error.message, type: 'error' }));
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(FinishLoading());
+          dispatch(projectCreateSuccess(response.data));
         }
       });
   };

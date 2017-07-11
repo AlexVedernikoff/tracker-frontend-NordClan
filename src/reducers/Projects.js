@@ -4,7 +4,8 @@ const InitialState = {
   projects: [],
   pageSize: 25,
   currentPage: 1,
-  tags: ''
+  tags: '',
+  isCreateProjectModalOpen: false
 };
 
 function Projects (state = InitialState, action) {
@@ -19,6 +20,18 @@ function Projects (state = InitialState, action) {
         ...state,
         projects: action.data
       };
+
+    case ProjectActions.OPEN_CREATE_PROJECT_MODAL:
+      return {
+        ...state,
+        isCreateProjectModalOpen: true
+      }
+
+    case ProjectActions.CLOSE_CREATE_PROJECT_MODAL:
+      return {
+        ...state,
+        isCreateProjectModalOpen: false
+      }
 
     default:
       return state;
