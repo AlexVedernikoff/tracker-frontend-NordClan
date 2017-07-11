@@ -6,23 +6,12 @@ import Input from '../../../components/Input';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './CreateProject.scss';
 import { CreateProjectRequest } from '../../../actions/Project';
+import Checkbox from '../../../components/Checkbox';
 
 class CreateProject extends Component {
   constructor (props) {
     super(props);
-    this.state = {
-      projectName: '',
-      prefix: ''
-    };
   }
-
-  handleChange = event => {
-    const { target } = event;
-    const { name } = event.target;
-    this.setState({
-      [name]: target.value
-    });
-  };
 
   closeModal = event => {
     event.preventDefault();
@@ -68,10 +57,15 @@ class CreateProject extends Component {
         outline: 'none',
         padding: 0,
         width: 500,
-        height: 165,
+        height: 228,
         maxHeight: '100%'
       }
     };
+
+    const formLayout = {
+      firstCol: 5,
+      secondCol: 7
+    }
 
     return (
       <ReactModal
@@ -84,10 +78,10 @@ class CreateProject extends Component {
         <form className={css.createProjectForm} onSubmit={this.props.onSubmit}>
           <label className={css.formField}>
             <Row>
-              <Col xs={4} className={css['col-xs-4']}>
+              <Col xs={formLayout.firstCol} className={css['leftColumn']}>
                 <p>Название проекта:</p>
               </Col>
-              <Col xs={8}>
+              <Col xs={formLayout.secondCol} className={css['rightColumn']}>
                 <Input
                   onChange={this.props.onChange}
                   name="projectName"
@@ -98,15 +92,25 @@ class CreateProject extends Component {
           </label>
           <label className={css.formField}>
             <Row>
-              <Col xs={4} className={css['col-xs-4']}>
+              <Col xs={formLayout.firstCol} className={css['leftColumn']}>
                 <p>Префикс проекта:</p>
               </Col>
-              <Col xs={8}>
+              <Col xs={formLayout.secondCol} className={css['rightColumn']}>
                 <Input
                   onChange={this.props.onChange}
                   name="projectPrefix"
                   placeholder="Префикс проекта"
                 />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={formLayout.firstCol} className={css.leftColumn}>
+                <p>Открыть страницу проекта</p>
+              </Col>
+              <Col xs={formLayout.secondCol} className={css.rightColumn}>
+                <Checkbox />
               </Col>
             </Row>
           </label>

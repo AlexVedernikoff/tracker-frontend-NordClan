@@ -32,8 +32,8 @@ class Projects extends Component {
       filteredFinished: false,
       projects: [],
       filterByName: '',
-      dateFrom: undefined,
-      dateTo: undefined,
+      dateFrom: '',
+      dateTo: '',
       projectName: '',
       projectPrefix: ''
     };

@@ -1,14 +1,17 @@
 .createProjectForm {
   width: 100%;
   padding: 25px;
-
-  p {
-    margin-top: 8px;
-  }
 }
 
-.col-xs-4 {
-  text-align: right;
+.leftColumn {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.rightColumn {
+  display: flex;
+  align-items: center;
 }
 
 .formField {
