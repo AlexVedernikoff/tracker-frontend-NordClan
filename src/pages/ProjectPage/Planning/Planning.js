@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 
 import GetPlanningTasks from '../../../actions/PlanningTasks';
+import { changeTask, startTaskEditing } from '../../../actions/Task';
 
 class Planning extends Component {
   constructor (props) {
@@ -61,18 +62,12 @@ class Planning extends Component {
   };
 
   dropTask = (task, sprint) => {
-    console.log(task, sprint);
-    // let i, movedTask;
+    this.props.changeTask({
+      id: task.id,
+      sprintId: sprint
+    }, 'Sprint');
 
-    // for (i in sprintTasks[task.previousSprint]) {
-    //   if (sprintTasks[task.previousSprint][i].props.task.id === task.id) {
-    //     movedTask = sprintTasks[task.previousSprint].splice(i, 1)[0];
-    //   }
-    // }
-
-    // movedTask.props.task.sprint = sprint;
-    // sprintTasks[sprint].push(movedTask);
-    // this.forceUpdate();
+    this.props.startTaskEditing('Sprint');
   };
 
   selectValue = (e, name) => {
@@ -86,6 +81,13 @@ class Planning extends Component {
       );
     });
   };
+
+  componentWillReceiveProps (nextProps) {
+    if (!nextProps.SprintIsEditing && this.props.SprintIsEditing) {
+      this.selectValue({value: this.state.leftColumn}, 'leftColumn');
+      this.selectValue({value: this.state.rightColumn}, 'rightColumn');
+    };
+  }
 
   render () {
 
@@ -364,17 +366,25 @@ class Planning extends Component {
 
 Planning.propTypes = {
   GetPlanningTasks: PropTypes.func.isRequired,
+  SprintIsEditing: PropTypes.bool,
+  changeTask: PropTypes.func.isRequired,
   leftColumnTasks: PropTypes.array,
   project: PropTypes.object,
   rightColumnTasks: PropTypes.array,
+  startTaskEditing: PropTypes.func
 };
 
 const mapStateToProps = state => ({
   project: state.Project.project,
   leftColumnTasks: state.PlanningTasks.leftColumnTasks,
-  rightColumnTasks: state.PlanningTasks.rightColumnTasks
+  rightColumnTasks: state.PlanningTasks.rightColumnTasks,
+  SprintIsEditing: state.Task.SprintIsEditing
 });
 
-const mapDispatchToProps = { GetPlanningTasks };
+const mapDispatchToProps = {
+  GetPlanningTasks,
+  changeTask,
+  startTaskEditing
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Planning);
