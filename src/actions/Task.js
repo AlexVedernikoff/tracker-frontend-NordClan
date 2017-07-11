@@ -1,7 +1,7 @@
 import * as TaskActions from '../constants/Task';
 import axios from 'axios';
-import { StartLoading, FinishLoading } from './Loading';
-import { ShowNotification } from './Notifications';
+import { startLoading, finishLoading } from './Loading';
+import { showNotification } from './Notifications';
 
 const getTaskStart = () => ({
   type: TaskActions.GET_TASK_REQUEST_SENT
@@ -36,18 +36,18 @@ const getTask = id => {
 
   return dispatch => {
     dispatch(getTaskStart());
-    dispatch(StartLoading());
+    dispatch(startLoading());
 
     axios
       .get(URL, {}, { withCredentials: true })
       .catch(error => {
-        dispatch(ShowNotification({ message: error.message, type: 'error' }));
-        dispatch(FinishLoading());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
       })
       .then(response => {
         if (response && response.status === 200) {
           dispatch(getTaskSuccess(response.data));
-          dispatch(FinishLoading());
+          dispatch(finishLoading());
         }
       });
   };
@@ -62,19 +62,20 @@ const changeTask = (ChangedProperties, target) => {
 
   return dispatch => {
     dispatch(requestTaskChange());
-    dispatch(StartLoading());
+    dispatch(startLoading());
 
     axios
       .put(URL, ChangedProperties, {
         withCredentials: true
       })
       .catch(err => {
-        dispatch(FinishLoading());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
       })
       .then(response => {
         if (response && response.status === 200) {
           dispatch(successTaskChange(response.data));
-          dispatch(FinishLoading());
+          dispatch(finishLoading());
           dispatch(stopTaskEditing(target));
         }
       });

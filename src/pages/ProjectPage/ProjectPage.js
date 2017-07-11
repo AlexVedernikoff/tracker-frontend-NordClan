@@ -92,6 +92,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   GetProjectInfo
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectPage);
