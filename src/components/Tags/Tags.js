@@ -4,7 +4,7 @@ import Button from '../Button';
 import * as css from './Tags.scss';
 import Tag from '../Tag';
 import onClickOutside from 'react-onclickoutside';
-import {CreateTags} from '../../actions/Tags';
+import {createTags} from '../../actions/Tags';
 import {connect} from 'react-redux';
 
 class Tags extends Component {
@@ -36,7 +36,7 @@ class Tags extends Component {
   sendNewTags = (e) => {
     e.preventDefault();
     this.setState({visible: !this.state.visible});
-    this.props.CreateTags(
+    this.props.createTags(
       this.state.tag.trim(),
       this.props.taggable,
       this.props.taggableId
@@ -74,7 +74,7 @@ class Tags extends Component {
 }
 
 Tags.propTypes = {
-  CreateTags: PropTypes.func.isRequired,
+  createTags: PropTypes.func.isRequired,
   children: PropTypes.oneOfType([
     PropTypes.node,
     PropTypes.array
@@ -85,7 +85,7 @@ Tags.propTypes = {
 };
 
 const mapDispatchToProps = {
-  CreateTags
+  createTags
 };
 
 export default connect(null, mapDispatchToProps)(onClickOutside(Tags));

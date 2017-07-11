@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import * as css from './Tag.scss';
 import {IconPlus, IconClose} from '../Icons';
-import {DeleteTag} from '../../actions/Tags';
+import {deleteTag} from '../../actions/Tags';
 import {connect} from 'react-redux';
 
 class Tag extends React.Component {
@@ -14,7 +14,7 @@ class Tag extends React.Component {
       blocked,
       taggable,
       taggableId,
-      DeleteTag: dT,
+      deleteTag: dT,
       ...other
     } = this.props;
 
@@ -31,7 +31,7 @@ class Tag extends React.Component {
 }
 
 Tag.propTypes = {
-  DeleteTag: PropTypes.func.isRequired,
+  deleteTag: PropTypes.func.isRequired,
   blocked: PropTypes.bool,
   create: PropTypes.bool,
   name: PropTypes.string,
@@ -40,7 +40,7 @@ Tag.propTypes = {
 };
 
 const mapDispatchToProps = {
-  DeleteTag
+  deleteTag
 };
 
 export default connect(null, mapDispatchToProps)(Tag);
