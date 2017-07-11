@@ -4,40 +4,40 @@ import {StartLoading, FinishLoading} from './Loading';
 import {store} from '../Router';
 import {history} from '../Router';
 
-const StartTagsCreate = () => ({
+const startTagsCreate = () => ({
   type: TagsActions.TAGS_CREATE_START
 });
 
-const TagsCreateSucces = tags => ({
+const tagsCreateSucces = tags => ({
   type: TagsActions.TAGS_CREATE_SUCCESS,
   data: tags
 });
 
-const TagsCreateError = err => ({
+const tagsCreateError = err => ({
   type: TagsActions.TAGS_CREATE_ERROR,
   error: err
 });
 
-const StartTagsDelete = () => ({
+const startTagsDelete = () => ({
   type: TagsActions.TAGS_DELETE_START
 });
 
-const TagsDeleteSucces = tags => ({
+const tagsDeleteSucces = tags => ({
   type: TagsActions.TAGS_DELETE_SUCCESS,
   data: tags
 });
 
-const TagsDeleteError = err => ({
+const tagsDeleteError = err => ({
   type: TagsActions.TAGS_DELETE_ERROR,
   error: err
 });
 
-export const CreateTags = (tags,
+export const createTags = (tags,
                            taggable,
                            taggableId) => {
   const URL = '/api/tag';
   return dispatch => {
-    dispatch(StartTagsCreate());
+    dispatch(startTagsCreate());
     dispatch(StartLoading());
     axios.post(URL, {
       tag: tags,
@@ -47,7 +47,7 @@ export const CreateTags = (tags,
       .then(res => {
         if (!res.data) return;
 
-        dispatch(TagsCreateSucces({
+        dispatch(tagsCreateSucces({
           taggableId: taggableId,
           tags: res.data
         }));
@@ -56,18 +56,18 @@ export const CreateTags = (tags,
   };
 };
 
-export const DeleteTag = (tag,
+export const deleteTag = (tag,
                           taggable,
                           taggableId) => {
   const URL = `/api/tag/${taggable}/${taggableId}/?tag=${tag}`;
   return dispatch => {
-    dispatch(StartTagsDelete());
+    dispatch(startTagsDelete());
     dispatch(StartLoading());
     axios.delete(URL)
       .then(res => {
         if (!res.data) return;
 
-        dispatch(TagsDeleteSucces({
+        dispatch(tagsDeleteSucces({
           taggableId: taggableId,
           tags: res.data
         }));
