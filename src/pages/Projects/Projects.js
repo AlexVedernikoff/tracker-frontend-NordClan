@@ -130,7 +130,7 @@ class Projects extends Component {
     requestProjectCreate({
       name: this.state.projectName,
       prefix: this.state.projectPrefix
-    });
+    }, this.state.openProjectPage);
   };
 
   handleModalCheckBoxChange = event => {

@@ -5,8 +5,10 @@ import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './CreateProject.scss';
+import { getPortfolios } from '../../../actions/Portfolios';
 import { CreateProjectRequest } from '../../../actions/Project';
 import Checkbox from '../../../components/Checkbox';
+import Select from 'react-select';
 
 class CreateProject extends Component {
   constructor (props) {
@@ -18,6 +20,11 @@ class CreateProject extends Component {
     const { onRequestClose } = this.props;
     onRequestClose();
   };
+
+  componentDidMount () {
+    const { getPortfolios } = this.props;
+    getPortfolios();
+  }
 
   render () {
     const { isOpen, onRequestClose } = this.props;
@@ -53,7 +60,7 @@ class CreateProject extends Component {
         outline: 'none',
         padding: 0,
         width: 500,
-        height: 228,
+        height: 300,
         maxHeight: '100%'
       }
     };
@@ -61,7 +68,7 @@ class CreateProject extends Component {
     const formLayout = {
       firstCol: 5,
       secondCol: 7
-    }
+    };
 
     return (
       <ReactModal
@@ -74,10 +81,10 @@ class CreateProject extends Component {
         <form className={css.createProjectForm} onSubmit={this.props.onSubmit}>
           <label className={css.formField}>
             <Row>
-              <Col xs={formLayout.firstCol} className={css['leftColumn']}>
+              <Col xs={formLayout.firstCol} className={css.leftColumn}>
                 <p>Название проекта:</p>
               </Col>
-              <Col xs={formLayout.secondCol} className={css['rightColumn']}>
+              <Col xs={formLayout.secondCol} className={css.rightColumn}>
                 <Input
                   onChange={this.props.onChange}
                   name="projectName"
@@ -88,10 +95,10 @@ class CreateProject extends Component {
           </label>
           <label className={css.formField}>
             <Row>
-              <Col xs={formLayout.firstCol} className={css['leftColumn']}>
+              <Col xs={formLayout.firstCol} className={css.leftColumn}>
                 <p>Префикс проекта:</p>
               </Col>
-              <Col xs={formLayout.secondCol} className={css['rightColumn']}>
+              <Col xs={formLayout.secondCol} className={css.rightColumn}>
                 <Input
                   onChange={this.props.onChange}
                   name="projectPrefix"
@@ -106,7 +113,20 @@ class CreateProject extends Component {
                 <p>Открыть страницу проекта</p>
               </Col>
               <Col xs={formLayout.secondCol} className={css.rightColumn}>
-                <Checkbox name='openProjectPage' onChange={this.props.handleCheckBox} />
+                <Checkbox
+                  name="openProjectPage"
+                  onChange={this.props.handleCheckBox}
+                />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={formLayout.firstCol} className={css.leftColumn}>
+                <p>Добавить проект в портфель</p>
+              </Col>
+              <Col xs={formLayout.secondCol} className={css.rightColumn}>
+                <Select />
               </Col>
             </Row>
           </label>
@@ -131,7 +151,11 @@ class CreateProject extends Component {
 }
 
 const mapDispatchToProps = {
-  CreateProject
+  getPortfolios
 };
 
-export default CreateProject;
+const mapStateToProps = state => ({
+  portfolios: state.Portfolios.portfolios
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateProject);

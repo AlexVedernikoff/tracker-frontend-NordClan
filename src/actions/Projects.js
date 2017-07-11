@@ -72,7 +72,7 @@ const GetProjects = (
   };
 };
 
-export const requestProjectCreate = project => {
+export const requestProjectCreate = (project, openProjectPage) => {
   if (!project.name) {
     return;
   }
@@ -88,6 +88,7 @@ export const requestProjectCreate = project => {
         withCredentials: true
       })
       .catch(error => {
+        dispatch(FinishLoading());
         dispatch(ShowNotification({ message: error.message, type: 'error' }));
       })
       .then(response => {
@@ -96,6 +97,11 @@ export const requestProjectCreate = project => {
           dispatch(projectCreateSuccess(response.data));
           dispatch(closeCreateProjectModal());
           dispatch(GetProjects());
+
+          if (openProjectPage) {
+            history.push(`projects/${response.data.id}`)
+          }
+
         }
       });
   };

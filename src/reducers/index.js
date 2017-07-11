@@ -6,12 +6,14 @@ import Projects from './Projects';
 import Loading from './Loading';
 import Project from './Project';
 import Task from './Task';
+import Portfolios from './Portfolios';
 import Notifications from './Notifications';
 
 const rootReducer = combineReducers({
   Auth,
   Loading,
   Notifications,
+  Portfolios,
   Project,
   Projects,
   Task,
