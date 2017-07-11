@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactTooltip from 'react-tooltip';
 import { DropTarget } from 'react-dnd';
 import { TASK_ROW } from '../../../../constants/DragAndDrop';
 import classnames from 'classnames';
@@ -10,7 +9,6 @@ import * as css from './SprintColumn.scss';
 const columnTarget = {
   drop (props, monitor) {
     props.onDrop(monitor.getItem(), props.sprint);
-    ReactTooltip.rebuild();
   }
 };
 

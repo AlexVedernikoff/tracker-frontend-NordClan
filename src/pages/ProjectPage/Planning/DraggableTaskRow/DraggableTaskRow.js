@@ -7,8 +7,7 @@ import TaskRow from '../../../../components/TaskRow';
 const taskRowSource = {
   beginDrag (props) {
     return {
-      id: props.task.id,
-      previousSprint: props.task.sprintId
+      id: props.task.id
     };
   }
 };

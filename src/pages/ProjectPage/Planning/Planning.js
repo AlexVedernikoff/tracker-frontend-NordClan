@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
 import GanttChart from './GanttChart';
 import classnames from 'classnames';
@@ -14,6 +15,14 @@ import moment from 'moment';
 
 import GetPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
+
+const sortTasks = (sortedArr) => {
+  sortedArr.sort((a, b) => {
+    if (a.prioritiesId > b.prioritiesId) return 1;
+    if (a.prioritiesId < b.prioritiesId) return -1;
+  });
+  return sortedArr;
+};
 
 class Planning extends Component {
   constructor (props) {
@@ -89,9 +98,12 @@ class Planning extends Component {
     };
   }
 
-  render () {
+  componentDidUpdate () {
+    ReactTooltip.rebuild();
+  }
 
-    const leftColumnTasks = this.props.leftColumnTasks.map(task => {
+  render () {
+    const leftColumnTasks = sortTasks(this.props.leftColumnTasks).map(task => {
       return <DraggableTaskRow
                 key={`task-${task.id}`}
                 task={task}
@@ -101,7 +113,7 @@ class Planning extends Component {
               />;
     });
 
-    const rightColumnTasks = this.props.rightColumnTasks.map(task => {
+    const rightColumnTasks = sortTasks(this.props.rightColumnTasks).map(task => {
       return <DraggableTaskRow
                 key={`task-${task.id}`}
                 task={task}
