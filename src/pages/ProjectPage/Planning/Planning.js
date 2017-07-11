@@ -80,7 +80,7 @@ class Planning extends Component {
   };
 
   selectValue = (e, name) => {
-    this.setState({ [name]: e !== null ? e.value : null }, () => {
+    this.setState({[name]: e }, () => {
       this.props.GetPlanningTasks(
       name === 'leftColumn' ? 'left' : 'right',
         {
@@ -91,10 +91,15 @@ class Planning extends Component {
     });
   };
 
+  componentWillMount () {
+    this.selectValue(0, 'leftColumn');
+    //this.selectValue({value: this.props.project.sprints[0].id}, 'rightColumn');
+  }
+
   componentWillReceiveProps (nextProps) {
     if (!nextProps.SprintIsEditing && this.props.SprintIsEditing) {
-      this.selectValue({value: this.state.leftColumn}, 'leftColumn');
-      this.selectValue({value: this.state.rightColumn}, 'rightColumn');
+      this.selectValue(this.state.leftColumn, 'leftColumn');
+      this.selectValue(this.state.rightColumn, 'rightColumn');
     };
   }
 
@@ -300,7 +305,7 @@ class Planning extends Component {
                     placeholder="Введите название спринта..."
                     multi={false}
                     value={this.state.leftColumn}
-                    onChange={e => this.selectValue(e, 'leftColumn')}
+                    onChange={e => this.selectValue(e !== null ? e.value : null, 'leftColumn')}
                     noResultsText="Нет результатов"
                     options={this.getSprints('leftColumn')}
                   />
@@ -338,7 +343,7 @@ class Planning extends Component {
                     placeholder="Введите название спринта..."
                     multi={false}
                     value={this.state.rightColumn}
-                    onChange={e => this.selectValue(e, 'rightColumn')}
+                    onChange={e => this.selectValue(e !== null ? e.value : null, 'rightColumn')}
                     noResultsText="Нет результатов"
                     options={this.getSprints('rightColumn')}
                   />
