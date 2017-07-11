@@ -1,78 +1,121 @@
-import React, {PropTypes} from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import classnames from 'classnames';
 import ReactTooltip from 'react-tooltip';
 import Tag from '../../../components/Tag';
 import Tags from '../../../components/Tags';
 import * as css from './Details.scss';
+import moment from 'moment';
 
-export default class Details extends React.Component {
+export default class Details extends Component {
+  constructor (props) {
+    super(props);
+  }
 
   render () {
-    const tags = this.props.task.tags.map((tag, i) => {
-      return (
-        <Tag key={i} name={tag}/>
-      );
+    const { task } = this.props;
+    const tags = task.tags.map((tag, i) => {
+      return <Tag key={i} name={tag} />;
     });
 
     return (
       <div className={css.detailsBlock}>
         <table className={css.detailTable}>
           <tbody>
-            <tr>
-              <td>Проект:</td>
-              <td>
-                <Link to={'/projects/' + this.props.task.projectId}>{this.props.task.projectName}</Link>
-              </td>
-            </tr>
-            <tr>
-              <td>Спринт:</td>
-              <td>
-                <Link to="#">{this.props.task.sprint}</Link>
-              </td>
-            </tr>
+            {task.project
+              ? <tr>
+                  <td>Проект:</td>
+                  <td>
+                    <Link to={'/projects/' + this.props.task.projectId}>
+                      {task.projectName}
+                    </Link>
+                  </td>
+                </tr>
+              : null}
+            {task.sprint
+              ? <tr>
+                  <td>Спринт:</td>
+                  <td>
+                    <Link to="#">
+                      {this.props.task.sprint}
+                    </Link>
+                  </td>
+                </tr>
+              : null}
             <tr>
               <td>Теги:</td>
               <td className={css.tags}>
-                <Tags>{tags}</Tags>
+                <Tags>
+                  {tags}
+                </Tags>
               </td>
             </tr>
-            <tr>
-              <td>Автор:</td>
-              <td>
-                <Link to="#">{this.props.task.creator ? this.props.task.creator.name : ''}</Link>
-              </td>
-            </tr>
-            <tr>
-              <td>Исполнитель:</td>
-              <td>
-                <Link to="#">{this.props.task.owner ? this.props.task.owner.name : ''}</Link>
-              </td>
-            </tr>
+            {task.author
+              ? <tr>
+                  <td>Автор:</td>
+                  <td>
+                    <Link to="#">
+                      {this.props.task.creator
+                        ? this.props.task.creator.name
+                        : ''}
+                    </Link>
+                  </td>
+                </tr>
+              : null}
+            {task.executor
+              ? <tr>
+                  <td>Исполнитель:</td>
+                  <td>
+                    <Link to="#">
+                      {this.props.task.owner ? this.props.task.owner.name : ''}
+                    </Link>
+                  </td>
+                </tr>
+              : null}
             <tr>
               <td>Дата создания:</td>
               <td>
-                28 мая 2016
+                {moment(this.props.task.createdAt).format('DD.MM.YYYY')}
               </td>
             </tr>
-            <tr>
-              <td>Запланировано:</td>
-              <td>
-                10 ч.
-              </td>
-            </tr>
+            {this.props.task.PlannedExecutionTime
+              ? <tr>
+                  <td>Запланировано:</td>
+                  <td>
+                    {`${this.props.task.PlannedExecutionTime} ч.`}
+                  </td>
+                </tr>
+              : null}
             <tr>
               <td>Потрачено:</td>
               <td>
-                <span data-tip data-place="right" data-for='time' className={classnames({[css.alert]: true, [css.factTime]: true})}>100 ч.</span>
+                <span
+                  data-tip
+                  data-place="right"
+                  data-for="time"
+                  className={classnames({
+                    [css.alert]: true,
+                    [css.factTime]: true
+                  })}
+                >
+                  100 ч.
+                </span>
               </td>
             </tr>
           </tbody>
         </table>
-        <ReactTooltip id='time' aria-haspopup='true' className="tooltip">
-          <div className={css.timeString}><span>Develop:</span><span>1 ч.</span></div>
-          <div className={css.timeString}><span>Code Review:</span>27 ч.</div>
-          <div className={css.timeString}><span>QA:</span>59 ч.</div>
+        <ReactTooltip id="time" aria-haspopup="true" className="tooltip">
+          <div className={css.timeString}>
+            <span>Develop:</span>
+            <span>1 ч.</span>
+          </div>
+          <div className={css.timeString}>
+            <span>Code Review:</span>27 ч.
+          </div>
+          <div className={css.timeString}>
+            <span>QA:</span>59 ч.
+          </div>
         </ReactTooltip>
       </div>
     );
