@@ -12,7 +12,8 @@ const taskCardSource = {
   beginDrag (props) {
     return {
       id: props.task.id,
-      section: props.section
+      section: props.section,
+      statusId: props.task.statusId
     };
   }
 };
@@ -44,11 +45,11 @@ const TaskCard = (props) => {
           ? <div
           className={classnames({
             [css.status]: true,
-            [css.inhold]: task.statusId === 3 || task.statusId === 5 || task.statusId === 7,
-            [css.inprogress]: task.statusId === 2 || task.statusId === 4 || task.statusId === 6
+            [css.inhold]: task.statusId === 2 || task.statusId === 4 || task.statusId === 6,
+            [css.inprogress]: task.statusId === 3 || task.statusId === 5 || task.statusId === 7
           })}>
             {
-              task.status === task.statusId === 3 || task.statusId === 5 || task.statusId === 7
+              task.statusId === 3 || task.statusId === 5 || task.statusId === 7
               ? <IconPlay data-tip="Начать"/>
               : <IconPause data-tip="Приостановить"/>
             }

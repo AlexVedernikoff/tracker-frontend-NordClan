@@ -12,7 +12,7 @@ const columnTarget = {
   },
 
   drop (props, monitor) {
-    props.onDrop(monitor.getItem(), props.section, props.title);
+    props.onDrop(monitor.getItem(), props.title);
   }
 };
 

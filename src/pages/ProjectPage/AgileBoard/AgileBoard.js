@@ -14,6 +14,7 @@ import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 import * as css from './AgileBoard.scss';
 
 import GetTasks from '../../../actions/Tasks';
+import { changeTask, startTaskEditing } from '../../../actions/Task';
 
 const filterTasks = (array, sortedObject) => {
   array.forEach((element) => {
@@ -56,6 +57,25 @@ const sortTasks = (sortedObject, prefix, section) => {
   }
 };
 
+const getNewStatus = (oldStatusId, newPhase) => {
+  let newStatusId;
+
+  switch (newPhase) {
+    case 'New': newStatusId = 1;
+          break;
+    case 'Dev': newStatusId = 3;
+          break;
+    case 'Code Review': newStatusId = 5;
+          break;
+    case 'QA': newStatusId = 7;
+          break;
+    case 'Done': newStatusId = 8;
+          break;
+    default: break;
+  }
+
+  return newStatusId;
+};
 
 class AgileBoard extends Component {
 
@@ -67,7 +87,7 @@ class AgileBoard extends Component {
         allTasks: true
       },
       filterTags: [],
-      changedSprint: 0
+      changedSprint: null
     };
   }
 
@@ -90,51 +110,13 @@ class AgileBoard extends Component {
     });
   }
 
-  dropTask = (taskId, section, phase) => {
-    // let obj, task;
+  dropTask = (task, phase) => {
+    this.props.changeTask({
+      id: task.id,
+      statusId: getNewStatus(task.statusId, phase)
+    }, 'Status');
 
-    // switch (section) {
-    //   case 'mine':
-    //     obj = mineSorted;
-    //     break;
-    //   case 'all':
-    //     obj = allSorted;
-    //     break;
-    //   default:
-    //     break;
-    // }
-
-    // for (const key in obj) {
-    //   obj[key].forEach((element, i) => {
-    //     if (element.props.task.id === taskId.id) {
-    //       task = obj[key].splice(i, 1)[0];
-    //     }
-    //   });
-    // }
-
-    // task.props.task.stage = phase;
-
-    // switch (phase) {
-    //   case 'NEW':
-    //     obj.new.push(task);
-    //     break;
-    //   case 'DEVELOP':
-    //     obj.dev.push(task);
-    //     break;
-    //   case 'CODE_REVIEW':
-    //     obj.codeReview.push(task);
-    //     break;
-    //   case 'QA':
-    //     obj.qa.push(task);
-    //     break;
-    //   case 'DONE':
-    //     obj.done.push(task);
-    //     break;
-    //   default:
-    //     break;
-    // }
-
-    // this.forceUpdate();
+    this.props.startTaskEditing('Status');
   }
 
   getSprints = () => {
@@ -168,6 +150,12 @@ class AgileBoard extends Component {
 
   componentWillMount () {
     this.selectValue(0, 'changedSprint');
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (!nextProps.StatusIsEditing && this.props.StatusIsEditing) {
+      this.selectValue(this.state.changedSprint, 'changedSprint');
+    };
   }
 
   componentDidUpdate () {
@@ -212,7 +200,7 @@ class AgileBoard extends Component {
                 placeholder="Введите название спринта..."
                 multi={false}
                 value={this.state.changedSprint}
-                onChange={(e) => this.selectValue(e ? e.value : null, 'changedSprint')}
+                onChange={(e) => this.selectValue(e !== null ? e.value : null, 'changedSprint')}
                 noResultsText="Нет результатов"
                 options={this.getSprints()}
               />
@@ -278,17 +266,25 @@ class AgileBoard extends Component {
 
 AgileBoard.propTypes = {
   GetTasks: PropTypes.func.isRequired,
+  StatusIsEditing: PropTypes.bool,
+  changeTask: PropTypes.func.isRequired,
   project: PropTypes.object,
   sprintTasks: PropTypes.array,
-  sprints: PropTypes.array
+  sprints: PropTypes.array,
+  startTaskEditing: PropTypes.func
 };
 
 const mapStateToProps = state => ({
   sprintTasks: state.Tasks.tasks,
   sprints: state.Project.project.sprints,
-  project: state.Project.project
+  project: state.Project.project,
+  StatusIsEditing: state.Task.StatusIsEditing
 });
 
-const mapDispatchToProps = { GetTasks };
+const mapDispatchToProps = {
+  GetTasks,
+  changeTask,
+  startTaskEditing
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);
