@@ -1,7 +1,7 @@
 import * as PortfoliosActions from '../constants/Portfolios';
 import axios from 'axios';
-import { StartLoading, FinishLoading } from './Loading';
-import { ShowNotification } from './Notifications';
+import { startLoading, finishLoading } from './Loading';
+import { showNotification } from './Notifications';
 
 const startPortfoliosRequest = () => ({
   type: PortfoliosActions.GET_PORTFOLIOS_START
@@ -17,18 +17,18 @@ const getPortfolios = () => {
 
   return dispatch => {
     dispatch(startPortfoliosRequest());
-    dispatch(StartLoading());
+    dispatch(startLoading());
 
     axios
       .get(URL, { withCredentials: true })
       .catch(error => {
-        dispatch(FinishLoading());
-        dispatch(ShowNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
       })
       .then(response => {
         if (response && response.status === 200) {
           dispatch(successPortfoliosRequest(response.data.data));
-          dispatch(FinishLoading());
+          dispatch(finishLoading());
         }
       });
   };

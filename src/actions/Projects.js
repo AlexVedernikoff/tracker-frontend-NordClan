@@ -2,14 +2,14 @@ import * as ProjectActions from '../constants/Projects';
 import axios from 'axios';
 import { store } from '../Router';
 import { history } from '../Router';
-import { StartLoading, FinishLoading } from './Loading';
-import { ShowNotification } from './Notifications';
+import { startLoading, finishLoading } from './Loading';
+import { showNotification } from './Notifications';
 
-const StartProjectsReceive = () => ({
+const startProjectsReceive = () => ({
   type: ProjectActions.PROJECTS_RECEIVE_START
 });
 
-const ProjectsReceived = projects => ({
+const projectsReceived = projects => ({
   type: ProjectActions.PROJECTS_RECEIVE_SUCCESS,
   data: projects
 });
@@ -41,8 +41,8 @@ const GetProjects = (
 ) => {
   const URL = '/api/project';
   return dispatch => {
-    dispatch(StartProjectsReceive());
-    dispatch(StartLoading());
+    dispatch(startProjectsReceive());
+    dispatch(startLoading());
     axios
       .get(
         URL,
@@ -60,13 +60,13 @@ const GetProjects = (
         { withCredentials: true }
       )
       .catch(error => {
-        dispatch(FinishLoading());
-        dispatch(ShowNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
       })
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(ProjectsReceived(response.data.data));
-          dispatch(FinishLoading());
+          dispatch(projectsReceived(response.data.data));
+          dispatch(finishLoading());
         }
       });
   };
@@ -80,7 +80,7 @@ export const requestProjectCreate = (project, openProjectPage) => {
   const URL = '/api/project';
 
   return dispatch => {
-    dispatch(StartLoading());
+    dispatch(startLoading());
     dispatch(startProjectCreate());
 
     axios
@@ -88,12 +88,12 @@ export const requestProjectCreate = (project, openProjectPage) => {
         withCredentials: true
       })
       .catch(error => {
-        dispatch(FinishLoading());
-        dispatch(ShowNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
       })
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(FinishLoading());
+          dispatch(finishLoading());
           dispatch(projectCreateSuccess(response.data));
           dispatch(closeCreateProjectModal());
           dispatch(GetProjects());
