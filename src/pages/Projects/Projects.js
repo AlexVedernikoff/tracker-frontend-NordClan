@@ -60,7 +60,7 @@ class Projects extends Component {
   }
 
   changeNameFilter = event => {
-    const { dispatch } = this.props;
+    const { GetProjects } = this.props;
     this.setState(
       {
         filterByName: event.target.value
@@ -72,15 +72,13 @@ class Projects extends Component {
         const dateTo = this.state.dateTo
           ? moment(this.state.dateTo).format('YYYY-MM-DD')
           : '';
-        dispatch(
-          GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo)
-        );
+        GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo);
       }
     );
   };
 
   handleDayFromChange = (dateFrom, modifiers) => {
-    const { dispatch } = this.props;
+    const { GetProjects } = this.props;
     this.setState({ dateFrom }, () => {
       dateFrom = dateFrom
         ? moment(this.state.dateFrom).format('YYYY-MM-DD')
@@ -88,22 +86,18 @@ class Projects extends Component {
       const dateTo = this.state.dateTo
         ? moment(this.state.dateTo).format('YYYY-MM-DD')
         : '';
-      dispatch(
-        GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo)
-      );
+      GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo);
     });
   };
 
   handleDayToChange = (dateTo, modifiers) => {
-    const { dispatch } = this.props;
+    const { GetProjects } = this.props;
     this.setState({ dateTo }, () => {
       const dateFrom = this.state.dateFrom
         ? moment(this.state.dateFrom).format('YYYY-MM-DD')
         : '';
       dateTo = dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
-      dispatch(
-        GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo)
-      );
+      GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo);
     });
   };
 
@@ -129,10 +123,14 @@ class Projects extends Component {
     });
   };
 
-  sendRequest () {
+  sendRequest = event => {
+    event.preventDefault();
     const { requestProjectCreate } = this.props;
-
-  }
+    requestProjectCreate({
+      name: this.state.projectName,
+      prefix: this.state.projectPrefix
+    });
+  };
 
   render () {
     const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
@@ -257,6 +255,7 @@ class Projects extends Component {
           isOpen={this.props.isCreateProjectModalOpen}
           onRequestClose={this.handleModal}
           onChange={this.handleModalChange}
+          onSubmit={this.sendRequest}
         />
       </div>
     );

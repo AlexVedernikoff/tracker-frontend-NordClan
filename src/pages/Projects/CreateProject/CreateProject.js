@@ -81,7 +81,7 @@ class CreateProject extends Component {
         closeTimeoutMS={200}
         style={ReactModalStyles}
       >
-        <form className={css.createProjectForm}>
+        <form className={css.createProjectForm} onSubmit={this.props.onSubmit}>
           <label className={css.formField}>
             <Row>
               <Col xs={4} className={css['col-xs-4']}>
@@ -115,6 +115,7 @@ class CreateProject extends Component {
               text="Создать проект"
               type="green"
               style={{ width: '50%' }}
+              onClick={this.props.onSubmit}
             />
             <Button
               text="Назад"

@@ -94,6 +94,8 @@ export const requestProjectCreate = project => {
         if (response && response.status === 200) {
           dispatch(FinishLoading());
           dispatch(projectCreateSuccess(response.data));
+          dispatch(closeCreateProjectModal());
+          dispatch(GetProjects());
         }
       });
   };
