@@ -27,8 +27,8 @@ export default class Details extends Component {
               ? <tr>
                   <td>Проект:</td>
                   <td>
-                    <Link to={'/projects/' + this.props.task.projectId}>
-                      {task.projectName}
+                    <Link to={'/projects/' + this.props.task.project.id}>
+                      {task.project.name}
                     </Link>
                   </td>
                 </tr>

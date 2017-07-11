@@ -5,29 +5,33 @@ const InitialState = {
   pageSize: 25,
   currentPage: 1,
   tags: '',
-  isReceiving: false
+  isCreateProjectModalOpen: false
 };
 
 function Projects (state = InitialState, action) {
   switch (action.type) {
     case ProjectActions.PROJECTS_RECEIVE_START:
       return {
-        ...state,
-        isReceiving: true
-      };
-
-    case ProjectActions.PROJECTS_RECEIVE_ERROR:
-      return {
-        ...state,
-        isReceiving: false
+        ...state
       };
 
     case ProjectActions.PROJECTS_RECEIVE_SUCCESS:
       return {
         ...state,
-        projects: action.data,
-        isReceiving: false
+        projects: action.data
       };
+
+    case ProjectActions.OPEN_CREATE_PROJECT_MODAL:
+      return {
+        ...state,
+        isCreateProjectModalOpen: true
+      }
+
+    case ProjectActions.CLOSE_CREATE_PROJECT_MODAL:
+      return {
+        ...state,
+        isCreateProjectModalOpen: false
+      }
 
     default:
       return state;

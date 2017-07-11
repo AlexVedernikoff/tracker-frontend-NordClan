@@ -1,8 +1,8 @@
 import * as TagsActions from '../constants/Tags';
 import axios from 'axios';
-import {StartLoading, FinishLoading} from './Loading';
-import {store} from '../Router';
-import {history} from '../Router';
+import { startLoading, finishLoading } from './Loading';
+import { store } from '../Router';
+import { history } from '../Router';
 
 const startTagsCreate = () => ({
   type: TagsActions.TAGS_CREATE_START
@@ -70,8 +70,9 @@ export const deleteTag = (tag,
         dispatch(tagsDeleteSucces({
           taggableId: taggableId,
           tags: res.data
-        }));
-        dispatch(FinishLoading());
-      });
+        })
+      );
+      dispatch(finishLoading());
+    });
   };
 };
