@@ -44,7 +44,7 @@ SprintColumn.propTypes = {
   connectDropTarget: PropTypes.func.isRequired,
   isOver: PropTypes.bool.isRequired,
   onDrop: PropTypes.func.isRequired,
-  sprint: PropTypes.string.isRequired,
+  sprint: PropTypes.number.isRequired,
   tasks: PropTypes.array.isRequired
 };
 

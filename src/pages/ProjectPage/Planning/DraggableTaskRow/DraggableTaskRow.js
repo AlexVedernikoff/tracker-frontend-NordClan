@@ -8,7 +8,7 @@ const taskRowSource = {
   beginDrag (props) {
     return {
       id: props.task.id,
-      previousSprint: props.task.sprint
+      previousSprint: props.task.sprintId
     };
   }
 };

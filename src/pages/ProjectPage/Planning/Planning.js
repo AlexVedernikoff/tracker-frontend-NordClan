@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import GanttChart from './GanttChart';
 import classnames from 'classnames';
 import * as css from './Planning.scss';
@@ -11,131 +12,25 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-//Mocks
-
-const tasks = [];
-const getRandomString = arr => {
-  return arr[Math.floor(Math.random() * arr.length)];
-};
-
-const getSomeRandomString = arr => {
-  const start = Math.floor(Math.random() * arr.length);
-  const end = arr.length - start;
-  return arr.splice(start, end);
-};
-
-for (let i = 0; i < 30; i++) {
-  const mockTags = [];
-
-  tasks.push({
-    name: getRandomString([
-      'Back. REST для просмотра товаров на голосовании, выбора товара для голосования, покупки товара',
-      'Back. Голосование, снятие голоса", "UI. Интеграции таба со счетами для страницы пользователя',
-      'Киви-Банк - Артек: Ретроспектива 02.06.17',
-      'Bug: При покупке семейного товара в раздел Голосование профиля семьи не подтягивается значение полей Название и Стоимость товара',
-      'TASK: Перевод денег из семьи члену семьи',
-      'UI. Интеграции таба со счетами для страницы пользователя'
-    ]),
-    tags: mockTags.concat(
-      getSomeRandomString([
-        'refactor',
-        'верстка',
-        'demo',
-        'release',
-        'design',
-        'совещание'
-      ]),
-      getRandomString(['UI', 'backend'])
-    ),
-    prefix: getRandomString(['MT-12', 'MT-254', 'MT-1245']),
-    sprint: getRandomString([
-      'sprint1',
-      'sprint2',
-      'sprint3',
-      'sprint4',
-      'backlog'
-    ]),
-    id: i,
-    status: getRandomString(['INHOLD', 'INPROGRESS']),
-    type: getRandomString(['Фича / Задача', 'Баг']),
-    stage: getRandomString([
-      'NEW',
-      'NEW',
-      'NEW',
-      'DEVELOP',
-      'DEVELOP',
-      'DEVELOP',
-      'QA',
-      'CODE_REVIEW',
-      'QA',
-      'DONE',
-      'DONE',
-      'DONE'
-    ]),
-    executor: getRandomString([
-      'Андрей Юдин',
-      'Александра Одноклассница',
-      'Иосиф Джугашвили',
-      'Ксенофонт Арабский',
-      'Не назначено'
-    ]),
-    executorId: getRandomString([1, 2, 3, 4, 5]),
-    priority: getRandomString([1, 2, 3, 3, 3, 3, 3, 4, 5]),
-    plannedTime: getRandomString([8, 9, 10, 11, 12, 13, 14, 15, 16]),
-    factTime: getRandomString([4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]),
-    subtasks: getRandomString([1, 2, 3, 4, 5]),
-    linkedTasks: getRandomString([1, 2, 3, 4, 5])
-  });
-}
-
-//const sortTasks = (sortedArr) => {
-//   tasks.sort((a, b) => {
-//     if (a.priority > b.priority) return 1;
-//     if (a.priority < b.priority) return -1;
-//   });
-//   return sortedArr.map((element) => {
-//     return <TaskRow key={element.id} task={element} shortcut card/>;
-//   });
-// };
-
-//const sortedTasks = sortTasks(tasks);
-
-const sprintTasks = {
-  sprint1: [],
-  sprint2: [],
-  sprint3: [],
-  sprint4: [],
-  backlog: []
-};
-
-tasks.map(element => {
-  sprintTasks[element.sprint].push(
-    <DraggableTaskRow key={element.id} task={element} shortcut card/>
-  );
-});
+import GetPlanningTasks from '../../../actions/PlanningTasks';
 
 class Planning extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      changedSprint: 'sprint1',
-      leftColumn: 'backlog',
-      rightColumn: `sprint0`
+      leftColumn: null,
+      rightColumn: null
     };
   }
 
-  selectValue = (e, name) => {
-    this.setState({ [name]: e ? e.value : null });
-  };
-
   getSprints = column => {
     const secondColumn = column === 'leftColumn' ? 'rightColumn' : 'leftColumn';
-    let sprints = _.sortBy(this.props.sprints, sprint => {
+    let sprints = _.sortBy(this.props.project.sprints, sprint => {
       return new moment(sprint.factFinishDate);
     });
 
     sprints = sprints.map((sprint, i) => ({
-      value: `sprint${i}`,
+      value: sprint.id,
       label: `${sprint.name} (${moment(sprint.factStartDate).format(
         'DD.MM.YYYY'
       )} ${sprint.factFinishDate
@@ -150,7 +45,7 @@ class Planning extends Component {
     }));
 
     sprints.push({
-      value: 'backlog',
+      value: 0,
       label: 'Backlog',
       className: classnames({
         [css.INPROGRESS]: true,
@@ -158,28 +53,62 @@ class Planning extends Component {
       })
     });
 
-    // sprints.forEach(sprint => {
-    //   sprint.disabled = sprint.value === this.state[secondColumn];
-    // });
+    sprints.forEach(sprint => {
+      sprint.disabled = sprint.value === this.state[secondColumn];
+    });
 
     return sprints;
   };
 
   dropTask = (task, sprint) => {
-    let i, movedTask;
+    console.log(task, sprint);
+    // let i, movedTask;
 
-    for (i in sprintTasks[task.previousSprint]) {
-      if (sprintTasks[task.previousSprint][i].props.task.id === task.id) {
-        movedTask = sprintTasks[task.previousSprint].splice(i, 1)[0];
-      }
-    }
+    // for (i in sprintTasks[task.previousSprint]) {
+    //   if (sprintTasks[task.previousSprint][i].props.task.id === task.id) {
+    //     movedTask = sprintTasks[task.previousSprint].splice(i, 1)[0];
+    //   }
+    // }
 
-    movedTask.props.task.sprint = sprint;
-    sprintTasks[sprint].push(movedTask);
-    this.forceUpdate();
+    // movedTask.props.task.sprint = sprint;
+    // sprintTasks[sprint].push(movedTask);
+    // this.forceUpdate();
+  };
+
+  selectValue = (e, name) => {
+    this.setState({ [name]: e !== null ? e.value : null }, () => {
+      this.props.GetPlanningTasks(
+      name === 'leftColumn' ? 'left' : 'right',
+        {
+          projectId: this.props.project.id,
+          sprintId: this.state[name]
+        }
+      );
+    });
   };
 
   render () {
+
+    const leftColumnTasks = this.props.leftColumnTasks.map(task => {
+      return <DraggableTaskRow
+                key={`task-${task.id}`}
+                task={task}
+                prefix={this.props.project.prefix}
+                shortcut
+                card
+              />;
+    });
+
+    const rightColumnTasks = this.props.rightColumnTasks.map(task => {
+      return <DraggableTaskRow
+                key={`task-${task.id}`}
+                task={task}
+                prefix={this.props.project.prefix}
+                shortcut
+                card
+              />;
+    });
+
     return (
       <div>
         <section>
@@ -382,8 +311,8 @@ class Planning extends Component {
                 />
               </div>
               {
-                  this.state.leftColumn
-                  ? <SprintColumn onDrop={this.dropTask} sprint={this.state.leftColumn} tasks={sprintTasks[this.state.leftColumn]}/>
+                  this.state.leftColumn || this.state.leftColumn === 0
+                  ? <SprintColumn onDrop={this.dropTask} sprint={this.state.leftColumn} tasks={leftColumnTasks} />
                   : null
               }
             </Col>
@@ -420,8 +349,8 @@ class Planning extends Component {
                 />
               </div>
               {
-                  this.state.rightColumn
-                  ? <SprintColumn onDrop={this.dropTask} sprint={this.state.rightColumn} tasks={sprintTasks[this.state.rightColumn]}/>
+                  this.state.rightColumn || this.state.rightColumn === 0
+                  ? <SprintColumn onDrop={this.dropTask} sprint={this.state.rightColumn} tasks={rightColumnTasks} />
                   : null
               }
             </Col>
@@ -433,8 +362,19 @@ class Planning extends Component {
   }
 }
 
+Planning.propTypes = {
+  GetPlanningTasks: PropTypes.func.isRequired,
+  leftColumnTasks: PropTypes.array,
+  project: PropTypes.object,
+  rightColumnTasks: PropTypes.array,
+};
+
 const mapStateToProps = state => ({
-  sprints: state.Project.project.sprints
+  project: state.Project.project,
+  leftColumnTasks: state.PlanningTasks.leftColumnTasks,
+  rightColumnTasks: state.PlanningTasks.rightColumnTasks
 });
 
-export default connect(mapStateToProps)(Planning);
+const mapDispatchToProps = { GetPlanningTasks };
+
+export default connect(mapStateToProps, mapDispatchToProps)(Planning);
