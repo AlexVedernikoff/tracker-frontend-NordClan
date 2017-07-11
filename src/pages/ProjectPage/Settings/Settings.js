@@ -4,43 +4,71 @@ import { Link } from 'react-router';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
+import { createSprint } from '../../../actions/Sprint';
 
 import * as css from './Settings.scss';
 import SprintCard from '../../../components/SprintCard';
 import Checkbox from '../../../components/Checkbox';
 import Button from '../../../components/Button';
-
-//Mocks
-
-const sprints = [
-  {
-    name: 'Спринт №1',
-    dateStart: '06.06.2017',
-    dateEnd: '12.06.2017',
-    tasksTotal: '35',
-    tasksDone: '34',
-    status: 'INHOLD'
-  },
-  {
-    name: 'Спринт №2',
-    dateStart: '12.06.2017',
-    dateEnd: '24.06.2017',
-    tasksTotal: '35',
-    tasksDone: '1',
-    status: 'INPROGRESS'
-  },
-  {
-    name: 'Спринт №3',
-    dateStart: '24.06.2017',
-    dateEnd: '01.07.2017',
-    tasksTotal: '40',
-    tasksDone: '0',
-    status: 'INHOLD'
-  }
-];
+import Modal from '../../../components/Modal';
+import DatepickerDropdown from '../../../components/DatepickerDropdown';
+import Input from '../../../components/Input';
+import moment from 'moment';
 
 class Settings extends Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      isModalOpen: false,
+      dateFrom: undefined,
+      dateTo: undefined,
+      sprintName: '',
+      sprintTime: ''
+    };
+  }
+
+  handleOpenModal = () => {
+    this.setState({ isModalOpen: true });
+  };
+
+  handleCloseModal = () => {
+    this.setState({ isModalOpen: false });
+  };
+
+  onChangeTime = (e) => {
+    this.setState({ sprintTime: e.target.value });
+  };
+
+  onChangeName = (e) => {
+    this.setState({ sprintName: e.target.value });
+  };
+
+  handleDayFromChange = (date) => {
+    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD')});
+  };
+
+  handleDayToChange = (date) => {
+    this.setState({ dateTo: moment(date).format('YYYY-MM-DD')});
+  };
+
+  createSprint = () => {
+    this.setState({ isModalOpen: false });
+    this.props.createSprint(
+        this.state.sprintName.trim(),
+        this.props.id,
+        this.state.dateFrom,
+        this.state.dateTo
+    );
+  };
+
   render () {
+    const formattedDayFrom = this.state.dateFrom
+        ? moment(this.state.dateFrom).format('DD.MM.YYYY')
+        : '';
+    const formattedDayTo = this.state.dateTo
+        ? moment(this.state.dateTo).format('DD.MM.YYYY')
+        : '';
+
     return (
       <div className={css.property}>
         <h2>Участники</h2>
@@ -319,18 +347,82 @@ class Settings extends Component {
           type="primary"
           style={{ marginTop: 16 }}
           icon="IconPlus"
+          onClick={this.handleOpenModal}
         />
+        {
+          this.state.isModalOpen
+              ? <Modal
+              isOpen
+              contentLabel="modal"
+              onRequestClose={this.handleCloseModal}>
+            <div>
+              <div>
+                <Row>
+                  <Col xsOffset={1}
+                       xs={10}>
+                    <h3>Создание нового спринта</h3>
+                    <Input
+                        placeholder="Введите название спринта..."
+                        onChange={this.onChangeName}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs>
+                    <DatepickerDropdown
+                        name="dateFrom"
+                        value={formattedDayFrom}
+                        onDayChange={this.handleDayFromChange}
+                        placeholder="Дата начала"
+                    />
+                    <DatepickerDropdown
+                        name="dateTo"
+                        value={formattedDayTo}
+                        onDayChange={this.handleDayToChange}
+                        placeholder="Дата окончания"
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xsOffset={1}
+                       xs={10}>
+                    <Input
+                        placeholder="Введите время в часах..."
+                        onChange={this.onChangeTime}
+                    />
+                  </Col>
+                </Row>
+                <Row className={css.createButton}
+                     center="xs">
+                  <Col xs>
+                    <Button type="green"
+                            text="Создать"
+                            onClick={this.createSprint}/>
+                  </Col>
+                </Row>
+              </div>
+            </div>
+          </Modal>
+              : null
+        }
       </div>
     );
   }
 }
 
-const mapStateToProps = state => ({
-  sprints: state.Project.project.sprints
-});
-
 Settings.propTypes = {
+  createSprint: PropTypes.func.isRequired,
+  id: PropTypes.number,
   sprints: PropTypes.array.isRequired
 };
 
-export default connect(mapStateToProps)(Settings);
+const mapStateToProps = state => ({
+  sprints: state.Project.project.sprints,
+  id: state.Project.project.id
+});
+
+const mapDispatchToProps = {
+  createSprint
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);
