@@ -59,7 +59,9 @@ const Modal = (props) => {
   } = props;
 
   return (
-    <ReactModal {...other} onRequestClose={onRequestClose} style={style || ReactModalStyles} closeTimeoutMS={200 || closeTimeoutMS}>
+    <ReactModal {...other} onRequestClose={onRequestClose}
+                           style={style || ReactModalStyles}
+                           closeTimeoutMS={200 || closeTimeoutMS}>
       <IconClose
         style={iconStyles}
         className={css.iconClose}
