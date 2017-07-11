@@ -33,7 +33,9 @@ class Projects extends Component {
       projects: [],
       filterByName: '',
       dateFrom: undefined,
-      dateTo: undefined
+      dateTo: undefined,
+      projectName: '',
+      projectPrefix: ''
     };
   }
 
@@ -53,7 +55,7 @@ class Projects extends Component {
   };
 
   componentDidMount () {
-    const { GetProjects} = this.props;
+    const { GetProjects } = this.props;
     GetProjects(25, 1, '');
   }
 
@@ -112,11 +114,25 @@ class Projects extends Component {
       closeCreateProjectModal
     } = this.props;
     if (isCreateProjectModalOpen) {
+      this.setState({ projectName: '', projectPrefix: '' });
       closeCreateProjectModal();
     } else {
       openCreateProjectModal();
     }
   };
+
+  handleModalChange = event => {
+    const { target } = event;
+    const { name } = event.target;
+    this.setState({
+      [name]: target.value
+    });
+  };
+
+  sendRequest () {
+    const { requestProjectCreate } = this.props;
+
+  }
 
   render () {
     const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
@@ -240,6 +256,7 @@ class Projects extends Component {
         <CreateProject
           isOpen={this.props.isCreateProjectModalOpen}
           onRequestClose={this.handleModal}
+          onChange={this.handleModalChange}
         />
       </div>
     );

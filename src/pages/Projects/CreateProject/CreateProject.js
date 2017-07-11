@@ -27,7 +27,6 @@ class CreateProject extends Component {
   closeModal = event => {
     event.preventDefault();
     const { onRequestClose } = this.props;
-    this.setState({ projectName: '', prefix: '' });
     onRequestClose();
   };
 
@@ -90,7 +89,7 @@ class CreateProject extends Component {
               </Col>
               <Col xs={8}>
                 <Input
-                  onChange={this.handleChange}
+                  onChange={this.props.onChange}
                   name="projectName"
                   placeholder="Название проекта"
                 />
@@ -104,8 +103,8 @@ class CreateProject extends Component {
               </Col>
               <Col xs={8}>
                 <Input
-                  onChange={this.handleChange}
-                  name="prefix"
+                  onChange={this.props.onChange}
+                  name="projectPrefix"
                   placeholder="Префикс проекта"
                 />
               </Col>
