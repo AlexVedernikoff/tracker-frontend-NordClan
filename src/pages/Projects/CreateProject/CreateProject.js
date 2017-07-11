@@ -60,10 +60,16 @@ class CreateProject extends Component {
         outline: 'none',
         padding: 0,
         width: 500,
-        height: 300,
+        height: 350,
         maxHeight: '100%'
       }
     };
+    const PortfolioList = this.props.portfolios.map((portfolio, i) => {
+      return {
+        label: portfolio.name,
+        value: portfolio.id
+      };
+    });
 
     const formLayout = {
       firstCol: 5,
@@ -126,7 +132,13 @@ class CreateProject extends Component {
                 <p>Добавить проект в портфель</p>
               </Col>
               <Col xs={formLayout.secondCol} className={css.rightColumn}>
-                <Select />
+                <Select
+                  options={PortfolioList}
+                  onChange={this.props.onPortfolioSelect}
+                  style={{ width: '100%' }}
+                  value={this.props.selectedPortfolio}
+                  className={css.selectPortfolio}
+                />
               </Col>
             </Row>
           </label>

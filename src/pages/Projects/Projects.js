@@ -36,7 +36,8 @@ class Projects extends Component {
       dateTo: '',
       projectName: '',
       projectPrefix: '',
-      openProjectPage: false
+      openProjectPage: false,
+      selectedPortfolio: null
     };
   }
 
@@ -109,7 +110,7 @@ class Projects extends Component {
       closeCreateProjectModal
     } = this.props;
     if (isCreateProjectModalOpen) {
-      this.setState({ projectName: '', projectPrefix: '' });
+      this.setState({ projectName: '', projectPrefix: '', selectedPortfolio: null });
       closeCreateProjectModal();
     } else {
       openCreateProjectModal();
@@ -127,17 +128,27 @@ class Projects extends Component {
   sendRequest = event => {
     event.preventDefault();
     const { requestProjectCreate } = this.props;
-    requestProjectCreate({
-      name: this.state.projectName,
-      prefix: this.state.projectPrefix
-    }, this.state.openProjectPage);
+    requestProjectCreate(
+      {
+        name: this.state.projectName,
+        prefix: this.state.projectPrefix,
+        portfolioId: this.state.selectedPortfolio
+      },
+      this.state.openProjectPage
+    );
   };
 
   handleModalCheckBoxChange = event => {
     const { target } = event;
     this.setState({
       openProjectPage: target.checked
-    })
+    });
+  };
+
+  handlePortfolioChange = event => {
+    this.setState({
+      selectedPortfolio: event.value
+    });
   };
 
   render () {
@@ -265,6 +276,8 @@ class Projects extends Component {
           onChange={this.handleModalChange}
           onSubmit={this.sendRequest}
           handleCheckBox={this.handleModalCheckBoxChange}
+          onPortfolioSelect={this.handlePortfolioChange}
+          selectedPortfolio={this.state.selectedPortfolio}
         />
       </div>
     );
