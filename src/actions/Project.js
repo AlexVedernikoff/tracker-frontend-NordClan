@@ -67,7 +67,7 @@ const ChangeProject = (ChangedProperties, target) => {
       .put(URL, ChangedProperties, {
         withCredentials: true
       })
-      .catch(err => {
+      .catch(error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
         dispatch(finishLoading());
       })
