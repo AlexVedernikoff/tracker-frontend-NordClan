@@ -38,7 +38,7 @@ export default class Details extends Component {
                   <td>Спринт:</td>
                   <td>
                     <Link to="#">
-                      {this.props.task.sprint}
+                      {this.props.task.sprint.name}
                     </Link>
                   </td>
                 </tr>
