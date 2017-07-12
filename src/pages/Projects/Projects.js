@@ -146,6 +146,7 @@ class Projects extends Component {
   };
 
   handlePortfolioChange = event => {
+    console.log(event);
     this.setState({
       selectedPortfolio: event.value
     });
