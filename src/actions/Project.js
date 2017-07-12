@@ -1,32 +1,24 @@
-import * as ProjectActions from '../constants/Project';
 import axios from 'axios';
-import { StartLoading, FinishLoading } from './Loading';
+import * as ProjectActions from '../constants/Project';
+import { showNotification } from './Notifications';
+import { startLoading, finishLoading } from './Loading';
 
-const GettingProjectInfoStart = () => ({
+const gettingProjectInfoStart = () => ({
   type: ProjectActions.PROJECT_INFO_RECEIVE_START
 });
 
-const GettingProjectInfoSuccess = project => ({
+const gettingProjectInfoSuccess = project => ({
   type: ProjectActions.PROJECT_INFO_RECEIVE_SUCCESS,
   project: project
 });
 
-const StartProjectChange = () => ({
+const startProjectChange = () => ({
   type: ProjectActions.PROJECT_CHANGE_START
 });
 
-const ProjectChangeSuccess = response => ({
+const projectChangeSuccess = response => ({
   type: ProjectActions.PROJECT_CHANGE_SUCCESS,
   changedFields: response
-});
-
-const StartGettingProjectSprints = () => ({
-  type: ProjectActions.PROJECT_SPRINTS_RECEIVE_START
-});
-
-const GettingProjectSprintsSuccess = sprints => ({
-  type: ProjectActions.PROJECT_SPRINTS_RECEIVE_SUCCESS,
-  sprints: sprints
 });
 
 export const StartEditing = target => ({
@@ -43,46 +35,18 @@ const GetProjectInfo = id => {
   const URL = `/api/project/${id}`;
 
   return dispatch => {
-    dispatch(GettingProjectInfoStart());
-    dispatch(StartLoading());
+    dispatch(gettingProjectInfoStart());
+    dispatch(startLoading());
     axios
       .get(URL, {}, { withCredentials: true })
       .catch(error => {
-        dispatch(GettingProjectInfoError(error.message));
-        dispatch(FinishLoading());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
       })
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(GettingProjectInfoSuccess(response.data));
-          dispatch(FinishLoading());
-        }
-      });
-  };
-};
-
-const GetProjectSprints = id => {
-  const URL = '/api/sprint/';
-
-  return dispatch => {
-    dispatch(StartGettingProjectSprints());
-    dispatch(StartLoading());
-    axios
-      .get(
-        URL,
-      {
-        params: {
-          projectId: id
-        }
-      },
-        { withCredentials: true }
-      )
-      .catch(error => {
-        dispatch(FinishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(GettingProjectSprintsSuccess(response.data.data));
-          dispatch(FinishLoading());
+          dispatch(gettingProjectInfoSuccess(response.data));
+          dispatch(finishLoading());
         }
       });
   };
@@ -96,25 +60,27 @@ const ChangeProject = (ChangedProperties, target) => {
   const URL = `/api/project/${ChangedProperties.id}`;
 
   return dispatch => {
-    dispatch(StartProjectChange());
-    dispatch(StartLoading());
+    dispatch(startProjectChange());
+    dispatch(startLoading());
 
     axios
       .put(URL, ChangedProperties, {
         withCredentials: true
       })
-      .catch(err => {
-        dispatch(ProjectChangeError());
-        dispatch(FinishLoading());
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
       })
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(ProjectChangeSuccess(response.data));
-          dispatch(FinishLoading());
+          dispatch(projectChangeSuccess(response.data));
+          dispatch(finishLoading());
           dispatch(StopEditing(target));
         }
       });
   };
 };
 
-export { GetProjectInfo, ChangeProject, GetProjectSprints };
+
+
+export { GetProjectInfo, ChangeProject };

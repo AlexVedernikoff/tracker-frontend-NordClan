@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ReactModal from 'react-modal';
 import classnames from 'classnames';
 import Button from '../Button';
-import ButtonGroup from '../ButtonGroup';
 import * as css from './ConfirmModal.scss';
 
 const ReactModalStyles = {
@@ -50,8 +49,7 @@ const iconStyles = {
   fill: 'currentColor'
 };
 
-const ConfirmModal = (props) => {
-
+const ConfirmModal = props => {
   const {
     style,
     onRequestClose,
@@ -62,15 +60,30 @@ const ConfirmModal = (props) => {
     ...other
   } = props;
 
-  console.log(text);
-
   return (
-    <ReactModal {...other} onRequestClose={onRequestClose} style={style || ReactModalStyles} closeTimeoutMS={200 || closeTimeoutMS}>
+    <ReactModal
+      {...other}
+      onRequestClose={onRequestClose}
+      style={style || ReactModalStyles}
+      closeTimeoutMS={200 || closeTimeoutMS}
+    >
       <div className={css.container}>
-        <h3 style={{margin: 0}}>{text}</h3>
+        <h3 style={{ margin: 0 }}>
+          {text}
+        </h3>
       </div>
-      <Button text="ОК" type="green" style={{width: '50%'}} onClick={onConfirm}/>
-      <Button text="Отмена" type="primary" style={{width: '50%'}} onClick={onCancel}/>
+      <Button
+        text="ОК"
+        type="green"
+        style={{ width: '50%' }}
+        onClick={onConfirm}
+      />
+      <Button
+        text="Отмена"
+        type="primary"
+        style={{ width: '50%' }}
+        onClick={onCancel}
+      />
     </ReactModal>
   );
 };

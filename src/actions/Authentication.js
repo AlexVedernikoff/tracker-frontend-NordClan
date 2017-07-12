@@ -1,46 +1,36 @@
 import * as AuthActions from '../constants/Authentication';
 import axios from 'axios';
 import { history } from '../Router';
-import { StartLoading, FinishLoading } from './Loading';
-import { ShowNotification } from './Notifications';
+import { startLoading, finishLoading } from './Loading';
+import { showNotification } from './Notifications';
 
-const StartAuthentication = () => ({
+const startAuthentication = () => ({
   type: AuthActions.AUTHENTICATION_START
 });
 
-const AuthenticationError = message => ({
+const authenticationError = message => ({
   type: AuthActions.AUTHENTICATION_ERROR,
   errorMessage: message
 });
 
-const AuthenticationReceived = user => ({
+const authenticationReceived = user => ({
   type: AuthActions.AUTHENTICATION_RECEIVED,
   data: user
 });
 
-const StartLogout = () => ({
+const startLogout = () => ({
   type: AuthActions.LOGOUT_START
 });
 
-const LogoutError = message => ({
-  type: AuthActions.LOGOUT_ERROR,
-  errorMessage: message
-});
-
-const LogoutComplete = () => ({
+const logoutComplete = () => ({
   type: AuthActions.LOGOUT_COMPLETE
 });
 
-const StartReceiveUserInfo = () => ({
+const startReceiveUserInfo = () => ({
   type: AuthActions.USER_INFO_RECEIVE_START
 });
 
-const ReceiveUserInfoError = message => ({
-  type: AuthActions.USER_INFO_RECEIVE_ERROR,
-  errorMessage: message
-});
-
-const UserInfoReceived = user => ({
+const userInfoReceived = user => ({
   type: AuthActions.USER_INFO_RECEIVE_SUCCESS,
   user: user
 });
@@ -49,7 +39,7 @@ export const doAuthentication = ({ username, password }) => {
   const URL = '/api/auth/login';
 
   return dispatch => {
-    dispatch(StartAuthentication());
+    dispatch(startAuthentication());
     axios
       .post(
         URL,
@@ -57,12 +47,12 @@ export const doAuthentication = ({ username, password }) => {
         { withCredentials: true }
       )
       .catch(error => {
-        dispatch(ShowNotification({ message: error.message, type: 'error' }));
-        dispatch(AuthenticationError(error.message));
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(authenticationError(error.message));
       })
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(AuthenticationReceived(response.data.user));
+          dispatch(authenticationReceived(response.data.user));
           history.push('/projects');
         }
       });
@@ -73,13 +63,13 @@ export const doLogout = () => {
   const URL = '/api/auth/logout';
 
   return dispatch => {
-    dispatch(StartLogout());
+    dispatch(startLogout());
     axios
       .delete(URL, { withCredentials: true })
-      .catch(error => dispatch(AuthenticationError(error)))
+      .catch(error => dispatch(authenticationError(error)))
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(LogoutComplete());
+          dispatch(logoutComplete());
           history.push('/login');
         }
       });
@@ -90,18 +80,18 @@ export const getInfoAboutMe = () => {
   const URL = '/api/user/me';
 
   return dispatch => {
-    dispatch(StartReceiveUserInfo());
-    dispatch(StartLoading());
+    dispatch(startReceiveUserInfo());
+    dispatch(startLoading());
     axios
       .get(URL, {}, { withCredentials: true })
       .catch(error => {
-        dispatch(ShowNotification({ message: error.message, type: 'error' }));
-        dispatch(FinishLoading());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
       })
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(UserInfoReceived(response.data));
-          dispatch(FinishLoading());
+          dispatch(userInfoReceived(response.data));
+          dispatch(finishLoading());
         }
       });
   };

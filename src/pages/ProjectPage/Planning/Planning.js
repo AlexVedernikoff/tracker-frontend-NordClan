@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import ReactTooltip from 'react-tooltip';
+import PropTypes from 'prop-types';
 import GanttChart from './GanttChart';
 import classnames from 'classnames';
 import * as css from './Planning.scss';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
-import TaskRow from '../../../components/TaskRow';
+import DraggableTaskRow from './DraggableTaskRow';
 import Button from '../../../components/Button';
 import SelectDropdown from '../../../components/SelectDropdown';
 import SprintColumn from './SprintColumn';
@@ -11,131 +13,34 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-//Mocks
+import getPlanningTasks from '../../../actions/PlanningTasks';
+import { changeTask, startTaskEditing } from '../../../actions/Task';
 
-const tasks = [];
-const getRandomString = arr => {
-  return arr[Math.floor(Math.random() * arr.length)];
-};
-
-const getSomeRandomString = arr => {
-  const start = Math.floor(Math.random() * arr.length);
-  const end = arr.length - start;
-  return arr.splice(start, end);
-};
-
-for (let i = 0; i < 30; i++) {
-  const mockTags = [];
-
-  tasks.push({
-    name: getRandomString([
-      'Back. REST для просмотра товаров на голосовании, выбора товара для голосования, покупки товара',
-      'Back. Голосование, снятие голоса", "UI. Интеграции таба со счетами для страницы пользователя',
-      'Киви-Банк - Артек: Ретроспектива 02.06.17',
-      'Bug: При покупке семейного товара в раздел Голосование профиля семьи не подтягивается значение полей Название и Стоимость товара',
-      'TASK: Перевод денег из семьи члену семьи',
-      'UI. Интеграции таба со счетами для страницы пользователя'
-    ]),
-    tags: mockTags.concat(
-      getSomeRandomString([
-        'refactor',
-        'верстка',
-        'demo',
-        'release',
-        'design',
-        'совещание'
-      ]),
-      getRandomString(['UI', 'backend'])
-    ),
-    prefix: getRandomString(['MT-12', 'MT-254', 'MT-1245']),
-    sprint: getRandomString([
-      'sprint1',
-      'sprint2',
-      'sprint3',
-      'sprint4',
-      'backlog'
-    ]),
-    id: i,
-    status: getRandomString(['INHOLD', 'INPROGRESS']),
-    type: getRandomString(['Фича / Задача', 'Баг']),
-    stage: getRandomString([
-      'NEW',
-      'NEW',
-      'NEW',
-      'DEVELOP',
-      'DEVELOP',
-      'DEVELOP',
-      'QA',
-      'CODE_REVIEW',
-      'QA',
-      'DONE',
-      'DONE',
-      'DONE'
-    ]),
-    executor: getRandomString([
-      'Андрей Юдин',
-      'Александра Одноклассница',
-      'Иосиф Джугашвили',
-      'Ксенофонт Арабский',
-      'Не назначено'
-    ]),
-    executorId: getRandomString([1, 2, 3, 4, 5]),
-    priority: getRandomString([1, 2, 3, 3, 3, 3, 3, 4, 5]),
-    plannedTime: getRandomString([8, 9, 10, 11, 12, 13, 14, 15, 16]),
-    factTime: getRandomString([4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]),
-    subtasks: getRandomString([1, 2, 3, 4, 5]),
-    linkedTasks: getRandomString([1, 2, 3, 4, 5])
+const sortTasks = (sortedArr) => {
+  sortedArr.sort((a, b) => {
+    if (a.prioritiesId > b.prioritiesId) return 1;
+    if (a.prioritiesId < b.prioritiesId) return -1;
   });
-}
-
-//const sortTasks = (sortedArr) => {
-//   tasks.sort((a, b) => {
-//     if (a.priority > b.priority) return 1;
-//     if (a.priority < b.priority) return -1;
-//   });
-//   return sortedArr.map((element) => {
-//     return <TaskRow key={element.id} task={element} shortcut card/>;
-//   });
-// };
-
-//const sortedTasks = sortTasks(tasks);
-
-const sprintTasks = {
-  sprint1: [],
-  sprint2: [],
-  sprint3: [],
-  sprint4: [],
-  backlog: []
+  return sortedArr;
 };
-
-tasks.map(element => {
-  sprintTasks[element.sprint].push(
-    <TaskRow key={element.id} task={element} shortcut card />
-  );
-});
 
 class Planning extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      changedSprint: 'sprint1',
-      leftColumn: 'backlog',
-      rightColumn: `sprint0`
+      leftColumn: null,
+      rightColumn: null
     };
   }
 
-  selectValue = (e, name) => {
-    this.setState({ [name]: e ? e.value : null });
-  };
-
   getSprints = column => {
     const secondColumn = column === 'leftColumn' ? 'rightColumn' : 'leftColumn';
-    let sprints = _.sortBy(this.props.sprints, sprint => {
+    let sprints = _.sortBy(this.props.project.sprints, sprint => {
       return new moment(sprint.factFinishDate);
     });
 
     sprints = sprints.map((sprint, i) => ({
-      value: `sprint${i}`,
+      value: sprint.id,
       label: `${sprint.name} (${moment(sprint.factStartDate).format(
         'DD.MM.YYYY'
       )} ${sprint.factFinishDate
@@ -150,7 +55,7 @@ class Planning extends Component {
     }));
 
     sprints.push({
-      value: 'backlog',
+      value: 0,
       label: 'Backlog',
       className: classnames({
         [css.INPROGRESS]: true,
@@ -158,28 +63,71 @@ class Planning extends Component {
       })
     });
 
-    // sprints.forEach(sprint => {
-    //   sprint.disabled = sprint.value === this.state[secondColumn];
-    // });
+    sprints.forEach(sprint => {
+      sprint.disabled = sprint.value === this.state[secondColumn];
+    });
 
     return sprints;
   };
 
   dropTask = (task, sprint) => {
-    let i, movedTask;
+    this.props.changeTask({
+      id: task.id,
+      sprintId: sprint
+    }, 'Sprint');
 
-    for (i in sprintTasks[task.previousSprint]) {
-      if (sprintTasks[task.previousSprint][i].props.task.id === task.id) {
-        movedTask = sprintTasks[task.previousSprint].splice(i, 1)[0];
-      }
-    }
-
-    movedTask.props.task.sprint = sprint;
-    sprintTasks[sprint].push(movedTask);
-    this.forceUpdate();
+    this.props.startTaskEditing('Sprint');
   };
 
+  selectValue = (e, name) => {
+    this.setState({[name]: e }, () => {
+      this.props.getPlanningTasks(
+      name === 'leftColumn' ? 'left' : 'right',
+        {
+          projectId: this.props.project.id,
+          sprintId: this.state[name]
+        }
+      );
+    });
+  };
+
+  componentWillMount () {
+    this.selectValue(0, 'leftColumn');
+    //this.selectValue({value: this.props.project.sprints[0].id}, 'rightColumn');
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (!nextProps.SprintIsEditing && this.props.SprintIsEditing) {
+      this.selectValue(this.state.leftColumn, 'leftColumn');
+      this.selectValue(this.state.rightColumn, 'rightColumn');
+    };
+  }
+
+  componentDidUpdate () {
+    ReactTooltip.rebuild();
+  }
+
   render () {
+    const leftColumnTasks = sortTasks(this.props.leftColumnTasks).map(task => {
+      return <DraggableTaskRow
+                key={`task-${task.id}`}
+                task={task}
+                prefix={this.props.project.prefix}
+                shortcut
+                card
+              />;
+    });
+
+    const rightColumnTasks = sortTasks(this.props.rightColumnTasks).map(task => {
+      return <DraggableTaskRow
+                key={`task-${task.id}`}
+                task={task}
+                prefix={this.props.project.prefix}
+                shortcut
+                card
+              />;
+    });
+
     return (
       <div>
         <section>
@@ -357,7 +305,7 @@ class Planning extends Component {
                     placeholder="Введите название спринта..."
                     multi={false}
                     value={this.state.leftColumn}
-                    onChange={e => this.selectValue(e, 'leftColumn')}
+                    onChange={e => this.selectValue(e !== null ? e.value : null, 'leftColumn')}
                     noResultsText="Нет результатов"
                     options={this.getSprints('leftColumn')}
                   />
@@ -382,8 +330,8 @@ class Planning extends Component {
                 />
               </div>
               {
-                  this.state.leftColumn
-                  ? <SprintColumn onDrop={this.dropTask} sprint={this.state.leftColumn} tasks={sprintTasks[this.state.leftColumn]}/>
+                  this.state.leftColumn || this.state.leftColumn === 0
+                  ? <SprintColumn onDrop={this.dropTask} sprint={this.state.leftColumn} tasks={leftColumnTasks} />
                   : null
               }
             </Col>
@@ -395,7 +343,7 @@ class Planning extends Component {
                     placeholder="Введите название спринта..."
                     multi={false}
                     value={this.state.rightColumn}
-                    onChange={e => this.selectValue(e, 'rightColumn')}
+                    onChange={e => this.selectValue(e !== null ? e.value : null, 'rightColumn')}
                     noResultsText="Нет результатов"
                     options={this.getSprints('rightColumn')}
                   />
@@ -420,8 +368,8 @@ class Planning extends Component {
                 />
               </div>
               {
-                  this.state.rightColumn
-                  ? <SprintColumn onDrop={this.dropTask} sprint={this.state.rightColumn} tasks={sprintTasks[this.state.rightColumn]}/>
+                  this.state.rightColumn || this.state.rightColumn === 0
+                  ? <SprintColumn onDrop={this.dropTask} sprint={this.state.rightColumn} tasks={rightColumnTasks} />
                   : null
               }
             </Col>
@@ -433,8 +381,27 @@ class Planning extends Component {
   }
 }
 
+Planning.propTypes = {
+  getPlanningTasks: PropTypes.func.isRequired,
+  SprintIsEditing: PropTypes.bool,
+  changeTask: PropTypes.func.isRequired,
+  leftColumnTasks: PropTypes.array,
+  project: PropTypes.object,
+  rightColumnTasks: PropTypes.array,
+  startTaskEditing: PropTypes.func
+};
+
 const mapStateToProps = state => ({
-  sprints: state.Project.project.sprints
+  project: state.Project.project,
+  leftColumnTasks: state.PlanningTasks.leftColumnTasks,
+  rightColumnTasks: state.PlanningTasks.rightColumnTasks,
+  SprintIsEditing: state.Task.SprintIsEditing
 });
 
-export default connect(mapStateToProps)(Planning);
+const mapDispatchToProps = {
+  getPlanningTasks,
+  changeTask,
+  startTaskEditing
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Planning);

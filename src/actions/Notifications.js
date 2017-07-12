@@ -1,25 +1,27 @@
 import * as NotificationsActions from '../constants/Notifications';
+import shortid from "shortid";
 
-const AddNotification = notification => {
+const addNotification = notification => {
   return {
     type: NotificationsActions.ADD_NOTIFICATION,
     notification
   };
 };
 
-const RemoveNotification = notification => ({
+const removeNotification = notification => ({
   type: NotificationsActions.REMOVE_NOTIFICATION,
   notification
 });
 
-const ShowNotification = notification => {
+const showNotification = notification => {
   return dispatch => {
-    dispatch(AddNotification(notification));
+    notification.id = shortid.generate();
+    dispatch(addNotification(notification));
 
     setTimeout(() => {
-      dispatch(RemoveNotification(notification))
+      dispatch(removeNotification(notification))
     }, 1500)
   }
 }
 
-export { ShowNotification };
+export { showNotification };

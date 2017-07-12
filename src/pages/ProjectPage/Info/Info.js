@@ -8,6 +8,11 @@ import Tag from '../../../components/Tag';
 import Tags from '../../../components/Tags';
 import Description from '../../../components/Description';
 import { DescriptionText } from '../../../mocks/descriptionText';
+import {
+  ChangeProject,
+  StartEditing,
+  StopEditing
+} from '../../../actions/Project';
 
 class Info extends Component {
   constructor (props) {
@@ -38,6 +43,10 @@ class Info extends Component {
           headerType="h2"
           id={this.props.id}
           headerText="Описание"
+          onEditStart={this.props.StartEditing}
+          onEditFinish={this.props.StopEditing}
+          onEditSubmit={this.props.ChangeProject}
+          isEditing={this.props.DescriptionIsEditing}
         />
         <hr />
         <h2>Файлы</h2>
@@ -50,7 +59,14 @@ class Info extends Component {
 const mapStateToProps = state => ({
   id: state.Project.project.id,
   tags: state.Project.project.tags,
-  description: state.Project.project.description
+  description: state.Project.project.description,
+  DescriptionIsEditing: state.Project.DescriptionIsEditing
 });
 
-export default connect(mapStateToProps)(Info);
+const mapDispatchToProps = {
+  ChangeProject,
+  StartEditing,
+  StopEditing
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Info);
