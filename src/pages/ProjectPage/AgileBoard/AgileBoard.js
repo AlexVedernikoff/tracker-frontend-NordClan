@@ -83,7 +83,7 @@ class AgileBoard extends Component {
     super(props);
     this.state = {
       isSectionOpen: {
-        myTasks: false,
+        myTasks: true,
         allTasks: true
       },
       filterTags: [],
@@ -183,8 +183,7 @@ class AgileBoard extends Component {
     };
 
     const myTasks = this.props.sprintTasks.filter((task) => {
-      // заменить на проверку id исполнителя
-      return true;
+      return task.performer && task.performer.id === this.props.user.id;
     });
 
     filterTasks(myTasks, mineSorted);
@@ -271,14 +270,16 @@ AgileBoard.propTypes = {
   project: PropTypes.object,
   sprintTasks: PropTypes.array,
   sprints: PropTypes.array,
-  startTaskEditing: PropTypes.func
+  startTaskEditing: PropTypes.func,
+  user: PropTypes.object
 };
 
 const mapStateToProps = state => ({
   sprintTasks: state.Tasks.tasks,
   sprints: state.Project.project.sprints,
   project: state.Project.project,
-  StatusIsEditing: state.Task.StatusIsEditing
+  StatusIsEditing: state.Task.StatusIsEditing,
+  user: state.Auth.user
 });
 
 const mapDispatchToProps = {
