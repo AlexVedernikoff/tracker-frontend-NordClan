@@ -1,8 +1,8 @@
 import * as AuthActions from '../constants/Authentication';
 import axios from 'axios';
 import { history } from '../Router';
-import { StartLoading, FinishLoading } from './Loading';
-import { ShowNotification } from './Notifications';
+import { startLoading, finishLoading } from './Loading';
+import { showNotification } from './Notifications';
 
 const startAuthentication = () => ({
   type: AuthActions.AUTHENTICATION_START
@@ -47,7 +47,7 @@ export const doAuthentication = ({ username, password }) => {
         { withCredentials: true }
       )
       .catch(error => {
-        dispatch(ShowNotification({ message: error.message, type: 'error' }));
+        dispatch(showNotification({ message: error.message, type: 'error' }));
         dispatch(authenticationError(error.message));
       })
       .then(response => {
@@ -81,17 +81,17 @@ export const getInfoAboutMe = () => {
 
   return dispatch => {
     dispatch(startReceiveUserInfo());
-    dispatch(StartLoading());
+    dispatch(startLoading());
     axios
       .get(URL, {}, { withCredentials: true })
       .catch(error => {
-        dispatch(ShowNotification({ message: error.message, type: 'error' }));
-        dispatch(FinishLoading());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
       })
       .then(response => {
         if (response && response.status === 200) {
           dispatch(UserInfoReceived(response.data));
-          dispatch(FinishLoading());
+          dispatch(finishLoading());
         }
       });
   };

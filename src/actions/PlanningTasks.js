@@ -2,7 +2,7 @@ import * as PlanningTaskActions from '../constants/PlanningTasks';
 import axios from 'axios';
 import { store } from '../Router';
 import { history } from '../Router';
-import { StartLoading, FinishLoading } from './Loading';
+import { startLoading, finishLoading } from './Loading';
 
 const StartTasksReceive = (side) => ({
   type: side === 'left' ? PlanningTaskActions.LEFT_COLUMN_TASKS_RECEIVE_START : PlanningTaskActions.RIGHT_COLUMN_TASKS_RECEIVE_START
@@ -23,7 +23,7 @@ const GetPlanningTasks = (side, options) => {
   const URL = '/api/task';
   return dispatch => {
     dispatch(StartTasksReceive(side));
-    dispatch(StartLoading());
+    dispatch(startLoading());
     axios
       .get(URL, {
         params: {
@@ -32,21 +32,21 @@ const GetPlanningTasks = (side, options) => {
           currentPage: 1,
           tags: '',
           ...options,
-          fields: 'FactExecutionTime,PlannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId'
+          fields: 'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId'
         }
       },
         { withCredentials: true }
       )
       .catch(error => {
         dispatch(TasksReceiveError(side, error.message));
-        dispatch(FinishLoading());
+        dispatch(finishLoading());
       })
       .then(response => {
         if (!response) {
           return;
         } else {
           dispatch(TasksReceived(side, response.data));
-          dispatch(FinishLoading());
+          dispatch(finishLoading());
         }
       });
   };

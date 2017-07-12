@@ -1,6 +1,6 @@
 import * as SprintActions from '../constants/Sprint';
 import axios from 'axios';
-import { StartLoading, FinishLoading } from './Loading';
+import { startLoading, finishLoading } from './Loading';
 
 const createSprintStart = () => ({
   type: SprintActions.SPRINTS_CREATE_START
@@ -42,12 +42,12 @@ export const editSprint = (id, statusId, name, dateForm, dateTo) => {
       return;
     }
     dispatch(editSprintStart());
-    dispatch(StartLoading());
+    dispatch(startLoading());
     axios.put(URL, params)
       .then(response => {
         if (response.data) {
           dispatch(editSprintSuccess(response.data));
-          dispatch(FinishLoading());
+          dispatch(finishLoading());
         }
       });
   };
@@ -58,12 +58,12 @@ export const deleteSprint = (id) => {
 
   return dispatch => {
     dispatch(deleteSprintStart());
-    dispatch(StartLoading());
+    dispatch(startLoading());
     axios.delete(URL)
       .then(response => {
         if (response.data) {
           dispatch(deleteSprintSuccess(response.data));
-          dispatch(FinishLoading());
+          dispatch(finishLoading());
         }
       });
   };
@@ -74,7 +74,7 @@ export const createSprint = (name, id, dateForm, dateTo) => {
 
   return dispatch => {
     dispatch(createSprintStart());
-    dispatch(StartLoading());
+    dispatch(startLoading());
     axios.post(URL, {
       name: name,
       projectId: id,
@@ -84,7 +84,7 @@ export const createSprint = (name, id, dateForm, dateTo) => {
       .then(response => {
         if (response.data) {
           dispatch(createSprintSuccess(response.data.sprints));
-          dispatch(FinishLoading());
+          dispatch(finishLoading());
         }
       });
   };

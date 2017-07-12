@@ -67,10 +67,10 @@ const TaskCard = (props) => {
           task.statusId !== 1
           ? <p className={css.time}>
             <IconTime className={classnames({
-              [css.green]: (task.FactExecutionTime / task.PlannedExecutionTime) <= 1,
-              [css.red]: (task.FactExecutionTime / task.PlannedExecutionTime) > 1
+              [css.green]: (task.factExecutionTime / task.plannedExecutionTime) <= 1,
+              [css.red]: (task.factExecutionTime / task.plannedExecutionTime) > 1
             })} />
-            <span>{task.FactExecutionTime} ч. из {task.PlannedExecutionTime}</span>
+            <span>{task.factExecutionTime} ч. из {task.plannedExecutionTime}</span>
           </p>
           : null
         }
@@ -78,10 +78,10 @@ const TaskCard = (props) => {
           task.stage !== 1
           ? <div className={css.progressBar}>
             <div
-              style={{width: (task.FactExecutionTime / task.PlannedExecutionTime) < 1 ? (task.FactExecutionTime / task.PlannedExecutionTime) * 100 + '%' : '100%'}}
+              style={{width: (task.factExecutionTime / task.plannedExecutionTime) < 1 ? (task.factExecutionTime / task.plannedExecutionTime) * 100 + '%' : '100%'}}
               className={classnames({
-                [css.green]: (task.FactExecutionTime / task.PlannedExecutionTime) <= 1,
-                [css.red]: (task.FactExecutionTime / task.PlannedExecutionTime) > 1
+                [css.green]: (task.factExecutionTime / task.plannedExecutionTime) <= 1,
+                [css.red]: (task.factExecutionTime / task.plannedExecutionTime) > 1
               })}
               />
           </div>

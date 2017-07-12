@@ -76,9 +76,9 @@ class TaskRow extends React.Component {
                   task.statusId !== 1
                   ? <span className={css.time}>
                     <span>Время: </span>
-                    <span className={classnames({[css.redText]: task.PlannedExecutionTime < task.FactExecutionTime,
-                                                  [css.greenText]: task.PlannedExecutionTime > task.FactExecutionTime})}>
-                      {task.FactExecutionTime} ч. из {task.PlannedExecutionTime}
+                    <span className={classnames({[css.redText]: task.plannedExecutionTime < task.factExecutionTime,
+                                                  [css.greenText]: task.plannedExecutionTime > task.factExecutionTime})}>
+                      {task.factExecutionTime} ч. из {task.plannedExecutionTime}
                     </span>
                   </span>
                   : null

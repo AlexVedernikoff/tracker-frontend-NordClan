@@ -2,7 +2,7 @@ import * as TaskActions from '../constants/Tasks';
 import axios from 'axios';
 import { store } from '../Router';
 import { history } from '../Router';
-import { StartLoading, FinishLoading } from './Loading';
+import { startLoading, finishLoading } from './Loading';
 
 const StartTasksReceive = () => ({
   type: TaskActions.TASKS_RECEIVE_START
@@ -22,7 +22,7 @@ const GetTasks = (options) => {
   const URL = '/api/task';
   return dispatch => {
     dispatch(StartTasksReceive());
-    dispatch(StartLoading());
+    dispatch(startLoading());
     axios
       .get(URL, {
         params: {
@@ -31,21 +31,21 @@ const GetTasks = (options) => {
           currentPage: 1,
           tags: '',
           ...options,
-          fields: 'FactExecutionTime,PlannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId'
+          fields: 'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId'
         }
       },
         { withCredentials: true }
       )
       .catch(error => {
         dispatch(TasksReceiveError(error.message));
-        dispatch(FinishLoading());
+        dispatch(finishLoading());
       })
       .then(response => {
         if (!response) {
           return;
         } else {
           dispatch(TasksReceived(response.data));
-          dispatch(FinishLoading());
+          dispatch(finishLoading());
         }
       });
   };

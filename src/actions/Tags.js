@@ -38,7 +38,7 @@ export const createTags = (tags,
   const URL = '/api/tag';
   return dispatch => {
     dispatch(startTagsCreate());
-    dispatch(StartLoading());
+    dispatch(startLoading());
     axios.post(URL, {
       tag: tags,
       taggable: taggable,
@@ -51,7 +51,7 @@ export const createTags = (tags,
           taggableId: taggableId,
           tags: res.data
         }));
-        dispatch(FinishLoading());
+        dispatch(finishLoading());
       });
   };
 };
@@ -62,7 +62,7 @@ export const deleteTag = (tag,
   const URL = `/api/tag/${taggable}/${taggableId}/?tag=${tag}`;
   return dispatch => {
     dispatch(startTagsDelete());
-    dispatch(StartLoading());
+    dispatch(startLoading());
     axios.delete(URL)
       .then(res => {
         if (!res.data) return;
