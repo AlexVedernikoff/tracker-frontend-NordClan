@@ -8,7 +8,7 @@ import Input from '../../../components/Input';
 import Checkbox from '../../../components/Checkbox';
 import * as css from './TaskList.scss';
 
-import GetTasks from '../../../actions/Tasks';
+import getTasks from '../../../actions/Tasks';
 
 const sortTasks = (sortedArr) => {
   sortedArr.sort((a, b) => {
@@ -29,7 +29,7 @@ class TaskList extends Component {
   }
 
   componentDidMount () {
-    this.props.GetTasks({projectId: this.props.project.id});
+    this.props.getTasks({projectId: this.props.project.id});
   }
 
   changeNameFilter = event => {
@@ -38,7 +38,7 @@ class TaskList extends Component {
         filterByName: event.target.value
       },
       () => {
-        this.props.GetTasks({
+        this.props.getTasks({
           projectId: this.props.project.id,
           name: this.state.filterByName
         });
@@ -94,14 +94,14 @@ class TaskList extends Component {
 }
 
 TaskList.propTypes = {
-  GetTasks: PropTypes.func.isRequired,
+  getTasks: PropTypes.func.isRequired,
   project: PropTypes.object.isRequired,
   tasksList: PropTypes.array.isRequired
 };
 
 
 const mapStateToProps = state => ({ tasksList: state.Tasks.tasks, project: state.Project.project});
-const mapDispatchToProps = { GetTasks };
+const mapDispatchToProps = { getTasks };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskList);
 

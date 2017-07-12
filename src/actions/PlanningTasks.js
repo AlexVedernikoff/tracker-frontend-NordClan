@@ -5,20 +5,19 @@ import { history } from '../Router';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
 
-const StartTasksReceive = (side) => ({
+const startTasksReceive = (side) => ({
   type: side === 'left' ? PlanningTaskActions.LEFT_COLUMN_TASKS_RECEIVE_START : PlanningTaskActions.RIGHT_COLUMN_TASKS_RECEIVE_START
 });
 
-const TasksReceived = (side, tasks) => ({
+const tasksReceived = (side, tasks) => ({
   type: side === 'left' ? PlanningTaskActions.LEFT_COLUMN_TASKS_RECEIVE_SUCCESS : PlanningTaskActions.RIGHT_COLUMN_TASKS_RECEIVE_SUCCESS,
   data: tasks
 });
 
-const GetPlanningTasks = (side, options) => {
-  console.log(side, options);
+const getPlanningTasks = (side, options) => {
   const URL = '/api/task';
   return dispatch => {
-    dispatch(StartTasksReceive(side));
+    dispatch(startTasksReceive(side));
     dispatch(startLoading());
     axios
       .get(URL, {
@@ -41,11 +40,11 @@ const GetPlanningTasks = (side, options) => {
         if (!response) {
           return;
         } else {
-          dispatch(TasksReceived(side, response.data));
+          dispatch(tasksReceived(side, response.data));
           dispatch(finishLoading());
         }
       });
   };
 };
 
-export default GetPlanningTasks;
+export default getPlanningTasks;

@@ -13,7 +13,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import GetPlanningTasks from '../../../actions/PlanningTasks';
+import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 
 const sortTasks = (sortedArr) => {
@@ -81,7 +81,7 @@ class Planning extends Component {
 
   selectValue = (e, name) => {
     this.setState({[name]: e }, () => {
-      this.props.GetPlanningTasks(
+      this.props.getPlanningTasks(
       name === 'leftColumn' ? 'left' : 'right',
         {
           projectId: this.props.project.id,
@@ -382,7 +382,7 @@ class Planning extends Component {
 }
 
 Planning.propTypes = {
-  GetPlanningTasks: PropTypes.func.isRequired,
+  getPlanningTasks: PropTypes.func.isRequired,
   SprintIsEditing: PropTypes.bool,
   changeTask: PropTypes.func.isRequired,
   leftColumnTasks: PropTypes.array,
@@ -399,7 +399,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  GetPlanningTasks,
+  getPlanningTasks,
   changeTask,
   startTaskEditing
 };

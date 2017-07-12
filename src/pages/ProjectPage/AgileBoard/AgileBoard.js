@@ -13,7 +13,7 @@ import SelectDropdown from '../../../components/SelectDropdown';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 import * as css from './AgileBoard.scss';
 
-import GetTasks from '../../../actions/Tasks';
+import getTasks from '../../../actions/Tasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 
 const filterTasks = (array, sortedObject) => {
@@ -103,7 +103,7 @@ class AgileBoard extends Component {
 
   selectValue = (e, name) => {
     this.setState({[name]: e}, () => {
-      this.props.GetTasks({
+      this.props.getTasks({
         projectId: this.props.project.Id,
         sprintId: this.state.changedSprint
       });
@@ -265,7 +265,7 @@ class AgileBoard extends Component {
 }
 
 AgileBoard.propTypes = {
-  GetTasks: PropTypes.func.isRequired,
+  getTasks: PropTypes.func.isRequired,
   StatusIsEditing: PropTypes.bool,
   changeTask: PropTypes.func.isRequired,
   project: PropTypes.object,
@@ -282,7 +282,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  GetTasks,
+  getTasks,
   changeTask,
   startTaskEditing
 };

@@ -5,19 +5,19 @@ import { history } from '../Router';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
 
-const StartTasksReceive = () => ({
+const startTasksReceive = () => ({
   type: TaskActions.TASKS_RECEIVE_START
 });
 
-const TasksReceived = tasks => ({
+const tasksReceived = tasks => ({
   type: TaskActions.TASKS_RECEIVE_SUCCESS,
   data: tasks
 });
 
-const GetTasks = (options) => {
+const getTasks = (options) => {
   const URL = '/api/task';
   return dispatch => {
-    dispatch(StartTasksReceive());
+    dispatch(startTasksReceive());
     dispatch(startLoading());
     axios
       .get(URL, {
@@ -40,11 +40,11 @@ const GetTasks = (options) => {
         if (!response) {
           return;
         } else {
-          dispatch(TasksReceived(response.data));
+          dispatch(tasksReceived(response.data));
           dispatch(finishLoading());
         }
       });
   };
 };
 
-export default GetTasks;
+export default getTasks;
