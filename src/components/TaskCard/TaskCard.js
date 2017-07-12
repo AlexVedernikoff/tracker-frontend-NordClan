@@ -61,7 +61,14 @@ const TaskCard = (props) => {
           {task.name}
         </Link>
         <p className={css.taskMeta}>
-          <span><Link to={`/users/${task.executorId}`}>{task.executorId}</Link></span>
+          <span>
+            { task.performer
+              ? <Link to={`/users/${task.performer.id}`}>
+                  {task.performer.fullNameRu}
+                </Link>
+              : 'Не назначено'
+            }
+          </span>
         </p>
         {
           task.statusId !== 1
