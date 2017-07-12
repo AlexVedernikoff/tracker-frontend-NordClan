@@ -29,16 +29,17 @@ const editSprintSuccess = sprints => ({
   sprints: sprints
 });
 
-export const editSprint = (id, statusId, name, dateForm, dateTo) => {
+export const editSprint = (id, statusId, name, dateForm, dateTo, allottedTime) => {
   const URL = `/api/sprint/${id}`;
   const params = {};
   if (name) params.name = name;
   if (dateForm) params.factStartDate = dateForm;
   if (dateTo) params.factFinishDate = dateTo;
   if (statusId) params.statusId = statusId;
+  if (allottedTime) params.allottedTime = allottedTime;
 
   return dispatch => {
-    if (!id || !(statusId || name || dateForm || dateTo)) {
+    if (!id || !(statusId || name || dateForm || dateTo || allottedTime)) {
       return;
     }
     dispatch(editSprintStart());
@@ -69,7 +70,7 @@ export const deleteSprint = (id) => {
   };
 };
 
-export const createSprint = (name, id, dateForm, dateTo) => {
+export const createSprint = (name, id, dateForm, dateTo, allottedTime) => {
   const URL = '/api/sprint/';
 
   return dispatch => {
@@ -79,7 +80,8 @@ export const createSprint = (name, id, dateForm, dateTo) => {
       name: name,
       projectId: id,
       factStartDate: dateForm,
-      factFinishDate: dateTo
+      factFinishDate: dateTo,
+      allottedTime: allottedTime
     })
       .then(response => {
         if (response.data) {

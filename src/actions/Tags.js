@@ -72,7 +72,7 @@ export const deleteTag = (tag,
           tags: res.data
         })
       );
-      dispatch(finishLoading());
-    });
+        dispatch(finishLoading());
+      });
   };
 };

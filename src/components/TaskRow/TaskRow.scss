@@ -132,15 +132,6 @@
   }
 }
 
-.loadMore {
-  display: inline-block;
-  margin: 2px;
-  font-size: 11px;
-  color: lighten($color-dark, 30%);
-  text-decoration: underline;
-  cursor: pointer;
-}
-
 .green { background-color: $color-green; }
 .red { background-color: $color-red; }
 

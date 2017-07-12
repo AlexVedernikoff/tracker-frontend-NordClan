@@ -11,6 +11,8 @@ class Tags extends Component {
   constructor (props) {
     super(props);
     this.state = {
+      cutTagsShow: false,
+      cutTags: this.props.children.length > 6 || false,
       tags: this.props.children,
       visible: false,
       tag: ''
@@ -31,6 +33,10 @@ class Tags extends Component {
 
   componentWillReceiveProps = (nextProps) => {
     this.setState({tags: nextProps.children});
+    if (!this.state.cutTagsShow) {
+      this.setState({cutTags: nextProps.children.length > 6});
+    }
+    this.setState({cutTagsShow: true});
   };
 
   sendNewTags = (e) => {
@@ -44,9 +50,20 @@ class Tags extends Component {
   };
 
   render () {
+    let sliceTags = this.state.tags;
+    if (this.state.tags.length > 7) {
+      sliceTags = this.state.tags.slice(0, 6);
+    }
     return (
       <div>
-        {this.state.tags}
+        {!this.state.cutTags
+          ? this.state.tags
+          : sliceTags}
+        {
+          this.state.cutTags
+            ? <span className={css.loadMore} onClick={() => this.setState({cutTags: false})}>Показать все {this.state.tags.length}</span>
+            : null
+        }
         <span className={css.wrapperAddTags}>
                     { this.props.create ? <Tag create
                                                data-tip="Добавить тег"
@@ -58,6 +75,7 @@ class Tags extends Component {
                    placeholder="Добавить тег"
                    className={css.tagsInput}
                    defaultValue=''
+                   ref="newTag"
                    onChange={this.onChangeHandler}/>
             <Button addedClassNames={{[css.tagsButton]: true}}
                     text="+"
@@ -74,12 +92,12 @@ class Tags extends Component {
 }
 
 Tags.propTypes = {
-  createTags: PropTypes.func.isRequired,
   children: PropTypes.oneOfType([
     PropTypes.node,
     PropTypes.array
   ]),
   create: PropTypes.bool,
+  createTags: PropTypes.func.isRequired,
   taggable: PropTypes.string,
   taggableId: PropTypes.number
 };
