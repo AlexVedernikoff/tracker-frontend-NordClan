@@ -79,11 +79,11 @@ export default class Details extends Component {
                 {moment(this.props.task.createdAt).format('DD.MM.YYYY')}
               </td>
             </tr>
-            {this.props.task.PlannedExecutionTime
+            {this.props.task.plannedExecutionTime
               ? <tr>
                   <td>Запланировано:</td>
                   <td>
-                    {`${this.props.task.PlannedExecutionTime} ч.`}
+                    {`${this.props.task.plannedExecutionTime} ч.`}
                   </td>
                 </tr>
               : null}
