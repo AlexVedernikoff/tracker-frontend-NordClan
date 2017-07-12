@@ -30,12 +30,17 @@ const TaskCard = (props) => {
     task,
     connectDragSource,
     isDragging,
+    onChangeStatus,
     prefix,
     section,
     ...other
   } = props;
 
   const classPriority = 'priority-' + task.prioritiesId;
+
+  const handleClick = () => {
+    onChangeStatus(task.id, task.statusId);
+  };
 
   return (
     connectDragSource(
@@ -50,8 +55,8 @@ const TaskCard = (props) => {
           })}>
             {
               task.statusId === 3 || task.statusId === 5 || task.statusId === 7
-              ? <IconPlay data-tip="Начать"/>
-              : <IconPause data-tip="Приостановить"/>
+              ? <IconPlay data-tip="Начать" onClick={handleClick} />
+              : <IconPause data-tip="Приостановить" onClick={handleClick} />
             }
           </div>
           : null
@@ -103,6 +108,7 @@ const TaskCard = (props) => {
 TaskCard.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
   isDragging: PropTypes.bool.isRequired,
+  onChangeStatus: PropTypes.func.isRequired,
   section: PropTypes.string.isRequired,
   task: PropTypes.object
 };

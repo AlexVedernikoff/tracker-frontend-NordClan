@@ -40,7 +40,7 @@ const filterTasks = (array, sortedObject) => {
   });
 };
 
-const sortTasks = (sortedObject, prefix, section) => {
+const sortTasks = (sortedObject, prefix, section, onChangeStatus) => {
   for (const key in sortedObject) {
     sortedObject[key].sort((a, b) => {
       if (a.priority > b.priority) return 1;
@@ -52,6 +52,7 @@ const sortTasks = (sortedObject, prefix, section) => {
         task={task}
         prefix={prefix}
         section={section}
+        onChangeStatus={onChangeStatus}
       />;
     });
   }
@@ -72,6 +73,18 @@ const getNewStatus = (oldStatusId, newPhase) => {
     case 'Done': newStatusId = 8;
           break;
     default: break;
+  }
+
+  return newStatusId;
+};
+
+const getNewStatusOnClick = (oldStatusId) => {
+  let newStatusId;
+
+  if (oldStatusId === 2 || oldStatusId === 4 || oldStatusId === 6) {
+    newStatusId = oldStatusId + 1;
+  } else if (oldStatusId === 3 || oldStatusId === 5 || oldStatusId === 7) {
+    newStatusId = oldStatusId - 1;
   }
 
   return newStatusId;
@@ -114,6 +127,15 @@ class AgileBoard extends Component {
     this.props.changeTask({
       id: task.id,
       statusId: getNewStatus(task.statusId, phase)
+    }, 'Status');
+
+    this.props.startTaskEditing('Status');
+  }
+
+  changeStatus = (taskId, statusId) => {
+    this.props.changeTask({
+      id: taskId,
+      statusId: getNewStatusOnClick(statusId)
     }, 'Status');
 
     this.props.startTaskEditing('Status');
@@ -172,7 +194,7 @@ class AgileBoard extends Component {
     };
 
     filterTasks(this.props.sprintTasks, allSorted);
-    sortTasks(allSorted, this.props.project.prefix, 'all');
+    sortTasks(allSorted, this.props.project.prefix, 'all', this.changeStatus);
 
     const mineSorted = {
       new: [],
@@ -187,7 +209,7 @@ class AgileBoard extends Component {
     });
 
     filterTasks(myTasks, mineSorted);
-    sortTasks(mineSorted, this.props.project.prefix, 'mine');
+    sortTasks(mineSorted, this.props.project.prefix, 'mine', this.changeStatus);
 
     return (
         <section className={css.agileBoard}>
