@@ -3,6 +3,7 @@ import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
 import GanttChart from './GanttChart';
 import classnames from 'classnames';
+import CreateTask from '../CreateTask';
 import * as css from './Planning.scss';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import DraggableTaskRow from './DraggableTaskRow';
@@ -376,6 +377,7 @@ class Planning extends Component {
           </Row>
         </section>
         <GanttChart />
+        <CreateTask />
       </div>
     );
   }

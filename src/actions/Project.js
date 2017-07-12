@@ -31,6 +31,14 @@ export const StopEditing = target => ({
   target: target
 });
 
+export const openCreateTaskModal = () => ({
+  type: ProjectActions.OPEN_CREATE_TASK_MODAL
+});
+
+export const closeCreateTaskModal = () => ({
+  type: ProjectActions.CLOSE_CREATE_TASK_MODAL
+});
+
 const GetProjectInfo = id => {
   const URL = `/api/project/${id}`;
 
