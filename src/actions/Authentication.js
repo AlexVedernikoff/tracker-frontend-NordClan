@@ -30,7 +30,7 @@ const startReceiveUserInfo = () => ({
   type: AuthActions.USER_INFO_RECEIVE_START
 });
 
-const UserInfoReceived = user => ({
+const userInfoReceived = user => ({
   type: AuthActions.USER_INFO_RECEIVE_SUCCESS,
   user: user
 });
@@ -90,7 +90,7 @@ export const getInfoAboutMe = () => {
       })
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(UserInfoReceived(response.data));
+          dispatch(userInfoReceived(response.data));
           dispatch(finishLoading());
         }
       });
