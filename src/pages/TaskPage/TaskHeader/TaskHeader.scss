@@ -19,6 +19,7 @@
 .parentTask {
   color: lighten($color-black, 40%);
   margin-bottom: 16px;
+  position: relative;
 
   &:hover {
     .parentTaskName {
@@ -30,16 +31,16 @@
     margin-right: 8px;
     cursor: pointer;
 
-    &:before {
-      content: "";
-      display: block;
-      position: absolute;
-      width: 1px;
-      height: 32px;
-      right: calc(100% + 8px);
-      top: 50%;
-      background-color: lighten($color-black, 40%);
-    }
+    // &:before {
+    //   content: "";
+    //   display: block;
+    //   position: absolute;
+    //   width: 1px;
+    //   height: 32px;
+    //   right: calc(100% + 8px);
+    //   top: 50%;
+    //   background-color: lighten($color-black, 40%);
+    // }
   }
 }
 
@@ -52,16 +53,16 @@
   display: inline-block;
   position: relative;
 
-  &:after {
-    content: "";
-    display: block;
-    position: absolute;
-    width: 4px;
-    height: 1px;
-    right: calc(100% + 4px);
-    top: 50%;
-    background-color: lighten($color-black, 40%);
-  }
+  // &:after {
+  //   content: "";
+  //   display: block;
+  //   position: absolute;
+  //   width: 4px;
+  //   height: 1px;
+  //   right: calc(100% + 4px);
+  //   top: 50%;
+  //   background-color: lighten($color-black, 40%);
+  // }
 }
 
 .buttonCancel {
@@ -105,6 +106,39 @@
   display: flex;
 
   > *:first-child {
-    flex-grow: 1
+    flex-grow: 1;
+  }
+}
+
+.parentTaskLink {
+  display: block;
+  position: absolute;
+  width: 1px;
+  height: 32px;
+  right: calc(100% + 8px);
+  top: 50%;
+  background-color: lighten($color-black, 40%);
+
+  .tasksPointers {
+    &:before {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 4px;
+      height: 1px;
+      left: 0;
+      background-color: lighten($color-black, 40%);
+    }
+
+    &:after {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 4px;
+      height: 1px;
+      left: 0;
+      bottom: 0;
+      background-color: lighten($color-black, 40%);
+    }
   }
 }

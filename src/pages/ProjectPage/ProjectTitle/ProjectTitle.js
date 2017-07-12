@@ -45,13 +45,19 @@ class ProjectTitle extends Component {
   };
 
   handleIncorrectInput () {
-    if (this.projectName.innerText.length < 4) {
+    if (
+      this.projectName.innerText.length < 4
+      || this.projectName.innerText.length > 255
+    ) {
       this.setState({ nameIsIncorrect: true });
     } else if (this.state.nameIsIncorrect) {
       this.setState({ nameIsIncorrect: false });
     }
 
-    if (this.projectPrefix.innerText.length < 2) {
+    if (
+      this.projectPrefix.innerText.length < 2
+      || this.projectPrefix.innerText.length > 8
+    ) {
       this.setState({ prefixIsIncorrect: true });
     } else if (this.state.prefixIsIncorrect) {
       this.setState({ prefixIsIncorrect: false });
@@ -88,7 +94,9 @@ class ProjectTitle extends Component {
 
     if (
       this.projectName.innerText.length < 4
+      || this.projectName.innerText.length > 255
       || this.projectPrefix.innerText.length < 2
+      || this.projectPrefix.innerText.length > 8
     ) {
       this.handleIncorrectInput();
     } else {

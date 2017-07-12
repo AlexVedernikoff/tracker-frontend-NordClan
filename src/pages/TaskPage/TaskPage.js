@@ -11,21 +11,20 @@ import Attachments from '../../components/Attachments';
 import Description from '../../components/Description';
 import RouteTabs from '../../components/RouteTabs';
 import { TaskDescriptionText } from '../../mocks/descriptionText';
-import { GetTask } from '../../actions/Task';
+import { getTask, startTaskEditing, stopTaskEditing, changeTask } from '../../actions/Task';
 
 import * as css from './TaskPage.scss';
 
 class TaskPage extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
   }
 
-  componentDidMount() {
-    // TODO: change this to this.props.params.taskId
-    const id = 4;
-
-    const { GetTask } = this.props;
-    GetTask(id);
+  componentDidMount () {
+    const id = this.props.params.taskId;
+    const { getTask } = this.props;
+    
+    getTask(id);
   }
 
   render () {
@@ -56,12 +55,17 @@ class TaskPage extends Component {
       <div id="task-page">
         <Row>
           <Col xs={8}>
-            <TaskHeader task={task} />
+            <TaskHeader task={this.props.task} />
             <main className={css.main}>
               <Description
-                text={TaskDescriptionText}
+                text={{ __html: this.props.task.description }}
                 headerType="h3"
+                id={4}
                 headerText="Описание:"
+                onEditStart={this.props.startTaskEditing}
+                onEditFinish={this.props.stopTaskEditing}
+                onEditSubmit={this.props.changeTask}
+                isEditing={this.props.DescriptionIsEditing}
               />
               <hr />
               <h3>Прикрепленные файлы:</h3>
@@ -83,7 +87,7 @@ class TaskPage extends Component {
           </Col>
           <Col xs={4}>
             <aside>
-              <Details task={task} />
+              <Details task={this.props.task} />
               <RelatedTasks task={task} type="related" />
               <RelatedTasks task={task} type="children" />
             </aside>
@@ -99,11 +103,15 @@ TaskPage.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  task: state.Task.task
+  task: state.Task.task,
+  DescriptionIsEditing: state.Task.DescriptionIsEditing
 });
 
 const mapDispatchToProps = {
-  GetTask
+  getTask,
+  startTaskEditing,
+  stopTaskEditing,
+  changeTask
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskPage);

@@ -42,22 +42,21 @@ class Description extends Component {
   }
 
   toggleEditing = () => {
-    if (this.props.DescriptionIsEditing) {
+    if (this.props.isEditing) {
       this.updateText();
-      this.stopEditing();
     } else {
       this.startEditing();
     }
   };
 
   startEditing = () => {
-    const { StartEditing } = this.props;
-    StartEditing('Description');
+    const { onEditStart } = this.props;
+    onEditStart('Description');
   };
 
   stopEditing = () => {
-    const { StopEditing } = this.props;
-    StopEditing('Description');
+    const { onEditFinish } = this.props;
+    onEditFinish('Description');
   };
 
   checkEscapeKeyPress = event => {
@@ -67,24 +66,16 @@ class Description extends Component {
   };
 
   updateText = () => {
-    const { ChangeProject } = this.props;
-    this.setState(
+    const { onEditSubmit } = this.props;
+
+    onEditSubmit(
       {
-        text: {
-          __html: stateToHTML(
-            this.TextEditor.state.editorState.getCurrentContent()
-          )
-        }
+        id: this.props.id,
+        description: stateToHTML(
+          this.TextEditor.state.editorState.getCurrentContent()
+        )
       },
-      () => {
-        ChangeProject(
-          {
-            id: this.props.id,
-            description: this.state.text.__html
-          },
-          'Description'
-        );
-      }
+      'Description'
     );
   };
 
@@ -146,17 +137,17 @@ class Description extends Component {
         })}
       >
         {header}
-        {this.props.DescriptionIsEditing
+        {this.props.isEditing
           ? <TextEditor
               ref={ref => (this.TextEditor = ref)}
-              content={this.state.text.__html}
+              content={this.props.text.__html}
             />
           : <div
               className={css.wiki}
-              dangerouslySetInnerHTML={this.state.text}
+              dangerouslySetInnerHTML={this.props.text}
             />}
         <div className={css.editBorder}>
-          {this.props.DescriptionIsEditing
+          {this.props.isEditing
             ? <IconCheck
                 className={css.save}
                 onClick={this.toggleEditing}
@@ -177,20 +168,10 @@ Description.propTypes = {
   headerText: PropTypes.string,
   headerType: PropTypes.string,
   text: PropTypes.object,
-  DescriptionIsEditing: PropTypes.bool.isRequired,
-  ChangeProject: PropTypes.func.isRequired,
-  StartEditing: PropTypes.func.isRequired,
-  StopEditing: PropTypes.func.isRequired
+  isEditing: PropTypes.bool.isRequired,
+  onEditSubmit: PropTypes.func.isRequired,
+  onEditFinish: PropTypes.func.isRequired,
+  onEditStart: PropTypes.func.isRequired
 };
 
-const mapStateToProps = state => ({
-  DescriptionIsEditing: state.Project.DescriptionIsEditing
-});
-
-const mapDispatchToProps = {
-  ChangeProject,
-  StartEditing,
-  StopEditing
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Description);
+export default Description;

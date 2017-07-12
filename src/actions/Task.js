@@ -1,59 +1,59 @@
 import * as TaskActions from '../constants/Task';
 import axios from 'axios';
-import { StartLoading, FinishLoading } from './Loading';
-import { ShowNotification } from './Notifications';
+import { startLoading, finishLoading } from './Loading';
+import { showNotification } from './Notifications';
 
-const GetTaskStart = () => ({
+const getTaskStart = () => ({
   type: TaskActions.GET_TASK_REQUEST_SENT
 });
 
-const GetTaskSuccess = task => ({
+const getTaskSuccess = task => ({
   type: TaskActions.GET_TASK_REQUEST_SUCCESS,
   data: task
 });
 
-const RequestTaskChange = () => ({
+const requestTaskChange = () => ({
   type: TaskActions.TASK_CHANGE_REQUEST_SENT
 });
 
-const SuccessTaskChange = changedFields => ({
+const successTaskChange = changedFields => ({
   type: TaskActions.TASK_CHANGE_REQUEST_SUCCESS,
   changedFields
 });
 
-const StartTaskEditing = target => ({
+const startTaskEditing = target => ({
   type: TaskActions.TASK_EDIT_START,
   target
 });
 
-const FinishTaskEditing = () => ({
+const stopTaskEditing = target => ({
   type: TaskActions.TASK_EDIT_FINISH,
   target
 });
 
-const GetTask = id => {
+const getTask = id => {
   const URL = `/api/task/${id}`;
 
   return dispatch => {
-    dispatch(GetTaskStart());
-    dispatch(StartLoading());
+    dispatch(getTaskStart());
+    dispatch(startLoading());
 
     axios
       .get(URL, {}, { withCredentials: true })
       .catch(error => {
-        dispatch(ShowNotification({ message: error.message, type: 'error' }));
-        dispatch(FinishLoading());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
       })
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(GetTaskSuccess(response.data.data));
-          dispatch(FinishLoading());
+          dispatch(getTaskSuccess(response.data));
+          dispatch(finishLoading());
         }
       });
   };
 };
 
-const ChangeTask = (ChangedProperties, target) => {
+const changeTask = (ChangedProperties, target) => {
   if (!ChangedProperties.id) {
     return;
   }
@@ -61,24 +61,25 @@ const ChangeTask = (ChangedProperties, target) => {
   const URL = `/api/task/${ChangedProperties.id}`;
 
   return dispatch => {
-    dispatch(RequestTaskChange());
-    dispatch(StartLoading());
+    dispatch(requestTaskChange());
+    dispatch(startLoading());
 
     axios
       .put(URL, ChangedProperties, {
         withCredentials: true
       })
       .catch(err => {
-        dispatch(FinishLoading());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
       })
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(SuccessTaskChange(response.data));
-          dispatcH(FinishLoading());
-          dispatch(StopEditing(target));
+          dispatch(successTaskChange(response.data));
+          dispatch(finishLoading());
+          dispatch(stopTaskEditing(target));
         }
       });
   };
 };
 
-export { GetTask };
+export { getTask, startTaskEditing, stopTaskEditing, changeTask };
