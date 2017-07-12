@@ -3,14 +3,10 @@ import axios from 'axios';
 import { store } from '../Router';
 import { history } from '../Router';
 import { startLoading, finishLoading } from './Loading';
+import { showNotification } from './Notifications';
 
 const StartTasksReceive = () => ({
   type: TaskActions.TASKS_RECEIVE_START
-});
-
-const TasksReceiveError = message => ({
-  type: TaskActions.TASKS_RECEIVE_ERROR,
-  errorMessage: message
 });
 
 const TasksReceived = tasks => ({
@@ -37,8 +33,8 @@ const GetTasks = (options) => {
         { withCredentials: true }
       )
       .catch(error => {
-        dispatch(TasksReceiveError(error.message));
         dispatch(finishLoading());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
       })
       .then(response => {
         if (!response) {

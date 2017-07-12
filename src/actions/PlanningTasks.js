@@ -3,14 +3,10 @@ import axios from 'axios';
 import { store } from '../Router';
 import { history } from '../Router';
 import { startLoading, finishLoading } from './Loading';
+import { showNotification } from './Notifications';
 
 const StartTasksReceive = (side) => ({
   type: side === 'left' ? PlanningTaskActions.LEFT_COLUMN_TASKS_RECEIVE_START : PlanningTaskActions.RIGHT_COLUMN_TASKS_RECEIVE_START
-});
-
-const TasksReceiveError = (side, message) => ({
-  type: side === 'left' ? PlanningTaskActions.LEFT_COLUMN_TASKS_RECEIVE_ERROR : PlanningTaskActions.RIGHT_COLUMN_TASKS_RECEIVE_ERROR,
-  errorMessage: message
 });
 
 const TasksReceived = (side, tasks) => ({
@@ -38,7 +34,7 @@ const GetPlanningTasks = (side, options) => {
         { withCredentials: true }
       )
       .catch(error => {
-        dispatch(TasksReceiveError(side, error.message));
+        dispatch(showNotification({ message: error.message, type: 'error' }));
         dispatch(finishLoading());
       })
       .then(response => {

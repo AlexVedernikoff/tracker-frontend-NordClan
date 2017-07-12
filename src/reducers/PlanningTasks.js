@@ -14,12 +14,6 @@ function PlanningTasks (state = InitialState, action) {
       isReceiving: true
     };
 
-  case PlanningTaskActions.LEFT_COLUMN_TASKS_RECEIVE_ERROR:
-    return {
-      ...state,
-      isReceiving: false
-    };
-
   case PlanningTaskActions.LEFT_COLUMN_TASKS_RECEIVE_SUCCESS:
     return {
       ...state,
@@ -31,12 +25,6 @@ function PlanningTasks (state = InitialState, action) {
     return {
       ...state,
       isReceiving: true
-    };
-
-  case PlanningTaskActions.RIGHT_COLUMN_TASKS_RECEIVE_ERROR:
-    return {
-      ...state,
-      isReceiving: false
     };
 
   case PlanningTaskActions.RIGHT_COLUMN_TASKS_RECEIVE_SUCCESS:

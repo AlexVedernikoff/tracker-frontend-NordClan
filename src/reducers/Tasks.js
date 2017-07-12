@@ -16,12 +16,6 @@ function Tasks (state = InitialState, action) {
         isReceiving: true
       };
 
-    case TaskActions.TASKS_RECEIVE_ERROR:
-      return {
-        ...state,
-        isReceiving: false
-      };
-
     case TaskActions.TASKS_RECEIVE_SUCCESS:
       return {
         ...state,
