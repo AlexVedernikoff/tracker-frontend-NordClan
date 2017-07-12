@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import { connect } from 'react-redux';
 import ReactModal from 'react-modal';
 import Button from '../../../components/Button';
@@ -24,6 +25,22 @@ class CreateProject extends Component {
   componentDidMount () {
     const { getPortfolios } = this.props;
     getPortfolios();
+  }
+
+  GetPortfolios (name) {
+    if (!name) {
+      return Promise.resolve({ options: [] });
+    }
+
+    return axios
+      .get('api/portfolio', { params: { name } }, { withCredentials: true })
+      .then(response => response.data.data)
+      .then(portfolios => ({
+        options: portfolios.map((portfolio, i) => ({
+            label: portfolio.name,
+            value: portfolio.id
+        }))
+      }));
   }
 
   render () {
@@ -75,6 +92,8 @@ class CreateProject extends Component {
       firstCol: 5,
       secondCol: 7
     };
+
+    const SelectAsync = Select.AsyncCreatable;
 
     return (
       <ReactModal
@@ -132,10 +151,10 @@ class CreateProject extends Component {
                 <p>Добавить проект в портфель</p>
               </Col>
               <Col xs={formLayout.secondCol} className={css.rightColumn}>
-                <Select
-                  options={PortfolioList}
+                <SelectAsync
+                  multi={false}
+                  loadOptions={this.GetPortfolios}
                   onChange={this.props.onPortfolioSelect}
-                  style={{ width: '100%' }}
                   value={this.props.selectedPortfolio}
                   className={css.selectPortfolio}
                 />

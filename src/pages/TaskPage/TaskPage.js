@@ -21,10 +21,9 @@ class TaskPage extends Component {
   }
 
   componentDidMount () {
-    // TODO: change this to this.props.params.taskId
-    const id = 4;
-
+    const id = this.props.params.taskId;
     const { getTask } = this.props;
+    
     getTask(id);
   }
 
