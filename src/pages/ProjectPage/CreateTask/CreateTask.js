@@ -40,7 +40,7 @@ class CreateTask extends Component {
         boxSizing: 'border-box',
         border: 'none',
         background: '#fff',
-        overflow: 'auto',
+        overflow: 'visi',
         WebkitOverflowScrolling: 'touch',
         borderRadius: 0,
         outline: 'none',
@@ -55,8 +55,6 @@ class CreateTask extends Component {
       firstCol: 5,
       secondCol: 7
     };
-
-    const SelectAsync = Select.AsyncCreatable;
 
     return (
       <Modal
@@ -110,12 +108,15 @@ class CreateTask extends Component {
                 <p>Добавить задачу в спринт:</p>
               </Col>
               <Col xs={formLayout.secondCol} className={css.rightColumn}>
-                <SelectAsync
+                <Select
                   promptTextCreator={label => `Создать спринт '${label}'`}
                   searchPromptText={'Введите название спринта'}
                   multi={false}
                   ignoreCase={false}
                   placeholder='Выберите спринт'
+                  options={this.props.optionsList}
+                  className={css.selectSprint}
+                  value={this.props.selectedSprintValue}
                   // loadOptions={this.getPortfolios}
                   // onChange={this.props.onPortfolioSelect}
                   // value={this.props.selectedPortfolio}
