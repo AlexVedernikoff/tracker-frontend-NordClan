@@ -397,7 +397,8 @@ const mapStateToProps = state => ({
   project: state.Project.project,
   leftColumnTasks: state.PlanningTasks.leftColumnTasks,
   rightColumnTasks: state.PlanningTasks.rightColumnTasks,
-  SprintIsEditing: state.Task.SprintIsEditing
+  SprintIsEditing: state.Task.SprintIsEditing,
+  isCreateTaskModalOpen: state.Task.isCreateTaskModalOpen
 });
 
 const mapDispatchToProps = {

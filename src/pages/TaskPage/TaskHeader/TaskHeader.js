@@ -71,7 +71,7 @@ export default class TaskHeader extends Component {
             ? <Priority taskId={task.id} priority={task.prioritiesId} />
             : null}
         </div>
-        <TaskTitle name={task.name} />
+        <TaskTitle name={task.name} id={task.id} />
         <Button
           type="bordered"
           icon="IconClose"
