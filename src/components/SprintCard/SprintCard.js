@@ -22,7 +22,8 @@ class SprintCard extends Component {
       dateFrom: undefined,
       dateTo: undefined,
       sprintName: '',
-      sprintTime: ''
+      sprintTime: '',
+      allottedTime: null
     };
   }
 
@@ -35,7 +36,7 @@ class SprintCard extends Component {
   };
 
   onChangeTime = (e) => {
-    this.setState({ sprintTime: e.target.value });
+    this.setState({ allottedTime: e.target.value });
   };
 
   onChangeName = (e) => {
@@ -68,7 +69,8 @@ class SprintCard extends Component {
         null,
         this.state.sprintName.trim(),
         this.state.dateFrom,
-        this.state.dateTo
+        this.state.dateTo,
+        this.state.allottedTime
       );
     };
 
@@ -110,6 +112,12 @@ class SprintCard extends Component {
           <span>Всего задач:</span>
         <span>
           {sprint.tasksTotal || 0}
+        </span>
+        </p>
+        <p className={css.sprintMeta}>
+          <span>Выполнено:</span>
+        <span>
+          {sprint.tasksDone || 0}
         </span>
         </p>
         <p className={css.sprintMeta}>

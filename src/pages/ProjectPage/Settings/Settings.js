@@ -23,7 +23,8 @@ class Settings extends Component {
       dateFrom: undefined,
       dateTo: undefined,
       sprintName: '',
-      sprintTime: ''
+      sprintTime: '',
+      allottedTime: null
     };
   }
 
@@ -36,7 +37,7 @@ class Settings extends Component {
   };
 
   onChangeTime = (e) => {
-    this.setState({ sprintTime: e.target.value });
+    this.setState({ allottedTime: e.target.value });
   };
 
   onChangeName = (e) => {
@@ -57,7 +58,8 @@ class Settings extends Component {
         this.state.sprintName.trim(),
         this.props.id,
         this.state.dateFrom,
-        this.state.dateTo
+        this.state.dateTo,
+        this.state.allottedTime
     );
   };
 

@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { connect } from 'react-redux';
 import ReactModal from 'react-modal';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './CreateProject.scss';
-import { getPortfolios } from '../../../actions/Portfolios';
 import { CreateProjectRequest } from '../../../actions/Project';
 import Checkbox from '../../../components/Checkbox';
 import Select from 'react-select';
@@ -22,16 +20,7 @@ class CreateProject extends Component {
     onRequestClose();
   };
 
-  componentDidMount () {
-    const { getPortfolios } = this.props;
-    getPortfolios();
-  }
-
-  GetPortfolios (name) {
-    if (!name) {
-      return Promise.resolve({ options: [] });
-    }
-
+  getPortfolios (name = '') {
     return axios
       .get('api/portfolio', { params: { name } }, { withCredentials: true })
       .then(response => response.data.data)
@@ -81,12 +70,6 @@ class CreateProject extends Component {
         maxHeight: '100%'
       }
     };
-    const PortfolioList = this.props.portfolios.map((portfolio, i) => {
-      return {
-        label: portfolio.name,
-        value: portfolio.id
-      };
-    });
 
     const formLayout = {
       firstCol: 5,
@@ -152,8 +135,12 @@ class CreateProject extends Component {
               </Col>
               <Col xs={formLayout.secondCol} className={css.rightColumn}>
                 <SelectAsync
+                  promptTextCreator={label => `Создать портфель '${label}'`}
+                  searchPromptText={'Введите название портфеля'}
                   multi={false}
-                  loadOptions={this.GetPortfolios}
+                  ignoreCase={false}
+                  placeholder='Выберите портфель'
+                  loadOptions={this.getPortfolios}
                   onChange={this.props.onPortfolioSelect}
                   value={this.props.selectedPortfolio}
                   className={css.selectPortfolio}
@@ -181,12 +168,4 @@ class CreateProject extends Component {
   }
 }
 
-const mapDispatchToProps = {
-  getPortfolios
-};
-
-const mapStateToProps = state => ({
-  portfolios: state.Portfolios.portfolios
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(CreateProject);
+export default CreateProject;
