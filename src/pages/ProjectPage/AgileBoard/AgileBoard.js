@@ -8,6 +8,8 @@ import moment from 'moment';
 import _ from 'lodash';
 
 import TaskCard from '../../../components/TaskCard';
+import Modal from '../../../components/Modal';
+import Button from '../../../components/Button';
 import PhaseColumn from './PhaseColumn';
 import SelectDropdown from '../../../components/SelectDropdown';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
@@ -40,7 +42,7 @@ const filterTasks = (array, sortedObject) => {
   });
 };
 
-const sortTasks = (sortedObject, prefix, section, onChangeStatus) => {
+const sortTasks = (sortedObject, prefix, section, onChangeStatus, onChangePerformer) => {
   for (const key in sortedObject) {
     sortedObject[key].sort((a, b) => {
       if (a.priority > b.priority) return 1;
@@ -53,6 +55,7 @@ const sortTasks = (sortedObject, prefix, section, onChangeStatus) => {
         prefix={prefix}
         section={section}
         onChangeStatus={onChangeStatus}
+        onChangePerformer={onChangePerformer}
       />;
     });
   }
@@ -99,6 +102,8 @@ class AgileBoard extends Component {
         myTasks: true,
         allTasks: true
       },
+      isModalOpen: false,
+      performer: null,
       filterTags: [],
       changedSprint: null
     };
@@ -141,6 +146,17 @@ class AgileBoard extends Component {
     this.props.startTaskEditing('Status');
   }
 
+  changePerformer = (taskId, performerId) => {
+    this.setState({
+      isModalOpen: true,
+      performer: performerId
+    });
+  }
+
+  closeModal = () => {
+    this.setState({ isModalOpen: false });
+  };
+
   getSprints = () => {
     let sprints = _.sortBy(this.props.sprints, sprint => {
       return new moment(sprint.factFinishDate);
@@ -170,6 +186,13 @@ class AgileBoard extends Component {
     return sprints;
   };
 
+  getUsers = () => {
+    return this.props.project.users.map((user, i) => ({
+      value: user.id,
+      label: user.fullNameRu
+    }));
+  };
+
   componentWillMount () {
     this.selectValue(0, 'changedSprint');
   }
@@ -194,7 +217,7 @@ class AgileBoard extends Component {
     };
 
     filterTasks(this.props.sprintTasks, allSorted);
-    sortTasks(allSorted, this.props.project.prefix, 'all', this.changeStatus);
+    sortTasks(allSorted, this.props.project.prefix, 'all', this.changeStatus, this.changePerformer);
 
     const mineSorted = {
       new: [],
@@ -209,7 +232,7 @@ class AgileBoard extends Component {
     });
 
     filterTasks(myTasks, mineSorted);
-    sortTasks(mineSorted, this.props.project.prefix, 'mine', this.changeStatus);
+    sortTasks(mineSorted, this.props.project.prefix, 'mine', this.changeStatus, this.changePerformer);
 
     return (
         <section className={css.agileBoard}>
@@ -280,6 +303,30 @@ class AgileBoard extends Component {
             : null
           }
           <hr/>
+          {this.state.isModalOpen
+            ? <Modal
+                isOpen
+                contentLabel="modal"
+                className={css.modalWrapper}
+                onRequestClose={this.closeModal}
+              >
+                <div className={css.changeStage}>
+                  <h3>Изменить исполнителя задачи</h3>
+                  <div className={css.modalLine}>
+                    <SelectDropdown
+                      name="member"
+                      placeholder="Введите имя исполнителя..."
+                      multi={false}
+                      value={this.state.performer}
+                      onChange={e => this.selectValue(e, 'member')}
+                      noResultsText="Нет результатов"
+                      options={this.getUsers()}
+                    />
+                    <Button type="green" text="ОК" />
+                  </div>
+                </div>
+              </Modal>
+          : null}
         </section>
     );
   }

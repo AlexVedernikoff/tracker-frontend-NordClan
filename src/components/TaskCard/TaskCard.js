@@ -31,6 +31,7 @@ const TaskCard = (props) => {
     connectDragSource,
     isDragging,
     onChangeStatus,
+    onChangePerformer,
     prefix,
     section,
     ...other
@@ -40,6 +41,10 @@ const TaskCard = (props) => {
 
   const handleClick = () => {
     onChangeStatus(task.id, task.statusId);
+  };
+
+  const handlePerformerClick = () => {
+    onChangePerformer(task.id, task.performer ? task.performer.id : null);
   };
 
   return (
@@ -65,12 +70,12 @@ const TaskCard = (props) => {
           <span className={css.prefix}>{`${prefix}-${task.id}`}.</span>
           {task.name}
         </Link>
-        <p className={css.taskMeta}>
+        <p className={css.taskMeta} onClick={handlePerformerClick}>
           <span>
             { task.performer
-              ? <Link to={`/users/${task.performer.id}`}>
+              ? <a>
                   {task.performer.fullNameRu}
-                </Link>
+                </a>
               : 'Не назначено'
             }
           </span>
@@ -108,6 +113,7 @@ const TaskCard = (props) => {
 TaskCard.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
   isDragging: PropTypes.bool.isRequired,
+  onChangePerformer: PropTypes.func.isRequired,
   onChangeStatus: PropTypes.func.isRequired,
   section: PropTypes.string.isRequired,
   task: PropTypes.object
