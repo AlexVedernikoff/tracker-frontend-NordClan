@@ -48,9 +48,9 @@ class Planning extends Component {
         : '- ...'})`,
       statusId: sprint.statusId,
       className: classnames({
-        [css.INPROGRESS]: sprint.statusId === 1,
         [css.sprintMarker]: true,
-        [css.FINISHED]: sprint.statusId === 2
+        [css.INPROGRESS]: sprint.statusId === 1,
+        [css.PLANNED]: sprint.statusId === 2
       })
     }));
 
