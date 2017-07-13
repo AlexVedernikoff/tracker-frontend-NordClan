@@ -8,9 +8,41 @@ import * as css from './CreateTask.scss';
 import { Col, Row } from 'react-flexbox-grid';
 
 class CreateTask extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
+    this.state = {
+      selectedSprint: null,
+      sprints: null
+    };
   }
+
+  componentWillReceiveProps (nextProps) {
+    if (!this.state.selectedSprint) {
+      this.setState({
+        selectedSprint: nextProps.selectedSprintValue
+      });
+    }
+    if (!this.state.sprints) {
+      this.setState({
+        sprints: nextProps.optionsList
+      })
+    }
+  }
+
+  handleModalSprintChange = selectedSprint => {
+    console.log('event eboshit');
+    this.setState({
+      selectedSprint: selectedSprint.value,
+      sprints: this.state.sprints.map(sprint => ({
+        ...sprint,
+        disabled:
+          _.isEqual(selectedSprint, sprint)
+          || this.state.selectedSprint === sprint.value
+            ? !sprint.disabled
+            : sprint.disabled
+      }))
+    });
+  };
 
   render () {
     const { isOpen, onRequestClose } = this.props;
@@ -71,7 +103,8 @@ class CreateTask extends Component {
                 <p>Проект:</p>
               </Col>
               <Col xs={formLayout.secondCol} className={css.rightColumn}>
-                <p>Тут будет проект</p>
+                <p>{`${this.props.project.name} (${this.props.project
+                  .prefix})`}</p>
               </Col>
             </Row>
           </div>
@@ -95,10 +128,8 @@ class CreateTask extends Component {
                 <p>Открыть страницу задачи</p>
               </Col>
               <Col xs={formLayout.secondCol} className={css.rightColumn}>
-                <Checkbox
-                  name="openProjectPage"
-                  // onChange={this.props.handleCheckBox}
-                />
+                <Checkbox name="openProjectPage" />
+                {/* // onChange={this.props.handleCheckBox} */}
               </Col>
             </Row>
           </label>
@@ -113,10 +144,11 @@ class CreateTask extends Component {
                   searchPromptText={'Введите название спринта'}
                   multi={false}
                   ignoreCase={false}
-                  placeholder='Выберите спринт'
-                  options={this.props.optionsList}
+                  placeholder="Выберите спринт"
+                  options={this.state.sprints}
                   className={css.selectSprint}
-                  value={this.props.selectedSprintValue}
+                  onChange={this.handleModalSprintChange}
+                  value={this.state.selectedSprint}
                   // loadOptions={this.getPortfolios}
                   // onChange={this.props.onPortfolioSelect}
                   // value={this.props.selectedPortfolio}
@@ -143,7 +175,6 @@ class CreateTask extends Component {
       </Modal>
     );
   }
-
 }
 
 export default CreateTask;

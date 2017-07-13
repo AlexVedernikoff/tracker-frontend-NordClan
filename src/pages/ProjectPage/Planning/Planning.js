@@ -443,6 +443,7 @@ class Planning extends Component {
               ? this.state.leftColumn
               : this.state.rightColumn
           }
+          project={this.props.project}
         />
       </div>
     );
