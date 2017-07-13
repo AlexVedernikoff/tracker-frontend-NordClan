@@ -39,6 +39,14 @@ export const closeCreateTaskModal = () => ({
   type: ProjectActions.CLOSE_CREATE_TASK_MODAL
 });
 
+const createTaskRequestStart = () => ({
+  type: ProjectActions.TASK_CREATE_REQUEST_START
+});
+
+const createTaskRequestSuccess = () => ({
+  type: ProjectActions.TASK_CREATE_REQUEST_SUCCESS
+});
+
 const GetProjectInfo = id => {
   const URL = `/api/project/${id}`;
 
@@ -89,6 +97,34 @@ const ChangeProject = (ChangedProperties, target) => {
   };
 };
 
+const createTask = (task, openTaskPage) => {
+  if (!task.name) {
+    return;
+  }
 
+  const URL = '/api/task';
 
-export { GetProjectInfo, ChangeProject };
+  return dispatch => {
+    dispatch(startLoading());
+    dispatch(createTaskRequestStart());
+
+    axios
+      .get(URL, task, {
+        withCredentials: true
+      })
+      .catch(error => {
+        dispatch(finishLoading());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(finishLoading());
+          dispatch(createTaskRequestSuccess());
+          dispatch(closeCreateTaskModal());
+          dispatch(GetProjectInfo(task.projectId));
+        }
+      })
+  };
+};
+
+export { GetProjectInfo, ChangeProject, createTask };

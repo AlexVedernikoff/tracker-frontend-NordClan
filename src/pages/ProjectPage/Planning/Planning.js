@@ -20,6 +20,7 @@ import {
   openCreateTaskModal,
   closeCreateTaskModal
 } from '../../../actions/Project';
+import { createTask } from '../../../actions/Project';
 
 const sortTasks = sortedArr => {
   sortedArr.sort((a, b) => {
@@ -437,12 +438,13 @@ class Planning extends Component {
         <CreateTask
           isOpen={this.props.isCreateTaskModalOpen}
           onRequestClose={this.handleModal}
-          optionsList={rightColumnSprints}
+          optionsList={leftColumnSprints}
           selectedSprintValue={
             this.state.createTaskCallee === 'left'
               ? this.state.leftColumn
               : this.state.rightColumn
           }
+          onSubmit={this.props.createTask}
           project={this.props.project}
         />
       </div>
@@ -476,7 +478,8 @@ const mapDispatchToProps = {
   changeTask,
   startTaskEditing,
   openCreateTaskModal,
-  closeCreateTaskModal
+  closeCreateTaskModal,
+  createTask
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Planning);

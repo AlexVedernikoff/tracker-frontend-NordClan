@@ -12,7 +12,8 @@ class CreateTask extends Component {
     super(props);
     this.state = {
       selectedSprint: null,
-      sprints: null
+      taskName: null,
+      openTaskPage: false
     };
   }
 
@@ -22,25 +23,33 @@ class CreateTask extends Component {
         selectedSprint: nextProps.selectedSprintValue
       });
     }
-    if (!this.state.sprints) {
-      this.setState({
-        sprints: nextProps.optionsList
-      })
-    }
+  }
+
+  componentWillUnmount () {
+    this.setState({
+      selectedSprint: null,
+      sprints: null,
+      taskName: null,
+      openTaskPage: false
+    });
   }
 
   handleModalSprintChange = selectedSprint => {
-    console.log('event eboshit');
     this.setState({
-      selectedSprint: selectedSprint.value,
-      sprints: this.state.sprints.map(sprint => ({
-        ...sprint,
-        disabled:
-          _.isEqual(selectedSprint, sprint)
-          || this.state.selectedSprint === sprint.value
-            ? !sprint.disabled
-            : sprint.disabled
-      }))
+      selectedSprint: selectedSprint.value
+    });
+  };
+
+  handleInput = event => {
+    this.setState({
+      taskName: event.target.value
+    });
+  };
+
+  handleCheckBox = event => {
+    const { checked } = event.target;
+    this.setState({
+      openTaskPage: checked
     });
   };
 
@@ -115,7 +124,7 @@ class CreateTask extends Component {
               </Col>
               <Col xs={formLayout.secondCol} className={css.rightColumn}>
                 <Input
-                  // onChange={this.props.onChange}
+                  onChange={this.handleInput}
                   name="taskName"
                   placeholder="Название задачи"
                 />
@@ -128,8 +137,10 @@ class CreateTask extends Component {
                 <p>Открыть страницу задачи</p>
               </Col>
               <Col xs={formLayout.secondCol} className={css.rightColumn}>
-                <Checkbox name="openProjectPage" />
-                {/* // onChange={this.props.handleCheckBox} */}
+                <Checkbox
+                  name="openProjectPage"
+                  onChange={this.handleCheckBox}
+                />
               </Col>
             </Row>
           </label>
@@ -145,7 +156,7 @@ class CreateTask extends Component {
                   multi={false}
                   ignoreCase={false}
                   placeholder="Выберите спринт"
-                  options={this.state.sprints}
+                  options={this.props.optionsList}
                   className={css.selectSprint}
                   onChange={this.handleModalSprintChange}
                   value={this.state.selectedSprint}

@@ -107,6 +107,16 @@ export default function Project (state = InitialState, action) {
         isCreateTaskModalOpen: false
       }
 
+    case ProjectActions.TASK_CREATE_REQUEST_START:
+      return {
+        ...state
+      }
+
+    case ProjectActions.TASK_CREATE_REQUEST_SUCCESS:
+      return {
+        ...state
+      }
+
     default:
       return {
         ...state
