@@ -16,6 +16,7 @@ import moment from 'moment';
 
 import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
+import { openCreateTaskModal, closeCreateTaskModal } from '../../../actions/Project';
 
 const sortTasks = (sortedArr) => {
   sortedArr.sort((a, b) => {
@@ -107,6 +108,25 @@ class Planning extends Component {
   componentDidUpdate () {
     ReactTooltip.rebuild();
   }
+
+  handleModal = event => {
+    const {
+      isCreateTaskModalOpen,
+      openCreateTaskModal,
+      closeCreateTaskModal
+    } = this.props;
+    if (isCreateTaskModalOpen) {
+      // this.setState({
+      //   projectName: '',
+      //   projectPrefix: '',
+      //   selectedPortfolio: null
+      // });
+      closeCreateTaskModal();
+    } else {
+      openCreateTaskModal();
+    }
+  };
+
 
   render () {
     const leftColumnTasks = sortTasks(this.props.leftColumnTasks).map(task => {
@@ -312,6 +332,7 @@ class Planning extends Component {
                   />
                 </div>
                 <Button
+                  onClick={this.handleModal}
                   type="bordered"
                   text="Создать задачу"
                   icon="IconPlus"
@@ -350,6 +371,7 @@ class Planning extends Component {
                   />
                 </div>
                 <Button
+                  onClick={this.handleModal}
                   type="bordered"
                   text="Создать задачу"
                   icon="IconPlus"
@@ -377,7 +399,7 @@ class Planning extends Component {
           </Row>
         </section>
         <GanttChart />
-        <CreateTask />
+        <CreateTask isOpen={this.props.isCreateTaskModalOpen} onRequestClose={this.handleModal} />
       </div>
     );
   }
@@ -398,13 +420,15 @@ const mapStateToProps = state => ({
   leftColumnTasks: state.PlanningTasks.leftColumnTasks,
   rightColumnTasks: state.PlanningTasks.rightColumnTasks,
   SprintIsEditing: state.Task.SprintIsEditing,
-  isCreateTaskModalOpen: state.Task.isCreateTaskModalOpen
+  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen
 });
 
 const mapDispatchToProps = {
   getPlanningTasks,
   changeTask,
-  startTaskEditing
+  startTaskEditing,
+  openCreateTaskModal,
+  closeCreateTaskModal
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Planning);

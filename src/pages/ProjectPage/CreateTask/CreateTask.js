@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
 import Modal from 'react-modal';
+import Select from 'react-select';
+import Input from '../../../components/Input';
+import Checkbox from '../../../components/Checkbox';
+import Button from '../../../components/Button';
+import * as css from './CreateTask.scss';
+import { Col, Row } from 'react-flexbox-grid';
 
 class CreateTask extends Component {
   constructor(props) {
@@ -53,7 +59,7 @@ class CreateTask extends Component {
     const SelectAsync = Select.AsyncCreatable;
 
     return (
-      <ReactModal
+      <Modal
         isOpen={isOpen}
         onRequestClose={onRequestClose}
         contentLabel="Modal"
@@ -133,7 +139,7 @@ class CreateTask extends Component {
             />
           </div>
         </form>
-      </ReactModal>
+      </Modal>
     );
   }
 
