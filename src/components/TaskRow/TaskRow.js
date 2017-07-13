@@ -14,9 +14,6 @@ class TaskRow extends React.Component {
 
   constructor (props) {
     super(props);
-    this.state = {
-      cutTags: props.task.tags.length > 6
-    };
   }
 
   render () {
@@ -30,9 +27,7 @@ class TaskRow extends React.Component {
     } = this.props;
 
     const classPriority = 'priority-' + task.prioritiesId;
-    const tags = task.tags.map((element, i) => <Tag key={i} name={element.name}/>);
-    const sliceTags = tags.slice(0, 6);
-    const { cutTags } = this.state;
+    const tags = task.tags.map((element, i) => <Tag key={i} name={element.name} blocked/>);
 
     return (
     <div className={classnames({[css.taskCard]: true, [css[classPriority]]: true, [css.card]: card, [css.dropped]: isDragging})} {...other}>
@@ -93,16 +88,7 @@ class TaskRow extends React.Component {
           !shortcut
           ? <Col xs>
             <div className={css.tagbox}>
-              <Tags>{
-                !cutTags
-                ? tags
-                : sliceTags
-              }</Tags>
-              {
-                cutTags
-                ? <span className={css.loadMore} onClick={() => this.setState({cutTags: false})}>Показать все {task.tags.length}</span>
-                : null
-              }
+              <Tags>{tags}</Tags>
             </div>
           </Col>
           : null
