@@ -4,7 +4,8 @@ import * as SprintActions from '../constants/Sprint';
 
 const InitialState = {
   project: {
-    sprints: []
+    sprints: [],
+    users: []
   },
   TitleIsEditing: false,
   DescriptionIsEditing: false

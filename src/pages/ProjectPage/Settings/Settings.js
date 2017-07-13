@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router';
-import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
+import { Row, Col } from 'react-flexbox-grid/lib/index';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { createSprint } from '../../../actions/Sprint';
 
 import * as css from './Settings.scss';
+import Participant from '../../../components/Participant';
 import SprintCard from '../../../components/SprintCard';
-import Checkbox from '../../../components/Checkbox';
 import Button from '../../../components/Button';
 import Modal from '../../../components/Modal';
 import DatepickerDropdown from '../../../components/DatepickerDropdown';
@@ -19,7 +18,8 @@ class Settings extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      isModalOpen: false,
+      isModalOpenAddSprint: false,
+      isModalOpenAddUser: false,
       dateFrom: undefined,
       dateTo: undefined,
       sprintName: '',
@@ -28,12 +28,20 @@ class Settings extends Component {
     };
   }
 
-  handleOpenModal = () => {
-    this.setState({ isModalOpen: true });
+  handleOpenModalAddSprint = () => {
+    this.setState({ isModalOpenAddSprint: true });
   };
 
-  handleCloseModal = () => {
-    this.setState({ isModalOpen: false });
+  handleCloseModalAddSprint = () => {
+    this.setState({ isModalOpenAddSprint: false });
+  };
+
+  handleOpenModalAddUser = () => {
+    this.setState({ isModalOpenAddUser: true });
+  };
+
+  handleCloseModalAddUser = () => {
+    this.setState({ isModalOpenAddUser: false });
   };
 
   onChangeTime = (e) => {
@@ -53,7 +61,7 @@ class Settings extends Component {
   };
 
   createSprint = () => {
-    this.setState({ isModalOpen: false });
+    this.setState({ isModalOpenAddSprint: false });
     this.props.createSprint(
         this.state.sprintName.trim(),
         this.props.id,
@@ -110,226 +118,17 @@ class Settings extends Component {
             </Row>
           </Col>
         </Row>
-        <Row className={css.memberRow}>
-          <Col xs={3}>
-            <Link to="/users/123">
-              <div className={classnames(css.cell, css.memberColumn)}>
-                Бронислав Пупков
-              </div>
-            </Link>
-          </Col>
-          <Col xs={9}>
-            <Row>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-        <Row className={css.memberRow}>
-          <Col xs={3}>
-            <Link to="/users/123">
-              <div className={classnames(css.cell, css.memberColumn)}>
-                Александра Одиннадцатиклассница
-              </div>
-            </Link>
-          </Col>
-          <Col xs={9}>
-            <Row>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-        <Row className={css.memberRow}>
-          <Col xs={3}>
-            <Link to="/users/123">
-              <div className={classnames(css.cell, css.memberColumn)}>
-                Никита Джугашвили
-              </div>
-            </Link>
-          </Col>
-          <Col xs={9}>
-            <Row>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-        <Row className={css.memberRow}>
-          <Col xs={3}>
-            <Link to="/users/123">
-              <div className={classnames(css.cell, css.memberColumn)}>
-                Николай Липотин
-              </div>
-            </Link>
-          </Col>
-          <Col xs={9}>
-            <Row>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-        <Row className={css.memberRow}>
-          <Col xs={3}>
-            <Link to="/users/123">
-              <div className={classnames(css.cell, css.memberColumn)}>
-                Андрей Юдин
-              </div>
-            </Link>
-          </Col>
-          <Col xs={9}>
-            <Row>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
+        {this.props.users
+          ? this.props.users.map((user) =>
+          <Participant user={user}
+                       key={`${user.id}-user`}/>
+        ) : null}
         <Button
           text="Добавить участника"
           type="primary"
           style={{ marginTop: 16 }}
           icon="IconPlus"
+          onClick={this.handleOpenModalAddUser}
         />
         {this.props.sprints
           ? <div>
@@ -349,14 +148,45 @@ class Settings extends Component {
           type="primary"
           style={{ marginTop: 16 }}
           icon="IconPlus"
-          onClick={this.handleOpenModal}
+          onClick={this.handleOpenModalAddSprint}
         />
         {
-          this.state.isModalOpen
+          this.state.isModalOpenAddUser
+            ? <Modal
+            isOpen
+            contentLabel="modal"
+            onRequestClose={this.handleCloseModalAddUser}>
+            <div>
+              <div>
+                <Row>
+                  <Col xsOffset={1}
+                       xs={10}>
+                    <h3>Создание нового спринта</h3>
+                    <Input
+                      placeholder="Имя Фамилия..."
+                      onChange={this.onChangeName}
+                    />
+                  </Col>
+                </Row>
+                <Row className={css.createButton}
+                     center="xs">
+                  <Col xs>
+                    <Button type="green"
+                            text="Добавить участника"
+                            onClick={this.createSprint}/>
+                  </Col>
+                </Row>
+              </div>
+            </div>
+          </Modal>
+            : null
+        }
+        {
+          this.state.isModalOpenAddSprint
               ? <Modal
               isOpen
               contentLabel="modal"
-              onRequestClose={this.handleCloseModal}>
+              onRequestClose={this.handleCloseModalAddSprint}>
             <div>
               <div>
                 <Row>
@@ -415,12 +245,14 @@ class Settings extends Component {
 Settings.propTypes = {
   createSprint: PropTypes.func.isRequired,
   id: PropTypes.number,
-  sprints: PropTypes.array.isRequired
+  sprints: PropTypes.array.isRequired,
+  users: PropTypes.array.isRequired
 };
 
 const mapStateToProps = state => ({
   sprints: state.Project.project.sprints,
-  id: state.Project.project.id
+  id: state.Project.project.id,
+  users: state.Project.project.users
 });
 
 const mapDispatchToProps = {
