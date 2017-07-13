@@ -53,6 +53,20 @@ class CreateTask extends Component {
     });
   };
 
+  submitTask = event => {
+    event.preventDefault();
+    this.props.onSubmit(
+      {
+        name: this.state.taskName,
+        projectId: this.props.project.id,
+        statusId: 1,
+        typeId: 1,
+        sprintId: this.state.selectedSprint === 0 ? null : this.state.selectedSprint
+      },
+      this.state.openTaskPage
+    );
+  }
+
   render () {
     const { isOpen, onRequestClose } = this.props;
     const ReactModalStyles = {
@@ -170,10 +184,10 @@ class CreateTask extends Component {
           </label>
           <div className={css.buttonsContainer}>
             <Button
-              text="Создать проект"
+              text="Создать задачу"
               type="green"
               style={{ width: '50%' }}
-              onClick={this.props.onSubmit}
+              onClick={this.submitTask}
             />
             <Button
               text="Назад"

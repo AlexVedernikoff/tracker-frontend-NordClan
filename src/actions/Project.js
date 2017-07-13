@@ -1,5 +1,6 @@
 import axios from 'axios';
 import * as ProjectActions from '../constants/Project';
+import { history } from '../Router';
 import { showNotification } from './Notifications';
 import { startLoading, finishLoading } from './Loading';
 
@@ -109,7 +110,7 @@ const createTask = (task, openTaskPage) => {
     dispatch(createTaskRequestStart());
 
     axios
-      .get(URL, task, {
+      .post(URL, task, {
         withCredentials: true
       })
       .catch(error => {
@@ -122,6 +123,10 @@ const createTask = (task, openTaskPage) => {
           dispatch(createTaskRequestSuccess());
           dispatch(closeCreateTaskModal());
           dispatch(GetProjectInfo(task.projectId));
+
+          if (openTaskPage) {
+            history.push(`/project/${task.projectId}/tasks/${response.data.id}`)
+          }
         }
       })
   };
