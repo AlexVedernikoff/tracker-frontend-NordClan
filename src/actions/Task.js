@@ -108,7 +108,7 @@ const changeTaskUser = (taskId, userId) => {
     dispatch(startLoading());
 
     axios
-      .put(URL, {
+      .post(URL, {
         taskId,
         userId
       }, {
