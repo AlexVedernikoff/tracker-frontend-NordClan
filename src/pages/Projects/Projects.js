@@ -22,6 +22,8 @@ import GetProjects, {
   closeCreateProjectModal
 } from '../../actions/Projects';
 
+import 'moment/locale/ru';
+
 class Projects extends Component {
   constructor (props) {
     super(props);
@@ -110,7 +112,11 @@ class Projects extends Component {
       closeCreateProjectModal
     } = this.props;
     if (isCreateProjectModalOpen) {
-      this.setState({ projectName: '', projectPrefix: '', selectedPortfolio: null });
+      this.setState({
+        projectName: '',
+        projectPrefix: '',
+        selectedPortfolio: null
+      });
       closeCreateProjectModal();
     } else {
       openCreateProjectModal();
@@ -128,11 +134,15 @@ class Projects extends Component {
   sendRequest = event => {
     event.preventDefault();
     const { requestProjectCreate } = this.props;
+    const portfolioName = !Number.isInteger(this.state.selectedPortfolio.value)
+      ? this.state.selectedPortfolio.value
+      : null;
     requestProjectCreate(
       {
         name: this.state.projectName,
         prefix: this.state.projectPrefix,
-        portfolioId: this.state.selectedPortfolio
+        portfolioId: portfolioName ? null : this.state.selectedPortfolio.value,
+        portfolioName
       },
       this.state.openProjectPage
     );
@@ -146,8 +156,9 @@ class Projects extends Component {
   };
 
   handlePortfolioChange = event => {
+    if (Array.isArray(event)) event = null;
     this.setState({
-      selectedPortfolio: event.value
+      selectedPortfolio: event
     });
   };
 

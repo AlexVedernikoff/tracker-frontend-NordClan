@@ -7,7 +7,8 @@ const InitialState = {
     sprints: []
   },
   TitleIsEditing: false,
-  DescriptionIsEditing: false
+  DescriptionIsEditing: false,
+  isCreateTaskModalOpen: false
 };
 
 export default function Project (state = InitialState, action) {
@@ -20,7 +21,7 @@ export default function Project (state = InitialState, action) {
           sprints: action.sprints
         }
       };
-    
+
     case SprintActions.SPRINTS_CREATE_SUCCESS:
       return {
         ...state,
@@ -93,6 +94,28 @@ export default function Project (state = InitialState, action) {
         ...state,
         [`${action.target}IsEditing`]: false
       };
+
+    case ProjectActions.OPEN_CREATE_TASK_MODAL:
+      return {
+        ...state,
+        isCreateTaskModalOpen: true
+      }
+
+    case ProjectActions.CLOSE_CREATE_TASK_MODAL:
+      return {
+        ...state,
+        isCreateTaskModalOpen: false
+      }
+
+    case ProjectActions.TASK_CREATE_REQUEST_START:
+      return {
+        ...state
+      }
+
+    case ProjectActions.TASK_CREATE_REQUEST_SUCCESS:
+      return {
+        ...state
+      }
 
     default:
       return {

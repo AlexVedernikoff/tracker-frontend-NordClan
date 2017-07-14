@@ -1,0 +1,33 @@
+.createTaskForm {
+  width: 100%;
+  padding: 25px;
+}
+
+.leftColumn {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.rightColumn {
+  display: flex;
+  align-items: center;
+}
+
+.formField {
+  display: block;
+
+  & + & {
+    margin-top: 10px;
+  }
+}
+
+.buttonsContainer {
+  width: 90%;
+  position: absolute;
+  bottom: 15px;
+}
+
+.selectSprint {
+  width: 100%;
+}

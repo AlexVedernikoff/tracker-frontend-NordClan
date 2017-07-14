@@ -16,7 +16,10 @@ export default class Details extends Component {
   render () {
     const { task } = this.props;
     const tags = task.tags.map((tag, i) => {
-      return <Tag key={i} name={tag} />;
+      return <Tag key={i}
+                  name={tag}
+                  taggable="task"
+                  taggableId={task.id}/>;
     });
 
     return (
@@ -38,7 +41,7 @@ export default class Details extends Component {
                   <td>Спринт:</td>
                   <td>
                     <Link to="#">
-                      {this.props.task.sprint}
+                      {this.props.task.sprint.name}
                     </Link>
                   </td>
                 </tr>
@@ -46,7 +49,9 @@ export default class Details extends Component {
             <tr>
               <td>Теги:</td>
               <td className={css.tags}>
-                <Tags>
+                <Tags taggable="task"
+                      taggableId={task.id}
+                      create>
                   {tags}
                 </Tags>
               </td>

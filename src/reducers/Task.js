@@ -1,4 +1,5 @@
 import * as TaskActions from '../constants/Task';
+import * as TagsActions from '../constants/Tags';
 
 const InitialState = {
   task: {
@@ -13,6 +14,22 @@ const InitialState = {
 
 export default function Task (state = InitialState, action) {
   switch (action.type) {
+  case TagsActions.TAGS_DELETE_SUCCESS:
+    return {
+      ...state,
+      task: {
+        ...state.task,
+        tags: action.data.tags
+      }
+    };
+  case TagsActions.TAGS_CREATE_SUCCESS:
+    return {
+      ...state,
+      task: {
+        ...state.task,
+        tags: action.data.tags
+      }
+    };
     case TaskActions.GET_TASK_REQUEST_SENT:
       return {
         ...state
