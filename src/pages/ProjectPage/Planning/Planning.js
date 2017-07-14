@@ -446,6 +446,7 @@ class Planning extends Component {
           }
           onSubmit={this.props.createTask}
           project={this.props.project}
+          column={this.state.createTaskCallee}
         />
       </div>
     );

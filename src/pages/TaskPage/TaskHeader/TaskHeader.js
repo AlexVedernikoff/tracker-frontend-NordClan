@@ -68,7 +68,7 @@ export default class TaskHeader extends Component {
               </div>
             : null}
           {task.prioritiesId
-            ? <Priority taskId={task.id} priority={task.prioritiesId} />
+            ? <Priority taskId={task.id} priority={task.prioritiesId} onChange={this.props.onChange} />
             : null}
         </div>
         <TaskTitle name={task.name} id={task.id} />

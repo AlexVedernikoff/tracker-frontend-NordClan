@@ -3,6 +3,7 @@ import * as ProjectActions from '../constants/Project';
 import { history } from '../Router';
 import { showNotification } from './Notifications';
 import { startLoading, finishLoading } from './Loading';
+import getPlanningTasks from './PlanningTasks';
 
 const gettingProjectInfoStart = () => ({
   type: ProjectActions.PROJECT_INFO_RECEIVE_START
@@ -98,7 +99,7 @@ const ChangeProject = (ChangedProperties, target) => {
   };
 };
 
-const createTask = (task, openTaskPage) => {
+const createTask = (task, openTaskPage, callee) => {
   if (!task.name) {
     return;
   }
@@ -123,12 +124,15 @@ const createTask = (task, openTaskPage) => {
           dispatch(createTaskRequestSuccess());
           dispatch(closeCreateTaskModal());
           dispatch(GetProjectInfo(task.projectId));
+          dispatch(getPlanningTasks(callee, { sprintId: task.sprintId || 0, projectId: task.projectId }));
 
           if (openTaskPage) {
-            history.push(`/project/${task.projectId}/tasks/${response.data.id}`)
+            history.push(
+              `/project/${task.projectId}/tasks/${response.data.id}`
+            );
           }
         }
-      })
+      });
   };
 };
 

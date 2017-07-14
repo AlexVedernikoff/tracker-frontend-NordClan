@@ -6,6 +6,7 @@ import Checkbox from '../../../components/Checkbox';
 import Button from '../../../components/Button';
 import * as css from './CreateTask.scss';
 import { Col, Row } from 'react-flexbox-grid';
+import Priority from '../../TaskPage/Priority';
 
 class CreateTask extends Component {
   constructor (props) {
@@ -13,7 +14,8 @@ class CreateTask extends Component {
     this.state = {
       selectedSprint: null,
       taskName: null,
-      openTaskPage: false
+      openTaskPage: false,
+      prioritiesId: 3
     };
   }
 
@@ -46,6 +48,12 @@ class CreateTask extends Component {
     });
   };
 
+  handlePriorityChange = priorityId => {
+    this.setState({
+      prioritiesId: +priorityId
+    });
+  };
+
   handleCheckBox = event => {
     const { checked } = event.target;
     this.setState({
@@ -61,11 +69,14 @@ class CreateTask extends Component {
         projectId: this.props.project.id,
         statusId: 1,
         typeId: 1,
-        sprintId: this.state.selectedSprint === 0 ? null : this.state.selectedSprint
+        sprintId:
+          this.state.selectedSprint === 0 ? null : this.state.selectedSprint,
+        prioritiesId: this.state.prioritiesId
       },
-      this.state.openTaskPage
+      this.state.openTaskPage,
+      this.props.column
     );
-  }
+  };
 
   render () {
     const { isOpen, onRequestClose } = this.props;
@@ -141,6 +152,20 @@ class CreateTask extends Component {
                   onChange={this.handleInput}
                   name="taskName"
                   placeholder="Название задачи"
+                />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={formLayout.firstCol} className={css.leftColumn}>
+                <p>Приоритет:</p>
+              </Col>
+              <Col xs={formLayout.secondCol} className={css.rightColumn}>
+                <Priority
+                  priority={this.state.prioritiesId}
+                  onPrioritySet={this.handlePriorityChange}
+                  text={''}
                 />
               </Col>
             </Row>

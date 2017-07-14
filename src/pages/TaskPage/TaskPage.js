@@ -55,7 +55,7 @@ class TaskPage extends Component {
       <div id="task-page">
         <Row>
           <Col xs={8}>
-            <TaskHeader task={this.props.task} />
+            <TaskHeader task={this.props.task} onChange={this.props.changeTask} />
             <main className={css.main}>
               <Description
                 text={{ __html: this.props.task.description }}
