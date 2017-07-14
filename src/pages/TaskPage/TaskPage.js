@@ -23,7 +23,7 @@ class TaskPage extends Component {
   componentDidMount () {
     const id = this.props.params.taskId;
     const { getTask } = this.props;
-    
+
     getTask(id);
   }
 
@@ -55,12 +55,12 @@ class TaskPage extends Component {
       <div id="task-page">
         <Row>
           <Col xs={8}>
-            <TaskHeader task={this.props.task} />
+            <TaskHeader task={this.props.task} onChange={this.props.changeTask} />
             <main className={css.main}>
               <Description
                 text={{ __html: this.props.task.description }}
                 headerType="h3"
-                id={4}
+                id={this.props.params.taskId}
                 headerText="Описание:"
                 onEditStart={this.props.startTaskEditing}
                 onEditFinish={this.props.stopTaskEditing}

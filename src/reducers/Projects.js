@@ -33,6 +33,16 @@ function Projects (state = InitialState, action) {
         isCreateProjectModalOpen: false
       }
 
+    case ProjectActions.PROJECT_CREATE_START:
+      return {
+        ...state
+      }
+
+    case ProjectActions.PROJECT_CREATE_SUCCESS:
+      return {
+        ...state
+      }
+
     default:
       return state;
   }

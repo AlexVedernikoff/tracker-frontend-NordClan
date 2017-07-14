@@ -22,6 +22,8 @@ import GetProjects, {
   closeCreateProjectModal
 } from '../../actions/Projects';
 
+import 'moment/locale/ru';
+
 class Projects extends Component {
   constructor (props) {
     super(props);

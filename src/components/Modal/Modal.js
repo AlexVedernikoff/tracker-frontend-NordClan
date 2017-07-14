@@ -19,7 +19,7 @@ const ReactModalStyles = {
     padding: '1rem',
     boxSizing: 'border-box',
     backgroundColor: 'rgba(43, 62, 80, 0.8)',
-    zIndex: 2,
+    zIndex: 3,
     overflow: 'visible'
   },
   content: {
