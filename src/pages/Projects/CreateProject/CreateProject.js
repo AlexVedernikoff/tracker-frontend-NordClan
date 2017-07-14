@@ -142,7 +142,7 @@ class CreateProject extends Component {
                   promptTextCreator={label => `Создать портфель '${label}'`}
                   searchPromptText={'Введите название портфеля'}
                   multi={false}
-                  ignoreCase={false}
+                  ignoreCase={true}
                   placeholder="Выберите портфель"
                   loadOptions={this.getPortfolios}
                   onChange={this.props.onPortfolioSelect}
