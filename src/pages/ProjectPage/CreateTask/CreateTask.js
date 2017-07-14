@@ -15,7 +15,9 @@ class CreateTask extends Component {
       selectedSprint: null,
       taskName: null,
       openTaskPage: false,
-      prioritiesId: 3
+      prioritiesId: 3,
+      types: [{ label: 'Фича', value: 1 }, { label: 'Баг', value: 2 }],
+      selectedType: { label: 'Фича', value: 1 }
     };
   }
 
@@ -68,7 +70,7 @@ class CreateTask extends Component {
         name: this.state.taskName,
         projectId: this.props.project.id,
         statusId: 1,
-        typeId: 1,
+        typeId: this.state.selectedType.value,
         sprintId:
           this.state.selectedSprint === 0 ? null : this.state.selectedSprint,
         prioritiesId: this.state.prioritiesId
@@ -76,6 +78,12 @@ class CreateTask extends Component {
       this.state.openTaskPage,
       this.props.column
     );
+  };
+
+  onTypeChange = value => {
+    this.setState({
+      selectedType: value
+    });
   };
 
   render () {
@@ -112,7 +120,7 @@ class CreateTask extends Component {
         outline: 'none',
         padding: 0,
         width: 500,
-        height: 350,
+        height: 400,
         maxHeight: '100%'
       }
     };
@@ -152,6 +160,24 @@ class CreateTask extends Component {
                   onChange={this.handleInput}
                   name="taskName"
                   placeholder="Название задачи"
+                />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={formLayout.firstCol} className={css.leftColumn}>
+                <p>Тип задачи:</p>
+              </Col>
+              <Col xs={formLayout.secondCol} className={css.rightColumn}>
+                <Select
+                  multi={false}
+                  ignoreCase={false}
+                  placeholder="Выберите спринт"
+                  options={this.state.types}
+                  className={css.selectSprint}
+                  value={this.state.selectedType}
+                  onChange={this.onTypeChange}
                 />
               </Col>
             </Row>
@@ -199,10 +225,6 @@ class CreateTask extends Component {
                   className={css.selectSprint}
                   onChange={this.handleModalSprintChange}
                   value={this.state.selectedSprint}
-                  // loadOptions={this.getPortfolios}
-                  // onChange={this.props.onPortfolioSelect}
-                  // value={this.props.selectedPortfolio}
-                  // className={css.selectSprint}
                 />
               </Col>
             </Row>
