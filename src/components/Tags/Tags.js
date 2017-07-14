@@ -12,18 +12,19 @@ class Tags extends Component {
     super(props);
     this.state = {
       cutTagsShow: false,
-      cutTags: this.props.children.length > 6 || false,
-      tags: this.props.children,
+      cutTags: this.props.children ? this.props.children.length > (this.props.maxLength || 6) || false : [],
+      tags: this.props.children || [],
       visible: false,
-      tag: ''
+      tag: '',
+      maxLength: this.props.maxLength || 6
     };
   }
 
-  handleClickOutside = evt => {
+  handleClickOutside = () => {
     this.setState({visible: false});
   };
 
-  showDropdownMenu = (e) => {
+  showDropdownMenu = () => {
     this.setState({visible: !this.state.visible});
   };
 
@@ -34,7 +35,7 @@ class Tags extends Component {
   componentWillReceiveProps = (nextProps) => {
     this.setState({tags: nextProps.children});
     if (!this.state.cutTagsShow) {
-      this.setState({cutTags: nextProps.children.length > 6});
+      this.setState({cutTags: nextProps.children.length > this.state.maxLength});
     }
     this.setState({cutTagsShow: true});
   };
@@ -51,8 +52,8 @@ class Tags extends Component {
 
   render () {
     let sliceTags = this.state.tags;
-    if (this.state.tags.length > 7) {
-      sliceTags = this.state.tags.slice(0, 6);
+    if (this.state.tags.length > this.state.maxLength) {
+      sliceTags = this.state.tags.slice(0, this.state.maxLength);
     }
     return (
       <div>
@@ -66,20 +67,20 @@ class Tags extends Component {
         }
         <span className={css.wrapperAddTags}>
                     { this.props.create ? <Tag create
-                                               data-tip="Добавить тег"
-                                               data-place="bottom"
+                                               data-tip='Добавить тег'
+                                               data-place='bottom'
                                                onClick={this.showDropdownMenu}/> : null}
           {this.state.visible ? <form className={css.tagPopup}
                                       onSubmit={this.sendNewTags}>
-            <input type="text"
-                   placeholder="Добавить тег"
+            <input type='text'
+                   placeholder='Добавить тег'
                    className={css.tagsInput}
                    defaultValue=''
-                   ref="newTag"
+                   ref='newTag'
                    onChange={this.onChangeHandler}/>
             <Button addedClassNames={{[css.tagsButton]: true}}
-                    text="+"
-                    type="green"
+                    text='+'
+                    type='green'
                     onClick={this.sendNewTags}
             />
           </form>
@@ -98,6 +99,7 @@ Tags.propTypes = {
   ]),
   create: PropTypes.bool,
   createTags: PropTypes.func.isRequired,
+  maxLength: PropTypes.number,
   taggable: PropTypes.string,
   taggableId: PropTypes.number
 };
