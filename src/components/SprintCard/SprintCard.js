@@ -121,10 +121,7 @@ class SprintCard extends Component {
         </span>
         </p>
         <p className={css.sprintMeta}>
-          <span>Выполнено:</span>
-        <span>
-          {sprint.tasksDone || 0}
-        </span>
+          <span>Выделенное время: {sprint.allottedTime || 0} ч.</span>
         </p>
         <div
           onClick={this.changeStatus}
@@ -135,13 +132,13 @@ class SprintCard extends Component {
           })}
           data-tip={sprint.statusId === 2 ? 'Остановить' : 'Запустить'}
         >
-          {sprint.status === 'INPROGRESS' ? <IconPause /> : <IconPlay />}
+          {sprint.statusId === 2 ? <IconPause /> : <IconPlay />}
         </div>
         {
           this.state.isModalOpen
             ? <Modal
             isOpen
-            contentLabel="modal"
+            contentLabel='modal'
             onRequestClose={this.handleCloseModal}>
             <div>
               <div>
@@ -150,7 +147,7 @@ class SprintCard extends Component {
                        xs={10}>
                     <h3>Редактирование спринта</h3>
                     <Input
-                      placeholder="Новое название спринта..."
+                      placeholder='Новое название спринта...'
                       defaultValue={sprint.name}
                       onChange={this.onChangeName}
                     />
@@ -159,13 +156,13 @@ class SprintCard extends Component {
                 <Row>
                   <Col xs>
                     <DatepickerDropdown
-                      name="dateFrom"
+                      name='dateFrom'
                       value={formattedDayFrom}
                       onDayChange={this.handleDayFromChange}
                       placeholder={moment(sprint.factStartDate).format('DD.MM.YYYY')}
                     />
                     <DatepickerDropdown
-                      name="dateTo"
+                      name='dateTo'
                       value={formattedDayTo}
                       onDayChange={this.handleDayToChange}
                       placeholder={moment(sprint.factFinishDate).format('DD.MM.YYYY')}
@@ -176,16 +173,17 @@ class SprintCard extends Component {
                   <Col xsOffset={1}
                        xs={10}>
                     <Input
-                      placeholder="Введите время в часах..."
+                      placeholder='Введите новое значение времени...'
+                      defaultValue={sprint.allottedTime || 0}
                       onChange={this.onChangeTime}
                     />
                   </Col>
                 </Row>
                 <Row className={css.createButton}
-                     center="xs">
+                     center='xs'>
                   <Col xs>
-                    <Button type="green"
-                            text="Изменить"
+                    <Button type='green'
+                            text='Изменить'
                             onClick={edit}/>
                   </Col>
                 </Row>
