@@ -38,3 +38,19 @@
 .createButton {
   margin: 15px 0 10px 0;
 }
+
+.changeStage {
+  padding: 2rem;
+
+  h3 {
+    margin-top: 0;
+  }
+}
+
+.modalLine {
+  display: flex;
+
+  > *:first-child {
+    flex-grow: 1;
+  }
+}

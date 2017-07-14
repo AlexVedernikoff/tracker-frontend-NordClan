@@ -3,13 +3,16 @@ import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
+import axios from 'axios';
 import { createSprint } from '../../../actions/Sprint';
+import { bindUserToProject } from '../../../actions/Project';
 
 import * as css from './Settings.scss';
 import Participant from '../../../components/Participant';
 import SprintCard from '../../../components/SprintCard';
 import Button from '../../../components/Button';
 import Modal from '../../../components/Modal';
+import SelectDropdown from '../../../components/SelectDropdown';
 import DatepickerDropdown from '../../../components/DatepickerDropdown';
 import Input from '../../../components/Input';
 import moment from 'moment';
@@ -24,9 +27,47 @@ class Settings extends Component {
       dateTo: undefined,
       sprintName: '',
       sprintTime: '',
-      allottedTime: null
+      allottedTime: null,
+      participant: null,
+      participants: []
     };
   }
+
+  bindUser = () => {
+    this.setState({ isModalOpenAddUser: false });
+    this.setState({participants: []});
+    this.props.bindUserToProject(
+      this.props.id,
+      this.state.participant.value
+    );
+  };
+
+  searchOnChange = (name) => {
+    const userName = name.trim();
+    if (userName.length > 1) {
+      const URL = `/api/user/autocompleter/?userName=${userName}`;
+      axios
+        .get(URL, {})
+        .then(response => {
+          if (response.data) {
+            this.setState({participants: response.data});
+          }
+        });
+    } else {
+      this.setState({participants: []});
+    }
+  };
+
+  getUsers = () => {
+    return this.state.participants.map((user) => ({
+      value: user.id,
+      label: user.fullNameRu
+    }));
+  };
+
+  selectValue = (e) => {
+    this.setState({participant: e});
+  };
 
   handleOpenModalAddSprint = () => {
     this.setState({ isModalOpenAddSprint: true });
@@ -42,6 +83,7 @@ class Settings extends Component {
 
   handleCloseModalAddUser = () => {
     this.setState({ isModalOpenAddUser: false });
+    this.setState({participants: []});
   };
 
   onChangeTime = (e) => {
@@ -156,26 +198,22 @@ class Settings extends Component {
             isOpen
             contentLabel="modal"
             onRequestClose={this.handleCloseModalAddUser}>
-            <div>
-              <div>
-                <Row>
-                  <Col xsOffset={1}
-                       xs={10}>
-                    <h3>Создание нового спринта</h3>
-                    <Input
-                      placeholder="Имя Фамилия..."
-                      onChange={this.onChangeName}
-                    />
-                  </Col>
-                </Row>
-                <Row className={css.createButton}
-                     center="xs">
-                  <Col xs>
-                    <Button type="green"
-                            text="Добавить участника"
-                            onClick={this.createSprint}/>
-                  </Col>
-                </Row>
+            <div className={css.changeStage}>
+              <h3>Добавление нового участника</h3>
+              <div className={css.modalLine}>
+                <SelectDropdown
+                  name="member"
+                  placeholder="Введите имя участника..."
+                  multi={false}
+                  value={this.state.participant}
+                  onChange={e => this.selectValue(e)}
+                  onInputChange={this.searchOnChange}
+                  noResultsText="Нет результатов"
+                  options={this.getUsers()}
+                />
+                <Button type="green"
+                        text="Добавить"
+                        onClick={this.bindUser}/>
               </div>
             </div>
           </Modal>
@@ -243,6 +281,7 @@ class Settings extends Component {
 }
 
 Settings.propTypes = {
+  bindUserToProject: PropTypes.func.isRequired,
   createSprint: PropTypes.func.isRequired,
   id: PropTypes.number,
   sprints: PropTypes.array.isRequired,
@@ -256,6 +295,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+  bindUserToProject,
   createSprint
 };
 

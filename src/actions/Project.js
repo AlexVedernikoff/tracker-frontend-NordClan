@@ -49,6 +49,61 @@ const createTaskRequestSuccess = () => ({
   type: ProjectActions.TASK_CREATE_REQUEST_SUCCESS
 });
 
+const getUsersStart = () => ({
+  type: ProjectActions.PROJECT_GET_USERS_START
+});
+
+const getUsersSuccess = users => ({
+  type: ProjectActions.PROJECT_GET_USERS_SUCCESS,
+  users: users
+});
+
+const bindUserToProjectStart = () => ({
+  type: ProjectActions.BIND_USER_TO_PROJECT_START
+});
+
+const bindUserToProjectsSuccess = users => ({
+  type: ProjectActions.BIND_USER_TO_PROJECT_SUCCESS,
+  users: users
+});
+
+export const bindUserToProject = (projectId, userId, rolesIds) => {
+  const URL = '/api/project-users';
+
+  return dispatch => {
+    dispatch(bindUserToProjectStart());
+    dispatch(startLoading());
+    axios
+      .post(URL, {
+        projectId: projectId,
+        userId: userId})
+      .then(response => {
+        if (response.data) {
+          console.log(response.data);
+          dispatch(bindUserToProjectsSuccess(response.data));
+          dispatch(finishLoading());
+        }
+      });
+  };
+};
+
+export const getUsers = (name) => {
+  const URL = `/api/user/autocompleter/?userName=${name}`;
+
+  return dispatch => {
+    dispatch(getUsersStart());
+    dispatch(startLoading());
+    axios
+      .get(URL, {})
+      .then(response => {
+        if (response.data) {
+          dispatch(getUsersSuccess(response.data));
+          dispatch(finishLoading());
+        }
+      });
+  };
+};
+
 const GetProjectInfo = id => {
   const URL = `/api/project/${id}`;
 

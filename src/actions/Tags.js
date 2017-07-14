@@ -1,8 +1,8 @@
 import * as TagsActions from '../constants/Tags';
 import axios from 'axios';
-import { startLoading, finishLoading } from './Loading';
-import { store } from '../Router';
-import { history } from '../Router';
+import {startLoading, finishLoading} from './Loading';
+import {store} from '../Router';
+import {history} from '../Router';
 
 const startTagsCreate = () => ({
   type: TagsActions.TAGS_CREATE_START
@@ -39,11 +39,12 @@ export const createTags = (tags,
   return dispatch => {
     dispatch(startTagsCreate());
     dispatch(startLoading());
-    axios.post(URL, {
-      tag: tags,
-      taggable: taggable,
-      taggableId: taggableId
-    })
+    axios
+      .post(URL, {
+        tag: tags,
+        taggable: taggable,
+        taggableId: taggableId
+      })
       .then(res => {
         if (!res.data) return;
 
@@ -63,15 +64,15 @@ export const deleteTag = (tag,
   return dispatch => {
     dispatch(startTagsDelete());
     dispatch(startLoading());
-    axios.delete(URL)
+    axios
+      .delete(URL)
       .then(res => {
         if (!res.data) return;
 
         dispatch(tagsDeleteSucces({
           taggableId: taggableId,
           tags: res.data
-        })
-      );
+        }));
         dispatch(finishLoading());
       });
   };
