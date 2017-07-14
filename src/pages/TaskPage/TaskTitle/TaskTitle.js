@@ -45,7 +45,7 @@ class TaskTitle extends Component {
       const { changeTask } = this.props;
       changeTask(
         {
-          id: 4,
+          id: this.props.id,
           name: this.taskName.innerText
         },
         'Title'

@@ -3,8 +3,9 @@ import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
 import GanttChart from './GanttChart';
 import classnames from 'classnames';
+import CreateTask from '../CreateTask';
 import * as css from './Planning.scss';
-import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
+import { Row, Col } from 'react-flexbox-grid/lib/index';
 import DraggableTaskRow from './DraggableTaskRow';
 import Button from '../../../components/Button';
 import SelectDropdown from '../../../components/SelectDropdown';
@@ -15,8 +16,13 @@ import moment from 'moment';
 
 import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
+import {
+  openCreateTaskModal,
+  closeCreateTaskModal
+} from '../../../actions/Project';
+import { createTask } from '../../../actions/Project';
 
-const sortTasks = (sortedArr) => {
+const sortTasks = sortedArr => {
   sortedArr.sort((a, b) => {
     if (a.prioritiesId > b.prioritiesId) return 1;
     if (a.prioritiesId < b.prioritiesId) return -1;
@@ -29,8 +35,31 @@ class Planning extends Component {
     super(props);
     this.state = {
       leftColumn: null,
-      rightColumn: null
+      rightColumn: null,
+      createTaskCallee: null
     };
+  }
+
+  componentWillMount () {
+    this.selectValue(0, 'leftColumn');
+    //this.selectValue({value: this.props.project.sprints[0].id}, 'rightColumn');
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (!nextProps.SprintIsEditing && this.props.SprintIsEditing) {
+      this.selectValue(this.state.leftColumn, 'leftColumn');
+      this.selectValue(this.state.rightColumn, 'rightColumn');
+    }
+  }
+
+  componentDidUpdate () {
+    ReactTooltip.rebuild();
+  }
+
+  setCallee (callee) {
+    this.setState({
+      createTaskCallee: callee
+    });
   }
 
   getSprints = column => {
@@ -39,7 +68,7 @@ class Planning extends Component {
       return new moment(sprint.factFinishDate);
     });
 
-    sprints = sprints.map((sprint, i) => ({
+    sprints = sprints.map(sprint => ({
       value: sprint.id,
       label: `${sprint.name} (${moment(sprint.factStartDate).format(
         'DD.MM.YYYY'
@@ -71,62 +100,76 @@ class Planning extends Component {
   };
 
   dropTask = (task, sprint) => {
-    this.props.changeTask({
-      id: task.id,
-      sprintId: sprint
-    }, 'Sprint');
+    this.props.changeTask(
+      {
+        id: task.id,
+        sprintId: sprint
+      },
+      'Sprint'
+    );
 
     this.props.startTaskEditing('Sprint');
   };
 
   selectValue = (e, name) => {
-    this.setState({[name]: e }, () => {
-      this.props.getPlanningTasks(
-      name === 'leftColumn' ? 'left' : 'right',
-        {
-          projectId: this.props.project.id,
-          sprintId: this.state[name]
-        }
-      );
+    this.setState({ [name]: e }, () => {
+      this.props.getPlanningTasks(name === 'leftColumn' ? 'left' : 'right', {
+        projectId: this.props.project.id,
+        sprintId: this.state[name]
+      });
     });
   };
 
-  componentWillMount () {
-    this.selectValue(0, 'leftColumn');
-    //this.selectValue({value: this.props.project.sprints[0].id}, 'rightColumn');
-  }
+  handleModal = event => {
+    const {
+      isCreateTaskModalOpen,
+      openCreateTaskModal,
+      closeCreateTaskModal
+    } = this.props;
+    if (isCreateTaskModalOpen) {
+      // this.setState({
+      //   projectName: '',
+      //   projectPrefix: '',
+      //   selectedPortfolio: null
+      // });
+      closeCreateTaskModal();
+    } else {
+      this.setCallee(event.target.name);
+      openCreateTaskModal();
+    }
+  };
 
-  componentWillReceiveProps (nextProps) {
-    if (!nextProps.SprintIsEditing && this.props.SprintIsEditing) {
-      this.selectValue(this.state.leftColumn, 'leftColumn');
-      this.selectValue(this.state.rightColumn, 'rightColumn');
-    };
-  }
-
-  componentDidUpdate () {
-    ReactTooltip.rebuild();
-  }
+  handleModalSprintSelect = () => {};
 
   render () {
     const leftColumnTasks = sortTasks(this.props.leftColumnTasks).map(task => {
-      return <DraggableTaskRow
-                key={`task-${task.id}`}
-                task={task}
-                prefix={this.props.project.prefix}
-                shortcut
-                card
-              />;
+      return (
+        <DraggableTaskRow
+          key={`task-${task.id}`}
+          task={task}
+          prefix={this.props.project.prefix}
+          shortcut
+          card
+        />
+      );
     });
 
-    const rightColumnTasks = sortTasks(this.props.rightColumnTasks).map(task => {
-      return <DraggableTaskRow
-                key={`task-${task.id}`}
-                task={task}
-                prefix={this.props.project.prefix}
-                shortcut
-                card
-              />;
+    const rightColumnTasks = sortTasks(
+      this.props.rightColumnTasks
+    ).map(task => {
+      return (
+        <DraggableTaskRow
+          key={`task-${task.id}`}
+          task={task}
+          prefix={this.props.project.prefix}
+          shortcut
+          card
+        />
+      );
     });
+
+    const leftColumnSprints = this.getSprints('leftColumn');
+    const rightColumnSprints = this.getSprints('rightColumn');
 
     return (
       <div>
@@ -305,15 +348,21 @@ class Planning extends Component {
                     placeholder="Введите название спринта..."
                     multi={false}
                     value={this.state.leftColumn}
-                    onChange={e => this.selectValue(e !== null ? e.value : null, 'leftColumn')}
+                    onChange={e =>
+                      this.selectValue(
+                        e !== null ? e.value : null,
+                        'leftColumn'
+                      )}
                     noResultsText="Нет результатов"
-                    options={this.getSprints('leftColumn')}
+                    options={leftColumnSprints}
                   />
                 </div>
                 <Button
+                  onClick={this.handleModal}
                   type="bordered"
                   text="Создать задачу"
                   icon="IconPlus"
+                  name="left"
                   style={{ marginLeft: 16 }}
                 />
               </div>
@@ -329,11 +378,13 @@ class Planning extends Component {
                   style={{ width: '100%' }}
                 />
               </div>
-              {
-                  this.state.leftColumn || this.state.leftColumn === 0
-                  ? <SprintColumn onDrop={this.dropTask} sprint={this.state.leftColumn} tasks={leftColumnTasks} />
-                  : null
-              }
+              {this.state.leftColumn || this.state.leftColumn === 0
+                ? <SprintColumn
+                    onDrop={this.dropTask}
+                    sprint={this.state.leftColumn}
+                    tasks={leftColumnTasks}
+                  />
+                : null}
             </Col>
             <Col xs={6}>
               <div className={css.headerColumn}>
@@ -343,15 +394,21 @@ class Planning extends Component {
                     placeholder="Введите название спринта..."
                     multi={false}
                     value={this.state.rightColumn}
-                    onChange={e => this.selectValue(e !== null ? e.value : null, 'rightColumn')}
+                    onChange={e =>
+                      this.selectValue(
+                        e !== null ? e.value : null,
+                        'rightColumn'
+                      )}
                     noResultsText="Нет результатов"
-                    options={this.getSprints('rightColumn')}
+                    options={rightColumnSprints}
                   />
                 </div>
                 <Button
+                  onClick={this.handleModal}
                   type="bordered"
                   text="Создать задачу"
                   icon="IconPlus"
+                  name="right"
                   style={{ marginLeft: 16 }}
                 />
               </div>
@@ -367,25 +424,43 @@ class Planning extends Component {
                   style={{ width: '58%' }}
                 />
               </div>
-              {
-                  this.state.rightColumn || this.state.rightColumn === 0
-                  ? <SprintColumn onDrop={this.dropTask} sprint={this.state.rightColumn} tasks={rightColumnTasks} />
-                  : null
-              }
+              {this.state.rightColumn || this.state.rightColumn === 0
+                ? <SprintColumn
+                    onDrop={this.dropTask}
+                    sprint={this.state.rightColumn}
+                    tasks={rightColumnTasks}
+                  />
+                : null}
             </Col>
           </Row>
         </section>
         <GanttChart />
+        <CreateTask
+          isOpen={this.props.isCreateTaskModalOpen}
+          onRequestClose={this.handleModal}
+          optionsList={leftColumnSprints}
+          selectedSprintValue={
+            this.state.createTaskCallee === 'left'
+              ? this.state.leftColumn
+              : this.state.rightColumn
+          }
+          onSubmit={this.props.createTask}
+          project={this.props.project}
+          column={this.state.createTaskCallee}
+        />
       </div>
     );
   }
 }
 
 Planning.propTypes = {
-  getPlanningTasks: PropTypes.func.isRequired,
   SprintIsEditing: PropTypes.bool,
   changeTask: PropTypes.func.isRequired,
+  closeCreateTaskModal: PropTypes.func,
+  getPlanningTasks: PropTypes.func.isRequired,
+  isCreateTaskModalOpen: PropTypes.bool,
   leftColumnTasks: PropTypes.array,
+  openCreateTaskModal: PropTypes.func,
   project: PropTypes.object,
   rightColumnTasks: PropTypes.array,
   startTaskEditing: PropTypes.func
@@ -395,13 +470,17 @@ const mapStateToProps = state => ({
   project: state.Project.project,
   leftColumnTasks: state.PlanningTasks.leftColumnTasks,
   rightColumnTasks: state.PlanningTasks.rightColumnTasks,
-  SprintIsEditing: state.Task.SprintIsEditing
+  SprintIsEditing: state.Task.SprintIsEditing,
+  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen
 });
 
 const mapDispatchToProps = {
   getPlanningTasks,
   changeTask,
-  startTaskEditing
+  startTaskEditing,
+  openCreateTaskModal,
+  closeCreateTaskModal,
+  createTask
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Planning);

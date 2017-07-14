@@ -20,14 +20,18 @@ class CreateProject extends Component {
     onRequestClose();
   };
 
-  getPortfolios (name = '') {
+  getPortfolios (portfolioName = '') {
     return axios
-      .get('api/portfolio', { params: { name } }, { withCredentials: true })
-      .then(response => response.data.data)
+      .get(
+        'api/portfolio/autocompleter',
+        { params: { portfolioName } },
+        { withCredentials: true }
+      )
+      .then(response => response.data)
       .then(portfolios => ({
         options: portfolios.map((portfolio, i) => ({
-            label: portfolio.name,
-            value: portfolio.id
+          label: portfolio.name,
+          value: portfolio.id
         }))
       }));
   }
@@ -139,7 +143,7 @@ class CreateProject extends Component {
                   searchPromptText={'Введите название портфеля'}
                   multi={false}
                   ignoreCase={false}
-                  placeholder='Выберите портфель'
+                  placeholder="Выберите портфель"
                   loadOptions={this.getPortfolios}
                   onChange={this.props.onPortfolioSelect}
                   value={this.props.selectedPortfolio}

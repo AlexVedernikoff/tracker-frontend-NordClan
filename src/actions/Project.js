@@ -1,7 +1,9 @@
 import axios from 'axios';
 import * as ProjectActions from '../constants/Project';
+import { history } from '../Router';
 import { showNotification } from './Notifications';
 import { startLoading, finishLoading } from './Loading';
+import getPlanningTasks from './PlanningTasks';
 
 const gettingProjectInfoStart = () => ({
   type: ProjectActions.PROJECT_INFO_RECEIVE_START
@@ -29,6 +31,22 @@ export const StartEditing = target => ({
 export const StopEditing = target => ({
   type: ProjectActions.EDIT_FINISH,
   target: target
+});
+
+export const openCreateTaskModal = () => ({
+  type: ProjectActions.OPEN_CREATE_TASK_MODAL
+});
+
+export const closeCreateTaskModal = () => ({
+  type: ProjectActions.CLOSE_CREATE_TASK_MODAL
+});
+
+const createTaskRequestStart = () => ({
+  type: ProjectActions.TASK_CREATE_REQUEST_START
+});
+
+const createTaskRequestSuccess = () => ({
+  type: ProjectActions.TASK_CREATE_REQUEST_SUCCESS
 });
 
 const GetProjectInfo = id => {
@@ -81,6 +99,41 @@ const ChangeProject = (ChangedProperties, target) => {
   };
 };
 
+const createTask = (task, openTaskPage, callee) => {
+  if (!task.name || !task.projectId || !task.statusId || !task.typeId) {
+    return;
+  }
 
+  const URL = '/api/task';
 
-export { GetProjectInfo, ChangeProject };
+  return dispatch => {
+    dispatch(startLoading());
+    dispatch(createTaskRequestStart());
+
+    axios
+      .post(URL, task, {
+        withCredentials: true
+      })
+      .catch(error => {
+        dispatch(finishLoading());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(finishLoading());
+          dispatch(createTaskRequestSuccess());
+          dispatch(closeCreateTaskModal());
+          dispatch(GetProjectInfo(task.projectId));
+          dispatch(getPlanningTasks(callee, { sprintId: task.sprintId || 0, projectId: task.projectId }));
+
+          if (openTaskPage) {
+            history.push(
+              `/project/${task.projectId}/tasks/${response.data.id}`
+            );
+          }
+        }
+      });
+  };
+};
+
+export { GetProjectInfo, ChangeProject, createTask };
