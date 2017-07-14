@@ -200,15 +200,12 @@ class AgileBoard extends Component {
     }));
   };
 
-  componentWillMount () {
-    this.selectValue(0, 'changedSprint');
-  }
-
   componentWillReceiveProps (nextProps) {
+    if (!this.props.project.id && nextProps.project.id) this.selectValue(0, 'changedSprint');
+
     if (!nextProps.StatusIsEditing && this.props.StatusIsEditing) {
       this.selectValue(this.state.changedSprint, 'changedSprint');
     };
-
     if (!nextProps.UserIsEditing && this.props.UserIsEditing) {
       this.selectValue(this.state.changedSprint, 'changedSprint');
       this.setState({
@@ -217,6 +214,7 @@ class AgileBoard extends Component {
         changedTask: null
       });
     }
+
   }
 
   componentDidUpdate () {
