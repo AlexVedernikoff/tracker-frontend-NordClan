@@ -201,7 +201,7 @@ class AgileBoard extends Component {
   };
 
   componentWillReceiveProps (nextProps) {
-    if (!this.props.project.id && nextProps.project.id) this.selectValue(0, 'changedSprint');
+    if (this.props.project.id !== nextProps.project.id) this.selectValue(0, 'changedSprint');
 
     if (!nextProps.StatusIsEditing && this.props.StatusIsEditing) {
       this.selectValue(this.state.changedSprint, 'changedSprint');
