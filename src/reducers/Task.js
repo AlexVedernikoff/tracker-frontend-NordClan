@@ -50,6 +50,24 @@ export default function Task (state = InitialState, action) {
         }
       }
 
+    case TaskActions.TASK_CHANGE_USER_SENT:
+      return {
+        ...state,
+        task: {
+          ...state.task,
+          ...action.changedFields
+        }
+      }
+
+    case TaskActions.TASK_CHANGE_USER_SUCCESS:
+      return {
+        ...state,
+        task: {
+          ...state.task,
+          ...action.changedFields
+        }
+      }
+
     default:
       return {
         ...state

@@ -31,7 +31,7 @@ const TaskCard = (props) => {
     connectDragSource,
     isDragging,
     onChangeStatus,
-    onChangePerformer,
+    onOpenPerformerModal,
     prefix,
     section,
     ...other
@@ -44,7 +44,7 @@ const TaskCard = (props) => {
   };
 
   const handlePerformerClick = () => {
-    onChangePerformer(task.id, task.performer ? task.performer.id : null);
+    onOpenPerformerModal(task.id, task.performer ? task.performer.id : null);
   };
 
   return (
@@ -71,14 +71,12 @@ const TaskCard = (props) => {
           {task.name}
         </Link>
         <p className={css.taskMeta} onClick={handlePerformerClick}>
-          <span>
+          <a>
             { task.performer
-              ? <a>
-                  {task.performer.fullNameRu}
-                </a>
-              : 'Не назначено'
+              ? task.performer.fullNameRu
+              : <span className={css.unassigned}>Не назначено</span>
             }
-          </span>
+          </a>
         </p>
         {
           task.statusId !== 1
@@ -113,8 +111,8 @@ const TaskCard = (props) => {
 TaskCard.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
   isDragging: PropTypes.bool.isRequired,
-  onChangePerformer: PropTypes.func.isRequired,
   onChangeStatus: PropTypes.func.isRequired,
+  onOpenPerformerModal: PropTypes.func.isRequired,
   section: PropTypes.string.isRequired,
   task: PropTypes.object
 };

@@ -21,9 +21,23 @@ const successTaskChange = changedFields => ({
   changedFields
 });
 
+const requestTaskChangeUser = () => ({
+  type: TaskActions.TASK_CHANGE_REQUEST_SENT
+});
+
+const successTaskChangeUser = changedFields => ({
+  type: TaskActions.TASK_CHANGE_REQUEST_SUCCESS,
+  changedFields
+});
+
 const startTaskEditing = target => ({
   type: TaskActions.TASK_EDIT_START,
   target
+});
+
+const startTaskChangeUser = () => ({
+  type: TaskActions.TASK_EDIT_START,
+  target: 'User'
 });
 
 const stopTaskEditing = target => ({
@@ -68,7 +82,7 @@ const changeTask = (ChangedProperties, target) => {
       .put(URL, ChangedProperties, {
         withCredentials: true
       })
-      .catch(err => {
+      .catch(error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
         dispatch(finishLoading());
       })
@@ -82,4 +96,36 @@ const changeTask = (ChangedProperties, target) => {
   };
 };
 
-export { getTask, startTaskEditing, stopTaskEditing, changeTask };
+const changeTaskUser = (taskId, userId) => {
+  if (!taskId) {
+    return;
+  }
+
+  const URL = '/api/task-users';
+
+  return dispatch => {
+    dispatch(requestTaskChangeUser());
+    dispatch(startLoading());
+
+    axios
+      .put(URL, {
+        taskId,
+        userId
+      }, {
+        withCredentials: true
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(successTaskChangeUser(response.data));
+          dispatch(finishLoading());
+          dispatch(stopTaskEditing('User'));
+        }
+      });
+  };
+};
+
+export { getTask, startTaskEditing, stopTaskEditing, changeTask, changeTaskUser, startTaskChangeUser };
