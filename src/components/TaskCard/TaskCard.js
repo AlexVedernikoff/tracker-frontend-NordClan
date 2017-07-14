@@ -30,12 +30,22 @@ const TaskCard = (props) => {
     task,
     connectDragSource,
     isDragging,
+    onChangeStatus,
+    onOpenPerformerModal,
     prefix,
     section,
     ...other
   } = props;
 
   const classPriority = 'priority-' + task.prioritiesId;
+
+  const handleClick = () => {
+    onChangeStatus(task.id, task.statusId);
+  };
+
+  const handlePerformerClick = () => {
+    onOpenPerformerModal(task.id, task.performer ? task.performer.id : null);
+  };
 
   return (
     connectDragSource(
@@ -50,8 +60,8 @@ const TaskCard = (props) => {
           })}>
             {
               task.statusId === 3 || task.statusId === 5 || task.statusId === 7
-              ? <IconPlay data-tip="Начать"/>
-              : <IconPause data-tip="Приостановить"/>
+              ? <IconPlay data-tip="Начать" onClick={handleClick} />
+              : <IconPause data-tip="Приостановить" onClick={handleClick} />
             }
           </div>
           : null
@@ -60,8 +70,13 @@ const TaskCard = (props) => {
           <span className={css.prefix}>{`${prefix}-${task.id}`}.</span>
           {task.name}
         </Link>
-        <p className={css.taskMeta}>
-          <span><Link to={`/users/${task.executorId}`}>{task.executorId}</Link></span>
+        <p className={css.taskMeta} onClick={handlePerformerClick}>
+          <a>
+            { task.performer
+              ? task.performer.fullNameRu
+              : <span className={css.unassigned}>Не назначено</span>
+            }
+          </a>
         </p>
         {
           task.statusId !== 1
@@ -96,6 +111,8 @@ const TaskCard = (props) => {
 TaskCard.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
   isDragging: PropTypes.bool.isRequired,
+  onChangeStatus: PropTypes.func.isRequired,
+  onOpenPerformerModal: PropTypes.func.isRequired,
   section: PropTypes.string.isRequired,
   task: PropTypes.object
 };

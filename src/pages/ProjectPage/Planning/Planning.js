@@ -77,9 +77,9 @@ class Planning extends Component {
         : '- ...'})`,
       statusId: sprint.statusId,
       className: classnames({
-        [css.INPROGRESS]: sprint.statusId === 1,
         [css.sprintMarker]: true,
-        [css.FINISHED]: sprint.statusId === 2
+        [css.INPROGRESS]: sprint.statusId === 1,
+        [css.PLANNED]: sprint.statusId === 2
       })
     }));
 
@@ -98,6 +98,34 @@ class Planning extends Component {
 
     return sprints;
   };
+
+  getEstimatesInfo = (sprintId, tasks) => {
+    if (!sprintId) {
+      return {
+        summary: '',
+        active: false,
+        exceeded: false,
+        width: '0%'
+      };
+    } else {
+      const sprint = this.props.project.sprints.filter(sprint => {
+        return sprint.id === sprintId;
+      })[0];
+
+      const tasksEstimate = tasks.reduce((sum, task) => {
+        return sum + task.plannedExecutionTime;
+      }, 0);
+      const sprintEstimate = sprint && sprint.allottedTime ? sprint.allottedTime : 0;
+      const ratio = sprintEstimate === 0 ? 0 : tasksEstimate / sprintEstimate;
+
+      return {
+        summary: `Суммарное время задач: ${tasksEstimate} ${sprintEstimate ? ' из ' + sprintEstimate : ''} ч.`,
+        width: `${ratio > 1 ? 100 : ratio * 100}%`,
+        active: sprintEstimate !== 0,
+        exceeded: ratio > 1
+      };
+    }
+  }
 
   dropTask = (task, sprint) => {
     this.props.changeTask(
@@ -168,6 +196,8 @@ class Planning extends Component {
       );
     });
 
+    const leftEstimates = this.getEstimatesInfo(this.state.leftColumn, this.props.leftColumnTasks);
+    const rightEstimates = this.getEstimatesInfo(this.state.rightColumn, this.props.rightColumnTasks);
     const leftColumnSprints = this.getSprints('leftColumn');
     const rightColumnSprints = this.getSprints('rightColumn');
 
@@ -368,14 +398,14 @@ class Planning extends Component {
               </div>
               <div
                 className={css.progressBarWrapper}
-                data-tip="Суммарное время задач: 795 ч. из 500"
+                data-tip={leftEstimates.summary}
               >
                 <div
                   className={classnames({
-                    [css.progressBar]: true,
-                    [css.exceeded]: true
+                    [css.progressBar]: leftEstimates.active,
+                    [css.exceeded]: leftEstimates.exceeded
                   })}
-                  style={{ width: '100%' }}
+                  style={{ width: leftEstimates.width }}
                 />
               </div>
               {this.state.leftColumn || this.state.leftColumn === 0
@@ -414,14 +444,14 @@ class Planning extends Component {
               </div>
               <div
                 className={css.progressBarWrapper}
-                data-tip="Суммарное время задач: 257 ч. из 500"
+                data-tip={rightEstimates.summary}
               >
                 <div
                   className={classnames({
-                    [css.progressBar]: true,
-                    [css.exceeded]: false
+                    [css.progressBar]: rightEstimates.active,
+                    [css.exceeded]: rightEstimates.exceeded
                   })}
-                  style={{ width: '58%' }}
+                  style={{ width: rightEstimates.width }}
                 />
               </div>
               {this.state.rightColumn || this.state.rightColumn === 0

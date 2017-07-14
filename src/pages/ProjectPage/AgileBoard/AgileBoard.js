@@ -8,13 +8,15 @@ import moment from 'moment';
 import _ from 'lodash';
 
 import TaskCard from '../../../components/TaskCard';
+import Modal from '../../../components/Modal';
+import Button from '../../../components/Button';
 import PhaseColumn from './PhaseColumn';
 import SelectDropdown from '../../../components/SelectDropdown';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 import * as css from './AgileBoard.scss';
 
 import getTasks from '../../../actions/Tasks';
-import { changeTask, startTaskEditing } from '../../../actions/Task';
+import { changeTask, changeTaskUser, startTaskEditing, startTaskChangeUser } from '../../../actions/Task';
 
 const filterTasks = (array, sortedObject) => {
   array.forEach((element) => {
@@ -40,7 +42,7 @@ const filterTasks = (array, sortedObject) => {
   });
 };
 
-const sortTasks = (sortedObject, prefix, section) => {
+const sortTasks = (sortedObject, prefix, section, onChangeStatus, onOpenPerformerModal) => {
   for (const key in sortedObject) {
     sortedObject[key].sort((a, b) => {
       if (a.priority > b.priority) return 1;
@@ -52,6 +54,8 @@ const sortTasks = (sortedObject, prefix, section) => {
         task={task}
         prefix={prefix}
         section={section}
+        onChangeStatus={onChangeStatus}
+        onOpenPerformerModal={onOpenPerformerModal}
       />;
     });
   }
@@ -77,17 +81,32 @@ const getNewStatus = (oldStatusId, newPhase) => {
   return newStatusId;
 };
 
+const getNewStatusOnClick = (oldStatusId) => {
+  let newStatusId;
+
+  if (oldStatusId === 2 || oldStatusId === 4 || oldStatusId === 6) {
+    newStatusId = oldStatusId + 1;
+  } else if (oldStatusId === 3 || oldStatusId === 5 || oldStatusId === 7) {
+    newStatusId = oldStatusId - 1;
+  }
+
+  return newStatusId;
+};
+
 class AgileBoard extends Component {
 
   constructor (props) {
     super(props);
     this.state = {
       isSectionOpen: {
-        myTasks: false,
+        myTasks: true,
         allTasks: true
       },
+      isModalOpen: false,
+      performer: null,
       filterTags: [],
-      changedSprint: null
+      changedSprint: null,
+      changedTask: null
     };
   }
 
@@ -104,7 +123,7 @@ class AgileBoard extends Component {
   selectValue = (e, name) => {
     this.setState({[name]: e}, () => {
       this.props.getTasks({
-        projectId: this.props.project.Id,
+        projectId: this.props.project.id,
         sprintId: this.state.changedSprint
       });
     });
@@ -118,6 +137,32 @@ class AgileBoard extends Component {
 
     this.props.startTaskEditing('Status');
   }
+
+  changeStatus = (taskId, statusId) => {
+    this.props.changeTask({
+      id: taskId,
+      statusId: getNewStatusOnClick(statusId)
+    }, 'Status');
+
+    this.props.startTaskEditing('Status');
+  }
+
+  openPerformerModal = (taskId, performerId) => {
+    this.setState({
+      isModalOpen: true,
+      performer: performerId,
+      changedTask: taskId
+    });
+  }
+
+  changePerformer = () => {
+    this.props.changeTaskUser(this.state.changedTask, this.state.performer);
+    this.props.startTaskChangeUser();
+  }
+
+  closeModal = () => {
+    this.setState({ isModalOpen: false });
+  };
 
   getSprints = () => {
     let sprints = _.sortBy(this.props.sprints, sprint => {
@@ -148,6 +193,13 @@ class AgileBoard extends Component {
     return sprints;
   };
 
+  getUsers = () => {
+    return this.props.project.users.map((user, i) => ({
+      value: user.id,
+      label: user.fullNameRu
+    }));
+  };
+
   componentWillMount () {
     this.selectValue(0, 'changedSprint');
   }
@@ -156,6 +208,15 @@ class AgileBoard extends Component {
     if (!nextProps.StatusIsEditing && this.props.StatusIsEditing) {
       this.selectValue(this.state.changedSprint, 'changedSprint');
     };
+
+    if (!nextProps.UserIsEditing && this.props.UserIsEditing) {
+      this.selectValue(this.state.changedSprint, 'changedSprint');
+      this.setState({
+        isModalOpen: false,
+        performer: null,
+        changedTask: null
+      });
+    }
   }
 
   componentDidUpdate () {
@@ -172,7 +233,7 @@ class AgileBoard extends Component {
     };
 
     filterTasks(this.props.sprintTasks, allSorted);
-    sortTasks(allSorted, this.props.project.prefix, 'all');
+    sortTasks(allSorted, this.props.project.prefix, 'all', this.changeStatus, this.openPerformerModal);
 
     const mineSorted = {
       new: [],
@@ -183,12 +244,11 @@ class AgileBoard extends Component {
     };
 
     const myTasks = this.props.sprintTasks.filter((task) => {
-      // заменить на проверку id исполнителя
-      return true;
+      return task.performer && task.performer.id === this.props.user.id;
     });
 
     filterTasks(myTasks, mineSorted);
-    sortTasks(mineSorted, this.props.project.prefix, 'mine');
+    sortTasks(mineSorted, this.props.project.prefix, 'mine', this.changeStatus, this.openPerformerModal);
 
     return (
         <section className={css.agileBoard}>
@@ -259,32 +319,64 @@ class AgileBoard extends Component {
             : null
           }
           <hr/>
+          {this.state.isModalOpen
+            ? <Modal
+                isOpen
+                contentLabel="modal"
+                className={css.modalWrapper}
+                onRequestClose={this.closeModal}
+              >
+                <div className={css.changeStage}>
+                  <h3>Изменить исполнителя задачи</h3>
+                  <div className={css.modalLine}>
+                    <SelectDropdown
+                      name="member"
+                      placeholder="Введите имя исполнителя..."
+                      multi={false}
+                      value={this.state.performer}
+                      onChange={e => this.selectValue(e !== null ? e.value : 0, 'performer')}
+                      noResultsText="Нет результатов"
+                      options={this.getUsers()}
+                    />
+                    <Button type="green" text="ОК" onClick={this.changePerformer} />
+                  </div>
+                </div>
+              </Modal>
+          : null}
         </section>
     );
   }
 }
 
 AgileBoard.propTypes = {
-  getTasks: PropTypes.func.isRequired,
   StatusIsEditing: PropTypes.bool,
+  UserIsEditing: PropTypes.bool,
   changeTask: PropTypes.func.isRequired,
+  changeTaskUser: PropTypes.func.isRequired,
+  getTasks: PropTypes.func.isRequired,
   project: PropTypes.object,
   sprintTasks: PropTypes.array,
   sprints: PropTypes.array,
-  startTaskEditing: PropTypes.func
+  startTaskChangeUser: PropTypes.func,
+  startTaskEditing: PropTypes.func,
+  user: PropTypes.object
 };
 
 const mapStateToProps = state => ({
   sprintTasks: state.Tasks.tasks,
   sprints: state.Project.project.sprints,
   project: state.Project.project,
-  StatusIsEditing: state.Task.StatusIsEditing
+  StatusIsEditing: state.Task.StatusIsEditing,
+  UserIsEditing: state.Task.UserIsEditing,
+  user: state.Auth.user
 });
 
 const mapDispatchToProps = {
   getTasks,
   changeTask,
-  startTaskEditing
+  changeTaskUser,
+  startTaskEditing,
+  startTaskChangeUser
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);
