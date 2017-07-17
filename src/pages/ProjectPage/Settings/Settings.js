@@ -1,31 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
-import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
+import { Row, Col } from 'react-flexbox-grid/lib/index';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
-import { createSprint } from '../../../actions/Sprint';
-import CreateSprintModal from '../CreateSprint';
 
 import * as css from './Settings.scss';
 import SprintCard from '../../../components/SprintCard';
 import Checkbox from '../../../components/Checkbox';
 import Button from '../../../components/Button';
-import Modal from '../../../components/Modal';
-import DatepickerDropdown from '../../../components/DatepickerDropdown';
-import Input from '../../../components/Input';
-import moment from 'moment';
+import CreateSprintModal from '../CreateSprintModal';
 
 class Settings extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      isModalOpen: false,
-      dateFrom: undefined,
-      dateTo: undefined,
-      sprintName: '',
-      sprintTime: '',
-      allottedTime: null
+      isModalOpen: false
     };
   }
 
@@ -37,40 +27,7 @@ class Settings extends Component {
     this.setState({ isModalOpen: false });
   };
 
-  onChangeTime = (e) => {
-    this.setState({ allottedTime: e.target.value });
-  };
-
-  onChangeName = (e) => {
-    this.setState({ sprintName: e.target.value });
-  };
-
-  handleDayFromChange = (date) => {
-    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD')});
-  };
-
-  handleDayToChange = (date) => {
-    this.setState({ dateTo: moment(date).format('YYYY-MM-DD')});
-  };
-
-  createSprint = () => {
-    this.setState({ isModalOpen: false });
-    this.props.createSprint(
-        this.state.sprintName.trim(),
-        this.props.id,
-        this.state.dateFrom,
-        this.state.dateTo,
-        this.state.allottedTime
-    );
-  };
-
   render () {
-    const formattedDayFrom = this.state.dateFrom
-        ? moment(this.state.dateFrom).format('DD.MM.YYYY')
-        : '';
-    const formattedDayTo = this.state.dateTo
-        ? moment(this.state.dateTo).format('DD.MM.YYYY')
-        : '';
 
     return (
       <div className={css.property}>
@@ -354,59 +311,8 @@ class Settings extends Component {
         />
         {
           this.state.isModalOpen
-              ? <Modal
-              isOpen
-              contentLabel="modal"
-              onRequestClose={this.handleCloseModal}>
-            <div>
-              <div>
-                <Row>
-                  <Col xsOffset={1}
-                       xs={10}>
-                    <h3>Создание нового спринта</h3>
-                    <Input
-                        placeholder="Введите название спринта..."
-                        onChange={this.onChangeName}
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xs>
-                    <DatepickerDropdown
-                        name="dateFrom"
-                        value={formattedDayFrom}
-                        onDayChange={this.handleDayFromChange}
-                        placeholder="Дата начала"
-                    />
-                    <DatepickerDropdown
-                        name="dateTo"
-                        value={formattedDayTo}
-                        onDayChange={this.handleDayToChange}
-                        placeholder="Дата окончания"
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xsOffset={1}
-                       xs={10}>
-                    <Input
-                        placeholder="Введите время в часах..."
-                        onChange={this.onChangeTime}
-                    />
-                  </Col>
-                </Row>
-                <Row className={css.createButton}
-                     center="xs">
-                  <Col xs>
-                    <Button type="green"
-                            text="Создать"
-                            onClick={this.createSprint}/>
-                  </Col>
-                </Row>
-              </div>
-            </div>
-          </Modal>
-              : null
+          ? <CreateSprintModal onClose={this.handleCloseModal} />
+          : null
         }
       </div>
     );
@@ -414,18 +320,11 @@ class Settings extends Component {
 }
 
 Settings.propTypes = {
-  createSprint: PropTypes.func.isRequired,
-  id: PropTypes.number,
   sprints: PropTypes.array.isRequired
 };
 
 const mapStateToProps = state => ({
-  sprints: state.Project.project.sprints,
-  id: state.Project.project.id
+  sprints: state.Project.project.sprints
 });
 
-const mapDispatchToProps = {
-  createSprint
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Settings);
+export default connect(mapStateToProps)(Settings);
