@@ -18,6 +18,8 @@ export default function GetStatusNameById (statusId) {
                 break;
         case 8: status = 'Done';
                 break;
+        case 9: status = 'Canceled';
+                break;
         default: break;
     }
     return status;

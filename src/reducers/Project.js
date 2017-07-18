@@ -4,7 +4,8 @@ import * as SprintActions from '../constants/Sprint';
 
 const InitialState = {
   project: {
-    sprints: []
+    sprints: [],
+    users: []
   },
   TitleIsEditing: false,
   DescriptionIsEditing: false,
@@ -67,6 +68,20 @@ export default function Project (state = InitialState, action) {
       return {
         ...state,
         project: action.project
+      };
+
+    case ProjectActions.PROJECT_USERS_RECEIVE_START:
+      return {
+        ...state
+      };
+
+    case ProjectActions.PROJECT_USERS_RECEIVE_SUCCESS:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          users: action.users
+        }
       };
 
     case ProjectActions.PROJECT_CHANGE_START:

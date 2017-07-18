@@ -51,7 +51,7 @@ const TaskCard = (props) => {
     connectDragSource(
       <div className={classnames({[css.taskCard]: true, [css[classPriority]]: true, [css.dropped]: isDragging})} {...other}>
         {
-          task.statusId !== 1 && task.stage !== 8
+          task.statusId !== 1 && task.statusId !== 8
           ? <div
           className={classnames({
             [css.status]: true,
