@@ -151,3 +151,8 @@ svg.red { background-color: transparent; fill: $color-red; }
   transition-property: opacity;
   transition-duration: 0.2s;
 }
+
+.unassigned {
+  color: lighten($color-black, 40%);
+  border-bottom: 1px lighten($color-black, 40%) dashed;
+}
