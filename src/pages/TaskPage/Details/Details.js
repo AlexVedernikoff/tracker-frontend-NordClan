@@ -68,16 +68,14 @@ export default class Details extends Component {
                   </td>
                 </tr>
               : null}
-            {task.executor
-              ? <tr>
-                  <td>Исполнитель:</td>
-                  <td>
-                    <Link to="#">
-                      {this.props.task.owner ? this.props.task.owner.name : ''}
-                    </Link>
-                  </td>
-                </tr>
-              : null}
+              <tr>
+                <td>Исполнитель:</td>
+                <td>
+                  <a>
+                    {task.performer ? task.performer.fullNameRu : 'Не назначено'}
+                  </a>
+                </td>
+              </tr>
             <tr>
               <td>Дата создания:</td>
               <td>

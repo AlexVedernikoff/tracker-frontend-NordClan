@@ -7,14 +7,29 @@ import Modal from '../../../components/Modal';
 import Priority from '../Priority';
 import ButtonGroup from '../../../components/ButtonGroup';
 import TaskTitle from '../TaskTitle';
-import {
-  startTaskEditing,
-  stopTaskEditing,
-  changeTask
-} from '../../../actions/Task';
 import { getProjectUsers } from '../../../actions/Project';
 import TaskStatuses from '../../../constants/TaskStatuses';
 import { connect } from 'react-redux';
+
+const getNewStatus = (newPhase) => {
+  let newStatusId;
+
+  switch (newPhase) {
+    case 'New': newStatusId = 1;
+          break;
+    case 'Develop': newStatusId = 3;
+          break;
+    case 'Code Review': newStatusId = 5;
+          break;
+    case 'QA': newStatusId = 7;
+          break;
+    case 'Done': newStatusId = 8;
+          break;
+    default: break;
+  }
+
+  return newStatusId;
+};
 
 class TaskHeader extends Component {
   constructor (props) {
@@ -22,17 +37,29 @@ class TaskHeader extends Component {
     this.state = {
       isModalOpen: false,
       modalTitle: '',
-      performer: null
+      performer: null,
+      clickedStatus: ''
     };
   }
 
-  handleOpenModal = (e) => {
-    console.log(e.currentTarget.textContent);
+  handleChangeStatus = e => {
+    const tip = e.currentTarget.getAttribute('data-tip');
+    if (tip === 'Начать') {
+      this.changeStatus(this.props.task.statusId - 1);
+    } else if (tip === 'Приостановить') {
+      this.changeStatus(this.props.task.statusId + 1);
+    } else {
+      this.state.clickedStatus = e.currentTarget.textContent;
+      this.handleOpenModal();
+    }
+  }
+
+  handleOpenModal = () => {
     this.props.getProjectUsers(this.props.projectId);
     this.setState({
       performer: this.props.task.performer ? this.props.task.performer.id : null,
       isModalOpen: true,
-      modalTitle: `Перевести в стадию ${e.currentTarget.textContent}`
+      modalTitle: `Перевести в стадию ${this.state.clickedStatus}`
     });
   };
 
@@ -40,22 +67,35 @@ class TaskHeader extends Component {
     this.setState({ isModalOpen: false });
   };
 
+  handleCancelTask = () => {
+    this.changeStatus(9);
+  }
+
   selectValue = (e, name) => {
     this.setState({ [name]: e });
   };
 
-  changePerformerAndStatus = () => {
-    this.props.changeTask(this.state.changedTask, this.state.performer);
-    this.props.startTaskEditing();
+  changeStatus = (newStatusId) => {
+    this.props.onChange(
+      {
+        id: this.props.task.id,
+        statusId: newStatusId
+      },
+      'Status'
+    );
+  }
+
+  changePerformer = () => {
+    this.props.onChangeUser(this.props.task.id, this.state.performer, getNewStatus(this.state.clickedStatus));
+    this.handleCloseModal();
   }
 
   render () {
     const { task } = this.props;
-    console.log(task);
     const css = require('./TaskHeader.scss');
     const users = this.props.users.map(item => ({
-      value: item.user.id,
-      label: item.user.fullNameRu
+      value: item.user ? item.user.id : item.id,
+      label: item.user ? item.user.fullNameRu : item.fullNameRu
     }));
 
     return (
@@ -96,6 +136,7 @@ class TaskHeader extends Component {
           data-tip="Отменить"
           data-place="bottom"
           addedClassNames={{ [css.buttonCancel]: true }}
+          onClick={this.handleCancelTask}
         />
         <ButtonGroup type="lifecircle" stage="full">
           <Button
@@ -111,7 +152,7 @@ class TaskHeader extends Component {
                     : 'Перевести в стадию New'
                   }
             data-place="bottom"
-            onClick={this.handleOpenModal}
+            onClick={this.handleChangeStatus}
           />
           <Button
             text="Develop"
@@ -135,7 +176,7 @@ class TaskHeader extends Component {
               : null
             }
             data-place="bottom"
-            onClick={this.handleOpenModal}
+            onClick={this.handleChangeStatus}
           />
           <Button
             text="Code Review"
@@ -159,7 +200,7 @@ class TaskHeader extends Component {
               : null
             }
             data-place="bottom"
-            onClick={this.handleOpenModal}
+            onClick={this.handleChangeStatus}
           />
           <Button
             text="QA"
@@ -183,7 +224,7 @@ class TaskHeader extends Component {
               : null
             }
             data-place="bottom"
-            onClick={this.handleOpenModal}
+            onClick={this.handleChangeStatus}
           />
           <Button
             text="Done"
@@ -198,7 +239,7 @@ class TaskHeader extends Component {
                     : 'Перевести в стадию Done'
                   }
             data-place="bottom"
-            onClick={this.handleOpenModal}
+            onClick={this.handleChangeStatus}
           />
         </ButtonGroup>
         {/*<Button type="bordered" icon='IconCheck' data-tip="Принять" data-place='bottom' addedClassNames={{[css.buttonOk]: true}} />*/}
@@ -233,12 +274,11 @@ class TaskHeader extends Component {
 }
 
 TaskHeader.propTypes = {
-  changeTask: PropTypes.func.isRequired,
   css: PropTypes.object,
   getProjectUsers: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  onChangeUser: PropTypes.func.isRequired,
   projectId: PropTypes.string.isRequired,
-  startTaskEditing: PropTypes.func.isRequired,
-  stopTaskEditing: PropTypes.func.isRequired,
   task: PropTypes.object.isRequired,
   users: PropTypes.array
 };
@@ -248,9 +288,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  startTaskEditing,
-  stopTaskEditing,
-  changeTask,
   getProjectUsers
 };
 

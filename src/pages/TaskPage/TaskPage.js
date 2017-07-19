@@ -10,7 +10,7 @@ import RelatedTasks from './RelatedTasks';
 import Attachments from '../../components/Attachments';
 import Description from '../../components/Description';
 import RouteTabs from '../../components/RouteTabs';
-import { getTask, startTaskEditing, stopTaskEditing, changeTask } from '../../actions/Task';
+import { getTask, startTaskEditing, stopTaskEditing, changeTask, changeTaskUser } from '../../actions/Task';
 
 import * as css from './TaskPage.scss';
 
@@ -51,7 +51,7 @@ class TaskPage extends Component {
       <div id="task-page">
         <Row>
           <Col xs={8}>
-            <TaskHeader task={this.props.task} projectId={this.props.params.projectId} onChange={this.props.changeTask} />
+            <TaskHeader task={this.props.task} projectId={this.props.params.projectId} onChange={this.props.changeTask} onChangeUser={this.props.changeTaskUser} />
             <main className={css.main}>
               <Description
                 text={{ __html: this.props.task.description }}
@@ -97,6 +97,7 @@ class TaskPage extends Component {
 TaskPage.propTypes = {
   DescriptionIsEditing: PropTypes.bool,
   changeTask: PropTypes.func.isRequired,
+  changeTaskUser: PropTypes.func.isRequired,
   children: PropTypes.object,
   getTask: PropTypes.func.isRequired,
   startTaskEditing: PropTypes.func.isRequired,
@@ -113,7 +114,8 @@ const mapDispatchToProps = {
   getTask,
   startTaskEditing,
   stopTaskEditing,
-  changeTask
+  changeTask,
+  changeTaskUser
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskPage);
