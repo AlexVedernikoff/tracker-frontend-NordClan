@@ -4,12 +4,13 @@ import { Link } from 'react-router';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
+import { createSprint } from '../../../actions/Sprint';
+import CreateSprintModal from '../CreateSprintModal';
 
 import * as css from './Settings.scss';
 import SprintCard from '../../../components/SprintCard';
 import Checkbox from '../../../components/Checkbox';
 import Button from '../../../components/Button';
-import CreateSprintModal from '../CreateSprintModal';
 
 class Settings extends Component {
   constructor (props) {
