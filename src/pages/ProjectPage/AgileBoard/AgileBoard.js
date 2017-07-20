@@ -8,8 +8,7 @@ import moment from 'moment';
 import _ from 'lodash';
 
 import TaskCard from '../../../components/TaskCard';
-import Modal from '../../../components/Modal';
-import Button from '../../../components/Button';
+import PerformerModal from '../../../components/PerformerModal';
 import PhaseColumn from './PhaseColumn';
 import SelectDropdown from '../../../components/SelectDropdown';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
@@ -65,17 +64,17 @@ const getNewStatus = (oldStatusId, newPhase) => {
   let newStatusId;
 
   switch (newPhase) {
-    case 'New': newStatusId = 1;
-          break;
-    case 'Dev': newStatusId = 3;
-          break;
-    case 'Code Review': newStatusId = 5;
-          break;
-    case 'QA': newStatusId = 7;
-          break;
-    case 'Done': newStatusId = 8;
-          break;
-    default: break;
+  case 'New': newStatusId = 1;
+    break;
+  case 'Dev': newStatusId = 3;
+    break;
+  case 'Code Review': newStatusId = 5;
+    break;
+  case 'QA': newStatusId = 7;
+    break;
+  case 'Done': newStatusId = 8;
+    break;
+  default: break;
   }
 
   return newStatusId;
@@ -155,8 +154,8 @@ class AgileBoard extends Component {
     });
   }
 
-  changePerformer = () => {
-    this.props.changeTaskUser(this.state.changedTask, this.state.performer);
+  changePerformer = (performerId) => {
+    this.props.changeTaskUser(this.state.changedTask, performerId);
     this.props.startTaskChangeUser();
   }
 
@@ -317,30 +316,18 @@ class AgileBoard extends Component {
             : null
           }
           <hr/>
-          {this.state.isModalOpen
-            ? <Modal
-                isOpen
-                contentLabel="modal"
-                className={css.modalWrapper}
-                onRequestClose={this.closeModal}
-              >
-                <div className={css.changeStage}>
-                  <h3>Изменить исполнителя задачи</h3>
-                  <div className={css.modalLine}>
-                    <SelectDropdown
-                      name="member"
-                      placeholder="Введите имя исполнителя..."
-                      multi={false}
-                      value={this.state.performer}
-                      onChange={e => this.selectValue(e !== null ? e.value : 0, 'performer')}
-                      noResultsText="Нет результатов"
-                      options={this.getUsers()}
-                    />
-                    <Button type="green" text="ОК" onClick={this.changePerformer} />
-                  </div>
-                </div>
-              </Modal>
-          : null}
+
+          {
+            this.state.isModalOpen
+            ? <PerformerModal
+                defaultUser={this.state.performer}
+                onChoose={this.changePerformer}
+                onClose={this.closeModal}
+                title="Изменить исполнителя задачи"
+                users={this.getUsers()}
+              />
+            : null
+          }
         </section>
     );
   }

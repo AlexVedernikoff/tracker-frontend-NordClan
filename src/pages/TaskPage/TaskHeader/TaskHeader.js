@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import SelectDropdown from '../../../components/SelectDropdown';
 import Button from '../../../components/Button';
-import Modal from '../../../components/Modal';
+import ConfirmModal from '../../../components/ConfirmModal';
+import PerformerModal from '../../../components/PerformerModal';
 import Priority from '../Priority';
 import ButtonGroup from '../../../components/ButtonGroup';
 import TaskTitle from '../TaskTitle';
@@ -11,21 +11,21 @@ import { getProjectUsers } from '../../../actions/Project';
 import TaskStatuses from '../../../constants/TaskStatuses';
 import { connect } from 'react-redux';
 
-const getNewStatus = (newPhase) => {
+const getNewStatus = newPhase => {
   let newStatusId;
 
   switch (newPhase) {
-    case 'New': newStatusId = 1;
-          break;
-    case 'Develop': newStatusId = 3;
-          break;
-    case 'Code Review': newStatusId = 5;
-          break;
-    case 'QA': newStatusId = 7;
-          break;
-    case 'Done': newStatusId = 8;
-          break;
-    default: break;
+  case 'New': newStatusId = 1;
+    break;
+  case 'Develop': newStatusId = 3;
+    break;
+  case 'Code Review': newStatusId = 5;
+    break;
+  case 'QA': newStatusId = 7;
+    break;
+  case 'Done': newStatusId = 8;
+    break;
+  default: break;
   }
 
   return newStatusId;
@@ -35,7 +35,8 @@ class TaskHeader extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      isModalOpen: false,
+      isCancelModalOpen: false,
+      isPerformerModalOpen: false,
       modalTitle: '',
       performer: null,
       clickedStatus: ''
@@ -58,17 +59,26 @@ class TaskHeader extends Component {
     this.props.getProjectUsers(this.props.projectId);
     this.setState({
       performer: this.props.task.performer ? this.props.task.performer.id : null,
-      isModalOpen: true,
+      isPerformerModalOpen: true,
       modalTitle: `Перевести в стадию ${this.state.clickedStatus}`
     });
   };
 
   handleCloseModal = () => {
-    this.setState({ isModalOpen: false });
+    this.setState({ isPerformerModalOpen: false });
+  };
+
+  handleOpenCancelModal = () => {
+    this.setState({ isCancelModalOpen: true });
+  };
+
+  handleCloseCancelModal = () => {
+    this.setState({ isCancelModalOpen: false });
   };
 
   handleCancelTask = () => {
     this.changeStatus(9);
+    this.handleCloseCancelModal();
   }
 
   selectValue = (e, name) => {
@@ -85,9 +95,38 @@ class TaskHeader extends Component {
     );
   }
 
-  changePerformer = () => {
-    this.props.onChangeUser(this.props.task.id, this.state.performer, getNewStatus(this.state.clickedStatus));
+  changePerformer = (performerId) => {
+    this.props.onChangeUser(this.props.task.id, performerId, getNewStatus(this.state.clickedStatus));
     this.handleCloseModal();
+  }
+
+  getButtonType = (inProcessStatusId, inHoldStatusId) => {
+    const { task } = this.props;
+    return task.statusId === inProcessStatusId || task.statusId === inHoldStatusId ? 'green' : 'bordered';
+  }
+
+  getButtonIcon = (inProcessStatusId, inHoldStatusId) => {
+    const { task } = this.props;
+    let icon = null;
+    if (task.statusId === inProcessStatusId) {
+      icon = 'IconPause';
+    } else if (task.statusId === inHoldStatusId) {
+      icon = 'IconPlay';
+    }
+    return icon;
+  }
+
+  getButtonTip = (inProcessStatusId, inHoldStatusId, phase) => {
+    const { task } = this.props;
+    let tip;
+    if (task.statusId === inProcessStatusId) {
+      tip = 'Приостановить';
+    } else if (task.statusId === inHoldStatusId) {
+      tip = 'Начать';
+    } else {
+      tip = `Перевести в стадию ${phase}`;
+    }
+    return tip;
   }
 
   render () {
@@ -97,7 +136,6 @@ class TaskHeader extends Component {
       value: item.user ? item.user.id : item.id,
       label: item.user ? item.user.fullNameRu : item.fullNameRu
     }));
-
     return (
       <div>
         {task.parentId
@@ -115,9 +153,12 @@ class TaskHeader extends Component {
           : null}
 
         <div className={css.taskTopInfo}>
-          <div className={css.prefix}>
-            PPJ-{task.id}
-          </div>
+          {task.project
+            ? <div className={css.prefix}>
+                {task.project.prefix}-{task.id}
+              </div>
+            : null
+          }
           {task.typeId && TaskStatuses[task.typeId]
             ? <div>
                 <span>
@@ -136,7 +177,7 @@ class TaskHeader extends Component {
           data-tip="Отменить"
           data-place="bottom"
           addedClassNames={{ [css.buttonCancel]: true }}
-          onClick={this.handleCancelTask}
+          onClick={this.handleOpenCancelModal}
         />
         <ButtonGroup type="lifecircle" stage="full">
           <Button
@@ -156,75 +197,27 @@ class TaskHeader extends Component {
           />
           <Button
             text="Develop"
-            type={
-                    task.statusId === 2 || task.statusId === 3
-                    ? 'green'
-                    : 'bordered'
-                  }
-            data-tip={
-                    task.statusId === 2
-                    ? 'Приостановить'
-                    : task.statusId === 3
-                    ? 'Начать'
-                    : 'Перевести в стадию Develop'
-                  }
-            icon= {
-              task.statusId === 2
-              ? 'IconPause'
-              : task.statusId === 3
-              ? 'IconPlay'
-              : null
-            }
-            data-place="bottom"
+            type={this.getButtonType(2, 3)}
+            data-tip={this.getButtonTip(2, 3, 'Develop')}
+            icon= {this.getButtonIcon(2, 3)}
             onClick={this.handleChangeStatus}
+            data-place="bottom"
           />
           <Button
             text="Code Review"
-            type={
-                    task.statusId === 4 || task.statusId === 5
-                    ? 'green'
-                    : 'bordered'
-                  }
-            data-tip={
-                    task.statusId === 4
-                    ? 'Приостановить'
-                    : task.statusId === 5
-                    ? 'Начать'
-                    : 'Перевести в стадию Code Review'
-                  }
-            icon= {
-              task.statusId === 4
-              ? 'IconPause'
-              : task.statusId === 5
-              ? 'IconPlay'
-              : null
-            }
-            data-place="bottom"
+            type={this.getButtonType(4, 5)}
+            data-tip={this.getButtonTip(4, 5, 'Code Review')}
+            icon= {this.getButtonIcon(4, 5)}
             onClick={this.handleChangeStatus}
+            data-place="bottom"
           />
           <Button
             text="QA"
-            type={
-                    task.statusId === 6 || task.statusId === 7
-                    ? 'green'
-                    : 'bordered'
-                  }
-            data-tip={
-                    task.statusId === 6
-                    ? 'Приостановить'
-                    : task.statusId === 7
-                    ? 'Начать'
-                    : 'Перевести в стадию QA'
-                  }
-            icon= {
-              task.statusId === 6
-              ? 'IconPause'
-              : task.statusId === 7
-              ? 'IconPlay'
-              : null
-            }
-            data-place="bottom"
+            type={this.getButtonType(6, 7)}
+            data-tip={this.getButtonTip(6, 7, 'QA')}
+            icon= {this.getButtonIcon(6, 7)}
             onClick={this.handleChangeStatus}
+            data-place="bottom"
           />
           <Button
             text="Done"
@@ -244,30 +237,29 @@ class TaskHeader extends Component {
         </ButtonGroup>
         {/*<Button type="bordered" icon='IconCheck' data-tip="Принять" data-place='bottom' addedClassNames={{[css.buttonOk]: true}} />*/}
         <hr />
-        {this.state.isModalOpen
-          ? <Modal
+
+        { this.state.isCancelModalOpen
+          ? <ConfirmModal
               isOpen
               contentLabel="modal"
-              className={css.modalWrapper}
-              onRequestClose={this.handleCloseModal}
-            >
-              <div className={css.changeStage}>
-                <h3>{this.state.modalTitle}</h3>
-                <div className={css.modalLine}>
-                  <SelectDropdown
-                    name="member"
-                    placeholder="Введите имя исполнителя..."
-                    multi={false}
-                    value={this.state.performer}
-                    onChange={e => this.selectValue(e !== null ? e.value : 0, 'performer')}
-                    noResultsText="Нет результатов"
-                    options={users}
-                  />
-                  <Button type="green" text="ОК" onClick={this.changePerformer}/>
-                </div>
-              </div>
-            </Modal>
-          : null}
+              text="Вы действительно хотите отменить задачу?"
+              onCancel={this.handleCloseCancelModal}
+              onConfirm={this.handleCancelTask}
+            />
+          : null
+        }
+
+        {
+          this.state.isPerformerModalOpen
+          ? <PerformerModal
+              defaultUser={task.performer ? task.performer.id : null}
+              onChoose={this.changePerformer}
+              onClose={this.handleCloseModal}
+              title={this.state.modalTitle}
+              users={users}
+            />
+          : null
+        }
       </div>
     );
   }

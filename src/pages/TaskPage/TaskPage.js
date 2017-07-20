@@ -83,7 +83,7 @@ class TaskPage extends Component {
           </Col>
           <Col xs={4}>
             <aside>
-              <Details task={this.props.task} />
+              <Details task={this.props.task} onChangeUser={this.props.changeTaskUser} />
               <RelatedTasks task={task} type="related" />
               <RelatedTasks task={task} type="children" />
             </aside>

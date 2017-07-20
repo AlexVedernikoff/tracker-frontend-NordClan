@@ -80,7 +80,7 @@ export default function Task (state = InitialState, action) {
         ...state,
         task: {
           ...state.task,
-          performer: action.changedFields ? { ...action.changedFields } : null
+          ...action.changedFields
         }
       }
 
