@@ -31,8 +31,8 @@ export const closeCreateProjectModal = () => ({
   type: ProjectActions.CLOSE_CREATE_PROJECT_MODAL
 });
 
-const GetProjects = (
-  pageSize = 25,
+const getProjects = (
+  pageSize = 20,
   currentPage = 1,
   tags = '',
   name = '',
@@ -65,7 +65,7 @@ const GetProjects = (
       })
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(projectsReceived(response.data.data));
+          dispatch(projectsReceived(response.data));
           dispatch(finishLoading());
         }
       });
@@ -96,7 +96,7 @@ export const requestProjectCreate = (project, openProjectPage) => {
           dispatch(finishLoading());
           dispatch(projectCreateSuccess(response.data));
           dispatch(closeCreateProjectModal());
-          dispatch(GetProjects());
+          dispatch(getProjects());
 
           if (openProjectPage) {
             history.push(`projects/${response.data.id}`)
@@ -107,4 +107,4 @@ export const requestProjectCreate = (project, openProjectPage) => {
   };
 };
 
-export default GetProjects;
+export default getProjects;

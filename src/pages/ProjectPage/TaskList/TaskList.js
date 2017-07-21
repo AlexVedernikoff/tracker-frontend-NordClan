@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import TaskRow from '../../../components/TaskRow';
 import Input from '../../../components/Input';
 import Checkbox from '../../../components/Checkbox';
+import Pagination from '../../../components/Pagination';
 import * as css from './TaskList.scss';
 
 import getTasks from '../../../actions/Tasks';
@@ -23,13 +24,23 @@ class TaskList extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      filterByName: ''
+      filterByName: '',
+      activePage: 1
     };
-
   }
 
   componentDidMount () {
-    this.props.getTasks({projectId: this.props.project.id});
+    if (this.props.project.id) {
+      this.loadTasks();
+    }
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (this.props.project.id !== nextProps.project.id) {
+      this.loadTasks({
+        projectId: nextProps.project.id
+      });
+    }
   }
 
   changeNameFilter = event => {
@@ -37,13 +48,27 @@ class TaskList extends Component {
       {
         filterByName: event.target.value
       },
-      () => {
-        this.props.getTasks({
-          projectId: this.props.project.id,
-          name: this.state.filterByName
-        });
-      }
+      this.loadTasks
     );
+  }
+
+  handlePaginationClick = e => {
+    this.setState(
+      {
+        activePage: e.activePage
+      },
+      this.loadTasks
+    );
+  };
+
+  loadTasks = (options = {}) => {
+    this.props.getTasks({
+      projectId: this.props.project.id,
+      currentPage: this.state.activePage,
+      pageSize: 50,
+      name: this.state.filterByName,
+      ...options
+    });
   }
 
   render () {
@@ -87,6 +112,16 @@ class TaskList extends Component {
               />;
             })
           }
+
+          <hr/>
+          { this.props.pagesCount > 1
+            ? <Pagination
+                itemsCount={this.props.pagesCount}
+                activePage={this.state.activePage}
+                onItemClick={this.handlePaginationClick}
+              />
+            : null
+          }
         </section>
       </div>
     );
@@ -95,12 +130,18 @@ class TaskList extends Component {
 
 TaskList.propTypes = {
   getTasks: PropTypes.func.isRequired,
+  pagesCount: PropTypes.number.isRequired,
   project: PropTypes.object.isRequired,
   tasksList: PropTypes.array.isRequired
 };
 
 
-const mapStateToProps = state => ({ tasksList: state.Tasks.tasks, project: state.Project.project});
+const mapStateToProps = state => ({
+  tasksList: state.Tasks.tasks,
+  pagesCount: state.Tasks.pagesCount,
+  project: state.Project.project
+});
+
 const mapDispatchToProps = { getTasks };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskList);
