@@ -5,12 +5,32 @@ import classnames from 'classnames';
 import ReactTooltip from 'react-tooltip';
 import Tag from '../../../components/Tag';
 import Tags from '../../../components/Tags';
+import PerformerModal from '../../../components/PerformerModal';
+import { getProjectUsers } from '../../../actions/Project';
+import { connect } from 'react-redux';
 import * as css from './Details.scss';
 import moment from 'moment';
 
-export default class Details extends Component {
+class Details extends Component {
   constructor (props) {
     super(props);
+    this.state = {
+      isModalOpen: false
+    };
+  }
+
+  openModal = () => {
+    this.props.getProjectUsers(this.props.task.project.id);
+    this.setState({ isModalOpen: true });
+  }
+
+  closeModal = () => {
+    this.setState({ isModalOpen: false });
+  };
+
+  changePerformer = (performerId) => {
+    this.props.onChangeUser(this.props.task.id, performerId);
+    this.closeModal();
   }
 
   render () {
@@ -21,6 +41,11 @@ export default class Details extends Component {
                   taggable="task"
                   taggableId={task.id}/>;
     });
+
+    const users = this.props.users.map(item => ({
+      value: item.user ? item.user.id : item.id,
+      label: item.user ? item.user.fullNameRu : item.fullNameRu
+    }));
 
     return (
       <div className={css.detailsBlock}>
@@ -36,16 +61,17 @@ export default class Details extends Component {
                   </td>
                 </tr>
               : null}
-            {task.sprint
-              ? <tr>
-                  <td>Спринт:</td>
-                  <td>
-                    <Link to="#">
-                      {this.props.task.sprint.name}
-                    </Link>
-                  </td>
-                </tr>
-              : null}
+              <tr>
+                <td>Спринт:</td>
+                <td>
+                    { task.sprint
+                      ? <Link to={`/projects/${task.projectId}/agile-board`}>
+                          {task.sprint.name}
+                        </Link>
+                      : 'Не задано'
+                    }
+                </td>
+              </tr>
             <tr>
               <td>Теги:</td>
               <td className={css.tags}>
@@ -68,46 +94,47 @@ export default class Details extends Component {
                   </td>
                 </tr>
               : null}
-            {task.executor
-              ? <tr>
-                  <td>Исполнитель:</td>
-                  <td>
-                    <Link to="#">
-                      {this.props.task.owner ? this.props.task.owner.name : ''}
-                    </Link>
-                  </td>
-                </tr>
-              : null}
+              <tr>
+                <td>Исполнитель:</td>
+                <td>
+                  <a onClick={this.openModal}>
+                    { task.performer
+                      ? task.performer.fullNameRu
+                      : <span className={css.unassigned}>Не назначено</span>
+                    }
+                  </a>
+                </td>
+              </tr>
             <tr>
               <td>Дата создания:</td>
               <td>
                 {moment(this.props.task.createdAt).format('DD.MM.YYYY')}
               </td>
             </tr>
-            {this.props.task.plannedExecutionTime
-              ? <tr>
-                  <td>Запланировано:</td>
-                  <td>
-                    {`${this.props.task.plannedExecutionTime} ч.`}
-                  </td>
-                </tr>
-              : null}
             <tr>
-              <td>Потрачено:</td>
+              <td>Запланировано:</td>
               <td>
-                <span
-                  data-tip
-                  data-place="right"
-                  data-for="time"
-                  className={classnames({
-                    [css.alert]: true,
-                    [css.factTime]: true
-                  })}
-                >
-                  100 ч.
-                </span>
+                {`${task.plannedExecutionTime ? task.plannedExecutionTime : 0} ч.`}
               </td>
             </tr>
+            { task.factExecutionTime
+              ? <tr>
+                  <td>Потрачено:</td>
+                  <td>
+                    <span
+                      data-tip
+                      data-place="right"
+                      data-for="time"
+                      className={classnames({
+                        [css.alert]: true,
+                        [css.factTime]: true
+                      })}
+                    >
+                       {`${task.factExecutionTime} ч.`}
+                    </span>
+                  </td>
+                </tr>
+              : null }
           </tbody>
         </table>
         <ReactTooltip id="time" aria-haspopup="true" className="tooltip">
@@ -122,11 +149,37 @@ export default class Details extends Component {
             <span>QA:</span>59 ч.
           </div>
         </ReactTooltip>
+
+        {
+          this.state.isModalOpen
+          ? <PerformerModal
+              defaultUser={task.performer ? task.performer.id : null}
+              onChoose={this.changePerformer}
+              onClose={this.closeModal}
+              title="Изменить исполнителя задачи"
+              users={users}
+            />
+          : null
+        }
       </div>
     );
   }
 }
 
 Details.propTypes = {
-  task: PropTypes.object.isRequired
+  getProjectUsers: PropTypes.func.isRequired,
+  onChangeUser: PropTypes.func.isRequired,
+  task: PropTypes.object.isRequired,
+  users: PropTypes.array
 };
+
+
+const mapStateToProps = state => ({
+  users: state.Project.project.users
+});
+
+const mapDispatchToProps = {
+  getProjectUsers
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Details);

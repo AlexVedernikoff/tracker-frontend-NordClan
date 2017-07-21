@@ -14,6 +14,15 @@ const gettingProjectInfoSuccess = project => ({
   project: project
 });
 
+const gettingProjectUsersStart = () => ({
+  type: ProjectActions.PROJECT_USERS_RECEIVE_START
+});
+
+const gettingProjectUsersSuccess = users => ({
+  type: ProjectActions.PROJECT_USERS_RECEIVE_SUCCESS,
+  users
+});
+
 const startProjectChange = () => ({
   type: ProjectActions.PROJECT_CHANGE_START
 });
@@ -64,6 +73,27 @@ const GetProjectInfo = id => {
       .then(response => {
         if (response && response.status === 200) {
           dispatch(gettingProjectInfoSuccess(response.data));
+          dispatch(finishLoading());
+        }
+      });
+  };
+};
+
+const getProjectUsers = id => {
+  const URL = `/api/project-users/${id}`;
+
+  return dispatch => {
+    dispatch(gettingProjectUsersStart());
+    dispatch(startLoading());
+    axios
+      .get(URL, {}, { withCredentials: true })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(gettingProjectUsersSuccess(response.data));
           dispatch(finishLoading());
         }
       });
@@ -136,4 +166,4 @@ const createTask = (task, openTaskPage, callee) => {
   };
 };
 
-export { GetProjectInfo, ChangeProject, createTask };
+export { GetProjectInfo, getProjectUsers, ChangeProject, createTask };

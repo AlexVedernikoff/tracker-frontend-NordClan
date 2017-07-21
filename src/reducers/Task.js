@@ -71,8 +71,7 @@ export default function Task (state = InitialState, action) {
       return {
         ...state,
         task: {
-          ...state.task,
-          ...action.changedFields
+          ...state.task
         }
       }
 

@@ -26,7 +26,7 @@ const requestTaskChangeUser = () => ({
 });
 
 const successTaskChangeUser = changedFields => ({
-  type: TaskActions.TASK_CHANGE_REQUEST_SUCCESS,
+  type: TaskActions.TASK_CHANGE_USER_SUCCESS,
   changedFields
 });
 
@@ -96,7 +96,7 @@ const changeTask = (ChangedProperties, target) => {
   };
 };
 
-const changeTaskUser = (taskId, userId) => {
+const changeTaskUser = (taskId, userId, statusId) => {
   if (!taskId) {
     return;
   }
@@ -110,7 +110,8 @@ const changeTaskUser = (taskId, userId) => {
     axios
       .post(URL, {
         taskId,
-        userId
+        userId,
+        statusId
       }, {
         withCredentials: true
       })
