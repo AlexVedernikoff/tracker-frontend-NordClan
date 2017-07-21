@@ -1,3 +1,3 @@
-import CreateProject from "./CreateProject";
+import CreateProject from './CreateProject';
 
 export default CreateProject;

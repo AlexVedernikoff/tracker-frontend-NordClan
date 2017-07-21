@@ -44,8 +44,8 @@ const Pagination = (props) => {
   for (let i = 0; i < itemsCount; i++) {
     const index = i + 1;
     items.push(<li key={i} className={classname(css['page-item'], {
-          'active': activePage === index
-        })}
+      'active': activePage === index
+    })}
         onClick={(e) => handleClick({ activePage: index }, e)}
       >
         <a className="page-link" href="#">{index}</a>
