@@ -63,12 +63,9 @@ class TaskRow extends React.Component {
               <p className={css.taskMeta}>
                 <span>Спринт:</span>
                 <span>
-                    { task.sprint
-                      ? <Link to={`/projects/${task.projectId}/agile-board`}>
-                          {task.sprint.name}
-                        </Link>
-                      : 'Не задано'
-                    }
+                  <Link to={`/projects/${task.projectId}/agile-board`}>
+                    {task.sprint ? task.sprint.name : 'Backlog'}
+                  </Link>
                 </span>
               </p>
               <p className={css.taskMeta}>

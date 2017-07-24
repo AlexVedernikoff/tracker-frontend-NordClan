@@ -64,12 +64,9 @@ class Details extends Component {
               <tr>
                 <td>Спринт:</td>
                 <td>
-                    { task.sprint
-                      ? <Link to={`/projects/${task.projectId}/agile-board`}>
-                          {task.sprint.name}
-                        </Link>
-                      : 'Не задано'
-                    }
+                    <Link to={`/projects/${task.projectId}/agile-board`}>
+                      {task.sprint ? task.sprint.name : 'Backlog'}
+                    </Link>
                 </td>
               </tr>
             <tr>
