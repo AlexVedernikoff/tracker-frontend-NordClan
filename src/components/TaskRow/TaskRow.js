@@ -10,6 +10,14 @@ import Tags from '../Tags';
 import Tag from '../Tag';
 import * as css from './TaskRow.scss';
 
+const getTaskTime = (factTime, planTime) => {
+  if (factTime) {
+    return planTime ? `${factTime} из ${planTime} ч.` : `${factTime} ч.`;
+  } else {
+    return planTime ? `0 из ${planTime} ч.` : '0 из 0 ч.';
+  }
+};
+
 class TaskRow extends React.Component {
 
   constructor (props) {
@@ -84,9 +92,10 @@ class TaskRow extends React.Component {
                   task.statusId !== 1
                   ? <span className={css.time}>
                     <span>Время: </span>
-                    <span className={classnames({[css.redText]: task.plannedExecutionTime < task.factExecutionTime,
-                                                  [css.greenText]: task.plannedExecutionTime > task.factExecutionTime})}>
-                      {task.factExecutionTime} ч. из {task.plannedExecutionTime}
+                    <span className={classnames({
+                      [css.redText]: task.plannedExecutionTime < task.factExecutionTime,
+                      [css.greenText]: task.plannedExecutionTime > task.factExecutionTime})}>
+                      { getTaskTime(task.factExecutionTime, task.plannedExecutionTime) }
                     </span>
                   </span>
                   : null
