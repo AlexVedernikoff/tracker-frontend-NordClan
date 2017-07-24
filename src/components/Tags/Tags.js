@@ -79,7 +79,7 @@ class Tags extends Component {
                    ref='newTag'
                    onChange={this.onChangeHandler}/>
             <Button addedClassNames={{[css.tagsButton]: true}}
-                    text='+'
+                    icon="IconCheck"
                     type='green'
                     onClick={this.sendNewTags}
             />
