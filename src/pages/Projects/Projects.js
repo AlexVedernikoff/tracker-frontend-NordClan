@@ -149,7 +149,7 @@ class Projects extends Component {
   };
 
   sendRequestAndOpen = event => {
-    this.setState({openProjectPage: true}, this.sendRequest(event));
+    this.setState({openProjectPage: true}, () => this.sendRequest(event));
   };
 
   handleModalCheckBoxChange = event => {
