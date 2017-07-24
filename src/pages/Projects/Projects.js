@@ -254,7 +254,7 @@ class Projects extends Component {
                   name="filterTags"
                   multi
                   placeholder="Введите название тега..."
-                  backspaceToRemoveMessage="BackSpace для очистки поля"
+                  backspaceToRemoveMessage=""
                   value={this.state.filterTags}
                   onChange={e => this.selectValue(e, 'filterTags')}
                   noResultsText="Нет результатов"

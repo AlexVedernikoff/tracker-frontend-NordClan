@@ -51,7 +51,7 @@
   padding-top: 5px;
   padding-bottom: 5px;
   padding-left: 13px;
-  line-height: 14px;
+  line-height: 16px;
 }
 
 .Select.is-focused {
@@ -68,7 +68,8 @@
 
 .Select-placeholder, .Select-aria-only {
   color: silver;
-  /*vertical-align: middle;*/
+  display: inline-block;
+  vertical-align: middle; 
 }
 
 .Select-placeholder {
@@ -114,7 +115,7 @@
 
 .Select--multi .Select-multi-value-wrapper .Select-value {
   font-size: 11px;
-  vertical-align: bottom;
+  vertical-align: middle;
   color: white;
   background-color: #88a4bf;
   height: 1rem;
@@ -126,6 +127,7 @@
 
 .Select--multi .Select-input {
   margin: 2px;
+  vertical-align: middle;
 }
 
 .Select--multi .Select-multi-value-wrapper .Select-value .Select-value-icon {
