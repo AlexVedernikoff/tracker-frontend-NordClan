@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
-import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
+import PropTypes from 'prop-types';
+import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 
 import * as css from './Projects.scss';
 import SelectDropdown from '../../components/SelectDropdown';
-import { IconFolderOpen } from '../../components/Icons';
 import Button from '../../components/Button';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
 import Input from '../../components/Input';
@@ -39,7 +38,7 @@ class Projects extends Component {
       projectName: '',
       projectPrefix: '',
       openProjectPage: false,
-      selectedPortfolio: null
+      selectedPortfolio: {}
     };
   }
 
@@ -59,12 +58,10 @@ class Projects extends Component {
   };
 
   componentDidMount () {
-    const { GetProjects } = this.props;
-    GetProjects(25, 1, '');
+    this.props.GetProjects(25, 1, '');
   }
 
   changeNameFilter = event => {
-    const { GetProjects } = this.props;
     this.setState(
       {
         filterByName: event.target.value
@@ -76,13 +73,12 @@ class Projects extends Component {
         const dateTo = this.state.dateTo
           ? moment(this.state.dateTo).format('YYYY-MM-DD')
           : '';
-        GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo);
+        this.props.GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo);
       }
     );
   };
 
   handleDayFromChange = (dateFrom, modifiers) => {
-    const { GetProjects } = this.props;
     this.setState({ dateFrom }, () => {
       dateFrom = dateFrom
         ? moment(this.state.dateFrom).format('YYYY-MM-DD')
@@ -90,18 +86,17 @@ class Projects extends Component {
       const dateTo = this.state.dateTo
         ? moment(this.state.dateTo).format('YYYY-MM-DD')
         : '';
-      GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo);
+      this.props.GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo);
     });
   };
 
   handleDayToChange = (dateTo, modifiers) => {
-    const { GetProjects } = this.props;
     this.setState({ dateTo }, () => {
       const dateFrom = this.state.dateFrom
         ? moment(this.state.dateFrom).format('YYYY-MM-DD')
         : '';
       dateTo = dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
-      GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo);
+      this.props.GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo);
     });
   };
 
@@ -133,11 +128,16 @@ class Projects extends Component {
 
   sendRequest = event => {
     event.preventDefault();
-    const { requestProjectCreate } = this.props;
-    const portfolioName = !Number.isInteger(this.state.selectedPortfolio.value)
-      ? this.state.selectedPortfolio.value
-      : null;
-    requestProjectCreate(
+    let portfolioName = '';
+    if (this.state.selectedPortfolio && (Object.keys(this.state.selectedPortfolio).length !== 0)) {
+      portfolioName
+        = !Number.isInteger(this.state.selectedPortfolio.value)
+        ? this.state.selectedPortfolio.value
+        : null;
+    } else {
+      portfolioName = null;
+    }
+    this.props.requestProjectCreate(
       {
         name: this.state.projectName,
         prefix: this.state.projectPrefix,
@@ -148,6 +148,10 @@ class Projects extends Component {
     );
   };
 
+  sendRequestAndOpen = event => {
+    this.setState({openProjectPage: true}, this.sendRequest(event));
+  };
+
   handleModalCheckBoxChange = event => {
     const { target } = event;
     this.setState({
@@ -156,9 +160,10 @@ class Projects extends Component {
   };
 
   handlePortfolioChange = event => {
-    if (Array.isArray(event)) event = null;
+    let portfolio = event;
+    if (Array.isArray(event)) portfolio = null;
     this.setState({
-      selectedPortfolio: event
+      selectedPortfolio: portfolio
     });
   };
 
@@ -182,7 +187,6 @@ class Projects extends Component {
               type="primary"
               icon="IconPlus"
             />
-            <Button text="Создать портфель" type="primary" icon="IconPlus" />
           </header>
           <hr />
           <div className={css.projectsHeader}>
@@ -286,6 +290,7 @@ class Projects extends Component {
           onRequestClose={this.handleModal}
           onChange={this.handleModalChange}
           onSubmit={this.sendRequest}
+          onSubmitAndOpen={this.sendRequestAndOpen}
           handleCheckBox={this.handleModalCheckBoxChange}
           onPortfolioSelect={this.handlePortfolioChange}
           selectedPortfolio={this.state.selectedPortfolio}
@@ -305,6 +310,18 @@ const mapDispatchToProps = {
   openCreateProjectModal,
   closeCreateProjectModal,
   GetProjects
+};
+
+Projects.propTypes = {
+  GetProjects: PropTypes.func,
+  closeCreateProjectModal: PropTypes.func,
+  isCreateProjectModalOpen: PropTypes.bool,
+  isOpen: PropTypes.bool,
+  onChange: PropTypes.func,
+  onRequestClose: PropTypes.func,
+  openCreateProjectModal: PropTypes.func,
+  projectList: PropTypes.array,
+  requestProjectCreate: PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Projects);
