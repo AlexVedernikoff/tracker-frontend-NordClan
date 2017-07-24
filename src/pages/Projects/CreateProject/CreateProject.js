@@ -121,12 +121,14 @@ class CreateProject extends Component {
           <div className={css.buttonsContainer}>
             <Button
               text="Создать проект"
+              htmlType="submit"
               type="green"
               style={{ width: '50%' }}
               onClick={this.props.onSubmit}
             />
             <Button
               text="Создать и открыть"
+              htmlType="button"
               type="green-lighten"
               style={{ width: '50%' }}
               onClick={this.props.onSubmitAndOpen}

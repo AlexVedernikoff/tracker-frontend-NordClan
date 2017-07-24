@@ -38,7 +38,7 @@ class Projects extends Component {
       projectName: '',
       projectPrefix: '',
       openProjectPage: false,
-      selectedPortfolio: {}
+      selectedPortfolio: null
     };
   }
 
@@ -127,6 +127,7 @@ class Projects extends Component {
   };
 
   sendRequest = event => {
+    console.warn('пыщ', event);
     event.preventDefault();
     let portfolioName = '';
     if (this.state.selectedPortfolio && (Object.keys(this.state.selectedPortfolio).length !== 0)) {
@@ -141,7 +142,7 @@ class Projects extends Component {
       {
         name: this.state.projectName,
         prefix: this.state.projectPrefix,
-        portfolioId: portfolioName ? null : this.state.selectedPortfolio.value,
+        portfolioId: portfolioName ? null : this.state.selectedPortfolio ? this.state.selectedPortfolio.value : null,
         portfolioName
       },
       this.state.openProjectPage

@@ -9,6 +9,7 @@ const Button = (props) => {
   const {
     icon,
     type,
+    htmlType,
     text,
     loading,
     addedClassNames,
@@ -20,6 +21,7 @@ const Button = (props) => {
   return (
     <button
       {...other}
+      type={htmlType}
       className={classnames({
         [css.btn]: true,
         [css[type]]: !!type,
@@ -40,6 +42,7 @@ const Button = (props) => {
 
 Button.propTypes = {
   addedClassNames: PropTypes.object,
+  htmlType: PropTypes.string,
   icon: PropTypes.string,
   loading: PropTypes.bool,
   text: PropTypes.string,
