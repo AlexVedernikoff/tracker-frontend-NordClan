@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col } from 'react-flexbox-grid/lib/index';
+import { Link } from 'react-router';
+import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 
 import * as css from './Projects.scss';
@@ -15,7 +16,7 @@ import Portfolio from './Portfolio';
 import moment from 'moment';
 
 import CreateProject from './CreateProject';
-import GetProjects, {
+import getProjects, {
   requestProjectCreate,
   openCreateProjectModal,
   closeCreateProjectModal
@@ -38,8 +39,17 @@ class Projects extends Component {
       projectName: '',
       projectPrefix: '',
       openProjectPage: false,
-      selectedPortfolio: null
+      selectedPortfolio: null,
+      activePage: 1
     };
+  }
+
+  componentDidMount () {
+    this.loadProjects();
+  }
+
+  loadProjects = (dateFrom, dateTo) => {
+    this.props.getProjects(20, this.state.activePage, '', this.state.filterByName, dateFrom, dateTo);
   }
 
   check = name => {
@@ -54,12 +64,13 @@ class Projects extends Component {
   };
 
   handlePaginationClick = e => {
-    e.preventDefault();
+    this.setState(
+      {
+        activePage: e.activePage
+      },
+      this.loadProjects
+    );
   };
-
-  componentDidMount () {
-    this.props.GetProjects(25, 1, '');
-  }
 
   changeNameFilter = event => {
     this.setState(
@@ -73,7 +84,7 @@ class Projects extends Component {
         const dateTo = this.state.dateTo
           ? moment(this.state.dateTo).format('YYYY-MM-DD')
           : '';
-        this.props.GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo);
+        this.loadProjects(dateFrom, dateTo);
       }
     );
   };
@@ -86,7 +97,7 @@ class Projects extends Component {
       const dateTo = this.state.dateTo
         ? moment(this.state.dateTo).format('YYYY-MM-DD')
         : '';
-      this.props.GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo);
+      this.loadProjects(dateFrom, dateTo);
     });
   };
 
@@ -96,7 +107,7 @@ class Projects extends Component {
         ? moment(this.state.dateFrom).format('YYYY-MM-DD')
         : '';
       dateTo = dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
-      this.props.GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo);
+      this.loadProjects(dateFrom, dateTo);
     });
   };
 
@@ -259,7 +270,7 @@ class Projects extends Component {
             </Row>
           </div>
           <div>
-            {this.props.projectList.map((project, i) => {
+             {this.props.projectList.map((project, i) => {
               if (project.elemType !== 'portfolio') {
                 return (
                   <ProjectCard
@@ -278,13 +289,14 @@ class Projects extends Component {
             })}
           </div>
           <hr />
-          {2 > 1
+          { this.props.pagesCount > 1
             ? <Pagination
-                itemsCount={3}
-                activePage={3}
+                itemsCount={this.props.pagesCount}
+                activePage={this.state.activePage}
                 onItemClick={this.handlePaginationClick}
               />
-            : null}
+            : null
+          }
         </section>
         <CreateProject
           isOpen={this.props.isCreateProjectModalOpen}
@@ -301,8 +313,18 @@ class Projects extends Component {
   }
 }
 
+Projects.propTypes = {
+  closeCreateProjectModal: PropTypes.func.isRequired,
+  getProjects: PropTypes.func.isRequired,
+  isCreateProjectModalOpen: PropTypes.bool.isRequired,
+  openCreateProjectModal: PropTypes.func.isRequired,
+  pagesCount: PropTypes.number.isRequired,
+  projectList: PropTypes.array.isRequired
+};
+
 const mapStateToProps = state => ({
   projectList: state.Projects.projects,
+  pagesCount: state.Projects.pagesCount,
   isCreateProjectModalOpen: state.Projects.isCreateProjectModalOpen
 });
 
@@ -310,7 +332,7 @@ const mapDispatchToProps = {
   requestProjectCreate,
   openCreateProjectModal,
   closeCreateProjectModal,
-  GetProjects
+  getProjects
 };
 
 Projects.propTypes = {

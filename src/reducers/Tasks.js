@@ -2,7 +2,8 @@ import * as TaskActions from '../constants/Tasks';
 
 const InitialState = {
   tasks: [],
-  pageSize: 25,
+  pageSize: 0,
+  pagesCount: 1,
   currentPage: 1,
   tags: '',
   isReceiving: false
@@ -16,12 +17,13 @@ function Tasks (state = InitialState, action) {
       isReceiving: true
     };
 
-  case TaskActions.TASKS_RECEIVE_SUCCESS:
-    return {
-      ...state,
-      tasks: action.data.data,
-      isReceiving: false
-    };
+    case TaskActions.TASKS_RECEIVE_SUCCESS:
+      return {
+        ...state,
+        tasks: action.data.data,
+        pagesCount: action.data.pagesCount,
+        isReceiving: false
+      };
 
   default:
     return state;

@@ -2,8 +2,9 @@ import * as ProjectActions from '../constants/Projects';
 
 const InitialState = {
   projects: [],
-  pageSize: 25,
+  pageSize: 20,
   currentPage: 1,
+  pagesCount: 1,
   tags: '',
   isCreateProjectModalOpen: false
 };
@@ -15,11 +16,12 @@ function Projects (state = InitialState, action) {
       ...state
     };
 
-  case ProjectActions.PROJECTS_RECEIVE_SUCCESS:
-    return {
-      ...state,
-      projects: action.data
-    };
+    case ProjectActions.PROJECTS_RECEIVE_SUCCESS:
+      return {
+        ...state,
+        projects: action.data.data,
+        pagesCount: action.data.pagesCount
+      };
 
   case ProjectActions.OPEN_CREATE_PROJECT_MODAL:
     return {
