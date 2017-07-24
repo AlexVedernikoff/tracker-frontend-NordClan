@@ -23,8 +23,6 @@ const getTasks = (options) => {
       .get(URL, {
         params: {
           name: '',
-          pageSize: 25,
-          currentPage: 1,
           tags: '',
           ...options,
           fields: 'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId'

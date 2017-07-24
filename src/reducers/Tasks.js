@@ -2,7 +2,8 @@ import * as TaskActions from '../constants/Tasks';
 
 const InitialState = {
   tasks: [],
-  pageSize: 25,
+  pageSize: 0,
+  pagesCount: 1,
   currentPage: 1,
   tags: '',
   isReceiving: false
@@ -20,6 +21,7 @@ function Tasks (state = InitialState, action) {
       return {
         ...state,
         tasks: action.data.data,
+        pagesCount: action.data.pagesCount,
         isReceiving: false
       };
 
