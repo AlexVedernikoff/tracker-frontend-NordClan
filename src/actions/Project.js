@@ -58,7 +58,7 @@ const createTaskRequestSuccess = () => ({
   type: ProjectActions.TASK_CREATE_REQUEST_SUCCESS
 });
 
-const GetProjectInfo = id => {
+const getProjectInfo = id => {
   const URL = `/api/project/${id}`;
 
   return dispatch => {
@@ -153,7 +153,7 @@ const createTask = (task, openTaskPage, callee) => {
           dispatch(finishLoading());
           dispatch(createTaskRequestSuccess());
           dispatch(closeCreateTaskModal());
-          dispatch(GetProjectInfo(task.projectId));
+          dispatch(getProjectInfo(task.projectId));
           dispatch(getPlanningTasks(callee, { sprintId: task.sprintId || 0, projectId: task.projectId }));
 
           if (openTaskPage) {
@@ -166,4 +166,4 @@ const createTask = (task, openTaskPage, callee) => {
   };
 };
 
-export { GetProjectInfo, getProjectUsers, ChangeProject, createTask };
+export { getProjectInfo, getProjectUsers, ChangeProject, createTask };

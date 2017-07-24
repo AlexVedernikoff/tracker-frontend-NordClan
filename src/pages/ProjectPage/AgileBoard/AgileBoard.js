@@ -199,6 +199,10 @@ class AgileBoard extends Component {
     }));
   };
 
+  componentDidMount () {
+    this.selectValue(0, 'changedSprint');
+  }
+
   componentWillReceiveProps (nextProps) {
     if (this.props.project.id !== nextProps.project.id) this.selectValue(0, 'changedSprint');
 
