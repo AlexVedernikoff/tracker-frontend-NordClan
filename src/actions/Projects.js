@@ -99,7 +99,7 @@ export const requestProjectCreate = (project, openProjectPage) => {
           dispatch(getProjects());
 
           if (openProjectPage) {
-            history.push(`projects/${response.data.id}`)
+            history.push(`projects/${response.data.id}`);
           }
 
         }
