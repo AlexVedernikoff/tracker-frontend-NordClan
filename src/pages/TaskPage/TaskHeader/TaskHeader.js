@@ -102,7 +102,15 @@ class TaskHeader extends Component {
 
   getButtonType = (inProcessStatusId, inHoldStatusId) => {
     const { task } = this.props;
-    return task.statusId === inProcessStatusId || task.statusId === inHoldStatusId ? 'green' : 'bordered';
+    let type;
+    if (task.statusId === inProcessStatusId) {
+      type = 'green';
+    } else if (task.statusId === inHoldStatusId) {
+      type = 'primary';
+    } else {
+      type = 'bordered';
+    }
+    return type;
   }
 
   getButtonIcon = (inProcessStatusId, inHoldStatusId) => {
