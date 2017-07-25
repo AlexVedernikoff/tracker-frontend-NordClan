@@ -15,7 +15,7 @@ class Notification extends Component {
   hideNotification = () => {
     this.setState({
       isShown: false
-    })
+    });
   }
 
   render () {
@@ -24,7 +24,7 @@ class Notification extends Component {
         className={classnames({
           [css.Notification]: true,
           [css.hide]: !this.state.isShown,
-          [css.error]: this.props.notification.type === 'error' 
+          [css.error]: this.props.notification.type === 'error'
         })}
       >
         <IconClose className={css.iconClose} onClick={this.hideNotification} />

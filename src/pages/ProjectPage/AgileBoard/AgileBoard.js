@@ -21,21 +21,21 @@ const filterTasks = (array, sortedObject) => {
   array.forEach((element) => {
     switch (element.statusId) {
     case 1: sortedObject.new.push(element);
-            break;
+      break;
     case 2: sortedObject.dev.push(element);
-            break;
+      break;
     case 3: sortedObject.dev.push(element);
-            break;
+      break;
     case 4: sortedObject.codeReview.push(element);
-            break;
+      break;
     case 5: sortedObject.codeReview.push(element);
-            break;
+      break;
     case 6: sortedObject.qa.push(element);
-            break;
+      break;
     case 7: sortedObject.qa.push(element);
-            break;
+      break;
     case 8: sortedObject.done.push(element);
-            break;
+      break;
     default: break;
     }
   });
@@ -208,7 +208,7 @@ class AgileBoard extends Component {
 
     if (!nextProps.StatusIsEditing && this.props.StatusIsEditing) {
       this.selectValue(this.state.changedSprint, 'changedSprint');
-    };
+    }
     if (!nextProps.UserIsEditing && this.props.UserIsEditing) {
       this.selectValue(this.state.changedSprint, 'changedSprint');
       this.setState({
@@ -271,7 +271,7 @@ class AgileBoard extends Component {
                 name="filterTags"
                 multi
                 placeholder="Введите название тега..."
-                backspaceToRemoveMessage="BackSpace для очистки поля"
+                backspaceToRemoveMessage=""
                 value={this.state.filterTags}
                 onChange={(e) => this.selectValue(e, 'filterTags')}
                 noResultsText="Нет результатов"

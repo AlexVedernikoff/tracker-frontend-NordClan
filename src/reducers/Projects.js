@@ -11,10 +11,10 @@ const InitialState = {
 
 function Projects (state = InitialState, action) {
   switch (action.type) {
-    case ProjectActions.PROJECTS_RECEIVE_START:
-      return {
-        ...state
-      };
+  case ProjectActions.PROJECTS_RECEIVE_START:
+    return {
+      ...state
+    };
 
     case ProjectActions.PROJECTS_RECEIVE_SUCCESS:
       return {
@@ -23,30 +23,30 @@ function Projects (state = InitialState, action) {
         pagesCount: action.data.pagesCount
       };
 
-    case ProjectActions.OPEN_CREATE_PROJECT_MODAL:
-      return {
-        ...state,
-        isCreateProjectModalOpen: true
-      }
+  case ProjectActions.OPEN_CREATE_PROJECT_MODAL:
+    return {
+      ...state,
+      isCreateProjectModalOpen: true
+    };
 
-    case ProjectActions.CLOSE_CREATE_PROJECT_MODAL:
-      return {
-        ...state,
-        isCreateProjectModalOpen: false
-      }
+  case ProjectActions.CLOSE_CREATE_PROJECT_MODAL:
+    return {
+      ...state,
+      isCreateProjectModalOpen: false
+    };
 
-    case ProjectActions.PROJECT_CREATE_START:
-      return {
-        ...state
-      }
+  case ProjectActions.PROJECT_CREATE_START:
+    return {
+      ...state
+    };
 
-    case ProjectActions.PROJECT_CREATE_SUCCESS:
-      return {
-        ...state
-      }
+  case ProjectActions.PROJECT_CREATE_SUCCESS:
+    return {
+      ...state
+    };
 
-    default:
-      return state;
+  default:
+    return state;
   }
 }
 
