@@ -78,23 +78,26 @@ class Tags extends Component {
             : null }
 
           <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
-            {this.state.visible ? <form className={classnames({[css.tagPopup]: true, [css[this.props.direction]]: true})}
-                                        onSubmit={this.sendNewTags}>
-              <input
-                type='text'
-                placeholder='Добавить тег'
-                className={css.tagsInput}
-                defaultValue=''
-                ref='newTag'
-                autoFocus
-                onChange={this.onChangeHandler}/>
-              <Button
-                addedClassNames={{[css.tagsButton]: true}}
-                icon="IconCheck"
-                type='green'
-                onClick={this.sendNewTags}
-              />
-            </form>
+            {
+              this.state.visible
+              ? <form
+                className={classnames({[css.tagPopup]: true, [css[this.props.direction]]: true})}
+                onSubmit={this.sendNewTags}>
+                <input
+                  type='text'
+                  placeholder='Добавить тег'
+                  className={css.tagsInput}
+                  defaultValue=''
+                  ref='newTag'
+                  autoFocus
+                  onChange={this.onChangeHandler}/>
+                <Button
+                  addedClassNames={{[css.tagsButton]: true}}
+                  icon="IconCheck"
+                  type='green'
+                  onClick={this.sendNewTags}
+                />
+              </form>
               : null
             }
           </ReactCSSTransitionGroup>
