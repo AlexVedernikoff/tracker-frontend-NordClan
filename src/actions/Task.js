@@ -101,7 +101,7 @@ const changeTaskUser = (taskId, userId, statusId) => {
     return;
   }
 
-  const URL = '/api/task-users';
+  const URL = `/api/task/${taskId}/users`;
 
   return dispatch => {
     dispatch(requestTaskChangeUser());
@@ -109,7 +109,6 @@ const changeTaskUser = (taskId, userId, statusId) => {
 
     axios
       .post(URL, {
-        taskId,
         userId,
         statusId
       }, {
