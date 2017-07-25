@@ -46,6 +46,10 @@ const stopTaskEditing = target => ({
 });
 
 const getTask = id => {
+  if (!id) {
+    return () => {};
+  }
+
   const URL = `/api/task/${id}`;
 
   return dispatch => {

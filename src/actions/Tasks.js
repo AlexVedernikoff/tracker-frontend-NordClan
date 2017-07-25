@@ -15,6 +15,10 @@ const tasksReceived = tasks => ({
 });
 
 const getTasks = (options) => {
+  if (!options.projectId) {
+    return () => {};
+  }
+
   const URL = '/api/task';
   return dispatch => {
     dispatch(startTasksReceive());
