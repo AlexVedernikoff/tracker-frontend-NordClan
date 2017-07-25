@@ -4,8 +4,10 @@ import Button from '../Button';
 import * as css from './Tags.scss';
 import Tag from '../Tag';
 import onClickOutside from 'react-onclickoutside';
+import classnames from 'classnames';
 import {createTags} from '../../actions/Tags';
 import {connect} from 'react-redux';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class Tags extends Component {
   constructor (props) {
@@ -66,27 +68,37 @@ class Tags extends Component {
             : null
         }
         <span className={css.wrapperAddTags}>
-                    { this.props.create ? <Tag create
-                                               data-tip='Добавить тег'
-                                               data-place='bottom'
-                                               onClick={this.showDropdownMenu}/> : null}
-          {this.state.visible ? <form className={css.tagPopup}
-                                      onSubmit={this.sendNewTags}>
-            <input type='text'
-                   placeholder='Добавить тег'
-                   className={css.tagsInput}
-                   defaultValue=''
-                   ref='newTag'
-                   onChange={this.onChangeHandler}/>
-            <Button addedClassNames={{[css.tagsButton]: true}}
-                    icon="IconCheck"
-                    type='green'
-                    onClick={this.sendNewTags}
-            />
-          </form>
-            : null
-          }
-                </span>
+
+          { this.props.create
+            ? <Tag
+              create
+              data-tip='Добавить тег'
+              data-place='bottom'
+              onClick={this.showDropdownMenu}/>
+            : null }
+
+          <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
+            {this.state.visible ? <form className={classnames({[css.tagPopup]: true, [css[this.props.direction]]: true})}
+                                        onSubmit={this.sendNewTags}>
+              <input
+                type='text'
+                placeholder='Добавить тег'
+                className={css.tagsInput}
+                defaultValue=''
+                ref='newTag'
+                autoFocus
+                onChange={this.onChangeHandler}/>
+              <Button
+                addedClassNames={{[css.tagsButton]: true}}
+                icon="IconCheck"
+                type='green'
+                onClick={this.sendNewTags}
+              />
+            </form>
+              : null
+            }
+          </ReactCSSTransitionGroup>
+        </span>
       </div>
     );
   }
@@ -99,9 +111,14 @@ Tags.propTypes = {
   ]),
   create: PropTypes.bool,
   createTags: PropTypes.func.isRequired,
+  direction: PropTypes.string,
   maxLength: PropTypes.number,
   taggable: PropTypes.string,
   taggableId: PropTypes.number
+};
+
+Tags.defaultProps = {
+  direction: 'left'
 };
 
 const mapDispatchToProps = {

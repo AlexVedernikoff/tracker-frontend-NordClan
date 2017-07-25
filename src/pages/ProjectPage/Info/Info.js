@@ -24,6 +24,7 @@ class Info extends Component {
       <div className={css.info}>
         <h2>Теги проекта</h2>
         <Tags taggable='project'
+              direction='right'
               taggableId={this.props.id}
               create
               maxLength={15}>
