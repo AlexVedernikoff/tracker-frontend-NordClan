@@ -17,7 +17,8 @@ const ProjectCard = props => {
     attaches,
     currentSprints,
     tags,
-    statusId
+    statusId,
+    portfolio
   } = props.project;
   const { isChild } = props;
 
@@ -60,9 +61,16 @@ const ProjectCard = props => {
               data-tip={statusTooltip}
               data-place="left"
             />
-            <Link to={`/projects/${id}`}>
-              {name}
-            </Link>
+            <div>
+              {
+                portfolio
+                ? <span><Link className={css.portfolioTitle} to={`/projects/porfolio/${portfolio.id}`}>{portfolio.name}</Link> <span className={css.titleSplit}>/</span> </span>
+                : null
+              }
+              <Link to={`/projects/${id}`}>
+                {name}
+              </Link>
+            </div>
           </h3>
         </Col>
         <Col xs>

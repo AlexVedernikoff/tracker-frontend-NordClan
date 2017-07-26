@@ -48,7 +48,9 @@
 
 .statusMarker {
   display: inline-block;
+  flex-shrink: 0;
   margin-right: 8px;
+  margin-top: 2px;
   vertical-align: middle;
   background-color: lightgray;
   width: 1rem;
@@ -62,11 +64,27 @@
 
 .title {
   display: flex;
+  // align-items: center;
   margin-top: 0;
   margin-bottom: 1rem;
 
+  .portfolioTitle {
+    color: $color-dark;
+  }
+
+  .titleSplit {
+    display: inline-block;
+    margin: 0 0.2rem;
+    color: silver;
+  }
+
   a {
+    display: inline-block;
     text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 
