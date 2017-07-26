@@ -60,14 +60,14 @@ const Pagination = (props) => {
       <li className={classnames({
         [css['page-item']]: true,
         [css.disabled]: activePage === 1
-      })} onClick={(e) => handleClick({ isPrev: true }, e)}><a className={css['page-link']} href="#">{prevText || 'Пред.'}</a></li>
+      })} onClick={(e) => handleClick({ isPrev: true }, e)}><a className={css['page-link']} href="#">{prevText || '«'}</a></li>
       {
         itemsCount && items
       }
       <li className={classnames({
         [css['page-item']]: true,
         [css.disabled]: activePage === itemsCount
-      })} onClick={(e) => handleClick({ isNext: true }, e)}><a className={css['page-link']} href="#">{nextText || 'След.'}</a></li>
+      })} onClick={(e) => handleClick({ isNext: true }, e)}><a className={css['page-link']} href="#">{nextText || '»'}</a></li>
     </ul>
   );
 };

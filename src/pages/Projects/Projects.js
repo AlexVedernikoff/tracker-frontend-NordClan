@@ -280,25 +280,15 @@ class Projects extends Component {
             </Row>
           </div>
           <div>
-             {this.props.projectList.map((project, i) => {
-              if (project.elemType !== 'portfolio') {
-                return (
-                  <ProjectCard
-                    key={`project-${project.id}`}
-                    project={project}
-                  />
-                );
-              } else {
-                return (
-                  <Portfolio
-                    key={`portfolio-${project.id}`}
-                    portfolio={project}
-                  />
-                );
-              }
+            {this.props.projectList.map((project, i) => {
+              return (
+                <ProjectCard
+                  key={`project-${project.id}`}
+                  project={project}
+                />
+              );
             })}
           </div>
-          <hr />
           { this.props.pagesCount > 1
             ? <Pagination
                 itemsCount={this.props.pagesCount}
