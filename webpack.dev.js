@@ -92,9 +92,6 @@ const settings = {
           protocol: 'http:',
           port: 80
         },
-        pathRewrite: {
-          '^/api/': '/api/v1/'
-        },
         // ignorePath: true,
         changeOrigin: true,
         secure: false

@@ -5,6 +5,7 @@ import classnames from 'classnames';
 import ReactTooltip from 'react-tooltip';
 import Tag from '../../../components/Tag';
 import Tags from '../../../components/Tags';
+import TaskPlanningTime from '../TaskPlanningTime';
 import PerformerModal from '../../../components/PerformerModal';
 import { getProjectUsers } from '../../../actions/Project';
 import { connect } from 'react-redux';
@@ -111,7 +112,7 @@ class Details extends Component {
             <tr>
               <td>Запланировано:</td>
               <td>
-                {`${task.plannedExecutionTime ? task.plannedExecutionTime : 0} ч.`}
+                <TaskPlanningTime time={task.plannedExecutionTime ? task.plannedExecutionTime : 0} id={task.id} />
               </td>
             </tr>
             { task.factExecutionTime

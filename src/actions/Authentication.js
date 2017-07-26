@@ -1,4 +1,5 @@
 import * as AuthActions from '../constants/Authentication';
+import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { history } from '../Router';
 import { startLoading, finishLoading } from './Loading';
@@ -36,7 +37,7 @@ const userInfoReceived = user => ({
 });
 
 export const doAuthentication = ({ username, password }) => {
-  const URL = '/api/auth/login';
+  const URL = `${API_URL}/auth/login`;
 
   return dispatch => {
     dispatch(startAuthentication());
@@ -60,7 +61,7 @@ export const doAuthentication = ({ username, password }) => {
 };
 
 export const doLogout = () => {
-  const URL = '/api/auth/logout';
+  const URL = `${API_URL}/auth/logout`;
 
   return dispatch => {
     dispatch(startLogout());
@@ -77,7 +78,7 @@ export const doLogout = () => {
 };
 
 export const getInfoAboutMe = () => {
-  const URL = '/api/user/me';
+  const URL = `${API_URL}/user/me`;
 
   return dispatch => {
     dispatch(startReceiveUserInfo());
