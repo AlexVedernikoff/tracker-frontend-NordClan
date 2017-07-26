@@ -6,6 +6,7 @@ const InitialState = {
     tags: []
   },
   TitleIsEditing: false,
+  PlanningTimeIsEditing: false,
   SprintIsEditing: false,
   StatusIsEditing: false,
   DescriptionIsEditing: false,
