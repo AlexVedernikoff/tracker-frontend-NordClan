@@ -1,4 +1,5 @@
 import * as TaskActions from '../constants/Task';
+import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
@@ -50,7 +51,7 @@ const getTask = id => {
     return () => {};
   }
 
-  const URL = `/api/task/${id}`;
+  const URL = `${API_URL}/task/${id}`;
 
   return dispatch => {
     dispatch(getTaskStart());
@@ -76,7 +77,7 @@ const changeTask = (ChangedProperties, target) => {
     return;
   }
 
-  const URL = `/api/task/${ChangedProperties.id}`;
+  const URL = `${API_URL}/task/${ChangedProperties.id}`;
 
   return dispatch => {
     dispatch(requestTaskChange());
@@ -105,7 +106,7 @@ const changeTaskUser = (taskId, userId, statusId) => {
     return;
   }
 
-  const URL = `/api/task/${taskId}/users`;
+  const URL = `${API_URL}/task/${taskId}/users`;
 
   return dispatch => {
     dispatch(requestTaskChangeUser());

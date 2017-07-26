@@ -1,4 +1,5 @@
 import * as TagsActions from '../constants/Tags';
+import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { store } from '../Router';
@@ -35,7 +36,7 @@ const tagsDeleteError = err => ({
 export const createTags = (tags,
                            taggable,
                            taggableId) => {
-  const URL = `/api/${taggable}/${taggableId}/tag`;
+  const URL = `${API_URL}/${taggable}/${taggableId}/tag`;
   return dispatch => {
     dispatch(startTagsCreate());
     dispatch(startLoading());
@@ -57,7 +58,7 @@ export const createTags = (tags,
 export const deleteTag = (tag,
                           taggable,
                           taggableId) => {
-  const URL = `/api/${taggable}/${taggableId}/tag/${tag}`;
+  const URL = `${API_URL}/${taggable}/${taggableId}/tag/${tag}`;
   return dispatch => {
     dispatch(startTagsDelete());
     dispatch(startLoading());
