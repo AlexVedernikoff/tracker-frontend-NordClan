@@ -7,6 +7,7 @@ import {
   IndexRedirect,
   Redirect
 } from 'react-router';
+import { API_URL } from './constants/Settings';
 
 import MainContainer from './pages/MainContainer';
 import InnerContainer from './pages/InnerContainer';
@@ -37,7 +38,7 @@ export const history = syncHistoryWithStore(browserHistory, store);
 
 // Auth check for Auth-required pages
 const requireAuth = function (nextState, replace, cb) {
-  axios.get('/api/user/me', {}, { withCredentials: true })
+  axios.get(`${API_URL}/user/me`, {}, { withCredentials: true })
   .catch(err => {
     replace('login');
     cb();
@@ -48,7 +49,7 @@ const requireAuth = function (nextState, replace, cb) {
 // Auth check for login page
 const isLogged = function (nextState, replace, cb) {
   axios
-    .get('/api/user/me', {}, { withCredentials: true })
+    .get(`${API_URL}/user/me`, {}, { withCredentials: true })
     .then(response => {
       if (response.status === 200) replace('projects');
       cb();
