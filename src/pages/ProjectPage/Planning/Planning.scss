@@ -170,15 +170,24 @@
 }
 
 
-.sprintMarker:before {
-  content: "";
-  display: inline-block;
-  width: 1rem;
-  height: 1rem;
-  border-radius: 50%;
-  background-color: silver;
-  margin-right: 0.5rem;
-  vertical-align: text-top;
+.sprintMarker {
+  display: flex !important;
+  align-items: center;
+
+  span {
+    display: inline-block;
+  }
+
+  &:before {
+    content: "";
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background-color: silver;
+    margin-right: 0.5rem;
+    vertical-align: text-top;
+  }
 }
 
 .INPROGRESS:before {
