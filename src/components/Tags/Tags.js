@@ -62,11 +62,6 @@ class Tags extends Component {
         {!this.state.cutTags
           ? this.state.tags
           : sliceTags}
-        {
-          this.state.cutTags
-            ? <span className={css.loadMore} onClick={() => this.setState({cutTags: false})}>Показать все {this.state.tags.length}</span>
-            : null
-        }
         <span className={css.wrapperAddTags}>
 
           { this.props.create
@@ -102,6 +97,11 @@ class Tags extends Component {
             }
           </ReactCSSTransitionGroup>
         </span>
+        {
+          this.state.cutTags
+            ? <div><a className={css.loadMore} onClick={() => this.setState({cutTags: false})}>Показать все {this.state.tags.length}</a></div>
+            : null
+        }
       </div>
     );
   }

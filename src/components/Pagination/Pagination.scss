@@ -23,10 +23,20 @@ $paginate-border-width: 3px;
     display: block;
     padding: 1rem 2rem;
     text-decoration: none;
-    color: $color-black;
+    color: silver;
     font-weight: bold;
     border-top: $paginate-border-width solid transparent;
     margin-top: -$paginate-border-width;
+    transition: $transition;
+  }
+
+  &:not(.disabled) {
+    a {
+      &:hover {
+        color: $color-green;
+        border-color: $color-dark;
+      }
+    }
   }
 }
 
@@ -34,6 +44,7 @@ $paginate-border-width: 3px;
   a {
     color: silver;
     cursor: not-allowed;
+    transition: $transition;
   }
 }
 
@@ -42,5 +53,6 @@ $paginate-border-width: 3px;
   a {
     color: $color-orange;
     border-color: $color-orange;
+    transition: $transition;
   }
 }

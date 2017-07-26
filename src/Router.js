@@ -14,6 +14,7 @@ import TaskPage from './pages/TaskPage';
 import Comments from './pages/TaskPage/Comments';
 import TaskHistory from './pages/TaskPage/TaskHistory';
 import ProjectPage from './pages/ProjectPage';
+import Portfolio from './pages/Portfolio';
 import AgileBoard from './pages/ProjectPage/AgileBoard';
 import Info from './pages/ProjectPage/Info';
 import Settings from './pages/ProjectPage/Settings';
@@ -80,6 +81,8 @@ export default class AppRouter extends Component {
                 <Route path="tasks" component={TaskList} />
                 <IndexRedirect to="agile-board" />
               </Route>
+
+              <Route path="projects/portfolio/:portfolioId" component={Portfolio} />
 
               <Route
                 path="projects/:projectId/tasks/:taskId"

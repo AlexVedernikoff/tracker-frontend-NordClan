@@ -5,8 +5,8 @@ import { Link } from 'react-router';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import moment from 'moment';
 
-import Tag from '../../../components/Tag';
-import Tags from '../../../components/Tags';
+import Tag from '../Tag';
+import Tags from '../Tags';
 import * as css from './ProjectCard.scss';
 
 const ProjectCard = props => {
@@ -64,7 +64,7 @@ const ProjectCard = props => {
             <div>
               {
                 portfolio
-                ? <span><Link className={css.portfolioTitle} to={`/projects/porfolio/${portfolio.id}`}>{portfolio.name}</Link> <span className={css.titleSplit}>/</span> </span>
+                ? <span><Link className={css.portfolioTitle} to={`/projects/portfolio/${portfolio.id}`}>{portfolio.name}</Link> <span className={css.titleSplit}>/</span> </span>
                 : null
               }
               <Link to={`/projects/${id}`}>
