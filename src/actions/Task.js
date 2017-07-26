@@ -46,6 +46,10 @@ const stopTaskEditing = target => ({
 });
 
 const getTask = id => {
+  if (!id) {
+    return () => {};
+  }
+
   const URL = `/api/task/${id}`;
 
   return dispatch => {
@@ -101,7 +105,7 @@ const changeTaskUser = (taskId, userId, statusId) => {
     return;
   }
 
-  const URL = '/api/task-users';
+  const URL = `/api/task/${taskId}/users`;
 
   return dispatch => {
     dispatch(requestTaskChangeUser());
@@ -109,7 +113,6 @@ const changeTaskUser = (taskId, userId, statusId) => {
 
     axios
       .post(URL, {
-        taskId,
         userId,
         statusId
       }, {

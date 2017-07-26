@@ -80,7 +80,7 @@ const getProjectInfo = id => {
 };
 
 const getProjectUsers = id => {
-  const URL = `/api/project-users/${id}`;
+  const URL = `/api/project/${id}/users`;
 
   return dispatch => {
     dispatch(gettingProjectUsersStart());

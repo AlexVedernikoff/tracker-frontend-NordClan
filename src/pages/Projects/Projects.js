@@ -75,7 +75,8 @@ class Projects extends Component {
   changeNameFilter = event => {
     this.setState(
       {
-        filterByName: event.target.value
+        filterByName: event.target.value,
+        activePage: this.state.filterByName !== event.target.value ? 1 : this.state.activePage
       },
       () => {
         const dateFrom = this.state.dateFrom
@@ -90,7 +91,12 @@ class Projects extends Component {
   };
 
   handleDayFromChange = (dateFrom, modifiers) => {
-    this.setState({ dateFrom }, () => {
+    this.setState(
+      {
+        dateFrom,
+        activePage: this.state.dateFrom !== dateFrom ? 1 : this.state.activePage
+      },
+      () => {
       dateFrom = dateFrom
         ? moment(this.state.dateFrom).format('YYYY-MM-DD')
         : '';
@@ -102,7 +108,11 @@ class Projects extends Component {
   };
 
   handleDayToChange = (dateTo, modifiers) => {
-    this.setState({ dateTo }, () => {
+    this.setState(
+      {
+        dateTo,
+        activePage: this.state.dateTo !== dateTo ? 1 : this.state.activePage
+      }, () => {
       const dateFrom = this.state.dateFrom
         ? moment(this.state.dateFrom).format('YYYY-MM-DD')
         : '';

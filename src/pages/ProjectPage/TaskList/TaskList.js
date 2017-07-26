@@ -46,7 +46,8 @@ class TaskList extends Component {
   changeNameFilter = event => {
     this.setState(
       {
-        filterByName: event.target.value
+        filterByName: event.target.value,
+        activePage: this.state.filterByName !== event.target.value ? 1 : this.state.activePage
       },
       this.loadTasks
     );

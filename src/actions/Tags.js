@@ -35,14 +35,12 @@ const tagsDeleteError = err => ({
 export const createTags = (tags,
                            taggable,
                            taggableId) => {
-  const URL = '/api/tag';
+  const URL = `/api/${taggable}/${taggableId}/tag`;
   return dispatch => {
     dispatch(startTagsCreate());
     dispatch(startLoading());
     axios.post(URL, {
-      tag: tags,
-      taggable: taggable,
-      taggableId: taggableId
+      tag: tags
     })
       .then(res => {
         if (!res.data) return;
@@ -59,7 +57,7 @@ export const createTags = (tags,
 export const deleteTag = (tag,
                           taggable,
                           taggableId) => {
-  const URL = `/api/tag/${taggable}/${taggableId}/?tag=${tag}`;
+  const URL = `/api/${taggable}/${taggableId}/tag/${tag}`;
   return dispatch => {
     dispatch(startTagsDelete());
     dispatch(startLoading());
