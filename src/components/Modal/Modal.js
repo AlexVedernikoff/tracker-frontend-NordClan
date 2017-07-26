@@ -42,8 +42,8 @@ const ReactModalStyles = {
 };
 
 const iconStyles = {
-  width: 24,
-  height: 24,
+  width: '1rem',
+  height: '1rem',
   color: 'inherit',
   fill: 'currentColor'
 };

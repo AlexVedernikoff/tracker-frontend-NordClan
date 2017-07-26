@@ -73,7 +73,7 @@ class NavMenu extends Component {
         <div className={css.ava}>
           {this.props.user.photo
             ? <img src={this.props.user.photo} alt="" />
-            : `${(this.props.user.firstNameRu.slice(0, 1) || "")
+            : `${(this.props.user.firstNameRu.slice(0, 1) || '')
                 + this.props.user.lastNameRu.slice(0, 1)}`}
         </div>
         <div className={css.userNameContainer}>

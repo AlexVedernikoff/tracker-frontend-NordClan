@@ -4,22 +4,22 @@ const InitialState = {
   portfolios: []
 };
 
-export default function Portfolios(state = InitialState, action) {
+export default function Portfolios (state = InitialState, action) {
   switch (action.type) {
-    case PortfoliosActions.GET_PORTFOLIOS_START:
-      return {
-        ...state
-      };
+  case PortfoliosActions.GET_PORTFOLIOS_START:
+    return {
+      ...state
+    };
 
-    case PortfoliosActions.GET_PORTFOLIOS_SUCCESS:
-      return {
-        ...state,
-        portfolios: action.portfolios
-      }
+  case PortfoliosActions.GET_PORTFOLIOS_SUCCESS:
+    return {
+      ...state,
+      portfolios: action.portfolios
+    };
 
-    default:
-      return {
-        ...state
-      }
+  default:
+    return {
+      ...state
+    };
   }
 }

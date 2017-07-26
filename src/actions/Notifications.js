@@ -1,5 +1,5 @@
 import * as NotificationsActions from '../constants/Notifications';
-import shortid from "shortid";
+import shortid from 'shortid';
 
 const addNotification = notification => {
   return {
@@ -19,9 +19,9 @@ const showNotification = notification => {
     dispatch(addNotification(notification));
 
     setTimeout(() => {
-      dispatch(removeNotification(notification))
-    }, 1500)
-  }
-}
+      dispatch(removeNotification(notification));
+    }, 1500);
+  };
+};
 
 export { showNotification };
