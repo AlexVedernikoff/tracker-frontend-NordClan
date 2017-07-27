@@ -23,6 +23,12 @@ class TaskPage extends Component {
     this.props.getTask(this.props.params.taskId);
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.params.taskId !== this.props.params.taskId) {
+      this.props.getTask(nextProps.params.taskId);
+    }
+  }
+
   render () {
     // Mocks
 
@@ -84,8 +90,16 @@ class TaskPage extends Component {
           <Col xs={4}>
             <aside>
               <Details task={this.props.task} onChangeUser={this.props.changeTaskUser} />
-              <RelatedTasks task={task} type="related" />
-              <RelatedTasks task={task} type="children" />
+              {
+                this.props.task.linkedTasks
+                ? <RelatedTasks task={this.props.task} type="linkedTasks" />
+                : null
+              }
+              {
+                this.props.task.subTasks && !this.props.task.parentTask
+                ? <RelatedTasks task={this.props.task} type="subTasks" />
+                : null
+              }
             </aside>
           </Col>
         </Row>
@@ -100,6 +114,10 @@ TaskPage.propTypes = {
   changeTaskUser: PropTypes.func.isRequired,
   children: PropTypes.object,
   getTask: PropTypes.func.isRequired,
+  params: PropTypes.shape({
+    projectId: PropTypes.string.isRequired,
+    taskId: PropTypes.string.isRequired
+  }),
   startTaskEditing: PropTypes.func.isRequired,
   stopTaskEditing: PropTypes.func.isRequired,
   task: PropTypes.object
