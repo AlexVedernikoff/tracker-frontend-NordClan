@@ -33,7 +33,10 @@ export default function Task (state = InitialState, action) {
     };
   case TaskActions.GET_TASK_REQUEST_SENT:
     return {
-      ...state
+      ...state,
+      TitleIsEditing: false,
+      PlanningTimeIsEditing: false,
+      DescriptionIsEditing: false
     };
 
   case TaskActions.GET_TASK_REQUEST_SUCCESS:
