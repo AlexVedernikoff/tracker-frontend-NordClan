@@ -99,7 +99,7 @@ class Tags extends Component {
         </span>
         {
           this.state.cutTags
-            ? <div><a className={css.loadMore} onClick={() => this.setState({cutTags: false})}>Показать все {this.state.tags.length}</a></div>
+            ? <a className={css.loadMore} onClick={() => this.setState({cutTags: false})}>Показать все {this.state.tags.length}</a>
             : null
         }
       </div>

@@ -2,9 +2,19 @@ import * as PortfolioActions from '../constants/Portfolio';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
+import { API_URL } from '../constants/Settings';
 
 const startPortfolioReceive = () => ({
   type: PortfolioActions.PORTFOLIO_RECEIVE_START
+});
+
+const startPortfolioNameReceive = () => ({
+  type: PortfolioActions.PORTFOLIO_NAME_RECEIVE_START
+});
+
+const portfolioNameReceived = (portfolioName) => ({
+  type: PortfolioActions.PORTFOLIO_NAME_RECEIVE_SUCCESS,
+  data: portfolioName
 });
 
 const portfolioReceived = portfolio => ({
@@ -12,8 +22,8 @@ const portfolioReceived = portfolio => ({
   data: portfolio
 });
 
-const getPortfolio = (portfolioId) => {
-  const URL = '/api/project';
+export const getPortfolio = (portfolioId) => {
+  const URL = `${API_URL}/project`;
   return dispatch => {
     dispatch(startPortfolioReceive());
     dispatch(startLoading());
@@ -32,4 +42,22 @@ const getPortfolio = (portfolioId) => {
   };
 };
 
-export default getPortfolio;
+export const getPortfolioName = (portfolioId) => {
+  const URL = `${API_URL}/portfolio/${portfolioId}`;
+  return dispatch => {
+    dispatch(startPortfolioNameReceive());
+    dispatch(startLoading());
+    axios
+      .get(URL)
+      .catch(error => {
+        dispatch(finishLoading());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(portfolioNameReceived(response.data));
+          dispatch(finishLoading());
+        }
+      });
+  };
+};

@@ -63,7 +63,7 @@ const ProjectCard = props => {
             />
             <div>
               {
-                portfolio
+                portfolio && props.isPortfolio
                 ? <span><Link className={css.portfolioTitle} to={`/projects/portfolio/${portfolio.id}`}>{portfolio.name}</Link> <span className={css.titleSplit}>/</span> </span>
                 : null
               }
@@ -128,6 +128,10 @@ const ProjectCard = props => {
 ProjectCard.propTypes = {
   isChild: PropTypes.bool,
   project: PropTypes.object.isRequired
+};
+
+ProjectCard.defaultProps = {
+  isPortfolio: true
 };
 
 export default ProjectCard;
