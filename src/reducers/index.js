@@ -10,6 +10,7 @@ import Tasks from './Tasks';
 import Task from './Task';
 import Portfolios from './Portfolios';
 import Notifications from './Notifications';
+import portfolio from './portfolio';
 
 const rootReducer = combineReducers({
   Auth,
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   Projects,
   Tasks,
   Task,
+  portfolio,
   routing: routerReducer
 });
 

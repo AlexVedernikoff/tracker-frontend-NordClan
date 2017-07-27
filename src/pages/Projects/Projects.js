@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router';
-import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
+import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 
 import * as css from './Projects.scss';
@@ -9,10 +8,9 @@ import SelectDropdown from '../../components/SelectDropdown';
 import Button from '../../components/Button';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
 import Input from '../../components/Input';
-import ProjectCard from './ProjectCard';
+import ProjectCard from '../../components/ProjectCard';
 import StatusCheckbox from './StatusCheckbox';
 import Pagination from '../../components/Pagination';
-import Portfolio from './Portfolio';
 import moment from 'moment';
 
 import CreateProject from './CreateProject';

@@ -98,8 +98,8 @@ class AgileBoard extends Component {
     super(props);
     this.state = {
       isSectionOpen: {
-        myTasks: true,
-        allTasks: true
+        myTasks: false,
+        allTasks: false
       },
       isModalOpen: false,
       performer: null,
@@ -205,6 +205,22 @@ class AgileBoard extends Component {
 
   componentWillReceiveProps (nextProps) {
     if (this.props.project.id !== nextProps.project.id) this.selectValue(0, 'changedSprint');
+
+    if (nextProps.sprintTasks.length) {
+      this.setState({
+        isSectionOpen: {
+          myTasks: true,
+          allTasks: true
+        }
+      });
+    } else {
+      this.setState({
+        isSectionOpen: {
+          myTasks: false,
+          allTasks: false
+        }
+      });
+    }
 
     if (!nextProps.StatusIsEditing && this.props.StatusIsEditing) {
       this.selectValue(this.state.changedSprint, 'changedSprint');
