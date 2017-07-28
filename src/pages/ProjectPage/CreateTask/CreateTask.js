@@ -259,7 +259,7 @@ class CreateTask extends Component {
 CreateTask.propTypes = {
   column: PropTypes.string,
   isOpen: PropTypes.bool.isRequired,
-  onRequestClose: PropTypes.func.isRequired,
+  onRequestClose: PropTypes.func,
   onSubmit: PropTypes.func.isRequired,
   parentTaskId: PropTypes.number,
   project: PropTypes.object,

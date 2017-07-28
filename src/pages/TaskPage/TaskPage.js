@@ -13,6 +13,7 @@ import RelatedTasks from './RelatedTasks';
 import Attachments from '../../components/Attachments';
 import Description from '../../components/Description';
 import RouteTabs from '../../components/RouteTabs';
+import TaskModal from '../../components/TaskModal';
 import CreateTask from '../../pages/ProjectPage/CreateTask';
 import { getTask, startTaskEditing, stopTaskEditing, changeTask, changeTaskUser} from '../../actions/Task';
 import {
@@ -27,6 +28,9 @@ import * as css from './TaskPage.scss';
 class TaskPage extends Component {
   constructor (props) {
     super(props);
+    this.state = {
+      isTaskModalOpen: false
+    };
   }
 
   componentDidMount () {
@@ -44,7 +48,7 @@ class TaskPage extends Component {
     }
   }
 
-  handleModal = () => {
+  handleCreateTaskModal = () => {
     if (this.props.isCreateTaskModalOpen) {
       this.props.closeCreateTaskModal();
     } else {
@@ -52,9 +56,20 @@ class TaskPage extends Component {
     }
   };
 
-  openCreateChildModal = () => {
+  linkTask = linkedTaskId => {
+    console.log(linkedTaskId);
+    this.handleCloseLinkTaskModal();
+  }
+
+  handleCloseLinkTaskModal = () => {
     this.setState({
-      isCreateTaskModalOpen: true
+      isTaskModalOpen: false
+    });
+  }
+
+  handleOpenLinkTaskModal = () => {
+    this.setState({
+      isTaskModalOpen: true
     });
   }
 
@@ -85,6 +100,14 @@ class TaskPage extends Component {
       })
     });
     return sprints;
+  };
+
+  getProjectTasks = () => {
+    return this.props.projectTasks.map((task, i) => ({
+      value: task.id,
+      label: `${this.props.task.project.prefix}-${task.id}. ${task.name}`,
+      // className: classnames({})
+    }));
   };
 
   render () {
@@ -150,12 +173,12 @@ class TaskPage extends Component {
               <Details task={this.props.task} onChangeUser={this.props.changeTaskUser} />
               {
                 this.props.task.linkedTasks
-                ? <RelatedTasks task={this.props.task} type="linkedTasks" />
+                ? <RelatedTasks task={this.props.task} type="linkedTasks" onAction={this.handleOpenLinkTaskModal} />
                 : null
               }
               {
                 this.props.task.subTasks && !this.props.task.parentTask
-                ? <RelatedTasks task={this.props.task} type="subTasks" onAction={this.handleModal} />
+                ? <RelatedTasks task={this.props.task} type="subTasks" onAction={this.handleCreateTaskModal} />
                 : null
               }
             </aside>
@@ -172,6 +195,16 @@ class TaskPage extends Component {
               parentTaskId={this.props.task.id}
             />
             : null
+        }
+        {
+          this.state.isTaskModalOpen
+          ? <TaskModal
+              onChoose={this.linkTask}
+              onClose={this.handleCloseLinkTaskModal}
+              title="Связывание задачи"
+              tasks={this.getProjectTasks()}
+            />
+          : null
         }
       </div>
     );
@@ -193,6 +226,7 @@ TaskPage.propTypes = {
     projectId: PropTypes.string.isRequired,
     taskId: PropTypes.string.isRequired
   }),
+  projectTasks: PropTypes.array,
   sprints: PropTypes.array,
   startTaskEditing: PropTypes.func.isRequired,
   stopTaskEditing: PropTypes.func.isRequired,
@@ -202,6 +236,7 @@ TaskPage.propTypes = {
 const mapStateToProps = state => ({
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
   sprints: state.Project.project.sprints,
+  projectTasks: state.Tasks.tasks,
   task: state.Task.task,
   DescriptionIsEditing: state.Task.DescriptionIsEditing
 });
