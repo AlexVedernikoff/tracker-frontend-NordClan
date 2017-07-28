@@ -34,7 +34,7 @@ export default class RelatedTasks extends React.Component {
         <ul className={css.taskList}>
             {tasks}
         </ul>
-        <Link to="#" className={css.task + ' ' + css.add}>
+        <a onClick={this.props.onAction} className={css.task + ' ' + css.add}>
           {
             this.props.type === 'linkedTasks'
             ? <IconLink style={iconStyles} />
@@ -49,13 +49,14 @@ export default class RelatedTasks extends React.Component {
               ? 'Добавить подзадачу' : null
             }
           </div>
-        </Link>
+        </a>
       </div>
     );
   }
 }
 
 RelatedTasks.propTypes = {
+  onAction: PropTypes.func,
   task: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired
 };
