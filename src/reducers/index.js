@@ -10,7 +10,7 @@ import Tasks from './Tasks';
 import Task from './Task';
 import Portfolios from './Portfolios';
 import Notifications from './Notifications';
-import portfolio from './portfolio';
+import portfolio from './Portfolio';
 
 const rootReducer = combineReducers({
   Auth,

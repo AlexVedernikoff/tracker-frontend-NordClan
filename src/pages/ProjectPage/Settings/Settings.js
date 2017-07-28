@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import { createSprint } from '../../../actions/Sprint';
 import CreateSprintModal from '../CreateSprintModal';
+import { API_URL } from '../../../constants/Settings';
 import { bindUserToProject } from '../../../actions/Project';
 
 import * as css from './Settings.scss';
@@ -46,7 +47,7 @@ class Settings extends Component {
   searchOnChange = (name) => {
     const userName = name.trim();
     if (userName.length > 1) {
-      const URL = `/api/user/autocompleter/?userName=${userName}`;
+      const URL = `${API_URL}/user/autocompleter/?userName=${userName}`;
       axios
         .get(URL, {})
         .then(response => {
@@ -115,6 +116,12 @@ class Settings extends Component {
   };
 
   render () {
+    const formattedDayFrom = this.state.dateFrom
+      ? moment(this.state.dateFrom).format('DD.MM.YYYY')
+      : '';
+    const formattedDayTo = this.state.dateTo
+      ? moment(this.state.dateTo).format('DD.MM.YYYY')
+      : '';
 
     return (
       <div className={css.property}>
@@ -158,7 +165,8 @@ class Settings extends Component {
         {this.props.users
           ? this.props.users.map((user) =>
           <Participant user={user}
-                       key={`${user.id}-user`}/>
+                       key={`${user.id}-user`}
+                       projectId={this.props.id}/>
         ) : null}
         <Button
           text="Добавить участника"
@@ -293,3 +301,5 @@ const mapDispatchToProps = {
   bindUserToProject,
   createSprint
 };
+
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);

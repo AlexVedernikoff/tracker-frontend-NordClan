@@ -72,13 +72,21 @@ const bindUserToProjectStart = () => ({
   type: ProjectActions.BIND_USER_TO_PROJECT_START
 });
 
+const unbindUserToProjectStart = () => ({
+  type: ProjectActions.UNBIND_USER_TO_PROJECT_START
+});
+
 const bindUserToProjectsSuccess = users => ({
   type: ProjectActions.BIND_USER_TO_PROJECT_SUCCESS,
   users: users
 });
+const unbindUserToProjectsSuccess = users => ({
+  type: ProjectActions.UNBIND_USER_TO_PROJECT_SUCCESS,
+  users: users
+});
 
 export const bindUserToProject = (projectId, userId, rolesIds) => {
-  const URL = '/api/project-users';
+  const URL = `${API_URL}/project/${projectId}/users`;
 
   return dispatch => {
     dispatch(bindUserToProjectStart());
@@ -91,6 +99,24 @@ export const bindUserToProject = (projectId, userId, rolesIds) => {
         if (response.data) {
           console.log(response.data);
           dispatch(bindUserToProjectsSuccess(response.data));
+          dispatch(finishLoading());
+        }
+      });
+  };
+};
+
+export const unbindUserToProject = (projectId, userId) => {
+  const URL = `${API_URL}/project/${projectId}/users/${userId}`;
+
+  return dispatch => {
+    dispatch(unbindUserToProjectStart());
+    dispatch(startLoading());
+    axios
+      .delete(URL)
+      .then(response => {
+        if (response.data) {
+          console.log(response.data);
+          dispatch(unbindUserToProjectsSuccess(response.data));
           dispatch(finishLoading());
         }
       });

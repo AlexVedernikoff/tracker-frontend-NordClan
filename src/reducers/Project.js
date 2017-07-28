@@ -14,6 +14,14 @@ const InitialState = {
 
 export default function Project (state = InitialState, action) {
   switch (action.type) {
+  case ProjectActions.UNBIND_USER_TO_PROJECT_SUCCESS:
+    return {
+      ...state,
+      project: {
+        ...state.project,
+        users: action.users
+      }
+    };
   case SprintActions.SPRINTS_EDIT_SUCCESS:
     return {
       ...state,

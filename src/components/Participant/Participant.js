@@ -1,15 +1,20 @@
 import React from 'react';
-import { Link } from 'react-router';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import * as css from './Participant.scss';
 import {IconClose} from '../Icons';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import Checkbox from '../../components/Checkbox';
-import {deleteTag} from '../../actions/Tags';
 import {connect} from 'react-redux';
+import { unbindUserToProject } from '../../actions/Project';
 
 class Participant extends React.Component {
+  unbindUser = () => {
+    this.props.unbindUserToProject(
+      this.props.projectId,
+      this.props.user.id
+    );
+  };
   render () {
     const {
       user,
@@ -19,11 +24,9 @@ class Participant extends React.Component {
     return (
       <Row className={css.memberRow}>
         <Col xs={3}>
-          <Link to="/users/123">
-            <div className={classnames(css.cell, css.memberColumn)}>
-              {user.fullNameRu}
-            </div>
-          </Link>
+          <div className={classnames(css.cell, css.memberColumn)}>
+            {user.fullNameRu}
+          </div>
         </Col>
         <Col xs={9}>
           <Row>
@@ -59,6 +62,7 @@ class Participant extends React.Component {
             </Col>
             <IconClose
               className={css.iconClose}
+              onClick={this.unbindUser}
             />
           </Row>
         </Col>
@@ -68,12 +72,13 @@ class Participant extends React.Component {
 }
 
 Participant.propTypes = {
+  projectId: PropTypes.number,
+  unbindUserToProject: PropTypes.func.isRequired,
   user: PropTypes.object
-  // deleteTag: PropTypes.func.isRequired
 };
 
 const mapDispatchToProps = {
-  deleteTag
+  unbindUserToProject
 };
 
 export default connect(null, mapDispatchToProps)(Participant);
