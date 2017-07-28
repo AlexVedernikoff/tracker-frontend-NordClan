@@ -18,6 +18,14 @@ const taskCardSource = {
   }
 };
 
+const getTaskTime = (factTime, planTime) => {
+  if (factTime) {
+    return planTime ? `${factTime} из ${planTime} ч.` : `${factTime} ч.`;
+  } else {
+    return planTime ? `0 из ${planTime} ч.` : '0 из 0 ч.';
+  }
+};
+
 function collect (connect, monitor) {
   return {
     connectDragSource: connect.dragSource(),
@@ -51,7 +59,7 @@ const TaskCard = (props) => {
     connectDragSource(
       <div className={classnames({[css.taskCard]: true, [css[classPriority]]: true, [css.dropped]: isDragging})} {...other}>
         {
-          task.statusId !== 1 && task.stage !== 8
+          task.statusId !== 1 && task.statusId !== 8
           ? <div
           className={classnames({
             [css.status]: true,
@@ -79,24 +87,24 @@ const TaskCard = (props) => {
           </a>
         </p>
         {
-          task.statusId !== 1
+          task.factExecutionTime || task.plannedExecutionTime
           ? <p className={css.time}>
             <IconTime className={classnames({
-              [css.green]: (task.factExecutionTime / task.plannedExecutionTime) <= 1,
-              [css.red]: (task.factExecutionTime / task.plannedExecutionTime) > 1
+              [css.green]: (task.factExecutionTime / task.plannedExecutionTime) <= 1 && task.plannedExecutionTime,
+              [css.red]: (task.factExecutionTime / task.plannedExecutionTime) > 1 && task.plannedExecutionTime
             })} />
-            <span>{task.factExecutionTime} ч. из {task.plannedExecutionTime}</span>
+            <span>{getTaskTime(task.factExecutionTime, task.plannedExecutionTime)}</span>
           </p>
           : null
         }
         {
-          task.stage !== 1
+          task.plannedExecutionTime
           ? <div className={css.progressBar}>
             <div
               style={{width: (task.factExecutionTime / task.plannedExecutionTime) < 1 ? (task.factExecutionTime / task.plannedExecutionTime) * 100 + '%' : '100%'}}
               className={classnames({
-                [css.green]: (task.factExecutionTime / task.plannedExecutionTime) <= 1,
-                [css.red]: (task.factExecutionTime / task.plannedExecutionTime) > 1
+                [css.green]: (task.factExecutionTime / task.plannedExecutionTime) <= 1 && task.plannedExecutionTime,
+                [css.red]: (task.factExecutionTime / task.plannedExecutionTime) > 1 && task.plannedExecutionTime
               })}
               />
           </div>

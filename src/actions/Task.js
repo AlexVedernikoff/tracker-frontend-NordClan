@@ -1,4 +1,5 @@
 import * as TaskActions from '../constants/Task';
+import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
@@ -26,7 +27,7 @@ const requestTaskChangeUser = () => ({
 });
 
 const successTaskChangeUser = changedFields => ({
-  type: TaskActions.TASK_CHANGE_REQUEST_SUCCESS,
+  type: TaskActions.TASK_CHANGE_USER_SUCCESS,
   changedFields
 });
 
@@ -46,7 +47,11 @@ const stopTaskEditing = target => ({
 });
 
 const getTask = id => {
-  const URL = `/api/task/${id}`;
+  if (!id) {
+    return () => {};
+  }
+
+  const URL = `${API_URL}/task/${id}`;
 
   return dispatch => {
     dispatch(getTaskStart());
@@ -72,7 +77,7 @@ const changeTask = (ChangedProperties, target) => {
     return;
   }
 
-  const URL = `/api/task/${ChangedProperties.id}`;
+  const URL = `${API_URL}/task/${ChangedProperties.id}`;
 
   return dispatch => {
     dispatch(requestTaskChange());
@@ -96,12 +101,12 @@ const changeTask = (ChangedProperties, target) => {
   };
 };
 
-const changeTaskUser = (taskId, userId) => {
+const changeTaskUser = (taskId, userId, statusId) => {
   if (!taskId) {
     return;
   }
 
-  const URL = '/api/task-users';
+  const URL = `${API_URL}/task/${taskId}/users`;
 
   return dispatch => {
     dispatch(requestTaskChangeUser());
@@ -109,8 +114,8 @@ const changeTaskUser = (taskId, userId) => {
 
     axios
       .post(URL, {
-        taskId,
-        userId
+        userId,
+        statusId
       }, {
         withCredentials: true
       })

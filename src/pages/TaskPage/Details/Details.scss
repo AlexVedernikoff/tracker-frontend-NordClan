@@ -76,3 +76,8 @@
     }
   }
 }
+
+.unassigned {
+  color: lighten($color-black, 40%);
+  border-bottom: 1px lighten($color-black, 40%) dashed;
+}

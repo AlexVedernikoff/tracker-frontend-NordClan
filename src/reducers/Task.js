@@ -6,6 +6,7 @@ const InitialState = {
     tags: []
   },
   TitleIsEditing: false,
+  PlanningTimeIsEditing: false,
   SprintIsEditing: false,
   StatusIsEditing: false,
   DescriptionIsEditing: false,
@@ -30,64 +31,66 @@ export default function Task (state = InitialState, action) {
         tags: action.data.tags
       }
     };
-    case TaskActions.GET_TASK_REQUEST_SENT:
-      return {
-        ...state
-      };
+  case TaskActions.GET_TASK_REQUEST_SENT:
+    return {
+      ...state,
+      TitleIsEditing: false,
+      PlanningTimeIsEditing: false,
+      DescriptionIsEditing: false
+    };
 
-    case TaskActions.GET_TASK_REQUEST_SUCCESS:
-      return {
-        ...state,
-        task: action.data
-      };
+  case TaskActions.GET_TASK_REQUEST_SUCCESS:
+    return {
+      ...state,
+      task: action.data
+    };
 
-    case TaskActions.TASK_EDIT_START:
-      return {
-        ...state,
-        [`${action.target}IsEditing`]: true
+  case TaskActions.TASK_EDIT_START:
+    return {
+      ...state,
+      [`${action.target}IsEditing`]: true
+    };
+
+  case TaskActions.TASK_EDIT_FINISH:
+    return {
+      ...state,
+      [`${action.target}IsEditing`]: false
+    };
+
+  case TaskActions.TASK_CHANGE_REQUEST_SENT:
+    return {
+      ...state
+    };
+
+  case TaskActions.TASK_CHANGE_REQUEST_SUCCESS:
+    return {
+      ...state,
+      task: {
+        ...state.task,
+        ...action.changedFields
       }
+    };
 
-    case TaskActions.TASK_EDIT_FINISH:
-      return {
-        ...state,
-        [`${action.target}IsEditing`]: false
+  case TaskActions.TASK_CHANGE_USER_SENT:
+    return {
+      ...state,
+      task: {
+        ...state.task
       }
+    };
 
-    case TaskActions.TASK_CHANGE_REQUEST_SENT:
-      return {
-        ...state
+  case TaskActions.TASK_CHANGE_USER_SUCCESS:
+    return {
+      ...state,
+      task: {
+        ...state.task,
+        ...action.changedFields
       }
+    };
 
-    case TaskActions.TASK_CHANGE_REQUEST_SUCCESS:
-      return {
-        ...state,
-        task: {
-          ...state.task,
-          ...action.changedFields
-        }
-      }
-
-    case TaskActions.TASK_CHANGE_USER_SENT:
-      return {
-        ...state,
-        task: {
-          ...state.task,
-          ...action.changedFields
-        }
-      }
-
-    case TaskActions.TASK_CHANGE_USER_SUCCESS:
-      return {
-        ...state,
-        task: {
-          ...state.task,
-          ...action.changedFields
-        }
-      }
-
-    default:
-      return {
-        ...state
-      };
-    }
+  default:
+    return {
+      ...state
+    };
+  }
 }

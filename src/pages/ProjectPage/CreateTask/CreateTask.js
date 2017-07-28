@@ -157,6 +157,7 @@ class CreateTask extends Component {
               </Col>
               <Col xs={formLayout.secondCol} className={css.rightColumn}>
                 <Input
+                  autoFocus
                   onChange={this.handleInput}
                   name="taskName"
                   placeholder="Название задачи"

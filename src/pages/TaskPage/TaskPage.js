@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
+import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 
@@ -10,8 +10,7 @@ import RelatedTasks from './RelatedTasks';
 import Attachments from '../../components/Attachments';
 import Description from '../../components/Description';
 import RouteTabs from '../../components/RouteTabs';
-import { TaskDescriptionText } from '../../mocks/descriptionText';
-import { getTask, startTaskEditing, stopTaskEditing, changeTask } from '../../actions/Task';
+import { getTask, startTaskEditing, stopTaskEditing, changeTask, changeTaskUser } from '../../actions/Task';
 
 import * as css from './TaskPage.scss';
 
@@ -21,10 +20,7 @@ class TaskPage extends Component {
   }
 
   componentDidMount () {
-    const id = this.props.params.taskId;
-    const { getTask } = this.props;
-
-    getTask(id);
+    this.props.getTask(this.props.params.taskId);
   }
 
   render () {
@@ -55,7 +51,7 @@ class TaskPage extends Component {
       <div id="task-page">
         <Row>
           <Col xs={8}>
-            <TaskHeader task={this.props.task} onChange={this.props.changeTask} />
+            <TaskHeader task={this.props.task} projectId={this.props.params.projectId} onChange={this.props.changeTask} onChangeUser={this.props.changeTaskUser} />
             <main className={css.main}>
               <Description
                 text={{ __html: this.props.task.description }}
@@ -87,7 +83,7 @@ class TaskPage extends Component {
           </Col>
           <Col xs={4}>
             <aside>
-              <Details task={this.props.task} />
+              <Details task={this.props.task} onChangeUser={this.props.changeTaskUser} />
               <RelatedTasks task={task} type="related" />
               <RelatedTasks task={task} type="children" />
             </aside>
@@ -99,7 +95,14 @@ class TaskPage extends Component {
 }
 
 TaskPage.propTypes = {
-  children: PropTypes.object
+  DescriptionIsEditing: PropTypes.bool,
+  changeTask: PropTypes.func.isRequired,
+  changeTaskUser: PropTypes.func.isRequired,
+  children: PropTypes.object,
+  getTask: PropTypes.func.isRequired,
+  startTaskEditing: PropTypes.func.isRequired,
+  stopTaskEditing: PropTypes.func.isRequired,
+  task: PropTypes.object
 };
 
 const mapStateToProps = state => ({
@@ -111,7 +114,8 @@ const mapDispatchToProps = {
   getTask,
   startTaskEditing,
   stopTaskEditing,
-  changeTask
+  changeTask,
+  changeTaskUser
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskPage);

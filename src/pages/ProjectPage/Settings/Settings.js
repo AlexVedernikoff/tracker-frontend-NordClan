@@ -5,6 +5,7 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import { createSprint } from '../../../actions/Sprint';
+import CreateSprintModal from '../CreateSprintModal';
 import { bindUserToProject } from '../../../actions/Project';
 
 import * as css from './Settings.scss';
@@ -114,12 +115,6 @@ class Settings extends Component {
   };
 
   render () {
-    const formattedDayFrom = this.state.dateFrom
-        ? moment(this.state.dateFrom).format('DD.MM.YYYY')
-        : '';
-    const formattedDayTo = this.state.dateTo
-        ? moment(this.state.dateTo).format('DD.MM.YYYY')
-        : '';
 
     return (
       <div className={css.property}>
@@ -298,5 +293,3 @@ const mapDispatchToProps = {
   bindUserToProject,
   createSprint
 };
-
-export default connect(mapStateToProps, mapDispatchToProps)(Settings);

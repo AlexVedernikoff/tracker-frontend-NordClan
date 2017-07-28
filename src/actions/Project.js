@@ -1,5 +1,6 @@
 import axios from 'axios';
 import * as ProjectActions from '../constants/Project';
+import { API_URL } from '../constants/Settings';
 import { history } from '../Router';
 import { showNotification } from './Notifications';
 import { startLoading, finishLoading } from './Loading';
@@ -12,6 +13,15 @@ const gettingProjectInfoStart = () => ({
 const gettingProjectInfoSuccess = project => ({
   type: ProjectActions.PROJECT_INFO_RECEIVE_SUCCESS,
   project: project
+});
+
+const gettingProjectUsersStart = () => ({
+  type: ProjectActions.PROJECT_USERS_RECEIVE_START
+});
+
+const gettingProjectUsersSuccess = users => ({
+  type: ProjectActions.PROJECT_USERS_RECEIVE_SUCCESS,
+  users
 });
 
 const startProjectChange = () => ({
@@ -104,8 +114,8 @@ export const getUsers = (name) => {
   };
 };
 
-const GetProjectInfo = id => {
-  const URL = `/api/project/${id}`;
+const getProjectInfo = id => {
+  const URL = `${API_URL}/project/${id}`;
 
   return dispatch => {
     dispatch(gettingProjectInfoStart());
@@ -125,12 +135,33 @@ const GetProjectInfo = id => {
   };
 };
 
+const getProjectUsers = id => {
+  const URL = `${API_URL}/project/${id}/users`;
+
+  return dispatch => {
+    dispatch(gettingProjectUsersStart());
+    dispatch(startLoading());
+    axios
+      .get(URL, {}, { withCredentials: true })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(gettingProjectUsersSuccess(response.data));
+          dispatch(finishLoading());
+        }
+      });
+  };
+};
+
 const ChangeProject = (ChangedProperties, target) => {
   if (!ChangedProperties.id) {
     return;
   }
 
-  const URL = `/api/project/${ChangedProperties.id}`;
+  const URL = `${API_URL}/project/${ChangedProperties.id}`;
 
   return dispatch => {
     dispatch(startProjectChange());
@@ -159,7 +190,7 @@ const createTask = (task, openTaskPage, callee) => {
     return;
   }
 
-  const URL = '/api/task';
+  const URL = `${API_URL}/task`;
 
   return dispatch => {
     dispatch(startLoading());
@@ -178,7 +209,7 @@ const createTask = (task, openTaskPage, callee) => {
           dispatch(finishLoading());
           dispatch(createTaskRequestSuccess());
           dispatch(closeCreateTaskModal());
-          dispatch(GetProjectInfo(task.projectId));
+          dispatch(getProjectInfo(task.projectId));
           dispatch(getPlanningTasks(callee, { sprintId: task.sprintId || 0, projectId: task.projectId }));
 
           if (openTaskPage) {
@@ -191,4 +222,4 @@ const createTask = (task, openTaskPage, callee) => {
   };
 };
 
-export { GetProjectInfo, ChangeProject, createTask };
+export { getProjectInfo, getProjectUsers, ChangeProject, createTask };

@@ -1,4 +1,5 @@
 import * as TaskActions from '../constants/Tasks';
+import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { store } from '../Router';
 import { history } from '../Router';
@@ -15,7 +16,11 @@ const tasksReceived = tasks => ({
 });
 
 const getTasks = (options) => {
-  const URL = '/api/task';
+  if (!options.projectId) {
+    return () => {};
+  }
+
+  const URL = `${API_URL}/task`;
   return dispatch => {
     dispatch(startTasksReceive());
     dispatch(startLoading());
@@ -23,8 +28,6 @@ const getTasks = (options) => {
       .get(URL, {
         params: {
           name: '',
-          pageSize: 25,
-          currentPage: 1,
           tags: '',
           ...options,
           fields: 'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId'

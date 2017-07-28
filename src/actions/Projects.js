@@ -2,6 +2,7 @@ import * as ProjectActions from '../constants/Projects';
 import axios from 'axios';
 import { store } from '../Router';
 import { history } from '../Router';
+import { API_URL } from '../constants/Settings';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
 
@@ -31,15 +32,15 @@ export const closeCreateProjectModal = () => ({
   type: ProjectActions.CLOSE_CREATE_PROJECT_MODAL
 });
 
-const GetProjects = (
-  pageSize = 25,
+const getProjects = (
+  pageSize = 20,
   currentPage = 1,
   tags = '',
   name = '',
   dateSprintBegin = '',
   dateSprintEnd = ''
 ) => {
-  const URL = '/api/project';
+  const URL = `${API_URL}/project`;
   return dispatch => {
     dispatch(startProjectsReceive());
     dispatch(startLoading());
@@ -65,7 +66,7 @@ const GetProjects = (
       })
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(projectsReceived(response.data.data));
+          dispatch(projectsReceived(response.data));
           dispatch(finishLoading());
         }
       });
@@ -77,7 +78,7 @@ export const requestProjectCreate = (project, openProjectPage) => {
     return;
   }
 
-  const URL = '/api/project';
+  const URL = `${API_URL}/project`;
 
   return dispatch => {
     dispatch(startLoading());
@@ -96,10 +97,10 @@ export const requestProjectCreate = (project, openProjectPage) => {
           dispatch(finishLoading());
           dispatch(projectCreateSuccess(response.data));
           dispatch(closeCreateProjectModal());
-          dispatch(GetProjects());
+          dispatch(getProjects());
 
           if (openProjectPage) {
-            history.push(`projects/${response.data.id}`)
+            history.push(`projects/${response.data.id}`);
           }
 
         }
@@ -107,4 +108,4 @@ export const requestProjectCreate = (project, openProjectPage) => {
   };
 };
 
-export default GetProjects;
+export default getProjects;

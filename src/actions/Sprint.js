@@ -1,4 +1,5 @@
 import * as SprintActions from '../constants/Sprint';
+import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 
@@ -30,7 +31,7 @@ const editSprintSuccess = sprints => ({
 });
 
 export const editSprint = (id, statusId, name, dateForm, dateTo, allottedTime) => {
-  const URL = `/api/sprint/${id}`;
+  const URL = `${API_URL}/sprint/${id}`;
   const params = {};
   if (name) params.name = name;
   if (dateForm) params.factStartDate = dateForm;
@@ -56,7 +57,7 @@ export const editSprint = (id, statusId, name, dateForm, dateTo, allottedTime) =
 };
 
 export const deleteSprint = (id) => {
-  const URL = `/api/sprint/${id}`;
+  const URL = `${API_URL}/sprint/${id}`;
 
   return dispatch => {
     dispatch(deleteSprintStart());
@@ -73,7 +74,7 @@ export const deleteSprint = (id) => {
 };
 
 export const createSprint = (name, id, dateForm, dateTo, allottedTime) => {
-  const URL = '/api/sprint/';
+  const URL = `${API_URL}/sprint/`;
 
   return dispatch => {
     dispatch(createSprintStart());

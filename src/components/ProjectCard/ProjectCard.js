@@ -5,8 +5,8 @@ import { Link } from 'react-router';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import moment from 'moment';
 
-import Tag from '../../../components/Tag';
-import Tags from '../../../components/Tags';
+import Tag from '../Tag';
+import Tags from '../Tags';
 import * as css from './ProjectCard.scss';
 
 const ProjectCard = props => {
@@ -17,7 +17,8 @@ const ProjectCard = props => {
     attaches,
     currentSprints,
     tags,
-    statusId
+    statusId,
+    portfolio
   } = props.project;
   const { isChild } = props;
 
@@ -60,9 +61,16 @@ const ProjectCard = props => {
               data-tip={statusTooltip}
               data-place="left"
             />
-            <Link to={`/projects/${id}`}>
-              {name}
-            </Link>
+            <div>
+              {
+                portfolio && props.isPortfolio
+                ? <span><Link className={css.portfolioTitle} to={`/projects/portfolio/${portfolio.id}`}>{portfolio.name}</Link> <span className={css.titleSplit}>/</span> </span>
+                : null
+              }
+              <Link to={`/projects/${id}`}>
+                {name}
+              </Link>
+            </div>
           </h3>
         </Col>
         <Col xs>
@@ -120,6 +128,10 @@ const ProjectCard = props => {
 ProjectCard.propTypes = {
   isChild: PropTypes.bool,
   project: PropTypes.object.isRequired
+};
+
+ProjectCard.defaultProps = {
+  isPortfolio: true
 };
 
 export default ProjectCard;

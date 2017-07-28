@@ -8,8 +8,7 @@ import moment from 'moment';
 import _ from 'lodash';
 
 import TaskCard from '../../../components/TaskCard';
-import Modal from '../../../components/Modal';
-import Button from '../../../components/Button';
+import PerformerModal from '../../../components/PerformerModal';
 import PhaseColumn from './PhaseColumn';
 import SelectDropdown from '../../../components/SelectDropdown';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
@@ -22,21 +21,21 @@ const filterTasks = (array, sortedObject) => {
   array.forEach((element) => {
     switch (element.statusId) {
     case 1: sortedObject.new.push(element);
-            break;
+      break;
     case 2: sortedObject.dev.push(element);
-            break;
+      break;
     case 3: sortedObject.dev.push(element);
-            break;
+      break;
     case 4: sortedObject.codeReview.push(element);
-            break;
+      break;
     case 5: sortedObject.codeReview.push(element);
-            break;
+      break;
     case 6: sortedObject.qa.push(element);
-            break;
+      break;
     case 7: sortedObject.qa.push(element);
-            break;
+      break;
     case 8: sortedObject.done.push(element);
-            break;
+      break;
     default: break;
     }
   });
@@ -65,17 +64,17 @@ const getNewStatus = (oldStatusId, newPhase) => {
   let newStatusId;
 
   switch (newPhase) {
-    case 'New': newStatusId = 1;
-          break;
-    case 'Dev': newStatusId = 3;
-          break;
-    case 'Code Review': newStatusId = 5;
-          break;
-    case 'QA': newStatusId = 7;
-          break;
-    case 'Done': newStatusId = 8;
-          break;
-    default: break;
+  case 'New': newStatusId = 1;
+    break;
+  case 'Dev': newStatusId = 3;
+    break;
+  case 'Code Review': newStatusId = 5;
+    break;
+  case 'QA': newStatusId = 7;
+    break;
+  case 'Done': newStatusId = 8;
+    break;
+  default: break;
   }
 
   return newStatusId;
@@ -99,8 +98,8 @@ class AgileBoard extends Component {
     super(props);
     this.state = {
       isSectionOpen: {
-        myTasks: true,
-        allTasks: true
+        myTasks: false,
+        allTasks: false
       },
       isModalOpen: false,
       performer: null,
@@ -155,8 +154,8 @@ class AgileBoard extends Component {
     });
   }
 
-  changePerformer = () => {
-    this.props.changeTaskUser(this.state.changedTask, this.state.performer);
+  changePerformer = (performerId) => {
+    this.props.changeTaskUser(this.state.changedTask, performerId);
     this.props.startTaskChangeUser();
   }
 
@@ -200,12 +199,32 @@ class AgileBoard extends Component {
     }));
   };
 
+  componentDidMount () {
+    this.selectValue(0, 'changedSprint');
+  }
+
   componentWillReceiveProps (nextProps) {
-    if (!this.props.project.id && nextProps.project.id) this.selectValue(0, 'changedSprint');
+    if (this.props.project.id !== nextProps.project.id) this.selectValue(0, 'changedSprint');
+
+    if (nextProps.sprintTasks.length) {
+      this.setState({
+        isSectionOpen: {
+          myTasks: true,
+          allTasks: true
+        }
+      });
+    } else {
+      this.setState({
+        isSectionOpen: {
+          myTasks: false,
+          allTasks: false
+        }
+      });
+    }
 
     if (!nextProps.StatusIsEditing && this.props.StatusIsEditing) {
       this.selectValue(this.state.changedSprint, 'changedSprint');
-    };
+    }
     if (!nextProps.UserIsEditing && this.props.UserIsEditing) {
       this.selectValue(this.state.changedSprint, 'changedSprint');
       this.setState({
@@ -268,7 +287,7 @@ class AgileBoard extends Component {
                 name="filterTags"
                 multi
                 placeholder="Введите название тега..."
-                backspaceToRemoveMessage="BackSpace для очистки поля"
+                backspaceToRemoveMessage=""
                 value={this.state.filterTags}
                 onChange={(e) => this.selectValue(e, 'filterTags')}
                 noResultsText="Нет результатов"
@@ -317,30 +336,18 @@ class AgileBoard extends Component {
             : null
           }
           <hr/>
-          {this.state.isModalOpen
-            ? <Modal
-                isOpen
-                contentLabel="modal"
-                className={css.modalWrapper}
-                onRequestClose={this.closeModal}
-              >
-                <div className={css.changeStage}>
-                  <h3>Изменить исполнителя задачи</h3>
-                  <div className={css.modalLine}>
-                    <SelectDropdown
-                      name="member"
-                      placeholder="Введите имя исполнителя..."
-                      multi={false}
-                      value={this.state.performer}
-                      onChange={e => this.selectValue(e !== null ? e.value : 0, 'performer')}
-                      noResultsText="Нет результатов"
-                      options={this.getUsers()}
-                    />
-                    <Button type="green" text="ОК" onClick={this.changePerformer} />
-                  </div>
-                </div>
-              </Modal>
-          : null}
+
+          {
+            this.state.isModalOpen
+            ? <PerformerModal
+                defaultUser={this.state.performer}
+                onChoose={this.changePerformer}
+                onClose={this.closeModal}
+                title="Изменить исполнителя задачи"
+                users={this.getUsers()}
+              />
+            : null
+          }
         </section>
     );
   }
