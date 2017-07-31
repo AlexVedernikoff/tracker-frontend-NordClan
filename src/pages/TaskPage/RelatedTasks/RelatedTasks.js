@@ -1,6 +1,7 @@
 import React, {PropTypes} from 'react';
 import { Link } from 'react-router';
-import { IconPlus, IconLink } from '../../../components/Icons';
+import { IconPlus, IconLink, IconClose } from '../../../components/Icons';
+import ConfirmModal from '../../../components/ConfirmModal';
 
 export default class RelatedTasks extends React.Component {
 
@@ -18,6 +19,14 @@ export default class RelatedTasks extends React.Component {
       return <li key={`${this.props.type}-${task.id}`} className={css.task}>
                 <span className={css.taskLabel}>{`${this.props.task.project.prefix}-${task.id}`}</span>
                 <Link to={`/projects/${this.props.task.project.id}/tasks/${task.id}`}>{task.name}</Link>
+                {
+                  this.props.onDelete
+                  ? <IconClose
+                      className={css.iconClose}
+                      onClick={() => {this.props.onDelete(task.id);}}
+                    />
+                  : null
+                }
              </li>;
     });
 
@@ -57,6 +66,7 @@ export default class RelatedTasks extends React.Component {
 
 RelatedTasks.propTypes = {
   onAction: PropTypes.func,
+  onDelete: PropTypes.func,
   task: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired
 };
