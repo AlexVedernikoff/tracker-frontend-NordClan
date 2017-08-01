@@ -97,7 +97,6 @@ export const bindUserToProject = (projectId, userId, rolesIds) => {
         userId: userId})
       .then(response => {
         if (response.data) {
-          console.log(response.data);
           dispatch(bindUserToProjectsSuccess(response.data));
           dispatch(finishLoading());
         }
@@ -115,25 +114,7 @@ export const unbindUserToProject = (projectId, userId) => {
       .delete(URL)
       .then(response => {
         if (response.data) {
-          console.log(response.data);
           dispatch(unbindUserToProjectsSuccess(response.data));
-          dispatch(finishLoading());
-        }
-      });
-  };
-};
-
-export const getUsers = (name) => {
-  const URL = `/api/user/autocompleter/?userName=${name}`;
-
-  return dispatch => {
-    dispatch(getUsersStart());
-    dispatch(startLoading());
-    axios
-      .get(URL, {})
-      .then(response => {
-        if (response.data) {
-          dispatch(getUsersSuccess(response.data));
           dispatch(finishLoading());
         }
       });

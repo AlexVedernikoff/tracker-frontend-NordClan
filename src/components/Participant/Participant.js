@@ -9,17 +9,40 @@ import {connect} from 'react-redux';
 import { unbindUserToProject } from '../../actions/Project';
 
 class Participant extends React.Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      roles: {
+        dev: this.props.user.rolesIds[0] || false,
+        back: false,
+        front: false,
+        review: false,
+        qa: false,
+        unbillable: false
+      }
+    };
+  }
   unbindUser = () => {
     this.props.unbindUserToProject(
       this.props.projectId,
       this.props.user.id
     );
   };
+
+  changeRole = () => {
+    console.log('bl');
+    console.log(this.props.user);
+    // this.props.unbindUserToProject(
+    //   this.props.projectId,
+    //   this.props.user.id
+    // );
+  };
   render () {
     const {
       user,
       ...other
     } = this.props;
+    const roles = this.state.roles;
 
     return (
       <Row className={css.memberRow}>
@@ -32,7 +55,8 @@ class Participant extends React.Component {
           <Row>
             <Col xs>
               <label className={css.cell}>
-                <Checkbox />
+                <Checkbox onChange={this.changeRole('dev')}
+                          checked={roles.dev}/>
               </label>
             </Col>
             <Col xs>
