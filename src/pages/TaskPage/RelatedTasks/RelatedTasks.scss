@@ -16,6 +16,7 @@
   padding: 16px;
   transition: background 0.3s ease-out 0s;
   border-top: 1px solid $color-gray;
+  position: relative;
 
   .taskLabel {
     padding-right: 8px;
@@ -57,5 +58,19 @@
     svg {
       display: none !important;
     }
+  }
+}
+
+.iconClose {
+  position: absolute;
+  z-index: 2;
+  right: 1rem;
+  top: 1rem;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    transform: rotate(90deg);
+    transition: $transition;
   }
 }

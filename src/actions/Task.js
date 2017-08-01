@@ -31,6 +31,15 @@ const successTaskChangeUser = changedFields => ({
   changedFields
 });
 
+const requestTaskLink = () => ({
+  type: TaskActions.TASK_LINK_SENT
+});
+
+const successTaskLink = linkedTasks => ({
+  type: TaskActions.TASK_LINK_SUCCESS,
+  linkedTasks
+});
+
 const startTaskEditing = target => ({
   type: TaskActions.TASK_EDIT_START,
   target
@@ -101,6 +110,65 @@ const changeTask = (ChangedProperties, target) => {
   };
 };
 
+const linkTask = (taskId, linkedTaskId) => {
+  if (!taskId) {
+    return () => {};
+  }
+
+  const URL = `${API_URL}/task/${taskId}/links`;
+
+  return dispatch => {
+    dispatch(requestTaskLink());
+    dispatch(startLoading());
+
+    axios
+    .post(URL,
+      {
+        linkedTaskId
+      }, {
+        withCredentials: true
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(successTaskLink(response.data));
+          dispatch(finishLoading());
+        }
+      });
+  };
+};
+
+const unlinkTask = (taskId, linkedTaskId) => {
+  if (!taskId) {
+    return () => {};
+  }
+
+  const URL = `${API_URL}/task/${taskId}/links/${linkedTaskId}`;
+
+  return dispatch => {
+    dispatch(requestTaskLink());
+    dispatch(startLoading());
+
+    axios
+    .delete(URL, {}, {
+      withCredentials: true
+    })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(successTaskLink(response.data));
+          dispatch(finishLoading());
+        }
+      });
+  };
+};
+
 const changeTaskUser = (taskId, userId, statusId) => {
   if (!taskId) {
     return;
@@ -133,4 +201,4 @@ const changeTaskUser = (taskId, userId, statusId) => {
   };
 };
 
-export { getTask, startTaskEditing, stopTaskEditing, changeTask, changeTaskUser, startTaskChangeUser };
+export { getTask, startTaskEditing, stopTaskEditing, changeTask, changeTaskUser, startTaskChangeUser, linkTask, unlinkTask };
