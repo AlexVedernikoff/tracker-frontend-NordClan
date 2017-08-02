@@ -482,7 +482,11 @@ class Planning extends Component {
         <CreateTask
           isOpen={this.props.isCreateTaskModalOpen}
           onRequestClose={this.handleModal}
-          sprintsList={leftColumnSprints}
+          sprintsList={
+            this.state.createTaskCallee === 'left'
+              ? leftColumnSprints
+              : rightColumnSprints
+          }
           selectedSprintValue={
             this.state.createTaskCallee === 'left'
               ? this.state.leftColumn

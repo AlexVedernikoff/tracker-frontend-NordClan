@@ -4,6 +4,8 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import moment from 'moment';
+import classnames from 'classnames';
 
 import TaskHeader from './TaskHeader';
 import Details from './Details';
@@ -111,6 +113,35 @@ class TaskPage extends Component {
     }));
   };
 
+  getSprints = () => {
+    let sprints = _.sortBy(this.props.sprints, sprint => {
+      return new moment(sprint.factFinishDate);
+    });
+
+    sprints = sprints.map((sprint, i) => ({
+      value: sprint.id,
+      label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${sprint.factFinishDate
+        ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}`
+        : '- ...'})`,
+      statusId: sprint.statusId,
+      className: classnames({
+        [css.INPROGRESS]: sprint.statusId === 2,
+        [css.sprintMarker]: true,
+        [css.FINISHED]: sprint.statusId === 1
+      })
+    }));
+
+    sprints.push({
+      value: 0,
+      label: 'Backlog',
+      className: classnames({
+        [css.INPROGRESS]: true,
+        [css.sprintMarker]: true
+      })
+    });
+    return sprints;
+  };
+
   render () {
     // Mocks
 
@@ -189,7 +220,7 @@ class TaskPage extends Component {
           ? <CreateTask
               isOpen={this.props.isCreateTaskModalOpen}
               onRequestClose={this.handleCreateTaskModal}
-              sprintsList={this.props.sprints}
+              sprintsList={this.getSprints()}
               selectedSprintValue={this.props.task.sprint ? this.props.task.sprint.id : 0}
               onSubmit={this.props.createTask}
               project={this.props.task.project}
