@@ -5,8 +5,6 @@ import Select from 'react-select';
 import Input from '../../../components/Input';
 import Checkbox from '../../../components/Checkbox';
 import Button from '../../../components/Button';
-import moment from 'moment';
-import classnames from 'classnames';
 import * as css from './CreateTask.scss';
 import { Col, Row } from 'react-flexbox-grid';
 import Priority from '../../TaskPage/Priority';
@@ -25,7 +23,7 @@ class CreateTask extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (!this.state.selectedSprint) {
+    if (this.state.selectedSprint !== nextProps.selectedSprintValue) {
       this.setState({
         selectedSprint: nextProps.selectedSprintValue
       });
@@ -70,35 +68,6 @@ class CreateTask extends Component {
     event.preventDefault();
     this.props.onRequestClose();
   }
-
-  getSprints = () => {
-    let sprints = _.sortBy(this.props.sprintsList, sprint => {
-      return new moment(sprint.factFinishDate);
-    });
-
-    sprints = sprints.map((sprint, i) => ({
-      value: sprint.id,
-      label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${sprint.factFinishDate
-        ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}`
-        : '- ...'})`,
-      statusId: sprint.statusId,
-      className: classnames({
-        [css.INPROGRESS]: sprint.statusId === 2,
-        [css.sprintMarker]: true,
-        [css.FINISHED]: sprint.statusId === 1
-      })
-    }));
-
-    sprints.push({
-      value: 0,
-      label: 'Backlog',
-      className: classnames({
-        [css.INPROGRESS]: true,
-        [css.sprintMarker]: true
-      })
-    });
-    return sprints;
-  };
 
   submitTask = event => {
     event.preventDefault();
@@ -259,7 +228,7 @@ class CreateTask extends Component {
                   multi={false}
                   ignoreCase={false}
                   placeholder="Выберите спринт"
-                  options={this.getSprints()}
+                  options={this.props.sprintsList}
                   className={css.selectSprint}
                   onChange={this.handleModalSprintChange}
                   value={this.state.selectedSprint}
