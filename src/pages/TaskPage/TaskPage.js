@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import TaskHeader from './TaskHeader';
 import Details from './Details';
@@ -10,18 +11,105 @@ import RelatedTasks from './RelatedTasks';
 import Attachments from '../../components/Attachments';
 import Description from '../../components/Description';
 import RouteTabs from '../../components/RouteTabs';
-import { getTask, startTaskEditing, stopTaskEditing, changeTask, changeTaskUser } from '../../actions/Task';
+import TaskModal from '../../components/TaskModal';
+import ConfirmModal from '../../components/ConfirmModal';
+import CreateTask from '../../pages/ProjectPage/CreateTask';
+import { getTask,
+        startTaskEditing,
+        stopTaskEditing,
+        changeTask,
+        changeTaskUser,
+        linkTask,
+        unlinkTask
+} from '../../actions/Task';
+import getTasks from '../../actions/Tasks';
+import {
+  getProjectInfo,
+  openCreateTaskModal,
+  closeCreateTaskModal,
+  createTask
+} from '../../actions/Project';
 
 import * as css from './TaskPage.scss';
 
 class TaskPage extends Component {
   constructor (props) {
     super(props);
+    this.state = {
+      isTaskModalOpen: false,
+      isUnlinkModalOpen: false,
+      unLinkedTask: null
+    };
   }
 
   componentDidMount () {
     this.props.getTask(this.props.params.taskId);
+    this.props.getProjectInfo(this.props.params.projectId);
   }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.params.taskId !== this.props.params.taskId) {
+      this.props.getTask(nextProps.params.taskId);
+    }
+
+    if (nextProps.params.projectId !== this.props.params.projectId) {
+      this.props.getProjectInfo(this.props.params.projectId);
+    }
+  }
+
+  handleCreateTaskModal = () => {
+    if (this.props.isCreateTaskModalOpen) {
+      this.props.closeCreateTaskModal();
+    } else {
+      this.props.openCreateTaskModal();
+    }
+  };
+
+  linkTask = linkedTaskId => {
+    this.props.linkTask(this.props.params.taskId, linkedTaskId.toString());
+    this.handleCloseLinkTaskModal();
+  }
+
+  unlinkTask = () => {
+    this.props.unlinkTask(this.props.params.taskId, this.state.unLinkedTask);
+    this.handleCloseUnlinkTaskModal();
+  }
+
+  handleOpenLinkTaskModal = () => {
+    this.props.getTasks({
+      projectId: this.props.params.projectId
+    });
+    this.setState({
+      isTaskModalOpen: true
+    });
+  }
+
+  handleCloseLinkTaskModal = () => {
+    this.setState({
+      isTaskModalOpen: false
+    });
+  }
+
+  handleCloseUnlinkTaskModal = () => {
+    this.setState({
+      isUnlinkModalOpen: false
+    });
+  }
+
+  handleOpenUnlinkTaskModal = unlinkedTaskId => {
+    this.setState({
+      isUnlinkModalOpen: true,
+      unLinkedTask: unlinkedTaskId
+    });
+  }
+
+  getProjectUnlinkedTasks = () => {
+    const linkedTasksIds = this.props.task.linkedTasks.map(task => task.id);
+    return this.props.projectTasks.filter(task => !_.includes(linkedTasksIds, task.id)).map(task => ({
+      value: task.id,
+      label: `${this.props.task.project.prefix}-${task.id}. ${task.name}`
+    }));
+  };
 
   render () {
     // Mocks
@@ -84,11 +172,52 @@ class TaskPage extends Component {
           <Col xs={4}>
             <aside>
               <Details task={this.props.task} onChangeUser={this.props.changeTaskUser} />
-              <RelatedTasks task={task} type="related" />
-              <RelatedTasks task={task} type="children" />
+              {
+                this.props.task.linkedTasks
+                ? <RelatedTasks task={this.props.task} type="linkedTasks" onAction={this.handleOpenLinkTaskModal} onDelete={this.handleOpenUnlinkTaskModal} />
+                : null
+              }
+              {
+                this.props.task.subTasks && !this.props.task.parentTask
+                ? <RelatedTasks task={this.props.task} type="subTasks" onAction={this.handleCreateTaskModal} />
+                : null
+              }
             </aside>
           </Col>
         </Row>
+        { this.props.task.project
+          ? <CreateTask
+              isOpen={this.props.isCreateTaskModalOpen}
+              onRequestClose={this.handleCreateTaskModal}
+              sprintsList={this.props.sprints}
+              selectedSprintValue={this.props.task.sprint ? this.props.task.sprint.id : 0}
+              onSubmit={this.props.createTask}
+              project={this.props.task.project}
+              parentTaskId={this.props.task.id}
+            />
+            : null
+        }
+        {
+          this.state.isTaskModalOpen
+          ? <TaskModal
+              onChoose={this.linkTask}
+              onClose={this.handleCloseLinkTaskModal}
+              title="Связывание задачи"
+              tasks={this.getProjectUnlinkedTasks()}
+            />
+          : null
+        }
+
+        { this.state.isUnlinkModalOpen
+          ? <ConfirmModal
+              isOpen
+              contentLabel="modal"
+              text="Вы действительно хотите отвязать задачу?"
+              onCancel={this.handleCloseUnlinkTaskModal}
+              onConfirm={this.unlinkTask}
+            />
+          : null
+        }
       </div>
     );
   }
@@ -99,23 +228,47 @@ TaskPage.propTypes = {
   changeTask: PropTypes.func.isRequired,
   changeTaskUser: PropTypes.func.isRequired,
   children: PropTypes.object,
+  closeCreateTaskModal: PropTypes.func,
+  createTask: PropTypes.func.isRequired,
+  getProjectInfo: PropTypes.func.isRequired,
   getTask: PropTypes.func.isRequired,
+  getTasks: PropTypes.func.isRequired,
+  isCreateTaskModalOpen: PropTypes.bool,
+  linkTask: PropTypes.func.isRequired,
+  openCreateTaskModal: PropTypes.func,
+  params: PropTypes.shape({
+    projectId: PropTypes.string.isRequired,
+    taskId: PropTypes.string.isRequired
+  }),
+  projectTasks: PropTypes.array,
+  sprints: PropTypes.array,
   startTaskEditing: PropTypes.func.isRequired,
   stopTaskEditing: PropTypes.func.isRequired,
-  task: PropTypes.object
+  task: PropTypes.object,
+  unlinkTask: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
+  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
+  sprints: state.Project.project.sprints,
+  projectTasks: state.Tasks.tasks,
   task: state.Task.task,
   DescriptionIsEditing: state.Task.DescriptionIsEditing
 });
 
 const mapDispatchToProps = {
   getTask,
+  getTasks,
+  getProjectInfo,
   startTaskEditing,
   stopTaskEditing,
   changeTask,
-  changeTaskUser
+  changeTaskUser,
+  openCreateTaskModal,
+  closeCreateTaskModal,
+  createTask,
+  linkTask,
+  unlinkTask
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskPage);

@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Modal from 'react-modal';
 import Select from 'react-select';
 import Input from '../../../components/Input';
 import Checkbox from '../../../components/Checkbox';
 import Button from '../../../components/Button';
+import moment from 'moment';
+import classnames from 'classnames';
 import * as css from './CreateTask.scss';
 import { Col, Row } from 'react-flexbox-grid';
 import Priority from '../../TaskPage/Priority';
@@ -40,7 +43,7 @@ class CreateTask extends Component {
 
   handleModalSprintChange = selectedSprint => {
     this.setState({
-      selectedSprint: selectedSprint.value
+      selectedSprint: selectedSprint !== null ? selectedSprint.value : 0
     });
   };
 
@@ -63,6 +66,40 @@ class CreateTask extends Component {
     });
   };
 
+  handleClose = event => {
+    event.preventDefault();
+    this.props.onRequestClose();
+  }
+
+  getSprints = () => {
+    let sprints = _.sortBy(this.props.sprintsList, sprint => {
+      return new moment(sprint.factFinishDate);
+    });
+
+    sprints = sprints.map((sprint, i) => ({
+      value: sprint.id,
+      label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${sprint.factFinishDate
+        ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}`
+        : '- ...'})`,
+      statusId: sprint.statusId,
+      className: classnames({
+        [css.INPROGRESS]: sprint.statusId === 2,
+        [css.sprintMarker]: true,
+        [css.FINISHED]: sprint.statusId === 1
+      })
+    }));
+
+    sprints.push({
+      value: 0,
+      label: 'Backlog',
+      className: classnames({
+        [css.INPROGRESS]: true,
+        [css.sprintMarker]: true
+      })
+    });
+    return sprints;
+  };
+
   submitTask = event => {
     event.preventDefault();
     this.props.onSubmit(
@@ -73,7 +110,8 @@ class CreateTask extends Component {
         typeId: this.state.selectedType.value,
         sprintId:
           this.state.selectedSprint === 0 ? null : this.state.selectedSprint,
-        prioritiesId: this.state.prioritiesId
+        prioritiesId: this.state.prioritiesId,
+        parentId: this.props.parentTaskId
       },
       this.state.openTaskPage,
       this.props.column
@@ -145,8 +183,7 @@ class CreateTask extends Component {
                 <p>Проект:</p>
               </Col>
               <Col xs={formLayout.secondCol} className={css.rightColumn}>
-                <p>{`${this.props.project.name} (${this.props.project
-                  .prefix})`}</p>
+                <p>{`${this.props.project.name} (${this.props.project.prefix})`}</p>
               </Col>
             </Row>
           </div>
@@ -222,7 +259,7 @@ class CreateTask extends Component {
                   multi={false}
                   ignoreCase={false}
                   placeholder="Выберите спринт"
-                  options={this.props.optionsList}
+                  options={this.getSprints()}
                   className={css.selectSprint}
                   onChange={this.handleModalSprintChange}
                   value={this.state.selectedSprint}
@@ -241,7 +278,7 @@ class CreateTask extends Component {
               text="Назад"
               type="primary"
               style={{ width: '50%' }}
-              onClick={this.closeModal}
+              onClick={this.handleClose}
             />
           </div>
         </form>
@@ -249,5 +286,16 @@ class CreateTask extends Component {
     );
   }
 }
+
+CreateTask.propTypes = {
+  column: PropTypes.string,
+  isOpen: PropTypes.bool.isRequired,
+  onRequestClose: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  parentTaskId: PropTypes.number,
+  project: PropTypes.object,
+  selectedSprintValue: PropTypes.number,
+  sprintsList: PropTypes.array
+};
 
 export default CreateTask;

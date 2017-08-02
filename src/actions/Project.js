@@ -5,6 +5,7 @@ import { history } from '../Router';
 import { showNotification } from './Notifications';
 import { startLoading, finishLoading } from './Loading';
 import getPlanningTasks from './PlanningTasks';
+import { getTask } from './Task';
 
 const gettingProjectInfoStart = () => ({
   type: ProjectActions.PROJECT_INFO_RECEIVE_START
@@ -215,13 +216,16 @@ const createTask = (task, openTaskPage, callee) => {
         if (response && response.status === 200) {
           dispatch(finishLoading());
           dispatch(createTaskRequestSuccess());
+          dispatch(getTask(task.parentId));
           dispatch(closeCreateTaskModal());
           dispatch(getProjectInfo(task.projectId));
-          dispatch(getPlanningTasks(callee, { sprintId: task.sprintId || 0, projectId: task.projectId }));
+          if (callee) {
+            dispatch(getPlanningTasks(callee, { sprintId: task.sprintId || 0, projectId: task.projectId }));
+          }
 
           if (openTaskPage) {
             history.push(
-              `/project/${task.projectId}/tasks/${response.data.id}`
+              `/projects/${task.projectId}/tasks/${response.data.id}`
             );
           }
         }

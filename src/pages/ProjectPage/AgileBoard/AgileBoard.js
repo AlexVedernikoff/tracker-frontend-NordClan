@@ -161,23 +161,30 @@ class AgileBoard extends Component {
 
   closeModal = () => {
     this.setState({ isModalOpen: false });
-  };
+  }
+
+  getCurrentSprint = sprints => {
+    const currentSprints = sprints.filter(sprint =>
+      sprint.statusId === 2 && moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]')
+    );
+    return currentSprints.length ? currentSprints[0].id : 0;
+  }
 
   getSprints = () => {
     let sprints = _.sortBy(this.props.sprints, sprint => {
       return new moment(sprint.factFinishDate);
     });
 
-    sprints = sprints.map((sprint, i) => ({
+    sprints = sprints.map((sprint) => ({
       value: sprint.id,
       label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${sprint.factFinishDate
         ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}`
         : '- ...'})`,
       statusId: sprint.statusId,
       className: classnames({
-        [css.INPROGRESS]: sprint.statusId === 1,
+        [css.INPROGRESS]: sprint.statusId === 2,
         [css.sprintMarker]: true,
-        [css.FINISHED]: sprint.statusId === 2
+        [css.FINISHED]: sprint.statusId === 1
       })
     }));
 
@@ -185,7 +192,7 @@ class AgileBoard extends Component {
       value: 0,
       label: 'Backlog',
       className: classnames({
-        [css.INPROGRESS]: true,
+        [css.INPROGRESS]: false,
         [css.sprintMarker]: true
       })
     });
@@ -200,11 +207,11 @@ class AgileBoard extends Component {
   };
 
   componentDidMount () {
-    this.selectValue(0, 'changedSprint');
+    this.selectValue(this.getCurrentSprint(this.props.sprints), 'changedSprint');
   }
 
   componentWillReceiveProps (nextProps) {
-    if (this.props.project.id !== nextProps.project.id) this.selectValue(0, 'changedSprint');
+    if (this.props.sprints !== nextProps.sprints) this.selectValue(this.getCurrentSprint(nextProps.sprints), 'changedSprint');
 
     if (nextProps.sprintTasks.length) {
       this.setState({
