@@ -84,11 +84,7 @@ class Details extends Component {
               ? <tr>
                   <td>Автор:</td>
                   <td>
-                    <Link to="#">
-                      {this.props.task.creator
-                        ? this.props.task.creator.name
-                        : ''}
-                    </Link>
+                     task.author.fullNameRu
                   </td>
                 </tr>
               : null}
