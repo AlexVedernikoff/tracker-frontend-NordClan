@@ -40,15 +40,20 @@ class Planning extends Component {
     };
   }
 
-  componentWillMount () {
+  componentDidMount () {
     this.selectValue(0, 'leftColumn');
-    //this.selectValue({value: this.props.project.sprints[0].id}, 'rightColumn');
+    this.selectValue(this.getCurrentSprint(this.props.project.sprints), 'rightColumn');
   }
 
   componentWillReceiveProps (nextProps) {
     if (!nextProps.SprintIsEditing && this.props.SprintIsEditing) {
       this.selectValue(this.state.leftColumn, 'leftColumn');
       this.selectValue(this.state.rightColumn, 'rightColumn');
+    }
+
+    if (this.props.project.sprints !== nextProps.project.sprints) {
+      this.selectValue(0, 'leftColumn');
+      this.selectValue(this.getCurrentSprint(nextProps.project.sprints), 'rightColumn');
     }
   }
 
@@ -60,6 +65,18 @@ class Planning extends Component {
     this.setState({
       createTaskCallee: callee
     });
+  }
+
+  getCurrentSprint = sprints => {
+    const currentSprints = sprints.filter(sprint =>
+      sprint.statusId === 2 && moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]')
+    );
+
+    if (currentSprints.length) {
+      return currentSprints[0].id;
+    } else {
+      return sprints.length ? sprints.sort((a, b) => moment(a.factStartDate).diff(moment(), 'days') - moment(b.factStartDate).diff(moment(), 'days'))[0].id : 0;
+    }
   }
 
   getSprints = column => {
@@ -77,9 +94,9 @@ class Planning extends Component {
         : '- ...'})`,
       statusId: sprint.statusId,
       className: classnames({
+        [css.INPROGRESS]: sprint.statusId === 2,
         [css.sprintMarker]: true,
-        [css.INPROGRESS]: sprint.statusId === 1,
-        [css.PLANNED]: sprint.statusId === 2
+        [css.FINISHED]: sprint.statusId === 1
       })
     }));
 
@@ -108,10 +125,7 @@ class Planning extends Component {
         width: '0%'
       };
     } else {
-      const sprint = this.props.project.sprints.filter(sprint => {
-        return sprint.id === sprintId;
-      })[0];
-
+      const sprint = this.props.project.sprints.filter(item => item.id === sprintId)[0];
       const tasksEstimate = tasks.reduce((sum, task) => {
         return sum + task.plannedExecutionTime;
       }, 0);
@@ -468,7 +482,11 @@ class Planning extends Component {
         <CreateTask
           isOpen={this.props.isCreateTaskModalOpen}
           onRequestClose={this.handleModal}
-          optionsList={leftColumnSprints}
+          sprintsList={
+            this.state.createTaskCallee === 'left'
+              ? leftColumnSprints
+              : rightColumnSprints
+          }
           selectedSprintValue={
             this.state.createTaskCallee === 'left'
               ? this.state.leftColumn

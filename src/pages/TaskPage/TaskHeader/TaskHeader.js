@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import Button from '../../../components/Button';
 import ConfirmModal from '../../../components/ConfirmModal';
+import { Link } from 'react-router';
 import PerformerModal from '../../../components/PerformerModal';
 import Priority from '../Priority';
 import ButtonGroup from '../../../components/ButtonGroup';
@@ -146,19 +147,21 @@ class TaskHeader extends Component {
     }));
     return (
       <div>
-        {task.parentId
+        {
+          task.parentTask
           ? <div className={css.parentTask}>
               <div className={css.prefix} data-tip="Родительская задача ">
-                PPJ-56320
+                {task.project.prefix}-{task.parentTask.id}
               </div>
-              <a href="#" className={css.parentTaskName}>
-                UI: Add to gulp build tasks for css and js minification
-              </a>
+               <Link to={`/projects/${task.project.id}/tasks/${task.parentTask.id}`} className={css.parentTaskName}>
+                  {task.parentTask.name}
+                </Link>
               <div className={css.parentTaskLink}>
                 <div className={css.tasksPointers} />
               </div>
             </div>
-          : null}
+          : null
+        }
 
         <div className={css.taskTopInfo}>
           {task.project

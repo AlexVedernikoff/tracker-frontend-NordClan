@@ -33,7 +33,10 @@ export default function Task (state = InitialState, action) {
     };
   case TaskActions.GET_TASK_REQUEST_SENT:
     return {
-      ...state
+      ...state,
+      TitleIsEditing: false,
+      PlanningTimeIsEditing: false,
+      DescriptionIsEditing: false
     };
 
   case TaskActions.GET_TASK_REQUEST_SUCCESS:
@@ -70,10 +73,7 @@ export default function Task (state = InitialState, action) {
 
   case TaskActions.TASK_CHANGE_USER_SENT:
     return {
-      ...state,
-      task: {
-        ...state.task
-      }
+      ...state
     };
 
   case TaskActions.TASK_CHANGE_USER_SUCCESS:
@@ -82,6 +82,20 @@ export default function Task (state = InitialState, action) {
       task: {
         ...state.task,
         ...action.changedFields
+      }
+    };
+
+  case TaskActions.TASK_LINK_SENT:
+    return {
+      ...state
+    };
+
+  case TaskActions.TASK_LINK_SUCCESS:
+    return {
+      ...state,
+      task: {
+        ...state.task,
+        linkedTasks: action.linkedTasks
       }
     };
 
