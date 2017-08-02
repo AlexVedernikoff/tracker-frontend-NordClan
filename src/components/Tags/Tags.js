@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import Button from '../Button';
 import * as css from './Tags.scss';
@@ -27,7 +28,9 @@ class Tags extends Component {
   };
 
   showDropdownMenu = () => {
-    this.setState({visible: !this.state.visible});
+    this.setState({visible: !this.state.visible}, () => {
+      ReactDOM.findDOMNode(this.refs.newTag).focus();
+    });
   };
 
   onChangeHandler = (e) => {

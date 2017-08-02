@@ -8,6 +8,7 @@ import { createSprint } from '../../../actions/Sprint';
 import CreateSprintModal from '../CreateSprintModal';
 import { API_URL } from '../../../constants/Settings';
 import { bindUserToProject } from '../../../actions/Project';
+import { debounce } from 'lodash';
 
 import * as css from './Settings.scss';
 import Participant from '../../../components/Participant';
@@ -30,7 +31,12 @@ class Settings extends Component {
       participant: null,
       participants: []
     };
+    this.searchOnChange = debounce(this.searchOnChange, 400);
   }
+
+  componentWillUnmount = () => {
+    this.searchOnChange.cancel();
+  };
 
   bindUser = () => {
     this.setState({ isModalOpenAddUser: false });
@@ -188,6 +194,7 @@ class Settings extends Component {
                   onInputChange={this.searchOnChange}
                   noResultsText="Нет результатов"
                   options={this.getUsers()}
+                  autofocus
                 />
                 <Button type="green"
                         text="Добавить"

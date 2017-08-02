@@ -6,43 +6,196 @@ import {IconClose} from '../Icons';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import Checkbox from '../../components/Checkbox';
 import {connect} from 'react-redux';
-import { unbindUserToProject } from '../../actions/Project';
+import { bindUserToProject, unbindUserToProject } from '../../actions/Project';
 
 class Participant extends React.Component {
-  // constructor (props) {
-  //   super(props);
-  //   this.state = {
-  //     roles: {
-  //       dev: this.props.user.rolesIds[0] || false,
-  //       back: false,
-  //       front: false,
-  //       review: false,
-  //       qa: false,
-  //       unbillable: false
-  //     }
-  //   };
-  // }
+  constructor (props) {
+    super(props);
+    this.ROLES_NAME = ['dev', 'back', 'front', 'review', 'qa', 'unbillable'];
+    this.ROLES_ID = ['1', '2', '3', '4', '5', '10'];
+    this.state = {
+      sendRoles: []
+    };
+  }
+  componentWillMount = () => {
+    this.setState({ sendRoles: this.setRoles(this.props) });
+  };
+  componentWillReceiveProps = (nextProps) => {
+    this.setState({ sendRoles: this.setRoles(nextProps) });
+  };
+  changeRole = (e, role, roleId) => {
+    e.preventDefault();
+    const self = this;
+    let stringRoles = '0';
+    const sendRoles = self.state.sendRoles;
+    switch (role) {
+    case this.ROLES_NAME[0]:
+      let triger = false;
+      if (sendRoles.length) {
+        sendRoles.forEach(function (r, i) {
+          if (r === roleId) {
+            sendRoles.splice(i, 1);
+            triger = true;
+          }
+        });
+        if (!triger) {
+          sendRoles.push(roleId);
+        }
+        break;
+      } else {
+        sendRoles.push(roleId);
+        break;
+      }
+    case this.ROLES_NAME[1]:
+      triger = false;
+      if (sendRoles.length) {
+        sendRoles.forEach(function (r, i) {
+          if (r === roleId) {
+            sendRoles.splice(i, 1);
+            triger = true;
+          }
+        });
+        if (!triger) {
+          sendRoles.push(roleId);
+        }
+        break;
+      } else {
+        sendRoles.push(roleId);
+        break;
+      }
+    case this.ROLES_NAME[2]:
+      triger = false;
+      if (sendRoles.length) {
+        sendRoles.forEach(function (r, i) {
+          if (r === roleId) {
+            sendRoles.splice(i, 1);
+            triger = true;
+          }
+        });
+        if (!triger) {
+          sendRoles.push(roleId);
+        }
+        break;
+      } else {
+        sendRoles.push(roleId);
+        break;
+      }
+    case this.ROLES_NAME[3]:
+      triger = false;
+      if (sendRoles.length) {
+        sendRoles.forEach(function (r, i) {
+          if (r === roleId) {
+            sendRoles.splice(i, 1);
+            triger = true;
+          }
+        });
+        if (!triger) {
+          sendRoles.push(roleId);
+        }
+        break;
+      } else {
+        sendRoles.push(roleId);
+        break;
+      }
+    case this.ROLES_NAME[4]:
+      triger = false;
+      if (sendRoles.length) {
+        sendRoles.forEach(function (r, i) {
+          if (r === roleId) {
+            sendRoles.splice(i, 1);
+            triger = true;
+          }
+        });
+        if (!triger) {
+          sendRoles.push(roleId);
+        }
+        break;
+      } else {
+        sendRoles.push(roleId);
+        break;
+      }
+    case this.ROLES_NAME[5]:
+      triger = false;
+      if (sendRoles.length) {
+        sendRoles.forEach(function (r, i) {
+          if (r === roleId) {
+            sendRoles.splice(i, 1);
+            triger = true;
+          }
+        });
+        if (!triger) {
+          sendRoles.push(roleId);
+        }
+        break;
+      } else {
+        sendRoles.push(roleId);
+        break;
+      }
+    default: break;
+    }
+    self.setState({ sendRoles: sendRoles });
+    if (sendRoles.length) {
+      stringRoles = sendRoles.join(',');
+    }
+    this.props.bindUserToProject(
+      this.props.projectId,
+      this.props.user.id,
+      stringRoles
+    );
+  };
   unbindUser = () => {
     this.props.unbindUserToProject(
       this.props.projectId,
       this.props.user.id
     );
   };
+  setRoles = (prop) => {
+    const sendRoles = [];
+    for (const key in prop.user.roles) {
+      switch (key) {
+      case this.ROLES_NAME[0]:
+        if (prop.user.roles[key]) {
+          sendRoles.push(this.ROLES_ID[0]);
+        }
+        break;
+      case this.ROLES_NAME[1]:
+        if (prop.user.roles[key]) {
+          sendRoles.push(this.ROLES_ID[1]);
+        }
+        break;
+      case this.ROLES_NAME[2]:
+        if (prop.user.roles[key]) {
+          sendRoles.push(this.ROLES_ID[2]);
+        }
+        break;
+      case this.ROLES_NAME[3]:
+        if (prop.user.roles[key]) {
+          sendRoles.push(this.ROLES_ID[3]);
+        }
+        break;
+      case this.ROLES_NAME[4]:
+        if (prop.user.roles[key]) {
+          sendRoles.push(this.ROLES_ID[4]);
+        }
+        break;
+      case this.ROLES_NAME[5]:
+        if (prop.user.roles[key]) {
+          sendRoles.push(this.ROLES_ID[5]);
+        }
+        break;
+      default: break;
+      }
+    }
 
-  changeRole = () => {
-    console.log('bl');
-    console.log(this.props.user);
-    // this.props.unbindUserToProject(
-    //   this.props.projectId,
-    //   this.props.user.id
-    // );
+    return sendRoles;
   };
   render () {
     const {
       user,
       ...other
     } = this.props;
-    //const roles = this.state.roles;
+
+    const roles = user.roles;
 
     return (
       <Row className={css.memberRow}>
@@ -55,33 +208,38 @@ class Participant extends React.Component {
           <Row>
             <Col xs>
               <label className={css.cell}>
-                <Checkbox /*onChange={this.changeRole('dev')}
-                          checked={roles.dev}*//>
+                <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[0], this.ROLES_ID[0])}
+                          checked={(roles && roles.dev) || false}/>
               </label>
             </Col>
             <Col xs>
               <label className={css.cell}>
-                <Checkbox />
+                <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[1], this.ROLES_ID[1])}
+                          checked={(roles && roles.back) || false}/>
               </label>
             </Col>
             <Col xs>
               <label className={css.cell}>
-                <Checkbox />
+                <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[2], this.ROLES_ID[2])}
+                          checked={(roles && roles.front) || false}/>
               </label>
             </Col>
             <Col xs>
               <label className={css.cell}>
-                <Checkbox />
+                <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[3], this.ROLES_ID[3])}
+                          checked={(roles && roles.review) || false}/>
               </label>
             </Col>
             <Col xs>
               <label className={css.cell}>
-                <Checkbox />
+                <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[4], this.ROLES_ID[4])}
+                          checked={(roles && roles.qa) || false}/>
               </label>
             </Col>
             <Col xs>
               <label className={css.cell}>
-                <Checkbox />
+                <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[5], this.ROLES_ID[5])}
+                          checked={(roles && roles.unbillable) || false}/>
               </label>
             </Col>
             <IconClose
@@ -96,12 +254,14 @@ class Participant extends React.Component {
 }
 
 Participant.propTypes = {
+  bindUserToProject: PropTypes.func.isRequired,
   projectId: PropTypes.number,
   unbindUserToProject: PropTypes.func.isRequired,
   user: PropTypes.object
 };
 
 const mapDispatchToProps = {
+  bindUserToProject,
   unbindUserToProject
 };
 

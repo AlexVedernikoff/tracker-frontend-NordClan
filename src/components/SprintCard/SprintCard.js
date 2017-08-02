@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
@@ -28,7 +29,9 @@ class SprintCard extends Component {
   }
 
   handleOpenModal = () => {
-    this.setState({ isModalOpen: true });
+    this.setState({ isModalOpen: true }, () => {
+      ReactDOM.findDOMNode(this.refs.newSprintName).focus();
+    });
   };
 
   handleCloseModal = () => {
@@ -150,22 +153,25 @@ class SprintCard extends Component {
                       placeholder='Новое название спринта...'
                       defaultValue={sprint.name}
                       onChange={this.onChangeName}
+                      ref='newSprintName'
                     />
                   </Col>
                 </Row>
                 <Row>
-                  <Col xs>
+                  <Col xsOffset={1} xs={5}>
                     <DatepickerDropdown
                       name='dateFrom'
                       value={formattedDayFrom}
                       onDayChange={this.handleDayFromChange}
                       placeholder={moment(sprint.factStartDate).format('DD.MM.YYYY')}
                     />
+                  </Col>
+                  <Col xs={5}>
                     <DatepickerDropdown
-                      name='dateTo'
-                      value={formattedDayTo}
-                      onDayChange={this.handleDayToChange}
-                      placeholder={moment(sprint.factFinishDate).format('DD.MM.YYYY')}
+                        name='dateTo'
+                        value={formattedDayTo}
+                        onDayChange={this.handleDayToChange}
+                        placeholder={moment(sprint.factFinishDate).format('DD.MM.YYYY')}
                     />
                   </Col>
                 </Row>
