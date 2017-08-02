@@ -42,6 +42,7 @@ class TaskModal extends Component {
               name="member"
               placeholder="Введите название задачи..."
               multi={false}
+              className={css.selectSprint}
               value={this.state.taskId}
               onChange={e => this.selectValue(e !== null ? e.value : 0, 'taskId')}
               noResultsText="Нет результатов"
