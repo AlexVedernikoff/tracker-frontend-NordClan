@@ -1,0 +1,45 @@
+@import '../../styles/variables';
+
+.property {
+  &:before {
+    content: "";
+    display: table;
+  }
+}
+
+.memberRow {
+
+  &:hover {
+    background-color: $color-lightgray;
+  }
+
+  label {
+    display: block;
+  }
+
+  .cell {
+    padding: 8px;
+  }
+
+  h4 {
+    margin: 0;
+  }
+}
+
+.memberColumn {
+  // text-align: right;
+}
+
+.iconClose {
+  position: relative;
+  z-index: 2;
+  right: 6px;
+  top: 10px;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    transform: rotate(90deg);
+    transition: $transition;
+  }
+}

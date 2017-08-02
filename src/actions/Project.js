@@ -60,6 +60,68 @@ const createTaskRequestSuccess = () => ({
   type: ProjectActions.TASK_CREATE_REQUEST_SUCCESS
 });
 
+const getUsersStart = () => ({
+  type: ProjectActions.PROJECT_GET_USERS_START
+});
+
+const getUsersSuccess = users => ({
+  type: ProjectActions.PROJECT_GET_USERS_SUCCESS,
+  users: users
+});
+
+const bindUserToProjectStart = () => ({
+  type: ProjectActions.BIND_USER_TO_PROJECT_START
+});
+
+const unbindUserToProjectStart = () => ({
+  type: ProjectActions.UNBIND_USER_TO_PROJECT_START
+});
+
+const bindUserToProjectsSuccess = users => ({
+  type: ProjectActions.BIND_USER_TO_PROJECT_SUCCESS,
+  users: users
+});
+const unbindUserToProjectsSuccess = users => ({
+  type: ProjectActions.UNBIND_USER_TO_PROJECT_SUCCESS,
+  users: users
+});
+
+export const bindUserToProject = (projectId, userId, rolesIds) => {
+  const URL = `${API_URL}/project/${projectId}/users`;
+
+  return dispatch => {
+    dispatch(bindUserToProjectStart());
+    dispatch(startLoading());
+    axios
+      .post(URL, {
+        projectId: projectId,
+        userId: userId})
+      .then(response => {
+        if (response.data) {
+          dispatch(bindUserToProjectsSuccess(response.data));
+          dispatch(finishLoading());
+        }
+      });
+  };
+};
+
+export const unbindUserToProject = (projectId, userId) => {
+  const URL = `${API_URL}/project/${projectId}/users/${userId}`;
+
+  return dispatch => {
+    dispatch(unbindUserToProjectStart());
+    dispatch(startLoading());
+    axios
+      .delete(URL)
+      .then(response => {
+        if (response.data) {
+          dispatch(unbindUserToProjectsSuccess(response.data));
+          dispatch(finishLoading());
+        }
+      });
+  };
+};
+
 const getProjectInfo = id => {
   const URL = `${API_URL}/project/${id}`;
 

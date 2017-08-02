@@ -45,7 +45,8 @@ export const editSprint = (id, statusId, name, dateForm, dateTo, allottedTime) =
     }
     dispatch(editSprintStart());
     dispatch(startLoading());
-    axios.put(URL, params)
+    axios
+      .put(URL, params)
       .then(response => {
         if (response.data) {
           dispatch(editSprintSuccess(response.data));
@@ -61,7 +62,8 @@ export const deleteSprint = (id) => {
   return dispatch => {
     dispatch(deleteSprintStart());
     dispatch(startLoading());
-    axios.delete(URL)
+    axios
+      .delete(URL)
       .then(response => {
         if (response.data) {
           dispatch(deleteSprintSuccess(response.data));
@@ -77,13 +79,14 @@ export const createSprint = (name, id, dateForm, dateTo, allottedTime) => {
   return dispatch => {
     dispatch(createSprintStart());
     dispatch(startLoading());
-    axios.post(URL, {
-      name: name,
-      projectId: id,
-      factStartDate: dateForm,
-      factFinishDate: dateTo,
-      allottedTime: allottedTime
-    })
+    axios
+      .post(URL, {
+        name: name,
+        projectId: id,
+        factStartDate: dateForm,
+        factFinishDate: dateTo,
+        allottedTime: allottedTime
+      })
       .then(response => {
         if (response.data) {
           dispatch(createSprintSuccess(response.data.sprints));
