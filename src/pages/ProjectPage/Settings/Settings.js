@@ -15,9 +15,6 @@ import SprintCard from '../../../components/SprintCard';
 import Button from '../../../components/Button';
 import Modal from '../../../components/Modal';
 import SelectDropdown from '../../../components/SelectDropdown';
-import DatepickerDropdown from '../../../components/DatepickerDropdown';
-import Input from '../../../components/Input';
-import moment from 'moment';
 
 class Settings extends Component {
   constructor (props) {
@@ -38,6 +35,7 @@ class Settings extends Component {
   bindUser = () => {
     this.setState({ isModalOpenAddUser: false });
     this.setState({participants: []});
+    this.setState({participant: null});
     this.props.bindUserToProject(
       this.props.id,
       this.state.participant.value
@@ -88,22 +86,6 @@ class Settings extends Component {
     this.setState({participants: []});
   };
 
-  onChangeTime = (e) => {
-    this.setState({ allottedTime: e.target.value });
-  };
-
-  onChangeName = (e) => {
-    this.setState({ sprintName: e.target.value });
-  };
-
-  handleDayFromChange = (date) => {
-    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD')});
-  };
-
-  handleDayToChange = (date) => {
-    this.setState({ dateTo: moment(date).format('YYYY-MM-DD')});
-  };
-
   createSprint = () => {
     this.setState({ isModalOpenAddSprint: false });
     this.props.createSprint(
@@ -116,13 +98,6 @@ class Settings extends Component {
   };
 
   render () {
-    const formattedDayFrom = this.state.dateFrom
-      ? moment(this.state.dateFrom).format('DD.MM.YYYY')
-      : '';
-    const formattedDayTo = this.state.dateTo
-      ? moment(this.state.dateTo).format('DD.MM.YYYY')
-      : '';
-
     return (
       <div className={css.property}>
         <h2>Участники</h2>
@@ -224,59 +199,8 @@ class Settings extends Component {
         }
         {
           this.state.isModalOpenAddSprint
-              ? <Modal
-              isOpen
-              contentLabel="modal"
-              onRequestClose={this.handleCloseModalAddSprint}>
-            <div>
-              <div>
-                <Row>
-                  <Col xsOffset={1}
-                       xs={10}>
-                    <h3>Создание нового спринта</h3>
-                    <Input
-                        placeholder="Введите название спринта..."
-                        onChange={this.onChangeName}
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xs>
-                    <DatepickerDropdown
-                        name="dateFrom"
-                        value={formattedDayFrom}
-                        onDayChange={this.handleDayFromChange}
-                        placeholder="Дата начала"
-                    />
-                    <DatepickerDropdown
-                        name="dateTo"
-                        value={formattedDayTo}
-                        onDayChange={this.handleDayToChange}
-                        placeholder="Дата окончания"
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xsOffset={1}
-                       xs={10}>
-                    <Input
-                        placeholder="Введите время в часах..."
-                        onChange={this.onChangeTime}
-                    />
-                  </Col>
-                </Row>
-                <Row className={css.createButton}
-                     center="xs">
-                  <Col xs>
-                    <Button type="green"
-                            text="Создать"
-                            onClick={this.createSprint}/>
-                  </Col>
-                </Row>
-              </div>
-            </div>
-          </Modal>
-              : null
+            ? <CreateSprintModal onClose={this.handleCloseModalAddSprint} />
+            : null
         }
       </div>
     );
