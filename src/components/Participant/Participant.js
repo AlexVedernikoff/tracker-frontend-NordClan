@@ -28,178 +28,19 @@ class Participant extends React.Component {
     const self = this;
     let stringRoles = '0';
     const sendRoles = self.state.sendRoles;
-    switch (role) {
-    case this.ROLES_NAME[0]:
-      let triger = false;
-      if (sendRoles.length) {
-        sendRoles.forEach(function (r, i) {
-          if (r === roleId) {
-            sendRoles.splice(i, 1);
-            triger = true;
-          }
-        });
-        if (!triger) {
-          sendRoles.push(roleId);
+    let triger = false;
+    if (sendRoles.length) {
+      sendRoles.forEach(function (r, i) {
+        if (r === roleId) {
+          sendRoles.splice(i, 1);
+          triger = true;
         }
-        break;
-      } else {
+      });
+      if (!triger) {
         sendRoles.push(roleId);
-        break;
       }
-    case this.ROLES_NAME[1]:
-      triger = false;
-      if (sendRoles.length) {
-        sendRoles.forEach(function (r, i) {
-          if (r === roleId) {
-            sendRoles.splice(i, 1);
-            triger = true;
-          }
-        });
-        if (!triger) {
-          sendRoles.push(roleId);
-        }
-        break;
-      } else {
-        sendRoles.push(roleId);
-        break;
-      }
-    case this.ROLES_NAME[2]:
-      triger = false;
-      if (sendRoles.length) {
-        sendRoles.forEach(function (r, i) {
-          if (r === roleId) {
-            sendRoles.splice(i, 1);
-            triger = true;
-          }
-        });
-        if (!triger) {
-          sendRoles.push(roleId);
-        }
-        break;
-      } else {
-        sendRoles.push(roleId);
-        break;
-      }
-    case this.ROLES_NAME[3]:
-      triger = false;
-      if (sendRoles.length) {
-        sendRoles.forEach(function (r, i) {
-          if (r === roleId) {
-            sendRoles.splice(i, 1);
-            triger = true;
-          }
-        });
-        if (!triger) {
-          sendRoles.push(roleId);
-        }
-        break;
-      } else {
-        sendRoles.push(roleId);
-        break;
-      }
-    case this.ROLES_NAME[4]:
-      triger = false;
-      if (sendRoles.length) {
-        sendRoles.forEach(function (r, i) {
-          if (r === roleId) {
-            sendRoles.splice(i, 1);
-            triger = true;
-          }
-        });
-        if (!triger) {
-          sendRoles.push(roleId);
-        }
-        break;
-      } else {
-        sendRoles.push(roleId);
-        break;
-      }
-    case this.ROLES_NAME[5]:
-      triger = false;
-      if (sendRoles.length) {
-        sendRoles.forEach(function (r, i) {
-          if (r === roleId) {
-            sendRoles.splice(i, 1);
-            triger = true;
-          }
-        });
-        if (!triger) {
-          sendRoles.push(roleId);
-        }
-        break;
-      } else {
-        sendRoles.push(roleId);
-        break;
-      }
-    case this.ROLES_NAME[6]:
-      triger = false;
-      if (sendRoles.length) {
-        sendRoles.forEach(function (r, i) {
-          if (r === roleId) {
-            sendRoles.splice(i, 1);
-            triger = true;
-          }
-        });
-        if (!triger) {
-          sendRoles.push(roleId);
-        }
-        break;
-      } else {
-        sendRoles.push(roleId);
-        break;
-      }
-    case this.ROLES_NAME[7]:
-      triger = false;
-      if (sendRoles.length) {
-        sendRoles.forEach(function (r, i) {
-          if (r === roleId) {
-            sendRoles.splice(i, 1);
-            triger = true;
-          }
-        });
-        if (!triger) {
-          sendRoles.push(roleId);
-        }
-        break;
-      } else {
-        sendRoles.push(roleId);
-        break;
-      }
-    case this.ROLES_NAME[8]:
-      triger = false;
-      if (sendRoles.length) {
-        sendRoles.forEach(function (r, i) {
-          if (r === roleId) {
-            sendRoles.splice(i, 1);
-            triger = true;
-          }
-        });
-        if (!triger) {
-          sendRoles.push(roleId);
-        }
-        break;
-      } else {
-        sendRoles.push(roleId);
-        break;
-      }
-    case this.ROLES_NAME[9]:
-      triger = false;
-      if (sendRoles.length) {
-        sendRoles.forEach(function (r, i) {
-          if (r === roleId) {
-            sendRoles.splice(i, 1);
-            triger = true;
-          }
-        });
-        if (!triger) {
-          sendRoles.push(roleId);
-        }
-        break;
-      } else {
-        sendRoles.push(roleId);
-        break;
-      }
-    default: break;
+    } else {
+      sendRoles.push(roleId);
     }
     self.setState({ sendRoles: sendRoles });
     if (sendRoles.length) {
@@ -219,59 +60,10 @@ class Participant extends React.Component {
   };
   setRoles = (prop) => {
     const sendRoles = [];
+
     for (const key in prop.user.roles) {
-      switch (key) {
-      case this.ROLES_NAME[0]:
-        if (prop.user.roles[key]) {
-          sendRoles.push(this.ROLES_ID[0]);
-        }
-        break;
-      case this.ROLES_NAME[1]:
-        if (prop.user.roles[key]) {
-          sendRoles.push(this.ROLES_ID[1]);
-        }
-        break;
-      case this.ROLES_NAME[2]:
-        if (prop.user.roles[key]) {
-          sendRoles.push(this.ROLES_ID[2]);
-        }
-        break;
-      case this.ROLES_NAME[3]:
-        if (prop.user.roles[key]) {
-          sendRoles.push(this.ROLES_ID[3]);
-        }
-        break;
-      case this.ROLES_NAME[4]:
-        if (prop.user.roles[key]) {
-          sendRoles.push(this.ROLES_ID[4]);
-        }
-        break;
-      case this.ROLES_NAME[5]:
-        if (prop.user.roles[key]) {
-          sendRoles.push(this.ROLES_ID[5]);
-        }
-        break;
-      case this.ROLES_NAME[6]:
-        if (prop.user.roles[key]) {
-          sendRoles.push(this.ROLES_ID[6]);
-        }
-        break;
-      case this.ROLES_NAME[7]:
-        if (prop.user.roles[key]) {
-          sendRoles.push(this.ROLES_ID[7]);
-        }
-        break;
-      case this.ROLES_NAME[8]:
-        if (prop.user.roles[key]) {
-          sendRoles.push(this.ROLES_ID[8]);
-        }
-        break;
-      case this.ROLES_NAME[9]:
-        if (prop.user.roles[key]) {
-          sendRoles.push(this.ROLES_ID[9]);
-        }
-        break;
-      default: break;
+      if (prop.user.roles[key]) {
+        sendRoles.push(this.ROLES_ID[this.ROLES_NAME.indexOf(key)]);
       }
     }
 
