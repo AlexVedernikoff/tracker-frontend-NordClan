@@ -154,18 +154,20 @@ class SprintCard extends Component {
                   </Col>
                 </Row>
                 <Row>
-                  <Col xs>
+                  <Col xsOffset={1} xs={5}>
                     <DatepickerDropdown
                       name='dateFrom'
                       value={formattedDayFrom}
                       onDayChange={this.handleDayFromChange}
                       placeholder={moment(sprint.factStartDate).format('DD.MM.YYYY')}
                     />
+                  </Col>
+                  <Col xs={5}>
                     <DatepickerDropdown
-                      name='dateTo'
-                      value={formattedDayTo}
-                      onDayChange={this.handleDayToChange}
-                      placeholder={moment(sprint.factFinishDate).format('DD.MM.YYYY')}
+                        name='dateTo'
+                        value={formattedDayTo}
+                        onDayChange={this.handleDayToChange}
+                        placeholder={moment(sprint.factFinishDate).format('DD.MM.YYYY')}
                     />
                   </Col>
                 </Row>

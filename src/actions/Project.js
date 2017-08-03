@@ -60,15 +60,6 @@ const createTaskRequestSuccess = () => ({
   type: ProjectActions.TASK_CREATE_REQUEST_SUCCESS
 });
 
-const getUsersStart = () => ({
-  type: ProjectActions.PROJECT_GET_USERS_START
-});
-
-const getUsersSuccess = users => ({
-  type: ProjectActions.PROJECT_GET_USERS_SUCCESS,
-  users: users
-});
-
 const bindUserToProjectStart = () => ({
   type: ProjectActions.BIND_USER_TO_PROJECT_START
 });
@@ -94,8 +85,9 @@ export const bindUserToProject = (projectId, userId, rolesIds) => {
     dispatch(startLoading());
     axios
       .post(URL, {
-        projectId: projectId,
-        userId: userId})
+        userId: userId,
+        rolesIds: rolesIds || '0'
+      })
       .then(response => {
         if (response.data) {
           dispatch(bindUserToProjectsSuccess(response.data));
