@@ -11,8 +11,8 @@ import { bindUserToProject, unbindUserToProject } from '../../actions/Project';
 class Participant extends React.Component {
   constructor (props) {
     super(props);
-    this.ROLES_NAME = ['dev', 'back', 'front', 'review', 'qa', 'unbillable'];
-    this.ROLES_ID = ['1', '2', '3', '4', '5', '10'];
+    this.ROLES_NAME = ['account', 'pm', 'ux', 'analyst', 'back', 'front', 'mobile', 'teamLead', 'qa', 'unbillable'];
+    this.ROLES_ID = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
     this.state = {
       sendRoles: []
     };
@@ -131,6 +131,74 @@ class Participant extends React.Component {
         sendRoles.push(roleId);
         break;
       }
+    case this.ROLES_NAME[6]:
+      triger = false;
+      if (sendRoles.length) {
+        sendRoles.forEach(function (r, i) {
+          if (r === roleId) {
+            sendRoles.splice(i, 1);
+            triger = true;
+          }
+        });
+        if (!triger) {
+          sendRoles.push(roleId);
+        }
+        break;
+      } else {
+        sendRoles.push(roleId);
+        break;
+      }
+    case this.ROLES_NAME[7]:
+      triger = false;
+      if (sendRoles.length) {
+        sendRoles.forEach(function (r, i) {
+          if (r === roleId) {
+            sendRoles.splice(i, 1);
+            triger = true;
+          }
+        });
+        if (!triger) {
+          sendRoles.push(roleId);
+        }
+        break;
+      } else {
+        sendRoles.push(roleId);
+        break;
+      }
+    case this.ROLES_NAME[8]:
+      triger = false;
+      if (sendRoles.length) {
+        sendRoles.forEach(function (r, i) {
+          if (r === roleId) {
+            sendRoles.splice(i, 1);
+            triger = true;
+          }
+        });
+        if (!triger) {
+          sendRoles.push(roleId);
+        }
+        break;
+      } else {
+        sendRoles.push(roleId);
+        break;
+      }
+    case this.ROLES_NAME[9]:
+      triger = false;
+      if (sendRoles.length) {
+        sendRoles.forEach(function (r, i) {
+          if (r === roleId) {
+            sendRoles.splice(i, 1);
+            triger = true;
+          }
+        });
+        if (!triger) {
+          sendRoles.push(roleId);
+        }
+        break;
+      } else {
+        sendRoles.push(roleId);
+        break;
+      }
     default: break;
     }
     self.setState({ sendRoles: sendRoles });
@@ -183,6 +251,26 @@ class Participant extends React.Component {
           sendRoles.push(this.ROLES_ID[5]);
         }
         break;
+      case this.ROLES_NAME[6]:
+        if (prop.user.roles[key]) {
+          sendRoles.push(this.ROLES_ID[6]);
+        }
+        break;
+      case this.ROLES_NAME[7]:
+        if (prop.user.roles[key]) {
+          sendRoles.push(this.ROLES_ID[7]);
+        }
+        break;
+      case this.ROLES_NAME[8]:
+        if (prop.user.roles[key]) {
+          sendRoles.push(this.ROLES_ID[8]);
+        }
+        break;
+      case this.ROLES_NAME[9]:
+        if (prop.user.roles[key]) {
+          sendRoles.push(this.ROLES_ID[9]);
+        }
+        break;
       default: break;
       }
     }
@@ -209,36 +297,60 @@ class Participant extends React.Component {
             <Col xs>
               <label className={css.cell}>
                 <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[0], this.ROLES_ID[0])}
-                          checked={(roles && roles.dev) || false}/>
+                          checked={(roles && roles.account) || false}/>
               </label>
             </Col>
             <Col xs>
               <label className={css.cell}>
                 <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[1], this.ROLES_ID[1])}
-                          checked={(roles && roles.back) || false}/>
+                          checked={(roles && roles.pm) || false}/>
               </label>
             </Col>
             <Col xs>
               <label className={css.cell}>
                 <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[2], this.ROLES_ID[2])}
-                          checked={(roles && roles.front) || false}/>
+                          checked={(roles && roles.ux) || false}/>
               </label>
             </Col>
             <Col xs>
               <label className={css.cell}>
                 <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[3], this.ROLES_ID[3])}
-                          checked={(roles && roles.review) || false}/>
+                          checked={(roles && roles.analyst) || false}/>
               </label>
             </Col>
             <Col xs>
               <label className={css.cell}>
                 <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[4], this.ROLES_ID[4])}
-                          checked={(roles && roles.qa) || false}/>
+                          checked={(roles && roles.back) || false}/>
               </label>
             </Col>
             <Col xs>
               <label className={css.cell}>
                 <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[5], this.ROLES_ID[5])}
+                          checked={(roles && roles.front) || false}/>
+              </label>
+            </Col>
+            <Col xs>
+              <label className={css.cell}>
+                <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[6], this.ROLES_ID[6])}
+                          checked={(roles && roles.mobile) || false}/>
+              </label>
+            </Col>
+            <Col xs>
+              <label className={css.cell}>
+                <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[7], this.ROLES_ID[7])}
+                          checked={(roles && roles.teamLead) || false}/>
+              </label>
+            </Col>
+            <Col xs>
+              <label className={css.cell}>
+                <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[8], this.ROLES_ID[8])}
+                          checked={(roles && roles.qa) || false}/>
+              </label>
+            </Col>
+            <Col xs>
+              <label className={css.cell}>
+                <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[9], this.ROLES_ID[9])}
                           checked={(roles && roles.unbillable) || false}/>
               </label>
             </Col>

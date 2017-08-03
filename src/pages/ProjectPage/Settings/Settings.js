@@ -56,6 +56,7 @@ class Settings extends Component {
         .get(URL, {})
         .then(response => {
           if (response.data) {
+            console.log(response.data);
             this.setState({participants: response.data});
           }
         });
@@ -112,7 +113,22 @@ class Settings extends Component {
             <Row>
               <Col xs>
                 <h4>
-                  <div className={css.cell}>Develop</div>
+                  <div className={css.cell}>Account</div>
+                </h4>
+              </Col>
+              <Col xs>
+                <h4>
+                  <div className={css.cell}>PM</div>
+                </h4>
+              </Col>
+              <Col xs>
+                <h4>
+                  <div className={css.cell}>UX</div>
+                </h4>
+              </Col>
+              <Col xs>
+                <h4>
+                  <div className={css.cell}>Аналитик</div>
                 </h4>
               </Col>
               <Col xs>
@@ -127,7 +143,12 @@ class Settings extends Component {
               </Col>
               <Col xs>
                 <h4>
-                  <div className={css.cell}>Code Review</div>
+                  <div className={css.cell}>Mobile</div>
+                </h4>
+              </Col>
+              <Col xs>
+                <h4>
+                  <div className={css.cell}>TeamLead</div>
                 </h4>
               </Col>
               <Col xs>
