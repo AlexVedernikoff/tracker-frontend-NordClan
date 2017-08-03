@@ -4,15 +4,12 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import { createSprint } from '../../../actions/Sprint';
-import CreateSprintModal from '../CreateSprintModal';
 import { API_URL } from '../../../constants/Settings';
 import { bindUserToProject } from '../../../actions/Project';
 import { debounce } from 'lodash';
 
 import * as css from './Settings.scss';
 import Participant from '../../../components/Participant';
-import SprintCard from '../../../components/SprintCard';
 import Button from '../../../components/Button';
 import Modal from '../../../components/Modal';
 import SelectDropdown from '../../../components/SelectDropdown';
@@ -21,13 +18,7 @@ class Settings extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      isModalOpenAddSprint: false,
       isModalOpenAddUser: false,
-      dateFrom: undefined,
-      dateTo: undefined,
-      sprintName: '',
-      sprintTime: '',
-      allottedTime: null,
       participant: null,
       participants: []
     };
@@ -85,14 +76,6 @@ class Settings extends Component {
     this.setState({participant: e});
   };
 
-  handleOpenModalAddSprint = () => {
-    this.setState({ isModalOpenAddSprint: true });
-  };
-
-  handleCloseModalAddSprint = () => {
-    this.setState({ isModalOpenAddSprint: false });
-  };
-
   handleOpenModalAddUser = () => {
     this.setState({ isModalOpenAddUser: true });
   };
@@ -101,18 +84,6 @@ class Settings extends Component {
     this.setState({ isModalOpenAddUser: false });
     this.setState({participants: []});
   };
-
-  createSprint = () => {
-    this.setState({ isModalOpenAddSprint: false });
-    this.props.createSprint(
-        this.state.sprintName.trim(),
-        this.props.id,
-        this.state.dateFrom,
-        this.state.dateTo,
-        this.state.allottedTime
-    );
-  };
-
   render () {
     return (
       <div className={css.property}>
@@ -144,26 +115,6 @@ class Settings extends Component {
           icon="IconPlus"
           onClick={this.handleOpenModalAddUser}
         />
-        {this.props.sprints
-          ? <div>
-              <hr />
-              <h2>Спринты / Фазы</h2>
-              <Row>
-                {this.props.sprints.map((element, i) =>
-                  <Col xs={3} key={`sprint-${i}`}>
-                    <SprintCard sprint={element} />
-                  </Col>
-                )}
-              </Row>
-            </div>
-          : null}
-        <Button
-          text="Создать спринт"
-          type="primary"
-          style={{ marginTop: 16 }}
-          icon="IconPlus"
-          onClick={this.handleOpenModalAddSprint}
-        />
         {
           this.state.isModalOpenAddUser
             ? <Modal
@@ -192,11 +143,6 @@ class Settings extends Component {
           </Modal>
             : null
         }
-        {
-          this.state.isModalOpenAddSprint
-            ? <CreateSprintModal onClose={this.handleCloseModalAddSprint} />
-            : null
-        }
       </div>
     );
   }
@@ -204,21 +150,17 @@ class Settings extends Component {
 
 Settings.propTypes = {
   bindUserToProject: PropTypes.func.isRequired,
-  createSprint: PropTypes.func.isRequired,
   id: PropTypes.number,
-  sprints: PropTypes.array.isRequired,
   users: PropTypes.array.isRequired
 };
 
 const mapStateToProps = state => ({
-  sprints: state.Project.project.sprints,
   id: state.Project.project.id,
   users: state.Project.project.users
 });
 
 const mapDispatchToProps = {
-  bindUserToProject,
-  createSprint
+  bindUserToProject
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Settings);
