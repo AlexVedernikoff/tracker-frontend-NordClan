@@ -84,7 +84,7 @@ class Details extends Component {
               ? <tr>
                   <td>Автор:</td>
                   <td>
-                     task.author.fullNameRu
+                     {task.author.fullNameRu}
                   </td>
                 </tr>
               : null}
