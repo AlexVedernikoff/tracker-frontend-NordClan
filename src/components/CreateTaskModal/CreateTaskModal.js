@@ -8,8 +8,9 @@ import moment from 'moment';
 import classnames from 'classnames';
 import _ from 'lodash';
 import Input from '../Input';
-import Checkbox from '../Checkbox';
 import Button from '../Button';
+import TextArea from '../TextArea';
+import SelectDropdown from '../SelectDropdown';
 import * as css from './CreateTaskModal.scss';
 import Priority from '../../pages/TaskPage/Priority';
 import { closeCreateTaskModal, createTask } from '../../actions/Project';
@@ -19,7 +20,9 @@ class CreateTaskModal extends Component {
     super(props);
     this.state = {
       selectedSprint: null,
+      selectedPerformer: null,
       taskName: null,
+      description: null,
       openTaskPage: false,
       prioritiesId: 3,
       types: [{ label: 'Фича', value: 1 }, { label: 'Баг', value: 2 }],
@@ -38,8 +41,10 @@ class CreateTaskModal extends Component {
   componentWillUnmount () {
     this.setState({
       selectedSprint: null,
+      selectedPerformer: null,
       sprints: null,
       taskName: null,
+      description: null,
       openTaskPage: false
     });
   }
@@ -50,9 +55,21 @@ class CreateTaskModal extends Component {
     });
   };
 
+  handlePerformerChange = selectedPerformer => {
+    this.setState({
+      selectedPerformer: selectedPerformer !== null ? selectedPerformer.value : 0
+    });
+  };
+
   handleInput = event => {
     this.setState({
       taskName: event.target.value
+    });
+  };
+
+  handleDescription = event => {
+    this.setState({
+      description: event.target.value
     });
   };
 
@@ -62,23 +79,19 @@ class CreateTaskModal extends Component {
     });
   };
 
-  handleCheckBox = event => {
-    const { checked } = event.target;
-    this.setState({
-      openTaskPage: checked
-    });
-  };
-
   submitTask = event => {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
     this.props.createTask(
       {
         name: this.state.taskName,
         projectId: this.props.project.id,
+        description: this.state.description,
+        performerId: this.state.selectedPerformer,
         statusId: 1,
         typeId: this.state.selectedType.value,
-        sprintId:
-          this.state.selectedSprint === 0 ? null : this.state.selectedSprint,
+        sprintId: this.state.selectedSprint === 0 ? null : this.state.selectedSprint,
         prioritiesId: this.state.prioritiesId,
         parentId: this.props.parentTaskId
       },
@@ -86,6 +99,10 @@ class CreateTaskModal extends Component {
       this.props.column
     );
   };
+
+  submitTaskAndOpen = () => {
+    this.setState({openTaskPage: true}, () => this.submitTask());
+  }
 
   onTypeChange = value => {
     this.setState({
@@ -127,6 +144,13 @@ class CreateTaskModal extends Component {
     return sprints;
   };
 
+  getUsers = () => {
+    return this.props.project.users.map(user => ({
+      value: user.id,
+      label: user.fullNameRu
+    }));
+  };
+
   render () {
     const ReactModalStyles = {
       overlay: {
@@ -159,8 +183,9 @@ class CreateTaskModal extends Component {
         borderRadius: 0,
         outline: 'none',
         padding: 0,
+        paddingBottom: '4rem',
         width: 500,
-        height: 400,
+        height: 'auto',
         maxHeight: '100%'
       }
     };
@@ -179,7 +204,7 @@ class CreateTaskModal extends Component {
         style={ReactModalStyles}
       >
         <form className={css.createTaskForm}>
-          <div className={css.formField}>
+          {/* <div className={css.formField}>
             <Row>
               <Col xs={formLayout.firstCol} className={css.leftColumn}>
                 <p>Проект:</p>
@@ -188,7 +213,7 @@ class CreateTaskModal extends Component {
                 <p>{`${this.props.project.name} (${this.props.project.prefix})`}</p>
               </Col>
             </Row>
-          </div>
+          </div> */}
           <label className={css.formField}>
             <Row>
               <Col xs={formLayout.firstCol} className={css.leftColumn}>
@@ -200,6 +225,20 @@ class CreateTaskModal extends Component {
                   onChange={this.handleInput}
                   name="taskName"
                   placeholder="Название задачи"
+                />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={formLayout.firstCol} className={css.leftColumn}>
+                <p>Описание:</p>
+              </Col>
+              <Col xs={formLayout.secondCol} className={css.rightColumn}>
+                <TextArea
+                  onChange={this.handleDescription}
+                  name="description"
+                  placeholder="Описание задачи"
                 />
               </Col>
             </Row>
@@ -236,7 +275,7 @@ class CreateTaskModal extends Component {
               </Col>
             </Row>
           </label>
-          <label className={css.formField}>
+          {/* <label className={css.formField}>
             <Row>
               <Col xs={formLayout.firstCol} className={css.leftColumn}>
                 <p>Открыть страницу задачи</p>
@@ -246,6 +285,36 @@ class CreateTaskModal extends Component {
                   name="openProjectPage"
                   onChange={this.handleCheckBox}
                 />
+              </Col>
+            </Row>
+          </label> */}
+          <label className={css.formField}>
+            <Row>
+              <Col xs={formLayout.firstCol} className={css.leftColumn}>
+                <p>Исполнитель:</p>
+              </Col>
+              <Col xs={formLayout.secondCol} className={css.rightColumn}>
+                <SelectDropdown
+                  name="performer"
+                  placeholder="Введите имя исполнителя..."
+                  multi={false}
+                  className={css.selectPerformer}
+                  value={this.state.selectedPerformer}
+                  onChange={this.handlePerformerChange}
+                  noResultsText="Нет результатов"
+                  options={this.getUsers()}
+                />
+                {/* <Select
+                  promptTextCreator={label => `Создать спринт '${label}'`}
+                  searchPromptText={'Введите название спринта'}
+                  multi={false}
+                  ignoreCase={false}
+                  placeholder="Выберите спринт"
+                  options={this.getSprints()}
+                  className={css.selectSprint}
+                  onChange={this.handleModalSprintChange}
+                  value={this.state.selectedSprint}
+                /> */}
               </Col>
             </Row>
           </label>
@@ -273,14 +342,16 @@ class CreateTaskModal extends Component {
             <Button
               text="Создать задачу"
               type="green"
+              htmlType="submit"
               style={{ width: '50%' }}
               onClick={this.submitTask}
             />
             <Button
-              text="Назад"
-              type="primary"
+              text="Создать и открыть"
+              htmlType="button"
+              type="green-lighten"
               style={{ width: '50%' }}
-              onClick={this.handleCloseModal}
+              onClick={this.submitTaskAndOpen}
             />
           </div>
         </form>
