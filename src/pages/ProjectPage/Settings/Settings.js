@@ -56,7 +56,15 @@ class Settings extends Component {
         .get(URL, {})
         .then(response => {
           if (response.data) {
-            console.log(response.data);
+            response.data = response.data.filter((participant) => {
+              let triger = false;
+              this.props.users.forEach((user) => {
+                if (participant.id === user.id) {
+                  triger = true;
+                }
+              });
+              return !triger ? participant : undefined;
+            });
             this.setState({participants: response.data});
           }
         });
