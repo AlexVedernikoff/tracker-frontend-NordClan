@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import Button from '../Button';
 import * as css from './Tags.scss';
@@ -27,10 +26,12 @@ class Tags extends Component {
     this.setState({visible: false});
   };
 
+  focus = () => {
+    this.textInput.focus();
+  };
+
   showDropdownMenu = () => {
-    this.setState({visible: !this.state.visible}, () => {
-      ReactDOM.findDOMNode(this.refs.newTag).focus();
-    });
+    this.setState({visible: !this.state.visible});
   };
 
   onChangeHandler = (e) => {
@@ -86,7 +87,6 @@ class Tags extends Component {
                   placeholder='Добавить тег'
                   className={css.tagsInput}
                   defaultValue=''
-                  ref='newTag'
                   autoFocus
                   onChange={this.onChangeHandler}/>
                 <Button

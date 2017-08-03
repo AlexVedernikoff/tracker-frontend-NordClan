@@ -25,9 +25,8 @@ class Participant extends React.Component {
   };
   changeRole = (e, role, roleId) => {
     e.preventDefault();
-    const self = this;
     let stringRoles = '0';
-    const sendRoles = self.state.sendRoles;
+    const sendRoles = this.state.sendRoles;
     let triger = false;
     if (sendRoles.length) {
       sendRoles.forEach(function (r, i) {
@@ -42,7 +41,7 @@ class Participant extends React.Component {
     } else {
       sendRoles.push(roleId);
     }
-    self.setState({ sendRoles: sendRoles });
+    this.setState({ sendRoles: sendRoles });
     if (sendRoles.length) {
       stringRoles = sendRoles.join(',');
     }
@@ -86,66 +85,15 @@ class Participant extends React.Component {
         </Col>
         <Col xs={9}>
           <Row>
-            <Col xs>
-              <label className={css.cell}>
-                <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[0], this.ROLES_ID[0])}
-                          checked={(roles && roles.account) || false}/>
-              </label>
-            </Col>
-            <Col xs>
-              <label className={css.cell}>
-                <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[1], this.ROLES_ID[1])}
-                          checked={(roles && roles.pm) || false}/>
-              </label>
-            </Col>
-            <Col xs>
-              <label className={css.cell}>
-                <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[2], this.ROLES_ID[2])}
-                          checked={(roles && roles.ux) || false}/>
-              </label>
-            </Col>
-            <Col xs>
-              <label className={css.cell}>
-                <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[3], this.ROLES_ID[3])}
-                          checked={(roles && roles.analyst) || false}/>
-              </label>
-            </Col>
-            <Col xs>
-              <label className={css.cell}>
-                <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[4], this.ROLES_ID[4])}
-                          checked={(roles && roles.back) || false}/>
-              </label>
-            </Col>
-            <Col xs>
-              <label className={css.cell}>
-                <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[5], this.ROLES_ID[5])}
-                          checked={(roles && roles.front) || false}/>
-              </label>
-            </Col>
-            <Col xs>
-              <label className={css.cell}>
-                <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[6], this.ROLES_ID[6])}
-                          checked={(roles && roles.mobile) || false}/>
-              </label>
-            </Col>
-            <Col xs>
-              <label className={css.cell}>
-                <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[7], this.ROLES_ID[7])}
-                          checked={(roles && roles.teamLead) || false}/>
-              </label>
-            </Col>
-            <Col xs>
-              <label className={css.cell}>
-                <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[8], this.ROLES_ID[8])}
-                          checked={(roles && roles.qa) || false}/>
-              </label>
-            </Col>
-            <Col xs>
-              <label className={css.cell}>
-                <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[9], this.ROLES_ID[9])}
-                          checked={(roles && roles.unbillable) || false}/>
-              </label>
-            </Col>
+            {this.ROLES_NAME
+              ? this.ROLES_NAME.map((ROLES_NAME, i) =>
+              <Col xs key={`${i}-roles-checkbox`}>
+                <label className={css.cell}>
+                  <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[i], this.ROLES_ID[i])}
+                            checked={(roles && roles[ROLES_NAME]) || false}/>
+                </label>
+              </Col>
+            ) : null}
             <IconClose
               className={css.iconClose}
               onClick={this.unbindUser}

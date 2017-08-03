@@ -29,9 +29,7 @@ class SprintCard extends Component {
   }
 
   handleOpenModal = () => {
-    this.setState({ isModalOpen: true }, () => {
-      ReactDOM.findDOMNode(this.refs.newSprintName).focus();
-    });
+    this.setState({ isModalOpen: true });
   };
 
   handleCloseModal = () => {
@@ -153,7 +151,6 @@ class SprintCard extends Component {
                       placeholder='Новое название спринта...'
                       defaultValue={sprint.name}
                       onChange={this.onChangeName}
-                      ref='newSprintName'
                     />
                   </Col>
                 </Row>

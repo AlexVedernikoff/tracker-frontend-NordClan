@@ -31,6 +31,7 @@ class Settings extends Component {
       participant: null,
       participants: []
     };
+    this.ROLES_FULL_NAME = ['Account', 'PM', 'UX', 'Analyst', 'Back', 'Front', 'Mobile', 'TeamLead', 'QA', 'Unbillable'];
     this.searchOnChange = debounce(this.searchOnChange, 400);
   }
 
@@ -119,56 +120,14 @@ class Settings extends Component {
         <Row className={classnames(css.memberRow, css.memberHeader)}>
           <Col xs={9} xsOffset={3}>
             <Row>
-              <Col xs>
-                <h4>
-                  <div className={css.cell}>Account</div>
-                </h4>
-              </Col>
-              <Col xs>
-                <h4>
-                  <div className={css.cell}>PM</div>
-                </h4>
-              </Col>
-              <Col xs>
-                <h4>
-                  <div className={css.cell}>UX</div>
-                </h4>
-              </Col>
-              <Col xs>
-                <h4>
-                  <div className={css.cell}>Аналитик</div>
-                </h4>
-              </Col>
-              <Col xs>
-                <h4>
-                  <div className={css.cell}>Back</div>
-                </h4>
-              </Col>
-              <Col xs>
-                <h4>
-                  <div className={css.cell}>Front</div>
-                </h4>
-              </Col>
-              <Col xs>
-                <h4>
-                  <div className={css.cell}>Mobile</div>
-                </h4>
-              </Col>
-              <Col xs>
-                <h4>
-                  <div className={css.cell}>TeamLead</div>
-                </h4>
-              </Col>
-              <Col xs>
-                <h4>
-                  <div className={css.cell}>QA</div>
-                </h4>
-              </Col>
-              <Col xs>
-                <h4>
-                  <div className={css.cell}>Unbillable</div>
-                </h4>
-              </Col>
+              {this.ROLES_FULL_NAME
+                ? this.ROLES_FULL_NAME.map((ROLES_FULL_NAME, i) =>
+                <Col xs key={`${i}-roles-name`}>
+                  <h4>
+                    <div className={css.cell}>{ROLES_FULL_NAME}</div>
+                  </h4>
+                </Col>
+              ) : null}
             </Row>
           </Col>
         </Row>
