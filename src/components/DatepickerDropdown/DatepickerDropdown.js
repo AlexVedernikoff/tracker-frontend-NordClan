@@ -4,6 +4,8 @@ import DayPickerInput from 'react-day-picker/DayPickerInput';
 import moment from 'moment';
 import './style.css';
 import * as css from './DatepickerDropdown.scss';
+import 'moment/locale/ru';
+import LocaleUtils from 'react-day-picker/moment';
 
 export default class DatepickerDropdown extends Component {
   constructor (props) {
@@ -19,6 +21,10 @@ export default class DatepickerDropdown extends Component {
         clickUnselectsDay
         className={css.dropdown}
         format="DD.MM.YYYY"
+        dayPickerProps={{
+          locale: 'ru',
+          localeUtils: { ...LocaleUtils }
+        }}
       />
     );
   }

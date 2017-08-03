@@ -1,6 +1,7 @@
 import React, {PropTypes} from 'react';
 import { Link } from 'react-router';
-import { IconPlus, IconLink } from '../../../components/Icons';
+import { IconPlus, IconLink, IconClose } from '../../../components/Icons';
+import ConfirmModal from '../../../components/ConfirmModal';
 
 export default class RelatedTasks extends React.Component {
 
@@ -14,56 +15,58 @@ export default class RelatedTasks extends React.Component {
       fill: 'currentColor'
     };
 
+    const tasks = this.props.task[this.props.type].map(task => {
+      return <li key={`${this.props.type}-${task.id}`} className={css.task}>
+                <span className={css.taskLabel}>{`${this.props.task.project.prefix}-${task.id}`}</span>
+                <Link to={`/projects/${this.props.task.project.id}/tasks/${task.id}`}>{task.name}</Link>
+                {
+                  this.props.onDelete
+                  ? <IconClose
+                      className={css.iconClose}
+                      onClick={() => {this.props.onDelete(task.id);}}
+                    />
+                  : null
+                }
+             </li>;
+    });
+
     return (
       <div className={css.relatedTasks}>
         <h3>
           {
-            this.props.type === 'related'
+            this.props.type === 'linkedTasks'
             ? 'Связанные задачи'
-            : this.props.type === 'children'
+            : this.props.type === 'subTasks'
             ? 'Подзадачи' : null
           }
         </h3>
         <ul className={css.taskList}>
-          <li className={css.task}>
-            <span className={css.taskLabel}>PPJ-56321</span>
-            <Link to="#">UI: Add to gulp build tasks for css and js minification</Link>
-          </li>
-          <li className={css.task}>
-            <span className={css.taskLabel}>PPJ-56322</span>
-            <Link to="#">UI: Implement customisation of post/article header image</Link>
-          </li>
-          <li className={css.task}>
-            <span className={css.taskLabel}>PPJ-56323</span>
-            <Link to="#">Bug: Error in console after registering user with long email</Link>
-          </li>
-          <li className={css.task}>
-            <span className={css.taskLabel}>PPJ-56324</span>
-            <Link to="#">UI:Enhancements for "ineterests" field on users edit profile</Link>
-          </li>
+            {tasks}
         </ul>
-        <Link to="#" className={css.task + ' ' + css.add}>
+        <a onClick={this.props.onAction} className={css.task + ' ' + css.add}>
           {
-            this.props.type === 'related'
+            this.props.type === 'linkedTasks'
             ? <IconLink style={iconStyles} />
-            : this.props.type === 'children'
+            : this.props.type === 'subTasks'
             ? <IconPlus style={iconStyles} /> : null
           }
           <div className={css.tooltip}>
             {
-              this.props.type === 'related'
+              this.props.type === 'linkedTasks'
               ? 'Связать с другой задачей'
-              : this.props.type === 'children'
+              : this.props.type === 'subTasks'
               ? 'Добавить подзадачу' : null
             }
           </div>
-        </Link>
+        </a>
       </div>
     );
   }
 }
 
 RelatedTasks.propTypes = {
+  onAction: PropTypes.func,
+  onDelete: PropTypes.func,
   task: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired
 };

@@ -1,3 +1,3 @@
-import NotificationContainer from "./NotificationContainer";
+import NotificationContainer from './NotificationContainer';
 
 export default NotificationContainer;

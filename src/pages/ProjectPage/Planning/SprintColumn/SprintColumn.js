@@ -22,19 +22,19 @@ function collect (connect, monitor) {
 class SprintColumn extends React.Component {
 
   render () {
-      const {
+    const {
         tasks,
         connectDropTarget,
         isOver
       } = this.props;
 
-      return (
+    return (
         connectDropTarget(
           <div className={classnames({[css.dropColumn]: true, [css.canDropColumn]: isOver})} >
             {tasks}
           </div>
         )
-      );
+    );
   }
 }
 

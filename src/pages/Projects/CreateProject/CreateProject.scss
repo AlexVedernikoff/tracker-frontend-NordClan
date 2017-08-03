@@ -1,12 +1,21 @@
 .createProjectForm {
-  width: 100%;
-  padding: 25px;
+  width: 384px;
+  padding: 2rem;
+}
+
+.header {
+  margin-top: 0;
 }
 
 .leftColumn {
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  text-align: right;
+  
+  p {
+    margin: 0;
+  }
 }
 
 .rightColumn {
@@ -18,14 +27,12 @@
   display: block;
 
   & + & {
-    margin-top: 10px;
+    margin-top: 1rem;
   }
 }
 
 .buttonsContainer {
-  width: 90%;
-  position: absolute;
-  bottom: 15px;
+  margin-top: 2rem;
 }
 
 .selectPortfolio {

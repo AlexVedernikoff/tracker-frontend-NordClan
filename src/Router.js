@@ -7,6 +7,7 @@ import {
   IndexRedirect,
   Redirect
 } from 'react-router';
+import { API_URL } from './constants/Settings';
 
 import MainContainer from './pages/MainContainer';
 import InnerContainer from './pages/InnerContainer';
@@ -14,6 +15,7 @@ import TaskPage from './pages/TaskPage';
 import Comments from './pages/TaskPage/Comments';
 import TaskHistory from './pages/TaskPage/TaskHistory';
 import ProjectPage from './pages/ProjectPage';
+import Portfolio from './pages/Portfolio';
 import AgileBoard from './pages/ProjectPage/AgileBoard';
 import Info from './pages/ProjectPage/Info';
 import Settings from './pages/ProjectPage/Settings';
@@ -37,7 +39,7 @@ export const history = syncHistoryWithStore(browserHistory, store);
 
 // Auth check for Auth-required pages
 const requireAuth = function (nextState, replace, cb) {
-  axios.get('/api/user/me', {}, { withCredentials: true })
+  axios.get(`${API_URL}/user/me`, {}, { withCredentials: true })
   .catch(err => {
     replace('login');
     cb();
@@ -48,7 +50,7 @@ const requireAuth = function (nextState, replace, cb) {
 // Auth check for login page
 const isLogged = function (nextState, replace, cb) {
   axios
-    .get('/api/user/me', {}, { withCredentials: true })
+    .get(`${API_URL}/user/me`, {}, { withCredentials: true })
     .then(response => {
       if (response.status === 200) replace('projects');
       cb();
@@ -80,6 +82,8 @@ export default class AppRouter extends Component {
                 <Route path="tasks" component={TaskList} />
                 <IndexRedirect to="agile-board" />
               </Route>
+
+              <Route path="projects/portfolio/:portfolioId" component={Portfolio} />
 
               <Route
                 path="projects/:projectId/tasks/:taskId"
