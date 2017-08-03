@@ -26,10 +26,6 @@ class Tags extends Component {
     this.setState({visible: false});
   };
 
-  focus = () => {
-    this.textInput.focus();
-  };
-
   showDropdownMenu = () => {
     this.setState({visible: !this.state.visible});
   };
