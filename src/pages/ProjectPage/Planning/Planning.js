@@ -3,12 +3,12 @@ import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
 import GanttChart from './GanttChart';
 import classnames from 'classnames';
-import CreateTask from '../CreateTask';
 import * as css from './Planning.scss';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import DraggableTaskRow from './DraggableTaskRow';
 import Button from '../../../components/Button';
 import SelectDropdown from '../../../components/SelectDropdown';
+import CreateTaskModal from '../../../components/CreateTaskModal';
 import SprintColumn from './SprintColumn';
 import _ from 'lodash';
 import { connect } from 'react-redux';
@@ -457,7 +457,7 @@ class Planning extends Component {
           </Row>
         </section>
         <GanttChart />
-        <CreateTask
+        <CreateTaskModal
           selectedSprintValue={
             this.state.createTaskCallee === 'left'
               ? this.state.leftColumn

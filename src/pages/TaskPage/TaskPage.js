@@ -13,7 +13,7 @@ import Description from '../../components/Description';
 import RouteTabs from '../../components/RouteTabs';
 import TaskModal from '../../components/TaskModal';
 import ConfirmModal from '../../components/ConfirmModal';
-import CreateTask from '../../pages/ProjectPage/CreateTask';
+import CreateTaskModal from '../../components/CreateTaskModal';
 import { getTask,
         startTaskEditing,
         stopTaskEditing,
@@ -175,7 +175,7 @@ class TaskPage extends Component {
             </aside>
           </Col>
         </Row>
-        <CreateTask
+        <CreateTaskModal
           selectedSprintValue={this.props.task.sprint ? this.props.task.sprint.id : 0}
           project={this.props.project}
           parentTaskId={this.props.task.id}

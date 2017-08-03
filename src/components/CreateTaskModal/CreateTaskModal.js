@@ -3,18 +3,18 @@ import PropTypes from 'prop-types';
 import Modal from 'react-modal';
 import { connect } from 'react-redux';
 import Select from 'react-select';
+import { Col, Row } from 'react-flexbox-grid';
 import moment from 'moment';
 import classnames from 'classnames';
 import _ from 'lodash';
-import Input from '../../../components/Input';
-import Checkbox from '../../../components/Checkbox';
-import Button from '../../../components/Button';
-import * as css from './CreateTask.scss';
-import { Col, Row } from 'react-flexbox-grid';
-import Priority from '../../TaskPage/Priority';
-import { closeCreateTaskModal, createTask } from '../../../actions/Project';
+import Input from '../Input';
+import Checkbox from '../Checkbox';
+import Button from '../Button';
+import * as css from './CreateTaskModal.scss';
+import Priority from '../../pages/TaskPage/Priority';
+import { closeCreateTaskModal, createTask } from '../../actions/Project';
 
-class CreateTask extends Component {
+class CreateTaskModal extends Component {
   constructor (props) {
     super(props);
     this.state = {
@@ -289,7 +289,7 @@ class CreateTask extends Component {
   }
 }
 
-CreateTask.propTypes = {
+CreateTaskModal.propTypes = {
   closeCreateTaskModal: PropTypes.func.isRequired,
   column: PropTypes.string,
   createTask: PropTypes.func.isRequired,
@@ -308,4 +308,4 @@ const mapDispatchToProps = {
   createTask
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateTask);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateTaskModal);
