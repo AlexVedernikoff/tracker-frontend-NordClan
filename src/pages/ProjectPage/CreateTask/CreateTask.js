@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'react-modal';
+import { connect } from 'react-redux';
 import Select from 'react-select';
+import moment from 'moment';
+import classnames from 'classnames';
+import _ from 'lodash';
 import Input from '../../../components/Input';
 import Checkbox from '../../../components/Checkbox';
 import Button from '../../../components/Button';
 import * as css from './CreateTask.scss';
 import { Col, Row } from 'react-flexbox-grid';
 import Priority from '../../TaskPage/Priority';
+import { closeCreateTaskModal, createTask } from '../../../actions/Project';
 
 class CreateTask extends Component {
   constructor (props) {
@@ -64,14 +69,9 @@ class CreateTask extends Component {
     });
   };
 
-  handleClose = event => {
-    event.preventDefault();
-    this.props.onRequestClose();
-  }
-
   submitTask = event => {
     event.preventDefault();
-    this.props.onSubmit(
+    this.props.createTask(
       {
         name: this.state.taskName,
         projectId: this.props.project.id,
@@ -93,8 +93,41 @@ class CreateTask extends Component {
     });
   };
 
+  handleCloseModal = event => {
+    event.preventDefault();
+    this.props.closeCreateTaskModal();
+  }
+
+  getSprints = () => {
+    let sprints = _.sortBy(this.props.project.sprints, sprint => {
+      return new moment(sprint.factFinishDate);
+    });
+
+    sprints = sprints.map((sprint, i) => ({
+      value: sprint.id,
+      label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${sprint.factFinishDate
+        ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}`
+        : '- ...'})`,
+      statusId: sprint.statusId,
+      className: classnames({
+        [css.INPROGRESS]: sprint.statusId === 2,
+        [css.sprintMarker]: true,
+        [css.FINISHED]: sprint.statusId === 1
+      })
+    }));
+
+    sprints.push({
+      value: 0,
+      label: 'Backlog',
+      className: classnames({
+        [css.INPROGRESS]: true,
+        [css.sprintMarker]: true
+      })
+    });
+    return sprints;
+  };
+
   render () {
-    const { isOpen, onRequestClose } = this.props;
     const ReactModalStyles = {
       overlay: {
         position: 'fixed',
@@ -139,8 +172,8 @@ class CreateTask extends Component {
 
     return (
       <Modal
-        isOpen={isOpen}
-        onRequestClose={onRequestClose}
+        isOpen={this.props.isCreateTaskModalOpen}
+        onRequestClose={this.props.closeCreateTaskModal}
         contentLabel="Modal"
         closeTimeoutMS={200}
         style={ReactModalStyles}
@@ -228,7 +261,7 @@ class CreateTask extends Component {
                   multi={false}
                   ignoreCase={false}
                   placeholder="Выберите спринт"
-                  options={this.props.sprintsList}
+                  options={this.getSprints()}
                   className={css.selectSprint}
                   onChange={this.handleModalSprintChange}
                   value={this.state.selectedSprint}
@@ -247,7 +280,7 @@ class CreateTask extends Component {
               text="Назад"
               type="primary"
               style={{ width: '50%' }}
-              onClick={this.handleClose}
+              onClick={this.handleCloseModal}
             />
           </div>
         </form>
@@ -257,14 +290,22 @@ class CreateTask extends Component {
 }
 
 CreateTask.propTypes = {
+  closeCreateTaskModal: PropTypes.func.isRequired,
   column: PropTypes.string,
-  isOpen: PropTypes.bool.isRequired,
-  onRequestClose: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
+  createTask: PropTypes.func.isRequired,
+  isCreateTaskModalOpen: PropTypes.bool.isRequired,
   parentTaskId: PropTypes.number,
   project: PropTypes.object,
-  selectedSprintValue: PropTypes.number,
-  sprintsList: PropTypes.array
+  selectedSprintValue: PropTypes.number
 };
 
-export default CreateTask;
+const mapStateToProps = state => ({
+  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen
+});
+
+const mapDispatchToProps = {
+  closeCreateTaskModal,
+  createTask
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateTask);

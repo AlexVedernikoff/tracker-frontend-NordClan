@@ -16,11 +16,7 @@ import moment from 'moment';
 
 import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
-import {
-  openCreateTaskModal,
-  closeCreateTaskModal
-} from '../../../actions/Project';
-import { createTask } from '../../../actions/Project';
+import { openCreateTaskModal } from '../../../actions/Project';
 
 const sortTasks = sortedArr => {
   sortedArr.sort((a, b) => {
@@ -59,12 +55,6 @@ class Planning extends Component {
 
   componentDidUpdate () {
     ReactTooltip.rebuild();
-  }
-
-  setCallee (callee) {
-    this.setState({
-      createTaskCallee: callee
-    });
   }
 
   getCurrentSprint = sprints => {
@@ -162,23 +152,11 @@ class Planning extends Component {
     });
   };
 
-  handleModal = event => {
-    const {
-      isCreateTaskModalOpen,
-      openCreateTaskModal,
-      closeCreateTaskModal
-    } = this.props;
-    if (isCreateTaskModalOpen) {
-      // this.setState({
-      //   projectName: '',
-      //   projectPrefix: '',
-      //   selectedPortfolio: null
-      // });
-      closeCreateTaskModal();
-    } else {
-      this.setCallee(event.target.name);
-      openCreateTaskModal();
-    }
+  openModal = event => {
+    this.setState({
+      createTaskCallee: event.target.name
+    });
+    this.props.openCreateTaskModal();
   };
 
   handleModalSprintSelect = () => {};
@@ -402,7 +380,7 @@ class Planning extends Component {
                   />
                 </div>
                 <Button
-                  onClick={this.handleModal}
+                  onClick={this.openModal}
                   type="bordered"
                   text="Создать задачу"
                   icon="IconPlus"
@@ -448,7 +426,7 @@ class Planning extends Component {
                   />
                 </div>
                 <Button
-                  onClick={this.handleModal}
+                  onClick={this.openModal}
                   type="bordered"
                   text="Создать задачу"
                   icon="IconPlus"
@@ -480,19 +458,11 @@ class Planning extends Component {
         </section>
         <GanttChart />
         <CreateTask
-          isOpen={this.props.isCreateTaskModalOpen}
-          onRequestClose={this.handleModal}
-          sprintsList={
-            this.state.createTaskCallee === 'left'
-              ? leftColumnSprints
-              : rightColumnSprints
-          }
           selectedSprintValue={
             this.state.createTaskCallee === 'left'
               ? this.state.leftColumn
               : this.state.rightColumn
           }
-          onSubmit={this.props.createTask}
           project={this.props.project}
           column={this.state.createTaskCallee}
         />
@@ -504,9 +474,7 @@ class Planning extends Component {
 Planning.propTypes = {
   SprintIsEditing: PropTypes.bool,
   changeTask: PropTypes.func.isRequired,
-  closeCreateTaskModal: PropTypes.func,
   getPlanningTasks: PropTypes.func.isRequired,
-  isCreateTaskModalOpen: PropTypes.bool,
   leftColumnTasks: PropTypes.array,
   openCreateTaskModal: PropTypes.func,
   project: PropTypes.object,
@@ -518,17 +486,14 @@ const mapStateToProps = state => ({
   project: state.Project.project,
   leftColumnTasks: state.PlanningTasks.leftColumnTasks,
   rightColumnTasks: state.PlanningTasks.rightColumnTasks,
-  SprintIsEditing: state.Task.SprintIsEditing,
-  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen
+  SprintIsEditing: state.Task.SprintIsEditing
 });
 
 const mapDispatchToProps = {
   getPlanningTasks,
   changeTask,
   startTaskEditing,
-  openCreateTaskModal,
-  closeCreateTaskModal,
-  createTask
+  openCreateTaskModal
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Planning);
