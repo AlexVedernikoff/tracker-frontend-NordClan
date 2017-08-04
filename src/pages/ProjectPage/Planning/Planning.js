@@ -456,7 +456,7 @@ class Planning extends Component {
             </Col>
           </Row>
         </section>
-        <GanttChart />
+        {/* <GanttChart /> */}
         <CreateTaskModal
           selectedSprintValue={
             this.state.createTaskCallee === 'left'
