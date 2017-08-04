@@ -25,6 +25,15 @@ const gettingProjectUsersSuccess = users => ({
   users
 });
 
+const gettingProjectSprintsStart = () => ({
+  type: ProjectActions.PROJECT_SPRINTS_RECEIVE_START
+});
+
+const gettingProjectSprintsSuccess = sprints => ({
+  type: ProjectActions.PROJECT_SPRINTS_RECEIVE_SUCCESS,
+  sprints
+});
+
 const startProjectChange = () => ({
   type: ProjectActions.PROJECT_CHANGE_START
 });
@@ -156,6 +165,32 @@ const getProjectUsers = id => {
   };
 };
 
+const getProjectSprints = id => {
+  const URL = `${API_URL}/sprint`;
+
+  return dispatch => {
+    dispatch(gettingProjectSprintsStart());
+    dispatch(startLoading());
+    axios
+      .get(URL, {
+        params: {
+          projectId: id,
+          fields: 'id,name,factFinishDate'
+        }
+      }, { withCredentials: true })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(gettingProjectSprintsSuccess(response.data.data));
+          dispatch(finishLoading());
+        }
+      });
+  };
+};
+
 const ChangeProject = (ChangedProperties, target) => {
   if (!ChangedProperties.id) {
     return;
@@ -225,4 +260,4 @@ const createTask = (task, openTaskPage, callee) => {
   };
 };
 
-export { getProjectInfo, getProjectUsers, ChangeProject, createTask };
+export { getProjectInfo, getProjectUsers, getProjectSprints, ChangeProject, createTask };
