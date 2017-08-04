@@ -137,7 +137,7 @@ class CreateTaskModal extends Component {
       value: 0,
       label: 'Backlog',
       className: classnames({
-        [css.INPROGRESS]: true,
+        [css.INPROGRESS]: false,
         [css.sprintMarker]: true
       })
     });
@@ -166,7 +166,7 @@ class CreateTaskModal extends Component {
         padding: '1rem',
         boxSizing: 'border-box',
         backgroundColor: 'rgba(43, 62, 80, 0.8)',
-        zIndex: 2,
+        zIndex: 3,
         overflow: 'auto'
       },
       content: {
@@ -204,16 +204,6 @@ class CreateTaskModal extends Component {
         style={ReactModalStyles}
       >
         <form className={css.createTaskForm}>
-          {/* <div className={css.formField}>
-            <Row>
-              <Col xs={formLayout.firstCol} className={css.leftColumn}>
-                <p>Проект:</p>
-              </Col>
-              <Col xs={formLayout.secondCol} className={css.rightColumn}>
-                <p>{`${this.props.project.name} (${this.props.project.prefix})`}</p>
-              </Col>
-            </Row>
-          </div> */}
           <label className={css.formField}>
             <Row>
               <Col xs={formLayout.firstCol} className={css.leftColumn}>
@@ -275,19 +265,6 @@ class CreateTaskModal extends Component {
               </Col>
             </Row>
           </label>
-          {/* <label className={css.formField}>
-            <Row>
-              <Col xs={formLayout.firstCol} className={css.leftColumn}>
-                <p>Открыть страницу задачи</p>
-              </Col>
-              <Col xs={formLayout.secondCol} className={css.rightColumn}>
-                <Checkbox
-                  name="openProjectPage"
-                  onChange={this.handleCheckBox}
-                />
-              </Col>
-            </Row>
-          </label> */}
           <label className={css.formField}>
             <Row>
               <Col xs={formLayout.firstCol} className={css.leftColumn}>
@@ -304,17 +281,6 @@ class CreateTaskModal extends Component {
                   noResultsText="Нет результатов"
                   options={this.getUsers()}
                 />
-                {/* <Select
-                  promptTextCreator={label => `Создать спринт '${label}'`}
-                  searchPromptText={'Введите название спринта'}
-                  multi={false}
-                  ignoreCase={false}
-                  placeholder="Выберите спринт"
-                  options={this.getSprints()}
-                  className={css.selectSprint}
-                  onChange={this.handleModalSprintChange}
-                  value={this.state.selectedSprint}
-                /> */}
               </Col>
             </Row>
           </label>

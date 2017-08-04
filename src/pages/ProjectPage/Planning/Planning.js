@@ -94,7 +94,7 @@ class Planning extends Component {
       value: 0,
       label: 'Backlog',
       className: classnames({
-        [css.INPROGRESS]: true,
+        [css.INPROGRESS]: false,
         [css.sprintMarker]: true
       })
     });
