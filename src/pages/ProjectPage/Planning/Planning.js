@@ -14,6 +14,9 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
+import { createSprint } from '../../../actions/Sprint';
+import CreateSprintModal from '../CreateSprintModal';
+import SprintCard from '../../../components/SprintCard';
 import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import {
@@ -36,7 +39,8 @@ class Planning extends Component {
     this.state = {
       leftColumn: null,
       rightColumn: null,
-      createTaskCallee: null
+      createTaskCallee: null,
+      isModalOpenAddSprint: false
     };
   }
 
@@ -67,6 +71,14 @@ class Planning extends Component {
     });
   }
 
+  handleOpenModalAddSprint = () => {
+    this.setState({ isModalOpenAddSprint: true });
+  };
+
+  handleCloseModalAddSprint = () => {
+    this.setState({ isModalOpenAddSprint: false });
+  };
+
   getCurrentSprint = sprints => {
     const currentSprints = sprints.filter(sprint =>
       sprint.statusId === 2 && moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]')
@@ -77,7 +89,7 @@ class Planning extends Component {
     } else {
       return sprints.length ? sprints.sort((a, b) => moment(a.factStartDate).diff(moment(), 'days') - moment(b.factStartDate).diff(moment(), 'days'))[0].id : 0;
     }
-  }
+  };
 
   getSprints = column => {
     const secondColumn = column === 'leftColumn' ? 'rightColumn' : 'leftColumn';
@@ -181,8 +193,6 @@ class Planning extends Component {
     }
   };
 
-  handleModalSprintSelect = () => {};
-
   render () {
     const leftColumnTasks = sortTasks(this.props.leftColumnTasks).map(task => {
       return (
@@ -218,12 +228,31 @@ class Planning extends Component {
     return (
       <div>
         <section>
+          {this.props.sprints
+            ? <div>
+            <hr />
+            <h2>Спринты / Фазы</h2>
+            <Row>
+              {this.props.sprints.map((element, i) =>
+                <Col xs={3} key={`sprint-${i}`}>
+                  <SprintCard sprint={element} />
+                </Col>
+              )}
+            </Row>
+          </div>
+            : null}
           <Button
-            type="primary"
             text="Создать спринт"
+            type="primary"
+            style={{ marginBottom: 16, marginTop: 16 }}
             icon="IconPlus"
-            style={{ marginBottom: 16 }}
+            onClick={this.handleOpenModalAddSprint}
           />
+          {
+            this.state.isModalOpenAddSprint
+              ? <CreateSprintModal onClose={this.handleCloseModalAddSprint} />
+              : null
+          }
           <div className={css.graph}>
             <div className={css.wrapper}>
               <div className={css.sprintNames}>
@@ -511,10 +540,12 @@ Planning.propTypes = {
   openCreateTaskModal: PropTypes.func,
   project: PropTypes.object,
   rightColumnTasks: PropTypes.array,
+  sprints: PropTypes.array.isRequired,
   startTaskEditing: PropTypes.func
 };
 
 const mapStateToProps = state => ({
+  sprints: state.Project.project.sprints,
   project: state.Project.project,
   leftColumnTasks: state.PlanningTasks.leftColumnTasks,
   rightColumnTasks: state.PlanningTasks.rightColumnTasks,
@@ -528,7 +559,8 @@ const mapDispatchToProps = {
   startTaskEditing,
   openCreateTaskModal,
   closeCreateTaskModal,
-  createTask
+  createTask,
+  createSprint
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Planning);
