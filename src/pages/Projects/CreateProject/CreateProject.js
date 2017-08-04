@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import { API_URL } from '../../../constants/Settings';
 import Modal from '../../../components/Modal';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
@@ -14,18 +15,10 @@ class CreateProject extends Component {
     super(props);
   }
 
-  closeModal = event => {
-    event.preventDefault();
-    const { onRequestClose } = this.props;
-    onRequestClose();
-  };
-
-  getOptions
-
   getPortfolios (name = '') {
     return axios
       .get(
-        'api/portfolio',
+        `${API_URL}/portfolio`,
         { params: { name } },
         { withCredentials: true }
       )
@@ -95,9 +88,10 @@ class CreateProject extends Component {
                   promptTextCreator={label => `Создать портфель '${label}'`}
                   searchPromptText={'Введите название портфеля'}
                   multi={false}
-                  ignoreCase
+                  ignoreCase={false}
                   placeholder="Выберите портфель"
                   loadOptions={this.getPortfolios}
+                  filterOption={el=>el}
                   onChange={this.props.onPortfolioSelect}
                   value={this.props.selectedPortfolio}
                   className={css.selectPortfolio}
