@@ -88,6 +88,12 @@ class TaskRow extends React.Component {
                 </span>
               </p>
               <p className={css.taskMeta}>
+                <span>Автор:</span>
+                <span>
+                  { task.author ? task.author.fullNameRu : '' }
+                </span>
+              </p>
+              <p className={css.taskMeta}>
                 {
                   task.statusId !== 1
                   ? <span className={css.time}>
