@@ -1,0 +1,22 @@
+@import '../../styles/variables';
+
+.modalWrapper {
+  width: 100%;
+  max-width: 360px !important;
+}
+
+.changeStage {
+  padding: 2rem;
+
+  h3 {
+    margin-top: 0;
+  }
+}
+
+.modalLine {
+  display: flex;
+
+  > *:first-child {
+    flex-grow: 1;
+  }
+}

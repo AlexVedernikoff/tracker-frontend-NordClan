@@ -11,14 +11,6 @@ import * as css from './TaskList.scss';
 
 import getTasks from '../../../actions/Tasks';
 
-const sortTasks = (sortedArr) => {
-  sortedArr.sort((a, b) => {
-    if (a.prioritiesId > b.prioritiesId) return 1;
-    if (a.prioritiesId < b.prioritiesId) return -1;
-  });
-  return sortedArr;
-};
-
 class TaskList extends Component {
 
   constructor (props) {
@@ -68,12 +60,13 @@ class TaskList extends Component {
       currentPage: this.state.activePage,
       pageSize: 50,
       name: this.state.filterByName,
+      statusId: 0, // вывожу таски со всеми статусами
       ...options
     });
   }
 
   render () {
-    const tasks = sortTasks(this.props.tasksList);
+    const tasks = this.props.tasksList;
 
     return (
       <div>

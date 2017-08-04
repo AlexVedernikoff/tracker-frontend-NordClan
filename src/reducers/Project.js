@@ -100,6 +100,20 @@ export default function Project (state = InitialState, action) {
       }
     };
 
+  case ProjectActions.PROJECT_SPRINTS_RECEIVE_START:
+    return {
+      ...state
+    };
+
+  case ProjectActions.PROJECT_SPRINTS_RECEIVE_SUCCESS:
+    return {
+      ...state,
+      project: {
+        ...state.project,
+        sprints: action.sprints
+      }
+    };
+
   case ProjectActions.PROJECT_CHANGE_START:
     return {
       ...state

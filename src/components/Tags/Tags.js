@@ -83,7 +83,6 @@ class Tags extends Component {
                   placeholder='Добавить тег'
                   className={css.tagsInput}
                   defaultValue=''
-                  ref='newTag'
                   autoFocus
                   onChange={this.onChangeHandler}/>
                 <Button

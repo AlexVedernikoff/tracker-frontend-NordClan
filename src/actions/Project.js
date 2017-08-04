@@ -25,6 +25,15 @@ const gettingProjectUsersSuccess = users => ({
   users
 });
 
+const gettingProjectSprintsStart = () => ({
+  type: ProjectActions.PROJECT_SPRINTS_RECEIVE_START
+});
+
+const gettingProjectSprintsSuccess = sprints => ({
+  type: ProjectActions.PROJECT_SPRINTS_RECEIVE_SUCCESS,
+  sprints
+});
+
 const startProjectChange = () => ({
   type: ProjectActions.PROJECT_CHANGE_START
 });
@@ -60,15 +69,6 @@ const createTaskRequestSuccess = () => ({
   type: ProjectActions.TASK_CREATE_REQUEST_SUCCESS
 });
 
-const getUsersStart = () => ({
-  type: ProjectActions.PROJECT_GET_USERS_START
-});
-
-const getUsersSuccess = users => ({
-  type: ProjectActions.PROJECT_GET_USERS_SUCCESS,
-  users: users
-});
-
 const bindUserToProjectStart = () => ({
   type: ProjectActions.BIND_USER_TO_PROJECT_START
 });
@@ -94,8 +94,9 @@ export const bindUserToProject = (projectId, userId, rolesIds) => {
     dispatch(startLoading());
     axios
       .post(URL, {
-        projectId: projectId,
-        userId: userId})
+        userId: userId,
+        rolesIds: rolesIds || '0'
+      })
       .then(response => {
         if (response.data) {
           dispatch(bindUserToProjectsSuccess(response.data));
@@ -158,6 +159,32 @@ const getProjectUsers = id => {
       .then(response => {
         if (response && response.status === 200) {
           dispatch(gettingProjectUsersSuccess(response.data));
+          dispatch(finishLoading());
+        }
+      });
+  };
+};
+
+const getProjectSprints = id => {
+  const URL = `${API_URL}/sprint`;
+
+  return dispatch => {
+    dispatch(gettingProjectSprintsStart());
+    dispatch(startLoading());
+    axios
+      .get(URL, {
+        params: {
+          projectId: id,
+          fields: 'id,name,factFinishDate'
+        }
+      }, { withCredentials: true })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(gettingProjectSprintsSuccess(response.data.data));
           dispatch(finishLoading());
         }
       });
@@ -233,4 +260,4 @@ const createTask = (task, openTaskPage, callee) => {
   };
 };
 
-export { getProjectInfo, getProjectUsers, ChangeProject, createTask };
+export { getProjectInfo, getProjectUsers, getProjectSprints, ChangeProject, createTask };
