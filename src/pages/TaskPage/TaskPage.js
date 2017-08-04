@@ -187,12 +187,12 @@ class TaskPage extends Component {
               <Attachments task={task} />
               <RouteTabs style={{ marginTop: '2rem', marginBottom: '2rem' }}>
                 <Link
-                  to={`/projects/${task.projectId}/tasks/${task.id}/comments`}
+                  to={`/projects/${this.props.params.projectId}/tasks/${this.props.params.taskId}/comments`}
                 >
                   Комментарии
                 </Link>
                 <Link
-                  to={`/projects/${task.projectId}/tasks/${task.id}/history`}
+                  to={`/projects/${this.props.params.projectId}/tasks/${this.props.params.taskId}/history`}
                 >
                   История
                 </Link>

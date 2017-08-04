@@ -1,63 +1,58 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
+import moment from 'moment';
+import { getTaskHistory} from '../../../actions/Task';
 
 import UserCard from '../../../components/UserCard';
 
-// Mocks
+const getMessage = (message, entities) => {
+  if (Object.keys(entities).length === 0) {
+    return message;
+  } else {
+    let result = message;
+    Object.keys(entities).forEach(entity => {
+      switch (entity) {
+      case 'performer':
+        result = result.replace(`{${entity}}`, entities[entity].fullNameRu);
+        break;
 
-const data = [
-  {
-    user: 'Анастасия Горшкова',
-    userId: 1,
-    event: 'has edit name status from On Track to Off Track.',
-    time: '17.02.2017 13:15'
-  },
-  {
-    user: 'Анастасия Горшкова',
-    userId: 1,
-    event: 'has edit name status from Proposed to On Track.',
-    time: '17.02.2017 13:15'
-  },
-  {
-    user: 'Максим Слепухов',
-    userId: 2,
-    event: 'has edit priority of issue from 3 to 3.',
-    time: '17.02.2017 13:15'
-  },
-  {
-    user: 'Анастасия Горшкова',
-    userId: 1,
-    event: 'has edit name status from On Track to Proposed.',
-    time: '17.02.2017 13:15'
-  },
-  {
-    user: 'Анастасия Горшкова',
-    userId: 1,
-    event: 'has edit name status from Proposed to On Track.',
-    time: '17.02.2017 13:15'
-  },
-  {
-    user: 'Виктор Сычев',
-    userId: 3,
-    event: 'has posted task to Фаза проекта Этап 10.',
-    time: '17.02.2017 13:15'
-  },
-  {
-    user: 'Виктор Сычев',
-    userId: 3,
-    event: 'has add task.',
-    time: '17.02.2017 13:15'
+      case 'linkedTask':
+      case 'parentTask':
+      case 'prevParentTask':
+        result = result.replace(`{${entity}}`, entities[entity].task.name);
+        break;
+
+      case 'sprint':
+      case 'prevSprint':
+        result = result.replace(`{${entity}}`, entities[entity].name);
+        break;
+
+      case 'file':
+        // реализовать потом
+        break;
+
+      default:
+        break;
+      }
+    });
+    return result;
   }
-];
+}
 
-export default class TaskHistory extends React.Component {
+
+class TaskHistory extends React.Component {
 
   constructor (props) {
     super(props);
     this.state = {isUserCardVisible: false};
   }
 
-  showUserCard = (id) => {
+  componentDidMount = () => {
+    this.props.getTaskHistory(this.props.params.taskId);
+  }
+
+  showUserCard = id => {
     this.setState({isUserCardVisible: true, userId: id});
   }
 
@@ -67,13 +62,13 @@ export default class TaskHistory extends React.Component {
 
   render () {
     const css = require('./TaskHistory.scss');
-    const eventList = data.map((element, i) => {
-      return <div className={css.historyEvent} key={i}>
-        <span className={css.time}>{element.time}</span>
+    const eventList = this.props.history.map((event, i) => {
+      return <div className={css.historyEvent} key={event.id}>
+        <span className={css.time}> {moment(event.date).format('DD.MM.YYYY HH:mm:ss')}</span>
         <div className={css.historyAction}>
-          <UserCard id={element.userId}>
-            <Link>{element.user}</Link>
-          </UserCard> {element.event}
+          <UserCard user={event.author}>
+            <Link>{event.author.fullNameRu}</Link>
+          </UserCard> {getMessage(event.message, event.entities)}
         </div>
       </div>;
     });
@@ -88,5 +83,16 @@ export default class TaskHistory extends React.Component {
 }
 
 TaskHistory.propTypes = {
-  task: PropTypes.object
+  getTaskHistory: PropTypes.func.isRequired,
+  history: PropTypes.array
 };
+
+const mapStateToProps = state => ({
+  history: state.Task.task.history
+});
+
+const mapDispatchToProps = {
+  getTaskHistory
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TaskHistory);
