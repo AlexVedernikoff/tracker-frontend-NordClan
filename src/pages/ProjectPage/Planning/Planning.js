@@ -3,12 +3,12 @@ import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
 import GanttChart from './GanttChart';
 import classnames from 'classnames';
-import CreateTask from '../CreateTask';
 import * as css from './Planning.scss';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import DraggableTaskRow from './DraggableTaskRow';
 import Button from '../../../components/Button';
 import SelectDropdown from '../../../components/SelectDropdown';
+import CreateTaskModal from '../../../components/CreateTaskModal';
 import SprintColumn from './SprintColumn';
 import _ from 'lodash';
 import { connect } from 'react-redux';
@@ -19,11 +19,7 @@ import CreateSprintModal from '../CreateSprintModal';
 import SprintCard from '../../../components/SprintCard';
 import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
-import {
-  openCreateTaskModal,
-  closeCreateTaskModal
-} from '../../../actions/Project';
-import { createTask } from '../../../actions/Project';
+import { openCreateTaskModal } from '../../../actions/Project';
 
 const sortTasks = sortedArr => {
   sortedArr.sort((a, b) => {
@@ -63,12 +59,6 @@ class Planning extends Component {
 
   componentDidUpdate () {
     ReactTooltip.rebuild();
-  }
-
-  setCallee (callee) {
-    this.setState({
-      createTaskCallee: callee
-    });
   }
 
   handleOpenModalAddSprint = () => {
@@ -116,7 +106,7 @@ class Planning extends Component {
       value: 0,
       label: 'Backlog',
       className: classnames({
-        [css.INPROGRESS]: true,
+        [css.INPROGRESS]: false,
         [css.sprintMarker]: true
       })
     });
@@ -174,23 +164,11 @@ class Planning extends Component {
     });
   };
 
-  handleModal = event => {
-    const {
-      isCreateTaskModalOpen,
-      openCreateTaskModal,
-      closeCreateTaskModal
-    } = this.props;
-    if (isCreateTaskModalOpen) {
-      // this.setState({
-      //   projectName: '',
-      //   projectPrefix: '',
-      //   selectedPortfolio: null
-      // });
-      closeCreateTaskModal();
-    } else {
-      this.setCallee(event.target.name);
-      openCreateTaskModal();
-    }
+  openModal = event => {
+    this.setState({
+      createTaskCallee: event.target.name
+    });
+    this.props.openCreateTaskModal();
   };
 
   render () {
@@ -431,7 +409,7 @@ class Planning extends Component {
                   />
                 </div>
                 <Button
-                  onClick={this.handleModal}
+                  onClick={this.openModal}
                   type="bordered"
                   text="Создать задачу"
                   icon="IconPlus"
@@ -477,7 +455,7 @@ class Planning extends Component {
                   />
                 </div>
                 <Button
-                  onClick={this.handleModal}
+                  onClick={this.openModal}
                   type="bordered"
                   text="Создать задачу"
                   icon="IconPlus"
@@ -507,21 +485,13 @@ class Planning extends Component {
             </Col>
           </Row>
         </section>
-        <GanttChart />
-        <CreateTask
-          isOpen={this.props.isCreateTaskModalOpen}
-          onRequestClose={this.handleModal}
-          sprintsList={
-            this.state.createTaskCallee === 'left'
-              ? leftColumnSprints
-              : rightColumnSprints
-          }
+        {/* <GanttChart /> */}
+        <CreateTaskModal
           selectedSprintValue={
             this.state.createTaskCallee === 'left'
               ? this.state.leftColumn
               : this.state.rightColumn
           }
-          onSubmit={this.props.createTask}
           project={this.props.project}
           column={this.state.createTaskCallee}
         />
@@ -533,9 +503,8 @@ class Planning extends Component {
 Planning.propTypes = {
   SprintIsEditing: PropTypes.bool,
   changeTask: PropTypes.func.isRequired,
-  closeCreateTaskModal: PropTypes.func,
+  createSprint: PropTypes.func.isRequired,
   getPlanningTasks: PropTypes.func.isRequired,
-  isCreateTaskModalOpen: PropTypes.bool,
   leftColumnTasks: PropTypes.array,
   openCreateTaskModal: PropTypes.func,
   project: PropTypes.object,
@@ -549,8 +518,7 @@ const mapStateToProps = state => ({
   project: state.Project.project,
   leftColumnTasks: state.PlanningTasks.leftColumnTasks,
   rightColumnTasks: state.PlanningTasks.rightColumnTasks,
-  SprintIsEditing: state.Task.SprintIsEditing,
-  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen
+  SprintIsEditing: state.Task.SprintIsEditing
 });
 
 const mapDispatchToProps = {
@@ -558,8 +526,6 @@ const mapDispatchToProps = {
   changeTask,
   startTaskEditing,
   openCreateTaskModal,
-  closeCreateTaskModal,
-  createTask,
   createSprint
 };
 
