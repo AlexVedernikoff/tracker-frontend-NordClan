@@ -241,12 +241,13 @@ class CreateTaskModal extends Component {
               <Col xs={formLayout.secondCol} className={css.rightColumn}>
                 <Select
                   multi={false}
-                  ignoreCase={false}
+                  ignoreCase
                   placeholder="Выберите спринт"
                   options={this.state.types}
                   className={css.selectSprint}
                   value={this.state.selectedType}
                   onChange={this.onTypeChange}
+                  noResultsText="Нет результатов"
                 />
               </Col>
             </Row>
@@ -294,12 +295,13 @@ class CreateTaskModal extends Component {
                   promptTextCreator={label => `Создать спринт '${label}'`}
                   searchPromptText={'Введите название спринта'}
                   multi={false}
-                  ignoreCase={false}
+                  ignoreCase
                   placeholder="Выберите спринт"
                   options={this.getSprints()}
                   className={css.selectSprint}
                   onChange={this.handleModalSprintChange}
                   value={this.state.selectedSprint}
+                  noResultsText="Нет результатов"
                 />
               </Col>
             </Row>
