@@ -6,39 +6,45 @@ import { getTaskHistory} from '../../../actions/Task';
 
 import UserCard from '../../../components/UserCard';
 
-const getMessage = (message, entities) => {
+const getMessage = (message, entities, projectId) => {
   if (Object.keys(entities).length === 0) {
     return message;
   } else {
-    let result = message;
-    Object.keys(entities).forEach(entity => {
-      switch (entity) {
-      case 'performer':
-        result = result.replace(`{${entity}}`, entities[entity].fullNameRu);
-        break;
+    const stringsArray = message.split(/[{}]/);
+    stringsArray.pop();
 
-      case 'linkedTask':
-      case 'parentTask':
-      case 'prevParentTask':
-        result = result.replace(`{${entity}}`, entities[entity].task.name);
-        break;
+    return stringsArray.map((string, i) => {
+      if (i % 2 === 0) {
+        return <span>{string}</span>;
+      } else {
+        switch (string) {
+        case 'prevPerformer':
+        case 'performer':
+          return <UserCard user={entities[string]}>
+                   <Link>{entities[string].fullNameRu}</Link>
+                 </UserCard>;
+        case 'linkedTask':
+        case 'parentTask':
+        case 'prevParentTask':
+          return <Link to={`/projects/${projectId}/tasks/${entities[string].task.id}`}>
+                  {entities[string].task.name}
+                 </Link>;
+        case 'sprint':
+        case 'prevSprint':
+          return <Link to={`/projects/${projectId}/sprint${entities[string].id}/tasks`}>
+                  {entities[string].name}
+                </Link>;
+        case 'file':
+          // реализовать потом
+          break;
 
-      case 'sprint':
-      case 'prevSprint':
-        result = result.replace(`{${entity}}`, entities[entity].name);
-        break;
-
-      case 'file':
-        // реализовать потом
-        break;
-
-      default:
-        break;
+        default:
+          break;
+        }
       }
     });
-    return result;
   }
-}
+};
 
 
 class TaskHistory extends React.Component {
@@ -68,7 +74,7 @@ class TaskHistory extends React.Component {
         <div className={css.historyAction}>
           <UserCard user={event.author}>
             <Link>{event.author.fullNameRu}</Link>
-          </UserCard> {getMessage(event.message, event.entities)}
+          </UserCard> {getMessage(event.message, event.entities, this.props.params.projectId)}
         </div>
       </div>;
     });
@@ -84,7 +90,11 @@ class TaskHistory extends React.Component {
 
 TaskHistory.propTypes = {
   getTaskHistory: PropTypes.func.isRequired,
-  history: PropTypes.array
+  history: PropTypes.array,
+  params: PropTypes.shape({
+    projectId: PropTypes.string.isRequired,
+    taskId: PropTypes.string.isRequired
+  })
 };
 
 const mapStateToProps = state => ({
