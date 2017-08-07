@@ -29,6 +29,20 @@ const sortTasks = sortedArr => {
   return sortedArr;
 };
 
+const getSprintBlock = sprint => {
+  const {factStartDate: start, factFinishDate: end} = sprint;
+  const daysInYear = moment().endOf('year').dayOfYear();
+
+  return {
+    left: Math.floor(moment(start).dayOfYear() / daysInYear * 100) + '%',
+    right: Math.floor(100 - (moment(end).dayOfYear() / daysInYear * 100)) + '%'
+  };
+};
+
+const getSprintTime = sprint =>
+  `${moment(sprint.factStartDate).format('DD.MM.YYYY')}
+  ${sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}` : '- ...'}`;
+
 class Planning extends Component {
   constructor (props) {
     super(props);
@@ -202,6 +216,7 @@ class Planning extends Component {
     const rightEstimates = this.getEstimatesInfo(this.state.rightColumn, this.props.rightColumnTasks);
     const leftColumnSprints = this.getSprints('leftColumn');
     const rightColumnSprints = this.getSprints('rightColumn');
+    const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 
     return (
       <div>
@@ -236,156 +251,41 @@ class Planning extends Component {
               <div className={css.sprintNames}>
                 <div />
                 <div />
-                <div>
-                  <span className={css.selection} />
-                  <span className={css.name}>Спринт №1</span>
-                </div>
-                <div>
-                  <span className={css.selection} />
-                  <span className={css.name}>Спринт №2</span>
-                </div>
-                <div>
-                  <span className={css.selection} />
-                  <span className={css.name}>Спринт №3</span>
-                </div>
-                <div>
-                  <span className={css.selection} />
-                  <span className={css.name}>Спринт №4</span>
-                </div>
-                <div>
-                  <span className={css.selection} />
-                  <span className={css.name}>
-                    Очень длинное название спринта
-                  </span>
-                </div>
+                {this.props.sprints.map(sprint =>
+                  <div>
+                    <span className={css.selection} data-tip={getSprintTime(sprint)} />
+                    <span className={css.name}>{sprint.name}</span>
+                  </div>
+                )}
               </div>
               <div className={css.table}>
                 <div className={css.tr}>
-                  <div className={css.year}>2016</div>
                   <div className={css.year}>2017</div>
-                  <div className={css.year}>2018</div>
                 </div>
                 <div className={css.tr}>
                   <div className={css.nameHeader} />
-                  <div className={css.month}>Январь</div>
-                  <div className={css.month}>Февраль</div>
-                  <div className={css.month}>Март</div>
-                  <div className={css.month}>Апрель</div>
-                  <div className={css.month}>Май</div>
-                  <div className={css.month}>Июнь</div>
-                  <div className={css.month}>Июль</div>
-                  <div className={css.month}>Август</div>
-                  <div className={css.month}>Сентябрь</div>
-                  <div className={css.month}>Октябрь</div>
-                  <div className={css.month}>Ноябрь</div>
-                  <div className={css.month}>Декабрь</div>
-                  <div className={css.month}>Январь</div>
-                  <div className={css.month}>Февраль</div>
-                  <div className={css.month}>Март</div>
-                  <div className={css.month}>Апрель</div>
-                  <div className={css.month}>Май</div>
-                  <div className={css.month}>Июнь</div>
-                  <div className={css.month}>Июль</div>
-                  <div className={css.month}>Август</div>
-                  <div className={css.month}>Сентябрь</div>
-                  <div className={css.month}>Октябрь</div>
-                  <div className={css.month}>Ноябрь</div>
-                  <div className={css.month}>Декабрь</div>
-                  <div className={css.month}>Январь</div>
-                  <div className={css.month}>Февраль</div>
-                  <div className={css.month}>Март</div>
-                  <div className={css.month}>Апрель</div>
-                  <div className={css.month}>Май</div>
-                  <div className={css.month}>Июнь</div>
-                  <div className={css.month}>Июль</div>
-                  <div className={css.month}>Август</div>
-                  <div className={css.month}>Сентябрь</div>
-                  <div className={css.month}>Октябрь</div>
-                  <div className={css.month}>Ноябрь</div>
-                  <div className={css.month}>Декабрь</div>
+                  {
+                    months.map(month => <div className={css.month}>{month}</div>)
+                  }
                 </div>
-                <div className={css.tr}>
-                  <div
-                    className={classnames({
-                      [css.sprintBar]: true,
-                      [css.finished]: true
-                    })}
-                    style={{ left: '13%', right: '83%' }}
-                  />
-                </div>
-                <div className={css.tr}>
-                  <div
-                    className={classnames({
-                      [css.sprintBar]: true,
-                      [css.finished]: true
-                    })}
-                    style={{ left: '17%', right: '81%' }}
-                  />
-                </div>
-                <div className={css.tr}>
-                  <div
-                    className={classnames({
-                      [css.sprintBar]: true,
-                      [css.active]: true
-                    })}
-                    style={{ left: '19%', right: '79%' }}
-                  />
-                </div>
-                <div className={css.tr}>
-                  <div
-                    className={classnames({
-                      [css.sprintBar]: true,
-                      [css.future]: true
-                    })}
-                    style={{ left: '21%', right: '75%' }}
-                  />
-                </div>
-                <div className={css.tr}>
-                  <div
-                    className={classnames({
-                      [css.sprintBar]: true,
-                      [css.future]: true
-                    })}
-                    style={{ left: '25%', right: '72%' }}
-                  />
-                </div>
+                {this.props.sprints.map(sprint =>
+                  <div className={css.tr}>
+                    <div
+                      className={classnames({
+                        [css.sprintBar]: true,
+                        [css.unactive]: sprint.statusId === 1 && moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]'),
+                        [css.finished]: moment(sprint.factFinishDate).isBefore(moment(), 'days'),
+                        [css.active]: sprint.statusId === 2,
+                        [css.future]: moment(sprint.factStartDate).isAfter(moment(), 'days')
+                      })}
+                      style={getSprintBlock(sprint)}
+                    />
+                  </div>
+                )}
                 <div className={css.grid}>
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
+                  {
+                    months.map(() => <span />)
+                  }
                 </div>
               </div>
             </div>
