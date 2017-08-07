@@ -1,63 +1,64 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
+import moment from 'moment';
+import { getTaskHistory} from '../../../actions/Task';
 
 import UserCard from '../../../components/UserCard';
 
-// Mocks
+const getMessage = (message, entities, projectId) => {
+  if (Object.keys(entities).length === 0) {
+    return message;
+  } else {
+    const stringsArray = message.split(/[{}]/);
+    stringsArray.pop();
 
-const data = [
-  {
-    user: 'Анастасия Горшкова',
-    userId: 1,
-    event: 'has edit name status from On Track to Off Track.',
-    time: '17.02.2017 13:15'
-  },
-  {
-    user: 'Анастасия Горшкова',
-    userId: 1,
-    event: 'has edit name status from Proposed to On Track.',
-    time: '17.02.2017 13:15'
-  },
-  {
-    user: 'Максим Слепухов',
-    userId: 2,
-    event: 'has edit priority of issue from 3 to 3.',
-    time: '17.02.2017 13:15'
-  },
-  {
-    user: 'Анастасия Горшкова',
-    userId: 1,
-    event: 'has edit name status from On Track to Proposed.',
-    time: '17.02.2017 13:15'
-  },
-  {
-    user: 'Анастасия Горшкова',
-    userId: 1,
-    event: 'has edit name status from Proposed to On Track.',
-    time: '17.02.2017 13:15'
-  },
-  {
-    user: 'Виктор Сычев',
-    userId: 3,
-    event: 'has posted task to Фаза проекта Этап 10.',
-    time: '17.02.2017 13:15'
-  },
-  {
-    user: 'Виктор Сычев',
-    userId: 3,
-    event: 'has add task.',
-    time: '17.02.2017 13:15'
+    return stringsArray.map((string, i) => {
+      if (i % 2 === 0) {
+        return <span>{string}</span>;
+      } else {
+        switch (string) {
+        case 'prevPerformer':
+        case 'performer':
+          return <UserCard user={entities[string]}>
+                   <Link>{entities[string].fullNameRu}</Link>
+                 </UserCard>;
+        case 'linkedTask':
+        case 'parentTask':
+        case 'prevParentTask':
+          return <Link to={`/projects/${projectId}/tasks/${entities[string].task.id}`}>
+                  {entities[string].task.name}
+                 </Link>;
+        case 'sprint':
+        case 'prevSprint':
+          return <Link to={`/projects/${projectId}/sprint${entities[string].id}/tasks`}>
+                  {entities[string].name}
+                </Link>;
+        case 'file':
+          // реализовать потом
+          break;
+
+        default:
+          break;
+        }
+      }
+    });
   }
-];
+};
 
-export default class TaskHistory extends React.Component {
+
+class TaskHistory extends React.Component {
 
   constructor (props) {
     super(props);
     this.state = {isUserCardVisible: false};
   }
 
-  showUserCard = (id) => {
+  componentDidMount = () => {
+    this.props.getTaskHistory(this.props.params.taskId);
+  }
+
+  showUserCard = id => {
     this.setState({isUserCardVisible: true, userId: id});
   }
 
@@ -67,13 +68,13 @@ export default class TaskHistory extends React.Component {
 
   render () {
     const css = require('./TaskHistory.scss');
-    const eventList = data.map((element, i) => {
-      return <div className={css.historyEvent} key={i}>
-        <span className={css.time}>{element.time}</span>
+    const eventList = this.props.history.map((event, i) => {
+      return <div className={css.historyEvent} key={event.id}>
+        <span className={css.time}> {moment(event.date).format('DD.MM.YYYY HH:mm:ss')}</span>
         <div className={css.historyAction}>
-          <UserCard id={element.userId}>
-            <Link>{element.user}</Link>
-          </UserCard> {element.event}
+          <UserCard user={event.author}>
+            <Link>{event.author.fullNameRu}</Link>
+          </UserCard> {getMessage(event.message, event.entities, this.props.params.projectId)}
         </div>
       </div>;
     });
@@ -88,5 +89,20 @@ export default class TaskHistory extends React.Component {
 }
 
 TaskHistory.propTypes = {
-  task: PropTypes.object
+  getTaskHistory: PropTypes.func.isRequired,
+  history: PropTypes.array,
+  params: PropTypes.shape({
+    projectId: PropTypes.string.isRequired,
+    taskId: PropTypes.string.isRequired
+  })
 };
+
+const mapStateToProps = state => ({
+  history: state.Task.task.history
+});
+
+const mapDispatchToProps = {
+  getTaskHistory
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TaskHistory);

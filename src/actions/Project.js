@@ -227,7 +227,7 @@ const ChangeProject = (ChangedProperties, target) => {
 
 const createTask = (task, openTaskPage, callee) => {
   if (!task.name || !task.projectId || !task.statusId || !task.typeId) {
-    return;
+    return () => {};
   }
 
   const URL = `${API_URL}/task`;

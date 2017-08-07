@@ -80,7 +80,7 @@ export default class AppRouter extends Component {
                 <Route path="property" component={Settings} />
                 <Route path="planning" component={Planning} />
                 <Route path="analitics" component={Analitics} />
-                <Route path="tasks" component={TaskList} />
+                <Route path="(sprint:sprintId/)tasks" component={TaskList} />
                 <IndexRedirect to="agile-board" />
               </Route>
 

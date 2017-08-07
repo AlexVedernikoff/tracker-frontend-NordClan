@@ -4,8 +4,6 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import moment from 'moment';
-import classnames from 'classnames';
 
 import TaskHeader from './TaskHeader';
 import Details from './Details';
@@ -15,8 +13,9 @@ import Description from '../../components/Description';
 import RouteTabs from '../../components/RouteTabs';
 import TaskModal from '../../components/TaskModal';
 import ConfirmModal from '../../components/ConfirmModal';
+import CreateTaskModal from '../../components/CreateTaskModal';
 import HttpError from '../../components/HttpError';
-import CreateTask from '../../pages/ProjectPage/CreateTask';
+
 import { getTask,
         startTaskEditing,
         stopTaskEditing,
@@ -28,9 +27,7 @@ import { getTask,
 import getTasks from '../../actions/Tasks';
 import {
   getProjectInfo,
-  openCreateTaskModal,
-  closeCreateTaskModal,
-  createTask
+  openCreateTaskModal
 } from '../../actions/Project';
 
 import * as css from './TaskPage.scss';
@@ -59,14 +56,6 @@ class TaskPage extends Component {
       this.props.getProjectInfo(this.props.params.projectId);
     }
   }
-
-  handleCreateTaskModal = () => {
-    if (this.props.isCreateTaskModalOpen) {
-      this.props.closeCreateTaskModal();
-    } else {
-      this.props.openCreateTaskModal();
-    }
-  };
 
   linkTask = linkedTaskId => {
     this.props.linkTask(this.props.params.taskId, linkedTaskId.toString());
@@ -114,35 +103,6 @@ class TaskPage extends Component {
     }));
   };
 
-  getSprints = () => {
-    let sprints = _.sortBy(this.props.sprints, sprint => {
-      return new moment(sprint.factFinishDate);
-    });
-
-    sprints = sprints.map((sprint, i) => ({
-      value: sprint.id,
-      label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${sprint.factFinishDate
-        ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}`
-        : '- ...'})`,
-      statusId: sprint.statusId,
-      className: classnames({
-        [css.INPROGRESS]: sprint.statusId === 2,
-        [css.sprintMarker]: true,
-        [css.FINISHED]: sprint.statusId === 1
-      })
-    }));
-
-    sprints.push({
-      value: 0,
-      label: 'Backlog',
-      className: classnames({
-        [css.INPROGRESS]: true,
-        [css.sprintMarker]: true
-      })
-    });
-    return sprints;
-  };
-
   render () {
     // Mocks
 
@@ -188,12 +148,12 @@ class TaskPage extends Component {
               <Attachments task={task} />
               <RouteTabs style={{ marginTop: '2rem', marginBottom: '2rem' }}>
                 <Link
-                  to={`/projects/${task.projectId}/tasks/${task.id}/comments`}
+                  to={`/projects/${this.props.params.projectId}/tasks/${this.props.params.taskId}/comments`}
                 >
                   Комментарии
                 </Link>
                 <Link
-                  to={`/projects/${task.projectId}/tasks/${task.id}/history`}
+                  to={`/projects/${this.props.params.projectId}/tasks/${this.props.params.taskId}/history`}
                 >
                   История
                 </Link>
@@ -211,24 +171,17 @@ class TaskPage extends Component {
               }
               {
                 this.props.task.subTasks && !this.props.task.parentTask
-                ? <RelatedTasks task={this.props.task} type="subTasks" onAction={this.handleCreateTaskModal} />
+                ? <RelatedTasks task={this.props.task} type="subTasks" onAction={this.props.openCreateTaskModal} />
                 : null
               }
             </aside>
           </Col>
         </Row>
-        { this.props.task.project
-          ? <CreateTask
-              isOpen={this.props.isCreateTaskModalOpen}
-              onRequestClose={this.handleCreateTaskModal}
-              sprintsList={this.getSprints()}
-              selectedSprintValue={this.props.task.sprint ? this.props.task.sprint.id : 0}
-              onSubmit={this.props.createTask}
-              project={this.props.task.project}
-              parentTaskId={this.props.task.id}
-            />
-            : null
-        }
+        <CreateTaskModal
+          selectedSprintValue={this.props.task.sprint ? this.props.task.sprint.id : 0}
+          project={this.props.project}
+          parentTaskId={this.props.task.id}
+        />
         {
           this.state.isTaskModalOpen
           ? <TaskModal
@@ -260,20 +213,17 @@ TaskPage.propTypes = {
   changeTask: PropTypes.func.isRequired,
   changeTaskUser: PropTypes.func.isRequired,
   children: PropTypes.object,
-  closeCreateTaskModal: PropTypes.func,
-  createTask: PropTypes.func.isRequired,
   getProjectInfo: PropTypes.func.isRequired,
   getTask: PropTypes.func.isRequired,
   getTasks: PropTypes.func.isRequired,
-  isCreateTaskModalOpen: PropTypes.bool,
   linkTask: PropTypes.func.isRequired,
-  openCreateTaskModal: PropTypes.func,
+  openCreateTaskModal: PropTypes.func.isRequired,
   params: PropTypes.shape({
     projectId: PropTypes.string.isRequired,
     taskId: PropTypes.string.isRequired
   }),
+  project: PropTypes.object,
   projectTasks: PropTypes.array,
-  sprints: PropTypes.array,
   startTaskEditing: PropTypes.func.isRequired,
   stopTaskEditing: PropTypes.func.isRequired,
   task: PropTypes.object,
@@ -281,8 +231,7 @@ TaskPage.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
-  sprints: state.Project.project.sprints,
+  project: state.Project.project,
   projectTasks: state.Tasks.tasks,
   task: state.Task.task,
   DescriptionIsEditing: state.Task.DescriptionIsEditing
@@ -297,8 +246,6 @@ const mapDispatchToProps = {
   changeTask,
   changeTaskUser,
   openCreateTaskModal,
-  closeCreateTaskModal,
-  createTask,
   linkTask,
   unlinkTask
 };
