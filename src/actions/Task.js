@@ -13,6 +13,15 @@ const getTaskSuccess = task => ({
   data: task
 });
 
+const getTaskHistoryStart = () => ({
+  type: TaskActions.GET_TASK_HISTORY_REQUEST_SENT
+});
+
+const getTaskHistorySuccess = history => ({
+  type: TaskActions.GET_TASK_HISTORY_REQUEST_SUCCESS,
+  data: history
+});
+
 const requestTaskChange = () => ({
   type: TaskActions.TASK_CHANGE_REQUEST_SENT
 });
@@ -75,6 +84,32 @@ const getTask = id => {
       .then(response => {
         if (response && response.status === 200) {
           dispatch(getTaskSuccess(response.data));
+          dispatch(finishLoading());
+        }
+      });
+  };
+};
+
+const getTaskHistory = id => {
+  if (!id) {
+    return () => {};
+  }
+
+  const URL = `${API_URL}/task/${id}/history`;
+
+  return dispatch => {
+    dispatch(getTaskHistoryStart());
+    dispatch(startLoading());
+
+    axios
+      .get(URL, {}, { withCredentials: true })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(getTaskHistorySuccess(response.data));
           dispatch(finishLoading());
         }
       });
@@ -201,4 +236,4 @@ const changeTaskUser = (taskId, userId, statusId) => {
   };
 };
 
-export { getTask, startTaskEditing, stopTaskEditing, changeTask, changeTaskUser, startTaskChangeUser, linkTask, unlinkTask };
+export { getTask, getTaskHistory, startTaskEditing, stopTaskEditing, changeTask, changeTaskUser, startTaskChangeUser, linkTask, unlinkTask };

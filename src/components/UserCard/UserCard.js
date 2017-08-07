@@ -7,30 +7,6 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import { IconSkype, IconMail, IconPhone } from '../Icons';
 
-const user = {
-  1: {
-    pic: 'http://lorempixel.com/200/200/people/',
-    name: 'Анастасия Горшкова',
-    skype: 'woody.just@gmail.com',
-    email: 'woody.just@gmail.com',
-    phone: '+79041862212'
-  },
-  2: {
-    pic: 'http://lorempixel.com/200/200/people/',
-    name: 'Максим Слепухов',
-    skype: 'maxim.slepuchov',
-    email: 'maxim.slepuchov@gmail.com',
-    phone: '+7 904 186 22 12'
-  },
-  3: {
-    pic: 'http://lorempixel.com/200/200/people/',
-    name: 'Виктор Сычев ',
-    skype: 'sychev.victor',
-    email: 'victor.sychev@simbirsoft.com',
-    phone: '+7 960 377 90 27'
-  }
-};
-
 class UserCard extends React.Component {
 
   constructor (props) {
@@ -55,6 +31,8 @@ class UserCard extends React.Component {
      })
     );
 
+    const {user} = this.props;
+
     return (
       <div className={css.wrapper}>
         {childrenWithProps}
@@ -63,22 +41,22 @@ class UserCard extends React.Component {
             this.state.visible
             ? <div className={css.userCard}>
               <div className={css.photoWrapper}>
-                <img src={user[this.props.id].pic} alt=""/>
+                <img src={user.photo} alt=""/>
               </div>
               <div className={css.name}>
-                {user[this.props.id].name}
+                {user.fullNameRu}
               </div>
               <div className={css.meta}>
                 <span><IconSkype/></span>
-                <span><a href={`skype:${user[this.props.id].skype}?add`}>{user[this.props.id].skype}</a></span>
+                <span><a href={`skype:${user.skype}?add`}>{user.skype}</a></span>
               </div>
               <div className={css.meta}>
                 <span><IconMail/></span>
-                <span><a href={`mailto:${user[this.props.id].email}`}>{user[this.props.id].email}</a></span>
+                <span><a href={`mailto:${user.emailPrimary}`}>{user.emailPrimary}</a></span>
               </div>
               <div className={css.meta}>
                 <span><IconPhone/></span>
-                <span><a href={`tel:${user[this.props.id].phone}`}>{user[this.props.id].phone}</a></span>
+                <span><a href={`tel:${user.mobile}`}>{user.mobile}</a></span>
               </div>
             </div>
             : null
@@ -91,8 +69,7 @@ class UserCard extends React.Component {
 
 UserCard.propTypes = {
   children: PropTypes.object,
-  id: PropTypes.number
+  user: PropTypes.object
 };
 
 export default onClickOutside(UserCard);
-// export default UserCard;
