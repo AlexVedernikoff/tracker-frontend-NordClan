@@ -13,6 +13,11 @@ const getTaskSuccess = task => ({
   data: task
 });
 
+const getTaskFail = error => ({
+  type: TaskActions.GET_TASK_REQUEST_FAIL,
+  error: error
+});
+
 const requestTaskChange = () => ({
   type: TaskActions.TASK_CHANGE_REQUEST_SENT
 });
@@ -69,7 +74,7 @@ const getTask = id => {
     axios
       .get(URL, {}, { withCredentials: true })
       .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(getTaskFail(error.response.data));
         dispatch(finishLoading());
       })
       .then(response => {

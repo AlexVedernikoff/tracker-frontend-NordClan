@@ -16,6 +16,11 @@ const gettingProjectInfoSuccess = project => ({
   project: project
 });
 
+const gettingProjectInfoFail = error => ({
+  type: ProjectActions.PROJECT_INFO_RECEIVE_FAIL,
+  error: error
+});
+
 const gettingProjectUsersStart = () => ({
   type: ProjectActions.PROJECT_USERS_RECEIVE_START
 });
@@ -132,7 +137,7 @@ const getProjectInfo = id => {
     axios
       .get(URL, {}, { withCredentials: true })
       .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(gettingProjectInfoFail(error.response.data));
         dispatch(finishLoading());
       })
       .then(response => {

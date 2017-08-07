@@ -27,6 +27,7 @@ import Login from './pages/Login';
 import Projects from './pages/Projects';
 import Dashboard from './pages/Dashboard';
 import Repeat from './pages/Repeat';
+import NotFound from './pages/NotFound';
 import DemoPage from './components/Icons/DemoPage';
 
 import configureStore from './store/configureStore';
@@ -99,6 +100,7 @@ export default class AppRouter extends Component {
 
             <IndexRedirect to="login" />
           </Route>
+          <Route path="*" component={NotFound} />
         </Router>
       </Provider>
     );

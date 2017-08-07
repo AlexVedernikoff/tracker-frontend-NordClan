@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 import RouteTabs from '../../components/RouteTabs';
 import { IconEdit } from '../../components/Icons';
+import HttpError from '../../components/HttpError';
 import * as css from './ProjectPage.scss';
 import ProjectTitle from './ProjectTitle';
 
@@ -24,8 +25,8 @@ class ProjectPage extends Component {
     // Mocks
     const pic
       = 'https://static.qiwi.com/img/qiwi_com/favicon/favicon-192x192.png';
-
-    return (
+    
+    return (this.props.project.error) ? (<HttpError error={this.props.project.error}/>) : (
       <div id="project-page">
         <ProjectTitle
           pic={pic}

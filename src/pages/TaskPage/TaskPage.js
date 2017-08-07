@@ -15,6 +15,7 @@ import Description from '../../components/Description';
 import RouteTabs from '../../components/RouteTabs';
 import TaskModal from '../../components/TaskModal';
 import ConfirmModal from '../../components/ConfirmModal';
+import HttpError from '../../components/HttpError';
 import CreateTask from '../../pages/ProjectPage/CreateTask';
 import { getTask,
         startTaskEditing,
@@ -166,7 +167,7 @@ class TaskPage extends Component {
       }
     };
 
-    return (
+    return (this.props.task.error) ? (<HttpError error={this.props.task.error}/>) : (
       <div id="task-page">
         <Row>
           <Col xs={8}>

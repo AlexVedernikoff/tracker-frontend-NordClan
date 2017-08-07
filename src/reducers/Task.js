@@ -3,7 +3,8 @@ import * as TagsActions from '../constants/Tags';
 
 const InitialState = {
   task: {
-    tags: []
+    tags: [],
+    error: false
   },
   TitleIsEditing: false,
   PlanningTimeIsEditing: false,
@@ -43,6 +44,15 @@ export default function Task (state = InitialState, action) {
     return {
       ...state,
       task: action.data
+    };
+
+  case TaskActions.GET_TASK_REQUEST_FAIL:
+    return {
+      ...state,
+      task: {
+        ...state.task,
+        error: action.error
+      }
     };
 
   case TaskActions.TASK_EDIT_START:
