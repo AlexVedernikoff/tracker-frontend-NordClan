@@ -4,6 +4,7 @@ import * as TagsActions from '../constants/Tags';
 const InitialState = {
   task: {
     tags: [],
+    error: false,
     history: []
   },
   TitleIsEditing: false,
@@ -49,6 +50,15 @@ export default function Task (state = InitialState, action) {
         ...action.data,
         tags: state.task.tags,
         history: state.task.history
+      }
+    };
+
+  case TaskActions.GET_TASK_REQUEST_FAIL:
+    return {
+      ...state,
+      task: {
+        ...state.task,
+        error: action.error
       }
     };
 
