@@ -149,6 +149,8 @@
   z-index: 0;
   top: 0;
   bottom: 0;
+  line-height: 2;
+  text-align: center;
 
   &.active {
     background-color: $color-green;

@@ -40,8 +40,8 @@ const getSprintBlock = sprint => {
 };
 
 const getSprintTime = sprint =>
-  `${moment(sprint.factStartDate).format('DD.MM.YYYY')}
-  ${sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}` : '- ...'}`;
+  `${moment(sprint.factStartDate).format('DD.MM')}
+  ${sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format('DD.MM')}` : '- ...'}`;
 
 class Planning extends Component {
   constructor (props) {
@@ -279,7 +279,9 @@ class Planning extends Component {
                         [css.future]: moment(sprint.factStartDate).isAfter(moment(), 'days')
                       })}
                       style={getSprintBlock(sprint)}
-                    />
+                    >
+                    {sprint.allottedTime} ч.
+                    </div>
                   </div>
                 )}
                 <div className={css.grid}>
