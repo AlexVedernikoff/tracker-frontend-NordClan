@@ -5,8 +5,10 @@ import {
   browserHistory,
   IndexRoute,
   IndexRedirect,
-  Redirect
+  Redirect,
+  applyRouterMiddleware
 } from 'react-router';
+import { useScroll } from 'react-router-scroll';
 import { API_URL } from './constants/Settings';
 
 import MainContainer from './pages/MainContainer';
@@ -63,18 +65,18 @@ export default class AppRouter extends Component {
   render () {
     return (
       <Provider store={store}>
-        <Router key={Math.random()} history={history}>
+        <Router key={Math.random()} history={history} render={applyRouterMiddleware(useScroll(()=>false))}>
           <Route path="/" component={MainContainer}>
             <Route path="login" component={Login} onEnter={isLogged} />
             <Route path="icons" component={DemoPage} />
 
-            <Route path="/" component={InnerContainer} onEnter={requireAuth}>
+            <Route path="/" component={InnerContainer} onEnter={requireAuth} >
               <Route path="dashboard" component={Dashboard} />
               <Route path="repeat" component={Repeat} />
               <Route path="tasks" component={MyTasks} />
               <Route path="projects" component={Projects} />
 
-              <Route path="projects/:projectId" component={ProjectPage}>
+              <Route path="projects/:projectId" component={ProjectPage} scrollToTop >
                 <Route path="agile-board" component={AgileBoard} />
                 <Route path="info" component={Info} />
                 <Route path="property" component={Settings} />
@@ -84,14 +86,15 @@ export default class AppRouter extends Component {
                 <IndexRedirect to="agile-board" />
               </Route>
 
-              <Route path="projects/portfolio/:portfolioId" component={Portfolio} />
+              <Route path="projects/portfolio/:portfolioId" component={Portfolio} scrollToTop />
 
               <Route
                 path="projects/:projectId/tasks/:taskId"
                 component={TaskPage}
+                ignoreScrollBehavior
               >
-                <Route path="comments" component={Comments} />
-                <Route path="history" component={TaskHistory} />
+                <Route path="comments" component={Comments}/>
+                <Route path="history" component={TaskHistory}/>
                 <IndexRedirect to="comments" />
               </Route>
 
