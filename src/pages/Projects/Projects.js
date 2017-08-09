@@ -47,14 +47,19 @@ class Projects extends Component {
   }
 
   loadProjects = (dateFrom, dateTo) => {
-    this.props.getProjects(20, this.state.activePage, '', this.state.filterByName, dateFrom, dateTo);
+    const statuses = [];
+    if (this.state.filteredInProgress) statuses.push(1);
+    if (this.state.filteredInHold) statuses.push(2);
+    if (this.state.filteredFinished) statuses.push(3);
+
+    this.props.getProjects(20, this.state.activePage, '', this.state.filterByName, dateFrom, dateTo, statuses.join(','));
   }
 
-  check = name => {
+  check = (name, callback = () => {}) => {
     const oldValue = this.state[name];
     this.setState({
       [name]: !oldValue
-    });
+    }, callback);
   };
 
   selectValue = (e, name) => {
@@ -117,6 +122,18 @@ class Projects extends Component {
       dateTo = dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
       this.loadProjects(dateFrom, dateTo);
     });
+  };
+
+  handleFilterChange = () => {
+    this.setState(
+      {
+        activePage: 1
+      },
+      () => {
+        const dateFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('YYYY-MM-DD') : '';
+        const dateTo = this.state.dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
+        this.loadProjects(dateFrom, dateTo);
+      });
   };
 
   handleModal = event => {
@@ -214,19 +231,19 @@ class Projects extends Component {
               <StatusCheckbox
                 type="INPROGRESS"
                 checked={filteredInProgress}
-                onClick={() => this.check('filteredInProgress')}
+                onClick={() => {this.check('filteredInProgress', this.handleFilterChange);}}
                 label="В процессе"
               />
               <StatusCheckbox
                 type="INHOLD"
                 checked={filteredInHold}
-                onClick={() => this.check('filteredInHold')}
+                onClick={() => {this.check('filteredInHold', this.handleFilterChange);}}
                 label="Приостановлен"
               />
               <StatusCheckbox
                 type="FINISHED"
                 checked={filteredFinished}
-                onClick={() => this.check('filteredFinished')}
+                onClick={() => {this.check('filteredFinished', this.handleFilterChange);}}
                 label="Завершен"
               />
             </div>

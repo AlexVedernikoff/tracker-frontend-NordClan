@@ -38,7 +38,8 @@ const getProjects = (
   tags = '',
   name = '',
   dateSprintBegin = '',
-  dateSprintEnd = ''
+  dateSprintEnd = '',
+  statusId = ''
 ) => {
   const URL = `${API_URL}/project`;
   return dispatch => {
@@ -55,7 +56,8 @@ const getProjects = (
           name: name,
           fields: 'name, statusId, createdAt',
           dateSprintBegin: dateSprintBegin,
-          dateSprintEnd: dateSprintEnd
+          dateSprintEnd: dateSprintEnd,
+          statusId: statusId
         }
       },
         { withCredentials: true }
