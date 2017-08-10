@@ -83,7 +83,7 @@ export const getInfoAboutMe = () => {
   return dispatch => {
     dispatch(startReceiveUserInfo());
     dispatch(startLoading());
-    axios
+    return axios
       .get(URL, {}, { withCredentials: true })
       .catch(error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
