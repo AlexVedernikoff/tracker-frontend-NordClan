@@ -56,15 +56,15 @@ class TaskHistory extends React.Component {
 
   componentDidMount = () => {
     this.props.getTaskHistory(this.props.params.taskId);
-  }
+  };
 
   showUserCard = id => {
     this.setState({isUserCardVisible: true, userId: id});
-  }
+  };
 
   hideUserCard = () => {
     this.setState({isUserCardVisible: false});
-  }
+  };
 
   render () {
     const css = require('./TaskHistory.scss');

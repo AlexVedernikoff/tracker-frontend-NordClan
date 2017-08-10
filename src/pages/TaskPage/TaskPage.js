@@ -60,12 +60,12 @@ class TaskPage extends Component {
   linkTask = linkedTaskId => {
     this.props.linkTask(this.props.params.taskId, linkedTaskId.toString());
     this.handleCloseLinkTaskModal();
-  }
+  };
 
   unlinkTask = () => {
     this.props.unlinkTask(this.props.params.taskId, this.state.unLinkedTask);
     this.handleCloseUnlinkTaskModal();
-  }
+  };
 
   handleOpenLinkTaskModal = () => {
     this.props.getTasks({
@@ -74,26 +74,26 @@ class TaskPage extends Component {
     this.setState({
       isTaskModalOpen: true
     });
-  }
+  };
 
   handleCloseLinkTaskModal = () => {
     this.setState({
       isTaskModalOpen: false
     });
-  }
+  };
 
   handleCloseUnlinkTaskModal = () => {
     this.setState({
       isUnlinkModalOpen: false
     });
-  }
+  };
 
   handleOpenUnlinkTaskModal = unlinkedTaskId => {
     this.setState({
       isUnlinkModalOpen: true,
       unLinkedTask: unlinkedTaskId
     });
-  }
+  };
 
   getProjectUnlinkedTasks = () => {
     const linkedTasksIds = this.props.task.linkedTasks.map(task => task.id);

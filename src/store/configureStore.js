@@ -1,13 +1,14 @@
-import { createStore, applyMiddleware, compose } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import rootReducer from '../reducers';
+import { taskUpdate } from '../middlewares/Tasks';
+import { composeWithDevTools } from 'redux-devtools-extension';
 
 const configureStore = preloadedState => {
   return createStore(
     rootReducer,
-    compose(
-      applyMiddleware(thunkMiddleware),
-      typeof window.devToolsExtension !== 'undefined' ? window.devToolsExtension() : (f) => f
+    composeWithDevTools(
+      applyMiddleware(thunkMiddleware, taskUpdate)
     )
   );
 };
