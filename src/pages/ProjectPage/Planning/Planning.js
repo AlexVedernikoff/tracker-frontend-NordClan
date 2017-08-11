@@ -50,7 +50,8 @@ class Planning extends Component {
       leftColumn: null,
       rightColumn: null,
       createTaskCallee: null,
-      isModalOpenAddSprint: false
+      isModalOpenAddSprint: false,
+      sprintIdHovered: null
     };
   }
 
@@ -185,6 +186,32 @@ class Planning extends Component {
     this.props.openCreateTaskModal();
   };
 
+  onMouseOverSprint = (sprintId) => {
+    return () => {
+      this.setState({ sprintIdHovered: sprintId });
+    };
+  };
+
+  onMouseOutSprint = () => {
+    this.setState({ sprintIdHovered: null });
+  };
+
+  oClickSprint = (sprintId) => {
+    return () => {
+      if (sprintId === this.state.leftColumn) {
+        this.selectValue(
+          this.state.rightColumn,
+          'leftColumn'
+        );
+      }
+
+      this.selectValue(
+          sprintId,
+          'rightColumn'
+        );
+    };
+  };
+
   render () {
     const leftColumnTasks = sortTasks(this.props.leftColumnTasks).map(task => {
       return (
@@ -228,7 +255,7 @@ class Planning extends Component {
             <Row>
               {this.props.sprints.map((element, i) =>
                 <Col xs={3} key={`sprint-${i}`}>
-                  <SprintCard sprint={element} />
+                  <SprintCard sprint={element} inFocus={element.id === this.state.sprintIdHovered} />
                 </Col>
               )}
             </Row>
@@ -253,7 +280,7 @@ class Planning extends Component {
                 <div />
                 {this.props.sprints.map(sprint =>
                   <div>
-                    <span className={css.selection} data-tip={getSprintTime(sprint)} />
+                    <span className={css.selection} data-tip={getSprintTime(sprint)} onClick={this.oClickSprint(sprint.id)} onMouseOver={this.onMouseOverSprint(sprint.id)} onMouseOut={this.onMouseOutSprint}/>
                     <span className={css.name}>{sprint.name}</span>
                   </div>
                 )}
@@ -280,7 +307,8 @@ class Planning extends Component {
                       })}
                       style={getSprintBlock(sprint)}
                     >
-                    {sprint.allottedTime} ч.
+                      <div className={css.text}>{sprint.spentTime || 0}</div>
+                      <div className={css.text}>{sprint.allottedTime || 0}</div>
                     </div>
                   </div>
                 )}

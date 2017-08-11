@@ -151,6 +151,8 @@
   bottom: 0;
   line-height: 2;
   text-align: center;
+  display: flex;
+  flex-direction: column;
 
   &.active {
     background-color: $color-green;
@@ -166,6 +168,11 @@
 
   &.future {
     background-color: lighten($color-dark, 10%);
+  }
+
+  .text {
+    flex: 1;
+    line-height: 1;
   }
 }
 
