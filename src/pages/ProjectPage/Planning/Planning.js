@@ -21,13 +21,6 @@ import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal } from '../../../actions/Project';
 
-const sortTasks = sortedArr => {
-  sortedArr.sort((a, b) => {
-    if (a.prioritiesId > b.prioritiesId) return 1;
-    if (a.prioritiesId < b.prioritiesId) return -1;
-  });
-  return sortedArr;
-};
 
 const getSprintBlock = sprint => {
   const {factStartDate: start, factFinishDate: end} = sprint;
@@ -213,7 +206,7 @@ class Planning extends Component {
   };
 
   render () {
-    const leftColumnTasks = sortTasks(this.props.leftColumnTasks).map(task => {
+    const leftColumnTasks = this.props.leftColumnTasks.map(task => {
       return (
         <DraggableTaskRow
           key={`task-${task.id}`}
@@ -225,9 +218,8 @@ class Planning extends Component {
       );
     });
 
-    const rightColumnTasks = sortTasks(
-      this.props.rightColumnTasks
-    ).map(task => {
+    const rightColumnTasks =
+      this.props.rightColumnTasks.map(task => {
       return (
         <DraggableTaskRow
           key={`task-${task.id}`}
