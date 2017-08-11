@@ -24,7 +24,7 @@
 
 .wrapper {
   display: flex;
-  width: calc(300% + 6rem);
+  width: 100%;
   flex-shrink: 0;
   overflow: hidden;
 }
@@ -149,9 +149,15 @@
   z-index: 0;
   top: 0;
   bottom: 0;
+  line-height: 2;
+  text-align: center;
 
   &.active {
     background-color: $color-green;
+  }
+
+  &.unactive {
+    border: 1px dashed $color-green;
   }
 
   &.finished {
