@@ -1,7 +1,8 @@
 import * as TagsActions from '../constants/Tags';
 import { API_URL } from '../constants/Settings';
 import axios from 'axios';
-import {startLoading, finishLoading} from './Loading';
+import { startLoading, finishLoading } from './Loading';
+import { showNotification } from './Notifications';
 import {store} from '../Router';
 import {history} from '../Router';
 
@@ -30,6 +31,20 @@ const tagsDeleteSucces = tags => ({
 
 const tagsDeleteError = err => ({
   type: TagsActions.TAGS_DELETE_ERROR,
+  error: err
+});
+
+const startTagsFilter = () => ({
+  type: TagsActions.GET_TAGS_FILTER_START
+});
+
+const TagsFilterSucces = tags => ({
+  type: TagsActions.GET_TAGS_FILTER_SUCCESS,
+  data: tags
+});
+
+const TagsFilterError = err => ({
+  type: TagsActions.GET_TAGS_FILTER_ERROR,
   error: err
 });
 
@@ -73,6 +88,36 @@ export const deleteTag = (tag,
         dispatch(tagsDeleteSucces({
           taggableId: taggableId,
           tags: res.data
+        }));
+        dispatch(finishLoading());
+      });
+  };
+};
+
+
+export const getTagsFilter = (tagName,
+                          filterFor) => {
+  return dispatch => {
+    dispatch(startTagsFilter());
+    dispatch(startLoading());
+    axios
+      .get(`${API_URL}/${filterFor}/tag`,
+        { params: { tagName } },
+        { withCredentials: true }
+      )
+      .then(response => {
+        if (!response) return;
+
+        dispatch(TagsFilterSucces({
+          filteredTags: response.data,
+          filterFor: filterFor
+        }));
+        dispatch(finishLoading());
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(TagsFilterError({
+          error: error
         }));
         dispatch(finishLoading());
       });
