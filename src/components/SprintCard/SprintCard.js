@@ -61,7 +61,7 @@ class SprintCard extends Component {
   };
 
   render () {
-    const { sprint, deleteSprint: dS, editSprint: eS, ...other } = this.props;
+    const { sprint, deleteSprint: dS, editSprint: eS, inFocus, ...other } = this.props;
 
     const edit = () => {
       this.setState({ isModalOpen: false });
@@ -86,7 +86,7 @@ class SprintCard extends Component {
         className={classnames({
           [css.sprintCard]: true,
           [css[sprint.status]]: true,
-          [css.INFOCUS]: this.props.inFocus
+          [css.INFOCUS]: inFocus
         })}
         {...other}
       >
@@ -227,10 +227,6 @@ SprintCard.defaultProps = {
     status: 'INPROGRESS',
   }
 };
-
-// const mapStateToProps = state => ({
-//   inFocus: state.Project.project.id,
-// });
 
 const mapDispatchToProps = {
   deleteSprint,

@@ -255,7 +255,7 @@ class Planning extends Component {
             <Row>
               {this.props.sprints.map((element, i) =>
                 <Col xs={3} key={`sprint-${i}`}>
-                  <SprintCard sprint={element} inFocus={element.id === this.state.sprintIdHovered} />
+                  <SprintCard sprint={element} inFocus={element.id === this.state.sprintIdHovered} onMouseOver={this.onMouseOverSprint(element.id)} onMouseOut={this.onMouseOutSprint} />
                 </Col>
               )}
             </Row>
@@ -278,9 +278,14 @@ class Planning extends Component {
               <div className={css.sprintNames}>
                 <div />
                 <div />
-                {this.props.sprints.map(sprint =>
-                  <div>
-                    <span className={css.selection} data-tip={getSprintTime(sprint)} onClick={this.oClickSprint(sprint.id)} onMouseOver={this.onMouseOverSprint(sprint.id)} onMouseOut={this.onMouseOutSprint}/>
+                {this.props.sprints.map((sprint, i)=>
+                  <div key={`sprint-${i}`}>
+                    <span
+                      className={classnames({
+                        [css.selection]: true,
+                        [css.hover]: sprint.id === this.state.sprintIdHovered
+                      })}
+                      data-tip={getSprintTime(sprint)} onClick={this.oClickSprint(sprint.id)} onMouseOver={this.onMouseOverSprint(sprint.id)} onMouseOut={this.onMouseOutSprint}/>
                     <span className={css.name}>{sprint.name}</span>
                   </div>
                 )}
@@ -292,11 +297,11 @@ class Planning extends Component {
                 <div className={css.tr}>
                   <div className={css.nameHeader} />
                   {
-                    months.map(month => <div className={css.month}>{month}</div>)
+                    months.map(month => <div key={`sprint-${month}`} className={css.month}>{month}</div>)
                   }
                 </div>
-                {this.props.sprints.map(sprint =>
-                  <div className={css.tr}>
+                {this.props.sprints.map((sprint, i) =>
+                  <div key={`sprint-${i}`} className={css.tr}>
                     <div
                       className={classnames({
                         [css.sprintBar]: true,
@@ -314,7 +319,7 @@ class Planning extends Component {
                 )}
                 <div className={css.grid}>
                   {
-                    months.map(() => <span />)
+                    months.map((el, i) => <span key={`sprint-${i}`}/>)
                   }
                 </div>
               </div>
