@@ -20,10 +20,10 @@ const ProjectCard = props => {
     statusId,
     portfolio
   } = props.project;
-  const { isChild } = props;
+  const { isChild, onClickTag } = props;
 
   const tagList = tags.map((element, i) =>
-    <Tag name={element} blocked key={`${i}-tag`} />
+    <Tag name={element} blocked key={`${i}-tag`} onClick={onClickTag} />
   );
 
   let statusTooltip = '';
@@ -127,6 +127,7 @@ const ProjectCard = props => {
 
 ProjectCard.propTypes = {
   isChild: PropTypes.bool,
+  onClickTag: PropTypes.func,
   project: PropTypes.object.isRequired
 };
 

@@ -31,11 +31,12 @@ class TaskRow extends React.Component {
       shortcut,
       card,
       isDragging,
+      onClickTag,
       ...other
     } = this.props;
 
     const classPriority = 'priority-' + task.prioritiesId;
-    const tags = task.tags.map((element, i) => <Tag key={i} name={element.name} blocked/>);
+    const tags = task.tags.map((element, i) => <Tag key={i} name={element.name} blocked onClick={onClickTag}/>);
 
     return (
     <div className={classnames({[css.taskCard]: true, [css[classPriority]]: true, [css.card]: card, [css.dropped]: isDragging})} {...other}>
@@ -140,6 +141,7 @@ class TaskRow extends React.Component {
 TaskRow.propTypes = {
   card: PropTypes.bool,
   isDragging: PropTypes.bool,
+  onClickTag: PropTypes.func,
   prefix: PropTypes.string,
   shortcut: PropTypes.bool,
   task: PropTypes.object

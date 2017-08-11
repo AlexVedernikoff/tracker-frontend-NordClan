@@ -1,4 +1,5 @@
 import * as TaskActions from '../constants/Tasks';
+import * as TagsActions from '../constants/Tags';
 
 const InitialState = {
   tasks: [],
@@ -6,7 +7,8 @@ const InitialState = {
   pagesCount: 1,
   currentPage: 1,
   tags: '',
-  isReceiving: false
+  isReceiving: false,
+  tagsFilter: []
 };
 
 function Tasks (state = InitialState, action) {
@@ -24,6 +26,17 @@ function Tasks (state = InitialState, action) {
         pagesCount: action.data.pagesCount,
         isReceiving: false
       };
+
+  case TagsActions.GET_TAGS_FILTER_SUCCESS:
+    if (action.data.filterFor === 'task') {
+      return {
+        ...state,
+        tagsFilter: action.data.filteredTags
+      };
+    }
+    return {
+      ...state
+    };
 
   default:
     return state;

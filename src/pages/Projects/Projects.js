@@ -4,7 +4,6 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 
 import * as css from './Projects.scss';
-import SelectDropdown from '../../components/SelectDropdown';
 import Button from '../../components/Button';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
 import Input from '../../components/Input';
@@ -12,6 +11,8 @@ import ProjectCard from '../../components/ProjectCard';
 import StatusCheckbox from './StatusCheckbox';
 import Pagination from '../../components/Pagination';
 import moment from 'moment';
+import TagsFilter from '../../components/TagsFilter';
+import _ from 'lodash';
 
 import CreateProject from './CreateProject';
 import getProjects, {
@@ -47,18 +48,20 @@ class Projects extends Component {
   }
 
   loadProjects = (dateFrom, dateTo) => {
-    this.props.getProjects(20, this.state.activePage, '', this.state.filterByName, dateFrom, dateTo);
-  }
+    const tags = this.state.filterTags.map(el => el.value).join(',');
+    const statuses = [];
+    if (this.state.filteredInProgress) statuses.push(1);
+    if (this.state.filteredInHold) statuses.push(2);
+    if (this.state.filteredFinished) statuses.push(3);
 
-  check = name => {
+    this.props.getProjects(20, this.state.activePage, tags, this.state.filterByName, dateFrom, dateTo, statuses.join(','));
+  };
+
+  check = (name, callback = () => {}) => {
     const oldValue = this.state[name];
     this.setState({
       [name]: !oldValue
-    });
-  };
-
-  selectValue = (e, name) => {
-    this.setState({ [name]: e });
+    }, callback);
   };
 
   handlePaginationClick = e => {
@@ -95,14 +98,14 @@ class Projects extends Component {
         activePage: this.state.dateFrom !== dateFrom ? 1 : this.state.activePage
       },
       () => {
-      dateFrom = dateFrom
+        dateFrom = dateFrom
         ? moment(this.state.dateFrom).format('YYYY-MM-DD')
         : '';
-      const dateTo = this.state.dateTo
+        const dateTo = this.state.dateTo
         ? moment(this.state.dateTo).format('YYYY-MM-DD')
         : '';
-      this.loadProjects(dateFrom, dateTo);
-    });
+        this.loadProjects(dateFrom, dateTo);
+      });
   };
 
   handleDayToChange = (dateTo, modifiers) => {
@@ -117,6 +120,18 @@ class Projects extends Component {
       dateTo = dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
       this.loadProjects(dateFrom, dateTo);
     });
+  };
+
+  handleFilterChange = () => {
+    this.setState(
+      {
+        activePage: 1
+      },
+      () => {
+        const dateFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('YYYY-MM-DD') : '';
+        const dateTo = this.state.dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
+        this.loadProjects(dateFrom, dateTo);
+      });
   };
 
   handleModal = event => {
@@ -187,6 +202,21 @@ class Projects extends Component {
     });
   };
 
+  onTagSelect = (tags) => {
+    this.setState({
+      filterTags: tags
+    }, this.handleFilterChange);
+  };
+
+  onClickTag = (tag) => {
+    this.setState({
+      filterTags: _.uniqBy(this.state.filterTags.concat({
+        value: tag,
+        label: tag
+      }), 'value')
+    }, this.handleFilterChange);
+  };
+
   render () {
     const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
     const formattedDayFrom = this.state.dateFrom
@@ -214,19 +244,19 @@ class Projects extends Component {
               <StatusCheckbox
                 type="INPROGRESS"
                 checked={filteredInProgress}
-                onClick={() => this.check('filteredInProgress')}
+                onClick={() => {this.check('filteredInProgress', this.handleFilterChange);}}
                 label="В процессе"
               />
               <StatusCheckbox
                 type="INHOLD"
                 checked={filteredInHold}
-                onClick={() => this.check('filteredInHold')}
+                onClick={() => {this.check('filteredInHold', this.handleFilterChange);}}
                 label="Приостановлен"
               />
               <StatusCheckbox
                 type="FINISHED"
                 checked={filteredFinished}
-                onClick={() => this.check('filteredFinished')}
+                onClick={() => {this.check('filteredFinished', this.handleFilterChange);}}
                 label="Завершен"
               />
             </div>
@@ -258,21 +288,10 @@ class Projects extends Component {
                 </Row>
               </Col>
               <Col xs>
-                <SelectDropdown
-                  name="filterTags"
-                  multi
-                  placeholder="Введите название тега..."
-                  backspaceToRemoveMessage=""
-                  value={this.state.filterTags}
-                  onChange={e => this.selectValue(e, 'filterTags')}
-                  noResultsText="Нет результатов"
-                  options={[
-                    { value: 'develop', label: 'develop' },
-                    { value: 'frontend', label: 'frontend' },
-                    { value: 'inner', label: 'внутренний' },
-                    { value: 'commerce', label: 'коммерческий' },
-                    { value: 'backend', label: 'backend' }
-                  ]}
+                <TagsFilter
+                  filterFor={'project'}
+                  onTagSelect={this.onTagSelect}
+                  filterTags={this.state.filterTags}
                 />
               </Col>
             </Row>
@@ -283,6 +302,7 @@ class Projects extends Component {
                 <ProjectCard
                   key={`project-${project.id}`}
                   project={project}
+                  onClickTag={this.onClickTag}
                 />
               );
             })}
