@@ -10,6 +10,11 @@ import { history } from '../../Router';
 import { doAuthentication } from '../../actions/Authentication';
 
 class Login extends Component {
+  static propTypes = {
+    doAuthentication: PropTypes.func.isRequired,
+    isLoggedIn: PropTypes.bool.isRequired
+  };
+
   constructor (props) {
     super(props);
     this.state = {
@@ -17,6 +22,12 @@ class Login extends Component {
       password: '',
       errorMessage: ''
     };
+  }
+
+  componentDidUpdate () {
+    if (this.props.isLoggedIn) {
+      history.push('/projects');
+    }
   }
 
   handleChange = event => {
@@ -74,12 +85,12 @@ class Login extends Component {
   }
 }
 
+const mapStateToProps = ({ Auth: { isLoggedIn } }) => ({
+  isLoggedIn
+});
+
 const mapDispatchToProps = {
   doAuthentication
 };
 
-Login.propTypes = {
-  doAuthentication: PropTypes.func.isRequired
-};
-
-export default connect(null, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
