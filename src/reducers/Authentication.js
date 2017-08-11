@@ -12,17 +12,23 @@ function Auth (state = InitialState, action) {
   switch (action.type) {
   case AuthActions.AUTHENTICATION_START:
     return {
-      ...state
+      ...state,
+      user: {},
+      isLoggedIn: false
     };
 
   case AuthActions.AUTHENTICATION_ERROR:
     return {
-      ...state
+      ...state,
+      user: {},
+      isLoggedIn: false
     };
 
   case AuthActions.AUTHENTICATION_RECEIVED:
     return {
-      ...state
+      ...state,
+      user: action.data,
+      isLoggedIn: true
     };
 
   case AuthActions.LOGOUT_START:
@@ -37,18 +43,23 @@ function Auth (state = InitialState, action) {
 
   case AuthActions.LOGOUT_COMPLETE:
     return {
-      ...state
+      ...state,
+      user: {},
+      isLoggedIn: false
     };
 
   case AuthActions.USER_INFO_RECEIVE_START:
     return {
-      ...state
+      ...state,
+      user: {},
+      isLoggedIn: false
     };
 
   case AuthActions.USER_INFO_RECEIVE_ERROR:
     return {
       ...state,
-      user: {}
+      user: {},
+      isLoggedIn: false
     };
 
   case AuthActions.USER_INFO_RECEIVE_SUCCESS:
