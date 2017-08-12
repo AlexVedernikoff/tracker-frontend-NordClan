@@ -2,6 +2,7 @@ import * as AuthActions from '../constants/Authentication';
 
 const InitialState = {
   isLoggedIn: false,
+  loaded: false,
   user: {
     firstNameRu: '',
     lastNameRu: ''
@@ -59,6 +60,7 @@ function Auth (state = InitialState, action) {
     return {
       ...state,
       user: {},
+      loaded: true,
       isLoggedIn: false
     };
 
@@ -66,6 +68,7 @@ function Auth (state = InitialState, action) {
     return {
       ...state,
       user: action.user,
+      loaded: true,
       isLoggedIn: true
     };
 
