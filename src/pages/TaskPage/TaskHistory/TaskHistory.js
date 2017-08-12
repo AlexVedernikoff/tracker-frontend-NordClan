@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -15,23 +16,23 @@ const getMessage = (message, entities, projectId) => {
 
     return stringsArray.map((string, i) => {
       if (i % 2 === 0) {
-        return <span>{string}</span>;
+        return <span key={i}>{string}</span>;
       } else {
         switch (string) {
         case 'prevPerformer':
         case 'performer':
-          return <UserCard user={entities[string]}>
+          return <UserCard user={entities[string]} key={i}>
                    <Link>{entities[string].fullNameRu}</Link>
                  </UserCard>;
         case 'linkedTask':
         case 'parentTask':
         case 'prevParentTask':
-          return <Link to={`/projects/${projectId}/tasks/${entities[string].task.id}`}>
+          return <Link to={`/projects/${projectId}/tasks/${entities[string].task.id}`} key={i}>
                   {entities[string].task.name}
                  </Link>;
         case 'sprint':
         case 'prevSprint':
-          return <Link to={`/projects/${projectId}/sprint${entities[string].id}/tasks`}>
+          return <Link to={`/projects/${projectId}/sprint${entities[string].id}/tasks`} key={i}>
                   {entities[string].name}
                 </Link>;
         case 'file':
