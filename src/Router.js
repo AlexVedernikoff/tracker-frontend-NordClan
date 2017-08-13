@@ -28,9 +28,9 @@ import Projects from './pages/Projects';
 import Dashboard from './pages/Dashboard';
 import Repeat from './pages/Repeat';
 import NotFound from './pages/NotFound';
-import Redirect from './pages/Redirect';
+import RedirectPage from './pages/Redirect';
 import DemoPage from './components/Icons/DemoPage';
-
+import AuthRoute from './components/AuthRoute';
 import { connect } from 'react-redux';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
@@ -69,10 +69,11 @@ class AppRouter extends Component {
       this.props.loaded
         ? <Router history={this.props.history} render={applyRouterMiddleware(useScroll(()=>false))}>
           <Route path="/" component={MainContainer} >
+            {/*<AuthRoute path="login" component={Login} allowed={!this.props.isLoggedIn} otherwise="projects" />*/}
             <Route path="login" component={Login} onEnter={this.isLogged} />
             <Route path="icons" component={DemoPage} />
             <Route path="logout" component={Logout} />
-
+            {/*<AuthRoute path="/" component={InnerContainer} allowed={this.props.isLoggedIn} otherwise="login" >*/}
             <Route path="/" component={InnerContainer} onEnter={this.requireAuth} >
               <Route path="dashboard" component={Dashboard} />
               <Route path="repeat" component={Repeat} />
@@ -103,12 +104,12 @@ class AppRouter extends Component {
 
               <IndexRedirect to="projects" />
             </Route>
-
+            {/*</AuthRoute>*/}
             <IndexRedirect to="login" />
           </Route>
           <Route path="*" component={NotFound} />
         </Router>
-        : <Redirect />
+        : <RedirectPage />
     );
   }
 }
