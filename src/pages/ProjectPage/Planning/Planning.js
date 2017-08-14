@@ -22,16 +22,6 @@ import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal } from '../../../actions/Project';
 
 
-const getSprintBlock = sprint => {
-  const {factStartDate: start, factFinishDate: end} = sprint;
-  const daysInYear = moment().endOf('year').dayOfYear();
-
-  return {
-    left: Math.floor(moment(start).dayOfYear() / daysInYear * 100) + '%',
-    right: Math.floor(100 - (moment(end).dayOfYear() / daysInYear * 100)) + '%'
-  };
-};
-
 const getSprintTime = sprint =>
   `${moment(sprint.factStartDate).format('DD.MM')}
   ${sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format('DD.MM')}` : '- ...'}`;
@@ -44,7 +34,8 @@ class Planning extends Component {
       rightColumn: null,
       createTaskCallee: null,
       isModalOpenAddSprint: false,
-      sprintIdHovered: null
+      sprintIdHovered: null,
+      grantActiveYear: new Date().getFullYear()
     };
   }
 
@@ -191,6 +182,25 @@ class Planning extends Component {
     };
   };
 
+  grantYearIncrement = () => {
+    this.setState({ grantActiveYear: ++this.state.grantActiveYear });
+  };
+
+  grantYearDecrement = () => {
+    this.setState({ grantActiveYear: --this.state.grantActiveYear });
+  };
+
+  getSprintBlock = sprint => {
+    const {factStartDate: start, factFinishDate: end} = sprint;
+    const daysInYear = moment().endOf('year').dayOfYear();
+
+    return {
+      left: (+moment(start).format('YYYY') !== +this.state.grantActiveYear) ? '0%' : Math.floor(moment(start).dayOfYear() / daysInYear * 100) + '%',
+      right: (+moment(end).format('YYYY') !== +this.state.grantActiveYear) ? '0%' : Math.floor(100 - (moment(end).dayOfYear() / daysInYear * 100)) + '%'
+    };
+  };
+
+
   render () {
     const leftColumnTasks = this.props.leftColumnTasks.map(task => {
       return (
@@ -256,7 +266,10 @@ class Planning extends Component {
               <div className={css.sprintNames}>
                 <div />
                 <div />
-                {this.props.sprints.map((sprint, i)=>
+                {this.props.sprints.filter((el) => {
+                  return (+moment(el.factFinishDate).format('YYYY') === this.state.grantActiveYear)
+                    || (+moment(el.factStartDate).format('YYYY') === this.state.grantActiveYear);
+                }).map((sprint, i)=>
                   <div key={`sprint-${i}`}>
                     <span
                       className={classnames({
@@ -270,15 +283,22 @@ class Planning extends Component {
               </div>
               <div className={css.table}>
                 <div className={css.tr}>
-                  <div className={css.year}>2017</div>
+                  <div className={css.year}>
+                    <span onClick={this.grantYearDecrement}>&larr;</span>
+                    <span>{this.state.grantActiveYear}</span>
+                    <span onClick={this.grantYearIncrement}>&rarr;</span>
+                  </div>
                 </div>
                 <div className={css.tr}>
                   <div className={css.nameHeader} />
                   {
-                    months.map(month => <div key={`sprint-${month}`} className={css.month}>{month}</div>)
+                    months.map((month, i) => <div key={`sprint-${month}`} className={css.month} style={{flex: moment(`${this.state.grantActiveYear}-${(++i)}`, 'YYYY-MM').daysInMonth()}} >{month}</div>)
                   }
                 </div>
-                {this.props.sprints.map((sprint, i) =>
+                {this.props.sprints.filter((el) => {
+                  return (+moment(el.factFinishDate).format('YYYY') === this.state.grantActiveYear)
+                      || (+moment(el.factStartDate).format('YYYY') === this.state.grantActiveYear);
+                }).map((sprint, i) =>
                   <div key={`sprint-${i}`} className={css.tr}>
                     <div
                       className={classnames({
@@ -288,7 +308,7 @@ class Planning extends Component {
                         [css.active]: sprint.statusId === 2,
                         [css.future]: moment(sprint.factStartDate).isAfter(moment(), 'days')
                       })}
-                      style={getSprintBlock(sprint)}
+                      style={this.getSprintBlock(sprint)}
                     >
                       <div className={css.text}>{sprint.spentTime || 0}</div>
                       <div className={css.text}>{sprint.allottedTime || 0}</div>
@@ -297,7 +317,7 @@ class Planning extends Component {
                 )}
                 <div className={css.grid}>
                   {
-                    months.map((el, i) => <span key={`sprint-${i}`}/>)
+                    months.map((el, i) => <span key={`sprint-${i}`} style={{flex: moment(`${this.state.grantActiveYear}-${(++i)}`, 'YYYY-MM').daysInMonth()}}/>)
                   }
                 </div>
               </div>
