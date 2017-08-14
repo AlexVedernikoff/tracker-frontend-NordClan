@@ -6,7 +6,7 @@ import {IconExitApp} from '../../../components/Icons';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Logo from '../../../components/Logo';
 import Loader from './Loader';
-import { history } from '../../../Router';
+import { history } from '../../../App';
 import { connect } from 'react-redux';
 
 import * as css from './AppHead.scss'; // Стили для плавного появления и скрытия лоадера

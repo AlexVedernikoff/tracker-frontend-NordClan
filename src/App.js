@@ -8,21 +8,32 @@ import 'normalize-css';
 import './styles/hooks.css';
 import './styles/App.scss';
 
+import configureStore from './store/configureStore';
+import { syncHistoryWithStore } from 'react-router-redux';
+import { Provider } from 'react-redux';
+import { getInfoAboutMe } from './actions/Authentication';
+
+export const store = configureStore();
+export const history = syncHistoryWithStore(browserHistory, store);
 const rootEl = document.getElementById('app');
 
-const render = () => {
+const render = (App) => {
   ReactDOM.render(
     <AppContainer>
-      <AppRoute />
+      <Provider store={store}>
+          <App history={history}/>
+      </Provider>
     </AppContainer>,
     rootEl
   );
 };
 
+store.dispatch(getInfoAboutMe());
+
 if (process.env.NODE_ENV !== 'production') {
   if (module.hot) {
-    module.hot.accept('./Router', render);
+    module.hot.accept('./Router', () => render(require('./Router').default));
   }
 }
 
-render();
+render(AppRoute);

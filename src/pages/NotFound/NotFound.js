@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import InnerContainer from '../InnerContainer';
+import Redirect from '../Redirect';
 import HttpError from '../../components/HttpError';
 
 class NotFound extends Component {
@@ -9,9 +9,9 @@ class NotFound extends Component {
 
   render () {
     return (
-      <InnerContainer>
-        <HttpError error={{status: 404, name: 'NotFoundError', message: 'Page Not Found'}}/>
-      </InnerContainer>
+      <Redirect>
+        <HttpError error={{status: 404, name: 'NotFoundError', message: 'Page Not Found'}} whiteCentered/>
+      </Redirect>
     );
   }
 }
