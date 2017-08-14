@@ -23,7 +23,8 @@ class SprintCard extends Component {
       dateTo: undefined,
       sprintName: '',
       sprintTime: '',
-      allottedTime: null
+      allottedTime: null,
+      isHovered: false
     };
   }
 
@@ -60,7 +61,7 @@ class SprintCard extends Component {
   };
 
   render () {
-    const { sprint, deleteSprint: dS, editSprint: eS, ...other } = this.props;
+    const { sprint, deleteSprint: dS, editSprint: eS, inFocus, ...other } = this.props;
 
     const edit = () => {
       this.setState({ isModalOpen: false });
@@ -82,7 +83,11 @@ class SprintCard extends Component {
       : '';
     return (
       <div
-        className={classnames([css.sprintCard], [css[sprint.status]])}
+        className={classnames({
+          [css.sprintCard]: true,
+          [css[sprint.status]]: true,
+          [css.INFOCUS]: inFocus
+        })}
         {...other}
       >
         <IconClose
@@ -111,17 +116,20 @@ class SprintCard extends Component {
         <p className={css.sprintMeta}>
           <span>Всего задач:</span>
         <span>
-          {sprint.tasksTotal || 0}
+          {sprint.countAllTasks || 0}
         </span>
         </p>
         <p className={css.sprintMeta}>
           <span>Выполнено:</span>
         <span>
-          {sprint.tasksDone || 0}
+          {sprint.countDoneTasks || 0}
         </span>
         </p>
         <p className={css.sprintMeta}>
           <span>Выделенное время: {sprint.allottedTime || 0} ч.</span>
+        </p>
+        <p className={css.sprintMeta}>
+          <span>Израсходованное время: {sprint.spentTime || 0} ч.</span>
         </p>
         <div
           onClick={this.changeStatus}
@@ -202,17 +210,21 @@ class SprintCard extends Component {
 SprintCard.propTypes = {
   deleteSprint: PropTypes.func.isRequired,
   editSprint: PropTypes.func.isRequired,
+  inFocus: PropTypes.bool,
   sprint: PropTypes.object
 };
 
 SprintCard.defaultProps = {
+  inFocus: false,
   sprint: {
     name: 'Название спринта',
-    dateStart: '00.00.00',
-    dateEnd: '00.00.00',
+    countAllTasks: '00',
+    countDoneTasks: '00',
     tasksTotal: '00',
     tasksDone: '00',
-    status: 'INPROGRESS'
+    allottedTime: '00',
+    spentTime: '00',
+    status: 'INPROGRESS',
   }
 };
 
