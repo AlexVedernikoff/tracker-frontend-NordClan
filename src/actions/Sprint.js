@@ -50,8 +50,7 @@ export const editSprint = (id, statusId, name, dateForm, dateTo, allottedTime) =
       .put(URL, params)
       .then(response => {
         if (response.data) {
-          const data = _.sortBy(_.sortBy(response.data, el => el.name), sprint => moment(sprint.factStartDate).format('X') );
-          dispatch(editSprintSuccess(data));
+          dispatch(editSprintSuccess(response.data));
           dispatch(finishLoading());
         }
       });
