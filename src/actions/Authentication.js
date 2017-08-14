@@ -36,6 +36,10 @@ const userInfoReceived = user => ({
   user: user
 });
 
+const userInfoReceiveFailed = () => ({
+  type: AuthActions.USER_INFO_RECEIVE_ERROR
+});
+
 export const doAuthentication = ({ username, password }) => {
   const URL = `${API_URL}/auth/login`;
 
@@ -50,11 +54,11 @@ export const doAuthentication = ({ username, password }) => {
       .catch(error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
         dispatch(authenticationError(error.message));
+        dispatch(userInfoReceiveFailed());
       })
       .then(response => {
         if (response && response.status === 200) {
           dispatch(authenticationReceived(response.data.user));
-          history.push('/projects');
         }
       });
   };
@@ -71,7 +75,6 @@ export const doLogout = () => {
       .then(response => {
         if (response && response.status === 200) {
           dispatch(logoutComplete());
-          history.push('/login');
         }
       });
   };
@@ -83,9 +86,10 @@ export const getInfoAboutMe = () => {
   return dispatch => {
     dispatch(startReceiveUserInfo());
     dispatch(startLoading());
-    axios
+    return axios
       .get(URL, {}, { withCredentials: true })
       .catch(error => {
+        dispatch(userInfoReceiveFailed());
         dispatch(showNotification({ message: error.message, type: 'error' }));
         dispatch(finishLoading());
       })

@@ -63,7 +63,8 @@ class TaskTitle extends Component {
       event.preventDefault();
       this.validateAndSubmit(event);
     } else if (event.keyCode === 27) {
-      event.target.innerText = this.state.name;
+      event.target.innerText = this.props.name;
+      this.stopEditing();
       this.setState({
         submitError: false
       });

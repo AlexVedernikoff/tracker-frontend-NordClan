@@ -6,43 +6,75 @@ import {IconClose} from '../Icons';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import Checkbox from '../../components/Checkbox';
 import {connect} from 'react-redux';
-import { unbindUserToProject } from '../../actions/Project';
+import { bindUserToProject, unbindUserToProject } from '../../actions/Project';
 
 class Participant extends React.Component {
-  // constructor (props) {
-  //   super(props);
-  //   this.state = {
-  //     roles: {
-  //       dev: this.props.user.rolesIds[0] || false,
-  //       back: false,
-  //       front: false,
-  //       review: false,
-  //       qa: false,
-  //       unbillable: false
-  //     }
-  //   };
-  // }
+  constructor (props) {
+    super(props);
+    this.ROLES_NAME = ['account', 'pm', 'ux', 'analyst', 'back', 'front', 'mobile', 'teamLead', 'qa', 'unbillable'];
+    this.ROLES_ID = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+    this.state = {
+      sendRoles: []
+    };
+  }
+  componentWillMount = () => {
+    this.setState({ sendRoles: this.setRoles(this.props) });
+  };
+  componentWillReceiveProps = (nextProps) => {
+    this.setState({ sendRoles: this.setRoles(nextProps) });
+  };
+  changeRole = (e, role, roleId) => {
+    e.preventDefault();
+    let stringRoles = '0';
+    const sendRoles = this.state.sendRoles;
+    let triger = false;
+    if (sendRoles.length) {
+      sendRoles.forEach(function (r, i) {
+        if (r === roleId) {
+          sendRoles.splice(i, 1);
+          triger = true;
+        }
+      });
+      if (!triger) {
+        sendRoles.push(roleId);
+      }
+    } else {
+      sendRoles.push(roleId);
+    }
+    this.setState({ sendRoles: sendRoles });
+    if (sendRoles.length) {
+      stringRoles = sendRoles.join(',');
+    }
+    this.props.bindUserToProject(
+      this.props.projectId,
+      this.props.user.id,
+      stringRoles
+    );
+  };
   unbindUser = () => {
     this.props.unbindUserToProject(
       this.props.projectId,
       this.props.user.id
     );
   };
+  setRoles = (prop) => {
+    const sendRoles = [];
 
-  changeRole = () => {
-    console.log('bl');
-    console.log(this.props.user);
-    // this.props.unbindUserToProject(
-    //   this.props.projectId,
-    //   this.props.user.id
-    // );
+    for (const key in prop.user.roles) {
+      if (prop.user.roles[key]) {
+        sendRoles.push(this.ROLES_ID[this.ROLES_NAME.indexOf(key)]);
+      }
+    }
+
+    return sendRoles;
   };
   render () {
     const {
       user,
       ...other
     } = this.props;
-    //const roles = this.state.roles;
+
+    const roles = user.roles;
 
     return (
       <Row className={css.memberRow}>
@@ -53,37 +85,15 @@ class Participant extends React.Component {
         </Col>
         <Col xs={9}>
           <Row>
-            <Col xs>
-              <label className={css.cell}>
-                <Checkbox /*onChange={this.changeRole('dev')}
-                          checked={roles.dev}*//>
-              </label>
-            </Col>
-            <Col xs>
-              <label className={css.cell}>
-                <Checkbox />
-              </label>
-            </Col>
-            <Col xs>
-              <label className={css.cell}>
-                <Checkbox />
-              </label>
-            </Col>
-            <Col xs>
-              <label className={css.cell}>
-                <Checkbox />
-              </label>
-            </Col>
-            <Col xs>
-              <label className={css.cell}>
-                <Checkbox />
-              </label>
-            </Col>
-            <Col xs>
-              <label className={css.cell}>
-                <Checkbox />
-              </label>
-            </Col>
+            {this.ROLES_NAME
+              ? this.ROLES_NAME.map((ROLES_NAME, i) =>
+              <Col xs key={`${i}-roles-checkbox`}>
+                <label className={css.cell}>
+                  <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[i], this.ROLES_ID[i])}
+                            checked={(roles && roles[ROLES_NAME]) || false}/>
+                </label>
+              </Col>
+            ) : null}
             <IconClose
               className={css.iconClose}
               onClick={this.unbindUser}
@@ -96,12 +106,14 @@ class Participant extends React.Component {
 }
 
 Participant.propTypes = {
+  bindUserToProject: PropTypes.func.isRequired,
   projectId: PropTypes.number,
   unbindUserToProject: PropTypes.func.isRequired,
   user: PropTypes.object
 };
 
 const mapDispatchToProps = {
+  bindUserToProject,
   unbindUserToProject
 };
 

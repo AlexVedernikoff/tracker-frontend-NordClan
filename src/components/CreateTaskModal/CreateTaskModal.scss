@@ -1,27 +1,39 @@
-@import '../../../styles/variables.scss';
+@import '../../styles/variables.scss';
 
-.agileBoard {
-  // margin-top: 24px;
+.createTaskForm {
+  width: 100%;
+  padding: 25px;
 }
 
-.filtersRow {
-  margin-bottom: 1rem;
+.leftColumn {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
-.taskSectionTitle {
-  cursor: pointer;
-  margin-left: -4px;
+.rightColumn {
+  display: flex;
+  align-items: center;
 }
 
-.close {
-  transform: rotate(-90deg);
-  transition: $transition;
+.formField {
+  display: block;
+
+  & + & {
+    margin-top: 10px;
+  }
 }
 
-.open {
-  transform: rotate(0);
-  transition: $transition;
+.buttonsContainer {
+  width: 90%;
+  position: absolute;
+  bottom: 15px;
 }
+
+.selectSprint, .selectPerformer {
+  width: 100%;
+}
+
 
 .sprintMarker {
   display: flex !important;
@@ -53,25 +65,4 @@
 
 .FINISHED:before {
   background-color: darken($color-gray, 10%);;
-}
-
-.modalWrapper {
-  width: 100%;
-  max-width: 360px !important;
-}
-
-.changeStage {
-  padding: 2rem;
-
-  h3 {
-    margin-top: 0;
-  }
-}
-
-.modalLine {
-  display: flex;
-
-  > *:first-child {
-    flex-grow: 1;
-  }
 }

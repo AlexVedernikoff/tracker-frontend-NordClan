@@ -1,20 +1,28 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'react-modal';
+import { connect } from 'react-redux';
 import Select from 'react-select';
-import Input from '../../../components/Input';
-import Checkbox from '../../../components/Checkbox';
-import Button from '../../../components/Button';
-import * as css from './CreateTask.scss';
 import { Col, Row } from 'react-flexbox-grid';
-import Priority from '../../TaskPage/Priority';
+import moment from 'moment';
+import classnames from 'classnames';
+import _ from 'lodash';
+import Input from '../Input';
+import Button from '../Button';
+import TextArea from '../TextArea';
+import SelectDropdown from '../SelectDropdown';
+import * as css from './CreateTaskModal.scss';
+import Priority from '../../pages/TaskPage/Priority';
+import { closeCreateTaskModal, createTask } from '../../actions/Project';
 
-class CreateTask extends Component {
+class CreateTaskModal extends Component {
   constructor (props) {
     super(props);
     this.state = {
       selectedSprint: null,
+      selectedPerformer: null,
       taskName: null,
+      description: null,
       openTaskPage: false,
       prioritiesId: 3,
       types: [{ label: 'Фича', value: 1 }, { label: 'Баг', value: 2 }],
@@ -33,8 +41,10 @@ class CreateTask extends Component {
   componentWillUnmount () {
     this.setState({
       selectedSprint: null,
+      selectedPerformer: null,
       sprints: null,
       taskName: null,
+      description: null,
       openTaskPage: false
     });
   }
@@ -45,9 +55,21 @@ class CreateTask extends Component {
     });
   };
 
+  handlePerformerChange = selectedPerformer => {
+    this.setState({
+      selectedPerformer: selectedPerformer !== null ? selectedPerformer.value : 0
+    });
+  };
+
   handleInput = event => {
     this.setState({
       taskName: event.target.value
+    });
+  };
+
+  handleDescription = event => {
+    this.setState({
+      description: event.target.value
     });
   };
 
@@ -57,28 +79,19 @@ class CreateTask extends Component {
     });
   };
 
-  handleCheckBox = event => {
-    const { checked } = event.target;
-    this.setState({
-      openTaskPage: checked
-    });
-  };
-
-  handleClose = event => {
-    event.preventDefault();
-    this.props.onRequestClose();
-  }
-
   submitTask = event => {
-    event.preventDefault();
-    this.props.onSubmit(
+    if (event) {
+      event.preventDefault();
+    }
+    this.props.createTask(
       {
         name: this.state.taskName,
         projectId: this.props.project.id,
+        description: this.state.description,
+        performerId: this.state.selectedPerformer,
         statusId: 1,
         typeId: this.state.selectedType.value,
-        sprintId:
-          this.state.selectedSprint === 0 ? null : this.state.selectedSprint,
+        sprintId: this.state.selectedSprint === 0 ? null : this.state.selectedSprint,
         prioritiesId: this.state.prioritiesId,
         parentId: this.props.parentTaskId
       },
@@ -87,14 +100,58 @@ class CreateTask extends Component {
     );
   };
 
+  submitTaskAndOpen = () => {
+    this.setState({openTaskPage: true}, () => this.submitTask());
+  }
+
   onTypeChange = value => {
     this.setState({
       selectedType: value
     });
   };
 
+  handleCloseModal = event => {
+    event.preventDefault();
+    this.props.closeCreateTaskModal();
+  }
+
+  getSprints = () => {
+    let sprints = _.sortBy(this.props.project.sprints, sprint => {
+      return new moment(sprint.factFinishDate);
+    });
+
+    sprints = sprints.map((sprint, i) => ({
+      value: sprint.id,
+      label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${sprint.factFinishDate
+        ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}`
+        : '- ...'})`,
+      statusId: sprint.statusId,
+      className: classnames({
+        [css.INPROGRESS]: sprint.statusId === 2,
+        [css.sprintMarker]: true,
+        [css.FINISHED]: sprint.statusId === 1
+      })
+    }));
+
+    sprints.push({
+      value: 0,
+      label: 'Backlog',
+      className: classnames({
+        [css.INPROGRESS]: false,
+        [css.sprintMarker]: true
+      })
+    });
+    return sprints;
+  };
+
+  getUsers = () => {
+    return this.props.project.users.map(user => ({
+      value: user.id,
+      label: user.fullNameRu
+    }));
+  };
+
   render () {
-    const { isOpen, onRequestClose } = this.props;
     const ReactModalStyles = {
       overlay: {
         position: 'fixed',
@@ -109,7 +166,7 @@ class CreateTask extends Component {
         padding: '1rem',
         boxSizing: 'border-box',
         backgroundColor: 'rgba(43, 62, 80, 0.8)',
-        zIndex: 2,
+        zIndex: 3,
         overflow: 'auto'
       },
       content: {
@@ -126,8 +183,9 @@ class CreateTask extends Component {
         borderRadius: 0,
         outline: 'none',
         padding: 0,
+        paddingBottom: '4rem',
         width: 500,
-        height: 400,
+        height: 'auto',
         maxHeight: '100%'
       }
     };
@@ -139,23 +197,13 @@ class CreateTask extends Component {
 
     return (
       <Modal
-        isOpen={isOpen}
-        onRequestClose={onRequestClose}
+        isOpen={this.props.isCreateTaskModalOpen}
+        onRequestClose={this.props.closeCreateTaskModal}
         contentLabel="Modal"
         closeTimeoutMS={200}
         style={ReactModalStyles}
       >
         <form className={css.createTaskForm}>
-          <div className={css.formField}>
-            <Row>
-              <Col xs={formLayout.firstCol} className={css.leftColumn}>
-                <p>Проект:</p>
-              </Col>
-              <Col xs={formLayout.secondCol} className={css.rightColumn}>
-                <p>{`${this.props.project.name} (${this.props.project.prefix})`}</p>
-              </Col>
-            </Row>
-          </div>
           <label className={css.formField}>
             <Row>
               <Col xs={formLayout.firstCol} className={css.leftColumn}>
@@ -174,17 +222,32 @@ class CreateTask extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={formLayout.firstCol} className={css.leftColumn}>
+                <p>Описание:</p>
+              </Col>
+              <Col xs={formLayout.secondCol} className={css.rightColumn}>
+                <TextArea
+                  onChange={this.handleDescription}
+                  name="description"
+                  placeholder="Описание задачи"
+                />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={formLayout.firstCol} className={css.leftColumn}>
                 <p>Тип задачи:</p>
               </Col>
               <Col xs={formLayout.secondCol} className={css.rightColumn}>
                 <Select
                   multi={false}
-                  ignoreCase={false}
+                  ignoreCase
                   placeholder="Выберите спринт"
                   options={this.state.types}
                   className={css.selectSprint}
                   value={this.state.selectedType}
                   onChange={this.onTypeChange}
+                  noResultsText="Нет результатов"
                 />
               </Col>
             </Row>
@@ -206,12 +269,18 @@ class CreateTask extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={formLayout.firstCol} className={css.leftColumn}>
-                <p>Открыть страницу задачи</p>
+                <p>Исполнитель:</p>
               </Col>
               <Col xs={formLayout.secondCol} className={css.rightColumn}>
-                <Checkbox
-                  name="openProjectPage"
-                  onChange={this.handleCheckBox}
+                <SelectDropdown
+                  name="performer"
+                  placeholder="Введите имя исполнителя..."
+                  multi={false}
+                  className={css.selectPerformer}
+                  value={this.state.selectedPerformer}
+                  onChange={this.handlePerformerChange}
+                  noResultsText="Нет результатов"
+                  options={this.getUsers()}
                 />
               </Col>
             </Row>
@@ -226,12 +295,13 @@ class CreateTask extends Component {
                   promptTextCreator={label => `Создать спринт '${label}'`}
                   searchPromptText={'Введите название спринта'}
                   multi={false}
-                  ignoreCase={false}
+                  ignoreCase
                   placeholder="Выберите спринт"
-                  options={this.props.sprintsList}
+                  options={this.getSprints()}
                   className={css.selectSprint}
                   onChange={this.handleModalSprintChange}
                   value={this.state.selectedSprint}
+                  noResultsText="Нет результатов"
                 />
               </Col>
             </Row>
@@ -240,14 +310,16 @@ class CreateTask extends Component {
             <Button
               text="Создать задачу"
               type="green"
+              htmlType="submit"
               style={{ width: '50%' }}
               onClick={this.submitTask}
             />
             <Button
-              text="Назад"
-              type="primary"
+              text="Создать и открыть"
+              htmlType="button"
+              type="green-lighten"
               style={{ width: '50%' }}
-              onClick={this.handleClose}
+              onClick={this.submitTaskAndOpen}
             />
           </div>
         </form>
@@ -256,15 +328,23 @@ class CreateTask extends Component {
   }
 }
 
-CreateTask.propTypes = {
+CreateTaskModal.propTypes = {
+  closeCreateTaskModal: PropTypes.func.isRequired,
   column: PropTypes.string,
-  isOpen: PropTypes.bool.isRequired,
-  onRequestClose: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
+  createTask: PropTypes.func.isRequired,
+  isCreateTaskModalOpen: PropTypes.bool.isRequired,
   parentTaskId: PropTypes.number,
   project: PropTypes.object,
-  selectedSprintValue: PropTypes.number,
-  sprintsList: PropTypes.array
+  selectedSprintValue: PropTypes.number
 };
 
-export default CreateTask;
+const mapStateToProps = state => ({
+  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen
+});
+
+const mapDispatchToProps = {
+  closeCreateTaskModal,
+  createTask
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateTaskModal);

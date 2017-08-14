@@ -24,7 +24,7 @@
 
 .wrapper {
   display: flex;
-  width: calc(300% + 6rem);
+  width: 100%;
   flex-shrink: 0;
   overflow: hidden;
 }
@@ -137,7 +137,7 @@
         background: rgba($color-black, 0.05);
       }
 
-      &:hover {
+      &.hover{
         opacity: 1;
       }
     }
@@ -149,9 +149,14 @@
   z-index: 0;
   top: 0;
   bottom: 0;
+  line-height: 2;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
 
-  &.active {
-    background-color: $color-green;
+
+  &.unactive {
+    border: 1px dashed $color-green;
   }
 
   &.finished {
@@ -160,6 +165,14 @@
 
   &.future {
     background-color: lighten($color-dark, 10%);
+  }
+
+  &.active {
+    background-color: $color-green;
+  }
+  .text {
+    flex: 1;
+    line-height: 1;
   }
 }
 

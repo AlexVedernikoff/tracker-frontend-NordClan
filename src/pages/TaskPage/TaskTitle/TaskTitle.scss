@@ -2,6 +2,8 @@
 
 
 .titleWrapper {
+  position: relative;
+
   &:hover {
     .edit, .save {
       opacity: 1;
@@ -41,6 +43,8 @@
   border-radius: 50%;
   opacity: 0;
   transition: $transition;
+  position: absolute;
+  bottom: 4px;
 
   &:hover {
     background-color: $color-lightgray;

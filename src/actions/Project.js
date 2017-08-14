@@ -16,6 +16,11 @@ const gettingProjectInfoSuccess = project => ({
   project: project
 });
 
+const gettingProjectInfoFail = error => ({
+  type: ProjectActions.PROJECT_INFO_RECEIVE_FAIL,
+  error: error
+});
+
 const gettingProjectUsersStart = () => ({
   type: ProjectActions.PROJECT_USERS_RECEIVE_START
 });
@@ -23,6 +28,15 @@ const gettingProjectUsersStart = () => ({
 const gettingProjectUsersSuccess = users => ({
   type: ProjectActions.PROJECT_USERS_RECEIVE_SUCCESS,
   users
+});
+
+const gettingProjectSprintsStart = () => ({
+  type: ProjectActions.PROJECT_SPRINTS_RECEIVE_START
+});
+
+const gettingProjectSprintsSuccess = sprints => ({
+  type: ProjectActions.PROJECT_SPRINTS_RECEIVE_SUCCESS,
+  sprints
 });
 
 const startProjectChange = () => ({
@@ -60,15 +74,6 @@ const createTaskRequestSuccess = () => ({
   type: ProjectActions.TASK_CREATE_REQUEST_SUCCESS
 });
 
-const getUsersStart = () => ({
-  type: ProjectActions.PROJECT_GET_USERS_START
-});
-
-const getUsersSuccess = users => ({
-  type: ProjectActions.PROJECT_GET_USERS_SUCCESS,
-  users: users
-});
-
 const bindUserToProjectStart = () => ({
   type: ProjectActions.BIND_USER_TO_PROJECT_START
 });
@@ -94,8 +99,9 @@ export const bindUserToProject = (projectId, userId, rolesIds) => {
     dispatch(startLoading());
     axios
       .post(URL, {
-        projectId: projectId,
-        userId: userId})
+        userId: userId,
+        rolesIds: rolesIds || '0'
+      })
       .then(response => {
         if (response.data) {
           dispatch(bindUserToProjectsSuccess(response.data));
@@ -131,7 +137,7 @@ const getProjectInfo = id => {
     axios
       .get(URL, {}, { withCredentials: true })
       .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(gettingProjectInfoFail(error.response.data));
         dispatch(finishLoading());
       })
       .then(response => {
@@ -158,6 +164,32 @@ const getProjectUsers = id => {
       .then(response => {
         if (response && response.status === 200) {
           dispatch(gettingProjectUsersSuccess(response.data));
+          dispatch(finishLoading());
+        }
+      });
+  };
+};
+
+const getProjectSprints = id => {
+  const URL = `${API_URL}/sprint`;
+
+  return dispatch => {
+    dispatch(gettingProjectSprintsStart());
+    dispatch(startLoading());
+    axios
+      .get(URL, {
+        params: {
+          projectId: id,
+          fields: 'id,name,factFinishDate'
+        }
+      }, { withCredentials: true })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(gettingProjectSprintsSuccess(response.data.data));
           dispatch(finishLoading());
         }
       });
@@ -195,7 +227,7 @@ const ChangeProject = (ChangedProperties, target) => {
 
 const createTask = (task, openTaskPage, callee) => {
   if (!task.name || !task.projectId || !task.statusId || !task.typeId) {
-    return;
+    return () => {};
   }
 
   const URL = `${API_URL}/task`;
@@ -233,4 +265,4 @@ const createTask = (task, openTaskPage, callee) => {
   };
 };
 
-export { getProjectInfo, getProjectUsers, ChangeProject, createTask };
+export { getProjectInfo, getProjectUsers, getProjectSprints, ChangeProject, createTask };

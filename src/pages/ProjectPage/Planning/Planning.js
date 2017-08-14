@@ -3,32 +3,28 @@ import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
 import GanttChart from './GanttChart';
 import classnames from 'classnames';
-import CreateTask from '../CreateTask';
 import * as css from './Planning.scss';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import DraggableTaskRow from './DraggableTaskRow';
 import Button from '../../../components/Button';
 import SelectDropdown from '../../../components/SelectDropdown';
+import CreateTaskModal from '../../../components/CreateTaskModal';
 import SprintColumn from './SprintColumn';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
+import { createSprint } from '../../../actions/Sprint';
+import CreateSprintModal from '../CreateSprintModal';
+import SprintCard from '../../../components/SprintCard';
 import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
-import {
-  openCreateTaskModal,
-  closeCreateTaskModal
-} from '../../../actions/Project';
-import { createTask } from '../../../actions/Project';
+import { openCreateTaskModal } from '../../../actions/Project';
 
-const sortTasks = sortedArr => {
-  sortedArr.sort((a, b) => {
-    if (a.prioritiesId > b.prioritiesId) return 1;
-    if (a.prioritiesId < b.prioritiesId) return -1;
-  });
-  return sortedArr;
-};
+
+const getSprintTime = sprint =>
+  `${moment(sprint.factStartDate).format('DD.MM')}
+  ${sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format('DD.MM')}` : '- ...'}`;
 
 class Planning extends Component {
   constructor (props) {
@@ -36,7 +32,10 @@ class Planning extends Component {
     this.state = {
       leftColumn: null,
       rightColumn: null,
-      createTaskCallee: null
+      createTaskCallee: null,
+      isModalOpenAddSprint: false,
+      sprintIdHovered: null,
+      grantActiveYear: new Date().getFullYear()
     };
   }
 
@@ -61,11 +60,13 @@ class Planning extends Component {
     ReactTooltip.rebuild();
   }
 
-  setCallee (callee) {
-    this.setState({
-      createTaskCallee: callee
-    });
-  }
+  handleOpenModalAddSprint = () => {
+    this.setState({ isModalOpenAddSprint: true });
+  };
+
+  handleCloseModalAddSprint = () => {
+    this.setState({ isModalOpenAddSprint: false });
+  };
 
   getCurrentSprint = sprints => {
     const currentSprints = sprints.filter(sprint =>
@@ -77,13 +78,10 @@ class Planning extends Component {
     } else {
       return sprints.length ? sprints.sort((a, b) => moment(a.factStartDate).diff(moment(), 'days') - moment(b.factStartDate).diff(moment(), 'days'))[0].id : 0;
     }
-  }
+  };
 
-  getSprints = column => {
-    const secondColumn = column === 'leftColumn' ? 'rightColumn' : 'leftColumn';
-    let sprints = _.sortBy(this.props.project.sprints, sprint => {
-      return new moment(sprint.factFinishDate);
-    });
+  getSprints = () => {
+    let sprints = this.props.project.sprints;
 
     sprints = sprints.map(sprint => ({
       value: sprint.id,
@@ -104,13 +102,9 @@ class Planning extends Component {
       value: 0,
       label: 'Backlog',
       className: classnames({
-        [css.INPROGRESS]: true,
+        [css.INPROGRESS]: false,
         [css.sprintMarker]: true
       })
-    });
-
-    sprints.forEach(sprint => {
-      sprint.disabled = sprint.value === this.state[secondColumn];
     });
 
     return sprints;
@@ -162,29 +156,53 @@ class Planning extends Component {
     });
   };
 
-  handleModal = event => {
-    const {
-      isCreateTaskModalOpen,
-      openCreateTaskModal,
-      closeCreateTaskModal
-    } = this.props;
-    if (isCreateTaskModalOpen) {
-      // this.setState({
-      //   projectName: '',
-      //   projectPrefix: '',
-      //   selectedPortfolio: null
-      // });
-      closeCreateTaskModal();
-    } else {
-      this.setCallee(event.target.name);
-      openCreateTaskModal();
-    }
+  openModal = event => {
+    this.setState({
+      createTaskCallee: event.target.name
+    });
+    this.props.openCreateTaskModal();
   };
 
-  handleModalSprintSelect = () => {};
+  onMouseOverSprint = (sprintId) => {
+    return () => {
+      this.setState({ sprintIdHovered: sprintId });
+    };
+  };
+
+  onMouseOutSprint = () => {
+    this.setState({ sprintIdHovered: null });
+  };
+
+  oClickSprint = (sprintId) => {
+    return () => {
+      this.selectValue(
+          sprintId,
+          'rightColumn'
+        );
+    };
+  };
+
+  grantYearIncrement = () => {
+    this.setState({ grantActiveYear: ++this.state.grantActiveYear });
+  };
+
+  grantYearDecrement = () => {
+    this.setState({ grantActiveYear: --this.state.grantActiveYear });
+  };
+
+  getSprintBlock = sprint => {
+    const {factStartDate: start, factFinishDate: end} = sprint;
+    const daysInYear = moment().endOf('year').dayOfYear();
+
+    return {
+      left: (+moment(start).format('YYYY') !== +this.state.grantActiveYear) ? '0%' : Math.floor(moment(start).dayOfYear() / daysInYear * 100) + '%',
+      right: (+moment(end).format('YYYY') !== +this.state.grantActiveYear) ? '0%' : Math.floor(100 - (moment(end).dayOfYear() / daysInYear * 100)) + '%'
+    };
+  };
+
 
   render () {
-    const leftColumnTasks = sortTasks(this.props.leftColumnTasks).map(task => {
+    const leftColumnTasks = this.props.leftColumnTasks.map(task => {
       return (
         <DraggableTaskRow
           key={`task-${task.id}`}
@@ -196,10 +214,9 @@ class Planning extends Component {
       );
     });
 
-    const rightColumnTasks = sortTasks(
-      this.props.rightColumnTasks
-    ).map(task => {
-      return (
+    const rightColumnTasks
+      = this.props.rightColumnTasks.map(task => {
+        return (
         <DraggableTaskRow
           key={`task-${task.id}`}
           task={task}
@@ -207,178 +224,101 @@ class Planning extends Component {
           shortcut
           card
         />
-      );
-    });
+        );
+      });
 
     const leftEstimates = this.getEstimatesInfo(this.state.leftColumn, this.props.leftColumnTasks);
     const rightEstimates = this.getEstimatesInfo(this.state.rightColumn, this.props.rightColumnTasks);
-    const leftColumnSprints = this.getSprints('leftColumn');
-    const rightColumnSprints = this.getSprints('rightColumn');
+    const leftColumnSprints = this.getSprints();
+    const rightColumnSprints = this.getSprints();
+    const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 
     return (
       <div>
         <section>
+          {this.props.sprints
+            ? <div>
+            <hr />
+            <h2>Спринты / Фазы</h2>
+            <Row>
+              {this.props.sprints.map((element, i) =>
+                <Col xs={3} key={`sprint-${i}`}>
+                  <SprintCard sprint={element} inFocus={element.id === this.state.sprintIdHovered} onMouseOver={this.onMouseOverSprint(element.id)} onMouseOut={this.onMouseOutSprint} />
+                </Col>
+              )}
+            </Row>
+          </div>
+            : null}
           <Button
-            type="primary"
             text="Создать спринт"
+            type="primary"
+            style={{ marginBottom: 16, marginTop: 16 }}
             icon="IconPlus"
-            style={{ marginBottom: 16 }}
+            onClick={this.handleOpenModalAddSprint}
           />
+          {
+            this.state.isModalOpenAddSprint
+              ? <CreateSprintModal onClose={this.handleCloseModalAddSprint} />
+              : null
+          }
           <div className={css.graph}>
             <div className={css.wrapper}>
               <div className={css.sprintNames}>
                 <div />
                 <div />
-                <div>
-                  <span className={css.selection} />
-                  <span className={css.name}>Спринт №1</span>
-                </div>
-                <div>
-                  <span className={css.selection} />
-                  <span className={css.name}>Спринт №2</span>
-                </div>
-                <div>
-                  <span className={css.selection} />
-                  <span className={css.name}>Спринт №3</span>
-                </div>
-                <div>
-                  <span className={css.selection} />
-                  <span className={css.name}>Спринт №4</span>
-                </div>
-                <div>
-                  <span className={css.selection} />
-                  <span className={css.name}>
-                    Очень длинное название спринта
-                  </span>
-                </div>
+                {this.props.sprints.filter((el) => {
+                  return (+moment(el.factFinishDate).format('YYYY') === this.state.grantActiveYear)
+                    || (+moment(el.factStartDate).format('YYYY') === this.state.grantActiveYear);
+                }).map((sprint, i)=>
+                  <div key={`sprint-${i}`}>
+                    <span
+                      className={classnames({
+                        [css.selection]: true,
+                        [css.hover]: sprint.id === this.state.sprintIdHovered
+                      })}
+                      data-tip={getSprintTime(sprint)} onClick={this.oClickSprint(sprint.id)} onMouseOver={this.onMouseOverSprint(sprint.id)} onMouseOut={this.onMouseOutSprint}/>
+                    <span className={css.name}>{sprint.name}</span>
+                  </div>
+                )}
               </div>
               <div className={css.table}>
                 <div className={css.tr}>
-                  <div className={css.year}>2016</div>
-                  <div className={css.year}>2017</div>
-                  <div className={css.year}>2018</div>
+                  <div className={css.year}>
+                    <span onClick={this.grantYearDecrement}>&larr;</span>
+                    <span>{this.state.grantActiveYear}</span>
+                    <span onClick={this.grantYearIncrement}>&rarr;</span>
+                  </div>
                 </div>
                 <div className={css.tr}>
                   <div className={css.nameHeader} />
-                  <div className={css.month}>Январь</div>
-                  <div className={css.month}>Февраль</div>
-                  <div className={css.month}>Март</div>
-                  <div className={css.month}>Апрель</div>
-                  <div className={css.month}>Май</div>
-                  <div className={css.month}>Июнь</div>
-                  <div className={css.month}>Июль</div>
-                  <div className={css.month}>Август</div>
-                  <div className={css.month}>Сентябрь</div>
-                  <div className={css.month}>Октябрь</div>
-                  <div className={css.month}>Ноябрь</div>
-                  <div className={css.month}>Декабрь</div>
-                  <div className={css.month}>Январь</div>
-                  <div className={css.month}>Февраль</div>
-                  <div className={css.month}>Март</div>
-                  <div className={css.month}>Апрель</div>
-                  <div className={css.month}>Май</div>
-                  <div className={css.month}>Июнь</div>
-                  <div className={css.month}>Июль</div>
-                  <div className={css.month}>Август</div>
-                  <div className={css.month}>Сентябрь</div>
-                  <div className={css.month}>Октябрь</div>
-                  <div className={css.month}>Ноябрь</div>
-                  <div className={css.month}>Декабрь</div>
-                  <div className={css.month}>Январь</div>
-                  <div className={css.month}>Февраль</div>
-                  <div className={css.month}>Март</div>
-                  <div className={css.month}>Апрель</div>
-                  <div className={css.month}>Май</div>
-                  <div className={css.month}>Июнь</div>
-                  <div className={css.month}>Июль</div>
-                  <div className={css.month}>Август</div>
-                  <div className={css.month}>Сентябрь</div>
-                  <div className={css.month}>Октябрь</div>
-                  <div className={css.month}>Ноябрь</div>
-                  <div className={css.month}>Декабрь</div>
+                  {
+                    months.map((month, i) => <div key={`sprint-${month}`} className={css.month} style={{flex: moment(`${this.state.grantActiveYear}-${(++i)}`, 'YYYY-MM').daysInMonth()}} >{month}</div>)
+                  }
                 </div>
-                <div className={css.tr}>
-                  <div
-                    className={classnames({
-                      [css.sprintBar]: true,
-                      [css.finished]: true
-                    })}
-                    style={{ left: '13%', right: '83%' }}
-                  />
-                </div>
-                <div className={css.tr}>
-                  <div
-                    className={classnames({
-                      [css.sprintBar]: true,
-                      [css.finished]: true
-                    })}
-                    style={{ left: '17%', right: '81%' }}
-                  />
-                </div>
-                <div className={css.tr}>
-                  <div
-                    className={classnames({
-                      [css.sprintBar]: true,
-                      [css.active]: true
-                    })}
-                    style={{ left: '19%', right: '79%' }}
-                  />
-                </div>
-                <div className={css.tr}>
-                  <div
-                    className={classnames({
-                      [css.sprintBar]: true,
-                      [css.future]: true
-                    })}
-                    style={{ left: '21%', right: '75%' }}
-                  />
-                </div>
-                <div className={css.tr}>
-                  <div
-                    className={classnames({
-                      [css.sprintBar]: true,
-                      [css.future]: true
-                    })}
-                    style={{ left: '25%', right: '72%' }}
-                  />
-                </div>
+                {this.props.sprints.filter((el) => {
+                  return (+moment(el.factFinishDate).format('YYYY') === this.state.grantActiveYear)
+                      || (+moment(el.factStartDate).format('YYYY') === this.state.grantActiveYear);
+                }).map((sprint, i) =>
+                  <div key={`sprint-${i}`} className={css.tr}>
+                    <div
+                      className={classnames({
+                        [css.sprintBar]: true,
+                        [css.unactive]: sprint.statusId === 1 && moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]'),
+                        [css.finished]: moment(sprint.factFinishDate).isBefore(moment(), 'days'),
+                        [css.active]: sprint.statusId === 2,
+                        [css.future]: moment(sprint.factStartDate).isAfter(moment(), 'days')
+                      })}
+                      style={this.getSprintBlock(sprint)}
+                    >
+                      <div className={css.text}>{sprint.spentTime || 0}</div>
+                      <div className={css.text}>{sprint.allottedTime || 0}</div>
+                    </div>
+                  </div>
+                )}
                 <div className={css.grid}>
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
+                  {
+                    months.map((el, i) => <span key={`sprint-${i}`} style={{flex: moment(`${this.state.grantActiveYear}-${(++i)}`, 'YYYY-MM').daysInMonth()}}/>)
+                  }
                 </div>
               </div>
             </div>
@@ -402,7 +342,7 @@ class Planning extends Component {
                   />
                 </div>
                 <Button
-                  onClick={this.handleModal}
+                  onClick={this.openModal}
                   type="bordered"
                   text="Создать задачу"
                   icon="IconPlus"
@@ -448,7 +388,7 @@ class Planning extends Component {
                   />
                 </div>
                 <Button
-                  onClick={this.handleModal}
+                  onClick={this.openModal}
                   type="bordered"
                   text="Создать задачу"
                   icon="IconPlus"
@@ -478,21 +418,13 @@ class Planning extends Component {
             </Col>
           </Row>
         </section>
-        <GanttChart />
-        <CreateTask
-          isOpen={this.props.isCreateTaskModalOpen}
-          onRequestClose={this.handleModal}
-          sprintsList={
-            this.state.createTaskCallee === 'left'
-              ? leftColumnSprints
-              : rightColumnSprints
-          }
+        {/* <GanttChart /> */}
+        <CreateTaskModal
           selectedSprintValue={
             this.state.createTaskCallee === 'left'
               ? this.state.leftColumn
               : this.state.rightColumn
           }
-          onSubmit={this.props.createTask}
           project={this.props.project}
           column={this.state.createTaskCallee}
         />
@@ -504,22 +436,22 @@ class Planning extends Component {
 Planning.propTypes = {
   SprintIsEditing: PropTypes.bool,
   changeTask: PropTypes.func.isRequired,
-  closeCreateTaskModal: PropTypes.func,
+  createSprint: PropTypes.func.isRequired,
   getPlanningTasks: PropTypes.func.isRequired,
-  isCreateTaskModalOpen: PropTypes.bool,
   leftColumnTasks: PropTypes.array,
   openCreateTaskModal: PropTypes.func,
   project: PropTypes.object,
   rightColumnTasks: PropTypes.array,
+  sprints: PropTypes.array.isRequired,
   startTaskEditing: PropTypes.func
 };
 
 const mapStateToProps = state => ({
+  sprints: state.Project.project.sprints,
   project: state.Project.project,
   leftColumnTasks: state.PlanningTasks.leftColumnTasks,
   rightColumnTasks: state.PlanningTasks.rightColumnTasks,
-  SprintIsEditing: state.Task.SprintIsEditing,
-  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen
+  SprintIsEditing: state.Task.SprintIsEditing
 });
 
 const mapDispatchToProps = {
@@ -527,8 +459,7 @@ const mapDispatchToProps = {
   changeTask,
   startTaskEditing,
   openCreateTaskModal,
-  closeCreateTaskModal,
-  createTask
+  createSprint
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Planning);

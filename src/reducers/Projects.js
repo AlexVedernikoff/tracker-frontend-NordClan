@@ -1,4 +1,5 @@
 import * as ProjectActions from '../constants/Projects';
+import * as TagsActions from '../constants/Tags';
 
 const InitialState = {
   projects: [],
@@ -6,7 +7,8 @@ const InitialState = {
   currentPage: 1,
   pagesCount: 1,
   tags: '',
-  isCreateProjectModalOpen: false
+  isCreateProjectModalOpen: false,
+  tagsFilter: []
 };
 
 function Projects (state = InitialState, action) {
@@ -41,6 +43,17 @@ function Projects (state = InitialState, action) {
     };
 
   case ProjectActions.PROJECT_CREATE_SUCCESS:
+    return {
+      ...state
+    };
+
+  case TagsActions.GET_TAGS_FILTER_SUCCESS:
+    if (action.data.filterFor === 'project') {
+      return {
+        ...state,
+        tagsFilter: action.data.filteredTags
+      };
+    }
     return {
       ...state
     };

@@ -8,22 +8,17 @@ import Input from '../../../components/Input';
 import Checkbox from '../../../components/Checkbox';
 import Pagination from '../../../components/Pagination';
 import * as css from './TaskList.scss';
+import TagsFilter from '../../../components/TagsFilter';
+import _ from 'lodash';
 
 import getTasks from '../../../actions/Tasks';
-
-const sortTasks = (sortedArr) => {
-  sortedArr.sort((a, b) => {
-    if (a.prioritiesId > b.prioritiesId) return 1;
-    if (a.prioritiesId < b.prioritiesId) return -1;
-  });
-  return sortedArr;
-};
 
 class TaskList extends Component {
 
   constructor (props) {
     super(props);
     this.state = {
+      filterTags: [],
       filterByName: '',
       activePage: 1
     };
@@ -63,17 +58,35 @@ class TaskList extends Component {
   };
 
   loadTasks = (options = {}) => {
+    const tags = this.state.filterTags.map(el => el.value).join(',');
     this.props.getTasks({
       projectId: this.props.project.id,
       currentPage: this.state.activePage,
       pageSize: 50,
       name: this.state.filterByName,
+      statusId: 0, // вывожу таски со всеми статусами
+      tags,
       ...options
     });
   }
 
+  onTagSelect = (tags) => {
+    this.setState({
+      filterTags: tags
+    }, this.loadTasks);
+  };
+
+  onClickTag = (tag) => {
+    this.setState({
+      filterTags: _.uniqBy(this.state.filterTags.concat({
+        value: tag,
+        label: tag
+      }), 'value')
+    }, this.loadTasks);
+  };
+
   render () {
-    const tasks = sortTasks(this.props.tasksList);
+    const tasks = this.props.tasksList;
 
     return (
       <div>
@@ -100,7 +113,11 @@ class TaskList extends Component {
                 <Input placeholder="Имя исполнителя"/>
               </Col>
               <Col xs={3}>
-                <Input placeholder="Теги" />
+                <TagsFilter
+                  filterFor={'task'}
+                  onTagSelect={this.onTagSelect}
+                  filterTags={this.state.filterTags}
+                />
               </Col>
             </Row>
           </div>
@@ -110,6 +127,7 @@ class TaskList extends Component {
                 key={`task-${task.id}`}
                 task={task}
                 prefix={this.props.project.prefix}
+                onClickTag={this.onClickTag}
               />;
             })
           }

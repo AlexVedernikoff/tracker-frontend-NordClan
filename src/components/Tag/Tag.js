@@ -19,7 +19,7 @@ class Tag extends React.Component {
     } = this.props;
 
     return (
-      <span {...other} className={classnames({[css.tag]: true, [css.create]: create})}>
+      <span {...other} className={classnames({[css.tag]: true, [css.create]: create})} onClick={() => {if (this.props.onClick) this.props.onClick(name);}}>
       <span className={classnames({[css.tagPart]: true, [css.tagCreate]: create})}>{create ? <IconPlus/> : name}</span>
         { create ? null : <span className={classnames(css.tagPart, css.tagClose)}>
           { blocked ? null : <IconClose onClick={() => dT(name, taggable, taggableId)}/> }
@@ -31,10 +31,11 @@ class Tag extends React.Component {
 }
 
 Tag.propTypes = {
-  deleteTag: PropTypes.func.isRequired,
   blocked: PropTypes.bool,
   create: PropTypes.bool,
+  deleteTag: PropTypes.func.isRequired,
   name: PropTypes.string,
+  onClick: PropTypes.func,
   taggable: PropTypes.string,
   taggableId: PropTypes.number
 };

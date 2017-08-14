@@ -7,6 +7,9 @@
   border: 1px solid darken($color-gray, 5%);
   min-height: 93px;
   &.INPROGRESS {border-color: $color-green};
+  &.INFOCUS {
+    background-color: $color-lightgray;
+  }
 }
 
 .sprintTitle {

@@ -11,11 +11,14 @@ import TaskCard from '../../../components/TaskCard';
 import PerformerModal from '../../../components/PerformerModal';
 import PhaseColumn from './PhaseColumn';
 import SelectDropdown from '../../../components/SelectDropdown';
+import Button from '../../../components/Button';
+import CreateTaskModal from '../../../components/CreateTaskModal';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 import * as css from './AgileBoard.scss';
 
 import getTasks from '../../../actions/Tasks';
 import { changeTask, changeTaskUser, startTaskEditing, startTaskChangeUser } from '../../../actions/Task';
+import { openCreateTaskModal } from '../../../actions/Project';
 
 const filterTasks = (array, sortedObject) => {
   array.forEach((element) => {
@@ -277,7 +280,7 @@ class AgileBoard extends Component {
     return (
         <section className={css.agileBoard}>
           {/*<h2 style={{display: 'inline-block'}}>Спринт №1 (01.06.2017 - 30.06.2017)</h2>*/}
-          <Row>
+          <Row className={css.filtersRow}>
             <Col xs>
               <SelectDropdown
                 name="changedSprint"
@@ -289,6 +292,16 @@ class AgileBoard extends Component {
                 options={this.getSprints()}
               />
             </Col>
+            <Button
+              onClick={this.props.openCreateTaskModal}
+              type="primary"
+              text="Создать задачу"
+              icon="IconPlus"
+              name="right"
+              style={{ marginLeft: 16, marginRight: 8 }}
+            />
+          </Row>
+          <Row>
             <Col xs>
               <SelectDropdown
                 name="filterTags"
@@ -355,6 +368,10 @@ class AgileBoard extends Component {
               />
             : null
           }
+          <CreateTaskModal
+            selectedSprintValue={this.state.changedSprint || 0}
+            project={this.props.project}
+          />
         </section>
     );
   }
@@ -366,6 +383,7 @@ AgileBoard.propTypes = {
   changeTask: PropTypes.func.isRequired,
   changeTaskUser: PropTypes.func.isRequired,
   getTasks: PropTypes.func.isRequired,
+  openCreateTaskModal: PropTypes.func.isRequired,
   project: PropTypes.object,
   sprintTasks: PropTypes.array,
   sprints: PropTypes.array,
@@ -388,7 +406,8 @@ const mapDispatchToProps = {
   changeTask,
   changeTaskUser,
   startTaskEditing,
-  startTaskChangeUser
+  startTaskChangeUser,
+  openCreateTaskModal
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);
