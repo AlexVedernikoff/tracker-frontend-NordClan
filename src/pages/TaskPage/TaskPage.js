@@ -163,10 +163,12 @@ class TaskPage extends Component {
           </Col>
           <Col xs={4}>
             <aside>
-              <Details task={this.props.task} sprints={this.props.sprints} onChange={this.props.changeTask} onChangeUser={this.props.changeTaskUser} />
+              <Details task={this.props.task} sprints={this.props.sprints} onChange={this.props.changeTask}
+                 onChangeUser={this.props.changeTaskUser} />
               {
                 this.props.task.linkedTasks
-                ? <RelatedTasks task={this.props.task} type="linkedTasks" onAction={this.handleOpenLinkTaskModal} onDelete={this.handleOpenUnlinkTaskModal} />
+                ? <RelatedTasks task={this.props.task} type="linkedTasks" onAction={this.handleOpenLinkTaskModal}
+                    onDelete={this.handleOpenUnlinkTaskModal} />
                 : null
               }
               {
