@@ -2,6 +2,7 @@ import * as SprintActions from '../constants/Sprint';
 import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
+import moment from 'moment';
 
 const createSprintStart = () => ({
   type: SprintActions.SPRINTS_CREATE_START
@@ -49,7 +50,10 @@ export const editSprint = (id, statusId, name, dateForm, dateTo, allottedTime) =
       .put(URL, params)
       .then(response => {
         if (response.data) {
-          dispatch(editSprintSuccess(response.data));
+          const data = _.sortBy(response.data, (sprint) => {
+            return moment(sprint.factStartDate).format('X');
+          });
+          dispatch(editSprintSuccess(data));
           dispatch(finishLoading());
         }
       });

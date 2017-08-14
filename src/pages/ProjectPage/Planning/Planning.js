@@ -89,11 +89,8 @@ class Planning extends Component {
     }
   };
 
-  getSprints = column => {
-    const secondColumn = column === 'leftColumn' ? 'rightColumn' : 'leftColumn';
-    let sprints = _.sortBy(this.props.project.sprints, sprint => {
-      return new moment(sprint.factFinishDate);
-    });
+  getSprints = () => {
+    let sprints = this.props.project.sprints;
 
     sprints = sprints.map(sprint => ({
       value: sprint.id,
@@ -117,10 +114,6 @@ class Planning extends Component {
         [css.INPROGRESS]: false,
         [css.sprintMarker]: true
       })
-    });
-
-    sprints.forEach(sprint => {
-      sprint.disabled = sprint.value === this.state[secondColumn];
     });
 
     return sprints;
@@ -191,13 +184,6 @@ class Planning extends Component {
 
   oClickSprint = (sprintId) => {
     return () => {
-      if (sprintId === this.state.leftColumn) {
-        this.selectValue(
-          this.state.rightColumn,
-          'leftColumn'
-        );
-      }
-
       this.selectValue(
           sprintId,
           'rightColumn'
@@ -218,9 +204,9 @@ class Planning extends Component {
       );
     });
 
-    const rightColumnTasks =
-      this.props.rightColumnTasks.map(task => {
-      return (
+    const rightColumnTasks
+      = this.props.rightColumnTasks.map(task => {
+        return (
         <DraggableTaskRow
           key={`task-${task.id}`}
           task={task}
@@ -228,13 +214,13 @@ class Planning extends Component {
           shortcut
           card
         />
-      );
-    });
+        );
+      });
 
     const leftEstimates = this.getEstimatesInfo(this.state.leftColumn, this.props.leftColumnTasks);
     const rightEstimates = this.getEstimatesInfo(this.state.rightColumn, this.props.rightColumnTasks);
-    const leftColumnSprints = this.getSprints('leftColumn');
-    const rightColumnSprints = this.getSprints('rightColumn');
+    const leftColumnSprints = this.getSprints();
+    const rightColumnSprints = this.getSprints();
     const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 
     return (
