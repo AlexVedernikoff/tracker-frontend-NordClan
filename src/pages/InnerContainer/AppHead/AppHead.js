@@ -6,6 +6,7 @@ import {IconExitApp} from '../../../components/Icons';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Logo from '../../../components/Logo';
 import Loader from './Loader';
+import Playlist from './Playlist';
 import { history } from '../../../Router';
 import { connect } from 'react-redux';
 
@@ -35,6 +36,7 @@ class AppHead extends Component {
         <Link to="/" style={{ textDecoration: 'none' }}>
           <Logo />
         </Link>
+        <Playlist/>
         <div className={css.search}>
           <input
             type="text"
