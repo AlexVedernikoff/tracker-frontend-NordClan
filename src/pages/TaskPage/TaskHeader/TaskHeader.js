@@ -26,6 +26,8 @@ const getNewStatus = newPhase => {
     break;
   case 'Done': newStatusId = 8;
     break;
+  case 'Closed': newStatusId = 10;
+    break;
   default: break;
   }
 
@@ -138,6 +140,10 @@ class TaskHeader extends Component {
     return tip;
   }
 
+  handleClose = () => {
+    this.props.onChangeUser(this.props.task.id, 0, 10);
+  };
+
   render () {
     const { task } = this.props;
     const css = require('./TaskHeader.scss');
@@ -246,7 +252,22 @@ class TaskHeader extends Component {
             onClick={this.handleChangeStatus}
           />
         </ButtonGroup>
-        {/*<Button type="bordered" icon='IconCheck' data-tip="Принять" data-place='bottom' addedClassNames={{[css.buttonOk]: true}} />*/}
+        <Button
+          type={
+            task.statusId === 10
+              ? 'green'
+              : 'bordered'
+          }
+          icon="IconCheck"
+          data-tip={
+            task.statusId === 10
+              ? null
+              : 'Принять'
+          }
+          data-place="bottom"
+          addedClassNames={{[css.buttonOk]: true}}
+          onClick={this.handleClose}
+        />
         <hr />
 
         { this.state.isCancelModalOpen
