@@ -1,7 +1,6 @@
 import * as ProjectActions from '../constants/Projects';
 import axios from 'axios';
-import { store } from '../Router';
-import { history } from '../Router';
+import { history } from '../App';
 import { API_URL } from '../constants/Settings';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';

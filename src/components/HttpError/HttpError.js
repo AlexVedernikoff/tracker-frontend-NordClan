@@ -10,7 +10,7 @@ const HttpError = (props) => {
   } = props;
 
   return (
-    <div>
+    <div style={props.whiteCentered ? {color: 'rgb(255,255,255)', textAlign: 'center'} : {}}>
       <h2>{error.status} {error.name}</h2>
       <p>
         {error.message}
@@ -20,7 +20,8 @@ const HttpError = (props) => {
 };
 
 HttpError.propTypes = {
-  error: PropTypes.object
+  error: PropTypes.object,
+  whiteCentered: PropTypes.bool
 };
 
 

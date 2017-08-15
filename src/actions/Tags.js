@@ -3,8 +3,6 @@ import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
-import {store} from '../Router';
-import {history} from '../Router';
 
 const startTagsCreate = () => ({
   type: TagsActions.TAGS_CREATE_START
