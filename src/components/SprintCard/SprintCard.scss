@@ -38,28 +38,8 @@
 
 .status {
   position: absolute;
-  cursor: pointer;
   top: 8px;
   left: -8px;
-  background-color: $color-green;
-  color: white;
-  width: 1rem;
-  height: 1rem;
-  border-radius: 50%;
-
-  svg {
-    display: block;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 100%;
-    width: 100%;
-  }
-
-  &.inprogress { background-color: $color-green };
-  &.inhold { background-color: $color-dark };
 }
 
 .iconClose {

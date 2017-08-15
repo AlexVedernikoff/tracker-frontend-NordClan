@@ -22,6 +22,9 @@ import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal } from '../../../actions/Project';
 
 
+import SprintStartControl from '../../../components/SprintStartControl';
+
+
 const getSprintTime = sprint =>
   `${moment(sprint.factStartDate).format('DD.MM')}
   ${sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format('DD.MM')}` : '- ...'}`;
@@ -200,6 +203,11 @@ class Planning extends Component {
     };
   };
 
+  sprintFilter = (sprint) => {
+    return (+moment(sprint.factFinishDate).format('YYYY') === this.state.grantActiveYear)
+      || (+moment(sprint.factStartDate).format('YYYY') === this.state.grantActiveYear);
+  };
+
 
   render () {
     const leftColumnTasks = this.props.leftColumnTasks.map(task => {
@@ -266,10 +274,7 @@ class Planning extends Component {
               <div className={css.sprintNames}>
                 <div />
                 <div />
-                {this.props.sprints.filter((el) => {
-                  return (+moment(el.factFinishDate).format('YYYY') === this.state.grantActiveYear)
-                    || (+moment(el.factStartDate).format('YYYY') === this.state.grantActiveYear);
-                }).map((sprint, i)=>
+                {this.props.sprints.filter(this.sprintFilter).map((sprint, i)=>
                   <div key={`sprint-${i}`}>
                     <span
                       className={classnames({
@@ -277,8 +282,31 @@ class Planning extends Component {
                         [css.hover]: sprint.id === this.state.sprintIdHovered
                       })}
                       data-tip={getSprintTime(sprint)} onClick={this.oClickSprint(sprint.id)} onMouseOver={this.onMouseOverSprint(sprint.id)} onMouseOut={this.onMouseOutSprint}/>
-                    <span className={css.name}>{sprint.name}</span>
+                    <SprintStartControl sprint={sprint} />
+                    <span className={css.name}>
+                      {sprint.name}
+                      </span>
                   </div>
+                )}
+              </div>
+              <div className={classnames({
+                [css.sprintNames]: true,
+                [css.spentTime]: true
+              })}>
+                <span className={css.header}>План</span>
+                {this.props.sprints.filter(this.sprintFilter).map((sprint, i)=>
+                    <span className={css.name}>{Math.floor(Math.random() * 10000)}</span>
+                )}
+              </div>
+              <div className={classnames({
+                [css.sprintNames]: true,
+                [css.spentTime]: true
+              })}>
+                <span className={css.header}>Факт</span>
+                {this.props.sprints.filter(this.sprintFilter).map((sprint, i)=>
+
+                    <span className={css.name}>{Math.floor(Math.random() * 10000)}</span>
+
                 )}
               </div>
               <div className={css.table}>
@@ -295,10 +323,7 @@ class Planning extends Component {
                     months.map((month, i) => <div key={`sprint-${month}`} className={css.month} style={{flex: moment(`${this.state.grantActiveYear}-${(++i)}`, 'YYYY-MM').daysInMonth()}} >{month}</div>)
                   }
                 </div>
-                {this.props.sprints.filter((el) => {
-                  return (+moment(el.factFinishDate).format('YYYY') === this.state.grantActiveYear)
-                      || (+moment(el.factStartDate).format('YYYY') === this.state.grantActiveYear);
-                }).map((sprint, i) =>
+                {this.props.sprints.filter(this.sprintFilter).map((sprint, i) =>
                   <div key={`sprint-${i}`} className={css.tr}>
                     <div
                       className={classnames({

@@ -10,8 +10,9 @@ import DatepickerDropdown from '../../components/DatepickerDropdown';
 import Input from '../../components/Input';
 import moment from 'moment';
 
-import { IconPlay, IconPause, IconClose } from '../Icons';
+import { IconClose } from '../Icons';
 import * as css from './SprintCard.scss';
+import SprintStartControl from '../SprintStartControl';
 
 
 class SprintCard extends Component {
@@ -50,14 +51,6 @@ class SprintCard extends Component {
 
   handleDayToChange = (date) => {
     this.setState({ dateTo: moment(date).format('YYYY-MM-DD')});
-  };
-
-  changeStatus = () => {
-    const statusId = this.props.sprint.statusId === 1 ? 2 : 1;
-    this.props.editSprint(
-      this.props.sprint.id,
-      statusId
-    );
   };
 
   render () {
@@ -132,15 +125,9 @@ class SprintCard extends Component {
           <span>Израсходованное время: {sprint.spentTime || 0} ч.</span>
         </p>
         <div
-          onClick={this.changeStatus}
-          className={classnames({
-            [css.status]: true,
-            [css.inprogress]: sprint.statusId === 2,
-            [css.inhold]: sprint.statusId === 1
-          })}
-          data-tip={sprint.statusId === 2 ? 'Остановить' : 'Запустить'}
+          className={css.status}
         >
-          {sprint.statusId === 2 ? <IconPause /> : <IconPlay />}
+          <SprintStartControl sprint={sprint} />
         </div>
         {
           this.state.isModalOpen
