@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import onClickOutside from 'react-onclickoutside';
+import ReactTooltip from 'react-tooltip';
 
 import { IconPause, IconPlay } from '../../../../components/Icons';
 import * as css from './Playlist.scss';
@@ -18,6 +19,14 @@ class Playlist extends Component {
         item3: 0
       }
     };
+  }
+
+  componentDidMount () {
+    ReactTooltip.rebuild();
+  }
+
+  componentDidUpdate () {
+    ReactTooltip.rebuild();
   }
 
   handleClickOutside = () => {
@@ -56,8 +65,8 @@ class Playlist extends Component {
               <input key="item1" type="text" onChange={(e) => this.handleChangeItem('item1', e)} value={this.state.times.item1}/>
             </div>
             <div className={css.other}>
-              <span data-tip="Всего" data-place="bottom">52</span>
-              <span data-tip="За эту неделю" data-place="bottom">14</span>
+              <span data-tip="Потрачено" data-place="bottom">52</span>
+              <span data-tip="Запланировано" data-place="bottom">14</span>
             </div>
           </div>
         </div>
