@@ -5,7 +5,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import onClickOutside from 'react-onclickoutside';
 import ReactTooltip from 'react-tooltip';
 
-import { IconPause, IconPlay, IconLock, IconArrowDown, IconArrowUp, IconBook, IconList, IconLaptop, IconCall, IconPlane, IconTime } from '../../../../components/Icons';
+import { IconPause, IconPlay, IconCheckCircle, IconArrowDown, IconArrowUp, IconBook, IconList, IconLaptop, IconCall, IconPlane, IconTime } from '../../../../components/Icons';
 import * as css from './Playlist.scss';
 
 class Playlist extends Component {
@@ -130,7 +130,7 @@ class Playlist extends Component {
     = <div>
         <div className={classnames(css.listTask, css.task)}>
           <div className={classnames(css.actionButton, css.locked)}>
-            <IconLock style={{width: '1.5rem', height: '1.5rem'}} />
+            <IconCheckCircle style={{width: '1.5rem', height: '1.5rem'}} />
           </div>
           <div className={css.taskNameWrapper}>
             <div className={css.taskTitle}>
@@ -155,7 +155,7 @@ class Playlist extends Component {
         </div>
         <div className={classnames(css.listTask, css.task)}>
           <div className={classnames(css.actionButton, css.locked)}>
-            <IconLock style={{width: '1.5rem', height: '1.5rem'}} />
+            <IconCheckCircle style={{width: '1.5rem', height: '1.5rem'}} />
           </div>
           <div className={css.taskNameWrapper}>
             <div className={css.taskTitle}>
