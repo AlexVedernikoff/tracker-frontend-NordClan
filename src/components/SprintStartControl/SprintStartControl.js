@@ -7,11 +7,9 @@ import { IconPlay, IconPause } from '../Icons';
 import { editSprint } from '../../actions/Sprint';
 
 
-class SprintStartControl extends Component {
+class SprintEditModal extends Component {
   constructor (props) {
     super(props);
-    this.state = {
-    };
   }
 
   render () {
@@ -33,28 +31,14 @@ class SprintStartControl extends Component {
   }
 }
 
-SprintStartControl.propTypes = {
+SprintEditModal.propTypes = {
   editSprint: PropTypes.func.isRequired,
   sprint: PropTypes.object.isRequired
 
 };
 
-const mapStateToProps = state => ({
-  // sprints: state.Project.project.sprints,
-  // project: state.Project.project,
-  // leftColumnTasks: state.PlanningTasks.leftColumnTasks,
-  // rightColumnTasks: state.PlanningTasks.rightColumnTasks,
-  // SprintIsEditing: state.Task.SprintIsEditing
-});
-
 const mapDispatchToProps = {
   editSprint
-  // getPlanningTasks,
-  // changeTask,
-  // startTaskEditing,
-  // openCreateTaskModal,
-  // createSprint,
-  // editSprint
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SprintStartControl);
+export default connect(null, mapDispatchToProps)(SprintEditModal);

@@ -19,10 +19,10 @@ import CreateSprintModal from '../CreateSprintModal';
 import SprintCard from '../../../components/SprintCard';
 import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
+import { deleteSprint, editSprint } from '../../../actions/Sprint';
 import { openCreateTaskModal } from '../../../actions/Project';
-
-
 import SprintStartControl from '../../../components/SprintStartControl';
+import SprintEditModal from '../../../components/SprintEditModal';
 
 
 const getSprintTime = sprint =>
@@ -38,7 +38,9 @@ class Planning extends Component {
       createTaskCallee: null,
       isModalOpenAddSprint: false,
       sprintIdHovered: null,
-      grantActiveYear: new Date().getFullYear()
+      grantActiveYear: new Date().getFullYear(),
+      isOpenEditModal: false,
+      editSprint: null
     };
   }
 
@@ -208,6 +210,36 @@ class Planning extends Component {
       || (+moment(sprint.factStartDate).format('YYYY') === this.state.grantActiveYear);
   };
 
+  openEditModal = (sprint) => {
+    return () => {
+      this.setState({
+        editSprint: sprint,
+        isOpenEditModal: true
+      });
+    };
+  };
+
+  handleEditSprint = (sprint) => {
+
+    console.log(sprint);
+
+    this.setState({ isOpenEditModal: false });
+    this.props.editSprint(
+      sprint.id,
+      null,
+      sprint.sprintName.trim(),
+      sprint.dateFrom,
+      sprint.dateTo,
+      sprint.allottedTime
+    );
+  };
+
+  closeEditSprintModal = () => {
+    this.setState({
+      editSprint: null,
+      isOpenEditModal: false
+    });
+  };
 
   render () {
     const leftColumnTasks = this.props.leftColumnTasks.map(task => {
@@ -283,9 +315,9 @@ class Planning extends Component {
                       })}
                       data-tip={getSprintTime(sprint)} onClick={this.oClickSprint(sprint.id)} onMouseOver={this.onMouseOverSprint(sprint.id)} onMouseOut={this.onMouseOutSprint}/>
                     <SprintStartControl sprint={sprint} />
-                    <span className={css.name}>
+                    <span className={css.name} onClick={this.openEditModal(sprint)}>
                       {sprint.name}
-                      </span>
+                    </span>
                   </div>
                 )}
               </div>
@@ -453,6 +485,7 @@ class Planning extends Component {
           project={this.props.project}
           column={this.state.createTaskCallee}
         />
+        {this.state.isOpenEditModal ? <SprintEditModal sprint={this.state.editSprint} handleEditSprint={this.handleEditSprint} handleCloseModal={this.closeEditSprintModal}/> : null}
       </div>
     );
   }
@@ -462,6 +495,7 @@ Planning.propTypes = {
   SprintIsEditing: PropTypes.bool,
   changeTask: PropTypes.func.isRequired,
   createSprint: PropTypes.func.isRequired,
+  editSprint: PropTypes.func.isRequired,
   getPlanningTasks: PropTypes.func.isRequired,
   leftColumnTasks: PropTypes.array,
   openCreateTaskModal: PropTypes.func,
@@ -481,6 +515,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   getPlanningTasks,
+  editSprint,
   changeTask,
   startTaskEditing,
   openCreateTaskModal,
