@@ -1,8 +1,6 @@
 import * as TaskActions from '../constants/Tasks';
 import { API_URL } from '../constants/Settings';
 import axios from 'axios';
-import { store } from '../Router';
-import { history } from '../Router';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
 

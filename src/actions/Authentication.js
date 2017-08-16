@@ -1,7 +1,6 @@
 import * as AuthActions from '../constants/Authentication';
 import { API_URL } from '../constants/Settings';
 import axios from 'axios';
-import { history } from '../Router';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
 
