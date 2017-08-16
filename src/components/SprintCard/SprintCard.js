@@ -23,7 +23,8 @@ class SprintCard extends Component {
       dateTo: undefined,
       sprintName: '',
       sprintTime: '',
-      allottedTime: null
+      allottedTime: null,
+      isHovered: false
     };
   }
 
@@ -60,7 +61,7 @@ class SprintCard extends Component {
   };
 
   render () {
-    const { sprint, deleteSprint: dS, editSprint: eS, ...other } = this.props;
+    const { sprint, deleteSprint: dS, editSprint: eS, inFocus, ...other } = this.props;
 
     const edit = () => {
       this.setState({ isModalOpen: false });
@@ -82,7 +83,11 @@ class SprintCard extends Component {
       : '';
     return (
       <div
-        className={classnames([css.sprintCard], [css[sprint.status]])}
+        className={classnames({
+          [css.sprintCard]: true,
+          [css[sprint.status]]: true,
+          [css.INFOCUS]: inFocus
+        })}
         {...other}
       >
         <IconClose
@@ -111,20 +116,20 @@ class SprintCard extends Component {
         <p className={css.sprintMeta}>
           <span>Всего задач:</span>
         <span>
-          {sprint.tasksTotal || 0}
+          {sprint.countAllTasks || 0}
         </span>
         </p>
         <p className={css.sprintMeta}>
           <span>Выполнено:</span>
         <span>
-          {sprint.tasksDone || 0}
+          {sprint.countDoneTasks || 0}
         </span>
         </p>
         <p className={css.sprintMeta}>
-          <span>Выполнено:</span>
-        <span>
-          {sprint.tasksDone || 0}
-        </span>
+          <span>Выделенное время: {sprint.allottedTime || 0} ч.</span>
+        </p>
+        <p className={css.sprintMeta}>
+          <span>Израсходованное время: {sprint.spentTime || 0} ч.</span>
         </p>
         <div
           onClick={this.changeStatus}
@@ -135,13 +140,13 @@ class SprintCard extends Component {
           })}
           data-tip={sprint.statusId === 2 ? 'Остановить' : 'Запустить'}
         >
-          {sprint.status === 'INPROGRESS' ? <IconPause /> : <IconPlay />}
+          {sprint.statusId === 2 ? <IconPause /> : <IconPlay />}
         </div>
         {
           this.state.isModalOpen
             ? <Modal
             isOpen
-            contentLabel="modal"
+            contentLabel='modal'
             onRequestClose={this.handleCloseModal}>
             <div>
               <div>
@@ -150,25 +155,27 @@ class SprintCard extends Component {
                        xs={10}>
                     <h3>Редактирование спринта</h3>
                     <Input
-                      placeholder="Новое название спринта..."
+                      placeholder='Новое название спринта...'
                       defaultValue={sprint.name}
                       onChange={this.onChangeName}
                     />
                   </Col>
                 </Row>
                 <Row>
-                  <Col xs>
+                  <Col xsOffset={1} xs={5}>
                     <DatepickerDropdown
-                      name="dateFrom"
+                      name='dateFrom'
                       value={formattedDayFrom}
                       onDayChange={this.handleDayFromChange}
                       placeholder={moment(sprint.factStartDate).format('DD.MM.YYYY')}
                     />
+                  </Col>
+                  <Col xs={5}>
                     <DatepickerDropdown
-                      name="dateTo"
-                      value={formattedDayTo}
-                      onDayChange={this.handleDayToChange}
-                      placeholder={moment(sprint.factFinishDate).format('DD.MM.YYYY')}
+                        name='dateTo'
+                        value={formattedDayTo}
+                        onDayChange={this.handleDayToChange}
+                        placeholder={moment(sprint.factFinishDate).format('DD.MM.YYYY')}
                     />
                   </Col>
                 </Row>
@@ -176,16 +183,17 @@ class SprintCard extends Component {
                   <Col xsOffset={1}
                        xs={10}>
                     <Input
-                      placeholder="Введите время в часах..."
+                      placeholder='Введите новое значение времени...'
+                      defaultValue={sprint.allottedTime || 0}
                       onChange={this.onChangeTime}
                     />
                   </Col>
                 </Row>
                 <Row className={css.createButton}
-                     center="xs">
+                     center='xs'>
                   <Col xs>
-                    <Button type="green"
-                            text="Изменить"
+                    <Button type='green'
+                            text='Изменить'
                             onClick={edit}/>
                   </Col>
                 </Row>
@@ -202,17 +210,21 @@ class SprintCard extends Component {
 SprintCard.propTypes = {
   deleteSprint: PropTypes.func.isRequired,
   editSprint: PropTypes.func.isRequired,
+  inFocus: PropTypes.bool,
   sprint: PropTypes.object
 };
 
 SprintCard.defaultProps = {
+  inFocus: false,
   sprint: {
     name: 'Название спринта',
-    dateStart: '00.00.00',
-    dateEnd: '00.00.00',
+    countAllTasks: '00',
+    countDoneTasks: '00',
     tasksTotal: '00',
     tasksDone: '00',
-    status: 'INPROGRESS'
+    allottedTime: '00',
+    spentTime: '00',
+    status: 'INPROGRESS',
   }
 };
 

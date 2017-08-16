@@ -1,411 +1,147 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router';
-import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
+import { Row, Col } from 'react-flexbox-grid/lib/index';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
-import { createSprint } from '../../../actions/Sprint';
+import axios from 'axios';
+import { API_URL } from '../../../constants/Settings';
+import { bindUserToProject } from '../../../actions/Project';
+import { debounce } from 'lodash';
 
 import * as css from './Settings.scss';
-import SprintCard from '../../../components/SprintCard';
-import Checkbox from '../../../components/Checkbox';
+import Participant from '../../../components/Participant';
 import Button from '../../../components/Button';
 import Modal from '../../../components/Modal';
-import DatepickerDropdown from '../../../components/DatepickerDropdown';
-import Input from '../../../components/Input';
-import moment from 'moment';
+import SelectDropdown from '../../../components/SelectDropdown';
 
 class Settings extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      isModalOpen: false,
-      dateFrom: undefined,
-      dateTo: undefined,
-      sprintName: '',
-      sprintTime: '',
-      allottedTime: null
+      isModalOpenAddUser: false,
+      participant: null,
+      participants: []
     };
+    this.ROLES_FULL_NAME = ['Account', 'PM', 'UX', 'Analyst', 'Back', 'Front', 'Mobile', 'TeamLead', 'QA', 'Unbillable'];
+    this.searchOnChange = debounce(this.searchOnChange, 400);
   }
 
-  handleOpenModal = () => {
-    this.setState({ isModalOpen: true });
+  componentWillUnmount = () => {
+    this.searchOnChange.cancel();
   };
 
-  handleCloseModal = () => {
-    this.setState({ isModalOpen: false });
-  };
-
-  onChangeTime = (e) => {
-    this.setState({ allottedTime: e.target.value });
-  };
-
-  onChangeName = (e) => {
-    this.setState({ sprintName: e.target.value });
-  };
-
-  handleDayFromChange = (date) => {
-    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD')});
-  };
-
-  handleDayToChange = (date) => {
-    this.setState({ dateTo: moment(date).format('YYYY-MM-DD')});
-  };
-
-  createSprint = () => {
-    this.setState({ isModalOpen: false });
-    this.props.createSprint(
-        this.state.sprintName.trim(),
-        this.props.id,
-        this.state.dateFrom,
-        this.state.dateTo,
-        this.state.allottedTime
+  bindUser = () => {
+    this.setState({ isModalOpenAddUser: false });
+    this.setState({participants: []});
+    this.setState({participant: null});
+    this.props.bindUserToProject(
+      this.props.id,
+      this.state.participant.value
     );
   };
 
-  render () {
-    const formattedDayFrom = this.state.dateFrom
-        ? moment(this.state.dateFrom).format('DD.MM.YYYY')
-        : '';
-    const formattedDayTo = this.state.dateTo
-        ? moment(this.state.dateTo).format('DD.MM.YYYY')
-        : '';
+  searchOnChange = (name) => {
+    const userName = name.trim();
+    if (userName.length > 1) {
+      const URL = `${API_URL}/user/autocompleter/?userName=${userName}`;
+      axios
+        .get(URL, {})
+        .then(response => {
+          if (response.data) {
+            response.data = response.data.filter((participant) => {
+              let triger = false;
+              this.props.users.forEach((user) => {
+                if (participant.id === user.id) {
+                  triger = true;
+                }
+              });
+              return !triger ? participant : undefined;
+            });
+            this.setState({participants: response.data});
+          }
+        });
+    } else {
+      this.setState({participants: []});
+    }
+  };
 
+  getUsers = () => {
+    return this.state.participants.map((user) => ({
+      value: user.id,
+      label: user.fullNameRu
+    }));
+  };
+
+  selectValue = (e) => {
+    this.setState({participant: e});
+  };
+
+  handleOpenModalAddUser = () => {
+    this.setState({ isModalOpenAddUser: true });
+  };
+
+  handleCloseModalAddUser = () => {
+    this.setState({ isModalOpenAddUser: false });
+    this.setState({participants: []});
+  };
+  render () {
     return (
       <div className={css.property}>
         <h2>Участники</h2>
         <Row className={classnames(css.memberRow, css.memberHeader)}>
           <Col xs={9} xsOffset={3}>
             <Row>
-              <Col xs>
-                <h4>
-                  <div className={css.cell}>Develop</div>
-                </h4>
-              </Col>
-              <Col xs>
-                <h4>
-                  <div className={css.cell}>Back</div>
-                </h4>
-              </Col>
-              <Col xs>
-                <h4>
-                  <div className={css.cell}>Front</div>
-                </h4>
-              </Col>
-              <Col xs>
-                <h4>
-                  <div className={css.cell}>Code Review</div>
-                </h4>
-              </Col>
-              <Col xs>
-                <h4>
-                  <div className={css.cell}>QA</div>
-                </h4>
-              </Col>
-              <Col xs>
-                <h4>
-                  <div className={css.cell}>Unbillable</div>
-                </h4>
-              </Col>
+              {this.ROLES_FULL_NAME
+                ? this.ROLES_FULL_NAME.map((ROLES_FULL_NAME, i) =>
+                <Col xs key={`${i}-roles-name`}>
+                  <h4>
+                    <div className={css.cell}>{ROLES_FULL_NAME}</div>
+                  </h4>
+                </Col>
+              ) : null}
             </Row>
           </Col>
         </Row>
-        <Row className={css.memberRow}>
-          <Col xs={3}>
-            <Link to="/users/123">
-              <div className={classnames(css.cell, css.memberColumn)}>
-                Бронислав Пупков
-              </div>
-            </Link>
-          </Col>
-          <Col xs={9}>
-            <Row>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-        <Row className={css.memberRow}>
-          <Col xs={3}>
-            <Link to="/users/123">
-              <div className={classnames(css.cell, css.memberColumn)}>
-                Александра Одиннадцатиклассница
-              </div>
-            </Link>
-          </Col>
-          <Col xs={9}>
-            <Row>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-        <Row className={css.memberRow}>
-          <Col xs={3}>
-            <Link to="/users/123">
-              <div className={classnames(css.cell, css.memberColumn)}>
-                Никита Джугашвили
-              </div>
-            </Link>
-          </Col>
-          <Col xs={9}>
-            <Row>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-        <Row className={css.memberRow}>
-          <Col xs={3}>
-            <Link to="/users/123">
-              <div className={classnames(css.cell, css.memberColumn)}>
-                Николай Липотин
-              </div>
-            </Link>
-          </Col>
-          <Col xs={9}>
-            <Row>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-        <Row className={css.memberRow}>
-          <Col xs={3}>
-            <Link to="/users/123">
-              <div className={classnames(css.cell, css.memberColumn)}>
-                Андрей Юдин
-              </div>
-            </Link>
-          </Col>
-          <Col xs={9}>
-            <Row>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-              <Col xs>
-                <label className={css.cell}>
-                  <Checkbox />
-                </label>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
+        {this.props.users
+          ? this.props.users.map((user) =>
+          <Participant user={user}
+                       key={`${user.id}-user`}
+                       projectId={this.props.id}/>
+        ) : null}
         <Button
           text="Добавить участника"
           type="primary"
           style={{ marginTop: 16 }}
           icon="IconPlus"
-        />
-        {this.props.sprints
-          ? <div>
-              <hr />
-              <h2>Спринты / Фазы</h2>
-              <Row>
-                {this.props.sprints.map((element, i) =>
-                  <Col xs={3} key={`sprint-${i}`}>
-                    <SprintCard sprint={element} />
-                  </Col>
-                )}
-              </Row>
-            </div>
-          : null}
-        <Button
-          text="Создать спринт"
-          type="primary"
-          style={{ marginTop: 16 }}
-          icon="IconPlus"
-          onClick={this.handleOpenModal}
+          onClick={this.handleOpenModalAddUser}
         />
         {
-          this.state.isModalOpen
-              ? <Modal
-              isOpen
-              contentLabel="modal"
-              onRequestClose={this.handleCloseModal}>
-            <div>
-              <div>
-                <Row>
-                  <Col xsOffset={1}
-                       xs={10}>
-                    <h3>Создание нового спринта</h3>
-                    <Input
-                        placeholder="Введите название спринта..."
-                        onChange={this.onChangeName}
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xs>
-                    <DatepickerDropdown
-                        name="dateFrom"
-                        value={formattedDayFrom}
-                        onDayChange={this.handleDayFromChange}
-                        placeholder="Дата начала"
-                    />
-                    <DatepickerDropdown
-                        name="dateTo"
-                        value={formattedDayTo}
-                        onDayChange={this.handleDayToChange}
-                        placeholder="Дата окончания"
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xsOffset={1}
-                       xs={10}>
-                    <Input
-                        placeholder="Введите время в часах..."
-                        onChange={this.onChangeTime}
-                    />
-                  </Col>
-                </Row>
-                <Row className={css.createButton}
-                     center="xs">
-                  <Col xs>
-                    <Button type="green"
-                            text="Создать"
-                            onClick={this.createSprint}/>
-                  </Col>
-                </Row>
+          this.state.isModalOpenAddUser
+            ? <Modal
+            isOpen
+            contentLabel="modal"
+            onRequestClose={this.handleCloseModalAddUser}>
+            <div className={css.changeStage}>
+              <h3>Добавление нового участника</h3>
+              <div className={css.modalLine}>
+                <SelectDropdown
+                  name="member"
+                  placeholder="Введите имя участника..."
+                  multi={false}
+                  value={this.state.participant}
+                  onChange={e => this.selectValue(e)}
+                  onInputChange={this.searchOnChange}
+                  noResultsText="Нет результатов"
+                  options={this.getUsers()}
+                  autofocus
+                />
+                <Button type="green"
+                        text="Добавить"
+                        onClick={this.bindUser}/>
               </div>
             </div>
           </Modal>
-              : null
+            : null
         }
       </div>
     );
@@ -413,18 +149,18 @@ class Settings extends Component {
 }
 
 Settings.propTypes = {
-  createSprint: PropTypes.func.isRequired,
+  bindUserToProject: PropTypes.func.isRequired,
   id: PropTypes.number,
-  sprints: PropTypes.array.isRequired
+  users: PropTypes.array.isRequired
 };
 
 const mapStateToProps = state => ({
-  sprints: state.Project.project.sprints,
-  id: state.Project.project.id
+  id: state.Project.project.id,
+  users: state.Project.project.users
 });
 
 const mapDispatchToProps = {
-  createSprint
+  bindUserToProject
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Settings);

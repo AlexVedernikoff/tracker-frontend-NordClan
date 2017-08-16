@@ -1,4 +1,5 @@
 import * as TaskActions from '../constants/Task';
+import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
@@ -12,6 +13,19 @@ const getTaskSuccess = task => ({
   data: task
 });
 
+const getTaskHistoryStart = () => ({
+  type: TaskActions.GET_TASK_HISTORY_REQUEST_SENT
+});
+
+const getTaskHistorySuccess = history => ({
+  type: TaskActions.GET_TASK_HISTORY_REQUEST_SUCCESS,
+  data: history
+});
+const getTaskFail = error => ({
+  type: TaskActions.GET_TASK_REQUEST_FAIL,
+  error: error
+});
+
 const requestTaskChange = () => ({
   type: TaskActions.TASK_CHANGE_REQUEST_SENT
 });
@@ -21,9 +35,32 @@ const successTaskChange = changedFields => ({
   changedFields
 });
 
+const requestTaskChangeUser = () => ({
+  type: TaskActions.TASK_CHANGE_REQUEST_SENT
+});
+
+const successTaskChangeUser = changedFields => ({
+  type: TaskActions.TASK_CHANGE_USER_SUCCESS,
+  changedFields
+});
+
+const requestTaskLink = () => ({
+  type: TaskActions.TASK_LINK_SENT
+});
+
+const successTaskLink = linkedTasks => ({
+  type: TaskActions.TASK_LINK_SUCCESS,
+  linkedTasks
+});
+
 const startTaskEditing = target => ({
   type: TaskActions.TASK_EDIT_START,
   target
+});
+
+const startTaskChangeUser = () => ({
+  type: TaskActions.TASK_EDIT_START,
+  target: 'User'
 });
 
 const stopTaskEditing = target => ({
@@ -32,7 +69,11 @@ const stopTaskEditing = target => ({
 });
 
 const getTask = id => {
-  const URL = `/api/task/${id}`;
+  if (!id) {
+    return () => {};
+  }
+
+  const URL = `${API_URL}/task/${id}`;
 
   return dispatch => {
     dispatch(getTaskStart());
@@ -41,7 +82,7 @@ const getTask = id => {
     axios
       .get(URL, {}, { withCredentials: true })
       .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(getTaskFail(error.response.data));
         dispatch(finishLoading());
       })
       .then(response => {
@@ -53,12 +94,38 @@ const getTask = id => {
   };
 };
 
+const getTaskHistory = id => {
+  if (!id) {
+    return () => {};
+  }
+
+  const URL = `${API_URL}/task/${id}/history`;
+
+  return dispatch => {
+    dispatch(getTaskHistoryStart());
+    dispatch(startLoading());
+
+    axios
+      .get(URL, {}, { withCredentials: true })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(getTaskHistorySuccess(response.data));
+          dispatch(finishLoading());
+        }
+      });
+  };
+};
+
 const changeTask = (ChangedProperties, target) => {
   if (!ChangedProperties.id) {
     return;
   }
 
-  const URL = `/api/task/${ChangedProperties.id}`;
+  const URL = `${API_URL}/task/${ChangedProperties.id}`;
 
   return dispatch => {
     dispatch(requestTaskChange());
@@ -68,7 +135,7 @@ const changeTask = (ChangedProperties, target) => {
       .put(URL, ChangedProperties, {
         withCredentials: true
       })
-      .catch(err => {
+      .catch(error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
         dispatch(finishLoading());
       })
@@ -82,4 +149,95 @@ const changeTask = (ChangedProperties, target) => {
   };
 };
 
-export { getTask, startTaskEditing, stopTaskEditing, changeTask };
+const linkTask = (taskId, linkedTaskId) => {
+  if (!taskId) {
+    return () => {};
+  }
+
+  const URL = `${API_URL}/task/${taskId}/links`;
+
+  return dispatch => {
+    dispatch(requestTaskLink());
+    dispatch(startLoading());
+
+    axios
+    .post(URL,
+      {
+        linkedTaskId
+      }, {
+        withCredentials: true
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(successTaskLink(response.data));
+          dispatch(finishLoading());
+        }
+      });
+  };
+};
+
+const unlinkTask = (taskId, linkedTaskId) => {
+  if (!taskId) {
+    return () => {};
+  }
+
+  const URL = `${API_URL}/task/${taskId}/links/${linkedTaskId}`;
+
+  return dispatch => {
+    dispatch(requestTaskLink());
+    dispatch(startLoading());
+
+    axios
+    .delete(URL, {}, {
+      withCredentials: true
+    })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(successTaskLink(response.data));
+          dispatch(finishLoading());
+        }
+      });
+  };
+};
+
+const changeTaskUser = (taskId, userId, statusId) => {
+  if (!taskId) {
+    return;
+  }
+
+  const URL = `${API_URL}/task/${taskId}/users`;
+
+  return dispatch => {
+    dispatch(requestTaskChangeUser());
+    dispatch(startLoading());
+
+    axios
+      .post(URL, {
+        userId,
+        statusId
+      }, {
+        withCredentials: true
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(successTaskChangeUser(response.data));
+          dispatch(finishLoading());
+          dispatch(stopTaskEditing('User'));
+        }
+      });
+  };
+};
+
+export { getTask, getTaskHistory, startTaskEditing, stopTaskEditing, changeTask, changeTaskUser, startTaskChangeUser, linkTask, unlinkTask };

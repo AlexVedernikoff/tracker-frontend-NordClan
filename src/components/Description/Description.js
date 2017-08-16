@@ -140,7 +140,7 @@ class Description extends Component {
         {this.props.isEditing
           ? <TextEditor
               ref={ref => (this.TextEditor = ref)}
-              content={this.props.text.__html}
+              content={this.props.text.__html || ''}
             />
           : <div
               className={css.wiki}

@@ -1,0 +1,58 @@
+@import '../../styles/variables';
+
+$paginate-border-width: 3px;
+
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  padding-left: 0;
+  border-top: $paginate-border-width solid $color-gray;
+  margin-top: 2rem;
+}
+
+.page-item {
+
+  &:first-child {
+    a {
+      // font-size: 2em;
+    }
+  }
+
+  a {
+    display: block;
+    padding: 1rem 2rem;
+    text-decoration: none;
+    color: silver;
+    font-weight: bold;
+    border-top: $paginate-border-width solid transparent;
+    margin-top: -$paginate-border-width;
+    transition: $transition;
+  }
+
+  &:not(.disabled) {
+    a {
+      &:hover {
+        color: $color-green;
+        border-color: $color-dark;
+      }
+    }
+  }
+}
+
+.disabled {
+  a {
+    color: silver;
+    cursor: not-allowed;
+    transition: $transition;
+  }
+}
+
+.active {
+
+  a {
+    color: $color-orange;
+    border-color: $color-orange;
+    transition: $transition;
+  }
+}

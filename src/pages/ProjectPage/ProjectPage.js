@@ -5,10 +5,11 @@ import { connect } from 'react-redux';
 
 import RouteTabs from '../../components/RouteTabs';
 import { IconEdit } from '../../components/Icons';
+import HttpError from '../../components/HttpError';
 import * as css from './ProjectPage.scss';
 import ProjectTitle from './ProjectTitle';
 
-import { GetProjectInfo } from '../../actions/Project';
+import { getProjectInfo } from '../../actions/Project';
 
 class ProjectPage extends Component {
   constructor (props) {
@@ -16,16 +17,16 @@ class ProjectPage extends Component {
   }
 
   componentDidMount () {
-    const { GetProjectInfo, GetProjectSprints } = this.props;
-    GetProjectInfo(this.props.params.projectId);
+    const { getProjectInfo, GetProjectSprints } = this.props;
+    getProjectInfo(this.props.params.projectId);
   }
 
   render () {
     // Mocks
     const pic
       = 'https://static.qiwi.com/img/qiwi_com/favicon/favicon-192x192.png';
-
-    return (
+    
+    return (this.props.project.error) ? (<HttpError error={this.props.project.error}/>) : (
       <div id="project-page">
         <ProjectTitle
           pic={pic}
@@ -83,7 +84,7 @@ class ProjectPage extends Component {
 
 ProjectPage.propTypes = {
   children: PropTypes.object,
-  GetProjectInfo: PropTypes.func.isRequired
+  getProjectInfo: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -91,7 +92,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  GetProjectInfo
+  getProjectInfo
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectPage);

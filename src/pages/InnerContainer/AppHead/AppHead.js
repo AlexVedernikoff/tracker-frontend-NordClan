@@ -6,30 +6,23 @@ import {IconExitApp} from '../../../components/Icons';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Logo from '../../../components/Logo';
 import Loader from './Loader';
-import { doLogout } from '../../../actions/Authentication';
+import { history } from '../../../App';
 import { connect } from 'react-redux';
 
 import * as css from './AppHead.scss'; // Стили для плавного появления и скрытия лоадера
 
 class AppHead extends Component {
+  static propTypes = {
+    loading: PropTypes.number
+  };
+
   constructor (props) {
     super(props);
-    this.state = {
-      isLogoutSending: this.props.isLogoutSending,
-      loading: false
-    };
   }
 
-  handleLogout = event => {
-    event.preventDefault();
-    const { doLogout } = this.props;
-    doLogout();
-  }
-
-  testLoad = () => {
-    this.setState({loading: true});
-    setTimeout(() => this.setState({loading: false}), 3000);
-  }
+  handleLogout = () => {
+    history.push('/logout');
+  };
 
   render () {
     const iconStyles = {
@@ -70,13 +63,8 @@ class AppHead extends Component {
 
 const mapStateToProps = state => {
   return {
-    isLogoutSending: state.Auth.isLogoutSending,
     loading: state.Loading.loading
   };
 };
 
-const mapDispatchToProps = {
-  doLogout
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(AppHead);
+export default connect(mapStateToProps)(AppHead);

@@ -1,6 +1,6 @@
 import * as AuthActions from '../constants/Authentication';
+import { API_URL } from '../constants/Settings';
 import axios from 'axios';
-import { history } from '../Router';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
 
@@ -35,8 +35,12 @@ const userInfoReceived = user => ({
   user: user
 });
 
+const userInfoReceiveFailed = () => ({
+  type: AuthActions.USER_INFO_RECEIVE_ERROR
+});
+
 export const doAuthentication = ({ username, password }) => {
-  const URL = '/api/auth/login';
+  const URL = `${API_URL}/auth/login`;
 
   return dispatch => {
     dispatch(startAuthentication());
@@ -49,18 +53,18 @@ export const doAuthentication = ({ username, password }) => {
       .catch(error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
         dispatch(authenticationError(error.message));
+        dispatch(userInfoReceiveFailed());
       })
       .then(response => {
         if (response && response.status === 200) {
           dispatch(authenticationReceived(response.data.user));
-          history.push('/projects');
         }
       });
   };
 };
 
 export const doLogout = () => {
-  const URL = '/api/auth/logout';
+  const URL = `${API_URL}/auth/logout`;
 
   return dispatch => {
     dispatch(startLogout());
@@ -70,21 +74,21 @@ export const doLogout = () => {
       .then(response => {
         if (response && response.status === 200) {
           dispatch(logoutComplete());
-          history.push('/login');
         }
       });
   };
 };
 
 export const getInfoAboutMe = () => {
-  const URL = '/api/user/me';
+  const URL = `${API_URL}/user/me`;
 
   return dispatch => {
     dispatch(startReceiveUserInfo());
     dispatch(startLoading());
-    axios
+    return axios
       .get(URL, {}, { withCredentials: true })
       .catch(error => {
+        dispatch(userInfoReceiveFailed());
         dispatch(showNotification({ message: error.message, type: 'error' }));
         dispatch(finishLoading());
       })

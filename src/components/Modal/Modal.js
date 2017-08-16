@@ -19,7 +19,7 @@ const ReactModalStyles = {
     padding: '1rem',
     boxSizing: 'border-box',
     backgroundColor: 'rgba(43, 62, 80, 0.8)',
-    zIndex: 2,
+    zIndex: 3,
     overflow: 'visible'
   },
   content: {
@@ -42,8 +42,8 @@ const ReactModalStyles = {
 };
 
 const iconStyles = {
-  width: 24,
-  height: 24,
+  width: '1rem',
+  height: '1rem',
   color: 'inherit',
   fill: 'currentColor'
 };

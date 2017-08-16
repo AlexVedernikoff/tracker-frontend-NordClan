@@ -10,6 +10,14 @@ import Tags from '../Tags';
 import Tag from '../Tag';
 import * as css from './TaskRow.scss';
 
+const getTaskTime = (factTime, planTime) => {
+  if (factTime) {
+    return planTime ? `${factTime} из ${planTime} ч.` : `${factTime} ч.`;
+  } else {
+    return planTime ? `0 из ${planTime} ч.` : '0 из 0 ч.';
+  }
+};
+
 class TaskRow extends React.Component {
 
   constructor (props) {
@@ -23,11 +31,12 @@ class TaskRow extends React.Component {
       shortcut,
       card,
       isDragging,
+      onClickTag,
       ...other
     } = this.props;
 
     const classPriority = 'priority-' + task.prioritiesId;
-    const tags = task.tags.map((element, i) => <Tag key={i} name={element.name} blocked/>);
+    const tags = task.tags.map((element, i) => <Tag key={i} name={element.name} blocked onClick={onClickTag}/>);
 
     return (
     <div className={classnames({[css.taskCard]: true, [css[classPriority]]: true, [css.card]: card, [css.dropped]: isDragging})} {...other}>
@@ -61,19 +70,39 @@ class TaskRow extends React.Component {
           ? <Col xs>
             <div className={css.metabox}>
               <p className={css.taskMeta}>
-                <span>Спринт:</span><span><Link to={`/projects/${task.projectId}/agile-board`}>{task.sprintId}</Link></span>
+                <span>Спринт:</span>
+                <span>
+                  <Link to={`/projects/${task.projectId}/agile-board`}>
+                    {task.sprint ? task.sprint.name : 'Backlog'}
+                  </Link>
+                </span>
               </p>
               <p className={css.taskMeta}>
-                <span>Исполнитель:</span><span><Link to={`/users/${task.executorId}`}>{task.executorId}</Link></span>
+                <span>Исполнитель:</span>
+                <span>
+                  { task.performer
+                    ? <Link to={`/users/${task.performer.id}`}>
+                        {task.performer.fullNameRu}
+                      </Link>
+                    : 'Не назначено'
+                  }
+                </span>
+              </p>
+              <p className={css.taskMeta}>
+                <span>Автор:</span>
+                <span>
+                  { task.author ? task.author.fullNameRu : '' }
+                </span>
               </p>
               <p className={css.taskMeta}>
                 {
                   task.statusId !== 1
                   ? <span className={css.time}>
                     <span>Время: </span>
-                    <span className={classnames({[css.redText]: task.plannedExecutionTime < task.factExecutionTime,
-                                                  [css.greenText]: task.plannedExecutionTime > task.factExecutionTime})}>
-                      {task.factExecutionTime} ч. из {task.plannedExecutionTime}
+                    <span className={classnames({
+                      [css.redText]: task.plannedExecutionTime < task.factExecutionTime,
+                      [css.greenText]: task.plannedExecutionTime > task.factExecutionTime})}>
+                      { getTaskTime(task.factExecutionTime, task.plannedExecutionTime) }
                     </span>
                   </span>
                   : null
@@ -112,6 +141,7 @@ class TaskRow extends React.Component {
 TaskRow.propTypes = {
   card: PropTypes.bool,
   isDragging: PropTypes.bool,
+  onClickTag: PropTypes.func,
   prefix: PropTypes.string,
   shortcut: PropTypes.bool,
   task: PropTypes.object

@@ -5,14 +5,16 @@
     "mocha": true,
     "es6": true
   },
-  "ecmaFeatures": {
-    "jsx": true,
-    "templateStrings": true,
-    "superInFunctions": false,
-    "classes": true,
-    "modules": true
-  },
   "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true,
+      "templateStrings": true,
+      "superInFunctions": false,
+      "classes": true,
+      "modules": true
+    }
+  },
   "plugins": [
     "babel",
     "react"

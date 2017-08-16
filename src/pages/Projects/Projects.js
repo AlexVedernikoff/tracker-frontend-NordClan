@@ -1,26 +1,27 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
-import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
+import PropTypes from 'prop-types';
+import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 
 import * as css from './Projects.scss';
-import SelectDropdown from '../../components/SelectDropdown';
-import { IconFolderOpen } from '../../components/Icons';
 import Button from '../../components/Button';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
 import Input from '../../components/Input';
-import ProjectCard from './ProjectCard';
+import ProjectCard from '../../components/ProjectCard';
 import StatusCheckbox from './StatusCheckbox';
 import Pagination from '../../components/Pagination';
-import Portfolio from './Portfolio';
 import moment from 'moment';
+import TagsFilter from '../../components/TagsFilter';
+import _ from 'lodash';
 
 import CreateProject from './CreateProject';
-import GetProjects, {
+import getProjects, {
   requestProjectCreate,
   openCreateProjectModal,
   closeCreateProjectModal
 } from '../../actions/Projects';
+
+import 'moment/locale/ru';
 
 class Projects extends Component {
   constructor (props) {
@@ -37,35 +38,46 @@ class Projects extends Component {
       projectName: '',
       projectPrefix: '',
       openProjectPage: false,
-      selectedPortfolio: null
+      selectedPortfolio: null,
+      activePage: 1
     };
   }
 
-  check = name => {
+  componentDidMount () {
+    this.loadProjects();
+  }
+
+  loadProjects = (dateFrom, dateTo) => {
+    const tags = this.state.filterTags.map(el => el.value).join(',');
+    const statuses = [];
+    if (this.state.filteredInProgress) statuses.push(1);
+    if (this.state.filteredInHold) statuses.push(2);
+    if (this.state.filteredFinished) statuses.push(3);
+
+    this.props.getProjects(20, this.state.activePage, tags, this.state.filterByName, dateFrom, dateTo, statuses.join(','));
+  };
+
+  check = (name, callback = () => {}) => {
     const oldValue = this.state[name];
     this.setState({
       [name]: !oldValue
-    });
-  };
-
-  selectValue = (e, name) => {
-    this.setState({ [name]: e });
+    }, callback);
   };
 
   handlePaginationClick = e => {
-    e.preventDefault();
-  };
-
-  componentDidMount () {
-    const { GetProjects } = this.props;
-    GetProjects(25, 1, '');
-  }
-
-  changeNameFilter = event => {
-    const { GetProjects } = this.props;
     this.setState(
       {
-        filterByName: event.target.value
+        activePage: e.activePage
+      },
+      this.loadProjects
+    );
+  };
+
+  changeNameFilter = event => {
+    this.setState(
+      {
+        filterByName: event.target.value,
+        activePage: this.state.filterByName !== event.target.value ? 1 : this.state.activePage
       },
       () => {
         const dateFrom = this.state.dateFrom
@@ -74,33 +86,52 @@ class Projects extends Component {
         const dateTo = this.state.dateTo
           ? moment(this.state.dateTo).format('YYYY-MM-DD')
           : '';
-        GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo);
+        this.loadProjects(dateFrom, dateTo);
       }
     );
   };
 
   handleDayFromChange = (dateFrom, modifiers) => {
-    const { GetProjects } = this.props;
-    this.setState({ dateFrom }, () => {
-      dateFrom = dateFrom
+    this.setState(
+      {
+        dateFrom,
+        activePage: this.state.dateFrom !== dateFrom ? 1 : this.state.activePage
+      },
+      () => {
+        dateFrom = dateFrom
         ? moment(this.state.dateFrom).format('YYYY-MM-DD')
         : '';
-      const dateTo = this.state.dateTo
+        const dateTo = this.state.dateTo
         ? moment(this.state.dateTo).format('YYYY-MM-DD')
         : '';
-      GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo);
-    });
+        this.loadProjects(dateFrom, dateTo);
+      });
   };
 
   handleDayToChange = (dateTo, modifiers) => {
-    const { GetProjects } = this.props;
-    this.setState({ dateTo }, () => {
+    this.setState(
+      {
+        dateTo,
+        activePage: this.state.dateTo !== dateTo ? 1 : this.state.activePage
+      }, () => {
       const dateFrom = this.state.dateFrom
         ? moment(this.state.dateFrom).format('YYYY-MM-DD')
         : '';
       dateTo = dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
-      GetProjects(25, 1, '', this.state.filterByName, dateFrom, dateTo);
+      this.loadProjects(dateFrom, dateTo);
     });
+  };
+
+  handleFilterChange = () => {
+    this.setState(
+      {
+        activePage: 1
+      },
+      () => {
+        const dateFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('YYYY-MM-DD') : '';
+        const dateTo = this.state.dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
+        this.loadProjects(dateFrom, dateTo);
+      });
   };
 
   handleModal = event => {
@@ -130,20 +161,30 @@ class Projects extends Component {
   };
 
   sendRequest = event => {
+    console.warn('пыщ', event);
     event.preventDefault();
-    const { requestProjectCreate } = this.props;
-    const portfolioName = !Number.isInteger(this.state.selectedPortfolio.value)
-      ? this.state.selectedPortfolio.value
-      : null;
-    requestProjectCreate(
+    let portfolioName = '';
+    if (this.state.selectedPortfolio && (Object.keys(this.state.selectedPortfolio).length !== 0)) {
+      portfolioName
+        = !Number.isInteger(this.state.selectedPortfolio.value)
+        ? this.state.selectedPortfolio.value
+        : null;
+    } else {
+      portfolioName = null;
+    }
+    this.props.requestProjectCreate(
       {
         name: this.state.projectName,
         prefix: this.state.projectPrefix,
-        portfolioId: portfolioName ? null : this.state.selectedPortfolio.value,
+        portfolioId: portfolioName ? null : this.state.selectedPortfolio ? this.state.selectedPortfolio.value : null,
         portfolioName
       },
       this.state.openProjectPage
     );
+  };
+
+  sendRequestAndOpen = event => {
+    this.setState({openProjectPage: true}, () => this.sendRequest(event));
   };
 
   handleModalCheckBoxChange = event => {
@@ -154,10 +195,26 @@ class Projects extends Component {
   };
 
   handlePortfolioChange = event => {
-    if (Array.isArray(event)) event = null;
+    let portfolio = event;
+    if (Array.isArray(event)) portfolio = null;
     this.setState({
-      selectedPortfolio: event
+      selectedPortfolio: portfolio
     });
+  };
+
+  onTagSelect = (tags) => {
+    this.setState({
+      filterTags: tags
+    }, this.handleFilterChange);
+  };
+
+  onClickTag = (tag) => {
+    this.setState({
+      filterTags: _.uniqBy(this.state.filterTags.concat({
+        value: tag,
+        label: tag
+      }), 'value')
+    }, this.handleFilterChange);
   };
 
   render () {
@@ -180,7 +237,6 @@ class Projects extends Component {
               type="primary"
               icon="IconPlus"
             />
-            <Button text="Создать портфель" type="primary" icon="IconPlus" />
           </header>
           <hr />
           <div className={css.projectsHeader}>
@@ -188,19 +244,19 @@ class Projects extends Component {
               <StatusCheckbox
                 type="INPROGRESS"
                 checked={filteredInProgress}
-                onClick={() => this.check('filteredInProgress')}
+                onClick={() => {this.check('filteredInProgress', this.handleFilterChange);}}
                 label="В процессе"
               />
               <StatusCheckbox
                 type="INHOLD"
                 checked={filteredInHold}
-                onClick={() => this.check('filteredInHold')}
+                onClick={() => {this.check('filteredInHold', this.handleFilterChange);}}
                 label="Приостановлен"
               />
               <StatusCheckbox
                 type="FINISHED"
                 checked={filteredFinished}
-                onClick={() => this.check('filteredFinished')}
+                onClick={() => {this.check('filteredFinished', this.handleFilterChange);}}
                 label="Завершен"
               />
             </div>
@@ -232,58 +288,40 @@ class Projects extends Component {
                 </Row>
               </Col>
               <Col xs>
-                <SelectDropdown
-                  name="filterTags"
-                  multi
-                  placeholder="Введите название тега..."
-                  backspaceToRemoveMessage="BackSpace для очистки поля"
-                  value={this.state.filterTags}
-                  onChange={e => this.selectValue(e, 'filterTags')}
-                  noResultsText="Нет результатов"
-                  options={[
-                    { value: 'develop', label: 'develop' },
-                    { value: 'frontend', label: 'frontend' },
-                    { value: 'inner', label: 'внутренний' },
-                    { value: 'commerce', label: 'коммерческий' },
-                    { value: 'backend', label: 'backend' }
-                  ]}
+                <TagsFilter
+                  filterFor={'project'}
+                  onTagSelect={this.onTagSelect}
+                  filterTags={this.state.filterTags}
                 />
               </Col>
             </Row>
           </div>
           <div>
             {this.props.projectList.map((project, i) => {
-              if (project.elemType !== 'portfolio') {
-                return (
-                  <ProjectCard
-                    key={`project-${project.id}`}
-                    project={project}
-                  />
-                );
-              } else {
-                return (
-                  <Portfolio
-                    key={`portfolio-${project.id}`}
-                    portfolio={project}
-                  />
-                );
-              }
+              return (
+                <ProjectCard
+                  key={`project-${project.id}`}
+                  project={project}
+                  onClickTag={this.onClickTag}
+                />
+              );
             })}
           </div>
-          <hr />
-          {2 > 1
+          { this.props.pagesCount > 1
             ? <Pagination
-                itemsCount={3}
-                activePage={3}
+                itemsCount={this.props.pagesCount}
+                activePage={this.state.activePage}
                 onItemClick={this.handlePaginationClick}
               />
-            : null}
+            : null
+          }
         </section>
         <CreateProject
           isOpen={this.props.isCreateProjectModalOpen}
           onRequestClose={this.handleModal}
           onChange={this.handleModalChange}
           onSubmit={this.sendRequest}
+          onSubmitAndOpen={this.sendRequestAndOpen}
           handleCheckBox={this.handleModalCheckBoxChange}
           onPortfolioSelect={this.handlePortfolioChange}
           selectedPortfolio={this.state.selectedPortfolio}
@@ -293,8 +331,18 @@ class Projects extends Component {
   }
 }
 
+Projects.propTypes = {
+  closeCreateProjectModal: PropTypes.func.isRequired,
+  getProjects: PropTypes.func.isRequired,
+  isCreateProjectModalOpen: PropTypes.bool.isRequired,
+  openCreateProjectModal: PropTypes.func.isRequired,
+  pagesCount: PropTypes.number.isRequired,
+  projectList: PropTypes.array.isRequired
+};
+
 const mapStateToProps = state => ({
   projectList: state.Projects.projects,
+  pagesCount: state.Projects.pagesCount,
   isCreateProjectModalOpen: state.Projects.isCreateProjectModalOpen
 });
 
@@ -302,7 +350,19 @@ const mapDispatchToProps = {
   requestProjectCreate,
   openCreateProjectModal,
   closeCreateProjectModal,
-  GetProjects
+  getProjects
+};
+
+Projects.propTypes = {
+  GetProjects: PropTypes.func,
+  closeCreateProjectModal: PropTypes.func,
+  isCreateProjectModalOpen: PropTypes.bool,
+  isOpen: PropTypes.bool,
+  onChange: PropTypes.func,
+  onRequestClose: PropTypes.func,
+  openCreateProjectModal: PropTypes.func,
+  projectList: PropTypes.array,
+  requestProjectCreate: PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Projects);

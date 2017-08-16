@@ -78,35 +78,11 @@
 }
 
 .buttonOk {
-  border-style: dashed;
   margin-left: 1rem;
-  border-color: $color-green;
-  color: $color-green;
 
   &:hover {
     border-color: $color-green;
     background-color: $color-green;
-  }
-}
-
-.modalWrapper {
-  width: 100%;
-  max-width: 360px !important;
-}
-
-.changeStage {
-  padding: 2rem;
-
-  h3 {
-    margin-top: 0;
-  }
-}
-
-.modalLine {
-  display: flex;
-
-  > *:first-child {
-    flex-grow: 1;
   }
 }
 

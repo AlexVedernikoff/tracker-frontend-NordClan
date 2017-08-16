@@ -1,7 +1,6 @@
 import * as PlanningTaskActions from '../constants/PlanningTasks';
+import { API_URL } from '../constants/Settings';
 import axios from 'axios';
-import { store } from '../Router';
-import { history } from '../Router';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
 
@@ -15,7 +14,7 @@ const tasksReceived = (side, tasks) => ({
 });
 
 const getPlanningTasks = (side, options) => {
-  const URL = '/api/task';
+  const URL = `${API_URL}/task`;
   return dispatch => {
     dispatch(startTasksReceive(side));
     dispatch(startLoading());

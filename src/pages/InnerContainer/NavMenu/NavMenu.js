@@ -1,22 +1,29 @@
 import React, { Component } from 'react';
-import { PropTypes } from 'prop-types';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { IconPlus } from '../../../components/Icons';
 import { connect } from 'react-redux';
-import { getInfoAboutMe } from '../../../actions/Authentication';
+import * as css from './NavMenu.scss';
 
 class NavMenu extends Component {
-  constructor (props) {
-    super(props);
-  }
+  static propTypes = {
+    user: PropTypes.object
+  };
 
-  componentDidMount () {
-    const { getInfoAboutMe } = this.props;
-    getInfoAboutMe();
-  }
+  getPhoto = () => {
+    const { user: { photo, firstNameRu, lastNameRu} } = this.props;
+    if (photo) {
+      return <img src={photo} alt="" />;
+    }
+    if (firstNameRu && lastNameRu) {
+      return `
+          ${firstNameRu.slice(0, 1) || ''}
+          ${lastNameRu.slice(0, 1) || ''}
+          `;
+    }
+  };
 
   render () {
-    const css = require('./NavMenu.scss');
 
     const iconStyles = {
       width: 16,
@@ -71,10 +78,7 @@ class NavMenu extends Component {
     const sidebarHeader = (
       <div className={css.sidebarHeader}>
         <div className={css.ava}>
-          {this.props.user.photo
-            ? <img src={this.props.user.photo} alt="" />
-            : `${(this.props.user.firstNameRu.slice(0, 1) || "")
-                + this.props.user.lastNameRu.slice(0, 1)}`}
+          {this.getPhoto()}
         </div>
         <div className={css.userNameContainer}>
           <div className={css.userName}>
@@ -98,17 +102,8 @@ class NavMenu extends Component {
   }
 }
 
-NavMenu.propTypes = {
-  user: PropTypes.object,
-  getInfoAboutMe: PropTypes.func.isRequired
-};
-
 const mapStateToProps = state => ({
   user: state.Auth.user
 });
 
-const mapDispatchToProps = {
-  getInfoAboutMe
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(NavMenu);
+export default connect(mapStateToProps)(NavMenu);

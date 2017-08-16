@@ -23,14 +23,16 @@ class Info extends Component {
     return (
       <div className={css.info}>
         <h2>Теги проекта</h2>
-        <Tags taggable="project"
+        <Tags taggable='project'
+              direction='right'
               taggableId={this.props.id}
-              create>
+              create
+              maxLength={15}>
           {this.props.tags
             ? this.props.tags.map((element, i) =>
                 <Tag name={element}
                      key={`${i}-tag`}
-                     taggable="project"
+                     taggable='project'
                      taggableId={this.props.id}/>
               )
             : null}
@@ -40,9 +42,9 @@ class Info extends Component {
           text={{
             __html: this.props.description ? this.props.description : ''
           }}
-          headerType="h2"
+          headerType='h2'
           id={this.props.id}
-          headerText="Описание"
+          headerText='Описание'
           onEditStart={this.props.StartEditing}
           onEditFinish={this.props.StopEditing}
           onEditSubmit={this.props.ChangeProject}
