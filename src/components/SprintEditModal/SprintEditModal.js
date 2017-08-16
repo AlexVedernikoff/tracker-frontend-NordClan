@@ -45,8 +45,6 @@ class SprintEditModal extends Component {
   };
 
   handleDayFromChange = (date) => {
-    console.log(date);
-
     this.setState({
       sprint: {
         ...this.state.sprint,
