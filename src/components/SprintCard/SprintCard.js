@@ -3,15 +3,12 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { deleteSprint, editSprint } from '../../actions/Sprint';
-import { Row, Col } from 'react-flexbox-grid/lib/index';
-import Button from '../../components/Button';
-import Modal from '../../components/Modal';
-import DatepickerDropdown from '../../components/DatepickerDropdown';
-import Input from '../../components/Input';
 import moment from 'moment';
+import SprintEditModal from '../../components/SprintEditModal';
 
-import { IconPlay, IconPause, IconClose } from '../Icons';
+import { IconClose } from '../Icons';
 import * as css from './SprintCard.scss';
+import SprintStartControl from '../SprintStartControl';
 
 
 class SprintCard extends Component {
@@ -19,68 +16,37 @@ class SprintCard extends Component {
     super(props);
     this.state = {
       isModalOpen: false,
-      dateFrom: undefined,
-      dateTo: undefined,
-      sprintName: '',
-      sprintTime: '',
-      allottedTime: null,
       isHovered: false
     };
   }
 
   handleOpenModal = () => {
-    this.setState({ isModalOpen: true });
+    this.setState({
+      isModalOpen: true
+    });
   };
 
-  handleCloseModal = () => {
+  handleEditSprint = (sprint) => {
     this.setState({ isModalOpen: false });
-  };
-
-  onChangeTime = (e) => {
-    this.setState({ allottedTime: e.target.value });
-  };
-
-  onChangeName = (e) => {
-    this.setState({ sprintName: e.target.value });
-  };
-
-  handleDayFromChange = (date) => {
-    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD')});
-  };
-
-  handleDayToChange = (date) => {
-    this.setState({ dateTo: moment(date).format('YYYY-MM-DD')});
-  };
-
-  changeStatus = () => {
-    const statusId = this.props.sprint.statusId === 1 ? 2 : 1;
     this.props.editSprint(
-      this.props.sprint.id,
-      statusId
+      sprint.id,
+      null,
+      sprint.sprintName.trim(),
+      sprint.dateFrom,
+      sprint.dateTo,
+      sprint.allottedTime
     );
   };
 
+  closeEditSprintModal = () => {
+    this.setState({
+      isModalOpen: false
+    });
+  };
+
   render () {
-    const { sprint, deleteSprint: dS, editSprint: eS, inFocus, ...other } = this.props;
+    const { sprint, deleteSprint: dS, editSprint, inFocus, ...other } = this.props;
 
-    const edit = () => {
-      this.setState({ isModalOpen: false });
-      eS(
-        sprint.id,
-        null,
-        this.state.sprintName.trim(),
-        this.state.dateFrom,
-        this.state.dateTo,
-        this.state.allottedTime
-      );
-    };
-
-    const formattedDayFrom = this.state.dateFrom
-      ? moment(this.state.dateFrom).format('DD.MM.YYYY')
-      : '';
-    const formattedDayTo = this.state.dateTo
-      ? moment(this.state.dateTo).format('DD.MM.YYYY')
-      : '';
     return (
       <div
         className={classnames({
@@ -100,28 +66,28 @@ class SprintCard extends Component {
         </p>
         <p className={css.sprintMeta}>
           <span>Дата начала:</span>
-        <span>
+          <span>
           {moment(sprint.factStartDate).format('DD.MM.YYYY')}
         </span>
         </p>
         {sprint.factFinishDate
           ? <p className={css.sprintMeta}>
-          <span>Дата окончания:</span>
+            <span>Дата окончания:</span>
             <span>
               {moment(sprint.factFinishDate).format('DD.MM.YYYY')}
             </span>
-        </p>
+          </p>
           : null}
 
         <p className={css.sprintMeta}>
           <span>Всего задач:</span>
-        <span>
+          <span>
           {sprint.countAllTasks || 0}
         </span>
         </p>
         <p className={css.sprintMeta}>
           <span>Выполнено:</span>
-        <span>
+          <span>
           {sprint.countDoneTasks || 0}
         </span>
         </p>
@@ -132,76 +98,13 @@ class SprintCard extends Component {
           <span>Израсходованное время: {sprint.spentTime || 0} ч.</span>
         </p>
         <div
-          onClick={this.changeStatus}
-          className={classnames({
-            [css.status]: true,
-            [css.inprogress]: sprint.statusId === 2,
-            [css.inhold]: sprint.statusId === 1
-          })}
-          data-tip={sprint.statusId === 2 ? 'Остановить' : 'Запустить'}
+          className={css.status}
         >
-          {sprint.statusId === 2 ? <IconPause /> : <IconPlay />}
+          <SprintStartControl sprint={sprint} />
         </div>
-        {
-          this.state.isModalOpen
-            ? <Modal
-            isOpen
-            contentLabel='modal'
-            onRequestClose={this.handleCloseModal}>
-            <div>
-              <div>
-                <Row>
-                  <Col xsOffset={1}
-                       xs={10}>
-                    <h3>Редактирование спринта</h3>
-                    <Input
-                      placeholder='Новое название спринта...'
-                      defaultValue={sprint.name}
-                      onChange={this.onChangeName}
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xsOffset={1} xs={5}>
-                    <DatepickerDropdown
-                      name='dateFrom'
-                      value={formattedDayFrom}
-                      onDayChange={this.handleDayFromChange}
-                      placeholder={moment(sprint.factStartDate).format('DD.MM.YYYY')}
-                    />
-                  </Col>
-                  <Col xs={5}>
-                    <DatepickerDropdown
-                        name='dateTo'
-                        value={formattedDayTo}
-                        onDayChange={this.handleDayToChange}
-                        placeholder={moment(sprint.factFinishDate).format('DD.MM.YYYY')}
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xsOffset={1}
-                       xs={10}>
-                    <Input
-                      placeholder='Введите новое значение времени...'
-                      defaultValue={sprint.allottedTime || 0}
-                      onChange={this.onChangeTime}
-                    />
-                  </Col>
-                </Row>
-                <Row className={css.createButton}
-                     center='xs'>
-                  <Col xs>
-                    <Button type='green'
-                            text='Изменить'
-                            onClick={edit}/>
-                  </Col>
-                </Row>
-              </div>
-            </div>
-          </Modal>
-            : null
-        }
+        {this.state.isModalOpen
+        ? <SprintEditModal sprint={this.props.sprint} handleEditSprint={this.handleEditSprint} handleCloseModal={this.closeEditSprintModal}/>
+        : null}
       </div>
     );
   }
@@ -224,7 +127,7 @@ SprintCard.defaultProps = {
     tasksDone: '00',
     allottedTime: '00',
     spentTime: '00',
-    status: 'INPROGRESS',
+    status: 'INPROGRESS'
   }
 };
 
