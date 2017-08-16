@@ -45,6 +45,8 @@ class SprintEditModal extends Component {
   };
 
   handleDayFromChange = (date) => {
+    console.log(date);
+
     this.setState({
       sprint: {
         ...this.state.sprint,
@@ -69,12 +71,11 @@ class SprintEditModal extends Component {
   render () {
     const { sprint } = this.props;
 
-    const formattedDayFrom = this.state.dateFrom
-      ? moment(this.state.dateFrom).format('DD.MM.YYYY')
-      : '';
-    const formattedDayTo = this.state.dateTo
-      ? moment(this.state.dateTo).format('DD.MM.YYYY')
-      : '';
+    const formattedDayFrom = this.state.sprint.dateFrom ? moment(this.state.sprint.dateFrom).format('DD.MM.YYYY') :
+      sprint.dateFrom ? moment(sprint.dateFrom).format('DD.MM.YYYY') : '';
+
+    const formattedDayTo = this.state.sprint.dateTo ? moment(this.state.sprint.dateTo).format('DD.MM.YYYY') :
+      sprint.dateTo ? moment(sprint.dateTo).format('DD.MM.YYYY') : '';
 
     return (
       <Modal

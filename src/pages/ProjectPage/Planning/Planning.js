@@ -19,7 +19,7 @@ import CreateSprintModal from '../CreateSprintModal';
 import SprintCard from '../../../components/SprintCard';
 import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
-import { deleteSprint, editSprint } from '../../../actions/Sprint';
+import { editSprint } from '../../../actions/Sprint';
 import { openCreateTaskModal } from '../../../actions/Project';
 import SprintStartControl from '../../../components/SprintStartControl';
 import SprintEditModal from '../../../components/SprintEditModal';
@@ -220,9 +220,6 @@ class Planning extends Component {
   };
 
   handleEditSprint = (sprint) => {
-
-    console.log(sprint);
-
     this.setState({ isOpenEditModal: false });
     this.props.editSprint(
       sprint.id,
@@ -327,7 +324,7 @@ class Planning extends Component {
               })}>
                 <span className={css.header}>План</span>
                 {this.props.sprints.filter(this.sprintFilter).map((sprint, i)=>
-                    <span className={css.name}>{Math.floor(Math.random() * 10000)}</span>
+                    <span className={css.name}>{sprint.allottedTime}</span>
                 )}
               </div>
               <div className={classnames({
@@ -336,9 +333,7 @@ class Planning extends Component {
               })}>
                 <span className={css.header}>Факт</span>
                 {this.props.sprints.filter(this.sprintFilter).map((sprint, i)=>
-
-                    <span className={css.name}>{Math.floor(Math.random() * 10000)}</span>
-
+                    <span className={css.name}>{0}</span>
                 )}
               </div>
               <div className={css.table}>
