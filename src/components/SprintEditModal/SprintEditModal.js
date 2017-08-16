@@ -10,6 +10,12 @@ import Input from '../../components/Input';
 import moment from 'moment';
 
 class SprintEditModal extends Component {
+  static propTypes = {
+    handleCloseModal: PropTypes.func.isRequired,
+    handleEditSprint: PropTypes.func.isRequired,
+    sprint: PropTypes.object.isRequired
+  };
+
   constructor (props) {
     super(props);
 
@@ -28,6 +34,7 @@ class SprintEditModal extends Component {
 
   onChangeTime = (e) => {
     this.setState({
+      ...this.state,
       sprint: {
         ...this.state.sprint,
         allottedTime: e.target.value
@@ -37,6 +44,7 @@ class SprintEditModal extends Component {
 
   onChangeName = (e) => {
     this.setState({
+      ...this.state,
       sprint: {
         ...this.state.sprint,
         sprintName: e.target.value
@@ -46,6 +54,7 @@ class SprintEditModal extends Component {
 
   handleDayFromChange = (date) => {
     this.setState({
+      ...this.state,
       sprint: {
         ...this.state.sprint,
         dateFrom: moment(date).format('YYYY-MM-DD')
@@ -55,6 +64,7 @@ class SprintEditModal extends Component {
 
   handleDayToChange = (date) => {
     this.setState({
+      ...this.state,
       sprint: {
         ...this.state.sprint,
         dateTo: moment(date).format('YYYY-MM-DD')
@@ -68,12 +78,21 @@ class SprintEditModal extends Component {
 
   render () {
     const { sprint } = this.props;
+    let formattedDayFrom = '';
+    let formattedDayTo = '';
 
-    const formattedDayFrom = this.state.sprint.dateFrom ? moment(this.state.sprint.dateFrom).format('DD.MM.YYYY') :
-      sprint.dateFrom ? moment(sprint.dateFrom).format('DD.MM.YYYY') : '';
+    if (this.state.sprint.dateFrom) {
+      formattedDayFrom = moment(this.state.sprint.dateFrom).format('DD.MM.YYYY');
+    } else if (sprint.dateFrom) {
+      moment(sprint.dateFrom).format('DD.MM.YYYY');
+    }
 
-    const formattedDayTo = this.state.sprint.dateTo ? moment(this.state.sprint.dateTo).format('DD.MM.YYYY') :
-      sprint.dateTo ? moment(sprint.dateTo).format('DD.MM.YYYY') : '';
+
+    if (this.state.sprint.dateTo) {
+      formattedDayTo = moment(this.state.sprint.dateTo).format('DD.MM.YYYY');
+    } else if (sprint.dateTo) {
+      moment(sprint.dateTo).format('DD.MM.YYYY');
+    }
 
     return (
       <Modal
@@ -135,12 +154,6 @@ class SprintEditModal extends Component {
     );
   }
 }
-
-SprintEditModal.propTypes = {
-  handleCloseModal: PropTypes.func.isRequired,
-  handleEditSprint: PropTypes.func.isRequired,
-  sprint: PropTypes.object.isRequired
-};
 
 
 export default SprintEditModal;

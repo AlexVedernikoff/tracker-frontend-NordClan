@@ -8,16 +8,22 @@ import { editSprint } from '../../actions/Sprint';
 
 
 class SprintEditModal extends Component {
-  constructor (props) {
-    super(props);
-  }
+
+  static propTypes = {
+    editSprint: PropTypes.func.isRequired,
+    sprint: PropTypes.object.isRequired
+  };
+
+  changeStatus = (sprint) => {
+    return () => this.props.editSprint(sprint.id, sprint.statusId === 1 ? 2 : 1);
+  };
 
   render () {
     const { sprint } = this.props;
 
     return (
       <span
-        onClick={() => this.props.editSprint(sprint.id, sprint.statusId === 1 ? 2 : 1)}
+        onClick={this.changeStatus(sprint)}
         className={classnames({
           [css.status]: true,
           [css.inprogress]: sprint.statusId === 2,
@@ -31,11 +37,6 @@ class SprintEditModal extends Component {
   }
 }
 
-SprintEditModal.propTypes = {
-  editSprint: PropTypes.func.isRequired,
-  sprint: PropTypes.object.isRequired
-
-};
 
 const mapDispatchToProps = {
   editSprint

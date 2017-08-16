@@ -31,6 +31,21 @@ const getSprintTime = sprint =>
   ${sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format('DD.MM')}` : '- ...'}`;
 
 class Planning extends Component {
+
+  static propTypes = {
+    SprintIsEditing: PropTypes.bool,
+    changeTask: PropTypes.func.isRequired,
+    createSprint: PropTypes.func.isRequired,
+    editSprint: PropTypes.func.isRequired,
+    getPlanningTasks: PropTypes.func.isRequired,
+    leftColumnTasks: PropTypes.array,
+    openCreateTaskModal: PropTypes.func,
+    project: PropTypes.object,
+    rightColumnTasks: PropTypes.array,
+    sprints: PropTypes.array.isRequired,
+    startTaskEditing: PropTypes.func
+  };
+
   constructor (props) {
     super(props);
     this.state = {
@@ -183,9 +198,9 @@ class Planning extends Component {
   oClickSprint = (sprintId) => {
     return () => {
       this.selectValue(
-          sprintId,
-          'rightColumn'
-        );
+        sprintId,
+        'rightColumn'
+      );
     };
   };
 
@@ -197,15 +212,27 @@ class Planning extends Component {
     this.setState({ grantActiveYear: --this.state.grantActiveYear });
   };
 
-  getSprintBlock = sprint => {
+  getSprintBlock = (sprint, activeYear) => {
     const {factStartDate: start, factFinishDate: end} = sprint;
     const daysInYear = moment().endOf('year').dayOfYear();
 
     return {
-      left: (+moment(start).format('YYYY') !== +this.state.grantActiveYear) ? '0%' : ((moment(start).dayOfYear() - 1) / daysInYear * 100).toFixed(1) + '%',
-      right: (+moment(end).format('YYYY') !== +this.state.grantActiveYear) ? '0%' : (100 - (moment(end).dayOfYear() / daysInYear * 100)).toFixed(1) + '%',
+      left: this.calcLeftPadding(activeYear, daysInYear, start),
+      right: this.calcRightPadding(activeYear, daysInYear, end),
       zIndex: 1
     };
+  };
+
+  calcLeftPadding = (activeYear, daysInYear, date) => {
+    return (+moment(date).format('YYYY') !== +activeYear)
+      ? '0%'
+      : ((moment(date).dayOfYear() - 1) / daysInYear * 100).toFixed(1) + '%';
+  };
+
+  calcRightPadding = (activeYear, daysInYear, date) => {
+    return (+moment(date).format('YYYY') !== +activeYear)
+      ? '0%'
+      : (100 - (moment(date).dayOfYear() / daysInYear * 100)).toFixed(1) + '%';
   };
 
   sprintFilter = (sprint) => {
@@ -239,6 +266,28 @@ class Planning extends Component {
       editSprint: null,
       isOpenEditModal: false
     });
+  };
+
+  sprints = (sprint, i) => {
+    return (
+        <div key={`sprint-${i}`} className={css.tr}>
+          <div
+            className={classnames({
+              [css.sprintBar]: true,
+              [css.unactive]: sprint.statusId === 1 && moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]'),
+              [css.finished]: moment(sprint.factFinishDate).isBefore(moment(), 'days'),
+              [css.active]: sprint.statusId === 2,
+              [css.future]: moment(sprint.factStartDate).isAfter(moment(), 'days')
+            })}
+            style={this.getSprintBlock(sprint, this.state.grantActiveYear)}
+            data-tip={getSprintTime(sprint)}
+            onClick={this.openEditModal(sprint)}
+          >
+            <div className={css.text}>{sprint.spentTime || 0}</div>
+            <div className={css.text}>{sprint.allottedTime || 0}</div>
+          </div>
+        </div>
+    );
   };
 
   render () {
@@ -286,25 +335,25 @@ class Planning extends Component {
             onClick={this.handleOpenModalAddSprint}
           />
           <div className={css.sprintList}>
-          {this.props.sprints
-            ? <div>
-            <h2 className={css.name} onClick={() => this.setState({
-              ...this.state,
-              isOpenSprintList: !this.state.isOpenSprintList
-            })}>
-              {this.state.isOpenSprintList ? <IconArrowDown /> : <IconArrowRight />}
-              Спринты / Фазы
-            </h2>
-              {this.state.isOpenSprintList
-              ? <Row>
-                {this.props.sprints.map((element, i) =>
-                  <Col xs={3} key={`sprint-${i}`}>
-                    <SprintCard sprint={element} inFocus={element.id === this.state.sprintIdHovered} onMouseOver={this.onMouseOverSprint(element.id)} onMouseOut={this.onMouseOutSprint} />
-                  </Col>
-                )}
-              </Row>
-             : null}
-            </div> : null}
+            {this.props.sprints
+              ? <div>
+                <h2 className={css.name} onClick={() => this.setState({
+                  ...this.state,
+                  isOpenSprintList: !this.state.isOpenSprintList
+                })}>
+                  {this.state.isOpenSprintList ? <IconArrowDown /> : <IconArrowRight />}
+                  Спринты / Фазы
+                </h2>
+                {this.state.isOpenSprintList
+                  ? <Row>
+                    {this.props.sprints.map((element, i) =>
+                      <Col xs={3} key={`sprint-${i}`}>
+                        <SprintCard sprint={element} inFocus={element.id === this.state.sprintIdHovered} onMouseOver={this.onMouseOverSprint(element.id)} onMouseOut={this.onMouseOutSprint} />
+                      </Col>
+                    )}
+                  </Row>
+                  : null}
+              </div> : null}
           </div>
           {
             this.state.isModalOpenAddSprint
@@ -337,7 +386,7 @@ class Planning extends Component {
               })}>
                 <span className={css.header}>План</span>
                 {this.props.sprints.filter(this.sprintFilter).map((sprint, i)=>
-                    <span key={`sprint-${i}`} className={css.name}>{sprint.allottedTime}</span>
+                  <span key={`sprint-${i}`} className={css.name}>{sprint.allottedTime}</span>
                 )}
               </div>
               <div className={classnames({
@@ -346,7 +395,7 @@ class Planning extends Component {
               })}>
                 <span className={css.header}>Факт</span>
                 {this.props.sprints.filter(this.sprintFilter).map((sprint, i)=>
-                    <span key={`sprint-${i}`} className={css.name}>{0}</span>
+                  <span key={`sprint-${i}`} className={css.name}>{0}</span>
                 )}
               </div>
               <div className={css.table}>
@@ -363,25 +412,7 @@ class Planning extends Component {
                     months.map((month, i) => <div key={`sprint-${month}`} className={css.month} style={{flex: moment(`${this.state.grantActiveYear}-${(++i)}`, 'YYYY-MM').daysInMonth()}} >{month}</div>)
                   }
                 </div>
-                {this.props.sprints.filter(this.sprintFilter).map((sprint, i) =>
-                  <div key={`sprint-${i}`} className={css.tr}>
-                    <div
-                      className={classnames({
-                        [css.sprintBar]: true,
-                        [css.unactive]: sprint.statusId === 1 && moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]'),
-                        [css.finished]: moment(sprint.factFinishDate).isBefore(moment(), 'days'),
-                        [css.active]: sprint.statusId === 2,
-                        [css.future]: moment(sprint.factStartDate).isAfter(moment(), 'days')
-                      })}
-                      style={this.getSprintBlock(sprint)}
-                      data-tip={getSprintTime(sprint)}
-                      onClick={this.openEditModal(sprint)}
-                    >
-                      <div className={css.text}>{sprint.spentTime || 0}</div>
-                      <div className={css.text}>{sprint.allottedTime || 0}</div>
-                    </div>
-                  </div>
-                )}
+                {this.props.sprints.filter(this.sprintFilter).map((sprint, i) => this.sprints(sprint, i))}
                 <div className={css.grid}>
                   {
                     months.map((el, i) => <span key={`sprint-${i}`} style={{flex: moment(`${this.state.grantActiveYear}-${(++i)}`, 'YYYY-MM').daysInMonth()}}/>)
@@ -431,10 +462,10 @@ class Planning extends Component {
               </div>
               {this.state.leftColumn || this.state.leftColumn === 0
                 ? <SprintColumn
-                    onDrop={this.dropTask}
-                    sprint={this.state.leftColumn}
-                    tasks={leftColumnTasks}
-                  />
+                  onDrop={this.dropTask}
+                  sprint={this.state.leftColumn}
+                  tasks={leftColumnTasks}
+                />
                 : null}
             </Col>
             <Col xs={6}>
@@ -477,10 +508,10 @@ class Planning extends Component {
               </div>
               {this.state.rightColumn || this.state.rightColumn === 0
                 ? <SprintColumn
-                    onDrop={this.dropTask}
-                    sprint={this.state.rightColumn}
-                    tasks={rightColumnTasks}
-                  />
+                  onDrop={this.dropTask}
+                  sprint={this.state.rightColumn}
+                  tasks={rightColumnTasks}
+                />
                 : null}
             </Col>
           </Row>
@@ -495,25 +526,13 @@ class Planning extends Component {
           project={this.props.project}
           column={this.state.createTaskCallee}
         />
-        {this.state.isOpenEditModal ? <SprintEditModal sprint={this.state.editSprint} handleEditSprint={this.handleEditSprint} handleCloseModal={this.closeEditSprintModal}/> : null}
+        {this.state.isOpenEditModal
+        ? <SprintEditModal sprint={this.state.editSprint} handleEditSprint={this.handleEditSprint} handleCloseModal={this.closeEditSprintModal}/>
+        : null}
       </div>
     );
   }
 }
-
-Planning.propTypes = {
-  SprintIsEditing: PropTypes.bool,
-  changeTask: PropTypes.func.isRequired,
-  createSprint: PropTypes.func.isRequired,
-  editSprint: PropTypes.func.isRequired,
-  getPlanningTasks: PropTypes.func.isRequired,
-  leftColumnTasks: PropTypes.array,
-  openCreateTaskModal: PropTypes.func,
-  project: PropTypes.object,
-  rightColumnTasks: PropTypes.array,
-  sprints: PropTypes.array.isRequired,
-  startTaskEditing: PropTypes.func
-};
 
 const mapStateToProps = state => ({
   sprints: state.Project.project.sprints,

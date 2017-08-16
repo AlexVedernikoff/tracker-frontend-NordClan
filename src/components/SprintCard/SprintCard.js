@@ -66,28 +66,28 @@ class SprintCard extends Component {
         </p>
         <p className={css.sprintMeta}>
           <span>Дата начала:</span>
-        <span>
+          <span>
           {moment(sprint.factStartDate).format('DD.MM.YYYY')}
         </span>
         </p>
         {sprint.factFinishDate
           ? <p className={css.sprintMeta}>
-          <span>Дата окончания:</span>
+            <span>Дата окончания:</span>
             <span>
               {moment(sprint.factFinishDate).format('DD.MM.YYYY')}
             </span>
-        </p>
+          </p>
           : null}
 
         <p className={css.sprintMeta}>
           <span>Всего задач:</span>
-        <span>
+          <span>
           {sprint.countAllTasks || 0}
         </span>
         </p>
         <p className={css.sprintMeta}>
           <span>Выполнено:</span>
-        <span>
+          <span>
           {sprint.countDoneTasks || 0}
         </span>
         </p>
@@ -102,7 +102,9 @@ class SprintCard extends Component {
         >
           <SprintStartControl sprint={sprint} />
         </div>
-        {this.state.isModalOpen ? <SprintEditModal sprint={this.props.sprint} handleEditSprint={this.handleEditSprint} handleCloseModal={this.closeEditSprintModal}/> : null}
+        {this.state.isModalOpen
+        ? <SprintEditModal sprint={this.props.sprint} handleEditSprint={this.handleEditSprint} handleCloseModal={this.closeEditSprintModal}/>
+        : null}
       </div>
     );
   }
@@ -125,7 +127,7 @@ SprintCard.defaultProps = {
     tasksDone: '00',
     allottedTime: '00',
     spentTime: '00',
-    status: 'INPROGRESS',
+    status: 'INPROGRESS'
   }
 };
 
