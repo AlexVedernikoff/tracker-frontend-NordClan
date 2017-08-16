@@ -33,43 +33,43 @@ class SprintEditModal extends Component {
   }
 
   onChangeTime = (e) => {
-    this.setState({
-      ...this.state,
+    const value = e.target.value;
+    this.setState(state => ({
       sprint: {
-        ...this.state.sprint,
-        allottedTime: e.target.value
+        ...state.sprint,
+        allottedTime: value
       }
-    });
+    }));
   };
 
   onChangeName = (e) => {
-    this.setState({
-      ...this.state,
+    const value = e.target.value;
+    this.setState(state => ({
       sprint: {
-        ...this.state.sprint,
-        sprintName: e.target.value
+        ...state.sprint,
+        sprintName: value
       }
-    });
+    }));
   };
 
   handleDayFromChange = (date) => {
-    this.setState({
-      ...this.state,
+    const value = moment(date).format('YYYY-MM-DD');
+    this.setState(state => ({
       sprint: {
-        ...this.state.sprint,
-        dateFrom: moment(date).format('YYYY-MM-DD')
+        ...state.sprint,
+        dateFrom: value
       }
-    });
+    }));
   };
 
   handleDayToChange = (date) => {
-    this.setState({
-      ...this.state,
+    const value = moment(date).format('YYYY-MM-DD');
+    this.setState(state => ({
       sprint: {
-        ...this.state.sprint,
-        dateTo: moment(date).format('YYYY-MM-DD')
+        ...state.sprint,
+        dateTo: value
       }
-    });
+    }));
   };
 
   handleEditSprint = () => {

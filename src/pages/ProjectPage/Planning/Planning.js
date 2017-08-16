@@ -412,7 +412,7 @@ class Planning extends Component {
                     months.map((month, i) => <div key={`sprint-${month}`} className={css.month} style={{flex: moment(`${this.state.grantActiveYear}-${(++i)}`, 'YYYY-MM').daysInMonth()}} >{month}</div>)
                   }
                 </div>
-                {this.props.sprints.filter(this.sprintFilter).map((sprint, i) => this.sprints(sprint, i))}
+                {this.props.sprints.filter(this.sprintFilter).map(this.sprints)}
                 <div className={css.grid}>
                   {
                     months.map((el, i) => <span key={`sprint-${i}`} style={{flex: moment(`${this.state.grantActiveYear}-${(++i)}`, 'YYYY-MM').daysInMonth()}}/>)
