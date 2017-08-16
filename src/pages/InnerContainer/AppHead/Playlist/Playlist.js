@@ -212,11 +212,6 @@ class Playlist extends Component {
                 </div>
                 <div className={css.taskWrapper}>
                   {tasks}
-                  {
-                    isNotMineTasksShow
-                    ? notMineTasks
-                    : null
-                  }
                   <div
                     className={css.showMore}
                     onClick={this.handleShowOther}
@@ -228,6 +223,11 @@ class Playlist extends Component {
                       : <IconArrowUp/>
                     }
                   </div>
+                  {
+                    isNotMineTasksShow
+                    ? notMineTasks
+                    : null
+                  }
                 </div>
                 <div className={css.activity}>
                   <div className={classnames(css.type, css.active)} data-tip="Все активности" data-place="bottom">
