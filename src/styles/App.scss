@@ -49,3 +49,18 @@ h2 {
 h3 {
   font-weight: normal;
 }
+
+* {
+  &::-webkit-scrollbar-track {
+    background-color: $color-gray;
+  }
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    background-color: $color-gray;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: lighten($color-dark, 50%);
+  }
+}
