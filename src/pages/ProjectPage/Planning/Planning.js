@@ -203,7 +203,8 @@ class Planning extends Component {
 
     return {
       left: (+moment(start).format('YYYY') !== +this.state.grantActiveYear) ? '0%' : ((moment(start).dayOfYear() - 1) / daysInYear * 100).toFixed(1) + '%',
-      right: (+moment(end).format('YYYY') !== +this.state.grantActiveYear) ? '0%' : (100 - (moment(end).dayOfYear() / daysInYear * 100)).toFixed(1) + '%'
+      right: (+moment(end).format('YYYY') !== +this.state.grantActiveYear) ? '0%' : (100 - (moment(end).dayOfYear() / daysInYear * 100)).toFixed(1) + '%',
+      zIndex: 1
     };
   };
 
@@ -373,6 +374,8 @@ class Planning extends Component {
                         [css.future]: moment(sprint.factStartDate).isAfter(moment(), 'days')
                       })}
                       style={this.getSprintBlock(sprint)}
+                      data-tip={getSprintTime(sprint)}
+                      onClick={this.openEditModal(sprint)}
                     >
                       <div className={css.text}>{sprint.spentTime || 0}</div>
                       <div className={css.text}>{sprint.allottedTime || 0}</div>
