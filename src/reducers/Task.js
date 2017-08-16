@@ -48,7 +48,6 @@ export default function Task (state = InitialState, action) {
       ...state,
       task: {
         ...action.data,
-        tags: state.task.tags,
         history: state.task.history
       }
     };
