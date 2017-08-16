@@ -275,10 +275,19 @@ class Planning extends Component {
     return (
       <div>
         <section>
+          <br />
+          <hr />
+          <Button
+            text="Создать спринт"
+            type="primary"
+            style={{ float: 'right', marginTop: '-.2rem' }}
+            icon="IconPlus"
+            onClick={this.handleOpenModalAddSprint}
+          />
+          <div className={css.sprintList}>
           {this.props.sprints
             ? <div>
-            <hr />
-            <h2 onClick={() => this.setState({
+            <h2 className={css.name} onClick={() => this.setState({
               ...this.state,
               isOpenSprintList: !this.state.isOpenSprintList
             })}>
@@ -293,16 +302,9 @@ class Planning extends Component {
                   </Col>
                 )}
               </Row>
-              : null}
+             : null}
+            </div> : null}
           </div>
-            : null}
-          <Button
-            text="Создать спринт"
-            type="primary"
-            style={{ marginBottom: 16, marginTop: 16 }}
-            icon="IconPlus"
-            onClick={this.handleOpenModalAddSprint}
-          />
           {
             this.state.isModalOpenAddSprint
               ? <CreateSprintModal onClose={this.handleCloseModalAddSprint} />
@@ -334,7 +336,7 @@ class Planning extends Component {
               })}>
                 <span className={css.header}>План</span>
                 {this.props.sprints.filter(this.sprintFilter).map((sprint, i)=>
-                    <span className={css.name}>{sprint.allottedTime}</span>
+                    <span key={`sprint-${i}`} className={css.name}>{sprint.allottedTime}</span>
                 )}
               </div>
               <div className={classnames({
@@ -343,7 +345,7 @@ class Planning extends Component {
               })}>
                 <span className={css.header}>Факт</span>
                 {this.props.sprints.filter(this.sprintFilter).map((sprint, i)=>
-                    <span className={css.name}>{0}</span>
+                    <span key={`sprint-${i}`} className={css.name}>{0}</span>
                 )}
               </div>
               <div className={css.table}>
