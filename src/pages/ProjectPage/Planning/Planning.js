@@ -23,6 +23,7 @@ import { editSprint } from '../../../actions/Sprint';
 import { openCreateTaskModal } from '../../../actions/Project';
 import SprintStartControl from '../../../components/SprintStartControl';
 import SprintEditModal from '../../../components/SprintEditModal';
+import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 
 
 const getSprintTime = sprint =>
@@ -33,6 +34,7 @@ class Planning extends Component {
   constructor (props) {
     super(props);
     this.state = {
+      isOpenSprintList: false,
       leftColumn: null,
       rightColumn: null,
       createTaskCallee: null,
@@ -200,8 +202,8 @@ class Planning extends Component {
     const daysInYear = moment().endOf('year').dayOfYear();
 
     return {
-      left: (+moment(start).format('YYYY') !== +this.state.grantActiveYear) ? '0%' : Math.floor(moment(start).dayOfYear() / daysInYear * 100) + '%',
-      right: (+moment(end).format('YYYY') !== +this.state.grantActiveYear) ? '0%' : Math.floor(100 - (moment(end).dayOfYear() / daysInYear * 100)) + '%'
+      left: (+moment(start).format('YYYY') !== +this.state.grantActiveYear) ? '0%' : ((moment(start).dayOfYear() - 1) / daysInYear * 100).toFixed(1) + '%',
+      right: (+moment(end).format('YYYY') !== +this.state.grantActiveYear) ? '0%' : (100 - (moment(end).dayOfYear() / daysInYear * 100)).toFixed(1) + '%'
     };
   };
 
@@ -276,14 +278,22 @@ class Planning extends Component {
           {this.props.sprints
             ? <div>
             <hr />
-            <h2>Спринты / Фазы</h2>
-            <Row>
-              {this.props.sprints.map((element, i) =>
-                <Col xs={3} key={`sprint-${i}`}>
-                  <SprintCard sprint={element} inFocus={element.id === this.state.sprintIdHovered} onMouseOver={this.onMouseOverSprint(element.id)} onMouseOut={this.onMouseOutSprint} />
-                </Col>
-              )}
-            </Row>
+            <h2 onClick={() => this.setState({
+              ...this.state,
+              isOpenSprintList: !this.state.isOpenSprintList
+            })}>
+              {this.state.isOpenSprintList ? <IconArrowDown /> : <IconArrowRight />}
+              Спринты / Фазы
+            </h2>
+              {this.state.isOpenSprintList
+              ? <Row>
+                {this.props.sprints.map((element, i) =>
+                  <Col xs={3} key={`sprint-${i}`}>
+                    <SprintCard sprint={element} inFocus={element.id === this.state.sprintIdHovered} onMouseOver={this.onMouseOverSprint(element.id)} onMouseOut={this.onMouseOutSprint} />
+                  </Col>
+                )}
+              </Row>
+              : null}
           </div>
             : null}
           <Button
@@ -339,9 +349,9 @@ class Planning extends Component {
               <div className={css.table}>
                 <div className={css.tr}>
                   <div className={css.year}>
-                    <span onClick={this.grantYearDecrement}>&larr;</span>
+                    <span className={css.arrow} onClick={this.grantYearDecrement}>&larr;</span>
                     <span>{this.state.grantActiveYear}</span>
-                    <span onClick={this.grantYearIncrement}>&rarr;</span>
+                    <span className={css.arrow} onClick={this.grantYearIncrement}>&rarr;</span>
                   </div>
                 </div>
                 <div className={css.tr}>
