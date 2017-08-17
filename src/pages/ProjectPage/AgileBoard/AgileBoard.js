@@ -20,37 +20,53 @@ import getTasks from '../../../actions/Tasks';
 import { changeTask, changeTaskUser, startTaskEditing, startTaskChangeUser } from '../../../actions/Task';
 import { openCreateTaskModal } from '../../../actions/Project';
 
-const filterTasks = (array, sortedObject) => {
+const filterTasks = (array) => {
+  const taskArray = {
+    new: [],
+    dev: [],
+    codeReview: [],
+    qa: [],
+    done: []
+  };
   array.forEach((element) => {
     switch (element.statusId) {
-    case 1: sortedObject.new.push(element);
+    case 1: taskArray.new.push(element);
       break;
-    case 2: sortedObject.dev.push(element);
+    case 2: taskArray.dev.push(element);
       break;
-    case 3: sortedObject.dev.push(element);
+    case 3: taskArray.dev.push(element);
       break;
-    case 4: sortedObject.codeReview.push(element);
+    case 4: taskArray.codeReview.push(element);
       break;
-    case 5: sortedObject.codeReview.push(element);
+    case 5: taskArray.codeReview.push(element);
       break;
-    case 6: sortedObject.qa.push(element);
+    case 6: taskArray.qa.push(element);
       break;
-    case 7: sortedObject.qa.push(element);
+    case 7: taskArray.qa.push(element);
       break;
-    case 8: sortedObject.done.push(element);
+    case 8: taskArray.done.push(element);
       break;
     default: break;
     }
   });
+  return taskArray;
 };
 
 const sortTasksAndCreateCard = (sortedObject, section, onChangeStatus, onOpenPerformerModal, myTaskBoard) => {
+  const taskArray = {
+    new: [],
+    dev: [],
+    codeReview: [],
+    qa: [],
+    done: []
+  };
+
   for (const key in sortedObject) {
     sortedObject[key].sort((a, b) => {
       if (a.priority > b.priority) return 1;
       if (a.priority < b.priority) return -1;
     });
-    sortedObject[key] = sortedObject[key].map((task) => {
+    taskArray[key] = sortedObject[key].map((task) => {
       return <TaskCard
         key={`task-${task.id}`}
         task={task}
@@ -61,6 +77,7 @@ const sortTasksAndCreateCard = (sortedObject, section, onChangeStatus, onOpenPer
       />;
     });
   }
+  return taskArray;
 };
 
 const getNewStatus = (oldStatusId, newPhase) => {
@@ -247,7 +264,7 @@ class AgileBoard extends Component {
     return sprints;
   };
 
-  getUsers = (e) => {
+  getUsers = () => {
     return !this.props.myTaskBoard ? this.props.project.users.map((user, i) => ({
       value: user.id,
       label: user.fullNameRu
@@ -255,31 +272,15 @@ class AgileBoard extends Component {
   };
 
   render () {
-    const allSorted = {
-      new: [],
-      dev: [],
-      codeReview: [],
-      qa: [],
-      done: []
-    };
-
-    filterTasks(this.props.sprintTasks, allSorted);
-    sortTasksAndCreateCard(allSorted, 'all', this.changeStatus, this.openPerformerModal);
-
-    const mineSorted = {
-      new: [],
-      dev: [],
-      codeReview: [],
-      qa: [],
-      done: []
-    };
+    let allSorted = filterTasks(this.props.sprintTasks);
+    allSorted = sortTasksAndCreateCard(allSorted, 'all', this.changeStatus, this.openPerformerModal);
 
     const myTasks = this.props.sprintTasks.filter((task) => {
       return task.performer && task.performer.id === this.props.user.id;
     });
 
-    filterTasks(myTasks, mineSorted);
-    sortTasksAndCreateCard(mineSorted, 'mine', this.changeStatus, this.openPerformerModal, this.props.myTaskBoard);
+    let mineSorted = filterTasks(myTasks);
+    mineSorted = sortTasksAndCreateCard(mineSorted, 'mine', this.changeStatus, this.openPerformerModal, this.props.myTaskBoard);
 
     return (
         <section className={css.agileBoard}>
