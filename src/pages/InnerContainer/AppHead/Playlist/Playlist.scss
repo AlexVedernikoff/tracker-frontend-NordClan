@@ -241,6 +241,7 @@
   vertical-align: middle;
   border-radius: 50%;
   font-size: 10px;
+  letter-spacing: -1px;
   border: 1px solid;
 }
 
@@ -251,9 +252,11 @@
 .showMore {
   text-align: center;
   border: 1px solid rgba(black, .05);
+  transition: $transition;
   cursor: pointer;
 
   &:hover {
     background-color: rgba(black, .05);
+    transition: $transition;
   }
 }
