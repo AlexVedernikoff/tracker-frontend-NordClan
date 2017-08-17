@@ -25,7 +25,7 @@ const getTasks = (options) => {
           tags: '',
           performerId: '',
           ...options,
-          fields: 'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId'
+          fields: 'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId,prefix'
         }
       },
         { withCredentials: true }

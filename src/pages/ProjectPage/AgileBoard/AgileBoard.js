@@ -44,7 +44,7 @@ const filterTasks = (array, sortedObject) => {
   });
 };
 
-const sortTasksAndCreateCard = (sortedObject, prefix, section, onChangeStatus, onOpenPerformerModal, myTaskBoard) => {
+const sortTasksAndCreateCard = (sortedObject, section, onChangeStatus, onOpenPerformerModal, myTaskBoard) => {
   for (const key in sortedObject) {
     sortedObject[key].sort((a, b) => {
       if (a.priority > b.priority) return 1;
@@ -54,7 +54,6 @@ const sortTasksAndCreateCard = (sortedObject, prefix, section, onChangeStatus, o
       return <TaskCard
         key={`task-${task.id}`}
         task={task}
-        prefix={prefix}
         section={section}
         onChangeStatus={onChangeStatus}
         onOpenPerformerModal={onOpenPerformerModal}
@@ -265,7 +264,7 @@ class AgileBoard extends Component {
     };
 
     filterTasks(this.props.sprintTasks, allSorted);
-    sortTasksAndCreateCard(allSorted, this.props.project.prefix, 'all', this.changeStatus, this.openPerformerModal);
+    sortTasksAndCreateCard(allSorted, 'all', this.changeStatus, this.openPerformerModal);
 
     const mineSorted = {
       new: [],
@@ -280,7 +279,7 @@ class AgileBoard extends Component {
     });
 
     filterTasks(myTasks, mineSorted);
-    sortTasksAndCreateCard(mineSorted, this.props.project.prefix, 'mine', this.changeStatus, this.openPerformerModal, this.props.myTaskBoard);
+    sortTasksAndCreateCard(mineSorted, 'mine', this.changeStatus, this.openPerformerModal, this.props.myTaskBoard);
 
     return (
         <section className={css.agileBoard}>
