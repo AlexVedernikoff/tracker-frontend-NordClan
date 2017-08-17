@@ -240,4 +240,107 @@ const changeTaskUser = (taskId, userId, statusId) => {
   };
 };
 
-export { getTask, getTaskHistory, startTaskEditing, stopTaskEditing, changeTask, changeTaskUser, startTaskChangeUser, linkTask, unlinkTask };
+const attachmentUploadStarted = (taskId, attachment) => ({
+  type: TaskActions.TASK_ATTACHMENT_UPLOAD_REQUEST,
+  taskId,
+  attachment
+});
+
+const attachmentUploadProgress = (taskId, attachment, progress) => ({
+  type: TaskActions.TASK_ATTACHMENT_UPLOAD_PROGRESS,
+  taskId,
+  attachment,
+  progress
+});
+
+const attachmentUploadSuccess = (taskId, attachment, result) => ({
+  type: TaskActions.TASK_ATTACHMENT_UPLOAD_SUCCESS,
+  taskId,
+  attachment,
+  result
+});
+
+const attachmentUploadFail = (taskId, attachment, error) => ({
+  type: TaskActions.TASK_ATTACHMENT_UPLOAD_FAIL,
+  taskId,
+  attachment,
+  error
+});
+
+const uploadAttachments = (taskId, attachments) => {
+  if (!taskId) {
+    return () => {};
+  }
+
+  const URL = `${API_URL}/task/${taskId}/attachment`;
+  return (dispatch) => {
+    axios.all(attachments.map((attachment) => {
+      const data = new FormData();
+      data.append('file', attachment);
+      attachmentUploadStarted(taskId, attachment);
+      return axios.post(URL, data, {
+        onUploadProgress: (progressEvent) => dispatch(
+          attachmentUploadProgress(taskId, attachment, Math.round((progressEvent.loaded * 100) / progressEvent.total))
+        )
+      })
+      .then(
+        result => attachmentUploadSuccess(taskId, attachment, result),
+        error => attachmentUploadFail(taskId, attachment, error)
+      );
+    }))
+    .then(() => dispatch(getTask(taskId)));
+  };
+};
+
+const startRemoveAttachment = (taskId, attachmentId) => ({
+  type: TaskActions.TASK_ATTACHMENT_REMOVE_REQUEST,
+  taskId,
+  attachmentId
+});
+
+const successRemoveAttachment = (taskId, attachmentId, result) => ({
+  type: TaskActions.TASK_ATTACHMENT_REMOVE_SUCCESS,
+  taskId,
+  attachmentId,
+  result
+});
+
+const failRemoveAttachment = (taskId, attachmentId, error) => ({
+  type: TaskActions.TASK_ATTACHMENT_REMOVE_FAIL,
+  taskId,
+  attachmentId,
+  error
+});
+
+const removeAttachment = (taskId, attachmentId) => {
+  if (!taskId || !attachmentId) {
+    return () => {};
+  }
+
+  const URL = `${API_URL}/task/${taskId}/attachment/${attachmentId}`;
+  return (dispatch) => {
+    dispatch(startRemoveAttachment(taskId, attachmentId));
+    axios.delete(URL)
+    .then(
+      result => {
+        dispatch(getTask(taskId));
+        return dispatch(successRemoveAttachment(taskId, attachmentId, result));
+      },
+          error => dispatch(failRemoveAttachment(taskId, attachmentId, error))
+      );
+  };
+};
+
+export {
+  getTask,
+  getTaskHistory,
+  startTaskEditing,
+  stopTaskEditing,
+  changeTask,
+  changeTaskUser,
+  startTaskChangeUser,
+  linkTask,
+  unlinkTask,
+  uploadAttachments,
+  removeAttachment
+};

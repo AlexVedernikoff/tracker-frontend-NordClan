@@ -5,7 +5,8 @@ const InitialState = {
   task: {
     tags: [],
     error: false,
-    history: []
+    history: [],
+    attachments: []
   },
   TitleIsEditing: false,
   PlanningTimeIsEditing: false,
