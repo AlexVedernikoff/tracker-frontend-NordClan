@@ -15,7 +15,7 @@ class PerformerModal extends Component {
 
   handleChoose = () => {
     this.props.onChoose(this.state.performer);
-  }
+  };
 
   selectValue = (e, name) => {
     this.setState({ [name]: e });

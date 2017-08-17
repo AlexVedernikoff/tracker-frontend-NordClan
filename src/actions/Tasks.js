@@ -14,10 +14,6 @@ const tasksReceived = tasks => ({
 });
 
 const getTasks = (options) => {
-  if (!options.projectId) {
-    return () => {};
-  }
-
   const URL = `${API_URL}/task`;
   return dispatch => {
     dispatch(startTasksReceive());
@@ -27,6 +23,7 @@ const getTasks = (options) => {
         params: {
           name: '',
           tags: '',
+          performerId: '',
           ...options,
           fields: 'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId'
         }

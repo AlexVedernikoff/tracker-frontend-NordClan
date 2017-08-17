@@ -40,7 +40,7 @@ const TaskCard = (props) => {
     isDragging,
     onChangeStatus,
     onOpenPerformerModal,
-    prefix,
+    myTaskBoard,
     section,
     ...other
   } = props;
@@ -75,16 +75,16 @@ const TaskCard = (props) => {
           : null
         }
         <Link to={`/projects/${task.projectId}/tasks/${task.id}`} className={css.taskName}>
-          <span className={css.prefix}>{`${prefix}-${task.id}`}.</span>
+          <span className={css.prefix}>{`${task.prefix}-${task.id}`}.</span>
           {task.name}
         </Link>
         <p className={css.taskMeta} onClick={handlePerformerClick}>
-          <a>
+          {!myTaskBoard ? <a>
             { task.performer
               ? task.performer.fullNameRu
               : <span className={css.unassigned}>Не назначено</span>
             }
-          </a>
+          </a> : null}
         </p>
         {
           task.factExecutionTime || task.plannedExecutionTime

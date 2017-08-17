@@ -13,7 +13,7 @@ import PhaseColumn from './PhaseColumn';
 import SelectDropdown from '../../../components/SelectDropdown';
 import Button from '../../../components/Button';
 import CreateTaskModal from '../../../components/CreateTaskModal';
-import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
+import { IconArrowDown } from '../../../components/Icons';
 import * as css from './AgileBoard.scss';
 
 import getTasks from '../../../actions/Tasks';
@@ -44,7 +44,7 @@ const filterTasks = (array, sortedObject) => {
   });
 };
 
-const sortTasks = (sortedObject, prefix, section, onChangeStatus, onOpenPerformerModal) => {
+const sortTasksAndCreateCard = (sortedObject, prefix, section, onChangeStatus, onOpenPerformerModal, myTaskBoard) => {
   for (const key in sortedObject) {
     sortedObject[key].sort((a, b) => {
       if (a.priority > b.priority) return 1;
@@ -58,6 +58,7 @@ const sortTasks = (sortedObject, prefix, section, onChangeStatus, onOpenPerforme
         section={section}
         onChangeStatus={onChangeStatus}
         onOpenPerformerModal={onOpenPerformerModal}
+        myTaskBoard = {myTaskBoard}
       />;
     });
   }
@@ -112,103 +113,6 @@ class AgileBoard extends Component {
     };
   }
 
-  toggleSection = (sectionName) => {
-    const allSectionsStatus = this.state.isSectionOpen;
-    this.setState({
-      isSectionOpen: {
-        ...allSectionsStatus,
-        [sectionName]: !this.state.isSectionOpen[sectionName]
-      }
-    });
-  }
-
-  selectValue = (e, name) => {
-    this.setState({[name]: e}, () => {
-      this.props.getTasks({
-        projectId: this.props.project.id,
-        sprintId: this.state.changedSprint
-      });
-    });
-  }
-
-  dropTask = (task, phase) => {
-    this.props.changeTask({
-      id: task.id,
-      statusId: getNewStatus(task.statusId, phase)
-    }, 'Status');
-
-    this.props.startTaskEditing('Status');
-  }
-
-  changeStatus = (taskId, statusId) => {
-    this.props.changeTask({
-      id: taskId,
-      statusId: getNewStatusOnClick(statusId)
-    }, 'Status');
-
-    this.props.startTaskEditing('Status');
-  }
-
-  openPerformerModal = (taskId, performerId) => {
-    this.setState({
-      isModalOpen: true,
-      performer: performerId,
-      changedTask: taskId
-    });
-  }
-
-  changePerformer = (performerId) => {
-    this.props.changeTaskUser(this.state.changedTask, performerId);
-    this.props.startTaskChangeUser();
-  }
-
-  closeModal = () => {
-    this.setState({ isModalOpen: false });
-  }
-
-  getCurrentSprint = sprints => {
-    const currentSprints = sprints.filter(sprint =>
-      sprint.statusId === 2 && moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]')
-    );
-    return currentSprints.length ? currentSprints[0].id : 0;
-  }
-
-  getSprints = () => {
-    let sprints = _.sortBy(this.props.sprints, sprint => {
-      return new moment(sprint.factFinishDate);
-    });
-
-    sprints = sprints.map((sprint) => ({
-      value: sprint.id,
-      label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${sprint.factFinishDate
-        ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}`
-        : '- ...'})`,
-      statusId: sprint.statusId,
-      className: classnames({
-        [css.INPROGRESS]: sprint.statusId === 2,
-        [css.sprintMarker]: true,
-        [css.FINISHED]: sprint.statusId === 1
-      })
-    }));
-
-    sprints.push({
-      value: 0,
-      label: 'Backlog',
-      className: classnames({
-        [css.INPROGRESS]: false,
-        [css.sprintMarker]: true
-      })
-    });
-    return sprints;
-  };
-
-  getUsers = () => {
-    return this.props.project.users.map((user, i) => ({
-      value: user.id,
-      label: user.fullNameRu
-    }));
-  };
-
   componentDidMount () {
     this.selectValue(this.getCurrentSprint(this.props.sprints), 'changedSprint');
   }
@@ -250,6 +154,107 @@ class AgileBoard extends Component {
     ReactTooltip.rebuild();
   }
 
+  toggleSection = (sectionName) => {
+    const allSectionsStatus = this.state.isSectionOpen;
+    this.setState({
+      isSectionOpen: {
+        ...allSectionsStatus,
+        [sectionName]: !this.state.isSectionOpen[sectionName]
+      }
+    });
+  };
+
+  selectValue = (e, name) => {
+    this.setState({[name]: e}, () => {
+      const options = !this.props.myTaskBoard ? {
+        projectId: this.props.project.id,
+        sprintId: this.state.changedSprint
+      } : {
+        performerId: this.props.user.id
+      };
+
+      this.props.getTasks(options);
+    });
+  };
+
+  dropTask = (task, phase) => {
+    this.props.changeTask({
+      id: task.id,
+      statusId: getNewStatus(task.statusId, phase)
+    }, 'Status');
+
+    this.props.startTaskEditing('Status');
+  };
+
+  changeStatus = (taskId, statusId) => {
+    this.props.changeTask({
+      id: taskId,
+      statusId: getNewStatusOnClick(statusId)
+    }, 'Status');
+
+    this.props.startTaskEditing('Status');
+  };
+
+  openPerformerModal = (taskId, performerId) => {
+    this.setState({
+      isModalOpen: true,
+      performer: performerId,
+      changedTask: taskId
+    });
+  };
+
+  changePerformer = (performerId) => {
+    this.props.changeTaskUser(this.state.changedTask, performerId);
+    this.props.startTaskChangeUser();
+  };
+
+  closeModal = () => {
+    this.setState({ isModalOpen: false });
+  };
+
+  getCurrentSprint = sprints => {
+    const currentSprints = sprints.filter(sprint =>
+      sprint.statusId === 2 && moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]')
+    );
+    return currentSprints.length ? currentSprints[0].id : 0;
+  };
+
+  getSprints = () => {
+    let sprints = _.sortBy(this.props.sprints, sprint => {
+      return new moment(sprint.factFinishDate);
+    });
+
+    sprints = sprints.map((sprint) => ({
+      value: sprint.id,
+      label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${sprint.factFinishDate
+        ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}`
+        : '- ...'})`,
+      statusId: sprint.statusId,
+      className: classnames({
+        [css.INPROGRESS]: sprint.statusId === 2,
+        [css.sprintMarker]: true,
+        [css.FINISHED]: sprint.statusId === 1
+      })
+    }));
+
+    sprints.push({
+      value: 0,
+      label: 'Backlog',
+      className: classnames({
+        [css.INPROGRESS]: false,
+        [css.sprintMarker]: true
+      })
+    });
+    return sprints;
+  };
+
+  getUsers = (e) => {
+    return !this.props.myTaskBoard ? this.props.project.users.map((user, i) => ({
+      value: user.id,
+      label: user.fullNameRu
+    })) : null;
+  };
+
   render () {
     const allSorted = {
       new: [],
@@ -260,7 +265,7 @@ class AgileBoard extends Component {
     };
 
     filterTasks(this.props.sprintTasks, allSorted);
-    sortTasks(allSorted, this.props.project.prefix, 'all', this.changeStatus, this.openPerformerModal);
+    sortTasksAndCreateCard(allSorted, this.props.project.prefix, 'all', this.changeStatus, this.openPerformerModal);
 
     const mineSorted = {
       new: [],
@@ -275,12 +280,11 @@ class AgileBoard extends Component {
     });
 
     filterTasks(myTasks, mineSorted);
-    sortTasks(mineSorted, this.props.project.prefix, 'mine', this.changeStatus, this.openPerformerModal);
+    sortTasksAndCreateCard(mineSorted, this.props.project.prefix, 'mine', this.changeStatus, this.openPerformerModal, this.props.myTaskBoard);
 
     return (
         <section className={css.agileBoard}>
-          {/*<h2 style={{display: 'inline-block'}}>Спринт №1 (01.06.2017 - 30.06.2017)</h2>*/}
-          <Row className={css.filtersRow}>
+          {!this.props.myTaskBoard ? <Row className={css.filtersRow}>
             <Col xs>
               <SelectDropdown
                 name="changedSprint"
@@ -300,8 +304,8 @@ class AgileBoard extends Component {
               name="right"
               style={{ marginLeft: 16, marginRight: 8 }}
             />
-          </Row>
-          <Row>
+          </Row> : null}
+          {!this.props.myTaskBoard ? <Row>
             <Col xs>
               <SelectDropdown
                 name="filterTags"
@@ -318,7 +322,7 @@ class AgileBoard extends Component {
                 ]}
               />
             </Col>
-          </Row>
+          </Row> : null}
           <hr/>
           <h3 onClick={() => this.toggleSection('myTasks')} className={css.taskSectionTitle}>
             <IconArrowDown className={classnames({
@@ -338,24 +342,26 @@ class AgileBoard extends Component {
             : null
           }
           <hr/>
-          <h3 onClick={() => this.toggleSection('allTasks')} className={css.taskSectionTitle}>
-            <IconArrowDown className={classnames({
-              [css.close]: !this.state.isSectionOpen.allTasks,
-              [css.open]: this.state.isSectionOpen.allTasks
-            })} /> Все задачи
-          </h3>
-          {
-            this.state.isSectionOpen.allTasks
-            ? <Row>
-                <PhaseColumn onDrop={this.dropTask} section={'all'} title={'New'} tasks={allSorted.new}/>
-                <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Dev'} tasks={allSorted.dev} />
-                <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Code Review'} tasks={allSorted.codeReview} />
-                <PhaseColumn onDrop={this.dropTask} section={'all'} title={'QA'} tasks={allSorted.qa} />
-                <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Done'} tasks={allSorted.done} />
-              </Row>
-            : null
-          }
-          <hr/>
+          {!this.props.myTaskBoard ? <div>
+              <h3 onClick={() => this.toggleSection('allTasks')} className={css.taskSectionTitle}>
+                <IconArrowDown className={classnames({
+                  [css.close]: !this.state.isSectionOpen.allTasks,
+                  [css.open]: this.state.isSectionOpen.allTasks
+                })} /> Все задачи
+              </h3>
+              {
+                this.state.isSectionOpen.allTasks
+                  ? <Row>
+                  <PhaseColumn onDrop={this.dropTask} section={'all'} title={'New'} tasks={allSorted.new}/>
+                  <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Dev'} tasks={allSorted.dev} />
+                  <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Code Review'} tasks={allSorted.codeReview} />
+                  <PhaseColumn onDrop={this.dropTask} section={'all'} title={'QA'} tasks={allSorted.qa} />
+                  <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Done'} tasks={allSorted.done} />
+                </Row>
+                  : null
+              }
+            <hr/>
+            </div> : null}
 
           {
             this.state.isModalOpen
@@ -378,17 +384,18 @@ class AgileBoard extends Component {
 }
 
 AgileBoard.propTypes = {
-  StatusIsEditing: PropTypes.bool,
-  UserIsEditing: PropTypes.bool,
   changeTask: PropTypes.func.isRequired,
   changeTaskUser: PropTypes.func.isRequired,
   getTasks: PropTypes.func.isRequired,
+  myTaskBoard: PropTypes.bool,
   openCreateTaskModal: PropTypes.func.isRequired,
   project: PropTypes.object,
   sprintTasks: PropTypes.array,
   sprints: PropTypes.array,
   startTaskChangeUser: PropTypes.func,
   startTaskEditing: PropTypes.func,
+  StatusIsEditing: PropTypes.bool,
+  UserIsEditing: PropTypes.bool,
   user: PropTypes.object
 };
 
