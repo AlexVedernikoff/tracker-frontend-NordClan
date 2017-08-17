@@ -1,12 +1,15 @@
-import React from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import * as css from './MyTasks.scss';
 
-const MyTasks = () => (
-  <div>
-    <section>
-      <h1 className={css.testClass}>My Tasks</h1>
-    </section>
-  </div>
-);
+import AgileBoard from '../ProjectPage/AgileBoard';
+
+class MyTasks extends Component {
+  render () {
+    return (
+      <AgileBoard myTaskBoard={true}/>
+    );
+  }
+}
 
 export default MyTasks;
