@@ -1,0 +1,259 @@
+@import "../../../../styles/variables.scss";
+
+.playlistWrapper {
+  position: relative;
+  z-index: 3;
+  width: 30rem;
+}
+
+.taskWrapper {
+  max-height: 30rem;
+  overflow: auto;
+}
+
+.task {
+  // padding: 0.5rem 1rem;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  min-height: 3.5rem;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    transition: $transition;
+  }
+}
+
+.displayTask {
+  color: white;
+  height: 100%;
+
+  &:hover {
+    background-color: rgba(white, .1);
+  }
+}
+
+.actionButton {
+  svg {
+    opacity: 0.6;
+    transition: $transition;
+  }
+
+  &:hover svg {
+    opacity: 1;
+    transition: $transition;
+  }
+
+  &.locked:hover svg {
+    opacity: 0.6;
+    transition: $transition;
+  }
+}
+
+.listTask {
+  &:hover {
+    background-color: rgba(black, .05);
+  }
+  .actionButton {
+    background-color: rgba(black, .05);
+
+    &.locked:hover {
+      background-color: rgba(black, .05);
+    }
+
+    &:hover {
+      background-color: rgba(black, .1);
+    }
+  }
+}
+
+.taskNameWrapper {
+  width: calc(100% - 7rem);
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 0 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.taskTitle {
+  width: 100%;
+}
+
+.taskName {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.meta {
+  max-width: 100%;
+  overflow: hidden;
+  opacity: 0.7;
+  font-size: 11px;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  span {
+    display: inline-block;
+
+    & + span {
+      border-left: 1px solid rgba(black, .3);
+      margin-left: 0.3rem;
+      padding-left: 0.3rem;
+    }
+  }
+}
+
+.actionButton {
+  width: 3.5rem;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: $transition;
+  background-color: lighten($color-dark, 5%);
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(white, .1);
+    transition: $transition;
+  }
+}
+
+.list {
+  box-shadow: $box-shadow;
+  background: white;
+}
+
+.time {
+  width: 3.5rem;
+  flex-shrink: 0;
+  padding: 0.5rem;
+  border-left: 1px solid $color-gray;
+
+  .other {
+    font-size: 11px;
+    line-height: 1;
+    color: gray;
+    text-align: center;
+
+    & > span {
+      // display: inline-block;
+
+      & + span {
+        // margin-left: 0.25rem;
+        // padding-left: 0.25rem;
+      }
+    }
+  }
+
+  .today {
+    font-size: 16px;
+    background-color: rgba(black, .05);
+    margin-bottom: 0.3rem;
+
+    input {
+      width: 100%;
+      background: none;
+      border: none;
+      text-align: center;
+    }
+  }
+}
+
+.week {
+  display: flex;
+
+  .day {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem;
+    cursor: pointer;
+    background-color: lighten($color-dark, 10%);
+    color: white;
+    transition: $transition;
+
+    &:hover {
+      background-color: $color-dark;
+      transition: $transition;
+    }
+
+    &.active {
+      background-color: $color-green;
+    }
+
+    & + .day {
+      border-left: 1px solid lighten($color-dark, 20%);
+    }
+  }
+}
+
+.activity {
+  display: flex;
+
+  .time {
+    .today {
+      margin-bottom: 0;
+    }
+  }
+
+  .type {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.5rem;
+    cursor: pointer;
+    background-color: lighten(black, 95%);
+    transition: $transition;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      opacity: 0.7;
+    }
+
+    &:hover {
+      background-color: lighten(black, 90%);
+      transition: $transition;
+    }
+
+    &.active {
+      background-color: lighten(black, 85%);
+    }
+  }
+}
+
+.countBadge {
+  width: 20px;
+  height: 20px;
+  opacity: 0.7;
+  margin-left: 0.25rem;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  vertical-align: middle;
+  border-radius: 50%;
+  font-size: 10px;
+  border: 1px solid;
+}
+
+.locked {
+  cursor: auto;
+}
+
+.showMore {
+  text-align: center;
+  border: 1px solid rgba(black, .05);
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(black, .05);
+  }
+}

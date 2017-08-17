@@ -20,6 +20,8 @@ export default function GetStatusNameById (statusId) {
     break;
   case 9: status = 'Canceled';
     break;
+  case 10: status = 'Closed';
+    break;
   default: break;
   }
   return status;
