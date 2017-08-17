@@ -5,6 +5,16 @@ import Modal from '../Modal';
 import ConfirmModal from '../ConfirmModal';
 
 export default class AttachedImage extends React.Component {
+  static propTypes = {
+    fileName: PropTypes.string.isRequired,
+    id: PropTypes.number,
+    path: PropTypes.string.isRequired,
+    previewPath: PropTypes.string.isRequired,
+    removeAttachment: PropTypes.func.isRequired,
+    removeInProgress: PropTypes.bool,
+    type: PropTypes.string.isRequired
+  };
+
   constructor (props) {
     super(props);
     this.state = {
@@ -30,6 +40,12 @@ export default class AttachedImage extends React.Component {
     this.setState({ isConfirmDeleteOpen: false });
   };
 
+  handleRemove = () => {
+    const { id, removeAttachment } = this.props;
+    removeAttachment(id);
+    this.handleCloseConfirmDelete();
+  };
+
   stopBubbling = event => {
     event.stopPropagation();
   };
@@ -50,7 +66,7 @@ export default class AttachedImage extends React.Component {
       display: 'block'
     };
 
-    const { fileName, filePath, fileType } = this.props;
+    const { fileName, path, previewPath} = this.props;
 
     return (
       <li className={css.attachment} onClick={this.handleOpenModal}>
@@ -58,7 +74,7 @@ export default class AttachedImage extends React.Component {
         <div className={css.actions}>
           <a
             target="_blank"
-            href={filePath}
+            href={path}
             onClick={this.stopBubbling}
             download
           >
@@ -72,7 +88,7 @@ export default class AttachedImage extends React.Component {
         </div>
 
         <div className={css.imagePreview}>
-          <img src={filePath} alt="" className={css.screen} />
+          <img src={previewPath} alt="" className={css.screen} />
         </div>
         <div className={css.attachmentName}>
           {fileName}
@@ -84,7 +100,7 @@ export default class AttachedImage extends React.Component {
               contentLabel="modal"
               onRequestClose={this.handleCloseModal}
             >
-              <img src={filePath} alt="" style={imageStyles} />
+              <img src={path} alt="" style={imageStyles} />
             </Modal>
           : null}
 
@@ -93,7 +109,7 @@ export default class AttachedImage extends React.Component {
               isOpen
               contentLabel="modal"
               onRequestClose={this.handleCloseConfirmDelete}
-              onConfirm={() => console.log('Йеп')}
+              onConfirm={this.handleRemove}
               onCancel={this.handleCloseConfirmDelete}
               text="Вы уверены, что хотите удалить этот файл?"
             />
@@ -103,9 +119,3 @@ export default class AttachedImage extends React.Component {
     );
   }
 }
-
-AttachedImage.propTypes = {
-  fileName: PropTypes.string.isRequired,
-  filePath: PropTypes.string.isRequired,
-  fileType: PropTypes.string.isRequired
-};

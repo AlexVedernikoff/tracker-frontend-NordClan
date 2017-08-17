@@ -16,13 +16,16 @@ import ConfirmModal from '../../components/ConfirmModal';
 import CreateTaskModal from '../../components/CreateTaskModal';
 import HttpError from '../../components/HttpError';
 
-import { getTask,
-        startTaskEditing,
-        stopTaskEditing,
-        changeTask,
-        changeTaskUser,
-        linkTask,
-        unlinkTask
+import {
+  getTask,
+  startTaskEditing,
+  stopTaskEditing,
+  changeTask,
+  changeTaskUser,
+  linkTask,
+  unlinkTask,
+  removeAttachment,
+  uploadAttachments
 } from '../../actions/Task';
 import getTasks from '../../actions/Tasks';
 import {
@@ -33,6 +36,31 @@ import {
 import * as css from './TaskPage.scss';
 
 class TaskPage extends Component {
+  static propTypes = {
+    DescriptionIsEditing: PropTypes.bool,
+    changeTask: PropTypes.func.isRequired,
+    changeTaskUser: PropTypes.func.isRequired,
+    children: PropTypes.object,
+    getProjectInfo: PropTypes.func.isRequired,
+    getTask: PropTypes.func.isRequired,
+    getTasks: PropTypes.func.isRequired,
+    linkTask: PropTypes.func.isRequired,
+    openCreateTaskModal: PropTypes.func.isRequired,
+    params: PropTypes.shape({
+      projectId: PropTypes.string.isRequired,
+      taskId: PropTypes.string.isRequired
+    }),
+    project: PropTypes.object,
+    projectTasks: PropTypes.array,
+    removeAttachment: PropTypes.func,
+    sprints: PropTypes.array,
+    startTaskEditing: PropTypes.func.isRequired,
+    stopTaskEditing: PropTypes.func.isRequired,
+    task: PropTypes.object,
+    unlinkTask: PropTypes.func.isRequired,
+    uploadAttachments: PropTypes.func.isRequired
+  };
+
   constructor (props) {
     super(props);
     this.state = {
@@ -103,29 +131,15 @@ class TaskPage extends Component {
     }));
   };
 
-  render () {
-    // Mocks
+  removeAttachment = (attachmentId) => {
+    this.props.removeAttachment(this.props.task.id, attachmentId);
+  };
 
-    const task = {
-      id: 1,
-      name: 'UI. Подготовка к демонстрации. Краткая проверка функционала',
-      description:
-        'Описание задачи, которое довольно часто может составлять пару предложений, а то и вовсе отсутствовать.',
-      projectName: 'MakeTalents',
-      projectId: 1,
-      sprint: 'Спринт 1',
-      tags: ['UI', 'ReFactor', 'Demo'],
-      creator: {
-        name: 'Виссарион Одноклассница'
-      },
-      owner: {
-        name: 'Андрей Юдин'
-      },
-      parentTask: {
-        name: 'UI: Add to gulp build tasks for css and js minification',
-        prefix: ''
-      }
-    };
+  uploadAttachments = (files) => {
+    this.props.uploadAttachments(this.props.task.id, files);
+  };
+
+  render () {
 
     return (this.props.task.error) ? (<HttpError error={this.props.task.error}/>) : (
       <div id="task-page">
@@ -145,7 +159,10 @@ class TaskPage extends Component {
               />
               <hr />
               <h3>Прикрепленные файлы:</h3>
-              <Attachments task={task} />
+              <Attachments attachments={this.props.task.attachments}
+                           removeAttachment={this.removeAttachment}
+                           uploadAttachments={this.uploadAttachments}
+              />
               <RouteTabs style={{ marginTop: '2rem', marginBottom: '2rem' }}>
                 <Link
                   to={`/projects/${this.props.params.projectId}/tasks/${this.props.params.taskId}/comments`}
@@ -210,28 +227,6 @@ class TaskPage extends Component {
   }
 }
 
-TaskPage.propTypes = {
-  DescriptionIsEditing: PropTypes.bool,
-  changeTask: PropTypes.func.isRequired,
-  changeTaskUser: PropTypes.func.isRequired,
-  children: PropTypes.object,
-  getProjectInfo: PropTypes.func.isRequired,
-  getTask: PropTypes.func.isRequired,
-  getTasks: PropTypes.func.isRequired,
-  linkTask: PropTypes.func.isRequired,
-  openCreateTaskModal: PropTypes.func.isRequired,
-  params: PropTypes.shape({
-    projectId: PropTypes.string.isRequired,
-    taskId: PropTypes.string.isRequired
-  }),
-  project: PropTypes.object,
-  projectTasks: PropTypes.array,
-  startTaskEditing: PropTypes.func.isRequired,
-  stopTaskEditing: PropTypes.func.isRequired,
-  task: PropTypes.object,
-  unlinkTask: PropTypes.func.isRequired
-};
-
 const mapStateToProps = state => ({
   project: state.Project.project,
   projectTasks: state.Tasks.tasks,
@@ -240,16 +235,18 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+  changeTask,
+  changeTaskUser,
   getTask,
   getTasks,
   getProjectInfo,
+  linkTask,
+  openCreateTaskModal,
+  removeAttachment,
   startTaskEditing,
   stopTaskEditing,
-  changeTask,
-  changeTaskUser,
-  openCreateTaskModal,
-  linkTask,
-  unlinkTask
+  unlinkTask,
+  uploadAttachments
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskPage);

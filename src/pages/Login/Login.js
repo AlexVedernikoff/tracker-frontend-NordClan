@@ -38,7 +38,7 @@ class Login extends Component {
 
   onSubmit = event => {
     event.preventDefault();
-    const { doAuthentication } = this.props;
+    const { doAuthentication } = this.props;//eslint-disable-line
     doAuthentication(this.state);
   };
 

@@ -1,28 +1,17 @@
-
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import AttachedDocument from '../AttachedDocument';
 import AttachedImage from '../AttachedImage';
 import FileUpload from '../FileUpload';
-import { files } from '../../mocks/Files';
 
-export default class Attachments extends React.Component {
-  constructor (props) {
-    super(props);
-    this.state = {
-      files: files
-    };
-  }
-
-  onDrop = (acceptedFiles, rejectedFiles) => {
-    console.log(acceptedFiles);
+export default class Attachments extends Component {
+  static defaultProps = {
+    attachments: []
   };
 
-  isPicture (fileType) {
-    const regexp = /(gif|jpe?g|tiff|png)/i;
-    return regexp.test(fileType);
-  }
-
+  onDrop = (acceptedFiles, rejectedFiles) => {
+    this.props.uploadAttachments(acceptedFiles);
+  };
 
   render () {
     const css = require('./Attachments.scss');
@@ -31,13 +20,14 @@ export default class Attachments extends React.Component {
       <div className={css.attachments}>
         <ul className={css.attachmentsContainer}>
 
-          {this.state.files.map((file, index) => {
-            return this.isPicture(file.fileType)
-              ? <AttachedImage key={`attached-document-${index}`} {...file} />
+          {this.props.attachments.map((file, index) => {
+            return file.type === 'image'
+              ? <AttachedImage key={`attached-document-${index}`} {...file} removeAttachment={this.props.removeAttachment} />
               : <AttachedDocument
                   key={`attached-picture-${index}`}
                   {...file}
-                />;
+                  removeAttachment={this.props.removeAttachment}
+              />;
           })}
 
           <FileUpload onDrop={this.onDrop} />
@@ -48,5 +38,7 @@ export default class Attachments extends React.Component {
 }
 
 Attachments.propTypes = {
-  // task: PropTypes.object
+  attachments: PropTypes.array,
+  removeAttachment: PropTypes.func.isRequired,
+  uploadAttachments: PropTypes.func.isRequired
 };
