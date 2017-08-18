@@ -27,31 +27,37 @@ class Playlist extends Component {
       activityTabs: [
         {
           name: 'all',
+          description: 'Все активности',
           content: <All/>,
           icon: <IconList/>
         },
         {
           name: 'work',
+          description: 'Работа',
           content: <Work/>,
           icon: <IconLaptop/>
         },
         {
           name: 'meeting',
+          description: 'Совещание',
           content: <span/>,
           icon: <IconCall/>
         },
         {
           name: 'estimate',
+          description: 'Оценка',
           content: <span/>,
           icon: <IconTime/>
         },
         {
           name: 'education',
+          description: 'Обучение',
           content: <span/>,
           icon: <IconBook/>
         },
         {
           name: 'vacation',
+          description: 'Опуск',
           content: <span/>,
           icon: <IconPlane/>
         }
@@ -122,7 +128,7 @@ class Playlist extends Component {
                       = <div
                           key={index}
                           className={classnames({[css.type]: true, [css.active]: this.state.activeTab.name === this.state.activityTabs[index].name})}
-                          data-tip={element.name}
+                          data-tip={element.description}
                           onClick={() => {this.setState({activeTab: element});}}
                           data-place="bottom">
                           {element.icon}
