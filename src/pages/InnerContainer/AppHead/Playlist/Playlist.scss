@@ -7,6 +7,7 @@
 }
 
 .taskWrapper {
+  min-height: 3.5rem;
   max-height: 30rem;
   overflow: auto;
 }
@@ -14,6 +15,7 @@
 .task {
   // padding: 0.5rem 1rem;
   display: flex;
+  flex-wrap: wrap;
   align-items: stretch;
   overflow: hidden;
   min-height: 3.5rem;
@@ -70,6 +72,7 @@
 
 .taskNameWrapper {
   width: calc(100% - 7rem);
+  height: 3.5rem;
   flex-grow: 0;
   flex-shrink: 0;
   padding: 0 0.5rem;
@@ -241,6 +244,7 @@
   vertical-align: middle;
   border-radius: 50%;
   font-size: 10px;
+  letter-spacing: -1px;
   border: 1px solid;
 }
 
@@ -251,9 +255,48 @@
 .showMore {
   text-align: center;
   border: 1px solid rgba(black, .05);
+  transition: $transition;
   cursor: pointer;
 
   &:hover {
     background-color: rgba(black, .05);
+    transition: $transition;
+  }
+}
+
+.commentToggler {
+  color: lighten(black, 50%);
+  transition: $transition;
+
+  
+  &.green {
+    color: $color-green;
+
+    &:hover {
+      color: $color-green;
+    }
+  }
+
+  &:hover {
+    color: lighten(black, 30%);
+    transition: $transition;
+  }
+}
+
+.comment {
+  width: 100%;
+  display: flex;
+
+  textarea {
+    width: calc(100% - 3.5rem);
+    height: 3.5rem;
+    resize: none;
+    border: 1px solid $color-gray;
+    border-right: none;
+    padding: 0.5rem;
+
+    &::placeholder {
+      color: silver;
+    }
   }
 }

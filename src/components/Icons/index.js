@@ -308,3 +308,28 @@ export const IconPlane = (props) => (
     <path d="M0 0h24v24H0z" fill="none"/>
   </SvgIcon>
 );
+
+export const IconComment = (props) => (
+  <SvgIcon viewBox="0 0 24 24" {...props}>
+    <path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/>
+    <path d="M0 0h24v24H0z" fill="none"/>
+  </SvgIcon>
+);
+
+export const IconCase = (props) => (
+  <SvgIcon viewBox="0 0 24 24" {...props}>
+    <path d="M14,6H10V4H14M20,6H16V4L14,2H10L8,4V6H4C2.89,6 2,6.89 2,8V19A2,2 0 0,0 4,21H20A2,2 0 0,0 22,19V8C22,6.89 21.1,6 20,6Z" />
+  </SvgIcon>
+);
+
+export const IconHospital = (props) => (
+  <SvgIcon viewBox="0 0 24 24" {...props}>
+    <path d="M18,14H14V18H10V14H6V10H10V6H14V10H18M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3Z" />
+  </SvgIcon>
+);
+
+export const IconPresentation = (props) => (
+  <SvgIcon viewBox="0 0 24 24" {...props}>
+    <path d="M2,3H10A2,2 0 0,1 12,1A2,2 0 0,1 14,3H22V5H21V16H15.25L17,22H15L13.25,16H10.75L9,22H7L8.75,16H3V5H2V3M5,5V14H19V5H5M11.85,11.85C11.76,11.94 11.64,12 11.5,12A0.5,0.5 0 0,1 11,11.5V7.5A0.5,0.5 0 0,1 11.5,7C11.64,7 11.76,7.06 11.85,7.15L13.25,8.54C13.57,8.86 13.89,9.18 13.89,9.5C13.89,9.82 13.57,10.14 13.25,10.46L11.85,11.85Z" />
+  </SvgIcon>
+);

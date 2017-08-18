@@ -1,11 +1,32 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import _ from 'lodash';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import onClickOutside from 'react-onclickoutside';
 import ReactTooltip from 'react-tooltip';
 
-import { IconPause, IconPlay, IconCheckCircle, IconArrowDown, IconArrowUp, IconBook, IconList, IconLaptop, IconCall, IconPlane, IconTime } from '../../../../components/Icons';
+import {
+  IconPause,
+  IconBook,
+  IconList,
+  IconLaptop,
+  IconCall,
+  IconPlane,
+  IconTime,
+  IconCase,
+  IconHospital,
+  IconPresentation
+} from '../../../../components/Icons';
+import All from './All';
+import Work from './Work';
+import Meeting from './Meeting';
+import Presale from './Presale';
+import Estimate from './Estimate';
+import Education from './Education';
+import Vacation from './Vacation';
+import Trip from './Trip';
+import Hospital from './Hospital';
 import * as css from './Playlist.scss';
 
 class Playlist extends Component {
@@ -13,16 +34,69 @@ class Playlist extends Component {
     super(props);
     this.state = {
       isPlaylistOpen: false,
-      times: {
-        item1: 0.25,
-        item2: 5,
-        item3: 0
-      }
+      activityTabs: [
+        {
+          name: 'all',
+          description: 'Все активности',
+          content: <All/>,
+          icon: <IconList/>
+        },
+        {
+          name: 'work',
+          description: 'Работа',
+          content: <Work/>,
+          icon: <IconLaptop/>
+        },
+        {
+          name: 'meeting',
+          description: 'Совещание',
+          content: <Meeting/>,
+          icon: <IconCall/>
+        },
+        {
+          name: 'presale',
+          description: 'Presale',
+          content: <Presale/>,
+          icon: <IconPresentation/>
+        },
+        {
+          name: 'estimate',
+          description: 'Оценка',
+          content: <Estimate/>,
+          icon: <IconTime/>
+        },
+        {
+          name: 'education',
+          description: 'Обучение',
+          content: <Education/>,
+          icon: <IconBook/>
+        },
+        {
+          name: 'vacation',
+          description: 'Отпуск',
+          content: <Vacation/>,
+          icon: <IconPlane/>
+        },
+        {
+          name: 'trip',
+          description: 'Командировка',
+          content: <Trip/>,
+          icon: <IconCase/>
+        },
+        {
+          name: 'hospital',
+          description: 'Больничный',
+          content: <Hospital/>,
+          icon: <IconHospital/>
+        }
+      ],
+      activeTab: {}
     };
   }
 
   componentDidMount () {
     ReactTooltip.rebuild();
+    this.setState({activeTab: this.state.activityTabs[0]});
   }
 
   componentDidUpdate () {
@@ -37,148 +111,10 @@ class Playlist extends Component {
     this.setState({isPlaylistOpen: !this.state.isPlaylistOpen});
   }
 
-  handleShowOther = () => {
-    this.setState({isNotMineTasksShow: !this.state.isNotMineTasksShow});
-  }
-
-  handleChangeItem = (name, e) => {
-    this.setState({times: {...this.state.times, [name]: e.target.value}});
-  }
-
   render () {
-    const { isPlaylistOpen, isNotMineTasksShow } = this.state;
-    const tasks
-    = <div>
-        <div className={classnames(css.listTask, css.task)}>
-          <div className={css.actionButton}>
-            <IconPause style={{width: '1.5rem', height: '1.5rem'}} />
-          </div>
-          <div className={css.taskNameWrapper}>
-            <div className={css.taskTitle}>
-              <div className={css.meta}>
-                <span>ST-48</span>
-                <span>ПроРейтинг - HR-инструмент</span>
-                <span>Develop</span>
-              </div>
-              <div className={css.taskName}>
-                UI: Страница задачи. Не хватает кнопки Создания задачи со страницы задачи
-              </div>
-            </div>
-          </div>
-          <div className={css.time}>
-            <div className={css.today}>
-              <input key="item1" type="text" onChange={(e) => this.handleChangeItem('item1', e)} value={this.state.times.item1}/>
-            </div>
-            <div className={css.other}>
-              <span data-tip="Потрачено" data-place="bottom">52</span> / <span data-tip="Запланировано" data-place="bottom">14</span>
-            </div>
-          </div>
-        </div>
-        <div className={classnames(css.listTask, css.task)}>
-          <div className={css.actionButton}>
-            <IconPlay style={{width: '1.5rem', height: '1.5rem'}} />
-          </div>
-          <div className={css.taskNameWrapper}>
-            <div className={css.taskTitle}>
-              <div className={css.meta}>
-                <span>ST-48</span>
-                <span>SimTrack</span>
-                <span>Develop</span>
-              </div>
-              <div className={css.taskName}>
-                UI: Добавить смену приоритета
-              </div>
-            </div>
-          </div>
-          <div className={css.time}>
-            <div className={css.today}>
-              <input key="item2" type="text" onChange={(e) => this.handleChangeItem('item2', e)} value={this.state.times.item2}/>
-            </div>
-            <div className={css.other}>
-              <span data-tip="Потрачено" data-place="bottom">52</span> / <span data-tip="Запланировано" data-place="bottom">14</span>
-            </div>
-          </div>
-        </div>
-        <div className={classnames(css.listTask, css.task)}>
-          <div className={css.actionButton}>
-            <IconPlay style={{width: '1.5rem', height: '1.5rem'}} />
-          </div>
-          <div className={css.taskNameWrapper}>
-            <div className={css.taskTitle}>
-              <div className={css.meta}>
-                <span>ST-3214</span>
-                <span>SimTrack</span>
-                <span>Develop</span>
-              </div>
-              <div className={css.taskName}>
-                UI: Список Проектов. Фильтрация по тэгам
-              </div>
-            </div>
-          </div>
-          <div className={css.time}>
-            <div className={css.today}>
-              <input key="item3" type="text" onChange={(e) => this.handleChangeItem('item3', e)} value={this.state.times.item3}/>
-            </div>
-            <div className={css.other}>
-              <span data-tip="Потрачено" data-place="bottom">52</span> / <span data-tip="Запланировано" data-place="bottom">14</span>
-            </div>
-          </div>
-        </div>
-      </div>;
 
-    const notMineTasks
-    = <div>
-        <div className={classnames(css.listTask, css.task)}>
-          <div className={classnames(css.actionButton, css.locked)}>
-            <IconCheckCircle style={{width: '1.5rem', height: '1.5rem'}} />
-          </div>
-          <div className={css.taskNameWrapper}>
-            <div className={css.taskTitle}>
-              <div className={css.meta}>
-                <span>QiwA-3214</span>
-                <span>Киви-Банк - Артек</span>
-                <span>QA</span>
-              </div>
-              <div className={css.taskName}>
-                Игровой клиент: таблица результатов
-              </div>
-            </div>
-          </div>
-          <div className={css.time}>
-            <div className={css.today}>
-              <input key="item3" type="text" onChange={(e) => this.handleChangeItem('item3', e)} value={this.state.times.item3}/>
-            </div>
-            <div className={css.other}>
-              <span data-tip="Потрачено" data-place="bottom">0</span> / <span data-tip="Запланировано" data-place="bottom">0</span>
-            </div>
-          </div>
-        </div>
-        <div className={classnames(css.listTask, css.task)}>
-          <div className={classnames(css.actionButton, css.locked)}>
-            <IconCheckCircle style={{width: '1.5rem', height: '1.5rem'}} />
-          </div>
-          <div className={css.taskNameWrapper}>
-            <div className={css.taskTitle}>
-              <div className={css.meta}>
-                <span>ST-3214</span>
-                <span>SimTrack</span>
-                <span>QA</span>
-              </div>
-              <div className={css.taskName}>
-                При переводе между членами семьи в списке отображаться роль
-              </div>
-            </div>
-          </div>
-          <div className={css.time}>
-            <div className={css.today}>
-              <input key="item3" type="text" onChange={(e) => this.handleChangeItem('item3', e)} value={this.state.times.item3}/>
-            </div>
-            <div className={css.other}>
-              <span data-tip="Потрачено" data-place="bottom">0</span> / <span data-tip="Запланировано" data-place="bottom">0</span>
-            </div>
-          </div>
-        </div>
-      </div>;
+    const { isPlaylistOpen } = this.state;
+
 
     return (
       <div className={css.playlistWrapper}>
@@ -202,8 +138,8 @@ class Playlist extends Component {
             isPlaylistOpen
             ? <div className={css.list}>
                 <div className={css.week}>
-                  <div className={css.day}>Пн <span className={css.countBadge}>1</span></div>
-                  <div className={classnames(css.day, css.active)}>Вт <span className={css.countBadge}>65</span></div>
+                  <div className={css.day}>Пн <span className={css.countBadge}>8</span></div>
+                  <div className={classnames(css.day, css.active)}>Вт <span className={css.countBadge}>7<small>.25</small></span></div>
                   <div className={css.day}>Ср</div>
                   <div className={css.day}>Чт</div>
                   <div className={css.day}>Пт</div>
@@ -211,43 +147,23 @@ class Playlist extends Component {
                   <div className={css.day}>Вс</div>
                 </div>
                 <div className={css.taskWrapper}>
-                  {tasks}
-                  <div
-                    className={css.showMore}
-                    onClick={this.handleShowOther}
-                    data-tip={!isNotMineTasksShow ? 'Показать переведенные' : 'Скрыть переведенные'}
-                    data-place="bottom">
-                    {
-                      !isNotMineTasksShow
-                      ? <IconArrowDown/>
-                      : <IconArrowUp/>
-                    }
-                  </div>
-                  {
-                    isNotMineTasksShow
-                    ? notMineTasks
-                    : null
-                  }
+                  {this.state.activeTab.content}
                 </div>
                 <div className={css.activity}>
-                  <div className={classnames(css.type, css.active)} data-tip="Все активности" data-place="bottom">
-                    <IconList/>
-                  </div>
-                  <div className={css.type} data-tip="Работа" data-place="bottom">
-                    <IconLaptop/>
-                  </div>
-                  <div className={css.type} data-tip="Совещание" data-place="bottom">
-                    <IconCall/>
-                  </div>
-                  <div className={css.type} data-tip="Оценка" data-place="bottom">
-                    <IconTime/>
-                  </div>
-                  <div className={css.type} data-tip="Обучение" data-place="bottom">
-                    <IconBook/>
-                  </div>
-                  <div className={css.type} data-tip="Отпуск" data-place="bottom">
-                    <IconPlane/>
-                  </div>
+                  {
+                    this.state.activityTabs.map((element, index) => {
+                      const tab
+                      = <div
+                          key={index}
+                          className={classnames({[css.type]: true, [css.active]: this.state.activeTab.name === this.state.activityTabs[index].name})}
+                          data-tip={element.description}
+                          onClick={() => {this.setState({activeTab: element});}}
+                          data-place="bottom">
+                          {element.icon}
+                        </div>;
+                      return tab;
+                    })
+                  }
                   <div className={css.time}>
                     <div className={css.today}>
                       <input type="text" value={7.25} data-tip="Итого"/>
