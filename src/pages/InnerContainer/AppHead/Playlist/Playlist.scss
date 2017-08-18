@@ -266,9 +266,20 @@
 
 .commentToggler {
   color: lighten(black, 50%);
+  transition: $transition;
+
+  
+  &.green {
+    color: $color-green;
+
+    &:hover {
+      color: $color-green;
+    }
+  }
 
   &:hover {
     color: lighten(black, 30%);
+    transition: $transition;
   }
 }
 
@@ -283,5 +294,9 @@
     border: 1px solid $color-gray;
     border-right: none;
     padding: 0.5rem;
+
+    &::placeholder {
+      color: silver;
+    }
   }
 }

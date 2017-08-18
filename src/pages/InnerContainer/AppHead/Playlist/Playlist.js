@@ -13,10 +13,20 @@ import {
   IconLaptop,
   IconCall,
   IconPlane,
-  IconTime
+  IconTime,
+  IconCase,
+  IconHospital,
+  IconPresentation
 } from '../../../../components/Icons';
 import All from './All';
 import Work from './Work';
+import Meeting from './Meeting';
+import Presale from './Presale';
+import Estimate from './Estimate';
+import Education from './Education';
+import Vacation from './Vacation';
+import Trip from './Trip';
+import Hospital from './Hospital';
 import * as css from './Playlist.scss';
 
 class Playlist extends Component {
@@ -40,26 +50,44 @@ class Playlist extends Component {
         {
           name: 'meeting',
           description: 'Совещание',
-          content: <span/>,
+          content: <Meeting/>,
           icon: <IconCall/>
+        },
+        {
+          name: 'presale',
+          description: 'Presale',
+          content: <Presale/>,
+          icon: <IconPresentation/>
         },
         {
           name: 'estimate',
           description: 'Оценка',
-          content: <span/>,
+          content: <Estimate/>,
           icon: <IconTime/>
         },
         {
           name: 'education',
           description: 'Обучение',
-          content: <span/>,
+          content: <Education/>,
           icon: <IconBook/>
         },
         {
           name: 'vacation',
-          description: 'Опуск',
-          content: <span/>,
+          description: 'Отпуск',
+          content: <Vacation/>,
           icon: <IconPlane/>
+        },
+        {
+          name: 'trip',
+          description: 'Командировка',
+          content: <Trip/>,
+          icon: <IconCase/>
+        },
+        {
+          name: 'hospital',
+          description: 'Больничный',
+          content: <Hospital/>,
+          icon: <IconHospital/>
         }
       ],
       activeTab: {}

@@ -14,7 +14,10 @@ import {
   IconLaptop,
   IconCall,
   IconPlane,
-  IconTime
+  IconTime,
+  IconCase,
+  IconHospital,
+  IconPresentation
 } from '../../../../../components/Icons';
 
 export default class PlaylistItem extends Component {
@@ -59,6 +62,12 @@ export default class PlaylistItem extends Component {
       return <IconBook style={{width: '1.5rem', height: '1.5rem'}}/>;
     case 'vacation':
       return <IconPlane style={{width: '1.5rem', height: '1.5rem'}}/>;
+    case 'trip':
+      return <IconCase style={{width: '1.5rem', height: '1.5rem'}}/>;
+    case 'hospital':
+      return <IconHospital style={{width: '1.5rem', height: '1.5rem'}}/>;
+    case 'presale':
+      return <IconPresentation style={{width: '1.5rem', height: '1.5rem'}}/>;
     }
   }
 
@@ -71,22 +80,25 @@ export default class PlaylistItem extends Component {
       factTime,
       plannedTime,
       time,
-      id,
-      comment
+      comment,
+      type
     } = this.props.item;
 
     return (
       <div className={classnames(css.listTask, css.task)}>
-        <div className={css.actionButton}>
+        <div className={classnames({
+          [css.actionButton]: true,
+          [css.locked]: this.props.item.status !== 'inhold' && this.props.item.status !== 'inprogress'
+        })}>
           {this.getActionButton()}
         </div>
         <div className={css.taskNameWrapper}>
           <div className={css.taskTitle}>
             <div className={css.meta}>
-              <span>{prefix}</span>
-              <span>{project}</span>
-              <span>{stage}</span>
-              <span className={css.commentToggler} onClick={this.toggleComment}><IconComment/></span>
+              { prefix ? <span>{prefix}</span> : null}
+              { project ? <span>{project}</span> : null}
+              { stage ? <span>{stage}</span> : null}
+              <span className={classnames({[css.commentToggler]: true, [css.green]: comment})} onClick={this.toggleComment}><IconComment/></span>
             </div>
             <div className={css.taskName}>
               {name}
@@ -98,13 +110,18 @@ export default class PlaylistItem extends Component {
             <input type="text" onChange={this.handleChangeTime} defaultValue={time}/>
           </div>
           <div className={css.other}>
-            <span data-tip="Потрачено" data-place="bottom">{factTime}</span> / <span data-tip="Запланировано" data-place="bottom">{plannedTime}</span>
+            <span data-tip="Всего потрачено" data-place="bottom">{factTime}</span>
+            {
+              type !== 'magicActivity'
+              ? <span> / <span data-tip="Запланировано" data-place="bottom">{plannedTime}</span></span>
+              : null
+            }
           </div>
         </div>
         {
           this.state.isCommentOpen
           ? <div className={css.comment}>
-            <textarea onChange={this.handleChangeComment} defaultValue={comment} value={this.state.comment}/>
+            <textarea autoFocus onChange={this.handleChangeComment} defaultValue={comment} value={this.state.comment} placeholder="Введите текст комментария"/>
             <div className={css.actionButton} onClick={this.toggleComment}>
               <IconCheck style={{width: '1.5rem', height: '1.5rem'}} />
             </div>
