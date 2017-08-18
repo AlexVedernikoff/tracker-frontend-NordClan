@@ -182,9 +182,11 @@ class AgileBoard extends Component {
 
   selectValue = (e, name) => {
     this.setState({[name]: e}, () => {
+      const tags = this.state.filterTags.map((tag) => tag.value);
       const options = !this.props.myTaskBoard ? {
         projectId: this.props.project.id,
-        sprintId: this.state.changedSprint
+        sprintId: this.state.changedSprint,
+        tags: tags.join(',')
       } : {
         performerId: this.props.user.id
       };
@@ -264,6 +266,29 @@ class AgileBoard extends Component {
     return sprints;
   };
 
+  getAllTags = () => {
+    let allTags = [];
+    let filteredTasks = this.props.sprintTasks.filter((task) => {
+      return task.tags.length;
+    });
+    if (filteredTasks.length) {
+      filteredTasks = filteredTasks.map((task) => {
+        return task.tags.map((tag) => tag.name);
+      });
+      filteredTasks.forEach((tags) => {
+        allTags = allTags.concat(tags);
+      });
+      allTags = _.uniq(allTags);
+
+      return allTags.map((tag) => ({
+        value: tag,
+        label: tag
+      }));
+    } else {
+      return [];
+    }
+  };
+
   getUsers = () => {
     return !this.props.myTaskBoard ? this.props.project.users.map((user, i) => ({
       value: user.id,
@@ -313,13 +338,9 @@ class AgileBoard extends Component {
                 placeholder="Введите название тега..."
                 backspaceToRemoveMessage=""
                 value={this.state.filterTags}
-                onChange={(e) => this.selectValue(e, 'filterTags')}
+                onChange={(opt) => this.selectValue(opt, 'filterTags')}
                 noResultsText="Нет результатов"
-                options={[
-                  {value: 'develop', label: 'develop'},
-                  {value: 'frontend', label: 'frontend'},
-                  {value: 'backend', label: 'backend'}
-                ]}
+                options={this.getAllTags()}
               />
             </Col>
           </Row> : null}
