@@ -19,13 +19,13 @@ function Tasks (state = InitialState, action) {
       isReceiving: true
     };
 
-    case TaskActions.TASKS_RECEIVE_SUCCESS:
-      return {
-        ...state,
-        tasks: action.data.data,
-        pagesCount: action.data.pagesCount,
-        isReceiving: false
-      };
+  case TaskActions.TASKS_RECEIVE_SUCCESS:
+    return {
+      ...state,
+      tasks: action.data.data,
+      pagesCount: action.data.pagesCount,
+      isReceiving: false
+    };
 
   case TagsActions.GET_TAGS_FILTER_SUCCESS:
     if (action.data.filterFor === 'task') {
