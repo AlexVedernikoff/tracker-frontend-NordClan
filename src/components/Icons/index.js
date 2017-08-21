@@ -103,6 +103,13 @@ export const IconDelete = (props) => (
   </SvgIcon>
 );
 
+export const IconDeleteAnimate = (props) => (
+  <SvgIcon {...props}>
+    <polyline points="19,4 15.5,4 14.5,3 9.5,3 8.5,4 5,4 5,6 19,6 " className={css.animateCap}/>
+    <path d="M6,19c0,1.1,0.9,2,2,2h8c1.1,0,2-0.9,2-2V7H6V19z"/>
+  </SvgIcon>
+);
+
 export const IconDownload = (props) => (
   <SvgIcon {...props}>
     <path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" />
