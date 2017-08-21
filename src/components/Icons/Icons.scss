@@ -30,3 +30,20 @@
     font-size: 1rem;
   }
 }
+
+.animateCap {
+  transform-origin: 14px 5px;
+  animation: animateCup 1s infinite ease-in-out;
+}
+
+@keyframes animateCup {
+  0% {
+    transform: rotate(10deg);
+  }
+  50% {
+    transform: rotate(-10deg);
+  }
+  100% {
+    transform: rotate(10deg);
+  }
+}
