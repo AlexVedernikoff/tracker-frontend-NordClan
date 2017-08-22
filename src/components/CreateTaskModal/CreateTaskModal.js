@@ -36,11 +36,22 @@ class CreateTaskModal extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (this.state.selectedSprint !== nextProps.selectedSprintValue) {
-      this.setState({
-        selectedSprint: nextProps.selectedSprintValue
-      });
-    }
+    const selectedSprint = this.state.selectedSprint !== nextProps.selectedSprintValue
+      ? nextProps.selectedSprintValue
+      : null;
+
+    this.setState(state => {
+      return {
+        ...state,
+        selectedSprint,
+        selectedPerformer: null,
+        taskName: null,
+        description: null,
+        openTaskPage: false,
+        prioritiesId: 3,
+        selectedType: { label: 'Фича', value: 1 }
+      };
+    });
   }
 
   componentWillUnmount () {
