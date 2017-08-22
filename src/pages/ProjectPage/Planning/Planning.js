@@ -24,6 +24,7 @@ import { openCreateTaskModal } from '../../../actions/Project';
 import SprintStartControl from '../../../components/SprintStartControl';
 import SprintEditModal from '../../../components/SprintEditModal';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
+import { IconEdit } from '../../../components/Icons';
 
 
 const getSprintTime = sprint =>
@@ -281,7 +282,6 @@ class Planning extends Component {
             })}
             style={this.getSprintBlock(sprint, this.state.grantActiveYear)}
             data-tip={getSprintTime(sprint)}
-            onClick={this.openEditModal(sprint)}
           >
             <div className={css.text}>{sprint.spentTime || 0}</div>
             <div className={css.text}>{sprint.allottedTime || 0}</div>
@@ -373,13 +373,19 @@ class Planning extends Component {
                         [css.hover]: sprint.id === this.state.sprintIdHovered
                       })}
                       data-tip={getSprintTime(sprint)} onClick={this.oClickSprint(sprint.id)} onMouseOver={this.onMouseOverSprint(sprint.id)} onMouseOut={this.onMouseOutSprint}/>
-                    <SprintStartControl sprint={sprint} />
-                    <span className={css.name} onClick={this.openEditModal(sprint)}>
+                    <SprintStartControl sprint={sprint}/>
+                    <div className={css.name}>
                       {sprint.name}
-                    </span>
+                    </div>
+                    <IconEdit
+                      className={css.edit}
+                      data-tip="Редактировать"
+                      onClick={this.openEditModal(sprint)}
+                    />
                   </div>
                 )}
               </div>
+
               <div className={classnames({
                 [css.sprintNames]: true,
                 [css.spentTime]: true
