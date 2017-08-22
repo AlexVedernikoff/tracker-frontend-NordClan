@@ -25,7 +25,12 @@ class CreateTaskModal extends Component {
       description: null,
       openTaskPage: false,
       prioritiesId: 3,
-      types: [{ label: 'Фича', value: 1 }, { label: 'Баг', value: 2 }],
+      types: [
+        { label: 'Фича', value: 1 },
+        { label: 'Доп. Фича', value: 3 },
+        { label: 'Баг', value: 2 },
+        { label: 'Регрес. Баг', value: 4 }
+      ],
       selectedType: { label: 'Фича', value: 1 }
     };
   }
