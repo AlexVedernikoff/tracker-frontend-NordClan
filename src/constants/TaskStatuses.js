@@ -1,6 +1,8 @@
 const TaskStatuses = {
   1: 'Фича / Задача',
-  2: 'Баг'
+  3: 'Доп. Фича',
+  2: 'Баг',
+  4: 'Регрес. Баг'
 };
 
 export default TaskStatuses;

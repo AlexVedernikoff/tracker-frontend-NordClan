@@ -94,7 +94,9 @@ class TaskList extends Component {
           <div className={css.filters}>
             <div className={css.checkedFilters}>
               <Checkbox label="Баг"/>
+              <Checkbox label="Регрес. Баг"/>
               <Checkbox label="Фича / Задача"/>
+              <Checkbox label="Доп. Фича"/>
               <Checkbox label="New"/>
               <Checkbox label="Develop"/>
               <Checkbox label="Code Review"/>
