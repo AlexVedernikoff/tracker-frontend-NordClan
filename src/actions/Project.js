@@ -231,7 +231,9 @@ const createTask = (task, openTaskPage, callee) => {
   }
 
   const URL = `${API_URL}/task`;
-  task.description = `<p>${task.description.split(/\n/).join('</p><p>')}</p>`;
+  if (task.description instanceof String && task.description.length > 1) {
+    task.description = `<p>${task.description.split(/\n/).join('</p><p>')}</p>`;
+  }
 
   return dispatch => {
     dispatch(startLoading());
