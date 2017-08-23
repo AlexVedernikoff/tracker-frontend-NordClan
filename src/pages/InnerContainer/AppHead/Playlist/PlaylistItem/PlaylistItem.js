@@ -114,8 +114,8 @@ export default class PlaylistItem extends Component {
               <span className={classnames({[css.commentToggler]: true, [css.green]: comment})} onClick={this.toggleComment}><IconComment/></span>
               { status !== 'education'
                 ? (this.props.visible
-                  ? <span className={css.commentToggler} onClick={this.toggleComment} data-tip="Скрыть"><IconEyeDisable/></span>
-                  : <span className={css.metaIcon} data-tip="Показать"><IconEye/></span>)
+                  ? <span className={css.visibleToggler} onClick={this.toggleComment} data-tip="Скрыть"><IconEyeDisable/></span>
+                  : <span className={css.visibleToggler} data-tip="Показать"><IconEye/></span>)
                 : null
               }
             </div>
