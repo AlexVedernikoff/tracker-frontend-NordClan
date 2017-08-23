@@ -18,7 +18,10 @@ const ProjectCard = props => {
     currentSprints,
     tags,
     statusId,
-    portfolio
+    portfolio,
+    dateStartFirstSprint,
+    dateFinishLastSprint,
+    completedAt
   } = props.project;
   const { isChild, onClickTag } = props;
 
@@ -79,7 +82,13 @@ const ProjectCard = props => {
               ? <div className={css.meta}>
                   <span>Сроки:</span>
                   <span>
-                    {moment(createdAt).format('DD.MM.YYYY')}
+                    { moment(dateStartFirstSprint ? dateStartFirstSprint : createdAt).format('DD.MM.YYYY')}
+                     -
+                    {
+                     dateFinishLastSprint
+                       ? moment(dateFinishLastSprint).format('DD.MM.YYYY')
+                       : completedAt ? moment(completedAt).format('DD.MM.YYYY') : ''
+                    }
                   </span>
                 </div>
               : null}
