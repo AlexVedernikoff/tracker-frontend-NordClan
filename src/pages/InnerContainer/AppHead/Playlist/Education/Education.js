@@ -18,26 +18,6 @@ const items = [
     time: 0,
     type: 'magicActivity',
     factTime: 16
-  },
-  {
-    id: 1,
-    name: 'Обучение',
-    status: 'education',
-    project: 'SimTrack',
-    comment: '',
-    time: 0,
-    type: 'magicActivity',
-    factTime: 16
-  },
-  {
-    id: 2,
-    name: 'Обучение',
-    status: 'education',
-    project: 'ПроРейтинг - HR-инструмент',
-    comment: '',
-    time: 0,
-    type: 'magicActivity',
-    factTime: 59
   }
 ];
 export default class Education extends Component {

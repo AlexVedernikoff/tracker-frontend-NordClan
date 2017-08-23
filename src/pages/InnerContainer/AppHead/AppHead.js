@@ -37,7 +37,7 @@ class AppHead extends Component {
           <Logo />
         </Link>
         <Playlist/>
-        <div className={css.search}>
+        {/* <div className={css.search}>
           <input
             type="text"
             id="mainSearch"
@@ -47,7 +47,7 @@ class AppHead extends Component {
           <label htmlFor="mainSearch" className={css.searchButton}>
             <IconSearch style={iconStyles} />
           </label>
-        </div>
+        </div> */}
         <div className={css.logoutButton} onClick={this.handleLogout}>
           <IconExitApp style={iconStyles} />
         </div>
