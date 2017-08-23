@@ -64,11 +64,11 @@ class NavMenu extends Component {
           Мои задачи
         </Link>
       </li>,
-      <li key="repeat" className={css.sidebarItem}>
+      <li key="timesheets" className={css.sidebarItem}>
         <Link
           className={css.sidebarLink}
           activeClassName={css.activeLink}
-          to="/repeat"
+          to="/timesheets"
         >
           Отчеты по времени
         </Link>

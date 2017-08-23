@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import * as css from '../Playlist.scss';
+import { IconArrowDown } from '../../../../../components/Icons';
 
 import PlaylistItem from '../PlaylistItem';
 
@@ -46,6 +47,12 @@ export default class Presale extends Component {
     return (
       <div className={css.work}>
         {list}
+        <div
+          className={css.showMore}
+          data-tip='Показать скрытые'
+          data-place="bottom">
+          <IconArrowDown/>
+        </div>
       </div>
     );
   }

@@ -26,7 +26,7 @@ import Login from './pages/Login';
 import Logout from './pages/Logout';
 import Projects from './pages/Projects';
 import Dashboard from './pages/Dashboard';
-import Repeat from './pages/Repeat';
+import Timesheets from './pages/Timesheets';
 import NotFound from './pages/NotFound';
 import RedirectPage from './pages/Redirect';
 import DemoPage from './components/Icons/DemoPage';
@@ -76,7 +76,7 @@ class AppRouter extends Component {
             {/*<AuthRoute path="/" component={InnerContainer} allowed={this.props.isLoggedIn} otherwise="login" >*/}
             <Route path="/" component={InnerContainer} onEnter={this.requireAuth} >
               <Route path="dashboard" component={Dashboard} />
-              <Route path="repeat" component={Repeat} />
+              <Route path="timesheets" component={Timesheets} />
               <Route path="tasks" component={MyTasks} />
               <Route path="projects" component={Projects} />
 

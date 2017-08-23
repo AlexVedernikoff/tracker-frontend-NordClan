@@ -331,6 +331,13 @@ export const IconComment = (props) => (
   </SvgIcon>
 );
 
+export const IconComments = (props) => (
+  <SvgIcon {...props}>
+    <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/>
+  </SvgIcon>
+);
+
 export const IconCase = (props) => (
   <SvgIcon viewBox="0 0 24 24" {...props}>
     <path d="M14,6H10V4H14M20,6H16V4L14,2H10L8,4V6H4C2.89,6 2,6.89 2,8V19A2,2 0 0,0 4,21H20A2,2 0 0,0 22,19V8C22,6.89 21.1,6 20,6Z" />

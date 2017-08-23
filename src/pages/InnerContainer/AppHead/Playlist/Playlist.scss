@@ -56,7 +56,12 @@
 .listTask {
   &:hover {
     background-color: rgba(black, .05);
+
+    .visibleToggler {
+      opacity: 1
+    }
   }
+
   .actionButton {
     background-color: rgba(black, .05);
 
@@ -281,7 +286,11 @@
   }
 }
 
-.commentToggler, .metaIcon {
+.visibleToggler {
+  opacity: 0
+}
+
+.commentToggler, .visibleToggler {
   color: lighten(black, 50%);
   transition: $transition;
 
