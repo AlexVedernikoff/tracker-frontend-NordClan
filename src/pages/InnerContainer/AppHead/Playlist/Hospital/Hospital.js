@@ -42,7 +42,7 @@ const items = [
 ];
 export default class Hospital extends Component {
   render () {
-    const list = items.map(item => <PlaylistItem key={item.id} item={item}/>);
+    const list = items.map(item => <PlaylistItem key={item.id} item={item} visible/>);
     return (
       <div className={css.work}>
         {list}
