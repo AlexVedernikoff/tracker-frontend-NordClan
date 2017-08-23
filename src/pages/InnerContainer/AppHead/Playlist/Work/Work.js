@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -60,6 +61,7 @@ const notMineItems = [
     prefix: 'ST-32',
     project: 'SimTrack',
     stage: 'QA',
+    prevStage: 'Develop',
     comment: '',
     time: 5,
     plannedTime: 5,
@@ -72,6 +74,7 @@ const notMineItems = [
     prefix: 'ST-48',
     project: 'SimTrack',
     stage: 'QA',
+    prevStage: 'Develop',
     comment: '',
     time: 1,
     plannedTime: 3,
@@ -88,12 +91,13 @@ export default class Work extends Component {
   }
 
   handleShowOther = () => {
-    this.setState({isNotMineTasksShow: !this.state.isNotMineTasksShow});
+    ReactTooltip.rebuild();
+    this.setState({isNotMineTasksShow: !this.state.isNotMineTasksShow}, () => ReactTooltip.rebuild());
   }
 
   render () {
     const { isNotMineTasksShow } = this.state;
-    const tasks = items.map(item => <PlaylistItem item={item} key={item.id}/>);
+    const tasks = items.map(item => <PlaylistItem item={item} key={item.id} visible/>);
     const notMineTasks = notMineItems.map(item => <PlaylistItem item={item} key={item.id}/>);
     return (
       <div>
@@ -101,7 +105,7 @@ export default class Work extends Component {
         <div
           className={css.showMore}
           onClick={this.handleShowOther}
-          data-tip={!isNotMineTasksShow ? 'Показать переведенные' : 'Скрыть переведенные'}
+          data-tip={!isNotMineTasksShow ? 'Показать скрытые' : 'Скрыть'}
           data-place="bottom">
           {
             !isNotMineTasksShow

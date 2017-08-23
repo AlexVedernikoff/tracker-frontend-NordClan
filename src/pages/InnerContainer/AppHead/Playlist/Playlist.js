@@ -13,16 +13,16 @@ import {
   IconLaptop,
   IconCall,
   IconPlane,
-  IconTime,
   IconCase,
   IconHospital,
-  IconPresentation
+  IconCheckList,
+  IconOrganization
 } from '../../../../components/Icons';
 import All from './All';
 import Work from './Work';
 import Meeting from './Meeting';
 import Presale from './Presale';
-import Estimate from './Estimate';
+import Control from './Control';
 import Education from './Education';
 import Vacation from './Vacation';
 import Trip from './Trip';
@@ -39,55 +39,64 @@ class Playlist extends Component {
           name: 'all',
           description: 'Все активности',
           content: <All/>,
-          icon: <IconList/>
+          icon: <IconList/>,
+          summary: 7.25
         },
         {
           name: 'work',
           description: 'Работа',
           content: <Work/>,
-          icon: <IconLaptop/>
+          icon: <IconLaptop/>,
+          summary: 5
         },
         {
           name: 'meeting',
           description: 'Совещание',
           content: <Meeting/>,
-          icon: <IconCall/>
+          icon: <IconCall/>,
+          summary: 0.25
         },
         {
           name: 'presale',
-          description: 'Presale',
+          description: 'Преселлинг и оценка',
           content: <Presale/>,
-          icon: <IconPresentation/>
-        },
-        {
-          name: 'estimate',
-          description: 'Оценка',
-          content: <Estimate/>,
-          icon: <IconTime/>
+          icon: <IconCheckList/>,
+          summary: 0.25
         },
         {
           name: 'education',
           description: 'Обучение',
           content: <Education/>,
-          icon: <IconBook/>
+          icon: <IconBook/>,
+          summary: 0
         },
         {
           name: 'vacation',
           description: 'Отпуск',
           content: <Vacation/>,
-          icon: <IconPlane/>
+          icon: <IconPlane/>,
+          summary: 0
         },
         {
           name: 'trip',
           description: 'Командировка',
           content: <Trip/>,
-          icon: <IconCase/>
+          icon: <IconCase/>,
+          summary: 0
         },
         {
           name: 'hospital',
           description: 'Больничный',
           content: <Hospital/>,
-          icon: <IconHospital/>
+          icon: <IconHospital/>,
+          summary: 0
+        },
+        {
+          name: 'control',
+          description: 'Управление',
+          content: <Control/>,
+          icon: <IconOrganization/>,
+          summary: 0
         }
       ],
       activeTab: {}
@@ -160,6 +169,16 @@ class Playlist extends Component {
                           onClick={() => {this.setState({activeTab: element});}}
                           data-place="bottom">
                           {element.icon}
+                          {
+                            element.summary
+                            ? <span className={css.countBadge}>
+                              {Math.floor(element.summary)}
+                              <small>
+                                {((Math.round(element.summary * 100) / 100) - Math.floor(element.summary)).toString().substring(1)}
+                              </small>
+                            </span>
+                            : null
+                          }
                         </div>;
                       return tab;
                     })

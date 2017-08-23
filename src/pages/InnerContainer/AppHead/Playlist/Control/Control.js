@@ -11,8 +11,8 @@ import PlaylistItem from '../PlaylistItem';
 const items = [
   {
     id: 3,
-    name: 'Оценка',
-    status: 'estimate',
+    name: 'Управление',
+    status: 'control',
     project: 'Прочее',
     comment: '',
     time: 0.25,
@@ -21,8 +21,8 @@ const items = [
   },
   {
     id: 1,
-    name: 'Оценка',
-    status: 'estimate',
+    name: 'Управление',
+    status: 'control',
     project: 'SimTrack',
     comment: '',
     time: 0,
@@ -31,8 +31,8 @@ const items = [
   },
   {
     id: 2,
-    name: 'Оценка',
-    status: 'estimate',
+    name: 'Управление',
+    status: 'control',
     project: 'ПроРейтинг - HR-инструмент',
     comment: '',
     time: 0,
@@ -40,7 +40,7 @@ const items = [
     factTime: 59
   }
 ];
-export default class Estimate extends Component {
+export default class Control extends Component {
   render () {
     const list = items.map(item => <PlaylistItem key={item.id} item={item}/>);
     return (

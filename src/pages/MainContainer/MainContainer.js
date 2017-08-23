@@ -24,7 +24,8 @@ class MainContainer extends Component {
 }
 
 MainContainer.propTypes = {
-  children: PropTypes.object
+  children: PropTypes.object,
+  notifications: PropTypes.array
 };
 
 const mapStateToProps = state => ({

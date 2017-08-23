@@ -7,11 +7,12 @@
   height: 56px;
   background: $color-dark;
   display: flex;
-  justify-content: space-between;
+  // justify-content: space-between;
 }
 
 .logoutButton {
   display: flex;
+  margin-left: auto;
   height: 56px;
   width: 56px;
   align-items: center;
@@ -36,7 +37,7 @@
 }
 
 .search {
-  flex-grow: 1;
+  // flex-grow: 1;
   flex-basis: 100%;
   display: flex;
   justify-content: flex-end;

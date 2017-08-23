@@ -153,6 +153,10 @@
         // padding-left: 0.25rem;
       }
     }
+
+    &.exceeded {
+      color: $color-red;
+    }
   }
 
   .today {
@@ -208,6 +212,7 @@
   .type {
     flex: 1;
     display: flex;
+    position: relative;
     align-items: center;
     justify-content: center;
     text-align: center;
@@ -215,6 +220,18 @@
     cursor: pointer;
     background-color: lighten(black, 95%);
     transition: $transition;
+
+    
+    .countBadge {
+      position: absolute;
+      opacity: 1;
+      color: darken(silver, 10%);
+      top: -0.25rem;
+      right: -0.25rem;
+      z-index: 2;
+      background: white;
+      border-color: silver;
+    }
 
     svg {
       width: 16px;
@@ -264,7 +281,7 @@
   }
 }
 
-.commentToggler {
+.commentToggler, .metaIcon {
   color: lighten(black, 50%);
   transition: $transition;
 

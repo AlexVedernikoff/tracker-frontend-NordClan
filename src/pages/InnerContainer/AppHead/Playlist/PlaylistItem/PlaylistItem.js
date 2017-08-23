@@ -14,10 +14,12 @@ import {
   IconLaptop,
   IconCall,
   IconPlane,
-  IconTime,
+  IconOrganization,
   IconCase,
   IconHospital,
-  IconPresentation
+  IconCheckList,
+  IconEye,
+  IconEyeDisable
 } from '../../../../../components/Icons';
 
 export default class PlaylistItem extends Component {
@@ -56,8 +58,8 @@ export default class PlaylistItem extends Component {
       return <IconLaptop style={{width: '1.5rem', height: '1.5rem'}}/>;
     case 'meeting':
       return <IconCall style={{width: '1.5rem', height: '1.5rem'}}/>;
-    case 'estimate':
-      return <IconTime style={{width: '1.5rem', height: '1.5rem'}}/>;
+    case 'control':
+      return <IconOrganization style={{width: '1.5rem', height: '1.5rem'}}/>;
     case 'education':
       return <IconBook style={{width: '1.5rem', height: '1.5rem'}}/>;
     case 'vacation':
@@ -67,7 +69,7 @@ export default class PlaylistItem extends Component {
     case 'hospital':
       return <IconHospital style={{width: '1.5rem', height: '1.5rem'}}/>;
     case 'presale':
-      return <IconPresentation style={{width: '1.5rem', height: '1.5rem'}}/>;
+      return <IconCheckList style={{width: '1.5rem', height: '1.5rem'}}/>;
     }
   }
 
@@ -77,6 +79,7 @@ export default class PlaylistItem extends Component {
       prefix,
       project,
       stage,
+      prevStage,
       factTime,
       plannedTime,
       time,
@@ -97,8 +100,22 @@ export default class PlaylistItem extends Component {
             <div className={css.meta}>
               { prefix ? <span>{prefix}</span> : null}
               { project ? <span>{project}</span> : null}
-              { stage ? <span>{stage}</span> : null}
+              { stage
+                ? <span>
+                    {
+                      prevStage
+                      ? (<span>{prevStage}<span style={{display: 'inline-block', margin: '0 0.25rem'}}> → </span></span>)
+                      : null
+                    }
+                    {stage}
+                  </span>
+                : null}
               <span className={classnames({[css.commentToggler]: true, [css.green]: comment})} onClick={this.toggleComment}><IconComment/></span>
+              {
+                this.props.visible
+                ? <span className={css.commentToggler} onClick={this.toggleComment} data-tip="Скрыть"><IconEyeDisable/></span>
+                : <span className={css.metaIcon} data-tip="Показать"><IconEye/></span>
+              }
             </div>
             <div className={css.taskName}>
               {name}
@@ -109,7 +126,7 @@ export default class PlaylistItem extends Component {
           <div className={css.today}>
             <input type="text" onChange={this.handleChangeTime} defaultValue={time}/>
           </div>
-          <div className={css.other}>
+          <div className={classnames({[css.other]: true, [css.exceeded]: factTime > plannedTime})}>
             <span data-tip="Всего потрачено" data-place="bottom">{factTime}</span>
             {
               type !== 'magicActivity'
@@ -134,5 +151,6 @@ export default class PlaylistItem extends Component {
 }
 
 PlaylistItem.propTypes = {
-  item: PropTypes.object
+  item: PropTypes.object,
+  visible: PropTypes.bool
 };
