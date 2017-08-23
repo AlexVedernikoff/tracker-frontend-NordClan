@@ -52,6 +52,20 @@ const ProjectCard = props => {
     status = 'FINISHED';
   }
 
+  const getProjectStartDate = (dateStartFirstSprint, createdAt) => {
+    return moment(dateStartFirstSprint ? dateStartFirstSprint : createdAt).format('DD.MM.YYYY');
+  };
+
+  const getProjectFinishDate = (dateFinishLastSprint, completedAt) => {
+    if (dateFinishLastSprint) {
+      return moment(dateFinishLastSprint).format('DD.MM.YYYY');
+    } else if (completedAt) {
+      return moment(completedAt).format('DD.MM.YYYY');
+    }
+
+    return '';
+  };
+
   return (
     <div className={css.projectCard}>
       <Row>
@@ -82,13 +96,9 @@ const ProjectCard = props => {
               ? <div className={css.meta}>
                   <span>Сроки:</span>
                   <span>
-                    { moment(dateStartFirstSprint ? dateStartFirstSprint : createdAt).format('DD.MM.YYYY')}
-                     -
-                    {
-                     dateFinishLastSprint
-                       ? moment(dateFinishLastSprint).format('DD.MM.YYYY')
-                       : completedAt ? moment(completedAt).format('DD.MM.YYYY') : ''
-                    }
+                    { getProjectStartDate(dateStartFirstSprint, createdAt) }
+                    { dateFinishLastSprint && completedAt ? ' - ' : '' }
+                    { getProjectFinishDate(dateFinishLastSprint, completedAt) }
                   </span>
                 </div>
               : null}
