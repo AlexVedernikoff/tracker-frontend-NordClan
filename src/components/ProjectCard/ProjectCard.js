@@ -97,7 +97,7 @@ const ProjectCard = props => {
                   <span>Сроки:</span>
                   <span>
                     { getProjectStartDate(dateStartFirstSprint, createdAt) }
-                    { dateFinishLastSprint && completedAt ? ' - ' : '' }
+                    { dateFinishLastSprint || completedAt ? ' - ' : '' }
                     { getProjectFinishDate(dateFinishLastSprint, completedAt) }
                   </span>
                 </div>
