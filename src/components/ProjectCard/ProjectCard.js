@@ -18,7 +18,10 @@ const ProjectCard = props => {
     currentSprints,
     tags,
     statusId,
-    portfolio
+    portfolio,
+    dateStartFirstSprint,
+    dateFinishLastSprint,
+    completedAt
   } = props.project;
   const { isChild, onClickTag } = props;
 
@@ -48,6 +51,20 @@ const ProjectCard = props => {
     statusTooltip = 'Завершен';
     status = 'FINISHED';
   }
+
+  const getProjectStartDate = (dateStartFirstSprint, createdAt) => {
+    return moment(dateStartFirstSprint ? dateStartFirstSprint : createdAt).format('DD.MM.YYYY');
+  };
+
+  const getProjectFinishDate = (dateFinishLastSprint, completedAt) => {
+    if (dateFinishLastSprint) {
+      return moment(dateFinishLastSprint).format('DD.MM.YYYY');
+    } else if (completedAt) {
+      return moment(completedAt).format('DD.MM.YYYY');
+    }
+
+    return '';
+  };
 
   return (
     <div className={css.projectCard}>
@@ -79,7 +96,9 @@ const ProjectCard = props => {
               ? <div className={css.meta}>
                   <span>Сроки:</span>
                   <span>
-                    {moment(createdAt).format('DD.MM.YYYY')}
+                    { getProjectStartDate(dateStartFirstSprint, createdAt) }
+                    { dateFinishLastSprint && completedAt ? ' - ' : '' }
+                    { getProjectFinishDate(dateFinishLastSprint, completedAt) }
                   </span>
                 </div>
               : null}
