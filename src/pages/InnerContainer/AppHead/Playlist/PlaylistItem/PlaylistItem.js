@@ -79,6 +79,7 @@ export default class PlaylistItem extends Component {
       prefix,
       project,
       stage,
+      status,
       prevStage,
       factTime,
       plannedTime,
@@ -111,10 +112,11 @@ export default class PlaylistItem extends Component {
                   </span>
                 : null}
               <span className={classnames({[css.commentToggler]: true, [css.green]: comment})} onClick={this.toggleComment}><IconComment/></span>
-              {
-                this.props.visible
-                ? <span className={css.commentToggler} onClick={this.toggleComment} data-tip="Скрыть"><IconEyeDisable/></span>
-                : <span className={css.metaIcon} data-tip="Показать"><IconEye/></span>
+              { status !== 'education'
+                ? (this.props.visible
+                  ? <span className={css.commentToggler} onClick={this.toggleComment} data-tip="Скрыть"><IconEyeDisable/></span>
+                  : <span className={css.metaIcon} data-tip="Показать"><IconEye/></span>)
+                : null
               }
             </div>
             <div className={css.taskName}>
