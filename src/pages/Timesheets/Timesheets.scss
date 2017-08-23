@@ -1,0 +1,179 @@
+@import '../../styles/variables.scss';
+
+.taskRow {
+  td {
+    transition: $transition;
+  }
+
+  &:hover {
+    td {
+      background: $color-gray;
+
+      &.weekend {
+        background-color: lighten($color-dark, 65%);
+        transition: $transition;
+      }
+    }
+
+    .deleteTask {
+      opacity: 1;
+    }
+  }
+}
+
+.taskCard {
+  padding-left: 1rem;
+  max-width: 20rem;
+}
+
+.timeCell {
+  width: 3rem;
+  height: 3rem;
+  margin: 0.5rem;
+  position: relative;
+
+  &.filled {
+    input {
+      background: $color-dark;
+      color: rgba(white, .7);
+
+      &:focus {
+        color: white;
+      }
+    }
+
+    .toggleComment {
+      color: rgba(white, .5);
+
+      &:hover {
+        color: rgba(white, .8);
+      }
+    }
+  }
+
+  input {
+    // padding: 1rem;
+    border: none;
+    background: rgba(black, .05);;
+    text-align: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+  }
+}
+
+.toggleComment {
+  cursor: pointer;
+  font-size: 80%;
+  color: silver;
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+
+  &:hover {
+    color: gray;
+  }
+
+  &.checked {
+    color: $color-green;
+
+    &:hover {
+      color: lighten($color-green, 10%);
+    }
+  }
+}
+
+.day {
+  padding: 0.5rem;
+}
+
+.weekend {
+  background-color: lighten($color-dark, 70%);
+}
+
+.meta {
+  max-width: 100%;
+  overflow: hidden;
+  opacity: 0.7;
+  font-size: 11px;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  span {
+    display: inline-block;
+
+    & + span {
+      border-left: 1px solid rgba(black, .3);
+      margin-left: 0.3rem;
+      padding-left: 0.3rem;
+    }
+  }
+}
+
+.total {
+  padding: 0.5rem 1rem;
+  text-align: center;
+
+  & > div {
+    display: inline-block;
+  }
+
+  .toggleComment {
+    position: static;
+    font-size: 100%;
+    vertical-align: middle;
+    margin-left: 0.5rem;
+  }
+}
+
+.actions {
+  padding: 0.5rem;
+}
+
+.deleteTask {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: $transition;
+}
+
+.totalWeek {
+  font-weight: bold;
+}
+
+.add {
+  display: flex;
+  margin-top: 1rem;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: 3rem;
+  color: lighten($color-black, 40%);
+  text-align: center;
+  text-decoration: none;
+  border-bottom: 1px solid $color-gray;
+  border-top: 1px solid $color-gray;
+  transition: $transition;
+
+  .tooltip {
+    display: none;
+  }
+
+  &:hover {
+    background: rgba($color-black, 0.05);
+    transition: $transition;
+
+    .tooltip {
+      display: block;
+    }
+    svg {
+      display: none !important;
+    }
+  }
+}
