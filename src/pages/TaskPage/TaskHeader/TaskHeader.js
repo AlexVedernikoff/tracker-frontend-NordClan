@@ -9,24 +9,25 @@ import Priority from '../Priority';
 import ButtonGroup from '../../../components/ButtonGroup';
 import TaskTitle from '../TaskTitle';
 import { getProjectUsers } from '../../../actions/Project';
-import TaskStatuses from '../../../constants/TaskStatuses';
+import TaskTypes from '../../../constants/TaskTypes';
+import * as TaskStatuses from '../../../constants/TaskStatuses';
 import { connect } from 'react-redux';
 
 const getNewStatus = newPhase => {
   let newStatusId;
 
   switch (newPhase) {
-  case 'New': newStatusId = 1;
+  case 'New': newStatusId = TaskStatuses.NEW;
     break;
-  case 'Develop': newStatusId = 3;
+  case 'Develop': newStatusId = TaskStatuses.DEV_PLAY;
     break;
-  case 'Code Review': newStatusId = 5;
+  case 'Code Review': newStatusId = TaskStatuses.CODE_REVIEW_PLAY;
     break;
-  case 'QA': newStatusId = 7;
+  case 'QA': newStatusId = TaskStatuses.QA_PLAY;
     break;
-  case 'Done': newStatusId = 8;
+  case 'Done': newStatusId = TaskStatuses.DONE;
     break;
-  case 'Closed': newStatusId = 10;
+  case 'Closed': newStatusId = TaskStatuses.CLOSED;
     break;
   default: break;
   }
@@ -80,7 +81,7 @@ class TaskHeader extends Component {
   };
 
   handleCancelTask = () => {
-    this.changeStatus(9);
+    this.changeStatus(TaskStatuses.CANCELED);
     this.handleCloseCancelModal();
   }
 
@@ -141,7 +142,7 @@ class TaskHeader extends Component {
   }
 
   handleClose = () => {
-    this.props.onChangeUser(this.props.task.id, 0, 10);
+    this.props.onChangeUser(this.props.task.id, 0, TaskStatuses.CLOSED);
   };
 
   render () {
@@ -176,10 +177,10 @@ class TaskHeader extends Component {
               </div>
             : null
           }
-          {task.typeId && TaskStatuses[task.typeId]
+          {task.typeId && TaskTypes[task.typeId]
             ? <div>
                 <span>
-                  {TaskStatuses[task.typeId]}
+                  {TaskTypes[task.typeId]}
                 </span>
               </div>
             : null}
@@ -189,23 +190,35 @@ class TaskHeader extends Component {
         </div>
         <TaskTitle name={task.name} id={task.id} />
         <Button
-          type="bordered"
+          type={
+            task.statusId === TaskStatuses.CANCELED
+              ? 'red'
+              : 'red-bordered'
+          }
           icon="IconClose"
-          data-tip="Отменить"
+          data-tip={
+            task.statusId === TaskStatuses.CANCELED
+              ? null
+              : 'Отменить'
+          }
           data-place="bottom"
           addedClassNames={{ [css.buttonCancel]: true }}
-          onClick={this.handleOpenCancelModal}
-        />
+          onClick={
+            task.statusId !== TaskStatuses.CANCELED
+              ? this.handleOpenCancelModal
+              : null
+          }
+            />
         <ButtonGroup type="lifecircle" stage="full">
           <Button
             text="New"
             type={
-                    task.statusId === 1
+                    task.statusId === TaskStatuses.NEW
                     ? 'green'
                     : 'bordered'
                   }
             data-tip={
-                    task.statusId === 1
+                    task.statusId === TaskStatuses.NEW
                     ? null
                     : 'Перевести в стадию New'
                   }
@@ -214,37 +227,37 @@ class TaskHeader extends Component {
           />
           <Button
             text="Develop"
-            type={this.getButtonType(2, 3)}
-            data-tip={this.getButtonTip(2, 3, 'Develop')}
-            icon= {this.getButtonIcon(2, 3)}
+            type={this.getButtonType(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY)}
+            data-tip={this.getButtonTip(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY, 'Develop')}
+            icon= {this.getButtonIcon(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY)}
             onClick={this.handleChangeStatus}
             data-place="bottom"
           />
           <Button
             text="Code Review"
-            type={this.getButtonType(4, 5)}
-            data-tip={this.getButtonTip(4, 5, 'Code Review')}
-            icon= {this.getButtonIcon(4, 5)}
+            type={this.getButtonType(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY)}
+            data-tip={this.getButtonTip(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY, 'Code Review')}
+            icon= {this.getButtonIcon(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY)}
             onClick={this.handleChangeStatus}
             data-place="bottom"
           />
           <Button
             text="QA"
-            type={this.getButtonType(6, 7)}
-            data-tip={this.getButtonTip(6, 7, 'QA')}
-            icon= {this.getButtonIcon(6, 7)}
+            type={this.getButtonType(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY)}
+            data-tip={this.getButtonTip(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY, 'QA')}
+            icon= {this.getButtonIcon(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY)}
             onClick={this.handleChangeStatus}
             data-place="bottom"
           />
           <Button
             text="Done"
             type={
-                    task.statusId === 8
+                    task.statusId === TaskStatuses.DONE
                     ? 'green'
                     : 'bordered'
                   }
             data-tip={
-                    task.statusId === 8
+                    task.statusId === TaskStatuses.DONE
                     ? null
                     : 'Перевести в стадию Done'
                   }
@@ -254,13 +267,13 @@ class TaskHeader extends Component {
         </ButtonGroup>
         <Button
           type={
-            task.statusId === 10
+            task.statusId === TaskStatuses.CLOSED
               ? 'green'
               : 'bordered'
           }
           icon="IconCheck"
           data-tip={
-            task.statusId === 10
+            task.statusId === TaskStatuses.CLOSED
               ? null
               : 'Принять'
           }

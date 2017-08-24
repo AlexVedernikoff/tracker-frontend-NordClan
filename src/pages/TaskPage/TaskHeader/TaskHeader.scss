@@ -68,13 +68,6 @@
 .buttonCancel {
   border-style: dashed;
   margin-right: 1rem;
-  border-color: $color-red;
-  color: $color-red;
-
-  &:hover {
-    border-color: $color-red;
-    background-color: $color-red;
-  }
 }
 
 .buttonOk {
