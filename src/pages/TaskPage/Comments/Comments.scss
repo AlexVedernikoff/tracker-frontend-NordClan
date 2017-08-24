@@ -28,7 +28,12 @@
       transition: all 0.3s ease-out 0s;
     }
   }
-
+  .commentAction {
+    display: flex;
+    & a {
+      padding-right: .5rem;
+    }
+  }
   a {
     text-decoration: none;
   }
@@ -118,6 +123,24 @@
   textarea {
     flex-grow: 1;
   }
+  .answerUnderline {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    flex-basis: 100%;
+
+    .answerSendTooltip {
+      text-align: right;
+      color: #678bad;
+      font-size: 0.8rem;
+      flex-basis: 50%;
+      flex-grow: 12;
+    }
+  }
+}
+
+.noCommentsYet {
+  text-align: center;
 }
 
 .answerInfo {
@@ -136,4 +159,9 @@
   &:hover {
     color: $color-dark;
   }
+}
+
+.outDatedToolTip {
+  color: #d9534f;
+  text-decoration: underline dotted;
 }

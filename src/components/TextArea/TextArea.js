@@ -7,13 +7,8 @@ export default class TextArea extends Component {
   };
 
   render () {
-    const {
-      value,
-      ...other
-    } = this.props;
-
     return (
-      <textarea {...other} className={css.textarea}>{value}</textarea>
+      <textarea {...this.props} className={css.textarea} ref="input" />
     );
   }
 }

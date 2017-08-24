@@ -1,13 +1,25 @@
 import * as TaskActions from '../constants/Task';
 import * as TagsActions from '../constants/Tags';
+import TaskList from "../pages/ProjectPage/TaskList/TaskList";
+
+const getDefaultCurrentComment = () => ({
+  text: '',
+  parentId: null,
+  id: null,
+  disabled: false,
+  expired: false
+});
 
 const InitialState = {
   task: {
     tags: [],
     error: false,
-    history: [],
     attachments: []
   },
+  comments: [],
+  history: [],
+  currentComment: getDefaultCurrentComment(),
+  highlighted: {},
   TitleIsEditing: false,
   PlanningTimeIsEditing: false,
   SprintIsEditing: false,
@@ -65,19 +77,13 @@ export default function Task (state = InitialState, action) {
   case TaskActions.GET_TASK_HISTORY_REQUEST_SENT:
     return {
       ...state,
-      task: {
-        ...state.task,
-        history: []
-      }
+      history: []
     };
 
   case TaskActions.GET_TASK_HISTORY_REQUEST_SUCCESS:
     return {
       ...state,
-      task: {
-        ...state.task,
-        history: action.data
-      }
+      history: action.data
     };
 
   case TaskActions.TASK_EDIT_START:
@@ -134,9 +140,126 @@ export default function Task (state = InitialState, action) {
       }
     };
 
-  default:
+  case TaskActions.GET_COMMENTS_BY_TASK_SUCCESS: {
     return {
-      ...state
+      ...state,
+      comments: action.result.reverse()
     };
+  }
+
+  case TaskActions.SET_CURRENT_COMMENT_TEXT: {
+    const { text } = action;
+    const { currentComment } = state;
+    return {
+      ...state,
+      currentComment: {
+        ...currentComment,
+        text
+      }
+    };
+  }
+
+  case TaskActions.REMOVE_COMMENT_REQUEST: {
+    const { commentId } = action;
+    let { comments, currentComment } = state;
+    const index = comments.findIndex((comment) => comment.id === commentId);
+
+    comments = [...comments];
+    if (currentComment.id === commentId) {
+      currentComment = getDefaultCurrentComment();
+    } else if (currentComment.parentId === commentId) {
+      currentComment = {...currentComment, parentId: null};
+    }
+    comments[index] = { ...comments[index], deleting: true };
+    return {
+      ...state,
+      comments,
+      currentComment
+    };
+  }
+
+  case TaskActions.UPDATE_COMMENT_REQUEST:
+  case TaskActions.PUBLISH_COMMENT_REQUEST: {
+    return {
+      ...state,
+      currentComment: {
+        ...state.currentComment,
+        disabled: true
+      }
+    };
+  }
+
+  case TaskActions.UPDATE_COMMENT_FAIL:
+  case TaskActions.PUBLISH_COMMENT_FAIL: {
+    return {
+      ...state,
+      currentComment: {
+        ...state.currentComment,
+        disabled: false
+      }
+    };
+  }
+
+  case TaskActions.UPDATE_COMMENT_SUCCESS:
+  case TaskActions.PUBLISH_COMMENT_SUCCESS: {
+    return {
+      ...state,
+      currentComment: getDefaultCurrentComment(),
+      highlighted: action.result
+    };
+  }
+
+  case TaskActions.SELECT_COMMENT_FOR_REPLY: {
+    const { parentId } = action;
+    let { currentComment } = state;
+    if (currentComment.id) {
+      currentComment = getDefaultCurrentComment();
+    }
+    return {
+      ...state,
+      currentComment: {
+        ...currentComment,
+        parentId
+      }
+    };
+  }
+
+  case TaskActions.SET_COMMENT_FOR_EDIT: {
+    const { comment } = action;
+    return {
+      ...state,
+      currentComment: {
+        ...getDefaultCurrentComment(),
+        ...comment
+      }
+    };
+  }
+
+  case TaskActions.RESET_CURRENT_EDITING_COMMENT: {
+    return {
+      ...state,
+      currentComment: getDefaultCurrentComment()
+    };
+  }
+
+  case TaskActions.SET_CURRENT_COMMENT_EXPIRED: {
+    return {
+      ...state,
+      currentComment: {
+        ...state.currentComment,
+        expired: true
+      }
+    };
+  }
+
+  case TaskActions.SET_HIGHLIGHTED_COMMENT: {
+    return {
+      ...state,
+      highlighted: action.comment
+    };
+  }
+
+  default:
+    return state;
   }
 }
