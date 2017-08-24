@@ -99,7 +99,7 @@ TaskHistory.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  history: state.Task.task.history
+  history: state.Task.history
 });
 
 const mapDispatchToProps = {
