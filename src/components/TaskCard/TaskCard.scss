@@ -124,7 +124,7 @@ svg.red { background-color: transparent; fill: $color-red; }
   background-color: white;
   border: 1px solid darken($color-gray, 10%);
   border-radius: 10px;
-  z-index: 3;
+  z-index: 2;
   padding: 2px;
   transition: $transition;
   overflow: hidden;
