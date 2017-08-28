@@ -96,15 +96,15 @@ class Comments extends Component {
 
   reply = null;
 
-  deleteComment = (commentId) => {
+  removeComment = (commentId) => {
     this.setState({commentToDelete: commentId});
   };
 
-  cancelDeleteComment = () => {
+  cancelRemoveComment = () => {
     this.setState({commentToDelete: null});
   };
 
-  confirmDeleteComment = () => {
+  confirmRemoveComment = () => {
     const commentId = this.state.commentToDelete;
     this.setState({commentToDelete: null}, () => this.props.removeComment(this.props.taskId, commentId));
   };
@@ -114,7 +114,7 @@ class Comments extends Component {
       key={c.id}/*используются id чтобы правильно работал маунт и анмаунт*/
       lightened={c.id === this.props.highlighted.id}
       editComment={this.props.setCommentForEdit}
-      deleteComment={this.deleteComment}
+      removeComment={this.removeComment}
       ownedByMe={c.author.id === this.props.userId}
       comment={c}/>
   );
@@ -180,8 +180,8 @@ class Comments extends Component {
             isOpen
             contentLabel="modal"
             text="Вы действительно хотите удалить комментарий?"
-            onCancel={this.cancelDeleteComment}
-            onConfirm={this.confirmDeleteComment}
+            onCancel={this.cancelRemoveComment}
+            onConfirm={this.confirmRemoveComment}
           />
           : null
         }
