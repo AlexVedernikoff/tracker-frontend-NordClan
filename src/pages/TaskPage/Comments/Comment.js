@@ -14,7 +14,9 @@ export default class Comment extends Component {
     editComment: PropTypes.func,
     lightened: PropTypes.bool,
     ownedByMe: PropTypes.bool,
-    removeComment: PropTypes.func
+    removeComment: PropTypes.func,
+    reply: PropTypes.func,
+    selectComment: PropTypes.func
   };
 
   static getNames = (person) => {//унификация имени
@@ -57,7 +59,7 @@ export default class Comment extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    if (this.props.lightened && !prevProps.lightened) {
+    if (this.props.lightened) {
       this.refs.comment.scrollIntoView();
     }
   }
@@ -90,11 +92,11 @@ export default class Comment extends Component {
             <div className={css.commentMeta}>
               <Link to={`#${comment.id}`}>{fullName}</Link>,&nbsp;
               {moment(comment.updatedAt).format('DD.MM.YY HH:mm')},&nbsp;
-              <a onClick={() => this.selectComment(comment.id)} href={`#comment-${comment.id}`}>{`#${comment.id}`}</a>
+              <a onClick={() => this.props.selectComment(comment.id)} href={`#comment-${comment.id}`}>{`#${comment.id}`}</a>
             </div>
             {
               parentComment
-                ? <div className={css.commentQuote} onClick={() => this.selectComment(parentComment.id)}>
+                ? <div className={css.commentQuote} onClick={() => this.props.selectComment(parentComment.id)}>
                   <a className={css.commentQuoteAutor}>
                     {Comment.getNames(parentComment.author).fullName},
                   </a>&nbsp;
@@ -109,14 +111,14 @@ export default class Comment extends Component {
             <div className={css.commentAction}>
               {
                 !comment.deleting
-                  ? <a onClick={() => this.selectQuote(comment.id)} href={'#reply'}>Ответить</a>
+                  ? <a onClick={() => this.props.reply(comment.id)} href="#reply">Ответить</a>
                   : null
               }
               {
                 this.state.canBeUpdated
                 && !comment.deleting
                   ? [
-                    <a onClick={() => this.props.editComment(comment)} key={0}>Редактировать</a>,
+                    <a onClick={() => this.props.editComment(comment)} href="#reply" key={0}>Редактировать</a>,
                     <a onClick={() => this.props.removeComment(comment.id)} key={1}>Удалить</a>
                   ]
                   : null
