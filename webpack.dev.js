@@ -78,6 +78,11 @@ const settings = {
     ]
   },
   devServer: {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+      'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization'
+    },
     contentBase: path.resolve('src/www'),
     publicPath: 'http://localhost:8080/', // full URL is necessary for Hot Module Replacement if additional path will be added.
     quiet: false,
@@ -88,9 +93,9 @@ const settings = {
     proxy: {
       '/api/**': {
         target: {
-          host: 'sim-track.simbirsoft',
+          host: '192.168.72.162',
           protocol: 'http:',
-          port: 80
+          port: 8080
         },
         // ignorePath: true,
         changeOrigin: true,
@@ -98,14 +103,14 @@ const settings = {
       },
       '/uploads/**': {
         target: {
-          host: 'sim-track.simbirsoft',
+          host: '192.168.72.162',
           protocol: 'http:',
-          port: 80
+          port: 8080
         },
         // ignorePath: true,
         changeOrigin: true,
         secure: false
-      },
+      }
     }
   },
   plugins: [

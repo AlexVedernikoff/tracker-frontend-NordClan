@@ -11,6 +11,7 @@ import Task from './Task';
 import Portfolios from './Portfolios';
 import Notifications from './Notifications';
 import Portfolio from './Portfolio';
+import TimesheetPlayer from './TimesheetPlayer';
 
 const rootReducer = combineReducers({
   Auth,
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   Tasks,
   Task,
   Portfolio,
+  TimesheetPlayer,
   routing: routerReducer
 });
 

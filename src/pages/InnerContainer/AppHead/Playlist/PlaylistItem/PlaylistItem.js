@@ -75,18 +75,18 @@ export default class PlaylistItem extends Component {
 
   render () {
     const {
-      name,
+      task,
       prefix,
       project,
-      stage,
-      status,
-      prevStage,
       factTime,
       plannedTime,
       time,
       comment,
-      type
+      type,
+      taskStatus: prevStatus,
+      spentTime
     } = this.props.item;
+    const status = this.props.item.task.taskStatus;
 
     return (
       <div className={classnames(css.listTask, css.task)}>
@@ -99,16 +99,16 @@ export default class PlaylistItem extends Component {
         <div className={css.taskNameWrapper}>
           <div className={css.taskTitle}>
             <div className={css.meta}>
-              { prefix ? <span>{prefix}</span> : null}
-              { project ? <span>{project}</span> : null}
-              { stage
+              { task.prefix ? <span>{prefix}</span> : null}
+              { project ? <span>{project.name}</span> : null}
+              { status
                 ? <span>
                     {
-                      prevStage
-                      ? (<span>{prevStage}<span style={{display: 'inline-block', margin: '0 0.25rem'}}> → </span></span>)
+                      prevStatus
+                      ? (<span>{prevStatus.name}<span style={{display: 'inline-block', margin: '0 0.25rem'}}> → </span></span>)
                       : null
                     }
-                    {stage}
+                    {status.name}
                   </span>
                 : null}
               <span className={classnames({[css.commentToggler]: true, [css.green]: comment})} onClick={this.toggleComment}><IconComment/></span>
@@ -120,7 +120,7 @@ export default class PlaylistItem extends Component {
               }
             </div>
             <div className={css.taskName}>
-              {name}
+              {task.name}
             </div>
           </div>
         </div>
@@ -129,10 +129,10 @@ export default class PlaylistItem extends Component {
             <input type="text" onChange={this.handleChangeTime} defaultValue={time}/>
           </div>
           <div className={classnames({[css.other]: true, [css.exceeded]: factTime > plannedTime})}>
-            <span data-tip="Всего потрачено" data-place="bottom">{factTime}</span>
+            <span data-tip="Всего потрачено" data-place="bottom">{spentTime}</span>
             {
               type !== 'magicActivity'
-              ? <span> / <span data-tip="Запланировано" data-place="bottom">{plannedTime}</span></span>
+              ? <span> / <span data-tip="Запланировано" data-place="bottom">{task.plannedExecutionTime}</span></span>
               : null
             }
           </div>

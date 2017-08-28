@@ -3,6 +3,7 @@ import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
+import { getTimesheetsPlayerData } from './TimesheetPlayer';
 
 const startAuthentication = () => ({
   type: AuthActions.AUTHENTICATION_START
@@ -94,6 +95,7 @@ export const getInfoAboutMe = () => {
       })
       .then(response => {
         if (response && response.status === 200) {
+          dispatch(getTimesheetsPlayerData(new Date().toISOString().slice(0, 10)));
           dispatch(userInfoReceived(response.data));
           dispatch(finishLoading());
         }

@@ -5,6 +5,8 @@ import _ from 'lodash';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import onClickOutside from 'react-onclickoutside';
 import ReactTooltip from 'react-tooltip';
+import { connect } from 'react-redux';
+import moment from 'moment';
 
 import {
   IconPause,
@@ -28,84 +30,91 @@ import Vacation from './Vacation';
 import Trip from './Trip';
 import Hospital from './Hospital';
 import * as css from './Playlist.scss';
+import {
+  getTimesheetsPlayerData
+} from '../../../../actions/TimesheetPlayer';
 
 class Playlist extends Component {
   constructor (props) {
     super(props);
+    this.activityTabs = [
+      {
+        name: 'all',
+        description: 'Все активности',
+        content: <All/>,
+        icon: <IconList/>,
+        summary: 7.25
+      },
+      {
+        name: 'work',
+        description: 'Работа',
+        content: <Work/>,
+        icon: <IconLaptop/>,
+        summary: 5
+      },
+      {
+        name: 'meeting',
+        description: 'Совещание',
+        content: <Meeting/>,
+        icon: <IconCall/>,
+        summary: 0.25
+      },
+      {
+        name: 'presale',
+        description: 'Преселлинг и оценка',
+        content: <Presale/>,
+        icon: <IconCheckList/>,
+        summary: 0.25
+      },
+      {
+        name: 'education',
+        description: 'Обучение',
+        content: <Education/>,
+        icon: <IconBook/>,
+        summary: 0
+      },
+      {
+        name: 'vacation',
+        description: 'Отпуск',
+        content: <Vacation/>,
+        icon: <IconPlane/>,
+        summary: 0
+      },
+      {
+        name: 'trip',
+        description: 'Командировка',
+        content: <Trip/>,
+        icon: <IconCase/>,
+        summary: 0
+      },
+      {
+        name: 'hospital',
+        description: 'Больничный',
+        content: <Hospital/>,
+        icon: <IconHospital/>,
+        summary: 0
+      },
+      {
+        name: 'control',
+        description: 'Управление',
+        content: <Control/>,
+        icon: <IconOrganization/>,
+        summary: 0
+      }
+    ];
+
     this.state = {
+      activeDayTab: moment().day() - 1,
+      activeActivityTab: 0,
       isPlaylistOpen: false,
-      activityTabs: [
-        {
-          name: 'all',
-          description: 'Все активности',
-          content: <All/>,
-          icon: <IconList/>,
-          summary: 7.25
-        },
-        {
-          name: 'work',
-          description: 'Работа',
-          content: <Work/>,
-          icon: <IconLaptop/>,
-          summary: 5
-        },
-        {
-          name: 'meeting',
-          description: 'Совещание',
-          content: <Meeting/>,
-          icon: <IconCall/>,
-          summary: 0.25
-        },
-        {
-          name: 'presale',
-          description: 'Преселлинг и оценка',
-          content: <Presale/>,
-          icon: <IconCheckList/>,
-          summary: 0.25
-        },
-        {
-          name: 'education',
-          description: 'Обучение',
-          content: <Education/>,
-          icon: <IconBook/>,
-          summary: 0
-        },
-        {
-          name: 'vacation',
-          description: 'Отпуск',
-          content: <Vacation/>,
-          icon: <IconPlane/>,
-          summary: 0
-        },
-        {
-          name: 'trip',
-          description: 'Командировка',
-          content: <Trip/>,
-          icon: <IconCase/>,
-          summary: 0
-        },
-        {
-          name: 'hospital',
-          description: 'Больничный',
-          content: <Hospital/>,
-          icon: <IconHospital/>,
-          summary: 0
-        },
-        {
-          name: 'control',
-          description: 'Управление',
-          content: <Control/>,
-          icon: <IconOrganization/>,
-          summary: 0
-        }
-      ],
+      activeContent: {},
       activeTab: {}
     };
   }
 
   componentDidMount () {
     ReactTooltip.rebuild();
-    this.setState({activeTab: this.state.activityTabs[0]});
+    this.setState({activeTab: this.activityTabs[0]});
   }
 
   componentDidUpdate () {
@@ -118,7 +127,73 @@ class Playlist extends Component {
 
   handleToggleList = () => {
     this.setState({isPlaylistOpen: !this.state.isPlaylistOpen});
-  }
+
+  };
+
+  isActiveDayTab = (tab) => {
+    return tab === this.state.activeDayTab;
+  };
+
+  dayTabStyle = (tab) => {
+    return classnames({
+      [css.day]: true,
+      [css.active]: this.isActiveDayTab(tab)
+    });
+  };
+
+  changeActiveDayTab = (tab) => {
+    return () => {
+      this.setState((state) => ({
+        ...state,
+        activeDayTab: tab
+      }), getTimesheetsPlayerData(new Date().toISOString().slice(0, 10)));
+    };
+  };
+
+  isActiveActivityTab = (tab) => {
+    return tab === this.state.activeActivityTab;
+  };
+
+  activityTabStyle = (tab) => {
+    return classnames({
+      [css.type]: true,
+      [css.active]: this.isActiveActivityTab(tab)
+    });
+  };
+
+  changeActiveActivityTab = (tab) => {
+    return () => {
+      this.setState((state) => ({
+        ...state,
+        activeActivityTab: tab
+      }));
+    };
+  };
+
+  getSummaryTime = (time) => {
+    if (time) {
+      return (
+        <span className={css.countBadge}>
+          {Math.floor(time)}
+          <small>
+            {((Math.round(time * 100) / 100) - Math.floor(time)).toString().substring(1)}
+          </small>
+        </span>
+      );
+    }
+
+    return null;
+  };
+
+  activeTracks = (tracks, activeDayTab) => {
+
+    const activeDate = moment().startOf('isoWeek').add(activeDayTab, 'days').format('YYYY-MM-DD');
+    if (tracks[activeDate]) {
+      return tracks[activeDate];
+    }
+
+    return {};
+  };
 
   render () {
 
@@ -147,40 +222,30 @@ class Playlist extends Component {
             isPlaylistOpen
             ? <div className={css.list}>
                 <div className={css.week}>
-                  <div className={css.day}>Пн <span className={css.countBadge}>8</span></div>
-                  <div className={classnames(css.day, css.active)}>Вт <span className={css.countBadge}>7<small>.25</small></span></div>
-                  <div className={css.day}>Ср</div>
-                  <div className={css.day}>Чт</div>
-                  <div className={css.day}>Пт</div>
-                  <div className={css.day}>Сб</div>
-                  <div className={css.day}>Вс</div>
+                  <div className={this.dayTabStyle(0)} onClick={this.changeActiveDayTab(0)}>Пн <span className={css.countBadge}>8</span></div>
+                  <div className={this.dayTabStyle(1)} onClick={this.changeActiveDayTab(1)}>Вт <span className={css.countBadge}>7<small>.25</small></span></div>
+                  <div className={this.dayTabStyle(2)} onClick={this.changeActiveDayTab(2)}>Ср</div>
+                  <div className={this.dayTabStyle(3)} onClick={this.changeActiveDayTab(3)}>Чт</div>
+                  <div className={this.dayTabStyle(4)} onClick={this.changeActiveDayTab(4)}>Пт</div>
+                  <div className={this.dayTabStyle(5)} onClick={this.changeActiveDayTab(5)}>Сб</div>
+                  <div className={this.dayTabStyle(6)} onClick={this.changeActiveDayTab(6)}>Вс</div>
                 </div>
                 <div className={css.taskWrapper}>
-                  {this.state.activeTab.content}
+                  <All tracks={this.activeTracks(this.props.tracks, this.state.activeDayTab)}/>
                 </div>
                 <div className={css.activity}>
                   {
-                    this.state.activityTabs.map((element, index) => {
-                      const tab
-                      = <div
+                    this.activityTabs.map((element, index) => {
+                      return <div
                           key={index}
-                          className={classnames({[css.type]: true, [css.active]: this.state.activeTab.name === this.state.activityTabs[index].name})}
+                          className={this.activityTabStyle(index)}
                           data-tip={element.description}
-                          onClick={() => {this.setState({activeTab: element});}}
+                          onClick={this.changeActiveActivityTab(index)}
+
                           data-place="bottom">
                           {element.icon}
-                          {
-                            element.summary
-                            ? <span className={css.countBadge}>
-                              {Math.floor(element.summary)}
-                              <small>
-                                {((Math.round(element.summary * 100) / 100) - Math.floor(element.summary)).toString().substring(1)}
-                              </small>
-                            </span>
-                            : null
-                          }
+                          {this.getSummaryTime(element.summary)}
                         </div>;
-                      return tab;
                     })
                   }
                   <div className={css.time}>
@@ -198,4 +263,19 @@ class Playlist extends Component {
   }
 }
 
-export default onClickOutside(Playlist);
+Playlist.propTypes = {
+  tracks: PropTypes.object
+};
+
+
+const mapStateToProps = state => {
+  return {
+    tracks: state.TimesheetPlayer.tracks
+  };
+};
+
+const mapDispatchToProps = {
+  getTimesheetsPlayerData
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(onClickOutside(Playlist));
