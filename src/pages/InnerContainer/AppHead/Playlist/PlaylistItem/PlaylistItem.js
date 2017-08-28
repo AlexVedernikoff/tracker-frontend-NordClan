@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { connect } from 'react-redux';
+import {
+  updateTimesheet
+} from '../../../../../actions/TimesheetPlayer';
 
 import * as css from '../Playlist.scss';
 
@@ -22,7 +26,7 @@ import {
   IconEyeDisable
 } from '../../../../../components/Icons';
 
-export default class PlaylistItem extends Component {
+class PlaylistItem extends Component {
 
   constructor (props) {
     super(props);
@@ -34,15 +38,27 @@ export default class PlaylistItem extends Component {
 
   toggleComment = () => {
     this.setState({isCommentOpen: !this.state.isCommentOpen});
-  }
+  };
+
+  pushComment = (comment) => {
+    return () => {
+      updateTimesheet({
+        taskId: this.props.item.task.id,
+        timesheetId: this.props.item.id,
+        body: {
+          comment
+        }
+      });
+    };
+  };
 
   handleChangeTime = (e) => {
     this.setState({time: e.target.value});
-  }
+  };
 
   handleChangeComment = (e) => {
     this.setState({comment: e.target.value});
-  }
+  };
 
   getActionButton = () => {
     switch (this.props.item.status) {
@@ -71,7 +87,7 @@ export default class PlaylistItem extends Component {
     case 'presale':
       return <IconCheckList style={{width: '1.5rem', height: '1.5rem'}}/>;
     }
-  }
+  };
 
   render () {
     const {
@@ -80,11 +96,10 @@ export default class PlaylistItem extends Component {
       project,
       factTime,
       plannedTime,
-      time,
+      spentTime,
       comment,
       type,
-      taskStatus: prevStatus,
-      spentTime
+      taskStatus: prevStatus
     } = this.props.item;
     const status = this.props.item.task.taskStatus;
 
@@ -126,7 +141,7 @@ export default class PlaylistItem extends Component {
         </div>
         <div className={css.time}>
           <div className={css.today}>
-            <input type="text" onChange={this.handleChangeTime} defaultValue={time}/>
+            <input type="text" onChange={this.handleChangeTime} defaultValue={spentTime}/>
           </div>
           <div className={classnames({[css.other]: true, [css.exceeded]: factTime > plannedTime})}>
             <span data-tip="Всего потрачено" data-place="bottom">{spentTime}</span>
@@ -141,7 +156,7 @@ export default class PlaylistItem extends Component {
           this.state.isCommentOpen
           ? <div className={css.comment}>
             <textarea autoFocus onChange={this.handleChangeComment} defaultValue={comment} value={this.state.comment} placeholder="Введите текст комментария"/>
-            <div className={css.actionButton} onClick={this.toggleComment}>
+            <div className={css.actionButton} onClick={this.pushComment(this.state.comment)}>
               <IconCheck style={{width: '1.5rem', height: '1.5rem'}} />
             </div>
           </div>
@@ -156,3 +171,15 @@ PlaylistItem.propTypes = {
   item: PropTypes.object,
   visible: PropTypes.bool
 };
+
+const mapStateToProps = state => {
+  return {
+    tracks: state.TimesheetPlayer.tracks
+  };
+};
+
+const mapDispatchToProps = {
+  updateTimesheet
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PlaylistItem);

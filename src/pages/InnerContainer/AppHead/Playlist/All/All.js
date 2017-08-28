@@ -28,15 +28,18 @@ class All extends Component {
   render () {
     const {
       isDraftShow,
-      tracks
     } = this.state;
 
+    const {
+      tracks
+    } = this.props;
+
     const visible = tracks.visible
-      ? tracks.visible.map(item => <PlaylistItem item={item} key={item.id} visible/>)
+      ? tracks.visible.map(item => <PlaylistItem item={item} key={`visible-${item.id}`} visible/>)
       : null;
 
     const invisible = tracks.invisible
-      ? tracks.invisible.map(item => <PlaylistItem item={item} key={item.id}/>)
+      ? tracks.invisible.map(item => <PlaylistItem item={item} key={`invisible-${item.id}`}/>)
       : null;
 
 
@@ -67,9 +70,7 @@ class All extends Component {
 }
 
 All.propTypes = {
-  tracks: PropTypes.object,
-  // draftsheets: PropTypes.array,
-  // timesheets: PropTypes.array
+  tracks: PropTypes.object
 };
 
 export default All;

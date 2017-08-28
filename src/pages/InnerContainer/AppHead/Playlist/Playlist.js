@@ -137,17 +137,26 @@ class Playlist extends Component {
   dayTabStyle = (tab) => {
     return classnames({
       [css.day]: true,
-      [css.active]: this.isActiveDayTab(tab)
+      [css.active]: this.isActiveDayTab(tab),
+      [css.inactive]: this.ifFutureTab(tab)
     });
   };
 
   changeActiveDayTab = (tab) => {
     return () => {
+      if (this.ifFutureTab(tab)) {
+        return;
+      }
+
       this.setState((state) => ({
         ...state,
         activeDayTab: tab
       }), getTimesheetsPlayerData(new Date().toISOString().slice(0, 10)));
     };
+  };
+
+  ifFutureTab = (tab) => {
+    return moment().diff(moment().startOf('isoWeek').add(tab, 'days')) < 0;
   };
 
   isActiveActivityTab = (tab) => {
@@ -185,15 +194,28 @@ class Playlist extends Component {
     return null;
   };
 
-  activeTracks = (tracks, activeDayTab) => {
+  activeTracks = (tracks, activeDayTab, activeActivityTab) => {
+    let activeTraks = this.filterTracksByDayTab(tracks, activeDayTab);
+    activeTraks = {
+      visible: this.filterTracksByActivityTab(tracks.visible, activeActivityTab),
+      invisible: []
+    }
+    //activeTraks = this.filterTracksByActivityTab(activeTraks, activeActivityTab);
 
+  };
+  filterTracksByDayTab = (tracks, activeDayTab) => {
     const activeDate = moment().startOf('isoWeek').add(activeDayTab, 'days').format('YYYY-MM-DD');
     if (tracks[activeDate]) {
       return tracks[activeDate];
     }
-
     return {};
   };
+
+  filterTracksByActivityTab = (tracks, activeDayTab) => {
+    if (Array.isArray(tracks)) return tracks.filter(el => el.typeId === activeDayTab);
+    return [];
+  };
+
 
   render () {
 
@@ -231,7 +253,8 @@ class Playlist extends Component {
                   <div className={this.dayTabStyle(6)} onClick={this.changeActiveDayTab(6)}>Вс</div>
                 </div>
                 <div className={css.taskWrapper}>
-                  <All tracks={this.activeTracks(this.props.tracks, this.state.activeDayTab)}/>
+                  {/*{this.getActiveContent(this.props.tracks, this.state.activeDayTab)}*/}
+                  {<All tracks={this.activeTracks(this.props.tracks, this.state.activeDayTab, this.state.activeActivityTab)}/>}
                 </div>
                 <div className={css.activity}>
                   {
