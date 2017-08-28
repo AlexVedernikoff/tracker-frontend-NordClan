@@ -33,6 +33,26 @@ class Comments extends Component {
     this.props.getCommentsByTask(this.props.params.taskId);
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (this.props.highlighted.id !== nextProps.highlighted.id) {
+      history.push({
+        ...this.props.location,
+        hash: typeof nextProps.highlighted.id === 'number' ? `#comment-${nextProps.highlighted.id}` : ''
+      });
+    }
+  }
+
+  componentDidUpdate (prevProps) {
+    if (this.props.location.hash === '#reply') {
+      setTimeout(() => this.reply.focus());
+    }
+  }
+  componentDidMount (prevProps) {
+    if (this.props.location.hash === '#reply') {
+      setTimeout(() => this.reply.focus());
+    }
+  }
+
   static defaultProps = {
     comments: []
   };
@@ -71,10 +91,6 @@ class Comments extends Component {
     this.props.setHighLighted(selectedComment);
   };
 
-  selectQuote = (id) => {
-    this.props.selectParentCommentForReply(id);
-  };
-
   typeComment = (evt) => {
     this.props.updateCurrentCommentText(evt.target.value);
   };
@@ -84,7 +100,7 @@ class Comments extends Component {
 
     if (ctrlKey && keyCode === ENTER) {
       if (this.props.currentComment.id) {
-        if (!Comments.isExpiredForUpdate(this.props.currentComment.createdAt)) {
+        if (!Comment.isExpiredForUpdate(this.props.currentComment.createdAt)) {
           this.props.editComment(this.props.taskId, this.props.currentComment.id, this.props.currentComment.text);
         } else {
           this.props.setCurrentCommentExpired();
@@ -116,6 +132,8 @@ class Comments extends Component {
       lightened={c.id === this.props.highlighted.id}
       editComment={this.props.setCommentForEdit}
       removeComment={this.removeComment}
+      reply={this.props.selectParentCommentForReply}
+      selectComment={this.selectComment}
       ownedByMe={c.author.id === this.props.userId}
       comment={c}/>
   );
