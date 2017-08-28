@@ -109,17 +109,18 @@ class Comments extends Component {
     this.setState({commentToDelete: null}, () => this.props.removeComment(this.props.taskId, commentId));
   };
 
-  render () {
-    const commentsList = this.props.comments.map((c) =>
-      <Comment
-        key={c.id}/*используются id чтобы правильно работал маунт и анмаунт*/
-        lightened={c.id === this.props.highlighted.id}
-        editComment={this.props.setCommentForEdit}
-        deleteComment={this.deleteComment}
-        ownedByMe={c.author.id === this.props.userId}
-        comment={c}/>
-    );
+  getCommentList = () => this.props.comments.map((c) =>
+    <Comment
+      key={c.id}/*используются id чтобы правильно работал маунт и анмаунт*/
+      lightened={c.id === this.props.highlighted.id}
+      editComment={this.props.setCommentForEdit}
+      deleteComment={this.deleteComment}
+      ownedByMe={c.author.id === this.props.userId}
+      comment={c}/>
+  );
 
+
+  render () {
     return (
       <div className="css.comments" id="reply">
         <ul className={css.commentList}>
@@ -165,8 +166,8 @@ class Comments extends Component {
             </div>
           </div>
           {
-            commentsList.length
-              ? commentsList
+            this.props.comments.length
+              ? this.getCommentList()
               : <div className={css.noCommentsYet} >
                 Комментариев еще нет!
                 <br/>
