@@ -1,8 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
-import classnames from 'classnames';
-import moment from 'moment';
-import { IconDeleteAnimate } from '../../../components/Icons';
 import onClickOutside from 'react-onclickoutside';
 import PropTypes from 'prop-types';
 import TextArea from '../../../components/TextArea';
@@ -20,8 +16,9 @@ import {
 } from '../../../actions/Task';
 import { connect } from 'react-redux';
 import * as css from './Comments.scss';
-
+import Comment from './Comment';
 import { history } from '../../../App';
+import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
 
 const ENTER = 13;
 
@@ -29,6 +26,7 @@ class Comments extends Component {
 
   constructor (props) {
     super(props);
+    this.state = { commentToDelete: null };
   }
 
   componentWillMount () {
@@ -86,7 +84,7 @@ class Comments extends Component {
 
     if (ctrlKey && keyCode === ENTER) {
       if (this.props.currentComment.id) {
-        if (!Comments.isExpired(this.props.currentComment.createdAt)) {
+        if (!Comments.isExpiredForUpdate(this.props.currentComment.createdAt)) {
           this.props.editComment(this.props.taskId, this.props.currentComment.id, this.props.currentComment.text);
         } else {
           this.props.setCurrentCommentExpired();
@@ -99,99 +97,31 @@ class Comments extends Component {
 
   reply = null;
 
-  componentWillReceiveProps (nextProps) {
-  }
-
-  static getNames = (person) => {
-    const { firstNameRu, lastNameRu, lastNameEn, firstNameEn } = person;
-    const firstName = firstNameRu ? firstNameRu : firstNameEn;
-    const lastName = lastNameRu ? lastNameRu : lastNameEn;
-    const fullName = `${firstName} ${lastName}`;
-
-    return { firstName, lastName, fullName };
+  removeComment = (commentId) => {
+    this.setState({commentToDelete: commentId});
   };
 
-  static isExpired = (date) => {
-    const EXPIRATION_TIMEOUT = 10 * 60 * 1000;
-    return (Date.now() - (new Date(date)).getTime()) > EXPIRATION_TIMEOUT;
+  cancelRemoveComment = () => {
+    this.setState({commentToDelete: null});
   };
 
-  editComment = (comment) => {
-    if (!Comments.isExpired(comment.createdAt)) {
-      this.props.setCommentForEdit(comment);
-    }
+  confirmRemoveComment = () => {
+    const commentId = this.state.commentToDelete;
+    this.setState({commentToDelete: null}, () => this.props.removeComment(this.props.taskId, commentId));
   };
+
+  getCommentList = () => this.props.comments.map((c) =>
+    <Comment
+      key={c.id}/*используются id чтобы правильно работал маунт и анмаунт*/
+      lightened={c.id === this.props.highlighted.id}
+      editComment={this.props.setCommentForEdit}
+      removeComment={this.removeComment}
+      ownedByMe={c.author.id === this.props.userId}
+      comment={c}/>
+  );
+
 
   render () {
-    const commentsList = this.props.comments.map((element) => {
-      const { author } = element;
-      let typoAvatar = '';
-      const { firstName, lastName, fullName } = Comments.getNames(author);
-      if (!author.photo) {
-        typoAvatar = firstName.slice(0, 1) + lastName.slice(0, 1);
-        typoAvatar.toLocaleUpperCase();
-      }
-      return (
-        <li
-          id={`comment-${element.id}`}
-          className={classnames({
-            [css.commentContainer]: true,
-            [css.selected]: element.id === this.props.highlighted.id
-          })}
-          key={element.id}>
-          <div className={css.comment}>
-            <div className={css.ava}>
-              {
-                element.deleting
-                  ? <IconDeleteAnimate />
-                  : author.photo
-                    ? <img src={author.photo}/>
-                    : typoAvatar
-              }
-            </div>
-            <div className={css.commentBody}>
-              <div className={css.commentMeta}>
-                <Link to={`#${element.id}`}>{fullName}</Link>,&nbsp;
-                {moment(element.updatedAt).format('DD.MM.YY HH:mm')},&nbsp;
-                <a onClick={() => this.selectComment(element.id)} href={`#comment-${element.id}`}>{`#${element.id}`}</a>
-              </div>
-              {
-                element.parentComment
-                ? <div className={css.commentQuote} onClick={() => this.selectComment(element.parentComment.id)}>
-                  <a className={css.commentQuoteAutor}>
-                    {Comments.getNames(element.parentComment.author).fullName},
-                  </a>&nbsp;
-                  <span className={css.commentQuoteDate}>
-                    {moment(element.parentComment.updatedAt).format('DD.MM.YY HH:mm')}:
-                  </span>
-                  «{element.parentComment.text}»
-                </div>
-                : null
-              }
-              <div className={css.commentText}>{element.text}</div>
-              <div className={css.commentAction}>
-                {
-                  !element.deleting
-                    ? <a onClick={() => this.selectQuote(element.id)} href={'#reply'}>Ответить</a>
-                    : null
-                }
-                {
-                  element.authorId === this.props.userId
-                    && !element.deleting
-                    && !Comments.isExpired(element.createdAt)
-                    ? [
-                      <a onClick={() => this.editComment(element)} key={0}>Редактировать</a>,
-                      <a onClick={() => !Comments.isExpired(element.createdAt) && this.props.removeComment(this.props.taskId, element.id)} key={1}>Удалить</a>
-                    ]
-                    : null
-                }
-              </div>
-            </div>
-          </div>
-        </li>
-      );
-    });
-
     return (
       <div className="css.comments" id="reply">
         <ul className={css.commentList}>
@@ -203,7 +133,6 @@ class Comments extends Component {
               onKeyDown={this.publishComment}
               ref={(ref) => (this.reply = ref ? ref.refs.input : null)}
               value={this.props.currentComment.text}/>
-            {/*<Button type="green" icon="IconSend" />*/}
             <div className={css.answerUnderline}>
               {
                 this.props.currentComment.id
@@ -238,8 +167,8 @@ class Comments extends Component {
             </div>
           </div>
           {
-            commentsList.length
-              ? commentsList
+            this.props.comments.length
+              ? this.getCommentList()
               : <div className={css.noCommentsYet} >
                 Комментариев еще нет!
                 <br/>
@@ -247,6 +176,16 @@ class Comments extends Component {
               </div>
           }
         </ul>
+        { this.state.commentToDelete
+          ? <ConfirmModal
+            isOpen
+            contentLabel="modal"
+            text="Вы действительно хотите удалить комментарий?"
+            onCancel={this.cancelRemoveComment}
+            onConfirm={this.confirmRemoveComment}
+          />
+          : null
+        }
       </div>
     );
   }
