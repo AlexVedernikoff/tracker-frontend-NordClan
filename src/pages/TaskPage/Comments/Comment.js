@@ -5,20 +5,14 @@ import { Link } from 'react-router';
 import cn from 'classnames';
 import moment from 'moment';
 import { IconDeleteAnimate } from '../../../components/Icons';
+import CopyThis from '../../../components/CopyThis';
+import { history } from '../../../App';
+import { connect } from 'react-redux';
+import UserCard from '../../../components/UserCard';
 
 const UPDATE_EXPIRATION_TIMEOUT = 10 * 60 * 1000;//10 минут
 
-export default class Comment extends Component {
-  static propTypes = {
-    comment: PropTypes.object,
-    editComment: PropTypes.func,
-    lightened: PropTypes.bool,
-    ownedByMe: PropTypes.bool,
-    removeComment: PropTypes.func,
-    reply: PropTypes.func,
-    selectComment: PropTypes.func
-  };
-
+class Comment extends Component {
   static getNames = (person) => {//унификация имени
     const { firstNameRu, lastNameRu, lastNameEn, firstNameEn } = person;
     const firstName = firstNameRu ? firstNameRu : firstNameEn;
@@ -34,6 +28,45 @@ export default class Comment extends Component {
 
   static getLifeTime = (date) => {
     return Date.now() - (new Date(date)).getTime();
+  };
+
+  static selectComment = (id, location) => {
+    history.push(Comment.getHashedPath(id, location));
+  };
+
+  static getHashedPath = (id, location) => {
+    return {...location, hash: Comment.getHash(id) };
+  };
+
+  static getHash = (id) => {
+    return `#comment-${id}`;
+  };
+
+  static getDirectionToScroll = (elem) => {
+    if (!elem) return;
+
+    const rect = elem.getBoundingClientRect();
+
+    if (rect.top < 50) {
+      return true;
+    }
+
+    if (rect.bottom > ((window.innerHeight || document.documentElement.clientHeight) - 50)) {
+      return false;
+    }
+
+    return null;
+  };
+
+  static propTypes = {
+    comment: PropTypes.object,
+    editComment: PropTypes.func,
+    lightened: PropTypes.bool,
+    location: PropTypes.object,
+    ownedByMe: PropTypes.bool,
+    removeComment: PropTypes.func,
+    reply: PropTypes.func,
+    selectComment: PropTypes.func
   };
 
   constructor (props) {
@@ -52,15 +85,23 @@ export default class Comment extends Component {
     };
   }
 
+  static conditionalScroll = (elem) => {
+    if (!elem) return;
+    const direction = Comment.getDirectionToScroll(elem);
+    if (direction !== null) {
+      elem.scrollIntoView(direction);
+    }
+  };
+
   componentDidMount () {
     if (this.props.lightened) {
-      this.refs.comment.scrollIntoView();
+      Comment.conditionalScroll(this.refs.comment);
     }
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate () {
     if (this.props.lightened) {
-      this.refs.comment.scrollIntoView();
+      Comment.conditionalScroll(this.refs.comment);
     }
   }
 
@@ -72,6 +113,7 @@ export default class Comment extends Component {
       typoAvatar = firstName.slice(0, 1) + lastName.slice(0, 1);
       typoAvatar.toLocaleUpperCase();
     }
+
     return (
       <li ref="comment"
         className={cn(css.commentContainer, {
@@ -90,24 +132,38 @@ export default class Comment extends Component {
           </div>
           <div className={css.commentBody}>
             <div className={css.commentMeta}>
-              <Link to={`#${comment.id}`}>{fullName}</Link>,&nbsp;
+              <UserCard user={author}>
+                <Link>{fullName}</Link>
+              </UserCard>,&nbsp;
               {moment(comment.updatedAt).format('DD.MM.YY HH:mm')},&nbsp;
-              <a onClick={() => this.props.selectComment(comment.id)} href={`#comment-${comment.id}`}>{`#${comment.id}`}</a>
+
+              <CopyThis
+                wrapThisInto={'a'}
+                textToCopy={
+                  `${location.origin}${history.createHref(Comment.getHashedPath(comment.id, this.props.location))}`
+                }
+              >
+                {`#${comment.id}`}&nbsp;
+              </CopyThis>
             </div>
             {
               parentComment
-                ? <div className={css.commentQuote} onClick={() => this.props.selectComment(parentComment.id)}>
+                ? <div
+                    className={css.commentQuote}
+                    onClick={() => Comment.selectComment(parentComment.id, this.props.location)}>
                   <a className={css.commentQuoteAutor}>
                     {Comment.getNames(parentComment.author).fullName},
                   </a>&nbsp;
                   <span className={css.commentQuoteDate}>
                     {moment(parentComment.updatedAt).format('DD.MM.YY HH:mm')}:
                   </span>
-                  «{parentComment.text}»
+                  «<div className={css.quoteText}>{parentComment.text}</div>»
                 </div>
                 : null
             }
-            <div className={css.commentText}>{comment.text}</div>
+            <div className={css.commentText} onClick={() => Comment.selectComment(comment.id, this.props.location)}>
+              {comment.text}
+            </div>
             <div className={css.commentAction}>
               {
                 !comment.deleting
@@ -130,3 +186,9 @@ export default class Comment extends Component {
     );
   }
 }
+
+const mapState = ({ routing: { locationBeforeTransitions: location } }) => ({
+  location
+});
+
+export default connect(mapState)(Comment);

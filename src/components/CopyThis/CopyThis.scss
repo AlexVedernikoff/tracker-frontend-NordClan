@@ -1,0 +1,23 @@
+.tooltip {
+  transition: all 0.5s ease;
+  opacity: 0;
+  position: absolute;
+
+  &.tooltipShown {
+    opacity: 1;
+  }
+}
+
+.copyThis {
+  display: inline;
+  position: relative;
+
+  .copyLink {
+    cursor: pointer;
+  }
+}
+
+.copy {
+  position: absolute;
+  opacity: 0;
+}

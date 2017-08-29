@@ -33,21 +33,35 @@ class Comments extends Component {
     this.props.getCommentsByTask(this.props.params.taskId);
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (this.props.highlighted.id !== nextProps.highlighted.id) {
-      history.push({
-        ...this.props.location,
-        hash: typeof nextProps.highlighted.id === 'number' ? `#comment-${nextProps.highlighted.id}` : ''
-      });
-    }
-  }
-
   componentDidUpdate (prevProps) {
-    if (this.props.location.hash === '#reply') {
-      setTimeout(() => this.reply.focus());
+    if (this.props.location.hash === '#reply' && prevProps.location.hash === '#reply') {
+      setTimeout(() => {
+        this.reply.focus();
+        Comment.conditionalScroll(this.reply);
+      });
+      if (this.props.highlighted.id) {
+        this.props.setHighLighted({});
+      }
+      return;
+    }
+    if (this.props.location.hash === '' && this.props.highlighted.id) {
+      return this.props.setHighLighted({});
+    }
+    const commentHash = (/\d+$/).exec(this.props.location.hash);
+    if (commentHash) {
+      const [commentId] = commentHash;
+
+      if (this.props.highlighted.id !== +commentId && prevProps.highlighted.id !== +commentId) {
+        const comment = this.props.comments.find(c => c.id === +commentId);
+        if (comment) {
+          return this.props.setHighLighted(comment);
+        }
+      } else if (this.props.highlighted.id && this.props.highlighted.id !== +commentId && prevProps.highlighted.id === +commentId) {
+        this.selectComment(this.props.highlighted.id);
+      }
     }
   }
-  componentDidMount (prevProps) {
+  componentDidMount () {
     if (this.props.location.hash === '#reply') {
       setTimeout(() => this.reply.focus());
     }
@@ -79,16 +93,12 @@ class Comments extends Component {
 
   handleClickOutside = evt => {
     if (this.props.location.hash) {
-      this.props.setHighLighted({});
       history.push({...this.props.location, hash: ''});
     }
   };
 
   selectComment = (id) => {
-    const selectedComment = this.props.comments.find((element) => {
-      return element.id === id;
-    });
-    this.props.setHighLighted(selectedComment);
+    Comment.selectComment(id, this.props.location);
   };
 
   typeComment = (evt) => {
@@ -133,7 +143,6 @@ class Comments extends Component {
       editComment={this.props.setCommentForEdit}
       removeComment={this.removeComment}
       reply={this.props.selectParentCommentForReply}
-      selectComment={this.selectComment}
       ownedByMe={c.author.id === this.props.userId}
       comment={c}/>
   );
@@ -141,7 +150,7 @@ class Comments extends Component {
 
   render () {
     return (
-      <div className="css.comments" id="reply">
+      <div className="css.comments">
         <ul className={css.commentList}>
           <div className={css.answerLine}>
             <TextArea
@@ -177,7 +186,11 @@ class Comments extends Component {
                     <a onClick={() => this.selectComment(this.props.currentComment.parentId)}>
                       {`#${this.props.currentComment.parentId}`}
                     </a>&nbsp;
-                    <span className={css.quoteCancel} onClick={() => this.selectQuote(null)}>(Отмена)</span>
+                    <span
+                      className={css.quoteCancel}
+                      onClick={() => this.props.selectParentCommentForReply(null)}>
+                      (Отмена)
+                    </span>
                   </div>
                   : null
               }
