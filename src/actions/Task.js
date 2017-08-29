@@ -3,7 +3,7 @@ import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
-
+import {GET, PUT, REST_API} from '../constants/RestApi';
 const getTaskStart = () => ({
   type: TaskActions.GET_TASK_REQUEST_SENT
 });
@@ -72,8 +72,28 @@ const getTask = id => {
   if (!id) {
     return () => {};
   }
-
-  const URL = `${API_URL}/task/${id}`;
+  return dispatch => dispatch({
+    type: REST_API,
+    url: `/task/${id}`,
+    method: GET,
+    body: {},
+    extra: { withCredentials: true },
+    start: () => {
+      dispatch(getTaskStart());
+      dispatch(startLoading());
+    },
+    response: response => {
+      if (response && response.status === 200) {
+        dispatch(getTaskSuccess(response.data));
+        dispatch(finishLoading());
+      }
+    },
+    error: error => {
+      dispatch(getTaskFail(error.response.data));
+      dispatch(finishLoading());
+    }
+  });
+  /*const URL = `${API_URL}/task/${id}`;
 
   return dispatch => {
     dispatch(getTaskStart());
@@ -91,14 +111,35 @@ const getTask = id => {
           dispatch(finishLoading());
         }
       });
-  };
+  };*/
 };
 
 const getTaskHistory = id => {
   if (!id) {
     return () => {};
   }
-
+  return dispatch => dispatch({
+    type: REST_API,
+    url: `/task/${id}/history`,
+    method: GET,
+    body: {},
+    extra: { withCredentials: true },
+    start: () => {
+      dispatch(getTaskHistoryStart());
+      dispatch(startLoading());
+    },
+    response: response => {
+      if (response && response.status === 200) {
+        dispatch(getTaskHistorySuccess(response.data));
+        dispatch(finishLoading());
+      }
+    },
+    error: error => {
+      dispatch(showNotification({ message: error.message, type: 'error' }));
+      dispatch(finishLoading());
+    }
+  });
+  /*
   const URL = `${API_URL}/task/${id}/history`;
 
   return dispatch => {
@@ -117,15 +158,36 @@ const getTaskHistory = id => {
           dispatch(finishLoading());
         }
       });
-  };
+  };*/
 };
 
 const changeTask = (ChangedProperties, target) => {
   if (!ChangedProperties.id) {
     return;
   }
-
-  const URL = `${API_URL}/task/${ChangedProperties.id}`;
+  return dispatch => dispatch({
+    type: REST_API,
+    url: `/task/${ChangedProperties.id}`,
+    method: PUT,
+    body: ChangedProperties,
+    extra: { withCredentials: true },
+    start: () => {
+      dispatch(requestTaskChange());
+      dispatch(startLoading());
+    },
+    response: response => {
+      if (response && response.status === 200) {
+        dispatch(successTaskChange(response.data));
+        dispatch(finishLoading());
+        dispatch(stopTaskEditing(target));
+      }
+    },
+    error: error => {
+      dispatch(showNotification({ message: error.message, type: 'error' }));
+      dispatch(finishLoading());
+    }
+  });
+  /*const URL = `${API_URL}/task/${ChangedProperties.id}`;
 
   return dispatch => {
     dispatch(requestTaskChange());
@@ -146,7 +208,7 @@ const changeTask = (ChangedProperties, target) => {
           dispatch(stopTaskEditing(target));
         }
       });
-  };
+  };*/
 };
 
 const linkTask = (taskId, linkedTaskId) => {
