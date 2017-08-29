@@ -144,19 +144,23 @@ class Playlist extends Component {
 
   changeActiveDayTab = (tab) => {
     return () => {
-      if (this.ifFutureTab(tab)) {
-        return;
-      }
+      // if (this.ifFutureTab(tab)) {
+      //   return;
+      // }
 
       this.setState((state) => ({
         ...state,
         activeDayTab: tab
-      }), getTimesheetsPlayerData(new Date().toISOString().slice(0, 10)));
+      }), () => this.props.getTimesheetsPlayerData(this.getDateByDayTab(tab).format('YYYY-MM-DD')));
     };
   };
 
   ifFutureTab = (tab) => {
-    return moment().diff(moment().startOf('isoWeek').add(tab, 'days')) < 0;
+    return moment().diff(this.getDateByDayTab(tab)) < 0;
+  };
+
+  getDateByDayTab = (tab) => {
+    return moment().startOf('isoWeek').add(tab, 'days');
   };
 
   isActiveActivityTab = (tab) => {
@@ -195,32 +199,33 @@ class Playlist extends Component {
   };
 
   activeTracks = (tracks, activeDayTab, activeActivityTab) => {
-    let activeTraks = this.filterTracksByDayTab(tracks, activeDayTab);
-    activeTraks = {
-      visible: this.filterTracksByActivityTab(tracks.visible, activeActivityTab),
-      invisible: []
-    }
-    //activeTraks = this.filterTracksByActivityTab(activeTraks, activeActivityTab);
+    let activeTracks = this.filterTracksByDayTab(tracks, activeDayTab);
+    activeTracks = {
+      visible: this.filterTracksByActivityTab(activeTracks.visible, activeActivityTab),
+      invisible: this.filterTracksByActivityTab(activeTracks.invisible, activeActivityTab)
+    };
 
+    return activeTracks;
   };
+
   filterTracksByDayTab = (tracks, activeDayTab) => {
-    const activeDate = moment().startOf('isoWeek').add(activeDayTab, 'days').format('YYYY-MM-DD');
-    if (tracks[activeDate]) {
+    const activeDate = this.getDateByDayTab(activeDayTab).format('YYYY-MM-DD');
+    if (activeDate in tracks) {
       return tracks[activeDate];
     }
     return {};
   };
 
   filterTracksByActivityTab = (tracks, activeDayTab) => {
-    if (Array.isArray(tracks)) return tracks.filter(el => el.typeId === activeDayTab);
+    if (Array.isArray(tracks)) {
+      return tracks.filter(el => el.typeId === (activeDayTab + 1));
+    }
     return [];
   };
 
 
   render () {
-
     const { isPlaylistOpen } = this.state;
-
 
     return (
       <div className={css.playlistWrapper}>
@@ -253,8 +258,7 @@ class Playlist extends Component {
                   <div className={this.dayTabStyle(6)} onClick={this.changeActiveDayTab(6)}>Вс</div>
                 </div>
                 <div className={css.taskWrapper}>
-                  {/*{this.getActiveContent(this.props.tracks, this.state.activeDayTab)}*/}
-                  {<All tracks={this.activeTracks(this.props.tracks, this.state.activeDayTab, this.state.activeActivityTab)}/>}
+                  <All tracks={this.activeTracks(this.props.tracks, this.state.activeDayTab, this.state.activeActivityTab)}/>
                 </div>
                 <div className={css.activity}>
                   {
@@ -273,7 +277,7 @@ class Playlist extends Component {
                   }
                   <div className={css.time}>
                     <div className={css.today}>
-                      <input type="text" value={7.25} data-tip="Итого"/>
+                      <input type="text" value={7.25} data-tip="Итого" onChange={() => {}}/>
                     </div>
                   </div>
                 </div>
@@ -287,6 +291,7 @@ class Playlist extends Component {
 }
 
 Playlist.propTypes = {
+  getTimesheetsPlayerData: PropTypes.func,
   tracks: PropTypes.object
 };
 

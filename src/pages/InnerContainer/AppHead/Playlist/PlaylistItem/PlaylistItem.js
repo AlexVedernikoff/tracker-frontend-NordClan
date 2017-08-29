@@ -42,7 +42,7 @@ class PlaylistItem extends Component {
 
   pushComment = (comment) => {
     return () => {
-      updateTimesheet({
+      this.props.updateTimesheet({
         taskId: this.props.item.task.id,
         timesheetId: this.props.item.id,
         body: {
@@ -169,6 +169,7 @@ class PlaylistItem extends Component {
 
 PlaylistItem.propTypes = {
   item: PropTypes.object,
+  updateTimesheet: PropTypes.func,
   visible: PropTypes.bool
 };
 

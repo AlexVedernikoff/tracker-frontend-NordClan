@@ -21,7 +21,6 @@ const playerDataReceiveFailed = () => ({
 export const getTimesheetsPlayerData = (onDate) => {
   const URL = `${API_URL}/timesheet/tracks/?onDate=${onDate}`;
 
-
   return dispatch => {
     dispatch(startReceivePlayerData());
     dispatch(startLoading());
@@ -34,7 +33,7 @@ export const getTimesheetsPlayerData = (onDate) => {
       })
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(playerDataReceived(response.data));
+          dispatch(playerDataReceived(response.data.data));
           dispatch(finishLoading());
         }
       });
@@ -45,28 +44,22 @@ export const getTimesheetsPlayerData = (onDate) => {
 export const updateTimesheet = (data) => {
   const URL = `${API_URL}/task/${data.taskId}/timesheet/${data.timesheetId}`;
 
-  console.log(data);
-
-
   return dispatch => {
     dispatch(startReceivePlayerData());
     dispatch(startLoading());
-    console.log(1);
     return axios
       .put(URL, data.body, { withCredentials: true })
       .catch(error => {
-        console.log(error);
-        // dispatch(playerDataReceiveFailed());
-        // dispatch(showNotification({ message: error.message, type: 'error' }));
-        // dispatch(finishLoading());
+        dispatch(playerDataReceiveFailed());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
       })
       .then(response => {
-        console.log(response);
-        // if (response && response.status === 200) {
-        //   console.log(response.data);
-        //   //dispatch(playerDataReceived(response.data));
-        //   dispatch(finishLoading());
-        // }
+        if (response && response.status === 200) {
+          //console.log(response.data);
+          //dispatch(playerDataReceived(response.data));
+          dispatch(finishLoading());
+        }
       });
   };
 };
