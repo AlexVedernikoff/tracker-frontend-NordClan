@@ -10,6 +10,7 @@ import {
   defaultExtra as extra,
   withdefaultExtra
 } from './Common';
+
 const getTaskStart = () => ({
   type: TaskActions.GET_TASK_REQUEST_SENT
 });
