@@ -74,19 +74,3 @@ export const restApi = (store) => (next) => (action) => {
 
   return Promise.reject();
 };
-
-/*
-
-  const URL = `${API_URL}/task/${taskId}/comment/${commentId}`;
-  return (dispatch) => {
-    dispatch(commentRemoveStart(taskId, commentId));
-    axios.delete(URL)
-    .then(
-      result => {
-        dispatch(getCommentsByTask(taskId));
-        return dispatch(commentRemoveSuccess(taskId, commentId, result));
-      },
-      error => dispatch(commentRemoveFail(taskId, commentId, error))
-    );
-  };
- */
