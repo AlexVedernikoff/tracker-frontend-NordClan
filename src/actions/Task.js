@@ -88,25 +88,6 @@ const getTask = id => {
     response: withFinishLoading(response => getTaskSuccess(response.data), true)(dispatch),
     error: withFinishLoading(error => getTaskFail(error.response.data), true)(dispatch)
   });
-  /*const URL = `${API_URL}/task/${id}`;
-
-  return dispatch => {
-    dispatch(getTaskStart());
-    dispatch(startLoading());
-
-    axios
-      .get(URL, {}, { withCredentials: true })
-      .catch(error => {
-        dispatch(getTaskFail(error.response.data));
-        dispatch(finishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(getTaskSuccess(response.data));
-          dispatch(finishLoading());
-        }
-      });
-  };*/
 };
 
 const getTaskHistory = id => {
@@ -123,26 +104,6 @@ const getTaskHistory = id => {
     response: withFinishLoading(response => getTaskHistorySuccess(response.data), true)(dispatch),
     error: defaultErrorHandler(dispatch)
   });
-  /*
-  const URL = `${API_URL}/task/${id}/history`;
-
-  return dispatch => {
-    dispatch(getTaskHistoryStart());
-    dispatch(startLoading());
-
-    axios
-      .get(URL, {}, { withCredentials: true })
-      .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(finishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(getTaskHistorySuccess(response.data));
-          dispatch(finishLoading());
-        }
-      });
-  };*/
 };
 
 const changeTask = (ChangedProperties, target) => {
@@ -162,28 +123,6 @@ const changeTask = (ChangedProperties, target) => {
     })(dispatch),
     error: defaultErrorHandler(dispatch)
   });
-  /*const URL = `${API_URL}/task/${ChangedProperties.id}`;
-
-  return dispatch => {
-    dispatch(requestTaskChange());
-    dispatch(startLoading());
-
-    axios
-      .put(URL, ChangedProperties, {
-        withCredentials: true
-      })
-      .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(finishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(successTaskChange(response.data));
-          dispatch(finishLoading());
-          dispatch(stopTaskEditing(target));
-        }
-      });
-  };*/
 };
 
 const linkTask = (taskId, linkedTaskId) => {
@@ -203,30 +142,6 @@ const linkTask = (taskId, linkedTaskId) => {
     response: withFinishLoading(response => successTaskLink(response.data), true)(dispatch),
     error: defaultErrorHandler(dispatch)
   });
-  /*const URL = `${API_URL}/task/${taskId}/links`;
-
-  return dispatch => {
-    dispatch(requestTaskLink());
-    dispatch(startLoading());
-
-    axios
-    .post(URL,
-      {
-        linkedTaskId
-      }, {
-        withCredentials: true
-      })
-      .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(finishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(successTaskLink(response.data));
-          dispatch(finishLoading());
-        }
-      });
-  };*/
 };
 
 const unlinkTask = (taskId, linkedTaskId) => {
@@ -244,25 +159,6 @@ const unlinkTask = (taskId, linkedTaskId) => {
     response: withFinishLoading(response => successTaskLink(response.data), true)(dispatch),
     error: defaultErrorHandler(dispatch)
   });
-  /*const URL = `${API_URL}/task/${taskId}/links/${linkedTaskId}`;
-
-  return dispatch => {
-    dispatch(requestTaskLink());
-    dispatch(startLoading());
-
-    axios
-    .delete(URL, {}, {
-      withCredentials: true
-    })
-      .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(finishLoading());
-      })
-      .then(response => {
-        dispatch(successTaskLink(response.data));
-        dispatch(finishLoading());
-      });
-  };*/
 };
 
 const changeTaskUser = (taskId, userId, statusId) => {
@@ -286,31 +182,6 @@ const changeTaskUser = (taskId, userId, statusId) => {
     })(dispatch),
     error: defaultErrorHandler(dispatch)
   });
-  /*const URL = `${API_URL}/task/${taskId}/users`;
-
-  return dispatch => {
-    dispatch(requestTaskChangeUser());
-    dispatch(startLoading());
-
-    axios
-      .post(URL, {
-        userId,
-        statusId
-      }, {
-        withCredentials: true
-      })
-      .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(finishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(successTaskChangeUser(response.data));
-          dispatch(finishLoading());
-          dispatch(stopTaskEditing('User'));
-        }
-      });
-  };*/
 };
 
 const attachmentUploadStarted = (taskId, attachment) => ({
