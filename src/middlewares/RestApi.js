@@ -46,7 +46,20 @@ const polyfill = ({ method, body, extra, start, error, response, url }) => {
 const sendToApi = ({ method, body, extra, start, error, response, url }) => {
   start();
   return axios[method](url, body, extra)
-    .then(response, error)
+    .then(res => {
+      if (res && res.status === 200) {
+        response(res);
+      } else {
+        error({
+          response: res || {},
+          message: `
+            Received ${JSON.stringify(res)} ${res && res.status ? `with status ${res.status}` : ''}
+            while ${method.toLocaleUpperCase()} ${url}
+            `
+        });
+        throw res;
+      }
+    }, error)
     .catch(err => console.error(err));
 };
 
