@@ -12,7 +12,7 @@ import PlaylistItem from '../PlaylistItem';
 import * as css from '../Playlist.scss';
 
 
-class All extends Component {
+class List extends Component {
 
   constructor (props) {
     super(props);
@@ -27,7 +27,7 @@ class All extends Component {
 
   render () {
     const {
-      isDraftShow,
+      isDraftShow
     } = this.state;
 
     const {
@@ -47,17 +47,21 @@ class All extends Component {
       <div>
         <div>
           {visible}
-          <div
-            className={css.showMore}
-            onClick={this.handleShowOther}
-            data-tip={!isDraftShow ? 'Показать скрытые' : 'Скрыть'}
-            data-place="bottom">
-            {
-              !isDraftShow && invisible
-              ? <IconArrowDown/>
-              : <IconArrowUp/>
-            }
-          </div>
+          {
+            invisible && invisible.length > 0
+            ? <div
+                className={css.showMore}
+                onClick={this.handleShowOther}
+                data-tip={!isDraftShow ? 'Показать скрытые' : 'Скрыть'}
+                data-place="bottom">
+                {
+                  !isDraftShow && invisible
+                    ? <IconArrowDown/>
+                    : <IconArrowUp/>
+                }
+              </div>
+              : null
+          }
           {
             isDraftShow
             ? invisible
@@ -69,8 +73,8 @@ class All extends Component {
   }
 }
 
-All.propTypes = {
+List.propTypes = {
   tracks: PropTypes.object
 };
 
-export default All;
+export default List;
