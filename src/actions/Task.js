@@ -1,8 +1,15 @@
 import * as TaskActions from '../constants/Task';
 import { API_URL } from '../constants/Settings';
 import axios from 'axios';
-import { startLoading, finishLoading } from './Loading';
-import { showNotification } from './Notifications';
+import {DELETE, GET, POST, PUT, REST_API} from '../constants/RestApi';
+import {
+  defaultErrorHandler,
+  withFinishLoading,
+  withStartLoading,
+  defaultBody as body,
+  defaultExtra as extra,
+  withdefaultExtra
+} from './Common';
 
 const getTaskStart = () => ({
   type: TaskActions.GET_TASK_REQUEST_SENT
@@ -72,81 +79,51 @@ const getTask = id => {
   if (!id) {
     return () => {};
   }
-
-  const URL = `${API_URL}/task/${id}`;
-
-  return dispatch => {
-    dispatch(getTaskStart());
-    dispatch(startLoading());
-
-    axios
-      .get(URL, {}, { withCredentials: true })
-      .catch(error => {
-        dispatch(getTaskFail(error.response.data));
-        dispatch(finishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(getTaskSuccess(response.data));
-          dispatch(finishLoading());
-        }
-      });
-  };
+  return dispatch => dispatch({
+    type: REST_API,
+    url: `/task/${id}`,
+    method: GET,
+    body,
+    extra,
+    start: withStartLoading(getTaskStart, true)(dispatch),
+    response: withFinishLoading(response => getTaskSuccess(response.data), true)(dispatch),
+    error: withFinishLoading(error => getTaskFail(error.response.data), true)(dispatch)
+  });
 };
 
 const getTaskHistory = id => {
   if (!id) {
     return () => {};
   }
-
-  const URL = `${API_URL}/task/${id}/history`;
-
-  return dispatch => {
-    dispatch(getTaskHistoryStart());
-    dispatch(startLoading());
-
-    axios
-      .get(URL, {}, { withCredentials: true })
-      .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(finishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(getTaskHistorySuccess(response.data));
-          dispatch(finishLoading());
-        }
-      });
-  };
+  return dispatch => dispatch({
+    type: REST_API,
+    url: `/task/${id}/history`,
+    method: GET,
+    body,
+    extra,
+    start: withStartLoading(getTaskHistoryStart, true)(dispatch),
+    response: withFinishLoading(response => getTaskHistorySuccess(response.data), true)(dispatch),
+    error: defaultErrorHandler(dispatch)
+  });
 };
 
 const changeTask = (ChangedProperties, target) => {
   if (!ChangedProperties.id) {
     return;
   }
-
-  const URL = `${API_URL}/task/${ChangedProperties.id}`;
-
-  return dispatch => {
-    dispatch(requestTaskChange());
-    dispatch(startLoading());
-
-    axios
-      .put(URL, ChangedProperties, {
-        withCredentials: true
-      })
-      .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(finishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(successTaskChange(response.data));
-          dispatch(finishLoading());
-          dispatch(stopTaskEditing(target));
-        }
-      });
-  };
+  return dispatch => dispatch({
+    type: REST_API,
+    url: `/task/${ChangedProperties.id}`,
+    method: PUT,
+    body: ChangedProperties,
+    extra,
+    start: withStartLoading(requestTaskChange, true)(dispatch),
+    response: withFinishLoading(response => {
+      dispatch(successTaskChange(response.data));
+      dispatch(stopTaskEditing(target));
+    })(dispatch),
+    error: defaultErrorHandler(dispatch)
+  });
 };
 
 const linkTask = (taskId, linkedTaskId) => {
@@ -154,30 +131,18 @@ const linkTask = (taskId, linkedTaskId) => {
     return () => {};
   }
 
-  const URL = `${API_URL}/task/${taskId}/links`;
-
-  return dispatch => {
-    dispatch(requestTaskLink());
-    dispatch(startLoading());
-
-    axios
-    .post(URL,
-      {
-        linkedTaskId
-      }, {
-        withCredentials: true
-      })
-      .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(finishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(successTaskLink(response.data));
-          dispatch(finishLoading());
-        }
-      });
-  };
+  return dispatch => dispatch({
+    type: REST_API,
+    url: `/task/${taskId}/links`,
+    method: POST,
+    body: {
+      linkedTaskId
+    },
+    extra,
+    start: withStartLoading(requestTaskLink, true)(dispatch),
+    response: withFinishLoading(response => successTaskLink(response.data), true)(dispatch),
+    error: defaultErrorHandler(dispatch)
+  });
 };
 
 const unlinkTask = (taskId, linkedTaskId) => {
@@ -185,27 +150,16 @@ const unlinkTask = (taskId, linkedTaskId) => {
     return () => {};
   }
 
-  const URL = `${API_URL}/task/${taskId}/links/${linkedTaskId}`;
-
-  return dispatch => {
-    dispatch(requestTaskLink());
-    dispatch(startLoading());
-
-    axios
-    .delete(URL, {}, {
-      withCredentials: true
-    })
-      .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(finishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(successTaskLink(response.data));
-          dispatch(finishLoading());
-        }
-      });
-  };
+  return dispatch => dispatch({
+    type: REST_API,
+    url: `/task/${taskId}/links/${linkedTaskId}`,
+    method: DELETE,
+    body,
+    extra,
+    start: withStartLoading(requestTaskLink, true)(dispatch),
+    response: withFinishLoading(response => successTaskLink(response.data), true)(dispatch),
+    error: defaultErrorHandler(dispatch)
+  });
 };
 
 const changeTaskUser = (taskId, userId, statusId) => {
@@ -213,31 +167,22 @@ const changeTaskUser = (taskId, userId, statusId) => {
     return;
   }
 
-  const URL = `${API_URL}/task/${taskId}/users`;
-
-  return dispatch => {
-    dispatch(requestTaskChangeUser());
-    dispatch(startLoading());
-
-    axios
-      .post(URL, {
-        userId,
-        statusId
-      }, {
-        withCredentials: true
-      })
-      .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(finishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(successTaskChangeUser(response.data));
-          dispatch(finishLoading());
-          dispatch(stopTaskEditing('User'));
-        }
-      });
-  };
+  return dispatch => dispatch({
+    type: REST_API,
+    url: `/task/${taskId}/users`,
+    method: POST,
+    body: {
+      userId,
+      statusId
+    },
+    extra,
+    start: withStartLoading(requestTaskChangeUser, true)(dispatch),
+    response: withFinishLoading(response => {
+      dispatch(successTaskChangeUser(response.data));
+      dispatch(stopTaskEditing('User'));
+    })(dispatch),
+    error: defaultErrorHandler(dispatch)
+  });
 };
 
 const attachmentUploadStarted = (taskId, attachment) => ({

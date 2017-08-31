@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import AttachedDocument from '../AttachedDocument';
 import AttachedImage from '../AttachedImage';
+import AttachDeletion from '../AttachDeletion';
 import FileUpload from '../FileUpload';
 
 export default class Attachments extends Component {
@@ -21,7 +22,9 @@ export default class Attachments extends Component {
         <ul className={css.attachmentsContainer}>
 
           {this.props.attachments.map((file, index) => {
-            return file.type === 'image'
+            return file.deleting
+              ? <AttachDeletion key={`attached-deletion-${index}`} filename={file.fileName} />
+              : file.type === 'image'
               ? <AttachedImage key={`attached-document-${index}`} {...file} removeAttachment={this.props.removeAttachment} />
               : <AttachedDocument
                   key={`attached-picture-${index}`}

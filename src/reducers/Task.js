@@ -259,6 +259,22 @@ export default function Task (state = InitialState, action) {
     };
   }
 
+  case TaskActions.TASK_ATTACHMENT_REMOVE_SUCCESS: {
+    const { attachmentId } = action;
+    const { attachments } = state.task;
+
+    const attachment = attachments.filter(attach => attach.id === attachmentId)[0];
+    attachment.deleting = true;
+
+    return {
+      ...state,
+      task: {
+        ...state.task,
+        attachments
+      }
+    };
+  }
+
   default:
     return state;
   }

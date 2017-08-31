@@ -83,10 +83,9 @@
 }
 
 .commentQuote {
+  display: flex;
   border: 1px solid $color-gray;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   background-color: $color-lightgray;
   color: gray;
   padding: 0.5rem;
@@ -104,6 +103,16 @@
 .commentQuoteAutor {
   display: inline-block;
   margin-right: 0.5rem;
+}
+
+.commentText {
+  white-space: pre-line;
+  cursor: pointer;
+}
+
+.quoteText {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .selected {
