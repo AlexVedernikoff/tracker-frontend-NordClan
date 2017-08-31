@@ -1,19 +1,28 @@
 import React from 'react';
-import cn from 'classnames'
+import cn from 'classnames';
 import * as css from './Timesheets.scss';
-import { IconComment, IconClose, IconComments, IconPlus } from '../../components/Icons';
+import { IconComment, IconClose, IconComments, IconPlus, IconArrowLeft, IconArrowRight, IconCalendar } from '../../components/Icons';
+import DayPicker from 'react-day-picker';
 
 class Timesheets extends React.Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      isCalendarOpen: false
+    };
+  }
+
   render () {
+    const { isCalendarOpen } = this.state;
     return (
       <div>
         <section>
-          <h1>Timesheets</h1>
+          <h1>Отчеты по времени</h1>
           <hr/>
           <table>
             <thead>
-              <tr>
-                <th></th>
+              <tr className={css.sheetsHeader}>
+                <th className={css.prevWeek}><IconArrowLeft data-tip="Предыдущая неделя"/></th>
                 <th className={cn(css.day)}>Пн<br/>21.08</th>
                 <th className={cn(css.day)}>Вт<br/>22.08</th>
                 <th className={cn(css.day)}>Ср<br/>23.08</th>
@@ -21,6 +30,17 @@ class Timesheets extends React.Component {
                 <th className={cn(css.day)}>Пт<br/>25.08</th>
                 <th className={cn(css.day, css.weekend)}>Сб<br/>26.08</th>
                 <th className={cn(css.day, css.weekend)}>Вс<br/>27.08</th>
+                <th className={css.nextWeek}><IconArrowRight data-tip="Следующая неделя"/></th>
+                <th className={cn(css.actions)}>
+                  <div className={css.changeWeek} data-tip="Выбрать дату" onClick={() => this.setState({isCalendarOpen: !isCalendarOpen})}>
+                    <IconCalendar/>
+                  </div>
+                  {
+                    isCalendarOpen
+                    ? <DayPicker />
+                    : null
+                  }
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -91,7 +111,7 @@ class Timesheets extends React.Component {
                     </span>
                   </div>
                 </td>
-                <td className={cn(css.total)}>
+                <td className={cn(css.total, css.totalRow)}>
                   <div>
                     0.75
                   </div>
@@ -174,7 +194,7 @@ class Timesheets extends React.Component {
                     </span>
                   </div>
                 </td>
-                <td className={cn(css.total)}>
+                <td className={cn(css.total, css.totalRow)}>
                   <div>
                     5.25
                   </div>
@@ -197,7 +217,7 @@ class Timesheets extends React.Component {
                 <td className={cn(css.total, css.inactive)}>0</td>
                 <td className={cn(css.total, css.inactive, css.weekend)}>0</td>
                 <td className={cn(css.total, css.inactive, css.weekend)}>0</td>
-                <td className={cn(css.total, css.totalWeek)}>6.5</td>
+                <td className={cn(css.total, css.totalWeek, css.totalRow)}>6.5</td>
                 <td className={css.total}></td>
               </tr>
               <tr>

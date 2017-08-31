@@ -189,6 +189,13 @@ export const IconLink = (props) => (
   </SvgIcon>
 );
 
+export const IconArrowLeft = (props) => (
+  <SvgIcon {...props}>
+    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+    <path d="M0 0h24v24H0z" fill="none"/>
+  </SvgIcon>
+);
+
 export const IconArrowRight = (props) => (
   <SvgIcon {...props}>
     <path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"/>
@@ -215,6 +222,12 @@ export const IconTime = (props) => (
     <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
     <path d="M0 0h24v24H0z" fill="none"/>
     <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+  </SvgIcon>
+);
+
+export const IconCalendar = (props) => (
+  <SvgIcon {...props}>
+    <path d="M19,19H5V8H19M16,1V3H8V1H6V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3H18V1" />
   </SvgIcon>
 );
 

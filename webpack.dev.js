@@ -93,7 +93,7 @@ const settings = {
     proxy: {
       '/api/**': {
         target: {
-          host: '192.168.72.162',
+          host: 'sim-track.simbirsoft',
           protocol: 'http:',
           port: 8080
         },
@@ -103,7 +103,7 @@ const settings = {
       },
       '/uploads/**': {
         target: {
-          host: '192.168.72.162',
+          host: 'sim-track.simbirsoft',
           protocol: 'http:',
           port: 8080
         },
