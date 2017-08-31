@@ -12,6 +12,8 @@ import { getProjectUsers } from '../../../actions/Project';
 import TaskTypes from '../../../constants/TaskTypes';
 import * as TaskStatuses from '../../../constants/TaskStatuses';
 import { connect } from 'react-redux';
+import CopyThis from '../../../components/CopyThis';
+import { history } from '../../../App';
 
 const getNewStatus = newPhase => {
   let newStatusId;
@@ -171,12 +173,17 @@ class TaskHeader extends Component {
         }
 
         <div className={css.taskTopInfo}>
-          {task.project
-            ? <div className={css.prefix}>
-                {task.project.prefix}-{task.id}
-              </div>
-            : null
-          }
+          <CopyThis
+            wrapThisInto={'div'}
+            textToCopy={`${location.origin}${history.createHref(this.props.location)}`}>
+            {
+              task.project
+                ? <div className={css.prefix}>
+                  {task.project.prefix}-{task.id}
+                </div>
+                : null
+            }
+          </CopyThis>
           {task.typeId && TaskTypes[task.typeId]
             ? <div>
                 <span>
@@ -313,6 +320,7 @@ class TaskHeader extends Component {
 TaskHeader.propTypes = {
   css: PropTypes.object,
   getProjectUsers: PropTypes.func.isRequired,
+  location: PropTypes.object,
   onChange: PropTypes.func.isRequired,
   onChangeUser: PropTypes.func.isRequired,
   projectId: PropTypes.string.isRequired,
@@ -321,7 +329,8 @@ TaskHeader.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  users: state.Project.project.users
+  users: state.Project.project.users,
+  location: state.routing.locationBeforeTransitions
 });
 
 const mapDispatchToProps = {
