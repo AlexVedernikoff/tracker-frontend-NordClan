@@ -13,11 +13,11 @@ function TimesheetPlayer (state = InitialState, action) {
       isReceiving: true
     };
 
-  case TimesheetPlayersActions.TIMESHEET_PLAYER_RECEIVE_SUCCESS:
+    case TimesheetPlayersActions.TIMESHEET_PLAYER_RECEIVE_SUCCESS:
     return {
       ...state,
       tracks: {
-        '2017-08-28': action.tracks,
+        [action.tracks.onDate.slice(0,10)]: action.tracks.data,
       },
     };
 

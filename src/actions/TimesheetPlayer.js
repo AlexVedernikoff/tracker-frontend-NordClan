@@ -33,7 +33,7 @@ export const getTimesheetsPlayerData = (onDate) => {
       })
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(playerDataReceived(response.data.data));
+          dispatch(playerDataReceived(response.data));
           dispatch(finishLoading());
         }
       });

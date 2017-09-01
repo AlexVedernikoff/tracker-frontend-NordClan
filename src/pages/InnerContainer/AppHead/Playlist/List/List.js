@@ -25,6 +25,10 @@ class List extends Component {
     this.setState({isNotMineTasksShow: !this.state.isNotMineTasksShow}, () => ReactTooltip.rebuild());
   };
 
+  changeVisibility = () => {
+
+  };
+
   render () {
     const {
       isDraftShow
@@ -35,7 +39,7 @@ class List extends Component {
     } = this.props;
 
     const visible = tracks.visible
-      ? tracks.visible.map(item => <PlaylistItem item={item} key={`visible-${item.id}`} visible/>)
+      ? tracks.visible.map(item => <PlaylistItem item={item} key={`visible-${item.id}`} visible changeVisibility={this.changeVisibility}/>)
       : null;
 
     const invisible = tracks.invisible
