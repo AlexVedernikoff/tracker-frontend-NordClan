@@ -46,19 +46,11 @@ const getActivityButton = (activityType) => {
     return <IconCase style={getActivityButtonStyle}/>;
   case TimesheetTypes.HOSPITAL:
     return <IconHospital style={getActivityButtonStyle}/>;
+  case TimesheetTypes.CONTROL:
+    return <IconOrganization style={{width: '1.5rem', height: '1.5rem'}}/>;
+  case TimesheetTypes.PRESALE:
+    return <IconCheckList style={{width: '1.5rem', height: '1.5rem'}}/>;
   }
-  // case 'inprogress':
-  //   return <IconPause style={{width: '1.5rem', height: '1.5rem'}}/>;
-  // case 'inhold':
-  //   return <IconPlay style={{width: '1.5rem', height: '1.5rem'}}/>;
-  // case 'delegated':
-  //   return <IconCheckCircle style={{width: '1.5rem', height: '1.5rem'}}/>;
-  // case 'work':
-  //   return <IconLaptop style={{width: '1.5rem', height: '1.5rem'}}/>;
-  // case 'control':
-  //   return <IconOrganization style={{width: '1.5rem', height: '1.5rem'}}/>;
-  // case 'presale':
-  //   return <IconCheckList style={{width: '1.5rem', height: '1.5rem'}}/>;
 };
 
 
@@ -104,6 +96,18 @@ class PlaylistItem extends Component {
     this.setState({comment: e.target.value});
   };
 
+  changeVisibility = (key, visibility) => {
+    return () => {
+      this.props.updateTimesheet({
+        taskId: this.props.item.task.id,
+        timesheetId: this.props.item.id,
+        body: {
+          isVisible: !!visibility
+        }
+      });
+    };
+  };
+
   render () {
     const {
       task,
@@ -144,8 +148,8 @@ class PlaylistItem extends Component {
               <span className={classnames({[css.commentToggler]: true, [css.green]: !!comment})} onClick={this.toggleComment}><IconComment/></span>
               { status !== 'education'
                 ? (this.props.visible
-                  ? <span className={css.visibleToggler} onClick={this.toggleComment} data-tip="Скрыть"><IconEyeDisable/></span>
-                  : <span className={css.visibleToggler} data-tip="Показать"><IconEye/></span>)
+                  ? <span className={css.visibleToggler} onClick={this.changeVisibility(this.props.index, false)} data-tip="Скрыть"><IconEyeDisable/></span>
+                  : <span className={css.visibleToggler}onClick={this.changeVisibility(this.props.index, true)} data-tip="Показать"><IconEye/></span>)
                 : null
               }
             </div>
@@ -183,6 +187,7 @@ class PlaylistItem extends Component {
 }
 
 PlaylistItem.propTypes = {
+  index: PropTypes.number.isRequired,
   item: PropTypes.object.isRequired,
   updateTimesheet: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired
