@@ -27,15 +27,11 @@ function TimesheetPlayer (state = InitialState, action) {
     };
 
   case TimesheetPlayersActions.TIMESHEET_PLAYER_UPDATE_RECEIVE_SUCCESS:
-    const array = state.tracks[action.tracks.onDate];
-    array.visible[action.tracks.itemKey] = action.tracks.data;
+
+    // нужно заменить старые данные новыми
 
     return {
       ...state,
-      tracks: {
-        [action.tracks.onDate.slice(0, 10)]: array,
-        ...state.tracks,
-      },
     };
 
 

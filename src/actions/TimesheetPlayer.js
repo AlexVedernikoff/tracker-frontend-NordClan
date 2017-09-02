@@ -49,12 +49,11 @@ export const getTimesheetsPlayerData = (startDate, endDate) => {
 export const updateDraftVisible = (data, options) => {
   const URL = `${API_URL}/timesheetDraft/${data.timesheetId}`;
 
-
   return dispatch => {
     dispatch(startReceivePlayerData());
     dispatch(startLoading());
     return axios
-      .put(URL, {isDraft: true, ...data.body}, { withCredentials: true })
+      .put(URL, data.body, { withCredentials: true })
       .catch(error => {
         dispatch(playerDataReceiveFailed());
         dispatch(showNotification({ message: error.message, type: 'error' }));
@@ -62,7 +61,6 @@ export const updateDraftVisible = (data, options) => {
       })
       .then(response => {
         if (response && response.status === 200) {
-          //console.log(response.data);
           dispatch(playerDataUpdateReceived(response.data, options.onDate, options.itemKey));
           dispatch(finishLoading());
         }
@@ -72,8 +70,6 @@ export const updateDraftVisible = (data, options) => {
 
 export const updateTimesheetDraft = (data, options) => {
   const URL = `${API_URL}/timesheet/${data.timesheetId}`;
-
-
   console.log(options);
 
   return dispatch => {
@@ -88,7 +84,6 @@ export const updateTimesheetDraft = (data, options) => {
       })
       .then(response => {
         if (response && response.status === 200) {
-          //console.log(response.data);
           dispatch(playerDataUpdateReceived(response.data, options.onDate, options.itemKey));
           dispatch(finishLoading());
         }
@@ -100,9 +95,13 @@ export const updateTimesheetDraft = (data, options) => {
 export const updateTimesheet = (data, options) => {
   const URL = `${API_URL}/task/${data.taskId}/timesheet/${data.timesheetId}`;
 
-  if (options.isDraft === true) {
-    if(data.body.isVisible) {
+  /*
+  нужен рефакторинг в этой функции
+   */
 
+  if (options.isDraft === true) {
+    if ('isVisible' in data.body) {
+      return updateDraftVisible(data, options);
     }
     return updateTimesheetDraft(data, options);
   }
@@ -119,8 +118,7 @@ export const updateTimesheet = (data, options) => {
       })
       .then(response => {
         if (response && response.status === 200) {
-          //console.log(response.data);
-          dispatch(playerDataUpdateReceived(response.data, options.onDate, options.itemKey));
+          dispatch(playerDataUpdateReceived(response.data, options.itemKey));
           dispatch(finishLoading());
         }
       });

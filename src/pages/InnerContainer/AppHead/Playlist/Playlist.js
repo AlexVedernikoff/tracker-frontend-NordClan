@@ -165,6 +165,7 @@ class Playlist extends Component {
 
   getScale = (tracks, activeDayTab, activeActivityTab) => {
     const activeTabContent = this.filterTracksByDayTab(tracks, activeDayTab);
+    if (!activeTabContent.scales) return '';
     const time = activeTabContent.scales[activeActivityTab];
 
     if (time) {
@@ -209,7 +210,7 @@ class Playlist extends Component {
   getScaleAll = (tracks, dayTab) => {
     const date = this.getDateByDayTab(dayTab).format('YYYY-MM-DD');
     if (date in tracks) {
-      if (tracks[date].scales.all) {
+      if ('scales' in tracks[date] && tracks[date].scales.all) {
         return tracks[date].scales.all;
       }
       return 0;

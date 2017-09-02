@@ -167,9 +167,9 @@ class PlaylistItem extends Component {
               }
 
               { status !== 'education'
-                ? (this.props.visible
+                ? (this.props.item.isVisible
                   ? <span className={css.visibleToggler} onClick={this.changeVisibility(false)} data-tip="Скрыть"><IconEyeDisable/></span>
-                  : <span className={css.visibleToggler}onClick={this.changeVisibility(true)} data-tip="Показать"><IconEye/></span>)
+                  : <span className={css.visibleToggler} onClick={this.changeVisibility(true)} data-tip="Показать"><IconEye/></span>)
                 : null
               }
             </div>
