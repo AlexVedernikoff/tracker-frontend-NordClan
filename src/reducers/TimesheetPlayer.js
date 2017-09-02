@@ -13,18 +13,31 @@ function TimesheetPlayer (state = InitialState, action) {
       isReceiving: true
     };
 
-    case TimesheetPlayersActions.TIMESHEET_PLAYER_RECEIVE_SUCCESS:
+  case TimesheetPlayersActions.TIMESHEET_PLAYER_RECEIVE_SUCCESS:
     return {
       ...state,
       tracks: {
-        [action.tracks.onDate.slice(0,10)]: action.tracks.data,
-      },
+        ...action.data
+      }
     };
 
   case TimesheetPlayersActions.TIMESHEET_PLAYER_RECEIVE_FAIL:
     return {
       ...state
     };
+
+  case TimesheetPlayersActions.TIMESHEET_PLAYER_UPDATE_RECEIVE_SUCCESS:
+    const array = state.tracks[action.tracks.onDate];
+    array.visible[action.tracks.itemKey] = action.tracks.data;
+
+    return {
+      ...state,
+      tracks: {
+        [action.tracks.onDate.slice(0, 10)]: array,
+        ...state.tracks,
+      },
+    };
+
 
   default:
     return state;

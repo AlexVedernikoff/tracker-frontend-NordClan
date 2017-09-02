@@ -10,16 +10,21 @@ const startReceivePlayerData = () => ({
 
 const playerDataReceived = data => ({
   type: TimesheetPlayer.TIMESHEET_PLAYER_RECEIVE_SUCCESS,
-  tracks: data
+  data
 });
 
 const playerDataReceiveFailed = () => ({
   type: TimesheetPlayer.TIMESHEET_PLAYER_RECEIVE_FAIL
 });
 
+const playerDataUpdateReceived = (data, itemKey) => ({
+  type: TimesheetPlayer.TIMESHEET_PLAYER_UPDATE_RECEIVE_SUCCESS,
+  data,
+  itemKey
+});
 
-export const getTimesheetsPlayerData = (onDate) => {
-  const URL = `${API_URL}/timesheet/tracks/?onDate=${onDate}`;
+export const getTimesheetsPlayerData = (startDate, endDate) => {
+  const URL = `${API_URL}/timesheet/tracksAll/?startDate=${startDate}&endDate=${endDate}`;
 
   return dispatch => {
     dispatch(startReceivePlayerData());
@@ -41,8 +46,66 @@ export const getTimesheetsPlayerData = (onDate) => {
 };
 
 
-export const updateTimesheet = (data) => {
+export const updateDraftVisible = (data, options) => {
+  const URL = `${API_URL}/timesheetDraft/${data.timesheetId}`;
+
+
+  return dispatch => {
+    dispatch(startReceivePlayerData());
+    dispatch(startLoading());
+    return axios
+      .put(URL, {isDraft: true, ...data.body}, { withCredentials: true })
+      .catch(error => {
+        dispatch(playerDataReceiveFailed());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          //console.log(response.data);
+          dispatch(playerDataUpdateReceived(response.data, options.onDate, options.itemKey));
+          dispatch(finishLoading());
+        }
+      });
+  };
+};
+
+export const updateTimesheetDraft = (data, options) => {
+  const URL = `${API_URL}/timesheet/${data.timesheetId}`;
+
+
+  console.log(options);
+
+  return dispatch => {
+    dispatch(startReceivePlayerData());
+    dispatch(startLoading());
+    return axios
+      .post(URL, {isDraft: true, ...data.body}, { withCredentials: true })
+      .catch(error => {
+        dispatch(playerDataReceiveFailed());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          //console.log(response.data);
+          dispatch(playerDataUpdateReceived(response.data, options.onDate, options.itemKey));
+          dispatch(finishLoading());
+        }
+      });
+  };
+};
+
+
+export const updateTimesheet = (data, options) => {
   const URL = `${API_URL}/task/${data.taskId}/timesheet/${data.timesheetId}`;
+
+  if (options.isDraft === true) {
+    if(data.body.isVisible) {
+
+    }
+    return updateTimesheetDraft(data, options);
+  }
 
   return dispatch => {
     dispatch(startReceivePlayerData());
@@ -57,7 +120,7 @@ export const updateTimesheet = (data) => {
       .then(response => {
         if (response && response.status === 200) {
           //console.log(response.data);
-          //dispatch(playerDataReceived(response.data));
+          dispatch(playerDataUpdateReceived(response.data, options.onDate, options.itemKey));
           dispatch(finishLoading());
         }
       });

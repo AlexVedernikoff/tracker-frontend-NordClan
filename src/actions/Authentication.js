@@ -4,6 +4,7 @@ import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
 import { getTimesheetsPlayerData } from './TimesheetPlayer';
+import { startOfCurrentWeek, endOfCurrentWeek } from '../utils/date';
 
 const startAuthentication = () => ({
   type: AuthActions.AUTHENTICATION_START
@@ -95,7 +96,7 @@ export const getInfoAboutMe = () => {
       })
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(getTimesheetsPlayerData(new Date().toISOString().slice(0, 10)));
+          dispatch(getTimesheetsPlayerData(startOfCurrentWeek, endOfCurrentWeek));
           dispatch(userInfoReceived(response.data));
           dispatch(finishLoading());
         }
