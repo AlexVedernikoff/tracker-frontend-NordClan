@@ -14,6 +14,10 @@ import * as css from '../Playlist.scss';
 
 class List extends Component {
 
+  static propTypes = {
+    tracks: PropTypes.array
+  };
+
   constructor (props) {
     super(props);
     this.state = {
@@ -78,8 +82,6 @@ class List extends Component {
   }
 }
 
-List.propTypes = {
-  tracks: PropTypes.array
-};
+
 
 export default List;
