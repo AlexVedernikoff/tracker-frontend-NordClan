@@ -1,8 +1,12 @@
 import * as TimesheetPlayer from '../constants/TimesheetPlayer';
 import { API_URL } from '../constants/Settings';
-import axios from 'axios';
-import { startLoading, finishLoading } from './Loading';
-import { showNotification } from './Notifications';
+import { GET, POST, PUT, REST_API} from '../constants/RestApi';
+import {
+  withFinishLoading,
+  withStartLoading,
+  defaultExtra as extra,
+  withdefaultExtra
+} from './Common';
 
 const startReceivePlayerData = () => ({
   type: TimesheetPlayer.TIMESHEET_PLAYER_RECEIVE_START
@@ -24,103 +28,77 @@ const playerDataUpdateReceived = (data, itemKey) => ({
 });
 
 export const getTimesheetsPlayerData = (startDate, endDate) => {
-  const URL = `${API_URL}/timesheet/tracksAll/?startDate=${startDate}&endDate=${endDate}`;
 
-  return dispatch => {
-    dispatch(startReceivePlayerData());
-    dispatch(startLoading());
-    return axios
-      .get(URL, {}, { withCredentials: true })
-      .catch(error => {
-        dispatch(playerDataReceiveFailed());
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(finishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(playerDataReceived(response.data));
-          dispatch(finishLoading());
-        }
-      });
-  };
+  return dispatch => dispatch({
+    type: REST_API,
+    url: `/timesheet/tracksAll/?startDate=${startDate}&endDate=${endDate}`,
+    method: GET,
+    extra,
+    start: withStartLoading(startReceivePlayerData, true)(dispatch),
+    response: withFinishLoading(response => {
+      dispatch(playerDataReceived(response.data));
+    })(dispatch),
+    error: playerDataReceived(dispatch)
+  });
 };
 
 
 export const updateDraftVisible = (data, options) => {
-  const URL = `${API_URL}/timesheetDraft/${data.timesheetId}`;
 
-  return dispatch => {
-    dispatch(startReceivePlayerData());
-    dispatch(startLoading());
-    return axios
-      .put(URL, data.body, { withCredentials: true })
-      .catch(error => {
-        dispatch(playerDataReceiveFailed());
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(finishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(playerDataUpdateReceived(response.data, options.onDate, options.itemKey));
-          dispatch(finishLoading());
-        }
-      });
-  };
+  return dispatch => dispatch({
+    type: REST_API,
+    url: `/timesheetDraft/${data.timesheetId}`,
+    method: PUT,
+    body: data.body,
+    extra,
+    start: withStartLoading(startReceivePlayerData, true)(dispatch),
+    response: withFinishLoading(response => {
+      dispatch(playerDataUpdateReceived(response.data, options.itemKey));
+    })(dispatch),
+    error: playerDataReceiveFailed(dispatch)
+  });
 };
 
 export const updateTimesheetDraft = (data, options) => {
-  const URL = `${API_URL}/timesheet/${data.timesheetId}`;
-  console.log(options);
 
-  return dispatch => {
-    dispatch(startReceivePlayerData());
-    dispatch(startLoading());
-    return axios
-      .post(URL, {isDraft: true, ...data.body}, { withCredentials: true })
-      .catch(error => {
-        dispatch(playerDataReceiveFailed());
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(finishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(playerDataUpdateReceived(response.data, options.onDate, options.itemKey));
-          dispatch(finishLoading());
-        }
-      });
-  };
+  return dispatch => dispatch({
+    type: REST_API,
+    url: `/timesheet/${data.timesheetId}`,
+    method: POST,
+    body: {isDraft: true, ...data.body},
+    extra,
+    start: withStartLoading(startReceivePlayerData, true)(dispatch),
+    response: withFinishLoading(response => {
+      dispatch(playerDataUpdateReceived(response.data, options.itemKey));
+    })(dispatch),
+    error: playerDataReceiveFailed(dispatch)
+  });
 };
 
+export const updateExistedTimesheet = (data, options) => {
+
+  return dispatch => dispatch({
+    type: REST_API,
+    url: `/task/${data.taskId}/timesheet/${data.timesheetId}`,
+    method: PUT,
+    body: data.body,
+    extra,
+    start: withStartLoading(startReceivePlayerData, true)(dispatch),
+    response: withFinishLoading(response => {
+      dispatch(playerDataUpdateReceived(response.data, options.itemKey));
+    })(dispatch),
+    error: playerDataReceiveFailed(dispatch)
+  });
+};
 
 export const updateTimesheet = (data, options) => {
-  const URL = `${API_URL}/task/${data.taskId}/timesheet/${data.timesheetId}`;
-
-  /*
-  нужен рефакторинг в этой функции
-   */
 
   if (options.isDraft === true) {
     if ('isVisible' in data.body) {
-      return updateDraftVisible(data, options);
+      return updateDraftVisible(data, options); // Скрываю драфт
     }
-    return updateTimesheetDraft(data, options);
+    return updateTimesheetDraft(data, options); // Делаю из драфта тш
   }
 
-  return dispatch => {
-    dispatch(startReceivePlayerData());
-    dispatch(startLoading());
-    return axios
-      .put(URL, data.body, { withCredentials: true })
-      .catch(error => {
-        dispatch(playerDataReceiveFailed());
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(finishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(playerDataUpdateReceived(response.data, options.itemKey));
-          dispatch(finishLoading());
-        }
-      });
-  };
+  return updateExistedTimesheet(data, options);
 };
