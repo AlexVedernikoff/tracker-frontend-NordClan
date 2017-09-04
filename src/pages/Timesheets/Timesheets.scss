@@ -161,6 +161,7 @@
 
 .actions {
   padding: 0.5rem;
+  position: relative;
 }
 
 .deleteTask {
@@ -233,4 +234,114 @@
 
 .nextWeek {
   text-align: left;
+}
+
+.dateDropdown {
+  box-shadow: $box-shadow;
+  background: white;
+  border: 1px solid $color-gray;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+}
+
+.singleComment,
+.totalComment {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+}
+
+.totalComment {
+  display: flex;
+  background-color: white;
+  align-items: stretch;
+  box-shadow: $box-shadow;
+
+  textarea {
+    resize: none;
+    height: 3.5rem;
+    width: 15rem;
+  }
+}
+
+.commentDropdown {
+  display: flex;
+  z-index: 3;
+  background: white;
+  color: $color-black;
+  font-size: 13px;
+  box-shadow: $box-shadow;
+
+  textarea {
+    resize: none;
+    height: 3.5rem;
+    width: 15rem;
+  }
+}
+
+.saveBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $color-green;
+  font-size: 1.5rem;
+  color: white;
+  width: 3.5rem;
+  height: 3.5rem;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    background-color: lighten($color-green, 10%);
+    transition: $transition;
+  }
+}
+
+.checkAll {
+  @extend .saveBtn;
+  height: auto;
+}
+
+.today {
+  border: 1px solid $color-green;
+}
+
+th.today {
+  border-bottom-width: 0;
+}
+
+td.today {
+  border-top-width: 0;
+  border-bottom-width: 0;
+}
+
+tr:nth-last-child(2) td.today {
+  border-bottom-width: 1px;
+}
+
+.totalCommentPart {
+  display: flex;
+
+  .commentDay {
+    width: 3.5rem;
+    height: 3.5rem;
+    padding: 0.5rem;
+    border: 1px solid $color-gray;
+    border-right: none;
+    color: gray;
+    transition: $transition;
+  }
+
+  &:hover .commentDay {
+    background: $color-gray;
+  }
+
+  & + .totalCommentPart {
+    textarea, .commentDay {
+      border-top: none;
+    }
+  }
 }

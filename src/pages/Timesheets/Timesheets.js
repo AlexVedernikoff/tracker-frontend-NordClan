@@ -1,8 +1,157 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import cn from 'classnames';
-import * as css from './Timesheets.scss';
-import { IconComment, IconClose, IconComments, IconPlus, IconArrowLeft, IconArrowRight, IconCalendar } from '../../components/Icons';
 import DayPicker from 'react-day-picker';
+import onClickOutside from 'react-onclickoutside';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import LocaleUtils from 'react-day-picker/moment';
+import * as css from './Timesheets.scss';
+import { IconComment, IconClose, IconComments, IconPlus, IconArrowLeft, IconArrowRight, IconCalendar, IconCheck, IconCheckAll } from '../../components/Icons';
+import Button from '../../components/Button';
+
+class Calendar extends React.Component {
+  static propTypes = {
+    onCancel: PropTypes.func
+  }
+
+  constructor (props) {
+    super(props);
+    this.state = {};
+  }
+
+  handleClickOutside = evt => {
+    this.props.onCancel();
+  }
+
+  render () {
+    const { onCancel, ...other } = this.props;
+
+    return (
+      <div
+        className={cn(css.dateDropdown, 'st-week-select')}
+      >
+        <DayPicker
+          locale='ru'
+          localeUtils={{ ...LocaleUtils }}
+          {...other}
+        />
+      </div>
+    );
+  }
+}
+
+Calendar = onClickOutside(Calendar);
+
+class TotalComment extends React.Component {
+  static propTypes = {}
+
+  constructor (props) {
+    super(props);
+    this.state = {
+      isOpen: false
+    };
+  }
+
+  handleClickOutside = evt => {
+    this.setState({
+      isOpen: false
+    });
+  }
+
+  toggle = () => {
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
+  }
+
+  render () {
+
+    return (
+      <div>
+        <IconComments onClick={this.toggle}/>
+        <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
+          {
+            this.state.isOpen
+            ? <div className={cn(css.totalComment)}>
+                <div>
+                  <div className={css.totalCommentPart}>
+                    <div className={css.commentDay}>
+                      Пн.<br/>21.08
+                    </div>
+                    <textarea placeholder="Введите текст комментария" />
+                  </div>
+                  <div className={css.totalCommentPart}>
+                    <div className={css.commentDay}>
+                      Вт.<br/>22.08
+                    </div>
+                    <textarea placeholder="Введите текст комментария" />
+                  </div>
+                  <div className={css.totalCommentPart}>
+                    <div className={css.commentDay}>
+                      Ср.<br/>23.08
+                    </div>
+                    <textarea placeholder="Введите текст комментария" />
+                  </div>
+                </div>
+                <div className={css.checkAll} onClick={this.toggle}>
+                  <IconCheckAll/>
+                </div>
+              </div>
+            : null
+          }
+        </ReactCSSTransitionGroup>
+      </div>
+    );
+  }
+}
+
+TotalComment = onClickOutside(TotalComment);
+
+class SingleComment extends React.Component {
+  static propTypes = {}
+
+  constructor (props) {
+    super(props);
+    this.state = {
+      isOpen: false
+    };
+  }
+
+  handleClickOutside = evt => {
+    this.setState({
+      isOpen: false
+    });
+  }
+
+  toggle = () => {
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
+  }
+
+  render () {
+
+    return (
+      <div>
+        <IconComment onClick={this.toggle}/>
+        <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
+          {
+            this.state.isOpen
+            ? <div className={cn(css.commentDropdown, css.singleComment)}>
+                <textarea autoFocus placeholder="Введите текст комментария" />
+                <div onClick={this.toggle} className={css.saveBtn}>
+                  <IconCheck/>
+                </div>
+              </div>
+            : null
+          }
+        </ReactCSSTransitionGroup>
+      </div>
+    );
+  }
+}
+
+SingleComment = onClickOutside(SingleComment);
 
 class Timesheets extends React.Component {
   constructor (props) {
@@ -10,6 +159,10 @@ class Timesheets extends React.Component {
     this.state = {
       isCalendarOpen: false
     };
+  }
+
+  toggleCalendar = () => {
+    this.setState({isCalendarOpen: !this.state.isCalendarOpen});
   }
 
   render () {
@@ -25,21 +178,27 @@ class Timesheets extends React.Component {
                 <th className={css.prevWeek}><IconArrowLeft data-tip="Предыдущая неделя"/></th>
                 <th className={cn(css.day)}>Пн<br/>21.08</th>
                 <th className={cn(css.day)}>Вт<br/>22.08</th>
-                <th className={cn(css.day)}>Ср<br/>23.08</th>
+                <th className={cn(css.day, css.today)}>Ср<br/>23.08</th>
                 <th className={cn(css.day)}>Чт<br/>24.08</th>
                 <th className={cn(css.day)}>Пт<br/>25.08</th>
                 <th className={cn(css.day, css.weekend)}>Сб<br/>26.08</th>
                 <th className={cn(css.day, css.weekend)}>Вс<br/>27.08</th>
                 <th className={css.nextWeek}><IconArrowRight data-tip="Следующая неделя"/></th>
                 <th className={cn(css.actions)}>
-                  <div className={css.changeWeek} data-tip="Выбрать дату" onClick={() => this.setState({isCalendarOpen: !isCalendarOpen})}>
+                  <div
+                    className={css.changeWeek}
+                    data-tip="Выбрать дату"
+                    onClick={this.toggleCalendar}
+                  >
                     <IconCalendar/>
                   </div>
-                  {
-                    isCalendarOpen
-                    ? <DayPicker />
-                    : null
-                  }
+                  <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
+                    {
+                      isCalendarOpen
+                      ? <Calendar onCancel={this.toggleCalendar} onDayClick={(day) => console.log(day)} />
+                      : null
+                    }
+                  </ReactCSSTransitionGroup>
                 </th>
               </tr>
             </thead>
@@ -59,7 +218,7 @@ class Timesheets extends React.Component {
                   <div className={cn(css.timeCell, css.filled)}>
                     <input type="text" defaultValue="0.25"/>
                     <span className={cn(css.toggleComment, css.checked)}>
-                      <IconComment/>
+                      <SingleComment/>
                     </span>
                   </div>
                 </td>
@@ -67,15 +226,15 @@ class Timesheets extends React.Component {
                   <div className={cn(css.timeCell, css.filled)}>
                     <input type="text" defaultValue="0.25"/>
                     <span className={css.toggleComment}>
-                      <IconComment/>
+                      <SingleComment/>
                     </span>
                   </div>
                 </td>
-                <td>
+                <td className={cn(css.today)}>
                   <div className={cn(css.timeCell, css.filled)}>
                     <input type="text" defaultValue="0.25"/>
                     <span className={css.toggleComment}>
-                      <IconComment/>
+                      <SingleComment/>
                     </span>
                   </div>
                 </td>
@@ -83,7 +242,7 @@ class Timesheets extends React.Component {
                   <div className={cn(css.timeCell)}>
                     <input type="text" placeholder="0"/>
                     <span className={css.toggleComment}>
-                      <IconComment/>
+                      <SingleComment/>
                     </span>
                   </div>
                 </td>
@@ -91,7 +250,7 @@ class Timesheets extends React.Component {
                   <div className={cn(css.timeCell)}>
                     <input type="text" placeholder="0"/>
                     <span className={css.toggleComment}>
-                      <IconComment/>
+                      <SingleComment/>
                     </span>
                   </div>
                 </td>
@@ -99,7 +258,7 @@ class Timesheets extends React.Component {
                   <div className={cn(css.timeCell)}>
                     <input type="text" placeholder="0"/>
                     <span className={css.toggleComment}>
-                      <IconComment/>
+                      <SingleComment/>
                     </span>
                   </div>
                 </td>
@@ -107,7 +266,7 @@ class Timesheets extends React.Component {
                   <div className={cn(css.timeCell)}>
                     <input type="text" placeholder="0"/>
                     <span className={css.toggleComment}>
-                      <IconComment/>
+                      <SingleComment/>
                     </span>
                   </div>
                 </td>
@@ -116,7 +275,7 @@ class Timesheets extends React.Component {
                     0.75
                   </div>
                   <div className={css.toggleComment}>
-                    <IconComments/>
+                    <TotalComment/>
                   </div>
                 </td>
                 <td className={cn(css.actions)}>
@@ -142,7 +301,7 @@ class Timesheets extends React.Component {
                   <div className={cn(css.timeCell, css.filled)}>
                     <input type="text" defaultValue="5"/>
                     <span className={cn(css.toggleComment, css.checked)}>
-                      <IconComment/>
+                      <SingleComment/>
                     </span>
                   </div>
                 </td>
@@ -150,7 +309,15 @@ class Timesheets extends React.Component {
                   <div className={cn(css.timeCell, css.filled)}>
                     <input type="text" defaultValue="0.25"/>
                     <span className={css.toggleComment}>
-                      <IconComment/>
+                      <SingleComment/>
+                    </span>
+                  </div>
+                </td>
+                <td className={cn(css.today)}>
+                  <div className={cn(css.timeCell)}>
+                    <input type="text" placeholder="0"/>
+                    <span className={css.toggleComment}>
+                      <SingleComment/>
                     </span>
                   </div>
                 </td>
@@ -158,7 +325,7 @@ class Timesheets extends React.Component {
                   <div className={cn(css.timeCell)}>
                     <input type="text" placeholder="0"/>
                     <span className={css.toggleComment}>
-                      <IconComment/>
+                      <SingleComment/>
                     </span>
                   </div>
                 </td>
@@ -166,15 +333,7 @@ class Timesheets extends React.Component {
                   <div className={cn(css.timeCell)}>
                     <input type="text" placeholder="0"/>
                     <span className={css.toggleComment}>
-                      <IconComment/>
-                    </span>
-                  </div>
-                </td>
-                <td>
-                  <div className={cn(css.timeCell)}>
-                    <input type="text" placeholder="0"/>
-                    <span className={css.toggleComment}>
-                      <IconComment/>
+                      <SingleComment/>
                     </span>
                   </div>
                 </td>
@@ -182,7 +341,7 @@ class Timesheets extends React.Component {
                   <div className={cn(css.timeCell)}>
                     <input type="text" placeholder="0"/>
                     <span className={css.toggleComment}>
-                      <IconComment/>
+                      <SingleComment/>
                     </span>
                   </div>
                 </td>
@@ -190,7 +349,7 @@ class Timesheets extends React.Component {
                   <div className={cn(css.timeCell)}>
                     <input type="text" placeholder="0"/>
                     <span className={css.toggleComment}>
-                      <IconComment/>
+                      <SingleComment/>
                     </span>
                   </div>
                 </td>
@@ -199,7 +358,7 @@ class Timesheets extends React.Component {
                     5.25
                   </div>
                   <div className={css.toggleComment}>
-                    <IconComments/>
+                    <TotalComment/>
                   </div>
                 </td>
                 <td className={cn(css.actions)}>
@@ -212,7 +371,7 @@ class Timesheets extends React.Component {
                 <td className={css.total}></td>
                 <td className={css.total}>5.25</td>
                 <td className={css.total}>0.5</td>
-                <td className={cn(css.total, css.inactive)}>0</td>
+                <td className={cn(css.total, css.inactive, css.today)}>0</td>
                 <td className={cn(css.total, css.inactive)}>0</td>
                 <td className={cn(css.total, css.inactive)}>0</td>
                 <td className={cn(css.total, css.inactive, css.weekend)}>0</td>
@@ -232,6 +391,7 @@ class Timesheets extends React.Component {
               </tr>
             </tbody>
           </table>
+          <Button text="Отправить на согласование" type="primary" style={{marginTop: '2rem'}}/>
         </section>
       </div>
     );
