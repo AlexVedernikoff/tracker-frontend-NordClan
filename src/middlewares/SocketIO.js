@@ -1,22 +1,51 @@
+import io from 'socket.io-client';
 import {
-  TASK_CHANGE_REQUEST_SUCCESS,
-  TASK_CHANGE_USER_SUCCESS,
-  TASK_LINK_SUCCESS
-} from '../constants/Task';
-import { getTaskHistory } from '../actions/Task';
+  SOCKET_URL,
+  DEMO_ACTION,
+  SOCKET_IO
+} from '../constants/SocketIO';
+import { demoAction } from '../actions/SocketIO';
 
-const targetActions = {
-  [TASK_CHANGE_REQUEST_SUCCESS]: true,
-  [TASK_CHANGE_USER_SUCCESS]: true,
-  [TASK_LINK_SUCCESS]: true
+const actions = {
+  [DEMO_ACTION]: demoAction
 };
 
-export const taskUpdate = (store) => (next) => (action) => {
-  if (targetActions[action.type]) {
-    const {routing: { locationBeforeTransitions: location }, Task: { task: { id } } } = store.getState();
-    if (RegExp(`${id}\/history\/?$`).test(location.pathname)) {
-      store.dispatch(getTaskHistory(id));
+const uid = btoa(`${Date.now()}${Math.random()}`);
+
+const isConsistant = () => true;
+
+const sendOverSocket = (client, { event, type, start, success, error, ...data }, store) => {
+
+  const handler = (res) => {
+    if (res.uid === uid) {
+      if (res && res.status === 200) {
+        success(res);
+      } else {
+        error(res);
+      }
+      client.off(event, handler);
     }
-  }
-  next(action);
+  };
+
+  start();
+  client.emit(event, { ...data, uid });
+  client.on(event, handler);
+};
+
+
+export const socketIO = (store) => {
+  const socket = io(SOCKET_URL);
+  return (next) => {
+
+    socket.on(DEMO_ACTION, (data) => next(actions[DEMO_ACTION](data)));
+
+    return (action) => {
+      if (action.type !== SOCKET_IO) {
+        return next(action);
+      }
+      if (isConsistant(action)) {
+        sendOverSocket(socket, action, store);
+      }
+    };
+  };
 };
