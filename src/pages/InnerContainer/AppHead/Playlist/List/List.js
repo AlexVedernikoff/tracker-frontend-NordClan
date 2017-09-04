@@ -14,6 +14,10 @@ import * as css from '../Playlist.scss';
 
 class List extends Component {
 
+  static propTypes = {
+    tracks: PropTypes.array
+  };
+
   constructor (props) {
     super(props);
     this.state = {
@@ -22,8 +26,13 @@ class List extends Component {
   }
 
   handleShowOther = () => {
-    this.setState({isNotMineTasksShow: !this.state.isNotMineTasksShow}, () => ReactTooltip.rebuild());
+    this.setState({isDraftShow: !this.state.isDraftShow}, () => ReactTooltip.rebuild());
   };
+
+  playlistItem = (item, i) => {
+    return <PlaylistItem item={item} index={i} key={`visible-${item.id}`} visible changeVisibility={this.changeVisibility}/>
+  };
+
 
   render () {
     const {
@@ -34,14 +43,14 @@ class List extends Component {
       tracks
     } = this.props;
 
-    const visible = tracks.visible
-      ? tracks.visible.map(item => <PlaylistItem item={item} key={`visible-${item.id}`} visible/>)
+
+    const visible = tracks
+      ? tracks.filter(item => item.isVisible === true).map(this.playlistItem)
       : null;
 
-    const invisible = tracks.invisible
-      ? tracks.invisible.map(item => <PlaylistItem item={item} key={`invisible-${item.id}`}/>)
+    const invisible = tracks
+      ? tracks.filter(item => item.isVisible === false).map(this.playlistItem)
       : null;
-
 
     return (
       <div>
@@ -73,8 +82,6 @@ class List extends Component {
   }
 }
 
-List.propTypes = {
-  tracks: PropTypes.object
-};
+
 
 export default List;

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
 import {
-  updateTimesheet
+  updateTimesheet, updateTimesheetDraft
 } from '../../../../../actions/TimesheetPlayer';
 import _ from 'lodash';
 import * as css from '../Playlist.scss';
@@ -46,19 +46,11 @@ const getActivityButton = (activityType) => {
     return <IconCase style={getActivityButtonStyle}/>;
   case TimesheetTypes.HOSPITAL:
     return <IconHospital style={getActivityButtonStyle}/>;
+  case TimesheetTypes.CONTROL:
+    return <IconOrganization style={{width: '1.5rem', height: '1.5rem'}}/>;
+  case TimesheetTypes.PRESALE:
+    return <IconCheckList style={{width: '1.5rem', height: '1.5rem'}}/>;
   }
-  // case 'inprogress':
-  //   return <IconPause style={{width: '1.5rem', height: '1.5rem'}}/>;
-  // case 'inhold':
-  //   return <IconPlay style={{width: '1.5rem', height: '1.5rem'}}/>;
-  // case 'delegated':
-  //   return <IconCheckCircle style={{width: '1.5rem', height: '1.5rem'}}/>;
-  // case 'work':
-  //   return <IconLaptop style={{width: '1.5rem', height: '1.5rem'}}/>;
-  // case 'control':
-  //   return <IconOrganization style={{width: '1.5rem', height: '1.5rem'}}/>;
-  // case 'presale':
-  //   return <IconCheckList style={{width: '1.5rem', height: '1.5rem'}}/>;
 };
 
 
@@ -70,6 +62,7 @@ class PlaylistItem extends Component {
       isCommentOpen: false
     };
     this.debounceUpdateTimesheet = _.debounce(this.props.updateTimesheet, 500);
+    this.debounceUpdateTimesheetDraft = _.debounce(this.props.updateTimesheetDraft, 500);
   }
 
   toggleComment = () => {
@@ -84,6 +77,10 @@ class PlaylistItem extends Component {
         body: {
           comment
         }
+      }, {
+        isDraft: this.props.item.isDraft,
+        onDate: this.props.item.onDate,
+        itemKey: this.props.index
       });
     };
   };
@@ -97,11 +94,31 @@ class PlaylistItem extends Component {
       body: {
         spentTime: value
       }
+    }, {
+      isDraft: this.props.item.isDraft,
+      onDate: this.props.item.onDate,
+      itemKey: this.props.index
     });
   };
 
   handleChangeComment = (e) => {
     this.setState({comment: e.target.value});
+  };
+
+  changeVisibility = (visibility) => {
+    return () => {
+      this.props.updateTimesheet({
+        taskId: this.props.item.task.id,
+        timesheetId: this.props.item.id,
+        body: {
+          isVisible: !!visibility
+        }
+      }, {
+        isDraft: this.props.item.isDraft,
+        onDate: this.props.item.onDate,
+        itemKey: this.props.index
+      });
+    };
   };
 
   render () {
@@ -114,7 +131,9 @@ class PlaylistItem extends Component {
       spentTime,
       comment,
       type,
-      taskStatus: prevStatus
+      onDate,
+      taskStatus: prevStatus,
+      isDraft
     } = this.props.item;
     const status = this.props.item.task.taskStatus;
 
@@ -141,11 +160,16 @@ class PlaylistItem extends Component {
                   {status.name}
                   </span>
                 : null}
-              <span className={classnames({[css.commentToggler]: true, [css.green]: !!comment})} onClick={this.toggleComment}><IconComment/></span>
+              {
+                !isDraft
+                ? <span className={classnames({[css.commentToggler]: true, [css.green]: !!comment})} onClick={this.toggleComment}><IconComment/></span>
+                : null
+              }
+
               { status !== 'education'
-                ? (this.props.visible
-                  ? <span className={css.visibleToggler} onClick={this.toggleComment} data-tip="Скрыть"><IconEyeDisable/></span>
-                  : <span className={css.visibleToggler} data-tip="Показать"><IconEye/></span>)
+                ? (this.props.item.isVisible
+                  ? <span className={css.visibleToggler} onClick={this.changeVisibility(false)} data-tip="Скрыть"><IconEyeDisable/></span>
+                  : <span className={css.visibleToggler} onClick={this.changeVisibility(true)} data-tip="Показать"><IconEye/></span>)
                 : null
               }
             </div>
@@ -183,8 +207,10 @@ class PlaylistItem extends Component {
 }
 
 PlaylistItem.propTypes = {
+  index: PropTypes.number.isRequired,
   item: PropTypes.object.isRequired,
   updateTimesheet: PropTypes.func.isRequired,
+  updateTimesheetDraft: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired
 };
 
@@ -195,7 +221,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-  updateTimesheet
+  updateTimesheet,
+  updateTimesheetDraft
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlaylistItem);

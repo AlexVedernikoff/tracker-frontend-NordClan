@@ -32,73 +32,64 @@ class Playlist extends Component {
     super(props);
     this.activityTabs = [
       {
-        activityId: null,
+        activityId: 'all',
         name: 'all',
         description: 'Все активности',
-        icon: <IconList/>,
-        summary: 7.25
+        icon: <IconList/>
       },
       {
         activityId: TimesheetTypes.IMPLEMENTATION,
         name: 'work',
         description: 'Работа',
-        icon: <IconLaptop/>,
-        summary: 5
+        icon: <IconLaptop/>
       },
       {
         activityId: TimesheetTypes.MEETING,
         name: 'meeting',
         description: 'Совещание',
-        icon: <IconCall/>,
-        summary: 0.25
+        icon: <IconCall/>
       },
       {
-        activityId: 91, // Нет соотвествия с беком
+        activityId: 8,
         name: 'presale',
         description: 'Преселлинг и оценка',
-        icon: <IconCheckList/>,
-        summary: 0.25
+        icon: <IconCheckList/>
       },
       {
         activityId: TimesheetTypes.EDUCATION,
         name: 'education',
         description: 'Обучение',
-        icon: <IconBook/>,
-        summary: 0
+        icon: <IconBook/>
       },
       {
         activityId: TimesheetTypes.VACATION,
         name: 'vacation',
         description: 'Отпуск',
-        icon: <IconPlane/>,
-        summary: 0
+        icon: <IconPlane/>
       },
       {
         activityId: 3,
         name: 'trip',
         description: TimesheetTypes.BUSINESS_TRIP,
-        icon: <IconCase/>,
-        summary: 0
+        icon: <IconCase/>
       },
       {
         activityId: TimesheetTypes.HOSPITAL,
         name: 'hospital',
         description: 'Больничный',
-        icon: <IconHospital/>,
-        summary: 0
+        icon: <IconHospital/>
       },
       {
-        activityId: 90, // Нет соотвествия с беком
+        activityId: 7,
         name: 'control',
         description: 'Управление',
-        icon: <IconOrganization/>,
-        summary: 0
+        icon: <IconOrganization/>
       }
     ];
 
     this.state = {
       activeDayTab: moment().day() - 1,
-      activeActivityTab: null,
+      activeActivityTab: 'all',
       isPlaylistOpen: false,
       activeContent: {},
       activeTab: {}
@@ -140,7 +131,7 @@ class Playlist extends Component {
       this.setState((state) => ({
         ...state,
         activeDayTab: tab
-      }), () => this.props.getTimesheetsPlayerData(this.getDateByDayTab(tab).format('YYYY-MM-DD')));
+      }));
     };
   };
 
@@ -172,28 +163,22 @@ class Playlist extends Component {
     };
   };
 
-  getSummaryTime = (time) => {
-    if (time) {
-      return (
-        <span className={css.countBadge}>
-          {Math.floor(time)}
-          <small>
-            {((Math.round(time * 100) / 100) - Math.floor(time)).toString().substring(1)}
-          </small>
-        </span>
-      );
-    }
+  getScale = (tracks, activeDayTab, activeActivityTab) => {
+    const activeTabContent = this.filterTracksByDayTab(tracks, activeDayTab);
+    if (!activeTabContent.scales) return '';
+    const time = activeTabContent.scales[activeActivityTab];
 
-    return null;
+    if (time) {
+      return <span className={css.countBadge}>
+        {Math.floor(time)}
+      </span>;
+    }
+    return '';
   };
 
   activeTracks = (tracks, activeDayTab, activeActivityTab) => {
     let activeTracks = this.filterTracksByDayTab(tracks, activeDayTab);
-    activeTracks = {
-      visible: this.filterTracksByActivityTab(activeTracks.visible, activeActivityTab),
-      invisible: this.filterTracksByActivityTab(activeTracks.invisible, activeActivityTab)
-    };
-
+    activeTracks = this.filterTracksByActivityTab(activeTracks.tracks, activeActivityTab);
     return activeTracks;
   };
 
@@ -206,12 +191,31 @@ class Playlist extends Component {
   };
 
   filterTracksByActivityTab = (tracks, activeDayTab) => {
-    if (Array.isArray(tracks) && activeDayTab) {
+    if (Array.isArray(tracks) && activeDayTab && activeDayTab !== 'all') {
       return tracks.filter(el => el.typeId === activeDayTab);
     } else if (Array.isArray(tracks)) {
       return tracks;
     }
     return [];
+  };
+
+  getCountBadge = (tracks, dayTab) => {
+    const value = this.getScaleAll(tracks, dayTab);
+    if (value) {
+      return <span className={css.countBadge}>{value}</span>;
+    }
+    return '';
+  };
+
+  getScaleAll = (tracks, dayTab) => {
+    const date = this.getDateByDayTab(dayTab).format('YYYY-MM-DD');
+    if (date in tracks) {
+      if ('scales' in tracks[date] && tracks[date].scales.all) {
+        return tracks[date].scales.all;
+      }
+      return 0;
+    }
+    return '';
   };
 
 
@@ -240,13 +244,13 @@ class Playlist extends Component {
             isPlaylistOpen
             ? <div className={css.list}>
                 <div className={css.week}>
-                  <div className={this.dayTabStyle(0)} onClick={this.changeActiveDayTab(0)}>Пн <span className={css.countBadge}>8</span></div>
-                  <div className={this.dayTabStyle(1)} onClick={this.changeActiveDayTab(1)}>Вт <span className={css.countBadge}>7<small>.25</small></span></div>
-                  <div className={this.dayTabStyle(2)} onClick={this.changeActiveDayTab(2)}>Ср</div>
-                  <div className={this.dayTabStyle(3)} onClick={this.changeActiveDayTab(3)}>Чт</div>
-                  <div className={this.dayTabStyle(4)} onClick={this.changeActiveDayTab(4)}>Пт</div>
-                  <div className={this.dayTabStyle(5)} onClick={this.changeActiveDayTab(5)}>Сб</div>
-                  <div className={this.dayTabStyle(6)} onClick={this.changeActiveDayTab(6)}>Вс</div>
+                  <div className={this.dayTabStyle(0)} onClick={this.changeActiveDayTab(0)}>Пн {this.getCountBadge(this.props.tracks, 0)}</div>
+                  <div className={this.dayTabStyle(1)} onClick={this.changeActiveDayTab(1)}>Вт {this.getCountBadge(this.props.tracks, 1)}</div>
+                  <div className={this.dayTabStyle(2)} onClick={this.changeActiveDayTab(2)}>Ср {this.getCountBadge(this.props.tracks, 2)}</div>
+                  <div className={this.dayTabStyle(3)} onClick={this.changeActiveDayTab(3)}>Чт {this.getCountBadge(this.props.tracks, 3)}</div>
+                  <div className={this.dayTabStyle(4)} onClick={this.changeActiveDayTab(4)}>Пт {this.getCountBadge(this.props.tracks, 4)}</div>
+                  <div className={this.dayTabStyle(5)} onClick={this.changeActiveDayTab(5)}>Сб {this.getCountBadge(this.props.tracks, 5)}</div>
+                  <div className={this.dayTabStyle(6)} onClick={this.changeActiveDayTab(6)}>Вс {this.getCountBadge(this.props.tracks, 6)}</div>
                 </div>
                 <div className={css.taskWrapper}>
                   <List tracks={this.activeTracks(this.props.tracks, this.state.activeDayTab, this.state.activeActivityTab)}/>
@@ -262,13 +266,13 @@ class Playlist extends Component {
 
                           data-place="bottom">
                           {element.icon}
-                          {this.getSummaryTime(element.summary)}
+                          {this.getScale(this.props.tracks, this.state.activeDayTab, element.activityId)}
                         </div>;
                     })
                   }
                   <div className={css.time}>
                     <div className={css.today}>
-                      <input type="text" value={7.25} data-tip="Итого" onChange={() => {}}/>
+                      <input type="text" value={this.getScaleAll(this.props.tracks, this.state.activeDayTab)} data-tip="Итого" onChange={() => {}}/>
                     </div>
                   </div>
                 </div>

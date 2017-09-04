@@ -95,7 +95,7 @@ const settings = {
         target: {
           host: 'sim-track.simbirsoft',
           protocol: 'http:',
-          port: 8080
+          port: 80
         },
         // ignorePath: true,
         changeOrigin: true,
@@ -105,7 +105,7 @@ const settings = {
         target: {
           host: 'sim-track.simbirsoft',
           protocol: 'http:',
-          port: 8080
+          port: 80
         },
         // ignorePath: true,
         changeOrigin: true,

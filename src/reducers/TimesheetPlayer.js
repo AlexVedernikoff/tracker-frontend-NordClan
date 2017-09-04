@@ -17,14 +17,23 @@ function TimesheetPlayer (state = InitialState, action) {
     return {
       ...state,
       tracks: {
-        '2017-08-28': action.tracks,
-      },
+        ...action.data
+      }
     };
 
   case TimesheetPlayersActions.TIMESHEET_PLAYER_RECEIVE_FAIL:
     return {
       ...state
     };
+
+  case TimesheetPlayersActions.TIMESHEET_PLAYER_UPDATE_RECEIVE_SUCCESS:
+
+    // нужно заменить старые данные новыми
+
+    return {
+      ...state,
+    };
+
 
   default:
     return state;
