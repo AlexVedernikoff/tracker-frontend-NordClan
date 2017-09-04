@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-
+import { connect } from 'react-redux';
+import {
+  updateTimesheet, updateTimesheetDraft
+} from '../../../../../actions/TimesheetPlayer';
+import _ from 'lodash';
 import * as css from '../Playlist.scss';
+import * as TimesheetTypes from '../../../../../constants/TimesheetTypes';
 
 import {
   IconPause,
@@ -22,71 +27,115 @@ import {
   IconEyeDisable
 } from '../../../../../components/Icons';
 
-export default class PlaylistItem extends Component {
+
+const getActivityButtonStyle = {width: '1.5rem', height: '1.5rem'};
+
+const getActivityButton = (activityType) => {
+  switch (activityType) {
+  default:
+    return <IconCheckCircle style={getActivityButtonStyle}/>;
+  case TimesheetTypes.IMPLEMENTATION:
+    return <IconLaptop style={getActivityButtonStyle}/>;
+  case TimesheetTypes.MEETING:
+    return <IconCall style={getActivityButtonStyle}/>;
+  case TimesheetTypes.EDUCATION:
+    return <IconBook style={getActivityButtonStyle}/>;
+  case TimesheetTypes.VACATION:
+    return <IconPlane style={getActivityButtonStyle}/>;
+  case TimesheetTypes.BUSINESS_TRIP:
+    return <IconCase style={getActivityButtonStyle}/>;
+  case TimesheetTypes.HOSPITAL:
+    return <IconHospital style={getActivityButtonStyle}/>;
+  case TimesheetTypes.CONTROL:
+    return <IconOrganization style={{width: '1.5rem', height: '1.5rem'}}/>;
+  case TimesheetTypes.PRESALE:
+    return <IconCheckList style={{width: '1.5rem', height: '1.5rem'}}/>;
+  }
+};
+
+
+class PlaylistItem extends Component {
 
   constructor (props) {
     super(props);
     this.state = {
-      time: 0.25,
       isCommentOpen: false
     };
+    this.debounceUpdateTimesheet = _.debounce(this.props.updateTimesheet, 500);
+    this.debounceUpdateTimesheetDraft = _.debounce(this.props.updateTimesheetDraft, 500);
   }
 
   toggleComment = () => {
     this.setState({isCommentOpen: !this.state.isCommentOpen});
-  }
+  };
+
+  pushComment = (comment) => {
+    return () => {
+      this.props.updateTimesheet({
+        taskId: this.props.item.task.id,
+        timesheetId: this.props.item.id,
+        body: {
+          comment
+        }
+      }, {
+        isDraft: this.props.item.isDraft,
+        onDate: this.props.item.onDate,
+        itemKey: this.props.index
+      });
+    };
+  };
 
   handleChangeTime = (e) => {
-    this.setState({time: e.target.value});
-  }
+    const value = e.target.value;
+
+    this.debounceUpdateTimesheet({
+      taskId: this.props.item.task.id,
+      timesheetId: this.props.item.id,
+      body: {
+        spentTime: value
+      }
+    }, {
+      isDraft: this.props.item.isDraft,
+      onDate: this.props.item.onDate,
+      itemKey: this.props.index
+    });
+  };
 
   handleChangeComment = (e) => {
     this.setState({comment: e.target.value});
-  }
+  };
 
-  getActionButton = () => {
-    switch (this.props.item.status) {
-    default:
-      return <IconCheckCircle style={{width: '1.5rem', height: '1.5rem'}}/>;
-    case 'inprogress':
-      return <IconPause style={{width: '1.5rem', height: '1.5rem'}}/>;
-    case 'inhold':
-      return <IconPlay style={{width: '1.5rem', height: '1.5rem'}}/>;
-    case 'delegated':
-      return <IconCheckCircle style={{width: '1.5rem', height: '1.5rem'}}/>;
-    case 'work':
-      return <IconLaptop style={{width: '1.5rem', height: '1.5rem'}}/>;
-    case 'meeting':
-      return <IconCall style={{width: '1.5rem', height: '1.5rem'}}/>;
-    case 'control':
-      return <IconOrganization style={{width: '1.5rem', height: '1.5rem'}}/>;
-    case 'education':
-      return <IconBook style={{width: '1.5rem', height: '1.5rem'}}/>;
-    case 'vacation':
-      return <IconPlane style={{width: '1.5rem', height: '1.5rem'}}/>;
-    case 'trip':
-      return <IconCase style={{width: '1.5rem', height: '1.5rem'}}/>;
-    case 'hospital':
-      return <IconHospital style={{width: '1.5rem', height: '1.5rem'}}/>;
-    case 'presale':
-      return <IconCheckList style={{width: '1.5rem', height: '1.5rem'}}/>;
-    }
-  }
+  changeVisibility = (visibility) => {
+    return () => {
+      this.props.updateTimesheet({
+        taskId: this.props.item.task.id,
+        timesheetId: this.props.item.id,
+        body: {
+          isVisible: !!visibility
+        }
+      }, {
+        isDraft: this.props.item.isDraft,
+        onDate: this.props.item.onDate,
+        itemKey: this.props.index
+      });
+    };
+  };
 
   render () {
     const {
-      name,
+      task,
       prefix,
       project,
-      stage,
-      status,
-      prevStage,
       factTime,
       plannedTime,
-      time,
+      spentTime,
       comment,
-      type
+      type,
+      onDate,
+      taskStatus: prevStatus,
+      isDraft
     } = this.props.item;
+    const status = this.props.item.task.taskStatus;
 
     return (
       <div className={classnames(css.listTask, css.task)}>
@@ -94,58 +143,63 @@ export default class PlaylistItem extends Component {
           [css.actionButton]: true,
           [css.locked]: this.props.item.status !== 'inhold' && this.props.item.status !== 'inprogress'
         })}>
-          {this.getActionButton()}
+          {getActivityButton(this.props.item.typeId)}
         </div>
         <div className={css.taskNameWrapper}>
           <div className={css.taskTitle}>
             <div className={css.meta}>
-              { prefix ? <span>{prefix}</span> : null}
-              { project ? <span>{project}</span> : null}
-              { stage
+              { task.prefix ? <span>{prefix}</span> : null}
+              { project ? <span>{project.name}</span> : null}
+              { status
                 ? <span>
                     {
-                      prevStage
-                      ? (<span>{prevStage}<span style={{display: 'inline-block', margin: '0 0.25rem'}}> → </span></span>)
-                      : null
+                      prevStatus
+                        ? (<span>{prevStatus.name}<span style={{display: 'inline-block', margin: '0 0.25rem'}}> → </span></span>)
+                        : null
                     }
-                    {stage}
+                  {status.name}
                   </span>
                 : null}
-              <span className={classnames({[css.commentToggler]: true, [css.green]: comment})} onClick={this.toggleComment}><IconComment/></span>
+              {
+                !isDraft
+                ? <span className={classnames({[css.commentToggler]: true, [css.green]: !!comment})} onClick={this.toggleComment}><IconComment/></span>
+                : null
+              }
+
               { status !== 'education'
-                ? (this.props.visible
-                  ? <span className={css.visibleToggler} onClick={this.toggleComment} data-tip="Скрыть"><IconEyeDisable/></span>
-                  : <span className={css.visibleToggler} data-tip="Показать"><IconEye/></span>)
+                ? (this.props.item.isVisible
+                  ? <span className={css.visibleToggler} onClick={this.changeVisibility(false)} data-tip="Скрыть"><IconEyeDisable/></span>
+                  : <span className={css.visibleToggler} onClick={this.changeVisibility(true)} data-tip="Показать"><IconEye/></span>)
                 : null
               }
             </div>
             <div className={css.taskName}>
-              {name}
+              {task.name}
             </div>
           </div>
         </div>
         <div className={css.time}>
           <div className={css.today}>
-            <input type="text" onChange={this.handleChangeTime} defaultValue={time}/>
+            <input type="text" onChange={this.handleChangeTime} defaultValue={spentTime}/>
           </div>
           <div className={classnames({[css.other]: true, [css.exceeded]: factTime > plannedTime})}>
-            <span data-tip="Всего потрачено" data-place="bottom">{factTime}</span>
+            <span data-tip="Всего потрачено" data-place="bottom">{task.factExecutionTime}</span>
             {
               type !== 'magicActivity'
-              ? <span> / <span data-tip="Запланировано" data-place="bottom">{plannedTime}</span></span>
-              : null
+                ? <span> / <span data-tip="Запланировано" data-place="bottom">{task.plannedExecutionTime}</span></span>
+                : null
             }
           </div>
         </div>
         {
           this.state.isCommentOpen
-          ? <div className={css.comment}>
-            <textarea autoFocus onChange={this.handleChangeComment} defaultValue={comment} value={this.state.comment} placeholder="Введите текст комментария"/>
-            <div className={css.actionButton} onClick={this.toggleComment}>
-              <IconCheck style={{width: '1.5rem', height: '1.5rem'}} />
+            ? <div className={css.comment}>
+              <textarea autoFocus onChange={this.handleChangeComment} defaultValue={comment} value={this.state.comment} placeholder="Введите текст комментария"/>
+              <div className={css.actionButton} onClick={this.pushComment(this.state.comment)}>
+                <IconCheck style={{width: '1.5rem', height: '1.5rem'}} />
+              </div>
             </div>
-          </div>
-          : null
+            : null
         }
       </div>
     );
@@ -153,6 +207,22 @@ export default class PlaylistItem extends Component {
 }
 
 PlaylistItem.propTypes = {
-  item: PropTypes.object,
-  visible: PropTypes.bool
+  index: PropTypes.number.isRequired,
+  item: PropTypes.object.isRequired,
+  updateTimesheet: PropTypes.func.isRequired,
+  updateTimesheetDraft: PropTypes.func.isRequired,
+  visible: PropTypes.bool.isRequired
 };
+
+const mapStateToProps = state => {
+  return {
+    tracks: state.TimesheetPlayer.tracks
+  };
+};
+
+const mapDispatchToProps = {
+  updateTimesheet,
+  updateTimesheetDraft
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PlaylistItem);

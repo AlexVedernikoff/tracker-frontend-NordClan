@@ -5,6 +5,8 @@ import _ from 'lodash';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import onClickOutside from 'react-onclickoutside';
 import ReactTooltip from 'react-tooltip';
+import { connect } from 'react-redux';
+import moment from 'moment';
 
 import {
   IconPause,
@@ -18,94 +20,85 @@ import {
   IconCheckList,
   IconOrganization
 } from '../../../../components/Icons';
-import All from './All';
-import Work from './Work';
-import Meeting from './Meeting';
-import Presale from './Presale';
-import Control from './Control';
-import Education from './Education';
-import Vacation from './Vacation';
-import Trip from './Trip';
-import Hospital from './Hospital';
+import List from './List';
 import * as css from './Playlist.scss';
+import {
+  getTimesheetsPlayerData
+} from '../../../../actions/TimesheetPlayer';
+import * as TimesheetTypes from '../../../../constants/TimesheetTypes';
 
 class Playlist extends Component {
   constructor (props) {
     super(props);
+    this.activityTabs = [
+      {
+        activityId: 'all',
+        name: 'all',
+        description: 'Все активности',
+        icon: <IconList/>
+      },
+      {
+        activityId: TimesheetTypes.IMPLEMENTATION,
+        name: 'work',
+        description: 'Работа',
+        icon: <IconLaptop/>
+      },
+      {
+        activityId: TimesheetTypes.MEETING,
+        name: 'meeting',
+        description: 'Совещание',
+        icon: <IconCall/>
+      },
+      {
+        activityId: 8,
+        name: 'presale',
+        description: 'Преселлинг и оценка',
+        icon: <IconCheckList/>
+      },
+      {
+        activityId: TimesheetTypes.EDUCATION,
+        name: 'education',
+        description: 'Обучение',
+        icon: <IconBook/>
+      },
+      {
+        activityId: TimesheetTypes.VACATION,
+        name: 'vacation',
+        description: 'Отпуск',
+        icon: <IconPlane/>
+      },
+      {
+        activityId: 3,
+        name: 'trip',
+        description: TimesheetTypes.BUSINESS_TRIP,
+        icon: <IconCase/>
+      },
+      {
+        activityId: TimesheetTypes.HOSPITAL,
+        name: 'hospital',
+        description: 'Больничный',
+        icon: <IconHospital/>
+      },
+      {
+        activityId: 7,
+        name: 'control',
+        description: 'Управление',
+        icon: <IconOrganization/>
+      }
+    ];
+
     this.state = {
+      activeDayTab: moment().day() - 1,
+      activeActivityTab: 'all',
       isPlaylistOpen: false,
-      activityTabs: [
-        {
-          name: 'all',
-          description: 'Все активности',
-          content: <All/>,
-          icon: <IconList/>,
-          summary: 7.25
-        },
-        {
-          name: 'work',
-          description: 'Работа',
-          content: <Work/>,
-          icon: <IconLaptop/>,
-          summary: 5
-        },
-        {
-          name: 'meeting',
-          description: 'Совещание',
-          content: <Meeting/>,
-          icon: <IconCall/>,
-          summary: 0.25
-        },
-        {
-          name: 'presale',
-          description: 'Преселлинг и оценка',
-          content: <Presale/>,
-          icon: <IconCheckList/>,
-          summary: 0.25
-        },
-        {
-          name: 'education',
-          description: 'Обучение',
-          content: <Education/>,
-          icon: <IconBook/>,
-          summary: 0
-        },
-        {
-          name: 'vacation',
-          description: 'Отпуск',
-          content: <Vacation/>,
-          icon: <IconPlane/>,
-          summary: 0
-        },
-        {
-          name: 'trip',
-          description: 'Командировка',
-          content: <Trip/>,
-          icon: <IconCase/>,
-          summary: 0
-        },
-        {
-          name: 'hospital',
-          description: 'Больничный',
-          content: <Hospital/>,
-          icon: <IconHospital/>,
-          summary: 0
-        },
-        {
-          name: 'control',
-          description: 'Управление',
-          content: <Control/>,
-          icon: <IconOrganization/>,
-          summary: 0
-        }
-      ],
+      activeContent: {},
       activeTab: {}
     };
   }
 
   componentDidMount () {
     ReactTooltip.rebuild();
-    this.setState({activeTab: this.state.activityTabs[0]});
+    this.setState({activeTab: this.activityTabs[0]});
   }
 
   componentDidUpdate () {
@@ -118,12 +111,116 @@ class Playlist extends Component {
 
   handleToggleList = () => {
     this.setState({isPlaylistOpen: !this.state.isPlaylistOpen});
-  }
+
+  };
+
+  isActiveDayTab = (tab) => {
+    return tab === this.state.activeDayTab;
+  };
+
+  dayTabStyle = (tab) => {
+    return classnames({
+      [css.day]: true,
+      [css.active]: this.isActiveDayTab(tab),
+      [css.inactive]: this.ifFutureTab(tab)
+    });
+  };
+
+  changeActiveDayTab = (tab) => {
+    return () => {
+      this.setState((state) => ({
+        ...state,
+        activeDayTab: tab
+      }));
+    };
+  };
+
+  ifFutureTab = (tab) => {
+    return moment().diff(this.getDateByDayTab(tab)) < 0;
+  };
+
+  getDateByDayTab = (tab) => {
+    return moment().startOf('isoWeek').add(tab, 'days');
+  };
+
+  isActiveActivityTab = (tab) => {
+    return tab === this.state.activeActivityTab;
+  };
+
+  activityTabStyle = (tab) => {
+    return classnames({
+      [css.type]: true,
+      [css.active]: this.isActiveActivityTab(tab)
+    });
+  };
+
+  changeActiveActivityTab = (tab) => {
+    return () => {
+      this.setState((state) => ({
+        ...state,
+        activeActivityTab: tab
+      }));
+    };
+  };
+
+  getScale = (tracks, activeDayTab, activeActivityTab) => {
+    const activeTabContent = this.filterTracksByDayTab(tracks, activeDayTab);
+    if (!activeTabContent.scales) return '';
+    const time = activeTabContent.scales[activeActivityTab];
+
+    if (time) {
+      return <span className={css.countBadge}>
+        {Math.floor(time)}
+      </span>;
+    }
+    return '';
+  };
+
+  activeTracks = (tracks, activeDayTab, activeActivityTab) => {
+    let activeTracks = this.filterTracksByDayTab(tracks, activeDayTab);
+    activeTracks = this.filterTracksByActivityTab(activeTracks.tracks, activeActivityTab);
+    return activeTracks;
+  };
+
+  filterTracksByDayTab = (tracks, activeDayTab) => {
+    const activeDate = this.getDateByDayTab(activeDayTab).format('YYYY-MM-DD');
+    if (activeDate in tracks) {
+      return tracks[activeDate];
+    }
+    return {};
+  };
+
+  filterTracksByActivityTab = (tracks, activeDayTab) => {
+    if (Array.isArray(tracks) && activeDayTab && activeDayTab !== 'all') {
+      return tracks.filter(el => el.typeId === activeDayTab);
+    } else if (Array.isArray(tracks)) {
+      return tracks;
+    }
+    return [];
+  };
+
+  getCountBadge = (tracks, dayTab) => {
+    const value = this.getScaleAll(tracks, dayTab);
+    if (value) {
+      return <span className={css.countBadge}>{value}</span>;
+    }
+    return '';
+  };
+
+  getScaleAll = (tracks, dayTab) => {
+    const date = this.getDateByDayTab(dayTab).format('YYYY-MM-DD');
+    if (date in tracks) {
+      if ('scales' in tracks[date] && tracks[date].scales.all) {
+        return tracks[date].scales.all;
+      }
+      return 0;
+    }
+    return '';
+  };
+
 
   render () {
-
     const { isPlaylistOpen } = this.state;
-
 
     return (
       <div className={css.playlistWrapper}>
@@ -147,45 +244,35 @@ class Playlist extends Component {
             isPlaylistOpen
             ? <div className={css.list}>
                 <div className={css.week}>
-                  <div className={css.day}>Пн <span className={css.countBadge}>8</span></div>
-                  <div className={classnames(css.day, css.active)}>Вт <span className={css.countBadge}>7<small>.25</small></span></div>
-                  <div className={css.day}>Ср</div>
-                  <div className={css.day}>Чт</div>
-                  <div className={css.day}>Пт</div>
-                  <div className={css.day}>Сб</div>
-                  <div className={css.day}>Вс</div>
+                  <div className={this.dayTabStyle(0)} onClick={this.changeActiveDayTab(0)}>Пн {this.getCountBadge(this.props.tracks, 0)}</div>
+                  <div className={this.dayTabStyle(1)} onClick={this.changeActiveDayTab(1)}>Вт {this.getCountBadge(this.props.tracks, 1)}</div>
+                  <div className={this.dayTabStyle(2)} onClick={this.changeActiveDayTab(2)}>Ср {this.getCountBadge(this.props.tracks, 2)}</div>
+                  <div className={this.dayTabStyle(3)} onClick={this.changeActiveDayTab(3)}>Чт {this.getCountBadge(this.props.tracks, 3)}</div>
+                  <div className={this.dayTabStyle(4)} onClick={this.changeActiveDayTab(4)}>Пт {this.getCountBadge(this.props.tracks, 4)}</div>
+                  <div className={this.dayTabStyle(5)} onClick={this.changeActiveDayTab(5)}>Сб {this.getCountBadge(this.props.tracks, 5)}</div>
+                  <div className={this.dayTabStyle(6)} onClick={this.changeActiveDayTab(6)}>Вс {this.getCountBadge(this.props.tracks, 6)}</div>
                 </div>
                 <div className={css.taskWrapper}>
-                  {this.state.activeTab.content}
+                  <List tracks={this.activeTracks(this.props.tracks, this.state.activeDayTab, this.state.activeActivityTab)}/>
                 </div>
                 <div className={css.activity}>
                   {
-                    this.state.activityTabs.map((element, index) => {
-                      const tab
-                      = <div
+                    this.activityTabs.map((element, index) => {
+                      return <div
                           key={index}
-                          className={classnames({[css.type]: true, [css.active]: this.state.activeTab.name === this.state.activityTabs[index].name})}
+                          className={this.activityTabStyle(element.activityId)}
                           data-tip={element.description}
-                          onClick={() => {this.setState({activeTab: element});}}
+                          onClick={this.changeActiveActivityTab(element.activityId)}
+
                           data-place="bottom">
                           {element.icon}
-                          {
-                            element.summary
-                            ? <span className={css.countBadge}>
-                              {Math.floor(element.summary)}
-                              <small>
-                                {((Math.round(element.summary * 100) / 100) - Math.floor(element.summary)).toString().substring(1)}
-                              </small>
-                            </span>
-                            : null
-                          }
+                          {this.getScale(this.props.tracks, this.state.activeDayTab, element.activityId)}
                         </div>;
-                      return tab;
                     })
                   }
                   <div className={css.time}>
                     <div className={css.today}>
-                      <input type="text" value={7.25} data-tip="Итого"/>
+                      <input type="text" value={this.getScaleAll(this.props.tracks, this.state.activeDayTab)} data-tip="Итого" onChange={() => {}}/>
                     </div>
                   </div>
                 </div>
@@ -198,4 +285,20 @@ class Playlist extends Component {
   }
 }
 
-export default onClickOutside(Playlist);
+Playlist.propTypes = {
+  getTimesheetsPlayerData: PropTypes.func,
+  tracks: PropTypes.object
+};
+
+
+const mapStateToProps = state => {
+  return {
+    tracks: state.TimesheetPlayer.tracks
+  };
+};
+
+const mapDispatchToProps = {
+  getTimesheetsPlayerData
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(onClickOutside(Playlist));

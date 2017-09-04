@@ -190,6 +190,10 @@
     color: white;
     transition: $transition;
 
+    &.inactive {
+      cursor: default;
+    }
+
     &:hover {
       background-color: $color-dark;
       transition: $transition;
