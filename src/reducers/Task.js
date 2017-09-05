@@ -275,6 +275,60 @@ export default function Task (state = InitialState, action) {
     };
   }
 
+  case TaskActions.TASK_ATTACHMENT_UPLOAD_REQUEST: {
+    let attachments = state.task.attachments;
+
+    if (Array.isArray(action.attachment)) {
+      attachments = attachments.concat(
+        action.attachment.map((attachment) => {
+          attachment.uploading = true;
+          return attachment;
+        }
+      ));
+    } else {
+      attachments.push(action.attachment);
+    }
+
+    return {
+      ...state,
+      task: {
+        ...state.task,
+        attachments
+      }
+    };
+  }
+
+  case TaskActions.TASK_ATTACHMENT_UPLOAD_PROGRESS: {
+    const { progress } = action;
+    const { attachments } = state.task;
+
+    action.attachment.progress = progress;
+
+    return {
+      ...state,
+      task: {
+        ...state.task,
+        attachments
+      }
+    };
+  }
+
+  case TaskActions.TASK_ATTACHMENT_UPLOAD_SUCCESS: {
+    const { attachment, result } = action;
+    let { attachments } = state.task;
+
+    attachment.uploading = false;
+    attachments = result.data.concat(attachments.filter(value => value.uploading === true));
+
+    return {
+      ...state,
+      task: {
+        ...state.task,
+        attachments
+      }
+    };
+  }
+
   default:
     return state;
   }

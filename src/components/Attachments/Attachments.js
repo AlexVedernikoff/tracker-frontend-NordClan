@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import AttachedDocument from '../AttachedDocument';
 import AttachedImage from '../AttachedImage';
 import AttachDeletion from '../AttachDeletion';
+import AttachUploading from '../AttachUploading';
 import FileUpload from '../FileUpload';
 
 export default class Attachments extends Component {
@@ -24,6 +25,8 @@ export default class Attachments extends Component {
           {this.props.attachments.map((file, index) => {
             return file.deleting
               ? <AttachDeletion key={`attached-deletion-${index}`} filename={file.fileName} />
+              : file.uploading
+              ? <AttachUploading key={`attached-uploading-${index}`} {...file} />
               : file.type === 'image'
               ? <AttachedImage key={`attached-document-${index}`} {...file} removeAttachment={this.props.removeAttachment} />
               : <AttachedDocument

@@ -218,22 +218,29 @@ const uploadAttachments = (taskId, attachments) => {
   }
 
   const URL = `${API_URL}/task/${taskId}/attachment`;
+
   return (dispatch) => {
-    axios.all(attachments.map((attachment) => {
-      const data = new FormData();
-      data.append('file', attachment);
-      attachmentUploadStarted(taskId, attachment);
-      return axios.post(URL, data, {
-        onUploadProgress: (progressEvent) => dispatch(
-          attachmentUploadProgress(taskId, attachment, Math.round((progressEvent.loaded * 100) / progressEvent.total))
-        )
-      })
-      .then(
-        result => attachmentUploadSuccess(taskId, attachment, result),
-        error => attachmentUploadFail(taskId, attachment, error)
-      );
-    }))
-    .then(() => dispatch(getTask(taskId)));
+    dispatch(attachmentUploadStarted(
+      taskId,
+      attachments.map((file) => {
+        const attachment = { fileName: file.name };
+        const data = new FormData();
+        data.append('file', file);
+
+        axios.post(URL, data, {
+          onUploadProgress: (progressEvent) => {
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            dispatch(attachmentUploadProgress(taskId, attachment, progress));
+          }
+        })
+        .then(
+          result => dispatch(attachmentUploadSuccess(taskId, attachment, result)),
+          error => dispatch(attachmentUploadFail(taskId, attachment, error))
+        );
+
+        return attachment;
+      }
+    )));
   };
 };
 
