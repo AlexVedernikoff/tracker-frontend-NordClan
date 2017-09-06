@@ -81,7 +81,7 @@ export const updateExistedTimesheet = (data, options) => {
     type: REST_API,
     url: `/timesheet/${data.timesheetId}`,
     method: PUT,
-    body: data.body,
+    body: {isDraft: false, ...data.body},
     extra,
     start: withStartLoading(startReceivePlayerData, true)(dispatch),
     response: withFinishLoading(response => {
