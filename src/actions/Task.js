@@ -218,7 +218,7 @@ const uploadAttachments = (taskId, attachments) => {
   }
 
   return dispatch => {
-    attachments.forEach((file) => {
+    Promise.all(attachments.map((file) => {
       const data = new FormData();
       data.append('file', file);
 
@@ -227,7 +227,7 @@ const uploadAttachments = (taskId, attachments) => {
         fileName: file.name
       };
 
-      dispatch({
+      return dispatch({
         type: REST_API,
         url: `/task/${taskId}/attachment`,
         method: POST,
@@ -242,7 +242,8 @@ const uploadAttachments = (taskId, attachments) => {
         response: result => withFinishLoading(attachmentUploadSuccess, true)(dispatch)(taskId, attachment, result),
         error: error => withFinishLoading(attachmentUploadFail, true)(dispatch)(taskId, attachment, error)
       });
-    });
+    }))
+    .then(() => dispatch(getTask(taskId)));
   };
 };
 
