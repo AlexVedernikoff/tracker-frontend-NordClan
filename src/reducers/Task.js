@@ -276,18 +276,10 @@ export default function Task (state = InitialState, action) {
   }
 
   case TaskActions.TASK_ATTACHMENT_UPLOAD_REQUEST: {
-    let attachments = state.task.attachments;
+    const attachments = state.task.attachments;
 
-    if (Array.isArray(action.attachment)) {
-      attachments = attachments.concat(
-        action.attachment.map((attachment) => {
-          attachment.uploading = true;
-          return attachment;
-        }
-      ));
-    } else {
-      attachments.push(action.attachment);
-    }
+    action.attachment.uploading = true;
+    attachments.push(action.attachment);
 
     return {
       ...state,
