@@ -218,7 +218,7 @@ const uploadAttachments = (taskId, attachments) => {
   }
 
   return dispatch => {
-    Promise.all(attachments.map((file) => {
+    attachments.map((file) => {
       const data = new FormData();
       data.append('file', file);
 
@@ -242,8 +242,7 @@ const uploadAttachments = (taskId, attachments) => {
         response: result => withFinishLoading(attachmentUploadSuccess, true)(dispatch)(taskId, attachment, result),
         error: error => withFinishLoading(attachmentUploadFail, true)(dispatch)(taskId, attachment, error)
       });
-    }))
-    .then(() => dispatch(getTask(taskId)));
+    });
   };
 };
 

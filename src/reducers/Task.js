@@ -313,19 +313,18 @@ export default function Task (state = InitialState, action) {
   }
 
   case TaskActions.TASK_ATTACHMENT_UPLOAD_SUCCESS: {
-    const attachments = state.task.attachments.map((attachment) => {
-      if (attachment.id === action.attachment.id) {
-        attachment.uploading = false;
-      }
-
-      return attachment;
-    });
+    const attachments = state.task.attachments.filter(
+      value => value.uploading && value.id !== action.attachment.id
+    );
 
     return {
       ...state,
       task: {
         ...state.task,
-        attachments
+        attachments: [
+          ...action.result.data,
+          ...attachments
+        ]
       }
     };
   }
