@@ -217,26 +217,32 @@ const uploadAttachments = (taskId, attachments) => {
     return () => {};
   }
 
-  const URL = `${API_URL}/task/${taskId}/attachment`;
-
-  return (dispatch) => {
-    for (let attachment of attachments) {
+  return dispatch => {
+    attachments.forEach((file) => {
       const data = new FormData();
-      data.append('file', attachment);
-      attachment = { fileName: attachment.name };
-      withStartLoading(attachmentUploadStarted, true)(dispatch)(taskId, attachment);
+      data.append('file', file);
 
-      axios.post(URL, data, {
-        onUploadProgress: (progressEvent) => {
-          const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-          dispatch(attachmentUploadProgress(taskId, attachment, progress));
-        }
-      })
-      .then(
-        result => withFinishLoading(attachmentUploadSuccess, true)(dispatch)(taskId, attachment, result),
-        error => dispatch(attachmentUploadFail(taskId, attachment, error))
-      );
-    }
+      const attachment = {
+        id: `${ Date.now() }${ Math.random() }`,
+        fileName: file.name
+      };
+
+      dispatch({
+        type: REST_API,
+        url: `/task/${taskId}/attachment`,
+        method: POST,
+        body: data,
+        extra: withdefaultExtra({
+          onUploadProgress: (progressEvent) => {
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            dispatch(attachmentUploadProgress(taskId, attachment, progress));
+          }
+        }),
+        start: () => withStartLoading(attachmentUploadStarted, true)(dispatch)(taskId, attachment),
+        response: result => withFinishLoading(attachmentUploadSuccess, true)(dispatch)(taskId, attachment, result),
+        error: error => withFinishLoading(attachmentUploadFail, true)(dispatch)(taskId, attachment, error)
+      });
+    });
   };
 };
 

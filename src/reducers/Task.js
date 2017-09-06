@@ -277,24 +277,31 @@ export default function Task (state = InitialState, action) {
 
   case TaskActions.TASK_ATTACHMENT_UPLOAD_REQUEST: {
     const attachments = state.task.attachments;
-
-    action.attachment.uploading = true;
-    attachments.push(action.attachment);
+    const attachment = action.attachment;
 
     return {
       ...state,
       task: {
         ...state.task,
-        attachments
+        attachments: [
+          ...attachments,
+          {
+            ...attachment,
+            uploading: true
+          }
+        ]
       }
     };
   }
 
   case TaskActions.TASK_ATTACHMENT_UPLOAD_PROGRESS: {
-    const { progress } = action;
-    const { attachments } = state.task;
+    const attachments = state.task.attachments.map((attachment) => {
+      if (attachment.id === action.attachment.id) {
+        attachment.progress = action.progress;
+      }
 
-    action.attachment.progress = progress;
+      return attachment;
+    });
 
     return {
       ...state,
@@ -306,11 +313,13 @@ export default function Task (state = InitialState, action) {
   }
 
   case TaskActions.TASK_ATTACHMENT_UPLOAD_SUCCESS: {
-    const { attachment, result } = action;
-    let { attachments } = state.task;
+    const attachments = state.task.attachments.map((attachment) => {
+      if (attachment.id === action.attachment.id) {
+        attachment.uploading = false;
+      }
 
-    attachment.uploading = false;
-    attachments = result.data.concat(attachments.filter(value => value.uploading === true));
+      return attachment;
+    });
 
     return {
       ...state,
