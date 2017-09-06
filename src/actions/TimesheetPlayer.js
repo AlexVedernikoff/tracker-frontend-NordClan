@@ -79,7 +79,7 @@ export const updateExistedTimesheet = (data, options) => {
 
   return dispatch => dispatch({
     type: REST_API,
-    url: `/task/${data.taskId}/timesheet/${data.timesheetId}`,
+    url: `/timesheet/${data.timesheetId}`,
     method: PUT,
     body: data.body,
     extra,
