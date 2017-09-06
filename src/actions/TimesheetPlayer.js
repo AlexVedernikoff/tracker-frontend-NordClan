@@ -64,7 +64,7 @@ export const updateTimesheetDraft = (data, options) => {
   return dispatch => dispatch({
     type: REST_API,
     url: `/timesheet/${data.timesheetId}`,
-    method: POST,
+    method: PUT,
     body: {isDraft: true, ...data.body},
     extra,
     start: withStartLoading(startReceivePlayerData, true)(dispatch),
