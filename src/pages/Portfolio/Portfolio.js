@@ -35,8 +35,8 @@ class Portfolio extends Component {
 
 
 const mapStateToProps = state => ({
-  portfolio: state.portfolio.data,
-  name: state.portfolio.name
+  portfolio: state.Portfolio.data,
+  name: state.Portfolio.name
 });
 
 const mapDispatchToProps = {
@@ -49,7 +49,7 @@ Portfolio.propTypes = {
   getPortfolioName: PropTypes.func,
   name: PropTypes.string,
   params: PropTypes.object,
-  portfolio: PropTypes.arr
+  portfolio: PropTypes.array
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Portfolio);
