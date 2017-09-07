@@ -12,6 +12,30 @@ $color-lightgray: #fafafa;
 
 $text-color: $color-black;
 
+// Responsible
+
+$phone-width: 768px;
+$tablet-width: 1024px;
+$desktop-width: 1280px;
+
+@mixin phone {
+  @media (max-width: #{$phone-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: #{$phone-width}) and (max-width: #{$tablet-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$desktop-width}) {
+    @content;
+  }
+}
+
 
 // Typo
 $font-size-base: 13px;

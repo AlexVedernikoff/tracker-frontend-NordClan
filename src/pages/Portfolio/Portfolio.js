@@ -33,10 +33,9 @@ class Portfolio extends Component {
   }
 }
 
-
 const mapStateToProps = state => ({
-  portfolio: state.portfolio.data,
-  name: state.portfolio.name
+  portfolio: state.Portfolio.data,
+  name: state.Portfolio.name
 });
 
 const mapDispatchToProps = {

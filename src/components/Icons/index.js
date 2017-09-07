@@ -321,6 +321,13 @@ export const IconList = (props) => (
   </SvgIcon>
 );
 
+export const IconMenu = (props) => (
+  <SvgIcon {...props}>
+    <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+  </SvgIcon>
+);
+
 export const IconLaptop = (props) => (
   <SvgIcon viewBox="0 0 24 24" {...props}>
     <path d="M0 0h24v24H0z" fill="none"/>

@@ -5,16 +5,50 @@ import ReactTooltip from 'react-tooltip';
 import AppHead from './AppHead';
 import NavMenu from './NavMenu';
 import * as css from './InnerContainer.scss';
+import { phoneWidth } from '../../constants/Breakpoints';
 import { ScrollContainer } from 'react-router-scroll';
 
+const mql = window.matchMedia(`(min-width: ${phoneWidth})`);
+
 export default class InnerContainer extends Component {
+
   static propTypes = {
     children: PropTypes.object,
     user: PropTypes.object
   };
 
+  constructor (props) {
+    super(props);
+
+    this.state = {
+      mql: mql,
+      sidebarDocked: true,
+      sidebarOpen: true
+    };
+
+    this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
+    this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
+  }
+
+  componentWillMount () {
+    mql.addListener(this.mediaQueryChanged);
+    this.setState({mql: mql, sidebarDocked: mql.matches});
+  }
+
   componentDidUpdate () {
     ReactTooltip.rebuild();
+  }
+
+  componentWillUnmount () {
+    this.state.mql.removeListener(this.mediaQueryChanged);
+  }
+
+  mediaQueryChanged = () => {
+    this.setState({sidebarDocked: this.state.mql.matches, sidebarOpen: !this.state.mql.matches});
+  }
+
+  onSetSidebarOpen = (open) => {
+    this.setState({sidebarOpen: open});
   }
 
   shouldUpdateScroll (prevLocation, { routes }) {
@@ -43,7 +77,7 @@ export default class InnerContainer extends Component {
         flexDirection: 'column'
       }
     };
-    const sidebarDocked = true;
+    const { sidebarDocked, sidebarOpen } = this.state;
 
     return (
       <div>
@@ -52,9 +86,11 @@ export default class InnerContainer extends Component {
             sidebar={sidebar}
             shadow={false}
             docked={sidebarDocked}
+            open={sidebarOpen}
             styles={sidebarStyles}
+            onSetOpen={this.onSetSidebarOpen}
           >
-            <AppHead />
+            <AppHead toggleMenu={() => this.onSetSidebarOpen(true)} />
             <ScrollContainer
               scrollKey={'innerContainer'}
               shouldUpdateScroll={this.shouldUpdateScroll}

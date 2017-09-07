@@ -10,6 +10,34 @@
   // justify-content: space-between;
 }
 
+.menuToggle {
+  display: none;
+  height: 56px;
+  width: 56px;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s ease-out 0s;
+  color: $color-lightgray;
+  flex-shrink: 0;
+  cursor: pointer;
+  @include phone {
+    display: flex;
+  }
+
+  svg {
+    opacity: 0.4;
+  }
+
+  &:active {
+    background: rgba(white, 0.1);
+    transition: 0.3s ease-out 0s;
+
+    svg {
+      opacity: 1;
+    }
+  }
+}
+
 .logoutButton {
   display: flex;
   margin-left: auto;
