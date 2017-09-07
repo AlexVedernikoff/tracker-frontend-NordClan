@@ -32,6 +32,7 @@ class Calendar extends React.Component {
       >
         <DayPicker
           locale='ru'
+          enableOutsideDays
           localeUtils={{ ...LocaleUtils }}
           {...other}
         />
