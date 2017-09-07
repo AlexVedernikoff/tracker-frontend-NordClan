@@ -7,12 +7,18 @@ import {
 } from './Notifications';
 
 const withHandler = handler => (callback, shouldBeDispatched) => dispatch => (...data) => {
-  if (shouldBeDispatched) {
-    dispatch(callback(...data));
-  } else {
-    callback(...data);
+  if (typeof callback === 'function') {
+    if (shouldBeDispatched) {
+      if (typeof dispatch === 'function') {
+        dispatch(callback(...data));
+      }
+    } else {
+      callback(...data);
+    }
   }
-  dispatch(handler());
+  if (typeof handler === 'function' && typeof dispatch === 'function') {
+    dispatch(handler());
+  }
 };
 
 const withStartLoading = withHandler(startLoading);

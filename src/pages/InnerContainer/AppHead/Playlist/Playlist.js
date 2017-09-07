@@ -22,9 +22,6 @@ import {
 } from '../../../../components/Icons';
 import List from './List';
 import * as css from './Playlist.scss';
-import {
-  getTimesheetsPlayerData
-} from '../../../../actions/TimesheetPlayer';
 import * as TimesheetTypes from '../../../../constants/TimesheetTypes';
 
 class Playlist extends Component {
@@ -286,7 +283,6 @@ class Playlist extends Component {
 }
 
 Playlist.propTypes = {
-  getTimesheetsPlayerData: PropTypes.func,
   tracks: PropTypes.object
 };
 
@@ -297,8 +293,5 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = {
-  getTimesheetsPlayerData
-};
 
-export default connect(mapStateToProps, mapDispatchToProps)(onClickOutside(Playlist));
+export default connect(mapStateToProps, null)(onClickOutside(Playlist));
