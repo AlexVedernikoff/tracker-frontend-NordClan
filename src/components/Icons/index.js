@@ -164,6 +164,12 @@ export const IconCheck = (props) => (
   </SvgIcon>
 );
 
+export const IconCheckAll = (props) => (
+  <SvgIcon {...props}>
+    <path d="M0.41,13.41L6,19L7.41,17.58L1.83,12M22.24,5.58L11.66,16.17L7.5,12L6.07,13.41L11.66,19L23.66,7M18,7L16.59,5.58L10.24,11.93L11.66,13.34L18,7Z" />
+  </SvgIcon>
+);
+
 export const IconCheckCircle = (props) => (
   <SvgIcon {...props}>
     <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M11,16.5L6.5,12L7.91,10.59L11,13.67L16.59,8.09L18,9.5L11,16.5Z" />
@@ -186,6 +192,13 @@ export const IconLink = (props) => (
   <SvgIcon {...props}>
     <path d="M0 0h24v24H0z" fill="none"/>
     <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+  </SvgIcon>
+);
+
+export const IconArrowLeft = (props) => (
+  <SvgIcon {...props}>
+    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+    <path d="M0 0h24v24H0z" fill="none"/>
   </SvgIcon>
 );
 
@@ -215,6 +228,12 @@ export const IconTime = (props) => (
     <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
     <path d="M0 0h24v24H0z" fill="none"/>
     <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+  </SvgIcon>
+);
+
+export const IconCalendar = (props) => (
+  <SvgIcon {...props}>
+    <path d="M19,19H5V8H19M16,1V3H8V1H6V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3H18V1" />
   </SvgIcon>
 );
 
@@ -299,6 +318,13 @@ export const IconList = (props) => (
   <SvgIcon viewBox="0 0 24 24" {...props}>
     <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
     <path d="M0 0h24v24H0z" fill="none"/>
+  </SvgIcon>
+);
+
+export const IconMenu = (props) => (
+  <SvgIcon {...props}>
+    <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
   </SvgIcon>
 );
 

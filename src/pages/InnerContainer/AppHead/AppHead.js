@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
-import {IconSearch} from '../../../components/Icons';
-import {IconExitApp} from '../../../components/Icons';
+import { IconExitApp, IconMenu, IconSearch } from '../../../components/Icons';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Logo from '../../../components/Logo';
 import Loader from './Loader';
@@ -14,7 +13,8 @@ import * as css from './AppHead.scss'; // Стили для плавного п�
 
 class AppHead extends Component {
   static propTypes = {
-    loading: PropTypes.number
+    loading: PropTypes.number,
+    toggleMenu: PropTypes.func
   };
 
   constructor (props) {
@@ -33,6 +33,9 @@ class AppHead extends Component {
 
     return (
       <div className={css.toppanel}>
+        <div className={css.menuToggle} onClick={this.props.toggleMenu}>
+          <IconMenu style={iconStyles} />
+        </div>
         <Link to="/" style={{ textDecoration: 'none' }}>
           <Logo />
         </Link>

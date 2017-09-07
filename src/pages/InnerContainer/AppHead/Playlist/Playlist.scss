@@ -1,9 +1,11 @@
 @import "../../../../styles/variables.scss";
 
 .playlistWrapper {
-  position: relative;
-  z-index: 3;
-  width: 30rem;
+  display: none;
+
+  @include desktop {
+    display: block
+  }
 }
 
 .taskWrapper {

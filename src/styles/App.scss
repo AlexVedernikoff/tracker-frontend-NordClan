@@ -69,3 +69,12 @@ h3 {
     background-color: lighten($color-dark, 50%);
   }
 }
+
+textarea {
+  border: 1px solid $color-gray;
+  padding: 0.5rem;
+
+  &::placeholder {
+    color: silver;
+  }
+}
