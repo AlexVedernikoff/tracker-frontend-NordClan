@@ -136,6 +136,8 @@
 }
 
 .list {
+  z-index: 3;
+  position: relative;
   box-shadow: $box-shadow;
   background: white;
 }
