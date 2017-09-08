@@ -1,3 +1,4 @@
+@import './normalize';
 @import './variables';
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500&subset=latin,cyrillic);
 
@@ -12,6 +13,7 @@ small {
 *, *:before, *:after {
   box-sizing: inherit;
 }
+
 
 body {
   font-family: Roboto, sans-serif;
@@ -44,6 +46,10 @@ h1 {
   font-weight: 300;
   margin-top: 16px;
   margin-bottom: 24px;
+
+  @include phone {
+    font-size: 1.2307692307692308rem;
+  }
 }
 
 h2 {
@@ -68,6 +74,16 @@ h3 {
   &::-webkit-scrollbar-thumb {
     background-color: lighten($color-dark, 50%);
   }
+}
+
+img {
+  box-sizing: content-box;
+}
+
+input,
+select,
+textarea {
+  font-size: $font-size-mobile;
 }
 
 textarea {

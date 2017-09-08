@@ -5,10 +5,12 @@ import ReactTooltip from 'react-tooltip';
 import AppHead from './AppHead';
 import NavMenu from './NavMenu';
 import * as css from './InnerContainer.scss';
-import { phoneWidth } from '../../constants/Breakpoints';
+// import { phoneWidth } from '../../constants/Breakpoints';
+import { tabletWidth } from '../../constants/Breakpoints';
 import { ScrollContainer } from 'react-router-scroll';
 
-const mql = window.matchMedia(`(min-width: ${phoneWidth})`);
+// const mql = window.matchMedia(`(min-width: ${phoneWidth})`);
+const mql = window.matchMedia(`(min-width: ${tabletWidth})`);
 
 export default class InnerContainer extends Component {
 

@@ -9,6 +9,7 @@ $color-green: #5cb85c;
 $color-blue: #46b8da;
 $color-gray: #f1f1f1;
 $color-lightgray: #fafafa;
+$color-white: #fff;
 
 $text-color: $color-black;
 
@@ -25,7 +26,7 @@ $desktop-width: 1280px;
 }
 
 @mixin tablet {
-  @media (min-width: #{$phone-width}) and (max-width: #{$tablet-width - 1px}) {
+  @media (min-width: #{$phone-width}) and (max-width: #{$desktop-width - 1px}) {
     @content;
   }
 }
@@ -39,6 +40,7 @@ $desktop-width: 1280px;
 
 // Typo
 $font-size-base: 13px;
+$font-size-mobile: 16px;
 
 // Transitions
 $transition: all 0.3s ease-out 0s;

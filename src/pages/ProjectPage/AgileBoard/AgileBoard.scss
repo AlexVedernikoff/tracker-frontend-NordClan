@@ -4,6 +4,12 @@
   // margin-top: 24px;
 }
 
+.changedSprint {
+  @include phone {
+    margin-bottom: 1rem;
+  }
+}
+
 .filtersRow {
   margin-bottom: 1rem;
 }

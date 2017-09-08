@@ -12,4 +12,13 @@
   min-width: 960px;
   padding: 64px 32px;
   margin: 0 auto;
+
+  @include tablet {
+    min-width: auto;
+  }
+
+  @include phone {
+    padding: 30px 10px;
+    min-width: auto;
+  }
 }
