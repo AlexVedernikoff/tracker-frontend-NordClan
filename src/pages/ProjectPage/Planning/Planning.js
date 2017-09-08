@@ -302,12 +302,14 @@ class Planning extends Component {
   currentTimeline = () => {
     const date = moment();
 
-    return (
-      <div className={css.timeline}
-        style={{left: this.calcTimelinePadding(date)}}
-        data-tip={moment(date).format('DD.MM')}
-      />
-    );
+    if (+moment(date).format('YYYY') === +this.state.grantActiveYear) {
+      return (
+        <div className={css.timeline}
+          style={{left: this.calcTimelinePadding(date)}}
+          data-tip={moment(date).format('DD.MM')}
+        />
+      );
+    }
   }
 
   render () {
