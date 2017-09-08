@@ -236,6 +236,15 @@ class Planning extends Component {
       : (100 - (moment(date).dayOfYear() / daysInYear * 100)).toFixed(1) + '%';
   };
 
+  calcTimelinePadding = (date) => {
+    const year = this.state.grantActiveYear;
+    const daysInYear = moment().endOf('year').dayOfYear();
+
+    return (+moment(date).format('YYYY') !== +year)
+      ? '0%'
+      : ((moment(date).dayOfYear() - 1) / daysInYear * 100).toFixed(1) + '%';
+  };
+
   sprintFilter = (sprint) => {
     return (+moment(sprint.factFinishDate).format('YYYY') === this.state.grantActiveYear)
       || (+moment(sprint.factStartDate).format('YYYY') === this.state.grantActiveYear);
@@ -289,6 +298,17 @@ class Planning extends Component {
         </div>
     );
   };
+
+  currentTimeline = () => {
+    const date = moment();
+
+    return (
+      <div className={css.timeline}
+        style={{left: this.calcTimelinePadding(date)}}
+        data-tip={moment(date).format('DD.MM')}
+      />
+    );
+  }
 
   render () {
     const leftColumnTasks = this.props.leftColumnTasks.map(task => {
@@ -418,6 +438,7 @@ class Planning extends Component {
                     months.map((month, i) => <div key={`sprint-${month}`} className={css.month} style={{flex: moment(`${this.state.grantActiveYear}-${(++i)}`, 'YYYY-MM').daysInMonth()}} >{month}</div>)
                   }
                 </div>
+                {this.currentTimeline()}
                 {this.props.sprints.filter(this.sprintFilter).map(this.sprints)}
                 <div className={css.grid}>
                   {
