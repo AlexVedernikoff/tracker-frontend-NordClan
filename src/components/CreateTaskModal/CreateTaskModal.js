@@ -14,6 +14,7 @@ import SelectDropdown from '../SelectDropdown';
 import * as css from './CreateTaskModal.scss';
 import Priority from '../../pages/TaskPage/Priority';
 import { closeCreateTaskModal, createTask } from '../../actions/Project';
+import { BACKLOG_ID } from '../../constants/Sprint';
 
 class CreateTaskModal extends Component {
   constructor (props) {
@@ -38,7 +39,7 @@ class CreateTaskModal extends Component {
   componentWillReceiveProps (nextProps) {
     const selectedSprint = this.state.selectedSprint !== nextProps.selectedSprintValue
       ? nextProps.selectedSprintValue
-      : null;
+      : this.state.selectedSprint;
 
     this.setState(state => {
       return {
@@ -107,7 +108,7 @@ class CreateTaskModal extends Component {
         performerId: this.state.selectedPerformer,
         statusId: 1,
         typeId: this.state.selectedType.value,
-        sprintId: this.state.selectedSprint === 0 ? null : this.state.selectedSprint,
+        sprintId: this.state.selectedSprint === BACKLOG_ID ? null : this.state.selectedSprint,
         prioritiesId: this.state.prioritiesId,
         parentId: this.props.parentTaskId
       },

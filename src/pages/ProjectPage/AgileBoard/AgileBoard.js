@@ -130,11 +130,13 @@ class AgileBoard extends Component {
   }
 
   componentDidMount () {
-    this.selectValue(this.getCurrentSprint(this.props.sprints), 'changedSprint');
+    this.selectValue(this.getChangedSprint(this.props), 'changedSprint');
   }
 
   componentWillReceiveProps (nextProps) {
-    if (this.props.sprints !== nextProps.sprints) this.selectValue(this.getCurrentSprint(nextProps.sprints), 'changedSprint');
+    if (this.props.sprints !== nextProps.sprints || this.props.lastCreatedTask !== nextProps.lastCreatedTask) {
+      this.selectValue(this.getChangedSprint(nextProps), 'changedSprint');
+    }
 
     if (nextProps.sprintTasks.length) {
       this.setState({
@@ -168,6 +170,16 @@ class AgileBoard extends Component {
 
   componentDidUpdate () {
     ReactTooltip.rebuild();
+  }
+
+  getChangedSprint = (props) => {
+    let changedSprint = this.getCurrentSprint(props.sprints);
+
+    if (props.lastCreatedTask && Number.isInteger(props.lastCreatedTask.sprintId)) {
+      changedSprint = props.lastCreatedTask.sprintId;
+    }
+
+    return changedSprint;
   }
 
   toggleSection = (sectionName) => {
@@ -395,7 +407,7 @@ class AgileBoard extends Component {
             : null
           }
           <CreateTaskModal
-            selectedSprintValue={this.state.changedSprint || 0}
+            selectedSprintValue={this.state.changedSprint}
             project={this.props.project}
           />
         </section>
@@ -407,6 +419,7 @@ AgileBoard.propTypes = {
   changeTask: PropTypes.func.isRequired,
   changeTaskUser: PropTypes.func.isRequired,
   getTasks: PropTypes.func.isRequired,
+  lastCreatedTask: PropTypes.object,
   myTaskBoard: PropTypes.bool,
   openCreateTaskModal: PropTypes.func.isRequired,
   project: PropTypes.object,
@@ -420,6 +433,7 @@ AgileBoard.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  lastCreatedTask: state.Project.lastCreatedTask,
   sprintTasks: state.Tasks.tasks,
   sprints: state.Project.project.sprints,
   project: state.Project.project,
