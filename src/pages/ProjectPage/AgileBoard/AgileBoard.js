@@ -130,11 +130,25 @@ class AgileBoard extends Component {
   }
 
   componentDidMount () {
-    this.selectValue(this.getCurrentSprint(this.props.sprints), 'changedSprint');
+    let changedSprint = this.getCurrentSprint(this.props.sprints);
+
+    if (this.props.lastCreatedTask && this.props.lastCreatedTask.sprintId >= 0) {
+      changedSprint = this.props.lastCreatedTask.sprintId;
+    }
+
+    this.selectValue(changedSprint, 'changedSprint');
   }
 
   componentWillReceiveProps (nextProps) {
-    if (this.props.sprints !== nextProps.sprints) this.selectValue(this.getCurrentSprint(nextProps.sprints), 'changedSprint');
+    if (this.props.sprints !== nextProps.sprints || this.props.lastCreatedTask !== nextProps.lastCreatedTask) {
+      let changedSprint = this.getCurrentSprint(nextProps.sprints);
+
+      if (nextProps.lastCreatedTask && nextProps.lastCreatedTask.sprintId >= 0) {
+        changedSprint = nextProps.lastCreatedTask.sprintId;
+      }
+
+      this.selectValue(changedSprint, 'changedSprint');
+    }
 
     if (nextProps.sprintTasks.length) {
       this.setState({
@@ -390,7 +404,7 @@ class AgileBoard extends Component {
             : null
           }
           <CreateTaskModal
-            selectedSprintValue={this.state.changedSprint || 0}
+            selectedSprintValue={this.state.changedSprint}
             project={this.props.project}
           />
         </section>
@@ -402,6 +416,7 @@ AgileBoard.propTypes = {
   changeTask: PropTypes.func.isRequired,
   changeTaskUser: PropTypes.func.isRequired,
   getTasks: PropTypes.func.isRequired,
+  lastCreatedTask: PropTypes.object,
   myTaskBoard: PropTypes.bool,
   openCreateTaskModal: PropTypes.func.isRequired,
   project: PropTypes.object,
@@ -415,6 +430,7 @@ AgileBoard.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  lastCreatedTask: state.Project.lastCreatedTask,
   sprintTasks: state.Tasks.tasks,
   sprints: state.Project.project.sprints,
   project: state.Project.project,

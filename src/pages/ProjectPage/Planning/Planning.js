@@ -39,6 +39,7 @@ class Planning extends Component {
     createSprint: PropTypes.func.isRequired,
     editSprint: PropTypes.func.isRequired,
     getPlanningTasks: PropTypes.func.isRequired,
+    lastCreatedTask: PropTypes.object,
     leftColumnTasks: PropTypes.array,
     openCreateTaskModal: PropTypes.func,
     project: PropTypes.object,
@@ -73,9 +74,19 @@ class Planning extends Component {
       this.selectValue(this.state.rightColumn, 'rightColumn');
     }
 
-    if (this.props.project.sprints !== nextProps.project.sprints) {
+    if (this.props.project.sprints.length === 0 && nextProps.project.sprints.length > 0) {
       this.selectValue(0, 'leftColumn');
       this.selectValue(this.getCurrentSprint(nextProps.project.sprints), 'rightColumn');
+    }
+
+    if (this.props.project.sprints !== nextProps.project.sprints) {
+      if (nextProps.lastCreatedTask && nextProps.lastCreatedTask.sprintId >= 0) {
+        if (this.state.createTaskCallee === 'left') {
+          this.selectValue(nextProps.lastCreatedTask.sprintId, 'leftColumn');
+        } else {
+          this.selectValue(nextProps.lastCreatedTask.sprintId, 'rightColumn');
+        }
+      }
     }
   }
 
@@ -543,6 +554,7 @@ class Planning extends Component {
 const mapStateToProps = state => ({
   sprints: state.Project.project.sprints,
   project: state.Project.project,
+  lastCreatedTask: state.Project.lastCreatedTask,
   leftColumnTasks: state.PlanningTasks.leftColumnTasks,
   rightColumnTasks: state.PlanningTasks.rightColumnTasks,
   SprintIsEditing: state.Task.SprintIsEditing
