@@ -47,7 +47,7 @@ class Playlist extends Component {
         icon: <IconCall/>
       },
       {
-        activityId: 8,
+        activityId: TimesheetTypes.PRESALE,
         name: 'presale',
         description: 'Преселлинг и оценка',
         icon: <IconCheckList/>
@@ -65,9 +65,9 @@ class Playlist extends Component {
         icon: <IconPlane/>
       },
       {
-        activityId: 3,
+        activityId: TimesheetTypes.BUSINESS_TRIP,
         name: 'trip',
-        description: TimesheetTypes.BUSINESS_TRIP,
+        description: 'Командировка',
         icon: <IconCase/>
       },
       {
@@ -163,14 +163,23 @@ class Playlist extends Component {
   getScale = (tracks, activeDayTab, activeActivityTab) => {
     const activeTabContent = this.filterTracksByDayTab(tracks, activeDayTab);
     if (!activeTabContent.scales) return '';
-    const time = activeTabContent.scales[activeActivityTab];
 
-    if (time) {
-      return <span className={css.countBadge}>
-        {Math.floor(time)}
-      </span>;
-    }
-    return '';
+    const time = activeTabContent.scales[activeActivityTab];
+    if (!time) return '';
+
+    const timeParts = ('' + time).split('.');
+    const wholePart = timeParts[0];
+    const fraction = timeParts[1] ? timeParts[1] : null;
+
+
+    return <span className={css.countBadge}>
+      {wholePart}
+      {
+        fraction
+          ? <small>.{fraction}</small>
+          : ''
+      }
+    </span>;
   };
 
   activeTracks = (tracks, activeDayTab, activeActivityTab) => {
@@ -260,7 +269,6 @@ class Playlist extends Component {
                           className={this.activityTabStyle(element.activityId)}
                           data-tip={element.description}
                           onClick={this.changeActiveActivityTab(element.activityId)}
-
                           data-place="bottom">
                           {element.icon}
                           {this.getScale(this.props.tracks, this.state.activeDayTab, element.activityId)}

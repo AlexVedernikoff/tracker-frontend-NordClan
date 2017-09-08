@@ -54,29 +54,27 @@ class List extends Component {
 
     return (
       <div>
-        <div>
-          {visible}
-          {
-            invisible && invisible.length > 0
-            ? <div
-                className={css.showMore}
-                onClick={this.handleShowOther}
-                data-tip={!isDraftShow ? 'Показать скрытые' : 'Скрыть'}
-                data-place="bottom">
-                {
-                  !isDraftShow && invisible
-                    ? <IconArrowDown/>
-                    : <IconArrowUp/>
-                }
-              </div>
-              : null
-          }
-          {
-            isDraftShow
-            ? invisible
+        {visible}
+        {
+          invisible && invisible.length > 0
+          ? <div
+              className={css.showMore}
+              onClick={this.handleShowOther}
+              data-tip={!isDraftShow ? 'Показать скрытые' : 'Скрыть'}
+              data-place="bottom">
+              {
+                !isDraftShow && invisible
+                  ? <IconArrowDown/>
+                  : <IconArrowUp/>
+              }
+            </div>
             : null
-          }
-        </div>
+        }
+        {
+          isDraftShow
+          ? invisible
+          : null
+        }
       </div>
     );
   }
