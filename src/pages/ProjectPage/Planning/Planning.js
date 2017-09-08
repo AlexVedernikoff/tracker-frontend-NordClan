@@ -237,10 +237,9 @@ class Planning extends Component {
   };
 
   calcTimelinePadding = (date) => {
-    const year = this.state.grantActiveYear;
     const daysInYear = moment().endOf('year').dayOfYear();
 
-    return (+moment(date).format('YYYY') !== +year)
+    return (date.getFullYear() !== this.state.grantActiveYear)
       ? '0%'
       : ((moment(date).dayOfYear() - 1) / daysInYear * 100).toFixed(1) + '%';
   };
@@ -300,9 +299,9 @@ class Planning extends Component {
   };
 
   currentTimeline = () => {
-    const date = moment();
+    const date = new Date();
 
-    if (+moment(date).format('YYYY') === +this.state.grantActiveYear) {
+    if (date.getFullYear() === this.state.grantActiveYear) {
       return (
         <div className={css.timeline}
           style={{left: this.calcTimelinePadding(date)}}
