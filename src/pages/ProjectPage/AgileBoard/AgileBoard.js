@@ -130,24 +130,12 @@ class AgileBoard extends Component {
   }
 
   componentDidMount () {
-    let changedSprint = this.getCurrentSprint(this.props.sprints);
-
-    if (this.props.lastCreatedTask && this.props.lastCreatedTask.sprintId >= 0) {
-      changedSprint = this.props.lastCreatedTask.sprintId;
-    }
-
-    this.selectValue(changedSprint, 'changedSprint');
+    this.selectValue(this.getChangedSprint(this.props), 'changedSprint');
   }
 
   componentWillReceiveProps (nextProps) {
     if (this.props.sprints !== nextProps.sprints || this.props.lastCreatedTask !== nextProps.lastCreatedTask) {
-      let changedSprint = this.getCurrentSprint(nextProps.sprints);
-
-      if (nextProps.lastCreatedTask && nextProps.lastCreatedTask.sprintId >= 0) {
-        changedSprint = nextProps.lastCreatedTask.sprintId;
-      }
-
-      this.selectValue(changedSprint, 'changedSprint');
+      this.selectValue(this.getChangedSprint(nextProps), 'changedSprint');
     }
 
     if (nextProps.sprintTasks.length) {
@@ -182,6 +170,16 @@ class AgileBoard extends Component {
 
   componentDidUpdate () {
     ReactTooltip.rebuild();
+  }
+
+  getChangedSprint = (props) => {
+    let changedSprint = this.getCurrentSprint(props.sprints);
+
+    if (props.lastCreatedTask && Number.isInteger(props.lastCreatedTask.sprintId)) {
+      changedSprint = props.lastCreatedTask.sprintId;
+    }
+
+    return changedSprint;
   }
 
   toggleSection = (sectionName) => {

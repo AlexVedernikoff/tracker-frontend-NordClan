@@ -25,6 +25,7 @@ import SprintStartControl from '../../../components/SprintStartControl';
 import SprintEditModal from '../../../components/SprintEditModal';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 import { IconEdit } from '../../../components/Icons';
+import { BACKLOG_ID } from '../../../constants/Sprint';
 
 
 const getSprintTime = sprint =>
@@ -64,7 +65,7 @@ class Planning extends Component {
   }
 
   componentDidMount () {
-    this.selectValue(0, 'leftColumn');
+    this.selectValue(BACKLOG_ID, 'leftColumn');
     this.selectValue(this.getCurrentSprint(this.props.project.sprints), 'rightColumn');
   }
 
@@ -75,12 +76,12 @@ class Planning extends Component {
     }
 
     if (this.props.project.sprints.length === 0 && nextProps.project.sprints.length > 0) {
-      this.selectValue(0, 'leftColumn');
+      this.selectValue(BACKLOG_ID, 'leftColumn');
       this.selectValue(this.getCurrentSprint(nextProps.project.sprints), 'rightColumn');
     }
 
     if (this.props.project.sprints !== nextProps.project.sprints) {
-      if (nextProps.lastCreatedTask && nextProps.lastCreatedTask.sprintId >= 0) {
+      if (nextProps.lastCreatedTask && Number.isInteger(nextProps.lastCreatedTask.sprintId)) {
         if (this.state.createTaskCallee === 'left') {
           this.selectValue(nextProps.lastCreatedTask.sprintId, 'leftColumn');
         } else {

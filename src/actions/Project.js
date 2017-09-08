@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as ProjectActions from '../constants/Project';
 import { API_URL } from '../constants/Settings';
+import { BACKLOG_ID } from '../constants/Sprint';
 import { history } from '../App';
 import { showNotification } from './Notifications';
 import { startLoading, finishLoading } from './Loading';
@@ -253,12 +254,12 @@ const createTask = (task, openTaskPage, callee) => {
       .then(response => {
         if (response && response.status === 200) {
           dispatch(finishLoading());
-          dispatch(createTaskRequestSuccess(task.projectId, task.sprintId || 0, response.data.id));
+          dispatch(createTaskRequestSuccess(task.projectId, task.sprintId || BACKLOG_ID, response.data.id));
           dispatch(getTask(task.parentId));
           dispatch(closeCreateTaskModal());
           dispatch(getProjectInfo(task.projectId));
           if (callee) {
-            dispatch(getPlanningTasks(callee, { sprintId: task.sprintId || 0, projectId: task.projectId }));
+            dispatch(getPlanningTasks(callee, { sprintId: task.sprintId || BACKLOG_ID, projectId: task.projectId }));
           }
 
           if (openTaskPage) {
