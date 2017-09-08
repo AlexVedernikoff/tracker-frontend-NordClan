@@ -25,6 +25,10 @@
     color: lighten($color-black, 40%);
     font-size: 11px;
 
+    @include phone {
+      margin-bottom: 1rem;
+    }
+
     & > div {
       padding-right: 0.5rem;
 
@@ -68,12 +72,28 @@
 .taskName {
   display: block;
   text-decoration: none;
+
+  @include phone {
+    margin-bottom: 1rem;
+  }
 }
 
-.metabox, .tagbox {
+.metabox, 
+.tagbox {
   padding-left: 1rem;
   height: 100%;
   border-left: 1px solid $color-gray;
+
+  @include phone {
+    padding-left: 0;
+  }
+}
+
+.metabox {
+
+  @include phone {
+    margin-bottom: 1rem;
+  }
 }
 
 .taskMeta {
