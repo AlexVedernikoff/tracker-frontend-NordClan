@@ -235,10 +235,15 @@ class AgileBoard extends Component {
   };
 
   getCurrentSprint = sprints => {
-    const currentSprints = sprints.filter(sprint =>
-      sprint.statusId === 2 && moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]')
-    );
-    return currentSprints.length ? currentSprints[0].id : 0;
+    const processedSprints = sprints.filter(sprint => {
+      return sprint.statusId === 2;
+    });
+
+    const currentSprints = processedSprints.filter(sprint => {
+      return moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]');
+    });
+
+    return currentSprints.length ? currentSprints[0].id : (processedSprints.length ? processedSprints[0].id : 0);
   };
 
   getSprints = () => {
