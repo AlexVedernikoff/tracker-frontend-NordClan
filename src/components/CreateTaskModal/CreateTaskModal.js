@@ -38,7 +38,7 @@ class CreateTaskModal extends Component {
   componentWillReceiveProps (nextProps) {
     const selectedSprint = this.state.selectedSprint !== nextProps.selectedSprintValue
       ? nextProps.selectedSprintValue
-      : null;
+      : this.state.selectedSprint;
 
     this.setState(state => {
       return {
