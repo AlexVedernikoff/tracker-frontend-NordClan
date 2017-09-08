@@ -92,7 +92,7 @@ class PlaylistItem extends Component {
       taskId: this.props.item.task.id,
       timesheetId: this.props.item.id,
       body: {
-        spentTime: value
+        spentTime: value.replace(',', '.')
       }
     }, {
       isDraft: this.props.item.isDraft,
@@ -131,7 +131,6 @@ class PlaylistItem extends Component {
       spentTime,
       comment,
       type,
-      onDate,
       taskStatus: prevStatus,
       isDraft
     } = this.props.item;
