@@ -34,8 +34,8 @@ const consistantRequest = (action) => {
 const polyfill = ({ method, body, extra, start, error, response, url }) => {
   return {
     method,
-    body: { ...body },
-    extra: { ...extra },
+    body,
+    extra,
     start: typeof start === 'function' ? start : () => {},
     response: typeof response === 'function' ? response : () => {},
     error: typeof error === 'function' ? error : () => {},

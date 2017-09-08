@@ -13,7 +13,6 @@ export default class AttachedDocument extends React.Component {
     fileName: PropTypes.string.isRequired,
     id: PropTypes.number,
     path: PropTypes.string.isRequired,
-    previewPath: PropTypes.string.isRequired,
     removeAttachment: PropTypes.func.isRequired,
     removeInProgress: PropTypes.bool,
     type: PropTypes.string.isRequired
