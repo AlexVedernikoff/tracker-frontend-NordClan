@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import { Row, Col } from 'react-flexbox-grid/lib/index';
 import Button from '../../../components/Button';
 import ConfirmModal from '../../../components/ConfirmModal';
 import { Link } from 'react-router';
@@ -196,98 +197,102 @@ class TaskHeader extends Component {
             : null}
         </div>
         <TaskTitle name={task.name} id={task.id} />
-        <Button
-          type={
-            task.statusId === TaskStatuses.CANCELED
-              ? 'red'
-              : 'red-bordered'
-          }
-          icon="IconClose"
-          data-tip={
-            task.statusId === TaskStatuses.CANCELED
-              ? null
-              : 'Отменить'
-          }
-          data-place="bottom"
-          addedClassNames={{ [css.buttonCancel]: true }}
-          onClick={
-            task.statusId !== TaskStatuses.CANCELED
-              ? this.handleOpenCancelModal
-              : null
-          }
+        <Row>
+          <Col xs={12}>
+            <Button
+              type={
+                task.statusId === TaskStatuses.CANCELED
+                  ? 'red'
+                  : 'red-bordered'
+              }
+              icon="IconClose"
+              data-tip={
+                task.statusId === TaskStatuses.CANCELED
+                  ? null
+                  : 'Отменить'
+              }
+              data-place="bottom"
+              addedClassNames={{ [css.buttonCancel]: true }}
+              onClick={
+                task.statusId !== TaskStatuses.CANCELED
+                  ? this.handleOpenCancelModal
+                  : null
+              }
+                />
+            <ButtonGroup type="lifecircle" stage="full">
+              <Button
+                text="New"
+                type={
+                        task.statusId === TaskStatuses.NEW
+                        ? 'green'
+                        : 'bordered'
+                      }
+                data-tip={
+                        task.statusId === TaskStatuses.NEW
+                        ? null
+                        : 'Перевести в стадию New'
+                      }
+                data-place="bottom"
+                onClick={this.handleChangeStatus}
+              />
+              <Button
+                text="Develop"
+                type={this.getButtonType(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY)}
+                data-tip={this.getButtonTip(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY, 'Develop')}
+                icon= {this.getButtonIcon(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY)}
+                onClick={this.handleChangeStatus}
+                data-place="bottom"
+              />
+              <Button
+                text="Code Review"
+                type={this.getButtonType(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY)}
+                data-tip={this.getButtonTip(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY, 'Code Review')}
+                icon= {this.getButtonIcon(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY)}
+                onClick={this.handleChangeStatus}
+                data-place="bottom"
+              />
+              <Button
+                text="QA"
+                type={this.getButtonType(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY)}
+                data-tip={this.getButtonTip(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY, 'QA')}
+                icon= {this.getButtonIcon(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY)}
+                onClick={this.handleChangeStatus}
+                data-place="bottom"
+              />
+              <Button
+                text="Done"
+                type={
+                        task.statusId === TaskStatuses.DONE
+                        ? 'green'
+                        : 'bordered'
+                      }
+                data-tip={
+                        task.statusId === TaskStatuses.DONE
+                        ? null
+                        : 'Перевести в стадию Done'
+                      }
+                data-place="bottom"
+                onClick={this.handleChangeStatus}
+              />
+            </ButtonGroup>
+            <Button
+              type={
+                task.statusId === TaskStatuses.CLOSED
+                  ? 'green'
+                  : 'bordered'
+              }
+              icon="IconCheck"
+              data-tip={
+                task.statusId === TaskStatuses.CLOSED
+                  ? null
+                  : 'Принять'
+              }
+              data-place="bottom"
+              addedClassNames={{[css.buttonOk]: true}}
+              onClick={this.handleClose}
             />
-        <ButtonGroup type="lifecircle" stage="full">
-          <Button
-            text="New"
-            type={
-                    task.statusId === TaskStatuses.NEW
-                    ? 'green'
-                    : 'bordered'
-                  }
-            data-tip={
-                    task.statusId === TaskStatuses.NEW
-                    ? null
-                    : 'Перевести в стадию New'
-                  }
-            data-place="bottom"
-            onClick={this.handleChangeStatus}
-          />
-          <Button
-            text="Develop"
-            type={this.getButtonType(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY)}
-            data-tip={this.getButtonTip(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY, 'Develop')}
-            icon= {this.getButtonIcon(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY)}
-            onClick={this.handleChangeStatus}
-            data-place="bottom"
-          />
-          <Button
-            text="Code Review"
-            type={this.getButtonType(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY)}
-            data-tip={this.getButtonTip(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY, 'Code Review')}
-            icon= {this.getButtonIcon(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY)}
-            onClick={this.handleChangeStatus}
-            data-place="bottom"
-          />
-          <Button
-            text="QA"
-            type={this.getButtonType(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY)}
-            data-tip={this.getButtonTip(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY, 'QA')}
-            icon= {this.getButtonIcon(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY)}
-            onClick={this.handleChangeStatus}
-            data-place="bottom"
-          />
-          <Button
-            text="Done"
-            type={
-                    task.statusId === TaskStatuses.DONE
-                    ? 'green'
-                    : 'bordered'
-                  }
-            data-tip={
-                    task.statusId === TaskStatuses.DONE
-                    ? null
-                    : 'Перевести в стадию Done'
-                  }
-            data-place="bottom"
-            onClick={this.handleChangeStatus}
-          />
-        </ButtonGroup>
-        <Button
-          type={
-            task.statusId === TaskStatuses.CLOSED
-              ? 'green'
-              : 'bordered'
-          }
-          icon="IconCheck"
-          data-tip={
-            task.statusId === TaskStatuses.CLOSED
-              ? null
-              : 'Принять'
-          }
-          data-place="bottom"
-          addedClassNames={{[css.buttonOk]: true}}
-          onClick={this.handleClose}
-        />
+          </Col>
+        </Row>
         <hr />
 
         { this.state.isCancelModalOpen

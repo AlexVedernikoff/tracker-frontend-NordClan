@@ -14,7 +14,6 @@ small {
   box-sizing: inherit;
 }
 
-
 body {
   font-family: Roboto, sans-serif;
   color: $color-black;
@@ -89,8 +88,9 @@ textarea {
 textarea {
   border: 1px solid $color-gray;
   padding: 0.5rem;
+  resize: vertical;
 
   &::placeholder {
-    color: silver;
+    color: $input-color-placeholder;
   }
 }

@@ -30,7 +30,7 @@ const ReactModalStyles = {
     right: 'initial',
     boxSizing: 'border-box',
     border: 'none',
-    background: '$color-white',
+    background: '#fff',
     overflow: 'auto',
     WebkitOverflowScrolling: 'touch',
     borderRadius: 0,

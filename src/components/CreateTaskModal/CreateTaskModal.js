@@ -193,7 +193,7 @@ class CreateTaskModal extends Component {
         right: 'initial',
         boxSizing: 'border-box',
         border: 'none',
-        background: '$color-white',
+        background: '#fff',
         overflow: 'visi',
         WebkitOverflowScrolling: 'touch',
         borderRadius: 0,
