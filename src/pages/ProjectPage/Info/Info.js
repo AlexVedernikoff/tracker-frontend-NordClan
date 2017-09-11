@@ -7,6 +7,7 @@ import Attachments from '../../../components/Attachments';
 import Tag from '../../../components/Tag';
 import Tags from '../../../components/Tags';
 import Description from '../../../components/Description';
+import Budget from '../../../components/Budget';
 import { DescriptionText } from '../../../mocks/descriptionText';
 import {
   ChangeProject,
@@ -17,6 +18,26 @@ import {
 class Info extends Component {
   constructor (props) {
     super(props);
+  }
+
+  onBudgetSubmit (budget) {
+    this.props.ChangeProject(
+      {
+        id: this.props.id,
+        budget
+      },
+      'budget'
+    );
+  }
+
+  onRiskBudgetSubmit (riskBudget) {
+    this.props.ChangeProject(
+      {
+        id: this.props.id,
+        riskBudget
+      },
+      'riskBudget'
+    );
   }
 
   render () {
@@ -51,6 +72,18 @@ class Info extends Component {
           isEditing={this.props.DescriptionIsEditing}
         />
         <hr />
+        <Budget
+          onEditSubmit={this.onRiskBudgetSubmit.bind(this)}
+          header='Бюджет с рисковым резервом'
+          value={this.props.riskBudget}
+        />
+        <hr />
+        <Budget
+          onEditSubmit={this.onBudgetSubmit.bind(this)}
+          header='Бюджет без рискового резерва'
+          value={this.props.budget}
+        />
+        <hr />
         <h2>Файлы</h2>
         <Attachments />
       </div>
@@ -62,6 +95,8 @@ const mapStateToProps = state => ({
   id: state.Project.project.id,
   tags: state.Project.project.tags,
   description: state.Project.project.description,
+  budget: state.Project.project.budget,
+  riskBudget: state.Project.project.riskBudget,
   DescriptionIsEditing: state.Project.DescriptionIsEditing
 });
 
@@ -69,6 +104,18 @@ const mapDispatchToProps = {
   ChangeProject,
   StartEditing,
   StopEditing
+};
+
+Info.propTypes = {
+  ChangeProject: PropTypes.func,
+  DescriptionIsEditing: PropTypes.bool,
+  StartEditing: PropTypes.func,
+  StopEditing: PropTypes.func,
+  budget: PropTypes.number,
+  description: PropTypes.string,
+  id: PropTypes.number,
+  riskBudget: PropTypes.number,
+  tags: PropTypes.array
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Info);

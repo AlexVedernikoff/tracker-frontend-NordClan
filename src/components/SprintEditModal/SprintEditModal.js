@@ -27,7 +27,9 @@ class SprintEditModal extends Component {
         sprintName: '',
         sprintTime: '',
         allottedTime: null,
-        isHovered: false
+        isHovered: false,
+        budget: 0,
+        riskBudget: 0
       }
     };
   }
@@ -48,6 +50,26 @@ class SprintEditModal extends Component {
       sprint: {
         ...state.sprint,
         sprintName: value
+      }
+    }));
+  };
+
+  onChangeBudget = (e) => {
+    const value = e.target.value;
+    this.setState(state => ({
+      sprint: {
+        ...state.sprint,
+        budget: parseFloat(value)
+      }
+    }));
+  };
+
+  onChangeRiskBudget = (e) => {
+    const value = e.target.value;
+    this.setState(state => ({
+      sprint: {
+        ...state.sprint,
+        riskBudget: parseFloat(value)
       }
     }));
   };
@@ -137,6 +159,26 @@ class SprintEditModal extends Component {
                   placeholder='Введите новое значение времени...'
                   defaultValue={sprint.allottedTime || 0}
                   onChange={this.onChangeTime}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col xsOffset={1}
+                   xs={10}>
+                <Input
+                  placeholder='Бюджет без рискового резерва...'
+                  defaultValue={sprint.budget || 0}
+                  onChange={this.onChangeBudget}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col xsOffset={1}
+                   xs={10}>
+                <Input
+                  placeholder='Бюджет с рисковым резервом...'
+                  defaultValue={sprint.riskBudget || 0}
+                  onChange={this.onChangeRiskBudget}
                 />
               </Col>
             </Row>
