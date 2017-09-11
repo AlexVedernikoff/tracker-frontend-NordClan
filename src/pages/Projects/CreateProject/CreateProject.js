@@ -52,10 +52,10 @@ class CreateProject extends Component {
           <hr/>
           <label className={css.formField}>
             <Row>
-              <Col xs={formLayout.firstCol} className={css.leftColumn}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Название проекта:</p>
               </Col>
-              <Col xs={formLayout.secondCol} className={css.rightColumn}>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Input
                   onChange={this.props.onChange}
                   name="projectName"
@@ -66,10 +66,10 @@ class CreateProject extends Component {
           </label>
           <label className={css.formField}>
             <Row>
-              <Col xs={formLayout.firstCol} className={css.leftColumn}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Префикс проекта:</p>
               </Col>
-              <Col xs={formLayout.secondCol} className={css.rightColumn}>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Input
                   onChange={this.props.onChange}
                   name="projectPrefix"
@@ -80,10 +80,10 @@ class CreateProject extends Component {
           </label>
           <label className={css.formField}>
             <Row>
-              <Col xs={formLayout.firstCol} className={css.leftColumn}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Добавить проект в портфель</p>
               </Col>
-              <Col xs={formLayout.secondCol} className={css.rightColumn}>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <SelectAsync
                   promptTextCreator={label => `Создать портфель '${label}'`}
                   searchPromptText={'Введите название портфеля'}
@@ -117,14 +117,12 @@ class CreateProject extends Component {
               text="Создать проект"
               htmlType="submit"
               type="green"
-              style={{ width: '50%' }}
               onClick={this.props.onSubmit}
             />
             <Button
               text="Создать и открыть"
               htmlType="button"
               type="green-lighten"
-              style={{ width: '50%' }}
               onClick={this.props.onSubmitAndOpen}
             />
           </div>

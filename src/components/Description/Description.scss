@@ -15,6 +15,10 @@
   border-radius: 50%;
   transition: $transition;
 
+  @include phone {
+    left: 0.5rem;
+  }
+
   &:hover {
     background-color: $color-lightgray;
     fill: $color-dark;

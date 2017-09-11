@@ -1,14 +1,24 @@
 @import '../../styles/variables.scss';
 
 .createTaskForm {
+  max-width: 500px;
   width: 100%;
-  padding: 25px;
+  padding: 2rem;
+
+  @include phone {
+    padding: 1rem;
+  }
 }
 
 .leftColumn {
   display: flex;
   justify-content: flex-end;
   align-items: center;
+
+  @include phone {
+    justify-content: flex-start;
+    text-align: left;
+  }
 }
 
 .rightColumn {
@@ -25,15 +35,27 @@
 }
 
 .buttonsContainer {
-  width: 90%;
-  position: absolute;
-  bottom: 15px;
+  width: 100%;
+  margin-top: 2rem;
+
+  button {
+    width: 50%;
+
+    @include phone {
+      width: 100%;
+    }
+
+    &:first-child {
+      @include phone {
+        margin-bottom: 1rem;
+      }
+    }
+  }
 }
 
 .selectSprint, .selectPerformer {
   width: 100%;
 }
-
 
 .sprintMarker {
   display: flex !important;
