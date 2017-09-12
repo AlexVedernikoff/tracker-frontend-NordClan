@@ -275,6 +275,60 @@ export default function Task (state = InitialState, action) {
     };
   }
 
+  case TaskActions.TASK_ATTACHMENT_UPLOAD_REQUEST: {
+    const attachments = state.task.attachments;
+    const attachment = action.attachment;
+
+    return {
+      ...state,
+      task: {
+        ...state.task,
+        attachments: [
+          ...attachments,
+          {
+            ...attachment,
+            uploading: true
+          }
+        ]
+      }
+    };
+  }
+
+  case TaskActions.TASK_ATTACHMENT_UPLOAD_PROGRESS: {
+    const attachments = state.task.attachments.map((attachment) => {
+      if (attachment.id === action.attachment.id) {
+        attachment.progress = action.progress;
+      }
+
+      return attachment;
+    });
+
+    return {
+      ...state,
+      task: {
+        ...state.task,
+        attachments
+      }
+    };
+  }
+
+  case TaskActions.TASK_ATTACHMENT_UPLOAD_SUCCESS: {
+    const attachments = state.task.attachments.filter(
+      value => value.uploading && value.id !== action.attachment.id
+    );
+
+    return {
+      ...state,
+      task: {
+        ...state.task,
+        attachments: [
+          ...action.result.data,
+          ...attachments
+        ]
+      }
+    };
+  }
+
   default:
     return state;
   }

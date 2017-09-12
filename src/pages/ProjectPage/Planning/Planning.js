@@ -25,6 +25,7 @@ import SprintStartControl from '../../../components/SprintStartControl';
 import SprintEditModal from '../../../components/SprintEditModal';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 import { IconEdit } from '../../../components/Icons';
+import { BACKLOG_ID } from '../../../constants/Sprint';
 
 
 const getSprintTime = sprint =>
@@ -39,6 +40,7 @@ class Planning extends Component {
     createSprint: PropTypes.func.isRequired,
     editSprint: PropTypes.func.isRequired,
     getPlanningTasks: PropTypes.func.isRequired,
+    lastCreatedTask: PropTypes.object,
     leftColumnTasks: PropTypes.array,
     openCreateTaskModal: PropTypes.func,
     project: PropTypes.object,
@@ -63,7 +65,7 @@ class Planning extends Component {
   }
 
   componentDidMount () {
-    this.selectValue(0, 'leftColumn');
+    this.selectValue(BACKLOG_ID, 'leftColumn');
     this.selectValue(this.getCurrentSprint(this.props.project.sprints), 'rightColumn');
   }
 
@@ -73,9 +75,19 @@ class Planning extends Component {
       this.selectValue(this.state.rightColumn, 'rightColumn');
     }
 
-    if (this.props.project.sprints !== nextProps.project.sprints) {
-      this.selectValue(0, 'leftColumn');
+    if (this.props.project.sprints.length === 0 && nextProps.project.sprints.length > 0) {
+      this.selectValue(BACKLOG_ID, 'leftColumn');
       this.selectValue(this.getCurrentSprint(nextProps.project.sprints), 'rightColumn');
+    }
+
+    if (this.props.project.sprints !== nextProps.project.sprints) {
+      if (nextProps.lastCreatedTask && Number.isInteger(nextProps.lastCreatedTask.sprintId)) {
+        if (this.state.createTaskCallee === 'left') {
+          this.selectValue(nextProps.lastCreatedTask.sprintId, 'leftColumn');
+        } else {
+          this.selectValue(nextProps.lastCreatedTask.sprintId, 'rightColumn');
+        }
+      }
     }
   }
 
@@ -541,6 +553,7 @@ class Planning extends Component {
 const mapStateToProps = state => ({
   sprints: state.Project.project.sprints,
   project: state.Project.project,
+  lastCreatedTask: state.Project.lastCreatedTask,
   leftColumnTasks: state.PlanningTasks.leftColumnTasks,
   rightColumnTasks: state.PlanningTasks.rightColumnTasks,
   SprintIsEditing: state.Task.SprintIsEditing

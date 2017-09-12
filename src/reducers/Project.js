@@ -170,7 +170,12 @@ export default function Project (state = InitialState, action) {
 
   case ProjectActions.TASK_CREATE_REQUEST_SUCCESS:
     return {
-      ...state
+      ...state,
+      lastCreatedTask: {
+        projectId: action.projectId,
+        sprintId: action.sprintId,
+        taskId: action.taskId
+      }
     };
 
   default:
