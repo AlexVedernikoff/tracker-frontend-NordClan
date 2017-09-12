@@ -100,10 +100,9 @@ class SprintEditModal extends Component {
         contentLabel='modal'
         onRequestClose={this.props.handleCloseModal}>
         <div>
-          <div>
+          <form className={css.editSprintForm}>
             <Row>
-              <Col xsOffset={1}
-                   xs={10}>
+              <Col xs={12}>
                 <h3>Редактирование спринта</h3>
                 <Input
                   placeholder='Новое название спринта...'
@@ -113,7 +112,7 @@ class SprintEditModal extends Component {
               </Col>
             </Row>
             <Row>
-              <Col xsOffset={1} xs={5}>
+              <Col xs={12} sm={6}>
                 <DatepickerDropdown
                   name='dateFrom'
                   value={formattedDayFrom}
@@ -121,7 +120,7 @@ class SprintEditModal extends Component {
                   placeholder={moment(sprint.factStartDate).format('DD.MM.YYYY')}
                 />
               </Col>
-              <Col xs={5}>
+              <Col xs={12} sm={6}>
                 <DatepickerDropdown
                   name='dateTo'
                   value={formattedDayTo}
@@ -131,8 +130,7 @@ class SprintEditModal extends Component {
               </Col>
             </Row>
             <Row>
-              <Col xsOffset={1}
-                   xs={10}>
+              <Col xs={12}>
                 <Input
                   placeholder='Введите новое значение времени...'
                   defaultValue={sprint.allottedTime || 0}
@@ -148,7 +146,7 @@ class SprintEditModal extends Component {
                         onClick={this.handleEditSprint}/>
               </Col>
             </Row>
-          </div>
+          </form>
         </div>
       </Modal>
     );

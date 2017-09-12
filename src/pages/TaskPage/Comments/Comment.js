@@ -157,7 +157,7 @@ class Comment extends Component {
                   <span className={css.commentQuoteDate}>
                     {moment(parentComment.updatedAt).format('DD.MM.YY HH:mm')}:
                   </span>
-                  «<div className={css.quoteText}>{parentComment.text}</div>»
+                  <div className={css.quoteText}>«{parentComment.text}»</div>
                 </div>
                 : null
             }
