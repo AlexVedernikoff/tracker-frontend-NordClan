@@ -41,7 +41,7 @@ class TaskRow extends React.Component {
     return (
     <div className={classnames({[css.taskCard]: true, [css[classPriority]]: true, [css.card]: card, [css.dropped]: isDragging})} {...other}>
       <Row>
-        <Col xs={shortcut ? 12 : 6}>
+        <Col xs={12} sm={shortcut ? 12 : 6}>
           <div className={css.header}>
             <div>
               <div className={css.priorityMarker} data-tip={`Приоритет: ${task.prioritiesId}`}>{task.prioritiesId}</div>
@@ -67,7 +67,7 @@ class TaskRow extends React.Component {
         </Col>
         {
           !shortcut
-          ? <Col xs>
+          ? <Col xs={12} sm>
             <div className={css.metabox}>
               <p className={css.taskMeta}>
                 <span>Спринт:</span>

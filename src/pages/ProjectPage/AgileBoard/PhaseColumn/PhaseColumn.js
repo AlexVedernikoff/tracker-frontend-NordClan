@@ -37,7 +37,7 @@ class PhaseColumn extends React.Component {
 
     return (
       connectDropTarget(
-      <div className={classnames({'col-xs': true, [css.dropColumn]: true, [css.canDropColumn]: isOver && canDrop, [css.cantDropColumn]: isOver && !canDrop})} >
+      <div className={classnames({'col-xs-6 col-sm': true, [css.dropColumn]: true, [css.canDropColumn]: isOver && canDrop, [css.cantDropColumn]: isOver && !canDrop})} >
         <h4>{title}</h4>
         {tasks}
       </div>

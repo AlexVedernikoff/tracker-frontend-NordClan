@@ -359,7 +359,7 @@ class Planning extends Component {
                 {this.state.isOpenSprintList
                   ? <Row>
                     {this.props.sprints.map((element, i) =>
-                      <Col xs={3} key={`sprint-${i}`}>
+                      <Col xs={12} sm={6} md={3} key={`sprint-${i}`}>
                         <SprintCard sprint={element} inFocus={element.id === this.state.sprintIdHovered} onMouseOver={this.onMouseOverSprint(element.id)} onMouseOut={this.onMouseOutSprint} />
                       </Col>
                     )}
@@ -440,7 +440,7 @@ class Planning extends Component {
             </div>
           </div>
           <Row>
-            <Col xs={6}>
+            <Col xs={12} sm={6}>
               <div className={css.headerColumn}>
                 <div className={css.selectWrapper}>
                   <SelectDropdown
@@ -463,7 +463,6 @@ class Planning extends Component {
                   text="Создать задачу"
                   icon="IconPlus"
                   name="left"
-                  style={{ marginLeft: 16 }}
                 />
               </div>
               <div
@@ -486,7 +485,7 @@ class Planning extends Component {
                 />
                 : null}
             </Col>
-            <Col xs={6}>
+            <Col xs={12} sm={6}>
               <div className={css.headerColumn}>
                 <div className={css.selectWrapper}>
                   <SelectDropdown
@@ -509,7 +508,6 @@ class Planning extends Component {
                   text="Создать задачу"
                   icon="IconPlus"
                   name="right"
-                  style={{ marginLeft: 16 }}
                 />
               </div>
               <div

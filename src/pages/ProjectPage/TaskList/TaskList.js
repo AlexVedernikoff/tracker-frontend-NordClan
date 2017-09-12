@@ -92,29 +92,49 @@ class TaskList extends Component {
       <div>
         <section>
           <div className={css.filters}>
-            <div className={css.checkedFilters}>
-              <Checkbox label="Баг"/>
-              <Checkbox label="Регрес. Баг"/>
-              <Checkbox label="Фича / Задача"/>
-              <Checkbox label="Доп. Фича"/>
-              <Checkbox label="New"/>
-              <Checkbox label="Develop"/>
-              <Checkbox label="Code Review"/>
-              <Checkbox label="QA"/>
-              <Checkbox label="Done"/>
-              <Checkbox label="В процессе"/>
-            </div>
-            <Row>
-              <Col xs={6}>
+            <Row className={css.checkedFilters} top="xs">
+              <Col xs={6} sm>
+                <Checkbox label="Баг"/>
+              </Col>
+              <Col xs={6} sm>
+                <Checkbox label="Регрес. Баг"/>
+              </Col>
+              <Col xs={6} sm>
+                <Checkbox label="Фича / Задача"/>
+              </Col>
+              <Col xs={6} sm>
+                <Checkbox label="Доп. Фича"/>
+              </Col>
+              <Col xs={6} sm>
+                <Checkbox label="New"/>
+              </Col>
+              <Col xs={6} sm>
+                <Checkbox label="Develop"/>
+              </Col>
+              <Col xs={6} sm>
+                <Checkbox label="Code Review"/>
+              </Col>
+              <Col xs={6} sm>
+                <Checkbox label="QA"/>
+              </Col>
+              <Col xs={6} sm>
+                <Checkbox label="Done"/>
+              </Col>
+              <Col xs={6} sm>
+                <Checkbox label="В процессе"/>
+              </Col>
+            </Row>
+            <Row className={css.search}>
+              <Col xs={12} sm={6}>
                 <Input
                   placeholder="Название задачи"
                   onChange={this.changeNameFilter}
                 />
               </Col>
-              <Col xs={3}>
+              <Col xs={12} sm={3}>
                 <Input placeholder="Имя исполнителя"/>
               </Col>
-              <Col xs={3}>
+              <Col xs={12} sm={3}>
                 <TagsFilter
                   filterFor={'task'}
                   onTagSelect={this.onTagSelect}

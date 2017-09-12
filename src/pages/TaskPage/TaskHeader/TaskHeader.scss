@@ -9,6 +9,10 @@
     display: inline-block;
     padding-right: 16px;
 
+    @include phone {
+      margin-bottom: 1rem;
+    }
+
     & + div {
       padding-left: 16px;
       border-left: 1px solid lighten($color-black, 60%);
@@ -65,13 +69,34 @@
   // }
 }
 
+.progressButtons {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  max-width: 550px;
+  width: 100%;
+
+  @include tablet {
+    justify-content: flex-start;
+    max-width: 470px;
+  }
+}
+
 .buttonCancel {
   border-style: dashed;
   margin-right: 1rem;
+
+  @include tablet {
+    order: 2;
+  }
 }
 
 .buttonOk {
   margin-left: 1rem;
+
+  @include tablet {
+    order: 3;
+  }
 
   &:hover {
     border-color: $color-green;

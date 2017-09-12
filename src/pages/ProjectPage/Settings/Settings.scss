@@ -43,6 +43,10 @@
   min-width: 330px;
   padding: 2rem;
 
+  @include phone {
+    padding: 1rem;
+  }
+
   h3 {
     margin-top: 0;
   }

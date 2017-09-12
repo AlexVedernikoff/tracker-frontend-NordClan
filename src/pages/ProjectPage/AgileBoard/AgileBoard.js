@@ -321,7 +321,7 @@ class AgileBoard extends Component {
     return (
         <section className={css.agileBoard}>
           {!this.props.myTaskBoard ? <Row className={css.filtersRow}>
-            <Col xs>
+            <Col xs className={css.changedSprint}>
               <SelectDropdown
                 name="changedSprint"
                 placeholder="Введите название спринта..."
@@ -338,7 +338,7 @@ class AgileBoard extends Component {
               text="Создать задачу"
               icon="IconPlus"
               name="right"
-              style={{ marginLeft: 16, marginRight: 8 }}
+              style={{ marginLeft: 8, marginRight: 8 }}
             />
           </Row> : null}
           {!this.props.myTaskBoard ? <Row>
