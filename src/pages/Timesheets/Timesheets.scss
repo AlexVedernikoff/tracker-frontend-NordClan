@@ -44,6 +44,13 @@
   }
 }
 
+.tableContainer {
+  
+  @include phone {
+    overflow-x: auto;
+  }
+}
+
 .taskCard {
   padding-left: 1rem;
   max-width: 20rem;

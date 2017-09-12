@@ -203,7 +203,7 @@ class CreateTaskModal extends Component {
         maxWidth: 500,
         width: '100%',
         height: 'auto',
-        maxHeight: '100%'
+        maxHeight: 'initial'
       }
     };
 
