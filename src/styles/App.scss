@@ -82,7 +82,10 @@ img {
 input,
 select,
 textarea {
-  font-size: $font-size-mobile;
+  
+  @include phone {
+    font-size: $font-size-mobile;
+  }
 }
 
 textarea {

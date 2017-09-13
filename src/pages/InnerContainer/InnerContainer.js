@@ -71,7 +71,8 @@ export default class InnerContainer extends Component {
     const sidebar = <NavMenu />;
     const sidebarStyles = {
       sidebar: {
-        width: 240
+        width: 240,
+        zIndex: 3
       },
       content: {
         overflowY: 'hidden',
