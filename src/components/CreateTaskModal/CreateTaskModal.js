@@ -258,7 +258,7 @@ class CreateTaskModal extends Component {
                 <Select
                   multi={false}
                   ignoreCase
-                  placeholder="Выберите спринт"
+                  placeholder="Выберите тип"
                   options={this.state.types}
                   className={css.selectSprint}
                   value={this.state.selectedType}

@@ -8,6 +8,7 @@ import LocaleUtils from 'react-day-picker/moment';
 import * as css from './Timesheets.scss';
 import { IconComment, IconClose, IconComments, IconPlus, IconArrowLeft, IconArrowRight, IconCalendar, IconCheck, IconCheckAll } from '../../components/Icons';
 import Button from '../../components/Button';
+import AddActivityModal from './AddActivityModal';
 
 class Calendar extends React.Component {
   static propTypes = {
@@ -16,7 +17,9 @@ class Calendar extends React.Component {
 
   constructor (props) {
     super(props);
-    this.state = {};
+    this.state = {
+      isModalOpen: true
+    };
   }
 
   handleClickOutside = evt => {
@@ -382,7 +385,7 @@ class Timesheets extends React.Component {
               </tr>
               <tr>
                 <td colSpan="10">
-                <a className={css.add}>
+                  <a className={css.add} onClick={() => this.setState({isModalOpen: true})}>
                     <IconPlus style={{fontSize: 16}}/>
                     <div className={css.tooltip}>
                       Добавить активность
@@ -394,6 +397,13 @@ class Timesheets extends React.Component {
           </table>
           <Button text="Отправить на согласование" type="primary" style={{marginTop: '2rem'}}/>
         </section>
+        {
+          this.state.isModalOpen
+          ? <AddActivityModal
+              onClose={() => this.setState({isModalOpen: false})}
+            />
+          : null
+        }
       </div>
     );
   }
