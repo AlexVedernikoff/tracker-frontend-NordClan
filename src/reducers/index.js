@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux';
 
 import Auth from './Authentication';
+import Dictionaries from './Dictionaries';
 import Projects from './Projects';
 import Loading from './Loading';
 import Project from './Project';
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   Task,
   Portfolio,
   TimesheetPlayer,
+  Dictionaries,
   routing: routerReducer
 });
 

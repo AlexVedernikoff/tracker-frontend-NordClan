@@ -15,6 +15,11 @@ import * as css from './Timesheets.scss';
 import { closeCreateTaskModal, createTask } from '../../actions/Project';
 
 class AddActivityModal extends Component {
+
+  static propTypes = {
+    activityTypes: PropTypes.array
+  }
+
   constructor (props) {
     super(props);
     this.state = {};
@@ -36,7 +41,48 @@ class AddActivityModal extends Component {
         <div className={css.addActivityForm}>
           <h3>Добавить активность</h3>
           <hr/>
-          <SelectDropdown/>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={12} sm={5}>
+                Тип активности:
+              </Col>
+              <Col xs={12} sm={7}>
+                <SelectDropdown
+                  multi={false}
+                  value={1}
+                  placeholder="Тип активности"
+                  options={
+                    this.props.activityTypes.length
+                    ? this.props.activityTypes.map(
+                        element => {return {label: element.name, value: element.id};}
+                      )
+                    : null
+                  }
+                />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={12} sm={5}>
+                Проект / Задача:
+              </Col>
+              <Col xs={12} sm={7}>
+                <SelectDropdown
+                  multi={false}
+                  placeholder="Выбрать проект / задачу"
+                  options=""
+                />
+              </Col>
+            </Row>
+          </label>
+          <div className={css.footer}>
+            <Button
+              text="Добавить"
+              htmlType="submit"
+              type="green"
+            />
+          </div>
         </div>
       </Modal>
     );
@@ -47,7 +93,9 @@ AddActivityModal.propTypes = {
   onClose: PropTypes.func
 };
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  activityTypes: state.Dictionaries.magicActivityTypes
+});
 
 const mapDispatchToProps = {};
 

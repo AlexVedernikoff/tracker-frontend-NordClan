@@ -355,4 +355,30 @@ tr:nth-last-child(2) td.today {
 
 .addActivityForm {
   padding: 2rem;
+  @include desktop { width: 24rem; }
+  @include tablet { width: 24rem; }
+  @include phone { width: 22.5rem; }
+
+  .footer {
+    margin-top: 2rem;
+    text-align: right;
+  }
+
+  .formField {
+    display: block;
+
+    & + .formField {
+      margin-top: 1rem;
+    }
+
+    & > div {
+      align-items: center;
+
+      & > div {
+        &:first-child {
+          text-align: right;
+        }
+      }
+    }
+  }
 }
