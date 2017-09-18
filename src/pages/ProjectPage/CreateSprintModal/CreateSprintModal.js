@@ -61,9 +61,9 @@ class CreateSprintModal extends Component {
     return (
       <Modal isOpen contentLabel="modal" onRequestClose={this.props.onClose}>
         <div>
-          <div>
+          <form className={css.createSprintForm}>
             <Row>
-              <Col xsOffset={1} xs={10}>
+              <Col xs={12}>
                 <h3>Создание нового спринта</h3>
                 <Input
                   placeholder="Введите название спринта..."
@@ -72,7 +72,7 @@ class CreateSprintModal extends Component {
               </Col>
             </Row>
             <Row>
-              <Col xsOffset={1} xs={5}>
+              <Col xs={12} sm={6}>
                 <DatepickerDropdown
                   name="dateFrom"
                   value={formattedDayFrom}
@@ -80,7 +80,7 @@ class CreateSprintModal extends Component {
                   placeholder="Дата начала"
                 />
               </Col>
-              <Col xs={5}>
+              <Col xs={12} sm={6}>
                 <DatepickerDropdown
                   name="dateTo"
                   value={formattedDayTo}
@@ -90,7 +90,7 @@ class CreateSprintModal extends Component {
               </Col>
             </Row>
             <Row>
-              <Col xsOffset={1} xs={10}>
+              <Col xs={12}>
                 <Input
                   placeholder="Введите время в часах..."
                   onChange={this.onChangeTime}
@@ -106,7 +106,7 @@ class CreateSprintModal extends Component {
                 />
               </Col>
             </Row>
-          </div>
+          </form>
         </div>
       </Modal>
     );

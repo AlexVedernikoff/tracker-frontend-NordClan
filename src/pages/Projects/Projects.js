@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
@@ -260,16 +261,16 @@ class Projects extends Component {
                 label="Завершен"
               />
             </div>
-            <Row>
-              <Col xs>
+            <Row className={css.search}>
+              <Col xs={12} sm={4}>
                 <Input
                   onChange={this.changeNameFilter}
                   placeholder="Введите название проекта..."
                 />
               </Col>
-              <Col xs>
+              <Col xs={12} sm={4}>
                 <Row>
-                  <Col xs>
+                  <Col xs={6} sm={6}>
                     <DatepickerDropdown
                       name="dateFrom"
                       value={formattedDayFrom}
@@ -277,7 +278,7 @@ class Projects extends Component {
                       placeholder="От"
                     />
                   </Col>
-                  <Col xs>
+                  <Col xs={6} sm={6}>
                     <DatepickerDropdown
                       name="dateTo"
                       value={formattedDayTo}
@@ -287,7 +288,7 @@ class Projects extends Component {
                   </Col>
                 </Row>
               </Col>
-              <Col xs>
+              <Col xs={12} sm={4}>
                 <TagsFilter
                   filterFor={'project'}
                   onTagSelect={this.onTagSelect}

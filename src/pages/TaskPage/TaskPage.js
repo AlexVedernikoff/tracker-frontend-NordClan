@@ -144,7 +144,7 @@ class TaskPage extends Component {
     return (this.props.task.error) ? (<HttpError error={this.props.task.error}/>) : (
       <div id="task-page">
         <Row>
-          <Col xs={8}>
+          <Col xs={12} sm={8}>
             <TaskHeader task={this.props.task} projectId={this.props.params.projectId} onChange={this.props.changeTask} onChangeUser={this.props.changeTaskUser} />
             <main className={css.main}>
               <Description
@@ -178,7 +178,7 @@ class TaskPage extends Component {
               {this.props.children}
             </main>
           </Col>
-          <Col xs={4}>
+          <Col xs={12} sm={4}>
             <aside>
               <Details task={this.props.task} sprints={this.props.sprints} onChange={this.props.changeTask}
                  onChangeUser={this.props.changeTaskUser} />

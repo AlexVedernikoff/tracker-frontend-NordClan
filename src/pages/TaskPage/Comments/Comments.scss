@@ -92,6 +92,10 @@
   font-size: 12px;
   margin-bottom: 0.5rem;
   cursor: pointer;
+
+  @include phone {
+    flex-wrap: wrap;
+  }
 }
 
 .commentQuoteDate {
@@ -107,6 +111,8 @@
 
 .commentText {
   white-space: pre-line;
+  word-break: break-all;
+  word-break: break-word;
   cursor: pointer;
 }
 

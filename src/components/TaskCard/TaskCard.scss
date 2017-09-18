@@ -52,6 +52,8 @@
 .taskName {
   display: block;
   margin-bottom: 8px;
+  word-break: break-all;
+  word-break: break-word;
   @include link-reset;
 }
 
@@ -140,10 +142,11 @@ svg.red { background-color: transparent; fill: $color-red; }
   }
 }
 
-.prefix {
+.header {
   display: inline-block;
-  margin-right: 4px;
   color: lighten($color-black, 40%);
+  margin-bottom: 0.5rem;
+  font-size: 11px;
 }
 
 .dropped {

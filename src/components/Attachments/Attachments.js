@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import AttachedDocument from '../AttachedDocument';
 import AttachedImage from '../AttachedImage';
 import AttachDeletion from '../AttachDeletion';
+import AttachUploading from '../AttachUploading';
 import FileUpload from '../FileUpload';
 
 export default class Attachments extends Component {
@@ -14,25 +15,29 @@ export default class Attachments extends Component {
     this.props.uploadAttachments(acceptedFiles);
   };
 
+  getAttachment = (file, index) => {
+    if (file.deleting) {
+      return <AttachDeletion key={`attached-deletion-${index}`} filename={file.fileName} />;
+    }
+
+    if (file.uploading) {
+      return <AttachUploading key={`attached-uploading-${index}`} {...file} />;
+    }
+
+    if (file.type === 'image') {
+      return <AttachedImage key={`attached-picture-${index}`} {...file} removeAttachment={this.props.removeAttachment} />;
+    }
+
+    return <AttachedDocument key={`attached-document-${index}`} {...file} removeAttachment={this.props.removeAttachment}/>;
+  };
+
   render () {
     const css = require('./Attachments.scss');
 
     return (
       <div className={css.attachments}>
         <ul className={css.attachmentsContainer}>
-
-          {this.props.attachments.map((file, index) => {
-            return file.deleting
-              ? <AttachDeletion key={`attached-deletion-${index}`} filename={file.fileName} />
-              : file.type === 'image'
-              ? <AttachedImage key={`attached-document-${index}`} {...file} removeAttachment={this.props.removeAttachment} />
-              : <AttachedDocument
-                  key={`attached-picture-${index}`}
-                  {...file}
-                  removeAttachment={this.props.removeAttachment}
-              />;
-          })}
-
+          {this.props.attachments.map((file, index) => this.getAttachment(file, index))}
           <FileUpload onDrop={this.onDrop} />
         </ul>
       </div>

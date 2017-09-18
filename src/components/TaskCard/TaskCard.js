@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import { Link } from 'react-router';
 import { DragSource } from 'react-dnd';
 import { TASK_CARD } from '../../constants/DragAndDrop';
+import getTypeById from '../../utils/TaskTypes';
 
 import { IconPlay, IconPause, IconTime } from '../Icons';
 import * as css from './TaskCard.scss';
@@ -74,9 +75,9 @@ const TaskCard = (props) => {
           </div>
           : null
         }
+        <span className={css.header}>{`${task.prefix}-${task.id}`} | {getTypeById(task.typeId)}</span>
         <Link to={`/projects/${task.projectId}/tasks/${task.id}`} className={css.taskName}>
-          <span className={css.prefix}>{`${task.prefix}-${task.id}`}.</span>
-          {task.name}
+          <div>{task.name}</div>
         </Link>
         <p className={css.taskMeta} onClick={handlePerformerClick}>
           {!myTaskBoard ? <a>

@@ -217,23 +217,32 @@ const uploadAttachments = (taskId, attachments) => {
     return () => {};
   }
 
-  const URL = `${API_URL}/task/${taskId}/attachment`;
-  return (dispatch) => {
-    axios.all(attachments.map((attachment) => {
+  return dispatch => {
+    attachments.map((file) => {
       const data = new FormData();
-      data.append('file', attachment);
-      attachmentUploadStarted(taskId, attachment);
-      return axios.post(URL, data, {
-        onUploadProgress: (progressEvent) => dispatch(
-          attachmentUploadProgress(taskId, attachment, Math.round((progressEvent.loaded * 100) / progressEvent.total))
-        )
-      })
-      .then(
-        result => attachmentUploadSuccess(taskId, attachment, result),
-        error => attachmentUploadFail(taskId, attachment, error)
-      );
-    }))
-    .then(() => dispatch(getTask(taskId)));
+      data.append('file', file);
+
+      const attachment = {
+        id: `${ Date.now() }${ Math.random() }`,
+        fileName: file.name
+      };
+
+      return dispatch({
+        type: REST_API,
+        url: `/task/${taskId}/attachment`,
+        method: POST,
+        body: data,
+        extra: withdefaultExtra({
+          onUploadProgress: (progressEvent) => {
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            dispatch(attachmentUploadProgress(taskId, attachment, progress));
+          }
+        }),
+        start: () => withStartLoading(attachmentUploadStarted, true)(dispatch)(taskId, attachment),
+        response: result => withFinishLoading(attachmentUploadSuccess, true)(dispatch)(taskId, attachment, result),
+        error: error => withFinishLoading(attachmentUploadFail, true)(dispatch)(taskId, attachment, error)
+      });
+    });
   };
 };
 

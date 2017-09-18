@@ -69,7 +69,7 @@ const ProjectCard = props => {
   return (
     <div className={css.projectCard}>
       <Row>
-        <Col xs>
+        <Col xs={12} sm={4}>
           <h3
             className={classnames({ [css.title]: true, [css.child]: isChild })}
           >
@@ -90,7 +90,7 @@ const ProjectCard = props => {
             </div>
           </h3>
         </Col>
-        <Col xs>
+        <Col xs={12} sm={4}>
           <div className={css.metaBox}>
             {createdAt
               ? <div className={css.meta}>
@@ -132,7 +132,7 @@ const ProjectCard = props => {
             </div>
           </div>
         </Col>
-        <Col xs>
+        <Col xs={12} sm={4}>
           <div className={css.tags}>
             <Tags>
               {tagList}

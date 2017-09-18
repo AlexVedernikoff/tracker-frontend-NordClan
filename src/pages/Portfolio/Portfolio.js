@@ -48,7 +48,7 @@ Portfolio.propTypes = {
   getPortfolioName: PropTypes.func,
   name: PropTypes.string,
   params: PropTypes.object,
-  portfolio: PropTypes.arr
+  portfolio: PropTypes.array
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Portfolio);

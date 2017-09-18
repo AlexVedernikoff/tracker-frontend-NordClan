@@ -14,6 +14,7 @@ import SelectDropdown from '../SelectDropdown';
 import * as css from './CreateTaskModal.scss';
 import Priority from '../../pages/TaskPage/Priority';
 import { closeCreateTaskModal, createTask } from '../../actions/Project';
+import { BACKLOG_ID } from '../../constants/Sprint';
 
 class CreateTaskModal extends Component {
   constructor (props) {
@@ -38,7 +39,7 @@ class CreateTaskModal extends Component {
   componentWillReceiveProps (nextProps) {
     const selectedSprint = this.state.selectedSprint !== nextProps.selectedSprintValue
       ? nextProps.selectedSprintValue
-      : null;
+      : this.state.selectedSprint;
 
     this.setState(state => {
       return {
@@ -107,7 +108,7 @@ class CreateTaskModal extends Component {
         performerId: this.state.selectedPerformer,
         statusId: 1,
         typeId: this.state.selectedType.value,
-        sprintId: this.state.selectedSprint === 0 ? null : this.state.selectedSprint,
+        sprintId: this.state.selectedSprint === BACKLOG_ID ? null : this.state.selectedSprint,
         prioritiesId: this.state.prioritiesId,
         parentId: this.props.parentTaskId
       },
@@ -199,10 +200,11 @@ class CreateTaskModal extends Component {
         borderRadius: 0,
         outline: 'none',
         padding: 0,
-        paddingBottom: '4rem',
-        width: 500,
+        paddingBottom: '0',
+        maxWidth: 500,
+        width: '100%',
         height: 'auto',
-        maxHeight: '100%'
+        maxHeight: 'initial'
       }
     };
 
@@ -222,10 +224,10 @@ class CreateTaskModal extends Component {
         <form className={css.createTaskForm}>
           <label className={css.formField}>
             <Row>
-              <Col xs={formLayout.firstCol} className={css.leftColumn}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Название задачи:</p>
               </Col>
-              <Col xs={formLayout.secondCol} className={css.rightColumn}>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Input
                   autoFocus
                   onChange={this.handleInput}
@@ -237,10 +239,10 @@ class CreateTaskModal extends Component {
           </label>
           <label className={css.formField}>
             <Row>
-              <Col xs={formLayout.firstCol} className={css.leftColumn}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Описание:</p>
               </Col>
-              <Col xs={formLayout.secondCol} className={css.rightColumn}>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <TextArea
                   onChange={this.handleDescription}
                   name="description"
@@ -251,10 +253,10 @@ class CreateTaskModal extends Component {
           </label>
           <label className={css.formField}>
             <Row>
-              <Col xs={formLayout.firstCol} className={css.leftColumn}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Тип задачи:</p>
               </Col>
-              <Col xs={formLayout.secondCol} className={css.rightColumn}>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Select
                   multi={false}
                   ignoreCase
@@ -270,10 +272,10 @@ class CreateTaskModal extends Component {
           </label>
           <label className={css.formField}>
             <Row>
-              <Col xs={formLayout.firstCol} className={css.leftColumn}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Приоритет:</p>
               </Col>
-              <Col xs={formLayout.secondCol} className={css.rightColumn}>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Priority
                   priority={this.state.prioritiesId}
                   onPrioritySet={this.handlePriorityChange}
@@ -284,10 +286,10 @@ class CreateTaskModal extends Component {
           </label>
           <label className={css.formField}>
             <Row>
-              <Col xs={formLayout.firstCol} className={css.leftColumn}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Исполнитель:</p>
               </Col>
-              <Col xs={formLayout.secondCol} className={css.rightColumn}>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <SelectDropdown
                   name="performer"
                   placeholder="Введите имя исполнителя..."
@@ -303,10 +305,10 @@ class CreateTaskModal extends Component {
           </label>
           <label className={css.formField}>
             <Row>
-              <Col xs={formLayout.firstCol} className={css.leftColumn}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Добавить задачу в спринт:</p>
               </Col>
-              <Col xs={formLayout.secondCol} className={css.rightColumn}>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Select
                   promptTextCreator={label => `Создать спринт '${label}'`}
                   searchPromptText={'Введите название спринта'}
@@ -327,14 +329,12 @@ class CreateTaskModal extends Component {
               text="Создать задачу"
               type="green"
               htmlType="submit"
-              style={{ width: '50%' }}
               onClick={this.submitTask}
             />
             <Button
               text="Создать и открыть"
               htmlType="button"
               type="green-lighten"
-              style={{ width: '50%' }}
               onClick={this.submitTaskAndOpen}
             />
           </div>
