@@ -198,12 +198,15 @@ class Timesheets extends React.Component {
         <th
           className={cn({
             [css.day]: true,
+            [css.weekend]: number === 6 || number === 7,
             [css.today]: moment().format('DD.MM.YY') === currentDay.format('DD.MM.YY')
           })}
           key={number}
         >
-          {currentDay.format('dd')}
-          <br/>{currentDay.format('DD.MM')}
+          <div>
+            {currentDay.format('dd')}
+            <br/>{currentDay.format('DD.MM')}
+          </div>
         </th>
       );
     }
@@ -269,11 +272,13 @@ class Timesheets extends React.Component {
                   </div>
                 </td>
                 <td className={cn(css.today)}>
-                  <div className={cn(css.timeCell, css.filled)}>
-                    <input type="text" defaultValue="0.25"/>
-                    <span className={css.toggleComment}>
-                      <SingleComment/>
-                    </span>
+                  <div>
+                    <div className={cn(css.timeCell, css.filled)}>
+                      <input type="text" defaultValue="0.25"/>
+                      <span className={css.toggleComment}>
+                        <SingleComment/>
+                      </span>
+                    </div>
                   </div>
                 </td>
                 <td>
@@ -310,10 +315,12 @@ class Timesheets extends React.Component {
                 </td>
                 <td className={cn(css.total, css.totalRow)}>
                   <div>
-                    0.75
-                  </div>
-                  <div className={css.toggleComment}>
-                    <TotalComment/>
+                    <div>
+                      0.75
+                    </div>
+                    <div className={css.toggleComment}>
+                      <TotalComment/>
+                    </div>
                   </div>
                 </td>
                 <td className={cn(css.actions)}>
@@ -352,11 +359,13 @@ class Timesheets extends React.Component {
                   </div>
                 </td>
                 <td className={cn(css.today)}>
-                  <div className={cn(css.timeCell)}>
-                    <input type="text" placeholder="0"/>
-                    <span className={css.toggleComment}>
-                      <SingleComment/>
-                    </span>
+                  <div>
+                    <div className={cn(css.timeCell)}>
+                      <input type="text" placeholder="0"/>
+                      <span className={css.toggleComment}>
+                        <SingleComment/>
+                      </span>
+                    </div>
                   </div>
                 </td>
                 <td>
@@ -393,10 +402,12 @@ class Timesheets extends React.Component {
                 </td>
                 <td className={cn(css.total, css.totalRow)}>
                   <div>
-                    5.25
-                  </div>
-                  <div className={css.toggleComment}>
-                    <TotalComment/>
+                    <div>
+                      5.25
+                    </div>
+                    <div className={css.toggleComment}>
+                      <TotalComment/>
+                    </div>
                   </div>
                 </td>
                 <td className={cn(css.actions)}>
@@ -407,14 +418,14 @@ class Timesheets extends React.Component {
               </tr>
               <tr>
                 <td className={css.total}></td>
-                <td className={css.total}>5.25</td>
-                <td className={css.total}>0.5</td>
-                <td className={cn(css.total, css.inactive, css.today)}>0</td>
-                <td className={cn(css.total, css.inactive)}>0</td>
-                <td className={cn(css.total, css.inactive)}>0</td>
-                <td className={cn(css.total, css.inactive, css.weekend)}>0</td>
-                <td className={cn(css.total, css.inactive, css.weekend)}>0</td>
-                <td className={cn(css.total, css.totalWeek, css.totalRow)}>6.5</td>
+                <td className={css.total}><div>5.25</div></td>
+                <td className={css.total}><div>0.5</div></td>
+                <td className={cn(css.total, css.inactive, css.today)}><div>0</div></td>
+                <td className={cn(css.total, css.inactive)}><div>0</div></td>
+                <td className={cn(css.total, css.inactive)}><div>0</div></td>
+                <td className={cn(css.total, css.inactive, css.weekend)}><div>0</div></td>
+                <td className={cn(css.total, css.inactive, css.weekend)}><div>0</div></td>
+                <td className={cn(css.total, css.totalWeek, css.totalRow)}><div>6.5</div></td>
                 <td className={css.total}></td>
               </tr>
               <tr>
