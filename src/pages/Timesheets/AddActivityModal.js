@@ -22,14 +22,35 @@ class AddActivityModal extends Component {
 
   constructor (props) {
     super(props);
-    this.state = {};
+    this.state = {
+      activityType: 0,
+      taskId: 0,
+      projectId: 0,
+      taskStatusId: 0
+    };
   }
 
   componentWillReceiveProps (nextProps) {}
 
   componentWillUnmount () {}
 
+  changeItem = (option, name) => {
+    if (option) {
+      this.setState({ [name]: option.value });
+      if (name === 'activityType' && option.value !== 1) {
+        this.setState({ 'taskId': 0 });
+      }
+    } else {
+      this.setState({ [name]: 0 });
+    }
+  }
+
   render () {
+
+    const formLayout = {
+      left: 5,
+      right: 7
+    };
 
     return (
       <Modal
@@ -43,39 +64,102 @@ class AddActivityModal extends Component {
           <hr/>
           <label className={css.formField}>
             <Row>
-              <Col xs={12} sm={5}>
+              <Col xs={12} sm={formLayout.left}>
                 Тип активности:
               </Col>
-              <Col xs={12} sm={7}>
+              <Col xs={12} sm={formLayout.right}>
                 <SelectDropdown
                   multi={false}
-                  value={1}
+                  value={this.state.activityType}
                   placeholder="Тип активности"
+                  onChange={(option) => this.changeItem(option, 'activityType')}
                   options={
                     this.props.activityTypes.length
                     ? this.props.activityTypes.map(
                         element => {return {label: element.name, value: element.id};}
-                      )
+                      ).concat([{ value: 0, label: 'Не выбрано' }])
                     : null
                   }
                 />
               </Col>
             </Row>
           </label>
-          <label className={css.formField}>
-            <Row>
-              <Col xs={12} sm={5}>
-                Проект / Задача:
-              </Col>
-              <Col xs={12} sm={7}>
-                <SelectDropdown
-                  multi={false}
-                  placeholder="Выбрать проект / задачу"
-                  options=""
-                />
-              </Col>
-            </Row>
-          </label>
+          {
+            this.state.activityType && this.state.activityType === 1
+            ? <label className={css.formField}>
+                <Row>
+                  <Col xs={12} sm={formLayout.left}>
+                    Задача:
+                  </Col>
+                  <Col xs={12} sm={formLayout.right}>
+                    <SelectDropdown
+                      multi={false}
+                      value={this.state.taskId}
+                      onChange={(option) => this.changeItem(option, 'taskId')}
+                      placeholder="Введите название задачи"
+                      options={[
+                        {value: 1, label: 'Тестовая задача'},
+                        {value: 0, label: 'Не выбрано'}
+                      ]}
+                    />
+                  </Col>
+                </Row>
+              </label>
+            : this.state.activityType && this.state.activityType !== 1
+            ? <label className={css.formField}>
+                <Row>
+                  <Col xs={12} sm={formLayout.left}>
+                    Проект:
+                  </Col>
+                  <Col xs={12} sm={formLayout.right}>
+                    <SelectDropdown
+                      multi={false}
+                      value={this.state.projectId}
+                      onChange={(option) => this.changeItem(option, 'projectId')}
+                      placeholder="Введите название проекта"
+                      options={[
+                        {value: 1, label: 'Тестовый проект'},
+                        {value: 0, label: 'Не выбрано'}
+                      ]}
+                    />
+                  </Col>
+                </Row>
+              </label>
+            : null
+          }
+          {
+            this.state.taskId
+            ? <label className={css.formField}>
+                <Row>
+                  <Col xs={12} sm={formLayout.left}>
+                    Статус:
+                  </Col>
+                  <Col xs={12} sm={formLayout.right}>
+                    <SelectDropdown
+                      multi={false}
+                      value={this.state.taskStatusId}
+                      onChange={(option) => this.changeItem(option, 'taskStatusId')}
+                      placeholder="Выбрать статус"
+                      options={[
+                        {
+                          value: 2,
+                          label: 'Develop'
+                        },
+                        {
+                          value: 4,
+                          label: 'Code Review'
+                        },
+                        {
+                          value: 6,
+                          label: 'QA'
+                        }
+                      ]}
+                    />
+                  </Col>
+                </Row>
+              </label>
+            : null
+          }
           <div className={css.footer}>
             <Button
               text="Добавить"

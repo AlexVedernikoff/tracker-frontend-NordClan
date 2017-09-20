@@ -355,8 +355,8 @@ tr:nth-last-child(2) td.today {
 
 .addActivityForm {
   padding: 2rem;
-  @include desktop { width: 24rem; }
-  @include tablet { width: 24rem; }
+  @include desktop { width: 30rem; }
+  @include tablet { width: 30rem; }
   @include phone { width: 22.5rem; }
 
   .footer {
