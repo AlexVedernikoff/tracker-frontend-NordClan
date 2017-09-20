@@ -1,8 +1,11 @@
 @import '../../styles/variables.scss';
 
+.timeSheetsTable {}
+
 .taskRow {
   td {
     transition: $transition;
+    padding: 0;
   }
 
   &:hover {
@@ -118,6 +121,11 @@
 
 .day {
   padding: 0.5rem;
+  width: 4rem;
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
 }
 
 .weekend {
@@ -237,6 +245,7 @@
 
 .prevWeek {
   text-align: right;
+  // min-width: 22rem;
 }
 
 .nextWeek {

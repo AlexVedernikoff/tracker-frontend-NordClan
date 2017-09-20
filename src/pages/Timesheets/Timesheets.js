@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
+import moment from 'moment';
 import DayPicker from 'react-day-picker';
 import onClickOutside from 'react-onclickoutside';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
@@ -69,7 +70,6 @@ class TotalComment extends React.Component {
   }
 
   render () {
-
     return (
       <div>
         <IconComments onClick={this.toggle}/>
@@ -161,7 +161,8 @@ class Timesheets extends React.Component {
   constructor (props) {
     super(props);
     this.state = {
-      isCalendarOpen: false
+      isCalendarOpen: false,
+      startingDay: moment()
     };
   }
 
@@ -169,25 +170,58 @@ class Timesheets extends React.Component {
     this.setState({isCalendarOpen: !this.state.isCalendarOpen});
   }
 
+  setPrevWeek = () => {
+    this.setState({
+      startingDay: moment(this.state.startingDay).subtract(7, 'days')
+    });
+  }
+
+  setNextWeek = () => {
+    this.setState({
+      startingDay: moment(this.state.startingDay).add(7, 'days')
+    });
+  }
+
+  setDate = (day) => {
+    this.setState({
+      startingDay: moment(day),
+      isCalendarOpen: false
+    });
+  }
+
   render () {
-    const { isCalendarOpen } = this.state;
+    const { isCalendarOpen, startingDay } = this.state;
+    const days = [];
+    for (let number = 1; number <= 7; number++) {
+      const currentDay = moment(startingDay).day(number);
+      days.push(
+        <th
+          className={cn({
+            [css.day]: true,
+            [css.today]: moment().format('DD.MM.YY') === currentDay.format('DD.MM.YY')
+          })}
+          key={number}
+        >
+          {currentDay.format('dd')}
+          <br/>{currentDay.format('DD.MM')}
+        </th>
+      );
+    }
     return (
       <div>
         <section>
           <h1>Отчеты по времени</h1>
           <hr/>
-          <table>
+          <table className={css.timeSheetsTable}>
             <thead>
               <tr className={css.sheetsHeader}>
-                <th className={css.prevWeek}><IconArrowLeft data-tip="Предыдущая неделя"/></th>
-                <th className={cn(css.day)}>Пн<br/>21.08</th>
-                <th className={cn(css.day)}>Вт<br/>22.08</th>
-                <th className={cn(css.day, css.today)}>Ср<br/>23.08</th>
-                <th className={cn(css.day)}>Чт<br/>24.08</th>
-                <th className={cn(css.day)}>Пт<br/>25.08</th>
-                <th className={cn(css.day, css.weekend)}>Сб<br/>26.08</th>
-                <th className={cn(css.day, css.weekend)}>Вс<br/>27.08</th>
-                <th className={css.nextWeek}><IconArrowRight data-tip="Следующая неделя"/></th>
+                <th className={css.prevWeek}>
+                  <IconArrowLeft data-tip="Предыдущая неделя" onClick={this.setPrevWeek}/>
+                </th>
+                {days}
+                <th className={css.nextWeek}>
+                  <IconArrowRight data-tip="Следующая неделя" onClick={this.setNextWeek}/>
+                </th>
                 <th className={cn(css.actions)}>
                   <div
                     className={css.changeWeek}
@@ -199,7 +233,7 @@ class Timesheets extends React.Component {
                   <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
                     {
                       isCalendarOpen
-                      ? <Calendar onCancel={this.toggleCalendar} onDayClick={(day) => console.log(day)} />
+                      ? <Calendar onCancel={this.toggleCalendar} onDayClick={this.setDate} />
                       : null
                     }
                   </ReactCSSTransitionGroup>
