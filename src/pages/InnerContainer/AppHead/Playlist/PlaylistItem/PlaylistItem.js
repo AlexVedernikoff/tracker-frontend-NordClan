@@ -72,7 +72,7 @@ class PlaylistItem extends Component {
   pushComment = (comment) => {
     return () => {
       this.props.updateTimesheet({
-        taskId: this.props.item.task.id,
+        taskId: this.props.item.task ? this.props.item.task.id : null,
         timesheetId: this.props.item.id,
         body: {
           comment
@@ -89,7 +89,7 @@ class PlaylistItem extends Component {
     const value = e.target.value;
 
     this.debounceUpdateTimesheet({
-      taskId: this.props.item.task.id,
+      taskId: (this.props.item.task) ? this.props.item.task.id : null,
       timesheetId: this.props.item.id,
       body: {
         spentTime: value.replace(',', '.')
@@ -108,7 +108,7 @@ class PlaylistItem extends Component {
   changeVisibility = (visibility) => {
     return () => {
       this.props.updateTimesheet({
-        taskId: this.props.item.task.id,
+        taskId: this.props.item.task ? this.props.item.task.id : null,
         timesheetId: this.props.item.id,
         body: {
           isVisible: !!visibility
@@ -130,11 +130,12 @@ class PlaylistItem extends Component {
       plannedTime,
       spentTime,
       comment,
-      type,
+      typeId,
       taskStatus: prevStatus,
       isDraft
     } = this.props.item;
-    const status = this.props.item.task.taskStatus;
+    const status = this.props.item.task ? this.props.item.task.taskStatus : null;
+
 
     return (
       <div className={classnames(css.listTask, css.task)}>
@@ -147,7 +148,7 @@ class PlaylistItem extends Component {
         <div className={css.taskNameWrapper}>
           <div className={css.taskTitle}>
             <div className={css.meta}>
-              { task.prefix ? <span>{prefix}</span> : null}
+              { task && task.prefix ? <span>{prefix}</span> : null}
               { project ? <span>{project.name}</span> : null}
               { status
                 ? <span>
@@ -173,7 +174,21 @@ class PlaylistItem extends Component {
               }
             </div>
             <div className={css.taskName}>
-              {task.name}
+              {task ? task.name : null}
+              {
+                (() => {
+                  switch (typeId) {
+                    case 2: return 'Больничный';
+                    case 3: return 'Командировка';
+                    case 4: return 'Отпуск';
+                    case 5: return 'Совещание';
+                    case 6: return 'Обучение';
+                    case 7: return 'Управление';
+                    case 8: return 'Преселлинг и оценка';
+                    default: return '';
+                  }
+                })()
+              }
             </div>
           </div>
         </div>
@@ -182,9 +197,9 @@ class PlaylistItem extends Component {
             <input type="text" onChange={this.handleChangeTime} defaultValue={spentTime}/>
           </div>
           <div className={classnames({[css.other]: true, [css.exceeded]: factTime > plannedTime})}>
-            <span data-tip="Всего потрачено" data-place="bottom">{task.factExecutionTime}</span>
+            <span data-tip="Всего потрачено" data-place="bottom">{task ? task.factExecutionTime : null}</span>
             {
-              type !== 'magicActivity'
+              task
                 ? <span> / <span data-tip="Запланировано" data-place="bottom">{task.plannedExecutionTime}</span></span>
                 : null
             }
