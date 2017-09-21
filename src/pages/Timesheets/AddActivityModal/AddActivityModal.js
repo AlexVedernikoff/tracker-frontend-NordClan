@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import { Col, Row } from 'react-flexbox-grid';
 import classnames from 'classnames';
 import _ from 'lodash';
-import Modal from '../../components/Modal';
-import Button from '../../components/Button';
-import SelectDropdown from '../../components/SelectDropdown';
-import * as css from './Timesheets.scss';
+import Modal from '../../../components/Modal';
+import Button from '../../../components/Button';
+import SelectDropdown from '../../../components/SelectDropdown';
+import * as css from '../Timesheets.scss';
 
 class AddActivityModal extends Component {
 

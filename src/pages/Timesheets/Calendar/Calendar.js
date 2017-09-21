@@ -4,7 +4,7 @@ import cn from 'classnames';
 import DayPicker from 'react-day-picker';
 import onClickOutside from 'react-onclickoutside';
 import LocaleUtils from 'react-day-picker/moment';
-import * as css from './Timesheets.scss';
+import * as css from '../Timesheets.scss';
 
 class Calendar extends React.Component {
   static propTypes = {
