@@ -121,6 +121,19 @@ class PlaylistItem extends Component {
     };
   };
 
+  getNameByType = (typeId) => {
+    switch (typeId) {
+    case 2: return 'Больничный';
+    case 3: return 'Командировка';
+    case 4: return 'Отпуск';
+    case 5: return 'Совещание';
+    case 6: return 'Обучение';
+    case 7: return 'Управление';
+    case 8: return 'Преселлинг и оценка';
+    default: return '';
+    }
+  };
+
   render () {
     const {
       task,
@@ -174,21 +187,7 @@ class PlaylistItem extends Component {
               }
             </div>
             <div className={css.taskName}>
-              {task ? task.name : null}
-              {
-                (() => {
-                  switch (typeId) {
-                    case 2: return 'Больничный';
-                    case 3: return 'Командировка';
-                    case 4: return 'Отпуск';
-                    case 5: return 'Совещание';
-                    case 6: return 'Обучение';
-                    case 7: return 'Управление';
-                    case 8: return 'Преселлинг и оценка';
-                    default: return '';
-                  }
-                })()
-              }
+              {task ? task.name : this.getNameByType()}
             </div>
           </div>
         </div>
