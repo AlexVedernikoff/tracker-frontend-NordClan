@@ -1,163 +1,26 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 import moment from 'moment';
-import DayPicker from 'react-day-picker';
-import onClickOutside from 'react-onclickoutside';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import LocaleUtils from 'react-day-picker/moment';
+import { getTimesheets, changeWeek } from '../../actions/Timesheets';
 import * as css from './Timesheets.scss';
-import { IconComment, IconClose, IconComments, IconPlus, IconArrowLeft, IconArrowRight, IconCalendar, IconCheck, IconCheckAll } from '../../components/Icons';
+import { IconClose, IconPlus, IconArrowLeft, IconArrowRight, IconCalendar } from '../../components/Icons';
 import Button from '../../components/Button';
 import AddActivityModal from './AddActivityModal';
-
-class Calendar extends React.Component {
-  static propTypes = {
-    onCancel: PropTypes.func
-  }
-
-  constructor (props) {
-    super(props);
-    this.state = {
-      isModalOpen: true
-    };
-  }
-
-  handleClickOutside = evt => {
-    this.props.onCancel();
-  }
-
-  render () {
-    const { onCancel, ...other } = this.props;
-
-    return (
-      <div
-        className={cn(css.dateDropdown, 'st-week-select')}
-      >
-        <DayPicker
-          locale='ru'
-          enableOutsideDays
-          localeUtils={{ ...LocaleUtils }}
-          {...other}
-        />
-      </div>
-    );
-  }
-}
-
-Calendar = onClickOutside(Calendar);
-
-class TotalComment extends React.Component {
-  static propTypes = {}
-
-  constructor (props) {
-    super(props);
-    this.state = {
-      isOpen: false
-    };
-  }
-
-  handleClickOutside = evt => {
-    this.setState({
-      isOpen: false
-    });
-  }
-
-  toggle = () => {
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
-  }
-
-  render () {
-    return (
-      <div>
-        <IconComments onClick={this.toggle}/>
-        <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
-          {
-            this.state.isOpen
-            ? <div className={cn(css.totalComment)}>
-                <div>
-                  <div className={css.totalCommentPart}>
-                    <div className={css.commentDay}>
-                      Пн.<br/>21.08
-                    </div>
-                    <textarea placeholder="Введите текст комментария" />
-                  </div>
-                  <div className={css.totalCommentPart}>
-                    <div className={css.commentDay}>
-                      Вт.<br/>22.08
-                    </div>
-                    <textarea placeholder="Введите текст комментария" />
-                  </div>
-                  <div className={css.totalCommentPart}>
-                    <div className={css.commentDay}>
-                      Ср.<br/>23.08
-                    </div>
-                    <textarea placeholder="Введите текст комментария" />
-                  </div>
-                </div>
-                <div className={css.checkAll} onClick={this.toggle}>
-                  <IconCheckAll/>
-                </div>
-              </div>
-            : null
-          }
-        </ReactCSSTransitionGroup>
-      </div>
-    );
-  }
-}
-
-TotalComment = onClickOutside(TotalComment);
-
-class SingleComment extends React.Component {
-  static propTypes = {}
-
-  constructor (props) {
-    super(props);
-    this.state = {
-      isOpen: false
-    };
-  }
-
-  handleClickOutside = evt => {
-    this.setState({
-      isOpen: false
-    });
-  }
-
-  toggle = () => {
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
-  }
-
-  render () {
-
-    return (
-      <div>
-        <IconComment onClick={this.toggle}/>
-        <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
-          {
-            this.state.isOpen
-            ? <div className={cn(css.commentDropdown, css.singleComment)}>
-                <textarea autoFocus placeholder="Введите текст комментария" />
-                <div onClick={this.toggle} className={css.saveBtn}>
-                  <IconCheck/>
-                </div>
-              </div>
-            : null
-          }
-        </ReactCSSTransitionGroup>
-      </div>
-    );
-  }
-}
-
-SingleComment = onClickOutside(SingleComment);
+import Calendar from './Calendar';
+import TotalComment from './TotalComment';
+import SingleComment from './SingleComment';
 
 class Timesheets extends React.Component {
+  static propTypes = {
+    changeWeek: PropTypes.func,
+    dateBegin: PropTypes.string,
+    dateEnd: PropTypes.string,
+    getTimesheets: PropTypes.func
+  }
+
   constructor (props) {
     super(props);
     this.state = {
@@ -166,14 +29,31 @@ class Timesheets extends React.Component {
     };
   }
 
+  componentDidMount () {
+    const { getTimesheets, userId } = this.props; // eslint-disable-line
+    getTimesheets({ userId, dateBegin: '2017-09-18', dateEnd: '2017-09-24'});
+  }
+
   toggleCalendar = () => {
     this.setState({isCalendarOpen: !this.state.isCalendarOpen});
+  }
+
+  calculateWeek = () => {
+    console.log(this.state.startingDay);
+    this.props.changeWeek(
+      moment(this.state.startingDay).day(1).format('YYYY-MM-DD'),
+      moment(this.state.startingDay).day(7).format('YYYY-MM-DD'),
+    );
   }
 
   setPrevWeek = () => {
     this.setState({
       startingDay: moment(this.state.startingDay).subtract(7, 'days')
-    });
+    }, this.props.changeWeek(
+      moment(this.state.startingDay).day(1).format('YYYY-MM-DD'),
+      moment(this.state.startingDay).day(7).format('YYYY-MM-DD'),
+      moment(this.state.startingDay).subtract(7, 'days')
+    ));
   }
 
   setNextWeek = () => {
@@ -454,4 +334,15 @@ class Timesheets extends React.Component {
   }
 }
 
-export default Timesheets;
+const mapStateToProps = state => ({
+  userId: state.Auth.user.id,
+  dateBegin: state.Timesheets.dateBegin,
+  dateEnd: state.Timesheets.dateEnd
+});
+
+const mapDispatchToProps = {
+  getTimesheets,
+  changeWeek
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Timesheets);

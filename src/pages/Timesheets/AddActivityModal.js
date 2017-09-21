@@ -1,18 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Select from 'react-select';
 import { Col, Row } from 'react-flexbox-grid';
-import moment from 'moment';
 import classnames from 'classnames';
 import _ from 'lodash';
-import Input from '../../components/Input';
 import Modal from '../../components/Modal';
 import Button from '../../components/Button';
-import TextArea from '../../components/TextArea';
 import SelectDropdown from '../../components/SelectDropdown';
 import * as css from './Timesheets.scss';
-import { closeCreateTaskModal, createTask } from '../../actions/Project';
 
 class AddActivityModal extends Component {
 
