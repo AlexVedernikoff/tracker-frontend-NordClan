@@ -30,7 +30,7 @@ class List extends Component {
   };
 
   playlistItem = (item, i) => {
-    return <PlaylistItem item={item} index={i} key={`visible-${item.id}`} visible changeVisibility={this.changeVisibility}/>
+    return <PlaylistItem item={item} index={i} key={`${item.id}${item.isDraft ? '-draft' : ''}`} visible changeVisibility={this.changeVisibility}/>
   };
 
 
