@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 import moment from 'moment';
+import _ from 'lodash';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as timesheetsActions from '../../actions/Timesheets';
 import * as css from './Timesheets.scss';
@@ -19,6 +20,7 @@ class Timesheets extends React.Component {
     dateBegin: PropTypes.string,
     dateEnd: PropTypes.string,
     getTimesheets: PropTypes.func,
+    list: PropTypes.array,
     startingDay: PropTypes.object,
     userId: PropTypes.number
   }
@@ -26,8 +28,7 @@ class Timesheets extends React.Component {
   constructor (props) {
     super(props);
     this.state = {
-      isCalendarOpen: false,
-      startingDay: moment()
+      isCalendarOpen: false
     };
   }
 
@@ -62,7 +63,25 @@ class Timesheets extends React.Component {
 
   render () {
     const { isCalendarOpen } = this.state;
-    const { startingDay, dateBegin, dateEnd } = this.props;
+    const { startingDay, list, getTimesheets, userId, dateBegin, dateEnd } = this.props;
+
+    const taskIds = list.length ? list.reduce((res, el) => { if (res.indexOf(el.task.id) < 0) res.push(el.task.id); return res; }, []) : [];
+    const tasks = taskIds.map(id => {
+      const taskTimeSheets = [];
+      for (let index = 1; index <= 7; index++) {
+        const timesheet = _.find(list, tsh => {
+          return (tsh.task.id === id)
+          && (moment(tsh.onDate).format('DD.MM.YY') === moment(startingDay).day(index).format('DD.MM.YY'));
+        });
+        if (timesheet) {
+          taskTimeSheets.push(timesheet);
+        } else {
+          taskTimeSheets.push({});
+        }
+      }
+      return taskTimeSheets;
+    });
+
     const days = [];
     for (let number = 1; number <= 7; number++) {
       const currentDay = moment(startingDay).day(number);
@@ -312,7 +331,7 @@ class Timesheets extends React.Component {
               </tr>
             </tbody>
           </table>
-          <Button text="Отправить на согласование" type="primary" style={{marginTop: '2rem'}}/>
+          <Button text="Отправить на согласование" type="primary" style={{marginTop: '2rem'}} onClick={() => getTimesheets({userId, dateBegin, dateEnd})}/>
         </section>
         {
           this.state.isModalOpen
@@ -329,6 +348,7 @@ class Timesheets extends React.Component {
 const mapStateToProps = state => ({
   userId: state.Auth.user.id,
   startingDay: state.Timesheets.startingDay,
+  list: state.Timesheets.list,
   dateBegin: state.Timesheets.dateBegin,
   dateEnd: state.Timesheets.dateEnd
 });
