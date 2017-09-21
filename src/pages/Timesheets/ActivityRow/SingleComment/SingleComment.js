@@ -2,8 +2,8 @@ import React from 'react';
 import cn from 'classnames';
 import onClickOutside from 'react-onclickoutside';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import * as css from '../Timesheets.scss';
-import { IconComment, IconCheck } from '../../../components/Icons';
+import * as css from '../../Timesheets.scss';
+import { IconComment, IconCheck } from '../../../../components/Icons';
 
 class SingleComment extends React.Component {
   static propTypes = {}

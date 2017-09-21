@@ -7,12 +7,11 @@ import _ from 'lodash';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as timesheetsActions from '../../actions/Timesheets';
 import * as css from './Timesheets.scss';
-import { IconClose, IconPlus, IconArrowLeft, IconArrowRight, IconCalendar } from '../../components/Icons';
+import { IconPlus, IconArrowLeft, IconArrowRight, IconCalendar } from '../../components/Icons';
 import Button from '../../components/Button';
 import AddActivityModal from './AddActivityModal';
 import Calendar from './Calendar';
-import TotalComment from './TotalComment';
-import SingleComment from './SingleComment';
+import ActivityRow from './ActivityRow';
 
 class Timesheets extends React.Component {
   static propTypes = {
@@ -65,12 +64,23 @@ class Timesheets extends React.Component {
     const { isCalendarOpen } = this.state;
     const { startingDay, list, getTimesheets, userId, dateBegin, dateEnd } = this.props;
 
-    const taskIds = list.length ? list.reduce((res, el) => { if (res.indexOf(el.task.id) < 0) res.push(el.task.id); return res; }, []) : [];
-    const tasks = taskIds.map(id => {
+    const taskReductions = list.length ? list.reduce((res, el) => {
+      if (!_.find(res, { 'id': el.task.id })) {
+        res.push({
+          id: el.task.id,
+          name: el.task.name,
+          projectId: el.task.project.id,
+          projectName: el.task.project.name
+        });
+      }
+      return res;
+    }, []) : [];
+
+    const tasks = taskReductions.map(element => {
       const taskTimeSheets = [];
       for (let index = 1; index <= 7; index++) {
         const timesheet = _.find(list, tsh => {
-          return (tsh.task.id === id)
+          return (tsh.task.id === element.id)
           && (moment(tsh.onDate).format('DD.MM.YY') === moment(startingDay).day(index).format('DD.MM.YY'));
         });
         if (timesheet) {
@@ -79,8 +89,10 @@ class Timesheets extends React.Component {
           taskTimeSheets.push({});
         }
       }
-      return taskTimeSheets;
+      return { ...element, taskTimeSheets };
     });
+
+    const taskRows = tasks.map((item, i) => <ActivityRow key={i} task item={item} />);
 
     const days = [];
     for (let number = 1; number <= 7; number++) {
@@ -135,178 +147,7 @@ class Timesheets extends React.Component {
               </tr>
             </thead>
             <tbody>
-              <tr className={css.taskRow}>
-                <td>
-                  <div className={css.taskCard}>
-                    <div className={css.meta}>
-                      <span>SimTrack</span>
-                    </div>
-                    <div>
-                      Совещание
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <div className={cn(css.timeCell, css.filled)}>
-                    <input type="text" defaultValue="0.25"/>
-                    <span className={cn(css.toggleComment, css.checked)}>
-                      <SingleComment/>
-                    </span>
-                  </div>
-                </td>
-                <td>
-                  <div className={cn(css.timeCell, css.filled)}>
-                    <input type="text" defaultValue="0.25"/>
-                    <span className={css.toggleComment}>
-                      <SingleComment/>
-                    </span>
-                  </div>
-                </td>
-                <td className={cn(css.today)}>
-                  <div>
-                    <div className={cn(css.timeCell, css.filled)}>
-                      <input type="text" defaultValue="0.25"/>
-                      <span className={css.toggleComment}>
-                        <SingleComment/>
-                      </span>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <div className={cn(css.timeCell)}>
-                    <input type="text" placeholder="0"/>
-                    <span className={css.toggleComment}>
-                      <SingleComment/>
-                    </span>
-                  </div>
-                </td>
-                <td>
-                  <div className={cn(css.timeCell)}>
-                    <input type="text" placeholder="0"/>
-                    <span className={css.toggleComment}>
-                      <SingleComment/>
-                    </span>
-                  </div>
-                </td>
-                <td className={cn(css.weekend)}>
-                  <div className={cn(css.timeCell)}>
-                    <input type="text" placeholder="0"/>
-                    <span className={css.toggleComment}>
-                      <SingleComment/>
-                    </span>
-                  </div>
-                </td>
-                <td className={cn(css.weekend)}>
-                  <div className={cn(css.timeCell)}>
-                    <input type="text" placeholder="0"/>
-                    <span className={css.toggleComment}>
-                      <SingleComment/>
-                    </span>
-                  </div>
-                </td>
-                <td className={cn(css.total, css.totalRow)}>
-                  <div>
-                    <div>
-                      0.75
-                    </div>
-                    <div className={css.toggleComment}>
-                      <TotalComment/>
-                    </div>
-                  </div>
-                </td>
-                <td className={cn(css.actions)}>
-                  <div className={css.deleteTask} data-tip="Удалить">
-                    <IconClose/>
-                  </div>
-                </td>
-              </tr>
-              <tr className={css.taskRow}>
-                <td>
-                  <div className={css.taskCard}>
-                    <div className={css.meta}>
-                      <span>ST-433</span>
-                      <span>SimTrack</span>
-                      <span>Develop</span>
-                    </div>
-                    <div>
-                      <a>UI: Страница задачи. Не хватает кнопки Создания задачи со страницы задачи</a>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <div className={cn(css.timeCell, css.filled)}>
-                    <input type="text" defaultValue="5"/>
-                    <span className={cn(css.toggleComment, css.checked)}>
-                      <SingleComment/>
-                    </span>
-                  </div>
-                </td>
-                <td>
-                  <div className={cn(css.timeCell, css.filled)}>
-                    <input type="text" defaultValue="0.25"/>
-                    <span className={css.toggleComment}>
-                      <SingleComment/>
-                    </span>
-                  </div>
-                </td>
-                <td className={cn(css.today)}>
-                  <div>
-                    <div className={cn(css.timeCell)}>
-                      <input type="text" placeholder="0"/>
-                      <span className={css.toggleComment}>
-                        <SingleComment/>
-                      </span>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <div className={cn(css.timeCell)}>
-                    <input type="text" placeholder="0"/>
-                    <span className={css.toggleComment}>
-                      <SingleComment/>
-                    </span>
-                  </div>
-                </td>
-                <td>
-                  <div className={cn(css.timeCell)}>
-                    <input type="text" placeholder="0"/>
-                    <span className={css.toggleComment}>
-                      <SingleComment/>
-                    </span>
-                  </div>
-                </td>
-                <td className={cn(css.weekend)}>
-                  <div className={cn(css.timeCell)}>
-                    <input type="text" placeholder="0"/>
-                    <span className={css.toggleComment}>
-                      <SingleComment/>
-                    </span>
-                  </div>
-                </td>
-                <td className={cn(css.weekend)}>
-                  <div className={cn(css.timeCell)}>
-                    <input type="text" placeholder="0"/>
-                    <span className={css.toggleComment}>
-                      <SingleComment/>
-                    </span>
-                  </div>
-                </td>
-                <td className={cn(css.total, css.totalRow)}>
-                  <div>
-                    <div>
-                      5.25
-                    </div>
-                    <div className={css.toggleComment}>
-                      <TotalComment/>
-                    </div>
-                  </div>
-                </td>
-                <td className={cn(css.actions)}>
-                  <div className={css.deleteTask} data-tip="Удалить">
-                    <IconClose/>
-                  </div>
-                </td>
-              </tr>
+              { taskRows }
               <tr>
                 <td className={css.total}></td>
                 <td className={css.total}><div>5.25</div></td>

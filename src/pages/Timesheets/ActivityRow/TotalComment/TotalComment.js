@@ -2,8 +2,8 @@ import React from 'react';
 import cn from 'classnames';
 import onClickOutside from 'react-onclickoutside';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import * as css from '../Timesheets.scss';
-import { IconComments, IconCheckAll } from '../../../components/Icons';
+import * as css from '../../Timesheets.scss';
+import { IconComments, IconCheckAll } from '../../../../components/Icons';
 
 class TotalComment extends React.Component {
   static propTypes = {}
