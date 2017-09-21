@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import cn from 'classnames';
 import moment from 'moment';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import { getTimesheets, changeWeek } from '../../actions/Timesheets';
+import * as timesheetsActions from '../../actions/Timesheets';
 import * as css from './Timesheets.scss';
 import { IconClose, IconPlus, IconArrowLeft, IconArrowRight, IconCalendar } from '../../components/Icons';
 import Button from '../../components/Button';
@@ -18,7 +18,9 @@ class Timesheets extends React.Component {
     changeWeek: PropTypes.func,
     dateBegin: PropTypes.string,
     dateEnd: PropTypes.string,
-    getTimesheets: PropTypes.func
+    getTimesheets: PropTypes.func,
+    startingDay: PropTypes.object,
+    userId: PropTypes.number
   }
 
   constructor (props) {
@@ -30,47 +32,37 @@ class Timesheets extends React.Component {
   }
 
   componentDidMount () {
-    const { getTimesheets, userId } = this.props; // eslint-disable-line
-    getTimesheets({ userId, dateBegin: '2017-09-18', dateEnd: '2017-09-24'});
+    const { getTimesheets, userId, dateBegin, dateEnd } = this.props;
+    getTimesheets({ userId, dateBegin, dateEnd});
   }
 
   toggleCalendar = () => {
     this.setState({isCalendarOpen: !this.state.isCalendarOpen});
   }
 
-  calculateWeek = () => {
-    console.log(this.state.startingDay);
-    this.props.changeWeek(
-      moment(this.state.startingDay).day(1).format('YYYY-MM-DD'),
-      moment(this.state.startingDay).day(7).format('YYYY-MM-DD'),
-    );
-  }
-
   setPrevWeek = () => {
-    this.setState({
-      startingDay: moment(this.state.startingDay).subtract(7, 'days')
-    }, this.props.changeWeek(
-      moment(this.state.startingDay).day(1).format('YYYY-MM-DD'),
-      moment(this.state.startingDay).day(7).format('YYYY-MM-DD'),
-      moment(this.state.startingDay).subtract(7, 'days')
-    ));
+    const { changeWeek, getTimesheets, userId, startingDay, dateBegin, dateEnd } = this.props;
+    changeWeek(startingDay.subtract(7, 'days'));
+    getTimesheets({ userId, dateBegin, dateEnd});
   }
 
   setNextWeek = () => {
-    this.setState({
-      startingDay: moment(this.state.startingDay).add(7, 'days')
-    });
+    const { changeWeek, getTimesheets, userId, startingDay, dateBegin, dateEnd } = this.props;
+    changeWeek(startingDay.add(7, 'days'));
+    getTimesheets({ userId, dateBegin, dateEnd});
   }
 
   setDate = (day) => {
-    this.setState({
-      startingDay: moment(day),
-      isCalendarOpen: false
+    const { changeWeek, getTimesheets, userId, dateBegin, dateEnd } = this.props;
+    this.setState({isCalendarOpen: false}, () => {
+      changeWeek(moment(day));
+      getTimesheets({ userId, dateBegin, dateEnd});
     });
   }
 
   render () {
-    const { isCalendarOpen, startingDay } = this.state;
+    const { isCalendarOpen } = this.state;
+    const { startingDay, dateBegin, dateEnd } = this.props;
     const days = [];
     for (let number = 1; number <= 7; number++) {
       const currentDay = moment(startingDay).day(number);
@@ -336,13 +328,13 @@ class Timesheets extends React.Component {
 
 const mapStateToProps = state => ({
   userId: state.Auth.user.id,
+  startingDay: state.Timesheets.startingDay,
   dateBegin: state.Timesheets.dateBegin,
   dateEnd: state.Timesheets.dateEnd
 });
 
 const mapDispatchToProps = {
-  getTimesheets,
-  changeWeek
+  ...timesheetsActions
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Timesheets);

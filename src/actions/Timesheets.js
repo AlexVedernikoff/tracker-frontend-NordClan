@@ -32,9 +32,9 @@ export const getTimesheets = (params) => {
   });
 };
 
-export const changeWeek = (dateBegin, dateEnd, startingDay) => ({
-  type: TimesheetsActions.SET_WEEK,
-  dateBegin,
-  dateEnd,
-  startingDay
-});
+export const changeWeek = (startingDay) => {
+  return dispatch => dispatch({
+    type: TimesheetsActions.SET_WEEK,
+    startingDay
+  });
+};

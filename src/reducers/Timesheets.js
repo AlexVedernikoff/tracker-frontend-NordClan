@@ -1,9 +1,13 @@
 import * as TimesheetsActions from '../constants/Timesheets';
+import moment from 'moment';
+
+const today = moment();
 
 const InitialState = {
   list: [],
-  dateBegin: '',
-  dateEnd: ''
+  startingDay: today,
+  dateBegin: moment(today).day(1).format('YYYY-MM-DD'),
+  dateEnd: moment(today).day(7).format('YYYY-MM-DD')
 };
 
 export default function Portfolios (state = InitialState, action) {
@@ -22,9 +26,9 @@ export default function Portfolios (state = InitialState, action) {
   case TimesheetsActions.SET_WEEK:
     return {
       ...state,
-      dateBegin: action.dateBegin,
-      dateEnd: action.dateEnd,
-      startingDay: action.startingDay
+      startingDay: action.startingDay,
+      dateBegin: moment(action.startingDay).day(1).format('YYYY-MM-DD'),
+      dateEnd: moment(action.startingDay).day(7).format('YYYY-MM-DD')
     };
 
   default:
