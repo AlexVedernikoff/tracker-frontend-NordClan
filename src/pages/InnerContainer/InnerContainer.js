@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Sidebar from 'react-sidebar';
 import ReactTooltip from 'react-tooltip';
@@ -7,15 +8,18 @@ import NavMenu from './NavMenu';
 import * as css from './InnerContainer.scss';
 // import { phoneWidth } from '../../constants/Breakpoints';
 import { tabletWidth } from '../../constants/Breakpoints';
+import * as dictionaryActions from '../../actions/Dictionaries';
 import { ScrollContainer } from 'react-router-scroll';
 
 // const mql = window.matchMedia(`(min-width: ${phoneWidth})`);
 const mql = window.matchMedia(`(min-width: ${tabletWidth})`);
 
-export default class InnerContainer extends Component {
+class InnerContainer extends Component {
 
   static propTypes = {
     children: PropTypes.object,
+    getMagicActivityTypes: PropTypes.func,
+    getTaskStatuses: PropTypes.func,
     user: PropTypes.object
   };
 
@@ -35,6 +39,8 @@ export default class InnerContainer extends Component {
   componentWillMount () {
     mql.addListener(this.mediaQueryChanged);
     this.setState({mql: mql, sidebarDocked: mql.matches});
+    this.props.getMagicActivityTypes();
+    this.props.getTaskStatuses();
   }
 
   componentDidUpdate () {
@@ -111,3 +117,11 @@ export default class InnerContainer extends Component {
     );
   }
 }
+
+const mapDispatchToProps = {
+  ...dictionaryActions
+};
+
+const mapStateToProps = state => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(InnerContainer);

@@ -57,6 +57,7 @@ class CreateProject extends Component {
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Input
+                  autoFocus
                   onChange={this.props.onChange}
                   name="projectName"
                   placeholder="Название проекта"

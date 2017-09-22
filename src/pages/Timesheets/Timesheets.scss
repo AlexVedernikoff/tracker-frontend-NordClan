@@ -1,8 +1,23 @@
 @import '../../styles/variables.scss';
 
+.timeSheetsTable {
+  td, th {
+    padding: 0;
+
+    &.actions {
+      padding: 0.5rem;
+      position: relative;
+    }
+  }
+}
+
 .taskRow {
   td {
     transition: $transition;
+
+    &:first-child {
+      padding-right: 2rem;
+    }
   }
 
   &:hover {
@@ -31,7 +46,7 @@
     th {
       background: $color-gray;
       transition: $transition;
-      
+
       &.weekend {
         background-color: lighten(black, 93%);
         transition: $transition;
@@ -59,7 +74,7 @@
 .timeCell {
   width: 3rem;
   height: 3rem;
-  margin: 0.5rem;
+  margin: calc(0.5rem - 2px);
   position: relative;
 
   &.filled {
@@ -116,10 +131,6 @@
   }
 }
 
-.day {
-  padding: 0.5rem;
-}
-
 .weekend {
   background-color: lighten(black, 98%);
 }
@@ -129,7 +140,6 @@
   overflow: hidden;
   opacity: 0.7;
   font-size: 11px;
-  line-height: 1;
   margin-bottom: 0.25rem;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -145,7 +155,22 @@
   }
 }
 
-.total {
+.today > div {
+  padding: 1px 0;
+  border: 1px solid $color-green;
+}
+
+th.today > div {
+  border-bottom-width: 0;
+  border-top: 1px solid $color-green;
+}
+
+td.today > div {
+  border-top-width: 0;
+  border-bottom-width: 0;
+}
+
+.total > div {
   padding: 0.5rem 1rem;
   text-align: center;
 
@@ -166,9 +191,17 @@
   }
 }
 
-.actions {
-  padding: 0.5rem;
-  position: relative;
+.day {
+  width: calc(4rem - 2px);
+
+  & > div {
+    padding: 0.5rem;
+    border-top: 1px solid transparent;
+
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
 }
 
 .deleteTask {
@@ -237,9 +270,18 @@
 
 .prevWeek {
   text-align: right;
+  // min-width: 22rem;
 }
 
 .nextWeek {
+  text-align: left;
+}
+
+.activityHeader {
+  float: left;
+  padding: 0.5rem 1rem;
+  font-size: $font-size-base;
+  min-width: 16rem;
   text-align: left;
 }
 
@@ -289,6 +331,10 @@
   }
 }
 
+.filledComment {
+  color: $color-green;
+}
+
 .saveBtn {
   display: flex;
   align-items: center;
@@ -312,20 +358,7 @@
   height: auto;
 }
 
-.today {
-  border: 1px solid $color-green;
-}
-
-th.today {
-  border-bottom-width: 0;
-}
-
-td.today {
-  border-top-width: 0;
-  border-bottom-width: 0;
-}
-
-tr:nth-last-child(2) td.today {
+tr:nth-last-child(2) td.today > div {
   border-bottom-width: 1px;
 }
 
@@ -333,6 +366,9 @@ tr:nth-last-child(2) td.today {
   display: flex;
 
   .commentDay {
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
     width: 3.5rem;
     height: 3.5rem;
     padding: 0.5rem;
@@ -349,6 +385,36 @@ tr:nth-last-child(2) td.today {
   & + .totalCommentPart {
     textarea, .commentDay {
       border-top: none;
+    }
+  }
+}
+
+.addActivityForm {
+  padding: 2rem;
+  @include desktop { width: 30rem; }
+  @include tablet { width: 30rem; }
+  @include phone { width: 22.5rem; }
+
+  .footer {
+    margin-top: 2rem;
+    text-align: right;
+  }
+
+  .formField {
+    display: block;
+
+    & + .formField {
+      margin-top: 1rem;
+    }
+
+    & > div {
+      align-items: center;
+
+      & > div {
+        &:first-child {
+          text-align: right;
+        }
+      }
     }
   }
 }
