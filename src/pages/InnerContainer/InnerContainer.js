@@ -8,7 +8,7 @@ import NavMenu from './NavMenu';
 import * as css from './InnerContainer.scss';
 // import { phoneWidth } from '../../constants/Breakpoints';
 import { tabletWidth } from '../../constants/Breakpoints';
-import { getMagicActivityTypes } from '../../actions/Dictionaries';
+import * as dictionaryActions from '../../actions/Dictionaries';
 import { ScrollContainer } from 'react-router-scroll';
 
 // const mql = window.matchMedia(`(min-width: ${phoneWidth})`);
@@ -18,6 +18,8 @@ class InnerContainer extends Component {
 
   static propTypes = {
     children: PropTypes.object,
+    getMagicActivityTypes: PropTypes.func,
+    getTaskStatuses: PropTypes.func,
     user: PropTypes.object
   };
 
@@ -38,6 +40,7 @@ class InnerContainer extends Component {
     mql.addListener(this.mediaQueryChanged);
     this.setState({mql: mql, sidebarDocked: mql.matches});
     this.props.getMagicActivityTypes();
+    this.props.getTaskStatuses();
   }
 
   componentDidUpdate () {
@@ -116,7 +119,7 @@ class InnerContainer extends Component {
 }
 
 const mapDispatchToProps = {
-  getMagicActivityTypes
+  ...dictionaryActions
 };
 
 const mapStateToProps = state => ({});

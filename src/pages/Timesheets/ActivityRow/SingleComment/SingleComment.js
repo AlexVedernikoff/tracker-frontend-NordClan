@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import cn from 'classnames';
 import onClickOutside from 'react-onclickoutside';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
@@ -6,7 +7,9 @@ import * as css from '../../Timesheets.scss';
 import { IconComment, IconCheck } from '../../../../components/Icons';
 
 class SingleComment extends React.Component {
-  static propTypes = {}
+  static propTypes = {
+    comment: PropTypes.string
+  }
 
   constructor (props) {
     super(props);
@@ -28,15 +31,16 @@ class SingleComment extends React.Component {
   }
 
   render () {
+    const { comment } = this.props;
 
     return (
       <div>
-        <IconComment onClick={this.toggle}/>
+        <IconComment className={cn({[css.filledComment]: comment})} onClick={this.toggle}/>
         <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
           {
             this.state.isOpen
             ? <div className={cn(css.commentDropdown, css.singleComment)}>
-                <textarea autoFocus placeholder="Введите текст комментария" />
+                <textarea autoFocus placeholder="Введите текст комментария" defaultValue={ comment } />
                 <div onClick={this.toggle} className={css.saveBtn}>
                   <IconCheck/>
                 </div>

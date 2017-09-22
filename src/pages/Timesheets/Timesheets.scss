@@ -140,7 +140,6 @@
   overflow: hidden;
   opacity: 0.7;
   font-size: 11px;
-  line-height: 1;
   margin-bottom: 0.25rem;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -193,7 +192,7 @@ td.today > div {
 }
 
 .day {
-  width: 4rem;
+  width: calc(4rem - 2px);
 
   & > div {
     padding: 0.5rem;
@@ -322,6 +321,10 @@ td.today > div {
     height: 3.5rem;
     width: 15rem;
   }
+}
+
+.filledComment {
+  color: $color-green;
 }
 
 .saveBtn {

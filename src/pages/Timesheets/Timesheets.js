@@ -41,22 +41,19 @@ class Timesheets extends React.Component {
   }
 
   setPrevWeek = () => {
-    const { changeWeek, getTimesheets, userId, startingDay, dateBegin, dateEnd } = this.props;
-    changeWeek(startingDay.subtract(7, 'days'));
-    getTimesheets({ userId, dateBegin, dateEnd});
+    const { changeWeek, userId, startingDay } = this.props;
+    changeWeek(startingDay.subtract(7, 'days'), userId);
   }
 
   setNextWeek = () => {
-    const { changeWeek, getTimesheets, userId, startingDay, dateBegin, dateEnd } = this.props;
-    changeWeek(startingDay.add(7, 'days'));
-    getTimesheets({ userId, dateBegin, dateEnd});
+    const { changeWeek, userId, startingDay } = this.props;
+    changeWeek(startingDay.add(7, 'days'), userId);
   }
 
   setDate = (day) => {
-    const { changeWeek, getTimesheets, userId, dateBegin, dateEnd } = this.props;
+    const { changeWeek, userId } = this.props;
     this.setState({isCalendarOpen: false}, () => {
-      changeWeek(moment(day));
-      getTimesheets({ userId, dateBegin, dateEnd});
+      changeWeek(moment(day), userId);
     });
   }
 
@@ -65,12 +62,13 @@ class Timesheets extends React.Component {
     const { startingDay, list, getTimesheets, userId, dateBegin, dateEnd } = this.props;
 
     const taskReductions = list.length ? list.reduce((res, el) => {
-      if (!_.find(res, { 'id': el.task.id })) {
+      if (!_.find(res, { 'id': el.task.id, 'statusId': el.taskStatusId })) {
         res.push({
           id: el.task.id,
           name: el.task.name,
           projectId: el.task.project.id,
-          projectName: el.task.project.name
+          projectName: el.task.project.name,
+          statusId: el.taskStatusId
         });
       }
       return res;
@@ -86,7 +84,7 @@ class Timesheets extends React.Component {
         if (timesheet) {
           taskTimeSheets.push(timesheet);
         } else {
-          taskTimeSheets.push({});
+          taskTimeSheets.push({ onDate: moment(startingDay).day(index).format(), spentTime: '0' });
         }
       }
       return { ...element, taskTimeSheets };
@@ -113,6 +111,29 @@ class Timesheets extends React.Component {
         </th>
       );
     }
+
+    const totalRow = [];
+    for (let day = 1; day <= 7; day++) {
+      totalRow.push(
+        <td key={day} className={cn({
+          [css.total]: true,
+          [css.weekend]: day === 6 || day === 7,
+          [css.today]: moment().format('DD.MM.YY') === moment(startingDay).day(day).format('DD.MM.YY')
+        })}>
+          <div>
+            {_.sumBy(list, tsh => {
+              if (moment(tsh.onDate).format('DD.MM.YY') === moment(startingDay).day(day).format('DD.MM.YY')) {
+                return +tsh.spentTime;
+              } else {
+                return 0;
+              }
+            })}
+          </div>
+        </td>
+      );
+    };
+
+
     return (
       <div>
         <section>
@@ -149,16 +170,14 @@ class Timesheets extends React.Component {
             <tbody>
               { taskRows }
               <tr>
-                <td className={css.total}></td>
-                <td className={css.total}><div>5.25</div></td>
-                <td className={css.total}><div>0.5</div></td>
-                <td className={cn(css.total, css.inactive, css.today)}><div>0</div></td>
-                <td className={cn(css.total, css.inactive)}><div>0</div></td>
-                <td className={cn(css.total, css.inactive)}><div>0</div></td>
-                <td className={cn(css.total, css.inactive, css.weekend)}><div>0</div></td>
-                <td className={cn(css.total, css.inactive, css.weekend)}><div>0</div></td>
-                <td className={cn(css.total, css.totalWeek, css.totalRow)}><div>6.5</div></td>
-                <td className={css.total}></td>
+                <td className={css.total}/>
+                {totalRow}
+                <td className={cn(css.total, css.totalWeek, css.totalRow)}>
+                  <div>
+                    {_.sumBy(list, tsh => { return +tsh.spentTime; })}
+                  </div>
+                </td>
+                <td className={css.total}/>
               </tr>
               <tr>
                 <td colSpan="10">

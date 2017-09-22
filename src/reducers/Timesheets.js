@@ -24,7 +24,7 @@ export default function Portfolios (state = InitialState, action) {
   case TimesheetsActions.SET_WEEK:
     return {
       ...state,
-      // startingDay: action.startingDay,
+      startingDay: action.startingDay,
       dateBegin: moment(action.startingDay).day(1).format('YYYY-MM-DD'),
       dateEnd: moment(action.startingDay).day(7).format('YYYY-MM-DD')
     };

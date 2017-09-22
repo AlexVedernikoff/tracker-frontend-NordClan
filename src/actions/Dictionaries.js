@@ -33,3 +33,16 @@ export const getMagicActivityTypes = () => {
   });
 };
 
+export const getTaskStatuses = () => {
+  return dispatch => dispatch({
+    type: REST_API,
+    url: '/task/status/dictionary/',
+    method: GET,
+    body,
+    extra,
+    start: withStartLoading(startDictionaryRequest, true)(dispatch),
+    response: withFinishLoading(response => successDictionaryRequest(response.data, 'taskStatuses'), true)(dispatch),
+    error: defaultErrorHandler(dispatch)
+  });
+};
+

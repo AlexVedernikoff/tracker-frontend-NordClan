@@ -1,5 +1,6 @@
 import * as TimesheetsActions from '../constants/Timesheets';
 import { GET, POST, PUT, REST_API} from '../constants/RestApi';
+import moment from 'moment';
 
 import {
   defaultErrorHandler,
@@ -32,9 +33,16 @@ export const getTimesheets = (params) => {
   });
 };
 
-export const changeWeek = (startingDay) => {
-  return dispatch => dispatch({
-    type: TimesheetsActions.SET_WEEK,
-    startingDay
-  });
+export const changeWeek = (startingDay, userId) => {
+  return dispatch => {
+    dispatch({
+      type: TimesheetsActions.SET_WEEK,
+      startingDay
+    });
+    dispatch(getTimesheets({
+      userId,
+      dateBegin: moment(startingDay).day(1).format('YYYY-MM-DD'),
+      dateEnd: moment(startingDay).day(7).format('YYYY-MM-DD')
+    }));
+  };
 };

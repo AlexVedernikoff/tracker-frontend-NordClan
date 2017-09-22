@@ -1,7 +1,10 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 import { Link } from 'react-router';
+import _ from 'lodash';
+import moment from 'moment';
 import SingleComment from './SingleComment';
 import TotalComment from './TotalComment';
 import * as css from '../Timesheets.scss';
@@ -11,6 +14,7 @@ class ActivityRow extends React.Component {
   static propTypes = {
     item: PropTypes.object,
     ma: PropTypes.bool,
+    statuses: PropTypes.array,
     task: PropTypes.bool
   }
 
@@ -25,8 +29,51 @@ class ActivityRow extends React.Component {
 
   render () {
 
-    const { item, task, ma } = this.props;
-    console.log(item);
+    const { item, task, ma, statuses } = this.props;
+    const status = _.find(statuses, { 'id': item.statusId });
+    const totalTime = _.sumBy(item.taskTimeSheets, tsh => { return +tsh.spentTime; });
+    const timeCells = item.taskTimeSheets.map((tsh, i) => {
+      if (tsh.id) {
+        return (
+          <td key={i} className={cn({
+            [css.today]: moment().format('YYYY-MM-DD') === moment(tsh.onDate).format('YYYY-MM-DD'),
+            [css.weekend]: i === 5 || i === 6
+          })}>
+            <div>
+              <div className={cn({
+                [css.timeCell]: true,
+                [css.filled]: tsh.spentTime
+              })}>
+                <input type="text" defaultValue={
+                  tsh.spentTime - Math.floor(tsh.spentTime)
+                  ? Math.round(tsh.spentTime * 100) / 100
+                  : Math.floor(tsh.spentTime)
+                }/>
+                <span className={css.toggleComment}>
+                  <SingleComment comment={tsh.comment}/>
+                </span>
+              </div>
+            </div>
+          </td>
+        );
+      } else {
+        return (
+          <td key={i} className={cn({
+            [css.today]: moment().format('YYYY-MM-DD') === moment(tsh.onDate).format('YYYY-MM-DD'),
+            [css.weekend]: i === 5 || i === 6
+          })}>
+            <div>
+              <div className={css.timeCell}>
+                <input type="text" defaultValue="0"/>
+                <span className={css.toggleComment}>
+                  <SingleComment/>
+                </span>
+              </div>
+            </div>
+          </td>
+        );
+      }
+    });
 
     return (
       <tr className={css.taskRow}>
@@ -34,74 +81,18 @@ class ActivityRow extends React.Component {
           <div className={css.taskCard}>
             <div className={css.meta}>
               <span>{item.projectName}</span>
+              {status ? <span>{status.name}</span> : null}
             </div>
             <div>
               { task && <Link to={`/projects/${item.projectId}/tasks/${item.id}`}>{item.name}</Link>}
             </div>
           </div>
         </td>
-        <td>
-          <div className={cn(css.timeCell, css.filled)}>
-            <input type="text" defaultValue="0.25"/>
-            <span className={cn(css.toggleComment, css.checked)}>
-              <SingleComment/>
-            </span>
-          </div>
-        </td>
-        <td>
-          <div className={cn(css.timeCell, css.filled)}>
-            <input type="text" defaultValue="0.25"/>
-            <span className={css.toggleComment}>
-              <SingleComment/>
-            </span>
-          </div>
-        </td>
-        <td className={cn(css.today)}>
-          <div>
-            <div className={cn(css.timeCell, css.filled)}>
-              <input type="text" defaultValue="0.25"/>
-              <span className={css.toggleComment}>
-                <SingleComment/>
-              </span>
-            </div>
-          </div>
-        </td>
-        <td>
-          <div className={cn(css.timeCell)}>
-            <input type="text" placeholder="0"/>
-            <span className={css.toggleComment}>
-              <SingleComment/>
-            </span>
-          </div>
-        </td>
-        <td>
-          <div className={cn(css.timeCell)}>
-            <input type="text" placeholder="0"/>
-            <span className={css.toggleComment}>
-              <SingleComment/>
-            </span>
-          </div>
-        </td>
-        <td className={cn(css.weekend)}>
-          <div className={cn(css.timeCell)}>
-            <input type="text" placeholder="0"/>
-            <span className={css.toggleComment}>
-              <SingleComment/>
-            </span>
-          </div>
-        </td>
-        <td className={cn(css.weekend)}>
-          <div className={cn(css.timeCell)}>
-            <input type="text" placeholder="0"/>
-            <span className={css.toggleComment}>
-              <SingleComment/>
-            </span>
-          </div>
-        </td>
+        {timeCells}
         <td className={cn(css.total, css.totalRow)}>
           <div>
             <div>
-              0.75
+             {totalTime}
             </div>
             <div className={css.toggleComment}>
               <TotalComment/>
@@ -118,4 +109,10 @@ class ActivityRow extends React.Component {
   }
 }
 
-export default ActivityRow;
+const mapStateToProps = state => ({
+  statuses: state.Dictionaries.taskStatuses
+});
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ActivityRow);
