@@ -143,6 +143,7 @@ class Timesheets extends React.Component {
             <thead>
               <tr className={css.sheetsHeader}>
                 <th className={css.prevWeek}>
+                  <div className={css.activityHeader}>Недельная активность:</div>
                   <IconArrowLeft data-tip="Предыдущая неделя" onClick={this.setPrevWeek}/>
                 </th>
                 {days}

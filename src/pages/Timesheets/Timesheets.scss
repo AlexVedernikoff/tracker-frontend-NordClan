@@ -277,6 +277,14 @@ td.today > div {
   text-align: left;
 }
 
+.activityHeader {
+  float: left;
+  padding: 0.5rem 1rem;
+  font-size: $font-size-base;
+  min-width: 16rem;
+  text-align: left;
+}
+
 .dateDropdown {
   box-shadow: $box-shadow;
   background: white;
