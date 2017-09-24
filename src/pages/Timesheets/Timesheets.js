@@ -62,13 +62,13 @@ class Timesheets extends React.Component {
     const { startingDay, list, getTimesheets, userId, dateBegin, dateEnd } = this.props;
 
     const taskReductions = list.length ? list.reduce((res, el) => {
-      if (!_.find(res, { 'id': el.task.id, 'statusId': el.taskStatusId })) {
+      if (!_.find(res, { 'id': el.task.id, 'taskStatusId': el.taskStatusId })) {
         res.push({
           id: el.task.id,
           name: el.task.name,
           projectId: el.task.project.id,
           projectName: el.task.project.name,
-          statusId: el.taskStatusId
+          taskStatusId: el.taskStatusId
         });
       }
       return res;
@@ -79,7 +79,8 @@ class Timesheets extends React.Component {
       for (let index = 1; index <= 7; index++) {
         const timesheet = _.find(list, tsh => {
           return (tsh.task.id === element.id)
-          && (moment(tsh.onDate).format('DD.MM.YY') === moment(startingDay).day(index).format('DD.MM.YY'));
+          && (moment(tsh.onDate).format('DD.MM.YY') === moment(startingDay).day(index).format('DD.MM.YY'))
+          && (tsh.taskStatusId === element.taskStatusId);
         });
         if (timesheet) {
           taskTimeSheets.push(timesheet);

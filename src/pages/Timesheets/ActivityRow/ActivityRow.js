@@ -30,7 +30,7 @@ class ActivityRow extends React.Component {
   render () {
 
     const { item, task, ma, statuses } = this.props;
-    const status = _.find(statuses, { 'id': item.statusId });
+    const status = _.find(statuses, { 'id': item.taskStatusId });
     const totalTime = _.sumBy(item.taskTimeSheets, tsh => { return +tsh.spentTime; });
     const timeCells = item.taskTimeSheets.map((tsh, i) => {
       if (tsh.id) {
