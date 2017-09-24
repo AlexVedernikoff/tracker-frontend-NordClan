@@ -14,6 +14,7 @@ class ActivityRow extends React.Component {
   static propTypes = {
     item: PropTypes.object,
     ma: PropTypes.bool,
+    maTypes: PropTypes.array,
     statuses: PropTypes.array,
     task: PropTypes.bool
   }
@@ -29,10 +30,11 @@ class ActivityRow extends React.Component {
 
   render () {
 
-    const { item, task, ma, statuses } = this.props;
-    const status = _.find(statuses, { 'id': item.taskStatusId });
-    const totalTime = _.sumBy(item.taskTimeSheets, tsh => { return +tsh.spentTime; });
-    const timeCells = item.taskTimeSheets.map((tsh, i) => {
+    const { item, task, ma, statuses, maTypes } = this.props;
+    const status = task ? _.find(statuses, { 'id': item.taskStatusId }) : '';
+    const maType = ma ? _.find(maTypes, { 'id': item.typeId }) : '';
+    const totalTime = _.sumBy(item.timeSheets, tsh => { return +tsh.spentTime; });
+    const timeCells = item.timeSheets.map((tsh, i) => {
       if (tsh.id) {
         return (
           <td key={i} className={cn({
@@ -85,6 +87,7 @@ class ActivityRow extends React.Component {
             </div>
             <div>
               { task && <Link to={`/projects/${item.projectId}/tasks/${item.id}`}>{item.name}</Link>}
+              { ma && <span>{maType.name}</span>}
             </div>
           </div>
         </td>
@@ -110,7 +113,8 @@ class ActivityRow extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  statuses: state.Dictionaries.taskStatuses
+  statuses: state.Dictionaries.taskStatuses,
+  maTypes: state.Dictionaries.magicActivityTypes
 });
 
 const mapDispatchToProps = {};

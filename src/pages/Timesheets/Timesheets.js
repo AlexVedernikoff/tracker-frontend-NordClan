@@ -61,8 +61,13 @@ class Timesheets extends React.Component {
     const { isCalendarOpen } = this.state;
     const { startingDay, list, getTimesheets, userId, dateBegin, dateEnd } = this.props;
 
-    const taskReductions = list.length ? list.reduce((res, el) => {
-      if (!_.find(res, { 'id': el.task.id, 'taskStatusId': el.taskStatusId })) {
+    // Создание массива таймшитов по таскам
+
+    let tasks = list.length ? list.reduce((res, el) => {
+      if (el.task && !_.find(res, tsh => {
+        return tsh.id === el.task.id
+        && tsh.taskStatusId === el.taskStatusId;
+      })) {
         res.push({
           id: el.task.id,
           name: el.task.name,
@@ -74,24 +79,65 @@ class Timesheets extends React.Component {
       return res;
     }, []) : [];
 
-    const tasks = taskReductions.map(element => {
-      const taskTimeSheets = [];
+    tasks = tasks.map(element => {
+      const timeSheets = [];
       for (let index = 1; index <= 7; index++) {
         const timesheet = _.find(list, tsh => {
-          return (tsh.task.id === element.id)
+          return tsh.task
+          && (tsh.task.id === element.id)
           && (moment(tsh.onDate).format('DD.MM.YY') === moment(startingDay).day(index).format('DD.MM.YY'))
           && (tsh.taskStatusId === element.taskStatusId);
         });
         if (timesheet) {
-          taskTimeSheets.push(timesheet);
+          timeSheets.push(timesheet);
         } else {
-          taskTimeSheets.push({ onDate: moment(startingDay).day(index).format(), spentTime: '0' });
+          timeSheets.push({ onDate: moment(startingDay).day(index).format(), spentTime: '0' });
         }
       }
-      return { ...element, taskTimeSheets };
+      return { ...element, timeSheets };
     });
 
+    _.sortBy(tasks, ['name']);
+
     const taskRows = tasks.map((item, i) => <ActivityRow key={i} task item={item} />);
+
+    // Создание массива таймшитов по magic activities
+
+    let magicActivities = list.length ? list.reduce((res, el) => {
+      if (el.projectMaginActivity && !_.find(res, tsh => {
+        return tsh.typeId === el.typeId
+        && tsh.projectId === el.projectMaginActivity.id;
+      })) {
+        res.push({
+          typeId: el.typeId,
+          projectName: el.projectMaginActivity.name,
+          projectId: el.projectMaginActivity.id
+        });
+      }
+      return res;
+    }, []) : [];
+
+    magicActivities = magicActivities.map(element => {
+      const timeSheets = [];
+      for (let index = 1; index <= 7; index++) {
+        const timesheet = _.find(list, tsh => {
+          return tsh.projectMaginActivity
+          && (tsh.typeId === element.typeId)
+          && (tsh.projectMaginActivity.id === element.projectId)
+          && (moment(tsh.onDate).format('DD.MM.YY') === moment(startingDay).day(index).format('DD.MM.YY'));
+        });
+        if (timesheet) {
+          timeSheets.push(timesheet);
+        } else {
+          timeSheets.push({ onDate: moment(startingDay).day(index).format(), spentTime: '0' });
+        }
+      }
+      return { ...element, timeSheets };
+    });
+
+    const magicActivityRows = magicActivities.map((item, i) => <ActivityRow key={i} ma item={item} />);
+
+    // Создание заголовка таблицы
 
     const days = [];
     for (let number = 1; number <= 7; number++) {
@@ -113,6 +159,8 @@ class Timesheets extends React.Component {
       );
     }
 
+    // Создание строки с суммой времени по дням
+
     const totalRow = [];
     for (let day = 1; day <= 7; day++) {
       totalRow.push(
@@ -132,8 +180,7 @@ class Timesheets extends React.Component {
           </div>
         </td>
       );
-    };
-
+    }
 
     return (
       <div>
@@ -171,6 +218,7 @@ class Timesheets extends React.Component {
             </thead>
             <tbody>
               { taskRows }
+              { magicActivityRows }
               <tr>
                 <td className={css.total}/>
                 {totalRow}
