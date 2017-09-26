@@ -96,6 +96,11 @@
   right: -1px;
 }
 
+.Select-menu-outer > div {
+  max-height: 20rem;
+  overflow: auto;
+}
+
 .Select-option {
   padding: 7px 15px;
   overflow: hidden;

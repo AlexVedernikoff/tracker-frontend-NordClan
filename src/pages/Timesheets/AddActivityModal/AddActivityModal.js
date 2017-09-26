@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Col, Row } from 'react-flexbox-grid';
+import Select from 'react-select';
+import axios from 'axios';
 import classnames from 'classnames';
 import _ from 'lodash';
+import { API_URL } from '../../../constants/Settings';
 import Modal from '../../../components/Modal';
 import Button from '../../../components/Button';
 import SelectDropdown from '../../../components/SelectDropdown';
@@ -40,12 +43,34 @@ class AddActivityModal extends Component {
     }
   }
 
+  getTasks (name = '') {
+    return axios
+      .get(
+        `${API_URL}/task`,
+        { params: { name } },
+        { withCredentials: true }
+      )
+      .then(response => response.data.data)
+      .then(tasks => ({
+        options: tasks.map((task) => ({
+          label: task.name,
+          value: task.id
+        }))
+      }));
+  }
+
+  changeTask (e) {
+    console.log(e);
+  }
+
   render () {
 
     const formLayout = {
       left: 5,
       right: 7
     };
+
+    const SelectAsync = Select.AsyncCreatable;
 
     return (
       <Modal
@@ -87,7 +112,7 @@ class AddActivityModal extends Component {
                     Задача:
                   </Col>
                   <Col xs={12} sm={formLayout.right}>
-                    <SelectDropdown
+                    {/* <SelectDropdown
                       multi={false}
                       value={this.state.taskId}
                       onChange={(option) => this.changeItem(option, 'taskId')}
@@ -96,6 +121,16 @@ class AddActivityModal extends Component {
                         {value: 1, label: 'Тестовая задача'},
                         {value: 0, label: 'Не выбрано'}
                       ]}
+                    /> */}
+                    <SelectAsync
+                      promptTextCreator={label => `Поиск задачи ${label}`}
+                      searchPromptText={'Введите название Задачи'}
+                      multi={false}
+                      ignoreCase={false}
+                      placeholder="Выберите задачу"
+                      loadOptions={this.getTasks}
+                      filterOption={el => el}
+                      onChange={e => this.changeTask(e)}
                     />
                   </Col>
                 </Row>
