@@ -376,6 +376,10 @@ tr:nth-last-child(2) td.today > div {
     border-right: none;
     color: gray;
     transition: $transition;
+
+    &:first-letter {
+      text-transform: uppercase;
+    }
   }
 
   &:hover .commentDay {

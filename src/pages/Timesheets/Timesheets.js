@@ -71,8 +71,8 @@ class Timesheets extends React.Component {
         res.push({
           id: el.task.id,
           name: el.task.name,
-          projectId: el.task.project.id,
-          projectName: el.task.project.name,
+          projectId: el.project.id,
+          projectName: el.project.name,
           taskStatusId: el.taskStatusId
         });
       }
@@ -83,7 +83,7 @@ class Timesheets extends React.Component {
       const timeSheets = [];
       for (let index = 1; index <= 7; index++) {
         const timesheet = _.find(list, tsh => {
-          return tsh.task
+          return tsh.task && tsh.typeId === 1
           && (tsh.task.id === element.id)
           && (moment(tsh.onDate).format('DD.MM.YY') === moment(startingDay).day(index).format('DD.MM.YY'))
           && (tsh.taskStatusId === element.taskStatusId);
@@ -104,14 +104,14 @@ class Timesheets extends React.Component {
     // Создание массива таймшитов по magic activities
 
     let magicActivities = list.length ? list.reduce((res, el) => {
-      if (el.projectMaginActivity && !_.find(res, tsh => {
+      if (el.typeId !== 1 && !_.find(res, tsh => {
         return tsh.typeId === el.typeId
-        && tsh.projectId === el.projectMaginActivity.id;
+        && tsh.projectId === el.project.id;
       })) {
         res.push({
           typeId: el.typeId,
-          projectName: el.projectMaginActivity.name,
-          projectId: el.projectMaginActivity.id
+          projectName: el.project.name,
+          projectId: el.project.id
         });
       }
       return res;
@@ -121,9 +121,9 @@ class Timesheets extends React.Component {
       const timeSheets = [];
       for (let index = 1; index <= 7; index++) {
         const timesheet = _.find(list, tsh => {
-          return tsh.projectMaginActivity
+          return tsh.typeId !== 1
           && (tsh.typeId === element.typeId)
-          && (tsh.projectMaginActivity.id === element.projectId)
+          && (tsh.project.id === element.projectId)
           && (moment(tsh.onDate).format('DD.MM.YY') === moment(startingDay).day(index).format('DD.MM.YY'));
         });
         if (timesheet) {

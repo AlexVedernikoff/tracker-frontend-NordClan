@@ -1,12 +1,16 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import cn from 'classnames';
+import moment from 'moment';
 import onClickOutside from 'react-onclickoutside';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as css from '../../Timesheets.scss';
 import { IconComments, IconCheckAll } from '../../../../components/Icons';
 
 class TotalComment extends React.Component {
-  static propTypes = {}
+  static propTypes = {
+    items: PropTypes.array
+  }
 
   constructor (props) {
     super(props);
@@ -28,6 +32,8 @@ class TotalComment extends React.Component {
   }
 
   render () {
+    const { items } = this.props;
+    const filledTimeSheets = items.filter((el) => { return el.id; });
     return (
       <div>
         <IconComments onClick={this.toggle}/>
@@ -36,24 +42,19 @@ class TotalComment extends React.Component {
             this.state.isOpen
             ? <div className={cn(css.totalComment)}>
                 <div>
-                  <div className={css.totalCommentPart}>
-                    <div className={css.commentDay}>
-                      Пн.<br/>21.08
-                    </div>
-                    <textarea placeholder="Введите текст комментария" />
-                  </div>
-                  <div className={css.totalCommentPart}>
-                    <div className={css.commentDay}>
-                      Вт.<br/>22.08
-                    </div>
-                    <textarea placeholder="Введите текст комментария" />
-                  </div>
-                  <div className={css.totalCommentPart}>
-                    <div className={css.commentDay}>
-                      Ср.<br/>23.08
-                    </div>
-                    <textarea placeholder="Введите текст комментария" />
-                  </div>
+                  {
+                    filledTimeSheets.map(
+                      tsh => (
+                        <div key={tsh.id} className={css.totalCommentPart}>
+                          <div className={css.commentDay}>
+                            {moment(tsh.onDate).format('dd')}<br/>
+                            {moment(tsh.onDate).format('DD.MM')}
+                          </div>
+                          <textarea placeholder="Введите текст комментария" value={tsh.comment} />
+                        </div>
+                      )
+                    )
+                  }
                 </div>
                 <div className={css.checkAll} onClick={this.toggle}>
                   <IconCheckAll/>

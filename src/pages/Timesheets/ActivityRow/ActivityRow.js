@@ -98,7 +98,7 @@ class ActivityRow extends React.Component {
              {totalTime}
             </div>
             <div className={css.toggleComment}>
-              <TotalComment/>
+              <TotalComment items={item.timeSheets}/>
             </div>
           </div>
         </td>
