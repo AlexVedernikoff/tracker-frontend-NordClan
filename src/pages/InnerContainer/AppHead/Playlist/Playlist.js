@@ -200,7 +200,7 @@ class Playlist extends Component {
     if (Array.isArray(tracks) && activeDayTab && activeDayTab !== 'all') {
       return tracks.filter(el => el.typeId === activeDayTab);
     } else if (Array.isArray(tracks)) {
-      return tracks;
+      return tracks.filter(el => el.isDraft === false);
     }
     return [];
   };
