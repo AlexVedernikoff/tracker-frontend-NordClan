@@ -187,7 +187,7 @@ class PlaylistItem extends Component {
               }
             </div>
             <div className={css.taskName}>
-              {task ? task.name : this.getNameByType()}
+              {task ? task.name : this.getNameByType(typeId)}
             </div>
           </div>
         </div>
