@@ -278,7 +278,9 @@ class Planning extends Component {
       sprint.sprintName.trim(),
       sprint.dateFrom,
       sprint.dateTo,
-      sprint.allottedTime
+      sprint.allottedTime,
+      sprint.budget,
+      sprint.riskBudget
     );
   };
 
