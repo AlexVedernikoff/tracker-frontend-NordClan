@@ -318,3 +318,12 @@
     border-color: $color-dark;
   }
 }
+
+.timeline {
+  position: absolute;
+  border-left: 1px solid red;
+  height: calc(100% - 64px);
+  z-index: 2;
+  opacity: 0.5;
+  top: 64px;
+}
