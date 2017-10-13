@@ -14,7 +14,7 @@ import TaskTypes from '../../../constants/TaskTypes';
 import * as TaskStatuses from '../../../constants/TaskStatuses';
 import { connect } from 'react-redux';
 import CopyThis from '../../../components/CopyThis';
-import { history } from '../../../App';
+import { history } from '../../../History';
 
 const getNewStatus = newPhase => {
   let newStatusId;

@@ -8,6 +8,8 @@ import Tags from '../../../components/Tags';
 import TaskPlanningTime from '../TaskPlanningTime';
 import PerformerModal from '../../../components/PerformerModal';
 import SprintModal from '../../../components/SprintModal';
+import TaskTypeModal from '../../../components/TaskTypeModal';
+import GetTypeById from '../../../utils/TaskTypes';
 import { getProjectUsers, getProjectSprints } from '../../../actions/Project';
 import { connect } from 'react-redux';
 import * as css from './Details.scss';
@@ -18,7 +20,8 @@ class Details extends Component {
     super(props);
     this.state = {
       isSprintModalOpen: false,
-      isPerformerModalOpen: false
+      isPerformerModalOpen: false,
+      isTaskTypeModalOpen: false
     };
   }
 
@@ -55,6 +58,24 @@ class Details extends Component {
     this.closePerformerModal();
   };
 
+  // Действия с типом задачи
+  openTaskTypeModal = () => {
+    this.setState({ isTaskTypeModalOpen: true });
+  };
+
+  closeTaskTypeModal = () => {
+    this.setState({ isTaskTypeModalOpen: false });
+  };
+
+  changeTaskType = (typeId) => {
+    this.props.onChange({
+      id: this.props.task.id,
+      typeId: typeId
+    }, this.props.task.id);
+
+    this.closeTaskTypeModal();
+  };
+
   render () {
     const { task, sprints } = this.props;
     const tags = task.tags.map((tag, i) => {
@@ -83,6 +104,14 @@ class Details extends Component {
                   </td>
                 </tr>
               : null}
+            <tr>
+              <td>Тип задачи:</td>
+              <td>
+                <a onClick={this.openTaskTypeModal}>
+                  {GetTypeById(task.typeId)}
+                </a>
+              </td>
+            </tr>
               <tr>
                 <td>Спринт:</td>
                 <td>
@@ -190,6 +219,15 @@ class Details extends Component {
               onClose={this.closeSprintModal}
               title="Изменить спринт задачи"
               sprints={sprints}
+            />
+          : null
+        }
+        {
+          this.state.isTaskTypeModalOpen
+          ? <TaskTypeModal
+              defaultTypeId={task ? task.typeId : null}
+              onChoose={this.changeTaskType}
+              onClose={this.closeTaskTypeModal}
             />
           : null
         }

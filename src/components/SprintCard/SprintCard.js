@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { deleteSprint, editSprint } from '../../actions/Sprint';
 import moment from 'moment';
 import SprintEditModal from '../../components/SprintEditModal';
+import { formatCurrency } from '../../utils/Currency';
 
 import { IconClose } from '../Icons';
 import * as css from './SprintCard.scss';
@@ -34,7 +35,9 @@ class SprintCard extends Component {
       sprint.sprintName.trim(),
       sprint.dateFrom,
       sprint.dateTo,
-      sprint.allottedTime
+      sprint.allottedTime,
+      sprint.budget,
+      sprint.riskBudget
     );
   };
 
@@ -97,6 +100,12 @@ class SprintCard extends Component {
         <p className={css.sprintMeta}>
           <span>Израсходованное время: {sprint.spentTime || 0} ч.</span>
         </p>
+        <p className={css.sprintMeta}>
+          <span>Бюджет без рискового резерва: {formatCurrency(sprint.budget)}</span>
+        </p>
+        <p className={css.sprintMeta}>
+          <span>Бюджет с рисковым резервом: {formatCurrency(sprint.riskBudget)}</span>
+        </p>
         <div
           className={css.status}
         >
@@ -127,7 +136,9 @@ SprintCard.defaultProps = {
     tasksDone: '00',
     allottedTime: '00',
     spentTime: '00',
-    status: 'INPROGRESS'
+    status: 'INPROGRESS',
+    budget: 0,
+    riskBudget: 0
   }
 };
 

@@ -6,7 +6,7 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 import bg from './bg.jpg';
 import { connect } from 'react-redux';
-import { history } from '../../App';
+import { history } from '../../History';
 import { doAuthentication } from '../../actions/Authentication';
 
 class Login extends Component {

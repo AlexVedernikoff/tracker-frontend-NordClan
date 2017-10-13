@@ -4,7 +4,7 @@ import * as css from './Logout.scss';
 import Logo from '../../components/Logo';
 import bg from '../Login/bg.jpg';
 import { connect } from 'react-redux';
-import { history } from '../../App';
+import { history } from '../../History';
 import { doLogout } from '../../actions/Authentication';
 
 class Logout extends Component {

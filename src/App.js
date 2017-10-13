@@ -2,19 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import AppRoute from './Router';
-import { browserHistory } from 'react-router';
 
 import 'normalize-css';
 import './styles/hooks.css';
 import './styles/App.scss';
+import { store, history } from './History';
 
-import configureStore from './store/configureStore';
-import { syncHistoryWithStore } from 'react-router-redux';
 import { Provider } from 'react-redux';
 import { getInfoAboutMe } from './actions/Authentication';
 
-export const store = configureStore();
-export const history = syncHistoryWithStore(browserHistory, store);
 const rootEl = document.getElementById('app');
 
 const render = (App) => {

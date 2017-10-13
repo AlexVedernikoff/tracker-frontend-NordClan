@@ -6,7 +6,7 @@ import cn from 'classnames';
 import moment from 'moment';
 import { IconDeleteAnimate } from '../../../components/Icons';
 import CopyThis from '../../../components/CopyThis';
-import { history } from '../../../App';
+import { history } from '../../../History';
 import { connect } from 'react-redux';
 import UserCard from '../../../components/UserCard';
 
