@@ -2,7 +2,7 @@ import axios from 'axios';
 import * as ProjectActions from '../constants/Project';
 import { API_URL } from '../constants/Settings';
 import { BACKLOG_ID } from '../constants/Sprint';
-import { history } from '../App';
+import { history } from '../History';
 import { showNotification } from './Notifications';
 import { startLoading, finishLoading } from './Loading';
 import getPlanningTasks from './PlanningTasks';

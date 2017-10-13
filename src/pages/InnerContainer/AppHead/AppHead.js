@@ -5,7 +5,7 @@ import { IconExitApp, IconMenu, IconSearch } from '../../../components/Icons';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Logo from '../../../components/Logo';
 import Loader from './Loader';
-import { history } from '../../../App';
+import { history } from '../../../History';
 import Playlist from './Playlist';
 import { connect } from 'react-redux';
 

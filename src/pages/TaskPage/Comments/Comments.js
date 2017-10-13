@@ -17,7 +17,7 @@ import {
 import { connect } from 'react-redux';
 import * as css from './Comments.scss';
 import Comment from './Comment';
-import { history } from '../../../App';
+import { history } from '../../../History';
 import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
 
 const ENTER = 13;

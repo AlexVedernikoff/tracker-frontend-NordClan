@@ -1,6 +1,6 @@
 import * as ProjectActions from '../constants/Projects';
 import axios from 'axios';
-import { history } from '../App';
+import { history } from '../History';
 import { API_URL } from '../constants/Settings';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
