@@ -82,7 +82,7 @@ class ActivityRow extends React.Component {
         <td>
           <div className={css.taskCard}>
             <div className={css.meta}>
-              <span>{item.projectName}</span>
+              {item.projectName ? <span>{item.projectName}</span> : null}
               {status ? <span>{status.name}</span> : null}
             </div>
             <div>

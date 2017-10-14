@@ -46,3 +46,32 @@ export const changeWeek = (startingDay, userId) => {
     }));
   };
 };
+
+export const changeTask = (task, taskStatusId) => ({
+  type: TimesheetsActions.CHANGE_TASK,
+  task: Array.isArray(task) ? null : task,
+  taskStatusId
+});
+
+export const changeActivityType = (typeId) => ({
+  type: TimesheetsActions.CHANGE_ACTIVITY_TYPE,
+  typeId
+});
+
+export const changeProject = (project) => ({
+  type: TimesheetsActions.CHANGE_PROJECT,
+  project: Array.isArray(project) ? null : project
+});
+
+export const clearModalState = () => ({
+  type: TimesheetsActions.CLEAR_MODAL_STATE
+});
+
+export const addActivity = () => ({
+  type: TimesheetsActions.ADD_ACTIVITY
+});
+
+export const filterTasks = (tasks) => ({
+  type: TimesheetsActions.FILTER_TASKS,
+  tasks
+});
