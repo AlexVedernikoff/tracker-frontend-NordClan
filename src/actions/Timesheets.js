@@ -2,6 +2,11 @@ import * as TimesheetsActions from '../constants/Timesheets';
 import { GET, POST, PUT, REST_API} from '../constants/RestApi';
 import moment from 'moment';
 
+import axios from 'axios';
+import { API_URL } from '../constants/Settings';
+import { startLoading, finishLoading } from './Loading';
+import { showNotification } from './Notifications';
+
 import {
   defaultErrorHandler,
   withFinishLoading,
@@ -23,7 +28,7 @@ const successTimesheetsRequest = (data) => ({
 export const getTimesheets = (params) => {
   return dispatch => dispatch({
     type: REST_API,
-    url: '/task/timesheet/getTimesheets',
+    url: '/timesheet',
     method: GET,
     body: { params },
     extra,
@@ -31,6 +36,54 @@ export const getTimesheets = (params) => {
     response: withFinishLoading(response => successTimesheetsRequest(response.data), true)(dispatch),
     error: defaultErrorHandler(dispatch)
   });
+};
+
+
+const startCreateTimesheetRequest = () => ({
+  type: TimesheetsActions.CREATE_TIMESHEET_START
+});
+
+const successCreateTimesheetRequest = (data) => ({
+  type: TimesheetsActions.CREATE_TIMESHEET_SUCCESS,
+  data
+});
+
+// export const createTimesheet = (params) => {
+//   return dispatch => dispatch({
+//     type: REST_API,
+//     url: '/timesheet',
+//     method: POST,
+//     body: { params },
+//     extra,
+//     start: withStartLoading(startCreateTimesheetRequest, true)(dispatch),
+//     response: withFinishLoading(response => successCreateTimesheetRequest(response.data), true)(dispatch),
+//     error: defaultErrorHandler(dispatch)
+//   });
+// };
+
+export const createTimesheet = (params, userId, startingDay) => { // TODO: не смог разобраться, как лучше послать query-params, используя мидлварь для rest API, поэтому экшн создан напрямую с axios
+  const URL = `${API_URL}/timesheet`;
+  return dispatch => {
+    dispatch(startCreateTimesheetRequest());
+    dispatch(startLoading());
+    axios
+      .post(URL, params)
+      .catch(error => {
+        dispatch(finishLoading());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(successCreateTimesheetRequest(response.data));
+          dispatch(finishLoading());
+          dispatch(getTimesheets({
+            userId,
+            dateBegin: moment(startingDay).day(1).format('YYYY-MM-DD'),
+            dateEnd: moment(startingDay).day(7).format('YYYY-MM-DD')
+          }));
+        }
+      });
+  };
 };
 
 export const changeWeek = (startingDay, userId) => {
