@@ -224,7 +224,7 @@ class Timesheets extends React.Component {
                 {totalRow}
                 <td className={cn(css.total, css.totalWeek, css.totalRow)}>
                   <div>
-                    {_.sumBy(list, tsh => { return +tsh.spentTime; })}
+                    {Math.floor(_.sumBy(list, tsh => { return +tsh.spentTime; }) * 100) / 100}
                   </div>
                 </td>
                 <td className={css.total}/>

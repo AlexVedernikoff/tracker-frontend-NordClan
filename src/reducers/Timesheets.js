@@ -2,6 +2,8 @@ import * as TimesheetsActions from '../constants/Timesheets';
 import moment from 'moment';
 import _ from 'lodash';
 
+moment.locale('ru');
+
 const InitialState = {
   list: [],
   startingDay: moment(),

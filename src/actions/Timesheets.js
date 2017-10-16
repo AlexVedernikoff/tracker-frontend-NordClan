@@ -38,7 +38,6 @@ export const getTimesheets = (params) => {
   });
 };
 
-
 const startCreateTimesheetRequest = () => ({
   type: TimesheetsActions.CREATE_TIMESHEET_START
 });
@@ -46,6 +45,14 @@ const startCreateTimesheetRequest = () => ({
 const successCreateTimesheetRequest = (data) => ({
   type: TimesheetsActions.CREATE_TIMESHEET_SUCCESS,
   data
+});
+
+const startUpdateTimesheetRequest = () => ({
+  type: TimesheetsActions.CREATE_TIMESHEET_START
+});
+
+const successUpdateTimesheetRequest = () => ({
+  type: TimesheetsActions.CREATE_TIMESHEET_SUCCESS
 });
 
 // export const createTimesheet = (params) => {
@@ -60,6 +67,27 @@ const successCreateTimesheetRequest = (data) => ({
 //     error: defaultErrorHandler(dispatch)
 //   });
 // };
+
+export const updateTimesheet = (data, userId, startingDay) => {
+  return dispatch => dispatch({
+    type: REST_API,
+    url: '/timesheet',
+    method: PUT,
+    body: { ...data },
+    extra,
+    start: withStartLoading(startUpdateTimesheetRequest, true)(dispatch),
+    response: () => {
+      dispatch(getTimesheets({
+        userId,
+        dateBegin: moment(startingDay).day(1).format('YYYY-MM-DD'),
+        dateEnd: moment(startingDay).day(7).format('YYYY-MM-DD')
+      }));
+      dispatch(successUpdateTimesheetRequest());
+      dispatch(finishLoading());
+    },
+    error: defaultErrorHandler(dispatch)
+  });
+};
 
 export const createTimesheet = (params, userId, startingDay) => { // TODO: не смог разобраться, как лучше послать query-params, используя мидлварь для rest API, поэтому экшн создан напрямую с axios
   const URL = `${API_URL}/timesheet`;

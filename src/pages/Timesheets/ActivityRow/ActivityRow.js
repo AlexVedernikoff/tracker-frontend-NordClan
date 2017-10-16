@@ -9,7 +9,7 @@ import SingleComment from './SingleComment';
 import TotalComment from './TotalComment';
 import * as css from '../Timesheets.scss';
 import { IconClose } from '../../../components/Icons';
-import { createTimesheet } from '../../../actions/Timesheets';
+import { createTimesheet, updateTimesheet } from '../../../actions/Timesheets';
 
 class ActivityRow extends React.Component {
   static propTypes = {
@@ -20,23 +20,16 @@ class ActivityRow extends React.Component {
     startingDay: PropTypes.object,
     statuses: PropTypes.array,
     task: PropTypes.bool,
+    updateTimesheet: PropTypes.func,
     userId: PropTypes.number
   }
 
   constructor (props) {
     super(props);
-    this.createTimesheet = _.debounce(this.createTimesheet, 1000);
+    this.createTimesheet = _.debounce(this.createTimesheet, 500);
+    this.updateTimesheet = _.debounce(this.updateTimesheet, 500);
     this.state = {
-      isOpen: false,
-      emptyTimesheetsTime: {
-        0: '0',
-        1: '0',
-        2: '0',
-        3: '0',
-        4: '0',
-        5: '0',
-        6: '0'
-      }
+      isOpen: false
     };
   }
 
@@ -45,40 +38,32 @@ class ActivityRow extends React.Component {
     const { value } = e.target;
     this.props.createTimesheet({
       isDraft: false,
-      taskId: item.id || '0',
-      taskStatusId: item.id ? item.taskStatusId : '0',
-      typeId: 1,
+      taskId: item.id || null,
+      taskStatusId: item.id ? item.taskStatusId : null,
+      typeId: item.id ? '1' : item.typeId,
       spentTime: value,
-      onDate: moment(startingDay).day(i + 1).format('YYYY-MM-DD')
+      onDate: moment(startingDay).day(i + 1).format('YYYY-MM-DD'),
+      projectId: item.projectId
+    }, userId, startingDay);
+  }
+
+  updateTimesheet = (i, sheetId, e) => {
+    const { userId, startingDay } = this.props;
+    const spentTime = e.target.value;
+    this.props.updateTimesheet({
+      sheetId,
+      spentTime
     }, userId, startingDay);
   }
 
   changeEmpty = (i, e) => {
     e.persist();
-    console.log(i, e.target.value);
     this.createTimesheet(i, e);
+  }
 
-    // const { item, userId, startingDay } = this.props;
-    // const { value } = e.target;
-    // this.props.createTimesheet({
-    //   isDraft: false,
-    //   taskId: item.id || '0',
-    //   taskStatusId: item.id ? item.taskStatusId : '0',
-    //   typeId: 1,
-    //   spentTime: value,
-    //   onDate: moment(startingDay).day(i + 1).format('YYYY-MM-DD')
-    // }, userId, startingDay);
-
-    // const debouncedCreate = _.debounce(create, 150);
-
-    // this.setState({
-    //   emptyTimesheetsTime: {
-    //     ...this.state.emptyTimesheetsTime,
-    //     [i]: value
-    //   }
-    // });
-
-    // debouncedCreate();
+  changeFilled = (i, id, e) => {
+    e.persist();
+    this.updateTimesheet(i, id, e);
   }
 
   toggle = () => {}
@@ -107,6 +92,7 @@ class ActivityRow extends React.Component {
                     tsh.spentTime - Math.floor(tsh.spentTime)
                     ? Math.round(tsh.spentTime * 100) / 100
                     : Math.floor(tsh.spentTime)}
+                  onChange={(e) => this.changeFilled(i, tsh.id, e)}
                 />
                 <span className={css.toggleComment}>
                   <SingleComment comment={tsh.comment}/>
@@ -127,8 +113,6 @@ class ActivityRow extends React.Component {
                   type="text"
                   maxLength="4"
                   defaultValue="0"
-                  // value={this.state.emptyTimesheetsTime[i]}
-                  // onChange={(e) => this.changeEmpty(i, e)}
                   onChange={(e) => this.changeEmpty(i, e)}
                 />
                 <span className={css.toggleComment}>
@@ -184,7 +168,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  createTimesheet
+  createTimesheet,
+  updateTimesheet
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ActivityRow);
