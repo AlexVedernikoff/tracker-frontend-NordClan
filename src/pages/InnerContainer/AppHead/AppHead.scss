@@ -21,7 +21,7 @@
   flex-shrink: 0;
   cursor: pointer;
   
-  @include phone {
+  @include tablet-portrait {
     display: flex;
   }
 

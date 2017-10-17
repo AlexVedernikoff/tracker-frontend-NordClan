@@ -106,12 +106,12 @@ class Timesheets extends React.Component {
     let magicActivities = list.length ? list.reduce((res, el) => {
       if (el.typeId !== 1 && !_.find(res, tsh => {
         return tsh.typeId === el.typeId
-        && tsh.projectId === el.project.id;
+        && el.project ? (tsh.projectId === el.project.id) : (el.project === null);
       })) {
         res.push({
           typeId: el.typeId,
-          projectName: el.project.name,
-          projectId: el.project.id
+          projectName: el.project ? el.project.name : 'Без проекта',
+          projectId: el.project ? el.project.id : 0
         });
       }
       return res;
@@ -123,7 +123,7 @@ class Timesheets extends React.Component {
         const timesheet = _.find(list, tsh => {
           return tsh.typeId !== 1
           && (tsh.typeId === element.typeId)
-          && (tsh.project.id === element.projectId)
+          && (tsh.project ? (tsh.project.id === element.projectId) : (tsh.project === null))
           && (moment(tsh.onDate).format('DD.MM.YY') === moment(startingDay).day(index).format('DD.MM.YY'));
         });
         if (timesheet) {

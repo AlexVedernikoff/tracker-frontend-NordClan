@@ -33,9 +33,8 @@ class ActivityRow extends React.Component {
     };
   }
 
-  createTimesheet = (i, e) => {
+  createTimesheet = (i, value) => {
     const { item, userId, startingDay } = this.props;
-    const { value } = e.target;
     this.props.createTimesheet({
       isDraft: false,
       taskId: item.id || null,
@@ -47,23 +46,32 @@ class ActivityRow extends React.Component {
     }, userId, startingDay);
   }
 
-  updateTimesheet = (i, sheetId, e) => {
+  updateTimesheet = (i, sheetId, value) => {
     const { userId, startingDay } = this.props;
-    const spentTime = e.target.value;
     this.props.updateTimesheet({
       sheetId,
-      spentTime
+      spentTime: value
     }, userId, startingDay);
   }
 
   changeEmpty = (i, e) => {
     e.persist();
-    this.createTimesheet(i, e);
+    const { value } = e.target;
+    if (value) {
+      this.createTimesheet(i, value);
+    } else {
+      this.createTimesheet(i, '0');
+    }
   }
 
   changeFilled = (i, id, e) => {
     e.persist();
-    this.updateTimesheet(i, id, e);
+    const { value } = e.target;
+    if (value) {
+      this.updateTimesheet(i, id, value);
+    } else {
+      this.updateTimesheet(i, id, '0');
+    }
   }
 
   toggle = () => {}
@@ -84,7 +92,7 @@ class ActivityRow extends React.Component {
             <div>
               <div className={cn({
                 [css.timeCell]: true,
-                [css.filled]: tsh.spentTime
+                [css.filled]: +tsh.spentTime
               })}>
                 <input
                   type="text"
@@ -135,7 +143,7 @@ class ActivityRow extends React.Component {
             </div>
             <div>
               { task && <Link to={`/projects/${item.projectId}/tasks/${item.id}`}>{item.name}</Link>}
-              { ma && <span>{maType.name}</span>}
+              { ma && maType && <span>{maType.name}</span>}
             </div>
           </div>
         </td>

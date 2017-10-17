@@ -96,7 +96,7 @@
   right: -1px;
 }
 
-.Select-menu-outer > div {
+.Select-menu {
   max-height: 20rem;
   overflow: auto;
 }
@@ -160,11 +160,5 @@
 
 .Select-noresults {
   padding: 7px 15px;
-}
-
-@media (max-width: 1279px) {
-  
-  .Select-placeholder {
-    font-size: 16px;
-  }
+  color: gray;
 }
