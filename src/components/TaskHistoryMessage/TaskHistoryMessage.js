@@ -6,15 +6,15 @@ import * as css from './TaskHistoryMessage.scss';
 export default class TaskHistoryMessage extends React.Component {
   constructor(props) {
     super(props);
+    this.maxLengthTextMessage = 100;
+    this.messageWithoutTags = this.deleteHtmlTags(this.props.message);
     this.setInitialState();
   }
 
   setInitialState() {
     if (this.isTextMessage()) {
-      const { message } = this.props;
-      const messageWithoutTags = this.deleteHtmlTags(message);
       this.state = {
-        isLongText: messageWithoutTags.length > this.maxLengthTextMessage(),
+        isLongText: this.messageWithoutTags.length > this.maxLengthTextMessage,
         isOpen: false
       }
     }
@@ -25,10 +25,6 @@ export default class TaskHistoryMessage extends React.Component {
     return Object.keys(entities).length === 0;
   }
 
-  maxLengthTextMessage() {
-    return 100;
-  }
-
   deleteHtmlTags(message) {
     const regex = /(<([^>]+)>)/ig;
     return message.replace(regex, '');
@@ -36,22 +32,22 @@ export default class TaskHistoryMessage extends React.Component {
 
   renderTextMessage() {
     const { message } = this.props;
-    const messageWithoutTags = this.deleteHtmlTags(message);
-    const shortText = messageWithoutTags
-      .slice(0, this.maxLengthTextMessage())
+    const shortText = this.messageWithoutTags
+      .slice(0, this.maxLengthTextMessage)
       .concat('...');
 
-    const visibleText = this.state.isOpen ? messageWithoutTags : shortText;
-    const className = this.state.isLongText ? css.longText : css.normalText;
-    const onClick = this.state.isLongText ? this.switchState.bind(this) : null;
-
-    return <div className={className} onClick={onClick}>
-      { this.state.isLongText ? visibleText : messageWithoutTags }
-    </div>
+    if (this.state.isLongText) {
+      return <div className={css.longText} onClick={this.switchState}>
+        { this.state.isOpen ? this.messageWithoutTags : shortText }
+      </div>;
+    }
+    return <div className={css.normalText}>
+      { this.messageWithoutTags }
+    </div>;
   }
 
-  switchState() {
-    this.setState({ isOpen: !this.state.isOpen })
+  switchState = () => {
+    this.setState({ isOpen: !this.state.isOpen });
   }
 
   renderMessageWithAdditions() {
@@ -63,7 +59,7 @@ export default class TaskHistoryMessage extends React.Component {
       } else {
         return this.getAdditionalInfo(addition, i);
       }
-    })
+    });
   }
 
   getAdditionalInfo(addition, key) {
@@ -96,8 +92,8 @@ export default class TaskHistoryMessage extends React.Component {
   render() {
     const message = this.isTextMessage() ?
       this.renderTextMessage() :
-      this.renderMessageWithAdditions()
+      this.renderMessageWithAdditions();
 
-    return <div className={css.normalText}>{message}</div>
+    return <div className={css.normalText}>{message}</div>;
   }
 }
