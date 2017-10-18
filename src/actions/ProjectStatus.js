@@ -6,12 +6,12 @@ import { API_URL } from '../constants/Settings';
 
 const updateProjectStatusStart = () => ({
   type: ProjectActions.UPDATE_PROJECT_STATUS_START
-})
+});
 
 const updateProjectStatusSuccess = (data) => ({
   type: ProjectActions.UPDATE_PROJECT_STATUS_SUCCESS,
   updatedStatusId: data.statusId
-})
+});
 
 export const updateProjectStatus = (projectId, statusId) => {
   const url = `${API_URL}/project/${projectId}`;
@@ -32,5 +32,5 @@ export const updateProjectStatus = (projectId, statusId) => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
         dispatch(finishLoading());
       })
-  }
+  };
 }
