@@ -33,4 +33,3 @@ StatusCheckbox.propTypes = {
 };
 
 export default StatusCheckbox;
-
