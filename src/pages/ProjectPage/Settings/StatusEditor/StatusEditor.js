@@ -16,7 +16,7 @@ class StatusEditor extends React.Component {
     ];
   }
 
-  switchStatus = (statusId) => {
+  switchStatus = (event, statusId) => {
     const { updateProjectStatus, projectId } = this.props;
     updateProjectStatus(projectId, statusId);
   }
@@ -30,8 +30,9 @@ class StatusEditor extends React.Component {
           return <StatusCheckbox
             key={type}
             type={type}
-            checked={(updatedStatusId || currentStatusId) == statusId}
-            onClick={this.switchStatus.bind(null, statusId)}
+            statusId={statusId}
+            checked={(updatedStatusId || currentStatusId) === statusId}
+            onClick={this.switchStatus}
             label={name}
           />
         })}
@@ -42,8 +43,8 @@ class StatusEditor extends React.Component {
 
 StatusEditor.propTypes = {
   updateProjectStatus: PropTypes.func.isRequired,
-  projectId: PropTypes.number.isRequired,
-  currentStatusId: PropTypes.number.isRequired,
+  projectId: PropTypes.number,
+  currentStatusId: PropTypes.number,
   updatedStatusId: PropTypes.number
 };
 
