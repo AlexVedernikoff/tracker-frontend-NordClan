@@ -21,6 +21,8 @@ class Priority extends Component {
         'Priority'
       );
     }
+
+    this.props.onChangeCallback();
   };
 
   setPriority = event => {
@@ -40,7 +42,8 @@ class Priority extends Component {
                   this.props.onChange ? this.changePriority : this.setPriority
                 }
                 className={classnames({
-                  [css.active]: priorityId === this.props.priority
+                  [css.active]: priorityId === this.props.priority,
+                  [css.inversionColor]: this.props.inversionColor
                 })}
               >
                 {priorityId}
@@ -55,7 +58,13 @@ class Priority extends Component {
 
 Priority.propTypes = {
   taskId: PropTypes.number,
-  priorityId: PropTypes.number
+  priority: PropTypes.number,
+  onChange: PropTypes.func,
+  onPrioritySet: PropTypes.func
 };
+
+Priority.defaultProps = {
+  onChangeCallback: () => {}
+}
 
 export default Priority;
