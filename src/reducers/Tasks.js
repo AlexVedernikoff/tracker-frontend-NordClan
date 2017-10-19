@@ -40,22 +40,18 @@ function Tasks (state = InitialState, action) {
     };
 
   case TaskActions.TASK_CHANGE_REQUEST_SUCCESS:
-    const oldTaskVersion = state.tasks.find(task => {
-      return task.id === action.changedFields.id;
+    const tasks = state.tasks.map(task => {
+      if (task.id === action.changedFields.id) {
+        return { ...task, ...action.changedFields };
+      } else {
+        return task;
+      }
     })
-    const updatedTaskVersion = {
-      ...oldTaskVersion,
-      ...action.changedFields
-    }
 
     return {
       ...state,
-      tasks: [
-        ...state.tasks.filter(task => task.id !== updatedTaskVersion.id),
-        updatedTaskVersion
-      ]
+      tasks
     };
-
 
   default:
     return state;
