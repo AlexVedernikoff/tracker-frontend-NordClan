@@ -1,4 +1,5 @@
-import * as TaskActions from '../constants/Tasks';
+import * as TasksActions from '../constants/Tasks';
+import * as TaskActions from '../constants/Task';
 import * as TagsActions from '../constants/Tags';
 
 const InitialState = {
@@ -13,13 +14,13 @@ const InitialState = {
 
 function Tasks (state = InitialState, action) {
   switch (action.type) {
-  case TaskActions.TASKS_RECEIVE_START:
+  case TasksActions.TASKS_RECEIVE_START:
     return {
       ...state,
       isReceiving: true
     };
 
-  case TaskActions.TASKS_RECEIVE_SUCCESS:
+  case TasksActions.TASKS_RECEIVE_SUCCESS:
     return {
       ...state,
       tasks: action.data.data,
@@ -37,6 +38,24 @@ function Tasks (state = InitialState, action) {
     return {
       ...state
     };
+
+  case TaskActions.TASK_CHANGE_REQUEST_SUCCESS:
+    const oldTaskVersion = state.tasks.find(task => {
+      return task.id === action.changedFields.id;
+    })
+    const updatedTaskVersion = {
+      ...oldTaskVersion,
+      ...action.changedFields
+    }
+
+    return {
+      ...state,
+      tasks: [
+        ...state.tasks.filter(task => task.id !== updatedTaskVersion.id),
+        updatedTaskVersion
+      ]
+    };
+
 
   default:
     return state;

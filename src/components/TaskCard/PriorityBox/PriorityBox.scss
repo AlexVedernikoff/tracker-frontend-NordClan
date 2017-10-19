@@ -1,0 +1,19 @@
+.container {
+  display: none;
+  position: absolute;
+  width: 100px;
+  height: 40px;
+  z-index: 2;
+  margin-top: -110px;
+  margin-left: 215px;
+  background-color: rgba(43, 62, 80, 0.8);
+
+  &.open {
+    display: block;
+  }
+}
+
+.content {
+  margin: auto;
+  padding: 13px 10px;
+}
