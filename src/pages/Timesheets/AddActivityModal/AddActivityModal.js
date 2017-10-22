@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { connect } from 'react-redux';
 import { Col, Row } from 'react-flexbox-grid';
 import Select from 'react-select';
@@ -27,7 +28,9 @@ class AddActivityModal extends Component {
     selectedActivityType: PropTypes.number,
     selectedProject: PropTypes.object,
     selectedTask: PropTypes.object,
-    selectedTaskStatusId: PropTypes.number
+    selectedTaskStatusId: PropTypes.number,
+    startingDay: PropTypes.object,
+    userId: PropTypes.number
   }
 
   constructor (props) {
@@ -104,8 +107,25 @@ class AddActivityModal extends Component {
   }
 
   addActivity = () => {
+    const {
+      selectedTask,
+      selectedActivityType,
+      selectedProject,
+      selectedTaskStatusId,
+      userId,
+      startingDay
+    } = this.props;
+
     this.props.onClose();
-    this.props.addActivity();
+    this.props.addActivity({
+      isDraft: false,
+      taskId: selectedTask ? selectedTask.value : null,
+      taskStatusId: selectedTask ? selectedTaskStatusId : null,
+      typeId: selectedActivityType,
+      spentTime: '0',
+      onDate: moment(startingDay).format('YYYY-MM-DD'),
+      projectId: selectedTask ? null : selectedProject.value
+    }, startingDay, userId);
   }
 
   render () {
@@ -250,7 +270,9 @@ const mapStateToProps = state => ({
   selectedActivityType: state.Timesheets.selectedActivityType,
   selectedTask: state.Timesheets.selectedTask,
   selectedTaskStatusId: state.Timesheets.selectedTaskStatusId,
-  selectedProject: state.Timesheets.selectedProject
+  selectedProject: state.Timesheets.selectedProject,
+  startingDay: state.Timesheets.startingDay,
+  userId: state.Auth.user.id
 });
 
 const mapDispatchToProps = {

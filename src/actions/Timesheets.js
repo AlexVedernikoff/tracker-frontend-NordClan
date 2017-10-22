@@ -1,5 +1,5 @@
 import * as TimesheetsActions from '../constants/Timesheets';
-import { GET, POST, PUT, REST_API} from '../constants/RestApi';
+import { GET, POST, PUT, DELETE, REST_API} from '../constants/RestApi';
 import moment from 'moment';
 
 import axios from 'axios';
@@ -48,11 +48,19 @@ const successCreateTimesheetRequest = (data) => ({
 });
 
 const startUpdateTimesheetRequest = () => ({
-  type: TimesheetsActions.CREATE_TIMESHEET_START
+  type: TimesheetsActions.UPDATE_TIMESHEET_START
 });
 
 const successUpdateTimesheetRequest = () => ({
-  type: TimesheetsActions.CREATE_TIMESHEET_SUCCESS
+  type: TimesheetsActions.UPDATE_TIMESHEET_SUCCESS
+});
+
+const startDeleteTimesheetRequest = () => ({
+  type: TimesheetsActions.DELETE_TIMESHEET_START
+});
+
+const successDeleteTimesheetRequest = () => ({
+  type: TimesheetsActions.DELETE_TIMESHEET_SUCCESS
 });
 
 // export const createTimesheet = (params) => {
@@ -79,10 +87,31 @@ export const updateTimesheet = (data, userId, startingDay) => {
     response: () => {
       dispatch(getTimesheets({
         userId,
-        dateBegin: moment(startingDay).day(1).format('YYYY-MM-DD'),
-        dateEnd: moment(startingDay).day(7).format('YYYY-MM-DD')
+        dateBegin: moment(startingDay).weekday(0).format('YYYY-MM-DD'),
+        dateEnd: moment(startingDay).weekday(6).format('YYYY-MM-DD')
       }));
       dispatch(successUpdateTimesheetRequest());
+      dispatch(finishLoading());
+    },
+    error: defaultErrorHandler(dispatch)
+  });
+};
+
+export const deleteTimesheets = (ids, userId, startingDay) => {
+  return dispatch => dispatch({
+    type: REST_API,
+    url: `/timesheet/${ids}`,
+    method: DELETE,
+    body,
+    extra,
+    start: withStartLoading(startDeleteTimesheetRequest, true)(dispatch),
+    response: () => {
+      dispatch(getTimesheets({
+        userId,
+        dateBegin: moment(startingDay).weekday(0).format('YYYY-MM-DD'),
+        dateEnd: moment(startingDay).weekday(6).format('YYYY-MM-DD')
+      }));
+      dispatch(successDeleteTimesheetRequest());
       dispatch(finishLoading());
     },
     error: defaultErrorHandler(dispatch)
@@ -106,8 +135,8 @@ export const createTimesheet = (params, userId, startingDay) => { // TODO: не 
           dispatch(finishLoading());
           dispatch(getTimesheets({
             userId,
-            dateBegin: moment(startingDay).day(1).format('YYYY-MM-DD'),
-            dateEnd: moment(startingDay).day(7).format('YYYY-MM-DD')
+            dateBegin: moment(startingDay).weekday(0).format('YYYY-MM-DD'),
+            dateEnd: moment(startingDay).weekday(6).format('YYYY-MM-DD')
           }));
         }
       });
@@ -122,8 +151,8 @@ export const changeWeek = (startingDay, userId) => {
     });
     dispatch(getTimesheets({
       userId,
-      dateBegin: moment(startingDay).day(1).format('YYYY-MM-DD'),
-      dateEnd: moment(startingDay).day(7).format('YYYY-MM-DD')
+      dateBegin: moment(startingDay).weekday(0).format('YYYY-MM-DD'),
+      dateEnd: moment(startingDay).weekday(6).format('YYYY-MM-DD')
     }));
   };
 };
@@ -148,9 +177,9 @@ export const clearModalState = () => ({
   type: TimesheetsActions.CLEAR_MODAL_STATE
 });
 
-export const addActivity = () => ({
-  type: TimesheetsActions.ADD_ACTIVITY
-});
+export const addActivity = (item, startingDay, userId) => {
+  return dispatch => dispatch(createTimesheet(item, userId, startingDay));
+};
 
 export const filterTasks = (tasks) => ({
   type: TimesheetsActions.FILTER_TASKS,

@@ -81,17 +81,17 @@ class Timesheets extends React.Component {
 
     tasks = tasks.map(element => {
       const timeSheets = [];
-      for (let index = 1; index <= 7; index++) {
+      for (let index = 0; index < 7; index++) {
         const timesheet = _.find(list, tsh => {
           return tsh.task && tsh.typeId === 1
           && (tsh.task.id === element.id)
-          && (moment(tsh.onDate).format('DD.MM.YY') === moment(startingDay).day(index).format('DD.MM.YY'))
+          && (moment(tsh.onDate).format('DD.MM.YY') === moment(startingDay).weekday(index).format('DD.MM.YY'))
           && (tsh.taskStatusId === element.taskStatusId);
         });
         if (timesheet) {
           timeSheets.push(timesheet);
         } else {
-          timeSheets.push({ onDate: moment(startingDay).day(index).format(), spentTime: '0' });
+          timeSheets.push({ onDate: moment(startingDay).weekday(index).format(), spentTime: '0' });
         }
       }
       return { ...element, timeSheets };
@@ -99,7 +99,7 @@ class Timesheets extends React.Component {
 
     _.sortBy(tasks, ['name']);
 
-    const taskRows = tasks.map((item, i) => <ActivityRow key={i} task item={item} />);
+    const taskRows = tasks.map((item) => <ActivityRow key={`${item.id}-${item.taskStatusId}-${startingDay}`} task item={item} />);
 
     // Создание массива таймшитов по magic activities
 
@@ -119,34 +119,34 @@ class Timesheets extends React.Component {
 
     magicActivities = magicActivities.map(element => {
       const timeSheets = [];
-      for (let index = 1; index <= 7; index++) {
+      for (let index = 0; index < 7; index++) {
         const timesheet = _.find(list, tsh => {
           return tsh.typeId !== 1
           && (tsh.typeId === element.typeId)
-          && (tsh.project ? (tsh.project.id === element.projectId) : (tsh.project === null))
-          && (moment(tsh.onDate).format('DD.MM.YY') === moment(startingDay).day(index).format('DD.MM.YY'));
+          && (tsh.project ? (tsh.project.id === element.projectId) : (!tsh.project && !element.projectId))
+          && (moment(tsh.onDate).format('DD.MM.YY') === moment(startingDay).weekday(index).format('DD.MM.YY'));
         });
         if (timesheet) {
           timeSheets.push(timesheet);
         } else {
-          timeSheets.push({ onDate: moment(startingDay).day(index).format(), spentTime: '0' });
+          timeSheets.push({ onDate: moment(startingDay).weekday(index).format(), spentTime: '0' });
         }
       }
       return { ...element, timeSheets };
     });
 
-    const magicActivityRows = magicActivities.map((item, i) => <ActivityRow key={i} ma item={item} />);
+    const magicActivityRows = magicActivities.map((item) => <ActivityRow key={`${item.projectId}-${item.typeId}-${startingDay}`} ma item={item} />);
 
     // Создание заголовка таблицы
 
     const days = [];
-    for (let number = 1; number <= 7; number++) {
-      const currentDay = moment(startingDay).day(number);
+    for (let number = 0; number < 7; number++) {
+      const currentDay = moment(startingDay).weekday(number);
       days.push(
         <th
           className={cn({
             [css.day]: true,
-            [css.weekend]: number === 6 || number === 7,
+            [css.weekend]: number === 5 || number === 6,
             [css.today]: moment().format('DD.MM.YY') === currentDay.format('DD.MM.YY')
           })}
           key={number}
@@ -162,16 +162,16 @@ class Timesheets extends React.Component {
     // Создание строки с суммой времени по дням
 
     const totalRow = [];
-    for (let day = 1; day <= 7; day++) {
+    for (let day = 0; day < 7; day++) {
       totalRow.push(
         <td key={day} className={cn({
           [css.total]: true,
-          [css.weekend]: day === 6 || day === 7,
-          [css.today]: moment().format('DD.MM.YY') === moment(startingDay).day(day).format('DD.MM.YY')
+          [css.weekend]: day === 5 || day === 6,
+          [css.today]: moment().format('DD.MM.YY') === moment(startingDay).weekday(day).format('DD.MM.YY')
         })}>
           <div>
             {_.sumBy(list, tsh => {
-              if (moment(tsh.onDate).format('DD.MM.YY') === moment(startingDay).day(day).format('DD.MM.YY')) {
+              if (moment(tsh.onDate).format('DD.MM.YY') === moment(startingDay).weekday(day).format('DD.MM.YY')) {
                 return +tsh.spentTime;
               } else {
                 return 0;

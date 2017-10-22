@@ -9,11 +9,12 @@ import SingleComment from './SingleComment';
 import TotalComment from './TotalComment';
 import * as css from '../Timesheets.scss';
 import { IconClose } from '../../../components/Icons';
-import { createTimesheet, updateTimesheet } from '../../../actions/Timesheets';
+import { createTimesheet, updateTimesheet, deleteTimesheets } from '../../../actions/Timesheets';
 
 class ActivityRow extends React.Component {
   static propTypes = {
     createTimesheet: PropTypes.func,
+    deleteTimesheets: PropTypes.func,
     item: PropTypes.object,
     ma: PropTypes.bool,
     maTypes: PropTypes.array,
@@ -41,7 +42,7 @@ class ActivityRow extends React.Component {
       taskStatusId: item.id ? item.taskStatusId : null,
       typeId: item.id ? '1' : item.typeId,
       spentTime: value,
-      onDate: moment(startingDay).day(i + 1).format('YYYY-MM-DD'),
+      onDate: moment(startingDay).weekday(i).format('YYYY-MM-DD'),
       projectId: item.projectId
     }, userId, startingDay);
   }
@@ -78,10 +79,11 @@ class ActivityRow extends React.Component {
 
   render () {
 
-    const { item, task, ma, statuses, maTypes } = this.props;
+    const { item, task, ma, statuses, maTypes, userId, startingDay } = this.props;
     const status = task ? _.find(statuses, { 'id': item.taskStatusId }) : '';
     const maType = ma ? _.find(maTypes, { 'id': item.typeId }) : '';
     const totalTime = _.sumBy(item.timeSheets, tsh => { return +tsh.spentTime; });
+    const timeSheetIds = _.remove(item.timeSheets.map(tsh => tsh.id), tsh => tsh);
     const timeCells = item.timeSheets.map((tsh, i) => {
       if (tsh.id) {
         return (
@@ -159,7 +161,7 @@ class ActivityRow extends React.Component {
           </div>
         </td>
         <td className={cn(css.actions)}>
-          <div className={css.deleteTask} data-tip="Удалить">
+          <div className={css.deleteTask} onClick={() => this.props.deleteTimesheets(timeSheetIds, userId, startingDay)} data-tip="Удалить">
             <IconClose/>
           </div>
         </td>
@@ -177,7 +179,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   createTimesheet,
-  updateTimesheet
+  updateTimesheet,
+  deleteTimesheets
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ActivityRow);

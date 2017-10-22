@@ -7,8 +7,8 @@ moment.locale('ru');
 const InitialState = {
   list: [],
   startingDay: moment(),
-  dateBegin: moment().day(1).format('YYYY-MM-DD'),
-  dateEnd: moment().day(7).format('YYYY-MM-DD'),
+  dateBegin: moment().weekday(0).format('YYYY-MM-DD'),
+  dateEnd: moment().weekday(6).format('YYYY-MM-DD'),
   selectedActivityType: null,
   selectedTask: null,
   selectedTaskStatusId: null,
@@ -34,8 +34,8 @@ export default function Portfolios (state = InitialState, action) {
     return {
       ...state,
       startingDay: action.startingDay,
-      dateBegin: moment(action.startingDay).day(1).format('YYYY-MM-DD'),
-      dateEnd: moment(action.startingDay).day(7).format('YYYY-MM-DD')
+      dateBegin: moment(action.startingDay).weekday(0).format('YYYY-MM-DD'),
+      dateEnd: moment(action.startingDay).weekday(6).format('YYYY-MM-DD')
     };
 
   case TimesheetsActions.CHANGE_ACTIVITY_TYPE:
@@ -61,29 +61,6 @@ export default function Portfolios (state = InitialState, action) {
     return {
       ...state,
       filteredTasks: action.tasks
-    };
-
-  case TimesheetsActions.ADD_ACTIVITY:
-    return {
-      ...state,
-      list: state.list.concat({
-        onDate: moment().format('YYYY-MM-DD'),
-        typeId: state.selectedActivityType,
-        spentTime: '0',
-        comment: '',
-        taskStatusId: state.selectedTaskStatusId,
-        task: state.selectedTask ? {
-          id: state.selectedTask.value,
-          name: state.selectedTask.label
-        } : null,
-        project: state.selectedTask ? {
-          id: _.find(state.filteredTasks, {id: state.selectedTask.value}).projectId
-          // TODO: забирать где-то название проекта. С задачей не приходит.
-        } : {
-          id: state.selectedProject.value,
-          name: state.selectedProject.label
-        }
-      })
     };
 
   case TimesheetsActions.CLEAR_MODAL_STATE:
