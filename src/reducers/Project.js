@@ -178,6 +178,15 @@ export default function Project (state = InitialState, action) {
       }
     };
 
+  case ProjectActions.UPDATE_PROJECT_STATUS_SUCCESS:
+    return {
+      ...state,
+      project: {
+        ...state.project,
+        updatedStatusId: action.updatedStatusId
+      }
+    }
+
   default:
     return {
       ...state

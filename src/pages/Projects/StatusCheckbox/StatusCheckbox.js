@@ -4,33 +4,40 @@ import classnames from 'classnames';
 
 import * as css from './StatusCheckbox.scss';
 
-const StatusCheckbox = (props) => {
-  const {
-    checked,
-    label,
-    type,
-    ...other
-  } = props;
+class StatusCheckbox extends React.Component {
+  handlerChange = (event) => {
+    const { statusId, onClick } = this.props;
+    onClick(event, statusId);
+  }
 
-  return (
-    <label
-    {...other}
-    className={classnames({
-      [css.statusCheckbox]: true,
-      [css.checked]: checked
-    })}>
-      {type ? <span className={classnames([css.marker], [css[type]])}/> : null}
-      <span>{label}</span>
-    </label>
-  );
+  render() {
+    const { checked, label, type, onChange, statusId, ...other } = this.props;
+    return (
+      <label
+        {...other}
+        className={classnames({
+          [css.statusCheckbox]: true,
+          [css.checked]: checked
+        })}
+        onClick={this.handlerChange}>
+        {type ? <span className={classnames([css.marker], [css[type]])}/> : null}
+        <span>{label}</span>
+      </label>
+    );
+  }
 };
 
 StatusCheckbox.propTypes = {
   checked: PropTypes.bool,
   label: PropTypes.string,
   onChange: PropTypes.func,
+  onClick: PropTypes.func,
+  statusId: PropTypes.number,
   type: PropTypes.string
 };
 
-export default StatusCheckbox;
+StatusCheckbox.defaultProps = {
+  onClick: () => {}
+}
 
+export default StatusCheckbox;

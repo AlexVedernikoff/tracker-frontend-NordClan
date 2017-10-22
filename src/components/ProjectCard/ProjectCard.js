@@ -14,7 +14,7 @@ const ProjectCard = props => {
     id,
     name,
     createdAt,
-    attaches,
+    usersCount,
     currentSprints,
     tags,
     statusId,
@@ -127,7 +127,7 @@ const ProjectCard = props => {
             <div className={css.meta}>
               <span>Участников:</span>
               <span>
-                {attaches ? attaches.length : 0}
+                {usersCount || 0}
               </span>
             </div>
           </div>

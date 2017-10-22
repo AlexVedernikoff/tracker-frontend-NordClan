@@ -4,49 +4,8 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { getTaskHistory} from '../../../actions/Task';
-
 import UserCard from '../../../components/UserCard';
-
-const getMessage = (message, entities, projectId) => {
-  if (Object.keys(entities).length === 0) {
-    return message;
-  } else {
-    const stringsArray = message.split(/[{}]/);
-    stringsArray.pop();
-
-    return stringsArray.map((string, i) => {
-      if (i % 2 === 0) {
-        return <span key={i}>{string}</span>;
-      } else {
-        switch (string) {
-        case 'prevPerformer':
-        case 'performer':
-          return <UserCard user={entities[string]} key={i}>
-                   <Link>{entities[string].fullNameRu}</Link>
-                 </UserCard>;
-        case 'linkedTask':
-        case 'parentTask':
-        case 'prevParentTask':
-          return <Link to={`/projects/${projectId}/tasks/${entities[string].task.id}`} key={i}>
-                  {entities[string].task.name}
-                 </Link>;
-        case 'sprint':
-        case 'prevSprint':
-          return <Link to={`/projects/${projectId}/sprint${entities[string].id}/tasks`} key={i}>
-                  {entities[string].name}
-                </Link>;
-        case 'file':
-          // реализовать потом
-          break;
-
-        default:
-          break;
-        }
-      }
-    });
-  }
-};
-
+import TaskHistoryMessage from '../../../components/TaskHistoryMessage';
 
 class TaskHistory extends React.Component {
 
@@ -75,7 +34,13 @@ class TaskHistory extends React.Component {
         <div className={css.historyAction}>
           <UserCard user={event.author}>
             <Link>{event.author.fullNameRu}</Link>
-          </UserCard> {getMessage(event.message, event.entities, this.props.params.projectId)}
+          </UserCard>
+          {' '}
+          <TaskHistoryMessage
+            message={event.message}
+            entities={event.entities}
+            projectId={this.props.params.projectId}
+          />
         </div>
       </div>;
     });
