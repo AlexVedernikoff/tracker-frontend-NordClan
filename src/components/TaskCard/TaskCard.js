@@ -46,6 +46,7 @@ class TaskCard extends React.Component {
   };
 
   handlePerformerClick = () => {
+    const { task, onOpenPerformerModal } = this.props;
     onOpenPerformerModal(task.id, task.performer ? task.performer.id : null);
   };
 
