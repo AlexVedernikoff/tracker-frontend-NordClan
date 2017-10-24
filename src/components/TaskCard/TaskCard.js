@@ -36,12 +36,13 @@ function collect (connect, monitor) {
 }
 
 class TaskCard extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = { isOpenPriority: false };
   }
 
   handleClick = () => {
+    const { task, onChangeStatus } = this.props;
     onChangeStatus(task.id, task.statusId);
   };
 
@@ -54,7 +55,7 @@ class TaskCard extends React.Component {
     this.setState({ isOpenPriority: !this.state.isOpenPriority });
   }
 
-  render() {
+  render () {
     const {
       task,
       connectDragSource,
