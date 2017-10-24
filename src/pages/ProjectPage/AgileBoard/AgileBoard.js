@@ -17,7 +17,7 @@ import { IconArrowDown } from '../../../components/Icons';
 import * as css from './AgileBoard.scss';
 
 import getTasks from '../../../actions/Tasks';
-import { changeTask, changeTaskUser, startTaskEditing, startTaskChangeUser } from '../../../actions/Task';
+import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal } from '../../../actions/Project';
 
 const filterTasks = (array) => {
@@ -238,8 +238,12 @@ class AgileBoard extends Component {
   };
 
   changePerformer = (performerId) => {
-    this.props.changeTaskUser(this.state.changedTask, performerId);
-    this.props.startTaskChangeUser();
+    this.props.changeTask({
+      id: this.state.changedTask,
+      performerId: performerId
+    }, 'User');
+
+    this.props.startTaskEditing('User');
   };
 
   closeModal = () => {
@@ -417,7 +421,6 @@ class AgileBoard extends Component {
 
 AgileBoard.propTypes = {
   changeTask: PropTypes.func.isRequired,
-  changeTaskUser: PropTypes.func.isRequired,
   getTasks: PropTypes.func.isRequired,
   lastCreatedTask: PropTypes.object,
   myTaskBoard: PropTypes.bool,
@@ -425,7 +428,6 @@ AgileBoard.propTypes = {
   project: PropTypes.object,
   sprintTasks: PropTypes.array,
   sprints: PropTypes.array,
-  startTaskChangeUser: PropTypes.func,
   startTaskEditing: PropTypes.func,
   StatusIsEditing: PropTypes.bool,
   UserIsEditing: PropTypes.bool,
@@ -445,9 +447,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   getTasks,
   changeTask,
-  changeTaskUser,
   startTaskEditing,
-  startTaskChangeUser,
   openCreateTaskModal
 };
 
