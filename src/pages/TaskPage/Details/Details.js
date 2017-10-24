@@ -54,7 +54,10 @@ class Details extends Component {
   };
 
   changePerformer = (performerId) => {
-    this.props.onChangeUser(this.props.task.id, performerId);
+    this.props.onChange({
+      id: this.props.task.id,
+      performerId: performerId
+    }, this.props.task.id);
     this.closePerformerModal();
   };
 
@@ -239,7 +242,6 @@ class Details extends Component {
 Details.propTypes = {
   getProjectUsers: PropTypes.func.isRequired,
   getProjectSprints: PropTypes.func.isRequired,
-  onChangeUser: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   task: PropTypes.object.isRequired,
   users: PropTypes.array,
