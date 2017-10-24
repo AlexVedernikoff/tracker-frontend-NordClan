@@ -82,8 +82,9 @@ class Details extends Component {
   render () {
     const { task, sprints } = this.props;
     const tags = task.tags.map((tag, i) => {
+      const tagName = (typeof tag === 'object') ? tag.name : tag;
       return <Tag key={i}
-                  name={tag}
+                  name={tagName}
                   taggable="task"
                   taggableId={task.id}/>;
     });
