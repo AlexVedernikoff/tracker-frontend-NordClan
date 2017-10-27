@@ -6,6 +6,7 @@ const InitialState = {
   project: {
     sprints: [],
     users: [],
+    history: [],
     error: false
   },
   TitleIsEditing: false,
@@ -84,11 +85,13 @@ export default function Project (state = InitialState, action) {
   case ProjectActions.PROJECT_INFO_RECEIVE_SUCCESS:
     return {
       ...state,
-      project: action.project
+      project: {
+        ...state.project,
+        ...action.project
+      }
     };
 
   case ProjectActions.PROJECT_INFO_RECEIVE_FAIL:
-    console.log(action);
     return {
       ...state,
       project: {
@@ -185,7 +188,25 @@ export default function Project (state = InitialState, action) {
         ...state.project,
         updatedStatusId: action.updatedStatusId
       }
-    }
+    };
+
+  case ProjectActions.GET_PROJECT_HISTORY_REQUEST_SENT:
+    return {
+      ...state,
+      project: {
+        ...state.project,
+        history: []
+      }
+    };
+
+  case ProjectActions.GET_PROJECT_HISTORY_REQUEST_SUCCESS:
+    return {
+      ...state,
+      project: {
+        ...state.project,
+        history: action.data
+      }
+    };
 
   default:
     return {

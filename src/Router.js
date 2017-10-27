@@ -13,6 +13,7 @@ import InnerContainer from './pages/InnerContainer';
 import TaskPage from './pages/TaskPage';
 import Comments from './pages/TaskPage/Comments';
 import TaskHistory from './pages/TaskPage/TaskHistory';
+import ProjectHistory from './pages/ProjectPage/ProjectHistory';
 import ProjectPage from './pages/ProjectPage';
 import Portfolio from './pages/Portfolio';
 import AgileBoard from './pages/ProjectPage/AgileBoard';
@@ -86,6 +87,7 @@ class AppRouter extends Component {
                 <Route path="property" component={Settings} />
                 <Route path="planning" component={Planning} />
                 <Route path="analitics" component={Analitics} />
+                <Route path="history" component={ProjectHistory} />
                 <Route path="(sprint:sprintId/)tasks" component={TaskList} />
                 <IndexRedirect to="agile-board" />
               </Route>
