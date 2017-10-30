@@ -21,7 +21,6 @@ import {
   startTaskEditing,
   stopTaskEditing,
   changeTask,
-  changeTaskUser,
   linkTask,
   unlinkTask,
   removeAttachment,
@@ -39,7 +38,6 @@ class TaskPage extends Component {
   static propTypes = {
     DescriptionIsEditing: PropTypes.bool,
     changeTask: PropTypes.func.isRequired,
-    changeTaskUser: PropTypes.func.isRequired,
     children: PropTypes.object,
     getProjectInfo: PropTypes.func.isRequired,
     getTask: PropTypes.func.isRequired,
@@ -145,7 +143,7 @@ class TaskPage extends Component {
       <div id="task-page">
         <Row>
           <Col xs={12} sm={8}>
-            <TaskHeader task={this.props.task} projectId={this.props.params.projectId} onChange={this.props.changeTask} onChangeUser={this.props.changeTaskUser} />
+            <TaskHeader task={this.props.task} projectId={this.props.params.projectId} onChange={this.props.changeTask} />
             <main className={css.main}>
               <Description
                 text={{ __html: this.props.task.description }}
@@ -180,8 +178,7 @@ class TaskPage extends Component {
           </Col>
           <Col xs={12} sm={4}>
             <aside>
-              <Details task={this.props.task} sprints={this.props.sprints} onChange={this.props.changeTask}
-                 onChangeUser={this.props.changeTaskUser} />
+              <Details task={this.props.task} sprints={this.props.sprints} onChange={this.props.changeTask} />
               {
                 this.props.task.linkedTasks
                 ? <RelatedTasks task={this.props.task} type="linkedTasks" onAction={this.handleOpenLinkTaskModal}
@@ -236,7 +233,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   changeTask,
-  changeTaskUser,
   getTask,
   getTasks,
   getProjectInfo,

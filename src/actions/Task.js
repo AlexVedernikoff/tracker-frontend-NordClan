@@ -65,11 +65,6 @@ const startTaskEditing = target => ({
   target
 });
 
-const startTaskChangeUser = () => ({
-  type: TaskActions.TASK_EDIT_START,
-  target: 'User'
-});
-
 const stopTaskEditing = target => ({
   type: TaskActions.TASK_EDIT_FINISH,
   target
@@ -158,29 +153,6 @@ const unlinkTask = (taskId, linkedTaskId) => {
     extra,
     start: withStartLoading(requestTaskLink, true)(dispatch),
     response: withFinishLoading(response => successTaskLink(response.data), true)(dispatch),
-    error: defaultErrorHandler(dispatch)
-  });
-};
-
-const changeTaskUser = (taskId, userId, statusId) => {
-  if (!taskId) {
-    return;
-  }
-
-  return dispatch => dispatch({
-    type: REST_API,
-    url: `/task/${taskId}/users`,
-    method: POST,
-    body: {
-      userId,
-      statusId
-    },
-    extra,
-    start: withStartLoading(requestTaskChangeUser, true)(dispatch),
-    response: withFinishLoading(response => {
-      dispatch(successTaskChangeUser(response.data));
-      dispatch(stopTaskEditing('User'));
-    })(dispatch),
     error: defaultErrorHandler(dispatch)
   });
 };
@@ -472,8 +444,6 @@ export {
   startTaskEditing,
   stopTaskEditing,
   changeTask,
-  changeTaskUser,
-  startTaskChangeUser,
   linkTask,
   unlinkTask,
   uploadAttachments,
