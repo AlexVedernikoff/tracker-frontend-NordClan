@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router';
 import UserCard from '../UserCard';
-import * as css from './TaskHistoryMessage.scss';
+import * as css from './HistoryMessage.scss';
 
-export default class TaskHistoryMessage extends React.Component {
+export default class HistoryMessage extends React.Component {
   constructor(props) {
     super(props);
     this.maxLengthTextMessage = 100;
@@ -52,7 +52,7 @@ export default class TaskHistoryMessage extends React.Component {
 
   renderMessageWithAdditions() {
     const { message } = this.props;
-    const additions = message.split(/[{}]/).slice(0, -1);
+    const additions = message.split(/[{}]/);
     return additions.map((addition, i) => {
       if (i % 2 === 0) {
         return <span key={i}>{addition}</span>;
@@ -67,6 +67,7 @@ export default class TaskHistoryMessage extends React.Component {
     switch (addition) {
       case 'prevPerformer':
       case 'performer':
+      case 'user':
         return <UserCard user={entities[addition]} key={key}>
           <Link>{entities[addition].fullNameRu}</Link>
         </UserCard>;

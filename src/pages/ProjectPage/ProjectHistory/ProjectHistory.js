@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { getProjectHistory } from '../../../actions/Project';
 import UserCard from '../../../components/UserCard';
-import TaskHistoryMessage from '../../../components/TaskHistoryMessage';
+import HistoryMessage from '../../../components/HistoryMessage';
 import * as css from './ProjectHistory.scss';
 
 class ProjectHistory extends React.Component {
@@ -16,9 +16,6 @@ class ProjectHistory extends React.Component {
 
   componentDidMount = () => {
     const { getProjectHistory, projectId } = this.props;
-    console.log('mount component!');
-    console.log(getProjectHistory);
-    console.log(projectId);
     getProjectHistory(projectId);
   };
 
@@ -40,7 +37,7 @@ class ProjectHistory extends React.Component {
             <Link>{event.author.fullNameRu}</Link>
           </UserCard>
           {' '}
-          <TaskHistoryMessage
+          <HistoryMessage
             message={event.message}
             entities={event.entities}
             projectId={projectId}

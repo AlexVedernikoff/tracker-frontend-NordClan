@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { getTaskHistory} from '../../../actions/Task';
 import UserCard from '../../../components/UserCard';
-import TaskHistoryMessage from '../../../components/TaskHistoryMessage';
+import HistoryMessage from '../../../components/HistoryMessage';
 
 class TaskHistory extends React.Component {
 
@@ -36,7 +36,7 @@ class TaskHistory extends React.Component {
             <Link>{event.author.fullNameRu}</Link>
           </UserCard>
           {' '}
-          <TaskHistoryMessage
+          <HistoryMessage
             message={event.message}
             entities={event.entities}
             projectId={this.props.params.projectId}
