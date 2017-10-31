@@ -6,6 +6,12 @@ import { getTagsFilter } from '../../actions/Tags';
 
 class PerformerFilter extends React.Component {
 
+  static propTypes = {
+    onPerformerSelect: PropTypes.func.isRequired,
+    selectedPerformerId: PropTypes.number,
+    users: PropTypes.array
+  };
+
   getUsers = () => {
     return this.props.users.map(user => ({
       value: user.id,
@@ -27,12 +33,6 @@ class PerformerFilter extends React.Component {
     );
   }
 }
-
-PerformerFilter.propTypes = {
-  onPerformerSelect: PropTypes.func.isRequired,
-  selectedPerformerId: PropTypes.number,
-  users: PropTypes.array
-};
 
 const mapStateToProps = state => {
   return {

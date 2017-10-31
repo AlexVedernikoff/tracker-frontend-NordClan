@@ -5,6 +5,12 @@ import Checkbox from '../../../../components/Checkbox';
 
 class StatusCheckbox extends Component {
 
+  static propTypes = {
+    checked: PropTypes.bool.isRequired,
+    onChange: PropTypes.func.isRequired,
+    status: PropTypes.object.isRequired
+  };
+
   onCheckboxChange = (event) => {
     this.props.onChange(this.props.status.id, event);
   };
@@ -21,11 +27,5 @@ class StatusCheckbox extends Component {
     );
   }
 }
-
-StatusCheckbox.propTypes = {
-  checked: PropTypes.bool.isRequired,
-  onChange: PropTypes.func.isRequired,
-  status: PropTypes.object.isRequired
-};
 
 export default StatusCheckbox;
