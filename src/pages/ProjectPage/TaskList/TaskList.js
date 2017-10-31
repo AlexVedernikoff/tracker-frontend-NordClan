@@ -41,37 +41,30 @@ class TaskList extends Component {
   }
 
   changeNameFilter = event => {
-    this.setState(
-      {
-        filterByName: event.target.value,
-        activePage: this.state.filterByName !== event.target.value ? 1 : this.state.activePage
-      },
-      this.loadTasks
-    );
+    const value = event.target.value;
+
+    this.setState(state => ({
+      filterByName: value,
+      activePage: state.filterByName !== value ? 1 : state.activePage
+    }), this.loadTasks);
   }
 
   changeStatusFilter = (id) => {
-    this.setState(
-      {
-        statusId: this.state.statusId.includes(id)
-          ? this.state.statusId.filter(statusId => statusId !== id)
-          : [...this.state.statusId, id],
-        activePage: 1
-      },
-      this.loadTasks
-    );
+    this.setState(state => ({
+      statusId: state.statusId.includes(id)
+        ? state.statusId.filter(statusId => statusId !== id)
+        : [...state.statusId, id],
+      activePage: 1
+    }), this.loadTasks);
   }
 
   changePerformerFilter = (performer) => {
     const performerId = performer ? performer.value : 0;
 
-    this.setState(
-      {
-        performerId,
-        activePage: this.state.performerId !== performerId ? 1 : this.state.activePage
-      },
-      this.loadTasks
-    );
+    this.setState(state=> ({
+      performerId,
+      activePage: state.performerId !== performerId ? 1 : state.activePage
+    }), this.loadTasks);
   }
 
   handlePaginationClick = e => {
@@ -105,12 +98,12 @@ class TaskList extends Component {
   };
 
   onClickTag = (tag) => {
-    this.setState({
-      filterTags: _.uniqBy(this.state.filterTags.concat({
+    this.setState(state => ({
+      filterTags: _.uniqBy(state.filterTags.concat({
         value: tag,
         label: tag
       }), 'value')
-    }, this.loadTasks);
+    }), this.loadTasks);
   };
 
   render () {
