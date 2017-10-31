@@ -103,7 +103,14 @@ class TaskHeader extends Component {
   }
 
   changePerformer = (performerId) => {
-    this.props.onChangeUser(this.props.task.id, performerId, getNewStatus(this.state.clickedStatus));
+    this.props.onChange(
+      {
+        id: this.props.task.id,
+        performerId: performerId,
+        statusId: getNewStatus(this.state.clickedStatus)
+      },
+      'User'
+    );
     this.handleCloseModal();
   }
 
@@ -145,7 +152,14 @@ class TaskHeader extends Component {
   }
 
   handleClose = () => {
-    this.props.onChangeUser(this.props.task.id, 0, TaskStatuses.CLOSED);
+    this.props.onChange(
+      {
+        id: this.props.task.id,
+        performerId: 0,
+        statusId: TaskStatuses.CLOSED
+      },
+      'User'
+    );
   };
 
   render () {
@@ -325,7 +339,6 @@ TaskHeader.propTypes = {
   getProjectUsers: PropTypes.func.isRequired,
   location: PropTypes.object,
   onChange: PropTypes.func.isRequired,
-  onChangeUser: PropTypes.func.isRequired,
   projectId: PropTypes.string.isRequired,
   task: PropTypes.object.isRequired,
   users: PropTypes.array

@@ -78,7 +78,7 @@ class InnerContainer extends Component {
     const sidebarStyles = {
       sidebar: {
         width: 240,
-        zIndex: 3
+        zIndex: 4
       },
       content: {
         overflowY: 'hidden',
