@@ -8,13 +8,6 @@ import { startLoading, finishLoading } from './Loading';
 import getPlanningTasks from './PlanningTasks';
 import { getTask } from './Task';
 import { GET, REST_API} from '../constants/RestApi';
-import {
-  defaultErrorHandler,
-  withFinishLoading,
-  withStartLoading,
-  defaultBody as body,
-  defaultExtra as extra
-} from './Common';
 
 const gettingProjectInfoStart = () => ({
   type: ProjectActions.PROJECT_INFO_RECEIVE_START
