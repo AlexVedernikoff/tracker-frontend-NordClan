@@ -50,20 +50,14 @@ const projectChangeSuccess = response => ({
   changedFields: response
 });
 
-const getProjectHistoryStart = () => {
-  console.log('start!!!!!');
-  return {
-    type: ProjectActions.GET_PROJECT_HISTORY_REQUEST_SENT
-  }
-};
+const getProjectHistoryStart = () => ({
+  type: ProjectActions.GET_PROJECT_HISTORY_REQUEST_SENT
+});
 
-const getProjectHistorySuccess = history => {
-  console.log('success!!!!');
-  return {
-    type: ProjectActions.GET_PROJECT_HISTORY_REQUEST_SUCCESS,
-    data: history
-  }
-};
+const getProjectHistorySuccess = history => ({
+  type: ProjectActions.GET_PROJECT_HISTORY_REQUEST_SUCCESS,
+  data: history
+});
 
 export const StartEditing = target => ({
   type: ProjectActions.EDIT_START,
@@ -292,9 +286,7 @@ const getProjectHistory = id => {
   if (!id) {
     return () => {};
   }
-
   const URL = `${API_URL}/project/${id}/history`;
-
   return dispatch => {
     dispatch(startLoading());
     dispatch(getProjectHistoryStart());
