@@ -45,7 +45,7 @@ class Tags extends Component {
   sendNewTags = (e) => {
     e.preventDefault();
     this.setState({visible: !this.state.visible});
-    this.props.createTags(
+    this.state.tag.trim() && this.props.createTags(
       this.state.tag.trim(),
       this.props.taggable,
       this.props.taggableId
