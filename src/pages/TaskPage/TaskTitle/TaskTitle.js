@@ -14,7 +14,7 @@ class TaskTitle extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      submitError: false
+      submitError: false,
     };
   }
 
@@ -38,26 +38,25 @@ class TaskTitle extends Component {
   };
 
   validateAndSubmit = () => {
-    this.taskName.innerText = this.taskName.innerText.trim();
-    if (this.taskName.innerText.length < 4) {
-      this.setState({ submitError: true });
-    } else {
-      const { changeTask } = this.props;
-      changeTask(
-        {
-          id: this.props.id,
-          name: this.taskName.innerText
-        },
-        'Title'
-      );
-    }
+    const { changeTask } = this.props;
+    !this.state.submitError && 
+    changeTask(
+          {
+            id: this.props.id,
+            name: this.taskName.innerText.trim()
+          },
+          'Title'
+         );
   };
 
-  handleKeyPress = event => {
-    if (event.target.innerText.length > 300) {
+  handleInput = event => {
+    let title = event.target.innerText.trim();
+    title.length < 4 ? this.setState({ submitError: true }) : this.setState({ submitError: false });
+    
+    if (title.length > 300) {
       // TODO: add exceptions for backspace and other needed keys
       event.preventDefault();
-    }
+    }    
 
     if (this.props.TitleIsEditing && event.keyCode === 13) {
       event.preventDefault();
@@ -83,8 +82,7 @@ class TaskTitle extends Component {
             ref={ref => (this.taskName = ref)}
             contentEditable={this.props.TitleIsEditing}
             onBlur={this.validateAndSubmit}
-            onKeyDown={this.handleKeyPress}
-            onInput={this.titleChangeHandler}
+            onInput={this.handleInput}
           >
             {this.props.name}
           </span>
