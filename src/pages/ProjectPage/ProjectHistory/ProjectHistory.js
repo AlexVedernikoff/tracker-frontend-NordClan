@@ -3,19 +3,20 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { getTaskHistory} from '../../../actions/Task';
+import { getProjectHistory } from '../../../actions/Project';
 import UserCard from '../../../components/UserCard';
 import HistoryMessage from '../../../components/HistoryMessage';
+import * as css from './ProjectHistory.scss';
 
-class TaskHistory extends React.Component {
-
+class ProjectHistory extends React.Component {
   constructor (props) {
     super(props);
     this.state = {isUserCardVisible: false};
   }
 
   componentDidMount = () => {
-    this.props.getTaskHistory(this.props.params.taskId);
+    const { getProjectHistory, projectId } = this.props;
+    getProjectHistory(projectId);
   };
 
   showUserCard = id => {
@@ -27,8 +28,8 @@ class TaskHistory extends React.Component {
   };
 
   render () {
-    const css = require('./TaskHistory.scss');
-    const eventList = this.props.history.map((event, i) => {
+    const { history, projectId } = this.props;
+    const eventList = history.map((event, i) => {
       return <div className={css.historyEvent} key={event.id}>
         <span className={css.time}> {moment(event.date).format('DD.MM.YYYY HH:mm:ss')}</span>
         <div className={css.historyAction}>
@@ -39,7 +40,7 @@ class TaskHistory extends React.Component {
           <HistoryMessage
             message={event.message}
             entities={event.entities}
-            projectId={this.props.params.projectId}
+            projectId={projectId}
           />
         </div>
       </div>;
@@ -54,21 +55,19 @@ class TaskHistory extends React.Component {
   }
 }
 
-TaskHistory.propTypes = {
-  getTaskHistory: PropTypes.func.isRequired,
+ProjectHistory.propTypes = {
+  getProjectHistory: PropTypes.func.isRequired,
   history: PropTypes.array,
-  params: PropTypes.shape({
-    projectId: PropTypes.string.isRequired,
-    taskId: PropTypes.string.isRequired
-  })
+  projectId: PropTypes.number,
 };
 
 const mapStateToProps = state => ({
-  history: state.Task.history
+  projectId: state.Project.project.id,
+  history: state.Project.project.history
 });
 
 const mapDispatchToProps = {
-  getTaskHistory
+  getProjectHistory
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskHistory);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectHistory);

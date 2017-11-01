@@ -25,7 +25,7 @@ class ProjectPage extends Component {
     // Mocks
     const pic
       = 'https://static.qiwi.com/img/qiwi_com/favicon/favicon-192x192.png';
-    
+
     return (this.props.project.error) ? (<HttpError error={this.props.project.error}/>) : (
       <div id="project-page">
         <ProjectTitle
@@ -71,6 +71,12 @@ class ProjectPage extends Component {
             to={`/projects/${this.props.params.projectId}/analitics`}
           >
             Аналитика
+          </Link>
+          <Link
+            activeClassName="active"
+            to={`/projects/${this.props.params.projectId}/history`}
+          >
+            История
           </Link>
         </RouteTabs>
 
