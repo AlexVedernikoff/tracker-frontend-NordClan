@@ -40,22 +40,18 @@ class UserCard extends React.Component {
                 <div className={css.photoWrapper}>
                   <img src={user.photo} alt=""/>
                 </div>
-                {user.fullNameRu &&
-                <div className={css.name}>
+                {user.fullNameRu && <div className={css.name}>
                   {user.fullNameRu}
                 </div>}
-                {user.name && 
-                <div className={css.meta}>
+                {user.skype && <div className={css.meta}>
                   <span><IconSkype/></span>
                   <span><a href={`skype:${user.skype}?add`}>{user.skype}</a></span>
                 </div>}
-                {user.emailPrimary && 
-                <div className={css.meta}>
+                {user.emailPrimary && <div className={css.meta}>
                   <span><IconMail/></span>
                   <span><a href={`mailto:${user.emailPrimary}`}>{user.emailPrimary}</a></span>
                 </div>}
-                {user.mobile && 
-                <div className={css.meta}>
+                {user.mobile && <div className={css.meta}>
                   <span><IconPhone/></span>
                   <span><a href={`tel:${user.mobile}`}>{user.mobile}</a></span>
                 </div>}
