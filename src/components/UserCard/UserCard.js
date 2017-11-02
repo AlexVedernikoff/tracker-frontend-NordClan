@@ -15,12 +15,10 @@ class UserCard extends React.Component {
   }
 
   handleClickOutside = evt => {
-    // console.log('close');
     this.setState({visible: false});
   }
 
   showCard = () => {
-    // console.log('open', this.state.visible, this.props.id);
     this.setState({visible: true});
   }
 
@@ -32,7 +30,6 @@ class UserCard extends React.Component {
     );
 
     const {user} = this.props;
-
     return (
       <div className={css.wrapper}>
         {childrenWithProps}
@@ -40,25 +37,25 @@ class UserCard extends React.Component {
           {
             this.state.visible
             ? <div className={css.userCard}>
-              <div className={css.photoWrapper}>
-                <img src={user.photo} alt=""/>
+                <div className={css.photoWrapper}>
+                  <img src={user.photo} alt=""/>
+                </div>
+                {user.fullNameRu && <div className={css.name}>
+                  {user.fullNameRu}
+                </div>}
+                {user.skype && <div className={css.meta}>
+                  <span><IconSkype/></span>
+                  <span><a href={`skype:${user.skype}?add`}>{user.skype}</a></span>
+                </div>}
+                {user.emailPrimary && <div className={css.meta}>
+                  <span><IconMail/></span>
+                  <span><a href={`mailto:${user.emailPrimary}`}>{user.emailPrimary}</a></span>
+                </div>}
+                {user.mobile && <div className={css.meta}>
+                  <span><IconPhone/></span>
+                  <span><a href={`tel:${user.mobile}`}>{user.mobile}</a></span>
+                </div>}
               </div>
-              <div className={css.name}>
-                {user.fullNameRu}
-              </div>
-              <div className={css.meta}>
-                <span><IconSkype/></span>
-                <span><a href={`skype:${user.skype}?add`}>{user.skype}</a></span>
-              </div>
-              <div className={css.meta}>
-                <span><IconMail/></span>
-                <span><a href={`mailto:${user.emailPrimary}`}>{user.emailPrimary}</a></span>
-              </div>
-              <div className={css.meta}>
-                <span><IconPhone/></span>
-                <span><a href={`tel:${user.mobile}`}>{user.mobile}</a></span>
-              </div>
-            </div>
             : null
           }
         </ReactCSSTransitionGroup>
