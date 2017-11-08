@@ -28,6 +28,22 @@ function Tasks (state = InitialState, action) {
       isReceiving: false
     };
 
+  case TaskActions.TASK_CHANGE_REQUEST_SUCCESS:
+      const updatedTasks = state.tasks.map(task => {
+        if (task.id === action.changedFields.id) {
+          return {
+            ...task,
+            ...action.changedFields
+          }
+        } else {
+          return task;
+        }
+      })
+      return {
+        ...state,
+        tasks: updatedTasks
+      };
+
   case TagsActions.GET_TAGS_FILTER_SUCCESS:
     if (action.data.filterFor === 'task') {
       return {

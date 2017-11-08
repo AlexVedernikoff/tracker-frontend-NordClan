@@ -3,6 +3,7 @@ import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
+import { subscribeOnChangeTask } from './Task';
 
 const startTasksReceive = () => ({
   type: TaskActions.TASKS_RECEIVE_START
@@ -39,6 +40,9 @@ const getTasks = (options) => {
           return;
         } else {
           dispatch(tasksReceived(response.data));
+          response.data.data.forEach(task => {
+            dispatch(subscribeOnChangeTask(task.projectId, task.id));
+          })
           dispatch(finishLoading());
         }
       });

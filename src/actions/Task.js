@@ -2,6 +2,7 @@ import * as TaskActions from '../constants/Task';
 import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import {DELETE, GET, POST, PUT, REST_API} from '../constants/RestApi';
+import {SOCKET_IO} from '../constants/SocketIO';
 import {
   defaultErrorHandler,
   withFinishLoading,
@@ -28,6 +29,7 @@ const getTaskHistorySuccess = history => ({
   type: TaskActions.GET_TASK_HISTORY_REQUEST_SUCCESS,
   data: history
 });
+
 const getTaskFail = error => ({
   type: TaskActions.GET_TASK_REQUEST_FAIL,
   error: error
@@ -81,8 +83,11 @@ const getTask = id => {
     body,
     extra,
     start: withStartLoading(getTaskStart, true)(dispatch),
-    response: withFinishLoading(response => getTaskSuccess(response.data), true)(dispatch),
-    error: withFinishLoading(error => getTaskFail(error.response.data), true)(dispatch)
+    response: withFinishLoading(response => {
+      dispatch(getTaskSuccess(response.data));
+      dispatch(subscribeOnChangeTask(response.data.projectId, response.data.id));
+    })(dispatch),
+    error: withFinishLoading(error => getTaskFail(error.response.data), true)(dispatch),
   });
 };
 
@@ -101,6 +106,14 @@ const getTaskHistory = id => {
     error: defaultErrorHandler(dispatch)
   });
 };
+
+const subscribeOnChangeTask = (projectId, taskId) => ({
+  type: SOCKET_IO,
+  channel: `project_${projectId}_task_${taskId}`,
+  onReceive: (dispatch, data) => {
+    dispatch(successTaskChange(data));
+  }
+})
 
 const changeTask = (ChangedProperties, target) => {
   if (!ChangedProperties.id) {
@@ -457,5 +470,6 @@ export {
   setCommentForEdit,
   resetCurrentEditingComment,
   setCurrentCommentExpired,
-  setHighLighted
+  setHighLighted,
+  subscribeOnChangeTask
 };

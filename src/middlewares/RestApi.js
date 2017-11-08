@@ -25,7 +25,6 @@ const consistantRequest = (action) => {
       throw new Error(`method '${method}' requires body for rest api`);
     }
   } catch (e) {
-    console.error(e);
     return false;
   }
   return true;

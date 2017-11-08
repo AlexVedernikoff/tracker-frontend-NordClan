@@ -4,12 +4,13 @@ import rootReducer from '../reducers';
 import { taskUpdate } from '../middlewares/Tasks';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { restApi } from '../middlewares/RestApi';
+import { socketIO } from '../middlewares/SocketIO';
 
 const configureStore = preloadedState => {
   const store = createStore(
     rootReducer,
     composeWithDevTools(
-      applyMiddleware(thunkMiddleware, taskUpdate, restApi)
+      applyMiddleware(thunkMiddleware, taskUpdate, restApi, socketIO)
     )
   );
 
