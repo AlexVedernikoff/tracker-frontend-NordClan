@@ -22,7 +22,7 @@ class CreateTaskModal extends Component {
     this.state = {
       selectedSprint: null,
       selectedPerformer: null,
-      taskName: null,
+      taskName: '',
       description: null,
       openTaskPage: false,
       prioritiesId: 3,
@@ -31,23 +31,9 @@ class CreateTaskModal extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    const selectedSprint
-      = this.state.selectedSprint !== nextProps.selectedSprintValue
-        ? nextProps.selectedSprintValue
-        : this.state.selectedSprint;
-
-    this.setState(state => {
-      return {
-        ...state,
-        selectedSprint,
-        selectedPerformer: null,
-        taskName: null,
-        description: null,
-        openTaskPage: false,
-        prioritiesId: 3,
-        selectedType: null
-      };
-    });
+    if (this.state.selectedSprint !== nextProps.selectedSprintValue) {
+      this.setState({ selectedSprint: nextProps.selectedSprintValue });
+    }
   }
 
   componentWillUnmount () {
@@ -63,40 +49,30 @@ class CreateTaskModal extends Component {
 
   handleModalSprintChange = selectedSprint => {
     this.setState({
-      selectedSprint: selectedSprint !== null ? selectedSprint.value : 0
+      selectedSprint: selectedSprint ? selectedSprint.value : 0
     });
   };
 
   handlePerformerChange = selectedPerformer => {
     this.setState({
-      selectedPerformer:
-        selectedPerformer !== null ? selectedPerformer.value : 0
+      selectedPerformer: selectedPerformer ? selectedPerformer.value : 0
     });
   };
 
-  handleInput = event => {
-    this.setState({
-      taskName: event.target.value
-    });
-  };
+  handleDescription = event =>
+    this.setState({ description: event.target.value });
 
-  handleDescription = event => {
-    this.setState({
-      description: event.target.value
-    });
-  };
+  handlePriorityChange = priorityId =>
+    this.setState({ prioritiesId: +priorityId });
 
-  handlePriorityChange = priorityId => {
-    this.setState({
-      prioritiesId: +priorityId
-    });
-  };
+  submitTaskAndOpen = () =>
+    this.setState({ openTaskPage: true }, () => this.submitTask());
 
   submitTask = event => {
     if (event) {
       event.preventDefault();
     }
-    if (!this.state.taskName || !this.state.selectedType || !this.state.selectedType.value) {
+    if (!this.state.selectedType || !this.state.selectedType.value) {
       return;
     }
     this.props.createTask(
@@ -119,15 +95,7 @@ class CreateTaskModal extends Component {
     );
   };
 
-  submitTaskAndOpen = () => {
-    this.setState({ openTaskPage: true }, () => this.submitTask());
-  };
-
-  onTypeChange = value => {
-    this.setState({
-      selectedType: value
-    });
-  };
+  onTypeChange = value => this.setState({ selectedType: value ? value : 1 });
 
   handleCloseModal = event => {
     event.preventDefault();
@@ -172,7 +140,27 @@ class CreateTaskModal extends Component {
     }));
   };
 
+  _handleChange = field => event =>
+    this.setState({ [field]: event.target.value });
+
+  _handleBlur = field => () =>
+    this.setState({ touched: { ...this.state.touched, [field]: true } });
+
+  _validate = taskName => ({
+    taskName: taskName.length < 4
+  });
+
   render () {
+    const errors = this._validate(this.state.taskName);
+    //Если в объекте errors хоть один элемент true(есть ошибка ввода), флаг равен true
+    const isDisabled = Object.keys(errors).some(error => errors[error]);
+
+    //Проверка, следует ли выводить ошибку (если инпут не был в фокусе, ошибка не будет показана)
+    const _shouldMarkError = field => {
+      const hasError = errors[field];
+      const shouldShow = this.state.touched[field];
+      return hasError ? shouldShow : false;
+    };
     const formLayout = {
       firstCol: 5,
       secondCol: 7
@@ -202,9 +190,11 @@ class CreateTaskModal extends Component {
               >
                 <Input
                   autoFocus
-                  onChange={this.handleInput}
                   name="taskName"
                   placeholder="Название задачи"
+                  onChange={this._handleChange('taskName')}
+                  onBlur={this._handleBlur('taskName')}
+                  isNotValid={_shouldMarkError('taskName')}
                 />
               </Col>
             </Row>
@@ -321,12 +311,14 @@ class CreateTaskModal extends Component {
               text="Создать задачу"
               type="green"
               htmlType="submit"
+              disabled={isDisabled}
               onClick={this.submitTask}
             />
             <Button
               text="Создать и открыть"
               htmlType="button"
               type="green-lighten"
+              disabled={isDisabled}
               onClick={this.submitTaskAndOpen}
             />
           </div>
