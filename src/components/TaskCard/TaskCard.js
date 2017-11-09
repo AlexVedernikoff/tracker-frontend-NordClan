@@ -4,12 +4,14 @@ import { connect } from 'react-redux';
 import classnames from 'classnames';
 import { Link } from 'react-router';
 import { DragSource } from 'react-dnd';
-import { TASK_CARD } from '../../constants/DragAndDrop';
+import { history } from '../../History';
 import getTypeById from '../../utils/TaskTypes';
+import { TASK_CARD } from '../../constants/DragAndDrop';
 
-import { IconPlay, IconPause, IconTime } from '../Icons';
 import * as css from './TaskCard.scss';
 import PriorityBox from './PriorityBox';
+import CopyThis from '../../components/CopyThis';
+import { IconPlay, IconPause, IconTime } from '../Icons';
 
 const taskCardSource = {
   beginDrag (props) {
@@ -90,6 +92,17 @@ class TaskCard extends React.Component {
             </div>
             : null
           }
+          <CopyThis
+            wrapThisInto={'div'}
+            isCopiedBackground
+            textToCopy={`${location.origin}${history.createHref(
+              `/projects/${task.projectId}/tasks/${task.id}`
+            )}`}
+          >
+            <div className={css.header}>
+              {task.prefix}-{task.id}
+            </div>
+          </CopyThis>
           <span className={css.header}>{`${task.prefix}-${task.id}`} | {getTypeById(task.typeId, taskTypes)}</span>
           <Link to={`/projects/${task.projectId}/tasks/${task.id}`} className={css.taskName}>
             <div>{task.name}</div>
@@ -111,6 +124,36 @@ class TaskCard extends React.Component {
               })} />
             <span>{getTaskTime(task.factExecutionTime, task.plannedExecutionTime)}</span>
           </p>
+        ) : null}
+        {task.plannedExecutionTime ? (
+          <div className={css.progressBar}>
+            <div
+              style={{
+                width:
+                  task.factExecutionTime / task.plannedExecutionTime < 1
+                    ? task.factExecutionTime / task.plannedExecutionTime * 100
+                      + '%'
+                    : '100%'
+              }}
+              className={classnames({
+                [css.green]:
+                  task.factExecutionTime / task.plannedExecutionTime <= 1
+                  && task.plannedExecutionTime,
+                [css.red]:
+                  task.factExecutionTime / task.plannedExecutionTime > 1
+                  && task.plannedExecutionTime
+              })}
+            />
+          </div>
+        ) : null}
+        <div className={css.priorityMarker} onClick={this.togglePriorityBox} />
+        <PriorityBox
+          open={this.state.isOpenPriority}
+          taskId={task.id}
+          priorityId={task.prioritiesId}
+          hideBox={this.togglePriorityBox}
+        />
+      </div>
             : null
           }
           {
