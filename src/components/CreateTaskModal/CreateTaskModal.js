@@ -30,7 +30,8 @@ class CreateTaskModal extends Component {
         { label: 'Фича', value: 1 },
         { label: 'Доп. Фича', value: 3 },
         { label: 'Баг', value: 2 },
-        { label: 'Регрес. Баг', value: 4 }
+        { label: 'Регрес. Баг', value: 4 },
+        { label: 'Баг от клиента', value: 5 }
       ],
       selectedType: { label: 'Фича', value: 1 }
     };

@@ -100,6 +100,9 @@ class TaskList extends Component {
                 <Checkbox label="Регрес. Баг"/>
               </Col>
               <Col xs={6} sm>
+                <Checkbox label="Баг от клиента"/>
+              </Col>
+              <Col xs={6} sm>
                 <Checkbox label="Фича / Задача"/>
               </Col>
               <Col xs={6} sm>
