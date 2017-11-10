@@ -34,7 +34,7 @@ class SprintEditModal extends Component {
     };
   }
 
-  onChangeTime = (e) => {
+  onChangeTime = e => {
     const value = e.target.value;
     this.setState(state => ({
       sprint: {
@@ -44,7 +44,7 @@ class SprintEditModal extends Component {
     }));
   };
 
-  onChangeName = (e) => {
+  onChangeName = e => {
     const value = e.target.value;
     this.setState(state => ({
       sprint: {
@@ -54,7 +54,7 @@ class SprintEditModal extends Component {
     }));
   };
 
-  onChangeBudget = (e) => {
+  onChangeBudget = e => {
     const value = e.target.value;
     this.setState(state => ({
       sprint: {
@@ -64,7 +64,7 @@ class SprintEditModal extends Component {
     }));
   };
 
-  onChangeRiskBudget = (e) => {
+  onChangeRiskBudget = e => {
     const value = e.target.value;
     this.setState(state => ({
       sprint: {
@@ -74,7 +74,7 @@ class SprintEditModal extends Component {
     }));
   };
 
-  handleDayFromChange = (date) => {
+  handleDayFromChange = date => {
     const value = moment(date).format('YYYY-MM-DD');
     this.setState(state => ({
       sprint: {
@@ -84,7 +84,7 @@ class SprintEditModal extends Component {
     }));
   };
 
-  handleDayToChange = (date) => {
+  handleDayToChange = date => {
     const value = moment(date).format('YYYY-MM-DD');
     this.setState(state => ({
       sprint: {
@@ -104,88 +104,154 @@ class SprintEditModal extends Component {
     let formattedDayTo = '';
 
     if (this.state.sprint.dateFrom) {
-      formattedDayFrom = moment(this.state.sprint.dateFrom).format('DD.MM.YYYY');
+      formattedDayFrom = moment(this.state.sprint.dateFrom).format(
+        'DD.MM.YYYY'
+      );
     } else if (sprint.dateFrom) {
       moment(sprint.dateFrom).format('DD.MM.YYYY');
     }
-
 
     if (this.state.sprint.dateTo) {
       formattedDayTo = moment(this.state.sprint.dateTo).format('DD.MM.YYYY');
     } else if (sprint.dateTo) {
       moment(sprint.dateTo).format('DD.MM.YYYY');
     }
-
+    const formLayout = {
+      firstCol: 5,
+      secondCol: 7
+    };
+    console.log(this.state);
     return (
       <Modal
         isOpen
-        contentLabel='modal'
-        onRequestClose={this.props.handleCloseModal}>
+        contentLabel="modal"
+        onRequestClose={this.props.handleCloseModal}
+      >
         <div>
           <form className={css.editSprintForm}>
-            <Row>
-              <Col xs={12}>
-                <h3>Редактирование спринта</h3>
-                <Input
-                  placeholder='Новое название спринта...'
-                  defaultValue={sprint.name}
-                  onChange={this.onChangeName}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col xs={12} sm={6}>
-                <DatepickerDropdown
-                  name='dateFrom'
-                  value={formattedDayFrom}
-                  onDayChange={this.handleDayFromChange}
-                  placeholder={moment(sprint.factStartDate).format('DD.MM.YYYY')}
-                />
-              </Col>
-              <Col xs={12} sm={6}>
-                <DatepickerDropdown
-                  name='dateTo'
-                  value={formattedDayTo}
-                  onDayChange={this.handleDayToChange}
-                  placeholder={moment(sprint.factFinishDate).format('DD.MM.YYYY')}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col xs={12}>
-                <Input
-                  placeholder='Введите новое значение времени...'
-                  defaultValue={sprint.allottedTime || 0}
-                  onChange={this.onChangeTime}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col xsOffset={1}
-                   xs={10}>
-                <Input
-                  placeholder='Бюджет без рискового резерва...'
-                  defaultValue={sprint.budget || 0}
-                  onChange={this.onChangeBudget}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col xsOffset={1}
-                   xs={10}>
-                <Input
-                  placeholder='Бюджет с рисковым резервом...'
-                  defaultValue={sprint.riskBudget || 0}
-                  onChange={this.onChangeRiskBudget}
-                />
-              </Col>
-            </Row>
-            <Row className={css.createButton}
-                 center='xs'>
+            <h3>Редактирование спринта</h3>
+            <label className={css.formField}>
+              <Row>
+                <Col
+                  xs={12}
+                  sm={formLayout.firstCol}
+                  className={css.leftColumn}
+                >
+                  <p>Название спринта:</p>
+                </Col>
+                <Col
+                  xs={12}
+                  sm={formLayout.secondCol}
+                  className={css.rightColumn}
+                >
+                  <Input
+                    placeholder="Новое название спринта..."
+                    defaultValue={sprint.name}
+                    onChange={this.onChangeName}
+                  />
+                </Col>
+              </Row>
+            </label>
+
+            <label className={css.formField}>
+              <Row>
+                <Col xs={12} sm={6}>
+                  <DatepickerDropdown
+                    name="dateFrom"
+                    value={formattedDayFrom}
+                    onDayChange={this.handleDayFromChange}
+                    placeholder={moment(sprint.factStartDate).format(
+                      'DD.MM.YYYY'
+                    )}
+                  />
+                </Col>
+                <Col xs={12} sm={6}>
+                  <DatepickerDropdown
+                    name="dateTo"
+                    value={formattedDayTo}
+                    onDayChange={this.handleDayToChange}
+                    placeholder={moment(sprint.factFinishDate).format(
+                      'DD.MM.YYYY'
+                    )}
+                  />
+                </Col>
+              </Row>
+            </label>
+
+            <label className={css.formField}>
+              <Row>
+                <Col
+                  xs={12}
+                  sm={formLayout.firstCol}
+                  className={css.leftColumn}
+                >
+                  <p>Выделенное время:</p>
+                </Col>
+                <Col
+                  xs={12}
+                  sm={formLayout.secondCol}
+                  className={css.rightColumn}
+                >
+                  <Input
+                    placeholder="Введите новое значение времени..."
+                    defaultValue={sprint.allottedTime || 0}
+                    onChange={this.onChangeTime}
+                  />
+                </Col>
+              </Row>
+            </label>
+
+            <label className={css.formField}>
+              <Row>
+                <Col
+                  xs={12}
+                  sm={formLayout.firstCol}
+                  className={css.leftColumn}
+                >
+                  <p>Бюджет без рискового резерва:</p>
+                </Col>
+                <Col
+                  xs={12}
+                  sm={formLayout.secondCol}
+                  className={css.rightColumn}
+                >
+                  <Input
+                    defaultValue={sprint.budget || 0}
+                    onChange={this.onChangeBudget}
+                  />
+                </Col>
+              </Row>
+            </label>
+
+            <label className={css.formField}>
+              <Row>
+                <Col
+                  xs={12}
+                  sm={formLayout.firstCol}
+                  className={css.leftColumn}
+                >
+                  <p>Бюджет с рисковым резервом:</p>
+                </Col>
+                <Col
+                  xs={12}
+                  sm={formLayout.secondCol}
+                  className={css.rightColumn}
+                >
+                  <Input
+                    defaultValue={sprint.riskBudget || 0}
+                    onChange={this.onChangeRiskBudget}
+                  />
+                </Col>
+              </Row>
+            </label>
+
+            <Row className={css.createButton} center="xs">
               <Col xs>
-                <Button type='green'
-                        text='Изменить'
-                        onClick={this.handleEditSprint}/>
+                <Button
+                  type="green"
+                  text="Изменить"
+                  onClick={this.handleEditSprint}
+                />
               </Col>
             </Row>
           </form>
@@ -194,6 +260,5 @@ class SprintEditModal extends Component {
     );
   }
 }
-
 
 export default SprintEditModal;
