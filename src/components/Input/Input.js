@@ -4,16 +4,18 @@ import classnames from 'classnames';
 import * as css from './Input.scss';
 
 export default class Input extends Component {
-  static propTypes = {};
+  static propTypes = {
+    isNotValid: PropTypes.bool
+  };
 
   render () {
-    const { ...other } = this.props;
+    const { isNotValid, ...other } = this.props;
     return (
       <input
         type="text"
         {...other}
         className={classnames(css.input, {
-          [css.inputError]: { ...other }.isNotValid
+          [css.inputError]: isNotValid
         })}
       />
     );
