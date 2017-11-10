@@ -10,6 +10,8 @@ export default function GetTypeById (typeId) {
     break;
   case 4: type = 'Регрес. Баг';
     break;
+  case 5: type = 'Баг от клиента';
+    break;
   default: break;
   }
   return type;
