@@ -140,23 +140,23 @@ class CreateTaskModal extends Component {
     }));
   };
 
-  _handleChange = field => event =>
+  handleChange = field => event =>
     this.setState({ [field]: event.target.value });
 
-  _handleBlur = field => () =>
+  handleBlur = field => () =>
     this.setState({ touched: { ...this.state.touched, [field]: true } });
 
-  _validate = taskName => ({
+  validate = taskName => ({
     taskName: taskName.length < 4
   });
 
   render () {
-    const errors = this._validate(this.state.taskName);
+    const errors = this.validate(this.state.taskName);
     //Если в объекте errors хоть один элемент true(есть ошибка ввода), флаг равен true
     const isDisabled = Object.keys(errors).some(error => errors[error]);
 
     //Проверка, следует ли выводить ошибку (если инпут не был в фокусе, ошибка не будет показана)
-    const _shouldMarkError = field => {
+    const shouldMarkError = field => {
       const hasError = errors[field];
       const shouldShow = this.state.touched[field];
       return hasError ? shouldShow : false;
@@ -192,9 +192,9 @@ class CreateTaskModal extends Component {
                   autoFocus
                   name="taskName"
                   placeholder="Название задачи"
-                  onChange={this._handleChange('taskName')}
-                  onBlur={this._handleBlur('taskName')}
-                  isNotValid={_shouldMarkError('taskName')}
+                  onChange={this.handleChange('taskName')}
+                  onBlur={this.handleBlur('taskName')}
+                  isNotValid={shouldMarkError('taskName')}
                 />
               </Col>
             </Row>
