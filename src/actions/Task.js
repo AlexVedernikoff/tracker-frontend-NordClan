@@ -85,7 +85,6 @@ const getTask = id => {
     start: withStartLoading(getTaskStart, true)(dispatch),
     response: withFinishLoading(response => {
       dispatch(getTaskSuccess(response.data));
-      dispatch(subscribeOnChangeTask(response.data.projectId, response.data.id));
     })(dispatch),
     error: withFinishLoading(error => getTaskFail(error.response.data), true)(dispatch),
   });
@@ -106,14 +105,6 @@ const getTaskHistory = id => {
     error: defaultErrorHandler(dispatch)
   });
 };
-
-const subscribeOnChangeTask = (projectId, taskId) => ({
-  type: SOCKET_IO,
-  channel: `project_${projectId}_task_${taskId}`,
-  onReceive: (dispatch, data) => {
-    dispatch(successTaskChange(data));
-  }
-})
 
 const changeTask = (ChangedProperties, target) => {
   if (!ChangedProperties.id) {
@@ -470,6 +461,5 @@ export {
   setCommentForEdit,
   resetCurrentEditingComment,
   setCurrentCommentExpired,
-  setHighLighted,
-  subscribeOnChangeTask
+  setHighLighted
 };

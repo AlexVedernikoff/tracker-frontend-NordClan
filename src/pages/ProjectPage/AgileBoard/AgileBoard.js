@@ -293,7 +293,7 @@ class AgileBoard extends Component {
 
   getAllTags = () => {
     let allTags = this.props.sprintTasks.reduce((arr, task) => {
-      return arr.concat(task.tags.map((tags) => tags.name));
+      return arr.concat(task.tags ? task.tags.map((tags) => tags.name) : []);
     }, []);
 
     allTags = _.uniq(allTags);

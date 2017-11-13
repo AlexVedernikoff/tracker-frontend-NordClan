@@ -11,6 +11,8 @@ import { store, history } from './History';
 import { Provider } from 'react-redux';
 import { getInfoAboutMe } from './actions/Authentication';
 
+import TaskSocket from './sockets/TaskSocket';
+
 const rootEl = document.getElementById('app');
 
 const render = (App) => {
@@ -24,7 +26,13 @@ const render = (App) => {
   );
 };
 
-store.dispatch(getInfoAboutMe());
+const tasksSocket = new TaskSocket(store);
+
+store
+  .dispatch(getInfoAboutMe())
+  .then(() => {
+    tasksSocket.connect();
+  });
 
 if (process.env.NODE_ENV !== 'production') {
   if (module.hot) {
