@@ -9,6 +9,7 @@ import SingleComment from './SingleComment';
 import TotalComment from './TotalComment';
 import * as css from '../Timesheets.scss';
 import { IconClose } from '../../../components/Icons';
+import ConfirmModal from '../../../components/ConfirmModal';
 import { createTimesheet, updateTimesheet, deleteTimesheets } from '../../../actions/Timesheets';
 
 class ActivityRow extends React.Component {
@@ -65,6 +66,20 @@ class ActivityRow extends React.Component {
     }
   }
 
+  changeEmptyComment = (text, i) => {
+    const { item, userId, startingDay } = this.props;
+    this.props.createTimesheet({
+      isDraft: false,
+      taskId: item.id || null,
+      taskStatusId: item.id ? item.taskStatusId : null,
+      typeId: item.id ? '1' : item.typeId,
+      comment: text,
+      spentTime: 0,
+      onDate: moment(startingDay).weekday(i).format('YYYY-MM-DD'),
+      projectId: item.projectId
+    }, userId, startingDay);
+  }
+
   changeFilled = (i, id, e) => {
     e.persist();
     const { value } = e.target;
@@ -75,7 +90,27 @@ class ActivityRow extends React.Component {
     }
   }
 
-  toggle = () => {}
+  openConfirmModal = () => {
+    this.setState({isConfirmModalOpen: true});
+  }
+
+  closeConfirmModal = () => {
+    this.setState({isConfirmModalOpen: false});
+  }
+
+  deleteActivity = (ids) => {
+    const { userId, startingDay } = this.props;
+    this.props.deleteTimesheets(ids, userId, startingDay);
+    this.closeConfirmModal();
+  }
+
+  changeFilledComment = (text, i, sheetId) => {
+    const { userId, startingDay } = this.props;
+    this.props.updateTimesheet({
+      sheetId,
+      comment: text
+    }, userId, startingDay);
+  }
 
   render () {
 
@@ -105,7 +140,7 @@ class ActivityRow extends React.Component {
                   onChange={(e) => this.changeFilled(i, tsh.id, e)}
                 />
                 <span className={css.toggleComment}>
-                  <SingleComment comment={tsh.comment}/>
+                  <SingleComment comment={tsh.comment} onChange={(text) => this.changeFilledComment(text, i, tsh.id)}/>
                 </span>
               </div>
             </div>
@@ -126,7 +161,7 @@ class ActivityRow extends React.Component {
                   onChange={(e) => this.changeEmpty(i, e)}
                 />
                 <span className={css.toggleComment}>
-                  <SingleComment/>
+                  <SingleComment onChange={(text) => this.changeEmptyComment(text, i)}/>
                 </span>
               </div>
             </div>
@@ -161,9 +196,19 @@ class ActivityRow extends React.Component {
           </div>
         </td>
         <td className={cn(css.actions)}>
-          <div className={css.deleteTask} onClick={() => this.props.deleteTimesheets(timeSheetIds, userId, startingDay)} data-tip="Удалить">
+          <div className={css.deleteTask} onClick={this.openConfirmModal} data-tip="Удалить">
             <IconClose/>
           </div>
+          {this.state.isConfirmModalOpen
+          ? <ConfirmModal
+              isOpen
+              contentLabel="modal"
+              text="Вы действительно хотите удалить эту активность?"
+              onCancel={this.closeConfirmModal}
+              onConfirm={() => this.deleteActivity(timeSheetIds)}
+              onRequestClose={this.closeConfirmModal}
+            />
+          : null}
         </td>
       </tr>
     );
