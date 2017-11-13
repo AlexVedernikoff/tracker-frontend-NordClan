@@ -7,6 +7,7 @@ import { showNotification } from './Notifications';
 import { startLoading, finishLoading } from './Loading';
 import getPlanningTasks from './PlanningTasks';
 import { getTask } from './Task';
+import { GET, REST_API} from '../constants/RestApi';
 
 const gettingProjectInfoStart = () => ({
   type: ProjectActions.PROJECT_INFO_RECEIVE_START
@@ -47,6 +48,15 @@ const startProjectChange = () => ({
 const projectChangeSuccess = response => ({
   type: ProjectActions.PROJECT_CHANGE_SUCCESS,
   changedFields: response
+});
+
+const getProjectHistoryStart = () => ({
+  type: ProjectActions.GET_PROJECT_HISTORY_REQUEST_SENT
+});
+
+const getProjectHistorySuccess = history => ({
+  type: ProjectActions.GET_PROJECT_HISTORY_REQUEST_SUCCESS,
+  data: history
 });
 
 export const StartEditing = target => ({
@@ -272,4 +282,27 @@ const createTask = (task, openTaskPage, callee) => {
   };
 };
 
-export { getProjectInfo, getProjectUsers, getProjectSprints, ChangeProject, createTask };
+const getProjectHistory = id => {
+  if (!id) {
+    return () => {};
+  }
+  const URL = `${API_URL}/project/${id}/history`;
+  return dispatch => {
+    dispatch(startLoading());
+    dispatch(getProjectHistoryStart());
+    axios
+      .get(URL)
+      .catch(error => {
+        dispatch(finishLoading());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+      })
+      .then(response => {
+        dispatch(finishLoading());
+        if (response && response.status === 200) {
+          dispatch(getProjectHistorySuccess(response.data));
+        }
+      })
+  }
+};
+
+export { getProjectInfo, getProjectUsers, getProjectSprints, ChangeProject, createTask, getProjectHistory };

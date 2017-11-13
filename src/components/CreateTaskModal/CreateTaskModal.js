@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Modal from 'react-modal';
+import Modal from '../../components/Modal';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import { Col, Row } from 'react-flexbox-grid';
@@ -30,16 +30,18 @@ class CreateTaskModal extends Component {
         { label: 'Фича', value: 1 },
         { label: 'Доп. Фича', value: 3 },
         { label: 'Баг', value: 2 },
-        { label: 'Регрес. Баг', value: 4 }
+        { label: 'Регрес. Баг', value: 4 },
+        { label: 'Баг от клиента', value: 5 }
       ],
       selectedType: { label: 'Фича', value: 1 }
     };
   }
 
   componentWillReceiveProps (nextProps) {
-    const selectedSprint = this.state.selectedSprint !== nextProps.selectedSprintValue
-      ? nextProps.selectedSprintValue
-      : this.state.selectedSprint;
+    const selectedSprint
+      = this.state.selectedSprint !== nextProps.selectedSprintValue
+        ? nextProps.selectedSprintValue
+        : this.state.selectedSprint;
 
     this.setState(state => {
       return {
@@ -74,7 +76,8 @@ class CreateTaskModal extends Component {
 
   handlePerformerChange = selectedPerformer => {
     this.setState({
-      selectedPerformer: selectedPerformer !== null ? selectedPerformer.value : 0
+      selectedPerformer:
+        selectedPerformer !== null ? selectedPerformer.value : 0
     });
   };
 
@@ -108,7 +111,10 @@ class CreateTaskModal extends Component {
         performerId: this.state.selectedPerformer,
         statusId: 1,
         typeId: this.state.selectedType.value,
-        sprintId: this.state.selectedSprint === BACKLOG_ID ? null : this.state.selectedSprint,
+        sprintId:
+          this.state.selectedSprint === BACKLOG_ID
+            ? null
+            : this.state.selectedSprint,
         prioritiesId: this.state.prioritiesId,
         parentId: this.props.parentTaskId
       },
@@ -118,8 +124,8 @@ class CreateTaskModal extends Component {
   };
 
   submitTaskAndOpen = () => {
-    this.setState({openTaskPage: true}, () => this.submitTask());
-  }
+    this.setState({ openTaskPage: true }, () => this.submitTask());
+  };
 
   onTypeChange = value => {
     this.setState({
@@ -130,7 +136,7 @@ class CreateTaskModal extends Component {
   handleCloseModal = event => {
     event.preventDefault();
     this.props.closeCreateTaskModal();
-  }
+  };
 
   getSprints = () => {
     let sprints = _.sortBy(this.props.project.sprints, sprint => {
@@ -139,7 +145,9 @@ class CreateTaskModal extends Component {
 
     sprints = sprints.map((sprint, i) => ({
       value: sprint.id,
-      label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${sprint.factFinishDate
+      label: `${sprint.name} (${moment(sprint.factStartDate).format(
+        'DD.MM.YYYY'
+      )} ${sprint.factFinishDate
         ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}`
         : '- ...'})`,
       statusId: sprint.statusId,
@@ -169,45 +177,6 @@ class CreateTaskModal extends Component {
   };
 
   render () {
-    const ReactModalStyles = {
-      overlay: {
-        position: 'fixed',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        height: '100%',
-        padding: '1rem',
-        boxSizing: 'border-box',
-        backgroundColor: 'rgba(43, 62, 80, 0.8)',
-        zIndex: 3,
-        overflow: 'auto'
-      },
-      content: {
-        position: 'relative',
-        top: 'initial',
-        bottom: 'initial',
-        left: 'initial',
-        right: 'initial',
-        boxSizing: 'border-box',
-        border: 'none',
-        background: '#fff',
-        overflow: 'visi',
-        WebkitOverflowScrolling: 'touch',
-        borderRadius: 0,
-        outline: 'none',
-        padding: 0,
-        paddingBottom: '0',
-        maxWidth: 500,
-        width: '100%',
-        height: 'auto',
-        maxHeight: 'initial'
-      }
-    };
-
     const formLayout = {
       firstCol: 5,
       secondCol: 7
@@ -218,8 +187,6 @@ class CreateTaskModal extends Component {
         isOpen={this.props.isCreateTaskModalOpen}
         onRequestClose={this.props.closeCreateTaskModal}
         contentLabel="Modal"
-        closeTimeoutMS={200}
-        style={ReactModalStyles}
       >
         <form className={css.createTaskForm}>
           <label className={css.formField}>
@@ -227,7 +194,11 @@ class CreateTaskModal extends Component {
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Название задачи:</p>
               </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+              <Col
+                xs={12}
+                sm={formLayout.secondCol}
+                className={css.rightColumn}
+              >
                 <Input
                   autoFocus
                   onChange={this.handleInput}
@@ -242,7 +213,11 @@ class CreateTaskModal extends Component {
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Описание:</p>
               </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+              <Col
+                xs={12}
+                sm={formLayout.secondCol}
+                className={css.rightColumn}
+              >
                 <TextArea
                   onChange={this.handleDescription}
                   name="description"
@@ -256,7 +231,11 @@ class CreateTaskModal extends Component {
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Тип задачи:</p>
               </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+              <Col
+                xs={12}
+                sm={formLayout.secondCol}
+                className={css.rightColumn}
+              >
                 <Select
                   multi={false}
                   ignoreCase
@@ -275,7 +254,11 @@ class CreateTaskModal extends Component {
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Приоритет:</p>
               </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+              <Col
+                xs={12}
+                sm={formLayout.secondCol}
+                className={css.rightColumn}
+              >
                 <Priority
                   priority={this.state.prioritiesId}
                   onPrioritySet={this.handlePriorityChange}
@@ -289,7 +272,11 @@ class CreateTaskModal extends Component {
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Исполнитель:</p>
               </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+              <Col
+                xs={12}
+                sm={formLayout.secondCol}
+                className={css.rightColumn}
+              >
                 <SelectDropdown
                   name="performer"
                   placeholder="Введите имя исполнителя..."
@@ -308,7 +295,11 @@ class CreateTaskModal extends Component {
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Добавить задачу в спринт:</p>
               </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+              <Col
+                xs={12}
+                sm={formLayout.secondCol}
+                className={css.rightColumn}
+              >
                 <Select
                   promptTextCreator={label => `Создать спринт '${label}'`}
                   searchPromptText={'Введите название спринта'}
