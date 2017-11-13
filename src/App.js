@@ -11,7 +11,7 @@ import { store, history } from './History';
 import { Provider } from 'react-redux';
 import { getInfoAboutMe } from './actions/Authentication';
 
-import TaskSocket from './sockets/TaskSocket';
+import SocketAdapter from './sockets/SocketAdapter';
 
 const rootEl = document.getElementById('app');
 
@@ -26,13 +26,12 @@ const render = (App) => {
   );
 };
 
-const tasksSocket = new TaskSocket(store);
+//TODO добавление новой сущности требует лишь добавить её название
+//в список каналов
+const channels = ['task'];
+const socket = new SocketAdapter(store, channels);
 
-store
-  .dispatch(getInfoAboutMe())
-  .then(() => {
-    tasksSocket.connect();
-  });
+store.dispatch(getInfoAboutMe());
 
 if (process.env.NODE_ENV !== 'production') {
   if (module.hot) {
