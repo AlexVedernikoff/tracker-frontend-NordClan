@@ -143,6 +143,47 @@ export const createTimesheet = (params, userId, startingDay) => { // TODO: не 
   };
 };
 
+export const updateSheetsArray = (sheetsArr, userId, startingDay) => {
+  const URL = `${API_URL}/timesheet`;
+  return dispatch => {
+    dispatch(startUpdateTimesheetRequest());
+    dispatch(startLoading());
+
+    const currentPromise = function (params) {
+      return axios
+      .put(URL, params)
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+      });
+    };
+
+    const allPromises = sheetsArr.map((element) => currentPromise(element));
+
+    Promise.all(allPromises).then(response => {
+      let isOk = false;
+
+      isOk = response.every((element) => {
+        if (element.status === 200) {
+          return true;
+        } else {
+          dispatch(finishLoading());
+          return false;
+        }
+      });
+
+      if (isOk) {
+        dispatch(successUpdateTimesheetRequest());
+        dispatch(finishLoading());
+        dispatch(getTimesheets({
+          userId,
+          dateBegin: moment(startingDay).weekday(0).format('YYYY-MM-DD'),
+          dateEnd: moment(startingDay).weekday(6).format('YYYY-MM-DD')
+        }));
+      }
+    });
+  };
+};
+
 export const changeWeek = (startingDay, userId) => {
   return dispatch => {
     dispatch({

@@ -269,8 +269,14 @@ td.today > div {
 }
 
 .prevWeek {
-  text-align: right;
-  // min-width: 22rem;
+  position: relative;
+
+  svg {
+    position: absolute;
+    top: 50%;
+    margin-top: -1rem;
+    right: 0;
+  }
 }
 
 .nextWeek {
@@ -280,6 +286,7 @@ td.today > div {
 .activityHeader {
   float: left;
   padding: 0.5rem 1rem;
+  padding-right: 2rem;
   font-size: $font-size-base;
   min-width: 16rem;
   text-align: left;

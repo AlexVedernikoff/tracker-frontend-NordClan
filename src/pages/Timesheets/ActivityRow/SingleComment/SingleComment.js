@@ -20,9 +20,14 @@ class SingleComment extends React.Component {
     };
   }
 
+  componentWillReceiveProps (newProps) {
+    this.setState({text: newProps.comment});
+  }
+
   handleClickOutside = () => {
     this.setState({
-      isOpen: false
+      isOpen: false,
+      text: this.props.comment || ''
     });
   }
 

@@ -30,6 +30,7 @@ class ActivityRow extends React.Component {
     super(props);
     this.createTimesheet = _.debounce(this.createTimesheet, 500);
     this.updateTimesheet = _.debounce(this.updateTimesheet, 500);
+    this.deleteTimesheets = _.debounce(this.deleteTimesheets, 500);
     this.state = {
       isOpen: false
     };
@@ -56,6 +57,11 @@ class ActivityRow extends React.Component {
     }, userId, startingDay);
   }
 
+  deleteTimesheets = (ids) => {
+    const { userId, startingDay } = this.props;
+    this.props.deleteTimesheets(ids, userId, startingDay);
+  }
+
   changeEmpty = (i, e) => {
     e.persist();
     const { value } = e.target;
@@ -80,13 +86,27 @@ class ActivityRow extends React.Component {
     }, userId, startingDay);
   }
 
-  changeFilled = (i, id, e) => {
+  changeFilled = (i, id, comment, e) => {
     e.persist();
     const { value } = e.target;
-    if (value) {
-      this.updateTimesheet(i, id, value);
+    if (+value || comment) {
+      if (!value) {
+        this.updateTimesheet(i, id, '0');
+      } else this.updateTimesheet(i, id, value);
     } else {
-      this.updateTimesheet(i, id, '0');
+      this.deleteTimesheets([id]);
+    }
+  }
+
+  changeFilledComment = (text, time, i, sheetId) => {
+    const { userId, startingDay } = this.props;
+    if (+time || text) {
+      this.props.updateTimesheet({
+        sheetId,
+        comment: text
+      }, userId, startingDay);
+    } else {
+      this.deleteTimesheets([sheetId]);
     }
   }
 
@@ -104,17 +124,9 @@ class ActivityRow extends React.Component {
     this.closeConfirmModal();
   }
 
-  changeFilledComment = (text, i, sheetId) => {
-    const { userId, startingDay } = this.props;
-    this.props.updateTimesheet({
-      sheetId,
-      comment: text
-    }, userId, startingDay);
-  }
-
   render () {
 
-    const { item, task, ma, statuses, maTypes, userId, startingDay } = this.props;
+    const { item, task, ma, statuses, maTypes} = this.props;
     const status = task ? _.find(statuses, { 'id': item.taskStatusId }) : '';
     const maType = ma ? _.find(maTypes, { 'id': item.typeId }) : '';
     const totalTime = _.sumBy(item.timeSheets, tsh => { return +tsh.spentTime; });
@@ -137,10 +149,10 @@ class ActivityRow extends React.Component {
                     tsh.spentTime - Math.floor(tsh.spentTime)
                     ? Math.round(tsh.spentTime * 100) / 100
                     : Math.floor(tsh.spentTime)}
-                  onChange={(e) => this.changeFilled(i, tsh.id, e)}
+                  onChange={(e) => this.changeFilled(i, tsh.id, tsh.comment, e)}
                 />
                 <span className={css.toggleComment}>
-                  <SingleComment comment={tsh.comment} onChange={(text) => this.changeFilledComment(text, i, tsh.id)}/>
+                  <SingleComment comment={tsh.comment} onChange={(text) => this.changeFilledComment(text, tsh.spentTime, i, tsh.id)}/>
                 </span>
               </div>
             </div>
