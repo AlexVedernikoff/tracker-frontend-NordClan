@@ -26,21 +26,21 @@ export default class SocketAdapter {
     this.userAuthState = nextUserAuthState;
   }
 
+  getUserAuthState() {
+    const { isLoggedIn, loaded } = this.store.getState().Auth;
+    return isLoggedIn && loaded;
+  }
+
+  getUser() {
+    return this.store.getState().Auth.user;
+  }
+
   isSignIn(nextUserAuthState) {
     return !this.userAuthState && nextUserAuthState;
   }
 
   isSignOut(nextUserAuthState) {
     return this.userAuthState && !nextUserAuthState;
-  }
-
-  getUserAuthState() {
-    const { isLoggedIn, loaded, user } = this.store.getState().Auth;
-    return isLoggedIn && loaded;
-  }
-
-  getUser() {
-    return this.store.getState().Auth.user;
   }
 
   subscribe(user) {
