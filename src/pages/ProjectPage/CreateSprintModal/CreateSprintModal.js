@@ -124,12 +124,10 @@ CreateSprintModal.propTypes = {
   sprintsDateRanges: PropTypes.array
 };
 
-const mapStateToProps = state => {
-  return {
-    projectId: state.Project.project.id,
-    sprintsDateRanges: getSprintsDateRange(state.Project.project.sprints)
-  };
-};
+const mapStateToProps = state => ({
+  projectId: state.Project.project.id,
+  sprintsDateRanges: getSprintsDateRange(state.Project.project.sprints)
+});
 
 const mapDispatchToProps = {
   createSprint
