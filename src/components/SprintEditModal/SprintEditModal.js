@@ -120,7 +120,6 @@ class SprintEditModal extends Component {
       firstCol: 5,
       secondCol: 7
     };
-    console.log(this.state);
     return (
       <Modal
         isOpen
