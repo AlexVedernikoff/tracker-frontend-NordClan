@@ -9,6 +9,7 @@ import * as css from './CreateSprintModal.scss';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { createSprint } from '../../../actions/Sprint';
+import { getSprintsDateRange } from '../../../selectors/getSprintsDateRange';
 
 class CreateSprintModal extends Component {
   constructor (props) {
@@ -39,7 +40,8 @@ class CreateSprintModal extends Component {
     this.setState({ dateTo: moment(date).format('YYYY-MM-DD') });
   };
 
-  createSprint = () => {
+  createSprint = e => {
+    e.preventDefault();
     this.props.onClose();
     this.props.createSprint(
       this.state.sprintName.trim(),
@@ -123,28 +125,6 @@ CreateSprintModal.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const getSprintsDateRange = sprints => {
-    const sprintsDates = [];
-    const changeDays = (date, days, type) => {
-      const result = new Date(date);
-      if (type === 'increase') {
-        result.setDate(result.getDate() + days);
-      } else if (type === 'decrease') {
-        result.setDate(result.getDate() - days);
-      }
-      return result;
-    };
-
-    for (const sprint of sprints) {
-      const sprintDates = {
-        after: changeDays(new Date(sprint.factStartDate), 1, 'decrease'),
-        before: changeDays(new Date(sprint.factFinishDate), 1, 'increase')
-      };
-      sprintsDates.push(sprintDates);
-    }
-    return sprintsDates;
-  };
-
   return {
     projectId: state.Project.project.id,
     sprintsDateRanges: getSprintsDateRange(state.Project.project.sprints)
