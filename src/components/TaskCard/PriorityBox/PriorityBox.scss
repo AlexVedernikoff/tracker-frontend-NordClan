@@ -1,12 +1,12 @@
+@import '../../../styles/variables.scss';
+
 .container {
-  display: none;
-  position: absolute;
-  width: 100px;
-  height: 40px;
+  display: block;
+  @include absolute;
+  left: initial;
+  width: 0.75rem;
+  height: 100%;
   z-index: 2;
-  background-color: rgba(43, 62, 80, 0.8);
-  right: -106px;
-  top: -46px;
   
   &.open {
     display: block;
@@ -14,6 +14,9 @@
 }
 
 .content {
-  margin: auto;
-  padding: 13px 10px;
+  @include absolute;
+}
+
+.shorter {
+  bottom: 11px;
 }
