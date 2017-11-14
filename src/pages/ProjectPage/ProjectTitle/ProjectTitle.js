@@ -1,17 +1,27 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import ProjectIcon from '../../../components/ProjectIcon';
 import { IconEdit, IconCheck } from '../../../components/Icons';
 import * as css from './ProjectTitle.scss';
 import ReactTooltip from 'react-tooltip';
 import {
-  ChangeProject,
-  StartEditing,
-  StopEditing
+  changeProject as editProject,
+  startEditing as beginEdit,
+  stopEditing as finishEdit
 } from '../../../actions/Project';
 import { connect } from 'react-redux';
 
 class ProjectTitle extends Component {
+  static propTypes = {
+    changeProject: PropTypes.func.isRequired,
+    id: PropTypes.any,
+    name: PropTypes.string.isRequired,
+    prefix: PropTypes.string.isRequired,
+    startEditing: PropTypes.func.isRequired,
+    stopEditing: PropTypes.func.isRequired,
+    titleIsEditing: PropTypes.bool
+  };
+
   constructor (props) {
     super(props);
     this.state = {
@@ -20,9 +30,16 @@ class ProjectTitle extends Component {
       nameIsIncorrect: false
     };
   }
+  componentDidMount () {
+    window.addEventListener('click', this.outsideClickHandler);
+  }
 
   componentDidUpdate () {
     ReactTooltip.rebuild();
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('click', this.outsideClickHandler);
   }
 
   editIconClickHandler = event => {
@@ -35,13 +52,13 @@ class ProjectTitle extends Component {
   };
 
   startTitleEditing = () => {
-    const { StartEditing } = this.props;
-    StartEditing('Title');
+    const { startEditing } = this.props;
+    startEditing('Title');
   };
 
   stopTitleEditing = () => {
-    const { StopEditing } = this.props;
-    StopEditing('Title');
+    const { stopEditing } = this.props;
+    stopEditing('Title');
   };
 
   handleIncorrectInput () {
@@ -67,7 +84,7 @@ class ProjectTitle extends Component {
   }
 
   submitInput () {
-    const { ChangeProject } = this.props;
+    const { changeProject } = this.props;
     this.setState(
       {
         prefixIsIncorrect: false,
@@ -76,7 +93,7 @@ class ProjectTitle extends Component {
         prefix: this.projectPrefix.innerText
       },
       () => {
-        ChangeProject(
+        changeProject(
           {
             id: this.props.id,
             name: this.state.name,
@@ -105,8 +122,6 @@ class ProjectTitle extends Component {
   };
 
   handleKeyPress = event => {
-    const { dispatch } = this.props;
-
     if (this.props.titleIsEditing) {
       if (event.keyCode === 13) {
         event.preventDefault();
@@ -121,7 +136,7 @@ class ProjectTitle extends Component {
 
         this.projectName.innerText = this.props.name;
         this.projectPrefix.innerText = this.props.prefix;
-        dispatch(StopEditing('Title'));
+        this.stopTitleEditing();
       }
     }
   };
@@ -137,18 +152,10 @@ class ProjectTitle extends Component {
     }
   };
 
-  componentDidMount () {
-    window.addEventListener('click', this.outsideClickHandler);
-  }
-
-  componentWillUnmount () {
-    window.removeEventListener('click', this.outsideClickHandler);
-  }
-
   render () {
     return (
       <h1 className={css.projectTitle}>
-        <img src={this.state.pic} className={css.projectPic} />
+        <ProjectIcon projectName={this.props.name} />
         <span
           id="projectName"
           className={this.state.nameIsIncorrect ? css.wrong : ''}
@@ -171,39 +178,32 @@ class ProjectTitle extends Component {
           </span>
           <span>)</span>
         </span>
-        {this.props.titleIsEditing
-          ? <IconCheck
-              className={css.save}
-              data-tip="Сохранить"
-              onClick={this.editIconClickHandler}
-            />
-          : <IconEdit
-              className={css.edit}
-              data-tip="Редактировать"
-              onClick={this.editIconClickHandler}
-            />}
+        {this.props.titleIsEditing ? (
+          <IconCheck
+            className={css.save}
+            data-tip="Сохранить"
+            onClick={this.editIconClickHandler}
+          />
+        ) : (
+          <IconEdit
+            className={css.edit}
+            data-tip="Редактировать"
+            onClick={this.editIconClickHandler}
+          />
+        )}
       </h1>
     );
   }
 }
-
-ProjectTitle.propTypes = {
-  name: PropTypes.string.isRequired,
-  pic: PropTypes.string.isRequired,
-  prefix: PropTypes.string.isRequired,
-  ChangeProject: PropTypes.func.isRequired,
-  StartEditing: PropTypes.func.isRequired,
-  StopEditing: PropTypes.func.isRequired
-};
 
 const mapStateToProps = state => ({
   titleIsEditing: state.Project.TitleIsEditing
 });
 
 const mapDispatchToProps = {
-  ChangeProject,
-  StartEditing,
-  StopEditing
+  changeProject: editProject,
+  startEditing: beginEdit,
+  stopEditing: finishEdit
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectTitle);

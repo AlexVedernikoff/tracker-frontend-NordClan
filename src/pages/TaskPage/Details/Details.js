@@ -9,13 +9,23 @@ import TaskPlanningTime from '../TaskPlanningTime';
 import PerformerModal from '../../../components/PerformerModal';
 import SprintModal from '../../../components/SprintModal';
 import TaskTypeModal from '../../../components/TaskTypeModal';
-import GetTypeById from '../../../utils/TaskTypes';
+import getTypeById from '../../../utils/TaskTypes';
 import { getProjectUsers, getProjectSprints } from '../../../actions/Project';
 import { connect } from 'react-redux';
 import * as css from './Details.scss';
 import moment from 'moment';
 
 class Details extends Component {
+  static propTypes = {
+    getProjectSprints: PropTypes.func.isRequired,
+    getProjectUsers: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
+    sprints: PropTypes.array,
+    task: PropTypes.object.isRequired,
+    taskTypes: PropTypes.array,
+    users: PropTypes.array
+  };
+
   constructor (props) {
     super(props);
     this.state = {
@@ -80,7 +90,7 @@ class Details extends Component {
   };
 
   render () {
-    const { task, sprints } = this.props;
+    const { task, sprints, taskTypes } = this.props;
     const tags = task.tags.map((tag, i) => {
       const tagName = (typeof tag === 'object') ? tag.name : tag;
       return <Tag key={i}
@@ -112,7 +122,7 @@ class Details extends Component {
               <td>Тип задачи:</td>
               <td>
                 <a onClick={this.openTaskTypeModal}>
-                  {GetTypeById(task.typeId)}
+                  {getTypeById(task.typeId, taskTypes)}
                 </a>
               </td>
             </tr>
@@ -240,19 +250,10 @@ class Details extends Component {
   }
 }
 
-Details.propTypes = {
-  getProjectUsers: PropTypes.func.isRequired,
-  getProjectSprints: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired,
-  task: PropTypes.object.isRequired,
-  users: PropTypes.array,
-  sprints: PropTypes.array
-};
-
-
 const mapStateToProps = state => ({
   users: state.Project.project.users,
-  sprints: state.Project.project.sprints
+  sprints: state.Project.project.sprints,
+  taskTypes: state.Dictionaries.taskTypes
 });
 
 const mapDispatchToProps = {

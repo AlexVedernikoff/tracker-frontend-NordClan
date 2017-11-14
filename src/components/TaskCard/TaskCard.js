@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import classnames from 'classnames';
 import { Link } from 'react-router';
 import { DragSource } from 'react-dnd';
@@ -28,9 +29,9 @@ const getTaskTime = (factTime, planTime) => {
   }
 };
 
-function collect (connect, monitor) {
+function collect (connection, monitor) {
   return {
-    connectDragSource: connect.dragSource(),
+    connectDragSource: connection.dragSource(),
     isDragging: monitor.isDragging()
   };
 }
@@ -53,7 +54,7 @@ class TaskCard extends React.Component {
 
   togglePriorityBox = () => {
     this.setState({ isOpenPriority: !this.state.isOpenPriority });
-  }
+  };
 
   render () {
     const {
@@ -64,6 +65,7 @@ class TaskCard extends React.Component {
       onOpenPerformerModal,
       myTaskBoard,
       section,
+      taskTypes,
       ...other
     } = this.props;
 
@@ -88,7 +90,7 @@ class TaskCard extends React.Component {
             </div>
             : null
           }
-          <span className={css.header}>{`${task.prefix}-${task.id}`} | {getTypeById(task.typeId)}</span>
+          <span className={css.header}>{`${task.prefix}-${task.id}`} | {getTypeById(task.typeId, taskTypes)}</span>
           <Link to={`/projects/${task.projectId}/tasks/${task.id}`} className={css.taskName}>
             <div>{task.name}</div>
           </Link>
@@ -140,10 +142,16 @@ class TaskCard extends React.Component {
 TaskCard.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
   isDragging: PropTypes.bool.isRequired,
+  myTaskBoard: PropTypes.any,
   onChangeStatus: PropTypes.func.isRequired,
   onOpenPerformerModal: PropTypes.func.isRequired,
   section: PropTypes.string.isRequired,
-  task: PropTypes.object
+  task: PropTypes.object,
+  taskTypes: PropTypes.array
 };
 
-export default DragSource(TASK_CARD, taskCardSource, collect)(TaskCard);
+const mapStateToProps = state => ({
+  taskTypes: state.Dictionaries.taskTypes
+});
+
+export default DragSource(TASK_CARD, taskCardSource, collect)(connect(mapStateToProps, {})(TaskCard));

@@ -1,13 +1,12 @@
 import * as DictionariesActions from '../constants/Dictionaries';
-import { GET, POST, PUT, REST_API} from '../constants/RestApi';
+import { GET, REST_API} from '../constants/RestApi';
 
 import {
   defaultErrorHandler,
   withFinishLoading,
   withStartLoading,
   defaultBody as body,
-  defaultExtra as extra,
-  withdefaultExtra
+  defaultExtra as extra
 } from './Common';
 
 const startDictionaryRequest = () => ({
@@ -46,3 +45,15 @@ export const getTaskStatuses = () => {
   });
 };
 
+export const getTaskTypes = () => {
+  return dispatch => dispatch({
+    type: REST_API,
+    url: '/dictionary/task/types',
+    method: GET,
+    body,
+    extra,
+    start: withStartLoading(startDictionaryRequest, true)(dispatch),
+    response: withFinishLoading(response => successDictionaryRequest(response.data, 'taskTypes'), true)(dispatch),
+    error: defaultErrorHandler(dispatch)
+  });
+};

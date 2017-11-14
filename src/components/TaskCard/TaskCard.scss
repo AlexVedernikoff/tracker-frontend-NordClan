@@ -1,7 +1,6 @@
 @import '../../styles/variables';
 
 .taskCard {
-  z-index: 0;
   position: relative;
   border: 1px solid darken($color-gray, 5%);
   padding: 0.5rem 1rem 1rem;
@@ -95,8 +94,8 @@
   }
 }
 
-.inhold { background-color: $color-dark; }
-.inprogress { background-color: $color-green; }
+.inhold { background-color: $color-green; }
+.inprogress { background-color: $color-dark; }
 
 .progressBar {
   position: absolute;

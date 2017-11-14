@@ -49,12 +49,21 @@ const projectChangeSuccess = response => ({
   changedFields: response
 });
 
-export const StartEditing = target => ({
+const getProjectHistoryStart = () => ({
+  type: ProjectActions.GET_PROJECT_HISTORY_REQUEST_SENT
+});
+
+const getProjectHistorySuccess = historyData => ({
+  type: ProjectActions.GET_PROJECT_HISTORY_REQUEST_SUCCESS,
+  data: historyData
+});
+
+export const startEditing = target => ({
   type: ProjectActions.EDIT_START,
   target: target
 });
 
-export const StopEditing = target => ({
+export const stopEditing = target => ({
   type: ProjectActions.EDIT_FINISH,
   target: target
 });
@@ -200,19 +209,19 @@ const getProjectSprints = id => {
   };
 };
 
-const ChangeProject = (ChangedProperties, target) => {
-  if (!ChangedProperties.id) {
+const changeProject = (changedProperties, target) => {
+  if (!changedProperties.id) {
     return;
   }
 
-  const URL = `${API_URL}/project/${ChangedProperties.id}`;
+  const URL = `${API_URL}/project/${changedProperties.id}`;
 
   return dispatch => {
     dispatch(startProjectChange());
     dispatch(startLoading());
 
     axios
-      .put(URL, ChangedProperties, {
+      .put(URL, changedProperties, {
         withCredentials: true
       })
       .catch(error => {
@@ -223,7 +232,7 @@ const ChangeProject = (ChangedProperties, target) => {
         if (response && response.status === 200) {
           dispatch(projectChangeSuccess(response.data));
           dispatch(finishLoading());
-          dispatch(StopEditing(target));
+          dispatch(stopEditing(target));
         }
       });
   };
@@ -272,4 +281,27 @@ const createTask = (task, openTaskPage, callee) => {
   };
 };
 
-export { getProjectInfo, getProjectUsers, getProjectSprints, ChangeProject, createTask };
+const getProjectHistory = id => {
+  if (!id) {
+    return () => {};
+  }
+  const URL = `${API_URL}/project/${id}/history`;
+  return dispatch => {
+    dispatch(startLoading());
+    dispatch(getProjectHistoryStart());
+    axios
+      .get(URL)
+      .catch(error => {
+        dispatch(finishLoading());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+      })
+      .then(response => {
+        dispatch(finishLoading());
+        if (response && response.status === 200) {
+          dispatch(getProjectHistorySuccess(response.data));
+        }
+      });
+  };
+};
+
+export { getProjectInfo, getProjectUsers, getProjectSprints, changeProject, createTask, getProjectHistory };

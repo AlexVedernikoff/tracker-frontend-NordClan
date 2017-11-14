@@ -20,7 +20,8 @@ class TaskList extends Component {
     super(props);
     this.state = {
       filterTags: [],
-      statusId: [],
+      statusIds: [],
+      typeIds: [],
       filterByName: '',
       activePage: 1
     };
@@ -47,16 +48,26 @@ class TaskList extends Component {
       filterByName: value,
       activePage: state.filterByName !== value ? 1 : state.activePage
     }), this.loadTasks);
-  }
+  };
 
   changeStatusFilter = (id) => {
     this.setState(state => ({
-      statusId: state.statusId.includes(id)
-        ? state.statusId.filter(statusId => statusId !== id)
-        : [...state.statusId, id],
+      statusIds: state.statusIds.includes(id)
+        ? state.statusIds.filter(statusId => statusId !== id)
+        : [...state.statusIds, id],
       activePage: 1
     }), this.loadTasks);
-  }
+  };
+
+  changeTypeFilter = (id) => {
+    this.setState(state => ({
+      typeIds: state.typeIds.includes(id)
+        ? state.typeIds.filter(typeId => typeId !== id)
+        : [...state.typeIds, id],
+      activePage: 1
+    }), this.loadTasks);
+  };
+
 
   changePerformerFilter = (performer) => {
     const performerId = performer ? performer.value : 0;
@@ -78,7 +89,8 @@ class TaskList extends Component {
 
   loadTasks = (options = {}) => {
     const tags = this.state.filterTags.map(el => el.value).join(',');
-    const statusId = this.state.statusId.join(',');
+    const statusId = this.state.statusIds.join(',');
+    const typeId = this.state.typeIds.join(',');
     this.props.getTasks({
       projectId: this.props.project.id,
       performerId: this.state.performerId,
@@ -87,6 +99,7 @@ class TaskList extends Component {
       name: this.state.filterByName,
       statusId,
       tags,
+      typeId,
       ...options
     });
   }
@@ -107,13 +120,22 @@ class TaskList extends Component {
   };
 
   render () {
-    const { tasksList: tasks, statuses} = this.props;
+    const { tasksList: tasks, statuses, taskTypes } = this.props;
     const statusCheckboxes = statuses ? statuses.map(status => (
       <Col xs={6} sm key={status.id}>
         <StatusCheckbox
           status={status}
-          checked={this.state.statusId.includes(status.id)}
-          onChange={this.changeStatusFilter}
+          checked={this.state.statusIds.includes(status.id)}
+          onChange={this.changeStatusFilter.bind(this, status.id)}
+        />
+      </Col>
+    )) : null;
+    const typeCheckboxes = taskTypes ? taskTypes.map(type => (
+      <Col xs={2} sm key={type.id}>
+        <StatusCheckbox
+          status={type}
+          checked={this.state.typeIds.includes(type.id)}
+          onChange={this.changeTypeFilter}
         />
       </Col>
     )) : null;
@@ -124,6 +146,9 @@ class TaskList extends Component {
           <div className={css.filters}>
             <Row className={css.checkedFilters} top="xs">
               { statusCheckboxes }
+            </Row>
+            <Row className={css.checkedFilters} top="xs">
+              { typeCheckboxes }
             </Row>
             <Row className={css.search}>
               <Col xs={12} sm={6}>
@@ -178,6 +203,7 @@ TaskList.propTypes = {
   pagesCount: PropTypes.number.isRequired,
   project: PropTypes.object.isRequired,
   statuses: PropTypes.array,
+  taskTypes: PropTypes.array,
   tasksList: PropTypes.array.isRequired
 };
 
@@ -186,7 +212,8 @@ const mapStateToProps = state => ({
   tasksList: state.Tasks.tasks,
   pagesCount: state.Tasks.pagesCount,
   project: state.Project.project,
-  statuses: state.Dictionaries.taskStatuses
+  statuses: state.Dictionaries.taskStatuses,
+  taskTypes: state.Dictionaries.taskTypes
 });
 
 const mapDispatchToProps = { getTasks };
