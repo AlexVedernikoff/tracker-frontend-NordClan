@@ -96,6 +96,9 @@ class CreateTaskModal extends Component {
     if (event) {
       event.preventDefault();
     }
+    if (!this.state.taskName || !this.state.selectedType || !this.state.selectedType.value) {
+      return;
+    }
     this.props.createTask(
       {
         name: this.state.taskName,
