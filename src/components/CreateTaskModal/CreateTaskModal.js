@@ -26,7 +26,7 @@ class CreateTaskModal extends Component {
       description: null,
       openTaskPage: false,
       prioritiesId: 3,
-      selectedType: {}
+      selectedType: null
     };
   }
 
@@ -45,7 +45,7 @@ class CreateTaskModal extends Component {
         description: null,
         openTaskPage: false,
         prioritiesId: 3,
-        selectedType: {}
+        selectedType: null
       };
     });
   }
