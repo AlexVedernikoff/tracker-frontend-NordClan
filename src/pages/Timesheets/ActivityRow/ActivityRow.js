@@ -49,8 +49,12 @@ class ActivityRow extends React.Component {
     }, userId, startingDay);
   }
 
-  updateTimesheet = (i, sheetId, value) => {
+  updateTimesheet = (i, sheetId, value, comment) => {
     const { userId, startingDay } = this.props;
+    if (!value && !comment) {
+      this.props.deleteTimesheets([sheetId], userId, startingDay);
+      return;
+    }
     this.props.updateTimesheet({
       sheetId,
       spentTime: value
@@ -89,13 +93,7 @@ class ActivityRow extends React.Component {
   changeFilled = (i, id, comment, e) => {
     e.persist();
     const { value } = e.target;
-    if (+value || comment) {
-      if (!value) {
-        this.updateTimesheet(i, id, '0');
-      } else this.updateTimesheet(i, id, value);
-    } else {
-      this.deleteTimesheets([id]);
-    }
+    this.updateTimesheet(i, id, value, comment);
   }
 
   changeFilledComment = (text, time, i, sheetId) => {
