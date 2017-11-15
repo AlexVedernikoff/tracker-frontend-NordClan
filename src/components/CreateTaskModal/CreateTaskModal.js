@@ -7,14 +7,15 @@ import { Col, Row } from 'react-flexbox-grid';
 import moment from 'moment';
 import classnames from 'classnames';
 import _ from 'lodash';
-import Input from '../Input';
 import Button from '../Button';
 import TextArea from '../TextArea';
 import SelectDropdown from '../SelectDropdown';
+import ValidatedInput from '../ValidatedInput';
 import * as css from './CreateTaskModal.scss';
 import Priority from '../../pages/TaskPage/Priority';
 import { closeCreateTaskModal, createTask } from '../../actions/Project';
 import { BACKLOG_ID } from '../../constants/Sprint';
+import Validator from '../ValidatedInput/Validator';
 
 class CreateTaskModal extends Component {
   constructor (props) {
@@ -23,11 +24,12 @@ class CreateTaskModal extends Component {
       selectedSprint: null,
       selectedPerformer: null,
       taskName: '',
-      description: null,
+      description: '',
       openTaskPage: false,
       prioritiesId: 3,
       selectedType: null
     };
+    this.validator = new Validator();
   }
 
   componentWillReceiveProps (nextProps) {
@@ -58,9 +60,6 @@ class CreateTaskModal extends Component {
       selectedPerformer: selectedPerformer ? selectedPerformer.value : 0
     });
   };
-
-  handleDescription = event =>
-    this.setState({ description: event.target.value });
 
   handlePriorityChange = priorityId =>
     this.setState({ prioritiesId: +priorityId });
@@ -143,24 +142,7 @@ class CreateTaskModal extends Component {
   handleChange = field => event =>
     this.setState({ [field]: event.target.value });
 
-  handleBlur = field => () =>
-    this.setState({ touched: { ...this.state.touched, [field]: true } });
-
-  validate = taskName => ({
-    taskName: taskName.length < 4
-  });
-
   render () {
-    const errors = this.validate(this.state.taskName);
-    //Если в объекте errors хоть один элемент true(есть ошибка ввода), флаг равен true
-    const isDisabled = Object.keys(errors).some(error => errors[error]);
-
-    //Проверка, следует ли выводить ошибку (если инпут не был в фокусе, ошибка не будет показана)
-    const shouldMarkError = field => {
-      const hasError = errors[field];
-      const shouldShow = this.state.touched[field];
-      return hasError ? shouldShow : false;
-    };
     const formLayout = {
       firstCol: 5,
       secondCol: 7
@@ -188,14 +170,21 @@ class CreateTaskModal extends Component {
                 sm={formLayout.secondCol}
                 className={css.rightColumn}
               >
-                <Input
-                  autoFocus
-                  name="taskName"
-                  placeholder="Название задачи"
-                  onChange={this.handleChange('taskName')}
-                  onBlur={this.handleBlur('taskName')}
-                  isNotValid={shouldMarkError('taskName')}
-                />
+                {this.validator.validate(
+                  (handleBlur, shouldMarkError) => (
+                    <ValidatedInput
+                      autoFocus
+                      name="taskName"
+                      placeholder="Название задачи"
+                      onChange={this.handleChange('taskName')}
+                      onBlur={handleBlur}
+                      shouldMarkError={shouldMarkError}
+                      errorText="Длина менее 4 символов"
+                    />
+                  ),
+                  'taskName',
+                  this.state.taskName.length < 4
+                )}
               </Col>
             </Row>
           </label>
@@ -210,7 +199,7 @@ class CreateTaskModal extends Component {
                 className={css.rightColumn}
               >
                 <TextArea
-                  onChange={this.handleDescription}
+                  onChange={this.handleChange('description')}
                   name="description"
                   placeholder="Описание задачи"
                 />
@@ -311,14 +300,14 @@ class CreateTaskModal extends Component {
               text="Создать задачу"
               type="green"
               htmlType="submit"
-              disabled={isDisabled}
+              disabled={this.validator.isDisabled}
               onClick={this.submitTask}
             />
             <Button
               text="Создать и открыть"
               htmlType="button"
               type="green-lighten"
-              disabled={isDisabled}
+              disabled={this.validator.isDisabled}
               onClick={this.submitTaskAndOpen}
             />
           </div>
