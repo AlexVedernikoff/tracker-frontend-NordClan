@@ -5,6 +5,7 @@ import cn from 'classnames';
 import { Link } from 'react-router';
 import _ from 'lodash';
 import moment from 'moment';
+import roundNum from '../../../utils/roundNum';
 import SingleComment from './SingleComment';
 import TotalComment from './TotalComment';
 import * as css from '../Timesheets.scss';
@@ -125,7 +126,7 @@ class ActivityRow extends React.Component {
     const { item, task, ma, statuses, maTypes} = this.props;
     const status = task ? _.find(statuses, { 'id': item.taskStatusId }) : '';
     const maType = ma ? _.find(maTypes, { 'id': item.typeId }) : '';
-    const totalTime = _.sumBy(item.timeSheets, tsh => { return +tsh.spentTime; });
+    const totalTime = roundNum(_.sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
     const timeSheetIds = _.remove(item.timeSheets.map(tsh => tsh.id), tsh => tsh);
     const timeCells = item.timeSheets.map((tsh, i) => {
       if (tsh.id) {
@@ -141,10 +142,8 @@ class ActivityRow extends React.Component {
               })}>
                 <input
                   type="text"
-                  defaultValue={
-                    tsh.spentTime - Math.floor(tsh.spentTime)
-                    ? Math.round(tsh.spentTime * 100) / 100
-                    : Math.floor(tsh.spentTime)}
+                  maxLength="6"
+                  defaultValue={roundNum(tsh.spentTime, 2)}
                   onChange={(e) => this.changeFilled(i, tsh.id, tsh.comment, e)}
                 />
                 <span className={css.toggleComment}>

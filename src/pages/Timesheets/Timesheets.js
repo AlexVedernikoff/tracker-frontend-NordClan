@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import cn from 'classnames';
 import moment from 'moment';
 import _ from 'lodash';
+import roundNum from '../../utils/roundNum';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as timesheetsActions from '../../actions/Timesheets';
 import * as css from './Timesheets.scss';
@@ -64,10 +65,15 @@ class Timesheets extends React.Component {
     // Создание массива таймшитов по таскам
 
     let tasks = list.length ? list.reduce((res, el) => {
-      if (el.task && !_.find(res, tsh => {
-        return tsh.id === el.task.id
-        && tsh.taskStatusId === el.taskStatusId;
-      })) {
+
+      const taskNotPushed
+        = el.task
+        && !_.find(res, tsh => {
+          return tsh.id === el.task.id
+          && tsh.taskStatusId === el.taskStatusId;
+        });
+
+      if (taskNotPushed) {
         res.push({
           id: el.task.id,
           name: el.task.name,
@@ -104,10 +110,15 @@ class Timesheets extends React.Component {
     // Создание массива таймшитов по magic activities
 
     let magicActivities = list.length ? list.reduce((res, el) => {
-      if (el.typeId !== 1 && !_.find(res, tsh => {
-        return tsh.typeId === el.typeId
-        && el.project ? (tsh.projectId === el.project.id) : (el.project === null);
-      })) {
+
+      const maNotPushed
+        = el.typeId !== 1
+        && !_.find(res, tsh => {
+          return tsh.typeId === el.typeId
+          && el.project ? (tsh.projectId === el.project.id) : (el.project === null);
+        });
+
+      if (maNotPushed) {
         res.push({
           typeId: el.typeId,
           projectName: el.project ? el.project.name : 'Без проекта',
@@ -224,7 +235,7 @@ class Timesheets extends React.Component {
                 {totalRow}
                 <td className={cn(css.total, css.totalWeek, css.totalRow)}>
                   <div>
-                    {Math.floor(_.sumBy(list, tsh => { return +tsh.spentTime; }) * 100) / 100}
+                    {roundNum(_.sumBy(list, tsh => +tsh.spentTime), 2)}
                   </div>
                 </td>
                 <td className={css.total}/>

@@ -226,3 +226,56 @@ export const filterTasks = (tasks) => ({
   type: TimesheetsActions.FILTER_TASKS,
   tasks
 });
+
+export const filterProjects = (projects) => ({
+  type: TimesheetsActions.FILTER_PROJECTS,
+  projects
+});
+
+// Поиск по задачам
+export const getTasksForSelect = (name = '') => {
+  return dispatch => {
+    return axios
+    .get(
+      `${API_URL}/task`,
+      { params: { name } },
+      { withCredentials: true }
+    )
+    .then(response => response.data.data)
+    .then(tasks => {
+      dispatch(filterTasks(tasks));
+      return {
+        options: tasks.map((task) => ({
+          label: task.name,
+          value: task.id
+        }))
+      };
+    });
+  };
+};
+
+// Поиск по проектам
+export const getProjectsForSelect = (name = '') => {
+  return dispatch => {
+    return axios
+    .get(
+      `${API_URL}/project`,
+      { params: { name } },
+      { withCredentials: true }
+    )
+    .then(response => response.data.data)
+    .then(projects => {
+      dispatch(filterProjects(projects));
+      return {
+        options: projects.map((project) => ({
+          label: project.name,
+          value: project.id
+        })).concat(
+          {
+            label: 'Без проекта',
+            value: 0
+          }
+        )};
+    });
+  };
+};

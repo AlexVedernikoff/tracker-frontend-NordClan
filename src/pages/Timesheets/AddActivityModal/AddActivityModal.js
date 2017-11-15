@@ -4,15 +4,19 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { Col, Row } from 'react-flexbox-grid';
 import Select from 'react-select';
-import axios from 'axios';
-import classnames from 'classnames';
-import _ from 'lodash';
-import { API_URL } from '../../../constants/Settings';
 import Modal from '../../../components/Modal';
 import Button from '../../../components/Button';
 import SelectDropdown from '../../../components/SelectDropdown';
 import * as css from '../Timesheets.scss';
-import { changeTask, changeProject, clearModalState, filterTasks, addActivity, changeActivityType } from '../../../actions/Timesheets';
+import {
+  changeTask,
+  changeProject,
+  clearModalState,
+  addActivity,
+  changeActivityType,
+  getTasksForSelect,
+  getProjectsForSelect
+} from '../../../actions/Timesheets';
 
 class AddActivityModal extends Component {
 
@@ -24,6 +28,8 @@ class AddActivityModal extends Component {
     changeTask: PropTypes.func,
     clearModalState: PropTypes.func,
     filterTasks: PropTypes.func,
+    getProjectsForSelect: PropTypes.func,
+    getTasksForSelect: PropTypes.func,
     onClose: PropTypes.func,
     selectedActivityType: PropTypes.number,
     selectedProject: PropTypes.object,
@@ -64,46 +70,6 @@ class AddActivityModal extends Component {
     } else {
       this.setState({ [name]: 0 });
     }
-  }
-
-  getTasks = (name = '') => {
-    return axios
-      .get(
-        `${API_URL}/task`,
-        { params: { name } },
-        { withCredentials: true }
-      )
-      .then(response => response.data.data)
-      .then(tasks => {
-        this.props.filterTasks(tasks);
-        return {
-          options: tasks.map((task) => ({
-            label: task.name,
-            value: task.id
-          }))
-        };
-      });
-  }
-
-  getProjects = (name = '') => {
-    return axios
-      .get(
-        `${API_URL}/project`,
-        { params: { name } },
-        { withCredentials: true }
-      )
-      .then(response => response.data.data)
-      .then(projects => ({
-        options: projects.map((project) => ({
-          label: project.name,
-          value: project.id
-        })).concat(
-          {
-            label: 'Без проекта',
-            value: 0
-          }
-        )
-      }));
   }
 
   addActivity = () => {
@@ -184,8 +150,7 @@ class AddActivityModal extends Component {
                       multi={false}
                       ignoreCase={false}
                       placeholder="Выберите задачу"
-                      loadOptions={this.getTasks}
-                      // loadOptions={_.debounce(this.getTasks, 500)} // TODO: работает некорректно, проверить
+                      loadOptions={this.props.getTasksForSelect}
                       filterOption={el => el}
                       onChange={option => this.props.changeTask(option)}
                       value={this.props.selectedTask}
@@ -207,8 +172,7 @@ class AddActivityModal extends Component {
                       multi={false}
                       ignoreCase={false}
                       placeholder="Выберите проект"
-                      loadOptions={this.getProjects}
-                      // loadOptions={_.debounce(this.getProjects, 500)} // TODO: работает некорректно, проверить
+                      loadOptions={this.props.getProjectsForSelect}
                       filterOption={el => el}
                       onChange={option => this.props.changeProject(option)}
                       value={this.props.selectedProject}
@@ -280,8 +244,9 @@ const mapDispatchToProps = {
   changeProject,
   clearModalState,
   addActivity,
-  filterTasks,
-  changeActivityType
+  changeActivityType,
+  getTasksForSelect,
+  getProjectsForSelect
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddActivityModal);
