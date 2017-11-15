@@ -31,15 +31,15 @@ class NavMenu extends Component {
     };
 
     const links = [
-      <li key="dashboard" className={css.sidebarItem}>
-        <Link
-          className={css.sidebarLink}
-          activeClassName={css.activeLink}
-          to="/dashboard"
-        >
-          Монитор
-        </Link>
-      </li>,
+      // <li key="dashboard" className={css.sidebarItem}>
+      //   <Link
+      //     className={css.sidebarLink}
+      //     activeClassName={css.activeLink}
+      //     to="/dashboard"
+      //   >
+      //     Монитор
+      //   </Link>
+      // </li>,
       <li key="projects" className={css.sidebarItem}>
         <button>
           <IconPlus style={iconStyles} />
