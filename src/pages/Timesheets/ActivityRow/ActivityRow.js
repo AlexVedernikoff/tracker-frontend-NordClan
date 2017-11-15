@@ -67,7 +67,6 @@ class ActivityRow extends React.Component {
   }
 
   changeEmpty = (i, e) => {
-    e.persist();
     const { value } = e.target;
     if (value) {
       this.createTimesheet(i, value);
@@ -91,7 +90,6 @@ class ActivityRow extends React.Component {
   }
 
   changeFilled = (i, id, comment, e) => {
-    e.persist();
     const { value } = e.target;
     this.updateTimesheet(i, id, value, comment);
   }
