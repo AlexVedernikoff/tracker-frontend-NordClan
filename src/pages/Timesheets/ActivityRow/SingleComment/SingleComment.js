@@ -8,20 +8,44 @@ import { IconComment, IconCheck } from '../../../../components/Icons';
 
 class SingleComment extends React.Component {
   static propTypes = {
-    comment: PropTypes.string
+    comment: PropTypes.string,
+    onChange: PropTypes.func
   }
 
   constructor (props) {
     super(props);
     this.state = {
-      isOpen: false
+      isOpen: false,
+      text: this.props.comment || ''
     };
   }
 
-  handleClickOutside = evt => {
+  componentWillReceiveProps (newProps) {
+    this.setState({text: newProps.comment});
+  }
+
+  handleClickOutside = () => {
     this.setState({
-      isOpen: false
+      isOpen: false,
+      text: this.props.comment || ''
     });
+  }
+
+  changeText = (e) => {
+    this.setState({text: e.target.value});
+  }
+
+  save = () => {
+    this.props.onChange(this.state.text);
+    this.toggle();
+  }
+
+  saveWithEnter = (evt) => {
+    const { ctrlKey, keyCode } = evt;
+    if (ctrlKey && keyCode === 13) {
+      this.props.onChange(this.state.text);
+      this.toggle();
+    }
   }
 
   toggle = () => {
@@ -40,8 +64,14 @@ class SingleComment extends React.Component {
           {
             this.state.isOpen
             ? <div className={cn(css.commentDropdown, css.singleComment)}>
-                <textarea autoFocus placeholder="Введите текст комментария" defaultValue={ comment } />
-                <div onClick={this.toggle} className={css.saveBtn}>
+                <textarea
+                autoFocus
+                placeholder="Введите текст комментария"
+                onChange={this.changeText}
+                onKeyDown={this.saveWithEnter}
+                value={this.state.text}
+              />
+                <div onClick={this.save} className={css.saveBtn}>
                   <IconCheck/>
                 </div>
               </div>
@@ -53,4 +83,7 @@ class SingleComment extends React.Component {
   }
 }
 
-export default SingleComment = onClickOutside(SingleComment);
+SingleComment = onClickOutside(SingleComment);
+
+export default SingleComment;
+
