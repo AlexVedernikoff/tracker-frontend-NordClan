@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import ProjectIcon from '../../../components/ProjectIcon';
 import { IconEdit, IconCheck } from '../../../components/Icons';
 import * as css from './ProjectTitle.scss';
 import ReactTooltip from 'react-tooltip';
@@ -148,7 +149,7 @@ class ProjectTitle extends Component {
   render () {
     return (
       <h1 className={css.projectTitle}>
-        <img src={this.state.pic} className={css.projectPic} />
+        <ProjectIcon projectName={this.props.name} />
         <span
           id="projectName"
           className={this.state.nameIsIncorrect ? css.wrong : ''}
@@ -171,17 +172,19 @@ class ProjectTitle extends Component {
           </span>
           <span>)</span>
         </span>
-        {this.props.titleIsEditing
-          ? <IconCheck
-              className={css.save}
-              data-tip="Сохранить"
-              onClick={this.editIconClickHandler}
-            />
-          : <IconEdit
-              className={css.edit}
-              data-tip="Редактировать"
-              onClick={this.editIconClickHandler}
-            />}
+        {this.props.titleIsEditing ? (
+          <IconCheck
+            className={css.save}
+            data-tip="Сохранить"
+            onClick={this.editIconClickHandler}
+          />
+        ) : (
+          <IconEdit
+            className={css.edit}
+            data-tip="Редактировать"
+            onClick={this.editIconClickHandler}
+          />
+        )}
       </h1>
     );
   }
