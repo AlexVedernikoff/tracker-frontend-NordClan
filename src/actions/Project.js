@@ -81,11 +81,12 @@ const createTaskRequestStart = () => ({
   type: ProjectActions.TASK_CREATE_REQUEST_START
 });
 
-const createTaskRequestSuccess = (projectId, sprintId, taskId) => ({
+const createTaskRequestSuccess = (projectId, sprintId, taskId, task) => ({
   type: ProjectActions.TASK_CREATE_REQUEST_SUCCESS,
   projectId,
   sprintId,
-  taskId
+  taskId,
+  task
 });
 
 const bindUserToProjectStart = () => ({
@@ -264,7 +265,7 @@ const createTask = (task, openTaskPage, callee) => {
       .then(response => {
         if (response && response.status === 200) {
           dispatch(finishLoading());
-          dispatch(createTaskRequestSuccess(task.projectId, task.sprintId || BACKLOG_ID, response.data.id));
+          dispatch(createTaskRequestSuccess(task.projectId, task.sprintId || BACKLOG_ID, response.data.id, response.data));
           dispatch(getTask(task.parentId));
           dispatch(closeCreateTaskModal());
           dispatch(getProjectInfo(task.projectId));

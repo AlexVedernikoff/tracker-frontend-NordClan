@@ -11,6 +11,8 @@ import { store, history } from './History';
 import { Provider } from 'react-redux';
 import { getInfoAboutMe } from './actions/Authentication';
 
+import SocketAdapter from './sockets/SocketAdapter';
+
 const rootEl = document.getElementById('app');
 
 const render = (App) => {
@@ -23,6 +25,11 @@ const render = (App) => {
     rootEl
   );
 };
+
+//TODO добавление новой сущности требует лишь добавить её название
+//в список каналов
+const channels = ['task'];
+const socket = new SocketAdapter(store, channels);
 
 store.dispatch(getInfoAboutMe());
 
