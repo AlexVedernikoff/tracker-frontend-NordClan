@@ -14,7 +14,7 @@ class TaskTitle extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      submitError: false,
+      submitError: false
     };
   }
 
@@ -39,24 +39,24 @@ class TaskTitle extends Component {
 
   validateAndSubmit = () => {
     const { changeTask } = this.props;
-    !this.state.submitError && 
-    changeTask(
-          {
-            id: this.props.id,
-            name: this.taskName.innerText.trim()
-          },
-          'Title'
-         );
+    !this.state.submitError
+      && changeTask(
+        {
+          id: this.props.id,
+          name: this.taskName.innerText.trim()
+        },
+        'Title'
+      );
   };
 
   handleInput = event => {
-    let title = event.target.innerText.trim();
-    title.length < 4 ? this.setState({ submitError: true }) : this.setState({ submitError: false });
-    
+    const title = event.target.innerText.trim();
+    this.setState({ submitError: title.length < 4 });
+
     if (title.length > 300) {
       // TODO: add exceptions for backspace and other needed keys
       event.preventDefault();
-    }    
+    }
 
     if (this.props.TitleIsEditing && event.keyCode === 13) {
       event.preventDefault();
@@ -86,15 +86,17 @@ class TaskTitle extends Component {
           >
             {this.props.name}
           </span>
-          {this.props.TitleIsEditing
-            ? <IconCheck
-                onClick={this.editIconClickHandler}
-                className={css.save}
-              />
-            : <IconEdit
-                onClick={this.editIconClickHandler}
-                className={css.edit}
-              />}
+          {this.props.TitleIsEditing ? (
+            <IconCheck
+              onClick={this.editIconClickHandler}
+              className={css.save}
+            />
+          ) : (
+            <IconEdit
+              onClick={this.editIconClickHandler}
+              className={css.edit}
+            />
+          )}
         </h1>
       </div>
     );
