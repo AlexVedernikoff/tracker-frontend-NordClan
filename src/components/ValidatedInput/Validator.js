@@ -19,9 +19,7 @@ class Validator {
       this.touched[field] = false;
     }
     this.validatedFields[field] = isError;
-    this.isDisabled = Object.values(this.validatedFields).some(
-      error => error === true
-    );
+    this.isDisabled = Object.values(this.validatedFields).some(error => error);
     return decorateFunc(
       this.handleBlur(field, isError),
       this.shouldMarkError(field, isError)
