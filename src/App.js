@@ -28,7 +28,7 @@ const render = (App) => {
 
 //TODO добавление новой сущности требует лишь добавить её название
 //в список каналов
-const channels = ['task'];
+const channels = ['task', 'project'];
 const socket = new SocketAdapter(store, channels);
 
 store.dispatch(getInfoAboutMe());

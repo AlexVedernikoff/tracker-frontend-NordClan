@@ -1,4 +1,5 @@
-import * as ProjectActions from '../constants/Projects';
+import * as ProjectsActions from '../constants/Projects';
+import * as ProjectActions from '../constants/Project';
 import * as TagsActions from '../constants/Tags';
 
 const InitialState = {
@@ -13,36 +14,36 @@ const InitialState = {
 
 function Projects (state = InitialState, action) {
   switch (action.type) {
-  case ProjectActions.PROJECTS_RECEIVE_START:
+  case ProjectsActions.PROJECTS_RECEIVE_START:
     return {
       ...state
     };
 
-    case ProjectActions.PROJECTS_RECEIVE_SUCCESS:
+    case ProjectsActions.PROJECTS_RECEIVE_SUCCESS:
       return {
         ...state,
         projects: action.data.data,
         pagesCount: action.data.pagesCount
       };
 
-  case ProjectActions.OPEN_CREATE_PROJECT_MODAL:
+  case ProjectsActions.OPEN_CREATE_PROJECT_MODAL:
     return {
       ...state,
       isCreateProjectModalOpen: true
     };
 
-  case ProjectActions.CLOSE_CREATE_PROJECT_MODAL:
+  case ProjectsActions.CLOSE_CREATE_PROJECT_MODAL:
     return {
       ...state,
       isCreateProjectModalOpen: false
     };
 
-  case ProjectActions.PROJECT_CREATE_START:
+  case ProjectsActions.PROJECT_CREATE_START:
     return {
       ...state
     };
 
-  case ProjectActions.PROJECT_CREATE_SUCCESS:
+  case ProjectsActions.PROJECT_CREATE_SUCCESS:
     return {
       ...state
     };
@@ -56,6 +57,22 @@ function Projects (state = InitialState, action) {
     }
     return {
       ...state
+    };
+
+  case ProjectActions.PROJECT_CHANGE_SUCCESS:
+    const updatedProjects = state.projects.map(project => {
+      if (project.id === action.changedFields.id) {
+        return {
+          ...project,
+          ...action.changedFields
+        }
+      } else {
+        return project;
+      }
+    })
+    return {
+      ...state,
+      projects: updatedProjects
     };
 
   default:
