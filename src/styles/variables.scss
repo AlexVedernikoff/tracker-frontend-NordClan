@@ -57,6 +57,14 @@ $box-shadow: 4px 4px 0 rgba(0,0,0,0.17);
   }
 }
 
+@mixin absolute {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
 // Priority
 $priority1: $color-red;
 $priority2: $color-orange;

@@ -126,13 +126,16 @@ class TaskCard extends React.Component {
               </div>
               : null
           }
-          <div className={css.priorityMarker} onClick={this.togglePriorityBox}/>
-          <PriorityBox
-            open={this.state.isOpenPriority}
-            taskId={task.id}
-            priorityId={task.prioritiesId}
-            hideBox={this.togglePriorityBox}
-          />
+          {
+            this.state.isOpenPriority
+            ? <PriorityBox
+              taskId={task.id}
+              isTime={task.factExecutionTime || task.plannedExecutionTime}
+              priorityId={task.prioritiesId}
+              hideBox={this.togglePriorityBox}
+            />
+            : <div className={css.priorityMarker} onClick={this.togglePriorityBox}/>
+          }
         </div>
       )
     );
