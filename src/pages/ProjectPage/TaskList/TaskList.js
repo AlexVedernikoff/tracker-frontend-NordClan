@@ -5,10 +5,11 @@ import { connect } from 'react-redux';
 
 import TaskRow from '../../../components/TaskRow';
 import Input from '../../../components/Input';
-import Checkbox from '../../../components/Checkbox';
+import StatusCheckbox from './StatusCheckbox';
 import Pagination from '../../../components/Pagination';
 import * as css from './TaskList.scss';
 import TagsFilter from '../../../components/TagsFilter';
+import PerformerFilter from '../../../components/PerformerFilter';
 import _ from 'lodash';
 
 import getTasks from '../../../actions/Tasks';
@@ -19,6 +20,8 @@ class TaskList extends Component {
     super(props);
     this.state = {
       filterTags: [],
+      statusIds: [],
+      typeIds: [],
       filterByName: '',
       activePage: 1
     };
@@ -39,13 +42,40 @@ class TaskList extends Component {
   }
 
   changeNameFilter = event => {
-    this.setState(
-      {
-        filterByName: event.target.value,
-        activePage: this.state.filterByName !== event.target.value ? 1 : this.state.activePage
-      },
-      this.loadTasks
-    );
+    const value = event.target.value;
+
+    this.setState(state => ({
+      filterByName: value,
+      activePage: state.filterByName !== value ? 1 : state.activePage
+    }), this.loadTasks);
+  };
+
+  changeStatusFilter = (id) => {
+    this.setState(state => ({
+      statusIds: state.statusIds.includes(id)
+        ? state.statusIds.filter(statusId => statusId !== id)
+        : [...state.statusIds, id],
+      activePage: 1
+    }), this.loadTasks);
+  };
+
+  changeTypeFilter = (id) => {
+    this.setState(state => ({
+      typeIds: state.typeIds.includes(id)
+        ? state.typeIds.filter(typeId => typeId !== id)
+        : [...state.typeIds, id],
+      activePage: 1
+    }), this.loadTasks);
+  };
+
+
+  changePerformerFilter = (performer) => {
+    const performerId = performer ? performer.value : 0;
+
+    this.setState(state=> ({
+      performerId,
+      activePage: state.performerId !== performerId ? 1 : state.activePage
+    }), this.loadTasks);
   }
 
   handlePaginationClick = e => {
@@ -59,13 +89,17 @@ class TaskList extends Component {
 
   loadTasks = (options = {}) => {
     const tags = this.state.filterTags.map(el => el.value).join(',');
+    const statusId = this.state.statusIds.join(',');
+    const typeId = this.state.typeIds.join(',');
     this.props.getTasks({
       projectId: this.props.project.id,
+      performerId: this.state.performerId,
       currentPage: this.state.activePage,
       pageSize: 50,
       name: this.state.filterByName,
-      statusId: 0, // вывожу таски со всеми статусами
+      statusId,
       tags,
+      typeId,
       ...options
     });
   }
@@ -77,55 +111,44 @@ class TaskList extends Component {
   };
 
   onClickTag = (tag) => {
-    this.setState({
-      filterTags: _.uniqBy(this.state.filterTags.concat({
+    this.setState(state => ({
+      filterTags: _.uniqBy(state.filterTags.concat({
         value: tag,
         label: tag
       }), 'value')
-    }, this.loadTasks);
+    }), this.loadTasks);
   };
 
   render () {
-    const tasks = this.props.tasksList;
+    const { tasksList: tasks, statuses, taskTypes } = this.props;
+    const statusCheckboxes = statuses ? statuses.map(status => (
+      <Col xs={6} sm key={status.id}>
+        <StatusCheckbox
+          status={status}
+          checked={this.state.statusIds.includes(status.id)}
+          onChange={this.changeStatusFilter.bind(this, status.id)}
+        />
+      </Col>
+    )) : null;
+    const typeCheckboxes = taskTypes ? taskTypes.map(type => (
+      <Col xs={2} sm key={type.id}>
+        <StatusCheckbox
+          status={type}
+          checked={this.state.typeIds.includes(type.id)}
+          onChange={this.changeTypeFilter}
+        />
+      </Col>
+    )) : null;
 
     return (
       <div>
         <section>
           <div className={css.filters}>
             <Row className={css.checkedFilters} top="xs">
-              <Col xs={6} sm>
-                <Checkbox label="Баг"/>
-              </Col>
-              <Col xs={6} sm>
-                <Checkbox label="Регрес. Баг"/>
-              </Col>
-              <Col xs={6} sm>
-                <Checkbox label="Баг от клиента"/>
-              </Col>
-              <Col xs={6} sm>
-                <Checkbox label="Фича / Задача"/>
-              </Col>
-              <Col xs={6} sm>
-                <Checkbox label="Доп. Фича"/>
-              </Col>
-              <Col xs={6} sm>
-                <Checkbox label="New"/>
-              </Col>
-              <Col xs={6} sm>
-                <Checkbox label="Develop"/>
-              </Col>
-              <Col xs={6} sm>
-                <Checkbox label="Code Review"/>
-              </Col>
-              <Col xs={6} sm>
-                <Checkbox label="QA"/>
-              </Col>
-              <Col xs={6} sm>
-                <Checkbox label="Done"/>
-              </Col>
-              <Col xs={6} sm>
-                <Checkbox label="В процессе"/>
-              </Col>
+              { statusCheckboxes }
+            </Row>
+            <Row className={css.checkedFilters} top="xs">
+              { typeCheckboxes }
             </Row>
             <Row className={css.search}>
               <Col xs={12} sm={6}>
@@ -135,7 +158,10 @@ class TaskList extends Component {
                 />
               </Col>
               <Col xs={12} sm={3}>
-                <Input placeholder="Имя исполнителя"/>
+                <PerformerFilter
+                  onPerformerSelect={this.changePerformerFilter}
+                  selectedPerformerId={this.state.performerId}
+                />
               </Col>
               <Col xs={12} sm={3}>
                 <TagsFilter
@@ -176,6 +202,8 @@ TaskList.propTypes = {
   getTasks: PropTypes.func.isRequired,
   pagesCount: PropTypes.number.isRequired,
   project: PropTypes.object.isRequired,
+  statuses: PropTypes.array,
+  taskTypes: PropTypes.array,
   tasksList: PropTypes.array.isRequired
 };
 
@@ -183,7 +211,9 @@ TaskList.propTypes = {
 const mapStateToProps = state => ({
   tasksList: state.Tasks.tasks,
   pagesCount: state.Tasks.pagesCount,
-  project: state.Project.project
+  project: state.Project.project,
+  statuses: state.Dictionaries.taskStatuses,
+  taskTypes: state.Dictionaries.taskTypes
 });
 
 const mapDispatchToProps = { getTasks };

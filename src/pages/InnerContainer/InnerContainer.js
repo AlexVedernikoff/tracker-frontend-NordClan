@@ -20,6 +20,7 @@ class InnerContainer extends Component {
     children: PropTypes.object,
     getMagicActivityTypes: PropTypes.func,
     getTaskStatuses: PropTypes.func,
+    getTaskTypes: PropTypes.func,
     user: PropTypes.object
   };
 
@@ -41,6 +42,7 @@ class InnerContainer extends Component {
     this.setState({mql: mql, sidebarDocked: mql.matches});
     this.props.getMagicActivityTypes();
     this.props.getTaskStatuses();
+    this.props.getTaskTypes();
   }
 
   componentDidUpdate () {

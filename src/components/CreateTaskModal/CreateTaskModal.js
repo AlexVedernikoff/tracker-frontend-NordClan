@@ -26,14 +26,7 @@ class CreateTaskModal extends Component {
       description: null,
       openTaskPage: false,
       prioritiesId: 3,
-      types: [
-        { label: 'Фича', value: 1 },
-        { label: 'Доп. Фича', value: 3 },
-        { label: 'Баг', value: 2 },
-        { label: 'Регрес. Баг', value: 4 },
-        { label: 'Баг от клиента', value: 5 }
-      ],
-      selectedType: { label: 'Фича', value: 1 }
+      selectedType: null
     };
   }
 
@@ -52,7 +45,7 @@ class CreateTaskModal extends Component {
         description: null,
         openTaskPage: false,
         prioritiesId: 3,
-        selectedType: { label: 'Фича', value: 1 }
+        selectedType: null
       };
     });
   }
@@ -102,6 +95,9 @@ class CreateTaskModal extends Component {
   submitTask = event => {
     if (event) {
       event.preventDefault();
+    }
+    if (!this.state.taskName || !this.state.selectedType || !this.state.selectedType.value) {
+      return;
     }
     this.props.createTask(
       {
@@ -182,6 +178,11 @@ class CreateTaskModal extends Component {
       secondCol: 7
     };
 
+    const types = this.props.taskTypes.map(({ name, id }) => ({
+      label: name,
+      value: id
+    }));
+
     return (
       <Modal
         isOpen={this.props.isCreateTaskModalOpen}
@@ -240,7 +241,7 @@ class CreateTaskModal extends Component {
                   multi={false}
                   ignoreCase
                   placeholder="Выберите тип"
-                  options={this.state.types}
+                  options={types}
                   className={css.selectSprint}
                   value={this.state.selectedType}
                   onChange={this.onTypeChange}
@@ -342,11 +343,13 @@ CreateTaskModal.propTypes = {
   isCreateTaskModalOpen: PropTypes.bool.isRequired,
   parentTaskId: PropTypes.number,
   project: PropTypes.object,
-  selectedSprintValue: PropTypes.number
+  selectedSprintValue: PropTypes.number,
+  taskTypes: PropTypes.array
 };
 
 const mapStateToProps = state => ({
-  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen
+  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
+  taskTypes: state.Dictionaries.taskTypes
 });
 
 const mapDispatchToProps = {

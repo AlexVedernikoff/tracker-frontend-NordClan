@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as css from './TaskTypeModal.scss';
 import Modal from '../Modal';
 import Button from '../Button';
 import SelectDropdown from '../SelectDropdown';
-import TaskTypes from '../../constants/TaskTypes';
 
 class TaskTypeModal extends Component {
   constructor (props) {
@@ -24,15 +24,16 @@ class TaskTypeModal extends Component {
 
   render () {
     const {
-      onClose
+      onClose,
+      taskTypes
     } = this.props;
 
     const options = [];
 
-    for (const id in TaskTypes) {
+    for (const type of taskTypes) {
       options.push({
-        label: TaskTypes[id],
-        value: parseInt(id)
+        label: type.name,
+        value: type.id
       });
     }
 
@@ -66,7 +67,12 @@ class TaskTypeModal extends Component {
 TaskTypeModal.propTypes = {
   defaultTypeId: PropTypes.number,
   onChoose: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired
+  onClose: PropTypes.func.isRequired,
+  taskTypes: PropTypes.array
 };
 
-export default TaskTypeModal;
+const mapStateToProps = state => ({
+  taskTypes: state.Dictionaries.taskTypes
+});
+
+export default connect(mapStateToProps, {})(TaskTypeModal);

@@ -6,12 +6,6 @@ import TextEditor from '../TextEditor';
 import { stateToHTML } from 'draft-js-export-html';
 import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
-import { connect } from 'react-redux';
-import {
-  ChangeProject,
-  StartEditing,
-  StopEditing
-} from '../../actions/Project';
 
 class Description extends Component {
   constructor (props) {
@@ -165,13 +159,15 @@ class Description extends Component {
 }
 
 Description.propTypes = {
+  DescriptionIsEditing: PropTypes.bool,
   headerText: PropTypes.string,
   headerType: PropTypes.string,
-  text: PropTypes.object,
+  id: PropTypes.string,
   isEditing: PropTypes.bool.isRequired,
-  onEditSubmit: PropTypes.func.isRequired,
   onEditFinish: PropTypes.func.isRequired,
-  onEditStart: PropTypes.func.isRequired
+  onEditStart: PropTypes.func.isRequired,
+  onEditSubmit: PropTypes.func.isRequired,
+  text: PropTypes.object
 };
 
 export default Description;

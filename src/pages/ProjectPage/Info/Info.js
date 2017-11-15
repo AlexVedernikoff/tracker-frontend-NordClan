@@ -8,11 +8,10 @@ import Tag from '../../../components/Tag';
 import Tags from '../../../components/Tags';
 import Description from '../../../components/Description';
 import Budget from '../../../components/Budget';
-import { DescriptionText } from '../../../mocks/descriptionText';
 import {
-  ChangeProject,
-  StartEditing,
-  StopEditing
+  changeProject,
+  startEditing,
+  stopEditing
 } from '../../../actions/Project';
 
 class Info extends Component {
@@ -21,7 +20,7 @@ class Info extends Component {
   }
 
   onBudgetSubmit (budget) {
-    this.props.ChangeProject(
+    this.props.changeProject(
       {
         id: this.props.id,
         budget
@@ -31,7 +30,7 @@ class Info extends Component {
   }
 
   onRiskBudgetSubmit (riskBudget) {
-    this.props.ChangeProject(
+    this.props.changeProject(
       {
         id: this.props.id,
         riskBudget
@@ -66,10 +65,10 @@ class Info extends Component {
           headerType='h2'
           id={this.props.id}
           headerText='Описание'
-          onEditStart={this.props.StartEditing}
-          onEditFinish={this.props.StopEditing}
-          onEditSubmit={this.props.ChangeProject}
-          isEditing={this.props.DescriptionIsEditing}
+          onEditStart={this.props.startEditing}
+          onEditFinish={this.props.stopEditing}
+          onEditSubmit={this.props.changeProject}
+          isEditing={this.props.descriptionIsEditing}
         />
         <hr />
         <Budget
@@ -85,7 +84,7 @@ class Info extends Component {
         />
         <hr />
         <h2>Файлы</h2>
-        <Attachments />
+        <Attachments removeAttachment={()=>{}} uploadAttachments={()=>{}} attachments={[]}/>
       </div>
     );
   }
@@ -97,24 +96,24 @@ const mapStateToProps = state => ({
   description: state.Project.project.description,
   budget: state.Project.project.budget,
   riskBudget: state.Project.project.riskBudget,
-  DescriptionIsEditing: state.Project.DescriptionIsEditing
+  descriptionIsEditing: state.Project.DescriptionIsEditing
 });
 
 const mapDispatchToProps = {
-  ChangeProject,
-  StartEditing,
-  StopEditing
+  changeProject,
+  startEditing,
+  stopEditing
 };
 
 Info.propTypes = {
-  ChangeProject: PropTypes.func,
-  DescriptionIsEditing: PropTypes.bool,
-  StartEditing: PropTypes.func,
-  StopEditing: PropTypes.func,
   budget: PropTypes.number,
+  changeProject: PropTypes.func,
   description: PropTypes.string,
+  descriptionIsEditing: PropTypes.bool,
   id: PropTypes.number,
   riskBudget: PropTypes.number,
+  startEditing: PropTypes.func,
+  stopEditing: PropTypes.func,
   tags: PropTypes.array
 };
 

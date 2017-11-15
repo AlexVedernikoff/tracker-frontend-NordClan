@@ -7,7 +7,6 @@ import { showNotification } from './Notifications';
 import { startLoading, finishLoading } from './Loading';
 import getPlanningTasks from './PlanningTasks';
 import { getTask } from './Task';
-import { GET, REST_API} from '../constants/RestApi';
 
 const gettingProjectInfoStart = () => ({
   type: ProjectActions.PROJECT_INFO_RECEIVE_START
@@ -54,17 +53,17 @@ const getProjectHistoryStart = () => ({
   type: ProjectActions.GET_PROJECT_HISTORY_REQUEST_SENT
 });
 
-const getProjectHistorySuccess = history => ({
+const getProjectHistorySuccess = historyData => ({
   type: ProjectActions.GET_PROJECT_HISTORY_REQUEST_SUCCESS,
-  data: history
+  data: historyData
 });
 
-export const StartEditing = target => ({
+export const startEditing = target => ({
   type: ProjectActions.EDIT_START,
   target: target
 });
 
-export const StopEditing = target => ({
+export const stopEditing = target => ({
   type: ProjectActions.EDIT_FINISH,
   target: target
 });
@@ -211,19 +210,19 @@ const getProjectSprints = id => {
   };
 };
 
-const ChangeProject = (ChangedProperties, target) => {
-  if (!ChangedProperties.id) {
+const changeProject = (changedProperties, target) => {
+  if (!changedProperties.id) {
     return;
   }
 
-  const URL = `${API_URL}/project/${ChangedProperties.id}`;
+  const URL = `${API_URL}/project/${changedProperties.id}`;
 
   return dispatch => {
     dispatch(startProjectChange());
     dispatch(startLoading());
 
     axios
-      .put(URL, ChangedProperties, {
+      .put(URL, changedProperties, {
         withCredentials: true
       })
       .catch(error => {
@@ -234,7 +233,7 @@ const ChangeProject = (ChangedProperties, target) => {
         if (response && response.status === 200) {
           dispatch(projectChangeSuccess(response.data));
           dispatch(finishLoading());
-          dispatch(StopEditing(target));
+          dispatch(stopEditing(target));
         }
       });
   };
@@ -302,8 +301,8 @@ const getProjectHistory = id => {
         if (response && response.status === 200) {
           dispatch(getProjectHistorySuccess(response.data));
         }
-      })
-  }
+      });
+  };
 };
 
-export { getProjectInfo, getProjectUsers, getProjectSprints, ChangeProject, createTask, getProjectHistory };
+export { getProjectInfo, getProjectUsers, getProjectSprints, changeProject, createTask, getProjectHistory };

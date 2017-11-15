@@ -1,6 +1,8 @@
 import * as dictionariesActions from '../constants/Dictionaries';
 
-const InitialState = {};
+const InitialState = {
+  taskTypes: []
+};
 
 export default function Portfolios (state = InitialState, action) {
   switch (action.type) {
