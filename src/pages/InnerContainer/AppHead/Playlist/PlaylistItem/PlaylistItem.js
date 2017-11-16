@@ -7,52 +7,17 @@ import {
 } from '../../../../../actions/TimesheetPlayer';
 import _ from 'lodash';
 import * as css from '../Playlist.scss';
-import * as TimesheetTypes from '../../../../../constants/TimesheetTypes';
+import getMaIcon from '../../../../../constants/MagicActivityIcons';
+import roundNum from '../../../../../utils/roundNum';
 
 import {
-  IconPause,
-  IconPlay,
-  IconCheckCircle,
   IconComment,
   IconCheck,
-  IconBook,
-  IconLaptop,
-  IconCall,
-  IconPlane,
-  IconOrganization,
-  IconCase,
-  IconHospital,
-  IconCheckList,
   IconEye,
   IconEyeDisable
 } from '../../../../../components/Icons';
 
-
-const getActivityButtonStyle = {width: '1.5rem', height: '1.5rem'};
-
-const getActivityButton = (activityType) => {
-  switch (activityType) {
-  default:
-    return <IconCheckCircle style={getActivityButtonStyle}/>;
-  case TimesheetTypes.IMPLEMENTATION:
-    return <IconLaptop style={getActivityButtonStyle}/>;
-  case TimesheetTypes.MEETING:
-    return <IconCall style={getActivityButtonStyle}/>;
-  case TimesheetTypes.EDUCATION:
-    return <IconBook style={getActivityButtonStyle}/>;
-  case TimesheetTypes.VACATION:
-    return <IconPlane style={getActivityButtonStyle}/>;
-  case TimesheetTypes.BUSINESS_TRIP:
-    return <IconCase style={getActivityButtonStyle}/>;
-  case TimesheetTypes.HOSPITAL:
-    return <IconHospital style={getActivityButtonStyle}/>;
-  case TimesheetTypes.CONTROL:
-    return <IconOrganization style={{width: '1.5rem', height: '1.5rem'}}/>;
-  case TimesheetTypes.PRESALE:
-    return <IconCheckList style={{width: '1.5rem', height: '1.5rem'}}/>;
-  }
-};
-
+const activityButtonStyle = {width: '1.5rem', height: '1.5rem'};
 
 class PlaylistItem extends Component {
 
@@ -122,16 +87,7 @@ class PlaylistItem extends Component {
   };
 
   getNameByType = (typeId) => {
-    switch (typeId) {
-    case 2: return 'Больничный';
-    case 3: return 'Командировка';
-    case 4: return 'Отпуск';
-    case 5: return 'Совещание';
-    case 6: return 'Обучение';
-    case 7: return 'Управление';
-    case 8: return 'Преселлинг и оценка';
-    default: return '';
-    }
+    return _.find(this.props.maTypes, {id: typeId}).name || 'Не определено';
   };
 
   render () {
@@ -156,7 +112,7 @@ class PlaylistItem extends Component {
           [css.actionButton]: true,
           [css.locked]: this.props.item.status !== 'inhold' && this.props.item.status !== 'inprogress'
         })}>
-          {getActivityButton(this.props.item.typeId)}
+          {getMaIcon(this.props.item.typeId, activityButtonStyle)}
         </div>
         <div className={css.taskNameWrapper}>
           <div className={css.taskTitle}>
@@ -193,7 +149,7 @@ class PlaylistItem extends Component {
         </div>
         <div className={css.time}>
           <div className={css.today}>
-            <input type="text" onChange={this.handleChangeTime} defaultValue={spentTime}/>
+            <input type="text" onChange={this.handleChangeTime} defaultValue={roundNum(spentTime, 2)}/>
           </div>
           <div className={classnames({[css.other]: true, [css.exceeded]: factTime > plannedTime})}>
             <span data-tip="Всего потрачено" data-place="bottom">{task ? task.factExecutionTime : null}</span>
@@ -222,6 +178,7 @@ class PlaylistItem extends Component {
 PlaylistItem.propTypes = {
   index: PropTypes.number.isRequired,
   item: PropTypes.object.isRequired,
+  maTypes: PropTypes.array,
   updateTimesheet: PropTypes.func.isRequired,
   updateTimesheetDraft: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired
@@ -229,7 +186,8 @@ PlaylistItem.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    tracks: state.TimesheetPlayer.tracks
+    tracks: state.TimesheetPlayer.tracks,
+    maTypes: state.Dictionaries.magicActivityTypes
   };
 };
 

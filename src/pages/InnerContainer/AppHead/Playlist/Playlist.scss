@@ -1,6 +1,7 @@
 @import "../../../../styles/variables.scss";
 
 .playlistWrapper {
+  width: 34rem;
   display: none;
 
   @include desktop {
@@ -12,6 +13,7 @@
   min-height: 3.5rem;
   max-height: 30rem;
   overflow: auto;
+  overflow: overlay; // Работает только в Chome. TODO: Скроллбар немного ломает верстку, нужно что-то придумать для остальных браузеров
 }
 
 .task {
