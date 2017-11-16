@@ -4,12 +4,14 @@ import { connect } from 'react-redux';
 import classnames from 'classnames';
 import { Link } from 'react-router';
 import { DragSource } from 'react-dnd';
-import { TASK_CARD } from '../../constants/DragAndDrop';
+import { history } from '../../History';
 import getTypeById from '../../utils/TaskTypes';
+import { TASK_CARD } from '../../constants/DragAndDrop';
 
-import { IconPlay, IconPause, IconTime } from '../Icons';
 import * as css from './TaskCard.scss';
 import PriorityBox from './PriorityBox';
+import CopyThis from '../../components/CopyThis';
+import { IconPlay, IconPause, IconTime } from '../Icons';
 
 const taskCardSource = {
   beginDrag (props) {
@@ -90,7 +92,17 @@ class TaskCard extends React.Component {
             </div>
             : null
           }
-          <span className={css.header}>{`${task.prefix}-${task.id}`} | {getTypeById(task.typeId, taskTypes)}</span>
+          <CopyThis
+            wrapThisInto={'div'}
+            isCopiedBackground
+            textToCopy={`${location.origin}${history.createHref(
+              `/projects/${task.projectId}/tasks/${task.id}`
+            )}`}
+          >
+            <div className={css.header}>
+              {task.prefix}-{task.id} | {getTypeById(task.typeId, taskTypes)}
+            </div>
+          </CopyThis>
           <Link to={`/projects/${task.projectId}/tasks/${task.id}`} className={css.taskName}>
             <div>{task.name}</div>
           </Link>
@@ -130,7 +142,7 @@ class TaskCard extends React.Component {
             this.state.isOpenPriority
             ? <PriorityBox
               taskId={task.id}
-              isTime={task.factExecutionTime || task.plannedExecutionTime}
+              isTime={!!(task.factExecutionTime || task.plannedExecutionTime)}
               priorityId={task.prioritiesId}
               hideBox={this.togglePriorityBox}
             />
