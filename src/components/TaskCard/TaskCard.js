@@ -124,7 +124,7 @@ class TaskCard extends React.Component {
               })} />
             <span>{getTaskTime(task.factExecutionTime, task.plannedExecutionTime)}</span>
           </p>
-        ) : null}
+        : null}
         {task.plannedExecutionTime ? (
           <div className={css.progressBar}>
             <div
@@ -153,9 +153,6 @@ class TaskCard extends React.Component {
           priorityId={task.prioritiesId}
           hideBox={this.togglePriorityBox}
         />
-      </div>
-            : null
-          }
           {
             task.plannedExecutionTime
               ? <div className={css.progressBar}>
