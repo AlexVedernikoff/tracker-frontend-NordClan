@@ -100,10 +100,9 @@ class TaskCard extends React.Component {
             )}`}
           >
             <div className={css.header}>
-              {task.prefix}-{task.id}
+              {task.prefix}-{task.id} | {getTypeById(task.typeId, taskTypes)}
             </div>
           </CopyThis>
-          <span className={css.header}>{`${task.prefix}-${task.id}`} | {getTypeById(task.typeId, taskTypes)}</span>
           <Link to={`/projects/${task.projectId}/tasks/${task.id}`} className={css.taskName}>
             <div>{task.name}</div>
           </Link>
@@ -143,7 +142,7 @@ class TaskCard extends React.Component {
             this.state.isOpenPriority
             ? <PriorityBox
               taskId={task.id}
-              isTime={task.factExecutionTime || task.plannedExecutionTime}
+              isTime={!(task.factExecutionTime || task.plannedExecutionTime)}
               priorityId={task.prioritiesId}
               hideBox={this.togglePriorityBox}
             />
