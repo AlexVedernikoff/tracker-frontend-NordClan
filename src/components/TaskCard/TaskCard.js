@@ -142,7 +142,7 @@ class TaskCard extends React.Component {
             this.state.isOpenPriority
             ? <PriorityBox
               taskId={task.id}
-              isTime={!(task.factExecutionTime || task.plannedExecutionTime)}
+              isTime={!!(task.factExecutionTime || task.plannedExecutionTime)}
               priorityId={task.prioritiesId}
               hideBox={this.togglePriorityBox}
             />
