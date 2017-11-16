@@ -76,7 +76,7 @@
   z-index: 1;
   cursor: pointer;
   bottom: -7px;
-  left: -7px;
+  left: -8px;
   background-color: $color-dark;
   color: white;
   width: 16px;
@@ -148,6 +148,10 @@ svg.red { background-color: transparent; fill: $color-red; }
   color: lighten($color-black, 40%);
   margin-bottom: 0.5rem;
   font-size: 11px;
+}
+
+.bug {
+  background-color: lighten($color-dark, 73%);
 }
 
 .dropped {

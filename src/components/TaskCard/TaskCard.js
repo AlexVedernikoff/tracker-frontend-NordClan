@@ -7,7 +7,7 @@ import { DragSource } from 'react-dnd';
 import { TASK_CARD } from '../../constants/DragAndDrop';
 import getTypeById from '../../utils/TaskTypes';
 
-import { IconPlay, IconPause, IconTime } from '../Icons';
+import { IconPlay, IconPause, IconTime, IconBug } from '../Icons';
 import * as css from './TaskCard.scss';
 import PriorityBox from './PriorityBox';
 
@@ -70,10 +70,16 @@ class TaskCard extends React.Component {
     } = this.props;
 
     const classPriority = 'priority-' + task.prioritiesId;
+    const isBug = ~[2, 4, 5].indexOf(task.typeId);
 
     return (
       connectDragSource(
-        <div className={classnames({[css.taskCard]: true, [css[classPriority]]: true, [css.dropped]: isDragging})} {...other}>
+        <div className={classnames({
+          [css.taskCard]: true,
+          [css[classPriority]]: true,
+          [css.dropped]: isDragging,
+          [css.bug]: isBug
+        })} {...other}>
           {
             task.statusId !== 1 && task.statusId !== 8
             ? <div
@@ -90,7 +96,9 @@ class TaskCard extends React.Component {
             </div>
             : null
           }
-          <span className={css.header}>{`${task.prefix}-${task.id}`} | {getTypeById(task.typeId, taskTypes)}</span>
+          <span className={css.header}>
+            {isBug ? <IconBug/> : null} {`${task.prefix}-${task.id}`} | {getTypeById(task.typeId, taskTypes)}
+          </span>
           <Link to={`/projects/${task.projectId}/tasks/${task.id}`} className={css.taskName}>
             <div>{task.name}</div>
           </Link>
