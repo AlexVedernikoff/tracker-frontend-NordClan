@@ -12,8 +12,8 @@ import PerformerModal from '../../../components/PerformerModal';
 import PhaseColumn from './PhaseColumn';
 import SelectDropdown from '../../../components/SelectDropdown';
 import Button from '../../../components/Button';
+import Checkbox from '../../../components/Checkbox';
 import CreateTaskModal from '../../../components/CreateTaskModal';
-import { IconArrowDown } from '../../../components/Icons';
 import * as css from './AgileBoard.scss';
 
 import getTasks from '../../../actions/Tasks';
@@ -117,10 +117,7 @@ class AgileBoard extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      isSectionOpen: {
-        myTasks: false,
-        allTasks: false
-      },
+      isOnlyMine: true,
       isModalOpen: false,
       performer: null,
       filterTags: [],
@@ -182,13 +179,9 @@ class AgileBoard extends Component {
     return changedSprint;
   }
 
-  toggleSection = (sectionName) => {
-    const allSectionsStatus = this.state.isSectionOpen;
+  toggleMine = () => {
     this.setState({
-      isSectionOpen: {
-        ...allSectionsStatus,
-        [sectionName]: !this.state.isSectionOpen[sectionName]
-      }
+      isOnlyMine: !this.state.isOnlyMine
     });
   };
 
@@ -345,8 +338,9 @@ class AgileBoard extends Component {
               style={{ marginLeft: 8, marginRight: 8 }}
             />
           </Row> : null}
-          {!this.props.myTaskBoard ? <Row>
-            <Col xs>
+          {!this.props.myTaskBoard ? <Row className={css.filtersRow}>
+            <Checkbox checked={this.state.isOnlyMine} onChange={this.toggleMine} label="Только мои задачи" style={{alignItems: 'center', padding: '0.5rem 1.5rem'}} />
+            <Col xs style={{minWidth: 200}}>
               <SelectDropdown
                 name="filterTags"
                 multi
@@ -359,45 +353,32 @@ class AgileBoard extends Component {
               />
             </Col>
           </Row> : null}
-          <hr/>
-          <h3 onClick={() => this.toggleSection('myTasks')} className={css.taskSectionTitle}>
-            <IconArrowDown className={classnames({
-              [css.close]: !this.state.isSectionOpen.myTasks,
-              [css.open]: this.state.isSectionOpen.myTasks
-            })} /> Мои задачи
-          </h3>
-          {
-            this.state.isSectionOpen.myTasks
-            ? <Row>
-                <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'New'} tasks={mineSorted.new}/>
-                <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Dev'} tasks={mineSorted.dev}/>
-                <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Code Review'} tasks={mineSorted.codeReview}/>
-                <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'QA'} tasks={mineSorted.qa}/>
-                <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Done'} tasks={mineSorted.done}/>
-              </Row>
-            : null
-          }
-          <hr/>
-          {!this.props.myTaskBoard ? <div>
-              <h3 onClick={() => this.toggleSection('allTasks')} className={css.taskSectionTitle}>
-                <IconArrowDown className={classnames({
-                  [css.close]: !this.state.isSectionOpen.allTasks,
-                  [css.open]: this.state.isSectionOpen.allTasks
-                })} /> Все задачи
-              </h3>
-              {
-                this.state.isSectionOpen.allTasks
-                  ? <Row>
-                  <PhaseColumn onDrop={this.dropTask} section={'all'} title={'New'} tasks={allSorted.new}/>
-                  <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Dev'} tasks={allSorted.dev} />
-                  <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Code Review'} tasks={allSorted.codeReview} />
-                  <PhaseColumn onDrop={this.dropTask} section={'all'} title={'QA'} tasks={allSorted.qa} />
-                  <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Done'} tasks={allSorted.done} />
+          <div className={css.boardContainer}>
+            {
+              this.state.isOnlyMine
+              ? <Row>
+                  <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'New'} tasks={mineSorted.new}/>
+                  <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Dev'} tasks={mineSorted.dev}/>
+                  <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Code Review'} tasks={mineSorted.codeReview}/>
+                  <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'QA'} tasks={mineSorted.qa}/>
+                  <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Done'} tasks={mineSorted.done}/>
                 </Row>
-                  : null
-              }
-            <hr/>
-            </div> : null}
+              : null
+            }
+            {!this.props.myTaskBoard ? <div>
+                {
+                  !this.state.isOnlyMine
+                    ? <Row>
+                    <PhaseColumn onDrop={this.dropTask} section={'all'} title={'New'} tasks={allSorted.new}/>
+                    <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Dev'} tasks={allSorted.dev} />
+                    <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Code Review'} tasks={allSorted.codeReview} />
+                    <PhaseColumn onDrop={this.dropTask} section={'all'} title={'QA'} tasks={allSorted.qa} />
+                    <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Done'} tasks={allSorted.done} />
+                  </Row>
+                    : null
+                }
+              </div> : null}
+          </div>
 
           {
             this.state.isModalOpen
@@ -420,6 +401,8 @@ class AgileBoard extends Component {
 }
 
 AgileBoard.propTypes = {
+  StatusIsEditing: PropTypes.bool,
+  UserIsEditing: PropTypes.bool,
   changeTask: PropTypes.func.isRequired,
   getTasks: PropTypes.func.isRequired,
   lastCreatedTask: PropTypes.object,
@@ -429,8 +412,6 @@ AgileBoard.propTypes = {
   sprintTasks: PropTypes.array,
   sprints: PropTypes.array,
   startTaskEditing: PropTypes.func,
-  StatusIsEditing: PropTypes.bool,
-  UserIsEditing: PropTypes.bool,
   user: PropTypes.object
 };
 
