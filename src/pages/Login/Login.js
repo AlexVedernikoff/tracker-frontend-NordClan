@@ -12,7 +12,8 @@ import { doAuthentication } from '../../actions/Authentication';
 class Login extends Component {
   static propTypes = {
     doAuthentication: PropTypes.func.isRequired,
-    isLoggedIn: PropTypes.bool.isRequired
+    isLoggedIn: PropTypes.bool.isRequired,
+    redirectPath: PropTypes.string
   };
 
   constructor (props) {
@@ -26,7 +27,7 @@ class Login extends Component {
 
   componentDidUpdate () {
     if (this.props.isLoggedIn) {
-      history.push('/projects');
+      history.push(this.props.redirectPath);
     }
   }
 
@@ -85,8 +86,9 @@ class Login extends Component {
   }
 }
 
-const mapStateToProps = ({ Auth: { isLoggedIn } }) => ({
-  isLoggedIn
+const mapStateToProps = ({ Auth: { isLoggedIn, redirectPath } }) => ({
+  isLoggedIn,
+  redirectPath
 });
 
 const mapDispatchToProps = {

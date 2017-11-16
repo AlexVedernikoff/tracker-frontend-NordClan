@@ -33,7 +33,7 @@ import RedirectPage from './pages/Redirect';
 import DemoPage from './components/Icons/DemoPage';
 import AuthRoute from './components/AuthRoute';
 import { connect } from 'react-redux';
-
+import { setRedirectPath } from './actions/Authentication';
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
 * для ролей использовать этот принцип
@@ -47,11 +47,14 @@ class AppRouter extends Component {
     dispatch: PropTypes.func,
     history: PropTypes.object,
     isLoggedIn: PropTypes.bool,
-    loaded: PropTypes.bool
+    loaded: PropTypes.bool,
+    redirectPath: PropTypes.string,
+    setRedirectPath: PropTypes.func
   };
 
   requireAuth = (nextState, replace, cb) => {
     if (!this.props.isLoggedIn) {
+      this.props.setRedirectPath(this.props.history.getCurrentLocation().pathname);
       replace('/login');
     }
     cb();
@@ -64,7 +67,6 @@ class AppRouter extends Component {
     }
     cb();
   };
-
   render () {
     return (
       this.props.loaded
@@ -116,9 +118,13 @@ class AppRouter extends Component {
   }
 }
 
-const mapStateToProps = ({ Auth: { loaded, isLoggedIn } }) => ({
+const mapStateToProps = ({ Auth: { loaded, isLoggedIn, redirectPath } }) => ({
   loaded,
-  isLoggedIn
+  isLoggedIn,
+  redirectPath
 });
 
-export default connect(mapStateToProps)(AppRouter);
+const mapDispatchToProps = {
+  setRedirectPath
+};
+export default connect(mapStateToProps, mapDispatchToProps)(AppRouter);

@@ -3,6 +3,7 @@ import * as AuthActions from '../constants/Authentication';
 const InitialState = {
   isLoggedIn: false,
   loaded: false,
+  redirectPath: '/projects',
   user: {
     firstNameRu: '',
     lastNameRu: ''
@@ -72,6 +73,11 @@ function Auth (state = InitialState, action) {
       isLoggedIn: true
     };
 
+  case AuthActions.SET_REDIRECT_PATH:
+    return {
+      ...state,
+      redirectPath: action.path
+    };
 
   default:
     return state;
