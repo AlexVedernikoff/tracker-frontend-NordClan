@@ -7,7 +7,6 @@ import {
   applyRouterMiddleware
 } from 'react-router';
 import { useScroll } from 'react-router-scroll';
-import { getComments } from './actions/Task';
 import MainContainer from './pages/MainContainer';
 import InnerContainer from './pages/InnerContainer';
 import TaskPage from './pages/TaskPage';
@@ -31,9 +30,9 @@ import Timesheets from './pages/Timesheets';
 import NotFound from './pages/NotFound';
 import RedirectPage from './pages/Redirect';
 import DemoPage from './components/Icons/DemoPage';
-import AuthRoute from './components/AuthRoute';
 import { connect } from 'react-redux';
 import { clearCurrentProjectAndTasks } from './actions/Tasks';
+import { setRedirectPath } from './actions/Authentication';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
@@ -48,11 +47,14 @@ class AppRouter extends Component {
     dispatch: PropTypes.func,
     history: PropTypes.object,
     isLoggedIn: PropTypes.bool,
-    loaded: PropTypes.bool
+    loaded: PropTypes.bool,
+    redirectPath: PropTypes.object,
+    setRedirectPath: PropTypes.func
   };
 
   requireAuth = (nextState, replace, cb) => {
     if (!this.props.isLoggedIn) {
+      this.props.setRedirectPath(this.props.history.getCurrentLocation());
       replace('/login');
     }
     cb();
@@ -121,9 +123,13 @@ class AppRouter extends Component {
   }
 }
 
-const mapStateToProps = ({ Auth: { loaded, isLoggedIn } }) => ({
+const mapStateToProps = ({ Auth: { loaded, isLoggedIn, redirectPath } }) => ({
   loaded,
-  isLoggedIn
+  isLoggedIn,
+  redirectPath
 });
 
-export default connect(mapStateToProps)(AppRouter);
+const mapDispatchToProps = {
+  setRedirectPath
+};
+export default connect(mapStateToProps, mapDispatchToProps)(AppRouter);

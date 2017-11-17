@@ -11,8 +11,10 @@ import { doAuthentication } from '../../actions/Authentication';
 
 class Login extends Component {
   static propTypes = {
+    defaultRedirectPath: PropTypes.string,
     doAuthentication: PropTypes.func.isRequired,
-    isLoggedIn: PropTypes.bool.isRequired
+    isLoggedIn: PropTypes.bool.isRequired,
+    redirectPath: PropTypes.object
   };
 
   constructor (props) {
@@ -26,7 +28,11 @@ class Login extends Component {
 
   componentDidUpdate () {
     if (this.props.isLoggedIn) {
-      history.push('/projects');
+      const { redirectPath, defaultRedirectPath } = this.props;
+      const nextLocation = Object.keys(redirectPath).length !== 0
+        ? redirectPath
+        : defaultRedirectPath;
+      history.push(nextLocation);
     }
   }
 
@@ -85,8 +91,10 @@ class Login extends Component {
   }
 }
 
-const mapStateToProps = ({ Auth: { isLoggedIn } }) => ({
-  isLoggedIn
+const mapStateToProps = ({ Auth: { isLoggedIn, redirectPath, defaultRedirectPath } }) => ({
+  isLoggedIn,
+  redirectPath,
+  defaultRedirectPath
 });
 
 const mapDispatchToProps = {
