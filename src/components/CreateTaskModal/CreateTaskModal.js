@@ -140,7 +140,7 @@ class CreateTaskModal extends Component {
   };
 
   handleChange = field => event =>
-    this.setState({ [field]: event.target.value });
+    this.setState({ [field]: event.target.value.trim() });
 
   render () {
     const formLayout = {

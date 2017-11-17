@@ -1,7 +1,8 @@
 import * as dictionariesActions from '../constants/Dictionaries';
 
 const InitialState = {
-  taskTypes: []
+  taskTypes: [],
+  magicActivityTypes: []
 };
 
 export default function Portfolios (state = InitialState, action) {

@@ -162,6 +162,10 @@ svg.red {
   }
 }
 
+.bug {
+  background-color: lighten($color-dark, 73%);
+}
+
 .header {
   display: inline-block;
   color: lighten($color-black, 40%);

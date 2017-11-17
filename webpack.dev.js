@@ -92,6 +92,14 @@ const settings = {
     inline: true,
     disableHostCheck: true,
     proxy: {
+      '/api/v1/socket': {
+        target: {
+          host: process.env.API_ROOT || 'sim-track.simbirsoft',
+          protocol: 'ws',
+          port: process.env.API_PORT || 80
+        },
+        ws: true
+      },
       '/api/**': {
         target: {
           host: process.env.API_ROOT || 'sim-track.simbirsoft',

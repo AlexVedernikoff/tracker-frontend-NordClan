@@ -6,7 +6,8 @@ export default class SocketAdapter {
     this.store = store;
     this.channels = channels;
     this.socket = io({
-      path: `${API_URL}/socket`
+      path: `${API_URL}/socket`,
+      transports: ['websocket']
     });
 
     this.userAuthState = false;

@@ -106,7 +106,7 @@
     "webpack-dev-server": "^2.5.1"
   },
   "scripts": {
-    "start": "node_modules/.bin/cross-env NODE_ENV=development webpack-dev-server --colors --config webpack.dev.js",
+    "start": "node_modules/.bin/cross-env NODE_ENV=development webpack-dev-server --inline --colors --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
     "deploy": "gh-pages -d build",
     "docker": "docker build -t simtrackfront ."

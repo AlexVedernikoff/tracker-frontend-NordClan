@@ -7,7 +7,6 @@ import {
   applyRouterMiddleware
 } from 'react-router';
 import { useScroll } from 'react-router-scroll';
-import { getComments } from './actions/Task';
 import MainContainer from './pages/MainContainer';
 import InnerContainer from './pages/InnerContainer';
 import TaskPage from './pages/TaskPage';
@@ -31,9 +30,10 @@ import Timesheets from './pages/Timesheets';
 import NotFound from './pages/NotFound';
 import RedirectPage from './pages/Redirect';
 import DemoPage from './components/Icons/DemoPage';
-import AuthRoute from './components/AuthRoute';
 import { connect } from 'react-redux';
+import { clearCurrentProjectAndTasks } from './actions/Tasks';
 import { setRedirectPath } from './actions/Authentication';
+
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
 * для ролей использовать этот принцип
@@ -67,11 +67,16 @@ class AppRouter extends Component {
     }
     cb();
   };
+
+  clearTasks = () => {
+    this.props.dispatch(clearCurrentProjectAndTasks());
+  };
+
   render () {
     return (
       this.props.loaded
         ? <Router history={this.props.history} render={applyRouterMiddleware(useScroll(()=>false))}>
-          <Route path="/" component={MainContainer} >
+          <Route path="" component={MainContainer} >
             {/*<AuthRoute path="login" component={Login} allowed={!this.props.isLoggedIn} otherwise="projects" />*/}
             <Route path="login" component={Login} onEnter={this.isLogged} />
             <Route path="icons" component={DemoPage} />
@@ -83,7 +88,7 @@ class AppRouter extends Component {
               <Route path="tasks" component={MyTasks} />
               <Route path="projects" component={Projects} />
 
-              <Route path="projects/:projectId" component={ProjectPage} scrollToTop >
+              <Route path="projects/:projectId" component={ProjectPage} scrollToTop onLeave={this.clearTasks} >
                 <Route path="agile-board" component={AgileBoard} />
                 <Route path="info" component={Info} />
                 <Route path="property" component={Settings} />

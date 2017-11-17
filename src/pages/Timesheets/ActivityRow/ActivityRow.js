@@ -19,7 +19,7 @@ class ActivityRow extends React.Component {
     deleteTimesheets: PropTypes.func,
     item: PropTypes.object,
     ma: PropTypes.bool,
-    maTypes: PropTypes.array,
+    magicActivitiesTypes: PropTypes.array,
     startingDay: PropTypes.object,
     statuses: PropTypes.array,
     task: PropTypes.bool,
@@ -123,9 +123,9 @@ class ActivityRow extends React.Component {
 
   render () {
 
-    const { item, task, ma, statuses, maTypes} = this.props;
+    const { item, task, ma, statuses, magicActivitiesTypes} = this.props;
     const status = task ? _.find(statuses, { 'id': item.taskStatusId }) : '';
-    const maType = ma ? _.find(maTypes, { 'id': item.typeId }) : '';
+    const maType = ma ? _.find(magicActivitiesTypes, { 'id': item.typeId }) : '';
     const totalTime = roundNum(_.sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
     const timeSheetIds = _.remove(item.timeSheets.map(tsh => tsh.id), tsh => tsh);
     const timeCells = item.timeSheets.map((tsh, i) => {
@@ -141,8 +141,8 @@ class ActivityRow extends React.Component {
                 [css.filled]: +tsh.spentTime
               })}>
                 <input
-                  type="text"
-                  maxLength="6"
+                  type="number"
+                  max="24"
                   defaultValue={roundNum(tsh.spentTime, 2)}
                   onChange={(e) => this.changeFilled(i, tsh.id, tsh.comment, e)}
                 />
@@ -162,8 +162,8 @@ class ActivityRow extends React.Component {
             <div>
               <div className={css.timeCell}>
                 <input
-                  type="text"
-                  maxLength="4"
+                  type="number"
+                  max="24"
                   defaultValue="0"
                   onChange={(e) => this.changeEmpty(i, e)}
                 />
@@ -224,7 +224,7 @@ class ActivityRow extends React.Component {
 
 const mapStateToProps = state => ({
   statuses: state.Dictionaries.taskStatuses,
-  maTypes: state.Dictionaries.magicActivityTypes,
+  magicActivitiesTypes: state.Dictionaries.magicActivityTypes,
   userId: state.Auth.user.id,
   startingDay: state.Timesheets.startingDay
 });
