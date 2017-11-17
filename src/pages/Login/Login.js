@@ -28,12 +28,11 @@ class Login extends Component {
 
   componentDidUpdate () {
     if (this.props.isLoggedIn) {
-
-      if (Object.keys(this.props.redirectPath).length !== 0){
-        history.push(this.props.redirectPath);
-      } else {
-        history.push(this.props.defaultRedirectPath);
-      }
+      const { redirectPath, defaultRedirectPath } = this.props;
+      const nextLocation = Object.keys(redirectPath).length !== 0
+        ? redirectPath
+        : defaultRedirectPath;
+      history.push(nextLocation);
     }
   }
 
