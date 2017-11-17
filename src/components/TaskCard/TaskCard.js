@@ -38,11 +38,21 @@ function collect (connection, monitor) {
   };
 }
 
+const STATUS_NEW = 1;
+const STATUS_DEV_PROGRESS = 2;
+const STATUS_DEV_HOLD = 3;
+const STATUS_REVIEW_PROGRESS = 4;
+const STATUS_REVIEW_HOLD = 5;
+const STATUS_QA_PROGRESS = 6;
+const STATUS_QA_HOLD = 7;
+const STATUS_DONE = 8;
+
 class TaskCard extends React.Component {
   constructor (props) {
     super(props);
     this.state = { isOpenPriority: false };
   }
+
 
   handleClick = () => {
     const { task, onChangeStatus } = this.props;
@@ -58,6 +68,26 @@ class TaskCard extends React.Component {
     this.setState({ isOpenPriority: !this.state.isOpenPriority });
   };
 
+  isTaskInWork = (statusId) => (
+    statusId !== STATUS_NEW && statusId !== STATUS_DONE
+  );
+
+  isTaskInProgress = (statusId) => (
+    statusId === STATUS_DEV_HOLD || statusId === STATUS_REVIEW_HOLD || statusId === STATUS_QA_HOLD
+  );
+
+  isTaskInHold = (statusId) => (
+    statusId === STATUS_DEV_PROGRESS || statusId === STATUS_REVIEW_PROGRESS || statusId === STATUS_QA_PROGRESS
+  );
+
+  isInPlan = (plannedTime, factTime) => (
+    (factTime / plannedTime) <= 1 && plannedTime
+  );
+
+  isOutOfPlan = (plannedTime, factTime) => (
+    (factTime / plannedTime) > 1 && plannedTime
+  );
+
   render () {
     const {
       task,
@@ -71,6 +101,8 @@ class TaskCard extends React.Component {
       ...other
     } = this.props;
 
+    const factPlanDivision = task.factExecutionTime / task.plannedExecutionTime;
+
     const classPriority = 'priority-' + task.prioritiesId;
     const isBug = ~[2, 4, 5].indexOf(task.typeId);
 
@@ -83,21 +115,21 @@ class TaskCard extends React.Component {
           [css.bug]: isBug
         })} {...other}>
           {
-            task.statusId !== 1 && task.statusId !== 8
-            ? <div
+            this.isTaskInWork(task.statusId)
+             && <div
               className={classnames({
                 [css.status]: true,
-                [css.inhold]: task.statusId === 2 || task.statusId === 4 || task.statusId === 6,
-                [css.inprogress]: task.statusId === 3 || task.statusId === 5 || task.statusId === 7
+                [css.inhold]: this.isTaskInHold(task.statusId),
+                [css.inprogress]: this.isTaskInProgress(task.statusId)
               })}>
               {
-                task.statusId === 3 || task.statusId === 5 || task.statusId === 7
+                this.isTaskInProgress(task.statusId)
                 ? <IconPlay data-tip="Начать" onClick={this.handleClick} />
                 : <IconPause data-tip="Приостановить" onClick={this.handleClick} />
               }
             </div>
-            : null
           }
+
           <CopyThis
             wrapThisInto={'div'}
             isCopiedBackground
@@ -109,41 +141,45 @@ class TaskCard extends React.Component {
               {isBug ? <IconBug/> : null} {task.prefix}-{task.id} | {getTypeById(task.typeId, taskTypes)}
             </div>
           </CopyThis>
+
           <Link to={`/projects/${task.projectId}/tasks/${task.id}`} className={css.taskName}>
             <div>{task.name}</div>
           </Link>
+
           <p className={css.taskMeta} onClick={this.handlePerformerClick}>
-            {!myTaskBoard ? <a>
+            {!myTaskBoard
+              && <a>
               { task.performer
                 ? task.performer.fullNameRu
                 : <span className={css.unassigned}>Не назначено</span>
               }
-            </a> : null}
+            </a>}
           </p>
+
           {
-            task.factExecutionTime || task.plannedExecutionTime
-            ? <p className={css.time}>
+            !!(task.factExecutionTime || task.plannedExecutionTime)
+            && <p className={css.time}>
               <IconTime className={classnames({
-                [css.green]: (task.factExecutionTime / task.plannedExecutionTime) <= 1 && task.plannedExecutionTime,
-                [css.red]: (task.factExecutionTime / task.plannedExecutionTime) > 1 && task.plannedExecutionTime
+                [css.green]: this.isInPlan(task.plannedExecutionTime, task.factExecutionTime),
+                [css.red]: this.isOutOfPlan(task.plannedExecutionTime, task.factExecutionTime)
               })} />
             <span>{getTaskTime(task.factExecutionTime, task.plannedExecutionTime)}</span>
           </p>
-            : null
           }
+
           {
-            task.plannedExecutionTime
-              ? <div className={css.progressBar}>
+            !!task.plannedExecutionTime
+              && <div className={css.progressBar}>
                 <div
-                  style={{width: (task.factExecutionTime / task.plannedExecutionTime) < 1 ? (task.factExecutionTime / task.plannedExecutionTime) * 100 + '%' : '100%'}}
+                  style={{width: factPlanDivision < 1 ? factPlanDivision * 100 + '%' : '100%'}}
                   className={classnames({
-                    [css.green]: (task.factExecutionTime / task.plannedExecutionTime) <= 1 && task.plannedExecutionTime,
-                    [css.red]: (task.factExecutionTime / task.plannedExecutionTime) > 1 && task.plannedExecutionTime
+                    [css.green]: this.isInPlan(task.plannedExecutionTime, task.factExecutionTime),
+                    [css.red]: this.isOutOfPlan(task.plannedExecutionTime, task.factExecutionTime)
                   })}
                 />
               </div>
-              : null
           }
+
           {
             this.state.isOpenPriority
             ? <PriorityBox
