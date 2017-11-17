@@ -141,8 +141,8 @@ class ActivityRow extends React.Component {
                 [css.filled]: +tsh.spentTime
               })}>
                 <input
-                  type="text"
-                  maxLength="6"
+                  type="number"
+                  max="24"
                   defaultValue={roundNum(tsh.spentTime, 2)}
                   onChange={(e) => this.changeFilled(i, tsh.id, tsh.comment, e)}
                 />
@@ -162,8 +162,8 @@ class ActivityRow extends React.Component {
             <div>
               <div className={css.timeCell}>
                 <input
-                  type="text"
-                  maxLength="4"
+                  type="number"
+                  max="24"
                   defaultValue="0"
                   onChange={(e) => this.changeEmpty(i, e)}
                 />

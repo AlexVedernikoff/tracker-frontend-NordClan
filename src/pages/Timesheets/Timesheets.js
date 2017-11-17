@@ -114,8 +114,9 @@ class Timesheets extends React.Component {
       const maNotPushed
         = el.typeId !== 1
         && !_.find(res, tsh => {
-          return tsh.typeId === el.typeId
-          && el.project ? (tsh.projectId === el.project.id) : (el.project === null);
+          const isSameType = tsh.typeId === el.typeId;
+          const isSameProject = el.project ? (tsh.projectId === el.project.id) : (tsh.projectId === 0);
+          return isSameType && isSameProject;
         });
 
       if (maNotPushed) {
