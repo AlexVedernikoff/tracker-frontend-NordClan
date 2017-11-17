@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import * as css from '../Input/Input.scss';
+import * as validateCss from './ValidatedInput.scss';
 
 class ValidatedInput extends Component {
   static propTypes = {
@@ -25,7 +26,7 @@ class ValidatedInput extends Component {
   render () {
     const { onBlur, shouldMarkError, errorText, ...other } = this.props;
     return (
-      <div>
+      <div className={validateCss.fullWrapper}>
         <input
           type="text"
           {...other}
