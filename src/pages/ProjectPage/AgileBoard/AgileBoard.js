@@ -127,11 +127,16 @@ class AgileBoard extends Component {
   }
 
   componentDidMount () {
-    this.selectValue(this.getChangedSprint(this.props), 'changedSprint');
+    if (this.props.myTaskBoard) {
+      this.selectValue(this.getChangedSprint(this.props), 'changedSprint');
+    }
   }
 
   componentWillReceiveProps (nextProps) {
-    if (this.props.sprints !== nextProps.sprints || this.props.lastCreatedTask !== nextProps.lastCreatedTask) {
+    if (
+        (this.props.sprints !== nextProps.sprints || this.props.lastCreatedTask !== nextProps.lastCreatedTask)
+        && nextProps.project.id
+      ) {
       this.selectValue(this.getChangedSprint(nextProps), 'changedSprint');
     }
 
@@ -189,7 +194,7 @@ class AgileBoard extends Component {
     this.setState({[name]: e}, () => {
       const tags = this.state.filterTags.map((tag) => tag.value);
       const options = !this.props.myTaskBoard ? {
-        projectId: this.props.project.id,
+        projectId: this.props.params.projectId,
         sprintId: this.state.changedSprint,
         tags: tags.join(',')
       } : {
@@ -405,6 +410,7 @@ AgileBoard.propTypes = {
   lastCreatedTask: PropTypes.object,
   myTaskBoard: PropTypes.bool,
   openCreateTaskModal: PropTypes.func.isRequired,
+  params: PropTypes.object,
   project: PropTypes.object,
   sprintTasks: PropTypes.array,
   sprints: PropTypes.array,
