@@ -38,11 +38,21 @@ function collect (connection, monitor) {
   };
 }
 
+const STATUS_NEW = 1;
+const STATUS_DEV_PROGRESS = 2;
+const STATUS_DEV_HOLD = 3;
+const STATUS_REVIEW_PROGRESS = 4;
+const STATUS_REVIEW_HOLD = 5;
+const STATUS_QA_PROGRESS = 6;
+const STATUS_QA_HOLD = 7;
+const STATUS_DONE = 8;
+
 class TaskCard extends React.Component {
   constructor (props) {
     super(props);
     this.state = { isOpenPriority: false };
   }
+
 
   handleClick = () => {
     const { task, onChangeStatus } = this.props;
@@ -58,11 +68,20 @@ class TaskCard extends React.Component {
     this.setState({ isOpenPriority: !this.state.isOpenPriority });
   };
 
-  isTaskInWork = (statusId) => (statusId !== 1 && statusId !== 8);
-  isTaskInProgress = (statusId) => (statusId === 3 || statusId === 5 || statusId === 7);
-  isTaskInHold = (statusId) => (statusId === 2 || statusId === 4 || statusId === 6);
-  isInPlan = (plannedTime, factTime) => (factTime / plannedTime) <= 1 && plannedTime;
-  isOutOfPlan = (plannedTime, factTime) => (factTime / plannedTime) > 1 && plannedTime;
+  isTaskInWork = (statusId) =>
+    statusId !== STATUS_NEW && statusId !== STATUS_DONE;
+
+  isTaskInProgress = (statusId) =>
+    statusId === STATUS_DEV_HOLD || statusId === STATUS_REVIEW_HOLD || statusId === STATUS_QA_HOLD;
+
+  isTaskInHold = (statusId) =>
+    statusId === STATUS_DEV_PROGRESS || statusId === STATUS_REVIEW_PROGRESS || statusId === STATUS_QA_PROGRESS;
+
+  isInPlan = (plannedTime, factTime) =>
+    (factTime / plannedTime) <= 1 && plannedTime;
+
+  isOutOfPlan = (plannedTime, factTime) =>
+    (factTime / plannedTime) > 1 && plannedTime;
 
   render () {
     const {
