@@ -209,7 +209,7 @@ export default function Project (state = InitialState, action) {
       }
     };
 
-  case TasksActions.CLEAR_CURRENT_TASKS:
+  case TasksActions.CLEAR_CURRENT_PROJECT_AND_TASKS:
     return {
       project: {
         sprints: [],

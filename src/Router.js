@@ -33,7 +33,7 @@ import RedirectPage from './pages/Redirect';
 import DemoPage from './components/Icons/DemoPage';
 import AuthRoute from './components/AuthRoute';
 import { connect } from 'react-redux';
-import { clearStateTasks } from './actions/Tasks';
+import { clearCurrentProjectAndTasks } from './actions/Tasks';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
@@ -67,7 +67,7 @@ class AppRouter extends Component {
   };
 
   clearTasks = () => {
-    this.props.dispatch(clearStateTasks());
+    this.props.dispatch(clearCurrentProjectAndTasks());
   };
 
   render () {

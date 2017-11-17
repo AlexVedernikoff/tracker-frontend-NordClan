@@ -29,7 +29,7 @@ function Tasks (state = InitialState, action) {
       isReceiving: false
     };
 
-  case TasksActions.CLEAR_CURRENT_TASKS:
+  case TasksActions.CLEAR_CURRENT_PROJECT_AND_TASKS:
     return {
       ...state,
       tasks: [],
