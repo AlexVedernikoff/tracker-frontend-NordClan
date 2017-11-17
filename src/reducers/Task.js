@@ -104,13 +104,17 @@ export default function Task (state = InitialState, action) {
     };
 
   case TaskActions.TASK_CHANGE_REQUEST_SUCCESS:
-    return {
-      ...state,
-      task: {
-        ...state.task,
-        ...action.changedFields
+    if (state.task.id === action.changedFields.id) {
+      return {
+        ...state,
+        task: {
+          ...state.task,
+          ...action.changedFields
+        }
       }
-    };
+    } else {
+      return state;
+    }
 
   case TaskActions.TASK_CHANGE_USER_SENT:
     return {

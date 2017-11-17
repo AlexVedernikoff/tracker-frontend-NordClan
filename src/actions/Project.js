@@ -7,7 +7,6 @@ import { showNotification } from './Notifications';
 import { startLoading, finishLoading } from './Loading';
 import getPlanningTasks from './PlanningTasks';
 import { getTask } from './Task';
-import { GET, REST_API} from '../constants/RestApi';
 
 const gettingProjectInfoStart = () => ({
   type: ProjectActions.PROJECT_INFO_RECEIVE_START
@@ -54,17 +53,17 @@ const getProjectHistoryStart = () => ({
   type: ProjectActions.GET_PROJECT_HISTORY_REQUEST_SENT
 });
 
-const getProjectHistorySuccess = history => ({
+const getProjectHistorySuccess = historyData => ({
   type: ProjectActions.GET_PROJECT_HISTORY_REQUEST_SUCCESS,
-  data: history
+  data: historyData
 });
 
-export const StartEditing = target => ({
+export const startEditing = target => ({
   type: ProjectActions.EDIT_START,
   target: target
 });
 
-export const StopEditing = target => ({
+export const stopEditing = target => ({
   type: ProjectActions.EDIT_FINISH,
   target: target
 });
@@ -81,11 +80,12 @@ const createTaskRequestStart = () => ({
   type: ProjectActions.TASK_CREATE_REQUEST_START
 });
 
-const createTaskRequestSuccess = (projectId, sprintId, taskId) => ({
+const createTaskRequestSuccess = (projectId, sprintId, taskId, task) => ({
   type: ProjectActions.TASK_CREATE_REQUEST_SUCCESS,
   projectId,
   sprintId,
-  taskId
+  taskId,
+  task
 });
 
 const bindUserToProjectStart = () => ({
@@ -210,19 +210,19 @@ const getProjectSprints = id => {
   };
 };
 
-const ChangeProject = (ChangedProperties, target) => {
-  if (!ChangedProperties.id) {
+const changeProject = (changedProperties, target) => {
+  if (!changedProperties.id) {
     return;
   }
 
-  const URL = `${API_URL}/project/${ChangedProperties.id}`;
+  const URL = `${API_URL}/project/${changedProperties.id}`;
 
   return dispatch => {
     dispatch(startProjectChange());
     dispatch(startLoading());
 
     axios
-      .put(URL, ChangedProperties, {
+      .put(URL, changedProperties, {
         withCredentials: true
       })
       .catch(error => {
@@ -233,7 +233,7 @@ const ChangeProject = (ChangedProperties, target) => {
         if (response && response.status === 200) {
           dispatch(projectChangeSuccess(response.data));
           dispatch(finishLoading());
-          dispatch(StopEditing(target));
+          dispatch(stopEditing(target));
         }
       });
   };
@@ -264,7 +264,7 @@ const createTask = (task, openTaskPage, callee) => {
       .then(response => {
         if (response && response.status === 200) {
           dispatch(finishLoading());
-          dispatch(createTaskRequestSuccess(task.projectId, task.sprintId || BACKLOG_ID, response.data.id));
+          dispatch(createTaskRequestSuccess(task.projectId, task.sprintId || BACKLOG_ID, response.data.id, response.data));
           dispatch(getTask(task.parentId));
           dispatch(closeCreateTaskModal());
           dispatch(getProjectInfo(task.projectId));
@@ -301,8 +301,8 @@ const getProjectHistory = id => {
         if (response && response.status === 200) {
           dispatch(getProjectHistorySuccess(response.data));
         }
-      })
-  }
+      });
+  };
 };
 
-export { getProjectInfo, getProjectUsers, getProjectSprints, ChangeProject, createTask, getProjectHistory };
+export { getProjectInfo, getProjectUsers, getProjectSprints, changeProject, createTask, getProjectHistory };

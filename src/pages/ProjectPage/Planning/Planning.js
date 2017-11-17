@@ -450,14 +450,26 @@ class Planning extends Component {
                 <div className={css.tr}>
                   <div className={css.nameHeader} />
                   {
-                    months.map((month, i) => <div key={`sprint-${month}`} className={css.month} style={{flex: moment(`${this.state.grantActiveYear}-${(++i)}`, 'YYYY-MM').daysInMonth()}} >{month}</div>)
+                    months.map((month, i) => (
+                      <div
+                        key={`sprint-${month}`}
+                        className={css.month}
+                        style={{flex: moment(`${this.state.grantActiveYear}-${i + 1}`, 'YYYY-MM').daysInMonth()}}
+                      >
+                        {month}
+                      </div>
+                    ))
                   }
                 </div>
                 {this.currentTimeline()}
                 {this.props.sprints.filter(this.sprintFilter).map(this.sprints)}
                 <div className={css.grid}>
                   {
-                    months.map((el, i) => <span key={`sprint-${i}`} style={{flex: moment(`${this.state.grantActiveYear}-${(++i)}`, 'YYYY-MM').daysInMonth()}}/>)
+                    months.map((el, i) => (
+                      <span
+                        key={`sprint-${i}`}
+                        style={{flex: moment(`${this.state.grantActiveYear}-${i + 1}`, 'YYYY-MM').daysInMonth()}}/>
+                    ))
                   }
                 </div>
               </div>

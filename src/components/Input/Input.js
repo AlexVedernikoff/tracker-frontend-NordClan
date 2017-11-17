@@ -1,18 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 import * as css from './Input.scss';
 
-export default class Input extends Component {
-  static propTypes = {
-  };
+const Input = props => {
+  const { ...other } = props;
+  return <input type="text" {...other} className={css.input} />;
+};
 
-  render () {
-    const {
-      ...other
-    } = this.props;
-
-    return (
-      <input type="text" {...other} className={css.input}/>
-    );
-  }
-}
+export default Input;

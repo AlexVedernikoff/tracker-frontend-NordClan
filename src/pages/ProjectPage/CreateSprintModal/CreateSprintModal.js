@@ -9,6 +9,7 @@ import * as css from './CreateSprintModal.scss';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { createSprint } from '../../../actions/Sprint';
+import { getSprintsDateRange } from '../../../selectors/getSprintsDateRange';
 
 class CreateSprintModal extends Component {
   constructor (props) {
@@ -23,40 +24,41 @@ class CreateSprintModal extends Component {
     };
   }
 
-  onChangeTime = (e) => {
+  onChangeTime = e => {
     this.setState({ allottedTime: e.target.value });
   };
 
-  onChangeName = (e) => {
+  onChangeName = e => {
     this.setState({ sprintName: e.target.value });
   };
 
-  handleDayFromChange = (date) => {
-    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD')});
+  handleDayFromChange = date => {
+    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD') });
   };
 
-  handleDayToChange = (date) => {
-    this.setState({ dateTo: moment(date).format('YYYY-MM-DD')});
+  handleDayToChange = date => {
+    this.setState({ dateTo: moment(date).format('YYYY-MM-DD') });
   };
 
-  createSprint = () => {
+  createSprint = e => {
+    e.preventDefault();
     this.props.onClose();
     this.props.createSprint(
-        this.state.sprintName.trim(),
-        this.props.projectId,
-        this.state.dateFrom,
-        this.state.dateTo,
-        this.state.allottedTime
+      this.state.sprintName.trim(),
+      this.props.projectId,
+      this.state.dateFrom,
+      this.state.dateTo,
+      this.state.allottedTime
     );
   };
 
   render () {
     const formattedDayFrom = this.state.dateFrom
-        ? moment(this.state.dateFrom).format('DD.MM.YYYY')
-        : '';
+      ? moment(this.state.dateFrom).format('DD.MM.YYYY')
+      : '';
     const formattedDayTo = this.state.dateTo
-        ? moment(this.state.dateTo).format('DD.MM.YYYY')
-        : '';
+      ? moment(this.state.dateTo).format('DD.MM.YYYY')
+      : '';
 
     return (
       <Modal isOpen contentLabel="modal" onRequestClose={this.props.onClose}>
@@ -78,6 +80,7 @@ class CreateSprintModal extends Component {
                   value={formattedDayFrom}
                   onDayChange={this.handleDayFromChange}
                   placeholder="Дата начала"
+                  disabledDataRanges={this.props.sprintsDateRanges}
                 />
               </Col>
               <Col xs={12} sm={6}>
@@ -86,6 +89,7 @@ class CreateSprintModal extends Component {
                   value={formattedDayTo}
                   onDayChange={this.handleDayToChange}
                   placeholder="Дата окончания"
+                  disabledDataRanges={this.props.sprintsDateRanges}
                 />
               </Col>
             </Row>
@@ -116,11 +120,13 @@ class CreateSprintModal extends Component {
 CreateSprintModal.propTypes = {
   createSprint: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
-  projectId: PropTypes.number
+  projectId: PropTypes.number,
+  sprintsDateRanges: PropTypes.array
 };
 
 const mapStateToProps = state => ({
-  projectId: state.Project.project.id
+  projectId: state.Project.project.id,
+  sprintsDateRanges: getSprintsDateRange(state.Project.project.sprints)
 });
 
 const mapDispatchToProps = {

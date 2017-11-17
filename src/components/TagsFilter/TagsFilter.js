@@ -35,7 +35,7 @@ class TagsFilter extends React.Component {
         backspaceToRemoveMessage={''}
         noResultsText="Нет результатов"
         multi
-        ignoreCase={false}
+        ignoreCase
         options={this.options()}
         filterOption={el=>el}
         onChange={this.props.onTagSelect}
@@ -55,12 +55,10 @@ TagsFilter.propTypes = {
   tasksTagsOptions: PropTypes.array.isRequired
 };
 
-const mapStateToProps = state => {
-  return {
-    projectsTagsOptions: state.Projects.tagsFilter,
-    tasksTagsOptions: state.Tasks.tagsFilter
-  };
-};
+const mapStateToProps = state => ({
+  projectsTagsOptions: state.Projects.tagsFilter,
+  tasksTagsOptions: state.Tasks.tagsFilter
+});
 
 const mapDispatchToProps = {
   getTagsFilter

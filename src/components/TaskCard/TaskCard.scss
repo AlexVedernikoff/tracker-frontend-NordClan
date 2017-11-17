@@ -1,5 +1,4 @@
-@import '../../styles/variables';
-
+@import "../../styles/variables";
 .taskCard {
   position: relative;
   border: 1px solid darken($color-gray, 5%);
@@ -8,10 +7,10 @@
   transition-property: opacity;
   transition-duration: 0.2s;
   background-color: white;
-
   .priorityMarker {
     content: "";
     display: block;
+    cursor: pointer;
     position: absolute;
     top: -1px;
     right: -1px;
@@ -21,28 +20,38 @@
     border-left: 0.5rem solid transparent;
     border-bottom: 0.5rem solid transparent;
   }
-
   h5 {
     font-weight: normal;
   }
-
   &.priority {
-    &-1 .priorityMarker { border-top: 0.5rem solid $priority1; border-right: 0.5rem solid $priority1 };
-    &-2 .priorityMarker { border-top: 0.5rem solid $priority2; border-right: 0.5rem solid $priority2 };
-    &-3 .priorityMarker { border-top: 0.5rem solid $priority3; border-right: 0.5rem solid $priority3 };
-    &-4 .priorityMarker { border-top: 0.5rem solid $priority4; border-right: 0.5rem solid $priority4 };
-    &-5 .priorityMarker { border-top: 0.5rem solid $priority5; border-right: 0.5rem solid $priority5 };
+    &-1 .priorityMarker {
+      border-top: 0.5rem solid $priority1;
+      border-right: 0.5rem solid $priority1;
+    }
+    &-2 .priorityMarker {
+      border-top: 0.5rem solid $priority2;
+      border-right: 0.5rem solid $priority2;
+    }
+    &-3 .priorityMarker {
+      border-top: 0.5rem solid $priority3;
+      border-right: 0.5rem solid $priority3;
+    }
+    &-4 .priorityMarker {
+      border-top: 0.5rem solid $priority4;
+      border-right: 0.5rem solid $priority4;
+    }
+    &-5 .priorityMarker {
+      border-top: 0.5rem solid $priority5;
+      border-right: 0.5rem solid $priority5;
+    }
   }
-
   h5 {
     margin: 0;
     margin-bottom: 8px;
     font-size: 1em;
   }
-
   p {
     margin: 0;
-
     &:last-child {
       margin-bottom: 0;
     }
@@ -60,10 +69,8 @@
 .taskMeta {
   font-size: 11px;
   color: gray;
-
   span {
     display: inline-block;
-
     &:first-child {
       margin-right: 4px;
     }
@@ -81,7 +88,6 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-
   svg {
     display: block;
     position: absolute;
@@ -94,8 +100,13 @@
   }
 }
 
-.inhold { background-color: $color-green; }
-.inprogress { background-color: $color-dark; }
+.inhold {
+  background-color: $color-green;
+}
+
+.inprogress {
+  background-color: $color-dark;
+}
 
 .progressBar {
   position: absolute;
@@ -105,17 +116,28 @@
   height: 2px;
   margin-top: 8px;
   background-color: $color-gray;
-
   & > div {
     height: 2px;
   }
 }
 
-.green { background-color: $color-green; }
-.red { background-color: $color-red; }
+.green {
+  background-color: $color-green;
+}
 
-svg.green { background-color: transparent; fill: $color-green; }
-svg.red { background-color: transparent; fill: $color-red; }
+.red {
+  background-color: $color-red;
+}
+
+svg.green {
+  background-color: transparent;
+  fill: $color-green;
+}
+
+svg.red {
+  background-color: transparent;
+  fill: $color-red;
+}
 
 .time {
   position: absolute;
@@ -130,16 +152,18 @@ svg.red { background-color: transparent; fill: $color-red; }
   padding: 2px;
   transition: $transition;
   overflow: hidden;
-
   svg {
     vertical-align: top;
     width: 13px;
     height: 13px;
   }
-
   span {
     margin: 0 4px;
   }
+}
+
+.bug {
+  background-color: lighten($color-dark, 73%);
 }
 
 .header {
@@ -147,6 +171,10 @@ svg.red { background-color: transparent; fill: $color-red; }
   color: lighten($color-black, 40%);
   margin-bottom: 0.5rem;
   font-size: 11px;
+}
+
+.headerTaskType {
+  margin-left: 3px;
 }
 
 .dropped {

@@ -66,7 +66,8 @@
     "redux": "^3.7.2",
     "redux-devtools-extension": "^2.13.2",
     "redux-thunk": "^2.2.0",
-    "shortid": "^2.2.8"
+    "shortid": "^2.2.8",
+    "socket.io-client": "^2.0.4"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
@@ -105,7 +106,7 @@
     "webpack-dev-server": "^2.5.1"
   },
   "scripts": {
-    "start": "node_modules/.bin/cross-env NODE_ENV=development webpack-dev-server --colors --config webpack.dev.js",
+    "start": "node_modules/.bin/cross-env NODE_ENV=development webpack-dev-server --inline --colors --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
     "deploy": "gh-pages -d build",
     "docker": "docker build -t simtrackfront ."

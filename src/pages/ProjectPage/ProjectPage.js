@@ -4,32 +4,34 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 
 import RouteTabs from '../../components/RouteTabs';
-import { IconEdit } from '../../components/Icons';
 import HttpError from '../../components/HttpError';
 import * as css from './ProjectPage.scss';
 import ProjectTitle from './ProjectTitle';
 
-import { getProjectInfo } from '../../actions/Project';
+import { getProjectInfo as getProject } from '../../actions/Project';
 
 class ProjectPage extends Component {
+  static propTypes = {
+    children: PropTypes.object,
+    getProjectInfo: PropTypes.func,
+    params: PropTypes.object,
+    project: PropTypes.object
+  };
+
   constructor (props) {
     super(props);
   }
 
   componentDidMount () {
-    const { getProjectInfo, GetProjectSprints } = this.props;
+    const { getProjectInfo } = this.props;
     getProjectInfo(this.props.params.projectId);
   }
 
   render () {
-    // Mocks
-    const pic
-      = 'https://static.qiwi.com/img/qiwi_com/favicon/favicon-192x192.png';
 
     return (this.props.project.error) ? (<HttpError error={this.props.project.error}/>) : (
       <div id="project-page">
         <ProjectTitle
-          pic={pic}
           name={this.props.project.name || ''}
           prefix={this.props.project.prefix || ''}
           id={this.props.project.id || ''}
@@ -88,17 +90,12 @@ class ProjectPage extends Component {
   }
 }
 
-ProjectPage.propTypes = {
-  children: PropTypes.object,
-  getProjectInfo: PropTypes.func.isRequired
-};
-
 const mapStateToProps = state => ({
   project: state.Project.project
 });
 
 const mapDispatchToProps = {
-  getProjectInfo
+  getProjectInfo: getProject
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectPage);

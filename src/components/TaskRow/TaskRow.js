@@ -5,7 +5,7 @@ import { Link } from 'react-router';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import getTypeById from '../../utils/TaskTypes';
 import getStatusNameById from '../../utils/TaskStatuses';
-
+import { connect } from 'react-redux';
 import Tags from '../Tags';
 import Tag from '../Tag';
 import * as css from './TaskRow.scss';
@@ -32,6 +32,7 @@ class TaskRow extends React.Component {
       card,
       isDragging,
       onClickTag,
+      taskTypes,
       ...other
     } = this.props;
 
@@ -47,7 +48,7 @@ class TaskRow extends React.Component {
               <div className={css.priorityMarker} data-tip={`Приоритет: ${task.prioritiesId}`}>{task.prioritiesId}</div>
             </div>
             <div className={css.prefix}>{`${prefix}-${task.id}`}</div>
-            <div className={css.type}>{getTypeById(task.typeId)}</div>
+            <div className={css.type}>{getTypeById(task.typeId, taskTypes)}</div>
             <div className={css.type}>{`На стадии: ${getStatusNameById(task.statusId)}`}</div>
             <div>
               {
@@ -144,7 +145,12 @@ TaskRow.propTypes = {
   onClickTag: PropTypes.func,
   prefix: PropTypes.string,
   shortcut: PropTypes.bool,
-  task: PropTypes.object
+  task: PropTypes.object,
+  taskTypes: PropTypes.array
 };
 
-export default TaskRow;
+const mapStateToProps = (state) => ({
+  taskTypes: state.Dictionaries.taskTypes
+});
+
+export default connect(mapStateToProps, {})(TaskRow);

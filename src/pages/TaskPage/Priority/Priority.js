@@ -31,7 +31,7 @@ class Priority extends Component {
 
   render () {
     return (
-      <div className={css.priority}>
+      <div className={classnames(css.priority, {[css.vertical]: this.props.vertical})}>
         {this.props.text === undefined ? 'Приоритет:' : this.props.text}
         <span className={css.count}>
           {[1, 2, 3, 4, 5].map((priorityId, i) => {
@@ -42,8 +42,7 @@ class Priority extends Component {
                   this.props.onChange ? this.changePriority : this.setPriority
                 }
                 className={classnames({
-                  [css.active]: priorityId === this.props.priority,
-                  [css.inversionColor]: this.props.inversionColor
+                  [css.active]: priorityId === this.props.priority
                 })}
               >
                 {priorityId}
@@ -57,14 +56,18 @@ class Priority extends Component {
 }
 
 Priority.propTypes = {
-  taskId: PropTypes.number,
-  priority: PropTypes.number,
   onChange: PropTypes.func,
-  onPrioritySet: PropTypes.func
+  onChangeCallback: PropTypes.func,
+  onPrioritySet: PropTypes.func,
+  priority: PropTypes.number,
+  taskId: PropTypes.number,
+  text: PropTypes.string,
+  vertical: PropTypes.bool
 };
 
 Priority.defaultProps = {
-  onChangeCallback: () => {}
-}
+  onChangeCallback: () => {},
+  vertical: false
+};
 
 export default Priority;

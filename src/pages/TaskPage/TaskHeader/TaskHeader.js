@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { Row, Col } from 'react-flexbox-grid/lib/index';
 import Button from '../../../components/Button';
 import ConfirmModal from '../../../components/ConfirmModal';
 import { Link } from 'react-router';
@@ -10,11 +9,11 @@ import Priority from '../Priority';
 import ButtonGroup from '../../../components/ButtonGroup';
 import TaskTitle from '../TaskTitle';
 import { getProjectUsers } from '../../../actions/Project';
-import TaskTypes from '../../../constants/TaskTypes';
 import * as TaskStatuses from '../../../constants/TaskStatuses';
 import { connect } from 'react-redux';
 import CopyThis from '../../../components/CopyThis';
 import { history } from '../../../History';
+import getTypeById from '../../../utils/TaskTypes';
 
 const getNewStatus = newPhase => {
   let newStatusId;
@@ -60,7 +59,7 @@ class TaskHeader extends Component {
       this.state.clickedStatus = e.currentTarget.textContent;
       this.handleOpenModal();
     }
-  }
+  };
 
   handleOpenModal = () => {
     this.props.getProjectUsers(this.props.projectId);
@@ -86,7 +85,7 @@ class TaskHeader extends Component {
   handleCancelTask = () => {
     this.changeStatus(TaskStatuses.CANCELED);
     this.handleCloseCancelModal();
-  }
+  };
 
   selectValue = (e, name) => {
     this.setState({ [name]: e });
@@ -100,7 +99,7 @@ class TaskHeader extends Component {
       },
       'Status'
     );
-  }
+  };
 
   changePerformer = (performerId) => {
     this.props.onChange(
@@ -112,7 +111,7 @@ class TaskHeader extends Component {
       'User'
     );
     this.handleCloseModal();
-  }
+  };
 
   getButtonType = (inProcessStatusId, inHoldStatusId) => {
     const { task } = this.props;
@@ -125,7 +124,7 @@ class TaskHeader extends Component {
       type = 'bordered';
     }
     return type;
-  }
+  };
 
   getButtonIcon = (inProcessStatusId, inHoldStatusId) => {
     const { task } = this.props;
@@ -136,7 +135,7 @@ class TaskHeader extends Component {
       icon = 'IconPlay';
     }
     return icon;
-  }
+  };
 
   getButtonTip = (inProcessStatusId, inHoldStatusId, phase) => {
     const { task } = this.props;
@@ -149,7 +148,7 @@ class TaskHeader extends Component {
       tip = `Перевести в стадию ${phase}`;
     }
     return tip;
-  }
+  };
 
   handleClose = () => {
     this.props.onChange(
@@ -163,7 +162,7 @@ class TaskHeader extends Component {
   };
 
   render () {
-    const { task } = this.props;
+    const { task, taskTypes } = this.props;
     const css = require('./TaskHeader.scss');
     const users = this.props.users.map(item => ({
       value: item.user ? item.user.id : item.id,
@@ -199,10 +198,10 @@ class TaskHeader extends Component {
                 : null
             }
           </CopyThis>
-          {task.typeId && TaskTypes[task.typeId]
+          {task.typeId && getTypeById(task.typeId, taskTypes)
             ? <div>
                 <span>
-                  {TaskTypes[task.typeId]}
+                  {getTypeById(task.typeId, taskTypes)}
                 </span>
               </div>
             : null}
@@ -341,12 +340,14 @@ TaskHeader.propTypes = {
   onChange: PropTypes.func.isRequired,
   projectId: PropTypes.string.isRequired,
   task: PropTypes.object.isRequired,
+  taskTypes: PropTypes.array,
   users: PropTypes.array
 };
 
 const mapStateToProps = state => ({
   users: state.Project.project.users,
-  location: state.routing.locationBeforeTransitions
+  location: state.routing.locationBeforeTransitions,
+  taskTypes: state.Dictionaries.taskTypes
 });
 
 const mapDispatchToProps = {

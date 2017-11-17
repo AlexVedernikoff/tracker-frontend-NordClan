@@ -13,7 +13,7 @@ export default class DatepickerDropdown extends Component {
   }
 
   render () {
-    const { ...other } = this.props;
+    const { disabledDataRanges, ...other } = this.props;
 
     return (
       <DayPickerInput
@@ -23,7 +23,8 @@ export default class DatepickerDropdown extends Component {
         format="DD.MM.YYYY"
         dayPickerProps={{
           locale: 'ru',
-          localeUtils: { ...LocaleUtils }
+          localeUtils: { ...LocaleUtils },
+          disabledDays: disabledDataRanges
         }}
       />
     );
@@ -31,6 +32,7 @@ export default class DatepickerDropdown extends Component {
 }
 
 DatepickerDropdown.propTypes = {
+  disabledDataRanges: PropTypes.array,
   name: PropTypes.string,
   options: PropTypes.array
 };

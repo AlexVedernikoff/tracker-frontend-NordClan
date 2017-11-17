@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { IconError, IconClose } from '../Icons';
+import { IconError } from '../Icons';
 import * as css from './Notification.scss';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
@@ -21,13 +21,13 @@ class Notification extends Component {
   render () {
     return (
       <div
+        onClick={this.hideNotification}
         className={classnames({
           [css.Notification]: true,
           [css.hide]: !this.state.isShown,
           [css.error]: this.props.notification.type === 'error'
         })}
       >
-        <IconClose className={css.iconClose} onClick={this.hideNotification} />
         <IconError className={css.MainIcon} />
         <p className={css.NotificationMessage}>
           {this.props.notification.message}

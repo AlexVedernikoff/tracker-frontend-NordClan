@@ -7,14 +7,15 @@ import { Col, Row } from 'react-flexbox-grid';
 import moment from 'moment';
 import classnames from 'classnames';
 import _ from 'lodash';
-import Input from '../Input';
 import Button from '../Button';
 import TextArea from '../TextArea';
 import SelectDropdown from '../SelectDropdown';
+import ValidatedInput from '../ValidatedInput';
 import * as css from './CreateTaskModal.scss';
 import Priority from '../../pages/TaskPage/Priority';
 import { closeCreateTaskModal, createTask } from '../../actions/Project';
 import { BACKLOG_ID } from '../../constants/Sprint';
+import Validator from '../ValidatedInput/Validator';
 
 class CreateTaskModal extends Component {
   constructor (props) {
@@ -22,39 +23,19 @@ class CreateTaskModal extends Component {
     this.state = {
       selectedSprint: null,
       selectedPerformer: null,
-      taskName: null,
-      description: null,
+      taskName: '',
+      description: '',
       openTaskPage: false,
       prioritiesId: 3,
-      types: [
-        { label: 'Фича', value: 1 },
-        { label: 'Доп. Фича', value: 3 },
-        { label: 'Баг', value: 2 },
-        { label: 'Регрес. Баг', value: 4 },
-        { label: 'Баг от клиента', value: 5 }
-      ],
-      selectedType: { label: 'Фича', value: 1 }
+      selectedType: null
     };
+    this.validator = new Validator();
   }
 
   componentWillReceiveProps (nextProps) {
-    const selectedSprint
-      = this.state.selectedSprint !== nextProps.selectedSprintValue
-        ? nextProps.selectedSprintValue
-        : this.state.selectedSprint;
-
-    this.setState(state => {
-      return {
-        ...state,
-        selectedSprint,
-        selectedPerformer: null,
-        taskName: null,
-        description: null,
-        openTaskPage: false,
-        prioritiesId: 3,
-        selectedType: { label: 'Фича', value: 1 }
-      };
-    });
+    if (this.state.selectedSprint !== nextProps.selectedSprintValue) {
+      this.setState({ selectedSprint: nextProps.selectedSprintValue });
+    }
   }
 
   componentWillUnmount () {
@@ -70,38 +51,28 @@ class CreateTaskModal extends Component {
 
   handleModalSprintChange = selectedSprint => {
     this.setState({
-      selectedSprint: selectedSprint !== null ? selectedSprint.value : 0
+      selectedSprint: selectedSprint ? selectedSprint.value : 0
     });
   };
 
   handlePerformerChange = selectedPerformer => {
     this.setState({
-      selectedPerformer:
-        selectedPerformer !== null ? selectedPerformer.value : 0
+      selectedPerformer: selectedPerformer ? selectedPerformer.value : 0
     });
   };
 
-  handleInput = event => {
-    this.setState({
-      taskName: event.target.value
-    });
-  };
+  handlePriorityChange = priorityId =>
+    this.setState({ prioritiesId: +priorityId });
 
-  handleDescription = event => {
-    this.setState({
-      description: event.target.value
-    });
-  };
-
-  handlePriorityChange = priorityId => {
-    this.setState({
-      prioritiesId: +priorityId
-    });
-  };
+  submitTaskAndOpen = () =>
+    this.setState({ openTaskPage: true }, () => this.submitTask());
 
   submitTask = event => {
     if (event) {
       event.preventDefault();
+    }
+    if (!this.state.selectedType || !this.state.selectedType.value) {
+      return;
     }
     this.props.createTask(
       {
@@ -123,15 +94,7 @@ class CreateTaskModal extends Component {
     );
   };
 
-  submitTaskAndOpen = () => {
-    this.setState({ openTaskPage: true }, () => this.submitTask());
-  };
-
-  onTypeChange = value => {
-    this.setState({
-      selectedType: value
-    });
-  };
+  onTypeChange = value => this.setState({ selectedType: value ? value : 1 });
 
   handleCloseModal = event => {
     event.preventDefault();
@@ -176,11 +139,19 @@ class CreateTaskModal extends Component {
     }));
   };
 
+  handleChange = field => event =>
+    this.setState({ [field]: event.target.value.trim() });
+
   render () {
     const formLayout = {
       firstCol: 5,
       secondCol: 7
     };
+
+    const types = this.props.taskTypes.map(({ name, id }) => ({
+      label: name,
+      value: id
+    }));
 
     return (
       <Modal
@@ -199,12 +170,21 @@ class CreateTaskModal extends Component {
                 sm={formLayout.secondCol}
                 className={css.rightColumn}
               >
-                <Input
-                  autoFocus
-                  onChange={this.handleInput}
-                  name="taskName"
-                  placeholder="Название задачи"
-                />
+                {this.validator.validate(
+                  (handleBlur, shouldMarkError) => (
+                    <ValidatedInput
+                      autoFocus
+                      name="taskName"
+                      placeholder="Название задачи"
+                      onChange={this.handleChange('taskName')}
+                      onBlur={handleBlur}
+                      shouldMarkError={shouldMarkError}
+                      errorText="Длина менее 4 символов"
+                    />
+                  ),
+                  'taskName',
+                  this.state.taskName.length < 4
+                )}
               </Col>
             </Row>
           </label>
@@ -219,7 +199,7 @@ class CreateTaskModal extends Component {
                 className={css.rightColumn}
               >
                 <TextArea
-                  onChange={this.handleDescription}
+                  onChange={this.handleChange('description')}
                   name="description"
                   placeholder="Описание задачи"
                 />
@@ -240,7 +220,7 @@ class CreateTaskModal extends Component {
                   multi={false}
                   ignoreCase
                   placeholder="Выберите тип"
-                  options={this.state.types}
+                  options={types}
                   className={css.selectSprint}
                   value={this.state.selectedType}
                   onChange={this.onTypeChange}
@@ -320,12 +300,14 @@ class CreateTaskModal extends Component {
               text="Создать задачу"
               type="green"
               htmlType="submit"
+              disabled={this.validator.isDisabled}
               onClick={this.submitTask}
             />
             <Button
               text="Создать и открыть"
               htmlType="button"
               type="green-lighten"
+              disabled={this.validator.isDisabled}
               onClick={this.submitTaskAndOpen}
             />
           </div>
@@ -342,11 +324,13 @@ CreateTaskModal.propTypes = {
   isCreateTaskModalOpen: PropTypes.bool.isRequired,
   parentTaskId: PropTypes.number,
   project: PropTypes.object,
-  selectedSprintValue: PropTypes.number
+  selectedSprintValue: PropTypes.number,
+  taskTypes: PropTypes.array
 };
 
 const mapStateToProps = state => ({
-  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen
+  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
+  taskTypes: state.Dictionaries.taskTypes
 });
 
 const mapDispatchToProps = {

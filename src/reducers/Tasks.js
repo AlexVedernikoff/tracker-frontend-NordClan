@@ -1,6 +1,7 @@
 import * as TasksActions from '../constants/Tasks';
 import * as TaskActions from '../constants/Task';
 import * as TagsActions from '../constants/Tags';
+import * as ProjectActions from '../constants/Project';
 
 const InitialState = {
   tasks: [],
@@ -28,6 +29,20 @@ function Tasks (state = InitialState, action) {
       isReceiving: false
     };
 
+  case TasksActions.CLEAR_CURRENT_PROJECT_AND_TASKS:
+    return {
+      ...state,
+      tasks: [],
+      pagesCount: 0,
+      isReceiving: false
+    };
+
+  case ProjectActions.TASK_CREATE_REQUEST_SUCCESS:
+    return {
+      ...state,
+      tasks: [...state.tasks, action.task]
+    };
+
   case TagsActions.GET_TAGS_FILTER_SUCCESS:
     if (action.data.filterFor === 'task') {
       return {
@@ -40,13 +55,14 @@ function Tasks (state = InitialState, action) {
     };
 
   case TaskActions.TASK_CHANGE_REQUEST_SUCCESS:
-    const tasks = state.tasks.map(task => {
-      if (task.id === action.changedFields.id) {
-        return { ...task, ...action.changedFields };
-      } else {
-        return task;
-      }
-    })
+    const tasks = state.tasks.map(task => (
+      task.id === action.changedFields.id
+        ? {
+          ...task,
+          ...action.changedFields
+        }
+        : task
+    ));
 
     return {
       ...state,

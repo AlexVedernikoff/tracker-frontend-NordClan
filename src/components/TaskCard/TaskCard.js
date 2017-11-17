@@ -1,14 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import classnames from 'classnames';
 import { Link } from 'react-router';
 import { DragSource } from 'react-dnd';
-import { TASK_CARD } from '../../constants/DragAndDrop';
+import { history } from '../../History';
 import getTypeById from '../../utils/TaskTypes';
+import { TASK_CARD } from '../../constants/DragAndDrop';
 
-import { IconPlay, IconPause, IconTime } from '../Icons';
 import * as css from './TaskCard.scss';
 import PriorityBox from './PriorityBox';
+import CopyThis from '../../components/CopyThis';
+import { IconPlay, IconPause, IconTime, IconBug } from '../Icons';
 
 const taskCardSource = {
   beginDrag (props) {
@@ -28,9 +31,9 @@ const getTaskTime = (factTime, planTime) => {
   }
 };
 
-function collect (connect, monitor) {
+function collect (connection, monitor) {
   return {
-    connectDragSource: connect.dragSource(),
+    connectDragSource: connection.dragSource(),
     isDragging: monitor.isDragging()
   };
 }
@@ -53,7 +56,7 @@ class TaskCard extends React.Component {
 
   togglePriorityBox = () => {
     this.setState({ isOpenPriority: !this.state.isOpenPriority });
-  }
+  };
 
   render () {
     const {
@@ -64,14 +67,21 @@ class TaskCard extends React.Component {
       onOpenPerformerModal,
       myTaskBoard,
       section,
+      taskTypes,
       ...other
     } = this.props;
 
     const classPriority = 'priority-' + task.prioritiesId;
+    const isBug = ~[2, 4, 5].indexOf(task.typeId);
 
     return (
       connectDragSource(
-        <div className={classnames({[css.taskCard]: true, [css[classPriority]]: true, [css.dropped]: isDragging})} {...other}>
+        <div className={classnames({
+          [css.taskCard]: true,
+          [css[classPriority]]: true,
+          [css.dropped]: isDragging,
+          [css.bug]: isBug
+        })} {...other}>
           {
             task.statusId !== 1 && task.statusId !== 8
             ? <div
@@ -88,7 +98,17 @@ class TaskCard extends React.Component {
             </div>
             : null
           }
-          <span className={css.header}>{`${task.prefix}-${task.id}`} | {getTypeById(task.typeId)}</span>
+          <CopyThis
+            wrapThisInto={'div'}
+            isCopiedBackground
+            textToCopy={`${location.origin}${history.createHref(
+              `/projects/${task.projectId}/tasks/${task.id}`
+            )}`}
+          >
+            <div className={css.header}>
+              {isBug ? <IconBug/> : null} {task.prefix}-{task.id} | {getTypeById(task.typeId, taskTypes)}
+            </div>
+          </CopyThis>
           <Link to={`/projects/${task.projectId}/tasks/${task.id}`} className={css.taskName}>
             <div>{task.name}</div>
           </Link>
@@ -124,13 +144,16 @@ class TaskCard extends React.Component {
               </div>
               : null
           }
-          <div className={css.priorityMarker} onClick={this.togglePriorityBox}/>
-          <PriorityBox
-            open={this.state.isOpenPriority}
-            taskId={task.id}
-            priorityId={task.prioritiesId}
-            hideBox={this.togglePriorityBox}
-          />
+          {
+            this.state.isOpenPriority
+            ? <PriorityBox
+              taskId={task.id}
+              isTime={!!(task.factExecutionTime || task.plannedExecutionTime)}
+              priorityId={task.prioritiesId}
+              hideBox={this.togglePriorityBox}
+            />
+            : <div className={css.priorityMarker} onClick={this.togglePriorityBox}/>
+          }
         </div>
       )
     );
@@ -140,10 +163,16 @@ class TaskCard extends React.Component {
 TaskCard.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
   isDragging: PropTypes.bool.isRequired,
+  myTaskBoard: PropTypes.any,
   onChangeStatus: PropTypes.func.isRequired,
   onOpenPerformerModal: PropTypes.func.isRequired,
   section: PropTypes.string.isRequired,
-  task: PropTypes.object
+  task: PropTypes.object,
+  taskTypes: PropTypes.array
 };
 
-export default DragSource(TASK_CARD, taskCardSource, collect)(TaskCard);
+const mapStateToProps = state => ({
+  taskTypes: state.Dictionaries.taskTypes
+});
+
+export default DragSource(TASK_CARD, taskCardSource, collect)(connect(mapStateToProps, {})(TaskCard));
