@@ -48,13 +48,13 @@ class AppRouter extends Component {
     history: PropTypes.object,
     isLoggedIn: PropTypes.bool,
     loaded: PropTypes.bool,
-    redirectPath: PropTypes.string,
+    redirectPath: PropTypes.object,
     setRedirectPath: PropTypes.func
   };
 
   requireAuth = (nextState, replace, cb) => {
     if (!this.props.isLoggedIn) {
-      this.props.setRedirectPath(this.props.history.getCurrentLocation().pathname);
+      this.props.setRedirectPath(this.props.history.getCurrentLocation());
       replace('/login');
     }
     cb();

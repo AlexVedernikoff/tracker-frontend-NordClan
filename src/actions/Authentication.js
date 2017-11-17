@@ -41,9 +41,9 @@ const userInfoReceiveFailed = () => ({
   type: AuthActions.USER_INFO_RECEIVE_ERROR
 });
 
-export const setRedirectPath = path => ({
+export const setRedirectPath = pathObj => ({
   type: AuthActions.SET_REDIRECT_PATH,
-  path: path
+  path: pathObj
 });
 
 export const doAuthentication = ({ username, password }) => {
