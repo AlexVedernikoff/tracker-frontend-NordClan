@@ -12,20 +12,20 @@ import {
 } from '../components/Icons';
 
 
-const getIcon = function (id, style) {
+const getIcon = function (id) {
   const maIcons = {
-    1: <IconLaptop style={style}/>,
-    2: <IconCall style={style}/>,
-    3: <IconCheckList style={style}/>,
-    4: <IconBook style={style}/>,
-    5: <IconPlane style={style}/>,
-    6: <IconCase style={style}/>,
-    7: <IconHospital style={style}/>,
-    8: <IconOrganization style={style}/>
+    1: <IconLaptop/>,
+    2: <IconCall/>,
+    3: <IconCheckList/>,
+    4: <IconBook/>,
+    5: <IconPlane/>,
+    6: <IconCase/>,
+    7: <IconHospital/>,
+    8: <IconOrganization/>
   };
 
   let icon = maIcons[id];
-  if (!icon) icon = <IconLaptop style={style}/>;
+  if (!icon) icon = <IconLaptop/>;
   return icon;
 };
 

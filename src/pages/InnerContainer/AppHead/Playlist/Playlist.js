@@ -37,7 +37,7 @@ class Playlist extends Component {
       this.activityTabs = newProps.maTypes.map(element => ({
         activityId: element.id,
         description: element.name,
-        icon: getMaIcon(element.id, null)
+        icon: getMaIcon(element.id)
       }));
 
       this.activityTabs.unshift(

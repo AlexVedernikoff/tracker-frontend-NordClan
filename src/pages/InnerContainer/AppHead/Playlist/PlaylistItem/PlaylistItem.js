@@ -17,8 +17,6 @@ import {
   IconEyeDisable
 } from '../../../../../components/Icons';
 
-const activityButtonStyle = {width: '1.5rem', height: '1.5rem'};
-
 class PlaylistItem extends Component {
 
   constructor (props) {
@@ -112,7 +110,7 @@ class PlaylistItem extends Component {
           [css.actionButton]: true,
           [css.locked]: this.props.item.status !== 'inhold' && this.props.item.status !== 'inprogress'
         })}>
-          {getMaIcon(this.props.item.typeId, activityButtonStyle)}
+          {getMaIcon(this.props.item.typeId)}
         </div>
         <div className={css.taskNameWrapper}>
           <div className={css.taskTitle}>
