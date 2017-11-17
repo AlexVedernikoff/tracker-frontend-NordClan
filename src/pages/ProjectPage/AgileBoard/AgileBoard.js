@@ -338,21 +338,25 @@ class AgileBoard extends Component {
               style={{ marginLeft: 8, marginRight: 8 }}
             />
           </Row> : null}
-          {!this.props.myTaskBoard ? <Row className={css.filtersRow}>
-            <Checkbox checked={this.state.isOnlyMine} onChange={this.toggleMine} label="Только мои задачи" style={{alignItems: 'center', padding: '0.5rem 1.5rem'}} />
-            <Col xs style={{minWidth: 200}}>
-              <SelectDropdown
-                name="filterTags"
-                multi
-                placeholder="Введите название тега..."
-                backspaceToRemoveMessage=""
-                value={this.state.filterTags}
-                onChange={this.selectTagForFiltrated}
-                noResultsText="Нет результатов"
-                options={this.getAllTags()}
-              />
-            </Col>
-          </Row> : null}
+          {
+            !this.props.myTaskBoard
+              ? <Row className={css.filtersRow}>
+                <Checkbox checked={this.state.isOnlyMine} onChange={this.toggleMine} label="Только мои задачи" style={{alignItems: 'center', padding: '0.5rem 1.5rem'}} />
+                <Col xs style={{minWidth: 200}}>
+                  <SelectDropdown
+                    name="filterTags"
+                    multi
+                    placeholder="Введите название тега..."
+                    backspaceToRemoveMessage=""
+                    value={this.state.filterTags}
+                    onChange={this.selectTagForFiltrated}
+                    noResultsText="Нет результатов"
+                    options={this.getAllTags()}
+                  />
+                </Col>
+              </Row>
+              : null
+          }
           <div className={css.boardContainer}>
             {
               this.props.myTaskBoard || this.state.isOnlyMine
