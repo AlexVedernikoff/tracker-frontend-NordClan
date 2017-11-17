@@ -7,83 +7,16 @@ import onClickOutside from 'react-onclickoutside';
 import ReactTooltip from 'react-tooltip';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import getMaIcon from '../../../../constants/MagicActivityIcons';
 
-import {
-  IconPause,
-  IconBook,
-  IconList,
-  IconLaptop,
-  IconCall,
-  IconPlane,
-  IconCase,
-  IconHospital,
-  IconCheckList,
-  IconOrganization
-} from '../../../../components/Icons';
+import { IconPause, IconList } from '../../../../components/Icons';
 import List from './List';
 import * as css from './Playlist.scss';
-import * as TimesheetTypes from '../../../../constants/TimesheetTypes';
 
 class Playlist extends Component {
   constructor (props) {
     super(props);
-    this.activityTabs = [
-      {
-        activityId: 'all',
-        name: 'all',
-        description: 'Все активности',
-        icon: <IconList/>
-      },
-      {
-        activityId: TimesheetTypes.IMPLEMENTATION,
-        name: 'work',
-        description: 'Работа',
-        icon: <IconLaptop/>
-      },
-      {
-        activityId: TimesheetTypes.MEETING,
-        name: 'meeting',
-        description: 'Совещание',
-        icon: <IconCall/>
-      },
-      {
-        activityId: TimesheetTypes.PRESALE,
-        name: 'presale',
-        description: 'Преселлинг и оценка',
-        icon: <IconCheckList/>
-      },
-      {
-        activityId: TimesheetTypes.EDUCATION,
-        name: 'education',
-        description: 'Обучение',
-        icon: <IconBook/>
-      },
-      {
-        activityId: TimesheetTypes.VACATION,
-        name: 'vacation',
-        description: 'Отпуск',
-        icon: <IconPlane/>
-      },
-      {
-        activityId: TimesheetTypes.BUSINESS_TRIP,
-        name: 'trip',
-        description: 'Командировка',
-        icon: <IconCase/>
-      },
-      {
-        activityId: TimesheetTypes.HOSPITAL,
-        name: 'hospital',
-        description: 'Больничный',
-        icon: <IconHospital/>
-      },
-      {
-        activityId: 7,
-        name: 'control',
-        description: 'Управление',
-        icon: <IconOrganization/>
-      }
-    ];
-
+    this.activityTabs = [];
     this.state = {
       activeDayTab: moment().day() - 1,
       activeActivityTab: 'all',
@@ -96,6 +29,25 @@ class Playlist extends Component {
   componentDidMount () {
     ReactTooltip.rebuild();
     this.setState({activeTab: this.activityTabs[0]});
+  }
+
+  componentWillReceiveProps (newProps) {
+
+    if (newProps.magicActivitiesTypes.length) {
+      this.activityTabs = newProps.magicActivitiesTypes.map(element => ({
+        activityId: element.id,
+        description: element.name,
+        icon: getMaIcon(element.id)
+      }));
+
+      this.activityTabs.unshift(
+        {
+          activityId: 'all',
+          description: 'Все активности',
+          icon: <IconList/>
+        }
+      );
+    }
   }
 
   componentDidUpdate () {
@@ -291,15 +243,16 @@ class Playlist extends Component {
 }
 
 Playlist.propTypes = {
+  magicActivitiesTypes: PropTypes.array,
   tracks: PropTypes.object
 };
 
 
 const mapStateToProps = state => {
   return {
-    tracks: state.TimesheetPlayer.tracks
+    tracks: state.TimesheetPlayer.tracks,
+    magicActivitiesTypes: state.Dictionaries.magicActivityTypes
   };
 };
-
 
 export default connect(mapStateToProps, null)(onClickOutside(Playlist));
