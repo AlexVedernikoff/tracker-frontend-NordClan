@@ -45,7 +45,8 @@ function Projects (state = InitialState, action) {
 
   case ProjectsActions.PROJECT_CREATE_SUCCESS:
     return {
-      ...state
+      ...state,
+      projects: [action.createdProject, ...state.projects]
     };
 
   case TagsActions.GET_TAGS_FILTER_SUCCESS:
