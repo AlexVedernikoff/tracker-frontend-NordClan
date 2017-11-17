@@ -68,20 +68,25 @@ class TaskCard extends React.Component {
     this.setState({ isOpenPriority: !this.state.isOpenPriority });
   };
 
-  isTaskInWork = (statusId) =>
-    statusId !== STATUS_NEW && statusId !== STATUS_DONE;
+  isTaskInWork = (statusId) => (
+    statusId !== STATUS_NEW && statusId !== STATUS_DONE
+  );
 
-  isTaskInProgress = (statusId) =>
-    statusId === STATUS_DEV_HOLD || statusId === STATUS_REVIEW_HOLD || statusId === STATUS_QA_HOLD;
+  isTaskInProgress = (statusId) => (
+    statusId === STATUS_DEV_HOLD || statusId === STATUS_REVIEW_HOLD || statusId === STATUS_QA_HOLD
+  );
 
-  isTaskInHold = (statusId) =>
-    statusId === STATUS_DEV_PROGRESS || statusId === STATUS_REVIEW_PROGRESS || statusId === STATUS_QA_PROGRESS;
+  isTaskInHold = (statusId) => (
+    statusId === STATUS_DEV_PROGRESS || statusId === STATUS_REVIEW_PROGRESS || statusId === STATUS_QA_PROGRESS
+  );
 
-  isInPlan = (plannedTime, factTime) =>
-    (factTime / plannedTime) <= 1 && plannedTime;
+  isInPlan = (plannedTime, factTime) => (
+    (factTime / plannedTime) <= 1 && plannedTime
+  );
 
-  isOutOfPlan = (plannedTime, factTime) =>
-    (factTime / plannedTime) > 1 && plannedTime;
+  isOutOfPlan = (plannedTime, factTime) => (
+    (factTime / plannedTime) > 1 && plannedTime
+  );
 
   render () {
     const {
