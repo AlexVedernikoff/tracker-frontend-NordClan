@@ -29,27 +29,19 @@ function Tasks (state = InitialState, action) {
       isReceiving: false
     };
 
-  case TaskActions.TASK_CHANGE_REQUEST_SUCCESS:
-      const updatedTasks = state.tasks.map(task => {
-        if (task.id === action.changedFields.id) {
-          return {
-            ...task,
-            ...action.changedFields
-          }
-        } else {
-          return task;
-        }
-      })
-      return {
-        ...state,
-        tasks: updatedTasks
-      };
+  case TasksActions.CLEAR_CURRENT_TASKS:
+    return {
+      ...state,
+      tasks: [],
+      pagesCount: 0,
+      isReceiving: false
+    };
 
-    case ProjectActions.TASK_CREATE_REQUEST_SUCCESS:
+  case ProjectActions.TASK_CREATE_REQUEST_SUCCESS:
     return {
       ...state,
       tasks: [...state.tasks, action.task]
-    }
+    };
 
   case TagsActions.GET_TAGS_FILTER_SUCCESS:
     if (action.data.filterFor === 'task') {
@@ -63,13 +55,14 @@ function Tasks (state = InitialState, action) {
     };
 
   case TaskActions.TASK_CHANGE_REQUEST_SUCCESS:
-    const tasks = state.tasks.map(task => {
-      if (task.id === action.changedFields.id) {
-        return { ...task, ...action.changedFields };
-      } else {
-        return task;
-      }
-    })
+    const tasks = state.tasks.map(task => (
+      task.id === action.changedFields.id
+        ? {
+          ...task,
+          ...action.changedFields
+        }
+        : task
+    ));
 
     return {
       ...state,

@@ -3,6 +3,7 @@ import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
+import { CLEAR_CURRENT_TASKS } from '../constants/Tasks';
 
 const startTasksReceive = () => ({
   type: TaskActions.TASKS_RECEIVE_START
@@ -46,3 +47,7 @@ const getTasks = (options) => {
 };
 
 export default getTasks;
+
+export const clearStateTasks = () => ({
+  type: CLEAR_CURRENT_TASKS
+});

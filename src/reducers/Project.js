@@ -1,6 +1,7 @@
 import * as ProjectActions from '../constants/Project';
 import * as TagsActions from '../constants/Tags';
 import * as SprintActions from '../constants/Sprint';
+import * as TasksActions from '../constants/Tasks';
 
 const InitialState = {
   project: {
@@ -206,6 +207,19 @@ export default function Project (state = InitialState, action) {
         ...state.project,
         history: action.data
       }
+    };
+
+  case TasksActions.CLEAR_CURRENT_TASKS:
+    return {
+      project: {
+        sprints: [],
+        users: [],
+        history: [],
+        error: false
+      },
+      TitleIsEditing: false,
+      DescriptionIsEditing: false,
+      isCreateTaskModalOpen: false
     };
 
   default:
