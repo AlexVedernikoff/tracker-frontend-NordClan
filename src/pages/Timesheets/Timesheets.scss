@@ -107,6 +107,13 @@
     right: 0;
     bottom: 0;
     width: 100%;
+    -moz-appearance: textfield;
+
+    &[type=number]::-webkit-inner-spin-button,
+    &[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
   }
 }
 
