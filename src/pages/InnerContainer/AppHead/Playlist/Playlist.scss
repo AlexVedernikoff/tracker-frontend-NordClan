@@ -50,21 +50,21 @@
   background-color: lighten($color-dark, 5%);
   cursor: pointer;
 
+    svg {
+      opacity: 0.6;
+      transition: $transition;
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
   &:hover {
     background-color: rgba(white, .1);
     transition: $transition;
-  }
 
-  svg {
-    opacity: 0.6;
-    transition: $transition;
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-
-  &:hover svg {
-    opacity: 1;
-    transition: $transition;
+    svg {
+      opacity: 1;
+      transition: $transition;
+    }
   }
 
   &.locked:hover svg {
