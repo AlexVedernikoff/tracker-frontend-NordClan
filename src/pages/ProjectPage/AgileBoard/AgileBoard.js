@@ -180,9 +180,9 @@ class AgileBoard extends Component {
   }
 
   toggleMine = () => {
-    this.setState({
-      isOnlyMine: !this.state.isOnlyMine
-    });
+    this.setState((currentState) => ({
+      isOnlyMine: !currentState.isOnlyMine
+    }));
   };
 
   selectValue = (e, name) => {
@@ -355,29 +355,22 @@ class AgileBoard extends Component {
           </Row> : null}
           <div className={css.boardContainer}>
             {
-              this.state.isOnlyMine
-              ? <Row>
+              this.props.myTaskBoard || this.state.isOnlyMine
+                ? <Row>
                   <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'New'} tasks={mineSorted.new}/>
                   <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Dev'} tasks={mineSorted.dev}/>
                   <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Code Review'} tasks={mineSorted.codeReview}/>
                   <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'QA'} tasks={mineSorted.qa}/>
                   <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Done'} tasks={mineSorted.done}/>
                 </Row>
-              : null
+                : <Row>
+                  <PhaseColumn onDrop={this.dropTask} section={'all'} title={'New'} tasks={allSorted.new}/>
+                  <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Dev'} tasks={allSorted.dev} />
+                  <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Code Review'} tasks={allSorted.codeReview} />
+                  <PhaseColumn onDrop={this.dropTask} section={'all'} title={'QA'} tasks={allSorted.qa} />
+                  <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Done'} tasks={allSorted.done} />
+                </Row>
             }
-            {!this.props.myTaskBoard ? <div>
-                {
-                  !this.state.isOnlyMine
-                    ? <Row>
-                    <PhaseColumn onDrop={this.dropTask} section={'all'} title={'New'} tasks={allSorted.new}/>
-                    <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Dev'} tasks={allSorted.dev} />
-                    <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Code Review'} tasks={allSorted.codeReview} />
-                    <PhaseColumn onDrop={this.dropTask} section={'all'} title={'QA'} tasks={allSorted.qa} />
-                    <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Done'} tasks={allSorted.done} />
-                  </Row>
-                    : null
-                }
-              </div> : null}
           </div>
 
           {
