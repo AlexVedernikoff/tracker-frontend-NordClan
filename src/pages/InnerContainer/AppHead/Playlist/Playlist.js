@@ -33,8 +33,8 @@ class Playlist extends Component {
 
   componentWillReceiveProps (newProps) {
 
-    if (newProps.maTypes.length) {
-      this.activityTabs = newProps.maTypes.map(element => ({
+    if (newProps.magicActivitiesTypes.length) {
+      this.activityTabs = newProps.magicActivitiesTypes.map(element => ({
         activityId: element.id,
         description: element.name,
         icon: getMaIcon(element.id)
@@ -243,7 +243,7 @@ class Playlist extends Component {
 }
 
 Playlist.propTypes = {
-  maTypes: PropTypes.array,
+  magicActivitiesTypes: PropTypes.array,
   tracks: PropTypes.object
 };
 
@@ -251,7 +251,7 @@ Playlist.propTypes = {
 const mapStateToProps = state => {
   return {
     tracks: state.TimesheetPlayer.tracks,
-    maTypes: state.Dictionaries.magicActivityTypes
+    magicActivitiesTypes: state.Dictionaries.magicActivityTypes
   };
 };
 

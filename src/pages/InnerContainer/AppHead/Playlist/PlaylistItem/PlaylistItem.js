@@ -85,7 +85,7 @@ class PlaylistItem extends Component {
   };
 
   getNameByType = (typeId) => {
-    return _.find(this.props.maTypes, {id: typeId}).name || 'Не определено';
+    return _.find(this.props.magicActivitiesTypes, {id: typeId}).name || 'Не определено';
   };
 
   render () {
@@ -176,7 +176,7 @@ class PlaylistItem extends Component {
 PlaylistItem.propTypes = {
   index: PropTypes.number.isRequired,
   item: PropTypes.object.isRequired,
-  maTypes: PropTypes.array,
+  magicActivitiesTypes: PropTypes.array,
   updateTimesheet: PropTypes.func.isRequired,
   updateTimesheetDraft: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired
@@ -185,7 +185,7 @@ PlaylistItem.propTypes = {
 const mapStateToProps = state => {
   return {
     tracks: state.TimesheetPlayer.tracks,
-    maTypes: state.Dictionaries.magicActivityTypes
+    magicActivitiesTypes: state.Dictionaries.magicActivityTypes
   };
 };
 
