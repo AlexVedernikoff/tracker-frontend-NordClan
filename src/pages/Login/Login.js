@@ -7,10 +7,11 @@ import Button from '../../components/Button';
 import bg from './bg.jpg';
 import { connect } from 'react-redux';
 import { history } from '../../History';
-import { doAuthentication } from '../../actions/Authentication';
+import { doAuthentication, clearRedirect } from '../../actions/Authentication';
 
 class Login extends Component {
   static propTypes = {
+    clearRedirect: PropTypes.func.isRequired,
     defaultRedirectPath: PropTypes.string,
     doAuthentication: PropTypes.func.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
@@ -29,10 +30,11 @@ class Login extends Component {
   componentDidUpdate () {
     if (this.props.isLoggedIn) {
       const { redirectPath, defaultRedirectPath } = this.props;
-      const nextLocation = Object.keys(redirectPath).length !== 0
-        ? redirectPath
-        : defaultRedirectPath;
-      history.push(nextLocation);
+      const nextLocation = redirectPath || defaultRedirectPath;
+      history.replace(nextLocation);
+      if (redirectPath) {
+        this.props.clearRedirect();
+      }
     }
   }
 
@@ -98,7 +100,8 @@ const mapStateToProps = ({ Auth: { isLoggedIn, redirectPath, defaultRedirectPath
 });
 
 const mapDispatchToProps = {
-  doAuthentication
+  doAuthentication,
+  clearRedirect
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

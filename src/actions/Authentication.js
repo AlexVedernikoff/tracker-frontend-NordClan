@@ -108,3 +108,7 @@ export const getInfoAboutMe = () => {
       });
   };
 };
+
+export const clearRedirect = () => (
+  setRedirectPath(null)
+);
