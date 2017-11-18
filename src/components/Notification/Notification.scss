@@ -1,0 +1,44 @@
+@import '../../styles/variables';
+
+.Notification {
+  width: 100%;
+  height: auto;
+  padding: 0.5rem;
+  background-color: $color-dark;
+  color: white;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  box-shadow: $box-shadow;
+  transition: box-shadow .15s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: $box-shadow;
+  }
+
+  & + & {
+    margin-top: 1rem;
+  }
+}
+
+.NotificationMessage {
+  margin: 0;
+  margin-left: 0.5rem;
+}
+
+.MainIcon {
+  width: 2rem;
+  height: 2rem;
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.error {
+  background-color: $color-orange;
+}
+
+.hide {
+  display: none;
+}

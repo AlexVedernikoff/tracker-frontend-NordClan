@@ -1,0 +1,35 @@
+@import '../../styles/variables';
+
+.routeTabs {
+  display: flex;
+  border-bottom: 1px solid $color-gray;
+  border-top: 1px solid $color-gray;
+
+  @include phone {
+    flex-wrap: wrap;
+  }
+
+  > * {
+    @include link-reset;
+    display: block;
+    box-sizing: border-box;
+    border-bottom: 2px solid rgba(0,0,0,0);
+    padding: 0.5rem 1rem;
+    transition: $transition;
+
+    @include phone {
+      width: 50%;
+    }
+
+    &:hover {
+      background-color: lighten(black, 95%);
+      transition: $transition;
+      border-color: gray;
+    }
+
+    &.active {
+      background-color: $color-lightgray;
+      border-color: $color-green;
+    }
+  }
+}

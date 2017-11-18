@@ -1,0 +1,70 @@
+@import '../../styles/variables';
+
+.wrapperAddTags {
+  position: relative;
+}
+.tagPopup {
+  display: flex;
+  position: absolute;
+  top: 1.5rem;
+  
+  box-shadow: $box-shadow;
+  z-index: 3;
+  background-color: white;
+
+  &:before {
+    content: "";
+    position: absolute;
+    display: block;
+    background: white;
+    height: 16px;
+    width: 16px;
+    transform: rotate(45deg);
+    box-shadow: $box-shadow;
+  }
+
+  &.left {
+    left: -9rem;
+
+    &:before {
+      left: 146px;
+      top: -8px;
+    }
+  }
+
+  &.right {
+    left: -1rem;
+
+    &:before {
+      left: 19px;
+      top: -8px;
+    }
+  }
+}
+
+.tagsInput {
+  box-sizing: border-box;
+  position: relative;
+  width: 10rem;
+  padding: 7px 15px;
+  line-height: 1rem;
+  border: 1px solid $color-gray;
+  border-right: none;
+  transition: 0.3s ease-out 0s;
+
+  &:focus {
+    border-color: darken($color-gray, 10%);
+    transition: 0.3s ease-out 0s;
+  }
+
+  &::placeholder {
+    color: silver;
+  }
+}
+.loadMore {
+  display: inline-block;
+  margin: 2px 8px;
+  font-size: 11px;
+  text-decoration: underline;
+  cursor: pointer;
+}

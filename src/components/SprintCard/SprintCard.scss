@@ -1,0 +1,62 @@
+@import '../../styles/variables';
+
+.sprintCard {
+  display: block;
+  position: relative;
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid darken($color-gray, 5%);
+  min-height: 93px;
+  &.INPROGRESS {border-color: $color-green};
+  &.INFOCUS {
+    background-color: $color-lightgray;
+  }
+}
+
+.sprintTitle {
+  display: block;
+  margin: 0 0 8px 0;
+  text-decoration: underline;
+  color: #5ea5e0;
+}
+.sprintTitle:hover {
+  cursor: pointer;
+}
+
+.sprintMeta {
+  font-size: 11px;
+  color: gray;
+  margin: 0;
+
+  span {
+    display: inline-block;
+
+    &:first-child {
+      margin-right: 4px;
+    }
+  }
+}
+
+.status {
+  position: absolute;
+  top: 8px;
+  left: -8px;
+}
+
+.iconClose {
+  position: absolute;
+  z-index: 2;
+  right: 0.5rem;
+  top: 0.5rem;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    transform: rotate(90deg);
+    transition: $transition;
+  }
+}
+
+.createButton {
+  margin: 15px 0 10px 0;
+}

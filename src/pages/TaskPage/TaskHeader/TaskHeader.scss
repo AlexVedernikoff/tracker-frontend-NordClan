@@ -1,0 +1,138 @@
+@import '../../../styles/variables.scss';
+
+.taskTopInfo {
+  color: lighten($color-black, 40%);
+  font-size: 13px;
+  line-height: 16px;
+
+  & > div {
+    display: inline-block;
+    padding-right: 16px;
+
+    @include phone {
+      margin-bottom: 1rem;
+    }
+
+    & + div {
+      padding-left: 16px;
+      border-left: 1px solid lighten($color-black, 60%);
+    }
+  }
+}
+
+.parentTask {
+  color: lighten($color-black, 40%);
+  margin-bottom: 16px;
+  position: relative;
+
+  &:hover {
+    .parentTaskName {
+      opacity: 1;
+    }
+  }
+
+  .prefix {
+    margin-right: 8px;
+    cursor: pointer;
+
+    // &:before {
+    //   content: "";
+    //   display: block;
+    //   position: absolute;
+    //   width: 1px;
+    //   height: 32px;
+    //   right: calc(100% + 8px);
+    //   top: 50%;
+    //   background-color: lighten($color-black, 40%);
+    // }
+  }
+}
+
+.parentTaskName {
+  opacity: 0;
+  transition: $transition;
+}
+
+.prefix {
+  display: inline-block;
+  position: relative;
+
+  // &:after {
+  //   content: "";
+  //   display: block;
+  //   position: absolute;
+  //   width: 4px;
+  //   height: 1px;
+  //   right: calc(100% + 4px);
+  //   top: 50%;
+  //   background-color: lighten($color-black, 40%);
+  // }
+}
+
+.progressButtons {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  max-width: 550px;
+  width: 100%;
+
+  @include tablet {
+    justify-content: flex-start;
+    max-width: 470px;
+  }
+}
+
+.buttonCancel {
+  border-style: dashed;
+  margin-right: 1rem;
+
+  @include tablet {
+    order: 2;
+  }
+}
+
+.buttonOk {
+  margin-left: 1rem;
+
+  @include tablet {
+    order: 3;
+  }
+
+  &:hover {
+    border-color: $color-green;
+    background-color: $color-green;
+  }
+}
+
+.parentTaskLink {
+  display: block;
+  position: absolute;
+  width: 1px;
+  height: 32px;
+  right: calc(100% + 8px);
+  top: 50%;
+  background-color: lighten($color-black, 40%);
+
+  .tasksPointers {
+    &:before {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 4px;
+      height: 1px;
+      left: 0;
+      background-color: lighten($color-black, 40%);
+    }
+
+    &:after {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 4px;
+      height: 1px;
+      left: 0;
+      bottom: 0;
+      background-color: lighten($color-black, 40%);
+    }
+  }
+}

@@ -1,0 +1,10 @@
+.NotificationContainer {
+  position: fixed;
+
+  bottom: 2rem;
+  right: 2rem;
+
+  width: 13rem;
+  z-index: 5;
+  display: flex;
+}

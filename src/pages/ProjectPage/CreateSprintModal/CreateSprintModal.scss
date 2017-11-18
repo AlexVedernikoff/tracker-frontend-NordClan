@@ -1,0 +1,14 @@
+@import '../../../styles/variables.scss';
+
+.createSprintForm {
+  padding: 2rem;
+
+  input,
+  .DayPickerInput {
+    margin-bottom: 1rem;
+  }
+
+  @include phone {
+    padding: 1rem;
+  }
+}

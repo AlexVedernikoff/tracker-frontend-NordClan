@@ -1,0 +1,18 @@
+@import '../../styles/variables';
+
+.logo {
+  padding: 16px 32px;
+  font-size: 20px;
+  color: #ebebeb;
+  display: block;
+  text-decoration: none;
+  @include phone {padding: 16px;}
+
+  &.onLight {
+    color: $color-dark;
+  }
+
+  span {
+    color: $color-orange;
+  }
+}

@@ -1,0 +1,99 @@
+@import './normalize';
+@import './variables';
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500&subset=latin,cyrillic);
+
+html {
+  box-sizing: border-box;
+}
+
+small {
+  font-size: 70%;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+  font-family: Roboto, sans-serif;
+  color: $color-black;
+  font-size: $font-size-base;
+  background-color: #fff;
+  margin: 0;
+}
+
+a {
+  cursor: pointer;
+  color: lighten($color-dark, 30%);
+}
+
+hr {
+  border: none;
+  border-bottom: 1px solid $color-gray;
+  margin: 2rem 0;
+}
+
+*:focus {
+  outline: none !important;
+}
+
+h1 {
+  font-size: 34px;
+  line-height: 1.2;
+  margin: 0;
+  color: #333;
+  font-weight: 300;
+  margin-top: 16px;
+  margin-bottom: 24px;
+
+  @include phone {
+    font-size: 1.2307692307692308rem;
+  }
+}
+
+h2 {
+  font-weight: 300;
+}
+
+h3 {
+  font-weight: normal;
+}
+
+* {
+  &::-webkit-scrollbar-track {
+    background-color: $color-gray;
+  }
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background-color: $color-gray;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: lighten($color-dark, 50%);
+  }
+}
+
+img {
+  box-sizing: content-box;
+}
+
+input,
+select,
+textarea {
+  
+  @include phone {
+    font-size: $font-size-mobile;
+  }
+}
+
+textarea {
+  border: 1px solid $color-gray;
+  padding: 0.5rem;
+  resize: vertical;
+
+  &::placeholder {
+    color: $input-color-placeholder;
+  }
+}

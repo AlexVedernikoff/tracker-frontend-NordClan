@@ -1,0 +1,99 @@
+@import '../../../styles/variables.scss';
+
+.priority {
+  &:hover {
+    .icon {
+      opacity: 1;
+    }
+  }
+}
+
+.count {
+  display: inline-flex;
+  align-items: stretch;
+  position: relative;
+  text-align: center;
+  margin-left: 4px;
+
+  > span {
+    display: block;
+    position: relative;
+    flex: 1;
+    align-items: center;
+    font-size: 11px;
+    padding: 0 4px;
+    background-color: $color-dark;
+    color: white;
+    cursor: pointer;
+
+    &:hover:not(.active) {
+      &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        // z-index: 1;
+        top: -6px;
+        left: calc(50% - 3px);
+        border-top: 6px solid lighten(black, 70%);
+        border-left: 3px solid transparent;
+        border-right: 3px solid transparent;
+      }
+    }
+
+    &:nth-child(1) { background-color: $priority1; border-color: $priority1; }
+    &:nth-child(2) { background-color: $priority2; border-color: $priority2; }
+    &:nth-child(3) { background-color: $priority3; border-color: $priority3; }
+    &:nth-child(4) { background-color: $priority4; border-color: $priority4; }
+    &:nth-child(5) { background-color: $priority5; border-color: $priority5; }
+  }
+}
+
+.active {
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    // z-index: 2;
+    top: -6px;
+    left: calc(50% - 3px);
+    border-top: 6px solid $color-dark;
+    // border-top-color: inherit;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+  }
+}
+
+.vertical {
+  @include absolute;
+
+  .count {
+    @include absolute;
+    margin: 0;
+    flex-flow: column;
+
+    & > span {
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &::after {
+        top: calc(50% - 3px);
+        left: 100%;
+        border-bottom: 3px solid transparent;
+        border-top: 3px solid transparent;
+        border-right: 6px solid #2b3e50;
+      }
+
+      &:hover:not(.active) {
+        &:after {
+          top: calc(50% - 3px);
+          left: 100%;
+          border-bottom: 3px solid transparent;
+          border-top: 3px solid transparent;
+          border-right: 6px solid lighten(black, 70%);
+        }
+      }
+    }
+  }
+}

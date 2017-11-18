@@ -1,0 +1,137 @@
+@import "../../styles/variables";
+.btn {
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
+  border: 0;
+  background-color: gray;
+  color: rgba(white, 0.9);
+  font-size: 13px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  line-height: 1rem;
+  height: 32px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  &:focus,
+  &:active {
+    outline: none;
+  }
+  &:disabled {
+    opacity: 0.4;
+  }
+}
+
+.icon {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  height: 1rem;
+  width: 1rem;
+}
+
+@mixin btn-type($color) {
+  background-color: $color;
+  transition: $transition;
+  &:hover {
+    background-color: lighten($color, 10%);
+    transition: $transition;
+  }
+  &:active {
+    background-color: lighten($color, 15%);
+    transition: $transition;
+  }
+}
+
+.default {
+  @include btn-type(gray);
+}
+
+.primary {
+  @include btn-type($color-dark);
+}
+
+.primary-lighten {
+  @include btn-type(lighten($color-dark, 10%));
+}
+
+.secondary {
+  @include btn-type($color-orange);
+}
+
+.green {
+  @include btn-type($color-green);
+}
+
+.green-lighten {
+  @include btn-type(lighten($color-green, 10%));
+}
+
+.red {
+  border-color: $color-red;
+  color: white;
+  background-color: $color-red;
+  cursor: default;
+}
+
+.red-bordered {
+  border-width: 1px;
+  border-style: solid;
+  border-color: $color-red;
+  padding: 7px 15px;
+  background-color: transparent;
+  color: $color-red;
+  transition: $transition;
+  &:hover {
+    background-color: lighten($color-red, 10%);
+    border-color: lighten($color-red, 10%);
+    color: white;
+    transition: $transition;
+  }
+}
+
+.bordered {
+  border-width: 1px;
+  border-style: solid;
+  border-color: $color-dark;
+  padding: 7px 15px;
+  background-color: transparent;
+  color: $color-dark;
+  transition: $transition;
+  &:hover {
+    background-color: lighten($color-dark, 10%);
+    border-color: lighten($color-dark, 10%);
+    color: white;
+    transition: $transition;
+  }
+}
+
+.borderedInverse {
+  border-width: 1px;
+  border-style: solid;
+  border-color: white;
+  padding: 7px 15px;
+  background-color: transparent;
+  color: white;
+  transition: $transition;
+  &:hover {
+    background-color: lighten($color-dark, 10%);
+    border-color: lighten($color-dark, 10%);
+    color: white;
+    transition: $transition;
+  }
+}
+
+.withIcon {
+  padding-left: 32px;
+}
+
+.onlyIcon {
+  padding-right: 8px;
+  padding-left: 8px;
+  .icon {
+    position: static;
+    display: inline-block;
+  }
+}

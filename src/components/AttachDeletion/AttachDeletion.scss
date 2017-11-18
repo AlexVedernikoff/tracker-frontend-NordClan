@@ -1,0 +1,57 @@
+@import '../../styles/variables.scss';
+
+.attachment {
+  list-style-type: none;
+  font-size: 12px;
+  width: 100px;
+  height: 143px;
+  cursor: pointer;
+  position: relative;
+  margin-right: 16px;
+
+  &:hover {
+    .attachmentIcon {
+      background: lighten($color-black, 70%);
+      border: 1px solid lighten($color-black, 65%);
+      transition: 0.3s ease-out 0s;
+    }
+
+    .attachmentName {
+      text-decoration: underline;
+    }
+  }
+
+  a {
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    width: 50px;
+    height: 50px;
+
+    &.iconWrapper {
+      display: block;
+      width: initial;
+      height: initial;
+    }
+  }
+}
+
+.attachmentIcon {
+  position: relative;
+  display: flex;
+  width: 100px;
+  height: 100px;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+  justify-content: center;
+  align-items: center;
+  background: lighten($color-black, 75%);
+  border: 1px solid lighten($color-black, 70%);
+  color: lighten($color-black, 50%);
+  transition: 0.3s ease-out 0s;
+}
+
+.attachmentName {
+  word-wrap: break-word;
+  width: 100px;
+}

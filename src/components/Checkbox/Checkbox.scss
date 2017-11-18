@@ -1,0 +1,64 @@
+@import '../../styles/variables';
+
+.wrapper {
+  display: inline-flex;
+  align-items: flex-start;
+  color: silver;
+  cursor: pointer;
+
+  & + .wrapper {
+    margin-left: 16px;
+  }
+
+  input {
+    display: none;
+
+    &:checked {
+      & + .pseudoSquare {
+        background-color: $color-green;
+        border-color: $color-green;  
+
+        svg {
+          opacity: 1;
+          transform: scale(1);
+          transition: $transition;
+        }
+      }
+
+      & ~ span {
+        color: $color-black
+      }
+    }
+  }
+
+  &:hover {
+    .pseudoSquare {
+      background: lighten($color-black, 70%);
+      transition: $transition;
+    }
+  }
+}
+
+.pseudoSquare {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 1px solid lighten($color-black, 60%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: $transition;
+
+  svg {
+    opacity: 0;
+    width: 16px;
+    height: 16px;
+    transform: scale(0.5);
+    fill: white;
+    transition: $transition;
+  }
+}
+
+.withText {
+  margin-right: 8px;
+}

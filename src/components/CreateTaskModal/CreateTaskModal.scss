@@ -1,0 +1,91 @@
+@import '../../styles/variables.scss';
+
+.createTaskForm {
+  max-width: 500px;
+  width: 100%;
+  padding: 2rem;
+
+  @include phone {
+    padding: 1rem;
+  }
+}
+
+.leftColumn {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  @include phone {
+    justify-content: flex-start;
+    text-align: left;
+  }
+}
+
+.rightColumn {
+  display: flex;
+  align-items: center;
+}
+
+.formField {
+  display: block;
+
+  & + & {
+    margin-top: 10px;
+  }
+}
+
+.buttonsContainer {
+  width: 100%;
+  margin-top: 2rem;
+
+  button {
+    width: 50%;
+
+    @include phone {
+      width: 100%;
+    }
+
+    &:first-child {
+      @include phone {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+}
+
+.selectSprint, .selectPerformer {
+  width: 100%;
+}
+
+.sprintMarker {
+  display: flex !important;
+  align-items: center;
+
+  span {
+    display: inline-block;
+  }
+
+  &:before {
+    content: "";
+    flex-shrink: 0;
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background-color: silver;
+    margin-right: 0.5rem;
+    vertical-align: text-top;
+  }
+}
+
+.INPROGRESS:before {
+  background-color: $color-green;
+}
+
+.PLANNED:before {
+  background-color: lighten($color-dark, 10%);
+}
+
+.FINISHED:before {
+  background-color: darken($color-gray, 10%);;
+}

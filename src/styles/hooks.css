@@ -1,0 +1,109 @@
+/* Tooltips ===> */
+
+.tooltip {
+  border-radius: 0 !important;
+  font-size: 11px !important;
+  background-color: #2b3e50 !important;
+  opacity: 0.8 !important;
+}
+
+.tooltip.place-bottom:after {border-bottom-color: #2b3e50 !important;}
+.tooltip.place-top:after {border-top-color: #2b3e50 !important;}
+.tooltip.place-left:after {border-left-color: #2b3e50 !important;}
+.tooltip.place-right:after {border-right-color: #2b3e50 !important;}
+
+.tab-pane {
+  padding: 0;
+  background: none;
+}
+
+.tab-simple>.tab-content { background: none; }
+.tab-simple>.nav>li>a { color: gray; font-weight: normal; }
+.tab-simple>.nav>li.active>a { color: #333; }
+
+/* <=== Tooltips */
+
+/* Animations ===> */
+
+@keyframes fadeIn {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+}
+
+@keyframes showIn {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes showOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* <=== Animations */
+
+/* Modal ===> */
+
+.ReactModal__Overlay
+.ReactModal__Content {
+  animation-name: fadeIn;
+  animation-duration: 0.2s;
+}
+
+.ReactModal__Overlay--before-close
+.ReactModal__Content {
+  animation-name: fadeOut;
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+}
+
+.ReactModal__Overlay--before-close {
+  animation-name: showOut;
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+}
+
+.animatedElement-enter {
+  opacity: 0.01;
+}
+
+.animatedElement-enter.animatedElement-enter-active {
+  opacity: 1;
+  transition: opacity 300ms ease-in;
+}
+
+.animatedElement-leave {
+  opacity: 1;
+}
+
+.animatedElement-leave.animatedElement-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}
+
+/* <=== Modal */

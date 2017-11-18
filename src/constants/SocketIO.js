@@ -1,0 +1,9 @@
+const SOCKET_URL = 'SOCKET_URL';
+const DEMO_ACTION = 'DEMO_ACTION';
+const SOCKET_IO = 'SOCKET_IO';
+
+export {
+  SOCKET_URL,
+  DEMO_ACTION,
+  SOCKET_IO
+};

@@ -1,0 +1,38 @@
+@import '../../../styles/variables';
+
+.statusCheckbox {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 14px 7px 7px;
+  border-radius: 20px;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  font-size: 11px;
+  margin: 8px;
+  color: gray;
+  transition: border-color 0.3s ease-in-out 0s;
+
+  input {
+    display: none;
+  }
+}
+
+.checked {
+  border: 1px solid lighten($color-black, 60%);
+  transition: border-color 0.3s ease-in-out 0s;
+  color: $color-black;
+}
+
+.marker {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: gray;
+  margin-right: 8px;
+}
+
+.INPROGRESS { background-color: $color-green }
+.INHOLD { background-color: $color-blue }
+.FINISHED { background-color: $color-dark }

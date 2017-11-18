@@ -1,0 +1,81 @@
+// Custom Colors
+$color-black: #333;
+$color-dark: #2b3e50;
+$color-red: #d9534f;
+$color-orange: #ff7800;
+$color-yellow: #f0ad4e;
+$color-gold: #d2dc0f;
+$color-green: #5cb85c;
+$color-blue: #46b8da;
+$color-gray: #f1f1f1;
+$color-lightgray: #fafafa;
+$color-white: #fff;
+
+$text-color: $color-black;
+$input-color-placeholder: silver;
+
+// Responsible
+
+$phone-width: 768px;
+$tablet-width: 1024px;
+$desktop-width: 1280px;
+
+@mixin phone {
+  @media (max-width: #{$phone-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet-portrait {
+  @media (max-width: #{$tablet-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: #{$desktop-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$desktop-width}) {
+    @content;
+  }
+}
+
+
+// Typo
+$font-size-base: 13px;
+$font-size-mobile: 16px;
+
+// Transitions
+$transition: all 0.3s ease-out 0s;
+$box-shadow: 4px 4px 0 rgba(0,0,0,0.17);
+
+// Utils
+@mixin link-reset {
+  &:active,
+  &:focus,
+  &:visited, & {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+@mixin absolute {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+// Priority
+$priority1: $color-red;
+$priority2: $color-orange;
+$priority3: lighten($color-yellow, 5%);
+$priority4: $color-gold;
+$priority5: lighten($color-green, 20%);

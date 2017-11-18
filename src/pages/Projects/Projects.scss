@@ -1,0 +1,39 @@
+@import '../../styles/variables';
+
+.dateToChange {
+
+  .DayPickerInput-Overlay {
+    left: initial;
+    right: 0;
+  }
+}
+
+.filters {
+  margin-bottom: 2rem;
+}
+
+.projectsHeader {
+  margin-bottom: 3rem;
+}
+
+.search {
+
+    > div {
+      @include phone {
+        margin-bottom: 1rem;
+      }
+    }
+}
+
+.title {
+  display: flex;
+  align-items: center;
+
+  & > * + * {
+    margin-left: 1rem;
+  }
+
+  h1 {
+    margin-bottom: 1rem;
+  }
+}

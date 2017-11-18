@@ -1,0 +1,97 @@
+@import '../../styles/variables';
+
+.projectCard {
+  padding: 1rem;
+  box-sizing: border-box;
+  height: calc(100% - 1rem);
+  transition: $transition;
+  border-top: 1px solid $color-gray;
+
+  &:hover {
+    background-color: $color-lightgray;
+  }
+}
+
+.meta {
+  font-size: 11px;
+  color: gray;
+  margin: 0;
+
+  span {
+    display: inline-block;
+
+    &:first-child {
+      margin-right: 4px;
+    }
+  }
+}
+
+.metaSprints {
+  display: flex;
+  align-items: stretch;
+
+  .sprintsMetaText {
+    white-space: nowrap;
+  }
+}
+
+.tags {
+  border-left: 1px solid $color-gray;
+  height: 100%;
+  padding-left: 1rem;
+}
+
+.metaBox {
+  border-left: 1px solid $color-gray;
+  padding-left: 1rem;
+
+  @include phone {
+    margin-bottom: 1rem;
+  }
+}
+
+.statusMarker {
+  display: inline-block;
+  flex-shrink: 0;
+  margin-right: 8px;
+  margin-top: 2px;
+  vertical-align: middle;
+  background-color: lightgray;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+
+  &.INPROGRESS { background-color: $color-green; }
+  &.INHOLD { background-color: $color-blue; }
+  &.FINISHED { background-color: $color-dark; }
+}
+
+.title {
+  display: flex;
+  // align-items: center;
+  margin-top: 0;
+  margin-bottom: 1rem;
+
+  .portfolioTitle {
+    color: $color-dark;
+  }
+
+  .titleSplit {
+    display: inline-block;
+    margin: 0 0.2rem;
+    color: silver;
+  }
+
+  a {
+    display: inline-block;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.child {
+  margin-left: 1.5rem;
+}

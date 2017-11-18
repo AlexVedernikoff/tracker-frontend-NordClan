@@ -1,0 +1,182 @@
+@import '../../../styles/variables.scss';
+
+.commentList {
+  padding: 0;
+  margin: 0;
+  margin-top: 1.5rem;
+
+  li {
+    list-style-type: none;
+  }
+
+  ul {
+    padding-left: 36px;
+  }
+}
+
+.commentContainer {
+  padding: 0.5rem;
+  transition: $transition;
+}
+
+.comment {
+  display: flex;
+
+  &:hover {
+    .commentAction {
+      opacity: 1;
+      transition: all 0.3s ease-out 0s;
+    }
+  }
+  .commentAction {
+    display: flex;
+    & a {
+      padding-right: .5rem;
+    }
+  }
+  a {
+    text-decoration: none;
+  }
+}
+
+.ava {
+  height: 56px;
+  width: 56px;
+  background: $color-dark;
+  color: lighten($color-dark, 30%);
+  margin-right: 16px;
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  font-weight: 300;
+  user-select: none;
+  cursor: default;
+
+  img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+}
+
+.commentBody {
+  flex-grow: 0;
+  width: calc(100% - 4.5rem);
+}
+
+.commentMeta {
+  margin-bottom: 8px;
+  color: lighten($color-black, 50%);
+  font-size: 12px;
+}
+
+.commentAction {
+  margin-top: 8px;
+  font-size: 12px;
+  opacity: 0;
+  transition: all 0.3s ease-out 0s;
+}
+
+.commentQuote {
+  display: flex;
+  border: 1px solid $color-gray;
+  white-space: nowrap;
+  background-color: $color-lightgray;
+  color: gray;
+  padding: 0.5rem;
+  font-size: 12px;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+
+  @include phone {
+    flex-wrap: wrap;
+  }
+}
+
+.commentQuoteDate {
+  display: inline-block;
+  color: lighten(gray, 15%);
+  margin-right: 0.5rem;
+}
+
+.commentQuoteAutor {
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+.commentText {
+  white-space: pre-line;
+  word-break: break-all;
+  word-break: break-word;
+  cursor: pointer;
+}
+
+.quoteText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.selected {
+  background-color: $color-gray;
+  transition: $transition;
+}
+
+.answerLine {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+
+  button {
+    flex-shrink: 0;
+  }
+
+  textarea {
+    flex-grow: 1;
+  }
+  .answerUnderline {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    flex-basis: 100%;
+
+    .answerSendTooltip {
+      text-align: right;
+      color: #678bad;
+      font-size: 0.8rem;
+      flex-basis: 50%;
+      flex-grow: 12;
+    }
+  }
+}
+
+.noCommentsYet {
+  text-align: center;
+}
+
+.answerInfo {
+  width: 100%;
+  margin-top: 4px;
+  padding-left: 1rem;
+  font-size: 12px;
+  line-height: 12px;
+  color: silver;
+}
+
+.quoteCancel {
+  // vertical-align: text-bottom;
+  cursor: pointer;
+
+  &:hover {
+    color: $color-dark;
+  }
+}
+
+.outDatedToolTip {
+  color: #d9534f;
+  text-decoration: underline dotted;
+}
