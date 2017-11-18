@@ -44,7 +44,7 @@ import { setRedirectPath } from './actions/Authentication';
 
 class AppRouter extends Component {
   static propTypes = {
-    dispatch: PropTypes.func,
+    clearCurrentProjectAndTasks: PropTypes.func,
     history: PropTypes.object,
     isLoggedIn: PropTypes.bool,
     loaded: PropTypes.bool,
@@ -69,7 +69,7 @@ class AppRouter extends Component {
   };
 
   clearTasks = () => {
-    this.props.dispatch(clearCurrentProjectAndTasks());
+    this.props.clearCurrentProjectAndTasks();
   };
 
   render () {
@@ -130,6 +130,7 @@ const mapStateToProps = ({ Auth: { loaded, isLoggedIn, redirectPath } }) => ({
 });
 
 const mapDispatchToProps = {
-  setRedirectPath
+  setRedirectPath,
+  clearCurrentProjectAndTasks
 };
 export default connect(mapStateToProps, mapDispatchToProps)(AppRouter);

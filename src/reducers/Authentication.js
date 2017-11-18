@@ -4,7 +4,7 @@ const InitialState = {
   isLoggedIn: false,
   loaded: false,
   defaultRedirectPath: '/projects',
-  redirectPath: {},
+  redirectPath: null,
   user: {
     firstNameRu: '',
     lastNameRu: ''
@@ -71,8 +71,7 @@ function Auth (state = InitialState, action) {
       ...state,
       user: action.user,
       loaded: true,
-      isLoggedIn: true,
-      redirectPath: {}
+      isLoggedIn: true
     };
 
   case AuthActions.SET_REDIRECT_PATH:
