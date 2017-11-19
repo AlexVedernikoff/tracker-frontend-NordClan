@@ -109,8 +109,10 @@
     "start": "node_modules/.bin/cross-env NODE_ENV=development webpack-dev-server --inline --colors --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
     "deploy": "gh-pages -d build",
-    "docker": "docker build -t simtrackfront ."
+    "docker:dev": "docker build -f Dockerfile.dev -t st_front_dev .",
+    "docker": "docker build -t st_front ."
   },
   "license": "MIT",
   "homepage": "https://github.com/react-toolbox/react-toolbox-example#readme"
 }
+
