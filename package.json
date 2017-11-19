@@ -66,6 +66,7 @@
     "redux": "^3.7.2",
     "redux-devtools-extension": "^2.13.2",
     "redux-thunk": "^2.2.0",
+    "serve": "^6.4.1",
     "shortid": "^2.2.8",
     "socket.io-client": "^2.0.4"
   },
@@ -107,12 +108,12 @@
   },
   "scripts": {
     "start": "node_modules/.bin/cross-env NODE_ENV=development webpack-dev-server --inline --colors --config webpack.dev.js",
+    "serve": "serve build -p 8080",
     "build": "webpack --config webpack.prod.js",
+    "prod": "npm run build && npm run serve",
     "deploy": "gh-pages -d build",
-    "docker:dev": "docker build -f Dockerfile.dev -t st_front_dev .",
-    "docker": "docker build -t st_front ."
+    "docker": "docker build -t simtrack_front ."
   },
   "license": "MIT",
   "homepage": "https://github.com/react-toolbox/react-toolbox-example#readme"
 }
-
