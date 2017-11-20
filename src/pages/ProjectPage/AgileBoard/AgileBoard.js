@@ -384,20 +384,23 @@ class AgileBoard extends Component {
 
           {
             this.state.isModalOpen
-            && <PerformerModal
+            ? <PerformerModal
                 defaultUser={this.state.performer}
                 onChoose={this.changePerformer}
                 onClose={this.closeModal}
                 title="Изменить исполнителя задачи"
                 users={this.getUsers()}
               />
-
+            : null
           }
-          {this.props.isCreateTaskModalOpen
-            && <CreateTaskModal
-            selectedSprintValue={this.state.changedSprint}
-            project={this.props.project}
-          />}
+          {
+            this.props.isCreateTaskModalOpen
+            ? <CreateTaskModal
+                selectedSprintValue={this.state.changedSprint}
+                project={this.props.project}
+              />
+            : null
+          }
         </section>
     );
   }

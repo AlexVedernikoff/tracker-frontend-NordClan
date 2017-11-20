@@ -196,11 +196,12 @@ class TaskPage extends Component {
         </Row>
         {
           this.props.isCreateTaskModalOpen
-          && <CreateTaskModal
-            selectedSprintValue={this.props.task.sprint ? this.props.task.sprint.id : 0}
-            project={this.props.project}
-            parentTaskId={this.props.task.id}
-          />
+          ? <CreateTaskModal
+              selectedSprintValue={this.props.task.sprint ? this.props.task.sprint.id : 0}
+              project={this.props.project}
+              parentTaskId={this.props.task.id}
+            />
+          : null
         }
         {
           this.state.isTaskModalOpen

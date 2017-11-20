@@ -570,16 +570,19 @@ class Planning extends Component {
           </Row>
         </section>
         {/* <GanttChart /> */}
-        {this.props.isCreateTaskModalOpen
-          && <CreateTaskModal
-            selectedSprintValue={
-              this.state.createTaskCallee === 'left'
-                ? this.state.leftColumn
-                : this.state.rightColumn
-            }
-            project={this.props.project}
-            column={this.state.createTaskCallee}
-        />}
+        {
+          this.props.isCreateTaskModalOpen
+          ? <CreateTaskModal
+                selectedSprintValue={
+                  this.state.createTaskCallee === 'left'
+                    ? this.state.leftColumn
+                    : this.state.rightColumn
+                }
+                project={this.props.project}
+                column={this.state.createTaskCallee}
+            />
+          : null
+        }
         {this.state.isOpenEditModal
         ? <SprintEditModal sprint={this.state.editSprint} handleEditSprint={this.handleEditSprint} handleCloseModal={this.closeEditSprintModal}/>
         : null}
