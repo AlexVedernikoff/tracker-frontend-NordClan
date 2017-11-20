@@ -107,3 +107,12 @@
 }
 
 /* <=== Modal */
+
+/* App service styles ===> */
+
+.text-info {
+  font-size: smaller;
+  color: darkgray;
+}
+
+/* <=== App service styles */

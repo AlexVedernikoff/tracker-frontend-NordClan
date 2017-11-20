@@ -1,0 +1,20 @@
+@keyframes placeHolderShimmer{
+  0% { background-position: -400px 0 }
+  100% { background-position: 400px 0 }
+}
+
+.inlineHolder {
+  display: inline-block;
+  vertical-align: middle;
+  height: 0.75em;
+  margin-left: 0.25em;
+  margin-right: 0.25em;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeHolderShimmer;
+  animation-timing-function: linear;
+  background: lighten(black, 95%);
+  background: linear-gradient(to right, lighten(black, 95%) 8%, lighten(black, 90%) 18%, lighten(black, 95%) 33%);
+  background-size: 800px 100px;
+}

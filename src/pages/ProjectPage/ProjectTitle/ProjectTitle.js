@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ProjectIcon from '../../../components/ProjectIcon';
-import { IconEdit, IconCheck } from '../../../components/Icons';
+import { IconEdit, IconCheck, IconPreloader } from '../../../components/Icons';
+import InlineHolder from '../../../components/InlineHolder';
 import * as css from './ProjectTitle.scss';
 import ReactTooltip from 'react-tooltip';
 import {
@@ -155,7 +156,7 @@ class ProjectTitle extends Component {
   render () {
     return (
       <h1 className={css.projectTitle}>
-        <ProjectIcon projectName={this.props.name} />
+        {this.props.name ? <ProjectIcon projectName={this.props.name} /> : <IconPreloader style={{color: 'silver', fontSize: '2.5rem', marginRight: 10}} />}
         <span
           id="projectName"
           className={this.state.nameIsIncorrect ? css.wrong : ''}
@@ -163,7 +164,7 @@ class ProjectTitle extends Component {
           contentEditable={this.props.titleIsEditing}
           onKeyDown={this.handleKeyPress}
         >
-          {this.props.name}
+          {this.props.name ? this.props.name : <InlineHolder length={7} />}
         </span>
         <span className={css.prefix}>
           <span>(</span>
@@ -174,7 +175,7 @@ class ProjectTitle extends Component {
             contentEditable={this.props.titleIsEditing}
             onKeyDown={this.handleKeyPress}
           >
-            {this.props.prefix}
+            {this.props.prefix ? this.props.prefix : <InlineHolder length={2} />}
           </span>
           <span>)</span>
         </span>
