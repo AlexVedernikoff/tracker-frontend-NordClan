@@ -41,24 +41,6 @@ class CreateTaskModal extends Component {
     this.validator = new Validator();
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (this.state.selectedSprint !== nextProps.selectedSprintValue) {
-      this.setState({ selectedSprint: nextProps.selectedSprintValue });
-    }
-
-    if (this.props.taskTypes !== nextProps.taskTypes) {
-      this.setState({ typeList: nextProps.taskTypes.map(({ name, id }) => ({
-        label: name,
-        value: id
-      })) });
-    }
-
-    this.setState({selectedTypeError: this.state.typeList.length === 0});
-    if (!this.state.selectedType && this.state.typeList.length > 0) {
-      this.setState({selectedType: this.state.typeList[0]});
-    }
-  }
-
   handleModalSprintChange = selectedSprint => {
     this.setState({
       selectedSprint: selectedSprint ? selectedSprint.value : 0
