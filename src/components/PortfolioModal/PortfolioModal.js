@@ -38,8 +38,7 @@ class PortfolioModal extends Component {
   handleChoose = () => {
     this.props.onChoose({
       id: this.props.projectId,
-      portfolioId: this.state.portfolio ? this.state.portfolio.value : 0,
-      porfolioName: ''
+      portfolioId: this.state.portfolio ? this.state.portfolio.value : 0
     },
     'Portfolio');
   };
