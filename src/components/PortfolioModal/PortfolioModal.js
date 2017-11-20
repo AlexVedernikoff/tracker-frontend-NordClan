@@ -1,31 +1,57 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as css from './PortfolioModal.scss';
 import Modal from '../Modal';
 import Button from '../Button';
-import SelectDropdown from '../SelectDropdown';
+import Select from 'react-select';
+const SelectAsync = Select.AsyncCreatable;
+
+import {
+  getPortfolios
+} from '../../actions/Project';
 
 class PortfolioModal extends Component {
+  static propTypes = {
+    defaultPortfolio: PropTypes.object,
+    getPortfolios: PropTypes.func.isRequired,
+    onChoose: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
+    portfolios: PropTypes.array,
+    projectId: PropTypes.number,
+    title: PropTypes.string
+  };
+
   constructor (props) {
     super(props);
+    const { defaultPortfolio } = this.props;
     this.state = {
-      performer: this.props.defaultUser
+      portfolio: defaultPortfolio
+        ? {
+          label: defaultPortfolio.name,
+          value: defaultPortfolio.id
+        }
+        : null
     };
   }
 
   handleChoose = () => {
-    this.props.onChoose(this.state.performer);
+    this.props.onChoose({
+      id: this.props.projectId,
+      portfolioId: this.state.portfolio ? this.state.portfolio.value : 0,
+      porfolioName: ''
+    },
+    'Portfolio');
   };
 
-  selectValue = (e, name) => {
-    this.setState({ [name]: e });
+  onPortfolioSelect = (e) => {
+    this.setState({ portfolio: e });
   };
 
   render () {
     const {
       title,
-      onClose,
-      users
+      onClose
     } = this.props;
 
     return (
@@ -38,14 +64,16 @@ class PortfolioModal extends Component {
         <div className={css.changeStage}>
           <h3>{title}</h3>
           <div className={css.modalLine}>
-            <SelectDropdown
-              name="member"
-              placeholder="Введите имя исполнителя..."
+            <SelectAsync
+              promptTextCreator={label => `Поиск портфеля '${label}'`}
+              searchPromptText={'Введите название портфеля'}
               multi={false}
-              value={this.state.performer}
-              onChange={e => this.selectValue(e !== null ? e.value : 0, 'performer')}
-              noResultsText="Нет результатов"
-              options={users}
+              ignoreCase={false}
+              placeholder="Выберите портфель"
+              loadOptions={this.props.getPortfolios}
+              filterOption={el => el}
+              onChange={this.onPortfolioSelect}
+              value={this.state.portfolio}
             />
             <Button type="green" text="ОК" onClick={this.handleChoose}/>
           </div>
@@ -55,12 +83,10 @@ class PortfolioModal extends Component {
   }
 }
 
-PortfolioModal.propTypes = {
-  defaultUser: PropTypes.number,
-  onChoose: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
-  title: PropTypes.string,
-  users: PropTypes.array
+const mapStateToProps = state => ({});
+
+const mapDispatchToProps = {
+  getPortfolios
 };
 
-export default PortfolioModal;
+export default connect(mapStateToProps, mapDispatchToProps)(PortfolioModal);

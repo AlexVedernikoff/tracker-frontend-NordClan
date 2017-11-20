@@ -80,6 +80,14 @@ const createTaskRequestStart = () => ({
   type: ProjectActions.TASK_CREATE_REQUEST_START
 });
 
+export const openPortfolioModal = () => ({
+  type: ProjectActions.OPEN_SET_PORTFOLIO_MODAL
+});
+
+export const closePortfolioModal = () => ({
+  type: ProjectActions.CLOSE_SET_PORTFOLIO_MODAL
+});
+
 const createTaskRequestSuccess = (projectId, sprintId, taskId, task) => ({
   type: ProjectActions.TASK_CREATE_REQUEST_SUCCESS,
   projectId,
@@ -302,6 +310,25 @@ const getProjectHistory = id => {
           dispatch(getProjectHistorySuccess(response.data));
         }
       });
+  };
+};
+
+export const getPortfolios = (name = '') => {
+
+  return dispatch => {
+    return axios
+    .get(
+      `${API_URL}/portfolio`,
+      { params: { name } },
+      { withCredentials: true }
+    )
+    .then(response => response.data.data)
+    .then(portfolios => ({
+      options: portfolios.map((portfolio) => ({
+        label: portfolio.name,
+        value: portfolio.id
+      }))
+    }));
   };
 };
 

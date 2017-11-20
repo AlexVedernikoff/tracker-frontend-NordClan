@@ -3,25 +3,31 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import { Link } from 'react-router';
-import Select from 'react-select';
 import ReactTooltip from 'react-tooltip';
 import ProjectIcon from '../../../components/ProjectIcon';
+import PortfolioModal from '../../../components/PortfolioModal';
 import { IconEdit, IconCheck, IconPreloader } from '../../../components/Icons';
 import InlineHolder from '../../../components/InlineHolder';
 import * as css from './ProjectTitle.scss';
 import {
   changeProject as editProject,
   startEditing as beginEdit,
-  stopEditing as finishEdit
+  stopEditing as finishEdit,
+  openPortfolioModal,
+  closePortfolioModal
 } from '../../../actions/Project';
 
 class ProjectTitle extends Component {
   static propTypes = {
+    PortfolioIsEditing: PropTypes.bool,
     changeProject: PropTypes.func.isRequired,
+    closePortfolioModal: PropTypes.func,
     id: PropTypes.any,
     name: PropTypes.string.isRequired,
+    openPortfolioModal: PropTypes.func,
     portfolio: PropTypes.object,
     prefix: PropTypes.string.isRequired,
+    projectId: PropTypes.number,
     startEditing: PropTypes.func.isRequired,
     stopEditing: PropTypes.func.isRequired,
     titleIsEditing: PropTypes.bool
@@ -165,8 +171,8 @@ class ProjectTitle extends Component {
         <div>
           {
             this.props.titleIsEditing
-            ? <span ref={ref => (this.portfolio = ref)} className={classnames([css.portfolio, css.edited])}>
-                {this.props.portfolio ? this.props.portfolio.name : 'Без портфолио'}
+            ? <span ref={ref => (this.portfolio = ref)} className={classnames([css.portfolio, css.edited])} onClick={this.props.openPortfolioModal}>
+                {this.props.portfolio ? this.props.portfolio.name : 'Вне портфеля'}
               </span>
             : this.props.portfolio
             ? <Link to={`/projects/portfolio/${this.props.portfolio.id}`} className={css.portfolio}>{this.props.portfolio.name}</Link>
@@ -210,19 +216,34 @@ class ProjectTitle extends Component {
             )}
           </h1>
         </div>
+        {
+          this.props.PortfolioIsEditing
+          ? <PortfolioModal
+              defaultPortfolio={this.props.portfolio || null}
+              projectId={this.props.projectId}
+              onClose={this.props.closePortfolioModal}
+              onChoose={this.props.changeProject}
+              title="Изменить портфель проекта"
+            />
+          : null
+        }
       </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  titleIsEditing: state.Project.TitleIsEditing
+  titleIsEditing: state.Project.TitleIsEditing,
+  PortfolioIsEditing: state.Project.PortfolioIsEditing,
+  projectId: state.Project.project.id
 });
 
 const mapDispatchToProps = {
   changeProject: editProject,
   startEditing: beginEdit,
-  stopEditing: finishEdit
+  stopEditing: finishEdit,
+  openPortfolioModal,
+  closePortfolioModal
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectTitle);
