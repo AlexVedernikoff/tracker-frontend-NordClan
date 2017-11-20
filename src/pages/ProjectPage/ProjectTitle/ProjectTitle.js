@@ -1,22 +1,26 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import classnames from 'classnames';
+import { Link } from 'react-router';
+import Select from 'react-select';
+import ReactTooltip from 'react-tooltip';
 import ProjectIcon from '../../../components/ProjectIcon';
 import { IconEdit, IconCheck, IconPreloader } from '../../../components/Icons';
 import InlineHolder from '../../../components/InlineHolder';
 import * as css from './ProjectTitle.scss';
-import ReactTooltip from 'react-tooltip';
 import {
   changeProject as editProject,
   startEditing as beginEdit,
   stopEditing as finishEdit
 } from '../../../actions/Project';
-import { connect } from 'react-redux';
 
 class ProjectTitle extends Component {
   static propTypes = {
     changeProject: PropTypes.func.isRequired,
     id: PropTypes.any,
     name: PropTypes.string.isRequired,
+    portfolio: PropTypes.object,
     prefix: PropTypes.string.isRequired,
     startEditing: PropTypes.func.isRequired,
     stopEditing: PropTypes.func.isRequired,
@@ -147,6 +151,7 @@ class ProjectTitle extends Component {
       if (
         event.target !== this.projectName
         && event.target !== this.projectPrefix
+        && event.target !== this.portfolio
       ) {
         this.validateSubmit();
       }
@@ -155,44 +160,57 @@ class ProjectTitle extends Component {
 
   render () {
     return (
-      <h1 className={css.projectTitle}>
-        {this.props.name ? <ProjectIcon projectName={this.props.name} /> : <IconPreloader style={{color: 'silver', fontSize: '2.5rem', marginRight: 10}} />}
-        <span
-          id="projectName"
-          className={this.state.nameIsIncorrect ? css.wrong : ''}
-          ref={ref => (this.projectName = ref)}
-          contentEditable={this.props.titleIsEditing}
-          onKeyDown={this.handleKeyPress}
-        >
-          {this.props.name ? this.props.name : <InlineHolder length={7} />}
-        </span>
-        <span className={css.prefix}>
-          <span>(</span>
-          <span
-            id="projectPrefix"
-            className={this.state.prefixIsIncorrect ? css.wrong : ''}
-            ref={ref => (this.projectPrefix = ref)}
-            contentEditable={this.props.titleIsEditing}
-            onKeyDown={this.handleKeyPress}
-          >
-            {this.props.prefix ? this.props.prefix : <InlineHolder length={2} />}
-          </span>
-          <span>)</span>
-        </span>
-        {this.props.titleIsEditing ? (
-          <IconCheck
-            className={css.save}
-            data-tip="Сохранить"
-            onClick={this.editIconClickHandler}
-          />
-        ) : (
-          <IconEdit
-            className={css.edit}
-            data-tip="Редактировать"
-            onClick={this.editIconClickHandler}
-          />
-        )}
-      </h1>
+      <div className={css.projectTitle}>
+        {this.props.name ? <ProjectIcon projectName={this.props.name} /> : <IconPreloader style={{color: 'silver', fontSize: '3rem', marginRight: 10}} />}
+        <div>
+          {
+            this.props.titleIsEditing
+            ? <span ref={ref => (this.portfolio = ref)} className={classnames([css.portfolio, css.edited])}>
+                {this.props.portfolio ? this.props.portfolio.name : 'Без портфолио'}
+              </span>
+            : this.props.portfolio
+            ? <Link to={`/projects/portfolio/${this.props.portfolio.id}`} className={css.portfolio}>{this.props.portfolio.name}</Link>
+            : null
+          }
+          <h1>
+            <span
+              id="projectName"
+              className={this.state.nameIsIncorrect ? css.wrong : ''}
+              ref={ref => (this.projectName = ref)}
+              contentEditable={this.props.titleIsEditing}
+              onKeyDown={this.handleKeyPress}
+            >
+              {this.props.name ? this.props.name : <InlineHolder length={7} />}
+            </span>
+            <span className={css.prefix}>
+              <span>(</span>
+              <span
+                id="projectPrefix"
+                className={this.state.prefixIsIncorrect ? css.wrong : ''}
+                ref={ref => (this.projectPrefix = ref)}
+                contentEditable={this.props.titleIsEditing}
+                onKeyDown={this.handleKeyPress}
+              >
+                {this.props.prefix ? this.props.prefix : <InlineHolder length={2} />}
+              </span>
+              <span>)</span>
+            </span>
+            {this.props.titleIsEditing ? (
+              <IconCheck
+                className={css.save}
+                data-tip="Сохранить"
+                onClick={this.editIconClickHandler}
+              />
+            ) : (
+              <IconEdit
+                className={css.edit}
+                data-tip="Редактировать"
+                onClick={this.editIconClickHandler}
+              />
+            )}
+          </h1>
+        </div>
+      </div>
     );
   }
 }
