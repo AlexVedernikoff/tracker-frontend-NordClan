@@ -4,7 +4,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const settings = {
   entry: {
-    bundle: ['react-hot-loader/patch', './src/App.js']
+    bundle: ['babel-polyfill', 'react-hot-loader/patch', './src/App.js']
   },
   output: {
     filename: '[name].js',

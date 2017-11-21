@@ -9,6 +9,47 @@
   margin-top: 1rem;
   margin-bottom: 1.5rem;
 
+  .portfolio {
+    a {
+      cursor: pointer;
+      text-decoration: none;
+      color: darkgray;
+      display: inline-block;
+      padding-left: 0.2em;
+      font-weight: normal;
+
+      &:hover {
+        color: lighten($color-dark, 30%);
+      }
+    }
+
+    svg {
+      cursor: pointer;
+      vertical-align: text-top;
+      opacity: 0;
+      color: silver;
+      transition: $transition;
+    }
+
+    &:hover svg {
+      opacity: 1;
+      transition: $transition;
+
+      &:hover {
+        color: $color-dark;
+      }
+    }
+  }
+
+  .edited {
+    background-color: $color-gray;
+  }
+
+  h1 {
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+
   &:hover {
     .edit {
       opacity: 1;
@@ -50,7 +91,7 @@
 .edit {
   display: inline-block;
   box-sizing: content-box;
-  vertical-align: center;
+  vertical-align: middle;
   color: silver;
   cursor: pointer;
   padding: 7px;

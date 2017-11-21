@@ -32,6 +32,7 @@ class ProjectPage extends Component {
     return (this.props.project.error) ? (<HttpError error={this.props.project.error}/>) : (
       <div id="project-page">
         <ProjectTitle
+          portfolio={this.props.project.portfolio}
           name={this.props.project.name || ''}
           prefix={this.props.project.prefix || ''}
           id={this.props.project.id || ''}

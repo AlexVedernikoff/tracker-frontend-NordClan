@@ -24,7 +24,7 @@
 }
 
 .Select--multi.Select:hover { cursor: text; }
-.Select--single.Select:hover { cursor: text; }
+.Select--single.Select:hover { cursor: pointer; }
 
 .Select--single
 .Select-multi-value-wrapper {

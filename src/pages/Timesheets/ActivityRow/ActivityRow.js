@@ -131,7 +131,7 @@ class ActivityRow extends React.Component {
     const timeCells = item.timeSheets.map((tsh, i) => {
       if (tsh.id) {
         return (
-          <td key={i} className={cn({
+          <td key={moment(tsh.onDate).format('X')} className={cn({
             [css.today]: moment().format('YYYY-MM-DD') === moment(tsh.onDate).format('YYYY-MM-DD'),
             [css.weekend]: i === 5 || i === 6
           })}>
