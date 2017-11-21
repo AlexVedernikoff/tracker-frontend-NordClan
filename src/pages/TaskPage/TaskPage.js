@@ -163,7 +163,8 @@ class TaskPage extends Component {
               />
               <RouteTabs style={{ marginTop: '2rem', marginBottom: '2rem' }}>
                 <Link
-                  to={`/projects/${this.props.params.projectId}/tasks/${this.props.params.taskId}/comments`}
+                  onlyActiveOnIndex
+                  to={`/projects/${this.props.params.projectId}/tasks/${this.props.params.taskId}`}
                 >
                   Комментарии
                 </Link>
