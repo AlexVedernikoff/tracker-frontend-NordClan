@@ -1,3 +1,5 @@
+@import "../../styles/variables.scss";
+
 .NotificationContainer {
   position: fixed;
 
@@ -5,6 +7,6 @@
   right: 2rem;
 
   width: 13rem;
-  z-index: 5;
+  z-index: $z-notification-layer;
   display: flex;
 }
