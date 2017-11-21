@@ -28,12 +28,18 @@ function TimesheetPlayer (state = InitialState, action) {
 
   case TimesheetPlayersActions.TIMESHEET_PLAYER_UPDATE_RECEIVE_SUCCESS:
 
-    // нужно заменить старые данные новыми
-
+    state.tracks[action.date] = action.data[action.date];
     return {
-      ...state,
+      ...state
     };
 
+  case TimesheetPlayersActions.TIMESHEET_PLAYER_TIMESHEET_UPDATE_RECEIVE_SUCCESS:
+    const updatedList = state.tracks[action.timesheet.onDate].tracks.map((track) => track.id === action.timesheet.id ? action.timesheet : track);
+    state.tracks[action.timesheet.onDate] = updatedList;
+
+    return {
+      ...state
+    };
 
   default:
     return state;
