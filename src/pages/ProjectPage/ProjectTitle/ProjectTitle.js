@@ -157,7 +157,6 @@ class ProjectTitle extends Component {
       if (
         event.target !== this.projectName
         && event.target !== this.projectPrefix
-        && event.target !== this.portfolio
       ) {
         this.validateSubmit();
       }
@@ -170,12 +169,8 @@ class ProjectTitle extends Component {
         {this.props.name ? <ProjectIcon projectName={this.props.name} /> : <IconPreloader style={{color: 'silver', fontSize: '3rem', marginRight: 10}} />}
         <div>
           {
-            this.props.titleIsEditing
-            ? <span ref={ref => (this.portfolio = ref)} className={classnames([css.portfolio, css.edited])} onClick={this.props.openPortfolioModal}>
-                {this.props.portfolio ? this.props.portfolio.name : 'Вне портфеля'}
-              </span>
-            : this.props.portfolio
-            ? <Link to={`/projects/portfolio/${this.props.portfolio.id}`} className={css.portfolio}>{this.props.portfolio.name}</Link>
+            this.props.portfolio
+            ? <span className={css.portfolio}><Link to={`/projects/portfolio/${this.props.portfolio.id}`}>{this.props.portfolio.name}</Link> <IconEdit onClick={this.props.openPortfolioModal}/></span>
             : null
           }
           <h1>
