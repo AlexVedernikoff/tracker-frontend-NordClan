@@ -5,6 +5,16 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
 class Notification extends Component {
+  static propTypes = {
+    notification: PropTypes.object
+  };
+
+  static defaultProps = {
+    notification: {
+      type: 'primary'
+    }
+  }
+
   constructor (props) {
     super(props);
     this.state = {
@@ -19,13 +29,15 @@ class Notification extends Component {
   }
 
   render () {
+    const { type } = this.props.notification;
+
     return (
       <div
         onClick={this.hideNotification}
         className={classnames({
           [css.Notification]: true,
           [css.hide]: !this.state.isShown,
-          [css.error]: this.props.notification.type === 'error'
+          [css[type]]: true
         })}
       >
         <IconError className={css.MainIcon} />
@@ -36,9 +48,5 @@ class Notification extends Component {
     );
   }
 }
-
-Notification.propTypes = {
-  notification: PropTypes.object
-};
 
 export default Notification;

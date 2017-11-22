@@ -139,6 +139,7 @@ class Comment extends Component {
 
               <CopyThis
                 wrapThisInto={'a'}
+                description={`Ссылка на комментарий #${comment.id}`}
                 textToCopy={
                   `${location.origin}${history.createHref(Comment.getHashedPath(comment.id, this.props.location))}`
                 }
