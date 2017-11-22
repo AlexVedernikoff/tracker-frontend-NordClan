@@ -85,12 +85,17 @@ class Comment extends Component {
     };
   }
 
-  static conditionalScroll = (elem) => {
+  static conditionalScroll = (elem) => Comment.deBouncedExecution(() => {
     if (!elem) return;
     const direction = Comment.getDirectionToScroll(elem);
     if (direction !== null) {
       elem.scrollIntoView(direction);
     }
+  });
+
+  static deBouncedExecution = (fn) => {
+    const delay = 100;
+    setTimeout(fn, delay);
   };
 
   componentDidMount () {
