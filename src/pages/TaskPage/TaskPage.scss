@@ -1,5 +1,9 @@
 @import '../../styles/variables.scss';
 
+.taskPage {
+  position: relative;
+}
+
 .paper {
   padding: 8px;
 }
@@ -67,4 +71,33 @@
   position: fixed;
   bottom: 35px;
   right: 60px;
+}
+
+.goBackTogglerWrapper {
+  position: fixed;
+  z-index: 0; // New z-index stack created
+  top: 56px;
+  bottom: 0;
+  left: 0;
+  cursor: pointer;
+
+  &:hover {
+    .goBackToggler {
+      opacity: 1;
+      transition: $transition;
+    }
+  }
+}
+
+.goBackToggler {
+  @include absolute;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-size: 1rem;
+  color: lighten($color-dark, 50%);
+  background-color: lighten($color-dark, 72%);
+  border-right: 1px solid lighten($color-dark, 65%);
+  opacity: 0;
+  transition: $transition;
 }
