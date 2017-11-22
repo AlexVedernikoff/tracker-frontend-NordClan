@@ -4,6 +4,7 @@ import {
   Router,
   Route,
   IndexRedirect,
+  IndexRoute,
   applyRouterMiddleware
 } from 'react-router';
 import { useScroll } from 'react-router-scroll';
@@ -77,11 +78,9 @@ class AppRouter extends Component {
       this.props.loaded
         ? <Router history={this.props.history} render={applyRouterMiddleware(useScroll(()=>false))}>
           <Route path="" component={MainContainer} >
-            {/*<AuthRoute path="login" component={Login} allowed={!this.props.isLoggedIn} otherwise="projects" />*/}
             <Route path="login" component={Login} onEnter={this.isLogged} />
             <Route path="icons" component={DemoPage} />
             <Route path="logout" component={Logout} />
-            {/*<AuthRoute path="/" component={InnerContainer} allowed={this.props.isLoggedIn} otherwise="login" >*/}
             <Route path="/" component={InnerContainer} onEnter={this.requireAuth} >
               <Route path="dashboard" component={Dashboard} />
               <Route path="timesheets" component={Timesheets} />
@@ -106,14 +105,12 @@ class AppRouter extends Component {
                 component={TaskPage}
                 ignoreScrollBehavior
               >
-                <Route path="comments" component={Comments}/>
+                <IndexRoute component={Comments}/>
                 <Route path="history" component={TaskHistory}/>
-                <IndexRedirect to="comments" />
               </Route>
 
               <IndexRedirect to="projects" />
             </Route>
-            {/*</AuthRoute>*/}
             <IndexRedirect to="login" />
           </Route>
           <Route path="*" component={NotFound} />
