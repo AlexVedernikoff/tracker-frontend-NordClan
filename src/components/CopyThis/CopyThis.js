@@ -23,7 +23,9 @@ class CopyThis extends PureComponent {
 
   copy = evt => {
     evt.stopPropagation();
-    this.props.showNotification({ message: `Скопировано: ${this.props.description}`, type: 'success' });
+    this.refs.copy.select();
+    const res = document.execCommand('copy');
+    if (res) this.props.showNotification({ message: `Скопировано: ${this.props.description}`, type: 'success' });
   };
 
   render () {
