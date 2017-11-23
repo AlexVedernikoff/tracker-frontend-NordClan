@@ -3,10 +3,8 @@ import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import ReactTooltip from 'react-tooltip';
 import _ from 'lodash';
 
-import { history } from '../../History';
 import TaskHeader from './TaskHeader';
 import Details from './Details';
 import RelatedTasks from './RelatedTasks';
@@ -15,7 +13,7 @@ import Description from '../../components/Description';
 import RouteTabs from '../../components/RouteTabs';
 import TaskModal from '../../components/TaskModal';
 import ConfirmModal from '../../components/ConfirmModal';
-import { IconArrowLeft } from '../../components/Icons';
+import GoBackPanel from '../../components/GoBackPanel';
 import CreateTaskModal from '../../components/CreateTaskModal';
 import HttpError from '../../components/HttpError';
 
@@ -74,7 +72,6 @@ class TaskPage extends Component {
   componentDidMount () {
     this.props.getTask(this.props.params.taskId);
     this.props.getProjectInfo(this.props.params.projectId);
-    window.addEventListener('resize', this.setGoBackToggler);
   }
 
   componentWillReceiveProps (nextProps) {
@@ -141,33 +138,16 @@ class TaskPage extends Component {
     this.props.uploadAttachments(this.props.task.id, files);
   };
 
-  setGoBackToggler = () => {
-    const goBackToggler = document.querySelector('#go-back-toggler');
-    const taskPage = document.querySelector('#task-page');
-    let taskPageRect = null;
-    if (taskPage && taskPage.getBoundingClientRect) {
-      taskPageRect = taskPage.getBoundingClientRect();
-      goBackToggler.style.right = `calc(${window.innerWidth - taskPageRect.left}px + 1rem)`;
-    }
-  };
-
-  goBack = () => {
-    if (window.history.length > 1) {
-      history.goBack();
-    } else {
-      history.push(`/projects/${this.props.task.project.id}`);
-    }
-  }
-
   render () {
-    this.setGoBackToggler();
+    let projectUrl = '/';
+    if (this.props.task.project) projectUrl = `/projects/${this.props.task.project.id}`;
+
     return (this.props.task.error) ? (<HttpError error={this.props.task.error}/>) : (
-      <div id="task-page" className={css.taskPage}>
-        <div id="go-back-toggler" className={css.goBackTogglerWrapper}>
-          <div className={css.goBackToggler} onClick={this.goBack} data-tip="Назад" data-place="right" data-for="goBackTip">
-            <IconArrowLeft/>
-          </div>
-        </div>
+      <div ref="taskPage" className={css.taskPage}>
+        <GoBackPanel
+          defaultPreviousUrl={projectUrl}
+          parentRef={this.refs.taskPage}
+        />
         <Row>
           <Col xs={12} sm={8}>
             <TaskHeader task={this.props.task} projectId={this.props.params.projectId} onChange={this.props.changeTask} />
@@ -247,7 +227,6 @@ class TaskPage extends Component {
             />
           : null
         }
-        <ReactTooltip id="goBackTip" className="tooltip" />
       </div>
     );
   }
