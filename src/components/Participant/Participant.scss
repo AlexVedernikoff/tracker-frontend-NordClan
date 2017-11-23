@@ -8,12 +8,13 @@
 }
 
 .memberRow {
+  position: relative;
 
   &:hover {
     background-color: $color-lightgray;
 
     .iconClose {
-      visibility: visible;
+      display: inline-block;
     }
   }
 
@@ -35,13 +36,13 @@
 }
 
 .iconClose {
-  visibility: hidden;
-  position: relative;
+  display: none;
+  position: absolute;
   z-index: 2;
-  float: left;
   top: 8px;
-  margin-right: 5px;
+  left: 0;
   cursor: pointer;
+  transition: $transition;
 
   &:hover {
     transform: rotate(90deg);
