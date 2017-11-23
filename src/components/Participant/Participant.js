@@ -108,8 +108,13 @@ class Participant extends React.Component {
                 </label>
               </Col>
             ) : null}
+            <IconClose
+              className={css.iconClose}
+              onClick={this.handleOpenConfirmDelete}
+            />
           </Row>
         </Col>
+
         {this.state.isConfirmDeleteOpen
           ? <ConfirmModal
               isOpen
