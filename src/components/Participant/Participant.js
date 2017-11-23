@@ -80,6 +80,10 @@ class Participant extends React.Component {
       <Row className={css.memberRow}>
         <Col xs={3}>
           <div className={classnames(css.cell, css.memberColumn)}>
+            <IconClose
+              className={css.iconClose}
+              onClick={this.unbindUser}
+            />
             {user.fullNameRu}
           </div>
         </Col>
@@ -94,10 +98,6 @@ class Participant extends React.Component {
                 </label>
               </Col>
             ) : null}
-            <IconClose
-              className={css.iconClose}
-              onClick={this.unbindUser}
-            />
           </Row>
         </Col>
       </Row>
