@@ -18,7 +18,6 @@ class CopyThis extends PureComponent {
 
   constructor (props) {
     super(props);
-    this.state = { copied: false, tooltipTimeoutId: null };
   }
 
   copy = evt => {
