@@ -11,6 +11,10 @@
 
   &:hover {
     background-color: $color-lightgray;
+
+    .iconClose {
+      visibility: visible;
+    }
   }
 
   label {
@@ -31,12 +35,13 @@
 }
 
 .iconClose {
+  visibility: hidden;
   position: relative;
   z-index: 2;
-  right: 6px;
-  top: 10px;
+  float: left;
+  top: 8px;
+  margin-right: 5px;
   cursor: pointer;
-  transition: $transition;
 
   &:hover {
     transform: rotate(90deg);
