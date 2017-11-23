@@ -218,9 +218,10 @@ export const clearModalState = () => ({
   type: TimesheetsActions.CLEAR_MODAL_STATE
 });
 
-export const addActivity = (item, startingDay, userId) => {
-  return dispatch => dispatch(createTimesheet(item, userId, startingDay));
-};
+export const addActivity = (item) => ({
+  item,
+  type: TimesheetsActions.ADD_ACTIVITY
+});
 
 export const filterTasks = (tasks) => ({
   type: TimesheetsActions.FILTER_TASKS,
@@ -247,7 +248,8 @@ export const getTasksForSelect = (name = '') => {
       return {
         options: tasks.map((task) => ({
           label: task.name,
-          value: task.id
+          value: task.id,
+          body: task
         }))
       };
     });
@@ -269,11 +271,13 @@ export const getProjectsForSelect = (name = '') => {
       return {
         options: projects.map((project) => ({
           label: project.name,
-          value: project.id
+          value: project.id,
+          body: project
         })).concat(
           {
             label: 'Без проекта',
-            value: 0
+            value: 0,
+            body: null
           }
         )};
     });

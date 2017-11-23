@@ -22,6 +22,7 @@ class Timesheets extends React.Component {
     getTimesheets: PropTypes.func,
     list: PropTypes.array,
     startingDay: PropTypes.object,
+    tempTimesheets: PropTypes.array,
     userId: PropTypes.number
   }
 
@@ -60,7 +61,8 @@ class Timesheets extends React.Component {
 
   render () {
     const { isCalendarOpen } = this.state;
-    const { startingDay, list, getTimesheets, userId, dateBegin, dateEnd } = this.props;
+    const { startingDay, tempTimesheets, getTimesheets, userId, dateBegin, dateEnd } = this.props;
+    const list = this.props.list.concat(tempTimesheets);
 
     // Создание массива таймшитов по таскам
 
@@ -271,6 +273,7 @@ const mapStateToProps = state => ({
   userId: state.Auth.user.id,
   startingDay: state.Timesheets.startingDay,
   list: state.Timesheets.list,
+  tempTimesheets: state.Timesheets.tempTimesheets,
   dateBegin: state.Timesheets.dateBegin,
   dateEnd: state.Timesheets.dateEnd
 });

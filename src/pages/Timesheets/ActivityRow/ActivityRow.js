@@ -116,9 +116,14 @@ class ActivityRow extends React.Component {
   }
 
   deleteActivity = (ids) => {
-    const { userId, startingDay } = this.props;
-    this.props.deleteTimesheets(ids, userId, startingDay);
-    this.closeConfirmModal();
+    const isTemp = ids.filter(id => ~id.toString().indexOf('temp')).length;
+    if (isTemp) {
+      // ... TODO: Удалить временные таймшиты;
+    } else {
+      const { userId, startingDay } = this.props;
+      this.props.deleteTimesheets(ids, userId, startingDay);
+      this.closeConfirmModal();
+    }
   }
 
   render () {

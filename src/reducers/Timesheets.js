@@ -14,7 +14,8 @@ const InitialState = {
   selectedTaskStatusId: null,
   selectedProject: null,
   selectedActivityTypeId: null,
-  filteredTasks: []
+  filteredTasks: [],
+  tempTimesheets: []
 };
 
 export default function Portfolios (state = InitialState, action) {
@@ -61,6 +62,12 @@ export default function Portfolios (state = InitialState, action) {
     return {
       ...state,
       filteredTasks: action.tasks
+    };
+
+  case TimesheetsActions.ADD_ACTIVITY:
+    return {
+      ...state,
+      tempTimesheets: state.tempTimesheets.concat(action.item)
     };
 
   case TimesheetsActions.CLEAR_MODAL_STATE:
