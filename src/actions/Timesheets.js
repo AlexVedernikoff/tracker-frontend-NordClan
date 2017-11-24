@@ -244,7 +244,10 @@ export const getTasksForSelect = (name = '') => {
     return axios
     .get(
       `${API_URL}/task`,
-      { params: { name } },
+      { params: {
+        name,
+        fields: 'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId,prefix'
+      } },
       { withCredentials: true }
     )
     .then(response => response.data.data)
@@ -252,7 +255,7 @@ export const getTasksForSelect = (name = '') => {
       dispatch(filterTasks(tasks));
       return {
         options: tasks.map((task) => ({
-          label: task.name,
+          label: `${task.prefix}-${task.id}: ${task.name}`,
           value: task.id,
           body: task
         }))
