@@ -14,7 +14,8 @@ class ValidatedInput extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      isError: this.props.shouldMarkError
+      isError: this.props.shouldMarkError,
+      showSpan: false
     };
   }
 
@@ -31,13 +32,14 @@ class ValidatedInput extends Component {
           type="text"
           {...other}
           onBlur={() => {
-            onBlur() && this.setState({ isError: true });
+            onBlur() && this.setState({ isError: true, showSpan: true });
           }}
+          onFocus = {()=> this.setState({ showSpan: false })}
           className={classnames(css.input, {
             [css.inputError]: this.state.isError
           })}
         />
-        {this.state.isError && <span>{errorText}</span>}
+        {this.state.showSpan && <span>{errorText}</span>}
       </div>
     );
   }
