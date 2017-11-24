@@ -13,6 +13,7 @@ import Description from '../../components/Description';
 import RouteTabs from '../../components/RouteTabs';
 import TaskModal from '../../components/TaskModal';
 import ConfirmModal from '../../components/ConfirmModal';
+import GoBackPanel from '../../components/GoBackPanel';
 import CreateTaskModal from '../../components/CreateTaskModal';
 import HttpError from '../../components/HttpError';
 
@@ -139,9 +140,15 @@ class TaskPage extends Component {
   };
 
   render () {
+    let projectUrl = '/';
+    if (this.props.task.project) projectUrl = `/projects/${this.props.task.project.id}`;
 
     return (this.props.task.error) ? (<HttpError error={this.props.task.error}/>) : (
-      <div id="task-page">
+      <div ref="taskPage" className={css.taskPage}>
+        <GoBackPanel
+          defaultPreviousUrl={projectUrl}
+          parentRef={this.refs.taskPage}
+        />
         <Row>
           <Col xs={12} sm={8}>
             <TaskHeader task={this.props.task} projectId={this.props.params.projectId} onChange={this.props.changeTask} />
