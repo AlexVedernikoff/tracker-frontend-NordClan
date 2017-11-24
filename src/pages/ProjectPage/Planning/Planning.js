@@ -38,6 +38,7 @@ class Planning extends Component {
     SprintIsEditing: PropTypes.bool,
     changeTask: PropTypes.func.isRequired,
     createSprint: PropTypes.func.isRequired,
+    isCreateTaskModalOpen: PropTypes.bool,
     editSprint: PropTypes.func.isRequired,
     getPlanningTasks: PropTypes.func.isRequired,
     lastCreatedTask: PropTypes.object,
@@ -569,15 +570,19 @@ class Planning extends Component {
           </Row>
         </section>
         {/* <GanttChart /> */}
-        <CreateTaskModal
-          selectedSprintValue={
-            this.state.createTaskCallee === 'left'
-              ? this.state.leftColumn
-              : this.state.rightColumn
-          }
-          project={this.props.project}
-          column={this.state.createTaskCallee}
-        />
+        {
+          this.props.isCreateTaskModalOpen
+          ? <CreateTaskModal
+                selectedSprintValue={
+                  this.state.createTaskCallee === 'left'
+                    ? this.state.leftColumn
+                    : this.state.rightColumn
+                }
+                project={this.props.project}
+                column={this.state.createTaskCallee}
+            />
+          : null
+        }
         {this.state.isOpenEditModal
         ? <SprintEditModal sprint={this.state.editSprint} handleEditSprint={this.handleEditSprint} handleCloseModal={this.closeEditSprintModal}/>
         : null}
@@ -592,7 +597,8 @@ const mapStateToProps = state => ({
   lastCreatedTask: state.Project.lastCreatedTask,
   leftColumnTasks: state.PlanningTasks.leftColumnTasks,
   rightColumnTasks: state.PlanningTasks.rightColumnTasks,
-  SprintIsEditing: state.Task.SprintIsEditing
+  SprintIsEditing: state.Task.SprintIsEditing,
+  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen
 });
 
 const mapDispatchToProps = {
