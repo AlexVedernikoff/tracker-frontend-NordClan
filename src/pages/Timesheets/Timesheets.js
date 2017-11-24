@@ -134,7 +134,7 @@ class Timesheets extends React.Component {
           return isSameType && isSameProject;
         });
 
-      if (maNotPushed) {
+      if (maNotPushed && isThisWeek(el.onDate)) {
         res.push({
           typeId: el.typeId,
           projectName: el.project ? el.project.name : 'Без проекта',

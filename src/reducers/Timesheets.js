@@ -70,6 +70,12 @@ export default function Portfolios (state = InitialState, action) {
       tempTimesheets: state.tempTimesheets.concat(action.item)
     };
 
+  case TimesheetsActions.DELETE_TEMP_TIMESHEET:
+    return {
+      ...state,
+      tempTimesheets: state.tempTimesheets.filter((el) => !~action.ids.indexOf(el.id))
+    };
+
   case TimesheetsActions.CLEAR_MODAL_STATE:
     return {
       ...state,

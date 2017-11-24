@@ -118,6 +118,11 @@ export const deleteTimesheets = (ids, userId, startingDay) => {
   });
 };
 
+export const deleteTempTimesheets = (ids) => ({
+  type: TimesheetsActions.DELETE_TEMP_TIMESHEET,
+  ids
+});
+
 export const createTimesheet = (params, userId, startingDay) => { // TODO: не смог разобраться, как лучше послать query-params, используя мидлварь для rest API, поэтому экшн создан напрямую с axios
   const URL = `${API_URL}/timesheet`;
   return dispatch => {
