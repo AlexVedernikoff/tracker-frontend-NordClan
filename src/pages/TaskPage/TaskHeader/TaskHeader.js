@@ -189,6 +189,7 @@ class TaskHeader extends Component {
         <div className={css.taskTopInfo}>
           <CopyThis
             wrapThisInto={'div'}
+            description={`Ссылка на задачу ${task.project ? task.project.prefix + '-' : ''}${task.id}`}
             textToCopy={`${location.origin}${history.createHref(this.props.location)}`}>
             {
               task.project

@@ -133,6 +133,7 @@ class TaskCard extends React.Component {
           <CopyThis
             wrapThisInto={'div'}
             isCopiedBackground
+            description={`Ссылка на задачу ${task.prefix}-${task.id}`}
             textToCopy={`${location.origin}${history.createHref(
               `/projects/${task.projectId}/tasks/${task.id}`
             )}`}

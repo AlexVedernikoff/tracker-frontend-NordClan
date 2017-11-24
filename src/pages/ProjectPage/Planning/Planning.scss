@@ -6,6 +6,7 @@
   display: flex;
   overflow: auto;
   position: relative;
+  z-index: 0; // New z-index stack created
   margin-bottom: 2rem;
 
   &::-webkit-scrollbar-track {

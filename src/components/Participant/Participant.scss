@@ -37,6 +37,8 @@
 
 .memberColumn {
   // text-align: right;
+  position: relative;
+  z-index: 0; // New z-index stack created
 }
 
 .iconClose {

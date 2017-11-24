@@ -393,10 +393,14 @@ class AgileBoard extends Component {
               />
             : null
           }
-          <CreateTaskModal
-            selectedSprintValue={this.state.changedSprint}
-            project={this.props.project}
-          />
+          {
+            this.props.isCreateTaskModalOpen
+            ? <CreateTaskModal
+                selectedSprintValue={this.state.changedSprint}
+                project={this.props.project}
+              />
+            : null
+          }
         </section>
     );
   }
@@ -407,6 +411,7 @@ AgileBoard.propTypes = {
   UserIsEditing: PropTypes.bool,
   changeTask: PropTypes.func.isRequired,
   getTasks: PropTypes.func.isRequired,
+  isCreateTaskModalOpen: PropTypes.bool,
   lastCreatedTask: PropTypes.object,
   myTaskBoard: PropTypes.bool,
   openCreateTaskModal: PropTypes.func.isRequired,
@@ -425,7 +430,8 @@ const mapStateToProps = state => ({
   project: state.Project.project,
   StatusIsEditing: state.Task.StatusIsEditing,
   UserIsEditing: state.Task.UserIsEditing,
-  user: state.Auth.user
+  user: state.Auth.user,
+  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen
 });
 
 const mapDispatchToProps = {

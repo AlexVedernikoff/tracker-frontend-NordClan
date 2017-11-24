@@ -42,6 +42,7 @@ class TaskPage extends Component {
     getProjectInfo: PropTypes.func.isRequired,
     getTask: PropTypes.func.isRequired,
     getTasks: PropTypes.func.isRequired,
+    isCreateTaskModalOpen: PropTypes.bool,
     linkTask: PropTypes.func.isRequired,
     openCreateTaskModal: PropTypes.func.isRequired,
     params: PropTypes.shape({
@@ -194,11 +195,15 @@ class TaskPage extends Component {
             </aside>
           </Col>
         </Row>
-        <CreateTaskModal
-          selectedSprintValue={this.props.task.sprint ? this.props.task.sprint.id : 0}
-          project={this.props.project}
-          parentTaskId={this.props.task.id}
-        />
+        {
+          this.props.isCreateTaskModalOpen
+          ? <CreateTaskModal
+              selectedSprintValue={this.props.task.sprint ? this.props.task.sprint.id : 0}
+              project={this.props.project}
+              parentTaskId={this.props.task.id}
+            />
+          : null
+        }
         {
           this.state.isTaskModalOpen
           ? <TaskModal
@@ -229,7 +234,8 @@ const mapStateToProps = state => ({
   project: state.Project.project,
   projectTasks: state.Tasks.tasks,
   task: state.Task.task,
-  DescriptionIsEditing: state.Task.DescriptionIsEditing
+  DescriptionIsEditing: state.Task.DescriptionIsEditing,
+  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen
 });
 
 const mapDispatchToProps = {
