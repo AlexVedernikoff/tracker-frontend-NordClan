@@ -142,7 +142,7 @@
 }
 
 .list {
-  z-index: 3;
+  z-index: $z-modal-layer;
   position: relative;
   box-shadow: $box-shadow;
   background: white;

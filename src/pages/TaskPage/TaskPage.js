@@ -13,6 +13,7 @@ import Description from '../../components/Description';
 import RouteTabs from '../../components/RouteTabs';
 import TaskModal from '../../components/TaskModal';
 import ConfirmModal from '../../components/ConfirmModal';
+import GoBackPanel from '../../components/GoBackPanel';
 import CreateTaskModal from '../../components/CreateTaskModal';
 import HttpError from '../../components/HttpError';
 
@@ -42,6 +43,7 @@ class TaskPage extends Component {
     getProjectInfo: PropTypes.func.isRequired,
     getTask: PropTypes.func.isRequired,
     getTasks: PropTypes.func.isRequired,
+    isCreateTaskModalOpen: PropTypes.bool,
     linkTask: PropTypes.func.isRequired,
     openCreateTaskModal: PropTypes.func.isRequired,
     params: PropTypes.shape({
@@ -138,9 +140,15 @@ class TaskPage extends Component {
   };
 
   render () {
+    let projectUrl = '/';
+    if (this.props.task.project) projectUrl = `/projects/${this.props.task.project.id}`;
 
     return (this.props.task.error) ? (<HttpError error={this.props.task.error}/>) : (
-      <div id="task-page">
+      <div ref="taskPage" className={css.taskPage}>
+        <GoBackPanel
+          defaultPreviousUrl={projectUrl}
+          parentRef={this.refs.taskPage}
+        />
         <Row>
           <Col xs={12} sm={8}>
             <TaskHeader task={this.props.task} projectId={this.props.params.projectId} onChange={this.props.changeTask} />
@@ -194,11 +202,15 @@ class TaskPage extends Component {
             </aside>
           </Col>
         </Row>
-        <CreateTaskModal
-          selectedSprintValue={this.props.task.sprint ? this.props.task.sprint.id : 0}
-          project={this.props.project}
-          parentTaskId={this.props.task.id}
-        />
+        {
+          this.props.isCreateTaskModalOpen
+          ? <CreateTaskModal
+              selectedSprintValue={this.props.task.sprint ? this.props.task.sprint.id : 0}
+              project={this.props.project}
+              parentTaskId={this.props.task.id}
+            />
+          : null
+        }
         {
           this.state.isTaskModalOpen
           ? <TaskModal
@@ -229,7 +241,8 @@ const mapStateToProps = state => ({
   project: state.Project.project,
   projectTasks: state.Tasks.tasks,
   task: state.Task.task,
-  DescriptionIsEditing: state.Task.DescriptionIsEditing
+  DescriptionIsEditing: state.Task.DescriptionIsEditing,
+  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen
 });
 
 const mapDispatchToProps = {

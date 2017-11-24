@@ -4,6 +4,7 @@ import ReactModal from 'react-modal';
 import classnames from 'classnames';
 import Button from '../Button';
 import * as css from './ConfirmModal.scss';
+import cssVariables from '!!sass-variable-loader!../../styles/variables.scss';
 
 const ReactModalStyles = {
   overlay: {
@@ -19,7 +20,7 @@ const ReactModalStyles = {
     padding: '1rem',
     boxSizing: 'border-box',
     backgroundColor: 'rgba(43, 62, 80, 0.8)',
-    zIndex: 2,
+    zIndex: cssVariables.zModalLayer,
     overflow: 'auto'
   },
   content: {

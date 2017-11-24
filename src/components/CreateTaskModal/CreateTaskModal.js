@@ -20,33 +20,25 @@ import Validator from '../ValidatedInput/Validator';
 class CreateTaskModal extends Component {
   constructor (props) {
     super(props);
+
+    this.types = props.taskTypes.map(({ name, id }) => ({
+      label: name,
+      value: id
+    }));
+
     this.state = {
-      selectedSprint: null,
+      selectedSprint: props.selectedSprintValue,
       selectedPerformer: null,
       taskName: '',
       description: '',
       openTaskPage: false,
       prioritiesId: 3,
-      selectedType: null
+      selectedType: this.types[0],
+      selectedTypeError: this.types.length === 0,
+      typeList: this.types
     };
+
     this.validator = new Validator();
-  }
-
-  componentWillReceiveProps (nextProps) {
-    if (this.state.selectedSprint !== nextProps.selectedSprintValue) {
-      this.setState({ selectedSprint: nextProps.selectedSprintValue });
-    }
-  }
-
-  componentWillUnmount () {
-    this.setState({
-      selectedSprint: null,
-      selectedPerformer: null,
-      sprints: null,
-      taskName: null,
-      description: null,
-      openTaskPage: false
-    });
   }
 
   handleModalSprintChange = selectedSprint => {
@@ -94,12 +86,7 @@ class CreateTaskModal extends Component {
     );
   };
 
-  onTypeChange = value => this.setState({ selectedType: value ? value : 1 });
-
-  handleCloseModal = event => {
-    event.preventDefault();
-    this.props.closeCreateTaskModal();
-  };
+  onTypeChange = value => this.setState({ selectedType: value ? value : this.state.typeList[0] });
 
   getSprints = () => {
     let sprints = _.sortBy(this.props.project.sprints, sprint => {
@@ -147,12 +134,6 @@ class CreateTaskModal extends Component {
       firstCol: 5,
       secondCol: 7
     };
-
-    const types = this.props.taskTypes.map(({ name, id }) => ({
-      label: name,
-      value: id
-    }));
-
     return (
       <Modal
         isOpen={this.props.isCreateTaskModalOpen}
@@ -220,12 +201,13 @@ class CreateTaskModal extends Component {
                   multi={false}
                   ignoreCase
                   placeholder="Выберите тип"
-                  options={types}
+                  options={this.state.typeList}
                   className={css.selectSprint}
                   value={this.state.selectedType}
                   onChange={this.onTypeChange}
                   noResultsText="Нет результатов"
                 />
+                {this.state.selectedTypeError && <span>Ошибка получения данных</span>}
               </Col>
             </Row>
           </label>
@@ -300,14 +282,14 @@ class CreateTaskModal extends Component {
               text="Создать задачу"
               type="green"
               htmlType="submit"
-              disabled={this.validator.isDisabled}
+              disabled={this.validator.isDisabled && !this.state.selectedTypeError}
               onClick={this.submitTask}
             />
             <Button
               text="Создать и открыть"
               htmlType="button"
               type="green-lighten"
-              disabled={this.validator.isDisabled}
+              disabled={this.validator.isDisabled && !this.state.selectedTypeError}
               onClick={this.submitTaskAndOpen}
             />
           </div>
