@@ -64,6 +64,18 @@ class Timesheets extends React.Component {
     const { startingDay, tempTimesheets, getTimesheets, userId, dateBegin, dateEnd } = this.props;
     const list = this.props.list.concat(tempTimesheets);
 
+    const isThisWeek = (date) => {
+      const getMidnight = (dayOfWeek) => {
+        return moment(startingDay)
+        .weekday(dayOfWeek)
+        .set({hour: 0, minute: 0, second: 0, millisecond: 0})
+        .format('X');
+      };
+
+      const timesheetOndDate = moment(date).format('X');
+      return (timesheetOndDate <= getMidnight(6)) && (timesheetOndDate >= getMidnight(0));
+    };
+
     // Создание массива таймшитов по таскам
 
     let tasks = list.length ? list.reduce((res, el) => {
@@ -75,7 +87,7 @@ class Timesheets extends React.Component {
           && tsh.taskStatusId === el.taskStatusId;
         });
 
-      if (taskNotPushed) {
+      if (taskNotPushed && isThisWeek(el.onDate)) {
         res.push({
           id: el.task.id,
           name: el.task.name,
@@ -89,6 +101,7 @@ class Timesheets extends React.Component {
 
     tasks = tasks.map(element => {
       const timeSheets = [];
+
       for (let index = 0; index < 7; index++) {
         const timesheet = _.find(list, tsh => {
           return tsh.task && tsh.typeId === 1
