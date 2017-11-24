@@ -33,6 +33,10 @@
 .memberHeader {
   background-color: $color-gray;
   margin-bottom: 8px;
+
+  @include tablet {
+    display: none;
+  }
 }
 
 .createButton {

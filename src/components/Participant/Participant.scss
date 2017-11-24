@@ -2,12 +2,24 @@
 
 .cell {
   position: relative;
+  @include text-wrap;
 }
 
 .property {
   &:before {
     content: "";
     display: table;
+  }
+}
+
+.labelText {
+  display: none;
+  white-space: nowrap;
+
+  @include tablet {
+    display: inline-block;
+    vertical-align: bottom;
+    padding-left: 10px;
   }
 }
 
@@ -24,14 +36,43 @@
 
   label {
     display: block;
+    text-transform: capitalize;
+
+    @include tablet {
+      display: inline-block;
+      vertical-align: bottom;
+    }
   }
 
   .cell {
     padding: 8px;
+
+    @include tablet {
+      padding-right: 0;
+    }
+  }
+
+  .cellColumn {
+
+    @include tablet {
+      flex-basis: 25%;
+      width: 25%;
+    }
+
+    @include phone {
+      flex-basis: 50%;
+      width: 50%;
+    }
   }
 
   h4 {
     margin: 0;
+  }
+
+  &:not(:last-child) {
+    @include tablet {
+      margin-bottom: 20px;
+    }
   }
 }
 

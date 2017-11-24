@@ -73,6 +73,14 @@ $box-shadow: 4px 4px 0 rgba(0,0,0,0.17);
   width: 100%;
 }
 
+@mixin text-wrap {
+  word-break: break-all;
+  word-break: break-word;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
 // Priority
 $priority1: $color-red;
 $priority2: $color-orange;
