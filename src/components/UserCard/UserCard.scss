@@ -10,7 +10,7 @@
   border: 1px solid $color-gray;
   background-color: white;
   text-align: center;
-  z-index: 1;
+  z-index: $z-dropdown-layer;
   box-shadow: $box-shadow;
 
   &:before {

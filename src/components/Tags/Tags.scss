@@ -9,7 +9,7 @@
   top: 1.5rem;
   
   box-shadow: $box-shadow;
-  z-index: 3;
+  z-index: $z-dropdown-layer;
   background-color: white;
 
   &:before {
