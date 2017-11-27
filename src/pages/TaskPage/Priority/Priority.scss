@@ -19,6 +19,7 @@
     display: block;
     position: relative;
     flex: 1;
+    flex-basis: auto; // ie fix
     align-items: center;
     font-size: 11px;
     padding: 0 4px;

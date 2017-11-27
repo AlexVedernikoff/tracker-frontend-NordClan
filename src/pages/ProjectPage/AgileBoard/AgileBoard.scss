@@ -16,6 +16,11 @@
 
 .filtersRow {
   margin-bottom: 1rem;
+
+  @include phone {
+    flex-direction: column; // ie fix
+    flex-basis: auto; // ie fix
+  }
 }
 
 .taskSectionTitle {
