@@ -500,6 +500,7 @@ class Planning extends Component {
                   text="Создать задачу"
                   icon="IconPlus"
                   name="left"
+                  className={css.button}
                 />
               </div>
               <div
@@ -545,6 +546,7 @@ class Planning extends Component {
                   text="Создать задачу"
                   icon="IconPlus"
                   name="right"
+                  className={css.button}
                 />
               </div>
               <div

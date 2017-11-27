@@ -86,7 +86,7 @@ class Tags extends Component {
                   autoFocus
                   onChange={this.onChangeHandler}/>
                 <Button
-                  addedClassNames={{[css.tagsButton]: true}}
+                  addedClassNames={{[css.tagsButton]: true, [css.tagsSubmit]: true}}
                   icon="IconCheck"
                   type='green'
                   onClick={this.sendNewTags}
