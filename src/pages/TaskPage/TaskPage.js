@@ -4,6 +4,7 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import anchorme from 'anchorme';
 
 import TaskHeader from './TaskHeader';
 import Details from './Details';
@@ -142,6 +143,19 @@ class TaskPage extends Component {
   render () {
     let projectUrl = '/';
     if (this.props.task.project) projectUrl = `/projects/${this.props.task.project.id}`;
+    // Parsing links inside of task description
+    // This variable is used because this component gets rerendered multiple times
+    let taskDescription = this.props.task.description;
+    if (taskDescription) {
+      taskDescription = anchorme(taskDescription, {
+        attributes: [
+          {
+            name: 'target',
+            value: '_blank'
+          }
+        ]
+      });
+    }
 
     return (this.props.task.error) ? (<HttpError error={this.props.task.error}/>) : (
       <div ref="taskPage" className={css.taskPage}>
