@@ -103,7 +103,7 @@ TaskPlanningTime.propTypes = {
   id: PropTypes.number,
   startTaskEditing: PropTypes.func.isRequired,
   stopTaskEditing: PropTypes.func.isRequired,
-  time: PropTypes.number.isRequired
+  time: PropTypes.string.isRequired
 };
 
 const mapStateToProps = state => ({

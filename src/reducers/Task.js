@@ -14,7 +14,8 @@ const InitialState = {
   task: {
     tags: [],
     error: false,
-    attachments: []
+    attachments: [],
+    plannedExecutionTime: '0.00'
   },
   comments: [],
   history: [],

@@ -28,7 +28,7 @@ class InnerContainer extends Component {
     this.state = {
       mql: mql,
       sidebarDocked: true,
-      sidebarOpen: true
+      sidebarOpen: mql.matches
     };
 
     this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
