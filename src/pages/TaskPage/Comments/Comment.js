@@ -9,9 +9,6 @@ import CopyThis from '../../../components/CopyThis';
 import { history } from '../../../History';
 import { connect } from 'react-redux';
 import UserCard from '../../../components/UserCard';
-
-import linkifyStr from 'linkifyjs/string';
-import anchorme from 'anchorme';
 import Autolinker from 'autolinker';
 
 const UPDATE_EXPIRATION_TIMEOUT = 10 * 60 * 1000;//10 минут
