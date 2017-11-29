@@ -166,7 +166,7 @@ class ProjectTitle extends Component {
   render () {
     return (
       <div className={css.projectTitle}>
-        {this.props.name ? <ProjectIcon projectName={this.props.name} /> : <IconPreloader style={{color: 'silver', fontSize: '3rem', marginRight: 10}} />}
+        {this.props.name ? <ProjectIcon projectName={this.props.name} projectPrefix={this.props.prefix}/> : <IconPreloader style={{color: 'silver', fontSize: '3rem', marginRight: 10}} />}
         <div>
           {
             this.props.portfolio

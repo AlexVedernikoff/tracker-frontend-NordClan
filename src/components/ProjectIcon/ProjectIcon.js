@@ -4,7 +4,7 @@ import * as css from './ProjectIcon.scss';
 
 const ProjectIcon = props => {
   const name = props.projectName;
-
+  const prefix = props.projectPrefix;
   const hexToLuma = hex => {
     const r = parseInt(hex.substr(0, 2), 16);
     const g = parseInt(hex.substr(2, 2), 16);
@@ -22,7 +22,6 @@ const ProjectIcon = props => {
     .substr(0, 6);
 
   const fontColor = hexToLuma(backColor) > 0.5 ? '#333' : '#fafafa';
-
   const divStyle = {
     backgroundColor: `#${backColor}`,
     color: fontColor
@@ -31,19 +30,27 @@ const ProjectIcon = props => {
   return (
     <div className={css.projectIcon} style={divStyle}>
       <span>
-        {name
+        {/*name
           .split(' ')
           .map(item => item[0])
           .join('')
           .substr(0, 2)
-          .toUpperCase()}
+        .toUpperCase()*/}
+        {
+          prefix
+          .split('')
+          .slice(0, 3)
+          .join('')
+          .toUpperCase()
+        }
       </span>
     </div>
   );
 };
 
 ProjectIcon.propTypes = {
-  projectName: PropTypes.string
+  projectName: PropTypes.string,
+  projectPrefix: PropTypes.string
 };
 
 export default ProjectIcon;
