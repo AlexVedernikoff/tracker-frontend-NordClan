@@ -155,7 +155,7 @@ class ActivityRow extends React.Component {
                   type="number"
                   disabled={tsh.id === 3}
                   max="24"
-                  defaultValue={roundNum(tsh.spentTime, 2)}
+                  value={roundNum(tsh.spentTime, 2)}
                   onChange={(e) => this.changeFilled(i, tsh.id, tsh.comment, e)}
                 />
                 <span className={css.toggleComment}>

@@ -54,23 +54,6 @@ export const getTimesheetsPlayerData = (startDate, endDate) => {
   });
 };
 
-
-export const updateDraftVisible = (data, options) => {
-
-  return dispatch => dispatch({
-    type: REST_API,
-    url: `/timesheetDraft/${data.timesheetId}`,
-    method: PUT,
-    body: data.body,
-    extra,
-    start: withStartLoading(startReceivePlayerData, true)(dispatch),
-    response: withFinishLoading(response => {
-      dispatch(playerDataUpdateReceived(response.data, options.itemKey));
-    })(dispatch),
-    error: playerDataReceiveFailed(dispatch)
-  });
-};
-
 export const updateTimesheetDraft = (data, options) => {
 
   return dispatch => dispatch({
@@ -115,11 +98,10 @@ export const updateTimesheet = (data, options) => {
   return updateExistedTimesheet(data, options);
 };
 
-////////////////////////////////
 export const updateDraft = (data, options) => {
   return dispatch => dispatch({
     type: REST_API,
-    url: `/draftsheet/?return=${data.return}`,
+    url: `/draftsheet/`,
     method: PUT,
     body: { ...data },
     extra,
@@ -140,7 +122,6 @@ export const updateOnlyTimesheet = (data) => {
     extra,
     start: withStartLoading(startReceivePlayerData, true)(dispatch),
     response: withFinishLoading(response => {
-      console.log(response);
       dispatch(playerTimesheetUpdateReceived(response.data));
     })(dispatch),
     error: playerDataReceiveFailed(dispatch)
