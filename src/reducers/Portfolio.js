@@ -24,7 +24,6 @@ function portfolio (state = InitialState, action) {
     };
 
   case portfolioActions.PORTFOLIO_NAME_RECEIVE_SUCCESS:
-    console.log(action.data);
     return {
       ...state,
       name: action.data.name
