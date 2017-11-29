@@ -4,8 +4,8 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 
 import TaskRow from '../../../components/TaskRow';
+import SelectDropdown from '../../../components/SelectDropdown';
 import Input from '../../../components/Input';
-import StatusCheckbox from './StatusCheckbox';
 import Pagination from '../../../components/Pagination';
 import * as css from './TaskList.scss';
 import TagsFilter from '../../../components/TagsFilter';
@@ -50,22 +50,18 @@ class TaskList extends Component {
     }), this.loadTasks);
   };
 
-  changeStatusFilter = (id) => {
-    this.setState(state => ({
-      statusIds: state.statusIds.includes(id)
-        ? state.statusIds.filter(statusId => statusId !== id)
-        : [...state.statusIds, id],
+  changeStatusFilter = (options) => {
+    this.setState({
+      statusIds: options.map(option => option.value),
       activePage: 1
-    }), this.loadTasks);
+    }, this.loadTasks);
   };
 
-  changeTypeFilter = (id) => {
-    this.setState(state => ({
-      typeIds: state.typeIds.includes(id)
-        ? state.typeIds.filter(typeId => typeId !== id)
-        : [...state.typeIds, id],
+  changeTypeFilter = (options) => {
+    this.setState({
+      typeIds: options.map(option => option.value),
       activePage: 1
-    }), this.loadTasks);
+    }, this.loadTasks);
   };
 
 
@@ -121,35 +117,42 @@ class TaskList extends Component {
 
   render () {
     const { tasksList: tasks, statuses, taskTypes } = this.props;
-    const statusCheckboxes = statuses ? statuses.map(status => (
-      <Col xs={6} sm key={status.id}>
-        <StatusCheckbox
-          status={status}
-          checked={this.state.statusIds.includes(status.id)}
-          onChange={this.changeStatusFilter.bind(this, status.id)}
-        />
-      </Col>
-    )) : null;
-    const typeCheckboxes = taskTypes ? taskTypes.map(type => (
-      <Col xs={2} sm key={type.id}>
-        <StatusCheckbox
-          status={type}
-          checked={this.state.typeIds.includes(type.id)}
-          onChange={this.changeTypeFilter}
-        />
-      </Col>
-    )) : null;
+    const statusOptions = statuses ? statuses.map(status => ({ value: status.id, label: status.name })) : [];
+    const typeOptions = taskTypes ? taskTypes.map(type => ({value: type.id, label: type.name})) : [];
 
     return (
       <div>
         <section>
           <div className={css.filters}>
-            <Row className={css.checkedFilters} top="xs">
-              { statusCheckboxes }
+            <Row className={css.search} top="xs">
+              <Col xs={12} sm={6}>
+                <SelectDropdown
+                  name="status"
+                  placeholder="Выберите статус..."
+                  multi
+                  noResultsText="Нет подходящих статусов"
+                  backspaceToRemoveMessage={''}
+                  clearAllText="Очистить все"
+                  value={this.state.statusIds}
+                  options={statusOptions}
+                  onChange={(options) => this.changeStatusFilter(options)}
+                />
+              </Col>
+              <Col xs={12} sm={6}>
+                <SelectDropdown
+                  name="type"
+                  placeholder="Выберите тип..."
+                  multi
+                  noResultsText="Нет подходящих типов"
+                  backspaceToRemoveMessage={''}
+                  clearAllText="Очистить все"
+                  value={this.state.typeIds}
+                  options={typeOptions}
+                  onChange={(options) => this.changeTypeFilter(options)}
+                />
+              </Col>
             </Row>
-            <Row className={css.checkedFilters} top="xs">
-              { typeCheckboxes }
-            </Row>
+
             <Row className={css.search}>
               <Col xs={12} sm={6}>
                 <Input
