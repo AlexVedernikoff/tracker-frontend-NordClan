@@ -9,6 +9,7 @@ import CopyThis from '../../../components/CopyThis';
 import { history } from '../../../History';
 import { connect } from 'react-redux';
 import UserCard from '../../../components/UserCard';
+import Autolinker from 'autolinker';
 
 const UPDATE_EXPIRATION_TIMEOUT = 10 * 60 * 1000;//10 минут
 
@@ -109,7 +110,6 @@ class Comment extends Component {
       Comment.conditionalScroll(this.refs.comment);
     }
   }
-
   render () {
     const { comment: { author, parentComment }, comment } = this.props;
     let typoAvatar = '';
@@ -167,8 +167,10 @@ class Comment extends Component {
                 </div>
                 : null
             }
-            <div className={css.commentText} onClick={() => Comment.selectComment(comment.id, this.props.location)}>
-              {comment.text}
+            <div
+              dangerouslySetInnerHTML={{ __html: Autolinker.link(comment.text) }}
+              className={css.commentText}
+              onClick={() => Comment.selectComment(comment.id, this.props.location)}>
             </div>
             <div className={css.commentAction}>
               {

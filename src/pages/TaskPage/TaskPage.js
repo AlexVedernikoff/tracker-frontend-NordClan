@@ -4,6 +4,7 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import Autolinker from 'autolinker';
 
 import TaskHeader from './TaskHeader';
 import Details from './Details';
@@ -142,7 +143,6 @@ class TaskPage extends Component {
   render () {
     let projectUrl = '/';
     if (this.props.task.project) projectUrl = `/projects/${this.props.task.project.id}`;
-
     return (this.props.task.error) ? (<HttpError error={this.props.task.error}/>) : (
       <div ref="taskPage" className={css.taskPage}>
         <GoBackPanel
