@@ -9,6 +9,7 @@ import {
   stopTaskEditing,
   changeTask
 } from '../../../actions/Task';
+import roundNum from '../../../utils/roundNum';
 
 class TaskPlanningTime extends Component {
   constructor (props) {
@@ -80,7 +81,7 @@ class TaskPlanningTime extends Component {
             onBlur={this.validateAndSubmit}
             onKeyDown={this.handleKeyPress}
           >
-            {this.props.time}
+            {roundNum(this.props.time, 2)}
           </span>
           <span> ч.</span>
           {this.props.PlanningTimeIsEditing
