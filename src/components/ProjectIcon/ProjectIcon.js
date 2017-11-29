@@ -32,9 +32,7 @@ const ProjectIcon = props => {
       <span>
         {
           prefix
-          .split('')
-          .slice(0, 3)
-          .join('')
+          .slice(0, 2)
           .toUpperCase()
         }
       </span>
