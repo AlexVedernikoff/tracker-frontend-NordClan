@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
+import moment from 'moment';
+import classnames from 'classnames';
 
 import TaskRow from '../../../components/TaskRow';
 import SelectDropdown from '../../../components/SelectDropdown';
@@ -41,6 +43,40 @@ class TaskList extends Component {
     }
   }
 
+  getSprints = () => {
+    const sprints = this.props.project.sprints.map((sprint, i) => ({
+      value: sprint.id,
+      label: `${sprint.name} (${moment(sprint.factStartDate).format(
+        'DD.MM.YYYY'
+      )} ${sprint.factFinishDate
+        ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}`
+        : '- ...'})`,
+      statusId: sprint.statusId,
+      className: classnames({
+        [css.INPROGRESS]: sprint.statusId === 2,
+        [css.sprintMarker]: true,
+        [css.FINISHED]: sprint.statusId === 1
+      })
+    }));
+
+    sprints.push({
+      value: 0,
+      label: 'Backlog',
+      className: classnames({
+        [css.INPROGRESS]: false,
+        [css.sprintMarker]: true
+      })
+    });
+    return sprints;
+  };
+
+  changeSprintFilter = (option) => {
+    this.setState({
+      sprintId: option.value,
+      activePage: 1
+    }, this.loadTasks);
+  }
+
   changeNameFilter = event => {
     const value = event.target.value;
 
@@ -64,6 +100,32 @@ class TaskList extends Component {
     }, this.loadTasks);
   };
 
+  getSprints = () => {
+    const sprints = this.props.project.sprints.map((sprint, i) => ({
+      value: sprint.id,
+      label: `${sprint.name} (${moment(sprint.factStartDate).format(
+        'DD.MM.YYYY'
+      )} ${sprint.factFinishDate
+        ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}`
+        : '- ...'})`,
+      statusId: sprint.statusId,
+      className: classnames({
+        [css.INPROGRESS]: sprint.statusId === 2,
+        [css.sprintMarker]: true,
+        [css.FINISHED]: sprint.statusId === 1
+      })
+    }));
+
+    sprints.push({
+      value: 0,
+      label: 'Backlog',
+      className: classnames({
+        [css.INPROGRESS]: false,
+        [css.sprintMarker]: true
+      })
+    });
+    return sprints;
+  };
 
   changePerformerFilter = (performer) => {
     const performerId = performer ? performer.value : 0;
@@ -96,6 +158,7 @@ class TaskList extends Component {
       statusId,
       tags,
       typeId,
+      sprintId: this.state.sprintId,
       ...options
     });
   }
@@ -116,7 +179,7 @@ class TaskList extends Component {
   };
 
   render () {
-    const { tasksList: tasks, statuses, taskTypes } = this.props;
+    const { tasksList: tasks, statuses, taskTypes, project } = this.props;
     const statusOptions = statuses ? statuses.map(status => ({ value: status.id, label: status.name })) : [];
     const typeOptions = taskTypes ? taskTypes.map(type => ({value: type.id, label: type.name})) : [];
 
@@ -125,10 +188,23 @@ class TaskList extends Component {
         <section>
           <div className={css.filters}>
             <Row className={css.search} top="xs">
-              <Col xs={12} sm={6}>
+              <Col xs={12} sm={3}>
+                <SelectDropdown
+                  name="type"
+                  placeholder="Тип задачи"
+                  multi
+                  noResultsText="Нет подходящих типов"
+                  backspaceToRemoveMessage={''}
+                  clearAllText="Очистить все"
+                  value={this.state.typeIds}
+                  options={typeOptions}
+                  onChange={(options) => this.changeTypeFilter(options)}
+                />
+              </Col>
+              <Col xs={12} sm={3}>
                 <SelectDropdown
                   name="status"
-                  placeholder="Выберите статус..."
+                  placeholder="Стадия задачи"
                   multi
                   noResultsText="Нет подходящих статусов"
                   backspaceToRemoveMessage={''}
@@ -141,14 +217,13 @@ class TaskList extends Component {
               <Col xs={12} sm={6}>
                 <SelectDropdown
                   name="type"
-                  placeholder="Выберите тип..."
-                  multi
-                  noResultsText="Нет подходящих типов"
+                  placeholder="Спринт"
+                  noResultsText="Нет подходящих спринтов"
                   backspaceToRemoveMessage={''}
                   clearAllText="Очистить все"
-                  value={this.state.typeIds}
-                  options={typeOptions}
-                  onChange={(options) => this.changeTypeFilter(options)}
+                  value={this.state.sprintId}
+                  options={this.getSprints()}
+                  onChange={(option) => this.changeSprintFilter(option)}
                 />
               </Col>
             </Row>
