@@ -11,7 +11,7 @@ const InlineHolder = (props) => {
 };
 
 InlineHolder.propTypes = {
-  length: PropTypes.number.isRequired
+  length: PropTypes.string.isRequired
 };
 
 export default InlineHolder;

@@ -60,7 +60,7 @@ class PhaseColumn extends React.Component {
         {
           tasks.length
           ? tasks
-          : isTasksLoad || isProjectLoading && !allTasksLength
+          : (isTasksLoad || isProjectLoading) && !allTasksLength
           ? <div className={css.cardHolder}>
               <InlineHolder length='70%' />
               <InlineHolder length='100%' />
