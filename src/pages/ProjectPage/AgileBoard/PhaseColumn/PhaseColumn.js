@@ -62,9 +62,9 @@ class PhaseColumn extends React.Component {
           ? tasks
           : isTasksLoad || isProjectLoading && !allTasksLength
           ? <div className={css.cardHolder}>
-              <InlineHolder length={7} />
-              <InlineHolder length={15} />
-              <InlineHolder length={3} />
+              <InlineHolder length='70%' />
+              <InlineHolder length='100%' />
+              <InlineHolder length='30%' />
             </div>
           : <span className="text-info">Задачи в стадии {title} отсутсвуют</span>
         }

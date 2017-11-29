@@ -181,7 +181,7 @@ class ProjectTitle extends Component {
               contentEditable={this.props.titleIsEditing}
               onKeyDown={this.handleKeyPress}
             >
-              {this.props.name ? this.props.name : <InlineHolder length={7} />}
+              {this.props.name ? this.props.name : <InlineHolder length='3.5em' />}
             </span>
             <span className={css.prefix}>
               <span>(</span>
@@ -192,7 +192,7 @@ class ProjectTitle extends Component {
                 contentEditable={this.props.titleIsEditing}
                 onKeyDown={this.handleKeyPress}
               >
-                {this.props.prefix ? this.props.prefix : <InlineHolder length={2} />}
+                {this.props.prefix ? this.props.prefix : <InlineHolder length='1em' />}
               </span>
               <span>)</span>
             </span>
