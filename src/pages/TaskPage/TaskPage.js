@@ -140,10 +140,6 @@ class TaskPage extends Component {
     this.props.uploadAttachments(this.props.task.id, files);
   };
 
-  // Link eval - making links clickable
-  parseTextLinks = (text) => {
-    return (text) ? Autolinker.link(text) : text;
-  };
   render () {
     let projectUrl = '/';
     if (this.props.task.project) projectUrl = `/projects/${this.props.task.project.id}`;
@@ -158,7 +154,7 @@ class TaskPage extends Component {
             <TaskHeader task={this.props.task} projectId={this.props.params.projectId} onChange={this.props.changeTask} />
             <main className={css.main}>
               <Description
-                text={{ __html: this.parseTextLinks(this.props.task.description) }}
+                text={{ __html: this.props.task.description }}
                 headerType="h3"
                 id={this.props.params.taskId}
                 headerText="Описание:"

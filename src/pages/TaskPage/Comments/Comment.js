@@ -167,7 +167,11 @@ class Comment extends Component {
                 </div>
                 : null
             }
-            <div dangerouslySetInnerHTML={{ __html: Autolinker.link(comment.text) }} className={css.commentText} onClick={() => Comment.selectComment(comment.id, this.props.location)} ></div>
+            <div
+              dangerouslySetInnerHTML={{ __html: Autolinker.link(comment.text) }}
+              className={css.commentText}
+              onClick={() => Comment.selectComment(comment.id, this.props.location)}>
+            </div>
             <div className={css.commentAction}>
               {
                 !comment.deleting
