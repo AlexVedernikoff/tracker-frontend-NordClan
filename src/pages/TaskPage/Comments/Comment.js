@@ -10,6 +10,8 @@ import { history } from '../../../History';
 import { connect } from 'react-redux';
 import UserCard from '../../../components/UserCard';
 
+import anchorme from 'anchorme';
+
 const UPDATE_EXPIRATION_TIMEOUT = 10 * 60 * 1000;//10 минут
 
 class Comment extends Component {
@@ -109,7 +111,6 @@ class Comment extends Component {
       Comment.conditionalScroll(this.refs.comment);
     }
   }
-
   render () {
     const { comment: { author, parentComment }, comment } = this.props;
     let typoAvatar = '';
@@ -168,7 +169,7 @@ class Comment extends Component {
                 : null
             }
             <div className={css.commentText} onClick={() => Comment.selectComment(comment.id, this.props.location)}>
-              {comment.text}
+              { comment.text }
             </div>
             <div className={css.commentAction}>
               {

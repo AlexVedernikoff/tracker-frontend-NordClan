@@ -4,7 +4,8 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import anchorme from 'anchorme';
+import linkifyStr from 'linkifyjs/string';
+
 
 import TaskHeader from './TaskHeader';
 import Details from './Details';
@@ -142,14 +143,7 @@ class TaskPage extends Component {
 
   // Link eval - making links clickable
   parseTextLinks = (text) => {
-    return (text) ? anchorme(text, {
-      attributes: [
-        {
-          name: 'target',
-          value: '_blank'
-        }
-      ]
-    }) : text;
+    return (text) ? linkifyStr(text) : text;
   };
   render () {
     let projectUrl = '/';
