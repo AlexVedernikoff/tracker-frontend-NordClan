@@ -30,12 +30,6 @@ const ProjectIcon = props => {
   return (
     <div className={css.projectIcon} style={divStyle}>
       <span>
-        {/*name
-          .split(' ')
-          .map(item => item[0])
-          .join('')
-          .substr(0, 2)
-        .toUpperCase()*/}
         {
           prefix
           .split('')

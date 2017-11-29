@@ -166,12 +166,25 @@ class ProjectTitle extends Component {
   render () {
     return (
       <div className={css.projectTitle}>
-        {this.props.name ? <ProjectIcon projectName={this.props.name} projectPrefix={this.props.prefix}/> : <IconPreloader style={{color: 'silver', fontSize: '3rem', marginRight: 10}} />}
+        {this.props.name ? 
+          <ProjectIcon 
+            projectName={this.props.name} 
+            projectPrefix={this.props.prefix}
+          /> 
+          : 
+          <IconPreloader 
+            style={{color: 'silver', fontSize: '3rem', marginRight: 10}} 
+          />
+        }
         <div>
           {
-            this.props.portfolio
-            ? <span className={css.portfolio}><Link to={`/projects/portfolio/${this.props.portfolio.id}`}>{this.props.portfolio.name}</Link> <IconEdit onClick={this.props.openPortfolioModal}/></span>
-            : null
+            this.props.portfolio ?
+              <span className={css.portfolio}>
+                <Link to={`/projects/portfolio/${this.props.portfolio.id}`}>{this.props.portfolio.name}</Link> 
+                <IconEdit onClick={this.props.openPortfolioModal}/>
+              </span>
+              : 
+              null
           }
           <h1>
             <span
