@@ -140,23 +140,20 @@ class TaskPage extends Component {
     this.props.uploadAttachments(this.props.task.id, files);
   };
 
+  // Link eval - making links clickable
+  parseTextLinks = (text) => {
+    return (text) ? anchorme(text, {
+      attributes: [
+        {
+          name: 'target',
+          value: '_blank'
+        }
+      ]
+    }) : text;
+  };
   render () {
     let projectUrl = '/';
     if (this.props.task.project) projectUrl = `/projects/${this.props.task.project.id}`;
-    // Parsing links inside of task description
-    // This variable is used because this component gets rerendered multiple times
-    let taskDescription = this.props.task.description;
-    if (taskDescription) {
-      taskDescription = anchorme(taskDescription, {
-        attributes: [
-          {
-            name: 'target',
-            value: '_blank'
-          }
-        ]
-      });
-    }
-
     return (this.props.task.error) ? (<HttpError error={this.props.task.error}/>) : (
       <div ref="taskPage" className={css.taskPage}>
         <GoBackPanel
@@ -168,7 +165,7 @@ class TaskPage extends Component {
             <TaskHeader task={this.props.task} projectId={this.props.params.projectId} onChange={this.props.changeTask} />
             <main className={css.main}>
               <Description
-                text={{ __html: this.props.task.description }}
+                text={{ __html: this.parseTextLinks(this.props.task.description) }}
                 headerType="h3"
                 id={this.props.params.taskId}
                 headerText="Описание:"
