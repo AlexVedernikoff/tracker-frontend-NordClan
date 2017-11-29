@@ -4,8 +4,7 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import linkifyStr from 'linkifyjs/string';
-
+import Autolinker from 'autolinker';
 
 import TaskHeader from './TaskHeader';
 import Details from './Details';
@@ -143,7 +142,7 @@ class TaskPage extends Component {
 
   // Link eval - making links clickable
   parseTextLinks = (text) => {
-    return (text) ? linkifyStr(text) : text;
+    return (text) ? Autolinker.link(text) : text;
   };
   render () {
     let projectUrl = '/';

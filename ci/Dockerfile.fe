@@ -1,0 +1,24 @@
+FROM nginx:stable-alpine
+
+MAINTAINER maxim.baranov@simbirsoft.com
+
+# install j2cli (for CI)
+
+RUN apk add --no-cache python2 py-pip && \
+    pip install j2cli
+
+ADD ci/nginx.crt /etc/nginx/ssl/nginx.crt
+ADD ci/nginx.key /etc/nginx/ssl/nginx.key
+ADD ci/dh4096.pem /etc/nginx/ssl/dh4096.pem
+ADD ci/nginx.conf.j2 /etc/nginx/conf.d/
+ADD ci/entrypoint.sh /entrypoint.sh
+
+RUN chmod 755 /entrypoint.sh
+
+ADD build/ /var/www
+
+EXPOSE 80
+EXPOSE 443
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]
