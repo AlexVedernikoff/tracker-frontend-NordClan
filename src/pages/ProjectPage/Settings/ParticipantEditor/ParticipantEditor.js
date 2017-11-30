@@ -76,6 +76,15 @@ class ParticipantEditor extends Component {
     this.setState({participant: e});
   };
 
+  roleRights = (role) => {
+    // временная заглушка, пока нет конкретного списка прав по ролям
+    if (role === 'PM' || role === 'ACCOUNT' || role === 'TEAMLEAD') {
+      return ['Доступны все действия на уровне проекта', 'Доступны все действия на уровне проекта']
+    } else {
+      return ['Доступны все действия на уровне проекта', 'Доступны все действия на уровне проекта']
+    }
+  }
+
   handleOpenModalAddUser = () => {
     this.setState({ isModalOpenAddUser: true });
   };
@@ -95,7 +104,19 @@ class ParticipantEditor extends Component {
                 ? this.ROLES_FULL_NAME.map((ROLES_FULL_NAME, i) =>
                 <Col xs key={`${i}-roles-name`}>
                   <h4>
-                    <div className={css.cell}>{ROLES_FULL_NAME}</div>
+                    <div className={css.cell}>
+                      {ROLES_FULL_NAME}
+                      <div className = {css.rightsInfo}>
+                        i
+                        <div className = {css.rightsInfoTooltip}>
+                          <ul>
+                            {this.roleRights(ROLES_FULL_NAME).map((right, i) =>
+                              <li>{right}</li>
+                            )}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
                   </h4>
                 </Col>
               ) : null}
