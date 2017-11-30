@@ -8,15 +8,18 @@ class PerformerFilter extends React.Component {
 
   static propTypes = {
     onPerformerSelect: PropTypes.func.isRequired,
-    selectedPerformerId: PropTypes.number,
+    selectedPerformerId: PropTypes.oneOfType([ PropTypes.number, PropTypes.string ]),
     users: PropTypes.array
   };
 
   getUsers = () => {
-    return this.props.users.map(user => ({
+    let users = [];
+    users = this.props.users.map(user => ({
       value: user.id,
       label: user.fullNameRu
     }));
+    users.unshift({ value: '0', label: 'Не назначено' });
+    return users;
   };
 
   render () {
