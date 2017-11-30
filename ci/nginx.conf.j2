@@ -34,13 +34,13 @@ server {
     add_header X-Content-Type-Options nosniff;
     add_header X-Frame-Options DENY;
     add_header X-XSS-Protection "1; mode=block;";
-    client_max_body_size {{ nginx_max_upload_sizedefault|default('5m') }};
+    client_max_body_size {{ nginx_max_upload_size|default('5m') }};
 
     autoindex off;
     root /var/www;
 
     location / {
-        try_files $uri $uri/ index.html;
+        try_files $uri $uri/ /index.html;
         gzip on;
         gzip_proxied any;
         gzip_vary on;
