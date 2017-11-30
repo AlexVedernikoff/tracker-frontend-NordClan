@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 import TaskRow from '../../../components/TaskRow';
 import Priority from '../../../components/Priority';
+import Button from '../../../components/Button';
 import SprintSelector from '../../../components/SprintSelector';
 import SelectDropdown from '../../../components/SelectDropdown';
 import Input from '../../../components/Input';
@@ -21,10 +22,7 @@ class TaskList extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      filterTags: [],
-      statusIds: [],
-      typeIds: [],
-      filterByName: '',
+      ...this.initialFilters,
       activePage: 1
     };
   }
@@ -41,6 +39,16 @@ class TaskList extends Component {
         projectId: nextProps.project.id
       });
     }
+  }
+
+  initialFilters = {
+    prioritiesId: null,
+    typeIds: [],
+    statusIds: [],
+    filterByName: '',
+    sprintId: null,
+    performerId: null,
+    filterTags: []
   }
 
   changeSprintFilter = (option) => {
@@ -132,10 +140,39 @@ class TaskList extends Component {
     }), this.loadTasks);
   };
 
+  clearFilters = () => {
+    this.setState(this.initialFilters, this.loadTasks);
+  }
+
   render () {
-    const { tasksList: tasks, statuses, taskTypes, project } = this.props;
+    const {
+      tasksList: tasks,
+      statuses,
+      taskTypes,
+      project
+    } = this.props;
+
+    const {
+      prioritiesId,
+      typeIds,
+      statusIds,
+      filterByName,
+      sprintId,
+      performerId,
+      filterTags
+    } = this.state;
+
     const statusOptions = statuses ? statuses.map(status => ({ value: status.id, label: status.name })) : [];
     const typeOptions = taskTypes ? taskTypes.map(type => ({value: type.id, label: type.name})) : [];
+
+    const isFilter
+      = prioritiesId
+      || typeIds.length
+      || statusIds.length
+      || filterByName
+      || sprintId
+      || performerId
+      || filterTags.length;
 
     return (
       <div>
@@ -143,7 +180,10 @@ class TaskList extends Component {
           <div className={css.filters}>
             <Row className={css.search} top="xs">
               <Col xs={12} sm={3} className={css.priorityFilter}>
-                <Priority onChange={this.changePriorityFilter} priority={this.state.prioritiesId}/>
+                <Priority onChange={this.changePriorityFilter} priority={prioritiesId}/>
+              </Col>
+              <Col smOffset={6} xs={12} sm={3} className={css.clearFilters}>
+                <Button text="Очистить фильтры" icon="IconClose" disabled={!isFilter} type="primary" onClick={this.clearFilters}/>
               </Col>
             </Row>
             <Row className={css.search} top="xs">
@@ -155,7 +195,7 @@ class TaskList extends Component {
                   noResultsText="Нет подходящих типов"
                   backspaceToRemoveMessage={''}
                   clearAllText="Очистить все"
-                  value={this.state.typeIds}
+                  value={typeIds}
                   options={typeOptions}
                   onChange={this.changeTypeFilter}
                 />
@@ -168,15 +208,15 @@ class TaskList extends Component {
                   noResultsText="Нет подходящих статусов"
                   backspaceToRemoveMessage={''}
                   clearAllText="Очистить все"
-                  value={this.state.statusIds}
+                  value={statusIds}
                   options={statusOptions}
                   onChange={this.changeStatusFilter}
                 />
               </Col>
               <Col xs={12} sm={6}>
                 <SprintSelector
-                  value={this.state.sprintId}
-                  sprints={this.props.project.sprints}
+                  value={sprintId}
+                  sprints={project.sprints}
                   onChange={this.changeSprintFilter}
                 />
               </Col>
@@ -192,14 +232,14 @@ class TaskList extends Component {
               <Col xs={12} sm={3}>
                 <PerformerFilter
                   onPerformerSelect={this.changePerformerFilter}
-                  selectedPerformerId={this.state.performerId}
+                  selectedPerformerId={performerId}
                 />
               </Col>
               <Col xs={12} sm={3}>
                 <TagsFilter
                   filterFor={'task'}
                   onTagSelect={this.onTagSelect}
-                  filterTags={this.state.filterTags}
+                  filterTags={filterTags}
                 />
               </Col>
             </Row>
@@ -209,7 +249,7 @@ class TaskList extends Component {
               return <TaskRow
                 key={`task-${task.id}`}
                 task={task}
-                prefix={this.props.project.prefix}
+                prefix={project.prefix}
                 onClickTag={this.onClickTag}
               />;
             })

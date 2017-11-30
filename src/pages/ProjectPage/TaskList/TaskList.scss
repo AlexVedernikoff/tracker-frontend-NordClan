@@ -31,3 +31,11 @@
 .priorityFilter {
   color: silver;
 }
+
+.clearFilters {
+  text-align: right;
+
+  @include phone {
+    text-align: left;
+  }
+}
