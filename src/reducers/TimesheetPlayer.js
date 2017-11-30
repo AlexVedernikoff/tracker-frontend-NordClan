@@ -39,7 +39,8 @@ function TimesheetPlayer (state = InitialState, action) {
       action.timesheet.onDate = moment(action.timesheet.onDate).format('YYYY-MM-DD');
       const updatedList = state.tracks[action.timesheet.onDate].tracks
         .map((track) => {
-          return track.id === action.timesheet.id ? { ...track, ...action.timesheet } : track;
+          return track.id === action.timesheet.id || track.taskId === action.timesheet.taskId
+            ? { ...track, ...action.timesheet } : track;
         });
 
       const updatedDay = {

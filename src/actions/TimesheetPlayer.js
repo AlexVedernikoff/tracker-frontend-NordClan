@@ -107,7 +107,9 @@ export const updateDraft = (data, options) => {
     extra,
     start: withStartLoading(startReceivePlayerData, true)(dispatch),
     response: withFinishLoading(response => {
-      dispatch(playerDataUpdateReceived(response.data, options.onDate));
+      // dispatch(playerDataUpdateReceived(response.data, options.onDate));
+
+      dispatch(playerTimesheetUpdateReceived(response.data));
     })(dispatch),
     error: playerDataReceiveFailed(dispatch)
   });
