@@ -1,6 +1,6 @@
 import * as TaskActions from '../constants/Task';
 import * as TagsActions from '../constants/Tags';
-import TaskList from "../pages/ProjectPage/TaskList/TaskList";
+import TaskList from '../pages/ProjectPage/TaskList/TaskList';
 
 const getDefaultCurrentComment = () => ({
   text: '',
