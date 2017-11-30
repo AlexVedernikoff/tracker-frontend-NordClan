@@ -127,9 +127,8 @@ class AgileBoard extends Component {
   }
 
   componentDidMount () {
-    if (this.props.myTaskBoard) {
-      this.selectValue(this.getChangedSprint(this.props), 'changedSprint');
-    }
+    const sprintToSelect = this.props.myTaskBoard ? this.getChangedSprint(this.props) : this.getCurrentSprint(this.props.sprints);
+    this.selectValue(sprintToSelect, 'changedSprint');
   }
 
   componentWillReceiveProps (nextProps) {
