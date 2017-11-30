@@ -150,7 +150,12 @@ class PlaylistItem extends Component {
             <input type="text" onChange={this.handleChangeTime} defaultValue={roundNum(spentTime, 2)}/>
           </div>
           <div className={classnames({[css.other]: true, [css.exceeded]: factTime > plannedTime})}>
-            <span data-tip="Всего потрачено" data-place="bottom">{task ? roundNum(task.factExecutionTime, 2) : null}</span>
+            <span
+              data-tip="Всего потрачено"
+              data-place="bottom"
+            >
+              {task ? roundNum(task.factExecutionTime, 2) : null}
+            </span>
             {
               task
                 ? <span> / <span data-tip="Запланировано" data-place="bottom">{roundNum(task.plannedExecutionTime, 2)}</span></span>

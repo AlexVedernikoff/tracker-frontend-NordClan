@@ -123,13 +123,13 @@ class ActivityRow extends React.Component {
 
     if (realSheetIds.length) {
       this.props.deleteTimesheets(realSheetIds, userId, startingDay);
-      this.closeConfirmModal();
     };
 
     if (tempSheetIds.length) {
       this.props.deleteTempTimesheets(tempSheetIds);
-      this.closeConfirmModal();
     };
+
+    this.closeConfirmModal();
   }
 
   render () {
