@@ -6,6 +6,8 @@ import moment from 'moment';
 import classnames from 'classnames';
 
 import TaskRow from '../../../components/TaskRow';
+import Priority from '../../TaskPage/Priority';
+import SprintSelector from '../../../components/SprintSelector';
 import SelectDropdown from '../../../components/SelectDropdown';
 import Input from '../../../components/Input';
 import Pagination from '../../../components/Pagination';
@@ -43,36 +45,16 @@ class TaskList extends Component {
     }
   }
 
-  getSprints = () => {
-    const sprints = this.props.project.sprints.map((sprint, i) => ({
-      value: sprint.id,
-      label: `${sprint.name} (${moment(sprint.factStartDate).format(
-        'DD.MM.YYYY'
-      )} ${sprint.factFinishDate
-        ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}`
-        : '- ...'})`,
-      statusId: sprint.statusId,
-      className: classnames({
-        [css.INPROGRESS]: sprint.statusId === 2,
-        [css.sprintMarker]: true,
-        [css.FINISHED]: sprint.statusId === 1
-      })
-    }));
-
-    sprints.push({
-      value: 0,
-      label: 'Backlog',
-      className: classnames({
-        [css.INPROGRESS]: false,
-        [css.sprintMarker]: true
-      })
-    });
-    return sprints;
-  };
-
   changeSprintFilter = (option) => {
     this.setState({
-      sprintId: option.value,
+      sprintId: option ? option.value : null,
+      activePage: 1
+    }, this.loadTasks);
+  }
+
+  changePriorityFilter = (option) => {
+    this.setState({
+      prioritiesId: option ? option.prioritiesId : null,
       activePage: 1
     }, this.loadTasks);
   }
@@ -98,33 +80,6 @@ class TaskList extends Component {
       typeIds: options.map(option => option.value),
       activePage: 1
     }, this.loadTasks);
-  };
-
-  getSprints = () => {
-    const sprints = this.props.project.sprints.map((sprint, i) => ({
-      value: sprint.id,
-      label: `${sprint.name} (${moment(sprint.factStartDate).format(
-        'DD.MM.YYYY'
-      )} ${sprint.factFinishDate
-        ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}`
-        : '- ...'})`,
-      statusId: sprint.statusId,
-      className: classnames({
-        [css.INPROGRESS]: sprint.statusId === 2,
-        [css.sprintMarker]: true,
-        [css.FINISHED]: sprint.statusId === 1
-      })
-    }));
-
-    sprints.push({
-      value: 0,
-      label: 'Backlog',
-      className: classnames({
-        [css.INPROGRESS]: false,
-        [css.sprintMarker]: true
-      })
-    });
-    return sprints;
   };
 
   changePerformerFilter = (performer) => {
@@ -153,6 +108,7 @@ class TaskList extends Component {
       projectId: this.props.project.id,
       performerId: this.state.performerId,
       currentPage: this.state.activePage,
+      prioritiesId: this.state.prioritiesId,
       pageSize: 50,
       name: this.state.filterByName,
       statusId,
@@ -188,6 +144,11 @@ class TaskList extends Component {
         <section>
           <div className={css.filters}>
             <Row className={css.search} top="xs">
+              <Col xs={12} sm={3} className={css.priorityFilter}>
+                <Priority onChange={this.changePriorityFilter} priority={this.state.prioritiesId}/>
+              </Col>
+            </Row>
+            <Row className={css.search} top="xs">
               <Col xs={12} sm={3}>
                 <SelectDropdown
                   name="type"
@@ -198,7 +159,7 @@ class TaskList extends Component {
                   clearAllText="Очистить все"
                   value={this.state.typeIds}
                   options={typeOptions}
-                  onChange={(options) => this.changeTypeFilter(options)}
+                  onChange={this.changeTypeFilter}
                 />
               </Col>
               <Col xs={12} sm={3}>
@@ -211,19 +172,14 @@ class TaskList extends Component {
                   clearAllText="Очистить все"
                   value={this.state.statusIds}
                   options={statusOptions}
-                  onChange={(options) => this.changeStatusFilter(options)}
+                  onChange={this.changeStatusFilter}
                 />
               </Col>
               <Col xs={12} sm={6}>
-                <SelectDropdown
-                  name="type"
-                  placeholder="Спринт"
-                  noResultsText="Нет подходящих спринтов"
-                  backspaceToRemoveMessage={''}
-                  clearAllText="Очистить все"
+                <SprintSelector
                   value={this.state.sprintId}
-                  options={this.getSprints()}
-                  onChange={(option) => this.changeSprintFilter(option)}
+                  sprints={this.props.project.sprints}
+                  onChange={this.changeSprintFilter}
                 />
               </Col>
             </Row>

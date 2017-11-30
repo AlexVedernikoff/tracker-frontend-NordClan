@@ -1,6 +1,7 @@
 @import '../../../styles/variables.scss';
 
 .priority {
+  line-height: 1rem;
   &:hover {
     .icon {
       opacity: 1;
@@ -20,7 +21,7 @@
     position: relative;
     flex: 1;
     align-items: center;
-    font-size: 11px;
+    font-size: 10px;
     padding: 0 4px;
     background-color: $color-dark;
     color: white;
