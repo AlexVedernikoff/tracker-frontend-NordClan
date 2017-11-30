@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
-import moment from 'moment';
-import classnames from 'classnames';
 
 import TaskRow from '../../../components/TaskRow';
-import Priority from '../../TaskPage/Priority';
+import Priority from '../../../components/Priority';
 import SprintSelector from '../../../components/SprintSelector';
 import SelectDropdown from '../../../components/SelectDropdown';
 import Input from '../../../components/Input';
