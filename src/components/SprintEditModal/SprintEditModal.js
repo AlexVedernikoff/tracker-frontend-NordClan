@@ -94,7 +94,8 @@ class SprintEditModal extends Component {
     }));
   };
 
-  handleEditSprint = () => {
+  handleEditSprint = (e) => {
+    e.preventDefault();
     this.props.handleEditSprint(this.state.sprint);
   };
 
