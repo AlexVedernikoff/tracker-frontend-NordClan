@@ -5,9 +5,7 @@ import * as css from './Metrics.scss';
 import StartEndDates from './StartEndDates/StartEndDates'
 class Metrics extends Component {
   constructor(props) {
-    super(props)
-    console.log(this.props)
-    
+    super(props)    
   }
   render () {
     return (
@@ -22,8 +20,7 @@ class Metrics extends Component {
 }
 const mapStateToProps = state => ({
   createdAt: state.Project.project.createdAt,
-  completedAt: state.Project.project.completedAt,
-  project: state.Project.project
+  completedAt: state.Project.project.completedAt
 });
 
 const mapDispatchToProps = {
@@ -31,8 +28,7 @@ const mapDispatchToProps = {
 
 Metrics.propTypes = {
   createdAt: PropTypes.string,
-  completedAt: PropTypes.string,
-  project: PropTypes.object
+  completedAt: PropTypes.string
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Metrics)

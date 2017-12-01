@@ -1,5 +1,16 @@
 @import '../../../../styles/variables.scss';
 
-.startEndDates {
+.startEndDatesWrp {
   position: relative;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.startEndDates {
+  max-width: 170px;
+  margin-top: 10px;
+  margin-right: 20px;
+  input {
+    margin-top: 10px;
+  }
 }
