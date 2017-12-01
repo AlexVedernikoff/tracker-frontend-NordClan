@@ -60,7 +60,7 @@ server {
     }
 
     location /uploads/ {
-        alias /var/www/uploads;
+        root /var/www/;
         try_files $uri $uri/;
         autoindex off;
     }
