@@ -1,0 +1,12 @@
+.BudgetChart {
+  padding: 20px 0;
+}
+
+.BudgetChartInfo {
+  > input {
+    display: inline-block;
+    max-width: 70px;
+    text-align: center;
+    margin-left: 10px;
+  }
+}
