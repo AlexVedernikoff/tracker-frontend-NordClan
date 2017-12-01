@@ -1,10 +1,5 @@
 @import '../../../styles/variables';
 
-
-.filters {
-  margin-bottom: 2rem;
-}
-
 .checkedFilters {
   display: flex;
   justify-content: space-between;
@@ -24,9 +19,25 @@
 
 .search {
 
+  margin-bottom: 1rem;
+
   > div {
     @include phone {
       margin-bottom: 1rem;
     }
+  }
+}
+
+.priorityFilter {
+  color: silver;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+}
+
+.clearFilters {
+  text-align: right;
+
+  @include phone {
+    text-align: left;
   }
 }
