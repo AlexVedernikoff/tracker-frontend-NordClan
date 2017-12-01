@@ -101,7 +101,7 @@ class TaskList extends Component {
       tags,
       typeId,
       ...options
-    });
+    }, true);
   }
 
   onTagSelect = (tags) => {
@@ -209,8 +209,8 @@ TaskList.propTypes = {
 
 
 const mapStateToProps = state => ({
-  tasksList: state.Tasks.tasks,
-  pagesCount: state.Tasks.pagesCount,
+  tasksList: state.TaskList.tasks,
+  pagesCount: state.TaskList.pagesCount,
   project: state.Project.project,
   statuses: state.Dictionaries.taskStatuses,
   taskTypes: state.Dictionaries.taskTypes

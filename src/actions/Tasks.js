@@ -3,7 +3,6 @@ import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
-import { CLEAR_CURRENT_PROJECT_AND_TASKS } from '../constants/Tasks';
 
 const startTasksReceive = () => ({
   type: TaskActions.TASKS_RECEIVE_START
@@ -14,7 +13,12 @@ const tasksReceived = tasks => ({
   data: tasks
 });
 
-const getTasks = (options) => {
+const tasksListReceived = tasks => ({
+  type: TaskActions.TASKS_LIST_RECEIVE_SUCCESS,
+  data: tasks
+});
+
+const getTasks = (options, onlyTaskListUpdate = false) => {
   const URL = `${API_URL}/task`;
   return dispatch => {
     dispatch(startTasksReceive());
@@ -37,9 +41,14 @@ const getTasks = (options) => {
       })
       .then(response => {
         if (!response) {
+          dispatch(finishLoading());
           return;
         } else {
-          dispatch(tasksReceived(response.data));
+          if (onlyTaskListUpdate) {
+            dispatch(tasksListReceived(response.data));
+          } else {
+            dispatch(tasksReceived(response.data));
+          }
           dispatch(finishLoading());
         }
       });
@@ -49,5 +58,5 @@ const getTasks = (options) => {
 export default getTasks;
 
 export const clearCurrentProjectAndTasks = () => ({
-  type: CLEAR_CURRENT_PROJECT_AND_TASKS
+  type: TaskActions.CLEAR_CURRENT_PROJECT_AND_TASKS
 });

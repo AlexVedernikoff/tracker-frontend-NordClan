@@ -9,6 +9,7 @@ import Project from './Project';
 import PlanningTasks from './PlanningTasks';
 import Tasks from './Tasks';
 import Task from './Task';
+import TaskList from './TaskList';
 import Portfolios from './Portfolios';
 import Notifications from './Notifications';
 import Portfolio from './Portfolio';
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   Project,
   Projects,
   Tasks,
+  TaskList,
   Task,
   Portfolio,
   Timesheets,
