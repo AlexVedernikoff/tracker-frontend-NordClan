@@ -22,6 +22,7 @@ class Timesheets extends React.Component {
     getTimesheets: PropTypes.func,
     list: PropTypes.array,
     startingDay: PropTypes.object,
+    tempTimesheets: PropTypes.array,
     userId: PropTypes.number
   }
 
@@ -60,7 +61,20 @@ class Timesheets extends React.Component {
 
   render () {
     const { isCalendarOpen } = this.state;
-    const { startingDay, list, getTimesheets, userId, dateBegin, dateEnd } = this.props;
+    const { startingDay, tempTimesheets, getTimesheets, userId, dateBegin, dateEnd } = this.props;
+    const list = this.props.list.concat(tempTimesheets);
+
+    const isThisWeek = (date) => {
+      const getMidnight = (dayOfWeek) => {
+        return moment(startingDay)
+        .weekday(dayOfWeek)
+        .set({hour: 0, minute: 0, second: 0, millisecond: 0})
+        .format('X');
+      };
+
+      const timesheetOndDate = moment(date).format('X');
+      return (timesheetOndDate <= getMidnight(6)) && (timesheetOndDate >= getMidnight(0));
+    };
 
     // Создание массива таймшитов по таскам
 
@@ -73,7 +87,7 @@ class Timesheets extends React.Component {
           && tsh.taskStatusId === el.taskStatusId;
         });
 
-      if (taskNotPushed) {
+      if (taskNotPushed && isThisWeek(el.onDate)) {
         res.push({
           id: el.task.id,
           name: el.task.name,
@@ -87,6 +101,7 @@ class Timesheets extends React.Component {
 
     tasks = tasks.map(element => {
       const timeSheets = [];
+
       for (let index = 0; index < 7; index++) {
         const timesheet = _.find(list, tsh => {
           return tsh.task && tsh.typeId === 1
@@ -119,7 +134,7 @@ class Timesheets extends React.Component {
           return isSameType && isSameProject;
         });
 
-      if (maNotPushed) {
+      if (maNotPushed && isThisWeek(el.onDate)) {
         res.push({
           typeId: el.typeId,
           projectName: el.project ? el.project.name : 'Без проекта',
@@ -271,6 +286,7 @@ const mapStateToProps = state => ({
   userId: state.Auth.user.id,
   startingDay: state.Timesheets.startingDay,
   list: state.Timesheets.list,
+  tempTimesheets: state.Timesheets.tempTimesheets,
   dateBegin: state.Timesheets.dateBegin,
   dateEnd: state.Timesheets.dateEnd
 });
