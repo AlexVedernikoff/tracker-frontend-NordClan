@@ -35,6 +35,11 @@ function Tasks (state = InitialState, action) {
       ...state
     };
 
+  case TasksActions.CLEAR_CURRENT_PROJECT_AND_TASKS:
+    return {
+      ...InitialState
+    };
+
   default:
     return state;
   }
