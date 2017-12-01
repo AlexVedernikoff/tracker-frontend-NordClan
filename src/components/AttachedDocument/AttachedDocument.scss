@@ -7,6 +7,7 @@
   height: 143px;
   cursor: pointer;
   position: relative;
+  z-index: 0; // New z-index stack created
   margin-right: 16px;
 
   .actions {

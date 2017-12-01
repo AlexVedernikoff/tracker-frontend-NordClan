@@ -4,7 +4,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const settings = {
   entry: {
-    bundle: ['./src/App.js']
+    bundle: ['babel-polyfill', './src/App.js']
   },
   output: {
     filename: '[name].js',

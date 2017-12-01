@@ -7,6 +7,7 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import Checkbox from '../../components/Checkbox';
 import {connect} from 'react-redux';
 import { bindUserToProject, unbindUserToProject } from '../../actions/Project';
+import ConfirmModal from '../ConfirmModal';
 
 class Participant extends React.Component {
   constructor (props) {
@@ -68,6 +69,15 @@ class Participant extends React.Component {
 
     return sendRoles;
   };
+
+  handleOpenConfirmDelete = event => {
+    event.stopPropagation();
+    this.setState({ isConfirmDeleteOpen: true });
+  };
+
+  handleCloseConfirmDelete = () => {
+    this.setState({ isConfirmDeleteOpen: false });
+  };
   render () {
     const {
       user,
@@ -80,6 +90,10 @@ class Participant extends React.Component {
       <Row className={css.memberRow}>
         <Col xs={3}>
           <div className={classnames(css.cell, css.memberColumn)}>
+            <IconClose
+              className={css.iconClose}
+              onClick={this.handleOpenConfirmDelete}
+            />
             {user.fullNameRu}
           </div>
         </Col>
@@ -94,12 +108,18 @@ class Participant extends React.Component {
                 </label>
               </Col>
             ) : null}
-            <IconClose
-              className={css.iconClose}
-              onClick={this.unbindUser}
-            />
           </Row>
         </Col>
+        {this.state.isConfirmDeleteOpen
+          ? <ConfirmModal
+              isOpen
+              contentLabel="modal"
+              text="Вы действительно хотите удалить этого участника?"
+              onCancel={this.handleCloseConfirmDelete}
+              onConfirm={this.unbindUser}
+              onRequestClose={this.handleCloseConfirmDelete}
+            />
+          : null}
       </Row>
     );
   }

@@ -1,5 +1,9 @@
 @import '../../styles/variables';
 
+.cell {
+  position: relative;
+}
+
 .property {
   &:before {
     content: "";
@@ -11,6 +15,11 @@
 
   &:hover {
     background-color: $color-lightgray;
+
+    .iconClose {
+      opacity: 1;
+      transition: $transition;
+    }
   }
 
   label {
@@ -28,18 +37,20 @@
 
 .memberColumn {
   // text-align: right;
+  position: relative;
+  z-index: 0; // New z-index stack created
 }
 
 .iconClose {
-  position: relative;
+  opacity: 0;
+  position: absolute;
   z-index: 2;
-  right: 6px;
-  top: 10px;
+  top: 8px;
+  left: -8px;
   cursor: pointer;
   transition: $transition;
 
   &:hover {
     transform: rotate(90deg);
-    transition: $transition;
   }
 }

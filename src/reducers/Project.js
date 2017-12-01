@@ -12,7 +12,9 @@ const InitialState = {
   },
   TitleIsEditing: false,
   DescriptionIsEditing: false,
-  isCreateTaskModalOpen: false
+  isCreateTaskModalOpen: false,
+  PortfolioIsEditing: false,
+  isProjectInfoReceiving: false
 };
 
 export default function Project (state = InitialState, action) {
@@ -80,7 +82,8 @@ export default function Project (state = InitialState, action) {
 
   case ProjectActions.PROJECT_INFO_RECEIVE_START:
     return {
-      ...state
+      ...state,
+      isProjectInfoReceiving: true
     };
 
   case ProjectActions.PROJECT_INFO_RECEIVE_SUCCESS:
@@ -89,7 +92,8 @@ export default function Project (state = InitialState, action) {
       project: {
         ...state.project,
         ...action.project
-      }
+      },
+      isProjectInfoReceiving: false
     };
 
   case ProjectActions.PROJECT_INFO_RECEIVE_FAIL:
@@ -98,7 +102,8 @@ export default function Project (state = InitialState, action) {
       project: {
         ...state.project,
         error: action.error
-      }
+      },
+      isProjectInfoReceiving: false
     };
 
   case ProjectActions.PROJECT_USERS_RECEIVE_START:
@@ -207,6 +212,18 @@ export default function Project (state = InitialState, action) {
         ...state.project,
         history: action.data
       }
+    };
+
+  case ProjectActions.OPEN_SET_PORTFOLIO_MODAL:
+    return {
+      ...state,
+      PortfolioIsEditing: true
+    };
+
+  case ProjectActions.CLOSE_SET_PORTFOLIO_MODAL:
+    return {
+      ...state,
+      PortfolioIsEditing: false
     };
 
   case TasksActions.CLEAR_CURRENT_PROJECT_AND_TASKS:

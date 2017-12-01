@@ -24,7 +24,7 @@
 }
 
 .Select--multi.Select:hover { cursor: text; }
-.Select--single.Select:hover { cursor: text; }
+.Select--single.Select:hover { cursor: pointer; }
 
 .Select--single
 .Select-multi-value-wrapper {
@@ -87,7 +87,7 @@
 
 .Select-menu-outer {
   position: absolute;
-  z-index: 2;
+  z-index: 2; /* Global z-index context (dropdown-layer) */
   background-color: white;
   border: 1px solid rgba(0,0,0,0.1);
   box-shadow: 4px 4px 0 rgba(0, 0, 0, .17);

@@ -162,7 +162,6 @@ class Projects extends Component {
   };
 
   sendRequest = event => {
-    console.warn('пыщ', event);
     event.preventDefault();
     let portfolioName = '';
     if (this.state.selectedPortfolio && (Object.keys(this.state.selectedPortfolio).length !== 0)) {

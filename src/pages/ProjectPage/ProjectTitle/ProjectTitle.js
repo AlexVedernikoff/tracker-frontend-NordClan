@@ -1,22 +1,33 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ProjectIcon from '../../../components/ProjectIcon';
-import { IconEdit, IconCheck } from '../../../components/Icons';
-import * as css from './ProjectTitle.scss';
+import { connect } from 'react-redux';
+import classnames from 'classnames';
+import { Link } from 'react-router';
 import ReactTooltip from 'react-tooltip';
+import ProjectIcon from '../../../components/ProjectIcon';
+import PortfolioModal from '../../../components/PortfolioModal';
+import { IconEdit, IconCheck, IconPreloader } from '../../../components/Icons';
+import InlineHolder from '../../../components/InlineHolder';
+import * as css from './ProjectTitle.scss';
 import {
   changeProject as editProject,
   startEditing as beginEdit,
-  stopEditing as finishEdit
+  stopEditing as finishEdit,
+  openPortfolioModal,
+  closePortfolioModal
 } from '../../../actions/Project';
-import { connect } from 'react-redux';
 
 class ProjectTitle extends Component {
   static propTypes = {
+    PortfolioIsEditing: PropTypes.bool,
     changeProject: PropTypes.func.isRequired,
+    closePortfolioModal: PropTypes.func,
     id: PropTypes.any,
     name: PropTypes.string.isRequired,
+    openPortfolioModal: PropTypes.func,
+    portfolio: PropTypes.object,
     prefix: PropTypes.string.isRequired,
+    projectId: PropTypes.number,
     startEditing: PropTypes.func.isRequired,
     stopEditing: PropTypes.func.isRequired,
     titleIsEditing: PropTypes.bool
@@ -154,56 +165,93 @@ class ProjectTitle extends Component {
 
   render () {
     return (
-      <h1 className={css.projectTitle}>
-        <ProjectIcon projectName={this.props.name} />
-        <span
-          id="projectName"
-          className={this.state.nameIsIncorrect ? css.wrong : ''}
-          ref={ref => (this.projectName = ref)}
-          contentEditable={this.props.titleIsEditing}
-          onKeyDown={this.handleKeyPress}
-        >
-          {this.props.name}
-        </span>
-        <span className={css.prefix}>
-          <span>(</span>
-          <span
-            id="projectPrefix"
-            className={this.state.prefixIsIncorrect ? css.wrong : ''}
-            ref={ref => (this.projectPrefix = ref)}
-            contentEditable={this.props.titleIsEditing}
-            onKeyDown={this.handleKeyPress}
-          >
-            {this.props.prefix}
-          </span>
-          <span>)</span>
-        </span>
-        {this.props.titleIsEditing ? (
-          <IconCheck
-            className={css.save}
-            data-tip="Сохранить"
-            onClick={this.editIconClickHandler}
+      <div className={css.projectTitle}>
+        {this.props.name ? 
+          <ProjectIcon 
+            projectName={this.props.name} 
+            projectPrefix={this.props.prefix}
+          /> 
+          : 
+          <IconPreloader 
+            style={{color: 'silver', fontSize: '3rem', marginRight: 10}} 
           />
-        ) : (
-          <IconEdit
-            className={css.edit}
-            data-tip="Редактировать"
-            onClick={this.editIconClickHandler}
-          />
-        )}
-      </h1>
+        }
+        <div>
+          {
+            this.props.portfolio ?
+              <span className={css.portfolio}>
+                <Link to={`/projects/portfolio/${this.props.portfolio.id}`}>{this.props.portfolio.name}</Link> 
+                <IconEdit onClick={this.props.openPortfolioModal}/>
+              </span>
+              : 
+              null
+          }
+          <h1>
+            <span
+              id="projectName"
+              className={this.state.nameIsIncorrect ? css.wrong : ''}
+              ref={ref => (this.projectName = ref)}
+              contentEditable={this.props.titleIsEditing}
+              onKeyDown={this.handleKeyPress}
+            >
+              {this.props.name ? this.props.name : <InlineHolder length='3.5em' />}
+            </span>
+            <span className={css.prefix}>
+              <span>(</span>
+              <span
+                id="projectPrefix"
+                className={this.state.prefixIsIncorrect ? css.wrong : ''}
+                ref={ref => (this.projectPrefix = ref)}
+                contentEditable={this.props.titleIsEditing}
+                onKeyDown={this.handleKeyPress}
+              >
+                {this.props.prefix ? this.props.prefix : <InlineHolder length='1em' />}
+              </span>
+              <span>)</span>
+            </span>
+            {this.props.titleIsEditing ? (
+              <IconCheck
+                className={css.save}
+                data-tip="Сохранить"
+                onClick={this.editIconClickHandler}
+              />
+            ) : (
+              <IconEdit
+                className={css.edit}
+                data-tip="Редактировать"
+                onClick={this.editIconClickHandler}
+              />
+            )}
+          </h1>
+        </div>
+        {
+          this.props.PortfolioIsEditing
+          ? <PortfolioModal
+              defaultPortfolio={this.props.portfolio || null}
+              projectId={this.props.projectId}
+              onClose={this.props.closePortfolioModal}
+              onChoose={this.props.changeProject}
+              title="Изменить портфель проекта"
+            />
+          : null
+        }
+      </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  titleIsEditing: state.Project.TitleIsEditing
+  titleIsEditing: state.Project.TitleIsEditing,
+  PortfolioIsEditing: state.Project.PortfolioIsEditing,
+  projectId: state.Project.project.id
 });
 
 const mapDispatchToProps = {
   changeProject: editProject,
   startEditing: beginEdit,
-  stopEditing: finishEdit
+  stopEditing: finishEdit,
+  openPortfolioModal,
+  closePortfolioModal
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectTitle);

@@ -7,6 +7,8 @@ import { stateToHTML } from 'draft-js-export-html';
 import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
 
+import Autolinker from 'autolinker';
+
 class Description extends Component {
   constructor (props) {
     super(props);
@@ -71,6 +73,11 @@ class Description extends Component {
       },
       'Description'
     );
+  };
+
+  // Link eval - making links clickable
+  parseTextLinks = (description) => {
+    return (description.__html) ? Autolinker.link(description.__html) : '';
   };
 
   render () {
@@ -138,7 +145,7 @@ class Description extends Component {
             />
           : <div
               className={css.wiki}
-              dangerouslySetInnerHTML={this.props.text}
+              dangerouslySetInnerHTML={{__html: this.parseTextLinks(this.props.text)}}
             />}
         <div className={css.editBorder}>
           {this.props.isEditing
