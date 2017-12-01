@@ -13,8 +13,7 @@ class PerformerFilter extends React.Component {
   };
 
   getUsers = () => {
-    const users = [];
-    users = this.props.users.map(user => ({
+    const users = this.props.users.map(user => ({
       value: user.id,
       label: user.fullNameRu
     }));
