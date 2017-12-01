@@ -117,7 +117,7 @@ class AgileBoard extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      isOnlyMine: true,
+      isOnlyMine: this.getIsOnlyMine(),
       isModalOpen: false,
       performer: null,
       filterTags: [],
@@ -185,7 +185,7 @@ class AgileBoard extends Component {
 
   toggleMine = () => {
     this.setState((currentState) => ({
-      isOnlyMine: !currentState.isOnlyMine
+      isOnlyMine: this.setIsOnlyMine(!currentState.isOnlyMine)
     }));
   };
 
@@ -306,6 +306,19 @@ class AgileBoard extends Component {
       value: user.id,
       label: user.fullNameRu
     })) : null;
+  };
+
+  getIsOnlyMine = () => {
+    try {
+      return JSON.parse(localStorage.getItem('isOnlyMine'));
+    } catch (e) {
+      return false;
+    }
+  };
+
+  setIsOnlyMine = (value) => {
+    localStorage.setItem('isOnlyMine', value);
+    return value;
   };
 
   render () {
