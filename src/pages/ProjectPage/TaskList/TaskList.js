@@ -144,6 +144,15 @@ class TaskList extends Component {
     this.setState(this.initialFilters, this.loadTasks);
   }
 
+  createOptions = (array) => {
+    return array.map(
+      element => ({
+        value: element.id,
+        label: element.name
+      })
+    );
+  }
+
   render () {
     const {
       tasksList: tasks,
@@ -162,8 +171,8 @@ class TaskList extends Component {
       filterTags
     } = this.state;
 
-    const statusOptions = statuses ? statuses.map(status => ({ value: status.id, label: status.name })) : [];
-    const typeOptions = taskTypes ? taskTypes.map(type => ({value: type.id, label: type.name})) : [];
+    const statusOptions = this.createOptions(statuses);
+    const typeOptions = this.createOptions(taskTypes);
 
     const isFilter
       = prioritiesId
