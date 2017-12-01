@@ -4,8 +4,11 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 
 import TaskRow from '../../../components/TaskRow';
+import Priority from '../../../components/Priority';
+import Button from '../../../components/Button';
+import SprintSelector from '../../../components/SprintSelector';
+import SelectDropdown from '../../../components/SelectDropdown';
 import Input from '../../../components/Input';
-import StatusCheckbox from './StatusCheckbox';
 import Pagination from '../../../components/Pagination';
 import * as css from './TaskList.scss';
 import TagsFilter from '../../../components/TagsFilter';
@@ -19,10 +22,7 @@ class TaskList extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      filterTags: [],
-      statusIds: [],
-      typeIds: [],
-      filterByName: '',
+      ...this.initialFilters,
       activePage: 1
     };
   }
@@ -41,6 +41,30 @@ class TaskList extends Component {
     }
   }
 
+  initialFilters = {
+    prioritiesId: null,
+    typeIds: [],
+    statusIds: [],
+    filterByName: '',
+    sprintId: null,
+    performerId: null,
+    filterTags: []
+  }
+
+  changeSprintFilter = (option) => {
+    this.setState({
+      sprintId: option ? option.value : null,
+      activePage: 1
+    }, this.loadTasks);
+  }
+
+  changePriorityFilter = (option) => {
+    this.setState({
+      prioritiesId: option ? option.prioritiesId : null,
+      activePage: 1
+    }, this.loadTasks);
+  }
+
   changeNameFilter = event => {
     const value = event.target.value;
 
@@ -50,24 +74,19 @@ class TaskList extends Component {
     }), this.loadTasks);
   };
 
-  changeStatusFilter = (id) => {
-    this.setState(state => ({
-      statusIds: state.statusIds.includes(id)
-        ? state.statusIds.filter(statusId => statusId !== id)
-        : [...state.statusIds, id],
+  changeStatusFilter = (options) => {
+    this.setState({
+      statusIds: options.map(option => option.value),
       activePage: 1
-    }), this.loadTasks);
+    }, this.loadTasks);
   };
 
-  changeTypeFilter = (id) => {
-    this.setState(state => ({
-      typeIds: state.typeIds.includes(id)
-        ? state.typeIds.filter(typeId => typeId !== id)
-        : [...state.typeIds, id],
+  changeTypeFilter = (options) => {
+    this.setState({
+      typeIds: options.map(option => option.value),
       activePage: 1
-    }), this.loadTasks);
+    }, this.loadTasks);
   };
-
 
   changePerformerFilter = (performer) => {
     const performerId = performer ? performer.value : 0;
@@ -95,11 +114,13 @@ class TaskList extends Component {
       projectId: this.props.project.id,
       performerId: this.state.performerId,
       currentPage: this.state.activePage,
+      prioritiesId: this.state.prioritiesId,
       pageSize: 50,
       name: this.state.filterByName,
       statusId,
       tags,
       typeId,
+      sprintId: this.state.sprintId,
       ...options
     });
   }
@@ -119,37 +140,97 @@ class TaskList extends Component {
     }), this.loadTasks);
   };
 
+  clearFilters = () => {
+    this.setState(this.initialFilters, this.loadTasks);
+  }
+
+  createOptions = (array) => {
+    return array.map(
+      element => ({
+        value: element.id,
+        label: element.name
+      })
+    );
+  }
+
   render () {
-    const { tasksList: tasks, statuses, taskTypes } = this.props;
-    const statusCheckboxes = statuses ? statuses.map(status => (
-      <Col xs={6} sm key={status.id}>
-        <StatusCheckbox
-          status={status}
-          checked={this.state.statusIds.includes(status.id)}
-          onChange={this.changeStatusFilter.bind(this, status.id)}
-        />
-      </Col>
-    )) : null;
-    const typeCheckboxes = taskTypes ? taskTypes.map(type => (
-      <Col xs={2} sm key={type.id}>
-        <StatusCheckbox
-          status={type}
-          checked={this.state.typeIds.includes(type.id)}
-          onChange={this.changeTypeFilter}
-        />
-      </Col>
-    )) : null;
+    const {
+      tasksList: tasks,
+      statuses,
+      taskTypes,
+      project
+    } = this.props;
+
+    const {
+      prioritiesId,
+      typeIds,
+      statusIds,
+      filterByName,
+      sprintId,
+      performerId,
+      filterTags
+    } = this.state;
+
+    const statusOptions = this.createOptions(statuses);
+    const typeOptions = this.createOptions(taskTypes);
+
+    const isFilter
+      = prioritiesId
+      || typeIds.length
+      || statusIds.length
+      || filterByName
+      || sprintId
+      || performerId
+      || filterTags.length;
 
     return (
       <div>
         <section>
           <div className={css.filters}>
-            <Row className={css.checkedFilters} top="xs">
-              { statusCheckboxes }
+            <Row className={css.search} top="xs">
+              <Col xs={12} sm={3} className={css.priorityFilter}>
+                <Priority onChange={this.changePriorityFilter} priority={prioritiesId}/>
+              </Col>
+              <Col smOffset={6} xs={12} sm={3} className={css.clearFilters}>
+                <Button text="Очистить фильтры" icon="IconClose" disabled={!isFilter} type="primary" onClick={this.clearFilters}/>
+              </Col>
             </Row>
-            <Row className={css.checkedFilters} top="xs">
-              { typeCheckboxes }
+            <Row className={css.search} top="xs">
+              <Col xs={12} sm={3}>
+                <SelectDropdown
+                  name="type"
+                  placeholder="Тип задачи"
+                  multi
+                  noResultsText="Нет подходящих типов"
+                  backspaceToRemoveMessage={''}
+                  clearAllText="Очистить все"
+                  value={typeIds}
+                  options={typeOptions}
+                  onChange={this.changeTypeFilter}
+                />
+              </Col>
+              <Col xs={12} sm={3}>
+                <SelectDropdown
+                  name="status"
+                  placeholder="Стадия задачи"
+                  multi
+                  noResultsText="Нет подходящих статусов"
+                  backspaceToRemoveMessage={''}
+                  clearAllText="Очистить все"
+                  value={statusIds}
+                  options={statusOptions}
+                  onChange={this.changeStatusFilter}
+                />
+              </Col>
+              <Col xs={12} sm={6}>
+                <SprintSelector
+                  value={sprintId}
+                  sprints={project.sprints}
+                  onChange={this.changeSprintFilter}
+                />
+              </Col>
             </Row>
+
             <Row className={css.search}>
               <Col xs={12} sm={6}>
                 <Input
@@ -160,14 +241,14 @@ class TaskList extends Component {
               <Col xs={12} sm={3}>
                 <PerformerFilter
                   onPerformerSelect={this.changePerformerFilter}
-                  selectedPerformerId={this.state.performerId}
+                  selectedPerformerId={performerId}
                 />
               </Col>
               <Col xs={12} sm={3}>
                 <TagsFilter
                   filterFor={'task'}
                   onTagSelect={this.onTagSelect}
-                  filterTags={this.state.filterTags}
+                  filterTags={filterTags}
                 />
               </Col>
             </Row>
@@ -177,7 +258,7 @@ class TaskList extends Component {
               return <TaskRow
                 key={`task-${task.id}`}
                 task={task}
-                prefix={this.props.project.prefix}
+                prefix={project.prefix}
                 onClickTag={this.onClickTag}
               />;
             })
