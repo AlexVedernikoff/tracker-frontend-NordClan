@@ -24,6 +24,9 @@
   color: lighten($color-black, 40%);
   margin-bottom: 16px;
   position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;  
 
   &:hover {
     .parentTaskName {
