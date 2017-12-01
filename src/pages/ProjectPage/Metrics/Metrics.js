@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './Metrics.scss';
 import StartEndDates from './StartEndDates/StartEndDates'
 class Metrics extends Component {
@@ -11,8 +12,13 @@ class Metrics extends Component {
     return (
       <div>
         <section>
-          <h2 className={css.testClass}>Аналитика</h2>
+          <h2>Аналитика</h2>
           <StartEndDates createdAt = {this.props.createdAt} completedAt = {this.props.completedAt}/>
+          <Row>
+            <Col md={6}>
+              
+            </Col>
+          </Row>
         </section>
       </div>
     );
