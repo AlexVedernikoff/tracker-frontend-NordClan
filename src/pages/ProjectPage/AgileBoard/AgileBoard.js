@@ -309,8 +309,11 @@ class AgileBoard extends Component {
   };
 
   getIsOnlyMine = () => {
-    const isOnlyMine = localStorage.getItem('isOnlyMine');
-    return isOnlyMine === 'false' ? false : true;
+    try {
+      return JSON.parse(localStorage.getItem('isOnlyMine'));
+    } catch (e) {
+      return false;
+    }
   };
 
   setIsOnlyMine = (value) => {
