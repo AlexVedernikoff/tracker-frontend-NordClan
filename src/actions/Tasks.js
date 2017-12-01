@@ -26,9 +26,6 @@ const getTasks = (options, onlyTaskListUpdate = false) => {
     axios
       .get(URL, {
         params: {
-          name: '',
-          tags: '',
-          performerId: '',
           ...options,
           fields: 'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId,prefix'
         }

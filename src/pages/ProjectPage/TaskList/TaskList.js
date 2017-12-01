@@ -23,7 +23,8 @@ class TaskList extends Component {
     super(props);
     this.state = {
       ...this.initialFilters,
-      activePage: 1
+      activePage: 1,
+      changedFilters: {}
     };
   }
 
@@ -48,21 +49,32 @@ class TaskList extends Component {
     filterByName: '',
     sprintId: null,
     performerId: null,
-    filterTags: []
+    filterTags: [],
+    changedFilters: {}
   }
 
   changeSprintFilter = (option) => {
-    this.setState({
-      sprintId: option ? option.value : null,
-      activePage: 1
-    }, this.loadTasks);
+    const sprintId = option ? option.value : null;
+
+    this.setState(state => ({
+      sprintId,
+      activePage: 1,
+      changedFilters: {
+        ...state.changedFilters,
+        sprintId
+      }
+    }), this.loadTasks);
   }
 
   changePriorityFilter = (option) => {
-    this.setState({
+    this.setState(state => ({
       prioritiesId: option ? option.prioritiesId : null,
-      activePage: 1
-    }, this.loadTasks);
+      activePage: 1,
+      changedFilters: {
+        ...state.changedFilters,
+        prioritiesId: option.prioritiesId
+      }
+    }), this.loadTasks);
   }
 
   changeNameFilter = event => {
@@ -70,32 +82,73 @@ class TaskList extends Component {
 
     this.setState(state => ({
       filterByName: value,
-      activePage: state.filterByName !== value ? 1 : state.activePage
+      activePage: state.filterByName !== value ? 1 : state.activePage,
+      changedFilters: {
+        ...state.changedFilters,
+        name: value
+      }
     }), this.loadTasks);
   };
 
   changeStatusFilter = (options) => {
-    this.setState({
+    this.setState(state => ({
       statusIds: options.map(option => option.value),
-      activePage: 1
-    }, this.loadTasks);
+      activePage: 1,
+      changedFilters: {
+        ...state.changedFilters,
+        statusId: options.map(option => option.value).join(',')
+      }
+    }), this.loadTasks);
   };
 
   changeTypeFilter = (options) => {
-    this.setState({
+    this.setState(state => ({
       typeIds: options.map(option => option.value),
-      activePage: 1
-    }, this.loadTasks);
+      activePage: 1,
+      changedFilters: {
+        ...state.changedFilters,
+        typeId: options.map(option => option.value).join(',')
+      }
+    }), this.loadTasks);
   };
 
   changePerformerFilter = (performer) => {
     const performerId = performer ? performer.value : 0;
 
-    this.setState(state=> ({
+    this.setState(state => ({
       performerId,
-      activePage: state.performerId !== performerId ? 1 : state.activePage
+      activePage: state.performerId !== performerId ? 1 : state.activePage,
+      changedFilters: {
+        ...state.changedFilters,
+        performerId
+      }
     }), this.loadTasks);
   }
+
+  onTagSelect = (tags) => {
+    this.setState(state => ({
+      filterTags: tags,
+      changedFilters: {
+        ...state.changedFilters,
+        tags: tags.map(tag => tag.value).join(',')
+      }
+    }), this.loadTasks);
+  }
+
+  onClickTag = (tag) => {
+    const sortedTags = _.uniqBy(this.state.filterTags.concat({
+      value: tag,
+      label: tag
+    }), 'value');
+
+    this.setState(state => ({
+      filterTags: sortedTags,
+      changedFilters: {
+        ...state.changedFilters,
+        tags: sortedTags.map(el => el.value).join(',')
+      }
+    }), this.loadTasks);
+  };
 
   handlePaginationClick = e => {
     this.setState(
@@ -106,39 +159,9 @@ class TaskList extends Component {
     );
   };
 
-  loadTasks = (options = {}) => {
-    const tags = this.state.filterTags.map(el => el.value).join(',');
-    const statusId = this.state.statusIds.join(',');
-    const typeId = this.state.typeIds.join(',');
-    this.props.getTasks({
-      projectId: this.props.project.id,
-      performerId: this.state.performerId,
-      currentPage: this.state.activePage,
-      prioritiesId: this.state.prioritiesId,
-      pageSize: 50,
-      name: this.state.filterByName,
-      statusId,
-      tags,
-      typeId,
-      sprintId: this.state.sprintId,
-      ...options
-    }, true);
+  loadTasks = () => {
+    this.props.getTasks(this.state.changedFilters, true);
   }
-
-  onTagSelect = (tags) => {
-    this.setState({
-      filterTags: tags
-    }, this.loadTasks);
-  };
-
-  onClickTag = (tag) => {
-    this.setState(state => ({
-      filterTags: _.uniqBy(state.filterTags.concat({
-        value: tag,
-        label: tag
-      }), 'value')
-    }), this.loadTasks);
-  };
 
   clearFilters = () => {
     this.setState(this.initialFilters, this.loadTasks);
@@ -173,15 +196,7 @@ class TaskList extends Component {
 
     const statusOptions = this.createOptions(statuses);
     const typeOptions = this.createOptions(taskTypes);
-
-    const isFilter
-      = prioritiesId
-      || typeIds.length
-      || statusIds.length
-      || filterByName
-      || sprintId
-      || performerId
-      || filterTags.length;
+    const isFilter = Object.keys(this.state.changedFilters).length;
 
     return (
       <div>
