@@ -12,7 +12,7 @@ import TextArea from '../TextArea';
 import SelectDropdown from '../SelectDropdown';
 import ValidatedInput from '../ValidatedInput';
 import * as css from './CreateTaskModal.scss';
-import Priority from '../../pages/TaskPage/Priority';
+import Priority from '../Priority';
 import { closeCreateTaskModal, createTask } from '../../actions/Project';
 import { BACKLOG_ID } from '../../constants/Sprint';
 import Validator from '../ValidatedInput/Validator';
