@@ -15,7 +15,7 @@ const InitialState = {
   isCreateTaskModalOpen: false,
   PortfolioIsEditing: false,
   isProjectInfoReceiving: false,
-  isCreateTaskRequestPending: false
+  isCreateTaskRequestInProgress: false
 };
 
 export default function Project (state = InitialState, action) {
@@ -176,7 +176,7 @@ export default function Project (state = InitialState, action) {
   case ProjectActions.TASK_CREATE_REQUEST_START:
     return {
       ...state,
-      isCreateTaskRequestPending: true
+      isCreateTaskRequestInProgress: true
     };
   case ProjectActions.TASK_CREATE_REQUEST_SUCCESS:
     return {
@@ -186,12 +186,12 @@ export default function Project (state = InitialState, action) {
         sprintId: action.sprintId,
         taskId: action.taskId
       },
-      isCreateTaskRequestPending: false
+      isCreateTaskRequestInProgress: false
     };
   case ProjectActions.TASK_CREATE_REQUEST_ERROR:
     return {
       ...state,
-      isCreateTaskRequestPending: false
+      isCreateTaskRequestInProgress: false
     };
   case ProjectActions.UPDATE_PROJECT_STATUS_SUCCESS:
     return {
