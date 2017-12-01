@@ -30,9 +30,10 @@ class ActivityRow extends React.Component {
 
   constructor (props) {
     super(props);
-    this.createTimesheet = _.debounce(this.createTimesheet, 500);
-    this.updateTimesheet = _.debounce(this.updateTimesheet, 500);
-    this.deleteTimesheets = _.debounce(this.deleteTimesheets, 500);
+    const debounceTime = 1000;
+    this.createTimesheet = _.debounce(this.createTimesheet, debounceTime);
+    this.updateTimesheet = _.debounce(this.updateTimesheet, debounceTime);
+    this.deleteTimesheets = _.debounce(this.deleteTimesheets, debounceTime);
     this.state = {
       isOpen: false
     };

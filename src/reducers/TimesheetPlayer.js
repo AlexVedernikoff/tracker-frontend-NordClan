@@ -22,11 +22,6 @@ function TimesheetPlayer (state = InitialState, action) {
         }
       };
 
-    case TimesheetPlayersActions.TIMESHEET_PLAYER_RECEIVE_FAIL:
-      return {
-        ...state
-      };
-
     case TimesheetPlayersActions.TIMESHEET_PLAYER_UPDATE_RECEIVE_SUCCESS:
 
       state.tracks[action.date] = action.data[action.date];
