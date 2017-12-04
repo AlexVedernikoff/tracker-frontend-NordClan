@@ -12,7 +12,7 @@ import Task from './Task';
 import Portfolios from './Portfolios';
 import Notifications from './Notifications';
 import Portfolio from './Portfolio';
-import TimesheetPlayer from './handlers/TimesheetPlayer';
+import TimesheetPlayer from './TimesheetPlayer';
 import Timesheets from './Timesheets';
 
 const rootReducer = combineReducers({

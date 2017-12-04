@@ -26,19 +26,28 @@ exports[TIMESHEET_PLAYER_RECEIVE_START] = (state = InitialState, action) => {
 }
 
 exports[TIMESHEET_PLAYER_RECEIVE_SUCCESS] = (state = InitialState, action) => {
+  const updatedTracks = setDefaultSpentTime(action)
   return {
     ...state,
-    tracks: {
-      ...action.data
-    }
+    tracks: updatedTracks
   };
 }
 
-//TODO возвращать новый state, а не изменять
+function setDefaultSpentTime(action) {
+  return Object.entries(action.data).reduce((acc, [date, tracks]) => {
+    const updatedTracks = tracks.tracks.map(track => ({ ...track, spentTime: track.spentTime || 0 }))
+    acc[date] = {
+      scales: tracks.scales,
+      tracks: updatedTracks
+    }
+    return acc
+  }, {})
+}
+
 exports[TIMESHEET_PLAYER_UPDATE_RECEIVE_SUCCESS] = (state = InitialState, action) => {
-  state.tracks[action.date] = action.data[action.date];
   return {
-    ...state
+    ...state,
+    tracks: [ ...state.tracks, action.data[action.date] ]
   };
 }
 
@@ -64,6 +73,7 @@ function onUpdateTracks(state, action) {
 
 exports[CREATE_TIMESHEET_SUCCESS] = (state = InititalState, action) => {
   action.timesheet.onDate = moment(action.timesheet.onDate).format('YYYY-MM-DD');
+  action.timesheet.spentTime = action.timesheet.spentTime || 0
 
   const updatedTracks = [
     ...state.tracks[action.timesheet.onDate].tracks,
