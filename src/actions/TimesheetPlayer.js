@@ -54,6 +54,23 @@ export const getTimesheetsPlayerData = (startDate, endDate) => {
   });
 };
 
+//TODO fix
+export const updateDraftVisible = (data, options) => {
+
+  return dispatch => dispatch({
+    type: REST_API,
+    url: `/timesheetDraft/${data.timesheetId}`,
+    method: PUT,
+    body: data.body,
+    extra,
+    start: withStartLoading(startReceivePlayerData, true)(dispatch),
+    response: withFinishLoading(response => {
+      dispatch(playerDataUpdateReceived(response.data, options.itemKey));
+    })(dispatch),
+    error: playerDataReceiveFailed(dispatch)
+  });
+};
+
 export const updateTimesheetDraft = (data, options) => {
 
   return dispatch => dispatch({
