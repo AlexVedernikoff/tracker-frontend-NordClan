@@ -140,10 +140,6 @@ class TaskPage extends Component {
     this.props.uploadAttachments(this.props.task.id, files);
   };
 
-  // Link eval - making links clickable
-  parseTextLinks = (text) => {
-    return (text) ? Autolinker.link(text) : text;
-  };
   render () {
     let projectUrl = '/';
     if (this.props.task.project) projectUrl = `/projects/${this.props.task.project.id}`;
