@@ -4,6 +4,7 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 
 import TaskRow from '../../../components/TaskRow';
+import InlineHolder from '../../../components/InlineHolder';
 import Priority from '../../../components/Priority';
 import Button from '../../../components/Button';
 import SprintSelector from '../../../components/SprintSelector';
@@ -168,7 +169,8 @@ class TaskList extends Component {
       tasksList: tasks,
       statuses,
       taskTypes,
-      project
+      project,
+      isReceiving
     } = this.props;
 
     const {
@@ -183,6 +185,26 @@ class TaskList extends Component {
     const statusOptions = this.createOptions(statuses);
     const typeOptions = this.createOptions(taskTypes);
     const isFilter = Object.keys(this.state.changedFilters).length;
+    const isLoading = isReceiving && !tasks.length;
+    const taskHolder
+    = <div style={{marginBottom: '1rem'}}>
+        <hr style={{margin: '0 0 1rem 0'}}/>
+        <Row>
+          <Col xs={12} sm={6}>
+            <InlineHolder length="80%"/>
+            <InlineHolder length="50%"/>
+          </Col>
+          <Col xs={12} sm>
+            <InlineHolder length="50%"/>
+            <InlineHolder length="70%"/>
+            <InlineHolder length="30%"/>
+          </Col>
+          <Col xs>
+            <InlineHolder length="20%"/>
+            <InlineHolder length="20%"/>
+          </Col>
+        </Row>
+      </div>;
 
     return (
       <div>
@@ -263,15 +285,18 @@ class TaskList extends Component {
               </Col>
             </Row>
           </div>
+
           {
-            tasks.map((task) => {
-              return <TaskRow
-                key={`task-${task.id}`}
-                task={task}
-                prefix={project.prefix}
-                onClickTag={this.onClickTag}
-              />;
-            })
+            isLoading
+            ? taskHolder
+            : tasks.map((task) =>
+                <TaskRow
+                  key={`task-${task.id}`}
+                  task={task}
+                  prefix={project.prefix}
+                  onClickTag={this.onClickTag}
+                />
+              )
           }
 
           <hr/>
@@ -291,6 +316,7 @@ class TaskList extends Component {
 
 TaskList.propTypes = {
   getTasks: PropTypes.func.isRequired,
+  isReceiving: PropTypes.bool,
   pagesCount: PropTypes.number.isRequired,
   project: PropTypes.object.isRequired,
   statuses: PropTypes.array,
@@ -298,10 +324,10 @@ TaskList.propTypes = {
   tasksList: PropTypes.array.isRequired
 };
 
-
 const mapStateToProps = state => ({
   tasksList: state.TaskList.tasks,
   pagesCount: state.TaskList.pagesCount,
+  isReceiving: state.TaskList.isReceiving,
   project: state.Project.project,
   statuses: state.Dictionaries.taskStatuses,
   taskTypes: state.Dictionaries.taskTypes
