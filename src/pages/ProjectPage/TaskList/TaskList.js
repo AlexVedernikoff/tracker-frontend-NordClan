@@ -44,105 +44,92 @@ class TaskList extends Component {
 
   initialFilters = {
     prioritiesId: null,
-    typeIds: [],
-    statusIds: [],
+    typeId: [],
+    statusId: [],
     filterByName: '',
     sprintId: null,
     performerId: null,
-    filterTags: [],
+    tags: [],
     changedFilters: {}
   }
 
-  changeSprintFilter = (option) => {
-    const sprintId = option ? option.value : null;
+  changeSingleFilter = (option, name) => {
 
-    this.setState(state => ({
-      sprintId,
-      activePage: 1,
-      changedFilters: {
-        ...state.changedFilters,
-        sprintId
+    this.setState(state => {
+
+      const filterValue = option ? option.value : null;
+      const changedFilters = state.changedFilters;
+      if (~[null, [], undefined, ''].indexOf(filterValue)) {
+        delete changedFilters[name];
+      } else {
+        changedFilters[name] = filterValue;
       }
-    }), this.loadTasks);
+
+      const newState = {
+        [name]: filterValue,
+        activePage: state[name] !== filterValue ? 1 : state.activePage,
+        changedFilters
+      };
+
+      return newState;
+
+    }, this.loadTasks);
   }
 
-  changePriorityFilter = (option) => {
-    this.setState(state => ({
-      prioritiesId: option ? option.prioritiesId : null,
-      activePage: 1,
-      changedFilters: {
-        ...state.changedFilters,
-        prioritiesId: option.prioritiesId
+  changeMultiFilter = (options, name) => {
+
+    this.setState(state => {
+
+      const filterValue = options.map(option => option.value);
+      const changedFilters = state.changedFilters;
+      if (filterValue.length) {
+        changedFilters[name] = filterValue;
+      } else {
+        delete changedFilters[name];
       }
-    }), this.loadTasks);
+
+      const newState = {
+        [name]: filterValue,
+        activePage: state[name].length !== filterValue.length ? 1 : state.activePage,
+        changedFilters
+      };
+
+      return newState;
+
+    }, this.loadTasks);
   }
 
   changeNameFilter = event => {
+
     const value = event.target.value;
 
-    this.setState(state => ({
-      filterByName: value,
-      activePage: state.filterByName !== value ? 1 : state.activePage,
-      changedFilters: {
-        ...state.changedFilters,
-        name: value
+    this.setState(state => {
+
+      const changedFilters = state.changedFilters;
+      if (value) {
+        changedFilters.name = value;
+      } else {
+        delete changedFilters.name;
       }
-    }), this.loadTasks);
+
+      const newState = {
+        filterByName: value,
+        activePage: state.filterByName !== value ? 1 : state.activePage,
+        changedFilters
+      };
+
+      return newState;
+    }, this.loadTasks);
   };
-
-  changeStatusFilter = (options) => {
-    this.setState(state => ({
-      statusIds: options.map(option => option.value),
-      activePage: 1,
-      changedFilters: {
-        ...state.changedFilters,
-        statusId: options.map(option => option.value).join(',')
-      }
-    }), this.loadTasks);
-  };
-
-  changeTypeFilter = (options) => {
-    this.setState(state => ({
-      typeIds: options.map(option => option.value),
-      activePage: 1,
-      changedFilters: {
-        ...state.changedFilters,
-        typeId: options.map(option => option.value).join(',')
-      }
-    }), this.loadTasks);
-  };
-
-  changePerformerFilter = (performer) => {
-    const performerId = performer ? performer.value : 0;
-
-    this.setState(state => ({
-      performerId,
-      activePage: state.performerId !== performerId ? 1 : state.activePage,
-      changedFilters: {
-        ...state.changedFilters,
-        performerId
-      }
-    }), this.loadTasks);
-  }
-
-  onTagSelect = (tags) => {
-    this.setState(state => ({
-      filterTags: tags,
-      changedFilters: {
-        ...state.changedFilters,
-        tags: tags.map(tag => tag.value).join(',')
-      }
-    }), this.loadTasks);
-  }
 
   onClickTag = (tag) => {
-    const sortedTags = _.uniqBy(this.state.filterTags.concat({
+    const sortedTags = _.uniqBy(this.state.tags.concat({
       value: tag,
       label: tag
     }), 'value');
 
     this.setState(state => ({
-      filterTags: sortedTags,
+      tags: sortedTags,
       changedFilters: {
         ...state.changedFilters,
         tags: sortedTags.map(el => el.value).join(',')
@@ -186,12 +173,11 @@ class TaskList extends Component {
 
     const {
       prioritiesId,
-      typeIds,
-      statusIds,
-      filterByName,
+      typeId,
+      statusId,
       sprintId,
       performerId,
-      filterTags
+      tags
     } = this.state;
 
     const statusOptions = this.createOptions(statuses);
@@ -204,10 +190,19 @@ class TaskList extends Component {
           <div className={css.filters}>
             <Row className={css.search} top="xs">
               <Col xs={12} sm={3} className={css.priorityFilter}>
-                <Priority onChange={this.changePriorityFilter} priority={prioritiesId}/>
+                <Priority
+                  onChange={(option) => this.changeSingleFilter(option, 'prioritiesId')}
+                  priority={prioritiesId}
+                />
               </Col>
               <Col smOffset={6} xs={12} sm={3} className={css.clearFilters}>
-                <Button text="Очистить фильтры" icon="IconClose" disabled={!isFilter} type="primary" onClick={this.clearFilters}/>
+                <Button
+                  type="primary"
+                  text="Очистить фильтры"
+                  icon="IconClose"
+                  disabled={!isFilter}
+                  onClick={this.clearFilters}
+                />
               </Col>
             </Row>
             <Row className={css.search} top="xs">
@@ -219,9 +214,9 @@ class TaskList extends Component {
                   noResultsText="Нет подходящих типов"
                   backspaceToRemoveMessage={''}
                   clearAllText="Очистить все"
-                  value={typeIds}
+                  value={typeId}
                   options={typeOptions}
-                  onChange={this.changeTypeFilter}
+                  onChange={(options) => this.changeMultiFilter(options, 'typeId')}
                 />
               </Col>
               <Col xs={12} sm={3}>
@@ -232,16 +227,16 @@ class TaskList extends Component {
                   noResultsText="Нет подходящих статусов"
                   backspaceToRemoveMessage={''}
                   clearAllText="Очистить все"
-                  value={statusIds}
+                  value={statusId}
                   options={statusOptions}
-                  onChange={this.changeStatusFilter}
+                  onChange={(options) => this.changeMultiFilter(options, 'statusId')}
                 />
               </Col>
               <Col xs={12} sm={6}>
                 <SprintSelector
                   value={sprintId}
                   sprints={project.sprints}
-                  onChange={this.changeSprintFilter}
+                  onChange={(option) => this.changeSingleFilter(option, 'sprintId')}
                 />
               </Col>
             </Row>
@@ -255,15 +250,15 @@ class TaskList extends Component {
               </Col>
               <Col xs={12} sm={3}>
                 <PerformerFilter
-                  onPerformerSelect={this.changePerformerFilter}
+                  onPerformerSelect={(option) => this.changeSingleFilter(option, 'performerId')}
                   selectedPerformerId={performerId}
                 />
               </Col>
               <Col xs={12} sm={3}>
                 <TagsFilter
                   filterFor={'task'}
-                  onTagSelect={this.onTagSelect}
-                  filterTags={filterTags}
+                  onTagSelect={(options) => this.changeMultiFilter(options, 'tags')}
+                  filterTags={tags}
                 />
               </Col>
             </Row>
