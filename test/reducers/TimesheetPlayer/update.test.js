@@ -1,4 +1,4 @@
-import reducer from '../../../src/reducers/handlers/TimesheetPlayer'
+import reducer from '../../../src/reducers/TimesheetPlayer'
 import * as TimesheetPlayersActions from '../../../src/constants/TimesheetPlayer';
 import * as TimesheetsActions from '../../../src/constants/Timesheets';
 
