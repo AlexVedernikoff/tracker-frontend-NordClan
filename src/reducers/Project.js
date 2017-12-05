@@ -7,7 +7,7 @@ const InitialState = {
   project: {
     sprints: [],
     users: [],
-    history: [],
+    history: {},
     error: false
   },
   TitleIsEditing: false,
@@ -207,7 +207,7 @@ export default function Project (state = InitialState, action) {
       ...state,
       project: {
         ...state.project,
-        history: []
+        history: {}
       }
     };
 
@@ -237,7 +237,7 @@ export default function Project (state = InitialState, action) {
       project: {
         sprints: [],
         users: [],
-        history: [],
+        history: {},
         error: false
       },
       TitleIsEditing: false,
