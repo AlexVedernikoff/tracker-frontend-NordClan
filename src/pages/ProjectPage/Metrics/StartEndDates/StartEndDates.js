@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as css from './StartEndDates.scss'
 import Input from '../../../../components/Input';
+import moment from 'moment';
 
 class StartEndDates extends Component {
   constructor (props) {
@@ -12,11 +13,11 @@ class StartEndDates extends Component {
       <div className = {css.startEndDatesWrp}> 
         <div className = {css.startEndDates}>
           Дата начала проекта: 
-          <Input readOnly value = {this.props.createdAt ? this.props.createdAt.substr(0,10) : 'Нет данных'}/>
+          <Input readOnly value = {this.props.startDate ? moment(this.props.startDate).format('DD.MM.YYYY') : 'Загрузка...'}/>
         </div>
         <div className = {css.startEndDates}>
           Дата завершения проекта
-          <Input readOnly value = {this.props.completedAt ? this.props.createdAt.substr(0,10) : 'Нет данных'}/>
+          <Input readOnly value = {this.props.endDate ? moment(this.props.endDate).format('DD.MM.YYYY') : 'Загрузка...'}/>
         </div>
       </div>
       
