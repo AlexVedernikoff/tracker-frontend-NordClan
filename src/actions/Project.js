@@ -295,7 +295,7 @@ const createTask = (task, openTaskPage, callee) => {
   };
 };
 
-const getProjectHistory = id => {
+const getProjectHistory = (id, options) => {
   if (!id) {
     return () => {};
   }
@@ -304,7 +304,13 @@ const getProjectHistory = id => {
     dispatch(startLoading());
     dispatch(getProjectHistoryStart());
     axios
-      .get(URL)
+      .get(URL, {
+        params: {
+          ...options
+        }
+      },
+        { withCredentials: true }
+      )
       .catch(error => {
         dispatch(finishLoading());
         dispatch(showNotification({ message: error.message, type: 'error' }));
