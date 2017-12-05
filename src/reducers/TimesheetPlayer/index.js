@@ -5,6 +5,7 @@ import {
   TIMESHEET_PLAYER_RECEIVE_SUCCESS,
   TIMESHEET_PLAYER_UPDATE_RECEIVE_SUCCESS,
   TIMESHEET_PLAYER_TIMESHEET_UPDATE_RECEIVE_SUCCESS,
+  GET_ACTIVE_TASK
 } from '../../constants/TimesheetPlayer';
 
 import {
@@ -13,8 +14,8 @@ import {
   DELETE_TIMESHEET_SUCCESS
 } from '../../constants/Timesheets';
 
-
 const InitialState = {
+  activeTack: {},
   tracks: {}
 };
 
@@ -129,6 +130,13 @@ function updateTracks(state, action, updatedTracks) {
     ...state,
     tracks: { ...state.tracks, ...updatedDay }
   };
+}
+
+exports[GET_ACTIVE_TASK] = (state = InitialState, action) => {
+  return {
+    ...state,
+    activeTask: action.task
+  }
 }
 
 module.exports = reducerFabric(module.exports, InitialState);
