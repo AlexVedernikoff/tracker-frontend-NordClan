@@ -21,11 +21,23 @@ const playerDataReceiveFailed = () => ({
   type: TimesheetPlayer.TIMESHEET_PLAYER_RECEIVE_FAIL
 });
 
-const playerDataUpdateReceived = (data, itemKey) => ({
-  type: TimesheetPlayer.TIMESHEET_PLAYER_UPDATE_RECEIVE_SUCCESS,
-  data,
-  itemKey
-});
+const playerDataUpdateReceived = (data, date) => {
+
+  return {
+    type: TimesheetPlayer.TIMESHEET_PLAYER_UPDATE_RECEIVE_SUCCESS,
+    data,
+    date
+  };
+};
+
+const playerTimesheetUpdateReceived = (timesheet) => {
+
+  return {
+    type: TimesheetPlayer.TIMESHEET_PLAYER_TIMESHEET_UPDATE_RECEIVE_SUCCESS,
+    timesheet
+  };
+};
+
 
 export const getTimesheetsPlayerData = (startDate, endDate) => {
 
@@ -101,4 +113,36 @@ export const updateTimesheet = (data, options) => {
   }
 
   return updateExistedTimesheet(data, options);
+};
+
+////////////////////////////////
+export const updateDraft = (data, options) => {
+  return dispatch => dispatch({
+    type: REST_API,
+    url: `/draftsheet/?return=${data.return}`,
+    method: PUT,
+    body: { ...data },
+    extra,
+    start: withStartLoading(startReceivePlayerData, true)(dispatch),
+    response: withFinishLoading(response => {
+      dispatch(playerDataUpdateReceived(response.data, options.onDate));
+    })(dispatch),
+    error: playerDataReceiveFailed(dispatch)
+  });
+};
+
+export const updateOnlyTimesheet = (data) => {
+  return dispatch => dispatch({
+    type: REST_API,
+    url: '/timesheet/',
+    method: PUT,
+    body: { ...data },
+    extra,
+    start: withStartLoading(startReceivePlayerData, true)(dispatch),
+    response: withFinishLoading(response => {
+      console.log(response);
+      dispatch(playerTimesheetUpdateReceived(response.data));
+    })(dispatch),
+    error: playerDataReceiveFailed(dispatch)
+  });
 };

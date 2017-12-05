@@ -5,7 +5,6 @@ import * as css from './Button.scss';
 import * as icons from '../Icons';
 
 const Button = (props) => {
-
   const {
     icon,
     type,
@@ -21,7 +20,7 @@ const Button = (props) => {
   return (
     <button
       {...other}
-      type={htmlType}
+      type={htmlType ? htmlType : 'button'}
       className={classnames({
         [css.btn]: true,
         [css[type]]: !!type,

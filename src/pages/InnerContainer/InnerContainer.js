@@ -9,6 +9,7 @@ import * as css from './InnerContainer.scss';
 import cssVariables from '!!sass-variable-loader!../../styles/variables.scss';
 import * as dictionaryActions from '../../actions/Dictionaries';
 import { ScrollContainer } from 'react-router-scroll';
+import { history } from '../../History';
 
 const mql = window.matchMedia(`(min-width: ${cssVariables.tabletWidth})`);
 
@@ -28,7 +29,7 @@ class InnerContainer extends Component {
     this.state = {
       mql: mql,
       sidebarDocked: true,
-      sidebarOpen: true
+      sidebarOpen: mql.matches
     };
 
     this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
@@ -41,6 +42,7 @@ class InnerContainer extends Component {
     this.props.getMagicActivityTypes();
     this.props.getTaskStatuses();
     this.props.getTaskTypes();
+    this.listenHistory();
   }
 
   componentDidUpdate () {
@@ -49,10 +51,15 @@ class InnerContainer extends Component {
 
   componentWillUnmount () {
     this.state.mql.removeListener(this.mediaQueryChanged);
+    this.listenHistory();
   }
 
   mediaQueryChanged = () => {
     this.setState({sidebarDocked: this.state.mql.matches, sidebarOpen: !this.state.mql.matches});
+  }
+
+  listenHistory = () => {
+    history.listen(() => { this.onSetSidebarOpen(false); });
   }
 
   onSetSidebarOpen = (open) => {

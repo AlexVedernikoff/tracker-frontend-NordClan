@@ -11,11 +11,12 @@ import TotalComment from './TotalComment';
 import * as css from '../Timesheets.scss';
 import { IconClose } from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal';
-import { createTimesheet, updateTimesheet, deleteTimesheets } from '../../../actions/Timesheets';
+import { createTimesheet, updateTimesheet, deleteTimesheets, deleteTempTimesheets } from '../../../actions/Timesheets';
 
 class ActivityRow extends React.Component {
   static propTypes = {
     createTimesheet: PropTypes.func,
+    deleteTempTimesheets: PropTypes.func,
     deleteTimesheets: PropTypes.func,
     item: PropTypes.object,
     ma: PropTypes.bool,
@@ -117,7 +118,17 @@ class ActivityRow extends React.Component {
 
   deleteActivity = (ids) => {
     const { userId, startingDay } = this.props;
-    this.props.deleteTimesheets(ids, userId, startingDay);
+    const realSheetIds = ids.filter(id => !~id.toString().indexOf('temp'));
+    const tempSheetIds = ids.filter(id => ~id.toString().indexOf('temp'));
+
+    if (realSheetIds.length) {
+      this.props.deleteTimesheets(realSheetIds, userId, startingDay);
+    };
+
+    if (tempSheetIds.length) {
+      this.props.deleteTempTimesheets(tempSheetIds);
+    };
+
     this.closeConfirmModal();
   }
 
@@ -129,7 +140,7 @@ class ActivityRow extends React.Component {
     const totalTime = roundNum(_.sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
     const timeSheetIds = _.remove(item.timeSheets.map(tsh => tsh.id), tsh => tsh);
     const timeCells = item.timeSheets.map((tsh, i) => {
-      if (tsh.id) {
+      if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
         return (
           <td key={moment(tsh.onDate).format('X')} className={cn({
             [css.today]: moment().format('YYYY-MM-DD') === moment(tsh.onDate).format('YYYY-MM-DD'),
@@ -142,6 +153,7 @@ class ActivityRow extends React.Component {
               })}>
                 <input
                   type="number"
+                  disabled={tsh.id === 3}
                   max="24"
                   defaultValue={roundNum(tsh.spentTime, 2)}
                   onChange={(e) => this.changeFilled(i, tsh.id, tsh.comment, e)}
@@ -232,7 +244,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   createTimesheet,
   updateTimesheet,
-  deleteTimesheets
+  deleteTimesheets,
+  deleteTempTimesheets
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ActivityRow);

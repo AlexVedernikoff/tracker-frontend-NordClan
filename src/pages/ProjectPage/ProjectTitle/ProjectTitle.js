@@ -166,12 +166,25 @@ class ProjectTitle extends Component {
   render () {
     return (
       <div className={css.projectTitle}>
-        {this.props.name ? <ProjectIcon projectName={this.props.name} /> : <IconPreloader style={{color: 'silver', fontSize: '3rem', marginRight: 10}} />}
+        {this.props.name ? 
+          <ProjectIcon 
+            projectName={this.props.name} 
+            projectPrefix={this.props.prefix}
+          /> 
+          : 
+          <IconPreloader 
+            style={{color: 'silver', fontSize: '3rem', marginRight: 10}} 
+          />
+        }
         <div>
           {
-            this.props.portfolio
-            ? <span className={css.portfolio}><Link to={`/projects/portfolio/${this.props.portfolio.id}`}>{this.props.portfolio.name}</Link> <IconEdit onClick={this.props.openPortfolioModal}/></span>
-            : null
+            this.props.portfolio ?
+              <span className={css.portfolio}>
+                <Link to={`/projects/portfolio/${this.props.portfolio.id}`}>{this.props.portfolio.name}</Link> 
+                <IconEdit onClick={this.props.openPortfolioModal}/>
+              </span>
+              : 
+              null
           }
           <h1>
             <span
@@ -181,7 +194,7 @@ class ProjectTitle extends Component {
               contentEditable={this.props.titleIsEditing}
               onKeyDown={this.handleKeyPress}
             >
-              {this.props.name ? this.props.name : <InlineHolder length={7} />}
+              {this.props.name ? this.props.name : <InlineHolder length='3.5em' />}
             </span>
             <span className={css.prefix}>
               <span>(</span>
@@ -192,7 +205,7 @@ class ProjectTitle extends Component {
                 contentEditable={this.props.titleIsEditing}
                 onKeyDown={this.handleKeyPress}
               >
-                {this.props.prefix ? this.props.prefix : <InlineHolder length={2} />}
+                {this.props.prefix ? this.props.prefix : <InlineHolder length='1em' />}
               </span>
               <span>)</span>
             </span>
