@@ -80,6 +80,10 @@ const createTaskRequestStart = () => ({
   type: ProjectActions.TASK_CREATE_REQUEST_START
 });
 
+const createTaskRequestError = () => ({
+  type: ProjectActions.TASK_CREATE_REQUEST_ERROR
+});
+
 export const openPortfolioModal = () => ({
   type: ProjectActions.OPEN_SET_PORTFOLIO_MODAL
 });
@@ -267,6 +271,7 @@ const createTask = (task, openTaskPage, callee) => {
       })
       .catch(error => {
         dispatch(finishLoading());
+        dispatch(createTaskRequestError());
         dispatch(showNotification({ message: error.message, type: 'error' }));
       })
       .then(response => {

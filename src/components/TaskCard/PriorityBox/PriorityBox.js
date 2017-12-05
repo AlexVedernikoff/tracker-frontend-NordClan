@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import onClickOutside from 'react-onclickoutside';
 import * as css from './PriorityBox.scss';
 import classNames from 'classnames';
-import Priority from './../../../pages/TaskPage/Priority';
+import Priority from '../../Priority';
 import { connect } from 'react-redux';
 import { changeTask } from './../../../actions/Task';
 
