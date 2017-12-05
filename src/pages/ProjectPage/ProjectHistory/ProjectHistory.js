@@ -29,7 +29,7 @@ class ProjectHistory extends React.Component {
 
   render () {
     const { history, projectId } = this.props;
-    const eventList = history.map((event, i) => {
+    const eventList = history.data ? history.data.map((event, i) => {
       return <div className={css.historyEvent} key={event.id}>
         <span className={css.time}> {moment(event.date).format('DD.MM.YYYY HH:mm:ss')}</span>
         <div className={css.historyAction}>
@@ -44,7 +44,7 @@ class ProjectHistory extends React.Component {
           />
         </div>
       </div>;
-    });
+    }) : null;
 
     return (
       <div className={css.history}>
@@ -57,7 +57,7 @@ class ProjectHistory extends React.Component {
 
 ProjectHistory.propTypes = {
   getProjectHistory: PropTypes.func.isRequired,
-  history: PropTypes.array,
+  history: PropTypes.object,
   projectId: PropTypes.number,
 };
 
