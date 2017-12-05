@@ -308,9 +308,7 @@ const getProjectHistory = (id, options) => {
         params: {
           ...options
         }
-      },
-        { withCredentials: true }
-      )
+      }, { withCredentials: true })
       .catch(error => {
         dispatch(finishLoading());
         dispatch(showNotification({ message: error.message, type: 'error' }));

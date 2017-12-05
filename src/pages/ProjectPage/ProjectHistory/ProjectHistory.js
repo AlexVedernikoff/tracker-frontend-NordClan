@@ -15,7 +15,7 @@ class ProjectHistory extends React.Component {
     super(props);
     this.state = {
       isUserCardVisible: false,
-      activePage: 1
+      activePage: 0
     };
   }
 

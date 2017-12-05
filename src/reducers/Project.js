@@ -9,7 +9,7 @@ const InitialState = {
     users: [],
     history: {
       events: [],
-      pagesCount: 1
+      pagesCount: 0
     },
     error: false
   },
@@ -212,7 +212,7 @@ export default function Project (state = InitialState, action) {
         ...state.project,
         history: {
           events: [],
-          pagesCount: 1
+          pagesCount: 0
         }
       }
     };
