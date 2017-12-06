@@ -6,6 +6,7 @@ import moment from 'moment';
 import * as css from './Metrics.scss';
 import StartEndDates from './StartEndDates/StartEndDates'
 import BudgetChart from './BudgetChart/BudgetChart'
+import BugsChart from './BugsChart/BugsChart'
 
 class Metrics extends Component {
   constructor(props) {
@@ -30,12 +31,17 @@ class Metrics extends Component {
   render () {
     return (
       <div>
-        <section>
-          <h2>Аналитика</h2>
+        <section className = {css.Metrics}>
+          <h2>Метрики по проекту</h2>
           <StartEndDates startDate = {this.startDate()} endDate = {this.endDate()}/>
           <Row>
             <Col md = {12} lg = {6}>
               <BudgetChart startDate = {this.startDate()} endDate = {this.endDate()}/>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs = {12}>
+              <BugsChart/>
             </Col>
           </Row>
         </section>
