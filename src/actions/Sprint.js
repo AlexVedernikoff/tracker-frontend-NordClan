@@ -76,9 +76,8 @@ export const deleteSprint = (id) => {
   };
 };
 
-export const createSprint = (name, id, dateForm, dateTo, allottedTime) => {
+export const createSprint = (name, id, dateForm, dateTo, allottedTime, budget, riskBudget) => {
   const URL = `${API_URL}/sprint/`;
-
   return dispatch => {
     dispatch(createSprintStart());
     dispatch(startLoading());
@@ -86,9 +85,11 @@ export const createSprint = (name, id, dateForm, dateTo, allottedTime) => {
       .post(URL, {
         name: name,
         projectId: id,
+        allottedTime: allottedTime,        
         factStartDate: dateForm,
         factFinishDate: dateTo,
-        allottedTime: allottedTime
+        budget: budget,
+        riskBudget: riskBudget
       })
       .then(response => {
         if (response.data) {
