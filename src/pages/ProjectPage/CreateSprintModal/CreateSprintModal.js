@@ -105,6 +105,7 @@ class CreateSprintModal extends Component {
               <Col xs>
                 <Button
                   type="green"
+                  htmlType="submit"
                   text="Создать"
                   onClick={this.createSprint}
                 />

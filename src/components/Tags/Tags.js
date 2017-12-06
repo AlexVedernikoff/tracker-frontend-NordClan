@@ -88,6 +88,7 @@ class Tags extends Component {
                 <Button
                   addedClassNames={{[css.tagsButton]: true}}
                   icon="IconCheck"
+                  htmlType="submit"
                   type='green'
                   onClick={this.sendNewTags}
                 />
