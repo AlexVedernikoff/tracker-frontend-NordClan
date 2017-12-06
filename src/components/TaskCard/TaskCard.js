@@ -6,6 +6,7 @@ import { Link } from 'react-router';
 import { DragSource } from 'react-dnd';
 import { history } from '../../History';
 import getTypeById from '../../utils/TaskTypes';
+import roundNum from '../../utils/roundNum';
 import { TASK_CARD } from '../../constants/DragAndDrop';
 
 import * as css from './TaskCard.scss';
@@ -25,7 +26,7 @@ const taskCardSource = {
 
 const getTaskTime = (factTime, planTime) => {
   if (factTime) {
-    return planTime ? `${factTime} из ${planTime} ч.` : `${factTime} ч.`;
+    return planTime ? `${roundNum(factTime, 2)} из ${roundNum(planTime, 2)} ч.` : `${roundNum(factTime, 2)} ч.`;
   } else {
     return planTime ? `0 из ${planTime} ч.` : '0 из 0 ч.';
   }
@@ -158,14 +159,14 @@ class TaskCard extends React.Component {
           </p>
 
           {
-            !!(task.factExecutionTime || task.plannedExecutionTime)
+            !!((task.factExecutionTime || task.plannedExecutionTime) && task.statusId !== 1)
             && <p className={css.time}>
-              <IconTime className={classnames({
-                [css.green]: this.isInPlan(task.plannedExecutionTime, task.factExecutionTime),
-                [css.red]: this.isOutOfPlan(task.plannedExecutionTime, task.factExecutionTime)
-              })} />
-            <span>{getTaskTime(task.factExecutionTime, task.plannedExecutionTime)}</span>
-          </p>
+                <IconTime className={classnames({
+                  [css.green]: this.isInPlan(task.plannedExecutionTime, task.factExecutionTime),
+                  [css.red]: this.isOutOfPlan(task.plannedExecutionTime, task.factExecutionTime)
+                })} />
+              <span>{getTaskTime(task.factExecutionTime, task.plannedExecutionTime)}</span>
+            </p>
           }
 
           {

@@ -84,7 +84,7 @@ class AppRouter extends Component {
             <Route path="/" component={InnerContainer} onEnter={this.requireAuth} >
               <Route path="dashboard" component={Dashboard} />
               <Route path="timesheets" component={Timesheets} />
-              <Route path="tasks" component={MyTasks} />
+              <Route path="tasks" component={MyTasks} onLeave={this.clearTasks} />
               <Route path="projects" component={Projects} />
 
               <Route path="projects/:projectId" component={ProjectPage} scrollToTop onLeave={this.clearTasks} >

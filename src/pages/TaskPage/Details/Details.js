@@ -14,6 +14,7 @@ import { getProjectUsers, getProjectSprints } from '../../../actions/Project';
 import { connect } from 'react-redux';
 import * as css from './Details.scss';
 import moment from 'moment';
+import roundNum from '../../../utils/roundNum';
 
 class Details extends Component {
   static propTypes = {
@@ -194,7 +195,7 @@ class Details extends Component {
                         [css.factTime]: true
                       })}
                     >
-                       {`${task.factExecutionTime} ч.`}
+                       {`${roundNum(task.factExecutionTime, 2)} ч.`}
                     </span>
                   </td>
                 </tr>

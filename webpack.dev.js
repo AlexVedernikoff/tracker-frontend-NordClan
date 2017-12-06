@@ -94,17 +94,17 @@ const settings = {
     proxy: {
       '/api/v1/socket': {
         target: {
-          host: process.env.API_ROOT || 'sim-track.simbirsoft',
+          host: process.env.API_ROOT || 'simtrack-dev.simbirsoft',
           protocol: 'ws',
-          port: process.env.API_PORT || 80
+          port: process.env.API_PORT || 443
         },
         ws: true
       },
       '/api/**': {
         target: {
-          host: process.env.API_ROOT || 'sim-track.simbirsoft',
-          protocol: 'http:',
-          port: process.env.API_PORT || 80
+          host: process.env.API_ROOT || 'simtrack-dev.simbirsoft',
+          protocol: 'https:',
+          port: process.env.API_PORT || 443
         },
         // ignorePath: true,
         changeOrigin: true,
@@ -112,9 +112,9 @@ const settings = {
       },
       '/uploads/**': {
         target: {
-          host: process.env.API_ROOT || 'sim-track.simbirsoft',
-          protocol: 'http:',
-          port: process.env.API_PORT || 80
+          host: process.env.API_ROOT || 'simtrack-dev.simbirsoft',
+          protocol: 'https:',
+          port: process.env.API_PORT || 443
         },
         // ignorePath: true,
         changeOrigin: true,

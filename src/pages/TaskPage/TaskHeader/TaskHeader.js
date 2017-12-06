@@ -5,7 +5,7 @@ import Button from '../../../components/Button';
 import ConfirmModal from '../../../components/ConfirmModal';
 import { Link } from 'react-router';
 import PerformerModal from '../../../components/PerformerModal';
-import Priority from '../Priority';
+import Priority from '../../../components/Priority';
 import ButtonGroup from '../../../components/ButtonGroup';
 import TaskTitle from '../TaskTitle';
 import { getProjectUsers } from '../../../actions/Project';
