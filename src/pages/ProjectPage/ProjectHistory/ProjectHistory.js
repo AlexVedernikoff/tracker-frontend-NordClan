@@ -65,7 +65,7 @@ class ProjectHistory extends React.Component {
           />
         </div>
       </div>;
-    }) : null;
+    });
 
     return (
       <div className={css.history}>
