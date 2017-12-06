@@ -36,6 +36,16 @@ class BudgetChart extends Component {
       title: {
         display: false
       },
+      tooltips: {
+        callbacks: {
+          title: function(tooltipItem, data) {
+            return moment(tooltipItem[0].xLabel).format('YYYY.MM.DD');
+          },
+          label: function(tooltipItem, data) {
+              return `${tooltipItem.yLabel} ч.`;
+          }
+        }
+      },
       legend: {
         position: 'bottom'
       },
