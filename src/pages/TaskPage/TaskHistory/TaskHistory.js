@@ -6,9 +6,9 @@ import moment from 'moment';
 import { getTaskHistory} from '../../../actions/Task';
 import UserCard from '../../../components/UserCard';
 import HistoryMessage from '../../../components/HistoryMessage';
+import * as css from './TaskHistory.scss';
 
 class TaskHistory extends React.Component {
-
   constructor (props) {
     super(props);
     this.state = {isUserCardVisible: false};
@@ -27,8 +27,8 @@ class TaskHistory extends React.Component {
   };
 
   render () {
-    const css = require('./TaskHistory.scss');
-    const eventList = this.props.history.map((event, i) => {
+    const { history } = this.props;
+    const eventList = history.data ? history.data.map((event, i) => {
       return <div className={css.historyEvent} key={event.id}>
         <span className={css.time}> {moment(event.date).format('DD.MM.YYYY HH:mm:ss')}</span>
         <div className={css.historyAction}>
@@ -43,7 +43,7 @@ class TaskHistory extends React.Component {
           />
         </div>
       </div>;
-    });
+    }) : null;
 
     return (
       <div className={css.history}>
@@ -56,7 +56,7 @@ class TaskHistory extends React.Component {
 
 TaskHistory.propTypes = {
   getTaskHistory: PropTypes.func.isRequired,
-  history: PropTypes.array,
+  history: PropTypes.object,
   params: PropTypes.shape({
     projectId: PropTypes.string.isRequired,
     taskId: PropTypes.string.isRequired

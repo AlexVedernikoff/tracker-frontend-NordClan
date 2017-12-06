@@ -282,15 +282,17 @@ class CreateTaskModal extends Component {
               text="Создать задачу"
               type="green"
               htmlType="submit"
-              disabled={this.validator.isDisabled && !this.state.selectedTypeError}
+              disabled={this.props.isCreateTaskRequestInProgress || this.validator.isDisabled && !this.state.selectedTypeError}
               onClick={this.submitTask}
+              loading={this.props.isCreateTaskRequestInProgress}
             />
             <Button
               text="Создать и открыть"
               htmlType="button"
               type="green-lighten"
-              disabled={this.validator.isDisabled && !this.state.selectedTypeError}
+              disabled={this.props.isCreateTaskRequestInProgress || this.validator.isDisabled && !this.state.selectedTypeError}
               onClick={this.submitTaskAndOpen}
+              loading={this.props.isCreateTaskRequestInProgress}
             />
           </div>
         </form>
@@ -304,6 +306,7 @@ CreateTaskModal.propTypes = {
   column: PropTypes.string,
   createTask: PropTypes.func.isRequired,
   isCreateTaskModalOpen: PropTypes.bool.isRequired,
+  isCreateTaskRequestInProgress: PropTypes.bool,
   parentTaskId: PropTypes.number,
   project: PropTypes.object,
   selectedSprintValue: PropTypes.number,
@@ -312,7 +315,8 @@ CreateTaskModal.propTypes = {
 
 const mapStateToProps = state => ({
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
-  taskTypes: state.Dictionaries.taskTypes
+  taskTypes: state.Dictionaries.taskTypes,
+  isCreateTaskRequestInProgress: state.Project.isCreateTaskRequestInProgress
 });
 
 const mapDispatchToProps = {

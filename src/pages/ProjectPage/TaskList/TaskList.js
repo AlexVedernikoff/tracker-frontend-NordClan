@@ -4,6 +4,7 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 
 import TaskRow from '../../../components/TaskRow';
+import InlineHolder from '../../../components/InlineHolder';
 import Priority from '../../../components/Priority';
 import Button from '../../../components/Button';
 import SprintSelector from '../../../components/SprintSelector';
@@ -23,7 +24,8 @@ class TaskList extends Component {
     super(props);
     this.state = {
       ...this.initialFilters,
-      activePage: 1
+      activePage: 1,
+      changedFilters: {}
     };
   }
 
@@ -43,59 +45,98 @@ class TaskList extends Component {
 
   initialFilters = {
     prioritiesId: null,
-    typeIds: [],
-    statusIds: [],
+    typeId: [],
+    statusId: [],
     filterByName: '',
     sprintId: null,
     performerId: null,
-    filterTags: []
+    tags: [],
+    changedFilters: {}
   }
 
-  changeSprintFilter = (option) => {
-    this.setState({
-      sprintId: option ? option.value : null,
-      activePage: 1
+  changeSingleFilter = (option, name) => {
+
+    this.setState(state => {
+
+      const filterValue = option ? option.value : null;
+      const changedFilters = state.changedFilters;
+      if (~[null, [], undefined, ''].indexOf(filterValue)) {
+        delete changedFilters[name];
+      } else {
+        changedFilters[name] = filterValue;
+      }
+
+      const newState = {
+        [name]: filterValue,
+        activePage: state[name] !== filterValue ? 1 : state.activePage,
+        changedFilters
+      };
+
+      return newState;
+
     }, this.loadTasks);
   }
 
-  changePriorityFilter = (option) => {
-    this.setState({
-      prioritiesId: option ? option.prioritiesId : null,
-      activePage: 1
+  changeMultiFilter = (options, name) => {
+
+    this.setState(state => {
+
+      const filterValue = options.map(option => option.value);
+      const changedFilters = state.changedFilters;
+      if (filterValue.length) {
+        changedFilters[name] = filterValue;
+      } else {
+        delete changedFilters[name];
+      }
+
+      const newState = {
+        [name]: filterValue,
+        activePage: state[name].length !== filterValue.length ? 1 : state.activePage,
+        changedFilters
+      };
+
+      return newState;
+
     }, this.loadTasks);
   }
 
   changeNameFilter = event => {
+
     const value = event.target.value;
 
+    this.setState(state => {
+
+      const changedFilters = state.changedFilters;
+      if (value) {
+        changedFilters.name = value;
+      } else {
+        delete changedFilters.name;
+      }
+
+      const newState = {
+        filterByName: value,
+        activePage: state.filterByName !== value ? 1 : state.activePage,
+        changedFilters
+      };
+
+      return newState;
+    }, this.loadTasks);
+  };
+
+  onClickTag = (tag) => {
+    const sortedTags = _.uniqBy(this.state.tags.concat({
+      value: tag,
+      label: tag
+    }), 'value');
+
     this.setState(state => ({
-      filterByName: value,
-      activePage: state.filterByName !== value ? 1 : state.activePage
+      tags: sortedTags,
+      changedFilters: {
+        ...state.changedFilters,
+        tags: sortedTags.map(el => el.value).join(',')
+      }
     }), this.loadTasks);
   };
-
-  changeStatusFilter = (options) => {
-    this.setState({
-      statusIds: options.map(option => option.value),
-      activePage: 1
-    }, this.loadTasks);
-  };
-
-  changeTypeFilter = (options) => {
-    this.setState({
-      typeIds: options.map(option => option.value),
-      activePage: 1
-    }, this.loadTasks);
-  };
-
-  changePerformerFilter = (performer) => {
-    const performerId = performer ? performer.value : 0;
-
-    this.setState(state=> ({
-      performerId,
-      activePage: state.performerId !== performerId ? 1 : state.activePage
-    }), this.loadTasks);
-  }
 
   handlePaginationClick = e => {
     this.setState(
@@ -106,39 +147,9 @@ class TaskList extends Component {
     );
   };
 
-  loadTasks = (options = {}) => {
-    const tags = this.state.filterTags.map(el => el.value).join(',');
-    const statusId = this.state.statusIds.join(',');
-    const typeId = this.state.typeIds.join(',');
-    this.props.getTasks({
-      projectId: this.props.project.id,
-      performerId: this.state.performerId,
-      currentPage: this.state.activePage,
-      prioritiesId: this.state.prioritiesId,
-      pageSize: 50,
-      name: this.state.filterByName,
-      statusId,
-      tags,
-      typeId,
-      sprintId: this.state.sprintId,
-      ...options
-    });
+  loadTasks = () => {
+    this.props.getTasks(this.state.changedFilters, true);
   }
-
-  onTagSelect = (tags) => {
-    this.setState({
-      filterTags: tags
-    }, this.loadTasks);
-  };
-
-  onClickTag = (tag) => {
-    this.setState(state => ({
-      filterTags: _.uniqBy(state.filterTags.concat({
-        value: tag,
-        label: tag
-      }), 'value')
-    }), this.loadTasks);
-  };
 
   clearFilters = () => {
     this.setState(this.initialFilters, this.loadTasks);
@@ -158,30 +169,42 @@ class TaskList extends Component {
       tasksList: tasks,
       statuses,
       taskTypes,
-      project
+      project,
+      isReceiving
     } = this.props;
 
     const {
       prioritiesId,
-      typeIds,
-      statusIds,
-      filterByName,
+      typeId,
+      statusId,
       sprintId,
       performerId,
-      filterTags
+      tags
     } = this.state;
 
     const statusOptions = this.createOptions(statuses);
     const typeOptions = this.createOptions(taskTypes);
-
-    const isFilter
-      = prioritiesId
-      || typeIds.length
-      || statusIds.length
-      || filterByName
-      || sprintId
-      || performerId
-      || filterTags.length;
+    const isFilter = Object.keys(this.state.changedFilters).length;
+    const isLoading = isReceiving && !tasks.length;
+    const taskHolder
+    = <div style={{marginBottom: '1rem'}}>
+        <hr style={{margin: '0 0 1rem 0'}}/>
+        <Row>
+          <Col xs={12} sm={6}>
+            <InlineHolder length="80%"/>
+            <InlineHolder length="50%"/>
+          </Col>
+          <Col xs={12} sm>
+            <InlineHolder length="50%"/>
+            <InlineHolder length="70%"/>
+            <InlineHolder length="30%"/>
+          </Col>
+          <Col xs>
+            <InlineHolder length="20%"/>
+            <InlineHolder length="20%"/>
+          </Col>
+        </Row>
+      </div>;
 
     return (
       <div>
@@ -189,10 +212,19 @@ class TaskList extends Component {
           <div className={css.filters}>
             <Row className={css.search} top="xs">
               <Col xs={12} sm={3} className={css.priorityFilter}>
-                <Priority onChange={this.changePriorityFilter} priority={prioritiesId}/>
+                <Priority
+                  onChange={(option) => this.changeSingleFilter(option, 'prioritiesId')}
+                  priority={prioritiesId}
+                />
               </Col>
               <Col smOffset={6} xs={12} sm={3} className={css.clearFilters}>
-                <Button text="Очистить фильтры" icon="IconClose" disabled={!isFilter} type="primary" onClick={this.clearFilters}/>
+                <Button
+                  type="primary"
+                  text="Очистить фильтры"
+                  icon="IconClose"
+                  disabled={!isFilter}
+                  onClick={this.clearFilters}
+                />
               </Col>
             </Row>
             <Row className={css.search} top="xs">
@@ -204,9 +236,9 @@ class TaskList extends Component {
                   noResultsText="Нет подходящих типов"
                   backspaceToRemoveMessage={''}
                   clearAllText="Очистить все"
-                  value={typeIds}
+                  value={typeId}
                   options={typeOptions}
-                  onChange={this.changeTypeFilter}
+                  onChange={(options) => this.changeMultiFilter(options, 'typeId')}
                 />
               </Col>
               <Col xs={12} sm={3}>
@@ -217,16 +249,16 @@ class TaskList extends Component {
                   noResultsText="Нет подходящих статусов"
                   backspaceToRemoveMessage={''}
                   clearAllText="Очистить все"
-                  value={statusIds}
+                  value={statusId}
                   options={statusOptions}
-                  onChange={this.changeStatusFilter}
+                  onChange={(options) => this.changeMultiFilter(options, 'statusId')}
                 />
               </Col>
               <Col xs={12} sm={6}>
                 <SprintSelector
                   value={sprintId}
                   sprints={project.sprints}
-                  onChange={this.changeSprintFilter}
+                  onChange={(option) => this.changeSingleFilter(option, 'sprintId')}
                 />
               </Col>
             </Row>
@@ -240,28 +272,31 @@ class TaskList extends Component {
               </Col>
               <Col xs={12} sm={3}>
                 <PerformerFilter
-                  onPerformerSelect={this.changePerformerFilter}
+                  onPerformerSelect={(option) => this.changeSingleFilter(option, 'performerId')}
                   selectedPerformerId={performerId}
                 />
               </Col>
               <Col xs={12} sm={3}>
                 <TagsFilter
                   filterFor={'task'}
-                  onTagSelect={this.onTagSelect}
-                  filterTags={filterTags}
+                  onTagSelect={(options) => this.changeMultiFilter(options, 'tags')}
+                  filterTags={tags}
                 />
               </Col>
             </Row>
           </div>
+
           {
-            tasks.map((task) => {
-              return <TaskRow
-                key={`task-${task.id}`}
-                task={task}
-                prefix={project.prefix}
-                onClickTag={this.onClickTag}
-              />;
-            })
+            isLoading
+            ? taskHolder
+            : tasks.map((task) =>
+                <TaskRow
+                  key={`task-${task.id}`}
+                  task={task}
+                  prefix={project.prefix}
+                  onClickTag={this.onClickTag}
+                />
+              )
           }
 
           <hr/>
@@ -281,6 +316,7 @@ class TaskList extends Component {
 
 TaskList.propTypes = {
   getTasks: PropTypes.func.isRequired,
+  isReceiving: PropTypes.bool,
   pagesCount: PropTypes.number.isRequired,
   project: PropTypes.object.isRequired,
   statuses: PropTypes.array,
@@ -288,10 +324,10 @@ TaskList.propTypes = {
   tasksList: PropTypes.array.isRequired
 };
 
-
 const mapStateToProps = state => ({
-  tasksList: state.Tasks.tasks,
-  pagesCount: state.Tasks.pagesCount,
+  tasksList: state.TaskList.tasks,
+  pagesCount: state.TaskList.pagesCount,
+  isReceiving: state.TaskList.isReceiving,
   project: state.Project.project,
   statuses: state.Dictionaries.taskStatuses,
   taskTypes: state.Dictionaries.taskTypes

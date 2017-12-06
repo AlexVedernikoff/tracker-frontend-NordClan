@@ -7,14 +7,18 @@ const InitialState = {
   project: {
     sprints: [],
     users: [],
-    history: [],
+    history: {
+      events: [],
+      pagesCount: 0
+    },
     error: false
   },
   TitleIsEditing: false,
   DescriptionIsEditing: false,
   isCreateTaskModalOpen: false,
   PortfolioIsEditing: false,
-  isProjectInfoReceiving: false
+  isProjectInfoReceiving: false,
+  isCreateTaskRequestInProgress: false
 };
 
 export default function Project (state = InitialState, action) {
@@ -174,9 +178,9 @@ export default function Project (state = InitialState, action) {
 
   case ProjectActions.TASK_CREATE_REQUEST_START:
     return {
-      ...state
+      ...state,
+      isCreateTaskRequestInProgress: true
     };
-
   case ProjectActions.TASK_CREATE_REQUEST_SUCCESS:
     return {
       ...state,
@@ -184,9 +188,14 @@ export default function Project (state = InitialState, action) {
         projectId: action.projectId,
         sprintId: action.sprintId,
         taskId: action.taskId
-      }
+      },
+      isCreateTaskRequestInProgress: false
     };
-
+  case ProjectActions.TASK_CREATE_REQUEST_ERROR:
+    return {
+      ...state,
+      isCreateTaskRequestInProgress: false
+    };
   case ProjectActions.UPDATE_PROJECT_STATUS_SUCCESS:
     return {
       ...state,
@@ -201,7 +210,10 @@ export default function Project (state = InitialState, action) {
       ...state,
       project: {
         ...state.project,
-        history: []
+        history: {
+          events: [],
+          pagesCount: 0
+        }
       }
     };
 
@@ -210,7 +222,10 @@ export default function Project (state = InitialState, action) {
       ...state,
       project: {
         ...state.project,
-        history: action.data
+        history: {
+          events: action.data.data,
+          pagesCount: action.data.pagesCount
+        }
       }
     };
 
@@ -231,7 +246,7 @@ export default function Project (state = InitialState, action) {
       project: {
         sprints: [],
         users: [],
-        history: [],
+        history: {},
         error: false
       },
       TitleIsEditing: false,
