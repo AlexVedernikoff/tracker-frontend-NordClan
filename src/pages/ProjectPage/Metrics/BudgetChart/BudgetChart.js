@@ -168,7 +168,6 @@ class BudgetChart extends Component {
           <Input readOnly value={this.props.budget ? `${this.props.budget} ч.` : ''} />
         </div>
         <Line data={this.state.chartData} options={this.chartOptions} redraw/>
-        
       </div>
     )
   }
