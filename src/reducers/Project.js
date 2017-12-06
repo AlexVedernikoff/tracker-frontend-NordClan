@@ -7,7 +7,10 @@ const InitialState = {
   project: {
     sprints: [],
     users: [],
-    history: {},
+    history: {
+      events: [],
+      pagesCount: 0
+    },
     error: false
   },
   TitleIsEditing: false,
@@ -207,7 +210,10 @@ export default function Project (state = InitialState, action) {
       ...state,
       project: {
         ...state.project,
-        history: {}
+        history: {
+          events: [],
+          pagesCount: 0
+        }
       }
     };
 
@@ -216,7 +222,10 @@ export default function Project (state = InitialState, action) {
       ...state,
       project: {
         ...state.project,
-        history: action.data
+        history: {
+          events: action.data.data,
+          pagesCount: action.data.pagesCount
+        }
       }
     };
 

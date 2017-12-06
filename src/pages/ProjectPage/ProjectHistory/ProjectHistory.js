@@ -3,20 +3,24 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { getProjectHistory } from '../../../actions/Project';
-import UserCard from '../../../components/UserCard';
-import HistoryMessage from '../../../components/HistoryMessage';
+
 import * as css from './ProjectHistory.scss';
+import { getProjectHistory } from '../../../actions/Project';
+import HistoryMessage from '../../../components/HistoryMessage';
+import Pagination from '../../../components/Pagination';
+import UserCard from '../../../components/UserCard';
 
 class ProjectHistory extends React.Component {
   constructor (props) {
     super(props);
-    this.state = {isUserCardVisible: false};
+    this.state = {
+      isUserCardVisible: false,
+      activePage: 0
+    };
   }
 
   componentDidMount = () => {
-    const { getProjectHistory, projectId } = this.props;
-    getProjectHistory(projectId);
+    this.loadHistoryEvents();
   };
 
   showUserCard = id => {
@@ -27,9 +31,26 @@ class ProjectHistory extends React.Component {
     this.setState({isUserCardVisible: false});
   };
 
+  handlePaginationClick = e => {
+    this.setState(
+      {
+        activePage: e.activePage
+      },
+      this.loadHistoryEvents
+    );
+  };
+
+  loadHistoryEvents = () => {
+    const pageSize = 20;
+    this.props.getProjectHistory(this.props.projectId, {
+      pageSize,
+      currentPage: this.state.activePage
+    });
+  };
+
   render () {
-    const { history, projectId } = this.props;
-    const eventList = history.data ? history.data.map((event, i) => {
+    const { historyEvents, projectId } = this.props;
+    const eventList = historyEvents.map((event, i) => {
       return <div className={css.historyEvent} key={event.id}>
         <span className={css.time}> {moment(event.date).format('DD.MM.YYYY HH:mm:ss')}</span>
         <div className={css.historyAction}>
@@ -44,12 +65,22 @@ class ProjectHistory extends React.Component {
           />
         </div>
       </div>;
-    }) : null;
+    });
 
     return (
       <div className={css.history}>
         <h3>История изменений</h3>
         {eventList}
+
+        <hr/>
+        { this.props.pagesCount > 1
+          ? <Pagination
+              itemsCount={this.props.pagesCount}
+              activePage={this.state.activePage}
+              onItemClick={this.handlePaginationClick}
+            />
+          : null
+        }
       </div>
     );
   }
@@ -57,13 +88,15 @@ class ProjectHistory extends React.Component {
 
 ProjectHistory.propTypes = {
   getProjectHistory: PropTypes.func.isRequired,
-  history: PropTypes.object,
-  projectId: PropTypes.number,
+  historyEvents: PropTypes.array,
+  pagesCount: PropTypes.number,
+  projectId: PropTypes.number
 };
 
 const mapStateToProps = state => ({
   projectId: state.Project.project.id,
-  history: state.Project.project.history
+  historyEvents: state.Project.project.history.events,
+  pagesCount: state.Project.project.history.pagesCount
 });
 
 const mapDispatchToProps = {
