@@ -2,6 +2,7 @@ import * as dictionariesActions from '../constants/Dictionaries';
 
 const InitialState = {
   taskTypes: [],
+  taskStatuses: [],
   magicActivityTypes: []
 };
 

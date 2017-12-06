@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import * as css from './Priority.scss';
-import { changeTask } from '../../../actions/Task';
 
 class Priority extends Component {
   constructor (props) {

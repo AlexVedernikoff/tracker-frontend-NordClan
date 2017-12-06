@@ -57,7 +57,7 @@ TagsFilter.propTypes = {
 
 const mapStateToProps = state => ({
   projectsTagsOptions: state.Projects.tagsFilter,
-  tasksTagsOptions: state.Tasks.tagsFilter
+  tasksTagsOptions: state.TaskList.tagsFilter
 });
 
 const mapDispatchToProps = {
