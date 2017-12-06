@@ -246,7 +246,7 @@ export default function Project (state = InitialState, action) {
       project: {
         sprints: [],
         users: [],
-        history: [],
+        history: {},
         error: false
       },
       TitleIsEditing: false,

@@ -82,6 +82,7 @@ class Login extends Component {
             <div className={css.buttonWrapper}>
               <Button
                 onClick={this.onSubmit}
+                htmlType="submit"
                 text="Войти"
                 type="borderedInverse"
               />
