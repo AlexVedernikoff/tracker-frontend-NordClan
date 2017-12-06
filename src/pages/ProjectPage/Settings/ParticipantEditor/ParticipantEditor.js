@@ -23,6 +23,11 @@ class ParticipantEditor extends Component {
       participants: []
     };
     this.ROLES_FULL_NAME = ['Account', 'PM', 'UX', 'Analyst', 'Back', 'Front', 'Mobile', 'TeamLead', 'QA', 'Unbillable'];
+    // временная заглушка, пока нет конкретного списка прав по ролям
+    this.roleRights = {
+      PM: 'Доступны все действия на уровне проекта',
+      default: 'Доступно CRU(без delete) всего на уровне проекта, в который добавлен'
+    }
     this.searchOnChange = debounce(this.searchOnChange, 400);
   }
 
@@ -76,12 +81,11 @@ class ParticipantEditor extends Component {
     this.setState({participant: e});
   };
 
-  roleRights = (role) => {
-    // временная заглушка, пока нет конкретного списка прав по ролям
-    if (role === 'PM' || role === 'ACCOUNT' || role === 'TEAMLEAD') {
-      return ['Доступны все действия на уровне проекта', 'Доступны все действия на уровне проекта']
+  getRoleRights = (role, rights) => {
+    if (rights[role]) {
+      return rights[role]
     } else {
-      return ['Доступно CRU(без delete) всего на уровне проекта, в который добавлен', 'Доступно CRU(без delete) всего на уровне проекта, в который добавлен']
+      return rights.default
     }
   }
 
@@ -109,11 +113,7 @@ class ParticipantEditor extends Component {
                       <div className = {css.rightsInfo}>
                         i
                         <div className = {css.rightsInfoTooltip}>
-                          <ul>
-                            {this.roleRights(ROLES_FULL_NAME).map((right, i) =>
-                              <li>{right}</li>
-                            )}
-                          </ul>
+                          {this.getRoleRights(ROLES_FULL_NAME, this.roleRights)}
                         </div>
                       </div>
                     </div>
