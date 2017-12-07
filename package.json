@@ -118,7 +118,9 @@
     "build": "webpack --config webpack.prod.js",
     "prod": "npm run build && npm run serve",
     "deploy": "gh-pages -d build",
-    "docker": "docker build -t simtrack_front ."
+    "docker": "docker build -t simtrack_front .",
+    "test": "jest",
+    "test:watch": "npm test -- --watch"
   },
   "license": "MIT",
   "homepage": "https://github.com/react-toolbox/react-toolbox-example#readme"
