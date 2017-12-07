@@ -1,6 +1,6 @@
 import * as TaskActions from '../constants/Task';
 import * as TagsActions from '../constants/Tags';
-import TaskList from "../pages/ProjectPage/TaskList/TaskList";
+import TaskList from '../pages/ProjectPage/TaskList/TaskList';
 
 const getDefaultCurrentComment = () => ({
   text: '',
@@ -14,10 +14,11 @@ const InitialState = {
   task: {
     tags: [],
     error: false,
-    attachments: []
+    attachments: [],
+    plannedExecutionTime: '0.00'
   },
   comments: [],
-  history: [],
+  history: {},
   currentComment: getDefaultCurrentComment(),
   highlighted: {},
   TitleIsEditing: false,
@@ -77,7 +78,7 @@ export default function Task (state = InitialState, action) {
   case TaskActions.GET_TASK_HISTORY_REQUEST_SENT:
     return {
       ...state,
-      history: []
+      history: {}
     };
 
   case TaskActions.GET_TASK_HISTORY_REQUEST_SUCCESS:

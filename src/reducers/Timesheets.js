@@ -14,15 +14,42 @@ const InitialState = {
   selectedTaskStatusId: null,
   selectedProject: null,
   selectedActivityTypeId: null,
-  filteredTasks: []
+  filteredTasks: [],
+  tempTimesheets: []
 };
 
-export default function Portfolios (state = InitialState, action) {
+export default function Timesheets (state = InitialState, action) {
   switch (action.type) {
+  case TimesheetsActions.DELETE_TIMESHEET_SUCCESS:
+      const updatedList = state.list.filter(timesheet => {
+        return timesheet.id !== action.timesheet.id;
+      })
+
+      return {
+        ...state,
+        list: updatedList
+      };
+  case TimesheetsActions.CREATE_TIMESHEET_SUCCESS:
+      if (action.timesheet.isDraft) {
+        return state;
+      }
+
+      return {
+        ...state,
+        list: [...state.list, action.timesheet]
+      };
+  case TimesheetsActions.UPDATE_TIMESHEET_SUCCESS:
+      const updatedTimesheets = state.list.map(sheet => {
+        return sheet.id === action.timesheet.id ? { ...sheet, ...action.timesheet } : sheet;
+      });
+
+      return {
+        ...state,
+        list: updatedTimesheets
+      }
+
   case TimesheetsActions.GET_TIMESHEETS_START:
-    return {
-      ...state
-    };
+    return state;
 
   case TimesheetsActions.GET_TIMESHEETS_SUCCESS:
     return {
@@ -63,6 +90,18 @@ export default function Portfolios (state = InitialState, action) {
       filteredTasks: action.tasks
     };
 
+  case TimesheetsActions.ADD_ACTIVITY:
+    return {
+      ...state,
+      tempTimesheets: state.tempTimesheets.concat(action.item)
+    };
+
+  case TimesheetsActions.DELETE_TEMP_TIMESHEET:
+    return {
+      ...state,
+      tempTimesheets: state.tempTimesheets.filter((el) => !~action.ids.indexOf(el.id))
+    };
+
   case TimesheetsActions.CLEAR_MODAL_STATE:
     return {
       ...state,
@@ -74,8 +113,6 @@ export default function Portfolios (state = InitialState, action) {
     };
 
   default:
-    return {
-      ...state
-    };
+    return state;
   }
 }

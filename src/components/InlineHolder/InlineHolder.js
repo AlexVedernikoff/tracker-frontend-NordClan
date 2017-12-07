@@ -6,12 +6,12 @@ import * as css from './InlineHolder.scss';
 const InlineHolder = (props) => {
 
   return (
-    <span className={css.inlineHolder} style={{width: `${props.length / 2}em`}}/>
+    <span className={css.inlineHolder} style={{width: `${props.length}`}}/>
   );
 };
 
 InlineHolder.propTypes = {
-  length: PropTypes.number.isRequired
+  length: PropTypes.string.isRequired
 };
 
 export default InlineHolder;

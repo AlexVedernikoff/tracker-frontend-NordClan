@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import shortid from 'shortid';
 import { connect } from 'react-redux';
 import { Col, Row } from 'react-flexbox-grid';
 import Select from 'react-select';
@@ -78,20 +79,28 @@ class AddActivityModal extends Component {
       selectedActivityType,
       selectedProject,
       selectedTaskStatusId,
-      userId,
       startingDay
     } = this.props;
 
     this.props.onClose();
     this.props.addActivity({
-      isDraft: false,
-      taskId: selectedTask ? selectedTask.value : null,
+      id: `temp-${shortid.generate()}`,
+      comment: null,
+      task: selectedTask ? {
+        id: selectedTask.value,
+        name: selectedTask.label
+      } : null,
       taskStatusId: selectedTask ? selectedTaskStatusId : null,
       typeId: selectedActivityType,
       spentTime: '0',
       onDate: moment(startingDay).format('YYYY-MM-DD'),
-      projectId: selectedTask ? null : selectedProject.value
-    }, startingDay, userId);
+      project: selectedTask ? {
+        id: selectedTask.body.projectId
+      } : selectedProject ? {
+        id: selectedProject.value,
+        name: selectedProject.label
+      } : null
+    });
   }
 
   render () {

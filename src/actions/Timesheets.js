@@ -42,25 +42,27 @@ const startCreateTimesheetRequest = () => ({
   type: TimesheetsActions.CREATE_TIMESHEET_START
 });
 
-const successCreateTimesheetRequest = (data) => ({
+const successCreateTimesheetRequest = (timesheet) => ({
   type: TimesheetsActions.CREATE_TIMESHEET_SUCCESS,
-  data
+  timesheet
 });
 
 const startUpdateTimesheetRequest = () => ({
   type: TimesheetsActions.UPDATE_TIMESHEET_START
 });
 
-const successUpdateTimesheetRequest = () => ({
-  type: TimesheetsActions.UPDATE_TIMESHEET_SUCCESS
+const successUpdateTimesheetRequest = (timesheet) => ({
+  type: TimesheetsActions.UPDATE_TIMESHEET_SUCCESS,
+  timesheet
 });
 
 const startDeleteTimesheetRequest = () => ({
   type: TimesheetsActions.DELETE_TIMESHEET_START
 });
 
-const successDeleteTimesheetRequest = () => ({
-  type: TimesheetsActions.DELETE_TIMESHEET_SUCCESS
+const successDeleteTimesheetRequest = (timesheet) => ({
+  type: TimesheetsActions.DELETE_TIMESHEET_SUCCESS,
+  timesheet
 });
 
 // export const createTimesheet = (params) => {
@@ -117,6 +119,11 @@ export const deleteTimesheets = (ids, userId, startingDay) => {
     error: defaultErrorHandler(dispatch)
   });
 };
+
+export const deleteTempTimesheets = (ids) => ({
+  type: TimesheetsActions.DELETE_TEMP_TIMESHEET,
+  ids
+});
 
 export const createTimesheet = (params, userId, startingDay) => { // TODO: не смог разобраться, как лучше послать query-params, используя мидлварь для rest API, поэтому экшн создан напрямую с axios
   const URL = `${API_URL}/timesheet`;
@@ -218,9 +225,10 @@ export const clearModalState = () => ({
   type: TimesheetsActions.CLEAR_MODAL_STATE
 });
 
-export const addActivity = (item, startingDay, userId) => {
-  return dispatch => dispatch(createTimesheet(item, userId, startingDay));
-};
+export const addActivity = (item) => ({
+  item,
+  type: TimesheetsActions.ADD_ACTIVITY
+});
 
 export const filterTasks = (tasks) => ({
   type: TimesheetsActions.FILTER_TASKS,
@@ -238,7 +246,10 @@ export const getTasksForSelect = (name = '') => {
     return axios
     .get(
       `${API_URL}/task`,
-      { params: { name } },
+      { params: {
+        name,
+        fields: 'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId,prefix'
+      } },
       { withCredentials: true }
     )
     .then(response => response.data.data)
@@ -246,8 +257,9 @@ export const getTasksForSelect = (name = '') => {
       dispatch(filterTasks(tasks));
       return {
         options: tasks.map((task) => ({
-          label: task.name,
-          value: task.id
+          label: `${task.prefix}-${task.id}: ${task.name}`,
+          value: task.id,
+          body: task
         }))
       };
     });
@@ -269,11 +281,13 @@ export const getProjectsForSelect = (name = '') => {
       return {
         options: projects.map((project) => ({
           label: project.name,
-          value: project.id
+          value: project.id,
+          body: project
         })).concat(
           {
             label: 'Без проекта',
-            value: 0
+            value: 0,
+            body: null
           }
         )};
     });

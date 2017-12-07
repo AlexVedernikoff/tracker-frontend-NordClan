@@ -32,23 +32,16 @@ class List extends Component {
     return <PlaylistItem item={item} index={i} key={`${item.id}${item.isDraft ? '-draft' : ''}`} visible changeVisibility={this.changeVisibility}/>
   };
 
-
   render () {
-    const {
-      isDraftShow
-    } = this.state;
-
-    const {
-      tracks
-    } = this.props;
-
+    const { isDraftShow } = this.state;
+    const { tracks } = this.props;
 
     const visible = tracks
-      ? tracks.filter(item => item.isVisible === true).map(this.playlistItem)
+      ? tracks.filter(item => item.isVisible).map(this.playlistItem)
       : null;
 
     const invisible = tracks
-      ? tracks.filter(item => item.isVisible === false).map(this.playlistItem)
+      ? tracks.filter(item => !item.isVisible).map(this.playlistItem)
       : null;
 
     return (

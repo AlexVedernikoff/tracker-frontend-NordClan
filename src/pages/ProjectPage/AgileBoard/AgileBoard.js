@@ -117,7 +117,7 @@ class AgileBoard extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      isOnlyMine: true,
+      isOnlyMine: this.getIsOnlyMine(),
       isModalOpen: false,
       performer: null,
       filterTags: [],
@@ -129,6 +129,8 @@ class AgileBoard extends Component {
   componentDidMount () {
     if (this.props.myTaskBoard) {
       this.selectValue(this.getChangedSprint(this.props), 'changedSprint');
+    } else if (this.props.project.id) {
+      this.selectValue(this.getCurrentSprint(this.props.sprints), 'changedSprint');
     }
   }
 
@@ -186,7 +188,7 @@ class AgileBoard extends Component {
 
   toggleMine = () => {
     this.setState((currentState) => ({
-      isOnlyMine: !currentState.isOnlyMine
+      isOnlyMine: this.setIsOnlyMine(!currentState.isOnlyMine)
     }));
   };
 
@@ -214,6 +216,11 @@ class AgileBoard extends Component {
       id: task.id,
       statusId: getNewStatus(task.statusId, phase)
     }, 'Status');
+
+    const performerId = this.props.sprintTasks.find((sprintTask) => {
+      return task.id === sprintTask.id;
+    }).performerId || null;
+    this.openPerformerModal(task.id, performerId);
 
     this.props.startTaskEditing('Status');
   };
@@ -307,6 +314,19 @@ class AgileBoard extends Component {
       value: user.id,
       label: user.fullNameRu
     })) : null;
+  };
+
+  getIsOnlyMine = () => {
+    try {
+      return JSON.parse(localStorage.getItem('isOnlyMine'));
+    } catch (e) {
+      return false;
+    }
+  };
+
+  setIsOnlyMine = (value) => {
+    localStorage.setItem('isOnlyMine', value);
+    return value;
   };
 
   render () {

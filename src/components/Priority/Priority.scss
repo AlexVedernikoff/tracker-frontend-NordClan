@@ -1,6 +1,7 @@
-@import '../../../styles/variables.scss';
+@import '../../styles/variables.scss';
 
 .priority {
+  line-height: 1rem;
   &:hover {
     .icon {
       opacity: 1;
@@ -21,7 +22,7 @@
     flex: 1;
     flex-basis: auto; // ie fix
     align-items: center;
-    font-size: 11px;
+    font-size: 10px;
     padding: 0 4px;
     background-color: $color-dark;
     color: white;

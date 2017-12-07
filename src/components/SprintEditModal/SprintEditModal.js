@@ -94,7 +94,8 @@ class SprintEditModal extends Component {
     }));
   };
 
-  handleEditSprint = () => {
+  handleEditSprint = (e) => {
+    e.preventDefault();
     this.props.handleEditSprint(this.state.sprint);
   };
 
@@ -248,6 +249,7 @@ class SprintEditModal extends Component {
               <Col xs>
                 <Button
                   type="green"
+                  htmlType="submit"
                   text="Изменить"
                   onClick={this.handleEditSprint}
                 />
