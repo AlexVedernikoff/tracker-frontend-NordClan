@@ -103,7 +103,7 @@ const settings = {
       '/api/**': {
         target: {
           host: process.env.API_ROOT || 'simtrack-dev.simbirsoft',
-          protocol: 'https:',
+          protocol: 'http:',
           port: process.env.API_PORT || 443
         },
         // ignorePath: true,
@@ -113,7 +113,7 @@ const settings = {
       '/uploads/**': {
         target: {
           host: process.env.API_ROOT || 'simtrack-dev.simbirsoft',
-          protocol: 'https:',
+          protocol: 'http:',
           port: process.env.API_PORT || 443
         },
         // ignorePath: true,

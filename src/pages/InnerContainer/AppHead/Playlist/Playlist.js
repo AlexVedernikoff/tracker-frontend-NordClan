@@ -176,59 +176,22 @@ class Playlist extends Component {
     return '';
   };
 
-  renderActiveTaskPanel() {
-    const { activeTask } = this.props
-    const Icons = {
-      3: IconPause,
-      4: IconPlay
-    };
-
-    const status = activeTask ? activeTask.statusId : 0;
-    const Icon = Icons[status] || IconList;
-    const title = activeTask
-      ? `Активная задача: ${activeTask.prefix}-${activeTask.id}`
-      : 'Нет активных задач'
-
-    const taskName = activeTask
-      ? activeTask.name
-      : ''
-
-    return <div>
-      <div className={css.actionButton}>
-        <Icon style={{width: '1.5rem', height: '1.5rem'}}/>
-      </div>
-      <div className={css.taskNameWrapper}>
-        <div className={css.taskTitle}>
-          <div className={css.meta}>
-            {title}
-          </div>
-          <div className={css.taskName}>
-            {taskName}
-          </div>
-        </div>
-      </div>
-    </div>
-  }
-
   render () {
     const { isPlaylistOpen } = this.state;
-
     const { activeTask } = this.props
+
     const Icons = {
-      3: IconPause,
-      4: IconPlay
+      2: IconPause,
+      3: IconPlay
     };
 
     const status = activeTask ? activeTask.statusId : 0;
     const Icon = Icons[status] || IconList;
     const title = activeTask
-      ? `Активная задача: ${activeTask.prefix}-${activeTask.id}`
+      ? `Активная задача: ${activeTask.project.prefix}-${activeTask.id}`
       : 'Нет активных задач'
 
-    const taskName = activeTask
-      ? activeTask.name
-      : ''
-
+    const taskName = activeTask ? activeTask.name : ''
 
     return (
       <div className={css.playlistWrapper}>

@@ -15,7 +15,7 @@ import {
 } from '../../constants/Timesheets';
 
 const InitialState = {
-  activeTack: {},
+  activeTask: null,
   tracks: {}
 };
 
