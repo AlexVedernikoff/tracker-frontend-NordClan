@@ -18,7 +18,7 @@ const InitialState = {
     plannedExecutionTime: '0.00'
   },
   comments: [],
-  history: [],
+  history: {},
   currentComment: getDefaultCurrentComment(),
   highlighted: {},
   TitleIsEditing: false,
@@ -78,7 +78,7 @@ export default function Task (state = InitialState, action) {
   case TaskActions.GET_TASK_HISTORY_REQUEST_SENT:
     return {
       ...state,
-      history: []
+      history: {}
     };
 
   case TaskActions.GET_TASK_HISTORY_REQUEST_SUCCESS:
