@@ -74,6 +74,7 @@ class BudgetChart extends Component {
       chartData: this.makeCharData(budgetMetricsMock)
     } 
   }
+  
   makeCharData (metrics) {
     return {
       datasets: [
@@ -84,6 +85,7 @@ class BudgetChart extends Component {
       ]
     }
   }
+
   makeIdealProjectBurndown (metrics) {
     let randomnedColor = getRandomColor();
     return {
@@ -101,6 +103,7 @@ class BudgetChart extends Component {
       ...getBasicLineSettings(randomnedColor)
     }
   }
+
   makeProjectBurndown (metrics) {
     let burndown = []
     let randomnedColor = getRandomColor();
@@ -117,6 +120,7 @@ class BudgetChart extends Component {
       ...getBasicLineSettings(randomnedColor)
     }
   }
+
   makeSprintsIdealBurndowns (metrics) {
     let burndownsArr = []
     metrics.sprints.forEach(sprint => {
@@ -140,6 +144,7 @@ class BudgetChart extends Component {
     return burndownsArr
     
   }
+
   makeSprintsBurndowns (metrics) {
     let burndownsArr = []
     metrics.sprints.forEach(sprint => {
@@ -159,6 +164,7 @@ class BudgetChart extends Component {
     })
     return burndownsArr
   } 
+
   render() {
     return (
       <div className={css.BudgetChart}>
