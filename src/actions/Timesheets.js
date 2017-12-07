@@ -42,25 +42,27 @@ const startCreateTimesheetRequest = () => ({
   type: TimesheetsActions.CREATE_TIMESHEET_START
 });
 
-const successCreateTimesheetRequest = (data) => ({
+const successCreateTimesheetRequest = (timesheet) => ({
   type: TimesheetsActions.CREATE_TIMESHEET_SUCCESS,
-  data
+  timesheet
 });
 
 const startUpdateTimesheetRequest = () => ({
   type: TimesheetsActions.UPDATE_TIMESHEET_START
 });
 
-const successUpdateTimesheetRequest = () => ({
-  type: TimesheetsActions.UPDATE_TIMESHEET_SUCCESS
+const successUpdateTimesheetRequest = (timesheet) => ({
+  type: TimesheetsActions.UPDATE_TIMESHEET_SUCCESS,
+  timesheet
 });
 
 const startDeleteTimesheetRequest = () => ({
   type: TimesheetsActions.DELETE_TIMESHEET_START
 });
 
-const successDeleteTimesheetRequest = () => ({
-  type: TimesheetsActions.DELETE_TIMESHEET_SUCCESS
+const successDeleteTimesheetRequest = (timesheet) => ({
+  type: TimesheetsActions.DELETE_TIMESHEET_SUCCESS,
+  timesheet
 });
 
 // export const createTimesheet = (params) => {
