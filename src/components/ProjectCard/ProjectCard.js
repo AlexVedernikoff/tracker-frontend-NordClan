@@ -25,9 +25,9 @@ const ProjectCard = props => {
   } = props.project;
   const { isChild, onClickTag } = props;
 
-  const tagList = tags.map((element, i) =>
+  const tagList = tags ? tags.map((element, i) =>
     <Tag name={element} blocked key={`${i}-tag`} onClick={onClickTag} />
-  );
+  ) : [];
 
   let statusTooltip = '';
   let status = '';
@@ -103,7 +103,7 @@ const ProjectCard = props => {
                 </div>
               : null}
 
-            {currentSprints.length
+            {currentSprints && currentSprints.length
               ? <div
                   className={classnames({
                     [css.meta]: true,

@@ -60,8 +60,7 @@ class PlaylistItem extends Component {
         {
           sheetId: this.props.item.id,
           spentTime: value.replace(',', '.'),
-          isVisible: this.props.item.isVisible,
-          return: 'trackList'
+          isVisible: this.props.item.isVisible
         },
         {
           onDate: this.props.item.onDate
@@ -74,23 +73,10 @@ class PlaylistItem extends Component {
           spentTime: value.replace(',', '.'),
           isVisible: this.props.item.isVisible,
           comment: this.props.item.comment,
-          statusId: this.props.item.task.taskStatus.id,
           onDate: this.props.item.onDate
-          //return: 'trackList'
-        },
+        }
       );
     }
-    // this.debounceUpdateTimesheet({
-    //   taskId: (this.props.item.task) ? this.props.item.task.id : null,
-    //   timesheetId: this.props.item.id,
-    //   body: {
-    //     spentTime: value.replace(',', '.')
-    //   }
-    // }, {
-    //   isDraft: this.props.item.isDraft,
-    //   onDate: this.props.item.onDate,
-    //   itemKey: this.props.index
-    // });
   };
 
   handleChangeComment = (e) => {
