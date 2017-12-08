@@ -8,7 +8,8 @@ import ReactTooltip from 'react-tooltip';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import getMaIcon from '../../../../constants/MagicActivityIcons';
-
+import ActiveTaskPanel from './ActiveTaskPanel'
+import { changeTask } from '../../../../actions/Task';
 import { IconPause, IconPlay, IconList } from '../../../../components/Icons';
 import List from './List';
 import * as css from './Playlist.scss';
@@ -176,42 +177,19 @@ class Playlist extends Component {
     return '';
   };
 
+
   render () {
     const { isPlaylistOpen } = this.state;
-    const { activeTask } = this.props
-
-    const Icons = {
-      2: IconPause,
-      3: IconPlay
-    };
-
-    const status = activeTask ? activeTask.statusId : 0;
-    const Icon = Icons[status] || IconList;
-    const title = activeTask
-      ? `Активная задача: ${activeTask.project.prefix}-${activeTask.id}`
-      : 'Нет активных задач'
-
-    const taskName = activeTask ? activeTask.name : ''
+    const { activeTask, changeTask } = this.props;
 
     return (
       <div className={css.playlistWrapper}>
-        <div className={classnames(css.displayTask, css.task)} onClick={this.handleToggleList}>
-
-          <div className={css.actionButton}>
-            <Icon style={{width: '1.5rem', height: '1.5rem'}}/>
-          </div>
-          <div className={css.taskNameWrapper}>
-            <div className={css.taskTitle}>
-              <div className={css.meta}>
-                {title}
-              </div>
-              <div className={css.taskName}>
-                {taskName}
-              </div>
-            </div>
-          </div>
-
-        </div>
+        <ActiveTaskPanel
+          className={classnames(css.displayTask, css.task)}
+          onClick={this.handleToggleList}
+          activeTask={activeTask}
+          changeTask={changeTask}
+        />
         <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
           {
             isPlaylistOpen
@@ -270,4 +248,8 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, null)(onClickOutside(Playlist));
+const mapDispatchToProps = {
+  changeTask
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(onClickOutside(Playlist));
