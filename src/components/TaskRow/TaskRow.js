@@ -24,6 +24,16 @@ class TaskRow extends React.Component {
     super(props);
   }
 
+  handlePerformerClick = () => {
+    const { task, onOpenPerformerModal } = this.props;
+    onOpenPerformerModal(task.id, task.performer ? task.performer.id : null);
+  }
+
+  handleSprintClick = () => {
+    const { task, onOpenSprintModal } = this.props;
+    onOpenSprintModal(task.id, task.sprint ? task.sprint.id : null);
+  }
+
   render () {
     const {
       prefix,
@@ -33,6 +43,8 @@ class TaskRow extends React.Component {
       isDragging,
       onClickTag,
       taskTypes,
+      onOpenPerformerModal,
+      onOpenSprintModal,
       ...other
     } = this.props;
 
@@ -72,22 +84,15 @@ class TaskRow extends React.Component {
             <div className={css.metabox}>
               <p className={css.taskMeta}>
                 <span>Спринт:</span>
-                <span>
-                  <Link to={`/projects/${task.projectId}/agile-board`}>
-                    {task.sprint ? task.sprint.name : 'Backlog'}
-                  </Link>
-                </span>
+                <a onClick = {this.handleSprintClick}>
+                  { task.sprint ? task.sprint.name : 'Backlog' }
+                </a>
               </p>
               <p className={css.taskMeta}>
                 <span>Исполнитель:</span>
-                <span>
-                  { task.performer
-                    ? <Link to={`/users/${task.performer.id}`}>
-                        {task.performer.fullNameRu}
-                      </Link>
-                    : 'Не назначено'
-                  }
-                </span>
+                <a onClick = {this.handlePerformerClick}>
+                  { task.performer ? task.performer.fullNameRu: 'Не назначено' }
+                </a>
               </p>
               <p className={css.taskMeta}>
                 <span>Автор:</span>
@@ -146,7 +151,9 @@ TaskRow.propTypes = {
   prefix: PropTypes.string,
   shortcut: PropTypes.bool,
   task: PropTypes.object,
-  taskTypes: PropTypes.array
+  taskTypes: PropTypes.array,
+  onOpenPerformerModal: PropTypes.func,
+  onOpenSprintModal: PropTypes.func
 };
 
 const mapStateToProps = (state) => ({
