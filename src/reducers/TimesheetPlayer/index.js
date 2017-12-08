@@ -52,10 +52,6 @@ exports[TIMESHEET_PLAYER_UPDATE_RECEIVE_SUCCESS] = (state = InitialState, action
   };
 }
 
-exports[TIMESHEET_PLAYER_TIMESHEET_UPDATE_RECEIVE_SUCCESS] = (state = InitialState, action) => {
-  return onUpdateTracks(state, action);
-}
-
 exports[UPDATE_TIMESHEET_SUCCESS] = (state = InitialState, action) => {
   return onUpdateTracks(state, action);
 }
