@@ -19,18 +19,83 @@ import * as css from './Comments.scss';
 import Comment from './Comment';
 import { history } from '../../../History';
 import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
-
+import PeopleMention from './PeopleMention';
 const ENTER = 13;
 
 class Comments extends Component {
+  static propTypes = {
+    comments: PropTypes.array,
+    currentComment: PropTypes.object,
+    editComment: PropTypes.func,
+    getCommentsByTask: PropTypes.func,
+    highlighted: PropTypes.object,
+    location: PropTypes.object,
+    params: PropTypes.object,
+    projectMembers: PropTypes.array,
+    publishComment: PropTypes.func,
+    removeComment: PropTypes.func,
+    resetCurrentEditingComment: PropTypes.func,
+    selectParentCommentForReply: PropTypes.func,
+    setCommentForEdit: PropTypes.func,
+    setCurrentCommentExpired: PropTypes.func,
+    setHighLighted: PropTypes.func,
+    taskId: PropTypes.number,
+    updateCurrentCommentText: PropTypes.func,
+    userId: PropTypes.number
+  };
+
+  static defaultProps = {
+    comments: []
+  };
 
   constructor (props) {
     super(props);
-    this.state = { commentToDelete: null };
+    this.state = {
+      commentToDelete: null,
+      isPeopleShown: false,
+      nameFilter: ''
+    };
   }
 
   componentWillMount () {
     this.props.getCommentsByTask(this.props.params.taskId);
+  }
+
+  componentDidMount () {
+    if (this.props.location.hash === '#reply') {
+      setTimeout(() => this.reply.focus());
+    }
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.currentComment.text !== this.props.currentComment.text) {
+      const { isPeopleShown } = this.state;
+      const mentionRE = /@(\S*)$/;
+      const result = mentionRE.exec(nextProps.currentComment.text);
+      const isMentionShown = result !== null;
+      if (isMentionShown) {//mention found, refresh nameFilter
+        const nameFilter = result[1]; //result contains [fullMatch, matchInBraces, ...etc]
+        const selObj = window.getSelection();
+        const selRange = selObj.getRangeAt(0);
+        const div = document.createElement('div');
+        div.style.background = 'red';
+        div.style.height = '5px';
+        div.style.width = '5px';
+        selRange.insertNode(div);
+        console.log('top = %s, left = %s', div.offsetTop, div.offsetLeft);
+
+        return this.setState({
+          isPeopleShown: true,
+          nameFilter
+        });
+      }
+      if (isMentionShown !== isPeopleShown) {// appers that ppl was shown but no mention found
+        return this.setState({
+          isPeopleShown: false,
+          nameFilter: ''
+        });
+      }
+    }
   }
 
   componentDidUpdate (prevProps) {
@@ -49,7 +114,7 @@ class Comments extends Component {
     }
     const commentHash = (/\d+$/).exec(this.props.location.hash);
     if (commentHash) {
-      const [commentId] = commentHash;
+      const [ commentId ] = commentHash;
 
       if (this.props.highlighted.id !== +commentId && prevProps.highlighted.id !== +commentId) {
         const comment = this.props.comments.find(c => c.id === +commentId);
@@ -61,39 +126,10 @@ class Comments extends Component {
       }
     }
   }
-  componentDidMount () {
-    if (this.props.location.hash === '#reply') {
-      setTimeout(() => this.reply.focus());
-    }
-  }
-
-  static defaultProps = {
-    comments: []
-  };
-
-  static propTypes = {
-    comments: PropTypes.array,
-    currentComment: PropTypes.object,
-    editComment: PropTypes.func,
-    getCommentsByTask: PropTypes.func,
-    highlighted: PropTypes.object,
-    location: PropTypes.object,
-    params: PropTypes.object,
-    publishComment: PropTypes.func,
-    removeComment: PropTypes.func,
-    resetCurrentEditingComment: PropTypes.func,
-    selectParentCommentForReply: PropTypes.func,
-    setCommentForEdit: PropTypes.func,
-    setCurrentCommentExpired: PropTypes.func,
-    setHighLighted: PropTypes.func,
-    taskId: PropTypes.number,
-    updateCurrentCommentText: PropTypes.func,
-    userId: PropTypes.number
-  };
 
   handleClickOutside = evt => {
     if (this.props.location.hash) {
-      history.push({...this.props.location, hash: ''});
+      history.push({ ...this.props.location, hash: '' });
     }
   };
 
@@ -124,16 +160,16 @@ class Comments extends Component {
   reply = null;
 
   removeComment = (commentId) => {
-    this.setState({commentToDelete: commentId});
+    this.setState({ commentToDelete: commentId });
   };
 
   cancelRemoveComment = () => {
-    this.setState({commentToDelete: null});
+    this.setState({ commentToDelete: null });
   };
 
   confirmRemoveComment = () => {
     const commentId = this.state.commentToDelete;
-    this.setState({commentToDelete: null}, () => this.props.removeComment(this.props.taskId, commentId));
+    this.setState({ commentToDelete: null }, () => this.props.removeComment(this.props.taskId, commentId));
   };
 
   getCommentList = () => this.props.comments.map((c) =>
@@ -153,13 +189,20 @@ class Comments extends Component {
       <div className="css.comments">
         <ul className={css.commentList}>
           <div className={css.answerLine}>
-            <TextArea
+            <div
+              contentEditable
+              style={{height: 30, width: 160, border: '1px solid black'}}
               disabled={this.props.currentComment.disabled || this.props.currentComment.expired}
               placeholder="Введите текст комментария"
               onInput={this.typeComment}
               onKeyDown={this.publishComment}
-              ref={(ref) => (this.reply = ref ? ref.refs.input : null)}
+              ref={(ref) => (this.reply = ref)}
               value={this.props.currentComment.text}/>
+            {
+              this.state.isPeopleShown
+                ? <PeopleMention nameFilter={this.state.nameFilter} projectMembers={this.props.projectMembers} />
+                : null
+            }
             <div className={css.answerUnderline}>
               {
                 this.props.currentComment.id
@@ -200,14 +243,14 @@ class Comments extends Component {
           {
             this.props.comments.length
               ? this.getCommentList()
-              : <div className={css.noCommentsYet} >
+              : <div className={css.noCommentsYet}>
                 Комментариев еще нет!
                 <br/>
                 Вы можете стать первым
               </div>
           }
         </ul>
-        { this.state.commentToDelete
+        {this.state.commentToDelete
           ? <ConfirmModal
             isOpen
             contentLabel="modal"
@@ -224,14 +267,18 @@ class Comments extends Component {
 
 const mapStateToProps = ({
   Task: { task: { id: taskId }, comments, currentComment, highlighted },
-  Auth: { user: { id: userId } }
-}) => ({
-  taskId,
-  comments,
-  userId,
-  currentComment,
-  highlighted
-});
+  Auth: { user: { id: userId } },
+  Project: { project: { users: projectMembers } }
+}) => {
+  return ({
+    taskId,
+    comments,
+    userId,
+    currentComment,
+    highlighted,
+    projectMembers
+  });
+};
 
 const mapDispatchToProps = {
   getCommentsByTask,
