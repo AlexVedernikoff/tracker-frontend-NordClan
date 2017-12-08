@@ -34,7 +34,9 @@ class TaskList extends Component {
 
   componentDidMount () {
     if (this.props.project.id) {
-      this.loadTasks();
+      this.loadTasks({
+        projectId: nextProps.project.id
+      });
     }
   }
 
@@ -68,6 +70,7 @@ class TaskList extends Component {
   closeSprintModal = () => {
     this.setState({ isSprintModalOpen: false });
   }
+
   changeSprint = (sprintId) => {
     this.props.changeTask({
       id: this.state.changedTask,
@@ -75,7 +78,8 @@ class TaskList extends Component {
     }, 'Sprint');
     this.props.startTaskEditing('Sprint');
     this.closeSprintModal();
-  };
+  }
+
   openPerformerModal = (taskId, performerId) => {
     this.setState({
       isPerformerModalOpen: true,
@@ -83,6 +87,7 @@ class TaskList extends Component {
       changedTask: taskId
     })
   }
+
   closePerformerModal = () => {
     this.setState({ isPerformerModalOpen: false });
   }
