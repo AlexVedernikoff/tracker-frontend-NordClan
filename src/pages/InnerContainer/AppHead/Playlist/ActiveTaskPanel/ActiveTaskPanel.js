@@ -9,27 +9,23 @@ class ActiveTaskPanel extends Component {
     this.playStatuses = [2, 4, 6];
   }
 
-  changeStatus = (e) => {
+  changeStatus = (event) => {
     const { changeTask, activeTask } = this.props;
 
     if (!activeTask) {
       return;
     }
 
-    if (~this.playStatuses.indexOf(activeTask.statusId)) {
-      changeTask({
-        id: activeTask.id,
-        statusId: activeTask.statusId + 1
-      }, 'Status');
-      e.stopPropagation();
-    }
+    const taskIsActive = ~this.playStatuses.indexOf(activeTask.statusId);
+    const taskIsStopped = ~this.stopStatuses.indexOf(activeTask.statusId);
 
-    if (~this.stopStatuses.indexOf(activeTask.statusId)) {
-      changeTask({
-        id: activeTask.id,
-        statusId: activeTask.statusId - 1
-      }, 'Status');
-      e.stopPropagation();
+    if (taskIsActive || taskIsStopped) {
+      const updatedStatus = taskIsActive
+        ? activeTask.statusId + 1
+        : activeTask.statusId - 1
+
+      changeTask({ id: activeTask.id, statusId: updatedStatus }, 'Status');
+      event.stopPropagation();
     }
   }
 
@@ -72,7 +68,7 @@ class ActiveTaskPanel extends Component {
 
     return <div className={className} onClick={onClick}>
       <div className={css.actionButton} onClick={this.changeStatus}>
-        <Icon style={{width: '1.5rem', height: '1.5rem'}}/>
+        <Icon />
       </div>
       <div className={css.taskNameWrapper}>
         <div className={css.taskTitle}>
