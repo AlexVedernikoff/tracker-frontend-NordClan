@@ -21,7 +21,7 @@ const ReactModalStyles = {
     boxSizing: 'border-box',
     backgroundColor: 'rgba(43, 62, 80, 0.8)',
     zIndex: cssVariables.zModalLayer,
-    overflow: 'visible'
+    overflow: 'auto'
   },
   content: {
     position: 'relative',
