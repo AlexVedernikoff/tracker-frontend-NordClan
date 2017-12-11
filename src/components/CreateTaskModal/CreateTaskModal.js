@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Modal from '../../components/Modal';
 import { connect } from 'react-redux';
 import Select from 'react-select';
+import { stateToHTML } from 'draft-js-export-html';
 import { Col, Row } from 'react-flexbox-grid';
 import moment from 'moment';
 import classnames from 'classnames';
@@ -16,6 +17,7 @@ import Priority from '../Priority';
 import { closeCreateTaskModal, createTask } from '../../actions/Project';
 import { BACKLOG_ID } from '../../constants/Sprint';
 import Validator from '../ValidatedInput/Validator';
+import TextEditor from '../../components/TextEditor';
 
 class CreateTaskModal extends Component {
   constructor (props) {
@@ -40,7 +42,7 @@ class CreateTaskModal extends Component {
 
     this.validator = new Validator();
   }
-
+  
   handleModalSprintChange = selectedSprint => {
     this.setState({
       selectedSprint: selectedSprint ? selectedSprint.value : 0
@@ -70,7 +72,7 @@ class CreateTaskModal extends Component {
       {
         name: this.state.taskName,
         projectId: this.props.project.id,
-        description: this.state.description,
+        description: stateToHTML(this.TextEditor.state.editorState.getCurrentContent()),
         performerId: this.state.selectedPerformer,
         statusId: 1,
         typeId: this.state.selectedType.value,
@@ -127,8 +129,11 @@ class CreateTaskModal extends Component {
   };
 
   handleChange = field => event =>
-    this.setState({ [field]: event.target.value.trim() });
+    this.setState({ [field]: event.target.value.trim() })
+  
+  descriptionChange = () => {
 
+  }
   render () {
     const formLayout = {
       firstCol: 5,
@@ -179,11 +184,14 @@ class CreateTaskModal extends Component {
                 sm={formLayout.secondCol}
                 className={css.rightColumn}
               >
-                <TextArea
-                  onChange={this.handleChange('description')}
-                  name="description"
-                  placeholder="Описание задачи"
-                />
+                <div className = {css.taskDescription}>
+                  <TextEditor
+                    toolbarHidden
+                    placeholder = 'Описание задачи'
+                    ref={ref => (this.TextEditor = ref)}
+                    content={''}
+                  />
+                </div>
               </Col>
             </Row>
           </label>
