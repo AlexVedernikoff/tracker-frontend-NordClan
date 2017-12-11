@@ -60,8 +60,11 @@ function onUpdateTracks(state, action) {
   action.timesheet.onDate = moment(action.timesheet.onDate).format('YYYY-MM-DD');
   const updatedTracks = state.tracks[action.timesheet.onDate].tracks
     .map((track) => {
-      return track.id === action.timesheet.id || track.taskId === action.timesheet.taskId
-        ? { ...track, ...action.timesheet } : track;
+      const taskId = getTaskId(action);
+      const isDraft = taskId && track.taskId === taskId;
+      return track.id === action.timesheet.id || isDraft
+        ? { ...track, ...action.timesheet }
+        : track;
     });
 
   const newState = updateTracks(state, action, updatedTracks);
