@@ -121,7 +121,14 @@ export default function Task (state = InitialState, action) {
     return {
       ...state
     };
-
+  case TaskActions.CLEAR_CURRENT_TASK:
+    return {
+      ...state,
+      task: { 
+        tags: []
+      },
+      comments: []
+    };
   case TaskActions.TASK_CHANGE_USER_SUCCESS:
     return {
       ...state,

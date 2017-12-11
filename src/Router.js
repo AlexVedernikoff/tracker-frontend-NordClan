@@ -33,6 +33,7 @@ import RedirectPage from './pages/Redirect';
 import DemoPage from './components/Icons/DemoPage';
 import { connect } from 'react-redux';
 import { clearCurrentProjectAndTasks } from './actions/Tasks';
+import { clearCurrentTask } from './actions/Task';
 import { setRedirectPath } from './actions/Authentication';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
@@ -73,6 +74,10 @@ class AppRouter extends Component {
     this.props.clearCurrentProjectAndTasks();
   };
 
+  clearTask = () => {
+    this.props.clearCurrentTask();
+  }
+
   render () {
     return (
       this.props.loaded
@@ -103,6 +108,7 @@ class AppRouter extends Component {
               <Route
                 path="projects/:projectId/tasks/:taskId"
                 component={TaskPage}
+                onLeave={this.clearTask}
                 ignoreScrollBehavior
               >
                 <IndexRoute component={Comments}/>
@@ -128,6 +134,7 @@ const mapStateToProps = ({ Auth: { loaded, isLoggedIn, redirectPath } }) => ({
 
 const mapDispatchToProps = {
   setRedirectPath,
-  clearCurrentProjectAndTasks
+  clearCurrentProjectAndTasks,
+  clearCurrentTask
 };
 export default connect(mapStateToProps, mapDispatchToProps)(AppRouter);
