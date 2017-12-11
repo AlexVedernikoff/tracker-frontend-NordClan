@@ -93,7 +93,7 @@ class ParticipantEditor extends Component {
             <Row>
               {this.ROLES_FULL_NAME
                 ? this.ROLES_FULL_NAME.map((ROLES_FULL_NAME, i) =>
-                <Col xs key={`${i}-roles-name`}>
+                <Col xs lg key={`${i}-roles-name`}>
                   <h4>
                     <div className={css.cell}>{ROLES_FULL_NAME}</div>
                   </h4>
