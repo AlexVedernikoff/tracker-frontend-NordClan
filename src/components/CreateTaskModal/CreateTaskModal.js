@@ -128,12 +128,10 @@ class CreateTaskModal extends Component {
     }));
   };
 
-  handleChange = field => event =>
+  handleChange = field => event => {
     this.setState({ [field]: event.target.value.trim() })
-  
-  descriptionChange = () => {
-
   }
+  
   render () {
     const formLayout = {
       firstCol: 5,
