@@ -500,6 +500,7 @@ class Planning extends Component {
                   text="Создать задачу"
                   icon="IconPlus"
                   name="left"
+                  data-tip="Создать задачу"
                 />
               </div>
               <div
@@ -545,6 +546,7 @@ class Planning extends Component {
                   text="Создать задачу"
                   icon="IconPlus"
                   name="right"
+                  data-tip="Создать задачу"
                 />
               </div>
               <div
