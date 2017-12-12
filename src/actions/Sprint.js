@@ -83,13 +83,13 @@ export const createSprint = (name, id, dateForm, dateTo, allottedTime, budget, r
     dispatch(startLoading());
     axios
       .post(URL, {
-        name: name,
-        projectId: id,
-        allottedTime: allottedTime,        
-        factStartDate: dateForm,
-        factFinishDate: dateTo,
-        budget: budget,
-        riskBudget: riskBudget
+        name,
+        projectId,
+        allottedTime,        
+        factStartDate,
+        factFinishDate,
+        budget,
+        riskBudget
       })
       .then(response => {
         if (response.data) {

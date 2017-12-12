@@ -26,10 +26,10 @@ class CreateSprintModal extends Component {
     };
   }
   onChangeBudget = e => {
-    this.setState({ budget: parseFloat(e.target.value)})
+    this.setState({ budget: parseFloat(e.target.value) || 0})
   }
   onChangeRiskBudget = e => {
-    this.setState({ riskBudget: parseFloat(e.target.value)})
+    this.setState({ riskBudget: parseFloat(e.target.value) || 0})
   }
   onChangeTime = e => {
     this.setState({ allottedTime: e.target.value });
