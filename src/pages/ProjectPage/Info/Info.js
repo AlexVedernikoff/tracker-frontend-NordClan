@@ -11,7 +11,9 @@ import Budget from '../../../components/Budget';
 import {
   changeProject,
   startEditing,
-  stopEditing
+  stopEditing,
+  uploadAttachments,
+  removeAttachment
 } from '../../../actions/Project';
 
 class Info extends Component {
@@ -19,7 +21,15 @@ class Info extends Component {
     super(props);
   }
 
-  onBudgetSubmit (budget) {
+  uploadAttachments = (files) => {
+    this.props.uploadAttachments(this.props.id, files);
+  }
+
+  removeAttachment = (attachmentId) => {
+    this.props.removeAttachment(this.props.id, attachmentId);
+  }
+
+  onBudgetSubmit  = (budget) => {
     this.props.changeProject(
       {
         id: this.props.id,
@@ -29,7 +39,7 @@ class Info extends Component {
     );
   }
 
-  onRiskBudgetSubmit (riskBudget) {
+  onRiskBudgetSubmit = (riskBudget) => {
     this.props.changeProject(
       {
         id: this.props.id,
@@ -72,19 +82,19 @@ class Info extends Component {
         />
         <hr />
         <Budget
-          onEditSubmit={this.onRiskBudgetSubmit.bind(this)}
+          onEditSubmit={this.onRiskBudgetSubmit}
           header='Бюджет с рисковым резервом'
           value={this.props.riskBudget}
         />
         <hr />
         <Budget
-          onEditSubmit={this.onBudgetSubmit.bind(this)}
+          onEditSubmit={this.onBudgetSubmit}
           header='Бюджет без рискового резерва'
           value={this.props.budget}
         />
         <hr />
         <h2>Файлы</h2>
-        <Attachments removeAttachment={()=>{}} uploadAttachments={()=>{}} attachments={[]}/>
+        <Attachments removeAttachment={this.removeAttachment} uploadAttachments={this.uploadAttachments} attachments={this.props.attachments}/>
       </div>
     );
   }
@@ -96,13 +106,16 @@ const mapStateToProps = state => ({
   description: state.Project.project.description,
   budget: state.Project.project.budget,
   riskBudget: state.Project.project.riskBudget,
-  descriptionIsEditing: state.Project.DescriptionIsEditing
+  descriptionIsEditing: state.Project.DescriptionIsEditing,
+  attachments: state.Project.project.attachments
 });
 
 const mapDispatchToProps = {
   changeProject,
   startEditing,
-  stopEditing
+  stopEditing,
+  uploadAttachments,
+  removeAttachment
 };
 
 Info.propTypes = {
@@ -114,7 +127,10 @@ Info.propTypes = {
   riskBudget: PropTypes.number,
   startEditing: PropTypes.func,
   stopEditing: PropTypes.func,
-  tags: PropTypes.array
+  tags: PropTypes.array,
+  attachments: PropTypes.array,
+  uploadAttachments: PropTypes.func,
+  removeAttachment: PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Info);
