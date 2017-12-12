@@ -70,14 +70,6 @@ class AppRouter extends Component {
     cb();
   };
 
-  clearTasks = () => {
-    this.props.clearCurrentProjectAndTasks();
-  };
-
-  clearTask = () => {
-    this.props.clearCurrentTask();
-  }
-
   render () {
     return (
       this.props.loaded
@@ -89,10 +81,10 @@ class AppRouter extends Component {
             <Route path="/" component={InnerContainer} onEnter={this.requireAuth} >
               <Route path="dashboard" component={Dashboard} />
               <Route path="timesheets" component={Timesheets} />
-              <Route path="tasks" component={MyTasks} onLeave={this.clearTasks} />
+              <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
               <Route path="projects" component={Projects} />
 
-              <Route path="projects/:projectId" component={ProjectPage} scrollToTop onLeave={this.clearTasks} >
+              <Route path="projects/:projectId" component={ProjectPage} scrollToTop onLeave={this.props.clearCurrentProjectAndTasks} >
                 <Route path="agile-board" component={AgileBoard} />
                 <Route path="info" component={Info} />
                 <Route path="property" component={Settings} />
@@ -108,7 +100,7 @@ class AppRouter extends Component {
               <Route
                 path="projects/:projectId/tasks/:taskId"
                 component={TaskPage}
-                onLeave={this.clearTask}
+                onLeave={this.props.clearCurrentTask}
                 ignoreScrollBehavior
               >
                 <IndexRoute component={Comments}/>
