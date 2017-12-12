@@ -33,6 +33,10 @@
 .memberHeader {
   background-color: $color-gray;
   margin-bottom: 8px;
+
+  @include tablet {
+    display: none;
+  }
 }
 
 .createButton {
@@ -45,6 +49,7 @@
 
   @include phone {
     padding: 1rem;
+    min-width: 290px;
   }
 
   h3 {
@@ -55,7 +60,15 @@
 .modalLine {
   display: flex;
 
+  @include phone {
+    flex-direction: column;
+  }
+
   > *:first-child {
     flex-grow: 1;
+
+    @include phone {
+      margin-bottom: 2rem;
+    }
   }
 }

@@ -88,7 +88,7 @@ class Participant extends React.Component {
 
     return (
       <Row className={css.memberRow}>
-        <Col xs={3}>
+        <Col xs={12} sm={2} md={2} lg={3}>
           <div className={classnames(css.cell, css.memberColumn)}>
             <IconClose
               className={css.iconClose}
@@ -97,14 +97,15 @@ class Participant extends React.Component {
             {user.fullNameRu}
           </div>
         </Col>
-        <Col xs={9}>
+        <Col xs={12} sm={10} md={10} lg={9}>
           <Row>
             {this.ROLES_NAME
               ? this.ROLES_NAME.map((ROLES_NAME, i) =>
-              <Col xs key={`${i}-roles-checkbox`}>
+              <Col xs={6} sm={3} md={3} lg key={`${i}-roles-checkbox`} className={css.cellColumn}>
                 <label className={css.cell}>
                   <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[i], this.ROLES_ID[i])}
                             checked={(roles && roles[ROLES_NAME]) || false}/>
+                            <span className={css.labelText}>{this.ROLES_NAME[i]}</span>
                 </label>
               </Col>
             ) : null}
