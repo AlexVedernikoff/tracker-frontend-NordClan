@@ -6,7 +6,6 @@ import { Link } from 'react-router';
 import { DragSource } from 'react-dnd';
 import { history } from '../../History';
 import getTypeById from '../../utils/TaskTypes';
-import getProrityById from '../../utils/TaskPriority';
 
 import roundNum from '../../utils/roundNum';
 import { TASK_CARD } from '../../constants/DragAndDrop';
@@ -192,7 +191,7 @@ class TaskCard extends React.Component {
               priorityId={task.prioritiesId}
               hideBox={this.togglePriorityBox}
             />
-            : <div className={css.priorityMarker} onClick={this.togglePriorityBox} data-tip={getProrityById(this.props.task.prioritiesId)}/>
+            : <div className={css.priorityMarker} onClick={this.togglePriorityBox} data-tip={`Приоритет: ${this.props.task.prioritiesId}`}/>
           }
         </div>
       )
