@@ -7,7 +7,7 @@ import axios from 'axios';
 import { API_URL } from '../../../../constants/Settings';
 import { bindUserToProject } from '../../../../actions/Project';
 import { debounce } from 'lodash';
-
+import ReactTooltip from 'react-tooltip';
 import * as css from './ParticipantEditor.scss';
 import Participant from '../../../../components/Participant';
 import Button from '../../../../components/Button';
@@ -30,6 +30,10 @@ class ParticipantEditor extends Component {
     }
     this.searchOnChange = debounce(this.searchOnChange, 400);
   }
+
+  componentDidUpdate () {
+    ReactTooltip.rebuild();
+  };
 
   componentWillUnmount = () => {
     this.searchOnChange.cancel();
@@ -110,11 +114,8 @@ class ParticipantEditor extends Component {
                   <h4>
                     <div className={css.cell}>
                       {ROLES_FULL_NAME}
-                      <div className = {css.rightsInfo}>
+                      <div className = {css.rightsInfo} data-tip={this.getRoleRights(ROLES_FULL_NAME, this.roleRights)}>
                         i
-                        <div className = {css.rightsInfoTooltip}>
-                          {this.getRoleRights(ROLES_FULL_NAME, this.roleRights)}
-                        </div>
                       </div>
                     </div>
                   </h4>
