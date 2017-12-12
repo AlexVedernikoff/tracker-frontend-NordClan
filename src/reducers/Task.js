@@ -123,11 +123,7 @@ export default function Task (state = InitialState, action) {
     };
   case TaskActions.CLEAR_CURRENT_TASK:
     return {
-      ...state,
-      task: { 
-        tags: []
-      },
-      comments: []
+      ...InitialState
     };
   case TaskActions.TASK_CHANGE_USER_SUCCESS:
     return {
