@@ -86,11 +86,7 @@ class ParticipantEditor extends Component {
   };
 
   getRoleRights = (role, rights) => {
-    if (rights[role]) {
-      return rights[role]
-    } else {
-      return rights.default
-    }
+    return rights[role] || rights.default
   }
 
   handleOpenModalAddUser = () => {
