@@ -9,12 +9,7 @@ import moment from 'moment';
 import budgetMetricsMock from '../../../../mocks/budgetMetricsMock'
 
 function getRandomColor() {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
+  return `#${((0xFFFFFF * Math.random() ) | 0).toString(16).padStart(6, '1')}`
 }
 
 function getBasicLineSettings (color) {
