@@ -2,7 +2,10 @@
 
 .createSprintForm {
   padding: 2rem;
-
+  h3 {
+    text-align:  center;
+    margin: 0;
+  }
   @include phone {
     padding: 1rem;
   }

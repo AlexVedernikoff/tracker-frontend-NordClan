@@ -20,7 +20,7 @@ class CreateSprintModal extends Component {
       dateTo: undefined,
       sprintName: '',
       sprintTime: '',
-      allottedTime: null
+      allottedTime: ''
     };
   }
 
@@ -33,16 +33,40 @@ class CreateSprintModal extends Component {
   };
 
   handleDayFromChange = date => { 
-    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD') } );    
+    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD') }, () => this.getDefaultTimeValue() );
   };
 
   handleDayToChange = date => {
-    this.setState({ dateTo: moment(date).format('YYYY-MM-DD') });
+    this.setState({ dateTo: moment(date).format('YYYY-MM-DD') }, () => this.getDefaultTimeValue() );
+    
   };
 
+  checkNullInputs = () => {
+    return !!(this.state.sprintName && this.state.dateTo && this.state.dateFrom && this.state.allottedTime)
+  }
+
+  getDefaultTimeValue = () => {
+    if (this.state.dateTo && this.state.dateFrom) {
+      let calculatedHours = this.calcWorkingHours(this.state.dateFrom, this.state.dateTo)
+      this.setState( { allottedTime: calculatedHours } )
+    }
+  }
+
+  calcWorkingHours(startDate, endDate) { 
+    let day = moment(startDate);
+    let businessDays = 0;
+    while (day.isSameOrBefore(endDate,'day')) {
+      if (day.day()!=0 && day.day()!=6) businessDays++;
+      day.add(1,'d');
+    }
+    return businessDays * 8;
+  }
+
   validateDates = () => {
-    console.log(this.state.dateFrom)
-    console.log(this.state.dateTo)
+    // console.log(this.state.dateTo, this.state.dateFrom)
+    // console.log(moment(this.state.dateTo).isAfter(this.state.dateFrom) )
+    console.log( calcWorkingHours( this.state.dateFrom,this.state.dateTo ) )
+    // console.log(this.state.dateTo)
     
   }
 
@@ -128,6 +152,9 @@ class CreateSprintModal extends Component {
                 <Input
                   placeholder="Время в часах"
                   onChange={this.onChangeTime}
+                  value = {this.state.allottedTime}
+                  type='number'
+                  min='0'
                 />
               </Col>
             </Row>
@@ -138,7 +165,7 @@ class CreateSprintModal extends Component {
                   htmlType="submit"
                   text="Создать"
                   onClick={this.createSprint}
-                  disabled={true}
+                  disabled={!this.checkNullInputs()}
                 />
               </Col>
             </Row>
