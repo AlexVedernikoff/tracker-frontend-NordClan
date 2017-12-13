@@ -8,8 +8,9 @@ import ReactTooltip from 'react-tooltip';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import getMaIcon from '../../../../constants/MagicActivityIcons';
-
-import { IconPause, IconList } from '../../../../components/Icons';
+import ActiveTaskPanel from './ActiveTaskPanel'
+import { changeTask } from '../../../../actions/Task';
+import { IconPause, IconPlay, IconList } from '../../../../components/Icons';
 import List from './List';
 import * as css from './Playlist.scss';
 
@@ -179,60 +180,52 @@ class Playlist extends Component {
 
   render () {
     const { isPlaylistOpen } = this.state;
+    const { activeTask, changeTask } = this.props;
 
     return (
       <div className={css.playlistWrapper}>
-        <div className={classnames(css.displayTask, css.task)} onClick={this.handleToggleList}>
-          <div className={css.actionButton}>
-            <IconPause style={{width: '1.5rem', height: '1.5rem'}}/>
-          </div>
-          <div className={css.taskNameWrapper}>
-            <div className={css.taskTitle}>
-              <div className={css.meta}>
-                Активная задача: ST-48
-              </div>
-              <div className={css.taskName}>
-                UI: Страница задачи. Не хватает кнопки Создания задачи со страницы задачи
-              </div>
-            </div>
-          </div>
-        </div>
+        <ActiveTaskPanel
+          className={classnames(css.displayTask, css.task)}
+          onClick={this.handleToggleList}
+          activeTask={activeTask}
+          changeTask={changeTask}
+        />
         <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
           {
             isPlaylistOpen
             ? <div className={css.list}>
-                <div className={css.week}>
-                  <div className={this.dayTabStyle(0)} onClick={this.changeActiveDayTab(0)}>Пн {this.getCountBadge(this.props.tracks, 0)}</div>
-                  <div className={this.dayTabStyle(1)} onClick={this.changeActiveDayTab(1)}>Вт {this.getCountBadge(this.props.tracks, 1)}</div>
-                  <div className={this.dayTabStyle(2)} onClick={this.changeActiveDayTab(2)}>Ср {this.getCountBadge(this.props.tracks, 2)}</div>
-                  <div className={this.dayTabStyle(3)} onClick={this.changeActiveDayTab(3)}>Чт {this.getCountBadge(this.props.tracks, 3)}</div>
-                  <div className={this.dayTabStyle(4)} onClick={this.changeActiveDayTab(4)}>Пт {this.getCountBadge(this.props.tracks, 4)}</div>
-                  <div className={this.dayTabStyle(5)} onClick={this.changeActiveDayTab(5)}>Сб {this.getCountBadge(this.props.tracks, 5)}</div>
-                  <div className={this.dayTabStyle(6)} onClick={this.changeActiveDayTab(6)}>Вс {this.getCountBadge(this.props.tracks, 6)}</div>
-                </div>
-                <div className={css.taskWrapper}>
-                  <List tracks={this.activeTracks(this.props.tracks, this.state.activeDayTab, this.state.activeActivityTab)}/>
-                </div>
-                <div className={css.activity}>
-                  {
-                    this.activityTabs.map((element, index) => {
-                      return <div
-                          key={index}
-                          className={this.activityTabStyle(element.activityId)}
-                          data-tip={element.description}
-                          onClick={this.changeActiveActivityTab(element.activityId)}
-                          data-place="bottom">
-                          {element.icon}
-                          {this.getScale(this.props.tracks, this.state.activeDayTab, element.activityId)}
-                        </div>;
-                    })
-                  }
-                  <div className={css.time}>
-                    <div className={css.today}>
-                      <input type="text" value={this.getScaleAll(this.props.tracks, this.state.activeDayTab)} data-tip="Итого" onChange={() => {}}/>
-                    </div>
+              <div className={css.week}>
+                <div className={this.dayTabStyle(0)} onClick={this.changeActiveDayTab(0)}>Пн {this.getCountBadge(this.props.tracks, 0)}</div>
+                <div className={this.dayTabStyle(1)} onClick={this.changeActiveDayTab(1)}>Вт {this.getCountBadge(this.props.tracks, 1)}</div>
+                <div className={this.dayTabStyle(2)} onClick={this.changeActiveDayTab(2)}>Ср {this.getCountBadge(this.props.tracks, 2)}</div>
+                <div className={this.dayTabStyle(3)} onClick={this.changeActiveDayTab(3)}>Чт {this.getCountBadge(this.props.tracks, 3)}</div>
+                <div className={this.dayTabStyle(4)} onClick={this.changeActiveDayTab(4)}>Пт {this.getCountBadge(this.props.tracks, 4)}</div>
+                <div className={this.dayTabStyle(5)} onClick={this.changeActiveDayTab(5)}>Сб {this.getCountBadge(this.props.tracks, 5)}</div>
+                <div className={this.dayTabStyle(6)} onClick={this.changeActiveDayTab(6)}>Вс {this.getCountBadge(this.props.tracks, 6)}</div>
+              </div>
+              <div className={css.taskWrapper}>
+                <List tracks={this.activeTracks(this.props.tracks, this.state.activeDayTab, this.state.activeActivityTab)}/>
+              </div>
+              <div className={css.activity}>
+                {
+                  this.activityTabs.map((element, index) => {
+                    return <div
+                      key={index}
+                      className={this.activityTabStyle(element.activityId)}
+                      data-tip={element.description}
+                      onClick={this.changeActiveActivityTab(element.activityId)}
+                      data-place="bottom">
+                      {element.icon}
+                      {this.getScale(this.props.tracks, this.state.activeDayTab, element.activityId)}
+                    </div>;
+                  })
+                }
+                <div className={css.time}>
+                  <div className={css.today}>
+                    <input type="text" value={this.getScaleAll(this.props.tracks, this.state.activeDayTab)} data-tip="Итого" onChange={() => {}}/>
                   </div>
                 </div>
+              </div>
             </div>
             : null
           }
@@ -247,12 +240,16 @@ Playlist.propTypes = {
   tracks: PropTypes.object
 };
 
-
 const mapStateToProps = state => {
   return {
+    activeTask: state.TimesheetPlayer.activeTask,
     tracks: state.TimesheetPlayer.tracks,
     magicActivitiesTypes: state.Dictionaries.magicActivityTypes
   };
 };
 
-export default connect(mapStateToProps, null)(onClickOutside(Playlist));
+const mapDispatchToProps = {
+  changeTask
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(onClickOutside(Playlist));

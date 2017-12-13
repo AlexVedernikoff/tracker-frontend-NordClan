@@ -26,6 +26,8 @@ class TextEditor extends Component {
       <Editor
         editorState={this.state.editorState}
         onEditorStateChange={this.onEditorStateChange}
+        toolbarHidden = {this.props.toolbarHidden}
+        placeholder = {this.props.placeholder}
         toolbar={{
           options: ['inline', 'blockType', 'list', 'history']
         }}

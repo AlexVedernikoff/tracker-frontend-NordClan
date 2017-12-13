@@ -5,6 +5,7 @@ import {
   TIMESHEET_PLAYER_RECEIVE_SUCCESS,
   TIMESHEET_PLAYER_UPDATE_RECEIVE_SUCCESS,
   TIMESHEET_PLAYER_TIMESHEET_UPDATE_RECEIVE_SUCCESS,
+  GET_ACTIVE_TASK
 } from '../../constants/TimesheetPlayer';
 
 import {
@@ -13,8 +14,8 @@ import {
   DELETE_TIMESHEET_SUCCESS
 } from '../../constants/Timesheets';
 
-
 const InitialState = {
+  activeTask: null,
   tracks: {}
 };
 
@@ -51,10 +52,6 @@ exports[TIMESHEET_PLAYER_UPDATE_RECEIVE_SUCCESS] = (state = InitialState, action
   };
 }
 
-exports[TIMESHEET_PLAYER_TIMESHEET_UPDATE_RECEIVE_SUCCESS] = (state = InitialState, action) => {
-  return onUpdateTracks(state, action);
-}
-
 exports[UPDATE_TIMESHEET_SUCCESS] = (state = InitialState, action) => {
   return onUpdateTracks(state, action);
 }
@@ -63,8 +60,11 @@ function onUpdateTracks(state, action) {
   action.timesheet.onDate = moment(action.timesheet.onDate).format('YYYY-MM-DD');
   const updatedTracks = state.tracks[action.timesheet.onDate].tracks
     .map((track) => {
-      return track.id === action.timesheet.id || track.taskId === action.timesheet.taskId
-        ? { ...track, ...action.timesheet } : track;
+      const taskId = getTaskId(action);
+      const isDraft = taskId && track.taskId === taskId;
+      return track.id === action.timesheet.id || isDraft
+        ? { ...track, ...action.timesheet }
+        : track;
     });
 
   const newState = updateTracks(state, action, updatedTracks);
@@ -129,6 +129,13 @@ function updateTracks(state, action, updatedTracks) {
     ...state,
     tracks: { ...state.tracks, ...updatedDay }
   };
+}
+
+exports[GET_ACTIVE_TASK] = (state = InitialState, action) => {
+  return {
+    ...state,
+    activeTask: action.task
+  }
 }
 
 module.exports = reducerFabric(module.exports, InitialState);

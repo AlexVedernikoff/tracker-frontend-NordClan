@@ -18,12 +18,19 @@ class CreateSprintModal extends Component {
     this.state = {
       dateFrom: undefined,
       dateTo: undefined,
+      budget: 0,
+      riskBudget: 0,
       sprintName: '',
       sprintTime: '',
       allottedTime: null
     };
   }
-
+  onChangeBudget = e => {
+    this.setState({ budget: parseFloat(e.target.value) || 0})
+  }
+  onChangeRiskBudget = e => {
+    this.setState({ riskBudget: parseFloat(e.target.value) || 0})
+  }
   onChangeTime = e => {
     this.setState({ allottedTime: e.target.value });
   };
@@ -48,7 +55,9 @@ class CreateSprintModal extends Component {
       this.props.projectId,
       this.state.dateFrom,
       this.state.dateTo,
-      this.state.allottedTime
+      this.state.allottedTime,
+      this.state.budget,
+      this.state.riskBudget
     );
   };
 
@@ -91,6 +100,14 @@ class CreateSprintModal extends Component {
                   placeholder="Дата окончания"
                   disabledDataRanges={this.props.sprintsDateRanges}
                 />
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={12} sm={6}>
+                <Input placeholder="Бюджет без РР" onChange={this.onChangeBudget}/>
+              </Col>
+              <Col xs={12} sm={6}>
+                <Input placeholder="Бюджет с РР" onChange={this.onChangeRiskBudget}/>
               </Col>
             </Row>
             <Row>

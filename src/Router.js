@@ -20,7 +20,7 @@ import AgileBoard from './pages/ProjectPage/AgileBoard';
 import Info from './pages/ProjectPage/Info';
 import Settings from './pages/ProjectPage/Settings';
 import Planning from './pages/ProjectPage/Planning';
-import Analitics from './pages/ProjectPage/Analitics';
+import Metrics from './pages/ProjectPage/Metrics';
 import TaskList from './pages/ProjectPage/TaskList';
 import MyTasks from './pages/MyTasks';
 import Login from './pages/Login';
@@ -33,6 +33,7 @@ import RedirectPage from './pages/Redirect';
 import DemoPage from './components/Icons/DemoPage';
 import { connect } from 'react-redux';
 import { clearCurrentProjectAndTasks } from './actions/Tasks';
+import { clearCurrentTask } from './actions/Task';
 import { setRedirectPath } from './actions/Authentication';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
@@ -69,10 +70,6 @@ class AppRouter extends Component {
     cb();
   };
 
-  clearTasks = () => {
-    this.props.clearCurrentProjectAndTasks();
-  };
-
   render () {
     return (
       this.props.loaded
@@ -84,15 +81,15 @@ class AppRouter extends Component {
             <Route path="/" component={InnerContainer} onEnter={this.requireAuth} >
               <Route path="dashboard" component={Dashboard} />
               <Route path="timesheets" component={Timesheets} />
-              <Route path="tasks" component={MyTasks} onLeave={this.clearTasks} />
+              <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
               <Route path="projects" component={Projects} />
 
-              <Route path="projects/:projectId" component={ProjectPage} scrollToTop onLeave={this.clearTasks} >
+              <Route path="projects/:projectId" component={ProjectPage} scrollToTop onLeave={this.props.clearCurrentProjectAndTasks} >
                 <Route path="agile-board" component={AgileBoard} />
                 <Route path="info" component={Info} />
                 <Route path="property" component={Settings} />
                 <Route path="planning" component={Planning} />
-                <Route path="analitics" component={Analitics} />
+                <Route path="metrics" component={Metrics} />
                 <Route path="history" component={ProjectHistory} />
                 <Route path="(sprint:sprintId/)tasks" component={TaskList} />
                 <IndexRedirect to="agile-board" />
@@ -103,6 +100,7 @@ class AppRouter extends Component {
               <Route
                 path="projects/:projectId/tasks/:taskId"
                 component={TaskPage}
+                onLeave={this.props.clearCurrentTask}
                 ignoreScrollBehavior
               >
                 <IndexRoute component={Comments}/>
@@ -128,6 +126,7 @@ const mapStateToProps = ({ Auth: { loaded, isLoggedIn, redirectPath } }) => ({
 
 const mapDispatchToProps = {
   setRedirectPath,
-  clearCurrentProjectAndTasks
+  clearCurrentProjectAndTasks,
+  clearCurrentTask
 };
 export default connect(mapStateToProps, mapDispatchToProps)(AppRouter);
