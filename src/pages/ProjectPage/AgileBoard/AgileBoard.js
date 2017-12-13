@@ -216,12 +216,12 @@ class AgileBoard extends Component {
       id: task.id,
       statusId: getNewStatus(task.statusId, phase)
     }, 'Status');
-
-    const performerId = this.props.sprintTasks.find((sprintTask) => {
-      return task.id === sprintTask.id;
-    }).performerId || null;
-    this.openPerformerModal(task.id, performerId);
-
+    if ( !(phase === 'New' || phase === 'Done') ) {
+      const performerId = this.props.sprintTasks.find((sprintTask) => {
+        return task.id === sprintTask.id;
+      }).performerId || null;
+      this.openPerformerModal(task.id, performerId);
+    } 
     this.props.startTaskEditing('Status');
   };
 

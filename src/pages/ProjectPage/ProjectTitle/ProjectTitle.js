@@ -73,6 +73,8 @@ class ProjectTitle extends Component {
   };
 
   handleIncorrectInput () {
+    console.log(2)
+    
     if (
       this.projectName.innerText.length < 4
       || this.projectName.innerText.length > 255
@@ -96,6 +98,7 @@ class ProjectTitle extends Component {
 
   submitInput () {
     const { changeProject } = this.props;
+    console.log(2)
     this.setState(
       {
         prefixIsIncorrect: false,
