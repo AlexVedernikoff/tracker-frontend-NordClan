@@ -179,7 +179,7 @@ class Details extends Component {
             <tr>
               <td>Запланировано:</td>
               <td>
-                <TaskPlanningTime time={task.plannedExecutionTime ? task.plannedExecutionTime : 0} id={task.id} />
+                <TaskPlanningTime time={task.plannedExecutionTime ? task.plannedExecutionTime : '0'} id={task.id} />
               </td>
             </tr>
             { task.factExecutionTime
