@@ -20,7 +20,7 @@ import AgileBoard from './pages/ProjectPage/AgileBoard';
 import Info from './pages/ProjectPage/Info';
 import Settings from './pages/ProjectPage/Settings';
 import Planning from './pages/ProjectPage/Planning';
-import Analitics from './pages/ProjectPage/Analitics';
+import Metrics from './pages/ProjectPage/Metrics';
 import TaskList from './pages/ProjectPage/TaskList';
 import MyTasks from './pages/MyTasks';
 import Login from './pages/Login';
@@ -92,7 +92,7 @@ class AppRouter extends Component {
                 <Route path="info" component={Info} />
                 <Route path="property" component={Settings} />
                 <Route path="planning" component={Planning} />
-                <Route path="analitics" component={Analitics} />
+                <Route path="metrics" component={Metrics} />
                 <Route path="history" component={ProjectHistory} />
                 <Route path="(sprint:sprintId/)tasks" component={TaskList} />
                 <IndexRedirect to="agile-board" />
