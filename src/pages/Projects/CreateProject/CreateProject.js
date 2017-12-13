@@ -5,6 +5,8 @@ import { API_URL } from '../../../constants/Settings';
 import Modal from '../../../components/Modal';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
+import ValidatedInput from '../../../components/ValidatedInput';
+import Validator from '../../../components/ValidatedInput/Validator';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './CreateProject.scss';
 import Checkbox from '../../../components/Checkbox';
@@ -13,6 +15,8 @@ import Select from 'react-select';
 class CreateProject extends Component {
   constructor (props) {
     super(props);
+
+    this.validator = new Validator();
   }
 
   getPortfolios (name = '') {
@@ -56,12 +60,21 @@ class CreateProject extends Component {
                 <p>Название проекта:</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input
-                  autoFocus
-                  onChange={this.props.onChange}
-                  name="projectName"
-                  placeholder="Название проекта"
-                />
+                {this.validator.validate(
+                  (handleBlur, shouldMarkError) => (
+                    <ValidatedInput
+                      autoFocus
+                      onChange={this.props.onChange}
+                      name="projectName"
+                      placeholder="Название проекта"
+                      onBlur={handleBlur}
+                      shouldMarkError={shouldMarkError}
+                      errorText="Длина менее 4 символов"
+                    />
+                  ),
+                  'projectName',
+                  !this.props.validateProjectName
+                )}
               </Col>
             </Row>
           </label>
@@ -71,11 +84,20 @@ class CreateProject extends Component {
                 <p>Префикс проекта:</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input
-                  onChange={this.props.onChange}
-                  name="projectPrefix"
-                  placeholder="Префикс проекта"
-                />
+                {this.validator.validate(
+                  (handleBlur, shouldMarkError) => (
+                    <ValidatedInput
+                      onChange={this.props.onChange}
+                      name="projectPrefix"
+                      placeholder="Префикс проекта"
+                      onBlur={handleBlur}
+                      shouldMarkError={shouldMarkError}
+                      errorText="Длина менее 2 символов"
+                    />
+                  ),
+                  'projectPrefix',
+                  !this.props.validateProjectPrefix
+                )}
               </Col>
             </Row>
           </label>
@@ -119,12 +141,14 @@ class CreateProject extends Component {
               htmlType="submit"
               type="green"
               onClick={this.props.onSubmit}
+              disabled = {!(this.props.validateProjectName && this.props.validateProjectPrefix)}
             />
             <Button
               text="Создать и открыть"
               htmlType="button"
               type="green-lighten"
               onClick={this.props.onSubmitAndOpen}
+              disabled = {!(this.props.validateProjectName && this.props.validateProjectPrefix)}              
             />
           </div>
         </form>
