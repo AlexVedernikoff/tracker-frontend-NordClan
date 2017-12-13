@@ -3,12 +3,28 @@
 .createSprintForm {
   padding: 2rem;
 
-  input,
-  .DayPickerInput {
-    margin-bottom: 1rem;
-  }
-
   @include phone {
     padding: 1rem;
   }
+}
+.inputRow {
+  margin-bottom: 1rem;
+}
+.leftColumn {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  text-align: right;
+  p {
+    margin: 0;
+  }
+  @include phone {
+    justify-content: flex-start;
+    text-align: left;
+  }
+}
+
+.rightColumn {
+  display: flex;
+  align-items: center;
 }

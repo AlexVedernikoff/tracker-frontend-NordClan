@@ -32,13 +32,19 @@ class CreateSprintModal extends Component {
     this.setState({ sprintName: e.target.value });
   };
 
-  handleDayFromChange = date => {
-    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD') });
+  handleDayFromChange = date => { 
+    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD') } );    
   };
 
   handleDayToChange = date => {
     this.setState({ dateTo: moment(date).format('YYYY-MM-DD') });
   };
+
+  validateDates = () => {
+    console.log(this.state.dateFrom)
+    console.log(this.state.dateTo)
+    
+  }
 
   createSprint = e => {
     e.preventDefault();
@@ -60,21 +66,37 @@ class CreateSprintModal extends Component {
       ? moment(this.state.dateTo).format('DD.MM.YYYY')
       : '';
 
+    const formLayout = {
+      firstCol: 5,
+      secondCol: 7
+    };
+
     return (
       <Modal isOpen contentLabel="modal" onRequestClose={this.props.onClose}>
         <div>
           <form className={css.createSprintForm}>
             <Row>
               <Col xs={12}>
-                <h3>Создание нового спринта</h3>
+              <h3 onClick={this.validateDates}>Создание нового спринта</h3>
+              <hr/>
+              </Col> 
+            </Row>
+            <Row className={css.inputRow}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>Название спринта:</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Input
-                  placeholder="Введите название спринта..."
+                  placeholder="Название спринта"
                   onChange={this.onChangeName}
                 />
               </Col>
             </Row>
-            <Row>
-              <Col xs={12} sm={6}>
+            <Row className={css.inputRow}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+               <p>Дата начала:</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <DatepickerDropdown
                   name="dateFrom"
                   value={formattedDayFrom}
@@ -83,7 +105,12 @@ class CreateSprintModal extends Component {
                   disabledDataRanges={this.props.sprintsDateRanges}
                 />
               </Col>
-              <Col xs={12} sm={6}>
+            </Row>
+            <Row className={css.inputRow}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+               <p>Дата окончания:</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <DatepickerDropdown
                   name="dateTo"
                   value={formattedDayTo}
@@ -93,10 +120,13 @@ class CreateSprintModal extends Component {
                 />
               </Col>
             </Row>
-            <Row>
-              <Col xs={12}>
+            <Row className={css.inputRow}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>Время в часах:</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Input
-                  placeholder="Введите время в часах..."
+                  placeholder="Время в часах"
                   onChange={this.onChangeTime}
                 />
               </Col>
@@ -108,6 +138,7 @@ class CreateSprintModal extends Component {
                   htmlType="submit"
                   text="Создать"
                   onClick={this.createSprint}
+                  disabled={true}
                 />
               </Col>
             </Row>
