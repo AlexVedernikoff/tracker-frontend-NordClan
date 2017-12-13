@@ -257,18 +257,14 @@ export default function Project (state = InitialState, action) {
   case ProjectActions.PROJECT_ATTACHMENT_REMOVE_SUCCESS: {
     const { attachmentId } = action;
     const { attachments } = state.project.attachments;
-    const filteredAttachments = attachments.filter(attach => attach.id === attachmentId)
+    const newAttachments = attachments.map(attach =>
+      { ...attach, deleting: attach.id === attachmentId || attach.deleting });
 
-    if (filteredAttachments.length > 0) {
-      const attachment = filteredAttachments[0];
-      attachment.deleting = true;
-    }
-    
     return {
       ...state,
       project: {
         ...state.project,
-        attachments
+        attachments: newAttachments
       }
     };
   };
