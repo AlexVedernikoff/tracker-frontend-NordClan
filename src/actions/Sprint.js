@@ -76,19 +76,20 @@ export const deleteSprint = (id) => {
   };
 };
 
-export const createSprint = (name, id, dateForm, dateTo, allottedTime) => {
+export const createSprint = (name, id, dateForm, dateTo, allottedTime, budget, riskBudget) => {
   const URL = `${API_URL}/sprint/`;
-
   return dispatch => {
     dispatch(createSprintStart());
     dispatch(startLoading());
     axios
       .post(URL, {
-        name: name,
-        projectId: id,
-        factStartDate: dateForm,
-        factFinishDate: dateTo,
-        allottedTime: allottedTime
+        name,
+        projectId,
+        allottedTime,        
+        factStartDate,
+        factFinishDate,
+        budget,
+        riskBudget
       })
       .then(response => {
         if (response.data) {

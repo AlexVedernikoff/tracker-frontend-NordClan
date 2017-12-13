@@ -7,7 +7,7 @@ import axios from 'axios';
 import { API_URL } from '../../../../constants/Settings';
 import { bindUserToProject } from '../../../../actions/Project';
 import { debounce } from 'lodash';
-
+import ReactTooltip from 'react-tooltip';
 import * as css from './ParticipantEditor.scss';
 import Participant from '../../../../components/Participant';
 import Button from '../../../../components/Button';
@@ -23,8 +23,17 @@ class ParticipantEditor extends Component {
       participants: []
     };
     this.ROLES_FULL_NAME = ['Account', 'PM', 'UX', 'Analyst', 'Back', 'Front', 'Mobile', 'TeamLead', 'QA', 'Unbillable'];
+    // временная заглушка, пока нет конкретного списка прав по ролям
+    this.roleRights = {
+      PM: 'Доступны все действия на уровне проекта',
+      default: 'Доступно CRU(без delete) всего на уровне проекта, в который добавлен'
+    }
     this.searchOnChange = debounce(this.searchOnChange, 400);
   }
+
+  componentDidUpdate () {
+    ReactTooltip.rebuild();
+  };
 
   componentWillUnmount = () => {
     this.searchOnChange.cancel();
@@ -76,6 +85,10 @@ class ParticipantEditor extends Component {
     this.setState({participant: e});
   };
 
+  getRoleRights = (role, rights) => {
+    return rights[role] || rights.default
+  }
+
   handleOpenModalAddUser = () => {
     this.setState({ isModalOpenAddUser: true });
   };
@@ -93,9 +106,14 @@ class ParticipantEditor extends Component {
             <Row>
               {this.ROLES_FULL_NAME
                 ? this.ROLES_FULL_NAME.map((ROLES_FULL_NAME, i) =>
-                <Col xs key={`${i}-roles-name`}>
+                <Col xs lg key={`${i}-roles-name`}>
                   <h4>
-                    <div className={css.cell}>{ROLES_FULL_NAME}</div>
+                    <div className={css.cell}>
+                      {ROLES_FULL_NAME}
+                      <div className = {css.rightsInfo} data-tip={this.getRoleRights(ROLES_FULL_NAME, this.roleRights)}>
+                        i
+                      </div>
+                    </div>
                   </h4>
                 </Col>
               ) : null}

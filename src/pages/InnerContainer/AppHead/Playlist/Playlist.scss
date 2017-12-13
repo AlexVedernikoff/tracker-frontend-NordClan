@@ -13,7 +13,7 @@
   min-height: 3.5rem;
   max-height: 30rem;
   overflow: auto;
-  overflow: overlay; // Работает только в Chome. TODO: Скроллбар немного ломает верстку, нужно что-то придумать для остальных браузеров
+  overflow: overlay; // Работает только в Chrome. TODO: Скроллбар немного ломает верстку, нужно что-то придумать для остальных браузеров
 }
 
 .task {
@@ -240,7 +240,7 @@
     background-color: lighten(black, 95%);
     transition: $transition;
 
-    
+
     .countBadge {
       position: absolute;
       opacity: 1;
@@ -308,7 +308,7 @@
   color: lighten(black, 50%);
   transition: $transition;
 
-  
+
   &.green {
     color: $color-green;
 
