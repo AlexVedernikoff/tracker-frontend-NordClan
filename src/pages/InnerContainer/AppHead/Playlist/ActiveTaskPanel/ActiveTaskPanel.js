@@ -16,14 +16,17 @@ class ActiveTaskPanel extends Component {
       return;
     }
 
-    const taskIsActive = ~this.playStatuses.indexOf(activeTask.statusId);
-    const taskIsStopped = ~this.stopStatuses.indexOf(activeTask.statusId);
+    const statusTransition = {
+      3: 2,
+      2: 3,
+      5: 4,
+      4: 5,
+      7: 6,
+      6: 7
+    };
 
-    if (taskIsActive || taskIsStopped) {
-      const updatedStatus = taskIsActive
-        ? activeTask.statusId + 1
-        : activeTask.statusId - 1
-
+    const updatedStatus = statusTransition[activeTask.statusId];
+    if (updatedStatus) {
       changeTask({ id: activeTask.id, statusId: updatedStatus }, 'Status');
       event.stopPropagation();
     }
