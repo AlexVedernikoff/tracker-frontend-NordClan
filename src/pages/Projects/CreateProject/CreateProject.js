@@ -69,7 +69,7 @@ class CreateProject extends Component {
                       placeholder="Название проекта"
                       onBlur={handleBlur}
                       shouldMarkError={shouldMarkError}
-                      errorText="Обязательное поле"
+                      errorText="Длина менее 4 символов"
                     />
                   ),
                   'projectName',
@@ -92,7 +92,7 @@ class CreateProject extends Component {
                       placeholder="Префикс проекта"
                       onBlur={handleBlur}
                       shouldMarkError={shouldMarkError}
-                      errorText="Обязательное поле"
+                      errorText="Длина менее 2 символов"
                     />
                   ),
                   'projectPrefix',
