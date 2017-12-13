@@ -258,7 +258,8 @@ export default function Project (state = InitialState, action) {
     const { attachmentId } = action;
     const { attachments } = state.project.attachments;
     const newAttachments = attachments.map(attach =>
-      { ...attach, deleting: attach.id === attachmentId || attach.deleting });
+      ({ ...attach, deleting: attach.id === attachmentId || attach.deleting })
+    );
 
     return {
       ...state,
