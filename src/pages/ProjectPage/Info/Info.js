@@ -94,7 +94,11 @@ class Info extends Component {
         />
         <hr />
         <h2>Файлы</h2>
-        <Attachments removeAttachment={this.removeAttachment} uploadAttachments={this.uploadAttachments} attachments={this.props.attachments}/>
+        <Attachments 
+          removeAttachment={this.removeAttachment} 
+          uploadAttachments={this.uploadAttachments} 
+          attachments={this.props.attachments}
+        />
       </div>
     );
   }

@@ -5,7 +5,7 @@ import { BACKLOG_ID } from '../constants/Sprint';
 import { history } from '../History';
 import { showNotification } from './Notifications';
 import { startLoading, finishLoading } from './Loading';
-import {DELETE, GET, POST, PUT, REST_API} from '../constants/RestApi';
+import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
 import getPlanningTasks from './PlanningTasks';
 import { getTask } from './Task';
 import {

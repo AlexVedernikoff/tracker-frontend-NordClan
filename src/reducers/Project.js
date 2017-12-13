@@ -256,11 +256,11 @@ export default function Project (state = InitialState, action) {
 
   case ProjectActions.PROJECT_ATTACHMENT_REMOVE_SUCCESS: {
     const { attachmentId } = action;
-    const { attachments } = state.task;
-
-    const attachment = attachments.filter(attach => attach.id === attachmentId)[0];
-    attachment.deleting = true;
-
+    const { attachments } = state.project.attachments;
+    if (attachments.length > 0) {
+      const attachment = attachments.filter(attach => attach.id === attachmentId)[0];
+      attachment.deleting = true;
+    }
     return {
       ...state,
       project: {
