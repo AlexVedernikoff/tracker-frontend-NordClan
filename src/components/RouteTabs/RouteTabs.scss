@@ -17,6 +17,10 @@
     padding: 0.5rem 1rem;
     transition: $transition;
 
+    @include tablet {
+      padding: 0.5rem 0.9rem;
+    }
+
     @include phone {
       width: 50%;
     }
