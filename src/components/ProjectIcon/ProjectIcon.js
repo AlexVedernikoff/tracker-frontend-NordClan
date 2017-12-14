@@ -19,7 +19,7 @@ const ProjectIcon = props => {
     36
   )
     .toString(16)
-    .substr(0, 6);
+    .substr(0, 3);
 
   const fontColor = hexToLuma(backColor) > 0.5 ? '#333' : '#fafafa';
   const divStyle = {
