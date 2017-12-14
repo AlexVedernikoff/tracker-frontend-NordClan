@@ -22,10 +22,13 @@ class TaskList extends Component {
 
   constructor (props) {
     super(props);
+    const projectId = this.props.params.projectId;
     this.state = {
       ...this.initialFilters,
       activePage: 1,
-      changedFilters: {}
+      changedFilters: {
+        projectId
+      }
     };
   }
 
