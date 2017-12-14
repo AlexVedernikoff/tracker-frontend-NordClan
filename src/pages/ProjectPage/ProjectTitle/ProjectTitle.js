@@ -81,7 +81,7 @@ class ProjectTitle extends Component {
       this.setState({ nameIsIncorrect: true }, 
         () => this.props.showNotification(
           { 
-            message: `Имя проекта должно содержать от 4 до 225 символов`, 
+            message: `Имя проекта должно содержать от 4 до 255 символов`, 
             type: 'error' 
           }
         )
