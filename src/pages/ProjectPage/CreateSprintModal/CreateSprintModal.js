@@ -21,10 +21,10 @@ class CreateSprintModal extends Component {
       budget: 0,
       riskBudget: 0,
       sprintName: '',
-      sprintTime: '',
       allottedTime: ''
     };
   }
+  
   onChangeBudget = e => {
     this.setState({ budget: parseFloat(e.target.value) || 0 })
   }
@@ -49,7 +49,14 @@ class CreateSprintModal extends Component {
   };
 
   checkNullInputs = () => {
-    return !!(this.state.sprintName && this.state.dateTo && this.state.dateFrom && this.state.allottedTime)
+    return !!(
+      this.state.sprintName &&
+      this.state.dateTo &&
+      this.state.dateFrom &&
+      this.state.allottedTime &&
+      this.state.budget &&
+      this.state.riskBudget
+    )
   }
 
   getDefaultTimeValue = () => {
@@ -70,11 +77,10 @@ class CreateSprintModal extends Component {
   }
 
   validateDates = () => {
-    // console.log(this.state.dateTo, this.state.dateFrom)
-    // console.log(moment(this.state.dateTo).isAfter(this.state.dateFrom) )
-    console.log(calcWorkingHours(this.state.dateFrom, this.state.dateTo))
-    // console.log(this.state.dateTo)
-
+    if (this.state.dateTo && this.state.dateFrom) {
+      return moment(this.state.dateTo).isAfter(this.state.dateFrom)
+    } else
+      return true
   }
 
   createSprint = e => {
@@ -112,6 +118,24 @@ class CreateSprintModal extends Component {
               <Col xs={12}>
                 <h3 onClick={this.validateDates}>Создание нового спринта</h3>
                 <hr />
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={12} className={css.validateMessages}>
+                {
+                  !this.checkNullInputs() ?
+                    <span>
+                      Все поля должны быть заполнены
+                    </span>
+                    : null
+                }
+                {
+                  !this.validateDates() ?
+                    <span className = {css.redMessage}>
+                      Дата окончания должны быть позже даты начала
+                    </span>
+                    : null
+                }
               </Col>
             </Row>
             <Row className={css.inputRow}>
@@ -168,15 +192,15 @@ class CreateSprintModal extends Component {
               </Col>
             </Row>
             <Row className={css.inputRow}>
-              <Col xs={12} sm={formLayout.firstCol}  className={css.leftColumn}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Бюджет без РР</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input  
-                  type='number' 
-                  min='0' 
-                  placeholder="Бюджет без РР" 
-                  onChange={this.onChangeBudget} 
+                <Input
+                  type='number'
+                  min='0'
+                  placeholder="Бюджет без РР"
+                  onChange={this.onChangeBudget}
                 />
               </Col>
             </Row>
@@ -185,11 +209,11 @@ class CreateSprintModal extends Component {
                 <p>Бюджет с РР</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input 
-                  type='number' 
-                  min='0' 
-                  placeholder="Бюджет с РР" 
-                  onChange={this.onChangeRiskBudget} 
+                <Input
+                  type='number'
+                  min='0'
+                  placeholder="Бюджет с РР"
+                  onChange={this.onChangeRiskBudget}
                 />
               </Col>
             </Row>
@@ -200,7 +224,7 @@ class CreateSprintModal extends Component {
                   htmlType="submit"
                   text="Создать"
                   onClick={this.createSprint}
-                  disabled={!this.checkNullInputs()}
+                  disabled={!this.checkNullInputs() || !this.validateDates()}
                 />
               </Col>
             </Row>

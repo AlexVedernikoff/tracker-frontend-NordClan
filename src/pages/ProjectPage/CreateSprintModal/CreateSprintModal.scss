@@ -6,6 +6,9 @@
     text-align:  center;
     margin: 0;
   }
+  hr {
+    margin: 20px 0 0 0;
+  }
   @include phone {
     padding: 1rem;
   }
@@ -30,4 +33,15 @@
 .rightColumn {
   display: flex;
   align-items: center;
+}
+.validateMessages {
+  text-align: center;
+  min-height: 35px;
+  .redMessage {
+    color: $color-red;
+  }
+  span {
+    padding: 10px 0;
+    display: block;
+  }
 }
