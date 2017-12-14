@@ -106,8 +106,8 @@ class CreateSprintModal extends Component {
       : '';
 
     const formLayout = {
-      firstCol: 5,
-      secondCol: 7
+      firstCol: 4,
+      secondCol: 8
     };
 
     return (
@@ -144,7 +144,7 @@ class CreateSprintModal extends Component {
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Input
-                  placeholder="Название спринта"
+                  placeholder="Введите название спринта"
                   onChange={this.onChangeName}
                 />
               </Col>
@@ -158,7 +158,7 @@ class CreateSprintModal extends Component {
                   name="dateFrom"
                   value={formattedDayFrom}
                   onDayChange={this.handleDayFromChange}
-                  placeholder="Дата начала"
+                  placeholder="Введите дату начала"
                   disabledDataRanges={this.props.sprintsDateRanges}
                 />
               </Col>
@@ -172,7 +172,7 @@ class CreateSprintModal extends Component {
                   name="dateTo"
                   value={formattedDayTo}
                   onDayChange={this.handleDayToChange}
-                  placeholder="Дата окончания"
+                  placeholder="Введите дату окончания"
                   disabledDataRanges={this.props.sprintsDateRanges}
                 />
               </Col>
@@ -183,7 +183,7 @@ class CreateSprintModal extends Component {
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Input
-                  placeholder="Время в часах"
+                  placeholder="Введите время в часах"
                   onChange={this.onChangeTime}
                   value={this.state.allottedTime}
                   type='number'
@@ -199,7 +199,7 @@ class CreateSprintModal extends Component {
                 <Input
                   type='number'
                   min='0'
-                  placeholder="Бюджет без РР"
+                  placeholder="Введите бюджет без рискового резерва"
                   onChange={this.onChangeBudget}
                 />
               </Col>
@@ -212,7 +212,7 @@ class CreateSprintModal extends Component {
                 <Input
                   type='number'
                   min='0'
-                  placeholder="Бюджет с РР"
+                  placeholder="Введите бюджет с рисковым резервом"
                   onChange={this.onChangeRiskBudget}
                 />
               </Col>
