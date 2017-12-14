@@ -72,6 +72,10 @@ const stopTaskEditing = target => ({
   target
 });
 
+const clearCurrentTask = target => ({
+  type: TaskActions.CLEAR_CURRENT_TASK
+});
+
 const getTask = id => {
   if (!id) {
     return () => {};
@@ -461,5 +465,6 @@ export {
   setCommentForEdit,
   resetCurrentEditingComment,
   setCurrentCommentExpired,
-  setHighLighted
+  setHighLighted,
+  clearCurrentTask
 };

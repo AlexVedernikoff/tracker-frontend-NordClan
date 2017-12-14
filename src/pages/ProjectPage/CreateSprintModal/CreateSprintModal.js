@@ -12,18 +12,25 @@ import { createSprint } from '../../../actions/Sprint';
 import { getSprintsDateRange } from '../../../selectors/getSprintsDateRange';
 
 class CreateSprintModal extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
       dateFrom: undefined,
       dateTo: undefined,
+      budget: 0,
+      riskBudget: 0,
       sprintName: '',
       sprintTime: '',
       allottedTime: ''
     };
   }
-
+  onChangeBudget = e => {
+    this.setState({ budget: parseFloat(e.target.value) || 0 })
+  }
+  onChangeRiskBudget = e => {
+    this.setState({ riskBudget: parseFloat(e.target.value) || 0 })
+  }
   onChangeTime = e => {
     this.setState({ allottedTime: e.target.value });
   };
@@ -32,13 +39,13 @@ class CreateSprintModal extends Component {
     this.setState({ sprintName: e.target.value });
   };
 
-  handleDayFromChange = date => { 
-    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD') }, () => this.getDefaultTimeValue() );
+  handleDayFromChange = date => {
+    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD') }, () => this.getDefaultTimeValue());
   };
 
   handleDayToChange = date => {
-    this.setState({ dateTo: moment(date).format('YYYY-MM-DD') }, () => this.getDefaultTimeValue() );
-    
+    this.setState({ dateTo: moment(date).format('YYYY-MM-DD') }, () => this.getDefaultTimeValue());
+
   };
 
   checkNullInputs = () => {
@@ -48,16 +55,16 @@ class CreateSprintModal extends Component {
   getDefaultTimeValue = () => {
     if (this.state.dateTo && this.state.dateFrom) {
       let calculatedHours = this.calcWorkingHours(this.state.dateFrom, this.state.dateTo)
-      this.setState( { allottedTime: calculatedHours } )
+      this.setState({ allottedTime: calculatedHours })
     }
   }
 
-  calcWorkingHours(startDate, endDate) { 
+  calcWorkingHours(startDate, endDate) {
     let day = moment(startDate);
     let businessDays = 0;
-    while (day.isSameOrBefore(endDate,'day')) {
-      if (day.day()!=0 && day.day()!=6) businessDays++;
-      day.add(1,'d');
+    while (day.isSameOrBefore(endDate, 'day')) {
+      if (day.day() != 0 && day.day() != 6) businessDays++;
+      day.add(1, 'd');
     }
     return businessDays * 8;
   }
@@ -65,9 +72,9 @@ class CreateSprintModal extends Component {
   validateDates = () => {
     // console.log(this.state.dateTo, this.state.dateFrom)
     // console.log(moment(this.state.dateTo).isAfter(this.state.dateFrom) )
-    console.log( calcWorkingHours( this.state.dateFrom,this.state.dateTo ) )
+    console.log(calcWorkingHours(this.state.dateFrom, this.state.dateTo))
     // console.log(this.state.dateTo)
-    
+
   }
 
   createSprint = e => {
@@ -78,11 +85,13 @@ class CreateSprintModal extends Component {
       this.props.projectId,
       this.state.dateFrom,
       this.state.dateTo,
-      this.state.allottedTime
+      this.state.allottedTime,
+      this.state.budget,
+      this.state.riskBudget
     );
   };
 
-  render () {
+  render() {
     const formattedDayFrom = this.state.dateFrom
       ? moment(this.state.dateFrom).format('DD.MM.YYYY')
       : '';
@@ -101,9 +110,9 @@ class CreateSprintModal extends Component {
           <form className={css.createSprintForm}>
             <Row>
               <Col xs={12}>
-              <h3 onClick={this.validateDates}>Создание нового спринта</h3>
-              <hr/>
-              </Col> 
+                <h3 onClick={this.validateDates}>Создание нового спринта</h3>
+                <hr />
+              </Col>
             </Row>
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
@@ -118,7 +127,7 @@ class CreateSprintModal extends Component {
             </Row>
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-               <p>Дата начала:</p>
+                <p>Дата начала:</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <DatepickerDropdown
@@ -132,7 +141,7 @@ class CreateSprintModal extends Component {
             </Row>
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-               <p>Дата окончания:</p>
+                <p>Дата окончания:</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <DatepickerDropdown
@@ -152,9 +161,35 @@ class CreateSprintModal extends Component {
                 <Input
                   placeholder="Время в часах"
                   onChange={this.onChangeTime}
-                  value = {this.state.allottedTime}
+                  value={this.state.allottedTime}
                   type='number'
                   min='0'
+                />
+              </Col>
+            </Row>
+            <Row className={css.inputRow}>
+              <Col xs={12} sm={formLayout.firstCol}  className={css.leftColumn}>
+                <p>Бюджет без РР</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                <Input  
+                  type='number' 
+                  min='0' 
+                  placeholder="Бюджет без РР" 
+                  onChange={this.onChangeBudget} 
+                />
+              </Col>
+            </Row>
+            <Row className={css.inputRow}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>Бюджет с РР</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                <Input 
+                  type='number' 
+                  min='0' 
+                  placeholder="Бюджет с РР" 
+                  onChange={this.onChangeRiskBudget} 
                 />
               </Col>
             </Row>

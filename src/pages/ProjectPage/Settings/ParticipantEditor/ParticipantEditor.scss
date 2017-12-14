@@ -6,6 +6,26 @@
     display: table;
   }
 }
+.rightsInfo {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  line-height: 10px;
+  text-align: center;
+  font-size: 8px;
+  border-radius: 50%;
+  background-color: $color-dark;
+  color: $color-white;
+  transition: $transition;
+  cursor: pointer;
+  position: absolute;
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  &:hover {
+    background-color: $color-green;
+  }
+}
 
 .memberRow {
 
@@ -19,6 +39,7 @@
 
   .cell {
     padding: 8px;
+    position: relative;
   }
 
   h4 {
