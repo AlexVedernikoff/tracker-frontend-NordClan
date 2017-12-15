@@ -89,6 +89,7 @@ exports[CREATE_TIMESHEET_SUCCESS] = (state = InititalState, action) => {
 function isDeletedDraft(track, action) {
   return track.id !== action.timesheet.id
     && track.taskId === getTaskId(action)
+    && track.taskStatusId === action.timesheet.taskStatusId
     && track.isDraft;
 }
 
