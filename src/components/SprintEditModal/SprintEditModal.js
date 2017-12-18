@@ -16,7 +16,7 @@ class SprintEditModal extends Component {
     sprint: PropTypes.object.isRequired
   };
 
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -99,7 +99,7 @@ class SprintEditModal extends Component {
     this.props.handleEditSprint(this.state.sprint);
   };
 
-  render() {
+  render () {
     const { sprint } = this.props;
     let formattedDayFrom = '';
     let formattedDayTo = '';
@@ -172,16 +172,16 @@ class SprintEditModal extends Component {
             </label>
             <label className={css.formField}>
               <Row>
-                <Col 
-                  xs={12} 
-                  sm={formLayout.firstCol} 
+                <Col
+                  xs={12}
+                  sm={formLayout.firstCol}
                   className={css.leftColumn}
                 >
                   <p>Дата окончания:</p>
                 </Col>
-                <Col 
-                  xs={12} 
-                  sm={formLayout.secondCol} 
+                <Col
+                  xs={12}
+                  sm={formLayout.secondCol}
                   className={css.rightColumn}
                 >
                   <DatepickerDropdown
@@ -234,6 +234,7 @@ class SprintEditModal extends Component {
                 >
                   <Input
                     defaultValue={sprint.budget || 0}
+                    placeholder="Введите новое значение бюджета без РР"
                     onChange={this.onChangeBudget}
                   />
                 </Col>
@@ -256,6 +257,7 @@ class SprintEditModal extends Component {
                 >
                   <Input
                     defaultValue={sprint.riskBudget || 0}
+                    placeholder="Введите новое значение бюджета с РР"
                     onChange={this.onChangeRiskBudget}
                   />
                 </Col>
