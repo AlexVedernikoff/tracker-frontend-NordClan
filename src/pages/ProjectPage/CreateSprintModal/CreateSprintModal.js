@@ -84,7 +84,7 @@ class CreateSprintModal extends Component {
   }
 
   validateNumbers (value) {
-    const re = /^[0-9]*$/;
+    const re = /^\d*(\.\d*)?$/;
     return value !== '' ? re.test(value) : true;
   }
   
