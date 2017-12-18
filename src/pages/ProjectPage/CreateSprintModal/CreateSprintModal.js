@@ -12,75 +12,87 @@ import { createSprint } from '../../../actions/Sprint';
 import { getSprintsDateRange } from '../../../selectors/getSprintsDateRange';
 
 class CreateSprintModal extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
       dateFrom: undefined,
       dateTo: undefined,
-      budget: 0,
-      riskBudget: 0,
+      budget: '',
+      riskBudget: '',
       sprintName: '',
       allottedTime: ''
     };
   }
-  
+
   onChangeBudget = e => {
-    this.setState({ budget: parseFloat(e.target.value) || 0 })
+    if (this.validateNumbers(e.target.value)) {
+      this.setState({ budget: e.target.value });
+    }
   }
+
   onChangeRiskBudget = e => {
-    this.setState({ riskBudget: parseFloat(e.target.value) || 0 })
+    if (this.validateNumbers(e.target.value)) {
+      this.setState({ riskBudget: e.target.value });
+    }
   }
+
   onChangeTime = e => {
-    this.setState({ allottedTime: e.target.value });
-  };
+    if (this.validateNumbers(e.target.value)) {
+      this.setState({ allottedTime: e.target.value });
+    }
+  }
 
   onChangeName = e => {
     this.setState({ sprintName: e.target.value });
   };
 
   handleDayFromChange = date => {
-    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD') }, () => this.getDefaultTimeValue());
+    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD') }, () => this.setDefaultTimeValue());
   };
 
   handleDayToChange = date => {
-    this.setState({ dateTo: moment(date).format('YYYY-MM-DD') }, () => this.getDefaultTimeValue());
-
+    this.setState({ dateTo: moment(date).format('YYYY-MM-DD') }, () => this.setDefaultTimeValue());
   };
 
   checkNullInputs = () => {
     return !!(
-      this.state.sprintName &&
-      this.state.dateTo &&
-      this.state.dateFrom &&
-      this.state.allottedTime &&
-      this.state.budget &&
-      this.state.riskBudget
-    )
+      this.state.sprintName
+      && this.state.dateTo
+      && this.state.dateFrom
+      && this.state.allottedTime
+      && this.state.budget
+      && this.state.riskBudget
+    );
   }
 
-  getDefaultTimeValue = () => {
+  setDefaultTimeValue = () => {
     if (this.state.dateTo && this.state.dateFrom) {
-      let calculatedHours = this.calcWorkingHours(this.state.dateFrom, this.state.dateTo)
-      this.setState({ allottedTime: calculatedHours })
+      const calculatedHours = this.calcWorkingHours(this.state.dateFrom, this.state.dateTo);
+      this.setState({ allottedTime: calculatedHours });
     }
   }
 
-  calcWorkingHours(startDate, endDate) {
-    let day = moment(startDate);
+  calcWorkingHours (startDate, endDate) {
+    const day = moment(startDate);
     let businessDays = 0;
     while (day.isSameOrBefore(endDate, 'day')) {
-      if (day.day() != 0 && day.day() != 6) businessDays++;
+      if (day.day() !== 0 && day.day() !== 6) businessDays++;
       day.add(1, 'd');
     }
     return businessDays * 8;
   }
 
+  validateNumbers (value) {
+    const re = /^[0-9]*$/;
+    return value !== '' ? re.test(value) : true;
+  }
+  
   validateDates = () => {
     if (this.state.dateTo && this.state.dateFrom) {
-      return moment(this.state.dateTo).isAfter(this.state.dateFrom)
-    } else
-      return true
+      return moment(this.state.dateTo).isAfter(this.state.dateFrom);
+    }
+    return true;
   }
 
   createSprint = e => {
@@ -97,7 +109,7 @@ class CreateSprintModal extends Component {
     );
   };
 
-  render() {
+  render () {
     const formattedDayFrom = this.state.dateFrom
       ? moment(this.state.dateFrom).format('DD.MM.YYYY')
       : '';
@@ -116,24 +128,24 @@ class CreateSprintModal extends Component {
           <form className={css.createSprintForm}>
             <Row>
               <Col xs={12}>
-                <h3 onClick={this.validateDates}>Создание нового спринта</h3>
+                <h3>Создание нового спринта</h3>
                 <hr />
               </Col>
             </Row>
             <Row>
               <Col xs={12} className={css.validateMessages}>
                 {
-                  !this.checkNullInputs() ?
-                    <span>
-                      Все поля должны быть заполнены
-                    </span>
+                  !this.checkNullInputs()
+                    ? <span>
+                        Все поля должны быть заполнены
+                      </span>
                     : null
                 }
                 {
-                  !this.validateDates() ?
-                    <span className = {css.redMessage}>
-                      Дата окончания должны быть позже даты начала
-                    </span>
+                  !this.validateDates()
+                    ? <span className = {css.redMessage}>
+                      Дата окончания должна быть позже даты начала
+                      </span>
                     : null
                 }
               </Col>
@@ -186,8 +198,6 @@ class CreateSprintModal extends Component {
                   placeholder="Введите время в часах"
                   onChange={this.onChangeTime}
                   value={this.state.allottedTime}
-                  type='number'
-                  min='0'
                 />
               </Col>
             </Row>
@@ -197,10 +207,9 @@ class CreateSprintModal extends Component {
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Input
-                  type='number'
-                  min='0'
                   placeholder="Введите бюджет без рискового резерва"
                   onChange={this.onChangeBudget}
+                  value={this.state.budget}
                 />
               </Col>
             </Row>
@@ -210,10 +219,9 @@ class CreateSprintModal extends Component {
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Input
-                  type='number'
-                  min='0'
                   placeholder="Введите бюджет с рисковым резервом"
                   onChange={this.onChangeRiskBudget}
+                  value={this.state.riskBudget}
                 />
               </Col>
             </Row>
