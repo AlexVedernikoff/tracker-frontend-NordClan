@@ -103,9 +103,9 @@ class CreateSprintModal extends Component {
       this.props.projectId,
       this.state.dateFrom,
       this.state.dateTo,
-      this.state.allottedTime,
-      this.state.budget,
-      this.state.riskBudget
+      Number(this.state.allottedTime),
+      Number(this.state.budget),
+      Number(this.state.riskBudget)
     );
   };
 
