@@ -16,7 +16,7 @@ import {
   stopEditing as finishEdit,
   openPortfolioModal,
   closePortfolioModal
-} from '../../../actions/Project'; 
+} from '../../../actions/Project';
 
 class ProjectTitle extends Component {
   static propTypes = {
