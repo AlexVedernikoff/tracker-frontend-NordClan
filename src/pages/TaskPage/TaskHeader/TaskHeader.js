@@ -8,7 +8,7 @@ import PerformerModal from '../../../components/PerformerModal';
 import Priority from '../../../components/Priority';
 import ButtonGroup from '../../../components/ButtonGroup';
 import TaskTitle from '../TaskTitle';
-import { getProjectUsers } from '../../../actions/Project';
+import { getProjectUsers, openCreateTaskModal } from '../../../actions/Project';
 import * as TaskStatuses from '../../../constants/TaskStatuses';
 import { connect } from 'react-redux';
 import CopyThis from '../../../components/CopyThis';
@@ -169,6 +169,14 @@ class TaskHeader extends Component {
     }));
     return (
       <div>
+        <Button
+          onClick={this.props.openCreateTaskModal}
+          type="primary"
+          text="Создать задачу"
+          icon="IconPlus"
+          name="right"
+          style={{ float: 'right' }}
+        />
         {
           task.parentTask
           ? <div className={css.parentTask}>
@@ -338,6 +346,7 @@ TaskHeader.propTypes = {
   getProjectUsers: PropTypes.func.isRequired,
   location: PropTypes.object,
   onChange: PropTypes.func.isRequired,
+  openCreateTaskModal: PropTypes.func.isRequired,
   projectId: PropTypes.string.isRequired,
   task: PropTypes.object.isRequired,
   taskTypes: PropTypes.array,
@@ -351,7 +360,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  getProjectUsers
+  getProjectUsers,
+  openCreateTaskModal
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskHeader);
