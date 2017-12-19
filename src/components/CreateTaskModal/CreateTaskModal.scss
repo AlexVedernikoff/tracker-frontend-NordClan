@@ -1,12 +1,15 @@
 @import '../../styles/variables.scss';
 
 .createTaskForm {
-  max-width: 500px;
-  width: 100%;
+  // max-width: 500px;
+  // width: 100%;
+  max-width: 100%; // ie fix
+  width: 500px; // ie fix
   padding: 2rem;
 
   @include phone {
     padding: 1rem;
+    width: 100%; // ie fix
   }
 }
 

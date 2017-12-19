@@ -1,12 +1,15 @@
 @import '../../../styles/variables.scss';
 
 .createProjectForm {
-  max-width: 384px;
-  width: 100%;
+  // max-width: 384px;
+  // width: 100%;
+  width: 384px; // ie fix
+  max-width: 100%; // ie fix
   padding: 2rem;
 
   @include phone {
     padding: 1rem;
+    width: 100%; // ie fix
   }
 }
 

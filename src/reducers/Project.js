@@ -11,7 +11,8 @@ const InitialState = {
       events: [],
       pagesCount: 0
     },
-    error: false
+    error: false,
+    metrics: []
   },
   TitleIsEditing: false,
   DescriptionIsEditing: false,
@@ -323,6 +324,15 @@ export default function Project (state = InitialState, action) {
       }
     };
   }
+
+  case ProjectActions.GET_METRICS_SUCCESS:
+    return {
+      ...state,
+      project: {
+        ...state.project,
+        metrics: action.metrics
+      }
+    }
   default:
     return {
       ...state
