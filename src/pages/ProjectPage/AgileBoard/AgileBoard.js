@@ -375,10 +375,7 @@ class AgileBoard extends Component {
                   checked={this.state.isOnlyMine}
                   onChange={this.toggleMine}
                   label="Только мои задачи"
-                  style={{
-                    alignItems: 'center',
-                    padding: '0.5rem 1.5rem'
-                  }}
+                  className={css.filterCheckbox}
                 />
                 <Col xs style={{minWidth: 200}}>
                   <SelectDropdown
