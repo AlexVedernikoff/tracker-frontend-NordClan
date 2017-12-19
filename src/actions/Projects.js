@@ -23,6 +23,11 @@ const projectCreateSuccess = project => ({
   createdProject: project
 });
 
+const projectCreateFail = error => ({
+  type: ProjectActions.PROJECT_CREATE_FAIL,
+  error: error
+});
+
 export const openCreateProjectModal = () => ({
   type: ProjectActions.OPEN_CREATE_PROJECT_MODAL
 });
@@ -91,6 +96,7 @@ export const requestProjectCreate = (project, openProjectPage) => {
       })
       .catch(error => {
         dispatch(finishLoading());
+        dispatch(projectCreateFail(error.response.data));
         dispatch(showNotification({ message: error.message, type: 'error' }));
       })
       .then(response => {

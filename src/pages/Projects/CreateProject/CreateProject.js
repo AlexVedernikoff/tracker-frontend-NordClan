@@ -10,6 +10,7 @@ import Validator from '../../../components/ValidatedInput/Validator';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './CreateProject.scss';
 import Checkbox from '../../../components/Checkbox';
+import ErrorText from '../../../components/ErrorText';
 import Select from 'react-select';
 
 class CreateProject extends Component {
@@ -36,7 +37,7 @@ class CreateProject extends Component {
   }
 
   render () {
-    const { isOpen, onRequestClose } = this.props;
+    const { isOpen, onRequestClose, projectError } = this.props;
 
     const formLayout = {
       firstCol: 5,
@@ -44,6 +45,8 @@ class CreateProject extends Component {
     };
 
     const SelectAsync = Select.AsyncCreatable;
+
+    const errorMessage = projectError ? <ErrorText message={projectError.message}/> : null;
 
     return (
       <Modal
@@ -136,6 +139,7 @@ class CreateProject extends Component {
             </Row>
           </label> */}
           <div className={css.buttonsContainer}>
+            {errorMessage}
             <Button
               text="Создать проект"
               htmlType="submit"
@@ -165,6 +169,7 @@ CreateProject.propTypes = {
   onRequestClose: PropTypes.func,
   onSubmit: PropTypes.func,
   onSubmitAndOpen: PropTypes.func,
+  projectError: PropTypes.object,
   selectedPortfolio: PropTypes.object
 };
 

@@ -327,6 +327,7 @@ class Projects extends Component {
           selectedPortfolio={this.state.selectedPortfolio}
           validateProjectName = {this.state.projectName.length > 3}
           validateProjectPrefix = {this.state.projectPrefix.length > 1}
+          projectError={this.props.projectError}
         />
       </div>
     );
@@ -339,13 +340,15 @@ Projects.propTypes = {
   isCreateProjectModalOpen: PropTypes.bool.isRequired,
   openCreateProjectModal: PropTypes.func.isRequired,
   pagesCount: PropTypes.number.isRequired,
+  projectError: PropTypes.object,
   projectList: PropTypes.array.isRequired
 };
 
 const mapStateToProps = state => ({
   projectList: state.Projects.projects,
   pagesCount: state.Projects.pagesCount,
-  isCreateProjectModalOpen: state.Projects.isCreateProjectModalOpen
+  isCreateProjectModalOpen: state.Projects.isCreateProjectModalOpen,
+  projectError: state.Projects.error
 });
 
 const mapDispatchToProps = {
