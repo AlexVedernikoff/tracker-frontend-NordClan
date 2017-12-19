@@ -113,7 +113,7 @@ const budgetMetricsMock = {
       allottedTime: "40.00",
       factFinishDate: "2017-12-20T00:00:00.000Z",
       factStartDate: "2017-12-11T00:00:00.000Z",
-      name: "Спринт 2" ,
+      name: "Спринт 2",
       points: [
         {
           date: "2017-12-11T00:00:00.000Z",
@@ -147,7 +147,7 @@ const budgetMetricsMock = {
           date: "2017-12-20T00:00:00.000Z",
           budget: 4
         }
-      ]     
+      ]
     },
     {
       allottedTime: "40.00",
@@ -187,9 +187,128 @@ const budgetMetricsMock = {
           date: "2017-12-30T00:00:00.000Z",
           budget: 0
         }
-      ]    
+      ]
     }
   ]
 }
 
-export default budgetMetricsMock;
+const bugsMetricsMock = {
+  startDate: '2017-12-01T00:00:00.000Z',
+  endDate: '2017-12-30T00:00:00.000Z',
+  openedBugs: [
+    {
+      date: "2017-12-01T00:00:00.000Z",
+      bugs: 0
+    },
+    {
+      date: "2017-12-02T00:00:00.000Z",
+      bugs: 4
+    },
+    {
+      date: "2017-12-03T00:00:00.000Z",
+      bugs: 3
+    },
+    {
+      date: "2017-12-04T00:00:00.000Z",
+      bugs: 5
+    },
+    {
+      date: "2017-12-05T00:00:00.000Z",
+      bugs: 4
+    },
+    {
+      date: "2017-12-06T00:00:00.000Z",
+      bugs: 8
+    },
+    {
+      date: "2017-12-08T00:00:00.000Z",
+      bugs: 12
+    },
+    {
+      date: "2017-12-09T00:00:00.000Z",
+      bugs: 17
+    },
+    {
+      date: "2017-12-10T00:00:00.000Z",
+      bugs: 15
+    }
+  ],
+  openedCustomerBugs: [
+    {
+      date: "2017-12-01T00:00:00.000Z",
+      bugs: 0
+    },
+    {
+      date: "2017-12-02T00:00:00.000Z",
+      bugs: 1
+    },
+    {
+      date: "2017-12-03T00:00:00.000Z",
+      bugs: 2
+    },
+    {
+      date: "2017-12-04T00:00:00.000Z",
+      bugs: 4
+    },
+    {
+      date: "2017-12-05T00:00:00.000Z",
+      bugs: 5
+    },
+    {
+      date: "2017-12-06T00:00:00.000Z",
+      bugs: 6
+    },
+    {
+      date: "2017-12-08T00:00:00.000Z",
+      bugs: 8
+    },
+    {
+      date: "2017-12-09T00:00:00.000Z",
+      bugs: 12
+    },
+    {
+      date: "2017-12-10T00:00:00.000Z",
+      bugs: 14
+    }
+  ],
+  openedRegressBugs: [
+    {
+      date: "2017-12-01T00:00:00.000Z",
+      bugs: 0
+    },
+    {
+      date: "2017-12-02T00:00:00.000Z",
+      bugs: 1
+    },
+    {
+      date: "2017-12-03T00:00:00.000Z",
+      bugs: 0
+    },
+    {
+      date: "2017-12-04T00:00:00.000Z",
+      bugs: 2
+    },
+    {
+      date: "2017-12-05T00:00:00.000Z",
+      bugs: 1
+    },
+    {
+      date: "2017-12-06T00:00:00.000Z",
+      bugs: 4
+    },
+    {
+      date: "2017-12-08T00:00:00.000Z",
+      bugs: 5
+    },
+    {
+      date: "2017-12-09T00:00:00.000Z",
+      bugs: 6
+    },
+    {
+      date: "2017-12-10T00:00:00.000Z",
+      bugs: 5
+    }
+  ]
+
+};
+export { budgetMetricsMock, bugsMetricsMock };

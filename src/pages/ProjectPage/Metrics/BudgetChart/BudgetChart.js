@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './BudgetChart.scss'
+import * as css from './BudgetChart.scss';
 import Input from '../../../../components/Input';
 import { Line } from 'react-chartjs-2';
 import { connect } from 'react-redux';
 import moment from 'moment';
-
-import budgetMetricsMock from '../../../../mocks/budgetMetricsMock'
-
-function getRandomColor() {
-  return `#${((0xFFFFFF * Math.random() ) | 0).toString(16).padStart(6, '1')}`
-}
+import getRandomColor from '../../../../utils/getRandomColor';
+import { budgetMetricsMock } from '../../../../mocks/MetricsMock';
 
 function getBasicLineSettings (color) {
   return {
@@ -20,24 +16,30 @@ function getBasicLineSettings (color) {
     lineTension: 0,
     borderWidth: 1,
     pointRadius: 1
-  }
+  };
 }
+
 class BudgetChart extends Component {
-  constructor(props) {
-    super(props)
-    this.chartOptions =  {
+
+  static propTypes = {
+    budget: PropTypes.number
+  }
+
+  constructor (props) {
+    super(props);
+    this.chartOptions = {
       responsive: true,
-      hover: {mode: "nearest"},
+      hover: {mode: 'nearest'},
       title: {
         display: false
       },
       tooltips: {
         callbacks: {
-          title: function(tooltipItem, data) {
+          title: function (tooltipItem, data) {
             return moment(tooltipItem[0].xLabel).format('YYYY.MM.DD');
           },
-          label: function(tooltipItem, data) {
-              return `${tooltipItem.yLabel} ч.`;
+          label: function (tooltipItem, data) {
+            return `${tooltipItem.yLabel} ч.`;
           }
         }
       },
@@ -46,7 +48,7 @@ class BudgetChart extends Component {
       },
       scales: {
         xAxes: [{
-          type: "time",
+          type: 'time',
           display: true,
           scaleLabel: {
             display: true,
@@ -64,103 +66,104 @@ class BudgetChart extends Component {
           }
         }]
       }
-    }    
+    };
+
     this.state = {
-      chartData: this.makeCharData(budgetMetricsMock)
-    } 
+      chartData: this.makeChartData(budgetMetricsMock)
+    };
   }
-  
-  makeCharData (metrics) {
+
+  makeChartData (metrics) {
     return {
       datasets: [
-        this.makeIdealProjectBurndown(metrics), 
-        this.makeProjectBurndown(metrics), 
-        ...this.makeSprintsBurndowns(metrics), 
+        this.makeIdealProjectBurndown(metrics),
+        this.makeProjectBurndown(metrics),
+        ...this.makeSprintsBurndowns(metrics),
         ...this.makeSprintsIdealBurndowns(metrics)
       ]
-    }
+    };
   }
 
   makeIdealProjectBurndown (metrics) {
-    let randomnedColor = getRandomColor();
+    const randomnedColor = getRandomColor();
     return {
       data: [
         {
-          x: moment(metrics.startDate).toDate(),
+          x: metrics.startDate,
           y: metrics.budget
         },
         {
-          x: moment(metrics.endDate).toDate(),
+          x: metrics.endDate,
           y: 0
         }
       ],
       label: 'Идеальная всего проекта',
       ...getBasicLineSettings(randomnedColor)
-    }
+    };
   }
 
   makeProjectBurndown (metrics) {
-    let burndown = []
-    let randomnedColor = getRandomColor();
+    const burndown = [];
+    const randomnedColor = getRandomColor();
+
     metrics.points.forEach(point => {
-        burndown.push({
-          x: moment(point.date).toDate(),
-          y: point.budget
-        } 
-      ) 
-    })
+      burndown.push({
+        x: point.date,
+        y: point.budget
+      });
+    });
+
     return {
       data: [...burndown],
       label: 'Весь проект',
       ...getBasicLineSettings(randomnedColor)
-    }
+    };
   }
 
   makeSprintsIdealBurndowns (metrics) {
-    let burndownsArr = []
+    const burndownsArr = [];
+
     metrics.sprints.forEach(sprint => {
-      let randomnedColor = getRandomColor();      
+      const randomnedColor = getRandomColor();
       burndownsArr.push({
         data: [
           {
-            x: moment(sprint.factStartDate).toDate(),
+            x: sprint.factStartDate,
             y: sprint.allottedTime
           },
           {
-            x: moment(sprint.factFinishDate).toDate(),
+            x: sprint.factFinishDate,
             y: 0
           }
         ],
         label: `Идеальная ${sprint.name}`,
         ...getBasicLineSettings(randomnedColor)
-      } 
-    )  
+      });
     });
-    return burndownsArr
-    
+    return burndownsArr;
   }
 
   makeSprintsBurndowns (metrics) {
-    let burndownsArr = []
+    const burndownsArr = [];
     metrics.sprints.forEach(sprint => {
-      let burndownData = []
-      let randomnedColor = getRandomColor();      
+      const burndownData = [];
+      const randomnedColor = getRandomColor();
       sprint.points.forEach(point => {
         burndownData.push({
-          x: moment(point.date).toDate(),
+          x: point.date,
           y: point.budget
-        })
-      })
+        });
+      });
       burndownsArr.push({
         data: burndownData,
         label: `${sprint.name}`,
         ...getBasicLineSettings(randomnedColor)
-      })
-    })
-    return burndownsArr
-  } 
+      });
+    });
+    return burndownsArr;
+  }
 
-  render() {
+  render () {
     return (
       <div className={css.BudgetChart}>
         <h3>Без рискового бюджета</h3>
@@ -170,14 +173,9 @@ class BudgetChart extends Component {
         </div>
         <Line data={this.state.chartData} options={this.chartOptions} redraw/>
       </div>
-    )
+    );
   }
 }
-const mapStateToProps = state => ({
-  createdAt: state.Project.project.createdAt,
-  completedAt: state.Project.project.completedAt,
-  budget: state.Project.project.budget,
-  riskBudget: state.Project.project.riskBudget,
-  sprints: state.Project.project.sprints
-});
-export default connect(mapStateToProps)(BudgetChart)
+const mapStateToProps = state => ({});
+
+export default connect(mapStateToProps)(BudgetChart);

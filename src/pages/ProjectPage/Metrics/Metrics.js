@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
-import moment from 'moment';
 import * as css from './Metrics.scss';
 import StartEndDates from './StartEndDates/StartEndDates';
 import BudgetChart from './BudgetChart/BudgetChart';
@@ -10,28 +9,27 @@ import BugsChart from './BugsChart/BugsChart';
 import { getMetrics } from './../../../actions/Metrics';
 
 class Metrics extends Component {
-  constructor(props) {
-    super(props)
-    const { getMetrics, params } = this.props;
+  static propTypes = {
+    completedAt: PropTypes.string,
+    createdAt: PropTypes.string,
+    metrics: PropTypes.array,
+    sprints: PropTypes.array
+  }
 
+  constructor (props) {
+    super(props);
+    // const {  params } = this.props;
+    // console.log(params)
     //NOTE: Example request to metrics api
     const metricsParams = {
-      projectId: parseInt(params.projectId),
-      typeId: 6,
+      projectId: parseInt(6),
+      typeId: 6
       // sprintId: 1,
       // userId: 1,
       // startDate: '2017-11-20',
       // endDate: '2017-12-20'
     };
-    getMetrics(metricsParams)
-  }
-
-  static propTypes = {
-    createdAt: PropTypes.string,
-    completedAt: PropTypes.string,
-    budget: PropTypes.number,
-    riskBudget: PropTypes.number,
-    sprints: PropTypes.array
+    getMetrics(metricsParams);
   }
 
   startDate () {
@@ -40,16 +38,16 @@ class Metrics extends Component {
     } else if (this.props.sprints.length > 0) {
       return this.props.sprints[0].factStartDate;
     }
-    return ''
+    return '';
   }
 
   endDate () {
-    if (this.props.completedDate) {
-      return this.props.completedDate;
+    if (this.props.completedAt) {
+      return this.props.completedAt;
     } else if (this.props.sprints.length > 0) {
       return this.props.sprints[this.props.sprints.length - 1].factFinishDate;
     }
-    return ''
+    return '';
   }
 
   render () {
@@ -64,7 +62,7 @@ class Metrics extends Component {
             </Col>
           </Row>
           <Row>
-            <Col xs = {12}>
+            <Col lg={8} lgOffset={2} md={12} mdOffset={0}>
               <BugsChart/>
             </Col>
           </Row>
@@ -77,14 +75,12 @@ class Metrics extends Component {
 const mapStateToProps = state => ({
   createdAt: state.Project.project.createdAt,
   completedAt: state.Project.project.completedAt,
-  budget: state.Project.project.budget,
-  riskBudget: state.Project.project.riskBudget,
   sprints: state.Project.project.sprints,
   metrics: state.Project.project.metrics
 });
 
 const mapDispatchToProps = {
   getMetrics
-}
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(Metrics)
+export default connect(mapStateToProps, mapDispatchToProps)(Metrics);
