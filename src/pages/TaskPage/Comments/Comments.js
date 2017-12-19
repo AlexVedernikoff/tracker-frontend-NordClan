@@ -33,6 +33,12 @@ class Comments extends Component {
     this.props.getCommentsByTask(this.props.params.taskId);
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.params.taskId !== this.props.params.taskId) {
+      this.props.getCommentsByTask(nextProps.params.taskId);
+    }
+  }
+
   componentDidUpdate (prevProps) {
     if (this.props.location.hash === '#reply' && prevProps.location.hash === '#reply') {
       setTimeout(() => {
