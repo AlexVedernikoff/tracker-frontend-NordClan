@@ -145,7 +145,7 @@ class SprintEditModal extends Component {
                   className={css.rightColumn}
                 >
                   <Input
-                    placeholder="Новое название спринта..."
+                    placeholder="Введите название спринта"
                     defaultValue={sprint.name}
                     onChange={this.onChangeName}
                   />
@@ -155,7 +155,10 @@ class SprintEditModal extends Component {
 
             <label className={css.formField}>
               <Row>
-                <Col xs={12} sm={6}>
+                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                  <p>Дата начала:</p>
+                </Col>
+                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   <DatepickerDropdown
                     name="dateFrom"
                     value={formattedDayFrom}
@@ -165,7 +168,22 @@ class SprintEditModal extends Component {
                     )}
                   />
                 </Col>
-                <Col xs={12} sm={6}>
+              </Row>
+            </label>
+            <label className={css.formField}>
+              <Row>
+                <Col
+                  xs={12}
+                  sm={formLayout.firstCol}
+                  className={css.leftColumn}
+                >
+                  <p>Дата окончания:</p>
+                </Col>
+                <Col
+                  xs={12}
+                  sm={formLayout.secondCol}
+                  className={css.rightColumn}
+                >
                   <DatepickerDropdown
                     name="dateTo"
                     value={formattedDayTo}
@@ -177,7 +195,6 @@ class SprintEditModal extends Component {
                 </Col>
               </Row>
             </label>
-
             <label className={css.formField}>
               <Row>
                 <Col
@@ -217,6 +234,7 @@ class SprintEditModal extends Component {
                 >
                   <Input
                     defaultValue={sprint.budget || 0}
+                    placeholder="Введите новое значение бюджета без РР"
                     onChange={this.onChangeBudget}
                   />
                 </Col>
@@ -239,6 +257,7 @@ class SprintEditModal extends Component {
                 >
                   <Input
                     defaultValue={sprint.riskBudget || 0}
+                    placeholder="Введите новое значение бюджета с РР"
                     onChange={this.onChangeRiskBudget}
                   />
                 </Col>
