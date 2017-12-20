@@ -33,6 +33,10 @@
   margin-right: 8px;
 }
 
+.disabled {
+  cursor: default;
+}
+
 .INPROGRESS { background-color: $color-green }
 .INHOLD { background-color: $color-blue }
 .FINISHED { background-color: $color-dark }

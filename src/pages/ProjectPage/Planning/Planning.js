@@ -10,7 +10,6 @@ import Button from '../../../components/Button';
 import SelectDropdown from '../../../components/SelectDropdown';
 import CreateTaskModal from '../../../components/CreateTaskModal';
 import SprintColumn from './SprintColumn';
-import _ from 'lodash';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
@@ -38,16 +37,17 @@ class Planning extends Component {
     SprintIsEditing: PropTypes.bool,
     changeTask: PropTypes.func.isRequired,
     createSprint: PropTypes.func.isRequired,
-    isCreateTaskModalOpen: PropTypes.bool,
     editSprint: PropTypes.func.isRequired,
     getPlanningTasks: PropTypes.func.isRequired,
+    isCreateTaskModalOpen: PropTypes.bool,
     lastCreatedTask: PropTypes.object,
     leftColumnTasks: PropTypes.array,
     openCreateTaskModal: PropTypes.func,
     project: PropTypes.object,
     rightColumnTasks: PropTypes.array,
     sprints: PropTypes.array.isRequired,
-    startTaskEditing: PropTypes.func
+    startTaskEditing: PropTypes.func,
+    user: PropTypes.object.isRequired,
   };
 
   constructor (props) {
@@ -169,7 +169,7 @@ class Planning extends Component {
         exceeded: ratio > 1
       };
     }
-  }
+  };
 
   dropTask = (task, sprint) => {
     this.props.changeTask(
@@ -293,24 +293,22 @@ class Planning extends Component {
   };
 
   sprints = (sprint, i) => {
-    return (
-        <div key={`sprint-${i}`} className={css.tr}>
-          <div
-            className={classnames({
-              [css.sprintBar]: true,
-              [css.unactive]: sprint.statusId === 1 && moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]'),
-              [css.finished]: moment(sprint.factFinishDate).isBefore(moment(), 'days'),
-              [css.active]: sprint.statusId === 2,
-              [css.future]: moment(sprint.factStartDate).isAfter(moment(), 'days')
-            })}
-            style={this.getSprintBlock(sprint, this.state.grantActiveYear)}
-            data-tip={getSprintTime(sprint)}
-          >
-            <div className={css.text}>{sprint.spentTime || 0}</div>
-            <div className={css.text}>{sprint.allottedTime || 0}</div>
-          </div>
-        </div>
-    );
+    return <div key={`sprint-${i}`} className={css.tr}>
+      <div
+        className={classnames({
+          [css.sprintBar]: true,
+          [css.unactive]: sprint.statusId === 1 && moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]'),
+          [css.finished]: moment(sprint.factFinishDate).isBefore(moment(), 'days'),
+          [css.active]: sprint.statusId === 2,
+          [css.future]: moment(sprint.factStartDate).isAfter(moment(), 'days')
+        })}
+        style={this.getSprintBlock(sprint, this.state.grantActiveYear)}
+        data-tip={getSprintTime(sprint)}
+      >
+        <div className={css.text}>{sprint.spentTime || 0}</div>
+        <div className={css.text}>{sprint.allottedTime || 0}</div>
+      </div>
+    </div>;
   };
 
   currentTimeline = () => {
@@ -324,9 +322,15 @@ class Planning extends Component {
         />
       );
     }
-  }
+  };
+
+  checkIsAdminInProject = () => {
+    return this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1;
+  };
 
   render () {
+    const isProjectAdmin = this.checkIsAdminInProject();
+
     const leftColumnTasks = this.props.leftColumnTasks.map(task => {
       return (
         <DraggableTaskRow
@@ -341,15 +345,13 @@ class Planning extends Component {
 
     const rightColumnTasks
       = this.props.rightColumnTasks.map(task => {
-        return (
-        <DraggableTaskRow
+        return <DraggableTaskRow
           key={`task-${task.id}`}
           task={task}
           prefix={this.props.project.prefix}
           shortcut
           card
-        />
-        );
+        />;
       });
 
     const leftEstimates = this.getEstimatesInfo(this.state.leftColumn, this.props.leftColumnTasks);
@@ -363,13 +365,17 @@ class Planning extends Component {
         <section>
           <br />
           <hr />
-          <Button
-            text="Создать спринт"
-            type="primary"
-            style={{ float: 'right', marginTop: '-.2rem' }}
-            icon="IconPlus"
-            onClick={this.handleOpenModalAddSprint}
-          />
+          {
+            isProjectAdmin
+              ? <Button
+                text="Создать спринт"
+                type="primary"
+                style={{ float: 'right', marginTop: '-.2rem' }}
+                icon="IconPlus"
+                onClick={this.handleOpenModalAddSprint}
+              />
+              : null
+          }
           <div className={css.sprintList}>
             {this.props.sprints
               ? <div>
@@ -427,7 +433,7 @@ class Planning extends Component {
                 [css.spentTime]: true
               })}>
                 <span className={css.header}>План</span>
-                {this.props.sprints.filter(this.sprintFilter).map((sprint, i)=>
+                {this.props.sprints.filter(this.sprintFilter).map((sprint, i) =>
                   <span key={`sprint-${i}`} className={css.name}>{sprint.allottedTime}</span>
                 )}
               </div>
@@ -436,7 +442,7 @@ class Planning extends Component {
                 [css.spentTime]: true
               })}>
                 <span className={css.header}>Факт</span>
-                {this.props.sprints.filter(this.sprintFilter).map((sprint, i)=>
+                {this.props.sprints.filter(this.sprintFilter).map((sprint, i) =>
                   <span key={`sprint-${i}`} className={css.name}>{0}</span>
                 )}
               </div>
@@ -576,20 +582,26 @@ class Planning extends Component {
         {/* <GanttChart /> */}
         {
           this.props.isCreateTaskModalOpen
-          ? <CreateTaskModal
-                selectedSprintValue={
-                  this.state.createTaskCallee === 'left'
-                    ? this.state.leftColumn
-                    : this.state.rightColumn
-                }
-                project={this.props.project}
-                column={this.state.createTaskCallee}
+            ? <CreateTaskModal
+              selectedSprintValue={
+                this.state.createTaskCallee === 'left'
+                  ? this.state.leftColumn
+                  : this.state.rightColumn
+              }
+              project={this.props.project}
+              column={this.state.createTaskCallee}
             />
-          : null
+            : null
         }
-        {this.state.isOpenEditModal
-        ? <SprintEditModal sprint={this.state.editSprint} handleEditSprint={this.handleEditSprint} handleCloseModal={this.closeEditSprintModal}/>
-        : null}
+        {
+          this.state.isOpenEditModal
+            ? <SprintEditModal
+              sprint={this.state.editSprint}
+              handleEditSprint={this.handleEditSprint}
+              handleCloseModal={this.closeEditSprintModal}
+            />
+            : null
+        }
       </div>
     );
   }
@@ -602,7 +614,8 @@ const mapStateToProps = state => ({
   leftColumnTasks: state.PlanningTasks.leftColumnTasks,
   rightColumnTasks: state.PlanningTasks.rightColumnTasks,
   SprintIsEditing: state.Task.SprintIsEditing,
-  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen
+  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
+  user: state.Auth.user
 });
 
 const mapDispatchToProps = {

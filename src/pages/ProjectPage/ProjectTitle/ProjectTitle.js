@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import classnames from 'classnames';
 import { Link } from 'react-router';
 import ReactTooltip from 'react-tooltip';
 import ProjectIcon from '../../../components/ProjectIcon';
@@ -23,6 +22,7 @@ class ProjectTitle extends Component {
     changeProject: PropTypes.func.isRequired,
     closePortfolioModal: PropTypes.func,
     id: PropTypes.any,
+    isProjectAdmin: PropTypes.bool,
     name: PropTypes.string.isRequired,
     openPortfolioModal: PropTypes.func,
     portfolio: PropTypes.object,
@@ -166,25 +166,24 @@ class ProjectTitle extends Component {
   render () {
     return (
       <div className={css.projectTitle}>
-        {this.props.name ? 
-          <ProjectIcon 
-            projectName={this.props.name} 
-            projectPrefix={this.props.prefix}
-          /> 
-          : 
-          <IconPreloader 
-            style={{color: 'silver', fontSize: '3rem', marginRight: 10}} 
-          />
+        {
+          this.props.name
+            ? <ProjectIcon
+              projectName={this.props.name}
+              projectPrefix={this.props.prefix}
+            />
+            : <IconPreloader
+              style={{color: 'silver', fontSize: '3rem', marginRight: 10}}
+            />
         }
         <div>
           {
-            this.props.portfolio ?
-              <span className={css.portfolio}>
-                <Link to={`/projects/portfolio/${this.props.portfolio.id}`}>{this.props.portfolio.name}</Link> 
+            this.props.portfolio
+              ? <span className={css.portfolio}>
+                <Link to={`/projects/portfolio/${this.props.portfolio.id}`}>{this.props.portfolio.name}</Link>
                 <IconEdit onClick={this.props.openPortfolioModal}/>
               </span>
-              : 
-              null
+              : null
           }
           <h1>
             <span
@@ -209,31 +208,33 @@ class ProjectTitle extends Component {
               </span>
               <span>)</span>
             </span>
-            {this.props.titleIsEditing ? (
-              <IconCheck
-                className={css.save}
-                data-tip="Сохранить"
-                onClick={this.editIconClickHandler}
-              />
-            ) : (
-              <IconEdit
-                className={css.edit}
-                data-tip="Редактировать"
-                onClick={this.editIconClickHandler}
-              />
-            )}
+            {
+              this.props.isProjectAdmin
+                ? this.props.titleIsEditing
+                  ? <IconCheck
+                    className={css.save}
+                    data-tip="Сохранить"
+                    onClick={this.editIconClickHandler}
+                  />
+                  : <IconEdit
+                    className={css.edit}
+                    data-tip="Редактировать"
+                    onClick={this.editIconClickHandler}
+                  />
+                : null
+            }
           </h1>
         </div>
         {
           this.props.PortfolioIsEditing
-          ? <PortfolioModal
+            ? <PortfolioModal
               defaultPortfolio={this.props.portfolio || null}
               projectId={this.props.projectId}
               onClose={this.props.closePortfolioModal}
               onChoose={this.props.changeProject}
               title="Изменить портфель проекта"
             />
-          : null
+            : null
         }
       </div>
     );
