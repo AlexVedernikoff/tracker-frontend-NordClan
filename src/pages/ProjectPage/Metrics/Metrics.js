@@ -7,10 +7,23 @@ import * as css from './Metrics.scss';
 import StartEndDates from './StartEndDates/StartEndDates';
 import BudgetChart from './BudgetChart/BudgetChart';
 import BugsChart from './BugsChart/BugsChart';
+import { getMetrics } from './../../../actions/Metrics';
 
 class Metrics extends Component {
   constructor(props) {
     super(props)
+    const { getMetrics, params } = this.props;
+
+    //NOTE: Example request to metrics api
+    const metricsParams = {
+      projectId: parseInt(params.projectId),
+      typeId: 6,
+      // sprintId: 1,
+      // userId: 1,
+      // startDate: '2017-11-20',
+      // endDate: '2017-12-20'
+    };
+    getMetrics(metricsParams)
   }
 
   static propTypes = {
@@ -25,7 +38,7 @@ class Metrics extends Component {
     if (this.props.createdAt) {
       return this.props.createdAt;
     } else if (this.props.sprints.length > 0) {
-      return this.props.sprints[0].factStartDate;      
+      return this.props.sprints[0].factStartDate;
     }
     return ''
   }
@@ -34,7 +47,7 @@ class Metrics extends Component {
     if (this.props.completedDate) {
       return this.props.completedDate;
     } else if (this.props.sprints.length > 0) {
-      return this.props.sprints[this.props.sprints.length - 1].factFinishDate;      
+      return this.props.sprints[this.props.sprints.length - 1].factFinishDate;
     }
     return ''
   }
@@ -66,7 +79,12 @@ const mapStateToProps = state => ({
   completedAt: state.Project.project.completedAt,
   budget: state.Project.project.budget,
   riskBudget: state.Project.project.riskBudget,
-  sprints: state.Project.project.sprints
+  sprints: state.Project.project.sprints,
+  metrics: state.Project.project.metrics
 });
 
-export default connect(mapStateToProps)(Metrics)
+const mapDispatchToProps = {
+  getMetrics
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Metrics)

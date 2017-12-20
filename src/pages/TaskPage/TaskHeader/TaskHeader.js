@@ -154,7 +154,6 @@ class TaskHeader extends Component {
     this.props.onChange(
       {
         id: this.props.task.id,
-        performerId: 0,
         statusId: TaskStatuses.CLOSED
       },
       'User'

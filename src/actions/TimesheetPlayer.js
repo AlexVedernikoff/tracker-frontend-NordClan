@@ -144,3 +144,8 @@ export const updateOnlyTimesheet = (data) => {
     error: playerDataReceiveFailed(dispatch)
   });
 };
+
+const getActiveTask = (task) => ({
+  type: TimesheetPlayer.GET_ACTIVE_TASK,
+  task
+});

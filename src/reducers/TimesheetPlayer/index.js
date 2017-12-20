@@ -5,6 +5,7 @@ import {
   TIMESHEET_PLAYER_RECEIVE_SUCCESS,
   TIMESHEET_PLAYER_UPDATE_RECEIVE_SUCCESS,
   TIMESHEET_PLAYER_TIMESHEET_UPDATE_RECEIVE_SUCCESS,
+  GET_ACTIVE_TASK
 } from '../../constants/TimesheetPlayer';
 
 import {
@@ -13,8 +14,12 @@ import {
   DELETE_TIMESHEET_SUCCESS
 } from '../../constants/Timesheets';
 
+import {
+  TASK_CHANGE_REQUEST_SUCCESS
+} from '../../constants/Task';
 
 const InitialState = {
+  activeTask: null,
   tracks: {}
 };
 
@@ -51,10 +56,6 @@ exports[TIMESHEET_PLAYER_UPDATE_RECEIVE_SUCCESS] = (state = InitialState, action
   };
 }
 
-exports[TIMESHEET_PLAYER_TIMESHEET_UPDATE_RECEIVE_SUCCESS] = (state = InitialState, action) => {
-  return onUpdateTracks(state, action);
-}
-
 exports[UPDATE_TIMESHEET_SUCCESS] = (state = InitialState, action) => {
   return onUpdateTracks(state, action);
 }
@@ -63,8 +64,11 @@ function onUpdateTracks(state, action) {
   action.timesheet.onDate = moment(action.timesheet.onDate).format('YYYY-MM-DD');
   const updatedTracks = state.tracks[action.timesheet.onDate].tracks
     .map((track) => {
-      return track.id === action.timesheet.id || track.taskId === action.timesheet.taskId
-        ? { ...track, ...action.timesheet } : track;
+      const taskId = getTaskId(action);
+      const isDraft = taskId && track.taskId === taskId && action.timesheet.isDraft;
+      return track.id === action.timesheet.id || isDraft
+        ? { ...track, ...action.timesheet }
+        : track;
     });
 
   const newState = updateTracks(state, action, updatedTracks);
@@ -89,6 +93,7 @@ exports[CREATE_TIMESHEET_SUCCESS] = (state = InititalState, action) => {
 function isDeletedDraft(track, action) {
   return track.id !== action.timesheet.id
     && track.taskId === getTaskId(action)
+    && track.taskStatusId === action.timesheet.taskStatusId
     && track.isDraft;
 }
 
@@ -129,6 +134,33 @@ function updateTracks(state, action, updatedTracks) {
     ...state,
     tracks: { ...state.tracks, ...updatedDay }
   };
+}
+
+exports[GET_ACTIVE_TASK] = (state = InitialState, action) => {
+  return {
+    ...state,
+    activeTask: action.task
+  }
+}
+
+exports[TASK_CHANGE_REQUEST_SUCCESS] = (state = InitialState, action) => {
+  const updatedState = Object.entries(state.tracks)
+    .reduce((acc, [day, { tracks, scales }]) => {
+      const updatedTracks = tracks.map(track => {
+        if (action.changedFields.id && track.taskId === action.changedFields.id) {
+          return {
+            ...track,
+            task: { ...track.task, taskStatus: action.changedFields.taskStatus }
+          }
+        }
+        return track;
+      })
+
+      acc.tracks[day] = { tracks: updatedTracks, scales }
+      return acc;
+    }, state)
+
+  return updatedState;
 }
 
 module.exports = reducerFabric(module.exports, InitialState);
