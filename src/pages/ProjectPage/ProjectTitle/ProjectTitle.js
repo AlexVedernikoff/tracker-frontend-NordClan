@@ -9,6 +9,7 @@ import PortfolioModal from '../../../components/PortfolioModal';
 import { IconEdit, IconCheck, IconPreloader } from '../../../components/Icons';
 import InlineHolder from '../../../components/InlineHolder';
 import * as css from './ProjectTitle.scss';
+import { showNotification } from '../../../actions/Notifications';
 import {
   changeProject as editProject,
   startEditing as beginEdit,
@@ -77,7 +78,14 @@ class ProjectTitle extends Component {
       this.projectName.innerText.length < 4
       || this.projectName.innerText.length > 255
     ) {
-      this.setState({ nameIsIncorrect: true });
+      this.setState({ nameIsIncorrect: true }, 
+        () => this.props.showNotification(
+          { 
+            message: `Имя проекта должно содержать от 4 до 255 символов`, 
+            type: 'error' 
+          }
+        )
+      );
     } else if (this.state.nameIsIncorrect) {
       this.setState({ nameIsIncorrect: false });
     }
@@ -86,7 +94,14 @@ class ProjectTitle extends Component {
       this.projectPrefix.innerText.length < 2
       || this.projectPrefix.innerText.length > 8
     ) {
-      this.setState({ prefixIsIncorrect: true });
+      this.setState({ prefixIsIncorrect: true },  
+        () => this.props.showNotification(
+          { 
+            message: `Префикс должен содержать от 2 до 8 символов`, 
+            type: 'error' 
+          }
+        )
+      );
     } else if (this.state.prefixIsIncorrect) {
       this.setState({ prefixIsIncorrect: false });
     }
@@ -251,7 +266,8 @@ const mapDispatchToProps = {
   startEditing: beginEdit,
   stopEditing: finishEdit,
   openPortfolioModal,
-  closePortfolioModal
+  closePortfolioModal,
+  showNotification
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectTitle);

@@ -14,6 +14,10 @@ import {
   DELETE_TIMESHEET_SUCCESS
 } from '../../constants/Timesheets';
 
+import {
+  TASK_CHANGE_REQUEST_SUCCESS
+} from '../../constants/Task';
+
 const InitialState = {
   activeTask: null,
   tracks: {}
@@ -61,7 +65,7 @@ function onUpdateTracks(state, action) {
   const updatedTracks = state.tracks[action.timesheet.onDate].tracks
     .map((track) => {
       const taskId = getTaskId(action);
-      const isDraft = taskId && track.taskId === taskId;
+      const isDraft = taskId && track.taskId === taskId && action.timesheet.isDraft;
       return track.id === action.timesheet.id || isDraft
         ? { ...track, ...action.timesheet }
         : track;
@@ -89,6 +93,7 @@ exports[CREATE_TIMESHEET_SUCCESS] = (state = InititalState, action) => {
 function isDeletedDraft(track, action) {
   return track.id !== action.timesheet.id
     && track.taskId === getTaskId(action)
+    && track.taskStatusId === action.timesheet.taskStatusId
     && track.isDraft;
 }
 
@@ -136,6 +141,26 @@ exports[GET_ACTIVE_TASK] = (state = InitialState, action) => {
     ...state,
     activeTask: action.task
   }
+}
+
+exports[TASK_CHANGE_REQUEST_SUCCESS] = (state = InitialState, action) => {
+  const updatedState = Object.entries(state.tracks)
+    .reduce((acc, [day, { tracks, scales }]) => {
+      const updatedTracks = tracks.map(track => {
+        if (action.changedFields.id && track.taskId === action.changedFields.id) {
+          return {
+            ...track,
+            task: { ...track.task, taskStatus: action.changedFields.taskStatus }
+          }
+        }
+        return track;
+      })
+
+      acc.tracks[day] = { tracks: updatedTracks, scales }
+      return acc;
+    }, state)
+
+  return updatedState;
 }
 
 module.exports = reducerFabric(module.exports, InitialState);
