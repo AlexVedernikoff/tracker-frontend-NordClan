@@ -110,7 +110,7 @@ const getTaskHistory = id => {
   });
 };
 
-const changeTask = (ChangedProperties, target) => {
+const changeTask = (ChangedProperties, target, cb) => {
   if (!ChangedProperties.id) {
     return;
   }
@@ -124,6 +124,9 @@ const changeTask = (ChangedProperties, target) => {
     response: withFinishLoading(response => {
       dispatch(successTaskChange(response.data));
       dispatch(stopTaskEditing(target));
+      if (cb) {
+        cb();
+      }
     })(dispatch),
     error: defaultErrorHandler(dispatch)
   });

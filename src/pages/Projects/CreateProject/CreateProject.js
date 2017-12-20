@@ -11,28 +11,13 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './CreateProject.scss';
 import Checkbox from '../../../components/Checkbox';
 import Select from 'react-select';
+import getPortfolios from '../../../utils/getPortfolios'
 
 class CreateProject extends Component {
   constructor (props) {
     super(props);
 
     this.validator = new Validator();
-  }
-
-  getPortfolios (name = '') {
-    return axios
-      .get(
-        `${API_URL}/portfolio`,
-        { params: { name } },
-        { withCredentials: true }
-      )
-      .then(response => response.data.data)
-      .then(portfolios => ({
-        options: portfolios.map((portfolio) => ({
-          label: portfolio.name,
-          value: portfolio.id
-        }))
-      }));
   }
 
   render () {
@@ -114,7 +99,7 @@ class CreateProject extends Component {
                   multi={false}
                   ignoreCase={false}
                   placeholder="Выберите портфель"
-                  loadOptions={this.getPortfolios}
+                  loadOptions={getPortfolios}
                   filterOption={el=>el}
                   onChange={this.props.onPortfolioSelect}
                   value={this.props.selectedPortfolio}

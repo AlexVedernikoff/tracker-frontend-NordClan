@@ -11,15 +11,16 @@ class StatusCheckbox extends React.Component {
   }
 
   render() {
-    const { checked, label, type, onChange, statusId, ...other } = this.props;
+    const { checked, label, type, onChange, statusId, disabled, ...other } = this.props;
     return (
       <label
         {...other}
         className={classnames({
           [css.statusCheckbox]: true,
-          [css.checked]: checked
+          [css.checked]: checked,
+          [css.disabled]: disabled
         })}
-        onClick={this.handlerChange}>
+        onClick={!disabled ? this.handlerChange : () => {}}>
         {type ? <span className={classnames([css.marker], [css[type]])}/> : null}
         <span>{label}</span>
       </label>
@@ -29,6 +30,7 @@ class StatusCheckbox extends React.Component {
 
 StatusCheckbox.propTypes = {
   checked: PropTypes.bool,
+  disabled: PropTypes.bool,
   label: PropTypes.string,
   onChange: PropTypes.func,
   onClick: PropTypes.func,
@@ -38,6 +40,6 @@ StatusCheckbox.propTypes = {
 
 StatusCheckbox.defaultProps = {
   onClick: () => {}
-}
+};
 
 export default StatusCheckbox;
