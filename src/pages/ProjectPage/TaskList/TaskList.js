@@ -43,9 +43,7 @@ class TaskList extends Component {
 
   componentWillReceiveProps (nextProps) {
     if (this.props.project.id !== nextProps.project.id) {
-      this.loadTasks({
-        projectId: nextProps.project.id
-      });
+      this.loadTasks();
     }
   }
 
@@ -71,17 +69,13 @@ class TaskList extends Component {
 
   closeSprintModal = () => {
     this.setState({ isSprintModalOpen: false });
-    this.loadTasks({
-      projectId: this.props.project.id
-    });
   }
 
   changeSprint = (sprintId) => {
     this.props.changeTask({
       id: this.state.changedTask,
       sprintId: sprintId
-    }, 'Sprint');
-    this.props.startTaskEditing('Sprint');
+    }, 'Sprint', this.loadTasks);
     this.closeSprintModal();
   }
 
@@ -95,17 +89,13 @@ class TaskList extends Component {
 
   closePerformerModal = () => {
     this.setState({ isPerformerModalOpen: false });
-    this.loadTasks({
-      projectId: this.props.project.id
-    });
   }
 
   changePerformer = (performerId) => {
     this.props.changeTask({
       id: this.state.changedTask,
       performerId: performerId
-    }, 'User');
-    this.props.startTaskEditing('User');
+    }, 'User', this.loadTasks);
     this.closePerformerModal();
   };
 
