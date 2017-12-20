@@ -38,9 +38,9 @@ class PortfolioEditor extends Component {
       return null
     }
   }
-  
+
   handlePortfolioChange = event => {
-    let portfolioId = event ? event.value : 0;
+    const portfolioData = this.detectPorfolioData(event)
     let value = event
     if (Array.isArray(event)) {
       value = null
@@ -48,16 +48,30 @@ class PortfolioEditor extends Component {
       this.props.changeProject(
         {
           id: this.props.project.id,
-          portfolioId
+          [portfolioData.field]: portfolioData.value
         },
         'Portfolio'
       );
     }
+
     this.setState({
       selectedPortfolio: value
     });
-
   };
+
+  detectPorfolioData = event => {
+    if (event && typeof event.value === 'string') {
+      return {
+        field: 'portfolioName',
+        value: event.value
+      }
+    }
+
+    return {
+      field: 'portfolioId',
+      value: event ? event.value : 0
+    }
+  }
 
   render() {
     const SelectAsync = Select.AsyncCreatable;
