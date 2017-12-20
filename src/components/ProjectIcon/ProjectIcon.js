@@ -19,7 +19,9 @@ const ProjectIcon = props => {
     36
   )
     .toString(16)
-    .substr(0, 6);
+    .substr(0, 6)
+    .padStart(6, '8');
+
 
   const fontColor = hexToLuma(backColor) > 0.5 ? '#333' : '#fafafa';
   const divStyle = {
