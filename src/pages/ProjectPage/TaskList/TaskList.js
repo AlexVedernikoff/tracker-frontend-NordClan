@@ -71,6 +71,9 @@ class TaskList extends Component {
 
   closeSprintModal = () => {
     this.setState({ isSprintModalOpen: false });
+    this.loadTasks({
+      projectId: this.props.project.id
+    });
   }
 
   changeSprint = (sprintId) => {
@@ -92,6 +95,9 @@ class TaskList extends Component {
 
   closePerformerModal = () => {
     this.setState({ isPerformerModalOpen: false });
+    this.loadTasks({
+      projectId: this.props.project.id
+    });
   }
 
   changePerformer = (performerId) => {
