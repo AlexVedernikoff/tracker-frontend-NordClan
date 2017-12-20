@@ -75,6 +75,7 @@ class Info extends Component {
                   key={`${i}-tag`}
                   taggable='project'
                   taggableId={this.props.id}
+                  blocked={!isProjectAdmin}
                 />
               )
               : null

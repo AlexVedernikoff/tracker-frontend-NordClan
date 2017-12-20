@@ -25,7 +25,7 @@ import SprintEditModal from '../../../components/SprintEditModal';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 import { IconEdit } from '../../../components/Icons';
 import { BACKLOG_ID } from '../../../constants/Sprint';
-import { ADMIN } from '../../../constants/Roles';
+import { ADMIN, VISOR } from '../../../constants/Roles';
 
 const getSprintTime = sprint =>
   `${moment(sprint.factStartDate).format('DD.MM')}
@@ -331,6 +331,7 @@ class Planning extends Component {
 
   render () {
     const isProjectAdmin = this.checkIsAdminInProject();
+    const isVisor = this.props.user.globalRole === VISOR;
 
     const leftColumnTasks = this.props.leftColumnTasks.map(task => {
       return (
@@ -483,102 +484,106 @@ class Planning extends Component {
               </div>
             </div>
           </div>
-          <Row>
-            <Col xs={12} sm={6}>
-              <div className={css.headerColumn}>
-                <div className={css.selectWrapper}>
-                  <SelectDropdown
-                    name="leftColumn"
-                    placeholder="Введите название спринта..."
-                    multi={false}
-                    value={this.state.leftColumn}
-                    onChange={e =>
-                      this.selectValue(
-                        e !== null ? e.value : null,
-                        'leftColumn'
-                      )}
-                    noResultsText="Нет результатов"
-                    options={leftColumnSprints}
-                  />
-                </div>
-                <Button
-                  onClick={this.openModal}
-                  type="bordered"
-                  text="Создать задачу"
-                  icon="IconPlus"
-                  name="left"
-                  className={css.button}
-                  data-tip="Создать задачу"
-                />
-              </div>
-              <div
-                className={css.progressBarWrapper}
-                data-tip={leftEstimates.summary}
-              >
-                <div
-                  className={classnames({
-                    [css.progressBar]: leftEstimates.active,
-                    [css.exceeded]: leftEstimates.exceeded
-                  })}
-                  style={{ width: leftEstimates.width }}
-                />
-              </div>
-              {this.state.leftColumn || this.state.leftColumn === 0
-                ? <SprintColumn
-                  onDrop={this.dropTask}
-                  sprint={this.state.leftColumn}
-                  tasks={leftColumnTasks}
-                />
-                : null}
-            </Col>
-            <Col xs={12} sm={6}>
-              <div className={css.headerColumn}>
-                <div className={css.selectWrapper}>
-                  <SelectDropdown
-                    name="rightColumn"
-                    placeholder="Введите название спринта..."
-                    multi={false}
-                    value={this.state.rightColumn}
-                    onChange={e =>
-                      this.selectValue(
-                        e !== null ? e.value : null,
-                        'rightColumn'
-                      )}
-                    noResultsText="Нет результатов"
-                    options={rightColumnSprints}
-                  />
-                </div>
-                <Button
-                  onClick={this.openModal}
-                  type="bordered"
-                  text="Создать задачу"
-                  icon="IconPlus"
-                  name="right"
-                  className={css.button}
-                  data-tip="Создать задачу"
-                />
-              </div>
-              <div
-                className={css.progressBarWrapper}
-                data-tip={rightEstimates.summary}
-              >
-                <div
-                  className={classnames({
-                    [css.progressBar]: rightEstimates.active,
-                    [css.exceeded]: rightEstimates.exceeded
-                  })}
-                  style={{ width: rightEstimates.width }}
-                />
-              </div>
-              {this.state.rightColumn || this.state.rightColumn === 0
-                ? <SprintColumn
-                  onDrop={this.dropTask}
-                  sprint={this.state.rightColumn}
-                  tasks={rightColumnTasks}
-                />
-                : null}
-            </Col>
-          </Row>
+          {
+            !isVisor
+              ? <Row>
+                <Col xs={12} sm={6}>
+                  <div className={css.headerColumn}>
+                    <div className={css.selectWrapper}>
+                      <SelectDropdown
+                        name="leftColumn"
+                        placeholder="Введите название спринта..."
+                        multi={false}
+                        value={this.state.leftColumn}
+                        onChange={e =>
+                          this.selectValue(
+                            e !== null ? e.value : null,
+                            'leftColumn'
+                          )}
+                        noResultsText="Нет результатов"
+                        options={leftColumnSprints}
+                      />
+                    </div>
+                    <Button
+                      onClick={this.openModal}
+                      type="bordered"
+                      text="Создать задачу"
+                      icon="IconPlus"
+                      name="left"
+                      className={css.button}
+                      data-tip="Создать задачу"
+                    />
+                  </div>
+                  <div
+                    className={css.progressBarWrapper}
+                    data-tip={leftEstimates.summary}
+                  >
+                    <div
+                      className={classnames({
+                        [css.progressBar]: leftEstimates.active,
+                        [css.exceeded]: leftEstimates.exceeded
+                      })}
+                      style={{ width: leftEstimates.width }}
+                    />
+                  </div>
+                  {this.state.leftColumn || this.state.leftColumn === 0
+                    ? <SprintColumn
+                      onDrop={this.dropTask}
+                      sprint={this.state.leftColumn}
+                      tasks={leftColumnTasks}
+                    />
+                    : null}
+                </Col>
+                <Col xs={12} sm={6}>
+                  <div className={css.headerColumn}>
+                    <div className={css.selectWrapper}>
+                      <SelectDropdown
+                        name="rightColumn"
+                        placeholder="Введите название спринта..."
+                        multi={false}
+                        value={this.state.rightColumn}
+                        onChange={e =>
+                          this.selectValue(
+                            e !== null ? e.value : null,
+                            'rightColumn'
+                          )}
+                        noResultsText="Нет результатов"
+                        options={rightColumnSprints}
+                      />
+                    </div>
+                    <Button
+                      onClick={this.openModal}
+                      type="bordered"
+                      text="Создать задачу"
+                      icon="IconPlus"
+                      name="right"
+                      className={css.button}
+                      data-tip="Создать задачу"
+                    />
+                  </div>
+                  <div
+                    className={css.progressBarWrapper}
+                    data-tip={rightEstimates.summary}
+                  >
+                    <div
+                      className={classnames({
+                        [css.progressBar]: rightEstimates.active,
+                        [css.exceeded]: rightEstimates.exceeded
+                      })}
+                      style={{ width: rightEstimates.width }}
+                    />
+                  </div>
+                  {this.state.rightColumn || this.state.rightColumn === 0
+                    ? <SprintColumn
+                      onDrop={this.dropTask}
+                      sprint={this.state.rightColumn}
+                      tasks={rightColumnTasks}
+                    />
+                    : null}
+                </Col>
+              </Row>
+              : null
+          }
         </section>
         {/* <GanttChart /> */}
         {
