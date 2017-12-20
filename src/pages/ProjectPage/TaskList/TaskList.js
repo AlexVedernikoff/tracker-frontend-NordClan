@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
-
 import TaskRow from '../../../components/TaskRow';
 import InlineHolder from '../../../components/InlineHolder';
 import Priority from '../../../components/Priority';
@@ -15,8 +14,10 @@ import * as css from './TaskList.scss';
 import TagsFilter from '../../../components/TagsFilter';
 import PerformerFilter from '../../../components/PerformerFilter';
 import _ from 'lodash';
-
+import PerformerModal from '../../../components/PerformerModal';
+import SprintModal from '../../../components/SprintModal';
 import getTasks from '../../../actions/Tasks';
+import { changeTask, startTaskEditing } from '../../../actions/Task';
 
 class TaskList extends Component {
 
@@ -26,6 +27,8 @@ class TaskList extends Component {
     this.state = {
       ...this.initialFilters,
       activePage: 1,
+      isPerformerModalOpen: false,
+      isSprintModalOpen: false,
       changedFilters: {
         projectId
       }
@@ -40,9 +43,7 @@ class TaskList extends Component {
 
   componentWillReceiveProps (nextProps) {
     if (this.props.project.id !== nextProps.project.id) {
-      this.loadTasks({
-        projectId: nextProps.project.id
-      });
+      this.loadTasks();
     }
   }
 
@@ -56,6 +57,53 @@ class TaskList extends Component {
     authorId: null,
     tags: [],
     changedFilters: {}
+  }
+
+  openSprintModal = (taskId, sprintId) =>{
+    this.setState({
+      isSprintModalOpen: true,
+      sprintId: sprintId,
+      changedTask: taskId
+    });
+  }
+
+  closeSprintModal = () => {
+    this.setState({ isSprintModalOpen: false });
+  }
+
+  changeSprint = (sprintId) => {
+    this.props.changeTask({
+      id: this.state.changedTask,
+      sprintId: sprintId
+    }, 'Sprint', this.loadTasks);
+    this.closeSprintModal();
+  }
+
+  openPerformerModal = (taskId, performerId) => {
+    this.setState({
+      isPerformerModalOpen: true,
+      performer: performerId,
+      changedTask: taskId
+    });
+  }
+
+  closePerformerModal = () => {
+    this.setState({ isPerformerModalOpen: false });
+  }
+
+  changePerformer = (performerId) => {
+    this.props.changeTask({
+      id: this.state.changedTask,
+      performerId: performerId
+    }, 'User', this.loadTasks);
+    this.closePerformerModal();
+  };
+
+  getUsers = () => {
+    return this.props.project.users.map((user) => ({
+      value: user.id,
+      label: user.fullNameRu
+    }));
   }
 
   changeSingleFilter = (option, name) => {
@@ -186,7 +234,6 @@ class TaskList extends Component {
       authorId,
       tags
     } = this.state;
-
     const statusOptions = this.createOptions(statuses);
     const typeOptions = this.createOptions(taskTypes);
     const authorOptions = this.createOptions(project.users, 'fullNameRu');
@@ -305,15 +352,17 @@ class TaskList extends Component {
 
           {
             isLoading
-              ? taskHolder
-              : tasks.map((task) =>
-              <TaskRow
-                key={`task-${task.id}`}
-                task={task}
-                prefix={project.prefix}
-                onClickTag={this.onClickTag}
-              />
-            )
+            ? taskHolder
+            : tasks.map((task) =>
+                <TaskRow
+                  key={`task-${task.id}`}
+                  task={task}
+                  prefix={project.prefix}
+                  onClickTag={this.onClickTag}
+                  onOpenPerformerModal={this.openPerformerModal}
+                  onOpenSprintModal={this.openSprintModal}
+                />
+              )
           }
 
           <hr/>
@@ -326,6 +375,28 @@ class TaskList extends Component {
             : null
           }
         </section>
+        {
+          this.state.isPerformerModalOpen
+          ? <PerformerModal
+              defaultUser={this.state.performer}
+              onChoose={this.changePerformer}
+              onClose={this.closePerformerModal}
+              title="Изменить исполнителя задачи"
+              users={this.getUsers()}
+            />
+          : null
+        }
+        {
+          this.state.isSprintModalOpen
+          ? <SprintModal
+              defaultSprint={this.state.sprintId}
+              onChoose={this.changeSprint}
+              onClose={this.closeSprintModal}
+              title="Изменить спринт задачи"
+              sprints={this.props.project.sprints}
+            />
+          : null
+        }
       </div>
     );
   }
@@ -338,7 +409,9 @@ TaskList.propTypes = {
   project: PropTypes.object.isRequired,
   statuses: PropTypes.array,
   taskTypes: PropTypes.array,
-  tasksList: PropTypes.array.isRequired
+  tasksList: PropTypes.array.isRequired,
+  changeTask: PropTypes.func.isRequired,
+  startTaskEditing: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -350,7 +423,7 @@ const mapStateToProps = state => ({
   taskTypes: state.Dictionaries.taskTypes
 });
 
-const mapDispatchToProps = { getTasks };
+const mapDispatchToProps = { getTasks, startTaskEditing, changeTask };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskList);
 
