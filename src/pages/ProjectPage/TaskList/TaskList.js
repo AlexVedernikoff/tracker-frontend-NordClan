@@ -53,6 +53,7 @@ class TaskList extends Component {
     filterByName: '',
     sprintId: null,
     performerId: null,
+    authorId: null,
     tags: [],
     changedFilters: {}
   }
@@ -158,11 +159,11 @@ class TaskList extends Component {
     this.setState(this.initialFilters, this.loadTasks);
   }
 
-  createOptions = (array) => {
+  createOptions = (array, labelField = 'name') => {
     return array.map(
       element => ({
         value: element.id,
-        label: element.name
+        label: element[labelField]
       })
     );
   }
@@ -182,32 +183,34 @@ class TaskList extends Component {
       statusId,
       sprintId,
       performerId,
+      authorId,
       tags
     } = this.state;
 
     const statusOptions = this.createOptions(statuses);
     const typeOptions = this.createOptions(taskTypes);
+    const authorOptions = this.createOptions(project.users, 'fullNameRu');
     const isFilter = Object.keys(this.state.changedFilters).length;
     const isLoading = isReceiving && !tasks.length;
     const taskHolder
-    = <div style={{marginBottom: '1rem'}}>
-        <hr style={{margin: '0 0 1rem 0'}}/>
-        <Row>
-          <Col xs={12} sm={6}>
-            <InlineHolder length="80%"/>
-            <InlineHolder length="50%"/>
-          </Col>
-          <Col xs={12} sm>
-            <InlineHolder length="50%"/>
-            <InlineHolder length="70%"/>
-            <InlineHolder length="30%"/>
-          </Col>
-          <Col xs>
-            <InlineHolder length="20%"/>
-            <InlineHolder length="20%"/>
-          </Col>
-        </Row>
-      </div>;
+      = <div style={{marginBottom: '1rem'}}>
+      <hr style={{margin: '0 0 1rem 0'}}/>
+      <Row>
+        <Col xs={12} sm={6}>
+          <InlineHolder length="80%"/>
+          <InlineHolder length="50%"/>
+        </Col>
+        <Col xs={12} sm>
+          <InlineHolder length="50%"/>
+          <InlineHolder length="70%"/>
+          <InlineHolder length="30%"/>
+        </Col>
+        <Col xs>
+          <InlineHolder length="20%"/>
+          <InlineHolder length="20%"/>
+        </Col>
+      </Row>
+    </div>;
 
     return (
       <div>
@@ -257,7 +260,18 @@ class TaskList extends Component {
                   onChange={(options) => this.changeMultiFilter(options, 'statusId')}
                 />
               </Col>
-              <Col xs={12} sm={6}>
+              <Col xs={12} sm={3}>
+                <SelectDropdown
+                  name="author"
+                  placeholder="Автор"
+                  multi={false}
+                  value={authorId}
+                  onChange={(option) => this.changeSingleFilter(option, 'authorId')}
+                  noResultsText="Нет результатов"
+                  options={authorOptions}
+                />
+              </Col>
+              <Col xs={12} sm={3}>
                 <SprintSelector
                   value={sprintId}
                   sprints={project.sprints}
@@ -291,24 +305,24 @@ class TaskList extends Component {
 
           {
             isLoading
-            ? taskHolder
-            : tasks.map((task) =>
-                <TaskRow
-                  key={`task-${task.id}`}
-                  task={task}
-                  prefix={project.prefix}
-                  onClickTag={this.onClickTag}
-                />
-              )
+              ? taskHolder
+              : tasks.map((task) =>
+              <TaskRow
+                key={`task-${task.id}`}
+                task={task}
+                prefix={project.prefix}
+                onClickTag={this.onClickTag}
+              />
+            )
           }
 
           <hr/>
           { this.props.pagesCount > 1
             ? <Pagination
-                itemsCount={this.props.pagesCount}
-                activePage={this.state.activePage}
-                onItemClick={this.handlePaginationClick}
-              />
+              itemsCount={this.props.pagesCount}
+              activePage={this.state.activePage}
+              onItemClick={this.handlePaginationClick}
+            />
             : null
           }
         </section>
