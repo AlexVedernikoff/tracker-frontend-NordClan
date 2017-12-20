@@ -5,6 +5,7 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import { API_URL } from '../../../../constants/Settings';
+import { ADMIN } from '../../../../constants/Roles';
 import { bindUserToProject } from '../../../../actions/Project';
 import { debounce } from 'lodash';
 import ReactTooltip from 'react-tooltip';
@@ -99,7 +100,8 @@ class ParticipantEditor extends Component {
   };
 
   checkIsAdminInProject = () => {
-    return this.props.user.projectsRoles && this.props.user.projectsRoles.admin.indexOf(this.props.id) !== -1;
+    return this.props.user.projectsRoles && this.props.user.projectsRoles.admin.indexOf(this.props.id) !== -1
+      || this.props.user.globalRole === ADMIN;
   };
 
   render () {

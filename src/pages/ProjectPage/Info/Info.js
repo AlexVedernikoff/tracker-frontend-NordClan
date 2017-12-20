@@ -15,6 +15,7 @@ import {
   uploadAttachments,
   removeAttachment
 } from '../../../actions/Project';
+import { ADMIN } from '../../../constants/Roles';
 
 class Info extends Component {
   constructor (props) {
@@ -50,7 +51,8 @@ class Info extends Component {
   };
 
   checkIsAdminInProject = () => {
-    return this.props.user.projectsRoles && this.props.user.projectsRoles.admin.indexOf(this.props.id) !== -1;
+    return this.props.user.projectsRoles && this.props.user.projectsRoles.admin.indexOf(this.props.id) !== -1
+      || this.props.user.globalRole === ADMIN;
   };
 
   render () {

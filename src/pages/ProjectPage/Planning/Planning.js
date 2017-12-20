@@ -25,7 +25,7 @@ import SprintEditModal from '../../../components/SprintEditModal';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 import { IconEdit } from '../../../components/Icons';
 import { BACKLOG_ID } from '../../../constants/Sprint';
-
+import { ADMIN } from '../../../constants/Roles';
 
 const getSprintTime = sprint =>
   `${moment(sprint.factStartDate).format('DD.MM')}
@@ -325,7 +325,8 @@ class Planning extends Component {
   };
 
   checkIsAdminInProject = () => {
-    return this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1;
+    return this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1
+      || this.props.user.globalRole === ADMIN;
   };
 
   render () {

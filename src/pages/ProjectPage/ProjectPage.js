@@ -9,6 +9,7 @@ import * as css from './ProjectPage.scss';
 import ProjectTitle from './ProjectTitle';
 
 import { getProjectInfo as getProject } from '../../actions/Project';
+import { ADMIN } from '../../constants/Roles';
 
 class ProjectPage extends Component {
   static propTypes = {
@@ -16,7 +17,7 @@ class ProjectPage extends Component {
     getProjectInfo: PropTypes.func,
     params: PropTypes.object,
     project: PropTypes.object,
-    user: PropTypes.object.isRequired,
+    user: PropTypes.object.isRequired
   };
 
   constructor (props) {
@@ -29,7 +30,8 @@ class ProjectPage extends Component {
   }
 
   checkIsAdminInProject = () => {
-    return this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1;
+    return this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1
+      || this.props.user.globalRole === ADMIN;
   };
 
   render () {

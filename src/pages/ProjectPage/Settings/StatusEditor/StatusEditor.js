@@ -5,6 +5,7 @@ import { Row } from 'react-flexbox-grid/lib/index';
 import StatusCheckbox from './../../../Projects/StatusCheckbox';
 import * as css from './StatusEditor.scss';
 import { updateProjectStatus } from '../../../../actions/ProjectStatus';
+import { ADMIN } from '../../../../constants/Roles';
 
 class StatusEditor extends React.Component {
   constructor (props) {
@@ -22,7 +23,8 @@ class StatusEditor extends React.Component {
   };
 
   checkIsAdminInProject = () => {
-    return this.props.user.projectsRoles && this.props.user.projectsRoles.admin.indexOf(this.props.projectId) !== -1;
+    return this.props.user.projectsRoles && this.props.user.projectsRoles.admin.indexOf(this.props.projectId) !== -1
+      || this.props.user.globalRole === ADMIN;
   };
 
   render () {
