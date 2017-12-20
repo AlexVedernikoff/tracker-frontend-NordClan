@@ -241,7 +241,7 @@ class ProjectTitle extends Component {
           </h1>
         </div>
         {
-          this.props.PortfolioIsEditing
+          this.props.isProjectAdmin && this.props.PortfolioIsEditing
             ? <PortfolioModal
               defaultPortfolio={this.props.portfolio || null}
               projectId={this.props.projectId}
