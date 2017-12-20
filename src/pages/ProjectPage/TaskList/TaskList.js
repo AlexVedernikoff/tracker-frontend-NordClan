@@ -27,23 +27,17 @@ class TaskList extends Component {
     this.state = {
       ...this.initialFilters,
       activePage: 1,
-<<<<<<< HEAD
       isPerformerModalOpen: false,
       isSprintModalOpen: false,
-      changedFilters: {}
-=======
       changedFilters: {
         projectId
       }
->>>>>>> origin/develop
     };
   }
 
   componentDidMount () {
     if (this.props.project.id) {
-      this.loadTasks({
-        projectId: nextProps.project.id
-      });
+      this.loadTasks();
     }
   }
 
@@ -68,7 +62,7 @@ class TaskList extends Component {
   }
 
   openSprintModal = (taskId, sprintId) =>{
-    this.setState({ 
+    this.setState({
       isSprintModalOpen: true,
       sprintId: sprintId,
       changedTask: taskId
@@ -93,7 +87,7 @@ class TaskList extends Component {
       isPerformerModalOpen: true,
       performer: performerId,
       changedTask: taskId
-    })
+    });
   }
 
   closePerformerModal = () => {
@@ -362,7 +356,6 @@ class TaskList extends Component {
 
           {
             isLoading
-<<<<<<< HEAD
             ? taskHolder
             : tasks.map((task) =>
                 <TaskRow
@@ -374,17 +367,6 @@ class TaskList extends Component {
                   onOpenSprintModal={this.openSprintModal}
                 />
               )
-=======
-              ? taskHolder
-              : tasks.map((task) =>
-              <TaskRow
-                key={`task-${task.id}`}
-                task={task}
-                prefix={project.prefix}
-                onClickTag={this.onClickTag}
-              />
-            )
->>>>>>> origin/develop
           }
 
           <hr/>
@@ -396,7 +378,7 @@ class TaskList extends Component {
             />
             : null
           }
-        </section> 
+        </section>
         {
           this.state.isPerformerModalOpen
           ? <PerformerModal
@@ -430,7 +412,7 @@ TaskList.propTypes = {
   pagesCount: PropTypes.number.isRequired,
   project: PropTypes.object.isRequired,
   statuses: PropTypes.array,
-  taskTypes: PropTypes.array, 
+  taskTypes: PropTypes.array,
   tasksList: PropTypes.array.isRequired,
   changeTask: PropTypes.func.isRequired,
   startTaskEditing: PropTypes.func.isRequired
@@ -442,7 +424,7 @@ const mapStateToProps = state => ({
   isReceiving: state.TaskList.isReceiving,
   project: state.Project.project,
   statuses: state.Dictionaries.taskStatuses,
-  taskTypes: state.Dictionaries.taskTypes,
+  taskTypes: state.Dictionaries.taskTypes
 });
 
 const mapDispatchToProps = { getTasks, startTaskEditing, changeTask };
