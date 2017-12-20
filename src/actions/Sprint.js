@@ -76,7 +76,7 @@ export const deleteSprint = (id) => {
   };
 };
 
-export const createSprint = (name, id, dateForm, dateTo, allottedTime, budget, riskBudget) => {
+export const createSprint = (name, projectId, factStartDate, factFinishDate, allottedTime, budget, riskBudget) => {
   const URL = `${API_URL}/sprint/`;
   return dispatch => {
     dispatch(createSprintStart());

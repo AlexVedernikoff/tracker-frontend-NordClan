@@ -18,7 +18,7 @@ import * as css from './AgileBoard.scss';
 
 import getTasks from '../../../actions/Tasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
-import { openCreateTaskModal } from '../../../actions/Project';
+import { openCreateTaskModal, getProjectUsers } from '../../../actions/Project';
 
 const filterTasks = (array) => {
   const taskArray = {
@@ -216,12 +216,14 @@ class AgileBoard extends Component {
       id: task.id,
       statusId: getNewStatus(task.statusId, phase)
     }, 'Status');
-    if ( !(phase === 'New' || phase === 'Done') ) {
-      const performerId = this.props.sprintTasks.find((sprintTask) => {
+    if (!(phase === 'New' || phase === 'Done')) {
+      const taskProps = this.props.sprintTasks.find((sprintTask) => {
         return task.id === sprintTask.id;
-      }).performerId || null;
-      this.openPerformerModal(task.id, performerId);
-    } 
+      });
+      const performerId = taskProps.performerId || null;
+      const projectId = taskProps.projectId || null;
+      this.openPerformerModal(task.id, performerId, projectId);
+    }
     this.props.startTaskEditing('Status');
   };
 
@@ -234,7 +236,10 @@ class AgileBoard extends Component {
     this.props.startTaskEditing('Status');
   };
 
-  openPerformerModal = (taskId, performerId) => {
+  openPerformerModal = (taskId, performerId, projectId) => {
+    if (this.props.myTaskBoard) {
+      this.props.getProjectUsers(projectId);
+    }
     this.setState({
       isModalOpen: true,
       performer: performerId,
@@ -310,10 +315,10 @@ class AgileBoard extends Component {
   };
 
   getUsers = () => {
-    return !this.props.myTaskBoard ? this.props.project.users.map((user) => ({
+    return this.props.project.users.map((user) => ({
       value: user.id,
       label: user.fullNameRu
-    })) : null;
+    }));
   };
 
   getIsOnlyMine = () => {
@@ -366,7 +371,12 @@ class AgileBoard extends Component {
           {
             !this.props.myTaskBoard
               ? <Row className={css.filtersRow}>
-                <Checkbox checked={this.state.isOnlyMine} onChange={this.toggleMine} label="Только мои задачи" style={{alignItems: 'center', padding: '0.5rem 1.5rem'}} />
+                <Checkbox
+                  checked={this.state.isOnlyMine}
+                  onChange={this.toggleMine}
+                  label="Только мои задачи"
+                  className={css.filterCheckbox}
+                />
                 <Col xs style={{minWidth: 200}}>
                   <SelectDropdown
                     name="filterTags"
@@ -440,7 +450,8 @@ AgileBoard.propTypes = {
   sprintTasks: PropTypes.array,
   sprints: PropTypes.array,
   startTaskEditing: PropTypes.func,
-  user: PropTypes.object
+  user: PropTypes.object,
+  getProjectUsers: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -458,7 +469,8 @@ const mapDispatchToProps = {
   getTasks,
   changeTask,
   startTaskEditing,
-  openCreateTaskModal
+  openCreateTaskModal,
+  getProjectUsers
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);
