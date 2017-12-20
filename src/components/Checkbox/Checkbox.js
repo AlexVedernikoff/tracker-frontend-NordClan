@@ -16,7 +16,7 @@ const Checkbox = (props) => {
   } = props;
 
   return (
-    <label {...other} className={classnames({[css.wrapper]: true, className, checked: checked, [css.disabled]: disabled})}>
+    <label {...other} className={classnames({[css.wrapper]: true, [className]: true, checked: checked, [css.disabled]: disabled})}>
       <input type="checkbox" checked={checked} onChange={onChange} disabled={disabled}/>
       <span className={classnames({[css.pseudoSquare]: true, [css.withText]: !!label})}>
         <IconCheck />
