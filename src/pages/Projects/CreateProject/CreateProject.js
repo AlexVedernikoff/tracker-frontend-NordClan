@@ -10,7 +10,6 @@ import Validator from '../../../components/ValidatedInput/Validator';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './CreateProject.scss';
 import Checkbox from '../../../components/Checkbox';
-import ErrorText from '../../../components/ErrorText';
 import Select from 'react-select';
 
 class CreateProject extends Component {
@@ -37,7 +36,7 @@ class CreateProject extends Component {
   }
 
   render () {
-    const { isOpen, onRequestClose, projectError } = this.props;
+    const { isOpen, onRequestClose, prefixErrorText } = this.props;
 
     const formLayout = {
       firstCol: 5,
@@ -45,8 +44,6 @@ class CreateProject extends Component {
     };
 
     const SelectAsync = Select.AsyncCreatable;
-
-    const errorMessage = projectError ? <ErrorText message={projectError.message}/> : null;
 
     return (
       <Modal
@@ -96,6 +93,7 @@ class CreateProject extends Component {
                       onBlur={handleBlur}
                       shouldMarkError={shouldMarkError}
                       errorText="Длина менее 2 символов"
+                      backendErrorText={prefixErrorText}
                     />
                   ),
                   'projectPrefix',
@@ -139,7 +137,6 @@ class CreateProject extends Component {
             </Row>
           </label> */}
           <div className={css.buttonsContainer}>
-            {errorMessage}
             <Button
               text="Создать проект"
               htmlType="submit"
@@ -152,7 +149,7 @@ class CreateProject extends Component {
               htmlType="button"
               type="green-lighten"
               onClick={this.props.onSubmitAndOpen}
-              disabled = {!(this.props.validateProjectName && this.props.validateProjectPrefix)}              
+              disabled = {!(this.props.validateProjectName && this.props.validateProjectPrefix)}
             />
           </div>
         </form>
@@ -169,7 +166,7 @@ CreateProject.propTypes = {
   onRequestClose: PropTypes.func,
   onSubmit: PropTypes.func,
   onSubmitAndOpen: PropTypes.func,
-  projectError: PropTypes.object,
+  prefixErrorText: PropTypes.string,
   selectedPortfolio: PropTypes.object
 };
 

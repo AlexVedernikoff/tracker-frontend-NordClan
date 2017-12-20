@@ -96,8 +96,11 @@ export const requestProjectCreate = (project, openProjectPage) => {
       })
       .catch(error => {
         dispatch(finishLoading());
-        dispatch(projectCreateFail(error.response.data));
-        dispatch(showNotification({ message: error.message, type: 'error' }));
+        if (error.response.status === 400) {
+          dispatch(projectCreateFail(error.response.data));
+        } else {
+          dispatch(showNotification({message: error.message, type: 'error'}));
+        }
       })
       .then(response => {
         if (response && response.status === 200) {
