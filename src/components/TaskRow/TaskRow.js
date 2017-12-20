@@ -84,15 +84,15 @@ class TaskRow extends React.Component {
             <div className={css.metabox}>
               <p className={css.taskMeta}>
                 <span>Спринт:</span>
-                <a onClick = {this.handleSprintClick}>
+                <button onClick = {this.handleSprintClick}>
                   { task.sprint ? task.sprint.name : 'Backlog' }
-                </a>
+                </button>
               </p>
               <p className={css.taskMeta}>
                 <span>Исполнитель:</span>
-                <a onClick = {this.handlePerformerClick}>
-                  { task.performer ? task.performer.fullNameRu: 'Не назначено' }
-                </a>
+                <button onClick = {this.handlePerformerClick}>
+                  { task.performer ? task.performer.fullNameRu : 'Не назначено' }
+                </button>
               </p>
               <p className={css.taskMeta}>
                 <span>Автор:</span>
