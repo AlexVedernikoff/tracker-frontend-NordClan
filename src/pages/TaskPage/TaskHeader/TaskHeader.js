@@ -175,22 +175,22 @@ class TaskHeader extends Component {
           text="Создать задачу"
           icon="IconPlus"
           name="right"
-          style={{ float: 'right' }}
+          addedClassNames={{[css.btnAddTask]: true}}
         />
         {
           task.parentTask
-          ? <div className={css.parentTask}>
+            ? <div className={css.parentTask}>
               <div className={css.prefix} data-tip="Родительская задача ">
                 {task.project.prefix}-{task.parentTask.id}
               </div>
-               <Link to={`/projects/${task.project.id}/tasks/${task.parentTask.id}`} className={css.parentTaskName}>
-                  {task.parentTask.name}
-                </Link>
+              <Link to={`/projects/${task.project.id}/tasks/${task.parentTask.id}`} className={css.parentTaskName}>
+                {task.parentTask.name}
+              </Link>
               <div className={css.parentTaskLink}>
                 <div className={css.tasksPointers} />
               </div>
             </div>
-          : null
+            : null
         }
 
         <div className={css.taskTopInfo}>
@@ -206,16 +206,20 @@ class TaskHeader extends Component {
                 : null
             }
           </CopyThis>
-          {task.typeId && getTypeById(task.typeId, taskTypes)
-            ? <div>
+          {
+            task.typeId && getTypeById(task.typeId, taskTypes)
+              ? <div>
                 <span>
                   {getTypeById(task.typeId, taskTypes)}
                 </span>
               </div>
-            : null}
-          {task.prioritiesId
-            ? <Priority taskId={task.id} priority={task.prioritiesId} onChange={this.props.onChange} />
-            : null}
+              : null
+          }
+          {
+            task.prioritiesId
+              ? <Priority taskId={task.id} priority={task.prioritiesId} onChange={this.props.onChange} />
+              : null
+          }
         </div>
         <TaskTitle name={task.name} id={task.id} />
         <div className={css.progressButtons}>
@@ -238,20 +242,20 @@ class TaskHeader extends Component {
                 ? this.handleOpenCancelModal
                 : null
             }
-              />
+          />
           <ButtonGroup type="lifecircle" stage="full">
             <Button
               text="New"
               type={
-                      task.statusId === TaskStatuses.NEW
-                      ? 'green'
-                      : 'bordered'
-                    }
+                task.statusId === TaskStatuses.NEW
+                  ? 'green'
+                  : 'bordered'
+              }
               data-tip={
-                      task.statusId === TaskStatuses.NEW
-                      ? null
-                      : 'Перевести в стадию New'
-                    }
+                task.statusId === TaskStatuses.NEW
+                  ? null
+                  : 'Перевести в стадию New'
+              }
               data-place="bottom"
               onClick={this.handleChangeStatus}
             />
@@ -282,15 +286,15 @@ class TaskHeader extends Component {
             <Button
               text="Done"
               type={
-                      task.statusId === TaskStatuses.DONE
-                      ? 'green'
-                      : 'bordered'
-                    }
+                task.statusId === TaskStatuses.DONE
+                  ? 'green'
+                  : 'bordered'
+              }
               data-tip={
-                      task.statusId === TaskStatuses.DONE
-                      ? null
-                      : 'Перевести в стадию Done'
-                    }
+                task.statusId === TaskStatuses.DONE
+                  ? null
+                  : 'Перевести в стадию Done'
+              }
               data-place="bottom"
               onClick={this.handleChangeStatus}
             />
@@ -314,27 +318,28 @@ class TaskHeader extends Component {
         </div>
         <hr />
 
-        { this.state.isCancelModalOpen
-          ? <ConfirmModal
+        {
+          this.state.isCancelModalOpen
+            ? <ConfirmModal
               isOpen
               contentLabel="modal"
               text="Вы действительно хотите отменить задачу?"
               onCancel={this.handleCloseCancelModal}
               onConfirm={this.handleCancelTask}
             />
-          : null
+            : null
         }
 
         {
           this.state.isPerformerModalOpen
-          ? <PerformerModal
+            ? <PerformerModal
               defaultUser={task.performer ? task.performer.id : null}
               onChoose={this.changePerformer}
               onClose={this.handleCloseModal}
               title={this.state.modalTitle}
               users={users}
             />
-          : null
+            : null
         }
       </div>
     );
