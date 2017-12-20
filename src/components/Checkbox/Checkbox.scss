@@ -60,6 +60,17 @@
   }
 }
 
+.disabled {
+  cursor: default;
+
+  &:hover {
+    .pseudoSquare {
+      background: none;
+      transition: none;
+    }
+  }
+}
+
 .withText {
   margin-right: 8px;
 }
