@@ -152,7 +152,6 @@ class Details extends Component {
   }
 
   onTooltipVisibleChange = () => {
-    const currentStatus = this.state.spentRequestStatus;
     if (this.state.spentRequestStatus === spentRequestStatus.READY) {
       this.setState({
         spentRequestStatus: spentRequestStatus.REQUESTED
