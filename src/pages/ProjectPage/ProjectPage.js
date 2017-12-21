@@ -86,9 +86,9 @@ class ProjectPage extends Component {
           </Link>
           <Link
             activeClassName="active"
-            to={`/projects/${this.props.params.projectId}/metrics`}
+            to={`/projects/${this.props.params.projectId}/analytics`}
           >
-            Метрики по проекту
+            Аналитика
           </Link>
         </RouteTabs>
 
