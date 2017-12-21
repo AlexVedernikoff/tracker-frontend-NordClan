@@ -139,11 +139,7 @@ class Details extends Component {
     .map(spent => ({job: getJobById(spent.taskStatusId), spent: spent.spentTime }))
     .transform((byStatus, spent) => {
       const job = spent.job;
-      if (byStatus[job]) {
-        byStatus[job] += Number(spent.spent);
-      } else {
-        byStatus[job] = Number(spent.spent);
-      }
+      byStatus[job] += Number(spent.spent) + byStatus[job] ? byStatus[job] : 0;
     }, {})
     .transform((spentsList, spentTime, status) => {
       spentsList.push(
@@ -155,11 +151,14 @@ class Details extends Component {
     .value();
   }
 
-  onTooltipVisibleChange (){
+  onTooltipVisibleChange = () => {
     const currentStatus = this.state.spentRequestStatus;
-    if (currentStatus === spentRequestStatus.RECEIVED || currentStatus === spentRequestStatus.REQUESTED) return;
-    this.setState({spentRequestStatus: spentRequestStatus.REQUESTED});
-    this.props.getTaskSpent(this.props.task.id);
+    if (this.state.spentRequestStatus === spentRequestStatus.READY) {
+      this.setState({
+        spentRequestStatus: spentRequestStatus.REQUESTED
+      });
+      this.props.getTaskSpent(this.props.task.id);
+    }
   }
 
   render () {
@@ -259,9 +258,10 @@ class Details extends Component {
                   <td>Потрачено:</td>
                   <td>
                     <span
+                      key={this.state.tooltipKey}
                       data-tip
                       data-place="right"
-                      data-for={this.state.spentRequestStatus === spentRequestStatus.RECEIVED? 'time':'notime'}
+                      data-for={this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? 'time' : 'notime'}
                       className={classnames({
                         [css.alert]: true,
                         [css.factTime]: true
@@ -274,13 +274,22 @@ class Details extends Component {
               : null }
           </tbody>
         </table>
-        <ReactTooltip id="notime" aria-haspopup="true" className="tooltip" afterShow={() => this.onTooltipVisibleChange()} getContent={
-            () => <div> loading...</div>
-        }/>
-        <ReactTooltip id="time" aria-haspopup="true" className="tooltip" afterShow={() => this.onTooltipVisibleChange()} getContent={
-            () => this.spentTooltipRender(timeSpent)
-        }/>
-
+        {
+          this.state.spentRequestStatus === spentRequestStatus.RECEIVED
+            ? <ReactTooltip id="time"
+              destroyTooltipOnHide
+              aria-haspopup="true"
+              className="tooltip"
+              getContent={() => this.spentTooltipRender(timeSpent)}
+            />
+            : <ReactTooltip id="notime"
+              destroyTooltipOnHide
+              aria-haspopup="true"
+              className="tooltip"
+              afterShow={this.onTooltipVisibleChange}
+              getContent={() => <div> loading... </div>}
+            />
+        }
         {
           this.state.isPerformerModalOpen
           ? <PerformerModal
