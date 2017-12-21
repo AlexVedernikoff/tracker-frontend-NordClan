@@ -50,7 +50,7 @@ class ProjectPage extends Component {
         <RouteTabs>
           <Link
             activeClassName="active"
-            to={`/projects/${this.props.params.projectId}/agile-board`}
+            to={`/projects/${this.props.params.projectId}`}
           >
             Доска
           </Link>
