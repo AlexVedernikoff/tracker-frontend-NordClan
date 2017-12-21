@@ -18,17 +18,18 @@ class Metrics extends Component {
 
   constructor (props) {
     super(props);
-    // const {  params } = this.props;
-    // console.log(params)
+    const { getMetrics, params } = this.props;
+    
     //NOTE: Example request to metrics api
     const metricsParams = {
-      projectId: parseInt(6),
-      typeId: 6
+      projectId: parseInt(params.projectId),
+      typeId: 6,
       // sprintId: 1,
       // userId: 1,
-      // startDate: '2017-11-20',
-      // endDate: '2017-12-20'
+      startDate: '2017-11-20',
+      endDate: '2017-12-20'
     };
+    
     getMetrics(metricsParams);
   }
 
