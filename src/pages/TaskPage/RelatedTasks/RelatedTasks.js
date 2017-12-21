@@ -6,6 +6,13 @@ import ConfirmModal from '../../../components/ConfirmModal';
 
 export default class RelatedTasks extends React.Component {
 
+  isTaskCompleted (taskId) {
+    if (taskId === 10 || taskId === 9) {
+      return true;
+    }
+    return false;
+  }
+
   render () {
     const css = require('./RelatedTasks.scss');
 
