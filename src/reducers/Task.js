@@ -19,6 +19,7 @@ const InitialState = {
   },
   comments: [],
   history: {},
+  timeSpent: [],
   currentComment: getDefaultCurrentComment(),
   highlighted: {},
   TitleIsEditing: false,
@@ -85,6 +86,18 @@ export default function Task (state = InitialState, action) {
     return {
       ...state,
       history: action.data
+    };
+
+  case TaskActions.GET_TASK_SPENT_REQUEST_SENT:
+    return {
+      ...state,
+      timeSpent: []
+    };
+
+  case TaskActions.GET_TASK_SPENT_REQUEST_SUCCESS:
+    return {
+      ...state,
+      timeSpent: action.data
     };
 
   case TaskActions.TASK_EDIT_START:

@@ -15,14 +15,41 @@ import { connect } from 'react-redux';
 import * as css from './Details.scss';
 import moment from 'moment';
 import roundNum from '../../../utils/roundNum';
+import * as TaskStatuses from '../../../constants/TaskStatuses';
+import { getTaskSpent } from '../../../actions/Task';
+import _ from 'lodash';
+
+const getJobById = status => {
+  switch (status) {
+  case TaskStatuses.DEV_PLAY:
+  case TaskStatuses.DEV_STOP:
+    return 'Develop';
+  case TaskStatuses.QA_PLAY:
+  case TaskStatuses.QA_STOP:
+    return 'QA';
+  case TaskStatuses.CODE_REVIEW_STOP:
+  case TaskStatuses.CODE_REVIEW_PLAY:
+    return 'Code Review';
+  default:
+    return 'Another';
+  }
+};
+
+const spentRequestStatus = {
+  READY: 0,
+  REQUESTED: 1,
+  RECEIVED: 2
+};
 
 class Details extends Component {
   static propTypes = {
     getProjectSprints: PropTypes.func.isRequired,
     getProjectUsers: PropTypes.func.isRequired,
+    getTaskSpent: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired,
     sprints: PropTypes.array,
     task: PropTypes.object.isRequired,
+    timeSpent: PropTypes.array,
     taskTypes: PropTypes.array,
     users: PropTypes.array
   };
@@ -30,10 +57,23 @@ class Details extends Component {
   constructor (props) {
     super(props);
     this.state = {
+      tooltipKey: 0,
       isSprintModalOpen: false,
       isPerformerModalOpen: false,
-      isTaskTypeModalOpen: false
+      isTaskTypeModalOpen: false,
+      spentRequestStatus: spentRequestStatus.READY
     };
+  }
+
+  componentWillReceiveProps (props) {
+    if (props.task.id !== this.props.task.id) {
+        // this.props.getTaskSpent(props.task.id);
+    }
+    if (props.timeSpent !== this.props.timeSpent) {
+      // console.log(props.timeSpent);
+        // const filtered = props.timeSpent.map()
+      this.setState({spentRequestStatus: spentRequestStatus.RECEIVED, tooltipKey: Math.random()});
+    }
   }
 
   // Действия со спринтами
@@ -90,8 +130,40 @@ class Details extends Component {
     this.closeTaskTypeModal();
   };
 
+  componentDidUpdate () {
+    ReactTooltip.rebuild();
+  }
+
+  spentTooltipRender (spents) {
+    return _.chain(spents)
+    .map(spent => ({job: getJobById(spent.taskStatusId), spent: spent.spentTime }))
+    .transform((byStatus, spent) => {
+      const job = spent.job;
+      if (byStatus[job]) {
+        byStatus[job] += Number(spent.spent);
+      } else {
+        byStatus[job] = Number(spent.spent);
+      }
+    }, {})
+    .transform((spentsList, spentTime, status) => {
+      spentsList.push(
+          <div className={css.timeString} key={status}>
+            <span>{status}:</span>{spentTime} ч.
+          </div>
+      );
+    }, [])
+    .value();
+  }
+
+  onTooltipVisibleChange (){
+    const currentStatus = this.state.spentRequestStatus;
+    if (currentStatus === spentRequestStatus.RECEIVED || currentStatus === spentRequestStatus.REQUESTED) return;
+    this.setState({spentRequestStatus: spentRequestStatus.REQUESTED});
+    this.props.getTaskSpent(this.props.task.id);
+  }
+
   render () {
-    const { task, sprints, taskTypes } = this.props;
+    const { task, sprints, taskTypes, timeSpent } = this.props;
     const tags = task.tags.map((tag, i) => {
       const tagName = (typeof tag === 'object') ? tag.name : tag;
       return <Tag key={i}
@@ -189,7 +261,7 @@ class Details extends Component {
                     <span
                       data-tip
                       data-place="right"
-                      data-for="time"
+                      data-for={this.state.spentRequestStatus === spentRequestStatus.RECEIVED? 'time':'notime'}
                       className={classnames({
                         [css.alert]: true,
                         [css.factTime]: true
@@ -202,18 +274,12 @@ class Details extends Component {
               : null }
           </tbody>
         </table>
-        <ReactTooltip id="time" aria-haspopup="true" className="tooltip">
-          <div className={css.timeString}>
-            <span>Develop:</span>
-            <span>1 ч.</span>
-          </div>
-          <div className={css.timeString}>
-            <span>Code Review:</span>27 ч.
-          </div>
-          <div className={css.timeString}>
-            <span>QA:</span>59 ч.
-          </div>
-        </ReactTooltip>
+        <ReactTooltip id="notime" aria-haspopup="true" className="tooltip" afterShow={() => this.onTooltipVisibleChange()} getContent={
+            () => <div> loading...</div>
+        }/>
+        <ReactTooltip id="time" aria-haspopup="true" className="tooltip" afterShow={() => this.onTooltipVisibleChange()} getContent={
+            () => this.spentTooltipRender(timeSpent)
+        }/>
 
         {
           this.state.isPerformerModalOpen
@@ -254,12 +320,14 @@ class Details extends Component {
 const mapStateToProps = state => ({
   users: state.Project.project.users,
   sprints: state.Project.project.sprints,
-  taskTypes: state.Dictionaries.taskTypes
+  taskTypes: state.Dictionaries.taskTypes,
+  timeSpent: state.Task.timeSpent
 });
 
 const mapDispatchToProps = {
   getProjectUsers,
-  getProjectSprints
+  getProjectSprints,
+  getTaskSpent
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Details);
