@@ -139,7 +139,7 @@ class Details extends Component {
     .map(spent => ({job: getJobById(spent.taskStatusId), spent: spent.spentTime }))
     .transform((byStatus, spent) => {
       const job = spent.job;
-      byStatus[job] += Number(spent.spent) + byStatus[job] ? byStatus[job] : 0;
+      byStatus[job] = Number(spent.spent) + byStatus[job] ? byStatus[job] : 0;
     }, {})
     .transform((spentsList, spentTime, status) => {
       spentsList.push(
