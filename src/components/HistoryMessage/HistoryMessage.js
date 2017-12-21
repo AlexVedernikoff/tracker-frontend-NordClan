@@ -9,7 +9,7 @@ export default class HistoryMessage extends React.Component {
   static propTypes = {
     entities: Pt.object,
     message: Pt.string,
-    projectId: Pt.string
+    projectId: Pt.number
   };
 
   constructor (props) {

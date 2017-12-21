@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
@@ -21,6 +20,7 @@ import getProjects, {
   openCreateProjectModal,
   closeCreateProjectModal
 } from '../../actions/Projects';
+import { VISOR } from '../../constants/Roles';
 
 import 'moment/locale/ru';
 
@@ -92,7 +92,7 @@ class Projects extends Component {
     );
   };
 
-  handleDayFromChange = (dateFrom, modifiers) => {
+  handleDayFromChange = (dateFrom) => {
     this.setState(
       {
         dateFrom,
@@ -100,27 +100,28 @@ class Projects extends Component {
       },
       () => {
         dateFrom = dateFrom
-        ? moment(this.state.dateFrom).format('YYYY-MM-DD')
-        : '';
+          ? moment(this.state.dateFrom).format('YYYY-MM-DD')
+          : '';
         const dateTo = this.state.dateTo
-        ? moment(this.state.dateTo).format('YYYY-MM-DD')
-        : '';
+          ? moment(this.state.dateTo).format('YYYY-MM-DD')
+          : '';
         this.loadProjects(dateFrom, dateTo);
       });
   };
 
-  handleDayToChange = (dateTo, modifiers) => {
+  handleDayToChange = (dateTo) => {
     this.setState(
       {
         dateTo,
         activePage: this.state.dateTo !== dateTo ? 1 : this.state.activePage
       }, () => {
-      const dateFrom = this.state.dateFrom
-        ? moment(this.state.dateFrom).format('YYYY-MM-DD')
-        : '';
-      dateTo = dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
-      this.loadProjects(dateFrom, dateTo);
-    });
+        const dateFrom = this.state.dateFrom
+          ? moment(this.state.dateFrom).format('YYYY-MM-DD')
+          : '';
+        dateTo = dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
+        this.loadProjects(dateFrom, dateTo);
+      }
+    );
   };
 
   handleFilterChange = () => {
@@ -135,7 +136,7 @@ class Projects extends Component {
       });
   };
 
-  handleModal = event => {
+  handleModal = () => {
     const {
       isCreateProjectModalOpen,
       openCreateProjectModal,
@@ -165,8 +166,7 @@ class Projects extends Component {
     event.preventDefault();
     let portfolioName = '';
     if (this.state.selectedPortfolio && (Object.keys(this.state.selectedPortfolio).length !== 0)) {
-      portfolioName
-        = !Number.isInteger(this.state.selectedPortfolio.value)
+      portfolioName = !Number.isInteger(this.state.selectedPortfolio.value)
         ? this.state.selectedPortfolio.value
         : null;
     } else {
@@ -225,18 +225,22 @@ class Projects extends Component {
     const formattedDayTo = this.state.dateTo
       ? moment(this.state.dateTo).format('DD.MM.YYYY')
       : '';
-
+    const isVisor = this.props.globalRole === VISOR;
     return (
       <div>
         <section>
           <header className={css.title}>
             <h1 className={css.title}>Мои проекты</h1>
-            <Button
-              onClick={this.handleModal}
-              text="Создать проект"
-              type="primary"
-              icon="IconPlus"
-            />
+            {
+              !isVisor
+                ? <Button
+                  onClick={this.handleModal}
+                  text="Создать проект"
+                  type="primary"
+                  icon="IconPlus"
+                />
+                : null
+            }
           </header>
           <hr />
           <div className={css.projectsHeader}>
@@ -307,13 +311,14 @@ class Projects extends Component {
               );
             })}
           </div>
-          { this.props.pagesCount > 1
-            ? <Pagination
+          {
+            this.props.pagesCount > 1
+              ? <Pagination
                 itemsCount={this.props.pagesCount}
                 activePage={this.state.activePage}
                 onItemClick={this.handlePaginationClick}
               />
-            : null
+              : null
           }
         </section>
         <CreateProject
@@ -336,6 +341,7 @@ class Projects extends Component {
 Projects.propTypes = {
   closeCreateProjectModal: PropTypes.func.isRequired,
   getProjects: PropTypes.func.isRequired,
+  globalRole: PropTypes.string.isRequired,
   isCreateProjectModalOpen: PropTypes.bool.isRequired,
   openCreateProjectModal: PropTypes.func.isRequired,
   pagesCount: PropTypes.number.isRequired,
@@ -345,7 +351,8 @@ Projects.propTypes = {
 const mapStateToProps = state => ({
   projectList: state.Projects.projects,
   pagesCount: state.Projects.pagesCount,
-  isCreateProjectModalOpen: state.Projects.isCreateProjectModalOpen
+  isCreateProjectModalOpen: state.Projects.isCreateProjectModalOpen,
+  globalRole: state.Auth.user.globalRole
 });
 
 const mapDispatchToProps = {

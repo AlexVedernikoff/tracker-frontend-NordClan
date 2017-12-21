@@ -5,9 +5,10 @@ import { Row } from 'react-flexbox-grid/lib/index';
 import StatusCheckbox from './../../../Projects/StatusCheckbox';
 import * as css from './StatusEditor.scss';
 import { updateProjectStatus } from '../../../../actions/ProjectStatus';
+import { ADMIN } from '../../../../constants/Roles';
 
 class StatusEditor extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.statusesInfo = [
       [1, 'INPROGRESS', 'В процессе'],
@@ -19,10 +20,18 @@ class StatusEditor extends React.Component {
   switchStatus = (event, statusId) => {
     const { updateProjectStatus, projectId } = this.props;
     updateProjectStatus(projectId, statusId);
-  }
+  };
 
-  render() {
+  checkIsAdminInProject = () => {
+    return this.props.user.projectsRoles && this.props.user.projectsRoles.admin.indexOf(this.props.projectId) !== -1
+      || this.props.user.globalRole === ADMIN;
+  };
+
+  render () {
     const { updatedStatusId, currentStatusId } = this.props;
+
+    const isProjectAdmin = this.checkIsAdminInProject();
+
     return <div className={css.container}>
       <h2>Статус</h2>
       <Row>
@@ -34,6 +43,7 @@ class StatusEditor extends React.Component {
             checked={(updatedStatusId || currentStatusId) === statusId}
             onClick={this.switchStatus}
             label={name}
+            disabled={!isProjectAdmin}
           />
         })}
       </Row>
@@ -42,16 +52,18 @@ class StatusEditor extends React.Component {
 }
 
 StatusEditor.propTypes = {
-  updateProjectStatus: PropTypes.func.isRequired,
-  projectId: PropTypes.number,
   currentStatusId: PropTypes.number,
-  updatedStatusId: PropTypes.number
+  projectId: PropTypes.number,
+  updateProjectStatus: PropTypes.func.isRequired,
+  updatedStatusId: PropTypes.number,
+  user: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
   projectId: state.Project.project.id,
   currentStatusId: state.Project.project.statusId,
-  updatedStatusId: state.Project.project.updatedStatusId
+  updatedStatusId: state.Project.project.updatedStatusId,
+  user: state.Auth.user
 });
 
 const mapDispatchToProps = {
