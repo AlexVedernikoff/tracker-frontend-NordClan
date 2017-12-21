@@ -46,6 +46,8 @@ class PerformerModal extends Component {
               onChange={e => this.selectValue(e !== null ? e.value : 0, 'performer')}
               noResultsText="Нет результатов"
               options={users}
+              autoFocus
+              openOnFocus
             />
             <Button type="green" text="ОК" onClick={this.handleChoose}/>
           </div>

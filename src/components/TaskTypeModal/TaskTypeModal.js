@@ -55,6 +55,8 @@ class TaskTypeModal extends Component {
               onChange={e => this.selectValue(e !== null ? e.value : 1)}
               noResultsText="Нет результатов"
               options={options}
+              autoFocus
+              openOnFocus
             />
             <Button type="green" text="ОК" onClick={this.handleChoose}/>
           </div>
