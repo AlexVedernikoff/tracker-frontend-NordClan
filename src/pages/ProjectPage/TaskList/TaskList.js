@@ -23,15 +23,11 @@ class TaskList extends Component {
 
   constructor (props) {
     super(props);
-    const projectId = this.props.params.projectId;
     this.state = {
       ...this.initialFilters,
       activePage: 1,
       isPerformerModalOpen: false,
-      isSprintModalOpen: false,
-      changedFilters: {
-        projectId
-      }
+      isSprintModalOpen: false
     };
   }
 
@@ -56,7 +52,9 @@ class TaskList extends Component {
     performerId: null,
     authorId: null,
     tags: [],
-    changedFilters: {}
+    changedFilters: {
+      projectId: this.props.params.projectId
+    }
   }
 
   openSprintModal = (taskId, sprintId) =>{
@@ -107,23 +105,23 @@ class TaskList extends Component {
   }
 
   changeSingleFilter = (option, name) => {
-
     this.setState(state => {
-
-      const filterValue = option ? option.value : null;
+      console.log(this.initialFilters)
+      let filterValue = option ? option.value : null;
       const changedFilters = state.changedFilters;
+      if (name === 'prioritiesId') {
+        filterValue = option.prioritiesId;
+      }
       if (~[null, [], undefined, ''].indexOf(filterValue)) {
         delete changedFilters[name];
       } else {
         changedFilters[name] = filterValue;
       }
-
       const newState = {
         [name]: filterValue,
         activePage: state[name] !== filterValue ? 1 : state.activePage,
         changedFilters
       };
-
       return newState;
 
     }, this.loadTasks);
