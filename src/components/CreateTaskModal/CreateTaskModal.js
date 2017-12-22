@@ -139,7 +139,7 @@ class CreateTaskModal extends Component {
     };
     return (
       <Modal
-        isOpen={this.props.isCreateTaskModalOpen}
+        isOpen={this.props.isCreateTaskModalOpen || this.props.isCreateChildTaskModalOpen}
         onRequestClose={this.props.closeCreateTaskModal}
         contentLabel="Modal"
       >
@@ -311,6 +311,7 @@ CreateTaskModal.propTypes = {
   closeCreateTaskModal: PropTypes.func.isRequired,
   column: PropTypes.string,
   createTask: PropTypes.func.isRequired,
+  isCreateChildTaskModalOpen: PropTypes.bool.isRequired,
   isCreateTaskModalOpen: PropTypes.bool.isRequired,
   isCreateTaskRequestInProgress: PropTypes.bool,
   parentTaskId: PropTypes.number,
@@ -321,6 +322,7 @@ CreateTaskModal.propTypes = {
 
 const mapStateToProps = state => ({
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
+  isCreateChildTaskModalOpen: state.Project.isCreateChildTaskModalOpen,
   taskTypes: state.Dictionaries.taskTypes,
   isCreateTaskRequestInProgress: state.Project.isCreateTaskRequestInProgress
 });
