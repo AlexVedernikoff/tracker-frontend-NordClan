@@ -20,7 +20,6 @@ const tasksListReceived = tasks => ({
 
 const getTasks = (options, onlyTaskListUpdate = false) => {
   const URL = `${API_URL}/task`;
-  console.log(options)
   return dispatch => {
     dispatch(startTasksReceive());
     dispatch(startLoading());

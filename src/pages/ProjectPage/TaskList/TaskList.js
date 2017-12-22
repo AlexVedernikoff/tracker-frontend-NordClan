@@ -106,7 +106,6 @@ class TaskList extends Component {
 
   changeSingleFilter = (option, name) => {
     this.setState(state => {
-      console.log(this.initialFilters)
       let filterValue = option ? option.value : null;
       const changedFilters = state.changedFilters;
       if (name === 'prioritiesId') {
@@ -202,7 +201,9 @@ class TaskList extends Component {
   }
 
   clearFilters = () => {
-    this.setState(this.initialFilters, this.loadTasks);
+    this.setState({...this.initialFilters, changedFilters: {
+      projectId: this.props.params.projectId
+    }}, this.loadTasks);
   }
 
   createOptions = (array, labelField = 'name') => {
@@ -235,7 +236,7 @@ class TaskList extends Component {
     const statusOptions = this.createOptions(statuses);
     const typeOptions = this.createOptions(taskTypes);
     const authorOptions = this.createOptions(project.users, 'fullNameRu');
-    const isFilter = Object.keys(this.state.changedFilters).length;
+    const isFilter = Object.keys(this.state.changedFilters).length > 1;
     const isLoading = isReceiving && !tasks.length;
     const taskHolder
       = <div style={{marginBottom: '1rem'}}>
