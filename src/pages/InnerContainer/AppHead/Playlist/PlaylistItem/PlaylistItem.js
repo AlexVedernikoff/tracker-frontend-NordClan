@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
 import { history } from '../../../../../History';
 import {
   updateTimesheet,
@@ -35,7 +34,8 @@ class PlaylistItem extends Component {
     this.debouncedUpdateOnlyTimesheet = _.debounce(this.props.updateOnlyTimesheet, 500);
   }
 
-  toggleComment = () => {
+  toggleComment = event => {
+    event.stopPropagation();
     this.setState({isCommentOpen: !this.state.isCommentOpen});
   };
 
@@ -85,7 +85,8 @@ class PlaylistItem extends Component {
     this.setState({comment: e.target.value});
   };
 
-  changeVisibility = (visibility) => {
+  changeVisibility = (e, visibility) => {
+    e.stopPropagation();
     return () => {
       this.props.updateTimesheet({
         taskId: this.props.item.task ? this.props.item.task.id : null,
@@ -151,8 +152,8 @@ class PlaylistItem extends Component {
 
               { status !== 'education'
                 ? (this.props.item.isVisible
-                  ? <span className={css.visibleToggler} onClick={this.changeVisibility(false)} data-tip="Скрыть"><IconEyeDisable/></span>
-                  : <span className={css.visibleToggler} onClick={this.changeVisibility(true)} data-tip="Показать"><IconEye/></span>)
+                  ? <span className={css.visibleToggler} onClick={(e) => this.changeVisibility(e, false)} data-tip="Скрыть"><IconEyeDisable/></span>
+                  : <span className={css.visibleToggler} onClick={(e) => this.changeVisibility(e, true)} data-tip="Показать"><IconEye/></span>)
                 : null
               }
             </div>
