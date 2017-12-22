@@ -158,7 +158,7 @@ exports[TASK_CHANGE_REQUEST_SUCCESS] = (state = InitialState, action) => {
 
       acc.tracks[day] = { tracks: updatedTracks, scales }
       return acc;
-    }, state)
+    }, { ...state })
 
   return updatedState;
 }
