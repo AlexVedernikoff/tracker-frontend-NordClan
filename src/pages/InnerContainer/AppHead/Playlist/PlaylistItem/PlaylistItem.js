@@ -99,6 +99,9 @@ class PlaylistItem extends Component {
       isVisible
     } = this.props.item;
     const status = task ? task.taskStatus : null;
+    const redColorForTime = task
+      ? parseFloat(task.factExecutionTime) > parseFloat(task.plannedExecutionTime)
+      : false;
 
     return (
       <div className={classnames(css.listTask, css.task)}>
@@ -145,7 +148,7 @@ class PlaylistItem extends Component {
           <div className={css.today}>
             <input type="text" onChange={this.handleChangeTime} defaultValue={roundNum(spentTime, 2)}/>
           </div>
-          <div className={classnames({[css.other]: true, [css.exceeded]: task.factExecutionTime > task.plannedExecutionTime})}>
+          <div className={classnames({[css.other]: true, [css.exceeded]: redColorForTime})}>
             <span
               data-tip="Всего потрачено"
               data-place="bottom"
