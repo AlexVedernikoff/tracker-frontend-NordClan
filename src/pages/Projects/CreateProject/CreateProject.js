@@ -21,7 +21,7 @@ class CreateProject extends Component {
   }
 
   render () {
-    const { isOpen, onRequestClose } = this.props;
+    const { isOpen, onRequestClose, prefixErrorText } = this.props;
 
     const formLayout = {
       firstCol: 5,
@@ -78,6 +78,7 @@ class CreateProject extends Component {
                       onBlur={handleBlur}
                       shouldMarkError={shouldMarkError}
                       errorText="Длина менее 2 символов"
+                      backendErrorText={prefixErrorText}
                     />
                   ),
                   'projectPrefix',
@@ -133,7 +134,7 @@ class CreateProject extends Component {
               htmlType="button"
               type="green-lighten"
               onClick={this.props.onSubmitAndOpen}
-              disabled = {!(this.props.validateProjectName && this.props.validateProjectPrefix)}              
+              disabled = {!(this.props.validateProjectName && this.props.validateProjectPrefix)}
             />
           </div>
         </form>
@@ -150,6 +151,7 @@ CreateProject.propTypes = {
   onRequestClose: PropTypes.func,
   onSubmit: PropTypes.func,
   onSubmitAndOpen: PropTypes.func,
+  prefixErrorText: PropTypes.string,
   selectedPortfolio: PropTypes.object
 };
 
