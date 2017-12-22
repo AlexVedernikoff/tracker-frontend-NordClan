@@ -24,13 +24,17 @@ class TaskList extends Component {
   constructor (props) {
     super(props);
     const projectId = this.props.params.projectId;
+    const query = this.props.location.query
+    console.log(this.props.location.query)
     this.state = {
       ...this.initialFilters,
       activePage: 1,
       isPerformerModalOpen: false,
       isSprintModalOpen: false,
+      sprintId: query.sprintId ? parseInt(query.sprintId) : null,
       changedFilters: {
-        projectId
+        projectId,
+        sprintId: query.sprintId ? parseInt(query.sprintId) : null
       }
     };
   }
