@@ -17,25 +17,18 @@ import _ from 'lodash';
 import PerformerModal from '../../../components/PerformerModal';
 import SprintModal from '../../../components/SprintModal';
 import getTasks from '../../../actions/Tasks';
+import { history } from '../../../History';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 
 class TaskList extends Component {
 
   constructor (props) {
     super(props);
-    const projectId = this.props.params.projectId;
-    const query = this.props.location.query
-    console.log(this.props.location.query)
     this.state = {
-      ...this.initialFilters,
       activePage: 1,
       isPerformerModalOpen: false,
       isSprintModalOpen: false,
-      sprintId: query.sprintId ? parseInt(query.sprintId) : null,
-      changedFilters: {
-        projectId,
-        sprintId: query.sprintId ? parseInt(query.sprintId) : null
-      }
+      ...this.setQueryFilters()
     };
   }
 
@@ -53,6 +46,62 @@ class TaskList extends Component {
     }
   }
 
+  setQueryFilters () {
+    const query = this.props.location.query;
+    const projectId = this.props.params.projectId;
+    const translateToNumIfNeeded = (value) => {
+      const re = /^\d+$/;
+      return re.test(value) ? +value : value;
+    };
+
+    const multipleQueries = (queries) => {
+      if (Array.isArray(queries)) return queries.map(queryValue => translateToNumIfNeeded(queryValue));
+      return queries ? [translateToNumIfNeeded(queries)] : [];
+    };
+
+    const singleQuery = (query) => {
+      return query ? translateToNumIfNeeded(query) : null;
+    };
+    const getValues = (changed) => {
+      const name = changed ? 'name' : 'filterByName';
+      if (changed && Object.keys(query).length === 0) return {};
+      return {
+        sprintId: singleQuery(query.sprintId),
+        performerId: singleQuery(query.performerId),
+        prioritiesId: singleQuery(query.prioritiesId),
+        authorId: singleQuery(query.authorId),
+        statusId: multipleQueries(query.statusId),
+        typeId: multipleQueries(query.typeId),
+        tags: multipleQueries(query.tags),
+        [name]: query.name ? query.name : ''
+      };
+    };
+    return {
+      ...getValues(),
+      changedFilters: {
+        projectId,
+        ...getValues(true)
+      }
+    };
+  }
+
+  changeUrl (changedFilters) {
+    const queryObj = {};
+
+    for (let [key, value] of Object.entries(changedFilters)) {
+      if (value && key !== 'projectId') {
+        queryObj[key] = value;
+      }
+    }
+
+    history.replace({
+      ...this.props.location,
+      query: {
+        ...queryObj
+      }
+    });
+  }
+
   initialFilters = {
     prioritiesId: null,
     typeId: [],
@@ -62,7 +111,9 @@ class TaskList extends Component {
     performerId: null,
     authorId: null,
     tags: [],
-    changedFilters: {}
+    changedFilters: {
+      projectId: this.props.params.projectId
+    }
   }
 
   openSprintModal = (taskId, sprintId) =>{
@@ -123,15 +174,17 @@ class TaskList extends Component {
   changeSingleFilter = (option, name) => {
 
     this.setState(state => {
-
-      const filterValue = option ? option.value : null;
+      let filterValue = option ? option.value : null;
       const changedFilters = state.changedFilters;
+      if (name === 'prioritiesId') {
+        filterValue = option.prioritiesId;
+      }
       if (~[null, [], undefined, ''].indexOf(filterValue)) {
         delete changedFilters[name];
       } else {
         changedFilters[name] = filterValue;
       }
-
+      this.changeUrl(changedFilters);
       const newState = {
         [name]: filterValue,
         activePage: state[name] !== filterValue ? 1 : state.activePage,
@@ -154,7 +207,7 @@ class TaskList extends Component {
       } else {
         delete changedFilters[name];
       }
-
+      this.changeUrl(changedFilters);
       const newState = {
         [name]: filterValue,
         activePage: state[name].length !== filterValue.length ? 1 : state.activePage,
@@ -184,7 +237,7 @@ class TaskList extends Component {
         activePage: state.filterByName !== value ? 1 : state.activePage,
         changedFilters
       };
-
+      this.changeUrl(changedFilters);
       return newState;
     }, this.loadTasks);
   };
@@ -218,7 +271,10 @@ class TaskList extends Component {
   }
 
   clearFilters = () => {
-    this.setState(this.initialFilters, this.loadTasks);
+    this.setState({...this.initialFilters, changedFilters: {
+      projectId: this.props.params.projectId
+    }}, this.loadTasks);
+    this.changeUrl({});
   }
 
   createOptions = (array, labelField = 'name') => {
@@ -246,12 +302,13 @@ class TaskList extends Component {
       sprintId,
       performerId,
       authorId,
-      tags
+      tags,
+      filterByName
     } = this.state;
     const statusOptions = this.createOptions(statuses);
     const typeOptions = this.createOptions(taskTypes);
     const authorOptions = this.createOptions(project.users, 'fullNameRu');
-    const isFilter = Object.keys(this.state.changedFilters).length;
+    const isFilter = Object.keys(this.state.changedFilters).length > 1;
     const isLoading = isReceiving && !tasks.length;
     const taskHolder
       = <div style={{marginBottom: '1rem'}}>
@@ -345,6 +402,7 @@ class TaskList extends Component {
               <Col xs={12} sm={6}>
                 <Input
                   placeholder="Название задачи"
+                  value={filterByName}
                   onChange={this.changeNameFilter}
                 />
               </Col>
@@ -425,7 +483,9 @@ TaskList.propTypes = {
   taskTypes: PropTypes.array,
   tasksList: PropTypes.array.isRequired,
   changeTask: PropTypes.func.isRequired,
-  startTaskEditing: PropTypes.func.isRequired
+  startTaskEditing: PropTypes.func.isRequired,
+  location: PropTypes.object,
+  params: PropTypes.object
 };
 
 const mapStateToProps = state => ({
