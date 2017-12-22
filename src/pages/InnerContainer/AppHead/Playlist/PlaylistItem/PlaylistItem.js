@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
+import { history } from '../../../../../History';
 import {
   updateTimesheet,
   updateTimesheetDraft,
@@ -126,25 +128,25 @@ class PlaylistItem extends Component {
         })}>
           {getMaIcon(this.props.item.typeId)}
         </div>
-        <div className={css.taskNameWrapper}>
+        <div className={css.taskNameWrapper} onClick={() => history.push(`/projects/${project.id}/tasks/${task.id}`)}>
           <div className={css.taskTitle}>
             <div className={css.meta}>
               { task && task.prefix ? <span>{prefix}</span> : null}
               { project ? <span>{project.name}</span> : null}
               { status
                 ? <span>
-                    {
-                      prevStatus
-                        ? (<span>{prevStatus.name}<span style={{display: 'inline-block', margin: '0 0.25rem'}}> → </span></span>)
-                        : null
-                    }
+                  {
+                    prevStatus
+                      ? (<span>{prevStatus.name}<span style={{display: 'inline-block', margin: '0 0.25rem'}}> → </span></span>)
+                      : null
+                  }
                   {status.name}
-                  </span>
+                </span>
                 : null}
               {
                 !isDraft
-                ? <span className={classnames({[css.commentToggler]: true, [css.green]: !!comment})} onClick={this.toggleComment}><IconComment/></span>
-                : null
+                  ? <span className={classnames({[css.commentToggler]: true, [css.green]: !!comment})} onClick={this.toggleComment}><IconComment/></span>
+                  : null
               }
 
               { status !== 'education'
