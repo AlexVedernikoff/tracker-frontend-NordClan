@@ -14,10 +14,11 @@ import { getProjectUsers, getProjectSprints } from '../../../actions/Project';
 import { connect } from 'react-redux';
 import * as css from './Details.scss';
 import moment from 'moment';
-import roundNum from '../../../utils/roundNum';
 
 class Details extends Component {
   static propTypes = {
+    ExecutionTimeIsEditing: PropTypes.bool,
+    PlanningTimeIsEditing: PropTypes.bool,
     getProjectSprints: PropTypes.func.isRequired,
     getProjectUsers: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired,
@@ -105,6 +106,19 @@ class Details extends Component {
       label: item.user ? item.user.fullNameRu : item.fullNameRu
     }));
 
+    const executeTimeTooltip = <div>
+      <div className={css.timeString}>
+        <span>Develop:</span>
+        <span>1 ч.</span>
+      </div>
+      <div className={css.timeString}>
+        <span>Code Review:</span>27 ч.
+      </div>
+      <div className={css.timeString}>
+        <span>QA:</span>59 ч.
+      </div>
+    </div>;
+
     return (
       <div className={css.detailsBlock}>
         <table className={css.detailTable}>
@@ -179,41 +193,40 @@ class Details extends Component {
             <tr>
               <td>Запланировано:</td>
               <td>
-                <TaskPlanningTime time={task.plannedExecutionTime ? task.plannedExecutionTime : '0'} id={task.id} />
+                <TaskPlanningTime
+                  time={task.plannedExecutionTime ? task.plannedExecutionTime : '0'}
+                  id={task.id}
+                  timeIsEditing={this.props.PlanningTimeIsEditing}
+                />
               </td>
             </tr>
             { task.factExecutionTime
               ? <tr>
                   <td>Потрачено:</td>
                   <td>
-                    <span
-                      data-tip
-                      data-place="right"
-                      data-for="time"
-                      className={classnames({
-                        [css.alert]: true,
-                        [css.factTime]: true
-                      })}
-                    >
-                       {`${roundNum(task.factExecutionTime, 2)} ч.`}
-                    </span>
+                    <TaskPlanningTime
+                      time={task.factExecutionTime}
+                      id={task.id}
+                      isExecutionTime
+                      tooltip={executeTimeTooltip}
+                      timeIsEditing={this.props.ExecutionTimeIsEditing}
+                    />
+                    {/*<span*/}
+                      {/*data-tip*/}
+                      {/*data-place="right"*/}
+                      {/*data-for="time"*/}
+                      {/*className={classnames({*/}
+                        {/*[css.alert]: true,*/}
+                        {/*[css.factTime]: true*/}
+                      {/*})}*/}
+                    {/*>*/}
+                       {/*{`${roundNum(task.factExecutionTime, 2)} ч.`}*/}
+                    {/*</span>*/}
                   </td>
                 </tr>
               : null }
           </tbody>
         </table>
-        <ReactTooltip id="time" aria-haspopup="true" className="tooltip">
-          <div className={css.timeString}>
-            <span>Develop:</span>
-            <span>1 ч.</span>
-          </div>
-          <div className={css.timeString}>
-            <span>Code Review:</span>27 ч.
-          </div>
-          <div className={css.timeString}>
-            <span>QA:</span>59 ч.
-          </div>
-        </ReactTooltip>
 
         {
           this.state.isPerformerModalOpen
@@ -254,7 +267,9 @@ class Details extends Component {
 const mapStateToProps = state => ({
   users: state.Project.project.users,
   sprints: state.Project.project.sprints,
-  taskTypes: state.Dictionaries.taskTypes
+  taskTypes: state.Dictionaries.taskTypes,
+  PlanningTimeIsEditing: state.Task.PlanningTimeIsEditing,
+  ExecutionTimeIsEditing: state.Task.ExecutionTimeIsEditing
 });
 
 const mapDispatchToProps = {

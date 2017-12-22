@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
+import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
 import * as css from './TaskPlanningTime.scss';
 import { IconEdit, IconCheck } from '../../../components/Icons';
@@ -22,7 +23,7 @@ class TaskPlanningTime extends Component {
 
   editIconClickHandler = event => {
     event.stopPropagation();
-    if (this.props.PlanningTimeIsEditing) {
+    if (this.props.timeIsEditing) {
       this.validateAndSubmit();
     } else {
       this.startEditing();
@@ -30,11 +31,11 @@ class TaskPlanningTime extends Component {
   };
 
   startEditing = () => {
-    this.props.startTaskEditing('PlanningTime');
+    this.props.startTaskEditing(this.props.isExecutionTime ? 'ExecutionTime' : 'PlanningTime');
   };
 
   stopEditing = () => {
-    this.props.stopTaskEditing('PlanningTime');
+    this.props.stopTaskEditing(this.props.isExecutionTime ? 'ExecutionTime' : 'PlanningTime');
   };
 
   validateAndSubmit = () => {
@@ -49,15 +50,15 @@ class TaskPlanningTime extends Component {
         this.props.changeTask(
           {
             id: this.props.id,
-            plannedExecutionTime: +this.taskPlanningTime.innerText
+            [this.props.isExecutionTime ? 'factExecutionTime' : 'plannedExecutionTime']: +this.taskPlanningTime.innerText
           },
-          'PlanningTime'
+          this.props.isExecutionTime ? 'ExecutionTime' : 'PlanningTime'
         ));
     }
   };
 
   handleKeyPress = event => {
-    if (this.props.PlanningTimeIsEditing && event.keyCode === 13) {
+    if (this.props.timeIsEditing && event.keyCode === 13) {
       event.preventDefault();
       this.validateAndSubmit(event);
     } else if (event.keyCode === 27) {
@@ -74,17 +75,30 @@ class TaskPlanningTime extends Component {
           <span
             className={classnames({
               [css.taskTime]: true,
-              [css.wrong]: this.state.submitError
+              [css.wrong]: this.state.submitError,
+              [css.alert]: this.props.isExecutionTime,
+              [css.factTime]: this.props.isExecutionTime
             })}
             ref={ref => (this.taskPlanningTime = ref)}
-            contentEditable={this.props.PlanningTimeIsEditing}
+            contentEditable={this.props.timeIsEditing}
             onBlur={this.validateAndSubmit}
             onKeyDown={this.handleKeyPress}
+            data-tip={!!this.props.tooltip}
+            data-place="right"
+            data-for="time"
           >
             {roundNum(this.props.time, 2)}
           </span>
-          <span> ч.</span>
-          {this.props.PlanningTimeIsEditing
+          <span
+            className={classnames({
+              [css.alert]: this.props.isExecutionTime,
+              [css.factTime]: this.props.isExecutionTime
+            })}
+            data-tip={!!this.props.tooltip}
+            data-place="right"
+            data-for="time"
+          > ч.</span>
+          {this.props.timeIsEditing
             ? <IconCheck
                 onClick={this.editIconClickHandler}
                 className={css.save}
@@ -93,23 +107,30 @@ class TaskPlanningTime extends Component {
                 onClick={this.editIconClickHandler}
                 className={css.edit}
               />}
+          {
+            this.props.tooltip
+              ? <ReactTooltip id="time" aria-haspopup="true" className="tooltip">
+                {this.props.tooltip}
+              </ReactTooltip>
+              : null
+          }
        </div>
     );
   }
 }
 
 TaskPlanningTime.propTypes = {
-  PlanningTimeIsEditing: PropTypes.bool.isRequired,
   changeTask: PropTypes.func.isRequired,
   id: PropTypes.number,
+  isExecutionTime: PropTypes.bool,
   startTaskEditing: PropTypes.func.isRequired,
   stopTaskEditing: PropTypes.func.isRequired,
-  time: PropTypes.string.isRequired
+  time: PropTypes.string.isRequired,
+  timeIsEditing: PropTypes.bool.isRequired,
+  tooltip: PropTypes.object
 };
 
-const mapStateToProps = state => ({
-  PlanningTimeIsEditing: state.Task.PlanningTimeIsEditing
-});
+const mapStateToProps = () => ({});
 
 const mapDispatchToProps = {
   startTaskEditing,

@@ -23,6 +23,7 @@ const InitialState = {
   highlighted: {},
   TitleIsEditing: false,
   PlanningTimeIsEditing: false,
+  ExecutionTimeIsEditing: false,
   SprintIsEditing: false,
   StatusIsEditing: false,
   DescriptionIsEditing: false,
