@@ -15,25 +15,8 @@ import { connect } from 'react-redux';
 import * as css from './Details.scss';
 import moment from 'moment';
 import roundNum from '../../../utils/roundNum';
-import * as TaskStatuses from '../../../constants/TaskStatuses';
 import { getTaskSpent } from '../../../actions/Task';
 import _ from 'lodash';
-
-const getJobById = status => {
-  switch (status) {
-  case TaskStatuses.DEV_PLAY:
-  case TaskStatuses.DEV_STOP:
-    return 'Develop';
-  case TaskStatuses.QA_PLAY:
-  case TaskStatuses.QA_STOP:
-    return 'QA';
-  case TaskStatuses.CODE_REVIEW_STOP:
-  case TaskStatuses.CODE_REVIEW_PLAY:
-    return 'Code Review';
-  default:
-    return 'Another';
-  }
-};
 
 const spentRequestStatus = {
   READY: 0,
@@ -49,7 +32,7 @@ class Details extends Component {
     onChange: PropTypes.func.isRequired,
     sprints: PropTypes.array,
     task: PropTypes.object.isRequired,
-    timeSpent: PropTypes.array,
+    timeSpent: PropTypes.object,
     taskTypes: PropTypes.array,
     users: PropTypes.array
   };
@@ -66,12 +49,7 @@ class Details extends Component {
   }
 
   componentWillReceiveProps (props) {
-    if (props.task.id !== this.props.task.id) {
-        // this.props.getTaskSpent(props.task.id);
-    }
     if (props.timeSpent !== this.props.timeSpent) {
-      // console.log(props.timeSpent);
-        // const filtered = props.timeSpent.map()
       this.setState({spentRequestStatus: spentRequestStatus.RECEIVED, tooltipKey: Math.random()});
     }
   }
@@ -135,20 +113,13 @@ class Details extends Component {
   }
 
   spentTooltipRender (spents) {
-    return _.chain(spents)
-    .map(spent => ({job: getJobById(spent.taskStatusId), spent: spent.spentTime }))
-    .transform((byStatus, spent) => {
-      const job = spent.job;
-      byStatus[job] = Number(spent.spent) + byStatus[job] ? byStatus[job] : 0;
-    }, {})
-    .transform((spentsList, spentTime, status) => {
+    return _.transform(spents, (spentsList, spentTime, status) => {
       spentsList.push(
           <div className={css.timeString} key={status}>
             <span>{status}:</span>{spentTime} ч.
           </div>
       );
-    }, [])
-    .value();
+    }, []);
   }
 
   onTooltipVisibleChange = () => {
@@ -286,7 +257,7 @@ class Details extends Component {
               aria-haspopup="true"
               className="tooltip"
               afterShow={this.onTooltipVisibleChange}
-              getContent={() => <div> loading... </div>}
+              getContent={() => <div> Загрузка... </div>}
             />
         }
         {
