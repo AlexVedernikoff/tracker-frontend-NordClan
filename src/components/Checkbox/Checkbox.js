@@ -8,6 +8,7 @@ const Checkbox = (props) => {
 
   const {
     checked,
+    disabled,
     onChange,
     label,
     className,
@@ -15,8 +16,8 @@ const Checkbox = (props) => {
   } = props;
 
   return (
-    <label {...other} className={classnames({[css.wrapper]: true, [className]: true, checked: checked})}>
-      <input type="checkbox" checked={checked} onChange={onChange}/>
+    <label {...other} className={classnames({[css.wrapper]: true, [className]: true, checked: checked, [css.disabled]: disabled})}>
+      <input type="checkbox" checked={checked} onChange={onChange} disabled={disabled}/>
       <span className={classnames({[css.pseudoSquare]: true, [css.withText]: !!label})}>
         <IconCheck />
       </span>
@@ -28,6 +29,7 @@ const Checkbox = (props) => {
 Checkbox.propTypes = {
   checked: PropTypes.bool,
   className: PropTypes.string,
+  disabled: PropTypes.bool,
   label: PropTypes.string,
   onChange: PropTypes.func
 };

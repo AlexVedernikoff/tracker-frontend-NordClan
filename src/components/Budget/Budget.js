@@ -59,31 +59,36 @@ class Budget extends Component {
         <h2>{header}</h2>
 
         <div className={css.editor}>
-          {this.state.isEditing
-            ? <Input
+          {
+            this.state.isEditing
+              ? <Input
                 type='number'
                 defaultValue={this.props.value}
                 onChange={this.onChangeValue}
               />
-
-            : <div>{formatCurrency(this.props.value)}</div>
+              : <div>{formatCurrency(this.props.value)}</div>
           }
         </div>
 
-        <div className={css.editBorder}>
-          {this.state.isEditing
-            ? <IconCheck
-                className={css.save}
-                onClick={this.toggleEditing}
-                data-tip="Сохранить"
-              />
-            : <IconEdit
-                className={css.edit}
-                onClick={this.toggleEditing}
-                data-tip="Редактировать"
-              />
-          }
-        </div>
+        {
+          this.props.isProjectAdmin
+            ? <div className={css.editBorder}>
+              {
+                this.state.isEditing
+                  ? <IconCheck
+                    className={css.save}
+                    onClick={this.toggleEditing}
+                    data-tip="Сохранить"
+                  />
+                  : <IconEdit
+                    className={css.edit}
+                    onClick={this.toggleEditing}
+                    data-tip="Редактировать"
+                  />
+              }
+            </div>
+            : null
+        }
       </div>
     );
   }
@@ -92,6 +97,7 @@ class Budget extends Component {
 Budget.propTypes = {
   header: PropTypes.string.isRequired,
   id: PropTypes.number,
+  isProjectAdmin: PropTypes.bool,
   onEditSubmit: PropTypes.func.isRequired,
   value: PropTypes.number
 };

@@ -130,12 +130,12 @@ class CreateTaskModal extends Component {
 
   handleChange = field => event => {
     this.setState({ [field]: event.target.value.trim() })
-  }
+  };
   
   render () {
     const formLayout = {
-      firstCol: 5,
-      secondCol: 7
+      firstCol: 4,
+      secondCol: 8
     };
     return (
       <Modal
@@ -182,10 +182,11 @@ class CreateTaskModal extends Component {
                 sm={formLayout.secondCol}
                 className={css.rightColumn}
               >
-                <div className = {css.taskDescription}>
+                <div className={css.taskDescription}>
                   <TextEditor
                     toolbarHidden
-                    placeholder = 'Описание задачи'
+                    placeholder="Описание задачи"
+                    toolbarClassName="hidden"
                     ref={ref => (this.TextEditor = ref)}
                     content={''}
                   />
@@ -261,7 +262,7 @@ class CreateTaskModal extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Добавить задачу в спринт:</p>
+                <p>Спринт:</p>
               </Col>
               <Col
                 xs={12}
