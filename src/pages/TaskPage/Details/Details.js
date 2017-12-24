@@ -136,9 +136,10 @@ class Details extends Component {
     const tags = task.tags.map((tag, i) => {
       const tagName = (typeof tag === 'object') ? tag.name : tag;
       return <Tag key={i}
-                  name={tagName}
-                  taggable="task"
-                  taggableId={task.id}/>;
+        name={tagName}
+        taggable="task"
+        taggableId={task.id}
+      />;
     });
 
     const users = this.props.users.map(item => ({
@@ -152,13 +153,13 @@ class Details extends Component {
           <tbody>
             {task.project
               ? <tr>
-                  <td>Проект:</td>
-                  <td>
-                    <Link to={'/projects/' + this.props.task.project.id}>
-                      {task.project.name}
-                    </Link>
-                  </td>
-                </tr>
+                <td>Проект:</td>
+                <td>
+                  <Link to={'/projects/' + this.props.task.project.id}>
+                    {task.project.name}
+                  </Link>
+                </td>
+              </tr>
               : null}
             <tr>
               <td>Тип задачи:</td>
@@ -168,49 +169,49 @@ class Details extends Component {
                 </a>
               </td>
             </tr>
-              <tr>
-                <td>Спринт:</td>
-                <td>
-                  <a onClick={this.openSprintModal}>
-                    { task.sprint
-                      ? task.sprint.name
-                      : 'Backlog'
-                    }
-                  </a>
-                    {/*<Link to={`/projects/${task.projectId}/agile-board`}>*/}
-                      {/*{task.sprint ? task.sprint.name : 'Backlog'}*/}
-                    {/*</Link>*/}
-                </td>
-              </tr>
+            <tr>
+              <td>Спринт:</td>
+              <td>
+                <a onClick={this.openSprintModal}>
+                  { task.sprint
+                    ? task.sprint.name
+                    : 'Backlog'
+                  }
+                </a>
+                {/*<Link to={`/projects/${task.projectId}/agile-board`}>*/}
+                  {/*{task.sprint ? task.sprint.name : 'Backlog'}*/}
+                {/*</Link>*/}
+              </td>
+            </tr>
             <tr>
               <td>Теги:</td>
               <td className={css.tags}>
                 <Tags taggable="task"
-                      taggableId={task.id}
-                      create>
+                  taggableId={task.id}
+                  create
+                >
                   {tags}
                 </Tags>
               </td>
             </tr>
             {task.author
               ? <tr>
-                  <td>Автор:</td>
-                  <td>
-                     {task.author.fullNameRu}
-                  </td>
-                </tr>
-              : null}
-              <tr>
-                <td>Исполнитель:</td>
-                <td>
-                  <a onClick={this.openPerformerModal}>
-                    { task.performer
-                      ? task.performer.fullNameRu
-                      : <span className={css.unassigned}>Не назначено</span>
-                    }
-                  </a>
-                </td>
+                <td>Автор:</td>
+                <td>{task.author.fullNameRu}</td>
               </tr>
+              : null
+            }
+            <tr>
+              <td>Исполнитель:</td>
+              <td>
+                <a onClick={this.openPerformerModal}>
+                  { task.performer
+                    ? task.performer.fullNameRu
+                    : <span className={css.unassigned}>Не назначено</span>
+                  }
+                </a>
+              </td>
+            </tr>
             <tr>
               <td>Дата создания:</td>
               <td>
@@ -262,34 +263,34 @@ class Details extends Component {
         }
         {
           this.state.isPerformerModalOpen
-          ? <PerformerModal
+            ? <PerformerModal
               defaultUser={task.performer ? task.performer.id : null}
               onChoose={this.changePerformer}
               onClose={this.closePerformerModal}
               title="Изменить исполнителя задачи"
               users={users}
             />
-          : null
+            : null
         }
         {
           this.state.isSprintModalOpen
-          ? <SprintModal
-              defaultSprint={task.sprint ? task.sprint.id : null}
+            ? <SprintModal
+              defaultSprint={task.sprint ? task.sprint.id : 0}
               onChoose={this.changeSprint}
               onClose={this.closeSprintModal}
               title="Изменить спринт задачи"
               sprints={sprints}
             />
-          : null
+            : null
         }
         {
           this.state.isTaskTypeModalOpen
-          ? <TaskTypeModal
+            ? <TaskTypeModal
               defaultTypeId={task ? task.typeId : null}
               onChoose={this.changeTaskType}
               onClose={this.closeTaskTypeModal}
             />
-          : null
+            : null
         }
       </div>
     );
