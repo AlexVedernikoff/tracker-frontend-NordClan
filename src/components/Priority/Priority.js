@@ -10,6 +10,8 @@ class Priority extends Component {
 
   changePriority = event => {
     event.preventDefault();
+    event.stopPropagation();
+
     if (+event.target.innerText !== this.props.priority) {
       const { onChange } = this.props;
       onChange(
