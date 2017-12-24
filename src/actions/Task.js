@@ -30,6 +30,15 @@ const getTaskHistorySuccess = history => ({
   data: history
 });
 
+const getTaskSpentStart = () => ({
+  type: TaskActions.GET_TASK_SPENT_REQUEST_SENT
+});
+
+const getTaskSpentSuccess = spent => ({
+  type: TaskActions.GET_TASK_SPENT_REQUEST_SUCCESS,
+  data: spent
+});
+
 const getTaskFail = error => ({
   type: TaskActions.GET_TASK_REQUEST_FAIL,
   error: error
@@ -106,6 +115,22 @@ const getTaskHistory = id => {
     extra,
     start: withStartLoading(getTaskHistoryStart, true)(dispatch),
     response: withFinishLoading(response => getTaskHistorySuccess(response.data), true)(dispatch),
+    error: defaultErrorHandler(dispatch)
+  });
+};
+
+const getTaskSpent = id => {
+  if (!id) {
+    return () => {};
+  }
+  return dispatch => dispatch({
+    type: REST_API,
+    url: `/task/${id}/spent`,
+    method: GET,
+    body,
+    extra,
+    start: withStartLoading(getTaskSpentStart, true)(dispatch),
+    response: withFinishLoading(response => getTaskSpentSuccess(response.data), true)(dispatch),
     error: defaultErrorHandler(dispatch)
   });
 };
@@ -452,6 +477,7 @@ const setHighLighted = (comment) => ({
 export {
   getTask,
   getTaskHistory,
+  getTaskSpent,
   startTaskEditing,
   stopTaskEditing,
   changeTask,

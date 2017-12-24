@@ -61,6 +61,8 @@ class SprintModal extends Component {
               onChange={e => this.selectValue(e !== null ? e.value : 0, 'sprint')}
               noResultsText="Нет результатов"
               options={options}
+              autoFocus
+              openOnFocus
             />
             <Button type="green" text="ОК" onClick={this.handleChoose}/>
           </div>
