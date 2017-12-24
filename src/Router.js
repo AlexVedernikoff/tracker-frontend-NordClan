@@ -85,14 +85,13 @@ class AppRouter extends Component {
               <Route path="projects" component={Projects} />
 
               <Route path="projects/:projectId" component={ProjectPage} scrollToTop onLeave={this.props.clearCurrentProjectAndTasks} >
-                <Route path="agile-board" component={AgileBoard} />
+                <IndexRoute component={AgileBoard}/>
                 <Route path="info" component={Info} />
                 <Route path="property" component={Settings} />
                 <Route path="planning" component={Planning} />
                 <Route path="metrics" component={Metrics} />
                 <Route path="history" component={ProjectHistory} />
                 <Route path="(sprint:sprintId/)tasks" component={TaskList} />
-                <IndexRedirect to="agile-board" />
               </Route>
 
               <Route path="projects/portfolio/:portfolioId" component={Portfolio} scrollToTop />
