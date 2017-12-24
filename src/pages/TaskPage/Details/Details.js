@@ -15,14 +15,24 @@ import { connect } from 'react-redux';
 import * as css from './Details.scss';
 import moment from 'moment';
 import roundNum from '../../../utils/roundNum';
+import { getTaskSpent } from '../../../actions/Task';
+import _ from 'lodash';
+
+const spentRequestStatus = {
+  READY: 0,
+  REQUESTED: 1,
+  RECEIVED: 2
+};
 
 class Details extends Component {
   static propTypes = {
     getProjectSprints: PropTypes.func.isRequired,
     getProjectUsers: PropTypes.func.isRequired,
+    getTaskSpent: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired,
     sprints: PropTypes.array,
     task: PropTypes.object.isRequired,
+    timeSpent: PropTypes.object,
     taskTypes: PropTypes.array,
     users: PropTypes.array
   };
@@ -30,10 +40,18 @@ class Details extends Component {
   constructor (props) {
     super(props);
     this.state = {
+      tooltipKey: 0,
       isSprintModalOpen: false,
       isPerformerModalOpen: false,
-      isTaskTypeModalOpen: false
+      isTaskTypeModalOpen: false,
+      spentRequestStatus: spentRequestStatus.READY
     };
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.timeSpent !== this.props.timeSpent && this.state.spentRequestStatus === spentRequestStatus.REQUESTED) {
+      this.setState({spentRequestStatus: spentRequestStatus.RECEIVED, tooltipKey: Math.random()});
+    }
   }
 
   // Действия со спринтами
@@ -90,8 +108,31 @@ class Details extends Component {
     this.closeTaskTypeModal();
   };
 
+  componentDidUpdate () {
+    ReactTooltip.rebuild();
+  }
+
+  spentTooltipRender (spents) {
+    return _.transform(spents, (spentsList, spentTime, status) => {
+      spentsList.push(
+          <div className={css.timeString} key={status}>
+            <span>{status}:</span>{spentTime} ч.
+          </div>
+      );
+    }, []);
+  }
+
+  onTooltipVisibleChange = () => {
+    if (this.state.spentRequestStatus === spentRequestStatus.READY) {
+      this.setState({
+        spentRequestStatus: spentRequestStatus.REQUESTED
+      });
+      this.props.getTaskSpent(this.props.task.id);
+    }
+  }
+
   render () {
-    const { task, sprints, taskTypes } = this.props;
+    const { task, sprints, taskTypes, timeSpent } = this.props;
     const tags = task.tags.map((tag, i) => {
       const tagName = (typeof tag === 'object') ? tag.name : tag;
       return <Tag key={i}
@@ -185,37 +226,41 @@ class Details extends Component {
             </tr>
             { task.factExecutionTime
               ? <tr>
-                <td>Потрачено:</td>
-                <td>
-                  <span
-                    data-tip
-                    data-place="right"
-                    data-for="time"
-                    className={classnames({
-                      [css.alert]: true,
-                      [css.factTime]: true
-                    })}
-                  >
-                    {`${roundNum(task.factExecutionTime, 2)} ч.`}
-                  </span>
-                </td>
-              </tr>
+                  <td>Потрачено:</td>
+                  <td>
+                    <span
+                      key={this.state.tooltipKey}
+                      data-tip
+                      data-place="right"
+                      data-for={this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? 'time' : 'notime'}
+                      className={classnames({
+                        [css.alert]: true,
+                        [css.factTime]: true
+                      })}
+                    >
+                       {`${roundNum(task.factExecutionTime, 2)} ч.`}
+                    </span>
+                  </td>
+                </tr>
               : null }
           </tbody>
         </table>
-        <ReactTooltip id="time" aria-haspopup="true" className="tooltip">
-          <div className={css.timeString}>
-            <span>Develop:</span>
-            <span>1 ч.</span>
-          </div>
-          <div className={css.timeString}>
-            <span>Code Review:</span>27 ч.
-          </div>
-          <div className={css.timeString}>
-            <span>QA:</span>59 ч.
-          </div>
-        </ReactTooltip>
-
+        {
+          this.state.spentRequestStatus === spentRequestStatus.RECEIVED
+            ? <ReactTooltip id="time"
+              destroyTooltipOnHide
+              aria-haspopup="true"
+              className="tooltip"
+              getContent={() => this.spentTooltipRender(timeSpent)}
+            />
+            : <ReactTooltip id="notime"
+              destroyTooltipOnHide
+              aria-haspopup="true"
+              className="tooltip"
+              afterShow={this.onTooltipVisibleChange}
+              getContent={() => <div> Загрузка... </div>}
+            />
+        }
         {
           this.state.isPerformerModalOpen
             ? <PerformerModal
@@ -255,12 +300,14 @@ class Details extends Component {
 const mapStateToProps = state => ({
   users: state.Project.project.users,
   sprints: state.Project.project.sprints,
-  taskTypes: state.Dictionaries.taskTypes
+  taskTypes: state.Dictionaries.taskTypes,
+  timeSpent: state.Task.timeSpent
 });
 
 const mapDispatchToProps = {
   getProjectUsers,
-  getProjectSprints
+  getProjectSprints,
+  getTaskSpent
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Details);
