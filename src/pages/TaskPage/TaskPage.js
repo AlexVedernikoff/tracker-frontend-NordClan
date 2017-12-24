@@ -156,7 +156,7 @@ class TaskPage extends Component {
               <Description
                 text={{ __html: this.props.task.description }}
                 headerType="h3"
-                id={this.props.params.taskId}
+                id={+this.props.params.taskId}
                 headerText="Описание:"
                 onEditStart={this.props.startTaskEditing}
                 onEditFinish={this.props.stopTaskEditing}
@@ -190,46 +190,46 @@ class TaskPage extends Component {
               <Details task={this.props.task} sprints={this.props.sprints} onChange={this.props.changeTask} />
               {
                 this.props.task.linkedTasks
-                ? <RelatedTasks task={this.props.task} type="linkedTasks" onAction={this.handleOpenLinkTaskModal}
+                  ? <RelatedTasks task={this.props.task} type="linkedTasks" onAction={this.handleOpenLinkTaskModal}
                     onDelete={this.handleOpenUnlinkTaskModal} />
-                : null
+                  : null
               }
               {
                 this.props.task.subTasks && !this.props.task.parentTask
-                ? <RelatedTasks task={this.props.task} type="subTasks" onAction={this.props.openCreateTaskModal} />
-                : null
+                  ? <RelatedTasks task={this.props.task} type="subTasks" onAction={this.props.openCreateTaskModal} />
+                  : null
               }
             </aside>
           </Col>
         </Row>
         {
           this.props.isCreateTaskModalOpen
-          ? <CreateTaskModal
+            ? <CreateTaskModal
               selectedSprintValue={this.props.task.sprint ? this.props.task.sprint.id : 0}
               project={this.props.project}
               parentTaskId={this.props.task.id}
             />
-          : null
+            : null
         }
         {
           this.state.isTaskModalOpen
-          ? <TaskModal
+            ? <TaskModal
               onChoose={this.linkTask}
               onClose={this.handleCloseLinkTaskModal}
               title="Связывание задачи"
               tasks={this.getProjectUnlinkedTasks()}
             />
-          : null
+            : null
         }
 
         { this.state.isUnlinkModalOpen
           ? <ConfirmModal
-              isOpen
-              contentLabel="modal"
-              text="Вы действительно хотите отвязать задачу?"
-              onCancel={this.handleCloseUnlinkTaskModal}
-              onConfirm={this.unlinkTask}
-            />
+            isOpen
+            contentLabel="modal"
+            text="Вы действительно хотите отвязать задачу?"
+            onCancel={this.handleCloseUnlinkTaskModal}
+            onConfirm={this.unlinkTask}
+          />
           : null
         }
       </div>

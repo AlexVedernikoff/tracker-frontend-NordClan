@@ -56,7 +56,7 @@ class Metrics extends Component {
     return (
       <div>
         <section className = {css.Metrics}>
-          <h2>Метрики по проекту</h2>
+          <h2>Аналитика</h2>
           <StartEndDates startDate={this.startDate()} endDate={this.endDate()}/>
           <Row>
             <Col md = {12} lg = {6}>
