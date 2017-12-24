@@ -48,8 +48,8 @@ class Details extends Component {
     };
   }
 
-  componentWillReceiveProps (props) {
-    if (props.timeSpent !== this.props.timeSpent) {
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.timeSpent !== this.props.timeSpent && this.state.spentRequestStatus === spentRequestStatus.REQUESTED) {
       this.setState({spentRequestStatus: spentRequestStatus.RECEIVED, tooltipKey: Math.random()});
     }
   }
