@@ -9,7 +9,6 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as timesheetsActions from '../../actions/Timesheets';
 import * as css from './Timesheets.scss';
 import { IconPlus, IconArrowLeft, IconArrowRight, IconCalendar } from '../../components/Icons';
-import Button from '../../components/Button';
 import AddActivityModal from './AddActivityModal';
 import Calendar from './Calendar';
 import ActivityRow from './ActivityRow';
@@ -268,7 +267,6 @@ class Timesheets extends React.Component {
               </tr>
             </tbody>
           </table>
-          <Button text="Отправить на согласование" type="primary" style={{marginTop: '2rem'}} onClick={() => getTimesheets({userId, dateBegin, dateEnd})}/>
         </section>
         {
           this.state.isModalOpen
