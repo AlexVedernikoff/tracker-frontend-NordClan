@@ -11,6 +11,7 @@ import SprintModal from '../../../components/SprintModal';
 import TaskTypeModal from '../../../components/TaskTypeModal';
 import getTypeById from '../../../utils/TaskTypes';
 import { getProjectUsers, getProjectSprints } from '../../../actions/Project';
+import { getTask } from '../../../actions/Task';
 import { connect } from 'react-redux';
 import * as css from './Details.scss';
 import moment from 'moment';
@@ -34,7 +35,8 @@ class Details extends Component {
     task: PropTypes.object.isRequired,
     timeSpent: PropTypes.object,
     taskTypes: PropTypes.array,
-    users: PropTypes.array
+    users: PropTypes.array,
+    getTask: PropTypes.func.isRequired
   };
 
   constructor (props) {
@@ -68,7 +70,7 @@ class Details extends Component {
     this.props.onChange({
       id: this.props.task.id,
       sprintId: sprintId
-    }, sprintId);
+    }, sprintId, () => this.props.getTask(this.props.task.id));
     this.closeSprintModal();
   };
 
@@ -86,7 +88,7 @@ class Details extends Component {
     this.props.onChange({
       id: this.props.task.id,
       performerId: performerId
-    }, this.props.task.id);
+    }, this.props.task.id, () => this.props.getTask(this.props.task.id));
     this.closePerformerModal();
   };
 
@@ -307,6 +309,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   getProjectUsers,
   getProjectSprints,
+  getTask,
   getTaskSpent
 };
 
