@@ -165,12 +165,15 @@ class TaskPage extends Component {
                 onEditFinish={this.props.stopTaskEditing}
                 onEditSubmit={this.props.changeTask}
                 isEditing={this.props.DescriptionIsEditing}
+                canEdit
               />
               <hr />
               <h3>Прикрепленные файлы:</h3>
-              <Attachments attachments={this.props.task.attachments}
+              <Attachments
+                attachments={this.props.task.attachments}
                 removeAttachment={this.removeAttachment}
                 uploadAttachments={this.uploadAttachments}
+                canEdit
               />
               <RouteTabs style={{ marginTop: '2rem', marginBottom: '2rem' }}>
                 <Link
