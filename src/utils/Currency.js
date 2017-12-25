@@ -2,7 +2,7 @@ export function formatCurrency (input) {
   let result;
 
   if (input) {
-    result = input;
+    result = Number(input);
   } else {
     result = 0;
   }
