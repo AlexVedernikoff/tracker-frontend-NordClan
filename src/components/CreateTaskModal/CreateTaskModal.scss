@@ -1,12 +1,15 @@
 @import '../../styles/variables.scss';
 
 .createTaskForm {
-  max-width: 500px;
-  width: 100%;
+  // max-width: 500px;
+  // width: 100%;
+  max-width: 100%; // ie fix
+  width: 500px; // ie fix
   padding: 2rem;
 
   @include phone {
     padding: 1rem;
+    width: 100%; // ie fix
   }
 }
 
@@ -25,7 +28,12 @@
   display: flex;
   align-items: center;
 }
-
+.taskDescription {
+  width: 100%;
+  padding: 7px 15px;
+  min-height: 92px;
+  border: 1px solid #e6e6e6;
+}
 .formField {
   display: block;
 

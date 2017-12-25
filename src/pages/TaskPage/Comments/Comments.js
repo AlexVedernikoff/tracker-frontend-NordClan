@@ -68,6 +68,9 @@ class Comments extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    if (nextProps.params.taskId !== this.props.params.taskId) {
+      this.props.getCommentsByTask(nextProps.params.taskId);
+    }
     if (nextProps.currentComment.text !== this.props.currentComment.text) {
       const { isPeopleShown } = this.state;
       const mentionRE = /@(\S*)$/;
@@ -129,7 +132,7 @@ class Comments extends Component {
 
   handleClickOutside = evt => {
     if (this.props.location.hash) {
-      history.push({ ...this.props.location, hash: '' });
+      history.replace({ ...this.props.location, hash: '' });
     }
   };
 

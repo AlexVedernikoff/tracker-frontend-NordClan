@@ -5,8 +5,14 @@ import { BACKLOG_ID } from '../constants/Sprint';
 import { history } from '../History';
 import { showNotification } from './Notifications';
 import { startLoading, finishLoading } from './Loading';
+import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
 import getPlanningTasks from './PlanningTasks';
 import { getTask } from './Task';
+import {
+  withFinishLoading,
+  withStartLoading,
+  withdefaultExtra
+} from './Common';
 
 const gettingProjectInfoStart = () => ({
   type: ProjectActions.PROJECT_INFO_RECEIVE_START
@@ -72,6 +78,10 @@ export const openCreateTaskModal = () => ({
   type: ProjectActions.OPEN_CREATE_TASK_MODAL
 });
 
+export const openCreateChildTaskModal = () => ({
+  type: ProjectActions.OPEN_CREATE_CHILD_TASK_MODAL
+});
+
 export const closeCreateTaskModal = () => ({
   type: ProjectActions.CLOSE_CREATE_TASK_MODAL
 });
@@ -115,6 +125,86 @@ const bindUserToProjectsSuccess = users => ({
 const unbindUserToProjectsSuccess = users => ({
   type: ProjectActions.UNBIND_USER_TO_PROJECT_SUCCESS,
   users: users
+});
+
+const attachmentUploadStarted = (projectId, attachment) => ({
+  type: ProjectActions.PROJECT_ATTACHMENT_UPLOAD_REQUEST,
+  projectId,
+  attachment
+});
+
+const attachmentUploadProgress = (projectId, attachment, progress) => ({
+  type: ProjectActions.PROJECT_ATTACHMENT_UPLOAD_PROGRESS,
+  projectId,
+  attachment,
+  progress
+});
+
+const attachmentUploadSuccess = (projectId, attachment, result) => ({
+  type: ProjectActions.PROJECT_ATTACHMENT_UPLOAD_SUCCESS,
+  projectId,
+  attachment,
+  result
+});
+
+const attachmentUploadFail = (projectId, attachment, error) => ({
+  type: ProjectActions.PROJECT_ATTACHMENT_UPLOAD_FAIL,
+  projectId,
+  attachment,
+  error
+});
+
+const uploadAttachments = (projectId, attachments) => {
+  if (!projectId) {
+    return () => {};
+  }
+
+  return dispatch => {
+    attachments.map((file) => {
+      const data = new FormData();
+      data.append('file', file);
+
+      const attachment = {
+        id: `${ Date.now() }${ Math.random() }`,
+        fileName: file.name
+      };
+
+      return dispatch({
+        type: REST_API,
+        url: `/project/${projectId}/attachment`,
+        method: POST,
+        body: data,
+        extra: withdefaultExtra({
+          onUploadProgress: (progressEvent) => {
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            dispatch(attachmentUploadProgress(projectId, attachment, progress));
+          }
+        }),
+        start: () => withStartLoading(attachmentUploadStarted, true)(dispatch)(projectId, attachment),
+        response: result => withFinishLoading(attachmentUploadSuccess, true)(dispatch)(projectId, attachment, result),
+        error: error => withFinishLoading(attachmentUploadFail, true)(dispatch)(projectId, attachment, error)
+      });
+    });
+  };
+};
+const startRemoveAttachment = (projectId, attachmentId) => ({
+  type: ProjectActions.PROJECT_ATTACHMENT_REMOVE_REQUEST,
+  projectId,
+  attachmentId
+});
+
+const successRemoveAttachment = (projectId, attachmentId, result) => ({
+  type: ProjectActions.PROJECT_ATTACHMENT_REMOVE_SUCCESS,
+  projectId,
+  attachmentId,
+  result
+});
+
+const failRemoveAttachment = (projectId, attachmentId, error) => ({
+  type: ProjectActions.PROJECT_ATTACHMENT_REMOVE_FAIL,
+  projectId,
+  attachmentId,
+  error
 });
 
 export const bindUserToProject = (projectId, userId, rolesIds) => {
@@ -341,4 +431,23 @@ export const getPortfolios = (name = '') => {
   };
 };
 
-export { getProjectInfo, getProjectUsers, getProjectSprints, changeProject, createTask, getProjectHistory };
+const removeAttachment = (projectId, attachmentId) => {
+  if (!projectId || !attachmentId) {
+    return () => {};
+  }
+
+  const URL = `${API_URL}/project/${projectId}/attachment/${attachmentId}`;
+  return (dispatch) => {
+    dispatch(startRemoveAttachment(projectId, attachmentId));
+    axios.delete(URL)
+      .then(
+        result => {
+          dispatch(getProjectInfo(projectId));
+          return dispatch(successRemoveAttachment(projectId, attachmentId, result));
+        },
+        error => dispatch(failRemoveAttachment(projectId, attachmentId, error))
+      );
+  };
+};
+
+export { getProjectInfo, getProjectUsers, getProjectSprints, changeProject, createTask, getProjectHistory, uploadAttachments, removeAttachment };

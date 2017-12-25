@@ -10,12 +10,21 @@
 
 .changedSprint {
   @include phone {
+    flex-basis: auto;
     margin-bottom: 1rem;
   }
 }
 
 .filtersRow {
   margin-bottom: 1rem;
+  .filterCheckbox {
+    align-items: center;
+    padding: 0.5rem 1.5rem;
+  }
+  @include phone {
+    flex-direction: column; // ie fix
+    flex-basis: auto; // ie fix
+  }
 }
 
 .taskSectionTitle {

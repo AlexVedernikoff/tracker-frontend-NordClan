@@ -30,6 +30,15 @@ const getTaskHistorySuccess = history => ({
   data: history
 });
 
+const getTaskSpentStart = () => ({
+  type: TaskActions.GET_TASK_SPENT_REQUEST_SENT
+});
+
+const getTaskSpentSuccess = spent => ({
+  type: TaskActions.GET_TASK_SPENT_REQUEST_SUCCESS,
+  data: spent
+});
+
 const getTaskFail = error => ({
   type: TaskActions.GET_TASK_REQUEST_FAIL,
   error: error
@@ -72,6 +81,10 @@ const stopTaskEditing = target => ({
   target
 });
 
+const clearCurrentTask = target => ({
+  type: TaskActions.CLEAR_CURRENT_TASK
+});
+
 const getTask = id => {
   if (!id) {
     return () => {};
@@ -106,7 +119,23 @@ const getTaskHistory = id => {
   });
 };
 
-const changeTask = (ChangedProperties, target) => {
+const getTaskSpent = id => {
+  if (!id) {
+    return () => {};
+  }
+  return dispatch => dispatch({
+    type: REST_API,
+    url: `/task/${id}/spent`,
+    method: GET,
+    body,
+    extra,
+    start: withStartLoading(getTaskSpentStart, true)(dispatch),
+    response: withFinishLoading(response => getTaskSpentSuccess(response.data), true)(dispatch),
+    error: defaultErrorHandler(dispatch)
+  });
+};
+
+const changeTask = (ChangedProperties, target, cb) => {
   if (!ChangedProperties.id) {
     return;
   }
@@ -120,6 +149,9 @@ const changeTask = (ChangedProperties, target) => {
     response: withFinishLoading(response => {
       dispatch(successTaskChange(response.data));
       dispatch(stopTaskEditing(target));
+      if (cb) {
+        cb();
+      }
     })(dispatch),
     error: defaultErrorHandler(dispatch)
   });
@@ -445,6 +477,7 @@ const setHighLighted = (comment) => ({
 export {
   getTask,
   getTaskHistory,
+  getTaskSpent,
   startTaskEditing,
   stopTaskEditing,
   changeTask,
@@ -461,5 +494,6 @@ export {
   setCommentForEdit,
   resetCurrentEditingComment,
   setCurrentCommentExpired,
-  setHighLighted
+  setHighLighted,
+  clearCurrentTask
 };

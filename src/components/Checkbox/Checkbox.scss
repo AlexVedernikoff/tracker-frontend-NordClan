@@ -48,6 +48,7 @@
   justify-content: center;
   align-items: center;
   transition: $transition;
+  flex-shrink: 0; // ie fix
 
   svg {
     opacity: 0;
@@ -56,6 +57,17 @@
     transform: scale(0.5);
     fill: white;
     transition: $transition;
+  }
+}
+
+.disabled {
+  cursor: default;
+
+  &:hover {
+    .pseudoSquare {
+      background: none;
+      transition: none;
+    }
   }
 }
 

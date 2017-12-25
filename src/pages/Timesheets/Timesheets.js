@@ -9,7 +9,6 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as timesheetsActions from '../../actions/Timesheets';
 import * as css from './Timesheets.scss';
 import { IconPlus, IconArrowLeft, IconArrowRight, IconCalendar } from '../../components/Icons';
-import Button from '../../components/Button';
 import AddActivityModal from './AddActivityModal';
 import Calendar from './Calendar';
 import ActivityRow from './ActivityRow';
@@ -24,7 +23,7 @@ class Timesheets extends React.Component {
     startingDay: PropTypes.object,
     tempTimesheets: PropTypes.array,
     userId: PropTypes.number
-  }
+  };
 
   constructor (props) {
     super(props);
@@ -40,36 +39,38 @@ class Timesheets extends React.Component {
 
   toggleCalendar = () => {
     this.setState({isCalendarOpen: !this.state.isCalendarOpen});
-  }
+  };
 
   setPrevWeek = () => {
     const { changeWeek, userId, startingDay } = this.props;
     changeWeek(startingDay.subtract(7, 'days'), userId);
-  }
+  };
 
   setNextWeek = () => {
     const { changeWeek, userId, startingDay } = this.props;
     changeWeek(startingDay.add(7, 'days'), userId);
-  }
+  };
 
   setDate = (day) => {
     const { changeWeek, userId } = this.props;
     this.setState({isCalendarOpen: false}, () => {
       changeWeek(moment(day), userId);
     });
-  }
+  };
 
   render () {
     const { isCalendarOpen } = this.state;
     const { startingDay, tempTimesheets, getTimesheets, userId, dateBegin, dateEnd } = this.props;
+    const hasEnableTs = !!this.props.list.filter(tsh => tsh.statusId !== 3 && tsh.statusId !== 4).length;
+    const countTsWithTime = this.props.list.filter(tsh => tsh.spentTime !== 0).length;
     const list = this.props.list.concat(tempTimesheets);
 
     const isThisWeek = (date) => {
       const getMidnight = (dayOfWeek) => {
         return moment(startingDay)
-        .weekday(dayOfWeek)
-        .set({hour: 0, minute: 0, second: 0, millisecond: 0})
-        .format('X');
+          .weekday(dayOfWeek)
+          .set({hour: 0, minute: 0, second: 0, millisecond: 0})
+          .format('X');
       };
 
       const timesheetOndDate = moment(date).format('X');
@@ -236,8 +237,8 @@ class Timesheets extends React.Component {
                   <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
                     {
                       isCalendarOpen
-                      ? <Calendar onCancel={this.toggleCalendar} onDayClick={this.setDate} />
-                      : null
+                        ? <Calendar onCancel={this.toggleCalendar} onDayClick={this.setDate} />
+                        : null
                     }
                   </ReactCSSTransitionGroup>
                 </th>
@@ -256,26 +257,29 @@ class Timesheets extends React.Component {
                 </td>
                 <td className={css.total}/>
               </tr>
-              <tr>
-                <td colSpan="10">
-                  <a className={css.add} onClick={() => this.setState({isModalOpen: true})}>
-                    <IconPlus style={{fontSize: 16}}/>
-                    <div className={css.tooltip}>
-                      Добавить активность
-                    </div>
-                  </a>
-                </td>
-              </tr>
+              {
+                hasEnableTs || !countTsWithTime
+                  ? <tr>
+                    <td colSpan="10">
+                      <a className={css.add} onClick={() => this.setState({isModalOpen: true})}>
+                        <IconPlus style={{fontSize: 16}}/>
+                        <div className={css.tooltip}>
+                          Добавить активность
+                        </div>
+                      </a>
+                    </td>
+                  </tr>
+                  : null
+              }
             </tbody>
           </table>
-          <Button text="Отправить на согласование" type="primary" style={{marginTop: '2rem'}} onClick={() => getTimesheets({userId, dateBegin, dateEnd})}/>
         </section>
         {
           this.state.isModalOpen
-          ? <AddActivityModal
+            ? <AddActivityModal
               onClose={() => this.setState({isModalOpen: false})}
             />
-          : null
+            : null
         }
       </div>
     );

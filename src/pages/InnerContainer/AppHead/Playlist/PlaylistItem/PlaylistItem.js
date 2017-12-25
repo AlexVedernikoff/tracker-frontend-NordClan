@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
+import { history } from '../../../../../History';
 import {
-  updateTimesheet,
-  updateTimesheetDraft,
   updateDraft,
-  updateOnlyTimesheet
+  updateTimesheet
 } from '../../../../../actions/TimesheetPlayer';
 import _ from 'lodash';
 import * as css from '../Playlist.scss';
@@ -27,29 +26,21 @@ class PlaylistItem extends Component {
     this.state = {
       isCommentOpen: false
     };
-    this.debounceUpdateTimesheet = _.debounce(this.props.updateTimesheet, 500);
-    //this.debounceUpdateTimesheetDraft = _.debounce(this.props.updateTimesheetDraft, 500);
     this.debouncedUpdateDraft = _.debounce(this.props.updateDraft, 500);
-    this.debouncedUpdateOnlyTimesheet = _.debounce(this.props.updateOnlyTimesheet, 500);
+    this.debouncedUpdateOnlyTimesheet = _.debounce(this.props.updateTimesheet, 500);
   }
 
-  toggleComment = () => {
+  toggleComment = event => {
+    event.stopPropagation();
     this.setState({isCommentOpen: !this.state.isCommentOpen});
   };
 
   pushComment = (comment) => {
     return () => {
-      this.props.updateTimesheet({
-        taskId: this.props.item.task ? this.props.item.task.id : null,
-        timesheetId: this.props.item.id,
-        body: {
-          comment
-        }
-      }, {
-        isDraft: this.props.item.isDraft,
-        onDate: this.props.item.onDate,
-        itemKey: this.props.index
-      });
+      this.debouncedUpdateOnlyTimesheet({
+        sheetId: this.props.item.id,
+        comment
+      })
     };
   };
 
@@ -57,11 +48,10 @@ class PlaylistItem extends Component {
     const value = e.target.value;
     if (this.props.item.isDraft) {
       this.debouncedUpdateDraft(
-        {
+       {
           sheetId: this.props.item.id,
           spentTime: value.replace(',', '.'),
-          isVisible: this.props.item.isVisible,
-          return: 'trackList'
+          isVisible: this.props.item.isVisible
         },
         {
           onDate: this.props.item.onDate
@@ -74,42 +64,25 @@ class PlaylistItem extends Component {
           spentTime: value.replace(',', '.'),
           isVisible: this.props.item.isVisible,
           comment: this.props.item.comment,
-          statusId: this.props.item.task.taskStatus.id,
           onDate: this.props.item.onDate
-          //return: 'trackList'
-        },
+        }
       );
     }
-    // this.debounceUpdateTimesheet({
-    //   taskId: (this.props.item.task) ? this.props.item.task.id : null,
-    //   timesheetId: this.props.item.id,
-    //   body: {
-    //     spentTime: value.replace(',', '.')
-    //   }
-    // }, {
-    //   isDraft: this.props.item.isDraft,
-    //   onDate: this.props.item.onDate,
-    //   itemKey: this.props.index
-    // });
   };
 
   handleChangeComment = (e) => {
     this.setState({comment: e.target.value});
   };
 
-  changeVisibility = (visibility) => {
+  changeVisibility = (e, visibility) => {
+    e.stopPropagation();
+    const { item, updateTimesheet, updateDraft } = this.props;
     return () => {
-      this.props.updateTimesheet({
-        taskId: this.props.item.task ? this.props.item.task.id : null,
-        timesheetId: this.props.item.id,
-        body: {
-          isVisible: !!visibility
-        }
-      }, {
-        isDraft: this.props.item.isDraft,
-        onDate: this.props.item.onDate,
-        itemKey: this.props.index
-      });
+      const params = {
+        sheetId: item.id,
+        isVisible: !!visibility
+      }
+      item.isDraft ? updateDraft(params) : updateTimesheet(params);
     };
   };
 
@@ -120,55 +93,57 @@ class PlaylistItem extends Component {
   render () {
     const {
       task,
-      prefix,
       project,
-      factTime,
-      plannedTime,
       spentTime,
       comment,
       typeId,
       taskStatus: prevStatus,
-      isDraft
+      isDraft,
+      isVisible
     } = this.props.item;
-    const status = this.props.item.task ? this.props.item.task.taskStatus : null;
+    const status = task ? task.taskStatus : null;
+    const redColorForTime = task
+      ? parseFloat(task.factExecutionTime) > parseFloat(task.plannedExecutionTime)
+      : false;
 
     return (
       <div className={classnames(css.listTask, css.task)}>
         <div className={classnames({
           [css.actionButton]: true,
-          [css.locked]: this.props.item.status !== 'inhold' && this.props.item.status !== 'inprogress'
+          [css.locked]: status !== 'inhold' && status !== 'inprogress'
         })}>
-          {getMaIcon(this.props.item.typeId)}
+          {getMaIcon(typeId)}
         </div>
-        <div className={css.taskNameWrapper}>
+        <div className={css.taskNameWrapper} onClick={() => history.push(`/projects/${project.id}/tasks/${task.id}`)}>
           <div className={css.taskTitle}>
             <div className={css.meta}>
-              { task && task.prefix ? <span>{prefix}</span> : null}
+              { task && task.prefix ? <span>{task.prefix}</span> : null}
               { project ? <span>{project.name}</span> : null}
               { status
                 ? <span>
-                    {
-                      prevStatus
-                        ? (<span>{prevStatus.name}<span style={{display: 'inline-block', margin: '0 0.25rem'}}> → </span></span>)
-                        : null
-                    }
+                  {
+                    prevStatus
+                      ? (<span>{prevStatus.name}<span style={{display: 'inline-block', margin: '0 0.25rem'}}> → </span></span>)
+                      : null
+                  }
                   {status.name}
-                  </span>
+                </span>
                 : null}
               {
                 !isDraft
-                ? <span className={classnames({[css.commentToggler]: true, [css.green]: !!comment})} onClick={this.toggleComment}><IconComment/></span>
-                : null
+                  ? <span className={classnames({[css.commentToggler]: true, [css.green]: !!comment})} onClick={this.toggleComment}><IconComment/></span>
+                  : null
               }
 
               { status !== 'education'
-                ? (this.props.item.isVisible
-                  ? <span className={css.visibleToggler} onClick={this.changeVisibility(false)} data-tip="Скрыть"><IconEyeDisable/></span>
-                  : <span className={css.visibleToggler} onClick={this.changeVisibility(true)} data-tip="Показать"><IconEye/></span>)
+                ? (isVisible
+                  ? <span className={css.visibleToggler} onClick={(e) => this.changeVisibility(e, false)} data-tip="Скрыть"><IconEyeDisable/></span>
+                  : <span className={css.visibleToggler} onClick={(e) => this.changeVisibility(e, true)} data-tip="Показать"><IconEye/></span>)
                 : null
               }
             </div>
             <div className={css.taskName}>
+              <span>{`${project.prefix}-${task.id}`}</span>
               {task ? task.name : this.getNameByType(typeId)}
             </div>
           </div>
@@ -177,7 +152,7 @@ class PlaylistItem extends Component {
           <div className={css.today}>
             <input type="text" onChange={this.handleChangeTime} defaultValue={roundNum(spentTime, 2)}/>
           </div>
-          <div className={classnames({[css.other]: true, [css.exceeded]: factTime > plannedTime})}>
+          <div className={classnames({[css.other]: true, [css.exceeded]: redColorForTime})}>
             <span
               data-tip="Всего потрачено"
               data-place="bottom"
@@ -211,24 +186,19 @@ PlaylistItem.propTypes = {
   item: PropTypes.object.isRequired,
   magicActivitiesTypes: PropTypes.array,
   updateDraft: PropTypes.func,
-  updateOnlyTimesheet: PropTypes.func,
-  updateTimesheet: PropTypes.func.isRequired,
-  updateTimesheetDraft: PropTypes.func.isRequired,
+  updateTimesheet: PropTypes.func,
   visible: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => {
   return {
-    tracks: state.TimesheetPlayer.tracks,
     magicActivitiesTypes: state.Dictionaries.magicActivityTypes
   };
 };
 
 const mapDispatchToProps = {
-  updateTimesheet,
-  updateTimesheetDraft,
   updateDraft,
-  updateOnlyTimesheet
+  updateTimesheet
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlaylistItem);

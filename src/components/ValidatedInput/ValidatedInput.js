@@ -6,6 +6,7 @@ import * as validateCss from './ValidatedInput.scss';
 
 class ValidatedInput extends Component {
   static propTypes = {
+    backendErrorText: PropTypes.string,
     errorText: PropTypes.string,
     onBlur: PropTypes.func,
     shouldMarkError: PropTypes.bool
@@ -25,7 +26,7 @@ class ValidatedInput extends Component {
   }
 
   render () {
-    const { onBlur, shouldMarkError, errorText, ...other } = this.props;
+    const { onBlur, shouldMarkError, errorText, backendErrorText, ...other } = this.props;
     return (
       <div className={validateCss.fullWrapper}>
         <input
@@ -36,10 +37,11 @@ class ValidatedInput extends Component {
           }}
           onFocus = {()=> this.setState({ showSpan: false })}
           className={classnames(css.input, {
-            [css.inputError]: this.state.isError
+            [css.inputError]: this.state.isError || backendErrorText
           })}
         />
         {this.state.showSpan && <span>{errorText}</span>}
+        {backendErrorText && <span>{backendErrorText}</span>}
       </div>
     );
   }

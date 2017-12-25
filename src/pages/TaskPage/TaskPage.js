@@ -31,7 +31,8 @@ import {
 import getTasks from '../../actions/Tasks';
 import {
   getProjectInfo,
-  openCreateTaskModal
+  openCreateTaskModal,
+  openCreateChildTaskModal
 } from '../../actions/Project';
 
 import * as css from './TaskPage.scss';
@@ -44,8 +45,10 @@ class TaskPage extends Component {
     getProjectInfo: PropTypes.func.isRequired,
     getTask: PropTypes.func.isRequired,
     getTasks: PropTypes.func.isRequired,
+    isCreateChildTaskModalOpen: PropTypes.bool,
     isCreateTaskModalOpen: PropTypes.bool,
     linkTask: PropTypes.func.isRequired,
+    openCreateChildTaskModal: PropTypes.func.isRequired,
     openCreateTaskModal: PropTypes.func.isRequired,
     params: PropTypes.shape({
       projectId: PropTypes.string.isRequired,
@@ -151,23 +154,26 @@ class TaskPage extends Component {
         />
         <Row>
           <Col xs={12} sm={8}>
-            <TaskHeader task={this.props.task} projectId={this.props.params.projectId} onChange={this.props.changeTask} />
+            <TaskHeader task={this.props.task} projectId={this.props.params.projectId} onChange={this.props.changeTask}/>
             <main className={css.main}>
               <Description
                 text={{ __html: this.props.task.description }}
                 headerType="h3"
-                id={this.props.params.taskId}
+                id={+this.props.params.taskId}
                 headerText="Описание:"
                 onEditStart={this.props.startTaskEditing}
                 onEditFinish={this.props.stopTaskEditing}
                 onEditSubmit={this.props.changeTask}
                 isEditing={this.props.DescriptionIsEditing}
+                canEdit
               />
               <hr />
               <h3>Прикрепленные файлы:</h3>
-              <Attachments attachments={this.props.task.attachments}
-                           removeAttachment={this.removeAttachment}
-                           uploadAttachments={this.uploadAttachments}
+              <Attachments
+                attachments={this.props.task.attachments}
+                removeAttachment={this.removeAttachment}
+                uploadAttachments={this.uploadAttachments}
+                canEdit
               />
               <RouteTabs style={{ marginTop: '2rem', marginBottom: '2rem' }}>
                 <Link
@@ -190,46 +196,46 @@ class TaskPage extends Component {
               <Details task={this.props.task} sprints={this.props.sprints} onChange={this.props.changeTask} />
               {
                 this.props.task.linkedTasks
-                ? <RelatedTasks task={this.props.task} type="linkedTasks" onAction={this.handleOpenLinkTaskModal}
+                  ? <RelatedTasks task={this.props.task} type="linkedTasks" onAction={this.handleOpenLinkTaskModal}
                     onDelete={this.handleOpenUnlinkTaskModal} />
-                : null
+                  : null
               }
               {
                 this.props.task.subTasks && !this.props.task.parentTask
-                ? <RelatedTasks task={this.props.task} type="subTasks" onAction={this.props.openCreateTaskModal} />
-                : null
+                  ? <RelatedTasks task={this.props.task} type="subTasks" onAction={this.props.openCreateChildTaskModal} />
+                  : null
               }
             </aside>
           </Col>
         </Row>
         {
-          this.props.isCreateTaskModalOpen
-          ? <CreateTaskModal
+          this.props.isCreateTaskModalOpen || this.props.isCreateChildTaskModalOpen
+            ? <CreateTaskModal
               selectedSprintValue={this.props.task.sprint ? this.props.task.sprint.id : 0}
               project={this.props.project}
-              parentTaskId={this.props.task.id}
+              parentTaskId={this.props.isCreateChildTaskModalOpen ? this.props.task.id : null}
             />
-          : null
+            : null
         }
         {
           this.state.isTaskModalOpen
-          ? <TaskModal
+            ? <TaskModal
               onChoose={this.linkTask}
               onClose={this.handleCloseLinkTaskModal}
               title="Связывание задачи"
               tasks={this.getProjectUnlinkedTasks()}
             />
-          : null
+            : null
         }
 
         { this.state.isUnlinkModalOpen
           ? <ConfirmModal
-              isOpen
-              contentLabel="modal"
-              text="Вы действительно хотите отвязать задачу?"
-              onCancel={this.handleCloseUnlinkTaskModal}
-              onConfirm={this.unlinkTask}
-            />
+            isOpen
+            contentLabel="modal"
+            text="Вы действительно хотите отвязать задачу?"
+            onCancel={this.handleCloseUnlinkTaskModal}
+            onConfirm={this.unlinkTask}
+          />
           : null
         }
       </div>
@@ -242,7 +248,8 @@ const mapStateToProps = state => ({
   projectTasks: state.Tasks.tasks,
   task: state.Task.task,
   DescriptionIsEditing: state.Task.DescriptionIsEditing,
-  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen
+  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
+  isCreateChildTaskModalOpen: state.Project.isCreateChildTaskModalOpen
 });
 
 const mapDispatchToProps = {
@@ -252,6 +259,7 @@ const mapDispatchToProps = {
   getProjectInfo,
   linkTask,
   openCreateTaskModal,
+  openCreateChildTaskModal,
   removeAttachment,
   startTaskEditing,
   stopTaskEditing,

@@ -10,11 +10,14 @@ $color-blue: #46b8da;
 $color-gray: #ebebeb;
 $color-lightgray: #fafafa;
 $color-white: #fff;
+$color-dark-gray: #7f8e9c;
+$color-light-red: #f37571;
 
 $text-color: $color-black;
 $input-color-placeholder: silver;
+$color-modal-bg: $color-white;
 
-// Responsible
+// Responsive
 
 $phone-width: 768px;
 $tablet-width: 1024px;
@@ -77,6 +80,14 @@ $box-shadow: 4px 4px 0 rgba(0,0,0,0.17);
   left: 0;
   height: 100%;
   width: 100%;
+}
+
+@mixin text-wrap {
+  word-break: break-all;
+  word-break: break-word;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
 }
 
 // Priority

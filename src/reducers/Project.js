@@ -11,11 +11,13 @@ const InitialState = {
       events: [],
       pagesCount: 0
     },
-    error: false
+    error: false,
+    metrics: []
   },
   TitleIsEditing: false,
   DescriptionIsEditing: false,
   isCreateTaskModalOpen: false,
+  isCreateChildTaskModalOpen: false,
   PortfolioIsEditing: false,
   isProjectInfoReceiving: false,
   isCreateTaskRequestInProgress: false
@@ -164,6 +166,12 @@ export default function Project (state = InitialState, action) {
       [`${action.target}IsEditing`]: false
     };
 
+  case ProjectActions.OPEN_CREATE_CHILD_TASK_MODAL:
+    return {
+      ...state,
+      isCreateChildTaskModalOpen: true
+    };
+
   case ProjectActions.OPEN_CREATE_TASK_MODAL:
     return {
       ...state,
@@ -173,7 +181,8 @@ export default function Project (state = InitialState, action) {
   case ProjectActions.CLOSE_CREATE_TASK_MODAL:
     return {
       ...state,
-      isCreateTaskModalOpen: false
+      isCreateTaskModalOpen: false,
+      isCreateChildTaskModalOpen: false
     };
 
   case ProjectActions.TASK_CREATE_REQUEST_START:
@@ -246,7 +255,9 @@ export default function Project (state = InitialState, action) {
       project: {
         sprints: [],
         users: [],
-        history: {},
+        history: {
+          events: []
+        },
         error: false
       },
       TitleIsEditing: false,
@@ -254,6 +265,84 @@ export default function Project (state = InitialState, action) {
       isCreateTaskModalOpen: false
     };
 
+  case ProjectActions.PROJECT_ATTACHMENT_REMOVE_SUCCESS: {
+    const { attachmentId } = action;
+    const { attachments } = state.project.attachments;
+    const newAttachments = attachments.map(attach =>
+      ({ ...attach, deleting: attach.id === attachmentId || attach.deleting })
+    );
+
+    return {
+      ...state,
+      project: {
+        ...state.project,
+        attachments: newAttachments
+      }
+    };
+  };
+
+  case ProjectActions.PROJECT_ATTACHMENT_UPLOAD_REQUEST: {
+    const attachments = state.project.attachments;
+    const attachment = action.attachment;
+
+    return {
+      ...state,
+      project: {
+        ...state.project,
+        attachments: [
+          ...attachments,
+          {
+            ...attachment,
+            uploading: true
+          }
+        ]
+      }
+    };
+  }
+
+  case ProjectActions.PROJECT_ATTACHMENT_UPLOAD_PROGRESS: {
+    const attachments = state.project.attachments.map((attachment) => {
+      if (attachment.id === action.attachment.id) {
+        attachment.progress = action.progress;
+      }
+
+      return attachment;
+    });
+
+    return {
+      ...state,
+      project: {
+        ...state.project,
+        attachments
+      }
+    };
+  }
+
+  case ProjectActions.PROJECT_ATTACHMENT_UPLOAD_SUCCESS: {
+    const attachments = state.project.attachments.filter(
+      value => value.uploading && value.id !== action.attachment.id
+    );
+
+    return {
+      ...state,
+      project: {
+        ...state.project,
+        attachments: [
+          ...action.result.data,
+          ...attachments
+        ]
+      }
+    };
+  }
+
+  case ProjectActions.GET_METRICS_SUCCESS:
+    return {
+      ...state,
+      project: {
+        ...state.project,
+        metrics: action.metrics
+      }
+    }
   default:
     return {
       ...state

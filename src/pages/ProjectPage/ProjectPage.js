@@ -9,13 +9,15 @@ import * as css from './ProjectPage.scss';
 import ProjectTitle from './ProjectTitle';
 
 import { getProjectInfo as getProject } from '../../actions/Project';
+import { ADMIN } from '../../constants/Roles';
 
 class ProjectPage extends Component {
   static propTypes = {
     children: PropTypes.object,
     getProjectInfo: PropTypes.func,
     params: PropTypes.object,
-    project: PropTypes.object
+    project: PropTypes.object,
+    user: PropTypes.object.isRequired
   };
 
   constructor (props) {
@@ -27,7 +29,13 @@ class ProjectPage extends Component {
     getProjectInfo(this.props.params.projectId);
   }
 
+  checkIsAdminInProject = () => {
+    return this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1
+      || this.props.user.globalRole === ADMIN;
+  };
+
   render () {
+    const isProjectAdmin = this.checkIsAdminInProject();
 
     return (this.props.project.error) ? (<HttpError error={this.props.project.error}/>) : (
       <div id="project-page">
@@ -36,12 +44,13 @@ class ProjectPage extends Component {
           name={this.props.project.name || ''}
           prefix={this.props.project.prefix || ''}
           id={this.props.project.id || ''}
+          isProjectAdmin={isProjectAdmin}
         />
 
         <RouteTabs>
           <Link
             activeClassName="active"
-            to={`/projects/${this.props.params.projectId}/agile-board`}
+            to={`/projects/${this.props.params.projectId}`}
           >
             Доска
           </Link>
@@ -71,15 +80,15 @@ class ProjectPage extends Component {
           </Link>
           <Link
             activeClassName="active"
-            to={`/projects/${this.props.params.projectId}/analitics`}
-          >
-            Аналитика
-          </Link>
-          <Link
-            activeClassName="active"
             to={`/projects/${this.props.params.projectId}/history`}
           >
             История
+          </Link>
+          <Link
+            activeClassName="active"
+            to={`/projects/${this.props.params.projectId}/analytics`}
+          >
+            Аналитика
           </Link>
         </RouteTabs>
 
@@ -92,7 +101,8 @@ class ProjectPage extends Component {
 }
 
 const mapStateToProps = state => ({
-  project: state.Project.project
+  project: state.Project.project,
+  user: state.Auth.user
 });
 
 const mapDispatchToProps = {

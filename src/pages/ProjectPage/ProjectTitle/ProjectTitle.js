@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import classnames from 'classnames';
 import { Link } from 'react-router';
 import ReactTooltip from 'react-tooltip';
 import ProjectIcon from '../../../components/ProjectIcon';
@@ -9,6 +8,7 @@ import PortfolioModal from '../../../components/PortfolioModal';
 import { IconEdit, IconCheck, IconPreloader } from '../../../components/Icons';
 import InlineHolder from '../../../components/InlineHolder';
 import * as css from './ProjectTitle.scss';
+import { showNotification } from '../../../actions/Notifications';
 import {
   changeProject as editProject,
   startEditing as beginEdit,
@@ -23,6 +23,7 @@ class ProjectTitle extends Component {
     changeProject: PropTypes.func.isRequired,
     closePortfolioModal: PropTypes.func,
     id: PropTypes.any,
+    isProjectAdmin: PropTypes.bool,
     name: PropTypes.string.isRequired,
     openPortfolioModal: PropTypes.func,
     portfolio: PropTypes.object,
@@ -77,7 +78,14 @@ class ProjectTitle extends Component {
       this.projectName.innerText.length < 4
       || this.projectName.innerText.length > 255
     ) {
-      this.setState({ nameIsIncorrect: true });
+      this.setState({ nameIsIncorrect: true }, 
+        () => this.props.showNotification(
+          { 
+            message: `Имя проекта должно содержать от 4 до 255 символов`, 
+            type: 'error' 
+          }
+        )
+      );
     } else if (this.state.nameIsIncorrect) {
       this.setState({ nameIsIncorrect: false });
     }
@@ -86,7 +94,14 @@ class ProjectTitle extends Component {
       this.projectPrefix.innerText.length < 2
       || this.projectPrefix.innerText.length > 8
     ) {
-      this.setState({ prefixIsIncorrect: true });
+      this.setState({ prefixIsIncorrect: true },  
+        () => this.props.showNotification(
+          { 
+            message: `Префикс должен содержать от 2 до 8 символов`, 
+            type: 'error' 
+          }
+        )
+      );
     } else if (this.state.prefixIsIncorrect) {
       this.setState({ prefixIsIncorrect: false });
     }
@@ -166,25 +181,24 @@ class ProjectTitle extends Component {
   render () {
     return (
       <div className={css.projectTitle}>
-        {this.props.name ? 
-          <ProjectIcon 
-            projectName={this.props.name} 
-            projectPrefix={this.props.prefix}
-          /> 
-          : 
-          <IconPreloader 
-            style={{color: 'silver', fontSize: '3rem', marginRight: 10}} 
-          />
+        {
+          this.props.name
+            ? <ProjectIcon
+              projectName={this.props.name}
+              projectPrefix={this.props.prefix}
+            />
+            : <IconPreloader
+              style={{color: 'silver', fontSize: '3rem', marginRight: 10}}
+            />
         }
         <div>
           {
-            this.props.portfolio ?
-              <span className={css.portfolio}>
-                <Link to={`/projects/portfolio/${this.props.portfolio.id}`}>{this.props.portfolio.name}</Link> 
+            this.props.portfolio
+              ? <span className={css.portfolio}>
+                <Link to={`/projects/portfolio/${this.props.portfolio.id}`}>{this.props.portfolio.name}</Link>
                 <IconEdit onClick={this.props.openPortfolioModal}/>
               </span>
-              : 
-              null
+              : null
           }
           <h1>
             <span
@@ -209,31 +223,33 @@ class ProjectTitle extends Component {
               </span>
               <span>)</span>
             </span>
-            {this.props.titleIsEditing ? (
-              <IconCheck
-                className={css.save}
-                data-tip="Сохранить"
-                onClick={this.editIconClickHandler}
-              />
-            ) : (
-              <IconEdit
-                className={css.edit}
-                data-tip="Редактировать"
-                onClick={this.editIconClickHandler}
-              />
-            )}
+            {
+              this.props.isProjectAdmin
+                ? this.props.titleIsEditing
+                  ? <IconCheck
+                    className={css.save}
+                    data-tip="Сохранить"
+                    onClick={this.editIconClickHandler}
+                  />
+                  : <IconEdit
+                    className={css.edit}
+                    data-tip="Редактировать"
+                    onClick={this.editIconClickHandler}
+                  />
+                : null
+            }
           </h1>
         </div>
         {
-          this.props.PortfolioIsEditing
-          ? <PortfolioModal
+          this.props.isProjectAdmin && this.props.PortfolioIsEditing
+            ? <PortfolioModal
               defaultPortfolio={this.props.portfolio || null}
               projectId={this.props.projectId}
               onClose={this.props.closePortfolioModal}
               onChoose={this.props.changeProject}
               title="Изменить портфель проекта"
             />
-          : null
+            : null
         }
       </div>
     );
@@ -251,7 +267,8 @@ const mapDispatchToProps = {
   startEditing: beginEdit,
   stopEditing: finishEdit,
   openPortfolioModal,
-  closePortfolioModal
+  closePortfolioModal,
+  showNotification
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectTitle);

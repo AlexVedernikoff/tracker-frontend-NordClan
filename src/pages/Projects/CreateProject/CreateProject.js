@@ -5,34 +5,23 @@ import { API_URL } from '../../../constants/Settings';
 import Modal from '../../../components/Modal';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
+import ValidatedInput from '../../../components/ValidatedInput';
+import Validator from '../../../components/ValidatedInput/Validator';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './CreateProject.scss';
 import Checkbox from '../../../components/Checkbox';
 import Select from 'react-select';
+import getPortfolios from '../../../utils/getPortfolios'
 
 class CreateProject extends Component {
   constructor (props) {
     super(props);
-  }
 
-  getPortfolios (name = '') {
-    return axios
-      .get(
-        `${API_URL}/portfolio`,
-        { params: { name } },
-        { withCredentials: true }
-      )
-      .then(response => response.data.data)
-      .then(portfolios => ({
-        options: portfolios.map((portfolio) => ({
-          label: portfolio.name,
-          value: portfolio.id
-        }))
-      }));
+    this.validator = new Validator();
   }
 
   render () {
-    const { isOpen, onRequestClose } = this.props;
+    const { isOpen, onRequestClose, prefixErrorText } = this.props;
 
     const formLayout = {
       firstCol: 5,
@@ -56,12 +45,21 @@ class CreateProject extends Component {
                 <p>Название проекта:</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input
-                  autoFocus
-                  onChange={this.props.onChange}
-                  name="projectName"
-                  placeholder="Название проекта"
-                />
+                {this.validator.validate(
+                  (handleBlur, shouldMarkError) => (
+                    <ValidatedInput
+                      autoFocus
+                      onChange={this.props.onChange}
+                      name="projectName"
+                      placeholder="Название проекта"
+                      onBlur={handleBlur}
+                      shouldMarkError={shouldMarkError}
+                      errorText="Длина менее 4 символов"
+                    />
+                  ),
+                  'projectName',
+                  !this.props.validateProjectName
+                )}
               </Col>
             </Row>
           </label>
@@ -71,11 +69,21 @@ class CreateProject extends Component {
                 <p>Префикс проекта:</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input
-                  onChange={this.props.onChange}
-                  name="projectPrefix"
-                  placeholder="Префикс проекта"
-                />
+                {this.validator.validate(
+                  (handleBlur, shouldMarkError) => (
+                    <ValidatedInput
+                      onChange={this.props.onChange}
+                      name="projectPrefix"
+                      placeholder="Префикс проекта"
+                      onBlur={handleBlur}
+                      shouldMarkError={shouldMarkError}
+                      errorText="Длина менее 2 символов"
+                      backendErrorText={prefixErrorText}
+                    />
+                  ),
+                  'projectPrefix',
+                  !this.props.validateProjectPrefix
+                )}
               </Col>
             </Row>
           </label>
@@ -91,7 +99,7 @@ class CreateProject extends Component {
                   multi={false}
                   ignoreCase={false}
                   placeholder="Выберите портфель"
-                  loadOptions={this.getPortfolios}
+                  loadOptions={getPortfolios}
                   filterOption={el=>el}
                   onChange={this.props.onPortfolioSelect}
                   value={this.props.selectedPortfolio}
@@ -119,12 +127,14 @@ class CreateProject extends Component {
               htmlType="submit"
               type="green"
               onClick={this.props.onSubmit}
+              disabled = {!(this.props.validateProjectName && this.props.validateProjectPrefix)}
             />
             <Button
               text="Создать и открыть"
               htmlType="button"
               type="green-lighten"
               onClick={this.props.onSubmitAndOpen}
+              disabled = {!(this.props.validateProjectName && this.props.validateProjectPrefix)}
             />
           </div>
         </form>
@@ -141,6 +151,7 @@ CreateProject.propTypes = {
   onRequestClose: PropTypes.func,
   onSubmit: PropTypes.func,
   onSubmitAndOpen: PropTypes.func,
+  prefixErrorText: PropTypes.string,
   selectedPortfolio: PropTypes.object
 };
 

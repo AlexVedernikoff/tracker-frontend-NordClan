@@ -18,12 +18,15 @@ class Participant extends React.Component {
       sendRoles: []
     };
   }
+
   componentWillMount = () => {
     this.setState({ sendRoles: this.setRoles(this.props) });
   };
+
   componentWillReceiveProps = (nextProps) => {
     this.setState({ sendRoles: this.setRoles(nextProps) });
   };
+
   changeRole = (e, role, roleId) => {
     e.preventDefault();
     let stringRoles = '0';
@@ -52,12 +55,14 @@ class Participant extends React.Component {
       stringRoles
     );
   };
+
   unbindUser = () => {
     this.props.unbindUserToProject(
       this.props.projectId,
       this.props.user.id
     );
   };
+
   setRoles = (prop) => {
     const sendRoles = [];
 
@@ -78,6 +83,7 @@ class Participant extends React.Component {
   handleCloseConfirmDelete = () => {
     this.setState({ isConfirmDeleteOpen: false });
   };
+
   render () {
     const {
       user,
@@ -88,30 +94,42 @@ class Participant extends React.Component {
 
     return (
       <Row className={css.memberRow}>
-        <Col xs={3}>
+        <Col xs={12} sm={2} md={2} lg={3}>
           <div className={classnames(css.cell, css.memberColumn)}>
-            <IconClose
-              className={css.iconClose}
-              onClick={this.handleOpenConfirmDelete}
-            />
+            {
+              this.props.isProjectAdmin
+                ? <IconClose
+                  className={css.iconClose}
+                  onClick={this.handleOpenConfirmDelete}
+                />
+                : null
+            }
             {user.fullNameRu}
           </div>
         </Col>
-        <Col xs={9}>
+        <Col xs={12} sm={10} md={10} lg={9}>
           <Row>
-            {this.ROLES_NAME
-              ? this.ROLES_NAME.map((ROLES_NAME, i) =>
-              <Col xs key={`${i}-roles-checkbox`}>
-                <label className={css.cell}>
-                  <Checkbox onChange={(e) => this.changeRole(e, this.ROLES_NAME[i], this.ROLES_ID[i])}
-                            checked={(roles && roles[ROLES_NAME]) || false}/>
-                </label>
-              </Col>
-            ) : null}
+            {
+              this.ROLES_NAME
+                ? this.ROLES_NAME.map((ROLES_NAME, i) =>
+                  <Col xs={6} sm={3} md={3} lg key={`${i}-roles-checkbox`} className={css.cellColumn}>
+                    <label className={css.cell}>
+                      <Checkbox
+                        disabled={!this.props.isProjectAdmin}
+                        onChange={(e) => this.changeRole(e, this.ROLES_NAME[i], this.ROLES_ID[i])}
+                        checked={(roles && roles[ROLES_NAME]) || false}
+                      />
+                      <span className={css.labelText}>{this.ROLES_NAME[i]}</span>
+                    </label>
+                  </Col>
+                )
+                : null
+            }
           </Row>
         </Col>
-        {this.state.isConfirmDeleteOpen
-          ? <ConfirmModal
+        {
+          this.state.isConfirmDeleteOpen
+            ? <ConfirmModal
               isOpen
               contentLabel="modal"
               text="Вы действительно хотите удалить этого участника?"
@@ -119,7 +137,8 @@ class Participant extends React.Component {
               onConfirm={this.unbindUser}
               onRequestClose={this.handleCloseConfirmDelete}
             />
-          : null}
+            : null
+        }
       </Row>
     );
   }
@@ -127,6 +146,7 @@ class Participant extends React.Component {
 
 Participant.propTypes = {
   bindUserToProject: PropTypes.func.isRequired,
+  isProjectAdmin: PropTypes.bool,
   projectId: PropTypes.number,
   unbindUserToProject: PropTypes.func.isRequired,
   user: PropTypes.object

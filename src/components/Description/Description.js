@@ -88,42 +88,42 @@ class Description extends Component {
     switch (headerType) {
     case 'h1':
       header = (
-          <h1>
-            {headerText}
-          </h1>
-        );
+        <h1>
+          {headerText}
+        </h1>
+      );
       break;
 
     case 'h2':
       header = (
-          <h2>
-            {headerText}
-          </h2>
-        );
+        <h2>
+          {headerText}
+        </h2>
+      );
       break;
 
     case 'h3':
       header = (
-          <h3>
-            {headerText}
-          </h3>
-        );
+        <h3>
+          {headerText}
+        </h3>
+      );
       break;
 
     case 'h4':
       header = (
-          <h4>
-            {headerText}
-          </h4>
-        );
+        <h4>
+          {headerText}
+        </h4>
+      );
       break;
 
     case 'h5':
       header = (
-          <h5>
-            {headerText}
-          </h5>
-        );
+        <h5>
+          {headerText}
+        </h5>
+      );
       break;
 
     default:
@@ -138,28 +138,36 @@ class Description extends Component {
         })}
       >
         {header}
-        {this.props.isEditing
-          ? <TextEditor
+        {
+          this.props.isEditing
+            ? <TextEditor
               ref={ref => (this.TextEditor = ref)}
               content={this.props.text.__html || ''}
             />
-          : <div
+            : <div
               className={css.wiki}
               dangerouslySetInnerHTML={{__html: this.parseTextLinks(this.props.text)}}
-            />}
-        <div className={css.editBorder}>
-          {this.props.isEditing
-            ? <IconCheck
-                className={css.save}
-                onClick={this.toggleEditing}
-                data-tip="Сохранить"
-              />
-            : <IconEdit
-                className={css.edit}
-                onClick={this.toggleEditing}
-                data-tip="Редактировать"
-              />}
-        </div>
+            />
+        }
+        {
+          this.props.canEdit
+            ? <div className={css.editBorder}>
+              {
+                this.props.isEditing
+                  ? <IconCheck
+                    className={css.save}
+                    onClick={this.toggleEditing}
+                    data-tip="Сохранить"
+                  />
+                  : <IconEdit
+                    className={css.edit}
+                    onClick={this.toggleEditing}
+                    data-tip="Редактировать"
+                  />
+              }
+            </div>
+            : null
+        }
       </div>
     );
   }
@@ -167,9 +175,10 @@ class Description extends Component {
 
 Description.propTypes = {
   DescriptionIsEditing: PropTypes.bool,
+  canEdit: PropTypes.bool,
   headerText: PropTypes.string,
   headerType: PropTypes.string,
-  id: PropTypes.string,
+  id: PropTypes.number,
   isEditing: PropTypes.bool.isRequired,
   onEditFinish: PropTypes.func.isRequired,
   onEditStart: PropTypes.func.isRequired,

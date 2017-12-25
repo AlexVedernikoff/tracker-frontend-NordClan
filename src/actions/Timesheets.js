@@ -42,39 +42,28 @@ const startCreateTimesheetRequest = () => ({
   type: TimesheetsActions.CREATE_TIMESHEET_START
 });
 
-const successCreateTimesheetRequest = (data) => ({
+const successCreateTimesheetRequest = (timesheet) => ({
   type: TimesheetsActions.CREATE_TIMESHEET_SUCCESS,
-  data
+  timesheet
 });
 
 const startUpdateTimesheetRequest = () => ({
   type: TimesheetsActions.UPDATE_TIMESHEET_START
 });
 
-const successUpdateTimesheetRequest = () => ({
-  type: TimesheetsActions.UPDATE_TIMESHEET_SUCCESS
+const successUpdateTimesheetRequest = (timesheet) => ({
+  type: TimesheetsActions.UPDATE_TIMESHEET_SUCCESS,
+  timesheet
 });
 
 const startDeleteTimesheetRequest = () => ({
   type: TimesheetsActions.DELETE_TIMESHEET_START
 });
 
-const successDeleteTimesheetRequest = () => ({
-  type: TimesheetsActions.DELETE_TIMESHEET_SUCCESS
+const successDeleteTimesheetRequest = (timesheet) => ({
+  type: TimesheetsActions.DELETE_TIMESHEET_SUCCESS,
+  timesheet
 });
-
-// export const createTimesheet = (params) => {
-//   return dispatch => dispatch({
-//     type: REST_API,
-//     url: '/timesheet',
-//     method: POST,
-//     body: { params },
-//     extra,
-//     start: withStartLoading(startCreateTimesheetRequest, true)(dispatch),
-//     response: withFinishLoading(response => successCreateTimesheetRequest(response.data), true)(dispatch),
-//     error: defaultErrorHandler(dispatch)
-//   });
-// };
 
 export const updateTimesheet = (data, userId, startingDay) => {
   return dispatch => dispatch({
@@ -85,12 +74,6 @@ export const updateTimesheet = (data, userId, startingDay) => {
     extra,
     start: withStartLoading(startUpdateTimesheetRequest, true)(dispatch),
     response: () => {
-      dispatch(getTimesheets({
-        userId,
-        dateBegin: moment(startingDay).weekday(0).format('YYYY-MM-DD'),
-        dateEnd: moment(startingDay).weekday(6).format('YYYY-MM-DD')
-      }));
-      dispatch(successUpdateTimesheetRequest());
       dispatch(finishLoading());
     },
     error: defaultErrorHandler(dispatch)
@@ -106,12 +89,6 @@ export const deleteTimesheets = (ids, userId, startingDay) => {
     extra,
     start: withStartLoading(startDeleteTimesheetRequest, true)(dispatch),
     response: () => {
-      dispatch(getTimesheets({
-        userId,
-        dateBegin: moment(startingDay).weekday(0).format('YYYY-MM-DD'),
-        dateEnd: moment(startingDay).weekday(6).format('YYYY-MM-DD')
-      }));
-      dispatch(successDeleteTimesheetRequest());
       dispatch(finishLoading());
     },
     error: defaultErrorHandler(dispatch)
@@ -136,13 +113,7 @@ export const createTimesheet = (params, userId, startingDay) => { // TODO: не 
       })
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(successCreateTimesheetRequest(response.data));
           dispatch(finishLoading());
-          dispatch(getTimesheets({
-            userId,
-            dateBegin: moment(startingDay).weekday(0).format('YYYY-MM-DD'),
-            dateEnd: moment(startingDay).weekday(6).format('YYYY-MM-DD')
-          }));
         }
       });
   };

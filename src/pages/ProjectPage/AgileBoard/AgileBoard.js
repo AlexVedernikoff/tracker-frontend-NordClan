@@ -17,8 +17,9 @@ import CreateTaskModal from '../../../components/CreateTaskModal';
 import * as css from './AgileBoard.scss';
 
 import getTasks from '../../../actions/Tasks';
+import { VISOR } from '../../../constants/Roles';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
-import { openCreateTaskModal } from '../../../actions/Project';
+import { openCreateTaskModal, getProjectUsers } from '../../../actions/Project';
 
 const filterTasks = (array) => {
   const taskArray = {
@@ -136,9 +137,9 @@ class AgileBoard extends Component {
 
   componentWillReceiveProps (nextProps) {
     if (
-        (this.props.sprints !== nextProps.sprints || this.props.lastCreatedTask !== nextProps.lastCreatedTask)
+      (this.props.sprints !== nextProps.sprints || this.props.lastCreatedTask !== nextProps.lastCreatedTask)
         && nextProps.project.id
-      ) {
+    ) {
       this.selectValue(this.getChangedSprint(nextProps), 'changedSprint');
     }
 
@@ -184,7 +185,7 @@ class AgileBoard extends Component {
     }
 
     return changedSprint;
-  }
+  };
 
   toggleMine = () => {
     this.setState((currentState) => ({
@@ -216,12 +217,14 @@ class AgileBoard extends Component {
       id: task.id,
       statusId: getNewStatus(task.statusId, phase)
     }, 'Status');
-
-    const performerId = this.props.sprintTasks.find((sprintTask) => {
-      return task.id === sprintTask.id;
-    }).performerId || null;
-    this.openPerformerModal(task.id, performerId);
-
+    if (!(phase === 'New' || phase === 'Done')) {
+      const taskProps = this.props.sprintTasks.find((sprintTask) => {
+        return task.id === sprintTask.id;
+      });
+      const performerId = taskProps.performerId || null;
+      const projectId = taskProps.projectId || null;
+      this.openPerformerModal(task.id, performerId, projectId);
+    }
     this.props.startTaskEditing('Status');
   };
 
@@ -234,7 +237,10 @@ class AgileBoard extends Component {
     this.props.startTaskEditing('Status');
   };
 
-  openPerformerModal = (taskId, performerId) => {
+  openPerformerModal = (taskId, performerId, projectId) => {
+    if (this.props.myTaskBoard) {
+      this.props.getProjectUsers(projectId);
+    }
     this.setState({
       isModalOpen: true,
       performer: performerId,
@@ -310,10 +316,10 @@ class AgileBoard extends Component {
   };
 
   getUsers = () => {
-    return !this.props.myTaskBoard ? this.props.project.users.map((user) => ({
+    return this.props.project.users.map((user) => ({
       value: user.id,
       label: user.fullNameRu
-    })) : null;
+    }));
   };
 
   getIsOnlyMine = () => {
@@ -340,88 +346,103 @@ class AgileBoard extends Component {
     let mineSorted = filterTasks(myTasks);
     mineSorted = sortTasksAndCreateCard(mineSorted, 'mine', this.changeStatus, this.openPerformerModal, this.props.myTaskBoard);
 
-    return (
-        <section className={css.agileBoard}>
-          {!this.props.myTaskBoard ? <Row className={css.filtersRow}>
-            <Col xs className={css.changedSprint}>
-              <SelectDropdown
-                name="changedSprint"
-                placeholder="Введите название спринта..."
-                multi={false}
-                value={this.state.changedSprint}
-                onChange={(e) => this.selectValue(e !== null ? e.value : null, 'changedSprint')}
-                noResultsText="Нет результатов"
-                options={this.getSprints()}
-              />
-            </Col>
-            <Button
-              onClick={this.props.openCreateTaskModal}
-              type="primary"
-              text="Создать задачу"
-              icon="IconPlus"
-              name="right"
-              style={{ marginLeft: 8, marginRight: 8 }}
-            />
-          </Row> : null}
-          {
-            !this.props.myTaskBoard
-              ? <Row className={css.filtersRow}>
-                <Checkbox checked={this.state.isOnlyMine} onChange={this.toggleMine} label="Только мои задачи" style={{alignItems: 'center', padding: '0.5rem 1.5rem'}} />
-                <Col xs style={{minWidth: 200}}>
-                  <SelectDropdown
-                    name="filterTags"
-                    multi
-                    placeholder="Введите название тега..."
-                    backspaceToRemoveMessage=""
-                    value={this.state.filterTags}
-                    onChange={this.selectTagForFiltrated}
-                    noResultsText="Нет результатов"
-                    options={this.getAllTags()}
-                  />
-                </Col>
-              </Row>
-              : null
-          }
-          <div className={css.boardContainer}>
-            {
-              this.props.myTaskBoard || this.state.isOnlyMine
-                ? <Row>
-                  <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'New'} tasks={mineSorted.new}/>
-                  <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Dev'} tasks={mineSorted.dev}/>
-                  <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Code Review'} tasks={mineSorted.codeReview}/>
-                  <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'QA'} tasks={mineSorted.qa}/>
-                  <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Done'} tasks={mineSorted.done}/>
-                </Row>
-                : <Row>
-                  <PhaseColumn onDrop={this.dropTask} section={'all'} title={'New'} tasks={allSorted.new}/>
-                  <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Dev'} tasks={allSorted.dev} />
-                  <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Code Review'} tasks={allSorted.codeReview} />
-                  <PhaseColumn onDrop={this.dropTask} section={'all'} title={'QA'} tasks={allSorted.qa} />
-                  <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Done'} tasks={allSorted.done} />
-                </Row>
-            }
-          </div>
+    const isVisor = this.props.globalRole === VISOR;
 
+    return (
+      <section className={css.agileBoard}>
+        {
+          !this.props.myTaskBoard
+            ? <Row className={css.filtersRow}>
+              <Col xs className={css.changedSprint}>
+                <SelectDropdown
+                  name="changedSprint"
+                  placeholder="Введите название спринта..."
+                  multi={false}
+                  value={this.state.changedSprint}
+                  onChange={(e) => this.selectValue(e !== null ? e.value : null, 'changedSprint')}
+                  noResultsText="Нет результатов"
+                  options={this.getSprints()}
+                />
+              </Col>
+              {
+                !isVisor
+                  ? <Button
+                    onClick={this.props.openCreateTaskModal}
+                    type="primary"
+                    text="Создать задачу"
+                    icon="IconPlus"
+                    name="right"
+                    style={{ marginLeft: 8, marginRight: 8 }}
+                  />
+                  : null
+              }
+            </Row>
+            : null
+        }
+        {
+          !this.props.myTaskBoard
+            ? <Row className={css.filtersRow}>
+              <Checkbox
+                checked={this.state.isOnlyMine}
+                onChange={this.toggleMine}
+                label="Только мои задачи"
+                className={css.filterCheckbox}
+              />
+              <Col xs style={{minWidth: 200}}>
+                <SelectDropdown
+                  name="filterTags"
+                  multi
+                  placeholder="Введите название тега..."
+                  backspaceToRemoveMessage=""
+                  value={this.state.filterTags}
+                  onChange={this.selectTagForFiltrated}
+                  noResultsText="Нет результатов"
+                  options={this.getAllTags()}
+                />
+              </Col>
+            </Row>
+            : null
+        }
+        <div className={css.boardContainer}>
           {
-            this.state.isModalOpen
+            this.props.myTaskBoard || this.state.isOnlyMine
+              ? <Row>
+                <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'New'} tasks={mineSorted.new}/>
+                <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Dev'} tasks={mineSorted.dev}/>
+                <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Code Review'} tasks={mineSorted.codeReview}/>
+                <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'QA'} tasks={mineSorted.qa}/>
+                <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Done'} tasks={mineSorted.done}/>
+              </Row>
+              : <Row>
+                <PhaseColumn onDrop={this.dropTask} section={'all'} title={'New'} tasks={allSorted.new}/>
+                <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Dev'} tasks={allSorted.dev} />
+                <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Code Review'} tasks={allSorted.codeReview} />
+                <PhaseColumn onDrop={this.dropTask} section={'all'} title={'QA'} tasks={allSorted.qa} />
+                <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Done'} tasks={allSorted.done} />
+              </Row>
+          }
+        </div>
+
+        {
+          this.state.isModalOpen
             ? <PerformerModal
-                defaultUser={this.state.performer}
-                onChoose={this.changePerformer}
-                onClose={this.closeModal}
-                title="Изменить исполнителя задачи"
-                users={this.getUsers()}
-              />
+              defaultUser={this.state.performer}
+              onChoose={this.changePerformer}
+              onClose={this.closeModal}
+              title="Изменить исполнителя задачи"
+              users={this.getUsers()}
+            />
             : null
-          }
-          {
-            this.props.isCreateTaskModalOpen
+        }
+        {
+          this.props.isCreateTaskModalOpen
             ? <CreateTaskModal
-                selectedSprintValue={this.state.changedSprint}
-                project={this.props.project}
-              />
+              selectedSprintValue={this.state.changedSprint}
+              project={this.props.project}
+            />
             : null
-          }
-        </section>
+        }
+      </section>
     );
   }
 }
@@ -431,6 +452,7 @@ AgileBoard.propTypes = {
   UserIsEditing: PropTypes.bool,
   changeTask: PropTypes.func.isRequired,
   getTasks: PropTypes.func.isRequired,
+  globalRole: PropTypes.string.isRequired,
   isCreateTaskModalOpen: PropTypes.bool,
   lastCreatedTask: PropTypes.object,
   myTaskBoard: PropTypes.bool,
@@ -440,7 +462,8 @@ AgileBoard.propTypes = {
   sprintTasks: PropTypes.array,
   sprints: PropTypes.array,
   startTaskEditing: PropTypes.func,
-  user: PropTypes.object
+  user: PropTypes.object,
+  getProjectUsers: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -451,14 +474,16 @@ const mapStateToProps = state => ({
   StatusIsEditing: state.Task.StatusIsEditing,
   UserIsEditing: state.Task.UserIsEditing,
   user: state.Auth.user,
-  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen
+  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
+  globalRole: state.Auth.user.globalRole
 });
 
 const mapDispatchToProps = {
   getTasks,
   changeTask,
   startTaskEditing,
-  openCreateTaskModal
+  openCreateTaskModal,
+  getProjectUsers
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);

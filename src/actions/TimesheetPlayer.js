@@ -54,84 +54,22 @@ export const getTimesheetsPlayerData = (startDate, endDate) => {
   });
 };
 
-
-export const updateDraftVisible = (data, options) => {
-
-  return dispatch => dispatch({
-    type: REST_API,
-    url: `/timesheetDraft/${data.timesheetId}`,
-    method: PUT,
-    body: data.body,
-    extra,
-    start: withStartLoading(startReceivePlayerData, true)(dispatch),
-    response: withFinishLoading(response => {
-      dispatch(playerDataUpdateReceived(response.data, options.itemKey));
-    })(dispatch),
-    error: playerDataReceiveFailed(dispatch)
-  });
-};
-
-export const updateTimesheetDraft = (data, options) => {
-
-  return dispatch => dispatch({
-    type: REST_API,
-    url: `/timesheet/${data.timesheetId}`,
-    method: PUT,
-    body: {isDraft: true, ...data.body},
-    extra,
-    start: withStartLoading(startReceivePlayerData, true)(dispatch),
-    response: withFinishLoading(response => {
-      dispatch(playerDataUpdateReceived(response.data, options.itemKey));
-    })(dispatch),
-    error: playerDataReceiveFailed(dispatch)
-  });
-};
-
-export const updateExistedTimesheet = (data, options) => {
-
-  return dispatch => dispatch({
-    type: REST_API,
-    url: `/timesheet/${data.timesheetId}`,
-    method: PUT,
-    body: {isDraft: false, ...data.body},
-    extra,
-    start: withStartLoading(startReceivePlayerData, true)(dispatch),
-    response: withFinishLoading(response => {
-      dispatch(playerDataUpdateReceived(response.data, options.itemKey));
-    })(dispatch),
-    error: playerDataReceiveFailed(dispatch)
-  });
-};
-
-export const updateTimesheet = (data, options) => {
-
-  if (options.isDraft === true) {
-    if ('isVisible' in data.body) {
-      return updateDraftVisible(data, options); // Скрываю драфт
-    }
-    return updateTimesheetDraft(data, options); // Делаю из драфта тш
-  }
-
-  return updateExistedTimesheet(data, options);
-};
-
-////////////////////////////////
 export const updateDraft = (data, options) => {
   return dispatch => dispatch({
     type: REST_API,
-    url: `/draftsheet/?return=${data.return}`,
+    url: `/draftsheet/`,
     method: PUT,
     body: { ...data },
     extra,
     start: withStartLoading(startReceivePlayerData, true)(dispatch),
     response: withFinishLoading(response => {
-      dispatch(playerDataUpdateReceived(response.data, options.onDate));
+      dispatch(playerTimesheetUpdateReceived(response.data));
     })(dispatch),
     error: playerDataReceiveFailed(dispatch)
   });
 };
 
-export const updateOnlyTimesheet = (data) => {
+export const updateTimesheet = (data) => {
   return dispatch => dispatch({
     type: REST_API,
     url: '/timesheet/',
@@ -140,9 +78,13 @@ export const updateOnlyTimesheet = (data) => {
     extra,
     start: withStartLoading(startReceivePlayerData, true)(dispatch),
     response: withFinishLoading(response => {
-      console.log(response);
       dispatch(playerTimesheetUpdateReceived(response.data));
     })(dispatch),
     error: playerDataReceiveFailed(dispatch)
   });
 };
+
+const getActiveTask = (task) => ({
+  type: TimesheetPlayer.GET_ACTIVE_TASK,
+  task
+});
