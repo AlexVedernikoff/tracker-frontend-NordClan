@@ -93,7 +93,7 @@ class Info extends Component {
           onEditFinish={this.props.stopEditing}
           onEditSubmit={this.props.changeProject}
           isEditing={this.props.descriptionIsEditing}
-          isProjectAdmin={isProjectAdmin}
+          canEdit={isProjectAdmin}
         />
         <hr />
         <Budget
@@ -115,7 +115,7 @@ class Info extends Component {
           removeAttachment={this.removeAttachment}
           uploadAttachments={this.uploadAttachments}
           attachments={this.props.attachments}
-          isProjectAdmin={isProjectAdmin}
+          canEdit={isProjectAdmin}
         />
       </div>
     );

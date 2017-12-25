@@ -32,7 +32,7 @@ class Comment extends Component {
   };
 
   static selectComment = (id, location) => {
-    history.push(Comment.getHashedPath(id, location));
+    history.replace(Comment.getHashedPath(id, location));
   };
 
   static getHashedPath = (id, location) => {
@@ -125,7 +125,8 @@ class Comment extends Component {
           [css.selected]: this.props.lightened
         })}
       >
-        <div className={css.comment}>
+        <div className={css.comment}
+             onClick={() => Comment.selectComment(comment.id, this.props.location)}>
           <div className={css.ava}>
             {
               comment.deleting
@@ -170,7 +171,8 @@ class Comment extends Component {
             <div
               dangerouslySetInnerHTML={{ __html: Autolinker.link(comment.text) }}
               className={css.commentText}
-              onClick={() => Comment.selectComment(comment.id, this.props.location)}>
+              onClick={(e) => e.stopPropagation()}
+              >
             </div>
             <div className={css.commentAction}>
               {

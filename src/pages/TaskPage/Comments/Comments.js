@@ -99,7 +99,7 @@ class Comments extends Component {
 
   handleClickOutside = evt => {
     if (this.props.location.hash) {
-      history.push({...this.props.location, hash: ''});
+      history.replace({...this.props.location, hash: ''});
     }
   };
 

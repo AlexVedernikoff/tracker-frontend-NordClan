@@ -26,7 +26,7 @@ class ActivityRow extends React.Component {
     task: PropTypes.bool,
     updateTimesheet: PropTypes.func,
     userId: PropTypes.number
-  }
+  };
 
   constructor (props) {
     super(props);
@@ -50,7 +50,7 @@ class ActivityRow extends React.Component {
       onDate: moment(startingDay).weekday(i).format('YYYY-MM-DD'),
       projectId: item.projectId
     }, userId, startingDay);
-  }
+  };
 
   updateTimesheet = (i, sheetId, value, comment) => {
     const { userId, startingDay } = this.props;
@@ -62,12 +62,12 @@ class ActivityRow extends React.Component {
       sheetId,
       spentTime: value
     }, userId, startingDay);
-  }
+  };
 
   deleteTimesheets = (ids) => {
     const { userId, startingDay } = this.props;
     this.props.deleteTimesheets(ids, userId, startingDay);
-  }
+  };
 
   changeEmpty = (i, e) => {
     const { value } = e.target;
@@ -76,7 +76,7 @@ class ActivityRow extends React.Component {
     } else {
       this.createTimesheet(i, '0');
     }
-  }
+  };
 
   changeEmptyComment = (text, i) => {
     const { item, userId, startingDay } = this.props;
@@ -90,12 +90,12 @@ class ActivityRow extends React.Component {
       onDate: moment(startingDay).weekday(i).format('YYYY-MM-DD'),
       projectId: item.projectId
     }, userId, startingDay);
-  }
+  };
 
   changeFilled = (i, id, comment, e) => {
     const { value } = e.target;
     this.updateTimesheet(i, id, value, comment);
-  }
+  };
 
   changeFilledComment = (text, time, i, sheetId) => {
     const { userId, startingDay } = this.props;
@@ -107,15 +107,15 @@ class ActivityRow extends React.Component {
     } else {
       this.deleteTimesheets([sheetId]);
     }
-  }
+  };
 
   openConfirmModal = () => {
     this.setState({isConfirmModalOpen: true});
-  }
+  };
 
   closeConfirmModal = () => {
     this.setState({isConfirmModalOpen: false});
-  }
+  };
 
   deleteActivity = (ids) => {
     const { userId, startingDay } = this.props;
@@ -124,22 +124,23 @@ class ActivityRow extends React.Component {
 
     if (realSheetIds.length) {
       this.props.deleteTimesheets(realSheetIds, userId, startingDay);
-    };
+    }
 
     if (tempSheetIds.length) {
       this.props.deleteTempTimesheets(tempSheetIds);
-    };
+    }
 
     this.closeConfirmModal();
-  }
+  };
 
   render () {
-
     const { item, task, ma, statuses, magicActivitiesTypes} = this.props;
     const status = task ? _.find(statuses, { 'id': item.taskStatusId }) : '';
     const maType = ma ? _.find(magicActivitiesTypes, { 'id': item.typeId }) : '';
     const totalTime = roundNum(_.sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
     const timeSheetIds = _.remove(item.timeSheets.map(tsh => tsh.id), tsh => tsh);
+    const canDeleteRow = !!item.timeSheets.filter(tsh => tsh.id && tsh.statusId !== 3 && tsh.statusId !== 4).length;
+
     const timeCells = item.timeSheets.map((tsh, i) => {
       if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
         return (
@@ -154,9 +155,9 @@ class ActivityRow extends React.Component {
               })}>
                 <input
                   type="number"
-                  disabled={tsh.id === 3}
+                  disabled={tsh.statusId === 3 || tsh.statusId === 4}
                   max="24"
-                  value={roundNum(tsh.spentTime, 2)}
+                  defaultValue={roundNum(tsh.spentTime, 2)}
                   onChange={(e) => this.changeFilled(i, tsh.id, tsh.comment, e)}
                 />
                 <span className={css.toggleComment}>
@@ -208,7 +209,7 @@ class ActivityRow extends React.Component {
         <td className={cn(css.total, css.totalRow)}>
           <div>
             <div>
-             {totalTime}
+              {totalTime}
             </div>
             <div className={css.toggleComment}>
               <TotalComment items={item.timeSheets}/>
@@ -217,10 +218,10 @@ class ActivityRow extends React.Component {
         </td>
         <td className={cn(css.actions)}>
           <div className={css.deleteTask} onClick={this.openConfirmModal} data-tip="Удалить">
-            <IconClose/>
+            {canDeleteRow ? <IconClose/> : null}
           </div>
           {this.state.isConfirmModalOpen
-          ? <ConfirmModal
+            ? <ConfirmModal
               isOpen
               contentLabel="modal"
               text="Вы действительно хотите удалить эту активность?"
@@ -228,7 +229,7 @@ class ActivityRow extends React.Component {
               onConfirm={() => this.deleteActivity(timeSheetIds)}
               onRequestClose={this.closeConfirmModal}
             />
-          : null}
+            : null}
         </td>
       </tr>
     );
