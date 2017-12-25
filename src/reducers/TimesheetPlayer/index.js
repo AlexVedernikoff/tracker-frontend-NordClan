@@ -150,7 +150,7 @@ exports[TASK_CHANGE_REQUEST_SUCCESS] = (state = InitialState, action) => {
         if (action.changedFields.id && track.taskId === action.changedFields.id) {
           return {
             ...track,
-            task: { ...track.task, taskStatus: action.changedFields.taskStatus }
+            task: { ...track.task, ...action.changedFields }
           }
         }
         return track;
@@ -158,7 +158,7 @@ exports[TASK_CHANGE_REQUEST_SUCCESS] = (state = InitialState, action) => {
 
       acc.tracks[day] = { tracks: updatedTracks, scales }
       return acc;
-    }, state)
+    }, { ...state })
 
   return updatedState;
 }
