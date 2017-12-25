@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
-import classnames from 'classnames';
 import ReactTooltip from 'react-tooltip';
 import Tag from '../../../components/Tag';
 import Tags from '../../../components/Tags';
@@ -15,7 +14,6 @@ import { getTask } from '../../../actions/Task';
 import { connect } from 'react-redux';
 import * as css from './Details.scss';
 import moment from 'moment';
-import roundNum from '../../../utils/roundNum';
 import { getTaskSpent } from '../../../actions/Task';
 import _ from 'lodash';
 
@@ -27,16 +25,18 @@ const spentRequestStatus = {
 
 class Details extends Component {
   static propTypes = {
+    ExecutionTimeIsEditing: PropTypes.bool,
+    PlanningTimeIsEditing: PropTypes.bool,
     getProjectSprints: PropTypes.func.isRequired,
     getProjectUsers: PropTypes.func.isRequired,
+    getTask: PropTypes.func.isRequired,
     getTaskSpent: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired,
     sprints: PropTypes.array,
     task: PropTypes.object.isRequired,
-    timeSpent: PropTypes.object,
     taskTypes: PropTypes.array,
-    users: PropTypes.array,
-    getTask: PropTypes.func.isRequired
+    timeSpent: PropTypes.object,
+    users: PropTypes.array
   };
 
   constructor (props) {
@@ -54,6 +54,10 @@ class Details extends Component {
     if (nextProps.timeSpent !== this.props.timeSpent && this.state.spentRequestStatus === spentRequestStatus.REQUESTED) {
       this.setState({spentRequestStatus: spentRequestStatus.RECEIVED, tooltipKey: Math.random()});
     }
+  }
+
+  componentDidUpdate () {
+    ReactTooltip.rebuild();
   }
 
   // Действия со спринтами
@@ -110,16 +114,12 @@ class Details extends Component {
     this.closeTaskTypeModal();
   };
 
-  componentDidUpdate () {
-    ReactTooltip.rebuild();
-  }
-
   spentTooltipRender (spents) {
     return _.transform(spents, (spentsList, spentTime, status) => {
       spentsList.push(
-          <div className={css.timeString} key={status}>
-            <span>{status}:</span>{spentTime} ч.
-          </div>
+        <div className={css.timeString} key={status}>
+          <span>{status}:</span>{spentTime || 0} ч.
+        </div>
       );
     }, []);
   }
@@ -131,7 +131,7 @@ class Details extends Component {
       });
       this.props.getTaskSpent(this.props.task.id);
     }
-  }
+  };
 
   render () {
     const { task, sprints, taskTypes, timeSpent } = this.props;
@@ -148,6 +148,21 @@ class Details extends Component {
       value: item.user ? item.user.id : item.id,
       label: item.user ? item.user.fullNameRu : item.fullNameRu
     }));
+
+    const executeTimeTooltip = this.state.spentRequestStatus === spentRequestStatus.RECEIVED
+      ? <ReactTooltip id="time"
+        destroyTooltipOnHide
+        aria-haspopup="true"
+        className="tooltip"
+        getContent={() => this.spentTooltipRender(timeSpent)}
+      />
+      : <ReactTooltip id="notime"
+        destroyTooltipOnHide
+        aria-haspopup="true"
+        className="tooltip"
+        afterShow={this.onTooltipVisibleChange}
+        getContent={() => <div> Загрузка... </div>}
+      />;
 
     return (
       <div className={css.detailsBlock}>
@@ -181,7 +196,7 @@ class Details extends Component {
                   }
                 </a>
                 {/*<Link to={`/projects/${task.projectId}/agile-board`}>*/}
-                  {/*{task.sprint ? task.sprint.name : 'Backlog'}*/}
+                {/*{task.sprint ? task.sprint.name : 'Backlog'}*/}
                 {/*</Link>*/}
               </td>
             </tr>
@@ -223,46 +238,32 @@ class Details extends Component {
             <tr>
               <td>Запланировано:</td>
               <td>
-                <TaskPlanningTime time={task.plannedExecutionTime ? task.plannedExecutionTime : '0'} id={task.id} />
+                <TaskPlanningTime
+                  time={task.plannedExecutionTime ? task.plannedExecutionTime : '0'}
+                  id={task.id}
+                  timeIsEditing={this.props.PlanningTimeIsEditing}
+                />
               </td>
             </tr>
             { task.factExecutionTime
               ? <tr>
                   <td>Потрачено:</td>
                   <td>
-                    <span
+                    <TaskPlanningTime
+                      time={task.factExecutionTime}
+                      id={task.id}
+                      isExecutionTime
+                      tooltip={executeTimeTooltip}
+                      timeIsEditing={this.props.ExecutionTimeIsEditing}
                       key={this.state.tooltipKey}
-                      data-tip
-                      data-place="right"
-                      data-for={this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? 'time' : 'notime'}
-                      className={classnames({
-                        [css.alert]: true,
-                        [css.factTime]: true
-                      })}
-                    >
-                       {`${roundNum(task.factExecutionTime, 2)} ч.`}
-                    </span>
+                      dataFor={this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? 'time' : 'notime'}
+                    />
                   </td>
                 </tr>
               : null }
           </tbody>
         </table>
-        {
-          this.state.spentRequestStatus === spentRequestStatus.RECEIVED
-            ? <ReactTooltip id="time"
-              destroyTooltipOnHide
-              aria-haspopup="true"
-              className="tooltip"
-              getContent={() => this.spentTooltipRender(timeSpent)}
-            />
-            : <ReactTooltip id="notime"
-              destroyTooltipOnHide
-              aria-haspopup="true"
-              className="tooltip"
-              afterShow={this.onTooltipVisibleChange}
-              getContent={() => <div> Загрузка... </div>}
-            />
-        }
+
         {
           this.state.isPerformerModalOpen
             ? <PerformerModal
@@ -303,6 +304,8 @@ const mapStateToProps = state => ({
   users: state.Project.project.users,
   sprints: state.Project.project.sprints,
   taskTypes: state.Dictionaries.taskTypes,
+  PlanningTimeIsEditing: state.Task.PlanningTimeIsEditing,
+  ExecutionTimeIsEditing: state.Task.ExecutionTimeIsEditing,
   timeSpent: state.Task.timeSpent
 });
 

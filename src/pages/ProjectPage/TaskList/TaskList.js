@@ -162,7 +162,6 @@ class TaskList extends Component {
   };
 
   changeSingleFilter = (option, name) => {
-
     this.setState(state => {
       let filterValue = option ? option.value : null;
       const changedFilters = state.changedFilters;
@@ -180,7 +179,6 @@ class TaskList extends Component {
         activePage: state[name] !== filterValue ? 1 : state.activePage,
         changedFilters
       };
-
       return newState;
 
     }, this.loadTasks);
