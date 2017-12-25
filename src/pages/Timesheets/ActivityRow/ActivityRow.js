@@ -151,7 +151,10 @@ class ActivityRow extends React.Component {
             <div>
               <div className={cn({
                 [css.timeCell]: true,
-                [css.filled]: +tsh.spentTime
+                [css.filled]: +tsh.spentTime && tsh.statusId === 1,
+                [css.submitted]: tsh.statusId === 3,
+                [css.approved]: tsh.statusId === 4,
+                [css.rejected]: tsh.statusId === 2
               })}>
                 <input
                   type="number"
@@ -177,6 +180,7 @@ class ActivityRow extends React.Component {
               <div className={css.timeCell}>
                 <input
                   type="number"
+                  disabled={!canDeleteRow}
                   max="24"
                   defaultValue="0"
                   onChange={(e) => this.changeEmpty(i, e)}

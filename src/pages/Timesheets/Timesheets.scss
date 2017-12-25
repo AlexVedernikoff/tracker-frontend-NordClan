@@ -25,11 +25,6 @@
   &:hover {
     td {
       background: $color-gray;
-
-      &.weekend {
-        background-color: lighten(black, 93%);
-        transition: $transition;
-      }
     }
 
     .deleteTask {
@@ -78,6 +73,32 @@
   height: 3rem;
   margin: calc(0.5rem - 2px);
   position: relative;
+
+  &.weekend {
+    background-color: lighten(black, 93%);
+    transition: $transition;
+  }
+
+  &.submitted {
+    input {
+      background-color: $color-dark-gray;
+      color: rgba(white, .9);
+    }
+  }
+
+  &.approved {
+    input {
+      background-color: $color-green;
+      color: rgba(white, .9);
+    }
+  }
+
+  &.rejected {
+    input {
+      background-color: $color-light-red;
+      color: rgba(white, .9);
+    }
+  }
 
   &.filled {
     input {
