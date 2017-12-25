@@ -143,6 +143,7 @@ class PlaylistItem extends Component {
               }
             </div>
             <div className={css.taskName}>
+              <span>{`${project.prefix}-${task.id}`}</span>
               {task ? task.name : this.getNameByType(typeId)}
             </div>
           </div>
