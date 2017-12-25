@@ -341,10 +341,15 @@ td.today > div {
   align-items: stretch;
   box-shadow: $box-shadow;
 
-  textarea {
+  textarea, span {
     resize: none;
     height: 3.5rem;
     width: 15rem;
+  }
+
+  span {
+    border: 1px solid #ebebeb;
+    padding: 0.5rem;
   }
 }
 
@@ -360,6 +365,14 @@ td.today > div {
     resize: none;
     height: 3.5rem;
     width: 15rem;
+  }
+
+  span {
+    resize: none;
+    height: 3.5rem;
+    width: 15rem;
+    border: 1px solid #ebebeb;
+    padding: 0.5rem;
   }
 }
 

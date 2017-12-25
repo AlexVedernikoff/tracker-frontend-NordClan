@@ -9,8 +9,9 @@ import { IconComment, IconCheck } from '../../../../components/Icons';
 class SingleComment extends React.Component {
   static propTypes = {
     comment: PropTypes.string,
+    disabled: PropTypes.bool,
     onChange: PropTypes.func
-  }
+  };
 
   constructor (props) {
     super(props);
@@ -29,16 +30,16 @@ class SingleComment extends React.Component {
       isOpen: false,
       text: this.props.comment || ''
     });
-  }
+  };
 
   changeText = (e) => {
     this.setState({text: e.target.value});
-  }
+  };
 
   save = () => {
     this.props.onChange(this.state.text);
     this.toggle();
-  }
+  };
 
   saveWithEnter = (evt) => {
     const { ctrlKey, keyCode } = evt;
@@ -46,16 +47,16 @@ class SingleComment extends React.Component {
       this.props.onChange(this.state.text);
       this.toggle();
     }
-  }
+  };
 
   toggle = () => {
     this.setState({
       isOpen: !this.state.isOpen
     });
-  }
+  };
 
   render () {
-    const { comment } = this.props;
+    const { comment, disabled } = this.props;
 
     return (
       <div>
@@ -63,19 +64,27 @@ class SingleComment extends React.Component {
         <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
           {
             this.state.isOpen
-            ? <div className={cn(css.commentDropdown, css.singleComment)}>
-                <textarea
-                autoFocus
-                placeholder="Введите текст комментария"
-                onChange={this.changeText}
-                onKeyDown={this.saveWithEnter}
-                value={this.state.text}
-              />
-                <div onClick={this.save} className={css.saveBtn}>
-                  <IconCheck/>
-                </div>
+              ? <div className={cn(css.commentDropdown, css.singleComment)}>
+                {
+                  !disabled
+                    ? <textarea
+                      autoFocus
+                      placeholder="Введите текст комментария"
+                      onChange={this.changeText}
+                      onKeyDown={this.saveWithEnter}
+                      value={this.state.text}
+                    />
+                    : <span>{comment}</span>
+                }
+                {
+                  !disabled
+                    ? <div onClick={this.save} className={css.saveBtn}>
+                      <IconCheck/>
+                    </div>
+                    : null
+                }
               </div>
-            : null
+              : null
           }
         </ReactCSSTransitionGroup>
       </div>
