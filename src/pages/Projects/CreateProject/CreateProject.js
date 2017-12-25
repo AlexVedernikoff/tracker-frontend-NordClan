@@ -11,6 +11,7 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './CreateProject.scss';
 import Checkbox from '../../../components/Checkbox';
 import Select from 'react-select';
+import getPortfolios from '../../../utils/getPortfolios'
 
 class CreateProject extends Component {
   constructor (props) {
@@ -19,24 +20,8 @@ class CreateProject extends Component {
     this.validator = new Validator();
   }
 
-  getPortfolios (name = '') {
-    return axios
-      .get(
-        `${API_URL}/portfolio`,
-        { params: { name } },
-        { withCredentials: true }
-      )
-      .then(response => response.data.data)
-      .then(portfolios => ({
-        options: portfolios.map((portfolio) => ({
-          label: portfolio.name,
-          value: portfolio.id
-        }))
-      }));
-  }
-
   render () {
-    const { isOpen, onRequestClose } = this.props;
+    const { isOpen, onRequestClose, prefixErrorText } = this.props;
 
     const formLayout = {
       firstCol: 5,
@@ -93,6 +78,7 @@ class CreateProject extends Component {
                       onBlur={handleBlur}
                       shouldMarkError={shouldMarkError}
                       errorText="Длина менее 2 символов"
+                      backendErrorText={prefixErrorText}
                     />
                   ),
                   'projectPrefix',
@@ -113,7 +99,7 @@ class CreateProject extends Component {
                   multi={false}
                   ignoreCase={false}
                   placeholder="Выберите портфель"
-                  loadOptions={this.getPortfolios}
+                  loadOptions={getPortfolios}
                   filterOption={el=>el}
                   onChange={this.props.onPortfolioSelect}
                   value={this.props.selectedPortfolio}
@@ -148,7 +134,7 @@ class CreateProject extends Component {
               htmlType="button"
               type="green-lighten"
               onClick={this.props.onSubmitAndOpen}
-              disabled = {!(this.props.validateProjectName && this.props.validateProjectPrefix)}              
+              disabled = {!(this.props.validateProjectName && this.props.validateProjectPrefix)}
             />
           </div>
         </form>
@@ -165,6 +151,7 @@ CreateProject.propTypes = {
   onRequestClose: PropTypes.func,
   onSubmit: PropTypes.func,
   onSubmitAndOpen: PropTypes.func,
+  prefixErrorText: PropTypes.string,
   selectedPortfolio: PropTypes.object
 };
 

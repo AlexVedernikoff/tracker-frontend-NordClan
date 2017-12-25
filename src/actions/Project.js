@@ -203,25 +203,6 @@ const failRemoveAttachment = (projectId, attachmentId, error) => ({
   error
 });
 
-const removeAttachment = (projectId, attachmentId) => {
-  if (!projectId || !attachmentId) {
-    return () => {};
-  }
-
-  const URL = `${API_URL}/project/${projectId}/attachment/${attachmentId}`;
-  return (dispatch) => {
-    dispatch(startRemoveAttachment(projectId, attachmentId));
-    axios.delete(URL)
-    .then(
-      result => {
-        dispatch(getTask(projectId));
-        return dispatch(successRemoveAttachment(projectId, attachmentId, result));
-      },
-          error => dispatch(failRemoveAttachment(projectId, attachmentId, error))
-      );
-  };
-};
-
 export const bindUserToProject = (projectId, userId, rolesIds) => {
   const URL = `${API_URL}/project/${projectId}/users`;
 
@@ -443,6 +424,25 @@ export const getPortfolios = (name = '') => {
         value: portfolio.id
       }))
     }));
+  };
+};
+
+const removeAttachment = (projectId, attachmentId) => {
+  if (!projectId || !attachmentId) {
+    return () => {};
+  }
+
+  const URL = `${API_URL}/project/${projectId}/attachment/${attachmentId}`;
+  return (dispatch) => {
+    dispatch(startRemoveAttachment(projectId, attachmentId));
+    axios.delete(URL)
+      .then(
+        result => {
+          dispatch(getProjectInfo(projectId));
+          return dispatch(successRemoveAttachment(projectId, attachmentId, result));
+        },
+        error => dispatch(failRemoveAttachment(projectId, attachmentId, error))
+      );
   };
 };
 

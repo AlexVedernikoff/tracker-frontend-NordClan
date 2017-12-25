@@ -39,7 +39,7 @@ class TaskHistory extends React.Component {
           <HistoryMessage
             message={event.message}
             entities={event.entities}
-            projectId={this.props.params.projectId}
+            projectId={+this.props.params.projectId}
           />
         </div>
       </div>;

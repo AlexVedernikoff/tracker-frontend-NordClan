@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
 import * as css from './UserCard.scss';
 import onClickOutside from 'react-onclickoutside';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import { IconSkype, IconMail, IconPhone } from '../Icons';
+import { IconUser } from '../Icons';
 
 class UserCard extends React.Component {
 
@@ -14,31 +14,41 @@ class UserCard extends React.Component {
     this.state = {visible: false};
   }
 
-  handleClickOutside = evt => {
+  handleClickOutside = () => {
     this.setState({visible: false});
-  }
+  };
 
   showCard = () => {
     this.setState({visible: true});
-  }
+  };
 
   render () {
     const childrenWithProps = React.Children.map(this.props.children,
-     (child) => React.cloneElement(child, {
-       onClick: () => this.showCard()
-     })
+      (child) => React.cloneElement(child, {
+        onClick: () => this.showCard()
+      })
     );
 
-    const {user} = this.props;
+    const { user } = this.props;
+
+    const iconUserStyles = {
+      width: 112,
+      height: 112
+    };
+
     return (
       <div className={css.wrapper}>
         {childrenWithProps}
         <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
           {
             this.state.visible
-            ? <div className={css.userCard}>
+              ? <div className={css.userCard}>
                 <div className={css.photoWrapper}>
-                  <img src={user.photo} alt=""/>
+                  {
+                    user.photo
+                      ? <img src={user.photo} alt=""/>
+                      : <IconUser style={iconUserStyles}/>
+                  }
                 </div>
                 {user.fullNameRu && <div className={css.name}>
                   {user.fullNameRu}
@@ -56,7 +66,7 @@ class UserCard extends React.Component {
                   <span><a href={`tel:${user.mobile}`}>{user.mobile}</a></span>
                 </div>}
               </div>
-            : null
+              : null
           }
         </ReactCSSTransitionGroup>
       </div>

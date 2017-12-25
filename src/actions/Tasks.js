@@ -30,7 +30,7 @@ const getTasks = (options, onlyTaskListUpdate = false) => {
           fields: 'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId,prefix'
         }
       },
-        { withCredentials: true }
+      { withCredentials: true }
       )
       .catch(error => {
         dispatch(finishLoading());
