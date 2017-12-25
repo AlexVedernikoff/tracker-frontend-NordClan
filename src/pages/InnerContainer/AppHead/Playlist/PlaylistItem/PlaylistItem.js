@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
+import { history } from '../../../../../History';
 import {
   updateDraft,
   updateTimesheet
@@ -29,7 +30,8 @@ class PlaylistItem extends Component {
     this.debouncedUpdateOnlyTimesheet = _.debounce(this.props.updateTimesheet, 500);
   }
 
-  toggleComment = () => {
+  toggleComment = event => {
+    event.stopPropagation();
     this.setState({isCommentOpen: !this.state.isCommentOpen});
   };
 
@@ -72,7 +74,8 @@ class PlaylistItem extends Component {
     this.setState({comment: e.target.value});
   };
 
-  changeVisibility = (visibility) => {
+  changeVisibility = (e, visibility) => {
+    e.stopPropagation();
     const { item, updateTimesheet, updateDraft } = this.props;
     return () => {
       const params = {
@@ -111,31 +114,31 @@ class PlaylistItem extends Component {
         })}>
           {getMaIcon(typeId)}
         </div>
-        <div className={css.taskNameWrapper}>
+        <div className={css.taskNameWrapper} onClick={() => history.push(`/projects/${project.id}/tasks/${task.id}`)}>
           <div className={css.taskTitle}>
             <div className={css.meta}>
               { task && task.prefix ? <span>{task.prefix}</span> : null}
               { project ? <span>{project.name}</span> : null}
               { status
                 ? <span>
-                    {
-                      prevStatus
-                        ? (<span>{prevStatus.name}<span style={{display: 'inline-block', margin: '0 0.25rem'}}> → </span></span>)
-                        : null
-                    }
+                  {
+                    prevStatus
+                      ? (<span>{prevStatus.name}<span style={{display: 'inline-block', margin: '0 0.25rem'}}> → </span></span>)
+                      : null
+                  }
                   {status.name}
-                  </span>
+                </span>
                 : null}
               {
                 !isDraft
-                ? <span className={classnames({[css.commentToggler]: true, [css.green]: !!comment})} onClick={this.toggleComment}><IconComment/></span>
-                : null
+                  ? <span className={classnames({[css.commentToggler]: true, [css.green]: !!comment})} onClick={this.toggleComment}><IconComment/></span>
+                  : null
               }
 
               { status !== 'education'
                 ? (isVisible
-                  ? <span className={css.visibleToggler} onClick={this.changeVisibility(false)} data-tip="Скрыть"><IconEyeDisable/></span>
-                  : <span className={css.visibleToggler} onClick={this.changeVisibility(true)} data-tip="Показать"><IconEye/></span>)
+                  ? <span className={css.visibleToggler} onClick={(e) => this.changeVisibility(e, false)} data-tip="Скрыть"><IconEyeDisable/></span>
+                  : <span className={css.visibleToggler} onClick={(e) => this.changeVisibility(e, true)} data-tip="Показать"><IconEye/></span>)
                 : null
               }
             </div>
