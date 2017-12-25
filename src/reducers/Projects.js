@@ -9,7 +9,8 @@ const InitialState = {
   pagesCount: 1,
   tags: '',
   isCreateProjectModalOpen: false,
-  tagsFilter: []
+  tagsFilter: [],
+  error: null
 };
 
 function Projects (state = InitialState, action) {
@@ -40,13 +41,20 @@ function Projects (state = InitialState, action) {
 
   case ProjectsActions.PROJECT_CREATE_START:
     return {
-      ...state
+      ...state,
+      error: null
     };
 
   case ProjectsActions.PROJECT_CREATE_SUCCESS:
     return {
       ...state,
       projects: [action.createdProject, ...state.projects]
+    };
+
+  case ProjectsActions.PROJECT_CREATE_FAIL:
+    return {
+      ...state,
+      error: action.error
     };
 
   case TagsActions.GET_TAGS_FILTER_SUCCESS:

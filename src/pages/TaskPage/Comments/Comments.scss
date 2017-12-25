@@ -21,7 +21,7 @@
 
 .comment {
   display: flex;
-
+  cursor: pointer;
   &:hover {
     .commentAction {
       opacity: 1;
@@ -113,7 +113,6 @@
   white-space: pre-line;
   word-break: break-all;
   word-break: break-word;
-  cursor: pointer;
 }
 
 .quoteText {
