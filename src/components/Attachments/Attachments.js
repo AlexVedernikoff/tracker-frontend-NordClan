@@ -38,7 +38,7 @@ export default class Attachments extends Component {
       <div className={css.attachments}>
         <ul className={css.attachmentsContainer}>
           {this.props.attachments.map((file, index) => this.getAttachment(file, index))}
-          <FileUpload onDrop={this.onDrop} />
+          {this.props.canEdit ? <FileUpload onDrop={this.onDrop} /> : null}
         </ul>
       </div>
     );
@@ -47,6 +47,7 @@ export default class Attachments extends Component {
 
 Attachments.propTypes = {
   attachments: PropTypes.array,
+  canEdit: PropTypes.bool,
   removeAttachment: PropTypes.func.isRequired,
   uploadAttachments: PropTypes.func.isRequired
 };
