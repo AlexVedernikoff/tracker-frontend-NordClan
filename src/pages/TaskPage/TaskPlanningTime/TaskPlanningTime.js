@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
 import * as css from './TaskPlanningTime.scss';
 import { IconEdit, IconCheck } from '../../../components/Icons';
@@ -71,60 +70,57 @@ class TaskPlanningTime extends Component {
 
   render () {
     return (
-        <div className={css.wrapper}>
-          <span
-            className={classnames({
-              [css.taskTime]: true,
-              [css.wrong]: this.state.submitError,
-              [css.alert]: this.props.isExecutionTime,
-              [css.factTime]: this.props.isExecutionTime
-            })}
-            ref={ref => (this.taskPlanningTime = ref)}
-            contentEditable={this.props.timeIsEditing}
-            onBlur={this.validateAndSubmit}
-            onKeyDown={this.handleKeyPress}
-            data-tip={!!this.props.tooltip}
-            data-place="right"
-            data-for="time"
-          >
-            {roundNum(this.props.time, 2)}
-          </span>
-          <span
-            className={classnames({
-              [css.alert]: this.props.isExecutionTime,
-              [css.factTime]: this.props.isExecutionTime
-            })}
-            data-tip={!!this.props.tooltip}
-            data-place="right"
-            data-for="time"
-          > ч.</span>
-          {this.props.timeIsEditing
-            ? <IconCheck
-                onClick={this.editIconClickHandler}
-                className={css.save}
-              />
-            : <IconEdit
-                onClick={this.editIconClickHandler}
-                className={css.edit}
-              />}
-          {
-            this.props.tooltip
-              ? <ReactTooltip id="time" aria-haspopup="true" className="tooltip">
-                {this.props.tooltip}
-              </ReactTooltip>
-              : null
-          }
-       </div>
+      <div className={css.wrapper}>
+        <span
+          key={this.props.key}
+          className={classnames({
+            [css.taskTime]: true,
+            [css.wrong]: this.state.submitError,
+            [css.alert]: this.props.isExecutionTime,
+            [css.factTime]: this.props.isExecutionTime
+          })}
+          ref={ref => (this.taskPlanningTime = ref)}
+          contentEditable={this.props.timeIsEditing}
+          onBlur={this.validateAndSubmit}
+          onKeyDown={this.handleKeyPress}
+          data-tip={!!this.props.tooltip}
+          data-place="right"
+          data-for={this.props.dataFor}
+        >
+          {roundNum(this.props.time, 2)}
+        </span>
+        <span
+          className={classnames({
+            [css.alert]: this.props.isExecutionTime,
+            [css.factTime]: this.props.isExecutionTime
+          })}
+          data-tip={!!this.props.tooltip}
+          data-place="right"
+          data-for="time"
+        > ч.</span>
+        {this.props.timeIsEditing
+          ? <IconCheck
+            onClick={this.editIconClickHandler}
+            className={css.save}
+          />
+          : <IconEdit
+            onClick={this.editIconClickHandler}
+            className={css.edit}
+          />}
+        {this.props.tooltip || null}
+      </div>
     );
   }
 }
 
 TaskPlanningTime.propTypes = {
   changeTask: PropTypes.func.isRequired,
+  dataFor: PropTypes.string,
   id: PropTypes.number,
   isExecutionTime: PropTypes.bool,
   startTaskEditing: PropTypes.func.isRequired,
   stopTaskEditing: PropTypes.func.isRequired,
+  key: PropTypes.string,
   time: PropTypes.string.isRequired,
   timeIsEditing: PropTypes.bool.isRequired,
   tooltip: PropTypes.object
