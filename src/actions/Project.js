@@ -78,6 +78,10 @@ export const openCreateTaskModal = () => ({
   type: ProjectActions.OPEN_CREATE_TASK_MODAL
 });
 
+export const openCreateChildTaskModal = () => ({
+  type: ProjectActions.OPEN_CREATE_CHILD_TASK_MODAL
+});
+
 export const closeCreateTaskModal = () => ({
   type: ProjectActions.CLOSE_CREATE_TASK_MODAL
 });
