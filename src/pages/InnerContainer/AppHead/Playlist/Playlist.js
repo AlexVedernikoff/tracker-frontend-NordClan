@@ -137,9 +137,29 @@ class Playlist extends Component {
     </span>;
   };
 
+  createMagicActivitiesForProjects = (projects, type) => {
+    return projects.map(project => ({
+      isCreated: false,
+      isVisible: true,
+      // isDraft: true,
+      typeId: type,
+      // onDate: this.state.activeDayTab,
+      onDate: "2017-12-26",
+      project
+    }))
+  }
+
   activeTracks = (tracks, activeDayTab, activeActivityTab) => {
+    const { availableProjects } = this.props;
+
     let activeTracks = this.filterTracksByDayTab(tracks, activeDayTab);
     activeTracks = this.filterTracksByActivityTab(activeTracks.tracks, activeActivityTab);
+
+    if (activeActivityTab !== 'all') {
+      const projects = availableProjects.filter(data => activeTracks.every(track => track.project.id !== data.project.id));
+      const additionalTracks = this.createMagicActivitiesForProjects(projects, activeActivityTab);
+      activeTracks.push(additionalTracks);
+    }
     // const activeTracks = tracks
     //   .filter(track => {
     //     return track === this.getDateByDayTab(activeDayTab).format('YYYY-MM-DD');
@@ -258,6 +278,7 @@ const mapStateToProps = state => {
   return {
     activeTask: state.TimesheetPlayer.activeTask,
     tracks: state.TimesheetPlayer.tracks,
+    availableProjects: state.TimesheetPlayer.availableProjects,
     magicActivitiesTypes: state.Dictionaries.magicActivityTypes
   };
 };
