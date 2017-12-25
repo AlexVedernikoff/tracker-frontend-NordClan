@@ -142,6 +142,8 @@ class ActivityRow extends React.Component {
     const canDeleteRow = !!item.timeSheets.filter(tsh => tsh.id && tsh.statusId !== 3 && tsh.statusId !== 4).length;
 
     const timeCells = item.timeSheets.map((tsh, i) => {
+      const isCellDisabled = tsh.statusId === 3 || tsh.statusId === 4;
+
       if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
         return (
           <td key={moment(tsh.onDate).format('X')} className={cn({
@@ -151,17 +153,24 @@ class ActivityRow extends React.Component {
             <div>
               <div className={cn({
                 [css.timeCell]: true,
-                [css.filled]: +tsh.spentTime
+                [css.filled]: +tsh.spentTime && tsh.statusId === 1,
+                [css.submitted]: tsh.statusId === 3,
+                [css.approved]: tsh.statusId === 4,
+                [css.rejected]: tsh.statusId === 2
               })}>
                 <input
                   type="number"
-                  disabled={tsh.statusId === 3 || tsh.statusId === 4}
+                  disabled={isCellDisabled}
                   max="24"
                   defaultValue={roundNum(tsh.spentTime, 2)}
                   onChange={(e) => this.changeFilled(i, tsh.id, tsh.comment, e)}
                 />
                 <span className={css.toggleComment}>
-                  <SingleComment comment={tsh.comment} onChange={(text) => this.changeFilledComment(text, tsh.spentTime, i, tsh.id)}/>
+                  <SingleComment
+                    disabled={isCellDisabled}
+                    comment={tsh.comment}
+                    onChange={(text) => this.changeFilledComment(text, tsh.spentTime, i, tsh.id)}
+                  />
                 </span>
               </div>
             </div>
@@ -177,6 +186,7 @@ class ActivityRow extends React.Component {
               <div className={css.timeCell}>
                 <input
                   type="number"
+                  disabled={!canDeleteRow}
                   max="24"
                   defaultValue="0"
                   onChange={(e) => this.changeEmpty(i, e)}
@@ -212,7 +222,10 @@ class ActivityRow extends React.Component {
               {totalTime}
             </div>
             <div className={css.toggleComment}>
-              <TotalComment items={item.timeSheets}/>
+              <TotalComment
+                items={item.timeSheets}
+                isDisable={!canDeleteRow}
+              />
             </div>
           </div>
         </td>
