@@ -96,8 +96,10 @@ export const getInfoAboutMe = () => {
       .get(URL, {}, { withCredentials: true })
       .catch(error => {
         dispatch(userInfoReceiveFailed());
-        dispatch(showNotification({ message: error.message, type: 'error' }));
         dispatch(finishLoading());
+        if (error.response.data.name !== 'UnauthorizedError') {
+          dispatch(showNotification({message: error.message, type: 'error'}));
+        }
       })
       .then(response => {
         if (response && response.status === 200) {
