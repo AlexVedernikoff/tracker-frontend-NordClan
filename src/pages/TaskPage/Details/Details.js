@@ -118,7 +118,7 @@ class Details extends Component {
     return _.transform(spents, (spentsList, spentTime, status) => {
       spentsList.push(
         <div className={css.timeString} key={status}>
-          <span>{status}:</span>{spentTime} ч.
+          <span>{status}:</span>{spentTime || 0} ч.
         </div>
       );
     }, []);
