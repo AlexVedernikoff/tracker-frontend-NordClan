@@ -22,7 +22,6 @@ class Playlist extends Component {
       activeDayTab: moment().day() - 1,
       activeActivityTab: 'all',
       isPlaylistOpen: false,
-      activeContent: {},
       activeTab: {}
     };
   }
@@ -56,7 +55,7 @@ class Playlist extends Component {
   }
 
   handleClickOutside = () => {
-    this.state.isPlaylistOpen === true && this.setState({isPlaylistOpen: false});
+    this.state.isPlaylistOpen === true && this.setState({ isPlaylistOpen: false });
   };
 
   handleToggleList = () => {
@@ -115,15 +114,18 @@ class Playlist extends Component {
 
   getScale = (tracks, activeDayTab, activeActivityTab) => {
     const activeTabContent = this.filterTracksByDayTab(tracks, activeDayTab);
-    if (!activeTabContent.scales) return '';
+    if (!activeTabContent.scales) {
+      return '';
+    }
 
     const time = activeTabContent.scales[activeActivityTab];
-    if (!time) return '';
+    if (!time) {
+      return '';
+    }
 
     const timeParts = ('' + time).split('.');
     const wholePart = timeParts[0];
     const fraction = timeParts[1] ? timeParts[1] : null;
-
 
     return <span className={css.countBadge}>
       {wholePart}
@@ -138,6 +140,19 @@ class Playlist extends Component {
   activeTracks = (tracks, activeDayTab, activeActivityTab) => {
     let activeTracks = this.filterTracksByDayTab(tracks, activeDayTab);
     activeTracks = this.filterTracksByActivityTab(activeTracks.tracks, activeActivityTab);
+    // const activeTracks = tracks
+    //   .filter(track => {
+    //     return track === this.getDateByDayTab(activeDayTab).format('YYYY-MM-DD');
+    //   })
+    //   .filter(track => {
+    //     activeTracks = this.filterTracksByActivityTab(activeTracks.tracks, activeActivityTab);
+
+    //     if (Array.isArray(tracks) && activeDayTab && activeDayTab !== 'all') {
+    //       return tracks.filter(el => el.typeId === activeDayTab);
+    //     } else if (Array.isArray(tracks)) {
+    //       return tracks.filter(el => (el.isDraft === false || el.task !== null)); // Фильтрую драфты магической активности
+    //     }
+    //   })
     return activeTracks;
   };
 
@@ -176,7 +191,6 @@ class Playlist extends Component {
     }
     return '';
   };
-
 
   render () {
     const { isPlaylistOpen } = this.state;
