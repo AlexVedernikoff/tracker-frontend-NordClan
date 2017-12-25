@@ -150,7 +150,7 @@ class Description extends Component {
             />
         }
         {
-          this.props.isProjectAdmin
+          this.props.canEdit
             ? <div className={css.editBorder}>
               {
                 this.props.isEditing
@@ -175,11 +175,11 @@ class Description extends Component {
 
 Description.propTypes = {
   DescriptionIsEditing: PropTypes.bool,
+  canEdit: PropTypes.bool,
   headerText: PropTypes.string,
   headerType: PropTypes.string,
   id: PropTypes.number,
   isEditing: PropTypes.bool.isRequired,
-  isProjectAdmin: PropTypes.bool,
   onEditFinish: PropTypes.func.isRequired,
   onEditStart: PropTypes.func.isRequired,
   onEditSubmit: PropTypes.func.isRequired,
