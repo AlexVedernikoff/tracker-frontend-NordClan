@@ -19,7 +19,9 @@
     }
   }
 }
-
+.parentTaskWrp {
+  position: relative;
+}
 .parentTask {
   color: lighten($color-black, 40%);
   margin-bottom: 16px;
@@ -27,12 +29,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;  
-
-  &:hover {
-    .parentTaskName {
-      opacity: 1;
-    }
-  }
 
   .prefix {
     margin-right: 8px;
@@ -49,11 +45,6 @@
     //   background-color: lighten($color-black, 40%);
     // }
   }
-}
-
-.parentTaskName {
-  opacity: 0;
-  transition: $transition;
 }
 
 .prefix {
