@@ -17,6 +17,7 @@ import _ from 'lodash';
 import PerformerModal from '../../../components/PerformerModal';
 import SprintModal from '../../../components/SprintModal';
 import getTasks from '../../../actions/Tasks';
+import { history } from '../../../History';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 
 class TaskList extends Component {
@@ -24,10 +25,10 @@ class TaskList extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      ...this.initialFilters,
       activePage: 1,
       isPerformerModalOpen: false,
-      isSprintModalOpen: false
+      isSprintModalOpen: false,
+      ...this.setQueryFilters()
     };
   }
 
@@ -41,6 +42,62 @@ class TaskList extends Component {
     if (this.props.project.id !== nextProps.project.id) {
       this.loadTasks();
     }
+  }
+
+  setQueryFilters () {
+    const query = this.props.location.query;
+    const projectId = this.props.params.projectId;
+    const translateToNumIfNeeded = (value) => {
+      const re = /^\d+$/;
+      return re.test(value) ? +value : value;
+    };
+
+    const multipleQueries = (queries) => {
+      if (Array.isArray(queries)) return queries.map(queryValue => translateToNumIfNeeded(queryValue));
+      return queries ? [translateToNumIfNeeded(queries)] : [];
+    };
+
+    const singleQuery = (query) => {
+      return query ? translateToNumIfNeeded(query) : null;
+    };
+    const getValues = (changed) => {
+      const name = changed ? 'name' : 'filterByName';
+      if (changed && Object.keys(query).length === 0) return {};
+      return {
+        sprintId: singleQuery(query.sprintId),
+        performerId: singleQuery(query.performerId),
+        prioritiesId: singleQuery(query.prioritiesId),
+        authorId: singleQuery(query.authorId),
+        statusId: multipleQueries(query.statusId),
+        typeId: multipleQueries(query.typeId),
+        tags: multipleQueries(query.tags),
+        [name]: query.name ? query.name : ''
+      };
+    };
+    return {
+      ...getValues(),
+      changedFilters: {
+        projectId,
+        ...getValues(true)
+      }
+    };
+  }
+
+  changeUrl (changedFilters) {
+    const queryObj = {};
+
+    for (let [key, value] of Object.entries(changedFilters)) {
+      if (value && key !== 'projectId') {
+        queryObj[key] = value;
+      }
+    }
+
+    history.replace({
+      ...this.props.location,
+      query: {
+        ...queryObj
+      }
+    });
   }
 
   initialFilters = {
@@ -116,6 +173,7 @@ class TaskList extends Component {
       } else {
         changedFilters[name] = filterValue;
       }
+      this.changeUrl(changedFilters);
       const newState = {
         [name]: filterValue,
         activePage: state[name] !== filterValue ? 1 : state.activePage,
@@ -137,7 +195,7 @@ class TaskList extends Component {
       } else {
         delete changedFilters[name];
       }
-
+      this.changeUrl(changedFilters);
       const newState = {
         [name]: filterValue,
         activePage: state[name].length !== filterValue.length ? 1 : state.activePage,
@@ -167,7 +225,7 @@ class TaskList extends Component {
         activePage: state.filterByName !== value ? 1 : state.activePage,
         changedFilters
       };
-
+      this.changeUrl(changedFilters);
       return newState;
     }, this.loadTasks);
   };
@@ -202,12 +260,13 @@ class TaskList extends Component {
 
   clearFilters = () => {
     this.setState({
-      ...this.initialFilters,
+      ...this.initialFilters, 
       changedFilters: {
         projectId: this.props.params.projectId
       }
     }, this.loadTasks);
-  };
+    this.changeUrl({});
+  }
 
   createOptions = (array, labelField = 'name') => {
     return array.map(
@@ -234,7 +293,8 @@ class TaskList extends Component {
       sprintId,
       performerId,
       authorId,
-      tags
+      tags,
+      filterByName
     } = this.state;
 
     const statusOptions = this.createOptions(statuses);
@@ -333,6 +393,7 @@ class TaskList extends Component {
               <Col xs={12} sm={6}>
                 <Input
                   placeholder="Название задачи"
+                  value={filterByName}
                   onChange={this.changeNameFilter}
                 />
               </Col>
@@ -415,7 +476,11 @@ TaskList.propTypes = {
   startTaskEditing: PropTypes.func.isRequired,
   statuses: PropTypes.array,
   taskTypes: PropTypes.array,
-  tasksList: PropTypes.array.isRequired
+  tasksList: PropTypes.array.isRequired,
+  changeTask: PropTypes.func.isRequired,
+  startTaskEditing: PropTypes.func.isRequired,
+  location: PropTypes.object,
+  params: PropTypes.object
 };
 
 const mapStateToProps = state => ({
