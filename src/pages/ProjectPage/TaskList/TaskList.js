@@ -23,15 +23,11 @@ class TaskList extends Component {
 
   constructor (props) {
     super(props);
-    const projectId = this.props.params.projectId;
     this.state = {
       ...this.initialFilters,
       activePage: 1,
       isPerformerModalOpen: false,
-      isSprintModalOpen: false,
-      changedFilters: {
-        projectId
-      }
+      isSprintModalOpen: false
     };
   }
 
@@ -55,8 +51,11 @@ class TaskList extends Component {
     sprintId: null,
     performerId: null,
     authorId: null,
-    tags: []
-  };
+    tags: [],
+    changedFilters: {
+      projectId: this.props.params.projectId
+    }
+  }
 
   openSprintModal = (taskId, sprintId) =>{
     this.setState({
@@ -106,23 +105,22 @@ class TaskList extends Component {
   };
 
   changeSingleFilter = (option, name) => {
-
     this.setState(state => {
-
-      const filterValue = option ? option.value : null;
+      let filterValue = option ? option.value : null;
       const changedFilters = state.changedFilters;
+      if (name === 'prioritiesId') {
+        filterValue = option.prioritiesId;
+      }
       if (~[null, [], undefined, ''].indexOf(filterValue)) {
         delete changedFilters[name];
       } else {
         changedFilters[name] = filterValue;
       }
-
       const newState = {
         [name]: filterValue,
         activePage: state[name] !== filterValue ? 1 : state.activePage,
         changedFilters
       };
-
       return newState;
 
     }, this.loadTasks);
@@ -242,7 +240,7 @@ class TaskList extends Component {
     const statusOptions = this.createOptions(statuses);
     const typeOptions = this.createOptions(taskTypes);
     const authorOptions = this.createOptions(project.users, 'fullNameRu');
-    const isFilter = Object.keys(this.state.changedFilters).length;
+    const isFilter = Object.keys(this.state.changedFilters).length > 1;
     const isLoading = isReceiving && !tasks.length;
     const taskHolder = <div style={{marginBottom: '1rem'}}>
       <hr style={{margin: '0 0 1rem 0'}}/>
