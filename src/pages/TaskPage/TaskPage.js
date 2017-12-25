@@ -159,7 +159,7 @@ class TaskPage extends Component {
               <Description
                 text={{ __html: this.props.task.description }}
                 headerType="h3"
-                id={this.props.params.taskId}
+                id={+this.props.params.taskId}
                 headerText="Описание:"
                 onEditStart={this.props.startTaskEditing}
                 onEditFinish={this.props.stopTaskEditing}
