@@ -178,7 +178,7 @@ class TaskHeader extends Component {
             ? <Button
               onClick={this.props.openCreateTaskModal}
               type="primary"
-              text="Создать подзадачу"
+              text="Создать задачу"
               icon="IconPlus"
               name="right"
               addedClassNames={{[css.btnAddTask]: true}}
