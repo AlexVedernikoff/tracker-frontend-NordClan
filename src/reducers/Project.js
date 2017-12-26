@@ -17,6 +17,7 @@ const InitialState = {
   TitleIsEditing: false,
   DescriptionIsEditing: false,
   isCreateTaskModalOpen: false,
+  isCreateChildTaskModalOpen: false,
   PortfolioIsEditing: false,
   isProjectInfoReceiving: false,
   isCreateTaskRequestInProgress: false
@@ -165,6 +166,12 @@ export default function Project (state = InitialState, action) {
       [`${action.target}IsEditing`]: false
     };
 
+  case ProjectActions.OPEN_CREATE_CHILD_TASK_MODAL:
+    return {
+      ...state,
+      isCreateChildTaskModalOpen: true
+    };
+
   case ProjectActions.OPEN_CREATE_TASK_MODAL:
     return {
       ...state,
@@ -174,7 +181,8 @@ export default function Project (state = InitialState, action) {
   case ProjectActions.CLOSE_CREATE_TASK_MODAL:
     return {
       ...state,
-      isCreateTaskModalOpen: false
+      isCreateTaskModalOpen: false,
+      isCreateChildTaskModalOpen: false
     };
 
   case ProjectActions.TASK_CREATE_REQUEST_START:
@@ -247,7 +255,9 @@ export default function Project (state = InitialState, action) {
       project: {
         sprints: [],
         users: [],
-        history: {},
+        history: {
+          events: []
+        },
         error: false
       },
       TitleIsEditing: false,

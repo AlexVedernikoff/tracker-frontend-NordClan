@@ -130,16 +130,16 @@ class CreateTaskModal extends Component {
 
   handleChange = field => event => {
     this.setState({ [field]: event.target.value.trim() })
-  }
+  };
   
   render () {
     const formLayout = {
-      firstCol: 5,
-      secondCol: 7
+      firstCol: 4,
+      secondCol: 8
     };
     return (
       <Modal
-        isOpen={this.props.isCreateTaskModalOpen}
+        isOpen={this.props.isCreateTaskModalOpen || this.props.isCreateChildTaskModalOpen}
         onRequestClose={this.props.closeCreateTaskModal}
         contentLabel="Modal"
       >
@@ -182,10 +182,11 @@ class CreateTaskModal extends Component {
                 sm={formLayout.secondCol}
                 className={css.rightColumn}
               >
-                <div className = {css.taskDescription}>
+                <div className={css.taskDescription}>
                   <TextEditor
                     toolbarHidden
-                    placeholder = 'Описание задачи'
+                    placeholder="Описание задачи"
+                    toolbarClassName="hidden"
                     ref={ref => (this.TextEditor = ref)}
                     content={''}
                   />
@@ -261,7 +262,7 @@ class CreateTaskModal extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Добавить задачу в спринт:</p>
+                <p>Спринт:</p>
               </Col>
               <Col
                 xs={12}
@@ -311,6 +312,7 @@ CreateTaskModal.propTypes = {
   closeCreateTaskModal: PropTypes.func.isRequired,
   column: PropTypes.string,
   createTask: PropTypes.func.isRequired,
+  isCreateChildTaskModalOpen: PropTypes.bool.isRequired,
   isCreateTaskModalOpen: PropTypes.bool.isRequired,
   isCreateTaskRequestInProgress: PropTypes.bool,
   parentTaskId: PropTypes.number,
@@ -321,6 +323,7 @@ CreateTaskModal.propTypes = {
 
 const mapStateToProps = state => ({
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
+  isCreateChildTaskModalOpen: state.Project.isCreateChildTaskModalOpen,
   taskTypes: state.Dictionaries.taskTypes,
   isCreateTaskRequestInProgress: state.Project.isCreateTaskRequestInProgress
 });

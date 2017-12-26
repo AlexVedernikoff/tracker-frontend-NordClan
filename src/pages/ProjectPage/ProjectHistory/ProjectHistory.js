@@ -42,7 +42,7 @@ class ProjectHistory extends React.Component {
 
   loadHistoryEvents = () => {
     const pageSize = 20;
-    this.props.getProjectHistory(this.props.projectId, {
+    this.props.getProjectHistory(this.props.params.projectId, {
       pageSize,
       currentPage: this.state.activePage
     });

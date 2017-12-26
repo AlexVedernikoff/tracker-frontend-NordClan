@@ -119,6 +119,10 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  > span {
+    padding-right: 5px;
+    color: gray;
+  }
 }
 
 .meta {
