@@ -138,14 +138,17 @@ class Playlist extends Component {
   };
 
   createMagicActivitiesForProjects = (projects, type) => {
+    const onDate = this.getDateByDayTab(this.state.activeDayTab).format('YYYY-MM-DD');
     return projects.map(project => ({
-      isCreated: false,
+      id: `temp-${project.project.id}`,
+      isCreatedTimesheet: false,
       isVisible: true,
-      // isDraft: true,
+      isDraft: true,
       typeId: type,
-      // onDate: this.state.activeDayTab,
-      onDate: "2017-12-26",
-      project
+      onDate,
+      project: project.project,
+      projectId: project.project.id,
+      spentTime: 0
     }))
   }
 
@@ -155,10 +158,12 @@ class Playlist extends Component {
     let activeTracks = this.filterTracksByDayTab(tracks, activeDayTab);
     activeTracks = this.filterTracksByActivityTab(activeTracks.tracks, activeActivityTab);
 
-    if (activeActivityTab !== 'all') {
-      const projects = availableProjects.filter(data => activeTracks.every(track => track.project.id !== data.project.id));
+    if (activeActivityTab !== 'all' && activeActivityTab !== 1) {
+      const projects = availableProjects
+        .filter(data => activeTracks.every(track => track.project && track.project.id !== data.project.id));
+
       const additionalTracks = this.createMagicActivitiesForProjects(projects, activeActivityTab);
-      activeTracks.push(additionalTracks);
+      activeTracks = activeTracks.concat(additionalTracks);
     }
     // const activeTracks = tracks
     //   .filter(track => {
