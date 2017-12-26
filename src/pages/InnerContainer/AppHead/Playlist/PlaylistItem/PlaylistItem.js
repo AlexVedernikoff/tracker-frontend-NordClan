@@ -90,6 +90,13 @@ class PlaylistItem extends Component {
     return _.find(this.props.magicActivitiesTypes, {id: typeId}).name || 'Не определено';
   };
 
+  goToDetailPage = () => {
+    const { task, project } = this.props.item;
+    if (task) {
+      history.push(`/projects/${project.id}/tasks/${task.id}`);
+    }
+  };
+
   render () {
     const {
       task,
@@ -114,7 +121,7 @@ class PlaylistItem extends Component {
         })}>
           {getMaIcon(typeId)}
         </div>
-        <div className={css.taskNameWrapper} onClick={() => history.push(`/projects/${project.id}/tasks/${task.id}`)}>
+        <div className={css.taskNameWrapper} onClick={this.goToDetailPage}>
           <div className={css.taskTitle}>
             <div className={css.meta}>
               { task && task.prefix ? <span>{task.prefix}</span> : null}
@@ -143,7 +150,7 @@ class PlaylistItem extends Component {
               }
             </div>
             <div className={css.taskName}>
-              <span>{`${project.prefix}-${task.id}`}</span>
+              <span>{task ? `${project.prefix}-${task.id}` : project.prefix}</span>
               {task ? task.name : this.getNameByType(typeId)}
             </div>
           </div>
