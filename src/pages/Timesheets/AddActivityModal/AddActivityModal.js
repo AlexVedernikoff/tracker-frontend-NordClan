@@ -18,9 +18,9 @@ import {
   getTasksForSelect,
   getProjectsForSelect
 } from '../../../actions/Timesheets';
+import * as activityTypes from '../../../constants/ActivityTypes';
 
 class AddActivityModal extends Component {
-
   static propTypes = {
     activityTypes: PropTypes.array,
     addActivity: PropTypes.func,
@@ -38,7 +38,7 @@ class AddActivityModal extends Component {
     selectedTaskStatusId: PropTypes.number,
     startingDay: PropTypes.object,
     userId: PropTypes.number
-  }
+  };
 
   constructor (props) {
     super(props);
@@ -59,7 +59,7 @@ class AddActivityModal extends Component {
       this.setState({ [name]: option.value });
       if (name === 'activityType') {
         this.props.changeActivityType(option.value);
-        if (option.value === 1) {
+        if (option.value === activityTypes.IMPLEMENTATION) {
           this.props.changeProject(null);
         } else {
           this.props.changeTask(null);
@@ -71,7 +71,7 @@ class AddActivityModal extends Component {
     } else {
       this.setState({ [name]: 0 });
     }
-  }
+  };
 
   addActivity = () => {
     const {
@@ -101,10 +101,9 @@ class AddActivityModal extends Component {
         name: selectedProject.label
       } : null
     });
-  }
+  };
 
   render () {
-
     const formLayout = {
       left: 5,
       right: 7
@@ -135,18 +134,18 @@ class AddActivityModal extends Component {
                   onChange={(option) => this.changeItem(option, 'activityType')}
                   options={
                     this.props.activityTypes.length
-                    ? this.props.activityTypes.map(
+                      ? this.props.activityTypes.map(
                         element => {return {label: element.name, value: element.id};}
                       ).concat([{ value: 0, label: 'Не выбрано' }])
-                    : null
+                      : null
                   }
                 />
               </Col>
             </Row>
           </label>
           {
-            this.state.activityType && this.state.activityType === 1
-            ? <label className={css.formField}>
+            this.state.activityType && this.state.activityType === activityTypes.IMPLEMENTATION
+              ? <label className={css.formField}>
                 <Row>
                   <Col xs={12} sm={formLayout.left}>
                     Задача:
@@ -167,33 +166,35 @@ class AddActivityModal extends Component {
                   </Col>
                 </Row>
               </label>
-            : this.state.activityType && this.state.activityType !== 1
-            ? <label className={css.formField}>
-                <Row>
-                  <Col xs={12} sm={formLayout.left}>
-                    Проект:
-                  </Col>
-                  <Col xs={12} sm={formLayout.right}>
-                    <SelectAsync
-                      key="projectAsyncSelect"
-                      promptTextCreator={label => `Поиск проекта ${label}`}
-                      searchPromptText={'Введите название Проекта'}
-                      multi={false}
-                      ignoreCase={false}
-                      placeholder="Выберите проект"
-                      loadOptions={this.props.getProjectsForSelect}
-                      filterOption={el => el}
-                      onChange={option => this.props.changeProject(option)}
-                      value={this.props.selectedProject}
-                    />
-                  </Col>
-                </Row>
-              </label>
-            : null
+              : this.state.activityType && this.state.activityType !== activityTypes.IMPLEMENTATION
+                  && this.state.activityType !== activityTypes.VACATION
+                  && this.state.activityType !== activityTypes.HOSPITAL
+                ? <label className={css.formField}>
+                  <Row>
+                    <Col xs={12} sm={formLayout.left}>
+                      Проект:
+                    </Col>
+                    <Col xs={12} sm={formLayout.right}>
+                      <SelectAsync
+                        key="projectAsyncSelect"
+                        promptTextCreator={label => `Поиск проекта ${label}`}
+                        searchPromptText={'Введите название Проекта'}
+                        multi={false}
+                        ignoreCase={false}
+                        placeholder="Выберите проект"
+                        loadOptions={this.props.getProjectsForSelect}
+                        filterOption={el => el}
+                        onChange={option => this.props.changeProject(option)}
+                        value={this.props.selectedProject}
+                      />
+                    </Col>
+                  </Row>
+                </label>
+                : null
           }
           {
             this.props.selectedTask
-            ? <label className={css.formField}>
+              ? <label className={css.formField}>
                 <Row>
                   <Col xs={12} sm={formLayout.left}>
                     Статус:
@@ -222,7 +223,7 @@ class AddActivityModal extends Component {
                   </Col>
                 </Row>
               </label>
-            : null
+              : null
           }
           <div className={css.footer}>
             <Button
