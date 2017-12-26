@@ -50,6 +50,7 @@ class ProjectPage extends Component {
         <RouteTabs>
           <Link
             activeClassName="active"
+            onlyActiveOnIndex
             to={`/projects/${this.props.params.projectId}`}
           >
             Доска
