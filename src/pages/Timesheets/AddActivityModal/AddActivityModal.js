@@ -9,6 +9,8 @@ import Modal from '../../../components/Modal';
 import Button from '../../../components/Button';
 import SelectDropdown from '../../../components/SelectDropdown';
 import * as css from '../Timesheets.scss';
+import Checkbox from '../../../components/Checkbox/Checkbox';
+
 import {
   changeTask,
   changeProject,
@@ -46,7 +48,8 @@ class AddActivityModal extends Component {
       activityType: 0,
       taskId: 0,
       projectId: 0,
-      taskStatusId: 0
+      taskStatusId: 0,
+      isOnlyMine: true
     };
   }
 
@@ -103,6 +106,24 @@ class AddActivityModal extends Component {
     });
   }
 
+
+  toggleMine = () => {
+    const isOnlyMine = !this.state.isOnlyMine;
+    this.setState({isOnlyMine});
+    this.props.changeProject(null);
+    this.props.changeTask(null);
+  };
+
+  asyncSelectTaskWrapper = (name) => {
+    const projectId = this.state.isOnlyMine ? undefined : this.props.selectedProject.value;
+    return this.props.getTasksForSelect(name, projectId);
+  };
+
+  asyncSelectProjectWrapper = (name) => {
+    const hideEmptyValue = this.state.activityType === 1;
+    return this.props.getProjectsForSelect(name, hideEmptyValue);
+  };
+
   render () {
 
     const formLayout = {
@@ -146,27 +167,63 @@ class AddActivityModal extends Component {
           </label>
           {
             this.state.activityType && this.state.activityType === 1
-            ? <label className={css.formField}>
+            ? [<label key="onlyMineLabel" className={css.formField}>
+                <Row>
+                  <Col xs={12} sm={formLayout.left}>
+                  </Col>
+                  <Col xs={12} sm={formLayout.right}>
+                    <Checkbox
+                      checked={this.state.isOnlyMine}
+                      onChange={this.toggleMine}
+                      label="Только мои задачи"
+                    />
+                  </Col>
+                </Row>
+              </label>, !this.state.isOnlyMine ? <label
+                key="projectSelectLabel"
+                className={css.formField}>
+                <Row>
+                  <Col xs={12} sm={formLayout.left}>
+                    Проект:
+                  </Col>
+                  <Col xs={12} sm={formLayout.right}>
+                    <SelectAsync
+                      key="projectAsyncSelect"
+                      promptTextCreator={label => `Поиск проекта ${label}`}
+                      searchPromptText={'Введите название Проекта'}
+                      multi={false}
+                      ignoreCase={false}
+                      placeholder="Выберите проект"
+                      loadOptions={this.asyncSelectProjectWrapper}
+                      filterOption={el => el}
+                      onChange={option => this.props.changeProject(option)}
+                      value={this.props.selectedProject}
+                    />
+                  </Col>
+                </Row>
+              </label> : null, this.props.selectedProject || this.state.isOnlyMine ? <label
+                key="taskSelectLabel"
+                className={css.formField}>
                 <Row>
                   <Col xs={12} sm={formLayout.left}>
                     Задача:
                   </Col>
                   <Col xs={12} sm={formLayout.right}>
                     <SelectAsync
-                      key="taskAsyncSelect"
+                      key={this.state.isOnlyMine ? 'taskAsyncSelect' : 'taskAsyncSelectAll'}
                       promptTextCreator={label => `Поиск задачи ${label}`}
                       searchPromptText={'Введите название Задачи'}
                       multi={false}
                       ignoreCase={false}
                       placeholder="Выберите задачу"
-                      loadOptions={this.props.getTasksForSelect}
+                      loadOptions={this.asyncSelectTaskWrapper}
                       filterOption={el => el}
                       onChange={option => this.props.changeTask(option)}
                       value={this.props.selectedTask}
                     />
                   </Col>
                 </Row>
-              </label>
+              </label> : null]
             : this.state.activityType && this.state.activityType !== 1
             ? <label className={css.formField}>
                 <Row>
@@ -181,7 +238,7 @@ class AddActivityModal extends Component {
                       multi={false}
                       ignoreCase={false}
                       placeholder="Выберите проект"
-                      loadOptions={this.props.getProjectsForSelect}
+                      loadOptions={this.asyncSelectProjectWrapper}
                       filterOption={el => el}
                       onChange={option => this.props.changeProject(option)}
                       value={this.props.selectedProject}
