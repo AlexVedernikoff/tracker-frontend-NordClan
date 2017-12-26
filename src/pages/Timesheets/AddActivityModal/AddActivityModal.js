@@ -10,6 +10,7 @@ import Button from '../../../components/Button';
 import SelectDropdown from '../../../components/SelectDropdown';
 import * as css from '../Timesheets.scss';
 import Checkbox from '../../../components/Checkbox/Checkbox';
+import debounceAsync from '../../../utils/DebouncePromise';
 
 import {
   changeTask,
@@ -219,7 +220,7 @@ class AddActivityModal extends Component {
                         multi={false}
                         ignoreCase={false}
                         placeholder="Выберите задачу"
-                        loadOptions={this.asyncSelectTaskWrapper}
+                        loadOptions={debounceAsync(this.asyncSelectTaskWrapper, 400)}
                         filterOption={el => el}
                         onChange={option => this.props.changeTask(option)}
                         value={this.props.selectedTask}
