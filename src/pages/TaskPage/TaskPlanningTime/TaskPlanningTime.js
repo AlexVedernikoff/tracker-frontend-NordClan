@@ -83,9 +83,12 @@ class TaskPlanningTime extends Component {
           contentEditable={this.props.timeIsEditing}
           onBlur={this.validateAndSubmit}
           onKeyDown={this.handleKeyPress}
-          data-tip={!!this.props.tooltip}
-          data-place="right"
-          data-for={this.props.dataFor}
+          { ...(this.props.tooltip ? {
+            'data-tip': !!this.props.tooltip,
+            'data-place': 'right',
+            'data-for': this.props.dataFor
+          } : null)
+          }
         >
           {roundNum(this.props.time, 2)}
         </span>
@@ -94,9 +97,12 @@ class TaskPlanningTime extends Component {
             [css.alert]: this.props.isExecutionTime,
             [css.factTime]: this.props.isExecutionTime
           })}
-          data-tip={!!this.props.tooltip}
-          data-place="right"
-          data-for="time"
+          { ...(this.props.tooltip ? {
+            'data-tip': !!this.props.tooltip,
+            'data-place': 'right',
+            'data-for': this.props.dataFor
+          } : null)
+          }
         > ч.</span>
         {this.props.timeIsEditing
           ? <IconCheck

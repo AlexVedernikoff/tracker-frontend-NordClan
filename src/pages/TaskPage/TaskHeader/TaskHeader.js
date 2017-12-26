@@ -187,13 +187,15 @@ class TaskHeader extends Component {
         }
         {
           task.parentTask
-            ? <div className={css.parentTask}>
-              <div className={css.prefix} data-tip="Родительская задача ">
-                {task.project.prefix}-{task.parentTask.id}
+            ? <div className={css.parentTaskWrp}>
+                <div className={css.parentTask}>
+                <div className={css.prefix} data-tip="Родительская задача ">
+                  {task.project.prefix}-{task.parentTask.id}
+                </div>
+                <Link to={`/projects/${task.project.id}/tasks/${task.parentTask.id}`} className={css.parentTaskName}>
+                  {task.parentTask.name}
+                </Link>
               </div>
-              <Link to={`/projects/${task.project.id}/tasks/${task.parentTask.id}`} className={css.parentTaskName}>
-                {task.parentTask.name}
-              </Link>
               <div className={css.parentTaskLink}>
                 <div className={css.tasksPointers} />
               </div>

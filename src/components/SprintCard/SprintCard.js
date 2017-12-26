@@ -6,6 +6,7 @@ import { deleteSprint, editSprint } from '../../actions/Sprint';
 import moment from 'moment';
 import SprintEditModal from '../../components/SprintEditModal';
 import { formatCurrency } from '../../utils/Currency';
+import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
 
 import { IconClose } from '../Icons';
 import * as css from './SprintCard.scss';
@@ -17,6 +18,7 @@ class SprintCard extends Component {
     super(props);
     this.state = {
       isModalOpen: false,
+      isConfirmDeleteModalOpen: false,
       isHovered: false
     };
   }
@@ -47,6 +49,18 @@ class SprintCard extends Component {
     });
   };
 
+  handleConfirmDeleteOpenModal = () => {
+    this.setState({
+      isConfirmDeleteModalOpen: true
+    });
+  };
+
+  closeConfirmDeleteModal = () => {
+    this.setState({
+      isConfirmDeleteModalOpen: false
+    });
+  };
+
   render () {
     const { sprint, deleteSprint: dS, editSprint, inFocus, ...other } = this.props;
 
@@ -61,7 +75,7 @@ class SprintCard extends Component {
       >
         <IconClose
           className={css.iconClose}
-          onClick={() => {dS(sprint.id);}}
+          onClick={this.handleConfirmDeleteOpenModal}
         />
         <p className={css.sprintTitle}
            onClick={this.handleOpenModal}>
@@ -114,6 +128,17 @@ class SprintCard extends Component {
         {this.state.isModalOpen
         ? <SprintEditModal sprint={this.props.sprint} handleEditSprint={this.handleEditSprint} handleCloseModal={this.closeEditSprintModal}/>
         : null}
+        {
+          this.state.isConfirmDeleteModalOpen
+            ? <ConfirmModal
+              isOpen
+              contentLabel="modal"
+              text="Вы действительно удалить спринт?"
+              onCancel={this.closeConfirmDeleteModal}
+              onConfirm={() => {dS(sprint.id);}}
+            />
+          : null
+        }
       </div>
     );
   }
