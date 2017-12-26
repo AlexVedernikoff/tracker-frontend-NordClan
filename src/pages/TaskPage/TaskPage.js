@@ -17,7 +17,7 @@ import ConfirmModal from '../../components/ConfirmModal';
 import GoBackPanel from '../../components/GoBackPanel';
 import CreateTaskModal from '../../components/CreateTaskModal';
 import HttpError from '../../components/HttpError';
-
+import { history } from '../../History';
 import {
   getTask,
   startTaskEditing,
@@ -70,6 +70,7 @@ class TaskPage extends Component {
     this.state = {
       isTaskModalOpen: false,
       isUnlinkModalOpen: false,
+      isLeaveConfirmModalOpen: false,
       unLinkedTask: null
     };
   }
@@ -77,6 +78,21 @@ class TaskPage extends Component {
   componentDidMount () {
     this.props.getTask(this.props.params.taskId);
     this.props.getProjectInfo(this.props.params.projectId);
+    this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave); 
+  }
+
+  routerWillLeave = (nextLocation) => {
+    if (this.props.DescriptionIsEditing) {
+      if (this.state.leaveConfirmed) return true;
+      this.setState({
+        isLeaveConfirmModalOpen: true,
+        nextLocation: nextLocation.pathname,
+        currentLocation: this.props.location.pathname
+      });
+      return false;
+    } else {
+      return true;
+    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -98,6 +114,20 @@ class TaskPage extends Component {
     this.props.unlinkTask(this.props.params.taskId, this.state.unLinkedTask);
     this.handleCloseUnlinkTaskModal();
   };
+
+  handleCloseLeaveConfirmModal = () => {
+    this.setState({isLeaveConfirmModalOpen: false}, () => {
+      if (window.location.pathname !== this.state.currentLocation) {
+        history.replace(this.state.currentLocation);
+      }
+    });
+  }
+
+  leaveConfirm = () => {
+    this.setState({leaveConfirmed: true}, () => {
+      history.push(this.state.nextLocation);
+    });
+  }
 
   handleOpenLinkTaskModal = () => {
     this.props.getTasks({
@@ -235,6 +265,17 @@ class TaskPage extends Component {
             text="Вы действительно хотите отвязать задачу?"
             onCancel={this.handleCloseUnlinkTaskModal}
             onConfirm={this.unlinkTask}
+          />
+          : null
+        }
+
+        { this.state.isLeaveConfirmModalOpen
+          ? <ConfirmModal
+            isOpen
+            contentLabel="modal"
+            text="Вы действительно хотите покинуть страницу? Все не сохранённые данные будут потеряны"
+            onCancel={this.handleCloseLeaveConfirmModal}
+            onConfirm={this.leaveConfirm}
           />
           : null
         }
