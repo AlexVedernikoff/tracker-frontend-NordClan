@@ -59,7 +59,7 @@ export default class AttachedDocument extends React.Component {
     return (
       <li className={css.attachment}>
         <div className={css.actions}>
-          <a href={path} onClick={this.stopBubbling} download>
+          <a href={`/${path}`} onClick={this.stopBubbling} download>
             <button>
               <IconDownload style={iconStyles} />
             </button>
