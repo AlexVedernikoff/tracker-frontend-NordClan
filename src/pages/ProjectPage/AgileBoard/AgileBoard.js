@@ -10,11 +10,15 @@ import _ from 'lodash';
 import TaskCard from '../../../components/TaskCard';
 import PerformerModal from '../../../components/PerformerModal';
 import PhaseColumn from './PhaseColumn';
+import Input from '../../../components/Input';
 import SelectDropdown from '../../../components/SelectDropdown';
 import Button from '../../../components/Button';
+import Priority from '../../../components/Priority';
 import Checkbox from '../../../components/Checkbox';
 import CreateTaskModal from '../../../components/CreateTaskModal';
+import PerformerFilter from '../../../components/PerformerFilter';
 import * as css from './AgileBoard.scss';
+
 
 import getTasks from '../../../actions/Tasks';
 import { VISOR } from '../../../constants/Roles';
@@ -121,10 +125,20 @@ class AgileBoard extends Component {
       isOnlyMine: this.getIsOnlyMine(),
       isModalOpen: false,
       performer: null,
-      filterTags: [],
-      changedSprint: null,
-      changedTask: null
+      ...this.initialFilters
     };
+  }
+
+  initialFilters = {
+    changedSprint: null,
+    filterTags: [],
+    typeId: [],
+    name: '',
+    changedTask: null,
+    authorId: null,
+    prioritiesId: null,
+    performerId: null,
+    sprintId: null
   }
 
   componentDidMount () {
@@ -196,14 +210,19 @@ class AgileBoard extends Component {
   selectValue = (e, name) => {
     this.setState({[name]: e}, () => {
       const tags = this.state.filterTags.map((tag) => tag.value);
+      const typeId = this.state.typeId.map(option => option.value);
       const options = !this.props.myTaskBoard ? {
         projectId: this.props.params.projectId,
         sprintId: this.state.changedSprint,
-        tags: tags.join(',')
+        prioritiesId: this.state.prioritiesId,
+        authorId: this.state.authorId,
+        typeId: typeId,
+        name: this.state.name,
+        tags: tags.join(','),
+        performerId: this.state.performerId
       } : {
         performerId: this.props.user.id
       };
-
       this.props.getTasks(options);
     });
   };
@@ -335,7 +354,45 @@ class AgileBoard extends Component {
     return value;
   };
 
+  createOptions = (array, labelField = 'name') => {
+    return array.map(
+      element => ({
+        value: element.id,
+        label: element[labelField]
+      })
+    );
+  };
+
+  clearFilter = () => {
+    this.setState({
+      ...this.initialFilters,
+      isOnlyMine: this.setIsOnlyMine(false)
+    }, this.props.getTasks({
+      projectId: this.props.params.projectId,
+      ...this.initialFilters
+    }));
+  }
+
+  isFilterEmpty = () => {
+    const filterKeys = [...Object.keys(this.initialFilters), 'isOnlyMine'];
+    let isEmpty = true;
+    filterKeys.forEach(key => {
+      if (Array.isArray(this.state[key]) && this.state[key].length === 0) {
+        return;
+      } else if ([null, '', false].indexOf(this.state[key]) === -1) {
+        isEmpty = false;
+      }
+    });
+    return isEmpty;
+  }
+
   render () {
+    const {
+      statuses,
+      taskTypes,
+      project
+    } = this.props;
+
     let allSorted = filterTasks(this.props.sprintTasks);
     allSorted = sortTasksAndCreateCard(allSorted, 'all', this.changeStatus, this.openPerformerModal);
 
@@ -348,61 +405,121 @@ class AgileBoard extends Component {
 
     const isVisor = this.props.globalRole === VISOR;
 
+    const statusOptions = this.createOptions(statuses);
+    const typeOptions = this.createOptions(taskTypes);
+    const authorOptions = this.createOptions(project.users, 'fullNameRu');
+
     return (
       <section className={css.agileBoard}>
         {
           !this.props.myTaskBoard
-            ? <Row className={css.filtersRow}>
-              <Col xs className={css.changedSprint}>
-                <SelectDropdown
-                  name="changedSprint"
-                  placeholder="Введите название спринта..."
-                  multi={false}
-                  value={this.state.changedSprint}
-                  onChange={(e) => this.selectValue(e !== null ? e.value : null, 'changedSprint')}
-                  noResultsText="Нет результатов"
-                  options={this.getSprints()}
-                />
-              </Col>
-              {
-                !isVisor
-                  ? <Button
-                    onClick={this.props.openCreateTaskModal}
-                    type="primary"
-                    text="Создать задачу"
-                    icon="IconPlus"
-                    name="right"
-                    style={{ marginLeft: 8, marginRight: 8 }}
+            ? <div>
+                <Row className={css.filtersRow}>
+                  <Col className={css.filterButtonCol}>
+                    <Priority
+                      onChange={(option) => this.selectValue(option.prioritiesId, 'prioritiesId')}
+                      priority={this.state.prioritiesId}
+                    />
+                  </Col>
+                  <Col className={css.filterButtonCol}>
+                    <Checkbox
+                      checked={this.state.isOnlyMine}
+                      onChange={this.toggleMine}
+                      label="Только мои задачи"
+                    />
+                  </Col>
+                  <Col xs style={{minWidth: 200}}>
+                    <SelectDropdown
+                      name="filterTags"
+                      multi
+                      placeholder="Введите название тега..."
+                      backspaceToRemoveMessage=""
+                      value={this.state.filterTags}
+                      onChange={this.selectTagForFiltrated}
+                      noResultsText="Нет результатов"
+                      options={this.getAllTags()}
+                    />
+                  </Col>
+                {
+                  !isVisor
+                    ? <Col className={css.filterButtonCol}>
+                        <Button
+                          onClick={this.props.openCreateTaskModal}
+                          type="primary"
+                          text="Создать задачу"
+                          icon="IconPlus"
+                          name="right"
+                        />
+                      </Col>
+                    : null
+                }
+              </Row>
+              <Row className={css.filtersRow}>
+                <Col xs={12} sm={6}>
+                  <Input
+                    placeholder="Название задачи"
+                    value={this.state.name}
+                    onChange={(e) => this.selectValue(e.target.value, 'name')}
                   />
-                  : null
-              }
+                </Col>
+                <Col xs={12} sm={3}>
+                  <PerformerFilter
+                    onPerformerSelect={(option) => this.selectValue(option ? option.value : null, 'performerId')}
+                    selectedPerformerId={this.state.performerId}
+                  />
+                </Col>
+                <Col xs={12} sm={3}>
+                  <SelectDropdown
+                    name="type"
+                    placeholder="Тип задачи"
+                    multi
+                    noResultsText="Нет подходящих типов"
+                    backspaceToRemoveMessage={''}
+                    clearAllText="Очистить все"
+                    value={this.state.typeId}
+                    options={typeOptions}
+                    onChange={(options) => this.selectValue(options, 'typeId')}
+                  />
+                </Col>
+              </Row>
+              <Row className={css.filtersRow}>
+                <Col xs={12} sm={6} className={css.changedSprint}>
+                  <SelectDropdown
+                    name="changedSprint"
+                    placeholder="Введите название спринта..."
+                    multi={false}
+                    value={this.state.changedSprint}
+                    onChange={(e) => this.selectValue(e !== null ? e.value : null, 'changedSprint')}
+                    noResultsText="Нет результатов"
+                    options={this.getSprints()}
+                  />
+                </Col>
+                <Col xs>
+                  <SelectDropdown
+                    name="author"
+                    placeholder="Автор"
+                    multi={false}
+                    value={this.state.authorId}
+                    onChange={(option) => this.selectValue(option ? option.value : null, 'authorId')}
+                    noResultsText="Нет результатов"
+                    options={authorOptions}
+                  />
+                </Col>
+                <Col className={css.filterButtonCol}>
+                  <Button
+                    onClick={this.clearFilter}
+                    type="primary"
+                    text="Очистить фильтры"
+                    icon="IconClose"
+                    name="right"
+                    disabled={this.isFilterEmpty()}
+                  />
+                </Col>
             </Row>
+            </div>
             : null
         }
-        {
-          !this.props.myTaskBoard
-            ? <Row className={css.filtersRow}>
-              <Checkbox
-                checked={this.state.isOnlyMine}
-                onChange={this.toggleMine}
-                label="Только мои задачи"
-                className={css.filterCheckbox}
-              />
-              <Col xs style={{minWidth: 200}}>
-                <SelectDropdown
-                  name="filterTags"
-                  multi
-                  placeholder="Введите название тега..."
-                  backspaceToRemoveMessage=""
-                  value={this.state.filterTags}
-                  onChange={this.selectTagForFiltrated}
-                  noResultsText="Нет результатов"
-                  options={this.getAllTags()}
-                />
-              </Col>
-            </Row>
-            : null
-        }
+
         <div className={css.boardContainer}>
           {
             this.props.myTaskBoard || this.state.isOnlyMine
@@ -463,7 +580,9 @@ AgileBoard.propTypes = {
   sprints: PropTypes.array,
   startTaskEditing: PropTypes.func,
   user: PropTypes.object,
-  getProjectUsers: PropTypes.func
+  getProjectUsers: PropTypes.func,
+  statuses: PropTypes.array,
+  taskTypes: PropTypes.array
 };
 
 const mapStateToProps = state => ({
@@ -475,7 +594,9 @@ const mapStateToProps = state => ({
   UserIsEditing: state.Task.UserIsEditing,
   user: state.Auth.user,
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
-  globalRole: state.Auth.user.globalRole
+  globalRole: state.Auth.user.globalRole,
+  statuses: state.Dictionaries.taskStatuses,
+  taskTypes: state.Dictionaries.taskTypes
 });
 
 const mapDispatchToProps = {
