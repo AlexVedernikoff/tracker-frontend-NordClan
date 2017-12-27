@@ -55,7 +55,9 @@ class Playlist extends Component {
   }
 
   handleClickOutside = () => {
-    this.state.isPlaylistOpen === true && this.setState({ isPlaylistOpen: false });
+    if (this.state.isPlaylistOpen) {
+      this.setState({ isPlaylistOpen: false });
+    }
   };
 
   handleToggleList = () => {
