@@ -157,9 +157,9 @@ class Planning extends Component {
     } else {
       const sprint = this.props.project.sprints.filter(item => item.id === sprintId)[0];
       const tasksEstimate = tasks.reduce((sum, task) => {
-        return sum + task.plannedExecutionTime;
+        return sum + +task.plannedExecutionTime;
       }, 0);
-      const sprintEstimate = sprint && sprint.allottedTime ? sprint.allottedTime : 0;
+      const sprintEstimate = sprint && sprint.allottedTime ? +sprint.allottedTime : 0;
       const ratio = sprintEstimate === 0 ? 0 : tasksEstimate / sprintEstimate;
 
       return {
