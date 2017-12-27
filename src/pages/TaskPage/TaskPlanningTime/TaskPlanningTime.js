@@ -20,6 +20,10 @@ class TaskPlanningTime extends Component {
     };
   }
 
+  componentDidUpdate() {
+    this.taskPlanningTime.focus();
+  }
+
   editIconClickHandler = event => {
     event.stopPropagation();
     if (this.props.timeIsEditing) {

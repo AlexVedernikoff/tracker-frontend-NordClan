@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { IconDelete, IconDownload, IconClose } from '../Icons';
+import { IconDelete, IconDownload } from '../Icons';
 import Modal from '../Modal';
 import ConfirmModal from '../ConfirmModal';
 
@@ -74,7 +74,7 @@ export default class AttachedImage extends React.Component {
         <div className={css.actions}>
           <a
             target="_blank"
-            href={path}
+            href={`/${path}`}
             onClick={this.stopBubbling}
             download
           >
@@ -88,7 +88,7 @@ export default class AttachedImage extends React.Component {
         </div>
 
         <div className={css.imagePreview}>
-          <img src={previewPath} alt="" className={css.screen} />
+          <img src={`/${previewPath}`} alt="" className={css.screen} />
         </div>
         <div className={css.attachmentName}>
           {fileName}
