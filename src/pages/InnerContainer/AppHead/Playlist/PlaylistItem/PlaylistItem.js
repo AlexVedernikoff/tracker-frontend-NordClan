@@ -52,9 +52,9 @@ class PlaylistItem extends Component {
           sheetId: this.props.item.id,
           spentTime: value.replace(',', '.'),
           isVisible: this.props.item.isVisible,
-         onDate: this.props.item.onDate,
-         typeId: this.props.item.typeId,
-         projectId: this.props.item.projectId
+          onDate: this.props.item.onDate,
+          typeId: this.props.item.typeId,
+          projectId: this.props.item.projectId
         },
         {
           onDate: this.props.item.onDate
