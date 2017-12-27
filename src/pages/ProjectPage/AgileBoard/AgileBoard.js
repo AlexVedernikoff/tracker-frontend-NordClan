@@ -125,6 +125,7 @@ class AgileBoard extends Component {
       isOnlyMine: this.getIsOnlyMine(),
       isModalOpen: false,
       performer: null,
+      changedTask: null,
       ...this.initialFilters
     };
   }
@@ -134,11 +135,9 @@ class AgileBoard extends Component {
     filterTags: [],
     typeId: [],
     name: '',
-    changedTask: null,
     authorId: null,
     prioritiesId: null,
-    performerId: null,
-    sprintId: null
+    performerId: null
   }
 
   componentDidMount () {
@@ -369,6 +368,7 @@ class AgileBoard extends Component {
       isOnlyMine: this.setIsOnlyMine(false)
     }, this.props.getTasks({
       projectId: this.props.params.projectId,
+      sprintId: null,
       ...this.initialFilters
     }));
   }
