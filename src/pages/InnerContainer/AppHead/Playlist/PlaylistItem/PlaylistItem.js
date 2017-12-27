@@ -116,8 +116,8 @@ class PlaylistItem extends Component {
       ? parseFloat(task.factExecutionTime) > parseFloat(task.plannedExecutionTime)
       : false;
 
-    const prefix = project ? project.prefix : 'Без проекта';
-    const taskLabel = task && project ? `${project.prefix}-${task.id}` : prefix;
+    const prefix = project ? project.prefix : '';
+    const taskLabel = task && project ? `${project.prefix}-${task.id}` : null;
 
     return (
       <div className={classnames(css.listTask, css.task)}>
@@ -131,7 +131,7 @@ class PlaylistItem extends Component {
           <div className={css.taskTitle}>
             <div className={css.meta}>
               { task && task.prefix ? <span>{task.prefix}</span> : null}
-              { project ? <span>{project.name}</span> : null}
+              <span>{project ? project.name : 'Без проекта'}</span>
               { status
                 ? <span>
                   {
@@ -156,7 +156,7 @@ class PlaylistItem extends Component {
               }
             </div>
             <div className={css.taskName}>
-              <span>{taskLabel}</span>
+              {taskLabel ? <span>{taskLabel}</span> : null}
               {task ? task.name : this.getNameByType(typeId)}
             </div>
           </div>
