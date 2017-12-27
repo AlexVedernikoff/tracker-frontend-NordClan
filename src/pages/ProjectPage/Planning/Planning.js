@@ -445,7 +445,7 @@ class Planning extends Component {
               })}>
                 <span className={css.header}>Факт</span>
                 {this.props.sprints.filter(this.sprintFilter).map((sprint, i) =>
-                  <span key={`sprint-${i}`} className={css.name}>{0}</span>
+                  <span key={`sprint-${i}`} className={css.name}>{sprint.spentTime}</span>
                 )}
               </div>
               <div className={css.table}>
