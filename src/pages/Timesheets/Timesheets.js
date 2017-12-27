@@ -64,13 +64,17 @@ class Timesheets extends React.Component {
     const hasEnableTs = !!this.props.list.filter(tsh => tsh.statusId !== 3 && tsh.statusId !== 4).length;
     const countTsWithTime = this.props.list.filter(tsh => tsh.spentTime !== 0).length;
     const defaultTaskStatusId = 2;
-    const list = tempTimesheets
+
+    const tempTimesheetsList = tempTimesheets
       .map(timesheet => {
         return {
           ...timesheet,
           taskStatusId: timesheet.taskStatusId || defaultTaskStatusId
         }
-      }).concat(this.props.list)
+      })
+
+    //TODO важен порядок сложения списков
+    const list = this.props.list.concat(tempTimesheetsList);
 
     const isThisWeek = (date) => {
       const getMidnight = (dayOfWeek) => {
