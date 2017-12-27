@@ -203,9 +203,11 @@ class Details extends Component {
             <tr>
               <td>Теги:</td>
               <td className={css.tags}>
-                <Tags taggable="task"
+                <Tags
+                  taggable="task"
                   taggableId={task.id}
                   create
+                  canEdit
                 >
                   {tags}
                 </Tags>
