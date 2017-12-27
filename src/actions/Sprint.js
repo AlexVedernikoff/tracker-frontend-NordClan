@@ -2,7 +2,7 @@ import * as SprintActions from '../constants/Sprint';
 import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
-import moment from 'moment';
+import { showNotification } from './Notifications';
 
 const createSprintStart = () => ({
   type: SprintActions.SPRINTS_CREATE_START
@@ -50,12 +50,18 @@ export const editSprint = (id, statusId, name, dateForm, dateTo, allottedTime, b
     dispatch(startLoading());
     axios
       .put(URL, params)
-      .then(response => {
-        if (response.data) {
-          dispatch(editSprintSuccess(response.data));
+      .then(
+        response => {
+          if (response.data) {
+            dispatch(editSprintSuccess(response.data));
+            dispatch(finishLoading());
+          }
+        },
+        error => {
+          dispatch(showNotification({ message: error.message, type: 'error' }));
           dispatch(finishLoading());
         }
-      });
+      );
   };
 };
 
@@ -67,12 +73,18 @@ export const deleteSprint = (id) => {
     dispatch(startLoading());
     axios
       .delete(URL)
-      .then(response => {
-        if (response.data) {
-          dispatch(deleteSprintSuccess(response.data));
+      .then(
+        response => {
+          if (response.data) {
+            dispatch(deleteSprintSuccess(response.data));
+            dispatch(finishLoading());
+          }
+        },
+        error => {
+          dispatch(showNotification({ message: error.message, type: 'error' }));
           dispatch(finishLoading());
         }
-      });
+      );
   };
 };
 
@@ -85,17 +97,23 @@ export const createSprint = (name, projectId, factStartDate, factFinishDate, all
       .post(URL, {
         name,
         projectId,
-        allottedTime,        
+        allottedTime,
         factStartDate,
         factFinishDate,
         budget,
         riskBudget
       })
-      .then(response => {
-        if (response.data) {
-          dispatch(createSprintSuccess(response.data.sprints));
+      .then(
+        response => {
+          if (response.data) {
+            dispatch(createSprintSuccess(response.data.sprints));
+            dispatch(finishLoading());
+          }
+        },
+        error => {
+          dispatch(showNotification({ message: error.message, type: 'error' }));
           dispatch(finishLoading());
         }
-      });
+      );
   };
 };
