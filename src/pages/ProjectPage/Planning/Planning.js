@@ -417,8 +417,8 @@ class Planning extends Component {
                         [css.hover]: sprint.id === this.state.sprintIdHovered
                       })}
                       data-tip={getSprintTime(sprint)} onClick={this.oClickSprint(sprint.id)} onMouseOver={this.onMouseOverSprint(sprint.id)} onMouseOut={this.onMouseOutSprint}/>
-                    <SprintStartControl sprint={sprint}/>
-                    <div className={css.name}>
+                    {isProjectAdmin ? <SprintStartControl sprint={sprint}/> : null}
+                    <div className={classnames(css.name, { [css.nameMargin]: isProjectAdmin })}>
                       {sprint.name}
                     </div>
                     <IconEdit
