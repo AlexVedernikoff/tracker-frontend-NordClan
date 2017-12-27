@@ -47,7 +47,7 @@ class Planning extends Component {
     rightColumnTasks: PropTypes.array,
     sprints: PropTypes.array.isRequired,
     startTaskEditing: PropTypes.func,
-    user: PropTypes.object.isRequired,
+    user: PropTypes.object.isRequired
   };
 
   constructor (props) {
