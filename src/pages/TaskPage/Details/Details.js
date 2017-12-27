@@ -258,7 +258,7 @@ class Details extends Component {
                       time={task.factExecutionTime}
                       id={task.id}
                       isExecutionTime
-                      tooltip={+task.factExecutionTime ? executeTimeTooltip : null}
+                      tooltip={Number(task.factExecutionTime) ? executeTimeTooltip : null}
                       timeIsEditing={this.props.ExecutionTimeIsEditing}
                       key={this.state.tooltipKey}
                       dataFor={this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? 'time' : 'notime'}
