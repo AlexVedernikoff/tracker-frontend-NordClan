@@ -54,6 +54,9 @@ class Details extends Component {
     if (nextProps.timeSpent !== this.props.timeSpent && this.state.spentRequestStatus === spentRequestStatus.REQUESTED) {
       this.setState({spentRequestStatus: spentRequestStatus.RECEIVED, tooltipKey: Math.random()});
     }
+    if (nextProps.task.factExecutionTime !== this.props.task.factExecutionTime) {
+      this.setState({spentRequestStatus: spentRequestStatus.READY, tooltipKey: Math.random()});
+    }
   }
 
   componentDidUpdate () {
@@ -255,7 +258,7 @@ class Details extends Component {
                       time={task.factExecutionTime}
                       id={task.id}
                       isExecutionTime
-                      tooltip={executeTimeTooltip}
+                      tooltip={+task.factExecutionTime ? executeTimeTooltip : null}
                       timeIsEditing={this.props.ExecutionTimeIsEditing}
                       key={this.state.tooltipKey}
                       dataFor={this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? 'time' : 'notime'}

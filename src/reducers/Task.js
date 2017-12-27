@@ -116,6 +116,7 @@ export default function Task (state = InitialState, action) {
     return {
       ...state,
       timeSpent: _.chain(action.data)
+          .filter(timeSheet => Number(timeSheet.spentTime))
           .map(spent => ({job: getJobById(spent.taskStatusId), spent: spent.spentTime }))
           .transform((byStatus, spent) => {
             const job = spent.job;
