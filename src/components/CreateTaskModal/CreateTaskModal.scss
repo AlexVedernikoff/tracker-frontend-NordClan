@@ -16,7 +16,10 @@
 .leftColumn {
   display: flex;
   justify-content: flex-end;
-  align-items: center;
+  align-items: flex-start;
+  line-height: 1rem;
+
+  p { margin: 0.5rem; }
 
   @include phone {
     justify-content: flex-start;
@@ -26,19 +29,35 @@
 
 .rightColumn {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
 }
+
+.priority {
+  align-items: center;
+  
+  @include phone {
+    padding-left: 0.75rem;
+  }
+}
+
+.taskDescriptionWrapper {
+  width: 100%;
+}
+
 .taskDescription {
   width: 100%;
-  padding: 7px 15px;
-  min-height: 92px;
-  border: 1px solid #e6e6e6;
+  min-height: 5rem;
+  cursor: text;
+  padding: 0.5rem 1rem;
+  border: 1px solid $color-gray;
+  transition: $transition;
 }
+
 .formField {
   display: block;
 
   & + & {
-    margin-top: 10px;
+    margin-top: 1rem;
   }
 }
 
