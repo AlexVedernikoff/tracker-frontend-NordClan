@@ -5,7 +5,6 @@ import { IconPlus, IconLink, IconClose } from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal';
 
 export default class RelatedTasks extends React.Component {
-
   render () {
     const css = require('./RelatedTasks.scss');
 
