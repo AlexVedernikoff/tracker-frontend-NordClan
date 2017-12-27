@@ -23,9 +23,7 @@ export default class RelatedTasks extends React.Component {
           this.props.onDelete
             ? <IconClose
               className={css.iconClose}
-              onClick={() => {
-                this.props.onDelete(task.id);
-              }}
+              onClick={() => {this.props.onDelete(task.id);}}
             />
             : null
         }

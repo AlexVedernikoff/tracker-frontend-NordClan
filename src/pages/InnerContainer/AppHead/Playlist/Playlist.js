@@ -22,7 +22,6 @@ class Playlist extends Component {
       activeDayTab: moment().day() - 1,
       activeActivityTab: 'all',
       isPlaylistOpen: false,
-      activeContent: {},
       activeTab: {}
     };
   }
@@ -56,7 +55,9 @@ class Playlist extends Component {
   }
 
   handleClickOutside = () => {
-    this.state.isPlaylistOpen === true && this.setState({isPlaylistOpen: false});
+    if (this.state.isPlaylistOpen) {
+      this.setState({ isPlaylistOpen: false });
+    }
   };
 
   handleToggleList = () => {
@@ -115,15 +116,18 @@ class Playlist extends Component {
 
   getScale = (tracks, activeDayTab, activeActivityTab) => {
     const activeTabContent = this.filterTracksByDayTab(tracks, activeDayTab);
-    if (!activeTabContent.scales) return '';
+    if (!activeTabContent.scales) {
+      return '';
+    }
 
     const time = activeTabContent.scales[activeActivityTab];
-    if (!time) return '';
+    if (!time) {
+      return '';
+    }
 
     const timeParts = ('' + time).split('.');
     const wholePart = timeParts[0];
     const fraction = timeParts[1] ? timeParts[1] : null;
-
 
     return <span className={css.countBadge}>
       {wholePart}
@@ -138,7 +142,25 @@ class Playlist extends Component {
   activeTracks = (tracks, activeDayTab, activeActivityTab) => {
     let activeTracks = this.filterTracksByDayTab(tracks, activeDayTab);
     activeTracks = this.filterTracksByActivityTab(activeTracks.tracks, activeActivityTab);
-    return activeTracks;
+
+    const isMagicActivityTab = activeActivityTab !== 'all' && activeActivityTab !== 1;
+    const additionalMagicActivityTracks = isMagicActivityTab
+      ? this.addAdditionalMagicActivities(activeTracks)
+      : []
+
+    const allTracks = activeTracks.concat(additionalMagicActivityTracks);
+    const allSortedTracks = allTracks.sort((track1, track2) => {
+      if (!track1.project) {
+        return -1;
+      }
+      if (!track2.project) {
+        return 1;
+      }
+
+      return track1.project.id - track2.project.id;
+    })
+
+    return allSortedTracks;
   };
 
   filterTracksByDayTab = (tracks, activeDayTab) => {
@@ -158,6 +180,46 @@ class Playlist extends Component {
     return [];
   };
 
+  addAdditionalMagicActivities = (activeTracks) => {
+    const { availableProjects } = this.props;
+
+    const projects = availableProjects
+      .filter(data => activeTracks.every(track => {
+        const isProjectWihoutMagicActivity = !track.project
+          || track.project && track.project.id !== data.project.id;
+
+        return isProjectWihoutMagicActivity;
+      }));
+
+    const hasActivityWithoutProject = activeTracks.find(track => !track.project);
+    const activityWithoutProject = !hasActivityWithoutProject
+      ? this.createMagicActivityDraft(this.state.activeActivityTab)
+      : [];
+
+    const additionalTracks = projects
+      .map(project => this.createMagicActivityDraft(this.state.activeActivityTab, project))
+      .concat(activityWithoutProject)
+
+    return additionalTracks;
+  }
+
+  createMagicActivityDraft = (type, data) => {
+    const onDate = this.getDateByDayTab(this.state.activeDayTab).format('YYYY-MM-DD');
+
+    const magicActivity = {
+      id: data ? `temp-${data.project.id}` : `temp-0`,
+      isCreatedTimesheet: false,
+      isVisible: true,
+      isDraft: true,
+      typeId: type,
+      onDate,
+      projectId: data ? data.project.id : 0,
+      spentTime: 0
+    }
+
+    return data ? { ...magicActivity, project: data.project } : magicActivity;
+  }
+
   getCountBadge = (tracks, dayTab) => {
     const value = this.getScaleAll(tracks, dayTab);
     if (value) {
@@ -176,7 +238,6 @@ class Playlist extends Component {
     }
     return '';
   };
-
 
   render () {
     const { isPlaylistOpen } = this.state;
@@ -244,6 +305,7 @@ const mapStateToProps = state => {
   return {
     activeTask: state.TimesheetPlayer.activeTask,
     tracks: state.TimesheetPlayer.tracks,
+    availableProjects: state.TimesheetPlayer.availableProjects,
     magicActivitiesTypes: state.Dictionaries.magicActivityTypes
   };
 };

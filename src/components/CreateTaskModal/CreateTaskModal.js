@@ -9,7 +9,6 @@ import moment from 'moment';
 import classnames from 'classnames';
 import _ from 'lodash';
 import Button from '../Button';
-import TextArea from '../TextArea';
 import SelectDropdown from '../SelectDropdown';
 import ValidatedInput from '../ValidatedInput';
 import * as css from './CreateTaskModal.scss';
@@ -42,7 +41,7 @@ class CreateTaskModal extends Component {
 
     this.validator = new Validator();
   }
-  
+
   handleModalSprintChange = selectedSprint => {
     this.setState({
       selectedSprint: selectedSprint ? selectedSprint.value : 0
@@ -129,7 +128,7 @@ class CreateTaskModal extends Component {
   };
 
   handleChange = field => event => {
-    this.setState({ [field]: event.target.value.trim() })
+    this.setState({ [field]: event.target.value.trim() });
   };
   
   render () {
@@ -248,7 +247,7 @@ class CreateTaskModal extends Component {
               >
                 <SelectDropdown
                   name="performer"
-                  placeholder="Введите имя исполнителя..."
+                  placeholder="Введите имя исполнителя"
                   multi={false}
                   className={css.selectPerformer}
                   value={this.state.selectedPerformer}

@@ -164,7 +164,7 @@ class TaskPage extends Component {
 
   getProjectUnlinkedTasks = () => {
     const linkedTasksIds = this.props.task.linkedTasks.map(task => task.id);
-    return this.props.projectTasks.filter(task => !_.includes(linkedTasksIds, task.id)).map(task => ({
+    return this.props.projectTasks.filter(task => !_.includes(linkedTasksIds, task.id) && task.id !== this.props.task.id).map(task => ({
       value: task.id,
       label: `${this.props.task.project.prefix}-${task.id}. ${task.name}`
     }));
