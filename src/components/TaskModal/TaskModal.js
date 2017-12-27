@@ -40,7 +40,7 @@ class TaskModal extends Component {
           <div className={css.modalLine}>
             <SelectDropdown
               name="member"
-              placeholder="Введите название задачи..."
+              placeholder="Введите название задачи"
               multi={false}
               className={css.selectSprint}
               value={this.state.taskId}

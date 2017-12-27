@@ -40,7 +40,7 @@ class ValidatedInput extends Component {
             [css.inputError]: this.state.isError || backendErrorText
           })}
         />
-        {this.state.showSpan && <span>{errorText}</span>}
+        {this.state.showSpan && <span className={css.message}>{errorText}</span>}
         {backendErrorText && <span>{backendErrorText}</span>}
       </div>
     );

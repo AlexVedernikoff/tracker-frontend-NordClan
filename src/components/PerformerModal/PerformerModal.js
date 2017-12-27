@@ -40,7 +40,7 @@ class PerformerModal extends Component {
           <div className={css.modalLine}>
             <SelectDropdown
               name="member"
-              placeholder="Введите имя исполнителя..."
+              placeholder="Введите имя исполнителя"
               multi={false}
               value={this.state.performer}
               onChange={e => this.selectValue(e !== null ? e.value : 0, 'performer')}

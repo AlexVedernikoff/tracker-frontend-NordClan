@@ -130,7 +130,7 @@ class CreateTaskModal extends Component {
   handleChange = field => event => {
     this.setState({ [field]: event.target.value.trim() });
   };
-  
+
   render () {
     const formLayout = {
       firstCol: 4,
@@ -143,6 +143,8 @@ class CreateTaskModal extends Component {
         contentLabel="Modal"
       >
         <form className={css.createTaskForm}>
+          <h3>Создать задачу</h3>
+          <hr/>
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
@@ -181,15 +183,14 @@ class CreateTaskModal extends Component {
                 sm={formLayout.secondCol}
                 className={css.rightColumn}
               >
-                <div className={css.taskDescription}>
-                  <TextEditor
-                    toolbarHidden
-                    placeholder="Описание задачи"
-                    toolbarClassName="hidden"
-                    ref={ref => (this.TextEditor = ref)}
-                    content={''}
-                  />
-                </div>
+                <TextEditor
+                  toolbarHidden
+                  placeholder="Описание задачи"
+                  wrapperClassName={css.taskDescriptionWrapper}
+                  editorClassName={css.taskDescription}
+                  ref={ref => (this.TextEditor = ref)}
+                  content={''}
+                />
               </Col>
             </Row>
           </label>
@@ -225,7 +226,7 @@ class CreateTaskModal extends Component {
               <Col
                 xs={12}
                 sm={formLayout.secondCol}
-                className={css.rightColumn}
+                className={classnames(css.rightColumn, css.priority)}
               >
                 <Priority
                   priority={this.state.prioritiesId}
@@ -311,8 +312,8 @@ CreateTaskModal.propTypes = {
   closeCreateTaskModal: PropTypes.func.isRequired,
   column: PropTypes.string,
   createTask: PropTypes.func.isRequired,
-  isCreateChildTaskModalOpen: PropTypes.bool.isRequired,
-  isCreateTaskModalOpen: PropTypes.bool.isRequired,
+  isCreateChildTaskModalOpen: PropTypes.bool,
+  isCreateTaskModalOpen: PropTypes.bool,
   isCreateTaskRequestInProgress: PropTypes.bool,
   parentTaskId: PropTypes.number,
   project: PropTypes.object,

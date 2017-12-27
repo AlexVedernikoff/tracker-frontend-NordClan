@@ -23,17 +23,21 @@ class TextEditor extends Component {
   };
 
   render () {
-    const toolbarClassName = this.props.toolbarClassName ? css[this.props.toolbarClassName] : '';
+    const {
+      toolbarHidden,
+      placeholder,
+      ...other
+    } = this.props;
     return (
       <Editor
         editorState={this.state.editorState}
         onEditorStateChange={this.onEditorStateChange}
-        toolbarHidden={this.props.toolbarHidden}
-        placeholder={this.props.placeholder}
+        toolbarHidden={toolbarHidden}
+        placeholder={placeholder}
         toolbar={{
           options: ['inline', 'blockType', 'list', 'history']
         }}
-        toolbarClassName={toolbarClassName}
+        {...other}
       />
     );
   }

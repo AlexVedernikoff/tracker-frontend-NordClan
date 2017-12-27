@@ -18,6 +18,9 @@ import GoBackPanel from '../../components/GoBackPanel';
 import CreateTaskModal from '../../components/CreateTaskModal';
 import HttpError from '../../components/HttpError';
 import { history } from '../../History';
+
+import * as TaskStatuses from '../../constants/TaskStatuses';
+
 import {
   getTask,
   startTaskEditing,
@@ -71,14 +74,16 @@ class TaskPage extends Component {
       isTaskModalOpen: false,
       isUnlinkModalOpen: false,
       isLeaveConfirmModalOpen: false,
-      unLinkedTask: null
+      unLinkedTask: null,
+      isCancelSubTaskModalOpen: false,
+      canceledSubTaskId: null
     };
   }
 
   componentDidMount () {
     this.props.getTask(this.props.params.taskId);
     this.props.getProjectInfo(this.props.params.projectId);
-    this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave); 
+    this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave);
   }
 
   routerWillLeave = (nextLocation) => {
@@ -173,6 +178,29 @@ class TaskPage extends Component {
     this.props.uploadAttachments(this.props.task.id, files);
   };
 
+  handleOpenCancelSubTaskModal = id => {
+    this.setState({
+      isCancelSubTaskModalOpen: true,
+      canceledSubTaskId: id
+    });
+  };
+
+  handleCloseCancelSubTaskModal = () => {
+    this.setState({
+      isCancelSubTaskModalOpen: false,
+      canceledSubTaskId: null
+    });
+  };
+
+  handleCancelSubTask = () => {
+    this.props.changeTask({
+      id: this.state.canceledSubTaskId,
+      statusId: TaskStatuses.CANCELED
+    },
+    'Status');
+    this.handleCloseCancelSubTaskModal();
+  };
+
   render () {
     let projectUrl = '/';
     if (this.props.task.project) projectUrl = `/projects/${this.props.task.project.id}`;
@@ -232,7 +260,15 @@ class TaskPage extends Component {
               }
               {
                 this.props.task.subTasks && !this.props.task.parentTask
-                  ? <RelatedTasks task={this.props.task} type="subTasks" onAction={this.props.openCreateChildTaskModal} />
+                  ? <RelatedTasks
+                    task={this.props.task}
+                    type="subTasks"
+                    onAction={this.props.openCreateChildTaskModal}
+                    onDelete={this.props.task.statusId !== TaskStatuses.CANCELED
+                      ? this.handleOpenCancelSubTaskModal
+                      : null
+                    }
+                  />
                   : null
               }
             </aside>
@@ -278,6 +314,18 @@ class TaskPage extends Component {
             onConfirm={this.leaveConfirm}
           />
           : null
+        }
+
+        {
+          this.state.isCancelSubTaskModalOpen
+            ? <ConfirmModal
+              isOpen
+              contentLabel="modal"
+              text="Вы действительно хотите отменить задачу?"
+              onCancel={this.handleCloseCancelSubTaskModal}
+              onConfirm={this.handleCancelSubTask}
+            />
+            : null
         }
       </div>
     );
