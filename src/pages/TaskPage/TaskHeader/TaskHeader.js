@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import Button from '../../../components/Button';
 import ConfirmModal from '../../../components/ConfirmModal';
 import { Link } from 'react-router';
@@ -15,6 +14,7 @@ import { connect } from 'react-redux';
 import CopyThis from '../../../components/CopyThis';
 import { history } from '../../../History';
 import getTypeById from '../../../utils/TaskTypes';
+import getProrityById from '../../../utils/TaskPriority';
 
 const getNewStatus = newPhase => {
   let newStatusId;
@@ -227,7 +227,9 @@ class TaskHeader extends Component {
           }
           {
             task.prioritiesId
-              ? <Priority taskId={task.id} priority={task.prioritiesId} onChange={this.props.onChange} />
+              ? <div data-tip={`Приоритет: ${getProrityById(task.prioritiesId)}`}>
+                  <Priority taskId={task.id} priority={task.prioritiesId} onChange={this.props.onChange} />
+                </div>
               : null
           }
         </div>
