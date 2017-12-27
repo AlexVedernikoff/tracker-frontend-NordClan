@@ -207,9 +207,7 @@ class Comments extends Component {
             this.props.comments.length
               ? this.getCommentList()
               : <div className={css.noCommentsYet} >
-                Комментариев еще нет!
-                <br/>
-                Вы можете стать первым
+                Комментариев еще нет, Вы можете стать первым!
               </div>
           }
         </ul>
