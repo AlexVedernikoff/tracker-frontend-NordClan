@@ -51,7 +51,10 @@ class PlaylistItem extends Component {
        {
           sheetId: this.props.item.id,
           spentTime: value.replace(',', '.'),
-          isVisible: this.props.item.isVisible
+          isVisible: this.props.item.isVisible,
+          onDate: this.props.item.onDate,
+          typeId: this.props.item.typeId,
+          projectId: this.props.item.projectId
         },
         {
           onDate: this.props.item.onDate
@@ -113,6 +116,9 @@ class PlaylistItem extends Component {
       ? parseFloat(task.factExecutionTime) > parseFloat(task.plannedExecutionTime)
       : false;
 
+    const prefix = project ? project.prefix : '';
+    const taskLabel = task && project ? `${project.prefix}-${task.id}` : null;
+
     return (
       <div className={classnames(css.listTask, css.task)}>
         <div className={classnames({
@@ -125,7 +131,7 @@ class PlaylistItem extends Component {
           <div className={css.taskTitle}>
             <div className={css.meta}>
               { task && task.prefix ? <span>{task.prefix}</span> : null}
-              { project ? <span>{project.name}</span> : null}
+              <span>{project ? project.name : 'Без проекта'}</span>
               { status
                 ? <span>
                   {
@@ -150,7 +156,7 @@ class PlaylistItem extends Component {
               }
             </div>
             <div className={css.taskName}>
-              <span>{task ? `${project.prefix}-${task.id}` : project.prefix}</span>
+              {taskLabel ? <span>{taskLabel}</span> : null}
               {task ? task.name : this.getNameByType(typeId)}
             </div>
           </div>

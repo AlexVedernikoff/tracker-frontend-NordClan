@@ -20,6 +20,7 @@ import {
 
 const InitialState = {
   activeTask: null,
+  availableProjects: [],
   tracks: {}
 };
 
@@ -31,9 +32,13 @@ exports[TIMESHEET_PLAYER_RECEIVE_START] = (state = InitialState, action) => {
 }
 
 exports[TIMESHEET_PLAYER_RECEIVE_SUCCESS] = (state = InitialState, action) => {
+  const availableProjects = action.data.availableProjects;
+  delete action.data.availableProjects;
+
   const updatedTracks = setDefaultSpentTime(action)
   return {
     ...state,
+    availableProjects: availableProjects,
     tracks: updatedTracks
   };
 }
