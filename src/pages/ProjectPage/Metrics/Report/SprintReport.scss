@@ -3,4 +3,10 @@
     align-items: center;
     margin-bottom: 10px;
   }
+  .disabled {
+    pointer-events: none;
+    cursor: default;
+    color: silver;
+    text-decoration: none;
+  }
 }

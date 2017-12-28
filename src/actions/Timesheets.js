@@ -210,13 +210,14 @@ export const filterProjects = (projects) => ({
 });
 
 // Поиск по задачам
-export const getTasksForSelect = (name = '') => {
+export const getTasksForSelect = (name = '', projectId) => {
   return dispatch => {
     return axios
     .get(
       `${API_URL}/task`,
       { params: {
         name,
+        ...{projectId},
         fields: 'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId,prefix'
       } },
       { withCredentials: true }
@@ -236,7 +237,7 @@ export const getTasksForSelect = (name = '') => {
 };
 
 // Поиск по проектам
-export const getProjectsForSelect = (name = '') => {
+export const getProjectsForSelect = (name = '', hideEmptyValue) => {
   return dispatch => {
     return axios
     .get(
@@ -247,18 +248,20 @@ export const getProjectsForSelect = (name = '') => {
     .then(response => response.data.data)
     .then(projects => {
       dispatch(filterProjects(projects));
+      const options = projects.map((project) => ({
+        label: project.name,
+        value: project.id,
+        body: project
+      }));
       return {
-        options: projects.map((project) => ({
-          label: project.name,
-          value: project.id,
-          body: project
-        })).concat(
+        options: hideEmptyValue ? options : options.concat(
           {
             label: 'Без проекта',
             value: 0,
             body: null
           }
-        )};
+        )
+      };
     });
   };
 };

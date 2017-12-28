@@ -47,7 +47,7 @@ class Planning extends Component {
     rightColumnTasks: PropTypes.array,
     sprints: PropTypes.array.isRequired,
     startTaskEditing: PropTypes.func,
-    user: PropTypes.object.isRequired,
+    user: PropTypes.object.isRequired
   };
 
   constructor (props) {
@@ -157,9 +157,9 @@ class Planning extends Component {
     } else {
       const sprint = this.props.project.sprints.filter(item => item.id === sprintId)[0];
       const tasksEstimate = tasks.reduce((sum, task) => {
-        return sum + task.plannedExecutionTime;
+        return sum + +task.plannedExecutionTime;
       }, 0);
-      const sprintEstimate = sprint && sprint.allottedTime ? sprint.allottedTime : 0;
+      const sprintEstimate = sprint && sprint.allottedTime ? +sprint.allottedTime : 0;
       const ratio = sprintEstimate === 0 ? 0 : tasksEstimate / sprintEstimate;
 
       return {
@@ -417,8 +417,8 @@ class Planning extends Component {
                         [css.hover]: sprint.id === this.state.sprintIdHovered
                       })}
                       data-tip={getSprintTime(sprint)} onClick={this.oClickSprint(sprint.id)} onMouseOver={this.onMouseOverSprint(sprint.id)} onMouseOut={this.onMouseOutSprint}/>
-                    <SprintStartControl sprint={sprint}/>
-                    <div className={css.name}>
+                    {isProjectAdmin ? <SprintStartControl sprint={sprint}/> : null}
+                    <div className={classnames(css.name, { [css.nameMargin]: isProjectAdmin })}>
                       {sprint.name}
                     </div>
                     <IconEdit
@@ -445,7 +445,7 @@ class Planning extends Component {
               })}>
                 <span className={css.header}>Факт</span>
                 {this.props.sprints.filter(this.sprintFilter).map((sprint, i) =>
-                  <span key={`sprint-${i}`} className={css.name}>{0}</span>
+                  <span key={`sprint-${i}`} className={css.name}>{sprint.spentTime}</span>
                 )}
               </div>
               <div className={css.table}>

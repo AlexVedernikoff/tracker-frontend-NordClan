@@ -48,10 +48,13 @@ class PlaylistItem extends Component {
     const value = e.target.value;
     if (this.props.item.isDraft) {
       this.debouncedUpdateDraft(
-       {
+        {
           sheetId: this.props.item.id,
           spentTime: value.replace(',', '.'),
-          isVisible: this.props.item.isVisible
+          isVisible: this.props.item.isVisible,
+          onDate: this.props.item.onDate,
+          typeId: this.props.item.typeId,
+          projectId: this.props.item.projectId
         },
         {
           onDate: this.props.item.onDate
@@ -81,7 +84,7 @@ class PlaylistItem extends Component {
       const params = {
         sheetId: item.id,
         isVisible: !!visibility
-      }
+      };
       item.isDraft ? updateDraft(params) : updateTimesheet(params);
     };
   };
@@ -94,6 +97,7 @@ class PlaylistItem extends Component {
     const { task, project } = this.props.item;
     if (task) {
       history.push(`/projects/${project.id}/tasks/${task.id}`);
+      this.props.handleToggleList();
     }
   };
 
@@ -113,6 +117,9 @@ class PlaylistItem extends Component {
       ? parseFloat(task.factExecutionTime) > parseFloat(task.plannedExecutionTime)
       : false;
 
+    const prefix = project ? project.prefix : '';
+    const taskLabel = task && project ? `${project.prefix}-${task.id}` : null;
+
     return (
       <div className={classnames(css.listTask, css.task)}>
         <div className={classnames({
@@ -125,7 +132,7 @@ class PlaylistItem extends Component {
           <div className={css.taskTitle}>
             <div className={css.meta}>
               { task && task.prefix ? <span>{task.prefix}</span> : null}
-              { project ? <span>{project.name}</span> : null}
+              <span>{project ? project.name : 'Без проекта'}</span>
               { status
                 ? <span>
                   {
@@ -150,7 +157,7 @@ class PlaylistItem extends Component {
               }
             </div>
             <div className={css.taskName}>
-              <span>{task ? `${project.prefix}-${task.id}` : project.prefix}</span>
+              {taskLabel ? <span>{taskLabel}</span> : null}
               {task ? task.name : this.getNameByType(typeId)}
             </div>
           </div>
@@ -189,6 +196,7 @@ class PlaylistItem extends Component {
 }
 
 PlaylistItem.propTypes = {
+  handleToggleList: PropTypes.func,
   index: PropTypes.number.isRequired,
   item: PropTypes.object.isRequired,
   magicActivitiesTypes: PropTypes.array,

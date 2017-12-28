@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState, ContentState, convertFromHTML } from 'draft-js';
 import './TextEditor.css';
+import classnames from 'classnames';
 import * as css from './TextEditor.scss';
 
 class TextEditor extends Component {
@@ -23,17 +23,22 @@ class TextEditor extends Component {
   };
 
   render () {
-    const toolbarClassName = this.props.toolbarClassName ? css[this.props.toolbarClassName] : '';
+    const {
+      toolbarHidden,
+      placeholder,
+      ...other
+    } = this.props;
     return (
       <Editor
         editorState={this.state.editorState}
         onEditorStateChange={this.onEditorStateChange}
-        toolbarHidden={this.props.toolbarHidden}
-        placeholder={this.props.placeholder}
+        toolbarHidden={toolbarHidden}
+        placeholder={placeholder}
         toolbar={{
           options: ['inline', 'blockType', 'list', 'history']
         }}
-        toolbarClassName={toolbarClassName}
+        toolbarClassName={classnames({ [css.hidden]: toolbarHidden })}
+        {...other}
       />
     );
   }

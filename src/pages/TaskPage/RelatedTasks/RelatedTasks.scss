@@ -1,7 +1,11 @@
 @import '../../../styles/variables.scss';
 
 .relatedTasks {
-  padding: 16px 16px 0 16px;
+  padding: 16px 0 0 16px;
+
+  @include phone {
+    padding: 16px 0 0 0;
+  }
 }
 
 .taskList {
@@ -49,17 +53,12 @@
   justify-content: center;
   border-bottom: 1px solid $color-gray;
 
-  .tooltip {
-    display: none;
-  }
+  .tooltip { display: inline-block; }
+  svg { display: none; }
 
   &:hover {
-    .tooltip {
-      display: block;
-    }
-    svg {
-      display: none !important;
-    }
+    .tooltip { display: none; }
+    svg { display: inline-block; }
   }
 }
 

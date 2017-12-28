@@ -22,7 +22,6 @@ class Playlist extends Component {
       activeDayTab: moment().day() - 1,
       activeActivityTab: 'all',
       isPlaylistOpen: false,
-      activeContent: {},
       activeTab: {}
     };
   }
@@ -56,7 +55,9 @@ class Playlist extends Component {
   }
 
   handleClickOutside = () => {
-    this.state.isPlaylistOpen === true && this.setState({isPlaylistOpen: false});
+    if (this.state.isPlaylistOpen) {
+      this.setState({ isPlaylistOpen: false });
+    }
   };
 
   handleToggleList = () => {
@@ -115,15 +116,18 @@ class Playlist extends Component {
 
   getScale = (tracks, activeDayTab, activeActivityTab) => {
     const activeTabContent = this.filterTracksByDayTab(tracks, activeDayTab);
-    if (!activeTabContent.scales) return '';
+    if (!activeTabContent.scales) {
+      return '';
+    }
 
     const time = activeTabContent.scales[activeActivityTab];
-    if (!time) return '';
+    if (!time) {
+      return '';
+    }
 
     const timeParts = ('' + time).split('.');
     const wholePart = timeParts[0];
     const fraction = timeParts[1] ? timeParts[1] : null;
-
 
     return <span className={css.countBadge}>
       {wholePart}
@@ -138,7 +142,25 @@ class Playlist extends Component {
   activeTracks = (tracks, activeDayTab, activeActivityTab) => {
     let activeTracks = this.filterTracksByDayTab(tracks, activeDayTab);
     activeTracks = this.filterTracksByActivityTab(activeTracks.tracks, activeActivityTab);
-    return activeTracks;
+
+    const isMagicActivityTab = activeActivityTab !== 'all' && activeActivityTab !== 1;
+    const additionalMagicActivityTracks = isMagicActivityTab
+      ? this.addAdditionalMagicActivities(activeTracks)
+      : []
+
+    const allTracks = activeTracks.concat(additionalMagicActivityTracks);
+    const allSortedTracks = allTracks.sort((track1, track2) => {
+      if (!track1.project) {
+        return -1;
+      }
+      if (!track2.project) {
+        return 1;
+      }
+
+      return track1.project.id - track2.project.id;
+    })
+
+    return allSortedTracks;
   };
 
   filterTracksByDayTab = (tracks, activeDayTab) => {
@@ -156,6 +178,46 @@ class Playlist extends Component {
       return tracks.filter(el => (el.isDraft === false || el.task !== null)); // Фильтрую драфты магической активности
     }
     return [];
+  };
+
+  addAdditionalMagicActivities = (activeTracks) => {
+    const { availableProjects } = this.props;
+
+    const projects = availableProjects
+      .filter(data => activeTracks.every(track => {
+        const isProjectWihoutMagicActivity = !track.project
+          || track.project && track.project.id !== data.project.id;
+
+        return isProjectWihoutMagicActivity;
+      }));
+
+    const hasActivityWithoutProject = activeTracks.find(track => !track.project);
+    const activityWithoutProject = !hasActivityWithoutProject
+      ? this.createMagicActivityDraft(this.state.activeActivityTab)
+      : [];
+
+    const additionalTracks = projects
+      .map(project => this.createMagicActivityDraft(this.state.activeActivityTab, project))
+      .concat(activityWithoutProject)
+
+    return additionalTracks;
+  };
+
+  createMagicActivityDraft = (type, data) => {
+    const onDate = this.getDateByDayTab(this.state.activeDayTab).format('YYYY-MM-DD');
+
+    const magicActivity = {
+      id: data ? `temp-${data.project.id}` : `temp-0`,
+      isCreatedTimesheet: false,
+      isVisible: true,
+      isDraft: true,
+      typeId: type,
+      onDate,
+      projectId: data ? data.project.id : 0,
+      spentTime: 0
+    };
+
+    return data ? { ...magicActivity, project: data.project } : magicActivity;
   };
 
   getCountBadge = (tracks, dayTab) => {
@@ -177,7 +239,6 @@ class Playlist extends Component {
     return '';
   };
 
-
   render () {
     const { isPlaylistOpen } = this.state;
     const { activeTask, changeTask } = this.props;
@@ -193,41 +254,44 @@ class Playlist extends Component {
         <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
           {
             isPlaylistOpen
-            ? <div className={css.list}>
-              <div className={css.week}>
-                <div className={this.dayTabStyle(0)} onClick={this.changeActiveDayTab(0)}>Пн {this.getCountBadge(this.props.tracks, 0)}</div>
-                <div className={this.dayTabStyle(1)} onClick={this.changeActiveDayTab(1)}>Вт {this.getCountBadge(this.props.tracks, 1)}</div>
-                <div className={this.dayTabStyle(2)} onClick={this.changeActiveDayTab(2)}>Ср {this.getCountBadge(this.props.tracks, 2)}</div>
-                <div className={this.dayTabStyle(3)} onClick={this.changeActiveDayTab(3)}>Чт {this.getCountBadge(this.props.tracks, 3)}</div>
-                <div className={this.dayTabStyle(4)} onClick={this.changeActiveDayTab(4)}>Пт {this.getCountBadge(this.props.tracks, 4)}</div>
-                <div className={this.dayTabStyle(5)} onClick={this.changeActiveDayTab(5)}>Сб {this.getCountBadge(this.props.tracks, 5)}</div>
-                <div className={this.dayTabStyle(6)} onClick={this.changeActiveDayTab(6)}>Вс {this.getCountBadge(this.props.tracks, 6)}</div>
-              </div>
-              <div className={css.taskWrapper}>
-                <List tracks={this.activeTracks(this.props.tracks, this.state.activeDayTab, this.state.activeActivityTab)}/>
-              </div>
-              <div className={css.activity}>
-                {
-                  this.activityTabs.map((element, index) => {
-                    return <div
-                      key={index}
-                      className={this.activityTabStyle(element.activityId)}
-                      data-tip={element.description}
-                      onClick={this.changeActiveActivityTab(element.activityId)}
-                      data-place="bottom">
-                      {element.icon}
-                      {this.getScale(this.props.tracks, this.state.activeDayTab, element.activityId)}
-                    </div>;
-                  })
-                }
-                <div className={css.time}>
-                  <div className={css.today}>
-                    <input type="text" value={this.getScaleAll(this.props.tracks, this.state.activeDayTab)} data-tip="Итого" onChange={() => {}}/>
+              ? <div className={css.list}>
+                <div className={css.week}>
+                  <div className={this.dayTabStyle(0)} onClick={this.changeActiveDayTab(0)}>Пн {this.getCountBadge(this.props.tracks, 0)}</div>
+                  <div className={this.dayTabStyle(1)} onClick={this.changeActiveDayTab(1)}>Вт {this.getCountBadge(this.props.tracks, 1)}</div>
+                  <div className={this.dayTabStyle(2)} onClick={this.changeActiveDayTab(2)}>Ср {this.getCountBadge(this.props.tracks, 2)}</div>
+                  <div className={this.dayTabStyle(3)} onClick={this.changeActiveDayTab(3)}>Чт {this.getCountBadge(this.props.tracks, 3)}</div>
+                  <div className={this.dayTabStyle(4)} onClick={this.changeActiveDayTab(4)}>Пт {this.getCountBadge(this.props.tracks, 4)}</div>
+                  <div className={this.dayTabStyle(5)} onClick={this.changeActiveDayTab(5)}>Сб {this.getCountBadge(this.props.tracks, 5)}</div>
+                  <div className={this.dayTabStyle(6)} onClick={this.changeActiveDayTab(6)}>Вс {this.getCountBadge(this.props.tracks, 6)}</div>
+                </div>
+                <div className={css.taskWrapper}>
+                  <List
+                    handleToggleList={this.handleToggleList}
+                    tracks={this.activeTracks(this.props.tracks, this.state.activeDayTab, this.state.activeActivityTab)}
+                  />
+                </div>
+                <div className={css.activity}>
+                  {
+                    this.activityTabs.map((element, index) => {
+                      return <div
+                        key={index}
+                        className={this.activityTabStyle(element.activityId)}
+                        data-tip={element.description}
+                        onClick={this.changeActiveActivityTab(element.activityId)}
+                        data-place="bottom">
+                        {element.icon}
+                        {this.getScale(this.props.tracks, this.state.activeDayTab, element.activityId)}
+                      </div>;
+                    })
+                  }
+                  <div className={css.time}>
+                    <div className={css.today}>
+                      <input type="text" value={this.getScaleAll(this.props.tracks, this.state.activeDayTab)} data-tip="Итого" onChange={() => {}}/>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            : null
+              : null
           }
         </ReactCSSTransitionGroup>
       </div>
@@ -244,6 +308,7 @@ const mapStateToProps = state => {
   return {
     activeTask: state.TimesheetPlayer.activeTask,
     tracks: state.TimesheetPlayer.tracks,
+    availableProjects: state.TimesheetPlayer.availableProjects,
     magicActivitiesTypes: state.Dictionaries.magicActivityTypes
   };
 };
