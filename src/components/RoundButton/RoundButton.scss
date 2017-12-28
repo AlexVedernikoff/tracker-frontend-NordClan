@@ -1,0 +1,26 @@
+@import '../../styles/variables.scss';
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: content-box;
+  color: silver;
+  cursor: pointer;
+  width: 2rem;
+  height: 2rem;
+  top: -1rem;
+  left: -1rem;
+  font-size: 1rem;
+  background-color: white;
+  border: 1px solid lighten($color-black, 70%);
+  border-radius: 50%;
+  transition: $transition;
+
+  &:hover {
+    background-color: $color-lightgray;
+    color: $color-dark;
+    fill: $color-dark;
+    border-color: $color-dark;
+  }
+}

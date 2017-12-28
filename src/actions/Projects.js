@@ -4,6 +4,7 @@ import { history } from '../History';
 import { API_URL } from '../constants/Settings';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
+import { getInfoAboutMe } from './Authentication';
 
 const startProjectsReceive = () => ({
   type: ProjectActions.PROJECTS_RECEIVE_START
@@ -107,6 +108,7 @@ export const requestProjectCreate = (project, openProjectPage) => {
           dispatch(finishLoading());
           dispatch(projectCreateSuccess(response.data));
           dispatch(closeCreateProjectModal());
+          dispatch(getInfoAboutMe());
           dispatch(getProjects());
 
           if (openProjectPage) {
