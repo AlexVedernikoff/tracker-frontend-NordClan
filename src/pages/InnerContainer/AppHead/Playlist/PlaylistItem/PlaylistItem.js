@@ -48,7 +48,7 @@ class PlaylistItem extends Component {
     const value = e.target.value;
     if (this.props.item.isDraft) {
       this.debouncedUpdateDraft(
-       {
+        {
           sheetId: this.props.item.id,
           spentTime: value.replace(',', '.'),
           isVisible: this.props.item.isVisible,
@@ -84,7 +84,7 @@ class PlaylistItem extends Component {
       const params = {
         sheetId: item.id,
         isVisible: !!visibility
-      }
+      };
       item.isDraft ? updateDraft(params) : updateTimesheet(params);
     };
   };
@@ -97,6 +97,7 @@ class PlaylistItem extends Component {
     const { task, project } = this.props.item;
     if (task) {
       history.push(`/projects/${project.id}/tasks/${task.id}`);
+      this.props.handleToggleList();
     }
   };
 
@@ -195,6 +196,7 @@ class PlaylistItem extends Component {
 }
 
 PlaylistItem.propTypes = {
+  handleToggleList: PropTypes.func,
   index: PropTypes.number.isRequired,
   item: PropTypes.object.isRequired,
   magicActivitiesTypes: PropTypes.array,
