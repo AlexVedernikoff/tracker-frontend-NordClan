@@ -8,7 +8,6 @@ import * as css from './RelatedTasks.scss';
 export default class RelatedTasks extends React.Component {
 
   taskStyle = (statusId) => {
-    console.log(statusId);
     return classnames({
       [css.task]: true,
       [css.completed]: statusId === 10 ? true : false
