@@ -57,11 +57,13 @@ class TaskTitle extends Component {
       // TODO: add exceptions for backspace and other needed keys
       event.preventDefault();
     }
+  };
 
-    if (this.props.TitleIsEditing && event.keyCode === 13) {
+  handleKeyDown = event => {
+    if (this.props.TitleIsEditing && event.key === 'Enter') {
       event.preventDefault();
       this.validateAndSubmit(event);
-    } else if (event.keyCode === 27) {
+    } else if (event.key === 'Escape') {
       event.target.innerText = this.props.name;
       this.stopEditing();
       this.setState({
@@ -83,6 +85,7 @@ class TaskTitle extends Component {
             contentEditable={this.props.TitleIsEditing}
             onBlur={this.validateAndSubmit}
             onInput={this.handleInput}
+            onKeyDown={this.handleKeyDown}
           >
             {this.props.name}
           </span>
