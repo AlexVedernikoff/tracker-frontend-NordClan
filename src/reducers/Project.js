@@ -268,9 +268,9 @@ export default function Project (state = InitialState, action) {
   case ProjectActions.PROJECT_ATTACHMENT_REMOVE_SUCCESS: {
     const { attachmentId } = action;
     const { attachments } = state.project.attachments;
-    const newAttachments = attachments.map(attach =>
+    const newAttachments = attachments ? attachments.map(attach =>
       ({ ...attach, deleting: attach.id === attachmentId || attach.deleting })
-    );
+    ): [];
 
     return {
       ...state,
