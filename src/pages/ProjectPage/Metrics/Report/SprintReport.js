@@ -68,6 +68,12 @@ class SprintReport extends Component {
     this.setState({ selectedTo: this.formatDate(date)});
   };
 
+  isRangeValid = () => {
+    return moment(this.state.selectedFrom, 'YYYY-MM-DD', true).isValid()
+      && moment(this.state.selectedTo, 'YYYY-MM-DD', true).isValid()
+      && moment(this.state.selectedTo).isAfter(this.state.selectedFrom);
+  };
+
   render () {
     return (
         <div className={css.SprintReport}>
@@ -112,7 +118,10 @@ class SprintReport extends Component {
                 </Col>
                 <Col xs></Col>
                 <Col xs={2}>
-                    <a href={`${API_URL}/project/${this.props.project.id}/reports/period?startDate=${this.state.selectedFrom}&endDate=${this.state.selectedTo}`}>Выгрузить отчёт</a>
+                    <a className={this.isRangeValid() ? '' : css.disabled}
+                       href={`${API_URL}/project/${this.props.project.id}/reports/period?startDate=${this.state.selectedFrom}&endDate=${this.state.selectedTo}`}>
+                      Выгрузить отчёт
+                    </a>
                 </Col>
             </Row>
         </div>
