@@ -9,7 +9,6 @@ import moment from 'moment';
 import classnames from 'classnames';
 import _ from 'lodash';
 import Button from '../Button';
-import TextArea from '../TextArea';
 import SelectDropdown from '../SelectDropdown';
 import ValidatedInput from '../ValidatedInput';
 import * as css from './CreateTaskModal.scss';
@@ -42,7 +41,7 @@ class CreateTaskModal extends Component {
 
     this.validator = new Validator();
   }
-  
+
   handleModalSprintChange = selectedSprint => {
     this.setState({
       selectedSprint: selectedSprint ? selectedSprint.value : 0
@@ -129,21 +128,23 @@ class CreateTaskModal extends Component {
   };
 
   handleChange = field => event => {
-    this.setState({ [field]: event.target.value.trim() })
-  }
-  
+    this.setState({ [field]: event.target.value.trim() });
+  };
+
   render () {
     const formLayout = {
-      firstCol: 5,
-      secondCol: 7
+      firstCol: 4,
+      secondCol: 8
     };
     return (
       <Modal
-        isOpen={this.props.isCreateTaskModalOpen}
+        isOpen={this.props.isCreateTaskModalOpen || this.props.isCreateChildTaskModalOpen}
         onRequestClose={this.props.closeCreateTaskModal}
         contentLabel="Modal"
       >
         <form className={css.createTaskForm}>
+          <h3>Создать задачу</h3>
+          <hr/>
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
@@ -182,14 +183,14 @@ class CreateTaskModal extends Component {
                 sm={formLayout.secondCol}
                 className={css.rightColumn}
               >
-                <div className = {css.taskDescription}>
-                  <TextEditor
-                    toolbarHidden
-                    placeholder = 'Описание задачи'
-                    ref={ref => (this.TextEditor = ref)}
-                    content={''}
-                  />
-                </div>
+                <TextEditor
+                  toolbarHidden
+                  placeholder="Описание задачи"
+                  wrapperClassName={css.taskDescriptionWrapper}
+                  editorClassName={css.taskDescription}
+                  ref={ref => (this.TextEditor = ref)}
+                  content={''}
+                />
               </Col>
             </Row>
           </label>
@@ -225,7 +226,7 @@ class CreateTaskModal extends Component {
               <Col
                 xs={12}
                 sm={formLayout.secondCol}
-                className={css.rightColumn}
+                className={classnames(css.rightColumn, css.priority)}
               >
                 <Priority
                   priority={this.state.prioritiesId}
@@ -247,7 +248,7 @@ class CreateTaskModal extends Component {
               >
                 <SelectDropdown
                   name="performer"
-                  placeholder="Введите имя исполнителя..."
+                  placeholder="Введите имя исполнителя"
                   multi={false}
                   className={css.selectPerformer}
                   value={this.state.selectedPerformer}
@@ -261,7 +262,7 @@ class CreateTaskModal extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Добавить задачу в спринт:</p>
+                <p>Спринт:</p>
               </Col>
               <Col
                 xs={12}
@@ -311,7 +312,8 @@ CreateTaskModal.propTypes = {
   closeCreateTaskModal: PropTypes.func.isRequired,
   column: PropTypes.string,
   createTask: PropTypes.func.isRequired,
-  isCreateTaskModalOpen: PropTypes.bool.isRequired,
+  isCreateChildTaskModalOpen: PropTypes.bool,
+  isCreateTaskModalOpen: PropTypes.bool,
   isCreateTaskRequestInProgress: PropTypes.bool,
   parentTaskId: PropTypes.number,
   project: PropTypes.object,
@@ -321,6 +323,7 @@ CreateTaskModal.propTypes = {
 
 const mapStateToProps = state => ({
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
+  isCreateChildTaskModalOpen: state.Project.isCreateChildTaskModalOpen,
   taskTypes: state.Dictionaries.taskTypes,
   isCreateTaskRequestInProgress: state.Project.isCreateTaskRequestInProgress
 });

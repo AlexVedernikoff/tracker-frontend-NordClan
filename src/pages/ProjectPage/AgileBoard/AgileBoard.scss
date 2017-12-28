@@ -17,13 +17,17 @@
 
 .filtersRow {
   margin-bottom: 1rem;
-  .filterCheckbox {
+  .filterButtonCol {
     align-items: center;
-    padding: 0.5rem 1.5rem;
+    display: flex;
+    padding: 0 8px;
   }
   @include phone {
     flex-direction: column; // ie fix
     flex-basis: auto; // ie fix
+    > div {
+      margin-bottom: 1rem;
+    }
   }
 }
 

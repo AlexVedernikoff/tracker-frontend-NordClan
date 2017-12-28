@@ -17,5 +17,19 @@
 }
 
 .inputError {
-  border-color: red;
+  border-color: $color-red;
+
+  & + .message {
+    color: $color-red;
+  }
+}
+
+.message {
+  font-size: $font-size-small;
+  display: inline-block;
+  padding: 0 0.25rem;
+  background: white;
+  position: absolute;
+  top: 1.6rem;
+  left: 0.75rem;
 }

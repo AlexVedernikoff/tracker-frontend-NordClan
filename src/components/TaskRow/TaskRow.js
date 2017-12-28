@@ -123,7 +123,7 @@ class TaskRow extends React.Component {
           !shortcut
           ? <Col xs>
             <div className={css.tagbox}>
-              <Tags>{tags}</Tags>
+              <Tags canEdit>{tags}</Tags>
             </div>
           </Col>
           : null

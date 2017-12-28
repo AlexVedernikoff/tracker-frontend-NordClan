@@ -5,8 +5,8 @@ const PRIORITIES = {
   4: 'Low',
   5: 'Lowest',
   default: ''
-}
+};
 
 export default function getPriorityById (priorityId) {
-  return PRIORITIES[priorityId] || PRIORITIES['default'];
+  return PRIORITIES[priorityId] || PRIORITIES.default;
 }

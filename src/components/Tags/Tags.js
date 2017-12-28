@@ -62,7 +62,7 @@ class Tags extends Component {
         {!this.state.cutTags ? this.state.tags : sliceTags}
         <span className={css.wrapperAddTags}>
           {
-            this.props.create && this.props.isProjectAdmin
+            this.props.create && this.props.canEdit
               ? <Tag
                 create
                 data-tip='Добавить тег'
@@ -73,7 +73,7 @@ class Tags extends Component {
           }
 
           {
-            this.props.isProjectAdmin
+            this.props.canEdit
               ? <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
                 {
                   this.state.visible
@@ -113,6 +113,7 @@ class Tags extends Component {
 }
 
 Tags.propTypes = {
+  canEdit: PropTypes.bool,
   children: PropTypes.oneOfType([
     PropTypes.node,
     PropTypes.array
@@ -120,7 +121,6 @@ Tags.propTypes = {
   create: PropTypes.bool,
   createTags: PropTypes.func.isRequired,
   direction: PropTypes.string,
-  isProjectAdmin: PropTypes.bool,
   maxLength: PropTypes.number,
   taggable: PropTypes.string,
   taggableId: PropTypes.number
