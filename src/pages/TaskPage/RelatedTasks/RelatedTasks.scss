@@ -1,7 +1,11 @@
 @import '../../../styles/variables.scss';
 
 .relatedTasks {
-  padding: 16px 16px 0 16px;
+  padding: 16px 0 0 16px;
+
+  @include phone {
+    padding: 16px 0 0 0;
+  }
 }
 
 .taskList {

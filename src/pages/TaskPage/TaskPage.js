@@ -10,6 +10,7 @@ import TaskHeader from './TaskHeader';
 import Details from './Details';
 import RelatedTasks from './RelatedTasks';
 import Attachments from '../../components/Attachments';
+import { IconPlus } from '../../components/Icons';
 import Description from '../../components/Description';
 import RouteTabs from '../../components/RouteTabs';
 import TaskModal from '../../components/TaskModal';
@@ -252,6 +253,10 @@ class TaskPage extends Component {
           <Col xs={12} sm={4}>
             <aside>
               <Details task={this.props.task} sprints={this.props.sprints} onChange={this.props.changeTask} />
+              <button className={css.addTask}>
+                <span>Создать новую задачу</span>
+                <IconPlus style={{width: 16, height: 16}}/>
+              </button>
               {
                 this.props.task.linkedTasks
                   ? <RelatedTasks task={this.props.task} type="linkedTasks" onAction={this.handleOpenLinkTaskModal}
