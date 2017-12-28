@@ -14,6 +14,7 @@ import * as css from '../Playlist.scss';
 class List extends Component {
 
   static propTypes = {
+    handleToggleList: PropTypes.func,
     tracks: PropTypes.array
   };
 
@@ -29,7 +30,14 @@ class List extends Component {
   };
 
   playlistItem = (item, i) => {
-    return <PlaylistItem item={item} index={i} key={`${item.id}${item.isDraft ? '-draft' : ''}`} visible changeVisibility={this.changeVisibility}/>
+    return <PlaylistItem
+      item={item}
+      index={i}
+      key={`${item.id}${item.isDraft ? '-draft' : ''}`}
+      visible
+      changeVisibility={this.changeVisibility}
+      handleToggleList={this.props.handleToggleList}
+    />;
   };
 
   render () {
@@ -49,7 +57,7 @@ class List extends Component {
         {visible}
         {
           invisible && invisible.length > 0
-          ? <div
+            ? <div
               className={css.showMore}
               onClick={this.handleShowOther}
               data-tip={!isDraftShow ? 'Показать скрытые' : 'Скрыть'}
@@ -64,8 +72,8 @@ class List extends Component {
         }
         {
           isDraftShow
-          ? invisible
-          : null
+            ? invisible
+            : null
         }
       </div>
     );

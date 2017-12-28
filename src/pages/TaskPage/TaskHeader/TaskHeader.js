@@ -7,9 +7,8 @@ import PerformerModal from '../../../components/PerformerModal';
 import Priority from '../../../components/Priority';
 import ButtonGroup from '../../../components/ButtonGroup';
 import TaskTitle from '../TaskTitle';
-import { getProjectUsers, openCreateTaskModal } from '../../../actions/Project';
+import { getProjectUsers } from '../../../actions/Project';
 import * as TaskStatuses from '../../../constants/TaskStatuses';
-import { VISOR } from '../../../constants/Roles';
 import { connect } from 'react-redux';
 import CopyThis from '../../../components/CopyThis';
 import { history } from '../../../History';
@@ -162,29 +161,15 @@ class TaskHeader extends Component {
   };
 
   render () {
-    const { task, taskTypes, globalRole } = this.props;
+    const { task, taskTypes } = this.props;
     const css = require('./TaskHeader.scss');
     const users = this.props.users.map(item => ({
       value: item.user ? item.user.id : item.id,
       label: item.user ? item.user.fullNameRu : item.fullNameRu
     }));
 
-    const isVisor = globalRole === VISOR;
-
     return (
       <div>
-        {
-          !isVisor
-            ? <Button
-              onClick={this.props.openCreateTaskModal}
-              type="primary"
-              text="Создать задачу"
-              icon="IconPlus"
-              name="right"
-              addedClassNames={{[css.btnAddTask]: true}}
-            />
-            : null
-        }
         {
           task.parentTask
             ? <div className={css.parentTaskWrp}>
@@ -361,10 +346,8 @@ class TaskHeader extends Component {
 TaskHeader.propTypes = {
   css: PropTypes.object,
   getProjectUsers: PropTypes.func.isRequired,
-  globalRole: PropTypes.string.isRequired,
   location: PropTypes.object,
   onChange: PropTypes.func.isRequired,
-  openCreateTaskModal: PropTypes.func.isRequired,
   projectId: PropTypes.string.isRequired,
   task: PropTypes.object.isRequired,
   taskTypes: PropTypes.array,
@@ -374,13 +357,11 @@ TaskHeader.propTypes = {
 const mapStateToProps = state => ({
   users: state.Project.project.users,
   location: state.routing.locationBeforeTransitions,
-  taskTypes: state.Dictionaries.taskTypes,
-  globalRole: state.Auth.user.globalRole
+  taskTypes: state.Dictionaries.taskTypes
 });
 
 const mapDispatchToProps = {
-  getProjectUsers,
-  openCreateTaskModal
+  getProjectUsers
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskHeader);
