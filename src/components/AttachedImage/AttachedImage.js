@@ -100,7 +100,7 @@ export default class AttachedImage extends React.Component {
               contentLabel="modal"
               onRequestClose={this.handleCloseModal}
             >
-              <img src={path} alt="" style={imageStyles} />
+              <img src={`/${path}`} alt="" style={imageStyles} />
             </Modal>
           : null}
 
