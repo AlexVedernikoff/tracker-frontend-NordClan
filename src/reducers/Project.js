@@ -5,6 +5,20 @@ import * as TasksActions from '../constants/Tasks';
 
 const InitialState = {
   project: {
+    milestones: [
+      {
+        id: 1,
+        name: 'Milestones 1',
+        date: '2017-07-01',
+        done: true
+      },
+      {
+        id: 2,
+        name: 'Milestones 2',
+        date: '2017-09-12',
+        done: false
+      }
+    ],
     sprints: [],
     users: [],
     history: {
