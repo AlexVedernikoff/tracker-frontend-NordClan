@@ -206,9 +206,8 @@ class Timesheets extends React.Component {
       return arr.map(tsh => {
         if (moment(tsh.onDate).format('DD.MM.YY') === moment(startingDay).weekday(day).format('DD.MM.YY')) {
           return +tsh.spentTime;
-        } else {
-          return 0;
         }
+        return 0;
       });
     };
 
