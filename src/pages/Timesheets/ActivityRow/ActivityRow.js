@@ -35,16 +35,13 @@ class ActivityRow extends React.Component {
     this.updateTimesheet = _.debounce(this.updateTimesheet, debounceTime);
     this.deleteTimesheets = _.debounce(this.deleteTimesheets, debounceTime);
     this.state = {
-      isOpen: false
+      isOpen: false,
+      timeCells : {}
     };
-    this.timeCells = {};
   }
 
   createTimesheet = (i, value) => {
     const { item, userId, startingDay } = this.props;
-    if (value < 0) {
-      value = 0;
-    }
     this.props.createTimesheet({
       isDraft: false,
       taskId: item.id || null,
@@ -56,14 +53,12 @@ class ActivityRow extends React.Component {
     }, userId, startingDay);
   };
 
-  updateTimesheet = (i, sheetId, value, comment) => {
+  updateTimesheet = (i, sheetId, comment, value) => {
+    console.log('updateTimesheet', value);
     const { userId, startingDay } = this.props;
     if (!value && !comment) {
       this.props.deleteTimesheets([sheetId], userId, startingDay);
       return;
-    }
-    if (value < 0) {
-      value = 0;
     }
     this.props.updateTimesheet({
       sheetId,
@@ -77,16 +72,19 @@ class ActivityRow extends React.Component {
   };
 
   changeEmpty = (i, e) => {
-    const { value } = e.target;
+    console.log('changeEmpty',e);
 
-    if (value) {
-      if (value < 0){
-        this.timeCells[i].value = 0;
-      }
-      this.createTimesheet(i, value);
-    } else {
-      this.createTimesheet(i, '0');
+    const event = e.persist() || e;
+    let value = event.target.value;
+    /*if (value < 0) {
+      value = Math.abs(value);
     }
+    this.state.timeCells[i] = value;
+    this.setState({
+      timeCells : this.state.timeCells
+    });*/
+
+    this.createTimesheet(i,value);
   };
 
   changeEmptyComment = (text, i) => {
@@ -104,11 +102,21 @@ class ActivityRow extends React.Component {
   };
 
   changeFilled = (i, id, comment, e) => {
-    const { value } = e.target;
-    if (value < 0){
-      this.timeCells[i].value = 0;
+    console.log('changeFilled',e);
+
+    const event = e.persist() || e;
+    let value = event.target.value;
+    if (value < 0) {
+      value = Math.abs(value);
     }
-    this.updateTimesheet(i, id, value, comment);
+    console.log(value);
+    this.setState({
+      timeCells: {
+        [i] : value
+      }
+    });
+
+    this.updateTimesheet(i, id, comment, value);
   };
 
   changeFilledComment = (text, time, i, sheetId) => {
@@ -159,6 +167,8 @@ class ActivityRow extends React.Component {
       const isCellDisabled = tsh.statusId === 3 || tsh.statusId === 4;
 
       if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
+        this.state.timeCells[i] = roundNum(tsh.spentTime, 2);
+
         return (
           <td key={moment(tsh.onDate).format('X')} className={cn({
             [css.today]: moment().format('YYYY-MM-DD') === moment(tsh.onDate).format('YYYY-MM-DD'),
@@ -176,9 +186,8 @@ class ActivityRow extends React.Component {
                   type="number"
                   disabled={isCellDisabled}
                   max="24"
-                  defaultValue={roundNum(tsh.spentTime, 2)}
+                  value={this.state.timeCells[i]}
                   onChange={(e) => this.changeFilled(i, tsh.id, tsh.comment, e)}
-                  ref={(input) => this.timeCells[i] = input} 
                 />
                 <span className={css.toggleComment}>
                   <SingleComment
@@ -192,6 +201,8 @@ class ActivityRow extends React.Component {
           </td>
         );
       } else {
+        this.state.timeCells[i] = 0;
+
         return (
           <td key={i} className={cn({
             [css.today]: moment().format('YYYY-MM-DD') === moment(tsh.onDate).format('YYYY-MM-DD'),
@@ -203,9 +214,8 @@ class ActivityRow extends React.Component {
                   type="number"
                   disabled={!canDeleteRow}
                   max="24"
-                  defaultValue="0"
-                  onChange={(e) => this.changeEmpty(i, e)}
-                  ref={(input) => this.timeCells[i] = input} 
+                  value={this.state.timeCells[i]}
+                  onChange={(e) => this.changeEmpty(i,e)}
                 />
                 <span className={css.toggleComment}>
                   <SingleComment onChange={(text) => this.changeEmptyComment(text, i)}/>
@@ -280,5 +290,6 @@ const mapDispatchToProps = {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ActivityRow);
+
 
 
