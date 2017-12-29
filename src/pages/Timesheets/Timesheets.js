@@ -209,13 +209,13 @@ class Timesheets extends React.Component {
           [css.today]: moment().format('DD.MM.YY') === moment(startingDay).weekday(day).format('DD.MM.YY')
         })}>
           <div>
-            {_.sumBy(list, tsh => {
+            {roundNum(_.sumBy(list, tsh => {
               if (moment(tsh.onDate).format('DD.MM.YY') === moment(startingDay).weekday(day).format('DD.MM.YY')) {
                 return +tsh.spentTime;
               } else {
                 return 0;
               }
-            })}
+            }), 2)}
           </div>
         </td>
       );
