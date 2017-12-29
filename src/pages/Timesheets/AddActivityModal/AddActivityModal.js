@@ -66,7 +66,9 @@ class AddActivityModal extends Component {
         this.loadProjects();
         if (option.value === activityTypes.IMPLEMENTATION) {
           this.props.changeProject(null);
-          if (this.state.isOnlyMine) this.loadTasks();
+          if (this.state.isOnlyMine) {
+            this.loadTasks();
+          }
         } else {
           this.props.changeTask(null);
         }
