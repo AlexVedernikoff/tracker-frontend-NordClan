@@ -45,7 +45,6 @@ class ActivityRow extends React.Component {
     if (value < 0) {
       value = 0;
     }
-    console.log('create with value ', value);
     this.props.createTimesheet({
       isDraft: false,
       taskId: item.id || null,
@@ -281,4 +280,5 @@ const mapDispatchToProps = {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ActivityRow);
+
 
