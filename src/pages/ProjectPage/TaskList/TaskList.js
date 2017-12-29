@@ -428,7 +428,6 @@ class TaskList extends Component {
               )
           }
 
-          <hr/>
           {
             this.props.pagesCount > 1
               ? <Pagination
