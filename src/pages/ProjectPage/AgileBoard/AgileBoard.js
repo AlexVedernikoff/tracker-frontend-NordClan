@@ -569,7 +569,7 @@ AgileBoard.propTypes = {
   UserIsEditing: PropTypes.bool,
   changeTask: PropTypes.func.isRequired,
   getTasks: PropTypes.func.isRequired,
-  globalRole: PropTypes.string.isRequired,
+  globalRole: PropTypes.string,
   isCreateTaskModalOpen: PropTypes.bool,
   lastCreatedTask: PropTypes.object,
   myTaskBoard: PropTypes.bool,
