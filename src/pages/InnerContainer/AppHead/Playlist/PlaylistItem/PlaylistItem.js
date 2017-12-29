@@ -42,7 +42,7 @@ class PlaylistItem extends Component {
         comment
       })
 
-      this.setState({isCommentOpen: !this.state.isCommentOpen});
+      this.setState((prevState) => ({ isCommentOpen: !prevState.isCommentOpen }));
     };
   };
 
