@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import cn from 'classnames';
 import moment from 'moment';
 import _ from 'lodash';
-import roundNum from '../../utils/roundNum';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as timesheetsActions from '../../actions/Timesheets';
 import * as css from './Timesheets.scss';
@@ -12,6 +11,7 @@ import { IconPlus, IconArrowLeft, IconArrowRight, IconCalendar } from '../../com
 import AddActivityModal from './AddActivityModal';
 import Calendar from './Calendar';
 import ActivityRow from './ActivityRow';
+import exactMath from 'exact-math';
 
 class Timesheets extends React.Component {
   static propTypes = {
@@ -201,6 +201,17 @@ class Timesheets extends React.Component {
     // Создание строки с суммой времени по дням
 
     const totalRow = [];
+
+    const dayTaskHours = (arr, day) => {
+      return arr.map(tsh => {
+        if (moment(tsh.onDate).format('DD.MM.YY') === moment(startingDay).weekday(day).format('DD.MM.YY')) {
+          return +tsh.spentTime;
+        } else {
+          return 0;
+        }
+      });
+    };
+
     for (let day = 0; day < 7; day++) {
       totalRow.push(
         <td key={day} className={cn({
@@ -209,13 +220,7 @@ class Timesheets extends React.Component {
           [css.today]: moment().format('DD.MM.YY') === moment(startingDay).weekday(day).format('DD.MM.YY')
         })}>
           <div>
-            {roundNum(_.sumBy(list, tsh => {
-              if (moment(tsh.onDate).format('DD.MM.YY') === moment(startingDay).weekday(day).format('DD.MM.YY')) {
-                return +tsh.spentTime;
-              } else {
-                return 0;
-              }
-            }), 2)}
+            {list.length > 0 ? exactMath.add(...dayTaskHours(list, day)) : 0}
           </div>
         </td>
       );
@@ -263,7 +268,7 @@ class Timesheets extends React.Component {
                 {totalRow}
                 <td className={cn(css.total, css.totalWeek, css.totalRow)}>
                   <div>
-                    {roundNum(_.sumBy(list, tsh => +tsh.spentTime), 2)}
+                    {list.length > 0 ? exactMath.add(...list.map(tsh => +tsh.spentTime)) : 0}
                   </div>
                 </td>
                 <td className={css.total}/>
