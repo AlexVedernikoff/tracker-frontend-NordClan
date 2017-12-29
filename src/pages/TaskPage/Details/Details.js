@@ -16,6 +16,8 @@ import * as css from './Details.scss';
 import moment from 'moment';
 import { getTaskSpent } from '../../../actions/Task';
 import _ from 'lodash';
+import roundNum from '../../../utils/roundNum';
+import classnames from 'classnames';
 
 const spentRequestStatus = {
   READY: 0,
@@ -254,15 +256,16 @@ class Details extends Component {
               ? <tr>
                   <td>Потрачено:</td>
                   <td>
-                    <TaskPlanningTime
-                      time={task.factExecutionTime}
-                      id={task.id}
-                      isExecutionTime
-                      tooltip={Number(task.factExecutionTime) ? executeTimeTooltip : null}
-                      timeIsEditing={this.props.ExecutionTimeIsEditing}
-                      key={this.state.tooltipKey}
-                      dataFor={this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? 'time' : 'notime'}
-                    />
+                    <span
+                      data-tip
+                      data-place="right"
+                      data-for="time"
+                      className={classnames({
+                        [css.alert]: true
+                      })}
+                    >
+                       {`${roundNum(task.factExecutionTime, 2)} ч.`}
+                    </span>
                   </td>
                 </tr>
               : null }
