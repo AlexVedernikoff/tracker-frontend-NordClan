@@ -246,7 +246,7 @@ class Details extends Component {
               <td>Запланировано:</td>
               <td>
                 <TaskPlanningTime
-                  time={task.plannedExecutionTime ? task.plannedExecutionTime : '0'}
+                  time={task.plannedExecutionTime ? task.plannedExecutionTime.toString() : '0'}
                   id={task.id}
                   timeIsEditing={this.props.PlanningTimeIsEditing}
                 />
@@ -257,15 +257,17 @@ class Details extends Component {
                   <td>Потрачено:</td>
                   <td>
                     <span
-                      data-tip
+                      data-tip={!!Number(task.factExecutionTime)}
                       data-place="right"
-                      data-for="time"
+                      data-for={this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? 'time' : 'notime'}
+                      key={this.state.tooltipKey}
                       className={classnames({
                         [css.alert]: true
                       })}
                     >
                        {`${roundNum(task.factExecutionTime, 2)} ч.`}
                     </span>
+                    {Number(task.factExecutionTime) ? executeTimeTooltip : null}
                   </td>
                 </tr>
               : null }
