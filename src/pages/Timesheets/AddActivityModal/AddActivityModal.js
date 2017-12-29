@@ -4,13 +4,11 @@ import moment from 'moment';
 import shortid from 'shortid';
 import { connect } from 'react-redux';
 import { Col, Row } from 'react-flexbox-grid';
-import Select from 'react-select';
 import Modal from '../../../components/Modal';
 import Button from '../../../components/Button';
 import SelectDropdown from '../../../components/SelectDropdown';
 import * as css from '../Timesheets.scss';
 import Checkbox from '../../../components/Checkbox/Checkbox';
-import debounceAsync from '../../../utils/DebouncePromise';
 
 import {
   changeTask,
@@ -50,7 +48,9 @@ class AddActivityModal extends Component {
       taskId: 0,
       projectId: 0,
       taskStatusId: 0,
-      isOnlyMine: true
+      isOnlyMine: true,
+      tasks: [],
+      projects: []
     };
   }
 
@@ -63,8 +63,10 @@ class AddActivityModal extends Component {
       this.setState({ [name]: option.value });
       if (name === 'activityType') {
         this.props.changeActivityType(option.value);
+        this.loadProjects();
         if (option.value === activityTypes.IMPLEMENTATION) {
           this.props.changeProject(null);
+          if (this.state.isOnlyMine) this.loadTasks();
         } else {
           this.props.changeTask(null);
         }
@@ -113,27 +115,34 @@ class AddActivityModal extends Component {
       const isOnlyMine = !oldState.isOnlyMine;
       this.props.changeProject(null);
       this.props.changeTask(null);
+      if (isOnlyMine) {
+        this.loadTasks();
+      }
       return { isOnlyMine };
     });
   };
 
-  asyncSelectTaskWrapper = (name) => {
-    const projectId = this.state.isOnlyMine ? undefined : this.props.selectedProject.value;
-    return this.props.getTasksForSelect(name, projectId);
-  };
+  handleChangeProject = (option) => {
+    this.props.changeProject(option);
+    this.loadTasks('', option ? option.value : null);
+  }
 
-  asyncSelectProjectWrapper = (name) => {
+  loadTasks = (name = '', projectId = null) => {
+    this.props.getTasksForSelect(name, projectId)
+      .then(options => this.setState({tasks: options.options}));
+  }
+
+  loadProjects = (name = '') => {
     const hideEmptyValue = this.state.activityType === 1;
-    return this.props.getProjectsForSelect(name, hideEmptyValue);
-  };
+    this.props.getProjectsForSelect(name, hideEmptyValue)
+      .then(options => this.setState({projects: options.options}));
+  }
 
   render () {
     const formLayout = {
       left: 5,
       right: 7
     };
-
-    const SelectAsync = Select.AsyncCreatable;
 
     return (
       <Modal
@@ -190,17 +199,12 @@ class AddActivityModal extends Component {
                       Проект:
                     </Col>
                     <Col xs={12} sm={formLayout.right}>
-                      <SelectAsync
-                        key="projectAsyncSelect"
-                        promptTextCreator={label => `Поиск проекта ${label}`}
-                        searchPromptText={'Введите название Проекта'}
+                      <SelectDropdown
                         multi={false}
-                        ignoreCase={false}
-                        placeholder="Выберите проект"
-                        loadOptions={this.asyncSelectProjectWrapper}
-                        filterOption={el => el}
-                        onChange={option => this.props.changeProject(option)}
                         value={this.props.selectedProject}
+                        placeholder="Выберите проект"
+                        onChange={this.handleChangeProject}
+                        options={this.state.projects}
                       />
                     </Col>
                   </Row>
@@ -212,17 +216,12 @@ class AddActivityModal extends Component {
                       Задача:
                     </Col>
                     <Col xs={12} sm={formLayout.right}>
-                      <SelectAsync
-                        key={this.state.isOnlyMine ? 'taskAsyncSelect' : 'taskAsyncSelectAll'}
-                        promptTextCreator={label => `Поиск задачи ${label}`}
-                        searchPromptText={'Введите название Задачи'}
+                      <SelectDropdown
                         multi={false}
-                        ignoreCase={false}
-                        placeholder="Выберите задачу"
-                        loadOptions={debounceAsync(this.asyncSelectTaskWrapper, 400)}
-                        filterOption={el => el}
-                        onChange={option => this.props.changeTask(option)}
                         value={this.props.selectedTask}
+                        placeholder="Выберите задачу"
+                        onChange={option => this.props.changeTask(option)}
+                        options={this.state.tasks}
                       />
                     </Col>
                   </Row>
@@ -236,18 +235,13 @@ class AddActivityModal extends Component {
                     Проект:
                   </Col>
                   <Col xs={12} sm={formLayout.right}>
-                    <SelectAsync
-                      key="projectAsyncSelect"
-                      promptTextCreator={label => `Поиск проекта ${label}`}
-                      searchPromptText={'Введите название Проекта'}
-                      multi={false}
-                      ignoreCase={false}
-                      placeholder="Выберите проект"
-                      loadOptions={this.asyncSelectProjectWrapper}
-                      filterOption={el => el}
-                      onChange={option => this.props.changeProject(option)}
-                      value={this.props.selectedProject}
-                    />
+                    <SelectDropdown
+                        multi={false}
+                        value={this.props.selectedProject}
+                        placeholder="Выберите проект"
+                        onChange={this.handleChangeProject}
+                        options={this.state.projects}
+                      />
                   </Col>
                 </Row>
               </label>
@@ -307,6 +301,7 @@ const mapStateToProps = state => ({
   selectedTaskStatusId: state.Timesheets.selectedTaskStatusId,
   selectedProject: state.Timesheets.selectedProject,
   startingDay: state.Timesheets.startingDay,
+  filteredTasks: state.Timesheets.filteredTasks,
   userId: state.Auth.user.id
 });
 
