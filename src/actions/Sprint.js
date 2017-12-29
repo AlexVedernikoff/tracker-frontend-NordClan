@@ -81,7 +81,14 @@ export const deleteSprint = (id) => {
           }
         },
         error => {
-          dispatch(showNotification({ message: error.message, type: 'error' }));
+          if (error.response.data.type === 'sprintHasActiveTasks') {
+            dispatch(showNotification({
+              message: 'В спринте есть активные задачи. Удаление невозможно',
+              type: 'error' }
+            ));
+          } else {
+            dispatch(showNotification({ message: error.message, type: 'error' }));
+          }
           dispatch(finishLoading());
         }
       );
