@@ -27,6 +27,7 @@ class Details extends Component {
   static propTypes = {
     ExecutionTimeIsEditing: PropTypes.bool,
     PlanningTimeIsEditing: PropTypes.bool,
+    canEdit: PropTypes.bool,
     getProjectSprints: PropTypes.func.isRequired,
     getProjectUsers: PropTypes.func.isRequired,
     getTask: PropTypes.func.isRequired,
@@ -247,6 +248,7 @@ class Details extends Component {
                   time={task.plannedExecutionTime ? task.plannedExecutionTime : '0'}
                   id={task.id}
                   timeIsEditing={this.props.PlanningTimeIsEditing}
+                  canEdit={this.props.canEdit}
                 />
               </td>
             </tr>

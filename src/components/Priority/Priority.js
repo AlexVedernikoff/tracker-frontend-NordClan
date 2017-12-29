@@ -30,6 +30,11 @@ class Priority extends Component {
     this.props.onPrioritySet(event.target.innerText);
   };
 
+  defaultHandleClick = event => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
   render () {
     return (
       <div className={classnames(css.priority, {[css.vertical]: this.props.vertical})}>
@@ -40,7 +45,9 @@ class Priority extends Component {
               <span
                 key={`priority-${i}`}
                 onClick={
-                  this.props.onChange ? this.changePriority : this.setPriority
+                  this.props.onChange
+                    ? this.props.canEdit ? this.changePriority : this.defaultHandleClick
+                    : this.setPriority
                 }
                 className={classnames({
                   [css.active]: priorityId === this.props.priority
@@ -57,6 +64,7 @@ class Priority extends Component {
 }
 
 Priority.propTypes = {
+  canEdit: PropTypes.bool,
   onChange: PropTypes.func,
   onChangeCallback: PropTypes.func,
   onPrioritySet: PropTypes.func,

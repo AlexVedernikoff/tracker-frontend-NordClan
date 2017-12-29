@@ -89,17 +89,18 @@ class TaskTitle extends Component {
           >
             {this.props.name}
           </span>
-          {this.props.TitleIsEditing ? (
-            <IconCheck
-              onClick={this.editIconClickHandler}
-              className={css.save}
-            />
-          ) : (
-            <IconEdit
-              onClick={this.editIconClickHandler}
-              className={css.edit}
-            />
-          )}
+          { this.props.canEdit
+            ? this.props.TitleIsEditing
+              ? <IconCheck
+                onClick={this.editIconClickHandler}
+                className={css.save}
+              />
+              : <IconEdit
+                onClick={this.editIconClickHandler}
+                className={css.edit}
+              />
+            : null
+          }
         </h1>
       </div>
     );
@@ -114,6 +115,10 @@ const mapDispatchToProps = {
   startTaskEditing,
   stopTaskEditing,
   changeTask
+};
+
+TaskTitle.propTypes = {
+  canEdit: PropTypes.bool
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskTitle);
