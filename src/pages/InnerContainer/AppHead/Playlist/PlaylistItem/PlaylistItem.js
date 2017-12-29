@@ -41,6 +41,8 @@ class PlaylistItem extends Component {
         sheetId: this.props.item.id,
         comment
       })
+
+      this.setState((prevState) => ({ isCommentOpen: !prevState.isCommentOpen }));
     };
   };
 

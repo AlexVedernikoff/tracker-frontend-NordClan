@@ -77,7 +77,7 @@ class Details extends Component {
     this.props.onChange({
       id: this.props.task.id,
       sprintId: sprintId
-    }, sprintId, () => this.props.getTask(this.props.task.id));
+    }, sprintId);
     this.closeSprintModal();
   };
 
@@ -95,7 +95,7 @@ class Details extends Component {
     this.props.onChange({
       id: this.props.task.id,
       performerId: performerId
-    }, this.props.task.id, () => this.props.getTask(this.props.task.id));
+    }, this.props.task.id);
     this.closePerformerModal();
   };
 
