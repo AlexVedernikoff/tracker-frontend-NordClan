@@ -10,7 +10,7 @@ export default class RelatedTasks extends React.Component {
   taskStyle = (statusId) => {
     return classnames({
       [css.task]: true,
-      [css.completed]: statusId === 10 ? true : false
+      [css.completed]: statusId === 10
     });
   };
 
