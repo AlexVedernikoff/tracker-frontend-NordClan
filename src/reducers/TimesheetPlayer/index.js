@@ -1,4 +1,5 @@
 import moment from 'moment';
+import exactMath from 'exact-math';
 import reducerFabric from './fabric';
 import {
   TIMESHEET_PLAYER_RECEIVE_START,
@@ -144,10 +145,10 @@ function updateTracks(state, action, updatedTracks) {
 
   const updatedActivityTime = updatedDay[action.timesheet.onDate].tracks
     .filter(track => track.typeId === action.timesheet.typeId)
-    .reduce((acc, time) => acc + parseFloat(time.spentTime), 0).toString();
+    .reduce((acc, time) => exactMath.add(acc.spentTime ? acc.spentTime : acc, time.spentTime));
 
   const all = updatedDay[action.timesheet.onDate].tracks
-    .reduce((acc, time) => acc + parseFloat(time.spentTime), 0).toString();
+    .reduce((acc, time) => exactMath.add(acc.spentTime ? acc.spentTime : acc, time.spentTime));
 
   updatedDay[action.timesheet.onDate].scales[action.timesheet.typeId] = updatedActivityTime;
   updatedDay[action.timesheet.onDate].scales.all = all;
