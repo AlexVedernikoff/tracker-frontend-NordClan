@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { scroller, Element } from 'react-scroll';
 import * as css from './PerformerModal.scss';
 import Modal from '../Modal';
 
@@ -22,7 +23,15 @@ class PerformerModal extends Component {
   }
 
   componentDidMount () {
+    const { users, selectedIndex } = this.state;
     addEventListener('keydown', this.moveList);
+    setTimeout(
+      () => {
+        scroller.scrollTo(users[selectedIndex].value.toString(),
+        { containerId: 'performerList' });
+      },
+      100
+    );
   }
 
   componentWillUnmount () {
@@ -54,7 +63,9 @@ class PerformerModal extends Component {
     if (down || up || enter) e.preventDefault();
     const indexIsMax = this.state.selectedIndex === this.state.users.length - 1;
     const indexIsMin = this.state.selectedIndex === 0;
-    const onChanged = () => this.list.children[this.state.selectedIndex].focus();
+    const onChanged = () => {
+      this.list.children[this.state.selectedIndex].focus();
+    };
 
     if (down && !indexIsMax) {
       this.setState(
@@ -106,18 +117,19 @@ class PerformerModal extends Component {
             value={searchText}
             onChange={this.onSearchTextChange}
           />
-          <div className={css.selectorContainer} ref={ref => {this.list = ref;}}>
+          <div className={css.selectorContainer} ref={ref => {this.list = ref;}} id="performerList">
             {
               users.map((user, i) => (
-                <div
+                <Element
+                  name={user.value.toString()}
                   key={user.value}
                   className={classnames({[css.user]: true, [css.selected]: selectedIndex === i})}
-                  tabIndex={selectedIndex === i ? 0 : -1}
                   autoFocus={selectedIndex === i}
                   onClick={() => this.handleChoose(user.value)}
+                  tabIndex={i}
                 >
                   {user.label}
-                </div>
+                </Element>
               ))
             }
           </div>
