@@ -21,6 +21,14 @@ class Priority extends Component {
         },
         'Priority'
       );
+    } else {
+      const { onChange } = this.props;
+      onChange(
+        {
+          id: this.props.taskId
+        },
+        'Priority'
+      );
     }
 
     this.props.onChangeCallback();
