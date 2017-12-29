@@ -37,10 +37,15 @@ class ActivityRow extends React.Component {
     this.state = {
       isOpen: false
     };
+    this.timeCells = {};
   }
 
   createTimesheet = (i, value) => {
     const { item, userId, startingDay } = this.props;
+    if (value < 0) {
+      value = 0;
+    }
+    console.log('create with value ', value);
     this.props.createTimesheet({
       isDraft: false,
       taskId: item.id || null,
@@ -58,9 +63,12 @@ class ActivityRow extends React.Component {
       this.props.deleteTimesheets([sheetId], userId, startingDay);
       return;
     }
+    if (value < 0) {
+      value = 0;
+    }
     this.props.updateTimesheet({
       sheetId,
-      spentTime: value
+      spentTime: value,
     }, userId, startingDay);
   };
 
@@ -71,7 +79,11 @@ class ActivityRow extends React.Component {
 
   changeEmpty = (i, e) => {
     const { value } = e.target;
+
     if (value) {
+      if (value < 0){
+        this.timeCells[i].value = 0;
+      }
       this.createTimesheet(i, value);
     } else {
       this.createTimesheet(i, '0');
@@ -94,6 +106,9 @@ class ActivityRow extends React.Component {
 
   changeFilled = (i, id, comment, e) => {
     const { value } = e.target;
+    if (value < 0){
+      this.timeCells[i].value = 0;
+    }
     this.updateTimesheet(i, id, value, comment);
   };
 
@@ -164,6 +179,7 @@ class ActivityRow extends React.Component {
                   max="24"
                   defaultValue={roundNum(tsh.spentTime, 2)}
                   onChange={(e) => this.changeFilled(i, tsh.id, tsh.comment, e)}
+                  ref={(input) => this.timeCells[i] = input} 
                 />
                 <span className={css.toggleComment}>
                   <SingleComment
@@ -190,6 +206,7 @@ class ActivityRow extends React.Component {
                   max="24"
                   defaultValue="0"
                   onChange={(e) => this.changeEmpty(i, e)}
+                  ref={(input) => this.timeCells[i] = input} 
                 />
                 <span className={css.toggleComment}>
                   <SingleComment onChange={(text) => this.changeEmptyComment(text, i)}/>
