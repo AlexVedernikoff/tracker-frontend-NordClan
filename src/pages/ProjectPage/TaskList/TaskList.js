@@ -427,7 +427,11 @@ class TaskList extends Component {
                 />
               )
           }
-
+          {
+            !isLoading && tasks.length === 0
+              ? <div className={css.notFound}>Ничего не найдено</div>
+              : null
+          }
           {
             this.props.pagesCount > 1
               ? <Pagination
