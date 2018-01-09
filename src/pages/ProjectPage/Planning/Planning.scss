@@ -146,7 +146,7 @@
       &.nameMargin {
         margin-left: 1.2rem;
       }
-      
+
       &:hover ~ .edit {
           opacity: 1;
       }
@@ -334,4 +334,17 @@
   z-index: 2;
   opacity: 0.5;
   top: 64px;
+}
+
+.milestone {
+  position: absolute;
+  border-left: 3px solid yellow;
+  height: calc(100% - 64px);
+  z-index: 2;
+  opacity: 0.5;
+  top: 64px;
+
+  &.done {
+    border-color: green;
+  }
 }

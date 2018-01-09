@@ -2,23 +2,11 @@ import * as ProjectActions from '../constants/Project';
 import * as TagsActions from '../constants/Tags';
 import * as SprintActions from '../constants/Sprint';
 import * as TasksActions from '../constants/Tasks';
+import * as MilestoneActions from '../constants/Milestone';
 
 const InitialState = {
   project: {
-    milestones: [
-      {
-        id: 1,
-        name: 'Milestones 1',
-        date: '2017-07-01',
-        done: true
-      },
-      {
-        id: 2,
-        name: 'Milestones 2',
-        date: '2017-09-12',
-        done: false
-      }
-    ],
+    milestones: [],
     sprints: [],
     users: [],
     history: {
@@ -357,6 +345,30 @@ export default function Project (state = InitialState, action) {
         metrics: action.metrics
       }
     }
+
+  case MilestoneActions.MILESTONE_CREATE_SUCCESS:
+    return {
+      ...state,
+      project: {
+        ...state.project,
+        milestones: [...state.project.milestones, action.milestone]
+      }
+    }
+
+  case MilestoneActions.MILESTONE_EDIT_SUCCESS:
+    const updatedMilestones = state.project.milestones.map(milestone => {
+      return milestone.id === action.milestone.id
+        ? action.milestone
+        : milestone;
+    })
+    return {
+      ...state,
+      project: {
+        ...state.project,
+        milestones: updatedMilestones
+      }
+    }
+
   default:
     return {
       ...state
