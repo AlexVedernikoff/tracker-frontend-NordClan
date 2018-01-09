@@ -12,35 +12,32 @@ class Priority extends Component {
     event.preventDefault();
     event.stopPropagation();
 
-    if (+event.target.innerText !== this.props.priority) {
-      const { onChange } = this.props;
-      onChange(
-        {
-          id: this.props.taskId,
-          prioritiesId: +event.target.innerText
-        },
-        'Priority'
-      );
-    } else {
-      const { onChange } = this.props;
-      onChange(
-        {
-          id: this.props.taskId
-        },
-        'Priority'
-      );
-    }
+    if (this.props.canEdit) {
+      if (+event.target.innerText !== this.props.priority) {
+        const {onChange} = this.props;
+        onChange(
+          {
+            id: this.props.taskId,
+            prioritiesId: +event.target.innerText
+          },
+          'Priority'
+        );
+      } else {
+        const {onChange} = this.props;
+        onChange(
+          {
+            id: this.props.taskId
+          },
+          'Priority'
+        );
+      }
 
-    this.props.onChangeCallback();
+      this.props.onChangeCallback();
+    }
   };
 
   setPriority = event => {
     this.props.onPrioritySet(event.target.innerText);
-  };
-
-  defaultHandleClick = event => {
-    event.preventDefault();
-    event.stopPropagation();
   };
 
   render () {
@@ -54,7 +51,7 @@ class Priority extends Component {
                 key={`priority-${i}`}
                 onClick={
                   this.props.onChange
-                    ? this.props.canEdit ? this.changePriority : this.defaultHandleClick
+                    ? this.changePriority
                     : this.setPriority
                 }
                 className={classnames({
