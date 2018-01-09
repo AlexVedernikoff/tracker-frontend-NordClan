@@ -74,6 +74,36 @@ class SprintReport extends Component {
       && moment(this.state.selectedTo).isAfter(this.state.selectedFrom);
   };
 
+  getSelectOptions = () => {
+    return [
+      this.lastWeekOption(),
+      this.lastMonthOption(),
+      ...this.props.sprints.map(value => ({ value, label: value.name}))
+    ];
+  }
+
+  lastWeekOption = () => {
+    const lastWeek = moment().subtract(1, 'weeks');
+    return {
+      label: 'За прошлую неделю',
+      value: {
+        factStartDate: lastWeek.startOf('isoWeek').toDate(),
+        factFinishDate: lastWeek.endOf('isoWeek').toDate()
+      }
+    };
+  }
+
+  lastMonthOption = () => {
+    const lastMonth = moment().subtract(1, 'month');
+    return {
+      label: 'За прошлый месяц',
+      value: {
+        factStartDate: lastMonth.startOf('month').toDate(),
+        factFinishDate: lastMonth.endOf('month').toDate()
+      }
+    };
+  }
+
   render () {
     return (
         <div className={css.SprintReport}>
@@ -90,7 +120,7 @@ class SprintReport extends Component {
                         value={this.state.sprintSelected}
                         onChange={(option) => this.sprintSelected(option)}
                         noResultsText="Нет результатов"
-                        options={this.props.sprints.map(value => ({ value, label: value.name}))}
+                        options={this.getSelectOptions()}
                     />
                 </Col>
                 <Col xs></Col>
