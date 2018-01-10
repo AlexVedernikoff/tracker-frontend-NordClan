@@ -160,7 +160,7 @@ class CreateTaskModal extends Component {
                     <ValidatedInput
                       autoFocus
                       name="taskName"
-                      placeholder="Название задачи"
+                      placeholder="Введите название задачи"
                       onChange={this.handleChange('taskName')}
                       onBlur={handleBlur}
                       shouldMarkError={shouldMarkError}
@@ -185,7 +185,7 @@ class CreateTaskModal extends Component {
               >
                 <TextEditor
                   toolbarHidden
-                  placeholder="Описание задачи"
+                  placeholder="Введите описание задачи"
                   wrapperClassName={css.taskDescriptionWrapper}
                   editorClassName={css.taskDescription}
                   ref={ref => (this.TextEditor = ref)}
