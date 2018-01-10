@@ -68,68 +68,101 @@ class Table extends React.Component {
     }
   };
 
-  renderSprintNameColumn() {
-    const {
-      sprints,
-      onClickSprint,
-      onMouseOverSprint,
-      sprintIdHovered,
-      isProjectAdmin,
-      openSprintEditModal,
-      openMilestoneEditModal,
-      milestones
-    } = this.props;
+  detectType = (entity) => {
+    return entity.factStartDate !== undefined ? 'sprint' : 'milestone';
+  }
+
+  renderEntityLabels() {
+    const { entities } = this.props;
 
     return <div className={css.sprintNames}>
       <div />
       <div />
-      {sprints.map((sprint, i) => {
-        return <div key={`sprint-${i}`}>
-          <span
-            className={classnames({
-              [css.selection]: true,
-              [css.hover]: sprint.id === sprintIdHovered
-            })}
-            data-tip={this.getSprintTime(sprint)}
-            onClick={onClickSprint(sprint.id)}
-            onMouseOver={onMouseOverSprint(sprint.id)}
-            onMouseOut={this.onMouseOutSprint}
-          />
-
-        {isProjectAdmin
-          ? <SprintStartControl sprint={sprint}/>
-          : null}
-
-          <div className={classnames(css.name, { [css.nameMargin]: isProjectAdmin })}>
-            {sprint.name}
-          </div>
-
-          <IconEdit
-            className={css.edit}
-            data-tip="Редактировать"
-            onClick={openSprintEditModal(sprint)}
-          />
-        </div>
+      {entities.map((entity, i) => {
+         return this.detectType(entity) === 'sprint'
+          ? this.renderSprintLabel(entity, i)
+          : this.renderMilestoneLabel(entity, i)
       })}
-      {milestones.map((milestone, i) => {
-        return <div key={`milestone-${i}`}>
-          <div className={classnames(css.name, { [css.nameMargin]: false })}>
-            {milestone.name}
-          </div>
+    </div>
+  }
 
-          <IconEdit
-            className={css.edit}
-            data-tip="Редактировать"
-            onClick={openMilestoneEditModal(milestone)}
-          />
-        </div>
-      })}
+  renderSprintLabel(sprint, i) {
+    const {
+      typeHovered,
+      typeIdHovered,
+      onClickSprint,
+      onMouseOverRow,
+      onMouseOutRow,
+      isProjectAdmin,
+      openSprintEditModal,
+      openMilestoneEditModal
+    } = this.props;
 
+    return <div key={`sprint-${i}`}>
+      <span
+        className={classnames({
+          [css.selection]: true,
+          [css.hover]: typeHovered === 'sprint' && sprint.id === typeIdHovered
+        })}
+        data-tip={this.getSprintTime(sprint)}
+        onClick={onClickSprint(sprint.id)}
+        onMouseOver={onMouseOverRow('sprint', sprint.id)}
+        onMouseOut={onMouseOutRow}
+      />
+
+    {isProjectAdmin
+      ? <SprintStartControl sprint={sprint}/>
+      : null}
+
+      <div className={classnames(css.name, { [css.nameMargin]: isProjectAdmin })}>
+        {sprint.name}
+      </div>
+
+      <IconEdit
+        className={css.edit}
+        data-tip="Редактировать"
+        onClick={openSprintEditModal(sprint)}
+      />
+    </div>
+  }
+
+  renderMilestoneLabel(milestone, i) {
+    const {
+      typeHovered,
+      typeIdHovered,
+      onClickSprint,
+      onMouseOverRow,
+      onMouseOutRow,
+      isProjectAdmin,
+      openSprintEditModal,
+      openMilestoneEditModal
+    } = this.props;
+
+    return <div key={`milestone-${i}`} >
+      <span
+        className={classnames({
+          [css.selection]: true,
+          [css.hover]: typeHovered === 'milestone' && milestone.id === typeIdHovered
+        })}
+        data-tip={this.getMilestoneLabel(milestone)}
+        onMouseOver={onMouseOverRow('milestone', milestone.id)}
+        onMouseOut={onMouseOutRow}
+      />
+
+      <div className={classnames(css.name, { [css.nameMargin]: false })}>
+        {milestone.name}
+      </div>
+
+      <IconEdit
+        className={css.edit}
+        data-tip="Редактировать"
+        onClick={openMilestoneEditModal(milestone)}
+      />
     </div>
   }
 
   renderPlanColumn() {
-    const { sprints, milestones } = this.props;
+    const { entities } = this.props;
     const className = classnames({
       [css.sprintNames]: true,
       [css.spentTime]: true
@@ -137,17 +170,16 @@ class Table extends React.Component {
 
     return <div className={className}>
       <span className={css.header}>План</span>
-      {sprints.map((sprint, i) =>
-        <span key={`sprint-${i}`} className={css.name}>{sprint.allottedTime}</span>
-      )}
-      {milestones.map((milestone, i) =>
-        <span key={`milestone-${i}`} className={css.name}>-</span>
-      )}
+      {entities.map((entity, i) => {
+        return this.detectType(entity) === 'sprint'
+          ? <span key={`sprint-${i}`} className={css.name}>{entity.allottedTime}</span>
+          : <span key={`milestone-${i}`} className={css.name}>-</span>
+      })}
     </div>
   }
 
   renderFactColumn() {
-    const { sprints, milestones } = this.props;
+    const { entities } = this.props;
     const className = classnames({
       [css.sprintNames]: true,
       [css.spentTime]: true
@@ -155,64 +187,67 @@ class Table extends React.Component {
 
     return <div className={className}>
       <span className={css.header}>Факт</span>
-      {sprints.map((sprint, i) =>
-        <span key={`sprint-${i}`} className={css.name}>{sprint.spentTime}</span>
-      )}
-      {milestones.map((milestone, i) =>
-        <span key={`milestone-${i}`} className={css.name}>-</span>
-      )}
+      {entities.map((entity, i) => {
+        return this.detectType(entity) === 'sprint'
+          ? <span key={`sprint-${i}`} className={css.name}>{entity.spentTime}</span>
+          : <span key={`milestone-${i}`} className={css.name}>-</span>
+      })}
     </div>
   }
 
-  renderSprints() {
-    const { sprints, grantActiveYear } = this.props;
+  renderEntities() {
+    const { entities, grantActiveYear } = this.props;
 
-    return sprints.map((sprint, i) => {
-      return <div key={`sprint-${i}`} className={css.tr}>
-        <div
-          className={classnames({
-            [css.sprintBar]: true,
-            [css.unactive]: sprint.statusId === 1 && moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]'),
-            [css.finished]: moment(sprint.factFinishDate).isBefore(moment(), 'days'),
-            [css.active]: sprint.statusId === 2,
-            [css.future]: moment(sprint.factStartDate).isAfter(moment(), 'days')
-          })}
-          style={this.getSprintBlock(sprint, grantActiveYear)}
-          data-tip={this.getSprintTime(sprint)}
-        >
-          <div className={css.text}>{sprint.spentTime || 0}</div>
-          <div className={css.text}>{sprint.allottedTime || 0}</div>
-        </div>
-      </div>;
+    return entities.map((entity, i) => {
+      return this.detectType(entity) === 'sprint'
+        ? this.renderSprint(entity, i)
+        : this.renderMilestone(entity, i)
     })
   }
 
-  renderMilestones() {
-    const { milestones, grantActiveYear } = this.props;
-
-    return milestones.map((milestone, i) => {
-      const status = milestone.done ? 'Выполнено' : 'Не выполнено';
-      const date = moment(milestone.date).format('YYYY-MM-DD');
-      const label = `${milestone.name}. ${date}. ${status}`;
-      return <div key={`milestone-${i}`} className={css.tr}>
-        <div
-          className={classnames({
-            [css.sprintBar]: true,
-            [css.active]: true,
-            [css.future]: milestone.done
-          })}
-          style={this.getMilestoneBlock(milestone.date, grantActiveYear)}
-          data-tip={label}
-        >
-        </div>
+  renderSprint(sprint, i) {
+    const { grantActiveYear } = this.props;
+    return <div key={`sprint-${i}`} className={css.tr}>
+      <div
+        className={classnames({
+          [css.sprintBar]: true,
+          [css.unactive]: sprint.statusId === 1 && moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]'),
+          [css.finished]: moment(sprint.factFinishDate).isBefore(moment(), 'days'),
+          [css.active]: sprint.statusId === 2,
+          [css.future]: moment(sprint.factStartDate).isAfter(moment(), 'days')
+        })}
+        style={this.getSprintBlock(sprint, grantActiveYear)}
+        data-tip={this.getSprintTime(sprint)}
+      >
+        <div className={css.text}>{sprint.spentTime || 0}</div>
+        <div className={css.text}>{sprint.allottedTime || 0}</div>
       </div>
-    })
+    </div>;
+  }
+
+  getMilestoneLabel(milestone) {
+    const status = milestone.done ? 'Выполнено' : 'Не выполнено';
+    const date = moment(milestone.date).format('YYYY-MM-DD');
+    return `${milestone.name}. ${date}. ${status}`;
+  }
+
+  renderMilestone(milestone, i) {
+    const { grantActiveYear } = this.props;
+    return <div key={`milestone-${i}`} className={css.tr}>
+      <div
+        className={classnames({
+          [css.milestoneBar]: true,
+          [css.done]: milestone.done
+        })}
+        style={this.getMilestoneBlock(milestone.date, grantActiveYear)}
+        data-tip={this.getMilestoneLabel(milestone)}
+      >
+      </div>
+    </div>
   }
 
   render() {
     const {
-      sprints,
-      sprintIdHovered,
       onMouseOverSprint,
       onClickSprint,
       openEditModal,
@@ -226,7 +261,7 @@ class Table extends React.Component {
 
     return <div className={css.graph}>
       <div className={css.wrapper}>
-        {this.renderSprintNameColumn()}
+        {this.renderEntityLabels()}
         {this.renderPlanColumn()}
         {this.renderFactColumn()}
 
@@ -253,9 +288,7 @@ class Table extends React.Component {
         }
       </div>
       {this.currentTimeline()}
-      {this.renderSprints()}
-      {this.renderMilestones()}
-      {/*this.renderMilestoneTimelines()*/}
+      {this.renderEntities()}
 
       <div className={css.grid}>
         {

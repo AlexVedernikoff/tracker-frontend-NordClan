@@ -63,8 +63,8 @@ class EditMilestoneModal extends Component {
   };
 
   render () {
-    const formattedDay = this.state.milestone.dateFrom
-      ? moment(this.state.milestone.dateFrom).format( 'DD.MM.YYYY')
+    const formattedDay = this.state.milestone.date
+      ? moment(this.state.milestone.date).format( 'DD.MM.YYYY')
       : ''
 
     const formLayout = {

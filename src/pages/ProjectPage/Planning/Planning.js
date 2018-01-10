@@ -58,7 +58,8 @@ class Planning extends Component {
       createTaskCallee: null,
       isModalOpenAddSprint: false,
       isModalOpenAddMilestone: false,
-      sprintIdHovered: null,
+      typeIdHovered: null,
+      typeHovered: null,
       grantActiveYear: new Date().getFullYear(),
       isOpenSprintEditModal: false,
       isOpenMilestoneEditModal: false,
@@ -210,14 +211,14 @@ class Planning extends Component {
     this.props.openCreateTaskModal();
   };
 
-  onMouseOverSprint = (sprintId) => {
+  onMouseOverRow = (type, id) => {
     return () => {
-      this.setState({ sprintIdHovered: sprintId });
+      this.setState({ typeHovered: type, typeIdHovered: id });
     };
   };
 
-  onMouseOutSprint = () => {
-    this.setState({ sprintIdHovered: null });
+  onMouseOutRow = () => {
+    this.setState({ typeHovered: null, idHovered: null });
   };
 
   onClickSprint = (sprintId) => {
@@ -290,6 +291,13 @@ class Planning extends Component {
       || this.props.user.globalRole === ADMIN;
   };
 
+  sortEntities = (entity1, entity2) => {
+    const date1 = new Date(entity1.factStartDate || entity1.date);
+    const date2 = new Date(entity2.factStartDate || entity2.date);
+
+    return date1 - date2;
+  }
+
   render () {
     const isProjectAdmin = this.checkIsAdminInProject();
     const isVisor = this.props.user.globalRole === VISOR;
@@ -329,6 +337,10 @@ class Planning extends Component {
     const filteredMilestones = this.props.milestones.filter(milestone => {
       return +moment(milestone.date).format('YYYY') === this.state.grantActiveYear;
     })
+
+    const entities = filteredSprints
+      .concat(filteredMilestones)
+      .sort(this.sortEntities)
 
     return (
       <div>
@@ -371,7 +383,7 @@ class Planning extends Component {
                 ? <Row>
                   {this.props.sprints.map((element, i) =>
                     <Col xs={12} sm={6} md={3} key={`sprint-${i}`}>
-                      <SprintCard sprint={element} inFocus={element.id === this.state.sprintIdHovered} onMouseOver={this.onMouseOverSprint(element.id)} onMouseOut={this.onMouseOutSprint} />
+                      <SprintCard sprint={element} inFocus={this.state.typeHovered === 'sprint' && element.id === this.state.typeIdHovered} onMouseOver={this.onMouseOverRow('sprint', element.id)} onMouseOut={this.onMouseOutRow} />
                     </Col>
                   )}
                 </Row>
@@ -389,11 +401,12 @@ class Planning extends Component {
               : null
             }
             <Table
-              sprints={filteredSprints}
-              milestones={filteredMilestones}
-              sprintIdHovered={this.state.sprintIdHovered}
+              entities={entities}
+              typeIdHovered={this.state.typeIdHovered}
+              typeHovered={this.state.typeHovered}
               isProjectAdmin={isProjectAdmin}
-              onMouseOverSprint={this.onMouseOverSprint}
+              onMouseOverRow={this.onMouseOverRow}
+              onMouseOutRow={this.onMouseOutRow}
               grantYearDecrement={this.grantYearDecrement}
               grantYearIncrement={this.grantYearIncrement}
               grantActiveYear={this.state.grantActiveYear}

@@ -218,9 +218,27 @@
   &.active {
     background-color: $color-green;
   }
+
   .text {
     flex: 1;
     line-height: 1;
+  }
+}
+
+.milestoneBar {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  bottom: 0;
+  line-height: 5;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  background-color: red;
+    // border: 1px dashed $color-green;
+
+  &.done {
+    background-color: yellow;
   }
 }
 
