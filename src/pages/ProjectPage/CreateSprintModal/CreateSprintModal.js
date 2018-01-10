@@ -128,7 +128,7 @@ class CreateSprintModal extends Component {
           <form className={css.createSprintForm}>
             <Row>
               <Col xs={12}>
-                <h3>Создание новой вехи</h3>
+                <h3>Создание нового спринта</h3>
                 <hr />
               </Col>
             </Row>
