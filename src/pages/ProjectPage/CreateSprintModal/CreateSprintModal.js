@@ -87,7 +87,7 @@ class CreateSprintModal extends Component {
     const re = /^\d*(\.\d*)?$/;
     return value !== '' ? re.test(value) : true;
   }
-  
+
   validateDates = () => {
     if (this.state.dateTo && this.state.dateFrom) {
       return moment(this.state.dateTo).isAfter(this.state.dateFrom);
@@ -128,7 +128,7 @@ class CreateSprintModal extends Component {
           <form className={css.createSprintForm}>
             <Row>
               <Col xs={12}>
-                <h3>Создание нового спринта</h3>
+                <h3>Создание новой вехи</h3>
                 <hr />
               </Col>
             </Row>

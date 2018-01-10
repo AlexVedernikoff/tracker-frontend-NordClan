@@ -136,7 +136,7 @@ class Planning extends Component {
         'DD.MM.YYYY'
       )} ${sprint.factFinishDate
         ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}`
-          : '- ...'})`,
+        : '- ...'})`,
       statusId: sprint.statusId,
       className: classnames({
         [css.INPROGRESS]: sprint.statusId === 2,
@@ -292,10 +292,10 @@ class Planning extends Component {
   };
 
   sortEntities = (entity1, entity2) => {
-    const date1 = new Date(entity1.factStartDate || entity1.date);
-    const date2 = new Date(entity2.factStartDate || entity2.date);
+    const startDay1 = entity1.factStartDate || entity1.date;
+    const startDay2 = entity2.factStartDate || entity2.date;
 
-    return date1 - date2;
+    return new Date(startDay1) - new Date(startDay2);
   }
 
   render () {

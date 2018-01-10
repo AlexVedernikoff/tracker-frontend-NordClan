@@ -49,6 +49,7 @@ export const createMilestone = (name, projectId, date) => {
           }
         },
         error => {
+          dispatch(createMilestoneFailure());
           dispatch(showNotification({ message: error.message, type: 'error' }));
           dispatch(finishLoading());
         }
