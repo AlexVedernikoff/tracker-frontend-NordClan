@@ -330,6 +330,7 @@ class TaskList extends Component {
                 <Priority
                   onChange={(option) => this.changeSingleFilter(option, 'prioritiesId')}
                   priority={prioritiesId}
+                  canEdit
                 />
               </Col>
               <Col smOffset={6} xs={12} sm={3} className={css.clearFilters}>

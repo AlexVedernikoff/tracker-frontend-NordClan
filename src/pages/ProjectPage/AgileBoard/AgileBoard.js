@@ -419,6 +419,7 @@ class AgileBoard extends Component {
                     <Priority
                       onChange={(option) => this.selectValue(option.prioritiesId, 'prioritiesId')}
                       priority={this.state.prioritiesId}
+                      canEdit
                     />
                   </Col>
                   <Col className={css.filterButtonCol}>

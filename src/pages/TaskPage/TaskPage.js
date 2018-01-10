@@ -217,7 +217,12 @@ class TaskPage extends Component {
         />
         <Row>
           <Col xs={12} sm={8}>
-            <TaskHeader task={this.props.task} projectId={this.props.params.projectId} onChange={this.props.changeTask}/>
+            <TaskHeader
+              task={this.props.task}
+              projectId={this.props.params.projectId}
+              onChange={this.props.changeTask}
+              canEdit={this.props.task.statusId !== TaskStatuses.CLOSED}
+            />
             <main className={css.main}>
               <Description
                 text={{ __html: this.props.task.description }}
@@ -228,7 +233,7 @@ class TaskPage extends Component {
                 onEditFinish={this.props.stopTaskEditing}
                 onEditSubmit={this.props.changeTask}
                 isEditing={this.props.DescriptionIsEditing}
-                canEdit
+                canEdit={this.props.task.statusId !== TaskStatuses.CLOSED}
               />
               <hr />
               <h3>Прикрепленные файлы:</h3>
@@ -236,7 +241,7 @@ class TaskPage extends Component {
                 attachments={this.props.task.attachments}
                 removeAttachment={this.removeAttachment}
                 uploadAttachments={this.uploadAttachments}
-                canEdit
+                canEdit={this.props.task.statusId !== TaskStatuses.CLOSED}
               />
               <RouteTabs style={{ marginTop: '2rem', marginBottom: '2rem' }}>
                 <Link
@@ -256,7 +261,12 @@ class TaskPage extends Component {
           </Col>
           <Col xs={12} sm={4}>
             <aside>
-              <Details task={this.props.task} sprints={this.props.sprints} onChange={this.props.changeTask} />
+              <Details
+                task={this.props.task}
+                sprints={this.props.sprints}
+                onChange={this.props.changeTask}
+                canEdit={this.props.task.statusId !== TaskStatuses.CLOSED}
+              />
               {
                 !isVisor
                   ? <button className={css.addTask} onClick={this.props.openCreateTaskModal}>
