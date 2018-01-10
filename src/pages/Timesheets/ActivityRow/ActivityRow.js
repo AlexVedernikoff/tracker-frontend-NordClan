@@ -34,14 +34,25 @@ class ActivityRow extends React.Component {
     this.createTimesheet = _.debounce(this.createTimesheet, debounceTime);
     this.updateTimesheet = _.debounce(this.updateTimesheet, debounceTime);
     this.deleteTimesheets = _.debounce(this.deleteTimesheets, debounceTime);
+
+    const timeCells = {};
+    _.forEach(props.item.timeSheets, (tsh,i) => {
+      if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
+        timeCells[i] = roundNum(tsh.spentTime, 2);
+      } else {
+        timeCells[i] = 0;
+      }
+    })
+
     this.state = {
       isOpen: false,
-      timeCells : {}
+      timeCells
     };
   }
 
-  createTimesheet = (i, value) => {
+  createTimesheet = (i) => {
     const { item, userId, startingDay } = this.props;
+    const value = this.state.timeCells[i];
     this.props.createTimesheet({
       isDraft: false,
       taskId: item.id || null,
@@ -53,8 +64,8 @@ class ActivityRow extends React.Component {
     }, userId, startingDay);
   };
 
-  updateTimesheet = (i, sheetId, comment, value) => {
-    console.log('updateTimesheet', value);
+  updateTimesheet = (i, sheetId, comment) => {
+    const value = this.state.timeCells[i];
     const { userId, startingDay } = this.props;
     if (!value && !comment) {
       this.props.deleteTimesheets([sheetId], userId, startingDay);
@@ -71,20 +82,23 @@ class ActivityRow extends React.Component {
     this.props.deleteTimesheets(ids, userId, startingDay);
   };
 
-  changeEmpty = (i, e) => {
-    console.log('changeEmpty',e);
-
-    const event = e.persist() || e;
-    let value = event.target.value;
-    /*if (value < 0) {
-      value = Math.abs(value);
+  changeEmpty = (i, value) => {
+    let newValue = parseFloat(value);
+    if (value < 0) {
+      newValue = Math.abs(value);
     }
-    this.state.timeCells[i] = value;
-    this.setState({
-      timeCells : this.state.timeCells
-    });*/
 
-    this.createTimesheet(i,value);
+    this.setState((state) => {
+      const timeCells = {
+        ...state.timeCells
+      };
+      timeCells[i] = newValue;
+      return {
+        timeCells
+      };
+    }, () => {
+      this.createTimesheet(i);
+    });
   };
 
   changeEmptyComment = (text, i) => {
@@ -101,22 +115,23 @@ class ActivityRow extends React.Component {
     }, userId, startingDay);
   };
 
-  changeFilled = (i, id, comment, e) => {
-    console.log('changeFilled',e);
-
-    const event = e.persist() || e;
-    let value = event.target.value;
+  changeFilled = (i, id, comment, value) => {
+    let newValue = parseFloat(value);
     if (value < 0) {
-      value = Math.abs(value);
+      newValue = Math.abs(value);
     }
-    console.log(value);
-    this.setState({
-      timeCells: {
-        [i] : value
-      }
-    });
 
-    this.updateTimesheet(i, id, comment, value);
+    this.setState((state) => {
+      const timeCells = {
+        ...state.timeCells
+      };
+      timeCells[i] = newValue;
+      return {
+        timeCells
+      };
+    }, () => {
+      this.updateTimesheet(i, id, comment);
+    });
   };
 
   changeFilledComment = (text, time, i, sheetId) => {
@@ -167,8 +182,6 @@ class ActivityRow extends React.Component {
       const isCellDisabled = tsh.statusId === 3 || tsh.statusId === 4;
 
       if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
-        this.state.timeCells[i] = roundNum(tsh.spentTime, 2);
-
         return (
           <td key={moment(tsh.onDate).format('X')} className={cn({
             [css.today]: moment().format('YYYY-MM-DD') === moment(tsh.onDate).format('YYYY-MM-DD'),
@@ -187,7 +200,7 @@ class ActivityRow extends React.Component {
                   disabled={isCellDisabled}
                   max="24"
                   value={this.state.timeCells[i]}
-                  onChange={(e) => this.changeFilled(i, tsh.id, tsh.comment, e)}
+                  onChange={(e) => this.changeFilled(i, tsh.id, tsh.comment, e.target.value)}
                 />
                 <span className={css.toggleComment}>
                   <SingleComment
@@ -201,8 +214,6 @@ class ActivityRow extends React.Component {
           </td>
         );
       } else {
-        this.state.timeCells[i] = 0;
-
         return (
           <td key={i} className={cn({
             [css.today]: moment().format('YYYY-MM-DD') === moment(tsh.onDate).format('YYYY-MM-DD'),
@@ -215,7 +226,7 @@ class ActivityRow extends React.Component {
                   disabled={!canDeleteRow}
                   max="24"
                   value={this.state.timeCells[i]}
-                  onChange={(e) => this.changeEmpty(i,e)}
+                  onChange={(e) => this.changeEmpty(i,e.target.value)}
                 />
                 <span className={css.toggleComment}>
                   <SingleComment onChange={(text) => this.changeEmptyComment(text, i)}/>
@@ -290,6 +301,3 @@ const mapDispatchToProps = {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ActivityRow);
-
-
-
