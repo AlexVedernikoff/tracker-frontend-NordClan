@@ -300,7 +300,7 @@ class AgileBoard extends Component {
       value: sprint.id,
       label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${sprint.factFinishDate
         ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}`
-        : '- ...'})`,
+        : '- ...'}) ${sprint.spentTime || 0}/${sprint.allottedTime || 0}`,
       statusId: sprint.statusId,
       className: classnames({
         [css.INPROGRESS]: sprint.statusId === 2,
@@ -317,6 +317,7 @@ class AgileBoard extends Component {
         [css.sprintMarker]: true
       })
     });
+    console.log(sprints)
     return sprints;
   };
 
