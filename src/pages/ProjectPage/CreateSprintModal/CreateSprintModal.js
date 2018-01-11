@@ -87,7 +87,7 @@ class CreateSprintModal extends Component {
     const re = /^\d*(\.\d*)?$/;
     return value !== '' ? re.test(value) : true;
   }
-  
+
   validateDates = () => {
     if (this.state.dateTo && this.state.dateFrom) {
       return moment(this.state.dateTo).isAfter(this.state.dateFrom);
