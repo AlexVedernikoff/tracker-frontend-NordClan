@@ -175,7 +175,7 @@ class TaskCard extends React.Component {
 
           {
             !!((task.factExecutionTime || task.plannedExecutionTime))
-            && <p className={css.time}>
+            && <p className={classnames(css.time, {[css.redBorder]: +task.plannedExecutionTime === 0})}>
               <IconTime className={classnames({
                 [css.green]: this.isInPlan(task.plannedExecutionTime, task.factExecutionTime),
                 [css.red]: this.isOutOfPlan(task.plannedExecutionTime, task.factExecutionTime)

@@ -163,6 +163,10 @@ svg.red {
   }
 }
 
+.redBorder {
+  border: 1px solid $color-red; 
+}
+
 .bug {
   background-color: lighten($color-dark, 73%);
 }
