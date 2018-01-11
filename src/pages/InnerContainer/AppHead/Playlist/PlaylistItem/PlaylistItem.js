@@ -40,7 +40,7 @@ class PlaylistItem extends Component {
       this.debouncedUpdateOnlyTimesheet({
         sheetId: this.props.item.id,
         comment
-      })
+      });
 
       this.setState((prevState) => ({ isCommentOpen: !prevState.isCommentOpen }));
     };
@@ -82,17 +82,16 @@ class PlaylistItem extends Component {
   changeVisibility = (e, visibility) => {
     e.stopPropagation();
     const { item, updateTimesheet, updateDraft } = this.props;
-    return () => {
-      const params = {
-        sheetId: item.id,
-        isVisible: !!visibility
-      };
-      item.isDraft ? updateDraft(params) : updateTimesheet(params);
+    const params = {
+      sheetId: item.id,
+      isVisible: !!visibility
     };
+    item.isDraft ? updateDraft(params) : updateTimesheet(params);
   };
 
   getNameByType = (typeId) => {
-    return _.find(this.props.magicActivitiesTypes, {id: typeId}).name || 'Не определено';
+    const activity = _.find(this.props.magicActivitiesTypes, {id: typeId});
+    return activity ? activity.name : 'Не определено';
   };
 
   goToDetailPage = () => {
