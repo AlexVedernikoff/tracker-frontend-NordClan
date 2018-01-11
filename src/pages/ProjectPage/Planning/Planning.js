@@ -146,7 +146,7 @@ class Planning extends Component {
     return sprints;
   };
 
-  getEstimatesInfo = (sprintId, tasks) => {
+  getEstimatesInfo = (sprintId) => {
     if (!sprintId) {
       return {
         summary: '',
@@ -156,15 +156,21 @@ class Planning extends Component {
       };
     } else {
       const sprint = this.props.project.sprints.filter(item => item.id === sprintId)[0];
-      const tasksEstimate = tasks.reduce((sum, task) => {
-        return sum + +task.plannedExecutionTime;
-      }, 0);
       const sprintEstimate = sprint && sprint.allottedTime ? +sprint.allottedTime : 0;
-      const ratio = sprintEstimate === 0 ? 0 : tasksEstimate / sprintEstimate;
-
+      const sprintSpentTime = sprint && sprint.spentTime ? +sprint.spentTime : 0;
+      const ratio = sprintEstimate === 0 ? 0 : sprintSpentTime / sprintEstimate;
+      const width = ratioValue => {
+        if (ratioValue > 1) {
+          return 100;
+        } else if (ratioValue < 0) {
+          return 0;
+        } else {
+          return ratioValue * 100;
+        }
+      };
       return {
-        summary: `Суммарное время задач: ${tasksEstimate} ${sprintEstimate ? ' из ' + sprintEstimate : ''} ч.`,
-        width: `${ratio > 1 ? 100 : ratio * 100}%`,
+        summary: `Суммарное время: ${sprintSpentTime} ${sprintEstimate ? ' из ' + sprintEstimate : ''} ч.`,
+        width: `${width(ratio)}%`,
         active: sprintEstimate !== 0,
         exceeded: ratio > 1
       };
@@ -356,8 +362,8 @@ class Planning extends Component {
         />;
       });
 
-    const leftEstimates = this.getEstimatesInfo(this.state.leftColumn, this.props.leftColumnTasks);
-    const rightEstimates = this.getEstimatesInfo(this.state.rightColumn, this.props.rightColumnTasks);
+    const leftEstimates = this.getEstimatesInfo(this.state.leftColumn);
+    const rightEstimates = this.getEstimatesInfo(this.state.rightColumn);
     const leftColumnSprints = this.getSprints();
     const rightColumnSprints = this.getSprints();
     const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
