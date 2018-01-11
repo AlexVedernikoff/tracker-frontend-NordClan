@@ -55,6 +55,8 @@ class TaskHeader extends Component {
       this.changeStatus(this.props.task.statusId - 1);
     } else if (tip === 'Приостановить') {
       this.changeStatus(this.props.task.statusId + 1);
+    } else if (tip === 'Перевести в стадию Done') {
+      this.state.clickedStatus = e.currentTarget.textContent;
     } else {
       this.state.clickedStatus = e.currentTarget.textContent;
       this.handleOpenModal();
