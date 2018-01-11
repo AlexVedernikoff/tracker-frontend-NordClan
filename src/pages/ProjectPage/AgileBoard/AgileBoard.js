@@ -300,7 +300,7 @@ class AgileBoard extends Component {
       value: sprint.id,
       label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${sprint.factFinishDate
         ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}`
-        : '- ...'}) ${sprint.spentTime || 0}/${sprint.allottedTime || 0}`,
+        : '- ...'})`,
       statusId: sprint.statusId,
       className: classnames({
         [css.INPROGRESS]: sprint.statusId === 2,
@@ -317,9 +317,19 @@ class AgileBoard extends Component {
         [css.sprintMarker]: true
       })
     });
-    console.log(sprints)
     return sprints;
   };
+
+  getSprintTime = (sprintId) => {
+    if (!sprintId) return false;
+    let currentSprint;
+    this.props.sprints.forEach(sprint => {
+      if (sprint.id === sprintId) {
+        currentSprint = sprint;
+      }
+    });
+    return `${currentSprint.spentTime || 0} / ${currentSprint.allottedTime || 0}`;
+  }
 
   getAllTags = () => {
     let allTags = this.props.sprintTasks.reduce((arr, task) => {
@@ -495,6 +505,9 @@ class AgileBoard extends Component {
                     noResultsText="Нет результатов"
                     options={this.getSprints()}
                   />
+                  <span className={css.sprintTime}>
+                    {this.getSprintTime(this.state.changedSprint) || null}
+                  </span>
                 </Col>
                 <Col xs>
                   <SelectDropdown
