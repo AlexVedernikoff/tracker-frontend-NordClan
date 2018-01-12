@@ -30,8 +30,10 @@ class ProjectPage extends Component {
   }
 
   checkIsAdminInProject = () => {
-    return this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1
-      || this.props.user.globalRole === ADMIN;
+    return this.props.user.projectsRoles
+      ? this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1
+        || this.props.user.globalRole === ADMIN
+      : false;
   };
 
   render () {
@@ -50,7 +52,8 @@ class ProjectPage extends Component {
         <RouteTabs>
           <Link
             activeClassName="active"
-            to={`/projects/${this.props.params.projectId}/agile-board`}
+            onlyActiveOnIndex
+            to={`/projects/${this.props.params.projectId}`}
           >
             Доска
           </Link>
@@ -86,9 +89,9 @@ class ProjectPage extends Component {
           </Link>
           <Link
             activeClassName="active"
-            to={`/projects/${this.props.params.projectId}/metrics`}
+            to={`/projects/${this.props.params.projectId}/analytics`}
           >
-            Метрики по проекту
+            Аналитика
           </Link>
         </RouteTabs>
 

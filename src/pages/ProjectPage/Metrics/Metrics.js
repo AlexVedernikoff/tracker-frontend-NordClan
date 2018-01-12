@@ -6,6 +6,7 @@ import * as css from './Metrics.scss';
 import StartEndDates from './StartEndDates/StartEndDates';
 import BudgetChart from './BudgetChart/BudgetChart';
 import BugsChart from './BugsChart/BugsChart';
+import SprintReport from './Report';
 import { getMetrics } from './../../../actions/Metrics';
 
 class Metrics extends Component {
@@ -33,6 +34,19 @@ class Metrics extends Component {
     getMetrics(metricsParams);
   }
 
+  componentWillMount () {
+    const { getMetrics, params } = this.props;
+    const metricsParams = {
+      projectId: parseInt(params.projectId),
+      typeId: 6,
+      // sprintId: 1,
+      // userId: 1,
+      // startDate: '2017-11-20',
+      // endDate: '2017-12-20'
+    };
+    getMetrics(metricsParams);
+  }
+
   startDate () {
     if (this.props.createdAt) {
       return this.props.createdAt;
@@ -55,18 +69,19 @@ class Metrics extends Component {
     return (
       <div>
         <section className = {css.Metrics}>
-          <h2>Метрики по проекту</h2>
-          <StartEndDates startDate={this.startDate()} endDate={this.endDate()}/>
-          <Row>
-            <Col md = {12} lg = {6}>
-              <BudgetChart startDate={this.startDate()} endDate={this.endDate()}/>
-            </Col>
-          </Row>
-          <Row>
-            <Col lg={8} lgOffset={2} md={12} mdOffset={0}>
-              <BugsChart/>
-            </Col>
-          </Row>
+          <SprintReport startDate={this.startDate()} endDate={this.endDate()}/>
+          {/*<h2>Метрики по проекту</h2>*/}
+          {/*<StartEndDates startDate={this.startDate()} endDate={this.endDate()}/>*/}
+          {/*<Row>*/}
+            {/*<Col md = {12} lg = {6}>*/}
+              {/*<BudgetChart startDate={this.startDate()} endDate={this.endDate()}/>*/}
+            {/*</Col>*/}
+          {/*</Row>*/}
+          {/*<Row>*/}
+            {/*<Col xs = {12}>*/}
+              {/*<BugsChart/>*/}
+            {/*</Col>*/}
+          {/*</Row>*/}
         </section>
       </div>
     );

@@ -61,12 +61,13 @@ class Info extends Component {
     return (
       <div className={css.info}>
         <h2>Теги проекта</h2>
-        <Tags taggable='project'
+        <Tags
+          taggable='project'
           direction='right'
           taggableId={this.props.id}
           create
           maxLength={15}
-          isProjectAdmin={isProjectAdmin}
+          canEdit={isProjectAdmin}
         >
           {
             this.props.tags
@@ -93,7 +94,7 @@ class Info extends Component {
           onEditFinish={this.props.stopEditing}
           onEditSubmit={this.props.changeProject}
           isEditing={this.props.descriptionIsEditing}
-          isProjectAdmin={isProjectAdmin}
+          canEdit={isProjectAdmin}
         />
         <hr />
         <Budget
@@ -115,7 +116,7 @@ class Info extends Component {
           removeAttachment={this.removeAttachment}
           uploadAttachments={this.uploadAttachments}
           attachments={this.props.attachments}
-          isProjectAdmin={isProjectAdmin}
+          canEdit={isProjectAdmin}
         />
       </div>
     );

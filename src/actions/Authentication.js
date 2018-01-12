@@ -5,6 +5,7 @@ import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
 import { getTimesheetsPlayerData } from './TimesheetPlayer';
 import { startOfCurrentWeek, endOfCurrentWeek } from '../utils/date';
+import { history } from '../History';
 
 const startAuthentication = () => ({
   type: AuthActions.AUTHENTICATION_START
@@ -37,7 +38,7 @@ const userInfoReceived = user => ({
   user: user
 });
 
-const userInfoReceiveFailed = () => ({
+export const userInfoReceiveFailed = () => ({
   type: AuthActions.USER_INFO_RECEIVE_ERROR
 });
 
@@ -95,9 +96,11 @@ export const getInfoAboutMe = () => {
     return axios
       .get(URL, {}, { withCredentials: true })
       .catch(error => {
-        dispatch(userInfoReceiveFailed());
-        dispatch(showNotification({ message: error.message, type: 'error' }));
         dispatch(finishLoading());
+        if (error.response.data.name !== 'UnauthorizedError' || history.getCurrentLocation().pathname !== '/login') {
+          dispatch(showNotification({message: error.message, type: 'error'}));
+        }
+        dispatch(userInfoReceiveFailed());
       })
       .then(response => {
         if (response && response.status === 200) {

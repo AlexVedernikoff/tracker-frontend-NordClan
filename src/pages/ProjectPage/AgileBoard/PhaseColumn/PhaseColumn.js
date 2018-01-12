@@ -55,20 +55,20 @@ class PhaseColumn extends React.Component {
 
     return (
       connectDropTarget(
-      <div className={classnames({'col-xs-6 col-sm': true, [css.dropColumn]: true, [css.canDropColumn]: isOver && canDrop, [css.cantDropColumn]: isOver && !canDrop})} >
-        <h4>{title}</h4>
-        {
-          tasks.length
-          ? tasks
-          : (isTasksLoad || isProjectLoading) && !allTasksLength
-          ? <div className={css.cardHolder}>
-              <InlineHolder length='70%' />
-              <InlineHolder length='100%' />
-              <InlineHolder length='30%' />
-            </div>
-          : <span className="text-info">Задачи в стадии {title} отсутсвуют</span>
-        }
-      </div>
+        <div className={classnames({'col-xs-6 col-sm': true, [css.dropColumn]: true, [css.canDropColumn]: isOver && canDrop, [css.cantDropColumn]: isOver && !canDrop})} >
+          <h4>{`${title} (${tasks.length})`}</h4>
+          {
+            tasks.length
+              ? tasks
+              : (isTasksLoad || isProjectLoading) && !allTasksLength
+                ? <div className={css.cardHolder}>
+                  <InlineHolder length='70%' />
+                  <InlineHolder length='100%' />
+                  <InlineHolder length='30%' />
+                </div>
+                : <span className="text-info">Задачи в стадии {title} отсутствуют</span>
+          }
+        </div>
       )
     );
   }

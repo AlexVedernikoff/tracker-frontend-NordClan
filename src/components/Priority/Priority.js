@@ -10,18 +10,30 @@ class Priority extends Component {
 
   changePriority = event => {
     event.preventDefault();
-    if (+event.target.innerText !== this.props.priority) {
-      const { onChange } = this.props;
-      onChange(
-        {
-          id: this.props.taskId,
-          prioritiesId: +event.target.innerText
-        },
-        'Priority'
-      );
-    }
+    event.stopPropagation();
 
-    this.props.onChangeCallback();
+    if (this.props.canEdit) {
+      if (+event.target.innerText !== this.props.priority) {
+        const {onChange} = this.props;
+        onChange(
+          {
+            id: this.props.taskId,
+            prioritiesId: +event.target.innerText
+          },
+          'Priority'
+        );
+      } else {
+        const {onChange} = this.props;
+        onChange(
+          {
+            id: this.props.taskId
+          },
+          'Priority'
+        );
+      }
+
+      this.props.onChangeCallback();
+    }
   };
 
   setPriority = event => {
@@ -38,7 +50,9 @@ class Priority extends Component {
               <span
                 key={`priority-${i}`}
                 onClick={
-                  this.props.onChange ? this.changePriority : this.setPriority
+                  this.props.onChange
+                    ? this.changePriority
+                    : this.setPriority
                 }
                 className={classnames({
                   [css.active]: priorityId === this.props.priority
@@ -55,6 +69,7 @@ class Priority extends Component {
 }
 
 Priority.propTypes = {
+  canEdit: PropTypes.bool,
   onChange: PropTypes.func,
   onChangeCallback: PropTypes.func,
   onPrioritySet: PropTypes.func,

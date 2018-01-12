@@ -24,6 +24,8 @@
 }
 
 .memberRow {
+  margin-left: 0;
+  margin-right: 0;
 
   &:hover {
     background-color: $color-lightgray;
@@ -35,7 +37,7 @@
   }
 
   label {
-    display: block;
+    display: inline-block;
     text-transform: capitalize;
 
     @include tablet {

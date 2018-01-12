@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import Button from '../../../components/Button';
 import ConfirmModal from '../../../components/ConfirmModal';
 import { Link } from 'react-router';
@@ -8,13 +7,13 @@ import PerformerModal from '../../../components/PerformerModal';
 import Priority from '../../../components/Priority';
 import ButtonGroup from '../../../components/ButtonGroup';
 import TaskTitle from '../TaskTitle';
-import { getProjectUsers, openCreateTaskModal } from '../../../actions/Project';
+import { getProjectUsers } from '../../../actions/Project';
 import * as TaskStatuses from '../../../constants/TaskStatuses';
-import { VISOR } from '../../../constants/Roles';
 import { connect } from 'react-redux';
 import CopyThis from '../../../components/CopyThis';
 import { history } from '../../../History';
 import getTypeById from '../../../utils/TaskTypes';
+import getProrityById from '../../../utils/TaskPriority';
 
 const getNewStatus = newPhase => {
   let newStatusId;
@@ -56,6 +55,8 @@ class TaskHeader extends Component {
       this.changeStatus(this.props.task.statusId - 1);
     } else if (tip === 'Приостановить') {
       this.changeStatus(this.props.task.statusId + 1);
+    } else if (tip === 'Перевести в стадию Done') {
+      this.state.clickedStatus = e.currentTarget.textContent;
     } else {
       this.state.clickedStatus = e.currentTarget.textContent;
       this.handleOpenModal();
@@ -162,38 +163,26 @@ class TaskHeader extends Component {
   };
 
   render () {
-    const { task, taskTypes, globalRole } = this.props;
+    const { task, taskTypes, canEdit } = this.props;
     const css = require('./TaskHeader.scss');
     const users = this.props.users.map(item => ({
       value: item.user ? item.user.id : item.id,
       label: item.user ? item.user.fullNameRu : item.fullNameRu
     }));
 
-    const isVisor = globalRole === VISOR;
-
     return (
       <div>
         {
-          !isVisor
-            ? <Button
-              onClick={this.props.openCreateTaskModal}
-              type="primary"
-              text="Создать задачу"
-              icon="IconPlus"
-              name="right"
-              addedClassNames={{[css.btnAddTask]: true}}
-            />
-            : null
-        }
-        {
           task.parentTask
-            ? <div className={css.parentTask}>
-              <div className={css.prefix} data-tip="Родительская задача ">
-                {task.project.prefix}-{task.parentTask.id}
+            ? <div className={css.parentTaskWrp}>
+                <div className={css.parentTask}>
+                <div className={css.prefix} data-tip="Родительская задача ">
+                  {task.project.prefix}-{task.parentTask.id}
+                </div>
+                <Link to={`/projects/${task.project.id}/tasks/${task.parentTask.id}`} className={css.parentTaskName}>
+                  {task.parentTask.name}
+                </Link>
               </div>
-              <Link to={`/projects/${task.project.id}/tasks/${task.parentTask.id}`} className={css.parentTaskName}>
-                {task.parentTask.name}
-              </Link>
               <div className={css.parentTaskLink}>
                 <div className={css.tasksPointers} />
               </div>
@@ -225,11 +214,18 @@ class TaskHeader extends Component {
           }
           {
             task.prioritiesId
-              ? <Priority taskId={task.id} priority={task.prioritiesId} onChange={this.props.onChange} />
+              ? <div data-tip={`Приоритет: ${getProrityById(task.prioritiesId)}`}>
+                <Priority
+                  taskId={task.id}
+                  priority={task.prioritiesId}
+                  onChange={this.props.onChange}
+                  canEdit={canEdit}
+                />
+              </div>
               : null
           }
         </div>
-        <TaskTitle name={task.name} id={task.id} />
+        <TaskTitle name={task.name} id={task.id} canEdit={canEdit}/>
         <div className={css.progressButtons}>
           <Button
             type={
@@ -250,6 +246,7 @@ class TaskHeader extends Component {
                 ? this.handleOpenCancelModal
                 : null
             }
+            disabled={!canEdit}
           />
           <ButtonGroup type="lifecircle" stage="full">
             <Button
@@ -266,6 +263,7 @@ class TaskHeader extends Component {
               }
               data-place="bottom"
               onClick={this.handleChangeStatus}
+              disabled={!canEdit}
             />
             <Button
               text="Develop"
@@ -274,6 +272,7 @@ class TaskHeader extends Component {
               icon= {this.getButtonIcon(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY)}
               onClick={this.handleChangeStatus}
               data-place="bottom"
+              disabled={!canEdit}
             />
             <Button
               text="Code Review"
@@ -282,6 +281,7 @@ class TaskHeader extends Component {
               icon= {this.getButtonIcon(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY)}
               onClick={this.handleChangeStatus}
               data-place="bottom"
+              disabled={!canEdit}
             />
             <Button
               text="QA"
@@ -290,6 +290,7 @@ class TaskHeader extends Component {
               icon= {this.getButtonIcon(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY)}
               onClick={this.handleChangeStatus}
               data-place="bottom"
+              disabled={!canEdit}
             />
             <Button
               text="Done"
@@ -305,6 +306,7 @@ class TaskHeader extends Component {
               }
               data-place="bottom"
               onClick={this.handleChangeStatus}
+              disabled={!canEdit}
             />
           </ButtonGroup>
           <Button
@@ -322,6 +324,7 @@ class TaskHeader extends Component {
             data-place="bottom"
             addedClassNames={{[css.buttonOk]: true}}
             onClick={this.handleClose}
+            disabled={!canEdit}
           />
         </div>
         <hr />
@@ -355,12 +358,11 @@ class TaskHeader extends Component {
 }
 
 TaskHeader.propTypes = {
+  canEdit: PropTypes.bool,
   css: PropTypes.object,
   getProjectUsers: PropTypes.func.isRequired,
-  globalRole: PropTypes.string.isRequired,
   location: PropTypes.object,
   onChange: PropTypes.func.isRequired,
-  openCreateTaskModal: PropTypes.func.isRequired,
   projectId: PropTypes.string.isRequired,
   task: PropTypes.object.isRequired,
   taskTypes: PropTypes.array,
@@ -370,13 +372,11 @@ TaskHeader.propTypes = {
 const mapStateToProps = state => ({
   users: state.Project.project.users,
   location: state.routing.locationBeforeTransitions,
-  taskTypes: state.Dictionaries.taskTypes,
-  globalRole: state.Auth.user.globalRole
+  taskTypes: state.Dictionaries.taskTypes
 });
 
 const mapDispatchToProps = {
-  getProjectUsers,
-  openCreateTaskModal
+  getProjectUsers
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskHeader);

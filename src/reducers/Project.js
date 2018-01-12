@@ -2,9 +2,11 @@ import * as ProjectActions from '../constants/Project';
 import * as TagsActions from '../constants/Tags';
 import * as SprintActions from '../constants/Sprint';
 import * as TasksActions from '../constants/Tasks';
+import * as MilestoneActions from '../constants/Milestone';
 
 const InitialState = {
   project: {
+    milestones: [],
     sprints: [],
     users: [],
     history: {
@@ -17,6 +19,7 @@ const InitialState = {
   TitleIsEditing: false,
   DescriptionIsEditing: false,
   isCreateTaskModalOpen: false,
+  isCreateChildTaskModalOpen: false,
   PortfolioIsEditing: false,
   isProjectInfoReceiving: false,
   isCreateTaskRequestInProgress: false
@@ -165,6 +168,12 @@ export default function Project (state = InitialState, action) {
       [`${action.target}IsEditing`]: false
     };
 
+  case ProjectActions.OPEN_CREATE_CHILD_TASK_MODAL:
+    return {
+      ...state,
+      isCreateChildTaskModalOpen: true
+    };
+
   case ProjectActions.OPEN_CREATE_TASK_MODAL:
     return {
       ...state,
@@ -174,7 +183,8 @@ export default function Project (state = InitialState, action) {
   case ProjectActions.CLOSE_CREATE_TASK_MODAL:
     return {
       ...state,
-      isCreateTaskModalOpen: false
+      isCreateTaskModalOpen: false,
+      isCreateChildTaskModalOpen: false
     };
 
   case ProjectActions.TASK_CREATE_REQUEST_START:
@@ -247,7 +257,9 @@ export default function Project (state = InitialState, action) {
       project: {
         sprints: [],
         users: [],
-        history: {},
+        history: {
+          events: []
+        },
         error: false
       },
       TitleIsEditing: false,
@@ -258,9 +270,9 @@ export default function Project (state = InitialState, action) {
   case ProjectActions.PROJECT_ATTACHMENT_REMOVE_SUCCESS: {
     const { attachmentId } = action;
     const { attachments } = state.project.attachments;
-    const newAttachments = attachments.map(attach =>
+    const newAttachments = attachments ? attachments.map(attach =>
       ({ ...attach, deleting: attach.id === attachmentId || attach.deleting })
-    );
+    ): [];
 
     return {
       ...state,
@@ -333,6 +345,30 @@ export default function Project (state = InitialState, action) {
         metrics: action.metrics
       }
     }
+
+  case MilestoneActions.MILESTONE_CREATE_SUCCESS:
+    return {
+      ...state,
+      project: {
+        ...state.project,
+        milestones: [...state.project.milestones, action.milestone]
+      }
+    }
+
+  case MilestoneActions.MILESTONE_EDIT_SUCCESS:
+    const updatedMilestones = state.project.milestones.map(milestone => {
+      return milestone.id === action.milestone.id
+        ? action.milestone
+        : milestone;
+    })
+    return {
+      ...state,
+      project: {
+        ...state.project,
+        milestones: updatedMilestones
+      }
+    }
+
   default:
     return {
       ...state

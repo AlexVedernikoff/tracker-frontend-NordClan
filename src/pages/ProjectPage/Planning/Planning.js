@@ -19,17 +19,16 @@ import SprintCard from '../../../components/SprintCard';
 import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { editSprint } from '../../../actions/Sprint';
+import { editMilestone } from '../../../actions/Milestone';
 import { openCreateTaskModal } from '../../../actions/Project';
-import SprintStartControl from '../../../components/SprintStartControl';
 import SprintEditModal from '../../../components/SprintEditModal';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 import { IconEdit } from '../../../components/Icons';
 import { BACKLOG_ID } from '../../../constants/Sprint';
 import { ADMIN, VISOR } from '../../../constants/Roles';
-
-const getSprintTime = sprint =>
-  `${moment(sprint.factStartDate).format('DD.MM')}
-  ${sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format('DD.MM')}` : '- ...'}`;
+import Table from './Table';
+import CreateMilestoneModal from './CreateMilestoneModal';
+import EditMilestoneModal from './EditMilestoneModal';
 
 class Planning extends Component {
 
@@ -47,7 +46,7 @@ class Planning extends Component {
     rightColumnTasks: PropTypes.array,
     sprints: PropTypes.array.isRequired,
     startTaskEditing: PropTypes.func,
-    user: PropTypes.object.isRequired,
+    user: PropTypes.object.isRequired
   };
 
   constructor (props) {
@@ -58,10 +57,14 @@ class Planning extends Component {
       rightColumn: null,
       createTaskCallee: null,
       isModalOpenAddSprint: false,
-      sprintIdHovered: null,
+      isModalOpenAddMilestone: false,
+      typeIdHovered: null,
+      typeHovered: null,
       grantActiveYear: new Date().getFullYear(),
-      isOpenEditModal: false,
-      editSprint: null
+      isOpenSprintEditModal: false,
+      isOpenMilestoneEditModal: false,
+      editSprint: null,
+      editMilestone: null
     };
   }
 
@@ -102,6 +105,14 @@ class Planning extends Component {
 
   handleCloseModalAddSprint = () => {
     this.setState({ isModalOpenAddSprint: false });
+  };
+
+  handleOpenModalAddMilestone = () => {
+    this.setState({ isModalOpenAddMilestone: true });
+  };
+
+  handleCloseModalAddMilestone = () => {
+    this.setState({ isModalOpenAddMilestone: false });
   };
 
   getCurrentSprint = sprints => {
@@ -157,9 +168,9 @@ class Planning extends Component {
     } else {
       const sprint = this.props.project.sprints.filter(item => item.id === sprintId)[0];
       const tasksEstimate = tasks.reduce((sum, task) => {
-        return sum + task.plannedExecutionTime;
+        return sum + +task.plannedExecutionTime;
       }, 0);
-      const sprintEstimate = sprint && sprint.allottedTime ? sprint.allottedTime : 0;
+      const sprintEstimate = sprint && sprint.allottedTime ? +sprint.allottedTime : 0;
       const ratio = sprintEstimate === 0 ? 0 : tasksEstimate / sprintEstimate;
 
       return {
@@ -170,6 +181,7 @@ class Planning extends Component {
       };
     }
   };
+
 
   dropTask = (task, sprint) => {
     this.props.changeTask(
@@ -199,17 +211,17 @@ class Planning extends Component {
     this.props.openCreateTaskModal();
   };
 
-  onMouseOverSprint = (sprintId) => {
+  onMouseOverRow = (type, id) => {
     return () => {
-      this.setState({ sprintIdHovered: sprintId });
+      this.setState({ typeHovered: type, typeIdHovered: id });
     };
   };
 
-  onMouseOutSprint = () => {
-    this.setState({ sprintIdHovered: null });
+  onMouseOutRow = () => {
+    this.setState({ typeHovered: null, idHovered: null });
   };
 
-  oClickSprint = (sprintId) => {
+  onClickSprint = (sprintId) => {
     return () => {
       this.selectValue(
         sprintId,
@@ -226,53 +238,27 @@ class Planning extends Component {
     this.setState({ grantActiveYear: --this.state.grantActiveYear });
   };
 
-  getSprintBlock = (sprint, activeYear) => {
-    const {factStartDate: start, factFinishDate: end} = sprint;
-    const daysInYear = moment().endOf('year').dayOfYear();
-
-    return {
-      left: this.calcLeftPadding(activeYear, daysInYear, start),
-      right: this.calcRightPadding(activeYear, daysInYear, end),
-      zIndex: 1
-    };
-  };
-
-  calcLeftPadding = (activeYear, daysInYear, date) => {
-    return (+moment(date).format('YYYY') !== +activeYear)
-      ? '0%'
-      : ((moment(date).dayOfYear() - 1) / daysInYear * 100).toFixed(1) + '%';
-  };
-
-  calcRightPadding = (activeYear, daysInYear, date) => {
-    return (+moment(date).format('YYYY') !== +activeYear)
-      ? '0%'
-      : (100 - (moment(date).dayOfYear() / daysInYear * 100)).toFixed(1) + '%';
-  };
-
-  calcTimelinePadding = (date) => {
-    const daysInYear = moment().endOf('year').dayOfYear();
-
-    return (date.getFullYear() !== this.state.grantActiveYear)
-      ? '0%'
-      : ((moment(date).dayOfYear() - 1) / daysInYear * 100).toFixed(1) + '%';
-  };
-
-  sprintFilter = (sprint) => {
-    return (+moment(sprint.factFinishDate).format('YYYY') === this.state.grantActiveYear)
-      || (+moment(sprint.factStartDate).format('YYYY') === this.state.grantActiveYear);
-  };
-
-  openEditModal = (sprint) => {
+  openSprintEditModal = (sprint) => {
     return () => {
       this.setState({
         editSprint: sprint,
-        isOpenEditModal: true
+        isOpenSprintEditModal: true
       });
     };
   };
 
+  openMilestoneEditModal = (milestone) => {
+    return () => {
+      this.setState({
+        editMilestone: milestone,
+        isOpenMilestoneEditModal: true
+      });
+    };
+  };
+
+
   handleEditSprint = (sprint) => {
-    this.setState({ isOpenEditModal: false });
+    this.setState({ isOpenSprintEditModal: false });
     this.props.editSprint(
       sprint.id,
       null,
@@ -288,46 +274,29 @@ class Planning extends Component {
   closeEditSprintModal = () => {
     this.setState({
       editSprint: null,
-      isOpenEditModal: false
+      isOpenSprintEditModal: false
     });
   };
 
-  sprints = (sprint, i) => {
-    return <div key={`sprint-${i}`} className={css.tr}>
-      <div
-        className={classnames({
-          [css.sprintBar]: true,
-          [css.unactive]: sprint.statusId === 1 && moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]'),
-          [css.finished]: moment(sprint.factFinishDate).isBefore(moment(), 'days'),
-          [css.active]: sprint.statusId === 2,
-          [css.future]: moment(sprint.factStartDate).isAfter(moment(), 'days')
-        })}
-        style={this.getSprintBlock(sprint, this.state.grantActiveYear)}
-        data-tip={getSprintTime(sprint)}
-      >
-        <div className={css.text}>{sprint.spentTime || 0}</div>
-        <div className={css.text}>{sprint.allottedTime || 0}</div>
-      </div>
-    </div>;
+  closeEditMilestoneModal = () => {
+    this.setState({
+      editMilestone: null,
+      isOpenMilestoneEditModal: false
+    });
   };
 
-  currentTimeline = () => {
-    const date = new Date();
-
-    if (date.getFullYear() === this.state.grantActiveYear) {
-      return (
-        <div className={css.timeline}
-          style={{left: this.calcTimelinePadding(date)}}
-          data-tip={moment(date).format('DD.MM')}
-        />
-      );
-    }
-  };
 
   checkIsAdminInProject = () => {
     return this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1
       || this.props.user.globalRole === ADMIN;
   };
+
+  sortEntities = (entity1, entity2) => {
+    const startDay1 = entity1.factStartDate || entity1.date;
+    const startDay2 = entity2.factStartDate || entity2.date;
+
+    return new Date(startDay1) - new Date(startDay2);
+  }
 
   render () {
     const isProjectAdmin = this.checkIsAdminInProject();
@@ -360,7 +329,18 @@ class Planning extends Component {
     const rightEstimates = this.getEstimatesInfo(this.state.rightColumn, this.props.rightColumnTasks);
     const leftColumnSprints = this.getSprints();
     const rightColumnSprints = this.getSprints();
-    const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+    const filteredSprints = this.props.sprints.filter(sprint => {
+      return (+moment(sprint.factFinishDate).format('YYYY') === this.state.grantActiveYear)
+        || (+moment(sprint.factStartDate).format('YYYY') === this.state.grantActiveYear);
+    });
+
+    const filteredMilestones = this.props.milestones.filter(milestone => {
+      return +moment(milestone.date).format('YYYY') === this.state.grantActiveYear;
+    })
+
+    const entities = filteredSprints
+      .concat(filteredMilestones)
+      .sort(this.sortEntities)
 
     return (
       <div>
@@ -369,14 +349,25 @@ class Planning extends Component {
           <hr />
           {
             isProjectAdmin
-              ? <Button
-                text="Создать спринт"
-                type="primary"
-                style={{ float: 'right', marginTop: '-.2rem' }}
-                icon="IconPlus"
-                onClick={this.handleOpenModalAddSprint}
-              />
-              : null
+            ? <Button
+              text="Создать спринт"
+              type="primary"
+              style={{ float: 'right', marginTop: '-.2rem' }}
+              icon="IconPlus"
+              onClick={this.handleOpenModalAddSprint}
+            />
+            : null
+          }
+          {
+            isProjectAdmin
+            ? <Button
+              text="Создать веху"
+              type="primary"
+              style={{ float: 'right', marginTop: '-.2rem', marginRight: '5px' }}
+              icon="IconPlus"
+              onClick={this.handleOpenModalAddMilestone}
+            />
+            : null
           }
           <div className={css.sprintList}>
             {this.props.sprints
@@ -385,154 +376,93 @@ class Planning extends Component {
                   ...this.state,
                   isOpenSprintList: !this.state.isOpenSprintList
                 })}>
-                  {this.state.isOpenSprintList ? <IconArrowDown /> : <IconArrowRight />}
-                  Спринты / Фазы
-                </h2>
-                {this.state.isOpenSprintList
-                  ? <Row>
-                    {this.props.sprints.map((element, i) =>
-                      <Col xs={12} sm={6} md={3} key={`sprint-${i}`}>
-                        <SprintCard sprint={element} inFocus={element.id === this.state.sprintIdHovered} onMouseOver={this.onMouseOverSprint(element.id)} onMouseOut={this.onMouseOutSprint} />
-                      </Col>
-                    )}
-                  </Row>
-                  : null}
+                {this.state.isOpenSprintList ? <IconArrowDown /> : <IconArrowRight />}
+                Спринты / Фазы
+              </h2>
+              {this.state.isOpenSprintList
+                ? <Row>
+                  {this.props.sprints.map((element, i) =>
+                    <Col xs={12} sm={6} md={3} key={`sprint-${i}`}>
+                      <SprintCard sprint={element} inFocus={this.state.typeHovered === 'sprint' && element.id === this.state.typeIdHovered} onMouseOver={this.onMouseOverRow('sprint', element.id)} onMouseOut={this.onMouseOutRow} />
+                    </Col>
+                  )}
+                </Row>
+                : null}
               </div> : null}
-          </div>
-          {
-            this.state.isModalOpenAddSprint
+            </div>
+            {
+              this.state.isModalOpenAddSprint
               ? <CreateSprintModal onClose={this.handleCloseModalAddSprint} />
               : null
-          }
-          <div className={css.graph}>
-            <div className={css.wrapper}>
-              <div className={css.sprintNames}>
-                <div />
-                <div />
-                {this.props.sprints.filter(this.sprintFilter).map((sprint, i)=>
-                  <div key={`sprint-${i}`}>
-                    <span
-                      className={classnames({
-                        [css.selection]: true,
-                        [css.hover]: sprint.id === this.state.sprintIdHovered
-                      })}
-                      data-tip={getSprintTime(sprint)} onClick={this.oClickSprint(sprint.id)} onMouseOver={this.onMouseOverSprint(sprint.id)} onMouseOut={this.onMouseOutSprint}/>
-                    <SprintStartControl sprint={sprint}/>
-                    <div className={css.name}>
-                      {sprint.name}
-                    </div>
-                    <IconEdit
-                      className={css.edit}
-                      data-tip="Редактировать"
-                      onClick={this.openEditModal(sprint)}
+            }
+            {
+              this.state.isModalOpenAddMilestone
+              ? <CreateMilestoneModal onClose={this.handleCloseModalAddMilestone} />
+              : null
+            }
+            <Table
+              entities={entities}
+              typeIdHovered={this.state.typeIdHovered}
+              typeHovered={this.state.typeHovered}
+              isProjectAdmin={isProjectAdmin}
+              onMouseOverRow={this.onMouseOverRow}
+              onMouseOutRow={this.onMouseOutRow}
+              grantYearDecrement={this.grantYearDecrement}
+              grantYearIncrement={this.grantYearIncrement}
+              grantActiveYear={this.state.grantActiveYear}
+              onClickSprint={this.onClickSprint}
+              openSprintEditModal={this.openSprintEditModal}
+              openMilestoneEditModal={this.openMilestoneEditModal}
+            />
+            {
+          !isVisor
+          ? <Row>
+            <Col xs={12} sm={6}>
+              <div className={css.headerColumn}>
+                <div className={css.selectWrapper}>
+                  <SelectDropdown
+                    name="leftColumn"
+                    placeholder="Введите название спринта..."
+                    multi={false}
+                    value={this.state.leftColumn}
+                    onChange={e =>
+                      this.selectValue(
+                        e !== null ? e.value : null,
+                        'leftColumn'
+                      )}
+                      noResultsText="Нет результатов"
+                      options={leftColumnSprints}
                     />
                   </div>
-                )}
-              </div>
-
-              <div className={classnames({
-                [css.sprintNames]: true,
-                [css.spentTime]: true
-              })}>
-                <span className={css.header}>План</span>
-                {this.props.sprints.filter(this.sprintFilter).map((sprint, i) =>
-                  <span key={`sprint-${i}`} className={css.name}>{sprint.allottedTime}</span>
-                )}
-              </div>
-              <div className={classnames({
-                [css.sprintNames]: true,
-                [css.spentTime]: true
-              })}>
-                <span className={css.header}>Факт</span>
-                {this.props.sprints.filter(this.sprintFilter).map((sprint, i) =>
-                  <span key={`sprint-${i}`} className={css.name}>{0}</span>
-                )}
-              </div>
-              <div className={css.table}>
-                <div className={css.tr}>
-                  <div className={css.year}>
-                    <span className={css.arrow} onClick={this.grantYearDecrement}>&larr;</span>
-                    <span>{this.state.grantActiveYear}</span>
-                    <span className={css.arrow} onClick={this.grantYearIncrement}>&rarr;</span>
-                  </div>
+                  <Button
+                    onClick={this.openModal}
+                    type="bordered"
+                    text="Создать задачу"
+                    icon="IconPlus"
+                    name="left"
+                    className={css.button}
+                    data-tip="Создать задачу"
+                  />
                 </div>
-                <div className={css.tr}>
-                  <div className={css.nameHeader} />
-                  {
-                    months.map((month, i) => (
-                      <div
-                        key={`sprint-${month}`}
-                        className={css.month}
-                        style={{flex: moment(`${this.state.grantActiveYear}-${i + 1}`, 'YYYY-MM').daysInMonth()}}
-                      >
-                        {month}
-                      </div>
-                    ))
-                  }
-                </div>
-                {this.currentTimeline()}
-                {this.props.sprints.filter(this.sprintFilter).map(this.sprints)}
-                <div className={css.grid}>
-                  {
-                    months.map((el, i) => (
-                      <span
-                        key={`sprint-${i}`}
-                        style={{flex: moment(`${this.state.grantActiveYear}-${i + 1}`, 'YYYY-MM').daysInMonth()}}/>
-                    ))
-                  }
-                </div>
-              </div>
-            </div>
-          </div>
-          {
-            !isVisor
-              ? <Row>
-                <Col xs={12} sm={6}>
-                  <div className={css.headerColumn}>
-                    <div className={css.selectWrapper}>
-                      <SelectDropdown
-                        name="leftColumn"
-                        placeholder="Введите название спринта..."
-                        multi={false}
-                        value={this.state.leftColumn}
-                        onChange={e =>
-                          this.selectValue(
-                            e !== null ? e.value : null,
-                            'leftColumn'
-                          )}
-                        noResultsText="Нет результатов"
-                        options={leftColumnSprints}
-                      />
-                    </div>
-                    <Button
-                      onClick={this.openModal}
-                      type="bordered"
-                      text="Создать задачу"
-                      icon="IconPlus"
-                      name="left"
-                      className={css.button}
-                      data-tip="Создать задачу"
-                    />
-                  </div>
+                <div
+                  className={css.progressBarWrapper}
+                  data-tip={leftEstimates.summary}
+                >
                   <div
-                    className={css.progressBarWrapper}
-                    data-tip={leftEstimates.summary}
-                  >
-                    <div
-                      className={classnames({
-                        [css.progressBar]: leftEstimates.active,
-                        [css.exceeded]: leftEstimates.exceeded
-                      })}
-                      style={{ width: leftEstimates.width }}
-                    />
-                  </div>
-                  {this.state.leftColumn || this.state.leftColumn === 0
-                    ? <SprintColumn
-                      onDrop={this.dropTask}
-                      sprint={this.state.leftColumn}
-                      tasks={leftColumnTasks}
-                    />
-                    : null}
+                    className={classnames({
+                      [css.progressBar]: leftEstimates.active,
+                      [css.exceeded]: leftEstimates.exceeded
+                    })}
+                    style={{ width: leftEstimates.width }}
+                  />
+                </div>
+                {this.state.leftColumn || this.state.leftColumn === 0
+                  ? <SprintColumn
+                    onDrop={this.dropTask}
+                    sprint={this.state.leftColumn}
+                    tasks={leftColumnTasks}
+                  />
+                  : null}
                 </Col>
                 <Col xs={12} sm={6}>
                   <div className={css.headerColumn}>
@@ -547,73 +477,84 @@ class Planning extends Component {
                             e !== null ? e.value : null,
                             'rightColumn'
                           )}
-                        noResultsText="Нет результатов"
-                        options={rightColumnSprints}
+                          noResultsText="Нет результатов"
+                          options={rightColumnSprints}
+                        />
+                      </div>
+                      <Button
+                        onClick={this.openModal}
+                        type="bordered"
+                        text="Создать задачу"
+                        icon="IconPlus"
+                        name="right"
+                        className={css.button}
+                        data-tip="Создать задачу"
                       />
                     </div>
-                    <Button
-                      onClick={this.openModal}
-                      type="bordered"
-                      text="Создать задачу"
-                      icon="IconPlus"
-                      name="right"
-                      className={css.button}
-                      data-tip="Создать задачу"
-                    />
-                  </div>
-                  <div
-                    className={css.progressBarWrapper}
-                    data-tip={rightEstimates.summary}
-                  >
                     <div
-                      className={classnames({
-                        [css.progressBar]: rightEstimates.active,
-                        [css.exceeded]: rightEstimates.exceeded
-                      })}
-                      style={{ width: rightEstimates.width }}
-                    />
-                  </div>
-                  {this.state.rightColumn || this.state.rightColumn === 0
-                    ? <SprintColumn
-                      onDrop={this.dropTask}
-                      sprint={this.state.rightColumn}
-                      tasks={rightColumnTasks}
-                    />
-                    : null}
-                </Col>
-              </Row>
-              : null
-          }
-        </section>
-        {/* <GanttChart /> */}
-        {
-          this.props.isCreateTaskModalOpen
-            ? <CreateTaskModal
-              selectedSprintValue={
-                this.state.createTaskCallee === 'left'
-                  ? this.state.leftColumn
-                  : this.state.rightColumn
-              }
-              project={this.props.project}
-              column={this.state.createTaskCallee}
-            />
-            : null
+                      className={css.progressBarWrapper}
+                      data-tip={rightEstimates.summary}
+                    >
+                      <div
+                        className={classnames({
+                          [css.progressBar]: rightEstimates.active,
+                          [css.exceeded]: rightEstimates.exceeded
+                        })}
+                        style={{ width: rightEstimates.width }}
+                      />
+                    </div>
+                    {this.state.rightColumn || this.state.rightColumn === 0
+                      ? <SprintColumn
+                        onDrop={this.dropTask}
+                        sprint={this.state.rightColumn}
+                        tasks={rightColumnTasks}
+                      />
+                      : null}
+                    </Col>
+                  </Row>
+          : null
         }
-        {
-          this.state.isOpenEditModal
-            ? <SprintEditModal
-              sprint={this.state.editSprint}
-              handleEditSprint={this.handleEditSprint}
-              handleCloseModal={this.closeEditSprintModal}
-            />
-            : null
-        }
-      </div>
+      </section>
+      {/* <GanttChart /> */}
+      {
+        this.props.isCreateTaskModalOpen
+          ? <CreateTaskModal
+            selectedSprintValue={
+              this.state.createTaskCallee === 'left'
+              ? this.state.leftColumn
+              : this.state.rightColumn
+            }
+            project={this.props.project}
+            column={this.state.createTaskCallee}
+          />
+          : null
+      }
+      {
+        this.state.isOpenSprintEditModal
+          ? <SprintEditModal
+            sprint={this.state.editSprint}
+            handleEditSprint={this.handleEditSprint}
+            handleCloseModal={this.closeEditSprintModal}
+          />
+          : null
+      }
+      {
+        this.state.isOpenMilestoneEditModal
+          ? <EditMilestoneModal
+            milestone={this.state.editMilestone}
+            handleEditMilestone={this.handleEditMilestone}
+            onClose={this.closeEditMilestoneModal}
+          />
+          : null
+      }
+
+    </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
+  milestones: state.Project.project.milestones,
   sprints: state.Project.project.sprints,
   project: state.Project.project,
   lastCreatedTask: state.Project.lastCreatedTask,
@@ -627,6 +568,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   getPlanningTasks,
   editSprint,
+  editMilestone,
   changeTask,
   startTaskEditing,
   openCreateTaskModal,

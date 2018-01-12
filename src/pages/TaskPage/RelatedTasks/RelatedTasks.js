@@ -3,11 +3,18 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { IconPlus, IconLink, IconClose } from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal';
-
+import classnames from 'classnames';
+import * as css from './RelatedTasks.scss';
 export default class RelatedTasks extends React.Component {
 
+  taskStyle = (statusId) => {
+    return classnames({
+      [css.task]: true,
+      [css.completed]: statusId === 10
+    });
+  };
+
   render () {
-    const css = require('./RelatedTasks.scss');
 
     const iconStyles = {
       width: 16,
@@ -17,18 +24,18 @@ export default class RelatedTasks extends React.Component {
     };
 
     const tasks = this.props.task[this.props.type].map(task => {
-      return <li key={`${this.props.type}-${task.id}`} className={css.task}>
-                <span className={css.taskLabel}>{`${this.props.task.project.prefix}-${task.id}`}</span>
-                <Link to={`/projects/${this.props.task.project.id}/tasks/${task.id}`}>{task.name}</Link>
-                {
-                  this.props.onDelete
-                  ? <IconClose
-                      className={css.iconClose}
-                      onClick={() => {this.props.onDelete(task.id);}}
-                    />
-                  : null
-                }
-             </li>;
+      return <li key={`${this.props.type}-${task.id}`} className={this.taskStyle(task.statusId)}>
+        <span className={css.taskLabel}>{`${this.props.task.project.prefix}-${task.id}`}</span>
+        <Link to={`/projects/${this.props.task.project.id}/tasks/${task.id}`}>{task.name}</Link>
+        {
+          this.props.onDelete
+            ? <IconClose
+              className={css.iconClose}
+              onClick={() => {this.props.onDelete(task.id);}}
+            />
+            : null
+        }
+      </li>;
     });
 
     return (
@@ -36,27 +43,24 @@ export default class RelatedTasks extends React.Component {
         <h3>
           {
             this.props.type === 'linkedTasks'
-            ? 'Связанные задачи'
-            : this.props.type === 'subTasks'
-            ? 'Подзадачи' : null
+              ? 'Связанные задачи'
+              : this.props.type === 'subTasks' ? 'Подзадачи' : null
           }
         </h3>
         <ul className={css.taskList}>
-            {tasks}
+          {tasks}
         </ul>
         <a onClick={this.props.onAction} className={css.task + ' ' + css.add}>
           {
             this.props.type === 'linkedTasks'
-            ? <IconLink style={iconStyles} />
-            : this.props.type === 'subTasks'
-            ? <IconPlus style={iconStyles} /> : null
+              ? <IconLink style={iconStyles} />
+              : this.props.type === 'subTasks' ? <IconPlus style={iconStyles} /> : null
           }
           <div className={css.tooltip}>
             {
               this.props.type === 'linkedTasks'
-              ? 'Связать с другой задачей'
-              : this.props.type === 'subTasks'
-              ? 'Добавить подзадачу' : null
+                ? 'Связать с другой задачей'
+                : this.props.type === 'subTasks' ? 'Добавить подзадачу' : null
             }
           </div>
         </a>

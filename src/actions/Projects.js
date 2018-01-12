@@ -4,6 +4,7 @@ import { history } from '../History';
 import { API_URL } from '../constants/Settings';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
+import { getInfoAboutMe } from './Authentication';
 
 const startProjectsReceive = () => ({
   type: ProjectActions.PROJECTS_RECEIVE_START
@@ -21,6 +22,11 @@ const startProjectCreate = () => ({
 const projectCreateSuccess = project => ({
   type: ProjectActions.PROJECT_CREATE_SUCCESS,
   createdProject: project
+});
+
+const projectCreateFail = error => ({
+  type: ProjectActions.PROJECT_CREATE_FAIL,
+  error: error
 });
 
 export const openCreateProjectModal = () => ({
@@ -91,13 +97,18 @@ export const requestProjectCreate = (project, openProjectPage) => {
       })
       .catch(error => {
         dispatch(finishLoading());
-        dispatch(showNotification({ message: error.message, type: 'error' }));
+        if (error.response.status === 400) {
+          dispatch(projectCreateFail(error.response.data));
+        } else {
+          dispatch(showNotification({message: error.message, type: 'error'}));
+        }
       })
       .then(response => {
         if (response && response.status === 200) {
           dispatch(finishLoading());
           dispatch(projectCreateSuccess(response.data));
           dispatch(closeCreateProjectModal());
+          dispatch(getInfoAboutMe());
           dispatch(getProjects());
 
           if (openProjectPage) {

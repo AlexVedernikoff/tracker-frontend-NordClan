@@ -14,7 +14,7 @@ class PriorityBox extends React.Component {
     isTime: PropTypes.bool,
     priorityId: PropTypes.number,
     taskId: PropTypes.number
-  }
+  };
 
   handleClickOutside = () => {
     this.props.hideBox();
@@ -37,13 +37,14 @@ class PriorityBox extends React.Component {
           onChange={changeTask}
           onChangeCallback={hideBox}
           vertical
+          canEdit
         />
       </div>
     </div>;
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = () => ({});
 
 const mapDispatchToProps = {
   changeTask

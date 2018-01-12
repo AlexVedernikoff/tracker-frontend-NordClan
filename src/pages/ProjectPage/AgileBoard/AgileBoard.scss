@@ -9,21 +9,36 @@
 }
 
 .changedSprint {
+  position: relative;
   @include phone {
     flex-basis: auto;
     margin-bottom: 1rem;
+  }
+  .sprintTime {
+    position: absolute;
+    top: 0;
+    right: 40px;
+    line-height: 2rem;
+    pointer-events: none;
+    @include phone {
+      display: none;
+    }
   }
 }
 
 .filtersRow {
   margin-bottom: 1rem;
-  .filterCheckbox {
+  .filterButtonCol {
     align-items: center;
-    padding: 0.5rem 1.5rem;
+    display: flex;
+    padding: 0 8px;
   }
   @include phone {
     flex-direction: column; // ie fix
     flex-basis: auto; // ie fix
+    > div {
+      margin-bottom: 1rem;
+    }
   }
 }
 

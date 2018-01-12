@@ -119,6 +119,10 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  > span {
+    padding-right: 5px;
+    color: gray;
+  }
 }
 
 .meta {
@@ -199,7 +203,9 @@
     background-color: lighten($color-dark, 10%);
     color: white;
     transition: $transition;
-
+    display: flex;
+    justify-content: center;
+    align-items: center;
     &.inactive {
       cursor: default;
     }

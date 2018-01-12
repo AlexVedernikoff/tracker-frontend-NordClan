@@ -1,4 +1,5 @@
 import moment from 'moment';
+import exactMath from 'exact-math';
 import reducerFabric from './fabric';
 import {
   TIMESHEET_PLAYER_RECEIVE_START,
@@ -20,6 +21,7 @@ import {
 
 const InitialState = {
   activeTask: null,
+  availableProjects: [],
   tracks: {}
 };
 
@@ -31,9 +33,13 @@ exports[TIMESHEET_PLAYER_RECEIVE_START] = (state = InitialState, action) => {
 }
 
 exports[TIMESHEET_PLAYER_RECEIVE_SUCCESS] = (state = InitialState, action) => {
+  const availableProjects = action.data.availableProjects;
+  delete action.data.availableProjects;
+
   const updatedTracks = setDefaultSpentTime(action)
   return {
     ...state,
+    availableProjects: availableProjects,
     tracks: updatedTracks
   };
 }
@@ -62,6 +68,12 @@ exports[UPDATE_TIMESHEET_SUCCESS] = (state = InitialState, action) => {
 
 function onUpdateTracks(state, action) {
   action.timesheet.onDate = moment(action.timesheet.onDate).format('YYYY-MM-DD');
+
+  const needUpdatePlayer = action.timesheet.onDate in state.tracks;
+  if (!needUpdatePlayer) {
+    return state;
+  }
+
   const updatedTracks = state.tracks[action.timesheet.onDate].tracks
     .map((track) => {
       const taskId = getTaskId(action);
@@ -78,6 +90,11 @@ function onUpdateTracks(state, action) {
 exports[CREATE_TIMESHEET_SUCCESS] = (state = InititalState, action) => {
   action.timesheet.onDate = moment(action.timesheet.onDate).format('YYYY-MM-DD');
   action.timesheet.spentTime = action.timesheet.spentTime || 0
+
+  const needCreateTimesheetInPlayer = action.timesheet.onDate in state.tracks;
+  if (!needCreateTimesheetInPlayer) {
+    return state;
+  }
 
   const updatedTracks = [
     ...state.tracks[action.timesheet.onDate].tracks,
@@ -103,6 +120,12 @@ function getTaskId(action) {
 
 exports[DELETE_TIMESHEET_SUCCESS] = (state = InitialState, action) => {
   action.timesheet.onDate = moment(action.timesheet.onDate).format('YYYY-MM-DD');
+
+  const needDeleteTimesheetInPlayer = action.timesheet.onDate in state.tracks;
+  if (!needDeleteTimesheetInPlayer) {
+    return state;
+  }
+
   const updatedTracks = state.tracks[action.timesheet.onDate].tracks
     .filter((track) => {
       return track.id !== action.timesheet.id;
@@ -122,10 +145,10 @@ function updateTracks(state, action, updatedTracks) {
 
   const updatedActivityTime = updatedDay[action.timesheet.onDate].tracks
     .filter(track => track.typeId === action.timesheet.typeId)
-    .reduce((acc, time) => acc + parseFloat(time.spentTime), 0).toString();
+    .reduce((acc, track) => exactMath.add(acc, track.spentTime), 0);
 
   const all = updatedDay[action.timesheet.onDate].tracks
-    .reduce((acc, time) => acc + parseFloat(time.spentTime), 0).toString();
+    .reduce((acc, track) => exactMath.add(acc, track.spentTime), 0);
 
   updatedDay[action.timesheet.onDate].scales[action.timesheet.typeId] = updatedActivityTime;
   updatedDay[action.timesheet.onDate].scales.all = all;
@@ -150,7 +173,7 @@ exports[TASK_CHANGE_REQUEST_SUCCESS] = (state = InitialState, action) => {
         if (action.changedFields.id && track.taskId === action.changedFields.id) {
           return {
             ...track,
-            task: { ...track.task, taskStatus: action.changedFields.taskStatus }
+            task: { ...track.task, ...action.changedFields }
           }
         }
         return track;
@@ -158,7 +181,7 @@ exports[TASK_CHANGE_REQUEST_SUCCESS] = (state = InitialState, action) => {
 
       acc.tracks[day] = { tracks: updatedTracks, scales }
       return acc;
-    }, state)
+    }, { ...state })
 
   return updatedState;
 }

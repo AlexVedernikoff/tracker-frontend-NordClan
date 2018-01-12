@@ -1,6 +1,7 @@
 import * as TaskActions from '../constants/Task';
 import * as TagsActions from '../constants/Tags';
-import TaskList from '../pages/ProjectPage/TaskList/TaskList';
+import * as TaskStatuses from '../constants/TaskStatuses';
+import _ from 'lodash';
 
 const getDefaultCurrentComment = () => ({
   text: '',
@@ -9,6 +10,22 @@ const getDefaultCurrentComment = () => ({
   disabled: false,
   expired: false
 });
+
+const getJobById = status => {
+  switch (status) {
+  case TaskStatuses.DEV_PLAY:
+  case TaskStatuses.DEV_STOP:
+    return 'Develop';
+  case TaskStatuses.QA_PLAY:
+  case TaskStatuses.QA_STOP:
+    return 'QA';
+  case TaskStatuses.CODE_REVIEW_STOP:
+  case TaskStatuses.CODE_REVIEW_PLAY:
+    return 'Code Review';
+  default:
+    return 'Another';
+  }
+};
 
 const InitialState = {
   task: {
@@ -19,10 +36,12 @@ const InitialState = {
   },
   comments: [],
   history: {},
+  timeSpent: {},
   currentComment: getDefaultCurrentComment(),
   highlighted: {},
   TitleIsEditing: false,
   PlanningTimeIsEditing: false,
+  ExecutionTimeIsEditing: false,
   SprintIsEditing: false,
   StatusIsEditing: false,
   DescriptionIsEditing: false,
@@ -85,6 +104,24 @@ export default function Task (state = InitialState, action) {
     return {
       ...state,
       history: action.data
+    };
+
+  case TaskActions.GET_TASK_SPENT_REQUEST_SENT:
+    return {
+      ...state,
+      timeSpent: {}
+    };
+
+  case TaskActions.GET_TASK_SPENT_REQUEST_SUCCESS:
+    return {
+      ...state,
+      timeSpent: _.chain(action.data)
+          .filter(timeSheet => Number(timeSheet.spentTime))
+          .map(spent => ({job: getJobById(spent.taskStatusId), spent: spent.spentTime }))
+          .transform((byStatus, spent) => {
+            const job = spent.job;
+            byStatus[job] = Number(spent.spent) + (byStatus[job] ? byStatus[job] : 0);
+          }, {}).value()
     };
 
   case TaskActions.TASK_EDIT_START:

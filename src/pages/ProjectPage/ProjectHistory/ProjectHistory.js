@@ -42,7 +42,7 @@ class ProjectHistory extends React.Component {
 
   loadHistoryEvents = () => {
     const pageSize = 20;
-    this.props.getProjectHistory(this.props.projectId, {
+    this.props.getProjectHistory(this.props.params.projectId, {
       pageSize,
       currentPage: this.state.activePage
     });
@@ -72,7 +72,6 @@ class ProjectHistory extends React.Component {
         <h3>История изменений</h3>
         {eventList}
 
-        <hr/>
         { this.props.pagesCount > 1
           ? <Pagination
               itemsCount={this.props.pagesCount}

@@ -57,11 +57,13 @@ class TaskTitle extends Component {
       // TODO: add exceptions for backspace and other needed keys
       event.preventDefault();
     }
+  };
 
-    if (this.props.TitleIsEditing && event.keyCode === 13) {
+  handleKeyDown = event => {
+    if (this.props.TitleIsEditing && event.key === 'Enter') {
       event.preventDefault();
       this.validateAndSubmit(event);
-    } else if (event.keyCode === 27) {
+    } else if (event.key === 'Escape') {
       event.target.innerText = this.props.name;
       this.stopEditing();
       this.setState({
@@ -83,20 +85,22 @@ class TaskTitle extends Component {
             contentEditable={this.props.TitleIsEditing}
             onBlur={this.validateAndSubmit}
             onInput={this.handleInput}
+            onKeyDown={this.handleKeyDown}
           >
             {this.props.name}
           </span>
-          {this.props.TitleIsEditing ? (
-            <IconCheck
-              onClick={this.editIconClickHandler}
-              className={css.save}
-            />
-          ) : (
-            <IconEdit
-              onClick={this.editIconClickHandler}
-              className={css.edit}
-            />
-          )}
+          { this.props.canEdit
+            ? this.props.TitleIsEditing
+              ? <IconCheck
+                onClick={this.editIconClickHandler}
+                className={css.save}
+              />
+              : <IconEdit
+                onClick={this.editIconClickHandler}
+                className={css.edit}
+              />
+            : null
+          }
         </h1>
       </div>
     );
@@ -111,6 +115,10 @@ const mapDispatchToProps = {
   startTaskEditing,
   stopTaskEditing,
   changeTask
+};
+
+TaskTitle.propTypes = {
+  canEdit: PropTypes.bool
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskTitle);

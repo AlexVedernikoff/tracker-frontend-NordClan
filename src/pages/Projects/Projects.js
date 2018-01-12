@@ -20,6 +20,7 @@ import getProjects, {
   openCreateProjectModal,
   closeCreateProjectModal
 } from '../../actions/Projects';
+import { getErrorMessageByType } from '../../utils/ErrorMessages';
 import { VISOR } from '../../constants/Roles';
 
 import 'moment/locale/ru';
@@ -217,6 +218,18 @@ class Projects extends Component {
     }, this.handleFilterChange);
   };
 
+  getFieldError = fieldName => {
+    const errorsArr = this.props.projectError
+      ? this.props.projectError.message.errors.filter(error => error.param === fieldName)
+      : [];
+
+    if (errorsArr.length) {
+      return getErrorMessageByType(errorsArr[0].type);
+    }
+
+    return null;
+  };
+
   render () {
     const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
     const formattedDayFrom = this.state.dateFrom
@@ -332,6 +345,7 @@ class Projects extends Component {
           selectedPortfolio={this.state.selectedPortfolio}
           validateProjectName = {this.state.projectName.length > 3}
           validateProjectPrefix = {this.state.projectPrefix.length > 1}
+          prefixErrorText={this.getFieldError('prefix')}
         />
       </div>
     );
@@ -345,6 +359,7 @@ Projects.propTypes = {
   isCreateProjectModalOpen: PropTypes.bool.isRequired,
   openCreateProjectModal: PropTypes.func.isRequired,
   pagesCount: PropTypes.number.isRequired,
+  projectError: PropTypes.object,
   projectList: PropTypes.array.isRequired
 };
 
@@ -352,6 +367,7 @@ const mapStateToProps = state => ({
   projectList: state.Projects.projects,
   pagesCount: state.Projects.pagesCount,
   isCreateProjectModalOpen: state.Projects.isCreateProjectModalOpen,
+  projectError: state.Projects.error,
   globalRole: state.Auth.user.globalRole
 });
 

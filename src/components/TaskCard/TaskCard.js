@@ -54,19 +54,25 @@ class TaskCard extends React.Component {
     this.state = { isOpenPriority: false };
   }
 
-
-  handleClick = () => {
+  handleClick = event => {
+    event.stopPropagation();
     const { task, onChangeStatus } = this.props;
     onChangeStatus(task.id, task.statusId);
   };
 
-  handlePerformerClick = () => {
+  handlePerformerClick = event => {
+    event.stopPropagation();
     const { task, onOpenPerformerModal } = this.props;
     onOpenPerformerModal(task.id, task.performer ? task.performer.id : null);
   };
 
   togglePriorityBox = () => {
     this.setState({ isOpenPriority: !this.state.isOpenPriority });
+  };
+
+  showPriorityBox = event => {
+    event.stopPropagation();
+    this.togglePriorityBox();
   };
 
   isTaskInWork = (statusId) => (
@@ -89,6 +95,10 @@ class TaskCard extends React.Component {
     (factTime / plannedTime) > 1 && plannedTime
   );
 
+  goToDetailPage = () => {
+    history.push(`/projects/${this.props.task.projectId}/tasks/${this.props.task.id}`);
+  };
+
   render () {
     const {
       task,
@@ -109,26 +119,31 @@ class TaskCard extends React.Component {
 
     return (
       connectDragSource(
-        <div className={classnames({
-          [css.taskCard]: true,
-          [css[classPriority]]: true,
-          [css.dropped]: isDragging,
-          [css.bug]: isBug
-        })} {...other}>
+        <div
+          className={classnames({
+            [css.taskCard]: true,
+            [css[classPriority]]: true,
+            [css.dropped]: isDragging,
+            [css.bug]: isBug
+          })}
+          onClick={this.goToDetailPage}
+          {...other}
+        >
           {
             this.isTaskInWork(task.statusId)
-             && <div
-              className={classnames({
-                [css.status]: true,
-                [css.inhold]: this.isTaskInHold(task.statusId),
-                [css.inprogress]: this.isTaskInProgress(task.statusId)
-              })}>
-              {
-                this.isTaskInProgress(task.statusId)
-                ? <IconPlay data-tip="Начать" onClick={this.handleClick} />
-                : <IconPause data-tip="Приостановить" onClick={this.handleClick} />
-              }
-            </div>
+              && <div
+                className={classnames({
+                  [css.status]: true,
+                  [css.inhold]: this.isTaskInHold(task.statusId),
+                  [css.inprogress]: this.isTaskInProgress(task.statusId)
+                })}
+              >
+                {
+                  this.isTaskInProgress(task.statusId)
+                    ? <IconPlay data-tip="Начать" onClick={this.handleClick} />
+                    : <IconPause data-tip="Приостановить" onClick={this.handleClick} />
+                }
+              </div>
           }
 
           <CopyThis
@@ -151,20 +166,20 @@ class TaskCard extends React.Component {
           <p className={css.taskMeta} onClick={this.handlePerformerClick}>
             {!myTaskBoard
               && <a>
-              { task.performer
-                ? task.performer.fullNameRu
-                : <span className={css.unassigned}>Не назначено</span>
-              }
-            </a>}
+                { task.performer
+                  ? task.performer.fullNameRu
+                  : <span className={css.unassigned}>Не назначено</span>
+                }
+              </a>}
           </p>
 
           {
-            !!((task.factExecutionTime || task.plannedExecutionTime) && task.statusId !== 1)
-            && <p className={css.time}>
-                <IconTime className={classnames({
-                  [css.green]: this.isInPlan(task.plannedExecutionTime, task.factExecutionTime),
-                  [css.red]: this.isOutOfPlan(task.plannedExecutionTime, task.factExecutionTime)
-                })} />
+            !!((task.factExecutionTime || task.plannedExecutionTime))
+            && <p className={classnames(css.time, {[css.redBorder]: +task.plannedExecutionTime === 0})}>
+              <IconTime className={classnames({
+                [css.green]: this.isInPlan(task.plannedExecutionTime, task.factExecutionTime),
+                [css.red]: this.isOutOfPlan(task.plannedExecutionTime, task.factExecutionTime)
+              })} />
               <span>{getTaskTime(task.factExecutionTime, task.plannedExecutionTime)}</span>
             </p>
           }
@@ -184,13 +199,17 @@ class TaskCard extends React.Component {
 
           {
             this.state.isOpenPriority
-            ? <PriorityBox
-              taskId={task.id}
-              isTime={!!(task.factExecutionTime || task.plannedExecutionTime)}
-              priorityId={task.prioritiesId}
-              hideBox={this.togglePriorityBox}
-            />
-            : <div className={css.priorityMarker} onClick={this.togglePriorityBox} data-tip={`Приоритет: ${getProrityById(this.props.task.prioritiesId)}`}/>
+              ? <PriorityBox
+                taskId={task.id}
+                isTime={!!(task.factExecutionTime || task.plannedExecutionTime)}
+                priorityId={task.prioritiesId}
+                hideBox={this.togglePriorityBox}
+              />
+              : <div
+                className={css.priorityMarker}
+                onClick={this.showPriorityBox}
+                data-tip={`Приоритет: ${getProrityById(this.props.task.prioritiesId)}`}
+              />
           }
         </div>
       )

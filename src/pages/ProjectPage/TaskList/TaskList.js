@@ -17,21 +17,18 @@ import _ from 'lodash';
 import PerformerModal from '../../../components/PerformerModal';
 import SprintModal from '../../../components/SprintModal';
 import getTasks from '../../../actions/Tasks';
+import { history } from '../../../History';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 
 class TaskList extends Component {
 
   constructor (props) {
     super(props);
-    const projectId = this.props.params.projectId;
     this.state = {
-      ...this.initialFilters,
       activePage: 1,
       isPerformerModalOpen: false,
       isSprintModalOpen: false,
-      changedFilters: {
-        projectId
-      }
+      ...this.setQueryFilters()
     };
   }
 
@@ -47,6 +44,62 @@ class TaskList extends Component {
     }
   }
 
+  setQueryFilters () {
+    const query = this.props.location.query;
+    const projectId = this.props.params.projectId;
+    const translateToNumIfNeeded = (value) => {
+      const re = /^\d+$/;
+      return re.test(value) ? +value : value;
+    };
+
+    const multipleQueries = (queries) => {
+      if (Array.isArray(queries)) return queries.map(queryValue => translateToNumIfNeeded(queryValue));
+      return queries ? [translateToNumIfNeeded(queries)] : [];
+    };
+
+    const singleQuery = (query) => {
+      return query ? translateToNumIfNeeded(query) : null;
+    };
+    const getValues = (changed) => {
+      const name = changed ? 'name' : 'filterByName';
+      if (changed && Object.keys(query).length === 0) return {};
+      return {
+        sprintId: singleQuery(query.sprintId),
+        performerId: singleQuery(query.performerId),
+        prioritiesId: singleQuery(query.prioritiesId),
+        authorId: singleQuery(query.authorId),
+        statusId: multipleQueries(query.statusId),
+        typeId: multipleQueries(query.typeId),
+        tags: multipleQueries(query.tags),
+        [name]: query.name ? query.name : ''
+      };
+    };
+    return {
+      ...getValues(),
+      changedFilters: {
+        projectId,
+        ...getValues(true)
+      }
+    };
+  }
+
+  changeUrl (changedFilters) {
+    const queryObj = {};
+
+    for (let [key, value] of Object.entries(changedFilters)) {
+      if (value && key !== 'projectId') {
+        queryObj[key] = value;
+      }
+    }
+
+    history.replace({
+      ...this.props.location,
+      query: {
+        ...queryObj
+      }
+    });
+  }
+
   initialFilters = {
     prioritiesId: null,
     typeId: [],
@@ -56,7 +109,9 @@ class TaskList extends Component {
     performerId: null,
     authorId: null,
     tags: [],
-    changedFilters: {}
+    changedFilters: {
+      projectId: this.props.params.projectId
+    }
   }
 
   openSprintModal = (taskId, sprintId) =>{
@@ -65,11 +120,11 @@ class TaskList extends Component {
       sprintId: sprintId,
       changedTask: taskId
     });
-  }
+  };
 
   closeSprintModal = () => {
     this.setState({ isSprintModalOpen: false });
-  }
+  };
 
   changeSprint = (sprintId) => {
     this.props.changeTask({
@@ -77,7 +132,7 @@ class TaskList extends Component {
       sprintId: sprintId
     }, 'Sprint', this.loadTasks);
     this.closeSprintModal();
-  }
+  };
 
   openPerformerModal = (taskId, performerId) => {
     this.setState({
@@ -85,11 +140,11 @@ class TaskList extends Component {
       performer: performerId,
       changedTask: taskId
     });
-  }
+  };
 
   closePerformerModal = () => {
     this.setState({ isPerformerModalOpen: false });
-  }
+  };
 
   changePerformer = (performerId) => {
     this.props.changeTask({
@@ -104,30 +159,30 @@ class TaskList extends Component {
       value: user.id,
       label: user.fullNameRu
     }));
-  }
+  };
 
   changeSingleFilter = (option, name) => {
-
     this.setState(state => {
-
-      const filterValue = option ? option.value : null;
+      let filterValue = option ? option.value : null;
       const changedFilters = state.changedFilters;
+      if (name === 'prioritiesId') {
+        filterValue = option.prioritiesId;
+      }
       if (~[null, [], undefined, ''].indexOf(filterValue)) {
         delete changedFilters[name];
       } else {
         changedFilters[name] = filterValue;
       }
-
+      this.changeUrl(changedFilters);
       const newState = {
         [name]: filterValue,
         activePage: state[name] !== filterValue ? 1 : state.activePage,
         changedFilters
       };
-
       return newState;
 
     }, this.loadTasks);
-  }
+  };
 
   changeMultiFilter = (options, name) => {
 
@@ -140,7 +195,7 @@ class TaskList extends Component {
       } else {
         delete changedFilters[name];
       }
-
+      this.changeUrl(changedFilters);
       const newState = {
         [name]: filterValue,
         activePage: state[name].length !== filterValue.length ? 1 : state.activePage,
@@ -150,7 +205,7 @@ class TaskList extends Component {
       return newState;
 
     }, this.loadTasks);
-  }
+  };
 
   changeNameFilter = event => {
 
@@ -170,7 +225,7 @@ class TaskList extends Component {
         activePage: state.filterByName !== value ? 1 : state.activePage,
         changedFilters
       };
-
+      this.changeUrl(changedFilters);
       return newState;
     }, this.loadTasks);
   };
@@ -201,10 +256,16 @@ class TaskList extends Component {
 
   loadTasks = () => {
     this.props.getTasks(this.state.changedFilters, true);
-  }
+  };
 
   clearFilters = () => {
-    this.setState(this.initialFilters, this.loadTasks);
+    this.setState({
+      ...this.initialFilters, 
+      changedFilters: {
+        projectId: this.props.params.projectId
+      }
+    }, this.loadTasks);
+    this.changeUrl({});
   }
 
   createOptions = (array, labelField = 'name') => {
@@ -214,7 +275,7 @@ class TaskList extends Component {
         label: element[labelField]
       })
     );
-  }
+  };
 
   render () {
     const {
@@ -232,15 +293,16 @@ class TaskList extends Component {
       sprintId,
       performerId,
       authorId,
-      tags
+      tags,
+      filterByName
     } = this.state;
+
     const statusOptions = this.createOptions(statuses);
     const typeOptions = this.createOptions(taskTypes);
     const authorOptions = this.createOptions(project.users, 'fullNameRu');
-    const isFilter = Object.keys(this.state.changedFilters).length;
+    const isFilter = Object.keys(this.state.changedFilters).length > 1;
     const isLoading = isReceiving && !tasks.length;
-    const taskHolder
-      = <div style={{marginBottom: '1rem'}}>
+    const taskHolder = <div style={{marginBottom: '1rem'}}>
       <hr style={{margin: '0 0 1rem 0'}}/>
       <Row>
         <Col xs={12} sm={6}>
@@ -268,6 +330,7 @@ class TaskList extends Component {
                 <Priority
                   onChange={(option) => this.changeSingleFilter(option, 'prioritiesId')}
                   priority={prioritiesId}
+                  canEdit
                 />
               </Col>
               <Col smOffset={6} xs={12} sm={3} className={css.clearFilters}>
@@ -331,6 +394,7 @@ class TaskList extends Component {
               <Col xs={12} sm={6}>
                 <Input
                   placeholder="Название задачи"
+                  value={filterByName}
                   onChange={this.changeNameFilter}
                 />
               </Col>
@@ -352,8 +416,8 @@ class TaskList extends Component {
 
           {
             isLoading
-            ? taskHolder
-            : tasks.map((task) =>
+              ? taskHolder
+              : tasks.map((task) =>
                 <TaskRow
                   key={`task-${task.id}`}
                   task={task}
@@ -364,38 +428,42 @@ class TaskList extends Component {
                 />
               )
           }
-
-          <hr/>
-          { this.props.pagesCount > 1
-            ? <Pagination
-              itemsCount={this.props.pagesCount}
-              activePage={this.state.activePage}
-              onItemClick={this.handlePaginationClick}
-            />
-            : null
+          {
+            !isLoading && tasks.length === 0
+              ? <div className={css.notFound}>Ничего не найдено</div>
+              : null
+          }
+          {
+            this.props.pagesCount > 1
+              ? <Pagination
+                itemsCount={this.props.pagesCount}
+                activePage={this.state.activePage}
+                onItemClick={this.handlePaginationClick}
+              />
+              : null
           }
         </section>
         {
           this.state.isPerformerModalOpen
-          ? <PerformerModal
+            ? <PerformerModal
               defaultUser={this.state.performer}
               onChoose={this.changePerformer}
               onClose={this.closePerformerModal}
               title="Изменить исполнителя задачи"
               users={this.getUsers()}
             />
-          : null
+            : null
         }
         {
           this.state.isSprintModalOpen
-          ? <SprintModal
+            ? <SprintModal
               defaultSprint={this.state.sprintId}
               onChoose={this.changeSprint}
               onClose={this.closeSprintModal}
               title="Изменить спринт задачи"
               sprints={this.props.project.sprints}
             />
-          : null
+            : null
         }
       </div>
     );
@@ -403,15 +471,20 @@ class TaskList extends Component {
 }
 
 TaskList.propTypes = {
+  changeTask: PropTypes.func.isRequired,
   getTasks: PropTypes.func.isRequired,
   isReceiving: PropTypes.bool,
+  params: PropTypes.object,
   pagesCount: PropTypes.number.isRequired,
   project: PropTypes.object.isRequired,
+  startTaskEditing: PropTypes.func.isRequired,
   statuses: PropTypes.array,
   taskTypes: PropTypes.array,
   tasksList: PropTypes.array.isRequired,
   changeTask: PropTypes.func.isRequired,
-  startTaskEditing: PropTypes.func.isRequired
+  startTaskEditing: PropTypes.func.isRequired,
+  location: PropTypes.object,
+  params: PropTypes.object
 };
 
 const mapStateToProps = state => ({
@@ -426,4 +499,3 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = { getTasks, startTaskEditing, changeTask };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskList);
-

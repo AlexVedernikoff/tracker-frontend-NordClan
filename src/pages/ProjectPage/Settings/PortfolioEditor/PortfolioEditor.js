@@ -79,20 +79,18 @@ class PortfolioEditor extends Component {
     return (
       <div className={css.PortfolioEditor}>
         <h2>Портфель</h2>
-        <Row>
-          <SelectAsync
-            promptTextCreator={label => `Создать портфель '${label}'`}
-            searchPromptText={'Введите название портфеля'}
-            multi={false}
-            ignoreCase={false}
-            placeholder="Выберите портфель"
-            loadOptions={getPortfolios}
-            filterOption={el => el}
-            onChange={this.handlePortfolioChange}
-            value={this.state.selectedPortfolio}
-            className={css.selectPortfolio}
-          />
-        </Row>
+        <SelectAsync
+          promptTextCreator={label => `Создать портфель '${label}'`}
+          searchPromptText={'Введите название портфеля'}
+          multi={false}
+          ignoreCase={false}
+          placeholder="Выберите портфель"
+          loadOptions={getPortfolios}
+          filterOption={el => el}
+          onChange={this.handlePortfolioChange}
+          value={this.state.selectedPortfolio}
+          className={css.selectPortfolio}
+        />
       </div>
     )
   }

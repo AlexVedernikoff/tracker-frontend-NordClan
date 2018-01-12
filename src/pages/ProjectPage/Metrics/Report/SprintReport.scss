@@ -1,0 +1,13 @@
+.SprintReport {
+  & > div {
+    align-items: center;
+    margin-bottom: 10px;
+    margin-left: 0.5rem;
+  }
+  .disabled {
+    pointer-events: none;
+    cursor: default;
+    color: silver;
+    text-decoration: none;
+  }
+}
