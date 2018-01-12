@@ -72,6 +72,15 @@ class NavMenu extends Component {
         >
           Отчеты по времени
         </Link>
+      </li>,
+      <li key="userroles" className={css.sidebarItem}>
+        <Link
+          className={css.sidebarLink}
+          activeClassName={css.activeLink}
+          to="/userroles"
+        >
+          Пользователи
+        </Link>
       </li>
     ];
 
