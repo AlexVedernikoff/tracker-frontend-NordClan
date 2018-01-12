@@ -55,6 +55,8 @@ class TaskHeader extends Component {
       this.changeStatus(this.props.task.statusId - 1);
     } else if (tip === 'Приостановить') {
       this.changeStatus(this.props.task.statusId + 1);
+    } else if (tip === 'Перевести в стадию Done') {
+      this.state.clickedStatus = e.currentTarget.textContent;
     } else {
       this.state.clickedStatus = e.currentTarget.textContent;
       this.handleOpenModal();
@@ -161,7 +163,7 @@ class TaskHeader extends Component {
   };
 
   render () {
-    const { task, taskTypes } = this.props;
+    const { task, taskTypes, canEdit } = this.props;
     const css = require('./TaskHeader.scss');
     const users = this.props.users.map(item => ({
       value: item.user ? item.user.id : item.id,
@@ -213,12 +215,17 @@ class TaskHeader extends Component {
           {
             task.prioritiesId
               ? <div data-tip={`Приоритет: ${getProrityById(task.prioritiesId)}`}>
-                  <Priority taskId={task.id} priority={task.prioritiesId} onChange={this.props.onChange} />
-                </div>
+                <Priority
+                  taskId={task.id}
+                  priority={task.prioritiesId}
+                  onChange={this.props.onChange}
+                  canEdit={canEdit}
+                />
+              </div>
               : null
           }
         </div>
-        <TaskTitle name={task.name} id={task.id} />
+        <TaskTitle name={task.name} id={task.id} canEdit={canEdit}/>
         <div className={css.progressButtons}>
           <Button
             type={
@@ -239,6 +246,7 @@ class TaskHeader extends Component {
                 ? this.handleOpenCancelModal
                 : null
             }
+            disabled={!canEdit}
           />
           <ButtonGroup type="lifecircle" stage="full">
             <Button
@@ -255,6 +263,7 @@ class TaskHeader extends Component {
               }
               data-place="bottom"
               onClick={this.handleChangeStatus}
+              disabled={!canEdit}
             />
             <Button
               text="Develop"
@@ -263,6 +272,7 @@ class TaskHeader extends Component {
               icon= {this.getButtonIcon(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY)}
               onClick={this.handleChangeStatus}
               data-place="bottom"
+              disabled={!canEdit}
             />
             <Button
               text="Code Review"
@@ -271,6 +281,7 @@ class TaskHeader extends Component {
               icon= {this.getButtonIcon(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY)}
               onClick={this.handleChangeStatus}
               data-place="bottom"
+              disabled={!canEdit}
             />
             <Button
               text="QA"
@@ -279,6 +290,7 @@ class TaskHeader extends Component {
               icon= {this.getButtonIcon(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY)}
               onClick={this.handleChangeStatus}
               data-place="bottom"
+              disabled={!canEdit}
             />
             <Button
               text="Done"
@@ -294,6 +306,7 @@ class TaskHeader extends Component {
               }
               data-place="bottom"
               onClick={this.handleChangeStatus}
+              disabled={!canEdit}
             />
           </ButtonGroup>
           <Button
@@ -311,6 +324,7 @@ class TaskHeader extends Component {
             data-place="bottom"
             addedClassNames={{[css.buttonOk]: true}}
             onClick={this.handleClose}
+            disabled={!canEdit}
           />
         </div>
         <hr />
@@ -344,6 +358,7 @@ class TaskHeader extends Component {
 }
 
 TaskHeader.propTypes = {
+  canEdit: PropTypes.bool,
   css: PropTypes.object,
   getProjectUsers: PropTypes.func.isRequired,
   location: PropTypes.object,

@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as css from './Login.scss';
 import Logo from '../../components/Logo';
-import Input from '../../components/Input';
+import ValidatedInput from '../../components/ValidatedInput';
+import Validator from '../../components/ValidatedInput/Validator';
 import Button from '../../components/Button';
 import bg from './bg.jpg';
 import { connect } from 'react-redux';
@@ -25,6 +26,7 @@ class Login extends Component {
       password: '',
       errorMessage: ''
     };
+    this.validator = new Validator();
   }
 
   componentDidUpdate () {
@@ -65,19 +67,38 @@ class Login extends Component {
           </div>
           <form onSubmit={this.onSubmit}>
             <div className={css.inputWrapper}>
-              <Input
-                name="username"
-                placeholder="Имя пользователя"
-                onChange={this.handleChange}
-              />
+              {this.validator.validate(
+                (handleBlur, shouldMarkError) => (
+                  <ValidatedInput
+                    autoFocus
+                    name="username"
+                    placeholder="Имя пользователя"
+                    onChange={this.handleChange}
+                    onBlur={handleBlur}
+                    shouldMarkError={shouldMarkError}
+                    errorText="Поле не должно быть пустым"
+                  />
+                ),
+                'taskName',
+                this.state.username.length < 1
+              )}
             </div>
             <div className={css.inputWrapper}>
-              <Input
-                name="password"
-                placeholder="Пароль"
-                type="password"
-                onChange={this.handleChange}
-              />
+              {this.validator.validate(
+                (handleBlur, shouldMarkError) => (
+                  <ValidatedInput
+                    placeholder="Пароль"
+                    name="password"
+                    type="password"
+                    onChange={this.handleChange}
+                    onBlur={handleBlur}
+                    shouldMarkError={shouldMarkError}
+                    errorText="Поле не должно быть пустым"
+                  />
+                ),
+                'taskName',
+                this.state.password.length < 1
+              )}
             </div>
             <div className={css.buttonWrapper}>
               <Button
@@ -85,6 +106,7 @@ class Login extends Component {
                 htmlType="submit"
                 text="Войти"
                 type="borderedInverse"
+                disabled={!(this.state.username && this.state.password)}
               />
             </div>
           </form>

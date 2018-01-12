@@ -16,6 +16,8 @@ import * as css from './Details.scss';
 import moment from 'moment';
 import { getTaskSpent } from '../../../actions/Task';
 import _ from 'lodash';
+import roundNum from '../../../utils/roundNum';
+import classnames from 'classnames';
 
 const spentRequestStatus = {
   READY: 0,
@@ -27,6 +29,7 @@ class Details extends Component {
   static propTypes = {
     ExecutionTimeIsEditing: PropTypes.bool,
     PlanningTimeIsEditing: PropTypes.bool,
+    canEdit: PropTypes.bool,
     getProjectSprints: PropTypes.func.isRequired,
     getProjectUsers: PropTypes.func.isRequired,
     getTask: PropTypes.func.isRequired,
@@ -244,9 +247,10 @@ class Details extends Component {
               <td>Запланировано:</td>
               <td>
                 <TaskPlanningTime
-                  time={task.plannedExecutionTime ? task.plannedExecutionTime : '0'}
+                  time={task.plannedExecutionTime ? task.plannedExecutionTime.toString() : '0'}
                   id={task.id}
                   timeIsEditing={this.props.PlanningTimeIsEditing}
+                  canEdit={this.props.canEdit}
                 />
               </td>
             </tr>
@@ -254,15 +258,18 @@ class Details extends Component {
               ? <tr>
                   <td>Потрачено:</td>
                   <td>
-                    <TaskPlanningTime
-                      time={task.factExecutionTime}
-                      id={task.id}
-                      isExecutionTime
-                      tooltip={Number(task.factExecutionTime) ? executeTimeTooltip : null}
-                      timeIsEditing={this.props.ExecutionTimeIsEditing}
+                    <span
+                      data-tip={!!Number(task.factExecutionTime)}
+                      data-place="right"
+                      data-for={this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? 'time' : 'notime'}
                       key={this.state.tooltipKey}
-                      dataFor={this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? 'time' : 'notime'}
-                    />
+                      className={classnames({
+                        [css.alert]: true
+                      })}
+                    >
+                       {`${roundNum(task.factExecutionTime, 2)} ч.`}
+                    </span>
+                    {Number(task.factExecutionTime) ? executeTimeTooltip : null}
                   </td>
                 </tr>
               : null }

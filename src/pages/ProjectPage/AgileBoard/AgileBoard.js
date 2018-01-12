@@ -320,6 +320,17 @@ class AgileBoard extends Component {
     return sprints;
   };
 
+  getSprintTime = (sprintId) => {
+    if (!sprintId) return false;
+    let currentSprint;
+    this.props.sprints.forEach(sprint => {
+      if (sprint.id === sprintId) {
+        currentSprint = sprint;
+      }
+    });
+    return `${currentSprint.spentTime || 0} / ${currentSprint.allottedTime || 0}`;
+  }
+
   getAllTags = () => {
     let allTags = this.props.sprintTasks.reduce((arr, task) => {
       return arr.concat(task.tags ? task.tags.map((tags) => tags.name) : []);
@@ -419,6 +430,7 @@ class AgileBoard extends Component {
                     <Priority
                       onChange={(option) => this.selectValue(option.prioritiesId, 'prioritiesId')}
                       priority={this.state.prioritiesId}
+                      canEdit
                     />
                   </Col>
                   <Col className={css.filterButtonCol}>
@@ -493,6 +505,9 @@ class AgileBoard extends Component {
                     noResultsText="Нет результатов"
                     options={this.getSprints()}
                   />
+                  <span className={css.sprintTime}>
+                    {this.getSprintTime(this.state.changedSprint) || null}
+                  </span>
                 </Col>
                 <Col xs>
                   <SelectDropdown

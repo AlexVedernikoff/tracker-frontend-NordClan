@@ -34,13 +34,25 @@ class ActivityRow extends React.Component {
     this.createTimesheet = _.debounce(this.createTimesheet, debounceTime);
     this.updateTimesheet = _.debounce(this.updateTimesheet, debounceTime);
     this.deleteTimesheets = _.debounce(this.deleteTimesheets, debounceTime);
+
+    const timeCells = {};
+    _.forEach(props.item.timeSheets, (tsh,i) => {
+      if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
+        timeCells[i] = roundNum(tsh.spentTime, 2);
+      } else {
+        timeCells[i] = 0;
+      }
+    })
+
     this.state = {
-      isOpen: false
+      isOpen: false,
+      timeCells
     };
   }
 
-  createTimesheet = (i, value) => {
+  createTimesheet = (i) => {
     const { item, userId, startingDay } = this.props;
+    const value = this.state.timeCells[i];
     this.props.createTimesheet({
       isDraft: false,
       taskId: item.id || null,
@@ -52,7 +64,8 @@ class ActivityRow extends React.Component {
     }, userId, startingDay);
   };
 
-  updateTimesheet = (i, sheetId, value, comment) => {
+  updateTimesheet = (i, sheetId, comment) => {
+    const value = this.state.timeCells[i];
     const { userId, startingDay } = this.props;
     if (!value && !comment) {
       this.props.deleteTimesheets([sheetId], userId, startingDay);
@@ -60,7 +73,7 @@ class ActivityRow extends React.Component {
     }
     this.props.updateTimesheet({
       sheetId,
-      spentTime: value
+      spentTime: value,
     }, userId, startingDay);
   };
 
@@ -69,13 +82,23 @@ class ActivityRow extends React.Component {
     this.props.deleteTimesheets(ids, userId, startingDay);
   };
 
-  changeEmpty = (i, e) => {
-    const { value } = e.target;
-    if (value) {
-      this.createTimesheet(i, value);
-    } else {
-      this.createTimesheet(i, '0');
+  changeEmpty = (i, value) => {
+    let newValue = parseFloat(value);
+    if (value < 0) {
+      newValue = Math.abs(value);
     }
+
+    this.setState((state) => {
+      const timeCells = {
+        ...state.timeCells
+      };
+      timeCells[i] = newValue;
+      return {
+        timeCells
+      };
+    }, () => {
+      this.createTimesheet(i);
+    });
   };
 
   changeEmptyComment = (text, i) => {
@@ -92,9 +115,23 @@ class ActivityRow extends React.Component {
     }, userId, startingDay);
   };
 
-  changeFilled = (i, id, comment, e) => {
-    const { value } = e.target;
-    this.updateTimesheet(i, id, value, comment);
+  changeFilled = (i, id, comment, value) => {
+    let newValue = parseFloat(value);
+    if (value < 0) {
+      newValue = Math.abs(value);
+    }
+
+    this.setState((state) => {
+      const timeCells = {
+        ...state.timeCells
+      };
+      timeCells[i] = newValue;
+      return {
+        timeCells
+      };
+    }, () => {
+      this.updateTimesheet(i, id, comment);
+    });
   };
 
   changeFilledComment = (text, time, i, sheetId) => {
@@ -162,8 +199,8 @@ class ActivityRow extends React.Component {
                   type="number"
                   disabled={isCellDisabled}
                   max="24"
-                  defaultValue={roundNum(tsh.spentTime, 2)}
-                  onChange={(e) => this.changeFilled(i, tsh.id, tsh.comment, e)}
+                  value={this.state.timeCells[i]}
+                  onChange={(e) => this.changeFilled(i, tsh.id, tsh.comment, e.target.value)}
                 />
                 <span className={css.toggleComment}>
                   <SingleComment
@@ -188,8 +225,8 @@ class ActivityRow extends React.Component {
                   type="number"
                   disabled={!canDeleteRow}
                   max="24"
-                  defaultValue="0"
-                  onChange={(e) => this.changeEmpty(i, e)}
+                  value={this.state.timeCells[i]}
+                  onChange={(e) => this.changeEmpty(i,e.target.value)}
                 />
                 <span className={css.toggleComment}>
                   <SingleComment onChange={(text) => this.changeEmptyComment(text, i)}/>

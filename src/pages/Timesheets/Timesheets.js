@@ -211,6 +211,28 @@ class Timesheets extends React.Component {
       });
     };
 
+    const calculateDayTaskHours = (arr, day) => {
+      if (arr.length > 0) {
+        const hours = dayTaskHours(arr, day);
+        if (hours.length === 1) {
+          return hours[0];
+        }
+        return exactMath.add(...hours);
+      }
+      return 0;
+    };
+
+    const calculateTotalTaskHours = (arr) => {
+      if (arr.length > 0) {
+        const hours = arr.map(tsh => +tsh.spentTime);
+        if (hours.length === 1) {
+          return hours[0];
+        }
+        return exactMath.add(...hours);
+      }
+      return 0;
+    };
+
     for (let day = 0; day < 7; day++) {
       totalRow.push(
         <td key={day} className={cn({
@@ -219,7 +241,7 @@ class Timesheets extends React.Component {
           [css.today]: moment().format('DD.MM.YY') === moment(startingDay).weekday(day).format('DD.MM.YY')
         })}>
           <div>
-            {list.length > 0 ? exactMath.add(...dayTaskHours(list, day)) : 0}
+            {calculateDayTaskHours(list, day)}
           </div>
         </td>
       );
@@ -267,7 +289,7 @@ class Timesheets extends React.Component {
                 {totalRow}
                 <td className={cn(css.total, css.totalWeek, css.totalRow)}>
                   <div>
-                    {list.length > 0 ? exactMath.add(...list.map(tsh => +tsh.spentTime)) : 0}
+                    {calculateTotalTaskHours(list)}
                   </div>
                 </td>
                 <td className={css.total}/>

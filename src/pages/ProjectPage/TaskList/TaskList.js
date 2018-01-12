@@ -330,6 +330,7 @@ class TaskList extends Component {
                 <Priority
                   onChange={(option) => this.changeSingleFilter(option, 'prioritiesId')}
                   priority={prioritiesId}
+                  canEdit
                 />
               </Col>
               <Col smOffset={6} xs={12} sm={3} className={css.clearFilters}>
@@ -427,7 +428,11 @@ class TaskList extends Component {
                 />
               )
           }
-
+          {
+            !isLoading && tasks.length === 0
+              ? <div className={css.notFound}>Ничего не найдено</div>
+              : null
+          }
           {
             this.props.pagesCount > 1
               ? <Pagination
