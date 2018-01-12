@@ -8,7 +8,7 @@ import moment from 'moment';
 import getRandomColor from '../../../../utils/getRandomColor';
 import { budgetMetricsMock } from '../../../../mocks/MetricsMock';
 
-function getBasicLineSettings(color) {
+function getBasicLineSettings (color) {
   return {
     backgroundColor: color,
     borderColor: color,
@@ -23,11 +23,13 @@ class BudgetChart extends Component {
 
   static propTypes = {
     budget: PropTypes.number,
+    riskBudget: PropTypes.number,
     sprints: PropTypes.array,
     projectBudgetMetrics: PropTypes.array,
     sprintsBudgetMetrics: PropTypes.array,
     startDate: PropTypes.string,
-    endDate: PropTypes.string
+    endDate: PropTypes.string,
+    isRisks: PropTypes.bool
   }
 
   constructor (props) {
@@ -72,34 +74,37 @@ class BudgetChart extends Component {
         }]
       }
     };
-
-    // this.state = {
-    //   chartData: this.makeChartData(budgetMetricsMock)
-    // };
-    
   }
 
   makeChartData (metrics) {
-    const {projectBudgetMetrics, sprintsBudgetMetrics, budget, startDate, endDate, sprints} = this.props;
+    const {
+      projectBudgetMetrics,
+      sprintsBudgetMetrics,
+      budget,
+      riskBudget,
+      startDate,
+      endDate,
+      sprints,
+      isRisks
+    } = this.props;
     const sprintsId = sprints.map(sprint => sprint.id);
-    console.log(this.makeSprintsIdealBurndowns(sprints));
     return {
       datasets: [
-        this.makeIdealProjectBurndown(startDate, endDate, budget),
+        this.makeIdealProjectBurndown(startDate, endDate, budget, riskBudget, isRisks),
         this.makeProjectBurndown(projectBudgetMetrics),
         ...this.makeSprintsBurndowns(sprintsBudgetMetrics, sprints),
-        ...this.makeSprintsIdealBurndowns(sprints)
+        ...this.makeSprintsIdealBurndowns(sprints, isRisks)
       ]
     };
   }
 
-  makeIdealProjectBurndown (startDate, endDate, budget) {
+  makeIdealProjectBurndown (startDate, endDate, budget, riskBudget, isRisks) {
     const randomnedColor = getRandomColor();
     return {
       data: [
         {
           x: startDate,
-          y: budget
+          y: isRisks ? riskBudget : budget
         },
         {
           x: endDate,
@@ -126,13 +131,13 @@ class BudgetChart extends Component {
     };
   }
 
-  makeSprintsIdealBurndowns (sprints) {
+  makeSprintsIdealBurndowns (sprints, isRisks) {
     return sprints.map(sprint => {
       const randomnedColor = getRandomColor();
       const idealBurndown = [
         {
           x: sprint.factStartDate,
-          y: sprint.budget || 0
+          y: isRisks ? sprint.riskBudget || 0 : sprint.budget || 0
         },
         {
           x: sprint.factFinishDate,
@@ -163,31 +168,16 @@ class BudgetChart extends Component {
         ...getBasicLineSettings(randomnedColor)
       };
     });
-    // metrics.sprints.forEach(sprint => {
-    //   const burndownData = [];
-    //   const randomnedColor = getRandomColor();
-    //   sprint.points.forEach(point => {
-    //     burndownData.push({
-    //       x: point.date,
-    //       y: point.budget
-    //     });
-    //   });
-    //   burndownsArr.push({
-    //     data: burndownData,
-    //     label: `${sprint.name}`,
-    //     ...getBasicLineSettings(randomnedColor)
-    //   });
-    // });
-    // return burndownsArr;
   }
 
   render () {
+    const {isRisks, budget, riskBudget} = this.props;
     return (
       <div className={css.BudgetChart}>
-        <h3>Без рискового бюджета</h3>
+        <h3>{isRisks ? 'С рисковым резервом' : 'Без рискового резерва'}</h3>
         <div className={css.BudgetChartInfo}>
           Бюджет:
-          <Input readOnly value={this.props.budget ? `${this.props.budget} ч.` : ''} />
+          <Input readOnly value={isRisks ? `${riskBudget} ч.` : `${budget} ч`} />
         </div>
         <Line data={this.makeChartData(budgetMetricsMock)} options={this.chartOptions} redraw />
       </div>
@@ -196,6 +186,7 @@ class BudgetChart extends Component {
 }
 const mapStateToProps = state => ({
   budget: state.Project.project.budget,
+  riskBudget: state.Project.project.riskBudget,
   sprints: state.Project.project.sprints
 });
 

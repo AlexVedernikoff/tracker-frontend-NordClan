@@ -81,7 +81,8 @@ class Metrics extends Component {
 
     const projectBudgetMetrics = this.filterById(5, metrics);
     const sprintsBudgetMetrics = this.filterById(30, metrics);
-
+    const projectBudgetRisksMetrics = this.filterById(6, metrics);
+    const sprintsBudgetRisksMetrics = this.filterById(31, metrics);
     return (
       <div>
         <section className={css.Metrics}>
@@ -95,7 +96,16 @@ class Metrics extends Component {
                 endDate={this.endDate()}
                 projectBudgetMetrics={projectBudgetMetrics}
                 sprintsBudgetMetrics={sprintsBudgetMetrics}
-
+                isRisks={false}
+              />
+            </Col>
+            <Col md={12} lg={6}>
+              <BudgetChart
+                startDate={this.startDate()}
+                endDate={this.endDate()}
+                projectBudgetMetrics={projectBudgetRisksMetrics}
+                sprintsBudgetMetrics={sprintsBudgetRisksMetrics}
+                isRisks={true}
               />
             </Col>
           </Row>
