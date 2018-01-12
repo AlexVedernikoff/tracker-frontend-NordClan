@@ -19,30 +19,30 @@ class Metrics extends Component {
 
   constructor (props) {
     super(props);
-    const { getMetrics, params } = this.props;
+    // const { getMetrics, params } = this.props;
     
-    //NOTE: Example request to metrics api
-    const metricsParams = {
-      projectId: parseInt(params.projectId),
-      typeId: 6,
-      // sprintId: 1,
-      // userId: 1,
-      startDate: '2017-11-20',
-      endDate: '2017-12-20'
-    };
+    // //NOTE: Example request to metrics api
+    // const metricsParams = {
+    //   projectId: parseInt(params.projectId),
+    //   typeId: 6,
+    //   // sprintId: 1,
+    //   // userId: 1,
+    //   startDate: '2017-11-20',
+    //   endDate: '2017-12-20'
+    // };
     
-    getMetrics(metricsParams);
+    // getMetrics(metricsParams);
   }
 
   componentWillMount () {
     const { getMetrics, params } = this.props;
     const metricsParams = {
       projectId: parseInt(params.projectId),
-      typeId: 6,
+      // typeId: 6,
       // sprintId: 1,
       // userId: 1,
-      // startDate: '2017-11-20',
-      // endDate: '2017-12-20'
+      startDate: '2017-11-20',
+      endDate: '2018-01-12'
     };
     getMetrics(metricsParams);
   }
@@ -65,18 +65,23 @@ class Metrics extends Component {
     return '';
   }
 
+  filterByid = (metrics) => {
+    
+  }
+
   render () {
+
     return (
       <div>
         <section className = {css.Metrics}>
           <SprintReport startDate={this.startDate()} endDate={this.endDate()}/>
-          {/*<h2>Метрики по проекту</h2>*/}
-          {/*<StartEndDates startDate={this.startDate()} endDate={this.endDate()}/>*/}
-          {/*<Row>*/}
-            {/*<Col md = {12} lg = {6}>*/}
-              {/*<BudgetChart startDate={this.startDate()} endDate={this.endDate()}/>*/}
-            {/*</Col>*/}
-          {/*</Row>*/}
+          <h2>Метрики по проекту</h2>
+          <StartEndDates startDate={this.startDate()} endDate={this.endDate()}/>
+          <Row>
+            <Col md = {12} lg = {6}>
+              <BudgetChart startDate={this.startDate()} endDate={this.endDate()}/>
+            </Col>
+          </Row>
           {/*<Row>*/}
             {/*<Col xs = {12}>*/}
               {/*<BugsChart/>*/}
