@@ -82,13 +82,13 @@ class BudgetChart extends Component {
   makeChartData (metrics) {
     const {projectBudgetMetrics, sprintsBudgetMetrics, budget, startDate, endDate, sprints} = this.props;
     const sprintsId = sprints.map(sprint => sprint.id);
-    console.log(this.makeSprintsBurndowns(sprintsBudgetMetrics, sprints));
+    console.log(this.makeSprintsIdealBurndowns(sprints));
     return {
       datasets: [
         this.makeIdealProjectBurndown(startDate, endDate, budget),
         this.makeProjectBurndown(projectBudgetMetrics),
-        ...this.makeSprintsBurndowns(sprintsBudgetMetrics, sprints)
-        // ...this.makeSprintsIdealBurndowns(metrics)
+        ...this.makeSprintsBurndowns(sprintsBudgetMetrics, sprints),
+        ...this.makeSprintsIdealBurndowns(sprints)
       ]
     };
   }
@@ -126,27 +126,25 @@ class BudgetChart extends Component {
     };
   }
 
-  makeSprintsIdealBurndowns (metrics) {
-    const burndownsArr = [];
-
-    metrics.sprints.forEach(sprint => {
+  makeSprintsIdealBurndowns (sprints) {
+    return sprints.map(sprint => {
       const randomnedColor = getRandomColor();
-      burndownsArr.push({
-        data: [
-          {
-            x: sprint.factStartDate,
-            y: sprint.allottedTime
-          },
-          {
-            x: sprint.factFinishDate,
-            y: 0
-          }
-        ],
+      const idealBurndown = [
+        {
+          x: sprint.factStartDate,
+          y: sprint.budget || 0
+        },
+        {
+          x: sprint.factFinishDate,
+          y: 0
+        }
+      ];
+      return {
+        data: [...idealBurndown],
         label: `Идеальная ${sprint.name}`,
         ...getBasicLineSettings(randomnedColor)
-      });
+      };
     });
-    return burndownsArr;
   }
 
   makeSprintsBurndowns (metrics, sprints) {
