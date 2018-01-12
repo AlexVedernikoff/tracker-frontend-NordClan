@@ -242,6 +242,7 @@ class Table extends React.Component {
         style={this.getMilestoneBlock(milestone.date, grantActiveYear)}
         data-tip={this.getMilestoneLabel(milestone)}
       >
+      <div></div>
       </div>
     </div>
   }
