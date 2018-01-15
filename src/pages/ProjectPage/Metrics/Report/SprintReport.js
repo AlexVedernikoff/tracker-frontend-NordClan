@@ -54,7 +54,7 @@ class SprintReport extends Component {
     }
   }
 
-  formatDate = date => moment(date).format(dateFormat);
+  formatDate = date => date && moment(date).format(dateFormat);
 
   updatePickers = value => {
     const {selectedFrom, selectedTo} = value;
@@ -69,13 +69,15 @@ class SprintReport extends Component {
   };
 
   isRangeValid = () => {
-    return moment(this.state.selectedFrom, 'YYYY-MM-DD', true).isValid()
+    return (!this.state.selectedFrom && !this.state.selectedTo)
+      || moment(this.state.selectedFrom, 'YYYY-MM-DD', true).isValid()
       && moment(this.state.selectedTo, 'YYYY-MM-DD', true).isValid()
       && moment(this.state.selectedTo).isAfter(this.state.selectedFrom);
   };
 
   getSelectOptions = () => {
     return [
+      this.fullTimeOption(),
       this.lastWeekOption(),
       this.lastMonthOption(),
       ...this.props.sprints.map(value => ({ value, label: value.name}))
@@ -102,6 +104,24 @@ class SprintReport extends Component {
         factFinishDate: lastMonth.endOf('month').toDate()
       }
     };
+  }
+
+  fullTimeOption = () => {
+    const lastMonth = moment().subtract(1, 'month');
+    return {
+      label: 'За весь проект',
+      value: {
+        factStartDate: undefined,
+        factFinishDate: undefined
+      }
+    };
+  }
+
+  getQueryParams = () => {
+    if (!this.state.selectedFrom && !this.state.selectedTo) {
+      return '';
+    }
+    return `?startDate=${this.state.selectedFrom}&endDate=${this.state.selectedTo}`;
   }
 
   render () {
@@ -149,7 +169,7 @@ class SprintReport extends Component {
                 <Col xs></Col>
                 <Col xs={2}>
                     <a className={this.isRangeValid() ? '' : css.disabled}
-                       href={`${API_URL}/project/${this.props.project.id}/reports/period?startDate=${this.state.selectedFrom}&endDate=${this.state.selectedTo}`}>
+                       href={`${API_URL}/project/${this.props.project.id}/reports/period${this.getQueryParams()}`}>
                       Выгрузить отчёт
                     </a>
                 </Col>

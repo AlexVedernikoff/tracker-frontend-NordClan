@@ -117,7 +117,7 @@ const ProjectCard = props => {
                         {sprint.name} ({moment(sprint.factStartDate).format(
                           'DD.MM.YYYY'
                         )}
-                        - {moment(sprint.factEndDate).format('DD.MM.YYYY')})
+                        - {moment(sprint.factFinishDate).format('DD.MM.YYYY')})
                       </span>
                     )}
                   </div>

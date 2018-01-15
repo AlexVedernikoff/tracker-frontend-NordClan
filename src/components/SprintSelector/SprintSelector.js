@@ -54,7 +54,7 @@ export default class SprintSelector extends Component {
     return (
       <SelectDropdown
         name="sprint"
-        placeholder="Спринт"
+        placeholder="Выберите спринт"
         noResultsText="Нет подходящих спринтов"
         backspaceToRemoveMessage={''}
         clearAllText="Очистить все"

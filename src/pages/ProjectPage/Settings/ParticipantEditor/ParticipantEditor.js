@@ -24,10 +24,11 @@ class ParticipantEditor extends Component {
       participants: []
     };
     this.ROLES_FULL_NAME = ['Account', 'PM', 'UX', 'Analyst', 'Back', 'Front', 'Mobile', 'TeamLead', 'QA', 'Unbillable'];
-    // временная заглушка, пока нет конкретного списка прав по ролям
     this.roleRights = {
-      PM: 'Доступны все действия на уровне проекта',
-      default: 'Доступно CRU(без delete) всего на уровне проекта, в который добавлен'
+      fullAccess: 'Полный доступ к проекту. <br/>Доступны все действия на уровне проекта: <br/>Ведение задач, планирование, настройки проекта и команды, аналитика <br/>Полная рассылка по проекту.',
+      devAccess: 'Ограниченный доступ к проекту. <br/>Доступны действия на уровне задач: <br/>Назначение задачи, новый комментарий в задаче, ответ на комментарий, изменение статуса<br/>Ограниченная рассылка.',
+      qaAccess: 'Ограниченный доступ к проекту. <br/>Доступны действия на уровне задач. <br/>Полная рассылка по проекту.',
+      unbillableAccess: 'Неоплачиваемая роль'
     };
     this.searchOnChange = debounce(this.searchOnChange, 400);
   }
@@ -87,7 +88,16 @@ class ParticipantEditor extends Component {
   };
 
   getRoleRights = (role, rights) => {
-    return rights[role] || rights.default;
+    if (role === 'Account' || role === 'PM') {
+      return rights.fullAccess;
+    }
+    if (role === 'QA') {
+      return rights.qaAccess;
+    }
+    if (role === 'Unbillable') {
+      return rights.unbillableAccess;
+    }
+    return rights.devAccess;
   };
 
   handleOpenModalAddUser = () => {
@@ -120,7 +130,7 @@ class ParticipantEditor extends Component {
                       <h4>
                         <div className={css.cell}>
                           {ROLES_FULL_NAME}
-                          <div className = {css.rightsInfo} data-tip={this.getRoleRights(ROLES_FULL_NAME, this.roleRights)}>
+                          <div className = {css.rightsInfo} data-html = 'true' data-tip={this.getRoleRights(ROLES_FULL_NAME, this.roleRights)}>
                             i
                           </div>
                         </div>

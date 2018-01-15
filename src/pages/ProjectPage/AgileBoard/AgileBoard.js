@@ -320,6 +320,17 @@ class AgileBoard extends Component {
     return sprints;
   };
 
+  getSprintTime = (sprintId) => {
+    if (!sprintId) return false;
+    let currentSprint;
+    this.props.sprints.forEach(sprint => {
+      if (sprint.id === sprintId) {
+        currentSprint = sprint;
+      }
+    });
+    return `${currentSprint.spentTime || 0} / ${currentSprint.allottedTime || 0}`;
+  }
+
   getAllTags = () => {
     let allTags = this.props.sprintTasks.reduce((arr, task) => {
       return arr.concat(task.tags ? task.tags.map((tags) => tags.name) : []);
@@ -433,7 +444,7 @@ class AgileBoard extends Component {
                     <SelectDropdown
                       name="filterTags"
                       multi
-                      placeholder="Введите название тега..."
+                      placeholder="Введите название тега"
                       backspaceToRemoveMessage=""
                       value={this.state.filterTags}
                       onChange={this.selectTagForFiltrated}
@@ -458,7 +469,7 @@ class AgileBoard extends Component {
               <Row className={css.filtersRow}>
                 <Col xs={12} sm={6}>
                   <Input
-                    placeholder="Название задачи"
+                    placeholder="Введите название задачи"
                     value={this.state.name}
                     onChange={(e) => this.selectValue(e.target.value, 'name')}
                   />
@@ -472,7 +483,7 @@ class AgileBoard extends Component {
                 <Col xs={12} sm={3}>
                   <SelectDropdown
                     name="type"
-                    placeholder="Тип задачи"
+                    placeholder="Выберите тип задачи"
                     multi
                     noResultsText="Нет подходящих типов"
                     backspaceToRemoveMessage={''}
@@ -487,18 +498,21 @@ class AgileBoard extends Component {
                 <Col xs={12} sm={6} className={css.changedSprint}>
                   <SelectDropdown
                     name="changedSprint"
-                    placeholder="Введите название спринта..."
+                    placeholder="Выберите спринт"
                     multi={false}
                     value={this.state.changedSprint}
                     onChange={(e) => this.selectValue(e !== null ? e.value : null, 'changedSprint')}
                     noResultsText="Нет результатов"
                     options={this.getSprints()}
                   />
+                  <span className={css.sprintTime}>
+                    {this.getSprintTime(this.state.changedSprint) || null}
+                  </span>
                 </Col>
                 <Col xs>
                   <SelectDropdown
                     name="author"
-                    placeholder="Автор"
+                    placeholder="Выберите автора задачи"
                     multi={false}
                     value={this.state.authorId}
                     onChange={(option) => this.selectValue(option ? option.value : null, 'authorId')}

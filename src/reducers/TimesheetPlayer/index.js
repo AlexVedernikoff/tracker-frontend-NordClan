@@ -145,10 +145,10 @@ function updateTracks(state, action, updatedTracks) {
 
   const updatedActivityTime = updatedDay[action.timesheet.onDate].tracks
     .filter(track => track.typeId === action.timesheet.typeId)
-    .reduce((acc, time) => exactMath.add(acc.spentTime ? acc.spentTime : acc, time.spentTime || 0));
+    .reduce((acc, track) => exactMath.add(acc, track.spentTime || 0), 0);
 
   const all = updatedDay[action.timesheet.onDate].tracks
-    .reduce((acc, time) => exactMath.add(acc.spentTime ? acc.spentTime : acc, time.spentTime || 0));
+    .reduce((acc, track) => exactMath.add(acc, track.spentTime || 0), 0);
 
   updatedDay[action.timesheet.onDate].scales[action.timesheet.typeId] = updatedActivityTime;
   updatedDay[action.timesheet.onDate].scales.all = all;
