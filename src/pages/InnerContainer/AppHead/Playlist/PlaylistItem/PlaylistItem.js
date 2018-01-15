@@ -69,7 +69,8 @@ class PlaylistItem extends Component {
           spentTime: value.replace(',', '.'),
           isVisible: this.props.item.isVisible,
           comment: this.props.item.comment,
-          onDate: this.props.item.onDate
+          onDate: this.props.item.onDate,
+          projectId: this.props.item.projectId
         }
       );
     }
