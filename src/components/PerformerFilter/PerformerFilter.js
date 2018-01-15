@@ -25,7 +25,7 @@ class PerformerFilter extends React.Component {
     return (
       <SelectDropdown
         name="performer"
-        placeholder="Введите имя исполнителя..."
+        placeholder="Выберите исполнителя"
         multi={false}
         value={this.props.selectedPerformerId}
         onChange={this.props.onPerformerSelect}
