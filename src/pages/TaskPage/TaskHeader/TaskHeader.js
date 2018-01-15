@@ -51,15 +51,15 @@ class TaskHeader extends Component {
 
   handleChangeStatus = e => {
     const tip = e.currentTarget.getAttribute('data-tip');
+    const buttonText = e.currentTarget.textContent;
     if (tip === 'Начать') {
       this.changeStatus(this.props.task.statusId - 1);
     } else if (tip === 'Приостановить') {
       this.changeStatus(this.props.task.statusId + 1);
-    } else if (tip === 'Перевести в стадию Done') {
-      this.state.clickedStatus = e.currentTarget.textContent;
+    } else if (buttonText === 'Done') {
+      this.changeStatus(TaskStatuses.DONE);
     } else {
-      this.state.clickedStatus = e.currentTarget.textContent;
-      this.handleOpenModal();
+      this.setState({clickedStatus: buttonText}, this.handleOpenModal);
     }
   };
 
@@ -94,6 +94,7 @@ class TaskHeader extends Component {
   };
 
   changeStatus = (newStatusId) => {
+    
     this.props.onChange(
       {
         id: this.props.task.id,
