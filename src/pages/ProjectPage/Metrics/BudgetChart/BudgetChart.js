@@ -177,9 +177,9 @@ class BudgetChart extends Component {
         <h3>{isRisks ? 'С рисковым резервом' : 'Без рискового резерва'}</h3>
         <div className={css.BudgetChartInfo}>
           Бюджет:
-          <Input readOnly value={isRisks ? `${riskBudget} ч.` : `${budget} ч`} />
+          <Input readOnly value={isRisks ? `${riskBudget || 0} ч.` : `${budget || 0} ч`} />
         </div>
-        <Line data={this.makeChartData(budgetMetricsMock)} options={this.chartOptions} redraw />
+        <Line height={250} data={this.makeChartData(budgetMetricsMock)} options={this.chartOptions} redraw />
       </div>
     );
   }

@@ -21,24 +21,13 @@ class Metrics extends Component {
     createdAt: PropTypes.string,
     metrics: PropTypes.array,
     riskBudget: PropTypes.number,
-    sprints: PropTypes.array
+    sprints: PropTypes.array,
+    getMetrics: PropTypes.func,
+    params: PropTypes.object
   }
 
   constructor (props) {
     super(props);
-    // const { getMetrics, params } = this.props;
-    
-    // //NOTE: Example request to metrics api
-    // const metricsParams = {
-    //   projectId: parseInt(params.projectId),
-    //   typeId: 6,
-    //   // sprintId: 1,
-    //   // userId: 1,
-    //   startDate: '2017-11-20',
-    //   endDate: '2017-12-20'
-    // };
-    
-    // getMetrics(metricsParams);
   }
 
   componentWillMount () {
@@ -90,7 +79,7 @@ class Metrics extends Component {
           <h2>Метрики по проекту</h2>
           <StartEndDates startDate={this.startDate()} endDate={this.endDate()}/>
           <Row>
-            <Col md={12} lg={6}>
+            <Col md={9} lg={6}>
               <BudgetChart
                 startDate={this.startDate()}
                 endDate={this.endDate()}
@@ -99,7 +88,7 @@ class Metrics extends Component {
                 isRisks={false}
               />
             </Col>
-            <Col md={12} lg={6}>
+            <Col md={9} lg={6}>
               <BudgetChart
                 startDate={this.startDate()}
                 endDate={this.endDate()}
