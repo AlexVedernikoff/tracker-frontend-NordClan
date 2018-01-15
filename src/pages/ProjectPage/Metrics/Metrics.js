@@ -6,13 +6,11 @@ import * as css from './Metrics.scss';
 import StartEndDates from './StartEndDates/StartEndDates';
 import BudgetChart from './BudgetChart/BudgetChart';
 import BugsChart from './BugsChart/BugsChart';
+import CostByRoleChart from './CostByRoleChart/CostByRoleChart';
 import SprintReport from './Report';
 import { getMetrics } from './../../../actions/Metrics';
 
-/* 
-значение Id типов метрик
-http://gitlab.simbirsoft/frontend/sim-track-back/blob/develop/server/services/agent/calculate/metrics.txt
-*/
+
 
 class Metrics extends Component {
   static propTypes = {
@@ -64,14 +62,106 @@ class Metrics extends Component {
   filterById = (id, metrics) => {
     return metrics.filter(metric => metric.typeId === id);
   }
-  
+
   render () {
+    /*
+      значение Id типов метрик
+      http://gitlab.simbirsoft/frontend/sim-track-back/blob/develop/server/services/agent/calculate/metrics.txt
+    */
     const { metrics } = this.props;
 
     const projectBudgetMetrics = this.filterById(5, metrics);
     const sprintsBudgetMetrics = this.filterById(30, metrics);
     const projectBudgetRisksMetrics = this.filterById(6, metrics);
     const sprintsBudgetRisksMetrics = this.filterById(31, metrics);
+    const openedBugsMetrics = this.filterById(7, metrics);
+    const openedCustomerBugsMetrics = this.filterById(8, metrics);
+    const openedRegressBugsMetrics = this.filterById(9, metrics);
+    const costByRoleMetrics = [
+      {
+        metrics: this.filterById(10, metrics),
+        name: 'Account'
+      },
+      {
+        metrics: this.filterById(11, metrics),
+        name: 'PM'
+      },
+      {
+        metrics: this.filterById(12, metrics),
+        name: 'UX'
+      },
+      {
+        metrics: this.filterById(13, metrics),
+        name: 'Аналитик'
+      },
+      {
+        metrics: this.filterById(14, metrics),
+        name: 'Back'
+      },
+      {
+        metrics: this.filterById(15, metrics),
+        name: 'Front'
+      },
+      {
+        metrics: this.filterById(16, metrics),
+        name: 'Mobile'
+      },
+      {
+        metrics: this.filterById(17, metrics),
+        name: 'TeamLead(Code review)'
+      },
+      {
+        metrics: this.filterById(18, metrics),
+        name: 'QA'
+      },
+      {
+        metrics: this.filterById(19, metrics),
+        name: 'Unbillable'
+      }
+    ];
+    const costByRolePercentMetrics = [
+      {
+        metrics: this.filterById(20, metrics),
+        name: 'Account'
+      },
+      {
+        metrics: this.filterById(21, metrics),
+        name: 'PM'
+      },
+      {
+        metrics: this.filterById(22, metrics),
+        name: 'UX'
+      },
+      {
+        metrics: this.filterById(23, metrics),
+        name: 'Аналитик'
+      },
+      {
+        metrics: this.filterById(24, metrics),
+        name: 'Back'
+      },
+      {
+        metrics: this.filterById(25, metrics),
+        name: 'Front'
+      },
+      {
+        metrics: this.filterById(26, metrics),
+        name: 'Mobile'
+      },
+      {
+        metrics: this.filterById(27, metrics),
+        name: 'TeamLead(Code review)'
+      },
+      {
+        metrics: this.filterById(28, metrics),
+        name: 'QA'
+      },
+      {
+        metrics: this.filterById(29, metrics),
+        name: 'Unbillable'
+      }
+    ];
+
     return (
       <div>
         <section className={css.Metrics}>
@@ -79,7 +169,7 @@ class Metrics extends Component {
           <h2>Метрики по проекту</h2>
           <StartEndDates startDate={this.startDate()} endDate={this.endDate()}/>
           <Row>
-            <Col md={9} lg={6}>
+            <Col xs={12} md={10} mdOffset={1} lg={6} lgOffset={0}>
               <BudgetChart
                 startDate={this.startDate()}
                 endDate={this.endDate()}
@@ -88,7 +178,7 @@ class Metrics extends Component {
                 isRisks={false}
               />
             </Col>
-            <Col md={9} lg={6}>
+            <Col xs={12} md={10} mdOffset={1} lg={6} lgOffset={0}>
               <BudgetChart
                 startDate={this.startDate()}
                 endDate={this.endDate()}
@@ -98,11 +188,23 @@ class Metrics extends Component {
               />
             </Col>
           </Row>
-          {/*<Row>*/}
-            {/*<Col xs = {12}>*/}
-              {/*<BugsChart/>*/}
-            {/*</Col>*/}
-          {/*</Row>*/}
+          <Row>
+            <Col xs={12} md={10} mdOffset={1} lg={6} lgOffset={3} >
+              <BugsChart
+                openedBugsMetrics={openedBugsMetrics}
+                openedCustomerBugsMetrics={openedCustomerBugsMetrics}
+                openedRegressBugsMetrics={openedRegressBugsMetrics}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={12} md={10} mdOffset={1} lg={6} lgOffset={3} >
+              <CostByRoleChart
+                costByRoleMetrics={costByRoleMetrics}
+                costByRolePercentMetrics={costByRolePercentMetrics}
+              />
+            </Col>
+          </Row>
         </section>
       </div>
     );

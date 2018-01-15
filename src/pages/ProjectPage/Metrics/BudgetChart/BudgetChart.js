@@ -6,7 +6,6 @@ import { Line } from 'react-chartjs-2';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import getRandomColor from '../../../../utils/getRandomColor';
-import { budgetMetricsMock } from '../../../../mocks/MetricsMock';
 
 function getBasicLineSettings (color) {
   return {
@@ -76,7 +75,7 @@ class BudgetChart extends Component {
     };
   }
 
-  makeChartData (metrics) {
+  makeChartData () {
     const {
       projectBudgetMetrics,
       sprintsBudgetMetrics,
@@ -179,7 +178,7 @@ class BudgetChart extends Component {
           Бюджет:
           <Input readOnly value={isRisks ? `${riskBudget || 0} ч.` : `${budget || 0} ч`} />
         </div>
-        <Line height={250} data={this.makeChartData(budgetMetricsMock)} options={this.chartOptions} redraw />
+        <Line height={250} data={this.makeChartData()} options={this.chartOptions} redraw />
       </div>
     );
   }

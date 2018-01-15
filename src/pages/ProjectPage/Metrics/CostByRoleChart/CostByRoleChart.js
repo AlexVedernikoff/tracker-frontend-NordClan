@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './BugsChart.scss';
+import * as css from './CostByRoleChart.scss';
 import { Line } from 'react-chartjs-2';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import getRandomColor from '../../../../utils/getRandomColor';
 
-function getBasicLineSettings(color) {
+function getBasicLineSettings (color) {
   return {
     backgroundColor: color,
     borderColor: color,
@@ -17,12 +17,11 @@ function getBasicLineSettings(color) {
   };
 }
 
-class BugsChart extends Component {
+class CostByRoleChart extends Component {
 
   static propTypes = {
-    openedBugsMetrics: PropTypes.array,
-    openedCustomerBugsMetrics: PropTypes.array,
-    openedRegressBugsMetrics: PropTypes.array
+    costByRoleMetrics: PropTypes.array,
+    costByRolePercentMetrics: PropTypes.array
   }
 
   constructor (props) {
@@ -71,38 +70,37 @@ class BugsChart extends Component {
 
   makeChartData () {
     const {
-      openedBugsMetrics,
-      openedCustomerBugsMetrics,
-      openedRegressBugsMetrics
+      costByRoleMetrics,
+      costByRolePercentMetrics
     } = this.props;
     return {
       datasets: [
-        this.makeBugsLine(openedBugsMetrics, 'Количество открытых багов'),
-        this.makeBugsLine(openedCustomerBugsMetrics, 'Количество открытых багов от Заказчика'),
-        this.makeBugsLine(openedRegressBugsMetrics, 'Количество открытых регрессионных багов')
+        ...this.makeRoleMetricsLine(costByRolePercentMetrics)
       ]
     };
   }
 
-  makeBugsLine (metrics, label) {
-    const randomnedColor = getRandomColor();
-    const line = metrics.map(metric => {
+  makeRoleMetricsLine (roleMetrics) {
+    return roleMetrics.map(role => {
+      const randomnedColor = getRandomColor();
+      const line = role.metrics.map(metric => {
+        return {
+          x: metric.createdAt,
+          y: +metric.value
+        };
+      });
       return {
-        x: metric.createdAt,
-        y: +metric.value
+        data: line,
+        label: `${role.name}`,
+        ...getBasicLineSettings(randomnedColor)
       };
     });
-    return {
-      data: [...line],
-      label: label,
-      ...getBasicLineSettings(randomnedColor)
-    };
   }
 
   render () {
     return (
       <div className={css.BugsChart}>
-        <h3>Баги на проекте</h3>
+        <h3>Затраты по ролям</h3>
         <Line
           data={this.makeChartData()}
           options={this.chartOptions}
@@ -113,4 +111,4 @@ class BugsChart extends Component {
   }
 }
 
-export default BugsChart;
+export default CostByRoleChart;
