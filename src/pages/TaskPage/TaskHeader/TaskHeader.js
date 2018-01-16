@@ -263,7 +263,6 @@ class TaskHeader extends Component {
               }
               data-place="bottom"
               onClick={this.handleChangeStatus}
-              disabled={!canEdit}
             />
             <Button
               text="Develop"
