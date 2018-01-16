@@ -70,7 +70,7 @@ class PlaylistItem extends Component {
           isVisible: this.props.item.isVisible,
           comment: this.props.item.comment,
           onDate: this.props.item.onDate,
-          projectId: this.props.item.projectId
+          projectId: this.props.item.project ? this.props.item.project.id : 0
         }
       );
     }
