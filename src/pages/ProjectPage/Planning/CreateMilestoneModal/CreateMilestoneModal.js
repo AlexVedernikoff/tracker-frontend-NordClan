@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Input from '../../../../components/Input';
 import Button from '../../../../components/Button';
 import Modal from '../../../../components/Modal';
 import DatepickerDropdown from '../../../../components/DatepickerDropdown';
-import Input from '../../../../components/Input';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './CreateMilestoneModal.scss';
 import moment from 'moment';
@@ -11,12 +11,18 @@ import { connect } from 'react-redux';
 import { createMilestone } from '../../../../actions/Milestone';
 
 class CreateMilestoneModal extends Component {
+  static propTypes = {
+    createMilestone: PropTypes.func,
+    onClose: PropTypes.func,
+    projectId: PropTypes.number
+  };
+
   constructor (props) {
     super(props);
 
     this.state = {
       date: undefined,
-      name: '',
+      name: ''
     };
   }
 
@@ -29,8 +35,8 @@ class CreateMilestoneModal extends Component {
   };
 
   checkNullInputs = () => {
-    return this.state.name && this.state.date;
-  }
+    return this.state.name.trim() && this.state.date;
+  };
 
   createMilestone = e => {
     e.preventDefault();
@@ -67,8 +73,8 @@ class CreateMilestoneModal extends Component {
                 {
                   !this.checkNullInputs()
                     ? <span>
-                        Все поля должны быть заполнены
-                      </span>
+                      Все поля должны быть заполнены
+                    </span>
                     : null
                 }
               </Col>
@@ -116,7 +122,7 @@ class CreateMilestoneModal extends Component {
 }
 
 const mapStateToProps = state => ({
-  projectId: state.Project.project.id,
+  projectId: state.Project.project.id
 });
 
 const mapDispatchToProps = {
