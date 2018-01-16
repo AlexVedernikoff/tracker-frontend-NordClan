@@ -83,7 +83,7 @@ class ActivityRow extends React.Component {
   };
 
   validateNumbers (value) {
-    const re = /^\d*(\.\d*)?$/;
+    const re = /^\d+(\.\d*)?$/;
     return value !== '' ? re.test(value) : true;
   }
 
@@ -100,9 +100,7 @@ class ActivityRow extends React.Component {
         timeCells
       };
     }, () => {
-      if (!isNaN(+value)) {
-        this.createTimesheet(i);
-      }
+      this.createTimesheet(i);
     });
   };
 
@@ -134,9 +132,7 @@ class ActivityRow extends React.Component {
         timeCells
       };
     }, () => {
-      if (!isNaN(+value)) {
-        this.updateTimesheet(i, id, comment);
-      }
+      this.updateTimesheet(i, id, comment);
     });
   };
 
