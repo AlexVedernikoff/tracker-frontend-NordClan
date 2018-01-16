@@ -48,21 +48,20 @@ class TaskHeader extends Component {
       clickedStatus: ''
     };
   }
-
-  handleChangeStatus = (statusStop, statusPlay) => {
-    const eventHandler = e => {
-      const currentStatus = this.props.task.statusId;
-      const buttonText = e.currentTarget.textContent;
-      if (currentStatus !== statusStop && currentStatus !== statusPlay) {
-        this.setState({ clickedStatus: buttonText }, this.handleOpenModal);
-      } else if (currentStatus === statusStop) {
-        this.changeStatus(currentStatus + 1);
-      } else if (currentStatus === statusPlay) {
-        this.changeStatus(currentStatus - 1);
-      }
-    };
-    return eventHandler;
-  };
+  
+  createChangeStatusHandler = (statusStop, statusPlay, statusName) => () => {
+    const currentStatus = this.props.task.statusId;
+    if (currentStatus !== statusStop && currentStatus !== statusPlay) {
+      this.setState({ clickedStatus: statusName }, this.handleOpenModal);
+      return;
+    } else if (currentStatus === statusStop) {
+      this.changeStatus(currentStatus + 1);
+      return;
+    } else if (currentStatus === statusPlay) {
+      this.changeStatus(currentStatus - 1);
+    }
+  }
+ 
 
   handleOpenModal = () => {
     this.props.getProjectUsers(this.props.projectId);
@@ -154,11 +153,13 @@ class TaskHeader extends Component {
     return tip;
   };
 
-  handleChangeSingleStateStatus = (status) => {
-    return () => {
+  handleChangeSingleStateStatus = (status, statusName) => () => {
+    if (statusName) {
+      this.setState({ clickedStatus: statusName }, this.handleOpenModal);
+    } else {
       this.changeStatus(status);
-    };
-  };
+    }
+  }
 
   render () {
     const { task, taskTypes, canEdit } = this.props;
@@ -260,7 +261,7 @@ class TaskHeader extends Component {
                   : 'Перевести в стадию New'
               }
               data-place="bottom"
-              onClick={this.handleChangeStatus}
+              onClick={this.handleChangeSingleStateStatus(TaskStatuses.NEW, 'New')}
               disabled={!canEdit}
             />
             <Button
@@ -268,7 +269,7 @@ class TaskHeader extends Component {
               type={this.getButtonType(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY)}
               data-tip={this.getButtonTip(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY, 'Develop')}
               icon= {this.getButtonIcon(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY)}
-              onClick={this.handleChangeStatus(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY)}
+              onClick={this.createChangeStatusHandler(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY, 'Develop')}
               data-place="bottom"
               disabled={!canEdit}
             />
@@ -277,7 +278,7 @@ class TaskHeader extends Component {
               type={this.getButtonType(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY)}
               data-tip={this.getButtonTip(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY, 'Code Review')}
               icon= {this.getButtonIcon(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY)}
-              onClick={this.handleChangeStatus(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY)}
+              onClick={this.createChangeStatusHandler(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY, 'Code Review')}
               data-place="bottom"
               disabled={!canEdit}
             />
@@ -286,7 +287,7 @@ class TaskHeader extends Component {
               type={this.getButtonType(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY)}
               data-tip={this.getButtonTip(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY, 'QA')}
               icon= {this.getButtonIcon(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY)}
-              onClick={this.handleChangeStatus(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY)}
+              onClick={this.createChangeStatusHandler(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY, 'QA')}
               data-place="bottom"
               disabled={!canEdit}
             />
