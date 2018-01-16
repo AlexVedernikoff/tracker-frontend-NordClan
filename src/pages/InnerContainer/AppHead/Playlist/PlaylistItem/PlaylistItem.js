@@ -49,7 +49,6 @@ class PlaylistItem extends Component {
   handleChangeTime = (e) => {
     const value = e.target.value;
     if (this.props.item.isDraft) {
-      console.log('draft')
       this.debouncedUpdateDraft(
         {
           sheetId: this.props.item.id,
@@ -64,7 +63,6 @@ class PlaylistItem extends Component {
         }
       );
     } else {
-      console.log('tsh')
       this.debouncedUpdateOnlyTimesheet(
         {
           sheetId: this.props.item.id,
@@ -72,7 +70,7 @@ class PlaylistItem extends Component {
           isVisible: this.props.item.isVisible,
           comment: this.props.item.comment,
           onDate: this.props.item.onDate,
-          projectId: this.props.item.project ? this.props.item.project.id : null
+          projectId: this.props.item.project ? this.props.item.project.id : 0
         }
       );
     }
