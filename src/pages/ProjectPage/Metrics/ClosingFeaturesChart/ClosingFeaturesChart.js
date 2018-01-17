@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Line } from 'react-chartjs-2';
 import moment from 'moment';
 import getRandomColor from '../../../../utils/getRandomColor';
+import * as css from './ClosingFeaturesChart.scss';
 
 function getBasicLineSettings(color) {
   return {
@@ -17,7 +18,9 @@ function getBasicLineSettings(color) {
 
 class ClosingFeaturesChart extends Component {
   static propTypes = {
-    sprintClosingFeaturesMetrics: PropTypes.array
+    sprintClosingFeaturesMetrics: PropTypes.array,
+    sprintWorkWithoutEvaluationMetrics: PropTypes.array,
+    sprintWriteOffTimeMetrics: PropTypes.array
   };
 
   constructor (props) {
@@ -57,7 +60,7 @@ class ClosingFeaturesChart extends Component {
           display: true,
           scaleLabel: {
             display: true,
-            labelString: 'Количество багов'
+            labelString: 'Часы'
           }
         }]
       }
@@ -66,11 +69,15 @@ class ClosingFeaturesChart extends Component {
 
   makeChartData () {
     const {
-      sprintClosingFeaturesMetrics
+      sprintClosingFeaturesMetrics,
+      sprintWriteOffTimeMetrics,
+      sprintWorkWithoutEvaluationMetrics
     } = this.props;
     return {
       datasets: [
         this.makeBugsLine(sprintClosingFeaturesMetrics, 'Динамика закрытия фич (с учетом трудозатрат)'),
+        this.makeBugsLine(sprintWriteOffTimeMetrics, 'Динамика списания времени на фичи'),
+        this.makeBugsLine(sprintWorkWithoutEvaluationMetrics, 'Динамика трудозатрат на фичи без оценки')
       ]
     };
   }
@@ -91,8 +98,9 @@ class ClosingFeaturesChart extends Component {
   }
 
   render () {
+    console.log(this.props.sprintClosingFeaturesMetrics);
     return (
-      <div>
+      <div className={css.ClosingFeaturesChart}>
         <h3>Динамика закрытия фич</h3>
         <Line
           data={this.makeChartData()}
