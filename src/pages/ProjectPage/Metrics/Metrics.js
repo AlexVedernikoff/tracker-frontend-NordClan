@@ -7,6 +7,7 @@ import StartEndDates from './StartEndDates/StartEndDates';
 import BudgetChart from './BudgetChart/BudgetChart';
 import BugsChart from './BugsChart/BugsChart';
 import CostByRoleChart from './CostByRoleChart/CostByRoleChart';
+import ClosingFeaturesChart from './ClosingFeaturesChart';
 import SprintReport from './Report';
 import { getMetrics } from './../../../actions/Metrics';
 import moment from 'moment';
@@ -130,7 +131,7 @@ class Metrics extends Component {
         name: 'Unbillable'
       }
     ];
-
+    
     const costByRolePercentMetrics = getCostByRoleMetrics(
       this.filterById(10, metrics),
       this.filterById(11, metrics),
@@ -199,6 +200,14 @@ class Metrics extends Component {
                 costByRolePercentMetrics={costByRolePercentMetrics}
               />
             </Col>
+          </Row>
+          <h2>Метрики по спринту</h2>
+          <Row>
+            <ClosingFeaturesChart
+              startDate={this.startDate()}
+              endDate={this.endDate()}
+              sprintClosingFeaturesMetrics={sprintClosingFeaturesMetrics}
+            />
           </Row>
         </section>
       </div>
