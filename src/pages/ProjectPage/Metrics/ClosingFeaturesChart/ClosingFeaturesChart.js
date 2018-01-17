@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-// import * as css from './BugsChart.scss';
 import { Line } from 'react-chartjs-2';
 import moment from 'moment';
 import getRandomColor from '../../../../utils/getRandomColor';
@@ -93,7 +92,7 @@ class ClosingFeaturesChart extends Component {
 
   render () {
     return (
-      <div className={css.BugsChart}>
+      <div>
         <h3>Динамика закрытия фич</h3>
         <Line
           data={this.makeChartData()}
