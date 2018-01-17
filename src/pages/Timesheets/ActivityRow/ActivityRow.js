@@ -83,8 +83,8 @@ class ActivityRow extends React.Component {
   };
 
   validateNumbers (value) {
-    const re = /^\d+(\.\d*)?$/;
-    return value !== '' ? re.test(value) : true;
+    const re = /^$|^\d+(\.\d*)?$/;
+    return re.test(value);
   }
 
   changeEmpty = (i, value) => {
@@ -225,9 +225,8 @@ class ActivityRow extends React.Component {
                 <input
                   type="text"
                   disabled={!canDeleteRow}
-                  // max="24"
                   value={this.state.timeCells[i]}
-                  onChange={(e) => this.changeEmpty(i,e.target.value)}
+                  onChange={(e) => this.changeEmpty(i, e.target.value)}
                 />
                 <span className={css.toggleComment}>
                   <SingleComment onChange={(text) => this.changeEmptyComment(text, i)}/>
