@@ -7,6 +7,7 @@ import StartEndDates from './StartEndDates/StartEndDates';
 import BudgetChart from './BudgetChart/BudgetChart';
 import BugsChart from './BugsChart/BugsChart';
 import CostByRoleChart from './CostByRoleChart/CostByRoleChart';
+import ClosingFeaturesChart from './ClosingFeaturesChart';
 import SprintReport from './Report';
 import { getMetrics } from './../../../actions/Metrics';
 
@@ -77,6 +78,7 @@ class Metrics extends Component {
     const openedBugsMetrics = this.filterById(7, metrics);
     const openedCustomerBugsMetrics = this.filterById(8, metrics);
     const openedRegressBugsMetrics = this.filterById(9, metrics);
+    const sprintClosingFeaturesMetrics = this.filterById(32, metrics);
     const costByRoleMetrics = [
       {
         metrics: this.filterById(10, metrics),
@@ -161,6 +163,56 @@ class Metrics extends Component {
         name: 'Unbillable'
       }
     ];
+    // const costBySprintMetrics = [
+    //   {
+    //     metrics: this.filterById(30, metrics),
+    //     name: 'Burndown по спринтам без РР'
+    //   },
+    //   {
+    //     metrics: this.filterById(31, metrics),
+    //     name: 'Burndown по спринтам с РР'
+    //   },
+    //   {
+    //     metrics: this.filterById(32, metrics),
+    //     name: 'Динамика закрытия фич (с учетом трудозатрат)'
+    //   },
+    //   {
+    //     metrics: this.filterById(33, metrics),
+    //     name: 'Трудозатраты на фичи без оценки'
+    //   },
+    //   {
+    //     metrics: this.filterById(34, metrics),
+    //     name: 'Динамика списания времени на фичи'
+    //   },
+    //   {
+    //     metrics: this.filterById(35, metrics),
+    //     name: 'Фича'
+    //   },
+    //   {
+    //     metrics: this.filterById(36, metrics),
+    //     name: 'Доп. Фича'
+    //   },
+    //   {
+    //     metrics: this.filterById(37, metrics),
+    //     name: 'Баг'
+    //   },
+    //   {
+    //     metrics: this.filterById(38, metrics),
+    //     name: 'Регрес. Баг'
+    //   },
+    //   {
+    //     metrics: this.filterById(39, metrics),
+    //     name: 'Баг от клиента'
+    //   },
+    //   {
+    //     metrics: this.filterById(40, metrics),
+    //     name: 'Количество фич без оценки'
+    //   },
+    //   {
+    //     metrics: this.filterById(41, metrics),
+    //     name: 'Количество открытых фич вне плана'
+    //   }
+    // ];
 
     return (
       <div>
@@ -204,6 +256,14 @@ class Metrics extends Component {
                 costByRolePercentMetrics={costByRolePercentMetrics}
               />
             </Col>
+          </Row>
+          <h2>Метрики по спринту</h2>
+          <Row>
+            <ClosingFeaturesChart
+              startDate={this.startDate()}
+              endDate={this.endDate()}
+              sprintClosingFeaturesMetrics={sprintClosingFeaturesMetrics}
+            />
           </Row>
         </section>
       </div>
