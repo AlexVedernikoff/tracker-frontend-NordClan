@@ -89,6 +89,7 @@ class Metrics extends Component {
     const openedBugsMetrics = this.filterById(7, metrics);
     const openedCustomerBugsMetrics = this.filterById(8, metrics);
     const openedRegressBugsMetrics = this.filterById(9, metrics);
+    const sprintClosingFeaturesMetrics = this.filterById(32, metrics);
     const getCostByRoleMetrics = (role1, role2, role3, role4, role5, role6, role7, role8, role9, role10) => [
       {
         metrics: role1,
