@@ -9,8 +9,7 @@ import BugsChart from './BugsChart/BugsChart';
 import CostByRoleChart from './CostByRoleChart/CostByRoleChart';
 import SprintReport from './Report';
 import { getMetrics } from './../../../actions/Metrics';
-
-
+import moment from 'moment';
 
 class Metrics extends Component {
   static propTypes = {
@@ -29,17 +28,29 @@ class Metrics extends Component {
   }
 
   componentWillMount () {
-    const { getMetrics, params } = this.props;
-    const metricsParams = {
-      projectId: parseInt(params.projectId),
-      // typeId: 6,
-      // sprintId: 1,
-      // userId: 1,
-      startDate: '2017-11-20',
-      endDate: '2018-01-12'
-    };
-    getMetrics(metricsParams);
+    const { getMetrics, params, createdAt } = this.props;
+    if (createdAt) {
+      const metricsParams = {
+        projectId: parseInt(params.projectId),
+        startDate: moment(this.props.createdAt).format('YYYY-MM-DD'),
+        endDate: moment().format('YYYY-MM-DD')
+      };
+      getMetrics(metricsParams);
+    }  
   }
+
+  componentWillReceiveProps (nextProps) {
+    const { getMetrics, params, createdAt } = this.props;
+    if (nextProps.createdAt !== createdAt) {
+      const metricsParams = {
+        projectId: parseInt(params.projectId),
+        startDate: moment(nextProps.createdAt).format('YYYY-MM-DD'),
+        endDate: moment().format('YYYY-MM-DD')
+      };
+      getMetrics(metricsParams);
+    }
+  }
+
 
   startDate () {
     if (this.props.createdAt) {
@@ -60,7 +71,7 @@ class Metrics extends Component {
   }
 
   filterById = (id, metrics) => {
-    return metrics.filter(metric => metric.typeId === id);
+    return metrics ? metrics.filter(metric => metric.typeId === id) : [];
   }
 
   render () {
@@ -77,90 +88,74 @@ class Metrics extends Component {
     const openedBugsMetrics = this.filterById(7, metrics);
     const openedCustomerBugsMetrics = this.filterById(8, metrics);
     const openedRegressBugsMetrics = this.filterById(9, metrics);
-    const costByRoleMetrics = [
+    const getCostByRoleMetrics = (role1, role2, role3, role4, role5, role6, role7, role8, role9, role10) => [
       {
-        metrics: this.filterById(10, metrics),
+        metrics: role1,
         name: 'Account'
       },
       {
-        metrics: this.filterById(11, metrics),
+        metrics: role2,
         name: 'PM'
       },
       {
-        metrics: this.filterById(12, metrics),
+        metrics: role3,
         name: 'UX'
       },
       {
-        metrics: this.filterById(13, metrics),
+        metrics: role4,
         name: 'Аналитик'
       },
       {
-        metrics: this.filterById(14, metrics),
+        metrics: role5,
         name: 'Back'
       },
       {
-        metrics: this.filterById(15, metrics),
+        metrics: role6,
         name: 'Front'
       },
       {
-        metrics: this.filterById(16, metrics),
+        metrics: role7,
         name: 'Mobile'
       },
       {
-        metrics: this.filterById(17, metrics),
+        metrics: role8,
         name: 'TeamLead(Code review)'
       },
       {
-        metrics: this.filterById(18, metrics),
+        metrics: role9,
         name: 'QA'
       },
       {
-        metrics: this.filterById(19, metrics),
+        metrics: role10,
         name: 'Unbillable'
       }
     ];
-    const costByRolePercentMetrics = [
-      {
-        metrics: this.filterById(20, metrics),
-        name: 'Account'
-      },
-      {
-        metrics: this.filterById(21, metrics),
-        name: 'PM'
-      },
-      {
-        metrics: this.filterById(22, metrics),
-        name: 'UX'
-      },
-      {
-        metrics: this.filterById(23, metrics),
-        name: 'Аналитик'
-      },
-      {
-        metrics: this.filterById(24, metrics),
-        name: 'Back'
-      },
-      {
-        metrics: this.filterById(25, metrics),
-        name: 'Front'
-      },
-      {
-        metrics: this.filterById(26, metrics),
-        name: 'Mobile'
-      },
-      {
-        metrics: this.filterById(27, metrics),
-        name: 'TeamLead(Code review)'
-      },
-      {
-        metrics: this.filterById(28, metrics),
-        name: 'QA'
-      },
-      {
-        metrics: this.filterById(29, metrics),
-        name: 'Unbillable'
-      }
-    ];
+
+    const costByRolePercentMetrics = getCostByRoleMetrics(
+      this.filterById(10, metrics),
+      this.filterById(11, metrics),
+      this.filterById(12, metrics),
+      this.filterById(13, metrics),
+      this.filterById(14, metrics),
+      this.filterById(15, metrics),
+      this.filterById(16, metrics),
+      this.filterById(17, metrics),
+      this.filterById(18, metrics),
+      this.filterById(19, metrics)
+    );
+
+    const costByRoleMetrics = getCostByRoleMetrics(
+      this.filterById(20, metrics),
+      this.filterById(21, metrics),
+      this.filterById(22, metrics),
+      this.filterById(23, metrics),
+      this.filterById(24, metrics),
+      this.filterById(25, metrics),
+      this.filterById(26, metrics),
+      this.filterById(27, metrics),
+      this.filterById(28, metrics),
+      this.filterById(29, metrics)
+    );
 
     return (
       <div>

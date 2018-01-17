@@ -13,11 +13,11 @@ class StartEndDates extends Component {
       <div className = {css.startEndDatesWrp}> 
         <div className = {css.startEndDates}>
           Дата начала проекта: 
-          <Input readOnly value = {this.props.startDate ? moment(this.props.startDate).format('DD.MM.YYYY') : 'Загрузка...'}/>
+          <Input readOnly value = {this.props.startDate ? moment(this.props.startDate).format('YYYY-MM-DD') : 'Загрузка...'}/>
         </div>
         <div className = {css.startEndDates}>
           Дата завершения проекта
-          <Input readOnly value = {this.props.endDate ? moment(this.props.endDate).format('DD.MM.YYYY') : 'Загрузка...'}/>
+          <Input readOnly value = {this.props.endDate ? moment(this.props.endDate).format('YYYY-MM-DD') : 'Загрузка...'}/>
         </div>
       </div>
       

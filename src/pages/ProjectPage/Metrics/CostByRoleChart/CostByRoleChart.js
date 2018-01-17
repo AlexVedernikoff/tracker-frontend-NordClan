@@ -5,6 +5,7 @@ import { Line } from 'react-chartjs-2';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import getRandomColor from '../../../../utils/getRandomColor';
+import Button from '../../../../components/Button';
 
 function getBasicLineSettings (color) {
   return {
@@ -26,7 +27,26 @@ class CostByRoleChart extends Component {
 
   constructor (props) {
     super(props);
-    this.chartOptions = {
+    this.state = {
+      displayPercent: true
+    };
+  }
+
+  makeChartData () {
+    const {
+      costByRoleMetrics,
+      costByRolePercentMetrics
+    } = this.props;
+    const { displayPercent } = this.state;
+    return {
+      datasets: [
+        ...this.makeRoleMetricsLine(displayPercent ? costByRolePercentMetrics : costByRoleMetrics)
+      ]
+    };
+  }
+
+  getChartOptions = () => {
+    return {
       responsive: true,
       hover: { mode: 'nearest' },
       title: {
@@ -61,22 +81,10 @@ class CostByRoleChart extends Component {
           display: true,
           scaleLabel: {
             display: true,
-            labelString: 'Количество багов'
+            labelString: this.state.displayPercent ? '% часов' : 'часы'
           }
         }]
       }
-    };
-  }
-
-  makeChartData () {
-    const {
-      costByRoleMetrics,
-      costByRolePercentMetrics
-    } = this.props;
-    return {
-      datasets: [
-        ...this.makeRoleMetricsLine(costByRolePercentMetrics)
-      ]
     };
   }
 
@@ -99,11 +107,23 @@ class CostByRoleChart extends Component {
 
   render () {
     return (
-      <div className={css.BugsChart}>
+      <div className={css.CostByRoleChart}>
         <h3>Затраты по ролям</h3>
+        <div className={css.CostByRoleSwitcher}>
+          <Button
+            type={this.state.displayPercent ? 'primary' : 'bordered'}
+            text='Отобразить в %'
+            onClick={() => this.setState({displayPercent: true})}
+          />
+          <Button
+            type={this.state.displayPercent ? 'bordered' : 'primary'}
+            text='Отобразить в часах'
+            onClick={() => this.setState({displayPercent: false})}
+          />
+        </div>
         <Line
           data={this.makeChartData()}
-          options={this.chartOptions}
+          options={this.getChartOptions()}
           redraw
         />
       </div>

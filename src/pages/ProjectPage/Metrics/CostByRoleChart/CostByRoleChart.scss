@@ -1,3 +1,10 @@
+@import "../../../../styles/variables";
 .CostByRoleChart {
-  
+  > h3 {
+    text-align: center;
+  }
+}
+.CostByRoleSwitcher {
+  text-align: center;
+  margin: 1rem 0;
 }
