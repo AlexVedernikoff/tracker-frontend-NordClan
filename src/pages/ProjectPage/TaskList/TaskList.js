@@ -330,6 +330,7 @@ class TaskList extends Component {
                 <Priority
                   onChange={(option) => this.changeSingleFilter(option, 'prioritiesId')}
                   priority={prioritiesId}
+                  canEdit
                 />
               </Col>
               <Col smOffset={6} xs={12} sm={3} className={css.clearFilters}>
@@ -346,7 +347,7 @@ class TaskList extends Component {
               <Col xs={12} sm={3}>
                 <SelectDropdown
                   name="type"
-                  placeholder="Тип задачи"
+                  placeholder="Выберите тип задачи"
                   multi
                   noResultsText="Нет подходящих типов"
                   backspaceToRemoveMessage={''}
@@ -359,7 +360,7 @@ class TaskList extends Component {
               <Col xs={12} sm={3}>
                 <SelectDropdown
                   name="status"
-                  placeholder="Стадия задачи"
+                  placeholder="Выберите статус задачи"
                   multi
                   noResultsText="Нет подходящих статусов"
                   backspaceToRemoveMessage={''}
@@ -372,7 +373,7 @@ class TaskList extends Component {
               <Col xs={12} sm={3}>
                 <SelectDropdown
                   name="author"
-                  placeholder="Автор"
+                  placeholder="Выберите автора задачи"
                   multi={false}
                   value={authorId}
                   onChange={(option) => this.changeSingleFilter(option, 'authorId')}
@@ -392,7 +393,7 @@ class TaskList extends Component {
             <Row className={css.search}>
               <Col xs={12} sm={6}>
                 <Input
-                  placeholder="Название задачи"
+                  placeholder="Введите название задачи"
                   value={filterByName}
                   onChange={this.changeNameFilter}
                 />
@@ -427,8 +428,11 @@ class TaskList extends Component {
                 />
               )
           }
-
-          <hr/>
+          {
+            !isLoading && tasks.length === 0
+              ? <div className={css.notFound}>Ничего не найдено</div>
+              : null
+          }
           {
             this.props.pagesCount > 1
               ? <Pagination

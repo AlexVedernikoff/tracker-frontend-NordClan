@@ -2,7 +2,24 @@
 
 .editSprintForm {
   padding: 2rem;
-
+  h3 {
+    text-align: center;
+    margin: 0;
+  }
+  hr {
+    margin: 20px 0 0 0;
+  }
+  .validateMessages {
+    text-align: center;
+    min-height: 35px;
+    .redMessage {
+      color: $color-red;
+    }
+    span {
+      padding: 10px 0;
+      display: block;
+    }
+  }
   input,
   .DayPickerInput {
     margin-bottom: 1rem;

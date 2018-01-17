@@ -4,12 +4,12 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import Autolinker from 'autolinker';
 
 import TaskHeader from './TaskHeader';
 import Details from './Details';
 import RelatedTasks from './RelatedTasks';
 import Attachments from '../../components/Attachments';
+import { IconPlus } from '../../components/Icons';
 import Description from '../../components/Description';
 import RouteTabs from '../../components/RouteTabs';
 import TaskModal from '../../components/TaskModal';
@@ -18,6 +18,7 @@ import GoBackPanel from '../../components/GoBackPanel';
 import CreateTaskModal from '../../components/CreateTaskModal';
 import HttpError from '../../components/HttpError';
 import { history } from '../../History';
+import { VISOR } from '../../constants/Roles';
 
 import * as TaskStatuses from '../../constants/TaskStatuses';
 
@@ -48,6 +49,7 @@ class TaskPage extends Component {
     getProjectInfo: PropTypes.func.isRequired,
     getTask: PropTypes.func.isRequired,
     getTasks: PropTypes.func.isRequired,
+    globalRole: PropTypes.string.isRequired,
     isCreateChildTaskModalOpen: PropTypes.bool,
     isCreateTaskModalOpen: PropTypes.bool,
     linkTask: PropTypes.func.isRequired,
@@ -202,8 +204,11 @@ class TaskPage extends Component {
   };
 
   render () {
+    const { globalRole } = this.props;
+    const isVisor = globalRole === VISOR;
     let projectUrl = '/';
     if (this.props.task.project) projectUrl = `/projects/${this.props.task.project.id}`;
+
     return (this.props.task.error) ? (<HttpError error={this.props.task.error}/>) : (
       <div ref="taskPage" className={css.taskPage}>
         <GoBackPanel
@@ -212,7 +217,12 @@ class TaskPage extends Component {
         />
         <Row>
           <Col xs={12} sm={8}>
-            <TaskHeader task={this.props.task} projectId={this.props.params.projectId} onChange={this.props.changeTask}/>
+            <TaskHeader
+              task={this.props.task}
+              projectId={this.props.params.projectId}
+              onChange={this.props.changeTask}
+              canEdit={this.props.task.statusId !== TaskStatuses.CLOSED}
+            />
             <main className={css.main}>
               <Description
                 text={{ __html: this.props.task.description }}
@@ -223,7 +233,7 @@ class TaskPage extends Component {
                 onEditFinish={this.props.stopTaskEditing}
                 onEditSubmit={this.props.changeTask}
                 isEditing={this.props.DescriptionIsEditing}
-                canEdit
+                canEdit={this.props.task.statusId !== TaskStatuses.CLOSED}
               />
               <hr />
               <h3>Прикрепленные файлы:</h3>
@@ -231,7 +241,7 @@ class TaskPage extends Component {
                 attachments={this.props.task.attachments}
                 removeAttachment={this.removeAttachment}
                 uploadAttachments={this.uploadAttachments}
-                canEdit
+                canEdit={this.props.task.statusId !== TaskStatuses.CLOSED}
               />
               <RouteTabs style={{ marginTop: '2rem', marginBottom: '2rem' }}>
                 <Link
@@ -251,7 +261,20 @@ class TaskPage extends Component {
           </Col>
           <Col xs={12} sm={4}>
             <aside>
-              <Details task={this.props.task} sprints={this.props.sprints} onChange={this.props.changeTask} />
+              <Details
+                task={this.props.task}
+                sprints={this.props.sprints}
+                onChange={this.props.changeTask}
+                canEdit={this.props.task.statusId !== TaskStatuses.CLOSED}
+              />
+              {
+                !isVisor
+                  ? <button className={css.addTask} onClick={this.props.openCreateTaskModal}>
+                      <span>Создать новую задачу</span>
+                      <IconPlus style={{width: 16, height: 16}}/>
+                    </button>
+                  : null
+              }
               {
                 this.props.task.linkedTasks
                   ? <RelatedTasks task={this.props.task} type="linkedTasks" onAction={this.handleOpenLinkTaskModal}
@@ -338,7 +361,8 @@ const mapStateToProps = state => ({
   task: state.Task.task,
   DescriptionIsEditing: state.Task.DescriptionIsEditing,
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
-  isCreateChildTaskModalOpen: state.Project.isCreateChildTaskModalOpen
+  isCreateChildTaskModalOpen: state.Project.isCreateChildTaskModalOpen,
+  globalRole: state.Auth.user.globalRole
 });
 
 const mapDispatchToProps = {

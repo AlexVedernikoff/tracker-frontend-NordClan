@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState, ContentState, convertFromHTML } from 'draft-js';
 import './TextEditor.css';
+import classnames from 'classnames';
 import * as css from './TextEditor.scss';
 
 class TextEditor extends Component {
@@ -37,6 +37,7 @@ class TextEditor extends Component {
         toolbar={{
           options: ['inline', 'blockType', 'list', 'history']
         }}
+        toolbarClassName={classnames({ [css.hidden]: toolbarHidden })}
         {...other}
       />
     );

@@ -54,7 +54,7 @@ class SprintReport extends Component {
     }
   }
 
-  formatDate = date => moment(date).format(dateFormat);
+  formatDate = date => date && moment(date).format(dateFormat);
 
   updatePickers = value => {
     const {selectedFrom, selectedTo} = value;
@@ -67,6 +67,62 @@ class SprintReport extends Component {
   handleDayToChange = date => {
     this.setState({ selectedTo: this.formatDate(date)});
   };
+
+  isRangeValid = () => {
+    return (!this.state.selectedFrom && !this.state.selectedTo)
+      || moment(this.state.selectedFrom, 'YYYY-MM-DD', true).isValid()
+      && moment(this.state.selectedTo, 'YYYY-MM-DD', true).isValid()
+      && moment(this.state.selectedTo).isAfter(this.state.selectedFrom);
+  };
+
+  getSelectOptions = () => {
+    return [
+      this.fullTimeOption(),
+      this.lastWeekOption(),
+      this.lastMonthOption(),
+      ...this.props.sprints.map(value => ({ value, label: value.name}))
+    ];
+  }
+
+  lastWeekOption = () => {
+    const lastWeek = moment().subtract(1, 'weeks');
+    return {
+      label: 'За прошлую неделю',
+      value: {
+        factStartDate: lastWeek.startOf('isoWeek').toDate(),
+        factFinishDate: lastWeek.endOf('isoWeek').toDate()
+      }
+    };
+  }
+
+  lastMonthOption = () => {
+    const lastMonth = moment().subtract(1, 'month');
+    return {
+      label: 'За прошлый месяц',
+      value: {
+        factStartDate: lastMonth.startOf('month').toDate(),
+        factFinishDate: lastMonth.endOf('month').toDate()
+      }
+    };
+  }
+
+  fullTimeOption = () => {
+    const lastMonth = moment().subtract(1, 'month');
+    return {
+      label: 'За весь проект',
+      value: {
+        factStartDate: undefined,
+        factFinishDate: undefined
+      }
+    };
+  }
+
+  getQueryParams = () => {
+    if (!this.state.selectedFrom && !this.state.selectedTo) {
+      return '';
+    }
+    return `?startDate=${this.state.selectedFrom}&endDate=${this.state.selectedTo}`;
+  }
 
   render () {
     return (
@@ -84,7 +140,7 @@ class SprintReport extends Component {
                         value={this.state.sprintSelected}
                         onChange={(option) => this.sprintSelected(option)}
                         noResultsText="Нет результатов"
-                        options={this.props.sprints.map(value => ({ value, label: value.name}))}
+                        options={this.getSelectOptions()}
                     />
                 </Col>
                 <Col xs></Col>
@@ -112,7 +168,10 @@ class SprintReport extends Component {
                 </Col>
                 <Col xs></Col>
                 <Col xs={2}>
-                    <a href={`${API_URL}/project/${this.props.project.id}/reports/period?startDate=${this.state.selectedFrom}&endDate=${this.state.selectedTo}`}>Выгрузить отчёт</a>
+                    <a className={this.isRangeValid() ? '' : css.disabled}
+                       href={`${API_URL}/project/${this.props.project.id}/reports/period${this.getQueryParams()}`}>
+                      Выгрузить отчёт
+                    </a>
                 </Col>
             </Row>
         </div>

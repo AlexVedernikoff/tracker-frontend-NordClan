@@ -203,7 +203,9 @@
     background-color: lighten($color-dark, 10%);
     color: white;
     transition: $transition;
-
+    display: flex;
+    justify-content: center;
+    align-items: center;
     &.inactive {
       cursor: default;
     }
