@@ -44,7 +44,7 @@
   position: relative;
   align-items: stretch;
   flex-wrap: wrap;
-  width: calc(100% - 14rem);
+  width: calc(100% - 15rem);
   overflow: hidden;
   border-left: 1px solid lighten($color-black, 70%);
 }
@@ -184,7 +184,7 @@
 }
 
 .spentTime {
-  width: 2.5rem;
+  width: 3rem;
 
   .header {
     flex: 3;
