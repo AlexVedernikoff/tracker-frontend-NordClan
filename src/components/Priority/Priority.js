@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import * as css from './Priority.scss';
+import getProrityById from '../../utils/TaskPriority';
 
 class Priority extends Component {
   constructor (props) {
@@ -45,6 +46,7 @@ class Priority extends Component {
                 className={classnames({
                   [css.active]: priorityId === this.props.priority
                 })}
+                data-tip={getProrityById(priorityId)}
               >
                 {priorityId}
               </span>
