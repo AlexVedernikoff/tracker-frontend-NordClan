@@ -6,6 +6,7 @@ import { showNotification } from './Notifications';
 import { getTimesheetsPlayerData } from './TimesheetPlayer';
 import { startOfCurrentWeek, endOfCurrentWeek } from '../utils/date';
 import { history } from '../History';
+import { getErrorMessageByType } from '../utils/ErrorMessages';
 
 const startAuthentication = () => ({
   type: AuthActions.AUTHENTICATION_START
@@ -60,7 +61,7 @@ export const doAuthentication = ({ username, password }) => {
       )
       .catch(error => {
         if (error.response.data.name === 'InvalidCredentialsError' && error.response.data.code === 49) {
-          dispatch(authenticationError('Неверый логин/пароль. Проверьте данные'));
+          dispatch(authenticationError(getErrorMessageByType(error.response.data.name)));
         } else {
           dispatch(showNotification({message: error.message, type: 'error'}));
         }
