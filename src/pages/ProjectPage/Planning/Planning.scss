@@ -234,10 +234,18 @@
   text-align: center;
   display: flex;
   flex-direction: column;
-  background-color: red;
-
+  justify-content: center;
+  align-items: center;
+  > div {
+    width: 10px;
+    height: 10px;
+    transform: rotate(45deg);
+    background-color: red;
+  }
   &.done {
-    background-color: yellow;
+    >div {
+      background-color: $color-green;
+    }    
   }
 }
 
