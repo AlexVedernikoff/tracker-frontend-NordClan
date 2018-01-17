@@ -59,8 +59,11 @@ export const doAuthentication = ({ username, password }) => {
         { withCredentials: true }
       )
       .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(authenticationError(error.message));
+        if (error.response.data.name === 'InvalidCredentialsError' && error.response.data.code === 49) {
+          dispatch(authenticationError('Неверый логин/пароль. Проверьте данные'));
+        } else {
+          dispatch(showNotification({message: error.message, type: 'error'}));
+        }
         dispatch(userInfoReceiveFailed());
       })
       .then(response => {
