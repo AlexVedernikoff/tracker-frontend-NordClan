@@ -40,16 +40,16 @@ class SprintReport extends Component {
       this.setState({
         sprintSelected: null,
         selectedFrom: this.formatDate(this.props.startDate),
-        selectedTo: this.formatDate(this.props.endDate)
+        selectedTo: moment().format(dateFormat)
       });
     }
   };
 
   componentWillReceiveProps (newProps) {
-    if (newProps.startDate && newProps.endDate) {
+    if (newProps.startDate) {
       this.updatePickers({
         selectedFrom: this.formatDate(newProps.startDate),
-        selectedTo: this.formatDate(newProps.endDate)
+        selectedTo: moment().format(dateFormat)
       });
     }
   }
