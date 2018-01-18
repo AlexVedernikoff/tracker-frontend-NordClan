@@ -69,7 +69,15 @@ class CostByRoleChart extends Component {
       };
     });
   }
-
+  switcherClickHandler = (buttonType) => {
+    return () => {
+      if (buttonType === 'percent' && !this.state.displayPercent) {
+        this.setState({displayPercent: true});
+      } else if (buttonType === 'hours' && this.state.displayPercent) {
+        this.setState({displayPercent: false});
+      }
+    };
+  }
   render () {
     return (
       <div className={css.CostByRoleChart}>
@@ -78,12 +86,12 @@ class CostByRoleChart extends Component {
           <Button
             type={this.state.displayPercent ? 'primary' : 'bordered'}
             text='Отобразить в %'
-            onClick={() => this.setState({displayPercent: true})}
+            onClick={this.switcherClickHandler('percent')}
           />
           <Button
             type={this.state.displayPercent ? 'bordered' : 'primary'}
             text='Отобразить в часах'
-            onClick={() => this.setState({displayPercent: false})}
+            onClick={this.switcherClickHandler('hours')}
           />
         </div>
         <Line

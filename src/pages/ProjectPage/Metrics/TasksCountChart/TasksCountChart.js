@@ -8,7 +8,13 @@ import getRandomColor from '../../../../utils/getRandomColor';
 
 class TasksCountChart extends Component {
   static propTypes = {
-    chartDefaultOptions: PropTypes.object
+    chartDefaultOptions: PropTypes.object,
+    getBasicLineSettings: PropTypes.func,
+    openedFeaturesMetric: PropTypes.array,
+    openedFeaturesWithoutEvaluationMetric: PropTypes.array,
+    openedOutOfPlanFeaturesMetric: PropTypes.array,
+    openedBugsMetrics: PropTypes.array,
+    openedCustomerBugsMetrics: PropTypes.array
   };
 
   constructor (props) {
@@ -27,7 +33,7 @@ class TasksCountChart extends Component {
           display: true,
           scaleLabel: {
             display: true,
-            labelString: 'Часы'
+            labelString: 'Количество задач'
           }
         }]
       }
@@ -35,7 +41,37 @@ class TasksCountChart extends Component {
   }
 
   makeChartData () {
+    const {
+      openedFeaturesMetric,
+      openedFeaturesWithoutEvaluationMetric,
+      openedOutOfPlanFeaturesMetric,
+      openedBugsMetrics,
+      openedCustomerBugsMetrics
+    } = this.props;
+    return {
+      datasets: [
+        this.makeTaskCountMetricsLine(openedFeaturesMetric, 'Количество открытых фич без оценки'),
+        this.makeTaskCountMetricsLine(openedFeaturesWithoutEvaluationMetric, 'Количество открытых фич без оценки'),
+        this.makeTaskCountMetricsLine(openedOutOfPlanFeaturesMetric, 'Количество открытых фич вне плана'),
+        this.makeTaskCountMetricsLine(openedBugsMetrics, 'Количество открытых багов'),
+        this.makeTaskCountMetricsLine(openedCustomerBugsMetrics, 'Количество открытых багов от заказчика')
+      ]
+    };
   }
+
+  makeTaskCountMetricsLine = (metrics, label) => {
+    const line = metrics.map(metric => {
+      return {
+        x: metric.createdAt,
+        y: +metric.value
+      };
+    });
+    return {
+      data: [...line],
+      label: label,
+      ...this.props.getBasicLineSettings()
+    };
+  };
 
   render () {
     return (

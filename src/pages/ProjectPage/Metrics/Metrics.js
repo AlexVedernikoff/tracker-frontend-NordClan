@@ -7,13 +7,12 @@ import StartEndDates from './StartEndDates';
 import BudgetChart from './BudgetChart';
 import BugsChart from './BugsChart';
 import CostByRoleChart from './CostByRoleChart';
-import ClosingFeaturesChart from './ClosingFeaturesChart';
-import TasksCountChart from './TasksCountChart';
 import SprintReport from './Report';
+import SprintMetrics from './SprintMetrics';
 import { getMetrics } from './../../../actions/Metrics';
 import moment from 'moment';
 import getRandomColor from '../../../utils/getRandomColor';
- 
+
 class Metrics extends Component {
   static propTypes = {
     budget: PropTypes.number,
@@ -31,7 +30,7 @@ class Metrics extends Component {
   }
 
   componentWillMount () {
-    const { getMetrics, params, createdAt } = this.props;
+    const { getMetrics, params, createdAt} = this.props;
     if (createdAt) {
       const metricsParams = {
         projectId: parseInt(params.projectId),
@@ -53,7 +52,6 @@ class Metrics extends Component {
       getMetrics(metricsParams);
     }
   }
-
 
   startDate () {
     if (this.props.createdAt) {
@@ -109,10 +107,6 @@ class Metrics extends Component {
     const openedCustomerBugsMetrics = this.filterById(8, metrics);
     const openedRegressBugsMetrics = this.filterById(9, metrics);
 
-    /*Динамика закрытия фич*/
-    const sprintClosingFeaturesMetrics = this.filterById(32, metrics);
-    const sprintWriteOffTimeMetrics = this.filterById(34, metrics);
-    const sprintWorkWithoutEvaluationMetrics = this.filterById(33, metrics);
     
     /*Затраты по ролям*/
     const getCostByRoleMetrics = (role1, role2, role3, role4, role5, role6, role7, role8, role9, role10) => [
@@ -182,14 +176,13 @@ class Metrics extends Component {
       this.filterById(29, metrics)
     );
 
-    /*Количество задач*/
-    const openedFeaturesWithoutEvaluationMetric = this.filterById(40, metrics);
-    const openedFeaturesMetric = this.filterById(35, metrics);
-    const openedOutOfPlanFeaturesMetric = this.filterById(41, metrics);
-    
+
     const chartDefaultOptions = {
       responsive: true,
       hover: { mode: 'nearest' },
+      animation: {
+        duration: 0
+      },
       title: {
         display: false
       },
@@ -248,7 +241,7 @@ class Metrics extends Component {
             </Col>
           </Row>
           <Row>
-            <Col xs={12} md={10} mdOffset={1} lg={6} lgOffset={3} >
+            <Col xs={12} md={10} mdOffset={1} lg={8} lgOffset={2} >
               <BugsChart
                 chartDefaultOptions={chartDefaultOptions}
                 getBasicLineSettings={this.getBasicLineSettings}
@@ -259,7 +252,7 @@ class Metrics extends Component {
             </Col>
           </Row>
           <Row>
-            <Col xs={12} md={10} mdOffset={1} lg={6} lgOffset={3} >
+            <Col xs={12} md={10} mdOffset={1} lg={8} lgOffset={2} >
               <CostByRoleChart
                 chartDefaultOptions={chartDefaultOptions}
                 getBasicLineSettings={this.getBasicLineSettings}
@@ -268,26 +261,15 @@ class Metrics extends Component {
               />
             </Col>
           </Row>
-          <h2>Метрики по спринту</h2>
-          <Row>
-            <Col xs={12} md={10} mdOffset={1} lg={6} lgOffset={3} >
-              <ClosingFeaturesChart
-                startDate={this.startDate()}
-                endDate={this.endDate()}
-                chartDefaultOptions={chartDefaultOptions}
-                getBasicLineSettings={this.getBasicLineSettings}
-                sprintClosingFeaturesMetrics={sprintClosingFeaturesMetrics}
-                sprintWriteOffTimeMetrics={sprintWriteOffTimeMetrics}
-                sprintWorkWithoutEvaluationMetrics={sprintWorkWithoutEvaluationMetrics}
-              />
-            </Col>
-            <Col xs={12} md={10} mdOffset={1} lg={6} lgOffset={3} >
-              <TasksCountChart
-                chartDefaultOptions={chartDefaultOptions}
-                getBasicLineSettings={this.getBasicLineSettings}
-              />
-            </Col>
-          </Row>
+          <SprintMetrics
+            chartDefaultOptions={chartDefaultOptions}
+            getBasicLineSettings={this.getBasicLineSettings}
+            startDate={this.startDate()}
+            endDate={this.endDate()}
+            openedBugsMetrics={openedBugsMetrics}
+            openedCustomerBugsMetrics={openedCustomerBugsMetrics}
+            filterById={this.filterById}
+          />
         </section>
       </div>
     );
