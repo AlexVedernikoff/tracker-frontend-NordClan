@@ -59,15 +59,22 @@ class SprintMetrics extends Component {
     const processedSprints = sprints.filter(sprint => {
       return sprint.statusId === 2;
     });
-
     const currentSprints = processedSprints.filter(sprint => {
       return moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]');
     });
-    const currentSprint = currentSprints.length ? currentSprints[0] : (processedSprints.length ? processedSprints[0] : 0);
-    return {
-      value: currentSprint,
-      label: currentSprint.name
+    const getOption = (sprint) => {
+      return {
+        value: sprint,
+        label: sprint.name
+      };
     };
+    if (currentSprints.length) {
+      return getOption(currentSprints[0]);
+    } else if (processedSprints.length) {
+      return getOption(processedSprints[0]);
+    } else {
+      return getOption(sprints[sprints.length - 1]);
+    }
   };
 
   sprintStartDate () {
@@ -109,7 +116,6 @@ class SprintMetrics extends Component {
     const openedFeaturesWithoutEvaluationMetric = filterById(40, metrics);
     const openedFeaturesMetric = filterById(35, metrics);
     const openedOutOfPlanFeaturesMetric = filterById(41, metrics);
-
     return (
       <div>
         <h2>Метрики по спринту</h2>
