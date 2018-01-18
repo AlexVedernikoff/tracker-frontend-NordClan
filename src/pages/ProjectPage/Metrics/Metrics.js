@@ -12,9 +12,11 @@ import SprintMetrics from './SprintMetrics';
 import { getMetrics } from './../../../actions/Metrics';
 import moment from 'moment';
 import getRandomColor from '../../../utils/getRandomColor';
+import { ADMIN } from '../../../constants/Roles';
 
 class Metrics extends Component {
   static propTypes = {
+    projectId: PropTypes.number,
     budget: PropTypes.number,
     completedAt: PropTypes.string,
     createdAt: PropTypes.string,
@@ -22,7 +24,8 @@ class Metrics extends Component {
     metrics: PropTypes.array,
     params: PropTypes.object,
     riskBudget: PropTypes.number,
-    sprints: PropTypes.array
+    sprints: PropTypes.array,
+    user: PropTypes.object.isRequired
   };
 
   constructor (props) {
@@ -87,12 +90,19 @@ class Metrics extends Component {
     };
   };
 
+  checkIsAdminInProject = () => {
+    return this.props.user.projectsRoles && this.props.user.projectsRoles.admin.indexOf(this.props.projectId) !== -1
+      || this.props.user.globalRole === ADMIN;
+  };
+
   render () {
     /*
       значение Id типов метрик
       http://gitlab.simbirsoft/frontend/sim-track-back/blob/develop/server/services/agent/calculate/metrics.txt
     */
     const { metrics } = this.props;
+
+    const isProjectAdmin = this.checkIsAdminInProject();
 
     /*Бюджет без рискового резерва*/
     const projectBudgetMetrics = this.filterById(5, metrics);
@@ -214,62 +224,64 @@ class Metrics extends Component {
       <div>
         <section className={css.Metrics}>
           <SprintReport startDate={this.startDate()} endDate={this.endDate()}/>
-          <h2>Метрики по проекту</h2>
-          <StartEndDates startDate={this.startDate()} endDate={this.endDate()}/>
-          <Row>
-            <Col xs={12} md={10} mdOffset={1} lg={6} lgOffset={0}>
-              <BudgetChart
-                startDate={this.startDate()}
-                endDate={this.endDate()}
-                chartDefaultOptions={chartDefaultOptions}
-                getBasicLineSettings={this.getBasicLineSettings}
-                projectBudgetMetrics={projectBudgetMetrics}
-                sprintsBudgetMetrics={sprintsBudgetMetrics}
-                isRisks={false}
-              />
-            </Col>
-            <Col xs={12} md={10} mdOffset={1} lg={6} lgOffset={0}>
-              <BudgetChart
-                startDate={this.startDate()}
-                endDate={this.endDate()}
-                chartDefaultOptions={chartDefaultOptions}
-                getBasicLineSettings={this.getBasicLineSettings}
-                projectBudgetMetrics={projectBudgetRisksMetrics}
-                sprintsBudgetMetrics={sprintsBudgetRisksMetrics}
-                isRisks
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col xs={12} md={10} mdOffset={1} lg={8} lgOffset={2} >
-              <BugsChart
-                chartDefaultOptions={chartDefaultOptions}
-                getBasicLineSettings={this.getBasicLineSettings}
-                openedBugsMetrics={openedBugsMetrics}
-                openedCustomerBugsMetrics={openedCustomerBugsMetrics}
-                openedRegressBugsMetrics={openedRegressBugsMetrics}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col xs={12} md={10} mdOffset={1} lg={8} lgOffset={2} >
-              <CostByRoleChart
-                chartDefaultOptions={chartDefaultOptions}
-                getBasicLineSettings={this.getBasicLineSettings}
-                costByRoleMetrics={costByRoleMetrics}
-                costByRolePercentMetrics={costByRolePercentMetrics}
-              />
-            </Col>
-          </Row>
-          <SprintMetrics
-            chartDefaultOptions={chartDefaultOptions}
-            getBasicLineSettings={this.getBasicLineSettings}
-            startDate={this.startDate()}
-            endDate={this.endDate()}
-            openedBugsMetrics={openedBugsMetrics}
-            openedCustomerBugsMetrics={openedCustomerBugsMetrics}
-            filterById={this.filterById}
-          />
+          {isProjectAdmin ? <div>
+            <h2>Метрики по проекту</h2>
+            <StartEndDates startDate={this.startDate()} endDate={this.endDate()}/>
+            <Row>
+              <Col xs={12} md={10} mdOffset={1} lg={6} lgOffset={0}>
+                <BudgetChart
+                  startDate={this.startDate()}
+                  endDate={this.endDate()}
+                  chartDefaultOptions={chartDefaultOptions}
+                  getBasicLineSettings={this.getBasicLineSettings}
+                  projectBudgetMetrics={projectBudgetMetrics}
+                  sprintsBudgetMetrics={sprintsBudgetMetrics}
+                  isRisks={false}
+                />
+              </Col>
+              <Col xs={12} md={10} mdOffset={1} lg={6} lgOffset={0}>
+                <BudgetChart
+                  startDate={this.startDate()}
+                  endDate={this.endDate()}
+                  chartDefaultOptions={chartDefaultOptions}
+                  getBasicLineSettings={this.getBasicLineSettings}
+                  projectBudgetMetrics={projectBudgetRisksMetrics}
+                  sprintsBudgetMetrics={sprintsBudgetRisksMetrics}
+                  isRisks
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={12} md={10} mdOffset={1} lg={8} lgOffset={2} >
+                <BugsChart
+                  chartDefaultOptions={chartDefaultOptions}
+                  getBasicLineSettings={this.getBasicLineSettings}
+                  openedBugsMetrics={openedBugsMetrics}
+                  openedCustomerBugsMetrics={openedCustomerBugsMetrics}
+                  openedRegressBugsMetrics={openedRegressBugsMetrics}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={12} md={10} mdOffset={1} lg={8} lgOffset={2} >
+                <CostByRoleChart
+                  chartDefaultOptions={chartDefaultOptions}
+                  getBasicLineSettings={this.getBasicLineSettings}
+                  costByRoleMetrics={costByRoleMetrics}
+                  costByRolePercentMetrics={costByRolePercentMetrics}
+                />
+              </Col>
+            </Row>
+            <SprintMetrics
+              chartDefaultOptions={chartDefaultOptions}
+              getBasicLineSettings={this.getBasicLineSettings}
+              startDate={this.startDate()}
+              endDate={this.endDate()}
+              openedBugsMetrics={openedBugsMetrics}
+              openedCustomerBugsMetrics={openedCustomerBugsMetrics}
+              filterById={this.filterById}
+            />
+          </div> : null}
         </section>
       </div>
     );
@@ -277,12 +289,14 @@ class Metrics extends Component {
 }
 
 const mapStateToProps = state => ({
+  projectId: state.Project.project.id,
   createdAt: state.Project.project.createdAt,
   completedAt: state.Project.project.completedAt,
   budget: state.Project.project.budget,
   riskBudget: state.Project.project.riskBudget,
   sprints: state.Project.project.sprints,
-  metrics: state.Project.project.metrics
+  metrics: state.Project.project.metrics,
+  user: state.Auth.user
 });
 
 const mapDispatchToProps = {
