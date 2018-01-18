@@ -2,59 +2,22 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as css from './BugsChart.scss';
 import { Line } from 'react-chartjs-2';
-import { connect } from 'react-redux';
-import moment from 'moment';
-import getRandomColor from '../../../../utils/getRandomColor';
-
-function getBasicLineSettings(color) {
-  return {
-    backgroundColor: color,
-    borderColor: color,
-    fill: false,
-    lineTension: 0,
-    borderWidth: 1,
-    pointRadius: 1
-  };
-}
 
 class BugsChart extends Component {
-
   static propTypes = {
+    chartDefaultOptions: PropTypes.object,
+    getBasicLineSettings: PropTypes.func,
     openedBugsMetrics: PropTypes.array,
     openedCustomerBugsMetrics: PropTypes.array,
     openedRegressBugsMetrics: PropTypes.array
-  }
+  };
 
   constructor (props) {
     super(props);
     this.chartOptions = {
-      responsive: true,
-      hover: { mode: 'nearest' },
-      title: {
-        display: false
-      },
-      tooltips: {
-        callbacks: {
-          title: function (tooltipItem, data) {
-            return moment(tooltipItem[0].xLabel).format('YYYY.MM.DD');
-          },
-          label: function (tooltipItem, data) {
-            return tooltipItem.yLabel;
-          }
-        }
-      },
-      legend: {
-        position: 'bottom'
-      },
+      ...props.chartDefaultOptions,
       scales: {
-        xAxes: [{
-          type: 'time',
-          display: true,
-          scaleLabel: {
-            display: true,
-            labelString: 'Дата'
-          }
-        }],
+        ...props.chartDefaultOptions.scales,
         yAxes: [{
           ticks: {
             beginAtZero: true
@@ -69,7 +32,7 @@ class BugsChart extends Component {
     };
   }
 
-  makeChartData () {
+  makeChartData = () => {
     const {
       openedBugsMetrics,
       openedCustomerBugsMetrics,
@@ -82,10 +45,9 @@ class BugsChart extends Component {
         this.makeBugsLine(openedRegressBugsMetrics, 'Количество открытых регрессионных багов')
       ]
     };
-  }
+  };
 
-  makeBugsLine (metrics, label) {
-    const randomnedColor = getRandomColor();
+  makeBugsLine = (metrics, label) => {
     const line = metrics.map(metric => {
       return {
         x: metric.createdAt,
@@ -95,9 +57,9 @@ class BugsChart extends Component {
     return {
       data: [...line],
       label: label,
-      ...getBasicLineSettings(randomnedColor)
+      ...this.props.getBasicLineSettings()
     };
-  }
+  };
 
   render () {
     return (

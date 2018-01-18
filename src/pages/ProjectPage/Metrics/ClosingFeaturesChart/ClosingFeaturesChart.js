@@ -1,24 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Line } from 'react-chartjs-2';
-import moment from 'moment';
-import getRandomColor from '../../../../utils/getRandomColor';
 import * as css from './ClosingFeaturesChart.scss';
-import 'moment/locale/ru';
-
-function getBasicLineSettings(color) {
-  return {
-    backgroundColor: color,
-    borderColor: color,
-    fill: false,
-    lineTension: 0,
-    borderWidth: 1,
-    pointRadius: 1
-  };
-}
 
 class ClosingFeaturesChart extends Component {
   static propTypes = {
+    chartDefaultOptions: PropTypes.object,
+    getBasicLineSettings: PropTypes.func,
     sprintClosingFeaturesMetrics: PropTypes.array,
     sprintWorkWithoutEvaluationMetrics: PropTypes.array,
     sprintWriteOffTimeMetrics: PropTypes.array
@@ -27,29 +15,9 @@ class ClosingFeaturesChart extends Component {
   constructor (props) {
     super(props);
     this.chartOptions = {
-      responsive: true,
-      hover: { mode: 'nearest' },
-      title: {
-        display: false
-      },
-      legend: {
-        position: 'bottom'
-      },
+      ...props.chartDefaultOptions,
       scales: {
-        xAxes: [{
-          type: 'time',
-          time: {
-            displayFormats: {
-              day: 'D MMM'
-            },
-            tooltipFormat: 'DD.MM.YYYY'
-          },
-          display: true,
-          scaleLabel: {
-            display: true,
-            labelString: 'Дата'
-          }
-        }],
+        ...props.chartDefaultOptions.scales,
         yAxes: [{
           ticks: {
             beginAtZero: true
@@ -64,7 +32,7 @@ class ClosingFeaturesChart extends Component {
     };
   }
 
-  makeChartData () {
+  makeChartData = () => {
     const {
       sprintClosingFeaturesMetrics,
       sprintWriteOffTimeMetrics,
@@ -77,10 +45,9 @@ class ClosingFeaturesChart extends Component {
         this.makeBugsLine(sprintWorkWithoutEvaluationMetrics, 'Динамика трудозатрат на фичи без оценки')
       ]
     };
-  }
+  };
 
-  makeBugsLine (metrics, label) {
-    const randomnedColor = getRandomColor();
+  makeBugsLine = (metrics, label) => {
     const line = metrics.map(metric => {
       return {
         x: metric.createdAt,
@@ -90,9 +57,9 @@ class ClosingFeaturesChart extends Component {
     return {
       data: [...line],
       label: label,
-      ...getBasicLineSettings(randomnedColor)
+      ...this.props.getBasicLineSettings()
     };
-  }
+  };
 
   render () {
     return (

@@ -10,6 +10,7 @@ import CostByRoleChart from './CostByRoleChart/CostByRoleChart';
 import ClosingFeaturesChart from './ClosingFeaturesChart';
 import SprintReport from './Report';
 import { getMetrics } from './../../../actions/Metrics';
+import getRandomColor from '../../../utils/getRandomColor';
 
 class Metrics extends Component {
   static propTypes = {
@@ -60,6 +61,18 @@ class Metrics extends Component {
 
   filterById = (id, metrics) => {
     return metrics.filter(metric => metric.typeId === id);
+  };
+
+  getBasicLineSettings = () => {
+    const randomnedColor = getRandomColor();
+    return {
+      backgroundColor: randomnedColor,
+      borderColor: randomnedColor,
+      fill: false,
+      lineTension: 0,
+      borderWidth: 1,
+      pointRadius: 1
+    };
   };
 
   render () {
@@ -164,6 +177,36 @@ class Metrics extends Component {
       }
     ];
 
+    const chartDefaultOptions = {
+      responsive: true,
+      hover: { mode: 'nearest' },
+      title: {
+        display: false
+      },
+      legend: {
+        position: 'bottom',
+        labels: {
+          usePointStyle: true
+        }
+      },
+      scales: {
+        xAxes: [{
+          type: 'time',
+          time: {
+            displayFormats: {
+              day: 'D MMM'
+            },
+            tooltipFormat: 'DD.MM.YYYY'
+          },
+          display: true,
+          scaleLabel: {
+            display: true,
+            labelString: 'Дата'
+          }
+        }]
+      }
+    };
+
     return (
       <div>
         <section className={css.Metrics}>
@@ -175,6 +218,8 @@ class Metrics extends Component {
               <BudgetChart
                 startDate={this.startDate()}
                 endDate={this.endDate()}
+                chartDefaultOptions={chartDefaultOptions}
+                getBasicLineSettings={this.getBasicLineSettings}
                 projectBudgetMetrics={projectBudgetMetrics}
                 sprintsBudgetMetrics={sprintsBudgetMetrics}
                 isRisks={false}
@@ -184,15 +229,19 @@ class Metrics extends Component {
               <BudgetChart
                 startDate={this.startDate()}
                 endDate={this.endDate()}
+                chartDefaultOptions={chartDefaultOptions}
+                getBasicLineSettings={this.getBasicLineSettings}
                 projectBudgetMetrics={projectBudgetRisksMetrics}
                 sprintsBudgetMetrics={sprintsBudgetRisksMetrics}
-                isRisks={true}
+                isRisks
               />
             </Col>
           </Row>
           <Row>
             <Col xs={12} md={10} mdOffset={1} lg={6} lgOffset={3} >
               <BugsChart
+                chartDefaultOptions={chartDefaultOptions}
+                getBasicLineSettings={this.getBasicLineSettings}
                 openedBugsMetrics={openedBugsMetrics}
                 openedCustomerBugsMetrics={openedCustomerBugsMetrics}
                 openedRegressBugsMetrics={openedRegressBugsMetrics}
@@ -202,6 +251,8 @@ class Metrics extends Component {
           <Row>
             <Col xs={12} md={10} mdOffset={1} lg={6} lgOffset={3} >
               <CostByRoleChart
+                chartDefaultOptions={chartDefaultOptions}
+                getBasicLineSettings={this.getBasicLineSettings}
                 costByRoleMetrics={costByRoleMetrics}
                 costByRolePercentMetrics={costByRolePercentMetrics}
               />
@@ -213,6 +264,8 @@ class Metrics extends Component {
               <ClosingFeaturesChart
                 startDate={this.startDate()}
                 endDate={this.endDate()}
+                chartDefaultOptions={chartDefaultOptions}
+                getBasicLineSettings={this.getBasicLineSettings}
                 sprintClosingFeaturesMetrics={sprintClosingFeaturesMetrics}
                 sprintWriteOffTimeMetrics={sprintWriteOffTimeMetrics}
                 sprintWorkWithoutEvaluationMetrics={sprintWorkWithoutEvaluationMetrics}

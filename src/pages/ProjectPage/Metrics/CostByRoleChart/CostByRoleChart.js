@@ -2,58 +2,21 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as css from './CostByRoleChart.scss';
 import { Line } from 'react-chartjs-2';
-import { connect } from 'react-redux';
-import moment from 'moment';
-import getRandomColor from '../../../../utils/getRandomColor';
-
-function getBasicLineSettings (color) {
-  return {
-    backgroundColor: color,
-    borderColor: color,
-    fill: false,
-    lineTension: 0,
-    borderWidth: 1,
-    pointRadius: 1
-  };
-}
 
 class CostByRoleChart extends Component {
-
   static propTypes = {
+    chartDefaultOptions: PropTypes.object,
     costByRoleMetrics: PropTypes.array,
-    costByRolePercentMetrics: PropTypes.array
-  }
+    costByRolePercentMetrics: PropTypes.array,
+    getBasicLineSettings: PropTypes.func
+  };
 
   constructor (props) {
     super(props);
     this.chartOptions = {
-      responsive: true,
-      hover: { mode: 'nearest' },
-      title: {
-        display: false
-      },
-      tooltips: {
-        callbacks: {
-          title: function (tooltipItem, data) {
-            return moment(tooltipItem[0].xLabel).format('YYYY.MM.DD');
-          },
-          label: function (tooltipItem, data) {
-            return tooltipItem.yLabel;
-          }
-        }
-      },
-      legend: {
-        position: 'bottom'
-      },
+      ...props.chartDefaultOptions,
       scales: {
-        xAxes: [{
-          type: 'time',
-          display: true,
-          scaleLabel: {
-            display: true,
-            labelString: 'Дата'
-          }
-        }],
+        ...props.chartDefaultOptions.scales,
         yAxes: [{
           ticks: {
             beginAtZero: true
@@ -82,7 +45,6 @@ class CostByRoleChart extends Component {
 
   makeRoleMetricsLine (roleMetrics) {
     return roleMetrics.map(role => {
-      const randomnedColor = getRandomColor();
       const line = role.metrics.map(metric => {
         return {
           x: metric.createdAt,
@@ -92,14 +54,14 @@ class CostByRoleChart extends Component {
       return {
         data: line,
         label: `${role.name}`,
-        ...getBasicLineSettings(randomnedColor)
+        ...this.props.getBasicLineSettings()
       };
     });
   }
 
   render () {
     return (
-      <div className={css.BugsChart}>
+      <div className={css.CostByRoleChart}>
         <h3>Затраты по ролям</h3>
         <Line
           data={this.makeChartData()}
