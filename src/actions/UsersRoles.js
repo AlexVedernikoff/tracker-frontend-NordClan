@@ -1,15 +1,15 @@
-import * as UsersActions from '../constants/Users';
+import * as UsersRolesActions from '../constants/UsersRoles';
 import axios from 'axios';
 import { API_URL } from '../constants/Settings';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
 
 const startUsersReceive = () => ({
-  type: UsersActions.USERS_RECEIVE_START
+  type: UsersRolesActions.USERS_RECEIVE_START
 });
 
 const UsersReceived = users => ({
-  type: UsersActions.USERS_RECEIVE_SUCCESS,
+  type: UsersRolesActions.USERS_RECEIVE_SUCCESS,
   data: users
 });
 

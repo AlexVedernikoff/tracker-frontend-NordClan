@@ -1,4 +1,4 @@
-import * as UsersActions from '../constants/Users';
+import * as UsersRolesActions from '../constants/UsersRoles';
 
 const InitialState = {
   users: []
@@ -6,11 +6,11 @@ const InitialState = {
 
 function Users (state = InitialState, action) {
   switch (action.type) {
-  case UsersActions.USERS_RECEIVE_START:
+  case UsersRolesActions.USERS_RECEIVE_START:
     return {
       ...state
     };
-  case UsersActions.USERS_RECEIVE_SUCCESS:
+  case UsersRolesActions.USERS_RECEIVE_SUCCESS:
     return {
       ...state,
       users: action.data

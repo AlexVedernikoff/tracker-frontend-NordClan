@@ -2,7 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-class UserRoles extends React.Component {
+import getUsers from '../../actions/UsersRoles';
+
+class UsersRoles extends React.Component {
   constructor (props) {
     super(props);
   }
@@ -16,4 +18,4 @@ class UserRoles extends React.Component {
   }
 }
 
-export default UserRoles;
+export default UsersRoles;
