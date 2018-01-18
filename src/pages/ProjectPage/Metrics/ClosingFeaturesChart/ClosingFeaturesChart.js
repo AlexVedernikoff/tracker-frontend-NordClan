@@ -1,55 +1,23 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Line } from 'react-chartjs-2';
-import moment from 'moment';
-import getRandomColor from '../../../../utils/getRandomColor';
-
-function getBasicLineSettings(color) {
-  return {
-    backgroundColor: color,
-    borderColor: color,
-    fill: false,
-    lineTension: 0,
-    borderWidth: 1,
-    pointRadius: 1
-  };
-}
+import * as css from './ClosingFeaturesChart.scss';
 
 class ClosingFeaturesChart extends Component {
   static propTypes = {
-    sprintClosingFeaturesMetrics: PropTypes.array
+    chartDefaultOptions: PropTypes.object,
+    getBasicLineSettings: PropTypes.func,
+    sprintClosingFeaturesMetrics: PropTypes.array,
+    sprintWorkWithoutEvaluationMetrics: PropTypes.array,
+    sprintWriteOffTimeMetrics: PropTypes.array
   };
 
   constructor (props) {
     super(props);
     this.chartOptions = {
-      responsive: true,
-      hover: { mode: 'nearest' },
-      title: {
-        display: false
-      },
-      tooltips: {
-        callbacks: {
-          title: function (tooltipItem, data) {
-            return moment(tooltipItem[0].xLabel).format('YYYY.MM.DD');
-          },
-          label: function (tooltipItem, data) {
-            return tooltipItem.yLabel;
-          }
-        }
-      },
-      legend: {
-        position: 'bottom'
-      },
+      ...props.chartDefaultOptions,
       scales: {
-        xAxes: [{
-          type: 'time',
-          display: true,
-          scaleLabel: {
-            display: true,
-            labelString: 'Дата'
-          }
-        }],
+        ...props.chartDefaultOptions.scales,
         yAxes: [{
           ticks: {
             beginAtZero: true
@@ -57,26 +25,29 @@ class ClosingFeaturesChart extends Component {
           display: true,
           scaleLabel: {
             display: true,
-            labelString: 'Количество багов'
+            labelString: 'Часы'
           }
         }]
       }
     };
   }
 
-  makeChartData () {
+  makeChartData = () => {
     const {
-      sprintClosingFeaturesMetrics
+      sprintClosingFeaturesMetrics,
+      sprintWriteOffTimeMetrics,
+      sprintWorkWithoutEvaluationMetrics
     } = this.props;
     return {
       datasets: [
         this.makeBugsLine(sprintClosingFeaturesMetrics, 'Динамика закрытия фич (с учетом трудозатрат)'),
+        this.makeBugsLine(sprintWriteOffTimeMetrics, 'Динамика списания времени на фичи'),
+        this.makeBugsLine(sprintWorkWithoutEvaluationMetrics, 'Динамика трудозатрат на фичи без оценки')
       ]
     };
-  }
+  };
 
-  makeBugsLine (metrics, label) {
-    const randomnedColor = getRandomColor();
+  makeBugsLine = (metrics, label) => {
     const line = metrics.map(metric => {
       return {
         x: metric.createdAt,
@@ -86,13 +57,13 @@ class ClosingFeaturesChart extends Component {
     return {
       data: [...line],
       label: label,
-      ...getBasicLineSettings(randomnedColor)
+      ...this.props.getBasicLineSettings()
     };
-  }
+  };
 
   render () {
     return (
-      <div>
+      <div className={css.ClosingFeaturesChart}>
         <h3>Динамика закрытия фич</h3>
         <Line
           data={this.makeChartData()}

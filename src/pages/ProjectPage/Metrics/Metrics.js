@@ -11,18 +11,19 @@ import ClosingFeaturesChart from './ClosingFeaturesChart';
 import SprintReport from './Report';
 import { getMetrics } from './../../../actions/Metrics';
 import moment from 'moment';
+import getRandomColor from '../../../utils/getRandomColor';
 
 class Metrics extends Component {
   static propTypes = {
     budget: PropTypes.number,
     completedAt: PropTypes.string,
     createdAt: PropTypes.string,
-    metrics: PropTypes.array,
-    riskBudget: PropTypes.number,
-    sprints: PropTypes.array,
     getMetrics: PropTypes.func,
-    params: PropTypes.object
-  }
+    metrics: PropTypes.array,
+    params: PropTypes.object,
+    riskBudget: PropTypes.number,
+    sprints: PropTypes.array
+  };
 
   constructor (props) {
     super(props);
@@ -90,6 +91,8 @@ class Metrics extends Component {
     const openedCustomerBugsMetrics = this.filterById(8, metrics);
     const openedRegressBugsMetrics = this.filterById(9, metrics);
     const sprintClosingFeaturesMetrics = this.filterById(32, metrics);
+    const sprintWriteOffTimeMetrics = this.filterById(34, metrics);
+    const sprintWorkWithoutEvaluationMetrics = this.filterById(33, metrics);
     const getCostByRoleMetrics = (role1, role2, role3, role4, role5, role6, role7, role8, role9, role10) => [
       {
         metrics: role1,
@@ -159,6 +162,36 @@ class Metrics extends Component {
       this.filterById(29, metrics)
     );
 
+    const chartDefaultOptions = {
+      responsive: true,
+      hover: { mode: 'nearest' },
+      title: {
+        display: false
+      },
+      legend: {
+        position: 'bottom',
+        labels: {
+          usePointStyle: true
+        }
+      },
+      scales: {
+        xAxes: [{
+          type: 'time',
+          time: {
+            displayFormats: {
+              day: 'D MMM'
+            },
+            tooltipFormat: 'DD.MM.YYYY'
+          },
+          display: true,
+          scaleLabel: {
+            display: true,
+            labelString: 'Дата'
+          }
+        }]
+      }
+    };
+
     return (
       <div>
         <section className={css.Metrics}>
@@ -170,6 +203,8 @@ class Metrics extends Component {
               <BudgetChart
                 startDate={this.startDate()}
                 endDate={this.endDate()}
+                chartDefaultOptions={chartDefaultOptions}
+                getBasicLineSettings={this.getBasicLineSettings}
                 projectBudgetMetrics={projectBudgetMetrics}
                 sprintsBudgetMetrics={sprintsBudgetMetrics}
                 isRisks={false}
@@ -179,15 +214,19 @@ class Metrics extends Component {
               <BudgetChart
                 startDate={this.startDate()}
                 endDate={this.endDate()}
+                chartDefaultOptions={chartDefaultOptions}
+                getBasicLineSettings={this.getBasicLineSettings}
                 projectBudgetMetrics={projectBudgetRisksMetrics}
                 sprintsBudgetMetrics={sprintsBudgetRisksMetrics}
-                isRisks={true}
+                isRisks
               />
             </Col>
           </Row>
           <Row>
             <Col xs={12} md={10} mdOffset={1} lg={6} lgOffset={3} >
               <BugsChart
+                chartDefaultOptions={chartDefaultOptions}
+                getBasicLineSettings={this.getBasicLineSettings}
                 openedBugsMetrics={openedBugsMetrics}
                 openedCustomerBugsMetrics={openedCustomerBugsMetrics}
                 openedRegressBugsMetrics={openedRegressBugsMetrics}
@@ -197,6 +236,8 @@ class Metrics extends Component {
           <Row>
             <Col xs={12} md={10} mdOffset={1} lg={6} lgOffset={3} >
               <CostByRoleChart
+                chartDefaultOptions={chartDefaultOptions}
+                getBasicLineSettings={this.getBasicLineSettings}
                 costByRoleMetrics={costByRoleMetrics}
                 costByRolePercentMetrics={costByRolePercentMetrics}
               />
@@ -204,11 +245,17 @@ class Metrics extends Component {
           </Row>
           <h2>Метрики по спринту</h2>
           <Row>
-            <ClosingFeaturesChart
-              startDate={this.startDate()}
-              endDate={this.endDate()}
-              sprintClosingFeaturesMetrics={sprintClosingFeaturesMetrics}
-            />
+            <Col xs={12} md={10} mdOffset={1} lg={6} lgOffset={3} >
+              <ClosingFeaturesChart
+                startDate={this.startDate()}
+                endDate={this.endDate()}
+                chartDefaultOptions={chartDefaultOptions}
+                getBasicLineSettings={this.getBasicLineSettings}
+                sprintClosingFeaturesMetrics={sprintClosingFeaturesMetrics}
+                sprintWriteOffTimeMetrics={sprintWriteOffTimeMetrics}
+                sprintWorkWithoutEvaluationMetrics={sprintWorkWithoutEvaluationMetrics}
+              />
+            </Col>
           </Row>
         </section>
       </div>

@@ -4,63 +4,27 @@ import * as css from './BudgetChart.scss';
 import Input from '../../../../components/Input';
 import { Line } from 'react-chartjs-2';
 import { connect } from 'react-redux';
-import moment from 'moment';
-import getRandomColor from '../../../../utils/getRandomColor';
-
-function getBasicLineSettings (color) {
-  return {
-    backgroundColor: color,
-    borderColor: color,
-    fill: false,
-    lineTension: 0,
-    borderWidth: 1,
-    pointRadius: 1
-  };
-}
 
 class BudgetChart extends Component {
-
   static propTypes = {
     budget: PropTypes.number,
+    chartDefaultOptions: PropTypes.object,
+    endDate: PropTypes.string,
+    getBasicLineSettings: PropTypes.func,
+    isRisks: PropTypes.bool,
+    projectBudgetMetrics: PropTypes.array,
     riskBudget: PropTypes.number,
     sprints: PropTypes.array,
-    projectBudgetMetrics: PropTypes.array,
     sprintsBudgetMetrics: PropTypes.array,
-    startDate: PropTypes.string,
-    endDate: PropTypes.string,
-    isRisks: PropTypes.bool
-  }
+    startDate: PropTypes.string
+  };
 
   constructor (props) {
     super(props);
     this.chartOptions = {
-      responsive: true,
-      hover: { mode: 'nearest' },
-      title: {
-        display: false
-      },
-      tooltips: {
-        callbacks: {
-          title: function (tooltipItem, data) {
-            return moment(tooltipItem[0].xLabel).format('YYYY.MM.DD');
-          },
-          label: function (tooltipItem, data) {
-            return `${tooltipItem.yLabel} ч.`;
-          }
-        }
-      },
-      legend: {
-        position: 'bottom'
-      },
+      ...props.chartDefaultOptions,
       scales: {
-        xAxes: [{
-          type: 'time',
-          display: true,
-          scaleLabel: {
-            display: true,
-            labelString: 'Дата'
-          }
-        }],
+        ...props.chartDefaultOptions.scales,
         yAxes: [{
           ticks: {
             beginAtZero: true
@@ -75,7 +39,7 @@ class BudgetChart extends Component {
     };
   }
 
-  makeChartData () {
+  makeChartData = () => {
     const {
       projectBudgetMetrics,
       sprintsBudgetMetrics,
@@ -95,10 +59,9 @@ class BudgetChart extends Component {
         ...this.makeSprintsIdealBurndowns(sprints, isRisks)
       ]
     };
-  }
+  };
 
-  makeIdealProjectBurndown (startDate, endDate, budget, riskBudget, isRisks) {
-    const randomnedColor = getRandomColor();
+  makeIdealProjectBurndown = (startDate, endDate, budget, riskBudget, isRisks) => {
     return {
       data: [
         {
@@ -111,12 +74,11 @@ class BudgetChart extends Component {
         }
       ],
       label: 'Идеальная всего проекта',
-      ...getBasicLineSettings(randomnedColor)
+      ...this.props.getBasicLineSettings()
     };
-  }
+  };
 
-  makeProjectBurndown (metrics) {
-    const randomnedColor = getRandomColor();
+  makeProjectBurndown = (metrics) => {
     const burndown = metrics.map(metric => {
       return {
         x: metric.createdAt,
@@ -126,13 +88,12 @@ class BudgetChart extends Component {
     return {
       data: [...burndown],
       label: 'Весь проект',
-      ...getBasicLineSettings(randomnedColor)
+      ...this.props.getBasicLineSettings()
     };
-  }
+  };
 
-  makeSprintsIdealBurndowns (sprints, isRisks) {
+  makeSprintsIdealBurndowns = (sprints, isRisks) => {
     return sprints.map(sprint => {
-      const randomnedColor = getRandomColor();
       const idealBurndown = [
         {
           x: sprint.factStartDate,
@@ -146,14 +107,13 @@ class BudgetChart extends Component {
       return {
         data: [...idealBurndown],
         label: `Идеальная ${sprint.name}`,
-        ...getBasicLineSettings(randomnedColor)
+        ...this.props.getBasicLineSettings()
       };
     });
-  }
+  };
 
-  makeSprintsBurndowns (metrics, sprints) {
+  makeSprintsBurndowns = (metrics, sprints) => {
     return sprints.map(sprint => {
-      const randomnedColor = getRandomColor();
       const sprintMetrics = metrics.filter(metric => metric.sprintId === sprint.id);
       const burndown = sprintMetrics.map(metric => {
         return {
@@ -164,10 +124,10 @@ class BudgetChart extends Component {
       return {
         data: burndown,
         label: `${sprint.name}`,
-        ...getBasicLineSettings(randomnedColor)
+        ...this.props.getBasicLineSettings()
       };
     });
-  }
+  };
 
   render () {
     const {isRisks, budget, riskBudget} = this.props;
@@ -183,6 +143,7 @@ class BudgetChart extends Component {
     );
   }
 }
+
 const mapStateToProps = state => ({
   budget: state.Project.project.budget,
   riskBudget: state.Project.project.riskBudget,
