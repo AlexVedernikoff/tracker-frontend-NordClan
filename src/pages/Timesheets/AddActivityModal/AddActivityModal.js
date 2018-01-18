@@ -103,7 +103,8 @@ class AddActivityModal extends Component {
       spentTime: '0',
       onDate: moment(startingDay).format('YYYY-MM-DD'),
       project: selectedTask ? {
-        id: selectedTask.body.projectId
+        id: selectedTask.body.projectId,
+        name: this.state.projects.find(project => project.body.id === selectedTask.body.projectId).body.name
       } : selectedProject ? {
         id: selectedProject.value,
         name: selectedProject.label

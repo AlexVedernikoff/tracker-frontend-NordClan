@@ -36,13 +36,13 @@ class ActivityRow extends React.Component {
     this.deleteTimesheets = _.debounce(this.deleteTimesheets, debounceTime);
 
     const timeCells = {};
-    _.forEach(props.item.timeSheets, (tsh,i) => {
+    _.forEach(props.item.timeSheets, (tsh, i) => {
       if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
         timeCells[i] = roundNum(tsh.spentTime, 2);
       } else {
         timeCells[i] = 0;
       }
-    })
+    });
 
     this.state = {
       isOpen: false,
@@ -58,7 +58,7 @@ class ActivityRow extends React.Component {
       taskId: item.id || null,
       taskStatusId: item.id ? item.taskStatusId : null,
       typeId: item.id ? '1' : item.typeId,
-      spentTime: value,
+      spentTime: +value,
       onDate: moment(startingDay).weekday(i).format('YYYY-MM-DD'),
       projectId: item.projectId
     }, userId, startingDay);
@@ -73,7 +73,7 @@ class ActivityRow extends React.Component {
     }
     this.props.updateTimesheet({
       sheetId,
-      spentTime: value,
+      spentTime: +value
     }, userId, startingDay);
   };
 
@@ -82,22 +82,27 @@ class ActivityRow extends React.Component {
     this.props.deleteTimesheets(ids, userId, startingDay);
   };
 
-  changeEmpty = (i, value) => {
-    let newValue = parseFloat(value);
-    if (value < 0) {
-      newValue = Math.abs(value);
-    }
+  validateNumbers (value) {
+    const re = /^$|^\d+(\.\d*)?$/;
+    return re.test(value);
+  }
 
+  changeEmpty = (i, value) => {
+    if (!this.validateNumbers(value) || +value > 24) {
+      return false;
+    }
     this.setState((state) => {
       const timeCells = {
         ...state.timeCells
       };
-      timeCells[i] = newValue;
+      timeCells[i] = value;
       return {
         timeCells
       };
     }, () => {
-      this.createTimesheet(i);
+      if (value !== '') {
+        this.createTimesheet(i);
+      }
     });
   };
 
@@ -116,23 +121,56 @@ class ActivityRow extends React.Component {
   };
 
   changeFilled = (i, id, comment, value) => {
-    let newValue = parseFloat(value);
-    if (value < 0) {
-      newValue = Math.abs(value);
+    if (!this.validateNumbers(value) || +value > 24) {
+      return false;
     }
 
     this.setState((state) => {
       const timeCells = {
         ...state.timeCells
       };
-      timeCells[i] = newValue;
+      timeCells[i] = value;
+      return {
+        timeCells
+      };
+    }, () => {
+      if (value !== '') {
+        this.updateTimesheet(i, id, comment);
+      }
+    });
+  };
+
+  onBlurFilled = (i, id, comment, value) => {
+    if (value !== '') {
+      return false;
+    }
+    this.setState((state) => {
+      const timeCells = {
+        ...state.timeCells
+      };
+      timeCells[i] = 0;
       return {
         timeCells
       };
     }, () => {
       this.updateTimesheet(i, id, comment);
     });
-  };
+  }
+
+  onBlurEmpty = (i, value) => {
+    if (value !== '') {
+      return false;
+    }
+    this.setState((state) => {
+      const timeCells = {
+        ...state.timeCells
+      };
+      timeCells[i] = 0;
+      return {
+        timeCells
+      };
+    });
+  }
 
   changeFilledComment = (text, time, i, sheetId) => {
     const { userId, startingDay } = this.props;
@@ -196,11 +234,11 @@ class ActivityRow extends React.Component {
                 [css.rejected]: tsh.statusId === 2
               })}>
                 <input
-                  type="number"
+                  type="text"
                   disabled={isCellDisabled}
-                  max="24"
                   value={this.state.timeCells[i]}
                   onChange={(e) => this.changeFilled(i, tsh.id, tsh.comment, e.target.value)}
+                  onBlur={(e) => this.onBlurFilled(i, tsh.id, tsh.comment, e.target.value)}
                 />
                 <span className={css.toggleComment}>
                   <SingleComment
@@ -222,11 +260,11 @@ class ActivityRow extends React.Component {
             <div>
               <div className={css.timeCell}>
                 <input
-                  type="number"
+                  type="text"
                   disabled={!canDeleteRow}
-                  max="24"
                   value={this.state.timeCells[i]}
-                  onChange={(e) => this.changeEmpty(i,e.target.value)}
+                  onChange={(e) => this.changeEmpty(i, e.target.value)}
+                  onBlur={(e) => this.onBlurEmpty(i, e.target.value)}
                 />
                 <span className={css.toggleComment}>
                   <SingleComment onChange={(text) => this.changeEmptyComment(text, i)}/>

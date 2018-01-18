@@ -20,7 +20,7 @@ import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { editSprint } from '../../../actions/Sprint';
 import { editMilestone } from '../../../actions/Milestone';
-import { openCreateTaskModal } from '../../../actions/Project';
+import { openCreateTaskModal, getProjectInfo } from '../../../actions/Project';
 import SprintEditModal from '../../../components/SprintEditModal';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 import { IconEdit } from '../../../components/Icons';
@@ -37,11 +37,13 @@ class Planning extends Component {
     changeTask: PropTypes.func.isRequired,
     createSprint: PropTypes.func.isRequired,
     editSprint: PropTypes.func.isRequired,
+    getProjectInfo: PropTypes.func.isRequired,
     getPlanningTasks: PropTypes.func.isRequired,
     isCreateTaskModalOpen: PropTypes.bool,
     lastCreatedTask: PropTypes.object,
     leftColumnTasks: PropTypes.array,
     openCreateTaskModal: PropTypes.func,
+    params: PropTypes.object,
     project: PropTypes.object,
     rightColumnTasks: PropTypes.array,
     sprints: PropTypes.array.isRequired,
@@ -157,7 +159,7 @@ class Planning extends Component {
     return sprints;
   };
 
-  getEstimatesInfo = (sprintId, tasks) => {
+  getEstimatesInfo = (sprintId) => {
     if (!sprintId) {
       return {
         summary: '',
@@ -167,15 +169,21 @@ class Planning extends Component {
       };
     } else {
       const sprint = this.props.project.sprints.filter(item => item.id === sprintId)[0];
-      const tasksEstimate = tasks.reduce((sum, task) => {
-        return sum + +task.plannedExecutionTime;
-      }, 0);
       const sprintEstimate = sprint && sprint.allottedTime ? +sprint.allottedTime : 0;
-      const ratio = sprintEstimate === 0 ? 0 : tasksEstimate / sprintEstimate;
-
+      const sprintSpentTime = sprint && sprint.spentTime ? +sprint.spentTime : 0;
+      const ratio = sprintEstimate === 0 ? 0 : sprintSpentTime / sprintEstimate;
+      const width = ratioValue => {
+        if (ratioValue > 1) {
+          return 100;
+        } else if (ratioValue < 0) {
+          return 0;
+        } else {
+          return ratioValue * 100;
+        }
+      };
       return {
-        summary: `Суммарное время задач: ${tasksEstimate} ${sprintEstimate ? ' из ' + sprintEstimate : ''} ч.`,
-        width: `${ratio > 1 ? 100 : ratio * 100}%`,
+        summary: `Суммарное время: ${sprintSpentTime} ${sprintEstimate ? ' из ' + sprintEstimate : ''} ч.`,
+        width: `${width(ratio)}%`,
         active: sprintEstimate !== 0,
         exceeded: ratio > 1
       };
@@ -189,7 +197,8 @@ class Planning extends Component {
         id: task.id,
         sprintId: sprint
       },
-      'Sprint'
+      'Sprint',
+      () => this.props.getProjectInfo(this.props.params.projectId)
     );
 
     this.props.startTaskEditing('Sprint');
@@ -325,8 +334,8 @@ class Planning extends Component {
         />;
       });
 
-    const leftEstimates = this.getEstimatesInfo(this.state.leftColumn, this.props.leftColumnTasks);
-    const rightEstimates = this.getEstimatesInfo(this.state.rightColumn, this.props.rightColumnTasks);
+    const leftEstimates = this.getEstimatesInfo(this.state.leftColumn);
+    const rightEstimates = this.getEstimatesInfo(this.state.rightColumn);
     const leftColumnSprints = this.getSprints();
     const rightColumnSprints = this.getSprints();
     const filteredSprints = this.props.sprints.filter(sprint => {
@@ -572,7 +581,8 @@ const mapDispatchToProps = {
   changeTask,
   startTaskEditing,
   openCreateTaskModal,
-  createSprint
+  createSprint,
+  getProjectInfo
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Planning);
