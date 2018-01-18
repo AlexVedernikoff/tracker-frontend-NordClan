@@ -28,7 +28,7 @@ import Logout from './pages/Logout';
 import Projects from './pages/Projects';
 import Dashboard from './pages/Dashboard';
 import Timesheets from './pages/Timesheets';
-import UserRoles from './pages/UserRoles';
+import UsersRoles from './pages/UsersRoles';
 import NotFound from './pages/NotFound';
 import RedirectPage from './pages/Redirect';
 import DemoPage from './components/Icons/DemoPage';
@@ -82,7 +82,7 @@ class AppRouter extends Component {
             <Route path="/" component={InnerContainer} onEnter={this.requireAuth} >
               <Route path="dashboard" component={Dashboard} />
               <Route path="timesheets" component={Timesheets} />
-              <Route path="userroles" component={UserRoles} />
+              <Route path="usersroles" component={UsersRoles} />
               <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
               <Route path="projects" component={Projects} />
 

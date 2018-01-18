@@ -1,3 +1,3 @@
-import UserRoles from './UserRoles';
+import UsersRoles from './UsersRoles';
 
-export default UserRoles;
+export default UsersRoles;

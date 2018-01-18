@@ -7,9 +7,17 @@ import getUsers from '../../actions/UsersRoles';
 class UsersRoles extends React.Component {
   constructor (props) {
     super(props);
+    this.state = {
+      users: ''
+    };
+  }
+
+  componentDidMount () {
+    this.props.getUsers();
   }
 
   render () {
+    console.log(3, this.state);
     return (
       <div>
         <h1>UserRoles is here</h1>
@@ -18,4 +26,12 @@ class UsersRoles extends React.Component {
   }
 }
 
-export default UsersRoles;
+UsersRoles.propTypes = {
+  getUsers: PropTypes.func.isRequired
+};
+
+const mapDispatchToProps = {
+  getUsers
+};
+
+export default connect(null, mapDispatchToProps)(UsersRoles);
