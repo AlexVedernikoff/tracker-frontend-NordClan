@@ -11,19 +11,17 @@ import ClosingFeaturesChart from './ClosingFeaturesChart';
 import SprintReport from './Report';
 import { getMetrics } from './../../../actions/Metrics';
 
-
-
 class Metrics extends Component {
   static propTypes = {
     budget: PropTypes.number,
     completedAt: PropTypes.string,
     createdAt: PropTypes.string,
-    metrics: PropTypes.array,
-    riskBudget: PropTypes.number,
-    sprints: PropTypes.array,
     getMetrics: PropTypes.func,
-    params: PropTypes.object
-  }
+    metrics: PropTypes.array,
+    params: PropTypes.object,
+    riskBudget: PropTypes.number,
+    sprints: PropTypes.array
+  };
 
   constructor (props) {
     super(props);

@@ -4,6 +4,7 @@ import { Line } from 'react-chartjs-2';
 import moment from 'moment';
 import getRandomColor from '../../../../utils/getRandomColor';
 import * as css from './ClosingFeaturesChart.scss';
+import 'moment/locale/ru';
 
 function getBasicLineSettings(color) {
   return {
@@ -31,22 +32,18 @@ class ClosingFeaturesChart extends Component {
       title: {
         display: false
       },
-      tooltips: {
-        callbacks: {
-          title: function (tooltipItem, data) {
-            return moment(tooltipItem[0].xLabel).format('YYYY.MM.DD');
-          },
-          label: function (tooltipItem, data) {
-            return tooltipItem.yLabel;
-          }
-        }
-      },
       legend: {
         position: 'bottom'
       },
       scales: {
         xAxes: [{
           type: 'time',
+          time: {
+            displayFormats: {
+              day: 'D MMM'
+            },
+            tooltipFormat: 'DD.MM.YYYY'
+          },
           display: true,
           scaleLabel: {
             display: true,
@@ -98,7 +95,6 @@ class ClosingFeaturesChart extends Component {
   }
 
   render () {
-    console.log(this.props.sprintClosingFeaturesMetrics);
     return (
       <div className={css.ClosingFeaturesChart}>
         <h3>Динамика закрытия фич</h3>
