@@ -7,17 +7,6 @@ import moment from 'moment';
 import getRandomColor from '../../../../utils/getRandomColor';
 import Button from '../../../../components/Button';
 
-function getBasicLineSettings (color) {
-  return {
-    backgroundColor: color,
-    borderColor: color,
-    fill: false,
-    lineTension: 0,
-    borderWidth: 1,
-    pointRadius: 1
-  };
-}
-
 class CostByRoleChart extends Component {
   static propTypes = {
     chartDefaultOptions: PropTypes.object,

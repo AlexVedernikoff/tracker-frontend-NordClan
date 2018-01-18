@@ -3,16 +3,17 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './Metrics.scss';
-import StartEndDates from './StartEndDates/StartEndDates';
-import BudgetChart from './BudgetChart/BudgetChart';
-import BugsChart from './BugsChart/BugsChart';
-import CostByRoleChart from './CostByRoleChart/CostByRoleChart';
+import StartEndDates from './StartEndDates';
+import BudgetChart from './BudgetChart';
+import BugsChart from './BugsChart';
+import CostByRoleChart from './CostByRoleChart';
 import ClosingFeaturesChart from './ClosingFeaturesChart';
+import TasksCountChart from './TasksCountChart';
 import SprintReport from './Report';
 import { getMetrics } from './../../../actions/Metrics';
 import moment from 'moment';
 import getRandomColor from '../../../utils/getRandomColor';
-
+ 
 class Metrics extends Component {
   static propTypes = {
     budget: PropTypes.number,
@@ -38,7 +39,7 @@ class Metrics extends Component {
         endDate: moment().format('YYYY-MM-DD')
       };
       getMetrics(metricsParams);
-    }  
+    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -76,6 +77,18 @@ class Metrics extends Component {
     return metrics ? metrics.filter(metric => metric.typeId === id) : [];
   }
 
+  getBasicLineSettings = () => {
+    const randomnedColor = getRandomColor();
+    return {
+      backgroundColor: randomnedColor,
+      borderColor: randomnedColor,
+      fill: false,
+      lineTension: 0,
+      borderWidth: 1,
+      pointRadius: 1
+    };
+  };
+
   render () {
     /*
       значение Id типов метрик
@@ -83,16 +96,25 @@ class Metrics extends Component {
     */
     const { metrics } = this.props;
 
+    /*Бюджет без рискового резерва*/
     const projectBudgetMetrics = this.filterById(5, metrics);
     const sprintsBudgetMetrics = this.filterById(30, metrics);
+
+    /*Бюджет с рисковым резервом*/
     const projectBudgetRisksMetrics = this.filterById(6, metrics);
     const sprintsBudgetRisksMetrics = this.filterById(31, metrics);
+
+    /*Баги на проекте*/
     const openedBugsMetrics = this.filterById(7, metrics);
     const openedCustomerBugsMetrics = this.filterById(8, metrics);
     const openedRegressBugsMetrics = this.filterById(9, metrics);
+
+    /*Динамика закрытия фич*/
     const sprintClosingFeaturesMetrics = this.filterById(32, metrics);
     const sprintWriteOffTimeMetrics = this.filterById(34, metrics);
     const sprintWorkWithoutEvaluationMetrics = this.filterById(33, metrics);
+    
+    /*Затраты по ролям*/
     const getCostByRoleMetrics = (role1, role2, role3, role4, role5, role6, role7, role8, role9, role10) => [
       {
         metrics: role1,
@@ -135,7 +157,6 @@ class Metrics extends Component {
         name: 'Unbillable'
       }
     ];
-    
     const costByRolePercentMetrics = getCostByRoleMetrics(
       this.filterById(10, metrics),
       this.filterById(11, metrics),
@@ -148,7 +169,6 @@ class Metrics extends Component {
       this.filterById(18, metrics),
       this.filterById(19, metrics)
     );
-
     const costByRoleMetrics = getCostByRoleMetrics(
       this.filterById(20, metrics),
       this.filterById(21, metrics),
@@ -162,6 +182,11 @@ class Metrics extends Component {
       this.filterById(29, metrics)
     );
 
+    /*Количество задач*/
+    const openedFeaturesWithoutEvaluationMetric = this.filterById(40, metrics);
+    const openedFeaturesMetric = this.filterById(35, metrics);
+    const openedOutOfPlanFeaturesMetric = this.filterById(41, metrics);
+    
     const chartDefaultOptions = {
       responsive: true,
       hover: { mode: 'nearest' },
@@ -254,6 +279,12 @@ class Metrics extends Component {
                 sprintClosingFeaturesMetrics={sprintClosingFeaturesMetrics}
                 sprintWriteOffTimeMetrics={sprintWriteOffTimeMetrics}
                 sprintWorkWithoutEvaluationMetrics={sprintWorkWithoutEvaluationMetrics}
+              />
+            </Col>
+            <Col xs={12} md={10} mdOffset={1} lg={6} lgOffset={3} >
+              <TasksCountChart
+                chartDefaultOptions={chartDefaultOptions}
+                getBasicLineSettings={this.getBasicLineSettings}
               />
             </Col>
           </Row>
