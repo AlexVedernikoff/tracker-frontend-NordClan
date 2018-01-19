@@ -16,11 +16,53 @@ class UsersRoles extends React.Component {
     this.props.getUsers();
   }
 
+  createRowUser (user) {
+    const fullName = `${user.lastNameRu} ${user.firstNameRu}`;
+    return (
+      <tr key={user.id}>
+        <td>
+          {fullName}
+        </td>
+        <td>
+          {user.globalRole}
+        </td>
+      </tr>
+    );
+  }
+
+  createTableUsers (users) {
+    const tableHead = (
+      <tr>
+        <th>
+          Имя пользователя
+        </th>
+        <th>
+          Статус
+        </th>
+      </tr>
+    );
+    const tableBody = users.map(user => {
+      return this.createRowUser(user);
+    });
+    return (
+      <table>
+        <thead>
+          {tableHead}
+        </thead>
+        <tbody>
+          {tableBody}
+        </tbody>
+      </table>
+    );
+  }
+
   render () {
+    const users = this.props.users;
+    const tableUsers = this.createTableUsers(users);
     return (
       <div>
-        <h1>UsersRoles is here</h1>
-        <p>users - {this.props.users[0]}</p>
+        <h1>Пользователи</h1>
+        {tableUsers}
       </div>
     );
   }
