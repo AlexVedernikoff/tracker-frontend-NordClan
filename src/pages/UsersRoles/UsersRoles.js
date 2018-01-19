@@ -16,15 +16,51 @@ class UsersRoles extends React.Component {
     this.props.getUsers();
   }
 
-  createRowUser (user) {
-    const fullName = `${user.lastNameRu} ${user.firstNameRu}`;
+  handleChangeStatus () {
+    console.log(1);
+  }
+
+  createStatusSelector (globalRole) {
+    const statuses = [
+      {
+        name: 'Администратор',
+        value: 'ADMIN',
+        id: 1
+      },
+      {
+        name: 'Пользователь',
+        value: 'USER',
+        id: 2
+      },
+      {
+        name: 'Наблюдатель',
+        value: 'VISOR',
+        id: 3
+      }
+    ];
+
+    const options = statuses.map(status => {
+      const option = <option key={status.id} value={status.value}>{status.name}</option>;
+      return option;
+    });
     return (
-      <tr key={user.id}>
+      <select value={globalRole} onChange={this.handleChangeStatus}>
+        {options}
+      </select>
+    );
+  }
+
+  createRowUser (user) {
+    const { id, lastNameRu, firstNameRu, globalRole} = user;
+    const fullName = `${lastNameRu} ${firstNameRu}`;
+    const status = this.createStatusSelector(globalRole);
+    return (
+      <tr key={id}>
         <td>
           {fullName}
         </td>
         <td>
-          {user.globalRole}
+          {status}
         </td>
       </tr>
     );
