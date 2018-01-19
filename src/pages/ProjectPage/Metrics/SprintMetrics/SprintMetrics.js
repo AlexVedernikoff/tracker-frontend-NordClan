@@ -119,7 +119,7 @@ class SprintMetrics extends Component {
     return (
       <div>
         <h2>Метрики по спринту</h2>
-        <div className={css.sprintSelector}>
+        <div className={css.sprintSelectWrapper}>
           <SelectDropdown
             name="sprint"
             placeholder="Выбирите спринт..."
@@ -128,12 +128,13 @@ class SprintMetrics extends Component {
             onChange={(option) => this.changeSprint(option)}
             noResultsText="Нет результатов"
             options={this.getSelectOptions()}
+            className={css.sprintSelector}
+          />
+          <StartEndDates
+            startDate={this.sprintStartDate()}
+            endDate={this.sprintEndDate()}
           />
         </div>
-        <StartEndDates
-          startDate={this.sprintStartDate()}
-          endDate={this.sprintEndDate()}
-        />
         <Row>
           <Col xs={12} md={10} mdOffset={1} lg={8} lgOffset={2} >
             <ClosingFeaturesChart
