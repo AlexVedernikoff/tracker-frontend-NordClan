@@ -51,17 +51,21 @@ class TaskHeader extends Component {
   
   createChangeStatusHandler = (statusStop, statusPlay, statusName) => () => {
     const currentStatus = this.props.task.statusId;
+    const statusTransition = {
+      3: 2,
+      2: 3,
+      5: 4,
+      4: 5,
+      7: 6,
+      6: 7
+    };
     if (currentStatus !== statusStop && currentStatus !== statusPlay) {
       this.setState({ clickedStatus: statusName }, this.handleOpenModal);
       return;
-    } else if (currentStatus === statusStop) {
-      this.changeStatus(currentStatus + 1);
-      return;
-    } else if (currentStatus === statusPlay) {
-      this.changeStatus(currentStatus - 1);
+    } else {
+      this.changeStatus(statusTransition[currentStatus]);
     }
   }
- 
 
   handleOpenModal = () => {
     this.props.getProjectUsers(this.props.projectId);
