@@ -25,7 +25,6 @@ const getUsers = () => {
       })
       .then(response => {
         if (response && response.status === 200) {
-          console.log(1, response.data);
           dispatch(UsersReceived(response.data));
           dispatch(finishLoading());
         }
