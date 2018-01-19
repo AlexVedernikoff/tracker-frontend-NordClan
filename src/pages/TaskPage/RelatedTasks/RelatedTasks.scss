@@ -23,7 +23,9 @@
   transition: background-color 0.3s ease-out 0s;
   border-top: 1px solid $color-gray;
   position: relative;
-
+  &.completed {
+    background-color: $color-gray;
+  }
   .taskLabel {
     padding-right: 8px;
     width: 72px;

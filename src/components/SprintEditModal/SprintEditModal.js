@@ -99,6 +99,19 @@ class SprintEditModal extends Component {
     this.props.handleEditSprint(this.state.sprint);
   };
 
+  validateDates = () => {
+    if (this.state.sprint.dateFrom && this.state.sprint.dateTo) {
+      return moment(this.state.sprint.dateTo).isAfter(this.state.sprint.dateFrom);
+    }
+    if (!this.state.sprint.dateFrom && this.state.sprint.dateTo) {
+      return moment(this.state.sprint.dateTo).isAfter(this.props.sprint.factStartDate);
+    }
+    if (this.state.sprint.dateFrom && !this.state.sprint.dateTo) {
+      return moment(this.props.sprint.factFinishDate).isAfter(this.state.sprint.dateFrom);
+    }
+    return true;
+  }
+
   render () {
     const { sprint } = this.props;
     let formattedDayFrom = '';
@@ -130,6 +143,18 @@ class SprintEditModal extends Component {
         <div>
           <form className={css.editSprintForm}>
             <h3>Редактирование спринта</h3>
+            <hr/>
+            <Row>
+              <Col xs={12} className={css.validateMessages}>
+                {
+                  !this.validateDates()
+                    ? <span className = {css.redMessage}>
+                      Дата окончания должна быть позже даты начала
+                      </span>
+                    : null
+                }
+              </Col>
+            </Row>
             <label className={css.formField}>
               <Row>
                 <Col
@@ -270,6 +295,7 @@ class SprintEditModal extends Component {
                   type="green"
                   htmlType="submit"
                   text="Изменить"
+                  disabled={!this.validateDates()}
                   onClick={this.handleEditSprint}
                 />
               </Col>

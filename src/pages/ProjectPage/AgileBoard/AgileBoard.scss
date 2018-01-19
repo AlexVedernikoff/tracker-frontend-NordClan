@@ -9,9 +9,20 @@
 }
 
 .changedSprint {
+  position: relative;
   @include phone {
     flex-basis: auto;
     margin-bottom: 1rem;
+  }
+  .sprintTime {
+    position: absolute;
+    top: 0;
+    right: 40px;
+    line-height: 2rem;
+    pointer-events: none;
+    @include phone {
+      display: none;
+    }
   }
 }
 

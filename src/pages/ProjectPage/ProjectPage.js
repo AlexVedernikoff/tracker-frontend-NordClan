@@ -30,8 +30,10 @@ class ProjectPage extends Component {
   }
 
   checkIsAdminInProject = () => {
-    return this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1
-      || this.props.user.globalRole === ADMIN;
+    return this.props.user.projectsRoles
+      ? this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1
+        || this.props.user.globalRole === ADMIN
+      : false;
   };
 
   render () {

@@ -34,25 +34,38 @@ class ActivityRow extends React.Component {
     this.createTimesheet = _.debounce(this.createTimesheet, debounceTime);
     this.updateTimesheet = _.debounce(this.updateTimesheet, debounceTime);
     this.deleteTimesheets = _.debounce(this.deleteTimesheets, debounceTime);
+
+    const timeCells = {};
+    _.forEach(props.item.timeSheets, (tsh, i) => {
+      if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
+        timeCells[i] = roundNum(tsh.spentTime, 2);
+      } else {
+        timeCells[i] = 0;
+      }
+    });
+
     this.state = {
-      isOpen: false
+      isOpen: false,
+      timeCells
     };
   }
 
-  createTimesheet = (i, value) => {
+  createTimesheet = (i) => {
     const { item, userId, startingDay } = this.props;
+    const value = this.state.timeCells[i];
     this.props.createTimesheet({
       isDraft: false,
       taskId: item.id || null,
       taskStatusId: item.id ? item.taskStatusId : null,
       typeId: item.id ? '1' : item.typeId,
-      spentTime: value,
+      spentTime: +value,
       onDate: moment(startingDay).weekday(i).format('YYYY-MM-DD'),
       projectId: item.projectId
     }, userId, startingDay);
   };
 
-  updateTimesheet = (i, sheetId, value, comment) => {
+  updateTimesheet = (i, sheetId, comment) => {
+    const value = this.state.timeCells[i];
     const { userId, startingDay } = this.props;
     if (!value && !comment) {
       this.props.deleteTimesheets([sheetId], userId, startingDay);
@@ -60,7 +73,7 @@ class ActivityRow extends React.Component {
     }
     this.props.updateTimesheet({
       sheetId,
-      spentTime: value
+      spentTime: +value
     }, userId, startingDay);
   };
 
@@ -69,13 +82,28 @@ class ActivityRow extends React.Component {
     this.props.deleteTimesheets(ids, userId, startingDay);
   };
 
-  changeEmpty = (i, e) => {
-    const { value } = e.target;
-    if (value) {
-      this.createTimesheet(i, value);
-    } else {
-      this.createTimesheet(i, '0');
+  validateNumbers (value) {
+    const re = /^$|^\d+(\.\d*)?$/;
+    return re.test(value);
+  }
+
+  changeEmpty = (i, value) => {
+    if (!this.validateNumbers(value) || +value > 24) {
+      return false;
     }
+    this.setState((state) => {
+      const timeCells = {
+        ...state.timeCells
+      };
+      timeCells[i] = value;
+      return {
+        timeCells
+      };
+    }, () => {
+      if (value !== '') {
+        this.createTimesheet(i);
+      }
+    });
   };
 
   changeEmptyComment = (text, i) => {
@@ -92,10 +120,57 @@ class ActivityRow extends React.Component {
     }, userId, startingDay);
   };
 
-  changeFilled = (i, id, comment, e) => {
-    const { value } = e.target;
-    this.updateTimesheet(i, id, value, comment);
+  changeFilled = (i, id, comment, value) => {
+    if (!this.validateNumbers(value) || +value > 24) {
+      return false;
+    }
+
+    this.setState((state) => {
+      const timeCells = {
+        ...state.timeCells
+      };
+      timeCells[i] = value;
+      return {
+        timeCells
+      };
+    }, () => {
+      if (value !== '') {
+        this.updateTimesheet(i, id, comment);
+      }
+    });
   };
+
+  onBlurFilled = (i, id, comment, value) => {
+    if (value !== '') {
+      return false;
+    }
+    this.setState((state) => {
+      const timeCells = {
+        ...state.timeCells
+      };
+      timeCells[i] = 0;
+      return {
+        timeCells
+      };
+    }, () => {
+      this.updateTimesheet(i, id, comment);
+    });
+  }
+
+  onBlurEmpty = (i, value) => {
+    if (value !== '') {
+      return false;
+    }
+    this.setState((state) => {
+      const timeCells = {
+        ...state.timeCells
+      };
+      timeCells[i] = 0;
+      return {
+        timeCells
+      };
+    });
+  }
 
   changeFilledComment = (text, time, i, sheetId) => {
     const { userId, startingDay } = this.props;
@@ -159,11 +234,11 @@ class ActivityRow extends React.Component {
                 [css.rejected]: tsh.statusId === 2
               })}>
                 <input
-                  type="number"
+                  type="text"
                   disabled={isCellDisabled}
-                  max="24"
-                  defaultValue={roundNum(tsh.spentTime, 2)}
-                  onChange={(e) => this.changeFilled(i, tsh.id, tsh.comment, e)}
+                  value={this.state.timeCells[i]}
+                  onChange={(e) => this.changeFilled(i, tsh.id, tsh.comment, e.target.value)}
+                  onBlur={(e) => this.onBlurFilled(i, tsh.id, tsh.comment, e.target.value)}
                 />
                 <span className={css.toggleComment}>
                   <SingleComment
@@ -185,11 +260,11 @@ class ActivityRow extends React.Component {
             <div>
               <div className={css.timeCell}>
                 <input
-                  type="number"
+                  type="text"
                   disabled={!canDeleteRow}
-                  max="24"
-                  defaultValue="0"
-                  onChange={(e) => this.changeEmpty(i, e)}
+                  value={this.state.timeCells[i]}
+                  onChange={(e) => this.changeEmpty(i, e.target.value)}
+                  onBlur={(e) => this.onBlurEmpty(i, e.target.value)}
                 />
                 <span className={css.toggleComment}>
                   <SingleComment onChange={(text) => this.changeEmptyComment(text, i)}/>

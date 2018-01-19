@@ -56,9 +56,9 @@ class SprintCard extends Component {
   };
 
   handleDeleteSprint = () => {
-    const { sprint, deleteSprint } = this.props;
+    const { sprint } = this.props;
     this.setState({
-      isConfirmDeleteModalOpen: true
+      isConfirmDeleteModalOpen: false
     }, this.props.deleteSprint(sprint.id));
   };
 
@@ -69,7 +69,7 @@ class SprintCard extends Component {
   };
 
   render () {
-    const { sprint, editSprint, inFocus, ...other } = this.props;
+    const { sprint, editSprint, deleteSprint, inFocus, ...other } = this.props;
 
     return (
       <div

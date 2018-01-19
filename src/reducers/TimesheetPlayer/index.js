@@ -1,4 +1,5 @@
 import moment from 'moment';
+import exactMath from 'exact-math';
 import reducerFabric from './fabric';
 import {
   TIMESHEET_PLAYER_RECEIVE_START,
@@ -144,10 +145,10 @@ function updateTracks(state, action, updatedTracks) {
 
   const updatedActivityTime = updatedDay[action.timesheet.onDate].tracks
     .filter(track => track.typeId === action.timesheet.typeId)
-    .reduce((acc, time) => acc + parseFloat(time.spentTime), 0).toString();
+    .reduce((acc, track) => exactMath.add(acc, track.spentTime || 0), 0);
 
   const all = updatedDay[action.timesheet.onDate].tracks
-    .reduce((acc, time) => acc + parseFloat(time.spentTime), 0).toString();
+    .reduce((acc, track) => exactMath.add(acc, track.spentTime || 0), 0);
 
   updatedDay[action.timesheet.onDate].scales[action.timesheet.typeId] = updatedActivityTime;
   updatedDay[action.timesheet.onDate].scales.all = all;
@@ -172,16 +173,17 @@ exports[TASK_CHANGE_REQUEST_SUCCESS] = (state = InitialState, action) => {
         if (action.changedFields.id && track.taskId === action.changedFields.id) {
           return {
             ...track,
+            project: action.changedFields.project,
             task: { ...track.task, ...action.changedFields }
           }
         }
+
         return track;
       })
 
       acc.tracks[day] = { tracks: updatedTracks, scales }
       return acc;
-    }, { ...state })
-
+    }, { ...state });
   return updatedState;
 }
 

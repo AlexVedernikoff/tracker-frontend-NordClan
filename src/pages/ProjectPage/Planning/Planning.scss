@@ -44,7 +44,7 @@
   position: relative;
   align-items: stretch;
   flex-wrap: wrap;
-  width: calc(100% - 14rem);
+  width: calc(100% - 15rem);
   overflow: hidden;
   border-left: 1px solid lighten($color-black, 70%);
 }
@@ -146,7 +146,7 @@
       &.nameMargin {
         margin-left: 1.2rem;
       }
-      
+
       &:hover ~ .edit {
           opacity: 1;
       }
@@ -184,7 +184,7 @@
 }
 
 .spentTime {
-  width: 2.5rem;
+  width: 3rem;
 
   .header {
     flex: 3;
@@ -218,9 +218,35 @@
   &.active {
     background-color: $color-green;
   }
+
   .text {
     flex: 1;
     line-height: 1;
+  }
+}
+
+.milestoneBar {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  bottom: 0;
+  line-height: 5;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  > div {
+    width: 10px;
+    height: 10px;
+    transform: rotate(45deg);
+    background-color: red;
+    cursor: pointer;
+  }
+  &.done {
+    >div {
+      background-color: $color-green;
+    }    
   }
 }
 
@@ -303,7 +329,7 @@
   position: absolute;
   right: 0;
   z-index: 1;
-  opacity: 0;
+  opacity: 0.5;
 
 
   display: inline-block;

@@ -37,6 +37,7 @@ class PriorityBox extends React.Component {
           onChange={changeTask}
           onChangeCallback={hideBox}
           vertical
+          canEdit
         />
       </div>
     </div>;

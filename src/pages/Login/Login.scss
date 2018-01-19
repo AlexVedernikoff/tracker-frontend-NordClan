@@ -24,9 +24,13 @@
 .inputWrapper {
   margin: 1rem 0;
 
-  & > input {
+  & input {
     background-color: transparent;
     color:white;
+  }
+  span {
+    background-color: #314359;
+    color: white;
   }
 }
 
@@ -38,4 +42,9 @@
     width: 100%;
     box-sizing: border-box;
   }
+}
+
+.errorMessage {
+  color: #ff0000;
+  margin-top: 10px;
 }

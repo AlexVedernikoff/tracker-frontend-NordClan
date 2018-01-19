@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import * as css from './Priority.scss';
+import getProrityById from '../../utils/TaskPriority';
 
 class Priority extends Component {
   constructor (props) {
@@ -12,18 +13,28 @@ class Priority extends Component {
     event.preventDefault();
     event.stopPropagation();
 
-    if (+event.target.innerText !== this.props.priority) {
-      const { onChange } = this.props;
-      onChange(
-        {
-          id: this.props.taskId,
-          prioritiesId: +event.target.innerText
-        },
-        'Priority'
-      );
-    }
+    if (this.props.canEdit) {
+      if (+event.target.innerText !== this.props.priority) {
+        const {onChange} = this.props;
+        onChange(
+          {
+            id: this.props.taskId,
+            prioritiesId: +event.target.innerText
+          },
+          'Priority'
+        );
+      } else {
+        const {onChange} = this.props;
+        onChange(
+          {
+            id: this.props.taskId
+          },
+          'Priority'
+        );
+      }
 
-    this.props.onChangeCallback();
+      this.props.onChangeCallback();
+    }
   };
 
   setPriority = event => {
@@ -40,11 +51,14 @@ class Priority extends Component {
               <span
                 key={`priority-${i}`}
                 onClick={
-                  this.props.onChange ? this.changePriority : this.setPriority
+                  this.props.onChange
+                    ? this.changePriority
+                    : this.setPriority
                 }
                 className={classnames({
                   [css.active]: priorityId === this.props.priority
                 })}
+                data-tip={getProrityById(priorityId)}
               >
                 {priorityId}
               </span>
@@ -57,6 +71,7 @@ class Priority extends Component {
 }
 
 Priority.propTypes = {
+  canEdit: PropTypes.bool,
   onChange: PropTypes.func,
   onChangeCallback: PropTypes.func,
   onPrioritySet: PropTypes.func,

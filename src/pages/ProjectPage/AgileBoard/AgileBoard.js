@@ -231,52 +231,54 @@ class AgileBoard extends Component {
   };
 
   dropTask = (task, phase) => {
-    this.props.changeTask({
-      id: task.id,
-      statusId: getNewStatus(task.statusId, phase)
-    }, 'Status');
     if (!(phase === 'New' || phase === 'Done')) {
       const taskProps = this.props.sprintTasks.find((sprintTask) => {
         return task.id === sprintTask.id;
       });
       const performerId = taskProps.performerId || null;
       const projectId = taskProps.projectId || null;
-      this.openPerformerModal(task.id, performerId, projectId);
+      this.openPerformerModal(task.id, performerId, projectId, task.statusId, phase);
+    } else {
+      this.changeStatus(task.id, task.statusId, phase);
     }
-    this.props.startTaskEditing('Status');
   };
 
-  changeStatus = (taskId, statusId) => {
+  changeStatus = (taskId, statusId, phase) => {
     this.props.changeTask({
       id: taskId,
-      statusId: getNewStatusOnClick(statusId)
+      statusId: phase ? getNewStatus(statusId, phase) : getNewStatusOnClick(statusId)
     }, 'Status');
 
     this.props.startTaskEditing('Status');
   };
 
-  openPerformerModal = (taskId, performerId, projectId) => {
+  openPerformerModal = (taskId, performerId, projectId, statusId, phase) => {
     if (this.props.myTaskBoard) {
       this.props.getProjectUsers(projectId);
     }
     this.setState({
       isModalOpen: true,
       performer: performerId,
-      changedTask: taskId
+      changedTask: taskId,
+      statusId,
+      phase
     });
   };
 
   changePerformer = (performerId) => {
     this.props.changeTask({
       id: this.state.changedTask,
-      performerId: performerId
+      performerId: performerId,
+      statusId: getNewStatus(this.state.statusId, this.state.phase)
     }, 'User');
 
     this.props.startTaskEditing('User');
   };
 
   closeModal = () => {
-    this.setState({ isModalOpen: false });
+    this.setState({
+      isModalOpen: false
+    }, () => this.changeStatus(this.state.changedTask, this.state.statusId, this.state.phase));
   };
 
   getCurrentSprint = sprints => {
@@ -319,6 +321,17 @@ class AgileBoard extends Component {
     });
     return sprints;
   };
+
+  getSprintTime = (sprintId) => {
+    if (!sprintId) return false;
+    let currentSprint;
+    this.props.sprints.forEach(sprint => {
+      if (sprint.id === sprintId) {
+        currentSprint = sprint;
+      }
+    });
+    return `${currentSprint.spentTime || 0} / ${currentSprint.allottedTime || 0}`;
+  }
 
   getAllTags = () => {
     let allTags = this.props.sprintTasks.reduce((arr, task) => {
@@ -419,6 +432,7 @@ class AgileBoard extends Component {
                     <Priority
                       onChange={(option) => this.selectValue(option.prioritiesId, 'prioritiesId')}
                       priority={this.state.prioritiesId}
+                      canEdit
                     />
                   </Col>
                   <Col className={css.filterButtonCol}>
@@ -432,7 +446,7 @@ class AgileBoard extends Component {
                     <SelectDropdown
                       name="filterTags"
                       multi
-                      placeholder="Введите название тега..."
+                      placeholder="Введите название тега"
                       backspaceToRemoveMessage=""
                       value={this.state.filterTags}
                       onChange={this.selectTagForFiltrated}
@@ -457,7 +471,7 @@ class AgileBoard extends Component {
               <Row className={css.filtersRow}>
                 <Col xs={12} sm={6}>
                   <Input
-                    placeholder="Название задачи"
+                    placeholder="Введите название задачи"
                     value={this.state.name}
                     onChange={(e) => this.selectValue(e.target.value, 'name')}
                   />
@@ -471,7 +485,7 @@ class AgileBoard extends Component {
                 <Col xs={12} sm={3}>
                   <SelectDropdown
                     name="type"
-                    placeholder="Тип задачи"
+                    placeholder="Выберите тип задачи"
                     multi
                     noResultsText="Нет подходящих типов"
                     backspaceToRemoveMessage={''}
@@ -486,18 +500,21 @@ class AgileBoard extends Component {
                 <Col xs={12} sm={6} className={css.changedSprint}>
                   <SelectDropdown
                     name="changedSprint"
-                    placeholder="Введите название спринта..."
+                    placeholder="Выберите спринт"
                     multi={false}
                     value={this.state.changedSprint}
                     onChange={(e) => this.selectValue(e !== null ? e.value : null, 'changedSprint')}
                     noResultsText="Нет результатов"
                     options={this.getSprints()}
                   />
+                  <span className={css.sprintTime}>
+                    {this.getSprintTime(this.state.changedSprint) || null}
+                  </span>
                 </Col>
                 <Col xs>
                   <SelectDropdown
                     name="author"
-                    placeholder="Автор"
+                    placeholder="Выберите автора задачи"
                     multi={false}
                     value={this.state.authorId}
                     onChange={(option) => this.selectValue(option ? option.value : null, 'authorId')}
@@ -569,7 +586,7 @@ AgileBoard.propTypes = {
   UserIsEditing: PropTypes.bool,
   changeTask: PropTypes.func.isRequired,
   getTasks: PropTypes.func.isRequired,
-  globalRole: PropTypes.string.isRequired,
+  globalRole: PropTypes.string,
   isCreateTaskModalOpen: PropTypes.bool,
   lastCreatedTask: PropTypes.object,
   myTaskBoard: PropTypes.bool,

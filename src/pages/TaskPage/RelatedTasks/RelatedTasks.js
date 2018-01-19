@@ -3,10 +3,18 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { IconPlus, IconLink, IconClose } from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal';
-
+import classnames from 'classnames';
+import * as css from './RelatedTasks.scss';
 export default class RelatedTasks extends React.Component {
+
+  taskStyle = (statusId) => {
+    return classnames({
+      [css.task]: true,
+      [css.completed]: statusId === 10
+    });
+  };
+
   render () {
-    const css = require('./RelatedTasks.scss');
 
     const iconStyles = {
       width: 16,
@@ -16,7 +24,7 @@ export default class RelatedTasks extends React.Component {
     };
 
     const tasks = this.props.task[this.props.type].map(task => {
-      return <li key={`${this.props.type}-${task.id}`} className={css.task}>
+      return <li key={`${this.props.type}-${task.id}`} className={this.taskStyle(task.statusId)}>
         <span className={css.taskLabel}>{`${this.props.task.project.prefix}-${task.id}`}</span>
         <Link to={`/projects/${this.props.task.project.id}/tasks/${task.id}`}>{task.name}</Link>
         {

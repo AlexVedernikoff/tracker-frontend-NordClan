@@ -108,15 +108,19 @@ class TaskPlanningTime extends Component {
           } : null)
           }
         > ч.</span>
-        {this.props.timeIsEditing
-          ? <IconCheck
-            onClick={this.editIconClickHandler}
-            className={css.save}
-          />
-          : <IconEdit
-            onClick={this.editIconClickHandler}
-            className={css.edit}
-          />}
+        {
+          this.props.canEdit
+            ? this.props.timeIsEditing
+              ? <IconCheck
+                onClick={this.editIconClickHandler}
+                className={css.save}
+              />
+              : <IconEdit
+                onClick={this.editIconClickHandler}
+                className={css.edit}
+              />
+            : null
+        }
         {this.props.tooltip || null}
       </div>
     );
@@ -124,6 +128,7 @@ class TaskPlanningTime extends Component {
 }
 
 TaskPlanningTime.propTypes = {
+  canEdit: PropTypes.bool,
   changeTask: PropTypes.func.isRequired,
   dataFor: PropTypes.string,
   id: PropTypes.number,

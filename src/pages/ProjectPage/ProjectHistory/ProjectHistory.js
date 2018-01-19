@@ -72,7 +72,6 @@ class ProjectHistory extends React.Component {
         <h3>История изменений</h3>
         {eventList}
 
-        <hr/>
         { this.props.pagesCount > 1
           ? <Pagination
               itemsCount={this.props.pagesCount}
