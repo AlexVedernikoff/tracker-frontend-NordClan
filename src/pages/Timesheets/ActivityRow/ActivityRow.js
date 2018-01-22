@@ -60,7 +60,8 @@ class ActivityRow extends React.Component {
       typeId: item.id ? '1' : item.typeId,
       spentTime: +value,
       onDate: moment(startingDay).weekday(i).format('YYYY-MM-DD'),
-      projectId: item.projectId
+      projectId: item.projectId,
+      sprintId: item.sprintId ? item.sprintId : null
     }, userId, startingDay);
   };
 
@@ -116,7 +117,8 @@ class ActivityRow extends React.Component {
       comment: text,
       spentTime: 0,
       onDate: moment(startingDay).weekday(i).format('YYYY-MM-DD'),
-      projectId: item.projectId
+      projectId: item.projectId,
+      sprintId: item.sprintId ? item.sprintId : null
     }, userId, startingDay);
   };
 
@@ -215,7 +217,6 @@ class ActivityRow extends React.Component {
     const totalTime = roundNum(_.sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
     const timeSheetIds = _.remove(item.timeSheets.map(tsh => tsh.id), tsh => tsh);
     const canDeleteRow = !!item.timeSheets.filter(tsh => tsh.id && tsh.statusId !== 3 && tsh.statusId !== 4).length;
-
     const timeCells = item.timeSheets.map((tsh, i) => {
       const isCellDisabled = tsh.statusId === 3 || tsh.statusId === 4;
 

@@ -64,7 +64,6 @@ class Timesheets extends React.Component {
     const hasEnableTs = !!this.props.list.filter(tsh => tsh.statusId !== 3 && tsh.statusId !== 4).length;
     const countTsWithTime = this.props.list.filter(tsh => tsh.spentTime !== 0).length;
     const defaultTaskStatusId = 2;
-
     const tempTimesheetsList = tempTimesheets
       .map(timesheet => {
         return {
@@ -105,7 +104,8 @@ class Timesheets extends React.Component {
           name: el.task.name,
           projectId: el.project.id,
           projectName: el.project.name,
-          taskStatusId: el.taskStatusId
+          taskStatusId: el.taskStatusId,
+          sprintId: el.sprintId ? el.sprintId : null
         });
       }
       return res;
@@ -150,7 +150,8 @@ class Timesheets extends React.Component {
         res.push({
           typeId: el.typeId,
           projectName: el.project ? el.project.name : 'Без проекта',
-          projectId: el.project ? el.project.id : 0
+          projectId: el.project ? el.project.id : 0,
+          sprintId: el.sprintId ? el.sprintId : null
         });
       }
       return res;
