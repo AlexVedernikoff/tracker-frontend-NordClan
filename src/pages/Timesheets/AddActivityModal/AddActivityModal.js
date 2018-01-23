@@ -92,20 +92,31 @@ class AddActivityModal extends Component {
       selectedTaskStatusId,
       startingDay
     } = this.props;
+    const { selectedSprint } = this.state;
 
+    const getSprint = () => {
+      if (this.isNoTaskProjectActivity() && selectedSprint) {
+        return selectedSprint.value;
+      } else if (selectedTask) {
+        return selectedTask.body.sprint;
+      } else {
+        return null;
+      }
+    };
     this.props.onClose();
     this.props.addActivity({
       id: `temp-${shortid.generate()}`,
       comment: null,
       task: selectedTask ? {
         id: selectedTask.value,
-        name: selectedTask.label
+        name: selectedTask.label,
+        sprint: getSprint()
       } : null,
       taskStatusId: selectedTask ? selectedTaskStatusId : null,
       typeId: selectedActivityType,
       spentTime: '0',
-      sprintId: this.isNoTaskProjectActivity() && this.state.selectedSprint ? this.state.selectedSprint.value.id : null,
-      sprint: this.isNoTaskProjectActivity() && this.state.selectedSprint ? this.state.selectedSprint.value : null,
+      sprintId: getSprint() ? getSprint().id : null,
+      sprint: getSprint(),
       onDate: moment(startingDay).format('YYYY-MM-DD'),
       project: selectedTask ? {
         id: selectedTask.body.projectId,
