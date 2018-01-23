@@ -104,7 +104,6 @@ class PlaylistItem extends Component {
   };
 
   render () {
-    console.log(this.props);
     const {
       task,
       project,
