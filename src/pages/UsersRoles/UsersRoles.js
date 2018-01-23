@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
-import getUsers from '../../actions/UsersRoles';
+import { getUsers, updateUserRole } from '../../actions/UsersRoles';
 
 class UsersRoles extends React.Component {
   constructor (props) {
@@ -21,11 +21,13 @@ class UsersRoles extends React.Component {
     const { users } = this.props;
     const newUserStatus = event.target.value;
     const userIndex = _.findIndex(users, { id: userId });
-    users[userIndex].globalRole = newUserStatus;
-    event.preventDefault();
+    const updatedUser = users[userIndex];
+    updatedUser.globalRole = newUserStatus;
+    const updatedUsers = [...users];
+    updatedUsers[userIndex] = updatedUser;
     this.setState({
       users
-    });
+    }, this.props.updateUserRole(updatedUser));
   }
 
   renderStatusSelector (globalRole, userId) {
@@ -113,6 +115,7 @@ class UsersRoles extends React.Component {
 
 UsersRoles.propTypes = {
   getUsers: PropTypes.func.isRequired,
+  updateUserRole: PropTypes.func,
   users: PropTypes.array
 };
 
@@ -121,7 +124,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  getUsers
+  getUsers,
+  updateUserRole
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(UsersRoles);

@@ -4,7 +4,6 @@ import {
   defaultErrorHandler,
   withFinishLoading,
   withStartLoading,
-  defaultBody as body,
   defaultExtra as extra
 } from './Common';
 
@@ -18,7 +17,16 @@ const getUsersSuccess = users => ({
   data: users
 });
 
-const getUsers = () => {
+const changeUserStatusStart = () => ({
+  type: UsersRolesActions.CHANGE_USER_STATUS_START
+});
+
+const changeUserStatusSuccess = (user) => ({
+  type: UsersRolesActions.CHANGE_USER_STATUS_SUCCESS,
+  user
+});
+
+export const getUsers = () => {
   return dispatch => dispatch({
     type: REST_API,
     url: '/user/all',
@@ -30,4 +38,15 @@ const getUsers = () => {
   });
 };
 
-export default getUsers;
+export const updateUserRole = (user) => {
+  return dispatch => dispatch({
+    type: REST_API,
+    url: '/user/',
+    method: PUT,
+    body: user,
+    extra,
+    start: withStartLoading(changeUserStatusStart, true)(dispatch),
+    response: withFinishLoading(response => changeUserStatusSuccess(response.data), true)(dispatch),
+    error: defaultErrorHandler(dispatch)
+  });
+};
