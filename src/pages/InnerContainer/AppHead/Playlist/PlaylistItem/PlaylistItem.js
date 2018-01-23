@@ -110,8 +110,9 @@ class PlaylistItem extends Component {
       spentTime,
       comment,
       typeId,
-      taskStatus: prevStatus,
+      taskStatus: createDraftStatus,
       isDraft,
+      sprint,
       isVisible
     } = this.props.item;
     const status = task ? task.taskStatus : null;
@@ -121,6 +122,8 @@ class PlaylistItem extends Component {
 
     const prefix = project ? project.prefix : '';
     const taskLabel = task && project ? `${project.prefix}-${task.id}` : null;
+
+    const createDraftStatusName = createDraftStatus ? createDraftStatus.name.replace(' stop', '') : '';
 
     return (
       <div className={classnames(css.listTask, css.task)}>
@@ -135,16 +138,21 @@ class PlaylistItem extends Component {
             <div className={css.meta}>
               { task && task.prefix ? <span>{task.prefix}</span> : null}
               <span>{project ? project.name : 'Без проекта'}</span>
+              {sprint ? <span>{sprint.name}</span> : null}
               { status
                 ? <span>
                   {
-                    prevStatus
-                      ? (<span>{prevStatus.name}<span style={{display: 'inline-block', margin: '0 0.25rem'}}> → </span></span>)
+                    createDraftStatus
+                      ? (<span>{createDraftStatusName}<span /></span>)
                       : null
                   }
-                  {status.name}
                 </span>
                 : null}
+                { status
+                  ? <span>
+                    Тек. статус: {status.name}
+                  </span>
+                  : null}
               {
                 !isDraft
                   ? <span className={classnames({[css.commentToggler]: true, [css.green]: !!comment})} onClick={this.toggleComment}><IconComment/></span>
