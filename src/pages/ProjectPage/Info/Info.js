@@ -7,7 +7,6 @@ import Attachments from '../../../components/Attachments';
 import Tag from '../../../components/Tag';
 import Tags from '../../../components/Tags';
 import Description from '../../../components/Description';
-import Budget from '../../../components/Budget';
 import {
   changeProject,
   startEditing,
@@ -28,26 +27,6 @@ class Info extends Component {
 
   removeAttachment = (attachmentId) => {
     this.props.removeAttachment(this.props.id, attachmentId);
-  };
-
-  onBudgetSubmit = (budget) => {
-    this.props.changeProject(
-      {
-        id: this.props.id,
-        budget
-      },
-      'budget'
-    );
-  };
-
-  onRiskBudgetSubmit = (riskBudget) => {
-    this.props.changeProject(
-      {
-        id: this.props.id,
-        riskBudget
-      },
-      'riskBudget'
-    );
   };
 
   checkIsAdminInProject = () => {
@@ -97,20 +76,6 @@ class Info extends Component {
           canEdit={isProjectAdmin}
         />
         <hr />
-        <Budget
-          onEditSubmit={this.onRiskBudgetSubmit}
-          header='Бюджет с рисковым резервом'
-          value={this.props.riskBudget}
-          isProjectAdmin={isProjectAdmin}
-        />
-        <hr />
-        <Budget
-          onEditSubmit={this.onBudgetSubmit}
-          header='Бюджет без рискового резерва'
-          value={this.props.budget}
-          isProjectAdmin={isProjectAdmin}
-        />
-        <hr />
         <h2>Файлы</h2>
         <Attachments
           removeAttachment={this.removeAttachment}
@@ -155,7 +120,7 @@ Info.propTypes = {
   stopEditing: PropTypes.func,
   tags: PropTypes.array,
   uploadAttachments: PropTypes.func,
-  user: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Info);

@@ -12,7 +12,7 @@ import CreateTaskModal from '../../../components/CreateTaskModal';
 import SprintColumn from './SprintColumn';
 import { connect } from 'react-redux';
 import moment from 'moment';
-
+import Budget from '../../../components/Budget';
 import { createSprint } from '../../../actions/Sprint';
 import CreateSprintModal from '../CreateSprintModal';
 import SprintCard from '../../../components/SprintCard';
@@ -20,7 +20,7 @@ import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { editSprint } from '../../../actions/Sprint';
 import { editMilestone } from '../../../actions/Milestone';
-import { openCreateTaskModal, getProjectInfo } from '../../../actions/Project';
+import { openCreateTaskModal, getProjectInfo, changeProject } from '../../../actions/Project';
 import SprintEditModal from '../../../components/SprintEditModal';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 import { IconEdit } from '../../../components/Icons';
@@ -36,6 +36,7 @@ class Planning extends Component {
     SprintIsEditing: PropTypes.bool,
     changeTask: PropTypes.func.isRequired,
     createSprint: PropTypes.func.isRequired,
+    changeProject: PropTypes.func,
     editSprint: PropTypes.func.isRequired,
     getProjectInfo: PropTypes.func.isRequired,
     getPlanningTasks: PropTypes.func.isRequired,
@@ -305,8 +306,27 @@ class Planning extends Component {
     const startDay2 = entity2.factStartDate || entity2.date;
 
     return new Date(startDay1) - new Date(startDay2);
-  }
+  };
 
+  onBudgetSubmit = (budget) => {
+    this.props.changeProject(
+      {
+        id: this.props.project.id,
+        budget
+      },
+      'budget'
+    );
+  };
+
+  onRiskBudgetSubmit = (riskBudget) => {
+    this.props.changeProject(
+      {
+        id: this.props.project.id,
+        riskBudget
+      },
+      'riskBudget'
+    );
+  };
   render () {
     const isProjectAdmin = this.checkIsAdminInProject();
     const isVisor = this.props.user.globalRole === VISOR;
@@ -345,17 +365,19 @@ class Planning extends Component {
 
     const filteredMilestones = this.props.milestones.filter(milestone => {
       return +moment(milestone.date).format('YYYY') === this.state.grantActiveYear;
-    })
+    });
 
     const entities = filteredSprints
       .concat(filteredMilestones)
-      .sort(this.sortEntities)
-
+      .sort(this.sortEntities);
+    
+    const budget = this.props.project.budget;
+    const riskBudget = this.props.project.riskBudget;
     return (
       <div>
         <section>
-          <br />
           <hr />
+          <br />
           {
             isProjectAdmin
             ? <Button
@@ -409,6 +431,24 @@ class Planning extends Component {
               ? <CreateMilestoneModal onClose={this.handleCloseModalAddMilestone} />
               : null
             }
+            <Row className={css.budgetRow}>
+              <Col xs={12} sm={6}>
+                <Budget
+                  onEditSubmit={this.onRiskBudgetSubmit}
+                  header='Бюджет с рисковым резервом'
+                  value={riskBudget}
+                  isProjectAdmin={isProjectAdmin}
+                />
+              </Col>
+              <Col xs={12} sm={6}>
+                <Budget
+                  onEditSubmit={this.onBudgetSubmit}
+                  header='Бюджет без рискового резерва'
+                  value={budget}
+                  isProjectAdmin={isProjectAdmin}
+                />
+              </Col>
+            </Row>
             <Table
               entities={entities}
               typeIdHovered={this.state.typeIdHovered}
@@ -575,6 +615,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+  changeProject,
   getPlanningTasks,
   editSprint,
   editMilestone,
