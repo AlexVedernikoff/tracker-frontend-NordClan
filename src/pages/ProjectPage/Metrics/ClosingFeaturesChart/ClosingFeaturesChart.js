@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './BugsChart.scss';
 import { Line } from 'react-chartjs-2';
+import * as css from './ClosingFeaturesChart.scss';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
-
-class BugsChart extends Component {
+class ClosingFeaturesChart extends Component {
   static propTypes = {
     chartDefaultOptions: PropTypes.object,
     getBasicLineSettings: PropTypes.func,
-    openedBugsMetrics: PropTypes.array,
-    openedCustomerBugsMetrics: PropTypes.array,
-    openedRegressBugsMetrics: PropTypes.array
+    sprintClosingFeaturesMetrics: PropTypes.array,
+    sprintWorkWithoutEvaluationMetrics: PropTypes.array,
+    sprintWriteOffTimeMetrics: PropTypes.array
   };
 
   constructor (props) {
@@ -26,7 +25,7 @@ class BugsChart extends Component {
           display: true,
           scaleLabel: {
             display: true,
-            labelString: 'Количество багов'
+            labelString: 'Часы'
           }
         }]
       }
@@ -35,15 +34,15 @@ class BugsChart extends Component {
 
   makeChartData = () => {
     const {
-      openedBugsMetrics,
-      openedCustomerBugsMetrics,
-      openedRegressBugsMetrics
+      sprintClosingFeaturesMetrics,
+      sprintWriteOffTimeMetrics,
+      sprintWorkWithoutEvaluationMetrics
     } = this.props;
     return {
       datasets: [
-        this.makeBugsLine(openedBugsMetrics, 'Количество открытых багов'),
-        this.makeBugsLine(openedCustomerBugsMetrics, 'Количество открытых багов от Заказчика'),
-        this.makeBugsLine(openedRegressBugsMetrics, 'Количество открытых регрессионных багов')
+        this.makeBugsLine(sprintClosingFeaturesMetrics, 'Динамика закрытия фич (с учетом трудозатрат)'),
+        this.makeBugsLine(sprintWriteOffTimeMetrics, 'Динамика списания времени на фичи'),
+        this.makeBugsLine(sprintWorkWithoutEvaluationMetrics, 'Динамика трудозатрат на фичи без оценки')
       ]
     };
   };
@@ -64,8 +63,8 @@ class BugsChart extends Component {
 
   render () {
     return (
-      <div className={css.BugsChart}>
-        <h3>Баги на проекте</h3>
+      <div className={css.ClosingFeaturesChart}>
+        <h3>Динамика закрытия фич</h3>
         <Line
           data={this.makeChartData()}
           options={this.chartOptions}
@@ -76,4 +75,4 @@ class BugsChart extends Component {
   }
 }
 
-export default BugsChart;
+export default ClosingFeaturesChart;

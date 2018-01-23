@@ -4,6 +4,10 @@
   flex-shrink: 0;
 }
 
+.budgetRow {
+  padding-bottom: 32px;
+}
+
 .graph {
   border-left: 1px solid lighten($color-black, 70%);
   border-right: 1px solid lighten($color-black, 70%);
@@ -44,7 +48,7 @@
   position: relative;
   align-items: stretch;
   flex-wrap: wrap;
-  width: calc(100% - 14rem);
+  width: calc(100% - 15rem);
   overflow: hidden;
   border-left: 1px solid lighten($color-black, 70%);
 }
@@ -184,7 +188,7 @@
 }
 
 .spentTime {
-  width: 2.5rem;
+  width: 3rem;
 
   .header {
     flex: 3;
@@ -241,6 +245,7 @@
     height: 10px;
     transform: rotate(45deg);
     background-color: red;
+    cursor: pointer;
   }
   &.done {
     >div {

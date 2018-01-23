@@ -15,6 +15,7 @@ class Login extends Component {
     clearRedirect: PropTypes.func.isRequired,
     defaultRedirectPath: PropTypes.string,
     doAuthentication: PropTypes.func.isRequired,
+    errorMessage: PropTypes.string,
     isLoggedIn: PropTypes.bool.isRequired,
     redirectPath: PropTypes.object
   };
@@ -66,6 +67,7 @@ class Login extends Component {
             />
           </div>
           <form onSubmit={this.onSubmit}>
+            {this.props.errorMessage ? <div className={css.errorMessage}>{this.props.errorMessage}</div> : null}
             <div className={css.inputWrapper}>
               {this.validator.validate(
                 (handleBlur, shouldMarkError) => (
@@ -116,10 +118,11 @@ class Login extends Component {
   }
 }
 
-const mapStateToProps = ({ Auth: { isLoggedIn, redirectPath, defaultRedirectPath } }) => ({
+const mapStateToProps = ({ Auth: { isLoggedIn, redirectPath, defaultRedirectPath, errorMessage } }) => ({
   isLoggedIn,
   redirectPath,
-  defaultRedirectPath
+  defaultRedirectPath,
+  errorMessage
 });
 
 const mapDispatchToProps = {

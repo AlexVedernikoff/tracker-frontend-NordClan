@@ -14,6 +14,10 @@ class Validator {
     return hasError && this.touched[field];
   };
 
+  resetTouched = () => {
+    this.touched = {};
+  }
+
   validate (decorateFunc, field, isError) {
     if (!this.touched[field]) {
       this.touched[field] = false;
