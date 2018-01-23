@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 
 import getUsers from '../../actions/UsersRoles';
 
@@ -16,11 +17,18 @@ class UsersRoles extends React.Component {
     this.props.getUsers();
   }
 
-  handleChangeStatus () {
-    console.log(1);
+  handleChangeStatus = (userId) => (event) => {
+    const { users } = this.props;
+    const newUserStatus = event.target.value;
+    const userIndex = _.findIndex(users, { id: userId });
+    users[userIndex].globalRole = newUserStatus;
+    event.preventDefault();
+    this.setState({
+      users
+    });
   }
 
-  createStatusSelector (globalRole) {
+  renderStatusSelector (globalRole, userId) {
     const statuses = [
       {
         name: 'Администратор',
@@ -44,16 +52,16 @@ class UsersRoles extends React.Component {
       return option;
     });
     return (
-      <select value={globalRole} onChange={this.handleChangeStatus}>
+      <select value={globalRole} onChange={this.handleChangeStatus(userId)}>
         {options}
       </select>
     );
   }
 
-  createRowUser (user) {
+  renderRowUser (user) {
     const { id, lastNameRu, firstNameRu, globalRole} = user;
     const fullName = `${lastNameRu} ${firstNameRu}`;
-    const status = this.createStatusSelector(globalRole);
+    const status = this.renderStatusSelector(globalRole, id);
     return (
       <tr key={id}>
         <td>
@@ -66,7 +74,7 @@ class UsersRoles extends React.Component {
     );
   }
 
-  createTableUsers (users) {
+  renderTableUsers (users) {
     const tableHead = (
       <tr>
         <th>
@@ -78,7 +86,7 @@ class UsersRoles extends React.Component {
       </tr>
     );
     const tableBody = users.map(user => {
-      return this.createRowUser(user);
+      return this.renderRowUser(user);
     });
     return (
       <table>
@@ -94,7 +102,7 @@ class UsersRoles extends React.Component {
 
   render () {
     const users = this.props.users;
-    const tableUsers = this.createTableUsers(users);
+    const tableUsers = this.renderTableUsers(users);
     return (
       <div>
         <h1>Пользователи</h1>
