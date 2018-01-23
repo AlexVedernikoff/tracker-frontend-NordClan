@@ -14,11 +14,15 @@ class PerformerModal extends Component {
         selectedIndex = i;
       }
     });
+    const noPerfromerOption = {
+      value: 0,
+      label: 'Не выбрано'
+    };
     this.state = {
       performer: this.props.defaultUser,
       selectedIndex,
       searchText: '',
-      users: this.props.users
+      users: this.props.users.concat(noPerfromerOption)
     };
   }
 
