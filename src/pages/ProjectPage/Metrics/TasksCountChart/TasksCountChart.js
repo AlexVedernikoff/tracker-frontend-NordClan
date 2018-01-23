@@ -5,6 +5,7 @@ import { Line } from 'react-chartjs-2';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import getRandomColor from '../../../../utils/getRandomColor';
+import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 
 class TasksCountChart extends Component {
   static propTypes = {
@@ -65,7 +66,7 @@ class TasksCountChart extends Component {
         x: metric.createdAt,
         y: +metric.value
       };
-    });
+    }).sort(sortChartLineByDates);
     return {
       data: [...line],
       label: label,

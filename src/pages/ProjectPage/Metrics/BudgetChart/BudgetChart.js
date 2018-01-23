@@ -4,6 +4,7 @@ import * as css from './BudgetChart.scss';
 import Input from '../../../../components/Input';
 import { Line } from 'react-chartjs-2';
 import { connect } from 'react-redux';
+import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 
 class BudgetChart extends Component {
   static propTypes = {
@@ -84,7 +85,7 @@ class BudgetChart extends Component {
         x: metric.createdAt,
         y: +metric.value
       };
-    });
+    }).sort(sortChartLineByDates);
     return {
       data: [...burndown],
       label: 'Весь проект',
@@ -120,7 +121,7 @@ class BudgetChart extends Component {
           x: metric.createdAt,
           y: +metric.value
         };
-      });
+      }).sort(sortChartLineByDates);
       return {
         data: burndown,
         label: `${sprint.name}`,
