@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import getRandomColor from '../../../../utils/getRandomColor';
 import Button from '../../../../components/Button';
+import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 
 class CostByRoleChart extends Component {
   static propTypes = {
@@ -61,7 +62,7 @@ class CostByRoleChart extends Component {
           x: metric.createdAt,
           y: +metric.value
         };
-      });
+      }).sort(sortChartLineByDates);
       return {
         data: line,
         label: `${role.name}`,

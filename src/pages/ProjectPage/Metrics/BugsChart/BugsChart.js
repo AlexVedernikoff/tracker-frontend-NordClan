@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as css from './BugsChart.scss';
 import { Line } from 'react-chartjs-2';
+import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 
 class BugsChart extends Component {
   static propTypes = {
@@ -53,7 +54,7 @@ class BugsChart extends Component {
         x: metric.createdAt,
         y: +metric.value
       };
-    });
+    }).sort(sortChartLineByDates);
     return {
       data: [...line],
       label: label,

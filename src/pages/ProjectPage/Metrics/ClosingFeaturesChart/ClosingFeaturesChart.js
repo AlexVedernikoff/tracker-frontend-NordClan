@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Line } from 'react-chartjs-2';
 import * as css from './ClosingFeaturesChart.scss';
-
+import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 class ClosingFeaturesChart extends Component {
   static propTypes = {
     chartDefaultOptions: PropTypes.object,
@@ -53,7 +53,7 @@ class ClosingFeaturesChart extends Component {
         x: metric.createdAt,
         y: +metric.value
       };
-    });
+    }).sort(sortChartLineByDates);
     return {
       data: [...line],
       label: label,
