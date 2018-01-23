@@ -105,7 +105,8 @@ class Timesheets extends React.Component {
           projectId: el.project.id,
           projectName: el.project.name,
           taskStatusId: el.taskStatusId,
-          sprintId: el.sprintId ? el.sprintId : null
+          sprintId: el.sprintId ? el.sprintId : null,
+          sprint: el.task.sprint ? el.task.sprint : null
         });
       }
       return res;
@@ -151,7 +152,8 @@ class Timesheets extends React.Component {
           typeId: el.typeId,
           projectName: el.project ? el.project.name : 'Без проекта',
           projectId: el.project ? el.project.id : 0,
-          sprintId: el.sprintId ? el.sprintId : null
+          sprintId: el.sprintId ? el.sprintId : null,
+          sprint: el.sprint ? el.sprint : null
         });
       }
       return res;

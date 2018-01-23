@@ -112,6 +112,7 @@ class PlaylistItem extends Component {
       typeId,
       taskStatus: prevStatus,
       isDraft,
+      sprint,
       isVisible
     } = this.props.item;
     const status = task ? task.taskStatus : null;
@@ -135,6 +136,7 @@ class PlaylistItem extends Component {
             <div className={css.meta}>
               { task && task.prefix ? <span>{task.prefix}</span> : null}
               <span>{project ? project.name : 'Без проекта'}</span>
+              {sprint ? <span>{sprint.name}</span> : null}
               { status
                 ? <span>
                   {

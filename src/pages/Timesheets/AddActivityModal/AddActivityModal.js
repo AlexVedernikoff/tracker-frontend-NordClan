@@ -104,7 +104,8 @@ class AddActivityModal extends Component {
       taskStatusId: selectedTask ? selectedTaskStatusId : null,
       typeId: selectedActivityType,
       spentTime: '0',
-      sprintId: this.isNoTaskProjectActivity() && this.state.selectedSprint ? this.state.selectedSprint.value : null,
+      sprintId: this.isNoTaskProjectActivity() && this.state.selectedSprint ? this.state.selectedSprint.value.id : null,
+      sprint: this.isNoTaskProjectActivity() && this.state.selectedSprint ? this.state.selectedSprint.value : null,
       onDate: moment(startingDay).format('YYYY-MM-DD'),
       project: selectedTask ? {
         id: selectedTask.body.projectId,
@@ -165,7 +166,7 @@ class AddActivityModal extends Component {
     return sprints ? sprints.map(sprint => {
       return {
         label: sprint.name,
-        value: sprint.id
+        value: sprint
       };
     }) : null;
   }

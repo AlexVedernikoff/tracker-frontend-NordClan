@@ -276,13 +276,13 @@ class ActivityRow extends React.Component {
         );
       }
     });
-
     return (
       <tr className={css.taskRow}>
         <td>
           <div className={css.taskCard}>
             <div className={css.meta}>
               {item.projectName ? <span>{item.projectName}</span> : null}
+              {item.sprint ? <span>{item.sprint.name}</span> : null}
               {status ? <span>{status.name}</span> : null}
             </div>
             <div>
