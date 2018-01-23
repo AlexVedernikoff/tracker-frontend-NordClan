@@ -18,11 +18,12 @@ class PerformerModal extends Component {
       value: 0,
       label: 'Не выбрано'
     };
+    this.userList = this.props.users.concat(noPerfromerOption);
     this.state = {
       performer: this.props.defaultUser,
       selectedIndex,
       searchText: '',
-      users: this.props.users.concat(noPerfromerOption)
+      users: this.userList
     };
   }
 
@@ -55,7 +56,7 @@ class PerformerModal extends Component {
     const searchReg = new RegExp(searchText.toLowerCase());
     this.setState({
       searchText,
-      users: this.props.users.filter(user => user.label.toLowerCase().match(searchReg)),
+      users: this.userList.filter(user => user.label.toLowerCase().match(searchReg)),
       selectedIndex: 0
     });
   }
@@ -113,14 +114,24 @@ class PerformerModal extends Component {
           <div className={css.header}>
             <h3>{title}</h3>
           </div>
-          <input
-            type="text"
-            autoFocus
-            className={css.search}
-            placeholder="Введите имя исполнителя"
-            value={searchText}
-            onChange={this.onSearchTextChange}
-          />
+          <div className={css.inputWrapper}>
+            <div className={css.fakeInput}>
+              <span>
+                {searchText}
+              </span>
+              {/* <span>
+                {searchText}
+              </span> */}
+            </div>
+            <input
+              type="text"
+              autoFocus
+              className={css.search}
+              placeholder="Введите имя исполнителя"
+              value={searchText}
+              onChange={this.onSearchTextChange}
+            />
+          </div>
           <div className={css.selectorContainer} ref={ref => {this.list = ref;}} id="performerList">
             {
               users.map((user, i) => (
