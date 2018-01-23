@@ -47,10 +47,9 @@ class UsersRoles extends React.Component {
       }
     ];
 
-    const options = statuses.map(status => {
-      const option = <option key={status.id} value={status.value}>{status.name}</option>;
-      return option;
-    });
+    const options = statuses.map(status =>
+      (<option key={status.id} value={status.value}>{status.name}</option>));
+
     return (
       <select value={globalRole} onChange={this.handleChangeStatus(userId)}>
         {options}

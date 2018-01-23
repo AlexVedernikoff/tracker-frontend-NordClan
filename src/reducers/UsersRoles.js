@@ -6,11 +6,11 @@ const InitialState = {
 
 function Users (state = InitialState, action) {
   switch (action.type) {
-  case UsersRolesActions.USERS_RECEIVE_START:
+  case UsersRolesActions.GET_USERS_START:
     return {
       ...state
     };
-  case UsersRolesActions.USERS_RECEIVE_SUCCESS:
+  case UsersRolesActions.GET_USERS_SUCCESS:
     return {
       ...state,
       users: action.data

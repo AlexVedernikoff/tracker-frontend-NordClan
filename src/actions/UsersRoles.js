@@ -1,35 +1,33 @@
 import * as UsersRolesActions from '../constants/UsersRoles';
-import axios from 'axios';
-import { API_URL } from '../constants/Settings';
-import { startLoading, finishLoading } from './Loading';
-import { showNotification } from './Notifications';
+import { GET, PUT, REST_API} from '../constants/RestApi';
+import {
+  defaultErrorHandler,
+  withFinishLoading,
+  withStartLoading,
+  defaultBody as body,
+  defaultExtra as extra
+} from './Common';
 
-const startUsersReceive = () => ({
-  type: UsersRolesActions.USERS_RECEIVE_START
+
+const getUsersStart = () => ({
+  type: UsersRolesActions.GET_USERS_START
 });
 
-const UsersReceived = users => ({
-  type: UsersRolesActions.USERS_RECEIVE_SUCCESS,
+const getUsersSuccess = users => ({
+  type: UsersRolesActions.GET_USERS_SUCCESS,
   data: users
 });
 
 const getUsers = () => {
-  const URL = `${API_URL}/user/all`;
-  return dispatch => {
-    dispatch(startUsersReceive());
-    dispatch(startLoading());
-    axios.get(URL, {}, { withCredentials: true })
-      .catch(error => {
-        dispatch(finishLoading());
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(UsersReceived(response.data));
-          dispatch(finishLoading());
-        }
-      });
-  };
+  return dispatch => dispatch({
+    type: REST_API,
+    url: '/user/all',
+    method: GET,
+    extra,
+    start: withStartLoading(getUsersStart, true)(dispatch),
+    response: withFinishLoading(response => getUsersSuccess(response.data), true)(dispatch),
+    error: defaultErrorHandler(dispatch)
+  });
 };
 
 export default getUsers;
