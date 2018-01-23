@@ -8,7 +8,8 @@ const InitialState = {
   user: {
     firstNameRu: '',
     lastNameRu: ''
-  }
+  },
+  errorMessage: null
 };
 
 function Auth (state = InitialState, action) {
@@ -17,14 +18,16 @@ function Auth (state = InitialState, action) {
     return {
       ...state,
       user: {},
-      isLoggedIn: false
+      isLoggedIn: false,
+      errorMessage: null
     };
 
   case AuthActions.AUTHENTICATION_ERROR:
     return {
       ...state,
       user: {},
-      isLoggedIn: false
+      isLoggedIn: false,
+      errorMessage: action.errorMessage
     };
 
   case AuthActions.AUTHENTICATION_RECEIVED:

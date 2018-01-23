@@ -59,13 +59,20 @@ class EditMilestoneModal extends Component {
   handleEditMilestone = (e) => {
     e.preventDefault();
     this.props.onClose();
-    this.props.editMilestone(this.state.milestone);
+    this.props.editMilestone({
+      ...this.state.milestone,
+      name: this.state.milestone.name.trim()
+    });
+  };
+
+  checkNullInputs = () => {
+    return this.state.milestone.name.trim() && this.state.milestone.date;
   };
 
   render () {
     const formattedDay = this.state.milestone.date
-      ? moment(this.state.milestone.date).format( 'DD.MM.YYYY')
-      : ''
+      ? moment(this.state.milestone.date).format('DD.MM.YYYY')
+      : '';
 
     const formLayout = {
       firstCol: 5,
@@ -84,6 +91,17 @@ class EditMilestoneModal extends Component {
               <Col xs={12}>
                 <h3>Редактирование вехи</h3>
                 <hr />
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={12} className={css.validateMessages}>
+                {
+                  !this.checkNullInputs()
+                    ? <span>
+                      Все поля должны быть заполнены
+                    </span>
+                    : null
+                }
               </Col>
             </Row>
             <Row className={css.inputRow}>
@@ -140,6 +158,7 @@ class EditMilestoneModal extends Component {
                   htmlType="submit"
                   text="Изменить"
                   onClick={this.handleEditMilestone}
+                  disabled={!this.checkNullInputs()}
                 />
               </Col>
             </Row>

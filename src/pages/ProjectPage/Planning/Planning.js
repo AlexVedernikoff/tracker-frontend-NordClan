@@ -20,7 +20,7 @@ import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { editSprint } from '../../../actions/Sprint';
 import { editMilestone } from '../../../actions/Milestone';
-import { openCreateTaskModal } from '../../../actions/Project';
+import { openCreateTaskModal, getProjectInfo } from '../../../actions/Project';
 import SprintEditModal from '../../../components/SprintEditModal';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 import { IconEdit } from '../../../components/Icons';
@@ -37,11 +37,13 @@ class Planning extends Component {
     changeTask: PropTypes.func.isRequired,
     createSprint: PropTypes.func.isRequired,
     editSprint: PropTypes.func.isRequired,
+    getProjectInfo: PropTypes.func.isRequired,
     getPlanningTasks: PropTypes.func.isRequired,
     isCreateTaskModalOpen: PropTypes.bool,
     lastCreatedTask: PropTypes.object,
     leftColumnTasks: PropTypes.array,
     openCreateTaskModal: PropTypes.func,
+    params: PropTypes.object,
     project: PropTypes.object,
     rightColumnTasks: PropTypes.array,
     sprints: PropTypes.array.isRequired,
@@ -195,7 +197,8 @@ class Planning extends Component {
         id: task.id,
         sprintId: sprint
       },
-      'Sprint'
+      'Sprint',
+      () => this.props.getProjectInfo(this.props.params.projectId)
     );
 
     this.props.startTaskEditing('Sprint');
@@ -578,7 +581,8 @@ const mapDispatchToProps = {
   changeTask,
   startTaskEditing,
   openCreateTaskModal,
-  createSprint
+  createSprint,
+  getProjectInfo
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Planning);

@@ -231,52 +231,54 @@ class AgileBoard extends Component {
   };
 
   dropTask = (task, phase) => {
-    this.props.changeTask({
-      id: task.id,
-      statusId: getNewStatus(task.statusId, phase)
-    }, 'Status');
     if (!(phase === 'New' || phase === 'Done')) {
       const taskProps = this.props.sprintTasks.find((sprintTask) => {
         return task.id === sprintTask.id;
       });
       const performerId = taskProps.performerId || null;
       const projectId = taskProps.projectId || null;
-      this.openPerformerModal(task.id, performerId, projectId);
+      this.openPerformerModal(task.id, performerId, projectId, task.statusId, phase);
+    } else {
+      this.changeStatus(task.id, task.statusId, phase);
     }
-    this.props.startTaskEditing('Status');
   };
 
-  changeStatus = (taskId, statusId) => {
+  changeStatus = (taskId, statusId, phase) => {
     this.props.changeTask({
       id: taskId,
-      statusId: getNewStatusOnClick(statusId)
+      statusId: phase ? getNewStatus(statusId, phase) : getNewStatusOnClick(statusId)
     }, 'Status');
 
     this.props.startTaskEditing('Status');
   };
 
-  openPerformerModal = (taskId, performerId, projectId) => {
+  openPerformerModal = (taskId, performerId, projectId, statusId, phase) => {
     if (this.props.myTaskBoard) {
       this.props.getProjectUsers(projectId);
     }
     this.setState({
       isModalOpen: true,
       performer: performerId,
-      changedTask: taskId
+      changedTask: taskId,
+      statusId,
+      phase
     });
   };
 
   changePerformer = (performerId) => {
     this.props.changeTask({
       id: this.state.changedTask,
-      performerId: performerId
+      performerId: performerId,
+      statusId: getNewStatus(this.state.statusId, this.state.phase)
     }, 'User');
 
     this.props.startTaskEditing('User');
   };
 
   closeModal = () => {
-    this.setState({ isModalOpen: false });
+    this.setState({
+      isModalOpen: false
+    }, () => this.changeStatus(this.state.changedTask, this.state.statusId, this.state.phase));
   };
 
   getCurrentSprint = sprints => {
@@ -322,14 +324,14 @@ class AgileBoard extends Component {
 
   getSprintTime = (sprintId) => {
     if (!sprintId) return false;
-    let currentSprint;
+    let currentSprint = {};
     this.props.sprints.forEach(sprint => {
       if (sprint.id === sprintId) {
         currentSprint = sprint;
       }
     });
     return `${currentSprint.spentTime || 0} / ${currentSprint.allottedTime || 0}`;
-  }
+  };
 
   getAllTags = () => {
     let allTags = this.props.sprintTasks.reduce((arr, task) => {
