@@ -8,7 +8,7 @@ import Checkbox from '../../components/Checkbox';
 import {connect} from 'react-redux';
 import { bindUserToProject, unbindUserToProject } from '../../actions/Project';
 import ConfirmModal from '../ConfirmModal';
-
+import { showNotification } from '../../actions/Notifications';
 class Participant extends React.Component {
   constructor (props) {
     super(props);
@@ -29,31 +29,27 @@ class Participant extends React.Component {
 
   changeRole = (e, role, roleId) => {
     e.preventDefault();
-    let stringRoles = '0';
-    const sendRoles = this.state.sendRoles;
-    let triger = false;
-    if (sendRoles.length) {
-      sendRoles.forEach(function (r, i) {
-        if (r === roleId) {
-          sendRoles.splice(i, 1);
-          triger = true;
+    const oldRoles = this.state.sendRoles;
+    const isDeleteRole = oldRoles.includes(roleId);
+    const newRoles = isDeleteRole ? oldRoles.filter(oldRoleId => oldRoleId !== roleId) : oldRoles.concat(roleId);
+    if (newRoles.length) {
+      const stringRoles = newRoles.join(',');
+      this.setState(
+        { sendRoles: newRoles },
+        () => {
+          this.props.bindUserToProject(
+            this.props.projectId,
+            this.props.user.id,
+            stringRoles
+          );
         }
-      });
-      if (!triger) {
-        sendRoles.push(roleId);
-      }
+      );
     } else {
-      sendRoles.push(roleId);
+      this.props.showNotification({
+        message: 'Это единственная роль. Участник должен обладать хотя бы одной ролью',
+        type: 'error'
+      });
     }
-    this.setState({ sendRoles: sendRoles });
-    if (sendRoles.length) {
-      stringRoles = sendRoles.join(',');
-    }
-    this.props.bindUserToProject(
-      this.props.projectId,
-      this.props.user.id,
-      stringRoles
-    );
   };
 
   unbindUser = () => {
@@ -146,6 +142,7 @@ class Participant extends React.Component {
 
 Participant.propTypes = {
   bindUserToProject: PropTypes.func.isRequired,
+  showNotification: PropTypes.func,
   isProjectAdmin: PropTypes.bool,
   projectId: PropTypes.number,
   unbindUserToProject: PropTypes.func.isRequired,
@@ -154,7 +151,8 @@ Participant.propTypes = {
 
 const mapDispatchToProps = {
   bindUserToProject,
-  unbindUserToProject
+  unbindUserToProject,
+  showNotification
 };
 
 export default connect(null, mapDispatchToProps)(Participant);
