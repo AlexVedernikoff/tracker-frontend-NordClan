@@ -46,7 +46,7 @@
      background-color: transparent;
    }
 
-  h1, h2, h3, h4, h5 {
+  h2 {
     position: relative;
     z-index: 2;
   }
@@ -77,4 +77,8 @@
   margin-left: 5px;
   font-weight: 300;
   font-size: 18px;
+  input {
+    font-family: Roboto, sans-serif;
+    font-weight: 300;
+  }
 }

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import * as css from './ProjectDate.scss';
 import { IconEdit, IconCheck } from '../Icons';
 import ReactTooltip from 'react-tooltip';
-import Input from '../Input';
+import DatepickerDropdown from '../DatepickerDropdown';
 import moment from 'moment';
 
 class Budget extends Component {
@@ -49,8 +49,8 @@ class Budget extends Component {
   };
 
   render () {
-    const { header } = this.props;
-
+    const { header, value } = this.props;
+    const formattedDay = moment(value).format('DD.MM.YYYY');
     return (
       <div className={css.projectDate}>
         <h2>{header}</h2>
@@ -58,12 +58,14 @@ class Budget extends Component {
         <div className={css.editor}>
           {
             this.state.isEditing
-              ? <Input
-                type='number'
-                defaultValue={moment(this.props.value).format('YYYY-MM-DD')}
-                onChange={this.onChangeValue}
+              ? <DatepickerDropdown
+                name="date"
+                value={value ? formattedDay : ''}
+                onDayChange={this.handleDayToChange}
+                placeholder="Введите дату"
+                // disabledDataRanges={this.props.sprintsDateRanges}
               />
-              : <div>{moment(this.props.value).format('YYYY-MM-DD')}</div>
+              : <div>{value ? formattedDay : 'Дата не указана'}</div>
           }
         </div>
 
@@ -96,7 +98,7 @@ Budget.propTypes = {
   id: PropTypes.number,
   isProjectAdmin: PropTypes.bool,
   onEditSubmit: PropTypes.func.isRequired,
-  value: PropTypes.number
+  value: PropTypes.string
 };
 
 export default Budget;
