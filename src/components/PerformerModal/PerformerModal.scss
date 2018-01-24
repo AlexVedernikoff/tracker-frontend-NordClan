@@ -13,32 +13,6 @@
   }
 }
 
-.inputWrapper {
-  position: relative;
-  > .fakeInput {
-    position: absolute;
-    pointer-events: none;
-    left: 0;
-    right: 0;
-    height: 100%;
-    line-height: 1rem;
-    width: 100%;
-    padding: 0.5rem 2rem;
-    border-top: 1px solid transparent;
-    border-bottom: 1px solid transparent;
-    span {
-      &:first-child {
-        background-color: white;
-        position: relative;
-        z-index: 1;
-      }
-      &:last-child {
-
-      }
-    }
-  }
-}
-
 .search {
   display: block;
   width: 100%;
@@ -49,7 +23,6 @@
   border: 1px solid $color-gray;
   border-left: none;
   border-right: none;
-  color: white;
   &:focus {
     border-color: darken($color-gray, 10%);
     transition: $transition;
@@ -66,6 +39,27 @@
   overflow: auto;
 }
 
+.currentPerformer {
+  padding: 0.5rem 2rem;
+  display: flex;
+  align-items: center;
+  > .removeCurrentPerformer{
+    margin-left: 5px;
+    cursor: pointer;
+  }
+}
+.inputWrapper {
+  position: relative;
+  > .searchIco {
+    position: absolute;
+    top: 0.65rem;
+    transform: translateX(-50%);
+    left: 1rem;
+    svg {
+      fill: darken($color-gray, 20%);;
+    }
+  }
+}
 .user {
   padding: 0.5rem 2rem;
   cursor: pointer;
