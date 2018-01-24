@@ -102,14 +102,14 @@ class UsersRoles extends React.Component {
   }
 
   render () {
-    const users = this.props.users;
+    const { users, myGlobalRole } = this.props;
     const tableUsers = this.renderTableUsers(users);
-    return (
-      <div>
+    return myGlobalRole === 'ADMIN'
+    ? <div>
         <h1>Пользователи</h1>
         {tableUsers}
       </div>
-    );
+    : null;
   }
 }
 
