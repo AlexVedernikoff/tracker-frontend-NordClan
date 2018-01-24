@@ -139,7 +139,7 @@ export const updateSheetsArray = (sheetsArr, userId, startingDay) => {
       let isOk = false;
 
       isOk = response.every((element) => {
-        if (element.status === 200) {
+        if (response.status === 200) {
           return true;
         } else {
           dispatch(finishLoading());

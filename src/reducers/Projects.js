@@ -36,6 +36,7 @@ function Projects (state = InitialState, action) {
   case ProjectsActions.CLOSE_CREATE_PROJECT_MODAL:
     return {
       ...state,
+      error: null,
       isCreateProjectModalOpen: false
     };
 

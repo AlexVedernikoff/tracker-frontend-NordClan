@@ -9,7 +9,7 @@ import Button from '../../../components/Button';
 import SelectDropdown from '../../../components/SelectDropdown';
 import * as css from '../Timesheets.scss';
 import Checkbox from '../../../components/Checkbox/Checkbox';
-
+import { getProjectSprints, getProjectHistory } from '../../../actions/Project';
 import {
   changeTask,
   changeProject,
@@ -33,11 +33,13 @@ class AddActivityModal extends Component {
     getProjectsForSelect: PropTypes.func,
     getTasksForSelect: PropTypes.func,
     onClose: PropTypes.func,
+    getProjectSprints: PropTypes.func,
     selectedActivityType: PropTypes.number,
     selectedProject: PropTypes.object,
     selectedTask: PropTypes.object,
     selectedTaskStatusId: PropTypes.number,
     startingDay: PropTypes.object,
+    sprints: PropTypes.array,
     userId: PropTypes.number
   };
 
@@ -48,6 +50,7 @@ class AddActivityModal extends Component {
       taskId: 0,
       projectId: 0,
       taskStatusId: 0,
+      selectedSprint: null,
       isOnlyMine: true,
       tasks: [],
       projects: []
@@ -89,18 +92,31 @@ class AddActivityModal extends Component {
       selectedTaskStatusId,
       startingDay
     } = this.props;
+    const { selectedSprint } = this.state;
 
+    const getSprint = () => {
+      if (this.isNoTaskProjectActivity() && selectedSprint) {
+        return selectedSprint.value;
+      } else if (selectedTask) {
+        return selectedTask.body.sprint;
+      } else {
+        return null;
+      }
+    };
     this.props.onClose();
     this.props.addActivity({
       id: `temp-${shortid.generate()}`,
       comment: null,
       task: selectedTask ? {
         id: selectedTask.value,
-        name: selectedTask.label
+        name: selectedTask.label,
+        sprint: getSprint()
       } : null,
       taskStatusId: selectedTask ? selectedTaskStatusId : null,
       typeId: selectedActivityType,
       spentTime: '0',
+      sprintId: getSprint() ? getSprint().id : null,
+      sprint: getSprint(),
       onDate: moment(startingDay).format('YYYY-MM-DD'),
       project: selectedTask ? {
         id: selectedTask.body.projectId,
@@ -125,9 +141,20 @@ class AddActivityModal extends Component {
     });
   };
 
+  isNoTaskProjectActivity = () => {
+    const { activityType } = this.state;
+    return activityType !== activityTypes.IMPLEMENTATION
+      && activityType !== activityTypes.VACATION
+      && activityType !== activityTypes.HOSPITAL;
+  }
+
   handleChangeProject = (option) => {
     this.props.changeProject(option);
     this.loadTasks('', option ? option.value : null);
+    const { activityType } = this.state;
+    if (this.isNoTaskProjectActivity()) {
+      this.props.getProjectSprints(option.value);
+    }
   }
 
   loadTasks = (name = '', projectId = null) => {
@@ -141,12 +168,25 @@ class AddActivityModal extends Component {
       .then(options => this.setState({projects: options.options}));
   }
 
+  handleChangeSprint = (option) => {
+    this.setState({selectedSprint: option});
+  }
+
+  getSprintOptions = () => {
+    const {sprints} = this.props;
+    return sprints ? sprints.map(sprint => {
+      return {
+        label: sprint.name,
+        value: sprint
+      };
+    }) : null;
+  }
   render () {
     const formLayout = {
       left: 5,
       right: 7
     };
-
+    this.getSprintOptions(2);
     return (
       <Modal
         isOpen
@@ -232,22 +272,39 @@ class AddActivityModal extends Component {
               : this.state.activityType && this.state.activityType !== activityTypes.IMPLEMENTATION
                 && this.state.activityType !== activityTypes.VACATION
                 && this.state.activityType !== activityTypes.HOSPITAL
-              ? <label className={css.formField}>
-                <Row>
-                  <Col xs={12} sm={formLayout.left}>
-                    Проект:
-                  </Col>
-                  <Col xs={12} sm={formLayout.right}>
-                    <SelectDropdown
-                        multi={false}
-                        value={this.props.selectedProject}
-                        placeholder="Выберите проект"
-                        onChange={this.handleChangeProject}
-                        options={this.state.projects}
-                      />
-                  </Col>
-                </Row>
-              </label>
+              ? [<label className={css.formField} key="noTaskActivityProject">
+                  <Row>
+                    <Col xs={12} sm={formLayout.left}>
+                      Проект:
+                    </Col>
+                    <Col xs={12} sm={formLayout.right}>
+                      <SelectDropdown
+                          multi={false}
+                          value={this.props.selectedProject}
+                          placeholder="Выберите проект"
+                          onChange={this.handleChangeProject}
+                          options={this.state.projects}
+                        />
+                    </Col>
+                  </Row>
+                </label>,
+                this.props.selectedProject
+                ? <label className={css.formField} key="noTaskActivitySprint">
+                  <Row>
+                    <Col xs={12} sm={formLayout.left}>
+                      Спринт:
+                    </Col>
+                    <Col xs={12} sm={formLayout.right}>
+                      <SelectDropdown
+                          multi={false}
+                          value={this.state.selectedSprint}
+                          placeholder="Выберите спринт"
+                          onChange={this.handleChangeSprint}
+                          options={this.getSprintOptions()}
+                        />
+                    </Col>
+                  </Row>
+                </label> : null]
             : null
           }
           {
@@ -305,6 +362,7 @@ const mapStateToProps = state => ({
   selectedProject: state.Timesheets.selectedProject,
   startingDay: state.Timesheets.startingDay,
   filteredTasks: state.Timesheets.filteredTasks,
+  sprints: state.Project.project.sprints,
   userId: state.Auth.user.id
 });
 
@@ -315,7 +373,8 @@ const mapDispatchToProps = {
   addActivity,
   changeActivityType,
   getTasksForSelect,
-  getProjectsForSelect
+  getProjectsForSelect,
+  getProjectSprints
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddActivityModal);
