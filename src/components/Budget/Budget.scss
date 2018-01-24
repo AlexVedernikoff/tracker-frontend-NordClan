@@ -38,7 +38,9 @@
   position: relative;
   z-index: 0; // New z-index stack created
   padding-bottom: 0.5rem;
-
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
    &.edited .editBorder {
      opacity: 1;
      background-color: transparent;
@@ -72,4 +74,7 @@
 .editor {
   position: relative;
   z-index: 2;
+  margin-left: 5px;
+  font-weight: 300;
+  font-size: 18px;
 }

@@ -435,7 +435,7 @@ class Planning extends Component {
               <Col xs={12} sm={6}>
                 <Budget
                   onEditSubmit={this.onRiskBudgetSubmit}
-                  header='Бюджет с рисковым резервом'
+                  header='Бюджет с рисковым резервом:'
                   value={riskBudget}
                   isProjectAdmin={isProjectAdmin}
                 />
@@ -443,7 +443,25 @@ class Planning extends Component {
               <Col xs={12} sm={6}>
                 <Budget
                   onEditSubmit={this.onBudgetSubmit}
-                  header='Бюджет без рискового резерва'
+                  header='Бюджет без рискового резерва:'
+                  value={budget}
+                  isProjectAdmin={isProjectAdmin}
+                />
+              </Col>
+            </Row>
+            <Row className={css.budgetRow}>
+              <Col xs={12} sm={6}>
+                <Budget
+                  onEditSubmit={this.onRiskBudgetSubmit}
+                  header='Начало проекта:'
+                  value={riskBudget}
+                  isProjectAdmin={isProjectAdmin}
+                />
+              </Col>
+              <Col xs={12} sm={6}>
+                <Budget
+                  onEditSubmit={this.onBudgetSubmit}
+                  header='Конец проекта:'
                   value={budget}
                   isProjectAdmin={isProjectAdmin}
                 />
@@ -606,6 +624,8 @@ const mapStateToProps = state => ({
   milestones: state.Project.project.milestones,
   sprints: state.Project.project.sprints,
   project: state.Project.project,
+  createdAt: state.Project.project.createdAt,
+  completedAt: state.Project.project.completedAt,
   lastCreatedTask: state.Project.lastCreatedTask,
   leftColumnTasks: state.PlanningTasks.leftColumnTasks,
   rightColumnTasks: state.PlanningTasks.rightColumnTasks,
