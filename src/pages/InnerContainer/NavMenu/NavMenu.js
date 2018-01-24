@@ -30,6 +30,20 @@ class NavMenu extends Component {
       height: 16
     };
 
+    const isAdmin = this.props.user.globalRole === 'ADMIN';
+
+    const usersRolesLink = isAdmin
+      ? <li key="usersroles" className={css.sidebarItem}>
+        <Link
+          className={css.sidebarLink}
+          activeClassName={css.activeLink}
+          to="/usersroles"
+        >
+          Пользователи
+        </Link>
+      </li>
+      : null;
+
     const links = [
       /*<li key="dashboard" className={css.sidebarItem}>
         <Link
@@ -73,15 +87,7 @@ class NavMenu extends Component {
           Отчеты по времени
         </Link>
       </li>,
-      <li key="usersroles" className={css.sidebarItem}>
-        <Link
-          className={css.sidebarLink}
-          activeClassName={css.activeLink}
-          to="/usersroles"
-        >
-          Пользователи
-        </Link>
-      </li>
+      usersRolesLink
     ];
 
     const sidebarHeader = (

@@ -115,12 +115,14 @@ class UsersRoles extends React.Component {
 
 UsersRoles.propTypes = {
   getUsers: PropTypes.func.isRequired,
+  myGlobalRole: PropTypes.string.isRequired,
   updateUserRole: PropTypes.func,
   users: PropTypes.array
 };
 
 const mapStateToProps = state => ({
-  users: state.UsersRoles.users
+  users: state.UsersRoles.users,
+  myGlobalRole: state.Auth.user.globalRole
 });
 
 const mapDispatchToProps = {
