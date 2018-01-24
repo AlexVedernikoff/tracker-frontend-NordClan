@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   Router,
   Route,
+  Redirect,
   IndexRedirect,
   IndexRoute,
   applyRouterMiddleware
@@ -49,6 +50,7 @@ class AppRouter extends Component {
   static propTypes = {
     clearCurrentProjectAndTasks: PropTypes.func,
     history: PropTypes.object,
+    isAdmin: PropTypes.bool,
     isLoggedIn: PropTypes.bool,
     loaded: PropTypes.bool,
     redirectPath: PropTypes.object,
@@ -82,7 +84,9 @@ class AppRouter extends Component {
             <Route path="/" component={InnerContainer} onEnter={this.requireAuth} >
               <Route path="dashboard" component={Dashboard} />
               <Route path="timesheets" component={Timesheets} />
-              <Route path="usersroles" component={UsersRoles} />
+              { this.props.isAdmin
+                ? <Route path="usersroles" component={UsersRoles} />
+                : <Redirect from="usersroles" to="projects" /> }
               <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
               <Route path="projects" component={Projects} />
 
@@ -119,10 +123,11 @@ class AppRouter extends Component {
   }
 }
 
-const mapStateToProps = ({ Auth: { loaded, isLoggedIn, redirectPath } }) => ({
+const mapStateToProps = ({ Auth: { loaded, isLoggedIn, redirectPath, user } }) => ({
   loaded,
   isLoggedIn,
-  redirectPath
+  redirectPath,
+  isAdmin: user.globalRole === 'ADMIN'
 });
 
 const mapDispatchToProps = {

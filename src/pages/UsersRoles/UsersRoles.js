@@ -102,9 +102,9 @@ class UsersRoles extends React.Component {
   }
 
   render () {
-    const { users, myGlobalRole } = this.props;
+    const { users, isAdmin } = this.props;
     const tableUsers = this.renderTableUsers(users);
-    return myGlobalRole === 'ADMIN'
+    return isAdmin
     ? <div>
         <h1>Пользователи</h1>
         {tableUsers}
@@ -115,14 +115,14 @@ class UsersRoles extends React.Component {
 
 UsersRoles.propTypes = {
   getUsers: PropTypes.func.isRequired,
-  myGlobalRole: PropTypes.string.isRequired,
+  isAdmin: PropTypes.bool.isRequired,
   updateUserRole: PropTypes.func,
   users: PropTypes.array
 };
 
 const mapStateToProps = state => ({
   users: state.UsersRoles.users,
-  myGlobalRole: state.Auth.user.globalRole
+  isAdmin: state.Auth.user.globalRole === 'ADMIN'
 });
 
 const mapDispatchToProps = {
