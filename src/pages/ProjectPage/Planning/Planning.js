@@ -13,6 +13,7 @@ import SprintColumn from './SprintColumn';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import Budget from '../../../components/Budget';
+import ProjectDate from '../../../components/ProjectDate';
 import { createSprint } from '../../../actions/Sprint';
 import CreateSprintModal from '../CreateSprintModal';
 import SprintCard from '../../../components/SprintCard';
@@ -43,6 +44,8 @@ class Planning extends Component {
     isCreateTaskModalOpen: PropTypes.bool,
     lastCreatedTask: PropTypes.object,
     leftColumnTasks: PropTypes.array,
+    createdAt: PropTypes.string,
+    completedAt: PropTypes.string,
     openCreateTaskModal: PropTypes.func,
     params: PropTypes.object,
     project: PropTypes.object,
@@ -308,6 +311,26 @@ class Planning extends Component {
     return new Date(startDay1) - new Date(startDay2);
   };
 
+  onProjectStartSubmit = (createdAt) => {
+    this.props.changeProject(
+      {
+        id: this.props.project.id,
+        createdAt
+      },
+      'createdAt'
+    );
+  };
+
+  onProjectEndSubmit = (completedAt) => {
+    this.props.changeProject(
+      {
+        id: this.props.project.id,
+        completedAt
+      },
+      'completedAt'
+    );
+  };
+
   onBudgetSubmit = (budget) => {
     this.props.changeProject(
       {
@@ -373,6 +396,8 @@ class Planning extends Component {
     
     const budget = this.props.project.budget;
     const riskBudget = this.props.project.riskBudget;
+
+    const { createdAt, completedAt } = this.props;
     return (
       <div>
         <section>
@@ -451,18 +476,18 @@ class Planning extends Component {
             </Row>
             <Row className={css.budgetRow}>
               <Col xs={12} sm={6}>
-                <Budget
-                  onEditSubmit={this.onRiskBudgetSubmit}
+                <ProjectDate
+                  onEditSubmit={this.onProjectStartSubmit}
                   header='Начало проекта:'
-                  value={riskBudget}
+                  value={createdAt}
                   isProjectAdmin={isProjectAdmin}
                 />
               </Col>
               <Col xs={12} sm={6}>
-                <Budget
-                  onEditSubmit={this.onBudgetSubmit}
+                <ProjectDate
+                  onEditSubmit={this.onProjectEndSubmit}
                   header='Конец проекта:'
-                  value={budget}
+                  value={completedAt}
                   isProjectAdmin={isProjectAdmin}
                 />
               </Col>
