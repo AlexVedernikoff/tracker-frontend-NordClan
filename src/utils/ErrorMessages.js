@@ -5,7 +5,7 @@ export const getErrorMessageByType = type => {
 
   case 49:
   case 'InvalidCredentialsError':
-    return 'Неверый логин/пароль. Проверьте данные';
+    return 'Неверный логин/пароль. Проверьте данные';
 
   default:
     return 'Произошла ошибка';
