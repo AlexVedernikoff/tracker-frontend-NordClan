@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './ProjectDate.scss';
-import { IconEdit, IconCheck } from '../Icons';
+import * as css from '../PlanningEdit.scss';
+import { IconEdit, IconCheck } from '../../Icons';
 import ReactTooltip from 'react-tooltip';
-import DatepickerDropdown from '../DatepickerDropdown';
+import DatepickerDropdown from '../../DatepickerDropdown';
 import moment from 'moment';
+import classnames from 'classnames';
 
-class Budget extends Component {
+class ProjectDate extends Component {
   constructor (props) {
     super(props);
 
@@ -20,9 +21,15 @@ class Budget extends Component {
     ReactTooltip.rebuild();
   }
 
+  componentWillReceiveProps = (newProps) => {
+    if (this.props.value !== newProps.value) {
+      this.setState({value: newProps.value});
+    }
+  }
+
   toggleEditing = () => {
     if (this.state.isEditing) {
-      this.saveBudget();
+      this.saveDate();
       this.stopEditing();
     } else {
       this.startEditing();
@@ -37,22 +44,23 @@ class Budget extends Component {
     this.setState({ isEditing: false });
   };
 
-  saveBudget = () => {
+  saveDate = () => {
     const { onEditSubmit } = this.props;
     onEditSubmit(this.state.value);
   };
 
-  onChangeValue = (e) => {
+  handleDayToChange = date => {
     this.setState({
-      value: e.target.value
+      value: moment(date).format()
     });
   };
 
   render () {
-    const { header, value } = this.props;
+    const { header, disabledDataRanges } = this.props;
+    const { value } = this.state;
     const formattedDay = moment(value).format('DD.MM.YYYY');
     return (
-      <div className={css.projectDate}>
+      <div className={classnames(css.PlanningEdit, css.projectDate)}>
         <h2>{header}</h2>
 
         <div className={css.editor}>
@@ -63,7 +71,7 @@ class Budget extends Component {
                 value={value ? formattedDay : ''}
                 onDayChange={this.handleDayToChange}
                 placeholder="Введите дату"
-                // disabledDataRanges={this.props.sprintsDateRanges}
+                disabledDataRanges={disabledDataRanges}
               />
               : <div>{value ? formattedDay : 'Дата не указана'}</div>
           }
@@ -93,12 +101,13 @@ class Budget extends Component {
   }
 }
 
-Budget.propTypes = {
+ProjectDate.propTypes = {
   header: PropTypes.string.isRequired,
   id: PropTypes.number,
   isProjectAdmin: PropTypes.bool,
   onEditSubmit: PropTypes.func.isRequired,
-  value: PropTypes.string
+  value: PropTypes.string,
+  disabledDataRanges: PropTypes.array.isRequired
 };
 
-export default Budget;
+export default ProjectDate;

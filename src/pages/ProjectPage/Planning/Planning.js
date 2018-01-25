@@ -12,8 +12,8 @@ import CreateTaskModal from '../../../components/CreateTaskModal';
 import SprintColumn from './SprintColumn';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import Budget from '../../../components/Budget';
-import ProjectDate from '../../../components/ProjectDate';
+import Budget from '../../../components/PlanningEdit/Budget';
+import ProjectDate from '../../../components/PlanningEdit/ProjectDate';
 import { createSprint } from '../../../actions/Sprint';
 import CreateSprintModal from '../CreateSprintModal';
 import SprintCard from '../../../components/SprintCard';
@@ -403,6 +403,44 @@ class Planning extends Component {
         <section>
           <hr />
           <br />
+          <Row className={css.editRow}>
+            <Col xs={12} sm={6}>
+              <ProjectDate
+                onEditSubmit={this.onProjectStartSubmit}
+                header='Начало проекта:'
+                value={createdAt}
+                isProjectAdmin={isProjectAdmin}
+                disabledDataRanges={[{after: new Date(completedAt)}]}
+              />
+            </Col>
+            <Col xs={12} sm={6}>
+              <ProjectDate
+                onEditSubmit={this.onProjectEndSubmit}
+                header='Конец проекта:'
+                value={completedAt}
+                isProjectAdmin={isProjectAdmin}
+                disabledDataRanges={[{before: new Date(createdAt)}]}
+              />
+            </Col>
+          </Row>
+          <Row className={css.editRow}>
+            <Col xs={12} sm={6}>
+              <Budget
+                onEditSubmit={this.onRiskBudgetSubmit}
+                header='Бюджет с рисковым резервом:'
+                value={riskBudget}
+                isProjectAdmin={isProjectAdmin}
+              />
+            </Col>
+            <Col xs={12} sm={6}>
+              <Budget
+                onEditSubmit={this.onBudgetSubmit}
+                header='Бюджет без рискового резерва:'
+                value={budget}
+                isProjectAdmin={isProjectAdmin}
+              />
+            </Col>
+          </Row>
           {
             isProjectAdmin
             ? <Button
@@ -456,42 +494,6 @@ class Planning extends Component {
               ? <CreateMilestoneModal onClose={this.handleCloseModalAddMilestone} />
               : null
             }
-            <Row className={css.budgetRow}>
-              <Col xs={12} sm={6}>
-                <Budget
-                  onEditSubmit={this.onRiskBudgetSubmit}
-                  header='Бюджет с рисковым резервом:'
-                  value={riskBudget}
-                  isProjectAdmin={isProjectAdmin}
-                />
-              </Col>
-              <Col xs={12} sm={6}>
-                <Budget
-                  onEditSubmit={this.onBudgetSubmit}
-                  header='Бюджет без рискового резерва:'
-                  value={budget}
-                  isProjectAdmin={isProjectAdmin}
-                />
-              </Col>
-            </Row>
-            <Row className={css.budgetRow}>
-              <Col xs={12} sm={6}>
-                <ProjectDate
-                  onEditSubmit={this.onProjectStartSubmit}
-                  header='Начало проекта:'
-                  value={createdAt}
-                  isProjectAdmin={isProjectAdmin}
-                />
-              </Col>
-              <Col xs={12} sm={6}>
-                <ProjectDate
-                  onEditSubmit={this.onProjectEndSubmit}
-                  header='Конец проекта:'
-                  value={completedAt}
-                  isProjectAdmin={isProjectAdmin}
-                />
-              </Col>
-            </Row>
             <Table
               entities={entities}
               typeIdHovered={this.state.typeIdHovered}

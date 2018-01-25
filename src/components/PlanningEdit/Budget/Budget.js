@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './Budget.scss';
-import { IconEdit, IconCheck } from '../Icons';
+import * as css from '../PlanningEdit.scss';
+import { IconEdit, IconCheck } from '../../Icons';
 import ReactTooltip from 'react-tooltip';
-import Input from '../Input';
-import { formatCurrency } from '../../utils/Currency';
+import Input from '../../Input';
+import { formatCurrency } from '../../../utils/Currency';
 
 class Budget extends Component {
   constructor (props) {
@@ -55,7 +55,7 @@ class Budget extends Component {
     const { header } = this.props;
 
     return (
-      <div className={css.budget}>
+      <div className={css.PlanningEdit}>
         <h2>{header}</h2>
 
         <div className={css.editor}>
