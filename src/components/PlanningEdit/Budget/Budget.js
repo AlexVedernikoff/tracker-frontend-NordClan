@@ -33,11 +33,15 @@ class Budget extends Component {
   };
 
   startEditing = () => {
-    this.setState({ isEditing: true });
+    this.setState({ isEditing: true }, () => {
+      ReactTooltip.hide();
+    });
   };
 
   stopEditing = () => {
-    this.setState({ isEditing: false });
+    this.setState({ isEditing: false }, () => {
+      ReactTooltip.hide();
+    });
   };
 
   saveBudget = () => {
