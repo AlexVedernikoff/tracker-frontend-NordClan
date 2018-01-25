@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import * as css from './SprintStartControl.scss';
 import { IconPlay, IconPause } from '../Icons';
 import { editSprint } from '../../actions/Sprint';
+import ReactTooltip from 'react-tooltip';
 
 
 class SprintEditModal extends Component {
@@ -13,6 +14,12 @@ class SprintEditModal extends Component {
     editSprint: PropTypes.func.isRequired,
     sprint: PropTypes.object.isRequired
   };
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.sprint.statusId !== this.props.sprint.statusId) {
+      ReactTooltip.hide();
+    }
+  }
 
   changeStatus = (sprint) => {
     return () => this.props.editSprint(sprint.id, sprint.statusId === 1 ? 2 : 1);
