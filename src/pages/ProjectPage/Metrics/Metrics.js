@@ -105,11 +105,11 @@ class Metrics extends Component {
     const isProjectAdmin = this.checkIsAdminInProject();
 
     /*Бюджет без рискового резерва*/
-    const projectBudgetMetrics = this.filterById(5, metrics);
+    const projectBudgetMetrics = this.filterById(6, metrics);
     const sprintsBudgetMetrics = this.filterById(30, metrics);
 
     /*Бюджет с рисковым резервом*/
-    const projectBudgetRisksMetrics = this.filterById(6, metrics);
+    const projectBudgetRisksMetrics = this.filterById(5, metrics);
     const sprintsBudgetRisksMetrics = this.filterById(31, metrics);
 
     /*Баги на проекте*/
@@ -122,43 +122,53 @@ class Metrics extends Component {
     const getCostByRoleMetrics = (role1, role2, role3, role4, role5, role6, role7, role8, role9, role10) => [
       {
         metrics: role1,
-        name: 'Account'
+        name: 'Account',
+        color: '#dcecc9'
       },
       {
         metrics: role2,
-        name: 'PM'
+        name: 'PM',
+        color: '#aadacc'
       },
       {
         metrics: role3,
-        name: 'UX'
+        name: 'UX',
+        color: '#78c6d0'
       },
       {
         metrics: role4,
-        name: 'Аналитик'
+        name: 'Аналитик',
+        color: '#48b3d3'
       },
       {
         metrics: role5,
-        name: 'Back'
+        name: 'Back',
+        color: '#3e94c0'
       },
       {
         metrics: role6,
-        name: 'Front'
+        name: 'Front',
+        color: '#3474ac'
       },
       {
         metrics: role7,
-        name: 'Mobile'
+        name: 'Mobile',
+        color: '#2a5599'
       },
       {
         metrics: role8,
-        name: 'TeamLead(Code review)'
+        name: 'TeamLead(Code review)',
+        color: '#203686'
       },
       {
         metrics: role9,
-        name: 'QA'
+        name: 'QA',
+        color: '#18216b'
       },
       {
         metrics: role10,
-        name: 'Unbillable'
+        name: 'Unbillable',
+        color: '#11174b'
       }
     ];
     const costByRolePercentMetrics = getCostByRoleMetrics(

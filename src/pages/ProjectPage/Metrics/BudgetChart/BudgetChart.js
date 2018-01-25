@@ -55,7 +55,7 @@ class BudgetChart extends Component {
     return {
       datasets: [
         this.makeIdealProjectBurndown(startDate, endDate, budget, riskBudget, isRisks),
-        this.makeProjectBurndown(projectBudgetMetrics),
+        this.makeProjectBurndown(projectBudgetMetrics, startDate, budget, riskBudget, isRisks),
         ...this.makeSprintsBurndowns(sprintsBudgetMetrics, sprints),
         ...this.makeSprintsIdealBurndowns(sprints, isRisks)
       ]
@@ -79,12 +79,15 @@ class BudgetChart extends Component {
     };
   };
 
-  makeProjectBurndown = (metrics) => {
+  makeProjectBurndown = (metrics, startDate, budget, riskBudget, isRisks) => {
     const burndown = metrics.map(metric => {
       return {
         x: metric.createdAt,
         y: +metric.value
       };
+    }).concat({
+      x: startDate,
+      y: isRisks ? riskBudget : budget
     }).sort(sortChartLineByDates);
     return {
       data: [...burndown],
