@@ -2,8 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import * as css from './UsersRoles.scss';
+import SelectDropdown from '../../components/SelectDropdown';
 
+import * as css from './UsersRoles.scss';
 import { getUsers, updateUserRole } from '../../actions/UsersRoles';
 
 class UsersRoles extends React.Component {
@@ -20,7 +21,7 @@ class UsersRoles extends React.Component {
 
   handleChangeStatus = (userId) => (event) => {
     const { users } = this.props;
-    const newUserStatus = event.target.value;
+    const newUserStatus = event.value;
     const userIndex = _.findIndex(users, { id: userId });
     const updatedUser = users[userIndex];
     updatedUser.globalRole = newUserStatus;
@@ -50,13 +51,25 @@ class UsersRoles extends React.Component {
       }
     ];
 
-    const options = statuses.map(status =>
-      (<option key={status.id} value={status.value}>{status.name}</option>));
+    const options = statuses.map(status => ({
+      value: status.value,
+      key: status.id,
+      label: status.name
+    }));
+
+      // (<option key={status.id} value={status.value}>{status.name}</option>)
 
     return (
-      <select value={globalRole} onChange={this.handleChangeStatus(userId)}>
-        {options}
-      </select>
+      <SelectDropdown
+        multi={false}
+        clearable={false}
+        value={globalRole}
+        onChange={this.handleChangeStatus(userId)}
+        options={options}
+        />
+      // <select value={globalRole} onChange={this.handleChangeStatus(userId)}>
+      //   {options}
+      // </select>
     );
   }
 
@@ -119,7 +132,7 @@ UsersRoles.propTypes = {
   getUsers: PropTypes.func.isRequired,
   isAdmin: PropTypes.bool.isRequired,
   updateUserRole: PropTypes.func,
-  users: PropTypes.array
+  users: PropTypes.array.isRequired
 };
 
 const mapStateToProps = state => ({
