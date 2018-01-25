@@ -4,21 +4,22 @@ import classnames from 'classnames';
 import { scroller, Element } from 'react-scroll';
 import * as css from './PerformerModal.scss';
 import Modal from '../Modal';
+import { IconClose, IconSearch } from '../Icons';
 
 class PerformerModal extends Component {
   constructor (props) {
     super(props);
-    let selectedIndex = 0;
-    this.props.users.forEach((user, i) => {
-      if (user.value === this.props.defaultUser) {
-        selectedIndex = i;
-      }
-    });
     const noPerfromerOption = {
       value: 0,
       label: 'Не выбрано'
     };
     this.userList = this.props.users.concat(noPerfromerOption);
+    let selectedIndex = this.userList.length - 1;
+    this.props.users.forEach((user, i) => {
+      if (user.value === this.props.defaultUser) {
+        selectedIndex = i;
+      }
+    });
     this.state = {
       performer: this.props.defaultUser,
       selectedIndex,
@@ -50,6 +51,17 @@ class PerformerModal extends Component {
   selectValue = (e, name) => {
     this.setState({ [name]: e });
   };
+
+  removeCurrentPerformer = () => {
+    this.setState({
+      searchText: '',
+      users: this.userList,
+      selectedIndex: this.userList.length - 1
+    }, () => {
+      scroller.scrollTo(this.state.users[this.state.selectedIndex].value.toString(),
+      { containerId: 'performerList' });
+    });
+  }
 
   onSearchTextChange = (e) => {
     const searchText = e.target.value;
@@ -114,15 +126,15 @@ class PerformerModal extends Component {
           <div className={css.header}>
             <h3>{title}</h3>
           </div>
+          <div className={css.currentPerformer}>
+            {users.length ? users[selectedIndex].label : null}
+            {users.length && (users[selectedIndex].value !== 0)
+              ? <div className={css.removeCurrentPerformer} onClick={this.removeCurrentPerformer}>
+                  <IconClose />
+                </div> : null
+            }
+          </div>
           <div className={css.inputWrapper}>
-            <div className={css.fakeInput}>
-              <span>
-                {searchText}
-              </span>
-              {/* <span>
-                {searchText}
-              </span> */}
-            </div>
             <input
               type="text"
               autoFocus
@@ -131,6 +143,9 @@ class PerformerModal extends Component {
               value={searchText}
               onChange={this.onSearchTextChange}
             />
+            <div className={css.searchIco}>
+              <IconSearch />
+            </div>
           </div>
           <div className={css.selectorContainer} ref={ref => {this.list = ref;}} id="performerList">
             {
