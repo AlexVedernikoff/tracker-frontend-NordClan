@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import * as css from './UsersRoles.scss';
 
 import { getUsers, updateUserRole } from '../../actions/UsersRoles';
 
@@ -64,7 +65,7 @@ class UsersRoles extends React.Component {
     const fullName = `${lastNameRu} ${firstNameRu}`;
     const status = this.renderStatusSelector(globalRole, id);
     return (
-      <tr key={id}>
+      <tr key={id} className={css.userRow}>
         <td>
           {fullName}
         </td>
@@ -77,12 +78,12 @@ class UsersRoles extends React.Component {
 
   renderTableUsers (users) {
     const tableHead = (
-      <tr>
+      <tr className={css.usersRolesHeader}>
         <th>
-          Имя пользователя
+          Пользователь
         </th>
         <th>
-          Статус
+          Роль
         </th>
       </tr>
     );
@@ -90,7 +91,7 @@ class UsersRoles extends React.Component {
       return this.renderRowUser(user);
     });
     return (
-      <table>
+      <table className={css.usersRolesTable}>
         <thead>
           {tableHead}
         </thead>
@@ -107,6 +108,7 @@ class UsersRoles extends React.Component {
     return isAdmin
     ? <div>
         <h1>Пользователи</h1>
+        <hr/>
         {tableUsers}
       </div>
     : null;
