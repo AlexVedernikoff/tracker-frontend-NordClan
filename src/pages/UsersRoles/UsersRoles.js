@@ -57,8 +57,6 @@ class UsersRoles extends React.Component {
       label: status.name
     }));
 
-      // (<option key={status.id} value={status.value}>{status.name}</option>)
-
     return (
       <SelectDropdown
         multi={false}
@@ -67,9 +65,6 @@ class UsersRoles extends React.Component {
         onChange={this.handleChangeStatus(userId)}
         options={options}
         />
-      // <select value={globalRole} onChange={this.handleChangeStatus(userId)}>
-      //   {options}
-      // </select>
     );
   }
 
