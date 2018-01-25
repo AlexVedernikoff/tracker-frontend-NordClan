@@ -27,9 +27,13 @@ class UsersRoles extends React.Component {
     updatedUser.globalRole = newUserStatus;
     const updatedUsers = [...users];
     updatedUsers[userIndex] = updatedUser;
+    const updatedUserData = {
+      id: updatedUser.id,
+      globalRole: updatedUser.globalRole
+    };
     this.setState({
       users
-    }, this.props.updateUserRole(updatedUser));
+    }, this.props.updateUserRole(updatedUserData));
   }
 
   renderStatusSelector (globalRole, userId) {
