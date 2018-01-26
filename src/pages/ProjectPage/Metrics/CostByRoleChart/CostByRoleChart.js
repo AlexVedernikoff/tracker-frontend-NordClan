@@ -65,8 +65,10 @@ class CostByRoleChart extends Component {
       }).sort(sortChartLineByDates);
       return {
         data: line,
-        label: `${role.name}`,
-        ...this.props.getBasicLineSettings()
+        label: role.name,
+        ...this.props.getBasicLineSettings(),
+        backgroundColor: role.color,
+        borderColor: role.color
       };
     });
   }

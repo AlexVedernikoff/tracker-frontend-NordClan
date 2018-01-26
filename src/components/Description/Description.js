@@ -31,6 +31,9 @@ class Description extends Component {
         text: nextProps.text
       });
     }
+    if (this.props.isEditing !== nextProps.isEditing) {
+      ReactTooltip.hide();
+    }
   }
 
   componentWillUnmount () {
