@@ -5,6 +5,7 @@ import Input from '../../../../components/Input';
 import { Line } from 'react-chartjs-2';
 import { connect } from 'react-redux';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
+import roundNum from '../../../../utils/roundNum';
 
 class BudgetChart extends Component {
   static propTypes = {
@@ -83,7 +84,7 @@ class BudgetChart extends Component {
     const burndown = metrics.map(metric => {
       return {
         x: metric.createdAt,
-        y: +metric.value
+        y: roundNum(+metric.value, 2)
       };
     }).concat({
       x: startDate,
@@ -122,7 +123,7 @@ class BudgetChart extends Component {
       const burndown = sprintMetrics.map(metric => {
         return {
           x: metric.createdAt,
-          y: +metric.value
+          y: roundNum(+metric.value, 2)
         };
       }).sort(sortChartLineByDates);
       return {
