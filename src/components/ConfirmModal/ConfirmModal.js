@@ -64,7 +64,7 @@ const ConfirmModal = props => {
   return (
     <ReactModal
       {...other}
-      onRequestClose={onRequestClose}
+      onRequestClose={onCancel}
       style={style || ReactModalStyles}
       closeTimeoutMS={200 || closeTimeoutMS}
     >
