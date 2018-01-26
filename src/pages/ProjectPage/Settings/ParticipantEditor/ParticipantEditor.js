@@ -35,13 +35,26 @@ class ParticipantEditor extends Component {
     this.searchOnChange = debounce(this.searchOnChange, 400);
   }
 
+  componentDidMount () {
+    addEventListener('keydown', this.handleEscClose, true);
+  }
+
   componentDidUpdate () {
     ReactTooltip.rebuild();
   }
 
   componentWillUnmount = () => {
     this.searchOnChange.cancel();
+    removeEventListener('keydown', this.handleEscClose);
   };
+
+  handleEscClose = (e) => {
+    const esc = (e.keyCode === 27);
+    if (esc && this.state.isModalOpenAddUser) {
+      e.preventDefault();
+      this.handleCloseModalAddUser();
+    }
+  }
 
   bindUser = () => {
     const {id, bindUserToProject} = this.props;
