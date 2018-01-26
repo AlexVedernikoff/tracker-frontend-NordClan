@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import * as css from './BugsChart.scss';
 import { Line } from 'react-chartjs-2';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
+import roundNum from '../../../../utils/roundNum';
 
 class BugsChart extends Component {
   static propTypes = {
@@ -52,7 +53,7 @@ class BugsChart extends Component {
     const line = metrics.map(metric => {
       return {
         x: metric.createdAt,
-        y: +metric.value
+        y: roundNum(+metric.value, 2)
       };
     }).sort(sortChartLineByDates);
     return {
