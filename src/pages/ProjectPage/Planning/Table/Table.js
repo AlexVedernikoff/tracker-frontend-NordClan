@@ -227,7 +227,7 @@ class Table extends React.Component {
 
   getMilestoneLabel(milestone) {
     const status = milestone.done ? 'Выполнено' : 'Не выполнено';
-    const date = moment(milestone.date).format('YYYY-MM-DD');
+    const date = moment(milestone.date).format('DD.MM');
     return `${milestone.name}. ${date}. ${status}`;
   }
 
