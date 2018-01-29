@@ -125,6 +125,8 @@ class SprintReport extends Component {
   }
 
   render () {
+    const dateFrom = this.state.selectedFrom ? moment(this.state.selectedFrom).format('DD.MM.YYYY') : '';
+    const dateTo = this.state.selectedTo ? moment(this.state.selectedTo).format('DD.MM.YYYY') : '';
     return (
         <div className={css.SprintReport}>
             <Row center="xs">
@@ -147,9 +149,9 @@ class SprintReport extends Component {
                 <Col>С: </Col>
                 <Col xs={2}>
                     <DatepickerDropdown
-                        name="dateTo"
+                        name="dateFrom"
                         format={dateFormat}
-                        value={this.state.selectedFrom}
+                        value={dateFrom}
                         onDayChange={this.handleDayFromChange}
                         placeholder="с"
                         disabledDataRanges={[{after: new Date(this.state.selectedTo)}]}
@@ -160,7 +162,7 @@ class SprintReport extends Component {
                     <DatepickerDropdown
                         name="dateTo"
                         format={dateFormat}
-                        value={this.state.selectedTo}
+                        value={dateTo}
                         onDayChange={this.handleDayToChange}
                         placeholder="по"
                         disabledDataRanges={[{before: new Date(this.state.selectedFrom)}]}

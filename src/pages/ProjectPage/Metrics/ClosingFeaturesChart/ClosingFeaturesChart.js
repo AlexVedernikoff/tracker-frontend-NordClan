@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { Line } from 'react-chartjs-2';
 import * as css from './ClosingFeaturesChart.scss';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
+import roundNum from '../../../../utils/roundNum';
+
 class ClosingFeaturesChart extends Component {
   static propTypes = {
     chartDefaultOptions: PropTypes.object,
@@ -51,7 +53,7 @@ class ClosingFeaturesChart extends Component {
     const line = metrics.map(metric => {
       return {
         x: metric.createdAt,
-        y: +metric.value
+        y: roundNum(+metric.value, 2)
       };
     }).sort(sortChartLineByDates);
     return {

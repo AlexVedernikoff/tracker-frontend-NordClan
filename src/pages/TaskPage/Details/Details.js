@@ -169,7 +169,7 @@ class Details extends Component {
         afterShow={this.onTooltipVisibleChange}
         getContent={() => <div> Загрузка... </div>}
       />;
-
+      
     return (
       <div className={css.detailsBlock}>
         <table className={css.detailTable}>
@@ -254,25 +254,23 @@ class Details extends Component {
                 />
               </td>
             </tr>
-            { task.factExecutionTime
-              ? <tr>
-                  <td>Потрачено:</td>
-                  <td>
-                    <span
-                      data-tip={!!Number(task.factExecutionTime)}
-                      data-place="right"
-                      data-for={this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? 'time' : 'notime'}
-                      key={this.state.tooltipKey}
-                      className={classnames({
-                        [css.alert]: true
-                      })}
-                    >
-                       {`${roundNum(task.factExecutionTime, 2)} ч.`}
-                    </span>
-                    {Number(task.factExecutionTime) ? executeTimeTooltip : null}
-                  </td>
-                </tr>
-              : null }
+            <tr>
+              <td>Потрачено:</td>
+              <td>
+                <span
+                  data-tip={!!Number(task.factExecutionTime)}
+                  data-place="right"
+                  data-for={this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? 'time' : 'notime'}
+                  key={this.state.tooltipKey}
+                  className={classnames({
+                    [css.alert]: true
+                  })}
+                >
+                    {`${task.factExecutionTime ? roundNum(task.factExecutionTime, 2) : 0} ч.`}
+                </span>
+                {Number(task.factExecutionTime) ? executeTimeTooltip : null}
+              </td>
+            </tr>
           </tbody>
         </table>
 

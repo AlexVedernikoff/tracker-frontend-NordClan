@@ -5,6 +5,7 @@ import Input from '../../../../components/Input';
 import { Line } from 'react-chartjs-2';
 import { connect } from 'react-redux';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
+import roundNum from '../../../../utils/roundNum';
 
 class BudgetChart extends Component {
   static propTypes = {
@@ -55,7 +56,7 @@ class BudgetChart extends Component {
     return {
       datasets: [
         this.makeIdealProjectBurndown(startDate, endDate, budget, riskBudget, isRisks),
-        this.makeProjectBurndown(projectBudgetMetrics),
+        this.makeProjectBurndown(projectBudgetMetrics, startDate, budget, riskBudget, isRisks),
         ...this.makeSprintsBurndowns(sprintsBudgetMetrics, sprints),
         ...this.makeSprintsIdealBurndowns(sprints, isRisks)
       ]
@@ -79,12 +80,15 @@ class BudgetChart extends Component {
     };
   };
 
-  makeProjectBurndown = (metrics) => {
+  makeProjectBurndown = (metrics, startDate, budget, riskBudget, isRisks) => {
     const burndown = metrics.map(metric => {
       return {
         x: metric.createdAt,
-        y: +metric.value
+        y: roundNum(+metric.value, 2)
       };
+    }).concat({
+      x: startDate,
+      y: isRisks ? riskBudget : budget
     }).sort(sortChartLineByDates);
     return {
       data: [...burndown],
@@ -119,7 +123,7 @@ class BudgetChart extends Component {
       const burndown = sprintMetrics.map(metric => {
         return {
           x: metric.createdAt,
-          y: +metric.value
+          y: roundNum(+metric.value, 2)
         };
       }).sort(sortChartLineByDates);
       return {

@@ -46,6 +46,12 @@ class ProjectTitle extends Component {
     window.addEventListener('click', this.outsideClickHandler);
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.titleIsEditing !== this.props.titleIsEditing) {
+      ReactTooltip.hide();
+    }
+  }
+
   componentDidUpdate () {
     ReactTooltip.rebuild();
   }
