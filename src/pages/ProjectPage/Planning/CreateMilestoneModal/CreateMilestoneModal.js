@@ -31,12 +31,20 @@ class CreateMilestoneModal extends Component {
   };
 
   handleDayChange = date => {
-    this.setState({ date: moment(date).format('YYYY-MM-DD') });
+    this.setState({ date: date ? moment(date).format('YYYY-MM-DD') : '' });
   };
 
   checkNullInputs = () => {
     return this.state.name.trim() && this.state.date;
   };
+
+  dateInputHandler = (e) => {
+    const inputValue = e.target.value;
+    const isValidValue = moment(inputValue, 'DD.MM.YYYY', true).isValid();
+    if (!isValidValue && this.state.date) {
+      this.setState({date: ''});
+    }
+  }
 
   createMilestone = e => {
     e.preventDefault();
@@ -99,6 +107,7 @@ class CreateMilestoneModal extends Component {
                   name="date"
                   value={formattedDay}
                   onDayChange={this.handleDayChange}
+                  onChange={this.dateInputHandler}
                   placeholder="Введите дату"
                 />
               </Col>
