@@ -92,11 +92,14 @@ class ActivityRow extends React.Component {
     if (!this.validateNumbers(value) || +value > 24) {
       return false;
     }
+
     this.setState((state) => {
       const timeCells = {
         ...state.timeCells
       };
+
       timeCells[i] = value;
+
       return {
         timeCells
       };
