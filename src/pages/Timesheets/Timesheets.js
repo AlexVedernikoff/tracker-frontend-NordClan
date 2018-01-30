@@ -34,7 +34,7 @@ class Timesheets extends React.Component {
 
   componentDidMount () {
     const { getTimesheets, userId, dateBegin, dateEnd } = this.props;
-    getTimesheets({ userId, dateBegin, dateEnd});
+    getTimesheets({userId, dateBegin, dateEnd});
   }
 
   toggleCalendar = () => {
@@ -105,7 +105,7 @@ class Timesheets extends React.Component {
           projectId: el.project.id,
           projectName: el.project.name,
           taskStatusId: el.taskStatusId,
-          sprintId: el.sprintId ? el.sprintId : null,
+          sprintId: el.sprint.id,
           sprint: el.task.sprint ? el.task.sprint : null
         });
       }
@@ -128,6 +128,7 @@ class Timesheets extends React.Component {
           timeSheets.push({ onDate: moment(startingDay).weekday(index).format(), spentTime: '0' });
         }
       }
+
       return { ...element, timeSheets };
     });
 
