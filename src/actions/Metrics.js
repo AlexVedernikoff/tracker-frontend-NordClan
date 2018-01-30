@@ -9,16 +9,16 @@ import {
 
 const getMetricsRequest = () => ({
   type: ProjectActions.GET_METRICS_REQUEST
-})
+});
 
 const getMetricsSuccess = (metrics) => ({
   type: ProjectActions.GET_METRICS_SUCCESS,
   metrics
-})
+});
 
 const getMetricsFailure = () => ({
   type: ProjectActions.GET_METRICS_FAILURE
-})
+});
 
 export const getMetrics = (data) => {
   return dispatch => dispatch({
@@ -31,6 +31,8 @@ export const getMetrics = (data) => {
     response: withFinishLoading(response => {
       dispatch(getMetricsSuccess(response.data));
     })(dispatch),
-    error: getMetricsFailure(dispatch)
+    error: withFinishLoading(() => {
+      dispatch(getMetricsFailure(dispatch));
+    })(dispatch)
   });
-}
+};
