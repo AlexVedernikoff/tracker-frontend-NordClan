@@ -50,14 +50,16 @@ export const getTimesheetsPlayerData = (startDate, endDate) => {
     response: withFinishLoading(response => {
       dispatch(playerDataReceived(response.data));
     })(dispatch),
-    error: playerDataReceived(dispatch)
+    error: withFinishLoading(() => {
+      dispatch(playerDataReceived(dispatch));
+    })(dispatch)
   });
 };
 
 export const updateDraft = (data, options) => {
   return dispatch => dispatch({
     type: REST_API,
-    url: `/draftsheet/`,
+    url: '/draftsheet/',
     method: PUT,
     body: { ...data },
     extra,
@@ -65,7 +67,9 @@ export const updateDraft = (data, options) => {
     response: withFinishLoading(response => {
       dispatch(playerTimesheetUpdateReceived(response.data));
     })(dispatch),
-    error: playerDataReceiveFailed(dispatch)
+    error: withFinishLoading(() => {
+      dispatch(playerDataReceiveFailed(dispatch));
+    })(dispatch)
   });
 };
 
@@ -80,7 +84,9 @@ export const updateTimesheet = (data) => {
     response: withFinishLoading(response => {
       dispatch(playerTimesheetUpdateReceived(response.data));
     })(dispatch),
-    error: playerDataReceiveFailed(dispatch)
+    error: withFinishLoading(() => {
+      dispatch(playerDataReceiveFailed(dispatch));
+    })(dispatch)
   });
 };
 
