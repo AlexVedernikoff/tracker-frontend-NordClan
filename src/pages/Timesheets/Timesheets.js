@@ -69,8 +69,8 @@ class Timesheets extends React.Component {
         return {
           ...timesheet,
           taskStatusId: timesheet.taskStatusId || defaultTaskStatusId
-        }
-      })
+        };
+      });
 
     //TODO важен порядок сложения списков
     const list = this.props.list.concat(tempTimesheetsList);
@@ -105,7 +105,7 @@ class Timesheets extends React.Component {
           projectId: el.project.id,
           projectName: el.project.name,
           taskStatusId: el.taskStatusId,
-          sprintId: el.sprint.id,
+          sprintId: el.task.sprint ? el.task.sprint.id : null,
           sprint: el.task.sprint ? el.task.sprint : null
         });
       }
