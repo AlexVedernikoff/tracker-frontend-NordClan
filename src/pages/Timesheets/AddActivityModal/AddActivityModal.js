@@ -172,6 +172,15 @@ class AddActivityModal extends Component {
     this.setState({selectedSprint: option});
   }
 
+  handleChangeActivity = (option) => {
+    if (!option) {
+      this.setState({'activityType': 0 },
+        () => this.props.changeActivityType(null));
+    } else {
+      this.changeItem(option, 'activityType');
+    }
+  }
+
   getSprintOptions = () => {
     const {sprints} = this.props;
     return sprints ? sprints.map(sprint => {
@@ -207,7 +216,7 @@ class AddActivityModal extends Component {
                   multi={false}
                   value={this.props.selectedActivityType}
                   placeholder="Тип активности"
-                  onChange={(option) => this.changeItem(option, 'activityType')}
+                  onChange={this.handleChangeActivity}
                   options={
                     this.props.activityTypes.length
                       ? this.props.activityTypes.map(
