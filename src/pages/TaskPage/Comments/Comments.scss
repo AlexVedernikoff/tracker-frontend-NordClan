@@ -142,7 +142,9 @@
     flex-wrap: nowrap;
     justify-content: space-between;
     flex-basis: 100%;
-
+    button {
+      margin-top: 20px;
+    }
     .answerSendTooltip {
       text-align: right;
       color: #678bad;
@@ -152,7 +154,6 @@
     }
   }
 }
-
 .noCommentsYet {
   text-align: center;
 }
