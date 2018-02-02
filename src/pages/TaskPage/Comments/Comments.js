@@ -18,6 +18,7 @@ import { connect } from 'react-redux';
 import * as css from './Comments.scss';
 import Comment from './Comment';
 import { history } from '../../../History';
+import Button from '../../../components/Button';
 import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
 
 const ENTER = 13;
@@ -112,9 +113,8 @@ class Comments extends Component {
   };
 
   publishComment = (evt) => {
-    const { ctrlKey, keyCode } = evt;
-
-    if (ctrlKey && keyCode === ENTER) {
+    const { ctrlKey, keyCode} = evt;
+    if (ctrlKey && keyCode === ENTER || evt.button === 0) {
       if (this.props.currentComment.id) {
         if (!Comment.isExpiredForUpdate(this.props.currentComment.createdAt)) {
           this.props.editComment(this.props.taskId, this.props.currentComment.id, this.props.currentComment.text);
@@ -167,6 +167,11 @@ class Comments extends Component {
               ref={(ref) => (this.reply = ref ? ref.refs.input : null)}
               value={this.props.currentComment.text}/>
             <div className={css.answerUnderline}>
+              <Button
+                onClick={this.publishComment}
+                text="Отправить"
+                type = 'green'
+                />
               {
                 this.props.currentComment.id
                   ? <div className={css.answerInfo}>
