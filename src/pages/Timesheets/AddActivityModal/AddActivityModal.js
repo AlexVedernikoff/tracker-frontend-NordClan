@@ -93,6 +93,9 @@ class AddActivityModal extends Component {
       startingDay
     } = this.props;
     const { selectedSprint } = this.state;
+    // ТШ должен создаваться в stop статусе
+    const checkPlayStatus = (status) => (status === 2 || status === 4 || status === 6);
+    const taskStatusId = selectedTask ? selectedTaskStatusId : null;
 
     const getSprint = () => {
       if (this.isNoTaskProjectActivity() && selectedSprint) {
@@ -112,7 +115,7 @@ class AddActivityModal extends Component {
         name: selectedTask.label,
         sprint: getSprint()
       } : null,
-      taskStatusId: selectedTask ? selectedTaskStatusId : null,
+      taskStatusId: checkPlayStatus(taskStatusId) ? taskStatusId + 1 : taskStatusId,
       typeId: selectedActivityType,
       spentTime: '0',
       sprintId: getSprint() ? getSprint().id : null,
@@ -233,8 +236,7 @@ class AddActivityModal extends Component {
             ? [
               <label key="onlyMineLabel" className={css.formField}>
                 <Row>
-                  <Col xs={12} sm={formLayout.left}>
-                  </Col>
+                  <Col xs={12} sm={formLayout.left} />
                   <Col xs={12} sm={formLayout.right}>
                     <Checkbox
                       checked={this.state.isOnlyMine}
