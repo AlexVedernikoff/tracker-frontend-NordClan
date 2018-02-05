@@ -82,19 +82,19 @@ const settings = {
       debug: false
     }),
     new CopyWebpackPlugin([{ from: './src/www', to: './' }]),
-    new webpack.optimize.UglifyJsPlugin({
-      beautify: false,
-      comments: false,
-      compress: {
-        sequences: true,
-        booleans: true,
-        loops: true,
-        unused: true,
-        warnings: false,
-        drop_console: true,
-        unsafe: true
-      }
-    }),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   beautify: false,
+    //   comments: false,
+    //   compress: {
+    //     sequences: true,
+    //     booleans: true,
+    //     loops: true,
+    //     unused: true,
+    //     warnings: false,
+    //     drop_console: true,
+    //     unsafe: true
+    //   }
+    // }),
     new webpack.optimize.ModuleConcatenationPlugin()
   ]
 };
