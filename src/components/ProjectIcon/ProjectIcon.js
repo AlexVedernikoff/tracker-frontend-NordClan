@@ -12,22 +12,21 @@ const ProjectIcon = props => {
     return [0.299 * r, 0.587 * g, 0.114 * b].reduce((a, с) => a + с) / 255;
   };
 
-  const backColor = parseInt(
+  const backColor = (parseInt(
     btoa(encodeURI(name))
       .toLowerCase()
-      .replace(/[^a-z0-9]/, ''),
+      .replace(/[^a-z0-9]/, '').substr(0, 6),
     36
-  )
+  ) * 100000)
     .toString(16)
     .substr(0, 6)
     .padStart(6, '8');
 
-
-  const fontColor = hexToLuma(backColor) > 0.5 ? '#333' : '#fafafa';
   const divStyle = {
     backgroundColor: `#${backColor}`,
-    color: fontColor
+    color: hexToLuma(backColor) > 0.5 ? '#ааа' : '#fafafa'
   };
+  console.log(divStyle.fontColor);
 
   return (
     <div className={css.projectIcon} style={divStyle}>
