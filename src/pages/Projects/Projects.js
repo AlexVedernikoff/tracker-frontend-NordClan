@@ -238,14 +238,14 @@ class Projects extends Component {
       ? moment(this.state.dateTo).format('DD.MM.YYYY')
       : '';
     /*const isVisor = this.props.globalRole === VISOR;*/
-    const isAmin = this.props.globalRole === ADMIN;
+    const isAdmin = this.props.globalRole === ADMIN;
     return (
       <div>
         <section>
           <header className={css.title}>
             <h1 className={css.title}>Мои проекты</h1>
             {
-              isAmin
+              isAdmin
                 ? <Button
                   onClick={this.handleModal}
                   text="Создать проект"
