@@ -16,7 +16,7 @@ before_script:
   - export TAG="${CI_SHORT_REF_NAME}-${CI_COMMIT_SHA:0:8}"
 
 build_fe:
-  image: node:6-alpine
+  image: node:8-alpine
   stage: build
   script:
     - npm install
