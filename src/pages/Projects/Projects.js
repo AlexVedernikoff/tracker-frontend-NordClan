@@ -159,7 +159,7 @@ class Projects extends Component {
     const { target } = event;
     const { name } = event.target;
     this.setState({
-      [name]: target.value
+      [name]: target.value.trim()
     });
   };
 
