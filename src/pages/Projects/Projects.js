@@ -21,7 +21,7 @@ import getProjects, {
   closeCreateProjectModal
 } from '../../actions/Projects';
 import { getErrorMessageByType } from '../../utils/ErrorMessages';
-import { VISOR } from '../../constants/Roles';
+import { VISOR, ADMIN } from '../../constants/Roles';
 
 import 'moment/locale/ru';
 
@@ -229,7 +229,6 @@ class Projects extends Component {
 
     return null;
   };
-
   render () {
     const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
     const formattedDayFrom = this.state.dateFrom
@@ -238,14 +237,15 @@ class Projects extends Component {
     const formattedDayTo = this.state.dateTo
       ? moment(this.state.dateTo).format('DD.MM.YYYY')
       : '';
-    const isVisor = this.props.globalRole === VISOR;
+    /*const isVisor = this.props.globalRole === VISOR;*/
+    const isAmin = this.props.globalRole === ADMIN;
     return (
       <div>
         <section>
           <header className={css.title}>
             <h1 className={css.title}>Мои проекты</h1>
             {
-              !isVisor
+              isAmin
                 ? <Button
                   onClick={this.handleModal}
                   text="Создать проект"
@@ -351,7 +351,6 @@ class Projects extends Component {
     );
   }
 }
-
 Projects.propTypes = {
   closeCreateProjectModal: PropTypes.func.isRequired,
   getProjects: PropTypes.func.isRequired,
