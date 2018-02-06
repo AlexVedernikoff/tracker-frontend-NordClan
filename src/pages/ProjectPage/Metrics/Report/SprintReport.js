@@ -130,11 +130,11 @@ class SprintReport extends Component {
     return (
         <div className={css.SprintReport}>
             <Row center="xs">
-                <Col xs={3}><h2>Выгрузка отчёта</h2></Col>
+                <Col md={3} xs={12}><h2>Выгрузка отчёта</h2></Col>
             </Row>
-            <Row>
+            <Row className = {css.modile_style}>
                 <Col>Спринт: </Col>
-                <Col xs={4}>
+                <Col md={4} xs={12}>
                     <SelectDropdown
                         name="sprint"
                         placeholder="Выбирите спринт..."
@@ -145,9 +145,8 @@ class SprintReport extends Component {
                         options={this.getSelectOptions()}
                     />
                 </Col>
-                <Col xs></Col>
                 <Col>С: </Col>
-                <Col xs={2}>
+                <Col md={2} xs={6}>
                     <DatepickerDropdown
                         name="dateFrom"
                         format={dateFormat}
@@ -158,7 +157,7 @@ class SprintReport extends Component {
                     />
                 </Col>
                 <Col>По: </Col>
-                <Col xs={2}>
+                <Col md={2} xs={4}>
                     <DatepickerDropdown
                         name="dateTo"
                         format={dateFormat}
@@ -168,9 +167,8 @@ class SprintReport extends Component {
                         disabledDataRanges={[{before: new Date(this.state.selectedFrom)}]}
                     />
                 </Col>
-                <Col xs></Col>
-                <Col xs={2}>
-                    <a className={this.isRangeValid() ? '' : css.disabled}
+                <Col md={2}>
+                    <a className={this.isRangeValid() ? css.downLoad : css.disabled}
                        href={`${API_URL}/project/${this.props.project.id}/reports/period${this.getQueryParams()}`}>
                       Выгрузить отчёт
                     </a>

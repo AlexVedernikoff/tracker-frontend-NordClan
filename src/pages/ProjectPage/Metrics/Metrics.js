@@ -237,7 +237,7 @@ class Metrics extends Component {
           {isProjectAdmin ? <div>
             <h2>Метрики по проекту</h2>
             <StartEndDates startDate={this.startDate()} endDate={this.endDate()}/>
-            <Row>
+            <Row className = {css.rowBorder}>
               <Col xs={12} md={10} mdOffset={1} lg={6} lgOffset={0}>
                 <BudgetChart
                   startDate={this.startDate()}
@@ -261,7 +261,7 @@ class Metrics extends Component {
                 />
               </Col>
             </Row>
-            <Row>
+            <Row className = {css.rowBorder}>
               <Col xs={12} md={10} mdOffset={1} lg={8} lgOffset={2} >
                 <BugsChart
                   chartDefaultOptions={chartDefaultOptions}
@@ -272,7 +272,7 @@ class Metrics extends Component {
                 />
               </Col>
             </Row>
-            <Row>
+            <Row className = {css.rowBorder}>
               <Col xs={12} md={10} mdOffset={1} lg={8} lgOffset={2} >
                 <CostByRoleChart
                   chartDefaultOptions={chartDefaultOptions}
