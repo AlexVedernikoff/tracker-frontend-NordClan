@@ -70,6 +70,7 @@ export const doAuthentication = ({ username, password }) => {
       .then(response => {
         if (response && response.status === 200) {
           dispatch(authenticationReceived(response.data.user));
+          dispatch(getTimesheetsPlayerData(startOfCurrentWeek, endOfCurrentWeek));
         }
       });
   };
