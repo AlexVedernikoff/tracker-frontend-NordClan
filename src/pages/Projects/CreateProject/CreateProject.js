@@ -33,7 +33,10 @@ class CreateProject extends Component {
     return (
       <Modal
         isOpen={isOpen}
-        onRequestClose={onRequestClose}
+        onRequestClose={() => {
+          this.validator.resetTouched();
+          onRequestClose();
+        }}
         contentLabel="Modal"
       >
         <form className={css.createProjectForm} onSubmit={this.props.onSubmit}>

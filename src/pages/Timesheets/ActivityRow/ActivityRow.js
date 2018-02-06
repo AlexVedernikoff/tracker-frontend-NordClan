@@ -35,20 +35,32 @@ class ActivityRow extends React.Component {
     this.updateTimesheet = _.debounce(this.updateTimesheet, debounceTime);
     this.deleteTimesheets = _.debounce(this.deleteTimesheets, debounceTime);
 
+    this.state = {
+      isOpen: false,
+      timeCells: this.getTimeCells(props.item.timeSheets)
+    };
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (this.props.item !== nextProps.item) {
+      const timeCells = this.getTimeCells(nextProps.item.timeSheets);
+      this.setState({
+        timeCells
+      });
+    }
+  }
+
+  getTimeCells = (timeSheets) => {
     const timeCells = {};
-    _.forEach(props.item.timeSheets, (tsh, i) => {
+    _.forEach(timeSheets, (tsh, i) => {
       if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
         timeCells[i] = roundNum(tsh.spentTime, 2);
       } else {
         timeCells[i] = 0;
       }
     });
-
-    this.state = {
-      isOpen: false,
-      timeCells
-    };
-  }
+    return timeCells;
+  };
 
   createTimesheet = (i) => {
     const { item, userId, startingDay } = this.props;
@@ -60,7 +72,8 @@ class ActivityRow extends React.Component {
       typeId: item.id ? '1' : item.typeId,
       spentTime: +value,
       onDate: moment(startingDay).weekday(i).format('YYYY-MM-DD'),
-      projectId: item.projectId
+      projectId: item.projectId,
+      sprintId: item.sprintId ? item.sprintId : null
     }, userId, startingDay);
   };
 
@@ -91,11 +104,14 @@ class ActivityRow extends React.Component {
     if (!this.validateNumbers(value) || +value > 24) {
       return false;
     }
+
     this.setState((state) => {
       const timeCells = {
         ...state.timeCells
       };
+
       timeCells[i] = value;
+
       return {
         timeCells
       };
@@ -116,7 +132,8 @@ class ActivityRow extends React.Component {
       comment: text,
       spentTime: 0,
       onDate: moment(startingDay).weekday(i).format('YYYY-MM-DD'),
-      projectId: item.projectId
+      projectId: item.projectId,
+      sprintId: item.sprintId ? item.sprintId : null
     }, userId, startingDay);
   };
 
@@ -215,7 +232,6 @@ class ActivityRow extends React.Component {
     const totalTime = roundNum(_.sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
     const timeSheetIds = _.remove(item.timeSheets.map(tsh => tsh.id), tsh => tsh);
     const canDeleteRow = !!item.timeSheets.filter(tsh => tsh.id && tsh.statusId !== 3 && tsh.statusId !== 4).length;
-
     const timeCells = item.timeSheets.map((tsh, i) => {
       const isCellDisabled = tsh.statusId === 3 || tsh.statusId === 4;
 
@@ -275,13 +291,13 @@ class ActivityRow extends React.Component {
         );
       }
     });
-
     return (
       <tr className={css.taskRow}>
         <td>
           <div className={css.taskCard}>
             <div className={css.meta}>
               {item.projectName ? <span>{item.projectName}</span> : null}
+              {item.sprint ? <span>{item.sprint.name}</span> : null}
               {status ? <span>{status.name}</span> : null}
             </div>
             <div>

@@ -27,8 +27,7 @@ class SingleComment extends React.Component {
 
   handleClickOutside = () => {
     this.setState({
-      isOpen: false,
-      text: this.props.comment || ''
+      isOpen: false
     });
   };
 

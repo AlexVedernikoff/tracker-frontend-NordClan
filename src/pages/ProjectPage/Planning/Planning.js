@@ -12,7 +12,8 @@ import CreateTaskModal from '../../../components/CreateTaskModal';
 import SprintColumn from './SprintColumn';
 import { connect } from 'react-redux';
 import moment from 'moment';
-
+import Budget from '../../../components/PlanningEdit/Budget';
+import ProjectDate from '../../../components/PlanningEdit/ProjectDate';
 import { createSprint } from '../../../actions/Sprint';
 import CreateSprintModal from '../CreateSprintModal';
 import SprintCard from '../../../components/SprintCard';
@@ -20,7 +21,7 @@ import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { editSprint } from '../../../actions/Sprint';
 import { editMilestone } from '../../../actions/Milestone';
-import { openCreateTaskModal, getProjectInfo } from '../../../actions/Project';
+import { openCreateTaskModal, getProjectInfo, changeProject } from '../../../actions/Project';
 import SprintEditModal from '../../../components/SprintEditModal';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 import { IconEdit } from '../../../components/Icons';
@@ -36,12 +37,15 @@ class Planning extends Component {
     SprintIsEditing: PropTypes.bool,
     changeTask: PropTypes.func.isRequired,
     createSprint: PropTypes.func.isRequired,
+    changeProject: PropTypes.func,
     editSprint: PropTypes.func.isRequired,
     getProjectInfo: PropTypes.func.isRequired,
     getPlanningTasks: PropTypes.func.isRequired,
     isCreateTaskModalOpen: PropTypes.bool,
     lastCreatedTask: PropTypes.object,
     leftColumnTasks: PropTypes.array,
+    createdAt: PropTypes.string,
+    completedAt: PropTypes.string,
     openCreateTaskModal: PropTypes.func,
     params: PropTypes.object,
     project: PropTypes.object,
@@ -305,8 +309,47 @@ class Planning extends Component {
     const startDay2 = entity2.factStartDate || entity2.date;
 
     return new Date(startDay1) - new Date(startDay2);
-  }
+  };
 
+  onProjectStartSubmit = (createdAt) => {
+    this.props.changeProject(
+      {
+        id: this.props.project.id,
+        createdAt
+      },
+      'createdAt'
+    );
+  };
+
+  onProjectEndSubmit = (completedAt) => {
+    this.props.changeProject(
+      {
+        id: this.props.project.id,
+        completedAt
+      },
+      'completedAt'
+    );
+  };
+
+  onBudgetSubmit = (budget) => {
+    this.props.changeProject(
+      {
+        id: this.props.project.id,
+        budget
+      },
+      'budget'
+    );
+  };
+
+  onRiskBudgetSubmit = (riskBudget) => {
+    this.props.changeProject(
+      {
+        id: this.props.project.id,
+        riskBudget
+      },
+      'riskBudget'
+    );
+  };
   render () {
     const isProjectAdmin = this.checkIsAdminInProject();
     const isVisor = this.props.user.globalRole === VISOR;
@@ -345,17 +388,59 @@ class Planning extends Component {
 
     const filteredMilestones = this.props.milestones.filter(milestone => {
       return +moment(milestone.date).format('YYYY') === this.state.grantActiveYear;
-    })
+    });
 
     const entities = filteredSprints
       .concat(filteredMilestones)
-      .sort(this.sortEntities)
+      .sort(this.sortEntities);
+    
+    const budget = this.props.project.budget;
+    const riskBudget = this.props.project.riskBudget;
 
+    const { createdAt, completedAt } = this.props;
     return (
       <div>
         <section>
-          <br />
           <hr />
+          <br />
+          <Row className={css.editRow}>
+            <Col xs={12} sm={6}>
+              <ProjectDate
+                onEditSubmit={this.onProjectStartSubmit}
+                header='Начало проекта:'
+                value={createdAt}
+                isProjectAdmin={isProjectAdmin}
+                disabledDataRanges={[{after: new Date(completedAt)}]}
+              />
+            </Col>
+            <Col xs={12} sm={6}>
+              <ProjectDate
+                onEditSubmit={this.onProjectEndSubmit}
+                header='Конец проекта:'
+                value={completedAt}
+                isProjectAdmin={isProjectAdmin}
+                disabledDataRanges={[{before: new Date(createdAt)}]}
+              />
+            </Col>
+          </Row>
+          <Row className={css.editRow}>
+            <Col xs={12} sm={6}>
+              <Budget
+                onEditSubmit={this.onRiskBudgetSubmit}
+                header='Бюджет с рисковым резервом:'
+                value={riskBudget}
+                isProjectAdmin={isProjectAdmin}
+              />
+            </Col>
+            <Col xs={12} sm={6}>
+              <Budget
+                onEditSubmit={this.onBudgetSubmit}
+                header='Бюджет без рискового резерва:'
+                value={budget}
+                isProjectAdmin={isProjectAdmin}
+              />
+            </Col>
+          </Row>
           {
             isProjectAdmin
             ? <Button
@@ -566,6 +651,8 @@ const mapStateToProps = state => ({
   milestones: state.Project.project.milestones,
   sprints: state.Project.project.sprints,
   project: state.Project.project,
+  createdAt: state.Project.project.createdAt,
+  completedAt: state.Project.project.completedAt,
   lastCreatedTask: state.Project.lastCreatedTask,
   leftColumnTasks: state.PlanningTasks.leftColumnTasks,
   rightColumnTasks: state.PlanningTasks.rightColumnTasks,
@@ -575,6 +662,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+  changeProject,
   getPlanningTasks,
   editSprint,
   editMilestone,

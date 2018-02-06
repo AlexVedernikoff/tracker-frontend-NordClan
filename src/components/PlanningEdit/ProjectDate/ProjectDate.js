@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './Budget.scss';
-import { IconEdit, IconCheck } from '../Icons';
+import * as css from '../PlanningEdit.scss';
+import { IconEdit, IconCheck } from '../../Icons';
 import ReactTooltip from 'react-tooltip';
-import Input from '../Input';
-import { formatCurrency } from '../../utils/Currency';
+import DatepickerDropdown from '../../DatepickerDropdown';
+import moment from 'moment';
+import classnames from 'classnames';
 
-class Budget extends Component {
+class ProjectDate extends Component {
   constructor (props) {
     super(props);
 
@@ -16,16 +17,19 @@ class Budget extends Component {
     };
   }
 
-  componentDidMount () {
-  }
-
   componentDidUpdate () {
     ReactTooltip.rebuild();
   }
 
+  componentWillReceiveProps = (newProps) => {
+    if (this.props.value !== newProps.value) {
+      this.setState({value: newProps.value});
+    }
+  }
+
   toggleEditing = () => {
     if (this.state.isEditing) {
-      this.saveBudget();
+      this.saveDate();
       this.stopEditing();
     } else {
       this.startEditing();
@@ -33,40 +37,47 @@ class Budget extends Component {
   };
 
   startEditing = () => {
-    this.setState({ isEditing: true });
+    this.setState({ isEditing: true }, () => {
+      ReactTooltip.hide();
+    });
   };
 
   stopEditing = () => {
-    this.setState({ isEditing: false });
+    this.setState({ isEditing: false }, () => {
+      ReactTooltip.hide();
+    });
   };
 
-  saveBudget = () => {
+  saveDate = () => {
     const { onEditSubmit } = this.props;
     onEditSubmit(this.state.value);
   };
 
-  onChangeValue = (e) => {
+  handleDayToChange = date => {
     this.setState({
-      value: parseFloat(parseFloat(e.target.value).toFixed(2))
+      value: moment(date).format()
     });
   };
 
   render () {
-    const { header } = this.props;
-
+    const { header, disabledDataRanges } = this.props;
+    const { value } = this.state;
+    const formattedDay = moment(value).format('DD.MM.YYYY');
     return (
-      <div className={css.budget}>
+      <div className={classnames(css.PlanningEdit, css.projectDate)}>
         <h2>{header}</h2>
 
         <div className={css.editor}>
           {
             this.state.isEditing
-              ? <Input
-                type='number'
-                defaultValue={this.props.value}
-                onChange={this.onChangeValue}
+              ? <DatepickerDropdown
+                name="date"
+                value={value ? formattedDay : ''}
+                onDayChange={this.handleDayToChange}
+                placeholder="Введите дату"
+                disabledDataRanges={disabledDataRanges}
               />
-              : <div>{formatCurrency(this.props.value)}</div>
+              : <div>{value ? formattedDay : 'Дата не указана'}</div>
           }
         </div>
 
@@ -94,12 +105,13 @@ class Budget extends Component {
   }
 }
 
-Budget.propTypes = {
+ProjectDate.propTypes = {
   header: PropTypes.string.isRequired,
   id: PropTypes.number,
   isProjectAdmin: PropTypes.bool,
   onEditSubmit: PropTypes.func.isRequired,
-  value: PropTypes.number
+  value: PropTypes.string,
+  disabledDataRanges: PropTypes.array.isRequired
 };
 
-export default Budget;
+export default ProjectDate;

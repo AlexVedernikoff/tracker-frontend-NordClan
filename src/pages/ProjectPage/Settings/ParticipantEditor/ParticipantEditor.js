@@ -21,9 +21,11 @@ class ParticipantEditor extends Component {
     this.state = {
       isModalOpenAddUser: false,
       participant: null,
+      roles: [],
       participants: []
     };
     this.ROLES_FULL_NAME = ['Account', 'PM', 'UX', 'Analyst', 'Back', 'Front', 'Mobile', 'TeamLead', 'QA', 'Unbillable'];
+    this.ROLES_ID = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
     this.roleRights = {
       fullAccess: 'Полный доступ к проекту. <br/>Доступны все действия на уровне проекта: <br/>Ведение задач, планирование, настройки проекта и команды, аналитика <br/>Полная рассылка по проекту.',
       devAccess: 'Ограниченный доступ к проекту. <br/>Доступны действия на уровне задач: <br/>Назначение задачи, новый комментарий в задаче, ответ на комментарий, изменение статуса<br/>Ограниченная рассылка.',
@@ -33,22 +35,42 @@ class ParticipantEditor extends Component {
     this.searchOnChange = debounce(this.searchOnChange, 400);
   }
 
+  componentDidMount () {
+    addEventListener('keydown', this.handleEscClose, true);
+  }
+
   componentDidUpdate () {
     ReactTooltip.rebuild();
   }
 
   componentWillUnmount = () => {
     this.searchOnChange.cancel();
+    removeEventListener('keydown', this.handleEscClose);
   };
 
+  handleEscClose = (e) => {
+    const esc = (e.keyCode === 27);
+    if (esc && this.state.isModalOpenAddUser) {
+      e.preventDefault();
+      this.handleCloseModalAddUser();
+    }
+  }
+
   bindUser = () => {
-    this.setState({ isModalOpenAddUser: false });
-    this.setState({participants: []});
-    this.setState({participant: null});
-    this.props.bindUserToProject(
-      this.props.id,
-      this.state.participant.value
+    const {id, bindUserToProject} = this.props;
+    const {participant, roles} = this.state;
+    const rolesIds = roles.map(role => role.value).join(',');
+    bindUserToProject(
+      id,
+      participant.value,
+      rolesIds
     );
+    this.setState({
+      roles: [],
+      isModalOpenAddUser: false,
+      participants: [],
+      participant: null
+    });
   };
 
   searchOnChange = (name) => {
@@ -83,8 +105,17 @@ class ParticipantEditor extends Component {
     }));
   };
 
-  selectValue = (e) => {
-    this.setState({participant: e});
+  getRolesOptions = () => {
+    return this.ROLES_FULL_NAME.map((role, i) => ({
+      value: this.ROLES_ID[i],
+      label: role
+    }));
+  }
+
+  selectNewParticipantValue = (key) => {
+    return (option) => {
+      this.setState({[key]: option});
+    };
   };
 
   getRoleRights = (role, rights) => {
@@ -105,8 +136,11 @@ class ParticipantEditor extends Component {
   };
 
   handleCloseModalAddUser = () => {
-    this.setState({ isModalOpenAddUser: false });
-    this.setState({participants: []});
+    this.setState({
+      isModalOpenAddUser: false,
+      participants: [],
+      roles: []
+    });
   };
 
   checkIsAdminInProject = () => {
@@ -173,22 +207,33 @@ class ParticipantEditor extends Component {
             >
               <div className={css.changeStage}>
                 <h3>Добавление нового участника</h3>
-                <div className={css.modalLine}>
+                <div className={css.modalContainer}>
                   <SelectDropdown
                     name="member"
-                    placeholder="Введите имя участника..."
+                    placeholder="Введите имя участника"
                     multi={false}
                     value={this.state.participant}
-                    onChange={e => this.selectValue(e)}
+                    onChange={this.selectNewParticipantValue('participant')}
                     onInputChange={this.searchOnChange}
                     noResultsText="Нет результатов"
                     options={this.getUsers()}
                     autofocus
                   />
+                  <SelectDropdown
+                    name="roles"
+                    placeholder="Введите роль участника"
+                    multi
+                    value={this.state.roles}
+                    onChange={this.selectNewParticipantValue('roles')}
+                    noResultsText="Нет результатов"
+                    backspaceToRemoveMessage={''}
+                    options={this.getRolesOptions()}
+                  />
                   <Button
                     type="green"
                     text="Добавить"
                     onClick={this.bindUser}
+                    disabled={!(this.state.participant && this.state.roles.length)}
                   />
                 </div>
               </div>

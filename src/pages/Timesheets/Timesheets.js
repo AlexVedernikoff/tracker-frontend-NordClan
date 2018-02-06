@@ -34,7 +34,7 @@ class Timesheets extends React.Component {
 
   componentDidMount () {
     const { getTimesheets, userId, dateBegin, dateEnd } = this.props;
-    getTimesheets({ userId, dateBegin, dateEnd});
+    getTimesheets({userId, dateBegin, dateEnd});
   }
 
   toggleCalendar = () => {
@@ -64,14 +64,13 @@ class Timesheets extends React.Component {
     const hasEnableTs = !!this.props.list.filter(tsh => tsh.statusId !== 3 && tsh.statusId !== 4).length;
     const countTsWithTime = this.props.list.filter(tsh => tsh.spentTime !== 0).length;
     const defaultTaskStatusId = 2;
-
     const tempTimesheetsList = tempTimesheets
       .map(timesheet => {
         return {
           ...timesheet,
           taskStatusId: timesheet.taskStatusId || defaultTaskStatusId
-        }
-      })
+        };
+      });
 
     //TODO важен порядок сложения списков
     const list = this.props.list.concat(tempTimesheetsList);
@@ -105,7 +104,9 @@ class Timesheets extends React.Component {
           name: el.task.name,
           projectId: el.project.id,
           projectName: el.project.name,
-          taskStatusId: el.taskStatusId
+          taskStatusId: el.taskStatusId,
+          sprintId: el.task.sprint ? el.task.sprint.id : null,
+          sprint: el.task.sprint ? el.task.sprint : null
         });
       }
       return res;
@@ -127,6 +128,7 @@ class Timesheets extends React.Component {
           timeSheets.push({ onDate: moment(startingDay).weekday(index).format(), spentTime: '0' });
         }
       }
+
       return { ...element, timeSheets };
     });
 
@@ -150,7 +152,9 @@ class Timesheets extends React.Component {
         res.push({
           typeId: el.typeId,
           projectName: el.project ? el.project.name : 'Без проекта',
-          projectId: el.project ? el.project.id : 0
+          projectId: el.project ? el.project.id : 0,
+          sprintId: el.sprintId ? el.sprintId : null,
+          sprint: el.sprint ? el.sprint : null
         });
       }
       return res;

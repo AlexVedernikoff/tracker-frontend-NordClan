@@ -324,14 +324,14 @@ class AgileBoard extends Component {
 
   getSprintTime = (sprintId) => {
     if (!sprintId) return false;
-    let currentSprint;
+    let currentSprint = {};
     this.props.sprints.forEach(sprint => {
       if (sprint.id === sprintId) {
         currentSprint = sprint;
       }
     });
     return `${currentSprint.spentTime || 0} / ${currentSprint.allottedTime || 0}`;
-  }
+  };
 
   getAllTags = () => {
     let allTags = this.props.sprintTasks.reduce((arr, task) => {

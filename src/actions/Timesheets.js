@@ -25,19 +25,6 @@ const successTimesheetsRequest = (data) => ({
   data
 });
 
-export const getTimesheets = (params) => {
-  return dispatch => dispatch({
-    type: REST_API,
-    url: '/timesheet',
-    method: GET,
-    body: { params },
-    extra,
-    start: withStartLoading(startTimesheetsRequest, true)(dispatch),
-    response: withFinishLoading(response => successTimesheetsRequest(response.data), true)(dispatch),
-    error: defaultErrorHandler(dispatch)
-  });
-};
-
 const startCreateTimesheetRequest = () => ({
   type: TimesheetsActions.CREATE_TIMESHEET_START
 });
@@ -65,6 +52,19 @@ const successDeleteTimesheetRequest = (timesheet) => ({
   timesheet
 });
 
+export const getTimesheets = (params) => {
+  return dispatch => dispatch({
+    type: REST_API,
+    url: '/timesheet',
+    method: GET,
+    body: { params },
+    extra,
+    start: withStartLoading(startTimesheetsRequest, true)(dispatch),
+    response: withFinishLoading(response => successTimesheetsRequest(response.data), true)(dispatch),
+    error: defaultErrorHandler(dispatch)
+  });
+};
+
 export const updateTimesheet = (data, userId, startingDay) => {
   return dispatch => dispatch({
     type: REST_API,
@@ -73,9 +73,7 @@ export const updateTimesheet = (data, userId, startingDay) => {
     body: { ...data },
     extra,
     start: withStartLoading(startUpdateTimesheetRequest, true)(dispatch),
-    response: () => {
-      dispatch(finishLoading());
-    },
+    response: () => dispatch(finishLoading()),
     error: defaultErrorHandler(dispatch)
   });
 };
@@ -88,9 +86,7 @@ export const deleteTimesheets = (ids, userId, startingDay) => {
     body,
     extra,
     start: withStartLoading(startDeleteTimesheetRequest, true)(dispatch),
-    response: () => {
-      dispatch(finishLoading());
-    },
+    response: () => dispatch(finishLoading()),
     error: defaultErrorHandler(dispatch)
   });
 };
@@ -100,23 +96,17 @@ export const deleteTempTimesheets = (ids) => ({
   ids
 });
 
-export const createTimesheet = (params, userId, startingDay) => { // TODO: не смог разобраться, как лучше послать query-params, используя мидлварь для rest API, поэтому экшн создан напрямую с axios
-  const URL = `${API_URL}/timesheet`;
-  return dispatch => {
-    dispatch(startCreateTimesheetRequest());
-    dispatch(startLoading());
-    axios
-      .post(URL, params)
-      .catch(error => {
-        dispatch(finishLoading());
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(finishLoading());
-        }
-      });
-  };
+export const createTimesheet = (data, userId, startingDay) => {
+  return dispatch => dispatch({
+    type: REST_API,
+    url: '/timesheet',
+    method: POST,
+    body: { ...data },
+    extra,
+    start: withStartLoading(startCreateTimesheetRequest, true)(dispatch),
+    response: () => dispatch(finishLoading()),
+    error: defaultErrorHandler(dispatch)
+  });
 };
 
 export const updateSheetsArray = (sheetsArr, userId, startingDay) => {
@@ -139,7 +129,7 @@ export const updateSheetsArray = (sheetsArr, userId, startingDay) => {
       let isOk = false;
 
       isOk = response.every((element) => {
-        if (element.status === 200) {
+        if (response.status === 200) {
           return true;
         } else {
           dispatch(finishLoading());

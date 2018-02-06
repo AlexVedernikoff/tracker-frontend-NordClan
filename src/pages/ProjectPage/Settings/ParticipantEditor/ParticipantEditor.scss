@@ -67,11 +67,12 @@
 
 .changeStage {
   min-width: 330px;
+  max-width: 500px;
   padding: 2rem;
 
   @include phone {
     padding: 1rem;
-    min-width: 290px;
+    min-width: 250px;
   }
 
   h3 {
@@ -79,18 +80,15 @@
   }
 }
 
-.modalLine {
+.modalContainer {
   display: flex;
-
-  @include phone {
-    flex-direction: column;
+  flex-wrap: wrap;
+  flex-direction: column;
+  > div {
+    margin-bottom: 1rem;
   }
-
-  > *:first-child {
-    flex-grow: 1;
-
-    @include phone {
-      margin-bottom: 2rem;
-    }
+  > button {
+    width: 100px;
+    align-self: center;
   }
 }
