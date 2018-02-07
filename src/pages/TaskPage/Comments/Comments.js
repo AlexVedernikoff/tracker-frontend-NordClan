@@ -205,7 +205,7 @@ class Comments extends Component {
                   </div>
                   : null
               }
-              <div className={css.answerSendTooltip}>отправить по Ctrl+Enter</div>
+              <div className={css.answerSendTooltip}>или Ctrl+Enter</div>
             </div>
           </div>
           {
