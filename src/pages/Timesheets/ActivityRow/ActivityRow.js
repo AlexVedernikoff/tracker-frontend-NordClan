@@ -35,20 +35,32 @@ class ActivityRow extends React.Component {
     this.updateTimesheet = _.debounce(this.updateTimesheet, debounceTime);
     this.deleteTimesheets = _.debounce(this.deleteTimesheets, debounceTime);
 
+    this.state = {
+      isOpen: false,
+      timeCells: this.getTimeCells(props.item.timeSheets)
+    };
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (this.props.item !== nextProps.item) {
+      const timeCells = this.getTimeCells(nextProps.item.timeSheets);
+      this.setState({
+        timeCells
+      });
+    }
+  }
+
+  getTimeCells = (timeSheets) => {
     const timeCells = {};
-    _.forEach(props.item.timeSheets, (tsh, i) => {
+    _.forEach(timeSheets, (tsh, i) => {
       if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
         timeCells[i] = roundNum(tsh.spentTime, 2);
       } else {
         timeCells[i] = 0;
       }
     });
-
-    this.state = {
-      isOpen: false,
-      timeCells
-    };
-  }
+    return timeCells;
+  };
 
   createTimesheet = (i) => {
     const { item, userId, startingDay } = this.props;
@@ -92,11 +104,14 @@ class ActivityRow extends React.Component {
     if (!this.validateNumbers(value) || +value > 24) {
       return false;
     }
+
     this.setState((state) => {
       const timeCells = {
         ...state.timeCells
       };
+
       timeCells[i] = value;
+
       return {
         timeCells
       };

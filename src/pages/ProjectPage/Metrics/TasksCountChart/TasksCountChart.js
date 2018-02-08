@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import getRandomColor from '../../../../utils/getRandomColor';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
-
+import roundNum from '../../../../utils/roundNum';
 class TasksCountChart extends Component {
   static propTypes = {
     chartDefaultOptions: PropTypes.object,
@@ -64,7 +64,7 @@ class TasksCountChart extends Component {
     const line = metrics.map(metric => {
       return {
         x: metric.createdAt,
-        y: +metric.value
+        y: roundNum(+metric.value, 2)
       };
     }).sort(sortChartLineByDates);
     return {

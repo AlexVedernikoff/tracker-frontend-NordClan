@@ -1,3 +1,5 @@
+@import '../../../../styles/variables.scss';
+
 .SprintReport {
   & > div:last-child {
     align-items: center;
@@ -10,5 +12,29 @@
     cursor: default;
     color: silver;
     text-decoration: none;
+  }
+  .downLoad {
+    background-color: $color-dark-gray;
+    color: $color-white;
+    padding: 8px 15px;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s;
+    border: 1px solid $color-lightgray;
+    &:hover {
+      background-color: $color-lightgray;
+      color: $color-dark-gray;
+      border-color: $color-dark-gray;
+    }
+  }
+  .modile_style {
+    @include tablet-portrait {
+      margin-right: 0;
+      margin-left: 0;
+      justify-content: center;
+      > div {
+        margin: 10px 0;
+      }
+    }
   }
 }

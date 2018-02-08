@@ -13,6 +13,7 @@ import * as css from './TaskCard.scss';
 import PriorityBox from './PriorityBox';
 import CopyThis from '../../components/CopyThis';
 import { IconPlay, IconPause, IconTime, IconBug } from '../Icons';
+import ReactTooltip from 'react-tooltip';
 
 const taskCardSource = {
   beginDrag (props) {
@@ -52,6 +53,12 @@ class TaskCard extends React.Component {
   constructor (props) {
     super(props);
     this.state = { isOpenPriority: false };
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (this.props.task.statusId !== nextProps.task.statusId) {
+      ReactTooltip.hide();
+    }
   }
 
   handleClick = event => {

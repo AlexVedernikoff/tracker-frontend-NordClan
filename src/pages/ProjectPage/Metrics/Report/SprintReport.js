@@ -125,14 +125,16 @@ class SprintReport extends Component {
   }
 
   render () {
+    const dateFrom = this.state.selectedFrom ? moment(this.state.selectedFrom).format('DD.MM.YYYY') : '';
+    const dateTo = this.state.selectedTo ? moment(this.state.selectedTo).format('DD.MM.YYYY') : '';
     return (
         <div className={css.SprintReport}>
             <Row center="xs">
-                <Col xs={3}><h2>Выгрузка отчёта</h2></Col>
+                <Col md={3} xs={12}><h2>Выгрузка отчёта</h2></Col>
             </Row>
-            <Row>
+            <Row className = {css.modile_style}>
                 <Col>Спринт: </Col>
-                <Col xs={4}>
+                <Col md={4} xs={12}>
                     <SelectDropdown
                         name="sprint"
                         placeholder="Выбирите спринт..."
@@ -143,32 +145,30 @@ class SprintReport extends Component {
                         options={this.getSelectOptions()}
                     />
                 </Col>
-                <Col xs></Col>
                 <Col>С: </Col>
-                <Col xs={2}>
+                <Col md={2} xs={6}>
                     <DatepickerDropdown
-                        name="dateTo"
+                        name="dateFrom"
                         format={dateFormat}
-                        value={this.state.selectedFrom}
+                        value={dateFrom}
                         onDayChange={this.handleDayFromChange}
                         placeholder="с"
                         disabledDataRanges={[{after: new Date(this.state.selectedTo)}]}
                     />
                 </Col>
                 <Col>По: </Col>
-                <Col xs={2}>
+                <Col md={2} xs={4}>
                     <DatepickerDropdown
                         name="dateTo"
                         format={dateFormat}
-                        value={this.state.selectedTo}
+                        value={dateTo}
                         onDayChange={this.handleDayToChange}
                         placeholder="по"
                         disabledDataRanges={[{before: new Date(this.state.selectedFrom)}]}
                     />
                 </Col>
-                <Col xs></Col>
-                <Col xs={2}>
-                    <a className={this.isRangeValid() ? '' : css.disabled}
+                <Col md={2}>
+                    <a className={this.isRangeValid() ? css.downLoad : css.disabled}
                        href={`${API_URL}/project/${this.props.project.id}/reports/period${this.getQueryParams()}`}>
                       Выгрузить отчёт
                     </a>

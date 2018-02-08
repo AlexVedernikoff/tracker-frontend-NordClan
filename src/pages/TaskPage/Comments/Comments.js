@@ -18,6 +18,7 @@ import { connect } from 'react-redux';
 import * as css from './Comments.scss';
 import Comment from './Comment';
 import { history } from '../../../History';
+import Button from '../../../components/Button';
 import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
 
 const ENTER = 13;
@@ -26,7 +27,10 @@ class Comments extends Component {
 
   constructor (props) {
     super(props);
-    this.state = { commentToDelete: null };
+    this.state = {
+      commentToDelete: null,
+      disabledBtn: true
+    };
   }
 
   componentWillMount () {
@@ -109,12 +113,16 @@ class Comments extends Component {
 
   typeComment = (evt) => {
     this.props.updateCurrentCommentText(evt.target.value);
+    if (evt.target.value && evt.target.value.trim() !== '') {
+      this.state.disabledBtn = false;
+    } else {
+      this.state.disabledBtn = true;
+    }
   };
 
   publishComment = (evt) => {
-    const { ctrlKey, keyCode } = evt;
-
-    if (ctrlKey && keyCode === ENTER) {
+    const { ctrlKey, keyCode} = evt;
+    if ((ctrlKey && keyCode === ENTER || evt.button === 0) && this.state.disabledBtn === false) {
       if (this.props.currentComment.id) {
         if (!Comment.isExpiredForUpdate(this.props.currentComment.createdAt)) {
           this.props.editComment(this.props.taskId, this.props.currentComment.id, this.props.currentComment.text);
@@ -167,6 +175,12 @@ class Comments extends Component {
               ref={(ref) => (this.reply = ref ? ref.refs.input : null)}
               value={this.props.currentComment.text}/>
             <div className={css.answerUnderline}>
+              <Button
+                disabled = {this.state.disabledBtn}
+                onClick={this.publishComment}
+                text="Отправить"
+                type = 'green'
+                />
               {
                 this.props.currentComment.id
                   ? <div className={css.answerInfo}>
@@ -200,7 +214,7 @@ class Comments extends Component {
                   </div>
                   : null
               }
-              <div className={css.answerSendTooltip}>отправить по Ctrl+Enter</div>
+              <div className={css.answerSendTooltip}>или Ctrl+Enter</div>
             </div>
           </div>
           {

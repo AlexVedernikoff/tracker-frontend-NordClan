@@ -7,6 +7,7 @@ import moment from 'moment';
 import getRandomColor from '../../../../utils/getRandomColor';
 import Button from '../../../../components/Button';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
+import roundNum from '../../../../utils/roundNum';
 
 class CostByRoleChart extends Component {
   static propTypes = {
@@ -60,13 +61,15 @@ class CostByRoleChart extends Component {
       const line = role.metrics.map(metric => {
         return {
           x: metric.createdAt,
-          y: +metric.value
+          y: roundNum(+metric.value, 2)
         };
       }).sort(sortChartLineByDates);
       return {
         data: line,
-        label: `${role.name}`,
-        ...this.props.getBasicLineSettings()
+        label: role.name,
+        ...this.props.getBasicLineSettings(),
+        backgroundColor: role.color,
+        borderColor: role.color
       };
     });
   }

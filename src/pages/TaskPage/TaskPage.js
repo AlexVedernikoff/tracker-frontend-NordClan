@@ -211,10 +211,6 @@ class TaskPage extends Component {
 
     return (this.props.task.error) ? (<HttpError error={this.props.task.error}/>) : (
       <div ref="taskPage" className={css.taskPage}>
-        <GoBackPanel
-          defaultPreviousUrl={projectUrl}
-          parentRef={this.refs.taskPage}
-        />
         <Row>
           <Col xs={12} sm={8}>
             <TaskHeader
@@ -350,6 +346,10 @@ class TaskPage extends Component {
             />
             : null
         }
+        <GoBackPanel
+          defaultPreviousUrl={projectUrl}
+          parentRef={this.refs.taskPage}
+        />
       </div>
     );
   }

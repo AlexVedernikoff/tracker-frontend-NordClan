@@ -93,12 +93,35 @@ class AddActivityModal extends Component {
       startingDay
     } = this.props;
     const { selectedSprint } = this.state;
+    // ТШ должен создаваться в stop статусе
+    const checkPlayStatus = (status) => (status === 2 || status === 4 || status === 6);
+    const taskStatusId = selectedTask ? selectedTaskStatusId : null;
 
     const getSprint = () => {
       if (this.isNoTaskProjectActivity() && selectedSprint) {
         return selectedSprint.value;
       } else if (selectedTask) {
         return selectedTask.body.sprint;
+      } else {
+        return null;
+      }
+    };
+
+    const getProject = () => {
+      const holidayOrHospital = selectedActivityType === 5 || selectedActivityType === 7;
+      if (holidayOrHospital) {
+        return null;
+      }
+      if (selectedTask) {
+        return {
+          id: selectedTask.body.projectId,
+          name: this.state.projects.find(project => project.body.id === selectedTask.body.projectId).body.name
+        };
+      } else if (selectedProject) {
+        return {
+          id: selectedProject.value,
+          name: selectedProject.label
+        };
       } else {
         return null;
       }
@@ -112,19 +135,13 @@ class AddActivityModal extends Component {
         name: selectedTask.label,
         sprint: getSprint()
       } : null,
-      taskStatusId: selectedTask ? selectedTaskStatusId : null,
+      taskStatusId: checkPlayStatus(taskStatusId) ? taskStatusId + 1 : taskStatusId,
       typeId: selectedActivityType,
       spentTime: '0',
       sprintId: getSprint() ? getSprint().id : null,
       sprint: getSprint(),
       onDate: moment(startingDay).format('YYYY-MM-DD'),
-      project: selectedTask ? {
-        id: selectedTask.body.projectId,
-        name: this.state.projects.find(project => project.body.id === selectedTask.body.projectId).body.name
-      } : selectedProject ? {
-        id: selectedProject.value,
-        name: selectedProject.label
-      } : null
+      project: getProject()
     });
   };
 
@@ -172,6 +189,15 @@ class AddActivityModal extends Component {
     this.setState({selectedSprint: option});
   }
 
+  handleChangeActivity = (option) => {
+    if (!option) {
+      this.setState({'activityType': 0 },
+        () => this.props.changeActivityType(null));
+    } else {
+      this.changeItem(option, 'activityType');
+    }
+  }
+
   getSprintOptions = () => {
     const {sprints} = this.props;
     return sprints ? sprints.map(sprint => {
@@ -207,7 +233,7 @@ class AddActivityModal extends Component {
                   multi={false}
                   value={this.props.selectedActivityType}
                   placeholder="Тип активности"
-                  onChange={(option) => this.changeItem(option, 'activityType')}
+                  onChange={this.handleChangeActivity}
                   options={
                     this.props.activityTypes.length
                       ? this.props.activityTypes.map(
@@ -224,8 +250,7 @@ class AddActivityModal extends Component {
             ? [
               <label key="onlyMineLabel" className={css.formField}>
                 <Row>
-                  <Col xs={12} sm={formLayout.left}>
-                  </Col>
+                  <Col xs={12} sm={formLayout.left} />
                   <Col xs={12} sm={formLayout.right}>
                     <Checkbox
                       checked={this.state.isOnlyMine}

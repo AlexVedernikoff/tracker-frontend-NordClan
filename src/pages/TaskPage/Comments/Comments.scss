@@ -127,6 +127,7 @@
 
 .answerLine {
   display: flex;
+  align-items: start;
   flex-wrap: wrap;
   margin-bottom: 2rem;
 
@@ -136,23 +137,41 @@
 
   textarea {
     flex-grow: 1;
+    max-width: 80%;
+    transition: height 0.3s;
+    &:focus {
+      height: 6em;
+    }
+    @include phone {
+      max-width: 100%;
+    }
   }
   .answerUnderline {
     display: flex;
     flex-wrap: nowrap;
     justify-content: space-between;
-    flex-basis: 100%;
-
+    flex-basis: 20%;
+    max-width: 20%;
+    flex-direction: column;
+    padding-left: 20px;
+    @include phone {
+      flex-basis: 100%;
+      max-width: 150px;
+      padding-left: 0px;
+      margin-top: 20px;
+    }
+    button {
+      margin-top: 0px;
+    }
     .answerSendTooltip {
-      text-align: right;
+      text-align: left;
       color: #678bad;
       font-size: 0.8rem;
-      flex-basis: 50%;
+      flex-basis: 100%;
       flex-grow: 12;
     }
   }
 }
-
 .noCommentsYet {
   text-align: center;
 }
