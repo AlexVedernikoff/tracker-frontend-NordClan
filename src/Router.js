@@ -37,6 +37,7 @@ import { connect } from 'react-redux';
 import { clearCurrentProjectAndTasks } from './actions/Tasks';
 import { clearCurrentTask } from './actions/Task';
 import { setRedirectPath } from './actions/Authentication';
+import isAdmin from './utils/isAdmin';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
@@ -50,11 +51,11 @@ class AppRouter extends Component {
   static propTypes = {
     clearCurrentProjectAndTasks: PropTypes.func,
     history: PropTypes.object,
-    isAdmin: PropTypes.bool,
     isLoggedIn: PropTypes.bool,
     loaded: PropTypes.bool,
     redirectPath: PropTypes.object,
-    setRedirectPath: PropTypes.func
+    setRedirectPath: PropTypes.func,
+    userGlobalRole: PropTypes.string
   };
 
   requireAuth = (nextState, replace, cb) => {
@@ -73,6 +74,13 @@ class AppRouter extends Component {
     cb();
   };
 
+  requareAdmin = (nextState, replace, cb) => {
+    if (!isAdmin(this.props.userGlobalRole)) {
+      replace('/projects');
+    }
+    cb();
+  }
+
   render () {
     return (
       this.props.loaded
@@ -84,9 +92,7 @@ class AppRouter extends Component {
             <Route path="/" component={InnerContainer} onEnter={this.requireAuth} >
               <Route path="dashboard" component={Dashboard} />
               <Route path="timesheets" component={Timesheets} />
-              { this.props.isAdmin
-                ? <Route path="usersroles" component={UsersRoles} />
-                : <Redirect from="usersroles" to="projects" /> }
+              <Route path="usersroles" component={UsersRoles} onEnter={this.requareAdmin}/>
               <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
               <Route path="projects" component={Projects} />
 
@@ -127,7 +133,7 @@ const mapStateToProps = ({ Auth: { loaded, isLoggedIn, redirectPath, user } }) =
   loaded,
   isLoggedIn,
   redirectPath,
-  isAdmin: user.globalRole === 'ADMIN'
+  userGlobalRole: user.globalRole
 });
 
 const mapDispatchToProps = {
