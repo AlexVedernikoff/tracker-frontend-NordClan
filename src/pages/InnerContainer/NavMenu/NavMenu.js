@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { IconPlus } from '../../../components/Icons';
 import { connect } from 'react-redux';
+import isAdmin from '../../../utils/isAdmin';
 import * as css from './NavMenu.scss';
 
 class NavMenu extends Component {
@@ -30,9 +31,7 @@ class NavMenu extends Component {
       height: 16
     };
 
-    const isAdmin = this.props.user.globalRole === 'ADMIN';
-
-    const usersRolesLink = isAdmin
+    const usersRolesLink = isAdmin(this.props.user.globalRole)
       ? <li key="usersroles" className={css.sidebarItem}>
         <Link
           className={css.sidebarLink}

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import SelectDropdown from '../../components/SelectDropdown';
+import isAdmin from '../../utils/isAdmin';
 
 import * as css from './UsersRoles.scss';
 import { getUsers, updateUserRole } from '../../actions/UsersRoles';
@@ -115,9 +116,9 @@ class UsersRoles extends React.Component {
   }
 
   render () {
-    const { users, isAdmin } = this.props;
+    const { users, userGlobalRole } = this.props;
     const tableUsers = this.renderTableUsers(users);
-    return isAdmin
+    return isAdmin(userGlobalRole)
     ? <div>
         <h1>Пользователи</h1>
         <hr/>
@@ -129,14 +130,14 @@ class UsersRoles extends React.Component {
 
 UsersRoles.propTypes = {
   getUsers: PropTypes.func.isRequired,
-  isAdmin: PropTypes.bool.isRequired,
   updateUserRole: PropTypes.func,
+  userGlobalRole: PropTypes.string.isRequired,
   users: PropTypes.array.isRequired
 };
 
 const mapStateToProps = state => ({
   users: state.UsersRoles.users,
-  isAdmin: state.Auth.user.globalRole === 'ADMIN'
+  userGlobalRole: state.Auth.user.globalRole
 });
 
 const mapDispatchToProps = {
