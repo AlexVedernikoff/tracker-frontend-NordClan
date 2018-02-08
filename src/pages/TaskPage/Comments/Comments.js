@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import onClickOutside from 'react-onclickoutside';
 import PropTypes from 'prop-types';
 import TextArea from '../../../components/TextArea';
+import TextareaAutosize from 'react-autosize-textarea';
 import {
   getCommentsByTask,
   publishComment,
@@ -125,6 +126,11 @@ class Comments extends Component {
   };
 
   publishComment = (evt) => {
+    const { ctrlKey, keyCode } = evt;
+    if ((ctrlKey && keyCode === ENTER) || (shiftKey && keyCode === ENTER)) {
+      return this.props.updateCurrentCommentText(evt.target.value + '\n');
+      console.log('true');
+    }
     if ((evt.which === ENTER || evt.button === 0) && this.state.disabledBtn === false) {
       if (this.props.currentComment.id) {
         if (!Comment.isExpiredForUpdate(this.props.currentComment.createdAt)) {
@@ -171,11 +177,13 @@ class Comments extends Component {
       <div className="css.comments">
         <ul className={css.commentList}>
           <form className={css.answerLine}>
-            <TextArea
+            <TextareaAutosize
+              style={{ minHeight: 32 }}
+              className={css.resizeTrue}
               disabled={this.props.currentComment.disabled || this.props.currentComment.expired}
               placeholder="Введите текст комментария"
               onInput={this.typeComment}
-              onKeyPress={this.publishComment}
+              onKeyDown={this.publishComment}
               ref={(ref) => (this.reply = ref ? ref.refs.input : null)}
               value={this.props.currentComment.text}
             />

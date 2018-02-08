@@ -127,10 +127,10 @@
 
 .answerLine {
   display: flex;
-  align-items: start;
+  align-items: end;
   flex-wrap: wrap;
   margin-bottom: 2rem;
-
+  position: relative;
   button {
     flex-shrink: 0;
   }
@@ -139,11 +139,14 @@
     flex-grow: 1;
     max-width: 90%;
     transition: height 0.3s;
-    &:focus {
-      height: 6em;
+    &.resizeTrue {
+      resize: vertical !important;
     }
     @include phone {
       max-width: 100%;
+      padding-right: 50px;
+      padding-top: 20px;
+      padding-bottom: 20px;
     }
   }
   .answerUnderline {
@@ -154,6 +157,9 @@
     max-width: 10%;
     flex-direction: column;
     padding-left: 20px;
+    position: absolute;
+    right: 0;
+    bottom: 14px;
     @include phone {
       flex-basis: 100%;
       max-width: 150px;
