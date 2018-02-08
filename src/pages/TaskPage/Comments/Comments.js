@@ -132,6 +132,7 @@ class Comments extends Component {
       } else {
         this.props.publishComment(this.props.taskId, this.props.currentComment);
       }
+      this.state.disabledBtn = true;
     }
   };
 
