@@ -25,7 +25,7 @@ class SprintReport extends Component {
   }
 
   state = {
-    sprintSelected: null,
+    reportPeriod: null,
     selectedFrom: '',
     selectedTo: ''
   };
@@ -39,16 +39,22 @@ class SprintReport extends Component {
     }
   }
 
-  sprintSelected = option => {
-    if (!_.isEmpty(option)) {
+  selectReportPeriod = option => {
+    if (!_.isEmpty(option) && option.value.id) {
       this.setState({
-        sprintSelected: option,
+        reportPeriod: option,
+        selectedFrom: this.formatDate(option.factStartDate),
+        selectedTo: this.formatDate(option.factFinishDate)
+      });
+    } else if (!_.isEmpty(option)) {
+      this.setState({
+        reportPeriod: option,
         selectedFrom: this.formatDate(option.value.factStartDate),
         selectedTo: this.formatDate(option.value.factFinishDate)
       });
     } else {
       this.setState({
-        sprintSelected: null,
+        reportPeriod: null,
         selectedFrom: this.formatDate(this.props.startDate),
         selectedTo: moment().format(dateFormat)
       });
@@ -79,11 +85,20 @@ class SprintReport extends Component {
   getSelectOptions = () => {
     return [
       this.fullTimeOption(),
+      this.wholeProjectTimeOption(),
       this.lastWeekOption(),
       this.lastMonthOption(),
-      ...this.props.sprints.map(value => ({ value, label: value.name}))
+      ...this.props.sprints.map(value => this.sprintOption(value))
     ];
   }
+
+  sprintOption = (value) => ({
+    value,
+    label: value.name,
+    // выборка делается по всем ТШ спринта, поэтому отправляется дата начала проекта и текущая
+    factStartDate: this.formatDate(this.props.startDate),
+    factFinishDate: moment().format(dateFormat)
+  })
 
   lastWeekOption = () => {
     const lastWeek = moment().subtract(1, 'weeks');
@@ -109,19 +124,32 @@ class SprintReport extends Component {
 
   fullTimeOption = () => {
     return {
+      label: 'За все время',
+      value: {
+        factStartDate: this.formatDate(this.props.startDate),
+        factFinishDate: moment().format(dateFormat)
+      }
+    };
+  }
+
+  wholeProjectTimeOption = () => {
+    return {
       label: 'За весь проект',
       value: {
-        factStartDate: undefined,
-        factFinishDate: undefined
+        factStartDate: this.formatDate(this.props.startDate),
+        factFinishDate: this.formatDate(this.props.endDate)
       }
     };
   }
 
   getQueryParams = () => {
-    if (!this.state.selectedFrom && !this.state.selectedTo) {
-      return '';
+    const { selectedFrom, selectedTo, reportPeriod } = this.state;
+    const sprintId = reportPeriod && reportPeriod.value && reportPeriod.value.id ? reportPeriod.value.id : null;
+    if (selectedFrom && selectedTo && sprintId) {
+      return `?startDate=${selectedFrom}&endDate=${selectedTo}&sprintId=${sprintId}`;
+    } else {
+      return `?startDate=${selectedFrom}&endDate=${selectedTo}`;
     }
-    return `?startDate=${this.state.selectedFrom}&endDate=${this.state.selectedTo}`;
   }
 
   render () {
@@ -139,8 +167,8 @@ class SprintReport extends Component {
                         name="sprint"
                         placeholder="Выбирите спринт..."
                         multi={false}
-                        value={this.state.sprintSelected}
-                        onChange={(option) => this.sprintSelected(option)}
+                        value={this.state.reportPeriod}
+                        onChange={(option) => this.selectReportPeriod(option)}
                         noResultsText="Нет результатов"
                         options={this.getSelectOptions()}
                     />
