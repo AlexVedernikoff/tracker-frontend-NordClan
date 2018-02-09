@@ -27,16 +27,18 @@ class BudgetChart extends Component {
       ...props.chartDefaultOptions,
       scales: {
         ...props.chartDefaultOptions.scales,
-        yAxes: [{
-          ticks: {
-            beginAtZero: true
-          },
-          display: true,
-          scaleLabel: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true
+            },
             display: true,
-            labelString: 'Бюджет'
+            scaleLabel: {
+              display: true,
+              labelString: 'Бюджет'
+            }
           }
-        }]
+        ]
       }
     };
   }
@@ -52,7 +54,7 @@ class BudgetChart extends Component {
       sprints,
       isRisks
     } = this.props;
-    const sprintsId = sprints.map(sprint => sprint.id);
+    const sprintsId = sprints.map((sprint) => sprint.id);
     return {
       datasets: [
         this.makeIdealProjectBurndown(startDate, endDate, budget, riskBudget, isRisks),
@@ -81,15 +83,18 @@ class BudgetChart extends Component {
   };
 
   makeProjectBurndown = (metrics, startDate, budget, riskBudget, isRisks) => {
-    const burndown = metrics.map(metric => {
-      return {
-        x: metric.createdAt,
-        y: roundNum(+metric.value, 2)
-      };
-    }).concat({
-      x: startDate,
-      y: isRisks ? riskBudget : budget
-    }).sort(sortChartLineByDates);
+    const burndown = metrics
+      .map((metric) => {
+        return {
+          x: metric.createdAt,
+          y: roundNum(+metric.value, 2)
+        };
+      })
+      .concat({
+        x: startDate,
+        y: isRisks ? riskBudget : budget
+      })
+      .sort(sortChartLineByDates);
     return {
       data: [...burndown],
       label: 'Весь проект',
@@ -98,7 +103,7 @@ class BudgetChart extends Component {
   };
 
   makeSprintsIdealBurndowns = (sprints, isRisks) => {
-    return sprints.map(sprint => {
+    return sprints.map((sprint) => {
       const idealBurndown = [
         {
           x: sprint.factStartDate,
@@ -118,14 +123,16 @@ class BudgetChart extends Component {
   };
 
   makeSprintsBurndowns = (metrics, sprints) => {
-    return sprints.map(sprint => {
-      const sprintMetrics = metrics.filter(metric => metric.sprintId === sprint.id);
-      const burndown = sprintMetrics.map(metric => {
-        return {
-          x: metric.createdAt,
-          y: roundNum(+metric.value, 2)
-        };
-      }).sort(sortChartLineByDates);
+    return sprints.map((sprint) => {
+      const sprintMetrics = metrics.filter((metric) => metric.sprintId === sprint.id);
+      const burndown = sprintMetrics
+        .map((metric) => {
+          return {
+            x: metric.createdAt,
+            y: roundNum(+metric.value, 2)
+          };
+        })
+        .sort(sortChartLineByDates);
       return {
         data: burndown,
         label: `${sprint.name}`,
@@ -135,7 +142,7 @@ class BudgetChart extends Component {
   };
 
   render () {
-    const {isRisks, budget, riskBudget} = this.props;
+    const { isRisks, budget, riskBudget } = this.props;
     return (
       <div className={css.BudgetChart}>
         <h3>{isRisks ? 'С рисковым резервом' : 'Без рискового резерва'}</h3>
@@ -149,7 +156,7 @@ class BudgetChart extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   budget: state.Project.project.budget,
   riskBudget: state.Project.project.riskBudget,
   sprints: state.Project.project.sprints

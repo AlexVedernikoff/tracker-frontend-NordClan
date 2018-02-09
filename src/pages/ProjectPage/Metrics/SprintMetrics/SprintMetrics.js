@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ClosingFeaturesChart from '../ClosingFeaturesChart';
 import TasksCountChart from '../TasksCountChart';
@@ -32,34 +32,32 @@ class SprintMetrics extends Component {
   componentWillMount () {
     const { sprints } = this.props;
     if (sprints.length > 0) {
-      this.setState({sprintSelected: this.getCurrentSprint(sprints)});
+      this.setState({ sprintSelected: this.getCurrentSprint(sprints) });
     }
   }
 
   componentWillReceiveProps (nextProps) {
     const { sprints } = this.props;
     if (nextProps.sprints.length !== sprints.length) {
-      this.setState({sprintSelected: this.getCurrentSprint(nextProps.sprints)});
+      this.setState({ sprintSelected: this.getCurrentSprint(nextProps.sprints) });
     }
   }
 
   getSelectOptions = () => {
-    return [
-      ...this.props.sprints.map(value => ({ value, label: value.name}))
-    ];
-  }
+    return [...this.props.sprints.map((value) => ({ value, label: value.name }))];
+  };
 
-  changeSprint = option => {
+  changeSprint = (option) => {
     if (option) {
       this.setState({ sprintSelected: option });
     }
-  }
+  };
 
-  getCurrentSprint = sprints => {
-    const processedSprints = sprints.filter(sprint => {
+  getCurrentSprint = (sprints) => {
+    const processedSprints = sprints.filter((sprint) => {
       return sprint.statusId === 2;
     });
-    const currentSprints = processedSprints.filter(sprint => {
+    const currentSprints = processedSprints.filter((sprint) => {
       return moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]');
     });
     const getOption = (sprint) => {
@@ -92,7 +90,7 @@ class SprintMetrics extends Component {
     return '';
   }
 
-  filterBySprint = (sprintId, metrics) => metrics.filter(metric => metric.sprintId === sprintId);
+  filterBySprint = (sprintId, metrics) => metrics.filter((metric) => metric.sprintId === sprintId);
 
   render () {
     const {
@@ -105,7 +103,7 @@ class SprintMetrics extends Component {
       openedBugsMetrics,
       openedCustomerBugsMetrics
     } = this.props;
-    
+
     const currentSprintId = this.state.sprintSelected ? this.state.sprintSelected.value.id : null;
     /*Динамика закрытия фич*/
     const sprintClosingFeaturesMetrics = filterById(32, metrics);
@@ -118,7 +116,6 @@ class SprintMetrics extends Component {
     const openedOutOfPlanFeaturesMetric = filterById(41, metrics);
     return (
       <div>
-        <h2>Метрики по спринту</h2>
         <div className={css.sprintSelectWrapper}>
           <SelectDropdown
             name="sprint"
@@ -130,13 +127,10 @@ class SprintMetrics extends Component {
             options={this.getSelectOptions()}
             className={css.sprintSelector}
           />
-          <StartEndDates
-            startDate={this.sprintStartDate()}
-            endDate={this.sprintEndDate()}
-          />
+          <StartEndDates startDate={this.sprintStartDate()} endDate={this.sprintEndDate()} />
         </div>
         <Row>
-          <Col xs={12} md={10} mdOffset={1} lg={8} lgOffset={2} >
+          <Col xs={12}>
             <ClosingFeaturesChart
               startDate={this.sprintStartDate()}
               endDate={this.sprintEndDate()}
@@ -144,14 +138,20 @@ class SprintMetrics extends Component {
               getBasicLineSettings={getBasicLineSettings}
               sprintClosingFeaturesMetrics={this.filterBySprint(currentSprintId, sprintClosingFeaturesMetrics)}
               sprintWriteOffTimeMetrics={this.filterBySprint(currentSprintId, sprintWriteOffTimeMetrics)}
-              sprintWorkWithoutEvaluationMetrics={this.filterBySprint(currentSprintId, sprintWorkWithoutEvaluationMetrics)}
+              sprintWorkWithoutEvaluationMetrics={this.filterBySprint(
+                currentSprintId,
+                sprintWorkWithoutEvaluationMetrics
+              )}
             />
           </Col>
-          <Col xs={12} md={10} mdOffset={1} lg={8} lgOffset={2} >
+          <Col xs={12}>
             <TasksCountChart
               chartDefaultOptions={chartDefaultOptions}
               getBasicLineSettings={getBasicLineSettings}
-              openedFeaturesWithoutEvaluationMetric={this.filterBySprint(currentSprintId, openedFeaturesWithoutEvaluationMetric)}
+              openedFeaturesWithoutEvaluationMetric={this.filterBySprint(
+                currentSprintId,
+                openedFeaturesWithoutEvaluationMetric
+              )}
               openedFeaturesMetric={this.filterBySprint(currentSprintId, openedFeaturesMetric)}
               openedOutOfPlanFeaturesMetric={this.filterBySprint(currentSprintId, openedOutOfPlanFeaturesMetric)}
               openedBugsMetrics={this.filterBySprint(currentSprintId, openedBugsMetrics)}
@@ -164,8 +164,7 @@ class SprintMetrics extends Component {
   }
 }
 
-
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   sprints: state.Project.project.sprints,
   metrics: state.Project.project.metrics
 });

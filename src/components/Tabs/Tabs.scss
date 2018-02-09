@@ -1,0 +1,29 @@
+@import '../../styles/variables';
+
+.tabs {
+  &__labels {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 50px;
+    padding-left: 0;
+    list-style: none;
+    li {
+      a {
+        text-decoration: none;
+        color: $color-dark-gray;
+        padding: 10px 20px;
+        border: 1px solid $color-dark-gray;
+        margin-right: 20px;
+        display: inline-block;
+        transition: all 0.3s;
+        &.isActive {
+          background-color: $color-dark;
+          color: $color-white;
+          &:hover {
+            background-color: #3d5871;
+          }
+        }
+      }
+    }
+  }
+}
