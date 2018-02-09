@@ -12,22 +12,32 @@ import * as css from './SprintReport.scss';
 const dateFormat = 'YYYY-MM-DD';
 
 class SprintReport extends Component {
+
+  static propTypes = {
+    endDate: PropTypes.string,
+    project: PropTypes.object,
+    sprints: PropTypes.array,
+    startDate: PropTypes.string
+  };
+
   constructor (props) {
     super(props);
   }
-
-  static propTypes = {
-    project: PropTypes.object,
-    startDate: PropTypes.string,
-    endDate: PropTypes.string,
-    sprints: PropTypes.array
-  };
 
   state = {
     sprintSelected: null,
     selectedFrom: '',
     selectedTo: ''
   };
+
+  componentWillReceiveProps (newProps) {
+    if (newProps.startDate) {
+      this.updatePickers({
+        selectedFrom: this.formatDate(newProps.startDate),
+        selectedTo: moment().format(dateFormat)
+      });
+    }
+  }
 
   sprintSelected = option => {
     if (!_.isEmpty(option)) {
@@ -44,15 +54,6 @@ class SprintReport extends Component {
       });
     }
   };
-
-  componentWillReceiveProps (newProps) {
-    if (newProps.startDate) {
-      this.updatePickers({
-        selectedFrom: this.formatDate(newProps.startDate),
-        selectedTo: moment().format(dateFormat)
-      });
-    }
-  }
 
   formatDate = date => date && moment(date).format(dateFormat);
 
@@ -107,7 +108,6 @@ class SprintReport extends Component {
   }
 
   fullTimeOption = () => {
-    const lastMonth = moment().subtract(1, 'month');
     return {
       label: 'За весь проект',
       value: {
