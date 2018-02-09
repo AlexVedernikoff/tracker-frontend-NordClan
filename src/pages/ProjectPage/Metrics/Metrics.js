@@ -13,6 +13,7 @@ import { getMetrics } from './../../../actions/Metrics';
 import moment from 'moment';
 import getRandomColor from '../../../utils/getRandomColor';
 import { ADMIN } from '../../../constants/Roles';
+import Tabs from '../../../components/Tabs';
 
 class Metrics extends Component {
   static propTypes = {
