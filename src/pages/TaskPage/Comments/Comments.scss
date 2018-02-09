@@ -31,7 +31,7 @@
   .commentAction {
     display: flex;
     & a {
-      padding-right: .5rem;
+      padding-right: 0.5rem;
     }
   }
   a {
@@ -127,33 +127,39 @@
 
 .answerLine {
   display: flex;
-  align-items: start;
+  align-items: end;
   flex-wrap: wrap;
   margin-bottom: 2rem;
-
+  position: relative;
   button {
     flex-shrink: 0;
   }
 
   textarea {
     flex-grow: 1;
-    max-width: 80%;
+    max-width: 90%;
     transition: height 0.3s;
-    &:focus {
-      height: 6em;
+    &.resizeTrue {
+      resize: vertical !important;
     }
     @include phone {
       max-width: 100%;
+      padding-right: 50px;
+      padding-top: 20px;
+      padding-bottom: 20px;
     }
   }
   .answerUnderline {
     display: flex;
     flex-wrap: nowrap;
     justify-content: space-between;
-    flex-basis: 20%;
-    max-width: 20%;
+    flex-basis: 10%;
+    max-width: 10%;
     flex-direction: column;
     padding-left: 20px;
+    position: absolute;
+    right: 0;
+    bottom: 14px;
     @include phone {
       flex-basis: 100%;
       max-width: 150px;
@@ -162,15 +168,32 @@
     }
     button {
       margin-top: 0px;
-    }
-    .answerSendTooltip {
-      text-align: left;
-      color: #678bad;
-      font-size: 0.8rem;
-      flex-basis: 100%;
-      flex-grow: 12;
+      background: none;
+      box-shadow: none;
+      border: none;
+      &:hover {
+        cursor: pointer;
+      }
+      svg {
+        fill: $color-green;
+        height: 30px;
+        width: 30px;
+        transition: fill 0.3s;
+      }
+      &:disabled {
+        svg {
+          fill: $color-dark-gray;
+        }
+      }
     }
   }
+}
+.answerSendTooltip {
+  text-align: left;
+  color: $input-color-placeholder;
+  font-size: 0.8rem;
+  flex-basis: 100%;
+  flex-grow: 12;
 }
 .noCommentsYet {
   text-align: center;

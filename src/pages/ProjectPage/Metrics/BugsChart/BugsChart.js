@@ -20,26 +20,24 @@ class BugsChart extends Component {
       ...props.chartDefaultOptions,
       scales: {
         ...props.chartDefaultOptions.scales,
-        yAxes: [{
-          ticks: {
-            beginAtZero: true
-          },
-          display: true,
-          scaleLabel: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true
+            },
             display: true,
-            labelString: 'Количество багов'
+            scaleLabel: {
+              display: true,
+              labelString: 'Количество багов'
+            }
           }
-        }]
+        ]
       }
     };
   }
 
   makeChartData = () => {
-    const {
-      openedBugsMetrics,
-      openedCustomerBugsMetrics,
-      openedRegressBugsMetrics
-    } = this.props;
+    const { openedBugsMetrics, openedCustomerBugsMetrics, openedRegressBugsMetrics } = this.props;
     return {
       datasets: [
         this.makeBugsLine(openedBugsMetrics, 'Количество открытых багов'),
@@ -50,12 +48,14 @@ class BugsChart extends Component {
   };
 
   makeBugsLine = (metrics, label) => {
-    const line = metrics.map(metric => {
-      return {
-        x: metric.createdAt,
-        y: roundNum(+metric.value, 2)
-      };
-    }).sort(sortChartLineByDates);
+    const line = metrics
+      .map((metric) => {
+        return {
+          x: metric.createdAt,
+          y: roundNum(+metric.value, 2)
+        };
+      })
+      .sort(sortChartLineByDates);
     return {
       data: [...line],
       label: label,
@@ -66,12 +66,7 @@ class BugsChart extends Component {
   render () {
     return (
       <div className={css.BugsChart}>
-        <h3>Баги на проекте</h3>
-        <Line
-          data={this.makeChartData()}
-          options={this.chartOptions}
-          redraw
-        />
+        <Line data={this.makeChartData()} options={this.chartOptions} redraw />
       </div>
     );
   }
