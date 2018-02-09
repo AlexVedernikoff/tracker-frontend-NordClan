@@ -97,11 +97,10 @@ class Timesheets extends React.Component {
           return tsh.id === el.task.id
           && tsh.taskStatusId === el.taskStatusId;
         });
-
       if (taskNotPushed && isThisWeek(el.onDate)) {
         res.push({
           id: el.task.id,
-          name: el.task.name,
+          name: `${el.project.prefix}-${el.task.id}: ${el.task.name}`,
           projectId: el.project.id,
           projectName: el.project.name,
           taskStatusId: el.taskStatusId,
