@@ -66,9 +66,7 @@ class CostByRoleChart extends Component {
       return {
         data: line,
         label: role.name,
-        ...this.props.getBasicLineSettings(),
-        backgroundColor: role.color,
-        borderColor: role.color
+        ...this.props.getBasicLineSettings()
       };
     });
   }

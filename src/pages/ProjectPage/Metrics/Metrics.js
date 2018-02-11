@@ -150,7 +150,6 @@ class Metrics extends Component {
             h /= 6;
           }
           const HSL = { h, s, l };
-          console.log(HSL);
           return HSL;
         };
         if (
@@ -317,6 +316,9 @@ class Metrics extends Component {
     };
     const tabs = [
       {
+        name: 'Выгрузка'
+      },
+      {
         name: 'Метрики по проекту'
       },
       {
@@ -343,6 +345,9 @@ class Metrics extends Component {
             <div>
               <Tabs tabs={tabs} selected={0}>
                 <Pane label={tabs[0].name}>
+                  <SprintReport startDate={this.startDate()} endDate={this.endDate()} />
+                </Pane>
+                <Pane label={tabs[1].name}>
                   <StartEndDates startDate={this.startDate()} endDate={this.endDate()} />
                   <Row>
                     <Col xs={12} md={10} lg={6} lgOffset={0}>
@@ -369,7 +374,7 @@ class Metrics extends Component {
                     </Col>
                   </Row>
                 </Pane>
-                <Pane label={tabs[3].name}>
+                <Pane label={tabs[4].name}>
                   <SprintMetrics
                     chartDefaultOptions={chartDefaultOptions}
                     getBasicLineSettings={this.getBasicLineSettings()}
@@ -380,7 +385,7 @@ class Metrics extends Component {
                     filterById={this.filterById}
                   />
                 </Pane>
-                <Pane label={tabs[1].name}>
+                <Pane label={tabs[2].name}>
                   <Row>
                     <Col xs={12}>
                       <BugsChart
@@ -393,7 +398,7 @@ class Metrics extends Component {
                     </Col>
                   </Row>
                 </Pane>
-                <Pane label={tabs[2].name}>
+                <Pane label={tabs[3].name}>
                   <Row>
                     <Col xs={12}>
                       <CostByRoleChart
@@ -408,7 +413,6 @@ class Metrics extends Component {
               </Tabs>
             </div>
           ) : null}
-          <SprintReport startDate={this.startDate()} endDate={this.endDate()} />
         </section>
       </div>
     );
