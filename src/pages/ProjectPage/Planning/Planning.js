@@ -401,7 +401,6 @@ class Planning extends Component {
     return (
       <div>
         <section>
-          <hr />
           <br />
           <Row className={css.editRow}>
             <Col xs={12} sm={5}>
