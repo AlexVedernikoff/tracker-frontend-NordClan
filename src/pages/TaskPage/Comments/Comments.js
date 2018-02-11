@@ -188,9 +188,7 @@ class Comments extends Component {
               value={this.props.currentComment.text}
             />
             <div className={css.answerUnderline}>
-              <button onClick={this.publishComment} disabled={this.state.disabledBtn}>
-                <Icons.IconSend />
-              </button>
+              <Button onClick={this.publishComment} type="green" disabled={this.state.disabledBtn} text='Отправить'/>
               {this.props.currentComment.id ? (
                 <div className={css.answerInfo}>
                   Редактирование комментария&nbsp;
