@@ -9,7 +9,7 @@ import { API_URL } from '../../../../constants/Settings';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './SprintReport.scss';
 
-const dateFormat = 'YYYY-MM-DD';
+const dateFormat = 'DD.MM.YYYY';
 
 class SprintReport extends Component {
   constructor (props) {
@@ -27,7 +27,10 @@ class SprintReport extends Component {
     sprintSelected: null,
     selectedFrom: '',
     selectedTo: '',
-    data: ' '
+    dateFrom: '',
+    dateTo: '',
+    borderColorFrom: '',
+    borderColorTo: ''
   };
 
   sprintSelected = (option) => {
@@ -63,17 +66,17 @@ class SprintReport extends Component {
   };
 
   handleDayFromChange = (date) => {
-    this.setState({ selectedFrom: this.formatDate(date) });
+    this.setState({ selectedFrom: this.formatDate(date), dateFrom: this.formatDate(date), borderColorFrom: ''});
   };
   handleDayToChange = (date) => {
-    this.setState({ selectedTo: this.formatDate(date) });
+    this.setState({ selectedTo: this.formatDate(date), dateTo: this.formatDate(date), borderColorTo: '' });
   };
 
   isRangeValid = () => {
     return (
       (!this.state.selectedFrom && !this.state.selectedTo)
-      || (moment(this.state.selectedFrom, 'YYYY-MM-DD', true).isValid()
-        && moment(this.state.selectedTo, 'YYYY-MM-DD', true).isValid()
+      || (moment(this.state.selectedFrom, 'DD.MM.YYYY', true).isValid()
+        && moment(this.state.selectedTo, 'DD.MM.YYYY', true).isValid()
         && moment(this.state.selectedTo).isAfter(this.state.selectedFrom))
     );
   };
@@ -126,12 +129,40 @@ class SprintReport extends Component {
     }
     return `?startDate=${this.state.selectedFrom}&endDate=${this.state.selectedTo}`;
   };
-  validDateInput = (val) => {
-    this.setState({ data: val.target.value.replace(/\D/, '') });
-    console.log(this.state.data);
+
+  validDateFromInput = (val) => {
+    if(val.length === 2 || val.length === 5) {
+      val+='.';
+    }
+    let d_arr = val.split('.');
+    let d = new Date(d_arr[2]+'/'+d_arr[1]+'/'+d_arr[0]+'');
+
+    if(d_arr[2]!=d.getFullYear() || d_arr[1]!=(d.getMonth() + 1) || d_arr[0]!=d.getDate()) {
+      this.state.borderColorFrom = 'red';
+    } else {
+      this.state.borderColorFrom = '#ebebeb';
+    }
+    this.setState({ dateFrom: val});
   };
+
+  validDateToInput = (val) => {
+    if(val.length === 2 || val.length === 5) {
+      val+='.';
+    }
+    let d_arr = val.split('.');
+    let d = new Date(d_arr[2]+'/'+d_arr[1]+'/'+d_arr[0]+'');
+
+    if(d_arr[2]!=d.getFullYear() || d_arr[1]!=(d.getMonth() + 1) || d_arr[0]!=d.getDate()) {
+      this.state.borderColorTo = 'red';
+    } else {
+      this.state.borderColorTo = '#ebebeb';
+    }
+    this.setState({ dateTo: val});
+  };
+  
   render () {
-    const dateFrom = this.state.selectedFrom ? moment(this.state.selectedFrom).format('DD.MM.YYYY') : this.state.data;
+    
+    const dateFrom = this.state.selectedFrom ? moment(this.state.selectedFrom).format('DD.MM.YYYY') : '';
     const dateTo = this.state.selectedTo ? moment(this.state.selectedTo).format('DD.MM.YYYY') : '';
     return (
       <div className={css.SprintReport}>
@@ -148,7 +179,7 @@ class SprintReport extends Component {
               placeholder="Выбирите спринт..."
               multi={false}
               value={this.state.sprintSelected}
-              onChange={(option) => this.sprintSelected(option)}
+              onKeyUp={(option) => this.sprintSelected(option)}
               noResultsText="Нет результатов"
               options={this.getSelectOptions()}
             />
@@ -156,13 +187,13 @@ class SprintReport extends Component {
           <Col>С: </Col>
           <Col md={2} xs={6}>
             <DatepickerDropdown
-              //onInput={(e) => console.log(e.target.value)}
               name="dateFrom"
               format={dateFormat}
-              value={dateFrom}
-              onInput={(e) => this.validDateInput(e)}
+              value={this.state.dateFrom}
+              onInput={(e) => this.validDateFromInput(e.target.value.replace(/[^0-9.]/g, '').substr(0, 9).trim())}
               onDayChange={this.handleDayFromChange}
-              placeholder="с"
+              style = {{borderColor: this.state.borderColorFrom}}
+              placeholder="дд.мм.гггг"
               disabledDataRanges={[{ after: new Date(this.state.selectedTo) }]}
             />
           </Col>
@@ -171,9 +202,11 @@ class SprintReport extends Component {
             <DatepickerDropdown
               name="dateTo"
               format={dateFormat}
-              value={dateTo}
+              value={this.state.dateTo}
+              onInput={(e) => this.validDateToInput(e.target.value.replace(/[^0-9.]/g, '').substr(0, 9).trim())}
               onDayChange={this.handleDayToChange}
-              placeholder="по"
+              style = {{borderColor: this.state.borderColorTo}}
+              placeholder="дд.мм.гггг"
               disabledDataRanges={[{ before: new Date(this.state.selectedFrom) }]}
             />
           </Col>
