@@ -126,7 +126,7 @@ class Comments extends Component {
   };
 
   publishComment = (evt) => {
-    const { ctrlKey, keyCode } = evt;
+    const { ctrlKey, keyCode, shiftKey } = evt;
     if ((ctrlKey && keyCode === ENTER) || (shiftKey && keyCode === ENTER)) {
       return this.props.updateCurrentCommentText(evt.target.value + '\n');
       console.log('true');
