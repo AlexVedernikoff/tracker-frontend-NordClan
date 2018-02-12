@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import SelectDropdown from '../../../../components/SelectDropdown';
 import _ from 'lodash';
-import moment from 'moment/moment';
+import moment, { locale } from 'moment/moment';
 import DatepickerDropdown from '../../../../components/DatepickerDropdown/DatepickerDropdown';
 import { API_URL } from '../../../../constants/Settings';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
@@ -26,7 +26,8 @@ class SprintReport extends Component {
   state = {
     sprintSelected: null,
     selectedFrom: '',
-    selectedTo: ''
+    selectedTo: '',
+    data: ' '
   };
 
   sprintSelected = (option) => {
@@ -125,9 +126,12 @@ class SprintReport extends Component {
     }
     return `?startDate=${this.state.selectedFrom}&endDate=${this.state.selectedTo}`;
   };
-
+  validDateInput = (val) => {
+    this.setState({ data: val.target.value.replace(/\D/, '') });
+    console.log(this.state.data);
+  };
   render () {
-    const dateFrom = this.state.selectedFrom ? moment(this.state.selectedFrom).format('DD.MM.YYYY') : '';
+    const dateFrom = this.state.selectedFrom ? moment(this.state.selectedFrom).format('DD.MM.YYYY') : this.state.data;
     const dateTo = this.state.selectedTo ? moment(this.state.selectedTo).format('DD.MM.YYYY') : '';
     return (
       <div className={css.SprintReport}>
@@ -152,9 +156,11 @@ class SprintReport extends Component {
           <Col>С: </Col>
           <Col md={2} xs={6}>
             <DatepickerDropdown
+              //onInput={(e) => console.log(e.target.value)}
               name="dateFrom"
               format={dateFormat}
               value={dateFrom}
+              onInput={(e) => this.validDateInput(e)}
               onDayChange={this.handleDayFromChange}
               placeholder="с"
               disabledDataRanges={[{ after: new Date(this.state.selectedTo) }]}
