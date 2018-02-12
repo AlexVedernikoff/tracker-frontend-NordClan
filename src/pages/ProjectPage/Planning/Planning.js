@@ -404,7 +404,7 @@ class Planning extends Component {
           <hr />
           <br />
           <Row className={css.editRow}>
-            <Col xs={12} sm={6}>
+            <Col xs={12} sm={5}>
               <ProjectDate
                 onEditSubmit={this.onProjectStartSubmit}
                 header='Начало проекта:'
@@ -413,7 +413,8 @@ class Planning extends Component {
                 disabledDataRanges={[{after: new Date(completedAt)}]}
               />
             </Col>
-            <Col xs={12} sm={6}>
+            <Col xs={12} sm={2}/>
+            <Col xs={12} sm={5}>
               <ProjectDate
                 onEditSubmit={this.onProjectEndSubmit}
                 header='Конец проекта:'
@@ -424,7 +425,7 @@ class Planning extends Component {
             </Col>
           </Row>
           <Row className={css.editRow}>
-            <Col xs={12} sm={6}>
+            <Col xs={12} sm={5}>
               <Budget
                 onEditSubmit={this.onRiskBudgetSubmit}
                 header='Бюджет с рисковым резервом:'
@@ -432,7 +433,8 @@ class Planning extends Component {
                 isProjectAdmin={isProjectAdmin}
               />
             </Col>
-            <Col xs={12} sm={6}>
+            <Col xs={12} sm={2}/>
+            <Col xs={12} sm={5}>
               <Budget
                 onEditSubmit={this.onBudgetSubmit}
                 header='Бюджет без рискового резерва:'

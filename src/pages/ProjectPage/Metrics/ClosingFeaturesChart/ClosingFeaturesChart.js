@@ -20,26 +20,24 @@ class ClosingFeaturesChart extends Component {
       ...props.chartDefaultOptions,
       scales: {
         ...props.chartDefaultOptions.scales,
-        yAxes: [{
-          ticks: {
-            beginAtZero: true
-          },
-          display: true,
-          scaleLabel: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true
+            },
             display: true,
-            labelString: 'Часы'
+            scaleLabel: {
+              display: true,
+              labelString: 'Часы'
+            }
           }
-        }]
+        ]
       }
     };
   }
 
   makeChartData = () => {
-    const {
-      sprintClosingFeaturesMetrics,
-      sprintWriteOffTimeMetrics,
-      sprintWorkWithoutEvaluationMetrics
-    } = this.props;
+    const { sprintClosingFeaturesMetrics, sprintWriteOffTimeMetrics, sprintWorkWithoutEvaluationMetrics } = this.props;
     return {
       datasets: [
         this.makeBugsLine(sprintClosingFeaturesMetrics, 'Динамика закрытия фич (с учетом трудозатрат)'),
@@ -50,12 +48,14 @@ class ClosingFeaturesChart extends Component {
   };
 
   makeBugsLine = (metrics, label) => {
-    const line = metrics.map(metric => {
-      return {
-        x: metric.createdAt,
-        y: roundNum(+metric.value, 2)
-      };
-    }).sort(sortChartLineByDates);
+    const line = metrics
+      .map((metric) => {
+        return {
+          x: metric.createdAt,
+          y: roundNum(+metric.value, 2)
+        };
+      })
+      .sort(sortChartLineByDates);
     return {
       data: [...line],
       label: label,
@@ -66,12 +66,8 @@ class ClosingFeaturesChart extends Component {
   render () {
     return (
       <div className={css.ClosingFeaturesChart}>
-        <h3>Динамика закрытия фич</h3>
-        <Line
-          data={this.makeChartData()}
-          options={this.chartOptions}
-          redraw
-        />
+        <h3 className={css.h3Top}>Динамика закрытия фич</h3>
+        <Line data={this.makeChartData()} options={this.chartOptions} redraw />
       </div>
     );
   }

@@ -13,6 +13,7 @@ import { getMetrics } from './../../../actions/Metrics';
 import moment from 'moment';
 import getRandomColor from '../../../utils/getRandomColor';
 import { ADMIN } from '../../../constants/Roles';
+import Tabs from '../../../components/Tabs';
 
 class Metrics extends Component {
   static propTypes = {
@@ -33,7 +34,7 @@ class Metrics extends Component {
   }
 
   componentWillMount () {
-    const { getMetrics, params, createdAt} = this.props;
+    const { getMetrics, params, createdAt } = this.props;
     if (createdAt) {
       const metricsParams = {
         projectId: parseInt(params.projectId),
@@ -75,24 +76,108 @@ class Metrics extends Component {
   }
 
   filterById = (id, metrics) => {
-    return metrics ? metrics.filter(metric => metric.typeId === id) : [];
-  }
+    return metrics ? metrics.filter((metric) => metric.typeId === id) : [];
+  };
 
   getBasicLineSettings = () => {
-    const randomnedColor = getRandomColor();
-    return {
-      backgroundColor: randomnedColor,
-      borderColor: randomnedColor,
-      fill: false,
-      lineTension: 0,
-      borderWidth: 1,
-      pointRadius: 1
+    let getBasicLineSettings_count = 0;
+    let prevColor;
+    let randomnedColor;
+    return () => {
+      if (getBasicLineSettings_count === 0) {
+        randomnedColor = getRandomColor();
+        prevColor = randomnedColor;
+        getBasicLineSettings_count++;
+      } else {
+        getBasicLineSettings_count = 0;
+        randomnedColor = getRandomColor();
+
+        /*const prev_r = parseInt(prevColor.substr(1, 3), 16);
+        const prev_g = parseInt(prevColor.substr(3, 3), 16);
+        const prev_b = parseInt(prevColor.substr(4, 3), 16);
+
+        const cur_r = parseInt(randomnedColor.substr(1, 3), 16);
+        const cur_g = parseInt(randomnedColor.substr(3, 3), 16);
+        const cur_b = parseInt(randomnedColor.substr(5, 3), 16);
+
+        const difference_r = Math.abs(prev_r - cur_r);
+        const difference_g = Math.abs(prev_g - cur_g);
+        const difference_b = Math.abs(prev_b - cur_b);
+
+        if (
+          difference_r < 0x40
+          || difference_g < 0x40
+          || difference_b < 0x40
+          || (Math.abs(difference_r - difference_g) < 0x40
+            || Math.abs(difference_g - difference_b) < 0x40
+            || Math.abs(difference_b - difference_r) < 0x40)
+          || (Math.sqrt(difference_r ^ (2 + difference_g) ^ 2)
+            + Math.sqrt(difference_g ^ (2 + difference_b) ^ 2)
+            + Math.sqrt(difference_b ^ (2 + difference_r) ^ 2))
+            / 3
+            < 80
+        ) {
+          randomnedColor = getRandomColor();
+        }*/
+
+        const parseColor = (color) => parseInt(color, 16) / 255;
+        const parseColorToHSL = (color) => {
+          let [result, r, g, b] = (/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i).exec(color);
+          r = parseColor(r);
+          g = parseColor(g);
+          b = parseColor(b);
+          const max = Math.max(r, g, b);
+          const min = Math.min(r, g, b);
+          let h;
+          let s;
+          const l = (max + min) / 2;
+          if (max == min) {
+            h = s = 0; // achromatic
+          } else {
+            const d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+            case r:
+              h = (g - b) / d + (g < b ? 6 : 0);
+              break;
+            case g:
+              h = (b - r) / d + 2;
+              break;
+            case b:
+              h = (r - g) / d + 4;
+              break;
+            }
+            h /= 6;
+          }
+          const HSL = { h, s, l };
+          console.log(HSL);
+          return HSL;
+        };
+        if (
+          parseColorToHSL(randomnedColor) > 0.5
+          && parseColorToHSL(randomnedColor) < 0.75
+          && Math.sqrt(parseColorToHSL(randomnedColor).h - parseColorToHSL(prevColor).h) < 0.25
+        ) {
+          randomnedColor = getRandomColor();
+        }
+      }
+
+      return {
+        backgroundColor: randomnedColor,
+        borderColor: randomnedColor,
+        fill: false,
+        lineTension: 0,
+        borderWidth: 1,
+        pointRadius: 1
+      };
     };
   };
 
   checkIsAdminInProject = () => {
-    return this.props.user.projectsRoles && this.props.user.projectsRoles.admin.indexOf(this.props.projectId) !== -1
-      || this.props.user.globalRole === ADMIN;
+    return (
+      (this.props.user.projectsRoles && this.props.user.projectsRoles.admin.indexOf(this.props.projectId) !== -1)
+      || this.props.user.globalRole === ADMIN
+    );
   };
 
   render () {
@@ -100,6 +185,7 @@ class Metrics extends Component {
       значение Id типов метрик
       http://gitlab.simbirsoft/frontend/sim-track-back/blob/develop/server/services/agent/calculate/metrics.txt
     */
+
     const { metrics } = this.props;
 
     const isProjectAdmin = this.checkIsAdminInProject();
@@ -117,7 +203,6 @@ class Metrics extends Component {
     const openedCustomerBugsMetrics = this.filterById(8, metrics);
     const openedRegressBugsMetrics = this.filterById(9, metrics);
 
-    
     /*Затраты по ролям*/
     const getCostByRoleMetrics = (role1, role2, role3, role4, role5, role6, role7, role8, role9, role10) => [
       {
@@ -196,7 +281,6 @@ class Metrics extends Component {
       this.filterById(29, metrics)
     );
 
-
     const chartDefaultOptions = {
       responsive: true,
       hover: { mode: 'nearest' },
@@ -213,92 +297,125 @@ class Metrics extends Component {
         }
       },
       scales: {
-        xAxes: [{
-          type: 'time',
-          time: {
-            displayFormats: {
-              day: 'D MMM'
+        xAxes: [
+          {
+            type: 'time',
+            time: {
+              displayFormats: {
+                day: 'D MMM'
+              },
+              tooltipFormat: 'DD.MM.YYYY'
             },
-            tooltipFormat: 'DD.MM.YYYY'
-          },
-          display: true,
-          scaleLabel: {
             display: true,
-            labelString: 'Дата'
+            scaleLabel: {
+              display: true,
+              labelString: 'Дата'
+            }
           }
-        }]
+        ]
       }
     };
+    const tabs = [
+      {
+        name: 'Метрики по проекту'
+      },
+      {
+        name: 'Баги на проекте'
+      },
+      {
+        name: 'Затраты по ролям'
+      },
+      {
+        name: 'Метрики по спринту'
+      }
+    ];
+    const Pane = (props) => {
+      return <div>{props.children}</div>;
+    };
 
+    Pane.propTypes = {
+      label: React.PropTypes.string.isRequired
+    };
     return (
       <div>
         <section className={css.Metrics}>
-          <SprintReport startDate={this.startDate()} endDate={this.endDate()}/>
-          {isProjectAdmin ? <div>
-            <h2>Метрики по проекту</h2>
-            <StartEndDates startDate={this.startDate()} endDate={this.endDate()}/>
-            <Row className = {css.rowBorder}>
-              <Col xs={12} md={10} mdOffset={1} lg={6} lgOffset={0}>
-                <BudgetChart
-                  startDate={this.startDate()}
-                  endDate={this.endDate()}
-                  chartDefaultOptions={chartDefaultOptions}
-                  getBasicLineSettings={this.getBasicLineSettings}
-                  projectBudgetMetrics={projectBudgetMetrics}
-                  sprintsBudgetMetrics={sprintsBudgetMetrics}
-                  isRisks={false}
-                />
-              </Col>
-              <Col xs={12} md={10} mdOffset={1} lg={6} lgOffset={0}>
-                <BudgetChart
-                  startDate={this.startDate()}
-                  endDate={this.endDate()}
-                  chartDefaultOptions={chartDefaultOptions}
-                  getBasicLineSettings={this.getBasicLineSettings}
-                  projectBudgetMetrics={projectBudgetRisksMetrics}
-                  sprintsBudgetMetrics={sprintsBudgetRisksMetrics}
-                  isRisks
-                />
-              </Col>
-            </Row>
-            <Row className = {css.rowBorder}>
-              <Col xs={12} md={10} mdOffset={1} lg={8} lgOffset={2} >
-                <BugsChart
-                  chartDefaultOptions={chartDefaultOptions}
-                  getBasicLineSettings={this.getBasicLineSettings}
-                  openedBugsMetrics={openedBugsMetrics}
-                  openedCustomerBugsMetrics={openedCustomerBugsMetrics}
-                  openedRegressBugsMetrics={openedRegressBugsMetrics}
-                />
-              </Col>
-            </Row>
-            <Row className = {css.rowBorder}>
-              <Col xs={12} md={10} mdOffset={1} lg={8} lgOffset={2} >
-                <CostByRoleChart
-                  chartDefaultOptions={chartDefaultOptions}
-                  getBasicLineSettings={this.getBasicLineSettings}
-                  costByRoleMetrics={costByRoleMetrics}
-                  costByRolePercentMetrics={costByRolePercentMetrics}
-                />
-              </Col>
-            </Row>
-            <SprintMetrics
-              chartDefaultOptions={chartDefaultOptions}
-              getBasicLineSettings={this.getBasicLineSettings}
-              startDate={this.startDate()}
-              endDate={this.endDate()}
-              openedBugsMetrics={openedBugsMetrics}
-              openedCustomerBugsMetrics={openedCustomerBugsMetrics}
-              filterById={this.filterById}
-            />
-          </div> : null}
+          {isProjectAdmin ? (
+            <div>
+              <Tabs tabs={tabs} selected={0}>
+                <Pane label={tabs[0].name}>
+                  <StartEndDates startDate={this.startDate()} endDate={this.endDate()} />
+                  <Row>
+                    <Col xs={12} md={10} lg={6} lgOffset={0}>
+                      <BudgetChart
+                        startDate={this.startDate()}
+                        endDate={this.endDate()}
+                        chartDefaultOptions={chartDefaultOptions}
+                        getBasicLineSettings={this.getBasicLineSettings()}
+                        projectBudgetMetrics={projectBudgetMetrics}
+                        sprintsBudgetMetrics={sprintsBudgetMetrics}
+                        isRisks={false}
+                      />
+                    </Col>
+                    <Col xs={12} md={10} lg={6} lgOffset={0}>
+                      <BudgetChart
+                        startDate={this.startDate()}
+                        endDate={this.endDate()}
+                        chartDefaultOptions={chartDefaultOptions}
+                        getBasicLineSettings={this.getBasicLineSettings()}
+                        projectBudgetMetrics={projectBudgetRisksMetrics}
+                        sprintsBudgetMetrics={sprintsBudgetRisksMetrics}
+                        isRisks
+                      />
+                    </Col>
+                  </Row>
+                </Pane>
+                <Pane label={tabs[3].name}>
+                  <SprintMetrics
+                    chartDefaultOptions={chartDefaultOptions}
+                    getBasicLineSettings={this.getBasicLineSettings()}
+                    startDate={this.startDate()}
+                    endDate={this.endDate()}
+                    openedBugsMetrics={openedBugsMetrics}
+                    openedCustomerBugsMetrics={openedCustomerBugsMetrics}
+                    filterById={this.filterById}
+                  />
+                </Pane>
+                <Pane label={tabs[1].name}>
+                  <Row>
+                    <Col xs={12}>
+                      <BugsChart
+                        chartDefaultOptions={chartDefaultOptions}
+                        getBasicLineSettings={this.getBasicLineSettings()}
+                        openedBugsMetrics={openedBugsMetrics}
+                        openedCustomerBugsMetrics={openedCustomerBugsMetrics}
+                        openedRegressBugsMetrics={openedRegressBugsMetrics}
+                      />
+                    </Col>
+                  </Row>
+                </Pane>
+                <Pane label={tabs[2].name}>
+                  <Row>
+                    <Col xs={12}>
+                      <CostByRoleChart
+                        chartDefaultOptions={chartDefaultOptions}
+                        getBasicLineSettings={this.getBasicLineSettings()}
+                        costByRoleMetrics={costByRoleMetrics}
+                        costByRolePercentMetrics={costByRolePercentMetrics}
+                      />
+                    </Col>
+                  </Row>
+                </Pane>
+              </Tabs>
+            </div>
+          ) : null}
+          <SprintReport startDate={this.startDate()} endDate={this.endDate()} />
         </section>
       </div>
     );
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   projectId: state.Project.project.id,
   createdAt: state.Project.project.createdAt,
   completedAt: state.Project.project.completedAt,
