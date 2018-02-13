@@ -40,9 +40,9 @@ class ClosingFeaturesChart extends Component {
     const { sprintClosingFeaturesMetrics, sprintWriteOffTimeMetrics, sprintWorkWithoutEvaluationMetrics } = this.props;
     return {
       datasets: [
-        this.makeBugsLine(sprintClosingFeaturesMetrics, 'Динамика закрытия фич (с учетом трудозатрат)'),
-        this.makeBugsLine(sprintWriteOffTimeMetrics, 'Динамика списания времени на фичи'),
-        this.makeBugsLine(sprintWorkWithoutEvaluationMetrics, 'Динамика трудозатрат на фичи без оценки')
+        this.makeBugsLine(sprintClosingFeaturesMetrics, 'Динамика закрытия задач (с учетом трудозатрат)'),
+        this.makeBugsLine(sprintWriteOffTimeMetrics, 'Динамика списания времени на задачи'),
+        this.makeBugsLine(sprintWorkWithoutEvaluationMetrics, 'Динамика трудозатрат на задачи без оценки')
       ]
     };
   };
@@ -66,7 +66,7 @@ class ClosingFeaturesChart extends Component {
   render () {
     return (
       <div className={css.ClosingFeaturesChart}>
-        <h3 className={css.h3Top}>Динамика закрытия фич</h3>
+        <h3 className={css.h3Top}>Динамика закрытия задач</h3>
         <Line data={this.makeChartData()} options={this.chartOptions} redraw />
       </div>
     );

@@ -131,18 +131,22 @@
   flex-wrap: wrap;
   margin-bottom: 2rem;
   position: relative;
+  @include phone {
+    flex-direction: column;
+  }
   button {
     flex-shrink: 0;
   }
 
   textarea {
     flex-grow: 1;
-    max-width: 90%;
+    max-width: calc(100% - 110px);
     transition: height 0.3s;
     &.resizeTrue {
       resize: vertical !important;
     }
     @include phone {
+      width: 100%;
       max-width: 100%;
       padding-right: 50px;
       padding-top: 20px;
@@ -153,38 +157,25 @@
     display: flex;
     flex-wrap: nowrap;
     justify-content: space-between;
-    flex-basis: 10%;
-    max-width: 10%;
+    flex-basis: 20%;
+    max-width: 20%;
     flex-direction: column;
-    padding-left: 20px;
+    padding-left: 0;
     position: absolute;
     right: 0;
     bottom: 14px;
+    button {
+      width: 100%;
+      max-width: 100px;
+    }
     @include phone {
       flex-basis: 100%;
       max-width: 150px;
       padding-left: 0px;
       margin-top: 20px;
-    }
-    button {
-      margin-top: 0px;
-      background: none;
-      box-shadow: none;
-      border: none;
-      &:hover {
-        cursor: pointer;
-      }
-      svg {
-        fill: $color-green;
-        height: 30px;
-        width: 30px;
-        transition: fill 0.3s;
-      }
-      &:disabled {
-        svg {
-          fill: $color-dark-gray;
-        }
-      }
+      position: relative;
+      right: inherit;
+      bottom: inherit;
     }
   }
 }
@@ -194,6 +185,8 @@
   font-size: 0.8rem;
   flex-basis: 100%;
   flex-grow: 12;
+  text-align: right;
+  padding-right: 20px;
 }
 .noCommentsYet {
   text-align: center;
