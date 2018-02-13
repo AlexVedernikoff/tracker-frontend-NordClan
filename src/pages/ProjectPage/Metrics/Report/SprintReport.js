@@ -78,11 +78,19 @@ class SprintReport extends Component {
   };
 
   getSelectOptions = () => {
+    let sprintStatus = '';
     return [
       this.fullTimeOption(),
       this.lastWeekOption(),
       this.lastMonthOption(),
-      ...this.props.sprints.map((value) => ({ value, label: value.name }))
+      ...this.props.sprints.map((value) => { 
+        if (value.statusId === 2) {
+          sprintStatus = '(в процессе)';
+        } else {
+          sprintStatus = '';
+        }
+        return {value, label: value.name + ' '+ sprintStatus}
+      })
     ];
   };
 

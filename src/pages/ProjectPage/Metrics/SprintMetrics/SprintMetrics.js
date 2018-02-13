@@ -44,7 +44,15 @@ class SprintMetrics extends Component {
   }
 
   getSelectOptions = () => {
-    return [...this.props.sprints.map((value) => ({ value, label: value.name }))];
+    let sprintStatus = '';
+    return [...this.props.sprints.map((value, index) => {
+      if (value.statusId === 2) {
+        sprintStatus = '(в процессе)';
+      } else {
+        sprintStatus = '';
+      }
+      return {value, label: value.name + ' ' + sprintStatus}
+    })];
   };
 
   changeSprint = (option) => {
