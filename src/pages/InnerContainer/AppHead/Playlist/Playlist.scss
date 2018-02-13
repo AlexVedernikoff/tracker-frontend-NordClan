@@ -2,10 +2,10 @@
 
 .playlistWrapper {
   width: 34rem;
-  display: none;
+  display: block;
 
-  @include desktop {
-    display: block
+  @include phone {
+    display: none;
   }
 }
 
