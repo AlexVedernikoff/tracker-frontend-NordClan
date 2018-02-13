@@ -92,13 +92,19 @@ class SprintReport extends Component {
     ];
   }
 
-  sprintOption = (value) => ({
-    value,
-    label: value.name,
-    // выборка делается по всем ТШ спринта, поэтому отправляется дата начала проекта и текущая
-    factStartDate: this.formatDate(this.props.startDate),
-    factFinishDate: moment().format(dateFormat)
-  })
+  sprintOption = (value) => {
+    return {
+      label: value.name,
+      value: {
+        sprintId: value.id,
+        // выборка делается по всем ТШ спринта, поэтому отправляется дата начала проекта и текущая
+        factStartDate: this.formatDate(this.props.startDate),
+        factFinishDate: moment().format(dateFormat),
+        sprintStartDate: value.factStartDate,
+        sprintFinishDate: value.factFinishDate
+      }
+    };
+  }
 
   lastWeekOption = () => {
     const lastWeek = moment().subtract(1, 'weeks');
@@ -144,11 +150,20 @@ class SprintReport extends Component {
 
   getQueryParams = () => {
     const { selectedFrom, selectedTo, reportPeriod } = this.state;
-    const sprintId = reportPeriod && reportPeriod.value && reportPeriod.value.id ? reportPeriod.value.id : null;
-    if (selectedFrom && selectedTo && sprintId) {
-      return `?startDate=${selectedFrom}&endDate=${selectedTo}&sprintId=${sprintId}`;
+    const checkSprint = reportPeriod && reportPeriod.value && reportPeriod.value.sprintId;
+    const checkDate = selectedFrom && selectedTo;
+    const selectedDate = `?startDate=${selectedFrom}&endDate=${selectedTo}`;
+    if (checkDate && checkSprint) {
+      // запрос отчета по спринту
+      const { sprintId, sprintStartDate, sprintFinishDate } = reportPeriod.value;
+      const sprintDate = `&sprintStartDate=${sprintStartDate}&sprintFinishDate=${sprintFinishDate}`;
+      return `${selectedDate}&sprintId=${sprintId}&label=${reportPeriod.label}${sprintDate}`;
+    } else if (checkDate && reportPeriod) {
+      // запрос отчета определенного типа
+      return `${selectedDate}&label=${reportPeriod.label}`;
     } else {
-      return `?startDate=${selectedFrom}&endDate=${selectedTo}`;
+      // запрос отчета по дате, без выбора типа
+      return selectedDate;
     }
   }
 
