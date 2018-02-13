@@ -27,16 +27,18 @@ class TasksCountChart extends Component {
       ...props.chartDefaultOptions,
       scales: {
         ...props.chartDefaultOptions.scales,
-        yAxes: [{
-          ticks: {
-            beginAtZero: true
-          },
-          display: true,
-          scaleLabel: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true
+            },
             display: true,
-            labelString: 'Количество задач'
+            scaleLabel: {
+              display: true,
+              labelString: 'Количество задач'
+            }
           }
-        }]
+        ]
       }
     };
   }
@@ -51,9 +53,9 @@ class TasksCountChart extends Component {
     } = this.props;
     return {
       datasets: [
-        this.makeTaskCountMetricsLine(openedFeaturesMetric, 'Количество открытых фич без оценки'),
-        this.makeTaskCountMetricsLine(openedFeaturesWithoutEvaluationMetric, 'Количество открытых фич без оценки'),
-        this.makeTaskCountMetricsLine(openedOutOfPlanFeaturesMetric, 'Количество открытых фич вне плана'),
+        this.makeTaskCountMetricsLine(openedFeaturesMetric, 'Количество открытых задач без оценки'),
+        this.makeTaskCountMetricsLine(openedFeaturesWithoutEvaluationMetric, 'Количество открытых задач без оценки'),
+        this.makeTaskCountMetricsLine(openedOutOfPlanFeaturesMetric, 'Количество открытых задач вне плана'),
         this.makeTaskCountMetricsLine(openedBugsMetrics, 'Количество открытых багов'),
         this.makeTaskCountMetricsLine(openedCustomerBugsMetrics, 'Количество открытых багов от заказчика')
       ]
@@ -61,12 +63,14 @@ class TasksCountChart extends Component {
   }
 
   makeTaskCountMetricsLine = (metrics, label) => {
-    const line = metrics.map(metric => {
-      return {
-        x: metric.createdAt,
-        y: roundNum(+metric.value, 2)
-      };
-    }).sort(sortChartLineByDates);
+    const line = metrics
+      .map((metric) => {
+        return {
+          x: metric.createdAt,
+          y: roundNum(+metric.value, 2)
+        };
+      })
+      .sort(sortChartLineByDates);
     return {
       data: [...line],
       label: label,
@@ -78,11 +82,7 @@ class TasksCountChart extends Component {
     return (
       <div className={css.TasksCountChart}>
         <h3>Количество задач</h3>
-        <Line
-          data={this.makeChartData()}
-          options={this.chartOptions}
-          redraw
-        />
+        <Line data={this.makeChartData()} options={this.chartOptions} redraw />
       </div>
     );
   }

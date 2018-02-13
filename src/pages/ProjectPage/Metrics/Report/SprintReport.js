@@ -43,8 +43,8 @@ class SprintReport extends Component {
     if (!_.isEmpty(option) && option.value.id) {
       this.setState({
         reportPeriod: option,
-        selectedFrom: this.formatDate(option.factStartDate),
-        selectedTo: this.formatDate(option.factFinishDate)
+        selectedFrom: this.formatDate(option.value.factStartDate),
+        selectedTo: this.formatDate(option.value.factFinishDate)
       });
     } else if (!_.isEmpty(option)) {
       this.setState({
@@ -63,23 +63,25 @@ class SprintReport extends Component {
 
   formatDate = date => date && moment(date).format(dateFormat);
 
-  updatePickers = value => {
-    const {selectedFrom, selectedTo} = value;
-    this.setState({selectedFrom, selectedTo});
+  updatePickers = (value) => {
+    const { selectedFrom, selectedTo } = value;
+    this.setState({ selectedFrom, selectedTo });
   };
 
-  handleDayFromChange = date => {
-    this.setState({ selectedFrom: this.formatDate(date)});
+  handleDayFromChange = (date) => {
+    this.setState({ selectedFrom: this.formatDate(date) });
   };
-  handleDayToChange = date => {
-    this.setState({ selectedTo: this.formatDate(date)});
+  handleDayToChange = (date) => {
+    this.setState({ selectedTo: this.formatDate(date) });
   };
 
   isRangeValid = () => {
-    return (!this.state.selectedFrom && !this.state.selectedTo)
-      || moment(this.state.selectedFrom, 'YYYY-MM-DD', true).isValid()
-      && moment(this.state.selectedTo, 'YYYY-MM-DD', true).isValid()
-      && moment(this.state.selectedTo).isAfter(this.state.selectedFrom);
+    return (
+      (!this.state.selectedFrom && !this.state.selectedTo)
+      || (moment(this.state.selectedFrom, 'YYYY-MM-DD', true).isValid()
+        && moment(this.state.selectedTo, 'YYYY-MM-DD', true).isValid()
+        && moment(this.state.selectedTo).isAfter(this.state.selectedFrom))
+    );
   };
 
   getSelectOptions = () => {
@@ -88,9 +90,9 @@ class SprintReport extends Component {
       this.wholeProjectTimeOption(),
       this.lastWeekOption(),
       this.lastMonthOption(),
-      ...this.props.sprints.map(value => this.sprintOption(value))
+      ...this.props.sprints.map((value) => ({ value, label: value.name }))
     ];
-  }
+  };
 
   sprintOption = (value) => {
     return {
@@ -115,7 +117,7 @@ class SprintReport extends Component {
         factFinishDate: lastWeek.endOf('isoWeek').toDate()
       }
     };
-  }
+  };
 
   lastMonthOption = () => {
     const lastMonth = moment().subtract(1, 'month');
@@ -126,7 +128,7 @@ class SprintReport extends Component {
         factFinishDate: lastMonth.endOf('month').toDate()
       }
     };
-  }
+  };
 
   fullTimeOption = () => {
     return {
@@ -146,7 +148,7 @@ class SprintReport extends Component {
         factFinishDate: this.formatDate(this.props.endDate)
       }
     };
-  }
+  };
 
   getQueryParams = () => {
     const { selectedFrom, selectedTo, reportPeriod } = this.state;
@@ -168,61 +170,66 @@ class SprintReport extends Component {
   }
 
   render () {
+    console.log(this.state);
     const dateFrom = this.state.selectedFrom ? moment(this.state.selectedFrom).format('DD.MM.YYYY') : '';
     const dateTo = this.state.selectedTo ? moment(this.state.selectedTo).format('DD.MM.YYYY') : '';
     return (
-        <div className={css.SprintReport}>
-            <Row center="xs">
-                <Col md={3} xs={12}><h2>Выгрузка отчёта</h2></Col>
-            </Row>
-            <Row className = {css.modile_style}>
-                <Col>Спринт: </Col>
-                <Col md={4} xs={12}>
-                    <SelectDropdown
-                        name="sprint"
-                        placeholder="Выбирите спринт..."
-                        multi={false}
-                        value={this.state.reportPeriod}
-                        onChange={(option) => this.selectReportPeriod(option)}
-                        noResultsText="Нет результатов"
-                        options={this.getSelectOptions()}
-                    />
-                </Col>
-                <Col>С: </Col>
-                <Col md={2} xs={6}>
-                    <DatepickerDropdown
-                        name="dateFrom"
-                        format={dateFormat}
-                        value={dateFrom}
-                        onDayChange={this.handleDayFromChange}
-                        placeholder="с"
-                        disabledDataRanges={[{after: new Date(this.state.selectedTo)}]}
-                    />
-                </Col>
-                <Col>По: </Col>
-                <Col md={2} xs={4}>
-                    <DatepickerDropdown
-                        name="dateTo"
-                        format={dateFormat}
-                        value={dateTo}
-                        onDayChange={this.handleDayToChange}
-                        placeholder="по"
-                        disabledDataRanges={[{before: new Date(this.state.selectedFrom)}]}
-                    />
-                </Col>
-                <Col md={2}>
-                    <a className={this.isRangeValid() ? css.downLoad : css.disabled}
-                       href={`${API_URL}/project/${this.props.project.id}/reports/period${this.getQueryParams()}`}>
-                      Выгрузить отчёт
-                    </a>
-                </Col>
-            </Row>
-        </div>
+      <div className={css.SprintReport}>
+        <Row center="xs">
+          <Col xs={12}>
+            <h2>Выгрузка отчёта</h2>
+          </Col>
+        </Row>
+        <Row className={css.modile_style}>
+          <Col>Спринт: </Col>
+          <Col md={4} xs={12}>
+            <SelectDropdown
+              name="sprint"
+              placeholder="Выбирите спринт..."
+              multi={false}
+              value={this.state.reportPeriod}
+              onChange={(option) => this.selectReportPeriod(option)}
+              noResultsText="Нет результатов"
+              options={this.getSelectOptions()}
+            />
+          </Col>
+          <Col>С: </Col>
+          <Col md={2} xs={6}>
+            <DatepickerDropdown
+              name="dateFrom"
+              format={dateFormat}
+              value={dateFrom}
+              onDayChange={this.handleDayFromChange}
+              placeholder="с"
+              disabledDataRanges={[{ after: new Date(this.state.selectedTo) }]}
+            />
+          </Col>
+          <Col>По: </Col>
+          <Col md={2} xs={4}>
+            <DatepickerDropdown
+              name="dateTo"
+              format={dateFormat}
+              value={dateTo}
+              onDayChange={this.handleDayToChange}
+              placeholder="по"
+              disabledDataRanges={[{ before: new Date(this.state.selectedFrom) }]}
+            />
+          </Col>
+          <Col md={2}>
+            <a
+              className={this.isRangeValid() ? css.downLoad : css.disabled}
+              href={`${API_URL}/project/${this.props.project.id}/reports/period${this.getQueryParams()}`}
+            >
+              Выгрузить отчёт
+            </a>
+          </Col>
+        </Row>
+      </div>
     );
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   project: state.Project.project,
   sprints: state.Project.project.sprints
 });

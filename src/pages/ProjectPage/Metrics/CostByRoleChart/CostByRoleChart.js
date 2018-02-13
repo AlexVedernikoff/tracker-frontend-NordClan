@@ -25,15 +25,10 @@ class CostByRoleChart extends Component {
   }
 
   makeChartData () {
-    const {
-      costByRoleMetrics,
-      costByRolePercentMetrics
-    } = this.props;
+    const { costByRoleMetrics, costByRolePercentMetrics } = this.props;
     const { displayPercent } = this.state;
     return {
-      datasets: [
-        ...this.makeRoleMetricsLine(displayPercent ? costByRolePercentMetrics : costByRoleMetrics)
-      ]
+      datasets: [...this.makeRoleMetricsLine(displayPercent ? costByRolePercentMetrics : costByRoleMetrics)]
     };
   }
 
@@ -42,67 +37,64 @@ class CostByRoleChart extends Component {
       ...this.props.chartDefaultOptions,
       scales: {
         ...this.props.chartDefaultOptions.scales,
-        yAxes: [{
-          ticks: {
-            beginAtZero: true
-          },
-          display: true,
-          scaleLabel: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true
+            },
             display: true,
-            labelString: this.state.displayPercent ? '% часов' : 'часы'
+            scaleLabel: {
+              display: true,
+              labelString: this.state.displayPercent ? '% часов' : 'часы'
+            }
           }
-        }]
+        ]
       }
     };
-  }
+  };
 
   makeRoleMetricsLine (roleMetrics) {
-    return roleMetrics.map(role => {
-      const line = role.metrics.map(metric => {
-        return {
-          x: metric.createdAt,
-          y: roundNum(+metric.value, 2)
-        };
-      }).sort(sortChartLineByDates);
+    return roleMetrics.map((role) => {
+      const line = role.metrics
+        .map((metric) => {
+          return {
+            x: metric.createdAt,
+            y: roundNum(+metric.value, 2)
+          };
+        })
+        .sort(sortChartLineByDates);
       return {
         data: line,
         label: role.name,
-        ...this.props.getBasicLineSettings(),
-        backgroundColor: role.color,
-        borderColor: role.color
+        ...this.props.getBasicLineSettings()
       };
     });
   }
   switcherClickHandler = (buttonType) => {
     return () => {
       if (buttonType === 'percent' && !this.state.displayPercent) {
-        this.setState({displayPercent: true});
+        this.setState({ displayPercent: true });
       } else if (buttonType === 'hours' && this.state.displayPercent) {
-        this.setState({displayPercent: false});
+        this.setState({ displayPercent: false });
       }
     };
-  }
+  };
   render () {
     return (
       <div className={css.CostByRoleChart}>
-        <h3>Затраты по ролям</h3>
         <div className={css.CostByRoleSwitcher}>
           <Button
             type={this.state.displayPercent ? 'primary' : 'bordered'}
-            text='Отобразить в %'
+            text="Отобразить в %"
             onClick={this.switcherClickHandler('percent')}
           />
           <Button
             type={this.state.displayPercent ? 'bordered' : 'primary'}
-            text='Отобразить в часах'
+            text="Отобразить в часах"
             onClick={this.switcherClickHandler('hours')}
           />
         </div>
-        <Line
-          data={this.makeChartData()}
-          options={this.getChartOptions()}
-          redraw
-        />
+        <Line data={this.makeChartData()} options={this.getChartOptions()} redraw />
       </div>
     );
   }

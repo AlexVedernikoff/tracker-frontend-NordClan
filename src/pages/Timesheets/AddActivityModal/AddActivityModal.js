@@ -115,12 +115,14 @@ class AddActivityModal extends Component {
       if (selectedTask) {
         return {
           id: selectedTask.body.projectId,
-          name: this.state.projects.find(project => project.body.id === selectedTask.body.projectId).body.name
+          name: this.state.projects.find(project => project.body.id === selectedTask.body.projectId).body.name,
+          prefix: selectedTask.body.prefix
         };
       } else if (selectedProject) {
         return {
           id: selectedProject.value,
-          name: selectedProject.label
+          name: selectedProject.label,
+          prefix: selectedProject.body.prefix
         };
       } else {
         return null;
@@ -132,7 +134,7 @@ class AddActivityModal extends Component {
       comment: null,
       task: selectedTask ? {
         id: selectedTask.value,
-        name: selectedTask.label,
+        name: selectedTask.body.name,
         sprint: getSprint()
       } : null,
       taskStatusId: checkPlayStatus(taskStatusId) ? taskStatusId + 1 : taskStatusId,

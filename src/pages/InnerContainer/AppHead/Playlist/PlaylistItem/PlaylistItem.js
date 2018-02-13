@@ -24,6 +24,7 @@ class PlaylistItem extends Component {
   constructor (props) {
     super(props);
     this.state = {
+      itemSpentTime: roundNum(this.props.item.spentTime, 2),
       isCommentOpen: false
     };
     this.debouncedUpdateDraft = _.debounce(this.props.updateDraft, 500);
@@ -48,35 +49,46 @@ class PlaylistItem extends Component {
 
   handleChangeTime = (e) => {
     const value = e.target.value;
-    if (this.props.item.isDraft) {
-      this.debouncedUpdateDraft(
-        {
-          sheetId: this.props.item.id,
-          spentTime: value.replace(',', '.'),
-          isVisible: this.props.item.isVisible,
-          onDate: this.props.item.onDate,
-          typeId: this.props.item.typeId,
-          projectId: this.props.item.project ? this.props.item.project.id : 0,
-          sprintId: this.props.item.task.sprint ? this.props.item.task.sprint.id : 0
-        },
-        {
-          onDate: this.props.item.onDate
-        }
-      );
-    } else {
-      this.debouncedUpdateOnlyTimesheet(
-        {
-          sheetId: this.props.item.id,
-          spentTime: value.replace(',', '.'),
-          isVisible: this.props.item.isVisible,
-          comment: this.props.item.comment,
-          onDate: this.props.item.onDate,
-          projectId: this.props.item.project ? this.props.item.project.id : 0,
-          sprintId: this.props.item.sprint ? this.props.item.sprint.id : 0
-        }
-      );
+    this.setState({
+      itemSpentTime: value ? roundNum(value, 2) : ''
+    });
+    if (Number(value) > 0) {
+      if (this.props.item.isDraft) {
+        this.debouncedUpdateDraft(
+          {
+            sheetId: this.props.item.id,
+            spentTime: value.replace(',', '.'),
+            isVisible: this.props.item.isVisible,
+            onDate: this.props.item.onDate,
+            typeId: this.props.item.typeId,
+            projectId: this.props.item.project ? this.props.item.project.id : 0,
+            sprintId: this.props.item.task.sprint ? this.props.item.task.sprint.id : 0
+          },
+          {
+            onDate: this.props.item.onDate
+          }
+        );
+      } else {
+        this.debouncedUpdateOnlyTimesheet(
+          {
+            sheetId: this.props.item.id,
+            spentTime: value.replace(',', '.'),
+            isVisible: this.props.item.isVisible,
+            comment: this.props.item.comment,
+            onDate: this.props.item.onDate,
+            projectId: this.props.item.project ? this.props.item.project.id : 0,
+            sprintId: this.props.item.sprint ? this.props.item.sprint.id : 0
+          }
+        );
+      }
     }
   };
+
+  handleChangeTimeToEmpty = () => {
+    this.setState({
+      itemSpentTime: roundNum(this.props.item.spentTime, 2)
+    });
+  }
 
   handleChangeComment = (e) => {
     this.setState({comment: e.target.value});
@@ -109,7 +121,6 @@ class PlaylistItem extends Component {
     const {
       task,
       project,
-      spentTime,
       comment,
       typeId,
       taskStatus: createDraftStatus,
@@ -176,7 +187,7 @@ class PlaylistItem extends Component {
         </div>
         <div className={css.time}>
           <div className={css.today}>
-            <input type="text" onChange={this.handleChangeTime} defaultValue={roundNum(spentTime, 2)}/>
+            <input type="text" onChange={this.handleChangeTime} onBlur={this.handleChangeTimeToEmpty} value={this.state.itemSpentTime}/>
           </div>
           <div className={classnames({[css.other]: true, [css.exceeded]: redColorForTime})}>
             <span
