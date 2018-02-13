@@ -66,7 +66,7 @@ class SprintReport extends Component {
   };
 
   handleDayFromChange = (date) => {
-    this.setState({ selectedFrom: this.formatDate(date), dateFrom: this.formatDate(date), borderColorFrom: ''});
+    this.setState({ selectedFrom: this.formatDate(date), dateFrom: this.formatDate(date), borderColorFrom: '' });
   };
   handleDayToChange = (date) => {
     this.setState({ selectedTo: this.formatDate(date), dateTo: this.formatDate(date), borderColorTo: '' });
@@ -130,38 +130,41 @@ class SprintReport extends Component {
     return `?startDate=${this.state.selectedFrom}&endDate=${this.state.selectedTo}`;
   };
 
-  validDateFromInput = (val) => {
-    if(val.length === 2 || val.length === 5) {
-      val+='.';
+  validDateFromInput = (val, e) => {
+    if (e.keyCode !== 8) {
+      if (val.length === 2 || val.length === 5) {
+        val += '.';
+      }
     }
-    let d_arr = val.split('.');
-    let d = new Date(d_arr[2]+'/'+d_arr[1]+'/'+d_arr[0]+'');
+    const d_arr = val.split('.');
+    const d = new Date(d_arr[2] + '/' + d_arr[1] + '/' + d_arr[0] + '');
 
-    if(d_arr[2]!=d.getFullYear() || d_arr[1]!=(d.getMonth() + 1) || d_arr[0]!=d.getDate()) {
+    if (d_arr[2] != d.getFullYear() || d_arr[1] != d.getMonth() + 1 || d_arr[0] != d.getDate()) {
       this.state.borderColorFrom = 'red';
     } else {
       this.state.borderColorFrom = '#ebebeb';
     }
-    this.setState({ dateFrom: val});
+    this.setState({ dateFrom: val });
   };
 
-  validDateToInput = (val) => {
-    if(val.length === 2 || val.length === 5) {
-      val+='.';
+  validDateToInput = (val, e) => {
+    if (e.keyCode !== 8) {
+      if (val.length === 2 || val.length === 5) {
+        val += '.';
+      }
     }
-    let d_arr = val.split('.');
-    let d = new Date(d_arr[2]+'/'+d_arr[1]+'/'+d_arr[0]+'');
+    const d_arr = val.split('.');
+    const d = new Date(d_arr[2] + '/' + d_arr[1] + '/' + d_arr[0] + '');
 
-    if(d_arr[2]!=d.getFullYear() || d_arr[1]!=(d.getMonth() + 1) || d_arr[0]!=d.getDate()) {
+    if (d_arr[2] != d.getFullYear() || d_arr[1] != d.getMonth() + 1 || d_arr[0] != d.getDate()) {
       this.state.borderColorTo = 'red';
     } else {
       this.state.borderColorTo = '#ebebeb';
     }
-    this.setState({ dateTo: val});
+    this.setState({ dateTo: val });
   };
-  
+
   render () {
-    
     const dateFrom = this.state.selectedFrom ? moment(this.state.selectedFrom).format('DD.MM.YYYY') : '';
     const dateTo = this.state.selectedTo ? moment(this.state.selectedTo).format('DD.MM.YYYY') : '';
     return (
@@ -190,9 +193,14 @@ class SprintReport extends Component {
               name="dateFrom"
               format={dateFormat}
               value={this.state.dateFrom}
-              onInput={(e) => this.validDateFromInput(e.target.value.replace(/[^0-9.]/g, '').substr(0, 9).trim())}
+              onKeyDown={(e) => {
+                if ((e.keyCode < 48 || e.keyCode > 57) && e.keyCode !== 8) {
+                  e.preventDefault();
+                }
+              }}
+              onKeyUp={(e) => this.validDateFromInput(e.target.value.substr(0, 10).trim(), e)}
               onDayChange={this.handleDayFromChange}
-              style = {{borderColor: this.state.borderColorFrom}}
+              style={{ borderColor: this.state.borderColorFrom }}
               placeholder="дд.мм.гггг"
               disabledDataRanges={[{ after: new Date(this.state.selectedTo) }]}
             />
@@ -203,9 +211,14 @@ class SprintReport extends Component {
               name="dateTo"
               format={dateFormat}
               value={this.state.dateTo}
-              onInput={(e) => this.validDateToInput(e.target.value.replace(/[^0-9.]/g, '').substr(0, 9).trim())}
+              onKeyDown={(e) => {
+                if ((e.keyCode < 48 || e.keyCode > 57) && e.keyCode !== 8) {
+                  e.preventDefault();
+                }
+              }}
+              onKeyUp={(e) => this.validDateToInput(e.target.value.substr(0, 10).trim(), e)}
               onDayChange={this.handleDayToChange}
-              style = {{borderColor: this.state.borderColorTo}}
+              style={{ borderColor: this.state.borderColorTo }}
               placeholder="дд.мм.гггг"
               disabledDataRanges={[{ before: new Date(this.state.selectedFrom) }]}
             />
