@@ -140,18 +140,32 @@ class AgileBoard extends Component {
     performerId: null
   }
 
+  storageAgileFilters = JSON.parse(localStorage.getItem('agileBoradFilters'))
+
   componentDidMount () {
     if (this.props.myTaskBoard) {
       this.selectValue(this.getChangedSprint(this.props), 'changedSprint');
     } else if (this.props.project.id) {
       this.selectValue(this.getCurrentSprint(this.props.sprints), 'changedSprint');
     }
+
+    if ((!this.props.myTaskBoard && this.storageAgileFilters) && (this.props.params.projectId === this.storageAgileFilters.projectId)) {
+      this.setState({
+        prioritiesId: this.storageAgileFilters.prioritiesId,
+        authorId: this.storageAgileFilters.authorId,
+        typeId: this.storageAgileFilters.typeId,
+        name: this.storageAgileFilters.name,
+        filterTags: this.storageAgileFilters.tags,
+        performerId: this.storageAgileFilters.performerId
+      });
+      this.selectValue(this.storageAgileFilters.sprintId, 'changedSprint');
+    }
   }
 
   componentWillReceiveProps (nextProps) {
     if (
       (this.props.sprints !== nextProps.sprints || this.props.lastCreatedTask !== nextProps.lastCreatedTask)
-        && nextProps.project.id
+        && nextProps.project.id && (!this.storageAgileFilters || this.storageAgileFilters.projectId !== this.props.params.projectId)
     ) {
       this.selectValue(this.getChangedSprint(nextProps), 'changedSprint');
     }
@@ -210,7 +224,8 @@ class AgileBoard extends Component {
     this.setState({[name]: e}, () => {
       const tags = this.state.filterTags.map((tag) => tag.value);
       const typeId = this.state.typeId.map(option => option.value);
-      const options = !this.props.myTaskBoard ? {
+      const isAllTaskBoard = !this.props.myTaskBoard;
+      const options = isAllTaskBoard ? {
         projectId: this.props.params.projectId,
         sprintId: this.state.changedSprint,
         prioritiesId: this.state.prioritiesId,
@@ -222,6 +237,19 @@ class AgileBoard extends Component {
       } : {
         performerId: this.props.user.id
       };
+      if (isAllTaskBoard) {
+        localStorage.setItem('agileBoradFilters', JSON.stringify({
+          projectId: this.props.params.projectId,
+          sprintId: options.sprintId,
+          prioritiesId: this.state.prioritiesId,
+          authorId: this.state.authorId,
+          typeId: this.state.typeId,
+          name: this.state.name,
+          tags: this.state.filterTags,
+          performerId: this.state.performerId
+        }));
+      }
+
       this.props.getTasks(options);
     });
   };
@@ -384,6 +412,7 @@ class AgileBoard extends Component {
       sprintId: null,
       ...this.initialFilters
     }));
+    localStorage.removeItem('agileBoradFilters');
   }
 
   isFilterEmpty = () => {
