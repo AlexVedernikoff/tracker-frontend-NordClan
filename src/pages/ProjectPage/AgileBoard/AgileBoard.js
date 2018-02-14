@@ -240,7 +240,7 @@ class AgileBoard extends Component {
       if (isAllTaskBoard) {
         localStorage.setItem('agileBoradFilters', JSON.stringify({
           projectId: this.props.params.projectId,
-          sprintId: options.sprintId,
+          sprintId: this.state.changedSprint,
           prioritiesId: this.state.prioritiesId,
           authorId: this.state.authorId,
           typeId: this.state.typeId,
