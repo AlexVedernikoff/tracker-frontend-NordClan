@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ClosingFeaturesChart from '../ClosingFeaturesChart';
 import TasksCountChart from '../TasksCountChart';
 import SelectDropdown from '../../../../components/SelectDropdown';
+import SelectDropDownStatusOptionWithIcon from '../../../../components/SelectDropDownStatusOptionWithIcon';
 import { connect } from 'react-redux';
 import * as css from './SprintMetrics.scss';
 import StartEndDates from '../StartEndDates';
@@ -44,15 +45,16 @@ class SprintMetrics extends Component {
   }
 
   getSelectOptions = () => {
-    let sprintStatus = '';
-    return [...this.props.sprints.map((value, index) => {
-      if (value.statusId === 2) {
-        sprintStatus = '(в процессе)';
-      } else {
-        sprintStatus = '';
-      }
-      return {value, label: value.name + ' ' + sprintStatus}
-    })];
+    return [
+      ...this.props.sprints.map((value) => {
+        return {
+          value,
+          label: `${value.name} (${moment(value.factStartDate).format('DD.MM.YYYY')} ${
+            value.factFinishDate ? `- ${moment(value.factFinishDate).format('DD.MM.YYYY')}` : '- ...'
+          })`
+        };
+      })
+    ];
   };
 
   changeSprint = (option) => {
@@ -132,6 +134,7 @@ class SprintMetrics extends Component {
             value={this.state.sprintSelected}
             onChange={(option) => this.changeSprint(option)}
             noResultsText="Нет результатов"
+            optionComponent={SelectDropDownStatusOptionWithIcon}
             options={this.getSelectOptions()}
             className={css.sprintSelector}
           />

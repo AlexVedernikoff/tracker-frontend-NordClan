@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import SelectDropdown from '../../../../components/SelectDropdown';
+import SelectDropDownStatusOptionWithIcon from '../../../../components/SelectDropDownStatusOptionWithIcon';
+import * as Icons from '../../../../components/Icons';
 import _ from 'lodash';
 import moment from 'moment/moment';
 import DatepickerDropdown from '../../../../components/DatepickerDropdown/DatepickerDropdown';
@@ -26,7 +28,8 @@ class SprintReport extends Component {
   state = {
     sprintSelected: null,
     selectedFrom: '',
-    selectedTo: ''
+    selectedTo: '',
+    optionStatus: ''
   };
 
   sprintSelected = (option) => {
@@ -78,18 +81,17 @@ class SprintReport extends Component {
   };
 
   getSelectOptions = () => {
-    let sprintStatus = '';
     return [
       this.fullTimeOption(),
       this.lastWeekOption(),
       this.lastMonthOption(),
-      ...this.props.sprints.map((value) => { 
-        if (value.statusId === 2) {
-          sprintStatus = '(в процессе)';
-        } else {
-          sprintStatus = '';
-        }
-        return {value, label: value.name + ' '+ sprintStatus}
+      ...this.props.sprints.map((value) => {
+        return {
+          value,
+          label: `${value.name} (${moment(value.factStartDate).format('DD.MM.YYYY')} ${
+            value.factFinishDate ? `- ${moment(value.factFinishDate).format('DD.MM.YYYY')}` : '- ...'
+          })`
+        };
       })
     ];
   };
@@ -151,10 +153,11 @@ class SprintReport extends Component {
               name="sprint"
               placeholder="Выбирите спринт..."
               multi={false}
-              value={this.state.sprintSelected}
+              options={this.getSelectOptions()}
+              optionComponent={SelectDropDownStatusOptionWithIcon}
               onChange={(option) => this.sprintSelected(option)}
               noResultsText="Нет результатов"
-              options={this.getSelectOptions()}
+              value={this.state.sprintSelected}
             />
           </Col>
           <Col>С: </Col>
