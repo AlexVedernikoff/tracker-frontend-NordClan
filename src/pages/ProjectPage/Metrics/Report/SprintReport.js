@@ -15,38 +15,22 @@ import * as css from './SprintReport.scss';
 const dateFormat = 'DD.MM.YYYY';
 
 class SprintReport extends Component {
+  static propTypes = {
+    endDate: PropTypes.string,
+    project: PropTypes.object,
+    sprints: PropTypes.array,
+    startDate: PropTypes.string
+  };
+
   constructor (props) {
     super(props);
   }
 
-  static propTypes = {
-    project: PropTypes.object,
-    startDate: PropTypes.string,
-    endDate: PropTypes.string,
-    sprints: PropTypes.array
-  };
-
   state = {
-    sprintSelected: null,
+    reportPeriod: null,
     selectedFrom: '',
     selectedTo: '',
     optionStatus: ''
-  };
-
-  sprintSelected = (option) => {
-    if (!_.isEmpty(option)) {
-      this.setState({
-        sprintSelected: option,
-        selectedFrom: this.formatDate(option.value.factStartDate),
-        selectedTo: this.formatDate(option.value.factFinishDate)
-      });
-    } else {
-      this.setState({
-        sprintSelected: null,
-        selectedFrom: this.formatDate(this.props.startDate),
-        selectedTo: moment().format(dateFormat)
-      });
-    }
   };
 
   componentWillReceiveProps (newProps) {
@@ -57,6 +41,28 @@ class SprintReport extends Component {
       });
     }
   }
+
+  selectReportPeriod = (option) => {
+    if (!_.isEmpty(option) && option.value.id) {
+      this.setState({
+        reportPeriod: option,
+        selectedFrom: this.formatDate(option.value.factStartDate),
+        selectedTo: this.formatDate(option.value.factFinishDate)
+      });
+    } else if (!_.isEmpty(option)) {
+      this.setState({
+        reportPeriod: option,
+        selectedFrom: this.formatDate(option.value.factStartDate),
+        selectedTo: this.formatDate(option.value.factFinishDate)
+      });
+    } else {
+      this.setState({
+        reportPeriod: null,
+        selectedFrom: this.formatDate(this.props.startDate),
+        selectedTo: moment().format(dateFormat)
+      });
+    }
+  };
 
   formatDate = (date) => date && moment(date).format(dateFormat);
 
@@ -104,19 +110,41 @@ class SprintReport extends Component {
   };
 
   fullTimeOption = () => {
-    const lastMonth = moment().subtract(1, 'month');
+    return {
+      label: 'За все время',
+      value: {
+        factStartDate: this.formatDate(this.props.startDate),
+        factFinishDate: moment().format(dateFormat)
+      }
+    };
+  };
+
+  wholeProjectTimeOption = () => {
     return {
       label: 'За весь проект',
       value: {
-        factStartDate: undefined,
-        factFinishDate: undefined
+        factStartDate: this.formatDate(this.props.startDate),
+        factFinishDate: this.formatDate(this.props.endDate)
       }
     };
   };
 
   getQueryParams = () => {
-    if (!this.state.selectedFrom && !this.state.selectedTo) {
-      return '';
+    const { selectedFrom, selectedTo, reportPeriod } = this.state;
+    const checkSprint = reportPeriod && reportPeriod.value && reportPeriod.value.sprintId;
+    const checkDate = selectedFrom && selectedTo;
+    const selectedDate = `?startDate=${selectedFrom}&endDate=${selectedTo}`;
+    if (checkDate && checkSprint) {
+      // запрос отчета по спринту
+      const { sprintId, sprintStartDate, sprintFinishDate } = reportPeriod.value;
+      const sprintDate = `&sprintStartDate=${sprintStartDate}&sprintFinishDate=${sprintFinishDate}`;
+      return `${selectedDate}&sprintId=${sprintId}&label=${reportPeriod.label}${sprintDate}`;
+    } else if (checkDate && reportPeriod) {
+      // запрос отчета определенного типа
+      return `${selectedDate}&label=${reportPeriod.label}`;
+    } else {
+      // запрос отчета по дате, без выбора типа
+      return selectedDate;
     }
     return `?startDate=${this.state.selectedFrom}&endDate=${this.state.selectedTo}`;
   };
