@@ -38,8 +38,8 @@ class Metrics extends Component {
     if (createdAt) {
       const metricsParams = {
         projectId: parseInt(params.projectId),
-        startDate: moment(this.props.createdAt).format('YYYY-MM-DD'),
-        endDate: moment().format('YYYY-MM-DD')
+        startDate: moment(this.props.createdAt).format('YYYY-MM-DD HH:mm'),
+        endDate: moment().format('YYYY-MM-DD HH:mm')
       };
       getMetrics(metricsParams);
     }
@@ -50,8 +50,8 @@ class Metrics extends Component {
     if (nextProps.createdAt !== createdAt) {
       const metricsParams = {
         projectId: parseInt(params.projectId),
-        startDate: moment(nextProps.createdAt),
-        endDate: moment()
+        startDate: moment(nextProps.createdAt).format('YYYY-MM-DD HH:mm'),
+        endDate: moment().format('YYYY-MM-DD HH:mm')
       };
       getMetrics(metricsParams);
     }
