@@ -50,8 +50,8 @@ class Metrics extends Component {
     if (nextProps.createdAt !== createdAt) {
       const metricsParams = {
         projectId: parseInt(params.projectId),
-        startDate: moment(nextProps.createdAt).format('YYYY-MM-DD'),
-        endDate: moment().format('YYYY-MM-DD')
+        startDate: moment(nextProps.createdAt),
+        endDate: moment()
       };
       getMetrics(metricsParams);
     }

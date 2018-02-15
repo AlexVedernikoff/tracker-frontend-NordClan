@@ -170,7 +170,6 @@ class SprintReport extends Component {
   }
 
   render () {
-    console.log(this.state);
     const dateFrom = this.state.selectedFrom ? moment(this.state.selectedFrom).format('DD.MM.YYYY') : '';
     const dateTo = this.state.selectedTo ? moment(this.state.selectedTo).format('DD.MM.YYYY') : '';
     return (
