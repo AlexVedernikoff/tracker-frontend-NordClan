@@ -122,7 +122,7 @@ class AgileBoard extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      isOnlyMine: this.getIsOnlyMine(),
+      isOnlyMine: false,
       isModalOpen: false,
       performer: null,
       changedTask: null,
@@ -140,7 +140,7 @@ class AgileBoard extends Component {
     performerId: null
   }
 
-  storageAgileFilters = JSON.parse(localStorage.getItem('agileBoradFilters'))
+  storageAgileFilters = JSON.parse(localStorage.getItem('agileBoardFilters'))
 
   componentDidMount () {
     if (this.props.myTaskBoard) {
@@ -149,8 +149,9 @@ class AgileBoard extends Component {
       this.selectValue(this.getCurrentSprint(this.props.sprints), 'changedSprint');
     }
 
-    if ((!this.props.myTaskBoard && this.storageAgileFilters) && (this.props.params.projectId === this.storageAgileFilters.projectId)) {
+    if (!this.props.myTaskBoard && this.storageAgileFilters && this.props.params.projectId === this.storageAgileFilters.projectId) {
       this.setState({
+        isOnlyMine: this.storageAgileFilters.isOnlyMine,
         prioritiesId: this.storageAgileFilters.prioritiesId,
         authorId: this.storageAgileFilters.authorId,
         typeId: this.storageAgileFilters.typeId,
@@ -216,38 +217,47 @@ class AgileBoard extends Component {
 
   toggleMine = () => {
     this.setState((currentState) => ({
-      isOnlyMine: this.setIsOnlyMine(!currentState.isOnlyMine)
-    }));
+      isOnlyMine: !currentState.isOnlyMine
+    }), () => {
+      this.saveFiltersToLocalStorage();
+    });
   };
+
+  saveFiltersToLocalStorage = () => {
+    localStorage.setItem('agileBoardFilters', JSON.stringify({
+      projectId: this.props.params.projectId,
+      sprintId: this.state.changedSprint,
+      isOnlyMine: this.state.isOnlyMine,
+      prioritiesId: this.state.prioritiesId,
+      authorId: this.state.authorId,
+      typeId: this.state.typeId,
+      name: this.state.name,
+      tags: this.state.filterTags,
+      performerId: this.state.performerId
+    }));
+  }
 
   selectValue = (e, name) => {
     this.setState({[name]: e}, () => {
       const tags = this.state.filterTags.map((tag) => tag.value);
       const typeId = this.state.typeId.map(option => option.value);
-      const isAllTaskBoard = !this.props.myTaskBoard;
-      const options = isAllTaskBoard ? {
-        projectId: this.props.params.projectId,
-        sprintId: this.state.changedSprint,
-        prioritiesId: this.state.prioritiesId,
-        authorId: this.state.authorId,
-        typeId: typeId,
-        name: this.state.name,
-        tags: tags.join(','),
-        performerId: this.state.performerId
-      } : {
-        performerId: this.props.user.id
-      };
-      if (isAllTaskBoard) {
-        localStorage.setItem('agileBoradFilters', JSON.stringify({
+      let options = {};
+      if (!this.props.myTaskBoard) {
+        options = {
           projectId: this.props.params.projectId,
           sprintId: this.state.changedSprint,
           prioritiesId: this.state.prioritiesId,
           authorId: this.state.authorId,
-          typeId: this.state.typeId,
+          typeId: typeId,
           name: this.state.name,
-          tags: this.state.filterTags,
+          tags: tags.join(','),
           performerId: this.state.performerId
-        }));
+        };
+        this.saveFiltersToLocalStorage();
+      } else {
+        options = {
+          performerId: this.props.user.id
+        };
       }
 
       this.props.getTasks(options);
@@ -381,19 +391,6 @@ class AgileBoard extends Component {
     }));
   };
 
-  getIsOnlyMine = () => {
-    try {
-      return JSON.parse(localStorage.getItem('isOnlyMine'));
-    } catch (e) {
-      return false;
-    }
-  };
-
-  setIsOnlyMine = (value) => {
-    localStorage.setItem('isOnlyMine', value);
-    return value;
-  };
-
   createOptions = (array, labelField = 'name') => {
     return array.map(
       element => ({
@@ -406,13 +403,13 @@ class AgileBoard extends Component {
   clearFilter = () => {
     this.setState({
       ...this.initialFilters,
-      isOnlyMine: this.setIsOnlyMine(false)
+      isOnlyMine: false
     }, this.props.getTasks({
       projectId: this.props.params.projectId,
       sprintId: null,
       ...this.initialFilters
     }));
-    localStorage.removeItem('agileBoradFilters');
+    localStorage.removeItem('agileBoardFilters');
   }
 
   isFilterEmpty = () => {
