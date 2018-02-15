@@ -190,11 +190,11 @@ class Metrics extends Component {
     const isProjectAdmin = this.checkIsAdminInProject();
 
     /*Бюджет без рискового резерва*/
-    const projectBudgetMetrics = this.filterById(6, metrics);
+    const projectBudgetMetrics = this.filterById(5, metrics);
     const sprintsBudgetMetrics = this.filterById(30, metrics);
 
     /*Бюджет с рисковым резервом*/
-    const projectBudgetRisksMetrics = this.filterById(5, metrics);
+    const projectBudgetRisksMetrics = this.filterById(6, metrics);
     const sprintsBudgetRisksMetrics = this.filterById(31, metrics);
 
     /*Баги на проекте*/
