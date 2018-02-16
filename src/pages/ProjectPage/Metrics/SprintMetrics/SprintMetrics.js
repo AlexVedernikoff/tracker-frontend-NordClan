@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import ClosingFeaturesChart from '../ClosingFeaturesChart';
 import TasksCountChart from '../TasksCountChart';
 import SelectDropdown from '../../../../components/SelectDropdown';
+import SprintSelector from '../../../../components/SprintSelector';
 import { connect } from 'react-redux';
 import * as css from './SprintMetrics.scss';
 import StartEndDates from '../StartEndDates';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import moment from 'moment';
+const dateFormat = 'DD.MM.YYYY';
 
 class SprintMetrics extends Component {
   static propTypes = {
@@ -21,14 +24,16 @@ class SprintMetrics extends Component {
     metrics: PropTypes.array,
     sprints: PropTypes.array
   };
-
   constructor (props) {
     super(props);
     this.state = {
-      sprintSelected: null
+      sprintSelected: null,
+      startDate: null,
+      endDate: null
     };
   }
 
+  formatDate = (date) => date && moment(date).format(dateFormat);
   componentWillMount () {
     const { sprints } = this.props;
     if (sprints.length > 0) {
@@ -44,7 +49,16 @@ class SprintMetrics extends Component {
   }
 
   getSelectOptions = () => {
-    return [...this.props.sprints.map((value) => ({ value, label: value.name }))];
+    return [
+      ...this.props.sprints.map((value) => {
+        return {
+          value,
+          label: `${value.name} (${moment(value.factStartDate).format(dateFormat)} ${
+            value.factFinishDate ? `- ${moment(value.factFinishDate).format(dateFormat)}` : '- ...'
+          })`
+        };
+      })
+    ];
   };
 
   changeSprint = (option) => {
@@ -63,7 +77,15 @@ class SprintMetrics extends Component {
     const getOption = (sprint) => {
       return {
         value: sprint,
-        label: sprint.name
+        label: `${sprint.name} (${moment(sprint.factStartDate).format(dateFormat)} ${
+          sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format(dateFormat)}` : '- ...'
+        })`,
+        statusId: sprint.statusId,
+        className: classnames({
+          [css.INPROGRESS]: sprint.statusId === 2,
+          [css.sprintMarker]: true,
+          [css.FINISHED]: sprint.statusId === 1
+        })
       };
     };
     if (currentSprints.length) {
@@ -103,7 +125,6 @@ class SprintMetrics extends Component {
       openedBugsMetrics,
       openedCustomerBugsMetrics
     } = this.props;
-
     const currentSprintId = this.state.sprintSelected ? this.state.sprintSelected.value.id : null;
     /*Динамика закрытия фич*/
     const sprintClosingFeaturesMetrics = filterById(32, metrics);
@@ -117,16 +138,14 @@ class SprintMetrics extends Component {
     return (
       <div>
         <div className={css.sprintSelectWrapper}>
-          <SelectDropdown
-            name="sprint"
-            placeholder="Выбирите спринт..."
+          <SprintSelector
             multi={false}
             value={this.state.sprintSelected}
+            sprints={this.props.sprints}
             onChange={(option) => this.changeSprint(option)}
-            noResultsText="Нет результатов"
-            options={this.getSelectOptions()}
             className={css.sprintSelector}
           />
+
           <StartEndDates startDate={this.sprintStartDate()} endDate={this.sprintEndDate()} />
         </div>
         <Row>
