@@ -126,6 +126,7 @@ class AgileBoard extends Component {
       isModalOpen: false,
       performer: null,
       changedTask: null,
+      allFilters: [],
       ...this.initialFilters
     };
   }
@@ -200,6 +201,13 @@ class AgileBoard extends Component {
     return changedSprint;
   };
 
+  toggleFilterView = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    return true;
+  }
+
   toggleMine = () => {
     this.setState((currentState) => ({
       isOnlyMine: this.setIsOnlyMine(!currentState.isOnlyMine)
@@ -223,6 +231,7 @@ class AgileBoard extends Component {
         performerId: this.props.user.id
       };
       this.props.getTasks(options);
+      this.getAllFilters();
     });
   };
 
@@ -346,6 +355,10 @@ class AgileBoard extends Component {
     }));
   };
 
+  getAllFilters = () => {
+    return this.getSprints();
+  };
+
   getUsers = () => {
     return this.props.project.users.map((user) => ({
       value: user.id,
@@ -427,6 +440,19 @@ class AgileBoard extends Component {
         {
           !this.props.myTaskBoard
             ? <div>
+                <Row className={css.filtersRow}>
+                  <Col xs={12} sm={12}>
+                    <SelectDropdown
+                      name="allFilters"
+                      multi
+                      placeholder=""
+                      backspaceToRemoveMessage=""
+                      value={this.state.allFilters}
+                      options={this.getAllFilters()}
+                      onFocus={this.toggleFilterView}
+                    />
+                  </Col>
+                </Row>
                 <Row className={css.filtersRow}>
                   <Col className={css.filterButtonCol}>
                     <Priority
