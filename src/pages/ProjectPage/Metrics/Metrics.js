@@ -9,7 +9,7 @@ import BugsChart from './BugsChart';
 import CostByRoleChart from './CostByRoleChart';
 import SprintReport from './Report';
 import SprintMetrics from './SprintMetrics';
-import { getMetrics } from './../../../actions/Metrics';
+import { getMetrics, calculateMetrics } from './../../../actions/Metrics';
 import moment from 'moment';
 import getRandomColor from '../../../utils/getRandomColor';
 import { ADMIN } from '../../../constants/Roles';
@@ -38,8 +38,8 @@ class Metrics extends Component {
     if (createdAt) {
       const metricsParams = {
         projectId: parseInt(params.projectId),
-        startDate: moment(this.props.createdAt).format('YYYY-MM-DD'),
-        endDate: moment().format('YYYY-MM-DD')
+        startDate: moment(this.props.createdAt).format('YYYY-MM-DD HH:mm'),
+        endDate: moment().format('YYYY-MM-DD HH:mm')
       };
       getMetrics(metricsParams);
     }
@@ -50,11 +50,15 @@ class Metrics extends Component {
     if (nextProps.createdAt !== createdAt) {
       const metricsParams = {
         projectId: parseInt(params.projectId),
-        startDate: moment(nextProps.createdAt).format('YYYY-MM-DD'),
-        endDate: moment().format('YYYY-MM-DD')
+        startDate: moment(nextProps.createdAt).format('YYYY-MM-DD HH:mm'),
+        endDate: moment().format('YYYY-MM-DD HH:mm')
       };
       getMetrics(metricsParams);
     }
+  }
+
+  calculate () {
+    calculateMetrics();
   }
 
   startDate () {
@@ -190,11 +194,11 @@ class Metrics extends Component {
     const isProjectAdmin = this.checkIsAdminInProject();
 
     /*Бюджет без рискового резерва*/
-    const projectBudgetMetrics = this.filterById(6, metrics);
+    const projectBudgetMetrics = this.filterById(5, metrics);
     const sprintsBudgetMetrics = this.filterById(30, metrics);
 
     /*Бюджет с рисковым резервом*/
-    const projectBudgetRisksMetrics = this.filterById(5, metrics);
+    const projectBudgetRisksMetrics = this.filterById(6, metrics);
     const sprintsBudgetRisksMetrics = this.filterById(31, metrics);
 
     /*Баги на проекте*/
@@ -340,6 +344,7 @@ class Metrics extends Component {
     };
     return (
       <div>
+      <button onClick={this.calculate}>Пересчитать метрику</button>
         <section className={css.Metrics}>
           {isProjectAdmin ? (
             <div>
