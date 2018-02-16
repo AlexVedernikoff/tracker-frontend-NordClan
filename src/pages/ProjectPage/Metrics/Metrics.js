@@ -57,8 +57,8 @@ class Metrics extends Component {
     }
   }
 
-  calculate () {
-    calculateMetrics();
+  calculate = () => {
+    calculateMetrics(this.props.projectId);
   }
 
   startDate () {
