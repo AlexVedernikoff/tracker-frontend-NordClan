@@ -113,8 +113,8 @@ class SprintReport extends Component {
     return {
       label: 'За все время',
       value: {
-        factStartDate: this.formatDate(this.props.startDate),
-        factFinishDate: moment().format(dateFormat)
+        factStartDate: undefined,
+        factFinishDate: undefined
       }
     };
   };
