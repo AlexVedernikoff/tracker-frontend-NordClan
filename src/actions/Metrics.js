@@ -39,7 +39,7 @@ export const getMetrics = (data) => {
   });
 };
 
-export const calculateMetrics = () => {
-  const URL = `${API_URL}/metrics`;
+export const calculateMetrics = (projectId) => {
+  const URL = `${API_URL}/metrics/${projectId}`;
   axios.get(URL);
 };
