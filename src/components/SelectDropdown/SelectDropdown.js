@@ -10,10 +10,17 @@ export default class SelectDropdown extends Component {
   };
 
   render () {
-    const { name, options, thisClassName, ...other } = this.props;
+    const { name, options, thisClassName, noResultsText, ...other } = this.props;
 
     return (
-      <Select className={thisClassName} name={name} options={options} onFocus={(e) => e.stopPropagation()} {...other} />
+      <Select
+        className={thisClassName}
+        name={name}
+        options={options}
+        noResultsText="Ничего не найдено"
+        onFocus={(e) => e.stopPropagation()}
+        {...other}
+      />
     );
   }
 }
