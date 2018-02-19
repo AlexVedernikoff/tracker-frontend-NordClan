@@ -126,6 +126,7 @@ class AgileBoard extends Component {
       isModalOpen: false,
       performer: null,
       changedTask: null,
+      storageAgileFilters: null,
       ...this.initialFilters
     };
   }
@@ -140,27 +141,13 @@ class AgileBoard extends Component {
     performerId: null
   }
 
-  storageAgileFilters = JSON.parse(localStorage.getItem('agileBoardFilters'))
-
   componentDidMount () {
     if (this.props.myTaskBoard) {
       this.selectValue(this.getChangedSprint(this.props), 'changedSprint');
     } else if (this.props.project.id) {
       this.selectValue(this.getCurrentSprint(this.props.sprints), 'changedSprint');
     }
-
-    if (!this.props.myTaskBoard && this.storageAgileFilters && this.props.params.projectId === this.storageAgileFilters.projectId) {
-      this.setState({
-        isOnlyMine: this.storageAgileFilters.isOnlyMine,
-        prioritiesId: this.storageAgileFilters.prioritiesId,
-        authorId: this.storageAgileFilters.authorId,
-        typeId: this.storageAgileFilters.typeId,
-        name: this.storageAgileFilters.name,
-        filterTags: this.storageAgileFilters.tags,
-        performerId: this.storageAgileFilters.performerId
-      });
-      this.selectValue(this.storageAgileFilters.sprintId, 'changedSprint');
-    }
+    this.getFiltersFromLocalStorage();
   }
 
   componentWillReceiveProps (nextProps) {
@@ -223,16 +210,37 @@ class AgileBoard extends Component {
     });
   };
 
+  getFiltersFromLocalStorage = () => {
+    if (!this.props.myTaskBoard) {
+      const localStorageFilter = JSON.parse(localStorage.getItem('agileBoardFilters')) || {};
+      if (this.props.params.projectId !== localStorageFilter.projectId) return false;
+      this.setState({
+        isOnlyMine: localStorageFilter.isOnlyMine || false,
+        changedSprint: localStorageFilter.changedSprint || this.initialFilters.changedSprint,
+        filterTags: localStorageFilter.filterTags || this.initialFilters.filterTags,
+        typeId: localStorageFilter.typeId || this.initialFilters.typeId,
+        name: localStorageFilter.name || this.initialFilters.name,
+        authorId: localStorageFilter.authorId || this.initialFilters.authorId,
+        prioritiesId: localStorageFilter.prioritiesId || this.initialFilters.prioritiesId,
+        performerId: localStorageFilter.performerId || this.initialFilters.performerId
+      });
+      return true;
+    } else {
+      localStorage.removeItem('agileBoardFilters');
+      return false;
+    }
+  }
+
   saveFiltersToLocalStorage = () => {
     localStorage.setItem('agileBoardFilters', JSON.stringify({
       projectId: this.props.params.projectId,
-      sprintId: this.state.changedSprint,
+      changedSprint: this.state.changedSprint,
       isOnlyMine: this.state.isOnlyMine,
       prioritiesId: this.state.prioritiesId,
       authorId: this.state.authorId,
       typeId: this.state.typeId,
       name: this.state.name,
-      tags: this.state.filterTags,
+      filterTags: this.state.filterTags,
       performerId: this.state.performerId
     }));
   }
