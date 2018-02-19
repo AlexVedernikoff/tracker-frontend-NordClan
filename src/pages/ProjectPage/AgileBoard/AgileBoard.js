@@ -126,7 +126,6 @@ class AgileBoard extends Component {
       isModalOpen: false,
       performer: null,
       changedTask: null,
-      storageAgileFilters: null,
       ...this.initialFilters
     };
   }
@@ -147,15 +146,18 @@ class AgileBoard extends Component {
     } else if (this.props.project.id) {
       this.selectValue(this.getCurrentSprint(this.props.sprints), 'changedSprint');
     }
-    this.getFiltersFromLocalStorage();
   }
 
   componentWillReceiveProps (nextProps) {
     if (
       (this.props.sprints !== nextProps.sprints || this.props.lastCreatedTask !== nextProps.lastCreatedTask)
-        && nextProps.project.id && (!this.storageAgileFilters || this.storageAgileFilters.projectId !== this.props.params.projectId)
+        && nextProps.project.id
     ) {
       this.selectValue(this.getChangedSprint(nextProps), 'changedSprint');
+    }
+
+    if (nextProps.project.id) {
+      this.getFiltersFromLocalStorage();
     }
 
     if (nextProps.sprintTasks.length) {
