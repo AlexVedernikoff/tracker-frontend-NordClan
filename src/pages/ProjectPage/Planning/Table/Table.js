@@ -218,7 +218,6 @@ class Table extends React.Component {
 
   currentMonth (sprint) {
     const nd = new Date(sprint.factFinishDate);
-    console.log(nd.getMonth());
     if (nd.getMonth() > 6) {
       return css.toRight;
     }
