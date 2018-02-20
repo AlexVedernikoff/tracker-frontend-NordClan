@@ -127,7 +127,7 @@
 
 .answerLine {
   display: flex;
-  align-items: end;
+  align-items: flex-start;
   flex-wrap: wrap;
   margin-bottom: 2rem;
   position: relative;
@@ -151,30 +151,22 @@
     }
   }
   .answerButton {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    justify-content: space-between;
-    flex-basis: 10%;
-    flex-direction: column;
+    align-self: flex-end;
     margin-left: 1rem;
     button {
       width: 100%;
       max-width: 100px;
     }
     @include phone {
-      flex-basis: 100%;
+      align-self: flex-start;
       max-width: 150px;
-      padding-left: 0px;
       margin-top: 20px;
-      position: relative;
-      right: inherit;
-      bottom: inherit;
+      margin-left: 0;
     }
   }
 }
 .answerLineText {
-  flex-basis: 80%;
+  flex-basis: 60%;
   flex-grow: 1;
   @include phone {
     width: 100%;
