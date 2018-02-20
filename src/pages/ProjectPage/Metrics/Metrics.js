@@ -14,6 +14,7 @@ import moment from 'moment';
 import getRandomColor from '../../../utils/getRandomColor';
 import { ADMIN } from '../../../constants/Roles';
 import Tabs from '../../../components/Tabs';
+import Button from '../../../components/Button';
 
 class Metrics extends Component {
   static propTypes = {
@@ -344,11 +345,17 @@ class Metrics extends Component {
     };
     return (
       <div>
-      <button onClick={this.calculate}>Пересчитать метрику</button>
         <section className={css.Metrics}>
           {isProjectAdmin ? (
             <div>
-              <Tabs tabs={tabs} selected={0}>
+              <Button
+                addedClassNames={{[css.recalculateBtn]: true}}
+                onClick={this.calculate}
+                type="bordered"
+                icon="IconRefresh"
+                data-tip="Пересчитать метрику"
+              />
+              <Tabs tabs={tabs} selected={0} addedClassNames={{[css.tabs]: true}}>
                 <Pane label={tabs[0].name}>
                   <SprintReport startDate={this.startDate()} endDate={this.endDate()} />
                 </Pane>

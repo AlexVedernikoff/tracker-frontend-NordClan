@@ -37,7 +37,10 @@ export default class Tabs extends React.Component {
 
   render () {
     return (
-      <div className={css.tabs}>
+      <div className={classnames({
+        [css.tabs]: !!css.tabs,
+        ...this.props.addedClassNames
+      })}>
         {this._renderTitles()}
 
         <div className={css.tabs__content}>{this.props.children[this.state.selected]}</div>
