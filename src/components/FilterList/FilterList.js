@@ -18,7 +18,7 @@ export default class FilterList extends React.Component {
     const filterList = filters.length ? (
       <div className={classnames(css.filterList)}>
         {filters.map((filter) => {
-          if (filter.delete) return <Tag name={filter.label} deleteTag={filter.delete} key={filter.name} />;
+          if (filter.onDelete) return <Tag name={filter.label} onDelete={filter.onDelete} key={filter.name} />;
           return <Tag name={filter.label} key={filter.name} />;
         })}
       </div>

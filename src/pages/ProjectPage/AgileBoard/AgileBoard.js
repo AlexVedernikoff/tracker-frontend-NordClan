@@ -420,15 +420,60 @@ class AgileBoard extends Component {
     }));
   };
 
+  resetFiled = (name) => {
+    this.setState(() => ({
+      [name]: this.initialFilters[name]
+    }), () => {
+      const tags = this.state.filterTags.map((tag) => tag.value);
+      const typeId = this.state.typeId.map(option => option.value);
+      this.updateFilterList();
+      this.saveFiltersToLocalStorage();
+      this.props.getTasks({
+        projectId: this.props.params.projectId,
+        sprintId: this.state.changedSprint,
+        prioritiesId: this.state.prioritiesId,
+        authorId: this.state.authorId,
+        typeId: typeId,
+        name: this.state.name,
+        tags: tags.join(','),
+        performerId: this.state.performerId
+      });
+    });
+  };
+
+  removeFromOptionList = (list, id, arrayName) => {
+    const newList = list.filter((item) => {
+      return item.value !== id;
+    });
+    this.setState({
+      [arrayName]: newList
+    }, () => {
+      const tags = this.state.filterTags.map((tag) => tag.value);
+      const typeId = this.state.typeId.map(option => option.value);
+      this.props.getTasks({
+        projectId: this.props.params.projectId,
+        sprintId: this.state.changedSprint,
+        prioritiesId: this.state.prioritiesId,
+        authorId: this.state.authorId,
+        typeId: typeId,
+        name: this.state.name,
+        tags: tags.join(','),
+        performerId: this.state.performerId
+      });
+      this.updateFilterList();
+      this.saveFiltersToLocalStorage();
+    });
+  }
+
   updateFilterList = () => {
     const filters = [
-      this.state.isOnlyMine ? {name: 'isOnlyMine', label: 'мои задачи', delete: () => { console.log('123');}} : null,
-      this.state.authorId ? {name: 'authorId', label: `автор: ${this.getSelectOptions(this.props.project.users, this.state.authorId, 'fullNameRu')}`} : null,
-      this.state.performerId ? {name: 'performerId', label: `исполнитель: ${this.getSelectOptions(this.props.project.users, this.state.performerId, 'fullNameRu')}`} : null,
-      this.state.changedSprint ? {name: 'sprint', label: this.getSelectOptions((this.getSprints()).map(sprint => ({id: sprint.value, name: sprint.label})), this.state.changedSprint)} : null,
-      this.state.name.length > 0 ? {name: ' name', label: this.state.name} : null,
-      ...this.getSelectOptions(null, this.state.typeId, null, 'type'),
-      ...this.getSelectOptions(null, this.state.filterTags, null, 'tag')
+      this.state.isOnlyMine ? {name: 'isOnlyMine', label: 'мои задачи', onDelete: () => this.resetFiled('isOnlyMine') } : null,
+      this.state.authorId ? {name: 'authorId', label: `автор: ${this.getSelectOptions(this.props.project.users, this.state.authorId, 'fullNameRu')}`, onDelete: () => this.resetFiled('authorId') } : null,
+      this.state.performerId ? {name: 'performerId', label: `исполнитель: ${this.getSelectOptions(this.props.project.users, this.state.performerId, 'fullNameRu')}`, onDelete: () => this.resetFiled('performerId')} : null,
+      this.state.changedSprint ? {name: 'sprint', label: this.getSelectOptions((this.getSprints()).map(sprint => ({id: sprint.value, name: sprint.label})), this.state.changedSprint), onDelete: () => this.resetFiled('changedSprint')} : null,
+      this.state.name.length > 0 ? {name: ' name', label: this.state.name, onDelete: () => this.resetFiled('name')} : null,
+      ...this.getSelectOptions(null, this.state.typeId, null, 'typeId'),
+      ...this.getSelectOptions(null, this.state.filterTags, null, 'filterTags')
     ];
 
     this.setState({
@@ -448,9 +493,9 @@ class AgileBoard extends Component {
     );
   };
 
-  getSelectOptions = (array, id, labelField = 'name', arrayName = 'array') => {
+  getSelectOptions = (array, id, labelField = 'name', arrayName = 'array', onDelete) => {
     if (Array.isArray(id)) {
-      return id.map(currentId => ({name: `${arrayName}-${currentId.value}`, label: currentId.label}));
+      return id.map(currentId => ({name: `${arrayName}-${currentId.value}`, label: currentId.label, onDelete: () => { this.removeFromOptionList(id, currentId.value, arrayName); }}));
     } else {
       const option = array.find(element => element.id === id);
       if (!option) return null;
