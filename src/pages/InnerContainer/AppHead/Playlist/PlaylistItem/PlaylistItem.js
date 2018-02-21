@@ -56,7 +56,7 @@ class PlaylistItem extends Component {
             onDate: this.props.item.onDate,
             typeId: this.props.item.typeId,
             projectId: this.props.item.project ? this.props.item.project.id : 0,
-            sprintId: this.props.item.task.sprint ? this.props.item.task.sprint.id : 0
+            sprintId: this.props.item.task && this.props.item.task.sprint ? this.props.item.task.sprint.id : 0
           },
           {
             onDate: this.props.item.onDate
