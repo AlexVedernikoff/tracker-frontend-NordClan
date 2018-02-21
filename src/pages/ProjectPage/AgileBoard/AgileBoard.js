@@ -422,7 +422,7 @@ class AgileBoard extends Component {
 
   updateFilterList = () => {
     const filters = [
-      this.state.isOnlyMine ? {name: 'isOnlyMine', label: 'мои задачи'} : null,
+      this.state.isOnlyMine ? {name: 'isOnlyMine', label: 'мои задачи', delete: () => { console.log('123');}} : null,
       this.state.authorId ? {name: 'authorId', label: `автор: ${this.getSelectOptions(this.props.project.users, this.state.authorId, 'fullNameRu')}`} : null,
       this.state.performerId ? {name: 'performerId', label: `исполнитель: ${this.getSelectOptions(this.props.project.users, this.state.performerId, 'fullNameRu')}`} : null,
       this.state.changedSprint ? {name: 'sprint', label: this.getSelectOptions((this.getSprints()).map(sprint => ({id: sprint.value, name: sprint.label})), this.state.changedSprint)} : null,

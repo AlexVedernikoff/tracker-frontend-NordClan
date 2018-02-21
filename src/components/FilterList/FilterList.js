@@ -1,22 +1,42 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Tag from '../Tag';
+import Button from '../../components/Button';
 import classnames from 'classnames';
 import * as css from './FilterList.scss';
 import {connect} from 'react-redux';
 
 export default class FilterList extends React.Component {
+  showAllFilters = () => {
+    console.log('showmore click');
+  }
   render () {
     const {
       filters,
       ...other
     } = this.props;
-
-    return (
-      <div>
+    const filterList = filters.length ? (
+      <div className={classnames(css.filterList)}>
         {filters.map((filter) => {
+          if (filter.delete) return <Tag name={filter.label} deleteTag={filter.delete} key={filter.name} />;
           return <Tag name={filter.label} key={filter.name} />;
         })}
+      </div>
+    ) : (
+      <div className={classnames(css.filterListShowMore)}>
+        <hr/>
+        <div className={classnames(css.filterListShowMoreButton)}>
+          <Button
+            type="primary"
+            text="Показать все"
+            name="allFilters"
+            onClick={this.showAllFilters}/>
+        </div>
+      </div>
+    );
+    return (
+      <div>
+        {filterList}
       </div>
     );
   }
@@ -24,5 +44,5 @@ export default class FilterList extends React.Component {
 
 
 FilterList.propTypes = {
-  filters: PropTypes.object.isRequired
+  filters: PropTypes.array.isRequired
 };
