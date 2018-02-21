@@ -1,6 +1,7 @@
 @import '../../../styles/variables.scss';
 
 .Metrics {
+  position: relative;
   h2 {
     text-align: left;
   }
@@ -14,5 +15,18 @@
     margin-bottom: 50px;
     padding-bottom: 50px;
     border-bottom: 1px solid $color-gray;
+  }
+}
+.recalculateBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  @include phone {
+    position: static;
+  }
+}
+.tabs {
+  ul {
+    margin-right: 32px;
   }
 }
