@@ -32,11 +32,11 @@ class NavMenu extends Component {
     };
 
     const usersRolesLink = isAdmin(this.props.user.globalRole)
-      ? <li key="usersroles" className={css.sidebarItem}>
+      ? <li key="roles" className={css.sidebarItem}>
         <Link
           className={css.sidebarLink}
           activeClassName={css.activeLink}
-          to="/usersroles"
+          to="/roles"
         >
           Пользователи
         </Link>
