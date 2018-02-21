@@ -8,6 +8,7 @@ import moment from 'moment';
 import _ from 'lodash';
 
 import TaskCard from '../../../components/TaskCard';
+import FilterList from '../../../components/FilterList';
 import PerformerModal from '../../../components/PerformerModal';
 import PhaseColumn from './PhaseColumn';
 import Input from '../../../components/Input';
@@ -216,6 +217,7 @@ class AgileBoard extends Component {
     this.setState((currentState) => ({
       isOnlyMine: !currentState.isOnlyMine
     }), () => {
+      this.updateFilterList();
       this.saveFiltersToLocalStorage();
     });
   };
@@ -267,6 +269,7 @@ class AgileBoard extends Component {
 
   selectValue = (e, name) => {
     this.setState({[name]: e}, () => {
+      this.updateFilterList();
       const tags = this.state.filterTags.map((tag) => tag.value);
       const typeId = this.state.typeId.map(option => option.value);
       let options = {
@@ -287,7 +290,6 @@ class AgileBoard extends Component {
       }
 
       this.props.getTasks(options);
-      this.getAllFilters();
     });
   };
 
@@ -411,15 +413,30 @@ class AgileBoard extends Component {
     }));
   };
 
-  getAllFilters = () => {
-    return this.getSprints();
-  };
-
   getUsers = () => {
     return this.props.project.users.map((user) => ({
       value: user.id,
       label: user.fullNameRu
     }));
+  };
+
+  updateFilterList = () => {
+    const filters = [
+      this.state.isOnlyMine ? {name: 'isOnlyMine', label: 'мои задачи'} : null,
+      this.state.authorId ? {name: 'authorId', label: `автор: ${this.getSelectOptions(this.props.project.users, this.state.authorId, 'fullNameRu')}`} : null,
+      this.state.performerId ? {name: 'performerId', label: `исполнитель: ${this.getSelectOptions(this.props.project.users, this.state.performerId, 'fullNameRu')}`} : null,
+      this.state.changedSprint ? {name: 'sprint', label: this.getSelectOptions((this.getSprints()).map(sprint => ({id: sprint.value, name: sprint.label})), this.state.changedSprint)} : null,
+      this.state.name.length > 0 ? {name: ' name', label: this.state.name} : null,
+      ...this.getSelectOptions(null, this.state.typeId, null, 'type'),
+      ...this.getSelectOptions(null, this.state.filterTags, null, 'tag')
+    ];
+
+    this.setState({
+      allFilters: filters.reduce((acc, filter) => {
+        if (filter !== null) return [...acc, filter];
+        return acc;
+      }, [])
+    });
   };
 
   createOptions = (array, labelField = 'name') => {
@@ -431,15 +448,28 @@ class AgileBoard extends Component {
     );
   };
 
+  getSelectOptions = (array, id, labelField = 'name', arrayName = 'array') => {
+    if (Array.isArray(id)) {
+      return id.map(currentId => ({name: `${arrayName}-${currentId.value}`, label: currentId.label}));
+    } else {
+      const option = array.find(element => element.id === id);
+      if (!option) return null;
+      return option[labelField];
+    }
+  };
+
   clearFilter = () => {
     this.setState({
       ...this.initialFilters
-    }, this.props.getTasks({
-      projectId: this.props.params.projectId,
-      sprintId: null,
-      ...this.initialFilters
-    }));
-    this.removeFiltersFromLocalStorage();
+    }, () => {
+      this.props.getTasks({
+        projectId: this.props.params.projectId,
+        sprintId: null,
+        ...this.initialFilters
+      });
+      this.updateFilterList();
+      this.removeFiltersFromLocalStorage();
+    });
   }
 
   isFilterEmpty = () => {
@@ -485,15 +515,7 @@ class AgileBoard extends Component {
             ? <div>
                 <Row className={css.filtersRow}>
                   <Col xs={12} sm={12}>
-                    <SelectDropdown
-                      name="allFilters"
-                      multi
-                      placeholder=""
-                      backspaceToRemoveMessage=""
-                      value={this.state.allFilters}
-                      options={this.getAllFilters()}
-                      onFocus={this.toggleFilterView}
-                    />
+                    <FilterList filters={this.state.allFilters}/>
                   </Col>
                 </Row>
                 <Row className={css.filtersRow}>
