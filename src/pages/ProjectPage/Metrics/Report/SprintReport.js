@@ -79,7 +79,7 @@ class SprintReport extends Component {
 
   isRangeValid = () => {
     return (
-      (!this.state.selectedFrom && !this.state.selectedTo)
+      (this.state.selectedFrom && this.state.selectedTo)
       || (moment(this.state.selectedFrom, 'YYYY-MM-DD', true).isValid()
         && moment(this.state.selectedTo, 'YYYY-MM-DD', true).isValid()
         && moment(this.state.selectedTo).isAfter(this.state.selectedFrom))
@@ -94,14 +94,14 @@ class SprintReport extends Component {
       this.lastMonthOption(),
       ...this.props.sprints.map((value) => ({ value, label: `${value.name} (${moment(value.factStartDate).format('DD.MM.YYYY')} ${
         value.factFinishDate ? `- ${moment(value.factFinishDate).format('DD.MM.YYYY')}` : '- ...'
-      })`, 
-      statusId: value.statusId,
-      className: classnames({
-        [css.INPROGRESS]: value.statusId === 2,
-        [css.sprintMarker]: true,
-        [css.FINISHED]: value.statusId === 1
-      }) }))
-    
+      })`,
+        statusId: value.statusId,
+        className: classnames({
+          [css.INPROGRESS]: value.statusId === 2,
+          [css.sprintMarker]: true,
+          [css.FINISHED]: value.statusId === 1
+        })
+      }))
     ];
   };
 
@@ -181,7 +181,6 @@ class SprintReport extends Component {
   }
 
   render () {
-    console.log(this.state);
     const dateFrom = this.state.selectedFrom ? moment(this.state.selectedFrom).format('DD.MM.YYYY') : '';
     const dateTo = this.state.selectedTo ? moment(this.state.selectedTo).format('DD.MM.YYYY') : '';
     return (
