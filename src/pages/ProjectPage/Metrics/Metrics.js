@@ -9,11 +9,12 @@ import BugsChart from './BugsChart';
 import CostByRoleChart from './CostByRoleChart';
 import SprintReport from './Report';
 import SprintMetrics from './SprintMetrics';
-import { getMetrics } from './../../../actions/Metrics';
+import { getMetrics, calculateMetrics } from './../../../actions/Metrics';
 import moment from 'moment';
 import getRandomColor from '../../../utils/getRandomColor';
 import { ADMIN } from '../../../constants/Roles';
 import Tabs from '../../../components/Tabs';
+import Button from '../../../components/Button';
 
 class Metrics extends Component {
   static propTypes = {
@@ -38,8 +39,8 @@ class Metrics extends Component {
     if (createdAt) {
       const metricsParams = {
         projectId: parseInt(params.projectId),
-        startDate: moment(this.props.createdAt).format('YYYY-MM-DD'),
-        endDate: moment().format('YYYY-MM-DD')
+        startDate: moment(this.props.createdAt).format('YYYY-MM-DD HH:mm'),
+        endDate: moment().format('YYYY-MM-DD HH:mm')
       };
       getMetrics(metricsParams);
     }
@@ -50,11 +51,15 @@ class Metrics extends Component {
     if (nextProps.createdAt !== createdAt) {
       const metricsParams = {
         projectId: parseInt(params.projectId),
-        startDate: moment(nextProps.createdAt).format('YYYY-MM-DD'),
-        endDate: moment().format('YYYY-MM-DD')
+        startDate: moment(nextProps.createdAt).format('YYYY-MM-DD HH:mm'),
+        endDate: moment().format('YYYY-MM-DD HH:mm')
       };
       getMetrics(metricsParams);
     }
+  }
+
+  calculate = () => {
+    calculateMetrics(this.props.projectId);
   }
 
   startDate () {
@@ -150,7 +155,6 @@ class Metrics extends Component {
             h /= 6;
           }
           const HSL = { h, s, l };
-          console.log(HSL);
           return HSL;
         };
         if (
@@ -191,11 +195,11 @@ class Metrics extends Component {
     const isProjectAdmin = this.checkIsAdminInProject();
 
     /*Бюджет без рискового резерва*/
-    const projectBudgetMetrics = this.filterById(6, metrics);
+    const projectBudgetMetrics = this.filterById(5, metrics);
     const sprintsBudgetMetrics = this.filterById(30, metrics);
 
     /*Бюджет с рисковым резервом*/
-    const projectBudgetRisksMetrics = this.filterById(5, metrics);
+    const projectBudgetRisksMetrics = this.filterById(6, metrics);
     const sprintsBudgetRisksMetrics = this.filterById(31, metrics);
 
     /*Баги на проекте*/
@@ -317,6 +321,9 @@ class Metrics extends Component {
     };
     const tabs = [
       {
+        name: 'Выгрузка'
+      },
+      {
         name: 'Метрики по проекту'
       },
       {
@@ -341,8 +348,18 @@ class Metrics extends Component {
         <section className={css.Metrics}>
           {isProjectAdmin ? (
             <div>
-              <Tabs tabs={tabs} selected={0}>
+              <Button
+                addedClassNames={{[css.recalculateBtn]: true}}
+                onClick={this.calculate}
+                type="bordered"
+                icon="IconRefresh"
+                data-tip="Пересчитать метрику"
+              />
+              <Tabs tabs={tabs} selected={0} addedClassNames={{[css.tabs]: true}}>
                 <Pane label={tabs[0].name}>
+                  <SprintReport startDate={this.startDate()} endDate={this.endDate()} />
+                </Pane>
+                <Pane label={tabs[1].name}>
                   <StartEndDates startDate={this.startDate()} endDate={this.endDate()} />
                   <Row>
                     <Col xs={12} md={10} lg={6} lgOffset={0}>
@@ -369,7 +386,7 @@ class Metrics extends Component {
                     </Col>
                   </Row>
                 </Pane>
-                <Pane label={tabs[3].name}>
+                <Pane label={tabs[4].name}>
                   <SprintMetrics
                     chartDefaultOptions={chartDefaultOptions}
                     getBasicLineSettings={this.getBasicLineSettings()}
@@ -380,7 +397,7 @@ class Metrics extends Component {
                     filterById={this.filterById}
                   />
                 </Pane>
-                <Pane label={tabs[1].name}>
+                <Pane label={tabs[2].name}>
                   <Row>
                     <Col xs={12}>
                       <BugsChart
@@ -393,7 +410,7 @@ class Metrics extends Component {
                     </Col>
                   </Row>
                 </Pane>
-                <Pane label={tabs[2].name}>
+                <Pane label={tabs[3].name}>
                   <Row>
                     <Col xs={12}>
                       <CostByRoleChart
@@ -408,7 +425,6 @@ class Metrics extends Component {
               </Tabs>
             </div>
           ) : null}
-          <SprintReport startDate={this.startDate()} endDate={this.endDate()} />
         </section>
       </div>
     );

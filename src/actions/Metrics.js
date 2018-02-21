@@ -1,5 +1,7 @@
+import axios from 'axios';
 import * as ProjectActions from '../constants/Project';
 import { GET, POST, REST_API } from '../constants/RestApi';
+import { API_URL } from '../constants/Settings';
 import {
   withFinishLoading,
   withStartLoading,
@@ -35,4 +37,9 @@ export const getMetrics = (data) => {
       dispatch(getMetricsFailure(dispatch));
     })(dispatch)
   });
+};
+
+export const calculateMetrics = (projectId) => {
+  const URL = `${API_URL}/metrics/${projectId}`;
+  axios.get(URL);
 };

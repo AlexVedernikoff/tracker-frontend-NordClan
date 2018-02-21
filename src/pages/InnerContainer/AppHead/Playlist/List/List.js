@@ -43,7 +43,6 @@ class List extends Component {
   render () {
     const { isDraftShow } = this.state;
     const { tracks } = this.props;
-
     const visible = tracks
       ? tracks.filter(item => item.isVisible).map(this.playlistItem)
       : null;

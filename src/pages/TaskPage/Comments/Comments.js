@@ -126,7 +126,7 @@ class Comments extends Component {
   };
 
   publishComment = (evt) => {
-    const { ctrlKey, keyCode } = evt;
+    const { ctrlKey, keyCode, shiftKey } = evt;
     if ((ctrlKey && keyCode === ENTER) || (shiftKey && keyCode === ENTER)) {
       return this.props.updateCurrentCommentText(evt.target.value + '\n');
       console.log('true');
@@ -177,20 +177,17 @@ class Comments extends Component {
       <div className="css.comments">
         <ul className={css.commentList}>
           <form className={css.answerLine}>
-            <TextareaAutosize
-              style={{ minHeight: 32 }}
-              className={css.resizeTrue}
-              disabled={this.props.currentComment.disabled || this.props.currentComment.expired}
-              placeholder="Введите текст комментария"
-              onInput={this.typeComment}
-              onKeyDown={this.publishComment}
-              ref={(ref) => (this.reply = ref ? ref.refs.input : null)}
-              value={this.props.currentComment.text}
-            />
-            <div className={css.answerUnderline}>
-              <button onClick={this.publishComment} disabled={this.state.disabledBtn}>
-                <Icons.IconSend />
-              </button>
+            <div className={css.answerLineText}>
+              <TextareaAutosize
+                style={{ minHeight: 32 }}
+                className={css.resizeTrue}
+                disabled={this.props.currentComment.disabled || this.props.currentComment.expired}
+                placeholder="Введите текст комментария"
+                onInput={this.typeComment}
+                onKeyDown={this.publishComment}
+                ref={(ref) => (this.reply = ref ? ref.refs.input : null)}
+                value={this.props.currentComment.text}
+              />
               {this.props.currentComment.id ? (
                 <div className={css.answerInfo}>
                   Редактирование комментария&nbsp;
@@ -217,7 +214,10 @@ class Comments extends Component {
                 </div>
               ) : null}
             </div>
-            <div className={css.answerSendTooltip}>или Enter</div>
+            <div className={css.answerButton}>
+              <Button onClick={this.publishComment} type="green" disabled={this.state.disabledBtn} text='Отправить'/>
+              <div className={css.answerSendTooltip}>или Enter</div>
+            </div>
           </form>
           {this.props.comments.length ? (
             this.getCommentList()

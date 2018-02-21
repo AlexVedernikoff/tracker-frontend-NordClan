@@ -122,7 +122,6 @@ class AgileBoard extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      isOnlyMine: this.getIsOnlyMine(),
       isModalOpen: false,
       performer: null,
       changedTask: null,
@@ -131,6 +130,7 @@ class AgileBoard extends Component {
   }
 
   initialFilters = {
+    isOnlyMine: false,
     changedSprint: null,
     filterTags: [],
     typeId: [],
@@ -154,6 +154,10 @@ class AgileBoard extends Component {
         && nextProps.project.id
     ) {
       this.selectValue(this.getChangedSprint(nextProps), 'changedSprint');
+    }
+
+    if (this.props.project.id !== nextProps.project.id) {
+      this.getFiltersFromLocalStorage();
     }
 
     if (nextProps.sprintTasks.length) {
@@ -202,26 +206,78 @@ class AgileBoard extends Component {
 
   toggleMine = () => {
     this.setState((currentState) => ({
-      isOnlyMine: this.setIsOnlyMine(!currentState.isOnlyMine)
-    }));
+      isOnlyMine: !currentState.isOnlyMine
+    }), () => {
+      this.saveFiltersToLocalStorage();
+    });
   };
+
+  getFiltersFromLocalStorage = () => {
+    if (!this.props.myTaskBoard) {
+      const localStorageFilter = this.parseLocalStorageFilters();
+      if (this.props.params.projectId !== localStorageFilter.projectId) return;
+      this.setState({
+        isOnlyMine: localStorageFilter.isOnlyMine,
+        changedSprint: localStorageFilter.changedSprint,
+        filterTags: localStorageFilter.filterTags,
+        typeId: localStorageFilter.typeId,
+        name: localStorageFilter.name,
+        authorId: localStorageFilter.authorId,
+        prioritiesId: localStorageFilter.prioritiesId,
+        performerId: localStorageFilter.performerId
+      });
+    } else {
+      this.removeFiltersFromLocalStorage();
+    }
+  }
+
+  parseLocalStorageFilters = () => {
+    try {
+      return JSON.parse(localStorage.getItem('agileBoardFilters'));
+    } catch (e) {
+      return {};
+    }
+  }
+
+  saveFiltersToLocalStorage = () => {
+    localStorage.setItem('agileBoardFilters', JSON.stringify({
+      projectId: this.props.params.projectId,
+      changedSprint: this.state.changedSprint,
+      isOnlyMine: this.state.isOnlyMine,
+      prioritiesId: this.state.prioritiesId,
+      authorId: this.state.authorId,
+      typeId: this.state.typeId,
+      name: this.state.name,
+      filterTags: this.state.filterTags,
+      performerId: this.state.performerId
+    }));
+  }
+
+  removeFiltersFromLocalStorage = () => {
+    localStorage.removeItem('agileBoardFilters');
+  }
 
   selectValue = (e, name) => {
     this.setState({[name]: e}, () => {
       const tags = this.state.filterTags.map((tag) => tag.value);
       const typeId = this.state.typeId.map(option => option.value);
-      const options = !this.props.myTaskBoard ? {
-        projectId: this.props.params.projectId,
-        sprintId: this.state.changedSprint,
-        prioritiesId: this.state.prioritiesId,
-        authorId: this.state.authorId,
-        typeId: typeId,
-        name: this.state.name,
-        tags: tags.join(','),
-        performerId: this.state.performerId
-      } : {
+      let options = {
         performerId: this.props.user.id
       };
+      if (!this.props.myTaskBoard) {
+        options = {
+          projectId: this.props.params.projectId,
+          sprintId: this.state.changedSprint,
+          prioritiesId: this.state.prioritiesId,
+          authorId: this.state.authorId,
+          typeId: typeId,
+          name: this.state.name,
+          tags: tags.join(','),
+          performerId: this.state.performerId
+        };
+        this.saveFiltersToLocalStorage();
+      }
+
       this.props.getTasks(options);
     });
   };
@@ -353,19 +409,6 @@ class AgileBoard extends Component {
     }));
   };
 
-  getIsOnlyMine = () => {
-    try {
-      return JSON.parse(localStorage.getItem('isOnlyMine'));
-    } catch (e) {
-      return false;
-    }
-  };
-
-  setIsOnlyMine = (value) => {
-    localStorage.setItem('isOnlyMine', value);
-    return value;
-  };
-
   createOptions = (array, labelField = 'name') => {
     return array.map(
       element => ({
@@ -377,13 +420,13 @@ class AgileBoard extends Component {
 
   clearFilter = () => {
     this.setState({
-      ...this.initialFilters,
-      isOnlyMine: this.setIsOnlyMine(false)
+      ...this.initialFilters
     }, this.props.getTasks({
       projectId: this.props.params.projectId,
       sprintId: null,
       ...this.initialFilters
     }));
+    this.removeFiltersFromLocalStorage();
   }
 
   isFilterEmpty = () => {
