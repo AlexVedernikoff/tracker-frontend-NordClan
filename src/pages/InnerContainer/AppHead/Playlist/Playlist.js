@@ -8,7 +8,7 @@ import ReactTooltip from 'react-tooltip';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import getMaIcon from '../../../../constants/MagicActivityIcons';
-import ActiveTaskPanel from './ActiveTaskPanel'
+import ActiveTaskPanel from './ActiveTaskPanel';
 import { changeTask } from '../../../../actions/Task';
 import { IconPause, IconPlay, IconList } from '../../../../components/Icons';
 import List from './List';
@@ -146,7 +146,7 @@ class Playlist extends Component {
     const isMagicActivityTab = activeActivityTab !== 'all' && activeActivityTab !== 1;
     const additionalMagicActivityTracks = isMagicActivityTab
       ? this.addAdditionalMagicActivities(activeTracks)
-      : []
+      : [];
 
     const allTracks = activeTracks.concat(additionalMagicActivityTracks);
     const allSortedTracks = allTracks.sort((track1, track2) => {
@@ -158,7 +158,7 @@ class Playlist extends Component {
       }
 
       return track1.project.id - track2.project.id;
-    })
+    });
 
     return allSortedTracks;
   };
@@ -198,7 +198,7 @@ class Playlist extends Component {
 
     const additionalTracks = projects
       .map(project => this.createMagicActivityDraft(this.state.activeActivityTab, project))
-      .concat(activityWithoutProject)
+      .concat(activityWithoutProject);
 
     return additionalTracks;
   };
@@ -207,7 +207,7 @@ class Playlist extends Component {
     const onDate = this.getDateByDayTab(this.state.activeDayTab).format('YYYY-MM-DD');
 
     const magicActivity = {
-      id: data ? `temp-${data.project.id}` : `temp-0`,
+      id: data ? `temp-${data.project.id}` : 'temp-0',
       isCreatedTimesheet: false,
       isVisible: true,
       isDraft: true,
@@ -239,9 +239,22 @@ class Playlist extends Component {
     return '';
   };
 
+  filterTracksByCurrentUser = (allTracks, currentUserId) => {
+    const dayTabs = Object.keys(allTracks);
+    const currentUserTracks = {};
+    dayTabs.forEach(dayTab => {
+      currentUserTracks[dayTab] = {
+        ...allTracks[dayTab],
+        tracks: allTracks[dayTab].tracks.filter(track => track.userId === currentUserId)
+      };
+    });
+    return currentUserTracks;
+  }
+
   render () {
     const { isPlaylistOpen } = this.state;
-    const { activeTask, changeTask } = this.props;
+    const { activeTask, changeTask, tracks, currentUserId } = this.props;
+    const currentUserTracks = this.filterTracksByCurrentUser(tracks, currentUserId);
 
     return (
       <div className={css.playlistWrapper}>
@@ -256,18 +269,18 @@ class Playlist extends Component {
             isPlaylistOpen
               ? <div className={css.list}>
                 <div className={css.week}>
-                  <div className={this.dayTabStyle(0)} onClick={this.changeActiveDayTab(0)}>Пн {this.getCountBadge(this.props.tracks, 0)}</div>
-                  <div className={this.dayTabStyle(1)} onClick={this.changeActiveDayTab(1)}>Вт {this.getCountBadge(this.props.tracks, 1)}</div>
-                  <div className={this.dayTabStyle(2)} onClick={this.changeActiveDayTab(2)}>Ср {this.getCountBadge(this.props.tracks, 2)}</div>
-                  <div className={this.dayTabStyle(3)} onClick={this.changeActiveDayTab(3)}>Чт {this.getCountBadge(this.props.tracks, 3)}</div>
-                  <div className={this.dayTabStyle(4)} onClick={this.changeActiveDayTab(4)}>Пт {this.getCountBadge(this.props.tracks, 4)}</div>
-                  <div className={this.dayTabStyle(5)} onClick={this.changeActiveDayTab(5)}>Сб {this.getCountBadge(this.props.tracks, 5)}</div>
-                  <div className={this.dayTabStyle(6)} onClick={this.changeActiveDayTab(6)}>Вс {this.getCountBadge(this.props.tracks, 6)}</div>
+                  <div className={this.dayTabStyle(0)} onClick={this.changeActiveDayTab(0)}>Пн {this.getCountBadge(currentUserTracks, 0)}</div>
+                  <div className={this.dayTabStyle(1)} onClick={this.changeActiveDayTab(1)}>Вт {this.getCountBadge(currentUserTracks, 1)}</div>
+                  <div className={this.dayTabStyle(2)} onClick={this.changeActiveDayTab(2)}>Ср {this.getCountBadge(currentUserTracks, 2)}</div>
+                  <div className={this.dayTabStyle(3)} onClick={this.changeActiveDayTab(3)}>Чт {this.getCountBadge(currentUserTracks, 3)}</div>
+                  <div className={this.dayTabStyle(4)} onClick={this.changeActiveDayTab(4)}>Пт {this.getCountBadge(currentUserTracks, 4)}</div>
+                  <div className={this.dayTabStyle(5)} onClick={this.changeActiveDayTab(5)}>Сб {this.getCountBadge(currentUserTracks, 5)}</div>
+                  <div className={this.dayTabStyle(6)} onClick={this.changeActiveDayTab(6)}>Вс {this.getCountBadge(currentUserTracks, 6)}</div>
                 </div>
                 <div className={css.taskWrapper}>
                   <List
                     handleToggleList={this.handleToggleList}
-                    tracks={this.activeTracks(this.props.tracks, this.state.activeDayTab, this.state.activeActivityTab)}
+                    tracks={this.activeTracks(currentUserTracks, this.state.activeDayTab, this.state.activeActivityTab)}
                   />
                 </div>
                 <div className={css.activity}>
@@ -280,13 +293,13 @@ class Playlist extends Component {
                         onClick={this.changeActiveActivityTab(element.activityId)}
                         data-place="bottom">
                         {element.icon}
-                        {this.getScale(this.props.tracks, this.state.activeDayTab, element.activityId)}
+                        {this.getScale(currentUserTracks, this.state.activeDayTab, element.activityId)}
                       </div>;
                     })
                   }
                   <div className={css.time}>
                     <div className={css.today}>
-                      <input type="text" value={this.getScaleAll(this.props.tracks, this.state.activeDayTab)} data-tip="Итого" onChange={() => {}}/>
+                      <input type="text" value={this.getScaleAll(currentUserTracks, this.state.activeDayTab)} data-tip="Итого" onChange={() => {}}/>
                     </div>
                   </div>
                 </div>
@@ -300,12 +313,14 @@ class Playlist extends Component {
 }
 
 Playlist.propTypes = {
+  currentUserId: PropTypes.number,
   magicActivitiesTypes: PropTypes.array,
   tracks: PropTypes.object
 };
 
 const mapStateToProps = state => {
   return {
+    currentUserId: state.Auth.user.id,
     activeTask: state.TimesheetPlayer.activeTask,
     tracks: state.TimesheetPlayer.tracks,
     availableProjects: state.TimesheetPlayer.availableProjects,
