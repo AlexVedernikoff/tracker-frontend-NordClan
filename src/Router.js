@@ -90,6 +90,7 @@ class AppRouter extends Component {
                 <Route path="property" component={Settings} />
                 <Route path="planning" component={Planning} />
                 <Route path="analytics" component={Metrics} />
+                <Route path="analytics/:metricType" component={Metrics} />
                 <Route path="history" component={ProjectHistory} />
                 <Route path="(sprint:sprintId/)tasks" component={TaskList} />
               </Route>
