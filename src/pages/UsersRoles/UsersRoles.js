@@ -21,20 +21,11 @@ class UsersRoles extends React.Component {
   }
 
   handleChangeStatus = (userId) => (event) => {
-    const { users } = this.props;
-    const newUserStatus = event.value;
-    const userIndex = _.findIndex(users, { id: userId });
-    const updatedUser = users[userIndex];
-    updatedUser.globalRole = newUserStatus;
-    const updatedUsers = [...users];
-    updatedUsers[userIndex] = updatedUser;
     const updatedUserData = {
-      id: updatedUser.id,
-      globalRole: updatedUser.globalRole
+      id: userId,
+      globalRole: event.value
     };
-    this.setState({
-      users
-    }, this.props.updateUserRole(updatedUserData));
+    this.props.updateUserRole(updatedUserData);
   }
 
   renderStatusSelector (globalRole, userId) {
@@ -90,6 +81,15 @@ class UsersRoles extends React.Component {
   }
 
   renderTableUsers (users) {
+    const sortedUsers = users.sort((user1, user2) => {
+      if (user1.lastNameRu > user2.lastNameRu) {
+        return 1;
+      } else if (user1.lastNameRu < user2.lastNameRu) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
     const tableHead = (
       <tr className={css.usersRolesHeader}>
         <th>
@@ -100,7 +100,7 @@ class UsersRoles extends React.Component {
         </th>
       </tr>
     );
-    const tableBody = users.map(user => {
+    const tableBody = sortedUsers.map(user => {
       return this.renderRowUser(user);
     });
     return (

@@ -17,10 +17,8 @@ function Users (state = InitialState, action) {
   case UsersRolesActions.CHANGE_USER_STATUS_START:
     return state;
   case UsersRolesActions.CHANGE_USER_STATUS_SUCCESS:
-    const userId = action.user.id;
-    const userIndex = _.findIndex(state, { id: userId });
-    const updatedUsers = [...state.users];
-    updatedUsers[userIndex] = action.user;
+    const otherUsers = state.users.filter(user => user.id !== action.user.id);
+    const updatedUsers = [...otherUsers, action.user];
     return {
       ...state,
       users: updatedUsers
