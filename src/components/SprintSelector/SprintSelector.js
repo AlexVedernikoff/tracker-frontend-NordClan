@@ -10,7 +10,10 @@ export default class SprintSelector extends Component {
   static propTypes = {
     onChange: PropTypes.func,
     sprints: PropTypes.array,
-    value: PropTypes.object
+    value: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.number
+    ])
   };
 
   constructor (props) {
@@ -24,7 +27,7 @@ export default class SprintSelector extends Component {
     });
 
     sprints = sprints.map((sprint, i) => ({
-      value: sprint,
+      value: sprint.id,
       label: `${sprint.name} (${moment(sprint.factStartDate).format(dateFormat)} ${
         sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format(dateFormat)}` : '- ...'
       })`,
