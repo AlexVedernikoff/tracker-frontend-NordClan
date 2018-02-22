@@ -23,14 +23,13 @@ export default class Tabs extends React.Component {
     const {routable, currentPath} = this.props;
 
     this.currentPath = routable && currentPath;
-    this.selectedIndex = this.getSelectedIndex();
-    this.state = { selected: this.selectedIndex === -1 ? 0 : this.selectedIndex};
+    this.state = { selected: this.getSelectedIndex() };
   }
 
   componentWillMount () {
     const [firstChild] = this.props.children;
 
-    if (this.selectedIndex === -1) {
+    if (!this.state.selected) {
       history.replace(this.setRoute(firstChild.props.path));
     }
   }
@@ -45,7 +44,7 @@ export default class Tabs extends React.Component {
       selectedIndex = parseInt(selected);
     }
 
-    return (isNaN(selectedIndex) || !children[selectedIndex]) ? -1 : selectedIndex;
+    return children[selectedIndex] ? selectedIndex : 0;
   }
 
   setRoute (subpath) {
