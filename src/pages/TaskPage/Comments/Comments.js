@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import onClickOutside from 'react-onclickoutside';
 import PropTypes from 'prop-types';
 import TextArea from '../../../components/TextArea';
+import TextareaAutosize from 'react-autosize-textarea';
 import {
   getCommentsByTask,
   publishComment,
@@ -19,15 +20,18 @@ import * as css from './Comments.scss';
 import Comment from './Comment';
 import { history } from '../../../History';
 import Button from '../../../components/Button';
+import * as Icons from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
 
 const ENTER = 13;
 
 class Comments extends Component {
-
   constructor (props) {
     super(props);
-    this.state = { commentToDelete: null };
+    this.state = {
+      commentToDelete: null,
+      disabledBtn: true
+    };
   }
 
   componentWillMount () {
@@ -59,11 +63,15 @@ class Comments extends Component {
       const [commentId] = commentHash;
 
       if (this.props.highlighted.id !== +commentId && prevProps.highlighted.id !== +commentId) {
-        const comment = this.props.comments.find(c => c.id === +commentId);
+        const comment = this.props.comments.find((c) => c.id === +commentId);
         if (comment) {
           return this.props.setHighLighted(comment);
         }
-      } else if (this.props.highlighted.id && this.props.highlighted.id !== +commentId && prevProps.highlighted.id === +commentId) {
+      } else if (
+        this.props.highlighted.id
+        && this.props.highlighted.id !== +commentId
+        && prevProps.highlighted.id === +commentId
+      ) {
         this.selectComment(this.props.highlighted.id);
       }
     }
@@ -98,9 +106,9 @@ class Comments extends Component {
     userId: PropTypes.number
   };
 
-  handleClickOutside = evt => {
+  handleClickOutside = (evt) => {
     if (this.props.location.hash) {
-      history.replace({...this.props.location, hash: ''});
+      history.replace({ ...this.props.location, hash: '' });
     }
   };
 
@@ -110,11 +118,20 @@ class Comments extends Component {
 
   typeComment = (evt) => {
     this.props.updateCurrentCommentText(evt.target.value);
+    if (evt.target.value && evt.target.value.trim() !== '') {
+      this.state.disabledBtn = false;
+    } else {
+      this.state.disabledBtn = true;
+    }
   };
 
   publishComment = (evt) => {
-    const { ctrlKey, keyCode} = evt;
-    if (ctrlKey && keyCode === ENTER || evt.button === 0) {
+    const { ctrlKey, keyCode, shiftKey } = evt;
+    if ((ctrlKey && keyCode === ENTER) || (shiftKey && keyCode === ENTER)) {
+      return this.props.updateCurrentCommentText(evt.target.value + '\n');
+      console.log('true');
+    }
+    if ((evt.which === ENTER || evt.button === 0) && this.state.disabledBtn === false) {
       if (this.props.currentComment.id) {
         if (!Comment.isExpiredForUpdate(this.props.currentComment.createdAt)) {
           this.props.editComment(this.props.taskId, this.props.currentComment.id, this.props.currentComment.text);
@@ -124,108 +141,99 @@ class Comments extends Component {
       } else {
         this.props.publishComment(this.props.taskId, this.props.currentComment);
       }
+      this.state.disabledBtn = true;
     }
   };
-
   reply = null;
 
   removeComment = (commentId) => {
-    this.setState({commentToDelete: commentId});
+    this.setState({ commentToDelete: commentId });
   };
 
   cancelRemoveComment = () => {
-    this.setState({commentToDelete: null});
+    this.setState({ commentToDelete: null });
   };
 
   confirmRemoveComment = () => {
     const commentId = this.state.commentToDelete;
-    this.setState({commentToDelete: null}, () => this.props.removeComment(this.props.taskId, commentId));
+    this.setState({ commentToDelete: null }, () => this.props.removeComment(this.props.taskId, commentId));
   };
 
-  getCommentList = () => this.props.comments.map((c) =>
-    <Comment
-      key={c.id}/*используются id чтобы правильно работал маунт и анмаунт*/
-      lightened={c.id === this.props.highlighted.id}
-      editComment={this.props.setCommentForEdit}
-      removeComment={this.removeComment}
-      reply={this.props.selectParentCommentForReply}
-      ownedByMe={c.author.id === this.props.userId}
-      comment={c}/>
-  );
-
+  getCommentList = () =>
+    this.props.comments.map((c) => (
+      <Comment
+        key={c.id} /*используются id чтобы правильно работал маунт и анмаунт*/
+        lightened={c.id === this.props.highlighted.id}
+        editComment={this.props.setCommentForEdit}
+        removeComment={this.removeComment}
+        reply={this.props.selectParentCommentForReply}
+        ownedByMe={c.author.id === this.props.userId}
+        comment={c}
+      />
+    ));
 
   render () {
     return (
       <div className="css.comments">
         <ul className={css.commentList}>
-          <div className={css.answerLine}>
-            <TextArea
-              disabled={this.props.currentComment.disabled || this.props.currentComment.expired}
-              placeholder="Введите текст комментария"
-              onInput={this.typeComment}
-              onKeyDown={this.publishComment}
-              ref={(ref) => (this.reply = ref ? ref.refs.input : null)}
-              value={this.props.currentComment.text}/>
-            <div className={css.answerUnderline}>
-              <Button
-                onClick={this.publishComment}
-                text="Отправить"
-                type = 'green'
-                />
-              {
-                this.props.currentComment.id
-                  ? <div className={css.answerInfo}>
-                    Редактирование комментария&nbsp;
-                    {
-                      this.props.currentComment.expired
-                        ? <span className={css.outDatedToolTip}>&nbsp;истекло&nbsp;</span>
-                        : null
-                    }
-                    <a onClick={() => this.selectComment(this.props.currentComment.id)}>
-                      {`#${this.props.currentComment.id}`}
-                    </a>&nbsp;
-                    <span className={css.quoteCancel} onClick={() => this.props.resetCurrentEditingComment()}>
-                      (Отмена)
-                    </span>
-                  </div>
-                  : null
-              }
-              {
-                this.props.currentComment.parentId && !this.props.currentComment.id
-                  ? <div className={css.answerInfo}>
-                    В ответ на комментарий&nbsp;
-                    <a onClick={() => this.selectComment(this.props.currentComment.parentId)}>
-                      {`#${this.props.currentComment.parentId}`}
-                    </a>&nbsp;
-                    <span
-                      className={css.quoteCancel}
-                      onClick={() => this.props.selectParentCommentForReply(null)}>
-                      (Отмена)
-                    </span>
-                  </div>
-                  : null
-              }
-              <div className={css.answerSendTooltip}>отправить по Ctrl+Enter</div>
+          <form className={css.answerLine}>
+            <div className={css.answerLineText}>
+              <TextareaAutosize
+                style={{ minHeight: 32 }}
+                className={css.resizeTrue}
+                disabled={this.props.currentComment.disabled || this.props.currentComment.expired}
+                placeholder="Введите текст комментария"
+                onInput={this.typeComment}
+                onKeyDown={this.publishComment}
+                ref={(ref) => (this.reply = ref ? ref.refs.input : null)}
+                value={this.props.currentComment.text}
+              />
+              {this.props.currentComment.id ? (
+                <div className={css.answerInfo}>
+                  Редактирование комментария&nbsp;
+                  {this.props.currentComment.expired ? (
+                    <span className={css.outDatedToolTip}>&nbsp;истекло&nbsp;</span>
+                  ) : null}
+                  <a onClick={() => this.selectComment(this.props.currentComment.id)}>
+                    {`#${this.props.currentComment.id}`}
+                  </a>&nbsp;
+                  <span className={css.quoteCancel} onClick={() => this.props.resetCurrentEditingComment()}>
+                    (Отмена)
+                  </span>
+                </div>
+              ) : null}
+              {this.props.currentComment.parentId && !this.props.currentComment.id ? (
+                <div className={css.answerInfo}>
+                  В ответ на комментарий&nbsp;
+                  <a onClick={() => this.selectComment(this.props.currentComment.parentId)}>
+                    {`#${this.props.currentComment.parentId}`}
+                  </a>&nbsp;
+                  <span className={css.quoteCancel} onClick={() => this.props.selectParentCommentForReply(null)}>
+                    (Отмена)
+                  </span>
+                </div>
+              ) : null}
             </div>
-          </div>
-          {
-            this.props.comments.length
-              ? this.getCommentList()
-              : <div className={css.noCommentsYet} >
-                Комментариев еще нет, Вы можете стать первым!
-              </div>
-          }
+            <div className={css.answerButton}>
+              <Button onClick={this.publishComment} type="green" disabled={this.state.disabledBtn} text='Отправить'/>
+              <div className={css.answerSendTooltip}>или Enter</div>
+            </div>
+          </form>
+          {this.props.comments.length ? (
+            this.getCommentList()
+          ) : (
+            <div className={css.noCommentsYet}>Комментариев еще нет, Вы можете стать первым!</div>
+          )}
         </ul>
-        { this.state.commentToDelete
-          ? <ConfirmModal
+        {this.state.commentToDelete ? (
+          <ConfirmModal
             isOpen
             contentLabel="modal"
             text="Вы действительно хотите удалить комментарий?"
             onCancel={this.cancelRemoveComment}
             onConfirm={this.confirmRemoveComment}
           />
-          : null
-        }
+        ) : null}
       </div>
     );
   }

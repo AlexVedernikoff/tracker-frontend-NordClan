@@ -20,42 +20,42 @@ class ClosingFeaturesChart extends Component {
       ...props.chartDefaultOptions,
       scales: {
         ...props.chartDefaultOptions.scales,
-        yAxes: [{
-          ticks: {
-            beginAtZero: true
-          },
-          display: true,
-          scaleLabel: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true
+            },
             display: true,
-            labelString: 'Часы'
+            scaleLabel: {
+              display: true,
+              labelString: 'Часы'
+            }
           }
-        }]
+        ]
       }
     };
   }
 
   makeChartData = () => {
-    const {
-      sprintClosingFeaturesMetrics,
-      sprintWriteOffTimeMetrics,
-      sprintWorkWithoutEvaluationMetrics
-    } = this.props;
+    const { sprintClosingFeaturesMetrics, sprintWriteOffTimeMetrics, sprintWorkWithoutEvaluationMetrics } = this.props;
     return {
       datasets: [
-        this.makeBugsLine(sprintClosingFeaturesMetrics, 'Динамика закрытия фич (с учетом трудозатрат)'),
-        this.makeBugsLine(sprintWriteOffTimeMetrics, 'Динамика списания времени на фичи'),
-        this.makeBugsLine(sprintWorkWithoutEvaluationMetrics, 'Динамика трудозатрат на фичи без оценки')
+        this.makeBugsLine(sprintClosingFeaturesMetrics, 'Динамика закрытия задач (с учетом трудозатрат)'),
+        this.makeBugsLine(sprintWriteOffTimeMetrics, 'Динамика списания времени на задачи'),
+        this.makeBugsLine(sprintWorkWithoutEvaluationMetrics, 'Динамика трудозатрат на задачи без оценки')
       ]
     };
   };
 
   makeBugsLine = (metrics, label) => {
-    const line = metrics.map(metric => {
-      return {
-        x: metric.createdAt,
-        y: roundNum(+metric.value, 2)
-      };
-    }).sort(sortChartLineByDates);
+    const line = metrics
+      .map((metric) => {
+        return {
+          x: metric.createdAt,
+          y: roundNum(+metric.value, 2)
+        };
+      })
+      .sort(sortChartLineByDates);
     return {
       data: [...line],
       label: label,
@@ -66,12 +66,8 @@ class ClosingFeaturesChart extends Component {
   render () {
     return (
       <div className={css.ClosingFeaturesChart}>
-        <h3>Динамика закрытия фич</h3>
-        <Line
-          data={this.makeChartData()}
-          options={this.chartOptions}
-          redraw
-        />
+        <h3 className={css.h3Top}>Динамика закрытия задач</h3>
+        <Line data={this.makeChartData()} options={this.chartOptions} redraw />
       </div>
     );
   }

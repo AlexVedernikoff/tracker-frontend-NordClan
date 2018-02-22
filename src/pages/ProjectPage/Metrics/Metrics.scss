@@ -1,5 +1,32 @@
+@import '../../../styles/variables.scss';
+
 .Metrics {
+  position: relative;
   h2 {
-    text-align: center;
+    text-align: left;
+  }
+  h3 {
+    text-align: left;
+    font-weight: 600;
+    margin-bottom: 30px;
+    margin-top: 20px;
+  }
+  .rowBorder {
+    margin-bottom: 50px;
+    padding-bottom: 50px;
+    border-bottom: 1px solid $color-gray;
+  }
+}
+.recalculateBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  @include phone {
+    position: static;
+  }
+}
+.tabs {
+  ul {
+    margin-right: 32px;
   }
 }

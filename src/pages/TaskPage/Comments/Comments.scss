@@ -31,7 +31,7 @@
   .commentAction {
     display: flex;
     & a {
-      padding-right: .5rem;
+      padding-right: 0.5rem;
     }
   }
   a {
@@ -127,32 +127,56 @@
 
 .answerLine {
   display: flex;
+  align-items: flex-start;
   flex-wrap: wrap;
   margin-bottom: 2rem;
-
+  position: relative;
+  @include phone {
+    flex-direction: column;
+  }
   button {
     flex-shrink: 0;
   }
-
   textarea {
-    flex-grow: 1;
+    width: 100%;
+    max-width: 100%;
+    transition: height 0.3s;
+    &.resizeTrue {
+      resize: vertical !important;
+    }
+    @include phone {
+      padding-right: 50px;
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
   }
-  .answerUnderline {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    flex-basis: 100%;
+  .answerButton {
+    align-self: flex-end;
+    margin-left: 1rem;
     button {
-      margin-top: 20px;
+      width: 100%;
+      max-width: 100px;
     }
-    .answerSendTooltip {
-      text-align: right;
-      color: #678bad;
-      font-size: 0.8rem;
-      flex-basis: 50%;
-      flex-grow: 12;
+    @include phone {
+      align-self: flex-start;
+      max-width: 150px;
+      margin-top: 20px;
+      margin-left: 0;
     }
   }
+}
+.answerLineText {
+  flex-basis: 60%;
+  flex-grow: 1;
+  @include phone {
+    width: 100%;
+  }
+}
+.answerSendTooltip {
+  margin-top: 4px;
+  color: $input-color-placeholder;
+  font-size: 0.8rem;
+  text-align: center;
 }
 .noCommentsYet {
   text-align: center;
@@ -161,7 +185,6 @@
 .answerInfo {
   width: 100%;
   margin-top: 4px;
-  padding-left: 1rem;
   font-size: 12px;
   line-height: 12px;
   color: silver;

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   Router,
   Route,
+  Redirect,
   IndexRedirect,
   IndexRoute,
   applyRouterMiddleware
@@ -28,6 +29,7 @@ import Logout from './pages/Logout';
 import Projects from './pages/Projects';
 import Dashboard from './pages/Dashboard';
 import Timesheets from './pages/Timesheets';
+import UsersRoles from './pages/UsersRoles';
 import NotFound from './pages/NotFound';
 import RedirectPage from './pages/Redirect';
 import DemoPage from './components/Icons/DemoPage';
@@ -35,6 +37,7 @@ import { connect } from 'react-redux';
 import { clearCurrentProjectAndTasks } from './actions/Tasks';
 import { clearCurrentTask } from './actions/Task';
 import { setRedirectPath } from './actions/Authentication';
+import isAdmin from './utils/isAdmin';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
@@ -47,11 +50,13 @@ import { setRedirectPath } from './actions/Authentication';
 class AppRouter extends Component {
   static propTypes = {
     clearCurrentProjectAndTasks: PropTypes.func,
+    clearCurrentTask: PropTypes.func,
     history: PropTypes.object,
     isLoggedIn: PropTypes.bool,
     loaded: PropTypes.bool,
     redirectPath: PropTypes.object,
-    setRedirectPath: PropTypes.func
+    setRedirectPath: PropTypes.func,
+    userGlobalRole: PropTypes.string
   };
 
   requireAuth = (nextState, replace, cb) => {
@@ -70,6 +75,13 @@ class AppRouter extends Component {
     cb();
   };
 
+  requareAdmin = (nextState, replace, cb) => {
+    if (!isAdmin(this.props.userGlobalRole)) {
+      replace('/projects');
+    }
+    cb();
+  }
+
   render () {
     return (
       this.props.loaded
@@ -81,6 +93,7 @@ class AppRouter extends Component {
             <Route path="/" component={InnerContainer} onEnter={this.requireAuth} >
               <Route path="dashboard" component={Dashboard} />
               <Route path="timesheets" component={Timesheets} />
+              <Route path="roles" component={UsersRoles} onEnter={this.requareAdmin}/>
               <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
               <Route path="projects" component={Projects} />
 
@@ -89,7 +102,9 @@ class AppRouter extends Component {
                 <Route path="info" component={Info} />
                 <Route path="property" component={Settings} />
                 <Route path="planning" component={Planning} />
-                <Route path="analytics" component={Metrics} />
+                <Route path="analytics" component={Metrics} >
+                  <Route path=":metricType" component={Metrics} />
+                </Route>
                 <Route path="history" component={ProjectHistory} />
                 <Route path="(sprint:sprintId/)tasks" component={TaskList} />
               </Route>
@@ -117,10 +132,11 @@ class AppRouter extends Component {
   }
 }
 
-const mapStateToProps = ({ Auth: { loaded, isLoggedIn, redirectPath } }) => ({
+const mapStateToProps = ({ Auth: { loaded, isLoggedIn, redirectPath, user } }) => ({
   loaded,
   isLoggedIn,
-  redirectPath
+  redirectPath,
+  userGlobalRole: user.globalRole
 });
 
 const mapDispatchToProps = {

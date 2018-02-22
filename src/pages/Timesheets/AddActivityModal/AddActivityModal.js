@@ -106,13 +106,35 @@ class AddActivityModal extends Component {
         return null;
       }
     };
+
+    const getProject = () => {
+      const holidayOrHospital = selectedActivityType === 5 || selectedActivityType === 7;
+      if (holidayOrHospital) {
+        return null;
+      }
+      if (selectedTask) {
+        return {
+          id: selectedTask.body.projectId,
+          name: this.state.projects.find(project => project.body.id === selectedTask.body.projectId).body.name,
+          prefix: selectedTask.body.prefix
+        };
+      } else if (selectedProject) {
+        return {
+          id: selectedProject.value,
+          name: selectedProject.label,
+          prefix: selectedProject.body.prefix
+        };
+      } else {
+        return null;
+      }
+    };
     this.props.onClose();
     this.props.addActivity({
       id: `temp-${shortid.generate()}`,
       comment: null,
       task: selectedTask ? {
         id: selectedTask.value,
-        name: selectedTask.label,
+        name: selectedTask.body.name,
         sprint: getSprint()
       } : null,
       taskStatusId: checkPlayStatus(taskStatusId) ? taskStatusId + 1 : taskStatusId,
@@ -121,13 +143,7 @@ class AddActivityModal extends Component {
       sprintId: getSprint() ? getSprint().id : null,
       sprint: getSprint(),
       onDate: moment(startingDay).format('YYYY-MM-DD'),
-      project: selectedTask ? {
-        id: selectedTask.body.projectId,
-        name: this.state.projects.find(project => project.body.id === selectedTask.body.projectId).body.name
-      } : selectedProject ? {
-        id: selectedProject.value,
-        name: selectedProject.label
-      } : null
+      project: getProject()
     });
   };
 

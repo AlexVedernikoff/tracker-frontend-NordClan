@@ -3,36 +3,28 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { history } from '../../../../../History';
-import {
-  updateDraft,
-  updateTimesheet
-} from '../../../../../actions/TimesheetPlayer';
+import { updateDraft, updateTimesheet } from '../../../../../actions/TimesheetPlayer';
 import _ from 'lodash';
 import * as css from '../Playlist.scss';
 import getMaIcon from '../../../../../constants/MagicActivityIcons';
 import roundNum from '../../../../../utils/roundNum';
 
-import {
-  IconComment,
-  IconCheck,
-  IconEye,
-  IconEyeDisable
-} from '../../../../../components/Icons';
+import { IconComment, IconCheck, IconEye, IconEyeDisable } from '../../../../../components/Icons';
 
 class PlaylistItem extends Component {
-
   constructor (props) {
     super(props);
     this.state = {
+      itemSpentTime: roundNum(this.props.item.spentTime, 2),
       isCommentOpen: false
     };
     this.debouncedUpdateDraft = _.debounce(this.props.updateDraft, 500);
     this.debouncedUpdateOnlyTimesheet = _.debounce(this.props.updateTimesheet, 500);
   }
 
-  toggleComment = event => {
+  toggleComment = (event) => {
     event.stopPropagation();
-    this.setState({isCommentOpen: !this.state.isCommentOpen});
+    this.setState({ isCommentOpen: !this.state.isCommentOpen });
   };
 
   pushComment = (comment) => {
@@ -47,25 +39,31 @@ class PlaylistItem extends Component {
   };
 
   handleChangeTime = (e) => {
-    const value = e.target.value;
-    if (this.props.item.isDraft) {
-      this.debouncedUpdateDraft(
-        {
-          sheetId: this.props.item.id,
-          spentTime: value.replace(',', '.'),
-          isVisible: this.props.item.isVisible,
-          onDate: this.props.item.onDate,
-          typeId: this.props.item.typeId,
-          projectId: this.props.item.project ? this.props.item.project.id : 0,
-          sprintId: this.props.item.task.sprint ? this.props.item.task.sprint.id : 0
-        },
-        {
-          onDate: this.props.item.onDate
-        }
-      );
-    } else {
-      this.debouncedUpdateOnlyTimesheet(
-        {
+    let value = e.target.value.replace(/[^\d,.]/g, '');
+    if (value.charAt(0) === '.' || value.charAt(0) === ',') {
+      value = '';
+    }
+    this.setState({
+      itemSpentTime: value
+    });
+    if (Number(value) > 0) {
+      if (this.props.item.isDraft) {
+        this.debouncedUpdateDraft(
+          {
+            sheetId: this.props.item.id,
+            spentTime: value.replace(',', '.'),
+            isVisible: this.props.item.isVisible,
+            onDate: this.props.item.onDate,
+            typeId: this.props.item.typeId,
+            projectId: this.props.item.project ? this.props.item.project.id : 0,
+            sprintId: this.props.item.task && this.props.item.task.sprint ? this.props.item.task.sprint.id : 0
+          },
+          {
+            onDate: this.props.item.onDate
+          }
+        );
+      } else {
+        this.debouncedUpdateOnlyTimesheet({
           sheetId: this.props.item.id,
           spentTime: value.replace(',', '.'),
           isVisible: this.props.item.isVisible,
@@ -73,13 +71,19 @@ class PlaylistItem extends Component {
           onDate: this.props.item.onDate,
           projectId: this.props.item.project ? this.props.item.project.id : 0,
           sprintId: this.props.item.sprint ? this.props.item.sprint.id : 0
-        }
-      );
+        });
+      }
     }
   };
 
+  handleChangeTimeToEmpty = () => {
+    this.setState({
+      itemSpentTime: roundNum(this.props.item.spentTime, 2)
+    });
+  };
+
   handleChangeComment = (e) => {
-    this.setState({comment: e.target.value});
+    this.setState({ comment: e.target.value });
   };
 
   changeVisibility = (e, visibility) => {
@@ -93,7 +97,7 @@ class PlaylistItem extends Component {
   };
 
   getNameByType = (typeId) => {
-    const activity = _.find(this.props.magicActivitiesTypes, {id: typeId});
+    const activity = _.find(this.props.magicActivitiesTypes, { id: typeId });
     return activity ? activity.name : 'Не определено';
   };
 
@@ -109,7 +113,6 @@ class PlaylistItem extends Component {
     const {
       task,
       project,
-      spentTime,
       comment,
       typeId,
       taskStatus: createDraftStatus,
@@ -118,9 +121,7 @@ class PlaylistItem extends Component {
       isVisible
     } = this.props.item;
     const status = task ? task.taskStatus : null;
-    const redColorForTime = task
-      ? parseFloat(task.factExecutionTime) > parseFloat(task.plannedExecutionTime)
-      : false;
+    const redColorForTime = task ? parseFloat(task.factExecutionTime) > parseFloat(task.plannedExecutionTime) : false;
 
     const prefix = project ? project.prefix : '';
     const taskLabel = task && project ? `${project.prefix}-${task.id}` : null;
@@ -129,44 +130,59 @@ class PlaylistItem extends Component {
 
     return (
       <div className={classnames(css.listTask, css.task)}>
-        <div className={classnames({
-          [css.actionButton]: true,
-          [css.locked]: status !== 'inhold' && status !== 'inprogress'
-        })}>
+        <div
+          className={classnames({
+            [css.actionButton]: true,
+            [css.locked]: status !== 'inhold' && status !== 'inprogress'
+          })}
+        >
           {getMaIcon(typeId)}
         </div>
         <div className={css.taskNameWrapper} onClick={this.goToDetailPage}>
           <div className={css.taskTitle}>
             <div className={css.meta}>
-              { task && task.prefix ? <span>{task.prefix}</span> : null}
+              {task && task.prefix ? <span>{task.prefix}</span> : null}
               <span>{project ? project.name : 'Без проекта'}</span>
               {sprint ? <span>{sprint.name}</span> : null}
-              { status
-                ? <span>
-                  {
-                    createDraftStatus
-                      ? (<span>{createDraftStatusName}<span /></span>)
-                      : null
-                  }
+              {status ? (
+                <span>
+                  {createDraftStatus ? (
+                    <span>
+                      {createDraftStatusName}
+                      <span />
+                    </span>
+                  ) : null}
                 </span>
-                : null}
-                { status
-                  ? <span>
-                    Тек. статус: {status.name}
-                  </span>
-                  : null}
-              {
-                !isDraft
-                  ? <span className={classnames({[css.commentToggler]: true, [css.green]: !!comment})} onClick={this.toggleComment}><IconComment/></span>
-                  : null
-              }
+              ) : null}
+              {status ? <span>Тек. статус: {status.name}</span> : null}
+              {!isDraft ? (
+                <span
+                  className={classnames({ [css.commentToggler]: true, [css.green]: !!comment })}
+                  onClick={this.toggleComment}
+                >
+                  <IconComment />
+                </span>
+              ) : null}
 
-              { status !== 'education'
-                ? (isVisible
-                  ? <span className={css.visibleToggler} onClick={(e) => this.changeVisibility(e, false)} data-tip="Скрыть"><IconEyeDisable/></span>
-                  : <span className={css.visibleToggler} onClick={(e) => this.changeVisibility(e, true)} data-tip="Показать"><IconEye/></span>)
-                : null
-              }
+              {status !== 'education' ? (
+                isVisible ? (
+                  <span
+                    className={css.visibleToggler}
+                    onClick={(e) => this.changeVisibility(e, false)}
+                    data-tip="Скрыть"
+                  >
+                    <IconEyeDisable />
+                  </span>
+                ) : (
+                  <span
+                    className={css.visibleToggler}
+                    onClick={(e) => this.changeVisibility(e, true)}
+                    data-tip="Показать"
+                  >
+                    <IconEye />
+                  </span>
+                )
+              ) : null}
             </div>
             <div className={css.taskName}>
               {taskLabel ? <span>{taskLabel}</span> : null}
@@ -176,32 +192,42 @@ class PlaylistItem extends Component {
         </div>
         <div className={css.time}>
           <div className={css.today}>
-            <input type="text" onChange={this.handleChangeTime} defaultValue={roundNum(spentTime, 2)}/>
+            <input
+              type="text"
+              onChange={this.handleChangeTime}
+              onBlur={this.handleChangeTimeToEmpty}
+              value={this.state.itemSpentTime}
+            />
           </div>
-          <div className={classnames({[css.other]: true, [css.exceeded]: redColorForTime})}>
-            <span
-              data-tip="Всего потрачено"
-              data-place="bottom"
-            >
+          <div className={classnames({ [css.other]: true, [css.exceeded]: redColorForTime })}>
+            <span data-tip="Всего потрачено" data-place="bottom">
               {task ? roundNum(task.factExecutionTime, 2) : null}
             </span>
-            {
-              task
-                ? <span> / <span data-tip="Запланировано" data-place="bottom">{roundNum(task.plannedExecutionTime, 2)}</span></span>
-                : null
-            }
+            {task ? (
+              <span>
+                {' '}
+                /{' '}
+                <span data-tip="Запланировано" data-place="bottom">
+                  {roundNum(task.plannedExecutionTime, 2)}
+                </span>
+              </span>
+            ) : null}
           </div>
         </div>
-        {
-          this.state.isCommentOpen
-            ? <div className={css.comment}>
-              <textarea autoFocus onChange={this.handleChangeComment} defaultValue={comment} value={this.state.comment} placeholder="Введите текст комментария"/>
-              <div className={css.actionButton} onClick={this.pushComment(this.state.comment)}>
-                <IconCheck style={{width: '1.5rem', height: '1.5rem'}} />
-              </div>
+        {this.state.isCommentOpen ? (
+          <div className={css.comment}>
+            <textarea
+              autoFocus
+              onChange={this.handleChangeComment}
+              defaultValue={comment}
+              value={this.state.comment}
+              placeholder="Введите текст комментария"
+            />
+            <div className={css.actionButton} onClick={this.pushComment(this.state.comment)}>
+              <IconCheck style={{ width: '1.5rem', height: '1.5rem' }} />
             </div>
-            : null
-        }
+          </div>
+        ) : null}
       </div>
     );
   }
@@ -217,7 +243,7 @@ PlaylistItem.propTypes = {
   visible: PropTypes.bool.isRequired
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     magicActivitiesTypes: state.Dictionaries.magicActivityTypes
   };
