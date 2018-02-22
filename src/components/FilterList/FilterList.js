@@ -4,7 +4,6 @@ import Tag from '../Tag';
 import Button from '../../components/Button';
 import classnames from 'classnames';
 import * as css from './FilterList.scss';
-import {connect} from 'react-redux';
 
 export default class FilterList extends React.Component {
   showAllFilters = () => {

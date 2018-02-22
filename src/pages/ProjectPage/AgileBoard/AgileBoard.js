@@ -269,29 +269,29 @@ class AgileBoard extends Component {
 
   selectValue = (e, name) => {
     this.setState({[name]: e}, () => {
-      this.updateFilterList();
-      const tags = this.state.filterTags.map((tag) => tag.value);
-      const typeId = this.state.typeId.map(option => option.value);
-      let options = {
-        performerId: this.props.user.id
-      };
-      if (!this.props.myTaskBoard) {
-        options = {
-          projectId: this.props.params.projectId,
-          sprintId: this.state.changedSprint,
-          prioritiesId: this.state.prioritiesId,
-          authorId: this.state.authorId,
-          typeId: typeId,
-          name: this.state.name,
-          tags: tags.join(','),
-          performerId: this.state.performerId
-        };
-        this.saveFiltersToLocalStorage();
-      }
-
-      this.props.getTasks(options);
+      if (this.props.myTaskBoard) return this.props.getTasks({performerId: this.props.user.id});
+      this.getTasks();
     });
   };
+
+  getTasks = (customOption) => {
+    const tags = this.state.filterTags.map((tag) => tag.value);
+    const typeId = this.state.typeId.map(option => option.value);
+    let options = {
+      projectId: this.props.params.projectId,
+      sprintId: this.state.changedSprint,
+      prioritiesId: this.state.prioritiesId,
+      authorId: this.state.authorId,
+      typeId: typeId,
+      name: this.state.name,
+      tags: tags.join(','),
+      performerId: this.state.performerId
+    };
+    if (customOption) options = customOption;
+    this.props.getTasks(options);
+    this.saveFiltersToLocalStorage();
+    this.updateFilterList();
+  }
 
   selectTagForFiltrated = (options) => {
     this.selectValue(options, 'filterTags');
@@ -424,20 +424,7 @@ class AgileBoard extends Component {
     this.setState(() => ({
       [name]: this.initialFilters[name]
     }), () => {
-      const tags = this.state.filterTags.map((tag) => tag.value);
-      const typeId = this.state.typeId.map(option => option.value);
-      this.updateFilterList();
-      this.saveFiltersToLocalStorage();
-      this.props.getTasks({
-        projectId: this.props.params.projectId,
-        sprintId: this.state.changedSprint,
-        prioritiesId: this.state.prioritiesId,
-        authorId: this.state.authorId,
-        typeId: typeId,
-        name: this.state.name,
-        tags: tags.join(','),
-        performerId: this.state.performerId
-      });
+      this.getTasks();
     });
   };
 
@@ -448,20 +435,7 @@ class AgileBoard extends Component {
     this.setState({
       [arrayName]: newList
     }, () => {
-      const tags = this.state.filterTags.map((tag) => tag.value);
-      const typeId = this.state.typeId.map(option => option.value);
-      this.props.getTasks({
-        projectId: this.props.params.projectId,
-        sprintId: this.state.changedSprint,
-        prioritiesId: this.state.prioritiesId,
-        authorId: this.state.authorId,
-        typeId: typeId,
-        name: this.state.name,
-        tags: tags.join(','),
-        performerId: this.state.performerId
-      });
-      this.updateFilterList();
-      this.saveFiltersToLocalStorage();
+      this.getTasks();
     });
   }
 
@@ -507,13 +481,11 @@ class AgileBoard extends Component {
     this.setState({
       ...this.initialFilters
     }, () => {
-      this.props.getTasks({
+      this.getTasks({
         projectId: this.props.params.projectId,
         sprintId: null,
         ...this.initialFilters
       });
-      this.updateFilterList();
-      this.removeFiltersFromLocalStorage();
     });
   }
 
