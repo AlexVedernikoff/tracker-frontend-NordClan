@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { IconPlus } from '../../../components/Icons';
 import { connect } from 'react-redux';
+import isAdmin from '../../../utils/isAdmin';
 import * as css from './NavMenu.scss';
 
 class NavMenu extends Component {
@@ -29,6 +30,18 @@ class NavMenu extends Component {
       width: 16,
       height: 16
     };
+
+    const usersRolesLink = isAdmin(this.props.user.globalRole)
+      ? <li key="roles" className={css.sidebarItem}>
+        <Link
+          className={css.sidebarLink}
+          activeClassName={css.activeLink}
+          to="/roles"
+        >
+          Пользователи
+        </Link>
+      </li>
+      : null;
 
     const links = [
       /*<li key="dashboard" className={css.sidebarItem}>
@@ -72,7 +85,8 @@ class NavMenu extends Component {
         >
           Отчеты по времени
         </Link>
-      </li>
+      </li>,
+      usersRolesLink
     ];
 
     const sidebarHeader = (
