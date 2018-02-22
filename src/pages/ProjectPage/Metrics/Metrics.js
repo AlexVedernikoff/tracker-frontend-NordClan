@@ -319,29 +319,11 @@ class Metrics extends Component {
         ]
       }
     };
-    const tabs = [
-      {
-        name: 'Выгрузка'
-      },
-      {
-        name: 'Метрики по проекту'
-      },
-      {
-        name: 'Баги на проекте'
-      },
-      {
-        name: 'Затраты по ролям'
-      },
-      {
-        name: 'Метрики по спринту'
-      }
-    ];
     const Pane = (props) => {
       return <div>{props.children}</div>;
     };
-
     Pane.propTypes = {
-      label: React.PropTypes.string.isRequired
+      label: PropTypes.string.isRequired
     };
     return (
       <div>
@@ -355,11 +337,11 @@ class Metrics extends Component {
                 icon="IconRefresh"
                 data-tip="Пересчитать метрику"
               />
-              <Tabs tabs={tabs} selected={0} addedClassNames={{[css.tabs]: true}}>
-                <Pane label={tabs[0].name}>
+              <Tabs addedClassNames={{[css.tabs]: true}} selected={this.props.params.metricType} currentPath={`/projects/${this.props.params.projectId}/analytics`} routable>
+                <Pane label="Выгрузка" path="/download">
                   <SprintReport startDate={this.startDate()} endDate={this.endDate()} />
                 </Pane>
-                <Pane label={tabs[1].name}>
+                <Pane label="Метрики по проекту" path="/project">
                   <StartEndDates startDate={this.startDate()} endDate={this.endDate()} />
                   <Row>
                     <Col xs={12} md={10} lg={6} lgOffset={0}>
@@ -386,7 +368,7 @@ class Metrics extends Component {
                     </Col>
                   </Row>
                 </Pane>
-                <Pane label={tabs[4].name}>
+                <Pane label="Баги на проекте" path="/bugs">
                   <SprintMetrics
                     chartDefaultOptions={chartDefaultOptions}
                     getBasicLineSettings={this.getBasicLineSettings()}
@@ -397,7 +379,7 @@ class Metrics extends Component {
                     filterById={this.filterById}
                   />
                 </Pane>
-                <Pane label={tabs[2].name}>
+                <Pane label="Затраты по ролям" path="/expenses">
                   <Row>
                     <Col xs={12}>
                       <BugsChart
@@ -410,7 +392,7 @@ class Metrics extends Component {
                     </Col>
                   </Row>
                 </Pane>
-                <Pane label={tabs[3].name}>
+                <Pane label="Метрики по спринту" path="/sprint">
                   <Row>
                     <Col xs={12}>
                       <CostByRoleChart
