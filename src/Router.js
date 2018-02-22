@@ -47,6 +47,7 @@ import { setRedirectPath } from './actions/Authentication';
 class AppRouter extends Component {
   static propTypes = {
     clearCurrentProjectAndTasks: PropTypes.func,
+    clearCurrentTask: PropTypes.func,
     history: PropTypes.object,
     isLoggedIn: PropTypes.bool,
     loaded: PropTypes.bool,
@@ -89,8 +90,9 @@ class AppRouter extends Component {
                 <Route path="info" component={Info} />
                 <Route path="property" component={Settings} />
                 <Route path="planning" component={Planning} />
-                <Route path="analytics" component={Metrics} />
-                <Route path="analytics/:metricType" component={Metrics} />
+                <Route path="analytics" component={Metrics} >
+                  <Route path=":metricType" component={Metrics} />
+                </Route>
                 <Route path="history" component={ProjectHistory} />
                 <Route path="(sprint:sprintId/)tasks" component={TaskList} />
               </Route>

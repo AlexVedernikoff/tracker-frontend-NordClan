@@ -15,6 +15,7 @@ class ProjectPage extends Component {
   static propTypes = {
     children: PropTypes.object,
     getProjectInfo: PropTypes.func,
+    location: PropTypes.object,
     params: PropTypes.object,
     project: PropTypes.object,
     user: PropTypes.object.isRequired
@@ -35,6 +36,12 @@ class ProjectPage extends Component {
         || this.props.user.globalRole === ADMIN
       : false;
   };
+
+  handleAnalyticsAction = (event) => {
+    if (this.props.location.pathname.indexOf('analytics') !== -1) {
+      event.preventDefault();
+    }
+  }
 
   render () {
     const isProjectAdmin = this.checkIsAdminInProject();
@@ -90,6 +97,7 @@ class ProjectPage extends Component {
           <Link
             activeClassName="active"
             to={`/projects/${this.props.params.projectId}/analytics`}
+            onClick={this.handleAnalyticsAction}
           >
             Аналитика
           </Link>

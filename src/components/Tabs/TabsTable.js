@@ -2,43 +2,64 @@ import React from 'react';
 import { Link } from 'react-router';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { history } from '../../History';
 import * as css from './Tabs.scss';
 
 export default class Tabs extends React.Component {
+  static propTypes = {
+    addedClassNames: PropTypes.object,
+    children: PropTypes.array,
+    currentPath: PropTypes.string,
+    routable: PropTypes.bool,
+    selected: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ])
+  }
+
   constructor (props) {
     super(props);
 
     const {routable, currentPath} = this.props;
 
     this.currentPath = routable && currentPath;
-    this.state = { selected: this._setSelectedIndex() };
+    this.selectedIndex = this.getSelectedIndex();
+    this.state = { selected: this.selectedIndex === -1 ? 0 : this.selectedIndex};
   }
 
-  _setSelectedIndex () {
+  componentWillMount () {
+    const [firstChild] = this.props.children;
+
+    if (this.selectedIndex === -1) {
+      history.replace(this.setRoute(firstChild.props.path));
+    }
+  }
+
+  getSelectedIndex () {
     const {children, selected} = this.props;
     let selectedIndex;
 
     if (this.currentPath) {
-      selectedIndex = children.findIndex(child => child.props.path.slice(1) == selected);
+      selectedIndex = children.findIndex(child => child.props.path.slice(1) === selected);
     } else {
-      selectedIndex = parseInt(selected)
+      selectedIndex = parseInt(selected);
     }
 
-    return (isNaN(selectedIndex) || !children[selectedIndex]) ? 0 : selectedIndex;
+    return (isNaN(selectedIndex) || !children[selectedIndex]) ? -1 : selectedIndex;
   }
 
-  _setRoute (subpath) {
-    return this.currentPath && subpath? this.currentPath + subpath: '';
+  setRoute (subpath) {
+    return this.currentPath && subpath ? this.currentPath + subpath : '';
   }
 
-  _renderTitles () {
+  renderTitles () {
     function labels (child, idx) {
       const activeClass = this.state.selected === idx ? css.isActive : '';
       const {label, path} = child.props;
 
       return (
         <li role="tab" key={idx} aria-controls={`panel${idx}`}>
-          <Link className={activeClass} onClick={this.onClick.bind(this, idx)} to={this._setRoute(path)}>
+          <Link className={activeClass} onClick={this.onClick.bind(this, idx)} to={this.setRoute(path)}>
             {label}
           </Link>
         </li>
@@ -68,7 +89,7 @@ export default class Tabs extends React.Component {
         [css.tabs]: !!css.tabs,
         ...this.props.addedClassNames
       })}>
-        {this._renderTitles()}
+        {this.renderTitles()}
 
         <div className={css.tabs__content}>{this.props.children[this.state.selected]}</div>
       </div>
