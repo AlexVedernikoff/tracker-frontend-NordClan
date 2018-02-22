@@ -255,7 +255,7 @@ class TaskList extends Component {
   };
 
   loadTasks = () => {
-    this.props.getTasks({ ...this.state.changedFilters, allStatuses: true }, true);
+    this.props.getTasks({ ...this.state.changedFilters, allStatuses: true, currentPage: this.state.activePage }, true);
   };
 
   clearFilters = () => {
