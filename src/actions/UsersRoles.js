@@ -29,7 +29,7 @@ const changeUserStatusSuccess = (user) => ({
 export const getUsers = () => {
   return dispatch => dispatch({
     type: REST_API,
-    url: '/user/usersroles',
+    url: '/user/roles',
     method: GET,
     extra,
     start: withStartLoading(getUsersStart, true)(dispatch),
