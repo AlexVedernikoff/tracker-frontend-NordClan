@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
 import { connect } from 'react-redux';
+import classnames from 'classnames';
 import SelectDropdown from '../../../../components/SelectDropdown';
 import SprintSelector from '../../../../components/SprintSelector';
+import * as Icons from '../../../../components/Icons';
 import _ from 'lodash';
 import moment from 'moment/moment';
 import DatepickerDropdown from '../../../../components/DatepickerDropdown/DatepickerDropdown';
@@ -11,10 +12,9 @@ import { API_URL } from '../../../../constants/Settings';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './SprintReport.scss';
 
-const dateFormat = 'YYYY-MM-DD';
+const dateFormat = 'DD.MM.YYYY';
 
 class SprintReport extends Component {
-
   static propTypes = {
     endDate: PropTypes.string,
     project: PropTypes.object,
@@ -29,7 +29,12 @@ class SprintReport extends Component {
   state = {
     reportPeriod: null,
     selectedFrom: '',
-    selectedTo: ''
+    selectedTo: '',
+    optionStatus: '',
+    dateFrom: '',
+    dateTo: '',
+    borderColorFrom: '',
+    borderColorTo: ''
   };
 
   componentWillReceiveProps (newProps) {
@@ -41,7 +46,7 @@ class SprintReport extends Component {
     }
   }
 
-  selectReportPeriod = option => {
+  selectReportPeriod = (option) => {
     if (!_.isEmpty(option) && option.value.id) {
       this.setState({
         reportPeriod: option,
@@ -63,7 +68,7 @@ class SprintReport extends Component {
     }
   };
 
-  formatDate = date => date && moment(date).format(dateFormat);
+  formatDate = (date) => date && moment(date).format(dateFormat);
 
   updatePickers = (value) => {
     const { selectedFrom, selectedTo } = value;
@@ -71,53 +76,50 @@ class SprintReport extends Component {
   };
 
   handleDayFromChange = (date) => {
-    this.setState({ selectedFrom: this.formatDate(date) });
+    this.setState({ selectedFrom: this.formatDate(date), dateFrom: this.formatDate(date), borderColorFrom: '' });
   };
   handleDayToChange = (date) => {
-    this.setState({ selectedTo: this.formatDate(date) });
+    this.setState({ selectedTo: this.formatDate(date), dateTo: this.formatDate(date), borderColorTo: '' });
   };
 
   isRangeValid = () => {
     return (
-      (this.state.selectedFrom && this.state.selectedTo)
-      || (moment(this.state.selectedFrom, 'YYYY-MM-DD', true).isValid()
-        && moment(this.state.selectedTo, 'YYYY-MM-DD', true).isValid()
+      (!this.state.selectedFrom && !this.state.selectedTo)
+      || (moment(this.state.selectedFrom, 'DD.MM.YYYY', true).isValid()
+        && moment(this.state.selectedTo, 'DD.MM.YYYY', true).isValid()
         && moment(this.state.selectedTo).isAfter(this.state.selectedFrom))
     );
   };
 
-  getSelectOptions = () => {
-    return [
-      this.fullTimeOption(),
-      this.wholeProjectTimeOption(),
-      this.lastWeekOption(),
-      this.lastMonthOption(),
-      ...this.props.sprints.map((value) => ({ value, label: `${value.name} (${moment(value.factStartDate).format('DD.MM.YYYY')} ${
-        value.factFinishDate ? `- ${moment(value.factFinishDate).format('DD.MM.YYYY')}` : '- ...'
-      })`,
-        statusId: value.statusId,
-        className: classnames({
-          [css.INPROGRESS]: value.statusId === 2,
-          [css.sprintMarker]: true,
-          [css.FINISHED]: value.statusId === 1
-        })
-      }))
-    ];
+  validDateFromInput = (val) => {
+    if (val.length === 2 || val.length === 5) {
+      val += '.';
+    }
+    const d_arr = val.split('.');
+    const d = new Date(d_arr[2] + '/' + d_arr[1] + '/' + d_arr[0] + '');
+
+    if (d_arr[2] != d.getFullYear() || d_arr[1] != d.getMonth() + 1 || d_arr[0] != d.getDate()) {
+      this.state.borderColorFrom = 'red';
+    } else {
+      this.state.borderColorFrom = '#ebebeb';
+    }
+    this.setState({ dateFrom: val });
   };
 
-  sprintOption = (value) => {
-    return {
-      label: value.name,
-      value: {
-        sprintId: value.id,
-        // выборка делается по всем ТШ спринта, поэтому отправляется дата начала проекта и текущая
-        factStartDate: this.formatDate(this.props.startDate),
-        factFinishDate: moment().format(dateFormat),
-        sprintStartDate: value.factStartDate,
-        sprintFinishDate: value.factFinishDate
-      }
-    };
-  }
+  validDateToInput = (val) => {
+    if (val.length === 2 || val.length === 5) {
+      val += '.';
+    }
+    const d_arr = val.split('.');
+    const d = new Date(d_arr[2] + '/' + d_arr[1] + '/' + d_arr[0] + '');
+
+    if (d_arr[2] != d.getFullYear() || d_arr[1] != d.getMonth() + 1 || d_arr[0] != d.getDate()) {
+      this.state.borderColorTo = 'red';
+    } else {
+      this.state.borderColorTo = '#ebebeb';
+    }
+    this.setState({ dateTo: val });
+  };
 
   lastWeekOption = () => {
     const lastWeek = moment().subtract(1, 'weeks');
@@ -145,11 +147,11 @@ class SprintReport extends Component {
     return {
       label: 'За все время',
       value: {
-        factStartDate: this.formatDate(this.props.startDate),
-        factFinishDate: moment().format(dateFormat)
+        factStartDate: undefined,
+        factFinishDate: undefined
       }
     };
-  }
+  };
 
   wholeProjectTimeOption = () => {
     return {
@@ -178,11 +180,42 @@ class SprintReport extends Component {
       // запрос отчета по дате, без выбора типа
       return selectedDate;
     }
-  }
+    return `?startDate=${this.state.selectedFrom}&endDate=${this.state.selectedTo}`;
+  };
+  changeSprint = (option) => {
+    if (option) {
+      this.setState({
+        sprintSelected: option,
+        selectedFrom: this.formatDate(option.value.factStartDate),
+        selectedTo: this.formatDate(option.value.factFinishDate)
+      });
+    }
+  };
+
+  sprintsList = () => {
+    const list = [];
+    list.unshift(this.lastWeekOption());
+    list.unshift(this.lastMonthOption());
+    list.unshift(this.fullTimeOption());
+    const sprints = this.props.sprints.map((sprint, i) => ({
+      value: sprint,
+      label: `${sprint.name} (${moment(sprint.factStartDate).format(dateFormat)} ${
+        sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format(dateFormat)}` : '- ...'
+      })`,
+      statusId: sprint.statusId,
+      className: classnames({
+        [css.INPROGRESS]: sprint.statusId === 2,
+        [css.sprintMarker]: true,
+        [css.FINISHED]: sprint.statusId === 1
+      })
+    }));
+    const newList = list.concat(sprints);
+    return newList;
+  };
 
   render () {
-    const dateFrom = this.state.selectedFrom ? moment(this.state.selectedFrom).format('DD.MM.YYYY') : '';
-    const dateTo = this.state.selectedTo ? moment(this.state.selectedTo).format('DD.MM.YYYY') : '';
+    const dateFrom = this.state.selectedFrom ? moment(this.state.selectedFrom, dateFormat).format(dateFormat) : '';
+    const dateTo = this.state.selectedTo ? moment(this.state.selectedTo, dateFormat).format(dateFormat) : '';
     return (
       <div className={css.SprintReport}>
         <Row center="xs">
@@ -191,16 +224,17 @@ class SprintReport extends Component {
           </Col>
         </Row>
         <Row className={css.modile_style}>
-          <Col>Спринт: </Col>
+          <Col>Период: </Col>
           <Col md={4} xs={12}>
             <SprintSelector
-              name="sprint"
-              placeholder="Выбирите спринт..."
               multi={false}
-              value={this.state.reportPeriod}
-              onChange={(option) => this.selectReportPeriod(option)}
+              value={this.state.sprintSelected}
+              sprints={this.props.sprints}
+              options={this.sprintsList()}
+              onChange={(option) => this.changeSprint(option)}
+              onKeyUp={(option) => this.sprintSelected(option)}
               noResultsText="Нет результатов"
-              options={this.getSelectOptions()}
+              className={css.sprintSelector}
             />
           </Col>
           <Col>С: </Col>
@@ -208,9 +242,18 @@ class SprintReport extends Component {
             <DatepickerDropdown
               name="dateFrom"
               format={dateFormat}
-              value={dateFrom}
+              value={this.state.dateFrom}
               onDayChange={this.handleDayFromChange}
-              placeholder="с"
+              onKeyDown={(e) =>
+                this.validDateFromInput(
+                  e.target.value
+                    .replace(/[^0-9.]/g, '')
+                    .substr(0, 9)
+                    .trim()
+                )
+              }
+              style={{ borderColor: this.state.borderColorFrom }}
+              placeholder="дд.мм.гггг"
               disabledDataRanges={[{ after: new Date(this.state.selectedTo) }]}
             />
           </Col>
@@ -219,9 +262,18 @@ class SprintReport extends Component {
             <DatepickerDropdown
               name="dateTo"
               format={dateFormat}
-              value={dateTo}
+              value={this.state.dateTo}
               onDayChange={this.handleDayToChange}
-              placeholder="по"
+              onKeyDown={(e) =>
+                this.validDateToInput(
+                  e.target.value
+                    .substr(0, 9)
+                    .replace(/[^0-9.]/g, '')
+                    .trim()
+                )
+              }
+              style={{ borderColor: this.state.borderColorTo }}
+              placeholder="дд.мм.гггг"
               disabledDataRanges={[{ before: new Date(this.state.selectedFrom) }]}
             />
           </Col>
