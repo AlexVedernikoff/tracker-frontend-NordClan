@@ -38,9 +38,10 @@ class BugsChart extends Component {
   }
 
   makeChartData = () => {
+    const { openedBugsMetrics, openedCustomerBugsMetrics, openedRegressBugsMetrics } = this.props;
+
     getColor.reset();
 
-    const { openedBugsMetrics, openedCustomerBugsMetrics, openedRegressBugsMetrics } = this.props;
     return {
       datasets: [
         this.makeBugsLine(openedBugsMetrics, 'Количество открытых багов'),
