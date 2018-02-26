@@ -18,6 +18,7 @@ import Priority from '../../../components/Priority';
 import Checkbox from '../../../components/Checkbox';
 import CreateTaskModal from '../../../components/CreateTaskModal';
 import PerformerFilter from '../../../components/PerformerFilter';
+import getProrityById from '../../../utils/TaskPriority';
 import * as css from './AgileBoard.scss';
 
 
@@ -453,6 +454,7 @@ class AgileBoard extends Component {
     const filters = [
       this.state.isOnlyMine ? {name: 'isOnlyMine', label: 'мои задачи', onDelete: () => this.resetFiled('isOnlyMine') } : null,
       this.state.authorId ? {name: 'authorId', label: `автор: ${this.getSelectOptions(this.props.project.users, this.state.authorId, 'fullNameRu')}`, onDelete: () => this.resetFiled('authorId') } : null,
+      this.state.prioritiesId ? {name: 'authorId', label: `${getProrityById(this.state.prioritiesId)}`, onDelete: () => this.resetFiled('prioritiesId') } : null,
       this.state.performerId ? {name: 'performerId', label: `исполнитель: ${this.getSelectOptions(this.props.project.users, this.state.performerId, 'fullNameRu')}`, onDelete: () => this.resetFiled('performerId')} : null,
       this.state.changedSprint ? {name: 'sprint', label: this.getSelectOptions((this.getSprints()).map(sprint => ({id: sprint.value, name: sprint.label})), this.state.changedSprint), onDelete: () => this.resetFiled('changedSprint')} : null,
       this.state.name.length > 0 ? {name: ' name', label: this.state.name, onDelete: () => this.resetFiled('name')} : null,
