@@ -258,7 +258,7 @@ class Metrics extends Component {
                     </Col>
                   </Row>
                 </Pane>
-                <Pane label="Баги на проекте" path="/bugs">
+                <Pane label="Метрики по спринту" path="/sprint">
                   <SprintMetrics
                     chartDefaultOptions={chartDefaultOptions}
                     getBasicLineSettings={this.getBasicLineSettings}
@@ -269,7 +269,7 @@ class Metrics extends Component {
                     filterById={this.filterById}
                   />
                 </Pane>
-                <Pane label="Затраты по ролям" path="/expenses">
+                <Pane label="Баги на проекте" path="/bugs">
                   <Row>
                     <Col xs={12}>
                       <BugsChart
@@ -282,7 +282,7 @@ class Metrics extends Component {
                     </Col>
                   </Row>
                 </Pane>
-                <Pane label="Метрики по спринту" path="/sprint">
+                <Pane label="Затраты по ролям" path="/expenses">
                   <Row>
                     <Col xs={12}>
                       <CostByRoleChart
