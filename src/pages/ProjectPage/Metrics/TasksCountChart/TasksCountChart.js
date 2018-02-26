@@ -2,20 +2,19 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as css from './TasksCountChart.scss';
 import { Line } from 'react-chartjs-2';
-import { connect } from 'react-redux';
-import moment from 'moment';
-import getRandomColor from '../../../../utils/getRandomColor';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
+import getColor from '../../../../utils/Colors';
 import roundNum from '../../../../utils/roundNum';
+
 class TasksCountChart extends Component {
   static propTypes = {
+    basicLineSettings: PropTypes.object,
     chartDefaultOptions: PropTypes.object,
-    getBasicLineSettings: PropTypes.func,
+    openedBugsMetrics: PropTypes.array,
+    openedCustomerBugsMetrics: PropTypes.array,
     openedFeaturesMetric: PropTypes.array,
     openedFeaturesWithoutEvaluationMetric: PropTypes.array,
-    openedOutOfPlanFeaturesMetric: PropTypes.array,
-    openedBugsMetrics: PropTypes.array,
-    openedCustomerBugsMetrics: PropTypes.array
+    openedOutOfPlanFeaturesMetric: PropTypes.array
   };
 
   constructor (props) {
@@ -51,6 +50,9 @@ class TasksCountChart extends Component {
       openedBugsMetrics,
       openedCustomerBugsMetrics
     } = this.props;
+
+    getColor.reset();
+
     return {
       datasets: [
         this.makeTaskCountMetricsLine(openedFeaturesMetric, 'Количество открытых задач без оценки'),
@@ -63,6 +65,8 @@ class TasksCountChart extends Component {
   }
 
   makeTaskCountMetricsLine = (metrics, label) => {
+    const lineColor = getColor();
+
     const line = metrics
       .map((metric) => {
         return {
@@ -72,9 +76,11 @@ class TasksCountChart extends Component {
       })
       .sort(sortChartLineByDates);
     return {
+      borderColor: lineColor,
+      backgroundColor: lineColor,
       data: [...line],
       label: label,
-      ...this.props.getBasicLineSettings()
+      ...this.props.basicLineSettings
     };
   };
 

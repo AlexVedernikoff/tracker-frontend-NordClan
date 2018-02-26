@@ -4,11 +4,12 @@ import * as css from './BugsChart.scss';
 import { Line } from 'react-chartjs-2';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import roundNum from '../../../../utils/roundNum';
+import getColor from '../../../../utils/Colors';
 
 class BugsChart extends Component {
   static propTypes = {
+    basicLineSettings: PropTypes.object,
     chartDefaultOptions: PropTypes.object,
-    getBasicLineSettings: PropTypes.func,
     openedBugsMetrics: PropTypes.array,
     openedCustomerBugsMetrics: PropTypes.array,
     openedRegressBugsMetrics: PropTypes.array
@@ -37,6 +38,8 @@ class BugsChart extends Component {
   }
 
   makeChartData = () => {
+    getColor.reset();
+
     const { openedBugsMetrics, openedCustomerBugsMetrics, openedRegressBugsMetrics } = this.props;
     return {
       datasets: [
@@ -48,6 +51,7 @@ class BugsChart extends Component {
   };
 
   makeBugsLine = (metrics, label) => {
+    const lineColor = getColor();
     const line = metrics
       .map((metric) => {
         return {
@@ -59,7 +63,9 @@ class BugsChart extends Component {
     return {
       data: [...line],
       label: label,
-      ...this.props.getBasicLineSettings()
+      borderColor: lineColor,
+      backgroundColor: lineColor,
+      ...this.props.basicLineSettings
     };
   };
 

@@ -14,15 +14,15 @@ const dateFormat = 'DD.MM.YYYY';
 
 class SprintMetrics extends Component {
   static propTypes = {
+    basicLineSettings: PropTypes.object,
     chartDefaultOptions: PropTypes.object,
-    getBasicLineSettings: PropTypes.func,
+    endDate: PropTypes.string,
+    filterById: PropTypes.func,
+    metrics: PropTypes.array,
     openedBugsMetrics: PropTypes.array,
     openedCustomerBugsMetrics: PropTypes.array,
-    filterById: PropTypes.func,
-    startDate: PropTypes.string,
-    endDate: PropTypes.string,
-    metrics: PropTypes.array,
-    sprints: PropTypes.array
+    sprints: PropTypes.array,
+    startDate: PropTypes.string
   };
   constructor (props) {
     super(props);
@@ -33,7 +33,6 @@ class SprintMetrics extends Component {
     };
   }
 
-  formatDate = (date) => date && moment(date).format(dateFormat);
   componentWillMount () {
     const { sprints } = this.props;
     if (sprints.length > 0) {
@@ -47,6 +46,8 @@ class SprintMetrics extends Component {
       this.setState({ sprintSelected: this.getCurrentSprint(nextProps.sprints) });
     }
   }
+
+  formatDate = (date) => date && moment(date).format(dateFormat);
 
   getSelectOptions = () => {
     return [
@@ -117,9 +118,7 @@ class SprintMetrics extends Component {
   render () {
     const {
       chartDefaultOptions,
-      startDate,
-      endDate,
-      getBasicLineSettings,
+      basicLineSettings,
       metrics,
       filterById,
       openedBugsMetrics,
@@ -154,7 +153,7 @@ class SprintMetrics extends Component {
               startDate={this.sprintStartDate()}
               endDate={this.sprintEndDate()}
               chartDefaultOptions={chartDefaultOptions}
-              getBasicLineSettings={getBasicLineSettings}
+              basicLineSettings={basicLineSettings}
               sprintClosingFeaturesMetrics={this.filterBySprint(currentSprintId, sprintClosingFeaturesMetrics)}
               sprintWriteOffTimeMetrics={this.filterBySprint(currentSprintId, sprintWriteOffTimeMetrics)}
               sprintWorkWithoutEvaluationMetrics={this.filterBySprint(
@@ -166,7 +165,7 @@ class SprintMetrics extends Component {
           <Col xs={12}>
             <TasksCountChart
               chartDefaultOptions={chartDefaultOptions}
-              getBasicLineSettings={getBasicLineSettings}
+              basicLineSettings={basicLineSettings}
               openedFeaturesWithoutEvaluationMetric={this.filterBySprint(
                 currentSprintId,
                 openedFeaturesWithoutEvaluationMetric

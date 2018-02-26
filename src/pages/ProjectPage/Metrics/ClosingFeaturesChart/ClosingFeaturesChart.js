@@ -4,11 +4,12 @@ import { Line } from 'react-chartjs-2';
 import * as css from './ClosingFeaturesChart.scss';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import roundNum from '../../../../utils/roundNum';
+import getColor from '../../../../utils/Colors';
 
 class ClosingFeaturesChart extends Component {
   static propTypes = {
+    basicLineSettings: PropTypes.object,
     chartDefaultOptions: PropTypes.object,
-    getBasicLineSettings: PropTypes.func,
     sprintClosingFeaturesMetrics: PropTypes.array,
     sprintWorkWithoutEvaluationMetrics: PropTypes.array,
     sprintWriteOffTimeMetrics: PropTypes.array
@@ -38,6 +39,9 @@ class ClosingFeaturesChart extends Component {
 
   makeChartData = () => {
     const { sprintClosingFeaturesMetrics, sprintWriteOffTimeMetrics, sprintWorkWithoutEvaluationMetrics } = this.props;
+
+    getColor.reset();
+
     return {
       datasets: [
         this.makeBugsLine(sprintClosingFeaturesMetrics, 'Динамика закрытия задач (с учетом трудозатрат)'),
@@ -48,6 +52,7 @@ class ClosingFeaturesChart extends Component {
   };
 
   makeBugsLine = (metrics, label) => {
+    const lineColor = getColor();
     const line = metrics
       .map((metric) => {
         return {
@@ -59,7 +64,9 @@ class ClosingFeaturesChart extends Component {
     return {
       data: [...line],
       label: label,
-      ...this.props.getBasicLineSettings()
+      borderColor: lineColor,
+      backgroundColor: lineColor,
+      ...this.props.basicLineSettings
     };
   };
 

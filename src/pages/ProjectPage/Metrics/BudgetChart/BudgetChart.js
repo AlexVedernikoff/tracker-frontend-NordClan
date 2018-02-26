@@ -6,13 +6,14 @@ import { Line } from 'react-chartjs-2';
 import { connect } from 'react-redux';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import roundNum from '../../../../utils/roundNum';
+import getColor from '../../../../utils/Colors';
 
 class BudgetChart extends Component {
   static propTypes = {
+    basicLineSettings: PropTypes.object,
     budget: PropTypes.number,
     chartDefaultOptions: PropTypes.object,
     endDate: PropTypes.string,
-    getBasicLineSettings: PropTypes.func,
     isRisks: PropTypes.bool,
     projectBudgetMetrics: PropTypes.array,
     riskBudget: PropTypes.number,
@@ -54,7 +55,9 @@ class BudgetChart extends Component {
       sprints,
       isRisks
     } = this.props;
-    const sprintsId = sprints.map((sprint) => sprint.id);
+
+    getColor.reset();
+
     return {
       datasets: [
         this.makeIdealProjectBurndown(startDate, endDate, budget, riskBudget, isRisks),
@@ -66,6 +69,8 @@ class BudgetChart extends Component {
   };
 
   makeIdealProjectBurndown = (startDate, endDate, budget, riskBudget, isRisks) => {
+    const lineColor = getColor();
+
     return {
       data: [
         {
@@ -78,11 +83,14 @@ class BudgetChart extends Component {
         }
       ],
       label: 'Идеальная всего проекта',
-      ...this.props.getBasicLineSettings()
+      borderColor: lineColor,
+      backgroundColor: lineColor,
+      ...this.props.basicLineSettings
     };
   };
 
   makeProjectBurndown = (metrics, startDate, budget, riskBudget, isRisks) => {
+    const lineColor = getColor();
     const burndown = metrics
       .map((metric) => {
         return {
@@ -98,12 +106,15 @@ class BudgetChart extends Component {
     return {
       data: [...burndown],
       label: 'Весь проект',
-      ...this.props.getBasicLineSettings()
+      borderColor: lineColor,
+      backgroundColor: lineColor,
+      ...this.props.basicLineSettings
     };
   };
 
   makeSprintsIdealBurndowns = (sprints, isRisks) => {
     return sprints.map((sprint) => {
+      const lineColor = getColor();
       const idealBurndown = [
         {
           x: sprint.factStartDate,
@@ -117,13 +128,16 @@ class BudgetChart extends Component {
       return {
         data: [...idealBurndown],
         label: `Идеальная ${sprint.name}`,
-        ...this.props.getBasicLineSettings()
+        borderColor: lineColor,
+        backgroundColor: lineColor,
+        ...this.props.basicLineSettings
       };
     });
   };
 
   makeSprintsBurndowns = (metrics, sprints) => {
     return sprints.map((sprint) => {
+      const lineColor = getColor();
       const sprintMetrics = metrics.filter((metric) => metric.sprintId === sprint.id);
       const burndown = sprintMetrics
         .map((metric) => {
@@ -136,7 +150,9 @@ class BudgetChart extends Component {
       return {
         data: burndown,
         label: `${sprint.name}`,
-        ...this.props.getBasicLineSettings()
+        borderColor: lineColor,
+        backgroundColor: lineColor,
+        ...this.props.basicLineSettings
       };
     });
   };

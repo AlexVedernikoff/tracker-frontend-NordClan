@@ -4,7 +4,6 @@ import * as css from './CostByRoleChart.scss';
 import { Line } from 'react-chartjs-2';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import getRandomColor from '../../../../utils/getRandomColor';
 import Button from '../../../../components/Button';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import roundNum from '../../../../utils/roundNum';
@@ -14,7 +13,7 @@ class CostByRoleChart extends Component {
     chartDefaultOptions: PropTypes.object,
     costByRoleMetrics: PropTypes.array,
     costByRolePercentMetrics: PropTypes.array,
-    getBasicLineSettings: PropTypes.func
+    basicLineSettings: PropTypes.object
   };
 
   constructor (props) {
@@ -66,7 +65,10 @@ class CostByRoleChart extends Component {
       return {
         data: line,
         label: role.name,
-        ...this.props.getBasicLineSettings()
+        ...this.props.basicLineSettings,
+        backgroundColor: role.color,
+        borderColor: role.color,
+        fill: false
       };
     });
   }
