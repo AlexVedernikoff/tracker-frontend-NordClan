@@ -8,8 +8,8 @@ import roundNum from '../../../../utils/roundNum';
 
 class TasksCountChart extends Component {
   static propTypes = {
-    basicLineSettings: PropTypes.object,
     chartDefaultOptions: PropTypes.object,
+    getBasicLineSettings: PropTypes.func,
     openedBugsMetrics: PropTypes.array,
     openedCustomerBugsMetrics: PropTypes.array,
     openedFeaturesMetric: PropTypes.array,
@@ -65,8 +65,6 @@ class TasksCountChart extends Component {
   }
 
   makeTaskCountMetricsLine = (metrics, label) => {
-    const lineColor = getColor();
-
     const line = metrics
       .map((metric) => {
         return {
@@ -76,11 +74,9 @@ class TasksCountChart extends Component {
       })
       .sort(sortChartLineByDates);
     return {
-      borderColor: lineColor,
-      backgroundColor: lineColor,
       data: [...line],
       label: label,
-      ...this.props.basicLineSettings
+      ...this.props.getBasicLineSettings()
     };
   };
 

@@ -8,8 +8,8 @@ import getColor from '../../../../utils/Colors';
 
 class BugsChart extends Component {
   static propTypes = {
-    basicLineSettings: PropTypes.object,
     chartDefaultOptions: PropTypes.object,
+    getBasicLineSettings: PropTypes.func,
     openedBugsMetrics: PropTypes.array,
     openedCustomerBugsMetrics: PropTypes.array,
     openedRegressBugsMetrics: PropTypes.array
@@ -51,7 +51,6 @@ class BugsChart extends Component {
   };
 
   makeBugsLine = (metrics, label) => {
-    const lineColor = getColor();
     const line = metrics
       .map((metric) => {
         return {
@@ -63,9 +62,7 @@ class BugsChart extends Component {
     return {
       data: [...line],
       label: label,
-      borderColor: lineColor,
-      backgroundColor: lineColor,
-      ...this.props.basicLineSettings
+      ...this.props.getBasicLineSettings()
     };
   };
 

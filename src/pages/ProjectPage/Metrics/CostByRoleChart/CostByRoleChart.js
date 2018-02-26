@@ -7,13 +7,14 @@ import moment from 'moment';
 import Button from '../../../../components/Button';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import roundNum from '../../../../utils/roundNum';
+import getColor from '../../../../utils/Colors';
 
 class CostByRoleChart extends Component {
   static propTypes = {
     chartDefaultOptions: PropTypes.object,
     costByRoleMetrics: PropTypes.array,
     costByRolePercentMetrics: PropTypes.array,
-    basicLineSettings: PropTypes.object
+    getBasicLineSettings: PropTypes.func
   };
 
   constructor (props) {
@@ -26,6 +27,9 @@ class CostByRoleChart extends Component {
   makeChartData () {
     const { costByRoleMetrics, costByRolePercentMetrics } = this.props;
     const { displayPercent } = this.state;
+
+    getColor.reset();
+
     return {
       datasets: [...this.makeRoleMetricsLine(displayPercent ? costByRolePercentMetrics : costByRoleMetrics)]
     };
@@ -65,10 +69,7 @@ class CostByRoleChart extends Component {
       return {
         data: line,
         label: role.name,
-        ...this.props.basicLineSettings,
-        backgroundColor: role.color,
-        borderColor: role.color,
-        fill: false
+        ...this.props.getBasicLineSettings()
       };
     });
   }

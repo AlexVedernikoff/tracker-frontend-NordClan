@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import ClosingFeaturesChart from '../ClosingFeaturesChart';
 import TasksCountChart from '../TasksCountChart';
-import SelectDropdown from '../../../../components/SelectDropdown';
 import SprintSelector from '../../../../components/SprintSelector';
 import { connect } from 'react-redux';
 import * as css from './SprintMetrics.scss';
@@ -14,10 +13,10 @@ const dateFormat = 'DD.MM.YYYY';
 
 class SprintMetrics extends Component {
   static propTypes = {
-    basicLineSettings: PropTypes.object,
     chartDefaultOptions: PropTypes.object,
     endDate: PropTypes.string,
     filterById: PropTypes.func,
+    getBasicLineSettings: PropTypes.func,
     metrics: PropTypes.array,
     openedBugsMetrics: PropTypes.array,
     openedCustomerBugsMetrics: PropTypes.array,
@@ -118,7 +117,7 @@ class SprintMetrics extends Component {
   render () {
     const {
       chartDefaultOptions,
-      basicLineSettings,
+      getBasicLineSettings,
       metrics,
       filterById,
       openedBugsMetrics,
@@ -153,7 +152,7 @@ class SprintMetrics extends Component {
               startDate={this.sprintStartDate()}
               endDate={this.sprintEndDate()}
               chartDefaultOptions={chartDefaultOptions}
-              basicLineSettings={basicLineSettings}
+              getBasicLineSettings={getBasicLineSettings}
               sprintClosingFeaturesMetrics={this.filterBySprint(currentSprintId, sprintClosingFeaturesMetrics)}
               sprintWriteOffTimeMetrics={this.filterBySprint(currentSprintId, sprintWriteOffTimeMetrics)}
               sprintWorkWithoutEvaluationMetrics={this.filterBySprint(
@@ -165,7 +164,7 @@ class SprintMetrics extends Component {
           <Col xs={12}>
             <TasksCountChart
               chartDefaultOptions={chartDefaultOptions}
-              basicLineSettings={basicLineSettings}
+              getBasicLineSettings={getBasicLineSettings}
               openedFeaturesWithoutEvaluationMetric={this.filterBySprint(
                 currentSprintId,
                 openedFeaturesWithoutEvaluationMetric

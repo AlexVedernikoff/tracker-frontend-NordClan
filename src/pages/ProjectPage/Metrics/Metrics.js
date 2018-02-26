@@ -84,11 +84,17 @@ class Metrics extends Component {
     return metrics ? metrics.filter((metric) => metric.typeId === id) : [];
   };
 
-  basicLineSettings = {
-    fill: false,
-    lineTension: 0,
-    borderWidth: 2,
-    pointRadius: 2
+  getBasicLineSettings = () => {
+    const lineColor = getColor();
+
+    return {
+      lineTension: 0,
+      borderWidth: 2,
+      pointRadius: 2,
+      borderColor: lineColor,
+      backgroundColor: lineColor,
+      fill: false
+    };
   };
 
   checkIsAdminInProject = () => {
@@ -136,13 +142,10 @@ class Metrics extends Component {
         'Unbillable'
       ];
 
-      getColor.reset();
-
       return [...costsByRoles].map((costByRole, index) => {
         return {
           metrics: costByRole,
-          name: roles[index],
-          color: getColor()
+          name: roles[index]
         };
       });
     };
@@ -236,7 +239,7 @@ class Metrics extends Component {
                         startDate={this.startDate()}
                         endDate={this.endDate()}
                         chartDefaultOptions={chartDefaultOptions}
-                        basicLineSettings={this.basicLineSettings}
+                        getBasicLineSettings={this.getBasicLineSettings}
                         projectBudgetMetrics={projectBudgetMetrics}
                         sprintsBudgetMetrics={sprintsBudgetMetrics}
                         isRisks={false}
@@ -247,7 +250,7 @@ class Metrics extends Component {
                         startDate={this.startDate()}
                         endDate={this.endDate()}
                         chartDefaultOptions={chartDefaultOptions}
-                        basicLineSettings={this.basicLineSettings}
+                        getBasicLineSettings={this.getBasicLineSettings}
                         projectBudgetMetrics={projectBudgetRisksMetrics}
                         sprintsBudgetMetrics={sprintsBudgetRisksMetrics}
                         isRisks
@@ -258,7 +261,7 @@ class Metrics extends Component {
                 <Pane label="Баги на проекте" path="/bugs">
                   <SprintMetrics
                     chartDefaultOptions={chartDefaultOptions}
-                    basicLineSettings={this.basicLineSettings}
+                    getBasicLineSettings={this.getBasicLineSettings}
                     startDate={this.startDate()}
                     endDate={this.endDate()}
                     openedBugsMetrics={openedBugsMetrics}
@@ -271,7 +274,7 @@ class Metrics extends Component {
                     <Col xs={12}>
                       <BugsChart
                         chartDefaultOptions={chartDefaultOptions}
-                        basicLineSettings={this.basicLineSettings}
+                        getBasicLineSettings={this.getBasicLineSettings}
                         openedBugsMetrics={openedBugsMetrics}
                         openedCustomerBugsMetrics={openedCustomerBugsMetrics}
                         openedRegressBugsMetrics={openedRegressBugsMetrics}
@@ -284,7 +287,7 @@ class Metrics extends Component {
                     <Col xs={12}>
                       <CostByRoleChart
                         chartDefaultOptions={chartDefaultOptions}
-                        basicLineSettings={this.basicLineSettings}
+                        getBasicLineSettings={this.getBasicLineSettings}
                         costByRoleMetrics={costByRoleMetrics}
                         costByRolePercentMetrics={costByRolePercentMetrics}
                       />

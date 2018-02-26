@@ -8,8 +8,8 @@ import getColor from '../../../../utils/Colors';
 
 class ClosingFeaturesChart extends Component {
   static propTypes = {
-    basicLineSettings: PropTypes.object,
     chartDefaultOptions: PropTypes.object,
+    getBasicLineSettings: PropTypes.func,
     sprintClosingFeaturesMetrics: PropTypes.array,
     sprintWorkWithoutEvaluationMetrics: PropTypes.array,
     sprintWriteOffTimeMetrics: PropTypes.array
@@ -52,7 +52,6 @@ class ClosingFeaturesChart extends Component {
   };
 
   makeBugsLine = (metrics, label) => {
-    const lineColor = getColor();
     const line = metrics
       .map((metric) => {
         return {
@@ -64,9 +63,7 @@ class ClosingFeaturesChart extends Component {
     return {
       data: [...line],
       label: label,
-      borderColor: lineColor,
-      backgroundColor: lineColor,
-      ...this.props.basicLineSettings
+      ...this.props.getBasicLineSettings()
     };
   };
 
