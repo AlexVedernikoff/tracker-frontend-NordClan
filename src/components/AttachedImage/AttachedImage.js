@@ -52,6 +52,7 @@ export default class AttachedImage extends React.Component {
 
   render () {
     const css = require('./AttachedImage.scss');
+    const { canEdit } = this.props;
 
     const iconStyles = {
       width: 24,
@@ -82,7 +83,7 @@ export default class AttachedImage extends React.Component {
               <IconDownload style={iconStyles} />
             </button>
           </a>
-          <button onClick={this.handleOpenConfirmDelete}>
+          <button onClick={this.handleOpenConfirmDelete} hidden={!canEdit}>
             <IconDelete style={iconStyles} />
           </button>
         </div>
