@@ -70,8 +70,7 @@ const sortTasksAndCreateCard = (sortedObject, section, onChangeStatus, onOpenPer
 
   for (const key in sortedObject) {
     sortedObject[key].sort((a, b) => {
-      if (a.priority > b.priority) return 1;
-      if (a.priority < b.priority) return -1;
+      return a.prioritiesId - b.prioritiesId;
     });
     taskArray[key] = sortedObject[key].map((task) => {
       return <TaskCard

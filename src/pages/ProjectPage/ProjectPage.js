@@ -15,6 +15,7 @@ class ProjectPage extends Component {
   static propTypes = {
     children: PropTypes.object,
     getProjectInfo: PropTypes.func,
+    location: PropTypes.object,
     params: PropTypes.object,
     project: PropTypes.object,
     user: PropTypes.object.isRequired
@@ -36,8 +37,72 @@ class ProjectPage extends Component {
       : false;
   };
 
+  handleAnalyticsAction = (event) => {
+    if (this.props.location.pathname.indexOf('analytics') !== -1) {
+      event.preventDefault();
+    }
+  }
+
   render () {
     const isProjectAdmin = this.checkIsAdminInProject();
+    const tabs = [
+      <Link
+        key={`/projects/${this.props.params.projectId}`}
+        activeClassName="active"
+        onlyActiveOnIndex
+        to={`/projects/${this.props.params.projectId}`}
+      >
+        Доска
+      </Link>,
+      <Link
+        activeClassName="active"
+        key={`/projects/${this.props.params.projectId}/tasks`}
+        to={`/projects/${this.props.params.projectId}/tasks`}
+      >
+        Список задач
+      </Link>,
+      <Link
+        activeClassName="active"
+        key={`/projects/${this.props.params.projectId}/planning`}
+        to={`/projects/${this.props.params.projectId}/planning`}
+      >
+        Планирование
+      </Link>,
+      <Link
+        activeClassName="active"
+        key={`/projects/${this.props.params.projectId}/info`}
+        to={`/projects/${this.props.params.projectId}/info`}
+      >
+        Информация
+      </Link>,
+      <Link
+        activeClassName="active"
+        key={`/projects/${this.props.params.projectId}/property`}
+        to={`/projects/${this.props.params.projectId}/property`}
+      >
+        Настройки
+      </Link>,
+      <Link
+        activeClassName="active"
+        key={`/projects/${this.props.params.projectId}/history`}
+        to={`/projects/${this.props.params.projectId}/history`}
+      >
+        История
+      </Link>
+    ];
+
+    if (isProjectAdmin) {
+      tabs.push(
+        <Link
+          activeClassName="active"
+          key={`/projects/${this.props.params.projectId}/analytics`}
+          to={`/projects/${this.props.params.projectId}/analytics`}
+          onClick={this.handleAnalyticsAction}
+        >
+          Аналитика
+        </Link>
+      );
+    }
 
     return (this.props.project.error) ? (<HttpError error={this.props.project.error}/>) : (
       <div id="project-page">
@@ -50,49 +115,7 @@ class ProjectPage extends Component {
         />
 
         <RouteTabs>
-          <Link
-            activeClassName="active"
-            onlyActiveOnIndex
-            to={`/projects/${this.props.params.projectId}`}
-          >
-            Доска
-          </Link>
-          <Link
-            activeClassName="active"
-            to={`/projects/${this.props.params.projectId}/tasks`}
-          >
-            Список задач
-          </Link>
-          <Link
-            activeClassName="active"
-            to={`/projects/${this.props.params.projectId}/planning`}
-          >
-            Планирование
-          </Link>
-          <Link
-            activeClassName="active"
-            to={`/projects/${this.props.params.projectId}/info`}
-          >
-            Информация
-          </Link>
-          <Link
-            activeClassName="active"
-            to={`/projects/${this.props.params.projectId}/property`}
-          >
-            Настройки
-          </Link>
-          <Link
-            activeClassName="active"
-            to={`/projects/${this.props.params.projectId}/history`}
-          >
-            История
-          </Link>
-          <Link
-            activeClassName="active"
-            to={`/projects/${this.props.params.projectId}/analytics`}
-          >
-            Аналитика
-          </Link>
+          {tabs}
         </RouteTabs>
 
         <div className={css.tabContent}>

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import ClosingFeaturesChart from '../ClosingFeaturesChart';
 import TasksCountChart from '../TasksCountChart';
-import SelectDropdown from '../../../../components/SelectDropdown';
 import SprintSelector from '../../../../components/SprintSelector';
 import { connect } from 'react-redux';
 import * as css from './SprintMetrics.scss';
@@ -15,14 +14,14 @@ const dateFormat = 'DD.MM.YYYY';
 class SprintMetrics extends Component {
   static propTypes = {
     chartDefaultOptions: PropTypes.object,
+    endDate: PropTypes.string,
+    filterById: PropTypes.func,
     getBasicLineSettings: PropTypes.func,
+    metrics: PropTypes.array,
     openedBugsMetrics: PropTypes.array,
     openedCustomerBugsMetrics: PropTypes.array,
-    filterById: PropTypes.func,
-    startDate: PropTypes.string,
-    endDate: PropTypes.string,
-    metrics: PropTypes.array,
-    sprints: PropTypes.array
+    sprints: PropTypes.array,
+    startDate: PropTypes.string
   };
   constructor (props) {
     super(props);
@@ -33,7 +32,6 @@ class SprintMetrics extends Component {
     };
   }
 
-  formatDate = (date) => date && moment(date).format(dateFormat);
   componentWillMount () {
     const { sprints } = this.props;
     if (sprints.length > 0) {
@@ -47,6 +45,8 @@ class SprintMetrics extends Component {
       this.setState({ sprintSelected: this.getCurrentSprint(nextProps.sprints) });
     }
   }
+
+  formatDate = (date) => date && moment(date).format(dateFormat);
 
   getSelectOptions = () => {
     return [
@@ -117,8 +117,6 @@ class SprintMetrics extends Component {
   render () {
     const {
       chartDefaultOptions,
-      startDate,
-      endDate,
       getBasicLineSettings,
       metrics,
       filterById,

@@ -4,6 +4,7 @@ import { Line } from 'react-chartjs-2';
 import * as css from './ClosingFeaturesChart.scss';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import roundNum from '../../../../utils/roundNum';
+import getColor from '../../../../utils/Colors';
 
 class ClosingFeaturesChart extends Component {
   static propTypes = {
@@ -38,6 +39,9 @@ class ClosingFeaturesChart extends Component {
 
   makeChartData = () => {
     const { sprintClosingFeaturesMetrics, sprintWriteOffTimeMetrics, sprintWorkWithoutEvaluationMetrics } = this.props;
+
+    getColor.reset();
+
     return {
       datasets: [
         this.makeBugsLine(sprintClosingFeaturesMetrics, 'Динамика закрытия задач (с учетом трудозатрат)'),

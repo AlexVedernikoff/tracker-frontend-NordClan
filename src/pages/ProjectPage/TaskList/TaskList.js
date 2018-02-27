@@ -21,8 +21,7 @@ import { history } from '../../../History';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 
 class TaskList extends Component {
-
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       activePage: 1,
@@ -32,35 +31,35 @@ class TaskList extends Component {
     };
   }
 
-  componentDidMount () {
+  componentDidMount() {
     if (this.props.project.id) {
       this.loadTasks();
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (this.props.project.id !== nextProps.project.id) {
       this.loadTasks();
     }
   }
 
-  setQueryFilters () {
+  setQueryFilters() {
     const query = this.props.location.query;
     const projectId = this.props.params.projectId;
-    const translateToNumIfNeeded = (value) => {
+    const translateToNumIfNeeded = value => {
       const re = /^\d+$/;
       return re.test(value) ? +value : value;
     };
 
-    const multipleQueries = (queries) => {
+    const multipleQueries = queries => {
       if (Array.isArray(queries)) return queries.map(queryValue => translateToNumIfNeeded(queryValue));
       return queries ? [translateToNumIfNeeded(queries)] : [];
     };
 
-    const singleQuery = (query) => {
+    const singleQuery = query => {
       return query ? translateToNumIfNeeded(query) : null;
     };
-    const getValues = (changed) => {
+    const getValues = changed => {
       const name = changed ? 'name' : 'filterByName';
       if (changed && Object.keys(query).length === 0) return {};
       return {
@@ -83,10 +82,10 @@ class TaskList extends Component {
     };
   }
 
-  changeUrl (changedFilters) {
+  changeUrl(changedFilters) {
     const queryObj = {};
 
-    for (let [key, value] of Object.entries(changedFilters)) {
+    for (const [key, value] of Object.entries(changedFilters)) {
       if (value && key !== 'projectId') {
         queryObj[key] = value;
       }
@@ -112,9 +111,9 @@ class TaskList extends Component {
     changedFilters: {
       projectId: this.props.params.projectId
     }
-  }
+  };
 
-  openSprintModal = (taskId, sprintId) =>{
+  openSprintModal = (taskId, sprintId) => {
     this.setState({
       isSprintModalOpen: true,
       sprintId: sprintId,
@@ -126,11 +125,15 @@ class TaskList extends Component {
     this.setState({ isSprintModalOpen: false });
   };
 
-  changeSprint = (sprintId) => {
-    this.props.changeTask({
-      id: this.state.changedTask,
-      sprintId: sprintId
-    }, 'Sprint', this.loadTasks);
+  changeSprint = sprintId => {
+    this.props.changeTask(
+      {
+        id: this.state.changedTask,
+        sprintId: sprintId
+      },
+      'Sprint',
+      this.loadTasks
+    );
     this.closeSprintModal();
   };
 
@@ -146,16 +149,20 @@ class TaskList extends Component {
     this.setState({ isPerformerModalOpen: false });
   };
 
-  changePerformer = (performerId) => {
-    this.props.changeTask({
-      id: this.state.changedTask,
-      performerId: performerId
-    }, 'User', this.loadTasks);
+  changePerformer = performerId => {
+    this.props.changeTask(
+      {
+        id: this.state.changedTask,
+        performerId: performerId
+      },
+      'User',
+      this.loadTasks
+    );
     this.closePerformerModal();
   };
 
   getUsers = () => {
-    return this.props.project.users.map((user) => ({
+    return this.props.project.users.map(user => ({
       value: user.id,
       label: user.fullNameRu
     }));
@@ -180,14 +187,11 @@ class TaskList extends Component {
         changedFilters
       };
       return newState;
-
     }, this.loadTasks);
   };
 
   changeMultiFilter = (options, name) => {
-
     this.setState(state => {
-
       const filterValue = options.map(option => option.value);
       const changedFilters = state.changedFilters;
       if (filterValue.length) {
@@ -203,16 +207,13 @@ class TaskList extends Component {
       };
 
       return newState;
-
     }, this.loadTasks);
   };
 
   changeNameFilter = event => {
-
     const value = event.target.value;
 
     this.setState(state => {
-
       const changedFilters = state.changedFilters;
       if (value) {
         changedFilters.name = value;
@@ -230,19 +231,25 @@ class TaskList extends Component {
     }, this.loadTasks);
   };
 
-  onClickTag = (tag) => {
-    const sortedTags = _.uniqBy(this.state.tags.concat({
-      value: tag,
-      label: tag
-    }), 'value');
+  onClickTag = tag => {
+    const sortedTags = _.uniqBy(
+      this.state.tags.concat({
+        value: tag,
+        label: tag
+      }),
+      'value'
+    );
 
-    this.setState(state => ({
-      tags: sortedTags,
-      changedFilters: {
-        ...state.changedFilters,
-        tags: sortedTags.map(el => el.value).join(',')
-      }
-    }), this.loadTasks);
+    this.setState(
+      state => ({
+        tags: sortedTags,
+        changedFilters: {
+          ...state.changedFilters,
+          tags: sortedTags.map(el => el.value).join(',')
+        }
+      }),
+      this.loadTasks
+    );
   };
 
   handlePaginationClick = e => {
@@ -255,71 +262,62 @@ class TaskList extends Component {
   };
 
   loadTasks = () => {
-    this.props.getTasks({ ...this.state.changedFilters, allStatuses: true }, true);
-  };
-
-  clearFilters = () => {
-    this.setState({
-      ...this.initialFilters, 
-      changedFilters: {
-        projectId: this.props.params.projectId
-      }
-    }, this.loadTasks);
-    this.changeUrl({});
-  }
-
-  createOptions = (array, labelField = 'name') => {
-    return array.map(
-      element => ({
-        value: element.id,
-        label: element[labelField]
-      })
+    this.props.getTasks(
+      { ...this.state.changedFilters, allStatuses: true, currentPage: this.state.activePage, pageSize: 25 },
+      true
     );
   };
 
-  render () {
-    const {
-      tasksList: tasks,
-      statuses,
-      taskTypes,
-      project,
-      isReceiving
-    } = this.props;
+  clearFilters = () => {
+    this.setState(
+      {
+        ...this.initialFilters,
+        changedFilters: {
+          projectId: this.props.params.projectId
+        }
+      },
+      this.loadTasks
+    );
+    this.changeUrl({});
+  };
 
-    const {
-      prioritiesId,
-      typeId,
-      statusId,
-      sprintId,
-      performerId,
-      authorId,
-      tags,
-      filterByName
-    } = this.state;
+  createOptions = (array, labelField = 'name') => {
+    return array.map(element => ({
+      value: element.id,
+      label: element[labelField]
+    }));
+  };
+
+  render() {
+    const { tasksList: tasks, statuses, taskTypes, project, isReceiving } = this.props;
+
+    const { prioritiesId, typeId, statusId, sprintId, performerId, authorId, tags, filterByName } = this.state;
 
     const statusOptions = this.createOptions(statuses);
     const typeOptions = this.createOptions(taskTypes);
     const authorOptions = this.createOptions(project.users, 'fullNameRu');
     const isFilter = Object.keys(this.state.changedFilters).length > 1;
     const isLoading = isReceiving && !tasks.length;
-    const taskHolder = <div style={{marginBottom: '1rem'}}>
-      <hr style={{margin: '0 0 1rem 0'}}/>
-      <Row>
-        <Col xs={12} sm={6}>
-          <InlineHolder length="80%"/>
-          <InlineHolder length="50%"/>
-        </Col>
-        <Col xs={12} sm>
-          <InlineHolder length="50%"/>
-          <InlineHolder length="70%"/>
-          <InlineHolder length="30%"/>
-        </Col>
-        <Col xs>
-          <InlineHolder length="20%"/>
-          <InlineHolder length="20%"/>
-        </Col>
-      </Row>
-    </div>;
+    const taskHolder = (
+      <div style={{ marginBottom: '1rem' }}>
+        <hr style={{ margin: '0 0 1rem 0' }} />
+        <Row>
+          <Col xs={12} sm={6}>
+            <InlineHolder length="80%" />
+            <InlineHolder length="50%" />
+          </Col>
+          <Col xs={12} sm>
+            <InlineHolder length="50%" />
+            <InlineHolder length="70%" />
+            <InlineHolder length="30%" />
+          </Col>
+          <Col xs>
+            <InlineHolder length="20%" />
+            <InlineHolder length="20%" />
+          </Col>
+        </Row>
+      </div>
+    );
 
     return (
       <div>
@@ -328,7 +326,7 @@ class TaskList extends Component {
             <Row className={css.search} top="xs">
               <Col xs={12} sm={3} className={css.priorityFilter}>
                 <Priority
-                  onChange={(option) => this.changeSingleFilter(option, 'prioritiesId')}
+                  onChange={option => this.changeSingleFilter(option, 'prioritiesId')}
                   priority={prioritiesId}
                   canEdit
                 />
@@ -354,7 +352,7 @@ class TaskList extends Component {
                   clearAllText="Очистить все"
                   value={typeId}
                   options={typeOptions}
-                  onChange={(options) => this.changeMultiFilter(options, 'typeId')}
+                  onChange={options => this.changeMultiFilter(options, 'typeId')}
                 />
               </Col>
               <Col xs={12} sm={3}>
@@ -367,7 +365,7 @@ class TaskList extends Component {
                   clearAllText="Очистить все"
                   value={statusId}
                   options={statusOptions}
-                  onChange={(options) => this.changeMultiFilter(options, 'statusId')}
+                  onChange={options => this.changeMultiFilter(options, 'statusId')}
                 />
               </Col>
               <Col xs={12} sm={3}>
@@ -376,7 +374,7 @@ class TaskList extends Component {
                   placeholder="Выберите автора задачи"
                   multi={false}
                   value={authorId}
-                  onChange={(option) => this.changeSingleFilter(option, 'authorId')}
+                  onChange={option => this.changeSingleFilter(option, 'authorId')}
                   noResultsText="Нет результатов"
                   options={authorOptions}
                 />
@@ -385,39 +383,34 @@ class TaskList extends Component {
                 <SprintSelector
                   value={sprintId}
                   sprints={project.sprints}
-                  onChange={(option) => this.changeSingleFilter(option, 'sprintId')}
+                  onChange={option => this.changeSingleFilter(option, 'sprintId')}
                 />
               </Col>
             </Row>
 
             <Row className={css.search}>
               <Col xs={12} sm={6}>
-                <Input
-                  placeholder="Введите название задачи"
-                  value={filterByName}
-                  onChange={this.changeNameFilter}
-                />
+                <Input placeholder="Введите название задачи" value={filterByName} onChange={this.changeNameFilter} />
               </Col>
               <Col xs={12} sm={3}>
                 <PerformerFilter
-                  onPerformerSelect={(option) => this.changeSingleFilter(option, 'performerId')}
+                  onPerformerSelect={option => this.changeSingleFilter(option, 'performerId')}
                   selectedPerformerId={performerId}
                 />
               </Col>
               <Col xs={12} sm={3}>
                 <TagsFilter
                   filterFor={'task'}
-                  onTagSelect={(options) => this.changeMultiFilter(options, 'tags')}
+                  onTagSelect={options => this.changeMultiFilter(options, 'tags')}
                   filterTags={tags}
                 />
               </Col>
             </Row>
           </div>
 
-          {
-            isLoading
-              ? taskHolder
-              : tasks.map((task) =>
+          {isLoading
+            ? taskHolder
+            : tasks.map(task => (
                 <TaskRow
                   key={`task-${task.id}`}
                   task={task}
@@ -426,45 +419,34 @@ class TaskList extends Component {
                   onOpenPerformerModal={this.openPerformerModal}
                   onOpenSprintModal={this.openSprintModal}
                 />
-              )
-          }
-          {
-            !isLoading && tasks.length === 0
-              ? <div className={css.notFound}>Ничего не найдено</div>
-              : null
-          }
-          {
-            this.props.pagesCount > 1
-              ? <Pagination
-                itemsCount={this.props.pagesCount}
-                activePage={this.state.activePage}
-                onItemClick={this.handlePaginationClick}
-              />
-              : null
-          }
+              ))}
+          {!isLoading && tasks.length === 0 ? <div className={css.notFound}>Ничего не найдено</div> : null}
+          {this.props.pagesCount > 1 ? (
+            <Pagination
+              itemsCount={this.props.pagesCount}
+              activePage={this.state.activePage}
+              onItemClick={this.handlePaginationClick}
+            />
+          ) : null}
         </section>
-        {
-          this.state.isPerformerModalOpen
-            ? <PerformerModal
-              defaultUser={this.state.performer}
-              onChoose={this.changePerformer}
-              onClose={this.closePerformerModal}
-              title="Изменить исполнителя задачи"
-              users={this.getUsers()}
-            />
-            : null
-        }
-        {
-          this.state.isSprintModalOpen
-            ? <SprintModal
-              defaultSprint={this.state.sprintId}
-              onChoose={this.changeSprint}
-              onClose={this.closeSprintModal}
-              title="Изменить спринт задачи"
-              sprints={this.props.project.sprints}
-            />
-            : null
-        }
+        {this.state.isPerformerModalOpen ? (
+          <PerformerModal
+            defaultUser={this.state.performer}
+            onChoose={this.changePerformer}
+            onClose={this.closePerformerModal}
+            title="Изменить исполнителя задачи"
+            users={this.getUsers()}
+          />
+        ) : null}
+        {this.state.isSprintModalOpen ? (
+          <SprintModal
+            defaultSprint={this.state.sprintId}
+            onChoose={this.changeSprint}
+            onClose={this.closeSprintModal}
+            title="Изменить спринт задачи"
+            sprints={this.props.project.sprints}
+          />
+        ) : null}
       </div>
     );
   }

@@ -4,6 +4,7 @@ import * as css from './BugsChart.scss';
 import { Line } from 'react-chartjs-2';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import roundNum from '../../../../utils/roundNum';
+import getColor from '../../../../utils/Colors';
 
 class BugsChart extends Component {
   static propTypes = {
@@ -38,6 +39,9 @@ class BugsChart extends Component {
 
   makeChartData = () => {
     const { openedBugsMetrics, openedCustomerBugsMetrics, openedRegressBugsMetrics } = this.props;
+
+    getColor.reset();
+
     return {
       datasets: [
         this.makeBugsLine(openedBugsMetrics, 'Количество открытых багов'),
