@@ -7,9 +7,6 @@ import {IconClose} from '../Icons';
 import * as css from './FilterList.scss';
 
 export default class FilterList extends React.Component {
-  showAllFilters = () => {
-    console.log('showmore click');
-  }
   render () {
     const {
       filters,
@@ -18,14 +15,14 @@ export default class FilterList extends React.Component {
       fullFilterView,
       ...other
     } = this.props;
+
     return (
       <div>
         {
           filters.length && !fullFilterView
           ? <div className={classnames(css.filterList)}>
             {filters.map((filter) => {
-              if (filter.onDelete) return <Tag name={filter.label} onDelete={filter.onDelete} key={filter.name} />;
-              return <Tag name={filter.label} key={filter.name} />;
+              return <Tag name={filter.label} deleteTag={filter.onDelete} key={filter.name} />;
             })}
             <span className={classnames(css.clearAllFilter)}>
               <IconClose onClick={clearAll}/>

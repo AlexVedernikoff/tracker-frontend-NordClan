@@ -18,7 +18,7 @@ import Priority from '../../../components/Priority';
 import Checkbox from '../../../components/Checkbox';
 import CreateTaskModal from '../../../components/CreateTaskModal';
 import PerformerFilter from '../../../components/PerformerFilter';
-import getProrityById from '../../../utils/TaskPriority';
+import getPriorityById from '../../../utils/TaskPriority';
 import * as css from './AgileBoard.scss';
 
 
@@ -288,7 +288,7 @@ class AgileBoard extends Component {
   getTasks = (customOption) => {
     const tags = this.state.filterTags.map((tag) => tag.value);
     const typeId = this.state.typeId.map(option => option.value);
-    let options = {
+    const options = customOption ? customOption : {
       projectId: this.props.params.projectId,
       sprintId: this.state.changedSprint,
       prioritiesId: this.state.prioritiesId,
@@ -298,7 +298,6 @@ class AgileBoard extends Component {
       tags: tags.join(','),
       performerId: this.state.performerId
     };
-    if (customOption) options = customOption;
     this.props.getTasks(options);
     this.saveFiltersToLocalStorage();
     this.updateFilterList();
@@ -454,7 +453,7 @@ class AgileBoard extends Component {
     const filters = [
       this.state.isOnlyMine ? {name: 'isOnlyMine', label: 'мои задачи', onDelete: () => this.resetFiled('isOnlyMine') } : null,
       this.state.authorId ? {name: 'authorId', label: `автор: ${this.getSelectOptions(this.props.project.users, this.state.authorId, 'fullNameRu')}`, onDelete: () => this.resetFiled('authorId') } : null,
-      this.state.prioritiesId ? {name: 'authorId', label: `${getProrityById(this.state.prioritiesId)}`, onDelete: () => this.resetFiled('prioritiesId') } : null,
+      this.state.prioritiesId ? {name: 'authorId', label: `${getPriorityById(this.state.prioritiesId)}`, onDelete: () => this.resetFiled('prioritiesId') } : null,
       this.state.performerId ? {name: 'performerId', label: `исполнитель: ${this.getSelectOptions(this.props.project.users, this.state.performerId, 'fullNameRu')}`, onDelete: () => this.resetFiled('performerId')} : null,
       this.state.changedSprint ? {name: 'sprint', label: this.getSelectOptions((this.getSprints()).map(sprint => ({id: sprint.value, name: sprint.label})), this.state.changedSprint), onDelete: () => this.resetFiled('changedSprint')} : null,
       this.state.name.length > 0 ? {name: ' name', label: this.state.name, onDelete: () => this.resetFiled('name')} : null,

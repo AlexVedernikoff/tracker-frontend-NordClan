@@ -14,7 +14,6 @@ class Tag extends React.Component {
       blocked,
       taggable,
       taggableId,
-      onDelete,
       deleteTag: dT,
       ...other
     } = this.props;
@@ -23,7 +22,7 @@ class Tag extends React.Component {
       <span {...other} className={classnames({[css.tag]: true, [css.create]: create})} onClick={() => {if (this.props.onClick) this.props.onClick(name);}}>
       <span className={classnames({[css.tagPart]: true, [css.tagCreate]: create})}>{create ? <IconPlus/> : name}</span>
         { create ? null : <span className={classnames(css.tagPart, css.tagClose)}>
-          { blocked ? null : <IconClose onClick={onDelete ? onDelete : () => dT(name, taggable, taggableId)}/> }
+          { blocked ? null : <IconClose onClick={() => dT(name, taggable, taggableId)}/> }
         </span>
         }
     </span>
