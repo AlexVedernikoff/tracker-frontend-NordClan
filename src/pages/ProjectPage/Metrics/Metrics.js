@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './Metrics.scss';
 import StartEndDates from './StartEndDates';
+import { defaults } from 'react-chartjs-2';
 import BudgetChart from './BudgetChart';
 import BugsChart from './BugsChart';
 import CostByRoleChart from './CostByRoleChart';
@@ -188,6 +189,39 @@ class Metrics extends Component {
         position: 'bottom',
         labels: {
           usePointStyle: true
+        },
+        onClick: function (e, legendItem) {
+          const chartItem = this.chart;
+          const datasetIndex = legendItem.datasetIndex;
+          const defaultLegendClickHandler = defaults.global.legend.onClick.bind(this);
+          const dblClickDelay = 400;
+
+          const legendDoubleClickHandler = () => {
+            chartItem.data.datasets.forEach((el, index) => {
+              const meta = chartItem.getDatasetMeta(index);
+
+              if (index === datasetIndex) {
+                meta.hidden = null;
+              } else {
+                meta.hidden = true;
+              }
+            });
+
+            chartItem.update();
+          };
+
+          if (chartItem.clicked === datasetIndex) {
+            legendDoubleClickHandler();
+            clearTimeout(chartItem.clickTimeout);
+            chartItem.clicked = false;
+          } else {
+            chartItem.clicked = datasetIndex;
+
+            chartItem.clickTimeout = setTimeout(() => {
+              chartItem.clicked = false;
+              defaultLegendClickHandler(e, legendItem);
+            }, dblClickDelay);
+          }
         }
       },
       scales: {
