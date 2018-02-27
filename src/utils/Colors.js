@@ -20,9 +20,7 @@ let current = 0;
 
 const getRandomColor = () => `#${((0xffffff * Math.random()) | 0).toString(16).padStart(6, '1')}`;
 
-const getColor = () => {
-  return colorPalette[current] ? colorPalette[current++] : getRandomColor();
-};
+const getColor = () => colorPalette[current] ? colorPalette[current++] : getRandomColor();
 
 getColor.reset = () => {
   current = 0;
