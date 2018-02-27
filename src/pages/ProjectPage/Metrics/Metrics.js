@@ -143,7 +143,7 @@ class Metrics extends Component {
         'Unbillable'
       ];
 
-      return [...costsByRoles].map((costByRole, index) => {
+      return costsByRoles.map((costByRole, index) => {
         return {
           metrics: costByRole,
           name: roles[index]
