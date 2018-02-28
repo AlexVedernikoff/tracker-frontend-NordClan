@@ -37,7 +37,7 @@ class TaskHistory extends React.Component {
 
   render() {
     const { history } = this.props;
-    console.log('pagesCount', this.props.pagesCount);
+    console.log('history', history);
     const eventList = history.data
       ? history.data.map((event, i) => {
           return (

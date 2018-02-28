@@ -108,34 +108,39 @@ const getTaskHistory = id => {
   if (!id) {
     return () => {};
   }
-  const URL = `/task/${id}/history`;
+  const URL = `${API_URL}/task/${id}/history`;
   return dispatch => {
     dispatch({
       type: REST_API,
-      url: URL,
+      url: `/task/${id}`,
       method: GET,
       body,
       extra,
-      start: withStartLoading(getTaskHistoryStart, true)(dispatch),
-      response: withFinishLoading(response => getTaskHistorySuccess(response.data), true)(dispatch),
-      error: defaultErrorHandler(dispatch)
+      start: withStartLoading(getTaskHistoryStart, true)(dispatch)
+      /*response: withFinishLoading(response => getTaskHistorySuccess(response.data), true)(dispatch),
+      error: defaultErrorHandler(dispatch)*/
     });
     axios
-      .get(URL)
+      .get(URL, {
+        params: {
+          pageSize: 5
+        }
+      })
       .then(function(response) {
-        console.log(response);
+        console.log('DATA----', response.data);
+        console.log('response----', response);
+        withFinishLoading(response => getTaskHistorySuccess(response.data), true)(dispatch);
       })
       .catch(function(error) {
         if (error.response) {
-          console.log(error.response.data);
-          console.log(error.response.status);
-          console.log(error.response.headers);
+          console.log('status', error.response.status);
+          console.log('headers', error.response.headers);
         } else if (error.request) {
-          console.log(error.request);
-        } else {
-          console.log('Error', error.message);
+          console.log('request', error.request);
         }
         console.log(error.config);
+        console.log('Error----', error.message);
+        defaultErrorHandler(dispatch);
       });
   };
 };
