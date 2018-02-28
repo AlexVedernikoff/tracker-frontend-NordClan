@@ -16,7 +16,7 @@ class TaskHistory extends React.Component {
   }
 
   componentDidMount = () => {
-    this.props.getTaskHistory(this.props.params.taskId);
+    this.loadHistoryEvents();
   };
 
   handlePaginationClick = e => {
@@ -27,6 +27,15 @@ class TaskHistory extends React.Component {
       this.loadHistoryEvents
     );
   };
+
+  loadHistoryEvents = () => {
+    const pageSize = 5;
+    this.props.getTaskHistory(this.props.params.taskId, {
+      currentPage: this.state.activePage,
+      pageSize
+    });
+  };
+
   showUserCard = id => {
     this.setState({ isUserCardVisible: true, userId: id });
   };
@@ -37,7 +46,6 @@ class TaskHistory extends React.Component {
 
   render() {
     const { history } = this.props;
-    console.log('history', history);
     const eventList = history.data
       ? history.data.map((event, i) => {
           return (

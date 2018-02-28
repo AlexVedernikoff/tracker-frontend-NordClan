@@ -104,7 +104,7 @@ const getTask = id => {
     });
 };
 
-const getTaskHistory = id => {
+const getTaskHistory = (id, options) => {
   if (!id) {
     return () => {};
   }
@@ -112,24 +112,27 @@ const getTaskHistory = id => {
   return dispatch => {
     dispatch({
       type: REST_API,
-      url: `/task/${id}`,
+      url: `/task/${id}/history`,
       method: GET,
       body,
       extra,
-      start: withStartLoading(getTaskHistoryStart, true)(dispatch)
-      /*response: withFinishLoading(response => getTaskHistorySuccess(response.data), true)(dispatch),
+      start: withStartLoading(getTaskHistoryStart, true)(
+        dispatch
+      ) /*,
+      response: withFinishLoading(response => getTaskHistorySuccess(response.data), true)(dispatch),
       error: defaultErrorHandler(dispatch)*/
     });
     axios
       .get(URL, {
         params: {
-          pageSize: 5
+          ...options
         }
       })
       .then(function(response) {
-        console.log('DATA----', response.data);
-        console.log('response----', response);
-        withFinishLoading(response => getTaskHistorySuccess(response.data), true)(dispatch);
+        dispatch(withFinishLoading());
+        if (response && response.status === 200) {
+          dispatch(getTaskHistorySuccess(response.data), true);
+        }
       })
       .catch(function(error) {
         if (error.response) {
