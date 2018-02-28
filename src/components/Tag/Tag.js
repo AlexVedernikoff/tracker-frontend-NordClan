@@ -2,30 +2,39 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import * as css from './Tag.scss';
-import {IconPlus, IconClose} from '../Icons';
-import {deleteTag} from '../../actions/Tags';
-import {connect} from 'react-redux';
+import { IconPlus, IconClose } from '../Icons';
+import { deleteTag } from '../../actions/Tags';
+import { connect } from 'react-redux';
 
 class Tag extends React.Component {
-  render () {
-    const {
-      name,
-      create,
-      blocked,
-      taggable,
-      taggableId,
-      deleteTag: dT,
-      ...other
-    } = this.props;
+  deleteTag = (name, taggable, taggableId) => {
+    if (this.props.deleteHandler) {
+      this.props.deleteHandler();
+    } else {
+      this.props.deleteTag(name, taggable, taggableId);
+    }
+  };
+
+  render() {
+    const { name, create, blocked, taggable, taggableId, deleteHandler, deleteTag, ...other } = this.props;
 
     return (
-      <span {...other} className={classnames({[css.tag]: true, [css.create]: create})} onClick={() => {if (this.props.onClick) this.props.onClick(name);}}>
-      <span className={classnames({[css.tagPart]: true, [css.tagCreate]: create})}>{create ? <IconPlus/> : name}</span>
-        { create ? null : <span className={classnames(css.tagPart, css.tagClose)}>
-          { blocked ? null : <IconClose onClick={() => dT(name, taggable, taggableId)}/> }
+      <span
+        {...other}
+        className={classnames({ [css.tag]: true, [css.create]: create })}
+        onClick={() => {
+          if (this.props.onClick) this.props.onClick(name);
+        }}
+      >
+        <span className={classnames({ [css.tagPart]: true, [css.tagCreate]: create })}>
+          {create ? <IconPlus /> : name}
         </span>
-        }
-    </span>
+        {create ? null : (
+          <span className={classnames(css.tagPart, css.tagClose)}>
+            {blocked ? null : <IconClose onClick={() => this.deleteTag(name, taggable, taggableId)} />}
+          </span>
+        )}
+      </span>
     );
   }
 }
@@ -33,8 +42,8 @@ class Tag extends React.Component {
 Tag.propTypes = {
   blocked: PropTypes.bool,
   create: PropTypes.bool,
+  deleteHandler: PropTypes.func,
   deleteTag: PropTypes.func.isRequired,
-  onDelete: PropTypes.func,
   name: PropTypes.string,
   onClick: PropTypes.func,
   taggable: PropTypes.string,
