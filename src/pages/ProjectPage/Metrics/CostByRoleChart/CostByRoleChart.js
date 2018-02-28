@@ -4,10 +4,10 @@ import * as css from './CostByRoleChart.scss';
 import { Line } from 'react-chartjs-2';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import getRandomColor from '../../../../utils/getRandomColor';
 import Button from '../../../../components/Button';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import roundNum from '../../../../utils/roundNum';
+import getColor from '../../../../utils/Colors';
 
 class CostByRoleChart extends Component {
   static propTypes = {
@@ -27,6 +27,9 @@ class CostByRoleChart extends Component {
   makeChartData () {
     const { costByRoleMetrics, costByRolePercentMetrics } = this.props;
     const { displayPercent } = this.state;
+
+    getColor.reset();
+
     return {
       datasets: [...this.makeRoleMetricsLine(displayPercent ? costByRolePercentMetrics : costByRoleMetrics)]
     };
