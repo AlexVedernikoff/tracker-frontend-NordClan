@@ -24,15 +24,18 @@ const getTasks = (options, onlyTaskListUpdate = false) => {
     dispatch(startTasksReceive());
     dispatch(startLoading());
     axios
-      .get(URL, {
-        params: {
-          pageSize: 25,
-          currentPage: 0,
-          ...options,
-          fields: 'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId,prefix'
-        }
-      },
-      { withCredentials: true }
+      .get(
+        URL,
+        {
+          params: {
+            //pageSize: 25,
+            currentPage: 0,
+            ...options,
+            fields:
+              'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId,prefix'
+          }
+        },
+        { withCredentials: true }
       )
       .catch(error => {
         dispatch(finishLoading());

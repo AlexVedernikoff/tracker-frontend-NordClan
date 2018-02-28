@@ -6,6 +6,7 @@ import { Line } from 'react-chartjs-2';
 import { connect } from 'react-redux';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import roundNum from '../../../../utils/roundNum';
+import getColor from '../../../../utils/Colors';
 
 class BudgetChart extends Component {
   static propTypes = {
@@ -54,7 +55,9 @@ class BudgetChart extends Component {
       sprints,
       isRisks
     } = this.props;
-    const sprintsId = sprints.map((sprint) => sprint.id);
+
+    getColor.reset();
+
     return {
       datasets: [
         this.makeIdealProjectBurndown(startDate, endDate, budget, riskBudget, isRisks),

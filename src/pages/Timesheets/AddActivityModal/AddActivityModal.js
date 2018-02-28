@@ -240,7 +240,7 @@ class AddActivityModal extends Component {
                     this.props.activityTypes.length
                       ? this.props.activityTypes.map(
                         element => {return {label: element.name, value: element.id};}
-                      ).concat([{ value: 0, label: 'Не выбрано' }])
+                      )
                       : null
                   }
                 />
