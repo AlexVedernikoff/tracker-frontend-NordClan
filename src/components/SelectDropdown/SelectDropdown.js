@@ -16,7 +16,8 @@ export default class SelectDropdown extends Component {
 
   onInputKeyDown(event) {
     const isEmpty = event.target.value ? event.target.value.length === 0 : true;
-    if (!this.props.inputCanBeEmpty && event.keyCode === 8 && isEmpty) {
+    const keyIsBackspace = event.key ? event.key === 'Backspace' : event.keyCode === 8;
+    if (!this.props.inputCanBeEmpty && keyIsBackspace && isEmpty) {
       event.preventDefault();
       return false;
     }
