@@ -4,11 +4,17 @@ import classnames from 'classnames';
 import { scroller, Element } from 'react-scroll';
 import * as css from './PerformerModal.scss';
 import Modal from '../Modal';
+import { IconClose, IconSearch } from '../Icons';
 
 class PerformerModal extends Component {
   constructor (props) {
     super(props);
-    let selectedIndex = 0;
+    const noPerfromerOption = {
+      value: 0,
+      label: 'Не выбрано'
+    };
+    this.userList = this.props.users.concat(noPerfromerOption);
+    let selectedIndex = this.userList.length - 1;
     this.props.users.forEach((user, i) => {
       if (user.value === this.props.defaultUser) {
         selectedIndex = i;
@@ -18,7 +24,7 @@ class PerformerModal extends Component {
       performer: this.props.defaultUser,
       selectedIndex,
       searchText: '',
-      users: this.props.users
+      users: this.userList
     };
   }
 
@@ -46,12 +52,23 @@ class PerformerModal extends Component {
     this.setState({ [name]: e });
   };
 
+  removeCurrentPerformer = () => {
+    this.setState({
+      searchText: '',
+      users: this.userList,
+      selectedIndex: this.userList.length - 1
+    }, () => {
+      scroller.scrollTo(this.state.users[this.state.selectedIndex].value.toString(),
+      { containerId: 'performerList' });
+    });
+  }
+
   onSearchTextChange = (e) => {
     const searchText = e.target.value;
     const searchReg = new RegExp(searchText.toLowerCase());
     this.setState({
       searchText,
-      users: this.props.users.filter(user => user.label.toLowerCase().match(searchReg)),
+      users: this.userList.filter(user => user.label.toLowerCase().match(searchReg)),
       selectedIndex: 0
     });
   }
@@ -109,14 +126,27 @@ class PerformerModal extends Component {
           <div className={css.header}>
             <h3>{title}</h3>
           </div>
-          <input
-            type="text"
-            autoFocus
-            className={css.search}
-            placeholder="Введите имя исполнителя"
-            value={searchText}
-            onChange={this.onSearchTextChange}
-          />
+          <div className={css.currentPerformer}>
+            {users.length ? users[selectedIndex].label : null}
+            {users.length && (users[selectedIndex].value !== 0)
+              ? <div className={css.removeCurrentPerformer} onClick={this.removeCurrentPerformer}>
+                  <IconClose />
+                </div> : null
+            }
+          </div>
+          <div className={css.inputWrapper}>
+            <input
+              type="text"
+              autoFocus
+              className={css.search}
+              placeholder="Введите имя исполнителя"
+              value={searchText}
+              onChange={this.onSearchTextChange}
+            />
+            <div className={css.searchIco}>
+              <IconSearch />
+            </div>
+          </div>
           <div className={css.selectorContainer} ref={ref => {this.list = ref;}} id="performerList">
             {
               users.map((user, i) => (
