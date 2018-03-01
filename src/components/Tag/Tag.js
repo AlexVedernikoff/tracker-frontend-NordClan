@@ -7,11 +7,11 @@ import { deleteTag } from '../../actions/Tags';
 import { connect } from 'react-redux';
 
 class Tag extends React.Component {
-  deleteTag = (name, taggable, taggableId) => {
+  deleteTag = () => {
     if (this.props.deleteHandler) {
       this.props.deleteHandler();
     } else {
-      this.props.deleteTag(name, taggable, taggableId);
+      this.props.deleteTag(this.props.name, this.props.taggable, this.props.taggableId);
     }
   };
 
@@ -31,7 +31,7 @@ class Tag extends React.Component {
         </span>
         {create ? null : (
           <span className={classnames(css.tagPart, css.tagClose)}>
-            {blocked ? null : <IconClose onClick={() => this.deleteTag(name, taggable, taggableId)} />}
+            {blocked ? null : <IconClose onClick={this.deleteTag} />}
           </span>
         )}
       </span>
