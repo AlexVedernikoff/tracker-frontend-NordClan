@@ -5,8 +5,7 @@ import { API_URL } from '../constants/Settings';
 import {
   withFinishLoading,
   withStartLoading,
-  defaultExtra as extra,
-  withdefaultExtra
+  defaultExtra as extra
 } from './Common';
 
 const getMetricsRequest = () => ({
@@ -26,8 +25,10 @@ export const getMetrics = (data) => {
   return dispatch => dispatch({
     type: REST_API,
     url: '/metrics',
-    method: POST,
-    body: { ...data },
+    method: GET,
+    body: {
+      params: { ...data }
+    },
     extra,
     start: withStartLoading(getMetricsRequest, true)(dispatch),
     response: withFinishLoading(response => {
@@ -37,9 +38,4 @@ export const getMetrics = (data) => {
       dispatch(getMetricsFailure(dispatch));
     })(dispatch)
   });
-};
-
-export const calculateMetrics = (projectId) => {
-  const URL = `${API_URL}/metrics/${projectId}`;
-  axios.get(URL);
 };
