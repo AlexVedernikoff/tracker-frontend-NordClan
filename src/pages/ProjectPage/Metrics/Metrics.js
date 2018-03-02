@@ -103,6 +103,7 @@ const getBasicLineSettings = () => {
     fill: false
   };
 };
+
 class Metrics extends Component {
   static propTypes = {
     budget: PropTypes.number,
