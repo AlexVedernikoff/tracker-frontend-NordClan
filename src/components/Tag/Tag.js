@@ -15,17 +15,15 @@ class Tag extends React.Component {
     }
   };
 
+  clickOnTag = () => {
+    if (this.props.onClick) this.props.onClick(this.props.name);
+  };
+
   render() {
-    const { name, create, blocked, taggable, taggableId, deleteHandler, deleteTag, ...other } = this.props;
+    const { name, create, blocked, taggable, taggableId, deleteHandler, deleteTag: dt, ...other } = this.props;
 
     return (
-      <span
-        {...other}
-        className={classnames({ [css.tag]: true, [css.create]: create })}
-        onClick={() => {
-          if (this.props.onClick) this.props.onClick(name);
-        }}
-      >
+      <span {...other} className={classnames({ [css.tag]: true, [css.create]: create })} onClick={this.clickOnTag}>
         <span className={classnames({ [css.tagPart]: true, [css.tagCreate]: create })}>
           {create ? <IconPlus /> : name}
         </span>
