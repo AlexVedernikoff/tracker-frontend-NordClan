@@ -52,7 +52,6 @@ export default class AttachedImage extends React.Component {
 
   render () {
     const css = require('./AttachedImage.scss');
-    const { canEdit } = this.props;
 
     const iconStyles = {
       width: 24,
@@ -67,7 +66,7 @@ export default class AttachedImage extends React.Component {
       display: 'block'
     };
 
-    const { fileName, path, previewPath} = this.props;
+    const { fileName, path, previewPath, canEdit} = this.props;
 
     return (
       <li className={css.attachment} onClick={this.handleOpenModal}>
@@ -120,3 +119,6 @@ export default class AttachedImage extends React.Component {
     );
   }
 }
+AttachedImage.propTypes = {
+  canEdit: PropTypes.bool
+};
