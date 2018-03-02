@@ -4,20 +4,19 @@ import PropTypes from 'prop-types';
 import * as css from './TaskTitle.scss';
 import { IconEdit, IconCheck } from '../../../components/Icons';
 import { connect } from 'react-redux';
-import {
-  startTaskEditing,
-  stopTaskEditing,
-  changeTask
-} from '../../../actions/Task';
+import ReactTooltip from 'react-tooltip';
+import { startTaskEditing, stopTaskEditing, changeTask } from '../../../actions/Task';
 
 class TaskTitle extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       submitError: false
     };
   }
-
+  componentDidUpdate() {
+    ReactTooltip.rebuild();
+  }
   editIconClickHandler = event => {
     event.stopPropagation();
     if (this.props.TitleIsEditing) {
@@ -39,8 +38,8 @@ class TaskTitle extends Component {
 
   validateAndSubmit = () => {
     const { changeTask } = this.props;
-    !this.state.submitError
-      && changeTask(
+    !this.state.submitError &&
+      changeTask(
         {
           id: this.props.id,
           name: this.taskName.innerText.trim()
@@ -72,7 +71,16 @@ class TaskTitle extends Component {
     }
   };
 
-  render () {
+  render() {
+    console.error = (function() {
+      var error = console.error;
+
+      return function(exception) {
+        if ((exception + '').indexOf('Warning: A component is `contentEditable`') != 0) {
+          error.apply(console, arguments);
+        }
+      };
+    })();
     return (
       <div className={css.title}>
         <h1 className={css.titleWrapper}>
@@ -89,18 +97,23 @@ class TaskTitle extends Component {
           >
             {this.props.name}
           </span>
-          { this.props.canEdit
-            ? this.props.TitleIsEditing
-              ? <IconCheck
+          {this.props.canEdit ? (
+            this.props.TitleIsEditing ? (
+              <IconCheck
                 onClick={this.editIconClickHandler}
                 className={css.save}
+                id={this.props.id}
+                data-tip="Сохранить"
               />
-              : <IconEdit
+            ) : (
+              <IconEdit
                 onClick={this.editIconClickHandler}
                 className={css.edit}
+                id={this.props.id}
+                data-tip="Редактировать"
               />
-            : null
-          }
+            )
+          ) : null}
         </h1>
       </div>
     );
@@ -118,7 +131,9 @@ const mapDispatchToProps = {
 };
 
 TaskTitle.propTypes = {
-  canEdit: PropTypes.bool
+  startTaskEditing: PropTypes.func,
+  canEdit: PropTypes.bool,
+  TitleIsEditing: PropTypes.bool
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskTitle);
