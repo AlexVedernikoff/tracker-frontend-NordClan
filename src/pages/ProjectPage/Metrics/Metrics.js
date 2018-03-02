@@ -121,7 +121,7 @@ class Metrics extends Component {
       http://gitlab.simbirsoft/frontend/sim-track-back/blob/develop/server/services/agent/calculate/metrics.txt
     */
 
-    const { metrics } = this.props;
+    const { metrics, loading } = this.props;
 
     const isProjectAdmin = this.checkIsAdminInProject();
 
@@ -268,7 +268,7 @@ class Metrics extends Component {
                 addedClassNames={{[css.recalculateBtn]: true}}
                 onClick={this.recalculateMetrics}
                 type="bordered"
-                icon="IconRefresh"
+                icon={loading ? 'IconPreloader' : 'IconRefresh'}
                 data-tip="Пересчитать метрику"
               />
               <Tabs addedClassNames={{[css.tabs]: true}} selected={this.props.params.metricType} currentPath={`/projects/${this.props.params.projectId}/analytics`} routable>
