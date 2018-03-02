@@ -66,7 +66,7 @@ export default class AttachedImage extends React.Component {
       display: 'block'
     };
 
-    const { fileName, path, previewPath} = this.props;
+    const { fileName, path, previewPath, canEdit} = this.props;
 
     return (
       <li className={css.attachment} onClick={this.handleOpenModal}>
@@ -82,7 +82,7 @@ export default class AttachedImage extends React.Component {
               <IconDownload style={iconStyles} />
             </button>
           </a>
-          <button onClick={this.handleOpenConfirmDelete}>
+          <button onClick={this.handleOpenConfirmDelete} hidden={!canEdit}>
             <IconDelete style={iconStyles} />
           </button>
         </div>
@@ -119,3 +119,6 @@ export default class AttachedImage extends React.Component {
     );
   }
 }
+AttachedImage.propTypes = {
+  canEdit: PropTypes.bool
+};
