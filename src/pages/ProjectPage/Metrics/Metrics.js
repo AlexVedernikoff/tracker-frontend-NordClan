@@ -23,6 +23,7 @@ class Metrics extends Component {
     completedAt: PropTypes.string,
     createdAt: PropTypes.string,
     getMetrics: PropTypes.func,
+    loading: PropTypes.number,
     metrics: PropTypes.array,
     params: PropTypes.object,
     projectId: PropTypes.number,
@@ -37,30 +38,39 @@ class Metrics extends Component {
 
   componentWillMount () {
     const { getMetrics, params, createdAt } = this.props;
+
     if (createdAt) {
-      const metricsParams = {
-        projectId: parseInt(params.projectId),
-        startDate: moment(this.props.createdAt).format('YYYY-MM-DD HH:mm'),
-        endDate: moment().format('YYYY-MM-DD HH:mm')
-      };
+      const metricsParams = this.getMetricsParams(createdAt, params.projectId);
       getMetrics(metricsParams);
     }
   }
 
   componentWillReceiveProps (nextProps) {
     const { getMetrics, params, createdAt } = this.props;
+
     if (nextProps.createdAt !== createdAt) {
-      const metricsParams = {
-        projectId: parseInt(params.projectId),
-        startDate: moment(nextProps.createdAt).format('YYYY-MM-DD HH:mm'),
-        endDate: moment().format('YYYY-MM-DD HH:mm')
-      };
+      const metricsParams = this.getMetricsParams(nextProps.createdAt, params.projectId);
       getMetrics(metricsParams);
     }
   }
 
-  calculate = () => {
-    calculateMetrics(this.props.projectId);
+  getMetricsParams = (createdAt, projectId) => ({
+    projectId: parseInt(projectId),
+    startDate: moment(createdAt).format('YYYY-MM-DD HH:mm'),
+    endDate: moment().format('YYYY-MM-DD HH:mm')
+  });
+
+
+  recalculateMetrics = () => {
+    if (!this.props.loading) {
+      const { getMetrics, params, createdAt } = this.props;
+      const metricsParams = this.getMetricsParams(createdAt, params.projectId);
+
+      getMetrics({
+        ...metricsParams,
+        recalculate: true
+      });
+    }
   }
 
   startDate () {
@@ -111,7 +121,7 @@ class Metrics extends Component {
       http://gitlab.simbirsoft/frontend/sim-track-back/blob/develop/server/services/agent/calculate/metrics.txt
     */
 
-    const { metrics } = this.props;
+    const { metrics, loading } = this.props;
 
     const isProjectAdmin = this.checkIsAdminInProject();
 
@@ -256,9 +266,9 @@ class Metrics extends Component {
             <div>
               <Button
                 addedClassNames={{[css.recalculateBtn]: true}}
-                onClick={this.calculate}
+                onClick={this.recalculateMetrics}
                 type="bordered"
-                icon="IconRefresh"
+                icon={loading ? 'IconPreloader' : 'IconRefresh'}
                 data-tip="Пересчитать метрику"
               />
               <Tabs addedClassNames={{[css.tabs]: true}} selected={this.props.params.metricType} currentPath={`/projects/${this.props.params.projectId}/analytics`} routable>
@@ -344,6 +354,7 @@ const mapStateToProps = (state) => ({
   budget: state.Project.project.budget,
   riskBudget: state.Project.project.riskBudget,
   sprints: state.Project.project.sprints,
+  loading: state.Loading.loading,
   metrics: state.Project.project.metrics,
   user: state.Auth.user
 });
