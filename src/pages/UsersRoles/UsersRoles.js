@@ -57,7 +57,7 @@ class UsersRoles extends React.Component {
       <SelectDropdown
         multi={false}
         clearable={false}
-        inputCanBeEmpty={false}
+        backspaceRemoves={false}
         searchable={false}
         value={globalRole}
         onChange={this.handleChangeStatus(userId)}
