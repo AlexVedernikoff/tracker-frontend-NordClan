@@ -14,7 +14,9 @@ import { getMetrics, calculateMetrics } from './../../../actions/Metrics';
 import moment from 'moment';
 import getColor from '../../../utils/Colors';
 import { ADMIN } from '../../../constants/Roles';
+import * as MetricTypes from '../../../constants/Metrics';
 import Tabs from '../../../components/Tabs';
+import Pane from '../../../components/Pane';
 import Button from '../../../components/Button';
 
 class Metrics extends Component {
@@ -91,23 +93,6 @@ class Metrics extends Component {
     return '';
   }
 
-  filterById = (id, metrics) => {
-    return metrics ? metrics.filter((metric) => metric.typeId === id) : [];
-  };
-
-  getBasicLineSettings = () => {
-    const lineColor = getColor();
-
-    return {
-      lineTension: 0,
-      borderWidth: 2,
-      pointRadius: 2,
-      borderColor: lineColor,
-      backgroundColor: lineColor,
-      fill: false
-    };
-  };
-
   checkIsAdminInProject = () => {
     return (
       (this.props.user.projectsRoles && this.props.user.projectsRoles.admin.indexOf(this.props.projectId) !== -1)
@@ -126,20 +111,20 @@ class Metrics extends Component {
     const isProjectAdmin = this.checkIsAdminInProject();
 
     /*Бюджет без рискового резерва*/
-    const projectBudgetMetrics = this.filterById(5, metrics);
-    const sprintsBudgetMetrics = this.filterById(30, metrics);
+    const projectBudgetMetrics = filterMetrics(MetricTypes.PROJECT_BUDGET_NO_RISK, metrics);
+    const sprintsBudgetMetrics = filterMetrics(MetricTypes.SPRINT_BUDGET_NO_RISK, metrics);
 
     /*Бюджет с рисковым резервом*/
-    const projectBudgetRisksMetrics = this.filterById(6, metrics);
-    const sprintsBudgetRisksMetrics = this.filterById(31, metrics);
+    const projectBudgetRisksMetrics = filterMetrics(MetricTypes.PROJECT_BUDGET_RISK, metrics);
+    const sprintsBudgetRisksMetrics = filterMetrics(MetricTypes.SPRINT_BUDGET_RISK, metrics);
 
     /*Баги на проекте*/
-    const openedBugsMetrics = this.filterById(7, metrics);
-    const openedCustomerBugsMetrics = this.filterById(8, metrics);
-    const openedRegressBugsMetrics = this.filterById(9, metrics);
+    const openedBugsMetrics = filterMetrics(MetricTypes.OPENED_BUGS, metrics);
+    const openedCustomerBugsMetrics = filterMetrics(MetricTypes.OPENED_CUSTOMER_BUGS, metrics);
+    const openedRegressBugsMetrics = filterMetrics(MetricTypes.OPENED_REGRESSION_BUGS, metrics);
 
     /*Затраты по ролям*/
-    const getCostByRoleMetrics = (...costsByRoles) => {
+    const getCostByRoleMetrics = (...typeIds) => {
       const roles = [
         'Account',
         'PM',
@@ -153,112 +138,40 @@ class Metrics extends Component {
         'Unbillable'
       ];
 
-      return costsByRoles.map((costByRole, index) => {
+      return typeIds.map((typeId, index) => {
         return {
-          metrics: costByRole,
+          metrics: filterMetrics(typeId, metrics),
           name: roles[index]
         };
       });
     };
 
     const costByRolePercentMetrics = getCostByRoleMetrics(
-      this.filterById(10, metrics),
-      this.filterById(11, metrics),
-      this.filterById(12, metrics),
-      this.filterById(13, metrics),
-      this.filterById(14, metrics),
-      this.filterById(15, metrics),
-      this.filterById(16, metrics),
-      this.filterById(17, metrics),
-      this.filterById(18, metrics),
-      this.filterById(19, metrics)
+      MetricTypes.ACCOUNT_COST_PERCENTAGE,
+      MetricTypes.PM_COST_PERCENTAGE,
+      MetricTypes.UX_COST_PERCENTAGE,
+      MetricTypes.ANALYTIC_COST_PERCENTAGE,
+      MetricTypes.BACK_COST_PERCENTAGE,
+      MetricTypes.FRONT_COST_PERCENTAGE,
+      MetricTypes.MOBILE_COST_PERCENTAGE,
+      MetricTypes.TEAMLEAD_COST_PERCENTAGE,
+      MetricTypes.QA_COST_PERCENTAGE,
+      MetricTypes.UNBILLABLE_COST_PERCENTAGE
     );
+
     const costByRoleMetrics = getCostByRoleMetrics(
-      this.filterById(20, metrics),
-      this.filterById(21, metrics),
-      this.filterById(22, metrics),
-      this.filterById(23, metrics),
-      this.filterById(24, metrics),
-      this.filterById(25, metrics),
-      this.filterById(26, metrics),
-      this.filterById(27, metrics),
-      this.filterById(28, metrics),
-      this.filterById(29, metrics)
+      MetricTypes.ACCOUNT_COST,
+      MetricTypes.PM_COST,
+      MetricTypes.UX_COST,
+      MetricTypes.ANALYTIC_COST,
+      MetricTypes.BACK_COST,
+      MetricTypes.FRONT_COST,
+      MetricTypes.MOBILE_COST,
+      MetricTypes.TEAMLEAD_COST,
+      MetricTypes.QA_COST,
+      MetricTypes.UNBILLABLE_COST
     );
 
-    const chartDefaultOptions = {
-      responsive: true,
-      hover: { mode: 'nearest' },
-      animation: {
-        duration: 0
-      },
-      title: {
-        display: false
-      },
-      legend: {
-        position: 'bottom',
-        labels: {
-          usePointStyle: true
-        },
-        onClick: function (e, legendItem) {
-          const chartItem = this.chart;
-          const datasetIndex = legendItem.datasetIndex;
-          const defaultLegendClickHandler = defaults.global.legend.onClick.bind(this);
-          const dblClickDelay = 400;
-
-          const legendDoubleClickHandler = () => {
-            chartItem.data.datasets.forEach((el, index) => {
-              const meta = chartItem.getDatasetMeta(index);
-
-              if (index === datasetIndex) {
-                meta.hidden = null;
-              } else {
-                meta.hidden = true;
-              }
-            });
-
-            chartItem.update();
-          };
-
-          if (chartItem.clicked === datasetIndex) {
-            legendDoubleClickHandler();
-            clearTimeout(chartItem.clickTimeout);
-            chartItem.clicked = false;
-          } else {
-            chartItem.clicked = datasetIndex;
-
-            chartItem.clickTimeout = setTimeout(() => {
-              chartItem.clicked = false;
-              defaultLegendClickHandler(e, legendItem);
-            }, dblClickDelay);
-          }
-        }
-      },
-      scales: {
-        xAxes: [
-          {
-            type: 'time',
-            time: {
-              displayFormats: {
-                day: 'D MMM'
-              },
-              tooltipFormat: 'DD.MM.YYYY'
-            },
-            display: true,
-            scaleLabel: {
-              display: true,
-              labelString: 'Дата'
-            }
-          }
-        ]
-      }
-    };
-    const Pane = (props) => {
-      return <div>{props.children}</div>;
-    };
-    Pane.propTypes = {
-      label: PropTypes.string.isRequired
-    };
     return (
       <div>
         <section className={css.Metrics}>
@@ -283,7 +196,7 @@ class Metrics extends Component {
                         startDate={this.startDate()}
                         endDate={this.endDate()}
                         chartDefaultOptions={chartDefaultOptions}
-                        getBasicLineSettings={this.getBasicLineSettings}
+                        getBasicLineSettings={getBasicLineSettings}
                         projectBudgetMetrics={projectBudgetMetrics}
                         sprintsBudgetMetrics={sprintsBudgetMetrics}
                         isRisks={false}
@@ -294,7 +207,7 @@ class Metrics extends Component {
                         startDate={this.startDate()}
                         endDate={this.endDate()}
                         chartDefaultOptions={chartDefaultOptions}
-                        getBasicLineSettings={this.getBasicLineSettings}
+                        getBasicLineSettings={getBasicLineSettings}
                         projectBudgetMetrics={projectBudgetRisksMetrics}
                         sprintsBudgetMetrics={sprintsBudgetRisksMetrics}
                         isRisks
@@ -305,12 +218,12 @@ class Metrics extends Component {
                 <Pane label="Метрики по спринту" path="/sprint">
                   <SprintMetrics
                     chartDefaultOptions={chartDefaultOptions}
-                    getBasicLineSettings={this.getBasicLineSettings}
+                    getBasicLineSettings={getBasicLineSettings}
                     startDate={this.startDate()}
                     endDate={this.endDate()}
                     openedBugsMetrics={openedBugsMetrics}
                     openedCustomerBugsMetrics={openedCustomerBugsMetrics}
-                    filterById={this.filterById}
+                    filterById={filterMetrics}
                   />
                 </Pane>
                 <Pane label="Баги на проекте" path="/bugs">
@@ -318,7 +231,7 @@ class Metrics extends Component {
                     <Col xs={12}>
                       <BugsChart
                         chartDefaultOptions={chartDefaultOptions}
-                        getBasicLineSettings={this.getBasicLineSettings}
+                        getBasicLineSettings={getBasicLineSettings}
                         openedBugsMetrics={openedBugsMetrics}
                         openedCustomerBugsMetrics={openedCustomerBugsMetrics}
                         openedRegressBugsMetrics={openedRegressBugsMetrics}
@@ -331,7 +244,7 @@ class Metrics extends Component {
                     <Col xs={12}>
                       <CostByRoleChart
                         chartDefaultOptions={chartDefaultOptions}
-                        getBasicLineSettings={this.getBasicLineSettings}
+                        getBasicLineSettings={getBasicLineSettings}
                         costByRoleMetrics={costByRoleMetrics}
                         costByRolePercentMetrics={costByRolePercentMetrics}
                       />
@@ -346,6 +259,91 @@ class Metrics extends Component {
     );
   }
 }
+
+const chartDefaultOptions = {
+  responsive: true,
+  hover: { mode: 'nearest' },
+  animation: {
+    duration: 0
+  },
+  title: {
+    display: false
+  },
+  legend: {
+    position: 'bottom',
+    labels: {
+      usePointStyle: true
+    },
+    onClick: function (e, legendItem) {
+      const chartItem = this.chart;
+      const datasetIndex = legendItem.datasetIndex;
+      const defaultLegendClickHandler = defaults.global.legend.onClick.bind(this);
+      const dblClickDelay = 400;
+
+      const legendDoubleClickHandler = () => {
+        chartItem.data.datasets.forEach((el, index) => {
+          const meta = chartItem.getDatasetMeta(index);
+
+          if (index === datasetIndex) {
+            meta.hidden = null;
+          } else {
+            meta.hidden = true;
+          }
+        });
+
+        chartItem.update();
+      };
+
+      if (chartItem.clicked === datasetIndex) {
+        legendDoubleClickHandler();
+        clearTimeout(chartItem.clickTimeout);
+        chartItem.clicked = false;
+      } else {
+        chartItem.clicked = datasetIndex;
+
+        chartItem.clickTimeout = setTimeout(() => {
+          chartItem.clicked = false;
+          defaultLegendClickHandler(e, legendItem);
+        }, dblClickDelay);
+      }
+    }
+  },
+  scales: {
+    xAxes: [
+      {
+        type: 'time',
+        time: {
+          displayFormats: {
+            day: 'D MMM'
+          },
+          tooltipFormat: 'DD.MM.YYYY'
+        },
+        display: true,
+        scaleLabel: {
+          display: true,
+          labelString: 'Дата'
+        }
+      }
+    ]
+  }
+};
+
+const filterMetrics = (id, metrics) => {
+  return metrics ? metrics.filter((metric) => metric.typeId === id) : [];
+};
+
+const getBasicLineSettings = () => {
+  const lineColor = getColor();
+
+  return {
+    lineTension: 0,
+    borderWidth: 2,
+    pointRadius: 2,
+    borderColor: lineColor,
+    backgroundColor: lineColor,
+    fill: false
+  };
+};
 
 const mapStateToProps = (state) => ({
   projectId: state.Project.project.id,
