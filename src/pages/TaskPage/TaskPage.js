@@ -195,11 +195,18 @@ class TaskPage extends Component {
   };
 
   handleCancelSubTask = () => {
-    this.props.changeTask({
-      id: this.state.canceledSubTaskId,
+    const { getTask, changeTask, task } = this.props;
+    const { canceledSubTaskId } = this.state;
+
+    changeTask({
+      id: canceledSubTaskId,
       statusId: TaskStatuses.CANCELED
     },
-    'Status');
+    'Status',
+    () => {
+      getTask(task.id);
+    });
+
     this.handleCloseCancelSubTaskModal();
   };
 
