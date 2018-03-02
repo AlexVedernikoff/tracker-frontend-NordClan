@@ -19,6 +19,90 @@ import Tabs from '../../../components/Tabs';
 import Pane from '../../../components/Pane';
 import Button from '../../../components/Button';
 
+const chartDefaultOptions = {
+  responsive: true,
+  hover: { mode: 'nearest' },
+  animation: {
+    duration: 0
+  },
+  title: {
+    display: false
+  },
+  legend: {
+    position: 'bottom',
+    labels: {
+      usePointStyle: true
+    },
+    onClick: function (e, legendItem) {
+      const chartItem = this.chart;
+      const datasetIndex = legendItem.datasetIndex;
+      const defaultLegendClickHandler = defaults.global.legend.onClick.bind(this);
+      const dblClickDelay = 400;
+
+      const legendDoubleClickHandler = () => {
+        chartItem.data.datasets.forEach((el, index) => {
+          const meta = chartItem.getDatasetMeta(index);
+
+          if (index === datasetIndex) {
+            meta.hidden = null;
+          } else {
+            meta.hidden = true;
+          }
+        });
+
+        chartItem.update();
+      };
+
+      if (chartItem.clicked === datasetIndex) {
+        legendDoubleClickHandler();
+        clearTimeout(chartItem.clickTimeout);
+        chartItem.clicked = false;
+      } else {
+        chartItem.clicked = datasetIndex;
+
+        chartItem.clickTimeout = setTimeout(() => {
+          chartItem.clicked = false;
+          defaultLegendClickHandler(e, legendItem);
+        }, dblClickDelay);
+      }
+    }
+  },
+  scales: {
+    xAxes: [
+      {
+        type: 'time',
+        time: {
+          displayFormats: {
+            day: 'D MMM'
+          },
+          tooltipFormat: 'DD.MM.YYYY'
+        },
+        display: true,
+        scaleLabel: {
+          display: true,
+          labelString: 'Дата'
+        }
+      }
+    ]
+  }
+};
+
+const filterMetrics = (id, metrics) => {
+  return metrics ? metrics.filter((metric) => metric.typeId === id) : [];
+};
+
+const getBasicLineSettings = () => {
+  const lineColor = getColor();
+
+  return {
+    lineTension: 0,
+    borderWidth: 2,
+    pointRadius: 2,
+    borderColor: lineColor,
+    backgroundColor: lineColor,
+    fill: false
+  };
+};
 class Metrics extends Component {
   static propTypes = {
     budget: PropTypes.number,
@@ -259,91 +343,6 @@ class Metrics extends Component {
     );
   }
 }
-
-const chartDefaultOptions = {
-  responsive: true,
-  hover: { mode: 'nearest' },
-  animation: {
-    duration: 0
-  },
-  title: {
-    display: false
-  },
-  legend: {
-    position: 'bottom',
-    labels: {
-      usePointStyle: true
-    },
-    onClick: function (e, legendItem) {
-      const chartItem = this.chart;
-      const datasetIndex = legendItem.datasetIndex;
-      const defaultLegendClickHandler = defaults.global.legend.onClick.bind(this);
-      const dblClickDelay = 400;
-
-      const legendDoubleClickHandler = () => {
-        chartItem.data.datasets.forEach((el, index) => {
-          const meta = chartItem.getDatasetMeta(index);
-
-          if (index === datasetIndex) {
-            meta.hidden = null;
-          } else {
-            meta.hidden = true;
-          }
-        });
-
-        chartItem.update();
-      };
-
-      if (chartItem.clicked === datasetIndex) {
-        legendDoubleClickHandler();
-        clearTimeout(chartItem.clickTimeout);
-        chartItem.clicked = false;
-      } else {
-        chartItem.clicked = datasetIndex;
-
-        chartItem.clickTimeout = setTimeout(() => {
-          chartItem.clicked = false;
-          defaultLegendClickHandler(e, legendItem);
-        }, dblClickDelay);
-      }
-    }
-  },
-  scales: {
-    xAxes: [
-      {
-        type: 'time',
-        time: {
-          displayFormats: {
-            day: 'D MMM'
-          },
-          tooltipFormat: 'DD.MM.YYYY'
-        },
-        display: true,
-        scaleLabel: {
-          display: true,
-          labelString: 'Дата'
-        }
-      }
-    ]
-  }
-};
-
-const filterMetrics = (id, metrics) => {
-  return metrics ? metrics.filter((metric) => metric.typeId === id) : [];
-};
-
-const getBasicLineSettings = () => {
-  const lineColor = getColor();
-
-  return {
-    lineTension: 0,
-    borderWidth: 2,
-    pointRadius: 2,
-    borderColor: lineColor,
-    backgroundColor: lineColor,
-    fill: false
-  };
-};
 
 const mapStateToProps = (state) => ({
   projectId: state.Project.project.id,
