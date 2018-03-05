@@ -135,7 +135,7 @@ const getTaskSpent = id => {
   });
 };
 
-const changeTask = (ChangedProperties, target, cb) => {
+const changeTask = (ChangedProperties, target, callback) => {
   if (!ChangedProperties.id) {
     return;
   }
@@ -149,8 +149,8 @@ const changeTask = (ChangedProperties, target, cb) => {
     response: withFinishLoading(response => {
       dispatch(successTaskChange(response.data));
       dispatch(stopTaskEditing(target));
-      if (cb) {
-        cb();
+      if (callback) {
+        callback();
       }
     })(dispatch),
     error: defaultErrorHandler(dispatch)
