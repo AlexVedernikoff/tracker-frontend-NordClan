@@ -19,7 +19,7 @@ class TaskTitle extends Component {
   }
   editIconClickHandler = event => {
     event.stopPropagation();
-    if (this.props.TitleIsEditing) {
+    if (this.props.titleIsEditing) {
       this.validateAndSubmit();
     } else {
       this.startEditing();
@@ -59,7 +59,7 @@ class TaskTitle extends Component {
   };
 
   handleKeyDown = event => {
-    if (this.props.TitleIsEditing && event.key === 'Enter') {
+    if (this.props.titleIsEditing && event.key === 'Enter') {
       event.preventDefault();
       this.validateAndSubmit(event);
     } else if (event.key === 'Escape') {
@@ -72,15 +72,6 @@ class TaskTitle extends Component {
   };
 
   render() {
-    console.error = (function() {
-      var error = console.error;
-
-      return function(exception) {
-        if ((exception + '').indexOf('Warning: A component is `contentEditable`') != 0) {
-          error.apply(console, arguments);
-        }
-      };
-    })();
     return (
       <div className={css.title}>
         <h1 className={css.titleWrapper}>
@@ -90,15 +81,16 @@ class TaskTitle extends Component {
               [css.wrong]: this.state.submitError
             })}
             ref={ref => (this.taskName = ref)}
-            contentEditable={this.props.TitleIsEditing}
             onBlur={this.validateAndSubmit}
             onInput={this.handleInput}
             onKeyDown={this.handleKeyDown}
+            contentEditable={this.props.titleIsEditing}
+            suppressContentEditableWarning
           >
             {this.props.name}
           </span>
           {this.props.canEdit ? (
-            this.props.TitleIsEditing ? (
+            this.props.titleIsEditing ? (
               <IconCheck
                 onClick={this.editIconClickHandler}
                 className={css.save}
@@ -121,7 +113,7 @@ class TaskTitle extends Component {
 }
 
 const mapStateToProps = state => ({
-  TitleIsEditing: state.Task.TitleIsEditing
+  titleIsEditing: state.Task.TitleIsEditing
 });
 
 const mapDispatchToProps = {
