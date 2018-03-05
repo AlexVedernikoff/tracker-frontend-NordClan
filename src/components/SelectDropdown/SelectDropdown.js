@@ -9,10 +9,6 @@ export default class SelectDropdown extends Component {
     options: PropTypes.array
   };
 
-  static defaultProps = {
-    inputCanBeEmpty: true
-  };
-
   render() {
     const { name, options, thisClassName, noResultsText, ...other } = this.props;
 
