@@ -110,7 +110,8 @@ class Description extends Component {
       default:
         header = null;
     }
-
+    const regexp = /<p>(.*)<\/p>/im;
+    console.log('match', this.parseTextLinks(this.props.text).match(regexp));
     return (
       <div
         className={classnames({
