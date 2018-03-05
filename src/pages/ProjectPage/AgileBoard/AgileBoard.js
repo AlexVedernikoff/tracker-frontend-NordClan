@@ -249,8 +249,8 @@ class AgileBoard extends Component {
 
   parseLocalStorageFilters = () => {
     try {
-      const localStoargeFilters = JSON.parse(localStorage.getItem('agileBoardFilters'));
-      return localStoargeFilters ? localStoargeFilters : {};
+      const localStorageFilters = localStorage.getItem('agileBoardFilters');
+      return localStorageFilters ? JSON.parse(localStorageFilters) : {};
     } catch (e) {
       return {};
     }
