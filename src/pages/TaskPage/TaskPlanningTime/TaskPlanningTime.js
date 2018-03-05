@@ -85,6 +85,7 @@ class TaskPlanningTime extends Component {
           })}
           ref={ref => (this.taskPlanningTime = ref)}
           contentEditable={this.props.timeIsEditing}
+          suppressContentEditableWarning
           onBlur={this.validateAndSubmit}
           onKeyDown={this.handleKeyPress}
           { ...(this.props.tooltip ? {

@@ -30,7 +30,7 @@ export default class HistoryMessage extends React.Component {
 
   isTextMessage () {
     const { entities } = this.props;
-    return Object.keys(entities).length === 0;
+    return !entities || Object.keys(entities).length === 0;
   }
 
   deleteHtmlTags (message) {
