@@ -110,8 +110,6 @@ class Description extends Component {
       default:
         header = null;
     }
-    const regexp = /<p>(.*)<\/p>/im;
-    console.log('match', this.parseTextLinks(this.props.text).match(regexp));
     return (
       <div
         className={classnames({
@@ -123,7 +121,10 @@ class Description extends Component {
         {this.props.isEditing ? (
           <TextEditor ref={ref => (this.TextEditor = ref)} content={this.props.text.__html || ''} />
         ) : (
-          <div className={css.wiki} dangerouslySetInnerHTML={{ __html: this.parseTextLinks(this.props.text) }} />
+          <div
+            className={css.wiki}
+            dangerouslySetInnerHTML={{ __html: this.parseTextLinks(this.props.text).replace(/&nbsp;/g, '') }}
+          />
         )}
         {this.props.canEdit ? (
           <div className={css.editBorder}>
