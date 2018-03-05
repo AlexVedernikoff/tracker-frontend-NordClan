@@ -1,12 +1,16 @@
 @import '../../styles/variables';
 
 .tagPart {
-  display: flex;
+  display: block;
   height: 1rem;
-  align-items: center;
+  line-height: 1rem;
   padding-left: 14px;
   padding-right: 2px;
   cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: calc(100% - 10px);
 }
 
 .tag {
@@ -17,17 +21,18 @@
   background: lighten($color-dark, 40%);
   font-size: 11px;
   color: white;
+  max-width: 100%;
   transition: $transition;
 
   &:hover {
     background: lighten($color-dark, 20%);
-    
+
    .tagClose {
      svg {
       opacity: 1;
       transition: $transition;
     }
-   } 
+   }
   }
 }
 
