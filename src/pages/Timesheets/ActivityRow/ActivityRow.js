@@ -33,6 +33,7 @@ class ActivityRow extends React.Component {
     super(props);
     const debounceTime = 100;
     this.createTimesheet = _.debounce(this.createTimesheet, debounceTime);
+    this.updateDebounceTimesheet = _.debounce(this.updateTimesheet, 3000);
     this.updateTimesheet = _.debounce(this.updateTimesheet, debounceTime);
     this.deleteTimesheets = _.debounce(this.deleteTimesheets, debounceTime);
 
@@ -124,24 +125,17 @@ class ActivityRow extends React.Component {
       return false;
     }
 
-    this.setState(
-      state => {
-        const timeCells = {
-          ...state.timeCells
-        };
+    this.setState(state => {
+      const timeCells = {
+        ...state.timeCells
+      };
 
-        timeCells[i] = value;
+      timeCells[i] = value.replace(/,/, '.');
 
-        return {
-          timeCells
-        };
-      },
-      () => {
-        if (value !== '') {
-          this.createTimesheet(i);
-        }
-      }
-    );
+      return {
+        timeCells
+      };
+    });
   };
 
   changeEmptyComment = (text, i) => {
@@ -175,21 +169,20 @@ class ActivityRow extends React.Component {
         const timeCells = {
           ...state.timeCells
         };
-        timeCells[i] = value;
+        timeCells[i] = value.replace(/,/, '.');
         return {
           timeCells
         };
       },
       () => {
-        if (value !== '') {
-          this.updateTimesheet(i, id, comment);
-        }
+        this.updateDebounceTimesheet(i, id, comment);
       }
     );
   };
 
   onBlurFilled = (i, id, comment, value) => {
     if (value !== '') {
+      this.updateTimesheet(i, id, comment);
       return false;
     }
     this.setState(
@@ -210,17 +203,18 @@ class ActivityRow extends React.Component {
 
   onBlurEmpty = (i, value) => {
     if (value !== '') {
-      return false;
+      this.createTimesheet(i);
+    } else {
+      this.setState(state => {
+        const timeCells = {
+          ...state.timeCells
+        };
+        timeCells[i] = 0;
+        return {
+          timeCells
+        };
+      });
     }
-    this.setState(state => {
-      const timeCells = {
-        ...state.timeCells
-      };
-      timeCells[i] = 0;
-      return {
-        timeCells
-      };
-    });
   };
 
   changeFilledComment = (text, time, i, sheetId) => {
