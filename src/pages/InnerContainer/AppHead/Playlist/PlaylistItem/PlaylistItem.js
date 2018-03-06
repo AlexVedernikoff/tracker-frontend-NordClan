@@ -40,7 +40,7 @@ class PlaylistItem extends Component {
   };
 
   handleChangeTime = e => {
-    const value = e.target.value;
+    let value = e.target.value;
 
     if (!validateNumber(value) || +value > 24) {
       return false;
@@ -50,12 +50,14 @@ class PlaylistItem extends Component {
       itemSpentTime: value
     });
 
-    if (Number(value) > 0) {
+    value = value.replace(',', '.');
+
+    if (+value > 0) {
       if (this.props.item.isDraft) {
         this.debouncedUpdateDraft(
           {
             sheetId: this.props.item.id,
-            spentTime: value.replace(',', '.'),
+            spentTime: value,
             isVisible: this.props.item.isVisible,
             onDate: this.props.item.onDate,
             typeId: this.props.item.typeId,
@@ -69,7 +71,7 @@ class PlaylistItem extends Component {
       } else {
         this.debouncedUpdateOnlyTimesheet({
           sheetId: this.props.item.id,
-          spentTime: value.replace(',', '.'),
+          spentTime: value,
           isVisible: this.props.item.isVisible,
           comment: this.props.item.comment,
           onDate: this.props.item.onDate,
