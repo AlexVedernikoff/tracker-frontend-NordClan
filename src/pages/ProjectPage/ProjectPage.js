@@ -2,17 +2,19 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-
+import ProjectPrefixModal from '../../components/ProjectPrefixModal';
+import { history } from '../../History';
 import RouteTabs from '../../components/RouteTabs';
 import HttpError from '../../components/HttpError';
 import * as css from './ProjectPage.scss';
 import ProjectTitle from './ProjectTitle';
 
-import { getProjectInfo as getProject } from '../../actions/Project';
+import { getProjectInfo as getProject, changeProject } from '../../actions/Project';
 import { ADMIN } from '../../constants/Roles';
 
 class ProjectPage extends Component {
   static propTypes = {
+    changeProject: PropTypes.func,
     children: PropTypes.object,
     getProjectInfo: PropTypes.func,
     location: PropTypes.object,
@@ -21,29 +23,37 @@ class ProjectPage extends Component {
     user: PropTypes.object.isRequired
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const { getProjectInfo } = this.props;
     getProjectInfo(this.props.params.projectId);
   }
 
   checkIsAdminInProject = () => {
     return this.props.user.projectsRoles
-      ? this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1
-        || this.props.user.globalRole === ADMIN
+      ? this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1 ||
+          this.props.user.globalRole === ADMIN
       : false;
   };
 
-  handleAnalyticsAction = (event) => {
+  handleAnalyticsAction = event => {
     if (this.props.location.pathname.indexOf('analytics') !== -1) {
       event.preventDefault();
     }
-  }
-
-  render () {
+  };
+  handleCloseProjectPrefixModal = () => history.push('/projects');
+  handleCloseProjectConfirmModal = prefixValue => () =>
+    this.props.changeProject(
+      {
+        id: this.props.params.projectId,
+        prefix: prefixValue
+      },
+      'Prefix'
+    );
+  render() {
     const isProjectAdmin = this.checkIsAdminInProject();
     const tabs = [
       <Link
@@ -104,7 +114,9 @@ class ProjectPage extends Component {
       );
     }
 
-    return (this.props.project.error) ? (<HttpError error={this.props.project.error}/>) : (
+    return this.props.project.error ? (
+      <HttpError error={this.props.project.error} />
+    ) : (
       <div id="project-page">
         <ProjectTitle
           portfolio={this.props.project.portfolio}
@@ -114,13 +126,19 @@ class ProjectPage extends Component {
           isProjectAdmin={isProjectAdmin}
         />
 
-        <RouteTabs>
-          {tabs}
-        </RouteTabs>
+        <RouteTabs>{tabs}</RouteTabs>
 
-        <div className={css.tabContent}>
-          {this.props.children}
-        </div>
+        <div className={css.tabContent}>{this.props.children}</div>
+        {isProjectAdmin && (this.props.project.prefix !== undefined) & !this.props.project.prefix ? (
+          <ProjectPrefixModal
+            isOpen
+            contentLabel="modal"
+            text="Для дальнейшей работы укажите префикс проекта"
+            error={this.props.project.validationError}
+            onCancel={this.handleCloseProjectPrefixModal}
+            onConfirm={this.handleCloseProjectConfirmModal}
+          />
+        ) : null}
       </div>
     );
   }
@@ -132,7 +150,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  getProjectInfo: getProject
+  getProjectInfo: getProject,
+  changeProject
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectPage);
