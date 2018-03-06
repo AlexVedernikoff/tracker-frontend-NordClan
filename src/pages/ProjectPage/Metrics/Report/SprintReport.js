@@ -174,8 +174,7 @@ class SprintReport extends Component {
 
   getQueryParams = () => {
     const reportPeriod = this.state;
-    const lableName = this.state.selectedName;
-    console.log(lableName);
+    const labelName = this.state.selectedName;
     const selectedFrom = moment(this.state.selectedFrom, dateFormat, true).format(dateFormat2);
     const selectedTo = moment(this.state.selectedTo, dateFormat, true).format(dateFormat2);
 
@@ -186,15 +185,12 @@ class SprintReport extends Component {
       // запрос отчета по спринту
       const { sprintId, sprintStartDate, sprintFinishDate } = reportPeriod.value;
       const sprintDate = `&sprintStartDate=${sprintStartDate}&sprintFinishDate=${sprintFinishDate}`;
-      console.log('запрос отчета по спринту', `${selectedDate}&sprintId=${sprintId}&label=${lableName}${sprintDate}`);
-      return `${selectedDate}&sprintId=${sprintId}&label=${lableName}${sprintDate}`;
+      return `${selectedDate}&sprintId=${sprintId}&label=${labelName}${sprintDate}`;
     } else if (checkDate && reportPeriod) {
       // запрос отчета определенного типа
-      console.log('запрос отчета определенного типа', `${selectedDate}&label=${lableName}`);
-      return `${selectedDate}&label=${lableName}`;
+      return `${selectedDate}&label=${labelName}`;
     } else {
       // запрос отчета по дате, без выбора типа
-      console.log('запрос отчета по дате, без выбора типа', selectedDate);
       return selectedDate;
     }
   };
