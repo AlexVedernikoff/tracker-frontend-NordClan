@@ -8,11 +8,12 @@ import _ from 'lodash';
 import * as css from '../Playlist.scss';
 import getMaIcon from '../../../../../constants/MagicActivityIcons';
 import roundNum from '../../../../../utils/roundNum';
+import validateNumber from '../../../../../utils/validateNumber';
 
 import { IconComment, IconCheck, IconEye, IconEyeDisable } from '../../../../../components/Icons';
 
 class PlaylistItem extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       itemSpentTime: roundNum(this.props.item.spentTime, 2),
@@ -22,30 +23,33 @@ class PlaylistItem extends Component {
     this.debouncedUpdateOnlyTimesheet = _.debounce(this.props.updateTimesheet, 500);
   }
 
-  toggleComment = (event) => {
+  toggleComment = event => {
     event.stopPropagation();
     this.setState({ isCommentOpen: !this.state.isCommentOpen });
   };
 
-  pushComment = (comment) => {
+  pushComment = comment => {
     return () => {
       this.debouncedUpdateOnlyTimesheet({
         sheetId: this.props.item.id,
         comment
       });
 
-      this.setState((prevState) => ({ isCommentOpen: !prevState.isCommentOpen }));
+      this.setState(prevState => ({ isCommentOpen: !prevState.isCommentOpen }));
     };
   };
 
-  handleChangeTime = (e) => {
-    let value = e.target.value.replace(/[^\d,.]/g, '');
-    if (value.charAt(0) === '.' || value.charAt(0) === ',') {
-      value = '';
+  handleChangeTime = e => {
+    const value = e.target.value;
+
+    if (!validateNumber(value) || +value > 24) {
+      return false;
     }
+
     this.setState({
       itemSpentTime: value
     });
+
     if (Number(value) > 0) {
       if (this.props.item.isDraft) {
         this.debouncedUpdateDraft(
@@ -76,13 +80,7 @@ class PlaylistItem extends Component {
     }
   };
 
-  handleChangeTimeToEmpty = () => {
-    this.setState({
-      itemSpentTime: roundNum(this.props.item.spentTime, 2)
-    });
-  };
-
-  handleChangeComment = (e) => {
+  handleChangeComment = e => {
     this.setState({ comment: e.target.value });
   };
 
@@ -96,7 +94,7 @@ class PlaylistItem extends Component {
     item.isDraft ? updateDraft(params) : updateTimesheet(params);
   };
 
-  getNameByType = (typeId) => {
+  getNameByType = typeId => {
     const activity = _.find(this.props.magicActivitiesTypes, { id: typeId });
     return activity ? activity.name : 'Не определено';
   };
@@ -109,7 +107,7 @@ class PlaylistItem extends Component {
     }
   };
 
-  render () {
+  render() {
     const {
       task,
       project,
@@ -166,17 +164,13 @@ class PlaylistItem extends Component {
 
               {status !== 'education' ? (
                 isVisible ? (
-                  <span
-                    className={css.visibleToggler}
-                    onClick={(e) => this.changeVisibility(e, false)}
-                    data-tip="Скрыть"
-                  >
+                  <span className={css.visibleToggler} onClick={e => this.changeVisibility(e, false)} data-tip="Скрыть">
                     <IconEyeDisable />
                   </span>
                 ) : (
                   <span
                     className={css.visibleToggler}
-                    onClick={(e) => this.changeVisibility(e, true)}
+                    onClick={e => this.changeVisibility(e, true)}
                     data-tip="Показать"
                   >
                     <IconEye />
@@ -192,12 +186,7 @@ class PlaylistItem extends Component {
         </div>
         <div className={css.time}>
           <div className={css.today}>
-            <input
-              type="text"
-              onChange={this.handleChangeTime}
-              onBlur={this.handleChangeTimeToEmpty}
-              value={this.state.itemSpentTime}
-            />
+            <input type="text" onChange={this.handleChangeTime} value={this.state.itemSpentTime} />
           </div>
           <div className={classnames({ [css.other]: true, [css.exceeded]: redColorForTime })}>
             <span data-tip="Всего потрачено" data-place="bottom">
@@ -243,7 +232,7 @@ PlaylistItem.propTypes = {
   visible: PropTypes.bool.isRequired
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     magicActivitiesTypes: state.Dictionaries.magicActivityTypes
   };
