@@ -34,7 +34,7 @@ export default class HistoryMessage extends React.Component {
 
   deleteHtmlTags(message) {
     const regex = /(<([^>]+)>)/gi;
-    return message.replace(regex, '');
+    return message.replace(regex, '').replace(/&nbsp;/g, '');
   }
 
   renderTextMessage() {
