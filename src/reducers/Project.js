@@ -148,7 +148,6 @@ export default function Project(state = InitialState, action) {
         ...state
       };
     case ProjectActions.PROJECT_CHANGE_FAIL_VALIDATION:
-      console.log(action);
       return {
         ...state,
         project: {
