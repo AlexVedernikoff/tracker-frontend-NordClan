@@ -28,6 +28,7 @@ class SprintReport extends Component {
 
   state = {
     reportPeriod: null,
+    selectedName: '',
     selectedFrom: '',
     selectedTo: '',
     borderColorFrom: '',
@@ -46,18 +47,21 @@ class SprintReport extends Component {
   selectReportPeriod = option => {
     if (!_.isEmpty(option) && option.value.id) {
       this.setState({
+        selectedName: option.label,
         reportPeriod: option,
         selectedFrom: this.formatDate(option.value.factStartDate),
         selectedTo: this.formatDate(option.value.factFinishDate)
       });
     } else if (!_.isEmpty(option)) {
       this.setState({
+        selectedName: option.label,
         reportPeriod: option,
         selectedFrom: this.formatDate(option.value.factStartDate),
         selectedTo: this.formatDate(option.value.factFinishDate)
       });
     } else {
       this.setState({
+        selectedName: option.label,
         reportPeriod: null,
         selectedFrom: this.formatDate(this.props.startDate),
         selectedTo: moment().format(dateFormat)
@@ -170,7 +174,8 @@ class SprintReport extends Component {
 
   getQueryParams = () => {
     const reportPeriod = this.state;
-
+    const lableName = this.state.selectedName;
+    console.log(lableName);
     const selectedFrom = moment(this.state.selectedFrom, dateFormat, true).format(dateFormat2);
     const selectedTo = moment(this.state.selectedTo, dateFormat, true).format(dateFormat2);
 
@@ -181,12 +186,15 @@ class SprintReport extends Component {
       // запрос отчета по спринту
       const { sprintId, sprintStartDate, sprintFinishDate } = reportPeriod.value;
       const sprintDate = `&sprintStartDate=${sprintStartDate}&sprintFinishDate=${sprintFinishDate}`;
-      return `${selectedDate}&sprintId=${sprintId}&label=${reportPeriod.label}${sprintDate}`;
+      console.log('запрос отчета по спринту', `${selectedDate}&sprintId=${sprintId}&label=${lableName}${sprintDate}`);
+      return `${selectedDate}&sprintId=${sprintId}&label=${lableName}${sprintDate}`;
     } else if (checkDate && reportPeriod) {
       // запрос отчета определенного типа
-      return `${selectedDate}&label=${reportPeriod.label}`;
+      console.log('запрос отчета определенного типа', `${selectedDate}&label=${lableName}`);
+      return `${selectedDate}&label=${lableName}`;
     } else {
       // запрос отчета по дате, без выбора типа
+      console.log('запрос отчета по дате, без выбора типа', selectedDate);
       return selectedDate;
     }
   };
