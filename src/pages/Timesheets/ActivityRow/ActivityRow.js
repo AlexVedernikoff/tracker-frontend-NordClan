@@ -105,7 +105,7 @@ class ActivityRow extends React.Component {
   };
 
   validateNumbers(value) {
-    const re = /^$|^\d+(\.\d*)?$/;
+    const re = /^$|^\d+([.,]?\d*)?$/;
     return re.test(value);
   }
 
@@ -120,7 +120,7 @@ class ActivityRow extends React.Component {
           ...state.timeCells
         };
 
-        timeCells[i] = value;
+        timeCells[i] = value.replace(/,/, '.');
 
         return {
           timeCells
@@ -165,16 +165,16 @@ class ActivityRow extends React.Component {
         const timeCells = {
           ...state.timeCells
         };
-        timeCells[i] = value;
+        timeCells[i] = value.replace(/,/, '.');
         return {
           timeCells
         };
-      },
+      } /*,
       () => {
-        /*if (value !== '') {
+        if (value !== '') {
           this.updateTimesheet(i, id, comment);
-        }*/
-      }
+        }
+      }*/
     );
   };
 
@@ -201,17 +201,18 @@ class ActivityRow extends React.Component {
 
   onBlurEmpty = (i, value) => {
     if (value !== '') {
-      return false;
+      this.createTimesheet(i);
+    } else {
+      this.setState(state => {
+        const timeCells = {
+          ...state.timeCells
+        };
+        timeCells[i] = 0;
+        return {
+          timeCells
+        };
+      });
     }
-    this.setState(state => {
-      const timeCells = {
-        ...state.timeCells
-      };
-      timeCells[i] = 0;
-      return {
-        timeCells
-      };
-    });
   };
 
   changeFilledComment = (text, time, i, sheetId) => {
