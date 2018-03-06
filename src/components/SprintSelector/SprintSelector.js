@@ -10,19 +10,16 @@ export default class SprintSelector extends Component {
   static propTypes = {
     onChange: PropTypes.func,
     sprints: PropTypes.array,
-    value: PropTypes.oneOfType([
-      PropTypes.object,
-      PropTypes.number
-    ])
+    value: PropTypes.oneOfType([PropTypes.object, PropTypes.number])
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {};
   }
 
   getSprints = () => {
-    let sprints = _.sortBy(this.props.sprints, (sprint) => {
+    let sprints = _.sortBy(this.props.sprints, sprint => {
       return new moment(sprint.factFinishDate);
     });
 
@@ -50,7 +47,7 @@ export default class SprintSelector extends Component {
     return sprints;
   };
 
-  render () {
+  render() {
     const { value, sprints, onChange, ...otherProps } = this.props;
     return (
       <SelectDropdown
@@ -61,7 +58,8 @@ export default class SprintSelector extends Component {
         clearAllText="Очистить все"
         value={value}
         options={this.getSprints()}
-        onChange={(option) => onChange(option)}
+        clearable={false}
+        onChange={option => onChange(option)}
         {...otherProps}
       />
     );
