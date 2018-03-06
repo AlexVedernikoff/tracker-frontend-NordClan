@@ -60,6 +60,7 @@ export default class SprintSelector extends Component {
         clearAllText="Очистить все"
         value={value}
         options={this.getSprints()}
+        clearable={false}
         onChange={option => onChange(option)}
         {...otherProps}
       />
