@@ -24,10 +24,12 @@ export default class SprintSelector extends Component {
     });
 
     sprints = sprints.map((sprint, i) => ({
-      value: sprint.id,
+      value: sprint,
       label: `${sprint.name} (${moment(sprint.factStartDate).format(dateFormat)} ${
         sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format(dateFormat)}` : '- ...'
       })`,
+      factStartDate: sprint.factStartDate,
+      factFinishDate: sprint.factFinishDate,
       statusId: sprint.statusId,
       className: classnames({
         [css.INPROGRESS]: sprint.statusId === 2,
