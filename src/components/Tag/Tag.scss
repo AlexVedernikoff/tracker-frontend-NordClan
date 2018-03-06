@@ -27,12 +27,12 @@
   &:hover {
     background: lighten($color-dark, 20%);
 
-   .tagClose {
-     svg {
-      opacity: 1;
-      transition: $transition;
+    .tagClose {
+      svg {
+        opacity: 1;
+        transition: $transition;
+      }
     }
-   }
   }
 }
 

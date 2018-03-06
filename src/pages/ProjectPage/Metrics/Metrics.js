@@ -33,7 +33,7 @@ const chartDefaultOptions = {
     labels: {
       usePointStyle: true
     },
-    onClick: function (e, legendItem) {
+    onClick: function(e, legendItem) {
       const chartItem = this.chart;
       const datasetIndex = legendItem.datasetIndex;
       const defaultLegendClickHandler = defaults.global.legend.onClick.bind(this);
@@ -88,7 +88,7 @@ const chartDefaultOptions = {
 };
 
 const filterMetrics = (id, metrics) => {
-  return metrics ? metrics.filter((metric) => metric.typeId === id) : [];
+  return metrics ? metrics.filter(metric => metric.typeId === id) : [];
 };
 
 const getBasicLineSettings = () => {
@@ -119,11 +119,11 @@ class Metrics extends Component {
     user: PropTypes.object.isRequired
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
 
-  componentWillMount () {
+  componentWillMount() {
     const { getMetrics, params, createdAt } = this.props;
 
     if (createdAt) {
@@ -132,7 +132,7 @@ class Metrics extends Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     const { getMetrics, params, createdAt } = this.props;
 
     if (nextProps.createdAt !== createdAt) {
@@ -147,7 +147,6 @@ class Metrics extends Component {
     endDate: moment().format('YYYY-MM-DD HH:mm')
   });
 
-
   recalculateMetrics = () => {
     if (!this.props.loading) {
       const { getMetrics, params, createdAt } = this.props;
@@ -158,9 +157,9 @@ class Metrics extends Component {
         recalculate: true
       });
     }
-  }
+  };
 
-  startDate () {
+  startDate() {
     if (this.props.createdAt) {
       return this.props.createdAt;
     } else if (this.props.sprints.length > 0) {
@@ -169,7 +168,7 @@ class Metrics extends Component {
     return '';
   }
 
-  endDate () {
+  endDate() {
     if (this.props.completedAt) {
       return this.props.completedAt;
     } else if (this.props.sprints.length > 0) {
@@ -180,12 +179,12 @@ class Metrics extends Component {
 
   checkIsAdminInProject = () => {
     return (
-      (this.props.user.projectsRoles && this.props.user.projectsRoles.admin.indexOf(this.props.projectId) !== -1)
-      || this.props.user.globalRole === ADMIN
+      (this.props.user.projectsRoles && this.props.user.projectsRoles.admin.indexOf(this.props.projectId) !== -1) ||
+      this.props.user.globalRole === ADMIN
     );
   };
 
-  render () {
+  render() {
     /*
       значение Id типов метрик
       http://gitlab.simbirsoft/frontend/sim-track-back/blob/develop/server/services/agent/calculate/metrics.txt
@@ -263,13 +262,18 @@ class Metrics extends Component {
           {isProjectAdmin ? (
             <div>
               <Button
-                addedClassNames={{[css.recalculateBtn]: true}}
+                addedClassNames={{ [css.recalculateBtn]: true }}
                 onClick={this.recalculateMetrics}
                 type="bordered"
                 icon={loading ? 'IconPreloader' : 'IconRefresh'}
                 data-tip="Пересчитать метрику"
               />
-              <Tabs addedClassNames={{[css.tabs]: true}} selected={this.props.params.metricType} currentPath={`/projects/${this.props.params.projectId}/analytics`} routable>
+              <Tabs
+                addedClassNames={{ [css.tabs]: true }}
+                selected={this.props.params.metricType}
+                currentPath={`/projects/${this.props.params.projectId}/analytics`}
+                routable
+              >
                 <Pane label="Выгрузка" path="/download">
                   <SprintReport startDate={this.startDate()} endDate={this.endDate()} />
                 </Pane>
@@ -345,7 +349,7 @@ class Metrics extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   projectId: state.Project.project.id,
   createdAt: state.Project.project.createdAt,
   completedAt: state.Project.project.completedAt,
