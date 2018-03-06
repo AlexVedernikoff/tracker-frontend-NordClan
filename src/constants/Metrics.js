@@ -4,7 +4,6 @@ export const OPENED_BUGS = 7;
 export const OPENED_CUSTOMER_BUGS = 8;
 export const OPENED_REGRESSION_BUGS = 9;
 
-
 export const ACCOUNT_COST_PERCENTAGE = 10;
 export const PM_COST_PERCENTAGE = 11;
 export const UX_COST_PERCENTAGE = 12;

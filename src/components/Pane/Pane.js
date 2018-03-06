@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Pane = (props) => {
+const Pane = props => {
   return <div>{props.children}</div>;
 };
 
