@@ -7,7 +7,7 @@ import Button from '../Button';
 import SelectDropdown from '../SelectDropdown';
 
 class TaskTypeModal extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       typeId: this.props.defaultTypeId
@@ -18,15 +18,12 @@ class TaskTypeModal extends Component {
     this.props.onChoose(this.state.typeId);
   };
 
-  selectValue = (value) => {
+  selectValue = value => {
     this.setState({ typeId: value });
   };
 
-  render () {
-    const {
-      onClose,
-      taskTypes
-    } = this.props;
+  render() {
+    const { onClose, taskTypes } = this.props;
 
     const options = [];
 
@@ -38,14 +35,9 @@ class TaskTypeModal extends Component {
     }
 
     return (
-      <Modal
-        isOpen
-        contentLabel="modal"
-        className={css.modalWrapper}
-        onRequestClose={onClose}
-      >
+      <Modal isOpen contentLabel="modal" className={css.modalWrapper} onRequestClose={onClose}>
         <div className={css.changeStage}>
-          <h3>Заголовок</h3>
+          <h3>Изменить тип задачи</h3>
           <div className={css.modalLine}>
             <SelectDropdown
               name="member"
@@ -58,7 +50,7 @@ class TaskTypeModal extends Component {
               autoFocus
               openOnFocus
             />
-            <Button type="green" text="ОК" onClick={this.handleChoose}/>
+            <Button type="green" text="ОК" onClick={this.handleChoose} />
           </div>
         </div>
       </Modal>
