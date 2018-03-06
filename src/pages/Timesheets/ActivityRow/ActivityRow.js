@@ -114,24 +114,17 @@ class ActivityRow extends React.Component {
       return false;
     }
 
-    this.setState(
-      state => {
-        const timeCells = {
-          ...state.timeCells
-        };
+    this.setState(state => {
+      const timeCells = {
+        ...state.timeCells
+      };
 
-        timeCells[i] = value.replace(/,/, '.');
+      timeCells[i] = value.replace(/,/, '.');
 
-        return {
-          timeCells
-        };
-      } /*,
-      () => {
-        if (value !== '') {
-          this.createTimesheet(i);
-        }
-      }*/
-    );
+      return {
+        timeCells
+      };
+    });
   };
 
   changeEmptyComment = (text, i) => {
@@ -160,22 +153,15 @@ class ActivityRow extends React.Component {
       return false;
     }
 
-    this.setState(
-      state => {
-        const timeCells = {
-          ...state.timeCells
-        };
-        timeCells[i] = value.replace(/,/, '.');
-        return {
-          timeCells
-        };
-      } /*,
-      () => {
-        if (value !== '') {
-          this.updateTimesheet(i, id, comment);
-        }
-      }*/
-    );
+    this.setState(state => {
+      const timeCells = {
+        ...state.timeCells
+      };
+      timeCells[i] = value.replace(/,/, '.');
+      return {
+        timeCells
+      };
+    });
   };
 
   onBlurFilled = (i, id, comment, value) => {
