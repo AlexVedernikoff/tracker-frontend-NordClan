@@ -54,7 +54,7 @@ export default class AttachedDocument extends React.Component {
       fill: 'currentColor'
     };
 
-    const { fileName, path } = this.props;
+    const { fileName, path, canEdit } = this.props;
 
     return (
       <li className={css.attachment}>
@@ -64,7 +64,7 @@ export default class AttachedDocument extends React.Component {
               <IconDownload style={iconStyles} />
             </button>
           </a>
-          <button onClick={this.handleOpenConfirmDelete}>
+          <button onClick={this.handleOpenConfirmDelete} hidden={!canEdit}>
             <IconDelete style={iconStyles} />
           </button>
         </div>
@@ -93,3 +93,6 @@ export default class AttachedDocument extends React.Component {
     );
   }
 }
+AttachedDocument.propTypes = {
+  canEdit: PropTypes.bool
+};
