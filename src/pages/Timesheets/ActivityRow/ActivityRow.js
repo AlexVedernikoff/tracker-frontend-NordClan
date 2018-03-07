@@ -84,8 +84,6 @@ class ActivityRow extends React.Component {
   };
 
   createTimesheet = i => {
-    console.log('create timesheet call', this.state.timeCells[i]);
-
     const { item, userId, startingDay } = this.props;
     const value = this.state.timeCells[i].toString().replace(',', '.');
     this.props.createTimesheet(
@@ -107,8 +105,6 @@ class ActivityRow extends React.Component {
   };
 
   updateTimesheet = (i, sheetId, comment) => {
-    console.log('update timesheet call', this.state.timeCells[i]);
-
     const value = this.state.timeCells[i].toString().replace(',', '.');
     const { userId, startingDay } = this.props;
     if (!value && !comment) {
