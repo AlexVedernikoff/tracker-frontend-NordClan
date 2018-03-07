@@ -1,3 +1,3 @@
-import ProjectPrefix from './ProjectPrefix';
+import ProjectPrefixModal from './ProjectPrefixModal';
 
-export default ProjectPrefix;
+export default ProjectPrefixModal;
