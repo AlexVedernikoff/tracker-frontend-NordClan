@@ -31,11 +31,17 @@ class ActivityRow extends React.Component {
 
   constructor(props) {
     super(props);
+
     const debounceTime = 100;
-    this.createTimesheet = _.debounce(this.createTimesheet, debounceTime);
-    this.updateTimesheet = _.debounce(this.updateTimesheet, debounceTime);
+    const onChangeDebounceTime = 2000;
+
     this.deleteTimesheets = _.debounce(this.deleteTimesheets, debounceTime);
-    this.updateDebounceTimesheet = _.debounce(this.updateTimesheet, 3000);
+
+    this.onChangeUpdateTimesheet = _.debounce(this.updateTimesheet, onChangeDebounceTime);
+    this.onChangeCreateTimesheet = _.debounce(this.createTimesheet, onChangeDebounceTime);
+
+    this.onBlurUpdateTimesheet = _.debounce(this.updateTimesheet, debounceTime);
+    this.onBlurCreateTimesheet = _.debounce(this.createTimesheet, debounceTime);
 
     this.state = {
       isOpen: false,
@@ -78,8 +84,10 @@ class ActivityRow extends React.Component {
   };
 
   createTimesheet = i => {
+    console.log('create timesheet call', this.state.timeCells[i]);
+
     const { item, userId, startingDay } = this.props;
-    const value = this.state.timeCells[i];
+    const value = this.state.timeCells[i].toString().replace(',', '.');
     this.props.createTimesheet(
       {
         isDraft: false,
@@ -99,7 +107,9 @@ class ActivityRow extends React.Component {
   };
 
   updateTimesheet = (i, sheetId, comment) => {
-    const value = this.state.timeCells[i];
+    console.log('update timesheet call', this.state.timeCells[i]);
+
+    const value = this.state.timeCells[i].toString().replace(',', '.');
     const { userId, startingDay } = this.props;
     if (!value && !comment) {
       this.props.deleteTimesheets([sheetId], userId, startingDay);
@@ -125,17 +135,24 @@ class ActivityRow extends React.Component {
       return false;
     }
 
-    this.setState(state => {
-      const timeCells = {
-        ...state.timeCells
-      };
+    this.setState(
+      state => {
+        const timeCells = {
+          ...state.timeCells
+        };
 
-      timeCells[i] = value.replace(/,/, '.');
+        timeCells[i] = value;
 
-      return {
-        timeCells
-      };
-    });
+        return {
+          timeCells
+        };
+      },
+      () => {
+        if (value !== '') {
+          this.onChangeCreateTimesheet(i);
+        }
+      }
+    );
   };
 
   changeEmptyComment = (text, i) => {
@@ -169,52 +186,49 @@ class ActivityRow extends React.Component {
         const timeCells = {
           ...state.timeCells
         };
-        timeCells[i] = value.replace(/,/, '.');
+
+        timeCells[i] = value;
+
         return {
           timeCells
         };
       },
       () => {
-        this.updateDebounceTimesheet(i, id, comment);
+        this.onChangeUpdateTimesheet(i, id, comment);
       }
     );
   };
 
   onBlurFilled = (i, id, comment, value) => {
-    if (value !== '') {
-      this.updateTimesheet(i, id, comment);
-      return false;
+    if (this.state.timeCells[i] !== +value) {
+      this.onBlurUpdateTimesheet(i, id, comment);
     }
-    this.setState(
-      state => {
-        const timeCells = {
-          ...state.timeCells
-        };
-        timeCells[i] = 0;
-        return {
-          timeCells
-        };
-      },
-      () => {
-        this.updateTimesheet(i, id, comment);
-      }
-    );
+
+    if (value === '') {
+      this.resetCell(i);
+    }
   };
 
   onBlurEmpty = (i, value) => {
     if (value !== '') {
-      this.createTimesheet(i);
+      if (this.state.timeCells[i] !== +value) {
+        this.onBlurCreateTimesheet(i);
+      }
     } else {
-      this.setState(state => {
-        const timeCells = {
-          ...state.timeCells
-        };
-        timeCells[i] = 0;
-        return {
-          timeCells
-        };
-      });
+      this.resetCell(i);
     }
+  };
+
+  resetCell = i => {
+    this.setState(state => {
+      const timeCells = {
+        ...state.timeCells
+      };
+      timeCells[i] = 0;
+      return {
+        timeCells
+      };
+    });
   };
 
   changeFilledComment = (text, time, i, sheetId) => {
