@@ -1,4 +1,1 @@
-export default function validateNumber(value) {
-  const regex = /^$|^\d+([.,]?\d*)?$/;
-  return regex.test(value);
-}
+export default value => /^$|^\d+([.,]?\d*)?$/.test(value);

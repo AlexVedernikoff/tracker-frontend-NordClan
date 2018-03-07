@@ -32,16 +32,12 @@ class ActivityRow extends React.Component {
   constructor(props) {
     super(props);
 
-    const debounceTime = 100;
-    const onChangeDebounceTime = 2000;
+    const debounceTime = 1000;
 
     this.deleteTimesheets = _.debounce(this.deleteTimesheets, debounceTime);
 
-    this.onChangeUpdateTimesheet = _.debounce(this.updateTimesheet, onChangeDebounceTime);
-    this.onChangeCreateTimesheet = _.debounce(this.createTimesheet, onChangeDebounceTime);
-
-    this.onBlurUpdateTimesheet = _.debounce(this.updateTimesheet, debounceTime);
-    this.onBlurCreateTimesheet = _.debounce(this.createTimesheet, debounceTime);
+    this.debouncedUpdateTimesheet = _.debounce(this.updateTimesheet, debounceTime * 2);
+    this.debouncedCreateTimesheet = _.debounce(this.createTimesheet, debounceTime * 2);
 
     this.state = {
       isOpen: false,
@@ -145,7 +141,7 @@ class ActivityRow extends React.Component {
       },
       () => {
         if (value !== '') {
-          this.onChangeCreateTimesheet(i);
+          this.debouncedCreateTimesheet(i);
         }
       }
     );
@@ -190,14 +186,14 @@ class ActivityRow extends React.Component {
         };
       },
       () => {
-        this.onChangeUpdateTimesheet(i, id, comment);
+        this.debouncedUpdateTimesheet(i, id, comment);
       }
     );
   };
 
   onBlurFilled = (i, id, comment, value) => {
     if (this.state.timeCells[i] !== +value) {
-      this.onBlurUpdateTimesheet(i, id, comment);
+      this.updateTimesheet(i, id, comment);
     }
 
     if (value === '') {
@@ -208,7 +204,7 @@ class ActivityRow extends React.Component {
   onBlurEmpty = (i, value) => {
     if (value !== '') {
       if (this.state.timeCells[i] !== +value) {
-        this.onBlurCreateTimesheet(i);
+        this.createTimesheet(i);
       }
     } else {
       this.resetCell(i);
