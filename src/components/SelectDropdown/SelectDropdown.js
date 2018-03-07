@@ -9,7 +9,7 @@ export default class SelectDropdown extends Component {
     options: PropTypes.array
   };
 
-  render () {
+  render() {
     const { name, options, thisClassName, noResultsText, ...other } = this.props;
 
     return (
@@ -18,7 +18,8 @@ export default class SelectDropdown extends Component {
         name={name}
         options={options}
         noResultsText="Ничего не найдено"
-        onFocus={(e) => e.stopPropagation()}
+        onFocus={e => e.stopPropagation()}
+        clearValueText="Очистить"
         {...other}
       />
     );

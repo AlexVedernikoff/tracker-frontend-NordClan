@@ -8,6 +8,7 @@ import moment from 'moment';
 import _ from 'lodash';
 
 import TaskCard from '../../../components/TaskCard';
+import FilterList from '../../../components/FilterList';
 import PerformerModal from '../../../components/PerformerModal';
 import PhaseColumn from './PhaseColumn';
 import Input from '../../../components/Input';
@@ -17,6 +18,7 @@ import Priority from '../../../components/Priority';
 import Checkbox from '../../../components/Checkbox';
 import CreateTaskModal from '../../../components/CreateTaskModal';
 import PerformerFilter from '../../../components/PerformerFilter';
+import getPriorityById from '../../../utils/TaskPriority';
 import * as css from './AgileBoard.scss';
 
 import getTasks from '../../../actions/Tasks';
@@ -139,6 +141,8 @@ class AgileBoard extends Component {
       isModalOpen: false,
       performer: null,
       changedTask: null,
+      allFilters: [],
+      fullFilterView: this.getFilterViewState(),
       ...this.initialFilters
     };
   }
@@ -217,12 +221,32 @@ class AgileBoard extends Component {
     return changedSprint;
   };
 
+  toggleFilterView = () => {
+    this.setState(
+      {
+        fullFilterView: !this.state.fullFilterView
+      },
+      () => {
+        localStorage.setItem('filterViewState', this.state.fullFilterView);
+      }
+    );
+  };
+
+  getFilterViewState = () => {
+    try {
+      return JSON.parse(localStorage.getItem('filterViewState')) || false;
+    } catch (e) {
+      return false;
+    }
+  };
+
   toggleMine = () => {
     this.setState(
       currentState => ({
         isOnlyMine: !currentState.isOnlyMine
       }),
       () => {
+        this.updateFilterList();
         this.saveFiltersToLocalStorage();
       }
     );
@@ -279,13 +303,17 @@ class AgileBoard extends Component {
 
   selectValue = (e, name) => {
     this.setState({ [name]: e }, () => {
-      const tags = this.state.filterTags.map(tag => tag.value);
-      const typeId = this.state.typeId.map(option => option.value);
-      let options = {
-        performerId: this.props.user.id
-      };
-      if (!this.props.myTaskBoard) {
-        options = {
+      if (this.props.myTaskBoard) return this.props.getTasks({ performerId: this.props.user.id });
+      this.getTasks();
+    });
+  };
+
+  getTasks = customOption => {
+    const tags = this.state.filterTags.map(tag => tag.value);
+    const typeId = this.state.typeId.map(option => option.value);
+    const options = customOption
+      ? customOption
+      : {
           projectId: this.props.params.projectId,
           sprintId: this.state.changedSprint,
           prioritiesId: this.state.prioritiesId,
@@ -295,11 +323,9 @@ class AgileBoard extends Component {
           tags: tags.join(','),
           performerId: this.state.performerId
         };
-        this.saveFiltersToLocalStorage();
-      }
-
-      this.props.getTasks(options);
-    });
+    this.props.getTasks(options);
+    this.saveFiltersToLocalStorage();
+    this.updateFilterList();
   };
 
   selectTagForFiltrated = options => {
@@ -438,6 +464,86 @@ class AgileBoard extends Component {
     }));
   };
 
+  resetFiled = name => {
+    this.setState(
+      () => ({
+        [name]: this.initialFilters[name]
+      }),
+      () => {
+        this.getTasks();
+      }
+    );
+  };
+
+  removeSelectOptionByIdFromFilter = (list, id, filterField) => {
+    const newList = list.filter(item => item.value !== id);
+    this.setState(
+      {
+        [filterField]: newList
+      },
+      () => this.getTasks()
+    );
+  };
+
+  filterIsNotEmpty = filterName => {
+    if (
+      typeof this.state[filterName] === 'string' ||
+      this.state[filterName] instanceof String ||
+      Array.isArray(this.state[filterName])
+    )
+      return this.state[filterName].length > 0;
+    return !!this.state[filterName];
+  };
+
+  createFilterLabel = filterName => {
+    switch (filterName) {
+      case 'isOnlyMine':
+        return 'мои задачи';
+      case 'prioritiesId':
+        return `${getPriorityById(this.state.prioritiesId)}`;
+      case 'authorId':
+        return `автор: ${this.createSelectedOption(this.props.project.users, this.state.authorId, 'fullNameRu')}`;
+      case 'performerId':
+        return `исполнитель: ${this.createSelectedOption(
+          this.props.project.users,
+          this.state.performerId,
+          'fullNameRu'
+        )}`;
+      case 'changedSprint':
+        return `${this.createSelectedOption(
+          this.getSprints().map(sprint => ({ id: sprint.value, name: sprint.label })),
+          this.state.changedSprint
+        )}`;
+      case 'name':
+        return `${this.state.name}`;
+      default:
+        return '';
+    }
+  };
+
+  updateFilterList = () => {
+    const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'performerId', 'changedSprint', 'name'];
+    const selectedFilters = [];
+
+    singleOptionFiltersList.forEach(filterName => {
+      if (this.filterIsNotEmpty(filterName)) {
+        selectedFilters.push({
+          name: filterName,
+          label: this.createFilterLabel(filterName),
+          deleteHandler: () => this.resetFiled(filterName)
+        });
+      }
+    });
+
+    this.setState({
+      allFilters: [
+        ...selectedFilters,
+        ...this.createSelectedOption(null, this.state.typeId, 'typeId'),
+        ...this.createSelectedOption(null, this.state.filterTags, 'filterTags')
+      ]
+    });
+  };
+
   createOptions = (array, labelField = 'name') => {
     return array.map(element => ({
       value: element.id,
@@ -445,18 +551,35 @@ class AgileBoard extends Component {
     }));
   };
 
+  createSelectedOption = (optionList, selectedOption, optionLabel = 'name') => {
+    if (Array.isArray(selectedOption)) {
+      return selectedOption.map(currentId => ({
+        name: `${optionLabel}-${currentId.value}`,
+        label: currentId.label,
+        deleteHandler: () => {
+          this.removeSelectOptionByIdFromFilter(selectedOption, currentId.value, optionLabel);
+        }
+      }));
+    } else {
+      const option = optionList.find(element => element.id === selectedOption);
+      if (!option) return null;
+      return option[optionLabel];
+    }
+  };
+
   clearFilter = () => {
     this.setState(
       {
         ...this.initialFilters
       },
-      this.props.getTasks({
-        projectId: this.props.params.projectId,
-        sprintId: null,
-        ...this.initialFilters
-      })
+      () => {
+        this.getTasks({
+          projectId: this.props.params.projectId,
+          sprintId: null,
+          ...this.initialFilters
+        });
+      }
     );
-    this.removeFiltersFromLocalStorage();
   };
 
   isFilterEmpty = () => {
@@ -501,101 +624,117 @@ class AgileBoard extends Component {
       <section className={css.agileBoard}>
         {!this.props.myTaskBoard ? (
           <div>
+            {this.state.fullFilterView ? (
+              <div>
+                <Row className={css.filtersRow}>
+                  <Col className={css.filterButtonCol}>
+                    <Priority
+                      onChange={option => this.selectValue(option.prioritiesId, 'prioritiesId')}
+                      priority={this.state.prioritiesId}
+                      canEdit
+                    />
+                  </Col>
+                  <Col className={css.filterButtonCol}>
+                    <Checkbox checked={this.state.isOnlyMine} onChange={this.toggleMine} label="Только мои задачи" />
+                  </Col>
+                  <Col xs style={{ minWidth: 200 }}>
+                    <SelectDropdown
+                      name="filterTags"
+                      multi
+                      placeholder="Введите название тега"
+                      backspaceToRemoveMessage=""
+                      value={this.state.filterTags}
+                      onChange={this.selectTagForFiltrated}
+                      noResultsText="Нет результатов"
+                      options={this.getAllTags()}
+                    />
+                  </Col>
+                  {!isVisor ? (
+                    <Col className={css.filterButtonCol}>
+                      <Button
+                        onClick={this.props.openCreateTaskModal}
+                        type="primary"
+                        text="Создать задачу"
+                        icon="IconPlus"
+                        name="right"
+                      />
+                    </Col>
+                  ) : null}
+                </Row>
+                <Row className={css.filtersRow}>
+                  <Col xs={12} sm={6}>
+                    <Input
+                      placeholder="Введите название задачи"
+                      value={this.state.name}
+                      onChange={e => this.selectValue(e.target.value, 'name')}
+                    />
+                  </Col>
+                  <Col xs={12} sm={3}>
+                    <PerformerFilter
+                      onPerformerSelect={option => this.selectValue(option ? option.value : null, 'performerId')}
+                      selectedPerformerId={this.state.performerId}
+                    />
+                  </Col>
+                  <Col xs={12} sm={3}>
+                    <SelectDropdown
+                      name="type"
+                      placeholder="Выберите тип задачи"
+                      multi
+                      noResultsText="Нет подходящих типов"
+                      backspaceToRemoveMessage={''}
+                      clearAllText="Очистить все"
+                      value={this.state.typeId}
+                      options={typeOptions}
+                      onChange={options => this.selectValue(options, 'typeId')}
+                    />
+                  </Col>
+                </Row>
+                <Row className={css.filtersRow}>
+                  <Col xs={12} sm={6} className={css.changedSprint}>
+                    <SelectDropdown
+                      name="changedSprint"
+                      placeholder="Выберите спринт"
+                      multi={false}
+                      value={this.state.changedSprint}
+                      onChange={e => this.selectValue(e !== null ? e.value : null, 'changedSprint')}
+                      noResultsText="Нет результатов"
+                      options={this.getSprints()}
+                    />
+                    <span className={css.sprintTime}>{this.getSprintTime(this.state.changedSprint) || null}</span>
+                  </Col>
+                  <Col xs>
+                    <SelectDropdown
+                      name="author"
+                      placeholder="Выберите автора задачи"
+                      multi={false}
+                      value={this.state.authorId}
+                      onChange={option => this.selectValue(option ? option.value : null, 'authorId')}
+                      noResultsText="Нет результатов"
+                      options={authorOptions}
+                    />
+                  </Col>
+                  <Col className={css.filterButtonCol}>
+                    <Button
+                      onClick={this.clearFilter}
+                      type="primary"
+                      text="Очистить фильтры"
+                      icon="IconClose"
+                      name="right"
+                      disabled={this.isFilterEmpty()}
+                    />
+                  </Col>
+                </Row>
+              </div>
+            ) : (
+              ''
+            )}
             <Row className={css.filtersRow}>
-              <Col className={css.filterButtonCol}>
-                <Priority
-                  onChange={option => this.selectValue(option.prioritiesId, 'prioritiesId')}
-                  priority={this.state.prioritiesId}
-                  canEdit
-                />
-              </Col>
-              <Col className={css.filterButtonCol}>
-                <Checkbox checked={this.state.isOnlyMine} onChange={this.toggleMine} label="Только мои задачи" />
-              </Col>
-              <Col xs style={{ minWidth: 200 }}>
-                <SelectDropdown
-                  name="filterTags"
-                  multi
-                  placeholder="Введите название тега"
-                  backspaceToRemoveMessage=""
-                  value={this.state.filterTags}
-                  onChange={this.selectTagForFiltrated}
-                  noResultsText="Нет результатов"
-                  options={this.getAllTags()}
-                />
-              </Col>
-              {!isVisor ? (
-                <Col className={css.filterButtonCol}>
-                  <Button
-                    onClick={this.props.openCreateTaskModal}
-                    type="primary"
-                    text="Создать задачу"
-                    icon="IconPlus"
-                    name="right"
-                  />
-                </Col>
-              ) : null}
-            </Row>
-            <Row className={css.filtersRow}>
-              <Col xs={12} sm={6}>
-                <Input
-                  placeholder="Введите название задачи"
-                  value={this.state.name}
-                  onChange={e => this.selectValue(e.target.value, 'name')}
-                />
-              </Col>
-              <Col xs={12} sm={3}>
-                <PerformerFilter
-                  onPerformerSelect={option => this.selectValue(option ? option.value : null, 'performerId')}
-                  selectedPerformerId={this.state.performerId}
-                />
-              </Col>
-              <Col xs={12} sm={3}>
-                <SelectDropdown
-                  name="type"
-                  placeholder="Выберите тип задачи"
-                  multi
-                  noResultsText="Нет подходящих типов"
-                  backspaceToRemoveMessage={''}
-                  clearAllText="Очистить все"
-                  value={this.state.typeId}
-                  options={typeOptions}
-                  onChange={options => this.selectValue(options, 'typeId')}
-                />
-              </Col>
-            </Row>
-            <Row className={css.filtersRow}>
-              <Col xs={12} sm={6} className={css.changedSprint}>
-                <SelectDropdown
-                  name="changedSprint"
-                  placeholder="Выберите спринт"
-                  multi={false}
-                  value={this.state.changedSprint}
-                  onChange={e => this.selectValue(e !== null ? e.value : null, 'changedSprint')}
-                  noResultsText="Нет результатов"
-                  options={this.getSprints()}
-                />
-                <span className={css.sprintTime}>{this.getSprintTime(this.state.changedSprint) || null}</span>
-              </Col>
-              <Col xs>
-                <SelectDropdown
-                  name="author"
-                  placeholder="Выберите автора задачи"
-                  multi={false}
-                  value={this.state.authorId}
-                  onChange={option => this.selectValue(option ? option.value : null, 'authorId')}
-                  noResultsText="Нет результатов"
-                  options={authorOptions}
-                />
-              </Col>
-              <Col className={css.filterButtonCol}>
-                <Button
-                  onClick={this.clearFilter}
-                  type="primary"
-                  text="Очистить фильтры"
-                  icon="IconClose"
-                  name="right"
-                  disabled={this.isFilterEmpty()}
+              <Col xs={12} sm={12}>
+                <FilterList
+                  clearAll={this.clearFilter}
+                  fullFilterView={this.state.fullFilterView}
+                  toggleFilterView={this.toggleFilterView}
+                  filters={this.state.allFilters}
                 />
               </Col>
             </Row>

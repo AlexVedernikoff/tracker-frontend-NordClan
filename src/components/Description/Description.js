@@ -10,22 +10,22 @@ import classnames from 'classnames';
 import Autolinker from 'autolinker';
 
 class Description extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       text: this.props.text
     };
   }
 
-  componentDidMount () {
+  componentDidMount() {
     window.addEventListener('keydown', this.checkEscapeKeyPress);
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     ReactTooltip.rebuild();
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (this.props.text !== nextProps.text) {
       this.setState({
         text: nextProps.text
@@ -36,7 +36,7 @@ class Description extends Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     window.removeEventListener('keydown', this.checkEscapeKeyPress);
   }
 
@@ -70,69 +70,46 @@ class Description extends Component {
     onEditSubmit(
       {
         id: this.props.id,
-        description: stateToHTML(
-          this.TextEditor.state.editorState.getCurrentContent()
-        )
+        description: stateToHTML(this.TextEditor.state.editorState.getCurrentContent())
       },
       'Description'
     );
   };
 
   // Link eval - making links clickable
-  parseTextLinks = (description) => {
-    return (description.__html) ? Autolinker.link(description.__html) : '';
+  parseTextLinks = description => {
+    return description.__html ? Autolinker.link(description.__html) : '';
   };
 
-  render () {
+  render() {
     const { headerType, headerText } = this.props;
 
     let header = null;
 
     switch (headerType) {
-    case 'h1':
-      header = (
-        <h1>
-          {headerText}
-        </h1>
-      );
-      break;
+      case 'h1':
+        header = <h1>{headerText}</h1>;
+        break;
 
-    case 'h2':
-      header = (
-        <h2>
-          {headerText}
-        </h2>
-      );
-      break;
+      case 'h2':
+        header = <h2>{headerText}</h2>;
+        break;
 
-    case 'h3':
-      header = (
-        <h3>
-          {headerText}
-        </h3>
-      );
-      break;
+      case 'h3':
+        header = <h3>{headerText}</h3>;
+        break;
 
-    case 'h4':
-      header = (
-        <h4>
-          {headerText}
-        </h4>
-      );
-      break;
+      case 'h4':
+        header = <h4>{headerText}</h4>;
+        break;
 
-    case 'h5':
-      header = (
-        <h5>
-          {headerText}
-        </h5>
-      );
-      break;
+      case 'h5':
+        header = <h5>{headerText}</h5>;
+        break;
 
-    default:
-      header = null;
+      default:
+        header = null;
     }
-
     return (
       <div
         className={classnames({
@@ -141,36 +118,33 @@ class Description extends Component {
         })}
       >
         {header}
-        {
-          this.props.isEditing
-            ? <TextEditor
-              ref={ref => (this.TextEditor = ref)}
-              content={this.props.text.__html || ''}
-            />
-            : <div
-              className={css.wiki}
-              dangerouslySetInnerHTML={{__html: this.parseTextLinks(this.props.text)}}
-            />
-        }
-        {
-          this.props.canEdit
-            ? <div className={css.editBorder}>
-              {
-                this.props.isEditing
-                  ? <IconCheck
-                    className={css.save}
-                    onClick={this.toggleEditing}
-                    data-tip="Сохранить"
-                  />
-                  : <IconEdit
-                    className={css.edit}
-                    onClick={this.toggleEditing}
-                    data-tip="Редактировать"
-                  />
-              }
-            </div>
-            : null
-        }
+        {this.props.isEditing ? (
+          <TextEditor ref={ref => (this.TextEditor = ref)} content={this.props.text.__html || ''} />
+        ) : (
+          <div
+            className={css.wiki}
+            dangerouslySetInnerHTML={{ __html: this.parseTextLinks(this.props.text).replace(/&nbsp;/g, '') }}
+          />
+        )}
+        {this.props.canEdit ? (
+          <div className={css.editBorder}>
+            {this.props.isEditing ? (
+              <IconCheck
+                className={css.save}
+                onClick={this.toggleEditing}
+                id={this.props.id + 1}
+                data-tip="Сохранить"
+              />
+            ) : (
+              <IconEdit
+                className={css.edit}
+                onClick={this.toggleEditing}
+                id={this.props.id + 1}
+                data-tip="Редактировать"
+              />
+            )}
+          </div>
+        ) : null}
       </div>
     );
   }
