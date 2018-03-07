@@ -98,7 +98,8 @@ class Timesheets extends React.Component {
             !_.find(res, tsh => {
               return tsh.id === el.task.id && tsh.taskStatusId === el.taskStatusId;
             });
-          if (!taskNotPushed && el.task) {
+          if (!taskNotPushed && el.task && tempTimesheets.some(tempTsh => tempTsh.id === el.id)) {
+            console.log(el);
             this.props.showNotification({ message: 'Задача с выбранным статусом уже есть в отчете', type: 'success' });
             this.props.deleteTempTimesheets([el.id.toString()]);
           }
@@ -165,7 +166,7 @@ class Timesheets extends React.Component {
               const isSameProject = el.project ? tsh.projectId === el.project.id : tsh.projectId === 0;
               return isSameType && isSameProject;
             });
-          if (!maNotPushed && el.typeId !== 1) {
+          if (!maNotPushed && el.typeId !== 1 && tempTimesheets.some(tempTsh => tempTsh.id === el.id)) {
             this.props.showNotification({ message: 'Задача с выбранным статусом уже есть в отчете', type: 'success' });
             this.props.deleteTempTimesheets([el.id.toString()]);
           }
