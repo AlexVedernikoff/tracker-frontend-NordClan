@@ -84,11 +84,11 @@ class ProjectTitle extends Component {
       this.projectName.innerText.length < 4
       || this.projectName.innerText.length > 255
     ) {
-      this.setState({ nameIsIncorrect: true }, 
+      this.setState({ nameIsIncorrect: true },
         () => this.props.showNotification(
-          { 
-            message: `Имя проекта должно содержать от 4 до 255 символов`, 
-            type: 'error' 
+          {
+            message: `Имя проекта должно содержать от 4 до 255 символов`,
+            type: 'error'
           }
         )
       );
@@ -100,11 +100,11 @@ class ProjectTitle extends Component {
       this.projectPrefix.innerText.length < 2
       || this.projectPrefix.innerText.length > 8
     ) {
-      this.setState({ prefixIsIncorrect: true },  
+      this.setState({ prefixIsIncorrect: true },
         () => this.props.showNotification(
-          { 
-            message: `Префикс должен содержать от 2 до 8 символов`, 
-            type: 'error' 
+          {
+            message: `Префикс должен содержать от 2 до 8 символов`,
+            type: 'error'
           }
         )
       );
@@ -211,8 +211,9 @@ class ProjectTitle extends Component {
               id="projectName"
               className={this.state.nameIsIncorrect ? css.wrong : ''}
               ref={ref => (this.projectName = ref)}
-              contentEditable={this.props.titleIsEditing}
               onKeyDown={this.handleKeyPress}
+              contentEditable={this.props.titleIsEditing}
+              suppressContentEditableWarning
             >
               {this.props.name ? this.props.name : <InlineHolder length='3.5em' />}
             </span>
@@ -222,8 +223,9 @@ class ProjectTitle extends Component {
                 id="projectPrefix"
                 className={this.state.prefixIsIncorrect ? css.wrong : ''}
                 ref={ref => (this.projectPrefix = ref)}
-                contentEditable={this.props.titleIsEditing}
                 onKeyDown={this.handleKeyPress}
+                contentEditable={this.props.titleIsEditing}
+                suppressContentEditableWarning
               >
                 {this.props.prefix ? this.props.prefix : <InlineHolder length='1em' />}
               </span>

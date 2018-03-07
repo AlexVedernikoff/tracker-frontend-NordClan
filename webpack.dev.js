@@ -2,6 +2,19 @@ const path = require('path');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
+const target =
+  process.env.API_ROOT === 'app'
+    ? {
+        host: process.env.API_ROOT,
+        protocol: 'http:',
+        port: process.env.API_PORT
+      }
+    : {
+        host: 'simtrack-dev.simbirsoft',
+        protocol: 'https:',
+        port: 443
+      };
+
 const settings = {
   entry: {
     bundle: ['babel-polyfill', 'react-hot-loader/patch', './src/App.js']
@@ -92,31 +105,14 @@ const settings = {
     inline: true,
     disableHostCheck: true,
     proxy: {
-      '/api/v1/socket': {
-        target: {
-          host: process.env.API_ROOT || 'simtrack-dev.simbirsoft',
-          protocol: 'ws',
-          port: process.env.API_PORT || 443
-        },
+      '/api/': {
+        target,
+        changeOrigin: true,
+        secure: false,
         ws: true
       },
-      '/api/**': {
-        target: {
-          host: process.env.API_ROOT || 'simtrack-dev.simbirsoft',
-          protocol: 'https:',
-          port: process.env.API_PORT || 443
-        },
-        // ignorePath: true,
-        changeOrigin: true,
-        secure: false
-      },
-      '/uploads/**': {
-        target: {
-          host: process.env.API_ROOT || 'simtrack-dev.simbirsoft',
-          protocol: 'https:',
-          port: process.env.API_PORT || 443
-        },
-        // ignorePath: true,
+      '/uploads/': {
+        target,
         changeOrigin: true,
         secure: false
       }
