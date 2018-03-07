@@ -7,6 +7,7 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import Button from '../Button';
 import * as css from './ProjectPrefixModal.scss';
 import cssVariables from '!!sass-variable-loader!../../styles/variables.scss';
+import { getErrorMessageByType } from '../../utils/ErrorMessages';
 
 const ReactModalStyles = {
   overlay: {
@@ -59,7 +60,19 @@ class ProjectPrefixModal extends Component {
       prefix: ''
     };
   }
+  getFieldError = fieldName => {
+    const errorsArr = this.props.error
+      ? this.props.error.message.errors.filter(error => error.param === fieldName)
+      : [];
+
+    if (errorsArr.length) {
+      return getErrorMessageByType(errorsArr[0].type);
+    }
+
+    return null;
+  };
   onPrefixInputChange = e => this.setState({ prefix: e.target.value });
+
   render() {
     const { style, onRequestClose, closeTimeoutMS, text, onConfirm, onCancel, ...other } = this.props;
     const formLayout = {
@@ -86,6 +99,7 @@ class ProjectPrefixModal extends Component {
               </Col>
             </Row>
           </label>
+          <p style={{ color: 'red' }}>{this.getFieldError('prefix')}</p>
         </div>
         <Button
           text="ОК"
@@ -102,6 +116,7 @@ class ProjectPrefixModal extends Component {
 
 ProjectPrefixModal.propTypes = {
   closeTimeoutMS: PropTypes.number,
+  error: PropTypes.object,
   onCancel: PropTypes.func,
   onConfirm: PropTypes.func,
   onRequestClose: PropTypes.func,
