@@ -1,57 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ReactModal from 'react-modal';
-import classnames from 'classnames';
+import Modal from '../../components/Modal';
 import Input from '../../components/Input';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import Button from '../Button';
 import * as css from './ProjectPrefixModal.scss';
-import cssVariables from '!!sass-variable-loader!../../styles/variables.scss';
 import { getErrorMessageByType } from '../../utils/ErrorMessages';
-
-const ReactModalStyles = {
-  overlay: {
-    position: 'fixed',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: '100%',
-    padding: '1rem',
-    boxSizing: 'border-box',
-    backgroundColor: 'rgba(43, 62, 80, 0.8)',
-    zIndex: cssVariables.zModalLayer,
-    overflow: 'auto'
-  },
-  content: {
-    position: 'relative',
-    top: 'initial',
-    bottom: 'initial',
-    left: 'initial',
-    right: 'initial',
-    boxSizing: 'border-box',
-    border: 'none',
-    background: '#fff',
-    overflow: 'auto',
-    WebkitOverflowScrolling: 'touch',
-    borderRadius: 0,
-    outline: 'none',
-    padding: 0,
-    width: '100%',
-    maxWidth: 400,
-    maxHeight: '100%'
-  }
-};
-
-const iconStyles = {
-  width: 24,
-  height: 24,
-  color: 'inherit',
-  fill: 'currentColor'
-};
 
 class ProjectPrefixModal extends Component {
   constructor(props) {
@@ -80,10 +34,10 @@ class ProjectPrefixModal extends Component {
       secondCol: 7
     };
     return (
-      <ReactModal
+      <Modal
         {...other}
         onRequestClose={onCancel}
-        style={style || ReactModalStyles}
+        // style={style || ReactModalStyles}
         closeTimeoutMS={200 || closeTimeoutMS}
       >
         <div className={css.container}>
@@ -109,7 +63,7 @@ class ProjectPrefixModal extends Component {
           disabled={this.state.prefix.length < 2}
         />
         <Button text="Вернуться в &quot;Мои проекты&quot;" type="primary" style={{ width: '50%' }} onClick={onCancel} />
-      </ReactModal>
+      </Modal>
     );
   }
 }

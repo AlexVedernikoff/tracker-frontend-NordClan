@@ -19,4 +19,10 @@
   overflow: auto;
   position: relative;
   padding: 2rem;
+  max-width: 100%;
+  width: 465px;
+  @include phone {
+    width: 100%;
+    padding: 1rem;
+  }
 }
