@@ -8,11 +8,7 @@ import { startLoading, finishLoading } from './Loading';
 import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
 import getPlanningTasks from './PlanningTasks';
 import { getTask } from './Task';
-import {
-  withFinishLoading,
-  withStartLoading,
-  withdefaultExtra
-} from './Common';
+import { withFinishLoading, withStartLoading, withdefaultExtra } from './Common';
 
 const gettingProjectInfoStart = () => ({
   type: ProjectActions.PROJECT_INFO_RECEIVE_START
@@ -53,6 +49,11 @@ const startProjectChange = () => ({
 const projectChangeSuccess = response => ({
   type: ProjectActions.PROJECT_CHANGE_SUCCESS,
   changedFields: response
+});
+
+const projectChangeFailValidation = error => ({
+  type: ProjectActions.PROJECT_CHANGE_FAIL_VALIDATION,
+  error: error
 });
 
 const getProjectHistoryStart = () => ({
@@ -160,12 +161,12 @@ const uploadAttachments = (projectId, attachments) => {
   }
 
   return dispatch => {
-    attachments.map((file) => {
+    attachments.map(file => {
       const data = new FormData();
       data.append('file', file);
 
       const attachment = {
-        id: `${ Date.now() }${ Math.random() }`,
+        id: `${Date.now()}${Math.random()}`,
         fileName: file.name
       };
 
@@ -175,8 +176,8 @@ const uploadAttachments = (projectId, attachments) => {
         method: POST,
         body: data,
         extra: withdefaultExtra({
-          onUploadProgress: (progressEvent) => {
-            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          onUploadProgress: progressEvent => {
+            const progress = Math.round(progressEvent.loaded * 100 / progressEvent.total);
             dispatch(attachmentUploadProgress(projectId, attachment, progress));
           }
         }),
@@ -233,14 +234,12 @@ export const unbindUserToProject = (projectId, userId) => {
   return dispatch => {
     dispatch(unbindUserToProjectStart());
     dispatch(startLoading());
-    axios
-      .delete(URL)
-      .then(response => {
-        if (response.data) {
-          dispatch(unbindUserToProjectsSuccess(response.data));
-          dispatch(finishLoading());
-        }
-      });
+    axios.delete(URL).then(response => {
+      if (response.data) {
+        dispatch(unbindUserToProjectsSuccess(response.data));
+        dispatch(finishLoading());
+      }
+    });
   };
 };
 
@@ -293,12 +292,16 @@ const getProjectSprints = id => {
     dispatch(gettingProjectSprintsStart());
     dispatch(startLoading());
     axios
-      .get(URL, {
-        params: {
-          projectId: id,
-          fields: 'id,name,factFinishDate'
-        }
-      }, { withCredentials: true })
+      .get(
+        URL,
+        {
+          params: {
+            projectId: id,
+            fields: 'id,name,factFinishDate'
+          }
+        },
+        { withCredentials: true }
+      )
       .catch(error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
         dispatch(finishLoading());
@@ -328,7 +331,11 @@ const changeProject = (changedProperties, target) => {
         withCredentials: true
       })
       .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
+        if (error.response.data.name === 'ValidationError') {
+          dispatch(projectChangeFailValidation(error.response.data));
+        } else {
+          dispatch(showNotification({ message: error.message, type: 'error' }));
+        }
         dispatch(finishLoading());
       })
       .then(response => {
@@ -367,7 +374,7 @@ const createTask = (task, openTaskPage, callee) => {
       .then(response => {
         if (response && response.status === 200) {
           dispatch(finishLoading());
-          dispatch(createTaskRequestSuccess(task.projectId, task.sprintId || BACKLOG_ID, response.data.id, response.data));
+          // dispatch(createTaskRequestSuccess(task.projectId, task.sprintId || BACKLOG_ID, response.data.id, response.data));
           dispatch(getTask(task.parentId));
           dispatch(closeCreateTaskModal());
           dispatch(getProjectInfo(task.projectId));
@@ -376,9 +383,7 @@ const createTask = (task, openTaskPage, callee) => {
           }
 
           if (openTaskPage) {
-            history.push(
-              `/projects/${task.projectId}/tasks/${response.data.id}`
-            );
+            history.push(`/projects/${task.projectId}/tasks/${response.data.id}`);
           }
         }
       });
@@ -394,11 +399,15 @@ const getProjectHistory = (id, options) => {
     dispatch(startLoading());
     dispatch(getProjectHistoryStart());
     axios
-      .get(URL, {
-        params: {
-          ...options
-        }
-      }, { withCredentials: true })
+      .get(
+        URL,
+        {
+          params: {
+            ...options
+          }
+        },
+        { withCredentials: true }
+      )
       .catch(error => {
         dispatch(finishLoading());
         dispatch(showNotification({ message: error.message, type: 'error' }));
@@ -413,21 +422,16 @@ const getProjectHistory = (id, options) => {
 };
 
 export const getPortfolios = (name = '') => {
-
   return dispatch => {
     return axios
-    .get(
-      `${API_URL}/portfolio`,
-      { params: { name } },
-      { withCredentials: true }
-    )
-    .then(response => response.data.data)
-    .then(portfolios => ({
-      options: portfolios.map((portfolio) => ({
-        label: portfolio.name,
-        value: portfolio.id
-      }))
-    }));
+      .get(`${API_URL}/portfolio`, { params: { name } }, { withCredentials: true })
+      .then(response => response.data.data)
+      .then(portfolios => ({
+        options: portfolios.map(portfolio => ({
+          label: portfolio.name,
+          value: portfolio.id
+        }))
+      }));
   };
 };
 
@@ -437,17 +441,25 @@ const removeAttachment = (projectId, attachmentId) => {
   }
 
   const URL = `${API_URL}/project/${projectId}/attachment/${attachmentId}`;
-  return (dispatch) => {
+  return dispatch => {
     dispatch(startRemoveAttachment(projectId, attachmentId));
-    axios.delete(URL)
-      .then(
-        result => {
-          dispatch(getProjectInfo(projectId));
-          return dispatch(successRemoveAttachment(projectId, attachmentId, result));
-        },
-        error => dispatch(failRemoveAttachment(projectId, attachmentId, error))
-      );
+    axios.delete(URL).then(
+      result => {
+        dispatch(getProjectInfo(projectId));
+        return dispatch(successRemoveAttachment(projectId, attachmentId, result));
+      },
+      error => dispatch(failRemoveAttachment(projectId, attachmentId, error))
+    );
   };
 };
 
-export { getProjectInfo, getProjectUsers, getProjectSprints, changeProject, createTask, getProjectHistory, uploadAttachments, removeAttachment };
+export {
+  getProjectInfo,
+  getProjectUsers,
+  getProjectSprints,
+  changeProject,
+  createTask,
+  getProjectHistory,
+  uploadAttachments,
+  removeAttachment
+};

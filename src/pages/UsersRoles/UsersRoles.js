@@ -9,26 +9,26 @@ import * as css from './UsersRoles.scss';
 import { getUsers, updateUserRole } from '../../actions/UsersRoles';
 
 class UsersRoles extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       users: ''
     };
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.getUsers();
   }
 
-  handleChangeStatus = (userId) => (event) => {
+  handleChangeStatus = userId => event => {
     const updatedUserData = {
       id: userId,
       globalRole: event.value
     };
     this.props.updateUserRole(updatedUserData);
-  }
+  };
 
-  renderStatusSelector (globalRole, userId) {
+  renderStatusSelector(globalRole, userId) {
     const statuses = [
       {
         name: 'Администратор',
@@ -57,30 +57,28 @@ class UsersRoles extends React.Component {
       <SelectDropdown
         multi={false}
         clearable={false}
+        backspaceRemoves={false}
+        searchable={false}
         value={globalRole}
         onChange={this.handleChangeStatus(userId)}
         options={options}
-        />
+      />
     );
   }
 
-  renderRowUser (user) {
-    const { id, lastNameRu, firstNameRu, globalRole} = user;
+  renderRowUser(user) {
+    const { id, lastNameRu, firstNameRu, globalRole } = user;
     const fullName = `${lastNameRu} ${firstNameRu}`;
     const status = this.renderStatusSelector(globalRole, id);
     return (
       <tr key={id} className={css.userRow}>
-        <td>
-          {fullName}
-        </td>
-        <td>
-          {status}
-        </td>
+        <td>{fullName}</td>
+        <td>{status}</td>
       </tr>
     );
   }
 
-  renderTableUsers (users) {
+  renderTableUsers(users) {
     const sortedUsers = users.sort((user1, user2) => {
       if (user1.lastNameRu > user2.lastNameRu) {
         return 1;
@@ -92,12 +90,8 @@ class UsersRoles extends React.Component {
     });
     const tableHead = (
       <tr className={css.usersRolesHeader}>
-        <th>
-          Пользователь
-        </th>
-        <th>
-          Роль
-        </th>
+        <th>Пользователь</th>
+        <th>Роль</th>
       </tr>
     );
     const tableBody = sortedUsers.map(user => {
@@ -105,26 +99,22 @@ class UsersRoles extends React.Component {
     });
     return (
       <table className={css.usersRolesTable}>
-        <thead>
-          {tableHead}
-        </thead>
-        <tbody>
-          {tableBody}
-        </tbody>
+        <thead>{tableHead}</thead>
+        <tbody>{tableBody}</tbody>
       </table>
     );
   }
 
-  render () {
+  render() {
     const { users, userGlobalRole } = this.props;
     const tableUsers = this.renderTableUsers(users);
-    return isAdmin(userGlobalRole)
-    ? <div>
+    return isAdmin(userGlobalRole) ? (
+      <div>
         <h1>Пользователи</h1>
-        <hr/>
+        <hr />
         {tableUsers}
       </div>
-    : null;
+    ) : null;
   }
 }
 

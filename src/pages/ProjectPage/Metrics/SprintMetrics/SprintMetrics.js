@@ -23,7 +23,7 @@ class SprintMetrics extends Component {
     sprints: PropTypes.array,
     startDate: PropTypes.string
   };
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       sprintSelected: null,
@@ -32,25 +32,25 @@ class SprintMetrics extends Component {
     };
   }
 
-  componentWillMount () {
+  componentWillMount() {
     const { sprints } = this.props;
     if (sprints.length > 0) {
       this.setState({ sprintSelected: this.getCurrentSprint(sprints) });
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     const { sprints } = this.props;
     if (nextProps.sprints.length !== sprints.length) {
       this.setState({ sprintSelected: this.getCurrentSprint(nextProps.sprints) });
     }
   }
 
-  formatDate = (date) => date && moment(date).format(dateFormat);
+  formatDate = date => date && moment(date).format(dateFormat);
 
   getSelectOptions = () => {
     return [
-      ...this.props.sprints.map((value) => {
+      ...this.props.sprints.map(value => {
         return {
           value,
           label: `${value.name} (${moment(value.factStartDate).format(dateFormat)} ${
@@ -61,20 +61,20 @@ class SprintMetrics extends Component {
     ];
   };
 
-  changeSprint = (option) => {
+  changeSprint = option => {
     if (option) {
       this.setState({ sprintSelected: option });
     }
   };
 
-  getCurrentSprint = (sprints) => {
-    const processedSprints = sprints.filter((sprint) => {
+  getCurrentSprint = sprints => {
+    const processedSprints = sprints.filter(sprint => {
       return sprint.statusId === 2;
     });
-    const currentSprints = processedSprints.filter((sprint) => {
+    const currentSprints = processedSprints.filter(sprint => {
       return moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]');
     });
-    const getOption = (sprint) => {
+    const getOption = sprint => {
       return {
         value: sprint,
         label: `${sprint.name} (${moment(sprint.factStartDate).format(dateFormat)} ${
@@ -97,14 +97,14 @@ class SprintMetrics extends Component {
     }
   };
 
-  sprintStartDate () {
+  sprintStartDate() {
     if (this.state.sprintSelected) {
       return this.state.sprintSelected.value.factStartDate;
     }
     return '';
   }
 
-  sprintEndDate () {
+  sprintEndDate() {
     if (this.state.sprintSelected) {
       const endDate = this.state.sprintSelected.value.factFinishDate;
       return endDate ? endDate : moment();
@@ -112,9 +112,9 @@ class SprintMetrics extends Component {
     return '';
   }
 
-  filterBySprint = (sprintId, metrics) => metrics.filter((metric) => metric.sprintId === sprintId);
+  filterBySprint = (sprintId, metrics) => metrics.filter(metric => metric.sprintId === sprintId);
 
-  render () {
+  render() {
     const {
       chartDefaultOptions,
       getBasicLineSettings,
@@ -140,7 +140,7 @@ class SprintMetrics extends Component {
             multi={false}
             value={this.state.sprintSelected}
             sprints={this.props.sprints}
-            onChange={(option) => this.changeSprint(option)}
+            onChange={option => this.changeSprint(option)}
             className={css.sprintSelector}
           />
 
@@ -181,7 +181,7 @@ class SprintMetrics extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   sprints: state.Project.project.sprints,
   metrics: state.Project.project.metrics
 });

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
@@ -8,6 +8,7 @@ import moment from 'moment';
 import _ from 'lodash';
 
 import TaskCard from '../../../components/TaskCard';
+import FilterList from '../../../components/FilterList';
 import PerformerModal from '../../../components/PerformerModal';
 import PhaseColumn from './PhaseColumn';
 import Input from '../../../components/Input';
@@ -17,15 +18,15 @@ import Priority from '../../../components/Priority';
 import Checkbox from '../../../components/Checkbox';
 import CreateTaskModal from '../../../components/CreateTaskModal';
 import PerformerFilter from '../../../components/PerformerFilter';
+import getPriorityById from '../../../utils/TaskPriority';
 import * as css from './AgileBoard.scss';
-
 
 import getTasks from '../../../actions/Tasks';
 import { VISOR } from '../../../constants/Roles';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal, getProjectUsers } from '../../../actions/Project';
 
-const filterTasks = (array) => {
+const filterTasks = array => {
   const taskArray = {
     new: [],
     dev: [],
@@ -33,25 +34,34 @@ const filterTasks = (array) => {
     qa: [],
     done: []
   };
-  array.forEach((element) => {
+  array.forEach(element => {
     switch (element.statusId) {
-    case 1: taskArray.new.push(element);
-      break;
-    case 2: taskArray.dev.push(element);
-      break;
-    case 3: taskArray.dev.push(element);
-      break;
-    case 4: taskArray.codeReview.push(element);
-      break;
-    case 5: taskArray.codeReview.push(element);
-      break;
-    case 6: taskArray.qa.push(element);
-      break;
-    case 7: taskArray.qa.push(element);
-      break;
-    case 8: taskArray.done.push(element);
-      break;
-    default: break;
+      case 1:
+        taskArray.new.push(element);
+        break;
+      case 2:
+        taskArray.dev.push(element);
+        break;
+      case 3:
+        taskArray.dev.push(element);
+        break;
+      case 4:
+        taskArray.codeReview.push(element);
+        break;
+      case 5:
+        taskArray.codeReview.push(element);
+        break;
+      case 6:
+        taskArray.qa.push(element);
+        break;
+      case 7:
+        taskArray.qa.push(element);
+        break;
+      case 8:
+        taskArray.done.push(element);
+        break;
+      default:
+        break;
     }
   });
   return taskArray;
@@ -70,15 +80,17 @@ const sortTasksAndCreateCard = (sortedObject, section, onChangeStatus, onOpenPer
     sortedObject[key].sort((a, b) => {
       return a.prioritiesId - b.prioritiesId;
     });
-    taskArray[key] = sortedObject[key].map((task) => {
-      return <TaskCard
-        key={`task-${task.id}`}
-        task={task}
-        section={section}
-        onChangeStatus={onChangeStatus}
-        onOpenPerformerModal={onOpenPerformerModal}
-        myTaskBoard = {myTaskBoard}
-      />;
+    taskArray[key] = sortedObject[key].map(task => {
+      return (
+        <TaskCard
+          key={`task-${task.id}`}
+          task={task}
+          section={section}
+          onChangeStatus={onChangeStatus}
+          onOpenPerformerModal={onOpenPerformerModal}
+          myTaskBoard={myTaskBoard}
+        />
+      );
     });
   }
   return taskArray;
@@ -88,23 +100,29 @@ const getNewStatus = (oldStatusId, newPhase) => {
   let newStatusId;
 
   switch (newPhase) {
-  case 'New': newStatusId = 1;
-    break;
-  case 'Dev': newStatusId = 3;
-    break;
-  case 'Code Review': newStatusId = 5;
-    break;
-  case 'QA': newStatusId = 7;
-    break;
-  case 'Done': newStatusId = 8;
-    break;
-  default: break;
+    case 'New':
+      newStatusId = 1;
+      break;
+    case 'Dev':
+      newStatusId = 3;
+      break;
+    case 'Code Review':
+      newStatusId = 5;
+      break;
+    case 'QA':
+      newStatusId = 7;
+      break;
+    case 'Done':
+      newStatusId = 8;
+      break;
+    default:
+      break;
   }
 
   return newStatusId;
 };
 
-const getNewStatusOnClick = (oldStatusId) => {
+const getNewStatusOnClick = oldStatusId => {
   let newStatusId;
 
   if (oldStatusId === 2 || oldStatusId === 4 || oldStatusId === 6) {
@@ -117,13 +135,14 @@ const getNewStatusOnClick = (oldStatusId) => {
 };
 
 class AgileBoard extends Component {
-
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       isModalOpen: false,
       performer: null,
       changedTask: null,
+      allFilters: [],
+      fullFilterView: this.getFilterViewState(),
       ...this.initialFilters
     };
   }
@@ -137,9 +156,9 @@ class AgileBoard extends Component {
     authorId: null,
     prioritiesId: null,
     performerId: null
-  }
+  };
 
-  componentDidMount () {
+  componentDidMount() {
     if (this.props.myTaskBoard) {
       this.selectValue(this.getChangedSprint(this.props), 'changedSprint');
     } else if (this.props.project.id) {
@@ -147,10 +166,10 @@ class AgileBoard extends Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (
-      (this.props.sprints !== nextProps.sprints || this.props.lastCreatedTask !== nextProps.lastCreatedTask)
-        && nextProps.project.id
+      (this.props.sprints !== nextProps.sprints || this.props.lastCreatedTask !== nextProps.lastCreatedTask) &&
+      nextProps.project.id
     ) {
       this.selectValue(this.getChangedSprint(nextProps), 'changedSprint');
     }
@@ -186,14 +205,13 @@ class AgileBoard extends Component {
         changedTask: null
       });
     }
-
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     ReactTooltip.rebuild();
   }
 
-  getChangedSprint = (props) => {
+  getChangedSprint = props => {
     let changedSprint = this.getCurrentSprint(props.sprints);
 
     if (props.lastCreatedTask && Number.isInteger(props.lastCreatedTask.sprintId)) {
@@ -203,12 +221,35 @@ class AgileBoard extends Component {
     return changedSprint;
   };
 
+  toggleFilterView = () => {
+    this.setState(
+      {
+        fullFilterView: !this.state.fullFilterView
+      },
+      () => {
+        localStorage.setItem('filterViewState', this.state.fullFilterView);
+      }
+    );
+  };
+
+  getFilterViewState = () => {
+    try {
+      return JSON.parse(localStorage.getItem('filterViewState')) || false;
+    } catch (e) {
+      return false;
+    }
+  };
+
   toggleMine = () => {
-    this.setState((currentState) => ({
-      isOnlyMine: !currentState.isOnlyMine
-    }), () => {
-      this.saveFiltersToLocalStorage();
-    });
+    this.setState(
+      currentState => ({
+        isOnlyMine: !currentState.isOnlyMine
+      }),
+      () => {
+        this.updateFilterList();
+        this.saveFiltersToLocalStorage();
+      }
+    );
   };
 
   getFiltersFromLocalStorage = () => {
@@ -228,43 +269,51 @@ class AgileBoard extends Component {
     } else {
       this.removeFiltersFromLocalStorage();
     }
-  }
+  };
 
   parseLocalStorageFilters = () => {
     try {
-      return JSON.parse(localStorage.getItem('agileBoardFilters'));
+      const localStorageFilters = localStorage.getItem('agileBoardFilters');
+      return localStorageFilters ? JSON.parse(localStorageFilters) : {};
     } catch (e) {
       return {};
     }
-  }
+  };
 
   saveFiltersToLocalStorage = () => {
-    localStorage.setItem('agileBoardFilters', JSON.stringify({
-      projectId: this.props.params.projectId,
-      changedSprint: this.state.changedSprint,
-      isOnlyMine: this.state.isOnlyMine,
-      prioritiesId: this.state.prioritiesId,
-      authorId: this.state.authorId,
-      typeId: this.state.typeId,
-      name: this.state.name,
-      filterTags: this.state.filterTags,
-      performerId: this.state.performerId
-    }));
-  }
+    localStorage.setItem(
+      'agileBoardFilters',
+      JSON.stringify({
+        projectId: this.props.params.projectId,
+        changedSprint: this.state.changedSprint,
+        isOnlyMine: this.state.isOnlyMine,
+        prioritiesId: this.state.prioritiesId,
+        authorId: this.state.authorId,
+        typeId: this.state.typeId,
+        name: this.state.name,
+        filterTags: this.state.filterTags,
+        performerId: this.state.performerId
+      })
+    );
+  };
 
   removeFiltersFromLocalStorage = () => {
     localStorage.removeItem('agileBoardFilters');
-  }
+  };
 
   selectValue = (e, name) => {
-    this.setState({[name]: e}, () => {
-      const tags = this.state.filterTags.map((tag) => tag.value);
-      const typeId = this.state.typeId.map(option => option.value);
-      let options = {
-        performerId: this.props.user.id
-      };
-      if (!this.props.myTaskBoard) {
-        options = {
+    this.setState({ [name]: e }, () => {
+      if (this.props.myTaskBoard) return this.props.getTasks({ performerId: this.props.user.id });
+      this.getTasks();
+    });
+  };
+
+  getTasks = customOption => {
+    const tags = this.state.filterTags.map(tag => tag.value);
+    const typeId = this.state.typeId.map(option => option.value);
+    const options = customOption
+      ? customOption
+      : {
           projectId: this.props.params.projectId,
           sprintId: this.state.changedSprint,
           prioritiesId: this.state.prioritiesId,
@@ -274,20 +323,18 @@ class AgileBoard extends Component {
           tags: tags.join(','),
           performerId: this.state.performerId
         };
-        this.saveFiltersToLocalStorage();
-      }
-
-      this.props.getTasks(options);
-    });
+    this.props.getTasks(options);
+    this.saveFiltersToLocalStorage();
+    this.updateFilterList();
   };
 
-  selectTagForFiltrated = (options) => {
+  selectTagForFiltrated = options => {
     this.selectValue(options, 'filterTags');
   };
 
   dropTask = (task, phase) => {
     if (!(phase === 'New' || phase === 'Done')) {
-      const taskProps = this.props.sprintTasks.find((sprintTask) => {
+      const taskProps = this.props.sprintTasks.find(sprintTask => {
         return task.id === sprintTask.id;
       });
       const performerId = taskProps.performerId || null;
@@ -299,10 +346,13 @@ class AgileBoard extends Component {
   };
 
   changeStatus = (taskId, statusId, phase) => {
-    this.props.changeTask({
-      id: taskId,
-      statusId: phase ? getNewStatus(statusId, phase) : getNewStatusOnClick(statusId)
-    }, 'Status');
+    this.props.changeTask(
+      {
+        id: taskId,
+        statusId: phase ? getNewStatus(statusId, phase) : getNewStatusOnClick(statusId)
+      },
+      'Status'
+    );
 
     this.props.startTaskEditing('Status');
   };
@@ -320,20 +370,26 @@ class AgileBoard extends Component {
     });
   };
 
-  changePerformer = (performerId) => {
-    this.props.changeTask({
-      id: this.state.changedTask,
-      performerId: performerId,
-      statusId: getNewStatus(this.state.statusId, this.state.phase)
-    }, 'User');
+  changePerformer = performerId => {
+    this.props.changeTask(
+      {
+        id: this.state.changedTask,
+        performerId: performerId,
+        statusId: getNewStatus(this.state.statusId, this.state.phase)
+      },
+      'User'
+    );
 
     this.props.startTaskEditing('User');
   };
 
   closeModal = () => {
-    this.setState({
-      isModalOpen: false
-    }, () => this.changeStatus(this.state.changedTask, this.state.statusId, this.state.phase));
+    this.setState(
+      {
+        isModalOpen: false
+      },
+      () => this.changeStatus(this.state.changedTask, this.state.statusId, this.state.phase)
+    );
   };
 
   getCurrentSprint = sprints => {
@@ -345,7 +401,7 @@ class AgileBoard extends Component {
       return moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]');
     });
 
-    return currentSprints.length ? currentSprints[0].id : (processedSprints.length ? processedSprints[0].id : 0);
+    return currentSprints.length ? currentSprints[0].id : processedSprints.length ? processedSprints[0].id : 0;
   };
 
   getSprints = () => {
@@ -353,11 +409,11 @@ class AgileBoard extends Component {
       return new moment(sprint.factFinishDate);
     });
 
-    sprints = sprints.map((sprint) => ({
+    sprints = sprints.map(sprint => ({
       value: sprint.id,
-      label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${sprint.factFinishDate
-        ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}`
-        : '- ...'})`,
+      label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${
+        sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}` : '- ...'
+      })`,
       statusId: sprint.statusId,
       className: classnames({
         [css.INPROGRESS]: sprint.statusId === 2,
@@ -377,7 +433,7 @@ class AgileBoard extends Component {
     return sprints;
   };
 
-  getSprintTime = (sprintId) => {
+  getSprintTime = sprintId => {
     if (!sprintId) return false;
     let currentSprint = {};
     this.props.sprints.forEach(sprint => {
@@ -390,43 +446,141 @@ class AgileBoard extends Component {
 
   getAllTags = () => {
     let allTags = this.props.sprintTasks.reduce((arr, task) => {
-      return arr.concat(task.tags ? task.tags.map((tags) => tags.name) : []);
+      return arr.concat(task.tags ? task.tags.map(tags => tags.name) : []);
     }, []);
 
     allTags = _.uniq(allTags);
 
-    return allTags.map((tag) => ({
+    return allTags.map(tag => ({
       value: tag,
       label: tag
     }));
   };
 
   getUsers = () => {
-    return this.props.project.users.map((user) => ({
+    return this.props.project.users.map(user => ({
       value: user.id,
       label: user.fullNameRu
     }));
   };
 
-  createOptions = (array, labelField = 'name') => {
-    return array.map(
-      element => ({
-        value: element.id,
-        label: element[labelField]
-      })
+  resetFiled = name => {
+    this.setState(
+      () => ({
+        [name]: this.initialFilters[name]
+      }),
+      () => {
+        this.getTasks();
+      }
     );
   };
 
-  clearFilter = () => {
+  removeSelectOptionByIdFromFilter = (list, id, filterField) => {
+    const newList = list.filter(item => item.value !== id);
+    this.setState(
+      {
+        [filterField]: newList
+      },
+      () => this.getTasks()
+    );
+  };
+
+  filterIsNotEmpty = filterName => {
+    if (
+      typeof this.state[filterName] === 'string' ||
+      this.state[filterName] instanceof String ||
+      Array.isArray(this.state[filterName])
+    )
+      return this.state[filterName].length > 0;
+    return !!this.state[filterName];
+  };
+
+  createFilterLabel = filterName => {
+    switch (filterName) {
+      case 'isOnlyMine':
+        return 'мои задачи';
+      case 'prioritiesId':
+        return `${getPriorityById(this.state.prioritiesId)}`;
+      case 'authorId':
+        return `автор: ${this.createSelectedOption(this.props.project.users, this.state.authorId, 'fullNameRu')}`;
+      case 'performerId':
+        return `исполнитель: ${this.createSelectedOption(
+          this.props.project.users,
+          this.state.performerId,
+          'fullNameRu'
+        )}`;
+      case 'changedSprint':
+        return `${this.createSelectedOption(
+          this.getSprints().map(sprint => ({ id: sprint.value, name: sprint.label })),
+          this.state.changedSprint
+        )}`;
+      case 'name':
+        return `${this.state.name}`;
+      default:
+        return '';
+    }
+  };
+
+  updateFilterList = () => {
+    const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'performerId', 'changedSprint', 'name'];
+    const selectedFilters = [];
+
+    singleOptionFiltersList.forEach(filterName => {
+      if (this.filterIsNotEmpty(filterName)) {
+        selectedFilters.push({
+          name: filterName,
+          label: this.createFilterLabel(filterName),
+          deleteHandler: () => this.resetFiled(filterName)
+        });
+      }
+    });
+
     this.setState({
-      ...this.initialFilters
-    }, this.props.getTasks({
-      projectId: this.props.params.projectId,
-      sprintId: null,
-      ...this.initialFilters
+      allFilters: [
+        ...selectedFilters,
+        ...this.createSelectedOption(null, this.state.typeId, 'typeId'),
+        ...this.createSelectedOption(null, this.state.filterTags, 'filterTags')
+      ]
+    });
+  };
+
+  createOptions = (array, labelField = 'name') => {
+    return array.map(element => ({
+      value: element.id,
+      label: element[labelField]
     }));
-    this.removeFiltersFromLocalStorage();
-  }
+  };
+
+  createSelectedOption = (optionList, selectedOption, optionLabel = 'name') => {
+    if (Array.isArray(selectedOption)) {
+      return selectedOption.map(currentId => ({
+        name: `${optionLabel}-${currentId.value}`,
+        label: currentId.label,
+        deleteHandler: () => {
+          this.removeSelectOptionByIdFromFilter(selectedOption, currentId.value, optionLabel);
+        }
+      }));
+    } else {
+      const option = optionList.find(element => element.id === selectedOption);
+      if (!option) return null;
+      return option[optionLabel];
+    }
+  };
+
+  clearFilter = () => {
+    this.setState(
+      {
+        ...this.initialFilters
+      },
+      () => {
+        this.getTasks({
+          projectId: this.props.params.projectId,
+          sprintId: null,
+          ...this.initialFilters
+        });
+      }
+    );
+  };
 
   isFilterEmpty = () => {
     const filterKeys = [...Object.keys(this.initialFilters), 'isOnlyMine'];
@@ -439,24 +593,26 @@ class AgileBoard extends Component {
       }
     });
     return isEmpty;
-  }
+  };
 
-  render () {
-    const {
-      statuses,
-      taskTypes,
-      project
-    } = this.props;
+  render() {
+    const { statuses, taskTypes, project } = this.props;
 
     let allSorted = filterTasks(this.props.sprintTasks);
     allSorted = sortTasksAndCreateCard(allSorted, 'all', this.changeStatus, this.openPerformerModal);
 
-    const myTasks = this.props.sprintTasks.filter((task) => {
+    const myTasks = this.props.sprintTasks.filter(task => {
       return task.performer && task.performer.id === this.props.user.id;
     });
 
     let mineSorted = filterTasks(myTasks);
-    mineSorted = sortTasksAndCreateCard(mineSorted, 'mine', this.changeStatus, this.openPerformerModal, this.props.myTaskBoard);
+    mineSorted = sortTasksAndCreateCard(
+      mineSorted,
+      'mine',
+      this.changeStatus,
+      this.openPerformerModal,
+      this.props.myTaskBoard
+    );
 
     const isVisor = this.props.globalRole === VISOR;
 
@@ -466,25 +622,22 @@ class AgileBoard extends Component {
 
     return (
       <section className={css.agileBoard}>
-        {
-          !this.props.myTaskBoard
-            ? <div>
+        {!this.props.myTaskBoard ? (
+          <div>
+            {this.state.fullFilterView ? (
+              <div>
                 <Row className={css.filtersRow}>
                   <Col className={css.filterButtonCol}>
                     <Priority
-                      onChange={(option) => this.selectValue(option.prioritiesId, 'prioritiesId')}
+                      onChange={option => this.selectValue(option.prioritiesId, 'prioritiesId')}
                       priority={this.state.prioritiesId}
                       canEdit
                     />
                   </Col>
                   <Col className={css.filterButtonCol}>
-                    <Checkbox
-                      checked={this.state.isOnlyMine}
-                      onChange={this.toggleMine}
-                      label="Только мои задачи"
-                    />
+                    <Checkbox checked={this.state.isOnlyMine} onChange={this.toggleMine} label="Только мои задачи" />
                   </Col>
-                  <Col xs style={{minWidth: 200}}>
+                  <Col xs style={{ minWidth: 200 }}>
                     <SelectDropdown
                       name="filterTags"
                       multi
@@ -496,128 +649,135 @@ class AgileBoard extends Component {
                       options={this.getAllTags()}
                     />
                   </Col>
-                {
-                  !isVisor
-                    ? <Col className={css.filterButtonCol}>
-                        <Button
-                          onClick={this.props.openCreateTaskModal}
-                          type="primary"
-                          text="Создать задачу"
-                          icon="IconPlus"
-                          name="right"
-                        />
-                      </Col>
-                    : null
-                }
-              </Row>
-              <Row className={css.filtersRow}>
-                <Col xs={12} sm={6}>
-                  <Input
-                    placeholder="Введите название задачи"
-                    value={this.state.name}
-                    onChange={(e) => this.selectValue(e.target.value, 'name')}
-                  />
-                </Col>
-                <Col xs={12} sm={3}>
-                  <PerformerFilter
-                    onPerformerSelect={(option) => this.selectValue(option ? option.value : null, 'performerId')}
-                    selectedPerformerId={this.state.performerId}
-                  />
-                </Col>
-                <Col xs={12} sm={3}>
-                  <SelectDropdown
-                    name="type"
-                    placeholder="Выберите тип задачи"
-                    multi
-                    noResultsText="Нет подходящих типов"
-                    backspaceToRemoveMessage={''}
-                    clearAllText="Очистить все"
-                    value={this.state.typeId}
-                    options={typeOptions}
-                    onChange={(options) => this.selectValue(options, 'typeId')}
-                  />
-                </Col>
-              </Row>
-              <Row className={css.filtersRow}>
-                <Col xs={12} sm={6} className={css.changedSprint}>
-                  <SelectDropdown
-                    name="changedSprint"
-                    placeholder="Выберите спринт"
-                    multi={false}
-                    value={this.state.changedSprint}
-                    onChange={(e) => this.selectValue(e !== null ? e.value : null, 'changedSprint')}
-                    noResultsText="Нет результатов"
-                    options={this.getSprints()}
-                  />
-                  <span className={css.sprintTime}>
-                    {this.getSprintTime(this.state.changedSprint) || null}
-                  </span>
-                </Col>
-                <Col xs>
-                  <SelectDropdown
-                    name="author"
-                    placeholder="Выберите автора задачи"
-                    multi={false}
-                    value={this.state.authorId}
-                    onChange={(option) => this.selectValue(option ? option.value : null, 'authorId')}
-                    noResultsText="Нет результатов"
-                    options={authorOptions}
-                  />
-                </Col>
-                <Col className={css.filterButtonCol}>
-                  <Button
-                    onClick={this.clearFilter}
-                    type="primary"
-                    text="Очистить фильтры"
-                    icon="IconClose"
-                    name="right"
-                    disabled={this.isFilterEmpty()}
-                  />
-                </Col>
+                  {!isVisor ? (
+                    <Col className={css.filterButtonCol}>
+                      <Button
+                        onClick={this.props.openCreateTaskModal}
+                        type="primary"
+                        text="Создать задачу"
+                        icon="IconPlus"
+                        name="right"
+                      />
+                    </Col>
+                  ) : null}
+                </Row>
+                <Row className={css.filtersRow}>
+                  <Col xs={12} sm={6}>
+                    <Input
+                      placeholder="Введите название задачи"
+                      value={this.state.name}
+                      onChange={e => this.selectValue(e.target.value, 'name')}
+                    />
+                  </Col>
+                  <Col xs={12} sm={3}>
+                    <PerformerFilter
+                      onPerformerSelect={option => this.selectValue(option ? option.value : null, 'performerId')}
+                      selectedPerformerId={this.state.performerId}
+                    />
+                  </Col>
+                  <Col xs={12} sm={3}>
+                    <SelectDropdown
+                      name="type"
+                      placeholder="Выберите тип задачи"
+                      multi
+                      noResultsText="Нет подходящих типов"
+                      backspaceToRemoveMessage={''}
+                      clearAllText="Очистить все"
+                      value={this.state.typeId}
+                      options={typeOptions}
+                      onChange={options => this.selectValue(options, 'typeId')}
+                    />
+                  </Col>
+                </Row>
+                <Row className={css.filtersRow}>
+                  <Col xs={12} sm={6} className={css.changedSprint}>
+                    <SelectDropdown
+                      name="changedSprint"
+                      placeholder="Выберите спринт"
+                      multi={false}
+                      value={this.state.changedSprint}
+                      onChange={e => this.selectValue(e !== null ? e.value : null, 'changedSprint')}
+                      noResultsText="Нет результатов"
+                      options={this.getSprints()}
+                    />
+                    <span className={css.sprintTime}>{this.getSprintTime(this.state.changedSprint) || null}</span>
+                  </Col>
+                  <Col xs>
+                    <SelectDropdown
+                      name="author"
+                      placeholder="Выберите автора задачи"
+                      multi={false}
+                      value={this.state.authorId}
+                      onChange={option => this.selectValue(option ? option.value : null, 'authorId')}
+                      noResultsText="Нет результатов"
+                      options={authorOptions}
+                    />
+                  </Col>
+                  <Col className={css.filterButtonCol}>
+                    <Button
+                      onClick={this.clearFilter}
+                      type="primary"
+                      text="Очистить фильтры"
+                      icon="IconClose"
+                      name="right"
+                      disabled={this.isFilterEmpty()}
+                    />
+                  </Col>
+                </Row>
+              </div>
+            ) : (
+              ''
+            )}
+            <Row className={css.filtersRow}>
+              <Col xs={12} sm={12}>
+                <FilterList
+                  clearAll={this.clearFilter}
+                  fullFilterView={this.state.fullFilterView}
+                  toggleFilterView={this.toggleFilterView}
+                  filters={this.state.allFilters}
+                />
+              </Col>
             </Row>
-            </div>
-            : null
-        }
+          </div>
+        ) : null}
 
         <div className={css.boardContainer}>
-          {
-            this.props.myTaskBoard || this.state.isOnlyMine
-              ? <Row>
-                <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'New'} tasks={mineSorted.new}/>
-                <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Dev'} tasks={mineSorted.dev}/>
-                <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Code Review'} tasks={mineSorted.codeReview}/>
-                <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'QA'} tasks={mineSorted.qa}/>
-                <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Done'} tasks={mineSorted.done}/>
-              </Row>
-              : <Row>
-                <PhaseColumn onDrop={this.dropTask} section={'all'} title={'New'} tasks={allSorted.new}/>
-                <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Dev'} tasks={allSorted.dev} />
-                <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Code Review'} tasks={allSorted.codeReview} />
-                <PhaseColumn onDrop={this.dropTask} section={'all'} title={'QA'} tasks={allSorted.qa} />
-                <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Done'} tasks={allSorted.done} />
-              </Row>
-          }
+          {this.props.myTaskBoard || this.state.isOnlyMine ? (
+            <Row>
+              <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'New'} tasks={mineSorted.new} />
+              <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Dev'} tasks={mineSorted.dev} />
+              <PhaseColumn
+                onDrop={this.dropTask}
+                section={'mine'}
+                title={'Code Review'}
+                tasks={mineSorted.codeReview}
+              />
+              <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'QA'} tasks={mineSorted.qa} />
+              <PhaseColumn onDrop={this.dropTask} section={'mine'} title={'Done'} tasks={mineSorted.done} />
+            </Row>
+          ) : (
+            <Row>
+              <PhaseColumn onDrop={this.dropTask} section={'all'} title={'New'} tasks={allSorted.new} />
+              <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Dev'} tasks={allSorted.dev} />
+              <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Code Review'} tasks={allSorted.codeReview} />
+              <PhaseColumn onDrop={this.dropTask} section={'all'} title={'QA'} tasks={allSorted.qa} />
+              <PhaseColumn onDrop={this.dropTask} section={'all'} title={'Done'} tasks={allSorted.done} />
+            </Row>
+          )}
         </div>
 
-        {
-          this.state.isModalOpen
-            ? <PerformerModal
-              defaultUser={this.state.performer}
-              onChoose={this.changePerformer}
-              onClose={this.closeModal}
-              title="Изменить исполнителя задачи"
-              users={this.getUsers()}
-            />
-            : null
-        }
-        {
-          this.props.isCreateTaskModalOpen
-            ? <CreateTaskModal
-              selectedSprintValue={this.state.changedSprint}
-              project={this.props.project}
-            />
-            : null
-        }
+        {this.state.isModalOpen ? (
+          <PerformerModal
+            defaultUser={this.state.performer}
+            onChoose={this.changePerformer}
+            onClose={this.closeModal}
+            title="Изменить исполнителя задачи"
+            users={this.getUsers()}
+          />
+        ) : null}
+        {this.props.isCreateTaskModalOpen ? (
+          <CreateTaskModal selectedSprintValue={this.state.changedSprint} project={this.props.project} />
+        ) : null}
       </section>
     );
   }
