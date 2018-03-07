@@ -74,7 +74,8 @@ class TaskPage extends Component {
       isLeaveConfirmModalOpen: false,
       unLinkedTask: null,
       isCancelSubTaskModalOpen: false,
-      canceledSubTaskId: null
+      canceledSubTaskId: null,
+      hasError: false
     };
   }
 
@@ -188,7 +189,8 @@ class TaskPage extends Component {
   handleCloseCancelSubTaskModal = () => {
     this.setState({
       isCancelSubTaskModalOpen: false,
-      canceledSubTaskId: null
+      canceledSubTaskId: null,
+      hasError: false
     });
   };
 
@@ -215,7 +217,6 @@ class TaskPage extends Component {
     const isVisor = globalRole === VISOR;
     let projectUrl = '/';
     if (this.props.task.project) projectUrl = `/projects/${this.props.task.project.id}`;
-
     return this.props.task.error ? (
       <HttpError error={this.props.task.error} />
     ) : (
@@ -340,6 +341,15 @@ class TaskPage extends Component {
             text="Вы действительно хотите отменить задачу?"
             onCancel={this.handleCloseCancelSubTaskModal}
             onConfirm={this.handleCancelSubTask}
+          />
+        ) : null}
+        {this.state.hasError ? (
+          <ConfirmModal
+            isOpen
+            contentLabel="modal"
+            text="Нельзя изменять закрытую задачу"
+            notification={true}
+            onCancel={this.handleCloseCancelSubTaskModal}
           />
         ) : null}
         <GoBackPanel defaultPreviousUrl={projectUrl} parentRef={this.refs.taskPage} />

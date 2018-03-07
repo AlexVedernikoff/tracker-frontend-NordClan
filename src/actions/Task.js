@@ -3,6 +3,7 @@ import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
 import { SOCKET_IO } from '../constants/SocketIO';
+import { finishLoading } from './Loading';
 import {
   defaultErrorHandler,
   withFinishLoading,
@@ -142,23 +143,30 @@ const changeTask = (ChangedProperties, target, callback) => {
   if (!ChangedProperties.id) {
     return;
   }
-  return dispatch =>
+  return dispatch => {
     dispatch({
       type: REST_API,
       url: `/task/${ChangedProperties.id}`,
       method: PUT,
       body: ChangedProperties,
       extra,
-      start: withStartLoading(requestTaskChange, true)(dispatch),
-      response: withFinishLoading(response => {
+      start: withStartLoading(requestTaskChange, true)(dispatch)
+    });
+    axios
+      .get(`${API_URL}/task/${ChangedProperties.id}`)
+      .then(function(response) {
         dispatch(successTaskChange(response.data));
         dispatch(stopTaskEditing(target));
         if (callback) {
           callback();
         }
-      })(dispatch),
-      error: defaultErrorHandler(dispatch)
-    });
+        dispatch(finishLoading());
+      })
+      .catch(function(error) {
+        dispatch(finishLoading());
+        defaultErrorHandler(dispatch);
+      });
+  };
 };
 
 const linkTask = (taskId, linkedTaskId) => {
