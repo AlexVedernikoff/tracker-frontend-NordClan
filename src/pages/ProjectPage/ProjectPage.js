@@ -129,7 +129,7 @@ class ProjectPage extends Component {
         <RouteTabs>{tabs}</RouteTabs>
 
         <div className={css.tabContent}>{this.props.children}</div>
-        {isProjectAdmin && (this.props.project.prefix !== undefined) & !this.props.project.prefix ? (
+        {isProjectAdmin && this.props.project.prefix !== undefined && !this.props.project.prefix ? (
           <ProjectPrefixModal
             isOpen
             contentLabel="modal"
