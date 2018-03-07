@@ -1,4 +1,4 @@
-@import "../../../../styles/variables.scss";
+@import '../../../../styles/variables.scss';
 
 .playlistWrapper {
   width: 34rem;
@@ -36,7 +36,7 @@
   height: 100%;
 
   &:hover {
-    background-color: rgba(white, .1);
+    background-color: rgba(white, 0.1);
   }
 }
 
@@ -50,15 +50,15 @@
   background-color: lighten($color-dark, 5%);
   cursor: pointer;
 
-    svg {
-      opacity: 0.6;
-      transition: $transition;
-      width: 1.5rem;
-      height: 1.5rem;
-    }
+  svg {
+    opacity: 0.6;
+    transition: $transition;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
 
   &:hover {
-    background-color: rgba(white, .1);
+    background-color: rgba(white, 0.1);
     transition: $transition;
 
     svg {
@@ -80,22 +80,22 @@
 
 .listTask {
   &:hover {
-    background-color: rgba(black, .05);
+    background-color: rgba(black, 0.05);
 
     .visibleToggler {
-      opacity: 1
+      opacity: 1;
     }
   }
 
   .actionButton {
-    background-color: rgba(black, .05);
+    background-color: rgba(black, 0.05);
 
     &.locked:hover {
-      background-color: rgba(black, .05);
+      background-color: rgba(black, 0.05);
     }
 
     &:hover {
-      background-color: rgba(black, .1);
+      background-color: rgba(black, 0.1);
     }
   }
 }
@@ -108,6 +108,11 @@
   padding: 0 0.5rem;
   display: flex;
   align-items: center;
+  .proName {
+    max-width: 95px;
+    overflow-x: hidden;
+    vertical-align: middle;
+  }
 }
 
 .taskTitle {
@@ -138,7 +143,7 @@
     display: inline-block;
 
     & + span {
-      border-left: 1px solid rgba(black, .3);
+      border-left: 1px solid rgba(black, 0.3);
       margin-left: 0.3rem;
       padding-left: 0.3rem;
     }
@@ -180,7 +185,7 @@
 
   .today {
     font-size: 16px;
-    background-color: rgba(black, .05);
+    background-color: rgba(black, 0.05);
     margin-bottom: 0.3rem;
 
     input {
@@ -246,7 +251,6 @@
     background-color: lighten(black, 95%);
     transition: $transition;
 
-
     .countBadge {
       position: absolute;
       opacity: 1;
@@ -296,24 +300,24 @@
 
 .showMore {
   text-align: center;
-  border: 1px solid rgba(black, .05);
+  border: 1px solid rgba(black, 0.05);
   transition: $transition;
   cursor: pointer;
 
   &:hover {
-    background-color: rgba(black, .05);
+    background-color: rgba(black, 0.05);
     transition: $transition;
   }
 }
 
 .visibleToggler {
-  opacity: 0
+  opacity: 0;
 }
 
-.commentToggler, .visibleToggler {
+.commentToggler,
+.visibleToggler {
   color: lighten(black, 50%);
   transition: $transition;
-
 
   &.green {
     color: $color-green;

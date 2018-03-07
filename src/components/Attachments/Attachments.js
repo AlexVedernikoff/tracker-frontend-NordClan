@@ -25,13 +25,27 @@ export default class Attachments extends Component {
     }
 
     if (file.type === 'image') {
-      return <AttachedImage key={`attached-picture-${index}`} {...file} canEdit={this.props.canEdit} removeAttachment={this.props.removeAttachment} />;
+      return (
+        <AttachedImage
+          key={`attached-picture-${index}`}
+          {...file}
+          canEdit={this.props.canEdit}
+          removeAttachment={this.props.removeAttachment}
+        />
+      );
     }
 
-    return <AttachedDocument key={`attached-document-${index}`} {...file} canEdit={this.props.canEdit} removeAttachment={this.props.removeAttachment}/>;
+    return (
+      <AttachedDocument
+        key={`attached-document-${index}`}
+        {...file}
+        canEdit={this.props.canEdit}
+        removeAttachment={this.props.removeAttachment}
+      />
+    );
   };
 
-  render () {
+  render() {
     const css = require('./Attachments.scss');
 
     return (
