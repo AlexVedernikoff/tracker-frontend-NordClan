@@ -24,12 +24,12 @@ class Comment extends Component {
     return { firstName, lastName, fullName };
   };
 
-  static isExpiredForUpdate = (date, referenceDate) => {
-    return Comment.getLifeTime(date, referenceDate) > UPDATE_EXPIRATION_TIMEOUT;
+  static isExpiredForUpdate = (createdDate, loadedDate) => {
+    return Comment.getLifeTime(createdDate, loadedDate) > UPDATE_EXPIRATION_TIMEOUT;
   };
 
-  static getLifeTime = (date, referenceDate) => {
-    return new Date(referenceDate) - new Date(date).getTime();
+  static getLifeTime = (createdDate, loadedDate) => {
+    return new Date(loadedDate) - new Date(createdDate).getTime();
   };
 
   static selectComment = (id, location) => {
@@ -60,6 +60,20 @@ class Comment extends Component {
     return null;
   };
 
+  static conditionalScroll = elem =>
+    Comment.deBouncedExecution(() => {
+      if (!elem) return;
+      const direction = Comment.getDirectionToScroll(elem);
+      if (direction !== null) {
+        elem.scrollIntoView(direction);
+      }
+    });
+
+  static deBouncedExecution = fn => {
+    const delay = 100;
+    setTimeout(fn, delay);
+  };
+
   static propTypes = {
     comment: PropTypes.object,
     commentsLoadedDate: PropTypes.string,
@@ -87,20 +101,6 @@ class Comment extends Component {
         : null
     };
   }
-
-  static conditionalScroll = elem =>
-    Comment.deBouncedExecution(() => {
-      if (!elem) return;
-      const direction = Comment.getDirectionToScroll(elem);
-      if (direction !== null) {
-        elem.scrollIntoView(direction);
-      }
-    });
-
-  static deBouncedExecution = fn => {
-    const delay = 100;
-    setTimeout(fn, delay);
-  };
 
   componentDidMount() {
     if (this.props.lightened) {
