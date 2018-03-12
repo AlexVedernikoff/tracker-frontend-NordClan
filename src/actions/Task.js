@@ -44,6 +44,11 @@ const getTaskFail = error => ({
   type: TaskActions.GET_TASK_REQUEST_FAIL,
   error: error
 });
+const postChangeFail = error => ({
+  type: TaskActions.TASK_CHANGE_REQUEST_FAIL,
+  closeHasError: false,
+  error: error
+});
 
 const requestTaskChange = () => ({
   type: TaskActions.TASK_CHANGE_REQUEST_SENT
@@ -153,18 +158,27 @@ const changeTask = (ChangedProperties, target, callback) => {
       start: withStartLoading(requestTaskChange, true)(dispatch)
     });
     axios
-      .get(`${API_URL}/task/${ChangedProperties.id}`)
-      .then(function(response) {
-        dispatch(successTaskChange(response.data));
-        dispatch(stopTaskEditing(target));
-        if (callback) {
-          callback();
+      .put(`${API_URL}/task/${ChangedProperties.id}`)
+      .then(
+        function(response) {
+          console.log('response1', response);
+          dispatch(successTaskChange(response.data));
+          dispatch(stopTaskEditing(target));
+          if (callback) {
+            callback();
+          }
+          dispatch(finishLoading());
+        },
+        function(value) {
+          if (value == 'Error: Request failed with status code 403') {
+            console.log('Error: Request failed with status code 403');
+            dispatch(postChangeFail());
+            dispatch(finishLoading());
+          }
         }
-        dispatch(finishLoading());
-      })
+      )
       .catch(function(error) {
         dispatch(finishLoading());
-        defaultErrorHandler(dispatch);
       });
   };
 };

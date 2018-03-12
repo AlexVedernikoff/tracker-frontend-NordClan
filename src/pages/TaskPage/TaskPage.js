@@ -74,8 +74,7 @@ class TaskPage extends Component {
       isLeaveConfirmModalOpen: false,
       unLinkedTask: null,
       isCancelSubTaskModalOpen: false,
-      canceledSubTaskId: null,
-      hasError: false
+      canceledSubTaskId: null
     };
   }
 
@@ -189,9 +188,12 @@ class TaskPage extends Component {
   handleCloseCancelSubTaskModal = () => {
     this.setState({
       isCancelSubTaskModalOpen: false,
-      canceledSubTaskId: null,
-      hasError: false
+      canceledSubTaskId: null
     });
+  };
+
+  handleCloseCancelInfoTaskModal = () => {
+    //this.setState({ closeHasError: true });
   };
 
   handleCancelSubTask = () => {
@@ -216,6 +218,7 @@ class TaskPage extends Component {
     const { globalRole } = this.props;
     const isVisor = globalRole === VISOR;
     let projectUrl = '/';
+    console.log(this.props, this.state);
     if (this.props.task.project) projectUrl = `/projects/${this.props.task.project.id}`;
     return this.props.task.error ? (
       <HttpError error={this.props.task.error} />
@@ -343,13 +346,13 @@ class TaskPage extends Component {
             onConfirm={this.handleCancelSubTask}
           />
         ) : null}
-        {this.state.hasError ? (
+        {this.props.hasError === true && this.props.closeHasError !== true ? (
           <ConfirmModal
             isOpen
             contentLabel="modal"
             text="Нельзя изменять закрытую задачу"
+            onCancel={this.handleCloseCancelInfoTaskModal}
             notification={true}
-            onCancel={this.handleCloseCancelSubTaskModal}
           />
         ) : null}
         <GoBackPanel defaultPreviousUrl={projectUrl} parentRef={this.refs.taskPage} />
@@ -365,7 +368,9 @@ const mapStateToProps = state => ({
   DescriptionIsEditing: state.Task.DescriptionIsEditing,
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
   isCreateChildTaskModalOpen: state.Project.isCreateChildTaskModalOpen,
-  globalRole: state.Auth.user.globalRole
+  globalRole: state.Auth.user.globalRole,
+  hasError: state.Task.hasError,
+  closeHasError: state.Task.closeHasError
 });
 
 const mapDispatchToProps = {
