@@ -44,10 +44,16 @@ const getTaskFail = error => ({
   type: TaskActions.GET_TASK_REQUEST_FAIL,
   error: error
 });
+
 const postChangeFail = error => ({
   type: TaskActions.TASK_CHANGE_REQUEST_FAIL,
   closeHasError: false,
   error: error
+});
+
+const clearError = status => ({
+  type: TaskActions.ERROR_CLEAR,
+  status: status
 });
 
 const requestTaskChange = () => ({
@@ -171,7 +177,6 @@ const changeTask = (ChangedProperties, target, callback) => {
         },
         function(value) {
           if (value == 'Error: Request failed with status code 403') {
-            console.log('Error: Request failed with status code 403');
             dispatch(postChangeFail());
             dispatch(finishLoading());
           }
@@ -520,5 +525,6 @@ export {
   resetCurrentEditingComment,
   setCurrentCommentExpired,
   setHighLighted,
-  clearCurrentTask
+  clearCurrentTask,
+  clearError
 };

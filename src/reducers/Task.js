@@ -155,8 +155,13 @@ export default function Task(state = InitialState, action) {
       } else {
         return state;
       }
+    case TaskActions.ERROR_CLEAR:
+      return {
+        ...state,
+        closeHasError: action.closeHasError,
+        hasError: false
+      };
     case TaskActions.TASK_CHANGE_REQUEST_FAIL:
-      console.log('action-----------------', action);
       return {
         ...state,
         closeHasError: action.closeHasError,

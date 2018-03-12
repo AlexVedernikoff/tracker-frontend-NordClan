@@ -24,6 +24,7 @@ import * as TaskStatuses from '../../constants/TaskStatuses';
 
 import {
   getTask,
+  clearError,
   startTaskEditing,
   stopTaskEditing,
   changeTask,
@@ -44,6 +45,7 @@ class TaskPage extends Component {
     children: PropTypes.object,
     getProjectInfo: PropTypes.func.isRequired,
     getTask: PropTypes.func.isRequired,
+    clearError: PropTypes.func,
     getTasks: PropTypes.func.isRequired,
     globalRole: PropTypes.string.isRequired,
     isCreateChildTaskModalOpen: PropTypes.bool,
@@ -74,7 +76,8 @@ class TaskPage extends Component {
       isLeaveConfirmModalOpen: false,
       unLinkedTask: null,
       isCancelSubTaskModalOpen: false,
-      canceledSubTaskId: null
+      canceledSubTaskId: null,
+      closeHasError: false
     };
   }
 
@@ -99,6 +102,11 @@ class TaskPage extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
+    if (nextProps.params.closeHasError !== this.state.closeHasError) {
+      this.setState({
+        closeHasError: nextProps.params.closeHasError
+      });
+    }
     if (nextProps.params.taskId !== this.props.params.taskId) {
       this.props.getTask(nextProps.params.taskId);
     }
@@ -193,7 +201,8 @@ class TaskPage extends Component {
   };
 
   handleCloseCancelInfoTaskModal = () => {
-    //this.setState({ closeHasError: true });
+    this.props.clearError();
+    this.setState({ closeHasError: true });
   };
 
   handleCancelSubTask = () => {
@@ -218,7 +227,6 @@ class TaskPage extends Component {
     const { globalRole } = this.props;
     const isVisor = globalRole === VISOR;
     let projectUrl = '/';
-    console.log(this.props, this.state);
     if (this.props.task.project) projectUrl = `/projects/${this.props.task.project.id}`;
     return this.props.task.error ? (
       <HttpError error={this.props.task.error} />
@@ -346,7 +354,7 @@ class TaskPage extends Component {
             onConfirm={this.handleCancelSubTask}
           />
         ) : null}
-        {this.props.hasError === true && this.props.closeHasError !== true ? (
+        {this.props.hasError === true && this.state.closeHasError !== true ? (
           <ConfirmModal
             isOpen
             contentLabel="modal"
@@ -376,6 +384,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   changeTask,
   getTask,
+  clearError,
   getTasks,
   getProjectInfo,
   linkTask,
