@@ -6,6 +6,7 @@ import { Link } from 'react-router';
 import _ from 'lodash';
 import moment from 'moment';
 import roundNum from '../../../utils/roundNum';
+import validateNumber from '../../../utils/validateNumber';
 import SingleComment from './SingleComment';
 import TotalComment from './TotalComment';
 import * as css from '../Timesheets.scss';
@@ -30,10 +31,14 @@ class ActivityRow extends React.Component {
 
   constructor(props) {
     super(props);
+
     const debounceTime = 1000;
-    this.createTimesheet = _.debounce(this.createTimesheet, debounceTime);
-    this.updateTimesheet = _.debounce(this.updateTimesheet, debounceTime);
+
     this.deleteTimesheets = _.debounce(this.deleteTimesheets, debounceTime);
+
+    this.debouncedUpdateTimesheet = _.debounce(this.updateTimesheet, debounceTime * 2);
+    this.debouncedCreateTimesheet = _.debounce(this.createTimesheet, debounceTime * 2);
+
     this.state = {
       isOpen: false,
       timeCells: this.getTimeCells(props.item.timeSheets)
@@ -42,12 +47,25 @@ class ActivityRow extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.item !== nextProps.item) {
-      const timeCells = this.getTimeCells(nextProps.item.timeSheets);
+      const currentTimeSheets = this.props.item.timeSheets;
+      const nextTimeSheets = nextProps.item.timeSheets;
+      const timeCells = { ...this.state.timeCells };
+
+      nextTimeSheets.forEach((nextTimesheet, index) => {
+        if (this.getTimeCell(currentTimeSheets[index]) !== this.getTimeCell(nextTimesheet)) {
+          timeCells[index] = this.getTimeCell(nextTimesheet);
+        }
+      });
+
       this.setState({
         timeCells
       });
     }
   }
+
+  getTimeCell = timeSheet => {
+    return roundNum(timeSheet.spentTime, 2);
+  };
 
   getTimeCells = timeSheets => {
     const timeCells = {};
@@ -63,7 +81,7 @@ class ActivityRow extends React.Component {
 
   createTimesheet = i => {
     const { item, userId, startingDay } = this.props;
-    const value = this.state.timeCells[i];
+    const value = this.state.timeCells[i].toString().replace(',', '.');
     this.props.createTimesheet(
       {
         isDraft: false,
@@ -83,7 +101,7 @@ class ActivityRow extends React.Component {
   };
 
   updateTimesheet = (i, sheetId, comment) => {
-    const value = this.state.timeCells[i];
+    const value = this.state.timeCells[i].toString().replace(',', '.');
     const { userId, startingDay } = this.props;
     if (!value && !comment) {
       this.props.deleteTimesheets([sheetId], userId, startingDay);
@@ -104,27 +122,29 @@ class ActivityRow extends React.Component {
     this.props.deleteTimesheets(ids, userId, startingDay);
   };
 
-  validateNumbers(value) {
-    const re = /^$|^\d+([.,]?\d*)?$/;
-    return re.test(value);
-  }
-
   changeEmpty = (i, value) => {
-    if (!this.validateNumbers(value) || +value > 24) {
+    if (!validateNumber(value) || +value > 24) {
       return false;
     }
 
-    this.setState(state => {
-      const timeCells = {
-        ...state.timeCells
-      };
+    this.setState(
+      state => {
+        const timeCells = {
+          ...state.timeCells
+        };
 
-      timeCells[i] = value.replace(/,/, '.');
+        timeCells[i] = value;
 
-      return {
-        timeCells
-      };
-    });
+        return {
+          timeCells
+        };
+      },
+      () => {
+        if (value !== '') {
+          this.debouncedCreateTimesheet(i);
+        }
+      }
+    );
   };
 
   changeEmptyComment = (text, i) => {
@@ -149,56 +169,58 @@ class ActivityRow extends React.Component {
   };
 
   changeFilled = (i, id, comment, value) => {
-    if (!this.validateNumbers(value) || +value > 24) {
+    if (!validateNumber(value) || +value > 24) {
       return false;
     }
 
-    this.setState(state => {
-      const timeCells = {
-        ...state.timeCells
-      };
-      timeCells[i] = value.replace(/,/, '.');
-      return {
-        timeCells
-      };
-    });
-  };
-
-  onBlurFilled = (i, id, comment, value) => {
-    if (value !== '') {
-      this.updateTimesheet(i, id, comment);
-      return false;
-    }
     this.setState(
       state => {
         const timeCells = {
           ...state.timeCells
         };
-        timeCells[i] = 0;
+
+        timeCells[i] = value;
+
         return {
           timeCells
         };
       },
       () => {
-        this.updateTimesheet(i, id, comment);
+        this.debouncedUpdateTimesheet(i, id, comment);
       }
     );
   };
 
+  onBlurFilled = (i, id, comment, value) => {
+    if (this.state.timeCells[i] !== +value) {
+      this.updateTimesheet(i, id, comment);
+    }
+
+    if (value === '') {
+      this.resetCell(i);
+    }
+  };
+
   onBlurEmpty = (i, value) => {
     if (value !== '') {
-      this.createTimesheet(i);
+      if (this.state.timeCells[i] !== +value) {
+        this.createTimesheet(i);
+      }
     } else {
-      this.setState(state => {
-        const timeCells = {
-          ...state.timeCells
-        };
-        timeCells[i] = 0;
-        return {
-          timeCells
-        };
-      });
+      this.resetCell(i);
     }
+  };
+
+  resetCell = i => {
+    this.setState(state => {
+      const timeCells = {
+        ...state.timeCells
+      };
+      timeCells[i] = 0;
+      return {
+        timeCells
+      };
+    });
   };
 
   changeFilledComment = (text, time, i, sheetId) => {

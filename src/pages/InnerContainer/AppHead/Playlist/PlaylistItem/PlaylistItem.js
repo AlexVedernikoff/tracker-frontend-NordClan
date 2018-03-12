@@ -8,6 +8,7 @@ import _ from 'lodash';
 import * as css from '../Playlist.scss';
 import getMaIcon from '../../../../../constants/MagicActivityIcons';
 import roundNum from '../../../../../utils/roundNum';
+import validateNumber from '../../../../../utils/validateNumber';
 
 import { IconComment, IconCheck, IconEye, IconEyeDisable } from '../../../../../components/Icons';
 
@@ -39,19 +40,24 @@ class PlaylistItem extends Component {
   };
 
   handleChangeTime = e => {
-    let value = e.target.value.replace(/[^\d,.]/g, '');
-    if (value.charAt(0) === '.' || value.charAt(0) === ',') {
-      value = '';
+    let value = e.target.value;
+
+    if (!validateNumber(value) || +value > 24) {
+      return false;
     }
+
     this.setState({
       itemSpentTime: value
     });
-    if (Number(value) > 0) {
+
+    value = value.replace(',', '.');
+
+    if (+value > 0) {
       if (this.props.item.isDraft) {
         this.debouncedUpdateDraft(
           {
             sheetId: this.props.item.id,
-            spentTime: value.replace(',', '.'),
+            spentTime: value,
             isVisible: this.props.item.isVisible,
             onDate: this.props.item.onDate,
             typeId: this.props.item.typeId,
@@ -65,7 +71,7 @@ class PlaylistItem extends Component {
       } else {
         this.debouncedUpdateOnlyTimesheet({
           sheetId: this.props.item.id,
-          spentTime: value.replace(',', '.'),
+          spentTime: value,
           isVisible: this.props.item.isVisible,
           comment: this.props.item.comment,
           onDate: this.props.item.onDate,
@@ -74,12 +80,6 @@ class PlaylistItem extends Component {
         });
       }
     }
-  };
-
-  handleChangeTimeToEmpty = () => {
-    this.setState({
-      itemSpentTime: roundNum(this.props.item.spentTime, 2)
-    });
   };
 
   handleChangeComment = e => {
@@ -188,12 +188,7 @@ class PlaylistItem extends Component {
         </div>
         <div className={css.time}>
           <div className={css.today}>
-            <input
-              type="text"
-              onChange={this.handleChangeTime}
-              onBlur={this.handleChangeTimeToEmpty}
-              value={this.state.itemSpentTime}
-            />
+            <input type="text" onChange={this.handleChangeTime} value={this.state.itemSpentTime} />
           </div>
           <div className={classnames({ [css.other]: true, [css.exceeded]: redColorForTime })}>
             <span data-tip="Всего потрачено" data-place="bottom">
