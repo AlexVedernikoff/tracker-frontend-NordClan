@@ -384,6 +384,7 @@ class TaskList extends Component {
                   value={sprintId}
                   sprints={project.sprints}
                   onChange={option => this.changeSingleFilter(option, 'sprintId')}
+                  useId
                 />
               </Col>
             </Row>
