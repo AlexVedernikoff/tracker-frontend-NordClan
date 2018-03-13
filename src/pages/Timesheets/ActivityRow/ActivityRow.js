@@ -272,15 +272,12 @@ class ActivityRow extends React.Component {
     const timeSheetIds = _.remove(item.timeSheets.map(tsh => tsh.id), tsh => tsh);
     const canDeleteRow = !item.timeSheets.find(
       tsh =>
-        (tsh.id && tsh.statusId === TimesheetStatuses.TIMESHEET_STATUS_SUBMITTED) ||
-        tsh.statusId === TimesheetStatuses.TIMESHEET_STATUS_APPROVED
+        tsh.id &&
+        (tsh.statusId === TimesheetStatuses.TIMESHEET_STATUS_SUBMITTED ||
+          tsh.statusId === TimesheetStatuses.TIMESHEET_STATUS_APPROVED)
     );
-    console.log(canDeleteRow);
-    const timeCells = item.timeSheets.map((tsh, i) => {
-      const isCellDisabled =
-        tsh.statusId === TimesheetStatuses.TIMESHEET_STATUS_SUBMITTED ||
-        tsh.statusId === TimesheetStatuses.TIMESHEET_STATUS_APPROVED;
 
+    const timeCells = item.timeSheets.map((tsh, i) => {
       if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
         return (
           <td

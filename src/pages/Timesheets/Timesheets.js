@@ -61,10 +61,10 @@ class Timesheets extends React.Component {
 
   render() {
     const { isCalendarOpen } = this.state;
-    const { startingDay, tempTimesheets, getTimesheets, userId, dateBegin, dateEnd } = this.props;
-    const hasEnableTs = !!this.props.list.find(
+    const { startingDay, tempTimesheets } = this.props;
+    const canAddActivity = !this.props.list.find(
       tsh =>
-        tsh.statusId === TimesheetStatuses.TIMESHEET_STATUS_SUBMITTED &&
+        tsh.statusId === TimesheetStatuses.TIMESHEET_STATUS_SUBMITTED ||
         tsh.statusId === TimesheetStatuses.TIMESHEET_STATUS_APPROVED
     );
     const countTsWithTime = this.props.list.filter(tsh => tsh.spentTime !== 0).length;
@@ -333,7 +333,7 @@ class Timesheets extends React.Component {
                 <td className={css.total} />
               </tr>
             </tbody>
-            {hasEnableTs || !countTsWithTime ? (
+            {canAddActivity || !countTsWithTime ? (
               <tfoot>
                 <tr>
                   <td colSpan="10">
