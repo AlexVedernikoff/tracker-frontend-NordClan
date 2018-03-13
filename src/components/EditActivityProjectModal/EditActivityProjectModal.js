@@ -11,12 +11,32 @@ class EditActivityProjectModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      projects: []
+      projects: [],
+      projectValue: null
     };
   }
   componentWillMount() {
-    this.props.getProjectsForSelect('', false).then(options => this.setState({ projects: options.options }));
+    this.props.getProjectsForSelect('', false).then(options =>
+      this.setState({
+        projects: options.options,
+        projectValue: options.options.find(proj => proj.value === this.props.selectedProject)
+      })
+    );
   }
+
+  handleChangeProject = option => {
+    this.setState({ projectValue: option });
+  };
+  onConfirm = () => {
+    const updatedFields = {
+      project: {
+        id: this.state.projectValue.body.id,
+        name: this.state.projectValue.body.name,
+        prefix: this.state.projectValue.body.prefix
+      }
+    };
+    this.props.onConfirm(updatedFields);
+  };
   render() {
     const { style, onRequestClose, closeTimeoutMS, text, onConfirm, onCancel, ...other } = this.props;
     const formLayout = {
@@ -37,7 +57,7 @@ class EditActivityProjectModal extends Component {
                 <SelectDropdown
                   multi={false}
                   className={css.Select}
-                  // value={this.props.selectedProject}
+                  value={this.state.projectValue}
                   placeholder="Выберите проект"
                   onChange={this.handleChangeProject}
                   options={this.state.projects}
@@ -45,7 +65,13 @@ class EditActivityProjectModal extends Component {
               </Col>
             </Row>
           </label>
-          <Button text="ОК" type="green" style={{ width: '50%' }} onClick={this.onConfirm} />
+          <Button
+            text="ОК"
+            disabled={!this.state.projectValue}
+            type="green"
+            style={{ width: '50%' }}
+            onClick={this.onConfirm}
+          />
           <Button text="Отмена" type="primary" onClick={onCancel} style={{ width: '50%' }} />
         </div>
       </Modal>
@@ -60,6 +86,7 @@ EditActivityProjectModal.propTypes = {
   onCancel: PropTypes.func,
   onConfirm: PropTypes.func,
   onRequestClose: PropTypes.func,
+  selectedProject: PropTypes.number,
   style: PropTypes.object,
   text: PropTypes.string
 };

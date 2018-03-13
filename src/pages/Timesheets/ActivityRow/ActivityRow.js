@@ -13,13 +13,20 @@ import * as css from '../Timesheets.scss';
 import { IconClose } from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal';
 import EditActivityProjectModal from '../../../components/EditActivityProjectModal';
-import { createTimesheet, updateTimesheet, deleteTimesheets, deleteTempTimesheets } from '../../../actions/Timesheets';
+import {
+  createTimesheet,
+  updateTimesheet,
+  deleteTimesheets,
+  deleteTempTimesheets,
+  editTempTimesheet
+} from '../../../actions/Timesheets';
 
 class ActivityRow extends React.Component {
   static propTypes = {
     createTimesheet: PropTypes.func,
     deleteTempTimesheets: PropTypes.func,
     deleteTimesheets: PropTypes.func,
+    editTempTimesheet: PropTypes.func,
     item: PropTypes.object,
     ma: PropTypes.bool,
     magicActivitiesTypes: PropTypes.array,
@@ -117,6 +124,10 @@ class ActivityRow extends React.Component {
       userId,
       startingDay
     );
+  };
+
+  editTempActivity = id => updatedFields => {
+    this.props.editTempTimesheet(id, updatedFields);
   };
 
   deleteTimesheets = ids => {
@@ -280,6 +291,8 @@ class ActivityRow extends React.Component {
     const totalTime = roundNum(_.sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
     const timeSheetIds = _.remove(item.timeSheets.map(tsh => tsh.id), tsh => tsh);
     const canDeleteRow = !!item.timeSheets.filter(tsh => tsh.id && tsh.statusId !== 3 && tsh.statusId !== 4).length;
+    const tempCell = item.timeSheets.find(tsh => tsh.id && tsh.id.toString().includes('temp'));
+    const isTempRow = !!tempCell;
     const timeCells = item.timeSheets.map((tsh, i) => {
       const isCellDisabled = tsh.statusId === 3 || tsh.statusId === 4;
 
@@ -396,6 +409,8 @@ class ActivityRow extends React.Component {
               contentLabel="modal"
               isOpen
               onCancel={this.closeProjectEditModal}
+              selectedProject={item.projectId}
+              onConfirm={isTempRow ? this.editTempActivity(tempCell.id) : () => {}}
               text="Выберите проект"
             />
           ) : null}
@@ -416,7 +431,8 @@ const mapDispatchToProps = {
   createTimesheet,
   updateTimesheet,
   deleteTimesheets,
-  deleteTempTimesheets
+  deleteTempTimesheets,
+  editTempTimesheet
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ActivityRow);
