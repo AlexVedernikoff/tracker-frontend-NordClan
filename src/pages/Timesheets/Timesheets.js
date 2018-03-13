@@ -6,7 +6,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as timesheetsActions from '../../actions/Timesheets';
-import * as TimesheetStatuses from '../../constants/Timesheets';
+import * as timesheetsConstants from '../../constants/Timesheets';
 import * as css from './Timesheets.scss';
 import { IconPlus, IconArrowLeft, IconArrowRight, IconCalendar } from '../../components/Icons';
 import AddActivityModal from './AddActivityModal';
@@ -64,8 +64,8 @@ class Timesheets extends React.Component {
     const { startingDay, tempTimesheets } = this.props;
     const canAddActivity = !this.props.list.find(
       tsh =>
-        tsh.statusId === TimesheetStatuses.TIMESHEET_STATUS_SUBMITTED ||
-        tsh.statusId === TimesheetStatuses.TIMESHEET_STATUS_APPROVED
+        tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
+        tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED
     );
     const countTsWithTime = this.props.list.filter(tsh => tsh.spentTime !== 0).length;
     const defaultTaskStatusId = 2;

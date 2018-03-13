@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
-import * as TimesheetStatuses from '../../../../../constants/Timesheets';
+import * as timesheetsConstants from '../../../../../constants/Timesheets';
 
 import { IconArrowDown, IconArrowUp } from '../../../../../components/Icons';
 
@@ -35,8 +35,8 @@ class List extends Component {
   checkIfshouldBeDisabled = tracks => {
     return !!tracks.find(
       track =>
-        track.statusId === TimesheetStatuses.TIMESHEET_STATUS_SUBMITTED ||
-        track.statusId === TimesheetStatuses.TIMESHEET_STATUS_APPROVED
+        track.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
+        track.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED
     );
   };
 

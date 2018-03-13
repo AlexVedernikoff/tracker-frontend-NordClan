@@ -12,7 +12,7 @@ import TotalComment from './TotalComment';
 import * as css from '../Timesheets.scss';
 import { IconClose } from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal';
-import * as TimesheetStatuses from '../../../constants/Timesheets';
+import * as timesheetsConstants from '../../../constants/Timesheets';
 import { createTimesheet, updateTimesheet, deleteTimesheets, deleteTempTimesheets } from '../../../actions/Timesheets';
 
 class ActivityRow extends React.Component {
@@ -273,8 +273,8 @@ class ActivityRow extends React.Component {
     const canDeleteRow = !item.timeSheets.find(
       tsh =>
         tsh.id &&
-        (tsh.statusId === TimesheetStatuses.TIMESHEET_STATUS_SUBMITTED ||
-          tsh.statusId === TimesheetStatuses.TIMESHEET_STATUS_APPROVED)
+        (tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
+          tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED)
     );
 
     const timeCells = item.timeSheets.map((tsh, i) => {
@@ -292,9 +292,9 @@ class ActivityRow extends React.Component {
                 className={cn({
                   [css.timeCell]: true,
                   [css.filled]: +tsh.spentTime && tsh.statusId === 1,
-                  [css.submitted]: tsh.statusId === TimesheetStatuses.TIMESHEET_STATUS_SUBMITTED,
-                  [css.approved]: tsh.statusId === TimesheetStatuses.TIMESHEET_STATUS_APPROVED,
-                  [css.rejected]: tsh.statusId === TimesheetStatuses.TIMESHEET_STATUS_REJECTED
+                  [css.submitted]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED,
+                  [css.approved]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED,
+                  [css.rejected]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED
                 })}
               >
                 <input
