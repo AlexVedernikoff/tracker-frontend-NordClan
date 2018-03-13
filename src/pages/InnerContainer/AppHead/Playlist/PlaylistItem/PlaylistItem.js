@@ -7,7 +7,6 @@ import { updateDraft, updateTimesheet } from '../../../../../actions/TimesheetPl
 import _ from 'lodash';
 import * as css from '../Playlist.scss';
 import getMaIcon from '../../../../../constants/MagicActivityIcons';
-import * as TimesheetStatuses from '../../../../../constants/Timesheets';
 import roundNum from '../../../../../utils/roundNum';
 import validateNumber from '../../../../../utils/validateNumber';
 
@@ -120,19 +119,13 @@ class PlaylistItem extends Component {
       taskStatus: createDraftStatus,
       isDraft,
       sprint,
-      isVisible,
-      statusId
+      isVisible
     } = this.props.item;
+    const timesheetDisabled = this.props.disabled;
     const status = task ? task.taskStatus : null;
     const redColorForTime = task ? parseFloat(task.factExecutionTime) > parseFloat(task.plannedExecutionTime) : false;
-
-    const prefix = project ? project.prefix : '';
     const taskLabel = task && project ? `${project.prefix}-${task.id}` : null;
-
     const createDraftStatusName = createDraftStatus ? createDraftStatus.name.replace(' stop', '') : '';
-    const timesheetDisabled =
-      statusId === TimesheetStatuses.TIMESHEET_STATUS_SUBMITTED ||
-      statusId === TimesheetStatuses.TIMESHEET_STATUS_APPROVED;
 
     return (
       <div className={classnames(css.listTask, css.task)}>
@@ -239,6 +232,7 @@ class PlaylistItem extends Component {
 }
 
 PlaylistItem.propTypes = {
+  disabled: PropTypes.bool,
   handleToggleList: PropTypes.func,
   index: PropTypes.number.isRequired,
   item: PropTypes.object.isRequired,
