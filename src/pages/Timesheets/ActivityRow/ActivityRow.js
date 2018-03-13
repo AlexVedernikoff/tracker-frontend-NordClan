@@ -12,6 +12,7 @@ import TotalComment from './TotalComment';
 import * as css from '../Timesheets.scss';
 import { IconClose } from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal';
+import EditActivityProjectModal from '../../../components/EditActivityProjectModal';
 import { createTimesheet, updateTimesheet, deleteTimesheets, deleteTempTimesheets } from '../../../actions/Timesheets';
 
 class ActivityRow extends React.Component {
@@ -41,6 +42,7 @@ class ActivityRow extends React.Component {
 
     this.state = {
       isOpen: false,
+      isProjectEditModalOpen: false,
       timeCells: this.getTimeCells(props.item.timeSheets)
     };
   }
@@ -247,6 +249,14 @@ class ActivityRow extends React.Component {
     this.setState({ isConfirmModalOpen: false });
   };
 
+  openProjectEditModal = () => {
+    this.setState({ isProjectEditModalOpen: true });
+  };
+
+  closeProjectEditModal = () => {
+    this.setState({ isProjectEditModalOpen: false });
+  };
+
   deleteActivity = ids => {
     const { userId, startingDay } = this.props;
     const realSheetIds = ids.filter(id => !~id.toString().indexOf('temp'));
@@ -342,7 +352,13 @@ class ActivityRow extends React.Component {
         <td>
           <div className={css.taskCard}>
             <div className={css.meta}>
-              {item.projectName ? <span>{item.projectName}</span> : null}
+              {item.projectName ? (
+                ma && maType.id !== 5 && maType.id !== 7 && canDeleteRow ? (
+                  <a onClick={() => this.openProjectEditModal()}>{item.projectName}</a>
+                ) : (
+                  <span>{item.projectName}</span>
+                )
+              ) : null}
               {item.sprint ? <span>{item.sprint.name}</span> : null}
               {status ? <span>{status.name}</span> : null}
             </div>
@@ -373,6 +389,14 @@ class ActivityRow extends React.Component {
               onCancel={this.closeConfirmModal}
               onConfirm={() => this.deleteActivity(timeSheetIds)}
               onRequestClose={this.closeConfirmModal}
+            />
+          ) : null}
+          {this.state.isProjectEditModalOpen ? (
+            <EditActivityProjectModal
+              contentLabel="modal"
+              isOpen
+              onCancel={this.closeProjectEditModal}
+              text="Выберите проект"
             />
           ) : null}
         </td>
