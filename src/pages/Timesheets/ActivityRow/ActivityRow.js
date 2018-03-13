@@ -195,7 +195,7 @@ class ActivityRow extends React.Component {
 
   onBlurFilled = (i, id, comment, value) => {
     if (this.state.timeCells[i] !== +value) {
-      this.updateTimesheet(i, id, comment);
+      this.debouncedUpdateTimesheet.flush();
     }
 
     if (value === '') {
@@ -206,7 +206,7 @@ class ActivityRow extends React.Component {
   onBlurEmpty = (i, value) => {
     if (value !== '') {
       if (this.state.timeCells[i] !== +value) {
-        this.createTimesheet(i);
+        this.debouncedCreateTimesheet.flush();
       }
     } else {
       this.resetCell(i);
