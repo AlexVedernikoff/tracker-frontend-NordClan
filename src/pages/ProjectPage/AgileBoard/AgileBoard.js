@@ -345,15 +345,17 @@ class AgileBoard extends Component {
     }
   };
 
-  changeStatus = (taskId, statusId, phase) => {
-    this.props.changeTask(
-      {
-        id: taskId,
-        statusId: phase ? getNewStatus(statusId, phase) : getNewStatusOnClick(statusId)
-      },
-      'Status'
-    );
+  changeStatus = (taskId, statusId, phase, performerId) => {
+    const params = {
+      id: taskId,
+      statusId: phase ? getNewStatus(statusId, phase) : getNewStatusOnClick(statusId)
+    };
 
+    if (performerId === 0) {
+      params.performerId = performerId;
+    }
+
+    this.props.changeTask(params, 'Status');
     this.props.startTaskEditing('Status');
   };
 
@@ -383,12 +385,12 @@ class AgileBoard extends Component {
     this.props.startTaskEditing('User');
   };
 
-  closeModal = () => {
+  closeModal = performerId => {
     this.setState(
       {
         isModalOpen: false
       },
-      () => this.changeStatus(this.state.changedTask, this.state.statusId, this.state.phase)
+      () => this.changeStatus(this.state.changedTask, this.state.statusId, this.state.phase, performerId)
     );
   };
 
