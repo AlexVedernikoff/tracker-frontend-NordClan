@@ -19,6 +19,9 @@ import SprintModal from '../../../components/SprintModal';
 import getTasks from '../../../actions/Tasks';
 import { history } from '../../../History';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
+import DatepickerDropdown from '../../../components/DatepickerDropdown';
+import moment from 'moment';
+const dateFormat = 'DD.MM.YYYY';
 
 class TaskList extends Component {
   constructor(props) {
@@ -27,6 +30,8 @@ class TaskList extends Component {
       activePage: 1,
       isPerformerModalOpen: false,
       isSprintModalOpen: false,
+      dateFrom: undefined,
+      dateTo: undefined,
       ...this.setQueryFilters()
     };
   }
@@ -288,6 +293,15 @@ class TaskList extends Component {
     }));
   };
 
+  handleDayFromChange = dateFrom => {
+    this.setState({ dateFrom: this.formatDate(dateFrom) });
+  };
+
+  handleDayToChange = dateTo => {
+    this.setState({ dateTo: this.formatDate(dateTo) });
+  };
+  formatDate = date => date && moment(date).format(dateFormat);
+
   render() {
     const { tasksList: tasks, statuses, taskTypes, project, isReceiving } = this.props;
 
@@ -318,7 +332,6 @@ class TaskList extends Component {
         </Row>
       </div>
     );
-
     return (
       <div>
         <section>
@@ -390,8 +403,25 @@ class TaskList extends Component {
             </Row>
 
             <Row className={css.search}>
-              <Col xs={12} sm={6}>
-                <Input placeholder="Введите название задачи" value={filterByName} onChange={this.changeNameFilter} />
+              <Col xs={6} sm={3}>
+                <DatepickerDropdown
+                  name="dateFrom"
+                  value={this.state.dateFrom}
+                  // disabledDataRanges={[{ after: new Date(this.state.dayTo) }]}
+                  onDayChange={this.handleDayFromChange}
+                  placeholder="От"
+                  format={dateFormat}
+                />
+              </Col>
+              <Col xs={6} sm={3}>
+                <DatepickerDropdown
+                  name="dateTo"
+                  value={this.state.dateTo}
+                  onDayChange={this.handleDayToChange}
+                  // disabledDataRanges={[{ before: new Date(this.state.dayFrom) }]}
+                  placeholder="До"
+                  format={dateFormat}
+                />
               </Col>
               <Col xs={12} sm={3}>
                 <PerformerFilter
@@ -405,6 +435,11 @@ class TaskList extends Component {
                   onTagSelect={options => this.changeMultiFilter(options, 'tags')}
                   filterTags={tags}
                 />
+              </Col>
+            </Row>
+            <Row className={css.search}>
+              <Col xs={12} sm={6}>
+                <Input placeholder="Введите название задачи" value={filterByName} onChange={this.changeNameFilter} />
               </Col>
             </Row>
           </div>
