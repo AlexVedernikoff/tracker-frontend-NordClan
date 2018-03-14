@@ -6,7 +6,6 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import _ from 'lodash';
-
 import TaskCard from '../../../components/TaskCard';
 import FilterList from '../../../components/FilterList';
 import PerformerModal from '../../../components/PerformerModal';
@@ -65,6 +64,18 @@ const filterTasks = array => {
     }
   });
   return taskArray;
+};
+const phaseColumnNameById = {
+  1: 'New',
+  2: 'Dev',
+  3: 'Dev',
+  4: 'Code Review',
+  5: 'Code Review',
+  6: 'QA',
+  7: 'QA',
+  8: 'Done',
+  9: 'Canceled',
+  10: 'Closed'
 };
 
 const sortTasksAndCreateCard = (sortedObject, section, onChangeStatus, onOpenPerformerModal, myTaskBoard) => {
@@ -333,6 +344,7 @@ class AgileBoard extends Component {
   };
 
   dropTask = (task, phase) => {
+    if (phaseColumnNameById[task.statusId] === phase) return;
     if (!(phase === 'New' || phase === 'Done')) {
       const taskProps = this.props.sprintTasks.find(sprintTask => {
         return task.id === sprintTask.id;
