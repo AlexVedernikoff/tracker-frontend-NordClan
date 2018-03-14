@@ -65,7 +65,7 @@ const filterTasks = array => {
   });
   return taskArray;
 };
-const statusNameById = {
+const phaseColumnNameById = {
   1: 'New',
   2: 'Dev',
   3: 'Dev',
@@ -344,7 +344,7 @@ class AgileBoard extends Component {
   };
 
   dropTask = (task, phase) => {
-    if (statusNameById[task.statusId] === phase) return;
+    if (phaseColumnNameById[task.statusId] === phase) return;
     if (!(phase === 'New' || phase === 'Done')) {
       const taskProps = this.props.sprintTasks.find(sprintTask => {
         return task.id === sprintTask.id;
