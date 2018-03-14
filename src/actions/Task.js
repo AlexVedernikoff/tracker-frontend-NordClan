@@ -352,7 +352,7 @@ const getCommentsByTask = taskId => {
     dispatch(requestCommentsByTaskId(taskId));
     axios.get(URL).then(
       result => {
-        return dispatch(requestCommentsByTaskIdSuccess(taskId, result.data));
+        return dispatch(requestCommentsByTaskIdSuccess(taskId, result));
       },
       error => dispatch(requestCommentsByTaskIdFail(taskId, error))
     );

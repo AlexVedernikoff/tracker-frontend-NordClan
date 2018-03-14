@@ -117,7 +117,10 @@ export default function Task(state = InitialState, action) {
         ...state,
         timeSpent: _.chain(action.data)
           .filter(timeSheet => Number(timeSheet.spentTime))
-          .map(spent => ({ job: getJobById(spent.taskStatusId), spent: spent.spentTime }))
+          .map(spent => ({
+            job: getJobById(spent.taskStatusId),
+            spent: spent.spentTime
+          }))
           .transform((byStatus, spent) => {
             const job = spent.job;
             byStatus[job] = Number(spent.spent) + (byStatus[job] ? byStatus[job] : 0);
@@ -201,7 +204,8 @@ export default function Task(state = InitialState, action) {
     case TaskActions.GET_COMMENTS_BY_TASK_SUCCESS: {
       return {
         ...state,
-        comments: action.result.reverse()
+        commentsLoadedDate: action.result.headers.date,
+        comments: action.result.data.reverse()
       };
     }
 
@@ -226,9 +230,15 @@ export default function Task(state = InitialState, action) {
       if (currentComment.id === commentId) {
         currentComment = getDefaultCurrentComment();
       } else if (currentComment.parentId === commentId) {
-        currentComment = { ...currentComment, parentId: null };
+        currentComment = {
+          ...currentComment,
+          parentId: null
+        };
       }
-      comments[index] = { ...comments[index], deleting: true };
+      comments[index] = {
+        ...comments[index],
+        deleting: true
+      };
       return {
         ...state,
         comments,
