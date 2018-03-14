@@ -15,7 +15,7 @@ export default class AttachedImage extends React.Component {
     type: PropTypes.string.isRequired
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       isModalOpen: false,
@@ -50,7 +50,7 @@ export default class AttachedImage extends React.Component {
     event.stopPropagation();
   };
 
-  render () {
+  render() {
     const css = require('./AttachedImage.scss');
 
     const iconStyles = {
@@ -66,23 +66,17 @@ export default class AttachedImage extends React.Component {
       display: 'block'
     };
 
-    const { fileName, path, previewPath} = this.props;
+    const { fileName, path, previewPath, canEdit } = this.props;
 
     return (
       <li className={css.attachment} onClick={this.handleOpenModal}>
-
         <div className={css.actions}>
-          <a
-            target="_blank"
-            href={`/${path}`}
-            onClick={this.stopBubbling}
-            download
-          >
+          <a target="_blank" href={`/${path}`} onClick={this.stopBubbling} download>
             <button>
               <IconDownload style={iconStyles} />
             </button>
           </a>
-          <button onClick={this.handleOpenConfirmDelete}>
+          <button onClick={this.handleOpenConfirmDelete} hidden={!canEdit}>
             <IconDelete style={iconStyles} />
           </button>
         </div>
@@ -90,32 +84,28 @@ export default class AttachedImage extends React.Component {
         <div className={css.imagePreview}>
           <img src={`/${previewPath}`} alt="" className={css.screen} />
         </div>
-        <div className={css.attachmentName}>
-          {fileName}
-        </div>
+        <div className={css.attachmentName}>{fileName}</div>
 
-        {this.state.isModalOpen
-          ? <Modal
-              isOpen
-              contentLabel="modal"
-              onRequestClose={this.handleCloseModal}
-            >
-              <img src={`/${path}`} alt="" style={imageStyles} />
-            </Modal>
-          : null}
+        {this.state.isModalOpen ? (
+          <Modal isOpen contentLabel="modal" onRequestClose={this.handleCloseModal}>
+            <img src={`/${path}`} alt="" style={imageStyles} />
+          </Modal>
+        ) : null}
 
-        {this.state.isConfirmDeleteOpen
-          ? <ConfirmModal
-              isOpen
-              contentLabel="modal"
-              onRequestClose={this.handleCloseConfirmDelete}
-              onConfirm={this.handleRemove}
-              onCancel={this.handleCloseConfirmDelete}
-              text="Вы уверены, что хотите удалить этот файл?"
-            />
-          : null}
-
+        {this.state.isConfirmDeleteOpen ? (
+          <ConfirmModal
+            isOpen
+            contentLabel="modal"
+            onRequestClose={this.handleCloseConfirmDelete}
+            onConfirm={this.handleRemove}
+            onCancel={this.handleCloseConfirmDelete}
+            text="Вы уверены, что хотите удалить этот файл?"
+          />
+        ) : null}
       </li>
     );
   }
 }
+AttachedImage.propTypes = {
+  canEdit: PropTypes.bool
+};

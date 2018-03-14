@@ -34,7 +34,7 @@ class ProjectTitle extends Component {
     titleIsEditing: PropTypes.bool
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       ...props,
@@ -42,21 +42,21 @@ class ProjectTitle extends Component {
       nameIsIncorrect: false
     };
   }
-  componentDidMount () {
+  componentDidMount() {
     window.addEventListener('click', this.outsideClickHandler);
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.titleIsEditing !== this.props.titleIsEditing) {
       ReactTooltip.hide();
     }
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     ReactTooltip.rebuild();
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     window.removeEventListener('click', this.outsideClickHandler);
   }
 
@@ -79,34 +79,24 @@ class ProjectTitle extends Component {
     stopEditing('Title');
   };
 
-  handleIncorrectInput () {
-    if (
-      this.projectName.innerText.length < 4
-      || this.projectName.innerText.length > 255
-    ) {
-      this.setState({ nameIsIncorrect: true }, 
-        () => this.props.showNotification(
-          { 
-            message: `Имя проекта должно содержать от 4 до 255 символов`, 
-            type: 'error' 
-          }
-        )
+  handleIncorrectInput() {
+    if (this.projectName.innerText.length < 4 || this.projectName.innerText.length > 255) {
+      this.setState({ nameIsIncorrect: true }, () =>
+        this.props.showNotification({
+          message: `Имя проекта должно содержать от 4 до 255 символов`,
+          type: 'error'
+        })
       );
     } else if (this.state.nameIsIncorrect) {
       this.setState({ nameIsIncorrect: false });
     }
 
-    if (
-      this.projectPrefix.innerText.length < 2
-      || this.projectPrefix.innerText.length > 8
-    ) {
-      this.setState({ prefixIsIncorrect: true },  
-        () => this.props.showNotification(
-          { 
-            message: `Префикс должен содержать от 2 до 8 символов`, 
-            type: 'error' 
-          }
-        )
+    if (this.projectPrefix.innerText.length < 2 || this.projectPrefix.innerText.length > 8) {
+      this.setState({ prefixIsIncorrect: true }, () =>
+        this.props.showNotification({
+          message: `Префикс должен содержать от 2 до 8 символов`,
+          type: 'error'
+        })
       );
     } else if (this.state.prefixIsIncorrect) {
       this.setState({ prefixIsIncorrect: false });
@@ -115,7 +105,7 @@ class ProjectTitle extends Component {
     return false;
   }
 
-  submitInput () {
+  submitInput() {
     const { changeProject } = this.props;
     this.setState(
       {
@@ -142,10 +132,10 @@ class ProjectTitle extends Component {
     this.projectPrefix.innerText = this.projectPrefix.innerText.trim();
 
     if (
-      this.projectName.innerText.length < 4
-      || this.projectName.innerText.length > 255
-      || this.projectPrefix.innerText.length < 2
-      || this.projectPrefix.innerText.length > 8
+      this.projectName.innerText.length < 4 ||
+      this.projectName.innerText.length > 255 ||
+      this.projectPrefix.innerText.length < 2 ||
+      this.projectPrefix.innerText.length > 8
     ) {
       this.handleIncorrectInput();
     } else {
@@ -175,46 +165,37 @@ class ProjectTitle extends Component {
 
   outsideClickHandler = event => {
     if (this.props.titleIsEditing) {
-      if (
-        event.target !== this.projectName
-        && event.target !== this.projectPrefix
-      ) {
+      if (event.target !== this.projectName && event.target !== this.projectPrefix) {
         this.validateSubmit();
       }
     }
   };
 
-  render () {
+  render() {
     return (
       <div className={css.projectTitle}>
-        {
-          this.props.name
-            ? <ProjectIcon
-              projectName={this.props.name}
-              projectPrefix={this.props.prefix}
-            />
-            : <IconPreloader
-              style={{color: 'silver', fontSize: '3rem', marginRight: 10}}
-            />
-        }
+        {this.props.name ? (
+          <ProjectIcon projectName={this.props.name} projectPrefix={this.props.prefix} />
+        ) : (
+          <IconPreloader style={{ color: 'silver', fontSize: '3rem', marginRight: 10 }} />
+        )}
         <div>
-          {
-            this.props.portfolio
-              ? <span className={css.portfolio}>
-                <Link to={`/projects/portfolio/${this.props.portfolio.id}`}>{this.props.portfolio.name}</Link>
-                <IconEdit onClick={this.props.openPortfolioModal}/>
-              </span>
-              : null
-          }
+          {this.props.portfolio ? (
+            <span className={css.portfolio}>
+              <Link to={`/projects/portfolio/${this.props.portfolio.id}`}>{this.props.portfolio.name}</Link>
+              <IconEdit onClick={this.props.openPortfolioModal} />
+            </span>
+          ) : null}
           <h1>
             <span
               id="projectName"
               className={this.state.nameIsIncorrect ? css.wrong : ''}
               ref={ref => (this.projectName = ref)}
-              contentEditable={this.props.titleIsEditing}
               onKeyDown={this.handleKeyPress}
+              contentEditable={this.props.titleIsEditing}
+              suppressContentEditableWarning
             >
-              {this.props.name ? this.props.name : <InlineHolder length='3.5em' />}
+              {this.props.name ? this.props.name : <InlineHolder length="3.5em" />}
             </span>
             <span className={css.prefix}>
               <span>(</span>
@@ -222,41 +203,32 @@ class ProjectTitle extends Component {
                 id="projectPrefix"
                 className={this.state.prefixIsIncorrect ? css.wrong : ''}
                 ref={ref => (this.projectPrefix = ref)}
-                contentEditable={this.props.titleIsEditing}
                 onKeyDown={this.handleKeyPress}
+                contentEditable={this.props.titleIsEditing}
+                suppressContentEditableWarning
               >
-                {this.props.prefix ? this.props.prefix : <InlineHolder length='1em' />}
+                {this.props.prefix ? this.props.prefix : <InlineHolder length="1em" />}
               </span>
               <span>)</span>
             </span>
-            {
-              this.props.isProjectAdmin
-                ? this.props.titleIsEditing
-                  ? <IconCheck
-                    className={css.save}
-                    data-tip="Сохранить"
-                    onClick={this.editIconClickHandler}
-                  />
-                  : <IconEdit
-                    className={css.edit}
-                    data-tip="Редактировать"
-                    onClick={this.editIconClickHandler}
-                  />
-                : null
-            }
+            {this.props.isProjectAdmin ? (
+              this.props.titleIsEditing ? (
+                <IconCheck className={css.save} data-tip="Сохранить" onClick={this.editIconClickHandler} />
+              ) : (
+                <IconEdit className={css.edit} data-tip="Редактировать" onClick={this.editIconClickHandler} />
+              )
+            ) : null}
           </h1>
         </div>
-        {
-          this.props.isProjectAdmin && this.props.PortfolioIsEditing
-            ? <PortfolioModal
-              defaultPortfolio={this.props.portfolio || null}
-              projectId={this.props.projectId}
-              onClose={this.props.closePortfolioModal}
-              onChoose={this.props.changeProject}
-              title="Изменить портфель проекта"
-            />
-            : null
-        }
+        {this.props.isProjectAdmin && this.props.PortfolioIsEditing ? (
+          <PortfolioModal
+            defaultPortfolio={this.props.portfolio || null}
+            projectId={this.props.projectId}
+            onClose={this.props.closePortfolioModal}
+            onChoose={this.props.changeProject}
+            title="Изменить портфель проекта"
+          />
+        ) : null}
       </div>
     );
   }

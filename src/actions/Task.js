@@ -1,8 +1,9 @@
 import * as TaskActions from '../constants/Task';
 import { API_URL } from '../constants/Settings';
 import axios from 'axios';
-import {DELETE, GET, POST, PUT, REST_API} from '../constants/RestApi';
-import {SOCKET_IO} from '../constants/SocketIO';
+import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
+import { SOCKET_IO } from '../constants/SocketIO';
+import { finishLoading } from './Loading';
 import {
   defaultErrorHandler,
   withFinishLoading,
@@ -42,6 +43,17 @@ const getTaskSpentSuccess = spent => ({
 const getTaskFail = error => ({
   type: TaskActions.GET_TASK_REQUEST_FAIL,
   error: error
+});
+
+const postChangeFail = error => ({
+  type: TaskActions.TASK_CHANGE_REQUEST_FAIL,
+  closeHasError: false,
+  error: error
+});
+
+const clearError = status => ({
+  type: TaskActions.ERROR_CLEAR,
+  status: status
 });
 
 const requestTaskChange = () => ({
@@ -89,72 +101,91 @@ const getTask = id => {
   if (!id) {
     return () => {};
   }
-  return dispatch => dispatch({
-    type: REST_API,
-    url: `/task/${id}`,
-    method: GET,
-    body,
-    extra,
-    start: withStartLoading(getTaskStart, true)(dispatch),
-    response: withFinishLoading(response => {
-      dispatch(getTaskSuccess(response.data));
-    })(dispatch),
-    error: withFinishLoading(error => getTaskFail(error.response.data), true)(dispatch),
-  });
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: `/task/${id}`,
+      method: GET,
+      body,
+      extra,
+      start: withStartLoading(getTaskStart, true)(dispatch),
+      response: withFinishLoading(response => {
+        dispatch(getTaskSuccess(response.data));
+      })(dispatch),
+      error: withFinishLoading(error => getTaskFail(error.response.data), true)(dispatch)
+    });
 };
 
 const getTaskHistory = id => {
   if (!id) {
     return () => {};
   }
-  return dispatch => dispatch({
-    type: REST_API,
-    url: `/task/${id}/history`,
-    method: GET,
-    body,
-    extra,
-    start: withStartLoading(getTaskHistoryStart, true)(dispatch),
-    response: withFinishLoading(response => getTaskHistorySuccess(response.data), true)(dispatch),
-    error: defaultErrorHandler(dispatch)
-  });
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: `/task/${id}/history`,
+      method: GET,
+      body,
+      extra,
+      start: withStartLoading(getTaskHistoryStart, true)(dispatch),
+      response: withFinishLoading(response => getTaskHistorySuccess(response.data), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
 };
 
 const getTaskSpent = id => {
   if (!id) {
     return () => {};
   }
-  return dispatch => dispatch({
-    type: REST_API,
-    url: `/task/${id}/spent`,
-    method: GET,
-    body,
-    extra,
-    start: withStartLoading(getTaskSpentStart, true)(dispatch),
-    response: withFinishLoading(response => getTaskSpentSuccess(response.data), true)(dispatch),
-    error: defaultErrorHandler(dispatch)
-  });
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: `/task/${id}/spent`,
+      method: GET,
+      body,
+      extra,
+      start: withStartLoading(getTaskSpentStart, true)(dispatch),
+      response: withFinishLoading(response => getTaskSpentSuccess(response.data), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
 };
 
-const changeTask = (ChangedProperties, target, cb) => {
+const changeTask = (ChangedProperties, target, callback) => {
   if (!ChangedProperties.id) {
     return;
   }
-  return dispatch => dispatch({
-    type: REST_API,
-    url: `/task/${ChangedProperties.id}`,
-    method: PUT,
-    body: ChangedProperties,
-    extra,
-    start: withStartLoading(requestTaskChange, true)(dispatch),
-    response: withFinishLoading(response => {
-      dispatch(successTaskChange(response.data));
-      dispatch(stopTaskEditing(target));
-      if (cb) {
-        cb();
-      }
-    })(dispatch),
-    error: defaultErrorHandler(dispatch)
-  });
+  return dispatch => {
+    dispatch({
+      type: REST_API,
+      url: `/task/${ChangedProperties.id}`,
+      method: PUT,
+      body: ChangedProperties,
+      extra,
+      start: withStartLoading(requestTaskChange, true)(dispatch)
+    });
+    axios
+      .put(`${API_URL}/task/${ChangedProperties.id}`)
+      .then(
+        function(response) {
+          console.log('response1', response);
+          dispatch(successTaskChange(response.data));
+          dispatch(stopTaskEditing(target));
+          if (callback) {
+            callback();
+          }
+          dispatch(finishLoading());
+        },
+        function(value) {
+          if (value == 'Error: Request failed with status code 403') {
+            dispatch(postChangeFail());
+            dispatch(finishLoading());
+          }
+        }
+      )
+      .catch(function(error) {
+        dispatch(finishLoading());
+      });
+  };
 };
 
 const linkTask = (taskId, linkedTaskId) => {
@@ -162,18 +193,19 @@ const linkTask = (taskId, linkedTaskId) => {
     return () => {};
   }
 
-  return dispatch => dispatch({
-    type: REST_API,
-    url: `/task/${taskId}/links`,
-    method: POST,
-    body: {
-      linkedTaskId
-    },
-    extra,
-    start: withStartLoading(requestTaskLink, true)(dispatch),
-    response: withFinishLoading(response => successTaskLink(response.data), true)(dispatch),
-    error: defaultErrorHandler(dispatch)
-  });
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: `/task/${taskId}/links`,
+      method: POST,
+      body: {
+        linkedTaskId
+      },
+      extra,
+      start: withStartLoading(requestTaskLink, true)(dispatch),
+      response: withFinishLoading(response => successTaskLink(response.data), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
 };
 
 const unlinkTask = (taskId, linkedTaskId) => {
@@ -181,16 +213,17 @@ const unlinkTask = (taskId, linkedTaskId) => {
     return () => {};
   }
 
-  return dispatch => dispatch({
-    type: REST_API,
-    url: `/task/${taskId}/links/${linkedTaskId}`,
-    method: DELETE,
-    body,
-    extra,
-    start: withStartLoading(requestTaskLink, true)(dispatch),
-    response: withFinishLoading(response => successTaskLink(response.data), true)(dispatch),
-    error: defaultErrorHandler(dispatch)
-  });
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: `/task/${taskId}/links/${linkedTaskId}`,
+      method: DELETE,
+      body,
+      extra,
+      start: withStartLoading(requestTaskLink, true)(dispatch),
+      response: withFinishLoading(response => successTaskLink(response.data), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
 };
 
 const attachmentUploadStarted = (taskId, attachment) => ({
@@ -226,12 +259,12 @@ const uploadAttachments = (taskId, attachments) => {
   }
 
   return dispatch => {
-    attachments.map((file) => {
+    attachments.map(file => {
       const data = new FormData();
       data.append('file', file);
 
       const attachment = {
-        id: `${ Date.now() }${ Math.random() }`,
+        id: `${Date.now()}${Math.random()}`,
         fileName: file.name
       };
 
@@ -241,8 +274,8 @@ const uploadAttachments = (taskId, attachments) => {
         method: POST,
         body: data,
         extra: withdefaultExtra({
-          onUploadProgress: (progressEvent) => {
-            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          onUploadProgress: progressEvent => {
+            const progress = Math.round(progressEvent.loaded * 100 / progressEvent.total);
             dispatch(attachmentUploadProgress(taskId, attachment, progress));
           }
         }),
@@ -280,20 +313,19 @@ const removeAttachment = (taskId, attachmentId) => {
   }
 
   const URL = `${API_URL}/task/${taskId}/attachment/${attachmentId}`;
-  return (dispatch) => {
+  return dispatch => {
     dispatch(startRemoveAttachment(taskId, attachmentId));
-    axios.delete(URL)
-    .then(
+    axios.delete(URL).then(
       result => {
         dispatch(getTask(taskId));
         return dispatch(successRemoveAttachment(taskId, attachmentId, result));
       },
-          error => dispatch(failRemoveAttachment(taskId, attachmentId, error))
-      );
+      error => dispatch(failRemoveAttachment(taskId, attachmentId, error))
+    );
   };
 };
 
-const requestCommentsByTaskId = (taskId) => ({
+const requestCommentsByTaskId = taskId => ({
   type: TaskActions.GET_COMMENTS_BY_TASK_REQUEST,
   taskId
 });
@@ -310,18 +342,17 @@ const requestCommentsByTaskIdFail = (taskId, error) => ({
   error
 });
 
-const getCommentsByTask = (taskId) => {
+const getCommentsByTask = taskId => {
   if (!taskId) {
     return () => {};
   }
 
   const URL = `${API_URL}/task/${taskId}/comment`;
-  return (dispatch) => {
+  return dispatch => {
     dispatch(requestCommentsByTaskId(taskId));
-    axios.get(URL)
-    .then(
+    axios.get(URL).then(
       result => {
-        return dispatch(requestCommentsByTaskIdSuccess(taskId, result.data));
+        return dispatch(requestCommentsByTaskIdSuccess(taskId, result));
       },
       error => dispatch(requestCommentsByTaskIdFail(taskId, error))
     );
@@ -354,9 +385,10 @@ const publishComment = (taskId, comment) => {
   }
   const { text, parentId } = comment;
   const URL = `${API_URL}/task/${taskId}/comment`;
-  return (dispatch) => {
+  return dispatch => {
     dispatch(commentPublishStart(taskId, comment));
-    return axios.post(URL, { text, parentId })
+    return axios
+      .post(URL, { text, parentId })
       .then(
         result => dispatch(commentPublishSuccess(taskId, comment, result.data)),
         error => dispatch(commentPublishFail(taskId, comment, error))
@@ -394,16 +426,15 @@ const editComment = (taskId, commentId, text) => {
   }
   const comment = { text };
   const URL = `${API_URL}/task/${taskId}/comment/${commentId}`;
-  return (dispatch) => {
+  return dispatch => {
     dispatch(commentUpdateStart(taskId, commentId, comment));
-    axios.put(URL, comment)
-      .then(
-        result => {
-          dispatch(getCommentsByTask(taskId));
-          return dispatch(commentUpdateSuccess(taskId, commentId, comment, result));
-        },
-        error => dispatch(commentUpdateFail(taskId, commentId, comment, error))
-      );
+    axios.put(URL, comment).then(
+      result => {
+        dispatch(getCommentsByTask(taskId));
+        return dispatch(commentUpdateSuccess(taskId, commentId, comment, result));
+      },
+      error => dispatch(commentUpdateFail(taskId, commentId, comment, error))
+    );
   };
 };
 
@@ -433,10 +464,9 @@ const removeComment = (taskId, commentId) => {
   }
 
   const URL = `${API_URL}/task/${taskId}/comment/${commentId}`;
-  return (dispatch) => {
+  return dispatch => {
     dispatch(commentRemoveStart(taskId, commentId));
-    axios.delete(URL)
-    .then(
+    axios.delete(URL).then(
       result => {
         dispatch(getCommentsByTask(taskId));
         return dispatch(commentRemoveSuccess(taskId, commentId, result));
@@ -446,17 +476,17 @@ const removeComment = (taskId, commentId) => {
   };
 };
 
-const updateCurrentCommentText = (text) => ({
+const updateCurrentCommentText = text => ({
   type: TaskActions.SET_CURRENT_COMMENT_TEXT,
   text
 });
 
-const selectParentCommentForReply = (parentId) => ({
+const selectParentCommentForReply = parentId => ({
   type: TaskActions.SELECT_COMMENT_FOR_REPLY,
   parentId
 });
 
-const setCommentForEdit = (comment) => ({
+const setCommentForEdit = comment => ({
   type: TaskActions.SET_COMMENT_FOR_EDIT,
   comment
 });
@@ -469,7 +499,7 @@ const setCurrentCommentExpired = () => ({
   type: TaskActions.SET_CURRENT_COMMENT_EXPIRED
 });
 
-const setHighLighted = (comment) => ({
+const setHighLighted = comment => ({
   type: TaskActions.SET_HIGHLIGHTED_COMMENT,
   comment
 });
@@ -495,5 +525,6 @@ export {
   resetCurrentEditingComment,
   setCurrentCommentExpired,
   setHighLighted,
-  clearCurrentTask
+  clearCurrentTask,
+  clearError
 };

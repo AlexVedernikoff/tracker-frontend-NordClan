@@ -23,23 +23,21 @@
   width: 32px;
 }
 
-.Select--multi.Select:hover { cursor: text; }
-.Select--single.Select:hover { cursor: pointer; }
+.Select--multi.Select:hover {
+  cursor: text;
+}
+.Select--single.Select:hover {
+  cursor: pointer;
+}
 
-.Select--single
-.Select-multi-value-wrapper {
+.Select--single .Select-multi-value-wrapper {
   display: flex;
   white-space: nowrap;
   max-width: 100%;
 }
 
-.Select--single
-.Select-multi-value-wrapper
-.Select-value,
-.Select--single
-.Select-multi-value-wrapper
-.Select-value
-.Select-value-label,
+.Select--single .Select-multi-value-wrapper .Select-value,
+.Select--single .Select-multi-value-wrapper .Select-value .Select-value-label,
 .Select-input {
   max-width: 100%;
   display: block;
@@ -66,10 +64,11 @@
   display: inline-block;
 }
 
-.Select-placeholder, .Select-aria-only {
+.Select-placeholder,
+.Select-aria-only {
   color: silver;
   display: inline-block;
-  vertical-align: middle; 
+  vertical-align: middle;
 }
 
 .Select-placeholder {
@@ -83,14 +82,15 @@
   padding: 0;
   font-size: inherit;
   line-height: inherit;
+  background-color: transparent;
 }
 
 .Select-menu-outer {
   position: absolute;
   z-index: 2; /* Global z-index context (dropdown-layer) */
   background-color: white;
-  border: 1px solid rgba(0,0,0,0.1);
-  box-shadow: 4px 4px 0 rgba(0, 0, 0, .17);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.17);
   top: calc(100% + 1px);
   left: -1px;
   right: -1px;
