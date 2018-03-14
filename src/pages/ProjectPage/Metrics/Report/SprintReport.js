@@ -28,6 +28,7 @@ class SprintReport extends Component {
 
   state = {
     reportPeriod: null,
+    selectedName: '',
     selectedFrom: '',
     selectedTo: '',
     borderColorFrom: '',
@@ -46,18 +47,21 @@ class SprintReport extends Component {
   selectReportPeriod = option => {
     if (!_.isEmpty(option) && option.value.id) {
       this.setState({
+        selectedName: option.label,
         reportPeriod: option,
         selectedFrom: this.formatDate(option.value.factStartDate),
         selectedTo: this.formatDate(option.value.factFinishDate)
       });
     } else if (!_.isEmpty(option)) {
       this.setState({
+        selectedName: option.label,
         reportPeriod: option,
         selectedFrom: this.formatDate(option.value.factStartDate),
         selectedTo: this.formatDate(option.value.factFinishDate)
       });
     } else {
       this.setState({
+        selectedName: option.label,
         reportPeriod: null,
         selectedFrom: this.formatDate(this.props.startDate),
         selectedTo: moment().format(dateFormat)
@@ -82,12 +86,10 @@ class SprintReport extends Component {
   isRangeValid = () => {
     const back_selectedFrom = moment(this.state.selectedFrom, dateFormat, true).format(dateFormat2);
     const back_selectedTo = moment(this.state.selectedTo, dateFormat, true).format(dateFormat2);
-    //console.log('back_selectedTo', back_selectedTo);
     return (
-      //(this.state.selectedFrom && this.state.selectedTo) ||
       moment(back_selectedFrom, dateFormat2, true).isValid() &&
       moment(back_selectedTo, dateFormat2, true).isValid() &&
-      moment(back_selectedTo).isAfter(back_selectedFrom)
+      moment(back_selectedTo).isSameOrAfter(back_selectedFrom)
     );
   };
 
@@ -170,7 +172,7 @@ class SprintReport extends Component {
 
   getQueryParams = () => {
     const reportPeriod = this.state;
-
+    const labelName = this.state.selectedName;
     const selectedFrom = moment(this.state.selectedFrom, dateFormat, true).format(dateFormat2);
     const selectedTo = moment(this.state.selectedTo, dateFormat, true).format(dateFormat2);
 
@@ -181,10 +183,10 @@ class SprintReport extends Component {
       // запрос отчета по спринту
       const { sprintId, sprintStartDate, sprintFinishDate } = reportPeriod.value;
       const sprintDate = `&sprintStartDate=${sprintStartDate}&sprintFinishDate=${sprintFinishDate}`;
-      return `${selectedDate}&sprintId=${sprintId}&label=${reportPeriod.label}${sprintDate}`;
+      return `${selectedDate}&sprintId=${sprintId}&label=${labelName}${sprintDate}`;
     } else if (checkDate && reportPeriod) {
       // запрос отчета определенного типа
-      return `${selectedDate}&label=${reportPeriod.label}`;
+      return `${selectedDate}&label=${labelName}`;
     } else {
       // запрос отчета по дате, без выбора типа
       return selectedDate;

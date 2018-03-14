@@ -117,11 +117,7 @@ const getTaskHistory = (id, options) => {
       method: GET,
       body,
       extra,
-      start: withStartLoading(getTaskHistoryStart, true)(
-        dispatch
-      ) /*,
-      response: withFinishLoading(response => getTaskHistorySuccess(response.data), true)(dispatch),
-      error: defaultErrorHandler(dispatch)*/
+      start: withStartLoading(getTaskHistoryStart, true)(dispatch)
     });
     axios
       .get(URL, {
@@ -130,13 +126,12 @@ const getTaskHistory = (id, options) => {
         }
       })
       .then(function(response) {
-        dispatch(finishLoading());
         if (response && response.status === 200) {
           dispatch(getTaskHistorySuccess(response.data), true);
         }
+        dispatch(finishLoading());
       })
       .catch(function(error) {
-        dispatch(finishLoading());
         if (error.response) {
           console.log('status', error.response.status);
           console.log('headers', error.response.headers);
@@ -146,6 +141,7 @@ const getTaskHistory = (id, options) => {
         console.log(error.config);
         console.log('Error----', error.message);
         defaultErrorHandler(dispatch);
+        dispatch(finishLoading());
       });
   };
 };
@@ -167,7 +163,7 @@ const getTaskSpent = id => {
     });
 };
 
-const changeTask = (ChangedProperties, target, cb) => {
+const changeTask = (ChangedProperties, target, callback) => {
   if (!ChangedProperties.id) {
     return;
   }
@@ -182,8 +178,8 @@ const changeTask = (ChangedProperties, target, cb) => {
       response: withFinishLoading(response => {
         dispatch(successTaskChange(response.data));
         dispatch(stopTaskEditing(target));
-        if (cb) {
-          cb();
+        if (callback) {
+          callback();
         }
       })(dispatch),
       error: defaultErrorHandler(dispatch)
@@ -354,7 +350,7 @@ const getCommentsByTask = taskId => {
     dispatch(requestCommentsByTaskId(taskId));
     axios.get(URL).then(
       result => {
-        return dispatch(requestCommentsByTaskIdSuccess(taskId, result.data));
+        return dispatch(requestCommentsByTaskIdSuccess(taskId, result));
       },
       error => dispatch(requestCommentsByTaskIdFail(taskId, error))
     );
@@ -390,7 +386,10 @@ const publishComment = (taskId, comment) => {
   return dispatch => {
     dispatch(commentPublishStart(taskId, comment));
     return axios
-      .post(URL, { text, parentId })
+      .post(URL, {
+        text,
+        parentId
+      })
       .then(
         result => dispatch(commentPublishSuccess(taskId, comment, result.data)),
         error => dispatch(commentPublishFail(taskId, comment, error))
@@ -426,7 +425,9 @@ const editComment = (taskId, commentId, text) => {
   if (!taskId || !commentId) {
     return () => {};
   }
-  const comment = { text };
+  const comment = {
+    text
+  };
   const URL = `${API_URL}/task/${taskId}/comment/${commentId}`;
   return dispatch => {
     dispatch(commentUpdateStart(taskId, commentId, comment));

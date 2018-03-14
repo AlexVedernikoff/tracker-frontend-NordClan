@@ -1,0 +1,35 @@
+@import '../../styles/variables';
+
+.filterList {
+  border: 1px solid $color-gray;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 13px;
+  padding-right: 32px;
+  position: relative;
+}
+
+.filterListShowMore {
+  position: relative;
+}
+
+.filterListShowMoreButton {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 1rem;
+}
+
+.clearAllFilter {
+  cursor: pointer;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 32px;
+}
