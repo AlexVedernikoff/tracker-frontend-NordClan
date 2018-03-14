@@ -89,7 +89,7 @@ class SprintReport extends Component {
     return (
       moment(back_selectedFrom, dateFormat2, true).isValid() &&
       moment(back_selectedTo, dateFormat2, true).isValid() &&
-      (moment(back_selectedTo).isAfter(back_selectedFrom) || back_selectedTo === back_selectedFrom)
+      moment(back_selectedTo).isSameOrAfter(back_selectedFrom)
     );
   };
 
