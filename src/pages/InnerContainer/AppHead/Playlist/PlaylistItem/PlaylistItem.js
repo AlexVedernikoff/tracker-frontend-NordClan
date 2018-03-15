@@ -124,7 +124,10 @@ class PlaylistItem extends Component {
     const timesheetDisabled = this.props.disabled;
     const status = task ? task.taskStatus : null;
     const redColorForTime = task ? parseFloat(task.factExecutionTime) > parseFloat(task.plannedExecutionTime) : false;
-    const taskLabel = task && project ? `${project.prefix}-${task.id}` : null;
+
+    const prefix = project && project.prefix ? `${project.prefix}-` : '';
+    const taskLabel = task && prefix ? prefix + task.id : null;
+
     const createDraftStatusName = createDraftStatus ? createDraftStatus.name.replace(' stop', '') : '';
     return (
       <div className={classnames(css.listTask, css.task)}>
