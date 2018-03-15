@@ -26,7 +26,7 @@ import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
 const ENTER = 13;
 
 class Comments extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       commentToDelete: null,
@@ -34,17 +34,17 @@ class Comments extends Component {
     };
   }
 
-  componentWillMount () {
+  componentWillMount() {
     this.props.getCommentsByTask(this.props.params.taskId);
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.params.taskId !== this.props.params.taskId) {
       this.props.getCommentsByTask(nextProps.params.taskId);
     }
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (this.props.location.hash === '#reply' && prevProps.location.hash === '#reply') {
       setTimeout(() => {
         this.reply.focus();
@@ -58,25 +58,25 @@ class Comments extends Component {
     if (this.props.location.hash === '' && this.props.highlighted.id) {
       return this.props.setHighLighted({});
     }
-    const commentHash = (/\d+$/).exec(this.props.location.hash);
+    const commentHash = /\d+$/.exec(this.props.location.hash);
     if (commentHash) {
       const [commentId] = commentHash;
 
       if (this.props.highlighted.id !== +commentId && prevProps.highlighted.id !== +commentId) {
-        const comment = this.props.comments.find((c) => c.id === +commentId);
+        const comment = this.props.comments.find(c => c.id === +commentId);
         if (comment) {
           return this.props.setHighLighted(comment);
         }
       } else if (
-        this.props.highlighted.id
-        && this.props.highlighted.id !== +commentId
-        && prevProps.highlighted.id === +commentId
+        this.props.highlighted.id &&
+        this.props.highlighted.id !== +commentId &&
+        prevProps.highlighted.id === +commentId
       ) {
         this.selectComment(this.props.highlighted.id);
       }
     }
   }
-  componentDidMount () {
+  componentDidMount() {
     if (this.props.location.hash === '#reply') {
       setTimeout(() => this.reply.focus());
     }
@@ -106,17 +106,17 @@ class Comments extends Component {
     userId: PropTypes.number
   };
 
-  handleClickOutside = (evt) => {
+  handleClickOutside = evt => {
     if (this.props.location.hash) {
       history.replace({ ...this.props.location, hash: '' });
     }
   };
 
-  selectComment = (id) => {
+  selectComment = id => {
     Comment.selectComment(id, this.props.location);
   };
 
-  typeComment = (evt) => {
+  typeComment = evt => {
     this.props.updateCurrentCommentText(evt.target.value);
     if (evt.target.value && evt.target.value.trim() !== '') {
       this.state.disabledBtn = false;
@@ -125,13 +125,9 @@ class Comments extends Component {
     }
   };
 
-  publishComment = (evt) => {
+  publishComment = evt => {
     const { ctrlKey, keyCode, shiftKey } = evt;
-    if ((ctrlKey && keyCode === ENTER) || (shiftKey && keyCode === ENTER)) {
-      return this.props.updateCurrentCommentText(evt.target.value + '\n');
-      console.log('true');
-    }
-    if ((evt.which === ENTER || evt.button === 0) && this.state.disabledBtn === false) {
+    if (((ctrlKey && keyCode === ENTER) || evt.button === 0) && this.state.disabledBtn === false) {
       if (this.props.currentComment.id) {
         if (!Comment.isExpiredForUpdate(this.props.currentComment.createdAt)) {
           this.props.editComment(this.props.taskId, this.props.currentComment.id, this.props.currentComment.text);
@@ -146,7 +142,7 @@ class Comments extends Component {
   };
   reply = null;
 
-  removeComment = (commentId) => {
+  removeComment = commentId => {
     this.setState({ commentToDelete: commentId });
   };
 
@@ -160,7 +156,7 @@ class Comments extends Component {
   };
 
   getCommentList = () =>
-    this.props.comments.map((c) => (
+    this.props.comments.map(c => (
       <Comment
         key={c.id} /*используются id чтобы правильно работал маунт и анмаунт*/
         lightened={c.id === this.props.highlighted.id}
@@ -172,7 +168,7 @@ class Comments extends Component {
       />
     ));
 
-  render () {
+  render() {
     return (
       <div className="css.comments">
         <ul className={css.commentList}>
@@ -185,7 +181,7 @@ class Comments extends Component {
                 placeholder="Введите текст комментария"
                 onInput={this.typeComment}
                 onKeyDown={this.publishComment}
-                ref={(ref) => (this.reply = ref ? ref.refs.input : null)}
+                ref={ref => (this.reply = ref ? ref.refs.input : null)}
                 value={this.props.currentComment.text}
               />
               {this.props.currentComment.id ? (
@@ -215,8 +211,8 @@ class Comments extends Component {
               ) : null}
             </div>
             <div className={css.answerButton}>
-              <Button onClick={this.publishComment} type="green" disabled={this.state.disabledBtn} text='Отправить'/>
-              <div className={css.answerSendTooltip}>или Enter</div>
+              <Button onClick={this.publishComment} type="green" disabled={this.state.disabledBtn} text="Отправить" />
+              <div className={css.answerSendTooltip}>или ctrl+enter</div>
             </div>
           </form>
           {this.props.comments.length ? (

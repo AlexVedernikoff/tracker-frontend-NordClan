@@ -3,7 +3,8 @@
 .timeSheetsTable {
   position: relative;
   z-index: 0; // New z-index stack created
-  td, th {
+  td,
+  th {
     padding: 0;
 
     &.actions {
@@ -57,7 +58,6 @@
 }
 
 .tableContainer {
-  
   @include phone {
     overflow-x: auto;
   }
@@ -82,28 +82,28 @@
   &.submitted {
     input {
       background-color: $color-dark-gray;
-      color: rgba(white, .9);
+      color: rgba(white, 0.9);
     }
   }
 
   &.approved {
     input {
       background-color: $color-green;
-      color: rgba(white, .9);
+      color: rgba(white, 0.9);
     }
   }
 
   &.rejected {
     input {
       background-color: $color-light-red;
-      color: rgba(white, .9);
+      color: rgba(white, 0.9);
     }
   }
 
   &.filled {
     input {
       background: $color-dark;
-      color: rgba(white, .7);
+      color: rgba(white, 0.7);
 
       &:focus {
         color: white;
@@ -111,10 +111,10 @@
     }
 
     .toggleComment {
-      color: rgba(white, .5);
+      color: rgba(white, 0.5);
 
       &:hover {
-        color: rgba(white, .8);
+        color: rgba(white, 0.8);
       }
     }
   }
@@ -122,15 +122,15 @@
   input {
     // padding: 1rem;
     border: none;
-    background: rgba(black, .05);;
+    background: rgba(black, 0.05);
     text-align: center;
     @include absolute;
     -moz-appearance: textfield;
 
-    &[type=number]::-webkit-inner-spin-button,
-    &[type=number]::-webkit-outer-spin-button {
-      -webkit-appearance: none; 
-      margin: 0; 
+    &[type='number']::-webkit-inner-spin-button,
+    &[type='number']::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
     }
   }
 }
@@ -173,28 +173,30 @@
     display: inline-block;
 
     & + span {
-      border-left: 1px solid rgba(black, .3);
+      border-left: 1px solid rgba(black, 0.3);
       margin-left: 0.3rem;
       padding-left: 0.3rem;
     }
   }
 }
 
-.today > div {
+.today {
   padding: 1px 0;
   border: 1px solid $color-green;
 }
 
-th.today > div {
+th.today {
   border-bottom-width: 0;
   border-top: 1px solid $color-green;
 }
 
-td.today > div {
+td.today {
   border-top-width: 0;
   border-bottom-width: 0;
 }
-
+tr:last-child td.today {
+  border-bottom-width: 1px;
+}
 .total > div {
   padding: 0.5rem 1rem;
   text-align: center;
@@ -278,7 +280,8 @@ td.today > div {
   }
 }
 
-.prevWeek, .nextWeek {
+.prevWeek,
+.nextWeek {
   font-size: 1.5rem;
 
   svg {
@@ -341,7 +344,8 @@ td.today > div {
   align-items: stretch;
   box-shadow: $box-shadow;
 
-  textarea, span {
+  textarea,
+  span {
     resize: none;
     height: 3.5rem;
     width: 15rem;
@@ -403,10 +407,6 @@ td.today > div {
   height: auto;
 }
 
-tr:nth-last-child(2) td.today > div {
-  border-bottom-width: 1px;
-}
-
 .totalCommentPart {
   display: flex;
 
@@ -432,7 +432,8 @@ tr:nth-last-child(2) td.today > div {
   }
 
   & + .totalCommentPart {
-    textarea, .commentDay {
+    textarea,
+    .commentDay {
       border-top: none;
     }
   }
@@ -440,9 +441,15 @@ tr:nth-last-child(2) td.today > div {
 
 .addActivityForm {
   padding: 2rem;
-  @include desktop { width: 30rem; }
-  @include tablet { width: 30rem; }
-  @include phone { width: 22.5rem; }
+  @include desktop {
+    width: 30rem;
+  }
+  @include tablet {
+    width: 30rem;
+  }
+  @include phone {
+    width: 22.5rem;
+  }
 
   .footer {
     margin-top: 2rem;

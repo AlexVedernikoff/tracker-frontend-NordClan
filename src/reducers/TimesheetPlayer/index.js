@@ -169,6 +169,8 @@ exports[TASK_CHANGE_REQUEST_SUCCESS] = (state = InitialState, action) => {
           return {
             ...track,
             project: action.changedFields.project,
+            sprint: action.changedFields.sprint,
+            sprintId: action.changedFields.sprintId,
             task: { ...track.task, ...action.changedFields }
           };
         }

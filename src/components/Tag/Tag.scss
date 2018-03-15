@@ -10,7 +10,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: calc(100% - 10px);
+  min-width: 1rem;
 }
 
 .tag {
@@ -27,12 +27,12 @@
   &:hover {
     background: lighten($color-dark, 20%);
 
-   .tagClose {
-     svg {
-      opacity: 1;
-      transition: $transition;
+    .tagClose {
+      svg {
+        opacity: 1;
+        transition: $transition;
+      }
     }
-   }
   }
 }
 

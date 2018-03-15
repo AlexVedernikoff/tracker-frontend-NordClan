@@ -6,7 +6,6 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import _ from 'lodash';
-
 import TaskCard from '../../../components/TaskCard';
 import FilterList from '../../../components/FilterList';
 import PerformerModal from '../../../components/PerformerModal';
@@ -65,6 +64,18 @@ const filterTasks = array => {
     }
   });
   return taskArray;
+};
+const phaseColumnNameById = {
+  1: 'New',
+  2: 'Dev',
+  3: 'Dev',
+  4: 'Code Review',
+  5: 'Code Review',
+  6: 'QA',
+  7: 'QA',
+  8: 'Done',
+  9: 'Canceled',
+  10: 'Closed'
 };
 
 const sortTasksAndCreateCard = (sortedObject, section, onChangeStatus, onOpenPerformerModal, myTaskBoard) => {
@@ -273,7 +284,8 @@ class AgileBoard extends Component {
 
   parseLocalStorageFilters = () => {
     try {
-      return JSON.parse(localStorage.getItem('agileBoardFilters'));
+      const localStorageFilters = localStorage.getItem('agileBoardFilters');
+      return localStorageFilters ? JSON.parse(localStorageFilters) : {};
     } catch (e) {
       return {};
     }
@@ -332,6 +344,7 @@ class AgileBoard extends Component {
   };
 
   dropTask = (task, phase) => {
+    if (phaseColumnNameById[task.statusId] === phase) return;
     if (!(phase === 'New' || phase === 'Done')) {
       const taskProps = this.props.sprintTasks.find(sprintTask => {
         return task.id === sprintTask.id;
@@ -344,15 +357,17 @@ class AgileBoard extends Component {
     }
   };
 
-  changeStatus = (taskId, statusId, phase) => {
-    this.props.changeTask(
-      {
-        id: taskId,
-        statusId: phase ? getNewStatus(statusId, phase) : getNewStatusOnClick(statusId)
-      },
-      'Status'
-    );
+  changeStatus = (taskId, statusId, phase, performerId) => {
+    const params = {
+      id: taskId,
+      statusId: phase ? getNewStatus(statusId, phase) : getNewStatusOnClick(statusId)
+    };
 
+    if (performerId === 0) {
+      params.performerId = performerId;
+    }
+
+    this.props.changeTask(params, 'Status');
     this.props.startTaskEditing('Status');
   };
 
@@ -382,12 +397,12 @@ class AgileBoard extends Component {
     this.props.startTaskEditing('User');
   };
 
-  closeModal = () => {
+  closeModal = performerId => {
     this.setState(
       {
         isModalOpen: false
       },
-      () => this.changeStatus(this.state.changedTask, this.state.statusId, this.state.phase)
+      () => this.changeStatus(this.state.changedTask, this.state.statusId, this.state.phase, performerId)
     );
   };
 
