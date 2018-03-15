@@ -42,11 +42,9 @@ class List extends Component {
   };
 
   playlistItem = (item, i) => {
-    const pathArr = window.location.pathname.split('/');
-    //var [host, projects, idProject, tasks, idTasks] = window.location.pathname.split('/');
-    console.log(idProject, idTasks);
+    const [host, projects, idProject, tasks, idTasks] = window.location.pathname.split('/');
     let thisPageCurrentTask = false;
-    if (parseInt(pathArr[2]) === item.projectId && parseInt(pathArr[4]) === item.task.id) {
+    if (parseInt(idProject) === item.projectId && parseInt(idTasks) === item.task.id) {
       thisPageCurrentTask = true;
     }
     return (
