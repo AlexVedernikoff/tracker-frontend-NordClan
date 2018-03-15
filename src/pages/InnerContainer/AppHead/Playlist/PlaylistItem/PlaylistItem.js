@@ -42,11 +42,6 @@ class PlaylistItem extends Component {
 
   handleChangeTime = e => {
     let value = e.target.value;
-    /*
-    let value = e.target.value.replace(/[^\d,.]/g, '');
-    if (value.charAt(0) === '.' || value.charAt(0) === ',') {
-      value = '';
-    */
 
     if (!validateNumber(value) || +value > 24) {
       return false;
@@ -87,14 +82,6 @@ class PlaylistItem extends Component {
       }
     }
   };
-
-  /*
-  handleChangeTimeToEmpty = () => {
-    this.setState({
-      itemSpentTime: roundNum(this.props.item.spentTime, 2)
-    });
-  };
- */
 
   handleChangeComment = e => {
     this.setState({ comment: e.target.value });
