@@ -116,21 +116,37 @@ const getTask = id => {
     });
 };
 
-const getTaskHistory = id => {
+const getTaskHistory = (id, options) => {
   if (!id) {
     return () => {};
   }
-  return dispatch =>
+  const URL = `${API_URL}/task/${id}/history`;
+  return dispatch => {
     dispatch({
       type: REST_API,
       url: `/task/${id}/history`,
       method: GET,
       body,
       extra,
-      start: withStartLoading(getTaskHistoryStart, true)(dispatch),
-      response: withFinishLoading(response => getTaskHistorySuccess(response.data), true)(dispatch),
-      error: defaultErrorHandler(dispatch)
+      start: withStartLoading(getTaskHistoryStart, true)(dispatch)
     });
+    axios
+      .get(URL, {
+        params: {
+          ...options
+        }
+      })
+      .then(function(response) {
+        if (response && response.status === 200) {
+          dispatch(getTaskHistorySuccess(response.data), true);
+        }
+        dispatch(finishLoading());
+      })
+      .catch(function(error) {
+        defaultErrorHandler(dispatch);
+        dispatch(finishLoading());
+      });
+  };
 };
 
 const getTaskSpent = id => {
@@ -167,7 +183,6 @@ const changeTask = (ChangedProperties, target, callback) => {
       .put(`${API_URL}/task/${ChangedProperties.id}`)
       .then(
         function(response) {
-          console.log('response1', response);
           dispatch(successTaskChange(response.data));
           dispatch(stopTaskEditing(target));
           if (callback) {
@@ -388,7 +403,10 @@ const publishComment = (taskId, comment) => {
   return dispatch => {
     dispatch(commentPublishStart(taskId, comment));
     return axios
-      .post(URL, { text, parentId })
+      .post(URL, {
+        text,
+        parentId
+      })
       .then(
         result => dispatch(commentPublishSuccess(taskId, comment, result.data)),
         error => dispatch(commentPublishFail(taskId, comment, error))
@@ -424,7 +442,9 @@ const editComment = (taskId, commentId, text) => {
   if (!taskId || !commentId) {
     return () => {};
   }
-  const comment = { text };
+  const comment = {
+    text
+  };
   const URL = `${API_URL}/task/${taskId}/comment/${commentId}`;
   return dispatch => {
     dispatch(commentUpdateStart(taskId, commentId, comment));

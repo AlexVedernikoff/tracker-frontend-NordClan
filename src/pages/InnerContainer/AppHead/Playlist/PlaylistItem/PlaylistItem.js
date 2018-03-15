@@ -124,9 +124,11 @@ class PlaylistItem extends Component {
     const timesheetDisabled = this.props.disabled;
     const status = task ? task.taskStatus : null;
     const redColorForTime = task ? parseFloat(task.factExecutionTime) > parseFloat(task.plannedExecutionTime) : false;
-    const taskLabel = task && project ? `${project.prefix}-${task.id}` : null;
-    const createDraftStatusName = createDraftStatus ? createDraftStatus.name.replace(' stop', '') : '';
 
+    const prefix = project && project.prefix ? `${project.prefix}-` : '';
+    const taskLabel = task && prefix ? prefix + task.id : null;
+
+    const createDraftStatusName = createDraftStatus ? createDraftStatus.name.replace(' stop', '') : '';
     return (
       <div className={classnames(css.listTask, css.task)}>
         <div
@@ -137,12 +139,17 @@ class PlaylistItem extends Component {
         >
           {getMaIcon(typeId)}
         </div>
-        <div className={css.taskNameWrapper} onClick={this.goToDetailPage}>
+        <div
+          className={
+            this.props.thisPageCurrentTask === true ? css.taskNameWrapper + ' ' + css.currentItrem : css.taskNameWrapper
+          }
+          onClick={this.goToDetailPage}
+        >
           <div className={css.taskTitle}>
             <div className={css.meta}>
               {task && task.prefix ? <span>{task.prefix}</span> : null}
               <span className={css.proName}>{project ? project.name : 'Без проекта'}</span>
-              {sprint ? <span>{sprint.name}</span> : null}
+              <span>{sprint ? sprint.name : 'Backlog'}</span>
               {status ? (
                 <span>
                   {createDraftStatus ? (
