@@ -15,6 +15,7 @@ import { IconComment, IconCheck, IconEye, IconEyeDisable } from '../../../../../
 class PlaylistItem extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       itemSpentTime: roundNum(this.props.item.spentTime, 2),
       isCommentOpen: false
@@ -120,14 +121,14 @@ class PlaylistItem extends Component {
       sprint,
       isVisible
     } = this.props.item;
+    const timesheetDisabled = this.props.disabled;
     const status = task ? task.taskStatus : null;
     const redColorForTime = task ? parseFloat(task.factExecutionTime) > parseFloat(task.plannedExecutionTime) : false;
 
-    const prefix = project ? project.prefix : '';
-    const taskLabel = task && project ? `${project.prefix}-${task.id}` : null;
+    const prefix = project && project.prefix ? `${project.prefix}-` : '';
+    const taskLabel = task && prefix ? prefix + task.id : null;
 
     const createDraftStatusName = createDraftStatus ? createDraftStatus.name.replace(' stop', '') : '';
-
     return (
       <div className={classnames(css.listTask, css.task)}>
         <div
@@ -138,12 +139,17 @@ class PlaylistItem extends Component {
         >
           {getMaIcon(typeId)}
         </div>
-        <div className={css.taskNameWrapper} onClick={this.goToDetailPage}>
+        <div
+          className={
+            this.props.thisPageCurrentTask === true ? css.taskNameWrapper + ' ' + css.currentItrem : css.taskNameWrapper
+          }
+          onClick={this.goToDetailPage}
+        >
           <div className={css.taskTitle}>
             <div className={css.meta}>
               {task && task.prefix ? <span>{task.prefix}</span> : null}
               <span className={css.proName}>{project ? project.name : 'Без проекта'}</span>
-              {sprint ? <span>{sprint.name}</span> : null}
+              <span>{sprint ? sprint.name : 'Backlog'}</span>
               {status ? (
                 <span>
                   {createDraftStatus ? (
@@ -188,7 +194,12 @@ class PlaylistItem extends Component {
         </div>
         <div className={css.time}>
           <div className={css.today}>
-            <input type="text" onChange={this.handleChangeTime} value={this.state.itemSpentTime} />
+            <input
+              type="text"
+              onChange={this.handleChangeTime}
+              value={this.state.itemSpentTime}
+              disabled={timesheetDisabled}
+            />
           </div>
           <div className={classnames({ [css.other]: true, [css.exceeded]: redColorForTime })}>
             <span data-tip="Всего потрачено" data-place="bottom">
@@ -213,10 +224,13 @@ class PlaylistItem extends Component {
               defaultValue={comment}
               value={this.state.comment}
               placeholder="Введите текст комментария"
+              disabled={timesheetDisabled}
             />
-            <div className={css.actionButton} onClick={this.pushComment(this.state.comment)}>
-              <IconCheck style={{ width: '1.5rem', height: '1.5rem' }} />
-            </div>
+            {!timesheetDisabled && (
+              <div className={css.actionButton} onClick={this.pushComment(this.state.comment)}>
+                <IconCheck style={{ width: '1.5rem', height: '1.5rem' }} />
+              </div>
+            )}
           </div>
         ) : null}
       </div>
@@ -225,6 +239,7 @@ class PlaylistItem extends Component {
 }
 
 PlaylistItem.propTypes = {
+  disabled: PropTypes.bool,
   handleToggleList: PropTypes.func,
   index: PropTypes.number.isRequired,
   item: PropTypes.object.isRequired,

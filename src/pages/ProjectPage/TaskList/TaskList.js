@@ -145,8 +145,12 @@ class TaskList extends Component {
     });
   };
 
-  closePerformerModal = () => {
-    this.setState({ isPerformerModalOpen: false });
+  closePerformerModal = performerId => {
+    if (performerId === 0) {
+      this.changePerformer(performerId);
+    } else {
+      this.setState({ isPerformerModalOpen: false });
+    }
   };
 
   changePerformer = performerId => {

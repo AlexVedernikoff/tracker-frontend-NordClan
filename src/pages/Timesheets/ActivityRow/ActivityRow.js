@@ -12,7 +12,7 @@ import TotalComment from './TotalComment';
 import * as css from '../Timesheets.scss';
 import { IconClose } from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal';
-import EditActivityProjectModal from '../../../components/EditActivityProjectModal';
+import * as timesheetsConstants from '../../../constants/Timesheets';
 import {
   createTimesheet,
   updateTimesheet,
@@ -20,6 +20,7 @@ import {
   deleteTempTimesheets,
   editTempTimesheet
 } from '../../../actions/Timesheets';
+import EditActivityProjectModal from '../../../components/EditActivityProjectModal';
 
 class ActivityRow extends React.Component {
   static propTypes = {
@@ -290,12 +291,15 @@ class ActivityRow extends React.Component {
     const maType = ma ? _.find(magicActivitiesTypes, { id: item.typeId }) : '';
     const totalTime = roundNum(_.sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
     const timeSheetIds = _.remove(item.timeSheets.map(tsh => tsh.id), tsh => tsh);
-    const canDeleteRow = !!item.timeSheets.filter(tsh => tsh.id && tsh.statusId !== 3 && tsh.statusId !== 4).length;
+    const canDeleteRow = !item.timeSheets.find(
+      tsh =>
+        tsh.id &&
+        (tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
+          tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED)
+    );
     const tempCell = item.timeSheets.find(tsh => tsh.id && tsh.id.toString().includes('temp'));
     const isTempRow = !!tempCell;
     const timeCells = item.timeSheets.map((tsh, i) => {
-      const isCellDisabled = tsh.statusId === 3 || tsh.statusId === 4;
-
       if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
         return (
           <td
@@ -310,21 +314,21 @@ class ActivityRow extends React.Component {
                 className={cn({
                   [css.timeCell]: true,
                   [css.filled]: +tsh.spentTime && tsh.statusId === 1,
-                  [css.submitted]: tsh.statusId === 3,
-                  [css.approved]: tsh.statusId === 4,
-                  [css.rejected]: tsh.statusId === 2
+                  [css.submitted]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED,
+                  [css.approved]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED,
+                  [css.rejected]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED
                 })}
               >
                 <input
                   type="text"
-                  disabled={isCellDisabled}
+                  disabled={!canDeleteRow}
                   value={this.state.timeCells[i]}
                   onChange={e => this.changeFilled(i, tsh.id, tsh.comment, e.target.value)}
                   onBlur={e => this.onBlurFilled(i, tsh.id, tsh.comment, e.target.value)}
                 />
                 <span className={css.toggleComment}>
                   <SingleComment
-                    disabled={isCellDisabled}
+                    disabled={!canDeleteRow}
                     comment={tsh.comment}
                     onChange={text => this.changeFilledComment(text, tsh.spentTime, i, tsh.id)}
                   />
@@ -352,7 +356,7 @@ class ActivityRow extends React.Component {
                   onBlur={e => this.onBlurEmpty(i, e.target.value)}
                 />
                 <span className={css.toggleComment}>
-                  <SingleComment onChange={text => this.changeEmptyComment(text, i)} />
+                  <SingleComment disabled={!canDeleteRow} onChange={text => this.changeEmptyComment(text, i)} />
                 </span>
               </div>
             </div>
@@ -372,7 +376,7 @@ class ActivityRow extends React.Component {
                   <span>{item.projectName}</span>
                 )
               ) : null}
-              {item.sprint ? <span>{item.sprint.name}</span> : null}
+              <span>{item.sprint ? item.sprint.name : 'Backlog'}</span>
               {status ? <span>{status.name}</span> : null}
             </div>
             <div>

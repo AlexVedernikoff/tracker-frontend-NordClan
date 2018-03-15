@@ -1,9 +1,7 @@
 @import '../../../../styles/variables.scss';
-
 .playlistWrapper {
   width: 34rem;
   display: block;
-
   @include phone {
     display: none;
   }
@@ -25,7 +23,6 @@
   min-height: 3.5rem;
   cursor: pointer;
   transition: $transition;
-
   &:hover {
     transition: $transition;
   }
@@ -34,7 +31,6 @@
 .displayTask {
   color: white;
   height: 100%;
-
   &:hover {
     background-color: rgba(white, 0.1);
   }
@@ -49,24 +45,20 @@
   transition: $transition;
   background-color: lighten($color-dark, 5%);
   cursor: pointer;
-
   svg {
     opacity: 0.6;
     transition: $transition;
     width: 1.5rem;
     height: 1.5rem;
   }
-
   &:hover {
     background-color: rgba(white, 0.1);
     transition: $transition;
-
     svg {
       opacity: 1;
       transition: $transition;
     }
   }
-
   &.locked:hover svg {
     opacity: 0.6;
     transition: $transition;
@@ -81,19 +73,15 @@
 .listTask {
   &:hover {
     background-color: rgba(black, 0.05);
-
     .visibleToggler {
       opacity: 1;
     }
   }
-
   .actionButton {
     background-color: rgba(black, 0.05);
-
     &.locked:hover {
       background-color: rgba(black, 0.05);
     }
-
     &:hover {
       background-color: rgba(black, 0.1);
     }
@@ -108,6 +96,22 @@
   padding: 0 0.5rem;
   display: flex;
   align-items: center;
+  &.currentItrem {
+    .taskName {
+      position: relative;
+      padding-left: 20px;
+      &:after {
+        content: '';
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: $color-green;
+        position: absolute;
+        top: 1px;
+        left: 0;
+      }
+    }
+  }
   .proName {
     max-width: 95px;
     overflow-x: hidden;
@@ -138,10 +142,8 @@
   margin-bottom: 0.25rem;
   white-space: nowrap;
   text-overflow: ellipsis;
-
   span {
     display: inline-block;
-
     & + span {
       border-left: 1px solid rgba(black, 0.3);
       margin-left: 0.3rem;
@@ -162,32 +164,19 @@
   flex-shrink: 0;
   padding: 0.5rem;
   border-left: 1px solid $color-gray;
-
   .other {
     font-size: 11px;
     line-height: 1;
     color: gray;
     text-align: center;
-
-    & > span {
-      // display: inline-block;
-
-      & + span {
-        // margin-left: 0.25rem;
-        // padding-left: 0.25rem;
-      }
-    }
-
     &.exceeded {
       color: $color-red;
     }
   }
-
   .today {
     font-size: 16px;
     background-color: rgba(black, 0.05);
     margin-bottom: 0.3rem;
-
     input {
       width: 100%;
       background: none;
@@ -199,7 +188,6 @@
 
 .week {
   display: flex;
-
   .day {
     flex: 1;
     text-align: center;
@@ -214,16 +202,13 @@
     &.inactive {
       cursor: default;
     }
-
     &:hover {
       background-color: $color-dark;
       transition: $transition;
     }
-
     &.active {
       background-color: $color-green;
     }
-
     & + .day {
       border-left: 1px solid lighten($color-dark, 20%);
     }
@@ -232,13 +217,11 @@
 
 .activity {
   display: flex;
-
   .time {
     .today {
       margin-bottom: 0;
     }
   }
-
   .type {
     flex: 1;
     display: flex;
@@ -250,7 +233,6 @@
     cursor: pointer;
     background-color: lighten(black, 95%);
     transition: $transition;
-
     .countBadge {
       position: absolute;
       opacity: 1;
@@ -261,18 +243,15 @@
       background: white;
       border-color: silver;
     }
-
     svg {
       width: 16px;
       height: 16px;
       opacity: 0.7;
     }
-
     &:hover {
       background-color: lighten(black, 90%);
       transition: $transition;
     }
-
     &.active {
       background-color: lighten(black, 85%);
     }
@@ -303,7 +282,6 @@
   border: 1px solid rgba(black, 0.05);
   transition: $transition;
   cursor: pointer;
-
   &:hover {
     background-color: rgba(black, 0.05);
     transition: $transition;
@@ -318,15 +296,12 @@
 .visibleToggler {
   color: lighten(black, 50%);
   transition: $transition;
-
   &.green {
     color: $color-green;
-
     &:hover {
       color: $color-green;
     }
   }
-
   &:hover {
     color: lighten(black, 30%);
     transition: $transition;
@@ -336,7 +311,6 @@
 .comment {
   width: 100%;
   display: flex;
-
   textarea {
     width: calc(100% - 3.5rem);
     height: 3.5rem;
@@ -344,9 +318,11 @@
     border: 1px solid $color-gray;
     border-right: none;
     padding: 0.5rem;
-
     &::placeholder {
       color: silver;
+    }
+    &:only-child {
+      width: 100%;
     }
   }
 }

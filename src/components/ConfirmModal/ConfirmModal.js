@@ -51,15 +51,7 @@ const iconStyles = {
 };
 
 const ConfirmModal = props => {
-  const {
-    style,
-    onRequestClose,
-    closeTimeoutMS,
-    text,
-    onConfirm,
-    onCancel,
-    ...other
-  } = props;
+  const { style, onRequestClose, closeTimeoutMS, text, onConfirm, onCancel, notification, ...other } = props;
 
   return (
     <ReactModal
@@ -69,22 +61,18 @@ const ConfirmModal = props => {
       closeTimeoutMS={200 || closeTimeoutMS}
     >
       <div className={css.container}>
-        <h3 style={{ margin: 0 }}>
-          {text}
-        </h3>
+        <h3 style={{ margin: 0 }}>{text}</h3>
       </div>
-      <Button
-        text="ОК"
-        type="green"
-        style={{ width: '50%' }}
-        onClick={onConfirm}
-      />
-      <Button
-        text="Отмена"
-        type="primary"
-        style={{ width: '50%' }}
-        onClick={onCancel}
-      />
+      {notification ? (
+        <div>
+          <Button text="Отмена" type="primary" style={{ width: '100%' }} onClick={onCancel} />
+        </div>
+      ) : (
+        <div>
+          <Button text="ОК" type="green" style={{ width: '50%' }} onClick={onConfirm} />
+          <Button text="Отмена" type="primary" style={{ width: '50%' }} onClick={onCancel} />
+        </div>
+      )}
     </ReactModal>
   );
 };

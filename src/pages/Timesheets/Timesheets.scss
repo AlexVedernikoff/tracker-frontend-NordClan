@@ -198,7 +198,7 @@ td.today {
   border-top-width: 0;
   border-bottom-width: 0;
 }
-tr:nth-last-child(2) td.today {
+tr:last-child td.today {
   border-bottom-width: 1px;
 }
 .total > div {
