@@ -12,7 +12,7 @@ import roundNum from '../../../../../utils/roundNum';
 import { IconComment, IconCheck, IconEye, IconEyeDisable } from '../../../../../components/Icons';
 
 class PlaylistItem extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       itemSpentTime: roundNum(this.props.item.spentTime, 2),
@@ -22,23 +22,23 @@ class PlaylistItem extends Component {
     this.debouncedUpdateOnlyTimesheet = _.debounce(this.props.updateTimesheet, 500);
   }
 
-  toggleComment = (event) => {
+  toggleComment = event => {
     event.stopPropagation();
     this.setState({ isCommentOpen: !this.state.isCommentOpen });
   };
 
-  pushComment = (comment) => {
+  pushComment = comment => {
     return () => {
       this.debouncedUpdateOnlyTimesheet({
         sheetId: this.props.item.id,
         comment
       });
 
-      this.setState((prevState) => ({ isCommentOpen: !prevState.isCommentOpen }));
+      this.setState(prevState => ({ isCommentOpen: !prevState.isCommentOpen }));
     };
   };
 
-  handleChangeTime = (e) => {
+  handleChangeTime = e => {
     let value = e.target.value.replace(/[^\d,.]/g, '');
     if (value.charAt(0) === '.' || value.charAt(0) === ',') {
       value = '';
@@ -82,7 +82,7 @@ class PlaylistItem extends Component {
     });
   };
 
-  handleChangeComment = (e) => {
+  handleChangeComment = e => {
     this.setState({ comment: e.target.value });
   };
 
@@ -96,7 +96,7 @@ class PlaylistItem extends Component {
     item.isDraft ? updateDraft(params) : updateTimesheet(params);
   };
 
-  getNameByType = (typeId) => {
+  getNameByType = typeId => {
     const activity = _.find(this.props.magicActivitiesTypes, { id: typeId });
     return activity ? activity.name : 'Не определено';
   };
@@ -109,7 +109,7 @@ class PlaylistItem extends Component {
     }
   };
 
-  render () {
+  render() {
     const {
       task,
       project,
@@ -123,8 +123,8 @@ class PlaylistItem extends Component {
     const status = task ? task.taskStatus : null;
     const redColorForTime = task ? parseFloat(task.factExecutionTime) > parseFloat(task.plannedExecutionTime) : false;
 
-    const prefix = project ? project.prefix : '';
-    const taskLabel = task && project ? `${project.prefix}-${task.id}` : null;
+    const prefix = project && project.prefix ? `${project.prefix}-` : '';
+    const taskLabel = task && prefix ? prefix + task.id : null;
 
     const createDraftStatusName = createDraftStatus ? createDraftStatus.name.replace(' stop', '') : '';
 
@@ -166,17 +166,13 @@ class PlaylistItem extends Component {
 
               {status !== 'education' ? (
                 isVisible ? (
-                  <span
-                    className={css.visibleToggler}
-                    onClick={(e) => this.changeVisibility(e, false)}
-                    data-tip="Скрыть"
-                  >
+                  <span className={css.visibleToggler} onClick={e => this.changeVisibility(e, false)} data-tip="Скрыть">
                     <IconEyeDisable />
                   </span>
                 ) : (
                   <span
                     className={css.visibleToggler}
-                    onClick={(e) => this.changeVisibility(e, true)}
+                    onClick={e => this.changeVisibility(e, true)}
                     data-tip="Показать"
                   >
                     <IconEye />
@@ -243,7 +239,7 @@ PlaylistItem.propTypes = {
   visible: PropTypes.bool.isRequired
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     magicActivitiesTypes: state.Dictionaries.magicActivityTypes
   };
