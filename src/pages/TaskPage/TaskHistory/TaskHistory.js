@@ -20,9 +20,10 @@ class TaskHistory extends React.Component {
   };
 
   handlePaginationClick = e => {
+    const activePage = e.activePage;
     this.setState(
       {
-        activePage: e.activePage
+        activePage: activePage
       },
       this.loadHistoryEvents
     );

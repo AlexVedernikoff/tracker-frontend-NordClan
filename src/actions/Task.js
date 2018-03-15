@@ -45,6 +45,17 @@ const getTaskFail = error => ({
   error: error
 });
 
+const postChangeFail = error => ({
+  type: TaskActions.TASK_CHANGE_REQUEST_FAIL,
+  closeHasError: false,
+  error: error
+});
+
+const clearError = status => ({
+  type: TaskActions.ERROR_CLEAR,
+  status: status
+});
+
 const requestTaskChange = () => ({
   type: TaskActions.TASK_CHANGE_REQUEST_SENT
 });
@@ -132,14 +143,6 @@ const getTaskHistory = (id, options) => {
         dispatch(finishLoading());
       })
       .catch(function(error) {
-        if (error.response) {
-          console.log('status', error.response.status);
-          console.log('headers', error.response.headers);
-        } else if (error.request) {
-          console.log('request', error.request);
-        }
-        console.log(error.config);
-        console.log('Error----', error.message);
         defaultErrorHandler(dispatch);
         dispatch(finishLoading());
       });
@@ -167,23 +170,38 @@ const changeTask = (ChangedProperties, target, callback) => {
   if (!ChangedProperties.id) {
     return;
   }
-  return dispatch =>
+  return dispatch => {
     dispatch({
       type: REST_API,
       url: `/task/${ChangedProperties.id}`,
       method: PUT,
       body: ChangedProperties,
       extra,
-      start: withStartLoading(requestTaskChange, true)(dispatch),
-      response: withFinishLoading(response => {
-        dispatch(successTaskChange(response.data));
-        dispatch(stopTaskEditing(target));
-        if (callback) {
-          callback();
-        }
-      })(dispatch),
-      error: defaultErrorHandler(dispatch)
+      start: withStartLoading(requestTaskChange, true)(dispatch)
     });
+    axios
+      .put(`${API_URL}/task/${ChangedProperties.id}`)
+      .then(
+        function(response) {
+          console.log('response1', response);
+          dispatch(successTaskChange(response.data));
+          dispatch(stopTaskEditing(target));
+          if (callback) {
+            callback();
+          }
+          dispatch(finishLoading());
+        },
+        function(value) {
+          if (value == 'Error: Request failed with status code 403') {
+            dispatch(postChangeFail());
+            dispatch(finishLoading());
+          }
+        }
+      )
+      .catch(function(error) {
+        dispatch(finishLoading());
+      });
+  };
 };
 
 const linkTask = (taskId, linkedTaskId) => {
@@ -528,5 +546,6 @@ export {
   resetCurrentEditingComment,
   setCurrentCommentExpired,
   setHighLighted,
-  clearCurrentTask
+  clearCurrentTask,
+  clearError
 };
