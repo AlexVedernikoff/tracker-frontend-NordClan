@@ -3,6 +3,7 @@ import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
 import { SOCKET_IO } from '../constants/SocketIO';
+import { finishLoading } from './Loading';
 import {
   defaultErrorHandler,
   withFinishLoading,
@@ -42,6 +43,17 @@ const getTaskSpentSuccess = spent => ({
 const getTaskFail = error => ({
   type: TaskActions.GET_TASK_REQUEST_FAIL,
   error: error
+});
+
+const postChangeFail = error => ({
+  type: TaskActions.TASK_CHANGE_REQUEST_FAIL,
+  closeHasError: false,
+  error: error
+});
+
+const clearError = status => ({
+  type: TaskActions.ERROR_CLEAR,
+  status: status
 });
 
 const requestTaskChange = () => ({
@@ -142,23 +154,38 @@ const changeTask = (ChangedProperties, target, callback) => {
   if (!ChangedProperties.id) {
     return;
   }
-  return dispatch =>
+  return dispatch => {
     dispatch({
       type: REST_API,
       url: `/task/${ChangedProperties.id}`,
       method: PUT,
       body: ChangedProperties,
       extra,
-      start: withStartLoading(requestTaskChange, true)(dispatch),
-      response: withFinishLoading(response => {
-        dispatch(successTaskChange(response.data));
-        dispatch(stopTaskEditing(target));
-        if (callback) {
-          callback();
-        }
-      })(dispatch),
-      error: defaultErrorHandler(dispatch)
+      start: withStartLoading(requestTaskChange, true)(dispatch)
     });
+    axios
+      .put(`${API_URL}/task/${ChangedProperties.id}`)
+      .then(
+        function(response) {
+          console.log('response1', response);
+          dispatch(successTaskChange(response.data));
+          dispatch(stopTaskEditing(target));
+          if (callback) {
+            callback();
+          }
+          dispatch(finishLoading());
+        },
+        function(value) {
+          if (value == 'Error: Request failed with status code 403') {
+            dispatch(postChangeFail());
+            dispatch(finishLoading());
+          }
+        }
+      )
+      .catch(function(error) {
+        dispatch(finishLoading());
+      });
+  };
 };
 
 const linkTask = (taskId, linkedTaskId) => {
@@ -325,7 +352,7 @@ const getCommentsByTask = taskId => {
     dispatch(requestCommentsByTaskId(taskId));
     axios.get(URL).then(
       result => {
-        return dispatch(requestCommentsByTaskIdSuccess(taskId, result.data));
+        return dispatch(requestCommentsByTaskIdSuccess(taskId, result));
       },
       error => dispatch(requestCommentsByTaskIdFail(taskId, error))
     );
@@ -498,5 +525,6 @@ export {
   resetCurrentEditingComment,
   setCurrentCommentExpired,
   setHighLighted,
-  clearCurrentTask
+  clearCurrentTask,
+  clearError
 };

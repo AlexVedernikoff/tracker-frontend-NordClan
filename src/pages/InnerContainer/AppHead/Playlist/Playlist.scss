@@ -169,15 +169,6 @@
     color: gray;
     text-align: center;
 
-    & > span {
-      // display: inline-block;
-
-      & + span {
-        // margin-left: 0.25rem;
-        // padding-left: 0.25rem;
-      }
-    }
-
     &.exceeded {
       color: $color-red;
     }
@@ -347,6 +338,10 @@
 
     &::placeholder {
       color: silver;
+    }
+
+    &:only-child {
+      width: 100%;
     }
   }
 }
