@@ -140,9 +140,9 @@ class PlaylistItem extends Component {
           {getMaIcon(typeId)}
         </div>
         <div
-          className={
-            this.props.thisPageCurrentTask === true ? css.taskNameWrapper + ' ' + css.currentItrem : css.taskNameWrapper
-          }
+          className={classnames(css.taskNameWrapper, {
+            [css.currentItrem]: task && task.id === this.props.task.id && project.id === this.props.task.projectId
+          })}
           onClick={this.goToDetailPage}
         >
           <div className={css.taskTitle}>
@@ -244,6 +244,7 @@ PlaylistItem.propTypes = {
   index: PropTypes.number.isRequired,
   item: PropTypes.object.isRequired,
   magicActivitiesTypes: PropTypes.array,
+  task: PropTypes.object,
   updateDraft: PropTypes.func,
   updateTimesheet: PropTypes.func,
   visible: PropTypes.bool.isRequired
@@ -251,7 +252,8 @@ PlaylistItem.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    magicActivitiesTypes: state.Dictionaries.magicActivityTypes
+    magicActivitiesTypes: state.Dictionaries.magicActivityTypes,
+    task: state.Task.task
   };
 };
 
