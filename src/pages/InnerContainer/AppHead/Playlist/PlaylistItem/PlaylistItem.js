@@ -141,7 +141,8 @@ class PlaylistItem extends Component {
         </div>
         <div
           className={classnames(css.taskNameWrapper, {
-            [css.currentItrem]: task && task.id === this.props.task.id && project.id === this.props.task.projectId
+            [css.currentItem]:
+              task && project && task.id === this.props.task.id && project.id === this.props.task.projectId
           })}
           onClick={this.goToDetailPage}
         >
