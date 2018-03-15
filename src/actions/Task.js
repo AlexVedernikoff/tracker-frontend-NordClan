@@ -167,7 +167,6 @@ const changeTask = (ChangedProperties, target, callback) => {
       .put(`${API_URL}/task/${ChangedProperties.id}`)
       .then(
         function(response) {
-          console.log('response1', response);
           dispatch(successTaskChange(response.data));
           dispatch(stopTaskEditing(target));
           if (callback) {

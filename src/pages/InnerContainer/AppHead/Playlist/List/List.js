@@ -18,6 +18,7 @@ class List extends Component {
     super(props);
     this.state = {
       isDraftShow: false,
+      colorCurrent: '#5cb85c',
       areTracksDisabled: this.checkIfshouldBeDisabled(this.props.tracks)
     };
   }
@@ -41,6 +42,11 @@ class List extends Component {
   };
 
   playlistItem = (item, i) => {
+    const [host, projects, idProject, tasks, idTasks] = window.location.pathname.split('/');
+    let thisPageCurrentTask = false;
+    if (parseInt(idProject) === item.projectId && parseInt(idTasks) === item.task.id) {
+      thisPageCurrentTask = true;
+    }
     return (
       <PlaylistItem
         item={item}
@@ -49,6 +55,7 @@ class List extends Component {
         visible
         changeVisibility={this.changeVisibility}
         handleToggleList={this.props.handleToggleList}
+        thisPageCurrentTask={thisPageCurrentTask}
         disabled={this.state.areTracksDisabled}
       />
     );
@@ -57,13 +64,16 @@ class List extends Component {
   render() {
     const { isDraftShow } = this.state;
     const { tracks } = this.props;
+    const current =
+      tracks && tracks.filter(item => item.isVisible && item.task.taskStatus.id === 2).map(this.playlistItem);
+    const visible =
+      tracks && tracks.filter(item => item.isVisible && item.task.taskStatus.id !== 2).map(this.playlistItem);
 
-    const visible = tracks ? tracks.filter(item => item.isVisible).map(this.playlistItem) : null;
-
-    const invisible = tracks ? tracks.filter(item => !item.isVisible).map(this.playlistItem) : null;
+    const invisible = tracks && tracks.filter(item => !item.isVisible).map(this.playlistItem);
 
     return (
       <div>
+        {current}
         {visible}
         {invisible && invisible.length > 0 ? (
           <div
