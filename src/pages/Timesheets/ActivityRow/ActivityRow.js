@@ -348,7 +348,7 @@ class ActivityRow extends React.Component {
           <div className={css.taskCard}>
             <div className={css.meta}>
               {item.projectName ? <span>{item.projectName}</span> : null}
-              {item.sprint ? <span>{item.sprint.name}</span> : null}
+              <span>{item.sprint ? item.sprint.name : 'Backlog'}</span>
               {status ? <span>{status.name}</span> : null}
             </div>
             <div>
