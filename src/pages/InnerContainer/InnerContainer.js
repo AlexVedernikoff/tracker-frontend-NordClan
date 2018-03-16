@@ -50,7 +50,7 @@ class InnerContainer extends Component {
 
   componentWillUnmount() {
     this.state.mql.removeListener(this.mediaQueryChanged);
-    this.listenHistory();
+    this.unlistenHistory();
   }
 
   mediaQueryChanged = () => {
@@ -58,8 +58,10 @@ class InnerContainer extends Component {
   };
 
   listenHistory = () => {
-    history.listen(() => {
-      this.onSetSidebarOpen(false);
+    this.unlistenHistory = history.listen(() => {
+      if (this.state.sidebarOpen) {
+        this.onSetSidebarOpen(false);
+      }
     });
   };
 
