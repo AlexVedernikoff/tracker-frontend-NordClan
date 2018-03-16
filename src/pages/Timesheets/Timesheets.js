@@ -161,7 +161,8 @@ class Timesheets extends React.Component {
             !_.find(res, tsh => {
               const isSameType = tsh.typeId === el.typeId;
               const isSameProject = el.project ? tsh.projectId === el.project.id : tsh.projectId === 0;
-              return isSameType && isSameProject;
+              const isSameSprint = (el.sprint ? el.sprint.id : 0) === (tsh.sprint ? tsh.sprint.id : 0);
+              return isSameType && isSameProject && isSameSprint;
             });
 
           if (maNotPushed && isThisWeek(el.onDate)) {
@@ -205,9 +206,15 @@ class Timesheets extends React.Component {
       return { ...element, timeSheets };
     });
 
-    const magicActivityRows = magicActivities.map(item => (
-      <ActivityRow key={`${item.projectId}-${item.typeId}-${startingDay}`} ma item={item} />
-    ));
+    const magicActivityRows = magicActivities.map(item => {
+      return (
+        <ActivityRow
+          key={`${item.projectId}-${item.typeId}-${startingDay}-${item.sprint ? item.sprint.id : 0}`}
+          ma
+          item={item}
+        />
+      );
+    });
 
     // Создание заголовка таблицы
 

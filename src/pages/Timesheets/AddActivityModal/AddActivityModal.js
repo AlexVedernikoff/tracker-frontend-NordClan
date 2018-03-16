@@ -357,7 +357,13 @@ class AddActivityModal extends Component {
             </label>
           ) : null}
           <div className={css.footer}>
-            <Button text="Добавить" htmlType="submit" type="green" onClick={this.addActivity} />
+            <Button
+              text="Добавить"
+              disabled={!this.props.selectedActivityType}
+              htmlType="submit"
+              type="green"
+              onClick={this.addActivity}
+            />
           </div>
         </div>
       </Modal>

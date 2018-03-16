@@ -66,11 +66,16 @@ class Description extends Component {
 
   updateText = () => {
     const { onEditSubmit } = this.props;
-
+    const options = {
+      inlineStyles: {
+        SUPERSCRIPT: { element: 'sup' },
+        SUBSCRIPT: { element: 'sub' }
+      }
+    };
     onEditSubmit(
       {
         id: this.props.id,
-        description: stateToHTML(this.TextEditor.state.editorState.getCurrentContent())
+        description: stateToHTML(this.TextEditor.state.editorState.getCurrentContent(), options)
       },
       'Description'
     );

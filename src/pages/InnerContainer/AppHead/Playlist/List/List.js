@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
 import * as timesheetsConstants from '../../../../../constants/Timesheets';
+import { TASK_STATUS_DEVELOP_PLAY } from '../../../../../constants/Task';
 
 import { IconArrowDown, IconArrowUp } from '../../../../../components/Icons';
 
@@ -18,7 +19,6 @@ class List extends Component {
     super(props);
     this.state = {
       isDraftShow: false,
-      colorCurrent: '#5cb85c',
       areTracksDisabled: this.checkIfshouldBeDisabled(this.props.tracks)
     };
   }
@@ -42,11 +42,6 @@ class List extends Component {
   };
 
   playlistItem = (item, i) => {
-    const [host, projects, idProject, tasks, idTasks] = window.location.pathname.split('/');
-    let thisPageCurrentTask = false;
-    if (parseInt(idProject) === item.projectId && parseInt(idTasks) === item.task.id) {
-      thisPageCurrentTask = true;
-    }
     return (
       <PlaylistItem
         item={item}
@@ -55,7 +50,6 @@ class List extends Component {
         visible
         changeVisibility={this.changeVisibility}
         handleToggleList={this.props.handleToggleList}
-        thisPageCurrentTask={thisPageCurrentTask}
         disabled={this.state.areTracksDisabled}
       />
     );
@@ -64,16 +58,15 @@ class List extends Component {
   render() {
     const { isDraftShow } = this.state;
     const { tracks } = this.props;
-    const current =
-      tracks && tracks.filter(item => item.isVisible && item.task.taskStatus.id === 2).map(this.playlistItem);
-    const visible =
-      tracks && tracks.filter(item => item.isVisible && item.task.taskStatus.id !== 2).map(this.playlistItem);
+    const visible = [
+      ...tracks.filter(item => item.isVisible && item.task && item.task.taskStatus.id === TASK_STATUS_DEVELOP_PLAY),
+      ...tracks.filter(item => item.isVisible && (!item.task || item.task.taskStatus.id !== TASK_STATUS_DEVELOP_PLAY))
+    ].map(this.playlistItem);
 
     const invisible = tracks && tracks.filter(item => !item.isVisible).map(this.playlistItem);
 
     return (
       <div>
-        {current}
         {visible}
         {invisible && invisible.length > 0 ? (
           <div
