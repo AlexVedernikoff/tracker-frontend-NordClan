@@ -24,7 +24,7 @@ import * as css from './AgileBoard.scss';
 import getTasks from '../../../actions/Tasks';
 import { VISOR } from '../../../constants/Roles';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
-import { openCreateTaskModal, getProjectUsers } from '../../../actions/Project';
+import { openCreateTaskModal, getProjectUsers, getProjectInfo } from '../../../actions/Project';
 
 const filterTasks = array => {
   const taskArray = {
@@ -167,6 +167,10 @@ class AgileBoard extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (this.props.tracks !== nextProps.tracks && this.props.project.id) {
+      this.props.getProjectInfo(this.props.project.id);
+    }
+
     if (
       (this.props.sprints !== nextProps.sprints || this.props.lastCreatedTask !== nextProps.lastCreatedTask) &&
       nextProps.project.id
@@ -797,9 +801,11 @@ AgileBoard.propTypes = {
   project: PropTypes.object,
   sprintTasks: PropTypes.array,
   sprints: PropTypes.array,
+  tracks: PropTypes.object,
   startTaskEditing: PropTypes.func,
   user: PropTypes.object,
   getProjectUsers: PropTypes.func,
+  getProjectInfo: PropTypes.func,
   statuses: PropTypes.array,
   taskTypes: PropTypes.array
 };
@@ -809,6 +815,7 @@ const mapStateToProps = state => ({
   sprintTasks: state.Tasks.tasks,
   sprints: state.Project.project.sprints,
   project: state.Project.project,
+  tracks: state.TimesheetPlayer.tracks,
   StatusIsEditing: state.Task.StatusIsEditing,
   UserIsEditing: state.Task.UserIsEditing,
   user: state.Auth.user,
@@ -823,7 +830,8 @@ const mapDispatchToProps = {
   changeTask,
   startTaskEditing,
   openCreateTaskModal,
-  getProjectUsers
+  getProjectUsers,
+  getProjectInfo
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);
