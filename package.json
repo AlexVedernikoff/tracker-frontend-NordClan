@@ -69,7 +69,6 @@
     "react-scroll": "^1.7.4",
     "react-select": "^1.0.0-rc.5",
     "react-sidebar": "^2.3.0",
-    "react-textarea-autoheight": "^1.0.0",
     "react-tooltip": "^3.3.0",
     "redux": "^3.7.2",
     "redux-devtools-extension": "^2.13.2",
