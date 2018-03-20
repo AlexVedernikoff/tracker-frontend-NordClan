@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
-import * as timesheetsConstants from '../../../../../constants/Timesheets';
 import { TASK_STATUS_DEVELOP_PLAY } from '../../../../../constants/Task';
 
 import { IconArrowDown, IconArrowUp } from '../../../../../components/Icons';
@@ -11,6 +10,7 @@ import * as css from '../Playlist.scss';
 
 class List extends Component {
   static propTypes = {
+    disabled: PropTypes.bool,
     handleToggleList: PropTypes.func,
     tracks: PropTypes.array
   };
@@ -18,27 +18,12 @@ class List extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isDraftShow: false,
-      areTracksDisabled: this.checkIfshouldBeDisabled(this.props.tracks)
+      isDraftShow: false
     };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      areTracksDisabled: this.checkIfshouldBeDisabled(nextProps.tracks)
-    });
   }
 
   handleShowOther = () => {
     this.setState({ isDraftShow: !this.state.isDraftShow }, () => ReactTooltip.rebuild());
-  };
-
-  checkIfshouldBeDisabled = tracks => {
-    return !!tracks.find(
-      track =>
-        track.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
-        track.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED
-    );
   };
 
   playlistItem = (item, i) => {
@@ -50,7 +35,7 @@ class List extends Component {
         visible
         changeVisibility={this.changeVisibility}
         handleToggleList={this.props.handleToggleList}
-        disabled={this.state.areTracksDisabled}
+        disabled={this.props.disabled}
       />
     );
   };

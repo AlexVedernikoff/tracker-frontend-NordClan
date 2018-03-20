@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import _ from 'lodash';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import onClickOutside from 'react-onclickoutside';
 import ReactTooltip from 'react-tooltip';
@@ -10,7 +9,8 @@ import moment from 'moment';
 import getMaIcon from '../../../../constants/MagicActivityIcons';
 import ActiveTaskPanel from './ActiveTaskPanel';
 import { changeTask } from '../../../../actions/Task';
-import { IconPause, IconPlay, IconList } from '../../../../components/Icons';
+import { IconList } from '../../../../components/Icons';
+import * as timesheetsConstants from '../../../../constants/Timesheets';
 import List from './List';
 import * as css from './Playlist.scss';
 
@@ -246,6 +246,22 @@ class Playlist extends Component {
     return currentUserTracks;
   };
 
+  //Search for at least one timesheet in submitted or approved statuses, whole week should be disabled in this case
+  checkIfshouldBeDisabled = rawTracks => {
+    const tracksArray = Object.entries(rawTracks);
+    const disabledTrackFound = !!tracksArray.find(([, { tracks }]) => {
+      const disabledTimesheetFound = !!tracks.find(
+        track =>
+          track.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
+          track.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED
+      );
+
+      return disabledTimesheetFound;
+    });
+
+    return disabledTrackFound;
+  };
+
   render() {
     const { isPlaylistOpen } = this.state;
     const { activeTask, changeTask, tracks, currentUserId } = this.props;
@@ -293,6 +309,7 @@ class Playlist extends Component {
                 <List
                   handleToggleList={this.handleToggleList}
                   tracks={this.activeTracks(currentUserTracks, this.state.activeDayTab, this.state.activeActivityTab)}
+                  disabled={this.checkIfshouldBeDisabled(currentUserTracks)}
                 />
               </div>
               <div className={css.activity}>
