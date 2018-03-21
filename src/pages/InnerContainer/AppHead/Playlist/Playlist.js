@@ -249,8 +249,8 @@ class Playlist extends Component {
   //Search for at least one timesheet in submitted or approved statuses, whole week should be disabled in this case
   checkIfshouldBeDisabled = rawTracks => {
     const tracksArray = Object.entries(rawTracks);
-    const disabledTrackFound = !!tracksArray.find(([, { tracks }]) => {
-      const disabledTimesheetFound = !!tracks.find(
+    const disabledTrackFound = tracksArray.some(([, { tracks }]) => {
+      const disabledTimesheetFound = tracks.some(
         track =>
           track.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
           track.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED
