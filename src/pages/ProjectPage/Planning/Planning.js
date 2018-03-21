@@ -21,6 +21,7 @@ import ProjectDate from '../../../components/PlanningEdit/ProjectDate';
 import SprintCard from '../../../components/SprintCard';
 import SprintEditModal from '../../../components/SprintEditModal';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
+
 import { BACKLOG_ID } from '../../../constants/Sprint';
 import { ADMIN, VISOR } from '../../../constants/Roles';
 import { DONE } from '../../../constants/TaskStatuses';
@@ -374,29 +375,33 @@ class Planning extends Component {
 
   // TODO: Избавиться от цикла и множественных вызовов после создания API массового редактирования задач
   onMoveTasksModalConfirm = sprintId => {
-    const tasksToMove = this.getUnfinishedLeftTasks();
+    const tasks = this.getUnfinishedLeftTasks();
 
     const getPlanningTasksAll = () => {
-      console.log('callback called');
+      const { getPlanningTasks, leftColumnTasks, rightColumnTasks, project } = this.props;
 
       ['left', 'right'].forEach(side => {
-        this.props.getPlanningTasks(side, {
-          projectId: this.props.project.id,
-          sprintId: this.state[`${side}Column`]
+        getPlanningTasks(side, {
+          projectId: project.id,
+          sprintId: this.state[`${side}Column`],
+          currentPage:
+            side !== 'left'
+              ? rightColumnTasks.currentPage
+              : tasks.length === leftColumnTasks.rowsCountOnCurrentPage
+                ? Math.max(0, leftColumnTasks.currentPage - 1)
+                : leftColumnTasks.currentPage
         });
       });
     };
 
-    const debouncedGetPlanningTasks = _.debounce(getPlanningTasksAll, 500);
-
-    tasksToMove.forEach(task => {
+    tasks.forEach((task, index) => {
       this.props.changeTask(
         {
           id: task.id,
           sprintId: sprintId
         },
         'Sprint',
-        debouncedGetPlanningTasks
+        index === tasks.length - 1 ? getPlanningTasksAll : null
       );
     });
 
@@ -404,6 +409,19 @@ class Planning extends Component {
   };
 
   getUnfinishedLeftTasks = () => this.props.leftColumnTasks.data.filter(task => task.statusId !== DONE);
+
+  isMoveTasksButtonDisabled = unfinishedLeftTasksCount => {
+    const { leftColumn, rightColumn } = this.state;
+    const { loading } = this.props;
+
+    return (
+      leftColumn === null ||
+      rightColumn === null ||
+      leftColumn === rightColumn ||
+      unfinishedLeftTasksCount === 0 ||
+      loading
+    );
+  };
 
   render() {
     const isProjectAdmin = this.checkIsAdminInProject();
@@ -568,7 +586,7 @@ class Planning extends Component {
                 icon={'IconPointingArrowRight'}
                 data-tip="Перенести нереализованные задачи в другой спринт"
                 onClick={this.onMoveTasksModalOpen}
-                disabled={this.state.leftColumn === this.state.rightColumn || !unfinishedLeftTasksCount || loading}
+                disabled={this.isMoveTasksButtonDisabled(unfinishedLeftTasksCount)}
               />
               <ConfirmModal
                 isOpen={this.state.isModalOpenMoveTasks}
