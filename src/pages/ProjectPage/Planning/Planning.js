@@ -1,37 +1,39 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import * as css from './Planning.scss';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
-import DraggableTaskRow from './DraggableTaskRow';
-import Button from '../../../components/Button';
-import SelectDropdown from '../../../components/SelectDropdown';
-import CreateTaskModal from '../../../components/CreateTaskModal';
-import SprintColumn from './SprintColumn';
-import { connect } from 'react-redux';
-import moment from 'moment';
-import Budget from '../../../components/PlanningEdit/Budget';
-import ProjectDate from '../../../components/PlanningEdit/ProjectDate';
+
+import { editSprint } from '../../../actions/Sprint';
 import { createSprint } from '../../../actions/Sprint';
-import CreateSprintModal from '../CreateSprintModal';
-import SprintCard from '../../../components/SprintCard';
+import { editMilestone } from '../../../actions/Milestone';
 import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
-import { editSprint } from '../../../actions/Sprint';
-import { editMilestone } from '../../../actions/Milestone';
 import { openCreateTaskModal, getProjectInfo, changeProject } from '../../../actions/Project';
+
+import Button from '../../../components/Button';
+import Budget from '../../../components/PlanningEdit/Budget';
+import ConfirmModal from '../../../components/ConfirmModal';
+import CreateTaskModal from '../../../components/CreateTaskModal';
+import ProjectDate from '../../../components/PlanningEdit/ProjectDate';
+import SprintCard from '../../../components/SprintCard';
 import SprintEditModal from '../../../components/SprintEditModal';
-import { IconArrowDown, IconArrowRight, IconPreloader, IconPointingArrowRight } from '../../../components/Icons';
-import { IconEdit } from '../../../components/Icons';
+import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 import { BACKLOG_ID } from '../../../constants/Sprint';
 import { ADMIN, VISOR } from '../../../constants/Roles';
-import Table from './Table';
+import { DONE } from '../../../constants/TaskStatuses';
+
+import CreateSprintModal from '../CreateSprintModal';
 import CreateMilestoneModal from './CreateMilestoneModal';
+import DraggableTaskRow from './DraggableTaskRow';
 import EditMilestoneModal from './EditMilestoneModal';
 import SprintColumnHeader from './SprintColumnHeader/';
-import ConfirmModal from '../../../components/ConfirmModal';
-import { DONE } from '../../../constants/TaskStatuses';
+import SprintColumn from './SprintColumn';
+import Table from './Table';
+
+import moment from 'moment';
 import _ from 'lodash';
 
 class Planning extends Component {
