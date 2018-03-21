@@ -42,13 +42,13 @@ class Planning extends Component {
     getPlanningTasks: PropTypes.func.isRequired,
     isCreateTaskModalOpen: PropTypes.bool,
     lastCreatedTask: PropTypes.object,
-    leftColumnTasks: PropTypes.array,
+    leftColumnTasks: PropTypes.object,
     createdAt: PropTypes.string,
     completedAt: PropTypes.string,
     openCreateTaskModal: PropTypes.func,
     params: PropTypes.object,
     project: PropTypes.object,
-    rightColumnTasks: PropTypes.array,
+    rightColumnTasks: PropTypes.object,
     sprints: PropTypes.array.isRequired,
     startTaskEditing: PropTypes.func,
     user: PropTypes.object.isRequired
@@ -348,15 +348,24 @@ class Planning extends Component {
       'riskBudget'
     );
   };
+
+  loadTasks = (e, name, activePage) => {
+    this.props.getPlanningTasks(name === 'leftColumn' ? 'left' : 'right', {
+      projectId: this.props.project.id,
+      sprintId: this.state[name],
+      currentPage: activePage
+    });
+  };
+
   render() {
     const isProjectAdmin = this.checkIsAdminInProject();
     const isVisor = this.props.user.globalRole === VISOR;
 
-    const leftColumnTasks = this.props.leftColumnTasks.map(task => {
+    const leftColumnTasksData = this.props.leftColumnTasks.data.map(task => {
       return <DraggableTaskRow key={`task-${task.id}`} task={task} prefix={this.props.project.prefix} shortcut card />;
     });
 
-    const rightColumnTasks = this.props.rightColumnTasks.map(task => {
+    const rightColumnTasksData = this.props.rightColumnTasks.data.map(task => {
       return <DraggableTaskRow key={`task-${task.id}`} task={task} prefix={this.props.project.prefix} shortcut card />;
     });
 
