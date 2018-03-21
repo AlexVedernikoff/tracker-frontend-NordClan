@@ -158,17 +158,6 @@ class AgileBoard extends Component {
     };
   }
 
-  initialFilters = {
-    isOnlyMine: false,
-    changedSprint: null,
-    filterTags: [],
-    typeId: [],
-    name: '',
-    authorId: null,
-    prioritiesId: null,
-    performerId: null
-  };
-
   componentDidMount() {
     if (this.props.myTaskBoard) {
       this.selectValue(this.getChangedSprint(this.props), 'changedSprint');
@@ -178,6 +167,7 @@ class AgileBoard extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    ReactTooltip.hide();
     if (this.props.tracks !== nextProps.tracks && this.props.project.id) {
       this.props.getProjectInfo(this.props.project.id);
     }
@@ -225,6 +215,17 @@ class AgileBoard extends Component {
   componentDidUpdate() {
     ReactTooltip.rebuild();
   }
+
+  initialFilters = {
+    isOnlyMine: false,
+    changedSprint: null,
+    filterTags: [],
+    typeId: [],
+    name: '',
+    authorId: null,
+    prioritiesId: null,
+    performerId: null
+  };
 
   getChangedSprint = props => {
     let changedSprint = this.getCurrentSprint(props.sprints);
@@ -508,8 +509,9 @@ class AgileBoard extends Component {
       typeof this.state[filterName] === 'string' ||
       this.state[filterName] instanceof String ||
       Array.isArray(this.state[filterName])
-    )
+    ) {
       return this.state[filterName].length > 0;
+    }
     return !!this.state[filterName];
   };
 
@@ -614,7 +616,7 @@ class AgileBoard extends Component {
   };
 
   render() {
-    const { statuses, taskTypes, project } = this.props;
+    const { taskTypes, project } = this.props;
 
     let allSorted = filterTasks(this.props.sprintTasks);
     allSorted = sortTasksAndCreateCard(allSorted, 'all', this.changeStatus, this.openPerformerModal);
@@ -634,7 +636,6 @@ class AgileBoard extends Component {
 
     const isVisor = this.props.globalRole === VISOR;
 
-    const statusOptions = this.createOptions(statuses);
     const typeOptions = this.createOptions(taskTypes);
     const authorOptions = this.createOptions(project.users, 'fullNameRu');
 
@@ -805,6 +806,7 @@ AgileBoard.propTypes = {
   StatusIsEditing: PropTypes.bool,
   UserIsEditing: PropTypes.bool,
   changeTask: PropTypes.func.isRequired,
+  getProjectUsers: PropTypes.func,
   getTasks: PropTypes.func.isRequired,
   globalRole: PropTypes.string,
   isCreateTaskModalOpen: PropTypes.bool,
@@ -821,7 +823,8 @@ AgileBoard.propTypes = {
   getProjectUsers: PropTypes.func,
   getProjectInfo: PropTypes.func,
   statuses: PropTypes.array,
-  taskTypes: PropTypes.array
+  taskTypes: PropTypes.array,
+  user: PropTypes.object
 };
 
 const mapStateToProps = state => ({

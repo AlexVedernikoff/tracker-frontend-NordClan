@@ -224,52 +224,56 @@ class TaskPage extends Component {
   };
 
   render() {
-    const { globalRole } = this.props;
+    const { globalRole, task, params } = this.props;
     const isVisor = globalRole === VISOR;
-    let projectUrl = '/';
-    if (this.props.task.project) projectUrl = `/projects/${this.props.task.project.id}`;
-    return this.props.task.error ? (
-      <HttpError error={this.props.task.error} />
+    const projectUrl = task.project ? `/projects/${task.project.id}` : '/';
+    const notFoundError =
+      task.project && task.project.id !== +params.projectId
+        ? {
+            message: 'Task not found',
+            name: 'NotFoundError',
+            status: 404
+          }
+        : null;
+    const httpError = task.error || notFoundError;
+
+    return httpError ? (
+      <HttpError error={httpError} />
     ) : (
       <div ref="taskPage" className={css.taskPage}>
         <Row>
           <Col xs={12} sm={8}>
             <TaskHeader
-              task={this.props.task}
-              projectId={this.props.params.projectId}
+              task={task}
+              projectId={params.projectId}
               onChange={this.props.changeTask}
-              canEdit={this.props.task.statusId !== TaskStatuses.CLOSED}
+              canEdit={task.statusId !== TaskStatuses.CLOSED}
             />
             <main className={css.main}>
               <Description
-                text={{ __html: this.props.task.description }}
+                text={{ __html: task.description }}
                 headerType="h3"
-                id={+this.props.params.taskId}
+                id={+params.taskId}
                 headerText="Описание:"
                 onEditStart={this.props.startTaskEditing}
                 onEditFinish={this.props.stopTaskEditing}
                 onEditSubmit={this.props.changeTask}
                 isEditing={this.props.DescriptionIsEditing}
-                canEdit={this.props.task.statusId !== TaskStatuses.CLOSED}
+                canEdit={task.statusId !== TaskStatuses.CLOSED}
               />
               <hr />
               <h3>Прикрепленные файлы:</h3>
               <Attachments
-                attachments={this.props.task.attachments}
+                attachments={task.attachments}
                 removeAttachment={this.removeAttachment}
                 uploadAttachments={this.uploadAttachments}
-                canEdit={this.props.task.statusId !== TaskStatuses.CLOSED}
+                canEdit={task.statusId !== TaskStatuses.CLOSED}
               />
               <RouteTabs style={{ marginTop: '2rem', marginBottom: '2rem' }}>
-                <Link
-                  onlyActiveOnIndex
-                  to={`/projects/${this.props.params.projectId}/tasks/${this.props.params.taskId}`}
-                >
+                <Link onlyActiveOnIndex to={`/projects/${params.projectId}/tasks/${params.taskId}`}>
                   Комментарии
                 </Link>
-                <Link to={`/projects/${this.props.params.projectId}/tasks/${this.props.params.taskId}/history`}>
-                  История
-                </Link>
+                <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/history`}>История</Link>
               </RouteTabs>
               {this.props.children}
             </main>
@@ -277,10 +281,10 @@ class TaskPage extends Component {
           <Col xs={12} sm={4}>
             <aside>
               <Details
-                task={this.props.task}
+                task={task}
                 sprints={this.props.sprints}
                 onChange={this.props.changeTask}
-                canEdit={this.props.task.statusId !== TaskStatuses.CLOSED}
+                canEdit={task.statusId !== TaskStatuses.CLOSED}
               />
               {!isVisor ? (
                 <button className={css.addTask} onClick={this.props.openCreateTaskModal}>
@@ -288,22 +292,20 @@ class TaskPage extends Component {
                   <IconPlus style={{ width: 16, height: 16 }} />
                 </button>
               ) : null}
-              {this.props.task.linkedTasks ? (
+              {task.linkedTasks ? (
                 <RelatedTasks
-                  task={this.props.task}
+                  task={task}
                   type="linkedTasks"
                   onAction={this.handleOpenLinkTaskModal}
                   onDelete={this.handleOpenUnlinkTaskModal}
                 />
               ) : null}
-              {this.props.task.subTasks && !this.props.task.parentTask ? (
+              {task.subTasks && !task.parentTask ? (
                 <RelatedTasks
-                  task={this.props.task}
+                  task={task}
                   type="subTasks"
                   onAction={this.props.openCreateChildTaskModal}
-                  onDelete={
-                    this.props.task.statusId !== TaskStatuses.CANCELED ? this.handleOpenCancelSubTaskModal : null
-                  }
+                  onDelete={task.statusId !== TaskStatuses.CANCELED ? this.handleOpenCancelSubTaskModal : null}
                 />
               ) : null}
             </aside>
@@ -311,9 +313,9 @@ class TaskPage extends Component {
         </Row>
         {this.props.isCreateTaskModalOpen || this.props.isCreateChildTaskModalOpen ? (
           <CreateTaskModal
-            selectedSprintValue={this.props.task.sprint ? this.props.task.sprint.id : 0}
+            selectedSprintValue={task.sprint ? task.sprint.id : 0}
             project={this.props.project}
-            parentTaskId={this.props.isCreateChildTaskModalOpen ? this.props.task.id : null}
+            parentTaskId={this.props.isCreateChildTaskModalOpen ? task.id : null}
           />
         ) : null}
         {this.state.isTaskModalOpen ? (
@@ -360,7 +362,7 @@ class TaskPage extends Component {
             contentLabel="modal"
             text="Нельзя изменять закрытую задачу"
             onCancel={this.handleCloseCancelInfoTaskModal}
-            notification={true}
+            notification
           />
         ) : null}
         <GoBackPanel defaultPreviousUrl={projectUrl} parentRef={this.refs.taskPage} />
