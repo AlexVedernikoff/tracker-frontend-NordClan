@@ -579,15 +579,16 @@ class Planning extends Component {
                 onSprintChange={e => this.selectValue(e !== null ? e.value : null, 'leftColumn')}
                 onCreateTaskClick={this.openModal}
               />
-              <Button
-                addedClassNames={{ [css.moveTasksBtn]: true }}
-                type="bordered"
-                loading={!!loading}
-                icon={'IconPointingArrowRight'}
-                data-tip="Перенести нереализованные задачи в другой спринт"
-                onClick={this.onMoveTasksModalOpen}
-                disabled={this.isMoveTasksButtonDisabled(unfinishedLeftTasksCount)}
-              />
+              <div className={css.moveTasksBtnWrapper}>
+                <Button
+                  type="bordered"
+                  loading={!!loading}
+                  icon={'IconPointingArrowRight'}
+                  data-tip="Перенести нереализованные задачи в другой спринт"
+                  onClick={this.onMoveTasksModalOpen}
+                  disabled={this.isMoveTasksButtonDisabled(unfinishedLeftTasksCount)}
+                />
+              </div>
               <ConfirmModal
                 isOpen={this.state.isModalOpenMoveTasks}
                 contentLabel="modal"
@@ -599,6 +600,7 @@ class Planning extends Component {
                 text={`Будет перенесено ${unfinishedLeftTasksCount} задач. Продолжить?`}
               />
               <SprintColumnHeader
+                className={css.rightColumn}
                 name="right"
                 estimates={rightEstimates}
                 sprints={rightColumnSprints}
@@ -606,7 +608,7 @@ class Planning extends Component {
                 onSprintChange={e => this.selectValue(e !== null ? e.value : null, 'rightColumn')}
                 onCreateTaskClick={this.openModal}
               />
-              <Col className="test" xs={12} sm={6}>
+              <Col xs={12} sm={6}>
                 {this.state.leftColumn || this.state.leftColumn === 0 ? (
                   <SprintColumn
                     onDrop={this.dropTask}
@@ -618,7 +620,7 @@ class Planning extends Component {
                   />
                 ) : null}
               </Col>
-              <Col xs={12} sm={6}>
+              <Col className={css.rightColumn} xs={12} sm={6}>
                 {this.state.rightColumn || this.state.rightColumn === 0 ? (
                   <SprintColumn
                     onDrop={this.dropTask}

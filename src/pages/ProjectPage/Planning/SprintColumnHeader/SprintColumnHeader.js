@@ -7,6 +7,7 @@ import * as css from './SprintColumnHeader.scss';
 
 class SprintColumnHeader extends Component {
   static propTypes = {
+    className: PropTypes.string,
     estimates: PropTypes.object.isRequired,
     name: PropTypes.string.isRequired,
     onCreateTaskClick: PropTypes.func.isRequired,
@@ -17,7 +18,7 @@ class SprintColumnHeader extends Component {
 
   render() {
     return (
-      <div className={css.headerColumnWrapper}>
+      <div className={classnames(css.headerColumnWrapper, this.props.className)}>
         <div className={css.headerColumn}>
           <div className={css.selectWrapper}>
             <SelectDropdown

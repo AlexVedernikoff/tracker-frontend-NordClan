@@ -376,7 +376,18 @@
   }
 }
 
-.moveTasksBtn {
-  margin: 0px 1rem;
+.moveTasksBtnWrapper {
+  margin: 0 0.5rem;
   flex-shrink: 0;
+
+  @include phone {
+    width: 100%;
+    margin: 0 0.5rem 2rem;
+  }
+}
+
+.rightColumn {
+  @include phone {
+    order: 5;
+  }
 }
