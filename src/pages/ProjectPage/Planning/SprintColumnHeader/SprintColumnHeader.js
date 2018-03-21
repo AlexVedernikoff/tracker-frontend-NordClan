@@ -11,7 +11,7 @@ class SprintColumnHeader extends Component {
     name: PropTypes.string.isRequired,
     onCreateTaskClick: PropTypes.func.isRequired,
     onSprintChange: PropTypes.func.isRequired,
-    selectedSprintValue: PropTypes.number.isRequired,
+    selectedSprintValue: PropTypes.number,
     sprints: PropTypes.array.isRequired
   };
 
@@ -36,7 +36,7 @@ class SprintColumnHeader extends Component {
             text="Создать задачу"
             icon="IconPlus"
             name={this.props.name}
-            className={css.button}
+            addedClassNames={{ [css.button]: true }}
             data-tip="Создать задачу"
           />
         </div>

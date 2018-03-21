@@ -22,7 +22,7 @@ import { editSprint } from '../../../actions/Sprint';
 import { editMilestone } from '../../../actions/Milestone';
 import { openCreateTaskModal, getProjectInfo, changeProject } from '../../../actions/Project';
 import SprintEditModal from '../../../components/SprintEditModal';
-import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
+import { IconArrowDown, IconArrowRight, IconPreloader, IconPointingArrowRight } from '../../../components/Icons';
 import { IconEdit } from '../../../components/Icons';
 import { BACKLOG_ID } from '../../../constants/Sprint';
 import { ADMIN, VISOR } from '../../../constants/Roles';
@@ -30,21 +30,25 @@ import Table from './Table';
 import CreateMilestoneModal from './CreateMilestoneModal';
 import EditMilestoneModal from './EditMilestoneModal';
 import SprintColumnHeader from './SprintColumnHeader/';
+import ConfirmModal from '../../../components/ConfirmModal';
+import { DONE } from '../../../constants/TaskStatuses';
+import _ from 'lodash';
 
 class Planning extends Component {
   static propTypes = {
     SprintIsEditing: PropTypes.bool,
-    changeTask: PropTypes.func.isRequired,
-    createSprint: PropTypes.func.isRequired,
     changeProject: PropTypes.func,
+    changeTask: PropTypes.func.isRequired,
+    completedAt: PropTypes.string,
+    createSprint: PropTypes.func.isRequired,
+    createdAt: PropTypes.string,
     editSprint: PropTypes.func.isRequired,
-    getProjectInfo: PropTypes.func.isRequired,
     getPlanningTasks: PropTypes.func.isRequired,
+    getProjectInfo: PropTypes.func.isRequired,
     isCreateTaskModalOpen: PropTypes.bool,
     lastCreatedTask: PropTypes.object,
     leftColumnTasks: PropTypes.object,
-    createdAt: PropTypes.string,
-    completedAt: PropTypes.string,
+    loading: PropTypes.number,
     openCreateTaskModal: PropTypes.func,
     params: PropTypes.object,
     project: PropTypes.object,
@@ -63,6 +67,7 @@ class Planning extends Component {
       createTaskCallee: null,
       isModalOpenAddSprint: false,
       isModalOpenAddMilestone: false,
+      isModalOpenMoveTasks: false,
       typeIdHovered: null,
       typeHovered: null,
       grantActiveYear: new Date().getFullYear(),
@@ -357,6 +362,47 @@ class Planning extends Component {
     });
   };
 
+  onMoveTasksModalOpen = () => {
+    this.setState({ isModalOpenMoveTasks: true });
+  };
+
+  onMoveTasksModalCancel = () => {
+    this.setState({ isModalOpenMoveTasks: false });
+  };
+
+  // TODO: Избавиться от цикла и множественных вызовов после создания API массового редактирования задач
+  onMoveTasksModalConfirm = sprintId => {
+    const tasksToMove = this.getUnfinishedLeftTasks();
+
+    const getPlanningTasksAll = () => {
+      console.log('callback called');
+
+      ['left', 'right'].forEach(side => {
+        this.props.getPlanningTasks(side, {
+          projectId: this.props.project.id,
+          sprintId: this.state[`${side}Column`]
+        });
+      });
+    };
+
+    const debouncedGetPlanningTasks = _.debounce(getPlanningTasksAll, 500);
+
+    tasksToMove.forEach(task => {
+      this.props.changeTask(
+        {
+          id: task.id,
+          sprintId: sprintId
+        },
+        'Sprint',
+        debouncedGetPlanningTasks
+      );
+    });
+
+    this.setState({ isModalOpenMoveTasks: false });
+  };
+
+  getUnfinishedLeftTasks = () => this.props.leftColumnTasks.data.filter(task => task.statusId !== DONE);
+
   render() {
     const isProjectAdmin = this.checkIsAdminInProject();
     const isVisor = this.props.user.globalRole === VISOR;
@@ -388,8 +434,9 @@ class Planning extends Component {
 
     const budget = this.props.project.budget;
     const riskBudget = this.props.project.riskBudget;
+    const { createdAt, completedAt, loading } = this.props;
+    const unfinishedLeftTasksCount = this.getUnfinishedLeftTasks().length;
 
-    const { createdAt, completedAt } = this.props;
     return (
       <div>
         <section>
@@ -436,7 +483,7 @@ class Planning extends Component {
           </Row>
           {isProjectAdmin ? (
             <Button
-              text="Создать спринт"
+              text="спринт"
               type="primary"
               style={{ float: 'right', marginTop: '-.2rem' }}
               icon="IconPlus"
@@ -503,44 +550,67 @@ class Planning extends Component {
             openMilestoneEditModal={this.openMilestoneEditModal}
           />
           {!isVisor ? (
-            <div>
-              <div className={css.sprintColumnHeaderWrapper}>
-                <SprintColumnHeader
-                  name="left"
-                  estimates={leftEstimates}
-                  sprints={leftColumnSprints}
-                  selectedSprintValue={this.state.leftColumn}
-                  onSprintChange={e => this.selectValue(e !== null ? e.value : null, 'leftColumn')}
-                  onCreateTaskClick={this.openModal}
-                />
-                <Button
-                  addedClassNames={{ [css.moveTasksBtn]: true }}
-                  type="bordered"
-                  icon={'IconSend'}
-                  data-tip="Перенести нереализованные задачи в другой спринт"
-                />
-                <SprintColumnHeader
-                  name="right"
-                  estimates={rightEstimates}
-                  sprints={rightColumnSprints}
-                  selectedSprintValue={this.state.rightColumn}
-                  onSprintChange={e => this.selectValue(e !== null ? e.value : null, 'rightColumn')}
-                  onCreateTaskClick={this.openModal}
-                />
-              </div>
-              <Row>
-                <Col xs={12} sm={6}>
-                  {this.state.leftColumn || this.state.leftColumn === 0 ? (
-                    <SprintColumn onDrop={this.dropTask} sprint={this.state.leftColumn} tasks={leftColumnTasks} />
-                  ) : null}
-                </Col>
-                <Col xs={12} sm={6}>
-                  {this.state.rightColumn || this.state.rightColumn === 0 ? (
-                    <SprintColumn onDrop={this.dropTask} sprint={this.state.rightColumn} tasks={rightColumnTasks} />
-                  ) : null}
-                </Col>
-              </Row>
-            </div>
+            <Row className={css.sprintColumnHeaderWrapper}>
+              <SprintColumnHeader
+                name="left"
+                estimates={leftEstimates}
+                sprints={leftColumnSprints}
+                selectedSprintValue={this.state.leftColumn}
+                onSprintChange={e => this.selectValue(e !== null ? e.value : null, 'leftColumn')}
+                onCreateTaskClick={this.openModal}
+              />
+              <Button
+                addedClassNames={{ [css.moveTasksBtn]: true }}
+                type="bordered"
+                loading={!!loading}
+                icon={'IconPointingArrowRight'}
+                data-tip="Перенести нереализованные задачи в другой спринт"
+                onClick={this.onMoveTasksModalOpen}
+                disabled={this.state.leftColumn === this.state.rightColumn || !unfinishedLeftTasksCount || loading}
+              />
+              <ConfirmModal
+                isOpen={this.state.isModalOpenMoveTasks}
+                contentLabel="modal"
+                onRequestClose={this.onMoveTasksModalCancel}
+                onConfirm={() => {
+                  this.onMoveTasksModalConfirm(this.state.rightColumn);
+                }}
+                onCancel={this.onMoveTasksModalCancel}
+                text={`Будет перенесено ${unfinishedLeftTasksCount} задач. Продолжить?`}
+              />
+              <SprintColumnHeader
+                name="right"
+                estimates={rightEstimates}
+                sprints={rightColumnSprints}
+                selectedSprintValue={this.state.rightColumn}
+                onSprintChange={e => this.selectValue(e !== null ? e.value : null, 'rightColumn')}
+                onCreateTaskClick={this.openModal}
+              />
+              <Col className="test" xs={12} sm={6}>
+                {this.state.leftColumn || this.state.leftColumn === 0 ? (
+                  <SprintColumn
+                    onDrop={this.dropTask}
+                    sprint={this.state.leftColumn}
+                    tasks={leftColumnTasksData}
+                    pagesCount={this.props.leftColumnTasks.pagesCount}
+                    loadTasks={this.loadTasks}
+                    name="leftColumn"
+                  />
+                ) : null}
+              </Col>
+              <Col xs={12} sm={6}>
+                {this.state.rightColumn || this.state.rightColumn === 0 ? (
+                  <SprintColumn
+                    onDrop={this.dropTask}
+                    sprint={this.state.rightColumn}
+                    tasks={rightColumnTasksData}
+                    pagesCount={this.props.rightColumnTasks.pagesCount}
+                    loadTasks={this.loadTasks}
+                    name="rightColumn"
+                  />
+                ) : null}
+              </Col>
+            </Row>
           ) : null}
         </section>
         {this.props.isCreateTaskModalOpen ? (
@@ -579,6 +649,7 @@ const mapStateToProps = state => ({
   completedAt: state.Project.project.completedAt,
   lastCreatedTask: state.Project.lastCreatedTask,
   leftColumnTasks: state.PlanningTasks.leftColumnTasks,
+  loading: state.Loading.loading,
   rightColumnTasks: state.PlanningTasks.rightColumnTasks,
   SprintIsEditing: state.Task.SprintIsEditing,
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,

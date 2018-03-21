@@ -33,7 +33,7 @@ class SprintColumn extends React.Component {
       {
         activePage: e.activePage
       },
-      e => this.props.loadTasks(e, this.props.name, this.state.activePage)
+      () => this.props.loadTasks(e, this.props.name, this.state.activePage)
     );
   };
 
@@ -58,12 +58,12 @@ class SprintColumn extends React.Component {
 SprintColumn.propTypes = {
   connectDropTarget: PropTypes.func.isRequired,
   isOver: PropTypes.bool.isRequired,
-  onDrop: PropTypes.func.isRequired,
-  sprint: PropTypes.number.isRequired,
-  tasks: PropTypes.array.isRequired,
   loadTasks: PropTypes.func,
+  name: PropTypes.string,
+  onDrop: PropTypes.func.isRequired,
   pagesCount: PropTypes.number,
-  name: PropTypes.string
+  sprint: PropTypes.number.isRequired,
+  tasks: PropTypes.array.isRequired
 };
 
 export default DropTarget(TASK_ROW, columnTarget, collect)(SprintColumn);

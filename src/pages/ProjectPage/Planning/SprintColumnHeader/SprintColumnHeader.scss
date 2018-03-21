@@ -1,5 +1,9 @@
 @import '../../../../styles/variables';
 
+.button {
+  flex-shrink: 0;
+}
+
 .headerColumn {
   display: flex;
   margin-bottom: 1rem;
@@ -16,13 +20,15 @@
 
     @include tablet {
       margin-bottom: 1rem;
+      margin-right: 0;
     }
   }
 }
 
 .headerColumnWrapper {
-  flex-basis: 40%;
-  flex-grow: 1;
+  flex-basis: 50%;
+  max-width: calc(50% - 37px);
+  padding: 0 0.5rem;
 }
 
 .progressBarWrapper {

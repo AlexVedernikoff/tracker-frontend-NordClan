@@ -376,11 +376,7 @@
   }
 }
 
-.sprintColumnHeaderWrapper {
-  display: flex;
-  justify-content: space-between;
-}
-
 .moveTasksBtn {
-  margin: 0px 20px;
+  margin: 0px 1rem;
+  flex-shrink: 0;
 }
