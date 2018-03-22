@@ -1,50 +1,57 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
-import GanttChart from './GanttChart';
 import classnames from 'classnames';
 import * as css from './Planning.scss';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
-import DraggableTaskRow from './DraggableTaskRow';
-import Button from '../../../components/Button';
-import SelectDropdown from '../../../components/SelectDropdown';
-import CreateTaskModal from '../../../components/CreateTaskModal';
-import SprintColumn from './SprintColumn';
-import { connect } from 'react-redux';
-import moment from 'moment';
-import Budget from '../../../components/PlanningEdit/Budget';
-import ProjectDate from '../../../components/PlanningEdit/ProjectDate';
+
+import { editSprint } from '../../../actions/Sprint';
 import { createSprint } from '../../../actions/Sprint';
-import CreateSprintModal from '../CreateSprintModal';
-import SprintCard from '../../../components/SprintCard';
+import { editMilestone } from '../../../actions/Milestone';
 import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
-import { editSprint } from '../../../actions/Sprint';
-import { editMilestone } from '../../../actions/Milestone';
 import { openCreateTaskModal, getProjectInfo, changeProject } from '../../../actions/Project';
+
+import Button from '../../../components/Button';
+import Budget from '../../../components/PlanningEdit/Budget';
+import ConfirmModal from '../../../components/ConfirmModal';
+import CreateTaskModal from '../../../components/CreateTaskModal';
+import ProjectDate from '../../../components/PlanningEdit/ProjectDate';
+import SprintCard from '../../../components/SprintCard';
 import SprintEditModal from '../../../components/SprintEditModal';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
-import { IconEdit } from '../../../components/Icons';
+
 import { BACKLOG_ID } from '../../../constants/Sprint';
 import { ADMIN, VISOR } from '../../../constants/Roles';
-import Table from './Table';
+import { DONE } from '../../../constants/TaskStatuses';
+
+import CreateSprintModal from '../CreateSprintModal';
 import CreateMilestoneModal from './CreateMilestoneModal';
+import DraggableTaskRow from './DraggableTaskRow';
 import EditMilestoneModal from './EditMilestoneModal';
+import SprintColumnHeader from './SprintColumnHeader/';
+import SprintColumn from './SprintColumn';
+import Table from './Table';
+
+import moment from 'moment';
+import _ from 'lodash';
 
 class Planning extends Component {
   static propTypes = {
     SprintIsEditing: PropTypes.bool,
-    changeTask: PropTypes.func.isRequired,
-    createSprint: PropTypes.func.isRequired,
     changeProject: PropTypes.func,
+    changeTask: PropTypes.func.isRequired,
+    completedAt: PropTypes.string,
+    createSprint: PropTypes.func.isRequired,
+    createdAt: PropTypes.string,
     editSprint: PropTypes.func.isRequired,
-    getProjectInfo: PropTypes.func.isRequired,
     getPlanningTasks: PropTypes.func.isRequired,
+    getProjectInfo: PropTypes.func.isRequired,
     isCreateTaskModalOpen: PropTypes.bool,
     lastCreatedTask: PropTypes.object,
     leftColumnTasks: PropTypes.object,
-    createdAt: PropTypes.string,
-    completedAt: PropTypes.string,
+    loading: PropTypes.number,
     openCreateTaskModal: PropTypes.func,
     params: PropTypes.object,
     project: PropTypes.object,
@@ -63,6 +70,7 @@ class Planning extends Component {
       createTaskCallee: null,
       isModalOpenAddSprint: false,
       isModalOpenAddMilestone: false,
+      isModalOpenMoveTasks: false,
       typeIdHovered: null,
       typeHovered: null,
       grantActiveYear: new Date().getFullYear(),
@@ -357,6 +365,64 @@ class Planning extends Component {
     });
   };
 
+  onMoveTasksModalOpen = () => {
+    this.setState({ isModalOpenMoveTasks: true });
+  };
+
+  onMoveTasksModalCancel = () => {
+    this.setState({ isModalOpenMoveTasks: false });
+  };
+
+  // TODO: Избавиться от цикла и множественных вызовов после создания API массового редактирования задач
+  onMoveTasksModalConfirm = sprintId => {
+    const tasks = this.getUnfinishedLeftTasks();
+
+    const getPlanningTasksAll = () => {
+      const { getPlanningTasks, leftColumnTasks, rightColumnTasks, project } = this.props;
+
+      ['left', 'right'].forEach(side => {
+        getPlanningTasks(side, {
+          projectId: project.id,
+          sprintId: this.state[`${side}Column`],
+          currentPage:
+            side !== 'left'
+              ? rightColumnTasks.currentPage
+              : tasks.length === leftColumnTasks.rowsCountOnCurrentPage
+                ? Math.max(0, leftColumnTasks.currentPage - 1)
+                : leftColumnTasks.currentPage
+        });
+      });
+    };
+
+    tasks.forEach((task, index) => {
+      this.props.changeTask(
+        {
+          id: task.id,
+          sprintId: sprintId
+        },
+        'Sprint',
+        index === tasks.length - 1 ? getPlanningTasksAll : null
+      );
+    });
+
+    this.setState({ isModalOpenMoveTasks: false });
+  };
+
+  getUnfinishedLeftTasks = () => this.props.leftColumnTasks.data.filter(task => task.statusId !== DONE);
+
+  isMoveTasksButtonDisabled = unfinishedLeftTasksCount => {
+    const { leftColumn, rightColumn } = this.state;
+    const { loading } = this.props;
+
+    return (
+      leftColumn === null ||
+      rightColumn === null ||
+      leftColumn === rightColumn ||
+      unfinishedLeftTasksCount === 0 ||
+      loading
+    );
+  };
+
   render() {
     const isProjectAdmin = this.checkIsAdminInProject();
     const isVisor = this.props.user.globalRole === VISOR;
@@ -388,8 +454,9 @@ class Planning extends Component {
 
     const budget = this.props.project.budget;
     const riskBudget = this.props.project.riskBudget;
+    const { createdAt, completedAt, loading } = this.props;
+    const unfinishedLeftTasksCount = this.getUnfinishedLeftTasks().length;
 
-    const { createdAt, completedAt } = this.props;
     return (
       <div>
         <section>
@@ -436,7 +503,7 @@ class Planning extends Component {
           </Row>
           {isProjectAdmin ? (
             <Button
-              text="Создать спринт"
+              text="спринт"
               type="primary"
               style={{ float: 'right', marginTop: '-.2rem' }}
               icon="IconPlus"
@@ -503,39 +570,45 @@ class Planning extends Component {
             openMilestoneEditModal={this.openMilestoneEditModal}
           />
           {!isVisor ? (
-            <Row>
+            <Row className={css.sprintColumnHeaderWrapper}>
+              <SprintColumnHeader
+                name="left"
+                estimates={leftEstimates}
+                sprints={leftColumnSprints}
+                selectedSprintValue={this.state.leftColumn}
+                onSprintChange={e => this.selectValue(e !== null ? e.value : null, 'leftColumn')}
+                onCreateTaskClick={this.openModal}
+              />
+              <div className={css.moveTasksBtnWrapper}>
+                <Button
+                  type="bordered"
+                  loading={!!loading}
+                  icon={'IconPointingArrowRight'}
+                  data-tip="Перенести нереализованные задачи в другой спринт"
+                  onClick={this.onMoveTasksModalOpen}
+                  disabled={this.isMoveTasksButtonDisabled(unfinishedLeftTasksCount)}
+                />
+              </div>
+              <ConfirmModal
+                isOpen={this.state.isModalOpenMoveTasks}
+                contentLabel="modal"
+                onRequestClose={this.onMoveTasksModalCancel}
+                onConfirm={() => {
+                  this.onMoveTasksModalConfirm(this.state.rightColumn);
+                }}
+                onCancel={this.onMoveTasksModalCancel}
+                text={`Будет перенесено ${unfinishedLeftTasksCount} задач. Продолжить?`}
+              />
+              <SprintColumnHeader
+                className={css.rightColumn}
+                name="right"
+                estimates={rightEstimates}
+                sprints={rightColumnSprints}
+                selectedSprintValue={this.state.rightColumn}
+                onSprintChange={e => this.selectValue(e !== null ? e.value : null, 'rightColumn')}
+                onCreateTaskClick={this.openModal}
+              />
               <Col xs={12} sm={6}>
-                <div className={css.headerColumn}>
-                  <div className={css.selectWrapper}>
-                    <SelectDropdown
-                      name="leftColumn"
-                      placeholder="Введите название спринта..."
-                      multi={false}
-                      value={this.state.leftColumn}
-                      onChange={e => this.selectValue(e !== null ? e.value : null, 'leftColumn')}
-                      noResultsText="Нет результатов"
-                      options={leftColumnSprints}
-                    />
-                  </div>
-                  <Button
-                    onClick={this.openModal}
-                    type="bordered"
-                    text="Создать задачу"
-                    icon="IconPlus"
-                    name="left"
-                    className={css.button}
-                    data-tip="Создать задачу"
-                  />
-                </div>
-                <div className={css.progressBarWrapper} data-tip={leftEstimates.summary}>
-                  <div
-                    className={classnames({
-                      [css.progressBar]: leftEstimates.active,
-                      [css.exceeded]: leftEstimates.exceeded
-                    })}
-                    style={{ width: leftEstimates.width }}
-                  />
-                </div>
                 {this.state.leftColumn || this.state.leftColumn === 0 ? (
                   <SprintColumn
                     onDrop={this.dropTask}
@@ -547,38 +620,7 @@ class Planning extends Component {
                   />
                 ) : null}
               </Col>
-              <Col xs={12} sm={6}>
-                <div className={css.headerColumn}>
-                  <div className={css.selectWrapper}>
-                    <SelectDropdown
-                      name="rightColumn"
-                      placeholder="Введите название спринта..."
-                      multi={false}
-                      value={this.state.rightColumn}
-                      onChange={e => this.selectValue(e !== null ? e.value : null, 'rightColumn')}
-                      noResultsText="Нет результатов"
-                      options={rightColumnSprints}
-                    />
-                  </div>
-                  <Button
-                    onClick={this.openModal}
-                    type="bordered"
-                    text="Создать задачу"
-                    icon="IconPlus"
-                    name="right"
-                    className={css.button}
-                    data-tip="Создать задачу"
-                  />
-                </div>
-                <div className={css.progressBarWrapper} data-tip={rightEstimates.summary}>
-                  <div
-                    className={classnames({
-                      [css.progressBar]: rightEstimates.active,
-                      [css.exceeded]: rightEstimates.exceeded
-                    })}
-                    style={{ width: rightEstimates.width }}
-                  />
-                </div>
+              <Col className={css.rightColumn} xs={12} sm={6}>
                 {this.state.rightColumn || this.state.rightColumn === 0 ? (
                   <SprintColumn
                     onDrop={this.dropTask}
@@ -593,7 +635,6 @@ class Planning extends Component {
             </Row>
           ) : null}
         </section>
-        {/* <GanttChart /> */}
         {this.props.isCreateTaskModalOpen ? (
           <CreateTaskModal
             selectedSprintValue={
@@ -630,6 +671,7 @@ const mapStateToProps = state => ({
   completedAt: state.Project.project.completedAt,
   lastCreatedTask: state.Project.lastCreatedTask,
   leftColumnTasks: state.PlanningTasks.leftColumnTasks,
+  loading: state.Loading.loading,
   rightColumnTasks: state.PlanningTasks.rightColumnTasks,
   SprintIsEditing: state.Task.SprintIsEditing,
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
