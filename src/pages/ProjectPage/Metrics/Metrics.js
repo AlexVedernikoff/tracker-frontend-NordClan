@@ -5,6 +5,7 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './Metrics.scss';
 import StartEndDates from './StartEndDates';
 import { defaults } from 'react-chartjs-2';
+import * as zoom from 'chartjs-plugin-zoom';
 import BudgetChart from './BudgetChart';
 import BugsChart from './BugsChart';
 import CostByRoleChart from './CostByRoleChart';
@@ -84,6 +85,14 @@ const chartDefaultOptions = {
         }
       }
     ]
+  },
+  pan: {
+    enabled: true,
+    mode: 'xy'
+  },
+  zoom: {
+    enabled: true,
+    mode: 'xy'
   }
 };
 
