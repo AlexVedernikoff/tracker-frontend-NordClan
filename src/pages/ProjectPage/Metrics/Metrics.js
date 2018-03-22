@@ -265,7 +265,7 @@ class Metrics extends Component {
                 addedClassNames={{ [css.recalculateBtn]: true }}
                 onClick={this.recalculateMetrics}
                 type="bordered"
-                loading={loading}
+                loading={!!loading}
                 icon={'IconRefresh'}
                 data-tip="Пересчитать метрику"
               />
