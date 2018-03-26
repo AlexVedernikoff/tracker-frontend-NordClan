@@ -364,7 +364,7 @@ class AddActivityModal extends Component {
               text="Добавить"
               disabled={
                 !this.props.selectedActivityType ||
-                (this.props.selectedActivityType === 1 ? !this.props.selectedTaskStatusId : false)
+                (this.props.selectedActivityType === 1 && !this.props.selectedTaskStatusId)
               }
               htmlType="submit"
               type="green"
