@@ -50,8 +50,16 @@
   fill: $color-dark-gray;
   width: 21px;
   height: 21px;
+  transition: transform 0.3s ease;
+  will-change: transform;
 }
 
 .filtersRow {
   margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.iconReverse {
+  transform-origin: 50% 50%;
+  transform: scale(1, -1);
 }

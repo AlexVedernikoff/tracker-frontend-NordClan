@@ -5,10 +5,12 @@ import ReactTooltip from 'react-tooltip';
 import Tag from '../Tag';
 import Button from '../../components/Button';
 import classnames from 'classnames';
-import { IconClose, IconArrowDownThin, IconArrowUpThin } from '../Icons';
+import { IconClose, IconArrowDownThin } from '../Icons';
 import * as css from './FilterList.scss';
+import { UnmountClosed, Collapse } from 'react-collapse';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
-export default class FilterList extends React.Component {
+export default class FilterList extends Component {
   componentWillReceiveProps() {
     ReactTooltip.hide();
   }
@@ -19,49 +21,50 @@ export default class FilterList extends React.Component {
       return <Tag name={filter.label} deleteHandler={filter.deleteHandler} key={filter.name} />;
     });
 
-    console.log(filterTags);
-
     return (
       <div>
-        <Row className={css.filtersRow}>
-          <Col xs>
-            {filterTags.length ? (
-              <div className={classnames(css.filterList)}>
-                <div>
-                  {filterTags}
-                  <span className={classnames(css.clearAllFilter)}>
-                    <IconClose onClick={clearAll} />
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <div className={classnames(css.filterList)} disabled>
-                Фильтры не выбраны
-              </div>
-            )}
-          </Col>
-          {!isVisor && (
-            <Col className={classnames(css.filterCol)}>
-              <Button
-                onClick={this.props.openCreateTaskModal}
-                type="primary"
-                text="Создать задачу"
-                icon="IconPlus"
-                name="right"
-              />
-            </Col>
+        <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeave={false}>
+          {!fullFilterView && (
+            <Row className={css.filtersRow}>
+              <Col xs>
+                {filterTags.length ? (
+                  <div className={classnames(css.filterList)}>
+                    <div>
+                      {filterTags}
+                      <span className={classnames(css.clearAllFilter)}>
+                        <IconClose onClick={clearAll} />
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className={classnames(css.filterList)} disabled>
+                    Фильтры не выбраны
+                  </div>
+                )}
+              </Col>
+              {!isVisor && (
+                <Col className={classnames(css.filterCol)}>
+                  <Button
+                    onClick={this.props.openCreateTaskModal}
+                    type="primary"
+                    text="Создать задачу"
+                    icon="IconPlus"
+                    name="right"
+                  />
+                </Col>
+              )}
+            </Row>
           )}
-        </Row>
+        </ReactCSSTransitionGroup>
         <div className={classnames(css.filterListShowMore)}>
           <div
             className={classnames(css.filterListShowMoreButton)}
             data-tip={fullFilterView ? 'Скрыть фильтры' : 'Показать фильтры'}
           >
-            {fullFilterView ? (
-              <IconArrowUpThin className={css.filterListShowMoreIcon} onClick={toggleFilterView} />
-            ) : (
-              <IconArrowDownThin className={css.filterListShowMoreIcon} onClick={toggleFilterView} />
-            )}
+            <IconArrowDownThin
+              className={classnames({ [css.filterListShowMoreIcon]: true, [css.iconReverse]: fullFilterView })}
+              onClick={toggleFilterView}
+            />
           </div>
         </div>
       </div>
