@@ -6,6 +6,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as timesheetsActions from '../../actions/Timesheets';
+import * as timesheetsConstants from '../../constants/Timesheets';
 import { showNotification } from '../../actions/Notifications';
 import * as css from './Timesheets.scss';
 import { IconPlus, IconArrowLeft, IconArrowRight, IconCalendar } from '../../components/Icons';
