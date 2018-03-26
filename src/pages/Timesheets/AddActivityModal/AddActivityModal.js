@@ -62,6 +62,7 @@ class AddActivityModal extends Component {
   }
 
   changeItem = (option, name) => {
+    console.log(option);
     if (option) {
       this.setState({ [name]: option.value });
       if (name === 'activityType') {
@@ -80,6 +81,9 @@ class AddActivityModal extends Component {
       }
     } else {
       this.setState({ [name]: 0 });
+    }
+    if (!option && name === 'taskStatusId') {
+      this.props.changeTask(this.props.selectedTask, null);
     }
   };
 
@@ -360,10 +364,8 @@ class AddActivityModal extends Component {
             <Button
               text="Добавить"
               disabled={
-                !this.props.selectedActivityType
-                // || (this.props.selectedActivityType === 1
-                //   ? !this.props.selectedTaskStatusId
-                //   : false)
+                !this.props.selectedActivityType ||
+                (this.props.selectedActivityType === 1 ? !this.props.selectedTaskStatusId : false)
               }
               htmlType="submit"
               type="green"
