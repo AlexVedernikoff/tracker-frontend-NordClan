@@ -145,7 +145,7 @@ class PerformerModal extends Component {
               <Element
                 name={user.value.toString()}
                 key={user.value}
-                className={classnames({ [css.user]: true })}
+                className={classnames({ [css.user]: true, [css.selected]: selectedIndex === i })}
                 autoFocus={selectedIndex === i}
                 onClick={() => this.handleChoose(user.value)}
                 tabIndex={i}
