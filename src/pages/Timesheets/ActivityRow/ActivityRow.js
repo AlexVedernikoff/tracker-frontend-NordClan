@@ -346,17 +346,15 @@ class ActivityRow extends React.Component {
       if (maType && (maType.id === 5 || maType.id === 7)) return null;
       if (item.projectName) {
         return <span>{item.projectName}</span>;
-      } else {
-        return null;
       }
+      return null;
     };
     const getSprintName = () => {
       if (maType && (maType.id === 5 || maType.id === 7 || item.projectId === 0)) return null;
       if (item.sprint) {
         return <span>{item.sprint.name}</span>;
-      } else {
-        return <span>{'Backlog'}</span>;
       }
+      return <span>{'Backlog'}</span>;
     };
     return (
       <tr className={css.taskRow}>
