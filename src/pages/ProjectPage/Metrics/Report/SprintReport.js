@@ -86,12 +86,10 @@ class SprintReport extends Component {
   isRangeValid = () => {
     const back_selectedFrom = moment(this.state.selectedFrom, dateFormat, true).format(dateFormat2);
     const back_selectedTo = moment(this.state.selectedTo, dateFormat, true).format(dateFormat2);
-    //console.log('back_selectedTo', back_selectedTo);
     return (
-      //(this.state.selectedFrom && this.state.selectedTo) ||
       moment(back_selectedFrom, dateFormat2, true).isValid() &&
       moment(back_selectedTo, dateFormat2, true).isValid() &&
-      moment(back_selectedTo).isAfter(back_selectedFrom)
+      moment(back_selectedTo).isSameOrAfter(back_selectedFrom)
     );
   };
 

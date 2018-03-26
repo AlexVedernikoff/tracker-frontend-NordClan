@@ -51,6 +51,11 @@ const projectChangeSuccess = response => ({
   changedFields: response
 });
 
+const projectChangeFailValidation = error => ({
+  type: ProjectActions.PROJECT_CHANGE_FAIL_VALIDATION,
+  error: error
+});
+
 const getProjectHistoryStart = () => ({
   type: ProjectActions.GET_PROJECT_HISTORY_REQUEST_SENT
 });
@@ -326,7 +331,11 @@ const changeProject = (changedProperties, target) => {
         withCredentials: true
       })
       .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
+        if (error.response.data.name === 'ValidationError') {
+          dispatch(projectChangeFailValidation(error.response.data));
+        } else {
+          dispatch(showNotification({ message: error.message, type: 'error' }));
+        }
         dispatch(finishLoading());
       })
       .then(response => {

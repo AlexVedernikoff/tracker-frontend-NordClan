@@ -63,8 +63,12 @@ class Timesheets extends React.Component {
 
   render() {
     const { isCalendarOpen } = this.state;
-    const { startingDay, tempTimesheets, getTimesheets, userId, dateBegin, dateEnd } = this.props;
-    const hasEnableTs = !!this.props.list.filter(tsh => tsh.statusId !== 3 && tsh.statusId !== 4).length;
+    const { startingDay, tempTimesheets } = this.props;
+    const canAddActivity = !this.props.list.find(
+      tsh =>
+        tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
+        tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED
+    );
     const countTsWithTime = this.props.list.filter(tsh => tsh.spentTime !== 0).length;
     const defaultTaskStatusId = 2;
     const tempTimesheetsList = tempTimesheets.map(timesheet => {
@@ -164,7 +168,8 @@ class Timesheets extends React.Component {
             !_.find(res, tsh => {
               const isSameType = tsh.typeId === el.typeId;
               const isSameProject = el.project ? tsh.projectId === el.project.id : tsh.projectId === 0;
-              return isSameType && isSameProject;
+              const isSameSprint = (el.sprint ? el.sprint.id : 0) === (tsh.sprint ? tsh.sprint.id : 0);
+              return isSameType && isSameProject && isSameSprint;
             });
           if (!maNotPushed && el.typeId !== 1 && tempTimesheets.some(tempTsh => tempTsh.id === el.id)) {
             this.props.showNotification({ message: 'Задача с выбранным статусом уже есть в отчете', type: 'success' });
@@ -211,9 +216,15 @@ class Timesheets extends React.Component {
       return { ...element, timeSheets };
     });
 
-    const magicActivityRows = magicActivities.map(item => (
-      <ActivityRow key={`${item.projectId}-${item.typeId}-${startingDay}`} ma item={item} />
-    ));
+    const magicActivityRows = magicActivities.map(item => {
+      return (
+        <ActivityRow
+          key={`${item.projectId}-${item.typeId}-${startingDay}-${item.sprint ? item.sprint.id : 0}`}
+          ma
+          item={item}
+        />
+      );
+    });
 
     // Создание заголовка таблицы
 
@@ -338,7 +349,9 @@ class Timesheets extends React.Component {
                 </td>
                 <td className={css.total} />
               </tr>
-              {hasEnableTs || !countTsWithTime ? (
+            </tbody>
+            {canAddActivity || !countTsWithTime ? (
+              <tfoot>
                 <tr>
                   <td colSpan="10">
                     <a className={css.add} onClick={() => this.setState({ isModalOpen: true })}>
@@ -347,8 +360,8 @@ class Timesheets extends React.Component {
                     </a>
                   </td>
                 </tr>
-              ) : null}
-            </tbody>
+              </tfoot>
+            ) : null}
           </table>
         </section>
         {this.state.isModalOpen ? <AddActivityModal onClose={() => this.setState({ isModalOpen: false })} /> : null}

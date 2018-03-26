@@ -8,12 +8,14 @@ import _ from 'lodash';
 import * as css from '../Playlist.scss';
 import getMaIcon from '../../../../../constants/MagicActivityIcons';
 import roundNum from '../../../../../utils/roundNum';
+import validateNumber from '../../../../../utils/validateNumber';
 
 import { IconComment, IconCheck, IconEye, IconEyeDisable } from '../../../../../components/Icons';
 
 class PlaylistItem extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
+
     this.state = {
       itemSpentTime: roundNum(this.props.item.spentTime, 2),
       isCommentOpen: false
@@ -22,36 +24,41 @@ class PlaylistItem extends Component {
     this.debouncedUpdateOnlyTimesheet = _.debounce(this.props.updateTimesheet, 500);
   }
 
-  toggleComment = (event) => {
+  toggleComment = event => {
     event.stopPropagation();
     this.setState({ isCommentOpen: !this.state.isCommentOpen });
   };
 
-  pushComment = (comment) => {
+  pushComment = comment => {
     return () => {
       this.debouncedUpdateOnlyTimesheet({
         sheetId: this.props.item.id,
         comment
       });
 
-      this.setState((prevState) => ({ isCommentOpen: !prevState.isCommentOpen }));
+      this.setState(prevState => ({ isCommentOpen: !prevState.isCommentOpen }));
     };
   };
 
-  handleChangeTime = (e) => {
-    let value = e.target.value.replace(/[^\d,.]/g, '');
-    if (value.charAt(0) === '.' || value.charAt(0) === ',') {
-      value = '';
+  handleChangeTime = e => {
+    let value = e.target.value;
+
+    if (!validateNumber(value) || +value > 24) {
+      return false;
     }
+
     this.setState({
       itemSpentTime: value
     });
-    if (Number(value) > 0) {
+
+    value = value.replace(',', '.');
+
+    if (+value > 0) {
       if (this.props.item.isDraft) {
         this.debouncedUpdateDraft(
           {
             sheetId: this.props.item.id,
-            spentTime: value.replace(',', '.'),
+            spentTime: value,
             isVisible: this.props.item.isVisible,
             onDate: this.props.item.onDate,
             typeId: this.props.item.typeId,
@@ -65,7 +72,7 @@ class PlaylistItem extends Component {
       } else {
         this.debouncedUpdateOnlyTimesheet({
           sheetId: this.props.item.id,
-          spentTime: value.replace(',', '.'),
+          spentTime: value,
           isVisible: this.props.item.isVisible,
           comment: this.props.item.comment,
           onDate: this.props.item.onDate,
@@ -76,13 +83,7 @@ class PlaylistItem extends Component {
     }
   };
 
-  handleChangeTimeToEmpty = () => {
-    this.setState({
-      itemSpentTime: roundNum(this.props.item.spentTime, 2)
-    });
-  };
-
-  handleChangeComment = (e) => {
+  handleChangeComment = e => {
     this.setState({ comment: e.target.value });
   };
 
@@ -96,7 +97,7 @@ class PlaylistItem extends Component {
     item.isDraft ? updateDraft(params) : updateTimesheet(params);
   };
 
-  getNameByType = (typeId) => {
+  getNameByType = typeId => {
     const activity = _.find(this.props.magicActivitiesTypes, { id: typeId });
     return activity ? activity.name : 'Не определено';
   };
@@ -109,7 +110,7 @@ class PlaylistItem extends Component {
     }
   };
 
-  render () {
+  render() {
     const {
       task,
       project,
@@ -120,14 +121,14 @@ class PlaylistItem extends Component {
       sprint,
       isVisible
     } = this.props.item;
+    const timesheetDisabled = this.props.disabled;
     const status = task ? task.taskStatus : null;
     const redColorForTime = task ? parseFloat(task.factExecutionTime) > parseFloat(task.plannedExecutionTime) : false;
 
-    const prefix = project ? project.prefix : '';
-    const taskLabel = task && project ? `${project.prefix}-${task.id}` : null;
+    const prefix = project && project.prefix ? `${project.prefix}-` : '';
+    const taskLabel = task && prefix ? prefix + task.id : null;
 
     const createDraftStatusName = createDraftStatus ? createDraftStatus.name.replace(' stop', '') : '';
-
     return (
       <div className={classnames(css.listTask, css.task)}>
         <div
@@ -138,12 +139,18 @@ class PlaylistItem extends Component {
         >
           {getMaIcon(typeId)}
         </div>
-        <div className={css.taskNameWrapper} onClick={this.goToDetailPage}>
+        <div
+          className={classnames(css.taskNameWrapper, {
+            [css.currentItem]:
+              task && project && task.id === this.props.task.id && project.id === this.props.task.projectId
+          })}
+          onClick={this.goToDetailPage}
+        >
           <div className={css.taskTitle}>
             <div className={css.meta}>
               {task && task.prefix ? <span>{task.prefix}</span> : null}
-              <span>{project ? project.name : 'Без проекта'}</span>
-              {sprint ? <span>{sprint.name}</span> : null}
+              <span className={css.proName}>{project ? project.name : 'Без проекта'}</span>
+              <span>{sprint ? sprint.name : 'Backlog'}</span>
               {status ? (
                 <span>
                   {createDraftStatus ? (
@@ -166,17 +173,13 @@ class PlaylistItem extends Component {
 
               {status !== 'education' ? (
                 isVisible ? (
-                  <span
-                    className={css.visibleToggler}
-                    onClick={(e) => this.changeVisibility(e, false)}
-                    data-tip="Скрыть"
-                  >
+                  <span className={css.visibleToggler} onClick={e => this.changeVisibility(e, false)} data-tip="Скрыть">
                     <IconEyeDisable />
                   </span>
                 ) : (
                   <span
                     className={css.visibleToggler}
-                    onClick={(e) => this.changeVisibility(e, true)}
+                    onClick={e => this.changeVisibility(e, true)}
                     data-tip="Показать"
                   >
                     <IconEye />
@@ -195,8 +198,8 @@ class PlaylistItem extends Component {
             <input
               type="text"
               onChange={this.handleChangeTime}
-              onBlur={this.handleChangeTimeToEmpty}
               value={this.state.itemSpentTime}
+              disabled={timesheetDisabled}
             />
           </div>
           <div className={classnames({ [css.other]: true, [css.exceeded]: redColorForTime })}>
@@ -222,10 +225,13 @@ class PlaylistItem extends Component {
               defaultValue={comment}
               value={this.state.comment}
               placeholder="Введите текст комментария"
+              disabled={timesheetDisabled}
             />
-            <div className={css.actionButton} onClick={this.pushComment(this.state.comment)}>
-              <IconCheck style={{ width: '1.5rem', height: '1.5rem' }} />
-            </div>
+            {!timesheetDisabled && (
+              <div className={css.actionButton} onClick={this.pushComment(this.state.comment)}>
+                <IconCheck style={{ width: '1.5rem', height: '1.5rem' }} />
+              </div>
+            )}
           </div>
         ) : null}
       </div>
@@ -234,18 +240,21 @@ class PlaylistItem extends Component {
 }
 
 PlaylistItem.propTypes = {
+  disabled: PropTypes.bool,
   handleToggleList: PropTypes.func,
   index: PropTypes.number.isRequired,
   item: PropTypes.object.isRequired,
   magicActivitiesTypes: PropTypes.array,
+  task: PropTypes.object,
   updateDraft: PropTypes.func,
   updateTimesheet: PropTypes.func,
   visible: PropTypes.bool.isRequired
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    magicActivitiesTypes: state.Dictionaries.magicActivityTypes
+    magicActivitiesTypes: state.Dictionaries.magicActivityTypes,
+    task: state.Task.task
   };
 };
 

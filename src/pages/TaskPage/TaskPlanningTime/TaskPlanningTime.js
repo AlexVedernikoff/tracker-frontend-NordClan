@@ -4,15 +4,11 @@ import PropTypes from 'prop-types';
 import * as css from './TaskPlanningTime.scss';
 import { IconEdit, IconCheck } from '../../../components/Icons';
 import { connect } from 'react-redux';
-import {
-  startTaskEditing,
-  stopTaskEditing,
-  changeTask
-} from '../../../actions/Task';
+import { startTaskEditing, stopTaskEditing, changeTask } from '../../../actions/Task';
 import roundNum from '../../../utils/roundNum';
 
 class TaskPlanningTime extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       submitError: false,
@@ -43,7 +39,7 @@ class TaskPlanningTime extends Component {
 
   validateAndSubmit = () => {
     this.taskPlanningTime.innerText = this.taskPlanningTime.innerText.replace(',', '.').trim();
-    if (!(/^\d+(\.\d{0,})?$/.test(this.taskPlanningTime.innerText))) {
+    if (!/^\d+(\.\d{0,})?$/.test(this.taskPlanningTime.innerText)) {
       this.setState({ submitError: true });
     } else {
       this.setState(
@@ -53,10 +49,12 @@ class TaskPlanningTime extends Component {
         this.props.changeTask(
           {
             id: this.props.id,
-            [this.props.isExecutionTime ? 'factExecutionTime' : 'plannedExecutionTime']: +this.taskPlanningTime.innerText
+            [this.props.isExecutionTime ? 'factExecutionTime' : 'plannedExecutionTime']: +this.taskPlanningTime
+              .innerText
           },
           this.props.isExecutionTime ? 'ExecutionTime' : 'PlanningTime'
-        ));
+        )
+      );
     }
   };
 
@@ -72,7 +70,7 @@ class TaskPlanningTime extends Component {
     }
   };
 
-  render () {
+  render() {
     return (
       <div className={css.wrapper}>
         <span
@@ -88,12 +86,13 @@ class TaskPlanningTime extends Component {
           suppressContentEditableWarning
           onBlur={this.validateAndSubmit}
           onKeyDown={this.handleKeyPress}
-          { ...(this.props.tooltip ? {
-            'data-tip': !!this.props.tooltip,
-            'data-place': 'right',
-            'data-for': this.props.dataFor
-          } : null)
-          }
+          {...(this.props.tooltip
+            ? {
+                'data-tip': !!this.props.tooltip,
+                'data-place': 'right',
+                'data-for': this.props.dataFor
+              }
+            : null)}
         >
           {roundNum(this.props.time, 2)}
         </span>
@@ -102,26 +101,24 @@ class TaskPlanningTime extends Component {
             [css.alert]: this.props.isExecutionTime,
             [css.factTime]: this.props.isExecutionTime
           })}
-          { ...(this.props.tooltip ? {
-            'data-tip': !!this.props.tooltip,
-            'data-place': 'right',
-            'data-for': this.props.dataFor
-          } : null)
-          }
-        > ч.</span>
-        {
-          this.props.canEdit
-            ? this.props.timeIsEditing
-              ? <IconCheck
-                onClick={this.editIconClickHandler}
-                className={css.save}
-              />
-              : <IconEdit
-                onClick={this.editIconClickHandler}
-                className={css.edit}
-              />
-            : null
-        }
+          {...(this.props.tooltip
+            ? {
+                'data-tip': !!this.props.tooltip,
+                'data-place': 'right',
+                'data-for': this.props.dataFor
+              }
+            : null)}
+        >
+          {' '}
+          ч.
+        </span>
+        {this.props.canEdit ? (
+          this.props.timeIsEditing ? (
+            <IconCheck onClick={this.editIconClickHandler} className={css.save} />
+          ) : (
+            <IconEdit onClick={this.editIconClickHandler} className={css.edit} />
+          )
+        ) : null}
         {this.props.tooltip || null}
       </div>
     );

@@ -11,11 +11,11 @@ import Pagination from '../../../components/Pagination';
 import UserCard from '../../../components/UserCard';
 
 class ProjectHistory extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       isUserCardVisible: false,
-      activePage: 0
+      activePage: 1
     };
   }
 
@@ -24,11 +24,11 @@ class ProjectHistory extends React.Component {
   };
 
   showUserCard = id => {
-    this.setState({isUserCardVisible: true, userId: id});
+    this.setState({ isUserCardVisible: true, userId: id });
   };
 
   hideUserCard = () => {
-    this.setState({isUserCardVisible: false});
+    this.setState({ isUserCardVisible: false });
   };
 
   handlePaginationClick = e => {
@@ -48,23 +48,22 @@ class ProjectHistory extends React.Component {
     });
   };
 
-  render () {
+  render() {
     const { historyEvents, projectId } = this.props;
     const eventList = historyEvents.map((event, i) => {
-      return <div className={css.historyEvent} key={event.id}>
-        <span className={css.time}> {moment(event.date).format('DD.MM.YYYY HH:mm:ss')}</span>
-        <div className={css.historyAction}>
-          <UserCard user={event.author}>
-            <Link>{event.author.fullNameRu}</Link>
-          </UserCard>
-          {' '}
-          <HistoryMessage
-            message={event.message}
-            entities={event.entities}
-            projectId={projectId}
-          />
+      return (
+        <div className={css.historyEvent} key={event.id}>
+          <span className={css.time}> {moment(event.date).format('DD.MM.YYYY HH:mm:ss')}</span>
+          <div className={css.historyAction}>
+            {event.author ? (
+              <UserCard user={event.author}>
+                <Link>{event.author.fullNameRu}</Link>
+              </UserCard>
+            ) : null}{' '}
+            <HistoryMessage message={event.message} entities={event.entities} projectId={projectId} />
+          </div>
         </div>
-      </div>;
+      );
     });
 
     return (
@@ -72,14 +71,13 @@ class ProjectHistory extends React.Component {
         <h3>История изменений</h3>
         {eventList}
 
-        { this.props.pagesCount > 1
-          ? <Pagination
-              itemsCount={this.props.pagesCount}
-              activePage={this.state.activePage}
-              onItemClick={this.handlePaginationClick}
-            />
-          : null
-        }
+        {this.props.pagesCount > 1 ? (
+          <Pagination
+            itemsCount={this.props.pagesCount}
+            activePage={this.state.activePage}
+            onItemClick={this.handlePaginationClick}
+          />
+        ) : null}
       </div>
     );
   }
