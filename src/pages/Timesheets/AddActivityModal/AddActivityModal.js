@@ -62,7 +62,7 @@ class AddActivityModal extends Component {
   }
 
   changeItem = (option, name) => {
-    console.log(option);
+    // console.log(option);
     if (option) {
       this.setState({ [name]: option.value });
       if (name === 'activityType') {
