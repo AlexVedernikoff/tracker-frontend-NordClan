@@ -359,7 +359,12 @@ class AddActivityModal extends Component {
           <div className={css.footer}>
             <Button
               text="Добавить"
-              disabled={!this.props.selectedActivityType}
+              disabled={
+                !this.props.selectedActivityType
+                // || (this.props.selectedActivityType === 1
+                //   ? !this.props.selectedTaskStatusId
+                //   : false)
+              }
               htmlType="submit"
               type="green"
               onClick={this.addActivity}
