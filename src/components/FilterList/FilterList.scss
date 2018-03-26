@@ -2,24 +2,36 @@
 
 .filterList {
   border: 1px solid $color-gray;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  padding-left: 13px;
-  padding-right: 32px;
+  padding: 5px 2rem 5px 13px;
   position: relative;
+  height: 2rem;
+  line-height: 20px;
+  color: $input-color-placeholder;
+
+  &[disabled] {
+    cursor: not-allowed;
+  }
+}
+
+.filterCol {
+  padding: 0 0.5rem;
 }
 
 .filterListShowMore {
   position: relative;
+  height: 0;
+  margin: 1rem 0;
+  border-top: 1px solid #ebebeb;
+  text-align: center;
 }
 
 .filterListShowMoreButton {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  transform: translate(-50%, -50%);
+  display: inline-block;
+  padding: 0 1rem;
+  margin-top: -1rem;
+  font-size: 0;
   background-color: #fff;
-  padding: 1rem;
+  cursor: pointer;
 }
 
 .clearAllFilter {
@@ -32,4 +44,14 @@
   bottom: 0;
   right: 0;
   width: 32px;
+}
+
+.filterListShowMoreIcon {
+  fill: $color-dark-gray;
+  width: 21px;
+  height: 21px;
+}
+
+.filtersRow {
+  margin-bottom: 2rem;
 }

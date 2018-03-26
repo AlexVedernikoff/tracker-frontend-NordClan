@@ -751,6 +751,8 @@ class AgileBoard extends Component {
                   fullFilterView={this.state.fullFilterView}
                   toggleFilterView={this.toggleFilterView}
                   filters={this.state.allFilters}
+                  openCreateTaskModal={this.props.openCreateTaskModal}
+                  isVisor={isVisor}
                 />
               </Col>
             </Row>
