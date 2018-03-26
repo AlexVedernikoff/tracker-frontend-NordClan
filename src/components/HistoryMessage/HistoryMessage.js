@@ -93,6 +93,12 @@ export default class HistoryMessage extends React.Component {
             {entities[addition].name}
           </Link>
         );
+      case 'portfolio':
+        return entities[addition] ? (
+          <Link to={`/projects/portfolio/${entities[addition].id}`} key={key}>
+            {entities[addition].name}
+          </Link>
+        ) : null;
       case 'file':
         // реализовать потом
         break;
