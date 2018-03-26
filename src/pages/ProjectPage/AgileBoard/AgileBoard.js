@@ -19,6 +19,8 @@ import CreateTaskModal from '../../../components/CreateTaskModal';
 import PerformerFilter from '../../../components/PerformerFilter';
 import getPriorityById from '../../../utils/TaskPriority';
 import * as css from './AgileBoard.scss';
+import { UnmountClosed } from 'react-collapse';
+import { presets } from 'react-motion';
 
 import getTasks from '../../../actions/Tasks';
 import { VISOR } from '../../../constants/Roles';
@@ -640,8 +642,8 @@ class AgileBoard extends Component {
       <section className={css.agileBoard}>
         {!this.props.myTaskBoard ? (
           <div>
-            {this.state.fullFilterView ? (
-              <div>
+            <UnmountClosed isOpened={this.state.fullFilterView} springConfig={{ stiffness: 90, damping: 15 }}>
+              <div className={css.filtersRowWrapper}>
                 <Row className={css.filtersRow}>
                   <Col className={css.filterButtonCol}>
                     <Priority
@@ -741,9 +743,7 @@ class AgileBoard extends Component {
                   </Col>
                 </Row>
               </div>
-            ) : (
-              ''
-            )}
+            </UnmountClosed>
             <Row className={css.filtersRow}>
               <Col xs={12} sm={12}>
                 <FilterList
@@ -751,6 +751,8 @@ class AgileBoard extends Component {
                   fullFilterView={this.state.fullFilterView}
                   toggleFilterView={this.toggleFilterView}
                   filters={this.state.allFilters}
+                  openCreateTaskModal={this.props.openCreateTaskModal}
+                  isVisor={isVisor}
                 />
               </Col>
             </Row>

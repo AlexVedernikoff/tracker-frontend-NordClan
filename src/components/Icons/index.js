@@ -218,14 +218,23 @@ export const IconArrowRight = props => (
 export const IconArrowDown = props => (
   <SvgIcon {...props}>
     <path d="M7.41 7.84L12 12.42l4.59-4.58L18 9.25l-6 6-6-6z" />
-    <path d="M0-.75h24v24H0z" fill="none" />
   </SvgIcon>
 );
 
 export const IconArrowUp = props => (
   <SvgIcon {...props}>
     <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z" />
-    <path d="M0 0h24v24H0z" fill="none" />
+  </SvgIcon>
+);
+
+export const IconArrowUpThin = props => (
+  <SvgIcon {...props} viewBox="0 0 129 129" style={{ transformOrigin: '50%' }} transform="scale(1, -1)">
+    <path d="M121.3 34.6c-1.6-1.6-4.2-1.6-5.8 0l-51 51.1-51.1-51.1c-1.6-1.6-4.2-1.6-5.8 0-1.6 1.6-1.6 4.2 0 5.8l53.9 53.9c.8.8 1.8 1.2 2.9 1.2 1 0 2.1-.4 2.9-1.2l53.9-53.9c1.7-1.6 1.7-4.2.1-5.8z" />
+  </SvgIcon>
+);
+export const IconArrowDownThin = props => (
+  <SvgIcon {...props} viewBox="0 0 129 129">
+    <path d="M121.3 34.6c-1.6-1.6-4.2-1.6-5.8 0l-51 51.1-51.1-51.1c-1.6-1.6-4.2-1.6-5.8 0-1.6 1.6-1.6 4.2 0 5.8l53.9 53.9c.8.8 1.8 1.2 2.9 1.2 1 0 2.1-.4 2.9-1.2l53.9-53.9c1.7-1.6 1.7-4.2.1-5.8z" />
   </SvgIcon>
 );
 
