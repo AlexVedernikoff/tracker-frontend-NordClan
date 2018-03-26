@@ -525,7 +525,7 @@ class AgileBoard extends Component {
           this.props.project.users,
           this.state.performerId,
           'fullNameRu'
-        )}`;
+        ) || 'Не назначено'}`;
       case 'changedSprint':
         return `${this.createSelectedOption(
           this.getSprints().map(sprint => ({ id: sprint.value, name: sprint.label })),
