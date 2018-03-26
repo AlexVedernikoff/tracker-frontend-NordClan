@@ -331,41 +331,6 @@
   background-color: darken($color-gray, 10%);
 }
 
-.headerColumn {
-  display: flex;
-  margin-bottom: 1rem;
-
-  @include tablet {
-    flex-wrap: wrap;
-  }
-
-  .selectWrapper {
-    flex-grow: 1;
-    max-width: 433px;
-    width: 100%;
-    margin-right: 1rem;
-
-    @include tablet {
-      margin-bottom: 1rem;
-    }
-  }
-}
-
-.progressBarWrapper {
-  height: 8px;
-  background: silver;
-  margin-bottom: 2rem;
-
-  .progressBar {
-    height: 100%;
-    background-color: $color-green;
-
-    &.exceeded {
-      background-color: $color-red;
-    }
-  }
-}
-
 .edit {
   position: absolute;
   right: 0;
@@ -408,5 +373,21 @@
     font-size: 12px;
     text-align: center;
     font-weight: 600;
+  }
+}
+
+.moveTasksBtnWrapper {
+  margin: 0 0.5rem;
+  flex-shrink: 0;
+
+  @include phone {
+    width: 100%;
+    margin: 0 0.5rem 2rem;
+  }
+}
+
+.rightColumn {
+  @include phone {
+    order: 5;
   }
 }

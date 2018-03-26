@@ -43,7 +43,7 @@ class AddActivityModal extends Component {
     userId: PropTypes.number
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       activityType: 0,
@@ -57,7 +57,7 @@ class AddActivityModal extends Component {
     };
   }
 
-  componentWillMount () {
+  componentWillMount() {
     this.props.clearModalState();
   }
 
@@ -66,7 +66,6 @@ class AddActivityModal extends Component {
       this.setState({ [name]: option.value });
       if (name === 'activityType') {
         this.props.changeActivityType(option.value);
-        this.loadProjects();
         if (option.value === activityTypes.IMPLEMENTATION) {
           this.props.changeProject(null);
           if (this.state.isOnlyMine) {
@@ -85,16 +84,10 @@ class AddActivityModal extends Component {
   };
 
   addActivity = () => {
-    const {
-      selectedTask,
-      selectedActivityType,
-      selectedProject,
-      selectedTaskStatusId,
-      startingDay
-    } = this.props;
+    const { selectedTask, selectedActivityType, selectedProject, selectedTaskStatusId, startingDay } = this.props;
     const { selectedSprint } = this.state;
     // ТШ должен создаваться в stop статусе
-    const checkPlayStatus = (status) => (status === 2 || status === 4 || status === 6);
+    const checkPlayStatus = status => status === 2 || status === 4 || status === 6;
     const taskStatusId = selectedTask ? selectedTaskStatusId : null;
 
     const getSprint = () => {
@@ -109,7 +102,7 @@ class AddActivityModal extends Component {
 
     const getProject = () => {
       const holidayOrHospital = selectedActivityType === 5 || selectedActivityType === 7;
-      if (holidayOrHospital) {
+      if (holidayOrHospital || (selectedProject && selectedProject.value === 0)) {
         return null;
       }
       if (selectedTask) {
@@ -132,11 +125,13 @@ class AddActivityModal extends Component {
     this.props.addActivity({
       id: `temp-${shortid.generate()}`,
       comment: null,
-      task: selectedTask ? {
-        id: selectedTask.value,
-        name: selectedTask.body.name,
-        sprint: getSprint()
-      } : null,
+      task: selectedTask
+        ? {
+            id: selectedTask.value,
+            name: selectedTask.body.name,
+            sprint: getSprint()
+          }
+        : null,
       taskStatusId: checkPlayStatus(taskStatusId) ? taskStatusId + 1 : taskStatusId,
       typeId: selectedActivityType,
       spentTime: '0',
@@ -146,7 +141,6 @@ class AddActivityModal extends Component {
       project: getProject()
     });
   };
-
 
   toggleMine = () => {
     this.setState(oldState => {
@@ -162,69 +156,65 @@ class AddActivityModal extends Component {
 
   isNoTaskProjectActivity = () => {
     const { activityType } = this.state;
-    return activityType !== activityTypes.IMPLEMENTATION
-      && activityType !== activityTypes.VACATION
-      && activityType !== activityTypes.HOSPITAL;
-  }
+    return (
+      activityType !== activityTypes.IMPLEMENTATION &&
+      activityType !== activityTypes.VACATION &&
+      activityType !== activityTypes.HOSPITAL
+    );
+  };
 
-  handleChangeProject = (option) => {
+  handleChangeProject = option => {
     this.props.changeProject(option);
     this.loadTasks('', option ? option.value : null);
-    const { activityType } = this.state;
-    if (this.isNoTaskProjectActivity()) {
+    if (this.isNoTaskProjectActivity() && (option && option.value !== 0)) {
       this.props.getProjectSprints(option.value);
     }
-  }
+  };
 
   loadTasks = (name = '', projectId = null) => {
-    this.props.getTasksForSelect(name, projectId)
-      .then(options => this.setState({tasks: options.options}));
-  }
+    this.props.getTasksForSelect(name, projectId).then(options => this.setState({ tasks: options.options }));
+  };
 
-  loadProjects = (name = '') => {
-    const hideEmptyValue = this.state.activityType === 1;
-    this.props.getProjectsForSelect(name, hideEmptyValue)
-      .then(options => this.setState({projects: options.options}));
-  }
+  loadProjects = activityType => {
+    const hideEmptyValue = activityType === 1;
+    this.props.getProjectsForSelect('', hideEmptyValue).then(options => this.setState({ projects: options.options }));
+  };
 
-  handleChangeSprint = (option) => {
-    this.setState({selectedSprint: option});
-  }
+  handleChangeSprint = option => {
+    this.setState({ selectedSprint: option });
+  };
 
-  handleChangeActivity = (option) => {
+  handleChangeActivity = option => {
     if (!option) {
-      this.setState({'activityType': 0 },
-        () => this.props.changeActivityType(null));
+      this.setState({ activityType: 0 }, () => this.props.changeActivityType(null));
     } else {
       this.changeItem(option, 'activityType');
+      this.loadProjects(option.value);
     }
-  }
+  };
 
   getSprintOptions = () => {
-    const {sprints} = this.props;
-    return sprints ? sprints.map(sprint => {
-      return {
-        label: sprint.name,
-        value: sprint
-      };
-    }) : null;
-  }
-  render () {
+    const { sprints } = this.props;
+    return sprints
+      ? sprints.map(sprint => {
+          return {
+            label: sprint.name,
+            value: sprint
+          };
+        })
+      : null;
+  };
+  render() {
     const formLayout = {
       left: 5,
       right: 7
     };
     this.getSprintOptions(2);
     return (
-      <Modal
-        isOpen
-        onRequestClose={this.props.onClose}
-        contentLabel="Modal"
-        closeTimeoutMS={200}
-      >
+      <Modal isOpen onRequestClose={this.props.onClose} contentLabel="Modal" closeTimeoutMS={200}>
         <div className={css.addActivityForm}>
           <h3>Добавить активность</h3>
-          <hr/>
+          <hr />
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.left}>
@@ -238,138 +228,138 @@ class AddActivityModal extends Component {
                   onChange={this.handleChangeActivity}
                   options={
                     this.props.activityTypes.length
-                      ? this.props.activityTypes.map(
-                        element => {return {label: element.name, value: element.id};}
-                      )
+                      ? this.props.activityTypes.map(element => {
+                          return { label: element.name, value: element.id };
+                        })
                       : null
                   }
                 />
               </Col>
             </Row>
           </label>
-          {
-            this.state.activityType && this.state.activityType === activityTypes.IMPLEMENTATION
+          {this.state.activityType && this.state.activityType === activityTypes.IMPLEMENTATION
             ? [
-              <label key="onlyMineLabel" className={css.formField}>
-                <Row>
-                  <Col xs={12} sm={formLayout.left} />
-                  <Col xs={12} sm={formLayout.right}>
-                    <Checkbox
-                      checked={this.state.isOnlyMine}
-                      onChange={this.toggleMine}
-                      label="Только мои задачи"
-                    />
-                  </Col>
-                </Row>
-              </label>,
-              !this.state.isOnlyMine
-              ? <label key="projectSelectLabel" className={css.formField}>
+                <label key="onlyMineLabel" className={css.formField}>
                   <Row>
-                    <Col xs={12} sm={formLayout.left}>
-                      Проект:
-                    </Col>
+                    <Col xs={12} sm={formLayout.left} />
                     <Col xs={12} sm={formLayout.right}>
-                      <SelectDropdown
-                        multi={false}
-                        value={this.props.selectedProject}
-                        placeholder="Выберите проект"
-                        onChange={this.handleChangeProject}
-                        options={this.state.projects}
-                      />
+                      <Checkbox checked={this.state.isOnlyMine} onChange={this.toggleMine} label="Только мои задачи" />
                     </Col>
                   </Row>
-                </label> : null,
-              this.props.selectedProject || this.state.isOnlyMine
-              ? <label key="taskSelectLabel" className={css.formField}>
-                  <Row>
-                    <Col xs={12} sm={formLayout.left}>
-                      Задача:
-                    </Col>
-                    <Col xs={12} sm={formLayout.right}>
-                      <SelectDropdown
-                        multi={false}
-                        value={this.props.selectedTask}
-                        placeholder="Выберите задачу"
-                        onChange={option => this.props.changeTask(option)}
-                        options={this.state.tasks}
-                      />
-                    </Col>
-                  </Row>
-                </label> : null]
-              : this.state.activityType && this.state.activityType !== activityTypes.IMPLEMENTATION
-                && this.state.activityType !== activityTypes.VACATION
-                && this.state.activityType !== activityTypes.HOSPITAL
-              ? [<label className={css.formField} key="noTaskActivityProject">
-                  <Row>
-                    <Col xs={12} sm={formLayout.left}>
-                      Проект:
-                    </Col>
-                    <Col xs={12} sm={formLayout.right}>
-                      <SelectDropdown
+                </label>,
+                !this.state.isOnlyMine ? (
+                  <label key="projectSelectLabel" className={css.formField}>
+                    <Row>
+                      <Col xs={12} sm={formLayout.left}>
+                        Проект:
+                      </Col>
+                      <Col xs={12} sm={formLayout.right}>
+                        <SelectDropdown
                           multi={false}
                           value={this.props.selectedProject}
                           placeholder="Выберите проект"
                           onChange={this.handleChangeProject}
                           options={this.state.projects}
                         />
-                    </Col>
-                  </Row>
-                </label>,
-                this.props.selectedProject
-                ? <label className={css.formField} key="noTaskActivitySprint">
-                  <Row>
-                    <Col xs={12} sm={formLayout.left}>
-                      Спринт:
-                    </Col>
-                    <Col xs={12} sm={formLayout.right}>
-                      <SelectDropdown
+                      </Col>
+                    </Row>
+                  </label>
+                ) : null,
+                this.props.selectedProject || this.state.isOnlyMine ? (
+                  <label key="taskSelectLabel" className={css.formField}>
+                    <Row>
+                      <Col xs={12} sm={formLayout.left}>
+                        Задача:
+                      </Col>
+                      <Col xs={12} sm={formLayout.right}>
+                        <SelectDropdown
                           multi={false}
-                          value={this.state.selectedSprint}
-                          placeholder="Выберите спринт"
-                          onChange={this.handleChangeSprint}
-                          options={this.getSprintOptions()}
+                          value={this.props.selectedTask}
+                          placeholder="Выберите задачу"
+                          onChange={option => this.props.changeTask(option)}
+                          options={this.state.tasks}
                         />
-                    </Col>
-                  </Row>
-                </label> : null]
-            : null
-          }
-          {
-            this.props.selectedTask
-              ? <label className={css.formField}>
-                <Row>
-                  <Col xs={12} sm={formLayout.left}>
-                    Статус:
-                  </Col>
-                  <Col xs={12} sm={formLayout.right}>
-                    <SelectDropdown
-                      multi={false}
-                      value={this.props.selectedTaskStatusId}
-                      onChange={(option) => this.changeItem(option, 'taskStatusId')}
-                      placeholder="Выбрать статус"
-                      options={[
-                        {
-                          value: 2,
-                          label: 'Develop'
-                        },
-                        {
-                          value: 4,
-                          label: 'Code Review'
-                        },
-                        {
-                          value: 6,
-                          label: 'QA'
-                        }
-                      ]}
-                    />
-                  </Col>
-                </Row>
-              </label>
-              : null
-          }
+                      </Col>
+                    </Row>
+                  </label>
+                ) : null
+              ]
+            : this.state.activityType &&
+              this.state.activityType !== activityTypes.IMPLEMENTATION &&
+              this.state.activityType !== activityTypes.VACATION &&
+              this.state.activityType !== activityTypes.HOSPITAL
+              ? [
+                  <label className={css.formField} key="noTaskActivityProject">
+                    <Row>
+                      <Col xs={12} sm={formLayout.left}>
+                        Проект:
+                      </Col>
+                      <Col xs={12} sm={formLayout.right}>
+                        <SelectDropdown
+                          multi={false}
+                          value={this.props.selectedProject}
+                          placeholder="Выберите проект"
+                          onChange={this.handleChangeProject}
+                          options={this.state.projects}
+                        />
+                      </Col>
+                    </Row>
+                  </label>,
+                  this.props.selectedProject && this.props.selectedProject.value !== 0 ? (
+                    <label className={css.formField} key="noTaskActivitySprint">
+                      <Row>
+                        <Col xs={12} sm={formLayout.left}>
+                          Спринт:
+                        </Col>
+                        <Col xs={12} sm={formLayout.right}>
+                          <SelectDropdown
+                            multi={false}
+                            value={this.state.selectedSprint}
+                            placeholder="Выберите спринт"
+                            onChange={this.handleChangeSprint}
+                            options={this.getSprintOptions()}
+                          />
+                        </Col>
+                      </Row>
+                    </label>
+                  ) : null
+                ]
+              : null}
+          {this.props.selectedTask ? (
+            <label className={css.formField}>
+              <Row>
+                <Col xs={12} sm={formLayout.left}>
+                  Статус:
+                </Col>
+                <Col xs={12} sm={formLayout.right}>
+                  <SelectDropdown
+                    multi={false}
+                    value={this.props.selectedTaskStatusId}
+                    onChange={option => this.changeItem(option, 'taskStatusId')}
+                    placeholder="Выбрать статус"
+                    options={[
+                      {
+                        value: 2,
+                        label: 'Develop'
+                      },
+                      {
+                        value: 4,
+                        label: 'Code Review'
+                      },
+                      {
+                        value: 6,
+                        label: 'QA'
+                      }
+                    ]}
+                  />
+                </Col>
+              </Row>
+            </label>
+          ) : null}
           <div className={css.footer}>
             <Button
               text="Добавить"
+              disabled={!this.props.selectedActivityType}
               htmlType="submit"
               type="green"
               onClick={this.addActivity}

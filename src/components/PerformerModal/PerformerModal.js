@@ -4,11 +4,17 @@ import classnames from 'classnames';
 import { scroller, Element } from 'react-scroll';
 import * as css from './PerformerModal.scss';
 import Modal from '../Modal';
+import { IconClose, IconSearch } from '../Icons';
 
 class PerformerModal extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
-    let selectedIndex = 0;
+    const noPerfromerOption = {
+      value: 0,
+      label: 'Не выбрано'
+    };
+    this.userList = this.props.users.concat(noPerfromerOption);
+    let selectedIndex = this.userList.length - 1;
     this.props.users.forEach((user, i) => {
       if (user.value === this.props.defaultUser) {
         selectedIndex = i;
@@ -18,27 +24,23 @@ class PerformerModal extends Component {
       performer: this.props.defaultUser,
       selectedIndex,
       searchText: '',
-      users: this.props.users
+      users: this.userList
     };
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const { users, selectedIndex } = this.state;
     addEventListener('keydown', this.moveList);
-    setTimeout(
-      () => {
-        scroller.scrollTo(users[selectedIndex].value.toString(),
-        { containerId: 'performerList' });
-      },
-      100
-    );
+    setTimeout(() => {
+      scroller.scrollTo(users[selectedIndex].value.toString(), { containerId: 'performerList' });
+    }, 100);
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     removeEventListener('keydown', this.moveList);
   }
 
-  handleChoose = (value) => {
+  handleChoose = value => {
     this.props.onChoose(value);
   };
 
@@ -46,20 +48,35 @@ class PerformerModal extends Component {
     this.setState({ [name]: e });
   };
 
-  onSearchTextChange = (e) => {
+  removeCurrentPerformer = () => {
+    this.setState(
+      {
+        searchText: '',
+        users: this.userList,
+        selectedIndex: this.userList.length - 1
+      },
+      () => {
+        scroller.scrollTo(this.state.users[this.state.selectedIndex].value.toString(), {
+          containerId: 'performerList'
+        });
+      }
+    );
+  };
+
+  onSearchTextChange = e => {
     const searchText = e.target.value;
     const searchReg = new RegExp(searchText.toLowerCase());
     this.setState({
       searchText,
-      users: this.props.users.filter(user => user.label.toLowerCase().match(searchReg)),
+      users: this.userList.filter(user => user.label.toLowerCase().match(searchReg)),
       selectedIndex: 0
     });
-  }
+  };
 
-  moveList = (e) => {
-    const down = (e.keyCode === 40);
-    const up = (e.keyCode === 38);
-    const enter = (e.keyCode === 13);
+  moveList = e => {
+    const down = e.keyCode === 40;
+    const up = e.keyCode === 38;
+    const enter = e.keyCode === 13;
     if (down || up || enter) e.preventDefault();
     const indexIsMax = this.state.selectedIndex === this.state.users.length - 1;
     const indexIsMin = this.state.selectedIndex === 0;
@@ -68,70 +85,74 @@ class PerformerModal extends Component {
     };
 
     if (down && !indexIsMax) {
-      this.setState(
-        (state) => ({ selectedIndex: state.selectedIndex + 1 }),
-        onChanged
-      );
+      this.setState(state => ({ selectedIndex: state.selectedIndex + 1 }), onChanged);
     }
     if (up && !indexIsMin) {
-      this.setState(
-        (state) => ({ selectedIndex: state.selectedIndex - 1 }),
-        onChanged
-      );
+      this.setState(state => ({ selectedIndex: state.selectedIndex - 1 }), onChanged);
     }
 
     if (enter) {
       const { users, selectedIndex } = this.state;
       this.handleChoose(users[selectedIndex].value);
     }
-  }
+  };
 
-  render () {
-    const {
-      title,
-      onClose
-    } = this.props;
+  onClose = () => {
+    const performerId = this.state.users[this.state.selectedIndex].value;
+    this.props.onClose(performerId);
+  };
 
-    const {
-      users,
-      searchText,
-      selectedIndex
-    } = this.state;
+  render() {
+    const { title } = this.props;
+
+    const { users, searchText, selectedIndex } = this.state;
 
     return (
-      <Modal
-        isOpen
-        contentLabel="modal"
-        className={css.modalWrapper}
-        onRequestClose={onClose}
-      >
+      <Modal isOpen contentLabel="modal" className={css.modalWrapper} onRequestClose={this.onClose}>
         <div>
           <div className={css.header}>
             <h3>{title}</h3>
           </div>
-          <input
-            type="text"
-            autoFocus
-            className={css.search}
-            placeholder="Введите имя исполнителя"
-            value={searchText}
-            onChange={this.onSearchTextChange}
-          />
-          <div className={css.selectorContainer} ref={ref => {this.list = ref;}} id="performerList">
-            {
-              users.map((user, i) => (
-                <Element
-                  name={user.value.toString()}
-                  key={user.value}
-                  className={classnames({[css.user]: true, [css.selected]: selectedIndex === i})}
-                  autoFocus={selectedIndex === i}
-                  onClick={() => this.handleChoose(user.value)}
-                  tabIndex={i}
-                >
-                  {user.label}
-                </Element>
-              ))
-            }
+          <div className={css.currentPerformer}>
+            {users.length ? users[selectedIndex].label : null}
+            {users.length && users[selectedIndex].value !== 0 ? (
+              <div className={css.removeCurrentPerformer} onClick={this.removeCurrentPerformer}>
+                <IconClose />
+              </div>
+            ) : null}
+          </div>
+          <div className={css.inputWrapper}>
+            <input
+              type="text"
+              autoFocus
+              className={css.search}
+              placeholder="Введите имя исполнителя"
+              value={searchText}
+              onChange={this.onSearchTextChange}
+            />
+            <div className={css.searchIco}>
+              <IconSearch />
+            </div>
+          </div>
+          <div
+            className={css.selectorContainer}
+            ref={ref => {
+              this.list = ref;
+            }}
+            id="performerList"
+          >
+            {users.map((user, i) => (
+              <Element
+                name={user.value.toString()}
+                key={user.value}
+                className={classnames({ [css.user]: true, [css.selected]: selectedIndex === i })}
+                autoFocus={selectedIndex === i}
+                onClick={() => this.handleChoose(user.value)}
+                tabIndex={i}
+              >
+                {user.label}
+              </Element>
+            ))}
           </div>
         </div>
       </Modal>

@@ -54,16 +54,12 @@ export const doAuthentication = ({ username, password }) => {
   return dispatch => {
     dispatch(startAuthentication());
     axios
-      .post(
-        URL,
-        { login: username, password: password },
-        { withCredentials: true }
-      )
+      .post(URL, { login: username, password: password }, { withCredentials: true })
       .catch(error => {
-        if (error.response.data.name === 'InvalidCredentialsError' && error.response.data.code === 49) {
+        if (error.response.data.status === 404) {
           dispatch(authenticationError(getErrorMessageByType(error.response.data.name)));
         } else {
-          dispatch(showNotification({message: error.message, type: 'error'}));
+          dispatch(showNotification({ message: error.message, type: 'error' }));
         }
         dispatch(userInfoReceiveFailed());
       })
@@ -103,7 +99,7 @@ export const getInfoAboutMe = () => {
       .catch(error => {
         dispatch(finishLoading());
         if (error.response.data.name !== 'UnauthorizedError' || history.getCurrentLocation().pathname !== '/login') {
-          dispatch(showNotification({message: error.message, type: 'error'}));
+          dispatch(showNotification({ message: error.message, type: 'error' }));
         }
         dispatch(userInfoReceiveFailed());
       })
@@ -117,6 +113,4 @@ export const getInfoAboutMe = () => {
   };
 };
 
-export const clearRedirect = () => (
-  setRedirectPath(null)
-);
+export const clearRedirect = () => setRedirectPath(null);

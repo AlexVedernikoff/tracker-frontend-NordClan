@@ -1,13 +1,5 @@
 @import '../../../styles/variables.scss';
 
-.agileBoard {
-  // margin-top: 24px;
-}
-
-.boardContainer {
-  margin-top: 3rem;
-}
-
 .changedSprint {
   position: relative;
   @include phone {
@@ -42,6 +34,11 @@
   }
 }
 
+//Fixes collapsing margin blinking issue during transition
+.filtersRowWrapper {
+  padding: 1px;
+}
+
 .taskSectionTitle {
   cursor: pointer;
   margin-left: -4px;
@@ -56,7 +53,7 @@
   }
 
   &:before {
-    content: "";
+    content: '';
     display: inline-block;
     width: 1rem;
     height: 1rem;
@@ -76,7 +73,7 @@
 }
 
 .FINISHED:before {
-  background-color: darken($color-gray, 10%);;
+  background-color: darken($color-gray, 10%);
 }
 
 .modalWrapper {

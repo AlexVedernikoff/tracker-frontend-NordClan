@@ -1,0 +1,65 @@
+@import '../../styles/variables';
+
+.filterList {
+  border: 1px solid $color-gray;
+  padding: 5px 2rem 5px 13px;
+  position: relative;
+  height: 2rem;
+  line-height: 20px;
+  color: $input-color-placeholder;
+
+  &[disabled] {
+    cursor: not-allowed;
+  }
+}
+
+.filterCol {
+  padding: 0 0.5rem;
+}
+
+.filterListShowMore {
+  position: relative;
+  height: 0;
+  margin: 1rem 0;
+  border-top: 1px solid #ebebeb;
+  text-align: center;
+}
+
+.filterListShowMoreButton {
+  display: inline-block;
+  padding: 0 1rem;
+  margin-top: -1rem;
+  font-size: 0;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.clearAllFilter {
+  cursor: pointer;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 32px;
+}
+
+.filterListShowMoreIcon {
+  fill: $color-dark-gray;
+  width: 21px;
+  height: 21px;
+  transition: transform 0.3s ease;
+  will-change: transform;
+}
+
+.filtersRow {
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.iconReverse {
+  transform-origin: 50% 50%;
+  transform: scale(1, -1);
+}

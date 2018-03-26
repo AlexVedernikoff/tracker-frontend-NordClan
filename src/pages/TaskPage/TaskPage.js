@@ -24,6 +24,7 @@ import * as TaskStatuses from '../../constants/TaskStatuses';
 
 import {
   getTask,
+  clearError,
   startTaskEditing,
   stopTaskEditing,
   changeTask,
@@ -33,11 +34,7 @@ import {
   uploadAttachments
 } from '../../actions/Task';
 import getTasks from '../../actions/Tasks';
-import {
-  getProjectInfo,
-  openCreateTaskModal,
-  openCreateChildTaskModal
-} from '../../actions/Project';
+import { getProjectInfo, openCreateTaskModal, openCreateChildTaskModal } from '../../actions/Project';
 
 import * as css from './TaskPage.scss';
 
@@ -48,6 +45,7 @@ class TaskPage extends Component {
     children: PropTypes.object,
     getProjectInfo: PropTypes.func.isRequired,
     getTask: PropTypes.func.isRequired,
+    clearError: PropTypes.func,
     getTasks: PropTypes.func.isRequired,
     globalRole: PropTypes.string.isRequired,
     isCreateChildTaskModalOpen: PropTypes.bool,
@@ -70,7 +68,7 @@ class TaskPage extends Component {
     uploadAttachments: PropTypes.func.isRequired
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       isTaskModalOpen: false,
@@ -78,17 +76,18 @@ class TaskPage extends Component {
       isLeaveConfirmModalOpen: false,
       unLinkedTask: null,
       isCancelSubTaskModalOpen: false,
-      canceledSubTaskId: null
+      canceledSubTaskId: null,
+      closeHasError: false
     };
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.getTask(this.props.params.taskId);
     this.props.getProjectInfo(this.props.params.projectId);
     this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave);
   }
 
-  routerWillLeave = (nextLocation) => {
+  routerWillLeave = nextLocation => {
     if (this.props.DescriptionIsEditing) {
       if (this.state.leaveConfirmed) return true;
       this.setState({
@@ -100,9 +99,14 @@ class TaskPage extends Component {
     } else {
       return true;
     }
-  }
+  };
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.params.closeHasError !== this.state.closeHasError) {
+      this.setState({
+        closeHasError: nextProps.params.closeHasError
+      });
+    }
     if (nextProps.params.taskId !== this.props.params.taskId) {
       this.props.getTask(nextProps.params.taskId);
     }
@@ -123,18 +127,18 @@ class TaskPage extends Component {
   };
 
   handleCloseLeaveConfirmModal = () => {
-    this.setState({isLeaveConfirmModalOpen: false}, () => {
+    this.setState({ isLeaveConfirmModalOpen: false }, () => {
       if (window.location.pathname !== this.state.currentLocation) {
         history.replace(this.state.currentLocation);
       }
     });
-  }
+  };
 
   leaveConfirm = () => {
-    this.setState({leaveConfirmed: true}, () => {
+    this.setState({ leaveConfirmed: true }, () => {
       history.push(this.state.nextLocation);
     });
-  }
+  };
 
   handleOpenLinkTaskModal = () => {
     this.props.getTasks({
@@ -166,17 +170,19 @@ class TaskPage extends Component {
 
   getProjectUnlinkedTasks = () => {
     const linkedTasksIds = this.props.task.linkedTasks.map(task => task.id);
-    return this.props.projectTasks.filter(task => !_.includes(linkedTasksIds, task.id) && task.id !== this.props.task.id).map(task => ({
-      value: task.id,
-      label: `${this.props.task.project.prefix}-${task.id}. ${task.name}`
-    }));
+    return this.props.projectTasks
+      .filter(task => !_.includes(linkedTasksIds, task.id) && task.id !== this.props.task.id)
+      .map(task => ({
+        value: task.id,
+        label: `${this.props.task.project.prefix}-${task.id}. ${task.name}`
+      }));
   };
 
-  removeAttachment = (attachmentId) => {
+  removeAttachment = attachmentId => {
     this.props.removeAttachment(this.props.task.id, attachmentId);
   };
 
-  uploadAttachments = (files) => {
+  uploadAttachments = files => {
     this.props.uploadAttachments(this.props.task.id, files);
   };
 
@@ -194,63 +200,80 @@ class TaskPage extends Component {
     });
   };
 
+  handleCloseCancelInfoTaskModal = () => {
+    this.props.clearError();
+    this.setState({ closeHasError: true });
+  };
+
   handleCancelSubTask = () => {
-    this.props.changeTask({
-      id: this.state.canceledSubTaskId,
-      statusId: TaskStatuses.CANCELED
-    },
-    'Status');
+    const { getTask, changeTask, task } = this.props;
+    const { canceledSubTaskId } = this.state;
+
+    changeTask(
+      {
+        id: canceledSubTaskId,
+        statusId: TaskStatuses.CANCELED
+      },
+      'Status',
+      () => {
+        getTask(task.id);
+      }
+    );
+
     this.handleCloseCancelSubTaskModal();
   };
 
-  render () {
-    const { globalRole } = this.props;
+  render() {
+    const { globalRole, task, params } = this.props;
     const isVisor = globalRole === VISOR;
-    let projectUrl = '/';
-    if (this.props.task.project) projectUrl = `/projects/${this.props.task.project.id}`;
+    const projectUrl = task.project ? `/projects/${task.project.id}` : '/';
+    const notFoundError =
+      task.project && task.project.id !== +params.projectId
+        ? {
+            message: 'Task not found',
+            name: 'NotFoundError',
+            status: 404
+          }
+        : null;
+    const httpError = task.error || notFoundError;
 
-    return (this.props.task.error) ? (<HttpError error={this.props.task.error}/>) : (
+    return httpError ? (
+      <HttpError error={httpError} />
+    ) : (
       <div ref="taskPage" className={css.taskPage}>
         <Row>
           <Col xs={12} sm={8}>
             <TaskHeader
-              task={this.props.task}
-              projectId={this.props.params.projectId}
+              task={task}
+              projectId={params.projectId}
               onChange={this.props.changeTask}
-              canEdit={this.props.task.statusId !== TaskStatuses.CLOSED}
+              canEdit={task.statusId !== TaskStatuses.CLOSED}
             />
             <main className={css.main}>
               <Description
-                text={{ __html: this.props.task.description }}
+                text={{ __html: task.description }}
                 headerType="h3"
-                id={+this.props.params.taskId}
+                id={+params.taskId}
                 headerText="Описание:"
                 onEditStart={this.props.startTaskEditing}
                 onEditFinish={this.props.stopTaskEditing}
                 onEditSubmit={this.props.changeTask}
                 isEditing={this.props.DescriptionIsEditing}
-                canEdit={this.props.task.statusId !== TaskStatuses.CLOSED}
+                canEdit={task.statusId !== TaskStatuses.CLOSED}
               />
               <hr />
               <h3>Прикрепленные файлы:</h3>
               <Attachments
-                attachments={this.props.task.attachments}
+                attachments={task.attachments}
                 removeAttachment={this.removeAttachment}
                 uploadAttachments={this.uploadAttachments}
-                canEdit={this.props.task.statusId !== TaskStatuses.CLOSED}
+                canEdit={task.statusId !== TaskStatuses.CLOSED}
               />
               <RouteTabs style={{ marginTop: '2rem', marginBottom: '2rem' }}>
-                <Link
-                  onlyActiveOnIndex
-                  to={`/projects/${this.props.params.projectId}/tasks/${this.props.params.taskId}`}
-                >
+                <Link onlyActiveOnIndex to={`/projects/${params.projectId}/tasks/${params.taskId}`}>
                   Комментарии
                 </Link>
-                <Link
-                  to={`/projects/${this.props.params.projectId}/tasks/${this.props.params.taskId}/history`}
-                >
-                  История
-                </Link>
+                <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/history`}>История</Link>
               </RouteTabs>
               {this.props.children}
             </main>
@@ -258,98 +281,91 @@ class TaskPage extends Component {
           <Col xs={12} sm={4}>
             <aside>
               <Details
-                task={this.props.task}
+                task={task}
                 sprints={this.props.sprints}
                 onChange={this.props.changeTask}
-                canEdit={this.props.task.statusId !== TaskStatuses.CLOSED}
+                canEdit={task.statusId !== TaskStatuses.CLOSED}
               />
-              {
-                !isVisor
-                  ? <button className={css.addTask} onClick={this.props.openCreateTaskModal}>
-                      <span>Создать новую задачу</span>
-                      <IconPlus style={{width: 16, height: 16}}/>
-                    </button>
-                  : null
-              }
-              {
-                this.props.task.linkedTasks
-                  ? <RelatedTasks task={this.props.task} type="linkedTasks" onAction={this.handleOpenLinkTaskModal}
-                    onDelete={this.handleOpenUnlinkTaskModal} />
-                  : null
-              }
-              {
-                this.props.task.subTasks && !this.props.task.parentTask
-                  ? <RelatedTasks
-                    task={this.props.task}
-                    type="subTasks"
-                    onAction={this.props.openCreateChildTaskModal}
-                    onDelete={this.props.task.statusId !== TaskStatuses.CANCELED
-                      ? this.handleOpenCancelSubTaskModal
-                      : null
-                    }
-                  />
-                  : null
-              }
+              {!isVisor ? (
+                <button className={css.addTask} onClick={this.props.openCreateTaskModal}>
+                  <span>Создать новую задачу</span>
+                  <IconPlus style={{ width: 16, height: 16 }} />
+                </button>
+              ) : null}
+              {task.linkedTasks ? (
+                <RelatedTasks
+                  task={task}
+                  type="linkedTasks"
+                  onAction={this.handleOpenLinkTaskModal}
+                  onDelete={this.handleOpenUnlinkTaskModal}
+                />
+              ) : null}
+              {task.subTasks && !task.parentTask ? (
+                <RelatedTasks
+                  task={task}
+                  type="subTasks"
+                  onAction={this.props.openCreateChildTaskModal}
+                  onDelete={task.statusId !== TaskStatuses.CANCELED ? this.handleOpenCancelSubTaskModal : null}
+                />
+              ) : null}
             </aside>
           </Col>
         </Row>
-        {
-          this.props.isCreateTaskModalOpen || this.props.isCreateChildTaskModalOpen
-            ? <CreateTaskModal
-              selectedSprintValue={this.props.task.sprint ? this.props.task.sprint.id : 0}
-              project={this.props.project}
-              parentTaskId={this.props.isCreateChildTaskModalOpen ? this.props.task.id : null}
-            />
-            : null
-        }
-        {
-          this.state.isTaskModalOpen
-            ? <TaskModal
-              onChoose={this.linkTask}
-              onClose={this.handleCloseLinkTaskModal}
-              title="Связывание задачи"
-              tasks={this.getProjectUnlinkedTasks()}
-            />
-            : null
-        }
+        {this.props.isCreateTaskModalOpen || this.props.isCreateChildTaskModalOpen ? (
+          <CreateTaskModal
+            selectedSprintValue={task.sprint ? task.sprint.id : 0}
+            project={this.props.project}
+            parentTaskId={this.props.isCreateChildTaskModalOpen ? task.id : null}
+          />
+        ) : null}
+        {this.state.isTaskModalOpen ? (
+          <TaskModal
+            onChoose={this.linkTask}
+            onClose={this.handleCloseLinkTaskModal}
+            title="Связывание задачи"
+            tasks={this.getProjectUnlinkedTasks()}
+          />
+        ) : null}
 
-        { this.state.isUnlinkModalOpen
-          ? <ConfirmModal
+        {this.state.isUnlinkModalOpen ? (
+          <ConfirmModal
             isOpen
             contentLabel="modal"
             text="Вы действительно хотите отвязать задачу?"
             onCancel={this.handleCloseUnlinkTaskModal}
             onConfirm={this.unlinkTask}
           />
-          : null
-        }
+        ) : null}
 
-        { this.state.isLeaveConfirmModalOpen
-          ? <ConfirmModal
+        {this.state.isLeaveConfirmModalOpen ? (
+          <ConfirmModal
             isOpen
             contentLabel="modal"
             text="Вы действительно хотите покинуть страницу? Все не сохранённые данные будут потеряны"
             onCancel={this.handleCloseLeaveConfirmModal}
             onConfirm={this.leaveConfirm}
           />
-          : null
-        }
+        ) : null}
 
-        {
-          this.state.isCancelSubTaskModalOpen
-            ? <ConfirmModal
-              isOpen
-              contentLabel="modal"
-              text="Вы действительно хотите отменить задачу?"
-              onCancel={this.handleCloseCancelSubTaskModal}
-              onConfirm={this.handleCancelSubTask}
-            />
-            : null
-        }
-        <GoBackPanel
-          defaultPreviousUrl={projectUrl}
-          parentRef={this.refs.taskPage}
-        />
+        {this.state.isCancelSubTaskModalOpen ? (
+          <ConfirmModal
+            isOpen
+            contentLabel="modal"
+            text="Вы действительно хотите отменить задачу?"
+            onCancel={this.handleCloseCancelSubTaskModal}
+            onConfirm={this.handleCancelSubTask}
+          />
+        ) : null}
+        {this.props.hasError === true && this.state.closeHasError !== true ? (
+          <ConfirmModal
+            isOpen
+            contentLabel="modal"
+            text="Нельзя изменять закрытую задачу"
+            onCancel={this.handleCloseCancelInfoTaskModal}
+            notification
+          />
+        ) : null}
+        <GoBackPanel defaultPreviousUrl={projectUrl} parentRef={this.refs.taskPage} />
       </div>
     );
   }
@@ -362,12 +378,15 @@ const mapStateToProps = state => ({
   DescriptionIsEditing: state.Task.DescriptionIsEditing,
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
   isCreateChildTaskModalOpen: state.Project.isCreateChildTaskModalOpen,
-  globalRole: state.Auth.user.globalRole
+  globalRole: state.Auth.user.globalRole,
+  hasError: state.Task.hasError,
+  closeHasError: state.Task.closeHasError
 });
 
 const mapDispatchToProps = {
   changeTask,
   getTask,
+  clearError,
   getTasks,
   getProjectInfo,
   linkTask,

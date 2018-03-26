@@ -12,7 +12,7 @@ import { createSprint } from '../../../actions/Sprint';
 import { getSprintsDateRange } from '../../../selectors/getSprintsDateRange';
 
 class CreateSprintModal extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -29,22 +29,22 @@ class CreateSprintModal extends Component {
     if (this.validateNumbers(e.target.value)) {
       this.setState({ budget: e.target.value });
     }
-  }
+  };
 
   onChangeRiskBudget = e => {
     if (this.validateNumbers(e.target.value)) {
       this.setState({ riskBudget: e.target.value });
     }
-  }
+  };
 
   onChangeTime = e => {
     if (this.validateNumbers(e.target.value)) {
       this.setState({ allottedTime: e.target.value });
     }
-  }
+  };
 
   onChangeName = e => {
-    this.setState({ sprintName: e.target.value });
+    this.setState({ sprintName: e.target.value.trim() });
   };
 
   handleDayFromChange = date => {
@@ -57,23 +57,23 @@ class CreateSprintModal extends Component {
 
   checkNullInputs = () => {
     return !!(
-      this.state.sprintName
-      && this.state.dateTo
-      && this.state.dateFrom
-      && this.state.allottedTime
-      && this.state.budget
-      && this.state.riskBudget
+      this.state.sprintName &&
+      this.state.dateTo &&
+      this.state.dateFrom &&
+      this.state.allottedTime &&
+      this.state.budget &&
+      this.state.riskBudget
     );
-  }
+  };
 
   setDefaultTimeValue = () => {
     if (this.state.dateTo && this.state.dateFrom) {
       const calculatedHours = this.calcWorkingHours(this.state.dateFrom, this.state.dateTo);
       this.setState({ allottedTime: calculatedHours });
     }
-  }
+  };
 
-  calcWorkingHours (startDate, endDate) {
+  calcWorkingHours(startDate, endDate) {
     const day = moment(startDate);
     let businessDays = 0;
     while (day.isSameOrBefore(endDate, 'day')) {
@@ -83,7 +83,7 @@ class CreateSprintModal extends Component {
     return businessDays * 8;
   }
 
-  validateNumbers (value) {
+  validateNumbers(value) {
     const re = /^\d*(\.\d*)?$/;
     return value !== '' ? re.test(value) : true;
   }
@@ -93,7 +93,7 @@ class CreateSprintModal extends Component {
       return moment(this.state.dateTo).isAfter(this.state.dateFrom);
     }
     return true;
-  }
+  };
 
   createSprint = e => {
     e.preventDefault();
@@ -109,13 +109,9 @@ class CreateSprintModal extends Component {
     );
   };
 
-  render () {
-    const formattedDayFrom = this.state.dateFrom
-      ? moment(this.state.dateFrom).format('DD.MM.YYYY')
-      : '';
-    const formattedDayTo = this.state.dateTo
-      ? moment(this.state.dateTo).format('DD.MM.YYYY')
-      : '';
+  render() {
+    const formattedDayFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('DD.MM.YYYY') : '';
+    const formattedDayTo = this.state.dateTo ? moment(this.state.dateTo).format('DD.MM.YYYY') : '';
 
     const formLayout = {
       firstCol: 4,
@@ -134,20 +130,10 @@ class CreateSprintModal extends Component {
             </Row>
             <Row>
               <Col xs={12} className={css.validateMessages}>
-                {
-                  !this.checkNullInputs()
-                    ? <span>
-                        Все поля должны быть заполнены
-                      </span>
-                    : null
-                }
-                {
-                  !this.validateDates()
-                    ? <span className = {css.redMessage}>
-                      Дата окончания должна быть позже даты начала
-                      </span>
-                    : null
-                }
+                {!this.checkNullInputs() ? <span>Все поля должны быть заполнены</span> : null}
+                {!this.validateDates() ? (
+                  <span className={css.redMessage}>Дата окончания должна быть позже даты начала</span>
+                ) : null}
               </Col>
             </Row>
             <Row className={css.inputRow}>
@@ -155,10 +141,7 @@ class CreateSprintModal extends Component {
                 <p>Название спринта:</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input
-                  placeholder="Введите название спринта"
-                  onChange={this.onChangeName}
-                />
+                <Input placeholder="Введите название спринта" onChange={this.onChangeName} />
               </Col>
             </Row>
             <Row className={css.inputRow}>
