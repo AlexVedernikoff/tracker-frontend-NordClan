@@ -167,7 +167,7 @@ class AgileBoard extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.tracks !== nextProps.tracks && this.props.project.id) {
+    if (this.props.tracksChange !== nextProps.tracksChange && this.props.project.id) {
       this.props.getProjectInfo(this.props.project.id);
     }
 
@@ -801,7 +801,7 @@ AgileBoard.propTypes = {
   project: PropTypes.object,
   sprintTasks: PropTypes.array,
   sprints: PropTypes.array,
-  tracks: PropTypes.object,
+  tracksChange: PropTypes.number,
   startTaskEditing: PropTypes.func,
   user: PropTypes.object,
   getProjectUsers: PropTypes.func,
@@ -815,7 +815,7 @@ const mapStateToProps = state => ({
   sprintTasks: state.Tasks.tasks,
   sprints: state.Project.project.sprints,
   project: state.Project.project,
-  tracks: state.TimesheetPlayer.tracks,
+  tracksChange: state.TimesheetPlayer.tracksChange,
   StatusIsEditing: state.Task.StatusIsEditing,
   UserIsEditing: state.Task.UserIsEditing,
   user: state.Auth.user,
