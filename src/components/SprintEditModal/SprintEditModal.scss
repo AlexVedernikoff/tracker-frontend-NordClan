@@ -2,6 +2,9 @@
 
 .editSprintForm {
   padding: 2rem;
+  max-width: 100%; // ie fix
+  width: 475px; // ie fix
+
   h3 {
     text-align: center;
     margin: 0;
@@ -24,8 +27,9 @@
   .DayPickerInput {
     margin-bottom: 1rem;
   }
-  
+
   @include phone {
     padding: 1rem;
+    width: 100%; // ie fix
   }
 }

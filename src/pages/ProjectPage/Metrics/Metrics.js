@@ -5,6 +5,7 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './Metrics.scss';
 import StartEndDates from './StartEndDates';
 import { defaults } from 'react-chartjs-2';
+import * as zoom from 'chartjs-plugin-zoom';
 import BudgetChart from './BudgetChart';
 import BugsChart from './BugsChart';
 import CostByRoleChart from './CostByRoleChart';
@@ -84,6 +85,14 @@ const chartDefaultOptions = {
         }
       }
     ]
+  },
+  pan: {
+    enabled: true,
+    mode: 'xy'
+  },
+  zoom: {
+    enabled: true,
+    mode: 'xy'
   }
 };
 
@@ -265,7 +274,8 @@ class Metrics extends Component {
                 addedClassNames={{ [css.recalculateBtn]: true }}
                 onClick={this.recalculateMetrics}
                 type="bordered"
-                icon={loading ? 'IconPreloader' : 'IconRefresh'}
+                loading={!!loading}
+                icon={'IconRefresh'}
                 data-tip="Пересчитать метрику"
               />
               <Tabs

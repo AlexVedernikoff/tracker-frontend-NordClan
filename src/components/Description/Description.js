@@ -66,11 +66,16 @@ class Description extends Component {
 
   updateText = () => {
     const { onEditSubmit } = this.props;
-
+    const options = {
+      inlineStyles: {
+        SUPERSCRIPT: { element: 'sup' },
+        SUBSCRIPT: { element: 'sub' }
+      }
+    };
     onEditSubmit(
       {
         id: this.props.id,
-        description: stateToHTML(this.TextEditor.state.editorState.getCurrentContent())
+        description: stateToHTML(this.TextEditor.state.editorState.getCurrentContent(), options)
       },
       'Description'
     );
@@ -110,7 +115,6 @@ class Description extends Component {
       default:
         header = null;
     }
-
     return (
       <div
         className={classnames({
@@ -122,7 +126,10 @@ class Description extends Component {
         {this.props.isEditing ? (
           <TextEditor ref={ref => (this.TextEditor = ref)} content={this.props.text.__html || ''} />
         ) : (
-          <div className={css.wiki} dangerouslySetInnerHTML={{ __html: this.parseTextLinks(this.props.text) }} />
+          <div
+            className={css.wiki}
+            dangerouslySetInnerHTML={{ __html: this.parseTextLinks(this.props.text).replace(/&nbsp;/g, '') }}
+          />
         )}
         {this.props.canEdit ? (
           <div className={css.editBorder}>

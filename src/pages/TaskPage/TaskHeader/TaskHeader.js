@@ -18,26 +18,33 @@ const getNewStatus = newPhase => {
   let newStatusId;
 
   switch (newPhase) {
-  case 'New': newStatusId = TaskStatuses.NEW;
-    break;
-  case 'Develop': newStatusId = TaskStatuses.DEV_PLAY;
-    break;
-  case 'Code Review': newStatusId = TaskStatuses.CODE_REVIEW_PLAY;
-    break;
-  case 'QA': newStatusId = TaskStatuses.QA_PLAY;
-    break;
-  case 'Done': newStatusId = TaskStatuses.DONE;
-    break;
-  case 'Closed': newStatusId = TaskStatuses.CLOSED;
-    break;
-  default: break;
+    case 'New':
+      newStatusId = TaskStatuses.NEW;
+      break;
+    case 'Develop':
+      newStatusId = TaskStatuses.DEV_PLAY;
+      break;
+    case 'Code Review':
+      newStatusId = TaskStatuses.CODE_REVIEW_PLAY;
+      break;
+    case 'QA':
+      newStatusId = TaskStatuses.QA_PLAY;
+      break;
+    case 'Done':
+      newStatusId = TaskStatuses.DONE;
+      break;
+    case 'Closed':
+      newStatusId = TaskStatuses.CLOSED;
+      break;
+    default:
+      break;
   }
 
   return newStatusId;
 };
 
 class TaskHeader extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       isCancelModalOpen: false,
@@ -47,7 +54,7 @@ class TaskHeader extends Component {
       clickedStatus: ''
     };
   }
-  
+
   createChangeStatusHandler = (statusStop, statusPlay, statusName) => () => {
     const currentStatus = this.props.task.statusId;
     const statusTransition = {
@@ -64,7 +71,7 @@ class TaskHeader extends Component {
     } else {
       this.changeStatus(statusTransition[currentStatus]);
     }
-  }
+  };
 
   handleOpenModal = () => {
     this.props.getProjectUsers(this.props.projectId);
@@ -96,8 +103,7 @@ class TaskHeader extends Component {
     this.setState({ [name]: e });
   };
 
-  changeStatus = (newStatusId) => {
-    
+  changeStatus = newStatusId => {
     this.props.onChange(
       {
         id: this.props.task.id,
@@ -107,7 +113,7 @@ class TaskHeader extends Component {
     );
   };
 
-  changePerformer = (performerId) => {
+  changePerformer = performerId => {
     this.props.onChange(
       {
         id: this.props.task.id,
@@ -157,14 +163,14 @@ class TaskHeader extends Component {
   };
 
   handleChangeSingleStateStatus = (status, statusName) => () => {
-    if (statusName) {
+    if (statusName && statusName !== 'New') {
       this.setState({ clickedStatus: statusName }, this.handleOpenModal);
     } else {
       this.changeStatus(status);
     }
-  }
+  };
 
-  render () {
+  render() {
     const { task, taskTypes, canEdit } = this.props;
     const css = require('./TaskHeader.scss');
     const users = this.props.users.map(item => ({
@@ -174,93 +180,59 @@ class TaskHeader extends Component {
 
     return (
       <div>
-        {
-          task.parentTask
-            ? <div className={css.parentTaskWrp}>
-                <div className={css.parentTask}>
-                <div className={css.prefix} data-tip="Родительская задача ">
-                  {task.project.prefix}-{task.parentTask.id}
-                </div>
-                <Link to={`/projects/${task.project.id}/tasks/${task.parentTask.id}`} className={css.parentTaskName}>
-                  {task.parentTask.name}
-                </Link>
+        {task.parentTask ? (
+          <div className={css.parentTaskWrp}>
+            <div className={css.parentTask}>
+              <div className={css.prefix} data-tip="Родительская задача ">
+                {task.project.prefix}-{task.parentTask.id}
               </div>
-              <div className={css.parentTaskLink}>
-                <div className={css.tasksPointers} />
-              </div>
+              <Link to={`/projects/${task.project.id}/tasks/${task.parentTask.id}`} className={css.parentTaskName}>
+                {task.parentTask.name}
+              </Link>
             </div>
-            : null
-        }
+            <div className={css.parentTaskLink}>
+              <div className={css.tasksPointers} />
+            </div>
+          </div>
+        ) : null}
 
         <div className={css.taskTopInfo}>
           <CopyThis
             wrapThisInto={'div'}
             description={`Ссылка на задачу ${task.project ? task.project.prefix + '-' : ''}${task.id}`}
-            textToCopy={`${location.origin}${history.createHref(this.props.location)}`}>
-            {
-              task.project
-                ? <div className={css.prefix}>
-                  {task.project.prefix}-{task.id}
-                </div>
-                : null
-            }
-          </CopyThis>
-          {
-            task.typeId && getTypeById(task.typeId, taskTypes)
-              ? <div>
-                <span>
-                  {getTypeById(task.typeId, taskTypes)}
-                </span>
+            textToCopy={`${location.origin}${history.createHref(this.props.location)}`}
+          >
+            {task.project ? (
+              <div className={css.prefix}>
+                {task.project.prefix}-{task.id}
               </div>
-              : null
-          }
-          {
-            task.prioritiesId
-              ? <Priority
-                  taskId={task.id}
-                  priority={task.prioritiesId}
-                  onChange={this.props.onChange}
-                  canEdit={canEdit}
-                />
-              : null
-          }
+            ) : null}
+          </CopyThis>
+          {task.typeId && getTypeById(task.typeId, taskTypes) ? (
+            <div>
+              <span>{getTypeById(task.typeId, taskTypes)}</span>
+            </div>
+          ) : null}
+          {task.prioritiesId ? (
+            <Priority taskId={task.id} priority={task.prioritiesId} onChange={this.props.onChange} canEdit={canEdit} />
+          ) : null}
         </div>
-        <TaskTitle name={task.name} id={task.id} canEdit={canEdit}/>
+        <TaskTitle name={task.name} id={task.id} canEdit={canEdit} />
         <div className={css.progressButtons}>
           <Button
-            type={
-              task.statusId === TaskStatuses.CANCELED
-                ? 'red'
-                : 'red-bordered'
-            }
+            type={task.statusId === TaskStatuses.CANCELED ? 'red' : 'red-bordered'}
             icon="IconClose"
-            data-tip={
-              task.statusId === TaskStatuses.CANCELED
-                ? null
-                : 'Отменить'
-            }
+            data-tip={task.statusId === TaskStatuses.CANCELED ? null : 'Отменить'}
             data-place="bottom"
             addedClassNames={{ [css.buttonCancel]: true }}
-            onClick={
-              task.statusId !== TaskStatuses.CANCELED
-                ? this.handleOpenCancelModal
-                : null
-            }
+            onClick={task.statusId !== TaskStatuses.CANCELED ? this.handleOpenCancelModal : null}
             disabled={!canEdit}
           />
           <ButtonGroup type="lifecircle" stage="full">
             <Button
               text="New"
-              type={
-                task.statusId === TaskStatuses.NEW
-                  ? 'green'
-                  : 'bordered'
-              }
-              data-tip={
-                task.statusId === TaskStatuses.NEW
-                  ? null
-                  : 'Перевести в стадию New'
-              }
+              type={task.statusId === TaskStatuses.NEW ? 'green' : 'bordered'}
+              data-tip={task.statusId === TaskStatuses.NEW ? null : 'Перевести в стадию New'}
               data-place="bottom"
               onClick={this.handleChangeSingleStateStatus(TaskStatuses.NEW, 'New')}
             />
@@ -268,7 +240,7 @@ class TaskHeader extends Component {
               text="Develop"
               type={this.getButtonType(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY)}
               data-tip={this.getButtonTip(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY, 'Develop')}
-              icon= {this.getButtonIcon(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY)}
+              icon={this.getButtonIcon(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY)}
               onClick={this.createChangeStatusHandler(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY, 'Develop')}
               data-place="bottom"
               disabled={!canEdit}
@@ -277,8 +249,12 @@ class TaskHeader extends Component {
               text="Code Review"
               type={this.getButtonType(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY)}
               data-tip={this.getButtonTip(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY, 'Code Review')}
-              icon= {this.getButtonIcon(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY)}
-              onClick={this.createChangeStatusHandler(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY, 'Code Review')}
+              icon={this.getButtonIcon(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY)}
+              onClick={this.createChangeStatusHandler(
+                TaskStatuses.CODE_REVIEW_STOP,
+                TaskStatuses.CODE_REVIEW_PLAY,
+                'Code Review'
+              )}
               data-place="bottom"
               disabled={!canEdit}
             />
@@ -286,71 +262,51 @@ class TaskHeader extends Component {
               text="QA"
               type={this.getButtonType(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY)}
               data-tip={this.getButtonTip(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY, 'QA')}
-              icon= {this.getButtonIcon(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY)}
+              icon={this.getButtonIcon(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY)}
               onClick={this.createChangeStatusHandler(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY, 'QA')}
               data-place="bottom"
               disabled={!canEdit}
             />
             <Button
               text="Done"
-              type={
-                task.statusId === TaskStatuses.DONE
-                  ? 'green'
-                  : 'bordered'
-              }
-              data-tip={
-                task.statusId === TaskStatuses.DONE
-                  ? null
-                  : 'Перевести в стадию Done'
-              }
+              type={task.statusId === TaskStatuses.DONE ? 'green' : 'bordered'}
+              data-tip={task.statusId === TaskStatuses.DONE ? null : 'Перевести в стадию Done'}
               data-place="bottom"
               onClick={this.handleChangeSingleStateStatus(TaskStatuses.DONE)}
               disabled={!canEdit}
             />
           </ButtonGroup>
           <Button
-            type={
-              task.statusId === TaskStatuses.CLOSED
-                ? 'green'
-                : 'bordered'
-            }
+            type={task.statusId === TaskStatuses.CLOSED ? 'green' : 'bordered'}
             icon="IconCheck"
-            data-tip={
-              task.statusId === TaskStatuses.CLOSED
-                ? null
-                : 'Принять'
-            }
+            data-tip={task.statusId === TaskStatuses.CLOSED ? null : 'Принять'}
             data-place="bottom"
-            addedClassNames={{[css.buttonOk]: true}}
+            addedClassNames={{ [css.buttonOk]: true }}
             onClick={this.handleChangeSingleStateStatus(TaskStatuses.CLOSED)}
             disabled={!canEdit}
           />
         </div>
         <hr />
 
-        {
-          this.state.isCancelModalOpen
-            ? <ConfirmModal
-              isOpen
-              contentLabel="modal"
-              text="Вы действительно хотите отменить задачу?"
-              onCancel={this.handleCloseCancelModal}
-              onConfirm={this.handleCancelTask}
-            />
-            : null
-        }
+        {this.state.isCancelModalOpen ? (
+          <ConfirmModal
+            isOpen
+            contentLabel="modal"
+            text="Вы действительно хотите отменить задачу?"
+            onCancel={this.handleCloseCancelModal}
+            onConfirm={this.handleCancelTask}
+          />
+        ) : null}
 
-        {
-          this.state.isPerformerModalOpen
-            ? <PerformerModal
-              defaultUser={task.performer ? task.performer.id : null}
-              onChoose={this.changePerformer}
-              onClose={this.handleCloseModal}
-              title={this.state.modalTitle}
-              users={users}
-            />
-            : null
-        }
+        {this.state.isPerformerModalOpen ? (
+          <PerformerModal
+            defaultUser={task.performer ? task.performer.id : null}
+            onChoose={this.changePerformer}
+            onClose={this.handleCloseModal}
+            title={this.state.modalTitle}
+            users={users}
+          />
+        ) : null}
       </div>
     );
   }

@@ -36,7 +36,12 @@ export default class Attachments extends Component {
     }
 
     return (
-      <AttachedDocument key={`attached-document-${index}`} {...file} removeAttachment={this.props.removeAttachment} />
+      <AttachedDocument
+        key={`attached-document-${index}`}
+        {...file}
+        canEdit={this.props.canEdit}
+        removeAttachment={this.props.removeAttachment}
+      />
     );
   };
 

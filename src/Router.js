@@ -1,13 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Router,
-  Route,
-  Redirect,
-  IndexRedirect,
-  IndexRoute,
-  applyRouterMiddleware
-} from 'react-router';
+import { Router, Route, IndexRedirect, IndexRoute, applyRouterMiddleware } from 'react-router';
 import { useScroll } from 'react-router-scroll';
 import MainContainer from './pages/MainContainer';
 import InnerContainer from './pages/InnerContainer';
@@ -67,7 +60,7 @@ class AppRouter extends Component {
     cb();
   };
 
-// Auth check for login page
+  // Auth check for login page
   isLogged = (nextState, replace, cb) => {
     if (this.props.isLoggedIn) {
       replace('/projects');
@@ -80,55 +73,60 @@ class AppRouter extends Component {
       replace('/projects');
     }
     cb();
-  }
+  };
 
-  render () {
-    return (
-      this.props.loaded
-        ? <Router history={this.props.history} render={applyRouterMiddleware(useScroll(()=>false))}>
-          <Route path="" component={MainContainer} >
-            <Route path="login" component={Login} onEnter={this.isLogged} />
-            <Route path="icons" component={DemoPage} />
-            <Route path="logout" component={Logout} />
-            <Route path="/" component={InnerContainer} onEnter={this.requireAuth} >
-              <Route path="dashboard" component={Dashboard} />
-              <Route path="timesheets" component={Timesheets} />
-              <Route path="roles" component={UsersRoles} onEnter={this.requareAdmin}/>
-              <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
-              <Route path="projects" component={Projects} />
+  router = (
+    <Router history={this.props.history} render={applyRouterMiddleware(useScroll(() => false))}>
+      <Route path="" component={MainContainer}>
+        <Route path="login" component={Login} onEnter={this.isLogged} />
+        <Route path="icons" component={DemoPage} />
+        <Route path="logout" component={Logout} />
+        <Route path="/" component={InnerContainer} onEnter={this.requireAuth}>
+          <Route path="dashboard" component={Dashboard} />
+          <Route path="timesheets" component={Timesheets} />
+          <Route path="roles" component={UsersRoles} onEnter={this.requareAdmin} />
+          <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
+          <Route path="projects" component={Projects} />
 
-              <Route path="projects/:projectId" component={ProjectPage} scrollToTop onLeave={this.props.clearCurrentProjectAndTasks} >
-                <IndexRoute component={AgileBoard}/>
-                <Route path="info" component={Info} />
-                <Route path="property" component={Settings} />
-                <Route path="planning" component={Planning} />
-                <Route path="analytics" component={Metrics} >
-                  <Route path=":metricType" component={Metrics} />
-                </Route>
-                <Route path="history" component={ProjectHistory} />
-                <Route path="(sprint:sprintId/)tasks" component={TaskList} />
-              </Route>
-
-              <Route path="projects/portfolio/:portfolioId" component={Portfolio} scrollToTop />
-
-              <Route
-                path="projects/:projectId/tasks/:taskId"
-                component={TaskPage}
-                onLeave={this.props.clearCurrentTask}
-                ignoreScrollBehavior
-              >
-                <IndexRoute component={Comments}/>
-                <Route path="history" component={TaskHistory}/>
-              </Route>
-
-              <IndexRedirect to="projects" />
+          <Route
+            path="projects/:projectId"
+            component={ProjectPage}
+            scrollToTop
+            onLeave={this.props.clearCurrentProjectAndTasks}
+          >
+            <IndexRoute component={AgileBoard} />
+            <Route path="info" component={Info} />
+            <Route path="property" component={Settings} />
+            <Route path="planning" component={Planning} />
+            <Route path="analytics" component={Metrics}>
+              <Route path=":metricType" component={Metrics} />
             </Route>
-            <IndexRedirect to="login" />
+            <Route path="history" component={ProjectHistory} />
+            <Route path="(sprint:sprintId/)tasks" component={TaskList} />
           </Route>
-          <Route path="*" component={NotFound} />
-        </Router>
-        : <RedirectPage />
-    );
+
+          <Route path="projects/portfolio/:portfolioId" component={Portfolio} scrollToTop />
+
+          <Route
+            path="projects/:projectId/tasks/:taskId"
+            component={TaskPage}
+            onLeave={this.props.clearCurrentTask}
+            ignoreScrollBehavior
+          >
+            <IndexRoute component={Comments} />
+            <Route path="history" component={TaskHistory} />
+          </Route>
+
+          <IndexRedirect to="projects" />
+        </Route>
+        <IndexRedirect to="login" />
+      </Route>
+      <Route path="*" component={NotFound} />
+    </Router>
+  );
+
+  render() {
+    return this.props.loaded ? this.router : <RedirectPage />;
   }
 }
 
