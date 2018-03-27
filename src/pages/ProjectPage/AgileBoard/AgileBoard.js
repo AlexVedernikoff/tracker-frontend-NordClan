@@ -170,7 +170,6 @@ class AgileBoard extends Component {
 
   componentWillReceiveProps(nextProps) {
     ReactTooltip.hide();
-
     if (this.props.tracksChange !== nextProps.tracksChange && this.props.project.id) {
       this.props.getProjectInfo(this.props.project.id);
     }
