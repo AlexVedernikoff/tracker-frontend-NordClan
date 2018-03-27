@@ -1,30 +1,66 @@
 import React, { Component } from 'react';
 import * as css from './ExternalUsersTableRow.scss';
 import PropTypes from 'prop-types';
-import ExternalUserName from './ExternalUserName';
-import ReactTooltip from 'react-tooltip';
+import ExternalUserInput from './ExternalUserInput';
+import ExternalUserActivity from './ExternalUserActivity';
+import ExternalUserExpiredDate from './ExternalUserExpiredDate';
+import { connect } from 'react-redux';
+import { editExternalUser } from '../../../../actions/ExternalUsers';
+import { showNotification } from '../../../../actions/Notifications';
 
 class ExternalUsersTableRow extends Component {
   constructor(props) {
     super(props);
   }
-  componentDidUpdate() {
-    ReactTooltip.rebuild();
-  }
+  editUser = id => changedFields => {
+    this.props.editExternalUser(id, changedFields);
+  };
   render() {
     return (
       <div className={css.TableHeader}>
         <div className={css.TableCell}>
-          <ExternalUserName name={this.props.exUser.name} />
+          <ExternalUserInput
+            value={this.props.exUser.name}
+            changeValue={this.editUser(this.props.exUser.id)}
+            showNotification={this.props.showNotification}
+            fieldType="name"
+          />
         </div>
-        <div className={css.TableCell}>{this.props.exUser.email}</div>
-        <div className={css.TableCell}>{this.props.exUser.isActive}</div>
-        <div className={css.TableCell}>{this.props.exUser.expiredDate}</div>
+        <div className={css.TableCell}>
+          <ExternalUserInput
+            value={this.props.exUser.email}
+            changeValue={this.editUser(this.props.exUser.id)}
+            showNotification={this.props.showNotification}
+            fieldType="email"
+          />
+        </div>
+        <div className={css.TableCell}>
+          <ExternalUserActivity
+            checked={this.props.exUser.isActive}
+            fieldType="isActive"
+            changeValue={this.editUser(this.props.exUser.id)}
+          />
+        </div>
+        <div className={css.TableCell}>
+          <ExternalUserExpiredDate
+            value={this.props.exUser.expiredDate}
+            fieldType="expiredDate"
+            changeValue={this.editUser(this.props.exUser.id)}
+          />
+        </div>
       </div>
     );
   }
 }
 ExternalUsersTableRow.propTypes = {
-  exUser: PropTypes.object
+  editExternalUser: PropTypes.func,
+  exUser: PropTypes.object,
+  showNotification: PropTypes.func
 };
-export default ExternalUsersTableRow;
+const mapStateToProps = state => ({});
+const mapDispatchToProps = {
+  editExternalUser,
+  showNotification
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ExternalUsersTableRow);
