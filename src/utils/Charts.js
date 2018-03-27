@@ -69,44 +69,43 @@ const chartDefaultOptions = {
       }
     ]
   },
-  events: [...defaults.global.events, 'contextmenu'],
   zoom: {
     enabled: true,
     mode: 'x',
     drag: true
-  },
-  onHover(event) {
-    if (event.type === 'contextmenu') {
-      this.chart.resetZoom();
-    }
   }
 };
 
+//Custom plugin which modifies chartjs-plugin-zoom behaviour.
+//Disables browser's context menu and resets zoom to the initial level on right mouse button click
 const modifyZoomPlugin = {
   beforeInit(chartInstance) {
     chartInstance.modifyZoom = {};
     const node = (chartInstance.modifyZoom.node = chartInstance.chart.ctx.canvas);
 
-    chartInstance.modifyZoom._disableContextMenu = event => {
+    chartInstance.modifyZoom._contextMenuHandler = event => {
+      chartInstance.chart.resetZoom();
       event.preventDefault();
     };
 
-    chartInstance.modifyZoom._rightClickMouseDownHandler = event => {
+    chartInstance.modifyZoom._leftButtonMouseDownHandler = event => {
       if (event.button === 0) {
         chartInstance.zoom._mouseDownHandler(event);
       }
     };
 
     node.removeEventListener('mousedown', chartInstance.zoom._mouseDownHandler);
+    node.addEventListener('mousedown', chartInstance.modifyZoom._leftButtonMouseDownHandler);
     node.addEventListener('contextmenu', chartInstance.modifyZoom._disableContextMenu);
-    node.addEventListener('mousedown', chartInstance.modifyZoom._rightClickMouseDownHandler);
+    node.addEventListener('contextmenu', chartInstance.modifyZoom._contextMenuHandler);
   },
   destroy(chartInstance) {
     if (chartInstance.modifyZoom) {
       const node = chartInstance.modifyZoom.node;
 
-      node.removeEventListener('contextmenu', chartInstance.modifyZoom._disableContextMenu);
-      node.removeEventListener('mousedown', chartInstance.modifyZoom._rightClickMouseDownHandler);
+      node.removeEventListener('mousedown', chartInstance.modifyZoom._leftButtonMouseDownHandler);
+      node.removeEventListener('contextmenu', chartInstance.modifyZoom._contextMenuHandler);
+
       delete chartInstance.modifyZoom;
     }
   }
