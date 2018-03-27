@@ -20,7 +20,6 @@ import PerformerFilter from '../../../components/PerformerFilter';
 import getPriorityById from '../../../utils/TaskPriority';
 import * as css from './AgileBoard.scss';
 import { UnmountClosed } from 'react-collapse';
-import { presets } from 'react-motion';
 
 import getTasks from '../../../actions/Tasks';
 import { VISOR } from '../../../constants/Roles';

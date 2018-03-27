@@ -60,10 +60,10 @@ export default class FilterList extends Component {
           <div
             className={classnames(css.filterListShowMoreButton)}
             data-tip={fullFilterView ? 'Скрыть фильтры' : 'Показать фильтры'}
+            onClick={toggleFilterView}
           >
             <IconArrowDownThin
               className={classnames({ [css.filterListShowMoreIcon]: true, [css.iconReverse]: fullFilterView })}
-              onClick={toggleFilterView}
             />
           </div>
         </div>
