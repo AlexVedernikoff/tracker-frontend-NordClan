@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './Metrics.scss';
 import StartEndDates from './StartEndDates';
-import { defaults } from 'react-chartjs-2';
-import * as zoom from 'chartjs-plugin-zoom';
+import { Chart } from 'react-chartjs-2';
 import BudgetChart from './BudgetChart';
 import BugsChart from './BugsChart';
 import CostByRoleChart from './CostByRoleChart';
@@ -14,87 +13,12 @@ import SprintMetrics from './SprintMetrics';
 import { getMetrics, calculateMetrics } from './../../../actions/Metrics';
 import moment from 'moment';
 import getColor from '../../../utils/Colors';
+import { chartDefaultOptions, modifyZoomPlugin } from '../../../utils/Charts';
 import { ADMIN } from '../../../constants/Roles';
 import * as MetricTypes from '../../../constants/Metrics';
 import Tabs from '../../../components/Tabs';
 import Pane from '../../../components/Pane';
 import Button from '../../../components/Button';
-
-const chartDefaultOptions = {
-  responsive: true,
-  hover: { mode: 'nearest' },
-  animation: {
-    duration: 0
-  },
-  title: {
-    display: false
-  },
-  legend: {
-    position: 'bottom',
-    labels: {
-      usePointStyle: true
-    },
-    onClick: function(e, legendItem) {
-      const chartItem = this.chart;
-      const datasetIndex = legendItem.datasetIndex;
-      const defaultLegendClickHandler = defaults.global.legend.onClick.bind(this);
-      const dblClickDelay = 400;
-
-      const legendDoubleClickHandler = () => {
-        chartItem.data.datasets.forEach((el, index) => {
-          const meta = chartItem.getDatasetMeta(index);
-
-          if (index === datasetIndex) {
-            meta.hidden = null;
-          } else {
-            meta.hidden = true;
-          }
-        });
-
-        chartItem.update();
-      };
-
-      if (chartItem.clicked === datasetIndex) {
-        legendDoubleClickHandler();
-        clearTimeout(chartItem.clickTimeout);
-        chartItem.clicked = false;
-      } else {
-        chartItem.clicked = datasetIndex;
-
-        chartItem.clickTimeout = setTimeout(() => {
-          chartItem.clicked = false;
-          defaultLegendClickHandler(e, legendItem);
-        }, dblClickDelay);
-      }
-    }
-  },
-  scales: {
-    xAxes: [
-      {
-        type: 'time',
-        time: {
-          displayFormats: {
-            day: 'D MMM'
-          },
-          tooltipFormat: 'DD.MM.YYYY'
-        },
-        display: true,
-        scaleLabel: {
-          display: true,
-          labelString: 'Дата'
-        }
-      }
-    ]
-  },
-  pan: {
-    enabled: true,
-    mode: 'xy'
-  },
-  zoom: {
-    enabled: true,
-    mode: 'xy'
-  }
-};
 
 const filterMetrics = (id, metrics) => {
   return metrics ? metrics.filter(metric => metric.typeId === id) : [];
@@ -139,6 +63,10 @@ class Metrics extends Component {
       const metricsParams = this.getMetricsParams(createdAt, params.projectId);
       getMetrics(metricsParams);
     }
+  }
+
+  componentDidMount() {
+    Chart.pluginService.register(modifyZoomPlugin);
   }
 
   componentWillReceiveProps(nextProps) {
