@@ -12,7 +12,7 @@ class NavMenu extends Component {
   };
 
   getPhoto = () => {
-    const { user: { photo, firstNameRu, lastNameRu} } = this.props;
+    const { user: { photo, firstNameRu, lastNameRu } } = this.props;
     if (photo) {
       return <img src={photo} alt="" />;
     }
@@ -24,24 +24,26 @@ class NavMenu extends Component {
     }
   };
 
-  render () {
-
+  render() {
     const iconStyles = {
       width: 16,
       height: 16
     };
 
-    const usersRolesLink = isAdmin(this.props.user.globalRole)
-      ? <li key="roles" className={css.sidebarItem}>
-        <Link
-          className={css.sidebarLink}
-          activeClassName={css.activeLink}
-          to="/roles"
-        >
+    const usersRolesLink = isAdmin(this.props.user.globalRole) ? (
+      <li key="roles" className={css.sidebarItem}>
+        <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/roles">
           Пользователи
         </Link>
       </li>
-      : null;
+    ) : null;
+    const externalUsersLink = isAdmin(this.props.user.globalRole) ? (
+      <li key="externalUsers" className={css.sidebarItem}>
+        <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/externalUsers">
+          Внешние пользователи
+        </Link>
+      </li>
+    ) : null;
 
     const links = [
       /*<li key="dashboard" className={css.sidebarItem}>
@@ -57,11 +59,7 @@ class NavMenu extends Component {
         <button>
           <IconPlus style={iconStyles} />
         </button>
-        <Link
-          className={css.sidebarLink}
-          activeClassName={css.activeLink}
-          to="/projects"
-        >
+        <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/projects">
           Мои проекты
         </Link>
       </li>,
@@ -69,38 +67,27 @@ class NavMenu extends Component {
         <button>
           <IconPlus style={iconStyles} />
         </button>
-        <Link
-          className={css.sidebarLink}
-          activeClassName={css.activeLink}
-          to="/tasks"
-        >
+        <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/tasks">
           Мои задачи
         </Link>
       </li>,
       <li key="timesheets" className={css.sidebarItem}>
-        <Link
-          className={css.sidebarLink}
-          activeClassName={css.activeLink}
-          to="/timesheets"
-        >
+        <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/timesheets">
           Отчеты по времени
         </Link>
       </li>,
-      usersRolesLink
+      usersRolesLink,
+      externalUsersLink
     ];
 
     const sidebarHeader = (
       <div className={css.sidebarHeader}>
-        <div className={css.ava}>
-          {this.getPhoto()}
-        </div>
+        <div className={css.ava}>{this.getPhoto()}</div>
         <div className={css.userNameContainer}>
           <div className={css.userName}>
             {this.props.user.firstNameRu} {this.props.user.lastNameRu}
           </div>
-          <div className={css.userGroups}>
-            {this.props.user.department}
-          </div>
+          <div className={css.userGroups}>{this.props.user.department}</div>
         </div>
       </div>
     );
@@ -108,9 +95,7 @@ class NavMenu extends Component {
     return (
       <div className={css.navigation}>
         {sidebarHeader}
-        <ul className={css.sidebarLinks}>
-          {links}
-        </ul>
+        <ul className={css.sidebarLinks}>{links}</ul>
       </div>
     );
   }
