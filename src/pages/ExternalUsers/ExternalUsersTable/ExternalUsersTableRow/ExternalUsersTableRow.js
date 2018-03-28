@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import ExternalUserInput from './ExternalUserInput';
 import ExternalUserActivity from './ExternalUserActivity';
 import ExternalUserExpiredDate from './ExternalUserExpiredDate';
+import ExternalUserDelete from './ExternalUserDelete';
 import { connect } from 'react-redux';
 import { editExternalUser } from '../../../../actions/ExternalUsers';
 import { showNotification } from '../../../../actions/Notifications';
@@ -47,6 +48,9 @@ class ExternalUsersTableRow extends Component {
             fieldType="expiredDate"
             changeValue={this.editUser(this.props.exUser.id)}
           />
+        </div>
+        <div className={css.TableCellDelete}>
+          <ExternalUserDelete />
         </div>
       </div>
     );
