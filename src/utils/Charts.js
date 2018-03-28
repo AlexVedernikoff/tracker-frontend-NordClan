@@ -96,7 +96,6 @@ const modifyZoomPlugin = {
 
     node.removeEventListener('mousedown', chartInstance.zoom._mouseDownHandler);
     node.addEventListener('mousedown', chartInstance.modifyZoom._leftButtonMouseDownHandler);
-    node.addEventListener('contextmenu', chartInstance.modifyZoom._disableContextMenu);
     node.addEventListener('contextmenu', chartInstance.modifyZoom._contextMenuHandler);
   },
   destroy(chartInstance) {
