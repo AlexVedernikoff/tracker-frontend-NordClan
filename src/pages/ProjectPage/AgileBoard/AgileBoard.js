@@ -513,7 +513,7 @@ class AgileBoard extends Component {
     ) {
       return this.state[filterName].length > 0;
     }
-    return !!this.state[filterName];
+    return this.state[filterName] !== null && this.state[filterName] !== false;
   };
 
   createFilterLabel = filterName => {
@@ -807,6 +807,7 @@ AgileBoard.propTypes = {
   StatusIsEditing: PropTypes.bool,
   UserIsEditing: PropTypes.bool,
   changeTask: PropTypes.func.isRequired,
+  getProjectInfo: PropTypes.func,
   getProjectUsers: PropTypes.func,
   getTasks: PropTypes.func.isRequired,
   globalRole: PropTypes.string,
@@ -818,13 +819,10 @@ AgileBoard.propTypes = {
   project: PropTypes.object,
   sprintTasks: PropTypes.array,
   sprints: PropTypes.array,
-  tracksChange: PropTypes.number,
   startTaskEditing: PropTypes.func,
-  user: PropTypes.object,
-  getProjectUsers: PropTypes.func,
-  getProjectInfo: PropTypes.func,
   statuses: PropTypes.array,
   taskTypes: PropTypes.array,
+  tracksChange: PropTypes.number,
   user: PropTypes.object
 };
 
