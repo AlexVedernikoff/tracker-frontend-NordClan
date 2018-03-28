@@ -32,3 +32,12 @@ export const addExternalUser = exUser => {
     dispatch(addExternalUserSuccess(exUser));
   };
 };
+export const deleteExternalUserSuccess = id => ({
+  type: externalUsersActions.DELETE_EXTERNAL_USER_SUCCESS,
+  id
+});
+export const deleteExternalUser = id => {
+  return dispatch => {
+    dispatch(deleteExternalUserSuccess(id));
+  };
+};

@@ -31,7 +31,6 @@ export default function ExternalUsers(state = InitialState, action) {
         users: updatedUsers
       };
     case externalUsersActions.ADD_EXTERNAL_USER_SUCCESS:
-      console.log(action.exUser);
       const concatedUsers = state.users.concat({
         ...action.exUser,
         id: state.users.length + 1
@@ -39,6 +38,12 @@ export default function ExternalUsers(state = InitialState, action) {
       return {
         ...state,
         users: concatedUsers
+      };
+    case externalUsersActions.DELETE_EXTERNAL_USER_SUCCESS:
+      const updatedUsersAfterDelete = state.users.filter(user => user.id !== action.id);
+      return {
+        ...state,
+        users: updatedUsersAfterDelete
       };
     default:
       return {

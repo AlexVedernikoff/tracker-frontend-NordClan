@@ -4,17 +4,27 @@ import Checkbox from '../../../../../components/Checkbox';
 class ExternalUserActivity extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      checked: props.checked
+    };
   }
   onActivityChange = () => {
-    this.props.changeValue({ [this.props.fieldType]: !this.props.checked });
+    const newCheckboxState = !this.state.checked;
+    this.setState(
+      {
+        checked: newCheckboxState
+      },
+      () => this.props.onValueChange(newCheckboxState)
+    );
   };
   render() {
-    return <Checkbox checked={this.props.checked} onChange={this.onActivityChange} />;
+    return <Checkbox checked={this.state.checked} disabled={!this.props.isEditing} onChange={this.onActivityChange} />;
   }
 }
 ExternalUserActivity.propTypes = {
-  changeValue: PropTypes.func,
   checked: PropTypes.bool,
-  fieldType: PropTypes.string
+  fieldType: PropTypes.string,
+  isEditing: PropTypes.bool,
+  onValueChange: PropTypes.func
 };
 export default ExternalUserActivity;

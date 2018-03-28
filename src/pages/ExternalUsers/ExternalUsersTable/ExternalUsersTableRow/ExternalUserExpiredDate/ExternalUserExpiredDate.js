@@ -3,55 +3,34 @@ import PropTypes from 'prop-types';
 import DatepickerDropdown from '../../../../../components/DatepickerDropdown';
 import moment from 'moment';
 import { IconEdit, IconCheck, IconClose } from '../../../../../components/Icons';
-import ReactTooltip from 'react-tooltip';
 
 class ExternalUserExpiredDate extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isEditing: false,
-      inputValue: props.value
+      value: props.value
     };
   }
-  componentDidUpdate() {
-    ReactTooltip.rebuild();
-  }
-  startEdit = () => {
-    this.setState(state => ({ isEditing: !state.isEditing }), () => ReactTooltip.hide());
-  };
 
   handleDayToChange = date => {
-    if (date) {
-      this.setState({
-        inputValue: moment(date).format()
-      });
-    }
-  };
-  saveChanges = () => {
-    this.setState({ isEditing: false }, () => {
-      ReactTooltip.hide();
-      if (!this.state.inputValue) return;
-      this.props.changeValue({ [this.props.fieldType]: this.state.inputValue });
-    });
-  };
-  undoChanges = () => {
+    const updatedDate = date ? moment(date).format() : this.props.value;
     this.setState(
       {
-        isEditing: false,
-        inputValue: this.props.value
+        value: updatedDate
       },
-      () => ReactTooltip.hide()
+      () => this.props.onValueChange(updatedDate)
     );
   };
+
   render() {
-    const { inputValue } = this.state;
-    const formattedDay = moment(inputValue).format('DD.MM.YYYY');
+    const formattedDay = moment(this.props.value).format('DD.MM.YYYY');
+    const formattedStateDay = moment(this.state.value).format('DD.MM.YYYY');
     return (
       <div>
-        {this.state.isEditing ? (
+        {this.props.isEditing ? (
           <DatepickerDropdown
             name="date"
-            value={formattedDay}
+            value={formattedStateDay}
             onDayChange={this.handleDayToChange}
             disabledDataRanges={[{ before: new Date() }]}
             placeholder="Введите дату"
@@ -59,30 +38,13 @@ class ExternalUserExpiredDate extends Component {
         ) : (
           <div>{formattedDay}</div>
         )}
-        {this.state.isEditing ? (
-          [
-            <IconCheck
-              // className={css.save}
-              onClick={this.saveChanges}
-              key="save"
-              data-tip="Сохранить"
-            />,
-            <IconClose data-tip="Отменить" key="undo" onClick={this.undoChanges} />
-          ]
-        ) : (
-          <IconEdit
-            // className={css.edit}
-            onClick={this.startEdit}
-            data-tip="Редактировать"
-          />
-        )}
       </div>
     );
   }
 }
 ExternalUserExpiredDate.propTypes = {
-  changeValue: PropTypes.func,
-  fieldType: PropTypes.string,
+  isEditing: PropTypes.bool,
+  onValueChange: PropTypes.func,
   value: PropTypes.string
 };
 export default ExternalUserExpiredDate;
