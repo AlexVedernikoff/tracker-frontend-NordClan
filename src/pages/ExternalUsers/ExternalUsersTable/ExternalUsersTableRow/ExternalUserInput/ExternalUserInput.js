@@ -12,6 +12,28 @@ class ExternalUserInput extends Component {
       isEditing: false,
       inputValue: props.value
     };
+    this.validation = {
+      name: () => {
+        if (this.state.inputValue.length < 2) {
+          this.props.showNotification({
+            message: 'Имя должно содержать не менее двух символов',
+            type: 'error'
+          });
+          return false;
+        }
+        return true;
+      },
+      email: () => {
+        if (!this.validateEmail(this.state.inputValue)) {
+          this.props.showNotification({
+            message: 'Введите корректный e-mail',
+            type: 'error'
+          });
+          return false;
+        }
+        return true;
+      }
+    };
   }
   componentDidUpdate() {
     ReactTooltip.rebuild();
@@ -27,18 +49,7 @@ class ExternalUserInput extends Component {
     return re.test(email);
   };
   saveChanges = () => {
-    if (this.props.fieldType === 'name' && this.state.inputValue.length < 2) {
-      this.props.showNotification({
-        message: 'Имя должно содержать не менее двух символов',
-        type: 'error'
-      });
-      return;
-    }
-    if (this.props.fieldType === 'email' && !this.validateEmail(this.state.inputValue)) {
-      this.props.showNotification({
-        message: 'Введите корректный e-mail',
-        type: 'error'
-      });
+    if (!this.validation[this.props.fieldType]()) {
       return;
     }
     this.setState({ isEditing: false }, () => {

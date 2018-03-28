@@ -23,3 +23,12 @@ export const editExternalUser = (id, changedFields) => {
     dispatch(editExternalUserSuccess(id, changedFields));
   };
 };
+export const addExternalUserSuccess = exUser => ({
+  type: externalUsersActions.ADD_EXTERNAL_USER_SUCCESS,
+  exUser
+});
+export const addExternalUser = exUser => {
+  return dispatch => {
+    dispatch(addExternalUserSuccess(exUser));
+  };
+};

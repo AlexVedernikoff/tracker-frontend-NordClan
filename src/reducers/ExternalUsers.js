@@ -30,6 +30,16 @@ export default function ExternalUsers(state = InitialState, action) {
         ...state,
         users: updatedUsers
       };
+    case externalUsersActions.ADD_EXTERNAL_USER_SUCCESS:
+      console.log(action.exUser);
+      const concatedUsers = state.users.concat({
+        ...action.exUser,
+        id: state.users.length + 1
+      });
+      return {
+        ...state,
+        users: concatedUsers
+      };
     default:
       return {
         ...state
