@@ -315,7 +315,7 @@ class Projects extends Component {
               ))}
             </div>
           ) : (
-            <div className={css.notFound}>Нет доступных проектов</div>
+            <div className={css.notFound}>Ничего не найдено</div>
           )}
           {this.props.pagesCount > 1 ? (
             <Pagination
