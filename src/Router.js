@@ -26,6 +26,7 @@ import UsersRoles from './pages/UsersRoles';
 import NotFound from './pages/NotFound';
 import RedirectPage from './pages/Redirect';
 import ExternalUsers from './pages/ExternalUsers';
+import ExternalUserActivate from './pages/ExternalUserActivate';
 import DemoPage from './components/Icons/DemoPage';
 import { connect } from 'react-redux';
 import { clearCurrentProjectAndTasks } from './actions/Tasks';
@@ -81,6 +82,7 @@ class AppRouter extends Component {
       <Route path="" component={MainContainer}>
         <Route path="login" component={Login} onEnter={this.isLogged} />
         <Route path="icons" component={DemoPage} />
+        <Route path="externalUserActivate/:exUserHash" component={ExternalUserActivate} />
         <Route path="logout" component={Logout} />
         <Route path="/" component={InnerContainer} onEnter={this.requireAuth}>
           <Route path="dashboard" component={Dashboard} />
@@ -88,7 +90,7 @@ class AppRouter extends Component {
           <Route path="roles" component={UsersRoles} onEnter={this.requareAdmin} />
           <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
           <Route path="projects" component={Projects} />
-          <Route path="externalUsers" component={ExternalUsers} />
+          <Route path="externalUsers" component={ExternalUsers} onEnter={this.requareAdmin} />
           <Route
             path="projects/:projectId"
             component={ProjectPage}
