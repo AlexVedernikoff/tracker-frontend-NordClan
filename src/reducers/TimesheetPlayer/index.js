@@ -20,6 +20,7 @@ import { TASK_CHANGE_REQUEST_SUCCESS } from '../../constants/Task';
 const InitialState = {
   activeTask: null,
   availableProjects: [],
+  tracksChange: 0,
   tracks: {}
 };
 
@@ -150,6 +151,7 @@ function updateTracks(state, action, updatedTracks) {
 
   return {
     ...state,
+    tracksChange: state.tracksChange + 1,
     tracks: { ...state.tracks, ...updatedDay }
   };
 }

@@ -342,13 +342,28 @@ class ActivityRow extends React.Component {
         );
       }
     });
+    const getProjectName = () => {
+      if (!item.projectName || (maType && (maType.id === 5 || maType.id === 7))) {
+        return null;
+      }
+      return <span>{item.projectName}</span>;
+    };
+    const getSprintName = () => {
+      if (maType && (maType.id === 5 || maType.id === 7 || item.projectId === 0)) {
+        return null;
+      }
+      if (item.sprint) {
+        return <span>{item.sprint.name}</span>;
+      }
+      return <span>{'Backlog'}</span>;
+    };
     return (
       <tr className={css.taskRow}>
         <td>
           <div className={css.taskCard}>
             <div className={css.meta}>
-              {item.projectName ? <span>{item.projectName}</span> : null}
-              <span>{item.sprint ? item.sprint.name : 'Backlog'}</span>
+              {getProjectName()}
+              {getSprintName()}
               {status ? <span>{status.name}</span> : null}
             </div>
             <div>

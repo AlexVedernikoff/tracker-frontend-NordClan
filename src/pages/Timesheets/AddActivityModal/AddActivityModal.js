@@ -81,6 +81,9 @@ class AddActivityModal extends Component {
     } else {
       this.setState({ [name]: 0 });
     }
+    if (!option && name === 'taskStatusId') {
+      this.props.changeTask(this.props.selectedTask, null);
+    }
   };
 
   addActivity = () => {
@@ -359,7 +362,10 @@ class AddActivityModal extends Component {
           <div className={css.footer}>
             <Button
               text="Добавить"
-              disabled={!this.props.selectedActivityType}
+              disabled={
+                !this.props.selectedActivityType ||
+                (this.props.selectedActivityType === 1 && !this.props.selectedTaskStatusId)
+              }
               htmlType="submit"
               type="green"
               onClick={this.addActivity}
