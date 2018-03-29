@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { editExternalUser, deleteExternalUser } from '../../../../actions/ExternalUsers';
 import { showNotification } from '../../../../actions/Notifications';
 import ReactTooltip from 'react-tooltip';
+import classnames from 'classnames';
 
 class ExternalUsersTableRow extends Component {
   constructor(props) {
@@ -101,13 +102,12 @@ class ExternalUsersTableRow extends Component {
   };
   render() {
     return (
-      <div className={css.TableHeader}>
+      <div className={css.TableRow}>
         <div className={css.TableCell}>
           <ExternalUserInput
             value={this.props.exUser.name}
             isEditing={this.state.isEditing}
             onValueChange={this.onEditValues('name')}
-            fieldType="name"
           />
         </div>
         <div className={css.TableCell}>
@@ -115,7 +115,6 @@ class ExternalUsersTableRow extends Component {
             value={this.props.exUser.email}
             isEditing={this.state.isEditing}
             onValueChange={this.onEditValues('email')}
-            fieldType="email"
           />
         </div>
         <div className={css.TableCell}>
@@ -135,17 +134,12 @@ class ExternalUsersTableRow extends Component {
         <div className={css.TableCellEdit}>
           {this.state.isEditing ? (
             [
-              <IconCheck
-                // className={css.save}
-                onClick={this.saveEditChanges}
-                key="save"
-                data-tip="Сохранить"
-              />,
-              <IconClose data-tip="Отменить" key="undo" onClick={this.undoChanges} />
+              <IconCheck className={css.icon} onClick={this.saveEditChanges} key="save" data-tip="Сохранить" />,
+              <IconClose className={css.icon} data-tip="Отменить" key="undo" onClick={this.undoChanges} />
             ]
           ) : (
             <IconEdit
-              // className={css.edit}
+              className={classnames(css.icon, css.editIcon)}
               onClick={this.startEdit}
               data-tip="Редактировать"
             />

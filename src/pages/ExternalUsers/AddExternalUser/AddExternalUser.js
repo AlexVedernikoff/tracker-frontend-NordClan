@@ -5,10 +5,8 @@ import Validator from '../../../components/ValidatedInput/Validator';
 import Button from '../../../components/Button';
 import Modal from '../../../components/Modal';
 import DatepickerDropdown from '../../../components/DatepickerDropdown';
-import Input from '../../../components/Input';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import Checkbox from '../../../components/Checkbox';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './AddExternalUser.scss';
 import { addExternalUser } from '../../../actions/ExternalUsers';
@@ -19,7 +17,6 @@ class AddExternalUser extends Component {
       isModalOpen: false,
       name: '',
       email: '',
-      isActive: false,
       expiredDate: ''
     };
     this.validator = new Validator();
@@ -40,9 +37,6 @@ class AddExternalUser extends Component {
       expiredDate: date ? moment(date).format() : ''
     });
   };
-  onCheckboxChange = () => {
-    this.setState({ isActive: !this.state.isActive });
-  };
   validateEmail = email => {
     const re = /\S+@\S+\.\S+/;
     return re.test(email);
@@ -52,13 +46,13 @@ class AddExternalUser extends Component {
     return name.length >= 2 && this.validateEmail(email) && expiredDate;
   }
   addUser = () => {
-    const { name, email, expiredDate, isActive } = this.state;
+    const { name, email, expiredDate } = this.state;
     this.setState({ isModalOpen: false }, () => {
       this.props.addExternalUser({
         name,
         email,
         expiredDate,
-        isActive
+        isActive: false
       });
     });
   };
@@ -70,8 +64,8 @@ class AddExternalUser extends Component {
     const { isModalOpen, name, email, expiredDate } = this.state;
     const formattedDay = expiredDate ? moment(expiredDate).format('DD.MM.YYYY') : '';
     return (
-      <div>
-        <Button text="Добавить внешнего пользователя" type="primary" onClick={this.openModal} />
+      <div className={css.AddExternalUser}>
+        <Button text="Добавить внешнего пользователя" type="primary" onClick={this.openModal} icon="IconPlus" />
         <Modal
           onRequestClose={this.closeModal}
           // // style={style || ReactModalStyles}
@@ -129,16 +123,6 @@ class AddExternalUser extends Component {
                     'exUserEmail',
                     !!email.length && !this.validateEmail(email)
                   )}
-                </Col>
-              </Row>
-            </label>
-            <label className={css.formField}>
-              <Row>
-                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>Активность:</p>
-                </Col>
-                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                  <Checkbox onChange={this.onCheckboxChange} />
                 </Col>
               </Row>
             </label>

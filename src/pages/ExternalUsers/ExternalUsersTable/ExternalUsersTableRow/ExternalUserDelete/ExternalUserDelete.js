@@ -3,6 +3,7 @@ import { IconDelete } from '../../../../../components/Icons';
 import ConfirmModal from '../../../../../components/ConfirmModal';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
+import * as css from './ExternalUserDelete.scss';
 
 class ExternalUserDelete extends Component {
   constructor(props) {
@@ -27,8 +28,8 @@ class ExternalUserDelete extends Component {
   };
   render() {
     return (
-      <div>
-        <IconDelete onClick={this.openConfirmModal} data-tip="Удалить" />
+      <div className={css.ExternalUserDelete}>
+        <IconDelete onClick={this.openConfirmModal} data-tip="Удалить" className={css.deleteIcon} />
         <ConfirmModal
           isOpen={this.state.isModalOpen}
           contentLabel="modal"
