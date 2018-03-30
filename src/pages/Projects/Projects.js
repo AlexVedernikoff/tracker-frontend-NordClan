@@ -26,7 +26,7 @@ import { VISOR, ADMIN } from '../../constants/Roles';
 import 'moment/locale/ru';
 
 class Projects extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       filterTags: [],
@@ -45,7 +45,7 @@ class Projects extends Component {
     };
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.loadProjects();
   }
 
@@ -56,14 +56,25 @@ class Projects extends Component {
     if (this.state.filteredInHold) statuses.push(2);
     if (this.state.filteredFinished) statuses.push(3);
 
-    this.props.getProjects(20, this.state.activePage, tags, this.state.filterByName, dateFrom, dateTo, statuses.join(','));
+    this.props.getProjects(
+      20,
+      this.state.activePage,
+      tags,
+      this.state.filterByName,
+      dateFrom,
+      dateTo,
+      statuses.join(',')
+    );
   };
 
   check = (name, callback = () => {}) => {
     const oldValue = this.state[name];
-    this.setState({
-      [name]: !oldValue
-    }, callback);
+    this.setState(
+      {
+        [name]: !oldValue
+      },
+      callback
+    );
   };
 
   handlePaginationClick = e => {
@@ -82,43 +93,35 @@ class Projects extends Component {
         activePage: this.state.filterByName !== event.target.value ? 1 : this.state.activePage
       },
       () => {
-        const dateFrom = this.state.dateFrom
-          ? moment(this.state.dateFrom).format('YYYY-MM-DD')
-          : '';
-        const dateTo = this.state.dateTo
-          ? moment(this.state.dateTo).format('YYYY-MM-DD')
-          : '';
+        const dateFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('YYYY-MM-DD') : '';
+        const dateTo = this.state.dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
         this.loadProjects(dateFrom, dateTo);
       }
     );
   };
 
-  handleDayFromChange = (dateFrom) => {
+  handleDayFromChange = dateFrom => {
     this.setState(
       {
         dateFrom,
         activePage: this.state.dateFrom !== dateFrom ? 1 : this.state.activePage
       },
       () => {
-        dateFrom = dateFrom
-          ? moment(this.state.dateFrom).format('YYYY-MM-DD')
-          : '';
-        const dateTo = this.state.dateTo
-          ? moment(this.state.dateTo).format('YYYY-MM-DD')
-          : '';
+        dateFrom = dateFrom ? moment(this.state.dateFrom).format('YYYY-MM-DD') : '';
+        const dateTo = this.state.dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
         this.loadProjects(dateFrom, dateTo);
-      });
+      }
+    );
   };
 
-  handleDayToChange = (dateTo) => {
+  handleDayToChange = dateTo => {
     this.setState(
       {
         dateTo,
         activePage: this.state.dateTo !== dateTo ? 1 : this.state.activePage
-      }, () => {
-        const dateFrom = this.state.dateFrom
-          ? moment(this.state.dateFrom).format('YYYY-MM-DD')
-          : '';
+      },
+      () => {
+        const dateFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('YYYY-MM-DD') : '';
         dateTo = dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
         this.loadProjects(dateFrom, dateTo);
       }
@@ -134,15 +137,12 @@ class Projects extends Component {
         const dateFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('YYYY-MM-DD') : '';
         const dateTo = this.state.dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
         this.loadProjects(dateFrom, dateTo);
-      });
+      }
+    );
   };
 
   handleModal = () => {
-    const {
-      isCreateProjectModalOpen,
-      openCreateProjectModal,
-      closeCreateProjectModal
-    } = this.props;
+    const { isCreateProjectModalOpen, openCreateProjectModal, closeCreateProjectModal } = this.props;
     if (isCreateProjectModalOpen) {
       this.setState({
         projectName: '',
@@ -166,10 +166,8 @@ class Projects extends Component {
   sendRequest = event => {
     event.preventDefault();
     let portfolioName = '';
-    if (this.state.selectedPortfolio && (Object.keys(this.state.selectedPortfolio).length !== 0)) {
-      portfolioName = !Number.isInteger(this.state.selectedPortfolio.value)
-        ? this.state.selectedPortfolio.value
-        : null;
+    if (this.state.selectedPortfolio && Object.keys(this.state.selectedPortfolio).length !== 0) {
+      portfolioName = !Number.isInteger(this.state.selectedPortfolio.value) ? this.state.selectedPortfolio.value : null;
     } else {
       portfolioName = null;
     }
@@ -185,7 +183,7 @@ class Projects extends Component {
   };
 
   sendRequestAndOpen = event => {
-    this.setState({openProjectPage: true}, () => this.sendRequest(event));
+    this.setState({ openProjectPage: true }, () => this.sendRequest(event));
   };
 
   handleModalCheckBoxChange = event => {
@@ -203,19 +201,28 @@ class Projects extends Component {
     });
   };
 
-  onTagSelect = (tags) => {
-    this.setState({
-      filterTags: tags
-    }, this.handleFilterChange);
+  onTagSelect = tags => {
+    this.setState(
+      {
+        filterTags: tags
+      },
+      this.handleFilterChange
+    );
   };
 
-  onClickTag = (tag) => {
-    this.setState({
-      filterTags: _.uniqBy(this.state.filterTags.concat({
-        value: tag,
-        label: tag
-      }), 'value')
-    }, this.handleFilterChange);
+  onClickTag = tag => {
+    this.setState(
+      {
+        filterTags: _.uniqBy(
+          this.state.filterTags.concat({
+            value: tag,
+            label: tag
+          }),
+          'value'
+        )
+      },
+      this.handleFilterChange
+    );
   };
 
   getFieldError = fieldName => {
@@ -229,31 +236,20 @@ class Projects extends Component {
 
     return null;
   };
-  render () {
+  render() {
     const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
-    const formattedDayFrom = this.state.dateFrom
-      ? moment(this.state.dateFrom).format('DD.MM.YYYY')
-      : '';
-    const formattedDayTo = this.state.dateTo
-      ? moment(this.state.dateTo).format('DD.MM.YYYY')
-      : '';
-    /*const isVisor = this.props.globalRole === VISOR;*/
+    const formattedDayFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('DD.MM.YYYY') : '';
+    const formattedDayTo = this.state.dateTo ? moment(this.state.dateTo).format('DD.MM.YYYY') : '';
     const isAdmin = this.props.globalRole === ADMIN;
+
     return (
       <div>
         <section>
           <header className={css.title}>
             <h1 className={css.title}>Мои проекты</h1>
-            {
-              isAdmin
-                ? <Button
-                  onClick={this.handleModal}
-                  text="Создать проект"
-                  type="primary"
-                  icon="IconPlus"
-                />
-                : null
-            }
+            {isAdmin ? (
+              <Button onClick={this.handleModal} text="Создать проект" type="primary" icon="IconPlus" />
+            ) : null}
           </header>
           <hr />
           <div className={css.projectsHeader}>
@@ -261,28 +257,31 @@ class Projects extends Component {
               <StatusCheckbox
                 type="INPROGRESS"
                 checked={filteredInProgress}
-                onClick={() => {this.check('filteredInProgress', this.handleFilterChange);}}
+                onClick={() => {
+                  this.check('filteredInProgress', this.handleFilterChange);
+                }}
                 label="В процессе"
               />
               <StatusCheckbox
                 type="INHOLD"
                 checked={filteredInHold}
-                onClick={() => {this.check('filteredInHold', this.handleFilterChange);}}
+                onClick={() => {
+                  this.check('filteredInHold', this.handleFilterChange);
+                }}
                 label="Приостановлен"
               />
               <StatusCheckbox
                 type="FINISHED"
                 checked={filteredFinished}
-                onClick={() => {this.check('filteredFinished', this.handleFilterChange);}}
+                onClick={() => {
+                  this.check('filteredFinished', this.handleFilterChange);
+                }}
                 label="Завершен"
               />
             </div>
             <Row className={css.search}>
               <Col xs={12} sm={4}>
-                <Input
-                  onChange={this.changeNameFilter}
-                  placeholder="Введите название проекта..."
-                />
+                <Input onChange={this.changeNameFilter} placeholder="Введите название проекта..." />
               </Col>
               <Col xs={12} sm={4}>
                 <Row>
@@ -305,34 +304,26 @@ class Projects extends Component {
                 </Row>
               </Col>
               <Col xs={12} sm={4}>
-                <TagsFilter
-                  filterFor={'project'}
-                  onTagSelect={this.onTagSelect}
-                  filterTags={this.state.filterTags}
-                />
+                <TagsFilter filterFor={'project'} onTagSelect={this.onTagSelect} filterTags={this.state.filterTags} />
               </Col>
             </Row>
           </div>
-          <div>
-            {this.props.projectList.map((project, i) => {
-              return (
-                <ProjectCard
-                  key={`project-${project.id}`}
-                  project={project}
-                  onClickTag={this.onClickTag}
-                />
-              );
-            })}
-          </div>
-          {
-            this.props.pagesCount > 1
-              ? <Pagination
-                itemsCount={this.props.pagesCount}
-                activePage={this.state.activePage}
-                onItemClick={this.handlePaginationClick}
-              />
-              : null
-          }
+          {this.props.projectList.length ? (
+            <div>
+              {this.props.projectList.map(project => (
+                <ProjectCard key={`project-${project.id}`} project={project} onClickTag={this.onClickTag} />
+              ))}
+            </div>
+          ) : (
+            <div className={css.notFound}>Ничего не найдено</div>
+          )}
+          {this.props.pagesCount > 1 ? (
+            <Pagination
+              itemsCount={this.props.pagesCount}
+              activePage={this.state.activePage}
+              onItemClick={this.handlePaginationClick}
+            />
+          ) : null}
         </section>
         <CreateProject
           isOpen={this.props.isCreateProjectModalOpen}
@@ -343,8 +334,8 @@ class Projects extends Component {
           handleCheckBox={this.handleModalCheckBoxChange}
           onPortfolioSelect={this.handlePortfolioChange}
           selectedPortfolio={this.state.selectedPortfolio}
-          validateProjectName = {this.state.projectName.length > 3}
-          validateProjectPrefix = {this.state.projectPrefix.length > 1}
+          validateProjectName={this.state.projectName.length > 3}
+          validateProjectPrefix={this.state.projectPrefix.length > 1}
           prefixErrorText={this.getFieldError('prefix')}
         />
       </div>
@@ -356,6 +347,7 @@ Projects.propTypes = {
   getProjects: PropTypes.func.isRequired,
   globalRole: PropTypes.string.isRequired,
   isCreateProjectModalOpen: PropTypes.bool.isRequired,
+  loading: PropTypes.number,
   openCreateProjectModal: PropTypes.func.isRequired,
   pagesCount: PropTypes.number.isRequired,
   projectError: PropTypes.object,
@@ -366,6 +358,7 @@ const mapStateToProps = state => ({
   projectList: state.Projects.projects,
   pagesCount: state.Projects.pagesCount,
   isCreateProjectModalOpen: state.Projects.isCreateProjectModalOpen,
+  loading: state.Loading.loading,
   projectError: state.Projects.error,
   globalRole: state.Auth.user.globalRole
 });
