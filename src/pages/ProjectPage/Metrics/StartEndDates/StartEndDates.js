@@ -5,10 +5,10 @@ import Input from '../../../../components/Input';
 import moment from 'moment';
 const dateFormat = 'DD.MM.YYYY';
 class StartEndDates extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
-  render () {
+  render() {
     return (
       <div className={css.startEndDatesWrp}>
         <div className={css.startEndDates}>
@@ -24,7 +24,7 @@ class StartEndDates extends Component {
   }
 }
 StartEndDates.propTypes = {
-  startDate: PropTypes.string,
-  endDate: PropTypes.string
+  endDate: PropTypes.string,
+  startDate: PropTypes.string
 };
 export default StartEndDates;
