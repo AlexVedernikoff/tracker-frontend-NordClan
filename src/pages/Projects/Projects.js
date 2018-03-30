@@ -307,11 +307,15 @@ class Projects extends Component {
               </Col>
             </Row>
           </div>
-          <div>
-            {this.props.projectList.map(project => {
-              return <ProjectCard key={`project-${project.id}`} project={project} onClickTag={this.onClickTag} />;
-            })}
-          </div>
+          {this.props.projectList.length ? (
+            <div>
+              {this.props.projectList.map(project => (
+                <ProjectCard key={`project-${project.id}`} project={project} onClickTag={this.onClickTag} />
+              ))}
+            </div>
+          ) : (
+            <div className={css.notFound}>Ничего не найдено</div>
+          )}
           {this.props.pagesCount > 1 ? (
             <Pagination
               itemsCount={this.props.pagesCount}
@@ -342,6 +346,7 @@ Projects.propTypes = {
   getProjects: PropTypes.func.isRequired,
   globalRole: PropTypes.string.isRequired,
   isCreateProjectModalOpen: PropTypes.bool.isRequired,
+  loading: PropTypes.number,
   openCreateProjectModal: PropTypes.func.isRequired,
   pagesCount: PropTypes.number.isRequired,
   projectError: PropTypes.object,
@@ -352,6 +357,7 @@ const mapStateToProps = state => ({
   projectList: state.Projects.projects,
   pagesCount: state.Projects.pagesCount,
   isCreateProjectModalOpen: state.Projects.isCreateProjectModalOpen,
+  loading: state.Loading.loading,
   projectError: state.Projects.error,
   globalRole: state.Auth.user.globalRole
 });
