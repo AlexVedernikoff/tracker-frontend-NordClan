@@ -21,7 +21,7 @@ import getProjects, {
   closeCreateProjectModal
 } from '../../actions/Projects';
 import { getErrorMessageByType } from '../../utils/ErrorMessages';
-import { VISOR, ADMIN } from '../../constants/Roles';
+import { ADMIN } from '../../constants/Roles';
 
 import 'moment/locale/ru';
 
@@ -163,8 +163,7 @@ class Projects extends Component {
     });
   };
 
-  sendRequest = event => {
-    event.preventDefault();
+  sendRequest = () => {
     let portfolioName = '';
     if (this.state.selectedPortfolio && Object.keys(this.state.selectedPortfolio).length !== 0) {
       portfolioName = !Number.isInteger(this.state.selectedPortfolio.value) ? this.state.selectedPortfolio.value : null;
@@ -182,8 +181,8 @@ class Projects extends Component {
     );
   };
 
-  sendRequestAndOpen = event => {
-    this.setState({ openProjectPage: true }, () => this.sendRequest(event));
+  sendRequestAndOpen = () => {
+    this.setState({ openProjectPage: true }, this.sendRequest);
   };
 
   handleModalCheckBoxChange = event => {
