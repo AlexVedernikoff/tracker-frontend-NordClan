@@ -23,6 +23,7 @@ class SprintMetrics extends Component {
     sprints: PropTypes.array,
     startDate: PropTypes.string
   };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -107,7 +108,7 @@ class SprintMetrics extends Component {
   sprintEndDate() {
     if (this.state.sprintSelected) {
       const endDate = this.state.sprintSelected.value.factFinishDate;
-      return endDate ? endDate : moment();
+      return endDate ? endDate : moment().format();
     }
     return '';
   }

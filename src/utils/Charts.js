@@ -16,12 +16,10 @@ const chartDefaultOptions = {
       usePointStyle: true
     },
     onClick(e, legendItem) {
-      this.chart.resetZoom();
-
       const chartItem = this.chart;
       const datasetIndex = legendItem.datasetIndex;
       const defaultLegendClickHandler = defaults.global.legend.onClick.bind(this);
-      const dblClickDelay = 400;
+      const dblClickDelay = 300;
 
       const legendDoubleClickHandler = () => {
         chartItem.data.datasets.forEach((el, index) => {
