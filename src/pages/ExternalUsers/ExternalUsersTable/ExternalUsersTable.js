@@ -19,7 +19,7 @@ class ExternalUsersTable extends Component {
         <ExternalUsersTableHeader />
         {this.props.exUsers.map((item, i) => (
           <ExternalUsersTableRow
-            key={`EU-${i}`}
+            key={i}
             // editExternalUser={this.props.editExternalUser}
             exUser={item}
           />

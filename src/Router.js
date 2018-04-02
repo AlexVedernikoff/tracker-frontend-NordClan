@@ -82,7 +82,7 @@ class AppRouter extends Component {
       <Route path="" component={MainContainer}>
         <Route path="login" component={Login} onEnter={this.isLogged} />
         <Route path="icons" component={DemoPage} />
-        <Route path="externalUserActivate/:exUserHash" component={ExternalUserActivate} />
+        <Route path="externalUserActivate/:exUserToken" component={ExternalUserActivate} />
         <Route path="logout" component={Logout} />
         <Route path="/" component={InnerContainer} onEnter={this.requireAuth}>
           <Route path="dashboard" component={Dashboard} />

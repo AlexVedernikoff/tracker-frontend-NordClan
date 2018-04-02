@@ -68,8 +68,8 @@ class ExternalUsersTableRow extends Component {
     const id = this.props.exUser.id;
     const changedFields = this.state.tempValues;
     if (
-      (changedFields.name !== undefined && !this.validation.name(changedFields.name)) ||
-      (changedFields.email !== undefined && !this.validation.email(changedFields.email)) ||
+      (changedFields.firstNameRu !== undefined && !this.validation.name(changedFields.firstNameRu)) ||
+      (changedFields.login !== undefined && !this.validation.email(changedFields.login)) ||
       (changedFields.expiredDate !== undefined && !this.validation.expiredDate(changedFields.expiredDate))
     ) {
       return;
@@ -81,7 +81,10 @@ class ExternalUsersTableRow extends Component {
       },
       () => {
         ReactTooltip.hide();
-        this.props.editExternalUser(id, changedFields);
+        this.props.editExternalUser(id, {
+          login: this.props.exUser.login,
+          ...changedFields
+        });
       }
     );
   };
@@ -105,23 +108,23 @@ class ExternalUsersTableRow extends Component {
       <div className={css.TableRow}>
         <div className={css.TableCell}>
           <ExternalUserInput
-            value={this.props.exUser.name}
+            value={this.props.exUser.firstNameRu}
             isEditing={this.state.isEditing}
-            onValueChange={this.onEditValues('name')}
+            onValueChange={this.onEditValues('firstNameRu')}
           />
         </div>
         <div className={css.TableCell}>
           <ExternalUserInput
-            value={this.props.exUser.email}
+            value={this.props.exUser.login}
             isEditing={this.state.isEditing}
-            onValueChange={this.onEditValues('email')}
+            onValueChange={this.onEditValues('login')}
           />
         </div>
         <div className={css.TableCell}>
           <ExternalUserActivity
-            checked={this.props.exUser.isActive}
+            checked={!!this.props.exUser.active}
             isEditing={this.state.isEditing}
-            onValueChange={this.onEditValues('isActive')}
+            onValueChange={this.onEditValues('active')}
           />
         </div>
         <div className={css.TableCell}>

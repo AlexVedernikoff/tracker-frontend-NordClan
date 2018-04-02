@@ -10,14 +10,17 @@ import { connect } from 'react-redux';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './AddExternalUser.scss';
 import { addExternalUser } from '../../../actions/ExternalUsers';
+const initialState = {
+  isModalOpen: false,
+  name: '',
+  email: '',
+  expiredDate: ''
+};
 class AddExternalUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isModalOpen: false,
-      name: '',
-      email: '',
-      expiredDate: ''
+      ...initialState
     };
     this.validator = new Validator();
   }
@@ -34,7 +37,7 @@ class AddExternalUser extends Component {
   };
   handleDayToChange = date => {
     this.setState({
-      expiredDate: date ? moment(date).format() : ''
+      expiredDate: date ? moment(date).format('YYYY-MM-DD') : ''
     });
   };
   validateEmail = email => {
@@ -47,12 +50,11 @@ class AddExternalUser extends Component {
   }
   addUser = () => {
     const { name, email, expiredDate } = this.state;
-    this.setState({ isModalOpen: false }, () => {
+    this.setState({ ...initialState }, () => {
       this.props.addExternalUser({
-        name,
-        email,
-        expiredDate,
-        isActive: false
+        firstNameRu: name,
+        login: email,
+        expiredDate
       });
     });
   };

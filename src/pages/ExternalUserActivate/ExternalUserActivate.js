@@ -5,12 +5,14 @@ import Logo from '../../components/Logo';
 import ValidatedInput from '../../components/ValidatedInput';
 import Validator from '../../components/ValidatedInput/Validator';
 import Button from '../../components/Button';
+import { activateExternalUser } from '../../actions/ExternalUsers';
 import bg from '../Login/bg.jpg';
 import { connect } from 'react-redux';
 import { history } from '../../History';
 
 class ExternalUserActivate extends Component {
   static propTypes = {
+    activateExternalUser: PropTypes.func,
     params: PropTypes.object
   };
 
@@ -28,9 +30,11 @@ class ExternalUserActivate extends Component {
       [event.target.name]: event.target.value
     });
   };
-
+  onSubmit = e => {
+    e.preventDefault();
+    this.props.activateExternalUser(this.props.params.exUserToken, this.state.password);
+  };
   render() {
-    console.log(this.props.params.exUserHash);
     return (
       <div className={css.formWrapper} style={{ backgroundImage: `url(${bg})` }}>
         <div className={css.loginForm}>
@@ -73,7 +77,7 @@ class ExternalUserActivate extends Component {
                   />
                 ),
                 'repeatPassword',
-                !!this.state.repeatPassword.length && this.state.repeatPassword !== this.state.password
+                this.state.repeatPassword !== this.state.password
               )}
             </div>
             <div className={css.buttonWrapper}>
@@ -94,6 +98,8 @@ class ExternalUserActivate extends Component {
 
 const mapStateToProps = () => ({});
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  activateExternalUser
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExternalUserActivate);

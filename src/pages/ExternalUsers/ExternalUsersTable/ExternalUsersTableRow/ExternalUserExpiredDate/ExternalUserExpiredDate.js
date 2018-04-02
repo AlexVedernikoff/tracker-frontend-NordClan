@@ -18,7 +18,7 @@ class ExternalUserExpiredDate extends Component {
       {
         value: updatedDate
       },
-      () => this.props.onValueChange(updatedDate)
+      () => this.props.onValueChange(moment(updatedDate).format('YYYY-MM-DD'))
     );
   };
 

@@ -14,7 +14,7 @@ class ExternalUserActivity extends Component {
       {
         checked: newCheckboxState
       },
-      () => this.props.onValueChange(newCheckboxState)
+      () => this.props.onValueChange(+newCheckboxState)
     );
   };
   render() {
