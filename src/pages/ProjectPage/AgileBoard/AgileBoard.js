@@ -20,12 +20,11 @@ import PerformerFilter from '../../../components/PerformerFilter';
 import getPriorityById from '../../../utils/TaskPriority';
 import * as css from './AgileBoard.scss';
 import { UnmountClosed } from 'react-collapse';
-import { presets } from 'react-motion';
 
 import getTasks from '../../../actions/Tasks';
 import { VISOR } from '../../../constants/Roles';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
-import { openCreateTaskModal, getProjectUsers } from '../../../actions/Project';
+import { openCreateTaskModal, getProjectUsers, getProjectInfo } from '../../../actions/Project';
 
 const filterTasks = array => {
   const taskArray = {
@@ -170,6 +169,9 @@ class AgileBoard extends Component {
 
   componentWillReceiveProps(nextProps) {
     ReactTooltip.hide();
+    if (this.props.tracksChange !== nextProps.tracksChange && this.props.project.id) {
+      this.props.getProjectInfo(this.props.project.id);
+    }
 
     if (
       (this.props.sprints !== nextProps.sprints || this.props.lastCreatedTask !== nextProps.lastCreatedTask) &&
@@ -511,7 +513,7 @@ class AgileBoard extends Component {
     ) {
       return this.state[filterName].length > 0;
     }
-    return !!this.state[filterName];
+    return this.state[filterName] !== null && this.state[filterName] !== false;
   };
 
   createFilterLabel = filterName => {
@@ -805,6 +807,7 @@ AgileBoard.propTypes = {
   StatusIsEditing: PropTypes.bool,
   UserIsEditing: PropTypes.bool,
   changeTask: PropTypes.func.isRequired,
+  getProjectInfo: PropTypes.func,
   getProjectUsers: PropTypes.func,
   getTasks: PropTypes.func.isRequired,
   globalRole: PropTypes.string,
@@ -819,6 +822,7 @@ AgileBoard.propTypes = {
   startTaskEditing: PropTypes.func,
   statuses: PropTypes.array,
   taskTypes: PropTypes.array,
+  tracksChange: PropTypes.number,
   user: PropTypes.object
 };
 
@@ -827,6 +831,7 @@ const mapStateToProps = state => ({
   sprintTasks: state.Tasks.tasks,
   sprints: state.Project.project.sprints,
   project: state.Project.project,
+  tracksChange: state.TimesheetPlayer.tracksChange,
   StatusIsEditing: state.Task.StatusIsEditing,
   UserIsEditing: state.Task.UserIsEditing,
   user: state.Auth.user,
@@ -841,7 +846,8 @@ const mapDispatchToProps = {
   changeTask,
   startTaskEditing,
   openCreateTaskModal,
-  getProjectUsers
+  getProjectUsers,
+  getProjectInfo
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);
