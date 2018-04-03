@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as css from './BudgetChart.scss';
+import ChartWrapper from '../ChartWrapper';
 import Input from '../../../../components/Input';
 import { Line } from 'react-chartjs-2';
 import { connect } from 'react-redux';
@@ -22,8 +23,13 @@ class BudgetChart extends Component {
     startDate: PropTypes.string
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
+
+    this.state = {
+      chartRef: null
+    };
+
     this.chartOptions = {
       ...props.chartDefaultOptions,
       scales: {
@@ -42,6 +48,10 @@ class BudgetChart extends Component {
         ]
       }
     };
+  }
+
+  componentDidMount() {
+    this.setState({ chartRef: this.refs.chart });
   }
 
   makeChartData = () => {
@@ -87,7 +97,7 @@ class BudgetChart extends Component {
 
   makeProjectBurndown = (metrics, startDate, budget, riskBudget, isRisks) => {
     const burndown = metrics
-      .map((metric) => {
+      .map(metric => {
         return {
           x: metric.createdAt,
           y: roundNum(+metric.value, 2)
@@ -106,7 +116,7 @@ class BudgetChart extends Component {
   };
 
   makeSprintsIdealBurndowns = (sprints, isRisks) => {
-    return sprints.map((sprint) => {
+    return sprints.map(sprint => {
       const idealBurndown = [
         {
           x: sprint.factStartDate,
@@ -126,10 +136,10 @@ class BudgetChart extends Component {
   };
 
   makeSprintsBurndowns = (metrics, sprints) => {
-    return sprints.map((sprint) => {
-      const sprintMetrics = metrics.filter((metric) => metric.sprintId === sprint.id);
+    return sprints.map(sprint => {
+      const sprintMetrics = metrics.filter(metric => metric.sprintId === sprint.id);
       const burndown = sprintMetrics
-        .map((metric) => {
+        .map(metric => {
           return {
             x: metric.createdAt,
             y: roundNum(+metric.value, 2)
@@ -144,7 +154,7 @@ class BudgetChart extends Component {
     });
   };
 
-  render () {
+  render() {
     const { isRisks, budget, riskBudget } = this.props;
     return (
       <div className={css.BudgetChart}>
@@ -153,13 +163,15 @@ class BudgetChart extends Component {
           Бюджет:
           <Input readOnly value={isRisks ? `${riskBudget || 0} ч.` : `${budget || 0} ч`} />
         </div>
-        <Line height={250} data={this.makeChartData()} options={this.chartOptions} redraw />
+        <ChartWrapper chartRef={this.state.chartRef}>
+          <Line ref="chart" height={250} data={this.makeChartData()} options={this.chartOptions} redraw />
+        </ChartWrapper>
       </div>
     );
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   budget: state.Project.project.budget,
   riskBudget: state.Project.project.riskBudget,
   sprints: state.Project.project.sprints
