@@ -1,0 +1,16 @@
+@import '../../../../styles/variables';
+
+$wrapper-border-color: rgba(0, 0, 0, 0.17);
+
+.chartWrapper {
+  margin-top: 1rem;
+  padding: 1rem 10px;
+  border: 1px solid transparent;
+  transition: all 0s ease;
+
+  &.selected {
+    transition-duration: 0.3s;
+    border-color: $wrapper-border-color;
+    box-shadow: $box-shadow;
+  }
+}
