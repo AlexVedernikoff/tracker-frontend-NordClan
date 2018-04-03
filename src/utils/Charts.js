@@ -1,6 +1,5 @@
-import { defaults, Chart } from 'react-chartjs-2';
+import { defaults } from 'react-chartjs-2';
 import * as zoom from 'chartjs-plugin-zoom';
-import * as css from '../pages/ProjectPage/Metrics/ChartWrapper/ChartWrapper.scss';
 
 const chartDefaultOptions = {
   responsive: true,
