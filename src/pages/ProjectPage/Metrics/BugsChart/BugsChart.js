@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as css from './BugsChart.scss';
+import ChartWrapper from '../ChartWrapper';
 import { Line } from 'react-chartjs-2';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import roundNum from '../../../../utils/roundNum';
@@ -15,8 +16,13 @@ class BugsChart extends Component {
     openedRegressBugsMetrics: PropTypes.array
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
+
+    this.state = {
+      chartRef: null
+    };
+
     this.chartOptions = {
       ...props.chartDefaultOptions,
       scales: {
@@ -37,6 +43,10 @@ class BugsChart extends Component {
     };
   }
 
+  componentDidMount() {
+    this.setState({ chartRef: this.refs.chart });
+  }
+
   makeChartData = () => {
     const { openedBugsMetrics, openedCustomerBugsMetrics, openedRegressBugsMetrics } = this.props;
 
@@ -53,7 +63,7 @@ class BugsChart extends Component {
 
   makeBugsLine = (metrics, label) => {
     const line = metrics
-      .map((metric) => {
+      .map(metric => {
         return {
           x: metric.createdAt,
           y: roundNum(+metric.value, 2)
@@ -67,11 +77,11 @@ class BugsChart extends Component {
     };
   };
 
-  render () {
+  render() {
     return (
-      <div className={css.BugsChart}>
-        <Line data={this.makeChartData()} options={this.chartOptions} redraw />
-      </div>
+      <ChartWrapper chartRef={this.state.chartRef} className={css.BugsChart}>
+        <Line ref="chart" data={this.makeChartData()} options={this.chartOptions} redraw />
+      </ChartWrapper>
     );
   }
 }
