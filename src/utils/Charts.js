@@ -67,10 +67,12 @@ const chartDefaultOptions = {
       }
     ]
   },
+  pan: {
+    mode: 'xy'
+  },
   zoom: {
     enabled: true,
-    mode: 'x',
-    drag: true
+    mode: 'xy'
   }
 };
 
@@ -86,22 +88,22 @@ const modifyZoomPlugin = {
       event.preventDefault();
     };
 
-    chartInstance.modifyZoom._leftButtonMouseDownHandler = event => {
-      if (event.button === 0) {
-        chartInstance.zoom._mouseDownHandler(event);
+    chartInstance.modifyZoom._wheelHandler = event => {
+      if (chartInstance.modifyZoom._allowZoom) {
+        chartInstance.zoom._wheelHandler(event);
       }
     };
 
-    node.removeEventListener('mousedown', chartInstance.zoom._mouseDownHandler);
-    node.addEventListener('mousedown', chartInstance.modifyZoom._leftButtonMouseDownHandler);
+    node.removeEventListener('wheel', chartInstance.zoom._wheelHandler);
+    node.addEventListener('wheel', chartInstance.modifyZoom._wheelHandler);
     node.addEventListener('contextmenu', chartInstance.modifyZoom._contextMenuHandler);
   },
   destroy(chartInstance) {
     if (chartInstance.modifyZoom) {
       const node = chartInstance.modifyZoom.node;
 
-      node.removeEventListener('mousedown', chartInstance.modifyZoom._leftButtonMouseDownHandler);
       node.removeEventListener('contextmenu', chartInstance.modifyZoom._contextMenuHandler);
+      node.removeEventListener('wheel', chartInstance.modifyZoom._wheelHandler);
 
       delete chartInstance.modifyZoom;
     }
