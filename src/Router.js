@@ -33,6 +33,7 @@ import { clearCurrentProjectAndTasks } from './actions/Tasks';
 import { clearCurrentTask } from './actions/Task';
 import { setRedirectPath } from './actions/Authentication';
 import isAdmin from './utils/isAdmin';
+import { EXTERNAL_USER } from './constants/Roles';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
@@ -77,6 +78,13 @@ class AppRouter extends Component {
     cb();
   };
 
+  notExternal = (nextState, replace, cb) => {
+    if (this.props.userGlobalRole === EXTERNAL_USER) {
+      replace('/projects');
+    }
+    cb();
+  };
+
   router = (
     <Router history={this.props.history} render={applyRouterMiddleware(useScroll(() => false))}>
       <Route path="" component={MainContainer}>
@@ -86,7 +94,7 @@ class AppRouter extends Component {
         <Route path="logout" component={Logout} />
         <Route path="/" component={InnerContainer} onEnter={this.requireAuth}>
           <Route path="dashboard" component={Dashboard} />
-          <Route path="timesheets" component={Timesheets} />
+          <Route path="timesheets" component={Timesheets} onEnter={this.notExternal} />
           <Route path="roles" component={UsersRoles} onEnter={this.requareAdmin} />
           <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
           <Route path="projects" component={Projects} />
@@ -101,7 +109,7 @@ class AppRouter extends Component {
             <Route path="info" component={Info} />
             <Route path="property" component={Settings} />
             <Route path="planning" component={Planning} />
-            <Route path="analytics" component={Metrics}>
+            <Route path="analytics" component={Metrics} onEnter={this.notExternal}>
               <Route path=":metricType" component={Metrics} />
             </Route>
             <Route path="history" component={ProjectHistory} />

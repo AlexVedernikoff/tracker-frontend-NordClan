@@ -4,6 +4,7 @@ import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
 import { getTimesheetsPlayerData } from './TimesheetPlayer';
+import { EXTERNAL_USER } from '../constants/Roles';
 import { startOfCurrentWeek, endOfCurrentWeek } from '../utils/date';
 import { history } from '../History';
 import { getErrorMessageByType } from '../utils/ErrorMessages';
@@ -66,7 +67,9 @@ export const doAuthentication = ({ username, password }) => {
       .then(response => {
         if (response && response.status === 200) {
           dispatch(authenticationReceived(response.data.user));
-          dispatch(getTimesheetsPlayerData(startOfCurrentWeek, endOfCurrentWeek));
+          if (response.data.user.globalRole !== EXTERNAL_USER) {
+            dispatch(getTimesheetsPlayerData(startOfCurrentWeek, endOfCurrentWeek));
+          }
         }
       });
   };
@@ -105,7 +108,9 @@ export const getInfoAboutMe = () => {
       })
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(getTimesheetsPlayerData(startOfCurrentWeek, endOfCurrentWeek));
+          if (response.data.globalRole !== EXTERNAL_USER) {
+            dispatch(getTimesheetsPlayerData(startOfCurrentWeek, endOfCurrentWeek));
+          }
           dispatch(userInfoReceived(response.data));
           dispatch(finishLoading());
         }

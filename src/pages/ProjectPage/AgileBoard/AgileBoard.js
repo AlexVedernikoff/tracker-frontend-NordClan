@@ -22,7 +22,7 @@ import * as css from './AgileBoard.scss';
 import { UnmountClosed } from 'react-collapse';
 
 import getTasks from '../../../actions/Tasks';
-import { VISOR } from '../../../constants/Roles';
+import { VISOR, EXTERNAL_USER } from '../../../constants/Roles';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal, getProjectUsers, getProjectInfo } from '../../../actions/Project';
 
@@ -79,7 +79,14 @@ const phaseColumnNameById = {
   10: 'Closed'
 };
 
-const sortTasksAndCreateCard = (sortedObject, section, onChangeStatus, onOpenPerformerModal, myTaskBoard) => {
+const sortTasksAndCreateCard = (
+  sortedObject,
+  section,
+  onChangeStatus,
+  onOpenPerformerModal,
+  myTaskBoard,
+  isExternal
+) => {
   const taskArray = {
     new: [],
     dev: [],
@@ -98,6 +105,7 @@ const sortTasksAndCreateCard = (sortedObject, section, onChangeStatus, onOpenPer
           key={`task-${task.id}`}
           task={task}
           section={section}
+          isExternal={isExternal}
           onChangeStatus={onChangeStatus}
           onOpenPerformerModal={onOpenPerformerModal}
           myTaskBoard={myTaskBoard}
@@ -619,8 +627,18 @@ class AgileBoard extends Component {
   render() {
     const { taskTypes, project } = this.props;
 
+    const isVisor = this.props.globalRole === VISOR;
+    const isExternal = this.props.globalRole === EXTERNAL_USER;
+
     let allSorted = filterTasks(this.props.sprintTasks);
-    allSorted = sortTasksAndCreateCard(allSorted, 'all', this.changeStatus, this.openPerformerModal);
+    allSorted = sortTasksAndCreateCard(
+      allSorted,
+      'all',
+      this.changeStatus,
+      this.openPerformerModal,
+      this.props.myTaskBoard,
+      isExternal
+    );
 
     const myTasks = this.props.sprintTasks.filter(task => {
       return task.performer && task.performer.id === this.props.user.id;
@@ -632,10 +650,9 @@ class AgileBoard extends Component {
       'mine',
       this.changeStatus,
       this.openPerformerModal,
-      this.props.myTaskBoard
+      this.props.myTaskBoard,
+      isExternal
     );
-
-    const isVisor = this.props.globalRole === VISOR;
 
     const typeOptions = this.createOptions(taskTypes);
     const authorOptions = this.createOptions(project.users, 'fullNameRu');

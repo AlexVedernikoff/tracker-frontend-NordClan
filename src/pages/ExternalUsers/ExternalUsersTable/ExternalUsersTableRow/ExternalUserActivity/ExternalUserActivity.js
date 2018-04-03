@@ -7,6 +7,7 @@ class ExternalUserActivity extends Component {
     this.state = {
       checked: props.checked
     };
+    console.log(this.state.checked);
   }
   onActivityChange = () => {
     const newCheckboxState = !this.state.checked;

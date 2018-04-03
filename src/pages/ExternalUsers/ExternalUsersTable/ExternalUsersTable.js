@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { getExternalUsers } from '../../../actions/ExternalUsers';
 import ExternalUsersTableHeader from './ExternalUsersTableHeader';
 import ExternalUsersTableRow from './ExternalUsersTableRow';
+
 class ExternalUsersTable extends Component {
   constructor(props) {
     super(props);
@@ -17,13 +18,7 @@ class ExternalUsersTable extends Component {
     return (
       <div className={css.ExternalUsersTable}>
         <ExternalUsersTableHeader />
-        {this.props.exUsers.map((item, i) => (
-          <ExternalUsersTableRow
-            key={i}
-            // editExternalUser={this.props.editExternalUser}
-            exUser={item}
-          />
-        ))}
+        {this.props.exUsers.map(item => <ExternalUsersTableRow key={item.id} exUser={item} />)}
       </div>
     );
   }

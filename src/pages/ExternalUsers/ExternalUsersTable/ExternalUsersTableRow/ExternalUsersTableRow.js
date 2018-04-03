@@ -149,7 +149,7 @@ class ExternalUsersTableRow extends Component {
           )}
         </div>
         <div className={css.TableCellEdit}>
-          <ExternalUserDelete username={this.props.exUser.name} onDelete={this.deleteUser} />
+          <ExternalUserDelete username={this.props.exUser.firstNameRu} onDelete={this.deleteUser} />
         </div>
       </div>
     );
