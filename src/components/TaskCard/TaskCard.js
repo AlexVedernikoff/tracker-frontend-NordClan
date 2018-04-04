@@ -16,7 +16,7 @@ import { IconPlay, IconPause, IconTime, IconBug } from '../Icons';
 import ReactTooltip from 'react-tooltip';
 
 const taskCardSource = {
-  beginDrag (props) {
+  beginDrag(props) {
     return {
       id: props.task.id,
       section: props.section,
@@ -29,11 +29,11 @@ const getTaskTime = (factTime, planTime) => {
   if (factTime) {
     return planTime ? `${roundNum(factTime, 2)} из ${roundNum(planTime, 2)} ч.` : `${roundNum(factTime, 2)} ч.`;
   } else {
-    return planTime ? `0 из ${planTime} ч.` : '0 из 0 ч.';
+    return planTime ? `0 из ${roundNum(planTime, 2)} ч.` : '0 из 0 ч.';
   }
 };
 
-function collect (connection, monitor) {
+function collect(connection, monitor) {
   return {
     connectDragSource: connection.dragSource(),
     isDragging: monitor.isDragging()
@@ -50,12 +50,12 @@ const STATUS_QA_HOLD = 7;
 const STATUS_DONE = 8;
 
 class TaskCard extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = { isOpenPriority: false };
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (this.props.task.statusId !== nextProps.task.statusId) {
       ReactTooltip.hide();
     }
@@ -82,31 +82,23 @@ class TaskCard extends React.Component {
     this.togglePriorityBox();
   };
 
-  isTaskInWork = (statusId) => (
-    statusId !== STATUS_NEW && statusId !== STATUS_DONE
-  );
+  isTaskInWork = statusId => statusId !== STATUS_NEW && statusId !== STATUS_DONE;
 
-  isTaskInProgress = (statusId) => (
-    statusId === STATUS_DEV_HOLD || statusId === STATUS_REVIEW_HOLD || statusId === STATUS_QA_HOLD
-  );
+  isTaskInProgress = statusId =>
+    statusId === STATUS_DEV_HOLD || statusId === STATUS_REVIEW_HOLD || statusId === STATUS_QA_HOLD;
 
-  isTaskInHold = (statusId) => (
-    statusId === STATUS_DEV_PROGRESS || statusId === STATUS_REVIEW_PROGRESS || statusId === STATUS_QA_PROGRESS
-  );
+  isTaskInHold = statusId =>
+    statusId === STATUS_DEV_PROGRESS || statusId === STATUS_REVIEW_PROGRESS || statusId === STATUS_QA_PROGRESS;
 
-  isInPlan = (plannedTime, factTime) => (
-    (factTime / plannedTime) <= 1 && plannedTime
-  );
+  isInPlan = (plannedTime, factTime) => factTime / plannedTime <= 1 && plannedTime;
 
-  isOutOfPlan = (plannedTime, factTime) => (
-    (factTime / plannedTime) > 1 && plannedTime
-  );
+  isOutOfPlan = (plannedTime, factTime) => factTime / plannedTime > 1 && plannedTime;
 
   goToDetailPage = () => {
     history.push(`/projects/${this.props.task.projectId}/tasks/${this.props.task.id}`);
   };
 
-  render () {
+  render() {
     const {
       task,
       connectDragSource,
@@ -124,102 +116,93 @@ class TaskCard extends React.Component {
     const classPriority = 'priority-' + task.prioritiesId;
     const isBug = ~[2, 4, 5].indexOf(task.typeId);
 
-    return (
-      connectDragSource(
-        <div
-          className={classnames({
-            [css.taskCard]: true,
-            [css[classPriority]]: true,
-            [css.dropped]: isDragging,
-            [css.bug]: isBug
-          })}
-          onClick={this.goToDetailPage}
-          {...other}
-        >
-          {
-            this.isTaskInWork(task.statusId)
-              && <div
-                className={classnames({
-                  [css.status]: true,
-                  [css.inhold]: this.isTaskInHold(task.statusId),
-                  [css.inprogress]: this.isTaskInProgress(task.statusId)
-                })}
-              >
-                {
-                  this.isTaskInProgress(task.statusId)
-                    ? <IconPlay data-tip="Начать" onClick={this.handleClick} />
-                    : <IconPause data-tip="Приостановить" onClick={this.handleClick} />
-                }
-              </div>
-          }
-
-          <CopyThis
-            wrapThisInto={'div'}
-            isCopiedBackground
-            description={`Ссылка на задачу ${task.prefix}-${task.id}`}
-            textToCopy={`${location.origin}${history.createHref(
-              `/projects/${task.projectId}/tasks/${task.id}`
-            )}`}
+    return connectDragSource(
+      <div
+        className={classnames({
+          [css.taskCard]: true,
+          [css[classPriority]]: true,
+          [css.dropped]: isDragging,
+          [css.bug]: isBug
+        })}
+        onClick={this.goToDetailPage}
+        {...other}
+      >
+        {this.isTaskInWork(task.statusId) && (
+          <div
+            className={classnames({
+              [css.status]: true,
+              [css.inhold]: this.isTaskInHold(task.statusId),
+              [css.inprogress]: this.isTaskInProgress(task.statusId)
+            })}
           >
-            <div className={css.header}>
-              {isBug ? <IconBug/> : null} {task.prefix}-{task.id} | {getTypeById(task.typeId, taskTypes)}
-            </div>
-          </CopyThis>
+            {this.isTaskInProgress(task.statusId) ? (
+              <IconPlay data-tip="Начать" onClick={this.handleClick} />
+            ) : (
+              <IconPause data-tip="Приостановить" onClick={this.handleClick} />
+            )}
+          </div>
+        )}
 
-          <Link to={`/projects/${task.projectId}/tasks/${task.id}`} className={css.taskName}>
-            <div>{task.name}</div>
-          </Link>
+        <CopyThis
+          wrapThisInto={'div'}
+          isCopiedBackground
+          description={`Ссылка на задачу ${task.prefix}-${task.id}`}
+          textToCopy={`${location.origin}${history.createHref(`/projects/${task.projectId}/tasks/${task.id}`)}`}
+        >
+          <div className={css.header}>
+            {isBug ? <IconBug /> : null} {task.prefix}-{task.id} | {getTypeById(task.typeId, taskTypes)}
+          </div>
+        </CopyThis>
 
-          <p className={css.taskMeta} onClick={this.handlePerformerClick}>
-            {!myTaskBoard
-              && <a>
-                { task.performer
-                  ? task.performer.fullNameRu
-                  : <span className={css.unassigned}>Не назначено</span>
-                }
-              </a>}
-          </p>
+        <Link to={`/projects/${task.projectId}/tasks/${task.id}`} className={css.taskName}>
+          <div>{task.name}</div>
+        </Link>
 
-          {
-            !!((task.factExecutionTime || task.plannedExecutionTime))
-            && <p className={classnames(css.time, {[css.redBorder]: +task.plannedExecutionTime === 0})}>
-              <IconTime className={classnames({
+        <p className={css.taskMeta} onClick={this.handlePerformerClick}>
+          {!myTaskBoard && (
+            <a>{task.performer ? task.performer.fullNameRu : <span className={css.unassigned}>Не назначено</span>}</a>
+          )}
+        </p>
+
+        {!!(task.factExecutionTime || task.plannedExecutionTime) && (
+          <div className={classnames(css.time, { [css.redBorder]: +task.plannedExecutionTime === 0 })}>
+            <IconTime
+              className={classnames({
                 [css.green]: this.isInPlan(task.plannedExecutionTime, task.factExecutionTime),
                 [css.red]: this.isOutOfPlan(task.plannedExecutionTime, task.factExecutionTime)
-              })} />
-              <span>{getTaskTime(task.factExecutionTime, task.plannedExecutionTime)}</span>
-            </p>
-          }
+              })}
+            />
+            <span>{getTaskTime(task.factExecutionTime, task.plannedExecutionTime)}</span>
+          </div>
+        )}
 
-          {
-            !!task.plannedExecutionTime
-              && <div className={css.progressBar}>
-                <div
-                  style={{width: factPlanDivision < 1 ? factPlanDivision * 100 + '%' : '100%'}}
-                  className={classnames({
-                    [css.green]: this.isInPlan(task.plannedExecutionTime, task.factExecutionTime),
-                    [css.red]: this.isOutOfPlan(task.plannedExecutionTime, task.factExecutionTime)
-                  })}
-                />
-              </div>
-          }
+        {!!task.plannedExecutionTime && (
+          <div className={css.progressBar}>
+            <div
+              style={{ width: factPlanDivision < 1 ? factPlanDivision * 100 + '%' : '100%' }}
+              className={classnames({
+                [css.green]: this.isInPlan(task.plannedExecutionTime, task.factExecutionTime),
+                [css.red]: this.isOutOfPlan(task.plannedExecutionTime, task.factExecutionTime)
+              })}
+            />
+          </div>
+        )}
 
-          {
-            this.state.isOpenPriority
-              ? <PriorityBox
-                taskId={task.id}
-                isTime={!!(task.factExecutionTime || task.plannedExecutionTime)}
-                priorityId={task.prioritiesId}
-                hideBox={this.togglePriorityBox}
-              />
-              : <div
-                className={css.priorityMarker}
-                onClick={this.showPriorityBox}
-                data-tip={`Приоритет: ${getProrityById(this.props.task.prioritiesId)}`}
-              />
-          }
-        </div>
-      )
+        {this.state.isOpenPriority ? (
+          <PriorityBox
+            taskId={task.id}
+            isTime={!!(task.factExecutionTime || task.plannedExecutionTime)}
+            priorityId={task.prioritiesId}
+            hideBox={this.togglePriorityBox}
+          />
+        ) : (
+          <div
+            className={css.priorityMarker}
+            onClick={this.showPriorityBox}
+            data-tip={`Приоритет: ${getProrityById(this.props.task.prioritiesId)}`}
+          />
+        )}
+      </div>
     );
   }
 }
