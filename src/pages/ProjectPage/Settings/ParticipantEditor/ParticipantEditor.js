@@ -16,30 +16,45 @@ import Modal from '../../../../components/Modal';
 import SelectDropdown from '../../../../components/SelectDropdown';
 
 class ParticipantEditor extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       isModalOpenAddUser: false,
+      isModalOpenAddExternal: false,
       participant: null,
       roles: [],
       participants: []
     };
-    this.ROLES_FULL_NAME = ['Account', 'PM', 'UX', 'Analyst', 'Back', 'Front', 'Mobile', 'TeamLead', 'QA', 'Unbillable'];
+    this.ROLES_FULL_NAME = [
+      'Account',
+      'PM',
+      'UX',
+      'Analyst',
+      'Back',
+      'Front',
+      'Mobile',
+      'TeamLead',
+      'QA',
+      'Unbillable'
+    ];
     this.ROLES_ID = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
     this.roleRights = {
-      fullAccess: 'Полный доступ к проекту. <br/>Доступны все действия на уровне проекта: <br/>Ведение задач, планирование, настройки проекта и команды, аналитика <br/>Полная рассылка по проекту.',
-      devAccess: 'Ограниченный доступ к проекту. <br/>Доступны действия на уровне задач: <br/>Назначение задачи, новый комментарий в задаче, ответ на комментарий, изменение статуса<br/>Ограниченная рассылка.',
-      qaAccess: 'Ограниченный доступ к проекту. <br/>Доступны действия на уровне задач. <br/>Полная рассылка по проекту.',
+      fullAccess:
+        'Полный доступ к проекту. <br/>Доступны все действия на уровне проекта: <br/>Ведение задач, планирование, настройки проекта и команды, аналитика <br/>Полная рассылка по проекту.',
+      devAccess:
+        'Ограниченный доступ к проекту. <br/>Доступны действия на уровне задач: <br/>Назначение задачи, новый комментарий в задаче, ответ на комментарий, изменение статуса<br/>Ограниченная рассылка.',
+      qaAccess:
+        'Ограниченный доступ к проекту. <br/>Доступны действия на уровне задач. <br/>Полная рассылка по проекту.',
       unbillableAccess: 'Неоплачиваемая роль'
     };
     this.searchOnChange = debounce(this.searchOnChange, 400);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     addEventListener('keydown', this.handleEscClose, true);
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     ReactTooltip.rebuild();
   }
 
@@ -48,23 +63,19 @@ class ParticipantEditor extends Component {
     removeEventListener('keydown', this.handleEscClose);
   };
 
-  handleEscClose = (e) => {
-    const esc = (e.keyCode === 27);
+  handleEscClose = e => {
+    const esc = e.keyCode === 27;
     if (esc && this.state.isModalOpenAddUser) {
       e.preventDefault();
       this.handleCloseModalAddUser();
     }
-  }
+  };
 
   bindUser = () => {
-    const {id, bindUserToProject} = this.props;
-    const {participant, roles} = this.state;
+    const { id, bindUserToProject } = this.props;
+    const { participant, roles } = this.state;
     const rolesIds = roles.map(role => role.value).join(',');
-    bindUserToProject(
-      id,
-      participant.value,
-      rolesIds
-    );
+    bindUserToProject(id, participant.value, rolesIds);
     this.setState({
       roles: [],
       isModalOpenAddUser: false,
@@ -73,33 +84,31 @@ class ParticipantEditor extends Component {
     });
   };
 
-  searchOnChange = (name) => {
+  searchOnChange = name => {
     const userName = name.trim();
     if (userName.length > 1) {
       const URL = `${API_URL}/user/autocompleter/?userName=${userName}`;
-      axios
-        .get(URL, {})
-        .then(response => {
-          if (response.data) {
-            response.data = response.data.filter((participant) => {
-              let triger = false;
-              this.props.users.forEach((user) => {
-                if (participant.id === user.id) {
-                  triger = true;
-                }
-              });
-              return !triger ? participant : undefined;
+      axios.get(URL, {}).then(response => {
+        if (response.data) {
+          response.data = response.data.filter(participant => {
+            let triger = false;
+            this.props.users.forEach(user => {
+              if (participant.id === user.id) {
+                triger = true;
+              }
             });
-            this.setState({participants: response.data});
-          }
-        });
+            return !triger ? participant : undefined;
+          });
+          this.setState({ participants: response.data });
+        }
+      });
     } else {
-      this.setState({participants: []});
+      this.setState({ participants: [] });
     }
   };
 
   getUsers = () => {
-    return this.state.participants.map((user) => ({
+    return this.state.participants.map(user => ({
       value: user.id,
       label: user.fullNameRu
     }));
@@ -110,11 +119,11 @@ class ParticipantEditor extends Component {
       value: this.ROLES_ID[i],
       label: role
     }));
-  }
+  };
 
-  selectNewParticipantValue = (key) => {
-    return (option) => {
-      this.setState({[key]: option});
+  selectNewParticipantValue = key => {
+    return option => {
+      this.setState({ [key]: option });
     };
   };
 
@@ -135,6 +144,10 @@ class ParticipantEditor extends Component {
     this.setState({ isModalOpenAddUser: true });
   };
 
+  handleOpenModalAddExternal = () => {
+    this.setState({ isModalOpenAddExternal: true });
+  };
+
   handleCloseModalAddUser = () => {
     this.setState({
       isModalOpenAddUser: false,
@@ -142,104 +155,137 @@ class ParticipantEditor extends Component {
       roles: []
     });
   };
-
-  checkIsAdminInProject = () => {
-    return this.props.user.projectsRoles && this.props.user.projectsRoles.admin.indexOf(this.props.id) !== -1
-      || this.props.user.globalRole === ADMIN;
+  handleCloseModalAddExternal = () => {
+    this.setState({
+      isModalOpenAddExternal: false,
+      participants: [],
+      participant: null
+    });
   };
 
-  render () {
-    const isProjectAdmin = this.checkIsAdminInProject();
+  checkIsAdminInProject = () => {
+    return (
+      (this.props.user.projectsRoles && this.props.user.projectsRoles.admin.indexOf(this.props.id) !== -1) ||
+      this.props.user.globalRole === ADMIN
+    );
+  };
 
+  render() {
+    const isProjectAdmin = this.checkIsAdminInProject();
     return (
       <div className={css.property}>
         <h2>Участники</h2>
         <Row className={classnames(css.memberRow, css.memberHeader)}>
           <Col xs={9} xsOffset={3}>
             <Row>
-              {
-                this.ROLES_FULL_NAME
-                  ? this.ROLES_FULL_NAME.map((ROLES_FULL_NAME, i) =>
+              {this.ROLES_FULL_NAME
+                ? this.ROLES_FULL_NAME.map((ROLES_FULL_NAME, i) => (
                     <Col xs lg key={`${i}-roles-name`}>
                       <h4>
                         <div className={css.cell}>
                           {ROLES_FULL_NAME}
-                          <div className = {css.rightsInfo} data-html = 'true' data-tip={this.getRoleRights(ROLES_FULL_NAME, this.roleRights)}>
+                          <div
+                            className={css.rightsInfo}
+                            data-html="true"
+                            data-tip={this.getRoleRights(ROLES_FULL_NAME, this.roleRights)}
+                          >
                             i
                           </div>
                         </div>
                       </h4>
                     </Col>
-                  )
-                  : null
-              }
+                  ))
+                : null}
             </Row>
           </Col>
         </Row>
-        {
-          this.props.users
-            ? this.props.users.map((user) =>
-              <Participant user={user}
+        {this.props.users
+          ? this.props.users.map(user => (
+              <Participant
+                user={user}
                 key={`${user.id}-user`}
                 projectId={this.props.id}
                 isProjectAdmin={isProjectAdmin}
               />
-            )
-            : null
-        }
-        {
-          isProjectAdmin
-            ? <Button
-              text="Добавить участника"
-              type="primary"
-              style={{ marginTop: 16 }}
-              icon="IconPlus"
-              onClick={this.handleOpenModalAddUser}
-            />
-            : null
-        }
-        {
-          this.state.isModalOpenAddUser
-            ? <Modal
-              isOpen
-              contentLabel="modal"
-              onRequestClose={this.handleCloseModalAddUser}
-            >
-              <div className={css.changeStage}>
-                <h3>Добавление нового участника</h3>
-                <div className={css.modalContainer}>
-                  <SelectDropdown
-                    name="member"
-                    placeholder="Введите имя участника"
-                    multi={false}
-                    value={this.state.participant}
-                    onChange={this.selectNewParticipantValue('participant')}
-                    onInputChange={this.searchOnChange}
-                    noResultsText="Нет результатов"
-                    options={this.getUsers()}
-                    autofocus
-                  />
-                  <SelectDropdown
-                    name="roles"
-                    placeholder="Введите роль участника"
-                    multi
-                    value={this.state.roles}
-                    onChange={this.selectNewParticipantValue('roles')}
-                    noResultsText="Нет результатов"
-                    backspaceToRemoveMessage={''}
-                    options={this.getRolesOptions()}
-                  />
-                  <Button
-                    type="green"
-                    text="Добавить"
-                    onClick={this.bindUser}
-                    disabled={!(this.state.participant && this.state.roles.length)}
-                  />
-                </div>
+            ))
+          : null}
+        {isProjectAdmin
+          ? [
+              <Button
+                key="addExternal"
+                text="Добавить внешнего пользователя"
+                type="primary"
+                addedClassNames={{ [css.addButton]: true }}
+                icon="IconPlus"
+                onClick={this.handleOpenModalAddExternal}
+              />,
+              <Button
+                key="addUser"
+                text="Добавить участника"
+                type="primary"
+                addedClassNames={{ [css.addButton]: true }}
+                icon="IconPlus"
+                onClick={this.handleOpenModalAddUser}
+              />
+            ]
+          : null}
+        {this.state.isModalOpenAddUser ? (
+          <Modal isOpen contentLabel="modal" onRequestClose={this.handleCloseModalAddUser}>
+            <div className={css.changeStage}>
+              <h3>Добавление нового участника</h3>
+              <div className={css.modalContainer}>
+                <SelectDropdown
+                  name="member"
+                  placeholder="Введите имя участника"
+                  multi={false}
+                  value={this.state.participant}
+                  onChange={this.selectNewParticipantValue('participant')}
+                  onInputChange={this.searchOnChange}
+                  noResultsText="Нет результатов"
+                  options={this.getUsers()}
+                  autofocus
+                />
+                <SelectDropdown
+                  name="roles"
+                  placeholder="Введите роль участника"
+                  multi
+                  value={this.state.roles}
+                  onChange={this.selectNewParticipantValue('roles')}
+                  noResultsText="Нет результатов"
+                  backspaceToRemoveMessage={''}
+                  options={this.getRolesOptions()}
+                />
+                <Button
+                  type="green"
+                  text="Добавить"
+                  onClick={this.bindUser}
+                  disabled={!(this.state.participant && this.state.roles.length)}
+                />
               </div>
-            </Modal>
-            : null
-        }
+            </div>
+          </Modal>
+        ) : null}
+        {this.state.isModalOpenAddExternal ? (
+          <Modal isOpen contentLabel="modal" onRequestClose={this.handleCloseModalAddExternal}>
+            <div className={css.changeStage}>
+              <h3>Добавление внешнего пользователя</h3>
+              <div className={css.modalContainer}>
+                <SelectDropdown
+                  name="member"
+                  placeholder="Введите имя внешнего пользователя"
+                  multi={false}
+                  value={this.state.participant}
+                  onChange={this.selectNewParticipantValue('participant')}
+                  onInputChange={this.searchOnChange}
+                  noResultsText="Нет результатов"
+                  options={this.getUsers()}
+                  autofocus
+                />
+                <Button type="green" text="Добавить" onClick={this.bindExternal} disabled={!this.state.participant} />
+              </div>
+            </div>
+          </Modal>
+        ) : null}
       </div>
     );
   }
