@@ -101,7 +101,11 @@ export const getInfoAboutMe = () => {
       .get(URL, {}, { withCredentials: true })
       .catch(error => {
         dispatch(finishLoading());
-        if (error.response.data.name !== 'UnauthorizedError' || history.getCurrentLocation().pathname !== '/login') {
+        const pathname = history.getCurrentLocation().pathname;
+        if (
+          error.response.data.name !== 'UnauthorizedError' ||
+          !(pathname === '/login' || /\/externalUserActivate\//i.test(pathname))
+        ) {
           dispatch(showNotification({ message: error.message, type: 'error' }));
         }
         dispatch(userInfoReceiveFailed());
