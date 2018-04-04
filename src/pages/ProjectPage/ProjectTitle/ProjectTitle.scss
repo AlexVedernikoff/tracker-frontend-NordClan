@@ -30,6 +30,9 @@
       opacity: 0;
       color: silver;
       transition: $transition;
+      position: relative;
+      left: 4px;
+      top: 1px;
     }
 
     &:hover svg {
@@ -57,12 +60,12 @@
     }
   }
 
-  span[contenteditable="true"] {
+  span[contenteditable='true'] {
     background-color: $color-gray;
-    max-width: calc(100% - 160px);   
+    max-width: calc(100% - 160px);
   }
-  
-  span[contenteditable="false"]{
+
+  span[contenteditable='false'] {
     text-overflow: ellipsis;
     max-width: 100%;
     white-space: nowrap;
@@ -103,7 +106,7 @@
   border-radius: 50%;
   opacity: 0;
   transition: $transition;
-  flex-shrink: 0;  
+  flex-shrink: 0;
 
   &:hover {
     background-color: $color-lightgray;
