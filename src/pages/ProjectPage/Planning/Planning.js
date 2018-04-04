@@ -23,7 +23,7 @@ import SprintEditModal from '../../../components/SprintEditModal';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 
 import { BACKLOG_ID } from '../../../constants/Sprint';
-import { ADMIN, VISOR } from '../../../constants/Roles';
+import { ADMIN, VISOR, EXTERNAL_USER } from '../../../constants/Roles';
 import { DONE } from '../../../constants/TaskStatuses';
 
 import CreateSprintModal from '../CreateSprintModal';
@@ -305,6 +305,9 @@ class Planning extends Component {
   };
 
   checkIsAdminInProject = () => {
+    // if (this.props.user.globalRole === EXTERNAL_USER) {
+    //   return false;
+    // }
     return (
       this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1 || this.props.user.globalRole === ADMIN
     );
@@ -426,6 +429,7 @@ class Planning extends Component {
   render() {
     const isProjectAdmin = this.checkIsAdminInProject();
     const isVisor = this.props.user.globalRole === VISOR;
+    const isExternal = this.props.user.globalRole === EXTERNAL_USER;
 
     const leftColumnTasksData = this.props.leftColumnTasks.data.map(task => {
       return <DraggableTaskRow key={`task-${task.id}`} task={task} prefix={this.props.project.prefix} shortcut card />;
@@ -482,25 +486,27 @@ class Planning extends Component {
               />
             </Col>
           </Row>
-          <Row className={css.editRow}>
-            <Col xs={12} sm={5}>
-              <Budget
-                onEditSubmit={this.onRiskBudgetSubmit}
-                header="Бюджет с рисковым резервом:"
-                value={riskBudget}
-                isProjectAdmin={isProjectAdmin}
-              />
-            </Col>
-            <Col xs={12} sm={2} />
-            <Col xs={12} sm={5}>
-              <Budget
-                onEditSubmit={this.onBudgetSubmit}
-                header="Бюджет без рискового резерва:"
-                value={budget}
-                isProjectAdmin={isProjectAdmin}
-              />
-            </Col>
-          </Row>
+          {!isExternal ? (
+            <Row className={css.editRow}>
+              <Col xs={12} sm={5}>
+                <Budget
+                  onEditSubmit={this.onRiskBudgetSubmit}
+                  header="Бюджет с рисковым резервом:"
+                  value={riskBudget}
+                  isProjectAdmin={isProjectAdmin}
+                />
+              </Col>
+              <Col xs={12} sm={2} />
+              <Col xs={12} sm={5}>
+                <Budget
+                  onEditSubmit={this.onBudgetSubmit}
+                  header="Бюджет без рискового резерва:"
+                  value={budget}
+                  isProjectAdmin={isProjectAdmin}
+                />
+              </Col>
+            </Row>
+          ) : null}
           {isProjectAdmin ? (
             <Button
               text="спринт"
@@ -543,6 +549,7 @@ class Planning extends Component {
                           inFocus={this.state.typeHovered === 'sprint' && element.id === this.state.typeIdHovered}
                           onMouseOver={this.onMouseOverRow('sprint', element.id)}
                           onMouseOut={this.onMouseOutRow}
+                          isExternal={isExternal}
                         />
                       </Col>
                     ))}
@@ -560,6 +567,7 @@ class Planning extends Component {
             typeIdHovered={this.state.typeIdHovered}
             typeHovered={this.state.typeHovered}
             isProjectAdmin={isProjectAdmin}
+            isExternal={isExternal}
             onMouseOverRow={this.onMouseOverRow}
             onMouseOutRow={this.onMouseOutRow}
             grantYearDecrement={this.grantYearDecrement}
@@ -569,7 +577,7 @@ class Planning extends Component {
             openSprintEditModal={this.openSprintEditModal}
             openMilestoneEditModal={this.openMilestoneEditModal}
           />
-          {!isVisor ? (
+          {!isVisor && !isExternal ? (
             <Row className={css.sprintColumnHeaderWrapper}>
               <SprintColumnHeader
                 name="left"

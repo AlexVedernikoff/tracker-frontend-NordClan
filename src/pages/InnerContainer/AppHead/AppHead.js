@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import { IconExitApp, IconMenu, IconSearch } from '../../../components/Icons';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Logo from '../../../components/Logo';
+import { EXTERNAL_USER } from '../../../constants/Roles';
 import Loader from './Loader';
 import { history } from '../../../History';
 import Playlist from './Playlist';
@@ -13,11 +14,12 @@ import * as css from './AppHead.scss'; // Стили для плавного п�
 
 class AppHead extends Component {
   static propTypes = {
+    globalRole: PropTypes.string,
     loading: PropTypes.number,
     toggleMenu: PropTypes.func
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
 
@@ -25,12 +27,12 @@ class AppHead extends Component {
     history.push('/logout');
   };
 
-  render () {
+  render() {
     const iconStyles = {
       width: 16,
       height: 16
     };
-
+    const { globalRole } = this.props;
     return (
       <div className={css.toppanel}>
         <div className={css.menuToggle} onClick={this.props.toggleMenu}>
@@ -39,7 +41,7 @@ class AppHead extends Component {
         <Link to="/" style={{ textDecoration: 'none' }}>
           <Logo />
         </Link>
-        <Playlist/>
+        {globalRole !== EXTERNAL_USER ? <Playlist /> : null}
         {/* <div className={css.search}>
           <input
             type="text"
@@ -54,12 +56,12 @@ class AppHead extends Component {
         <div className={css.logoutButton} onClick={this.handleLogout}>
           <IconExitApp style={iconStyles} />
         </div>
-        <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
-          {
-            this.props.loading
-            ? <Loader/>
-            : null
-          }
+        <ReactCSSTransitionGroup
+          transitionName="animatedElement"
+          transitionEnterTimeout={300}
+          transitionLeaveTimeout={300}
+        >
+          {this.props.loading ? <Loader /> : null}
         </ReactCSSTransitionGroup>
       </div>
     );
@@ -68,7 +70,8 @@ class AppHead extends Component {
 
 const mapStateToProps = state => {
   return {
-    loading: state.Loading.loading
+    loading: state.Loading.loading,
+    globalRole: state.Auth.user.globalRole
   };
 };
 
