@@ -67,6 +67,15 @@ class ExternalUsersTableRow extends Component {
   saveEditChanges = () => {
     const id = this.props.exUser.id;
     const changedFields = this.state.tempValues;
+    if (!Object.keys(changedFields).length) {
+      this.setState(
+        {
+          isEditing: false
+        },
+        () => ReactTooltip.hide()
+      );
+      return;
+    }
     if (
       (changedFields.firstNameRu !== undefined && !this.validation.name(changedFields.firstNameRu)) ||
       (changedFields.login !== undefined && !this.validation.email(changedFields.login)) ||
@@ -82,7 +91,6 @@ class ExternalUsersTableRow extends Component {
       () => {
         ReactTooltip.hide();
         this.props.editExternalUser(id, {
-          login: this.props.exUser.login,
           ...changedFields
         });
       }

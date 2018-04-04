@@ -35,9 +35,10 @@ class ParticipantEditor extends Component {
       'Mobile',
       'TeamLead',
       'QA',
-      'Unbillable'
+      'Unbillable',
+      'Customer'
     ];
-    this.ROLES_ID = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+    this.ROLES_ID = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'];
     this.roleRights = {
       fullAccess:
         'Полный доступ к проекту. <br/>Доступны все действия на уровне проекта: <br/>Ведение задач, планирование, настройки проекта и команды, аналитика <br/>Полная рассылка по проекту.',
@@ -45,7 +46,8 @@ class ParticipantEditor extends Component {
         'Ограниченный доступ к проекту. <br/>Доступны действия на уровне задач: <br/>Назначение задачи, новый комментарий в задаче, ответ на комментарий, изменение статуса<br/>Ограниченная рассылка.',
       qaAccess:
         'Ограниченный доступ к проекту. <br/>Доступны действия на уровне задач. <br/>Полная рассылка по проекту.',
-      unbillableAccess: 'Неоплачиваемая роль'
+      unbillableAccess: 'Неоплачиваемая роль',
+      external: 'Внешний пользователь'
     };
     this.searchOnChange = debounce(this.searchOnChange, 400);
   }
@@ -84,6 +86,18 @@ class ParticipantEditor extends Component {
     });
   };
 
+  bindExternal = () => {
+    const { id, bindUserToProject } = this.props;
+    const { participant } = this.state;
+    bindUserToProject(id, participant.value, '11');
+    this.setState({
+      roles: [],
+      isModalOpenAddExternal: false,
+      participants: [],
+      participant: null
+    });
+  };
+
   searchOnChange = name => {
     const userName = name.trim();
     if (userName.length > 1) {
@@ -99,6 +113,20 @@ class ParticipantEditor extends Component {
             });
             return !triger ? participant : undefined;
           });
+          this.setState({ participants: response.data });
+        }
+      });
+    } else {
+      this.setState({ participants: [] });
+    }
+  };
+
+  searchExternalOnChange = name => {
+    const userName = name.trim();
+    if (userName.length > 1) {
+      const URL = `${API_URL}/user/autocompleter/external/?userName=${userName}`;
+      axios.get(URL, {}).then(response => {
+        if (response.data) {
           this.setState({ participants: response.data });
         }
       });
@@ -136,6 +164,9 @@ class ParticipantEditor extends Component {
     }
     if (role === 'Unbillable') {
       return rights.unbillableAccess;
+    }
+    if (role === 'Customer') {
+      return rights.external;
     }
     return rights.devAccess;
   };
@@ -276,7 +307,7 @@ class ParticipantEditor extends Component {
                   multi={false}
                   value={this.state.participant}
                   onChange={this.selectNewParticipantValue('participant')}
-                  onInputChange={this.searchOnChange}
+                  onInputChange={this.searchExternalOnChange}
                   noResultsText="Нет результатов"
                   options={this.getUsers()}
                   autofocus

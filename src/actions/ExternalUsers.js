@@ -106,7 +106,7 @@ export const activateExternalUser = (token, password) => {
           if (response && response.status === 200) {
             dispatch(activateExternalUserSuccess());
             dispatch(finishLoading());
-            history.push('login');
+            history.push('/login');
           }
         },
         error => {
