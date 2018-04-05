@@ -109,7 +109,7 @@ class AppRouter extends Component {
             <Route path="info" component={Info} />
             <Route path="property" component={Settings} />
             <Route path="planning" component={Planning} />
-            <Route path="analytics" component={Metrics} onEnter={this.notExternal}>
+            <Route path="analytics" component={Metrics}>
               <Route path=":metricType" component={Metrics} />
             </Route>
             <Route path="history" component={ProjectHistory} />
@@ -125,7 +125,7 @@ class AppRouter extends Component {
             ignoreScrollBehavior
           >
             <IndexRoute component={Comments} />
-            <Route path="history" component={TaskHistory} />
+            <Route path="history" component={TaskHistory} onEnter={this.notExternal} />
           </Route>
 
           <IndexRedirect to="projects" />

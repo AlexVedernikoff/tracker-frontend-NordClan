@@ -114,28 +114,28 @@ class ExternalUsersTableRow extends Component {
   render() {
     return (
       <div className={css.TableRow}>
-        <div className={css.TableCell}>
+        <div className={classnames(css.TableCell, css.TableCellName)}>
           <ExternalUserInput
             value={this.props.exUser.firstNameRu}
             isEditing={this.state.isEditing}
             onValueChange={this.onEditValues('firstNameRu')}
           />
         </div>
-        <div className={css.TableCell}>
+        <div className={classnames(css.TableCell, css.TableCellLogin)}>
           <ExternalUserInput
             value={this.props.exUser.login}
             isEditing={this.state.isEditing}
             onValueChange={this.onEditValues('login')}
           />
         </div>
-        <div className={css.TableCell}>
+        <div className={classnames(css.TableCell, css.TableCellActivity)}>
           <ExternalUserActivity
             checked={!!this.props.exUser.active}
             isEditing={this.state.isEditing}
             onValueChange={this.onEditValues('active')}
           />
         </div>
-        <div className={css.TableCell}>
+        <div className={classnames(css.TableCell, css.TableCellDate)}>
           <ExternalUserExpiredDate
             value={this.props.exUser.expiredDate}
             isEditing={this.state.isEditing}
