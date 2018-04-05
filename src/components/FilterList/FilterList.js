@@ -18,7 +18,7 @@ export default class FilterList extends Component {
   render() {
     const { filters, clearAll, toggleFilterView, fullFilterView, isVisor } = this.props;
     const filterTags = filters.map(filter => {
-      return <Tag name={filter.label} deleteHandler={filter.deleteHandler} key={filter.name} />;
+      return <Tag name={filter.label} deleteHandler={filter.deleteHandler} key={filter.name} unclickable />;
     });
 
     return (
