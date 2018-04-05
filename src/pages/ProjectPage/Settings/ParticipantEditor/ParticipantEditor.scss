@@ -2,7 +2,7 @@
 
 .property {
   &:before {
-    content: "";
+    content: '';
     display: table;
   }
 }
@@ -64,7 +64,10 @@
 .createButton {
   margin: 15px 0 10px 0;
 }
-
+.addButton {
+  margin-top: 16px;
+  display: block;
+}
 .changeStage {
   min-width: 330px;
   max-width: 500px;
