@@ -2,7 +2,7 @@
 
 .property {
   &:before {
-    content: "";
+    content: '';
     display: table;
   }
 }
@@ -46,6 +46,13 @@
   }
 }
 
+.externalTable {
+  max-width: 350px;
+  .memberHeader {
+    height: 30px;
+  }
+}
+
 .memberColumn {
   // text-align: right;
 }
@@ -64,7 +71,10 @@
 .createButton {
   margin: 15px 0 10px 0;
 }
-
+.addButton {
+  margin-top: 16px;
+  display: block;
+}
 .changeStage {
   min-width: 330px;
   max-width: 500px;

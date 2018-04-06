@@ -18,7 +18,7 @@ import GoBackPanel from '../../components/GoBackPanel';
 import CreateTaskModal from '../../components/CreateTaskModal';
 import HttpError from '../../components/HttpError';
 import { history } from '../../History';
-import { VISOR } from '../../constants/Roles';
+import { VISOR, EXTERNAL_USER } from '../../constants/Roles';
 
 import * as TaskStatuses from '../../constants/TaskStatuses';
 
@@ -226,6 +226,7 @@ class TaskPage extends Component {
   render() {
     const { globalRole, task, params } = this.props;
     const isVisor = globalRole === VISOR;
+    const isExternal = globalRole === EXTERNAL_USER;
     const projectUrl = task.project ? `/projects/${task.project.id}` : '/';
     const notFoundError =
       task.project && task.project.id !== +params.projectId
@@ -269,12 +270,14 @@ class TaskPage extends Component {
                 uploadAttachments={this.uploadAttachments}
                 canEdit={task.statusId !== TaskStatuses.CLOSED}
               />
-              <RouteTabs style={{ marginTop: '2rem', marginBottom: '2rem' }}>
-                <Link onlyActiveOnIndex to={`/projects/${params.projectId}/tasks/${params.taskId}`}>
-                  Комментарии
-                </Link>
-                <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/history`}>История</Link>
-              </RouteTabs>
+              {!isExternal ? (
+                <RouteTabs style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+                  <Link onlyActiveOnIndex to={`/projects/${params.projectId}/tasks/${params.taskId}`}>
+                    Комментарии
+                  </Link>
+                  <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/history`}>История</Link>
+                </RouteTabs>
+              ) : null}
               {this.props.children}
             </main>
           </Col>
@@ -283,6 +286,7 @@ class TaskPage extends Component {
               <Details
                 task={task}
                 sprints={this.props.sprints}
+                isExternal={isExternal}
                 onChange={this.props.changeTask}
                 canEdit={task.statusId !== TaskStatuses.CLOSED}
               />

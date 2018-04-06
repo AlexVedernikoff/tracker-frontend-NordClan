@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Line } from 'react-chartjs-2';
+import ChartWrapper from '../ChartWrapper';
 import * as css from './ClosingFeaturesChart.scss';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import roundNum from '../../../../utils/roundNum';
@@ -15,8 +16,13 @@ class ClosingFeaturesChart extends Component {
     sprintWriteOffTimeMetrics: PropTypes.array
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
+
+    this.state = {
+      chartRef: null
+    };
+
     this.chartOptions = {
       ...props.chartDefaultOptions,
       scales: {
@@ -37,6 +43,10 @@ class ClosingFeaturesChart extends Component {
     };
   }
 
+  componentDidMount() {
+    this.setState({ chartRef: this.refs.chart });
+  }
+
   makeChartData = () => {
     const { sprintClosingFeaturesMetrics, sprintWriteOffTimeMetrics, sprintWorkWithoutEvaluationMetrics } = this.props;
 
@@ -53,7 +63,7 @@ class ClosingFeaturesChart extends Component {
 
   makeBugsLine = (metrics, label) => {
     const line = metrics
-      .map((metric) => {
+      .map(metric => {
         return {
           x: metric.createdAt,
           y: roundNum(+metric.value, 2)
@@ -67,12 +77,12 @@ class ClosingFeaturesChart extends Component {
     };
   };
 
-  render () {
+  render() {
     return (
-      <div className={css.ClosingFeaturesChart}>
-        <h3 className={css.h3Top}>Динамика закрытия задач</h3>
-        <Line data={this.makeChartData()} options={this.chartOptions} redraw />
-      </div>
+      <ChartWrapper chartRef={this.refs.chart} className={css.ClosingFeaturesChart}>
+        <h3>Динамика закрытия задач</h3>
+        <Line ref="chart" data={this.makeChartData()} options={this.chartOptions} redraw />
+      </ChartWrapper>
     );
   }
 }

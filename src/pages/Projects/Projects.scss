@@ -1,7 +1,6 @@
 @import '../../styles/variables';
 
 .dateToChange {
-
   .DayPickerInput-Overlay {
     left: initial;
     right: 0;
@@ -17,12 +16,11 @@
 }
 
 .search {
-
-    > div {
-      @include phone {
-        margin-bottom: 1rem;
-      }
+  > div {
+    @include phone {
+      margin-bottom: 1rem;
     }
+  }
 }
 
 .title {
@@ -36,4 +34,9 @@
   h1 {
     margin-bottom: 1rem;
   }
+}
+
+.notFound {
+  color: $input-color-placeholder;
+  text-align: center;
 }

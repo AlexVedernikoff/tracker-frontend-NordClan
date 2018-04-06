@@ -20,12 +20,11 @@ import PerformerFilter from '../../../components/PerformerFilter';
 import getPriorityById from '../../../utils/TaskPriority';
 import * as css from './AgileBoard.scss';
 import { UnmountClosed } from 'react-collapse';
-import { presets } from 'react-motion';
 
 import getTasks from '../../../actions/Tasks';
-import { VISOR } from '../../../constants/Roles';
+import { VISOR, EXTERNAL_USER } from '../../../constants/Roles';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
-import { openCreateTaskModal, getProjectUsers } from '../../../actions/Project';
+import { openCreateTaskModal, getProjectUsers, getProjectInfo } from '../../../actions/Project';
 
 const filterTasks = array => {
   const taskArray = {
@@ -80,7 +79,14 @@ const phaseColumnNameById = {
   10: 'Closed'
 };
 
-const sortTasksAndCreateCard = (sortedObject, section, onChangeStatus, onOpenPerformerModal, myTaskBoard) => {
+const sortTasksAndCreateCard = (
+  sortedObject,
+  section,
+  onChangeStatus,
+  onOpenPerformerModal,
+  myTaskBoard,
+  isExternal
+) => {
   const taskArray = {
     new: [],
     dev: [],
@@ -99,6 +105,7 @@ const sortTasksAndCreateCard = (sortedObject, section, onChangeStatus, onOpenPer
           key={`task-${task.id}`}
           task={task}
           section={section}
+          isExternal={isExternal}
           onChangeStatus={onChangeStatus}
           onOpenPerformerModal={onOpenPerformerModal}
           myTaskBoard={myTaskBoard}
@@ -170,6 +177,9 @@ class AgileBoard extends Component {
 
   componentWillReceiveProps(nextProps) {
     ReactTooltip.hide();
+    if (this.props.tracksChange !== nextProps.tracksChange && this.props.project.id) {
+      this.props.getProjectInfo(this.props.project.id);
+    }
 
     if (
       (this.props.sprints !== nextProps.sprints || this.props.lastCreatedTask !== nextProps.lastCreatedTask) &&
@@ -511,7 +521,7 @@ class AgileBoard extends Component {
     ) {
       return this.state[filterName].length > 0;
     }
-    return !!this.state[filterName];
+    return this.state[filterName] !== null && this.state[filterName] !== false;
   };
 
   createFilterLabel = filterName => {
@@ -617,8 +627,18 @@ class AgileBoard extends Component {
   render() {
     const { taskTypes, project } = this.props;
 
+    const isVisor = this.props.globalRole === VISOR;
+    const isExternal = this.props.globalRole === EXTERNAL_USER;
+
     let allSorted = filterTasks(this.props.sprintTasks);
-    allSorted = sortTasksAndCreateCard(allSorted, 'all', this.changeStatus, this.openPerformerModal);
+    allSorted = sortTasksAndCreateCard(
+      allSorted,
+      'all',
+      this.changeStatus,
+      this.openPerformerModal,
+      this.props.myTaskBoard,
+      isExternal
+    );
 
     const myTasks = this.props.sprintTasks.filter(task => {
       return task.performer && task.performer.id === this.props.user.id;
@@ -630,10 +650,9 @@ class AgileBoard extends Component {
       'mine',
       this.changeStatus,
       this.openPerformerModal,
-      this.props.myTaskBoard
+      this.props.myTaskBoard,
+      isExternal
     );
-
-    const isVisor = this.props.globalRole === VISOR;
 
     const typeOptions = this.createOptions(taskTypes);
     const authorOptions = this.createOptions(project.users, 'fullNameRu');
@@ -718,7 +737,9 @@ class AgileBoard extends Component {
                       noResultsText="Нет результатов"
                       options={this.getSprints()}
                     />
-                    <span className={css.sprintTime}>{this.getSprintTime(this.state.changedSprint) || null}</span>
+                    {!isExternal ? (
+                      <span className={css.sprintTime}>{this.getSprintTime(this.state.changedSprint) || null}</span>
+                    ) : null}
                   </Col>
                   <Col xs>
                     <SelectDropdown
@@ -805,6 +826,7 @@ AgileBoard.propTypes = {
   StatusIsEditing: PropTypes.bool,
   UserIsEditing: PropTypes.bool,
   changeTask: PropTypes.func.isRequired,
+  getProjectInfo: PropTypes.func,
   getProjectUsers: PropTypes.func,
   getTasks: PropTypes.func.isRequired,
   globalRole: PropTypes.string,
@@ -819,6 +841,7 @@ AgileBoard.propTypes = {
   startTaskEditing: PropTypes.func,
   statuses: PropTypes.array,
   taskTypes: PropTypes.array,
+  tracksChange: PropTypes.number,
   user: PropTypes.object
 };
 
@@ -827,6 +850,7 @@ const mapStateToProps = state => ({
   sprintTasks: state.Tasks.tasks,
   sprints: state.Project.project.sprints,
   project: state.Project.project,
+  tracksChange: state.TimesheetPlayer.tracksChange,
   StatusIsEditing: state.Task.StatusIsEditing,
   UserIsEditing: state.Task.UserIsEditing,
   user: state.Auth.user,
@@ -841,7 +865,8 @@ const mapDispatchToProps = {
   changeTask,
   startTaskEditing,
   openCreateTaskModal,
-  getProjectUsers
+  getProjectUsers,
+  getProjectInfo
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);

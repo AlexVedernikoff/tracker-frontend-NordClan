@@ -13,7 +13,10 @@
   background-size: cover;
   background-color: $color-dark;
 }
-
+.activatePasswordInfo {
+  text-align: center;
+  color: white;
+}
 .loginForm {
   // position: fixed; // ie, safari fix
   width: 100%;
@@ -26,7 +29,7 @@
 
   & input {
     background-color: transparent;
-    color:white;
+    color: white;
   }
   span {
     background-color: #314359;

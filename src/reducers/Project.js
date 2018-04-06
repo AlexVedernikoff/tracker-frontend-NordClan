@@ -9,6 +9,7 @@ const InitialState = {
     milestones: [],
     sprints: [],
     users: [],
+    externalUsers: [],
     history: {
       events: [],
       pagesCount: 0
@@ -42,6 +43,14 @@ export default function Project(state = InitialState, action) {
         project: {
           ...state.project,
           users: action.users
+        }
+      };
+    case ProjectActions.UNBIND_EXTERNAL_USER_TO_PROJECT_SUCCESS:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          externalUsers: state.project.externalUsers.filter(item => item.id !== action.userId)
         }
       };
     case SprintActions.SPRINTS_EDIT_SUCCESS:
@@ -128,7 +137,14 @@ export default function Project(state = InitialState, action) {
           users: action.users
         }
       };
-
+    case ProjectActions.PROJECT_EXTERNAL_USERS_RECEIVE_SUCCESS:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          externalUsers: action.users
+        }
+      };
     case ProjectActions.PROJECT_SPRINTS_RECEIVE_START:
       return {
         ...state

@@ -10,7 +10,7 @@ import * as css from './ProjectPage.scss';
 import ProjectTitle from './ProjectTitle';
 
 import { getProjectInfo as getProject, changeProject } from '../../actions/Project';
-import { ADMIN } from '../../constants/Roles';
+import { ADMIN, EXTERNAL_USER } from '../../constants/Roles';
 
 class ProjectPage extends Component {
   static propTypes = {
@@ -91,16 +91,19 @@ class ProjectPage extends Component {
         to={`/projects/${this.props.params.projectId}/property`}
       >
         Настройки
-      </Link>,
-      <Link
-        activeClassName="active"
-        key={`/projects/${this.props.params.projectId}/history`}
-        to={`/projects/${this.props.params.projectId}/history`}
-      >
-        История
       </Link>
     ];
-
+    if (this.props.user.globalRole !== EXTERNAL_USER) {
+      tabs.push(
+        <Link
+          activeClassName="active"
+          key={`/projects/${this.props.params.projectId}/history`}
+          to={`/projects/${this.props.params.projectId}/history`}
+        >
+          История
+        </Link>
+      );
+    }
     if (isProjectAdmin) {
       tabs.push(
         <Link

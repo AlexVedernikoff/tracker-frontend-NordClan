@@ -34,6 +34,7 @@ class Details extends Component {
     getProjectUsers: PropTypes.func.isRequired,
     getTask: PropTypes.func.isRequired,
     getTaskSpent: PropTypes.func.isRequired,
+    isExternal: PropTypes.bool,
     onChange: PropTypes.func.isRequired,
     sprints: PropTypes.array,
     task: PropTypes.object.isRequired,
@@ -161,7 +162,7 @@ class Details extends Component {
   };
 
   render() {
-    const { task, sprints, taskTypes, timeSpent } = this.props;
+    const { task, sprints, taskTypes, timeSpent, isExternal } = this.props;
     const tags = task.tags.map((tag, i) => {
       const tagName = typeof tag === 'object' ? tag.name : tag;
       return <Tag key={i} name={tagName} taggable="task" taggableId={task.id} />;
@@ -245,34 +246,38 @@ class Details extends Component {
               <td>Дата создания:</td>
               <td>{moment(this.props.task.createdAt).format('DD.MM.YYYY')}</td>
             </tr>
-            <tr>
-              <td>Запланировано:</td>
-              <td>
-                <TaskPlanningTime
-                  time={task.plannedExecutionTime ? task.plannedExecutionTime.toString() : '0'}
-                  id={task.id}
-                  timeIsEditing={this.props.PlanningTimeIsEditing}
-                  canEdit={this.props.canEdit}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>Потрачено:</td>
-              <td>
-                <span
-                  data-tip={!!Number(task.factExecutionTime)}
-                  data-place="right"
-                  data-for={this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? 'time' : 'notime'}
-                  key={this.state.tooltipKey}
-                  className={classnames({
-                    [css.alert]: true
-                  })}
-                >
-                  {`${task.factExecutionTime ? roundNum(task.factExecutionTime, 2) : 0} ч.`}
-                </span>
-                {Number(task.factExecutionTime) ? executeTimeTooltip : null}
-              </td>
-            </tr>
+            {!isExternal
+              ? [
+                  <tr key="plannedExecutionTime">
+                    <td>Запланировано:</td>
+                    <td>
+                      <TaskPlanningTime
+                        time={task.plannedExecutionTime ? task.plannedExecutionTime.toString() : '0'}
+                        id={task.id}
+                        timeIsEditing={this.props.PlanningTimeIsEditing}
+                        canEdit={this.props.canEdit}
+                      />
+                    </td>
+                  </tr>,
+                  <tr key="factExecutionTime">
+                    <td>Потрачено:</td>
+                    <td>
+                      <span
+                        data-tip={!!Number(task.factExecutionTime)}
+                        data-place="right"
+                        data-for={this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? 'time' : 'notime'}
+                        key={this.state.tooltipKey}
+                        className={classnames({
+                          [css.alert]: true
+                        })}
+                      >
+                        {`${task.factExecutionTime ? roundNum(task.factExecutionTime, 2) : 0} ч.`}
+                      </span>
+                      {Number(task.factExecutionTime) ? executeTimeTooltip : null}
+                    </td>
+                  </tr>
+                ]
+              : null}
           </tbody>
         </table>
 
