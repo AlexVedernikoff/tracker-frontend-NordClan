@@ -1,0 +1,13 @@
+.ExternalUserDelete {
+}
+
+.deleteIcon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.6;
+  cursor: pointer;
+  transition: opacity 0.3s;
+  &:hover {
+    opacity: 1;
+  }
+}

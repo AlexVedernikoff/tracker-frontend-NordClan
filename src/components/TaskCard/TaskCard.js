@@ -108,6 +108,7 @@ class TaskCard extends React.Component {
       myTaskBoard,
       section,
       taskTypes,
+      isExternal,
       ...other
     } = this.props;
 
@@ -164,29 +165,31 @@ class TaskCard extends React.Component {
           )}
         </p>
 
-        {!!(task.factExecutionTime || task.plannedExecutionTime) && (
-          <div className={classnames(css.time, { [css.redBorder]: +task.plannedExecutionTime === 0 })}>
-            <IconTime
-              className={classnames({
-                [css.green]: this.isInPlan(task.plannedExecutionTime, task.factExecutionTime),
-                [css.red]: this.isOutOfPlan(task.plannedExecutionTime, task.factExecutionTime)
-              })}
-            />
-            <span>{getTaskTime(task.factExecutionTime, task.plannedExecutionTime)}</span>
-          </div>
-        )}
+        {!!(task.factExecutionTime || task.plannedExecutionTime) &&
+          !isExternal && (
+            <p className={classnames(css.time, { [css.redBorder]: +task.plannedExecutionTime === 0 })}>
+              <IconTime
+                className={classnames({
+                  [css.green]: this.isInPlan(task.plannedExecutionTime, task.factExecutionTime),
+                  [css.red]: this.isOutOfPlan(task.plannedExecutionTime, task.factExecutionTime)
+                })}
+              />
+              <span>{getTaskTime(task.factExecutionTime, task.plannedExecutionTime)}</span>
+            </p>
+          )}
 
-        {!!task.plannedExecutionTime && (
-          <div className={css.progressBar}>
-            <div
-              style={{ width: factPlanDivision < 1 ? factPlanDivision * 100 + '%' : '100%' }}
-              className={classnames({
-                [css.green]: this.isInPlan(task.plannedExecutionTime, task.factExecutionTime),
-                [css.red]: this.isOutOfPlan(task.plannedExecutionTime, task.factExecutionTime)
-              })}
-            />
-          </div>
-        )}
+        {!!task.plannedExecutionTime &&
+          !isExternal && (
+            <div className={css.progressBar}>
+              <div
+                style={{ width: factPlanDivision < 1 ? factPlanDivision * 100 + '%' : '100%' }}
+                className={classnames({
+                  [css.green]: this.isInPlan(task.plannedExecutionTime, task.factExecutionTime),
+                  [css.red]: this.isOutOfPlan(task.plannedExecutionTime, task.factExecutionTime)
+                })}
+              />
+            </div>
+          )}
 
         {this.state.isOpenPriority ? (
           <PriorityBox
@@ -210,6 +213,7 @@ class TaskCard extends React.Component {
 TaskCard.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
   isDragging: PropTypes.bool.isRequired,
+  isExternal: PropTypes.bool,
   myTaskBoard: PropTypes.any,
   onChangeStatus: PropTypes.func.isRequired,
   onOpenPerformerModal: PropTypes.func.isRequired,
