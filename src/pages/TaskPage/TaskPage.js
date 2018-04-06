@@ -270,12 +270,14 @@ class TaskPage extends Component {
                 uploadAttachments={this.uploadAttachments}
                 canEdit={task.statusId !== TaskStatuses.CLOSED}
               />
-              <RouteTabs style={{ marginTop: '2rem', marginBottom: '2rem' }}>
-                <Link onlyActiveOnIndex to={`/projects/${params.projectId}/tasks/${params.taskId}`}>
-                  Комментарии
-                </Link>
-                <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/history`}>История</Link>
-              </RouteTabs>
+              {!isExternal ? (
+                <RouteTabs style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+                  <Link onlyActiveOnIndex to={`/projects/${params.projectId}/tasks/${params.taskId}`}>
+                    Комментарии
+                  </Link>
+                  <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/history`}>История</Link>
+                </RouteTabs>
+              ) : null}
               {this.props.children}
             </main>
           </Col>

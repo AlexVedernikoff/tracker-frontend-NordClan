@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import DatepickerDropdown from '../../../../../components/DatepickerDropdown';
 import moment from 'moment';
-import { IconEdit, IconCheck, IconClose } from '../../../../../components/Icons';
 
 class ExternalUserExpiredDate extends Component {
   constructor(props) {
