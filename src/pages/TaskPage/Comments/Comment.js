@@ -19,7 +19,7 @@ class Comment extends Component {
     const { firstNameRu, lastNameRu, lastNameEn, firstNameEn } = person;
     const firstName = firstNameRu ? firstNameRu : firstNameEn;
     const lastName = lastNameRu ? lastNameRu : lastNameEn;
-    const fullName = `${firstName} ${lastName}`;
+    const fullName = `${firstName} ${lastName ? lastName : ''}`;
 
     return { firstName, lastName, fullName };
   };

@@ -51,7 +51,8 @@ class Participant extends React.Component {
   };
 
   unbindUser = () => {
-    this.props.unbindUserToProject(this.props.projectId, this.props.user.id);
+    const { unbindUserToProject, projectId, user, isExternal } = this.props;
+    this.setState({ isConfirmDeleteOpen: false }, () => unbindUserToProject(projectId, user.id, isExternal));
   };
 
   setRoles = prop => {

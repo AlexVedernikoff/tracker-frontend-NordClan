@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import { API_URL } from '../../../../constants/Settings';
 import { ADMIN } from '../../../../constants/Roles';
-import { bindUserToProject } from '../../../../actions/Project';
+import { bindUserToProject, getProjectUsers } from '../../../../actions/Project';
 import { debounce } from 'lodash';
 import ReactTooltip from 'react-tooltip';
 import * as css from './ParticipantEditor.scss';
@@ -53,6 +53,15 @@ class ParticipantEditor extends Component {
 
   componentDidMount() {
     addEventListener('keydown', this.handleEscClose, true);
+    if (this.props.id) {
+      this.props.getProjectUsers(this.props.id, true);
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.id !== this.props.id) {
+      this.props.getProjectUsers(nextProps.id, true);
+    }
   }
 
   componentDidUpdate() {
@@ -126,7 +135,9 @@ class ParticipantEditor extends Component {
       const URL = `${API_URL}/user/autocompleter/external/?userName=${userName}`;
       axios.get(URL, {}).then(response => {
         if (response.data) {
-          this.setState({ participants: response.data });
+          const userIds = this.props.externalUsers.map(user => user.id);
+          const newParticipantsState = response.data.filter(participant => !userIds.includes(participant.id));
+          this.setState({ participants: newParticipantsState });
         }
       });
     } else {
@@ -202,7 +213,6 @@ class ParticipantEditor extends Component {
 
   render() {
     const isProjectAdmin = this.checkIsAdminInProject();
-
     return (
       <div className={css.property}>
         <h2>Участники</h2>
@@ -252,11 +262,11 @@ class ParticipantEditor extends Component {
         <h2>Внешние пользователи</h2>
         <div className={css.externalTable}>
           {/* <Row className={classnames(css.memberRow, css.memberHeader)} /> */}
-          {this.props.users
-            ? this.props.users.map(user => (
+          {this.props.externalUsers
+            ? this.props.externalUsers.map(user => (
                 <Participant
                   user={user}
-                  key={`${user.id}-user`}
+                  key={`${user.id}-exUser`}
                   projectId={this.props.id}
                   isProjectAdmin={isProjectAdmin}
                   isExternal
@@ -335,6 +345,8 @@ class ParticipantEditor extends Component {
 
 ParticipantEditor.propTypes = {
   bindUserToProject: PropTypes.func.isRequired,
+  externalUsers: PropTypes.array,
+  getProjectUsers: PropTypes.func,
   id: PropTypes.number,
   user: PropTypes.object.isRequired,
   users: PropTypes.array.isRequired
@@ -343,11 +355,13 @@ ParticipantEditor.propTypes = {
 const mapStateToProps = state => ({
   id: state.Project.project.id,
   users: state.Project.project.users,
+  externalUsers: state.Project.project.externalUsers,
   user: state.Auth.user
 });
 
 const mapDispatchToProps = {
-  bindUserToProject
+  bindUserToProject,
+  getProjectUsers
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ParticipantEditor);
