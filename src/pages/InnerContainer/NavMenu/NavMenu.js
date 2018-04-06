@@ -38,7 +38,6 @@ class NavMenu extends Component {
       width: 16,
       height: 16
     };
-    console.log(this.getPhoto());
     const usersRolesLink = isAdmin(this.props.user.globalRole) ? (
       <li key="roles" className={css.sidebarItem}>
         <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/roles">
