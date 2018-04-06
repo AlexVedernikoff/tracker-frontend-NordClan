@@ -35,8 +35,7 @@ class ParticipantEditor extends Component {
       'Mobile',
       'TeamLead',
       'QA',
-      'Unbillable',
-      'Customer'
+      'Unbillable'
     ];
     this.ROLES_ID = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'];
     this.roleRights = {
@@ -203,6 +202,7 @@ class ParticipantEditor extends Component {
 
   render() {
     const isProjectAdmin = this.checkIsAdminInProject();
+
     return (
       <div className={css.property}>
         <h2>Участники</h2>
@@ -240,26 +240,37 @@ class ParticipantEditor extends Component {
               />
             ))
           : null}
-        {isProjectAdmin
-          ? [
-              <Button
-                key="addExternal"
-                text="Добавить внешнего пользователя"
-                type="primary"
-                addedClassNames={{ [css.addButton]: true }}
-                icon="IconPlus"
-                onClick={this.handleOpenModalAddExternal}
-              />,
-              <Button
-                key="addUser"
-                text="Добавить участника"
-                type="primary"
-                addedClassNames={{ [css.addButton]: true }}
-                icon="IconPlus"
-                onClick={this.handleOpenModalAddUser}
-              />
-            ]
-          : null}
+        {isProjectAdmin ? (
+          <Button
+            text="Добавить участника"
+            type="primary"
+            addedClassNames={{ [css.addButton]: true }}
+            icon="IconPlus"
+            onClick={this.handleOpenModalAddUser}
+          />
+        ) : null}
+        <h2>Внешние пользователи</h2>
+        <div className={css.externalTable}>
+          {/* <Row className={classnames(css.memberRow, css.memberHeader)} /> */}
+          {this.props.users
+            ? this.props.users.map(user => (
+                <Participant
+                  user={user}
+                  key={`${user.id}-user`}
+                  projectId={this.props.id}
+                  isProjectAdmin={isProjectAdmin}
+                  isExternal
+                />
+              ))
+            : null}
+        </div>
+        <Button
+          text="Добавить внешнего пользователя"
+          type="primary"
+          addedClassNames={{ [css.addButton]: true }}
+          icon="IconPlus"
+          onClick={this.handleOpenModalAddExternal}
+        />
         {this.state.isModalOpenAddUser ? (
           <Modal isOpen contentLabel="modal" onRequestClose={this.handleCloseModalAddUser}>
             <div className={css.changeStage}>
