@@ -46,6 +46,13 @@
   }
 }
 
+.externalTable {
+  max-width: 350px;
+  .memberHeader {
+    height: 30px;
+  }
+}
+
 .memberColumn {
   // text-align: right;
 }

@@ -19,7 +19,7 @@ class Comment extends Component {
     const { firstNameRu, lastNameRu, lastNameEn, firstNameEn } = person;
     const firstName = firstNameRu ? firstNameRu : firstNameEn;
     const lastName = lastNameRu ? lastNameRu : lastNameEn;
-    const fullName = `${firstName} ${lastName}`;
+    const fullName = `${firstName} ${lastName ? lastName : ''}`;
 
     return { firstName, lastName, fullName };
   };
@@ -118,7 +118,10 @@ class Comment extends Component {
     let typoAvatar = '';
     const { firstName, lastName, fullName } = Comment.getNames(author);
     if (!author.photo) {
-      typoAvatar = firstName.slice(0, 1) + lastName.slice(0, 1);
+      typoAvatar = firstName.slice(0, 1);
+      if (lastName) {
+        typoAvatar += lastName.slice(0, 1);
+      }
       typoAvatar.toLocaleUpperCase();
     }
 
