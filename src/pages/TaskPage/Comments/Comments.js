@@ -38,14 +38,20 @@ class Comments extends Component {
     this.props.getCommentsByTask(this.props.params.taskId);
   }
 
+  componentDidMount = () => {
+    if (this.props.location.hash === '#reply') {
+      setTimeout(() => this.reply.focus());
+    }
+  };
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.params.taskId !== this.props.params.taskId) {
       this.props.getCommentsByTask(nextProps.params.taskId);
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.location.hash === '#reply' && prevProps.location.hash === '#reply') {
+  componentDidUpdate = prevProps => {
+    if (this.props.location.hash === '#reply' && prevProps.location.hash !== '#reply') {
       setTimeout(() => {
         this.reply.focus();
         Comment.conditionalScroll(this.reply);
@@ -75,12 +81,7 @@ class Comments extends Component {
         this.selectComment(this.props.highlighted.id);
       }
     }
-  }
-  componentDidMount() {
-    if (this.props.location.hash === '#reply') {
-      setTimeout(() => this.reply.focus());
-    }
-  }
+  };
 
   static defaultProps = {
     comments: []
@@ -140,7 +141,6 @@ class Comments extends Component {
       this.state.disabledBtn = true;
     }
   };
-  reply = null;
 
   removeComment = commentId => {
     this.setState({ commentToDelete: commentId });
@@ -181,7 +181,7 @@ class Comments extends Component {
                 placeholder="Введите текст комментария"
                 onInput={this.typeComment}
                 onKeyDown={this.publishComment}
-                ref={ref => (this.reply = ref ? ref.refs.input : null)}
+                ref={ref => (this.reply = ref ? ref.textarea : null)}
                 value={this.props.currentComment.text}
               />
               {this.props.currentComment.id ? (
