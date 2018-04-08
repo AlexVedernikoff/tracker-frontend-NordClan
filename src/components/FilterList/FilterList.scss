@@ -14,6 +14,16 @@
   }
 }
 
+.emptyFiltersLink {
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    color: lighten($color-dark, 30%);
+    transition: $transition;
+  }
+}
+
 .filterCol {
   padding: 0 0.5rem;
 }

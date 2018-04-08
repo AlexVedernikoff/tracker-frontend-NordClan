@@ -339,7 +339,7 @@ class TaskList extends Component {
                 <Button
                   type="primary"
                   text="Очистить фильтры"
-                  icon="IconClose"
+                  icon="IconBroom"
                   disabled={!isFilter}
                   onClick={this.clearFilters}
                 />

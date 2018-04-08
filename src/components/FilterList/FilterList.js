@@ -37,7 +37,11 @@ export default class FilterList extends Component {
                     </div>
                   </div>
                 ) : (
-                  <div className={classnames(css.filterList)}>Фильтры не выбраны</div>
+                  <div className={classnames(css.filterList)}>
+                    <span onClick={toggleFilterView} className={css.emptyFiltersLink}>
+                      Фильтры не выбраны
+                    </span>
+                  </div>
                 )}
               </Col>
               {!isVisor && (
