@@ -8,6 +8,11 @@
   transition-property: opacity;
   transition-duration: 0.2s;
   background-color: white;
+
+  &:hover {
+    border-color: darken($color-gray, 10%);
+  }
+
   .priorityMarker {
     content: '';
     display: block;
@@ -65,6 +70,21 @@
   word-break: break-all;
   word-break: break-word;
   @include link-reset;
+  transition: $transition;
+
+  &:hover {
+    color: lighten($color-dark, 30%);
+    transition: $transition;
+  }
+}
+
+.taskNum {
+  transition: $transition;
+
+  &:hover {
+    color: lighten($color-dark, 30%);
+    transition: $transition;
+  }
 }
 
 .taskMeta {
@@ -192,4 +212,33 @@ svg.red {
 .unassigned {
   color: lighten($color-black, 40%);
   border-bottom: 1px lighten($color-black, 40%) dashed;
+
+  &:hover {
+    color: lighten($color-dark, 30%);
+    transition: $transition;
+  }
+}
+
+.performer {
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    color: lighten($color-dark, 30%);
+    transition: $transition;
+
+    .preformerEditIcon {
+      opacity: 0.7;
+      transition: $transition;
+    }
+  }
+
+  .preformerEditIcon {
+    opacity: 0;
+    display: inline-block;
+    line-height: 1;
+    vertical-align: top;
+    margin-left: 4px;
+    transition: $transition;
+  }
 }
