@@ -9,32 +9,32 @@ import { connect } from 'react-redux';
 import Tags from '../Tags';
 import Tag from '../Tag';
 import * as css from './TaskRow.scss';
+import roundNum from '../../utils/roundNum';
 
 const getTaskTime = (factTime, planTime) => {
   if (factTime) {
-    return planTime ? `${factTime} из ${planTime} ч.` : `${factTime} ч.`;
+    return planTime ? `${roundNum(factTime, 2)} из ${roundNum(planTime, 2)} ч.` : `${roundNum(factTime, 2)} ч.`;
   } else {
-    return planTime ? `0 из ${planTime} ч.` : '0 из 0 ч.';
+    return planTime ? `0 из ${roundNum(planTime, 2)} ч.` : '0 из 0 ч.';
   }
 };
 
 class TaskRow extends React.Component {
-
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
 
   handlePerformerClick = () => {
     const { task, onOpenPerformerModal } = this.props;
     onOpenPerformerModal(task.id, task.performer ? task.performer.id : null);
-  }
+  };
 
   handleSprintClick = () => {
     const { task, onOpenSprintModal } = this.props;
     onOpenSprintModal(task.id, task.sprint ? task.sprint.id : null);
-  }
+  };
 
-  render () {
+  render() {
     const {
       prefix,
       task,
@@ -49,88 +49,86 @@ class TaskRow extends React.Component {
     } = this.props;
 
     const classPriority = 'priority-' + task.prioritiesId;
-    const tags = task.tags.map((element, i) => <Tag key={i} name={element.name} blocked onClick={onClickTag}/>);
+    const tags = task.tags.map((element, i) => <Tag key={i} name={element.name} blocked onClick={onClickTag} />);
 
     return (
-    <div className={classnames({[css.taskCard]: true, [css[classPriority]]: true, [css.card]: card, [css.dropped]: isDragging})} {...other}>
-      <Row>
-        <Col xs={12} sm={shortcut ? 12 : 6}>
-          <div className={css.header}>
-            <div>
-              <div className={css.priorityMarker} data-tip={`Приоритет: ${task.prioritiesId}`}>{task.prioritiesId}</div>
+      <div
+        className={classnames({
+          [css.taskCard]: true,
+          [css[classPriority]]: true,
+          [css.card]: card,
+          [css.dropped]: isDragging
+        })}
+        {...other}
+      >
+        <Row>
+          <Col xs={12} sm={shortcut ? 12 : 6}>
+            <div className={css.header}>
+              <div>
+                <div className={css.priorityMarker} data-tip={`Приоритет: ${task.prioritiesId}`}>
+                  {task.prioritiesId}
+                </div>
+              </div>
+              <div className={css.prefix}>{`${prefix}-${task.id}`}</div>
+              <div className={css.type}>{getTypeById(task.typeId, taskTypes)}</div>
+              <div className={css.type}>{`На стадии: ${getStatusNameById(task.statusId)}`}</div>
+              <div>
+                {task.statusId === 2 || task.statusId === 4 || task.statusId === 6 ? (
+                  <span className={css.greenText}>В процессе</span>
+                ) : task.statusId === 3 || task.statusId === 5 || task.statusId === 7 ? (
+                  'Приостановлено'
+                ) : null}
+              </div>
             </div>
-            <div className={css.prefix}>{`${prefix}-${task.id}`}</div>
-            <div className={css.type}>{getTypeById(task.typeId, taskTypes)}</div>
-            <div className={css.type}>{`На стадии: ${getStatusNameById(task.statusId)}`}</div>
-            <div>
-              {
-                task.statusId === 2 || task.statusId === 4 || task.statusId === 6
-                ? <span className={css.greenText}>В процессе</span>
-                : task.statusId === 3 || task.statusId === 5 || task.statusId === 7
-                ? 'Приостановлено'
-                : null
-              }
-            </div>
-          </div>
-          <Link to={`/projects/${task.projectId}/tasks/${task.id}`} className={css.taskName}>
-            <h4>
-              {task.name}
-            </h4>
-          </Link>
-        </Col>
-        {
-          !shortcut
-          ? <Col xs={12} sm>
-            <div className={css.metabox}>
-              <p className={css.taskMeta}>
-                <span>Спринт:</span>
-                <button onClick = {this.handleSprintClick}>
-                  { task.sprint ? task.sprint.name : 'Backlog' }
-                </button>
-              </p>
-              <p className={css.taskMeta}>
-                <span>Исполнитель:</span>
-                <button onClick = {this.handlePerformerClick}>
-                  { task.performer ? task.performer.fullNameRu : 'Не назначено' }
-                </button>
-              </p>
-              <p className={css.taskMeta}>
-                <span>Автор:</span>
-                <span>
-                  { task.author ? task.author.fullNameRu : '' }
-                </span>
-              </p>
-              <p className={css.taskMeta}>
-                {
-                  task.statusId !== 1
-                  ? <span className={css.time}>
-                    <span>Время: </span>
-                    <span className={classnames({
-                      [css.redText]: task.plannedExecutionTime < task.factExecutionTime,
-                      [css.greenText]: task.plannedExecutionTime > task.factExecutionTime})}>
-                      { getTaskTime(task.factExecutionTime, task.plannedExecutionTime) }
+            <Link to={`/projects/${task.projectId}/tasks/${task.id}`} className={css.taskName}>
+              <h4>{task.name}</h4>
+            </Link>
+          </Col>
+          {!shortcut ? (
+            <Col xs={12} sm>
+              <div className={css.metabox}>
+                <p className={css.taskMeta}>
+                  <span>Спринт:</span>
+                  <button onClick={this.handleSprintClick}>{task.sprint ? task.sprint.name : 'Backlog'}</button>
+                </p>
+                <p className={css.taskMeta}>
+                  <span>Исполнитель:</span>
+                  <button onClick={this.handlePerformerClick}>
+                    {task.performer ? task.performer.fullNameRu : 'Не назначено'}
+                  </button>
+                </p>
+                <p className={css.taskMeta}>
+                  <span>Автор:</span>
+                  <span>{task.author ? task.author.fullNameRu : ''}</span>
+                </p>
+                <p className={css.taskMeta}>
+                  {task.statusId !== 1 ? (
+                    <span className={css.time}>
+                      <span>Время: </span>
+                      <span
+                        className={classnames({
+                          [css.redText]: task.plannedExecutionTime < task.factExecutionTime,
+                          [css.greenText]: task.plannedExecutionTime > task.factExecutionTime
+                        })}
+                      >
+                        {getTaskTime(task.factExecutionTime, task.plannedExecutionTime)}
+                      </span>
                     </span>
-                  </span>
-                  : null
-                }
-              </p>
-            </div>
-          </Col>
-          : null
-        }
+                  ) : null}
+                </p>
+              </div>
+            </Col>
+          ) : null}
 
-        {
-          !shortcut
-          ? <Col xs>
-            <div className={css.tagbox}>
-              <Tags canEdit>{tags}</Tags>
-            </div>
-          </Col>
-          : null
-        }
-
-      </Row>
-      {/*<div className={css.progressBar}>
+          {!shortcut ? (
+            <Col xs>
+              <div className={css.tagbox}>
+                <Tags canEdit>{tags}</Tags>
+              </div>
+            </Col>
+          ) : null}
+        </Row>
+        {/*<div className={css.progressBar}>
         <div
           style={{width: (task.stage === 'NEW') ? 0 : ((task.factTime / task.plannedTime) < 1) ? (task.factTime / task.plannedTime) * 100 + '%' : '100%'}}
           className={classnames({
@@ -139,7 +137,7 @@ class TaskRow extends React.Component {
           })}
           />
       </div>*/}
-    </div>
+      </div>
     );
   }
 }
@@ -156,7 +154,7 @@ TaskRow.propTypes = {
   onOpenSprintModal: PropTypes.func
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   taskTypes: state.Dictionaries.taskTypes
 });
 

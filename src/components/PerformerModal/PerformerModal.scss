@@ -40,12 +40,23 @@
 }
 
 .currentPerformer {
-  padding: 0.5rem 2rem;
+  padding: 0.5rem 2rem 0.5rem 0;
+  margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
-  > .removeCurrentPerformer{
-    margin-left: 5px;
+  > .removeCurrentPerformer {
+    color: darken($color-gray, 20%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
     cursor: pointer;
+    transition: $transition;
+
+    &:hover {
+      color: $color-dark;
+      transition: $transition;
+    }
   }
 }
 .inputWrapper {
@@ -56,7 +67,7 @@
     transform: translateX(-50%);
     left: 1rem;
     svg {
-      fill: darken($color-gray, 20%);;
+      fill: darken($color-gray, 20%);
     }
   }
 }
@@ -70,4 +81,9 @@
     background-color: rgba($color-black, 0.07);
     transition: $transition;
   }
+}
+
+.noPerformer {
+  padding-left: 2rem;
+  color: lighten(black, 70%);
 }

@@ -755,7 +755,7 @@ class AgileBoard extends Component {
                       onClick={this.clearFilter}
                       type="primary"
                       text="Очистить фильтры"
-                      icon="IconClose"
+                      icon="IconBroom"
                       name="right"
                       disabled={this.isFilterEmpty()}
                     />

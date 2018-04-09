@@ -12,7 +12,7 @@ import { TASK_CARD } from '../../constants/DragAndDrop';
 import * as css from './TaskCard.scss';
 import PriorityBox from './PriorityBox';
 import CopyThis from '../../components/CopyThis';
-import { IconPlay, IconPause, IconTime, IconBug } from '../Icons';
+import { IconPlay, IconPause, IconTime, IconBug, IconEdit } from '../Icons';
 import ReactTooltip from 'react-tooltip';
 
 const taskCardSource = {
@@ -151,7 +151,10 @@ class TaskCard extends React.Component {
           textToCopy={`${location.origin}${history.createHref(`/projects/${task.projectId}/tasks/${task.id}`)}`}
         >
           <div className={css.header}>
-            {isBug ? <IconBug /> : null} {task.prefix}-{task.id} | {getTypeById(task.typeId, taskTypes)}
+            <span className={css.taskNum}>
+              {isBug ? <IconBug style={{ verticalAlign: 'top' }} /> : null} {task.prefix}-{task.id}
+            </span>{' '}
+            | {getTypeById(task.typeId, taskTypes)}
           </div>
         </CopyThis>
 
@@ -161,7 +164,18 @@ class TaskCard extends React.Component {
 
         <p className={css.taskMeta} onClick={this.handlePerformerClick}>
           {!myTaskBoard && (
-            <a>{task.performer ? task.performer.fullNameRu : <span className={css.unassigned}>Не назначено</span>}</a>
+            <span className={css.performer}>
+              {task.performer ? (
+                <span>
+                  {task.performer.fullNameRu}
+                  <span className={css.preformerEditIcon}>
+                    <IconEdit />
+                  </span>
+                </span>
+              ) : (
+                <span className={css.unassigned}>Не назначено</span>
+              )}
+            </span>
           )}
         </p>
 
