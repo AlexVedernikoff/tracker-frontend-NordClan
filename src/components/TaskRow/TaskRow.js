@@ -9,12 +9,13 @@ import { connect } from 'react-redux';
 import Tags from '../Tags';
 import Tag from '../Tag';
 import * as css from './TaskRow.scss';
+import roundNum from '../../utils/roundNum';
 
 const getTaskTime = (factTime, planTime) => {
   if (factTime) {
-    return planTime ? `${factTime} из ${planTime} ч.` : `${factTime} ч.`;
+    return planTime ? `${roundNum(factTime, 2)} из ${roundNum(planTime, 2)} ч.` : `${roundNum(factTime, 2)} ч.`;
   } else {
-    return planTime ? `0 из ${planTime} ч.` : '0 из 0 ч.';
+    return planTime ? `0 из ${roundNum(planTime, 2)} ч.` : '0 из 0 ч.';
   }
 };
 

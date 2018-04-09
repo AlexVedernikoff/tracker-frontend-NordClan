@@ -64,3 +64,9 @@
   justify-content: center;
   padding-right: 2px;
 }
+
+.unclickable {
+  .tagPart:not(.tagClose) {
+    cursor: default;
+  }
+}

@@ -13,7 +13,7 @@
     .attachmentIcon {
       background: lighten($color-black, 70%);
       border: 1px solid lighten($color-black, 65%);
-      transition: 0.3s ease-out 0s;
+      transition: $transition;
     }
 
     .attachmentName {
@@ -48,7 +48,7 @@
   background: lighten($color-black, 75%);
   border: 1px solid lighten($color-black, 70%);
   color: lighten($color-black, 50%);
-  transition: 0.3s ease-out 0s;
+  transition: $transition;
 }
 
 .attachmentName {
