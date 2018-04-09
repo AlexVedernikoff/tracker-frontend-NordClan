@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
-import { IconPlus } from '../../../components/Icons';
+import { IconPlus, IconUser } from '../../../components/Icons';
 import { connect } from 'react-redux';
 import isAdmin from '../../../utils/isAdmin';
 import { EXTERNAL_USER } from '../../../constants/Roles';
@@ -23,6 +23,14 @@ class NavMenu extends Component {
           ${lastNameRu.slice(0, 1) || ''}
           `;
     }
+    return (
+      <IconUser
+        style={{
+          width: '100%',
+          height: '100%'
+        }}
+      />
+    );
   };
 
   render() {
@@ -30,7 +38,6 @@ class NavMenu extends Component {
       width: 16,
       height: 16
     };
-
     const usersRolesLink = isAdmin(this.props.user.globalRole) ? (
       <li key="roles" className={css.sidebarItem}>
         <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/roles">

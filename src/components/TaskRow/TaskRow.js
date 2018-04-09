@@ -45,6 +45,7 @@ class TaskRow extends React.Component {
       taskTypes,
       onOpenPerformerModal,
       onOpenSprintModal,
+      isExternal,
       ...other
     } = this.props;
 
@@ -102,7 +103,7 @@ class TaskRow extends React.Component {
                   <span>{task.author ? task.author.fullNameRu : ''}</span>
                 </p>
                 <p className={css.taskMeta}>
-                  {task.statusId !== 1 ? (
+                  {task.statusId !== 1 && !isExternal ? (
                     <span className={css.time}>
                       <span>Время: </span>
                       <span
@@ -145,13 +146,14 @@ class TaskRow extends React.Component {
 TaskRow.propTypes = {
   card: PropTypes.bool,
   isDragging: PropTypes.bool,
+  isExternal: PropTypes.bool,
   onClickTag: PropTypes.func,
+  onOpenPerformerModal: PropTypes.func,
+  onOpenSprintModal: PropTypes.func,
   prefix: PropTypes.string,
   shortcut: PropTypes.bool,
   task: PropTypes.object,
-  taskTypes: PropTypes.array,
-  onOpenPerformerModal: PropTypes.func,
-  onOpenSprintModal: PropTypes.func
+  taskTypes: PropTypes.array
 };
 
 const mapStateToProps = state => ({

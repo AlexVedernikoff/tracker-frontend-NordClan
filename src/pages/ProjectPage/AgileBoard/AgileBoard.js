@@ -737,7 +737,9 @@ class AgileBoard extends Component {
                       noResultsText="Нет результатов"
                       options={this.getSprints()}
                     />
-                    <span className={css.sprintTime}>{this.getSprintTime(this.state.changedSprint) || null}</span>
+                    {!isExternal ? (
+                      <span className={css.sprintTime}>{this.getSprintTime(this.state.changedSprint) || null}</span>
+                    ) : null}
                   </Col>
                   <Col xs>
                     <SelectDropdown
