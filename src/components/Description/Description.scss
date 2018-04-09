@@ -27,7 +27,7 @@
 }
 
 .save {
-  @extend .edit; 
+  @extend .edit;
   color: $color-green;
   border: 1px solid $color-green;
 
@@ -42,13 +42,18 @@
   position: relative;
   z-index: 0; // New z-index stack created
   padding-bottom: 0.5rem;
+  line-height: 1.5;
 
-   &.edited .editBorder {
-     opacity: 1;
-     background-color: transparent;
-   }
+  &.edited .editBorder {
+    opacity: 1;
+    background-color: transparent;
+  }
 
-  h1, h2, h3, h4, h5 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
     position: relative;
     z-index: 1;
   }
@@ -58,6 +63,18 @@
       opacity: 1;
       transition: $transition;
     }
+  }
+
+  blockquote {
+    background: $color-lightgray;
+    border-left: 0.25rem solid $color-gray;
+    margin: 1.5em 0.5rem;
+    padding: 0.5em 0.5rem;
+    quotes: '\201C''\201D''\2018''\2019';
+  }
+
+  blockquote p {
+    display: inline;
   }
 }
 
@@ -76,4 +93,8 @@
 .wiki {
   position: relative;
   z-index: 2;
+
+  p {
+    margin: 0;
+  }
 }
