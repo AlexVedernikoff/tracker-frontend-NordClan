@@ -7,6 +7,18 @@ import { deleteTag } from '../../actions/Tags';
 import { connect } from 'react-redux';
 
 class Tag extends React.Component {
+  static propTypes = {
+    blocked: PropTypes.bool,
+    create: PropTypes.bool,
+    deleteHandler: PropTypes.func,
+    deleteTag: PropTypes.func.isRequired,
+    name: PropTypes.string,
+    onClick: PropTypes.func,
+    taggable: PropTypes.string,
+    taggableId: PropTypes.number,
+    unclickable: PropTypes.bool
+  };
+
   deleteTag = () => {
     if (this.props.deleteHandler) {
       this.props.deleteHandler();
@@ -20,10 +32,28 @@ class Tag extends React.Component {
   };
 
   render() {
-    const { name, create, blocked, taggable, taggableId, deleteHandler, deleteTag: dt, ...other } = this.props;
+    const {
+      name,
+      create,
+      blocked,
+      taggable,
+      taggableId,
+      deleteHandler,
+      unclickable,
+      deleteTag: dt,
+      ...other
+    } = this.props;
 
     return (
-      <span {...other} className={classnames({ [css.tag]: true, [css.create]: create })} onClick={this.clickOnTag}>
+      <span
+        {...other}
+        className={classnames({
+          [css.tag]: true,
+          [css.create]: create,
+          [css.unclickable]: unclickable
+        })}
+        onClick={this.clickOnTag}
+      >
         <span className={classnames({ [css.tagPart]: true, [css.tagCreate]: create })}>
           {create ? <IconPlus /> : name}
         </span>
@@ -36,17 +66,6 @@ class Tag extends React.Component {
     );
   }
 }
-
-Tag.propTypes = {
-  blocked: PropTypes.bool,
-  create: PropTypes.bool,
-  deleteHandler: PropTypes.func,
-  deleteTag: PropTypes.func.isRequired,
-  name: PropTypes.string,
-  onClick: PropTypes.func,
-  taggable: PropTypes.string,
-  taggableId: PropTypes.number
-};
 
 const mapDispatchToProps = {
   deleteTag

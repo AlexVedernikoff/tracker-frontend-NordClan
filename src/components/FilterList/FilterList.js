@@ -5,7 +5,7 @@ import ReactTooltip from 'react-tooltip';
 import Tag from '../Tag';
 import Button from '../../components/Button';
 import classnames from 'classnames';
-import { IconClose, IconArrowDownThin } from '../Icons';
+import { IconClose, IconArrowDownThin, IconBroom } from '../Icons';
 import * as css from './FilterList.scss';
 import { UnmountClosed, Collapse } from 'react-collapse';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
@@ -18,7 +18,7 @@ export default class FilterList extends Component {
   render() {
     const { filters, clearAll, toggleFilterView, fullFilterView, isVisor } = this.props;
     const filterTags = filters.map(filter => {
-      return <Tag name={filter.label} deleteHandler={filter.deleteHandler} key={filter.name} />;
+      return <Tag name={filter.label} deleteHandler={filter.deleteHandler} key={filter.name} unclickable />;
     });
 
     return (
@@ -31,14 +31,16 @@ export default class FilterList extends Component {
                   <div className={classnames(css.filterList)}>
                     <div>
                       {filterTags}
-                      <span className={classnames(css.clearAllFilter)}>
-                        <IconClose onClick={clearAll} />
+                      <span className={classnames(css.clearAllFilter)} data-tip="Очистить фильтры">
+                        <IconBroom onClick={clearAll} />
                       </span>
                     </div>
                   </div>
                 ) : (
-                  <div className={classnames(css.filterList)} disabled>
-                    Фильтры не выбраны
+                  <div className={classnames(css.filterList)}>
+                    <span onClick={toggleFilterView} className={css.emptyFiltersLink}>
+                      Фильтры не выбраны
+                    </span>
                   </div>
                 )}
               </Col>

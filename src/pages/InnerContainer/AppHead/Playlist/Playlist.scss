@@ -10,6 +10,7 @@
 .taskWrapper {
   min-height: 3.5rem;
   max-height: 30rem;
+  position: relative;
   overflow: auto;
   overflow: overlay; // Работает только в Chrome. TODO: Скроллбар немного ломает верстку, нужно что-то придумать для остальных браузеров
 }
@@ -325,4 +326,17 @@
       width: 100%;
     }
   }
+}
+
+.nothingToShow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  background-color: rgba(black, 0.05);
 }
