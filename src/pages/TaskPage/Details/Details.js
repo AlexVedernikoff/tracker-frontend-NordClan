@@ -285,8 +285,8 @@ class Details extends Component {
                         key={this.state.tooltipKey}
                         className={classnames({
                           [css.factTime]: true,
-                          [css.alert]: task.factExecutionTime > task.plannedExecutionTime,
-                          [css.success]: task.factExecutionTime <= task.plannedExecutionTime
+                          [css.alert]: +task.factExecutionTime > +task.plannedExecutionTime,
+                          [css.success]: +task.factExecutionTime <= +task.plannedExecutionTime
                         })}
                       >
                         {`${task.factExecutionTime ? roundNum(task.factExecutionTime, 2) : 0} ч.`}
