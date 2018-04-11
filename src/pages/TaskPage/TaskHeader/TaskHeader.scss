@@ -28,7 +28,15 @@
   position: relative;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;  
+  text-overflow: ellipsis;
+
+  a {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 
   .prefix {
     margin-right: 8px;
@@ -109,7 +117,7 @@
 
   .tasksPointers {
     &:before {
-      content: "";
+      content: '';
       display: block;
       position: absolute;
       width: 4px;
@@ -119,7 +127,7 @@
     }
 
     &:after {
-      content: "";
+      content: '';
       display: block;
       position: absolute;
       width: 4px;
