@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import classnames from 'classnames';
 import onClickOutside from 'react-onclickoutside';
 import PropTypes from 'prop-types';
-import TextArea from '../../../components/TextArea';
 import TextareaAutosize from 'react-autosize-textarea';
 import {
   getCommentsByTask,
@@ -19,8 +19,7 @@ import { connect } from 'react-redux';
 import * as css from './Comments.scss';
 import Comment from './Comment';
 import { history } from '../../../History';
-import Button from '../../../components/Button';
-import * as Icons from '../../../components/Icons';
+import { IconSend } from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
 
 const ENTER = 13;
@@ -209,10 +208,16 @@ class Comments extends Component {
                   </span>
                 </div>
               ) : null}
-            </div>
-            <div className={css.answerButton}>
-              <Button onClick={this.publishComment} type="green" disabled={this.state.disabledBtn} text="Отправить" />
-              <div className={css.answerSendTooltip}>или ctrl+enter</div>
+              <span
+                onClick={!this.state.disabledBtn ? this.publishComment : null}
+                data-tip="Отправить (Ctrl + Enter)"
+                className={classnames({
+                  [css.sendIcon]: true,
+                  [css.disabled]: this.state.disabledBtn
+                })}
+              >
+                <IconSend />
+              </span>
             </div>
           </form>
           {this.props.comments.length ? (
