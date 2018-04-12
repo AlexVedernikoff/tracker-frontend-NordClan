@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 import * as css from './Comments.scss';
 import Comment from './Comment';
 import { history } from '../../../History';
-import { IconSend } from '../../../components/Icons';
+import { IconSend, IconComments } from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
 
 const ENTER = 13;
@@ -223,7 +223,12 @@ class Comments extends Component {
           {this.props.comments.length ? (
             this.getCommentList()
           ) : (
-            <div className={css.noCommentsYet}>Комментариев еще нет, Вы можете стать первым!</div>
+            <div className={css.noCommentsYet}>
+              <div className={css.noCommentsIcon}>
+                <IconComments />
+              </div>
+              Комментариев еще нет<br />Вы можете стать первым!
+            </div>
           )}
         </ul>
         {this.state.commentToDelete ? (

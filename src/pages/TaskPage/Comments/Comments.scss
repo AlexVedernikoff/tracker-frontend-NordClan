@@ -209,6 +209,17 @@
 
 .noCommentsYet {
   text-align: center;
+  color: silver;
+  font-size: $font-size-small;
+  line-height: 1.5;
+}
+
+.noCommentsIcon {
+  display: block;
+  opacity: 0.4;
+  font-size: 2rem;
+  line-height: 1;
+  margin-bottom: 0.25rem;
 }
 
 .answerInfo {

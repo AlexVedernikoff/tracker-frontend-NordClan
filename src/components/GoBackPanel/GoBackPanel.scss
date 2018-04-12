@@ -7,14 +7,14 @@
   justify-content: flex-start;
   z-index: $z-dropdown-layer;
   bottom: 1rem;
-  left: 225px;
+  left: 14rem;
   width: 2rem;
   height: 2rem;
   overflow: hidden;
   font-size: 1rem;
   opacity: 1;
-  border: 1px solid $color-gray;
-  background-color: $color-lightgray;
+  background-color: lighten($color-dark, 10%);
+  color: white;
   box-shadow: $box-shadow;
   cursor: pointer;
   transition: $transition;
@@ -25,7 +25,7 @@
   }
 
   svg {
-    opacity: 0.5;
+    opacity: 0.7;
     margin-left: 0.5rem;
     flex-shrink: 0;
   }
@@ -33,12 +33,11 @@
   .gobackButtonText {
     font-size: $font-size-base;
     margin-left: 0.25rem;
-    color: $color-dark-gray;
     display: none;
   }
 
   &:hover {
-    background-color: darken($color-lightgray, 3%);
+    background-color: $color-dark;
     width: 5rem;
 
     .gobackButtonText {
