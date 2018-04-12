@@ -11,6 +11,7 @@ import _ from 'lodash';
 import Button from '../Button';
 import SelectDropdown from '../SelectDropdown';
 import ValidatedInput from '../ValidatedInput';
+import InputNumber from '../../components/InputNumber';
 import ValidatedAutosizeInput from '../ValidatedAutosizeInput';
 import * as css from './CreateTaskModal.scss';
 import Priority from '../Priority';
@@ -123,6 +124,10 @@ class CreateTaskModal extends Component {
 
   handleChange = field => event => {
     this.setState({ [field]: event.target.value.trim() });
+  };
+
+  handleChangePlannedTime = plannedTime => {
+    this.setState({ plannedTime });
   };
 
   render() {
@@ -248,6 +253,16 @@ class CreateTaskModal extends Component {
                   value={this.state.selectedSprint}
                   noResultsText="Нет результатов"
                 />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>Оценка времени:</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                <InputNumber min={0} onChange={this.handleChangePlannedTime} value={this.state.plannedTime} />
               </Col>
             </Row>
           </label>

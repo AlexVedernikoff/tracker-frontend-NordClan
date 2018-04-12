@@ -1,0 +1,35 @@
+@import '../../styles/variables';
+.input {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 7px 15px;
+  line-height: 1rem;
+  border: 1px solid $color-gray;
+  transition: 0.3s ease-out 0s;
+  &:focus {
+    border-color: darken($color-gray, 10%);
+    transition: 0.3s ease-out 0s;
+  }
+  &::placeholder {
+    color: silver;
+  }
+}
+
+.inputError {
+  border-color: $color-red;
+
+  & + .message {
+    color: $color-red;
+  }
+}
+
+.message {
+  font-size: $font-size-small;
+  display: inline-block;
+  padding: 0 0.25rem;
+  background: white;
+  position: absolute;
+  top: 1.6rem;
+  left: 0.75rem;
+}
