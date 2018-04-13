@@ -1,29 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import InputNumber from 'rc-input-number';
 
 import * as css from './InputNumber.scss';
 
-class InputNumber extends Component {
-  static propTypes = {
-    max: PropTypes.number,
-    min: PropTypes.number,
-    onChange: PropTypes.func,
-    value: PropTypes.string
-  };
+const CusotmInputNumber = ({ className, postfix, ...props }) => (
+  <div className={css.inputContainer}>
+    <InputNumber className={classnames([className, css.input])} {...props} />
+    {postfix ? <span className={css.postfix}>{postfix}</span> : null}
+  </div>
+);
 
-  formatValue = e => {
-    const value = e.target.value;
-    let formattedValue = +value;
-    const { min, max } = this.props;
-    if (min && formattedValue && value < min) formattedValue = min;
-    if (max && formattedValue && value > max) formattedValue = max;
-    this.props.onChange(formattedValue);
-  };
+CusotmInputNumber.propTypes = {
+  className: PropTypes.string,
+  postfix: PropTypes.string
+};
 
-  render() {
-    const { onChange, value, ...other } = this.props;
-    return <input onChange={this.formatValue} value={value} type="number" {...other} className={css.input} />;
-  }
-}
-
-export default InputNumber;
+export default CusotmInputNumber;

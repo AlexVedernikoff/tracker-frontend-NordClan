@@ -1,18 +1,37 @@
 @import '../../styles/variables';
-.input {
-  display: block;
-  box-sizing: border-box;
+
+.inputContainer {
+  position: relative;
+  display: flex;
+  align-items: stretch;
   width: 100%;
-  padding: 7px 15px;
+}
+
+.postfix {
+  padding: calc(0.5rem - 1px);
   line-height: 1rem;
   border: 1px solid $color-gray;
-  transition: 0.3s ease-out 0s;
-  &:focus {
-    border-color: darken($color-gray, 10%);
+  border-left: none;
+  background: $color-lightgray;
+}
+
+.input {
+  flex-grow: 1;
+  input {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 7px 15px;
+    line-height: 1rem;
+    border: 1px solid $color-gray;
     transition: 0.3s ease-out 0s;
-  }
-  &::placeholder {
-    color: silver;
+    &:focus {
+      border-color: darken($color-gray, 10%);
+      transition: 0.3s ease-out 0s;
+    }
+    &::placeholder {
+      color: silver;
+    }
   }
 }
 

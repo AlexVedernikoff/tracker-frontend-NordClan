@@ -34,6 +34,7 @@ class CreateTaskModal extends Component {
       selectedPerformer: null,
       taskName: '',
       description: '',
+      plannedExecutionTime: 0,
       openTaskPage: false,
       prioritiesId: 3,
       selectedType: this.types[0],
@@ -77,6 +78,7 @@ class CreateTaskModal extends Component {
         typeId: this.state.selectedType.value,
         sprintId: this.state.selectedSprint === BACKLOG_ID ? null : this.state.selectedSprint,
         prioritiesId: this.state.prioritiesId,
+        plannedExecutionTime: this.state.plannedExecutionTime,
         parentId: this.props.parentTaskId
       },
       this.state.openTaskPage,
@@ -126,8 +128,8 @@ class CreateTaskModal extends Component {
     this.setState({ [field]: event.target.value.trim() });
   };
 
-  handleChangePlannedTime = plannedTime => {
-    this.setState({ plannedTime });
+  handleChangePlannedTime = plannedExecutionTime => {
+    this.setState({ plannedExecutionTime });
   };
 
   render() {
@@ -262,7 +264,12 @@ class CreateTaskModal extends Component {
                 <p>Оценка времени:</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <InputNumber min={0} onChange={this.handleChangePlannedTime} value={this.state.plannedTime} />
+                <InputNumber
+                  min={0}
+                  postfix={'ч.'}
+                  onChange={this.handleChangePlannedTime}
+                  value={this.state.plannedExecutionTime}
+                />
               </Col>
             </Row>
           </label>
