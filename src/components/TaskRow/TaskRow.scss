@@ -7,6 +7,7 @@
   // margin-bottom: 1rem;
   border-top: 1px solid $color-gray;
   transition: $transition;
+  cursor: pointer;
 
   &.card {
     border: 1px solid $color-gray;
@@ -43,6 +44,10 @@
   h4 {
     margin: 0;
     font-weight: normal;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   .priorityMarker {
@@ -57,11 +62,21 @@
   }
 
   &.priority {
-    &-1 .priorityMarker { background-color: $priority1; };
-    &-2 .priorityMarker { background-color: $priority2; };
-    &-3 .priorityMarker { background-color: $priority3; };
-    &-4 .priorityMarker { background-color: $priority4; };
-    &-5 .priorityMarker { background-color: $priority5; };
+    &-1 .priorityMarker {
+      background-color: $priority1;
+    }
+    &-2 .priorityMarker {
+      background-color: $priority2;
+    }
+    &-3 .priorityMarker {
+      background-color: $priority3;
+    }
+    &-4 .priorityMarker {
+      background-color: $priority4;
+    }
+    &-5 .priorityMarker {
+      background-color: $priority5;
+    }
   }
 
   h5 {
@@ -72,7 +87,7 @@
 }
 
 .taskName {
-  display: block;
+  display: inline-block;
   text-decoration: none;
 
   @include phone {
@@ -80,7 +95,7 @@
   }
 }
 
-.metabox, 
+.metabox,
 .tagbox {
   padding-left: 1rem;
   height: 100%;
@@ -92,7 +107,6 @@
 }
 
 .metabox {
-
   @include phone {
     margin-bottom: 1rem;
   }
@@ -145,8 +159,12 @@
   }
 }
 
-.inhold { background-color: $color-dark; }
-.inprogress { background-color: $color-green; }
+.inhold {
+  background-color: $color-dark;
+}
+.inprogress {
+  background-color: $color-green;
+}
 
 .progressBar {
   position: absolute;
@@ -162,8 +180,12 @@
   }
 }
 
-.green { background-color: $color-green; }
-.red { background-color: $color-red; }
+.green {
+  background-color: $color-green;
+}
+.red {
+  background-color: $color-red;
+}
 
 .greenText {
   color: $color-green;
@@ -181,5 +203,11 @@
   transition-duration: 0.2s;
 }
 
-svg.green { background-color: transparent; fill: $color-green; }
-svg.red { background-color: transparent; fill: $color-red; }
+svg.green {
+  background-color: transparent;
+  fill: $color-green;
+}
+svg.red {
+  background-color: transparent;
+  fill: $color-red;
+}

@@ -8,6 +8,7 @@
   transition-property: opacity;
   transition-duration: 0.2s;
   background-color: white;
+  cursor: grab;
 
   &:hover {
     border-color: darken($color-gray, 10%);
