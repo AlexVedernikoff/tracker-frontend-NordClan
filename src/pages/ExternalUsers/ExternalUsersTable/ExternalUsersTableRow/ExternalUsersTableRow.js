@@ -5,7 +5,7 @@ import ExternalUserInput from './ExternalUserInput';
 import ExternalUserActivity from './ExternalUserActivity';
 import ExternalUserExpiredDate from './ExternalUserExpiredDate';
 import { IconEdit, IconCheck, IconClose } from '../../../../components/Icons';
-// import ExternalUserDelete from './ExternalUserDelete';
+import ExternalUserDelete from './ExternalUserDelete';
 import { connect } from 'react-redux';
 import { editExternalUser, deleteExternalUser } from '../../../../actions/ExternalUsers';
 import { showNotification } from '../../../../actions/Notifications';
@@ -130,9 +130,9 @@ class ExternalUsersTableRow extends Component {
         </div>
         <div className={classnames(css.TableCell, css.TableCellActivity)}>
           <ExternalUserActivity
-            checked={!!this.props.exUser.active}
+            checked={!!this.props.exUser.isActive}
             isEditing={this.state.isEditing}
-            onValueChange={this.onEditValues('active')}
+            onValueChange={this.onEditValues('isActive')}
           />
         </div>
         <div className={classnames(css.TableCell, css.TableCellDate)}>
@@ -156,9 +156,9 @@ class ExternalUsersTableRow extends Component {
             />
           )}
         </div>
-        {/* <div className={css.TableCellEdit}>
-          <ExternalUserDelete username={this.props.exUser.firstNameRu} onDelete={this.deleteUser} />
-        </div> */}
+        <div className={css.TableCellDelete}>
+          <ExternalUserDelete onDelete={this.deleteUser} username={this.props.exUser.firstNameRu} />
+        </div>
       </div>
     );
   }

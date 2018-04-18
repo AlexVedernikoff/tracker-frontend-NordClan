@@ -30,8 +30,16 @@
   }
   .commentAction {
     display: flex;
+    font-size: $font-size-small;
     & a {
       padding-right: 0.5rem;
+      color: silver;
+      transition: $transition;
+
+      &:hover {
+        color: $color-dark;
+        transition: $transition;
+      }
     }
   }
   a {
@@ -168,25 +176,58 @@
 .answerLineText {
   flex-basis: 60%;
   flex-grow: 1;
+  position: relative;
+
   @include phone {
     width: 100%;
   }
 }
-.answerSendTooltip {
-  margin-top: 4px;
-  color: $input-color-placeholder;
-  font-size: 0.8rem;
-  text-align: center;
+
+.sendIcon {
+  position: absolute;
+  font-size: 1.5rem;
+  top: 0.25rem;
+  right: 0.5rem;
+  opacity: 0.4;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    opacity: 0.6;
+    transition: $transition;
+  }
 }
+
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.3;
+
+  &:hover {
+    opacity: 0.3;
+  }
+}
+
 .noCommentsYet {
   text-align: center;
+  color: silver;
+  font-size: $font-size-small;
+  line-height: 1.5;
+}
+
+.noCommentsIcon {
+  display: block;
+  opacity: 0.4;
+  font-size: 2rem;
+  line-height: 1;
+  margin-bottom: 0.25rem;
 }
 
 .answerInfo {
   width: 100%;
   margin-top: 4px;
-  font-size: 12px;
-  line-height: 12px;
+  padding-left: calc(0.5rem + 1px);
+  font-size: $font-size-small;
+  line-height: $font-size-small;
   color: silver;
 }
 
@@ -200,6 +241,6 @@
 }
 
 .outDatedToolTip {
-  color: #d9534f;
+  color: $color-red;
   text-decoration: underline dotted;
 }

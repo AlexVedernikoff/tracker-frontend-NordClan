@@ -17,9 +17,12 @@
   display: flex;
   justify-content: flex-end;
   align-items: flex-start;
+  text-align: right;
   line-height: 1rem;
 
-  p { margin: 0.5rem; }
+  p {
+    margin: 0.5rem;
+  }
 
   @include phone {
     justify-content: flex-start;
@@ -34,7 +37,7 @@
 
 .priority {
   align-items: center;
-  
+
   @include phone {
     padding-left: 0.75rem;
   }
@@ -80,7 +83,8 @@
   }
 }
 
-.selectSprint, .selectPerformer {
+.selectSprint,
+.selectPerformer {
   width: 100%;
 }
 
@@ -93,7 +97,7 @@
   }
 
   &:before {
-    content: "";
+    content: '';
     flex-shrink: 0;
     display: inline-block;
     width: 1rem;
@@ -114,5 +118,5 @@
 }
 
 .FINISHED:before {
-  background-color: darken($color-gray, 10%);;
+  background-color: darken($color-gray, 10%);
 }

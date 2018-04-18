@@ -116,12 +116,33 @@ export const activateExternalUser = (token, password) => {
       );
   };
 };
+export const deleteExternalUserStart = () => ({
+  type: externalUsersActions.DELETE_EXTERNAL_USER_START
+});
 export const deleteExternalUserSuccess = id => ({
   type: externalUsersActions.DELETE_EXTERNAL_USER_SUCCESS,
   id
 });
 export const deleteExternalUser = id => {
+  const URL = `${API_URL}/user/external/${id}`;
   return dispatch => {
-    dispatch(deleteExternalUserSuccess(id));
+    dispatch(deleteExternalUserStart());
+    dispatch(startLoading());
+    axios
+      .put(URL, {
+        active: 0
+      })
+      .then(
+        response => {
+          if (response.data) {
+            dispatch(deleteExternalUserSuccess(id));
+            dispatch(finishLoading());
+          }
+        },
+        error => {
+          dispatch(showNotification({ message: error.message, type: 'error' }));
+          dispatch(finishLoading());
+        }
+      );
   };
 };

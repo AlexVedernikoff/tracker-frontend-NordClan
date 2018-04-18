@@ -8,6 +8,7 @@ import TaskPlanningTime from '../TaskPlanningTime';
 import PerformerModal from '../../../components/PerformerModal';
 import SprintModal from '../../../components/SprintModal';
 import TaskTypeModal from '../../../components/TaskTypeModal';
+import { IconEdit } from '../../../components/Icons';
 import getTypeById from '../../../utils/TaskTypes';
 import { getProjectUsers, getProjectSprints } from '../../../actions/Project';
 import { getTask } from '../../../actions/Task';
@@ -201,20 +202,32 @@ class Details extends Component {
               <tr>
                 <td>Проект:</td>
                 <td>
-                  <Link to={'/projects/' + this.props.task.project.id}>{task.project.name}</Link>
+                  <Link className="underline-link" to={'/projects/' + this.props.task.project.id}>
+                    {task.project.name}
+                  </Link>
                 </td>
               </tr>
             ) : null}
             <tr>
               <td>Тип задачи:</td>
               <td>
-                <a onClick={this.openTaskTypeModal}>{getTypeById(task.typeId, taskTypes)}</a>
+                <span onClick={this.openTaskTypeModal} className={css.editableCell}>
+                  {getTypeById(task.typeId, taskTypes)}
+                  <span className={css.editIcon}>
+                    <IconEdit />
+                  </span>
+                </span>
               </td>
             </tr>
             <tr>
               <td>Спринт:</td>
               <td>
-                <a onClick={this.openSprintModal}>{task.sprint ? task.sprint.name : 'Backlog'}</a>
+                <span className={css.editableCell} onClick={this.openSprintModal}>
+                  {task.sprint ? task.sprint.name : 'Backlog'}
+                  <span className={css.editIcon}>
+                    <IconEdit />
+                  </span>
+                </span>
                 {/*<Link to={`/projects/${task.projectId}/agile-board`}>*/}
                 {/*{task.sprint ? task.sprint.name : 'Backlog'}*/}
                 {/*</Link>*/}
@@ -237,9 +250,12 @@ class Details extends Component {
             <tr>
               <td>Исполнитель:</td>
               <td>
-                <a onClick={this.openPerformerModal}>
+                <span onClick={this.openPerformerModal} className={css.editableCell}>
                   {task.performer ? task.performer.fullNameRu : <span className={css.unassigned}>Не назначено</span>}
-                </a>
+                  <span className={css.editIcon}>
+                    <IconEdit />
+                  </span>
+                </span>
               </td>
             </tr>
             <tr>
@@ -268,7 +284,9 @@ class Details extends Component {
                         data-for={this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? 'time' : 'notime'}
                         key={this.state.tooltipKey}
                         className={classnames({
-                          [css.alert]: true
+                          [css.factTime]: true,
+                          [css.alert]: +task.factExecutionTime > +task.plannedExecutionTime,
+                          [css.success]: +task.factExecutionTime <= +task.plannedExecutionTime
                         })}
                       >
                         {`${task.factExecutionTime ? roundNum(task.factExecutionTime, 2) : 0} ч.`}

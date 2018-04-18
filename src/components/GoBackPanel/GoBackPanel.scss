@@ -1,50 +1,47 @@
 @import '../../styles/variables';
 
-.goBackTogglerWrapper {
+.gobackButton {
   position: fixed;
-  z-index: 0; // New z-index stack created
-  top: 50%;
-  transform: translateY(-50%);
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  left: 215px;
-  opacity: 1;
-  border: 1px solid $color-gray;
-  cursor: pointer;
-  @include tablet-portrait {
-    bottom: 20px;
-    left: 15px;
-    top: inherit;
-    transform: none;
-  }
-  &:hover {
-    .goBackToggler {
-      opacity: 1;
-      transition: $transition;
-    }
-  }
-}
-
-.goBackToggler {
-  @include absolute;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
+  z-index: $z-dropdown-layer;
+  bottom: 1rem;
+  left: 14rem;
+  width: 2rem;
+  height: 2rem;
+  overflow: hidden;
   font-size: 1rem;
-  color: lighten($color-dark, 50%);
   opacity: 1;
+  background-color: lighten($color-dark, 10%);
+  color: white;
+  box-shadow: $box-shadow;
+  cursor: pointer;
   transition: $transition;
-  border-radius: 50%;
+
+  @include tablet-portrait {
+    bottom: 1rem;
+    left: 1rem;
+  }
+
   svg {
-    position: absolute;
-    top: 50%;
-    right: 5px;
-    transform: translateY(-50%) scale(2);
-    @include tablet-portrait {
-      right: inherit;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(2);
+    opacity: 0.7;
+    margin-left: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .gobackButtonText {
+    font-size: $font-size-base;
+    margin-left: 0.25rem;
+    display: none;
+  }
+
+  &:hover {
+    background-color: $color-dark;
+    width: 5rem;
+
+    .gobackButtonText {
+      display: inline-block;
     }
   }
 }

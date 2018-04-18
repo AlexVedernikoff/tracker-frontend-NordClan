@@ -57,8 +57,8 @@ class TaskList extends Component {
       return queries ? [translateToNumIfNeeded(queries)] : [];
     };
 
-    const singleQuery = query => {
-      return query ? translateToNumIfNeeded(query) : null;
+    const singleQuery = currentQuery => {
+      return currentQuery ? translateToNumIfNeeded(currentQuery) : null;
     };
     const getValues = changed => {
       const name = changed ? 'name' : 'filterByName';
@@ -341,7 +341,7 @@ class TaskList extends Component {
                 <Button
                   type="primary"
                   text="Очистить фильтры"
-                  icon="IconClose"
+                  icon="IconBroom"
                   disabled={!isFilter}
                   onClick={this.clearFilters}
                 />
@@ -465,17 +465,14 @@ TaskList.propTypes = {
   getTasks: PropTypes.func.isRequired,
   globalRole: PropTypes.string,
   isReceiving: PropTypes.bool,
-  params: PropTypes.object,
+  location: PropTypes.object,
   pagesCount: PropTypes.number.isRequired,
+  params: PropTypes.object,
   project: PropTypes.object.isRequired,
   startTaskEditing: PropTypes.func.isRequired,
   statuses: PropTypes.array,
   taskTypes: PropTypes.array,
-  tasksList: PropTypes.array.isRequired,
-  changeTask: PropTypes.func.isRequired,
-  startTaskEditing: PropTypes.func.isRequired,
-  location: PropTypes.object,
-  params: PropTypes.object
+  tasksList: PropTypes.array.isRequired
 };
 
 const mapStateToProps = state => ({

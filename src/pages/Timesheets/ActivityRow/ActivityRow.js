@@ -94,7 +94,7 @@ class ActivityRow extends React.Component {
           .weekday(i)
           .format('YYYY-MM-DD'),
         projectId: item.projectId,
-        sprintId: item.sprintId ? item.sprintId : null
+        sprintId: item.sprintId || (item.sprint ? item.sprint.id : null)
       },
       userId,
       startingDay

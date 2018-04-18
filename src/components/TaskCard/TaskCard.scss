@@ -1,4 +1,4 @@
-@import "../../styles/variables";
+@import '../../styles/variables';
 .taskCard {
   position: relative;
   z-index: 0; // New z-index stack created
@@ -8,8 +8,13 @@
   transition-property: opacity;
   transition-duration: 0.2s;
   background-color: white;
+
+  &:hover {
+    border-color: darken($color-gray, 10%);
+  }
+
   .priorityMarker {
-    content: "";
+    content: '';
     display: block;
     cursor: pointer;
     position: absolute;
@@ -65,6 +70,21 @@
   word-break: break-all;
   word-break: break-word;
   @include link-reset;
+  transition: $transition;
+
+  &:hover {
+    color: lighten($color-dark, 30%);
+    transition: $transition;
+  }
+}
+
+.taskNum {
+  transition: $transition;
+
+  &:hover {
+    color: lighten($color-dark, 30%);
+    transition: $transition;
+  }
 }
 
 .taskMeta {
@@ -144,7 +164,8 @@ svg.red {
   position: absolute;
   bottom: -8px;
   right: -8px;
-  font-size: 11px;
+  font-size: $font-size-small;
+  line-height: $font-size-small + 2px;
   color: gray;
   background-color: white;
   border: 1px solid darken($color-gray, 10%);
@@ -164,7 +185,7 @@ svg.red {
 }
 
 .redBorder {
-  border: 1px solid #d9534f69; 
+  border: 1px solid #d9534f69;
 }
 
 .bug {
@@ -191,4 +212,33 @@ svg.red {
 .unassigned {
   color: lighten($color-black, 40%);
   border-bottom: 1px lighten($color-black, 40%) dashed;
+
+  &:hover {
+    color: lighten($color-dark, 30%);
+    transition: $transition;
+  }
+}
+
+.performer {
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    color: lighten($color-dark, 30%);
+    transition: $transition;
+
+    .preformerEditIcon {
+      opacity: 0.7;
+      transition: $transition;
+    }
+  }
+
+  .preformerEditIcon {
+    opacity: 0;
+    display: inline-block;
+    line-height: 1;
+    vertical-align: top;
+    margin-left: 4px;
+    transition: $transition;
+  }
 }
