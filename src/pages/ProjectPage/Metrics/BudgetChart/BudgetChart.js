@@ -135,7 +135,7 @@ class BudgetChart extends Component {
     });
   };
 
-  makeSprintsBurndowns = (metrics, sprints) => {
+  makeSprintsBurndowns = (metrics, sprints, isRisks) => {
     return sprints.map(sprint => {
       const sprintMetrics = metrics.filter(metric => metric.sprintId === sprint.id);
       const burndown = sprintMetrics
@@ -146,8 +146,15 @@ class BudgetChart extends Component {
           };
         })
         .sort(sortChartLineByDates);
+      const fullBurndown = [
+        {
+          x: sprint.factStartDate,
+          y: isRisks ? sprint.riskBudget || 0 : sprint.budget || 0
+        },
+        ...burndown
+      ];
       return {
-        data: burndown,
+        data: fullBurndown,
         label: `${sprint.name}`,
         ...this.props.getBasicLineSettings()
       };
