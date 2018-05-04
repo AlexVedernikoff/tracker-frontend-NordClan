@@ -12,36 +12,41 @@ class ValidatedInput extends Component {
     shouldMarkError: PropTypes.bool
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       isError: this.props.shouldMarkError,
-      showSpan: false
+      onFocus: false
     };
   }
 
-  componentWillReceiveProps (nextProps) {
-    this.state.isError !== nextProps.shouldMarkError
-      && this.setState({ isError: nextProps.shouldMarkError });
+  componentWillReceiveProps(nextProps) {
+    this.state.isError !== nextProps.shouldMarkError && this.setState({ isError: nextProps.shouldMarkError });
   }
 
-  render () {
+  render() {
     const { onBlur, shouldMarkError, errorText, backendErrorText, ...other } = this.props;
+    const { onFocus, isError } = this.state;
+
     return (
       <div className={validateCss.fullWrapper}>
         <input
           type="text"
           {...other}
           onBlur={() => {
-            onBlur() && this.setState({ isError: true, showSpan: true });
+            this.setState({ onFocus: false }, () => {
+              onBlur() && this.setState({ isError: true });
+            });
           }}
-          onFocus = {()=> this.setState({ showSpan: false })}
+          onFocus={() => {
+            this.setState({ onFocus: true });
+          }}
           className={classnames(css.input, {
-            [css.inputError]: this.state.isError || backendErrorText
+            [css.inputError]: (isError || backendErrorText) && !onFocus
           })}
         />
-        {this.state.showSpan && <span className={css.message}>{errorText}</span>}
-        {backendErrorText && <span>{backendErrorText}</span>}
+        {isError && !onFocus && <span className={css.message}>{errorText}</span>}
+        {backendErrorText && !onFocus && <span>{backendErrorText}</span>}
       </div>
     );
   }
