@@ -62,7 +62,7 @@ class TasksCountChart extends Component {
 
     return {
       datasets: [
-        this.makeTaskCountMetricsLine(openedFeaturesMetric, 'Количество открытых задач без оценки'),
+        this.makeTaskCountMetricsLine(openedFeaturesMetric, 'Количество открытых задач'),
         this.makeTaskCountMetricsLine(openedFeaturesWithoutEvaluationMetric, 'Количество открытых задач без оценки'),
         this.makeTaskCountMetricsLine(openedOutOfPlanFeaturesMetric, 'Количество открытых задач вне плана'),
         this.makeTaskCountMetricsLine(openedBugsMetrics, 'Количество открытых багов'),
