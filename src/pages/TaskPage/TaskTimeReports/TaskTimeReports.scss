@@ -1,0 +1,28 @@
+@import '../../../styles/variables.scss';
+
+.history {
+  // padding: 16px 16px 0 16px;
+}
+
+.historyEvent {
+  color: lighten($color-black, 20%);
+  font-size: 13px;
+  display: flex;
+}
+
+.time {
+  box-sizing: border-box;
+  width: 9rem;
+  padding: 0.5rem;
+  border-right: 1px solid $color-gray;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.historyAction {
+  padding: 0.5rem;
+
+  a {
+    text-decoration: none;
+  }
+}

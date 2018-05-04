@@ -18,7 +18,7 @@ import GoBackPanel from '../../components/GoBackPanel';
 import CreateTaskModal from '../../components/CreateTaskModal';
 import HttpError from '../../components/HttpError';
 import { history } from '../../History';
-import { VISOR, EXTERNAL_USER } from '../../constants/Roles';
+import { VISOR, EXTERNAL_USER, ADMIN } from '../../constants/Roles';
 
 import * as TaskStatuses from '../../constants/TaskStatuses';
 
@@ -37,6 +37,7 @@ import getTasks from '../../actions/Tasks';
 import { getProjectInfo, openCreateTaskModal, openCreateChildTaskModal } from '../../actions/Project';
 
 import * as css from './TaskPage.scss';
+import isAdmin from '../../utils/isAdmin';
 
 class TaskPage extends Component {
   static propTypes = {
@@ -276,6 +277,11 @@ class TaskPage extends Component {
                     Комментарии
                   </Link>
                   <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/history`}>История</Link>
+                  {globalRole === ADMIN && (
+                    <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/time-reports`}>
+                      Отчеты по времени
+                    </Link>
+                  )}
                 </RouteTabs>
               ) : null}
               {this.props.children}
