@@ -6,7 +6,7 @@ import PaginationItem from './PaginationItem';
 import * as css from './Pagination.scss';
 
 const paginationConfig = {
-  maxVisibleCount: 10,
+  maxVisibleCount: 8,
   tail: 2,
   skipChar: '...'
 };
