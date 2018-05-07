@@ -1,7 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+
+import PaginationItem from './PaginationItem';
 import * as css from './Pagination.scss';
+
+const paginationConfig = {
+  maxVisibleCount: 10,
+  tail: 2,
+  skipChar: '...'
+};
+
+const SkipItem = () => <PaginationItem active={false} index={paginationConfig.skipChar} clickable={false} />;
 
 const Pagination = props => {
   const { itemsCount, activePage, onItemClick, prevText, nextText } = props;
@@ -41,24 +51,58 @@ const Pagination = props => {
   };
 
   const items = [];
-  for (let i = 0; i < itemsCount; i++) {
-    const index = i + 1;
-    const active = activePage === index;
+  const fillItems = (min, max) => {
+    for (let i = min; i < max; i++) {
+      const index = i + 1;
+      const active = activePage === index;
+      items.push(<PaginationItem active={active} key={i} index={index} clickable handleClick={handleClick} />);
+    }
+  };
+
+  const startCount = paginationConfig.maxVisibleCount - paginationConfig.tail;
+  const finishCount = itemsCount - startCount;
+
+  const isBegin = activePage <= startCount;
+  const isMiddle = activePage > startCount && activePage <= finishCount;
+  const isEnd = activePage > finishCount;
+
+  if (itemsCount <= paginationConfig.maxVisibleCount) {
+    fillItems(0, itemsCount);
+  } else if (isMiddle) {
     items.push(
-      <li
-        key={i}
-        className={classnames({
-          [css['page-item']]: true,
-          [css.active]: active,
-          [css.disabled]: active
-        })}
-        onClick={e => !active && handleClick({ activePage: index }, e)}
-      >
-        <a className={css['page-link']} href="#">
-          {index}
-        </a>
-      </li>
+      <PaginationItem key="startPage" active={activePage === 1} index={1} clickable handleClick={handleClick} />
     );
+    items.push(<SkipItem key="startSkip" />);
+    const middleLength = paginationConfig.maxVisibleCount - paginationConfig.tail * 2;
+    fillItems(Math.floor(activePage - middleLength / 2), Math.floor(activePage + middleLength / 2) - 1);
+    items.push(<SkipItem key="finishSkip" />);
+    items.push(
+      <PaginationItem
+        key="finishPage"
+        active={activePage === itemsCount}
+        index={itemsCount}
+        clickable
+        handleClick={handleClick}
+      />
+    );
+  } else if (isBegin) {
+    fillItems(0, paginationConfig.maxVisibleCount - paginationConfig.tail);
+    items.push(<SkipItem key="finishSkip" />);
+    items.push(
+      <PaginationItem
+        key="finishPage"
+        active={activePage === itemsCount}
+        index={itemsCount}
+        clickable
+        handleClick={handleClick}
+      />
+    );
+  } else if (isEnd) {
+    items.push(
+      <PaginationItem key="startPage" active={activePage === 1} index={1} clickable handleClick={handleClick} />
+    );
+    items.push(<SkipItem key="startSkip" />);
+    fillItems(itemsCount - (paginationConfig.maxVisibleCount - paginationConfig.tail), itemsCount);
   }
 
   return (
