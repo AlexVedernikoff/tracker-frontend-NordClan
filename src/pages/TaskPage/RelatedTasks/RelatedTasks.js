@@ -53,7 +53,9 @@ export default class RelatedTasks extends React.Component {
       return (
         <li key={`${this.props.type}-${task.id}`} className={this.taskStyle(task.statusId)}>
           <span className={css.taskLabel}>{`${this.props.task.project.prefix}-${task.id}`}</span>
-          <Link to={`/projects/${this.props.task.project.id}/tasks/${task.id}`}>{task.name}</Link>
+          <Link className="underline-link" to={`/projects/${this.props.task.project.id}/tasks/${task.id}`}>
+            {task.name}
+          </Link>
           {this.props.onDelete ? this.getActionIcon(task) : null}
         </li>
       );
@@ -65,7 +67,7 @@ export default class RelatedTasks extends React.Component {
           {this.props.type === 'linkedTasks' ? 'Связанные задачи' : this.props.type === 'subTasks' ? 'Подзадачи' : null}
         </h3>
         <ul className={css.taskList}>{tasks}</ul>
-        <a onClick={this.props.onAction} className={css.task + ' ' + css.add}>
+        <a onClick={this.props.onAction} className={classnames([css.task, css.add])}>
           {this.props.type === 'linkedTasks' ? (
             <IconLink style={iconStyles} />
           ) : this.props.type === 'subTasks' ? (
