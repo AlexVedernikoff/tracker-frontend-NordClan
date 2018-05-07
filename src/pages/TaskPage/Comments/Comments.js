@@ -173,7 +173,7 @@ class Comments extends Component {
 
   render() {
     return (
-      <div className="css.comments">
+      <div className={css.comments}>
         <ul className={css.commentList}>
           <form className={css.answerLine}>
             <div className={css.answerLineText}>

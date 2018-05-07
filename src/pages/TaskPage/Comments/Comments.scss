@@ -118,6 +118,7 @@
 }
 
 .commentText {
+  line-height: 1.3;
   white-space: pre-line;
   word-break: break-all;
   word-break: break-word;
@@ -178,6 +179,10 @@
   flex-basis: 60%;
   flex-grow: 1;
   position: relative;
+
+  textarea {
+    line-height: 1.3;
+  }
 
   @include phone {
     width: 100%;
