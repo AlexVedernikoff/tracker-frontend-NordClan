@@ -107,7 +107,13 @@ class Table extends React.Component {
     } = this.props;
 
     return (
-      <div key={`sprint-${i}`}>
+      <div
+        key={`sprint-${i}`}
+        className={classnames({
+          [css.unactive]: sprint.statusId === 1,
+          [css.active]: sprint.statusId === 2
+        })}
+      >
         <span
           className={classnames({
             [css.selection]: true,

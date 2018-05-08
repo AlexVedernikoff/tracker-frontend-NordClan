@@ -578,6 +578,19 @@ class Planning extends Component {
             openMilestoneEditModal={this.openMilestoneEditModal}
           />
           {!isVisor && !isExternal ? (
+            <div className={css.moveTasksBtnWrapper}>
+              <Button
+                text="Перенести спринт"
+                type="bordered"
+                loading={!!loading}
+                icon={'IconPointingArrowRight'}
+                data-tip="Перенести нереализованные задачи в другой спринт"
+                onClick={this.onMoveTasksModalOpen}
+                disabled={this.isMoveTasksButtonDisabled(unfinishedLeftTasksCount)}
+              />
+            </div>
+          ) : null}
+          {!isVisor && !isExternal ? (
             <Row className={css.sprintColumnHeaderWrapper}>
               <SprintColumnHeader
                 name="left"
@@ -587,16 +600,6 @@ class Planning extends Component {
                 onSprintChange={e => this.selectValue(e !== null ? e.value : null, 'leftColumn')}
                 onCreateTaskClick={this.openModal}
               />
-              <div className={css.moveTasksBtnWrapper}>
-                <Button
-                  type="bordered"
-                  loading={!!loading}
-                  icon={'IconPointingArrowRight'}
-                  data-tip="Перенести нереализованные задачи в другой спринт"
-                  onClick={this.onMoveTasksModalOpen}
-                  disabled={this.isMoveTasksButtonDisabled(unfinishedLeftTasksCount)}
-                />
-              </div>
               <ConfirmModal
                 isOpen={this.state.isModalOpenMoveTasks}
                 contentLabel="modal"
