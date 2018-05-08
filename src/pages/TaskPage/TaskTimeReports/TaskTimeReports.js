@@ -15,8 +15,18 @@ class TaskTimeReports extends React.Component {
     this.state = {
       stageData: {
         stages: [],
-        dataSet: [],
-        colors: []
+        stagesDataSet: [],
+        stagesColors: []
+      },
+      userData: {
+        users: [],
+        usersDataSet: [],
+        usersColors: []
+      },
+      roleData: {
+        roles: [],
+        rolesDataSet: [],
+        rolesColors: []
       }
     };
   }
@@ -27,27 +37,96 @@ class TaskTimeReports extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.getStageData(nextProps.timeSpent);
+    this.getUserData(nextProps.userTimeSpent);
+    this.getRoleData(nextProps.roleTimeSpent);
   }
 
   getStageData = timeSpent => {
     const stages = [];
-    const dataSet = [];
-    const colors = [];
+    const stagesDataSet = [];
+    const stagesColors = [];
+
+    getColor.reset();
 
     if (timeSpent) {
       for (const stage in timeSpent) {
         if (timeSpent.hasOwnProperty(stage)) {
           stages.push(stage);
-          dataSet.push(timeSpent[stage]);
-          colors.push(getColor());
+          stagesDataSet.push(timeSpent[stage]);
+          stagesColors.push(getColor());
         }
       }
 
       this.setState({
         stageData: {
           stages,
-          dataSet,
-          colors
+          stagesDataSet,
+          stagesColors
+        }
+      });
+    }
+  };
+
+  getUserData = timeSpent => {
+    const users = [];
+    const usersDataSet = [];
+    const usersColors = [];
+
+    getColor.reset();
+
+    if (timeSpent) {
+      for (const user in timeSpent) {
+        if (timeSpent.hasOwnProperty(user)) {
+          users.push(user);
+          usersDataSet.push(timeSpent[user]);
+          usersColors.push(getColor());
+        }
+      }
+
+      this.setState({
+        userData: {
+          users,
+          usersDataSet,
+          usersColors
+        }
+      });
+    }
+  };
+
+  getRoleData = timeSpent => {
+    const roles = [];
+    const rolesDataSet = [];
+    const rolesColors = [];
+
+    getColor.reset();
+
+    if (timeSpent && this.props.roles) {
+      for (const role in timeSpent) {
+        if (timeSpent.hasOwnProperty(role)) {
+          const roleId = role.match(/[\d+]/g);
+
+          if (roleId.length !== 0) {
+            for (const id of roleId) {
+              const roleName = this.props.roles.find(roleDictionary => roleDictionary.id === Number(id));
+              const roleExist = roles.length !== 0 && roles.findIndex(o => o === roleName.name);
+
+              if (roleExist === -1 || !roleExist) {
+                roles.push(roleName.name);
+                rolesDataSet.push(timeSpent[role]);
+                rolesColors.push(getColor());
+              } else {
+                rolesDataSet[roleExist] = rolesDataSet[roleExist] + timeSpent[role];
+              }
+            }
+          }
+        }
+      }
+
+      this.setState({
+        roleData: {
+          roles,
+          rolesDataSet,
+          rolesColors
         }
       });
     }
@@ -58,26 +137,70 @@ class TaskTimeReports extends React.Component {
   };
 
   render() {
-    const { dataSet, stages, colors } = this.state.stageData;
+    const { stagesDataSet, stages, stagesColors } = this.state.stageData;
+    const { usersDataSet, users, usersColors } = this.state.userData;
+    const { rolesDataSet, roles, rolesColors } = this.state.roleData;
+
+    const isStagesDataSet = stagesDataSet.length !== 0;
+    const isUsersDataSet = usersDataSet.length !== 0;
+    const isRolesDataSet = rolesDataSet.length !== 0;
+
     const stageData = {
       labels: stages,
       datasets: [
         {
-          data: dataSet,
-          backgroundColor: colors,
-          hoverBackgroundColor: colors
+          data: stagesDataSet,
+          backgroundColor: stagesColors,
+          hoverBackgroundColor: stagesColors
         }
       ]
     };
+    const userData = {
+      labels: users,
+      datasets: [
+        {
+          data: usersDataSet,
+          backgroundColor: usersColors,
+          hoverBackgroundColor: usersColors
+        }
+      ]
+    };
+    const roleData = {
+      datasets: [
+        {
+          data: rolesDataSet,
+          backgroundColor: rolesColors,
+          hoverBackgroundColor: rolesColors
+        }
+      ],
+      labels: roles
+    };
 
     return (
-      <div className={css.history}>
+      <div className={css.timeReports}>
         <h3>Отчеты по времени</h3>
         <Row>
-          <Col xs={4}>
-            <h4>по стадиям</h4>
-            <Doughnut data={stageData} />
-          </Col>
+          {isStagesDataSet && (
+            <Col xs={12}>
+              <h4>по стадиям</h4>
+              <Doughnut data={stageData} />
+            </Col>
+          )}
+          {isUsersDataSet && (
+            <Col xs={12}>
+              <h4>по людям</h4>
+              <Doughnut data={userData} />
+            </Col>
+          )}
+          {isRolesDataSet && (
+            <Col xs={12}>
+              <h4>по ролям</h4>
+              <Doughnut data={roleData} />
+            </Col>
+          )}
+          {!isStagesDataSet &&
+            !isUsersDataSet &&
+            !isRolesDataSet && <p className={css.noReports}>Нет существующих отчетов</p>}
         </Row>
       </div>
     );
@@ -90,11 +213,17 @@ TaskTimeReports.propTypes = {
     projectId: PropTypes.string.isRequired,
     taskId: PropTypes.string.isRequired
   }),
-  timeSpent: PropTypes.object
+  roleTimeSpent: PropTypes.object,
+  roles: PropTypes.array,
+  timeSpent: PropTypes.object,
+  userTimeSpent: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  timeSpent: state.Task.timeSpent
+  timeSpent: state.Task.timeSpent,
+  userTimeSpent: state.Task.userTimeSpent,
+  roleTimeSpent: state.Task.roleTimeSpent,
+  roles: state.Dictionaries.roles
 });
 
 const mapDispatchToProps = {

@@ -37,16 +37,17 @@ import getTasks from '../../actions/Tasks';
 import { getProjectInfo, openCreateTaskModal, openCreateChildTaskModal } from '../../actions/Project';
 
 import * as css from './TaskPage.scss';
-import isAdmin from '../../utils/isAdmin';
+import { getRoles } from '../../actions/Dictionaries';
 
 class TaskPage extends Component {
   static propTypes = {
     DescriptionIsEditing: PropTypes.bool,
     changeTask: PropTypes.func.isRequired,
     children: PropTypes.object,
-    getProjectInfo: PropTypes.func.isRequired,
-    getTask: PropTypes.func.isRequired,
     clearError: PropTypes.func,
+    getProjectInfo: PropTypes.func.isRequired,
+    getRoles: PropTypes.func.isRequired,
+    getTask: PropTypes.func.isRequired,
     getTasks: PropTypes.func.isRequired,
     globalRole: PropTypes.string.isRequired,
     isCreateChildTaskModalOpen: PropTypes.bool,
@@ -83,6 +84,7 @@ class TaskPage extends Component {
   }
 
   componentDidMount() {
+    this.props.getRoles();
     this.props.getTask(this.props.params.taskId);
     this.props.getProjectInfo(this.props.params.projectId);
     this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave);
@@ -406,7 +408,8 @@ const mapDispatchToProps = {
   startTaskEditing,
   stopTaskEditing,
   unlinkTask,
-  uploadAttachments
+  uploadAttachments,
+  getRoles
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskPage);
