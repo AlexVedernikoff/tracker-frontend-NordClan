@@ -74,7 +74,7 @@ const Pagination = props => {
     );
     items.push(<SkipItem key="startSkip" />);
     const middleLength = paginationConfig.maxVisibleCount - paginationConfig.tail * 2;
-    fillItems(Math.floor(activePage - middleLength / 2), Math.floor(activePage + middleLength / 2) - 1);
+    fillItems(Math.floor(activePage - middleLength / 2), Math.floor(activePage + middleLength / 2));
     items.push(<SkipItem key="finishSkip" />);
     items.push(
       <PaginationItem
