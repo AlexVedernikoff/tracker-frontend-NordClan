@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from '../PlanningEdit.scss';
+import * as css from './ProjectDate.scss';
 import { IconEdit, IconCheck } from '../../Icons';
 import ReactTooltip from 'react-tooltip';
 import DatepickerDropdown from '../../DatepickerDropdown';
@@ -8,7 +8,7 @@ import moment from 'moment';
 import classnames from 'classnames';
 
 class ProjectDate extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -17,15 +17,15 @@ class ProjectDate extends Component {
     };
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     ReactTooltip.rebuild();
   }
 
-  componentWillReceiveProps = (newProps) => {
+  componentWillReceiveProps = newProps => {
     if (this.props.value !== newProps.value) {
-      this.setState({value: newProps.value});
+      this.setState({ value: newProps.value });
     }
-  }
+  };
 
   toggleEditing = () => {
     if (this.state.isEditing) {
@@ -54,52 +54,52 @@ class ProjectDate extends Component {
   };
 
   handleDayToChange = date => {
-    this.setState({
-      value: moment(date).format()
-    });
+    this.setState(
+      {
+        value: moment(date).format()
+      },
+      this.toggleEditing
+    );
   };
 
-  render () {
-    const { header, disabledDataRanges } = this.props;
+  render() {
+    const { header, disabledDataRanges, disabledDays } = this.props;
     const { value } = this.state;
     const formattedDay = moment(value).format('DD.MM.YYYY');
     return (
-      <div className={classnames(css.PlanningEdit, css.projectDate)}>
-        <h2>{header}</h2>
+      <div className={css.projectDate}>
+        <div>{header}</div>
 
         <div className={css.editor}>
-          {
-            this.state.isEditing
-              ? <DatepickerDropdown
-                name="date"
-                value={value ? formattedDay : ''}
-                onDayChange={this.handleDayToChange}
-                placeholder="Введите дату"
-                disabledDataRanges={disabledDataRanges}
-              />
-              : <div>{value ? formattedDay : 'Дата не указана'}</div>
-          }
+          {this.state.isEditing ? (
+            <DatepickerDropdown
+              name="date"
+              autoFocus
+              value={value ? formattedDay : ''}
+              onDayChange={this.handleDayToChange}
+              selecteDAte
+              placeholder="Введите дату"
+              disabledDataRanges={disabledDataRanges}
+            />
+          ) : (
+            <div className={css.date}>{value ? formattedDay : 'Не указано'}</div>
+          )}
         </div>
 
-        {
-          this.props.isProjectAdmin
-            ? <div className={css.editBorder}>
-              {
-                this.state.isEditing
-                  ? <IconCheck
-                    className={css.save}
-                    onClick={this.toggleEditing}
-                    data-tip="Сохранить"
-                  />
-                  : <IconEdit
-                    className={css.edit}
-                    onClick={this.toggleEditing}
-                    data-tip="Редактировать"
-                  />
-              }
-            </div>
-            : null
-        }
+        {this.props.isProjectAdmin ? (
+          <div
+            className={classnames({
+              [css.save]: this.state.isEditing,
+              [css.edit]: !this.state.isEditing
+            })}
+          >
+            {this.state.isEditing ? (
+              <IconCheck onClick={this.toggleEditing} data-tip="Сохранить" />
+            ) : (
+              <IconEdit onClick={this.toggleEditing} data-tip="Редактировать" />
+            )}
+          </div>
+        ) : null}
       </div>
     );
   }

@@ -14,6 +14,7 @@ import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal, getProjectInfo, changeProject } from '../../../actions/Project';
 
 import Button from '../../../components/Button';
+import SimplePie from '../../../components/SimplePie';
 import Budget from '../../../components/PlanningEdit/Budget';
 import ConfirmModal from '../../../components/ConfirmModal';
 import CreateTaskModal from '../../../components/CreateTaskModal';
@@ -52,6 +53,7 @@ class Planning extends Component {
     lastCreatedTask: PropTypes.object,
     leftColumnTasks: PropTypes.object,
     loading: PropTypes.number,
+    milestones: PropTypes.array,
     openCreateTaskModal: PropTypes.func,
     params: PropTypes.object,
     project: PropTypes.object,
@@ -381,10 +383,10 @@ class Planning extends Component {
     const tasks = this.getUnfinishedLeftTasks();
 
     const getPlanningTasksAll = () => {
-      const { getPlanningTasks, leftColumnTasks, rightColumnTasks, project } = this.props;
+      const { leftColumnTasks, rightColumnTasks, project } = this.props;
 
       ['left', 'right'].forEach(side => {
-        getPlanningTasks(side, {
+        this.props.getPlanningTasks(side, {
           projectId: project.id,
           sprintId: this.state[`${side}Column`],
           currentPage:
@@ -464,48 +466,39 @@ class Planning extends Component {
     return (
       <div>
         <section>
-          <br />
-          <Row className={css.editRow}>
-            <Col xs={12} sm={5}>
-              <ProjectDate
-                onEditSubmit={this.onProjectStartSubmit}
-                header="Начало проекта:"
-                value={createdAt}
-                isProjectAdmin={isProjectAdmin}
-                disabledDataRanges={[{ after: new Date(completedAt) }]}
-              />
-            </Col>
-            <Col xs={12} sm={2} />
-            <Col xs={12} sm={5}>
-              <ProjectDate
-                onEditSubmit={this.onProjectEndSubmit}
-                header="Конец проекта:"
-                value={completedAt}
-                isProjectAdmin={isProjectAdmin}
-                disabledDataRanges={[{ before: new Date(createdAt) }]}
-              />
-            </Col>
-          </Row>
+          <div className={css.dates}>
+            <ProjectDate
+              onEditSubmit={this.onProjectStartSubmit}
+              header="Начало проекта:"
+              value={createdAt}
+              isProjectAdmin={isProjectAdmin}
+              disabledDataRanges={[{ after: new Date(completedAt) }]}
+            />
+            <hr />
+            <ProjectDate
+              onEditSubmit={this.onProjectEndSubmit}
+              header="Конец проекта:"
+              value={completedAt}
+              isProjectAdmin={isProjectAdmin}
+              disabledDataRanges={[{ before: new Date(createdAt) }]}
+            />
+          </div>
+          <SimplePie value={1 - budget / riskBudget} />
           {!isExternal ? (
-            <Row className={css.editRow}>
-              <Col xs={12} sm={5}>
-                <Budget
-                  onEditSubmit={this.onRiskBudgetSubmit}
-                  header="Бюджет с рисковым резервом:"
-                  value={riskBudget}
-                  isProjectAdmin={isProjectAdmin}
-                />
-              </Col>
-              <Col xs={12} sm={2} />
-              <Col xs={12} sm={5}>
-                <Budget
-                  onEditSubmit={this.onBudgetSubmit}
-                  header="Бюджет без рискового резерва:"
-                  value={budget}
-                  isProjectAdmin={isProjectAdmin}
-                />
-              </Col>
-            </Row>
+            <div>
+              <Budget
+                onEditSubmit={this.onRiskBudgetSubmit}
+                header="Бюджет с рисковым резервом:"
+                value={riskBudget}
+                isProjectAdmin={isProjectAdmin}
+              />
+              <Budget
+                onEditSubmit={this.onBudgetSubmit}
+                header="Бюджет без рискового резерва:"
+                value={budget}
+                isProjectAdmin={isProjectAdmin}
+              />
+            </div>
           ) : null}
           {isProjectAdmin ? (
             <Button
