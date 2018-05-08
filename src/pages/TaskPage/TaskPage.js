@@ -279,7 +279,7 @@ class TaskPage extends Component {
                     Комментарии
                   </Link>
                   <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/history`}>История</Link>
-                  {globalRole === ADMIN && (
+                  {this.props.globalRole === ADMIN && (
                     <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/time-reports`}>
                       Отчеты по времени
                     </Link>
