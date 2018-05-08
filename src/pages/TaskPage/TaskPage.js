@@ -67,7 +67,8 @@ class TaskPage extends Component {
     stopTaskEditing: PropTypes.func.isRequired,
     task: PropTypes.object,
     unlinkTask: PropTypes.func.isRequired,
-    uploadAttachments: PropTypes.func.isRequired
+    uploadAttachments: PropTypes.func.isRequired,
+    user: PropTypes.object
   };
 
   constructor(props) {
@@ -241,6 +242,8 @@ class TaskPage extends Component {
         : null;
     const httpError = task.error || notFoundError;
 
+    const pmAccess = this.props.project.users.find(user => user.id === this.props.user.id);
+
     return httpError ? (
       <HttpError error={httpError} />
     ) : (
@@ -279,7 +282,7 @@ class TaskPage extends Component {
                     Комментарии
                   </Link>
                   <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/history`}>История</Link>
-                  {this.props.globalRole === ADMIN && (
+                  {(this.props.globalRole === ADMIN || (pmAccess && (pmAccess.roles.pm || pmAccess.roles.account))) && (
                     <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/time-reports`}>
                       Отчеты по времени
                     </Link>
@@ -392,7 +395,8 @@ const mapStateToProps = state => ({
   isCreateChildTaskModalOpen: state.Project.isCreateChildTaskModalOpen,
   globalRole: state.Auth.user.globalRole,
   hasError: state.Task.hasError,
-  closeHasError: state.Task.closeHasError
+  closeHasError: state.Task.closeHasError,
+  user: state.Auth.user
 });
 
 const mapDispatchToProps = {
