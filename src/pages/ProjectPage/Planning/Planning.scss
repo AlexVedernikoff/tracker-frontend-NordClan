@@ -17,9 +17,9 @@
 }
 
 .dates {
-  margin-bottom: 1rem;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 
   hr {
     width: 2rem;
