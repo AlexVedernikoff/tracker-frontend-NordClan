@@ -483,26 +483,29 @@ class Planning extends Component {
               disabledDataRanges={[{ before: new Date(createdAt) }]}
             />
           </div>
-          <SimplePie value={1 - budget / riskBudget} />
-          {!isExternal ? (
-            <div>
-              <Budget
-                onEditSubmit={this.onRiskBudgetSubmit}
-                header="Бюджет с рисковым резервом:"
-                value={riskBudget}
-                isProjectAdmin={isProjectAdmin}
-              />
-              <Budget
-                onEditSubmit={this.onBudgetSubmit}
-                header="Бюджет без рискового резерва:"
-                value={budget}
-                isProjectAdmin={isProjectAdmin}
-              />
-            </div>
-          ) : null}
+          <div className={css.budgetContainer}>
+            {!!budget && !!riskBudget && <SimplePie value={1 - budget / riskBudget} />}
+            {!isExternal ? (
+              <div className={css.budgetLegend}>
+                <Budget
+                  onEditSubmit={this.onRiskBudgetSubmit}
+                  header="Бюджет с рисковым резервом:"
+                  value={riskBudget}
+                  isProjectAdmin={isProjectAdmin}
+                />
+                <Budget
+                  onEditSubmit={this.onBudgetSubmit}
+                  header="Бюджет без рискового резерва:"
+                  value={budget}
+                  isProjectAdmin={isProjectAdmin}
+                />
+              </div>
+            ) : null}
+          </div>
+          <hr />
           {isProjectAdmin ? (
             <Button
-              text="спринт"
+              text="Cпринт"
               type="primary"
               style={{ float: 'right', marginTop: '-.2rem' }}
               icon="IconPlus"
@@ -511,7 +514,7 @@ class Planning extends Component {
           ) : null}
           {isProjectAdmin ? (
             <Button
-              text="Создать веху"
+              text="Веха"
               type="primary"
               style={{ float: 'right', marginTop: '-.2rem', marginRight: '5px' }}
               icon="IconPlus"

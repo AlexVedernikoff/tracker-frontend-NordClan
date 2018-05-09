@@ -18,6 +18,7 @@
 
 .dates {
   display: flex;
+  margin-bottom: 1rem;
   align-items: center;
   flex-wrap: wrap;
 
@@ -26,6 +27,17 @@
     border-color: lighten(black, 80%);
     margin: 0 0.5rem;
   }
+}
+
+.budgetContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: nowrap;
+}
+
+.budgetLegend:not(:first-child) {
+  margin-left: 1rem;
 }
 
 .graph {

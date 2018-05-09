@@ -63,7 +63,7 @@ class ProjectDate extends Component {
   };
 
   render() {
-    const { header, disabledDataRanges, disabledDays } = this.props;
+    const { header, disabledDataRanges } = this.props;
     const { value } = this.state;
     const formattedDay = moment(value).format('DD.MM.YYYY');
     return (
@@ -82,7 +82,7 @@ class ProjectDate extends Component {
               disabledDataRanges={disabledDataRanges}
             />
           ) : (
-            <div className={css.date}>{value ? formattedDay : 'Не указано'}</div>
+            <div className={css.date}>{value ? formattedDay : <span style={{ color: 'silver' }}>Не указано</span>}</div>
           )}
         </div>
 

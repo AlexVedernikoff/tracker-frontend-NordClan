@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from '../PlanningEdit.scss';
+import * as css from './Budget.scss';
 import { IconEdit, IconCheck } from '../../Icons';
 import ReactTooltip from 'react-tooltip';
-import Input from '../../Input';
-import { formatCurrency } from '../../../utils/Currency';
+import InputNumber from '../../InputNumber';
+import roundNum from '../../../utils/roundNum';
 
 class Budget extends Component {
   constructor(props) {
@@ -48,9 +48,10 @@ class Budget extends Component {
     onEditSubmit(this.state.value);
   };
 
-  onChangeValue = e => {
+  onChangeValue = value => {
     this.setState({
-      value: parseFloat(parseFloat(e.target.value).toFixed(2))
+      value
+      // value: parseFloat(parseFloat(e.target.value).toFixed(2))
     });
   };
 
@@ -58,23 +59,23 @@ class Budget extends Component {
     const { header } = this.props;
 
     return (
-      <div className={css.PlanningEdit}>
-        <div>{header}</div>
+      <div className={css.budget}>
+        <div className={css.title}>{header}</div>
 
         <div className={css.editor}>
           {this.state.isEditing ? (
-            <Input type="number" defaultValue={this.props.value} onChange={this.onChangeValue} />
+            <InputNumber defaultValue={this.props.value} onChange={this.onChangeValue} />
           ) : (
-            <div>{formatCurrency(this.props.value)}</div>
+            <div className={css.budgetValue}>{roundNum(this.props.value, 2)}</div>
           )}
         </div>
 
         {this.props.isProjectAdmin ? (
-          <div className={css.editBorder}>
+          <div>
             {this.state.isEditing ? (
-              <IconCheck className={css.save} onClick={this.toggleEditing} data-tip="Сохранить" />
+              <IconCheck onClick={this.toggleEditing} data-tip="Сохранить" />
             ) : (
-              <IconEdit className={css.edit} onClick={this.toggleEditing} data-tip="Редактировать" />
+              <IconEdit onClick={this.toggleEditing} data-tip="Редактировать" />
             )}
           </div>
         ) : null}
