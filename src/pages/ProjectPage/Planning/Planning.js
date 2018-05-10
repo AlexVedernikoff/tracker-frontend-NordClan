@@ -14,6 +14,7 @@ import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal, getProjectInfo, changeProject } from '../../../actions/Project';
 
 import Button from '../../../components/Button';
+import RoundButton from '../../../components/RoundButton';
 import SimplePie from '../../../components/SimplePie';
 import Budget from '../../../components/PlanningEdit/Budget';
 import ConfirmModal from '../../../components/ConfirmModal';
@@ -579,15 +580,19 @@ class Planning extends Component {
           />
           {!isVisor && !isExternal ? (
             <div className={css.moveTasksBtnWrapper}>
-              <Button
-                text="Перенести спринт"
-                type="bordered"
-                loading={!!loading}
-                icon={'IconPointingArrowRight'}
-                data-tip="Перенести нереализованные задачи в другой спринт"
-                onClick={this.onMoveTasksModalOpen}
-                disabled={this.isMoveTasksButtonDisabled(unfinishedLeftTasksCount)}
-              />
+              <div className={css.leftBranch} />
+              <div className={css.moveButton}>
+                <RoundButton
+                  data-tip="Перенести все незакрытые задачи"
+                  loading={!!loading}
+                  onClick={this.onMoveTasksModalOpen}
+                  disabled={this.isMoveTasksButtonDisabled(unfinishedLeftTasksCount)}
+                >
+                  »
+                </RoundButton>
+              </div>
+              <div className={css.mobeButtonLabel}>Перенести все незакрытые</div>
+              <div className={css.rightBranch} />
             </div>
           ) : null}
           {!isVisor && !isExternal ? (

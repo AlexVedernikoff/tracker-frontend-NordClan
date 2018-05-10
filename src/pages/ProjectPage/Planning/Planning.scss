@@ -424,13 +424,46 @@
 }
 
 .moveTasksBtnWrapper {
-  // margin: 0 0.5rem;
-  // flex-shrink: 0;
-  margin-bottom: 1.2rem;
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  position: relative;
   @include phone {
-    width: 100%;
-    margin: 0 0.5rem 2rem;
+    justify-content: flex-start;
+  }
+
+  .mobeButtonLabel {
+    display: none;
+    color: $color-dark-gray;
+
+    @include phone {
+      display: block;
+      margin-left: 0.5rem;
+    }
+  }
+
+  .leftBranch,
+  .rightBranch {
+    margin: 0 0.5rem;
+    position: relative;
+    top: 0.5rem;
+    width: 3rem;
+    height: 1rem;
+    border: 1px solid silver;
+    border-bottom: none;
+
+    @include phone {
+      display: none;
+    }
+  }
+
+  .leftBranch {
+    border-right: none;
+  }
+  .rightBranch {
+    border-left: none;
   }
 }
 
