@@ -22,7 +22,8 @@ class Budget extends Component {
     ReactTooltip.rebuild();
   }
 
-  toggleEditing = () => {
+  toggleEditing = e => {
+    e.preventDefault();
     if (this.state.isEditing) {
       this.saveBudget();
       this.stopEditing();
@@ -55,8 +56,12 @@ class Budget extends Component {
     });
   };
 
+  selectAll = e => {
+    e.target.select();
+  };
+
   render() {
-    const { header } = this.props;
+    const { header, max, min } = this.props;
 
     return (
       <div className={css.budget}>
@@ -64,19 +69,28 @@ class Budget extends Component {
 
         <div className={css.editor}>
           {this.state.isEditing ? (
-            <InputNumber defaultValue={this.props.value} onChange={this.onChangeValue} />
+            <form onSubmit={this.toggleEditing}>
+              <InputNumber
+                onFocus={this.selectAll}
+                autoFocus
+                defaultValue={this.props.value}
+                onChange={this.onChangeValue}
+                max={max}
+                min={min}
+              />
+            </form>
           ) : (
             <div className={css.budgetValue}>{roundNum(this.props.value, 2)}</div>
           )}
         </div>
 
         {this.props.isProjectAdmin ? (
-          <div>
-            {this.state.isEditing ? (
-              <IconCheck onClick={this.toggleEditing} data-tip="Сохранить" />
-            ) : (
-              <IconEdit onClick={this.toggleEditing} data-tip="Редактировать" />
-            )}
+          <div
+            className={css.editIcon}
+            onClick={this.toggleEditing}
+            data-tip={this.state.isEditing ? 'Сохранить' : 'Редактировать'}
+          >
+            {this.state.isEditing ? <IconCheck className={css.save} /> : <IconEdit className={css.edit} />}
           </div>
         ) : null}
       </div>
@@ -88,6 +102,8 @@ Budget.propTypes = {
   header: PropTypes.string.isRequired,
   id: PropTypes.number,
   isProjectAdmin: PropTypes.bool,
+  max: PropTypes.number,
+  min: PropTypes.number,
   onEditSubmit: PropTypes.func.isRequired,
   value: PropTypes.number
 };

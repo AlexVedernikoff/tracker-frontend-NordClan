@@ -2,6 +2,16 @@
 
 .budget {
   display: flex;
+  flex-wrap: wrap;
+
+  .editIcon {
+    opacity: 0;
+    transition: $transition;
+  }
+
+  &:hover .editIcon {
+    opacity: 0.6;
+  }
 
   .editor {
     input {
@@ -21,4 +31,21 @@
 .title {
   display: flex;
   align-items: center;
+}
+
+.editIcon {
+  display: inline-flex;
+  margin-left: 0.25rem;
+  align-items: center;
+  color: $color-dark;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 1;
+    transition: $transition;
+
+    .save {
+      color: $color-green;
+    }
+  }
 }

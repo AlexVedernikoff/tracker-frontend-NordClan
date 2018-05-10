@@ -487,18 +487,22 @@ class Planning extends Component {
             {!!budget && !!riskBudget && <SimplePie value={1 - budget / riskBudget} />}
             {!isExternal ? (
               <div className={css.budgetLegend}>
+                <div style={{ lineHeight: '1.5rem', fontWeight: 'bold' }}>Бюджет:</div>
                 <Budget
                   onEditSubmit={this.onRiskBudgetSubmit}
-                  header="Бюджет с рисковым резервом:"
+                  header="С рисковым резервом:"
                   value={riskBudget}
                   isProjectAdmin={isProjectAdmin}
+                  min={budget}
                 />
                 <Budget
                   onEditSubmit={this.onBudgetSubmit}
-                  header="Бюджет без рискового резерва:"
+                  header="Без рискового резерва:"
                   value={budget}
                   isProjectAdmin={isProjectAdmin}
+                  max={riskBudget}
                 />
+                {!!budget && !!riskBudget && <div className={css.riskMarker}>Рисковый резерв</div>}
               </div>
             ) : null}
           </div>
