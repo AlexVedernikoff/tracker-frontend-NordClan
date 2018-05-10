@@ -435,11 +435,29 @@ class Planning extends Component {
     const isExternal = this.props.user.globalRole === EXTERNAL_USER;
 
     const leftColumnTasksData = this.props.leftColumnTasks.data.map(task => {
-      return <DraggableTaskRow key={`task-${task.id}`} task={task} prefix={this.props.project.prefix} shortcut card />;
+      return (
+        <DraggableTaskRow
+          draggable
+          key={`task-${task.id}`}
+          task={task}
+          prefix={this.props.project.prefix}
+          shortcut
+          card
+        />
+      );
     });
 
     const rightColumnTasksData = this.props.rightColumnTasks.data.map(task => {
-      return <DraggableTaskRow key={`task-${task.id}`} task={task} prefix={this.props.project.prefix} shortcut card />;
+      return (
+        <DraggableTaskRow
+          draggable
+          key={`task-${task.id}`}
+          task={task}
+          prefix={this.props.project.prefix}
+          shortcut
+          card
+        />
+      );
     });
 
     const leftEstimates = this.getEstimatesInfo(this.state.leftColumn);

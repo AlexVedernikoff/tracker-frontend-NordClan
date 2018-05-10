@@ -7,7 +7,10 @@
   // margin-bottom: 1rem;
   border-top: 1px solid $color-gray;
   transition: $transition;
-  cursor: pointer;
+
+  &.draggable {
+    cursor: grab;
+  }
 
   &.card {
     border: 1px solid $color-gray;

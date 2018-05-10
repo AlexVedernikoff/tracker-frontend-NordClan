@@ -1,11 +1,8 @@
 @import '../../../styles/variables';
 
 .unactive {
-  color: $color-dark-gray;
 }
-
 .active {
-  color: $color-black;
 }
 
 .button {
@@ -143,8 +140,36 @@
 .year {
   display: flex;
   text-align: center;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
+
+  .prev,
+  .next,
+  .current {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .prev,
+  .next {
+    cursor: pointer;
+    background-color: $color-lightgray;
+    color: gray;
+    flex: 1;
+    transition: $transition;
+
+    &:hover {
+      color: $color-black;
+      background-color: $color-gray;
+      transition: $transition;
+    }
+  }
+
+  .current {
+    font-weight: bold;
+    flex: 1;
+  }
 
   .arrow {
     cursor: pointer;
@@ -170,14 +195,15 @@
 }
 
 .sprintNames {
-  display: flex;
   width: 9rem;
+  padding-top: 4rem;
   flex-shrink: 0;
   flex-direction: column;
   border-top: 1px solid lighten($color-black, 70%);
   border-bottom: 1px solid lighten($color-black, 70%);
 
   & > * {
+    height: 2rem;
     flex: 1;
     display: flex;
     align-items: center;
@@ -235,6 +261,7 @@
 
 .spentTime {
   width: 3rem;
+  padding-top: 2rem;
 
   .header {
     flex: 3;

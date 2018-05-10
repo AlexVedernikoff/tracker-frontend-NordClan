@@ -42,6 +42,7 @@ class TaskRow extends React.Component {
       shortcut,
       card,
       isDragging,
+      draggable,
       onClickTag,
       taskTypes,
       onOpenPerformerModal,
@@ -57,6 +58,7 @@ class TaskRow extends React.Component {
       <div
         className={classnames({
           [css.taskCard]: true,
+          [css.draggable]: draggable,
           [css[classPriority]]: true,
           [css.card]: card,
           [css.dropped]: isDragging
@@ -153,6 +155,7 @@ class TaskRow extends React.Component {
 
 TaskRow.propTypes = {
   card: PropTypes.bool,
+  draggable: PropTypes.bool,
   isDragging: PropTypes.bool,
   isExternal: PropTypes.bool,
   onClickTag: PropTypes.func,

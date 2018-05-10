@@ -8,7 +8,7 @@ import * as css from './RoundButton.scss';
 
 class RoundButton extends Component {
   static propTypes = {
-    children: PropTypes.object,
+    children: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     className: PropTypes.string,
     loading: PropTypes.bool
   };

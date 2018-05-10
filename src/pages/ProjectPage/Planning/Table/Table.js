@@ -5,6 +5,8 @@ import moment from 'moment';
 import SprintStartControl from '../../../../components/SprintStartControl';
 import { IconEdit } from '../../../../components/Icons';
 
+import roundNum from '../../../../utils/roundNum';
+
 class Table extends React.Component {
   getSprintBlock = (sprint, activeYear) => {
     const { factStartDate: start, factFinishDate: end } = sprint;
@@ -82,8 +84,6 @@ class Table extends React.Component {
 
     return (
       <div className={css.sprintNames}>
-        <div />
-        <div />
         {entities.map((entity, i) => {
           return this.detectType(entity) === 'sprint'
             ? this.renderSprintLabel(entity, i)
@@ -183,7 +183,7 @@ class Table extends React.Component {
         {entities.map((entity, i) => {
           return this.detectType(entity) === 'sprint' ? (
             <span key={`sprint-${i}`} className={css.name}>
-              {!isExternal ? entity.allottedTime : ''}
+              {!isExternal ? roundNum(entity.allottedTime, 2) : ''}
             </span>
           ) : (
             <span key={`milestone-${i}`} className={css.name}>
@@ -208,7 +208,7 @@ class Table extends React.Component {
         {entities.map((entity, i) => {
           return this.detectType(entity) === 'sprint' ? (
             <span key={`sprint-${i}`} className={css.name}>
-              {!isExternal ? entity.spentTime : ''}
+              {!isExternal ? roundNum(entity.spentTime, 2) : ''}
             </span>
           ) : (
             <span key={`milestone-${i}`} className={css.name}>
@@ -322,12 +322,12 @@ class Table extends React.Component {
           <div className={css.table}>
             <div className={css.tr}>
               <div className={css.year}>
-                <span className={css.arrow} onClick={grantYearDecrement}>
-                  &larr;
+                <span className={css.prev} onClick={grantYearDecrement}>
+                  {grantActiveYear - 1}
                 </span>
-                <span>{grantActiveYear}</span>
-                <span className={css.arrow} onClick={grantYearIncrement}>
-                  &rarr;
+                <span className={css.current}>{grantActiveYear}</span>
+                <span className={css.next} onClick={grantYearIncrement}>
+                  {grantActiveYear + 1}
                 </span>
               </div>
             </div>
