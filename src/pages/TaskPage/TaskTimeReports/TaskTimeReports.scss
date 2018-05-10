@@ -11,3 +11,22 @@
   font-size: $font-size-small;
   line-height: 1.5;
 }
+
+.chartContainer {
+  display: flex;
+}
+
+.horizontalChart {
+  position: relative;
+  height: 50px;
+  min-width: auto;
+  display: block;
+  padding: 5px;
+}
+
+.chartNumber {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 5px;
+}

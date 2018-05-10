@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import * as css from './TaskTimeReports.scss';
 import { getTaskSpent } from '../../../actions/Task';
 import PropTypes from 'prop-types';
-import { Doughnut } from 'react-chartjs-2';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import getColor from '../../../utils/Colors';
 
@@ -145,57 +144,64 @@ class TaskTimeReports extends React.Component {
     const isUsersDataSet = usersDataSet.length !== 0;
     const isRolesDataSet = rolesDataSet.length !== 0;
 
-    const stageData = {
-      labels: stages,
-      datasets: [
-        {
-          data: stagesDataSet,
-          backgroundColor: stagesColors,
-          hoverBackgroundColor: stagesColors
-        }
-      ]
-    };
-    const userData = {
-      labels: users,
-      datasets: [
-        {
-          data: usersDataSet,
-          backgroundColor: usersColors,
-          hoverBackgroundColor: usersColors
-        }
-      ]
-    };
-    const roleData = {
-      datasets: [
-        {
-          data: rolesDataSet,
-          backgroundColor: rolesColors,
-          hoverBackgroundColor: rolesColors
-        }
-      ],
-      labels: roles
-    };
-
     return (
-      <div className={css.timeReports}>
+      <div className={css.timeReports} style={{ position: 'relative' }}>
         <h3>Отчеты по времени</h3>
         <Row>
           {isStagesDataSet && (
             <Col xs={12}>
               <h4>по стадиям</h4>
-              <Doughnut data={stageData} />
+              <div className={css.chartContainer}>
+                {stages.map((stage, index) => (
+                  <div
+                    key={index}
+                    className={css.horizontalChart}
+                    style={{ backgroundColor: stagesColors[index], flexGrow: stagesDataSet[index] }}
+                  >
+                    {stage}
+                    <div className={css.chartNumber}>{stagesDataSet[index]}</div>
+                  </div>
+                ))}
+              </div>
             </Col>
           )}
           {isUsersDataSet && (
             <Col xs={12}>
               <h4>по людям</h4>
-              <Doughnut data={userData} />
+              <div className={css.chartContainer}>
+                {users.map((user, index) => {
+                  const userArr = user.split(' ');
+                  return (
+                    <div
+                      key={index}
+                      className={css.horizontalChart}
+                      style={{ backgroundColor: usersColors[index], flexGrow: usersDataSet[index] }}
+                    >
+                      <span>{userArr[0]}</span>
+                      <br />
+                      <span>{userArr[1]}</span>
+                      <div className={css.chartNumber}>{usersDataSet[index]}</div>
+                    </div>
+                  );
+                })}
+              </div>
             </Col>
           )}
           {isRolesDataSet && (
             <Col xs={12}>
               <h4>по ролям</h4>
-              <Doughnut data={roleData} />
+              <div className={css.chartContainer}>
+                {roles.map((role, index) => (
+                  <div
+                    key={index}
+                    className={css.horizontalChart}
+                    style={{ backgroundColor: rolesColors[index], flexGrow: rolesDataSet[index] }}
+                  >
+                    <span>{role}</span>
+                    <div className={css.chartNumber}>{rolesDataSet[index]}</div>
+                  </div>
+                ))}
+              </div>
             </Col>
           )}
           {!isStagesDataSet &&
