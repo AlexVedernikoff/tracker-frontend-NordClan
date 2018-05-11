@@ -7,6 +7,7 @@ import { getTaskSpent } from '../../../actions/Task';
 import PropTypes from 'prop-types';
 import getColor from '../../../utils/Colors';
 import { ADMIN } from '../../../constants/Roles';
+import RadioGroup from '../../../components/RadioGroup';
 
 class TaskTimeReports extends React.Component {
   constructor(props) {
@@ -26,7 +27,8 @@ class TaskTimeReports extends React.Component {
         roles: [],
         rolesDataSet: [],
         rolesColors: []
-      }
+      },
+      chartBy: 'byStage'
     };
   }
 
@@ -151,73 +153,85 @@ class TaskTimeReports extends React.Component {
         <h3>Отчеты по времени</h3>
         {(this.props.globalRole === ADMIN || (pmAccess && (pmAccess.roles.pm || pmAccess.roles.account))) && (
           <div className={css.timeCharts}>
-            {isStagesDataSet && (
-              <div className={css.timeChart}>
-                <h4>По стадиям</h4>
-                <div className={css.chartContainer}>
-                  {stages.map((stage, index) => (
-                    <div
-                      key={index}
-                      className={css.horizontalChart}
-                      style={{
-                        backgroundColor: stagesColors[index],
-                        width: stagesDataSet[index] / sum(stagesDataSet) * 100 + '%'
-                      }}
-                      title={`${stage}: ${stagesDataSet[index]}`}
-                    >
-                      <div className={css.chartLabelContainer}>{stage}</div>
-                      <div className={css.chartNumber}>{stagesDataSet[index]}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            {isUsersDataSet && (
-              <div className={css.timeChart}>
-                <h4>По людям</h4>
-                <div className={css.chartContainer}>
-                  {users.map((user, index) => {
-                    const userArr = user.split(' ');
-                    return (
+            <div>
+              <RadioGroup
+                name="chartView"
+                value={this.state.chartBy}
+                onChange={chartBy => this.setState({ chartBy })}
+                options={[
+                  { text: 'По стадиям', value: 'byStage' },
+                  { text: 'По людям', value: 'byUser' },
+                  { text: 'По ролям', value: 'byRole' }
+                ]}
+              />
+            </div>
+            {isStagesDataSet &&
+              this.state.chartBy === 'byStage' && (
+                <div className={css.timeChart}>
+                  <div className={css.chartContainer}>
+                    {stages.map((stage, index) => (
                       <div
                         key={index}
                         className={css.horizontalChart}
                         style={{
-                          backgroundColor: usersColors[index],
-                          width: usersDataSet[index] / sum(usersDataSet) * 100 + '%'
+                          backgroundColor: stagesColors[index],
+                          width: stagesDataSet[index] / sum(stagesDataSet) * 100 + '%'
                         }}
-                        title={`${user}: ${usersDataSet[index]}`}
+                        title={`${stage}: ${stagesDataSet[index]}`}
                       >
-                        <div className={css.chartLabelContainer}>{userArr[0]}</div>
-                        <div className={css.chartLabelContainer}>{userArr[1]}</div>
-                        <div className={css.chartNumber}>{usersDataSet[index]}</div>
+                        <div className={css.chartLabelContainer}>{stage}</div>
+                        <div className={css.chartNumber}>{stagesDataSet[index]}</div>
                       </div>
-                    );
-                  })}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
-            {isRolesDataSet && (
-              <div className={css.timeChart}>
-                <h4>По ролям</h4>
-                <div className={css.chartContainer}>
-                  {roles.map((role, index) => (
-                    <div
-                      key={index}
-                      className={css.horizontalChart}
-                      style={{
-                        backgroundColor: rolesColors[index],
-                        width: rolesDataSet[index] / sum(rolesDataSet) * 100 + '%'
-                      }}
-                      title={`${role}: ${rolesDataSet[index]}`}
-                    >
-                      <div className={css.chartLabelContainer}>{role}</div>
-                      <div className={css.chartNumber}>{rolesDataSet[index]}</div>
-                    </div>
-                  ))}
+              )}
+            {isUsersDataSet &&
+              this.state.chartBy === 'byUser' && (
+                <div className={css.timeChart}>
+                  <div className={css.chartContainer}>
+                    {users.map((user, index) => {
+                      const userArr = user.split(' ');
+                      return (
+                        <div
+                          key={index}
+                          className={css.horizontalChart}
+                          style={{
+                            backgroundColor: usersColors[index],
+                            width: usersDataSet[index] / sum(usersDataSet) * 100 + '%'
+                          }}
+                          title={`${user}: ${usersDataSet[index]}`}
+                        >
+                          <div className={css.chartLabelContainer}>{userArr[0]}</div>
+                          <div className={css.chartLabelContainer}>{userArr[1]}</div>
+                          <div className={css.chartNumber}>{usersDataSet[index]}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            {isRolesDataSet &&
+              this.state.chartBy === 'byRole' && (
+                <div className={css.timeChart}>
+                  <div className={css.chartContainer}>
+                    {roles.map((role, index) => (
+                      <div
+                        key={index}
+                        className={css.horizontalChart}
+                        style={{
+                          backgroundColor: rolesColors[index],
+                          width: rolesDataSet[index] / sum(rolesDataSet) * 100 + '%'
+                        }}
+                        title={`${role}: ${rolesDataSet[index]}`}
+                      >
+                        <div className={css.chartLabelContainer}>{role}</div>
+                        <div className={css.chartNumber}>{rolesDataSet[index]}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             {!isStagesDataSet &&
               !isUsersDataSet &&
               !isRolesDataSet && <p className={css.noReports}>Нет существующих отчетов</p>}
