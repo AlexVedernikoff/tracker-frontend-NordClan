@@ -1,7 +1,17 @@
 @import '../../../styles/variables.scss';
 
+.timeCharts {
+  margin-bottom: 2rem;
+}
+
 .timeReports {
   // padding: 16px 16px 0 16px;
+}
+
+.chartLabelContainer {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .noReports {
@@ -14,19 +24,43 @@
 
 .chartContainer {
   display: flex;
+  color: white;
 }
 
 .horizontalChart {
   position: relative;
-  height: 50px;
+  height: 3.5rem;
   min-width: auto;
   display: block;
-  padding: 5px;
+  padding: 0.5rem;
+  overflow: hidden;
+  transition: $transition;
+
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    height: 100%;
+    background-color: rgba(white, 0.1);
+  }
+
+  &:hover {
+    opacity: 0.9;
+    transition: $transition;
+  }
 }
 
 .chartNumber {
   position: absolute;
   right: 0;
   bottom: 0;
-  padding: 5px;
+  padding: 0.25rem 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: $font-size-small;
+  opacity: 0.8;
 }

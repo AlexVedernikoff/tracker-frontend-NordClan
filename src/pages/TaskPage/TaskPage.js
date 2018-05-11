@@ -18,7 +18,7 @@ import GoBackPanel from '../../components/GoBackPanel';
 import CreateTaskModal from '../../components/CreateTaskModal';
 import HttpError from '../../components/HttpError';
 import { history } from '../../History';
-import { VISOR, EXTERNAL_USER, ADMIN } from '../../constants/Roles';
+import { VISOR, EXTERNAL_USER } from '../../constants/Roles';
 
 import * as TaskStatuses from '../../constants/TaskStatuses';
 
@@ -50,18 +50,23 @@ class TaskPage extends Component {
     getTask: PropTypes.func.isRequired,
     getTasks: PropTypes.func.isRequired,
     globalRole: PropTypes.string.isRequired,
+    hasError: PropTypes.bool,
     isCreateChildTaskModalOpen: PropTypes.bool,
     isCreateTaskModalOpen: PropTypes.bool,
     linkTask: PropTypes.func.isRequired,
+    location: PropTypes.object,
     openCreateChildTaskModal: PropTypes.func.isRequired,
     openCreateTaskModal: PropTypes.func.isRequired,
     params: PropTypes.shape({
       projectId: PropTypes.string.isRequired,
-      taskId: PropTypes.string.isRequired
+      taskId: PropTypes.string.isRequired,
+      closeHasError: PropTypes.bool
     }),
     project: PropTypes.object,
     projectTasks: PropTypes.array,
     removeAttachment: PropTypes.func,
+    route: PropTypes.object,
+    router: PropTypes.object,
     sprints: PropTypes.array,
     startTaskEditing: PropTypes.func.isRequired,
     stopTaskEditing: PropTypes.func.isRequired,
@@ -210,17 +215,17 @@ class TaskPage extends Component {
   };
 
   handleCancelSubTask = () => {
-    const { getTask, changeTask, task } = this.props;
+    const { task } = this.props;
     const { canceledSubTaskId } = this.state;
 
-    changeTask(
+    this.props.changeTask(
       {
         id: canceledSubTaskId,
         statusId: TaskStatuses.CANCELED
       },
       'Status',
       () => {
-        getTask(task.id);
+        this.props.getTask(task.id);
       }
     );
 
@@ -241,8 +246,6 @@ class TaskPage extends Component {
           }
         : null;
     const httpError = task.error || notFoundError;
-
-    const pmAccess = this.props.project.users.find(user => user.id === this.props.user.id);
 
     return httpError ? (
       <HttpError error={httpError} />
@@ -282,11 +285,9 @@ class TaskPage extends Component {
                     Комментарии
                   </Link>
                   <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/history`}>История</Link>
-                  {(this.props.globalRole === ADMIN || (pmAccess && (pmAccess.roles.pm || pmAccess.roles.account))) && (
-                    <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/time-reports`}>
-                      Отчеты по времени
-                    </Link>
-                  )}
+                  <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/time-reports`}>
+                    Отчеты по времени
+                  </Link>
                 </RouteTabs>
               ) : null}
               {this.props.children}
@@ -371,7 +372,7 @@ class TaskPage extends Component {
             onConfirm={this.handleCancelSubTask}
           />
         ) : null}
-        {this.props.hasError === true && this.state.closeHasError !== true ? (
+        {this.props.hasError && !this.state.closeHasError ? (
           <ConfirmModal
             isOpen
             contentLabel="modal"

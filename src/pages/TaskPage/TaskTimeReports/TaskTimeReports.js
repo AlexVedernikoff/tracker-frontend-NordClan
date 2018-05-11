@@ -1,12 +1,12 @@
 import React from 'react';
-
 import { connect } from 'react-redux';
+import { sum } from 'lodash';
 
 import * as css from './TaskTimeReports.scss';
 import { getTaskSpent } from '../../../actions/Task';
 import PropTypes from 'prop-types';
-import { Row, Col } from 'react-flexbox-grid/lib/index';
 import getColor from '../../../utils/Colors';
+import { ADMIN } from '../../../constants/Roles';
 
 class TaskTimeReports extends React.Component {
   constructor(props) {
@@ -144,70 +144,85 @@ class TaskTimeReports extends React.Component {
     const isUsersDataSet = usersDataSet.length !== 0;
     const isRolesDataSet = rolesDataSet.length !== 0;
 
+    const pmAccess = this.props.project.users.find(user => user.id === this.props.user.id);
+
     return (
       <div className={css.timeReports} style={{ position: 'relative' }}>
         <h3>Отчеты по времени</h3>
-        <Row>
-          {isStagesDataSet && (
-            <Col xs={12}>
-              <h4>по стадиям</h4>
-              <div className={css.chartContainer}>
-                {stages.map((stage, index) => (
-                  <div
-                    key={index}
-                    className={css.horizontalChart}
-                    style={{ backgroundColor: stagesColors[index], flexGrow: stagesDataSet[index] }}
-                  >
-                    {stage}
-                    <div className={css.chartNumber}>{stagesDataSet[index]}</div>
-                  </div>
-                ))}
-              </div>
-            </Col>
-          )}
-          {isUsersDataSet && (
-            <Col xs={12}>
-              <h4>по людям</h4>
-              <div className={css.chartContainer}>
-                {users.map((user, index) => {
-                  const userArr = user.split(' ');
-                  return (
+        {(this.props.globalRole === ADMIN || (pmAccess && (pmAccess.roles.pm || pmAccess.roles.account))) && (
+          <div className={css.timeCharts}>
+            {isStagesDataSet && (
+              <div className={css.timeChart}>
+                <h4>По стадиям</h4>
+                <div className={css.chartContainer}>
+                  {stages.map((stage, index) => (
                     <div
                       key={index}
                       className={css.horizontalChart}
-                      style={{ backgroundColor: usersColors[index], flexGrow: usersDataSet[index] }}
+                      style={{
+                        backgroundColor: stagesColors[index],
+                        width: stagesDataSet[index] / sum(stagesDataSet) * 100 + '%'
+                      }}
+                      title={`${stage}: ${stagesDataSet[index]}`}
                     >
-                      <span>{userArr[0]}</span>
-                      <br />
-                      <span>{userArr[1]}</span>
-                      <div className={css.chartNumber}>{usersDataSet[index]}</div>
+                      <div className={css.chartLabelContainer}>{stage}</div>
+                      <div className={css.chartNumber}>{stagesDataSet[index]}</div>
                     </div>
-                  );
-                })}
+                  ))}
+                </div>
               </div>
-            </Col>
-          )}
-          {isRolesDataSet && (
-            <Col xs={12}>
-              <h4>по ролям</h4>
-              <div className={css.chartContainer}>
-                {roles.map((role, index) => (
-                  <div
-                    key={index}
-                    className={css.horizontalChart}
-                    style={{ backgroundColor: rolesColors[index], flexGrow: rolesDataSet[index] }}
-                  >
-                    <span>{role}</span>
-                    <div className={css.chartNumber}>{rolesDataSet[index]}</div>
-                  </div>
-                ))}
+            )}
+            {isUsersDataSet && (
+              <div className={css.timeChart}>
+                <h4>По людям</h4>
+                <div className={css.chartContainer}>
+                  {users.map((user, index) => {
+                    const userArr = user.split(' ');
+                    return (
+                      <div
+                        key={index}
+                        className={css.horizontalChart}
+                        style={{
+                          backgroundColor: usersColors[index],
+                          width: usersDataSet[index] / sum(usersDataSet) * 100 + '%'
+                        }}
+                        title={`${user}: ${usersDataSet[index]}`}
+                      >
+                        <div className={css.chartLabelContainer}>{userArr[0]}</div>
+                        <div className={css.chartLabelContainer}>{userArr[1]}</div>
+                        <div className={css.chartNumber}>{usersDataSet[index]}</div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </Col>
-          )}
-          {!isStagesDataSet &&
-            !isUsersDataSet &&
-            !isRolesDataSet && <p className={css.noReports}>Нет существующих отчетов</p>}
-        </Row>
+            )}
+            {isRolesDataSet && (
+              <div className={css.timeChart}>
+                <h4>По ролям</h4>
+                <div className={css.chartContainer}>
+                  {roles.map((role, index) => (
+                    <div
+                      key={index}
+                      className={css.horizontalChart}
+                      style={{
+                        backgroundColor: rolesColors[index],
+                        width: rolesDataSet[index] / sum(rolesDataSet) * 100 + '%'
+                      }}
+                      title={`${role}: ${rolesDataSet[index]}`}
+                    >
+                      <div className={css.chartLabelContainer}>{role}</div>
+                      <div className={css.chartNumber}>{rolesDataSet[index]}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {!isStagesDataSet &&
+              !isUsersDataSet &&
+              !isRolesDataSet && <p className={css.noReports}>Нет существующих отчетов</p>}
+          </div>
+        )}
       </div>
     );
   }
@@ -215,13 +230,16 @@ class TaskTimeReports extends React.Component {
 
 TaskTimeReports.propTypes = {
   getTaskSpent: PropTypes.func.isRequired,
+  globalRole: PropTypes.string.isRequired,
   params: PropTypes.shape({
     projectId: PropTypes.string.isRequired,
     taskId: PropTypes.string.isRequired
   }),
+  project: PropTypes.object,
   roleTimeSpent: PropTypes.object,
   roles: PropTypes.array,
   timeSpent: PropTypes.object,
+  user: PropTypes.object,
   userTimeSpent: PropTypes.object
 };
 
@@ -229,7 +247,10 @@ const mapStateToProps = state => ({
   timeSpent: state.Task.timeSpent,
   userTimeSpent: state.Task.userTimeSpent,
   roleTimeSpent: state.Task.roleTimeSpent,
-  roles: state.Dictionaries.roles
+  roles: state.Dictionaries.roles,
+  user: state.Auth.user,
+  project: state.Project.project,
+  globalRole: state.Auth.user.globalRole
 });
 
 const mapDispatchToProps = {
