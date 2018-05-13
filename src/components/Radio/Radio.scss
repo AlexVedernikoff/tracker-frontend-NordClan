@@ -1,3 +1,72 @@
+@import '../../styles/variables';
+
 .container {
   display: inline-block;
+  display: inline-flex;
+  align-items: flex-start;
+  cursor: pointer;
+
+  .label {
+    color: silver;
+    transition: $transition;
+  }
+
+  .pseudoRadio {
+    position: relative;
+    border: 1px solid silver;
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    margin-right: 0.5rem;
+    border-radius: 50%;
+    transition: $transition;
+
+    $padding: 0.25rem;
+
+    &:before {
+      content: '';
+      display: block;
+      position: absolute;
+      top: $padding;
+      bottom: $padding;
+      left: $padding;
+      right: $padding;
+      border-radius: 50%;
+      background-color: $color-green;
+      transform: scale(0.5);
+      opacity: 0;
+      transition: $transition;
+    }
+  }
+
+  &:hover {
+    .pseudoRadio {
+      background: lighten($color-black, 70%);
+      transition: $transition;
+    }
+  }
+
+  & + .container {
+    margin-left: 1rem;
+  }
+
+  input {
+    display: none;
+
+    &:checked {
+      & + .pseudoRadio {
+        border-color: $color-green;
+        &:before {
+          opacity: 1;
+          transform: scale(1);
+          transition: $transition;
+        }
+      }
+
+      & ~ .label {
+        color: $color-black;
+        transition: $transition;
+      }
+    }
+  }
 }

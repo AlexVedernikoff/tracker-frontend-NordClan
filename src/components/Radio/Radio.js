@@ -24,7 +24,8 @@ class Radio extends Component {
     return (
       <label className={css.container} {...other}>
         <input type="radio" onChange={this.onChange} checked={checked} value={value} name={name} />
-        {label}
+        <span className={css.pseudoRadio} />
+        <span className={css.label}>{label}</span>
       </label>
     );
   }
