@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { sum, find } from 'lodash';
+import { sum, get } from 'lodash';
 
 import * as css from './TaskTimeReports.scss';
 import { getTaskSpent } from '../../../actions/Task';
@@ -247,7 +247,11 @@ class TaskTimeReports extends React.Component {
             <hr />
           </div>
         )}
-        <TimeSheetsHistory users={project.users} timesheets={timesheets} taskStatuses={taskStatuses} />
+        <TimeSheetsHistory
+          users={get(project, 'projectUsers', []).map(projectUser => projectUser.user)}
+          timesheets={timesheets}
+          taskStatuses={taskStatuses}
+        />
       </div>
     );
   }
