@@ -19,8 +19,8 @@ class SimplePie extends Component {
   render() {
     const { className, size, value } = this.props;
 
-    const rotateValue = `rotate(${360 * value}deg)`;
     const isInverse = value > 0.5;
+    const rotateValue = `rotate(${isInverse ? 360 * value - 180 : 360 * value}deg)`;
 
     return (
       <div
