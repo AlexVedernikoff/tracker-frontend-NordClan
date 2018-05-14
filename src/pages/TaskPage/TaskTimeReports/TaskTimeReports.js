@@ -1,13 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { sum } from 'lodash';
+import { sum, find } from 'lodash';
 
 import * as css from './TaskTimeReports.scss';
 import { getTaskSpent } from '../../../actions/Task';
+import { getTimesheets } from '../../../actions/Timesheets';
 import PropTypes from 'prop-types';
 import getColor from '../../../utils/Colors';
 import { ADMIN } from '../../../constants/Roles';
 import RadioGroup from '../../../components/RadioGroup';
+import TimeSheetsHistory from './TimeSheetsHistory.js';
 
 class TaskTimeReports extends React.Component {
   constructor(props) {
@@ -34,6 +36,7 @@ class TaskTimeReports extends React.Component {
 
   componentDidMount = () => {
     this.loadSpent();
+    this.getTimesheets();
   };
 
   componentWillReceiveProps(nextProps) {
@@ -137,10 +140,16 @@ class TaskTimeReports extends React.Component {
     this.props.getTaskSpent(this.props.params.taskId);
   };
 
+  getTimesheets = () => {
+    this.props.getTimesheets({ taskId: this.props.params.taskId });
+  };
+
   render() {
     const { stagesDataSet, stages, stagesColors } = this.state.stageData;
     const { usersDataSet, users, usersColors } = this.state.userData;
     const { rolesDataSet, roles, rolesColors } = this.state.roleData;
+
+    const { timesheets, project, taskStatuses } = this.props;
 
     const isStagesDataSet = stagesDataSet.length !== 0;
     const isUsersDataSet = usersDataSet.length !== 0;
@@ -150,10 +159,10 @@ class TaskTimeReports extends React.Component {
 
     return (
       <div className={css.timeReports} style={{ position: 'relative' }}>
-        <h3>Отчеты по времени</h3>
         {(this.props.globalRole === ADMIN || (pmAccess && (pmAccess.roles.pm || pmAccess.roles.account))) && (
           <div className={css.timeCharts}>
-            <div>
+            <h3>Распределение времени:</h3>
+            <div className={css.viewSwitcher}>
               <RadioGroup
                 name="chartView"
                 value={this.state.chartBy}
@@ -234,7 +243,9 @@ class TaskTimeReports extends React.Component {
               )}
             {!isStagesDataSet &&
               !isUsersDataSet &&
-              !isRolesDataSet && <p className={css.noReports}>Нет существующих отчетов</p>}
+              !isRolesDataSet && <p className={css.noReports}>Нет данных для отображения</p>}
+            <hr />
+            <TimeSheetsHistory users={project.users} timesheets={timesheets} taskStatuses={taskStatuses} />
           </div>
         )}
       </div>
@@ -244,6 +255,7 @@ class TaskTimeReports extends React.Component {
 
 TaskTimeReports.propTypes = {
   getTaskSpent: PropTypes.func.isRequired,
+  getTimesheets: PropTypes.func.isRequired,
   globalRole: PropTypes.string.isRequired,
   params: PropTypes.shape({
     projectId: PropTypes.string.isRequired,
@@ -252,23 +264,30 @@ TaskTimeReports.propTypes = {
   project: PropTypes.object,
   roleTimeSpent: PropTypes.object,
   roles: PropTypes.array,
+  task: PropTypes.object,
+  taskStatuses: PropTypes.array,
   timeSpent: PropTypes.object,
+  timesheets: PropTypes.array,
   user: PropTypes.object,
   userTimeSpent: PropTypes.object
 };
 
 const mapStateToProps = state => ({
   timeSpent: state.Task.timeSpent,
+  timesheets: state.Timesheets.list,
+  taskStatuses: state.Dictionaries.taskStatuses,
   userTimeSpent: state.Task.userTimeSpent,
   roleTimeSpent: state.Task.roleTimeSpent,
   roles: state.Dictionaries.roles,
   user: state.Auth.user,
   project: state.Project.project,
+  task: state.Task.task,
   globalRole: state.Auth.user.globalRole
 });
 
 const mapDispatchToProps = {
-  getTaskSpent
+  getTaskSpent,
+  getTimesheets
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskTimeReports);

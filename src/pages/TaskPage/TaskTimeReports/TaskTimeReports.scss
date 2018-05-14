@@ -16,7 +16,7 @@
 
 .noReports {
   width: 100%;
-  text-align: center;
+  // text-align: center;
   color: silver;
   font-size: $font-size-small;
   line-height: 1.5;
@@ -63,4 +63,8 @@
   text-overflow: ellipsis;
   font-size: $font-size-small;
   opacity: 0.8;
+}
+
+.viewSwitcher {
+  margin-bottom: 1rem;
 }
