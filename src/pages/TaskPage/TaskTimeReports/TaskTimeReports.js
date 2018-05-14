@@ -245,9 +245,9 @@ class TaskTimeReports extends React.Component {
               !isUsersDataSet &&
               !isRolesDataSet && <p className={css.noReports}>Нет данных для отображения</p>}
             <hr />
-            <TimeSheetsHistory users={project.users} timesheets={timesheets} taskStatuses={taskStatuses} />
           </div>
         )}
+        <TimeSheetsHistory users={project.users} timesheets={timesheets} taskStatuses={taskStatuses} />
       </div>
     );
   }

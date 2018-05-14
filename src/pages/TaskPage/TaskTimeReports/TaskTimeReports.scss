@@ -2,6 +2,10 @@
 
 .timeCharts {
   margin-bottom: 2rem;
+
+  hr {
+    margin: 1rem 0;
+  }
 }
 
 .timeReports {
@@ -67,4 +71,28 @@
 
 .viewSwitcher {
   margin-bottom: 1rem;
+}
+
+.historyItem {
+  color: lighten($color-black, 20%);
+
+  .day {
+    padding: 0.5rem;
+    padding-left: 0;
+    border-right: 1px solid $color-gray;
+  }
+
+  .status {
+    padding: 0.5rem;
+    border-right: 1px solid $color-gray;
+  }
+
+  .time {
+    padding: 0.5rem;
+    border-right: 1px solid $color-gray;
+  }
+
+  .user {
+    padding: 0.5rem;
+  }
 }

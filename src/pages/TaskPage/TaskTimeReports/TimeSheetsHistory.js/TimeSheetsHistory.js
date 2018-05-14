@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { find } from 'lodash';
+import { find, get } from 'lodash';
+import moment from 'moment';
+import { Link } from 'react-router';
 
+import UserCard from '../../../../components/UserCard';
+import roundNum from '../../../../utils/roundNum';
 import * as css from '../TaskTimeReports.scss';
 
 class TimeSheetsHistory extends Component {
@@ -16,19 +20,33 @@ class TimeSheetsHistory extends Component {
 
     return (
       <div className={css.history}>
-        <h3>История:</h3>
-        <ul>
-          {timesheets.reverse().map(timesheet => (
-            <li key={timesheet.id}>
-              {find(users, user => timesheet.userId === user.id).fullNameRu}
-              ({find(taskStatuses, taskStatus => timesheet.taskStatusId === taskStatus.id).name.replace(
-                / play| stop/g,
-                ''
-              )}) :
-              {timesheet.spentTime} ч.
-            </li>
-          ))}
-        </ul>
+        <table>
+          <tbody>
+            {timesheets
+              .sort((a, b) => moment(a.onDate) - moment(b.onDate))
+              .reverse()
+              .map(timesheet => {
+                const user = find(users, u => timesheet.userId === u.id);
+                const status = find(taskStatuses, taskStatus => timesheet.taskStatusId === taskStatus.id).name.replace(
+                  / play| stop/g,
+                  ''
+                );
+
+                return (
+                  <tr key={timesheet.id} className={css.historyItem}>
+                    <td className={css.day}>{moment(timesheet.onDate).format('DD.MM.YYYY')}</td>
+                    <td className={css.status}>{status} :</td>
+                    <td className={css.time}>{roundNum(timesheet.spentTime, 2)} ч.</td>
+                    <td className={css.user}>
+                      <UserCard user={user}>
+                        <Link>{get(user, 'fullNameRu')}</Link>
+                      </UserCard>
+                    </td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
       </div>
     );
   }
