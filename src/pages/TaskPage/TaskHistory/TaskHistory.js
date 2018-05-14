@@ -30,7 +30,7 @@ class TaskHistory extends React.Component {
   };
 
   loadHistoryEvents = () => {
-    const pageSize = 5;
+    const pageSize = 10;
     this.props.getTaskHistory(this.props.params.taskId, {
       currentPage: this.state.activePage,
       pageSize
