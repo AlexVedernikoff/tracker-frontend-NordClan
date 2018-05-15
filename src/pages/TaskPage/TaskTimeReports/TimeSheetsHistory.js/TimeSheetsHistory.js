@@ -13,21 +13,42 @@ import * as css from '../TaskTimeReports.scss';
 
 class TimeSheetsHistory extends Component {
   static propTypes = {
+    createTimesheet: PropTypes.func.isRequired,
+    currentTask: PropTypes.object,
     currentUser: PropTypes.object,
     taskStatuses: PropTypes.array,
     timesheets: PropTypes.array,
     users: PropTypes.array
   };
 
+  addTimesheet = values => {
+    const { currentTask, currentUser } = this.props;
+
+    const data = {
+      ...values,
+      isDraft: false,
+      taskId: currentTask.id,
+      sprintId: currentTask.sprintId,
+      projectId: currentTask.projectId,
+      typeId: 1
+    };
+    this.props.createTimesheet(data, this.props.currentUser.id);
+  };
+
   render() {
-    const { timesheets, users, taskStatuses, currentUser } = this.props;
+    const { timesheets, users, taskStatuses, currentUser, currentTask } = this.props;
     const sortedTimesheets = sortBy(timesheets, ['onDate', 'id']).reverse();
 
     return (
       <div className={css.history}>
         <table>
           <tbody>
-            <NewLine currentUser={currentUser} taskStatuses={taskStatuses} />
+            <NewLine
+              currentUser={currentUser}
+              taskStatuses={taskStatuses}
+              currentStatus={currentTask.statusId}
+              onSubmit={this.addTimesheet}
+            />
             {sortedTimesheets.map(timesheet => {
               const user = find(users, u => timesheet.userId === u.id);
               const status = find(taskStatuses, taskStatus => timesheet.taskStatusId === taskStatus.id).name.replace(

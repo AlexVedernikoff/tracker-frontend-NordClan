@@ -4,6 +4,7 @@ import { sum, get } from 'lodash';
 
 import * as css from './TaskTimeReports.scss';
 import { getTaskSpent } from '../../../actions/Task';
+import { createTimesheet } from '../../../actions/Timesheets';
 import { getTimesheets } from '../../../actions/Timesheets';
 import PropTypes from 'prop-types';
 import getColor from '../../../utils/Colors';
@@ -149,7 +150,7 @@ class TaskTimeReports extends React.Component {
     const { usersDataSet, users, usersColors } = this.state.userData;
     const { rolesDataSet, roles, rolesColors } = this.state.roleData;
 
-    const { timesheets, project, taskStatuses, user: currentUser } = this.props;
+    const { timesheets, project, task, taskStatuses, user: currentUser } = this.props;
 
     const isStagesDataSet = stagesDataSet.length !== 0;
     const isUsersDataSet = usersDataSet.length !== 0;
@@ -250,8 +251,10 @@ class TaskTimeReports extends React.Component {
         <TimeSheetsHistory
           users={get(project, 'projectUsers', []).map(projectUser => projectUser.user)}
           currentUser={currentUser}
+          currentTask={task}
           timesheets={timesheets}
           taskStatuses={taskStatuses}
+          createTimesheet={this.props.createTimesheet}
         />
       </div>
     );
@@ -259,6 +262,7 @@ class TaskTimeReports extends React.Component {
 }
 
 TaskTimeReports.propTypes = {
+  createTimesheet: PropTypes.func.isRequired,
   getTaskSpent: PropTypes.func.isRequired,
   getTimesheets: PropTypes.func.isRequired,
   globalRole: PropTypes.string.isRequired,
@@ -292,7 +296,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   getTaskSpent,
-  getTimesheets
+  getTimesheets,
+  createTimesheet
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskTimeReports);
