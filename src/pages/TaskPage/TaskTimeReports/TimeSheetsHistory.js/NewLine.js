@@ -53,6 +53,11 @@ class NewLine extends Component {
       onDate: this.state.date.format('YYYY-MM-DD'),
       spentTime: this.state.time
     });
+    this.setState({
+      date: moment(),
+      status: this.props.currentStatus,
+      time: 0
+    });
   };
 
   render() {
@@ -68,6 +73,7 @@ class NewLine extends Component {
             style={{ width: '7rem' }}
             value={date.format('DD.MM.YYYY')}
             onDayChange={this.changeDate}
+            disabled={preloading}
           />
         </td>
         <td className={css.status}>
@@ -79,10 +85,17 @@ class NewLine extends Component {
             multi={false}
             noResultsText="Нет результатов"
             options={statusOptions}
+            disabled={preloading}
           />
         </td>
         <td className={css.time} colSpan={2}>
-          <InputNumber style={{ width: '4rem' }} postfix="ч." value={time} onChange={this.changeTime} />
+          <InputNumber
+            style={{ width: '4rem' }}
+            postfix="ч."
+            value={time}
+            onChange={this.changeTime}
+            disabled={preloading}
+          />
         </td>
         <td className={css.user}>
           {currentUser.fullNameRu}
@@ -90,7 +103,7 @@ class NewLine extends Component {
             className={css.confirmNewTimesheet}
             data-tip="Добавить запись"
             onClick={this.onSubmit}
-            disabled={isDisabled}
+            disabled={isDisabled || preloading}
             loading={preloading}
           >
             <IconCheck />

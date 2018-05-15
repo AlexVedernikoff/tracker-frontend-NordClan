@@ -2,8 +2,19 @@
   position: relative;
   border: 1px solid #e6e6e6;
   line-height: 1rem;
+  min-height: 2rem;
   box-sizing: border-box;
   transition: 0.3s ease-out 0s;
+}
+
+.Select.is-disabled {
+  cursor: not-allowed;
+  background-color: rgb(235, 235, 228);
+}
+
+.Select--single.Select.is-disabled,
+.Select--single.Select.is-disabled:hover {
+  cursor: not-allowed;
 }
 
 .Select-control {

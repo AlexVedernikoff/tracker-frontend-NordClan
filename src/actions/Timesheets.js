@@ -34,6 +34,12 @@ const successCreateTimesheetRequest = timesheet => ({
   timesheet
 });
 
+const failCreateTimesheetRequest = error => {
+  return {
+    type: TimesheetsActions.CREATE_TIMESHEET_ERROR
+  };
+};
+
 const startUpdateTimesheetRequest = () => ({
   type: TimesheetsActions.UPDATE_TIMESHEET_START
 });
@@ -108,9 +114,11 @@ export const createTimesheet = (data, userId, startingDay) => {
       body: { ...data },
       extra,
       start: withStartLoading(startCreateTimesheetRequest, true)(dispatch),
-      // response: withFinishLoading(successCreateTimesheetRequest, true)(dispatch),
       response: () => dispatch(finishLoading()),
-      error: defaultErrorHandler(dispatch)
+      error: error => {
+        withFinishLoading(failCreateTimesheetRequest, true)(dispatch)(error);
+        dispatch(showNotification({ message: error.response.data.message, type: 'error' }));
+      }
     });
 };
 
