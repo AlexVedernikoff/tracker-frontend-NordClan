@@ -149,7 +149,7 @@ class TaskTimeReports extends React.Component {
     const { usersDataSet, users, usersColors } = this.state.userData;
     const { rolesDataSet, roles, rolesColors } = this.state.roleData;
 
-    const { timesheets, project, taskStatuses } = this.props;
+    const { timesheets, project, taskStatuses, user: currentUser } = this.props;
 
     const isStagesDataSet = stagesDataSet.length !== 0;
     const isUsersDataSet = usersDataSet.length !== 0;
@@ -249,6 +249,7 @@ class TaskTimeReports extends React.Component {
         )}
         <TimeSheetsHistory
           users={get(project, 'projectUsers', []).map(projectUser => projectUser.user)}
+          currentUser={currentUser}
           timesheets={timesheets}
           taskStatuses={taskStatuses}
         />

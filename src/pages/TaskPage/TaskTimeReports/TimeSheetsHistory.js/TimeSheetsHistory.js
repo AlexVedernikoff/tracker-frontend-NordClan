@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { find, get, sortBy } from 'lodash';
 import moment from 'moment';
 import { Link } from 'react-router';
+import classnames from 'classnames';
 
+import NewLine from './NewLine';
 import UserCard from '../../../../components/UserCard';
 import SimplePie from '../../../../components/SimplePie';
 import roundNum from '../../../../utils/roundNum';
@@ -11,19 +13,21 @@ import * as css from '../TaskTimeReports.scss';
 
 class TimeSheetsHistory extends Component {
   static propTypes = {
+    currentUser: PropTypes.object,
     taskStatuses: PropTypes.array,
     timesheets: PropTypes.array,
     users: PropTypes.array
   };
 
   render() {
-    const { timesheets, users, taskStatuses } = this.props;
+    const { timesheets, users, taskStatuses, currentUser } = this.props;
     const sortedTimesheets = sortBy(timesheets, ['onDate', 'id']).reverse();
 
     return (
       <div className={css.history}>
         <table>
           <tbody>
+            <NewLine currentUser={currentUser} taskStatuses={taskStatuses} />
             {sortedTimesheets.map(timesheet => {
               const user = find(users, u => timesheet.userId === u.id);
               const status = find(taskStatuses, taskStatus => timesheet.taskStatusId === taskStatus.id).name.replace(
