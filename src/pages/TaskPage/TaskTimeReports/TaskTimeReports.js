@@ -150,7 +150,7 @@ class TaskTimeReports extends React.Component {
     const { usersDataSet, users, usersColors } = this.state.userData;
     const { rolesDataSet, roles, rolesColors } = this.state.roleData;
 
-    const { timesheets, project, task, taskStatuses, user: currentUser } = this.props;
+    const { timesheets, project, task, taskStatuses, user: currentUser, preloaders } = this.props;
 
     const isStagesDataSet = stagesDataSet.length !== 0;
     const isUsersDataSet = usersDataSet.length !== 0;
@@ -255,6 +255,7 @@ class TaskTimeReports extends React.Component {
           timesheets={timesheets}
           taskStatuses={taskStatuses}
           createTimesheet={this.props.createTimesheet}
+          preloaders={preloaders}
         />
       </div>
     );
@@ -270,6 +271,7 @@ TaskTimeReports.propTypes = {
     projectId: PropTypes.string.isRequired,
     taskId: PropTypes.string.isRequired
   }),
+  preloaders: PropTypes.object,
   project: PropTypes.object,
   roleTimeSpent: PropTypes.object,
   roles: PropTypes.array,
@@ -284,6 +286,7 @@ TaskTimeReports.propTypes = {
 const mapStateToProps = state => ({
   timeSpent: state.Task.timeSpent,
   timesheets: state.Timesheets.list,
+  preloaders: state.Timesheets.preloaders,
   taskStatuses: state.Dictionaries.taskStatuses,
   userTimeSpent: state.Task.userTimeSpent,
   roleTimeSpent: state.Task.roleTimeSpent,

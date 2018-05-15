@@ -16,6 +16,7 @@ class NewLine extends Component {
     currentStatus: PropTypes.number,
     currentUser: PropTypes.object,
     onSubmit: PropTypes.func,
+    preloading: PropTypes.bool,
     taskStatuses: PropTypes.array
   };
 
@@ -55,7 +56,7 @@ class NewLine extends Component {
   };
 
   render() {
-    const { currentUser, taskStatuses } = this.props;
+    const { currentUser, taskStatuses, preloading } = this.props;
     const { date, status, time } = this.state;
     const statusOptions = getStatusOptions(taskStatuses);
     const isDisabled = !status || !time || !statusOptions.filter(option => option.value === status).length;
@@ -90,6 +91,7 @@ class NewLine extends Component {
             data-tip="Добавить запись"
             onClick={this.onSubmit}
             disabled={isDisabled}
+            loading={preloading}
           >
             <IconCheck />
           </RoundButton>

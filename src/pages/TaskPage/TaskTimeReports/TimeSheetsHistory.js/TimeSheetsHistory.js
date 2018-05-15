@@ -16,6 +16,7 @@ class TimeSheetsHistory extends Component {
     createTimesheet: PropTypes.func.isRequired,
     currentTask: PropTypes.object,
     currentUser: PropTypes.object,
+    preloaders: PropTypes.object,
     taskStatuses: PropTypes.array,
     timesheets: PropTypes.array,
     users: PropTypes.array
@@ -36,7 +37,7 @@ class TimeSheetsHistory extends Component {
   };
 
   render() {
-    const { timesheets, users, taskStatuses, currentUser, currentTask } = this.props;
+    const { timesheets, users, taskStatuses, currentUser, currentTask, preloaders } = this.props;
     const sortedTimesheets = sortBy(timesheets, ['onDate', 'id']).reverse();
 
     return (
@@ -48,6 +49,7 @@ class TimeSheetsHistory extends Component {
               taskStatuses={taskStatuses}
               currentStatus={currentTask.statusId}
               onSubmit={this.addTimesheet}
+              preloading={preloaders.creating}
             />
             {sortedTimesheets.map(timesheet => {
               const user = find(users, u => timesheet.userId === u.id);

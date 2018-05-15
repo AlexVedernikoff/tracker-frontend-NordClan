@@ -123,9 +123,13 @@
       width: 24px;
       height: 24px;
 
-      &:hover {
+      &:not(:disabled):hover {
         color: white;
         background-color: $color-green;
+      }
+
+      &:disabled {
+        opacity: 0.5;
       }
     }
   }
