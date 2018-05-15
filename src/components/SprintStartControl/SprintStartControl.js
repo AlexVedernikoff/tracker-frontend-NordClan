@@ -7,25 +7,23 @@ import { IconPlay, IconPause } from '../Icons';
 import { editSprint } from '../../actions/Sprint';
 import ReactTooltip from 'react-tooltip';
 
-
 class SprintEditModal extends Component {
-
   static propTypes = {
     editSprint: PropTypes.func.isRequired,
     sprint: PropTypes.object.isRequired
   };
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.sprint.statusId !== this.props.sprint.statusId) {
       ReactTooltip.hide();
     }
   }
 
-  changeStatus = (sprint) => {
+  changeStatus = sprint => {
     return () => this.props.editSprint(sprint.id, sprint.statusId === 1 ? 2 : 1);
   };
 
-  render () {
+  render() {
     const { sprint } = this.props;
 
     return (
@@ -43,7 +41,6 @@ class SprintEditModal extends Component {
     );
   }
 }
-
 
 const mapDispatchToProps = {
   editSprint

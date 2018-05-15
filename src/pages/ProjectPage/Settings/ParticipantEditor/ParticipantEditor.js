@@ -224,13 +224,12 @@ class ParticipantEditor extends Component {
                     <Col xs lg key={`${i}-roles-name`}>
                       <h4>
                         <div className={css.cell}>
-                          {ROLES_FULL_NAME}
                           <div
                             className={css.rightsInfo}
                             data-html="true"
                             data-tip={this.getRoleRights(ROLES_FULL_NAME, this.roleRights)}
                           >
-                            i
+                            <span>{ROLES_FULL_NAME}</span>
                           </div>
                         </div>
                       </h4>
@@ -259,28 +258,30 @@ class ParticipantEditor extends Component {
             onClick={this.handleOpenModalAddUser}
           />
         ) : null}
-        <h2>Внешние пользователи</h2>
-        <div className={css.externalTable}>
-          {/* <Row className={classnames(css.memberRow, css.memberHeader)} /> */}
-          {this.props.externalUsers
-            ? this.props.externalUsers.map(user => (
-                <Participant
-                  user={user}
-                  key={`${user.id}-exUser`}
-                  projectId={this.props.id}
-                  isProjectAdmin={isProjectAdmin}
-                  isExternal
-                />
-              ))
-            : null}
+        <div className={css.externalUsers}>
+          <h2>Внешние пользователи</h2>
+          <div className={css.externalTable}>
+            {/* <Row className={classnames(css.memberRow, css.memberHeader)} /> */}
+            {this.props.externalUsers
+              ? this.props.externalUsers.map(user => (
+                  <Participant
+                    user={user}
+                    key={`${user.id}-exUser`}
+                    projectId={this.props.id}
+                    isProjectAdmin={isProjectAdmin}
+                    isExternal
+                  />
+                ))
+              : null}
+          </div>
+          <Button
+            text="Добавить внешнего пользователя"
+            type="primary"
+            addedClassNames={{ [css.addButton]: true }}
+            icon="IconPlus"
+            onClick={this.handleOpenModalAddExternal}
+          />
         </div>
-        <Button
-          text="Добавить внешнего пользователя"
-          type="primary"
-          addedClassNames={{ [css.addButton]: true }}
-          icon="IconPlus"
-          onClick={this.handleOpenModalAddExternal}
-        />
         {this.state.isModalOpenAddUser ? (
           <Modal isOpen contentLabel="modal" onRequestClose={this.handleCloseModalAddUser}>
             <div className={css.changeStage}>

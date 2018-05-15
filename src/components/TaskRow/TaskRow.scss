@@ -8,6 +8,10 @@
   border-top: 1px solid $color-gray;
   transition: $transition;
 
+  &.draggable {
+    cursor: grab;
+  }
+
   &.card {
     border: 1px solid $color-gray;
     margin-bottom: 1rem;
@@ -43,6 +47,10 @@
   h4 {
     margin: 0;
     font-weight: normal;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   .priorityMarker {
@@ -57,11 +65,21 @@
   }
 
   &.priority {
-    &-1 .priorityMarker { background-color: $priority1; };
-    &-2 .priorityMarker { background-color: $priority2; };
-    &-3 .priorityMarker { background-color: $priority3; };
-    &-4 .priorityMarker { background-color: $priority4; };
-    &-5 .priorityMarker { background-color: $priority5; };
+    &-1 .priorityMarker {
+      background-color: $priority1;
+    }
+    &-2 .priorityMarker {
+      background-color: $priority2;
+    }
+    &-3 .priorityMarker {
+      background-color: $priority3;
+    }
+    &-4 .priorityMarker {
+      background-color: $priority4;
+    }
+    &-5 .priorityMarker {
+      background-color: $priority5;
+    }
   }
 
   h5 {
@@ -72,7 +90,7 @@
 }
 
 .taskName {
-  display: block;
+  display: inline-block;
   text-decoration: none;
 
   @include phone {
@@ -80,7 +98,7 @@
   }
 }
 
-.metabox, 
+.metabox,
 .tagbox {
   padding-left: 1rem;
   height: 100%;
@@ -88,13 +106,14 @@
 
   @include phone {
     padding-left: 0;
+    border-left: none;
   }
 }
 
 .metabox {
-
   @include phone {
     margin-bottom: 1rem;
+    border-left: none;
   }
 }
 
@@ -103,20 +122,33 @@
   color: gray;
   margin-bottom: 1px;
   margin-top: 0;
-  button {
+
+  span {
+    display: inline-block;
+    &:not(:first-child) {
+      margin-left: 0.25rem;
+    }
+  }
+
+  .metaValue {
     background: none;
     border: 0;
     padding: 0;
-    color: #678bad;
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-  span {
-    display: inline-block;
+    cursor: pointer;
 
-    &:first-child {
-      margin-right: 4px;
+    svg {
+      display: inline-block;
+      vertical-align: text-top;
+      margin-left: 2px;
+      opacity: 0;
+    }
+
+    &:hover {
+      color: lighten($color-dark, 30%);
+
+      svg {
+        opacity: 0.6;
+      }
     }
   }
 }
@@ -145,8 +177,12 @@
   }
 }
 
-.inhold { background-color: $color-dark; }
-.inprogress { background-color: $color-green; }
+.inhold {
+  background-color: $color-dark;
+}
+.inprogress {
+  background-color: $color-green;
+}
 
 .progressBar {
   position: absolute;
@@ -162,8 +198,12 @@
   }
 }
 
-.green { background-color: $color-green; }
-.red { background-color: $color-red; }
+.green {
+  background-color: $color-green;
+}
+.red {
+  background-color: $color-red;
+}
 
 .greenText {
   color: $color-green;
@@ -181,5 +221,11 @@
   transition-duration: 0.2s;
 }
 
-svg.green { background-color: transparent; fill: $color-green; }
-svg.red { background-color: transparent; fill: $color-red; }
+svg.green {
+  background-color: transparent;
+  fill: $color-green;
+}
+svg.red {
+  background-color: transparent;
+  fill: $color-red;
+}

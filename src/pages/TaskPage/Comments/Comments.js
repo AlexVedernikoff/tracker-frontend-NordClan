@@ -3,6 +3,7 @@ import classnames from 'classnames';
 import onClickOutside from 'react-onclickoutside';
 import PropTypes from 'prop-types';
 import TextareaAutosize from 'react-autosize-textarea';
+import shortId from 'shortid';
 import {
   getCommentsByTask,
   publishComment,
@@ -29,7 +30,8 @@ class Comments extends Component {
     super(props);
     this.state = {
       commentToDelete: null,
-      disabledBtn: true
+      disabledBtn: true,
+      resizeKey: shortId()
     };
   }
 
@@ -82,10 +84,6 @@ class Comments extends Component {
     }
   };
 
-  static defaultProps = {
-    comments: []
-  };
-
   static propTypes = {
     comments: PropTypes.array,
     currentComment: PropTypes.object,
@@ -114,6 +112,12 @@ class Comments extends Component {
 
   selectComment = id => {
     Comment.selectComment(id, this.props.location);
+  };
+
+  setCommentForEdit = comment => {
+    this.props.setCommentForEdit(comment).then(() => {
+      this.setState({ resizeKey: shortId() });
+    });
   };
 
   typeComment = evt => {
@@ -159,7 +163,7 @@ class Comments extends Component {
       <Comment
         key={c.id} /*используются id чтобы правильно работал маунт и анмаунт*/
         lightened={c.id === this.props.highlighted.id}
-        editComment={this.props.setCommentForEdit}
+        editComment={this.setCommentForEdit}
         removeComment={this.removeComment}
         reply={this.props.selectParentCommentForReply}
         ownedByMe={c.author.id === this.props.userId}
@@ -169,11 +173,12 @@ class Comments extends Component {
 
   render() {
     return (
-      <div className="css.comments">
+      <div className={css.comments}>
         <ul className={css.commentList}>
           <form className={css.answerLine}>
             <div className={css.answerLineText}>
               <TextareaAutosize
+                key={this.state.resizeKey}
                 style={{ minHeight: 32 }}
                 className={css.resizeTrue}
                 disabled={this.props.currentComment.disabled || this.props.currentComment.expired}
