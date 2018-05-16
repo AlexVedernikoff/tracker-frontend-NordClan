@@ -16,10 +16,6 @@ class RadionGroup extends Component {
     super(props);
   }
 
-  onChange = (value, checked) => {
-    console.log(value, checked);
-  };
-
   render() {
     const { options, name, value, onChange, ...other } = this.props;
 

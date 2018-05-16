@@ -9,6 +9,7 @@ import NewLine from './NewLine';
 import UserCard from '../../../../components/UserCard';
 import SimplePie from '../../../../components/SimplePie';
 import roundNum from '../../../../utils/roundNum';
+import createHash from '../../../../utils/createHash';
 import * as css from '../TaskTimeReports.scss';
 
 class TimeSheetsHistory extends Component {
@@ -39,6 +40,9 @@ class TimeSheetsHistory extends Component {
   render() {
     const { timesheets, users, taskStatuses, currentUser, currentTask, preloaders } = this.props;
     const sortedTimesheets = sortBy(timesheets, ['onDate', 'id']).reverse();
+    const timesheetsHashCodes = timesheets.map(tsh => {
+      return createHash(tsh.onDate, tsh.taskStatusId, tsh.userId);
+    });
 
     return (
       <div className={css.history}>
@@ -50,6 +54,7 @@ class TimeSheetsHistory extends Component {
               currentStatus={currentTask.statusId}
               onSubmit={this.addTimesheet}
               preloading={preloaders.creating}
+              hashCodes={timesheetsHashCodes}
             />
             {sortedTimesheets.map(timesheet => {
               const user = find(users, u => timesheet.userId === u.id);

@@ -73,6 +73,7 @@
 .Select-multi-value-wrapper,
 .Select-multi-value-wrapper .Select-value {
   display: inline-block;
+  line-height: 1rem;
 }
 
 .Select-placeholder,

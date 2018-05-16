@@ -7,14 +7,16 @@ import DatepickerDropdown from '../../../../components/DatepickerDropdown';
 import SelectDropdown from '../../../../components/SelectDropdown';
 import InputNumber from '../../../../components/InputNumber';
 import RoundButton from '../../../../components/RoundButton';
-import { IconCheck } from '../../../../components/Icons';
+import { IconCheck, IconError } from '../../../../components/Icons';
 import getStatusOptions from '../../../../utils/getDraftStatusOptions';
+import createHash from '../../../../utils/createHash';
 import * as css from '../TaskTimeReports.scss';
 
 class NewLine extends Component {
   static propTypes = {
     currentStatus: PropTypes.number,
     currentUser: PropTypes.object,
+    hashCodes: PropTypes.array,
     onSubmit: PropTypes.func,
     preloading: PropTypes.bool,
     taskStatuses: PropTypes.array
@@ -61,10 +63,12 @@ class NewLine extends Component {
   };
 
   render() {
-    const { currentUser, taskStatuses, preloading } = this.props;
+    const { currentUser, taskStatuses, preloading, hashCodes } = this.props;
     const { date, status, time } = this.state;
     const statusOptions = getStatusOptions(taskStatuses);
-    const isDisabled = !status || !time || !statusOptions.filter(option => option.value === status).length;
+    const isFieldValues = !status || !time || !statusOptions.filter(option => option.value === status).length;
+    const hash = createHash(date.format('YYYY-MM-DD'), status, currentUser.id);
+    const isAlreadyCreated = hashCodes.includes(hash);
 
     return (
       <tr className={classnames(css.historyItem, css.ghostItem)}>
@@ -99,15 +103,27 @@ class NewLine extends Component {
         </td>
         <td className={css.user}>
           {currentUser.fullNameRu}
-          <RoundButton
-            className={css.confirmNewTimesheet}
-            data-tip="Добавить запись"
-            onClick={this.onSubmit}
-            disabled={isDisabled || preloading}
-            loading={preloading}
-          >
-            <IconCheck />
-          </RoundButton>
+          {!isFieldValues && !isAlreadyCreated ? (
+            <RoundButton
+              className={css.confirmNewTimesheet}
+              onClick={this.onSubmit}
+              disabled={isFieldValues || isAlreadyCreated || preloading}
+              loading={preloading}
+            >
+              <IconCheck />
+            </RoundButton>
+          ) : (
+            <i
+              data-tip={
+                isAlreadyCreated
+                  ? 'Запись с заданными параметрами уже создана'
+                  : 'Заполните все поля, чтобы создать запись'
+              }
+              className={classnames([css.info, { [css.infoWarning]: isAlreadyCreated }])}
+            >
+              <IconError />
+            </i>
+          )}
         </td>
       </tr>
     );
