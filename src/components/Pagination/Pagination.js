@@ -50,59 +50,65 @@ const Pagination = props => {
     }
   };
 
-  const items = [];
   const fillItems = (min, max) => {
+    const filledArr = [];
     for (let i = min; i < max; i++) {
       const index = i + 1;
       const active = activePage === index;
-      items.push(<PaginationItem active={active} key={i} index={index} clickable handleClick={handleClick} />);
+      filledArr.push(<PaginationItem active={active} key={i} index={index} clickable handleClick={handleClick} />);
     }
+    return filledArr;
   };
 
   const startCount = paginationConfig.maxVisibleCount - paginationConfig.tail;
-  const finishCount = itemsCount - startCount;
+  const finishCount = itemsCount - startCount + 1;
+  console.log(startCount, finishCount);
+  const startPageItem = (
+    <PaginationItem key="startPage" active={activePage === 1} index={1} clickable handleClick={handleClick} />
+  );
+  const finishPageItem = (
+    <PaginationItem
+      key="finishPage"
+      active={activePage === itemsCount}
+      index={itemsCount}
+      clickable
+      handleClick={handleClick}
+    />
+  );
 
-  const isBegin = activePage <= startCount;
-  const isMiddle = activePage > startCount && activePage <= finishCount;
+  const needCut = itemsCount > paginationConfig.maxVisibleCount;
+  const isStart = activePage < startCount;
+  const isMiddle = activePage >= startCount && activePage <= finishCount;
   const isEnd = activePage > finishCount;
 
-  if (itemsCount <= paginationConfig.maxVisibleCount) {
-    fillItems(0, itemsCount);
+  const middleLength = isMiddle ? paginationConfig.maxVisibleCount - paginationConfig.tail * 2 : 0;
+  const startMiddlePart = isMiddle ? Math.floor(activePage - middleLength / 2) : 0;
+  const endMiddlePart = isMiddle ? Math.floor(activePage + middleLength / 2) : 0;
+
+  let items = [];
+
+  if (!needCut) {
+    items = [...fillItems(0, itemsCount)];
   } else if (isMiddle) {
-    items.push(
-      <PaginationItem key="startPage" active={activePage === 1} index={1} clickable handleClick={handleClick} />
-    );
-    items.push(<SkipItem key="startSkip" />);
-    const middleLength = paginationConfig.maxVisibleCount - paginationConfig.tail * 2;
-    fillItems(Math.floor(activePage - middleLength / 2), Math.floor(activePage + middleLength / 2));
-    items.push(<SkipItem key="finishSkip" />);
-    items.push(
-      <PaginationItem
-        key="finishPage"
-        active={activePage === itemsCount}
-        index={itemsCount}
-        clickable
-        handleClick={handleClick}
-      />
-    );
-  } else if (isBegin) {
-    fillItems(0, paginationConfig.maxVisibleCount - paginationConfig.tail);
-    items.push(<SkipItem key="finishSkip" />);
-    items.push(
-      <PaginationItem
-        key="finishPage"
-        active={activePage === itemsCount}
-        index={itemsCount}
-        clickable
-        handleClick={handleClick}
-      />
-    );
+    items = [
+      startPageItem,
+      <SkipItem key="startSkip" />,
+      ...fillItems(startMiddlePart, endMiddlePart),
+      <SkipItem key="finishSkip" />,
+      finishPageItem
+    ];
+  } else if (isStart) {
+    items = [
+      ...fillItems(0, paginationConfig.maxVisibleCount - paginationConfig.tail),
+      <SkipItem key="finishSkip" />,
+      finishPageItem
+    ];
   } else if (isEnd) {
-    items.push(
-      <PaginationItem key="startPage" active={activePage === 1} index={1} clickable handleClick={handleClick} />
-    );
-    items.push(<SkipItem key="startSkip" />);
-    fillItems(itemsCount - (paginationConfig.maxVisibleCount - paginationConfig.tail), itemsCount);
+    items = [
+      startPageItem,
+      <SkipItem key="startSkip" />,
+      ...fillItems(itemsCount - (paginationConfig.maxVisibleCount - paginationConfig.tail), itemsCount)
+    ];
   }
 
   return (
