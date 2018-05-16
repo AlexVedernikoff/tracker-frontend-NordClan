@@ -34,6 +34,7 @@ import { clearCurrentTask } from './actions/Task';
 import { setRedirectPath } from './actions/Authentication';
 import isAdmin from './utils/isAdmin';
 import { EXTERNAL_USER } from './constants/Roles';
+import TaskTimeReports from './pages/TaskPage/TaskTimeReports/TaskTimeReports';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
@@ -126,6 +127,7 @@ class AppRouter extends Component {
           >
             <IndexRoute component={Comments} />
             <Route path="history" component={TaskHistory} onEnter={this.notExternal} />
+            <Route path="time-reports" component={TaskTimeReports} onEnter={this.notExternal} />
           </Route>
 
           <IndexRedirect to="projects" />

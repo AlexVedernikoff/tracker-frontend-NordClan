@@ -14,8 +14,10 @@
   background-image: linear-gradient(to right, transparent 50%, $color-orange 0);
 
   &.inverse {
-    background: $color-orange;
-    background-image: linear-gradient(to right, transparent 50%, $color-dark 0);
+    .part {
+      background: $color-orange;
+      background-image: linear-gradient(to right, transparent 50%, $color-orange 0);
+    }
   }
 }
 

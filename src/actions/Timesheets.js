@@ -1,5 +1,5 @@
 import * as TimesheetsActions from '../constants/Timesheets';
-import { GET, POST, PUT, DELETE, REST_API} from '../constants/RestApi';
+import { GET, POST, PUT, DELETE, REST_API } from '../constants/RestApi';
 import moment from 'moment';
 
 import axios from 'axios';
@@ -20,7 +20,7 @@ const startTimesheetsRequest = () => ({
   type: TimesheetsActions.GET_TIMESHEETS_START
 });
 
-const successTimesheetsRequest = (data) => ({
+const successTimesheetsRequest = data => ({
   type: TimesheetsActions.GET_TIMESHEETS_SUCCESS,
   data
 });
@@ -29,16 +29,22 @@ const startCreateTimesheetRequest = () => ({
   type: TimesheetsActions.CREATE_TIMESHEET_START
 });
 
-const successCreateTimesheetRequest = (timesheet) => ({
+const successCreateTimesheetRequest = timesheet => ({
   type: TimesheetsActions.CREATE_TIMESHEET_SUCCESS,
   timesheet
 });
+
+const failCreateTimesheetRequest = error => {
+  return {
+    type: TimesheetsActions.CREATE_TIMESHEET_ERROR
+  };
+};
 
 const startUpdateTimesheetRequest = () => ({
   type: TimesheetsActions.UPDATE_TIMESHEET_START
 });
 
-const successUpdateTimesheetRequest = (timesheet) => ({
+const successUpdateTimesheetRequest = timesheet => ({
   type: TimesheetsActions.UPDATE_TIMESHEET_SUCCESS,
   timesheet
 });
@@ -47,66 +53,73 @@ const startDeleteTimesheetRequest = () => ({
   type: TimesheetsActions.DELETE_TIMESHEET_START
 });
 
-const successDeleteTimesheetRequest = (timesheet) => ({
+const successDeleteTimesheetRequest = timesheet => ({
   type: TimesheetsActions.DELETE_TIMESHEET_SUCCESS,
   timesheet
 });
 
-export const getTimesheets = (params) => {
-  return dispatch => dispatch({
-    type: REST_API,
-    url: '/timesheet',
-    method: GET,
-    body: { params },
-    extra,
-    start: withStartLoading(startTimesheetsRequest, true)(dispatch),
-    response: withFinishLoading(response => successTimesheetsRequest(response.data), true)(dispatch),
-    error: defaultErrorHandler(dispatch)
-  });
+export const getTimesheets = params => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/timesheet',
+      method: GET,
+      body: { params },
+      extra,
+      start: withStartLoading(startTimesheetsRequest, true)(dispatch),
+      response: withFinishLoading(response => successTimesheetsRequest(response.data), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
 };
 
 export const updateTimesheet = (data, userId, startingDay) => {
-  return dispatch => dispatch({
-    type: REST_API,
-    url: '/timesheet',
-    method: PUT,
-    body: { ...data },
-    extra,
-    start: withStartLoading(startUpdateTimesheetRequest, true)(dispatch),
-    response: () => dispatch(finishLoading()),
-    error: defaultErrorHandler(dispatch)
-  });
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/timesheet',
+      method: PUT,
+      body: { ...data },
+      extra,
+      start: withStartLoading(startUpdateTimesheetRequest, true)(dispatch),
+      response: () => dispatch(finishLoading()),
+      error: defaultErrorHandler(dispatch)
+    });
 };
 
 export const deleteTimesheets = (ids, userId, startingDay) => {
-  return dispatch => dispatch({
-    type: REST_API,
-    url: `/timesheet/${ids}`,
-    method: DELETE,
-    body,
-    extra,
-    start: withStartLoading(startDeleteTimesheetRequest, true)(dispatch),
-    response: () => dispatch(finishLoading()),
-    error: defaultErrorHandler(dispatch)
-  });
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: `/timesheet/${ids}`,
+      method: DELETE,
+      body,
+      extra,
+      start: withStartLoading(startDeleteTimesheetRequest, true)(dispatch),
+      response: () => dispatch(finishLoading()),
+      error: defaultErrorHandler(dispatch)
+    });
 };
 
-export const deleteTempTimesheets = (ids) => ({
+export const deleteTempTimesheets = ids => ({
   type: TimesheetsActions.DELETE_TEMP_TIMESHEET,
   ids
 });
 
 export const createTimesheet = (data, userId, startingDay) => {
-  return dispatch => dispatch({
-    type: REST_API,
-    url: '/timesheet',
-    method: POST,
-    body: { ...data },
-    extra,
-    start: withStartLoading(startCreateTimesheetRequest, true)(dispatch),
-    response: () => dispatch(finishLoading()),
-    error: defaultErrorHandler(dispatch)
-  });
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/timesheet',
+      method: POST,
+      body: { ...data },
+      extra,
+      start: withStartLoading(startCreateTimesheetRequest, true)(dispatch),
+      response: () => dispatch(finishLoading()),
+      error: error => {
+        withFinishLoading(failCreateTimesheetRequest, true)(dispatch)(error);
+        dispatch(showNotification({ message: error.response.data.message, type: 'error' }));
+      }
+    });
 };
 
 export const updateSheetsArray = (sheetsArr, userId, startingDay) => {
@@ -115,20 +128,18 @@ export const updateSheetsArray = (sheetsArr, userId, startingDay) => {
     dispatch(startUpdateTimesheetRequest());
     dispatch(startLoading());
 
-    const currentPromise = function (params) {
-      return axios
-      .put(URL, params)
-      .catch(error => {
+    const currentPromise = function(params) {
+      return axios.put(URL, params).catch(error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
       });
     };
 
-    const allPromises = sheetsArr.map((element) => currentPromise(element));
+    const allPromises = sheetsArr.map(element => currentPromise(element));
 
     Promise.all(allPromises).then(response => {
       let isOk = false;
 
-      isOk = response.every((element) => {
+      isOk = response.every(element => {
         if (response.status === 200) {
           return true;
         } else {
@@ -140,11 +151,17 @@ export const updateSheetsArray = (sheetsArr, userId, startingDay) => {
       if (isOk) {
         dispatch(successUpdateTimesheetRequest());
         dispatch(finishLoading());
-        dispatch(getTimesheets({
-          userId,
-          dateBegin: moment(startingDay).weekday(0).format('YYYY-MM-DD'),
-          dateEnd: moment(startingDay).weekday(6).format('YYYY-MM-DD')
-        }));
+        dispatch(
+          getTimesheets({
+            userId,
+            dateBegin: moment(startingDay)
+              .weekday(0)
+              .format('YYYY-MM-DD'),
+            dateEnd: moment(startingDay)
+              .weekday(6)
+              .format('YYYY-MM-DD')
+          })
+        );
       }
     });
   };
@@ -156,11 +173,17 @@ export const changeWeek = (startingDay, userId) => {
       type: TimesheetsActions.SET_WEEK,
       startingDay
     });
-    dispatch(getTimesheets({
-      userId,
-      dateBegin: moment(startingDay).weekday(0).format('YYYY-MM-DD'),
-      dateEnd: moment(startingDay).weekday(6).format('YYYY-MM-DD')
-    }));
+    dispatch(
+      getTimesheets({
+        userId,
+        dateBegin: moment(startingDay)
+          .weekday(0)
+          .format('YYYY-MM-DD'),
+        dateEnd: moment(startingDay)
+          .weekday(6)
+          .format('YYYY-MM-DD')
+      })
+    );
   };
 };
 
@@ -170,12 +193,12 @@ export const changeTask = (task, taskStatusId) => ({
   taskStatusId
 });
 
-export const changeActivityType = (typeId) => ({
+export const changeActivityType = typeId => ({
   type: TimesheetsActions.CHANGE_ACTIVITY_TYPE,
   typeId
 });
 
-export const changeProject = (project) => ({
+export const changeProject = project => ({
   type: TimesheetsActions.CHANGE_PROJECT,
   project: Array.isArray(project) ? null : project
 });
@@ -184,17 +207,17 @@ export const clearModalState = () => ({
   type: TimesheetsActions.CLEAR_MODAL_STATE
 });
 
-export const addActivity = (item) => ({
+export const addActivity = item => ({
   item,
   type: TimesheetsActions.ADD_ACTIVITY
 });
 
-export const filterTasks = (tasks) => ({
+export const filterTasks = tasks => ({
   type: TimesheetsActions.FILTER_TASKS,
   tasks
 });
 
-export const filterProjects = (projects) => ({
+export const filterProjects = projects => ({
   type: TimesheetsActions.FILTER_PROJECTS,
   projects
 });
@@ -203,26 +226,29 @@ export const filterProjects = (projects) => ({
 export const getTasksForSelect = (name = '', projectId) => {
   return dispatch => {
     return axios
-    .get(
-      `${API_URL}/task`,
-      { params: {
-        name,
-        ...{projectId},
-        fields: 'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId,prefix'
-      } },
-      { withCredentials: true }
-    )
-    .then(response => response.data.data)
-    .then(tasks => {
-      dispatch(filterTasks(tasks));
-      return {
-        options: tasks.map((task) => ({
-          label: `${task.prefix}-${task.id}: ${task.name}`,
-          value: task.id,
-          body: task
-        }))
-      };
-    });
+      .get(
+        `${API_URL}/task`,
+        {
+          params: {
+            name,
+            ...{ projectId },
+            fields:
+              'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId,prefix'
+          }
+        },
+        { withCredentials: true }
+      )
+      .then(response => response.data.data)
+      .then(tasks => {
+        dispatch(filterTasks(tasks));
+        return {
+          options: tasks.map(task => ({
+            label: `${task.prefix}-${task.id}: ${task.name}`,
+            value: task.id,
+            body: task
+          }))
+        };
+      });
   };
 };
 
@@ -230,28 +256,24 @@ export const getTasksForSelect = (name = '', projectId) => {
 export const getProjectsForSelect = (name = '', hideEmptyValue) => {
   return dispatch => {
     return axios
-    .get(
-      `${API_URL}/project`,
-      { params: { name } },
-      { withCredentials: true }
-    )
-    .then(response => response.data.data)
-    .then(projects => {
-      dispatch(filterProjects(projects));
-      const options = projects.map((project) => ({
-        label: project.name,
-        value: project.id,
-        body: project
-      }));
-      return {
-        options: hideEmptyValue ? options : options.concat(
-          {
-            label: 'Без проекта',
-            value: 0,
-            body: null
-          }
-        )
-      };
-    });
+      .get(`${API_URL}/project`, { params: { name } }, { withCredentials: true })
+      .then(response => response.data.data)
+      .then(projects => {
+        dispatch(filterProjects(projects));
+        const options = projects.map(project => ({
+          label: project.name,
+          value: project.id,
+          body: project
+        }));
+        return {
+          options: hideEmptyValue
+            ? options
+            : options.concat({
+                label: 'Без проекта',
+                value: 0,
+                body: null
+              })
+        };
+      });
   };
 };
