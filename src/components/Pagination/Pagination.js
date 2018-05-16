@@ -62,7 +62,6 @@ const Pagination = props => {
 
   const startCount = paginationConfig.maxVisibleCount - paginationConfig.tail;
   const finishCount = itemsCount - startCount + 1;
-  console.log(startCount, finishCount);
   const startPageItem = (
     <PaginationItem key="startPage" active={activePage === 1} index={1} clickable handleClick={handleClick} />
   );
