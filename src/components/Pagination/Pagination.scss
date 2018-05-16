@@ -18,7 +18,8 @@ $paginate-border-width: 3px;
     }
   }
 
-  a {
+  a,
+  span {
     display: block;
     padding: 1rem 2rem;
     text-decoration: none;
@@ -27,6 +28,10 @@ $paginate-border-width: 3px;
     border-top: $paginate-border-width solid transparent;
     margin-top: -$paginate-border-width;
     transition: $transition;
+
+    @include phone {
+      padding: 0.5rem;
+    }
   }
 
   &:not(.disabled) {

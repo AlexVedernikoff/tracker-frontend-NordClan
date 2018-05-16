@@ -1,11 +1,57 @@
 @import '../../../styles/variables';
 
+.unactive {
+}
+.active {
+}
+
 .button {
   flex-shrink: 0;
 }
 
 .editRow {
   padding-bottom: 32px;
+}
+
+.dates {
+  display: flex;
+  margin-bottom: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+
+  hr {
+    width: 2rem;
+    border-color: lighten(black, 80%);
+    margin: 0 0.5rem;
+  }
+}
+
+.budgetContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: nowrap;
+}
+
+.budgetLegend:not(:first-child) {
+  margin-left: 1rem;
+}
+
+.riskMarker {
+  font-size: $font-size-small;
+  color: gray;
+  margin-top: 0.5rem;
+
+  &:before {
+    content: '';
+    height: 0.75rem;
+    width: 0.75rem;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    display: inline-block;
+    vertical-align: text-top;
+    background-color: $color-orange;
+  }
 }
 
 .graph {
@@ -15,7 +61,7 @@
   overflow: auto;
   position: relative;
   z-index: 0; // New z-index stack created
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 
   &::-webkit-scrollbar-track {
     background-color: $color-gray;
@@ -94,8 +140,36 @@
 .year {
   display: flex;
   text-align: center;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
+
+  .prev,
+  .next,
+  .current {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .prev,
+  .next {
+    cursor: pointer;
+    background-color: $color-lightgray;
+    color: gray;
+    flex: 1;
+    transition: $transition;
+
+    &:hover {
+      color: $color-black;
+      background-color: $color-gray;
+      transition: $transition;
+    }
+  }
+
+  .current {
+    font-weight: bold;
+    flex: 1;
+  }
 
   .arrow {
     cursor: pointer;
@@ -121,14 +195,15 @@
 }
 
 .sprintNames {
-  display: flex;
   width: 9rem;
+  padding-top: 4rem;
   flex-shrink: 0;
   flex-direction: column;
   border-top: 1px solid lighten($color-black, 70%);
   border-bottom: 1px solid lighten($color-black, 70%);
 
   & > * {
+    height: 2rem;
     flex: 1;
     display: flex;
     align-items: center;
@@ -186,6 +261,7 @@
 
 .spentTime {
   width: 3rem;
+  padding-top: 2rem;
 
   .header {
     flex: 3;
@@ -203,7 +279,7 @@
   flex-direction: column;
 
   &.unactive {
-    border: 1px dashed $color-green;
+    background-color: lighten($color-dark, 55%);
   }
 
   &.finished {
@@ -223,46 +299,59 @@
     line-height: 1;
   }
 }
+
+$tooltip-border: 1px solid lighten(black, 85%);
+
 .SprintInfo__tooltip {
-  margin: 0 15px;
-  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
-  top: 2px;
+  height: 1.5rem;
+  top: 50%;
+  margin-top: -0.75rem;
+  margin-left: 0.75rem;
   left: 100%;
-  bottom: 2px;
-  background-color: rgba(0, 0, 0, 0.6);
-  color: $color-white;
-  padding: 0px 10px;
+  background-color: $color-lightgray;
+  border: $tooltip-border;
+  color: gray;
   z-index: 5;
-  min-width: 100px;
+  min-width: 6rem;
   text-align: center;
   .text {
     font-size: 11px;
     display: inline-block;
+    position: relative;
+    z-index: 1;
   }
   &:nth-of-type(2) {
     top: 50%;
   }
   &:after {
     content: '';
-    position: absolute;
-    left: -10px;
-    width: 10px;
-    height: 10px;
-    border-style: solid;
-    border-width: 10px 10px 10px 0;
-    border-color: transparent rgba(0, 0, 0, 0.6) transparent transparent;
     display: block;
-    top: 50%;
-    transform: translateY(-50%);
+    width: 1rem;
+    height: 1rem;
+    background-color: $color-lightgray;
+    border: $tooltip-border;
+    border-top: none;
+    border-right: none;
+    transform: rotate(45deg);
+    position: absolute;
+    left: -0.5rem;
   }
   &.toRight {
     left: initial;
     right: 100%;
+    margin-right: 0.75rem;
+
     &:after {
       left: initial;
-      right: -10px;
-      transform: translateY(-50%) rotate(180deg);
+      right: -0.5rem;
+      border-bottom: none;
+      border-left: none;
+      border-top: $tooltip-border;
+      border-right: $tooltip-border;
     }
   }
 }
@@ -282,7 +371,7 @@
     width: 10px;
     height: 10px;
     transform: rotate(45deg);
-    background-color: red;
+    background-color: $color-red;
     cursor: pointer;
   }
   &.done {
@@ -335,8 +424,7 @@
   position: absolute;
   right: 0;
   z-index: 1;
-  opacity: 0.5;
-
+  opacity: 0;
   display: inline-block;
   box-sizing: content-box;
   vertical-align: center;
@@ -346,21 +434,21 @@
   width: 0.8rem;
   height: 0.8rem;
   background-color: white;
-  border: 1px solid lighten($color-black, 70%);
   border-radius: 50%;
-  transition: $transition;
+  transition: opacity 100ms;
+  transform: translate3d(0, 0, 0);
 
   &:hover {
     opacity: 1;
     background-color: $color-lightgray;
     fill: $color-dark;
-    border-color: $color-dark;
   }
 }
 
 .timeline {
   position: absolute;
-  border-left: 1px solid red;
+  border-left: 1px solid $color-green;
+  border-right: 1px solid $color-green;
   height: calc(100% - 64px);
   z-index: 2;
   opacity: 0.5;
@@ -369,7 +457,7 @@
     position: absolute;
     top: -11px;
     left: -15px;
-    color: red;
+    color: $color-green;
     font-size: 12px;
     text-align: center;
     font-weight: 600;
@@ -377,12 +465,46 @@
 }
 
 .moveTasksBtnWrapper {
-  margin: 0 0.5rem;
-  flex-shrink: 0;
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  position: relative;
   @include phone {
-    width: 100%;
-    margin: 0 0.5rem 2rem;
+    justify-content: flex-start;
+  }
+
+  .mobeButtonLabel {
+    display: none;
+    color: $color-dark-gray;
+
+    @include phone {
+      display: block;
+      margin-left: 0.5rem;
+    }
+  }
+
+  .leftBranch,
+  .rightBranch {
+    margin: 0 0.5rem;
+    position: relative;
+    top: 0.5rem;
+    width: 3rem;
+    height: 1rem;
+    border: 1px solid silver;
+    border-bottom: none;
+
+    @include phone {
+      display: none;
+    }
+  }
+
+  .leftBranch {
+    border-right: none;
+  }
+  .rightBranch {
+    border-left: none;
   }
 }
 

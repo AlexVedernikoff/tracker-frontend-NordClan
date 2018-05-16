@@ -4,6 +4,7 @@ import * as css from './Comments.scss';
 import { Link } from 'react-router';
 import cn from 'classnames';
 import moment from 'moment';
+import { get } from 'lodash';
 import { IconDeleteAnimate } from '../../../components/Icons';
 import CopyThis from '../../../components/CopyThis';
 import { history } from '../../../History';
@@ -113,6 +114,13 @@ class Comment extends Component {
       Comment.conditionalScroll(this.refs.comment);
     }
   }
+
+  handleSelect = e => {
+    if (get(e, 'target.dataset.key') === 'textContainer') {
+      Comment.selectComment(this.props.comment.id, this.props.location);
+    }
+  };
+
   render() {
     const { comment: { author, parentComment }, comment } = this.props;
     let typoAvatar = '';
@@ -132,7 +140,7 @@ class Comment extends Component {
           [css.selected]: this.props.lightened
         })}
       >
-        <div className={css.comment} onClick={() => Comment.selectComment(comment.id, this.props.location)}>
+        <div className={css.comment}>
           <div className={css.ava}>
             {comment.deleting ? <IconDeleteAnimate /> : author.photo ? <img src={author.photo} /> : typoAvatar}
           </div>
@@ -167,7 +175,8 @@ class Comment extends Component {
             <div
               dangerouslySetInnerHTML={{ __html: Autolinker.link(comment.text) }}
               className={css.commentText}
-              onClick={e => e.stopPropagation()}
+              data-key="textContainer"
+              onClick={this.handleSelect}
             />
             <div className={css.commentAction}>
               {!comment.deleting ? (
