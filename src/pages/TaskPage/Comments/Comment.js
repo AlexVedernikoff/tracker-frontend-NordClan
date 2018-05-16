@@ -114,6 +114,13 @@ class Comment extends Component {
       Comment.conditionalScroll(this.refs.comment);
     }
   }
+
+  handleSelect = e => {
+    if (get(e, 'target.dataset.key') === 'textContainer') {
+      Comment.selectComment(this.props.comment.id, this.props.location);
+    }
+  };
+
   render() {
     const { comment: { author, parentComment }, comment } = this.props;
     let typoAvatar = '';
@@ -169,11 +176,7 @@ class Comment extends Component {
               dangerouslySetInnerHTML={{ __html: Autolinker.link(comment.text) }}
               className={css.commentText}
               data-key="textContainer"
-              onClick={e => {
-                if (get(e, 'target.dataset.key') === 'textContainer') {
-                  Comment.selectComment(comment.id, this.props.location);
-                }
-              }}
+              onClick={this.handleSelect}
             />
             <div className={css.commentAction}>
               {!comment.deleting ? (
