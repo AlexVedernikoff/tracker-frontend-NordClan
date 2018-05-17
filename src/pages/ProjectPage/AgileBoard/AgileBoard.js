@@ -40,20 +40,14 @@ const filterTasks = array => {
         taskArray.new.push(element);
         break;
       case 2:
-        taskArray.dev.push(element);
-        break;
       case 3:
         taskArray.dev.push(element);
         break;
       case 4:
-        taskArray.codeReview.push(element);
-        break;
       case 5:
         taskArray.codeReview.push(element);
         break;
       case 6:
-        taskArray.qa.push(element);
-        break;
       case 7:
         taskArray.qa.push(element);
         break;
@@ -66,6 +60,7 @@ const filterTasks = array => {
   });
   return taskArray;
 };
+
 const phaseColumnNameById = {
   1: 'New',
   2: 'Dev',

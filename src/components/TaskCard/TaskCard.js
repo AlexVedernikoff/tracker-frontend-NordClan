@@ -12,7 +12,7 @@ import { TASK_CARD } from '../../constants/DragAndDrop';
 import * as css from './TaskCard.scss';
 import PriorityBox from './PriorityBox';
 import CopyThis from '../../components/CopyThis';
-import { IconPlay, IconPause, IconTime, IconBug, IconEdit } from '../Icons';
+import { IconPlay, IconPause, IconTime, IconBug, IconEdit, IconFileTree, IconLink } from '../Icons';
 import ReactTooltip from 'react-tooltip';
 
 const taskCardSource = {
@@ -113,112 +113,158 @@ class TaskCard extends React.Component {
     } = this.props;
 
     const factPlanDivision = task.factExecutionTime / task.plannedExecutionTime;
+    const isSubtasks = task.subTasks.length;
+    const isLinkedTasks = task.linkedTasks.length;
+    const isParent = task.parentTask;
 
     const classPriority = 'priority-' + task.prioritiesId;
     const isBug = ~[2, 4, 5].indexOf(task.typeId);
 
     return connectDragSource(
-      <div
-        className={classnames({
-          [css.taskCard]: true,
-          [css[classPriority]]: true,
-          [css.dropped]: isDragging,
-          [css.bug]: isBug
-        })}
-        onClick={this.goToDetailPage}
-        {...other}
-      >
-        {this.isTaskInWork(task.statusId) && (
-          <div
-            className={classnames({
-              [css.status]: true,
-              [css.inhold]: this.isTaskInHold(task.statusId),
-              [css.inprogress]: this.isTaskInProgress(task.statusId)
-            })}
-          >
-            {this.isTaskInProgress(task.statusId) ? (
-              <IconPlay data-tip="Начать" onClick={this.handleClick} />
-            ) : (
-              <IconPause data-tip="Приостановить" onClick={this.handleClick} />
-            )}
-          </div>
-        )}
-
-        <CopyThis
-          wrapThisInto={'div'}
-          isCopiedBackground
-          description={`Ссылка на задачу ${task.prefix}-${task.id}`}
-          textToCopy={`${location.origin}${history.createHref(`/projects/${task.projectId}/tasks/${task.id}`)}`}
-        >
-          <div className={css.header}>
-            <span className={css.taskNum}>
-              {isBug ? <IconBug style={{ verticalAlign: 'top' }} /> : null} {task.prefix}-{task.id}
-            </span>{' '}
-            | {getTypeById(task.typeId, taskTypes)}
-          </div>
-        </CopyThis>
-
-        <Link to={`/projects/${task.projectId}/tasks/${task.id}`} className={css.taskName}>
-          <div>{task.name}</div>
-        </Link>
-
-        <p className={css.taskMeta} onClick={this.handlePerformerClick}>
-          {!myTaskBoard && (
-            <span className={css.performer}>
-              {task.performer ? (
-                <span>
-                  {task.performer.fullNameRu}
-                  <span className={css.preformerEditIcon}>
-                    <IconEdit />
-                  </span>
-                </span>
-              ) : (
-                <span className={css.unassigned}>Не назначено</span>
-              )}
+      <div className={css.taskWrapper}>
+        {isParent ? (
+          <div onMouseEnter={e => console.log(task.parentTask.id)} className={css.parentTask}>
+            <span className={css.shortNumber}>
+              <span className={css.relatedTaskIcon}>
+                <IconFileTree />
+              </span>
+              {task.prefix}-{task.parentTask.id}:
             </span>
-          )}
-        </p>
-
-        {!!(task.factExecutionTime || task.plannedExecutionTime) &&
-          !isExternal && (
-            <p className={classnames(css.time, { [css.redBorder]: +task.plannedExecutionTime === 0 })}>
-              <IconTime
-                className={classnames({
-                  [css.green]: this.isInPlan(task.plannedExecutionTime, task.factExecutionTime),
-                  [css.red]: this.isOutOfPlan(task.plannedExecutionTime, task.factExecutionTime)
-                })}
-              />
-              <span>{getTaskTime(task.factExecutionTime, task.plannedExecutionTime)}</span>
-            </p>
-          )}
-
-        {!!task.plannedExecutionTime &&
-          !isExternal && (
-            <div className={css.progressBar}>
-              <div
-                style={{ width: factPlanDivision < 1 ? factPlanDivision * 100 + '%' : '100%' }}
-                className={classnames({
-                  [css.green]: this.isInPlan(task.plannedExecutionTime, task.factExecutionTime),
-                  [css.red]: this.isOutOfPlan(task.plannedExecutionTime, task.factExecutionTime)
-                })}
-              />
+            {task.parentTask.name}
+          </div>
+        ) : null}
+        <div
+          className={classnames({
+            [css.taskCard]: true,
+            [css[classPriority]]: true,
+            [css.dropped]: isDragging,
+            [css.bug]: isBug
+          })}
+          onClick={this.goToDetailPage}
+          {...other}
+        >
+          {this.isTaskInWork(task.statusId) && (
+            <div
+              className={classnames({
+                [css.status]: true,
+                [css.inhold]: this.isTaskInHold(task.statusId),
+                [css.inprogress]: this.isTaskInProgress(task.statusId)
+              })}
+            >
+              {this.isTaskInProgress(task.statusId) ? (
+                <IconPlay data-tip="Начать" onClick={this.handleClick} />
+              ) : (
+                <IconPause data-tip="Приостановить" onClick={this.handleClick} />
+              )}
             </div>
           )}
 
-        {this.state.isOpenPriority ? (
-          <PriorityBox
-            taskId={task.id}
-            isTime={!!(task.factExecutionTime || task.plannedExecutionTime)}
-            priorityId={task.prioritiesId}
-            hideBox={this.togglePriorityBox}
-          />
-        ) : (
-          <div
-            className={css.priorityMarker}
-            onClick={this.showPriorityBox}
-            data-tip={`Приоритет: ${getProrityById(this.props.task.prioritiesId)}`}
-          />
-        )}
+          <CopyThis
+            wrapThisInto={'div'}
+            isCopiedBackground
+            description={`Ссылка на задачу ${task.prefix}-${task.id}`}
+            textToCopy={`${location.origin}${history.createHref(`/projects/${task.projectId}/tasks/${task.id}`)}`}
+          >
+            <div className={css.header}>
+              <span className={css.taskNum}>
+                {isBug ? <IconBug style={{ verticalAlign: 'top' }} /> : null} {task.prefix}-{task.id}
+              </span>{' '}
+              | {getTypeById(task.typeId, taskTypes)}
+            </div>
+          </CopyThis>
+
+          <Link to={`/projects/${task.projectId}/tasks/${task.id}`} className={css.taskName}>
+            <div>{task.name}</div>
+          </Link>
+
+          <p className={css.taskMeta} onClick={this.handlePerformerClick}>
+            {!myTaskBoard && (
+              <span className={css.performer}>
+                {task.performer ? (
+                  <span>
+                    {task.performer.fullNameRu}
+                    <span className={css.preformerEditIcon}>
+                      <IconEdit />
+                    </span>
+                  </span>
+                ) : (
+                  <span className={css.unassigned}>Не назначено</span>
+                )}
+              </span>
+            )}
+          </p>
+
+          {!!(task.factExecutionTime || task.plannedExecutionTime) &&
+            !isExternal && (
+              <p className={classnames(css.time, { [css.redBorder]: +task.plannedExecutionTime === 0 })}>
+                <IconTime
+                  className={classnames({
+                    [css.green]: this.isInPlan(task.plannedExecutionTime, task.factExecutionTime),
+                    [css.red]: this.isOutOfPlan(task.plannedExecutionTime, task.factExecutionTime)
+                  })}
+                />
+                <span>{getTaskTime(task.factExecutionTime, task.plannedExecutionTime)}</span>
+              </p>
+            )}
+
+          {!!task.plannedExecutionTime &&
+            !isExternal && (
+              <div className={css.progressBar}>
+                <div
+                  style={{ width: factPlanDivision < 1 ? factPlanDivision * 100 + '%' : '100%' }}
+                  className={classnames({
+                    [css.green]: this.isInPlan(task.plannedExecutionTime, task.factExecutionTime),
+                    [css.red]: this.isOutOfPlan(task.plannedExecutionTime, task.factExecutionTime)
+                  })}
+                />
+              </div>
+            )}
+
+          {this.state.isOpenPriority ? (
+            <PriorityBox
+              taskId={task.id}
+              isTime={!!(task.factExecutionTime || task.plannedExecutionTime)}
+              priorityId={task.prioritiesId}
+              hideBox={this.togglePriorityBox}
+            />
+          ) : (
+            <div
+              className={css.priorityMarker}
+              onClick={this.showPriorityBox}
+              data-tip={`Приоритет: ${getProrityById(this.props.task.prioritiesId)}`}
+            />
+          )}
+        </div>
+        {isSubtasks ? (
+          <div className={css.subTasks}>
+            {task.subTasks.map(subTask => (
+              <div onMouseEnter={e => console.log(subTask.id)} key={subTask.id} className={css.subTask}>
+                <span className={css.shortNumber}>
+                  <span className={css.relatedTaskIcon}>
+                    <IconFileTree />
+                  </span>
+                  {task.prefix}-{subTask.id}:
+                </span>
+                {subTask.name}
+              </div>
+            ))}
+          </div>
+        ) : null}
+        {isLinkedTasks ? (
+          <div className={css.linkedTasks}>
+            {task.linkedTasks.map(linkedTask => (
+              <div key={linkedTask.id} onMouseEnter={e => console.log(linkedTask.id)} className={css.linkedTask}>
+                <span className={css.shortNumber}>
+                  <span className={css.relatedTaskIcon}>
+                    <IconLink />
+                  </span>
+                  {task.prefix}-{linkedTask.id}:
+                </span>
+                {linkedTask.name}
+              </div>
+            ))}
+          </div>
+        ) : null}
       </div>
     );
   }
