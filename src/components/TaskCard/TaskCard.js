@@ -109,6 +109,9 @@ class TaskCard extends React.Component {
       section,
       taskTypes,
       isExternal,
+      lightTask,
+      lighted,
+      lightedTaskId,
       ...other
     } = this.props;
 
@@ -123,7 +126,11 @@ class TaskCard extends React.Component {
     return connectDragSource(
       <div className={css.taskWrapper}>
         {isParent ? (
-          <div onMouseEnter={e => console.log(task.parentTask.id)} className={css.parentTask}>
+          <div
+            onMouseEnter={() => lightTask(task.parentTask.id, true)}
+            onMouseLeave={() => lightTask(null, false)}
+            className={classnames([css.parentTask, { [css.lighted]: lightedTaskId === task.parentTask.id }])}
+          >
             <span className={css.shortNumber}>
               <span className={css.relatedTaskIcon}>
                 <IconFileTree />
@@ -140,6 +147,8 @@ class TaskCard extends React.Component {
             [css.dropped]: isDragging,
             [css.bug]: isBug
           })}
+          onMouseEnter={() => lightTask(task.id, false)}
+          onMouseLeave={() => lightTask(null, false)}
           onClick={this.goToDetailPage}
           {...other}
         >
@@ -173,9 +182,11 @@ class TaskCard extends React.Component {
             </div>
           </CopyThis>
 
-          <Link to={`/projects/${task.projectId}/tasks/${task.id}`} className={css.taskName}>
-            <div>{task.name}</div>
-          </Link>
+          <div>
+            <Link to={`/projects/${task.projectId}/tasks/${task.id}`} className={css.taskName}>
+              {task.name}
+            </Link>
+          </div>
 
           <p className={css.taskMeta} onClick={this.handlePerformerClick}>
             {!myTaskBoard && (
@@ -234,11 +245,17 @@ class TaskCard extends React.Component {
               data-tip={`Приоритет: ${getProrityById(this.props.task.prioritiesId)}`}
             />
           )}
+          {lighted ? <div className={css.lightedBorder} /> : null}
         </div>
         {isSubtasks ? (
           <div className={css.subTasks}>
             {task.subTasks.map(subTask => (
-              <div onMouseEnter={e => console.log(subTask.id)} key={subTask.id} className={css.subTask}>
+              <div
+                onMouseEnter={() => lightTask(subTask.id, true)}
+                onMouseLeave={() => lightTask(null, false)}
+                key={subTask.id}
+                className={classnames([css.subTask, { [css.lighted]: lightedTaskId === subTask.id }])}
+              >
                 <span className={css.shortNumber}>
                   <span className={css.relatedTaskIcon}>
                     <IconFileTree />
@@ -253,7 +270,12 @@ class TaskCard extends React.Component {
         {isLinkedTasks ? (
           <div className={css.linkedTasks}>
             {task.linkedTasks.map(linkedTask => (
-              <div key={linkedTask.id} onMouseEnter={e => console.log(linkedTask.id)} className={css.linkedTask}>
+              <div
+                key={linkedTask.id}
+                onMouseEnter={() => lightTask(linkedTask.id, true)}
+                onMouseLeave={() => lightTask(null, false)}
+                className={classnames([css.linkedTask, { [css.lighted]: lightedTaskId === linkedTask.id }])}
+              >
                 <span className={css.shortNumber}>
                   <span className={css.relatedTaskIcon}>
                     <IconLink />
@@ -274,6 +296,9 @@ TaskCard.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
   isDragging: PropTypes.bool.isRequired,
   isExternal: PropTypes.bool,
+  lightTask: PropTypes.func.isRequired,
+  lighted: PropTypes.bool,
+  lightedTaskId: PropTypes.number,
   myTaskBoard: PropTypes.any,
   onChangeStatus: PropTypes.func.isRequired,
   onOpenPerformerModal: PropTypes.func.isRequired,

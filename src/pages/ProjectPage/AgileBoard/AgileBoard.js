@@ -80,7 +80,10 @@ const sortTasksAndCreateCard = (
   onChangeStatus,
   onOpenPerformerModal,
   myTaskBoard,
-  isExternal
+  isExternal,
+  lightTask,
+  lightedTaskId,
+  isCardFocus
 ) => {
   const taskArray = {
     new: [],
@@ -94,11 +97,22 @@ const sortTasksAndCreateCard = (
     sortedObject[key].sort((a, b) => {
       return a.prioritiesId - b.prioritiesId;
     });
+
     taskArray[key] = sortedObject[key].map(task => {
+      const lightedRelatedTask = task.linkedTasks
+        .concat(task.subTasks, task.parentTask)
+        .map(relatedTask => _.get(relatedTask, 'id', null))
+        .includes(lightedTaskId);
+
+      const lighted = task.id === lightedTaskId && isCardFocus;
+
       return (
         <TaskCard
-          key={`task-${task.id}`}
           task={task}
+          lightTask={lightTask}
+          lighted={lighted}
+          lightedTaskId={lightedRelatedTask ? lightedTaskId : null}
+          key={`task-${task.id}`}
           section={section}
           isExternal={isExternal}
           onChangeStatus={onChangeStatus}
@@ -153,6 +167,8 @@ class AgileBoard extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      lightedTaskId: null,
+      isCardFocus: false,
       isModalOpen: false,
       performer: null,
       changedTask: null,
@@ -619,6 +635,10 @@ class AgileBoard extends Component {
     return isEmpty;
   };
 
+  lightTask = (lightedTaskId, isCardFocus) => {
+    this.setState({ lightedTaskId, isCardFocus });
+  };
+
   render() {
     const { taskTypes, project } = this.props;
 
@@ -632,7 +652,10 @@ class AgileBoard extends Component {
       this.changeStatus,
       this.openPerformerModal,
       this.props.myTaskBoard,
-      isExternal
+      isExternal,
+      this.lightTask,
+      this.state.lightedTaskId,
+      this.state.isCardFocus
     );
 
     const myTasks = this.props.sprintTasks.filter(task => {
@@ -646,7 +669,10 @@ class AgileBoard extends Component {
       this.changeStatus,
       this.openPerformerModal,
       this.props.myTaskBoard,
-      isExternal
+      isExternal,
+      this.lightTask,
+      this.state.lightedTaskId,
+      this.state.isCardFocus
     );
 
     const typeOptions = this.createOptions(taskTypes);
