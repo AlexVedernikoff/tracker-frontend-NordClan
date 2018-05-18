@@ -4,16 +4,18 @@ import { connect } from 'react-redux';
 import classnames from 'classnames';
 import { Link } from 'react-router';
 import { DragSource } from 'react-dnd';
+import ReactTooltip from 'react-tooltip';
+
 import { history } from '../../History';
 import getTypeById from '../../utils/TaskTypes';
 import getProrityById from '../../utils/TaskPriority';
 import roundNum from '../../utils/roundNum';
 import { TASK_CARD } from '../../constants/DragAndDrop';
-import * as css from './TaskCard.scss';
 import PriorityBox from './PriorityBox';
+import * as css from './TaskCard.scss';
 import CopyThis from '../../components/CopyThis';
-import { IconPlay, IconPause, IconTime, IconBug, IconEdit, IconFileTree, IconLink } from '../Icons';
-import ReactTooltip from 'react-tooltip';
+import { IconPlay, IconPause, IconTime, IconBug, IconEdit } from '../Icons';
+import RelatedTask from './RelatedTask';
 
 const taskCardSource = {
   beginDrag(props) {
@@ -121,30 +123,23 @@ class TaskCard extends React.Component {
     const isParent = task.parentTask;
 
     const classPriority = 'priority-' + task.prioritiesId;
-    const isBug = ~[2, 4, 5].indexOf(task.typeId);
+    const isBug = [2, 4, 5].includes(task.typeId);
 
     return connectDragSource(
-      <div className={css.taskWrapper}>
-        {isParent ? (
-          <div
-            onMouseEnter={() => lightTask(task.parentTask.id, true)}
-            onMouseLeave={() => lightTask(null, false)}
-            className={classnames([css.parentTask, { [css.lighted]: lightedTaskId === task.parentTask.id }])}
-          >
-            <span className={css.shortNumber}>
-              <span className={css.relatedTaskIcon}>
-                <IconFileTree />
-              </span>
-              {task.prefix}-{task.parentTask.id}:
-            </span>
-            {task.parentTask.name}
-          </div>
+      <div className={classnames([css.taskWrapper, { [css.dropped]: isDragging }])}>
+        {isParent && !isDragging ? (
+          <RelatedTask
+            onHover={lightTask}
+            task={task.parentTask}
+            isLighted={lightedTaskId === task.parentTask.id}
+            mode="parent"
+            prefix={task.prefix}
+          />
         ) : null}
         <div
           className={classnames({
             [css.taskCard]: true,
             [css[classPriority]]: true,
-            [css.dropped]: isDragging,
             [css.bug]: isBug
           })}
           onMouseEnter={() => lightTask(task.id, false)}
@@ -247,43 +242,31 @@ class TaskCard extends React.Component {
           )}
           {lighted ? <div className={css.lightedBorder} /> : null}
         </div>
-        {isSubtasks ? (
+        {isSubtasks && !isDragging ? (
           <div className={css.subTasks}>
             {task.subTasks.map(subTask => (
-              <div
-                onMouseEnter={() => lightTask(subTask.id, true)}
-                onMouseLeave={() => lightTask(null, false)}
+              <RelatedTask
                 key={subTask.id}
-                className={classnames([css.subTask, { [css.lighted]: lightedTaskId === subTask.id }])}
-              >
-                <span className={css.shortNumber}>
-                  <span className={css.relatedTaskIcon}>
-                    <IconFileTree />
-                  </span>
-                  {task.prefix}-{subTask.id}:
-                </span>
-                {subTask.name}
-              </div>
+                onHover={lightTask}
+                task={subTask}
+                isLighted={lightedTaskId === subTask.id}
+                mode="sub"
+                prefix={task.prefix}
+              />
             ))}
           </div>
         ) : null}
-        {isLinkedTasks ? (
+        {isLinkedTasks && !isDragging ? (
           <div className={css.linkedTasks}>
             {task.linkedTasks.map(linkedTask => (
-              <div
+              <RelatedTask
                 key={linkedTask.id}
-                onMouseEnter={() => lightTask(linkedTask.id, true)}
-                onMouseLeave={() => lightTask(null, false)}
-                className={classnames([css.linkedTask, { [css.lighted]: lightedTaskId === linkedTask.id }])}
-              >
-                <span className={css.shortNumber}>
-                  <span className={css.relatedTaskIcon}>
-                    <IconLink />
-                  </span>
-                  {task.prefix}-{linkedTask.id}:
-                </span>
-                {linkedTask.name}
-              </div>
+                onHover={lightTask}
+                task={linkedTask}
+                isLighted={lightedTaskId === linkedTask.id}
+                mode="linked"
+                prefix={task.prefix}
+              />
             ))}
           </div>
         ) : null}
