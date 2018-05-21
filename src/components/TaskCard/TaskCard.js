@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import classnames from 'classnames';
 
 import * as css from './TaskCard.scss';
 import RelatedTask from './RelatedTask';
 import TaskCore from './TaskCore';
-
-class TaskCard extends React.Component {
+class TaskCard extends PureComponent {
   render() {
     const { task, lightTask, lightedTaskId, ...other } = this.props;
 
@@ -27,6 +27,7 @@ class TaskCard extends React.Component {
             isLighted={lightedTaskId === task.parentTask.id}
             mode="parent"
             prefix={task.prefix}
+            projectId={task.projectId}
           />
         ) : null}
 
@@ -51,6 +52,7 @@ class TaskCard extends React.Component {
                 isLighted={lightedTaskId === subTask.id}
                 mode="sub"
                 prefix={task.prefix}
+                projectId={task.projectId}
               />
             ))}
           </div>
@@ -66,6 +68,7 @@ class TaskCard extends React.Component {
                 isLighted={lightedTaskId === linkedTask.id}
                 mode="linked"
                 prefix={task.prefix}
+                projectId={task.projectId}
               />
             ))}
           </div>

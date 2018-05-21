@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import ReactTooltip from 'react-tooltip';
@@ -49,7 +49,7 @@ const getTaskTime = (factTime, planTime) => {
   }
 };
 
-class TaskCore extends Component {
+class TaskCore extends PureComponent {
   static propTypes = {
     classPriority: PropTypes.string,
     connectDragSource: PropTypes.func,
@@ -139,7 +139,8 @@ class TaskCore extends Component {
         className={classnames({
           [css.taskCard]: true,
           [css[classPriority]]: true,
-          [css.bug]: isBug
+          [css.bug]: isBug,
+          [css.dropped]: isDragging
         })}
         onMouseEnter={() => lightTask(task.id, false)}
         onMouseLeave={() => lightTask(null, false)}

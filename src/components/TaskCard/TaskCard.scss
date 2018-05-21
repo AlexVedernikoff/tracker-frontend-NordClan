@@ -266,7 +266,6 @@ svg.red {
   &.lighted {
     background-color: darken($color-lightgray, 5%);
     transition: $transition;
-    cursor: pointer;
   }
 }
 
@@ -293,6 +292,18 @@ svg.red {
 
 .shortNumber {
   color: $color-dark-gray;
+
+  &:hover {
+    color: lighten($color-dark, 30%);
+  }
+}
+
+.relatedTaskName {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .relatedTaskIcon {
