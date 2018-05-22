@@ -27,13 +27,10 @@ class GitLabEditor extends Component {
   };
 
   submit = () => {
-    this.props.changeProject(
-      {
-        gitlabRepositoryId: this.state.value,
-        id: this.props.project.id
-      },
-      'gitlabRepositoryId'
-    );
+    this.props.changeProject({
+      gitlabProjectIds: [this.state.value],
+      id: this.props.project.id
+    });
   };
 
   render() {
@@ -44,12 +41,7 @@ class GitLabEditor extends Component {
       <div className={css.gitLabEditor}>
         <h2>GitLab</h2>
         <Input {...{ value, onChange }} />
-        <RoundButton
-          data-tip="Сохранить"
-          // loading={!!loading}
-          onClick={this.submit}
-          // disabled={this.isMoveTasksButtonDisabled(unfinishedLeftTasksCount)}
-        >
+        <RoundButton data-tip="Сохранить" onClick={this.submit}>
           <IconCheck />
         </RoundButton>
       </div>
