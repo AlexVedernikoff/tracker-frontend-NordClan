@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { get, remove } from 'lodash';
 
 import * as css from './GitLabEditor.scss';
-import Input from '../../../../components/Input';
-import RoundButton from '../../../../components/RoundButton';
-import { IconCheck } from '../../../../components/Icons';
 import { changeProject } from '../../../../actions/Project';
+import ProjectList from './ProjectList';
+import NewProject from './NewProject';
 
 class GitLabEditor extends Component {
   static propTypes = {
@@ -14,36 +14,33 @@ class GitLabEditor extends Component {
     project: PropTypes.object
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: ''
-    };
-  }
-
-  changeValue = e => {
-    const value = e.target.value;
-    this.setState({ value });
+  saveProject = value => {
+    const isProjectIds = get(this.props.project, 'gitlabProjectIds', false);
+    this.props.changeProject({
+      gitlabProjectIds: isProjectIds ? [...this.props.project.gitlabProjectIds, +value] : [+value],
+      id: this.props.project.id
+    });
   };
 
-  submit = () => {
+  deleteProject = value => {
+    const idsWithoutRemoved = [...get(this.props.project, 'gitlabProjectIds', [])];
+    remove(idsWithoutRemoved, id => id === value);
+
     this.props.changeProject({
-      gitlabProjectIds: [this.state.value],
+      gitlabProjectIds: idsWithoutRemoved,
       id: this.props.project.id
     });
   };
 
   render() {
-    const { value } = this.state;
-    const onChange = this.changeValue;
+    const { project } = this.props;
+    const isProjects = get(project, 'gitlabProjects.length', false);
 
     return (
       <div className={css.gitLabEditor}>
         <h2>GitLab</h2>
-        <Input {...{ value, onChange }} />
-        <RoundButton data-tip="Сохранить" onClick={this.submit}>
-          <IconCheck />
-        </RoundButton>
+        {isProjects ? <ProjectList deleteProject={this.deleteProject} projects={project.gitlabProjects} /> : null}
+        <NewProject projectIds={project.gitlabProjectIds} onSubmit={this.saveProject} />
       </div>
     );
   }

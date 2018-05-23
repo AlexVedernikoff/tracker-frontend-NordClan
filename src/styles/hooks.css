@@ -132,6 +132,10 @@
   color: darkgray;
 }
 
+.underline-link {
+  text-decoration: none;
+}
+
 .underline-link:hover {
   text-decoration: underline;
 }
