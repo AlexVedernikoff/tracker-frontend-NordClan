@@ -5,6 +5,10 @@
   border-top: 1px solid #f1f1f1;
 }
 
+.addButton {
+  width: 16rem;
+}
+
 .projectList {
   display: flex;
   flex-wrap: wrap;
@@ -32,6 +36,21 @@
   margin: 0 1rem 1rem 0;
 }
 
+@keyframes newCardAnimation {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.isNew {
+  animation: newCardAnimation 0.2s ease-out 0s;
+}
+
 .repoField {
   margin-top: 0.5rem;
   display: flex;
@@ -45,6 +64,11 @@
 }
 
 .projectName {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
   .gitlabLogo {
     display: inline-block;
     font-size: 1rem;
