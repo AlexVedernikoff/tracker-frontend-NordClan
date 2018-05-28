@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 import * as css from './Projects.scss';
 import Button from '../../components/Button';
+import TypeFilter from './TypeFilter';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
 import Input from '../../components/Input';
 import ProjectCard from '../../components/ProjectCard';
@@ -41,13 +42,18 @@ class Projects extends Component {
       projectPrefix: '',
       openProjectPage: false,
       selectedPortfolio: null,
-      activePage: 1
+      activePage: 1,
+      selectedTypes: []
     };
   }
 
   componentDidMount() {
     this.loadProjects();
   }
+
+  selectType = selectedTypes => {
+    this.setState({ selectedTypes });
+  };
 
   loadProjects = (dateFrom, dateTo) => {
     const tags = this.state.filterTags.map(el => el.value).join(',');
@@ -236,7 +242,7 @@ class Projects extends Component {
     return null;
   };
   render() {
-    const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
+    const { filteredInProgress, filteredInHold, filteredFinished, selectedTypes } = this.state;
     const formattedDayFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('DD.MM.YYYY') : '';
     const formattedDayTo = this.state.dateTo ? moment(this.state.dateTo).format('DD.MM.YYYY') : '';
     const isAdmin = this.props.globalRole === ADMIN;
@@ -252,32 +258,39 @@ class Projects extends Component {
           </header>
           <hr />
           <div className={css.projectsHeader}>
-            <div className={css.statusFilters}>
-              <StatusCheckbox
-                type="INPROGRESS"
-                checked={filteredInProgress}
-                onClick={() => {
-                  this.check('filteredInProgress', this.handleFilterChange);
-                }}
-                label="В процессе"
-              />
-              <StatusCheckbox
-                type="INHOLD"
-                checked={filteredInHold}
-                onClick={() => {
-                  this.check('filteredInHold', this.handleFilterChange);
-                }}
-                label="Приостановлен"
-              />
-              <StatusCheckbox
-                type="FINISHED"
-                checked={filteredFinished}
-                onClick={() => {
-                  this.check('filteredFinished', this.handleFilterChange);
-                }}
-                label="Завершен"
-              />
-            </div>
+            <Row>
+              <Col xs={12} sm={8}>
+                <div className={css.statusFilters}>
+                  <StatusCheckbox
+                    type="INPROGRESS"
+                    checked={filteredInProgress}
+                    onClick={() => {
+                      this.check('filteredInProgress', this.handleFilterChange);
+                    }}
+                    label="В процессе"
+                  />
+                  <StatusCheckbox
+                    type="INHOLD"
+                    checked={filteredInHold}
+                    onClick={() => {
+                      this.check('filteredInHold', this.handleFilterChange);
+                    }}
+                    label="Приостановлен"
+                  />
+                  <StatusCheckbox
+                    type="FINISHED"
+                    checked={filteredFinished}
+                    onClick={() => {
+                      this.check('filteredFinished', this.handleFilterChange);
+                    }}
+                    label="Завершен"
+                  />
+                </div>
+              </Col>
+              <Col xs={12} sm={4}>
+                <TypeFilter onChange={this.selectType} value={selectedTypes} />
+              </Col>
+            </Row>
             <Row className={css.search}>
               <Col xs={12} sm={4}>
                 <Input onChange={this.changeNameFilter} placeholder="Введите название проекта..." />
