@@ -1,4 +1,4 @@
-@import './normalize';
+// @import './normalize';
 @import './variables';
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500&subset=latin,cyrillic);
 
@@ -10,7 +10,9 @@ small {
   font-size: 70%;
 }
 
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: inherit;
 }
 
@@ -82,7 +84,6 @@ img {
 input,
 select,
 textarea {
-  
   @include phone {
     font-size: $font-size-mobile;
   }
