@@ -37,14 +37,17 @@ class ProjectList extends Component {
       <div className={css.projectList}>
         {projects
           .sort((a, b) => a.name_with_namespace > b.name_with_namespace)
-          .map(project => (
-            <ProjectCard
-              deleteProject={this.props.deleteProject}
-              key={project.id}
-              project={project}
-              isNew={newProjectIds.includes(project.id)}
-            />
-          ))}
+          .map(
+            project =>
+              project ? (
+                <ProjectCard
+                  deleteProject={this.props.deleteProject}
+                  key={project.id}
+                  project={project}
+                  isNew={newProjectIds.includes(project.id)}
+                />
+              ) : null
+          )}
       </div>
     );
   }
