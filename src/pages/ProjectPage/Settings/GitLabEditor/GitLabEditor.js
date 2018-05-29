@@ -8,11 +8,13 @@ import { changeProject } from '../../../../actions/Project';
 import ProjectList from './ProjectList';
 import NewProject from './NewProject';
 import Button from '../../../../components/Button';
+import { ADMIN } from '../../../../constants/Roles';
 
 class GitLabEditor extends Component {
   static propTypes = {
     changeProject: PropTypes.func,
-    project: PropTypes.object
+    project: PropTypes.object,
+    user: PropTypes.object
   };
 
   constructor(props) {
@@ -50,22 +52,30 @@ class GitLabEditor extends Component {
     });
   };
 
+  checkIsAdminInProject = () => {
+    return (
+      get(this.props.user, 'projectsRoles.admin', []).includes(this.props.project.id) ||
+      this.props.user.globalRole === ADMIN
+    );
+  };
+
   render() {
     const { project } = this.props;
     const { isAdding } = this.state;
     const isProjects = get(project, 'gitlabProjects.length', false);
+    const isProjectAdmin = this.checkIsAdminInProject();
 
     return (
       <div className={css.gitLabEditor}>
         <h2>GitLab</h2>
         {isProjects ? <ProjectList deleteProject={this.deleteProject} projects={project.gitlabProjects} /> : null}
-        {isAdding ? (
+        {isAdding && isProjectAdmin ? (
           <NewProject
             projectIds={project.gitlabProjectIds}
             onSubmit={this.saveProject}
             callback={this.toggleCreating}
           />
-        ) : (
+        ) : isProjectAdmin ? (
           <Button
             onClick={this.toggleCreating}
             addedClassNames={{ [css.addButton]: true }}
@@ -73,7 +83,7 @@ class GitLabEditor extends Component {
             icon="IconPlus"
             text="Привязать репозиторий"
           />
-        )}
+        ) : null}
       </div>
     );
   }
@@ -81,7 +91,8 @@ class GitLabEditor extends Component {
 
 function mapStateToProps(state) {
   return {
-    project: state.Project.project
+    project: state.Project.project,
+    user: state.Auth.user
   };
 }
 
