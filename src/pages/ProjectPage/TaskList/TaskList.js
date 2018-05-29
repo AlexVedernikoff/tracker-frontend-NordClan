@@ -469,7 +469,11 @@ class TaskList extends Component {
           />
         ) : null}
         {this.props.isCreateTaskModalOpen ? (
-          <CreateTaskModal selectedSprintValue={this.state.changedSprint} project={this.props.project} />
+          <CreateTaskModal
+            selectedSprintValue={this.state.sprintId}
+            project={this.props.project}
+            defaultPerformerId={performerId}
+          />
         ) : null}
       </div>
     );
