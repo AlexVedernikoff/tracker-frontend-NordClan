@@ -70,20 +70,24 @@ export const addExternalUserSuccess = exUser => ({
 export const addExternalUser = exUser => {
   const URL = `${API_URL}/user/external`;
   return dispatch => {
-    dispatch(addExternalUserStart());
-    dispatch(startLoading());
-    axios.post(URL, exUser).then(
-      response => {
-        if (response.data) {
-          dispatch(addExternalUserSuccess(response.data));
+    return new Promise((resolve, reject) => {
+      dispatch(addExternalUserStart());
+      dispatch(startLoading());
+      axios.post(URL, exUser).then(
+        response => {
+          if (response.data) {
+            resolve();
+            dispatch(addExternalUserSuccess(response.data));
+            dispatch(finishLoading());
+          }
+        },
+        error => {
+          reject({ message: error.response.data ? error.response.data.message : error.message });
+          dispatch(showNotification({ message: error.message, type: 'error' }));
           dispatch(finishLoading());
         }
-      },
-      error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(finishLoading());
-      }
-    );
+      );
+    });
   };
 };
 export const activateExternalUserStart = () => ({
