@@ -51,8 +51,9 @@ class Projects extends Component {
     this.loadProjects();
   }
 
-  selectType = selectedTypes => {
+  selectType = (selectedTypes, requestTypes) => {
     this.setState({ selectedTypes });
+    // console.log(requestTypes); TODO: отправляем полученные айдишники в запросе
   };
 
   loadProjects = (dateFrom, dateTo) => {
