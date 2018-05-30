@@ -52,12 +52,14 @@ class Projects extends Component {
   }
 
   selectType = (selectedTypes, requestTypes) => {
-    this.setState({ selectedTypes });
-    // console.log(requestTypes); TODO: отправляем полученные айдишники в запросе
+    this.setState({ selectedTypes }, () => {
+      this.loadProjects();
+    });
   };
 
   loadProjects = (dateFrom, dateTo) => {
     const tags = this.state.filterTags.map(el => el.value).join(',');
+    const typeId = this.state.selectedTypes.join(',');
     const statuses = [];
     if (this.state.filteredInProgress) statuses.push(1);
     if (this.state.filteredInHold) statuses.push(2);
@@ -70,7 +72,8 @@ class Projects extends Component {
       this.state.filterByName,
       dateFrom,
       dateTo,
-      statuses.join(',')
+      statuses.join(','),
+      typeId
     );
   };
 
@@ -244,6 +247,7 @@ class Projects extends Component {
   };
   render() {
     const { filteredInProgress, filteredInHold, filteredFinished, selectedTypes } = this.state;
+    const { projectTypes } = this.props;
     const formattedDayFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('DD.MM.YYYY') : '';
     const formattedDayTo = this.state.dateTo ? moment(this.state.dateTo).format('DD.MM.YYYY') : '';
     const isAdmin = this.props.globalRole === ADMIN;
@@ -289,7 +293,7 @@ class Projects extends Component {
                 </div>
               </Col>
               <Col xs={12} sm={4}>
-                <TypeFilter onChange={this.selectType} value={selectedTypes} />
+                <TypeFilter onChange={this.selectType} value={selectedTypes} dictionary={projectTypes} />
               </Col>
             </Row>
             <Row className={css.search}>
@@ -369,6 +373,7 @@ Projects.propTypes = {
 
 const mapStateToProps = state => ({
   projectList: state.Projects.projects,
+  projectTypes: state.Dictionaries.projectTypes,
   pagesCount: state.Projects.pagesCount,
   isCreateProjectModalOpen: state.Projects.isCreateProjectModalOpen,
   loading: state.Loading.loading,
@@ -392,6 +397,7 @@ Projects.propTypes = {
   onRequestClose: PropTypes.func,
   openCreateProjectModal: PropTypes.func,
   projectList: PropTypes.array,
+  projectTypes: PropTypes.array,
   requestProjectCreate: PropTypes.func
 };
 

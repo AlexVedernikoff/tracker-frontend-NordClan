@@ -8,7 +8,11 @@ import Select from '../../../components/SelectDropdown';
 class TypeFilter extends Component {
   static propTypes = {
     onChange: PropTypes.func,
-    options: PropTypes.array
+    dictionary: PropTypes.array
+  };
+
+  static defaultProps = {
+    dictionary: []
   };
 
   constructor(props) {
@@ -17,14 +21,15 @@ class TypeFilter extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    // if (newProps.options.length !== this.props.options.length) {
-    const sourceOptions = [
-      { label: 'Стажировка', value: 1, className: css.not },
-      { label: 'Продуктовый', value: 2, className: css.equal },
-      { label: 'Внутренний', value: 3, className: css.equal }
-    ];
-    this.TwoWayOptions = new TwoWayOptionsClass(sourceOptions, css.optGroupLabel, css.option);
-    // }
+    if (newProps.dictionary.length !== this.props.dictionary.length) {
+      const sourceOptions = newProps.dictionary.map(type => ({ label: type.name, value: type.id }));
+      this.TwoWayOptions = new TwoWayOptionsClass(sourceOptions, css.optGroupLabel, css.option);
+    }
+  }
+
+  get options() {
+    // return this.TwoWayOptions.options; // Возможность задавать иключающие опции поиска.
+    return this.TwoWayOptions.sourceOptions; // Только оригинальные опции
   }
 
   onChange = selectedOptions => {
@@ -47,7 +52,7 @@ class TypeFilter extends Component {
           multi
           noResultsText="Нет результатов"
           backspaceRemoves={false}
-          options={this.TwoWayOptions.options}
+          options={this.options}
           onChange={this.onChange}
           {...other}
         />
