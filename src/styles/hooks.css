@@ -1,3 +1,8 @@
+input,
+textarea {
+  font-family: inherit;
+}
+
 /* Tooltips ===> */
 
 .tooltip {
@@ -130,6 +135,10 @@
 .text-info {
   font-size: smaller;
   color: darkgray;
+}
+
+.underline-link {
+  text-decoration: none;
 }
 
 .underline-link:hover {

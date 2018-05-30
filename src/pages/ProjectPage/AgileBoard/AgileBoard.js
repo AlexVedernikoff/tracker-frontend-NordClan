@@ -815,7 +815,11 @@ class AgileBoard extends Component {
           />
         ) : null}
         {this.props.isCreateTaskModalOpen ? (
-          <CreateTaskModal selectedSprintValue={this.state.changedSprint} project={this.props.project} />
+          <CreateTaskModal
+            selectedSprintValue={this.state.changedSprint}
+            project={this.props.project}
+            defaultPerformerId={this.state.performerId}
+          />
         ) : null}
       </section>
     );
