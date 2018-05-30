@@ -9,13 +9,26 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './AddExternalUser.scss';
-import { addExternalUser } from '../../../actions/ExternalUsers';
+import { addExternalUser, addExternalUserSuccess } from '../../../actions/ExternalUsers';
+import { showNotification } from '../../../actions/Notifications';
+import { finishLoading } from '../../../actions/Loading';
+import { cloneDeep } from 'lodash';
+
 const initialState = {
   isModalOpen: false,
   name: '',
   email: '',
-  expiredDate: ''
+  expiredDate: '',
+  errorMessage: '',
+  errors: {
+    email: {
+      error: false,
+      serverError: false,
+      text: ''
+    }
+  }
 };
+
 class AddExternalUser extends Component {
   constructor(props) {
     super(props);
@@ -24,6 +37,7 @@ class AddExternalUser extends Component {
     };
     this.validator = new Validator();
   }
+
   openModal = () => {
     this.setState({ isModalOpen: true });
   };
@@ -34,6 +48,8 @@ class AddExternalUser extends Component {
     this.setState({
       [field]: e.target.value
     });
+    // reset field errors
+    this.setError(field, '', false, false);
   };
   handleDayToChange = date => {
     this.setState({
@@ -42,28 +58,103 @@ class AddExternalUser extends Component {
   };
   validateEmail = email => {
     const re = /\S+@\S+\.\S+/;
-    return re.test(email);
+    const result = re.test(email);
+
+    if (!result) {
+      if (!this.state.errors.email.error) {
+        this.setError('email', 'Некорректный e-mail', true, false);
+      }
+    } else if (this.state.errors.email.error && !this.state.errors.email.serverError) {
+      this.setError('email', '', false);
+    }
+    return result;
   };
+
+  setError = (key, text = '', error = false, serverError = false) => {
+    const updatedErrors = cloneDeep(this.state.errors);
+    updatedErrors[key] = {
+      error,
+      serverError,
+      text
+    };
+
+    this.setState({
+      errors: updatedErrors
+    });
+  };
+
   validateForm() {
     const { name, email, expiredDate } = this.state;
     return name.length >= 2 && this.validateEmail(email) && expiredDate;
   }
+
   addUser = () => {
     const { name, email, expiredDate } = this.state;
-    this.setState({ ...initialState }, () => {
-      this.props.addExternalUser({
+    this.setState({ errorMessage: null });
+    this.props
+      .addExternalUser({
         firstNameRu: name,
         login: email,
         expiredDate
+      })
+      .then(() => {
+        this.setState({ ...initialState });
+      })
+      .catch(message => {
+        this.setState({ errorMessage: this.getServerErrorMessage(message.message) });
       });
-    });
   };
+
+  getServerValidationFieldName = param => {
+    switch (param) {
+      case 'login':
+        return 'E-mail';
+      default:
+        return param;
+    }
+  };
+
+  getServerValidationMessageString = type => {
+    switch (type) {
+      case 'unique violation':
+        return 'уже занят';
+      default:
+        return type;
+    }
+  };
+
+  getServerErrorMessage = message => {
+    if (message.errors && message.errors.length) {
+      let result = '';
+      for (const error of message.errors) {
+        const errorString = `${this.getServerValidationFieldName(error.param)} ${this.getServerValidationMessageString(
+          error.type
+        )}`;
+        if (error.param === 'login') {
+          this.setError('email', errorString, true, true);
+          return false;
+        }
+        result += errorString;
+      }
+      return result;
+    }
+
+    switch (message) {
+      case 'Access denied':
+        return 'Доступ запрещен';
+      default:
+        return `Непредвиденная ошибка на сервере: ${JSON.stringify(message)}`;
+    }
+  };
+
   render() {
     const formLayout = {
       firstCol: 5,
       secondCol: 7
     };
-    const { isModalOpen, name, email, expiredDate } = this.state;
+    const { isModalOpen, name, email, expiredDate, errors, errorMessage } = this.state;
+    const errorNotice = errorMessage ? <p style={{ color: 'red' }}>{errorMessage}</p> : null;
+
     const formattedDay = expiredDate ? moment(expiredDate).format('DD.MM.YYYY') : '';
     return (
       <div className={css.AddExternalUser}>
@@ -78,6 +169,7 @@ class AddExternalUser extends Component {
           <div className={css.container}>
             <h3 style={{ margin: 0 }}>Добавить внешнего пользователя</h3>
             <hr />
+            {errorNotice}
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
@@ -119,11 +211,11 @@ class AddExternalUser extends Component {
                         placeholder="Введите электронную почту"
                         onBlur={handleBlur}
                         shouldMarkError={shouldMarkError}
-                        errorText="Некорректный e-mail"
+                        errorText={errors.email.text}
                       />
                     ),
                     'exUserEmail',
-                    !!email.length && !this.validateEmail(email)
+                    errors.email.error || (!!email.length && !this.validateEmail(email))
                   )}
                 </Col>
               </Row>
@@ -160,6 +252,7 @@ class AddExternalUser extends Component {
     );
   }
 }
+
 const mapStateToProps = state => ({});
 
 const mapDispatchToProps = {
