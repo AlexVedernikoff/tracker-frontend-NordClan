@@ -73,13 +73,15 @@ export const addExternalUser = exUser => {
     return new Promise((resolve, reject) => {
       dispatch(addExternalUserStart());
       dispatch(startLoading());
-      axios.post(URL, exUser).then(
+      return axios.post(URL, exUser).then(
         response => {
           if (response.data) {
-            resolve();
+            resolve(response.data);
             dispatch(addExternalUserSuccess(response.data));
             dispatch(finishLoading());
           }
+
+          resolve(null);
         },
         error => {
           reject({ message: error.response.data ? error.response.data.message : error.message });
