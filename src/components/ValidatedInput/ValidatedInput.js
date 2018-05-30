@@ -39,7 +39,7 @@ class ValidatedInput extends Component {
   };
 
   render() {
-    const { errorText, backendErrorText, ...other } = this.props;
+    const { errorText, backendErrorText, shouldMarkError, ...other } = this.props;
     const { isFocused, isError } = this.state;
 
     return (

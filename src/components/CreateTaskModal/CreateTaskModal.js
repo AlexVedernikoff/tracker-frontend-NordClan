@@ -31,7 +31,7 @@ class CreateTaskModal extends Component {
 
     this.state = {
       selectedSprint: props.selectedSprintValue,
-      selectedPerformer: null,
+      selectedPerformer: props.defaultPerformerId || null,
       taskName: '',
       description: '',
       plannedExecutionTime: 0,
@@ -311,7 +311,8 @@ CreateTaskModal.propTypes = {
   parentTaskId: PropTypes.number,
   project: PropTypes.object,
   selectedSprintValue: PropTypes.number,
-  taskTypes: PropTypes.array
+  taskTypes: PropTypes.array,
+  defaultPerformerId: PropTypes.number
 };
 
 const mapStateToProps = state => ({
