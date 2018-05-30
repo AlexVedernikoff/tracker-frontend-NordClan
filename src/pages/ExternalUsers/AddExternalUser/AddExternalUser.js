@@ -12,13 +12,21 @@ import * as css from './AddExternalUser.scss';
 import { addExternalUser, addExternalUserSuccess } from '../../../actions/ExternalUsers';
 import { showNotification } from '../../../actions/Notifications';
 import { finishLoading } from '../../../actions/Loading';
+import { cloneDeep } from 'lodash';
 
 const initialState = {
   isModalOpen: false,
   name: '',
   email: '',
   expiredDate: '',
-  errorMessage: ''
+  errorMessage: '',
+  errors: {
+    email: {
+      error: false,
+      serverError: false,
+      text: ''
+    }
+  }
 };
 
 class AddExternalUser extends Component {
@@ -40,6 +48,8 @@ class AddExternalUser extends Component {
     this.setState({
       [field]: e.target.value
     });
+    // reset field errors
+    this.setError(field, '', false, false);
   };
   handleDayToChange = date => {
     this.setState({
@@ -48,7 +58,29 @@ class AddExternalUser extends Component {
   };
   validateEmail = email => {
     const re = /\S+@\S+\.\S+/;
-    return re.test(email);
+    const result = re.test(email);
+
+    if (!result) {
+      if (!this.state.errors.email.error) {
+        this.setError('email', 'Некорректный e-mail', true, false);
+      }
+    } else if (this.state.errors.email.error && !this.state.errors.email.serverError) {
+      this.setError('email', '', false);
+    }
+    return result;
+  };
+
+  setError = (key, text = '', error = false, serverError = false) => {
+    const updatedErrors = cloneDeep(this.state.errors);
+    updatedErrors[key] = {
+      error,
+      serverError,
+      text
+    };
+
+    this.setState({
+      errors: updatedErrors
+    });
   };
 
   validateForm() {
@@ -95,9 +127,14 @@ class AddExternalUser extends Component {
     if (message.errors && message.errors.length) {
       let result = '';
       for (const error of message.errors) {
-        result += `${this.getServerValidationFieldName(error.param)} ${this.getServerValidationMessageString(
+        const errorString = `${this.getServerValidationFieldName(error.param)} ${this.getServerValidationMessageString(
           error.type
         )}`;
+        if (error.param === 'login') {
+          this.setError('email', errorString, true, true);
+          return false;
+        }
+        result += errorString;
       }
       return result;
     }
@@ -115,7 +152,7 @@ class AddExternalUser extends Component {
       firstCol: 5,
       secondCol: 7
     };
-    const { isModalOpen, name, email, expiredDate, errorMessage } = this.state;
+    const { isModalOpen, name, email, expiredDate, errors, errorMessage } = this.state;
     const errorNotice = errorMessage ? <p style={{ color: 'red' }}>{errorMessage}</p> : null;
 
     const formattedDay = expiredDate ? moment(expiredDate).format('DD.MM.YYYY') : '';
@@ -174,11 +211,11 @@ class AddExternalUser extends Component {
                         placeholder="Введите электронную почту"
                         onBlur={handleBlur}
                         shouldMarkError={shouldMarkError}
-                        errorText="Некорректный e-mail"
+                        errorText={errors.email.text}
                       />
                     ),
                     'exUserEmail',
-                    !!email.length && !this.validateEmail(email)
+                    errors.email.error || (!!email.length && !this.validateEmail(email))
                   )}
                 </Col>
               </Row>
