@@ -5,8 +5,11 @@ import ConfirmModal from '../ConfirmModal';
 
 export default class AttachedImage extends React.Component {
   static propTypes = {
-    fileName: PropTypes.string.isRequired,
+    canEdit: PropTypes.bool,
     id: PropTypes.number,
+    index: PropTypes.number,
+    fileName: PropTypes.string.isRequired,
+    open: PropTypes.func,
     path: PropTypes.string.isRequired,
     previewPath: PropTypes.string.isRequired,
     removeAttachment: PropTypes.func.isRequired,
@@ -95,8 +98,3 @@ export default class AttachedImage extends React.Component {
     );
   }
 }
-AttachedImage.propTypes = {
-  canEdit: PropTypes.bool,
-  index: PropTypes.number,
-  open: PropTypes.func
-};
