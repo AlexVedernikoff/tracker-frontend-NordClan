@@ -21,7 +21,10 @@ class TypeFilter extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.dictionary.length !== this.props.dictionary.length) {
+    const isOldOptions = this.props.dictionary.length;
+    const isNewOptions = newProps.dictionary.length !== this.props.dictionary.length;
+
+    if (isOldOptions || isNewOptions) {
       const sourceOptions = newProps.dictionary.map(type => ({ label: type.name, value: type.id }));
       this.TwoWayOptions = new TwoWayOptionsClass(sourceOptions, css.optGroupLabel, css.option);
     }

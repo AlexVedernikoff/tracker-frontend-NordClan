@@ -34,17 +34,18 @@ class Projects extends Component {
       filteredInProgress: false,
       filteredInHold: false,
       filteredFinished: false,
-      projects: [],
       filterByName: '',
+      filterSelectedTypes: [],
+      filterRequestTypes: [],
+      projects: [],
       dateFrom: '',
       dateTo: '',
       projectName: '',
       projectPrefix: '',
       openProjectPage: false,
       selectedPortfolio: null,
-      activePage: 1,
-      selectedTypes: [],
-      requestTypes: []
+      selectedType: 1,
+      activePage: 1
     };
   }
 
@@ -52,15 +53,15 @@ class Projects extends Component {
     this.loadProjects();
   }
 
-  selectType = (selectedTypes, requestTypes) => {
-    this.setState({ selectedTypes, requestTypes }, () => {
+  selectType = (filterSelectedTypes, filterRequestTypes) => {
+    this.setState({ filterSelectedTypes, filterRequestTypes }, () => {
       this.loadProjects();
     });
   };
 
   loadProjects = (dateFrom, dateTo) => {
     const tags = this.state.filterTags.map(el => el.value).join(',');
-    const typeId = this.state.requestTypes.join(',');
+    const typeId = this.state.filterRequestTypes.join(',');
     const statuses = [];
     if (this.state.filteredInProgress) statuses.push(1);
     if (this.state.filteredInHold) statuses.push(2);
@@ -186,7 +187,8 @@ class Projects extends Component {
         name: this.state.projectName,
         prefix: this.state.projectPrefix,
         portfolioId: portfolioName ? null : this.state.selectedPortfolio ? this.state.selectedPortfolio.value : null,
-        portfolioName
+        portfolioName,
+        typeId: this.state.selectedType
       },
       this.state.openProjectPage
     );
@@ -209,6 +211,11 @@ class Projects extends Component {
     this.setState({
       selectedPortfolio: portfolio
     });
+  };
+
+  onTypeSelect = option => {
+    const selectedType = option ? option.value : 1;
+    this.setState({ selectedType });
   };
 
   onTagSelect = tags => {
@@ -247,7 +254,7 @@ class Projects extends Component {
     return null;
   };
   render() {
-    const { filteredInProgress, filteredInHold, filteredFinished, selectedTypes } = this.state;
+    const { filteredInProgress, filteredInHold, filteredFinished, filterSelectedTypes } = this.state;
     const { projectTypes } = this.props;
     const formattedDayFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('DD.MM.YYYY') : '';
     const formattedDayTo = this.state.dateTo ? moment(this.state.dateTo).format('DD.MM.YYYY') : '';
@@ -294,7 +301,7 @@ class Projects extends Component {
                 </div>
               </Col>
               <Col xs={12} sm={4}>
-                <TypeFilter onChange={this.selectType} value={selectedTypes} dictionary={projectTypes} />
+                <TypeFilter onChange={this.selectType} value={filterSelectedTypes} dictionary={projectTypes} />
               </Col>
             </Row>
             <Row className={css.search}>
@@ -352,9 +359,12 @@ class Projects extends Component {
           handleCheckBox={this.handleModalCheckBoxChange}
           onPortfolioSelect={this.handlePortfolioChange}
           selectedPortfolio={this.state.selectedPortfolio}
+          onTypeSelect={this.onTypeSelect}
+          selectedType={this.state.selectedType}
           validateProjectName={this.state.projectName.length > 3}
           validateProjectPrefix={this.state.projectPrefix.length > 1}
           prefixErrorText={this.getFieldError('prefix')}
+          projectTypes={projectTypes}
         />
       </div>
     );

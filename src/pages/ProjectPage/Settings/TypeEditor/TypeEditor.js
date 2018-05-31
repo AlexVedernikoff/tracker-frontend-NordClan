@@ -16,7 +16,7 @@ class TypeEditor extends Component {
   };
 
   changeType = option => {
-    const value = option ? option.value : null;
+    const value = option ? option.value : 1;
     this.props.changeProject(
       {
         id: this.props.project.id,
