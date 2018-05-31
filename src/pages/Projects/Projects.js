@@ -43,7 +43,8 @@ class Projects extends Component {
       openProjectPage: false,
       selectedPortfolio: null,
       activePage: 1,
-      selectedTypes: []
+      selectedTypes: [],
+      requestTypes: []
     };
   }
 
@@ -52,14 +53,14 @@ class Projects extends Component {
   }
 
   selectType = (selectedTypes, requestTypes) => {
-    this.setState({ selectedTypes }, () => {
+    this.setState({ selectedTypes, requestTypes }, () => {
       this.loadProjects();
     });
   };
 
   loadProjects = (dateFrom, dateTo) => {
     const tags = this.state.filterTags.map(el => el.value).join(',');
-    const typeId = this.state.selectedTypes.join(',');
+    const typeId = this.state.requestTypes.join(',');
     const statuses = [];
     if (this.state.filteredInProgress) statuses.push(1);
     if (this.state.filteredInHold) statuses.push(2);
