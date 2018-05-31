@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import ProjectPrefixModal from '../../components/ProjectPrefixModal';
+import MissingProjectFieldsModal from '../../components/MissingProjectFieldsModal';
 import { history } from '../../History';
 import RouteTabs from '../../components/RouteTabs';
 import HttpError from '../../components/HttpError';
@@ -20,6 +20,7 @@ class ProjectPage extends Component {
     location: PropTypes.object,
     params: PropTypes.object,
     project: PropTypes.object,
+    projectTypes: PropTypes.array,
     user: PropTypes.object.isRequired
   };
 
@@ -45,15 +46,19 @@ class ProjectPage extends Component {
     }
   };
   handleCloseProjectPrefixModal = () => history.push('/projects');
-  handleCloseProjectConfirmModal = prefixValue => () =>
+
+  handleCloseProjectConfirmModal = values => {
     this.props.changeProject(
       {
         id: this.props.params.projectId,
-        prefix: prefixValue
+        ...values
       },
       'Prefix'
     );
+  };
+
   render() {
+    const { projectTypes } = this.props;
     const isProjectAdmin = this.checkIsAdminInProject();
     const tabs = [
       <Link
@@ -133,11 +138,12 @@ class ProjectPage extends Component {
 
         <div className={css.tabContent}>{this.props.children}</div>
         {isProjectAdmin && this.props.project.prefix !== undefined && !this.props.project.prefix ? (
-          <ProjectPrefixModal
+          <MissingProjectFieldsModal
             isOpen
             contentLabel="modal"
-            text="Для дальнейшей работы укажите префикс проекта"
+            text="Укажите недостающие данные"
             error={this.props.project.validationError}
+            projectTypes={projectTypes}
             onCancel={this.handleCloseProjectPrefixModal}
             onConfirm={this.handleCloseProjectConfirmModal}
           />
@@ -149,7 +155,8 @@ class ProjectPage extends Component {
 
 const mapStateToProps = state => ({
   project: state.Project.project,
-  user: state.Auth.user
+  user: state.Auth.user,
+  projectTypes: state.Dictionaries.projectTypes || []
 });
 
 const mapDispatchToProps = {
