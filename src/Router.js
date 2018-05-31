@@ -16,6 +16,7 @@ import Settings from './pages/ProjectPage/Settings';
 import Planning from './pages/ProjectPage/Planning';
 import Metrics from './pages/ProjectPage/Metrics';
 import TaskList from './pages/ProjectPage/TaskList';
+import ProjectTimesheets from './pages/ProjectPage/ProjectTimesheets';
 import MyTasks from './pages/MyTasks';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
@@ -113,6 +114,7 @@ class AppRouter extends Component {
             <Route path="analytics" component={Metrics}>
               <Route path=":metricType" component={Metrics} />
             </Route>
+            <Route path="timesheets" component={ProjectTimesheets} />
             <Route path="history" component={ProjectHistory} />
             <Route path="(sprint:sprintId/)tasks" component={TaskList} />
           </Route>
