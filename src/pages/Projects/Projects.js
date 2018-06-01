@@ -29,6 +29,8 @@ import 'moment/locale/ru';
 class Projects extends Component {
   constructor(props) {
     super(props);
+    const projectListFilters = this.getSavedFilters();
+
     this.state = {
       filterTags: [],
       filteredInProgress: false,
@@ -45,7 +47,8 @@ class Projects extends Component {
       openProjectPage: false,
       selectedPortfolio: null,
       selectedType: 1,
-      activePage: 1
+      activePage: 1,
+      ...projectListFilters
     };
   }
 
@@ -62,21 +65,49 @@ class Projects extends Component {
   loadProjects = (dateFrom, dateTo) => {
     const tags = this.state.filterTags.map(el => el.value).join(',');
     const typeId = this.state.filterRequestTypes.join(',');
+    const dateSprintBegin = dateFrom || this.state.dateFrom ? moment(this.state.dateFrom).format('YYYY-MM-DD') : '';
+    const dateSprintEnd = dateTo || this.state.dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
     const statuses = [];
     if (this.state.filteredInProgress) statuses.push(1);
     if (this.state.filteredInHold) statuses.push(2);
     if (this.state.filteredFinished) statuses.push(3);
 
-    this.props.getProjects(
-      20,
-      this.state.activePage,
-      tags,
-      this.state.filterByName,
-      dateFrom,
-      dateTo,
-      statuses.join(','),
-      typeId
+    const params = {
+      pageSize: 20,
+      currentPage: this.state.activePage,
+      tags: tags,
+      name: this.state.filterByName,
+      dateSprintBegin,
+      dateSprintEnd,
+      statusId: statuses.join(','),
+      typeId: typeId
+    };
+
+    this.props.getProjects(params);
+    this.saveFilters();
+  };
+
+  saveFilters = () => {
+    const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
+
+    localStorage.setItem(
+      'projectListFilters',
+      JSON.stringify({
+        tags: this.state.filterTags.map(el => el.value),
+        dateTo: this.state.dateTo,
+        dateFrom: this.state.dateFrom,
+        filteredInProgress,
+        filteredInHold,
+        filteredFinished,
+        filterSelectedTypes: this.state.filterSelectedTypes,
+        filterRequestTypes: this.state.filterRequestTypes
+      })
     );
+  };
+
+  getSavedFilters = () => {
+    const filters = JSON.parse(localStorage.getItem('projectListFilters'));
+    return filters;
   };
 
   check = (name, callback = () => {}) => {

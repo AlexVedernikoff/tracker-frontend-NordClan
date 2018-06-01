@@ -37,7 +37,7 @@ export const closeCreateProjectModal = () => ({
   type: ProjectActions.CLOSE_CREATE_PROJECT_MODAL
 });
 
-const getProjects = (
+const getProjects = ({
   pageSize = 20,
   currentPage = 1,
   tags = '',
@@ -46,7 +46,7 @@ const getProjects = (
   dateSprintEnd = '',
   statusId = '',
   typeId = ''
-) => {
+}) => {
   const URL = `${API_URL}/project`;
   return dispatch => {
     dispatch(startProjectsReceive());
