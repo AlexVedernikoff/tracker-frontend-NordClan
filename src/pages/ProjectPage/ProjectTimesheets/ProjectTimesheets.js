@@ -12,6 +12,7 @@ import { IconPlus, IconArrowLeft, IconArrowRight, IconCalendar } from '../../../
 import AddActivityModal from './AddActivityModal';
 import Calendar from './Calendar';
 import ActivityRow from './ActivityRow';
+import UserRow from './UserRow';
 import exactMath from 'exact-math';
 
 class Timesheets extends React.Component {
@@ -19,11 +20,11 @@ class Timesheets extends React.Component {
     changeWeek: PropTypes.func,
     dateBegin: PropTypes.string,
     dateEnd: PropTypes.string,
-    getTimesheets: PropTypes.func,
+    getProjectTimesheets: PropTypes.func,
     list: PropTypes.array,
     startingDay: PropTypes.object,
     tempTimesheets: PropTypes.array,
-    userId: PropTypes.number
+    params: PropTypes.object
   };
 
   constructor(props) {
@@ -34,8 +35,8 @@ class Timesheets extends React.Component {
   }
 
   componentDidMount() {
-    const { getTimesheets, userId, dateBegin, dateEnd } = this.props;
-    getTimesheets({ userId, dateBegin, dateEnd });
+    const { getProjectTimesheets, params, dateBegin, dateEnd } = this.props;
+    getProjectTimesheets(params.projectId, { dateBegin, dateEnd });
   }
 
   toggleCalendar = () => {
@@ -43,19 +44,19 @@ class Timesheets extends React.Component {
   };
 
   setPrevWeek = () => {
-    const { changeWeek, userId, startingDay } = this.props;
-    changeWeek(startingDay.subtract(7, 'days'), userId);
+    const { changeWeek, params, startingDay } = this.props;
+    changeWeek(startingDay.subtract(7, 'days'), params.projectId);
   };
 
   setNextWeek = () => {
-    const { changeWeek, userId, startingDay } = this.props;
-    changeWeek(startingDay.add(7, 'days'), userId);
+    const { changeWeek, params, startingDay } = this.props;
+    changeWeek(startingDay.add(7, 'days'), params.projectId);
   };
 
   setDate = day => {
-    const { changeWeek, userId } = this.props;
+    const { changeWeek, params } = this.props;
     this.setState({ isCalendarOpen: false }, () => {
-      changeWeek(moment(day), userId);
+      changeWeek(moment(day), params.projectId);
     });
   };
 
@@ -91,31 +92,7 @@ class Timesheets extends React.Component {
       return timesheetOndDate <= getMidnight(6) && timesheetOndDate >= getMidnight(0);
     };
 
-    // Создание массива таймшитов по таскам
-
-    let tasks = list.length
-      ? list.reduce((res, el) => {
-          const taskNotPushed =
-            el.task &&
-            !_.find(res, tsh => {
-              return tsh.id === el.task.id && tsh.taskStatusId === el.taskStatusId;
-            });
-          if (taskNotPushed && isThisWeek(el.onDate)) {
-            res.push({
-              id: el.task.id,
-              name: `${el.project.prefix}-${el.task.id}: ${el.task.name}`,
-              projectId: el.project.id,
-              projectName: el.project.name,
-              taskStatusId: el.taskStatusId,
-              sprintId: el.task.sprint ? el.task.sprint.id : null,
-              sprint: el.task.sprint ? el.task.sprint : null
-            });
-          }
-          return res;
-        }, [])
-      : [];
-
-    tasks = tasks.map(element => {
+    const formSpentForTask = (list, task, startingDay) => {
       const timeSheets = [];
 
       for (let index = 0; index < 7; index++) {
@@ -123,12 +100,12 @@ class Timesheets extends React.Component {
           return (
             tsh.task &&
             tsh.typeId === 1 &&
-            tsh.task.id === element.id &&
+            tsh.id === task.id &&
             moment(tsh.onDate).format('DD.MM.YY') ===
               moment(startingDay)
                 .weekday(index)
                 .format('DD.MM.YY') &&
-            tsh.taskStatusId === element.taskStatusId
+            tsh.taskStatusId === task.taskStatusId
           );
         });
         if (timesheet) {
@@ -143,17 +120,66 @@ class Timesheets extends React.Component {
         }
       }
 
-      return { ...element, timeSheets };
+      return timeSheets;
+    };
+
+    // Create users object where key user.id = user with timesheets
+    const users = {};
+    list.forEach(el => {
+      const userNotPushed = !users[el.user.id];
+      if (isThisWeek(el.onDate)) {
+        // add new users key
+        if (userNotPushed) {
+          users[el.user.id] = {
+            id: el.user.id,
+            userName: el.user.fullNameRu ? el.user.fullNameRu : null,
+            isOpen: false,
+            tasks: [
+              {
+                id: el.id,
+                name: `${el.project.prefix}-${el.task.id}: ${el.task.name}`,
+                projectId: el.project.id,
+                projectName: el.project.name,
+                taskStatusId: el.taskStatusId,
+                sprintId: el.task.sprint ? el.task.sprint.id : null,
+                sprint: el.task.sprint ? el.task.sprint : null,
+                timeSheets: formSpentForTask(list, el, startingDay)
+              }
+            ]
+          };
+          // push timesheet to existing user
+        } else {
+          users[el.user.id].tasks.push({
+            id: el.id,
+            name: `${el.project.prefix}-${el.task.id}: ${el.task.name}`,
+            projectId: el.project.id,
+            projectName: el.project.name,
+            taskStatusId: el.taskStatusId,
+            sprintId: el.task.sprint ? el.task.sprint.id : null,
+            sprint: el.task.sprint ? el.task.sprint : null,
+            timeSheets: formSpentForTask(list, el, startingDay)
+          });
+        }
+      }
     });
 
-    _.sortBy(tasks, ['name']);
+    console.log('list', list);
+    console.log('users', users);
 
-    const taskRows = tasks.map(item => (
-      <ActivityRow key={`${item.id}-${item.taskStatusId}-${startingDay}`} task item={item} />
-    ));
+    _.sortBy(users, ['userName']);
+
+    const userRows = [];
+    for (const user of Object.values(users)) {
+      userRows.push([
+        <UserRow
+          key={`${user.id}-${startingDay}`}
+          user={user}
+          items={user.tasks.map(task => <ActivityRow key={`${task.id}-${startingDay}-task`} task item={task} />)}
+        />
+      ]);
+    }
 
     // Создание массива таймшитов по magic activities
-
     let magicActivities = list.length
       ? list.reduce((res, el) => {
           const maNotPushed =
@@ -301,7 +327,7 @@ class Timesheets extends React.Component {
     return (
       <div>
         <section>
-          <h1>Отчеты по времени</h1>
+          <h3>Отчеты по времени</h3>
           <hr />
           <table className={css.timeSheetsTable}>
             <thead>
@@ -329,7 +355,7 @@ class Timesheets extends React.Component {
               </tr>
             </thead>
             <tbody>
-              {taskRows}
+              {userRows}
               {magicActivityRows}
               <tr>
                 <td className={css.total} />
@@ -361,7 +387,6 @@ class Timesheets extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  userId: state.Auth.user.id,
   startingDay: state.Timesheets.startingDay,
   list: state.Timesheets.list,
   tempTimesheets: state.Timesheets.tempTimesheets,

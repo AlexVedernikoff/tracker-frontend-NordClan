@@ -4,7 +4,7 @@ import cn from 'classnames';
 import onClickOutside from 'react-onclickoutside';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as css from '../../ProjectTimesheets.scss';
-import { IconComment, IconCheck } from '../../../../../components/Icons';
+import { IconEdit, IconCheck } from '../../../../../components/Icons';
 
 class SingleComment extends React.Component {
   static propTypes = {
@@ -59,7 +59,7 @@ class SingleComment extends React.Component {
 
     return (
       <div>
-        <IconComment className={cn({ [css.filledComment]: comment })} onClick={this.toggle} />
+        <IconEdit className={cn({ [css.filledComment]: comment })} onClick={this.toggle} />
         <ReactCSSTransitionGroup
           transitionName="animatedElement"
           transitionEnterTimeout={300}

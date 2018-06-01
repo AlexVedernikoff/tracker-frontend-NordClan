@@ -369,6 +369,7 @@ class ActivityRow extends React.Component {
             <div className={css.meta}>
               {getProjectName()}
               {getSprintName()}
+              <span>{item.userName}</span>
               {status ? <span>{status.name}</span> : null}
             </div>
             <div>

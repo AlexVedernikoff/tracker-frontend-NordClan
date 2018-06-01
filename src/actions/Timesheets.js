@@ -72,6 +72,21 @@ export const getTimesheets = params => {
     });
 };
 
+export const getProjectTimesheets = (projectId, params) => {
+  const url = `/project/${projectId}/timesheet`;
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: url,
+      method: GET,
+      body: { params },
+      extra,
+      start: withStartLoading(startTimesheetsRequest, true)(dispatch),
+      response: withFinishLoading(response => successTimesheetsRequest(response.data), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
 export const updateTimesheet = (data, userId, startingDay) => {
   return dispatch =>
     dispatch({

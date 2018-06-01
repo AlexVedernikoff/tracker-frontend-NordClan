@@ -60,6 +60,7 @@
     "react-dnd": "^2.4.0",
     "react-dnd-html5-backend": "^2.4.1",
     "react-dom": "^15.4.2",
+    "react-dot-fragment": "^0.2.5",
     "react-draft-wysiwyg": "^1.10.4",
     "react-dropzone": "^3.13.2",
     "react-flexbox-grid": "1.1.3",
