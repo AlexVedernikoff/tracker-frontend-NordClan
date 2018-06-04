@@ -202,6 +202,25 @@ export const changeWeek = (startingDay, userId) => {
   };
 };
 
+export const changeProjectWeek = (startingDay, projectId) => {
+  return dispatch => {
+    dispatch({
+      type: TimesheetsActions.SET_WEEK,
+      startingDay
+    });
+    dispatch(
+      getProjectTimesheets(projectId, {
+        dateBegin: moment(startingDay)
+          .weekday(0)
+          .format('YYYY-MM-DD'),
+        dateEnd: moment(startingDay)
+          .weekday(6)
+          .format('YYYY-MM-DD')
+      })
+    );
+  };
+};
+
 export const changeTask = (task, taskStatusId) => ({
   type: TimesheetsActions.CHANGE_TASK,
   task: Array.isArray(task) ? null : task,

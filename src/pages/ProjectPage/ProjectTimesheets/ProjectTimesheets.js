@@ -15,9 +15,9 @@ import ActivityRow from './ActivityRow';
 import UserRow from './UserRow';
 import exactMath from 'exact-math';
 
-class Timesheets extends React.Component {
+class ProjectTimesheets extends React.Component {
   static propTypes = {
-    changeWeek: PropTypes.func,
+    changeProjectWeek: PropTypes.func,
     dateBegin: PropTypes.string,
     dateEnd: PropTypes.string,
     getProjectTimesheets: PropTypes.func,
@@ -44,19 +44,19 @@ class Timesheets extends React.Component {
   };
 
   setPrevWeek = () => {
-    const { changeWeek, params, startingDay } = this.props;
-    changeWeek(startingDay.subtract(7, 'days'), params.projectId);
+    const { changeProjectWeek, params, startingDay } = this.props;
+    changeProjectWeek(startingDay.subtract(7, 'days'), params.projectId);
   };
 
   setNextWeek = () => {
-    const { changeWeek, params, startingDay } = this.props;
-    changeWeek(startingDay.add(7, 'days'), params.projectId);
+    const { changeProjectWeek, params, startingDay } = this.props;
+    changeProjectWeek(startingDay.add(7, 'days'), params.projectId);
   };
 
   setDate = day => {
-    const { changeWeek, params } = this.props;
+    const { changeProjectWeek, params } = this.props;
     this.setState({ isCalendarOpen: false }, () => {
-      changeWeek(moment(day), params.projectId);
+      changeProjectWeek(moment(day), params.projectId);
     });
   };
 
@@ -162,9 +162,6 @@ class Timesheets extends React.Component {
         }
       }
     });
-
-    console.log('list', list);
-    console.log('users', users);
 
     _.sortBy(users, ['userName']);
 
@@ -398,4 +395,4 @@ const mapDispatchToProps = {
   ...timesheetsActions
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Timesheets);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectTimesheets);
