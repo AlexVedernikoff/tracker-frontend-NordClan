@@ -1,14 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as css from '../ProjectTimesheets.scss';
-import Fragment from 'react-dot-fragment';
 import _forEach from 'lodash/forEach';
+import _sumBy from 'lodash/sumBy';
 import * as timesheetsConstants from '../../../../constants/Timesheets';
 import cn from 'classnames';
 import moment from 'moment/moment';
 import roundNum from '../../../../utils/roundNum';
-
-React.Fragment = React.Fragment || Fragment; // TODO: del on 16.4 upgrade
 
 class UserRow extends React.Component {
   static propTypes = {
@@ -49,11 +47,7 @@ class UserRow extends React.Component {
         (tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
           tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED)
     );
-    const totalTime = roundNum(_.sumBy(user.timesheets, tsh => +tsh.spentTime), 2);
-
-    console.log('props.user.timesheets', user.timesheets);
-    console.log('timeCells', this.state.timeCells);
-    console.log('totalTime', totalTime);
+    const totalTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.spentTime), 2);
 
     const timeCells = user.timesheets.map((tsh, i) => {
       return (
@@ -80,10 +74,10 @@ class UserRow extends React.Component {
     const rows = [];
 
     return (
-      <React.Fragment>
+      <div className={css.psuedoRow}>
         <tr onClick={toggle}>
           <td>
-            <div className={css.userCard}>
+            <div className={css.activityHeader}>
               {user.userName} {JSON.stringify(isOpen)}
             </div>
           </td>
@@ -95,7 +89,7 @@ class UserRow extends React.Component {
           </td>
         </tr>
         {isOpen ? this.props.items : null}
-      </React.Fragment>
+      </div>
     );
   }
 }

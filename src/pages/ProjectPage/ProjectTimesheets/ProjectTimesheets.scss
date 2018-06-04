@@ -15,6 +15,11 @@
   }
 }
 
+.psuedoRow {
+  display: contents;
+  vertical-align: middle;
+}
+
 .taskRow {
   td {
     transition: $transition;
