@@ -2,6 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as css from '../ProjectTimesheets.scss';
 import Fragment from 'react-dot-fragment';
+import _forEach from 'lodash/forEach';
+import * as timesheetsConstants from '../../../../constants/Timesheets';
+import cn from 'classnames';
+import moment from 'moment/moment';
+import roundNum from '../../../../utils/roundNum';
 
 React.Fragment = React.Fragment || Fragment; // TODO: del on 16.4 upgrade
 
@@ -17,14 +22,54 @@ class UserRow extends React.Component {
     this.state = {
       isOpen: props.user.isOpen ? props.user.isOpen : false,
       user: props.user,
-      activityRows: props.items
+      activityRows: props.items,
+      timeCells: this.getTimeCells(props.user.timesheets)
     };
   }
+
+  getTimeCells = timeSheets => {
+    const timeCells = {};
+    _forEach(timeSheets, (tsh, i) => {
+      if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
+        timeCells[i] = roundNum(tsh.spentTime, 2);
+      } else {
+        timeCells[i] = 0;
+      }
+    });
+    return timeCells;
+  };
 
   componentWillReceiveProps(nextProps) {}
 
   render() {
     const { user, activityRows, isOpen } = this.state;
+    const canDeleteRow = !user.tasks.find(
+      tsh =>
+        tsh.id &&
+        (tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
+          tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED)
+    );
+    const totalTime = roundNum(_.sumBy(user.timesheets, tsh => +tsh.spentTime), 2);
+
+    console.log('props.user.timesheets', user.timesheets);
+    console.log('timeCells', this.state.timeCells);
+    console.log('totalTime', totalTime);
+
+    const timeCells = user.timesheets.map((tsh, i) => {
+      return (
+        <td
+          key={`${i}-${user.id}`}
+          className={cn({
+            [css.total]: true,
+            [css.totalRow]: true,
+            [css.today]: moment().format('YYYY-MM-DD') === moment(tsh.onDate).format('YYYY-MM-DD'),
+            [css.weekend]: i === 5 || i === 6
+          })}
+        >
+          <div>{this.state.timeCells[i]}</div>
+        </td>
+      );
+    });
 
     const toggle = () => {
       this.setState({
@@ -36,12 +81,16 @@ class UserRow extends React.Component {
 
     return (
       <React.Fragment>
-        <tr className={css.taskRow} onClick={toggle}>
-          <td colSpan={10}>
-            <div className={css.taskCard}>
-              <div className={css.meta}>
-                {user.userName} {JSON.stringify(isOpen)}
-              </div>
+        <tr onClick={toggle}>
+          <td>
+            <div className={css.userCard}>
+              {user.userName} {JSON.stringify(isOpen)}
+            </div>
+          </td>
+          {timeCells}
+          <td className={cn(css.total, css.totalRow)}>
+            <div>
+              <div>{totalTime}</div>
             </div>
           </td>
         </tr>

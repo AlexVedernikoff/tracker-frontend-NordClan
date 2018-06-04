@@ -123,6 +123,33 @@ class ProjectTimesheets extends React.Component {
       return timeSheets;
     };
 
+    const getUserMagicActivities = userId => {
+      const timeSheets = [];
+      for (let index = 0; index < 7; index++) {
+        const timesheet = _.find(list, tsh => {
+          return (
+            tsh.typeId === 1 &&
+            tsh.userId === userId &&
+            moment(tsh.onDate).format('DD.MM.YY') ===
+              moment(startingDay)
+                .weekday(index)
+                .format('DD.MM.YY')
+          );
+        });
+        if (timesheet) {
+          timeSheets.push(timesheet);
+        } else {
+          timeSheets.push({
+            onDate: moment(startingDay)
+              .weekday(index)
+              .format(),
+            spentTime: '0'
+          });
+        }
+      }
+      return timeSheets;
+    };
+
     // Create users object where key user.id = user with timesheets
     const users = {};
     list.forEach(el => {
@@ -145,7 +172,8 @@ class ProjectTimesheets extends React.Component {
                 sprint: el.task.sprint ? el.task.sprint : null,
                 timeSheets: formSpentForTask(list, el, startingDay)
               }
-            ]
+            ],
+            timesheets: getUserMagicActivities(el.user.id)
           };
           // push timesheet to existing user
         } else {
@@ -164,6 +192,9 @@ class ProjectTimesheets extends React.Component {
     });
 
     _.sortBy(users, ['userName']);
+
+    console.log('list', list);
+    console.log('users', users);
 
     const userRows = [];
     for (const user of Object.values(users)) {
@@ -363,18 +394,6 @@ class ProjectTimesheets extends React.Component {
                 <td className={css.total} />
               </tr>
             </tbody>
-            {canAddActivity || !countTsWithTime ? (
-              <tfoot>
-                <tr>
-                  <td colSpan="10">
-                    <a className={css.add} onClick={() => this.setState({ isModalOpen: true })}>
-                      <IconPlus style={{ fontSize: 16 }} />
-                      <div className={css.tooltip}>Добавить активность</div>
-                    </a>
-                  </td>
-                </tr>
-              </tfoot>
-            ) : null}
           </table>
         </section>
         {this.state.isModalOpen ? <AddActivityModal onClose={() => this.setState({ isModalOpen: false })} /> : null}
