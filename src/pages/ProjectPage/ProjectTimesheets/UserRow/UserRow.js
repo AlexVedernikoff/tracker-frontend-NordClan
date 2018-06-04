@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import * as css from '../ProjectTimesheets.scss';
 import _forEach from 'lodash/forEach';
 import _sumBy from 'lodash/sumBy';
+import { IconArrowDown, IconArrowUp } from '../../../../components/Icons';
 import * as timesheetsConstants from '../../../../constants/Timesheets';
 import cn from 'classnames';
 import moment from 'moment/moment';
@@ -28,7 +29,7 @@ class UserRow extends React.Component {
   getTimeCells = timeSheets => {
     const timeCells = {};
     _forEach(timeSheets, (tsh, i) => {
-      if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
+      if (tsh.spentTime) {
         timeCells[i] = roundNum(tsh.spentTime, 2);
       } else {
         timeCells[i] = 0;
@@ -49,6 +50,7 @@ class UserRow extends React.Component {
     );
     const totalTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.spentTime), 2);
 
+    console.log('user.timesheets', user.timesheets);
     const timeCells = user.timesheets.map((tsh, i) => {
       return (
         <td
@@ -75,10 +77,10 @@ class UserRow extends React.Component {
 
     return (
       <div className={css.psuedoRow}>
-        <tr onClick={toggle}>
+        <tr onClick={toggle} className={css.userRow}>
           <td>
             <div className={css.activityHeader}>
-              {user.userName} {JSON.stringify(isOpen)}
+              {user.userName} {isOpen ? <IconArrowUp /> : <IconArrowDown />}
             </div>
           </td>
           {timeCells}

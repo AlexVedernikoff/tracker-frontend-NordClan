@@ -380,27 +380,7 @@ class ActivityRow extends React.Component {
         </td>
         {timeCells}
         <td className={cn(css.total, css.totalRow)}>
-          <div>
-            <div>{totalTime}</div>
-            <div className={css.toggleComment}>
-              <TotalComment items={item.timeSheets} isDisable={!canDeleteRow} />
-            </div>
-          </div>
-        </td>
-        <td className={cn(css.actions)}>
-          <div className={css.deleteTask} onClick={this.openConfirmModal} data-tip="Удалить">
-            {canDeleteRow ? <IconClose /> : null}
-          </div>
-          {this.state.isConfirmModalOpen ? (
-            <ConfirmModal
-              isOpen
-              contentLabel="modal"
-              text="Вы действительно хотите удалить эту активность?"
-              onCancel={this.closeConfirmModal}
-              onConfirm={() => this.deleteActivity(timeSheetIds)}
-              onRequestClose={this.closeConfirmModal}
-            />
-          ) : null}
+          <div>{totalTime}</div>
         </td>
       </tr>
     );

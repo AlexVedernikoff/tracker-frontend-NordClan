@@ -20,6 +20,16 @@
   vertical-align: middle;
 }
 
+.userRow {
+  cursor: pointer;
+
+  &:hover {
+    td {
+      background: $color-gray;
+    }
+  }
+}
+
 .taskRow {
   td {
     transition: $transition;

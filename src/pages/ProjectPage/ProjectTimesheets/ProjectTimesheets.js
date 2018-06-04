@@ -89,17 +89,17 @@ class ProjectTimesheets extends React.Component {
       return timesheetOndDate <= getMidnight(6) && timesheetOndDate >= getMidnight(0);
     };
 
-    const formSpentForTask = (list, task, startingDay) => {
+    const formSpentForTask = (arr, task, day) => {
       const timeSheets = [];
 
       for (let index = 0; index < 7; index++) {
-        const timesheet = _.find(list, tsh => {
+        const timesheet = _.find(arr, tsh => {
           return (
             tsh.task &&
             tsh.typeId === 1 &&
             tsh.id === task.id &&
             moment(tsh.onDate).format('DD.MM.YY') ===
-              moment(startingDay)
+              moment(day)
                 .weekday(index)
                 .format('DD.MM.YY') &&
             tsh.taskStatusId === task.taskStatusId
@@ -109,7 +109,7 @@ class ProjectTimesheets extends React.Component {
           timeSheets.push(timesheet);
         } else {
           timeSheets.push({
-            onDate: moment(startingDay)
+            onDate: moment(day)
               .weekday(index)
               .format(),
             spentTime: '0'
@@ -120,12 +120,11 @@ class ProjectTimesheets extends React.Component {
       return timeSheets;
     };
 
-    const getUserMagicActivities = userId => {
+    const getUserAcivities = userId => {
       const timeSheets = [];
       for (let index = 0; index < 7; index++) {
-        const timesheet = _.find(list, tsh => {
+        const dayUserSheets = _.filter(list, tsh => {
           return (
-            tsh.typeId === 1 &&
             tsh.userId === userId &&
             moment(tsh.onDate).format('DD.MM.YY') ===
               moment(startingDay)
@@ -133,8 +132,16 @@ class ProjectTimesheets extends React.Component {
                 .format('DD.MM.YY')
           );
         });
-        if (timesheet) {
-          timeSheets.push(timesheet);
+        if (dayUserSheets && dayUserSheets.length) {
+          const dayTime = dayUserSheets.reduce((a, b) => {
+            return a + parseFloat(b['spentTime']);
+          }, 0);
+          timeSheets.push({
+            onDate: moment(startingDay)
+              .weekday(index)
+              .format(),
+            spentTime: dayTime + ''
+          });
         } else {
           timeSheets.push({
             onDate: moment(startingDay)
@@ -144,6 +151,8 @@ class ProjectTimesheets extends React.Component {
           });
         }
       }
+
+      console.log('timesheets for user', userId, timeSheets);
       return timeSheets;
     };
 
@@ -172,7 +181,7 @@ class ProjectTimesheets extends React.Component {
             userName: el.user.fullNameRu ? el.user.fullNameRu : null,
             isOpen: false,
             tasks: [],
-            timesheets: getUserMagicActivities(el.user.id)
+            timesheets: getUserAcivities(el.user.id)
           };
           // push timesheet to existing user
         }
@@ -185,7 +194,9 @@ class ProjectTimesheets extends React.Component {
 
     _.sortBy(users, ['userName']);
 
-    let userRows = [];
+    console.log('users', users);
+
+    const userRows = [];
 
     for (const user of Object.values(users)) {
       userRows.push([
@@ -196,6 +207,72 @@ class ProjectTimesheets extends React.Component {
         />
       ]);
     }
+
+    // Создание массива таймшитов по magic activities
+
+    let magicActivities = list.length
+      ? list.reduce((res, el) => {
+          const maNotPushed =
+            el.typeId !== 1 &&
+            !_.find(res, tsh => {
+              const isSameType = tsh.typeId === el.typeId;
+              const isSameProject = el.project ? tsh.projectId === el.project.id : tsh.projectId === 0;
+              const isSameSprint = (el.sprint ? el.sprint.id : 0) === (tsh.sprint ? tsh.sprint.id : 0);
+              return isSameType && isSameProject && isSameSprint;
+            });
+
+          if (maNotPushed && isThisWeek(el.onDate)) {
+            res.push({
+              typeId: el.typeId,
+              projectName: el.project ? el.project.name : 'Без проекта',
+              projectId: el.project ? el.project.id : 0,
+              sprintId: el.sprintId ? el.sprintId : null,
+              sprint: el.sprint ? el.sprint : null
+            });
+          }
+          return res;
+        }, [])
+      : [];
+
+    magicActivities = magicActivities.map(element => {
+      const timeSheets = [];
+      for (let index = 0; index < 7; index++) {
+        const timesheet = _.find(list, tsh => {
+          return (
+            tsh.typeId !== 1 &&
+            tsh.typeId === element.typeId &&
+            (tsh.project ? tsh.project.id === element.projectId : !tsh.project && !element.projectId) &&
+            moment(tsh.onDate).format('DD.MM.YY') ===
+              moment(startingDay)
+                .weekday(index)
+                .format('DD.MM.YY')
+          );
+        });
+        if (timesheet) {
+          timeSheets.push(timesheet);
+        } else {
+          timeSheets.push({
+            onDate: moment(startingDay)
+              .weekday(index)
+              .format(),
+            spentTime: '0'
+          });
+        }
+      }
+      return { ...element, timeSheets };
+    });
+
+    console.log('magicActivities', magicActivities);
+
+    const magicActivityRows = magicActivities.map(item => {
+      return (
+        <ActivityRow
+          key={`${item.projectId}-${item.typeId}-${startingDay}-${item.sprint ? item.sprint.id : 0}`}
+          ma
+          item={item}
+        />
+      );
+    });
 
     // Создание заголовка таблицы
 
