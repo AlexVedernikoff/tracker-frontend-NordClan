@@ -145,4 +145,10 @@ textarea {
   text-decoration: underline;
 }
 
+.ellipsis {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* <=== App service styles */
