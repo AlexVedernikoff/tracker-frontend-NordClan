@@ -9,6 +9,7 @@ import SelectDropdown from '../../../../components/SelectDropdown';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './EditSpentModal.scss';
 import { connect } from 'react-redux';
+import { createTimesheet, updateTimesheet } from '../../../../actions/Timesheets';
 
 class EditSpentModal extends Component {
   static propTypes = {
@@ -26,11 +27,6 @@ class EditSpentModal extends Component {
     taskTypes: PropTypes.array,
     isMagic: PropTypes.bool
   };
-
-  static validateNumbers(value) {
-    const re = /^\d*(\.\d*)?$/;
-    return value !== '' ? re.test(value) : true;
-  }
 
   constructor(props) {
     super(props);
@@ -50,8 +46,13 @@ class EditSpentModal extends Component {
     };
   }
 
+  validateNumbers(value) {
+    const re = /^\d*(\.\d*)?$/;
+    return value !== '' ? re.test(value) : true;
+  }
+
   checkNullInputs = () => {
-    return !!(this.state.sprint && this.state.spentTime && this.state.comment);
+    return !!this.state.spentTime;
   };
 
   onChangeSpentTime = e => {
@@ -130,7 +131,7 @@ class EditSpentModal extends Component {
                   </Col>
                   <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                     <SelectDropdown
-                      className={css.select}
+                      className={css.fullwidth}
                       onChange={this.changeSprint}
                       value={sprint ? sprint.id : null}
                       placeholder={'Выберите спринт'}
@@ -172,6 +173,15 @@ class EditSpentModal extends Component {
                 </Row>
               </div>
             ) : null}
+            <Button
+              style={{ width: '100%' }}
+              onClick={() => {
+                console.log('save');
+              }}
+              text="Сохранить"
+              type="green"
+              icon="IconCheck"
+            />
           </form>
         </div>
       </Modal>
@@ -186,4 +196,9 @@ const mapStateToProps = state => ({
   projectSprints: state.Project.project.sprints
 });
 
-export default connect(mapStateToProps)(EditSpentModal);
+const mapDispatchToProps = {
+  createTimesheet,
+  updateTimesheet
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditSpentModal);
