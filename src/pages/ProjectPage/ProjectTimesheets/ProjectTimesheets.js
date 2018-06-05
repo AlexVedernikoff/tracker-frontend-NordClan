@@ -96,7 +96,6 @@ class ProjectTimesheets extends React.Component {
         const timesheet = _.find(arr, tsh => {
           return (
             tsh.task &&
-            tsh.typeId === 1 &&
             tsh.id === task.id &&
             moment(tsh.onDate).format('DD.MM.YY') ===
               moment(day)
@@ -152,7 +151,6 @@ class ProjectTimesheets extends React.Component {
         }
       }
 
-      console.log('timesheets for user', userId, timeSheets);
       return timeSheets;
     };
 
@@ -169,48 +167,8 @@ class ProjectTimesheets extends React.Component {
       });
     };
 
-    // Create users object where key user.id = user with timesheets
-    const users = {};
-    list.forEach(el => {
-      const userNotPushed = !users[el.user.id];
-      if (isThisWeek(el.onDate)) {
-        // add new users key
-        if (userNotPushed) {
-          users[el.user.id] = {
-            id: el.user.id,
-            userName: el.user.fullNameRu ? el.user.fullNameRu : null,
-            isOpen: false,
-            tasks: [],
-            timesheets: getUserAcivities(el.user.id)
-          };
-          // push timesheet to existing user
-        }
-
-        if (el.task) {
-          pushTaskToUser(users[el.user.id], el);
-        }
-      }
-    });
-
-    _.sortBy(users, ['userName']);
-
-    console.log('users', users);
-
-    const userRows = [];
-
-    for (const user of Object.values(users)) {
-      userRows.push([
-        <UserRow
-          key={`${user.id}-${startingDay}`}
-          user={user}
-          items={user.tasks.map(task => <ActivityRow key={`${task.id}-${startingDay}-task`} task item={task} />)}
-        />
-      ]);
-    }
-
     // Создание массива таймшитов по magic activities
-
-    let magicActivities = list.length
+    const magicActivities = list.length
       ? list.reduce((res, el) => {
           const maNotPushed =
             el.typeId !== 1 &&
@@ -234,45 +192,79 @@ class ProjectTimesheets extends React.Component {
         }, [])
       : [];
 
-    magicActivities = magicActivities.map(element => {
-      const timeSheets = [];
-      for (let index = 0; index < 7; index++) {
-        const timesheet = _.find(list, tsh => {
-          return (
-            tsh.typeId !== 1 &&
-            tsh.typeId === element.typeId &&
-            (tsh.project ? tsh.project.id === element.projectId : !tsh.project && !element.projectId) &&
-            moment(tsh.onDate).format('DD.MM.YY') ===
-              moment(startingDay)
-                .weekday(index)
-                .format('DD.MM.YY')
-          );
-        });
-        if (timesheet) {
-          timeSheets.push(timesheet);
-        } else {
-          timeSheets.push({
-            onDate: moment(startingDay)
-              .weekday(index)
-              .format(),
-            spentTime: '0'
+    const userMagicActivities = userId => {
+      const tasks = [];
+      magicActivities.forEach(element => {
+        const timeSheets = [];
+        for (let index = 0; index < 7; index++) {
+          const timesheet = _.find(list, tsh => {
+            return (
+              tsh.typeId !== 1 &&
+              tsh.userId === userId &&
+              tsh.typeId === element.typeId &&
+              (tsh.project ? tsh.project.id === element.projectId : !tsh.project && !element.projectId) &&
+              moment(tsh.onDate).format('DD.MM.YY') ===
+                moment(startingDay)
+                  .weekday(index)
+                  .format('DD.MM.YY')
+            );
           });
+          if (timesheet) {
+            timeSheets.push(timesheet);
+          } else {
+            timeSheets.push({
+              onDate: moment(startingDay)
+                .weekday(index)
+                .format(),
+              spentTime: '0'
+            });
+          }
+        }
+
+        tasks.push({ ...element, timeSheets });
+      });
+
+      return tasks;
+    };
+
+    // Create users object where key user.id = user with timesheets
+    const users = {};
+    list.forEach(el => {
+      const userNotPushed = !users[el.user.id];
+      if (isThisWeek(el.onDate)) {
+        // add new users key
+        if (userNotPushed) {
+          users[el.user.id] = {
+            id: el.user.id,
+            userName: el.user.fullNameRu ? el.user.fullNameRu : null,
+            isOpen: false,
+            tasks: [],
+            timesheets: getUserAcivities(el.user.id),
+            ma: userMagicActivities(el.user.id) || []
+          };
+        }
+
+        if (el.task) {
+          pushTaskToUser(users[el.user.id], el);
         }
       }
-      return { ...element, timeSheets };
     });
 
-    console.log('magicActivities', magicActivities);
+    _.sortBy(users, ['userName']);
 
-    const magicActivityRows = magicActivities.map(item => {
-      return (
-        <ActivityRow
-          key={`${item.projectId}-${item.typeId}-${startingDay}-${item.sprint ? item.sprint.id : 0}`}
-          ma
-          item={item}
+    const userRows = [];
+    for (const user of Object.values(users)) {
+      userRows.push([
+        <UserRow
+          key={`${user.id}-${startingDay}`}
+          user={user}
+          items={[
+            ...user.tasks.map(task => <ActivityRow key={`${task.id}-${startingDay}-task`} task item={task} />),
+            ...user.ma.map(task => <ActivityRow key={`${task.onDate}-${startingDay}-ma`} ma item={task} />)
+          ]}
         />
-      );
-    });
+      ]);
+    }
 
     // Создание заголовка таблицы
 

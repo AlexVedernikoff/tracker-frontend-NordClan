@@ -50,7 +50,6 @@ class UserRow extends React.Component {
     );
     const totalTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.spentTime), 2);
 
-    console.log('user.timesheets', user.timesheets);
     const timeCells = user.timesheets.map((tsh, i) => {
       return (
         <td
