@@ -6,42 +6,24 @@ import { Link } from 'react-router';
 import _ from 'lodash';
 import moment from 'moment';
 import roundNum from '../../../../utils/roundNum';
-import validateNumber from '../../../../utils/validateNumber';
 import * as css from '../ProjectTimesheets.scss';
-import { IconClose, IconEdit } from '../../../../components/Icons';
+import { IconEdit } from '../../../../components/Icons';
 import * as timesheetsConstants from '../../../../constants/Timesheets';
 import EditSpentModal from '../EditSpentModal';
-import {
-  createTimesheet,
-  updateTimesheet,
-  deleteTimesheets,
-  deleteTempTimesheets
-} from '../../../../actions/Timesheets';
 
 class ActivityRow extends React.Component {
   static propTypes = {
-    createTimesheet: PropTypes.func,
-    deleteTempTimesheets: PropTypes.func,
-    deleteTimesheets: PropTypes.func,
     item: PropTypes.object,
     ma: PropTypes.bool,
     magicActivitiesTypes: PropTypes.array,
     startingDay: PropTypes.object,
     statuses: PropTypes.array,
     task: PropTypes.bool,
-    updateTimesheet: PropTypes.func,
     userId: PropTypes.number
   };
 
   constructor(props) {
     super(props);
-
-    const debounceTime = 1000;
-
-    this.deleteTimesheets = _.debounce(this.deleteTimesheets, debounceTime);
-
-    this.debouncedUpdateTimesheet = _.debounce(this.updateTimesheet, debounceTime * 2);
-    this.debouncedCreateTimesheet = _.debounce(this.createTimesheet, debounceTime * 2);
 
     this.state = {
       isEditOpen: false,
@@ -84,44 +66,6 @@ class ActivityRow extends React.Component {
     return timeCells;
   };
 
-  createTimesheet = i => {
-    const { item, userId, startingDay } = this.props;
-    const value = this.state.timeCells[i].toString().replace(',', '.');
-    this.props.createTimesheet(
-      {
-        isDraft: false,
-        taskId: item.id || null,
-        taskStatusId: item.id ? item.taskStatusId : null,
-        typeId: item.id ? '1' : item.typeId,
-        spentTime: +value,
-        onDate: moment(startingDay)
-          .weekday(i)
-          .format('YYYY-MM-DD'),
-        projectId: item.projectId,
-        sprintId: item.sprintId || (item.sprint ? item.sprint.id : null)
-      },
-      userId,
-      startingDay
-    );
-  };
-
-  updateTimesheet = (i, sheetId, comment) => {
-    const value = this.state.timeCells[i].toString().replace(',', '.');
-    const { userId, startingDay } = this.props;
-    if (!value && !comment) {
-      this.props.deleteTimesheets([sheetId], userId, startingDay);
-      return;
-    }
-    this.props.updateTimesheet(
-      {
-        sheetId,
-        spentTime: +value
-      },
-      userId,
-      startingDay
-    );
-  };
-
   openEditModal = tsh => {
     this.setState({
       isEditOpen: true,
@@ -134,11 +78,6 @@ class ActivityRow extends React.Component {
       isEditOpen: false,
       editingSpent: null
     });
-  };
-
-  deleteTimesheets = ids => {
-    const { userId, startingDay } = this.props;
-    this.props.deleteTimesheets(ids, userId, startingDay);
   };
 
   render() {
@@ -189,7 +128,7 @@ class ActivityRow extends React.Component {
               <div className={css.timeCell}>
                 <input type="text" disabled value={this.state.timeCells[i]} />
                 <span className={css.toggleComment}>
-                  <IconEdit />
+                  <IconEdit onClick={this.openEditModal.bind(this, tsh)} />
                 </span>
               </div>
             </div>
@@ -238,6 +177,7 @@ class ActivityRow extends React.Component {
             spentTime={editingSpent.spentTime}
             sprint={editingSpent.sprint}
             comment={editingSpent.comment}
+            isMagic={ma}
             isBillable={editingSpent.isBillable}
             taskStatusId={editingSpent.taskStatusId}
             typeId={editingSpent.typeId}
@@ -256,11 +196,4 @@ const mapStateToProps = state => ({
   startingDay: state.Timesheets.startingDay
 });
 
-const mapDispatchToProps = {
-  createTimesheet,
-  updateTimesheet,
-  deleteTimesheets,
-  deleteTempTimesheets
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ActivityRow);
+export default connect(mapStateToProps)(ActivityRow);

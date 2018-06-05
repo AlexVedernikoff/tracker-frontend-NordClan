@@ -16,14 +16,15 @@ class EditSpentModal extends Component {
     spentId: PropTypes.number,
     sprint: PropTypes.object,
     spentTime: PropTypes.string,
-    typeId: PropTypes.number.isRequired,
-    taskStatusId: PropTypes.number.isRequired,
+    typeId: PropTypes.number,
+    taskStatusId: PropTypes.number,
     comment: PropTypes.string,
     isBillible: PropTypes.bool,
     projectId: PropTypes.number.isRequired,
     projectSprints: PropTypes.array.isRequired,
     statuses: PropTypes.array,
-    taskTypes: PropTypes.array
+    taskTypes: PropTypes.array,
+    isMagic: PropTypes.bool
   };
 
   static validateNumbers(value) {
@@ -44,7 +45,8 @@ class EditSpentModal extends Component {
       typeId: props.typeId,
       taskStatusId: props.taskStatusId,
       comment: props.comment || '',
-      isBillible: props.isBillible || false
+      isBillible: props.isBillible || false,
+      isMagic: props.isMagic || false
     };
   }
 
@@ -71,7 +73,17 @@ class EditSpentModal extends Component {
   };
 
   render() {
-    const { onClose, spentTime, sprint, projectSprints, comment, typeId, taskStatusId, isBillible } = this.state;
+    const {
+      onClose,
+      spentTime,
+      sprint,
+      projectSprints,
+      comment,
+      typeId,
+      taskStatusId,
+      isBillible,
+      isMagic
+    } = this.state;
     const { statuses, taskTypes } = this.props;
     const status = taskStatusId ? statuses.find(el => el.id === taskStatusId).name : '';
     const taskType = typeId ? taskTypes.find(el => el.id === typeId).name : '';
@@ -97,7 +109,9 @@ class EditSpentModal extends Component {
             </Row>
             <Row>
               <Col xs={12} className={css.validateMessages}>
-                {!this.checkNullInputs() ? <span>Все поля должны быть заполнены</span> : null}
+                {!this.checkNullInputs() ? (
+                  <span className={css.redMessage}>Все поля должны быть заполнены</span>
+                ) : null}
               </Col>
             </Row>
             <Row className={css.inputRow}>
@@ -108,52 +122,56 @@ class EditSpentModal extends Component {
                 <Input placeholder="Введите потраченное время" onChange={this.onChangeSpentTime} value={spentTime} />
               </Col>
             </Row>
-            <Row className={css.inputRow}>
-              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Спринт:</p>
-              </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <SelectDropdown
-                  className={css.select}
-                  onChange={this.changeSprint}
-                  value={sprint ? sprint.id : null}
-                  placeholder={'Выберите спринт'}
-                  options={projectSprintsOptions}
-                />
-              </Col>
-            </Row>
-            <Row className={css.inputRow}>
-              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Комментарий:</p>
-              </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Textarea onChange={this.onChangeComment} placeholder="Введите комментарий" value={comment} />
-              </Col>
-            </Row>
-            <Row className={css.inputRow}>
-              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Тип активности:</p>
-              </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input disabled value={taskType} />
-              </Col>
-            </Row>
-            <Row className={css.inputRow}>
-              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Статус:</p>
-              </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input disabled value={status} />
-              </Col>
-            </Row>
-            <Row className={css.inputRow}>
-              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Billable:</p>
-              </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Checkbox disabled checked={isBillible} />
-              </Col>
-            </Row>
+            {!isMagic ? (
+              <div>
+                <Row className={css.inputRow}>
+                  <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                    <p>Спринт:</p>
+                  </Col>
+                  <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                    <SelectDropdown
+                      className={css.select}
+                      onChange={this.changeSprint}
+                      value={sprint ? sprint.id : null}
+                      placeholder={'Выберите спринт'}
+                      options={projectSprintsOptions}
+                    />
+                  </Col>
+                </Row>
+                <Row className={css.inputRow}>
+                  <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                    <p>Комментарий:</p>
+                  </Col>
+                  <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                    <Textarea onChange={this.onChangeComment} placeholder="Введите комментарий" value={comment} />
+                  </Col>
+                </Row>
+                <Row className={css.inputRow}>
+                  <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                    <p>Тип активности:</p>
+                  </Col>
+                  <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                    <Input disabled value={taskType} />
+                  </Col>
+                </Row>
+                <Row className={css.inputRow}>
+                  <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                    <p>Статус:</p>
+                  </Col>
+                  <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                    <Input disabled value={status} />
+                  </Col>
+                </Row>
+                <Row className={css.inputRow}>
+                  <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                    <p>Billable:</p>
+                  </Col>
+                  <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                    <Checkbox disabled checked={isBillible} />
+                  </Col>
+                </Row>
+              </div>
+            ) : null}
           </form>
         </div>
       </Modal>

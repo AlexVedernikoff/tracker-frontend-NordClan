@@ -102,6 +102,12 @@ class ProjectTimesheets extends React.Component {
           timeSheets.push(timesheet);
         } else {
           timeSheets.push({
+            comment: '',
+            typeId: task.typeId,
+            taskStatusId: task.taskStatusId,
+            isBillable: task.isBillable,
+            sprint: task.sprint,
+            statusId: task.statusId,
             onDate: moment(day)
               .weekday(index)
               .format(),
@@ -246,6 +252,7 @@ class ProjectTimesheets extends React.Component {
     });
 
     _.sortBy(users, ['userName']);
+    console.log('users', users);
 
     const userRows = [];
     for (const user of Object.values(users)) {
