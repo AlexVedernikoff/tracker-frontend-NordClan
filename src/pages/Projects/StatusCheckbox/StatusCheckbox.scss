@@ -9,9 +9,10 @@
   box-sizing: border-box;
   border: 1px solid transparent;
   font-size: 11px;
-  margin: 8px;
+  // margin: 8px;
   color: gray;
   transition: border-color 0.3s ease-in-out 0s;
+  margin-left: 0.5rem;
 
   input {
     display: none;
@@ -37,6 +38,12 @@
   cursor: default;
 }
 
-.INPROGRESS { background-color: $color-green }
-.INHOLD { background-color: $color-blue }
-.FINISHED { background-color: $color-dark }
+.INPROGRESS {
+  background-color: $color-green;
+}
+.INHOLD {
+  background-color: $color-blue;
+}
+.FINISHED {
+  background-color: $color-dark;
+}
