@@ -4,6 +4,7 @@ import Button from '../../../../components/Button';
 import Modal from '../../../../components/Modal';
 import Input from '../../../../components/Input';
 import Textarea from '../../../../components/TextArea';
+import Checkbox from '../../../../components/Checkbox';
 import SelectDropdown from '../../../../components/SelectDropdown';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './EditSpentModal.scss';
@@ -16,11 +17,13 @@ class EditSpentModal extends Component {
     sprint: PropTypes.object,
     spentTime: PropTypes.string,
     typeId: PropTypes.number.isRequired,
-    statusId: PropTypes.number.isRequired,
+    taskStatusId: PropTypes.number.isRequired,
     comment: PropTypes.string,
     isBillible: PropTypes.bool,
     projectId: PropTypes.number.isRequired,
-    projectSprints: PropTypes.array.isRequired
+    projectSprints: PropTypes.array.isRequired,
+    statuses: PropTypes.array,
+    taskTypes: PropTypes.array
   };
 
   static validateNumbers(value) {
@@ -39,7 +42,7 @@ class EditSpentModal extends Component {
       projectId: props.projectId,
       projectSprints: props.projectSprints,
       typeId: props.typeId,
-      statusId: props.statusId,
+      taskStatusId: props.taskStatusId,
       comment: props.comment || '',
       isBillible: props.isBillible || false
     };
@@ -68,7 +71,10 @@ class EditSpentModal extends Component {
   };
 
   render() {
-    const { onClose, spentTime, sprint, projectSprints, comment } = this.state;
+    const { onClose, spentTime, sprint, projectSprints, comment, typeId, taskStatusId, isBillible } = this.state;
+    const { statuses, taskTypes } = this.props;
+    const status = taskStatusId ? statuses.find(el => el.id === taskStatusId).name : '';
+    const taskType = typeId ? taskTypes.find(el => el.id === typeId).name : '';
 
     const projectSprintsOptions = projectSprints.map(el => {
       return { value: el.id, label: el.name };
@@ -124,6 +130,30 @@ class EditSpentModal extends Component {
                 <Textarea onChange={this.onChangeComment} placeholder="Введите комментарий" value={comment} />
               </Col>
             </Row>
+            <Row className={css.inputRow}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>Тип активности:</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                <Input disabled value={taskType} />
+              </Col>
+            </Row>
+            <Row className={css.inputRow}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>Статус:</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                <Input disabled value={status} />
+              </Col>
+            </Row>
+            <Row className={css.inputRow}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>Billable:</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                <Checkbox disabled checked={isBillible} />
+              </Col>
+            </Row>
           </form>
         </div>
       </Modal>
@@ -132,6 +162,8 @@ class EditSpentModal extends Component {
 }
 
 const mapStateToProps = state => ({
+  statuses: state.Dictionaries.taskStatuses,
+  taskTypes: state.Dictionaries.taskTypes,
   projectId: state.Project.project.id,
   projectSprints: state.Project.project.sprints
 });

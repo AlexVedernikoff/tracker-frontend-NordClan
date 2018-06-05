@@ -123,7 +123,6 @@ class ActivityRow extends React.Component {
   };
 
   openEditModal = tsh => {
-    console.log('open tsh', tsh);
     this.setState({
       isEditOpen: true,
       editingSpent: tsh
@@ -240,7 +239,7 @@ class ActivityRow extends React.Component {
             sprint={editingSpent.sprint}
             comment={editingSpent.comment}
             isBillable={editingSpent.isBillable}
-            statusId={editingSpent.statusId}
+            taskStatusId={editingSpent.taskStatusId}
             typeId={editingSpent.typeId}
             onClose={this.closeEditModal}
           />
