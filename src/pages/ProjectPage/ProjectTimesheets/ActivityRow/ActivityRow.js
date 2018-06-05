@@ -7,12 +7,10 @@ import _ from 'lodash';
 import moment from 'moment';
 import roundNum from '../../../../utils/roundNum';
 import validateNumber from '../../../../utils/validateNumber';
-import SingleComment from './SingleComment';
-import TotalComment from './TotalComment';
 import * as css from '../ProjectTimesheets.scss';
-import { IconClose } from '../../../../components/Icons';
-import ConfirmModal from '../../../../components/ConfirmModal';
+import { IconClose, IconEdit } from '../../../../components/Icons';
 import * as timesheetsConstants from '../../../../constants/Timesheets';
+import EditSpentModal from '../EditSpentModal';
 import {
   createTimesheet,
   updateTimesheet,
@@ -46,7 +44,8 @@ class ActivityRow extends React.Component {
     this.debouncedCreateTimesheet = _.debounce(this.createTimesheet, debounceTime * 2);
 
     this.state = {
-      isOpen: false,
+      isEditOpen: false,
+      editingSpent: null,
       timeCells: this.getTimeCells(props.item.timeSheets)
     };
   }
@@ -123,164 +122,32 @@ class ActivityRow extends React.Component {
     );
   };
 
+  openEditModal = tsh => {
+    console.log('open tsh', tsh);
+    this.setState({
+      isEditOpen: true,
+      editingSpent: tsh
+    });
+  };
+
+  closeEditModal = () => {
+    this.setState({
+      isEditOpen: false,
+      editingSpent: null
+    });
+  };
+
   deleteTimesheets = ids => {
     const { userId, startingDay } = this.props;
     this.props.deleteTimesheets(ids, userId, startingDay);
   };
 
-  changeEmpty = (i, value) => {
-    if (!validateNumber(value) || +value > 24) {
-      return false;
-    }
-
-    this.setState(
-      state => {
-        const timeCells = {
-          ...state.timeCells
-        };
-
-        timeCells[i] = value;
-
-        return {
-          timeCells
-        };
-      },
-      () => {
-        if (value !== '') {
-          this.debouncedCreateTimesheet(i);
-        }
-      }
-    );
-  };
-
-  changeEmptyComment = (text, i) => {
-    const { item, userId, startingDay } = this.props;
-    this.props.createTimesheet(
-      {
-        isDraft: false,
-        taskId: item.id || null,
-        taskStatusId: item.id ? item.taskStatusId : null,
-        typeId: item.id ? '1' : item.typeId,
-        comment: text,
-        spentTime: 0,
-        onDate: moment(startingDay)
-          .weekday(i)
-          .format('YYYY-MM-DD'),
-        projectId: item.projectId,
-        sprintId: item.sprintId ? item.sprintId : null
-      },
-      userId,
-      startingDay
-    );
-  };
-
-  changeFilled = (i, id, comment, value) => {
-    if (!validateNumber(value) || +value > 24) {
-      return false;
-    }
-
-    this.setState(
-      state => {
-        const timeCells = {
-          ...state.timeCells
-        };
-
-        timeCells[i] = value;
-
-        return {
-          timeCells
-        };
-      },
-      () => {
-        this.debouncedUpdateTimesheet(i, id, comment);
-      }
-    );
-  };
-
-  onBlurFilled = (i, id, comment, value) => {
-    if (this.state.timeCells[i] !== +value) {
-      this.debouncedUpdateTimesheet.flush();
-    }
-
-    if (value === '') {
-      this.resetCell(i);
-    }
-  };
-
-  onBlurEmpty = (i, value) => {
-    if (value !== '') {
-      if (this.state.timeCells[i] !== +value) {
-        this.debouncedCreateTimesheet.flush();
-      }
-    } else {
-      this.resetCell(i);
-    }
-  };
-
-  resetCell = i => {
-    this.setState(state => {
-      const timeCells = {
-        ...state.timeCells
-      };
-      timeCells[i] = 0;
-      return {
-        timeCells
-      };
-    });
-  };
-
-  changeFilledComment = (text, time, i, sheetId) => {
-    const { userId, startingDay } = this.props;
-    if (+time || text) {
-      this.props.updateTimesheet(
-        {
-          sheetId,
-          comment: text
-        },
-        userId,
-        startingDay
-      );
-    } else {
-      this.deleteTimesheets([sheetId]);
-    }
-  };
-
-  openConfirmModal = () => {
-    this.setState({ isConfirmModalOpen: true });
-  };
-
-  closeConfirmModal = () => {
-    this.setState({ isConfirmModalOpen: false });
-  };
-
-  deleteActivity = ids => {
-    const { userId, startingDay } = this.props;
-    const realSheetIds = ids.filter(id => !~id.toString().indexOf('temp'));
-    const tempSheetIds = ids.filter(id => ~id.toString().indexOf('temp'));
-
-    if (realSheetIds.length) {
-      this.props.deleteTimesheets(realSheetIds, userId, startingDay);
-    }
-
-    if (tempSheetIds.length) {
-      this.props.deleteTempTimesheets(tempSheetIds);
-    }
-
-    this.closeConfirmModal();
-  };
-
   render() {
     const { item, task, ma, statuses, magicActivitiesTypes } = this.props;
+    const { editingSpent } = this.state;
     const status = task ? _.find(statuses, { id: item.taskStatusId }) : '';
     const maType = ma ? _.find(magicActivitiesTypes, { id: item.typeId }) : '';
     const totalTime = roundNum(_.sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
-    const timeSheetIds = _.remove(item.timeSheets.map(tsh => tsh.id), tsh => tsh);
-    const canDeleteRow = !item.timeSheets.find(
-      tsh =>
-        tsh.id &&
-        (tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
-          tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED)
-    );
 
     const timeCells = item.timeSheets.map((tsh, i) => {
       if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
@@ -302,19 +169,9 @@ class ActivityRow extends React.Component {
                   [css.rejected]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED
                 })}
               >
-                <input
-                  type="text"
-                  disabled={!canDeleteRow}
-                  value={this.state.timeCells[i]}
-                  onChange={e => this.changeFilled(i, tsh.id, tsh.comment, e.target.value)}
-                  onBlur={e => this.onBlurFilled(i, tsh.id, tsh.comment, e.target.value)}
-                />
+                <input type="text" disabled value={this.state.timeCells[i]} />
                 <span className={css.toggleComment}>
-                  <SingleComment
-                    disabled={!canDeleteRow}
-                    comment={tsh.comment}
-                    onChange={text => this.changeFilledComment(text, tsh.spentTime, i, tsh.id)}
-                  />
+                  <IconEdit onClick={this.openEditModal.bind(this, tsh)} />
                 </span>
               </div>
             </div>
@@ -331,15 +188,9 @@ class ActivityRow extends React.Component {
           >
             <div>
               <div className={css.timeCell}>
-                <input
-                  type="text"
-                  disabled={!canDeleteRow}
-                  value={this.state.timeCells[i]}
-                  onChange={e => this.changeEmpty(i, e.target.value)}
-                  onBlur={e => this.onBlurEmpty(i, e.target.value)}
-                />
+                <input type="text" disabled value={this.state.timeCells[i]} />
                 <span className={css.toggleComment}>
-                  <SingleComment disabled={!canDeleteRow} onChange={text => this.changeEmptyComment(text, i)} />
+                  <IconEdit />
                 </span>
               </div>
             </div>
@@ -382,6 +233,18 @@ class ActivityRow extends React.Component {
         <td className={cn(css.total, css.totalRow)}>
           <div>{totalTime}</div>
         </td>
+        {this.state.isEditOpen ? (
+          <EditSpentModal
+            spentId={editingSpent.id}
+            spentTime={editingSpent.spentTime}
+            sprint={editingSpent.sprint}
+            comment={editingSpent.comment}
+            isBillable={editingSpent.isBillable}
+            statusId={editingSpent.statusId}
+            typeId={editingSpent.typeId}
+            onClose={this.closeEditModal}
+          />
+        ) : null}
       </tr>
     );
   }

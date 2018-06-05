@@ -9,7 +9,6 @@ import * as timesheetsActions from '../../../actions/Timesheets';
 import * as timesheetsConstants from '../../../constants/Timesheets';
 import * as css from './ProjectTimesheets.scss';
 import { IconPlus, IconArrowLeft, IconArrowRight, IconCalendar } from '../../../components/Icons';
-import AddActivityModal from './AddActivityModal';
 import Calendar from './Calendar';
 import ActivityRow from './ActivityRow';
 import UserRow from './UserRow';
@@ -60,12 +59,6 @@ class ProjectTimesheets extends React.Component {
   render() {
     const { isCalendarOpen } = this.state;
     const { startingDay, tempTimesheets } = this.props;
-    const canAddActivity = !this.props.list.find(
-      tsh =>
-        tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
-        tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED
-    );
-    const countTsWithTime = this.props.list.filter(tsh => tsh.spentTime !== 0).length;
     const defaultTaskStatusId = 2;
     const tempTimesheetsList = tempTimesheets.map(timesheet => {
       return {
@@ -89,7 +82,8 @@ class ProjectTimesheets extends React.Component {
       return timesheetOndDate <= getMidnight(6) && timesheetOndDate >= getMidnight(0);
     };
 
-    const formSpentForTask = (arr, task, day) => {
+    // Timesheets for task by week
+    const getTaskTimesheets = (arr, task, day) => {
       const timeSheets = [];
 
       for (let index = 0; index < 7; index++) {
@@ -119,7 +113,8 @@ class ProjectTimesheets extends React.Component {
       return timeSheets;
     };
 
-    const getUserAcivities = userId => {
+    // Overall time by week for user tasks
+    const getUserTimesheets = userId => {
       const timeSheets = [];
       for (let index = 0; index < 7; index++) {
         const dayUserSheets = _.filter(list, tsh => {
@@ -163,7 +158,7 @@ class ProjectTimesheets extends React.Component {
         taskStatusId: el.taskStatusId,
         sprintId: el.task.sprint ? el.task.sprint.id : null,
         sprint: el.task.sprint ? el.task.sprint : null,
-        timeSheets: formSpentForTask(list, el, startingDay)
+        timeSheets: getTaskTimesheets(list, el, startingDay)
       });
     };
 
@@ -239,7 +234,7 @@ class ProjectTimesheets extends React.Component {
             userName: el.user.fullNameRu ? el.user.fullNameRu : null,
             isOpen: false,
             tasks: [],
-            timesheets: getUserAcivities(el.user.id),
+            timesheets: getUserTimesheets(el.user.id),
             ma: userMagicActivities(el.user.id) || []
           };
         }
@@ -269,7 +264,6 @@ class ProjectTimesheets extends React.Component {
     }
 
     // Создание заголовка таблицы
-
     const days = [];
     for (let number = 0; number < 7; number++) {
       const currentDay = moment(startingDay).weekday(number);
@@ -294,7 +288,6 @@ class ProjectTimesheets extends React.Component {
     // Создание строки с суммой времени по дням
 
     const totalRow = [];
-
     const dayTaskHours = (arr, day) => {
       return arr.map(tsh => {
         if (
@@ -393,7 +386,6 @@ class ProjectTimesheets extends React.Component {
             </tbody>
           </table>
         </section>
-        {this.state.isModalOpen ? <AddActivityModal onClose={() => this.setState({ isModalOpen: false })} /> : null}
       </div>
     );
   }
