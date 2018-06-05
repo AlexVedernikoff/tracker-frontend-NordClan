@@ -260,7 +260,9 @@ class ProjectTimesheets extends React.Component {
           user={user}
           items={[
             ...user.tasks.map(task => <ActivityRow key={`${task.id}-${startingDay}-task`} task item={task} />),
-            ...user.ma.map(task => <ActivityRow key={`${task.onDate}-${startingDay}-ma`} ma item={task} />)
+            ...user.ma.map((task, index) => (
+              <ActivityRow key={`${user.id}-${startingDay}-ma-${index}`} ma item={task} />
+            ))
           ]}
         />
       ]);
