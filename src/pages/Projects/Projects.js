@@ -22,6 +22,7 @@ import getProjects, {
 } from '../../actions/Projects';
 import { getErrorMessageByType } from '../../utils/ErrorMessages';
 import { ADMIN } from '../../constants/Roles';
+import localization from './projects.json';
 
 import 'moment/locale/ru';
 
@@ -236,6 +237,7 @@ class Projects extends Component {
     return null;
   };
   render() {
+    const { lang } = this.props;
     const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
     const formattedDayFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('DD.MM.YYYY') : '';
     const formattedDayTo = this.state.dateTo ? moment(this.state.dateTo).format('DD.MM.YYYY') : '';
@@ -245,7 +247,7 @@ class Projects extends Component {
       <div>
         <section>
           <header className={css.title}>
-            <h1 className={css.title}>Мои проекты</h1>
+            <h1 className={css.title}>{localization[lang].MY_PROJECTS}</h1>
             {isAdmin ? (
               <Button onClick={this.handleModal} text="Создать проект" type="primary" icon="IconPlus" />
             ) : null}
@@ -259,7 +261,7 @@ class Projects extends Component {
                 onClick={() => {
                   this.check('filteredInProgress', this.handleFilterChange);
                 }}
-                label="В процессе"
+                label={localization[lang].INPROGRESS}
               />
               <StatusCheckbox
                 type="INHOLD"
@@ -267,7 +269,7 @@ class Projects extends Component {
                 onClick={() => {
                   this.check('filteredInHold', this.handleFilterChange);
                 }}
-                label="Приостановлен"
+                label={localization[lang].INHOLD}
               />
               <StatusCheckbox
                 type="FINISHED"
@@ -275,12 +277,12 @@ class Projects extends Component {
                 onClick={() => {
                   this.check('filteredFinished', this.handleFilterChange);
                 }}
-                label="Завершен"
+                label={localization[lang].FINISHED}
               />
             </div>
             <Row className={css.search}>
               <Col xs={12} sm={4}>
-                <Input onChange={this.changeNameFilter} placeholder="Введите название проекта..." />
+                <Input onChange={this.changeNameFilter} placeholder={localization[lang].NAME_PROJECT} />
               </Col>
               <Col xs={12} sm={4}>
                 <Row>
@@ -289,7 +291,7 @@ class Projects extends Component {
                       name="dateFrom"
                       value={formattedDayFrom}
                       onDayChange={this.handleDayFromChange}
-                      placeholder="От"
+                      placeholder={localization[lang].TO}
                     />
                   </Col>
                   <Col xs={6} sm={6}>
@@ -297,7 +299,7 @@ class Projects extends Component {
                       name="dateTo"
                       value={formattedDayTo}
                       onDayChange={this.handleDayToChange}
-                      placeholder="До"
+                      placeholder={localization[lang].FROM}
                     />
                   </Col>
                 </Row>
@@ -314,7 +316,7 @@ class Projects extends Component {
               ))}
             </div>
           ) : (
-            <div className={css.notFound}>Ничего не найдено</div>
+            <div className={css.notFound}>{localization[lang].NOTHING_FOUND}</div>
           )}
           {this.props.pagesCount > 1 ? (
             <Pagination
@@ -359,7 +361,8 @@ const mapStateToProps = state => ({
   isCreateProjectModalOpen: state.Projects.isCreateProjectModalOpen,
   loading: state.Loading.loading,
   projectError: state.Projects.error,
-  globalRole: state.Auth.user.globalRole
+  globalRole: state.Auth.user.globalRole,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
@@ -381,4 +384,7 @@ Projects.propTypes = {
   requestProjectCreate: PropTypes.func
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Projects);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Projects);

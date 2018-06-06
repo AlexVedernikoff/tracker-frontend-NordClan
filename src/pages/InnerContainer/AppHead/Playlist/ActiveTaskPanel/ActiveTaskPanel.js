@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { IconPause, IconPlay, IconList } from '../../../../../components/Icons';
+import localization from './activeTaskPanel.json';
 import * as css from '../Playlist.scss';
 
 class ActiveTaskPanel extends Component {
@@ -9,7 +10,7 @@ class ActiveTaskPanel extends Component {
     this.playStatuses = [2, 4, 6];
   }
 
-  changeStatus = (event) => {
+  changeStatus = event => {
     const { changeTask, activeTask } = this.props;
 
     if (!activeTask) {
@@ -30,10 +31,10 @@ class ActiveTaskPanel extends Component {
       changeTask({ id: activeTask.id, statusId: updatedStatus }, 'Status');
       event.stopPropagation();
     }
-  }
+  };
 
   selectIcon() {
-    const { activeTask } = this.props
+    const { activeTask } = this.props;
     const status = activeTask ? activeTask.statusId : 1;
 
     if (~this.playStatuses.indexOf(status)) {
@@ -48,42 +49,40 @@ class ActiveTaskPanel extends Component {
   }
 
   getTitle() {
-    const { activeTask } = this.props
+    const { activeTask, lang } = this.props;
 
     if (!activeTask) {
-      return 'Нет активных задач'
+      return localization[lang].NO_ACTIVE_TASKS;
     }
 
     const taskTitle = `${activeTask.project.prefix}-${activeTask.id}`;
 
     if (~this.playStatuses.indexOf(activeTask.statusId)) {
-      return `Активная задача: ${taskTitle}`
+      return `${localization[lang].ACTIVE_TASKS} ${taskTitle}`;
     }
 
-    return `Последняя активная задача: ${taskTitle}`
+    return `${localization[lang].LAST_ACTIVE_TASKS} ${taskTitle}`;
   }
 
-  render () {
+  render() {
     const { activeTask, className, onClick } = this.props;
     const Icon = this.selectIcon();
     const title = this.getTitle();
     const taskName = activeTask ? activeTask.name : '';
 
-    return <div className={className} onClick={onClick}>
-      <div className={css.actionButton} onClick={this.changeStatus}>
-        <Icon />
-      </div>
-      <div className={css.taskNameWrapper}>
-        <div className={css.taskTitle}>
-          <div className={css.meta}>
-            {title}
-          </div>
-          <div className={css.taskName}>
-            {taskName}
+    return (
+      <div className={className} onClick={onClick}>
+        <div className={css.actionButton} onClick={this.changeStatus}>
+          <Icon />
+        </div>
+        <div className={css.taskNameWrapper}>
+          <div className={css.taskTitle}>
+            <div className={css.meta}>{title}</div>
+            <div className={css.taskName}>{taskName}</div>
           </div>
         </div>
       </div>
-    </div>
+    );
   }
 }
 
