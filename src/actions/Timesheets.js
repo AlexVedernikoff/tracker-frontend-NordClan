@@ -88,17 +88,26 @@ export const getProjectTimesheets = (projectId, params) => {
 };
 
 export const updateTimesheet = (data, userId, startingDay) => {
-  return dispatch =>
-    dispatch({
-      type: REST_API,
-      url: '/timesheet',
-      method: PUT,
-      body: { ...data },
-      extra,
-      start: withStartLoading(startUpdateTimesheetRequest, true)(dispatch),
-      response: () => dispatch(finishLoading()),
-      error: defaultErrorHandler(dispatch)
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      dispatch({
+        type: REST_API,
+        url: '/timesheet',
+        method: PUT,
+        body: { ...data },
+        extra,
+        start: withStartLoading(startUpdateTimesheetRequest, true)(dispatch),
+        response: response => {
+          dispatch(finishLoading());
+          resolve(response);
+        },
+        error: error => {
+          defaultErrorHandler(dispatch);
+          reject(error);
+        }
+      });
     });
+  };
 };
 
 export const deleteTimesheets = (ids, userId, startingDay) => {
@@ -121,20 +130,27 @@ export const deleteTempTimesheets = ids => ({
 });
 
 export const createTimesheet = (data, userId, startingDay) => {
-  return dispatch =>
-    dispatch({
-      type: REST_API,
-      url: '/timesheet',
-      method: POST,
-      body: { ...data },
-      extra,
-      start: withStartLoading(startCreateTimesheetRequest, true)(dispatch),
-      response: () => dispatch(finishLoading()),
-      error: error => {
-        withFinishLoading(failCreateTimesheetRequest, true)(dispatch)(error);
-        dispatch(showNotification({ message: error.response.data.message, type: 'error' }));
-      }
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      dispatch({
+        type: REST_API,
+        url: '/timesheet',
+        method: POST,
+        body: { ...data },
+        extra,
+        start: withStartLoading(startCreateTimesheetRequest, true)(dispatch),
+        response: response => {
+          dispatch(finishLoading());
+          resolve(response);
+        },
+        error: error => {
+          withFinishLoading(failCreateTimesheetRequest, true)(dispatch)(error);
+          dispatch(showNotification({ message: error.response.data.message, type: 'error' }));
+          reject(error);
+        }
+      });
     });
+  };
 };
 
 export const updateSheetsArray = (sheetsArr, userId, startingDay) => {

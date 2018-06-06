@@ -9,11 +9,11 @@ import SelectDropdown from '../../../../components/SelectDropdown';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './EditSpentModal.scss';
 import { connect } from 'react-redux';
-import { createTimesheet, updateTimesheet } from '../../../../actions/Timesheets';
 
 class EditSpentModal extends Component {
   static propTypes = {
     onClose: PropTypes.func.isRequired,
+    onSave: PropTypes.func.isRequired,
     spentId: PropTypes.number,
     sprint: PropTypes.object,
     spentTime: PropTypes.string,
@@ -25,24 +25,18 @@ class EditSpentModal extends Component {
     projectSprints: PropTypes.array.isRequired,
     statuses: PropTypes.array,
     taskTypes: PropTypes.array,
-    isMagic: PropTypes.bool
+    isMagic: PropTypes.bool,
+    timesheet: PropTypes.object.isRequired
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      onClose: props.onClose,
       spentId: props.spentId || null,
       sprint: props.sprint || { id: null, name: 'Backlog' },
       spentTime: props.spentTime || 0,
-      projectId: props.projectId,
-      projectSprints: props.projectSprints,
-      typeId: props.typeId,
-      taskStatusId: props.taskStatusId,
-      comment: props.comment || '',
-      isBillible: props.isBillible || false,
-      isMagic: props.isMagic || false
+      comment: props.comment || ''
     };
   }
 
@@ -74,18 +68,19 @@ class EditSpentModal extends Component {
   };
 
   render() {
+    const { spentTime, sprint, comment } = this.state;
     const {
-      onClose,
-      spentTime,
-      sprint,
       projectSprints,
-      comment,
+      statuses,
       typeId,
       taskStatusId,
+      taskTypes,
+      onClose,
       isBillible,
-      isMagic
-    } = this.state;
-    const { statuses, taskTypes } = this.props;
+      isMagic,
+      onSave,
+      timesheet
+    } = this.props;
     const status = taskStatusId ? statuses.find(el => el.id === taskStatusId).name : '';
     const taskType = typeId ? taskTypes.find(el => el.id === typeId).name : '';
 
@@ -173,15 +168,14 @@ class EditSpentModal extends Component {
                 </Row>
               </div>
             ) : null}
-            <Button
-              style={{ width: '100%' }}
-              onClick={() => {
-                console.log('save');
-              }}
-              text="Сохранить"
-              type="green"
-              icon="IconCheck"
-            />
+            <div className={css.buttonWrap}>
+              <Button
+                onClick={onSave.bind(this, this.state, timesheet)}
+                text="Сохранить"
+                type="green"
+                icon="IconCheck"
+              />
+            </div>
           </form>
         </div>
       </Modal>
@@ -196,9 +190,4 @@ const mapStateToProps = state => ({
   projectSprints: state.Project.project.sprints
 });
 
-const mapDispatchToProps = {
-  createTimesheet,
-  updateTimesheet
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(EditSpentModal);
+export default connect(mapStateToProps)(EditSpentModal);

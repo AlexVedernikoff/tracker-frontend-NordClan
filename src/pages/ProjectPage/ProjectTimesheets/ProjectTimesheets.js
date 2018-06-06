@@ -83,19 +83,19 @@ class ProjectTimesheets extends React.Component {
     };
 
     // Timesheets for task by week
-    const getTaskTimesheets = (arr, task, day) => {
+    const getTaskTimesheets = (arr, el, day, userId) => {
       const timeSheets = [];
 
       for (let index = 0; index < 7; index++) {
         const timesheet = _.find(arr, tsh => {
           return (
             tsh.task &&
-            tsh.id === task.id &&
+            tsh.task.id === el.task.id &&
             moment(tsh.onDate).format('DD.MM.YY') ===
               moment(day)
                 .weekday(index)
                 .format('DD.MM.YY') &&
-            tsh.taskStatusId === task.taskStatusId
+            tsh.taskStatusId === el.taskStatusId
           );
         });
         if (timesheet) {
@@ -103,11 +103,13 @@ class ProjectTimesheets extends React.Component {
         } else {
           timeSheets.push({
             comment: '',
-            typeId: task.typeId,
-            taskStatusId: task.taskStatusId,
-            isBillable: task.isBillable,
-            sprint: task.sprint,
-            statusId: task.statusId,
+            task: el.task,
+            typeId: el.typeId,
+            taskStatusId: el.taskStatusId,
+            isBillable: el.isBillable,
+            sprint: el.sprint,
+            statusId: el.statusId,
+            userId: userId,
             onDate: moment(day)
               .weekday(index)
               .format(),
@@ -156,16 +158,21 @@ class ProjectTimesheets extends React.Component {
     };
 
     const pushTaskToUser = (user, el) => {
-      user.tasks.push({
-        id: el.id,
-        name: `${el.project.prefix}-${el.task.id}: ${el.task.name}`,
-        projectId: el.project.id,
-        projectName: el.project.name,
-        taskStatusId: el.taskStatusId,
-        sprintId: el.task.sprint ? el.task.sprint.id : null,
-        sprint: el.task.sprint ? el.task.sprint : null,
-        timeSheets: getTaskTimesheets(list, el, startingDay)
+      const exists = user.tasks.find(usrTask => {
+        return usrTask.taskStatusId === el.taskStatusId && usrTask.id === el.task.id;
       });
+      if (!exists) {
+        user.tasks.push({
+          id: el.task.id,
+          name: `${el.project.prefix}-${el.task.id}: ${el.task.name}`,
+          projectId: el.project.id,
+          projectName: el.project.name,
+          taskStatusId: el.taskStatusId,
+          sprintId: el.task.sprint ? el.task.sprint.id : null,
+          sprint: el.task.sprint ? el.task.sprint : null,
+          timeSheets: getTaskTimesheets(list, el, startingDay, user.id)
+        });
+      }
     };
 
     // Создание массива таймшитов по magic activities
@@ -185,8 +192,10 @@ class ProjectTimesheets extends React.Component {
               typeId: el.typeId,
               projectName: el.project ? el.project.name : 'Без проекта',
               projectId: el.project ? el.project.id : 0,
-              sprintId: el.sprintId ? el.sprintId : null,
-              sprint: el.sprint ? el.sprint : null
+              sprintId: null,
+              sprint: null,
+              userId: el.userId ? el.userId : null,
+              task: null
             });
           }
           return res;
@@ -214,6 +223,14 @@ class ProjectTimesheets extends React.Component {
             timeSheets.push(timesheet);
           } else {
             timeSheets.push({
+              comment: '',
+              task: element.task,
+              typeId: element.typeId,
+              taskStatusId: element.taskStatusId,
+              isBillable: element.isBillable,
+              sprint: element.sprint,
+              statusId: element.statusId,
+              userId: userId,
               onDate: moment(startingDay)
                 .weekday(index)
                 .format(),
@@ -231,28 +248,29 @@ class ProjectTimesheets extends React.Component {
     // Create users object where key user.id = user with timesheets
     const users = {};
     list.forEach(el => {
-      const userNotPushed = !users[el.user.id];
-      if (isThisWeek(el.onDate)) {
-        // add new users key
-        if (userNotPushed) {
-          users[el.user.id] = {
-            id: el.user.id,
-            userName: el.user.fullNameRu ? el.user.fullNameRu : null,
-            isOpen: false,
-            tasks: [],
-            timesheets: getUserTimesheets(el.user.id),
-            ma: userMagicActivities(el.user.id) || []
-          };
-        }
+      if (el.user) {
+        const userNotPushed = !users[el.user.id];
+        if (isThisWeek(el.onDate)) {
+          // add new users key
+          if (userNotPushed) {
+            users[el.user.id] = {
+              id: el.user.id,
+              userName: el.user.fullNameRu ? el.user.fullNameRu : null,
+              isOpen: false,
+              tasks: [],
+              timesheets: getUserTimesheets(el.user.id),
+              ma: userMagicActivities(el.user.id) || []
+            };
+          }
 
-        if (el.task) {
-          pushTaskToUser(users[el.user.id], el);
+          if (el.task) {
+            pushTaskToUser(users[el.user.id], el);
+          }
         }
       }
     });
 
     _.sortBy(users, ['userName']);
-    console.log('users', users);
 
     const userRows = [];
     for (const user of Object.values(users)) {
@@ -261,7 +279,9 @@ class ProjectTimesheets extends React.Component {
           key={`${user.id}-${startingDay}`}
           user={user}
           items={[
-            ...user.tasks.map(task => <ActivityRow key={`${task.id}-${startingDay}-task`} task item={task} />),
+            ...user.tasks.map((task, index) => (
+              <ActivityRow key={`${task.id}-${startingDay}-task-${index}`} task item={task} />
+            )),
             ...user.ma.map((task, index) => (
               <ActivityRow key={`${user.id}-${startingDay}-ma-${index}`} ma item={task} />
             ))

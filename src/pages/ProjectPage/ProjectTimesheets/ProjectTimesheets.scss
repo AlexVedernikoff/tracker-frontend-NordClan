@@ -18,6 +18,9 @@
 .psuedoRow {
   display: contents;
   vertical-align: middle;
+  tr:last-child td.today {
+    border-bottom-width: 0;
+  }
 }
 
 .userRow {
