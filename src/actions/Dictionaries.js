@@ -76,3 +76,17 @@ export const getTaskTypes = () => {
       error: defaultErrorHandler(dispatch)
     });
 };
+
+export const getProjectTypes = () => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/dictionary/project/types',
+      method: GET,
+      body,
+      extra,
+      start: withStartLoading(startDictionaryRequest, true)(dispatch),
+      response: withFinishLoading(response => successDictionaryRequest(response.data, 'projectTypes'), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
