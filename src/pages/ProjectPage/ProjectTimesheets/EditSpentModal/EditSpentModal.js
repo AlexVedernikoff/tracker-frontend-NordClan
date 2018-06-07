@@ -8,7 +8,6 @@ import Checkbox from '../../../../components/Checkbox';
 import SelectDropdown from '../../../../components/SelectDropdown';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './EditSpentModal.scss';
-import { connect } from 'react-redux';
 
 class EditSpentModal extends Component {
   static propTypes = {
@@ -183,11 +182,4 @@ class EditSpentModal extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  statuses: state.Dictionaries.taskStatuses,
-  taskTypes: state.Dictionaries.taskTypes,
-  projectId: state.Project.project.id,
-  projectSprints: state.Project.project.sprints
-});
-
-export default connect(mapStateToProps)(EditSpentModal);
+export default EditSpentModal;

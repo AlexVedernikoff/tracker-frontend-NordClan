@@ -38,7 +38,11 @@ class UserRow extends React.Component {
     return timeCells;
   };
 
-  componentWillReceiveProps(nextProps) {}
+  toggle = () => {
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
+  };
 
   render() {
     const { user, activityRows, isOpen } = this.state;
@@ -66,17 +70,9 @@ class UserRow extends React.Component {
       );
     });
 
-    const toggle = () => {
-      this.setState({
-        isOpen: !this.state.isOpen
-      });
-    };
-
-    const rows = [];
-
     return (
       <div className={css.psuedoRow}>
-        <tr onClick={toggle} className={css.userRow}>
+        <tr onClick={this.toggle} className={css.userRow}>
           <td>
             <div className={css.activityHeader}>
               {user.userName} {isOpen ? <IconArrowUp /> : <IconArrowDown />}
