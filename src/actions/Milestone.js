@@ -30,7 +30,7 @@ const editMilestoneFailure = () => ({
   type: MilestoneActions.MILESTONE_EDIT_FAILURE
 });
 
-export const createMilestone = (name, projectId, date) => {
+export const createMilestone = (name, projectId, date, typeId) => {
   const URL = `${API_URL}/milestones/`;
   return dispatch => {
     dispatch(createMilestoneRequest());
@@ -39,7 +39,8 @@ export const createMilestone = (name, projectId, date) => {
       .post(URL, {
         name,
         projectId,
-        date
+        date,
+        typeId
       })
       .then(
         response => {
@@ -57,26 +58,24 @@ export const createMilestone = (name, projectId, date) => {
   };
 };
 
-export const editMilestone = (milestone) => {
+export const editMilestone = milestone => {
   const URL = `${API_URL}/milestones/${milestone.id}`;
 
   return dispatch => {
     dispatch(editMilestoneRequest());
     dispatch(startLoading());
-    axios
-      .put(URL, milestone)
-      .then(
-        response => {
-          if (response.data) {
-            dispatch(editMilestoneSuccess(response.data));
-            dispatch(finishLoading());
-          }
-        },
-        error => {
-          dispatch(editMilestoneFailure());
-          dispatch(showNotification({ message: error.message, type: 'error' }));
+    axios.put(URL, milestone).then(
+      response => {
+        if (response.data) {
+          dispatch(editMilestoneSuccess(response.data));
           dispatch(finishLoading());
         }
-      );
+      },
+      error => {
+        dispatch(editMilestoneFailure());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      }
+    );
   };
 };

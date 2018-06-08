@@ -11,28 +11,10 @@ import { connect } from 'react-redux';
 import { createMilestone } from '../../../../actions/Milestone';
 import Select from 'react-select';
 
-const options = [
-  {
-    label: 'Получение отзыва',
-    value: 1
-  },
-  {
-    label: 'Демо Клиенту',
-    value: 2
-  },
-  {
-    label: 'Внутренняя демо',
-    value: 3
-  },
-  {
-    label: 'Другое',
-    value: 4
-  }
-];
-
 class CreateMilestoneModal extends Component {
   static propTypes = {
     createMilestone: PropTypes.func,
+    milestoneTypes: PropTypes.array,
     onClose: PropTypes.func,
     projectId: PropTypes.number
   };
@@ -43,7 +25,7 @@ class CreateMilestoneModal extends Component {
     this.state = {
       date: undefined,
       name: '',
-      enum: 1
+      typeId: 1
     };
   }
 
@@ -56,7 +38,7 @@ class CreateMilestoneModal extends Component {
   };
 
   changeStatus = status => {
-    this.setState({ enum: status.value });
+    this.setState({ typeId: status.value });
   };
 
   checkNullInputs = () => {
@@ -74,7 +56,7 @@ class CreateMilestoneModal extends Component {
   createMilestone = e => {
     e.preventDefault();
     this.props.onClose();
-    this.props.createMilestone(this.state.name.trim(), this.props.projectId, this.state.date);
+    this.props.createMilestone(this.state.name.trim(), this.props.projectId, this.state.date, this.state.typeId);
   };
 
   render() {
@@ -84,6 +66,8 @@ class CreateMilestoneModal extends Component {
       firstCol: 4,
       secondCol: 8
     };
+    const { milestoneTypes } = this.props;
+    const options = milestoneTypes.map(type => ({ value: type.id, label: type.name }));
 
     return (
       <Modal isOpen contentLabel="modal" onRequestClose={this.props.onClose}>
@@ -114,7 +98,7 @@ class CreateMilestoneModal extends Component {
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Select
-                  value={this.state.enum}
+                  value={this.state.typeId}
                   options={options}
                   multi={false}
                   style={{ width: '100%' }}
@@ -158,7 +142,8 @@ class CreateMilestoneModal extends Component {
 }
 
 const mapStateToProps = state => ({
-  projectId: state.Project.project.id
+  projectId: state.Project.project.id,
+  milestoneTypes: state.Dictionaries.milestoneTypes || []
 });
 
 const mapDispatchToProps = {

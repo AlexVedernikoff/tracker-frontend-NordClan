@@ -275,7 +275,10 @@ class Table extends React.Component {
         <div
           className={classnames({
             [css.milestoneBar]: true,
-            [css.done]: milestone.done
+            [css.done]: milestone.done,
+            [css.review]: milestone.typeId === 1,
+            [css.client]: milestone.typeId === 2,
+            [css.inside]: milestone.typeId === 3
           })}
           style={this.getMilestoneBlock(milestone.date, grantActiveYear)}
           data-tip={this.getMilestoneLabel(milestone)}

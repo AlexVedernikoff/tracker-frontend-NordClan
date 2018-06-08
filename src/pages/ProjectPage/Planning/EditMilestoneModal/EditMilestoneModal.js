@@ -13,25 +13,6 @@ import { connect } from 'react-redux';
 import { editMilestone } from '../../../../actions/Milestone';
 import Select from 'react-select';
 
-const options = [
-  {
-    label: 'Получение отзыва',
-    value: 1
-  },
-  {
-    label: 'Демо Клиенту',
-    value: 2
-  },
-  {
-    label: 'Внутренняя демо',
-    value: 3
-  },
-  {
-    label: 'Другое',
-    value: 4
-  }
-];
-
 class EditMilestoneModal extends Component {
   constructor(props) {
     super(props);
@@ -42,7 +23,7 @@ class EditMilestoneModal extends Component {
         name: this.props.milestone.name,
         date: this.props.milestone.date,
         done: this.props.milestone.done,
-        enum: 1
+        typeId: this.props.milestone.typeId
       }
     };
   }
@@ -71,7 +52,7 @@ class EditMilestoneModal extends Component {
     this.setState(state => ({
       milestone: {
         ...state.milestone,
-        enum: status.value
+        typeId: status.value
       }
     }));
   };
@@ -107,6 +88,10 @@ class EditMilestoneModal extends Component {
       secondCol: 7
     };
 
+    const { milestoneTypes } = this.props;
+
+    const options = milestoneTypes.map(type => ({ value: type.id, label: type.name }));
+
     return (
       <Modal isOpen contentLabel="modal" onRequestClose={this.props.onClose}>
         <div>
@@ -141,7 +126,7 @@ class EditMilestoneModal extends Component {
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Select
-                  value={this.state.milestone.enum}
+                  value={this.state.milestone.typeId}
                   options={options}
                   multi={false}
                   style={{ width: '100%' }}
@@ -195,7 +180,8 @@ class EditMilestoneModal extends Component {
 }
 
 const mapStateToProps = state => ({
-  projectId: state.Project.project.id
+  projectId: state.Project.project.id,
+  milestoneTypes: state.Dictionaries.milestoneTypes || []
 });
 
 const mapDispatchToProps = {
