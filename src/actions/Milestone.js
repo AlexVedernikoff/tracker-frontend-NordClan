@@ -30,8 +30,22 @@ const editMilestoneFailure = () => ({
   type: MilestoneActions.MILESTONE_EDIT_FAILURE
 });
 
+const deleteMilestoneRequest = () => ({
+  type: MilestoneActions.MILESTONE_DELETE_REQUEST
+});
+
+const deleteMilestoneSuccess = id => ({
+  type: MilestoneActions.MILESTONE_DELETE_SUCCESS,
+  id
+});
+
+const deleteMilestoneFailure = () => ({
+  type: MilestoneActions.MILESTONE_DELETE_FAILURE
+});
+
 export const createMilestone = (name, projectId, date) => {
   const URL = `${API_URL}/milestones/`;
+
   return dispatch => {
     dispatch(createMilestoneRequest());
     dispatch(startLoading());
@@ -57,26 +71,44 @@ export const createMilestone = (name, projectId, date) => {
   };
 };
 
-export const editMilestone = (milestone) => {
+export const editMilestone = milestone => {
   const URL = `${API_URL}/milestones/${milestone.id}`;
 
   return dispatch => {
     dispatch(editMilestoneRequest());
     dispatch(startLoading());
-    axios
-      .put(URL, milestone)
-      .then(
-        response => {
-          if (response.data) {
-            dispatch(editMilestoneSuccess(response.data));
-            dispatch(finishLoading());
-          }
-        },
-        error => {
-          dispatch(editMilestoneFailure());
-          dispatch(showNotification({ message: error.message, type: 'error' }));
+    axios.put(URL, milestone).then(
+      response => {
+        if (response.data) {
+          dispatch(editMilestoneSuccess(response.data));
           dispatch(finishLoading());
         }
-      );
+      },
+      error => {
+        dispatch(editMilestoneFailure());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      }
+    );
+  };
+};
+
+export const deleteMilestone = id => {
+  const URL = `${API_URL}/milestones/${id}`;
+
+  return dispatch => {
+    dispatch(deleteMilestoneRequest());
+    dispatch(startLoading());
+    axios.delete(URL, id).then(
+      () => {
+        dispatch(deleteMilestoneSuccess(id));
+        dispatch(finishLoading());
+      },
+      error => {
+        dispatch(deleteMilestoneFailure());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      }
+    );
   };
 };
