@@ -8,6 +8,7 @@ import TaskPlanningTime from '../TaskPlanningTime';
 import PerformerModal from '../../../components/PerformerModal';
 import SprintModal from '../../../components/SprintModal';
 import TaskTypeModal from '../../../components/TaskTypeModal';
+import Checkbox from '../../../components/Checkbox/Checkbox';
 import { IconEdit } from '../../../components/Icons';
 import getTypeById from '../../../utils/TaskTypes';
 import { getProjectUsers, getProjectSprints } from '../../../actions/Project';
@@ -51,6 +52,7 @@ class Details extends Component {
       isSprintModalOpen: false,
       isPerformerModalOpen: false,
       isTaskTypeModalOpen: false,
+      isTaskByCustomer: false,
       spentRequestStatus: spentRequestStatus.READY
     };
   }
@@ -138,6 +140,16 @@ class Details extends Component {
     this.closeTaskTypeModal();
   };
 
+  changeIsTaskByCustomer = isTaskByCustomer => {
+    this.props.onChange(
+      {
+        id: this.props.task.isTaskByCustomer,
+        isTaskByCustomer: isTaskByCustomer
+      },
+      this.props.task.isTaskByCustomer
+    );
+  };
+
   spentTooltipRender(spents) {
     return _.transform(
       spents,
@@ -217,6 +229,11 @@ class Details extends Component {
                     <IconEdit />
                   </span>
                 </span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <Checkbox chacked={task.isTaskByCustomer} onChange={this.changeIsTaskByCustomer} label="От клиента" />
               </td>
             </tr>
             <tr>
