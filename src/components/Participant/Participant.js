@@ -17,8 +17,21 @@ class Participant extends React.Component {
 
   constructor(props) {
     super(props);
-    this.ROLES_NAME = ['account', 'pm', 'ux', 'analyst', 'back', 'front', 'mobile', 'teamLead', 'qa', 'unbillable'];
-    this.ROLES_ID = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'];
+    this.ROLES_NAME = [
+      'account',
+      'pm',
+      'ux',
+      'analyst',
+      'back',
+      'front',
+      'mobile',
+      'teamLead',
+      'qa',
+      'unbillable',
+      'android',
+      'ios'
+    ];
+    this.ROLES_ID = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '13'];
     this.state = {
       sendRoles: []
     };
