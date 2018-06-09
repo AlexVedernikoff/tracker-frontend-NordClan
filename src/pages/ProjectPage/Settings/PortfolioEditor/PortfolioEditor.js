@@ -7,12 +7,14 @@ import * as css from './PortfolioEditor.scss';
 import getPortfolios from '../../../../utils/getPortfolios';
 import { changeProject } from '../../../../actions/Project';
 import checkProjectAdmin from '../../../../utils/checkProjectAdmin';
+import localize from './portfolioEditor.json';
 
 class PortfolioEditor extends Component {
   static propTypes = {
     changeProject: PropTypes.func,
     project: PropTypes.object.isRequired,
-    user: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    lang: PropTypes.string.isRequired
   };
 
   constructor(props) {
@@ -81,13 +83,13 @@ class PortfolioEditor extends Component {
 
     return (
       <div className={css.PortfolioEditor}>
-        <h2>Портфель</h2>
+        <h2>{localize[lang].PORTFOLIO}</h2>
         <SelectAsync
-          promptTextCreator={label => `Создать портфель '${label}'`}
-          searchPromptText={'Введите название портфеля'}
+          promptTextCreator={label => `${localize[lang].PORTFOLIO} '${label}'`}
+          searchPromptText={localize[lang].ENTER_NAME_PORTFOLIO}
           multi={false}
           ignoreCase={false}
-          placeholder="Выберите портфель"
+          placeholder={localize[lang].SELECT_PORTFOLIO}
           loadOptions={getPortfolios}
           filterOption={el => el}
           disabled={!isProjectAdmin}
@@ -102,14 +104,12 @@ class PortfolioEditor extends Component {
 
 const mapStateToProps = state => ({
   project: state.Project.project,
-  user: state.Auth.user
+  user: state.Auth.user,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
   changeProject
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PortfolioEditor);
+export default connect(mapStateToProps, mapDispatchToProps)(PortfolioEditor);

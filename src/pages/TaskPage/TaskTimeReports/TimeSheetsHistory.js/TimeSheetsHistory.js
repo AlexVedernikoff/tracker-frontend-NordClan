@@ -38,7 +38,7 @@ class TimeSheetsHistory extends Component {
   };
 
   render() {
-    const { timesheets, users, taskStatuses, currentUser, currentTask, preloaders } = this.props;
+    const { timesheets, users, taskStatuses, currentUser, currentTask, preloaders, localizeText } = this.props;
     const sortedTimesheets = sortBy(timesheets, ['onDate', 'id']).reverse();
     const timesheetsHashCodes = timesheets.map(tsh => {
       return createHash(tsh.onDate, tsh.taskStatusId, tsh.userId);
@@ -55,6 +55,7 @@ class TimeSheetsHistory extends Component {
               onSubmit={this.addTimesheet}
               preloading={preloaders.creating}
               hashCodes={timesheetsHashCodes}
+              localizeText={localizeText}
             />
             {sortedTimesheets.map(timesheet => {
               const user = find(users, u => timesheet.userId === u.id);

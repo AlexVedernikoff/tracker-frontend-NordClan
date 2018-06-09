@@ -1,0 +1,14 @@
+{
+  "en": {
+    "PORTFOLIO": "Portfolio",
+    "CREATE_PORTFOLIO": "Create portfolio",
+    "ENTER_NAME_PORTFOLIO": "Enter the name of the portfolio",
+    "SELECT_PORTFOLIO": "Choose a portfolio"
+  },
+  "ru": {
+    "PORTFOLIO": "Портфель",
+    "CREATE_PORTFOLIO": "Создать портфель",
+    "ENTER_NAME_PORTFOLIO": "Введите название портфеля",
+    "SELECT_PORTFOLIO": "Выберите портфель"
+  }
+}

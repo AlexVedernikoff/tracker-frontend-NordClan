@@ -319,6 +319,9 @@ class Playlist extends Component {
                   handleToggleList={this.handleToggleList}
                   tracks={this.activeTracks(currentUserTracks, this.state.activeDayTab, this.state.activeActivityTab)}
                   disabled={this.checkIfshouldBeDisabled(currentUserTracks)}
+                  textInfo={localize[lang].NOTHING_TO_SHOW}
+                  textShowHidden={localize[lang].SHOW_HIDDEN}
+                  textHide={localize[lang].HIDE}
                 />
               </div>
               <div className={css.activity}>
@@ -379,7 +382,4 @@ const mapDispatchToProps = {
   changeTask
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(onClickOutside(Playlist));
+export default connect(mapStateToProps, mapDispatchToProps)(onClickOutside(Playlist));

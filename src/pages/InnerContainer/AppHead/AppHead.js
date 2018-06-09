@@ -30,13 +30,13 @@ class AppHead extends Component {
   };
 
   toggleLanguage = lang => this.props.setLocalize(lang);
+
   render() {
     const iconStyles = {
       width: 16,
       height: 16
     };
-    const { globalRole, lang } = this.props;
-    console.log('lang', lang);
+    const { globalRole } = this.props;
     return (
       <div className={css.toppanel}>
         <div className={css.menuToggle} onClick={this.props.toggleMenu}>
@@ -77,8 +77,7 @@ class AppHead extends Component {
 const mapStateToProps = state => {
   return {
     loading: state.Loading.loading,
-    globalRole: state.Auth.user.globalRole,
-    lang: state.Localize
+    globalRole: state.Auth.user.globalRole
   };
 };
 
@@ -86,7 +85,4 @@ const mapDispatchToProps = {
   setLocalize
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AppHead);
+export default connect(mapStateToProps, mapDispatchToProps)(AppHead);

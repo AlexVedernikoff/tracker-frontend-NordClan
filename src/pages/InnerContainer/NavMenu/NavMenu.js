@@ -5,6 +5,7 @@ import { IconPlus, IconUser } from '../../../components/Icons';
 import { connect } from 'react-redux';
 import isAdmin from '../../../utils/isAdmin';
 import { EXTERNAL_USER } from '../../../constants/Roles';
+import localize from './navMenu.json';
 import * as css from './NavMenu.scss';
 
 class NavMenu extends Component {
@@ -34,6 +35,7 @@ class NavMenu extends Component {
   };
 
   render() {
+    const { lang } = this.props;
     const iconStyles = {
       width: 16,
       height: 16
@@ -41,14 +43,14 @@ class NavMenu extends Component {
     const usersRolesLink = isAdmin(this.props.user.globalRole) ? (
       <li key="roles" className={css.sidebarItem}>
         <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/roles">
-          Пользователи
+          {localize[lang].USERS}
         </Link>
       </li>
     ) : null;
     const externalUsersLink = isAdmin(this.props.user.globalRole) ? (
       <li key="externalUsers" className={css.sidebarItem}>
         <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/externalUsers">
-          Внешние пользователи
+          {localize[lang].EXTERNAL_USERS}
         </Link>
       </li>
     ) : null;
@@ -56,7 +58,7 @@ class NavMenu extends Component {
       this.props.user.globalRole !== EXTERNAL_USER ? (
         <li key="timesheets" className={css.sidebarItem}>
           <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/timesheets">
-            Отчеты по времени
+            {localize[lang].TIMESHEETS}
           </Link>
         </li>
       ) : null;
@@ -75,7 +77,7 @@ class NavMenu extends Component {
           <IconPlus style={iconStyles} />
         </button>
         <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/projects">
-          Мои проекты
+          {localize[lang].MY_PROJECTS}
         </Link>
       </li>,
       <li key="tasks" className={css.sidebarItem}>
@@ -83,7 +85,7 @@ class NavMenu extends Component {
           <IconPlus style={iconStyles} />
         </button>
         <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/tasks">
-          Мои задачи
+          {localize[lang].MY_TASKS}
         </Link>
       </li>,
       timesheetsLink,
@@ -113,7 +115,8 @@ class NavMenu extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.Auth.user
+  user: state.Auth.user,
+  lang: state.Localize.lang
 });
 
 export default connect(mapStateToProps)(NavMenu);

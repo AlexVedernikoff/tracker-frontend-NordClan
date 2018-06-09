@@ -11,6 +11,7 @@ import roundNum from '../../../../../utils/roundNum';
 import validateNumber from '../../../../../utils/validateNumber';
 
 import { IconComment, IconCheck, IconEye, IconEyeDisable } from '../../../../../components/Icons';
+import localize from './playlistItem.json';
 
 class PlaylistItem extends Component {
   constructor(props) {
@@ -99,7 +100,7 @@ class PlaylistItem extends Component {
 
   getNameByType = typeId => {
     const activity = _.find(this.props.magicActivitiesTypes, { id: typeId });
-    return activity ? activity.name : 'Не определено';
+    return activity ? activity.name : localize[this.props.lang].UNDEFINED;
   };
 
   goToDetailPage = () => {
@@ -121,7 +122,7 @@ class PlaylistItem extends Component {
       sprint,
       isVisible
     } = this.props.item;
-    const timesheetDisabled = this.props.disabled;
+    const { lang, disabled: timesheetDisabled } = this.props;
     const status = task ? task.taskStatus : null;
     const redColorForTime = task ? parseFloat(task.factExecutionTime) > parseFloat(task.plannedExecutionTime) : false;
 
@@ -149,7 +150,7 @@ class PlaylistItem extends Component {
           <div className={css.taskTitle}>
             <div className={css.meta}>
               {task && task.prefix ? <span>{task.prefix}</span> : null}
-              <span className={css.proName}>{project ? project.name : 'Без проекта'}</span>
+              <span className={css.proName}>{project ? project.name : localize[lang].WITHOUT_PROJECT}</span>
               <span>{sprint ? sprint.name : 'Backlog'}</span>
               {status ? (
                 <span>
@@ -161,7 +162,7 @@ class PlaylistItem extends Component {
                   ) : null}
                 </span>
               ) : null}
-              {status ? <span>Тек. статус: {status.name}</span> : null}
+              {status ? <span>localize[lang].CURRENT_STATUS {status.name}</span> : null}
               {!isDraft ? (
                 <span
                   className={classnames({ [css.commentToggler]: true, [css.green]: !!comment })}
@@ -173,14 +174,18 @@ class PlaylistItem extends Component {
 
               {status !== 'education' ? (
                 isVisible ? (
-                  <span className={css.visibleToggler} onClick={e => this.changeVisibility(e, false)} data-tip="Скрыть">
+                  <span
+                    className={css.visibleToggler}
+                    onClick={e => this.changeVisibility(e, false)}
+                    data-tip={localize[lang].HIDE}
+                  >
                     <IconEyeDisable />
                   </span>
                 ) : (
                   <span
                     className={css.visibleToggler}
                     onClick={e => this.changeVisibility(e, true)}
-                    data-tip="Показать"
+                    data-tip={localize[lang].SHOW}
                   >
                     <IconEye />
                   </span>
@@ -203,14 +208,14 @@ class PlaylistItem extends Component {
             />
           </div>
           <div className={classnames({ [css.other]: true, [css.exceeded]: redColorForTime })}>
-            <span data-tip="Всего потрачено" data-place="bottom">
+            <span data-tip={localize[lang].TOTAL_SPENT} data-place="bottom">
               {task ? roundNum(task.factExecutionTime, 2) : null}
             </span>
             {task ? (
               <span>
                 {' '}
                 /{' '}
-                <span data-tip="Запланировано" data-place="bottom">
+                <span data-tip={localize[lang].SCHEDULED} data-place="bottom">
                   {roundNum(task.plannedExecutionTime, 2)}
                 </span>
               </span>
@@ -224,7 +229,7 @@ class PlaylistItem extends Component {
               onChange={this.handleChangeComment}
               defaultValue={comment}
               value={this.state.comment}
-              placeholder="Введите текст комментария"
+              placeholder={localize[lang].ENTER_COMMENT_TEXT}
               disabled={timesheetDisabled}
             />
             {!timesheetDisabled && (
@@ -254,7 +259,8 @@ PlaylistItem.propTypes = {
 const mapStateToProps = state => {
   return {
     magicActivitiesTypes: state.Dictionaries.magicActivityTypes,
-    task: state.Task.task
+    task: state.Task.task,
+    lang: state.Localize.lang
   };
 };
 

@@ -1,12 +1,30 @@
 {
   "en": {
-    "NO_ACTIVE_TASKS": "No active tasks",
-    "ACTIVE_TASKS": "Active task:",
-    "LAST_ACTIVE_TASKS": "Last active task"
+    "ADD_EXTERNAL_USER": "Add external user",
+    "ADD_USER": "Add User",
+    "USERNAME": "Username:",
+    "ENTER_YOUR_USERNAME": "Enter your username",
+    "ENTER_YOUR_USERNAME_ERROR": "Length less than 2 characters",
+    "ENTER_YOUR_EMAIL": "Enter your email",
+    "ENTER_DATE": "Enter the date",
+    "ACTIVE_BEFORE": "Active before",
+    "ACCESS_DENIED": "Access is denied",
+    "ERROR_ON_SERVER": "Unexpected error on the server:",
+    "UNIQUE_VIOLATION": "already taken",
+    "INCORRECT_EMAIL": "Incorrect e-mail"
   },
   "ru": {
-    "NO_ACTIVE_TASKS": "Нет активных задач",
-    "ACTIVE_TASKS": "Активная задача:",
-    "LAST_ACTIVE_TASKS": "Последняя активная задача:"
+    "ADD_EXTERNAL_USER": "Добавить внешнего пользователя",
+    "ADD_USER": "Добавить пользователя",
+    "USERNAME": "Имя пользователя:",
+    "ENTER_YOUR_USERNAME": "Введите имя пользователя",
+    "ENTER_YOUR_USERNAME_ERROR": "Длина менее 2 символов",
+    "ENTER_YOUR_EMAIL": "Введите электронную почту",
+    "ENTER_DATE": "Введите дату",
+    "ACTIVE_BEFORE": "Активен до",
+    "ACCESS_DENIED": "Доступ запрещен",
+    "ERROR_ON_SERVER": "Непредвиденная ошибка на сервере:",
+    "UNIQUE_VIOLATION": "уже занят",
+    "INCORRECT_EMAIL": "Некорректный e-mail"
   }
 }

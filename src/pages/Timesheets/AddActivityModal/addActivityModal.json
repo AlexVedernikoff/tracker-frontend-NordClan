@@ -1,0 +1,24 @@
+{
+  "en": {
+    "ACTIVITY_TYPE": "Activity type",
+    "ADD_ACTIVITY": "Add Activity",
+    "MY_TASKS": "Only my tasks",
+    "SELECT_PROJECT": "Select project",
+    "SELECT_TASKS": "Select a task",
+    "SELECT_PROJECT": "Select project",
+    "SELECT_SPRINT": "Select a sprint",
+    "SELECT_STATUS": "Select status",
+    "ADD": "Upload"
+  },
+  "ru": {
+    "ACTIVITY_TYPE": "Тип активности",
+    "ADD_ACTIVITY": "Добавить активность",
+    "MY_TASKS": "Только мои задачи",
+    "SELECT_PROJECT": "Выберите проект",
+    "SELECT_TASKS": "Выберите задачу",
+    "SELECT_PROJECT": "Выберите проект",
+    "SELECT_SPRINT": "Выберите спринт",
+    "SELECT_STATUS": "Выбрать статус",
+    "ADD": "Добавить"
+  }
+}

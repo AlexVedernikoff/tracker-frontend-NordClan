@@ -63,7 +63,7 @@ class NewLine extends Component {
   };
 
   render() {
-    const { currentUser, taskStatuses, preloading, hashCodes } = this.props;
+    const { currentUser, taskStatuses, preloading, hashCodes, localizeText } = this.props;
     const { date, status, time } = this.state;
     const statusOptions = getStatusOptions(taskStatuses);
     const isFieldValues = !status || !time || !statusOptions.filter(option => option.value === status).length;
@@ -85,9 +85,9 @@ class NewLine extends Component {
             value={status}
             onChange={this.changeStatus}
             style={{ width: '8rem' }}
-            placeholder="Статус"
+            placeholder={localizeText.STATUS}
             multi={false}
-            noResultsText="Нет результатов"
+            noResultsText={localizeText.selectDropdownNoResults}
             options={statusOptions}
             disabled={preloading}
           />
@@ -114,11 +114,7 @@ class NewLine extends Component {
             </RoundButton>
           ) : (
             <i
-              data-tip={
-                isAlreadyCreated
-                  ? 'Запись с заданными параметрами уже создана'
-                  : 'Заполните все поля, чтобы создать запись'
-              }
+              data-tip={isAlreadyCreated ? localizeText.isAlreadyCreatedTrue : localizeText.isAlreadyCreatedFalse}
               className={classnames([css.info, { [css.infoWarning]: isAlreadyCreated }])}
             >
               <IconError />

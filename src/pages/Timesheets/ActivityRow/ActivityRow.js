@@ -14,6 +14,7 @@ import { IconClose } from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal';
 import * as timesheetsConstants from '../../../constants/Timesheets';
 import { createTimesheet, updateTimesheet, deleteTimesheets, deleteTempTimesheets } from '../../../actions/Timesheets';
+import localize from './activityRow.json';
 
 class ActivityRow extends React.Component {
   static propTypes = {
@@ -265,7 +266,7 @@ class ActivityRow extends React.Component {
   };
 
   render() {
-    const { item, task, ma, statuses, magicActivitiesTypes } = this.props;
+    const { item, task, ma, statuses, magicActivitiesTypes, lang } = this.props;
     const status = task ? _.find(statuses, { id: item.taskStatusId }) : '';
     const maType = ma ? _.find(magicActivitiesTypes, { id: item.typeId }) : '';
     const totalTime = roundNum(_.sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
@@ -382,14 +383,14 @@ class ActivityRow extends React.Component {
           </div>
         </td>
         <td className={cn(css.actions)}>
-          <div className={css.deleteTask} onClick={this.openConfirmModal} data-tip="Удалить">
+          <div className={css.deleteTask} onClick={this.openConfirmModal} data-tip={localize[lang].DELETE}>
             {canDeleteRow ? <IconClose /> : null}
           </div>
           {this.state.isConfirmModalOpen ? (
             <ConfirmModal
               isOpen
               contentLabel="modal"
-              text="Вы действительно хотите удалить эту активность?"
+              text={localize[lang].CONFIRM_MESSAGE}
               onCancel={this.closeConfirmModal}
               onConfirm={() => this.deleteActivity(timeSheetIds)}
               onRequestClose={this.closeConfirmModal}
@@ -405,7 +406,8 @@ const mapStateToProps = state => ({
   statuses: state.Dictionaries.taskStatuses,
   magicActivitiesTypes: state.Dictionaries.magicActivityTypes,
   userId: state.Auth.user.id,
-  startingDay: state.Timesheets.startingDay
+  startingDay: state.Timesheets.startingDay,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {

@@ -1,0 +1,14 @@
+{
+  "en": {
+    "USERS": "Members List",
+    "ADMIN": "Administrator",
+    "USER": "User",
+    "VISOR": "Observer"
+  },
+  "ru": {
+    "USERS": "Пользователи",
+    "ADMIN": "Администратор",
+    "USER": "Пользователь",
+    "VISOR": "Наблюдатель"
+  }
+}

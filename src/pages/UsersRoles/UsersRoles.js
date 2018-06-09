@@ -7,6 +7,7 @@ import isAdmin from '../../utils/isAdmin';
 
 import * as css from './UsersRoles.scss';
 import { getUsers, updateUserRole } from '../../actions/UsersRoles';
+import localize from './usersRoles.json';
 
 class UsersRoles extends React.Component {
   constructor(props) {
@@ -29,19 +30,20 @@ class UsersRoles extends React.Component {
   };
 
   renderStatusSelector(globalRole, userId) {
+    const { lang } = this.props;
     const statuses = [
       {
-        name: 'Администратор',
+        name: localize[lang].ADMIN,
         value: 'ADMIN',
         id: 1
       },
       {
-        name: 'Пользователь',
+        name: localize[lang].USER,
         value: 'USER',
         id: 2
       },
       {
-        name: 'Наблюдатель',
+        name: localize[lang].VISOR,
         value: 'VISOR',
         id: 3
       }
@@ -110,7 +112,7 @@ class UsersRoles extends React.Component {
     const tableUsers = this.renderTableUsers(users);
     return isAdmin(userGlobalRole) ? (
       <div>
-        <h1>Пользователи</h1>
+        <h1>{localize[lang].USERS}</h1>
         <hr />
         {tableUsers}
       </div>
@@ -127,7 +129,8 @@ UsersRoles.propTypes = {
 
 const mapStateToProps = state => ({
   users: state.UsersRoles.users,
-  userGlobalRole: state.Auth.user.globalRole
+  userGlobalRole: state.Auth.user.globalRole,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {

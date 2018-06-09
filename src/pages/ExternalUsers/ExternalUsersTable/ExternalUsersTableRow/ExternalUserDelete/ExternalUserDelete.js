@@ -27,13 +27,14 @@ class ExternalUserDelete extends Component {
     });
   };
   render() {
+    const { dataTip, text } = this.props;
     return (
       <div className={css.ExternalUserDelete}>
-        <IconDelete onClick={this.openConfirmModal} data-tip="Удалить" className={css.deleteIcon} />
+        <IconDelete onClick={this.openConfirmModal} data-tip={dataTip} className={css.deleteIcon} />
         <ConfirmModal
           isOpen={this.state.isModalOpen}
           contentLabel="modal"
-          text={`Вы действительно хотите удалить пользователя ${this.props.username}?`}
+          text={`${text} ${this.props.username}?`}
           onCancel={this.closeConfirmModal}
           onConfirm={this.confirmDeleteUser}
           onRequestClose={this.handleCloseConfirmDelete}

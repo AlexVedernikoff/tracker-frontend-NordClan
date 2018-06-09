@@ -13,6 +13,7 @@ import { addExternalUser, addExternalUserSuccess } from '../../../actions/Extern
 import { showNotification } from '../../../actions/Notifications';
 import { finishLoading } from '../../../actions/Loading';
 import { cloneDeep } from 'lodash';
+import localize from './addExternalUser.json';
 
 const initialState = {
   isModalOpen: false,
@@ -57,12 +58,13 @@ class AddExternalUser extends Component {
     });
   };
   validateEmail = email => {
+    const { lang } = this.props;
     const re = /\S+@\S+\.\S+/;
     const result = re.test(email);
 
     if (!result) {
       if (!this.state.errors.email.error) {
-        this.setError('email', 'Некорректный e-mail', true, false);
+        this.setError('email', localize[lang].INCORRECT_EMAIL, true, false);
       }
     } else if (this.state.errors.email.error && !this.state.errors.email.serverError) {
       this.setError('email', '', false);
@@ -115,15 +117,17 @@ class AddExternalUser extends Component {
   };
 
   getServerValidationMessageString = type => {
+    const { lang } = this.props;
     switch (type) {
       case 'unique violation':
-        return 'уже занят';
+        return localize[lang].UNIQUE_VIOLATION;
       default:
         return type;
     }
   };
 
   getServerErrorMessage = message => {
+    const { lang } = this.props;
     if (message.errors && message.errors.length) {
       let result = '';
       for (const error of message.errors) {
@@ -141,9 +145,9 @@ class AddExternalUser extends Component {
 
     switch (message) {
       case 'Access denied':
-        return 'Доступ запрещен';
+        return localize[lang].ACCESS_DENIED;
       default:
-        return `Непредвиденная ошибка на сервере: ${JSON.stringify(message)}`;
+        return `${localize[lang].ERROR_ON_SERVER} ${JSON.stringify(message)}`;
     }
   };
 
@@ -152,13 +156,14 @@ class AddExternalUser extends Component {
       firstCol: 5,
       secondCol: 7
     };
+    const { lang } = this.props;
     const { isModalOpen, name, email, expiredDate, errors, errorMessage } = this.state;
     const errorNotice = errorMessage ? <p style={{ color: 'red' }}>{errorMessage}</p> : null;
 
     const formattedDay = expiredDate ? moment(expiredDate).format('DD.MM.YYYY') : '';
     return (
       <div className={css.AddExternalUser}>
-        <Button text="Добавить внешнего пользователя" type="primary" onClick={this.openModal} icon="IconPlus" />
+        <Button text={localize[lang].ADD_EXTERNAL_USER} type="primary" onClick={this.openModal} icon="IconPlus" />
         <Modal
           onRequestClose={this.closeModal}
           // // style={style || ReactModalStyles}
@@ -167,13 +172,13 @@ class AddExternalUser extends Component {
           closeTimeoutMS={200}
         >
           <div className={css.container}>
-            <h3 style={{ margin: 0 }}>Добавить внешнего пользователя</h3>
+            <h3 style={{ margin: 0 }}>{localize[lang].ADD_EXTERNAL_USER}</h3>
             <hr />
             {errorNotice}
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>Имя пользователя:</p>
+                  <p>{localize[lang].USERNAME}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   {this.validator.validate(
@@ -184,10 +189,10 @@ class AddExternalUser extends Component {
                         maxLength={100}
                         value={name}
                         name="exUserName"
-                        placeholder="Введите имя пользователя"
+                        placeholder={localize[lang].ENTER_YOUR_USERNAME}
                         onBlur={handleBlur}
                         shouldMarkError={shouldMarkError}
-                        errorText="Длина менее 2 символов"
+                        errorText={localize[lang].ENTER_YOUR_USERNAME}
                       />
                     ),
                     'exUserName',
@@ -208,7 +213,7 @@ class AddExternalUser extends Component {
                         onChange={this.onInputChange('email')}
                         value={email}
                         name="exUserEmail"
-                        placeholder="Введите электронную почту"
+                        placeholder={localize[lang].ENTER_YOUR_EMAIL}
                         onBlur={handleBlur}
                         shouldMarkError={shouldMarkError}
                         errorText={errors.email.text}
@@ -223,7 +228,7 @@ class AddExternalUser extends Component {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>Активен до</p>
+                  <p>{localize[lang].ACTIVE_BEFORE}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   <DatepickerDropdown
@@ -231,7 +236,7 @@ class AddExternalUser extends Component {
                     value={formattedDay}
                     onDayChange={this.handleDayToChange}
                     disabledDataRanges={[{ before: new Date() }]}
-                    placeholder="Введите дату"
+                    placeholder={localize[lang].ENTER_DATE}
                   />
                 </Col>
               </Row>
@@ -240,7 +245,7 @@ class AddExternalUser extends Component {
               <Col xs>
                 <Button
                   type="green"
-                  text="Добавить пользователя"
+                  text={localize[lang].ADD_USER}
                   disabled={!this.validateForm()}
                   onClick={this.addUser}
                 />
@@ -253,7 +258,9 @@ class AddExternalUser extends Component {
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
 
 const mapDispatchToProps = {
   addExternalUser

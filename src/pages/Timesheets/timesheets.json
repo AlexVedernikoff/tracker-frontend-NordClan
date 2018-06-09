@@ -1,0 +1,14 @@
+{
+  "en": {
+    "WITHOUT_PROJECT": "Without a project",
+    "PREVIOUS_WEEK": "Previous week",
+    "NEXT_WEEK": "Next week",
+    "SELECT_DATE": "Select date"
+  },
+  "ru": {
+    "WITHOUT_PROJECT": "Without a project",
+    "PREVIOUS_WEEK": "Предыдущая неделя",
+    "NEXT_WEEK": "Следующая неделя",
+    "SELECT_DATE": "Выбрать дату"
+  }
+}

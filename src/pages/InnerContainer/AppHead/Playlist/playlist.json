@@ -7,7 +7,10 @@
     "Fr": "Fr",
     "Sa": "Sa",
     "Su": "Su",
-    "TOTAL": "Total"
+    "TOTAL": "Total",
+    "NOTHING_TO_SHOW": "There are no time reports suitable for the selected parameters.",
+    "SHOW_HIDDEN": "Show hidden",
+    "HIDE": "Hide"
   },
   "ru": {
     "Mo": "Пн",
@@ -17,6 +20,9 @@
     "Fr": "Пт",
     "Sa": "Сб",
     "Su": "Вс",
-    "TOTAL": "Итого"
+    "TOTAL": "Итого",
+    "NOTHING_TO_SHOW": "Отсутствуют отчеты по времени, подходящие под выбранные параметры.",
+    "SHOW_HIDDEN": "Показать скрытые",
+    "HIDE": "Скрыть"
   }
 }

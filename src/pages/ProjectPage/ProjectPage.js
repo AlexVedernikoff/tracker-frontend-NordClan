@@ -11,6 +11,7 @@ import ProjectTitle from './ProjectTitle';
 
 import { getProjectInfo as getProject, changeProject } from '../../actions/Project';
 import { ADMIN, EXTERNAL_USER } from '../../constants/Roles';
+import localize from './projectPage.json';
 
 class ProjectPage extends Component {
   static propTypes = {
@@ -21,7 +22,8 @@ class ProjectPage extends Component {
     params: PropTypes.object,
     project: PropTypes.object,
     projectTypes: PropTypes.array,
-    user: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    lang: PropTypes.string.isRequired
   };
 
   constructor(props) {
@@ -58,7 +60,7 @@ class ProjectPage extends Component {
   };
 
   render() {
-    const { projectTypes } = this.props;
+    const { projectTypes, lang } = this.props;
     const isProjectAdmin = this.checkIsAdminInProject();
     const tabs = [
       <Link
@@ -67,35 +69,35 @@ class ProjectPage extends Component {
         onlyActiveOnIndex
         to={`/projects/${this.props.params.projectId}`}
       >
-        Доска
+        {location[lang].BOARD}
       </Link>,
       <Link
         activeClassName="active"
         key={`/projects/${this.props.params.projectId}/tasks`}
         to={`/projects/${this.props.params.projectId}/tasks`}
       >
-        Список задач
+        {location[lang].TASK_LIST}
       </Link>,
       <Link
         activeClassName="active"
         key={`/projects/${this.props.params.projectId}/planning`}
         to={`/projects/${this.props.params.projectId}/planning`}
       >
-        Планирование
+        {location[lang].PLANNING}
       </Link>,
       <Link
         activeClassName="active"
         key={`/projects/${this.props.params.projectId}/info`}
         to={`/projects/${this.props.params.projectId}/info`}
       >
-        Информация
+        {location[lang].INFO}
       </Link>,
       <Link
         activeClassName="active"
         key={`/projects/${this.props.params.projectId}/property`}
         to={`/projects/${this.props.params.projectId}/property`}
       >
-        Настройки
+        {location[lang].SETTING}
       </Link>
     ];
     if (this.props.user.globalRole !== EXTERNAL_USER) {
@@ -105,7 +107,7 @@ class ProjectPage extends Component {
           key={`/projects/${this.props.params.projectId}/history`}
           to={`/projects/${this.props.params.projectId}/history`}
         >
-          История
+          {location[lang].HISTORY}
         </Link>
       );
     }
@@ -117,7 +119,7 @@ class ProjectPage extends Component {
           to={`/projects/${this.props.params.projectId}/analytics`}
           onClick={this.handleAnalyticsAction}
         >
-          Аналитика
+          {location[lang].ANALYTICS}
         </Link>
       );
     }
@@ -141,7 +143,7 @@ class ProjectPage extends Component {
           <MissingProjectFieldsModal
             isOpen
             contentLabel="modal"
-            text="Укажите недостающие данные"
+            text={location[lang].ENTER_MISSING_DATA}
             error={this.props.project.validationError}
             projectTypes={projectTypes}
             onCancel={this.handleCloseProjectPrefixModal}
@@ -156,7 +158,8 @@ class ProjectPage extends Component {
 const mapStateToProps = state => ({
   project: state.Project.project,
   user: state.Auth.user,
-  projectTypes: state.Dictionaries.projectTypes || []
+  projectTypes: state.Dictionaries.projectTypes || [],
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
@@ -164,7 +167,4 @@ const mapDispatchToProps = {
   changeProject
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ProjectPage);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectPage);

@@ -1,0 +1,22 @@
+{
+  "en": {
+    "BOARD": "Board",
+    "TASK_LIST": "Task list",
+    "PLANNING": "Planning",
+    "INFO": "Info",
+    "SETTING": "Setting",
+    "HISTORY": "History",
+    "ANALYTICS": "Analytics",
+    "ENTER_MISSING_DATA": "Enter missing data"
+  },
+  "ru": {
+    "BOARD": "Доска",
+    "TASK_LIST": "Список задач",
+    "PLANNING": "Планирование",
+    "INFO": "Информация",
+    "SETTING": "Настройки",
+    "HISTORY": "История",
+    "ANALYTICS": "Аналитика",
+    "ENTER_MISSING_DATA": "Укажите недостающие данные"
+  }
+}

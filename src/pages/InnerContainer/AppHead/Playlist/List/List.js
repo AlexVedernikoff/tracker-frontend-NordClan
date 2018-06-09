@@ -42,18 +42,14 @@ class List extends Component {
 
   render() {
     const { isDraftShow } = this.state;
-    const { tracks } = this.props;
+    const { tracks, textInfo, textShowHidden, textHide } = this.props;
     const visible = [
       ...tracks.filter(item => item.isVisible && item.task && item.task.taskStatus.id === TASK_STATUS_DEVELOP_PLAY),
       ...tracks.filter(item => item.isVisible && (!item.task || item.task.taskStatus.id !== TASK_STATUS_DEVELOP_PLAY))
     ].map(this.playlistItem);
 
     const invisible = tracks && tracks.filter(item => !item.isVisible).map(this.playlistItem);
-    const nothingToShow = (
-      <div className={cn(['text-info', css.nothingToShow])}>
-        Отсутствуют отчеты по времени, подходящие под выбранные параметры.
-      </div>
-    );
+    const nothingToShow = <div className={cn(['text-info', css.nothingToShow])}>{textInfo}</div>;
 
     return (
       <div>
@@ -62,7 +58,7 @@ class List extends Component {
           <div
             className={css.showMore}
             onClick={this.handleShowOther}
-            data-tip={!isDraftShow ? 'Показать скрытые' : 'Скрыть'}
+            data-tip={!isDraftShow ? textShowHidden : textHide}
             data-place="bottom"
           >
             {!isDraftShow && invisible ? <IconArrowDown /> : <IconArrowUp />}
