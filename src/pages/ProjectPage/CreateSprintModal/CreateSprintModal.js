@@ -21,7 +21,8 @@ class CreateSprintModal extends Component {
       budget: '',
       riskBudget: '',
       sprintName: '',
-      allottedTime: ''
+      allottedTime: '',
+      allottedTimeQa: 30
     };
   }
 
@@ -40,6 +41,12 @@ class CreateSprintModal extends Component {
   onChangeTime = e => {
     if (this.validateNumbers(e.target.value)) {
       this.setState({ allottedTime: e.target.value });
+    }
+  };
+
+  onChangeTimeQA = e => {
+    if (this.validateNumbers(e.target.value) && e.target.value <= 100) {
+      this.setState({ allottedTimeQa: e.target.value });
     }
   };
 
@@ -62,7 +69,8 @@ class CreateSprintModal extends Component {
       this.state.dateFrom &&
       this.state.allottedTime &&
       this.state.budget &&
-      this.state.riskBudget
+      this.state.riskBudget &&
+      this.state.allottedTimeQa
     );
   };
 
@@ -104,6 +112,7 @@ class CreateSprintModal extends Component {
       this.state.dateFrom,
       this.state.dateTo,
       Number(this.state.allottedTime),
+      Number(this.state.allottedTimeQa),
       Number(this.state.budget),
       Number(this.state.riskBudget)
     );
@@ -184,6 +193,16 @@ class CreateSprintModal extends Component {
                 />
               </Col>
             </Row>
+
+            <Row className={css.inputRow}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>% на QA:</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                <Input placeholder="Введите % на QA" onChange={this.onChangeTimeQA} value={this.state.allottedTimeQa} />
+              </Col>
+            </Row>
+
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Бюджет без РР</p>
@@ -208,6 +227,7 @@ class CreateSprintModal extends Component {
                 />
               </Col>
             </Row>
+
             <Row className={css.createButton} center="xs">
               <Col xs>
                 <Button

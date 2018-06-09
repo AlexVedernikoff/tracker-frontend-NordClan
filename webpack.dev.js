@@ -92,7 +92,7 @@ const settings = {
   },
   devServer: {
     host: '0.0.0.0',
-    port: 8080,
+    port: 8081,
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',

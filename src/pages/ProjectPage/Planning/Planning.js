@@ -289,7 +289,8 @@ class Planning extends Component {
       sprint.dateTo,
       sprint.allottedTime,
       sprint.budget,
-      sprint.riskBudget
+      sprint.riskBudget,
+      sprint.allottedTimeQa
     );
   };
 

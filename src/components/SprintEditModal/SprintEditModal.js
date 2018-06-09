@@ -26,6 +26,7 @@ class SprintEditModal extends Component {
         dateTo: undefined,
         sprintName: this.props.sprint.name,
         allottedTime: this.props.sprint.allottedTime || '0.00',
+        allottedTimeQa: this.props.sprint.allottedTimeQa || '30',
         isHovered: false,
         budget: this.props.sprint.budget || '0.00',
         riskBudget: this.props.sprint.riskBudget || '0.00'
@@ -38,7 +39,8 @@ class SprintEditModal extends Component {
       this.state.sprint.sprintName.length &&
       this.state.sprint.allottedTime.length &&
       this.state.sprint.budget.length &&
-      this.state.sprint.riskBudget.length
+      this.state.sprint.riskBudget.length &&
+      this.state.sprint.allottedTimeQa.length
     );
   };
   validateNumbers(value) {
@@ -52,6 +54,18 @@ class SprintEditModal extends Component {
         sprint: {
           ...state.sprint,
           allottedTime: value
+        }
+      }));
+    }
+  };
+
+  onChangeTimeQA = e => {
+    const value = e.target.value;
+    if (this.validateNumbers(value) && value <= 100) {
+      this.setState(state => ({
+        sprint: {
+          ...state.sprint,
+          allottedTimeQa: value
         }
       }));
     }
@@ -218,6 +232,21 @@ class SprintEditModal extends Component {
                     placeholder="Введите новое значение времени..."
                     value={this.state.sprint.allottedTime}
                     onChange={this.onChangeTime}
+                  />
+                </Col>
+              </Row>
+            </label>
+
+            <label className={css.formField}>
+              <Row>
+                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                  <p>% на QA:</p>
+                </Col>
+                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                  <Input
+                    placeholder="Введите новое % на QA..."
+                    value={this.state.sprint.allottedTimeQa}
+                    onChange={this.onChangeTimeQA}
                   />
                 </Col>
               </Row>

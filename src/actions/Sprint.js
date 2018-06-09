@@ -31,7 +31,7 @@ const editSprintSuccess = sprints => ({
   sprints: sprints
 });
 
-export const editSprint = (id, statusId, name, dateForm, dateTo, allottedTime, budget, riskBudget) => {
+export const editSprint = (id, statusId, name, dateForm, dateTo, allottedTime, budget, riskBudget, allottedTimeQa) => {
   const URL = `${API_URL}/sprint/${id}`;
   const params = {};
   if (name) params.name = name;
@@ -41,61 +41,70 @@ export const editSprint = (id, statusId, name, dateForm, dateTo, allottedTime, b
   if (allottedTime) params.allottedTime = allottedTime;
   if (budget) params.budget = budget;
   if (riskBudget) params.riskBudget = riskBudget;
+  if (allottedTimeQa) params.allottedTimeQa = allottedTimeQa;
 
+  console.warn(params);
   return dispatch => {
-    if (!id || !(statusId || name || dateForm || dateTo || allottedTime || budget || riskBudget)) {
+    if (!id || !(statusId || name || dateForm || dateTo || allottedTime || allottedTimeQa || budget || riskBudget)) {
       return;
     }
     dispatch(editSprintStart());
     dispatch(startLoading());
-    axios
-      .put(URL, params)
-      .then(
-        response => {
-          if (response.data) {
-            dispatch(editSprintSuccess(response.data));
-            dispatch(finishLoading());
-          }
-        },
-        error => {
-          dispatch(showNotification({ message: error.message, type: 'error' }));
+    axios.put(URL, params).then(
+      response => {
+        if (response.data) {
+          dispatch(editSprintSuccess(response.data));
           dispatch(finishLoading());
         }
-      );
+      },
+      error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      }
+    );
   };
 };
 
-export const deleteSprint = (id) => {
+export const deleteSprint = id => {
   const URL = `${API_URL}/sprint/${id}`;
 
   return dispatch => {
     dispatch(deleteSprintStart());
     dispatch(startLoading());
-    axios
-      .delete(URL)
-      .then(
-        response => {
-          if (response.data) {
-            dispatch(deleteSprintSuccess(response.data));
-            dispatch(finishLoading());
-          }
-        },
-        error => {
-          if (error.response.data.type === 'sprintHasActiveTasks') {
-            dispatch(showNotification({
-              message: 'В спринте есть активные задачи. Удаление невозможно',
-              type: 'error' }
-            ));
-          } else {
-            dispatch(showNotification({ message: error.message, type: 'error' }));
-          }
+    axios.delete(URL).then(
+      response => {
+        if (response.data) {
+          dispatch(deleteSprintSuccess(response.data));
           dispatch(finishLoading());
         }
-      );
+      },
+      error => {
+        if (error.response.data.type === 'sprintHasActiveTasks') {
+          dispatch(
+            showNotification({
+              message: 'В спринте есть активные задачи. Удаление невозможно',
+              type: 'error'
+            })
+          );
+        } else {
+          dispatch(showNotification({ message: error.message, type: 'error' }));
+        }
+        dispatch(finishLoading());
+      }
+    );
   };
 };
 
-export const createSprint = (name, projectId, factStartDate, factFinishDate, allottedTime, budget, riskBudget) => {
+export const createSprint = (
+  name,
+  projectId,
+  factStartDate,
+  factFinishDate,
+  allottedTime,
+  allottedTimeQa,
+  budget,
+  riskBudget
+) => {
   const URL = `${API_URL}/sprint/`;
   return dispatch => {
     dispatch(createSprintStart());
@@ -105,6 +114,7 @@ export const createSprint = (name, projectId, factStartDate, factFinishDate, all
         name,
         projectId,
         allottedTime,
+        allottedTimeQa,
         factStartDate,
         factFinishDate,
         budget,

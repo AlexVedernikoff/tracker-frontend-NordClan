@@ -39,7 +39,8 @@ class SprintCard extends Component {
       sprint.dateTo,
       sprint.allottedTime,
       sprint.budget,
-      sprint.riskBudget
+      sprint.riskBudget,
+      sprint.allottedTimeQa
     );
   };
 
@@ -110,6 +111,9 @@ class SprintCard extends Component {
           ? [
               <p key="allottedTime" className={css.sprintMeta}>
                 <span>Выделенное время: {sprint.allottedTime || 0} ч.</span>
+              </p>,
+              <p key="allottedTimeQa" className={css.sprintMeta}>
+                <span>% на QA: {sprint.allottedTimeQa || 30}</span>
               </p>,
               <p key="spentTime" className={css.sprintMeta}>
                 <span>Израсходованное время: {sprint.spentTime || 0} ч.</span>
