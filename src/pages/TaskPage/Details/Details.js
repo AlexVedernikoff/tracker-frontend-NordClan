@@ -52,7 +52,7 @@ class Details extends Component {
       isSprintModalOpen: false,
       isPerformerModalOpen: false,
       isTaskTypeModalOpen: false,
-      isTaskByCustomer: false,
+      isTaskByClient: false,
       spentRequestStatus: spentRequestStatus.READY
     };
   }
@@ -140,13 +140,13 @@ class Details extends Component {
     this.closeTaskTypeModal();
   };
 
-  changeIsTaskByCustomer = isTaskByCustomer => {
+  changeIsTaskByClient = isTaskByClient => {
     this.props.onChange(
       {
-        id: this.props.task.isTaskByCustomer,
-        isTaskByCustomer: isTaskByCustomer
+        id: this.props.task.isTaskByClient,
+        isTaskByClient: isTaskByClient
       },
-      this.props.task.isTaskByCustomer
+      this.props.task.isTaskByClient
     );
   };
 
@@ -233,7 +233,7 @@ class Details extends Component {
             </tr>
             <tr>
               <td>
-                <Checkbox chacked={task.isTaskByCustomer} onChange={this.changeIsTaskByCustomer} label="От клиента" />
+                <Checkbox chacked={task.isTaskByClient} onChange={this.changeIsTaskByClient} label="От клиента" />
               </td>
             </tr>
             <tr>
