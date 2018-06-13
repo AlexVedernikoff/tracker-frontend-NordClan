@@ -681,6 +681,7 @@ class Planning extends Component {
         ) : null}
         {this.state.isOpenSprintEditModal ? (
           <SprintEditModal
+            project={this.props.project}
             sprint={this.state.editSprint}
             handleEditSprint={this.handleEditSprint}
             handleCloseModal={this.closeEditSprintModal}

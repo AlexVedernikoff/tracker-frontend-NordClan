@@ -13,6 +13,7 @@ class SprintEditModal extends Component {
   static propTypes = {
     handleCloseModal: PropTypes.func.isRequired,
     handleEditSprint: PropTypes.func.isRequired,
+    project: PropTypes.object.isRequired,
     sprint: PropTypes.object.isRequired
   };
 
@@ -26,7 +27,7 @@ class SprintEditModal extends Component {
         dateTo: undefined,
         sprintName: this.props.sprint.name,
         allottedTime: this.props.sprint.allottedTime || '0.00',
-        allottedTimeQa: this.props.sprint.allottedTimeQa || '30',
+        allottedTimeQa: this.props.sprint.allottedTimeQa || props.project.percentQA || '30',
         isHovered: false,
         budget: this.props.sprint.budget || '0.00',
         riskBudget: this.props.sprint.riskBudget || '0.00'

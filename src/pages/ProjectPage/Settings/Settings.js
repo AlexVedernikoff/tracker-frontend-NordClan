@@ -4,6 +4,7 @@ import StatusEditor from './StatusEditor';
 import PortfolioEditor from './PortfolioEditor';
 import GitLabEditor from './GitLabEditor';
 import TypeEditor from './TypeEditor';
+import QaEditor from './QaEditor';
 
 export default class Settings extends Component {
   render() {
@@ -11,6 +12,7 @@ export default class Settings extends Component {
       <div>
         <ParticipantEditor />
         <TypeEditor />
+        <QaEditor />
         <StatusEditor />
         <PortfolioEditor />
         <GitLabEditor />

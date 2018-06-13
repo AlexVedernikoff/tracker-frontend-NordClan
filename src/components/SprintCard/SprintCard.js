@@ -73,7 +73,7 @@ class SprintCard extends Component {
   };
 
   render() {
-    const { sprint, editSprint, deleteSprint, inFocus, isExternal, ...other } = this.props;
+    const { sprint, inFocus, isExternal, ...other } = this.props;
 
     return (
       <div
@@ -133,6 +133,7 @@ class SprintCard extends Component {
         ) : null}
         {this.state.isModalOpen ? (
           <SprintEditModal
+            project={this.props.project}
             sprint={this.props.sprint}
             handleEditSprint={this.handleEditSprint}
             handleCloseModal={this.closeEditSprintModal}
@@ -157,6 +158,7 @@ SprintCard.propTypes = {
   editSprint: PropTypes.func.isRequired,
   inFocus: PropTypes.bool,
   isExternal: PropTypes.bool,
+  project: PropTypes.object.isRequired,
   sprint: PropTypes.object
 };
 
@@ -176,9 +178,13 @@ SprintCard.defaultProps = {
   }
 };
 
+const mapStateToProps = state => ({
+  project: state.Project.project
+});
+
 const mapDispatchToProps = {
   deleteSprint,
   editSprint
 };
 
-export default connect(null, mapDispatchToProps)(SprintCard);
+export default connect(mapStateToProps, mapDispatchToProps)(SprintCard);

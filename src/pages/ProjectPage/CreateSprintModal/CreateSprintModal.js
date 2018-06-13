@@ -22,7 +22,7 @@ class CreateSprintModal extends Component {
       riskBudget: '',
       sprintName: '',
       allottedTime: '',
-      allottedTimeQa: 30
+      allottedTimeQa: props.project.percentQA || 30
     };
   }
 
@@ -249,12 +249,14 @@ class CreateSprintModal extends Component {
 CreateSprintModal.propTypes = {
   createSprint: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  project: PropTypes.object.isRequired,
   projectId: PropTypes.number,
   sprintsDateRanges: PropTypes.array
 };
 
 const mapStateToProps = state => ({
   projectId: state.Project.project.id,
+  project: state.Project.project,
   sprintsDateRanges: getSprintsDateRange(state.Project.project.sprints)
 });
 
