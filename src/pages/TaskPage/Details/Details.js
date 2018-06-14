@@ -8,6 +8,7 @@ import TaskPlanningTime from '../TaskPlanningTime';
 import PerformerModal from '../../../components/PerformerModal';
 import SprintModal from '../../../components/SprintModal';
 import TaskTypeModal from '../../../components/TaskTypeModal';
+import Checkbox from '../../../components/Checkbox/Checkbox';
 import { IconEdit } from '../../../components/Icons';
 import getTypeById from '../../../utils/TaskTypes';
 import { getProjectUsers, getProjectSprints } from '../../../actions/Project';
@@ -138,6 +139,16 @@ class Details extends Component {
     this.closeTaskTypeModal();
   };
 
+  changeIsTaskByClient = () => {
+    this.props.onChange(
+      {
+        id: this.props.task.id,
+        isTaskByClient: !this.props.task.isTaskByClient
+      },
+      null
+    );
+  };
+
   spentTooltipRender(spents) {
     return _.transform(
       spents,
@@ -217,6 +228,12 @@ class Details extends Component {
                     <IconEdit />
                   </span>
                 </span>
+              </td>
+            </tr>
+            <tr>
+              <td>От клиента</td>
+              <td className={css.byClient}>
+                <Checkbox checked={task.isTaskByClient} onChange={this.changeIsTaskByClient} />
               </td>
             </tr>
             <tr>
