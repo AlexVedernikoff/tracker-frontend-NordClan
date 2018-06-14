@@ -19,6 +19,7 @@ import { closeCreateTaskModal, createTask } from '../../actions/Project';
 import { BACKLOG_ID } from '../../constants/Sprint';
 import Validator from '../ValidatedInput/Validator';
 import TextEditor from '../../components/TextEditor';
+import Checkbox from '../../components/Checkbox/Checkbox';
 
 class CreateTaskModal extends Component {
   constructor(props) {
@@ -39,7 +40,8 @@ class CreateTaskModal extends Component {
       prioritiesId: 3,
       selectedType: this.types[0],
       selectedTypeError: this.types.length === 0,
-      typeList: this.types
+      typeList: this.types,
+      isTaskByClient: false
     };
 
     this.validator = new Validator();
@@ -54,6 +56,12 @@ class CreateTaskModal extends Component {
   handlePerformerChange = selectedPerformer => {
     this.setState({
       selectedPerformer: selectedPerformer ? selectedPerformer.value : 0
+    });
+  };
+
+  handleIsTaskByClientChange = () => {
+    this.setState({
+      isTaskByClient: true
     });
   };
 
@@ -79,7 +87,8 @@ class CreateTaskModal extends Component {
         sprintId: this.state.selectedSprint === BACKLOG_ID ? null : this.state.selectedSprint,
         prioritiesId: this.state.prioritiesId,
         plannedExecutionTime: this.state.plannedExecutionTime,
-        parentId: this.props.parentTaskId
+        parentId: this.props.parentTaskId,
+        isTaskByClient: this.state.isTaskByClient
       },
       this.state.openTaskPage,
       this.props.column
@@ -205,6 +214,16 @@ class CreateTaskModal extends Component {
                   noResultsText="Нет результатов"
                 />
                 {this.state.selectedTypeError && <span>Ошибка получения данных</span>}
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>От клиента:</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
+                <Checkbox chacked={this.state.isTaskByClient} onChange={this.handleIsTaskByClientChange} />
               </Col>
             </Row>
           </label>
