@@ -223,7 +223,7 @@ class CreateTaskModal extends Component {
                 <p>От клиента:</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
-                <Checkbox chacked={this.state.isTaskByClient} onChange={this.handleIsTaskByClientChange} />
+                <Checkbox checked={this.state.isTaskByClient} onChange={this.handleIsTaskByClientChange} />
               </Col>
             </Row>
           </label>
