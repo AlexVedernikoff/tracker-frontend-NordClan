@@ -313,6 +313,21 @@ class Details extends Component {
                   </tr>
                 ]
               : null}
+            <tr>
+              <td>План / Факт (QA):</td>
+              <td>
+                <span
+                  className={classnames({
+                    [css.factTime]: true,
+                    [css.alert]: +task.qaFactExecutionTime > +task.qaPlannedTime,
+                    [css.success]: +task.qaFactExecutionTime <= +task.qaPlannedTime
+                  })}
+                >
+                  {`${task.qaPlannedTime ? roundNum(task.qaPlannedTime, 2) : 0} /
+                     ${task.qaFactExecutionTime ? roundNum(task.qaFactExecutionTime, 2) : 0}  ч.`}
+                </span>
+              </td>
+            </tr>
           </tbody>
         </table>
 
