@@ -191,7 +191,7 @@ const changeTask = (ChangedProperties, target, callback) => {
           dispatch(finishLoading());
         },
         function(value) {
-          if (value == 'Error: Request failed with status code 403') {
+          if (value === 'Error: Request failed with status code 403') {
             dispatch(postChangeFail());
             dispatch(finishLoading());
           }
@@ -506,10 +506,15 @@ const selectParentCommentForReply = parentId => ({
   parentId
 });
 
-const setCommentForEdit = comment => ({
-  type: TaskActions.SET_COMMENT_FOR_EDIT,
-  comment
-});
+const setCommentForEdit = comment => {
+  return dispatch => {
+    dispatch({
+      type: TaskActions.SET_COMMENT_FOR_EDIT,
+      comment
+    });
+    return Promise.resolve();
+  };
+};
 
 const resetCurrentEditingComment = () => ({
   type: TaskActions.RESET_CURRENT_EDITING_COMMENT

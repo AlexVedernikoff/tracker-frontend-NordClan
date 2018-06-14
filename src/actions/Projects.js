@@ -37,15 +37,16 @@ export const closeCreateProjectModal = () => ({
   type: ProjectActions.CLOSE_CREATE_PROJECT_MODAL
 });
 
-const getProjects = (
+const getProjects = ({
   pageSize = 20,
   currentPage = 1,
   tags = '',
   name = '',
   dateSprintBegin = '',
   dateSprintEnd = '',
-  statusId = ''
-) => {
+  statusId = '',
+  typeId = ''
+}) => {
   const URL = `${API_URL}/project`;
   return dispatch => {
     dispatch(startProjectsReceive());
@@ -53,18 +54,19 @@ const getProjects = (
     axios
       .get(
         URL,
-      {
-        params: {
-          pageSize: pageSize,
-          currentPage: currentPage,
-          tags: tags,
-          name: name,
-          fields: 'name, statusId, createdAt',
-          dateSprintBegin: dateSprintBegin,
-          dateSprintEnd: dateSprintEnd,
-          statusId: statusId
-        }
-      },
+        {
+          params: {
+            pageSize,
+            currentPage,
+            tags,
+            name,
+            fields: 'name, statusId, createdAt',
+            dateSprintBegin,
+            dateSprintEnd,
+            statusId,
+            typeId
+          }
+        },
         { withCredentials: true }
       )
       .catch(error => {
@@ -100,7 +102,7 @@ export const requestProjectCreate = (project, openProjectPage) => {
         if (error.response.status === 400) {
           dispatch(projectCreateFail(error.response.data));
         } else {
-          dispatch(showNotification({message: error.message, type: 'error'}));
+          dispatch(showNotification({ message: error.message, type: 'error' }));
         }
       })
       .then(response => {
@@ -114,7 +116,6 @@ export const requestProjectCreate = (project, openProjectPage) => {
           if (openProjectPage) {
             history.push(`projects/${response.data.id}`);
           }
-
         }
       });
   };

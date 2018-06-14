@@ -17,7 +17,7 @@ class CreateProject extends Component {
   }
 
   render() {
-    const { isOpen, onRequestClose, prefixErrorText } = this.props;
+    const { isOpen, onRequestClose, prefixErrorText, projectTypes = [] } = this.props;
 
     const formLayout = {
       firstCol: 5,
@@ -89,6 +89,26 @@ class CreateProject extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>Тип проекта</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                <Select
+                  name="performer"
+                  placeholder="Выберите тип проекта"
+                  multi={false}
+                  noResultsText="Нет результатов"
+                  backspaceRemoves={false}
+                  options={projectTypes.map(type => ({ value: type.id, label: type.name }))}
+                  className={css.selectType}
+                  onChange={this.props.onTypeSelect}
+                  value={this.props.selectedType}
+                />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Добавить проект в портфель</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
@@ -135,8 +155,11 @@ CreateProject.propTypes = {
   onRequestClose: PropTypes.func,
   onSubmit: PropTypes.func,
   onSubmitAndOpen: PropTypes.func,
+  onTypeSelect: PropTypes.func,
   prefixErrorText: PropTypes.string,
+  projectTypes: PropTypes.array,
   selectedPortfolio: PropTypes.object,
+  selectedType: PropTypes.number,
   validateProjectName: PropTypes.bool,
   validateProjectPrefix: PropTypes.bool
 };

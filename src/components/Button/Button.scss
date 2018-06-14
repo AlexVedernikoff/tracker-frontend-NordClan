@@ -1,4 +1,4 @@
-@import "../../styles/variables";
+@import '../../styles/variables';
 .btn {
   display: inline-block;
   vertical-align: middle;
@@ -14,6 +14,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  transition: $transition;
+
   &:focus,
   &:active {
     outline: none;
@@ -21,6 +23,11 @@
   &:disabled {
     opacity: 0.4;
     cursor: not-allowed;
+  }
+
+  &:hover {
+    background-color: $color-dark-gray;
+    transition: $transition;
   }
 }
 

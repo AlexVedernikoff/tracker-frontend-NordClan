@@ -8,6 +8,7 @@ import getStatusNameById from '../../utils/TaskStatuses';
 import { connect } from 'react-redux';
 import Tags from '../Tags';
 import Tag from '../Tag';
+import { IconEdit } from '../Icons';
 import * as css from './TaskRow.scss';
 import roundNum from '../../utils/roundNum';
 
@@ -41,6 +42,7 @@ class TaskRow extends React.Component {
       shortcut,
       card,
       isDragging,
+      draggable,
       onClickTag,
       taskTypes,
       onOpenPerformerModal,
@@ -56,6 +58,7 @@ class TaskRow extends React.Component {
       <div
         className={classnames({
           [css.taskCard]: true,
+          [css.draggable]: draggable,
           [css[classPriority]]: true,
           [css.card]: card,
           [css.dropped]: isDragging
@@ -81,7 +84,10 @@ class TaskRow extends React.Component {
                 ) : null}
               </div>
             </div>
-            <Link to={`/projects/${task.projectId}/tasks/${task.id}`} className={css.taskName}>
+            <Link
+              to={`/projects/${task.projectId}/tasks/${task.id}`}
+              className={classnames([css.taskName, 'underline-link'])}
+            >
               <h4>{task.name}</h4>
             </Link>
           </Col>
@@ -89,23 +95,27 @@ class TaskRow extends React.Component {
             <Col xs={12} sm>
               <div className={css.metabox}>
                 <p className={css.taskMeta}>
-                  <span>Спринт:</span>
-                  <button onClick={this.handleSprintClick}>{task.sprint ? task.sprint.name : 'Backlog'}</button>
+                  <span className={css.metaKey}>Спринт:</span>
+                  <span className={css.metaValue} onClick={this.handleSprintClick}>
+                    {task.sprint ? task.sprint.name : 'Backlog'}
+                    <IconEdit />
+                  </span>
                 </p>
                 <p className={css.taskMeta}>
-                  <span>Исполнитель:</span>
-                  <button onClick={this.handlePerformerClick}>
+                  <span className={css.metaKey}>Исполнитель:</span>
+                  <span className={css.metaValue} onClick={this.handlePerformerClick}>
                     {task.performer ? task.performer.fullNameRu : 'Не назначено'}
-                  </button>
+                    <IconEdit />
+                  </span>
                 </p>
                 <p className={css.taskMeta}>
-                  <span>Автор:</span>
+                  <span className={css.metaKey}>Автор:</span>
                   <span>{task.author ? task.author.fullNameRu : ''}</span>
                 </p>
                 <p className={css.taskMeta}>
                   {task.statusId !== 1 && !isExternal ? (
                     <span className={css.time}>
-                      <span>Время: </span>
+                      <span className={css.metaKey}>Время: </span>
                       <span
                         className={classnames({
                           [css.redText]: task.plannedExecutionTime < task.factExecutionTime,
@@ -145,6 +155,7 @@ class TaskRow extends React.Component {
 
 TaskRow.propTypes = {
   card: PropTypes.bool,
+  draggable: PropTypes.bool,
   isDragging: PropTypes.bool,
   isExternal: PropTypes.bool,
   onClickTag: PropTypes.func,

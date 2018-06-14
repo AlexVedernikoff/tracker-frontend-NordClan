@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 import * as css from './Projects.scss';
 import Button from '../../components/Button';
+import TypeFilter from './TypeFilter';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
 import Input from '../../components/Input';
 import ProjectCard from '../../components/ProjectCard';
@@ -28,20 +29,26 @@ import 'moment/locale/ru';
 class Projects extends Component {
   constructor(props) {
     super(props);
+    const projectListFilters = this.getSavedFilters();
+
     this.state = {
       filterTags: [],
       filteredInProgress: false,
       filteredInHold: false,
       filteredFinished: false,
-      projects: [],
       filterByName: '',
+      filterSelectedTypes: [],
+      filterRequestTypes: [],
+      projects: [],
       dateFrom: '',
       dateTo: '',
       projectName: '',
       projectPrefix: '',
       openProjectPage: false,
       selectedPortfolio: null,
-      activePage: 1
+      selectedType: 1,
+      activePage: 1,
+      ...projectListFilters
     };
   }
 
@@ -49,22 +56,58 @@ class Projects extends Component {
     this.loadProjects();
   }
 
+  selectType = (filterSelectedTypes, filterRequestTypes) => {
+    this.setState({ filterSelectedTypes, filterRequestTypes }, () => {
+      this.loadProjects();
+    });
+  };
+
   loadProjects = (dateFrom, dateTo) => {
     const tags = this.state.filterTags.map(el => el.value).join(',');
+    const typeId = this.state.filterRequestTypes.join(',');
+    const dateSprintBegin = dateFrom || this.state.dateFrom ? moment(this.state.dateFrom).format('YYYY-MM-DD') : '';
+    const dateSprintEnd = dateTo || this.state.dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
     const statuses = [];
     if (this.state.filteredInProgress) statuses.push(1);
     if (this.state.filteredInHold) statuses.push(2);
     if (this.state.filteredFinished) statuses.push(3);
 
-    this.props.getProjects(
-      20,
-      this.state.activePage,
-      tags,
-      this.state.filterByName,
-      dateFrom,
-      dateTo,
-      statuses.join(',')
+    const params = {
+      pageSize: 20,
+      currentPage: this.state.activePage,
+      tags: tags,
+      name: this.state.filterByName,
+      dateSprintBegin,
+      dateSprintEnd,
+      statusId: statuses.join(','),
+      typeId: typeId
+    };
+
+    this.props.getProjects(params);
+    this.saveFilters();
+  };
+
+  saveFilters = () => {
+    const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
+
+    localStorage.setItem(
+      'projectListFilters',
+      JSON.stringify({
+        tags: this.state.filterTags.map(el => el.value),
+        dateTo: this.state.dateTo,
+        dateFrom: this.state.dateFrom,
+        filteredInProgress,
+        filteredInHold,
+        filteredFinished,
+        filterSelectedTypes: this.state.filterSelectedTypes,
+        filterRequestTypes: this.state.filterRequestTypes
+      })
     );
+  };
+
+  getSavedFilters = () => {
+    const filters = JSON.parse(localStorage.getItem('projectListFilters'));
+    return filters;
   };
 
   check = (name, callback = () => {}) => {
@@ -175,7 +218,8 @@ class Projects extends Component {
         name: this.state.projectName,
         prefix: this.state.projectPrefix,
         portfolioId: portfolioName ? null : this.state.selectedPortfolio ? this.state.selectedPortfolio.value : null,
-        portfolioName
+        portfolioName,
+        typeId: this.state.selectedType
       },
       this.state.openProjectPage
     );
@@ -198,6 +242,11 @@ class Projects extends Component {
     this.setState({
       selectedPortfolio: portfolio
     });
+  };
+
+  onTypeSelect = option => {
+    const selectedType = option ? option.value : 1;
+    this.setState({ selectedType });
   };
 
   onTagSelect = tags => {
@@ -236,7 +285,8 @@ class Projects extends Component {
     return null;
   };
   render() {
-    const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
+    const { filteredInProgress, filteredInHold, filteredFinished, filterSelectedTypes } = this.state;
+    const { projectTypes } = this.props;
     const formattedDayFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('DD.MM.YYYY') : '';
     const formattedDayTo = this.state.dateTo ? moment(this.state.dateTo).format('DD.MM.YYYY') : '';
     const isAdmin = this.props.globalRole === ADMIN;
@@ -252,32 +302,39 @@ class Projects extends Component {
           </header>
           <hr />
           <div className={css.projectsHeader}>
-            <div className={css.statusFilters}>
-              <StatusCheckbox
-                type="INPROGRESS"
-                checked={filteredInProgress}
-                onClick={() => {
-                  this.check('filteredInProgress', this.handleFilterChange);
-                }}
-                label="В процессе"
-              />
-              <StatusCheckbox
-                type="INHOLD"
-                checked={filteredInHold}
-                onClick={() => {
-                  this.check('filteredInHold', this.handleFilterChange);
-                }}
-                label="Приостановлен"
-              />
-              <StatusCheckbox
-                type="FINISHED"
-                checked={filteredFinished}
-                onClick={() => {
-                  this.check('filteredFinished', this.handleFilterChange);
-                }}
-                label="Завершен"
-              />
-            </div>
+            <Row>
+              <Col xs={12} sm={8}>
+                <div className={css.statusFilters}>
+                  <StatusCheckbox
+                    type="INPROGRESS"
+                    checked={filteredInProgress}
+                    onClick={() => {
+                      this.check('filteredInProgress', this.handleFilterChange);
+                    }}
+                    label="В процессе"
+                  />
+                  <StatusCheckbox
+                    type="INHOLD"
+                    checked={filteredInHold}
+                    onClick={() => {
+                      this.check('filteredInHold', this.handleFilterChange);
+                    }}
+                    label="Приостановлен"
+                  />
+                  <StatusCheckbox
+                    type="FINISHED"
+                    checked={filteredFinished}
+                    onClick={() => {
+                      this.check('filteredFinished', this.handleFilterChange);
+                    }}
+                    label="Завершен"
+                  />
+                </div>
+              </Col>
+              <Col xs={12} sm={4}>
+                <TypeFilter onChange={this.selectType} value={filterSelectedTypes} dictionary={projectTypes} />
+              </Col>
+            </Row>
             <Row className={css.search}>
               <Col xs={12} sm={4}>
                 <Input onChange={this.changeNameFilter} placeholder="Введите название проекта..." />
@@ -333,9 +390,12 @@ class Projects extends Component {
           handleCheckBox={this.handleModalCheckBoxChange}
           onPortfolioSelect={this.handlePortfolioChange}
           selectedPortfolio={this.state.selectedPortfolio}
+          onTypeSelect={this.onTypeSelect}
+          selectedType={this.state.selectedType}
           validateProjectName={this.state.projectName.length > 3}
           validateProjectPrefix={this.state.projectPrefix.length > 1}
           prefixErrorText={this.getFieldError('prefix')}
+          projectTypes={projectTypes}
         />
       </div>
     );
@@ -355,6 +415,7 @@ Projects.propTypes = {
 
 const mapStateToProps = state => ({
   projectList: state.Projects.projects,
+  projectTypes: state.Dictionaries.projectTypes,
   pagesCount: state.Projects.pagesCount,
   isCreateProjectModalOpen: state.Projects.isCreateProjectModalOpen,
   loading: state.Loading.loading,
@@ -378,6 +439,7 @@ Projects.propTypes = {
   onRequestClose: PropTypes.func,
   openCreateProjectModal: PropTypes.func,
   projectList: PropTypes.array,
+  projectTypes: PropTypes.array,
   requestProjectCreate: PropTypes.func
 };
 

@@ -16,6 +16,7 @@ import Settings from './pages/ProjectPage/Settings';
 import Planning from './pages/ProjectPage/Planning';
 import Metrics from './pages/ProjectPage/Metrics';
 import TaskList from './pages/ProjectPage/TaskList';
+import ProjectTimesheets from './pages/ProjectPage/ProjectTimesheets';
 import MyTasks from './pages/MyTasks';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
@@ -34,6 +35,7 @@ import { clearCurrentTask } from './actions/Task';
 import { setRedirectPath } from './actions/Authentication';
 import isAdmin from './utils/isAdmin';
 import { EXTERNAL_USER } from './constants/Roles';
+import TaskTimeReports from './pages/TaskPage/TaskTimeReports/TaskTimeReports';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
@@ -112,6 +114,7 @@ class AppRouter extends Component {
             <Route path="analytics" component={Metrics}>
               <Route path=":metricType" component={Metrics} />
             </Route>
+            <Route path="timesheets" component={ProjectTimesheets} />
             <Route path="history" component={ProjectHistory} />
             <Route path="(sprint:sprintId/)tasks" component={TaskList} />
           </Route>
@@ -126,6 +129,7 @@ class AppRouter extends Component {
           >
             <IndexRoute component={Comments} />
             <Route path="history" component={TaskHistory} onEnter={this.notExternal} />
+            <Route path="time-reports" component={TaskTimeReports} onEnter={this.notExternal} />
           </Route>
 
           <IndexRedirect to="projects" />
