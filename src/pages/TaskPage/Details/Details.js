@@ -8,6 +8,7 @@ import TaskPlanningTime from '../TaskPlanningTime';
 import PerformerModal from '../../../components/PerformerModal';
 import SprintModal from '../../../components/SprintModal';
 import TaskTypeModal from '../../../components/TaskTypeModal';
+import Checkbox from '../../../components/Checkbox/Checkbox';
 import { IconEdit } from '../../../components/Icons';
 import getTypeById from '../../../utils/TaskTypes';
 import { getProjectUsers, getProjectSprints } from '../../../actions/Project';
@@ -138,6 +139,16 @@ class Details extends Component {
     this.closeTaskTypeModal();
   };
 
+  changeIsTaskByClient = () => {
+    this.props.onChange(
+      {
+        id: this.props.task.id,
+        isTaskByClient: !this.props.task.isTaskByClient
+      },
+      null
+    );
+  };
+
   spentTooltipRender(spents) {
     return _.transform(
       spents,
@@ -220,6 +231,12 @@ class Details extends Component {
               </td>
             </tr>
             <tr>
+              <td>От клиента</td>
+              <td className={css.byClient}>
+                <Checkbox checked={task.isTaskByClient} onChange={this.changeIsTaskByClient} />
+              </td>
+            </tr>
+            <tr>
               <td>Спринт:</td>
               <td>
                 <span className={css.editableCell} onClick={this.openSprintModal}>
@@ -276,7 +293,7 @@ class Details extends Component {
                     </td>
                   </tr>,
                   <tr key="factExecutionTime">
-                    <td>Потрачено:</td>
+                    <td>Всего затрачено:</td>
                     <td>
                       <span
                         data-tip={!!Number(task.factExecutionTime)}
@@ -296,6 +313,21 @@ class Details extends Component {
                   </tr>
                 ]
               : null}
+            <tr>
+              <td>Из них на QA:</td>
+              <td>
+                <span
+                  className={classnames({
+                    [css.factTime]: true,
+                    [css.alert]: +task.qaFactExecutionTime > +task.qaPlannedTime,
+                    [css.success]: +task.qaFactExecutionTime <= +task.qaPlannedTime
+                  })}
+                >
+                  {task.qaFactExecutionTime ? roundNum(task.qaFactExecutionTime, 2) : 0} из{' '}
+                  {task.qaPlannedTime ? roundNum(task.qaPlannedTime, 2) : 0} ч.
+                </span>
+              </td>
+            </tr>
           </tbody>
         </table>
 
