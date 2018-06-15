@@ -364,6 +364,16 @@ class Planning extends Component {
     );
   };
 
+  onPercentQaSubmit = percentQa => {
+    this.props.changeProject(
+      {
+        id: this.props.project.id,
+        percentQa
+      },
+      'percentQa'
+    );
+  };
+
   loadTasks = (e, name, activePage) => {
     this.props.getPlanningTasks(name === 'leftColumn' ? 'left' : 'right', {
       projectId: this.props.project.id,
@@ -480,6 +490,7 @@ class Planning extends Component {
 
     const budget = this.props.project.budget;
     const riskBudget = this.props.project.riskBudget;
+    const percentQa = this.props.project.percentQa || 30;
     const { createdAt, completedAt, loading } = this.props;
     const unfinishedLeftTasksCount = this.getUnfinishedLeftTasks().length;
 
@@ -523,6 +534,19 @@ class Planning extends Component {
                   max={riskBudget}
                 />
                 {!!budget && !!riskBudget && <div className={css.riskMarker}>Рисковый резерв</div>}
+              </div>
+            ) : null}
+            {!isExternal ? (
+              <div className={css.budgetLegend}>
+                <div style={{ lineHeight: '1.5rem', fontWeight: 'bold' }}>QA:</div>
+                <Budget
+                  onEditSubmit={this.onPercentQaSubmit}
+                  header="Процент на тестирование:"
+                  value={percentQa}
+                  isProjectAdmin={isProjectAdmin}
+                  min={0}
+                  max={100}
+                />
               </div>
             ) : null}
           </div>
