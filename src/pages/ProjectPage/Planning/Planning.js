@@ -290,7 +290,7 @@ class Planning extends Component {
       sprint.allottedTime,
       sprint.budget,
       sprint.riskBudget,
-      sprint.allottedTimeQa
+      sprint.qaPercent
     );
   };
 
@@ -364,13 +364,13 @@ class Planning extends Component {
     );
   };
 
-  onPercentQaSubmit = percentQa => {
+  onPercentQaSubmit = qaPercent => {
     this.props.changeProject(
       {
         id: this.props.project.id,
-        percentQa
+        qaPercent: qaPercent
       },
-      'percentQa'
+      'qaPercent'
     );
   };
 
@@ -490,7 +490,7 @@ class Planning extends Component {
 
     const budget = this.props.project.budget;
     const riskBudget = this.props.project.riskBudget;
-    const percentQa = this.props.project.percentQa || 30;
+    const qaPercent = this.props.project.qaPercent || 30;
     const { createdAt, completedAt, loading } = this.props;
     const unfinishedLeftTasksCount = this.getUnfinishedLeftTasks().length;
 
@@ -542,7 +542,7 @@ class Planning extends Component {
                 <Budget
                   onEditSubmit={this.onPercentQaSubmit}
                   header="Процент на тестирование:"
-                  value={percentQa}
+                  value={qaPercent}
                   isProjectAdmin={isProjectAdmin}
                   min={0}
                   max={100}

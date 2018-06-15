@@ -27,7 +27,7 @@ class SprintEditModal extends Component {
         dateTo: undefined,
         sprintName: this.props.sprint.name,
         allottedTime: this.props.sprint.allottedTime || '0.00',
-        allottedTimeQa: this.props.sprint.allottedTimeQa || props.project.percentQA || '30',
+        qaPercent: this.props.sprint.qaPercent || props.project.qaPercent || '30',
         isHovered: false,
         budget: this.props.sprint.budget || '0.00',
         riskBudget: this.props.sprint.riskBudget || '0.00'
@@ -41,7 +41,7 @@ class SprintEditModal extends Component {
       this.state.sprint.allottedTime.length &&
       this.state.sprint.budget.length &&
       this.state.sprint.riskBudget.length &&
-      this.state.sprint.allottedTimeQa.length
+      this.state.sprint.qaPercent.length
     );
   };
   validateNumbers(value) {
@@ -60,13 +60,13 @@ class SprintEditModal extends Component {
     }
   };
 
-  onChangeTimeQA = e => {
+  onChangePercentQA = e => {
     const value = e.target.value;
     if (this.validateNumbers(value) && value <= 100) {
       this.setState(state => ({
         sprint: {
           ...state.sprint,
-          allottedTimeQa: value
+          qaPercent: value
         }
       }));
     }
@@ -246,8 +246,8 @@ class SprintEditModal extends Component {
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   <Input
                     placeholder="Введите новое % на QA..."
-                    value={this.state.sprint.allottedTimeQa}
-                    onChange={this.onChangeTimeQA}
+                    value={this.state.sprint.qaPercent}
+                    onChange={this.onChangePercentQA}
                   />
                 </Col>
               </Row>

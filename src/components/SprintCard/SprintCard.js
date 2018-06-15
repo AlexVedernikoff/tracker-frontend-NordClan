@@ -40,7 +40,7 @@ class SprintCard extends Component {
       sprint.allottedTime,
       sprint.budget,
       sprint.riskBudget,
-      sprint.allottedTimeQa
+      sprint.qaPercent
     );
   };
 
@@ -112,8 +112,8 @@ class SprintCard extends Component {
               <p key="allottedTime" className={css.sprintMeta}>
                 <span>Выделенное время: {sprint.allottedTime || 0} ч.</span>
               </p>,
-              <p key="allottedTimeQa" className={css.sprintMeta}>
-                <span>% на QA: {sprint.allottedTimeQa || 30}</span>
+              <p key="qaPercent" className={css.sprintMeta}>
+                <span>% на QA: {sprint.qaPercent || 30}</span>
               </p>,
               <p key="spentTime" className={css.sprintMeta}>
                 <span>Израсходованное время: {sprint.spentTime || 0} ч.</span>
