@@ -293,7 +293,7 @@ class Details extends Component {
                     </td>
                   </tr>,
                   <tr key="factExecutionTime">
-                    <td>Потрачено:</td>
+                    <td>Всего затрачено:</td>
                     <td>
                       <span
                         data-tip={!!Number(task.factExecutionTime)}
@@ -314,7 +314,7 @@ class Details extends Component {
                 ]
               : null}
             <tr>
-              <td>План / Факт (QA):</td>
+              <td>Из них на QA:</td>
               <td>
                 <span
                   className={classnames({
@@ -323,8 +323,8 @@ class Details extends Component {
                     [css.success]: +task.qaFactExecutionTime <= +task.qaPlannedTime
                   })}
                 >
-                  {`${task.qaPlannedTime ? roundNum(task.qaPlannedTime, 2) : 0} /
-                     ${task.qaFactExecutionTime ? roundNum(task.qaFactExecutionTime, 2) : 0}  ч.`}
+                  {task.qaFactExecutionTime ? roundNum(task.qaFactExecutionTime, 2) : 0} из{' '}
+                  {task.qaPlannedTime ? roundNum(task.qaPlannedTime, 2) : 0} ч.
                 </span>
               </td>
             </tr>
