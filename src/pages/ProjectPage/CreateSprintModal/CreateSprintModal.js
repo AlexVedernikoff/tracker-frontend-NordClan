@@ -20,8 +20,7 @@ class CreateSprintModal extends Component {
       dateTo: undefined,
       budget: '',
       riskBudget: '',
-      sprintName: '',
-      allottedTime: ''
+      sprintName: ''
     };
   }
 
@@ -37,22 +36,16 @@ class CreateSprintModal extends Component {
     }
   };
 
-  onChangeTime = e => {
-    if (this.validateNumbers(e.target.value)) {
-      this.setState({ allottedTime: e.target.value });
-    }
-  };
-
   onChangeName = e => {
     this.setState({ sprintName: e.target.value.trim() });
   };
 
   handleDayFromChange = date => {
-    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD') }, () => this.setDefaultTimeValue());
+    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD') });
   };
 
   handleDayToChange = date => {
-    this.setState({ dateTo: moment(date).format('YYYY-MM-DD') }, () => this.setDefaultTimeValue());
+    this.setState({ dateTo: moment(date).format('YYYY-MM-DD') });
   };
 
   checkNullInputs = () => {
@@ -60,28 +53,10 @@ class CreateSprintModal extends Component {
       this.state.sprintName &&
       this.state.dateTo &&
       this.state.dateFrom &&
-      this.state.allottedTime &&
       this.state.budget &&
       this.state.riskBudget
     );
   };
-
-  setDefaultTimeValue = () => {
-    if (this.state.dateTo && this.state.dateFrom) {
-      const calculatedHours = this.calcWorkingHours(this.state.dateFrom, this.state.dateTo);
-      this.setState({ allottedTime: calculatedHours });
-    }
-  };
-
-  calcWorkingHours(startDate, endDate) {
-    const day = moment(startDate);
-    let businessDays = 0;
-    while (day.isSameOrBefore(endDate, 'day')) {
-      if (day.day() !== 0 && day.day() !== 6) businessDays++;
-      day.add(1, 'd');
-    }
-    return businessDays * 8;
-  }
 
   validateNumbers(value) {
     const re = /^\d*(\.\d*)?$/;
@@ -103,7 +78,6 @@ class CreateSprintModal extends Component {
       this.props.projectId,
       this.state.dateFrom,
       this.state.dateTo,
-      Number(this.state.allottedTime),
       Number(this.state.budget),
       Number(this.state.riskBudget)
     );
@@ -169,18 +143,6 @@ class CreateSprintModal extends Component {
                   onDayChange={this.handleDayToChange}
                   placeholder="Введите дату окончания"
                   disabledDataRanges={this.props.sprintsDateRanges}
-                />
-              </Col>
-            </Row>
-            <Row className={css.inputRow}>
-              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Время в часах:</p>
-              </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input
-                  placeholder="Введите время в часах"
-                  onChange={this.onChangeTime}
-                  value={this.state.allottedTime}
                 />
               </Col>
             </Row>

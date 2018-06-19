@@ -37,7 +37,6 @@ class SprintCard extends Component {
       sprint.sprintName.trim(),
       sprint.dateFrom,
       sprint.dateTo,
-      sprint.allottedTime,
       sprint.budget,
       sprint.riskBudget
     );
@@ -108,9 +107,6 @@ class SprintCard extends Component {
         </p>
         {!isExternal
           ? [
-              <p key="allottedTime" className={css.sprintMeta}>
-                <span>Выделенное время: {sprint.allottedTime || 0} ч.</span>
-              </p>,
               <p key="spentTime" className={css.sprintMeta}>
                 <span>Израсходованное время: {sprint.spentTime || 0} ч.</span>
               </p>,
@@ -164,7 +160,6 @@ SprintCard.defaultProps = {
     countDoneTasks: '00',
     tasksTotal: '00',
     tasksDone: '00',
-    allottedTime: '00',
     spentTime: '00',
     status: 'INPROGRESS',
     budget: 0,

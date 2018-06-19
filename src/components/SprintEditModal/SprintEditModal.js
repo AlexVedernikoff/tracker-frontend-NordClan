@@ -25,7 +25,6 @@ class SprintEditModal extends Component {
         id: this.props.sprint.id,
         dateTo: undefined,
         sprintName: this.props.sprint.name,
-        allottedTime: this.props.sprint.allottedTime || '0.00',
         isHovered: false,
         budget: this.props.sprint.budget || '0.00',
         riskBudget: this.props.sprint.riskBudget || '0.00'
@@ -36,26 +35,15 @@ class SprintEditModal extends Component {
   checkNullInputs = () => {
     return !!(
       this.state.sprint.sprintName.length &&
-      this.state.sprint.allottedTime.length &&
       this.state.sprint.budget.length &&
       this.state.sprint.riskBudget.length
     );
   };
+
   validateNumbers(value) {
     const re = /^\d*(\.\d*)?$/;
     return value !== '' ? re.test(value) : true;
   }
-  onChangeTime = e => {
-    const value = e.target.value;
-    if (this.validateNumbers(value)) {
-      this.setState(state => ({
-        sprint: {
-          ...state.sprint,
-          allottedTime: value
-        }
-      }));
-    }
-  };
 
   onChangeName = e => {
     const value = e.target.value;
@@ -208,21 +196,6 @@ class SprintEditModal extends Component {
                 </Col>
               </Row>
             </label>
-            <label className={css.formField}>
-              <Row>
-                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>Выделенное время:</p>
-                </Col>
-                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                  <Input
-                    placeholder="Введите новое значение времени..."
-                    value={this.state.sprint.allottedTime}
-                    onChange={this.onChangeTime}
-                  />
-                </Col>
-              </Row>
-            </label>
-
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>

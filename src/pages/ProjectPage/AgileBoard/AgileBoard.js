@@ -482,7 +482,7 @@ class AgileBoard extends Component {
         currentSprint = sprint;
       }
     });
-    return `${currentSprint.spentTime || 0} / ${currentSprint.allottedTime || 0}`;
+    return `${currentSprint.spentTime || 0} / ${currentSprint.riskBudget || 0}`;
   };
 
   getAllTags = () => {
@@ -761,7 +761,7 @@ class AgileBoard extends Component {
                       options={this.getSprints()}
                     />
                     {!isExternal ? (
-                      <span className={css.sprintTime}>{this.getSprintTime(this.state.changedSprint) || null}</span>
+                      <span className={css.sprintTime}>ВОТ {this.getSprintTime(this.state.changedSprint) || null}</span>
                     ) : null}
                   </Col>
                   <Col xs>
