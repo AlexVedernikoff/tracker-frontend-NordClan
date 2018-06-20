@@ -8,7 +8,7 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 
 import { editSprint } from '../../../actions/Sprint';
 import { createSprint } from '../../../actions/Sprint';
-import { editMilestone } from '../../../actions/Milestone';
+import { editMilestone, deleteMilestone } from '../../../actions/Milestone';
 import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal, getProjectInfo, changeProject } from '../../../actions/Project';
@@ -278,6 +278,8 @@ class Planning extends Component {
       });
     };
   };
+
+  onDeleteMilestone = milestone => () => this.props.deleteMilestone(milestone.id);
 
   handleEditSprint = sprint => {
     this.setState({ isOpenSprintEditModal: false });
@@ -595,6 +597,7 @@ class Planning extends Component {
             onClickSprint={this.onClickSprint}
             openSprintEditModal={this.openSprintEditModal}
             openMilestoneEditModal={this.openMilestoneEditModal}
+            onDeleteMilestone={this.onDeleteMilestone}
           />
           {!isVisor && !isExternal ? (
             <div className={css.moveTasksBtnWrapper}>
@@ -717,6 +720,7 @@ const mapDispatchToProps = {
   getPlanningTasks,
   editSprint,
   editMilestone,
+  deleteMilestone,
   changeTask,
   startTaskEditing,
   openCreateTaskModal,
