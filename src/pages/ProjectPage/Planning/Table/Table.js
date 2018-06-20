@@ -3,7 +3,7 @@ import * as css from './../Planning.scss';
 import classnames from 'classnames';
 import moment from 'moment';
 import SprintStartControl from '../../../../components/SprintStartControl';
-import { IconEdit } from '../../../../components/Icons';
+import { IconDelete, IconEdit } from '../../../../components/Icons';
 
 import roundNum from '../../../../utils/roundNum';
 
@@ -103,7 +103,8 @@ class Table extends React.Component {
       isProjectAdmin,
       openSprintEditModal,
       openMilestoneEditModal,
-      isExternal
+      isExternal,
+      onDeleteMilestone
     } = this.props;
 
     return (
@@ -146,7 +147,8 @@ class Table extends React.Component {
       isProjectAdmin,
       openSprintEditModal,
       openMilestoneEditModal,
-      isExternal
+      isExternal,
+      onDeleteMilestone
     } = this.props;
 
     return (
@@ -165,6 +167,9 @@ class Table extends React.Component {
 
         {!isExternal ? (
           <IconEdit className={css.edit} data-tip="Редактировать" onClick={openMilestoneEditModal(milestone)} />
+        ) : null}
+        {!isExternal ? (
+          <IconDelete className={css.delete} data-tip="Удалить" onClick={onDeleteMilestone(milestone)} />
         ) : null}
       </div>
     );

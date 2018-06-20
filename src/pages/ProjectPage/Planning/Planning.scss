@@ -227,6 +227,9 @@
       &:hover ~ .edit {
         opacity: 1;
       }
+      &:hover ~ .delete {
+        opacity: 1;
+      }
     }
 
     .selection {
@@ -447,9 +450,10 @@ $tooltip-border: 1px solid lighten(black, 85%);
   background-color: darken($color-gray, 10%);
 }
 
-.edit {
+.edit,
+.delete {
   position: absolute;
-  right: 0;
+  right: 20px;
   z-index: 1;
   opacity: 0;
   display: inline-block;
@@ -469,7 +473,14 @@ $tooltip-border: 1px solid lighten(black, 85%);
     opacity: 1;
     background-color: $color-lightgray;
     fill: $color-dark;
+    + .delete {
+      opacity: 1;
+    }
   }
+}
+
+.delete {
+  right: 0;
 }
 
 .timeline {
