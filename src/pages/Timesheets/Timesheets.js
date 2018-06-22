@@ -98,15 +98,24 @@ class Timesheets extends React.Component {
 
     let tasks = list.length
       ? list.reduce((res, el) => {
+          const isTemp = tempTimesheets.some(tempTsh => tempTsh.id === el.id);
           const taskNotPushed =
             el.task &&
             !_.find(res, tsh => {
-              return tsh.id === el.task.id && tsh.taskStatusId === el.taskStatusId;
+              const isExist = tsh.id === el.task.id && tsh.taskStatusId === el.taskStatusId;
+              if (isExist && isTemp) {
+                tsh.hilight = true;
+              }
+              return isExist;
             });
-          if (!taskNotPushed && el.task && tempTimesheets.some(tempTsh => tempTsh.id === el.id)) {
-            console.log(el);
-            this.props.showNotification({ message: 'Задача с выбранным статусом уже есть в отчете', type: 'success' });
-            this.props.deleteTempTimesheets([el.id.toString()]);
+          if (!taskNotPushed && el.task && isTemp) {
+            Promise.resolve().then(() => {
+              this.props.showNotification({
+                message: 'Задача с выбранным статусом уже есть в отчете',
+                type: 'success'
+              });
+              this.props.deleteTempTimesheets([el.id.toString()]);
+            });
           }
           if (taskNotPushed && isThisWeek(el.onDate)) {
             res.push({
@@ -164,17 +173,26 @@ class Timesheets extends React.Component {
 
     let magicActivities = list.length
       ? list.reduce((res, el) => {
+          const isTemp = tempTimesheets.some(tempTsh => tempTsh.id === el.id);
           const maNotPushed =
             el.typeId !== 1 &&
             !_.find(res, tsh => {
               const isSameType = tsh.typeId === el.typeId;
               const isSameProject = el.project ? tsh.projectId === el.project.id : tsh.projectId === 0;
               const isSameSprint = (el.sprint ? el.sprint.id : 0) === (tsh.sprint ? tsh.sprint.id : 0);
+              if (isSameType && isSameProject && isSameSprint && isTemp) {
+                tsh.hilight = true;
+              }
               return isSameType && isSameProject && isSameSprint;
             });
-          if (!maNotPushed && el.typeId !== 1 && tempTimesheets.some(tempTsh => tempTsh.id === el.id)) {
-            this.props.showNotification({ message: 'Задача с выбранным статусом уже есть в отчете', type: 'success' });
-            this.props.deleteTempTimesheets([el.id.toString()]);
+          if (!maNotPushed && el.typeId !== 1 && isTemp) {
+            Promise.resolve().then(() => {
+              this.props.showNotification({
+                message: 'Задача с выбранным статусом уже есть в отчете',
+                type: 'success'
+              });
+              this.props.deleteTempTimesheets([el.id.toString()]);
+            });
           }
           if (maNotPushed && isThisWeek(el.onDate)) {
             res.push({
