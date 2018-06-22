@@ -43,7 +43,7 @@ const deleteMilestoneFailure = () => ({
   type: MilestoneActions.MILESTONE_DELETE_FAILURE
 });
 
-export const createMilestone = (name, projectId, date) => {
+export const createMilestone = (name, projectId, date, typeId) => {
   const URL = `${API_URL}/milestones/`;
 
   return dispatch => {
@@ -53,7 +53,8 @@ export const createMilestone = (name, projectId, date) => {
       .post(URL, {
         name,
         projectId,
-        date
+        date,
+        typeId
       })
       .then(
         response => {

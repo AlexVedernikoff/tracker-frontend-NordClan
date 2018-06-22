@@ -377,6 +377,33 @@ $tooltip-border: 1px solid lighten(black, 85%);
     background-color: $color-red;
     cursor: pointer;
   }
+  &.client {
+    > div {
+      transform: none;
+      border-radius: 50%;
+    }
+  }
+  &.inside {
+    > div {
+      transform: none;
+      border-radius: 15px;
+      position: relative;
+      color: #fff;
+      background: none !important;
+      &:after {
+        content: '';
+        position: absolute;
+        left: -1px;
+        border: 6px solid transparent;
+        border-top: 10px solid $color-red;
+      }
+    }
+  }
+  &.review {
+    > div {
+      transform: none;
+    }
+  }
   &.done {
     > div {
       background-color: $color-green;
