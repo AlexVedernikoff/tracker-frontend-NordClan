@@ -174,18 +174,6 @@ class CreateSprintModal extends Component {
             </Row>
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Время в часах:</p>
-              </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input
-                  placeholder="Введите время в часах"
-                  onChange={this.onChangeTime}
-                  value={this.state.allottedTime}
-                />
-              </Col>
-            </Row>
-            <Row className={css.inputRow}>
-              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Бюджет без РР</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>

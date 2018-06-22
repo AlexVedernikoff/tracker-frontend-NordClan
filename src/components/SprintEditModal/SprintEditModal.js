@@ -41,21 +41,11 @@ class SprintEditModal extends Component {
       this.state.sprint.riskBudget.length
     );
   };
+
   validateNumbers(value) {
     const re = /^\d*(\.\d*)?$/;
     return value !== '' ? re.test(value) : true;
   }
-  onChangeTime = e => {
-    const value = e.target.value;
-    if (this.validateNumbers(value)) {
-      this.setState(state => ({
-        sprint: {
-          ...state.sprint,
-          allottedTime: value
-        }
-      }));
-    }
-  };
 
   onChangeName = e => {
     const value = e.target.value;
@@ -204,20 +194,6 @@ class SprintEditModal extends Component {
                     value={formattedDayTo}
                     onDayChange={this.handleDayToChange}
                     placeholder={moment(sprint.factFinishDate).format('DD.MM.YYYY')}
-                  />
-                </Col>
-              </Row>
-            </label>
-            <label className={css.formField}>
-              <Row>
-                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>Выделенное время:</p>
-                </Col>
-                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                  <Input
-                    placeholder="Введите новое значение времени..."
-                    value={this.state.sprint.allottedTime}
-                    onChange={this.onChangeTime}
                   />
                 </Col>
               </Row>
