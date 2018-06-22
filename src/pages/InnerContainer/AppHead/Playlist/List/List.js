@@ -44,8 +44,12 @@ class List extends Component {
     const { isDraftShow } = this.state;
     const { tracks } = this.props;
     const visible = [
-      ...tracks.filter(item => item.isVisible && item.task && item.task.taskStatus.id === TASK_STATUS_DEVELOP_PLAY),
-      ...tracks.filter(item => item.isVisible && (!item.task || item.task.taskStatus.id !== TASK_STATUS_DEVELOP_PLAY))
+      ...tracks.filter(
+        item => item.isVisible && item.task && item.taskStatus && item.taskStatus.id === TASK_STATUS_DEVELOP_PLAY
+      ),
+      ...tracks.filter(
+        item => item.isVisible && (!item.task || (item.taskStatus && item.taskStatus.id !== TASK_STATUS_DEVELOP_PLAY))
+      )
     ].map(this.playlistItem);
 
     const invisible = tracks && tracks.filter(item => !item.isVisible).map(this.playlistItem);
