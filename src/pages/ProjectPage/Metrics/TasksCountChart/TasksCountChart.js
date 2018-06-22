@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as css from './TasksCountChart.scss';
+import ChartWrapper from '../ChartWrapper';
 import { Line } from 'react-chartjs-2';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import getColor from '../../../../utils/Colors';
@@ -17,11 +18,13 @@ class TasksCountChart extends Component {
     openedOutOfPlanFeaturesMetric: PropTypes.array
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
+
     this.state = {
-      displayPercent: true
+      chartRef: null
     };
+
     this.chartOptions = {
       ...props.chartDefaultOptions,
       scales: {
@@ -42,7 +45,11 @@ class TasksCountChart extends Component {
     };
   }
 
-  makeChartData () {
+  componentDidMount() {
+    this.setState({ chartRef: this.refs.chart });
+  }
+
+  makeChartData() {
     const {
       openedFeaturesMetric,
       openedFeaturesWithoutEvaluationMetric,
@@ -55,7 +62,7 @@ class TasksCountChart extends Component {
 
     return {
       datasets: [
-        this.makeTaskCountMetricsLine(openedFeaturesMetric, 'Количество открытых задач без оценки'),
+        this.makeTaskCountMetricsLine(openedFeaturesMetric, 'Количество открытых задач'),
         this.makeTaskCountMetricsLine(openedFeaturesWithoutEvaluationMetric, 'Количество открытых задач без оценки'),
         this.makeTaskCountMetricsLine(openedOutOfPlanFeaturesMetric, 'Количество открытых задач вне плана'),
         this.makeTaskCountMetricsLine(openedBugsMetrics, 'Количество открытых багов'),
@@ -66,7 +73,7 @@ class TasksCountChart extends Component {
 
   makeTaskCountMetricsLine = (metrics, label) => {
     const line = metrics
-      .map((metric) => {
+      .map(metric => {
         return {
           x: metric.createdAt,
           y: roundNum(+metric.value, 2)
@@ -80,12 +87,19 @@ class TasksCountChart extends Component {
     };
   };
 
-  render () {
+  render() {
     return (
-      <div className={css.TasksCountChart}>
+      <ChartWrapper chartRef={this.chartRef} className={css.BugsChart}>
         <h3>Количество задач</h3>
-        <Line data={this.makeChartData()} options={this.chartOptions} redraw />
-      </div>
+        <Line
+          ref={element => {
+            this.chartRef = element;
+          }}
+          data={this.makeChartData()}
+          options={this.chartOptions}
+          redraw
+        />
+      </ChartWrapper>
     );
   }
 }

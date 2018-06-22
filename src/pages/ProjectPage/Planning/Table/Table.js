@@ -3,7 +3,9 @@ import * as css from './../Planning.scss';
 import classnames from 'classnames';
 import moment from 'moment';
 import SprintStartControl from '../../../../components/SprintStartControl';
-import { IconEdit } from '../../../../components/Icons';
+import { IconDelete, IconEdit } from '../../../../components/Icons';
+
+import roundNum from '../../../../utils/roundNum';
 
 class Table extends React.Component {
   getSprintBlock = (sprint, activeYear) => {
@@ -41,7 +43,7 @@ class Table extends React.Component {
       : (100 - moment(date).dayOfYear() / daysInYear * 100).toFixed(1) + '%';
   };
 
-  calcTimelinePadding = (date) => {
+  calcTimelinePadding = date => {
     const { grantActiveYear } = this.props;
     const daysInYear = moment()
       .endOf('year')
@@ -52,7 +54,7 @@ class Table extends React.Component {
       : ((moment(date).dayOfYear() - 1) / daysInYear * 100).toFixed(1) + '%';
   };
 
-  getSprintTime = (sprint) => {
+  getSprintTime = sprint => {
     return `${moment(sprint.factStartDate).format('DD.MM')} ${
       sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format('DD.MM')}` : '- ...'
     }`;
@@ -73,17 +75,15 @@ class Table extends React.Component {
     }
   };
 
-  detectType = (entity) => {
+  detectType = entity => {
     return entity.factStartDate !== undefined ? 'sprint' : 'milestone';
   };
 
-  renderEntityLabels () {
+  renderEntityLabels() {
     const { entities } = this.props;
 
     return (
       <div className={css.sprintNames}>
-        <div />
-        <div />
         {entities.map((entity, i) => {
           return this.detectType(entity) === 'sprint'
             ? this.renderSprintLabel(entity, i)
@@ -93,7 +93,7 @@ class Table extends React.Component {
     );
   }
 
-  renderSprintLabel (sprint, i) {
+  renderSprintLabel(sprint, i) {
     const {
       typeHovered,
       typeIdHovered,
@@ -102,11 +102,19 @@ class Table extends React.Component {
       onMouseOutRow,
       isProjectAdmin,
       openSprintEditModal,
-      openMilestoneEditModal
+      openMilestoneEditModal,
+      isExternal,
+      onDeleteMilestone
     } = this.props;
 
     return (
-      <div key={`sprint-${i}`}>
+      <div
+        key={`sprint-${i}`}
+        className={classnames({
+          [css.unactive]: sprint.statusId === 1,
+          [css.active]: sprint.statusId === 2
+        })}
+      >
         <span
           className={classnames({
             [css.selection]: true,
@@ -122,12 +130,14 @@ class Table extends React.Component {
 
         <div className={classnames(css.name, { [css.nameMargin]: isProjectAdmin })}>{sprint.name}</div>
 
-        <IconEdit className={css.edit} data-tip="Редактировать" onClick={openSprintEditModal(sprint)} />
+        {!isExternal ? (
+          <IconEdit className={css.edit} data-tip="Редактировать" onClick={openSprintEditModal(sprint)} />
+        ) : null}
       </div>
     );
   }
 
-  renderMilestoneLabel (milestone, i) {
+  renderMilestoneLabel(milestone, i) {
     const {
       typeHovered,
       typeIdHovered,
@@ -136,7 +146,9 @@ class Table extends React.Component {
       onMouseOutRow,
       isProjectAdmin,
       openSprintEditModal,
-      openMilestoneEditModal
+      openMilestoneEditModal,
+      isExternal,
+      onDeleteMilestone
     } = this.props;
 
     return (
@@ -153,13 +165,18 @@ class Table extends React.Component {
 
         <div className={classnames(css.name, { [css.nameMargin]: false })}>{milestone.name}</div>
 
-        <IconEdit className={css.edit} data-tip="Редактировать" onClick={openMilestoneEditModal(milestone)} />
+        {!isExternal ? (
+          <IconEdit className={css.edit} data-tip="Редактировать" onClick={openMilestoneEditModal(milestone)} />
+        ) : null}
+        {!isExternal ? (
+          <IconDelete className={css.delete} data-tip="Удалить" onClick={onDeleteMilestone(milestone)} />
+        ) : null}
       </div>
     );
   }
 
-  renderPlanColumn () {
-    const { entities } = this.props;
+  renderPlanColumn() {
+    const { entities, isExternal } = this.props;
     const className = classnames({
       [css.sprintNames]: true,
       [css.spentTime]: true
@@ -171,7 +188,7 @@ class Table extends React.Component {
         {entities.map((entity, i) => {
           return this.detectType(entity) === 'sprint' ? (
             <span key={`sprint-${i}`} className={css.name}>
-              {entity.allottedTime}
+              {!isExternal ? roundNum(entity.allottedTime, 2) : ''}
             </span>
           ) : (
             <span key={`milestone-${i}`} className={css.name}>
@@ -183,8 +200,8 @@ class Table extends React.Component {
     );
   }
 
-  renderFactColumn () {
-    const { entities } = this.props;
+  renderFactColumn() {
+    const { entities, isExternal } = this.props;
     const className = classnames({
       [css.sprintNames]: true,
       [css.spentTime]: true
@@ -196,7 +213,7 @@ class Table extends React.Component {
         {entities.map((entity, i) => {
           return this.detectType(entity) === 'sprint' ? (
             <span key={`sprint-${i}`} className={css.name}>
-              {entity.spentTime}
+              {!isExternal ? roundNum(entity.spentTime, 2) : ''}
             </span>
           ) : (
             <span key={`milestone-${i}`} className={css.name}>
@@ -208,7 +225,7 @@ class Table extends React.Component {
     );
   }
 
-  renderEntities () {
+  renderEntities() {
     const { entities, grantActiveYear } = this.props;
 
     return entities.map((entity, i) => {
@@ -216,14 +233,14 @@ class Table extends React.Component {
     });
   }
 
-  currentMonth (sprint) {
+  currentMonth(sprint) {
     const nd = new Date(sprint.factFinishDate);
     if (nd.getMonth() > 6) {
       return css.toRight;
     }
   }
 
-  renderSprint (sprint, i) {
+  renderSprint(sprint, i) {
     const { grantActiveYear } = this.props;
     return (
       <div key={`sprint-${i}`} className={css.tr}>
@@ -231,8 +248,8 @@ class Table extends React.Component {
           className={classnames({
             [css.sprintBar]: true,
             [css.unactive]:
-              sprint.statusId === 1
-              && moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]'),
+              sprint.statusId === 1 &&
+              moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]'),
             [css.finished]: moment(sprint.factFinishDate).isBefore(moment(), 'days'),
             [css.active]: sprint.statusId === 2,
             [css.future]: moment(sprint.factStartDate).isAfter(moment(), 'days')
@@ -250,20 +267,23 @@ class Table extends React.Component {
     );
   }
 
-  getMilestoneLabel (milestone) {
+  getMilestoneLabel(milestone) {
     const status = milestone.done ? 'Выполнено' : 'Не выполнено';
     const date = moment(milestone.date).format('DD.MM');
     return `${milestone.name}. ${date}. ${status}`;
   }
 
-  renderMilestone (milestone, i) {
+  renderMilestone(milestone, i) {
     const { grantActiveYear } = this.props;
     return (
       <div key={`milestone-${i}`} className={css.tr}>
         <div
           className={classnames({
             [css.milestoneBar]: true,
-            [css.done]: milestone.done
+            [css.done]: milestone.done,
+            [css.review]: milestone.typeId === 1,
+            [css.client]: milestone.typeId === 2,
+            [css.inside]: milestone.typeId === 3
           })}
           style={this.getMilestoneBlock(milestone.date, grantActiveYear)}
           data-tip={this.getMilestoneLabel(milestone)}
@@ -274,7 +294,7 @@ class Table extends React.Component {
     );
   }
 
-  render () {
+  render() {
     const {
       onMouseOverSprint,
       onClickSprint,
@@ -310,12 +330,12 @@ class Table extends React.Component {
           <div className={css.table}>
             <div className={css.tr}>
               <div className={css.year}>
-                <span className={css.arrow} onClick={grantYearDecrement}>
-                  &larr;
+                <span className={css.prev} onClick={grantYearDecrement}>
+                  {grantActiveYear - 1}
                 </span>
-                <span>{grantActiveYear}</span>
-                <span className={css.arrow} onClick={grantYearIncrement}>
-                  &rarr;
+                <span className={css.current}>{grantActiveYear}</span>
+                <span className={css.next} onClick={grantYearIncrement}>
+                  {grantActiveYear + 1}
                 </span>
               </div>
             </div>

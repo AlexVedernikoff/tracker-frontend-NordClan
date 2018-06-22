@@ -1,0 +1,29 @@
+@import '../../../../styles/variables.scss';
+
+.TableCell {
+  padding: 10px 15px;
+  text-align: left;
+  font-weight: 600;
+}
+.TableCellName {
+  flex-basis: 23%;
+  max-width: 23%;
+}
+.TableCellLogin {
+  flex-basis: 29%;
+  max-width: 29%;
+}
+.TableCellDate {
+  flex-basis: 23%;
+  max-width: 23%;
+}
+.TableCellActivity {
+  flex-basis: 16%;
+  max-width: 16%;
+  text-align: center;
+}
+
+.TableHeader {
+  display: flex;
+  background-color: $color-gray;
+}

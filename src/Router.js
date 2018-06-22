@@ -16,6 +16,7 @@ import Settings from './pages/ProjectPage/Settings';
 import Planning from './pages/ProjectPage/Planning';
 import Metrics from './pages/ProjectPage/Metrics';
 import TaskList from './pages/ProjectPage/TaskList';
+import ProjectTimesheets from './pages/ProjectPage/ProjectTimesheets';
 import MyTasks from './pages/MyTasks';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
@@ -25,12 +26,16 @@ import Timesheets from './pages/Timesheets';
 import UsersRoles from './pages/UsersRoles';
 import NotFound from './pages/NotFound';
 import RedirectPage from './pages/Redirect';
+import ExternalUsers from './pages/ExternalUsers';
+import ExternalUserActivate from './pages/ExternalUserActivate';
 import DemoPage from './components/Icons/DemoPage';
 import { connect } from 'react-redux';
 import { clearCurrentProjectAndTasks } from './actions/Tasks';
 import { clearCurrentTask } from './actions/Task';
 import { setRedirectPath } from './actions/Authentication';
 import isAdmin from './utils/isAdmin';
+import { EXTERNAL_USER } from './constants/Roles';
+import TaskTimeReports from './pages/TaskPage/TaskTimeReports/TaskTimeReports';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
@@ -75,19 +80,27 @@ class AppRouter extends Component {
     cb();
   };
 
+  notExternal = (nextState, replace, cb) => {
+    if (this.props.userGlobalRole === EXTERNAL_USER) {
+      replace('/projects');
+    }
+    cb();
+  };
+
   router = (
     <Router history={this.props.history} render={applyRouterMiddleware(useScroll(() => false))}>
       <Route path="" component={MainContainer}>
         <Route path="login" component={Login} onEnter={this.isLogged} />
         <Route path="icons" component={DemoPage} />
+        <Route path="externalUserActivate/:exUserToken" component={ExternalUserActivate} onEnter={this.isLogged} />
         <Route path="logout" component={Logout} />
         <Route path="/" component={InnerContainer} onEnter={this.requireAuth}>
           <Route path="dashboard" component={Dashboard} />
-          <Route path="timesheets" component={Timesheets} />
+          <Route path="timesheets" component={Timesheets} onEnter={this.notExternal} />
           <Route path="roles" component={UsersRoles} onEnter={this.requareAdmin} />
           <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
           <Route path="projects" component={Projects} />
-
+          <Route path="externalUsers" component={ExternalUsers} onEnter={this.requareAdmin} />
           <Route
             path="projects/:projectId"
             component={ProjectPage}
@@ -101,6 +114,7 @@ class AppRouter extends Component {
             <Route path="analytics" component={Metrics}>
               <Route path=":metricType" component={Metrics} />
             </Route>
+            <Route path="timesheets" component={ProjectTimesheets} />
             <Route path="history" component={ProjectHistory} />
             <Route path="(sprint:sprintId/)tasks" component={TaskList} />
           </Route>
@@ -114,7 +128,8 @@ class AppRouter extends Component {
             ignoreScrollBehavior
           >
             <IndexRoute component={Comments} />
-            <Route path="history" component={TaskHistory} />
+            <Route path="history" component={TaskHistory} onEnter={this.notExternal} />
+            <Route path="time-reports" component={TaskTimeReports} onEnter={this.notExternal} />
           </Route>
 
           <IndexRedirect to="projects" />

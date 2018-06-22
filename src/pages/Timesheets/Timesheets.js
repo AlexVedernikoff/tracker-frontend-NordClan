@@ -369,7 +369,8 @@ class Timesheets extends React.Component {
                 <td className={css.total} />
               </tr>
             </tbody>
-            {canAddActivity || !countTsWithTime ? (
+            {
+              // canAddActivity || !countTsWithTime ? (
               <tfoot>
                 <tr>
                   <td colSpan="10">
@@ -380,7 +381,8 @@ class Timesheets extends React.Component {
                   </td>
                 </tr>
               </tfoot>
-            ) : null}
+              // ) : null
+            }
           </table>
         </section>
         {this.state.isModalOpen ? <AddActivityModal onClose={() => this.setState({ isModalOpen: false })} /> : null}

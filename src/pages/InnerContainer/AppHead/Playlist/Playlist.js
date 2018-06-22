@@ -264,7 +264,7 @@ class Playlist extends Component {
 
   render() {
     const { isPlaylistOpen } = this.state;
-    const { activeTask, changeTask, tracks, currentUserId } = this.props;
+    const { activeTask, tracks, currentUserId } = this.props;
     const currentUserTracks = this.filterTracksByCurrentUser(tracks, currentUserId);
 
     return (
@@ -273,7 +273,7 @@ class Playlist extends Component {
           className={classnames(css.displayTask, css.task)}
           onClick={this.handleToggleList}
           activeTask={activeTask}
-          changeTask={changeTask}
+          changeTask={this.props.changeTask}
         />
         <ReactCSSTransitionGroup
           transitionName="animatedElement"
@@ -331,7 +331,7 @@ class Playlist extends Component {
                   <div className={css.today}>
                     <input
                       type="text"
-                      value={this.getScaleAll(currentUserTracks, this.state.activeDayTab)}
+                      value={this.getScaleAll(currentUserTracks, this.state.activeDayTab) || 0}
                       data-tip="Итого"
                       onChange={() => {}}
                     />
@@ -347,6 +347,9 @@ class Playlist extends Component {
 }
 
 Playlist.propTypes = {
+  activeTask: PropTypes.object,
+  availableProjects: PropTypes.array,
+  changeTask: PropTypes.func,
   currentUserId: PropTypes.number,
   magicActivitiesTypes: PropTypes.array,
   tracks: PropTypes.object

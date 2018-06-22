@@ -90,7 +90,7 @@ class CreateSprintModal extends Component {
 
   validateDates = () => {
     if (this.state.dateTo && this.state.dateFrom) {
-      return moment(this.state.dateTo).isAfter(this.state.dateFrom);
+      return moment(this.state.dateTo).isSameOrAfter(this.state.dateFrom);
     }
     return true;
   };
@@ -154,7 +154,7 @@ class CreateSprintModal extends Component {
                   value={formattedDayFrom}
                   onDayChange={this.handleDayFromChange}
                   placeholder="Введите дату начала"
-                  disabledDataRanges={this.props.sprintsDateRanges}
+                  // disabledDataRanges={this.props.sprintsDateRanges}
                 />
               </Col>
             </Row>
@@ -168,19 +168,7 @@ class CreateSprintModal extends Component {
                   value={formattedDayTo}
                   onDayChange={this.handleDayToChange}
                   placeholder="Введите дату окончания"
-                  disabledDataRanges={this.props.sprintsDateRanges}
-                />
-              </Col>
-            </Row>
-            <Row className={css.inputRow}>
-              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Время в часах:</p>
-              </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input
-                  placeholder="Введите время в часах"
-                  onChange={this.onChangeTime}
-                  value={this.state.allottedTime}
+                  // disabledDataRanges={this.props.sprintsDateRanges}
                 />
               </Col>
             </Row>

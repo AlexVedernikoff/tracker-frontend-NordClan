@@ -13,12 +13,15 @@ import Pagination from '../../../components/Pagination';
 import * as css from './TaskList.scss';
 import TagsFilter from '../../../components/TagsFilter';
 import PerformerFilter from '../../../components/PerformerFilter';
+import { EXTERNAL_USER } from '../../../constants/Roles';
 import _ from 'lodash';
 import PerformerModal from '../../../components/PerformerModal';
 import SprintModal from '../../../components/SprintModal';
 import getTasks from '../../../actions/Tasks';
 import { history } from '../../../History';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
+import CreateTaskModal from '../../../components/CreateTaskModal';
+import { openCreateTaskModal } from '../../../actions/Project';
 
 class TaskList extends Component {
   constructor(props) {
@@ -41,6 +44,10 @@ class TaskList extends Component {
     if (this.props.project.id !== nextProps.project.id) {
       this.loadTasks();
     }
+
+    if (this.props.lastCreatedTask !== nextProps.lastCreatedTask && nextProps.project.id) {
+      this.loadTasks();
+    }
   }
 
   setQueryFilters() {
@@ -56,8 +63,8 @@ class TaskList extends Component {
       return queries ? [translateToNumIfNeeded(queries)] : [];
     };
 
-    const singleQuery = query => {
-      return query ? translateToNumIfNeeded(query) : null;
+    const singleQuery = currentQuery => {
+      return currentQuery ? translateToNumIfNeeded(currentQuery) : null;
     };
     const getValues = changed => {
       const name = changed ? 'name' : 'filterByName';
@@ -302,6 +309,7 @@ class TaskList extends Component {
     const authorOptions = this.createOptions(project.users, 'fullNameRu');
     const isFilter = Object.keys(this.state.changedFilters).length > 1;
     const isLoading = isReceiving && !tasks.length;
+    const isExternal = this.props.globalRole === EXTERNAL_USER;
     const taskHolder = (
       <div style={{ marginBottom: '1rem' }}>
         <hr style={{ margin: '0 0 1rem 0' }} />
@@ -335,11 +343,18 @@ class TaskList extends Component {
                   canEdit
                 />
               </Col>
-              <Col smOffset={6} xs={12} sm={3} className={css.clearFilters}>
+              <Col smOffset={4} xs={12} sm={5} className={css.clearFilters}>
+                <Button
+                  onClick={this.props.openCreateTaskModal}
+                  type="primary"
+                  text="Создать задачу"
+                  icon="IconPlus"
+                  name="right"
+                />
                 <Button
                   type="primary"
                   text="Очистить фильтры"
-                  icon="IconClose"
+                  icon="IconBroom"
                   disabled={!isFilter}
                   onClick={this.clearFilters}
                 />
@@ -423,6 +438,7 @@ class TaskList extends Component {
                   onClickTag={this.onClickTag}
                   onOpenPerformerModal={this.openPerformerModal}
                   onOpenSprintModal={this.openSprintModal}
+                  isExternal={isExternal}
                 />
               ))}
           {!isLoading && tasks.length === 0 ? <div className={css.notFound}>Ничего не найдено</div> : null}
@@ -452,6 +468,13 @@ class TaskList extends Component {
             sprints={this.props.project.sprints}
           />
         ) : null}
+        {this.props.isCreateTaskModalOpen ? (
+          <CreateTaskModal
+            selectedSprintValue={this.state.sprintId}
+            project={this.props.project}
+            defaultPerformerId={performerId}
+          />
+        ) : null}
       </div>
     );
   }
@@ -460,29 +483,33 @@ class TaskList extends Component {
 TaskList.propTypes = {
   changeTask: PropTypes.func.isRequired,
   getTasks: PropTypes.func.isRequired,
+  globalRole: PropTypes.string,
   isReceiving: PropTypes.bool,
-  params: PropTypes.object,
+  lastCreatedTask: PropTypes.object,
+  location: PropTypes.object,
+  openCreateTaskModal: PropTypes.func.isRequired,
+  isCreateTaskModalOpen: PropTypes.bool,
   pagesCount: PropTypes.number.isRequired,
+  params: PropTypes.object,
   project: PropTypes.object.isRequired,
   startTaskEditing: PropTypes.func.isRequired,
   statuses: PropTypes.array,
   taskTypes: PropTypes.array,
-  tasksList: PropTypes.array.isRequired,
-  changeTask: PropTypes.func.isRequired,
-  startTaskEditing: PropTypes.func.isRequired,
-  location: PropTypes.object,
-  params: PropTypes.object
+  tasksList: PropTypes.array.isRequired
 };
 
 const mapStateToProps = state => ({
+  lastCreatedTask: state.Project.lastCreatedTask,
+  globalRole: state.Auth.user.globalRole,
   tasksList: state.TaskList.tasks,
   pagesCount: state.TaskList.pagesCount,
   isReceiving: state.TaskList.isReceiving,
+  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
   project: state.Project.project,
   statuses: state.Dictionaries.taskStatuses,
   taskTypes: state.Dictionaries.taskTypes
 });
 
-const mapDispatchToProps = { getTasks, startTaskEditing, changeTask };
+const mapDispatchToProps = { getTasks, startTaskEditing, changeTask, openCreateTaskModal };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskList);

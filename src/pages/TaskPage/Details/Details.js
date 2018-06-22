@@ -8,6 +8,8 @@ import TaskPlanningTime from '../TaskPlanningTime';
 import PerformerModal from '../../../components/PerformerModal';
 import SprintModal from '../../../components/SprintModal';
 import TaskTypeModal from '../../../components/TaskTypeModal';
+import Checkbox from '../../../components/Checkbox/Checkbox';
+import { IconEdit } from '../../../components/Icons';
 import getTypeById from '../../../utils/TaskTypes';
 import { getProjectUsers, getProjectSprints } from '../../../actions/Project';
 import { getTask } from '../../../actions/Task';
@@ -34,6 +36,7 @@ class Details extends Component {
     getProjectUsers: PropTypes.func.isRequired,
     getTask: PropTypes.func.isRequired,
     getTaskSpent: PropTypes.func.isRequired,
+    isExternal: PropTypes.bool,
     onChange: PropTypes.func.isRequired,
     sprints: PropTypes.array,
     task: PropTypes.object.isRequired,
@@ -136,6 +139,16 @@ class Details extends Component {
     this.closeTaskTypeModal();
   };
 
+  changeIsTaskByClient = () => {
+    this.props.onChange(
+      {
+        id: this.props.task.id,
+        isTaskByClient: !this.props.task.isTaskByClient
+      },
+      null
+    );
+  };
+
   spentTooltipRender(spents) {
     return _.transform(
       spents,
@@ -161,7 +174,7 @@ class Details extends Component {
   };
 
   render() {
-    const { task, sprints, taskTypes, timeSpent } = this.props;
+    const { task, sprints, taskTypes, timeSpent, isExternal } = this.props;
     const tags = task.tags.map((tag, i) => {
       const tagName = typeof tag === 'object' ? tag.name : tag;
       return <Tag key={i} name={tagName} taggable="task" taggableId={task.id} />;
@@ -200,20 +213,38 @@ class Details extends Component {
               <tr>
                 <td>Проект:</td>
                 <td>
-                  <Link to={'/projects/' + this.props.task.project.id}>{task.project.name}</Link>
+                  <Link className="underline-link" to={'/projects/' + this.props.task.project.id}>
+                    {task.project.name}
+                  </Link>
                 </td>
               </tr>
             ) : null}
             <tr>
               <td>Тип задачи:</td>
               <td>
-                <a onClick={this.openTaskTypeModal}>{getTypeById(task.typeId, taskTypes)}</a>
+                <span onClick={this.openTaskTypeModal} className={css.editableCell}>
+                  {getTypeById(task.typeId, taskTypes)}
+                  <span className={css.editIcon}>
+                    <IconEdit />
+                  </span>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td>От клиента</td>
+              <td className={css.byClient}>
+                <Checkbox checked={task.isTaskByClient} onChange={this.changeIsTaskByClient} />
               </td>
             </tr>
             <tr>
               <td>Спринт:</td>
               <td>
-                <a onClick={this.openSprintModal}>{task.sprint ? task.sprint.name : 'Backlog'}</a>
+                <span className={css.editableCell} onClick={this.openSprintModal}>
+                  {task.sprint ? task.sprint.name : 'Backlog'}
+                  <span className={css.editIcon}>
+                    <IconEdit />
+                  </span>
+                </span>
                 {/*<Link to={`/projects/${task.projectId}/agile-board`}>*/}
                 {/*{task.sprint ? task.sprint.name : 'Backlog'}*/}
                 {/*</Link>*/}
@@ -236,41 +267,65 @@ class Details extends Component {
             <tr>
               <td>Исполнитель:</td>
               <td>
-                <a onClick={this.openPerformerModal}>
+                <span onClick={this.openPerformerModal} className={css.editableCell}>
                   {task.performer ? task.performer.fullNameRu : <span className={css.unassigned}>Не назначено</span>}
-                </a>
+                  <span className={css.editIcon}>
+                    <IconEdit />
+                  </span>
+                </span>
               </td>
             </tr>
             <tr>
               <td>Дата создания:</td>
               <td>{moment(this.props.task.createdAt).format('DD.MM.YYYY')}</td>
             </tr>
+            {!isExternal
+              ? [
+                  <tr key="plannedExecutionTime">
+                    <td>Запланировано:</td>
+                    <td>
+                      <TaskPlanningTime
+                        time={task.plannedExecutionTime ? task.plannedExecutionTime.toString() : '0'}
+                        id={task.id}
+                        timeIsEditing={this.props.PlanningTimeIsEditing}
+                        canEdit={this.props.canEdit}
+                      />
+                    </td>
+                  </tr>,
+                  <tr key="factExecutionTime">
+                    <td>Всего затрачено:</td>
+                    <td>
+                      <span
+                        data-tip={!!Number(task.factExecutionTime)}
+                        data-place="right"
+                        data-for={this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? 'time' : 'notime'}
+                        key={this.state.tooltipKey}
+                        className={classnames({
+                          [css.factTime]: true,
+                          [css.alert]: +task.factExecutionTime > +task.plannedExecutionTime,
+                          [css.success]: +task.factExecutionTime <= +task.plannedExecutionTime
+                        })}
+                      >
+                        {`${task.factExecutionTime ? roundNum(task.factExecutionTime, 2) : 0} ч.`}
+                      </span>
+                      {Number(task.factExecutionTime) ? executeTimeTooltip : null}
+                    </td>
+                  </tr>
+                ]
+              : null}
             <tr>
-              <td>Запланировано:</td>
-              <td>
-                <TaskPlanningTime
-                  time={task.plannedExecutionTime ? task.plannedExecutionTime.toString() : '0'}
-                  id={task.id}
-                  timeIsEditing={this.props.PlanningTimeIsEditing}
-                  canEdit={this.props.canEdit}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>Потрачено:</td>
+              <td>Из них на QA:</td>
               <td>
                 <span
-                  data-tip={!!Number(task.factExecutionTime)}
-                  data-place="right"
-                  data-for={this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? 'time' : 'notime'}
-                  key={this.state.tooltipKey}
                   className={classnames({
-                    [css.alert]: true
+                    [css.factTime]: true,
+                    [css.alert]: +task.qaFactExecutionTime > +task.qaPlannedTime,
+                    [css.success]: +task.qaFactExecutionTime <= +task.qaPlannedTime
                   })}
                 >
-                  {`${task.factExecutionTime ? roundNum(task.factExecutionTime, 2) : 0} ч.`}
+                  {task.qaFactExecutionTime ? roundNum(task.qaFactExecutionTime, 2) : 0} из{' '}
+                  {task.qaPlannedTime ? roundNum(task.qaPlannedTime, 2) : 0} ч.
                 </span>
-                {Number(task.factExecutionTime) ? executeTimeTooltip : null}
               </td>
             </tr>
           </tbody>

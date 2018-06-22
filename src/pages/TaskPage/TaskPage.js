@@ -18,7 +18,7 @@ import GoBackPanel from '../../components/GoBackPanel';
 import CreateTaskModal from '../../components/CreateTaskModal';
 import HttpError from '../../components/HttpError';
 import { history } from '../../History';
-import { VISOR } from '../../constants/Roles';
+import { VISOR, EXTERNAL_USER } from '../../constants/Roles';
 
 import * as TaskStatuses from '../../constants/TaskStatuses';
 
@@ -37,35 +37,43 @@ import getTasks from '../../actions/Tasks';
 import { getProjectInfo, openCreateTaskModal, openCreateChildTaskModal } from '../../actions/Project';
 
 import * as css from './TaskPage.scss';
+import { getRoles } from '../../actions/Dictionaries';
 
 class TaskPage extends Component {
   static propTypes = {
     DescriptionIsEditing: PropTypes.bool,
     changeTask: PropTypes.func.isRequired,
     children: PropTypes.object,
-    getProjectInfo: PropTypes.func.isRequired,
-    getTask: PropTypes.func.isRequired,
     clearError: PropTypes.func,
+    getProjectInfo: PropTypes.func.isRequired,
+    getRoles: PropTypes.func.isRequired,
+    getTask: PropTypes.func.isRequired,
     getTasks: PropTypes.func.isRequired,
     globalRole: PropTypes.string.isRequired,
+    hasError: PropTypes.bool,
     isCreateChildTaskModalOpen: PropTypes.bool,
     isCreateTaskModalOpen: PropTypes.bool,
     linkTask: PropTypes.func.isRequired,
+    location: PropTypes.object,
     openCreateChildTaskModal: PropTypes.func.isRequired,
     openCreateTaskModal: PropTypes.func.isRequired,
     params: PropTypes.shape({
       projectId: PropTypes.string.isRequired,
-      taskId: PropTypes.string.isRequired
+      taskId: PropTypes.string.isRequired,
+      closeHasError: PropTypes.bool
     }),
     project: PropTypes.object,
     projectTasks: PropTypes.array,
     removeAttachment: PropTypes.func,
+    route: PropTypes.object,
+    router: PropTypes.object,
     sprints: PropTypes.array,
     startTaskEditing: PropTypes.func.isRequired,
     stopTaskEditing: PropTypes.func.isRequired,
     task: PropTypes.object,
     unlinkTask: PropTypes.func.isRequired,
-    uploadAttachments: PropTypes.func.isRequired
+    uploadAttachments: PropTypes.func.isRequired,
+    user: PropTypes.object
   };
 
   constructor(props) {
@@ -82,6 +90,7 @@ class TaskPage extends Component {
   }
 
   componentDidMount() {
+    this.props.getRoles();
     this.props.getTask(this.props.params.taskId);
     this.props.getProjectInfo(this.props.params.projectId);
     this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave);
@@ -206,17 +215,17 @@ class TaskPage extends Component {
   };
 
   handleCancelSubTask = () => {
-    const { getTask, changeTask, task } = this.props;
+    const { task } = this.props;
     const { canceledSubTaskId } = this.state;
 
-    changeTask(
+    this.props.changeTask(
       {
         id: canceledSubTaskId,
         statusId: TaskStatuses.CANCELED
       },
       'Status',
       () => {
-        getTask(task.id);
+        this.props.getTask(task.id);
       }
     );
 
@@ -226,6 +235,7 @@ class TaskPage extends Component {
   render() {
     const { globalRole, task, params } = this.props;
     const isVisor = globalRole === VISOR;
+    const isExternal = globalRole === EXTERNAL_USER;
     const projectUrl = task.project ? `/projects/${task.project.id}` : '/';
     const notFoundError =
       task.project && task.project.id !== +params.projectId
@@ -269,12 +279,17 @@ class TaskPage extends Component {
                 uploadAttachments={this.uploadAttachments}
                 canEdit={task.statusId !== TaskStatuses.CLOSED}
               />
-              <RouteTabs style={{ marginTop: '2rem', marginBottom: '2rem' }}>
-                <Link onlyActiveOnIndex to={`/projects/${params.projectId}/tasks/${params.taskId}`}>
-                  Комментарии
-                </Link>
-                <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/history`}>История</Link>
-              </RouteTabs>
+              {!isExternal ? (
+                <RouteTabs style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+                  <Link onlyActiveOnIndex to={`/projects/${params.projectId}/tasks/${params.taskId}`}>
+                    Комментарии
+                  </Link>
+                  <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/history`}>История</Link>
+                  <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/time-reports`}>
+                    Отчеты по времени
+                  </Link>
+                </RouteTabs>
+              ) : null}
               {this.props.children}
             </main>
           </Col>
@@ -283,6 +298,7 @@ class TaskPage extends Component {
               <Details
                 task={task}
                 sprints={this.props.sprints}
+                isExternal={isExternal}
                 onChange={this.props.changeTask}
                 canEdit={task.statusId !== TaskStatuses.CLOSED}
               />
@@ -356,7 +372,7 @@ class TaskPage extends Component {
             onConfirm={this.handleCancelSubTask}
           />
         ) : null}
-        {this.props.hasError === true && this.state.closeHasError !== true ? (
+        {this.props.hasError && !this.state.closeHasError ? (
           <ConfirmModal
             isOpen
             contentLabel="modal"
@@ -380,7 +396,8 @@ const mapStateToProps = state => ({
   isCreateChildTaskModalOpen: state.Project.isCreateChildTaskModalOpen,
   globalRole: state.Auth.user.globalRole,
   hasError: state.Task.hasError,
-  closeHasError: state.Task.closeHasError
+  closeHasError: state.Task.closeHasError,
+  user: state.Auth.user
 });
 
 const mapDispatchToProps = {
@@ -396,7 +413,8 @@ const mapDispatchToProps = {
   startTaskEditing,
   stopTaskEditing,
   unlinkTask,
-  uploadAttachments
+  uploadAttachments,
+  getRoles
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskPage);

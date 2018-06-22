@@ -125,6 +125,28 @@ export default function Task(state = InitialState, action) {
             const job = spent.job;
             byStatus[job] = Number(spent.spent) + (byStatus[job] ? byStatus[job] : 0);
           }, {})
+          .value(),
+        userTimeSpent: _.chain(action.data)
+          .filter(timeSheet => Number(timeSheet.spentTime))
+          .map(spent => ({
+            user: spent.user.fullNameRu,
+            spent: spent.spentTime
+          }))
+          .transform((byStatus, spent) => {
+            const user = spent.user;
+            byStatus[user] = Number(spent.spent) + (byStatus[user] ? byStatus[user] : 0);
+          }, {})
+          .value(),
+        roleTimeSpent: _.chain(action.data)
+          .filter(timeSheet => Number(timeSheet.spentTime))
+          .map(spent => ({
+            role: spent.userRole,
+            spent: spent.spentTime
+          }))
+          .transform((byStatus, spent) => {
+            const role = spent.role;
+            byStatus[role] = Number(spent.spent) + (byStatus[role] ? byStatus[role] : 0);
+          }, {})
           .value()
       };
 

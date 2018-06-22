@@ -17,6 +17,8 @@ class InnerContainer extends Component {
   static propTypes = {
     children: PropTypes.object,
     getMagicActivityTypes: PropTypes.func,
+    getMilestoneTypes: PropTypes.func,
+    getProjectTypes: PropTypes.func,
     getTaskStatuses: PropTypes.func,
     getTaskTypes: PropTypes.func,
     user: PropTypes.object
@@ -41,6 +43,8 @@ class InnerContainer extends Component {
     this.props.getMagicActivityTypes();
     this.props.getTaskStatuses();
     this.props.getTaskTypes();
+    this.props.getMilestoneTypes();
+    this.props.getProjectTypes();
     this.listenHistory();
   }
 

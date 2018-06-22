@@ -1,7 +1,7 @@
 @import '../../styles/variables';
 
 .Notification {
-  width: 100%;
+  width: 13rem;
   height: auto;
   padding: 0.5rem 1rem 0.5rem 0.5rem;
   background-color: $color-dark;
@@ -11,7 +11,7 @@
   align-items: center;
   justify-content: flex-start;
   box-shadow: $box-shadow;
-  transition: box-shadow .15s ease-in-out;
+  transition: box-shadow 0.15s ease-in-out;
   cursor: pointer;
 
   &:hover {
@@ -24,6 +24,9 @@
 }
 
 .NotificationMessage {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
   margin: 0;
   margin-left: 0.5rem;
 }
@@ -35,9 +38,15 @@
   flex-shrink: 0;
 }
 
-.error { background-color: $color-red; }
-.success { background-color: $color-green; }
-.primary { background-color: $color-green; }
+.error {
+  background-color: $color-red;
+}
+.success {
+  background-color: $color-green;
+}
+.primary {
+  background-color: $color-green;
+}
 
 .hide {
   display: none;

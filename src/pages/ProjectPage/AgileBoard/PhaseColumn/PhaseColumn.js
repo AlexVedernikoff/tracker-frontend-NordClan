@@ -9,16 +9,16 @@ import InlineHolder from '../../../../components/InlineHolder';
 import * as css from './PhaseColumn.scss';
 
 const columnTarget = {
-  canDrop (props, monitor) {
+  canDrop(props, monitor) {
     return props.section === monitor.getItem().section;
   },
 
-  drop (props, monitor) {
+  drop(props, monitor) {
     props.onDrop(monitor.getItem(), props.title);
   }
 };
 
-function collect (connectDnd, monitor) {
+function collect(connectDnd, monitor) {
   return {
     connectDropTarget: connectDnd.dropTarget(),
     isOver: monitor.isOver(),
@@ -27,7 +27,6 @@ function collect (connectDnd, monitor) {
 }
 
 class PhaseColumn extends React.Component {
-
   static propTypes = {
     allTasksLength: PropTypes.number.isRequired,
     canDrop: PropTypes.bool.isRequired,
@@ -39,9 +38,9 @@ class PhaseColumn extends React.Component {
     section: PropTypes.string.isRequired,
     tasks: PropTypes.array,
     title: PropTypes.string.isRequired
-  }
+  };
 
-  render () {
+  render() {
     const {
       tasks,
       title,
@@ -53,23 +52,27 @@ class PhaseColumn extends React.Component {
       isProjectLoading
     } = this.props;
 
-    return (
-      connectDropTarget(
-        <div className={classnames({'col-xs-6 col-sm': true, [css.dropColumn]: true, [css.canDropColumn]: isOver && canDrop, [css.cantDropColumn]: isOver && !canDrop})} >
-          <h4>{`${title} (${tasks.length})`}</h4>
-          {
-            tasks.length
-              ? tasks
-              : (isTasksLoad || isProjectLoading) && !allTasksLength
-                ? <div className={css.cardHolder}>
-                  <InlineHolder length='70%' />
-                  <InlineHolder length='100%' />
-                  <InlineHolder length='30%' />
-                </div>
-                : <span className="text-info">Задачи в стадии {title} отсутствуют</span>
-          }
-        </div>
-      )
+    return connectDropTarget(
+      <div
+        className={classnames({
+          [css.dropColumn]: true,
+          [css.canDropColumn]: isOver && canDrop,
+          [css.cantDropColumn]: isOver && !canDrop
+        })}
+      >
+        <h4>{`${title} (${tasks.length})`}</h4>
+        {tasks.length ? (
+          tasks
+        ) : (isTasksLoad || isProjectLoading) && !allTasksLength ? (
+          <div className={css.cardHolder}>
+            <InlineHolder length="70%" />
+            <InlineHolder length="100%" />
+            <InlineHolder length="30%" />
+          </div>
+        ) : (
+          <span className="text-info">Задачи в стадии {title} отсутствуют</span>
+        )}
+      </div>
     );
   }
 }

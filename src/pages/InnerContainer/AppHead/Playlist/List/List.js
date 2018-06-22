@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
+import cn from 'classnames';
+
 import { TASK_STATUS_DEVELOP_PLAY } from '../../../../../constants/Task';
-
 import { IconArrowDown, IconArrowUp } from '../../../../../components/Icons';
-
 import PlaylistItem from '../PlaylistItem';
 import * as css from '../Playlist.scss';
 
@@ -44,15 +44,24 @@ class List extends Component {
     const { isDraftShow } = this.state;
     const { tracks } = this.props;
     const visible = [
-      ...tracks.filter(item => item.isVisible && item.task && item.task.taskStatus.id === TASK_STATUS_DEVELOP_PLAY),
-      ...tracks.filter(item => item.isVisible && (!item.task || item.task.taskStatus.id !== TASK_STATUS_DEVELOP_PLAY))
+      ...tracks.filter(
+        item => item.isVisible && item.task && item.taskStatus && item.taskStatus.id === TASK_STATUS_DEVELOP_PLAY
+      ),
+      ...tracks.filter(
+        item => item.isVisible && (!item.task || (item.taskStatus && item.taskStatus.id !== TASK_STATUS_DEVELOP_PLAY))
+      )
     ].map(this.playlistItem);
 
     const invisible = tracks && tracks.filter(item => !item.isVisible).map(this.playlistItem);
+    const nothingToShow = (
+      <div className={cn(['text-info', css.nothingToShow])}>
+        Отсутствуют отчеты по времени, подходящие под выбранные параметры.
+      </div>
+    );
 
     return (
       <div>
-        {visible}
+        {visible.length ? visible : nothingToShow}
         {invisible && invisible.length > 0 ? (
           <div
             className={css.showMore}

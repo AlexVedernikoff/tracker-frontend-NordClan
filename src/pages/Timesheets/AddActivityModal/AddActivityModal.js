@@ -19,6 +19,7 @@ import {
   getTasksForSelect,
   getProjectsForSelect
 } from '../../../actions/Timesheets';
+import getStatusOptions from '../../../utils/getDraftStatusOptions';
 import * as activityTypes from '../../../constants/ActivityTypes';
 
 class AddActivityModal extends Component {
@@ -30,16 +31,17 @@ class AddActivityModal extends Component {
     changeTask: PropTypes.func,
     clearModalState: PropTypes.func,
     filterTasks: PropTypes.func,
+    getProjectSprints: PropTypes.func,
     getProjectsForSelect: PropTypes.func,
     getTasksForSelect: PropTypes.func,
     onClose: PropTypes.func,
-    getProjectSprints: PropTypes.func,
     selectedActivityType: PropTypes.number,
     selectedProject: PropTypes.object,
     selectedTask: PropTypes.object,
     selectedTaskStatusId: PropTypes.number,
-    startingDay: PropTypes.object,
     sprints: PropTypes.array,
+    startingDay: PropTypes.object,
+    taskStatuses: PropTypes.array,
     userId: PropTypes.number
   };
 
@@ -80,6 +82,9 @@ class AddActivityModal extends Component {
       }
     } else {
       this.setState({ [name]: 0 });
+    }
+    if (!option && name === 'taskStatusId') {
+      this.props.changeTask(this.props.selectedTask, null);
     }
   };
 
@@ -337,20 +342,7 @@ class AddActivityModal extends Component {
                     value={this.props.selectedTaskStatusId}
                     onChange={option => this.changeItem(option, 'taskStatusId')}
                     placeholder="Выбрать статус"
-                    options={[
-                      {
-                        value: 2,
-                        label: 'Develop'
-                      },
-                      {
-                        value: 4,
-                        label: 'Code Review'
-                      },
-                      {
-                        value: 6,
-                        label: 'QA'
-                      }
-                    ]}
+                    options={getStatusOptions(this.props.taskStatuses)}
                   />
                 </Col>
               </Row>
@@ -359,7 +351,10 @@ class AddActivityModal extends Component {
           <div className={css.footer}>
             <Button
               text="Добавить"
-              disabled={!this.props.selectedActivityType}
+              disabled={
+                !this.props.selectedActivityType ||
+                (this.props.selectedActivityType === 1 && !this.props.selectedTaskStatusId)
+              }
               htmlType="submit"
               type="green"
               onClick={this.addActivity}
@@ -378,6 +373,7 @@ const mapStateToProps = state => ({
   selectedTaskStatusId: state.Timesheets.selectedTaskStatusId,
   selectedProject: state.Timesheets.selectedProject,
   startingDay: state.Timesheets.startingDay,
+  taskStatuses: state.Dictionaries.taskStatuses,
   filteredTasks: state.Timesheets.filteredTasks,
   sprints: state.Project.project.sprints,
   userId: state.Auth.user.id

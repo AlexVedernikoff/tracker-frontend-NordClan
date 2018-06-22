@@ -1,27 +1,23 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
-import { API_URL } from '../../../constants/Settings';
 import Modal from '../../../components/Modal';
 import Button from '../../../components/Button';
-import Input from '../../../components/Input';
 import ValidatedInput from '../../../components/ValidatedInput';
 import Validator from '../../../components/ValidatedInput/Validator';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './CreateProject.scss';
-import Checkbox from '../../../components/Checkbox';
 import Select from 'react-select';
-import getPortfolios from '../../../utils/getPortfolios'
+import getPortfolios from '../../../utils/getPortfolios';
 
 class CreateProject extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.validator = new Validator();
   }
 
-  render () {
-    const { isOpen, onRequestClose, prefixErrorText } = this.props;
+  render() {
+    const { isOpen, onRequestClose, prefixErrorText, projectTypes = [] } = this.props;
 
     const formLayout = {
       firstCol: 5,
@@ -39,9 +35,9 @@ class CreateProject extends Component {
         }}
         contentLabel="Modal"
       >
-        <form className={css.createProjectForm} onSubmit={this.props.onSubmit}>
+        <div className={css.createProjectForm}>
           <h3 className={css.header}>Создать проект</h3>
-          <hr/>
+          <hr />
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
@@ -93,6 +89,26 @@ class CreateProject extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>Тип проекта</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                <Select
+                  name="performer"
+                  placeholder="Выберите тип проекта"
+                  multi={false}
+                  noResultsText="Нет результатов"
+                  backspaceRemoves={false}
+                  options={projectTypes.map(type => ({ value: type.id, label: type.name }))}
+                  className={css.selectType}
+                  onChange={this.props.onTypeSelect}
+                  value={this.props.selectedType}
+                />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Добавить проект в портфель</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
@@ -103,7 +119,7 @@ class CreateProject extends Component {
                   ignoreCase={false}
                   placeholder="Выберите портфель"
                   loadOptions={getPortfolios}
-                  filterOption={el=>el}
+                  filterOption={el => el}
                   onChange={this.props.onPortfolioSelect}
                   value={this.props.selectedPortfolio}
                   className={css.selectPortfolio}
@@ -111,36 +127,21 @@ class CreateProject extends Component {
               </Col>
             </Row>
           </label>
-          {/* <label className={css.formField}>
-            <Row>
-              <Col xs={formLayout.firstCol} className={css.leftColumn}>
-                <p>Открыть страницу проекта</p>
-              </Col>
-              <Col xs={formLayout.secondCol} className={css.rightColumn}>
-                <Checkbox
-                  name="openProjectPage"
-                  onChange={this.props.handleCheckBox}
-                />
-              </Col>
-            </Row>
-          </label> */}
           <div className={css.buttonsContainer}>
             <Button
               text="Создать проект"
-              htmlType="submit"
               type="green"
               onClick={this.props.onSubmit}
-              disabled = {!(this.props.validateProjectName && this.props.validateProjectPrefix)}
+              disabled={!(this.props.validateProjectName && this.props.validateProjectPrefix)}
             />
             <Button
               text="Создать и открыть"
-              htmlType="button"
               type="green-lighten"
               onClick={this.props.onSubmitAndOpen}
-              disabled = {!(this.props.validateProjectName && this.props.validateProjectPrefix)}
+              disabled={!(this.props.validateProjectName && this.props.validateProjectPrefix)}
             />
           </div>
-        </form>
+        </div>
       </Modal>
     );
   }
@@ -154,8 +155,13 @@ CreateProject.propTypes = {
   onRequestClose: PropTypes.func,
   onSubmit: PropTypes.func,
   onSubmitAndOpen: PropTypes.func,
+  onTypeSelect: PropTypes.func,
   prefixErrorText: PropTypes.string,
-  selectedPortfolio: PropTypes.object
+  projectTypes: PropTypes.array,
+  selectedPortfolio: PropTypes.object,
+  selectedType: PropTypes.number,
+  validateProjectName: PropTypes.bool,
+  validateProjectPrefix: PropTypes.bool
 };
 
 export default CreateProject;

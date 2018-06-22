@@ -12,14 +12,14 @@ $paginate-border-width: 3px;
 }
 
 .page-item {
-
   &:first-child {
     a {
       // font-size: 2em;
     }
   }
 
-  a {
+  a,
+  span {
     display: block;
     padding: 1rem 2rem;
     text-decoration: none;
@@ -28,12 +28,17 @@ $paginate-border-width: 3px;
     border-top: $paginate-border-width solid transparent;
     margin-top: -$paginate-border-width;
     transition: $transition;
+
+    @include phone {
+      padding: 0.5rem;
+    }
   }
 
   &:not(.disabled) {
     a {
       &:hover {
-        color: $color-green;
+        // color: $color-green;
+        color: $color-dark;
         border-color: $color-dark;
       }
     }
@@ -49,7 +54,6 @@ $paginate-border-width: 3px;
 }
 
 .active {
-
   a {
     color: $color-orange;
     border-color: $color-orange;

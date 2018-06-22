@@ -11,6 +11,7 @@ import _ from 'lodash';
 import Button from '../Button';
 import SelectDropdown from '../SelectDropdown';
 import ValidatedInput from '../ValidatedInput';
+import InputNumber from '../../components/InputNumber';
 import ValidatedAutosizeInput from '../ValidatedAutosizeInput';
 import * as css from './CreateTaskModal.scss';
 import Priority from '../Priority';
@@ -18,6 +19,7 @@ import { closeCreateTaskModal, createTask } from '../../actions/Project';
 import { BACKLOG_ID } from '../../constants/Sprint';
 import Validator from '../ValidatedInput/Validator';
 import TextEditor from '../../components/TextEditor';
+import Checkbox from '../../components/Checkbox/Checkbox';
 
 class CreateTaskModal extends Component {
   constructor(props) {
@@ -30,14 +32,16 @@ class CreateTaskModal extends Component {
 
     this.state = {
       selectedSprint: props.selectedSprintValue,
-      selectedPerformer: null,
+      selectedPerformer: props.defaultPerformerId || null,
       taskName: '',
       description: '',
+      plannedExecutionTime: 0,
       openTaskPage: false,
       prioritiesId: 3,
       selectedType: this.types[0],
       selectedTypeError: this.types.length === 0,
-      typeList: this.types
+      typeList: this.types,
+      isTaskByClient: false
     };
 
     this.validator = new Validator();
@@ -52,6 +56,12 @@ class CreateTaskModal extends Component {
   handlePerformerChange = selectedPerformer => {
     this.setState({
       selectedPerformer: selectedPerformer ? selectedPerformer.value : 0
+    });
+  };
+
+  handleIsTaskByClientChange = () => {
+    this.setState({
+      isTaskByClient: true
     });
   };
 
@@ -76,7 +86,9 @@ class CreateTaskModal extends Component {
         typeId: this.state.selectedType.value,
         sprintId: this.state.selectedSprint === BACKLOG_ID ? null : this.state.selectedSprint,
         prioritiesId: this.state.prioritiesId,
-        parentId: this.props.parentTaskId
+        plannedExecutionTime: this.state.plannedExecutionTime,
+        parentId: this.props.parentTaskId,
+        isTaskByClient: this.state.isTaskByClient
       },
       this.state.openTaskPage,
       this.props.column
@@ -123,6 +135,10 @@ class CreateTaskModal extends Component {
 
   handleChange = field => event => {
     this.setState({ [field]: event.target.value.trim() });
+  };
+
+  handleChangePlannedTime = plannedExecutionTime => {
+    this.setState({ plannedExecutionTime });
   };
 
   render() {
@@ -204,6 +220,16 @@ class CreateTaskModal extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>От клиента:</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
+                <Checkbox checked={this.state.isTaskByClient} onChange={this.handleIsTaskByClientChange} />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Приоритет:</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
@@ -251,6 +277,21 @@ class CreateTaskModal extends Component {
               </Col>
             </Row>
           </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>Оценка времени:</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                <InputNumber
+                  min={0}
+                  postfix={'ч.'}
+                  onChange={this.handleChangePlannedTime}
+                  value={this.state.plannedExecutionTime}
+                />
+              </Col>
+            </Row>
+          </label>
           <div className={css.buttonsContainer}>
             <Button
               text="Создать задачу"
@@ -289,7 +330,8 @@ CreateTaskModal.propTypes = {
   parentTaskId: PropTypes.number,
   project: PropTypes.object,
   selectedSprintValue: PropTypes.number,
-  taskTypes: PropTypes.array
+  taskTypes: PropTypes.array,
+  defaultPerformerId: PropTypes.number
 };
 
 const mapStateToProps = state => ({

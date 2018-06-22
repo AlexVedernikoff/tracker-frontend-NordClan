@@ -7,7 +7,7 @@
 
 .property {
   &:before {
-    content: "";
+    content: '';
     display: table;
   }
 }
@@ -47,7 +47,7 @@
   }
 
   .cell {
-    padding: 8px;
+    padding: 8px 0;
 
     @include tablet {
       padding-right: 0;
@@ -55,7 +55,6 @@
   }
 
   .cellColumn {
-
     @include tablet {
       flex-basis: 25%;
       width: 25%;
@@ -89,9 +88,10 @@
   position: absolute;
   z-index: 2;
   top: 8px;
-  left: -8px;
+  left: -16px;
   cursor: pointer;
   transition: $transition;
+  fill: transparentize(#000000, 0.5);
 
   &:hover {
     transform: rotate(90deg);

@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { IconDelete, IconDownload } from '../Icons';
-import Modal from '../Modal';
 import ConfirmModal from '../ConfirmModal';
 
 export default class AttachedImage extends React.Component {
   static propTypes = {
-    fileName: PropTypes.string.isRequired,
+    canEdit: PropTypes.bool,
     id: PropTypes.number,
+    index: PropTypes.number,
+    fileName: PropTypes.string.isRequired,
+    open: PropTypes.func,
     path: PropTypes.string.isRequired,
     previewPath: PropTypes.string.isRequired,
     removeAttachment: PropTypes.func.isRequired,
@@ -18,18 +20,9 @@ export default class AttachedImage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isModalOpen: false,
       isConfirmDeleteOpen: false
     };
   }
-
-  handleOpenModal = () => {
-    this.setState({ isModalOpen: true });
-  };
-
-  handleCloseModal = () => {
-    this.setState({ isModalOpen: false });
-  };
 
   handleOpenConfirmDelete = event => {
     event.stopPropagation();
@@ -66,10 +59,15 @@ export default class AttachedImage extends React.Component {
       display: 'block'
     };
 
-    const { fileName, path, previewPath, canEdit } = this.props;
+    const { fileName, path, previewPath, canEdit, open, index } = this.props;
 
     return (
-      <li className={css.attachment} onClick={this.handleOpenModal}>
+      <li
+        className={css.attachment}
+        onClick={() => {
+          open(index);
+        }}
+      >
         <div className={css.actions}>
           <a target="_blank" href={`/${path}`} onClick={this.stopBubbling} download>
             <button>
@@ -86,12 +84,6 @@ export default class AttachedImage extends React.Component {
         </div>
         <div className={css.attachmentName}>{fileName}</div>
 
-        {this.state.isModalOpen ? (
-          <Modal isOpen contentLabel="modal" onRequestClose={this.handleCloseModal}>
-            <img src={`/${path}`} alt="" style={imageStyles} />
-          </Modal>
-        ) : null}
-
         {this.state.isConfirmDeleteOpen ? (
           <ConfirmModal
             isOpen
@@ -106,6 +98,3 @@ export default class AttachedImage extends React.Component {
     );
   }
 }
-AttachedImage.propTypes = {
-  canEdit: PropTypes.bool
-};

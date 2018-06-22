@@ -1,3 +1,8 @@
+input,
+textarea {
+  font-family: inherit;
+}
+
 /* Tooltips ===> */
 
 .tooltip {
@@ -7,19 +12,34 @@
   opacity: 0.8 !important;
 }
 
-.tooltip.place-bottom:after {border-bottom-color: #2b3e50 !important;}
-.tooltip.place-top:after {border-top-color: #2b3e50 !important;}
-.tooltip.place-left:after {border-left-color: #2b3e50 !important;}
-.tooltip.place-right:after {border-right-color: #2b3e50 !important;}
+.tooltip.place-bottom:after {
+  border-bottom-color: #2b3e50 !important;
+}
+.tooltip.place-top:after {
+  border-top-color: #2b3e50 !important;
+}
+.tooltip.place-left:after {
+  border-left-color: #2b3e50 !important;
+}
+.tooltip.place-right:after {
+  border-right-color: #2b3e50 !important;
+}
 
 .tab-pane {
   padding: 0;
   background: none;
 }
 
-.tab-simple>.tab-content { background: none; }
-.tab-simple>.nav>li>a { color: gray; font-weight: normal; }
-.tab-simple>.nav>li.active>a { color: #333; }
+.tab-simple > .tab-content {
+  background: none;
+}
+.tab-simple > .nav > li > a {
+  color: gray;
+  font-weight: normal;
+}
+.tab-simple > .nav > li.active > a {
+  color: #333;
+}
 
 /* <=== Tooltips */
 
@@ -73,14 +93,12 @@
     align-items: flex-start !important;
   }
 }
-.ReactModal__Overlay
-.ReactModal__Content {
+.ReactModal__Overlay .ReactModal__Content {
   animation-name: fadeIn;
   animation-duration: 0.2s;
 }
 
-.ReactModal__Overlay--before-close
-.ReactModal__Content {
+.ReactModal__Overlay--before-close .ReactModal__Content {
   animation-name: fadeOut;
   animation-duration: 0.2s;
   animation-fill-mode: forwards;
@@ -117,6 +135,20 @@
 .text-info {
   font-size: smaller;
   color: darkgray;
+}
+
+.underline-link {
+  text-decoration: none;
+}
+
+.underline-link:hover {
+  text-decoration: underline;
+}
+
+.ellipsis {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* <=== App service styles */

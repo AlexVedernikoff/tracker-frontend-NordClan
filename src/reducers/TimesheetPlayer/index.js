@@ -5,7 +5,6 @@ import {
   TIMESHEET_PLAYER_RECEIVE_START,
   TIMESHEET_PLAYER_RECEIVE_SUCCESS,
   TIMESHEET_PLAYER_UPDATE_RECEIVE_SUCCESS,
-  TIMESHEET_PLAYER_TIMESHEET_UPDATE_RECEIVE_SUCCESS,
   GET_ACTIVE_TASK
 } from '../../constants/TimesheetPlayer';
 
@@ -20,6 +19,7 @@ import { TASK_CHANGE_REQUEST_SUCCESS } from '../../constants/Task';
 const InitialState = {
   activeTask: null,
   availableProjects: [],
+  tracksChange: 0,
   tracks: {}
 };
 
@@ -82,7 +82,7 @@ function onUpdateTracks(state, action) {
   return newState;
 }
 
-exports[CREATE_TIMESHEET_SUCCESS] = (state = InititalState, action) => {
+exports[CREATE_TIMESHEET_SUCCESS] = (state = InitialState, action) => {
   action.timesheet.onDate = moment(action.timesheet.onDate).format('YYYY-MM-DD');
   action.timesheet.spentTime = action.timesheet.spentTime || 0;
 
@@ -150,6 +150,7 @@ function updateTracks(state, action, updatedTracks) {
 
   return {
     ...state,
+    tracksChange: state.tracksChange + 1,
     tracks: { ...state.tracks, ...updatedDay }
   };
 }

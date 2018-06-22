@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import AppRoute from './Router';
 
-import 'normalize-css';
+import 'normalize.css';
 import './styles/hooks.css';
 import './styles/App.scss';
 import { store, history } from './History';
@@ -15,11 +15,11 @@ import SocketAdapter from './sockets/SocketAdapter';
 
 const rootEl = document.getElementById('app');
 
-const render = (App) => {
+const render = App => {
   ReactDOM.render(
     <AppContainer>
       <Provider store={store}>
-          <App history={history}/>
+        <App history={history} />
       </Provider>
     </AppContainer>,
     rootEl
