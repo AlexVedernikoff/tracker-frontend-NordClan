@@ -20,8 +20,7 @@ class CreateSprintModal extends Component {
       dateTo: undefined,
       budget: '',
       riskBudget: '',
-      sprintName: '',
-      allottedTime: ''
+      sprintName: ''
     };
   }
 
@@ -34,12 +33,6 @@ class CreateSprintModal extends Component {
   onChangeRiskBudget = e => {
     if (this.validateNumbers(e.target.value)) {
       this.setState({ riskBudget: e.target.value });
-    }
-  };
-
-  onChangeTime = e => {
-    if (this.validateNumbers(e.target.value)) {
-      this.setState({ allottedTime: e.target.value });
     }
   };
 
@@ -60,7 +53,6 @@ class CreateSprintModal extends Component {
       this.state.sprintName &&
       this.state.dateTo &&
       this.state.dateFrom &&
-      this.state.allottedTime &&
       this.state.budget &&
       this.state.riskBudget
     );
@@ -69,7 +61,7 @@ class CreateSprintModal extends Component {
   setDefaultTimeValue = () => {
     if (this.state.dateTo && this.state.dateFrom) {
       const calculatedHours = this.calcWorkingHours(this.state.dateFrom, this.state.dateTo);
-      this.setState({ allottedTime: calculatedHours });
+      this.setState({ budget: calculatedHours });
     }
   };
 
@@ -103,7 +95,6 @@ class CreateSprintModal extends Component {
       this.props.projectId,
       this.state.dateFrom,
       this.state.dateTo,
-      Number(this.state.allottedTime),
       Number(this.state.budget),
       Number(this.state.riskBudget)
     );

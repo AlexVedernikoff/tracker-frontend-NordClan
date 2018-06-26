@@ -259,8 +259,6 @@ class Table extends React.Component {
         >
           <div className={css.SprintInfo__tooltip + ' ' + this.currentMonth(sprint)}>
             <div className={css.text}>{this.getSprintTime(sprint)}</div>
-            {/*<div className={css.text}>{sprint.spentTime || 0}</div>
-            <div className={css.text}>{sprint.allottedTime || 0}</div>*/}
           </div>
         </div>
       </div>

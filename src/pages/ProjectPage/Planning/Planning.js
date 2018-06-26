@@ -187,7 +187,7 @@ class Planning extends Component {
       };
     } else {
       const sprint = this.props.project.sprints.filter(item => item.id === sprintId)[0];
-      const sprintEstimate = sprint && sprint.allottedTime ? +sprint.allottedTime : 0;
+      const sprintEstimate = sprint && sprint.riskBudget ? +sprint.riskBudget : 0;
       const sprintSpentTime = sprint && sprint.spentTime ? +sprint.spentTime : 0;
       const ratio = sprintEstimate === 0 ? 0 : sprintSpentTime / sprintEstimate;
       const width = ratioValue => {
@@ -289,7 +289,6 @@ class Planning extends Component {
       sprint.sprintName.trim(),
       sprint.dateFrom,
       sprint.dateTo,
-      sprint.allottedTime,
       sprint.budget,
       sprint.riskBudget
     );

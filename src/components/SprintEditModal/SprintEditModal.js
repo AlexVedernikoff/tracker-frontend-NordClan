@@ -25,7 +25,6 @@ class SprintEditModal extends Component {
         id: this.props.sprint.id,
         dateTo: undefined,
         sprintName: this.props.sprint.name,
-        allottedTime: this.props.sprint.allottedTime || '0.00',
         isHovered: false,
         budget: this.props.sprint.budget || '0.00',
         riskBudget: this.props.sprint.riskBudget || '0.00'
@@ -36,7 +35,6 @@ class SprintEditModal extends Component {
   checkNullInputs = () => {
     return !!(
       this.state.sprint.sprintName.length &&
-      this.state.sprint.allottedTime.length &&
       this.state.sprint.budget.length &&
       this.state.sprint.riskBudget.length
     );
