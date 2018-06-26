@@ -3,7 +3,7 @@ import * as css from './../Planning.scss';
 import classnames from 'classnames';
 import moment from 'moment';
 import SprintStartControl from '../../../../components/SprintStartControl';
-import { IconEdit } from '../../../../components/Icons';
+import { IconDelete, IconEdit } from '../../../../components/Icons';
 
 import roundNum from '../../../../utils/roundNum';
 
@@ -103,7 +103,8 @@ class Table extends React.Component {
       isProjectAdmin,
       openSprintEditModal,
       openMilestoneEditModal,
-      isExternal
+      isExternal,
+      onDeleteMilestone
     } = this.props;
 
     return (
@@ -146,7 +147,8 @@ class Table extends React.Component {
       isProjectAdmin,
       openSprintEditModal,
       openMilestoneEditModal,
-      isExternal
+      isExternal,
+      onDeleteMilestone
     } = this.props;
 
     return (
@@ -165,6 +167,9 @@ class Table extends React.Component {
 
         {!isExternal ? (
           <IconEdit className={css.edit} data-tip="Редактировать" onClick={openMilestoneEditModal(milestone)} />
+        ) : null}
+        {!isExternal ? (
+          <IconDelete className={css.delete} data-tip="Удалить" onClick={onDeleteMilestone(milestone)} />
         ) : null}
       </div>
     );
@@ -254,8 +259,6 @@ class Table extends React.Component {
         >
           <div className={css.SprintInfo__tooltip + ' ' + this.currentMonth(sprint)}>
             <div className={css.text}>{this.getSprintTime(sprint)}</div>
-            {/*<div className={css.text}>{sprint.spentTime || 0}</div>
-            <div className={css.text}>{sprint.allottedTime || 0}</div>*/}
           </div>
         </div>
       </div>
@@ -275,7 +278,10 @@ class Table extends React.Component {
         <div
           className={classnames({
             [css.milestoneBar]: true,
-            [css.done]: milestone.done
+            [css.done]: milestone.done,
+            [css.review]: milestone.typeId === 1,
+            [css.client]: milestone.typeId === 2,
+            [css.inside]: milestone.typeId === 3
           })}
           style={this.getMilestoneBlock(milestone.date, grantActiveYear)}
           data-tip={this.getMilestoneLabel(milestone)}

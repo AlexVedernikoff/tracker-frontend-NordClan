@@ -41,12 +41,19 @@ class ActivityRow extends React.Component {
     this.debouncedCreateTimesheet = _.debounce(this.createTimesheet, debounceTime * 2);
 
     this.state = {
+      hl: false,
       isOpen: false,
       timeCells: this.getTimeCells(props.item.timeSheets)
     };
   }
 
   componentWillReceiveProps(nextProps) {
+    if (nextProps.item.hilight && !this.state.hl) {
+      this.setState({ hl: true }, () => setTimeout(() => this.setState({ hl: false }), 1000));
+      if (this.row) {
+        this.row.scrollIntoView();
+      }
+    }
     if (this.props.item !== nextProps.item) {
       const currentTimeSheets = this.props.item.timeSheets;
       const nextTimeSheets = nextProps.item.timeSheets;
@@ -264,6 +271,8 @@ class ActivityRow extends React.Component {
     this.closeConfirmModal();
   };
 
+  getRef = ref => (this.row = ref);
+
   render() {
     const { item, task, ma, statuses, magicActivitiesTypes } = this.props;
     const status = task ? _.find(statuses, { id: item.taskStatusId }) : '';
@@ -358,7 +367,7 @@ class ActivityRow extends React.Component {
       return <span>{'Backlog'}</span>;
     };
     return (
-      <tr className={css.taskRow}>
+      <tr ref={this.getRef} className={cn(css.taskRow, { [css.taskRowHighLighted]: this.state.hl })}>
         <td>
           <div className={css.taskCard}>
             <div className={css.meta}>

@@ -389,6 +389,15 @@ export default function Project(state = InitialState, action) {
         }
       };
 
+    case MilestoneActions.MILESTONE_DELETE_SUCCESS:
+      const delelteMilestones = state.project.milestones.filter(milestone => milestone.id !== action.id);
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          milestones: delelteMilestones
+        }
+      };
     default:
       return {
         ...state

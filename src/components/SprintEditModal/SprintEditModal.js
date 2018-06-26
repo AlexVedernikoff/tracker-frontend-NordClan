@@ -196,6 +196,7 @@ class SprintEditModal extends Component {
                 </Col>
               </Row>
             </label>
+
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>

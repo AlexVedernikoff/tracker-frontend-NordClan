@@ -58,6 +58,23 @@ class CreateSprintModal extends Component {
     );
   };
 
+  setDefaultTimeValue = () => {
+    if (this.state.dateTo && this.state.dateFrom) {
+      const calculatedHours = this.calcWorkingHours(this.state.dateFrom, this.state.dateTo);
+      this.setState({ budget: calculatedHours });
+    }
+  };
+
+  calcWorkingHours(startDate, endDate) {
+    const day = moment(startDate);
+    let businessDays = 0;
+    while (day.isSameOrBefore(endDate, 'day')) {
+      if (day.day() !== 0 && day.day() !== 6) businessDays++;
+      day.add(1, 'd');
+    }
+    return businessDays * 8;
+  }
+
   validateNumbers(value) {
     const re = /^\d*(\.\d*)?$/;
     return value !== '' ? re.test(value) : true;
@@ -65,7 +82,7 @@ class CreateSprintModal extends Component {
 
   validateDates = () => {
     if (this.state.dateTo && this.state.dateFrom) {
-      return moment(this.state.dateTo).isAfter(this.state.dateFrom);
+      return moment(this.state.dateTo).isSameOrAfter(this.state.dateFrom);
     }
     return true;
   };
@@ -128,7 +145,7 @@ class CreateSprintModal extends Component {
                   value={formattedDayFrom}
                   onDayChange={this.handleDayFromChange}
                   placeholder="Введите дату начала"
-                  disabledDataRanges={this.props.sprintsDateRanges}
+                  // disabledDataRanges={this.props.sprintsDateRanges}
                 />
               </Col>
             </Row>

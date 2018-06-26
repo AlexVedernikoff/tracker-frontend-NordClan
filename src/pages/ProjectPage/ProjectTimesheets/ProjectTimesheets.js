@@ -402,7 +402,7 @@ class ProjectTimesheets extends React.Component {
             </thead>
             <tbody>
               {userRows}
-              <tr>
+              <tr className={css.summaryRow}>
                 <td className={css.total} />
                 {totalRow}
                 <td className={cn(css.total, css.totalWeek, css.totalRow)}>
