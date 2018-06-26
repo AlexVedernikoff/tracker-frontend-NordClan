@@ -220,6 +220,11 @@ td.today {
 tr:last-child td.today {
   border-bottom-width: 1px;
 }
+
+.summaryRow > .total:not(:last-child) {
+  border-top: 2px solid $color-gray;
+}
+
 .total > div {
   padding: 0.5rem 1rem;
   text-align: center;
