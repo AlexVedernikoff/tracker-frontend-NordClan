@@ -75,35 +75,35 @@ class ProjectPage extends Component {
         onlyActiveOnIndex
         to={`/projects/${this.props.params.projectId}`}
       >
-        {location[lang].BOARD}
+        {localize[lang].BOARD}
       </Link>,
       <Link
         activeClassName="active"
         key={`/projects/${this.props.params.projectId}/tasks`}
         to={`/projects/${this.props.params.projectId}/tasks`}
       >
-        {location[lang].TASK_LIST}
+        {localize[lang].TASK_LIST}
       </Link>,
       <Link
         activeClassName="active"
         key={`/projects/${this.props.params.projectId}/planning`}
         to={`/projects/${this.props.params.projectId}/planning`}
       >
-        {location[lang].PLANNING}
+        {localize[lang].PLANNING}
       </Link>,
       <Link
         activeClassName="active"
         key={`/projects/${this.props.params.projectId}/info`}
         to={`/projects/${this.props.params.projectId}/info`}
       >
-        {location[lang].INFO}
+        {localize[lang].INFO}
       </Link>,
       <Link
         activeClassName="active"
         key={`/projects/${this.props.params.projectId}/property`}
         to={`/projects/${this.props.params.projectId}/property`}
       >
-        {location[lang].SETTING}
+        {localize[lang].SETTING}
       </Link>
     ];
     if (this.props.user.globalRole !== EXTERNAL_USER) {
@@ -113,7 +113,7 @@ class ProjectPage extends Component {
           key={`/projects/${this.props.params.projectId}/history`}
           to={`/projects/${this.props.params.projectId}/history`}
         >
-          {location[lang].HISTORY}
+          {localize[lang].HISTORY}
         </Link>
       );
     }
@@ -125,7 +125,7 @@ class ProjectPage extends Component {
           to={`/projects/${this.props.params.projectId}/analytics`}
           onClick={this.handleAnalyticsAction}
         >
-          {location[lang].ANALYTICS}
+          {localize[lang].ANALYTICS}
         </Link>
       );
     }
@@ -161,7 +161,7 @@ class ProjectPage extends Component {
           <MissingProjectFieldsModal
             isOpen
             contentLabel="modal"
-            text={location[lang].ENTER_MISSING_DATA}
+            text={localize[lang].ENTER_MISSING_DATA}
             error={this.props.project.validationError}
             projectTypes={projectTypes}
             onCancel={this.handleCloseProjectPrefixModal}
