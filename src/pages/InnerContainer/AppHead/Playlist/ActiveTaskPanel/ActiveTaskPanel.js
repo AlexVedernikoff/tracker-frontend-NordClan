@@ -58,10 +58,10 @@ class ActiveTaskPanel extends Component {
     const taskTitle = `${activeTask.project.prefix}-${activeTask.id}`;
 
     if (~this.playStatuses.indexOf(activeTask.statusId)) {
-      return `${localization[lang].ACTIVE_TASKS} ${taskTitle}`;
+      return `${localization[lang].ACTIVE_TASKS}: ${taskTitle}`;
     }
 
-    return `${localization[lang].LAST_ACTIVE_TASKS} ${taskTitle}`;
+    return `${localization[lang].LAST_ACTIVE_TASKS}: ${taskTitle}`;
   }
 
   render() {

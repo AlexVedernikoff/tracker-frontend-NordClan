@@ -1,9 +1,16 @@
+.wrap {
+  display: flex;
+  justify-content: flex-end;
+  flex-grow: 12;
+  align-items: center;
+}
+
 .wrap > label {
   position: relative;
   display: inline-block;
   width: 55px;
   height: 25px;
-  top: 13px;
+  right: 16px;
 }
 
 .wrap > label input {

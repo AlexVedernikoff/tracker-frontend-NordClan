@@ -170,7 +170,11 @@ class PlaylistItem extends Component {
                   ) : null}
                 </span>
               ) : null}
-              {status ? <span>localize[lang].CURRENT_STATUS {status.name}</span> : null}
+              {status ? (
+                <span>
+                  {localize[lang].CURRENT_STATUS} {status.name}
+                </span>
+              ) : null}
               {!isDraft ? (
                 <span
                   className={classnames({ [css.commentToggler]: true, [css.green]: !!comment })}

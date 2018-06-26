@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { IconExitApp, IconMenu, IconSearch } from '../../../components/Icons';
-import Toggle from '../../../components/Toggle';
+import Toggle from '../../../components/LanguageToggle';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Logo from '../../../components/Logo';
 import { EXTERNAL_USER } from '../../../constants/Roles';
@@ -17,7 +17,9 @@ import * as css from './AppHead.scss'; // Стили для плавного п�
 class AppHead extends Component {
   static propTypes = {
     globalRole: PropTypes.string,
+    lang: PropTypes.string,
     loading: PropTypes.number,
+    setLocalize: PropTypes.func,
     toggleMenu: PropTypes.func
   };
 
@@ -57,7 +59,7 @@ class AppHead extends Component {
             <IconSearch style={iconStyles} />
           </label>
         </div> */}
-        <Toggle onChange={this.toggleLanguage} />
+        <Toggle lang={this.props.lang} onChange={this.toggleLanguage} />
 
         <div className={css.logoutButton} onClick={this.handleLogout}>
           <IconExitApp style={iconStyles} />
@@ -77,7 +79,8 @@ class AppHead extends Component {
 const mapStateToProps = state => {
   return {
     loading: state.Loading.loading,
-    globalRole: state.Auth.user.globalRole
+    globalRole: state.Auth.user.globalRole,
+    lang: state.Localize.lang
   };
 };
 
