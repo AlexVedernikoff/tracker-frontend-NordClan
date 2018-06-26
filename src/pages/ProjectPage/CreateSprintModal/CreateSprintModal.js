@@ -159,7 +159,7 @@ class CreateSprintModal extends Component {
                   value={formattedDayTo}
                   onDayChange={this.handleDayToChange}
                   placeholder="Введите дату окончания"
-                  disabledDataRanges={this.props.sprintsDateRanges}
+                  //disabledDataRanges={this.props.sprintsDateRanges}
                 />
               </Col>
             </Row>
