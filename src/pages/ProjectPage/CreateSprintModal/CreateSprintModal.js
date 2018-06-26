@@ -41,11 +41,11 @@ class CreateSprintModal extends Component {
   };
 
   handleDayFromChange = date => {
-    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD') }, () => this.setDefaultTimeValue());
+    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD') });
   };
 
   handleDayToChange = date => {
-    this.setState({ dateTo: moment(date).format('YYYY-MM-DD') }, () => this.setDefaultTimeValue());
+    this.setState({ dateTo: moment(date).format('YYYY-MM-DD') });
   };
 
   checkNullInputs = () => {
@@ -159,7 +159,7 @@ class CreateSprintModal extends Component {
                   value={formattedDayTo}
                   onDayChange={this.handleDayToChange}
                   placeholder="Введите дату окончания"
-                  // disabledDataRanges={this.props.sprintsDateRanges}
+                  //disabledDataRanges={this.props.sprintsDateRanges}
                 />
               </Col>
             </Row>
