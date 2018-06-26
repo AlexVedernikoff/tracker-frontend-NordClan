@@ -78,7 +78,7 @@ class PortfolioEditor extends Component {
 
   render() {
     const SelectAsync = Select.AsyncCreatable;
-    const { user, project } = this.props;
+    const { user, project, lang } = this.props;
     const isProjectAdmin = checkProjectAdmin(user, project.id);
 
     return (
