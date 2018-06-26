@@ -90,3 +90,19 @@ export const getProjectTypes = () => {
       error: defaultErrorHandler(dispatch)
     });
 };
+
+export const getMilestoneTypes = () => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/dictionary/milestone/types',
+      method: GET,
+      body,
+      extra,
+      start: withStartLoading(startDictionaryRequest, true)(dispatch),
+      response: withFinishLoading(response => successDictionaryRequest(response.data, 'milestoneTypes'), true)(
+        dispatch
+      ),
+      error: defaultErrorHandler(dispatch)
+    });
+};

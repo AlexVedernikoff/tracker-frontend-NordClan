@@ -1,6 +1,6 @@
 @import '../../../../styles/variables.scss';
 
-.createSprintForm {
+.editSpentForm {
   max-width: 100%; // ie fix
   width: 520px; // ie fix
   padding: 2rem;
@@ -22,6 +22,14 @@
 .inputRow {
   margin-bottom: 1rem;
 }
+.fullwidth {
+  width: 100%;
+}
+
+.buttonWrap {
+  text-align: right;
+}
+
 .leftColumn {
   display: flex;
   justify-content: flex-end;
@@ -50,7 +58,4 @@
     padding: 10px 0;
     display: block;
   }
-}
-.selectEnum {
-  width: 100%;
 }

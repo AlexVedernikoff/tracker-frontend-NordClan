@@ -18,7 +18,8 @@ class ExternalUsersTableRow extends Component {
     super(props);
     this.state = {
       isEditing: false,
-      tempValues: {}
+      tempValues: {},
+      isValid: {}
     };
     const { lang } = props;
     this.validation = {
@@ -58,13 +59,30 @@ class ExternalUsersTableRow extends Component {
   componentDidUpdate() {
     ReactTooltip.rebuild();
   }
-  onEditValues = fieldName => value => {
+  onEditValues = (fieldName, type) => value => {
     this.setState(state => ({
       tempValues: {
         ...state.tempValues,
         [fieldName]: value
+      },
+      isValid: {
+        ...state.isValid,
+        [fieldName]: this.onValidate(value, type)
       }
     }));
+  };
+  onValidate = (value, type) => {
+    switch (type) {
+      case 'name': {
+        return value.length < 2;
+      }
+      case 'email': {
+        const re = /\S+@\S+\.\S+/;
+        return !re.test(value);
+      }
+      default:
+        return false;
+    }
   };
   saveEditChanges = () => {
     const id = this.props.exUser.id;
@@ -121,14 +139,16 @@ class ExternalUsersTableRow extends Component {
           <ExternalUserInput
             value={this.props.exUser.firstNameRu}
             isEditing={this.state.isEditing}
-            onValueChange={this.onEditValues('firstNameRu')}
+            onValueChange={this.onEditValues('firstNameRu', 'name')}
+            isValid={this.state.isValid.firstNameRu}
           />
         </div>
         <div className={classnames(css.TableCell, css.TableCellLogin)}>
           <ExternalUserInput
             value={this.props.exUser.login}
             isEditing={this.state.isEditing}
-            onValueChange={this.onEditValues('login')}
+            onValueChange={this.onEditValues('login', 'email')}
+            isValid={this.state.isValid.login}
           />
         </div>
         <div className={classnames(css.TableCell, css.TableCellActivity)}>

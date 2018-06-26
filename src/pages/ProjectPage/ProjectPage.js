@@ -47,6 +47,12 @@ class ProjectPage extends Component {
       event.preventDefault();
     }
   };
+
+  handleTimesheetsAction = event => {
+    if (this.props.location.pathname.indexOf('timesheets') !== -1) {
+      event.preventDefault();
+    }
+  };
   handleCloseProjectPrefixModal = () => history.push('/projects');
 
   handleCloseProjectConfirmModal = values => {
@@ -120,6 +126,18 @@ class ProjectPage extends Component {
           onClick={this.handleAnalyticsAction}
         >
           {location[lang].ANALYTICS}
+        </Link>
+      );
+    }
+    if (isProjectAdmin) {
+      tabs.push(
+        <Link
+          activeClassName="active"
+          key={`/projects/${this.props.params.projectId}/timesheets`}
+          to={`/projects/${this.props.params.projectId}/timesheets`}
+          onClick={this.handleTimesheetsAction}
+        >
+          Отчеты по времени
         </Link>
       );
     }

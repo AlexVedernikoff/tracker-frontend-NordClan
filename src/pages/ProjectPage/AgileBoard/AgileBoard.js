@@ -99,10 +99,12 @@ const sortTasksAndCreateCard = (
     });
 
     taskArray[key] = sortedObject[key].map(task => {
-      const lightedRelatedTask = task.linkedTasks
-        .concat(task.subTasks, task.parentTask)
-        .map(relatedTask => _.get(relatedTask, 'id', null))
-        .includes(lightedTaskId);
+      const lightedRelatedTask = _.get(task, 'linkedTasks.length')
+        ? task.linkedTasks
+            .concat(task.subTasks, task.parentTask)
+            .map(relatedTask => _.get(relatedTask, 'id', null))
+            .includes(lightedTaskId)
+        : [];
 
       const lighted = task.id === lightedTaskId && isCardFocus;
 
@@ -480,7 +482,7 @@ class AgileBoard extends Component {
         currentSprint = sprint;
       }
     });
-    return `${currentSprint.spentTime || 0} / ${currentSprint.allottedTime || 0}`;
+    return `${currentSprint.spentTime || 0} / ${currentSprint.riskBudget || 0}`;
   };
 
   getAllTags = () => {
@@ -894,7 +896,4 @@ const mapDispatchToProps = {
   getProjectInfo
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AgileBoard);
+export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);

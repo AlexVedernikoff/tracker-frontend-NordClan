@@ -1,1 +1,1 @@
-export default value => /^$|^\d+([.,]?\d*)?$/.test(value);
+export default value => /^\d*([.,]?\d*)?$/.test(value);

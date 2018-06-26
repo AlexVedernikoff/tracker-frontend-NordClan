@@ -8,7 +8,7 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 
 import { editSprint } from '../../../actions/Sprint';
 import { createSprint } from '../../../actions/Sprint';
-import { editMilestone } from '../../../actions/Milestone';
+import { editMilestone, deleteMilestone } from '../../../actions/Milestone';
 import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal, getProjectInfo, changeProject } from '../../../actions/Project';
@@ -187,7 +187,7 @@ class Planning extends Component {
       };
     } else {
       const sprint = this.props.project.sprints.filter(item => item.id === sprintId)[0];
-      const sprintEstimate = sprint && sprint.allottedTime ? +sprint.allottedTime : 0;
+      const sprintEstimate = sprint && sprint.riskBudget ? +sprint.riskBudget : 0;
       const sprintSpentTime = sprint && sprint.spentTime ? +sprint.spentTime : 0;
       const ratio = sprintEstimate === 0 ? 0 : sprintSpentTime / sprintEstimate;
       const width = ratioValue => {
@@ -279,6 +279,8 @@ class Planning extends Component {
     };
   };
 
+  onDeleteMilestone = milestone => () => this.props.deleteMilestone(milestone.id);
+
   handleEditSprint = sprint => {
     this.setState({ isOpenSprintEditModal: false });
     this.props.editSprint(
@@ -287,7 +289,6 @@ class Planning extends Component {
       sprint.sprintName.trim(),
       sprint.dateFrom,
       sprint.dateTo,
-      sprint.allottedTime,
       sprint.budget,
       sprint.riskBudget
     );
@@ -595,6 +596,7 @@ class Planning extends Component {
             onClickSprint={this.onClickSprint}
             openSprintEditModal={this.openSprintEditModal}
             openMilestoneEditModal={this.openMilestoneEditModal}
+            onDeleteMilestone={this.onDeleteMilestone}
           />
           {!isVisor && !isExternal ? (
             <div className={css.moveTasksBtnWrapper}>
@@ -717,6 +719,7 @@ const mapDispatchToProps = {
   getPlanningTasks,
   editSprint,
   editMilestone,
+  deleteMilestone,
   changeTask,
   startTaskEditing,
   openCreateTaskModal,
