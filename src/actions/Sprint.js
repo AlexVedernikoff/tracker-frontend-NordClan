@@ -31,20 +31,19 @@ const editSprintSuccess = sprints => ({
   sprints: sprints
 });
 
-export const editSprint = (id, statusId, name, dateForm, dateTo, allottedTime, budget, riskBudget, qaPercent) => {
+export const editSprint = (id, statusId, name, dateForm, dateTo, budget, riskBudget, qaPercent) => {
   const URL = `${API_URL}/sprint/${id}`;
   const params = {};
   if (name) params.name = name;
   if (dateForm) params.factStartDate = dateForm;
   if (dateTo) params.factFinishDate = dateTo;
   if (statusId) params.statusId = statusId;
-  if (allottedTime) params.allottedTime = allottedTime;
   if (budget) params.budget = budget;
   if (riskBudget) params.riskBudget = riskBudget;
   if (qaPercent) params.qaPercent = qaPercent;
 
   return dispatch => {
-    if (!id || !(statusId || name || dateForm || dateTo || allottedTime || qaPercent || budget || riskBudget)) {
+    if (!id || !(statusId || name || dateForm || dateTo || qaPercent || budget || riskBudget)) {
       return;
     }
     dispatch(editSprintStart());
@@ -94,16 +93,7 @@ export const deleteSprint = id => {
   };
 };
 
-export const createSprint = (
-  name,
-  projectId,
-  factStartDate,
-  factFinishDate,
-  allottedTime,
-  qaPercent,
-  budget,
-  riskBudget
-) => {
+export const createSprint = (name, projectId, factStartDate, factFinishDate, qaPercent, budget, riskBudget) => {
   const URL = `${API_URL}/sprint/`;
   return dispatch => {
     dispatch(createSprintStart());
@@ -112,7 +102,6 @@ export const createSprint = (
       .post(URL, {
         name,
         projectId,
-        allottedTime,
         qaPercent,
         factStartDate,
         factFinishDate,
