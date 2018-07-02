@@ -34,6 +34,21 @@
   }
 }
 
+.taskRowHighLighted {
+  td {
+    transition: $transition;
+    background: $color-gray;
+
+    &:first-child {
+      padding-right: 2rem;
+    }
+  }
+
+  .deleteTask {
+    opacity: 1;
+  }
+}
+
 .sheetsHeader {
   .changeWeek svg {
     opacity: 0;

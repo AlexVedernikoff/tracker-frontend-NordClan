@@ -26,7 +26,6 @@ class SprintEditModal extends Component {
         id: this.props.sprint.id,
         dateTo: undefined,
         sprintName: this.props.sprint.name,
-        allottedTime: this.props.sprint.allottedTime || '0.00',
         qaPercent: this.props.sprint.qaPercent || props.project.qaPercent || '30',
         isHovered: false,
         budget: this.props.sprint.budget || '0.00',
@@ -38,27 +37,16 @@ class SprintEditModal extends Component {
   checkNullInputs = () => {
     return !!(
       this.state.sprint.sprintName.length &&
-      this.state.sprint.allottedTime.length &&
       this.state.sprint.budget.length &&
       this.state.sprint.riskBudget.length &&
       this.state.sprint.qaPercent.length
     );
   };
+
   validateNumbers(value) {
     const re = /^\d*(\.\d*)?$/;
     return value !== '' ? re.test(value) : true;
   }
-  onChangeTime = e => {
-    const value = e.target.value;
-    if (this.validateNumbers(value)) {
-      this.setState(state => ({
-        sprint: {
-          ...state.sprint,
-          allottedTime: value
-        }
-      }));
-    }
-  };
 
   onChangePercentQA = e => {
     const value = e.target.value;
@@ -219,20 +207,6 @@ class SprintEditModal extends Component {
                     value={formattedDayTo}
                     onDayChange={this.handleDayToChange}
                     placeholder={moment(sprint.factFinishDate).format('DD.MM.YYYY')}
-                  />
-                </Col>
-              </Row>
-            </label>
-            <label className={css.formField}>
-              <Row>
-                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>Выделенное время:</p>
-                </Col>
-                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                  <Input
-                    placeholder="Введите новое значение времени..."
-                    value={this.state.sprint.allottedTime}
-                    onChange={this.onChangeTime}
                   />
                 </Col>
               </Row>
