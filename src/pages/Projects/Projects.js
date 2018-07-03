@@ -249,7 +249,12 @@ class Projects extends Component {
           <header className={css.title}>
             <h1 className={css.title}>{localization[lang].MY_PROJECTS}</h1>
             {isAdmin ? (
-              <Button onClick={this.handleModal} text="Создать проект" type="primary" icon="IconPlus" />
+              <Button
+                onClick={this.handleModal}
+                text={localization[lang].CREATE_PROJECT}
+                type="primary"
+                icon="IconPlus"
+              />
             ) : null}
           </header>
           <hr />

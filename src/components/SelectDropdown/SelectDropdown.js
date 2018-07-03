@@ -17,7 +17,7 @@ export default class SelectDropdown extends Component {
         className={thisClassName}
         name={name}
         options={options}
-        noResultsText="Ничего не найдено"
+        noResultsText={noResultsText}
         onFocus={e => e.stopPropagation()}
         clearValueText="Очистить"
         {...other}
