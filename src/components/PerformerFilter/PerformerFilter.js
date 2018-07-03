@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import SelectDropdown from '../../components/SelectDropdown';
 import { getTagsFilter } from '../../actions/Tags';
+import localize from './PerformerFilter.json';
 
 class PerformerFilter extends React.Component {
-
   static propTypes = {
     onPerformerSelect: PropTypes.func.isRequired,
-    selectedPerformerId: PropTypes.oneOfType([ PropTypes.number, PropTypes.string ]),
+    selectedPerformerId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     users: PropTypes.array
   };
 
@@ -17,19 +17,20 @@ class PerformerFilter extends React.Component {
       value: user.id,
       label: user.fullNameRu
     }));
-    users.unshift({ value: '0', label: 'Не назначено' });
+    users.unshift({ value: '0', label: localize[this.props.lang].NOT_CHANGED });
     return users;
   };
 
-  render () {
+  render() {
+    const { lang } = this.props;
     return (
       <SelectDropdown
         name="performer"
-        placeholder="Выберите исполнителя"
+        placeholder={localize[lang].CHANGE_PERFORMER}
         multi={false}
         value={this.props.selectedPerformerId}
         onChange={this.props.onPerformerSelect}
-        noResultsText="Нет результатов"
+        noResultsText={localize[lang].NO_RESULTS}
         options={this.getUsers()}
       />
     );
@@ -38,7 +39,8 @@ class PerformerFilter extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    users: state.Project.project.users
+    users: state.Project.project.users,
+    lang: state.Localize.lang
   };
 };
 
@@ -46,4 +48,7 @@ const mapDispatchToProps = {
   getTagsFilter
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PerformerFilter);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PerformerFilter);

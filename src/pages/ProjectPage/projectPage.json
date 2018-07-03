@@ -7,7 +7,8 @@
     "SETTING": "Setting",
     "HISTORY": "History",
     "ANALYTICS": "Analytics",
-    "ENTER_MISSING_DATA": "Enter missing data"
+    "ENTER_MISSING_DATA": "Enter missing data",
+    "TIME_REPORTS": "Time reports"
   },
   "ru": {
     "BOARD": "Доска",
@@ -17,6 +18,7 @@
     "SETTING": "Настройки",
     "HISTORY": "История",
     "ANALYTICS": "Аналитика",
-    "ENTER_MISSING_DATA": "Укажите недостающие данные"
+    "ENTER_MISSING_DATA": "Укажите недостающие данные",
+    "TIME_REPORTS": "Отчеты по времени"
   }
 }

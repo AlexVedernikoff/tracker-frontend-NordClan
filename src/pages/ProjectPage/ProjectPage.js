@@ -137,7 +137,7 @@ class ProjectPage extends Component {
           to={`/projects/${this.props.params.projectId}/timesheets`}
           onClick={this.handleTimesheetsAction}
         >
-          Отчеты по времени
+          {localize[lang].TIME_REPORTS}
         </Link>
       );
     }
@@ -185,4 +185,7 @@ const mapDispatchToProps = {
   changeProject
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectPage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ProjectPage);
