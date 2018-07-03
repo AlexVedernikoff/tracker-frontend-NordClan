@@ -290,7 +290,8 @@ class Planning extends Component {
       sprint.dateFrom,
       sprint.dateTo,
       sprint.budget,
-      sprint.riskBudget
+      sprint.riskBudget,
+      sprint.qaPercent
     );
   };
 
@@ -361,6 +362,16 @@ class Planning extends Component {
         riskBudget
       },
       'riskBudget'
+    );
+  };
+
+  onPercentQaSubmit = qaPercent => {
+    this.props.changeProject(
+      {
+        id: this.props.project.id,
+        qaPercent: qaPercent
+      },
+      'qaPercent'
     );
   };
 
@@ -480,6 +491,7 @@ class Planning extends Component {
 
     const budget = this.props.project.budget;
     const riskBudget = this.props.project.riskBudget;
+    const qaPercent = this.props.project.qaPercent || 30;
     const { createdAt, completedAt, loading } = this.props;
     const unfinishedLeftTasksCount = this.getUnfinishedLeftTasks().length;
 
@@ -505,26 +517,41 @@ class Planning extends Component {
           </div>
           <div className={css.budgetContainer}>
             {!!budget && !!riskBudget && <SimplePie value={1 - budget / riskBudget} />}
-            {!isExternal ? (
-              <div className={css.budgetLegend}>
-                <div style={{ lineHeight: '1.5rem', fontWeight: 'bold' }}>Бюджет:</div>
-                <Budget
-                  onEditSubmit={this.onRiskBudgetSubmit}
-                  header="С рисковым резервом:"
-                  value={riskBudget}
-                  isProjectAdmin={isProjectAdmin}
-                  min={budget}
-                />
-                <Budget
-                  onEditSubmit={this.onBudgetSubmit}
-                  header="Без рискового резерва:"
-                  value={budget}
-                  isProjectAdmin={isProjectAdmin}
-                  max={riskBudget}
-                />
-                {!!budget && !!riskBudget && <div className={css.riskMarker}>Рисковый резерв</div>}
-              </div>
-            ) : null}
+            <div className={css.legendContainer}>
+              {!isExternal ? (
+                <div className={css.budgetLegend}>
+                  <div style={{ lineHeight: '1.5rem', fontWeight: 'bold' }}>Бюджет:</div>
+                  <Budget
+                    onEditSubmit={this.onRiskBudgetSubmit}
+                    header="С рисковым резервом:"
+                    value={riskBudget}
+                    isProjectAdmin={isProjectAdmin}
+                    min={budget}
+                  />
+                  <Budget
+                    onEditSubmit={this.onBudgetSubmit}
+                    header="Без рискового резерва:"
+                    value={budget}
+                    isProjectAdmin={isProjectAdmin}
+                    max={riskBudget}
+                  />
+                  {!!budget && !!riskBudget && <div className={css.riskMarker}>Рисковый резерв</div>}
+                </div>
+              ) : null}
+              {!isExternal ? (
+                <div className={css.budgetLegend}>
+                  <div style={{ lineHeight: '1.5rem', fontWeight: 'bold' }}>QA:</div>
+                  <Budget
+                    onEditSubmit={this.onPercentQaSubmit}
+                    header="Процент на тестирование:"
+                    value={qaPercent}
+                    isProjectAdmin={isProjectAdmin}
+                    min={0}
+                    max={100}
+                  />
+                </div>
+              ) : null}
+            </div>
           </div>
           <hr />
           {isProjectAdmin ? (
@@ -682,6 +709,7 @@ class Planning extends Component {
         ) : null}
         {this.state.isOpenSprintEditModal ? (
           <SprintEditModal
+            project={this.props.project}
             sprint={this.state.editSprint}
             handleEditSprint={this.handleEditSprint}
             handleCloseModal={this.closeEditSprintModal}

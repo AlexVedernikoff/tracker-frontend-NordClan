@@ -28,12 +28,33 @@
 
 .budgetContainer {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 1rem;
   flex-wrap: nowrap;
 }
 
-.budgetLegend:not(:first-child) {
+.legendContainer {
+  margin-left: 1rem;
+  flex-wrap: wrap;
+  .budgetLegend:not(:first-child) {
+    vertical-align: top;
+  }
+  .budgetLegend {
+    display: inline-block;
+  }
+
+  @include phone {
+    .budgetLegend {
+      display: block;
+      vertical-align: baseline;
+    }
+    .budgetLegend:not(:first-child) {
+      padding-top: 1rem;
+    }
+  }
+}
+
+.budgetLegend {
   margin-left: 1rem;
 }
 
