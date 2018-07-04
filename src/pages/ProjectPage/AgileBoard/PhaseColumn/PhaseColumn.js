@@ -7,6 +7,7 @@ import classnames from 'classnames';
 
 import InlineHolder from '../../../../components/InlineHolder';
 import * as css from './PhaseColumn.scss';
+import localize from './PhaseColumn.json';
 
 const columnTarget = {
   canDrop(props, monitor) {
@@ -49,7 +50,8 @@ class PhaseColumn extends React.Component {
       isOver,
       isTasksLoad,
       allTasksLength,
-      isProjectLoading
+      isProjectLoading,
+      lang
     } = this.props;
 
     return connectDropTarget(
@@ -70,7 +72,9 @@ class PhaseColumn extends React.Component {
             <InlineHolder length="30%" />
           </div>
         ) : (
-          <span className="text-info">Задачи в стадии {title} отсутствуют</span>
+          <span className="text-info">
+            {localize[lang].TASKS_ON_STAGE} {title} {localize[lang].EXISTS}
+          </span>
         )}
       </div>
     );
@@ -80,7 +84,8 @@ class PhaseColumn extends React.Component {
 const mapStateToProps = state => ({
   isTasksLoad: state.Tasks.isReceiving,
   isProjectLoading: state.Project.isProjectInfoReceiving,
-  allTasksLength: state.Tasks.tasks.length
+  allTasksLength: state.Tasks.tasks.length,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {};
