@@ -265,7 +265,11 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   addExternalUser
 };
+
 AddExternalUser.propTypes = {
   addExternalUser: PropTypes.func
 };
-export default connect(mapStateToProps, mapDispatchToProps)(AddExternalUser);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AddExternalUser);
