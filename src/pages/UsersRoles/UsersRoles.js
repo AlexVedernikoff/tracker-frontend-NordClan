@@ -92,8 +92,8 @@ class UsersRoles extends React.Component {
     });
     const tableHead = (
       <tr className={css.usersRolesHeader}>
-        <th>Пользователь</th>
-        <th>Роль</th>
+        <th>{localize[this.props.lang].USER}</th>
+        <th>{localize[this.props.lang].ROLE}</th>
       </tr>
     );
     const tableBody = sortedUsers.map(user => {
@@ -108,7 +108,7 @@ class UsersRoles extends React.Component {
   }
 
   render() {
-    const { users, userGlobalRole } = this.props;
+    const { users, userGlobalRole, lang } = this.props;
     const tableUsers = this.renderTableUsers(users);
     return isAdmin(userGlobalRole) ? (
       <div>
@@ -138,4 +138,7 @@ const mapDispatchToProps = {
   updateUserRole
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(UsersRoles);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UsersRoles);
