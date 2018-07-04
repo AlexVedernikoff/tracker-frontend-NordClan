@@ -331,13 +331,13 @@ class Timesheets extends React.Component {
     return (
       <div>
         <section>
-          <h1>Отчеты по времени</h1>
+          <h1>{localize[lang].TIMESHEETS_REPORT}</h1>
           <hr />
           <table className={css.timeSheetsTable}>
             <thead>
               <tr className={css.sheetsHeader}>
                 <th className={css.prevWeek}>
-                  <div className={css.activityHeader}>Недельная активность:</div>
+                  <div className={css.activityHeader}>{localize[lang].WEEK_ACTIVITY}</div>
                   <IconArrowLeft data-tip={localize[lang].PREVIOUS_WEEK} onClick={this.setPrevWeek} />
                 </th>
                 {days}
@@ -377,7 +377,7 @@ class Timesheets extends React.Component {
                   <td colSpan="10">
                     <a className={css.add} onClick={() => this.setState({ isModalOpen: true })}>
                       <IconPlus style={{ fontSize: 16 }} />
-                      <div className={css.tooltip}>Добавить активность</div>
+                      <div className={css.tooltip}>{localize[lang].ADD_ACTIVITY}</div>
                     </a>
                   </td>
                 </tr>
@@ -407,4 +407,7 @@ const mapDispatchToProps = {
   showNotification
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Timesheets);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Timesheets);

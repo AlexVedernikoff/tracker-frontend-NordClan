@@ -262,7 +262,7 @@ class AddActivityModal extends Component {
                   <label key="projectSelectLabel" className={css.formField}>
                     <Row>
                       <Col xs={12} sm={formLayout.left}>
-                        Проект:
+                        {localize[lang].PROJECT}
                       </Col>
                       <Col xs={12} sm={formLayout.right}>
                         <SelectDropdown
@@ -280,7 +280,7 @@ class AddActivityModal extends Component {
                   <label key="taskSelectLabel" className={css.formField}>
                     <Row>
                       <Col xs={12} sm={formLayout.left}>
-                        Задача:
+                        {localize[lang].TASK}
                       </Col>
                       <Col xs={12} sm={formLayout.right}>
                         <SelectDropdown
@@ -303,7 +303,7 @@ class AddActivityModal extends Component {
                   <label className={css.formField} key="noTaskActivityProject">
                     <Row>
                       <Col xs={12} sm={formLayout.left}>
-                        Проект:
+                        {localize[lang].PROJECT}
                       </Col>
                       <Col xs={12} sm={formLayout.right}>
                         <SelectDropdown
@@ -320,7 +320,7 @@ class AddActivityModal extends Component {
                     <label className={css.formField} key="noTaskActivitySprint">
                       <Row>
                         <Col xs={12} sm={formLayout.left}>
-                          Спринт:
+                          {localize[lang].SPRINT}
                         </Col>
                         <Col xs={12} sm={formLayout.right}>
                           <SelectDropdown
@@ -340,7 +340,7 @@ class AddActivityModal extends Component {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.left}>
-                  Статус:
+                  {localize[lang].STATUS}
                 </Col>
                 <Col xs={12} sm={formLayout.right}>
                   <SelectDropdown
@@ -397,4 +397,7 @@ const mapDispatchToProps = {
   getProjectSprints
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddActivityModal);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AddActivityModal);
