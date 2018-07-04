@@ -13,6 +13,7 @@ import PriorityBox from './PriorityBox';
 import getTypeById from '../../utils/TaskTypes';
 import roundNum from '../../utils/roundNum';
 import getProrityById from '../../utils/TaskPriority';
+import taskStatus from '../../constants/TaskStatuses';
 import * as css from './TaskCard.scss';
 
 const taskCardSource = {
@@ -31,15 +32,6 @@ function collect(connection, monitor) {
     isDragging: monitor.isDragging()
   };
 }
-
-const STATUS_NEW = 1;
-const STATUS_DEV_PROGRESS = 2;
-const STATUS_DEV_HOLD = 3;
-const STATUS_REVIEW_PROGRESS = 4;
-const STATUS_REVIEW_HOLD = 5;
-const STATUS_QA_PROGRESS = 6;
-const STATUS_QA_HOLD = 7;
-const STATUS_DONE = 8;
 
 const getTaskTime = (factTime, planTime) => {
   if (factTime) {
@@ -102,7 +94,7 @@ class TaskCore extends PureComponent {
   isTaskInWork = statusId => statusId !== STATUS_NEW && statusId !== STATUS_DONE;
 
   isTaskInProgress = statusId =>
-    statusId === STATUS_DEV_HOLD || statusId === STATUS_REVIEW_HOLD || statusId === STATUS_QA_HOLD;
+    statusId === taskStatus.STATUS_DEV_HOLD || statusId === STATUS_REVIEW_HOLD || statusId === STATUS_QA_HOLD;
 
   isTaskInHold = statusId =>
     statusId === STATUS_DEV_PROGRESS || statusId === STATUS_REVIEW_PROGRESS || statusId === STATUS_QA_PROGRESS;
@@ -155,7 +147,7 @@ class TaskCore extends PureComponent {
               [css.inprogress]: this.isTaskInProgress(task.statusId)
             })}
           >
-            {this.isTaskInProgress(task.statusId) ? (
+            {taskStatus.isTaskInProgress(task.statusId) ? (
               <IconPlay data-tip="Начать" onClick={this.handleClick} />
             ) : (
               <IconPause data-tip="Приостановить" onClick={this.handleClick} />
