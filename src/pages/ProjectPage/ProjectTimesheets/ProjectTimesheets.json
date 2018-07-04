@@ -1,0 +1,16 @@
+{
+  "en": {
+    "TIMESHEETS_REPORT": "Timesheets report",
+    "WEEK_ACTIVITY": "Activity for week:",
+    "PREV_WEEK": "Previous week",
+    "NEXT_WEEK": "Next week",
+    "SELECT_DATE": "Select date"
+  },
+  "ru": {
+    "TIMESHEETS_REPORT": "Отчеты по времени",
+    "WEEK_ACTIVITY": "Недельная активность:",
+    "PREV_WEEK": "Предыдущая неделя",
+    "NEXT_WEEK": "Следущая week",
+    "SELECT_DATE": "Выбрать дату"
+  }
+}

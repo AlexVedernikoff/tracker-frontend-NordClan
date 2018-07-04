@@ -13,6 +13,7 @@ import Calendar from './Calendar';
 import ActivityRow from './ActivityRow';
 import UserRow from './UserRow';
 import exactMath from 'exact-math';
+import localize from './ProjectTimesheets.json';
 
 class ProjectTimesheets extends React.Component {
   static propTypes = {
@@ -58,7 +59,7 @@ class ProjectTimesheets extends React.Component {
 
   render() {
     const { isCalendarOpen } = this.state;
-    const { startingDay, tempTimesheets } = this.props;
+    const { startingDay, tempTimesheets, lang } = this.props;
     const defaultTaskStatusId = 2;
     const tempTimesheetsList = tempTimesheets.map(timesheet => {
       return {
@@ -373,21 +374,21 @@ class ProjectTimesheets extends React.Component {
     return (
       <div>
         <section>
-          <h3>Отчеты по времени</h3>
+          <h3>{localize[lang].TIMESHEETS_REPORT}</h3>
           <hr />
           <table className={css.timeSheetsTable}>
             <thead>
               <tr className={css.sheetsHeader}>
                 <th className={css.prevWeek}>
-                  <div className={css.activityHeader}>Недельная активность:</div>
-                  <IconArrowLeft data-tip="Предыдущая неделя" onClick={this.setPrevWeek} />
+                  <div className={css.activityHeader}>{localize[lang].WEEK_ACTIVITY}</div>
+                  <IconArrowLeft data-tip={localize[lang].PREV_WEEK} onClick={this.setPrevWeek} />
                 </th>
                 {days}
                 <th className={css.nextWeek}>
-                  <IconArrowRight data-tip="Следующая неделя" onClick={this.setNextWeek} />
+                  <IconArrowRight data-tip={localize[lang].NEXT_WEEK} onClick={this.setNextWeek} />
                 </th>
                 <th className={cn(css.actions)}>
-                  <div className={css.changeWeek} data-tip="Выбрать дату" onClick={this.toggleCalendar}>
+                  <div className={css.changeWeek} data-tip={localize[lang].SELECT_DATE} onClick={this.toggleCalendar}>
                     <IconCalendar />
                   </div>
                   <ReactCSSTransitionGroup
@@ -423,11 +424,15 @@ const mapStateToProps = state => ({
   list: state.Timesheets.list,
   tempTimesheets: state.Timesheets.tempTimesheets,
   dateBegin: state.Timesheets.dateBegin,
-  dateEnd: state.Timesheets.dateEnd
+  dateEnd: state.Timesheets.dateEnd,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
   ...timesheetsActions
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectTimesheets);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ProjectTimesheets);
