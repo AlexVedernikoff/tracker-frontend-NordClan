@@ -7,7 +7,8 @@
     "SPENT_TIME": "Spent time:",
     "WO_RISK_RESERVE": "Budget without risk reserve",
     "WITH_RISK_RESERVE": "Budget with risk reserve",
-    "REMOVE_SPRINT_NOTIFICATION": "Do you really want to remove the sprint?"
+    "REMOVE_SPRINT_NOTIFICATION": "Do you really want to remove the sprint?",
+    "H": "h."
   },
   "ru": {
     "DATE_OF_START": "Дата начала:",
@@ -17,6 +18,7 @@
     "SPENT_TIME": "Израсходованное время:",
     "WO_RISK_RESERVE": "Бюджет без рискового резерва",
     "WITH_RISK_RESERVE": "Бюджет с рисковым резервом",
-    "REMOVE_SPRINT_NOTIFICATION": "Вы действительно хотите удалить спринт?"
+    "REMOVE_SPRINT_NOTIFICATION": "Вы действительно хотите удалить спринт?",
+    "H": "ч."
   }
 }

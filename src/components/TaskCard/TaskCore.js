@@ -14,6 +14,9 @@ import getTypeById from '../../utils/TaskTypes';
 import roundNum from '../../utils/roundNum';
 import getProrityById from '../../utils/TaskPriority';
 import * as css from './TaskCard.scss';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import localize from './TaskCore.json';
 
 const taskCardSource = {
   beginDrag(props) {
@@ -41,11 +44,15 @@ const STATUS_QA_PROGRESS = 6;
 const STATUS_QA_HOLD = 7;
 const STATUS_DONE = 8;
 
-const getTaskTime = (factTime, planTime) => {
+const getTaskTime = (factTime, planTime, lang) => {
   if (factTime) {
-    return planTime ? `${roundNum(factTime, 2)} из ${roundNum(planTime, 2)} ч.` : `${roundNum(factTime, 2)} ч.`;
+    return planTime
+      ? `${roundNum(factTime, 2)} ${localize[lang].OF} ${roundNum(planTime, 2)} ${localize[lang].H}`
+      : `${roundNum(factTime, 2)} ${localize[lang].H}`;
   } else {
-    return planTime ? `0 из ${roundNum(planTime, 2)} ч.` : '0 из 0 ч.';
+    return planTime
+      ? `0 ${localize[lang].OF} ${roundNum(planTime, 2)} ${localize[lang].H}`
+      : `0 ${localize[lang].OF} 0 ${localize[lang].H}`;
   }
 };
 
@@ -131,6 +138,7 @@ class TaskCore extends PureComponent {
       onOpenPerformerModal,
       connectDragSource,
       isDragging,
+      lang,
       ...other
     } = this.props;
 
@@ -156,9 +164,9 @@ class TaskCore extends PureComponent {
             })}
           >
             {this.isTaskInProgress(task.statusId) ? (
-              <IconPlay data-tip="Начать" onClick={this.handleClick} />
+              <IconPlay data-tip={localize[lang].START} onClick={this.handleClick} />
             ) : (
-              <IconPause data-tip="Приостановить" onClick={this.handleClick} />
+              <IconPause data-tip={localize[lang].PAUSE} onClick={this.handleClick} />
             )}
           </div>
         )}
@@ -166,7 +174,7 @@ class TaskCore extends PureComponent {
         <CopyThis
           wrapThisInto={'div'}
           isCopiedBackground
-          description={`Ссылка на задачу ${task.prefix}-${task.id}`}
+          description={`${localize[lang].LINK} ${task.prefix}-${task.id}`}
           textToCopy={`${location.origin}${history.createHref(`/projects/${task.projectId}/tasks/${task.id}`)}`}
         >
           <div className={css.header}>
@@ -194,7 +202,7 @@ class TaskCore extends PureComponent {
                   </span>
                 </span>
               ) : (
-                <span className={css.unassigned}>Не назначено</span>
+                <span className={css.unassigned}>{localize[lang].NOT_ASSIGNED}</span>
               )}
             </span>
           )}
@@ -209,7 +217,7 @@ class TaskCore extends PureComponent {
                   [css.red]: this.isOutOfPlan(task.plannedExecutionTime, task.factExecutionTime)
                 })}
               />
-              <span>{getTaskTime(task.factExecutionTime, task.plannedExecutionTime)}</span>
+              <span>{getTaskTime(task.factExecutionTime, task.plannedExecutionTime, lang)}</span>
             </p>
           )}
 
@@ -237,7 +245,7 @@ class TaskCore extends PureComponent {
           <div
             className={css.priorityMarker}
             onClick={this.showPriorityBox}
-            data-tip={`Приоритет: ${getProrityById(this.props.task.prioritiesId)}`}
+            data-tip={`${localize[lang].NOT_ASSIGNED} ${getProrityById(this.props.task.prioritiesId)}`}
           />
         )}
         {lighted ? <div className={css.lightedBorder} /> : null}
@@ -246,4 +254,14 @@ class TaskCore extends PureComponent {
   }
 }
 
-export default DragSource(TASK_CARD, taskCardSource, collect)(TaskCore);
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default compose(
+  DragSource(TASK_CARD, taskCardSource, collect),
+  connect(
+    mapStateToProps,
+    null
+  )
+)(TaskCore);

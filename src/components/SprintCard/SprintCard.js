@@ -110,7 +110,7 @@ class SprintCard extends Component {
           ? [
               <p key="spentTime" className={css.sprintMeta}>
                 <span>
-                  {localize[lang].SPENT_TIME} {sprint.spentTime || 0} ч.
+                  {localize[lang].SPENT_TIME} {sprint.spentTime || 0} {localize[lang].H}
                 </span>
               </p>,
               <p key="budget" className={css.sprintMeta}>
