@@ -63,7 +63,7 @@ class NewLine extends Component {
   };
 
   render() {
-    const { currentUser, taskStatuses, preloading, hashCodes, localizeText } = this.props;
+    const { currentUser, taskStatuses, preloading, hashCodes, localizeText, localizeH } = this.props;
     const { date, status, time } = this.state;
     const statusOptions = getStatusOptions(taskStatuses);
     const isFieldValues = !status || !time || !statusOptions.filter(option => option.value === status).length;
@@ -95,7 +95,7 @@ class NewLine extends Component {
         <td className={css.time} colSpan={2}>
           <InputNumber
             style={{ width: '4rem' }}
-            postfix="ч."
+            postfix={localizeH}
             value={time}
             onChange={this.changeTime}
             disabled={preloading}

@@ -11,6 +11,8 @@ import SimplePie from '../../../../components/SimplePie';
 import roundNum from '../../../../utils/roundNum';
 import createHash from '../../../../utils/createHash';
 import * as css from '../TaskTimeReports.scss';
+import localize from './TimeSheetsHistory.json';
+import { connect } from 'react-redux';
 
 class TimeSheetsHistory extends Component {
   static propTypes = {
@@ -38,7 +40,7 @@ class TimeSheetsHistory extends Component {
   };
 
   render() {
-    const { timesheets, users, taskStatuses, currentUser, currentTask, preloaders, localizeText } = this.props;
+    const { timesheets, users, taskStatuses, currentUser, currentTask, preloaders, localizeText, lang } = this.props;
     const sortedTimesheets = sortBy(timesheets, ['onDate', 'id']).reverse();
     const timesheetsHashCodes = timesheets.map(tsh => {
       return createHash(tsh.onDate, tsh.taskStatusId, tsh.userId);
@@ -56,6 +58,7 @@ class TimeSheetsHistory extends Component {
               preloading={preloaders.creating}
               hashCodes={timesheetsHashCodes}
               localizeText={localizeText}
+              localizeH={localize[lang].H}
             />
             {sortedTimesheets.map(timesheet => {
               const user = find(users, u => timesheet.userId === u.id);
@@ -72,7 +75,9 @@ class TimeSheetsHistory extends Component {
                   <td className={css.pie}>
                     <SimplePie value={pieValue} size={16} />
                   </td>
-                  <td className={css.time}>{roundNum(timesheet.spentTime, 2)} ч.</td>
+                  <td className={css.time}>
+                    {roundNum(timesheet.spentTime, 2)} {localize[lang].H}
+                  </td>
                   <td className={css.user}>
                     <UserCard user={user}>
                       <Link>{get(user, 'fullNameRu')}</Link>
@@ -88,4 +93,22 @@ class TimeSheetsHistory extends Component {
   }
 }
 
-export default TimeSheetsHistory;
+const mapStateToProps = state => ({
+  timeSpent: state.Task.timeSpent,
+  timesheets: state.Timesheets.list,
+  preloaders: state.Timesheets.preloaders,
+  taskStatuses: state.Dictionaries.taskStatuses,
+  userTimeSpent: state.Task.userTimeSpent,
+  roleTimeSpent: state.Task.roleTimeSpent,
+  roles: state.Dictionaries.roles,
+  user: state.Auth.user,
+  project: state.Project.project,
+  task: state.Task.task,
+  globalRole: state.Auth.user.globalRole,
+  lang: state.Localize.lang
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(TimeSheetsHistory);

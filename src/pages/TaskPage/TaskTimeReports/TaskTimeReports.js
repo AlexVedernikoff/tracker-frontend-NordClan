@@ -163,7 +163,7 @@ class TaskTimeReports extends React.Component {
       <div className={css.timeReports} style={{ position: 'relative' }}>
         {(this.props.globalRole === ADMIN || (pmAccess && (pmAccess.roles.pm || pmAccess.roles.account))) && (
           <div className={css.timeCharts}>
-            <h3>Распределение времени:</h3>
+            <h3>{localize[lang].TIMING}</h3>
             <div className={css.viewSwitcher}>
               <RadioGroup
                 name="chartView"
@@ -186,7 +186,7 @@ class TaskTimeReports extends React.Component {
                         className={css.horizontalChart}
                         style={{
                           backgroundColor: stagesColors[index],
-                          width: stagesDataSet[index] / sum(stagesDataSet) * 100 + '%'
+                          width: (stagesDataSet[index] / sum(stagesDataSet)) * 100 + '%'
                         }}
                         title={`${stage}: ${stagesDataSet[index]}`}
                       >
@@ -209,7 +209,7 @@ class TaskTimeReports extends React.Component {
                           className={css.horizontalChart}
                           style={{
                             backgroundColor: usersColors[index],
-                            width: usersDataSet[index] / sum(usersDataSet) * 100 + '%'
+                            width: (usersDataSet[index] / sum(usersDataSet)) * 100 + '%'
                           }}
                           title={`${user}: ${usersDataSet[index]}`}
                         >
@@ -232,7 +232,7 @@ class TaskTimeReports extends React.Component {
                         className={css.horizontalChart}
                         style={{
                           backgroundColor: rolesColors[index],
-                          width: rolesDataSet[index] / sum(rolesDataSet) * 100 + '%'
+                          width: (rolesDataSet[index] / sum(rolesDataSet)) * 100 + '%'
                         }}
                         title={`${role}: ${rolesDataSet[index]}`}
                       >
@@ -245,7 +245,7 @@ class TaskTimeReports extends React.Component {
               )}
             {!isStagesDataSet &&
               !isUsersDataSet &&
-              !isRolesDataSet && <p className={css.noReports}>{Localize[lang].NO_DATA_DISPLAY}</p>}
+              !isRolesDataSet && <p className={css.noReports}>{localize[lang].NO_DATA_DISPLAY}</p>}
             <hr />
           </div>
         )}
@@ -311,4 +311,7 @@ const mapDispatchToProps = {
   createTimesheet
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskTimeReports);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskTimeReports);

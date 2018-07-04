@@ -8,6 +8,7 @@ import UserCard from '../../../components/UserCard';
 import HistoryMessage from '../../../components/HistoryMessage';
 import Pagination from '../../../components/Pagination';
 import * as css from './TaskHistory.scss';
+import localize from './TaskHistory.json';
 
 class TaskHistory extends React.Component {
   constructor(props) {
@@ -46,7 +47,7 @@ class TaskHistory extends React.Component {
   };
 
   render() {
-    const { history } = this.props;
+    const { history, lang } = this.props;
     const eventList = history.data
       ? history.data.map((event, i) => {
           return (
@@ -69,7 +70,7 @@ class TaskHistory extends React.Component {
 
     return (
       <div className={css.history}>
-        <h3>История изменений</h3>
+        <h3>{localize[lang].CHANGES_HISTORY}</h3>
         {eventList}
         {this.props.pagesCount > 0 ? (
           <Pagination
@@ -95,11 +96,15 @@ TaskHistory.propTypes = {
 
 const mapStateToProps = state => ({
   history: state.Task.history,
-  pagesCount: state.Task.history.pagesCount
+  pagesCount: state.Task.history.pagesCount,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
   getTaskHistory
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskHistory);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskHistory);

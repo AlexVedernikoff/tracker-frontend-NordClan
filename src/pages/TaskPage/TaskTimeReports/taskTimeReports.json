@@ -7,7 +7,8 @@
     "NO_RESULTS": "No results",
     "STATUS": "Status",
     "IS_ALREADY_CREATE": "A record with the specified parameters is already created",
-    "FILL_FIELDS": "Fill in all the fields to create a record"
+    "FILL_FIELDS": "Fill in all the fields to create a record",
+    "TIMING": "Timing"
   },
   "ru": {
     "BY_STAGE": "По стадиям",
@@ -17,6 +18,7 @@
     "NO_RESULTS": "Нет результатов",
     "STATUS": "Статус",
     "IS_ALREADY_CREATE": "Запись с заданными параметрами уже создана",
-    "FILL_FIELDS": "Заполните все поля, чтобы создать запись"
+    "FILL_FIELDS": "Заполните все поля, чтобы создать запись",
+    "TIMING": "Распределение времени"
   }
 }

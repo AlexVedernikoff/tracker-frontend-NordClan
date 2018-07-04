@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 import CopyThis from '../../../components/CopyThis';
 import { history } from '../../../History';
 import getTypeById from '../../../utils/TaskTypes';
+import localize from './TaskHeader.json';
 
 const getNewStatus = newPhase => {
   let newStatusId;
@@ -78,7 +79,7 @@ class TaskHeader extends Component {
     this.setState({
       performer: this.props.task.performer ? this.props.task.performer.id : null,
       isPerformerModalOpen: true,
-      modalTitle: `Перевести в стадию ${this.state.clickedStatus}`
+      modalTitle: `${localize[this.props.lang].MOVE_TO} ${this.state.clickedStatus}`
     });
   };
 
@@ -157,7 +158,7 @@ class TaskHeader extends Component {
     } else if (task.statusId === inHoldStatusId) {
       tip = 'Начать';
     } else {
-      tip = `Перевести в стадию ${phase}`;
+      tip = `${localize[this.props.lang].MOVE_TO} ${phase}`;
     }
     return tip;
   };
@@ -171,7 +172,7 @@ class TaskHeader extends Component {
   };
 
   render() {
-    const { task, taskTypes, canEdit } = this.props;
+    const { task, taskTypes, canEdit, lang } = this.props;
     const css = require('./TaskHeader.scss');
     const users = this.props.users.map(item => ({
       value: item.user ? item.user.id : item.id,
@@ -183,7 +184,7 @@ class TaskHeader extends Component {
         {task.parentTask ? (
           <div className={css.parentTaskWrp}>
             <div className={css.parentTask}>
-              <div className={css.prefix} data-tip="Родительская задача ">
+              <div className={css.prefix} data-tip={localize[lang].PARENT_TASK}>
                 {task.project.prefix}-{task.parentTask.id}
               </div>
               <Link to={`/projects/${task.project.id}/tasks/${task.parentTask.id}`} className={css.parentTaskName}>
@@ -222,7 +223,7 @@ class TaskHeader extends Component {
           <Button
             type={task.statusId === TaskStatuses.CANCELED ? 'red' : 'red-bordered'}
             icon="IconClose"
-            data-tip={task.statusId === TaskStatuses.CANCELED ? null : 'Отменить'}
+            data-tip={task.statusId === TaskStatuses.CANCELED ? null : localize[lang].CANCEL}
             data-place="bottom"
             addedClassNames={{ [css.buttonCancel]: true }}
             onClick={task.statusId !== TaskStatuses.CANCELED ? this.handleOpenCancelModal : null}
@@ -232,7 +233,7 @@ class TaskHeader extends Component {
             <Button
               text="New"
               type={task.statusId === TaskStatuses.NEW ? 'green' : 'bordered'}
-              data-tip={task.statusId === TaskStatuses.NEW ? null : 'Перевести в стадию New'}
+              data-tip={task.statusId === TaskStatuses.NEW ? null : localize[lang].MOVE_TO_NEW}
               data-place="bottom"
               onClick={this.handleChangeSingleStateStatus(TaskStatuses.NEW, 'New')}
             />
@@ -270,7 +271,7 @@ class TaskHeader extends Component {
             <Button
               text="Done"
               type={task.statusId === TaskStatuses.DONE ? 'green' : 'bordered'}
-              data-tip={task.statusId === TaskStatuses.DONE ? null : 'Перевести в стадию Done'}
+              data-tip={task.statusId === TaskStatuses.DONE ? null : localize[lang].MOVE_TO_DONE}
               data-place="bottom"
               onClick={this.handleChangeSingleStateStatus(TaskStatuses.DONE)}
               disabled={!canEdit}
@@ -279,7 +280,7 @@ class TaskHeader extends Component {
           <Button
             type={task.statusId === TaskStatuses.CLOSED ? 'green' : 'bordered'}
             icon="IconCheck"
-            data-tip={task.statusId === TaskStatuses.CLOSED ? null : 'Принять'}
+            data-tip={task.statusId === TaskStatuses.CLOSED ? null : localize[lang].ACCEPT}
             data-place="bottom"
             addedClassNames={{ [css.buttonOk]: true }}
             onClick={this.handleChangeSingleStateStatus(TaskStatuses.CLOSED)}
@@ -292,7 +293,7 @@ class TaskHeader extends Component {
           <ConfirmModal
             isOpen
             contentLabel="modal"
-            text="Вы действительно хотите отменить задачу?"
+            text={localize[lang].CANCEL_MESSAGE}
             onCancel={this.handleCloseCancelModal}
             onConfirm={this.handleCancelTask}
           />
@@ -327,11 +328,15 @@ TaskHeader.propTypes = {
 const mapStateToProps = state => ({
   users: state.Project.project.users,
   location: state.routing.locationBeforeTransitions,
-  taskTypes: state.Dictionaries.taskTypes
+  taskTypes: state.Dictionaries.taskTypes,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
   getProjectUsers
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskHeader);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskHeader);
