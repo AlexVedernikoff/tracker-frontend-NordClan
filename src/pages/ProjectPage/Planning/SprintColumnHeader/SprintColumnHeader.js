@@ -4,6 +4,8 @@ import Button from '../../../../components/Button';
 import SelectDropdown from '../../../../components/SelectDropdown/';
 import classnames from 'classnames';
 import * as css from './SprintColumnHeader.scss';
+import localize from './SprintColumnHeader.json';
+import { connect } from 'react-redux';
 
 class SprintColumnHeader extends Component {
   static propTypes = {
@@ -17,28 +19,30 @@ class SprintColumnHeader extends Component {
   };
 
   render() {
+    const { lang } = this.props;
+
     return (
       <div className={classnames(css.headerColumnWrapper, this.props.className)}>
         <div className={css.headerColumn}>
           <div className={css.selectWrapper}>
             <SelectDropdown
               name={`${this.props.name}Column`}
-              placeholder="Введите название спринта..."
+              placeholder={localize[lang].ENTER_SPRINT_NAME}
               multi={false}
               value={this.props.selectedSprintValue}
               onChange={this.props.onSprintChange}
-              noResultsText="Нет результатов"
+              noResultsText={localize[lang].NO_RESULTS}
               options={this.props.sprints}
             />
           </div>
           <Button
             onClick={this.props.onCreateTaskClick}
             type="bordered"
-            text="Создать задачу"
+            text={localize[lang].CREATE_TASK}
             icon="IconPlus"
             name={this.props.name}
             addedClassNames={{ [css.button]: true }}
-            data-tip="Создать задачу"
+            data-tip={localize[lang].CREATE_TASK}
           />
         </div>
         <div className={css.progressBarWrapper} data-tip={this.props.estimates.summary}>
@@ -55,4 +59,11 @@ class SprintColumnHeader extends Component {
   }
 }
 
-export default SprintColumnHeader;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(SprintColumnHeader);

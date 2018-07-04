@@ -1,0 +1,34 @@
+{
+  "en": {
+    "NEW_SPRINT": "Create new sprint",
+    "INPUT_NOTIFICATION": "All fields must be filled in",
+    "DATE_NOTIFICATION": "The end date must be after the start date",
+    "SPRINT_NAME": "Sprint name:",
+    "ENTER_SPRINT_NAME": "Enter the sprint name",
+    "DATE_OF_START": "Date of start:",
+    "ENTER_START_DATE": "Enter of start date",
+    "DATE_OF_ENDING": "Date of the end:",
+    "ENTER_END_DATE": "Enter date of the end",
+    "WO_RISK_RESERVE": "Budget without risk reserve:",
+    "ENTER_BUDGET_WO_RISK_RESERVE": "Enter budget without risk reserve",
+    "WITH_RISK_RESERVE": "Budget with risk reserve:",
+    "ENTER_BUDGET_WITH_RISK_RESERVE": "Enter budget with risk reserve",
+    "CREATE": "Create"
+  },
+  "ru": {
+    "NEW_SPRINT": "Создание нового спринта",
+    "INPUT_NOTIFICATION": "Все поля должны быть заполнены",
+    "DATE_NOTIFICATION": "Дата окончания должна быть позже даты начала",
+    "SPRINT_NAME": "Название спринта:",
+    "ENTER_SPRINT_NAME": "Введите название спринта",
+    "DATE_OF_START": "Дата начала:",
+    "ENTER_START_DATE": "Введите дату начала",
+    "DATE_OF_ENDING": "Дата окончания:",
+    "ENTER_END_DATE": "Введите дату окончания",
+    "WO_RISK_RESERVE": "Беджет без рискового резерва:",
+    "ENTER_BUDGET_WO_RISK_RESERVE": "Введите бюджет без рискового резерва",
+    "WITH_RISK_RESERVE": "Бюджет с рисковым резервом:",
+    "ENTER_BUDGET_WITH_RISK_RESERVE": "Введите бюджет с рисковым резервом",
+    "CREATE": "Создать"
+  }
+}

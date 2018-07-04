@@ -35,6 +35,7 @@ import EditMilestoneModal from './EditMilestoneModal';
 import SprintColumnHeader from './SprintColumnHeader/';
 import SprintColumn from './SprintColumn';
 import Table from './Table';
+import localize from './Planning.json';
 
 import moment from 'moment';
 import _ from 'lodash';
@@ -200,7 +201,9 @@ class Planning extends Component {
         }
       };
       return {
-        summary: `Суммарное время: ${sprintSpentTime} ${sprintEstimate ? ' из ' + sprintEstimate : ''} ч.`,
+        summary: `${localize[this.props.lang].TOTAL_TIME} ${sprintSpentTime} ${
+          sprintEstimate ? localize[this.props.lang].OF + sprintEstimate : ''
+        } ${localize[this.props.lang].H}`,
         width: `${width(ratio)}%`,
         active: sprintEstimate !== 0,
         exceeded: ratio > 1
@@ -431,6 +434,7 @@ class Planning extends Component {
   };
 
   render() {
+    const { lang } = this.props;
     const isProjectAdmin = this.checkIsAdminInProject();
     const isVisor = this.props.user.globalRole === VISOR;
     const isExternal = this.props.user.globalRole === EXTERNAL_USER;
@@ -489,7 +493,7 @@ class Planning extends Component {
           <div className={css.dates}>
             <ProjectDate
               onEditSubmit={this.onProjectStartSubmit}
-              header="Начало проекта:"
+              header={localize[lang].PROJECT_START}
               value={createdAt}
               isProjectAdmin={isProjectAdmin}
               disabledDataRanges={[{ after: new Date(completedAt) }]}
@@ -497,7 +501,7 @@ class Planning extends Component {
             <hr />
             <ProjectDate
               onEditSubmit={this.onProjectEndSubmit}
-              header="Конец проекта:"
+              header={localize[lang].PROJECT_END}
               value={completedAt}
               isProjectAdmin={isProjectAdmin}
               disabledDataRanges={[{ before: new Date(createdAt) }]}
@@ -507,29 +511,29 @@ class Planning extends Component {
             {!!budget && !!riskBudget && <SimplePie value={1 - budget / riskBudget} />}
             {!isExternal ? (
               <div className={css.budgetLegend}>
-                <div style={{ lineHeight: '1.5rem', fontWeight: 'bold' }}>Бюджет:</div>
+                <div style={{ lineHeight: '1.5rem', fontWeight: 'bold' }}>{localize[lang].BUDGET}</div>
                 <Budget
                   onEditSubmit={this.onRiskBudgetSubmit}
-                  header="С рисковым резервом:"
+                  header={localize[lang].WITH_RISK_RESERVE}
                   value={riskBudget}
                   isProjectAdmin={isProjectAdmin}
                   min={budget}
                 />
                 <Budget
                   onEditSubmit={this.onBudgetSubmit}
-                  header="Без рискового резерва:"
+                  header={localize[lang].WO_RISK_RESERVE}
                   value={budget}
                   isProjectAdmin={isProjectAdmin}
                   max={riskBudget}
                 />
-                {!!budget && !!riskBudget && <div className={css.riskMarker}>Рисковый резерв</div>}
+                {!!budget && !!riskBudget && <div className={css.riskMarker}>{localize[lang].RISK_RESERVE}</div>}
               </div>
             ) : null}
           </div>
           <hr />
           {isProjectAdmin ? (
             <Button
-              text="Cпринт"
+              text={localize[lang].SPRINT}
               type="primary"
               style={{ float: 'right', marginTop: '-.2rem' }}
               icon="IconPlus"
@@ -538,7 +542,7 @@ class Planning extends Component {
           ) : null}
           {isProjectAdmin ? (
             <Button
-              text="Веха"
+              text={localize[lang].MILESTONE}
               type="primary"
               style={{ float: 'right', marginTop: '-.2rem', marginRight: '5px' }}
               icon="IconPlus"
@@ -558,7 +562,7 @@ class Planning extends Component {
                   }
                 >
                   {this.state.isOpenSprintList ? <IconArrowDown /> : <IconArrowRight />}
-                  Спринты / Фазы
+                  {localize[lang].SPRINTS_AND_PHASES}
                 </h2>
                 {this.state.isOpenSprintList ? (
                   <Row>
@@ -603,7 +607,7 @@ class Planning extends Component {
               <div className={css.leftBranch} />
               <div className={css.moveButton}>
                 <RoundButton
-                  data-tip="Перенести все незакрытые задачи"
+                  data-tip={localize[lang].REPLACE_UNCLOSED_TASKS}
                   loading={!!loading}
                   onClick={this.onMoveTasksModalOpen}
                   disabled={this.isMoveTasksButtonDisabled(unfinishedLeftTasksCount)}
@@ -611,7 +615,7 @@ class Planning extends Component {
                   »
                 </RoundButton>
               </div>
-              <div className={css.mobeButtonLabel}>Перенести все незакрытые</div>
+              <div className={css.mobeButtonLabel}>{localize[lang].REPLACE_UNCLOSED}</div>
               <div className={css.rightBranch} />
             </div>
           ) : null}
@@ -633,7 +637,9 @@ class Planning extends Component {
                   this.onMoveTasksModalConfirm(this.state.rightColumn);
                 }}
                 onCancel={this.onMoveTasksModalCancel}
-                text={`Будет перенесено ${unfinishedLeftTasksCount} задач. Продолжить?`}
+                text={`${localize[lang].WILL_BE_REPLACE} ${unfinishedLeftTasksCount} ${
+                  localize[lang].CONTINUE_REPLACE
+                }`}
               />
               <SprintColumnHeader
                 className={css.rightColumn}
@@ -711,7 +717,8 @@ const mapStateToProps = state => ({
   rightColumnTasks: state.PlanningTasks.rightColumnTasks,
   SprintIsEditing: state.Task.SprintIsEditing,
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
-  user: state.Auth.user
+  user: state.Auth.user,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
@@ -727,4 +734,7 @@ const mapDispatchToProps = {
   getProjectInfo
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Planning);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Planning);
