@@ -16,7 +16,8 @@
     "NO_RESULTS": "No results",
     "ENTER_ROLE_PARTICIPANT": "Enter the member role",
     "ENTER_EXTERNAL_USERS": "Enter the name of the external user",
-    "ADD": "Add"
+    "ADD": "Add",
+    "PARTICIPANTS": "Participants"
   },
   "ru": {
     "FULL_ACCESS":
@@ -35,6 +36,7 @@
     "NO_RESULTS": "Нет результатов",
     "ENTER_ROLE_PARTICIPANT": "Введите роль участника",
     "ENTER_EXTERNAL_USERS": "Введите имя внешнего пользователя",
-    "ADD": "Добавить"
+    "ADD": "Добавить",
+    "PARTICIPANTS": "Участники:"
   }
 }

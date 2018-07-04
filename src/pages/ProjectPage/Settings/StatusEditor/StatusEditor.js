@@ -32,13 +32,13 @@ class StatusEditor extends React.Component {
   };
 
   render() {
-    const { updatedStatusId, currentStatusId } = this.props;
+    const { updatedStatusId, currentStatusId, lang } = this.props;
 
     const isProjectAdmin = this.checkIsAdminInProject();
 
     return (
       <div className={css.container}>
-        <h2>Статус</h2>
+        <h2>{localize[lang].STATUS}</h2>
         <Row>
           {this.statusesInfo.map(([statusId, type, name]) => {
             return (
@@ -80,4 +80,7 @@ const mapDispatchToProps = {
   updateProjectStatus
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(StatusEditor);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(StatusEditor);

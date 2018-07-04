@@ -215,7 +215,7 @@ class ParticipantEditor extends Component {
     const isProjectAdmin = this.checkIsAdminInProject();
     return (
       <div className={css.property}>
-        <h2>Участники</h2>
+        <h2>{localize[lang].PARTICIPANTS}</h2>
         <Row className={classnames(css.memberRow, css.memberHeader)}>
           <Col xs={9} xsOffset={3}>
             <Row>
@@ -372,4 +372,7 @@ const mapDispatchToProps = {
   getProjectUsers
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ParticipantEditor);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ParticipantEditor);

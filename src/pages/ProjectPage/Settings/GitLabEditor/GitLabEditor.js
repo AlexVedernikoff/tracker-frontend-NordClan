@@ -9,6 +9,7 @@ import ProjectList from './ProjectList';
 import NewProject from './NewProject';
 import Button from '../../../../components/Button';
 import { ADMIN } from '../../../../constants/Roles';
+import localize from './GitLabEditor.json';
 
 class GitLabEditor extends Component {
   static propTypes = {
@@ -60,7 +61,7 @@ class GitLabEditor extends Component {
   };
 
   render() {
-    const { project } = this.props;
+    const { project, lang } = this.props;
     const { isAdding } = this.state;
     const isProjects = get(project, 'gitlabProjects.length', false);
     const isProjectAdmin = this.checkIsAdminInProject();
@@ -81,7 +82,7 @@ class GitLabEditor extends Component {
             addedClassNames={{ [css.addButton]: true }}
             type="primary"
             icon="IconPlus"
-            text="Привязать репозиторий"
+            text={localize[lang].BOUND_REPO}
           />
         ) : null}
       </div>
@@ -92,7 +93,8 @@ class GitLabEditor extends Component {
 function mapStateToProps(state) {
   return {
     project: state.Project.project,
-    user: state.Auth.user
+    user: state.Auth.user,
+    lang: state.Localize.lang
   };
 }
 
@@ -100,4 +102,7 @@ const mapDispatchToProps = {
   changeProject
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(GitLabEditor);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(GitLabEditor);

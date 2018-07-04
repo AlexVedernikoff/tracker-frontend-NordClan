@@ -6,6 +6,7 @@ import { changeProject } from '../../../../actions/Project';
 import Select from '../../../../components/SelectDropdown';
 import * as css from './TypeEditor.scss';
 import checkProjectAdmin from '../../../../utils/checkProjectAdmin';
+import localize from './TypeEditor.json';
 
 class TypeEditor extends Component {
   static propTypes = {
@@ -27,20 +28,20 @@ class TypeEditor extends Component {
   };
 
   render() {
-    const { projectTypes, project, user } = this.props;
+    const { projectTypes, project, user, lang } = this.props;
     const isProjectAdmin = checkProjectAdmin(user, project.id);
     const options = projectTypes.map(type => ({ value: type.id, label: type.name }));
 
     return (
       <div className={css.TypeEditor}>
-        <h2>Тип проекта</h2>
+        <h2>{localize[lang].PROJECT_TYPE}</h2>
         <div className={css.selectType}>
           <Select
             name="performer"
             disabled={!isProjectAdmin}
-            placeholder="Выберите тип проекта"
+            placeholder={localize[lang].SELECT_PROJECT_TYPE}
             multi={false}
-            noResultsText="Нет результатов"
+            noResultsText={localize[lang].NO_RESULTS}
             backspaceRemoves={false}
             options={options}
             onChange={this.changeType}
@@ -56,7 +57,8 @@ function mapStateToProps(state) {
   return {
     projectTypes: state.Dictionaries.projectTypes || [],
     project: state.Project.project,
-    user: state.Auth.user
+    user: state.Auth.user,
+    lang: state.Localize.lang
   };
 }
 
