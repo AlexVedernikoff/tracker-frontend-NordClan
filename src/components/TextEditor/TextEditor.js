@@ -7,12 +7,12 @@ import classnames from 'classnames';
 import * as css from './TextEditor.scss';
 
 class TextEditor extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
-      editorState: EditorState.createWithContent(
-        ContentState.createFromBlockArray(convertFromHTML(this.props.content))
-      )
+      editorState: this.props.context
+        ? EditorState.createWithContent(ContentState.createFromBlockArray(convertFromHTML(this.props.content)))
+        : EditorState.createEmpty()
     };
   }
 
@@ -22,12 +22,8 @@ class TextEditor extends Component {
     });
   };
 
-  render () {
-    const {
-      toolbarHidden,
-      placeholder,
-      ...other
-    } = this.props;
+  render() {
+    const { toolbarHidden, placeholder, ...other } = this.props;
     return (
       <Editor
         editorState={this.state.editorState}
