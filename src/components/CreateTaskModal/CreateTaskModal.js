@@ -218,7 +218,7 @@ class CreateTaskModal extends Component {
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Тэги:</p>
               </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+              <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
                 <Tags taggable="task" noRequest create canEdit createTagsModalTask={this.addTag}>
                   {tags}
                 </Tags>
