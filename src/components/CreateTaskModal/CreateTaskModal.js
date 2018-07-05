@@ -216,6 +216,18 @@ class CreateTaskModal extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>Тэги:</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                <Tags taggable="task" noRequest create canEdit createTagsModalTask={this.addTag}>
+                  {tags}
+                </Tags>
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Тип задачи:</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
@@ -233,20 +245,6 @@ class CreateTaskModal extends Component {
               </Col>
             </Row>
           </label>
-
-          <label className={css.formField}>
-            <Row>
-              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Тэги:</p>
-              </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Tags taggable="task" noRequest create canEdit createTagsModalTask={this.addTag}>
-                  {tags}
-                </Tags>
-              </Col>
-            </Row>
-          </label>
-
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
