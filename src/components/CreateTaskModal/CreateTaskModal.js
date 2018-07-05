@@ -20,6 +20,8 @@ import { BACKLOG_ID } from '../../constants/Sprint';
 import Validator from '../ValidatedInput/Validator';
 import TextEditor from '../../components/TextEditor';
 import Checkbox from '../../components/Checkbox/Checkbox';
+import Tag from '../../components/Tag';
+import Tags from '../../components/Tags';
 
 class CreateTaskModal extends Component {
   constructor(props) {
@@ -41,7 +43,8 @@ class CreateTaskModal extends Component {
       selectedType: this.types[0],
       selectedTypeError: this.types.length === 0,
       typeList: this.types,
-      isTaskByClient: false
+      isTaskByClient: false,
+      tags: []
     };
 
     this.validator = new Validator();
@@ -88,7 +91,8 @@ class CreateTaskModal extends Component {
         prioritiesId: this.state.prioritiesId,
         plannedExecutionTime: this.state.plannedExecutionTime,
         parentId: this.props.parentTaskId,
-        isTaskByClient: this.state.isTaskByClient
+        isTaskByClient: this.state.isTaskByClient,
+        tags: this.state.tags.join(',')
       },
       this.state.openTaskPage,
       this.props.column
@@ -141,11 +145,23 @@ class CreateTaskModal extends Component {
     this.setState({ plannedExecutionTime });
   };
 
+  addTag = tag => {
+    const unicTags = [...new Set([...this.state.tags, tag])];
+    this.setState({ tags: [...unicTags] });
+  };
+  deleteTag = () => tagName => {
+    const tags = this.state.tags.filter(tag => tag !== tagName);
+    this.setState({ tags: [...tags] });
+  };
+
   render() {
     const formLayout = {
       firstCol: 4,
       secondCol: 8
     };
+    const tags = this.state.tags.map((tagName, i) => {
+      return <Tag key={i} name={tagName} noRequest deleteTagModal={() => this.deleteTag()(tagName)} />;
+    });
     return (
       <Modal
         isOpen={this.props.isCreateTaskModalOpen || this.props.isCreateChildTaskModalOpen}
@@ -194,6 +210,18 @@ class CreateTaskModal extends Component {
                   ref={ref => (this.TextEditor = ref)}
                   content={''}
                 />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>Тэги:</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
+                <Tags taggable="task" noRequest create canEdit createTagsModalTask={this.addTag}>
+                  {tags}
+                </Tags>
               </Col>
             </Row>
           </label>
