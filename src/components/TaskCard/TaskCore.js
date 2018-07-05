@@ -196,7 +196,7 @@ class TaskCore extends PureComponent {
             <span className={css.performer}>
               {task.performer ? (
                 <span>
-                  {task.performer.fullNameRu}
+                  {lang === 'ru' ? task.performer.fullNameRu : task.performer.fullNameEn}
                   <span className={css.preformerEditIcon}>
                     <IconEdit />
                   </span>

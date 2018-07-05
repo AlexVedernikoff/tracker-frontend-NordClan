@@ -8,6 +8,7 @@ import isAdmin from '../../utils/isAdmin';
 import * as css from './UsersRoles.scss';
 import { getUsers, updateUserRole } from '../../actions/UsersRoles';
 import localize from './usersRoles.json';
+import { getLastName, getFullName } from '../../utils/NameLocalisation';
 
 class UsersRoles extends React.Component {
   constructor(props) {
@@ -69,8 +70,8 @@ class UsersRoles extends React.Component {
   }
 
   renderRowUser(user) {
-    const { id, lastNameRu, firstNameRu, globalRole } = user;
-    const fullName = `${lastNameRu} ${firstNameRu}`;
+    const { id, globalRole } = user;
+    const fullName = getFullName(user);
     const status = this.renderStatusSelector(globalRole, id);
     return (
       <tr key={id} className={css.userRow}>
@@ -82,9 +83,9 @@ class UsersRoles extends React.Component {
 
   renderTableUsers(users) {
     const sortedUsers = users.sort((user1, user2) => {
-      if (user1.lastNameRu > user2.lastNameRu) {
+      if (getLastName(user1) > getLastName(user2)) {
         return 1;
-      } else if (user1.lastNameRu < user2.lastNameRu) {
+      } else if (getLastName(user1) < getLastName(user2)) {
         return -1;
       } else {
         return 0;

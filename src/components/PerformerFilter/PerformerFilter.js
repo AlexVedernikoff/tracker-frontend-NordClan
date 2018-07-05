@@ -15,7 +15,7 @@ class PerformerFilter extends React.Component {
   getUsers = () => {
     const users = this.props.users.map(user => ({
       value: user.id,
-      label: user.fullNameRu
+      label: this.props.lang === 'ru' ? user.fullNameRu : user.fullNameEn
     }));
     users.unshift({ value: '0', label: localize[this.props.lang].NOT_CHANGED });
     return users;

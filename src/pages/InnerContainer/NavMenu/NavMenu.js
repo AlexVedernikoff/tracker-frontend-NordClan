@@ -7,6 +7,7 @@ import isAdmin from '../../../utils/isAdmin';
 import { EXTERNAL_USER } from '../../../constants/Roles';
 import localize from './navMenu.json';
 import * as css from './NavMenu.scss';
+import { getFirstName, getLastName, getFullName } from '../../../utils/NameLocalisation';
 
 class NavMenu extends Component {
   static propTypes = {
@@ -14,14 +15,18 @@ class NavMenu extends Component {
   };
 
   getPhoto = () => {
-    const { user: { photo, firstNameRu, lastNameRu } } = this.props;
+    const {
+      user: { photo }
+    } = this.props;
     if (photo) {
       return <img src={photo} alt="" />;
     }
-    if (firstNameRu && lastNameRu) {
+    const firstName = getFirstName(this.props.user);
+    const lastName = getLastName(this.props.user);
+    if (firstName && lastName) {
       return `
-          ${firstNameRu.slice(0, 1) || ''}
-          ${lastNameRu.slice(0, 1) || ''}
+          ${firstName.slice(0, 1) || ''}
+          ${lastName.slice(0, 1) || ''}
           `;
     }
     return (
@@ -97,9 +102,7 @@ class NavMenu extends Component {
       <div className={css.sidebarHeader}>
         <div className={css.ava}>{this.getPhoto()}</div>
         <div className={css.userNameContainer}>
-          <div className={css.userName}>
-            {this.props.user.firstNameRu} {this.props.user.lastNameRu}
-          </div>
+          <div className={css.userName}>{getFullName(this.props.user)}</div>
           <div className={css.userGroups}>{this.props.user.department}</div>
         </div>
       </div>

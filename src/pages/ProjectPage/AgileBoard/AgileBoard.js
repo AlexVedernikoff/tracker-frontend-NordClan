@@ -679,7 +679,7 @@ class AgileBoard extends Component {
     );
 
     const typeOptions = this.createOptions(taskTypes);
-    const authorOptions = this.createOptions(project.users, 'fullNameRu');
+    const authorOptions = this.createOptions(project.users, lang === 'ru' ? 'fullNameRu' : 'fullNameEn');
 
     return (
       <section className={css.agileBoard}>

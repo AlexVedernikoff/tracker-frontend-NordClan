@@ -12,16 +12,16 @@ import { connect } from 'react-redux';
 import UserCard from '../../../components/UserCard';
 import Autolinker from 'autolinker';
 import localize from './Comment.json';
+import { getFirstName, getLastName, getFullName } from '../../../utils/NameLocalisation';
 
 const UPDATE_EXPIRATION_TIMEOUT = 10 * 60 * 1000; //10 минут
 
 class Comment extends Component {
   static getNames = person => {
     //унификация имени
-    const { firstNameRu, lastNameRu, lastNameEn, firstNameEn } = person;
-    const firstName = firstNameRu ? firstNameRu : firstNameEn;
-    const lastName = lastNameRu ? lastNameRu : lastNameEn;
-    const fullName = `${firstName} ${lastName ? lastName : ''}`;
+    const firstName = getFirstName(person);
+    const lastName = getLastName(person);
+    const fullName = getFullName(person);
 
     return { firstName, lastName, fullName };
   };
