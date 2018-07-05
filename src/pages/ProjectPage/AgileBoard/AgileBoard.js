@@ -181,10 +181,13 @@ class AgileBoard extends Component {
   }
 
   componentDidMount() {
+    this.getFiltersFromLocalStorage();
     if (this.props.myTaskBoard) {
       this.selectValue(this.getChangedSprint(this.props), 'changedSprint');
-    } else if (this.props.project.id) {
+    } else if (this.props.project.id && this.parseLocalStorageFilters().changedSprint === null) {
       this.selectValue(this.getCurrentSprint(this.props.sprints), 'changedSprint');
+    } else if (this.props.project.id && this.parseLocalStorageFilters().changedSprint !== null) {
+      this.selectValue(this.parseLocalStorageFilters().changedSprint, 'changedSprint');
     }
   }
 
