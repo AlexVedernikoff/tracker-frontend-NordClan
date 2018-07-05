@@ -29,9 +29,10 @@ class Participant extends React.Component {
       'qa',
       'unbillable',
       'android',
-      'ios'
+      'ios',
+      'devops'
     ];
-    this.ROLES_ID = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '13'];
+    this.ROLES_ID = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '13', '14'];
     this.state = {
       sendRoles: []
     };

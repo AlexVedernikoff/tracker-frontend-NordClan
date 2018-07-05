@@ -34,3 +34,6 @@ export const IOS_COST_PERCENTAGE = 52;
 
 export const ANDROID_COST = 53;
 export const IOS_COST = 54;
+
+export const DEVOPS_COST_PERCENTAGE = 55;
+export const DEVOPS_COST = 56;
