@@ -21,7 +21,7 @@ class CreateSprintModal extends Component {
       budget: '',
       riskBudget: '',
       sprintName: '',
-      allottedTime: ''
+      allottedTimeQa: props.project.percentQA || 30
     };
   }
 
@@ -37,9 +37,9 @@ class CreateSprintModal extends Component {
     }
   };
 
-  onChangeTime = e => {
-    if (this.validateNumbers(e.target.value)) {
-      this.setState({ allottedTime: e.target.value });
+  onChangeTimeQA = e => {
+    if (this.validateNumbers(e.target.value) && e.target.value <= 100) {
+      this.setState({ allottedTimeQa: e.target.value });
     }
   };
 
@@ -48,11 +48,11 @@ class CreateSprintModal extends Component {
   };
 
   handleDayFromChange = date => {
-    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD') }, () => this.setDefaultTimeValue());
+    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD') });
   };
 
   handleDayToChange = date => {
-    this.setState({ dateTo: moment(date).format('YYYY-MM-DD') }, () => this.setDefaultTimeValue());
+    this.setState({ dateTo: moment(date).format('YYYY-MM-DD') });
   };
 
   checkNullInputs = () => {
@@ -60,16 +60,16 @@ class CreateSprintModal extends Component {
       this.state.sprintName &&
       this.state.dateTo &&
       this.state.dateFrom &&
-      this.state.allottedTime &&
       this.state.budget &&
-      this.state.riskBudget
+      this.state.riskBudget &&
+      this.state.allottedTimeQa
     );
   };
 
   setDefaultTimeValue = () => {
     if (this.state.dateTo && this.state.dateFrom) {
       const calculatedHours = this.calcWorkingHours(this.state.dateFrom, this.state.dateTo);
-      this.setState({ allottedTime: calculatedHours });
+      this.setState({ budget: calculatedHours });
     }
   };
 
@@ -90,7 +90,7 @@ class CreateSprintModal extends Component {
 
   validateDates = () => {
     if (this.state.dateTo && this.state.dateFrom) {
-      return moment(this.state.dateTo).isAfter(this.state.dateFrom);
+      return moment(this.state.dateTo).isSameOrAfter(this.state.dateFrom);
     }
     return true;
   };
@@ -104,6 +104,7 @@ class CreateSprintModal extends Component {
       this.state.dateFrom,
       this.state.dateTo,
       Number(this.state.allottedTime),
+      Number(this.state.allottedTimeQa),
       Number(this.state.budget),
       Number(this.state.riskBudget)
     );
@@ -154,7 +155,7 @@ class CreateSprintModal extends Component {
                   value={formattedDayFrom}
                   onDayChange={this.handleDayFromChange}
                   placeholder="Введите дату начала"
-                  disabledDataRanges={this.props.sprintsDateRanges}
+                  // disabledDataRanges={this.props.sprintsDateRanges}
                 />
               </Col>
             </Row>
@@ -168,22 +169,20 @@ class CreateSprintModal extends Component {
                   value={formattedDayTo}
                   onDayChange={this.handleDayToChange}
                   placeholder="Введите дату окончания"
-                  disabledDataRanges={this.props.sprintsDateRanges}
+                  //disabledDataRanges={this.props.sprintsDateRanges}
                 />
               </Col>
             </Row>
+
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Время в часах:</p>
+                <p>% на QA:</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input
-                  placeholder="Введите время в часах"
-                  onChange={this.onChangeTime}
-                  value={this.state.allottedTime}
-                />
+                <Input placeholder="Введите % на QA" onChange={this.onChangeTimeQA} value={this.state.allottedTimeQa} />
               </Col>
             </Row>
+
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Бюджет без РР</p>
@@ -229,12 +228,14 @@ class CreateSprintModal extends Component {
 CreateSprintModal.propTypes = {
   createSprint: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  project: PropTypes.object.isRequired,
   projectId: PropTypes.number,
   sprintsDateRanges: PropTypes.array
 };
 
 const mapStateToProps = state => ({
   projectId: state.Project.project.id,
+  project: state.Project.project,
   sprintsDateRanges: getSprintsDateRange(state.Project.project.sprints)
 });
 

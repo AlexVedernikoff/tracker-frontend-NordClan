@@ -181,10 +181,13 @@ class AgileBoard extends Component {
   }
 
   componentDidMount() {
+    this.getFiltersFromLocalStorage();
     if (this.props.myTaskBoard) {
       this.selectValue(this.getChangedSprint(this.props), 'changedSprint');
-    } else if (this.props.project.id) {
+    } else if (this.props.project.id && this.parseLocalStorageFilters().changedSprint === null) {
       this.selectValue(this.getCurrentSprint(this.props.sprints), 'changedSprint');
+    } else if (this.props.project.id && this.parseLocalStorageFilters().changedSprint !== null) {
+      this.selectValue(this.parseLocalStorageFilters().changedSprint, 'changedSprint');
     }
   }
 
@@ -482,7 +485,7 @@ class AgileBoard extends Component {
         currentSprint = sprint;
       }
     });
-    return `${currentSprint.spentTime || 0} / ${currentSprint.allottedTime || 0}`;
+    return `${currentSprint.spentTime || 0} / ${currentSprint.riskBudget || 0}`;
   };
 
   getAllTags = () => {

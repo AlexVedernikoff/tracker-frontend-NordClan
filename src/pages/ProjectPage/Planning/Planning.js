@@ -8,7 +8,7 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 
 import { editSprint } from '../../../actions/Sprint';
 import { createSprint } from '../../../actions/Sprint';
-import { editMilestone } from '../../../actions/Milestone';
+import { editMilestone, deleteMilestone } from '../../../actions/Milestone';
 import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal, getProjectInfo, changeProject } from '../../../actions/Project';
@@ -187,7 +187,7 @@ class Planning extends Component {
       };
     } else {
       const sprint = this.props.project.sprints.filter(item => item.id === sprintId)[0];
-      const sprintEstimate = sprint && sprint.allottedTime ? +sprint.allottedTime : 0;
+      const sprintEstimate = sprint && sprint.riskBudget ? +sprint.riskBudget : 0;
       const sprintSpentTime = sprint && sprint.spentTime ? +sprint.spentTime : 0;
       const ratio = sprintEstimate === 0 ? 0 : sprintSpentTime / sprintEstimate;
       const width = ratioValue => {
@@ -279,6 +279,8 @@ class Planning extends Component {
     };
   };
 
+  onDeleteMilestone = milestone => () => this.props.deleteMilestone(milestone.id);
+
   handleEditSprint = sprint => {
     this.setState({ isOpenSprintEditModal: false });
     this.props.editSprint(
@@ -287,9 +289,9 @@ class Planning extends Component {
       sprint.sprintName.trim(),
       sprint.dateFrom,
       sprint.dateTo,
-      sprint.allottedTime,
       sprint.budget,
-      sprint.riskBudget
+      sprint.riskBudget,
+      sprint.qaPercent
     );
   };
 
@@ -360,6 +362,16 @@ class Planning extends Component {
         riskBudget
       },
       'riskBudget'
+    );
+  };
+
+  onPercentQaSubmit = qaPercent => {
+    this.props.changeProject(
+      {
+        id: this.props.project.id,
+        qaPercent: qaPercent
+      },
+      'qaPercent'
     );
   };
 
@@ -479,6 +491,7 @@ class Planning extends Component {
 
     const budget = this.props.project.budget;
     const riskBudget = this.props.project.riskBudget;
+    const qaPercent = this.props.project.qaPercent || 30;
     const { createdAt, completedAt, loading } = this.props;
     const unfinishedLeftTasksCount = this.getUnfinishedLeftTasks().length;
 
@@ -504,26 +517,41 @@ class Planning extends Component {
           </div>
           <div className={css.budgetContainer}>
             {!!budget && !!riskBudget && <SimplePie value={1 - budget / riskBudget} />}
-            {!isExternal ? (
-              <div className={css.budgetLegend}>
-                <div style={{ lineHeight: '1.5rem', fontWeight: 'bold' }}>Бюджет:</div>
-                <Budget
-                  onEditSubmit={this.onRiskBudgetSubmit}
-                  header="С рисковым резервом:"
-                  value={riskBudget}
-                  isProjectAdmin={isProjectAdmin}
-                  min={budget}
-                />
-                <Budget
-                  onEditSubmit={this.onBudgetSubmit}
-                  header="Без рискового резерва:"
-                  value={budget}
-                  isProjectAdmin={isProjectAdmin}
-                  max={riskBudget}
-                />
-                {!!budget && !!riskBudget && <div className={css.riskMarker}>Рисковый резерв</div>}
-              </div>
-            ) : null}
+            <div className={css.legendContainer}>
+              {!isExternal ? (
+                <div className={css.budgetLegend}>
+                  <div style={{ lineHeight: '1.5rem', fontWeight: 'bold' }}>Бюджет:</div>
+                  <Budget
+                    onEditSubmit={this.onRiskBudgetSubmit}
+                    header="С рисковым резервом:"
+                    value={riskBudget}
+                    isProjectAdmin={isProjectAdmin}
+                    min={budget}
+                  />
+                  <Budget
+                    onEditSubmit={this.onBudgetSubmit}
+                    header="Без рискового резерва:"
+                    value={budget}
+                    isProjectAdmin={isProjectAdmin}
+                    max={riskBudget}
+                  />
+                  {!!budget && !!riskBudget && <div className={css.riskMarker}>Рисковый резерв</div>}
+                </div>
+              ) : null}
+              {!isExternal ? (
+                <div className={css.budgetLegend}>
+                  <div style={{ lineHeight: '1.5rem', fontWeight: 'bold' }}>QA:</div>
+                  <Budget
+                    onEditSubmit={this.onPercentQaSubmit}
+                    header="Процент на тестирование:"
+                    value={qaPercent}
+                    isProjectAdmin={isProjectAdmin}
+                    min={0}
+                    max={100}
+                  />
+                </div>
+              ) : null}
+            </div>
           </div>
           <hr />
           {isProjectAdmin ? (
@@ -595,6 +623,7 @@ class Planning extends Component {
             onClickSprint={this.onClickSprint}
             openSprintEditModal={this.openSprintEditModal}
             openMilestoneEditModal={this.openMilestoneEditModal}
+            onDeleteMilestone={this.onDeleteMilestone}
           />
           {!isVisor && !isExternal ? (
             <div className={css.moveTasksBtnWrapper}>
@@ -680,6 +709,7 @@ class Planning extends Component {
         ) : null}
         {this.state.isOpenSprintEditModal ? (
           <SprintEditModal
+            project={this.props.project}
             sprint={this.state.editSprint}
             handleEditSprint={this.handleEditSprint}
             handleCloseModal={this.closeEditSprintModal}
@@ -717,6 +747,7 @@ const mapDispatchToProps = {
   getPlanningTasks,
   editSprint,
   editMilestone,
+  deleteMilestone,
   changeTask,
   startTaskEditing,
   openCreateTaskModal,

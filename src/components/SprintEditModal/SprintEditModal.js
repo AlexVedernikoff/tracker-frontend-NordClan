@@ -13,6 +13,7 @@ class SprintEditModal extends Component {
   static propTypes = {
     handleCloseModal: PropTypes.func.isRequired,
     handleEditSprint: PropTypes.func.isRequired,
+    project: PropTypes.object.isRequired,
     sprint: PropTypes.object.isRequired
   };
 
@@ -25,7 +26,7 @@ class SprintEditModal extends Component {
         id: this.props.sprint.id,
         dateTo: undefined,
         sprintName: this.props.sprint.name,
-        allottedTime: this.props.sprint.allottedTime || '0.00',
+        qaPercent: this.props.sprint.qaPercent || props.project.qaPercent || '30',
         isHovered: false,
         budget: this.props.sprint.budget || '0.00',
         riskBudget: this.props.sprint.riskBudget || '0.00'
@@ -36,22 +37,24 @@ class SprintEditModal extends Component {
   checkNullInputs = () => {
     return !!(
       this.state.sprint.sprintName.length &&
-      this.state.sprint.allottedTime.length &&
       this.state.sprint.budget.length &&
-      this.state.sprint.riskBudget.length
+      this.state.sprint.riskBudget.length &&
+      this.state.sprint.qaPercent.length
     );
   };
+
   validateNumbers(value) {
     const re = /^\d*(\.\d*)?$/;
     return value !== '' ? re.test(value) : true;
   }
-  onChangeTime = e => {
+
+  onChangePercentQA = e => {
     const value = e.target.value;
-    if (this.validateNumbers(value)) {
+    if (this.validateNumbers(value) && value <= 100) {
       this.setState(state => ({
         sprint: {
           ...state.sprint,
-          allottedTime: value
+          qaPercent: value
         }
       }));
     }
@@ -208,16 +211,17 @@ class SprintEditModal extends Component {
                 </Col>
               </Row>
             </label>
+
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>Выделенное время:</p>
+                  <p>% на QA:</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   <Input
-                    placeholder="Введите новое значение времени..."
-                    value={this.state.sprint.allottedTime}
-                    onChange={this.onChangeTime}
+                    placeholder="Введите новое % на QA..."
+                    value={this.state.sprint.qaPercent}
+                    onChange={this.onChangePercentQA}
                   />
                 </Col>
               </Row>

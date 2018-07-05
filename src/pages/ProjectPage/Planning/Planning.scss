@@ -28,12 +28,33 @@
 
 .budgetContainer {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 1rem;
   flex-wrap: nowrap;
 }
 
-.budgetLegend:not(:first-child) {
+.legendContainer {
+  margin-left: 1rem;
+  flex-wrap: wrap;
+  .budgetLegend:not(:first-child) {
+    vertical-align: top;
+  }
+  .budgetLegend {
+    display: inline-block;
+  }
+
+  @include phone {
+    .budgetLegend {
+      display: block;
+      vertical-align: baseline;
+    }
+    .budgetLegend:not(:first-child) {
+      padding-top: 1rem;
+    }
+  }
+}
+
+.budgetLegend {
   margin-left: 1rem;
 }
 
@@ -227,6 +248,9 @@
       &:hover ~ .edit {
         opacity: 1;
       }
+      &:hover ~ .delete {
+        opacity: 1;
+      }
     }
 
     .selection {
@@ -374,6 +398,33 @@ $tooltip-border: 1px solid lighten(black, 85%);
     background-color: $color-red;
     cursor: pointer;
   }
+  &.client {
+    > div {
+      transform: none;
+      border-radius: 50%;
+    }
+  }
+  &.inside {
+    > div {
+      transform: none;
+      border-radius: 15px;
+      position: relative;
+      color: #fff;
+      background: none !important;
+      &:after {
+        content: '';
+        position: absolute;
+        left: -1px;
+        border: 6px solid transparent;
+        border-top: 10px solid $color-red;
+      }
+    }
+  }
+  &.review {
+    > div {
+      transform: none;
+    }
+  }
   &.done {
     > div {
       background-color: $color-green;
@@ -420,9 +471,10 @@ $tooltip-border: 1px solid lighten(black, 85%);
   background-color: darken($color-gray, 10%);
 }
 
-.edit {
+.edit,
+.delete {
   position: absolute;
-  right: 0;
+  right: 20px;
   z-index: 1;
   opacity: 0;
   display: inline-block;
@@ -442,7 +494,14 @@ $tooltip-border: 1px solid lighten(black, 85%);
     opacity: 1;
     background-color: $color-lightgray;
     fill: $color-dark;
+    + .delete {
+      opacity: 1;
+    }
   }
+}
+
+.delete {
+  right: 0;
 }
 
 .timeline {

@@ -7,6 +7,7 @@ import _ from 'lodash';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as timesheetsActions from '../../actions/Timesheets';
 import * as timesheetsConstants from '../../constants/Timesheets';
+import { showNotification } from '../../actions/Notifications';
 import * as css from './Timesheets.scss';
 import { IconPlus, IconArrowLeft, IconArrowRight, IconCalendar } from '../../components/Icons';
 import AddActivityModal from './AddActivityModal';
@@ -19,8 +20,10 @@ class Timesheets extends React.Component {
     changeWeek: PropTypes.func,
     dateBegin: PropTypes.string,
     dateEnd: PropTypes.string,
+    deleteTempTimesheets: PropTypes.func,
     getTimesheets: PropTypes.func,
     list: PropTypes.array,
+    showNotification: PropTypes.func,
     startingDay: PropTypes.object,
     tempTimesheets: PropTypes.array,
     userId: PropTypes.number
@@ -95,11 +98,25 @@ class Timesheets extends React.Component {
 
     let tasks = list.length
       ? list.reduce((res, el) => {
+          const isTemp = tempTimesheets.some(tempTsh => tempTsh.id === el.id);
           const taskNotPushed =
             el.task &&
             !_.find(res, tsh => {
-              return tsh.id === el.task.id && tsh.taskStatusId === el.taskStatusId;
+              const isExist = tsh.id === el.task.id && tsh.taskStatusId === el.taskStatusId;
+              if (isExist && isTemp) {
+                tsh.hilight = true;
+              }
+              return isExist;
             });
+          if (!taskNotPushed && el.task && isTemp) {
+            Promise.resolve().then(() => {
+              this.props.showNotification({
+                message: 'Задача с выбранным статусом уже есть в отчете',
+                type: 'success'
+              });
+              this.props.deleteTempTimesheets([el.id.toString()]);
+            });
+          }
           if (taskNotPushed && isThisWeek(el.onDate)) {
             res.push({
               id: el.task.id,
@@ -156,15 +173,27 @@ class Timesheets extends React.Component {
 
     let magicActivities = list.length
       ? list.reduce((res, el) => {
+          const isTemp = tempTimesheets.some(tempTsh => tempTsh.id === el.id);
           const maNotPushed =
             el.typeId !== 1 &&
             !_.find(res, tsh => {
               const isSameType = tsh.typeId === el.typeId;
               const isSameProject = el.project ? tsh.projectId === el.project.id : tsh.projectId === 0;
               const isSameSprint = (el.sprint ? el.sprint.id : 0) === (tsh.sprint ? tsh.sprint.id : 0);
+              if (isSameType && isSameProject && isSameSprint && isTemp) {
+                tsh.hilight = true;
+              }
               return isSameType && isSameProject && isSameSprint;
             });
-
+          if (!maNotPushed && el.typeId !== 1 && isTemp) {
+            Promise.resolve().then(() => {
+              this.props.showNotification({
+                message: 'Задача с выбранным статусом уже есть в отчете',
+                type: 'success'
+              });
+              this.props.deleteTempTimesheets([el.id.toString()]);
+            });
+          }
           if (maNotPushed && isThisWeek(el.onDate)) {
             res.push({
               typeId: el.typeId,
@@ -372,7 +401,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  ...timesheetsActions
+  ...timesheetsActions,
+  showNotification
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Timesheets);

@@ -156,7 +156,10 @@ class Metrics extends Component {
         'Mobile',
         'TeamLead(Code review)',
         'QA',
-        'Unbillable'
+        'Unbillable',
+        'Android',
+        'IOS',
+        'DevOps'
       ];
 
       return typeIds.map((typeId, index) => {
@@ -177,7 +180,10 @@ class Metrics extends Component {
       MetricTypes.MOBILE_COST_PERCENTAGE,
       MetricTypes.TEAMLEAD_COST_PERCENTAGE,
       MetricTypes.QA_COST_PERCENTAGE,
-      MetricTypes.UNBILLABLE_COST_PERCENTAGE
+      MetricTypes.UNBILLABLE_COST_PERCENTAGE,
+      MetricTypes.ANDROID_COST_PERCENTAGE,
+      MetricTypes.IOS_COST_PERCENTAGE,
+      MetricTypes.DEVOPS_COST_PERCENTAGE
     );
 
     const costByRoleMetrics = getCostByRoleMetrics(
@@ -190,7 +196,10 @@ class Metrics extends Component {
       MetricTypes.MOBILE_COST,
       MetricTypes.TEAMLEAD_COST,
       MetricTypes.QA_COST,
-      MetricTypes.UNBILLABLE_COST
+      MetricTypes.UNBILLABLE_COST,
+      MetricTypes.ANDROID_COST,
+      MetricTypes.IOS_COST,
+      MetricTypes.DEVOPS_COST
     );
 
     return (
