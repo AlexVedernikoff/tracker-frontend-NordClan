@@ -70,10 +70,7 @@ class Tags extends Component {
               transitionLeaveTimeout={300}
             >
               {this.state.visible ? (
-                <div
-                  className={classnames({ [css.tagPopup]: true, [css[this.props.direction]]: true })}
-                  onSubmit={this.sendNewTags}
-                >
+                <div className={classnames({ [css.tagPopup]: true, [css[this.props.direction]]: true })}>
                   <input
                     type="text"
                     placeholder="Добавить тег"
