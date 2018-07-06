@@ -6,6 +6,8 @@ import { Line } from 'react-chartjs-2';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import roundNum from '../../../../utils/roundNum';
 import getColor from '../../../../utils/Colors';
+import localize from './BugsChart.json';
+import { connect } from 'react-redux';
 
 class BugsChart extends Component {
   static propTypes = {
@@ -48,15 +50,15 @@ class BugsChart extends Component {
   }
 
   makeChartData = () => {
-    const { openedBugsMetrics, openedCustomerBugsMetrics, openedRegressBugsMetrics } = this.props;
+    const { openedBugsMetrics, openedCustomerBugsMetrics, openedRegressBugsMetrics, lang } = this.props;
 
     getColor.reset();
 
     return {
       datasets: [
-        this.makeBugsLine(openedBugsMetrics, 'Количество открытых багов'),
-        this.makeBugsLine(openedCustomerBugsMetrics, 'Количество открытых багов от Заказчика'),
-        this.makeBugsLine(openedRegressBugsMetrics, 'Количество открытых регрессионных багов')
+        this.makeBugsLine(openedBugsMetrics, localize[lang].BUGS_NUMBER),
+        this.makeBugsLine(openedCustomerBugsMetrics, localize[lang].BUGS_NUMBER_FROM_CLIENT),
+        this.makeBugsLine(openedRegressBugsMetrics, localize[lang].BUGS_REGRESSION)
       ]
     };
   };
@@ -86,4 +88,8 @@ class BugsChart extends Component {
   }
 }
 
-export default BugsChart;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(mapStateToProps)(BugsChart);

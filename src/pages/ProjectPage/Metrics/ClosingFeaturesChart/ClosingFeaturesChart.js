@@ -6,6 +6,8 @@ import * as css from './ClosingFeaturesChart.scss';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import roundNum from '../../../../utils/roundNum';
 import getColor from '../../../../utils/Colors';
+import localize from './ClosingFeaturesChart.json';
+import { connect } from 'react-redux';
 
 class ClosingFeaturesChart extends Component {
   static propTypes = {
@@ -54,9 +56,9 @@ class ClosingFeaturesChart extends Component {
 
     return {
       datasets: [
-        this.makeBugsLine(sprintClosingFeaturesMetrics, 'Динамика закрытия задач (с учетом трудозатрат)'),
-        this.makeBugsLine(sprintWriteOffTimeMetrics, 'Динамика списания времени на задачи'),
-        this.makeBugsLine(sprintWorkWithoutEvaluationMetrics, 'Динамика трудозатрат на задачи без оценки')
+        this.makeBugsLine(sprintClosingFeaturesMetrics, localize[this.props.lang].DYNAMIC_CLOSE),
+        this.makeBugsLine(sprintWriteOffTimeMetrics, localize[this.props.lang].DYNAMIC_OFF_TIME),
+        this.makeBugsLine(sprintWorkWithoutEvaluationMetrics, localize[this.props.lang].DYNAMIC_WITHOUT_ELEVATION)
       ]
     };
   };
@@ -78,13 +80,18 @@ class ClosingFeaturesChart extends Component {
   };
 
   render() {
+    const { lang } = this.props;
     return (
       <ChartWrapper chartRef={this.refs.chart} className={css.ClosingFeaturesChart}>
-        <h3>Динамика закрытия задач</h3>
+        <h3>{localize[lang].DYNAMIC}</h3>
         <Line ref="chart" data={this.makeChartData()} options={this.chartOptions} redraw />
       </ChartWrapper>
     );
   }
 }
 
-export default ClosingFeaturesChart;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(mapStateToProps)(ClosingFeaturesChart);

@@ -6,6 +6,8 @@ import { Line } from 'react-chartjs-2';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import getColor from '../../../../utils/Colors';
 import roundNum from '../../../../utils/roundNum';
+import localize from './TasksCountChart.json';
+import { connect } from 'react-redux';
 
 class TasksCountChart extends Component {
   static propTypes = {
@@ -62,11 +64,14 @@ class TasksCountChart extends Component {
 
     return {
       datasets: [
-        this.makeTaskCountMetricsLine(openedFeaturesMetric, 'Количество открытых задач'),
-        this.makeTaskCountMetricsLine(openedFeaturesWithoutEvaluationMetric, 'Количество открытых задач без оценки'),
-        this.makeTaskCountMetricsLine(openedOutOfPlanFeaturesMetric, 'Количество открытых задач вне плана'),
-        this.makeTaskCountMetricsLine(openedBugsMetrics, 'Количество открытых багов'),
-        this.makeTaskCountMetricsLine(openedCustomerBugsMetrics, 'Количество открытых багов от заказчика')
+        this.makeTaskCountMetricsLine(openedFeaturesMetric, localize[this.props.lang].NUMBER_OPEN_TASKS),
+        this.makeTaskCountMetricsLine(
+          openedFeaturesWithoutEvaluationMetric,
+          localize[this.props.lang].WITHOUT_ELEVATION
+        ),
+        this.makeTaskCountMetricsLine(openedOutOfPlanFeaturesMetric, localize[this.props.lang].OUTSIDE_PLAN),
+        this.makeTaskCountMetricsLine(openedBugsMetrics, localize[this.props.lang].NUMBER_BUGS),
+        this.makeTaskCountMetricsLine(openedCustomerBugsMetrics, localize[this.props.lang].NUMBER_BUGS_FROM_CLIENT)
       ]
     };
   }
@@ -88,9 +93,10 @@ class TasksCountChart extends Component {
   };
 
   render() {
+    const { lang } = this.props;
     return (
       <ChartWrapper chartRef={this.chartRef} className={css.BugsChart}>
-        <h3>Количество задач</h3>
+        <h3>{localize[lang].NUMBER_OF_TASKS}</h3>
         <Line
           ref={element => {
             this.chartRef = element;
@@ -104,4 +110,8 @@ class TasksCountChart extends Component {
   }
 }
 
-export default TasksCountChart;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(mapStateToProps)(TasksCountChart);
