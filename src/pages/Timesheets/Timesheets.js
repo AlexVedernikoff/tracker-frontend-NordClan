@@ -250,7 +250,9 @@ class Timesheets extends React.Component {
 
     const days = [];
     for (let number = 0; number < 7; number++) {
-      const currentDay = moment(startingDay).weekday(number);
+      const currentDay = moment(startingDay)
+        .weekday(number)
+        .locale(localize[lang].MOMENT);
       days.push(
         <th
           className={cn({
