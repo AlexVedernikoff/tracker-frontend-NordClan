@@ -13,6 +13,7 @@ import PriorityBox from './PriorityBox';
 import getTypeById from '../../utils/TaskTypes';
 import roundNum from '../../utils/roundNum';
 import getProrityById from '../../utils/TaskPriority';
+import { isTaskInHold, isTaskInProgress, isTaskInWork } from '../../utils/TaskStatuses';
 import * as css from './TaskCard.scss';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
@@ -34,15 +35,6 @@ function collect(connection, monitor) {
     isDragging: monitor.isDragging()
   };
 }
-
-const STATUS_NEW = 1;
-const STATUS_DEV_PROGRESS = 2;
-const STATUS_DEV_HOLD = 3;
-const STATUS_REVIEW_PROGRESS = 4;
-const STATUS_REVIEW_HOLD = 5;
-const STATUS_QA_PROGRESS = 6;
-const STATUS_QA_HOLD = 7;
-const STATUS_DONE = 8;
 
 const getTaskTime = (factTime, planTime, lang) => {
   if (factTime) {
@@ -106,14 +98,6 @@ class TaskCore extends PureComponent {
     this.togglePriorityBox();
   };
 
-  isTaskInWork = statusId => statusId !== STATUS_NEW && statusId !== STATUS_DONE;
-
-  isTaskInProgress = statusId =>
-    statusId === STATUS_DEV_HOLD || statusId === STATUS_REVIEW_HOLD || statusId === STATUS_QA_HOLD;
-
-  isTaskInHold = statusId =>
-    statusId === STATUS_DEV_PROGRESS || statusId === STATUS_REVIEW_PROGRESS || statusId === STATUS_QA_PROGRESS;
-
   isInPlan = (plannedTime, factTime) => factTime / plannedTime <= 1 && plannedTime;
 
   isOutOfPlan = (plannedTime, factTime) => factTime / plannedTime > 1 && plannedTime;
@@ -155,15 +139,15 @@ class TaskCore extends PureComponent {
         onClick={this.goToDetailPage}
         {...other}
       >
-        {this.isTaskInWork(task.statusId) && (
+        {isTaskInWork(task.statusId) && (
           <div
             className={classnames({
               [css.status]: true,
-              [css.inhold]: this.isTaskInHold(task.statusId),
-              [css.inprogress]: this.isTaskInProgress(task.statusId)
+              [css.inhold]: isTaskInHold(task.statusId),
+              [css.inprogress]: isTaskInProgress(task.statusId)
             })}
           >
-            {this.isTaskInProgress(task.statusId) ? (
+            {isTaskInProgress(task.statusId) ? (
               <IconPlay data-tip={localize[lang].START} onClick={this.handleClick} />
             ) : (
               <IconPause data-tip={localize[lang].PAUSE} onClick={this.handleClick} />

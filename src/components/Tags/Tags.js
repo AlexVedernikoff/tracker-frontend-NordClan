@@ -46,9 +46,12 @@ class Tags extends Component {
   sendNewTags = e => {
     e.preventDefault();
     this.setState({ visible: !this.state.visible });
-    this.state.tag.trim() && this.props.createTags(this.state.tag.trim(), this.props.taggable, this.props.taggableId);
+    if (this.state.tag.trim() && !this.props.noRequest) {
+      this.props.createTags(this.state.tag.trim(), this.props.taggable, this.props.taggableId);
+    } else {
+      this.props.createTagsModalTask(this.state.tag.trim());
+    }
   };
-
   render() {
     const { lang } = this.props;
     let sliceTags = this.state.tags;
@@ -109,8 +112,10 @@ Tags.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.array]),
   create: PropTypes.bool,
   createTags: PropTypes.func.isRequired,
+  createTagsModalTask: PropTypes.func,
   direction: PropTypes.string,
   maxLength: PropTypes.number,
+  noRequest: PropTypes.bool,
   taggable: PropTypes.string,
   taggableId: PropTypes.number
 };

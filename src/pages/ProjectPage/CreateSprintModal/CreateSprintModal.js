@@ -21,7 +21,8 @@ class CreateSprintModal extends Component {
       dateTo: undefined,
       budget: '',
       riskBudget: '',
-      sprintName: ''
+      sprintName: '',
+      allottedTimeQa: props.project.percentQA || 30
     };
   }
 
@@ -34,6 +35,12 @@ class CreateSprintModal extends Component {
   onChangeRiskBudget = e => {
     if (this.validateNumbers(e.target.value)) {
       this.setState({ riskBudget: e.target.value });
+    }
+  };
+
+  onChangeTimeQA = e => {
+    if (this.validateNumbers(e.target.value) && e.target.value <= 100) {
+      this.setState({ allottedTimeQa: e.target.value });
     }
   };
 
@@ -55,7 +62,8 @@ class CreateSprintModal extends Component {
       this.state.dateTo &&
       this.state.dateFrom &&
       this.state.budget &&
-      this.state.riskBudget
+      this.state.riskBudget &&
+      this.state.allottedTimeQa
     );
   };
 
@@ -96,6 +104,8 @@ class CreateSprintModal extends Component {
       this.props.projectId,
       this.state.dateFrom,
       this.state.dateTo,
+      Number(this.state.allottedTime),
+      Number(this.state.allottedTimeQa),
       Number(this.state.budget),
       Number(this.state.riskBudget)
     );
@@ -165,6 +175,16 @@ class CreateSprintModal extends Component {
                 />
               </Col>
             </Row>
+
+            <Row className={css.inputRow}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>% на QA:</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                <Input placeholder="Введите % на QA" onChange={this.onChangeTimeQA} value={this.state.allottedTimeQa} />
+              </Col>
+            </Row>
+
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>{localize[lang].WO_RISK_RESERVE}</p>
@@ -210,6 +230,7 @@ class CreateSprintModal extends Component {
 CreateSprintModal.propTypes = {
   createSprint: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  project: PropTypes.object.isRequired,
   projectId: PropTypes.number,
   sprintsDateRanges: PropTypes.array
 };
@@ -217,7 +238,8 @@ CreateSprintModal.propTypes = {
 const mapStateToProps = state => ({
   projectId: state.Project.project.id,
   sprintsDateRanges: getSprintsDateRange(state.Project.project.sprints),
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  project: state.Project.project
 });
 
 const mapDispatchToProps = {

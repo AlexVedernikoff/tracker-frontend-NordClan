@@ -37,9 +37,12 @@ class ParticipantEditor extends Component {
       'Mobile',
       'TeamLead',
       'QA',
-      'Unbillable'
+      'Unbillable',
+      'Android',
+      'IOS',
+      'DevOps'
     ];
-    this.ROLES_ID = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'];
+    this.ROLES_ID = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14'];
     this.roleRights = {
       fullAccess: localize[lang].FULL_ACCESS,
       devAccess: localize[lang].DEV_ACCESS,

@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
-import { IconPlus, IconLink, IconUnLink, IconClose } from '../../../components/Icons';
+import { IconPlay, IconPause, IconPlus, IconLink, IconUnLink, IconClose } from '../../../components/Icons';
 import classnames from 'classnames';
+import { isTaskInProgress, getStatusNameById } from '../../../utils/TaskStatuses';
 import * as css from './RelatedTasks.scss';
 import { connect } from 'react-redux';
 import localize from './RelatedTasks.json';
@@ -56,10 +57,18 @@ class RelatedTasks extends React.Component {
     const tasks = this.props.task[this.props.type].map(task => {
       return (
         <li key={`${this.props.type}-${task.id}`} className={this.taskStyle(task.statusId)}>
-          <span className={css.taskLabel}>{`${this.props.task.project.prefix}-${task.id}`}</span>
-          <Link className="underline-link" to={`/projects/${this.props.task.project.id}/tasks/${task.id}`}>
-            {task.name}
-          </Link>
+          <span className={css.taskLabel}>
+            <div>
+              <div>{`${this.props.task.project.prefix}-${task.id}`}</div>
+              <div className={css.taskStatus}>{getStatusNameById(task.statusId)}</div>
+            </div>
+            <div className={css.taskStatusIcon}>{isTaskInProgress(task.statusId) ? <IconPlay /> : <IconPause />}</div>
+          </span>
+          <div className={css.taskLink}>
+            <Link className="underline-link" to={`/projects/${this.props.task.project.id}/tasks/${task.id}`}>
+              {task.name}
+            </Link>
+          </div>
           {this.props.onDelete ? this.getActionIcon(task) : null}
         </li>
       );

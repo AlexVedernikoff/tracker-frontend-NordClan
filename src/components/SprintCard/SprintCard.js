@@ -39,7 +39,8 @@ class SprintCard extends Component {
       sprint.dateFrom,
       sprint.dateTo,
       sprint.budget,
-      sprint.riskBudget
+      sprint.riskBudget,
+      sprint.qaPercent
     );
   };
 
@@ -72,7 +73,7 @@ class SprintCard extends Component {
   };
 
   render() {
-    const { sprint, editSprint, deleteSprint, inFocus, isExternal, lang, ...other } = this.props;
+    const { sprint, inFocus, isExternal, lang, ...other } = this.props;
 
     return (
       <div
@@ -108,6 +109,9 @@ class SprintCard extends Component {
         </p>
         {!isExternal
           ? [
+              <p key="qaPercent" className={css.sprintMeta}>
+                <span>% на QA: {sprint.qaPercent || 30}</span>
+              </p>,
               <p key="spentTime" className={css.sprintMeta}>
                 <span>
                   {localize[lang].SPENT_TIME} {sprint.spentTime || 0} {localize[lang].H}
@@ -132,6 +136,7 @@ class SprintCard extends Component {
         ) : null}
         {this.state.isModalOpen ? (
           <SprintEditModal
+            project={this.props.project}
             sprint={this.props.sprint}
             handleEditSprint={this.handleEditSprint}
             handleCloseModal={this.closeEditSprintModal}
@@ -156,6 +161,7 @@ SprintCard.propTypes = {
   editSprint: PropTypes.func.isRequired,
   inFocus: PropTypes.bool,
   isExternal: PropTypes.bool,
+  project: PropTypes.object.isRequired,
   sprint: PropTypes.object
 };
 
@@ -175,7 +181,8 @@ SprintCard.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  project: state.Project.project
 });
 
 const mapDispatchToProps = {

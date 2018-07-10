@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { Link } from 'react-router';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import getTypeById from '../../utils/TaskTypes';
-import getStatusNameById from '../../utils/TaskStatuses';
+import { getStatusNameById } from '../../utils/TaskStatuses';
 import { connect } from 'react-redux';
 import Tags from '../Tags';
 import Tag from '../Tag';
