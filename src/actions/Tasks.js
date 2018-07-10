@@ -1,8 +1,12 @@
 import * as TaskActions from '../constants/Tasks';
+import * as TaskAction from '../constants/Task';
 import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
+import { stopTaskEditing } from './Task';
+import { PUT, REST_API } from '../constants/RestApi';
+import { defaultExtra as extra, withStartLoading } from './Common';
 
 const startTasksReceive = () => ({
   type: TaskActions.TASKS_RECEIVE_START
@@ -16,6 +20,21 @@ const tasksReceived = tasks => ({
 const tasksListReceived = tasks => ({
   type: TaskActions.TASKS_LIST_RECEIVE_SUCCESS,
   data: tasks
+});
+
+const requestTasksChange = () => ({
+  type: TaskAction.TASK_CHANGE_REQUEST_SENT
+});
+
+const successTaskChange = changedFields => ({
+  type: TaskAction.TASK_CHANGE_REQUEST_SUCCESS,
+  changedFields
+});
+
+const postChangeFail = error => ({
+  type: TaskActions.TASK_CHANGE_REQUEST_FAIL,
+  closeHasError: false,
+  error: error
 });
 
 const getTasks = (options, onlyTaskListUpdate = false) => {
@@ -53,6 +72,39 @@ const getTasks = (options, onlyTaskListUpdate = false) => {
           }
           dispatch(finishLoading());
         }
+      });
+  };
+};
+
+export const changeTasks = (ChangedTasksProperties, callback) => {
+  return dispatch => {
+    dispatch({
+      type: REST_API,
+      url: '/tasks',
+      method: PUT,
+      body: ChangedTasksProperties,
+      extra,
+      start: withStartLoading(requestTasksChange, true)(dispatch)
+    });
+    axios
+      .put(`${API_URL}/tasks`)
+      .then(
+        function(response) {
+          dispatch(successTaskChange(response.data));
+          if (callback) {
+            callback();
+          }
+          dispatch(finishLoading());
+        },
+        function(value) {
+          if (value === 'Error: Request failed with status code 403') {
+            dispatch(postChangeFail());
+            dispatch(finishLoading());
+          }
+        }
+      )
+      .catch(function(error) {
+        dispatch(finishLoading());
       });
   };
 };
