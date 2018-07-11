@@ -161,29 +161,11 @@ const changeTask = (ChangedProperties, target, callback) => {
       method: PUT,
       body: ChangedProperties,
       extra,
-      start: withStartLoading(requestTaskChange, true)(dispatch)
+      start: withStartLoading(requestTaskChange, true)(dispatch),
+      callback: callback,
+      response: withFinishLoading(response => stopTaskEditing(target), true)(dispatch),
+      error: defaultErrorHandler(dispatch(stopTaskEditing(target)))
     });
-    axios
-      .put(`${API_URL}/task/${ChangedProperties.id}`)
-      .then(
-        function(response) {
-          dispatch(successTaskChange(response.data));
-          dispatch(stopTaskEditing(target));
-          if (callback) {
-            callback();
-          }
-          dispatch(finishLoading());
-        },
-        function(value) {
-          if (value === 'Error: Request failed with status code 403') {
-            dispatch(postChangeFail());
-            dispatch(finishLoading());
-          }
-        }
-      )
-      .catch(function(error) {
-        dispatch(finishLoading());
-      });
   };
 };
 
