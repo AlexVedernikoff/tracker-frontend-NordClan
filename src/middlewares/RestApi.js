@@ -1,19 +1,13 @@
-import {
-  REST_API,
-  GET,
-  POST,
-  PUT,
-  DELETE
-} from '../constants/RestApi';
+import { REST_API, GET, POST, PUT, DELETE } from '../constants/RestApi';
 import axios from 'axios';
 import { API_URL } from '../constants/Settings';
 
 const allowedMethods = new Set([GET, POST, PUT, DELETE]);
 const requiresBody = new Set([PUT, POST]);
 
-const consistantRequest = (action) => {
+const consistantRequest = action => {
   try {
-    const { method, body, url} = action;
+    const { method, body, url } = action;
 
     if (typeof url !== 'string' || url.length === 0) {
       throw new Error(`url '${url}' is not allowed for rest api`);
@@ -43,12 +37,15 @@ const polyfill = ({ method, body, extra, start, error, response, url }) => {
   };
 };
 
-const sendToApi = ({ method, body, extra, start, error, response, url }) => {
+const sendToApi = ({ method, body, extra, start, error, response, url, callback }) => {
   start();
   return axios[method](url, body, extra)
     .then(res => {
       if (res && res.status === 200) {
         response(res);
+        if (callback) {
+          callback();
+        }
       } else {
         error({
           response: res || {},
@@ -63,7 +60,7 @@ const sendToApi = ({ method, body, extra, start, error, response, url }) => {
     .catch(err => console.error(err));
 };
 
-export const restApi = (store) => (next) => (action) => {
+export const restApi = store => next => action => {
   if (action.type !== REST_API) {
     return next(action);
   }
