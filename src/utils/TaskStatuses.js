@@ -40,7 +40,7 @@ export const getStatusNameById = statusId => {
   return status;
 };
 
-export const isTaskInWork = statusId => statusId !== taskStatus.STATUS_NEW && statusId !== taskStatus.STATUS_DONE;
+export const isTaskInWork = statusId => statusId !== taskStatus.NEW && statusId !== taskStatus.DONE;
 
 export const isTaskInProgress = statusId =>
   statusId === taskStatus.STATUS_DEV_HOLD ||
