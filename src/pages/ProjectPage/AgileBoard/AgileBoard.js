@@ -21,6 +21,7 @@ import getPriorityById from '../../../utils/TaskPriority';
 import * as css from './AgileBoard.scss';
 import { UnmountClosed } from 'react-collapse';
 import localize from './AgileBoard.json';
+import { getFullName } from '../../../utils/NameLocalisation';
 
 import getTasks from '../../../actions/Tasks';
 import { VISOR, EXTERNAL_USER } from '../../../constants/Roles';
@@ -505,7 +506,7 @@ class AgileBoard extends Component {
   getUsers = () => {
     return this.props.project.users.map(user => ({
       value: user.id,
-      label: user.fullNameRu
+      label: getFullName(user)
     }));
   };
 
@@ -590,10 +591,10 @@ class AgileBoard extends Component {
     });
   };
 
-  createOptions = (array, labelField = 'name') => {
+  createOptions = (array, labelField) => {
     return array.map(element => ({
       value: element.id,
-      label: element[labelField]
+      label: labelField === 'name' ? element[labelField] : getFullName(element)
     }));
   };
 
@@ -681,8 +682,8 @@ class AgileBoard extends Component {
       this.state.isCardFocus
     );
 
-    const typeOptions = this.createOptions(taskTypes);
-    const authorOptions = this.createOptions(project.users, lang === 'ru' ? 'fullNameRu' : 'fullNameEn');
+    const typeOptions = this.createOptions(taskTypes, 'name');
+    const authorOptions = this.createOptions(project.users);
 
     return (
       <section className={css.agileBoard}>

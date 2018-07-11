@@ -18,6 +18,7 @@ import * as css from './TaskCard.scss';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import localize from './TaskCore.json';
+import { getFullName } from '../../utils/NameLocalisation';
 
 const taskCardSource = {
   beginDrag(props) {
@@ -180,7 +181,7 @@ class TaskCore extends PureComponent {
             <span className={css.performer}>
               {task.performer ? (
                 <span>
-                  {lang === 'ru' ? task.performer.fullNameRu : task.performer.fullNameEn}
+                  {getFullName(task.performer)}
                   <span className={css.preformerEditIcon}>
                     <IconEdit />
                   </span>

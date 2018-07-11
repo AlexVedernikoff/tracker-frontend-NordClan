@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import SelectDropdown from '../../components/SelectDropdown';
 import { getTagsFilter } from '../../actions/Tags';
 import localize from './PerformerFilter.json';
+import { getFullName } from '../../utils/NameLocalisation';
 
 class PerformerFilter extends React.Component {
   static propTypes = {
@@ -15,7 +16,7 @@ class PerformerFilter extends React.Component {
   getUsers = () => {
     const users = this.props.users.map(user => ({
       value: user.id,
-      label: this.props.lang === 'ru' ? user.fullNameRu : user.fullNameEn
+      label: getFullName(user)
     }));
     users.unshift({ value: '0', label: localize[this.props.lang].NOT_CHANGED });
     return users;
