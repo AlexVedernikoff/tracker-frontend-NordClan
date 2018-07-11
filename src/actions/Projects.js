@@ -37,18 +37,16 @@ export const closeCreateProjectModal = () => ({
   type: ProjectActions.CLOSE_CREATE_PROJECT_MODAL
 });
 
-const params = {
-  pageSize: 20,
-  currentPage: 1,
-  tags: '',
-  name: '',
-  dateSprintBegin: '',
-  dateSprintEnd: '',
-  statusId: '',
-  typeId: ''
-};
-
-const getProjects = () => {
+const getProjects = ({
+  pageSize = 20,
+  currentPage = 1,
+  tags = '',
+  name = '',
+  dateSprintBegin = '',
+  dateSprintEnd = '',
+  statusId = '',
+  typeId = ''
+} = {}) => {
   const URL = `${API_URL}/project`;
   return dispatch => {
     dispatch(startProjectsReceive());
@@ -58,15 +56,15 @@ const getProjects = () => {
         URL,
         {
           params: {
-            pageSize: params.pageSize,
-            currentPage: params.currentPage,
-            tags: params.tags,
-            name: params.name,
+            pageSize,
+            currentPage,
+            tags,
+            name,
             fields: 'name, statusId, createdAt',
-            dateSprintBegin: params.dateSprintBegin,
-            dateSprintEnd: params.dateSprintEnd,
-            statusId: params.statusId,
-            typeId: params.typeId
+            dateSprintBegin,
+            dateSprintEnd,
+            statusId,
+            typeId
           }
         },
         { withCredentials: true }
