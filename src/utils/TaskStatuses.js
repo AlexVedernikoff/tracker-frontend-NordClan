@@ -46,10 +46,4 @@ export const isTaskInProgress = statusId =>
   statusId === taskStatus.CODE_REVIEW_PLAY || statusId === taskStatus.DEV_PLAY || statusId === taskStatus.QA_PLAY;
 
 export const isTaskInHold = statusId =>
-  statusId === taskStatus.DEV_STOP ||
-  statusId === taskStatus.CODE_REVIEW_STOP ||
-  statusId === taskStatus.QA_STOP ||
-  statusId === taskStatus.DONE ||
-  statusId === taskStatus.NEW ||
-  statusId === taskStatus.CLOSED ||
-  statusId === taskStatus.CANCELED;
+  statusId === taskStatus.DEV_STOP || statusId === taskStatus.CODE_REVIEW_STOP || statusId === taskStatus.QA_STOP;
