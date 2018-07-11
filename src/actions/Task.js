@@ -2,8 +2,6 @@ import * as TaskActions from '../constants/Task';
 import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
-import { SOCKET_IO } from '../constants/SocketIO';
-import { finishLoading } from './Loading';
 import {
   defaultErrorHandler,
   withFinishLoading,
@@ -128,24 +126,10 @@ const getTaskHistory = (id, options) => {
       method: GET,
       body,
       extra,
-      start: withStartLoading(getTaskHistoryStart, true)(dispatch)
+      start: withStartLoading(getTaskHistoryStart, true)(dispatch),
+      response: withFinishLoading(response => getTaskHistorySuccess(response.data))(dispatch),
+      error: defaultErrorHandler(dispatch)
     });
-    axios
-      .get(URL, {
-        params: {
-          ...options
-        }
-      })
-      .then(function(response) {
-        if (response && response.status === 200) {
-          dispatch(getTaskHistorySuccess(response.data), true);
-        }
-        dispatch(finishLoading());
-      })
-      .catch(function(error) {
-        defaultErrorHandler(dispatch);
-        dispatch(finishLoading());
-      });
   };
 };
 
