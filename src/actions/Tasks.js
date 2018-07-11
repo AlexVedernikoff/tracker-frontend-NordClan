@@ -6,7 +6,7 @@ import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
 import { stopTaskEditing } from './Task';
 import { PUT, REST_API } from '../constants/RestApi';
-import { defaultExtra as extra, withStartLoading } from './Common';
+import { defaultErrorHandler, defaultExtra as extra, withFinishLoading, withStartLoading } from './Common';
 
 const startTasksReceive = () => ({
   type: TaskActions.TASKS_RECEIVE_START
@@ -84,28 +84,11 @@ export const changeTasks = (ChangedTasksProperties, callback) => {
       method: PUT,
       body: ChangedTasksProperties,
       extra,
-      start: withStartLoading(requestTasksChange, true)(dispatch)
+      start: withStartLoading(requestTasksChange, true)(dispatch),
+      callback: callback,
+      response: dispatch(finishLoading()),
+      error: defaultErrorHandler(dispatch)
     });
-    axios
-      .put(`${API_URL}/tasks`)
-      .then(
-        function(response) {
-          dispatch(successTaskChange(response.data));
-          if (callback) {
-            callback();
-          }
-          dispatch(finishLoading());
-        },
-        function(value) {
-          if (value === 'Error: Request failed with status code 403') {
-            dispatch(postChangeFail());
-            dispatch(finishLoading());
-          }
-        }
-      )
-      .catch(function(error) {
-        dispatch(finishLoading());
-      });
   };
 };
 
