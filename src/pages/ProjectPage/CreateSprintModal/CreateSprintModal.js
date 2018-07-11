@@ -103,7 +103,6 @@ class CreateSprintModal extends Component {
       this.props.projectId,
       this.state.dateFrom,
       this.state.dateTo,
-      Number(this.state.allottedTime),
       Number(this.state.allottedTimeQa),
       Number(this.state.budget),
       Number(this.state.riskBudget)
@@ -243,4 +242,7 @@ const mapDispatchToProps = {
   createSprint
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateSprintModal);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CreateSprintModal);
