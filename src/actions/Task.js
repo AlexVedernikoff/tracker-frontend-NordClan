@@ -1,6 +1,7 @@
 import * as TaskActions from '../constants/Task';
 import { API_URL } from '../constants/Settings';
 import axios from 'axios';
+import { finishLoading } from './Loading';
 import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
 import {
   defaultErrorHandler,
@@ -10,6 +11,7 @@ import {
   defaultExtra as extra,
   withdefaultExtra
 } from './Common';
+import * as LoadingActions from '../constants/Loading';
 
 const getTaskStart = () => ({
   type: TaskActions.GET_TASK_REQUEST_SENT
@@ -120,16 +122,22 @@ const getTaskHistory = (id, options) => {
   }
   const URL = `${API_URL}/task/${id}/history`;
   return dispatch => {
-    dispatch({
-      type: REST_API,
-      url: `/task/${id}/history`,
-      method: GET,
-      body,
-      extra,
-      start: withStartLoading(getTaskHistoryStart, true)(dispatch),
-      response: withFinishLoading(response => getTaskHistorySuccess(response.data))(dispatch),
-      error: defaultErrorHandler(dispatch)
-    });
+    axios
+      .get(URL, {
+        params: {
+          ...options
+        }
+      })
+      .then(function(response) {
+        if (response && response.status === 200) {
+          dispatch(getTaskHistorySuccess(response.data), true);
+        }
+        dispatch(finishLoading());
+      })
+      .catch(function(error) {
+        defaultErrorHandler(dispatch);
+        dispatch(finishLoading());
+      });
   };
 };
 
