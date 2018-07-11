@@ -40,7 +40,7 @@ class ParticipantEditor extends Component {
       'IOS',
       'DevOps'
     ];
-    this.ROLES_ID = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14'];
+    this.ROLES_ID = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '13', '14'];
     this.roleRights = {
       fullAccess:
         'Полный доступ к проекту. <br/>Доступны все действия на уровне проекта: <br/>Ведение задач, планирование, настройки проекта и команды, аналитика <br/>Полная рассылка по проекту.',
@@ -368,4 +368,7 @@ const mapDispatchToProps = {
   getProjectUsers
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ParticipantEditor);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ParticipantEditor);
