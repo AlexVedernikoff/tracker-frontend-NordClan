@@ -46,7 +46,7 @@ const getProjects = ({
   dateSprintEnd = '',
   statusId = '',
   typeId = ''
-}) => {
+} = {}) => {
   const URL = `${API_URL}/project`;
   return dispatch => {
     dispatch(startProjectsReceive());
