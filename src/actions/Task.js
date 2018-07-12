@@ -174,8 +174,10 @@ const changeTask = (ChangedProperties, target, callback) => {
       body: ChangedProperties,
       extra,
       start: withStartLoading(requestTaskChange, true)(dispatch),
-      response: withFinishLoading(cresponse => {
-        callback();
+      response: withFinishLoading(response => {
+        if (callback) {
+          callback();
+        }
         return stopTaskEditing(target);
       }, true)(dispatch),
       error: defaultErrorHandler(dispatch(stopTaskEditing(target)))
