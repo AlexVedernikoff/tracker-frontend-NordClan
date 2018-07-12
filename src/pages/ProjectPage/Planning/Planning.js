@@ -412,16 +412,18 @@ class Planning extends Component {
       });
     };
 
-    tasks.forEach((task, index) => {
-      this.props.changeTask(
-        {
-          id: task.id,
-          sprintId: sprintId
-        },
-        'Sprint',
-        index === tasks.length - 1 ? getPlanningTasksAll : null
-      );
-    });
+    Promise.resolve(
+      tasks.forEach((task, index) => {
+        this.props.changeTask(
+          {
+            id: task.id,
+            sprintId: sprintId
+          },
+          'Sprint',
+          index === tasks.length - 1 ? getPlanningTasksAll : null
+        );
+      })
+    ).then(console.log('Proooooooooooooomise'));
 
     this.setState({ isModalOpenMoveTasks: false });
   };

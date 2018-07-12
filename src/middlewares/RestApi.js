@@ -37,15 +37,12 @@ const polyfill = ({ method, body, extra, start, error, response, url }) => {
   };
 };
 
-const sendToApi = ({ method, body, extra, start, error, response, url, callback }) => {
+const sendToApi = ({ method, body, extra, start, error, response, url }) => {
   start();
   return axios[method](url, body, extra)
     .then(res => {
       if (res && res.status === 200) {
         response(res);
-        if (callback) {
-          callback();
-        }
       } else {
         error({
           response: res || {},

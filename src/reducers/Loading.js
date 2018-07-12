@@ -8,13 +8,13 @@ export default function Loading(state = InitialState, action) {
   switch (action.type) {
     case LoadingActions.LOADING_START:
       return {
-        loading: 1
+        loading: state.loading + 1
       };
 
     case LoadingActions.LOADING_FINISH:
       return {
         ...state,
-        loading: 0
+        loading: state.loading - 1
       };
 
     default:

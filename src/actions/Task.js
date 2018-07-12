@@ -93,6 +93,10 @@ const stopTaskEditing = target => ({
   target
 });
 
+const withCallback = (resp, callback) => ({
+  callback
+});
+
 const clearCurrentTask = target => ({
   type: TaskActions.CLEAR_CURRENT_TASK
 });
@@ -170,8 +174,10 @@ const changeTask = (ChangedProperties, target, callback) => {
       body: ChangedProperties,
       extra,
       start: withStartLoading(requestTaskChange, true)(dispatch),
-      callback: callback,
-      response: withFinishLoading(response => stopTaskEditing(target), true)(dispatch),
+      response: withFinishLoading(cresponse => {
+        callback();
+        return stopTaskEditing(target);
+      }, true)(dispatch),
       error: defaultErrorHandler(dispatch(stopTaskEditing(target)))
     });
   };
