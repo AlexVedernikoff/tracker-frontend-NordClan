@@ -129,7 +129,9 @@ class Participant extends React.Component {
                           onChange={e => this.changeRole(e, this.ROLES_NAME[i], this.ROLES_ID[i])}
                           checked={(roles && roles[ROLES_NAME]) || false}
                         />
-                        <span className={css.labelText}>{this.ROLES_NAME[i]}</span>
+                        <span className={ROLES_NAME === 'ios' ? classnames(css.labelText, css.toUp) : css.labelText}>
+                          {this.ROLES_NAME[i]}
+                        </span>
                       </label>
                     </Col>
                   ))
@@ -168,4 +170,7 @@ const mapDispatchToProps = {
   showNotification
 };
 
-export default connect(null, mapDispatchToProps)(Participant);
+export default connect(
+  null,
+  mapDispatchToProps
+)(Participant);
