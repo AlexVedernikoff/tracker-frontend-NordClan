@@ -43,8 +43,8 @@ export const getStatusNameById = statusId => {
 export const isTaskInWork = statusId =>
   statusId !== taskStatus.NEW &&
   statusId !== taskStatus.DONE &&
-  statusId === taskStatus.CLOSED &&
-  statusId === taskStatus.CANCELED;
+  statusId !== taskStatus.CLOSED &&
+  statusId !== taskStatus.CANCELED;
 
 export const isTaskInProgress = statusId =>
   statusId === taskStatus.CODE_REVIEW_PLAY || statusId === taskStatus.DEV_PLAY || statusId === taskStatus.QA_PLAY;
