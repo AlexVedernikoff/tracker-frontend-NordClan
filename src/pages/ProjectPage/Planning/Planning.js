@@ -392,8 +392,6 @@ class Planning extends Component {
   onMoveTasksModalCancel = () => {
     this.setState({ isModalOpenMoveTasks: false });
   };
-
-  // TODO: Избавиться от цикла и множественных вызовов после создания API массового редактирования задач
   onMoveTasksModalConfirm = sprintId => {
     const tasks = this.getUnfinishedLeftTasks();
 
@@ -416,6 +414,7 @@ class Planning extends Component {
 
     const tasksChanged = [];
     tasks.forEach(task => {
+      console.log(task);
       tasksChanged.push({
         id: task.id,
         sprintId: sprintId

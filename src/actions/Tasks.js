@@ -85,8 +85,11 @@ export const changeTasks = (ChangedTasksProperties, callback) => {
       body: ChangedTasksProperties,
       extra,
       start: withStartLoading(requestTasksChange, true)(dispatch),
-      callback: callback,
-      response: dispatch(finishLoading()),
+      response: withFinishLoading(response => {
+        if (callback) {
+          callback();
+        }
+      }, false)(dispatch),
       error: defaultErrorHandler(dispatch)
     });
   };
