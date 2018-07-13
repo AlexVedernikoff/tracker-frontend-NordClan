@@ -9,6 +9,7 @@ import HistoryMessage from '../../../components/HistoryMessage';
 import Pagination from '../../../components/Pagination';
 import * as css from './TaskHistory.scss';
 import localize from './TaskHistory.json';
+import { getFullName } from '../../../utils/NameLocalisation';
 
 class TaskHistory extends React.Component {
   constructor(props) {
@@ -55,7 +56,7 @@ class TaskHistory extends React.Component {
               <span className={css.time}> {moment(event.date).format('DD.MM.YYYY HH:mm:ss')}</span>
               <div className={css.historyAction}>
                 <UserCard user={event.author}>
-                  <Link>{event.author.fullNameRu}</Link>
+                  <Link>{getFullName(event.author)}</Link>
                 </UserCard>{' '}
                 <HistoryMessage
                   message={event.message}

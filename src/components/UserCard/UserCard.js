@@ -6,25 +6,25 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import { IconSkype, IconMail, IconPhone } from '../Icons';
 import { IconUser } from '../Icons';
+import { getFullName } from '../../utils/NameLocalisation';
 
 class UserCard extends React.Component {
-
-  constructor (props) {
+  constructor(props) {
     super(props);
-    this.state = {visible: false};
+    this.state = { visible: false };
   }
 
   handleClickOutside = () => {
-    this.setState({visible: false});
+    this.setState({ visible: false });
   };
 
   showCard = () => {
-    this.setState({visible: true});
+    this.setState({ visible: true });
   };
 
-  render () {
-    const childrenWithProps = React.Children.map(this.props.children,
-      (child) => React.cloneElement(child, {
+  render() {
+    const childrenWithProps = React.Children.map(this.props.children, child =>
+      React.cloneElement(child, {
         onClick: () => this.showCard()
       })
     );
@@ -39,35 +39,49 @@ class UserCard extends React.Component {
     return (
       <div className={css.wrapper}>
         {childrenWithProps}
-        <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
-          {
-            this.state.visible
-              ? <div className={css.userCard}>
-                <div className={css.photoWrapper}>
-                  {
-                    user.photo
-                      ? <img src={user.photo} alt=""/>
-                      : <IconUser style={iconUserStyles}/>
-                  }
-                </div>
-                {user.fullNameRu && <div className={css.name}>
-                  {user.fullNameRu}
-                </div>}
-                {user.skype && <div className={css.meta}>
-                  <span><IconSkype/></span>
-                  <span><a href={`skype:${user.skype}?add`}>{user.skype}</a></span>
-                </div>}
-                {user.emailPrimary && <div className={css.meta}>
-                  <span><IconMail/></span>
-                  <span><a href={`mailto:${user.emailPrimary}`}>{user.emailPrimary}</a></span>
-                </div>}
-                {user.mobile && <div className={css.meta}>
-                  <span><IconPhone/></span>
-                  <span><a href={`tel:${user.mobile}`}>{user.mobile}</a></span>
-                </div>}
+        <ReactCSSTransitionGroup
+          transitionName="animatedElement"
+          transitionEnterTimeout={300}
+          transitionLeaveTimeout={300}
+        >
+          {this.state.visible ? (
+            <div className={css.userCard}>
+              <div className={css.photoWrapper}>
+                {user.photo ? <img src={user.photo} alt="" /> : <IconUser style={iconUserStyles} />}
               </div>
-              : null
-          }
+              {getFullName(user) && <div className={css.name}>{getFullName(user)}</div>}
+              {user.skype && (
+                <div className={css.meta}>
+                  <span>
+                    <IconSkype />
+                  </span>
+                  <span>
+                    <a href={`skype:${user.skype}?add`}>{user.skype}</a>
+                  </span>
+                </div>
+              )}
+              {user.emailPrimary && (
+                <div className={css.meta}>
+                  <span>
+                    <IconMail />
+                  </span>
+                  <span>
+                    <a href={`mailto:${user.emailPrimary}`}>{user.emailPrimary}</a>
+                  </span>
+                </div>
+              )}
+              {user.mobile && (
+                <div className={css.meta}>
+                  <span>
+                    <IconPhone />
+                  </span>
+                  <span>
+                    <a href={`tel:${user.mobile}`}>{user.mobile}</a>
+                  </span>
+                </div>
+              )}
+            </div>
+          ) : null}
         </ReactCSSTransitionGroup>
       </div>
     );

@@ -21,6 +21,7 @@ import _ from 'lodash';
 import roundNum from '../../../utils/roundNum';
 import classnames from 'classnames';
 import localize from './Details.json';
+import { getFullName } from '../../../utils/NameLocalisation';
 
 const spentRequestStatus = {
   READY: 0,
@@ -183,7 +184,7 @@ class Details extends Component {
 
     const users = this.props.users.map(item => ({
       value: item.user ? item.user.id : item.id,
-      label: item.user ? item.user.fullNameRu : item.fullNameRu
+      label: item.user ? getFullName(item.user) : getFullName(item)
     }));
 
     const executeTimeTooltip =
@@ -205,7 +206,7 @@ class Details extends Component {
           getContent={() => <div> {localize[lang].LOADING} </div>}
         />
       );
-
+    console.log(task.performer);
     return (
       <div className={css.detailsBlock}>
         <table className={css.detailTable}>
@@ -262,7 +263,7 @@ class Details extends Component {
             {task.author ? (
               <tr>
                 <td>{localize[lang].AUTHOR}</td>
-                <td>{task.author.fullNameRu}</td>
+                <td>{getFullName(task.author)}</td>
               </tr>
             ) : null}
             <tr>
@@ -270,7 +271,7 @@ class Details extends Component {
               <td>
                 <span onClick={this.openPerformerModal} className={css.editableCell}>
                   {task.performer ? (
-                    task.performer.fullNameRu
+                    getFullName(task.performer)
                   ) : (
                     <span className={css.unassigned}>{localize[lang].NOT_SPECIFIED}</span>
                   )}

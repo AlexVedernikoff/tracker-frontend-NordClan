@@ -14,6 +14,7 @@ import CopyThis from '../../../components/CopyThis';
 import { history } from '../../../History';
 import getTypeById from '../../../utils/TaskTypes';
 import localize from './TaskHeader.json';
+import { getFullName } from '../../../utils/NameLocalisation';
 
 const getNewStatus = newPhase => {
   let newStatusId;
@@ -176,7 +177,7 @@ class TaskHeader extends Component {
     const css = require('./TaskHeader.scss');
     const users = this.props.users.map(item => ({
       value: item.user ? item.user.id : item.id,
-      label: item.user ? item.user.fullNameRu : item.fullNameRu
+      label: item.user ? getFullName(item.user) : getFullName(item)
     }));
 
     return (

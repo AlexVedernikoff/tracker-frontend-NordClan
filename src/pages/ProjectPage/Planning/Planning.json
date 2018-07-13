@@ -15,7 +15,9 @@
     "CONTINUE_REPLACE": "tasks. Continue?",
     "TOTAL_TIME": "Total time",
     "OF": "of",
-    "H": "h."
+    "H": "h.",
+    "PERCENT_TEST": "Percent on testing:",
+    "RISK_RESERVE": "Risk reserve"
   },
   "ru": {
     "PROJECT_START": "Начало проекта:",
@@ -33,6 +35,8 @@
     "CONTINUE_REPLACE": "задач. Продолжить?",
     "TOTAL_TIME": "Суммарное время",
     "OF": "из",
-    "H": "ч."
+    "H": "ч.",
+    "PERCENT_TEST": "Процент на тестирование:",
+    "RISK_RESERVE": "Рисковый резерв"
   }
 }

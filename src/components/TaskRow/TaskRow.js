@@ -12,6 +12,7 @@ import { IconEdit } from '../Icons';
 import * as css from './TaskRow.scss';
 import roundNum from '../../utils/roundNum';
 import localize from './TaskRow.json';
+import { getFullName } from '../../utils/NameLocalisation';
 
 const getTaskTime = (factTime, planTime, lang) => {
   if (factTime) {
@@ -110,13 +111,13 @@ class TaskRow extends React.Component {
                 <p className={css.taskMeta}>
                   <span className={css.metaKey}>{localize[lang].PERFORMER}</span>
                   <span className={css.metaValue} onClick={this.handlePerformerClick}>
-                    {task.performer ? task.performer.fullNameRu : localize[lang].UNASSIGNED}
+                    {task.performer ? getFullName(task.performer) : localize[lang].UNASSIGNED}
                     <IconEdit />
                   </span>
                 </p>
                 <p className={css.taskMeta}>
                   <span className={css.metaKey}>{localize[lang].AUTHOR}</span>
-                  <span>{task.author ? task.author.fullNameRu : ''}</span>
+                  <span>{task.author ? getFullName(task.author) : ''}</span>
                 </p>
                 <p className={css.taskMeta}>
                   {task.statusId !== 1 && !isExternal ? (

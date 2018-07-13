@@ -10,7 +10,6 @@ import { bindUserToProject, unbindUserToProject } from '../../actions/Project';
 import ConfirmModal from '../ConfirmModal';
 import { showNotification } from '../../actions/Notifications';
 import localize from './Participant.json';
-import { getFullName } from '../../utils/NameLocalisation';
 
 class Participant extends React.Component {
   static defaultProps = {
@@ -116,7 +115,7 @@ class Participant extends React.Component {
             {this.props.isProjectAdmin ? (
               <IconClose className={css.iconClose} onClick={this.handleOpenConfirmDelete} />
             ) : null}
-            {getFullName(user)}
+            {user.fullNameRu}
           </div>
         </Col>
         {!isExternal ? (

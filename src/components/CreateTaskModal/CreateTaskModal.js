@@ -23,6 +23,7 @@ import Checkbox from '../../components/Checkbox/Checkbox';
 import localize from './CreateTaskModal.json';
 import Tag from '../../components/Tag';
 import Tags from '../../components/Tags';
+import { getFullName } from '../../utils/NameLocalisation';
 
 class CreateTaskModal extends Component {
   constructor(props) {
@@ -134,7 +135,7 @@ class CreateTaskModal extends Component {
   getUsers = () => {
     return this.props.project.users.map(user => ({
       value: user.id,
-      label: user.fullNameRu
+      label: getFullName(user)
     }));
   };
 

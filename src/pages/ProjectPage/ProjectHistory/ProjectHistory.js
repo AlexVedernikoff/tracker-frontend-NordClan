@@ -10,6 +10,7 @@ import HistoryMessage from '../../../components/HistoryMessage';
 import Pagination from '../../../components/Pagination';
 import UserCard from '../../../components/UserCard';
 import localize from './ProjectHistory.json';
+import { getFullName } from '../../../utils/NameLocalisation';
 
 class ProjectHistory extends React.Component {
   constructor(props) {
@@ -58,7 +59,7 @@ class ProjectHistory extends React.Component {
           <div className={css.historyAction}>
             {event.author ? (
               <UserCard user={event.author}>
-                <Link>{event.author.fullNameRu}</Link>
+                <Link>{getFullName(event.author)}</Link>
               </UserCard>
             ) : null}{' '}
             <HistoryMessage message={event.message} entities={event.entities} projectId={projectId} />

@@ -11,6 +11,7 @@ import { IconCheck, IconError } from '../../../../components/Icons';
 import getStatusOptions from '../../../../utils/getDraftStatusOptions';
 import createHash from '../../../../utils/createHash';
 import * as css from '../TaskTimeReports.scss';
+import { getFullName } from '../../../../utils/NameLocalisation';
 
 class NewLine extends Component {
   static propTypes = {
@@ -102,7 +103,7 @@ class NewLine extends Component {
           />
         </td>
         <td className={css.user}>
-          {currentUser.fullNameRu}
+          {getFullName(currentUser)}
           {!isFieldValues && !isAlreadyCreated ? (
             <RoundButton
               className={css.confirmNewTimesheet}

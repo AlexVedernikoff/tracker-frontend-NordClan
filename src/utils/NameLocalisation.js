@@ -14,7 +14,17 @@ export function getLastName(user) {
 }
 
 export function getFullName(user) {
-  return lang === 'ru'
-    ? user.fullNameRu || `${user.firstNameRu} ${user.lastNameRu}`
-    : user.fullNameEn || `${user.firstNameEn} ${user.lastNameEn}`;
+  if (lang === 'ru') {
+    if (user.fullNameRu) {
+      return user.fullNameRu;
+    } else {
+      return `${user.firstNameRu} ${user.lastNameRu}`;
+    }
+  } else if (lang === 'en') {
+    if (user.fullNameEn) {
+      return user.fullNameEn;
+    } else {
+      return `${user.firstNameEn} ${user.lastNameEn}`;
+    }
+  }
 }

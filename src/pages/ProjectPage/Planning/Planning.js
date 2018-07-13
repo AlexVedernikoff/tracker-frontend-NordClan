@@ -524,7 +524,7 @@ class Planning extends Component {
             <div className={css.legendContainer}>
               {!isExternal ? (
                 <div className={css.budgetLegend}>
-                  <div style={{ lineHeight: '1.5rem', fontWeight: 'bold' }}>Бюджет:</div>
+                  <div style={{ lineHeight: '1.5rem', fontWeight: 'bold' }}>{localize[lang].BUDGET}</div>
                   <Budget
                     onEditSubmit={this.onRiskBudgetSubmit}
                     header={localize[lang].WITH_RISK_RESERVE}
@@ -539,7 +539,7 @@ class Planning extends Component {
                     isProjectAdmin={isProjectAdmin}
                     max={riskBudget}
                   />
-                  {!!budget && !!riskBudget && <div className={css.riskMarker}>Рисковый резерв</div>}
+                  {!!budget && !!riskBudget && <div className={css.riskMarker}>{localize[lang].RISK_RESERVE}</div>}
                 </div>
               ) : null}
               {!isExternal ? (
@@ -547,7 +547,7 @@ class Planning extends Component {
                   <div style={{ lineHeight: '1.5rem', fontWeight: 'bold' }}>QA:</div>
                   <Budget
                     onEditSubmit={this.onPercentQaSubmit}
-                    header="Процент на тестирование:"
+                    header={localize[lang].PERCENT_TEST}
                     value={qaPercent}
                     isProjectAdmin={isProjectAdmin}
                     min={0}

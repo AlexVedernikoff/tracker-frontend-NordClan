@@ -3,6 +3,7 @@ import Pt from 'prop-types';
 import { Link } from 'react-router';
 import UserCard from '../UserCard';
 import * as css from './HistoryMessage.scss';
+import { getFullName } from '../../utils/NameLocalisation';
 
 export default class HistoryMessage extends React.Component {
   static propTypes = {
@@ -75,7 +76,7 @@ export default class HistoryMessage extends React.Component {
       case 'user':
         return (
           <UserCard user={entities[addition]} key={key}>
-            <Link>{entities[addition].fullNameRu}</Link>
+            <Link>{getFullName(entities[addition])}</Link>
           </UserCard>
         );
       case 'linkedTask':

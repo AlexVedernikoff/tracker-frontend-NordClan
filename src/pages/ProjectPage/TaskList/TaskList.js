@@ -23,6 +23,7 @@ import { changeTask, startTaskEditing } from '../../../actions/Task';
 import CreateTaskModal from '../../../components/CreateTaskModal';
 import { openCreateTaskModal } from '../../../actions/Project';
 import localize from './taskList.json';
+import { getFullName } from '../../../utils/NameLocalisation';
 
 class TaskList extends Component {
   constructor(props) {
@@ -176,7 +177,7 @@ class TaskList extends Component {
   getUsers = () => {
     return this.props.project.users.map(user => ({
       value: user.id,
-      label: user.fullNameRu
+      label: getFullName(user)
     }));
   };
 
@@ -518,4 +519,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = { getTasks, startTaskEditing, changeTask, openCreateTaskModal };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskList);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskList);

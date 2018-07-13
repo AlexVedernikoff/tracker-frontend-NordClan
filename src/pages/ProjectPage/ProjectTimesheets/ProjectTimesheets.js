@@ -14,6 +14,7 @@ import ActivityRow from './ActivityRow';
 import UserRow from './UserRow';
 import exactMath from 'exact-math';
 import localize from './ProjectTimesheets.json';
+import { getFullName } from '../../../utils/NameLocalisation';
 
 class ProjectTimesheets extends React.Component {
   static propTypes = {
@@ -256,7 +257,7 @@ class ProjectTimesheets extends React.Component {
           if (userNotPushed) {
             users[el.user.id] = {
               id: el.user.id,
-              userName: el.user.fullNameRu ? el.user.fullNameRu : null,
+              userName: getFullName(el.user) ? getFullName(el.user) : null,
               isOpen: false,
               tasks: [],
               timesheets: getUserTimesheets(el.user.id),

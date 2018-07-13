@@ -51,7 +51,7 @@ const getTaskTime = (factTime, planTime, lang) => {
 
 class TaskCore extends PureComponent {
   static propTypes = {
-    classPriority: PropTypes.string,
+    classPriority: PropTypes.any,
     connectDragSource: PropTypes.func,
     factPlanDivision: PropTypes.number,
     isBug: PropTypes.bool,
@@ -123,8 +123,8 @@ class TaskCore extends PureComponent {
       onOpenPerformerModal,
       connectDragSource,
       isDragging,
-      lang,
-      ...other
+      lang
+      // ...other
     } = this.props;
 
     return connectDragSource(
@@ -138,7 +138,7 @@ class TaskCore extends PureComponent {
         onMouseEnter={() => lightTask(task.id, false)}
         onMouseLeave={() => lightTask(null, false)}
         onClick={this.goToDetailPage}
-        {...other}
+        // {...other}
       >
         {isTaskInWork(task.statusId) && (
           <div
