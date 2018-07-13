@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { IconPlay, IconPause, IconPlus, IconLink, IconUnLink, IconClose } from '../../../components/Icons';
 import classnames from 'classnames';
-import { isTaskInProgress, getStatusNameById } from '../../../utils/TaskStatuses';
+import { isTaskInProgress, getStatusNameById, isTaskInHold } from '../../../utils/TaskStatuses';
 import * as css from './RelatedTasks.scss';
 
 export default class RelatedTasks extends React.Component {
@@ -59,7 +59,9 @@ export default class RelatedTasks extends React.Component {
               <div>{`${this.props.task.project.prefix}-${task.id}`}</div>
               <div className={css.taskStatus}>{getStatusNameById(task.statusId)}</div>
             </div>
-            <div className={css.taskStatusIcon}>{isTaskInProgress(task.statusId) ? <IconPlay /> : <IconPause />}</div>
+            <div className={css.taskStatusIcon}>
+              {isTaskInProgress(task.statusId) ? <IconPlay /> : isTaskInHold(task.statusId) ? <IconPause /> : null}
+            </div>
           </span>
           <div className={css.taskLink}>
             <Link className="underline-link" to={`/projects/${this.props.task.project.id}/tasks/${task.id}`}>
