@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { IconPlay, IconPause, IconPlus, IconLink, IconUnLink, IconClose } from '../../../components/Icons';
 import classnames from 'classnames';
-import { isTaskInProgress, getStatusNameById } from '../../../utils/TaskStatuses';
+import { isTaskInProgress, getStatusNameById, isTaskInHold } from '../../../utils/TaskStatuses';
 import * as css from './RelatedTasks.scss';
 
 export default class RelatedTasks extends React.Component {
