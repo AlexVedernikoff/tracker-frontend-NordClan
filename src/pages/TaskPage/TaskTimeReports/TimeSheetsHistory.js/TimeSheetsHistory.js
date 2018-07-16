@@ -38,6 +38,8 @@ class TimeSheetsHistory extends Component {
   };
 
   render() {
+    console.log('Данные компонента');
+    console.log(this.props);
     const { timesheets, users, taskStatuses, currentUser, currentTask, preloaders } = this.props;
     const sortedTimesheets = sortBy(timesheets, ['onDate', 'id']).reverse();
     const timesheetsHashCodes = timesheets.map(tsh => {

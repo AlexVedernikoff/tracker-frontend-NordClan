@@ -248,15 +248,17 @@ class TaskTimeReports extends React.Component {
             <hr />
           </div>
         )}
-        <TimeSheetsHistory
-          users={get(project, 'projectUsers', []).map(projectUser => projectUser.user)}
-          currentUser={currentUser}
-          currentTask={task}
-          timesheets={timesheets}
-          taskStatuses={taskStatuses}
-          createTimesheet={this.props.createTimesheet}
-          preloaders={preloaders}
-        />
+        {get(project, 'projectUsers', []).indexOf(currentUser.id) > -1 && (
+          <TimeSheetsHistory
+            users={get(project, 'projectUsers', []).map(projectUser => projectUser.user)}
+            currentUser={currentUser}
+            currentTask={task}
+            timesheets={timesheets}
+            taskStatuses={taskStatuses}
+            createTimesheet={this.props.createTimesheet}
+            preloaders={preloaders}
+          />
+        )}
       </div>
     );
   }
