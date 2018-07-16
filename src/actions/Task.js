@@ -11,7 +11,6 @@ import {
   defaultExtra as extra,
   withdefaultExtra
 } from './Common';
-import * as LoadingActions from '../constants/Loading';
 
 const getTaskStart = () => ({
   type: TaskActions.GET_TASK_REQUEST_SENT
@@ -91,10 +90,6 @@ const startTaskEditing = target => ({
 const stopTaskEditing = target => ({
   type: TaskActions.TASK_EDIT_FINISH,
   target
-});
-
-const withCallback = (resp, callback) => ({
-  callback
 });
 
 const clearCurrentTask = target => ({

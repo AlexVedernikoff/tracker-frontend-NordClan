@@ -59,7 +59,9 @@ export default class RelatedTasks extends React.Component {
               <div>{`${this.props.task.project.prefix}-${task.id}`}</div>
               <div className={css.taskStatus}>{getStatusNameById(task.statusId)}</div>
             </div>
-            <div className={css.taskStatusIcon}>{isTaskInProgress(task.statusId) ? <IconPlay /> : <IconPause />}</div>
+            <div className={css.taskStatusIcon}>
+              {isTaskInProgress(task.statusId) ? <IconPlay /> : isTaskInHold(task.statusId) ? <IconPause /> : null}
+            </div>
           </span>
           <div className={css.taskLink}>
             <Link className="underline-link" to={`/projects/${this.props.task.project.id}/tasks/${task.id}`}>
