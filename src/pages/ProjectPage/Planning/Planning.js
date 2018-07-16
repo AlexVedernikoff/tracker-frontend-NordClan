@@ -11,6 +11,7 @@ import { createSprint } from '../../../actions/Sprint';
 import { editMilestone, deleteMilestone } from '../../../actions/Milestone';
 import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
+import { changeTasks } from '../../../actions/Tasks';
 import { openCreateTaskModal, getProjectInfo, changeProject } from '../../../actions/Project';
 
 import Button from '../../../components/Button';
@@ -44,6 +45,7 @@ class Planning extends Component {
     SprintIsEditing: PropTypes.bool,
     changeProject: PropTypes.func,
     changeTask: PropTypes.func.isRequired,
+    changeTasks: PropTypes.func.isRequired,
     completedAt: PropTypes.string,
     createSprint: PropTypes.func.isRequired,
     createdAt: PropTypes.string,
@@ -390,8 +392,6 @@ class Planning extends Component {
   onMoveTasksModalCancel = () => {
     this.setState({ isModalOpenMoveTasks: false });
   };
-
-  // TODO: Избавиться от цикла и множественных вызовов после создания API массового редактирования задач
   onMoveTasksModalConfirm = sprintId => {
     const tasks = this.getUnfinishedLeftTasks();
 
@@ -412,16 +412,16 @@ class Planning extends Component {
       });
     };
 
-    tasks.forEach((task, index) => {
-      this.props.changeTask(
-        {
-          id: task.id,
-          sprintId: sprintId
-        },
-        'Sprint',
-        index === tasks.length - 1 ? getPlanningTasksAll : null
-      );
+    const tasksChanged = [];
+    tasks.forEach(task => {
+      console.log(task);
+      tasksChanged.push({
+        id: task.id,
+        sprintId: sprintId
+      });
     });
+
+    this.props.changeTasks(tasksChanged, getPlanningTasksAll);
 
     this.setState({ isModalOpenMoveTasks: false });
   };
@@ -749,6 +749,7 @@ const mapDispatchToProps = {
   editMilestone,
   deleteMilestone,
   changeTask,
+  changeTasks,
   startTaskEditing,
   openCreateTaskModal,
   createSprint,
