@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import classNames from 'classnames/bind';
 import * as css from './Participant.scss';
 import { IconClose } from '../Icons';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
@@ -10,8 +9,6 @@ import { connect } from 'react-redux';
 import { bindUserToProject, unbindUserToProject } from '../../actions/Project';
 import ConfirmModal from '../ConfirmModal';
 import { showNotification } from '../../actions/Notifications';
-
-const cx = classNames.bind(css);
 
 class Participant extends React.Component {
   static defaultProps = {
@@ -124,25 +121,20 @@ class Participant extends React.Component {
           <Col xs={12} sm={10} md={10} lg={9}>
             <Row>
               {this.ROLES_NAME
-                ? this.ROLES_NAME.map((ROLES_NAME, i) => {
-                    const className = cx({
-                      labelText: true,
-                      toUp: ROLES_NAME === 'ios'
-                    });
-
-                    return (
-                      <Col xs={6} sm={3} md={3} lg key={`${i}-roles-checkbox`} className={css.cellColumn}>
-                        <label className={css.cell}>
-                          <Checkbox
-                            disabled={!this.props.isProjectAdmin}
-                            onChange={e => this.changeRole(e, this.ROLES_NAME[i], this.ROLES_ID[i])}
-                            checked={(roles && roles[ROLES_NAME]) || false}
-                          />
-                          <span className={className}>{this.ROLES_NAME[i]}</span>
-                        </label>
-                      </Col>
-                    );
-                  })
+                ? this.ROLES_NAME.map((ROLES_NAME, i) => (
+                    <Col xs={6} sm={3} md={3} lg key={`${i}-roles-checkbox`} className={css.cellColumn}>
+                      <label className={css.cell}>
+                        <Checkbox
+                          disabled={!this.props.isProjectAdmin}
+                          onChange={e => this.changeRole(e, this.ROLES_NAME[i], this.ROLES_ID[i])}
+                          checked={(roles && roles[ROLES_NAME]) || false}
+                        />
+                        <span className={classnames(css.labelText, { [css.toUp]: ROLES_NAME === 'ios' })}>
+                          {this.ROLES_NAME[i]}
+                        </span>
+                      </label>
+                    </Col>
+                  ))
                 : null}
             </Row>
           </Col>
@@ -178,7 +170,4 @@ const mapDispatchToProps = {
   showNotification
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(Participant);
+export default connect(null, mapDispatchToProps)(Participant);
