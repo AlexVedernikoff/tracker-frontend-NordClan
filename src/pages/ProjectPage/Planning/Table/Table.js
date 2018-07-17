@@ -4,6 +4,8 @@ import classnames from 'classnames';
 import moment from 'moment';
 import SprintStartControl from '../../../../components/SprintStartControl';
 import { IconDelete, IconEdit } from '../../../../components/Icons';
+import { connect } from 'react-redux';
+import localize from './Table.json';
 
 import roundNum from '../../../../utils/roundNum';
 
@@ -34,13 +36,13 @@ class Table extends React.Component {
   calcLeftPadding = (activeYear, daysInYear, date) => {
     return +moment(date).format('YYYY') !== +activeYear
       ? '0%'
-      : ((moment(date).dayOfYear() - 1) / daysInYear * 100).toFixed(1) + '%';
+      : (((moment(date).dayOfYear() - 1) / daysInYear) * 100).toFixed(1) + '%';
   };
 
   calcRightPadding = (activeYear, daysInYear, date) => {
     return +moment(date).format('YYYY') !== +activeYear
       ? '0%'
-      : (100 - moment(date).dayOfYear() / daysInYear * 100).toFixed(1) + '%';
+      : (100 - (moment(date).dayOfYear() / daysInYear) * 100).toFixed(1) + '%';
   };
 
   calcTimelinePadding = date => {
@@ -51,7 +53,7 @@ class Table extends React.Component {
 
     return date.getFullYear() !== grantActiveYear
       ? '0%'
-      : ((moment(date).dayOfYear() - 1) / daysInYear * 100).toFixed(1) + '%';
+      : (((moment(date).dayOfYear() - 1) / daysInYear) * 100).toFixed(1) + '%';
   };
 
   getSprintTime = sprint => {
@@ -300,23 +302,11 @@ class Table extends React.Component {
       grantActiveYear,
       grantYearDecrement,
       grantYearIncrement,
-      isProjectAdmin
+      isProjectAdmin,
+      lang
     } = this.props;
 
-    const months = [
-      'Январь',
-      'Февраль',
-      'Март',
-      'Апрель',
-      'Май',
-      'Июнь',
-      'Июль',
-      'Август',
-      'Сентябрь',
-      'Октябрь',
-      'Ноябрь',
-      'Декабрь'
-    ];
+    const months = localize[lang].MONTHS;
 
     return (
       <div className={css.graph}>
@@ -367,4 +357,11 @@ class Table extends React.Component {
   }
 }
 
-export default Table;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(Table);

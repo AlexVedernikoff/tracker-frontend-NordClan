@@ -22,6 +22,8 @@ import { history } from '../../../History';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import CreateTaskModal from '../../../components/CreateTaskModal';
 import { openCreateTaskModal } from '../../../actions/Project';
+import localize from './taskList.json';
+import { getFullName } from '../../../utils/NameLocalisation';
 
 class TaskList extends Component {
   constructor(props) {
@@ -175,7 +177,7 @@ class TaskList extends Component {
   getUsers = () => {
     return this.props.project.users.map(user => ({
       value: user.id,
-      label: user.fullNameRu
+      label: getFullName(user)
     }));
   };
 
@@ -300,7 +302,7 @@ class TaskList extends Component {
   };
 
   render() {
-    const { tasksList: tasks, statuses, taskTypes, project, isReceiving } = this.props;
+    const { tasksList: tasks, statuses, taskTypes, project, isReceiving, lang } = this.props;
 
     const { prioritiesId, typeId, statusId, sprintId, performerId, authorId, tags, filterByName } = this.state;
 
@@ -347,13 +349,13 @@ class TaskList extends Component {
                 <Button
                   onClick={this.props.openCreateTaskModal}
                   type="primary"
-                  text="Создать задачу"
+                  text={localize[lang].CREATE_TASK}
                   icon="IconPlus"
                   name="right"
                 />
                 <Button
                   type="primary"
-                  text="Очистить фильтры"
+                  text={localize[lang].CLEAR_FILTERS}
                   icon="IconBroom"
                   disabled={!isFilter}
                   onClick={this.clearFilters}
@@ -364,11 +366,11 @@ class TaskList extends Component {
               <Col xs={12} sm={3}>
                 <SelectDropdown
                   name="type"
-                  placeholder="Выберите тип задачи"
+                  placeholder={localize[lang].SELECT_TYPE_TASK}
                   multi
-                  noResultsText="Нет подходящих типов"
+                  noResultsText={localize[lang].SELECT_TYPE_TASK_EMPTY}
                   backspaceToRemoveMessage={''}
-                  clearAllText="Очистить все"
+                  clearAllText={localize[lang].CLEAR_ALL}
                   value={typeId}
                   options={typeOptions}
                   onChange={options => this.changeMultiFilter(options, 'typeId')}
@@ -377,11 +379,11 @@ class TaskList extends Component {
               <Col xs={12} sm={3}>
                 <SelectDropdown
                   name="status"
-                  placeholder="Выберите статус задачи"
+                  placeholder={localize[lang].SELECT_STATUS_TASK}
                   multi
-                  noResultsText="Нет подходящих статусов"
+                  noResultsText={localize[lang].NO_MATCH_STATUS}
                   backspaceToRemoveMessage={''}
-                  clearAllText="Очистить все"
+                  clearAllText={localize[lang].CLEAR_ALL}
                   value={statusId}
                   options={statusOptions}
                   onChange={options => this.changeMultiFilter(options, 'statusId')}
@@ -390,11 +392,11 @@ class TaskList extends Component {
               <Col xs={12} sm={3}>
                 <SelectDropdown
                   name="author"
-                  placeholder="Выберите автора задачи"
+                  placeholder={localize[lang].SELECT_AUTHOR_TASK}
                   multi={false}
                   value={authorId}
                   onChange={option => this.changeSingleFilter(option, 'authorId')}
-                  noResultsText="Нет результатов"
+                  noResultsText={localize[lang].NO_RESULTS}
                   options={authorOptions}
                 />
               </Col>
@@ -410,7 +412,11 @@ class TaskList extends Component {
 
             <Row className={css.search}>
               <Col xs={12} sm={6}>
-                <Input placeholder="Введите название задачи" value={filterByName} onChange={this.changeNameFilter} />
+                <Input
+                  placeholder={localize[lang].ENTER_TITLE_TASK}
+                  value={filterByName}
+                  onChange={this.changeNameFilter}
+                />
               </Col>
               <Col xs={12} sm={3}>
                 <PerformerFilter
@@ -455,7 +461,7 @@ class TaskList extends Component {
             defaultUser={this.state.performer}
             onChoose={this.changePerformer}
             onClose={this.closePerformerModal}
-            title="Изменить исполнителя задачи"
+            title={localize[lang].EDIT_TASK_PERFORMER}
             users={this.getUsers()}
           />
         ) : null}
@@ -464,7 +470,7 @@ class TaskList extends Component {
             defaultSprint={this.state.sprintId}
             onChoose={this.changeSprint}
             onClose={this.closeSprintModal}
-            title="Изменить спринт задачи"
+            title={localize[lang].EDIT_TASK_SPRING}
             sprints={this.props.project.sprints}
           />
         ) : null}
@@ -507,9 +513,13 @@ const mapStateToProps = state => ({
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
   project: state.Project.project,
   statuses: state.Dictionaries.taskStatuses,
-  taskTypes: state.Dictionaries.taskTypes
+  taskTypes: state.Dictionaries.taskTypes,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = { getTasks, startTaskEditing, changeTask, openCreateTaskModal };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskList);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskList);

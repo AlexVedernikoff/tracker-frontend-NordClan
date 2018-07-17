@@ -1,0 +1,12 @@
+{
+  "en": {
+    "CHANGE_PERFORMER": "Change the performer",
+    "NOT_CHANGED": "Not changed",
+    "NO_RESULTS": "No results"
+  },
+  "ru": {
+    "CHANGE_PERFORMER": "Выберите исполнителя",
+    "NOT_CHANGED": "Не назначено",
+    "NO_RESULTS": "Нет результатов"
+  }
+}

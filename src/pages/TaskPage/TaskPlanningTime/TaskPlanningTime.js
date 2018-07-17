@@ -113,7 +113,7 @@ class TaskPlanningTime extends Component {
             : null)}
         >
           {' '}
-          ч.
+          {this.props.h}
         </span>
         {this.props.canEdit ? (
           this.props.timeIsEditing ? (
@@ -150,4 +150,7 @@ const mapDispatchToProps = {
   changeTask
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskPlanningTime);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskPlanningTime);

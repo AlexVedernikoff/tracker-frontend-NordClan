@@ -11,16 +11,17 @@ import { history } from '../../../History';
 import { connect } from 'react-redux';
 import UserCard from '../../../components/UserCard';
 import Autolinker from 'autolinker';
+import localize from './Comment.json';
+import { getFirstName, getLastName, getFullName } from '../../../utils/NameLocalisation';
 
 const UPDATE_EXPIRATION_TIMEOUT = 10 * 60 * 1000; //10 минут
 
 class Comment extends Component {
   static getNames = person => {
     //унификация имени
-    const { firstNameRu, lastNameRu, lastNameEn, firstNameEn } = person;
-    const firstName = firstNameRu ? firstNameRu : firstNameEn;
-    const lastName = lastNameRu ? lastNameRu : lastNameEn;
-    const fullName = `${firstName} ${lastName ? lastName : ''}`;
+    const firstName = getFirstName(person);
+    const lastName = getLastName(person);
+    const fullName = getFullName(person);
 
     return { firstName, lastName, fullName };
   };
@@ -89,7 +90,11 @@ class Comment extends Component {
 
   constructor(props) {
     super(props);
-    const { comment: { createdAt }, ownedByMe, commentsLoadedDate } = this.props;
+    const {
+      comment: { createdAt },
+      ownedByMe,
+      commentsLoadedDate
+    } = this.props;
     const lifeTime = Comment.getLifeTime(createdAt, commentsLoadedDate);
     const canBeUpdated = ownedByMe && !Comment.isExpiredForUpdate(createdAt, commentsLoadedDate);
     this.state = {
@@ -122,7 +127,12 @@ class Comment extends Component {
   };
 
   render() {
-    const { comment: { author, parentComment }, comment } = this.props;
+    const {
+      comment: { author, parentComment },
+      comment,
+      lang
+    } = this.props;
+
     let typoAvatar = '';
     const { firstName, lastName, fullName } = Comment.getNames(author);
     if (!author.photo) {
@@ -152,7 +162,7 @@ class Comment extends Component {
               {moment(comment.updatedAt).format('DD.MM.YY HH:mm')},&nbsp;
               <CopyThis
                 wrapThisInto={'a'}
-                description={`Ссылка на комментарий #${comment.id}`}
+                description={`${localize[lang].COMMENT_LINK}${comment.id}`}
                 textToCopy={`${location.origin}${history.createHref(
                   Comment.getHashedPath(comment.id, this.props.location)
                 )}`}
@@ -181,16 +191,16 @@ class Comment extends Component {
             <div className={css.commentAction}>
               {!comment.deleting ? (
                 <a onClick={() => this.props.reply(comment.id)} href="#reply">
-                  Ответить
+                  {localize[lang].REPLY}
                 </a>
               ) : null}
               {this.state.canBeUpdated && !comment.deleting
                 ? [
                     <a onClick={() => this.props.editComment(comment)} href="#reply" key={0}>
-                      Редактировать
+                      {localize[lang].EDIT}
                     </a>,
                     <a onClick={() => this.props.removeComment(comment.id)} key={1}>
-                      Удалить
+                      {localize[lang].REMOVE}
                     </a>
                   ]
                 : null}
@@ -202,9 +212,14 @@ class Comment extends Component {
   }
 }
 
-const mapState = ({ routing: { locationBeforeTransitions: location }, Task: { commentsLoadedDate } }) => ({
+const mapState = ({
+  routing: { locationBeforeTransitions: location },
+  Task: { commentsLoadedDate },
+  Localize: { lang }
+}) => ({
   location,
-  commentsLoadedDate
+  commentsLoadedDate,
+  lang
 });
 
 export default connect(mapState)(Comment);

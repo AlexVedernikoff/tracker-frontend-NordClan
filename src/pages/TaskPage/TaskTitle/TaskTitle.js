@@ -6,6 +6,7 @@ import { IconEdit, IconCheck } from '../../../components/Icons';
 import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 import { startTaskEditing, stopTaskEditing, changeTask } from '../../../actions/Task';
+import localize from './taskTitle.json';
 
 class TaskTitle extends Component {
   constructor(props) {
@@ -72,6 +73,7 @@ class TaskTitle extends Component {
   };
 
   render() {
+    const { lang } = this.props;
     return (
       <div className={css.title}>
         <h1 className={css.titleWrapper}>
@@ -95,14 +97,14 @@ class TaskTitle extends Component {
                 onClick={this.editIconClickHandler}
                 className={css.save}
                 id={this.props.id}
-                data-tip="Сохранить"
+                data-tip={localize[lang].SAVE}
               />
             ) : (
               <IconEdit
                 onClick={this.editIconClickHandler}
                 className={css.edit}
                 id={this.props.id}
-                data-tip="Редактировать"
+                data-tip={localize[lang].EDIT}
               />
             )
           ) : null}
@@ -113,7 +115,8 @@ class TaskTitle extends Component {
 }
 
 const mapStateToProps = state => ({
-  titleIsEditing: state.Task.TitleIsEditing
+  titleIsEditing: state.Task.TitleIsEditing,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {

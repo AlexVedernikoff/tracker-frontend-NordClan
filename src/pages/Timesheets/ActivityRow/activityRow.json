@@ -1,0 +1,10 @@
+{
+  "en": {
+    "DELETE": "Delete",
+    "CONFIRM_MESSAGE": "Are you sure you want to delete this activity?"
+  },
+  "ru": {
+    "DELETE": "Удалить",
+    "CONFIRM_MESSAGE": "Вы действительно хотите удалить эту активность?"
+  }
+}

@@ -38,6 +38,7 @@ import { getProjectInfo, openCreateTaskModal, openCreateChildTaskModal } from '.
 
 import * as css from './TaskPage.scss';
 import { getRoles } from '../../actions/Dictionaries';
+import localize from './taskPage.json';
 
 class TaskPage extends Component {
   static propTypes = {
@@ -233,14 +234,14 @@ class TaskPage extends Component {
   };
 
   render() {
-    const { globalRole, task, params } = this.props;
+    const { globalRole, task, params, lang } = this.props;
     const isVisor = globalRole === VISOR;
     const isExternal = globalRole === EXTERNAL_USER;
     const projectUrl = task.project ? `/projects/${task.project.id}` : '/';
     const notFoundError =
       task.project && task.project.id !== +params.projectId
         ? {
-            message: 'Task not found',
+            message: localize[lang].NOT_FOUND_ERROR,
             name: 'NotFoundError',
             status: 404
           }
@@ -264,7 +265,7 @@ class TaskPage extends Component {
                 text={{ __html: task.description }}
                 headerType="h3"
                 id={+params.taskId}
-                headerText="Описание:"
+                headerText={localize[lang].DESCRIPTION}
                 onEditStart={this.props.startTaskEditing}
                 onEditFinish={this.props.stopTaskEditing}
                 onEditSubmit={this.props.changeTask}
@@ -272,7 +273,7 @@ class TaskPage extends Component {
                 canEdit={task.statusId !== TaskStatuses.CLOSED}
               />
               <hr />
-              <h3>Прикрепленные файлы:</h3>
+              <h3>{localize[lang].ATTACHED_FILES}</h3>
               <Attachments
                 attachments={task.attachments}
                 removeAttachment={this.removeAttachment}
@@ -282,11 +283,13 @@ class TaskPage extends Component {
               {!isExternal ? (
                 <RouteTabs style={{ marginTop: '2rem', marginBottom: '2rem' }}>
                   <Link onlyActiveOnIndex to={`/projects/${params.projectId}/tasks/${params.taskId}`}>
-                    Комментарии
+                    {localize[lang].COMMENTS}
                   </Link>
-                  <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/history`}>История</Link>
+                  <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/history`}>
+                    {localize[lang].HISTORY}
+                  </Link>
                   <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/time-reports`}>
-                    Отчеты по времени
+                    {localize[lang].TIME_REPORTS}
                   </Link>
                 </RouteTabs>
               ) : null}
@@ -304,7 +307,7 @@ class TaskPage extends Component {
               />
               {!isVisor ? (
                 <button className={css.addTask} onClick={this.props.openCreateTaskModal}>
-                  <span>Создать новую задачу</span>
+                  <span>{localize[lang].CREATE_NEW_TASK}</span>
                   <IconPlus style={{ width: 16, height: 16 }} />
                 </button>
               ) : null}
@@ -338,7 +341,7 @@ class TaskPage extends Component {
           <TaskModal
             onChoose={this.linkTask}
             onClose={this.handleCloseLinkTaskModal}
-            title="Связывание задачи"
+            title={localize[lang].BINDING_TASK}
             tasks={this.getProjectUnlinkedTasks()}
           />
         ) : null}
@@ -347,7 +350,7 @@ class TaskPage extends Component {
           <ConfirmModal
             isOpen
             contentLabel="modal"
-            text="Вы действительно хотите отвязать задачу?"
+            text={localize[lang].CONFIRM_UNTIE_TASK}
             onCancel={this.handleCloseUnlinkTaskModal}
             onConfirm={this.unlinkTask}
           />
@@ -357,7 +360,7 @@ class TaskPage extends Component {
           <ConfirmModal
             isOpen
             contentLabel="modal"
-            text="Вы действительно хотите покинуть страницу? Все не сохранённые данные будут потеряны"
+            text={localize[lang].CONFIRM_LEAVE_PAGE}
             onCancel={this.handleCloseLeaveConfirmModal}
             onConfirm={this.leaveConfirm}
           />
@@ -367,7 +370,7 @@ class TaskPage extends Component {
           <ConfirmModal
             isOpen
             contentLabel="modal"
-            text="Вы действительно хотите отменить задачу?"
+            text={localize[lang].CONFIRM_CANCEL_TASK}
             onCancel={this.handleCloseCancelSubTaskModal}
             onConfirm={this.handleCancelSubTask}
           />
@@ -376,7 +379,7 @@ class TaskPage extends Component {
           <ConfirmModal
             isOpen
             contentLabel="modal"
-            text="Нельзя изменять закрытую задачу"
+            text={localize[lang].ERROR_CHANGE_PRIVATE_TASK}
             onCancel={this.handleCloseCancelInfoTaskModal}
             notification
           />
@@ -397,7 +400,8 @@ const mapStateToProps = state => ({
   globalRole: state.Auth.user.globalRole,
   hasError: state.Task.hasError,
   closeHasError: state.Task.closeHasError,
-  user: state.Auth.user
+  user: state.Auth.user,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {

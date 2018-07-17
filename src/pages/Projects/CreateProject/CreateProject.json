@@ -1,0 +1,33 @@
+{
+  "en": {
+    "CREATE": "Create project",
+    "NAME": "Project Name:",
+    "PREFIX": "Project prefix:",
+    "TYPE": "Type of project:",
+    "ADD_TO_PORTFOLIO": "Add project to portfolio",
+    "ADD": "Create project",
+    "CREATE_AND_OPEN": "Create and open",
+    "ERROR_NAME_TEXT": "Length less than 4 characters",
+    "ERROR_PREFIX_TEXT": "Length less than 2 characters",
+    "NAME_PLACEHOLDER": "Project Name",
+    "PREFIX_PLACEHOLDER": "Project prefix",
+    "TYPE_PLACEHOLDER": "Type of project",
+    "NO_RESULTS": "No results"
+  },
+
+  "ru": {
+    "CREATE": "Создать проект",
+    "NAME": "Название проекта:",
+    "PREFIX": "Префикс проекта:",
+    "TYPE": "Тип проекта:",
+    "ADD_TO_PORTFOLIO": "Добавить проект в портфель",
+    "ADD": "Добавить проект",
+    "CREATE_AND_OPEN": "Создать и открыть",
+    "ERROR_NAME_TEXT": "Длинна меньше 4 символов",
+    "ERROR_PREFIX_TEXT": "Длинна меньше 2 символов",
+    "NAME_PLACEHOLDER": "Название проекта",
+    "PREFIX_PLACEHOLDER": "Префикс проекта",
+    "TYPE_PLACEHOLDER": "Тип проекта",
+    "NO_RESULTS": "Нет результатов"
+  }
+}

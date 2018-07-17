@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { IconExitApp, IconMenu, IconSearch } from '../../../components/Icons';
+import Toggle from '../../../components/LanguageToggle';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Logo from '../../../components/Logo';
 import { EXTERNAL_USER } from '../../../constants/Roles';
@@ -9,13 +10,16 @@ import Loader from './Loader';
 import { history } from '../../../History';
 import Playlist from './Playlist';
 import { connect } from 'react-redux';
+import { setLocalize } from '../../../actions/localize';
 
 import * as css from './AppHead.scss'; // Стили для плавного появления и скрытия лоадера
 
 class AppHead extends Component {
   static propTypes = {
     globalRole: PropTypes.string,
+    lang: PropTypes.string,
     loading: PropTypes.number,
+    setLocalize: PropTypes.func,
     toggleMenu: PropTypes.func
   };
 
@@ -26,6 +30,8 @@ class AppHead extends Component {
   handleLogout = () => {
     history.push('/logout');
   };
+
+  toggleLanguage = lang => this.props.setLocalize(lang);
 
   render() {
     const iconStyles = {
@@ -53,6 +59,8 @@ class AppHead extends Component {
             <IconSearch style={iconStyles} />
           </label>
         </div> */}
+        <Toggle lang={this.props.lang} onChange={this.toggleLanguage} />
+
         <div className={css.logoutButton} onClick={this.handleLogout}>
           <IconExitApp style={iconStyles} />
         </div>
@@ -71,8 +79,13 @@ class AppHead extends Component {
 const mapStateToProps = state => {
   return {
     loading: state.Loading.loading,
-    globalRole: state.Auth.user.globalRole
+    globalRole: state.Auth.user.globalRole,
+    lang: state.Localize.lang
   };
 };
 
-export default connect(mapStateToProps)(AppHead);
+const mapDispatchToProps = {
+  setLocalize
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppHead);

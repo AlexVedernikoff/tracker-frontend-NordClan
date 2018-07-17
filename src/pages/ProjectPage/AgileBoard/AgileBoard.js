@@ -20,6 +20,8 @@ import PerformerFilter from '../../../components/PerformerFilter';
 import getPriorityById from '../../../utils/TaskPriority';
 import * as css from './AgileBoard.scss';
 import { UnmountClosed } from 'react-collapse';
+import localize from './AgileBoard.json';
+import { getFullName } from '../../../utils/NameLocalisation';
 
 import getTasks from '../../../actions/Tasks';
 import { VISOR, EXTERNAL_USER } from '../../../constants/Roles';
@@ -504,7 +506,7 @@ class AgileBoard extends Component {
   getUsers = () => {
     return this.props.project.users.map(user => ({
       value: user.id,
-      label: user.fullNameRu
+      label: getFullName(user)
     }));
   };
 
@@ -589,10 +591,10 @@ class AgileBoard extends Component {
     });
   };
 
-  createOptions = (array, labelField = 'name') => {
+  createOptions = (array, labelField) => {
     return array.map(element => ({
       value: element.id,
-      label: element[labelField]
+      label: labelField === 'name' ? element[labelField] : getFullName(element)
     }));
   };
 
@@ -645,7 +647,7 @@ class AgileBoard extends Component {
   };
 
   render() {
-    const { taskTypes, project } = this.props;
+    const { taskTypes, project, lang } = this.props;
 
     const isVisor = this.props.globalRole === VISOR;
     const isExternal = this.props.globalRole === EXTERNAL_USER;
@@ -680,8 +682,8 @@ class AgileBoard extends Component {
       this.state.isCardFocus
     );
 
-    const typeOptions = this.createOptions(taskTypes);
-    const authorOptions = this.createOptions(project.users, 'fullNameRu');
+    const typeOptions = this.createOptions(taskTypes, 'name');
+    const authorOptions = this.createOptions(project.users);
 
     return (
       <section className={css.agileBoard}>
@@ -694,17 +696,22 @@ class AgileBoard extends Component {
                     <Priority
                       onChange={option => this.selectValue(option.prioritiesId, 'prioritiesId')}
                       priority={this.state.prioritiesId}
+                      priorityTitle={localize[lang].PRIORITY}
                       canEdit
                     />
                   </Col>
                   <Col className={css.filterButtonCol}>
-                    <Checkbox checked={this.state.isOnlyMine} onChange={this.toggleMine} label="Только мои задачи" />
+                    <Checkbox
+                      checked={this.state.isOnlyMine}
+                      onChange={this.toggleMine}
+                      label={localize[lang].MY_TASKS}
+                    />
                   </Col>
                   <Col xs style={{ minWidth: 200 }}>
                     <SelectDropdown
                       name="filterTags"
                       multi
-                      placeholder="Введите название тега"
+                      placeholder={localize[lang].TAG_NAME}
                       backspaceToRemoveMessage=""
                       value={this.state.filterTags}
                       onChange={this.selectTagForFiltrated}
@@ -717,7 +724,7 @@ class AgileBoard extends Component {
                       <Button
                         onClick={this.props.openCreateTaskModal}
                         type="primary"
-                        text="Создать задачу"
+                        text={localize[lang].CREATE_TASK}
                         icon="IconPlus"
                         name="right"
                       />
@@ -727,7 +734,7 @@ class AgileBoard extends Component {
                 <Row className={css.filtersRow}>
                   <Col xs={12} sm={6}>
                     <Input
-                      placeholder="Введите название задачи"
+                      placeholder={localize[lang].TASK_NAME}
                       value={this.state.name}
                       onChange={e => this.selectValue(e.target.value, 'name')}
                     />
@@ -741,11 +748,11 @@ class AgileBoard extends Component {
                   <Col xs={12} sm={3}>
                     <SelectDropdown
                       name="type"
-                      placeholder="Выберите тип задачи"
+                      placeholder={localize[lang].TASK_TYPE}
                       multi
-                      noResultsText="Нет подходящих типов"
+                      noResultsText={localize[lang].TYPE_IS_MISS}
                       backspaceToRemoveMessage={''}
-                      clearAllText="Очистить все"
+                      clearAllText={localize[lang].CLEAR_ALL}
                       value={this.state.typeId}
                       options={typeOptions}
                       onChange={options => this.selectValue(options, 'typeId')}
@@ -756,11 +763,11 @@ class AgileBoard extends Component {
                   <Col xs={12} sm={6} className={css.changedSprint}>
                     <SelectDropdown
                       name="changedSprint"
-                      placeholder="Выберите спринт"
+                      placeholder={localize[lang].SELECT_SPRINT}
                       multi={false}
                       value={this.state.changedSprint}
                       onChange={e => this.selectValue(e !== null ? e.value : null, 'changedSprint')}
-                      noResultsText="Нет результатов"
+                      noResultsText={localize[lang].NO_RESULTS}
                       options={this.getSprints()}
                     />
                     {!isExternal ? (
@@ -770,11 +777,11 @@ class AgileBoard extends Component {
                   <Col xs>
                     <SelectDropdown
                       name="author"
-                      placeholder="Выберите автора задачи"
+                      placeholder={localize[lang].SELECT_AUTHOR}
                       multi={false}
                       value={this.state.authorId}
                       onChange={option => this.selectValue(option ? option.value : null, 'authorId')}
-                      noResultsText="Нет результатов"
+                      noResultsText={localize[lang].NO_RESULTS}
                       options={authorOptions}
                     />
                   </Col>
@@ -782,7 +789,7 @@ class AgileBoard extends Component {
                     <Button
                       onClick={this.clearFilter}
                       type="primary"
-                      text="Очистить фильтры"
+                      text={localize[lang].CLEAR_FILTERS}
                       icon="IconBroom"
                       name="right"
                       disabled={this.isFilterEmpty()}
@@ -836,7 +843,7 @@ class AgileBoard extends Component {
             defaultUser={this.state.performer}
             onChoose={this.changePerformer}
             onClose={this.closeModal}
-            title="Изменить исполнителя задачи"
+            title={localize[lang].CHANGE_PERFORMER}
             users={this.getUsers()}
           />
         ) : null}
@@ -887,7 +894,8 @@ const mapStateToProps = state => ({
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
   globalRole: state.Auth.user.globalRole,
   statuses: state.Dictionaries.taskStatuses,
-  taskTypes: state.Dictionaries.taskTypes
+  taskTypes: state.Dictionaries.taskTypes,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
@@ -899,4 +907,7 @@ const mapDispatchToProps = {
   getProjectInfo
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AgileBoard);

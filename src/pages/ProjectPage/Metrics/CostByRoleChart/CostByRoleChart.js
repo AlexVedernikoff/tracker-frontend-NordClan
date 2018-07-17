@@ -7,6 +7,8 @@ import Button from '../../../../components/Button';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import roundNum from '../../../../utils/roundNum';
 import getColor from '../../../../utils/Colors';
+import localize from './CostByRoleChart.json';
+import { connect } from 'react-redux';
 
 class CostByRoleChart extends Component {
   static propTypes = {
@@ -53,7 +55,7 @@ class CostByRoleChart extends Component {
             display: true,
             scaleLabel: {
               display: true,
-              labelString: this.state.displayPercent ? '% часов' : 'часы'
+              labelString: this.state.displayPercent ? localize[this.props.lang].PER_OF_H : localize[this.props.lang].H
             }
           }
         ]
@@ -88,17 +90,19 @@ class CostByRoleChart extends Component {
     };
   };
   render() {
+    const { lang } = this.props;
+
     return (
       <ChartWrapper chartRef={this.state.chartRef} className={css.CostByRoleChart}>
         <div className={css.CostByRoleSwitcher}>
           <Button
             type={this.state.displayPercent ? 'primary' : 'bordered'}
-            text="Отобразить в %"
+            text={localize[lang].IN_PERCENT}
             onClick={this.switcherClickHandler('percent')}
           />
           <Button
             type={this.state.displayPercent ? 'bordered' : 'primary'}
-            text="Отобразить в часах"
+            text={localize[lang].IN_HOURS}
             onClick={this.switcherClickHandler('hours')}
           />
         </div>
@@ -108,4 +112,8 @@ class CostByRoleChart extends Component {
   }
 }
 
-export default CostByRoleChart;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(mapStateToProps)(CostByRoleChart);

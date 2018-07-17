@@ -1,0 +1,42 @@
+{
+  "en": {
+    "PROJECT_START": "The start date of project:",
+    "PROJECT_END": "The end date of project:",
+    "WITH_RISK_RESERVE": "With a risk reserve:",
+    "WO_RISK_RESERVE": "Without a risk reserve",
+    "BUDGET": "Budget",
+    "RISK_RESERVE": "Risk reserve",
+    "SPRINT": "Sprint",
+    "MILESTONE": "Milestone",
+    "SPRINTS_AND_PHASES": "Sprints / Phases",
+    "REPLACE_UNCLOSED_TASKS": "Replace all unclosed tasks",
+    "REPLACE_UNCLOSED": "Replace all unclosed",
+    "WILL_BE_REPLACE": "Will be replace",
+    "CONTINUE_REPLACE": "tasks. Continue?",
+    "TOTAL_TIME": "Total time",
+    "OF": "of",
+    "H": "h.",
+    "PERCENT_TEST": "Percent on testing:",
+    "RISK_RESERVE": "Risk reserve"
+  },
+  "ru": {
+    "PROJECT_START": "Начало проекта:",
+    "PROJECT_END": "Конец проекта:",
+    "WITH_RISK_RESERVE": "С рисковым резервом",
+    "WO_RISK_RESERVE": "Без рискового резерва",
+    "BUDGET": "Бюджет",
+    "RISK_RESERVE": "Рисковый резерв",
+    "SPRINT": "Спринт",
+    "MILESTONE": "Веха",
+    "SPRINTS_AND_PHASES": "Спринты / Фазы",
+    "REPLACE_UNCLOSED_TASKS": "Перенести все незакрытые задачи",
+    "REPLACE_UNCLOSED": "Перенести все незакрытые",
+    "WILL_BE_REPLACE": "Будет перенесено",
+    "CONTINUE_REPLACE": "задач. Продолжить?",
+    "TOTAL_TIME": "Суммарное время",
+    "OF": "из",
+    "H": "ч.",
+    "PERCENT_TEST": "Процент на тестирование:",
+    "RISK_RESERVE": "Рисковый резерв"
+  }
+}

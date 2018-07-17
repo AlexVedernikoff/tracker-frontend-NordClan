@@ -9,14 +9,16 @@ import { IconClose, IconArrowDownThin, IconBroom } from '../Icons';
 import * as css from './FilterList.scss';
 import { UnmountClosed, Collapse } from 'react-collapse';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { connect } from 'react-redux';
+import localize from './FilterList.json';
 
-export default class FilterList extends Component {
+class FilterList extends Component {
   componentWillReceiveProps() {
     ReactTooltip.hide();
   }
 
   render() {
-    const { filters, clearAll, toggleFilterView, fullFilterView, isVisor } = this.props;
+    const { filters, clearAll, toggleFilterView, fullFilterView, isVisor, lang } = this.props;
     const filterTags = filters.map(filter => {
       return <Tag name={filter.label} deleteHandler={filter.deleteHandler} key={filter.name} unclickable />;
     });
@@ -31,7 +33,7 @@ export default class FilterList extends Component {
                   <div className={classnames(css.filterList)}>
                     <div>
                       {filterTags}
-                      <span className={classnames(css.clearAllFilter)} data-tip="Очистить фильтры">
+                      <span className={classnames(css.clearAllFilter)} data-tip={localize[lang].CLEAR_FILTERS}>
                         <IconBroom onClick={clearAll} />
                       </span>
                     </div>
@@ -39,7 +41,7 @@ export default class FilterList extends Component {
                 ) : (
                   <div className={classnames(css.filterList)}>
                     <span onClick={toggleFilterView} className={css.emptyFiltersLink}>
-                      Фильтры не выбраны
+                      {localize[lang].NOT_SELECTED}
                     </span>
                   </div>
                 )}
@@ -49,7 +51,7 @@ export default class FilterList extends Component {
                   <Button
                     onClick={this.props.openCreateTaskModal}
                     type="primary"
-                    text="Создать задачу"
+                    text={localize[lang].CREATE_TASK}
                     icon="IconPlus"
                     name="right"
                   />
@@ -61,7 +63,7 @@ export default class FilterList extends Component {
         <div className={classnames(css.filterListShowMore)}>
           <div
             className={classnames(css.filterListShowMoreButton)}
-            data-tip={fullFilterView ? 'Скрыть фильтры' : 'Показать фильтры'}
+            data-tip={fullFilterView ? localize[lang].HIDE_FILTERS : localize[lang].SHOW_FILTERS}
             onClick={toggleFilterView}
           >
             <IconArrowDownThin
@@ -82,3 +84,11 @@ FilterList.propTypes = {
   openCreateTaskModal: PropTypes.func.isRequired,
   toggleFilterView: PropTypes.func.isRequired
 };
+
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+export default connect(
+  mapStateToProps,
+  null
+)(FilterList);

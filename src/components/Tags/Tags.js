@@ -8,6 +8,7 @@ import classnames from 'classnames';
 import { createTags } from '../../actions/Tags';
 import { connect } from 'react-redux';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import localize from './Tags.json';
 
 class Tags extends Component {
   constructor(props) {
@@ -52,6 +53,7 @@ class Tags extends Component {
     }
   };
   render() {
+    const { lang } = this.props;
     let sliceTags = this.state.tags;
     if (this.state.tags.length > this.state.maxLength) {
       sliceTags = this.state.tags.slice(0, this.state.maxLength);
@@ -61,8 +63,9 @@ class Tags extends Component {
         {!this.state.cutTags ? this.state.tags : sliceTags}
         <span className={css.wrapperAddTags}>
           {this.props.create && this.props.canEdit ? (
-            <Tag create data-tip="Добавить тег" data-place="bottom" onClick={this.showDropdownMenu} />
+            <Tag create data-tip={localize[lang].ADD_TAG} data-place="bottom" onClick={this.showDropdownMenu} />
           ) : null}
+
           {this.props.canEdit ? (
             <ReactCSSTransitionGroup
               transitionName="animatedElement"
@@ -70,10 +73,13 @@ class Tags extends Component {
               transitionLeaveTimeout={300}
             >
               {this.state.visible ? (
-                <div className={classnames({ [css.tagPopup]: true, [css[this.props.direction]]: true })}>
+                <form
+                  className={classnames({ [css.tagPopup]: true, [css[this.props.direction]]: true })}
+                  onSubmit={this.sendNewTags}
+                >
                   <input
                     type="text"
-                    placeholder="Добавить тег"
+                    placeholder={localize[lang].ADD_TAG}
                     className={css.tagsInput}
                     defaultValue=""
                     autoFocus
@@ -86,14 +92,14 @@ class Tags extends Component {
                     type="green"
                     onClick={this.sendNewTags}
                   />
-                </div>
+                </form>
               ) : null}
             </ReactCSSTransitionGroup>
           ) : null}
         </span>
         {this.state.cutTags ? (
           <a className={css.loadMore} onClick={() => this.setState({ cutTags: false })}>
-            Показать все {this.state.tags.length}
+            {localize[lang].SHOW_ALL} {this.state.tags.length}
           </a>
         ) : null}
       </div>
@@ -118,8 +124,15 @@ Tags.defaultProps = {
   direction: 'left'
 };
 
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
 const mapDispatchToProps = {
   createTags
 };
 
-export default connect(null, mapDispatchToProps)(onClickOutside(Tags));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(onClickOutside(Tags));

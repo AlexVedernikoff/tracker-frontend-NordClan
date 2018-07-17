@@ -15,60 +15,63 @@ import {
   removeAttachment
 } from '../../../actions/Project';
 import { ADMIN } from '../../../constants/Roles';
+import localize from './Info.json';
 
 class Info extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
 
-  uploadAttachments = (files) => {
+  uploadAttachments = files => {
     this.props.uploadAttachments(this.props.id, files);
   };
 
-  removeAttachment = (attachmentId) => {
+  removeAttachment = attachmentId => {
     this.props.removeAttachment(this.props.id, attachmentId);
   };
 
   checkIsAdminInProject = () => {
-    return this.props.user.projectsRoles && this.props.user.projectsRoles.admin.indexOf(this.props.id) !== -1
-      || this.props.user.globalRole === ADMIN;
+    return (
+      (this.props.user.projectsRoles && this.props.user.projectsRoles.admin.indexOf(this.props.id) !== -1) ||
+      this.props.user.globalRole === ADMIN
+    );
   };
 
-  render () {
+  render() {
+    const { lang } = this.props;
     const isProjectAdmin = this.checkIsAdminInProject();
 
     return (
       <div className={css.info}>
-        <h2>Теги проекта</h2>
+        <h2>{localize[lang].TAGS}</h2>
         <Tags
-          taggable='project'
-          direction='right'
+          taggable="project"
+          direction="right"
           taggableId={this.props.id}
           create
           maxLength={15}
           canEdit={isProjectAdmin}
         >
-          {
-            this.props.tags
-              ? this.props.tags.map((element, i) =>
-                <Tag name={element}
+          {this.props.tags
+            ? this.props.tags.map((element, i) => (
+                <Tag
+                  name={element}
                   key={`${i}-tag`}
-                  taggable='project'
+                  taggable="project"
                   taggableId={this.props.id}
                   blocked={!isProjectAdmin}
                 />
-              )
-              : null
-          }
+              ))
+            : null}
         </Tags>
         <hr />
         <Description
           text={{
             __html: this.props.description ? this.props.description : ''
           }}
-          headerType='h2'
+          headerType="h2"
           id={this.props.id}
-          headerText='Описание'
+          headerText={localize[lang].DESCRIPTION}
           onEditStart={this.props.startEditing}
           onEditFinish={this.props.stopEditing}
           onEditSubmit={this.props.changeProject}
@@ -76,7 +79,7 @@ class Info extends Component {
           canEdit={isProjectAdmin}
         />
         <hr />
-        <h2>Файлы</h2>
+        <h2>{localize[lang].FILES}</h2>
         <Attachments
           removeAttachment={this.removeAttachment}
           uploadAttachments={this.uploadAttachments}
@@ -96,7 +99,8 @@ const mapStateToProps = state => ({
   riskBudget: state.Project.project.riskBudget,
   descriptionIsEditing: state.Project.DescriptionIsEditing,
   attachments: state.Project.project.attachments,
-  user: state.Auth.user
+  user: state.Auth.user,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
@@ -123,4 +127,7 @@ Info.propTypes = {
   user: PropTypes.object.isRequired
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Info);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Info);

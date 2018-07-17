@@ -1,0 +1,13 @@
+{
+  "en": {
+    "USERNAME": "User name:",
+    "ACTIVITY": "Activity",
+    "ACTIVE_TO": "Active to"
+  },
+
+  "ru": {
+    "USERNAME": "Имя пользователя:",
+    "ACTIVITY": "Активность",
+    "ACTIVE_TO": "Активен до"
+  }
+}

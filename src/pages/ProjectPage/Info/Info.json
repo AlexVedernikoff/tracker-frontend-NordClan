@@ -1,0 +1,12 @@
+{
+  "en": {
+    "TAGS": "Tags of project",
+    "DESCRIPTION": "Description",
+    "FILES": "Files"
+  },
+  "ru": {
+    "TAGS": "Теги проекта",
+    "DESCRIPTION": "Описание",
+    "FILES": "Файлы"
+  }
+}

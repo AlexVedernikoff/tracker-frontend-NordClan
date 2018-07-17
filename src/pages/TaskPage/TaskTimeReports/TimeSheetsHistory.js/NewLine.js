@@ -11,6 +11,7 @@ import { IconCheck, IconError } from '../../../../components/Icons';
 import getStatusOptions from '../../../../utils/getDraftStatusOptions';
 import createHash from '../../../../utils/createHash';
 import * as css from '../TaskTimeReports.scss';
+import { getFullName } from '../../../../utils/NameLocalisation';
 
 class NewLine extends Component {
   static propTypes = {
@@ -63,7 +64,7 @@ class NewLine extends Component {
   };
 
   render() {
-    const { currentUser, taskStatuses, preloading, hashCodes } = this.props;
+    const { currentUser, taskStatuses, preloading, hashCodes, localizeText, localizeH } = this.props;
     const { date, status, time } = this.state;
     const statusOptions = getStatusOptions(taskStatuses);
     const isFieldValues = !status || !time || !statusOptions.filter(option => option.value === status).length;
@@ -85,9 +86,9 @@ class NewLine extends Component {
             value={status}
             onChange={this.changeStatus}
             style={{ width: '8rem' }}
-            placeholder="Статус"
+            placeholder={localizeText.STATUS}
             multi={false}
-            noResultsText="Нет результатов"
+            noResultsText={localizeText.selectDropdownNoResults}
             options={statusOptions}
             disabled={preloading}
           />
@@ -95,14 +96,14 @@ class NewLine extends Component {
         <td className={css.time} colSpan={2}>
           <InputNumber
             style={{ width: '4rem' }}
-            postfix="ч."
+            postfix={localizeH}
             value={time}
             onChange={this.changeTime}
             disabled={preloading}
           />
         </td>
         <td className={css.user}>
-          {currentUser.fullNameRu}
+          {getFullName(currentUser)}
           {!isFieldValues && !isAlreadyCreated ? (
             <RoundButton
               className={css.confirmNewTimesheet}
@@ -114,11 +115,7 @@ class NewLine extends Component {
             </RoundButton>
           ) : (
             <i
-              data-tip={
-                isAlreadyCreated
-                  ? 'Запись с заданными параметрами уже создана'
-                  : 'Заполните все поля, чтобы создать запись'
-              }
+              data-tip={isAlreadyCreated ? localizeText.isAlreadyCreatedTrue : localizeText.isAlreadyCreatedFalse}
               className={classnames([css.info, { [css.infoWarning]: isAlreadyCreated }])}
             >
               <IconError />

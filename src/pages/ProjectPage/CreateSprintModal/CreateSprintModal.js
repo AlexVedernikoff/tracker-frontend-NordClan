@@ -10,6 +10,7 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { createSprint } from '../../../actions/Sprint';
 import { getSprintsDateRange } from '../../../selectors/getSprintsDateRange';
+import localize from './CreateSprintModal.json';
 
 class CreateSprintModal extends Component {
   constructor(props) {
@@ -110,6 +111,7 @@ class CreateSprintModal extends Component {
   };
 
   render() {
+    const { lang } = this.props;
     const formattedDayFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('DD.MM.YYYY') : '';
     const formattedDayTo = this.state.dateTo ? moment(this.state.dateTo).format('DD.MM.YYYY') : '';
 
@@ -124,50 +126,50 @@ class CreateSprintModal extends Component {
           <form className={css.createSprintForm}>
             <Row>
               <Col xs={12}>
-                <h3>Создание нового спринта</h3>
+                <h3>{localize[lang].NEW_SPRINT}</h3>
                 <hr />
               </Col>
             </Row>
             <Row>
               <Col xs={12} className={css.validateMessages}>
-                {!this.checkNullInputs() ? <span>Все поля должны быть заполнены</span> : null}
+                {!this.checkNullInputs() ? <span>{localize[lang].INPUT_NOTIFICATION}</span> : null}
                 {!this.validateDates() ? (
-                  <span className={css.redMessage}>Дата окончания должна быть позже даты начала</span>
+                  <span className={css.redMessage}>{localize[lang].DATE_NOTIFICATION}</span>
                 ) : null}
               </Col>
             </Row>
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Название спринта:</p>
+                <p>{localize[lang].SPRINT_NAME}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input placeholder="Введите название спринта" onChange={this.onChangeName} />
+                <Input placeholder={localize[lang].ENTER_SPRINT_NAME} onChange={this.onChangeName} />
               </Col>
             </Row>
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Дата начала:</p>
+                <p>{localize[lang].DATE_OF_START}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <DatepickerDropdown
                   name="dateFrom"
                   value={formattedDayFrom}
                   onDayChange={this.handleDayFromChange}
-                  placeholder="Введите дату начала"
+                  placeholder={localize[lang].ENTER_START_DATE}
                   // disabledDataRanges={this.props.sprintsDateRanges}
                 />
               </Col>
             </Row>
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Дата окончания:</p>
+                <p>{localize[lang].DATE_OF_ENDING}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <DatepickerDropdown
                   name="dateTo"
                   value={formattedDayTo}
                   onDayChange={this.handleDayToChange}
-                  placeholder="Введите дату окончания"
+                  placeholder={localize[lang].ENTER_END_DATE}
                   //disabledDataRanges={this.props.sprintsDateRanges}
                 />
               </Col>
@@ -184,11 +186,11 @@ class CreateSprintModal extends Component {
 
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Бюджет без РР</p>
+                <p>{localize[lang].WO_RISK_RESERVE}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Input
-                  placeholder="Введите бюджет без рискового резерва"
+                  placeholder={localize[lang].ENTER_BUDGET_WO_RISK_RESERVE}
                   onChange={this.onChangeBudget}
                   value={this.state.budget}
                 />
@@ -196,11 +198,11 @@ class CreateSprintModal extends Component {
             </Row>
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Бюджет с РР</p>
+                <p>{localize[lang].WITH_RISK_RESERVE}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Input
-                  placeholder="Введите бюджет с рисковым резервом"
+                  placeholder={localize[lang].ENTER_BUDGET_WITH_RISK_RESERVE}
                   onChange={this.onChangeRiskBudget}
                   value={this.state.riskBudget}
                 />
@@ -211,7 +213,7 @@ class CreateSprintModal extends Component {
                 <Button
                   type="green"
                   htmlType="submit"
-                  text="Создать"
+                  text={localize[lang].CREATE}
                   onClick={this.createSprint}
                   disabled={!this.checkNullInputs() || !this.validateDates()}
                 />
@@ -234,8 +236,9 @@ CreateSprintModal.propTypes = {
 
 const mapStateToProps = state => ({
   projectId: state.Project.project.id,
-  project: state.Project.project,
-  sprintsDateRanges: getSprintsDateRange(state.Project.project.sprints)
+  sprintsDateRanges: getSprintsDateRange(state.Project.project.sprints),
+  lang: state.Localize.lang,
+  project: state.Project.project
 });
 
 const mapDispatchToProps = {

@@ -94,4 +94,7 @@ const mapStateToProps = state => ({
   taskTypes: state.Dictionaries.taskTypes
 });
 
-export default connect(mapStateToProps, {})(TaskCard);
+export default connect(
+  mapStateToProps,
+  {}
+)(TaskCard);
