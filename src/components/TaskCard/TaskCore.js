@@ -140,7 +140,7 @@ class TaskCore extends PureComponent {
         onClick={this.goToDetailPage}
         // {...other}
       >
-        {isTaskInWork(task.statusId) && (
+        {isTaskInWork(task.statusId) ? (
           <div
             className={classnames({
               [css.status]: true,
@@ -154,7 +154,7 @@ class TaskCore extends PureComponent {
               <IconPause data-tip={localize[lang].PAUSE} onClick={this.handleClick} />
             )}
           </div>
-        )}
+        ) : null}
 
         <CopyThis
           wrapThisInto={'div'}

@@ -40,14 +40,14 @@ export const getStatusNameById = statusId => {
   return status;
 };
 
-export const isTaskInWork = statusId => statusId !== taskStatus.STATUS_NEW && statusId !== taskStatus.STATUS_DONE;
+export const isTaskInWork = statusId =>
+  statusId !== taskStatus.NEW &&
+  statusId !== taskStatus.DONE &&
+  statusId !== taskStatus.CLOSED &&
+  statusId !== taskStatus.CANCELED;
 
 export const isTaskInProgress = statusId =>
-  statusId === taskStatus.STATUS_DEV_HOLD ||
-  statusId === taskStatus.STATUS_REVIEW_HOLD ||
-  statusId === taskStatus.STATUS_QA_HOLD;
+  statusId === taskStatus.CODE_REVIEW_PLAY || statusId === taskStatus.DEV_PLAY || statusId === taskStatus.QA_PLAY;
 
 export const isTaskInHold = statusId =>
-  statusId === taskStatus.STATUS_DEV_PROGRESS ||
-  statusId === taskStatus.STATUS_REVIEW_PROGRESS ||
-  statusId === taskStatus.STATUS_QA_PROGRESS;
+  statusId === taskStatus.DEV_STOP || statusId === taskStatus.CODE_REVIEW_STOP || statusId === taskStatus.QA_STOP;

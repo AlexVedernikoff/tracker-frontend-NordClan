@@ -131,7 +131,9 @@ class Participant extends React.Component {
                           onChange={e => this.changeRole(e, this.ROLES_NAME[i], this.ROLES_ID[i])}
                           checked={(roles && roles[ROLES_NAME]) || false}
                         />
-                        <span className={css.labelText}>{this.ROLES_NAME[i]}</span>
+                        <span className={classnames(css.labelText, { [css.toUp]: ROLES_NAME === 'ios' })}>
+                          {this.ROLES_NAME[i]}
+                        </span>
                       </label>
                     </Col>
                   ))
