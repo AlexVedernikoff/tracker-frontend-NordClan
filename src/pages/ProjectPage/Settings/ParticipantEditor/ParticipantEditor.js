@@ -191,6 +191,12 @@ class ParticipantEditor extends Component {
     this.setState({ isModalOpenAddExternal: true });
   };
 
+  checkIsPmInProject = () => this.props.users.some(user => user.roles.pm);
+
+  checkIsAuthorProject = () => this.props.user.id === this.props.projectAuthorId;
+
+  disableButton = () => this.checkIsAdminInProject() || this.checkIsPmInProject() || this.checkIsAuthorProject();
+
   handleCloseModalAddUser = () => {
     this.setState({
       isModalOpenAddUser: false,
@@ -252,7 +258,7 @@ class ParticipantEditor extends Component {
               />
             ))
           : null}
-        {isProjectAdmin ? (
+        {this.disableButton() ? (
           <Button
             text={localize[lang].ADD_MEMBERS}
             type="primary"
@@ -359,14 +365,16 @@ ParticipantEditor.propTypes = {
   id: PropTypes.number,
   user: PropTypes.object.isRequired,
   users: PropTypes.array.isRequired,
-  lang: PropTypes.string.isRequired
+  lang: PropTypes.string.isRequired,
+  projectAuthorId: state.Project.project.authorId
 };
 
 const mapStateToProps = state => ({
   id: state.Project.project.id,
   users: state.Project.project.users,
   externalUsers: state.Project.project.externalUsers,
-  user: state.Auth.user,
+  users: PropTypes.array.isRequired,
+  projectAuthorId: PropTypes.number.isRequired,
   lang: state.Localize.lang
 });
 
@@ -375,7 +383,4 @@ const mapDispatchToProps = {
   getProjectUsers
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ParticipantEditor);
+export default connect(mapStateToProps, mapDispatchToProps)(ParticipantEditor);
