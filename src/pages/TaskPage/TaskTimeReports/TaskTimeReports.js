@@ -155,7 +155,8 @@ class TaskTimeReports extends React.Component {
     const isStagesDataSet = stagesDataSet.length !== 0;
     const isUsersDataSet = usersDataSet.length !== 0;
     const isRolesDataSet = rolesDataSet.length !== 0;
-    const isCurrentUserIsMember = get(project, 'projectUsers', []).indexOf(currentUser.id) > -1;
+    const projectUsers = get(project, 'projectUsers', []);
+    const isCurrentUserIsMember = projectUsers.indexOf(currentUser.id) > -1;
 
     const pmAccess = this.props.project.users.find(user => user.id === this.props.user.id);
 
@@ -251,7 +252,7 @@ class TaskTimeReports extends React.Component {
         )}
         {isCurrentUserIsMember && (
           <TimeSheetsHistory
-            users={get(project, 'projectUsers', []).map(projectUser => projectUser.user)}
+            users={projectUsers.map(projectUser => projectUser.user)}
             currentUser={currentUser}
             currentTask={task}
             timesheets={timesheets}
