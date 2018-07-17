@@ -249,7 +249,7 @@ class TaskTimeReports extends React.Component {
             <hr />
           </div>
         )}
-        {!isCurrentUserIsMember && (
+        {isCurrentUserIsMember && (
           <TimeSheetsHistory
             users={get(project, 'projectUsers', []).map(projectUser => projectUser.user)}
             currentUser={currentUser}
