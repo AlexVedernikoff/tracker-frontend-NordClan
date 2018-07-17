@@ -1,9 +1,8 @@
 import * as TaskActions from '../constants/Task';
 import { API_URL } from '../constants/Settings';
 import axios from 'axios';
-import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
-import { SOCKET_IO } from '../constants/SocketIO';
 import { finishLoading } from './Loading';
+import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
 import {
   defaultErrorHandler,
   withFinishLoading,
@@ -122,14 +121,6 @@ const getTaskHistory = (id, options) => {
   }
   const URL = `${API_URL}/task/${id}/history`;
   return dispatch => {
-    dispatch({
-      type: REST_API,
-      url: `/task/${id}/history`,
-      method: GET,
-      body,
-      extra,
-      start: withStartLoading(getTaskHistoryStart, true)(dispatch)
-    });
     axios
       .get(URL, {
         params: {
@@ -177,29 +168,15 @@ const changeTask = (ChangedProperties, target, callback) => {
       method: PUT,
       body: ChangedProperties,
       extra,
-      start: withStartLoading(requestTaskChange, true)(dispatch)
-    });
-    axios
-      .put(`${API_URL}/task/${ChangedProperties.id}`)
-      .then(
-        function(response) {
-          dispatch(successTaskChange(response.data));
-          dispatch(stopTaskEditing(target));
-          if (callback) {
-            callback();
-          }
-          dispatch(finishLoading());
-        },
-        function(value) {
-          if (value === 'Error: Request failed with status code 403') {
-            dispatch(postChangeFail());
-            dispatch(finishLoading());
-          }
+      start: withStartLoading(requestTaskChange, true)(dispatch),
+      response: withFinishLoading(response => {
+        if (callback) {
+          callback();
         }
-      )
-      .catch(function(error) {
-        dispatch(finishLoading());
-      });
+        return stopTaskEditing(target);
+      }, true)(dispatch),
+      error: defaultErrorHandler(dispatch(stopTaskEditing(target)))
+    });
   };
 };
 
