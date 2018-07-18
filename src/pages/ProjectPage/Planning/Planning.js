@@ -419,12 +419,18 @@ class Planning extends Component {
     tasks.forEach(task => {
       console.log(task);
       tasksChanged.push({
-        id: task.id,
-        sprintId: sprintId
+        id: task.id
       });
     });
 
-    this.props.changeTasks(tasksChanged, getPlanningTasksAll);
+    this.props.changeTasks(
+      {
+        target: 'sprintId',
+        data: sprintId,
+        taskIds: tasksChanged
+      },
+      getPlanningTasksAll
+    );
 
     this.setState({ isModalOpenMoveTasks: false });
   };
@@ -763,7 +769,4 @@ const mapDispatchToProps = {
   getProjectInfo
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Planning);
+export default connect(mapStateToProps, mapDispatchToProps)(Planning);
