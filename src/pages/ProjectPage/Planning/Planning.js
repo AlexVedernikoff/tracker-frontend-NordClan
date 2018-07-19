@@ -417,16 +417,14 @@ class Planning extends Component {
 
     const tasksChanged = [];
     tasks.forEach(task => {
-      console.log(task);
-      tasksChanged.push({
-        id: task.id
-      });
+      tasksChanged.push(task.id);
     });
 
     this.props.changeTasks(
       {
-        target: 'sprintId',
-        data: sprintId,
+        changeData: {
+          sprintId: sprintId
+        },
         taskIds: tasksChanged
       },
       getPlanningTasksAll
