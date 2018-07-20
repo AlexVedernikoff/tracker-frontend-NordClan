@@ -366,15 +366,15 @@ ParticipantEditor.propTypes = {
   user: PropTypes.object.isRequired,
   users: PropTypes.array.isRequired,
   lang: PropTypes.string.isRequired,
-  projectAuthorId: state.Project.project.authorId
+  projectAuthorId: PropTypes.number.isRequired
 };
 
 const mapStateToProps = state => ({
   id: state.Project.project.id,
   users: state.Project.project.users,
   externalUsers: state.Project.project.externalUsers,
-  users: PropTypes.array.isRequired,
-  projectAuthorId: PropTypes.number.isRequired,
+  user: state.Auth.user,
+  projectAuthorId: state.Project.project.authorId,
   lang: state.Localize.lang
 });
 
