@@ -4,8 +4,10 @@ import PropTypes from 'prop-types';
 
 import * as css from './GoBackPanel.scss';
 import { history } from '../../History';
+import { connect } from 'react-redux';
+import localize from './GoBackPanel.json';
 
-export default class GoBackPanel extends Component {
+class GoBackPanel extends Component {
   static propTypes = {
     defaultPreviousUrl: PropTypes.string,
     parentRef: PropTypes.object
@@ -24,11 +26,21 @@ export default class GoBackPanel extends Component {
   };
 
   render() {
+    const { lang } = this.props;
     return (
       <div className={css.gobackButton} onClick={this.goBack}>
         <IconArrowLeft />
-        <span className={css.gobackButtonText}>Назад</span>
+        <span className={css.gobackButtonText}>{localize[lang].BACK}</span>
       </div>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(GoBackPanel);
