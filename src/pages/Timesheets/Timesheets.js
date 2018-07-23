@@ -14,6 +14,7 @@ import AddActivityModal from './AddActivityModal';
 import Calendar from './Calendar';
 import ActivityRow from './ActivityRow';
 import exactMath from 'exact-math';
+import localize from './timesheets.json';
 
 class Timesheets extends React.Component {
   static propTypes = {
@@ -64,7 +65,7 @@ class Timesheets extends React.Component {
 
   render() {
     const { isCalendarOpen } = this.state;
-    const { startingDay, tempTimesheets } = this.props;
+    const { startingDay, tempTimesheets, lang } = this.props;
     const canAddActivity = !this.props.list.find(
       tsh =>
         tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
@@ -197,7 +198,7 @@ class Timesheets extends React.Component {
           if (maNotPushed && isThisWeek(el.onDate)) {
             res.push({
               typeId: el.typeId,
-              projectName: el.project ? el.project.name : 'Без проекта',
+              projectName: el.project ? el.project.name : localize[lang].WITHOUT_PROJECT,
               projectId: el.project ? el.project.id : 0,
               sprintId: el.sprintId ? el.sprintId : null,
               sprint: el.sprint ? el.sprint : null
@@ -249,7 +250,9 @@ class Timesheets extends React.Component {
 
     const days = [];
     for (let number = 0; number < 7; number++) {
-      const currentDay = moment(startingDay).weekday(number);
+      const currentDay = moment(startingDay)
+        .weekday(number)
+        .locale(localize[lang].MOMENT);
       days.push(
         <th
           className={cn({
@@ -330,21 +333,21 @@ class Timesheets extends React.Component {
     return (
       <div>
         <section>
-          <h1>Отчеты по времени</h1>
+          <h1>{localize[lang].TIMESHEETS_REPORT}</h1>
           <hr />
           <table className={css.timeSheetsTable}>
             <thead>
               <tr className={css.sheetsHeader}>
                 <th className={css.prevWeek}>
-                  <div className={css.activityHeader}>Недельная активность:</div>
-                  <IconArrowLeft data-tip="Предыдущая неделя" onClick={this.setPrevWeek} />
+                  <div className={css.activityHeader}>{localize[lang].WEEK_ACTIVITY}</div>
+                  <IconArrowLeft data-tip={localize[lang].PREVIOUS_WEEK} onClick={this.setPrevWeek} />
                 </th>
                 {days}
                 <th className={css.nextWeek}>
-                  <IconArrowRight data-tip="Следующая неделя" onClick={this.setNextWeek} />
+                  <IconArrowRight data-tip={localize[lang].NEXT_WEEK} onClick={this.setNextWeek} />
                 </th>
                 <th className={cn(css.actions)}>
-                  <div className={css.changeWeek} data-tip="Выбрать дату" onClick={this.toggleCalendar}>
+                  <div className={css.changeWeek} data-tip={localize[lang].SELECT_DATE} onClick={this.toggleCalendar}>
                     <IconCalendar />
                   </div>
                   <ReactCSSTransitionGroup
@@ -376,7 +379,7 @@ class Timesheets extends React.Component {
                   <td colSpan="10">
                     <a className={css.add} onClick={() => this.setState({ isModalOpen: true })}>
                       <IconPlus style={{ fontSize: 16 }} />
-                      <div className={css.tooltip}>Добавить активность</div>
+                      <div className={css.tooltip}>{localize[lang].ADD_ACTIVITY}</div>
                     </a>
                   </td>
                 </tr>
@@ -397,7 +400,8 @@ const mapStateToProps = state => ({
   list: state.Timesheets.list,
   tempTimesheets: state.Timesheets.tempTimesheets,
   dateBegin: state.Timesheets.dateBegin,
-  dateEnd: state.Timesheets.dateEnd
+  dateEnd: state.Timesheets.dateEnd,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
@@ -405,4 +409,7 @@ const mapDispatchToProps = {
   showNotification
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Timesheets);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Timesheets);

@@ -1,0 +1,42 @@
+{
+  "en": {
+    "FULL_ACCESS":
+      "Full access to the project. <br/> All actions are available at the project level: <br/> Maintaining tasks, planning, project and team settings, analytics <br/> Full distribution of the project.",
+    "DEV_ACCESS":
+      "Limited access to the project. <br/> Actions at the task level are available: <br/> Task assignment, new comment in the task, reply to the comment, status change <br/> Limited mailing.",
+    "QA_ACCESS":
+      "Limited access to the project. <br/> Actions are available at the task level. <br/> Full mailing on the project.",
+    "UNPAID_ROLE": "Unpaid role",
+    "EXTERNAL": "External user",
+    "ADD_MEMBERS": "Add member",
+    "EXTERNAL_USERS": "External Users",
+    "ADD_EXTERNAL_USERS": "Add external user",
+    "ADD_NEW_MEMBERS": "Adding a new member",
+    "ENTER_NAME_PARTICIPANT": "Enter the name of the participant",
+    "NO_RESULTS": "No results",
+    "ENTER_ROLE_PARTICIPANT": "Enter the member role",
+    "ENTER_EXTERNAL_USERS": "Enter the name of the external user",
+    "ADD": "Add",
+    "PARTICIPANTS": "Participants"
+  },
+  "ru": {
+    "FULL_ACCESS":
+      "Полный доступ к проекту. <br/>Доступны все действия на уровне проекта: <br/>Ведение задач, планирование, настройки проекта и команды, аналитика <br/>Полная рассылка по проекту.",
+    "DEV_ACCESS":
+      "Ограниченный доступ к проекту. <br/>Доступны действия на уровне задач: <br/>Назначение задачи, новый комментарий в задаче, ответ на комментарий, изменение статуса<br/>Ограниченная рассылка.",
+    "QA_ACCESS":
+      "Ограниченный доступ к проекту. <br/>Доступны действия на уровне задач. <br/>Полная рассылка по проекту.",
+    "UNPAID_ROLE": "Неоплачиваемая роль",
+    "EXTERNAL": "Внешний пользователь",
+    "ADD_MEMBERS": "Добавить участника",
+    "EXTERNAL_USERS": "Внешние пользователи",
+    "ADD_EXTERNAL_USERS": "Добавить внешнего пользователя",
+    "ADD_NEW_MEMBERS": "Добавление нового участника",
+    "ENTER_NAME_PARTICIPANT": "Введите имя участника",
+    "NO_RESULTS": "Нет результатов",
+    "ENTER_ROLE_PARTICIPANT": "Введите роль участника",
+    "ENTER_EXTERNAL_USERS": "Введите имя внешнего пользователя",
+    "ADD": "Добавить",
+    "PARTICIPANTS": "Участники:"
+  }
+}

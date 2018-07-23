@@ -1,0 +1,38 @@
+{
+  "en": {
+    "LOADING": "Loading...",
+    "PROJECT": "Project:",
+    "TASK_TYPE": "Type of task:",
+    "FROM_CLIENT": "From client:",
+    "SPRINT": "Sprint:",
+    "TAGS": "Tags:",
+    "AUTHOR": "Author:",
+    "PERFORMER": "Performer:",
+    "DATE_OF_CREATE": "The date of create:",
+    "PLANNED_TIME": "Planned time:",
+    "SPENT_TIME": "Spent time:",
+    "SPENT_QA_TIME": "Spent time on QA:",
+    "CHANGE_PERFORMER": "Change performer of task:",
+    "CHANGE_SPRINT": "Change sprint:",
+    "NOT_SPECIFIED": "Not specified",
+    "H": "h."
+  },
+  "ru": {
+    "LOADING": "Загрузка...",
+    "PROJECT": "Проект:",
+    "TASK_TYPE": "Тип задачи:",
+    "FROM_CLIENT": "От клиента:",
+    "SPRINT": "Спринт:",
+    "TAGS": "Теги:",
+    "AUTHOR": "Автор:",
+    "PERFORMER": "Исполнитель:",
+    "DATE_OF_CREATE": "Дата создания:",
+    "PLANNED_TIME": "Планируемое время:",
+    "SPENT_TIME": "Затраченное время:",
+    "SPENT_QA_TIME": "Из них на QA:",
+    "CHANGE_PERFORMER": "Изменить исполнителя задачи:",
+    "CHANGE_SPRINT": "Изменить спринт:",
+    "NOT_SPECIFIED": "Не указано",
+    "H": "ч."
+  }
+}

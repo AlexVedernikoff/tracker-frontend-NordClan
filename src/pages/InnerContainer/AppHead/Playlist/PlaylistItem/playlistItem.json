@@ -1,0 +1,22 @@
+{
+  "en": {
+    "UNDEFINED": "Undefined",
+    "WITHOUT_PROJECT": "Without a project",
+    "CURRENT_STATUS": "Cur. status:",
+    "HIDE": "Hide",
+    "SHOW": "Show",
+    "TOTAL_SPENT": "Total amount spent",
+    "SCHEDULED": "Scheduled",
+    "ENTER_COMMENT_TEXT": "Enter comment text"
+  },
+  "ru": {
+    "UNDEFINED": "Не определено",
+    "WITHOUT_PROJECT": "Без проекта",
+    "CURRENT_STATUS": "Тек. статус:",
+    "HIDE": "Скрыть",
+    "SHOW": "Показать",
+    "TOTAL_SPENT": "Всего потрачено",
+    "SCHEDULED": "Запланировано",
+    "ENTER_COMMENT_TEXT": "Введите текст комментария"
+  }
+}

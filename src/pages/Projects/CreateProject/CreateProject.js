@@ -8,6 +8,8 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './CreateProject.scss';
 import Select from 'react-select';
 import getPortfolios from '../../../utils/getPortfolios';
+import { connect } from 'react-redux';
+import localize from './CreateProject.json';
 
 class CreateProject extends Component {
   constructor(props) {
@@ -17,7 +19,7 @@ class CreateProject extends Component {
   }
 
   render() {
-    const { isOpen, onRequestClose, prefixErrorText, projectTypes = [] } = this.props;
+    const { isOpen, onRequestClose, prefixErrorText, projectTypes = [], lang } = this.props;
 
     const formLayout = {
       firstCol: 5,
@@ -36,12 +38,12 @@ class CreateProject extends Component {
         contentLabel="Modal"
       >
         <div className={css.createProjectForm}>
-          <h3 className={css.header}>Создать проект</h3>
+          <h3 className={css.header}>{localize[lang].CREATE}</h3>
           <hr />
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Название проекта:</p>
+                <p>{localize[lang].NAME}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 {this.validator.validate(
@@ -50,10 +52,10 @@ class CreateProject extends Component {
                       autoFocus
                       onChange={this.props.onChange}
                       name="projectName"
-                      placeholder="Название проекта"
+                      placeholder={localize[lang].NAME_PLACEHOLDER}
                       onBlur={handleBlur}
                       shouldMarkError={shouldMarkError}
-                      errorText="Длина менее 4 символов"
+                      errorText={localize[lang].ERROR_NAME_TEXT}
                     />
                   ),
                   'projectName',
@@ -65,7 +67,7 @@ class CreateProject extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Префикс проекта:</p>
+                <p>{localize[lang].PREFIX}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 {this.validator.validate(
@@ -73,10 +75,10 @@ class CreateProject extends Component {
                     <ValidatedInput
                       onChange={this.props.onChange}
                       name="projectPrefix"
-                      placeholder="Префикс проекта"
+                      placeholder={localize[lang].PREFIX_PLACEHOLDER}
                       onBlur={handleBlur}
                       shouldMarkError={shouldMarkError}
-                      errorText="Длина менее 2 символов"
+                      errorText={localize[lang].ERROR_PREFIX_TEXT}
                       backendErrorText={prefixErrorText}
                     />
                   ),
@@ -89,14 +91,14 @@ class CreateProject extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Тип проекта</p>
+                <p>{localize[lang].TYPE}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Select
                   name="performer"
-                  placeholder="Выберите тип проекта"
+                  placeholder={localize[lang].TYPE_PLACEHOLDER}
                   multi={false}
-                  noResultsText="Нет результатов"
+                  noResultsText={localize[lang].NO_RESULTS}
                   backspaceRemoves={false}
                   options={projectTypes.map(type => ({ value: type.id, label: type.name }))}
                   className={css.selectType}
@@ -109,7 +111,7 @@ class CreateProject extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Добавить проект в портфель</p>
+                <p>{localize[lang].ADD_TO_PORTFOLIO}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <SelectAsync
@@ -129,13 +131,13 @@ class CreateProject extends Component {
           </label>
           <div className={css.buttonsContainer}>
             <Button
-              text="Создать проект"
+              text={localize[lang].ADD}
               type="green"
               onClick={this.props.onSubmit}
               disabled={!(this.props.validateProjectName && this.props.validateProjectPrefix)}
             />
             <Button
-              text="Создать и открыть"
+              text={localize[lang].CREATE_AND_OPEN}
               type="green-lighten"
               onClick={this.props.onSubmitAndOpen}
               disabled={!(this.props.validateProjectName && this.props.validateProjectPrefix)}
@@ -164,4 +166,11 @@ CreateProject.propTypes = {
   validateProjectPrefix: PropTypes.bool
 };
 
-export default CreateProject;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(CreateProject);

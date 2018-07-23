@@ -77,4 +77,7 @@ const mapDispatchToProps = {
   deleteTag
 };
 
-export default connect(null, mapDispatchToProps)(Tag);
+export default connect(
+  null,
+  mapDispatchToProps
+)(Tag);

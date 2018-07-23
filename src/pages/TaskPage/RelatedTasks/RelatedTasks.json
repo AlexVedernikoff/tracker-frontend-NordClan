@@ -1,0 +1,18 @@
+{
+  "en": {
+    "CANCEL_TASK": "Cancel task",
+    "UNBIND_TASK": "Unbind this task",
+    "BINDED_TASKS": "Binded tasks",
+    "SUBTASKS": "Subtasks",
+    "BOUND_WITH_OTHER_TASK": "Bound with other task",
+    "ADD_SUBTASKS": "Add subtasks"
+  },
+  "ru": {
+    "CANCEL_TASK": "Отменить задачу",
+    "UNBIND_TASK": "Отвязать задачу",
+    "BINDED_TASKS": "Связанные задачи",
+    "SUBTASKS": "Подзадачи",
+    "BOUND_WITH_OTHER_TASK": "Связать с другой задачей",
+    "ADD_SUBTASKS": "Добавить подзадачу"
+  }
+}

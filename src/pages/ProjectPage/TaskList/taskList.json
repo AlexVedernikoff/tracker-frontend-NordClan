@@ -1,0 +1,30 @@
+{
+  "en": {
+    "CREATE_TASK": "Create task",
+    "CLEAR_FILTERS": "Clear filters",
+    "SELECT_TYPE_TASK": "Select the task type",
+    "SELECT_TYPE_TASK_EMPTY": "No suitable types",
+    "SELECT_STATUS_TASK": "Select task status",
+    "NO_MATCH_STATUS": "No matching statuses",
+    "CLEAR_ALL": "Clear all",
+    "SELECT_AUTHOR_TASK": "Select the author of the task",
+    "NO_RESULTS": "No results",
+    "ENTER_TITLE_TASK": "Enter a title for the task",
+    "EDIT_TASK_PERFORMER": "Edit task performer",
+    "EDIT_TASK_SPRING": "Edit task sprint"
+  },
+  "ru": {
+    "CREATE_TASK": "Создать задачу",
+    "CLEAR_FILTERS": "Очистить фильтры",
+    "SELECT_TYPE_TASK": "Выберите тип задачи",
+    "SELECT_TYPE_TASK_EMPTY": "Нет подходящих типов",
+    "SELECT_STATUS_TASK": "Выберите статус задачи",
+    "NO_MATCH_STATUS": "Нет подходящих статусов",
+    "CLEAR_ALL": "Очистить все",
+    "SELECT_AUTHOR_TASK": "Выберите автора задачи",
+    "NO_RESULTS": "Нет результатов",
+    "ENTER_TITLE_TASK": "Введите название задачи",
+    "EDIT_TASK_PERFORMER": "Изменить исполнителя задачи",
+    "EDIT_TASK_SPRING": "Изменить спринт задачи"
+  }
+}

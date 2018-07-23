@@ -1,0 +1,16 @@
+{
+  "en": {
+    "USERS": "Members list",
+    "EXTERNAL_USERS": "External Users",
+    "TIMESHEETS": "Time reports",
+    "MY_PROJECTS": "My projects",
+    "MY_TASKS": "My tasks"
+  },
+  "ru": {
+    "USERS": "Пользователи",
+    "EXTERNAL_USERS": "Внешние пользователи",
+    "TIMESHEETS": "Отчеты по времени",
+    "MY_PROJECTS": "Мои проекты",
+    "MY_TASKS": "Мои задачи"
+  }
+}

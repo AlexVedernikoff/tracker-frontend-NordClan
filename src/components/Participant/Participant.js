@@ -9,6 +9,8 @@ import { connect } from 'react-redux';
 import { bindUserToProject, unbindUserToProject } from '../../actions/Project';
 import ConfirmModal from '../ConfirmModal';
 import { showNotification } from '../../actions/Notifications';
+import localize from './Participant.json';
+import { getFullName } from '../../utils/NameLocalisation';
 
 class Participant extends React.Component {
   static defaultProps = {
@@ -58,7 +60,7 @@ class Participant extends React.Component {
       });
     } else {
       this.props.showNotification({
-        message: 'Это единственная роль. Участник должен обладать хотя бы одной ролью',
+        message: localize[this.props.lang].MESSAGE,
         type: 'error'
       });
     }
@@ -91,7 +93,7 @@ class Participant extends React.Component {
   };
 
   render() {
-    const { user, isExternal, ...other } = this.props;
+    const { user, isExternal, lang, ...other } = this.props;
 
     const roles = user.roles;
     return (
@@ -114,7 +116,7 @@ class Participant extends React.Component {
             {this.props.isProjectAdmin ? (
               <IconClose className={css.iconClose} onClick={this.handleOpenConfirmDelete} />
             ) : null}
-            {user.fullNameRu}
+            {getFullName(user)}
           </div>
         </Col>
         {!isExternal ? (
@@ -129,7 +131,9 @@ class Participant extends React.Component {
                           onChange={e => this.changeRole(e, this.ROLES_NAME[i], this.ROLES_ID[i])}
                           checked={(roles && roles[ROLES_NAME]) || false}
                         />
-                        <span className={css.labelText}>{this.ROLES_NAME[i]}</span>
+                        <span className={classnames(css.labelText, { [css.toUp]: ROLES_NAME === 'ios' })}>
+                          {this.ROLES_NAME[i]}
+                        </span>
                       </label>
                     </Col>
                   ))
@@ -141,7 +145,7 @@ class Participant extends React.Component {
           <ConfirmModal
             isOpen
             contentLabel="modal"
-            text="Вы действительно хотите удалить этого участника?"
+            text={localize[lang].DELETE}
             onCancel={this.handleCloseConfirmDelete}
             onConfirm={this.unbindUser}
             onRequestClose={this.handleCloseConfirmDelete}
@@ -162,10 +166,14 @@ Participant.propTypes = {
   user: PropTypes.object
 };
 
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
 const mapDispatchToProps = {
   bindUserToProject,
   unbindUserToProject,
   showNotification
 };
 
-export default connect(null, mapDispatchToProps)(Participant);
+export default connect(mapStateToProps, mapDispatchToProps)(Participant);

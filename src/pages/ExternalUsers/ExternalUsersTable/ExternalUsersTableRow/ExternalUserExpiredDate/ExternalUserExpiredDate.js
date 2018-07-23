@@ -22,6 +22,7 @@ class ExternalUserExpiredDate extends Component {
   };
 
   render() {
+    const { placeholder } = this.props;
     const formattedDay = moment(this.props.value).format('DD.MM.YYYY');
     const formattedStateDay = moment(this.state.value).format('DD.MM.YYYY');
     return (
@@ -32,7 +33,7 @@ class ExternalUserExpiredDate extends Component {
             value={formattedStateDay}
             onDayChange={this.handleDayToChange}
             disabledDataRanges={[{ before: new Date() }]}
-            placeholder="Введите дату"
+            placeholder={placeholder || 'Введите дату'}
           />
         ) : (
           <div>{formattedDay}</div>

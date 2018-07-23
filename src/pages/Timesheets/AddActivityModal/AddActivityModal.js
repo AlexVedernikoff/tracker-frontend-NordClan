@@ -21,6 +21,7 @@ import {
 } from '../../../actions/Timesheets';
 import getStatusOptions from '../../../utils/getDraftStatusOptions';
 import * as activityTypes from '../../../constants/ActivityTypes';
+import localize from './addActivityModal.json';
 
 class AddActivityModal extends Component {
   static propTypes = {
@@ -210,6 +211,7 @@ class AddActivityModal extends Component {
       : null;
   };
   render() {
+    const { lang } = this.props;
     const formLayout = {
       left: 5,
       right: 7
@@ -218,18 +220,18 @@ class AddActivityModal extends Component {
     return (
       <Modal isOpen onRequestClose={this.props.onClose} contentLabel="Modal" closeTimeoutMS={200}>
         <div className={css.addActivityForm}>
-          <h3>Добавить активность</h3>
+          <h3>{localize[lang].ADD_ACTIVITY}</h3>
           <hr />
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.left}>
-                Тип активности:
+                {localize[lang].ACTIVITY_TYPE}:
               </Col>
               <Col xs={12} sm={formLayout.right}>
                 <SelectDropdown
                   multi={false}
                   value={this.props.selectedActivityType}
-                  placeholder="Тип активности"
+                  placeholder={localize[lang].ACTIVITY_TYPE}
                   onChange={this.handleChangeActivity}
                   options={
                     this.props.activityTypes.length
@@ -248,7 +250,11 @@ class AddActivityModal extends Component {
                   <Row>
                     <Col xs={12} sm={formLayout.left} />
                     <Col xs={12} sm={formLayout.right}>
-                      <Checkbox checked={this.state.isOnlyMine} onChange={this.toggleMine} label="Только мои задачи" />
+                      <Checkbox
+                        checked={this.state.isOnlyMine}
+                        onChange={this.toggleMine}
+                        label={localize[lang].MY_TASKS}
+                      />
                     </Col>
                   </Row>
                 </label>,
@@ -256,13 +262,13 @@ class AddActivityModal extends Component {
                   <label key="projectSelectLabel" className={css.formField}>
                     <Row>
                       <Col xs={12} sm={formLayout.left}>
-                        Проект:
+                        {localize[lang].PROJECT}
                       </Col>
                       <Col xs={12} sm={formLayout.right}>
                         <SelectDropdown
                           multi={false}
                           value={this.props.selectedProject}
-                          placeholder="Выберите проект"
+                          placeholder={localize[lang].SELECT_PROJECT}
                           onChange={this.handleChangeProject}
                           options={this.state.projects}
                         />
@@ -274,13 +280,13 @@ class AddActivityModal extends Component {
                   <label key="taskSelectLabel" className={css.formField}>
                     <Row>
                       <Col xs={12} sm={formLayout.left}>
-                        Задача:
+                        {localize[lang].TASK}
                       </Col>
                       <Col xs={12} sm={formLayout.right}>
                         <SelectDropdown
                           multi={false}
                           value={this.props.selectedTask}
-                          placeholder="Выберите задачу"
+                          placeholder={localize[lang].SELECT_TASKS}
                           onChange={option => this.props.changeTask(option)}
                           options={this.state.tasks}
                         />
@@ -297,13 +303,13 @@ class AddActivityModal extends Component {
                   <label className={css.formField} key="noTaskActivityProject">
                     <Row>
                       <Col xs={12} sm={formLayout.left}>
-                        Проект:
+                        {localize[lang].PROJECT}
                       </Col>
                       <Col xs={12} sm={formLayout.right}>
                         <SelectDropdown
                           multi={false}
                           value={this.props.selectedProject}
-                          placeholder="Выберите проект"
+                          placeholder={localize[lang].SELECT_PROJECT}
                           onChange={this.handleChangeProject}
                           options={this.state.projects}
                         />
@@ -314,13 +320,13 @@ class AddActivityModal extends Component {
                     <label className={css.formField} key="noTaskActivitySprint">
                       <Row>
                         <Col xs={12} sm={formLayout.left}>
-                          Спринт:
+                          {localize[lang].SPRINT}
                         </Col>
                         <Col xs={12} sm={formLayout.right}>
                           <SelectDropdown
                             multi={false}
                             value={this.state.selectedSprint}
-                            placeholder="Выберите спринт"
+                            placeholder={localize[lang].SELECT_SPRINT}
                             onChange={this.handleChangeSprint}
                             options={this.getSprintOptions()}
                           />
@@ -334,14 +340,14 @@ class AddActivityModal extends Component {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.left}>
-                  Статус:
+                  {localize[lang].STATUS}
                 </Col>
                 <Col xs={12} sm={formLayout.right}>
                   <SelectDropdown
                     multi={false}
                     value={this.props.selectedTaskStatusId}
                     onChange={option => this.changeItem(option, 'taskStatusId')}
-                    placeholder="Выбрать статус"
+                    placeholder={localize[lang].SELECT_STATUS}
                     options={getStatusOptions(this.props.taskStatuses)}
                   />
                 </Col>
@@ -350,7 +356,7 @@ class AddActivityModal extends Component {
           ) : null}
           <div className={css.footer}>
             <Button
-              text="Добавить"
+              text={localize[lang].ADD}
               disabled={
                 !this.props.selectedActivityType ||
                 (this.props.selectedActivityType === 1 && !this.props.selectedTaskStatusId)
@@ -376,7 +382,8 @@ const mapStateToProps = state => ({
   taskStatuses: state.Dictionaries.taskStatuses,
   filteredTasks: state.Timesheets.filteredTasks,
   sprints: state.Project.project.sprints,
-  userId: state.Auth.user.id
+  userId: state.Auth.user.id,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
@@ -390,4 +397,7 @@ const mapDispatchToProps = {
   getProjectSprints
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddActivityModal);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AddActivityModal);

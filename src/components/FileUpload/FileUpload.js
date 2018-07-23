@@ -2,13 +2,16 @@ import React from 'react';
 import { IconPlus } from '../Icons';
 import PropTypes from 'prop-types';
 import Dropzone from 'react-dropzone';
+import { connect } from 'react-redux';
+import localize from './FileUpload.json';
 
-export default class FileUpload extends React.Component {
-  constructor (props) {
+class FileUpload extends React.Component {
+  constructor(props) {
     super(props);
   }
 
-  render () {
+  render() {
+    const { lang } = this.props;
     const css = require('./FileUpload.scss');
 
     const iconStyles = {
@@ -24,13 +27,22 @@ export default class FileUpload extends React.Component {
           <div className={css.attachmentIcon}>
             <IconPlus style={iconStyles} />
           </div>
-          <div className={css.attachmentName}>Добавить файл</div>
+          <div className={css.attachmentName}>{localize[lang].ADD_FILE}</div>
         </li>
       </Dropzone>
     );
   }
 }
 
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
 FileUpload.propTypes = {
   onDrop: PropTypes.func.isRequired
 };
+
+export default connect(
+  mapStateToProps,
+  null
+)(FileUpload);

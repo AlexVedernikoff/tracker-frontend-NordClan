@@ -1,0 +1,24 @@
+{
+  "en": {
+    "SAVE": "Save",
+    "UNDO": "Undo",
+    "EDIT": "Edit",
+    "DELETE": "Delete",
+    "ERROR_MESSAGE": "The name must contain at least two characters",
+    "ENTER_VALID_EMAIL": "Please enter a valid e-mail",
+    "SPECIFY_DATE": "Specify date",
+    "ENTER_DATE": "Enter the date",
+    "CONFIRM_DELETE_USER": "Are you sure you want to delete the user"
+  },
+  "ru": {
+    "SAVE": "Сохранить",
+    "UNDO": "Отмена",
+    "EDIT": "Редактировать",
+    "DELETE": "Удалить",
+    "ERROR_MESSAGE": "Имя должно содержать не менее двух символов",
+    "ENTER_VALID_EMAIL": "Введите корректный e-mail",
+    "SPECIFY_DATE": "Укажите дату",
+    "ENTER_DATE": "Введите дату",
+    "CONFIRM_DELETE_USER": "Вы действительно хотите удалить пользователя"
+  }
+}

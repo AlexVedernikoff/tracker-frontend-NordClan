@@ -11,6 +11,7 @@ import { editExternalUser, deleteExternalUser } from '../../../../actions/Extern
 import { showNotification } from '../../../../actions/Notifications';
 import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
+import localize from './externalUsersTableRow.json';
 
 class ExternalUsersTableRow extends Component {
   constructor(props) {
@@ -20,11 +21,12 @@ class ExternalUsersTableRow extends Component {
       tempValues: {},
       isValid: {}
     };
+    const { lang } = props;
     this.validation = {
       name: value => {
         if (value.length < 2) {
           this.props.showNotification({
-            message: 'Имя должно содержать не менее двух символов',
+            message: localize[lang].ERROR_MESSAGE,
             type: 'error'
           });
           return false;
@@ -35,7 +37,7 @@ class ExternalUsersTableRow extends Component {
         const re = /\S+@\S+\.\S+/;
         if (!re.test(value)) {
           this.props.showNotification({
-            message: 'Введите корректный e-mail',
+            message: localize[lang].ENTER_VALID_EMAIL,
             type: 'error'
           });
           return false;
@@ -45,7 +47,7 @@ class ExternalUsersTableRow extends Component {
       expiredDate: value => {
         if (!value) {
           this.props.showNotification({
-            message: 'Укажите дату',
+            message: localize[lang].SPECIFY_DATE,
             type: 'error'
           });
           return false;
@@ -130,6 +132,7 @@ class ExternalUsersTableRow extends Component {
     this.setState(state => ({ isEditing: !state.isEditing }), () => ReactTooltip.hide());
   };
   render() {
+    const { lang } = this.props;
     return (
       <div className={css.TableRow}>
         <div className={classnames(css.TableCell, css.TableCellName)}>
@@ -157,6 +160,7 @@ class ExternalUsersTableRow extends Component {
         </div>
         <div className={classnames(css.TableCell, css.TableCellDate)}>
           <ExternalUserExpiredDate
+            placeholder={localize[lang].ENTER_DATE}
             value={this.props.exUser.expiredDate}
             isEditing={this.state.isEditing}
             onValueChange={this.onEditValues('expiredDate')}
@@ -165,19 +169,29 @@ class ExternalUsersTableRow extends Component {
         <div className={css.TableCellEdit}>
           {this.state.isEditing ? (
             [
-              <IconCheck className={css.icon} onClick={this.saveEditChanges} key="save" data-tip="Сохранить" />,
-              <IconClose className={css.icon} data-tip="Отменить" key="undo" onClick={this.undoChanges} />
+              <IconCheck
+                className={css.icon}
+                onClick={this.saveEditChanges}
+                key="save"
+                data-tip={localize[lang].SAVE}
+              />,
+              <IconClose className={css.icon} data-tip={localize[lang].UNDO} key="undo" onClick={this.undoChanges} />
             ]
           ) : (
             <IconEdit
               className={classnames(css.icon, css.editIcon)}
               onClick={this.startEdit}
-              data-tip="Редактировать"
+              data-tip={localize[lang].EDIT}
             />
           )}
         </div>
         <div className={css.TableCellDelete}>
-          <ExternalUserDelete onDelete={this.deleteUser} username={this.props.exUser.firstNameRu} />
+          <ExternalUserDelete
+            onDelete={this.deleteUser}
+            username={this.props.exUser.firstNameRu}
+            text={localize[lang].CONFIRM_DELETE_USER}
+            dataTip={localize[lang].DELETE}
+          />
         </div>
       </div>
     );
@@ -189,7 +203,9 @@ ExternalUsersTableRow.propTypes = {
   exUser: PropTypes.object,
   showNotification: PropTypes.func
 };
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
 const mapDispatchToProps = {
   deleteExternalUser,
   editExternalUser,

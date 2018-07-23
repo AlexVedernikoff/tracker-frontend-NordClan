@@ -6,6 +6,8 @@ import ReactTooltip from 'react-tooltip';
 import DatepickerDropdown from '../../DatepickerDropdown';
 import moment from 'moment';
 import classnames from 'classnames';
+import { connect } from 'react-redux';
+import localize from './ProjectDate.json';
 
 class ProjectDate extends Component {
   constructor(props) {
@@ -63,7 +65,7 @@ class ProjectDate extends Component {
   };
 
   render() {
-    const { header, disabledDataRanges } = this.props;
+    const { header, disabledDataRanges, lang } = this.props;
     const { value } = this.state;
     const formattedDay = moment(value).format('DD.MM.YYYY');
     return (
@@ -78,11 +80,13 @@ class ProjectDate extends Component {
               value={value ? formattedDay : ''}
               onDayChange={this.handleDayToChange}
               selecteDAte
-              placeholder="Введите дату"
+              placeholder={localize[lang].SELECT_DATA}
               disabledDataRanges={disabledDataRanges}
             />
           ) : (
-            <div className={css.date}>{value ? formattedDay : <span style={{ color: 'silver' }}>Не указано</span>}</div>
+            <div className={css.date}>
+              {value ? formattedDay : <span style={{ color: 'silver' }}>{localize[lang].NOT_SPECIFIED}</span>}
+            </div>
           )}
         </div>
 
@@ -94,9 +98,9 @@ class ProjectDate extends Component {
             })}
           >
             {this.state.isEditing ? (
-              <IconCheck onClick={this.toggleEditing} data-tip="Сохранить" />
+              <IconCheck onClick={this.toggleEditing} data-tip={localize[lang].SAVE} />
             ) : (
-              <IconEdit onClick={this.toggleEditing} data-tip="Редактировать" />
+              <IconEdit onClick={this.toggleEditing} data-tip={localize[lang].EDIT} />
             )}
           </div>
         ) : null}
@@ -114,4 +118,11 @@ ProjectDate.propTypes = {
   disabledDataRanges: PropTypes.array.isRequired
 };
 
-export default ProjectDate;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(ProjectDate);

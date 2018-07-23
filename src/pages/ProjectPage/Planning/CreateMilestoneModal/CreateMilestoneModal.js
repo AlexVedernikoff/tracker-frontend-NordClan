@@ -10,6 +10,7 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { createMilestone } from '../../../../actions/Milestone';
 import Select from 'react-select';
+import localize from './CreateMilestoneModal.json';
 
 class CreateMilestoneModal extends Component {
   static propTypes = {
@@ -66,7 +67,7 @@ class CreateMilestoneModal extends Component {
       firstCol: 4,
       secondCol: 8
     };
-    const { milestoneTypes } = this.props;
+    const { milestoneTypes, lang } = this.props;
     const options = milestoneTypes.map(type => ({ value: type.id, label: type.name }));
 
     return (
@@ -75,26 +76,26 @@ class CreateMilestoneModal extends Component {
           <form className={css.createSprintForm}>
             <Row>
               <Col xs={12}>
-                <h3>Создание новой вехи</h3>
+                <h3>{localize[lang].CREATE_MILESTONE}</h3>
                 <hr />
               </Col>
             </Row>
             <Row>
               <Col xs={12} className={css.validateMessages}>
-                {!this.checkNullInputs() ? <span>Все поля должны быть заполнены</span> : null}
+                {!this.checkNullInputs() ? <span>{localize[lang].INPUT_NOTIFICATION}</span> : null}
               </Col>
             </Row>
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Название вехи:</p>
+                <p>{localize[lang].MILESTONE_NAME}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input placeholder="Введите название вехи" onChange={this.onChangeName} />
+                <Input placeholder={localize[lang].ENTER_MILESTONE_NAME} onChange={this.onChangeName} />
               </Col>
             </Row>
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Типы майлстоунов:</p>
+                <p>{localize[lang].MILESTONE_TYPE}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Select
@@ -104,14 +105,14 @@ class CreateMilestoneModal extends Component {
                   style={{ width: '100%' }}
                   className={css.selectEnum}
                   onChange={this.changeStatus}
-                  placeholder="Типы майлстоунов"
-                  noResultsText="Нет результатов"
+                  placeholder={localize[lang].MILESTONE_TYPE}
+                  noResultsText={localize[lang].NO_RESUTLS}
                 />
               </Col>
             </Row>
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Дата:</p>
+                <p>{localize[lang].DATE}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <DatepickerDropdown
@@ -119,7 +120,7 @@ class CreateMilestoneModal extends Component {
                   value={formattedDay}
                   onDayChange={this.handleDayChange}
                   onChange={this.dateInputHandler}
-                  placeholder="Введите дату"
+                  placeholder={localize[lang].ENTER_DATE}
                 />
               </Col>
             </Row>
@@ -128,7 +129,7 @@ class CreateMilestoneModal extends Component {
                 <Button
                   type="green"
                   htmlType="submit"
-                  text="Создать"
+                  text={localize[lang].CREATE}
                   onClick={this.createMilestone}
                   disabled={!this.checkNullInputs()}
                 />
@@ -143,11 +144,15 @@ class CreateMilestoneModal extends Component {
 
 const mapStateToProps = state => ({
   projectId: state.Project.project.id,
-  milestoneTypes: state.Dictionaries.milestoneTypes || []
+  milestoneTypes: state.Dictionaries.milestoneTypes || [],
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
   createMilestone
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateMilestoneModal);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CreateMilestoneModal);

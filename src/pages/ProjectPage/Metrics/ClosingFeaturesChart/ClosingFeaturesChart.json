@@ -1,0 +1,14 @@
+{
+  "en": {
+    "DYNAMIC": "The dynamics of closing tasks",
+    "DYNAMIC_CLOSE": "The dynamics of closing tasks( in view of labor costs)",
+    "DYNAMIC_OFF_TIME": "Dynamics of writing down the time for tasks",
+    "DYNAMIC_WITHOUT_ELEVATION": "Dynamics of work for tasks without evaluation"
+  },
+  "ru": {
+    "DYNAMIC": "Динамика закрытия задач",
+    "DYNAMIC_CLOSE": "Динамика закрытия задач (с учетом трудозатрат)",
+    "DYNAMIC_OFF_TIME": "Динамика списания времени на задач",
+    "DYNAMIC_WITHOUT_ELEVATION": "Динамика трудозатрат на задачи без оценки"
+  }
+}

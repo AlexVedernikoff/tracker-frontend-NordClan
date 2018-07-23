@@ -22,6 +22,7 @@ import Comment from './Comment';
 import { history } from '../../../History';
 import { IconSend, IconComments } from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
+import localize from './Comments.json';
 
 const ENTER = 13;
 
@@ -172,6 +173,8 @@ class Comments extends Component {
     ));
 
   render() {
+    const { lang } = this.props;
+
     return (
       <div className={css.comments}>
         <ul className={css.commentList}>
@@ -182,7 +185,7 @@ class Comments extends Component {
                 style={{ minHeight: 32 }}
                 className={css.resizeTrue}
                 disabled={this.props.currentComment.disabled || this.props.currentComment.expired}
-                placeholder="Введите текст комментария"
+                placeholder={localize[lang].ENTER_COMMENT}
                 onInput={this.typeComment}
                 onKeyDown={this.publishComment}
                 ref={ref => (this.reply = ref ? ref.textarea : null)}
@@ -190,32 +193,32 @@ class Comments extends Component {
               />
               {this.props.currentComment.id ? (
                 <div className={css.answerInfo}>
-                  Редактирование комментария&nbsp;
+                  {localize[lang].EDIT_COMMENT}&nbsp;
                   {this.props.currentComment.expired ? (
-                    <span className={css.outDatedToolTip}>&nbsp;истекло&nbsp;</span>
+                    <span className={css.outDatedToolTip}>&nbsp;{localize[lang].EXPIRED}&nbsp;</span>
                   ) : null}
                   <a onClick={() => this.selectComment(this.props.currentComment.id)}>
                     {`#${this.props.currentComment.id}`}
                   </a>&nbsp;
                   <span className={css.quoteCancel} onClick={() => this.props.resetCurrentEditingComment()}>
-                    (Отмена)
+                    {localize[lang].CANCEL}
                   </span>
                 </div>
               ) : null}
               {this.props.currentComment.parentId && !this.props.currentComment.id ? (
                 <div className={css.answerInfo}>
-                  В ответ на комментарий&nbsp;
+                  {localize[lang].ANSWER}&nbsp;
                   <a onClick={() => this.selectComment(this.props.currentComment.parentId)}>
                     {`#${this.props.currentComment.parentId}`}
                   </a>&nbsp;
                   <span className={css.quoteCancel} onClick={() => this.props.selectParentCommentForReply(null)}>
-                    (Отмена)
+                    {localize[lang].CANCEL}
                   </span>
                 </div>
               ) : null}
               <span
                 onClick={!this.state.disabledBtn ? this.publishComment : null}
-                data-tip="Отправить (Ctrl + Enter)"
+                data-tip={localize[lang].SEND}
                 className={classnames({
                   [css.sendIcon]: true,
                   [css.disabled]: this.state.disabledBtn
@@ -232,7 +235,9 @@ class Comments extends Component {
               <div className={css.noCommentsIcon}>
                 <IconComments />
               </div>
-              Комментариев еще нет<br />Вы можете стать первым!
+              {localize[lang].COMMENTS_IS_EXISTS}
+              <br />
+              {localize[lang].BE_FIRST}
             </div>
           )}
         </ul>
@@ -240,7 +245,7 @@ class Comments extends Component {
           <ConfirmModal
             isOpen
             contentLabel="modal"
-            text="Вы действительно хотите удалить комментарий?"
+            text={localize[lang].REMOVE_COMMENT}
             onCancel={this.cancelRemoveComment}
             onConfirm={this.confirmRemoveComment}
           />
@@ -251,14 +256,23 @@ class Comments extends Component {
 }
 
 const mapStateToProps = ({
-  Task: { task: { id: taskId }, comments, currentComment, highlighted },
-  Auth: { user: { id: userId } }
+  Task: {
+    task: { id: taskId },
+    comments,
+    currentComment,
+    highlighted
+  },
+  Auth: {
+    user: { id: userId }
+  },
+  Localize: { lang }
 }) => ({
   taskId,
   comments,
   userId,
   currentComment,
-  highlighted
+  highlighted,
+  lang
 });
 
 const mapDispatchToProps = {
@@ -274,4 +288,7 @@ const mapDispatchToProps = {
   setHighLighted
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(onClickOutside(Comments));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(onClickOutside(Comments));

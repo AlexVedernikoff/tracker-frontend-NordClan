@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 
 import * as css from './Projects.scss';
 import Button from '../../components/Button';
-import TypeFilter from './TypeFilter';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
 import Input from '../../components/Input';
 import ProjectCard from '../../components/ProjectCard';
@@ -23,32 +22,27 @@ import getProjects, {
 } from '../../actions/Projects';
 import { getErrorMessageByType } from '../../utils/ErrorMessages';
 import { ADMIN } from '../../constants/Roles';
+import localization from './projects.json';
 
 import 'moment/locale/ru';
 
 class Projects extends Component {
   constructor(props) {
     super(props);
-    const projectListFilters = this.getSavedFilters();
-
     this.state = {
       filterTags: [],
       filteredInProgress: false,
       filteredInHold: false,
       filteredFinished: false,
-      filterByName: '',
-      filterSelectedTypes: [],
-      filterRequestTypes: [],
       projects: [],
+      filterByName: '',
       dateFrom: '',
       dateTo: '',
       projectName: '',
       projectPrefix: '',
       openProjectPage: false,
       selectedPortfolio: null,
-      selectedType: 1,
-      activePage: 1,
-      ...projectListFilters
+      activePage: 1
     };
   }
 
@@ -56,58 +50,22 @@ class Projects extends Component {
     this.loadProjects();
   }
 
-  selectType = (filterSelectedTypes, filterRequestTypes) => {
-    this.setState({ filterSelectedTypes, filterRequestTypes }, () => {
-      this.loadProjects();
-    });
-  };
-
   loadProjects = (dateFrom, dateTo) => {
     const tags = this.state.filterTags.map(el => el.value).join(',');
-    const typeId = this.state.filterRequestTypes.join(',');
-    const dateSprintBegin = dateFrom || this.state.dateFrom ? moment(this.state.dateFrom).format('YYYY-MM-DD') : '';
-    const dateSprintEnd = dateTo || this.state.dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
     const statuses = [];
     if (this.state.filteredInProgress) statuses.push(1);
     if (this.state.filteredInHold) statuses.push(2);
     if (this.state.filteredFinished) statuses.push(3);
 
-    const params = {
-      pageSize: 20,
-      currentPage: this.state.activePage,
-      tags: tags,
-      name: this.state.filterByName,
-      dateSprintBegin,
-      dateSprintEnd,
-      statusId: statuses.join(','),
-      typeId: typeId
-    };
-
-    this.props.getProjects(params);
-    this.saveFilters();
-  };
-
-  saveFilters = () => {
-    const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
-
-    localStorage.setItem(
-      'projectListFilters',
-      JSON.stringify({
-        tags: this.state.filterTags.map(el => el.value),
-        dateTo: this.state.dateTo,
-        dateFrom: this.state.dateFrom,
-        filteredInProgress,
-        filteredInHold,
-        filteredFinished,
-        filterSelectedTypes: this.state.filterSelectedTypes,
-        filterRequestTypes: this.state.filterRequestTypes
-      })
+    this.props.getProjects(
+      20,
+      this.state.activePage,
+      tags,
+      this.state.filterByName,
+      dateFrom,
+      dateTo,
+      statuses.join(',')
     );
-  };
-
-  getSavedFilters = () => {
-    const filters = JSON.parse(localStorage.getItem('projectListFilters'));
-    return filters;
   };
 
   check = (name, callback = () => {}) => {
@@ -218,8 +176,7 @@ class Projects extends Component {
         name: this.state.projectName,
         prefix: this.state.projectPrefix,
         portfolioId: portfolioName ? null : this.state.selectedPortfolio ? this.state.selectedPortfolio.value : null,
-        portfolioName,
-        typeId: this.state.selectedType
+        portfolioName
       },
       this.state.openProjectPage
     );
@@ -242,11 +199,6 @@ class Projects extends Component {
     this.setState({
       selectedPortfolio: portfolio
     });
-  };
-
-  onTypeSelect = option => {
-    const selectedType = option ? option.value : 1;
-    this.setState({ selectedType });
   };
 
   onTagSelect = tags => {
@@ -285,8 +237,8 @@ class Projects extends Component {
     return null;
   };
   render() {
-    const { filteredInProgress, filteredInHold, filteredFinished, filterSelectedTypes } = this.state;
-    const { projectTypes } = this.props;
+    const { lang } = this.props;
+    const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
     const formattedDayFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('DD.MM.YYYY') : '';
     const formattedDayTo = this.state.dateTo ? moment(this.state.dateTo).format('DD.MM.YYYY') : '';
     const isAdmin = this.props.globalRole === ADMIN;
@@ -295,49 +247,47 @@ class Projects extends Component {
       <div>
         <section>
           <header className={css.title}>
-            <h1 className={css.title}>Мои проекты</h1>
+            <h1 className={css.title}>{localization[lang].MY_PROJECTS}</h1>
             {isAdmin ? (
-              <Button onClick={this.handleModal} text="Создать проект" type="primary" icon="IconPlus" />
+              <Button
+                onClick={this.handleModal}
+                text={localization[lang].CREATE_PROJECT}
+                type="primary"
+                icon="IconPlus"
+              />
             ) : null}
           </header>
           <hr />
           <div className={css.projectsHeader}>
-            <Row>
-              <Col xs={12} sm={8}>
-                <div className={css.statusFilters}>
-                  <StatusCheckbox
-                    type="INPROGRESS"
-                    checked={filteredInProgress}
-                    onClick={() => {
-                      this.check('filteredInProgress', this.handleFilterChange);
-                    }}
-                    label="В процессе"
-                  />
-                  <StatusCheckbox
-                    type="INHOLD"
-                    checked={filteredInHold}
-                    onClick={() => {
-                      this.check('filteredInHold', this.handleFilterChange);
-                    }}
-                    label="Приостановлен"
-                  />
-                  <StatusCheckbox
-                    type="FINISHED"
-                    checked={filteredFinished}
-                    onClick={() => {
-                      this.check('filteredFinished', this.handleFilterChange);
-                    }}
-                    label="Завершен"
-                  />
-                </div>
-              </Col>
-              <Col xs={12} sm={4}>
-                <TypeFilter onChange={this.selectType} value={filterSelectedTypes} dictionary={projectTypes} />
-              </Col>
-            </Row>
+            <div className={css.statusFilters}>
+              <StatusCheckbox
+                type="INPROGRESS"
+                checked={filteredInProgress}
+                onClick={() => {
+                  this.check('filteredInProgress', this.handleFilterChange);
+                }}
+                label={localization[lang].INPROGRESS}
+              />
+              <StatusCheckbox
+                type="INHOLD"
+                checked={filteredInHold}
+                onClick={() => {
+                  this.check('filteredInHold', this.handleFilterChange);
+                }}
+                label={localization[lang].INHOLD}
+              />
+              <StatusCheckbox
+                type="FINISHED"
+                checked={filteredFinished}
+                onClick={() => {
+                  this.check('filteredFinished', this.handleFilterChange);
+                }}
+                label={localization[lang].FINISHED}
+              />
+            </div>
             <Row className={css.search}>
               <Col xs={12} sm={4}>
-                <Input onChange={this.changeNameFilter} placeholder="Введите название проекта..." />
+                <Input onChange={this.changeNameFilter} placeholder={localization[lang].NAME_PROJECT} />
               </Col>
               <Col xs={12} sm={4}>
                 <Row>
@@ -346,7 +296,7 @@ class Projects extends Component {
                       name="dateFrom"
                       value={formattedDayFrom}
                       onDayChange={this.handleDayFromChange}
-                      placeholder="От"
+                      placeholder={localization[lang].TO}
                     />
                   </Col>
                   <Col xs={6} sm={6}>
@@ -354,7 +304,7 @@ class Projects extends Component {
                       name="dateTo"
                       value={formattedDayTo}
                       onDayChange={this.handleDayToChange}
-                      placeholder="До"
+                      placeholder={localization[lang].FROM}
                     />
                   </Col>
                 </Row>
@@ -371,7 +321,7 @@ class Projects extends Component {
               ))}
             </div>
           ) : (
-            <div className={css.notFound}>Ничего не найдено</div>
+            <div className={css.notFound}>{localization[lang].NOTHING_FOUND}</div>
           )}
           {this.props.pagesCount > 1 ? (
             <Pagination
@@ -390,12 +340,9 @@ class Projects extends Component {
           handleCheckBox={this.handleModalCheckBoxChange}
           onPortfolioSelect={this.handlePortfolioChange}
           selectedPortfolio={this.state.selectedPortfolio}
-          onTypeSelect={this.onTypeSelect}
-          selectedType={this.state.selectedType}
           validateProjectName={this.state.projectName.length > 3}
           validateProjectPrefix={this.state.projectPrefix.length > 1}
           prefixErrorText={this.getFieldError('prefix')}
-          projectTypes={projectTypes}
         />
       </div>
     );
@@ -415,12 +362,12 @@ Projects.propTypes = {
 
 const mapStateToProps = state => ({
   projectList: state.Projects.projects,
-  projectTypes: state.Dictionaries.projectTypes,
   pagesCount: state.Projects.pagesCount,
   isCreateProjectModalOpen: state.Projects.isCreateProjectModalOpen,
   loading: state.Loading.loading,
   projectError: state.Projects.error,
-  globalRole: state.Auth.user.globalRole
+  globalRole: state.Auth.user.globalRole,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
@@ -439,8 +386,10 @@ Projects.propTypes = {
   onRequestClose: PropTypes.func,
   openCreateProjectModal: PropTypes.func,
   projectList: PropTypes.array,
-  projectTypes: PropTypes.array,
   requestProjectCreate: PropTypes.func
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Projects);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Projects);

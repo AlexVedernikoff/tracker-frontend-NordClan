@@ -7,6 +7,8 @@ import ValidatedInput from '../../../../components/ValidatedInput';
 import Validator from '../../../../components/ValidatedInput/Validator';
 import RoundButton from '../../../../components/RoundButton';
 import { IconCheck } from '../../../../components/Icons';
+import { connect } from 'react-redux';
+import localize from './NewProject.json';
 
 class NewProject extends Component {
   static propTypes = {
@@ -35,7 +37,7 @@ class NewProject extends Component {
   };
 
   render() {
-    const { projectIds } = this.props;
+    const { projectIds, lang } = this.props;
     const invalid = !Number.isInteger(+this.state.projectId) || (projectIds || []).includes(+this.state.projectId);
 
     return (
@@ -45,11 +47,11 @@ class NewProject extends Component {
             <ValidatedInput
               autoFocus
               name="projectId"
-              placeholder="id проекта в GitLab"
+              placeholder={localize[lang].PLACEHOLDER}
               onChange={this.changeValue}
               onBlur={handleBlur}
               shouldMarkError={shouldMarkError}
-              errorText="Должен быть уникальным целым числом"
+              errorText={localize[lang].ERROR_TEXT}
             />
           ),
           'projectId',
@@ -68,4 +70,11 @@ class NewProject extends Component {
   }
 }
 
-export default NewProject;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(NewProject);

@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { IconPlay, IconPause, IconPlus, IconLink, IconUnLink, IconClose } from '../../../components/Icons';
 import classnames from 'classnames';
-import { isTaskInProgress, getStatusNameById } from '../../../utils/TaskStatuses';
+import { isTaskInProgress, getStatusNameById, isTaskInHold } from '../../../utils/TaskStatuses';
 import * as css from './RelatedTasks.scss';
+import { connect } from 'react-redux';
+import localize from './RelatedTasks.json';
 
-export default class RelatedTasks extends React.Component {
+class RelatedTasks extends React.Component {
   taskStyle = statusId => {
     return classnames({
       [css.task]: true,
@@ -20,7 +22,7 @@ export default class RelatedTasks extends React.Component {
         return (
           <IconClose
             className={css.iconClose}
-            data-tip="Отменить задачу"
+            data-tip={localize[this.props.lang].CANCEL_TASK}
             onClick={() => {
               this.props.onDelete(task.id);
             }}
@@ -31,7 +33,7 @@ export default class RelatedTasks extends React.Component {
         return (
           <IconUnLink
             className={css.iconClose}
-            data-tip="Отвязать задачу"
+            data-tip={localize[this.props.lang].UNBIND_TASK}
             onClick={() => {
               this.props.onDelete(task.id);
             }}
@@ -44,6 +46,7 @@ export default class RelatedTasks extends React.Component {
   }
 
   render() {
+    const { lang } = this.props;
     const iconStyles = {
       width: 16,
       height: 16,
@@ -59,7 +62,9 @@ export default class RelatedTasks extends React.Component {
               <div>{`${this.props.task.project.prefix}-${task.id}`}</div>
               <div className={css.taskStatus}>{getStatusNameById(task.statusId)}</div>
             </div>
-            <div className={css.taskStatusIcon}>{isTaskInProgress(task.statusId) ? <IconPlay /> : <IconPause />}</div>
+            <div className={css.taskStatusIcon}>
+              {isTaskInProgress(task.statusId) ? <IconPlay /> : isTaskInHold(task.statusId) ? <IconPause /> : null}
+            </div>
           </span>
           <div className={css.taskLink}>
             <Link className="underline-link" to={`/projects/${this.props.task.project.id}/tasks/${task.id}`}>
@@ -74,7 +79,11 @@ export default class RelatedTasks extends React.Component {
     return (
       <div className={css.relatedTasks}>
         <h3>
-          {this.props.type === 'linkedTasks' ? 'Связанные задачи' : this.props.type === 'subTasks' ? 'Подзадачи' : null}
+          {this.props.type === 'linkedTasks'
+            ? localize[lang].BINDED_TASKS
+            : this.props.type === 'subTasks'
+              ? localize[lang].SUBTASKS
+              : null}
         </h3>
         <ul className={css.taskList}>{tasks}</ul>
         <a onClick={this.props.onAction} className={classnames([css.task, css.add])}>
@@ -85,8 +94,10 @@ export default class RelatedTasks extends React.Component {
           ) : null}
           <div className={css.tooltip}>
             {this.props.type === 'linkedTasks'
-              ? 'Связать с другой задачей'
-              : this.props.type === 'subTasks' ? 'Добавить подзадачу' : null}
+              ? localize[lang].BOUND_WITH_OTHER_TASK
+              : this.props.type === 'subTasks'
+                ? localize[lang].ADD_SUBTASKS
+                : null}
           </div>
         </a>
       </div>
@@ -100,3 +111,12 @@ RelatedTasks.propTypes = {
   task: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired
 };
+
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(RelatedTasks);

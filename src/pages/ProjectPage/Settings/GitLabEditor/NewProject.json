@@ -1,0 +1,10 @@
+{
+  "en": {
+    "PLACEHOLDER": "ID of project in GitLab",
+    "ERROR_TEXT": "Must be a unique integer"
+  },
+  "ru": {
+    "PLACEHOLDER": "ID проекта в GitLab",
+    "ERROR_TEXT": "Должен быть уникальным целым числом"
+  }
+}

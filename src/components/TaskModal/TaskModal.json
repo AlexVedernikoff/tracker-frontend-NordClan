@@ -1,0 +1,10 @@
+{
+  "en": {
+    "ENTER_NAME": "Enter the name of task",
+    "NO_RESULTS": "No results"
+  },
+  "ru": {
+    "ENTER_NAME": "Введите название задачи",
+    "NO_RESULTS": "Нет результатов"
+  }
+}

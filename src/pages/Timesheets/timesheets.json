@@ -1,0 +1,22 @@
+{
+  "en": {
+    "WITHOUT_PROJECT": "Without a project",
+    "PREVIOUS_WEEK": "Previous week",
+    "NEXT_WEEK": "Next week",
+    "SELECT_DATE": "Select date",
+    "TIMESHEETS_REPORT": "Timesheets report",
+    "WEEK_ACTIVITY": "Week activity",
+    "ADD_ACTIVITY": "Add activity",
+    "MOMENT": "en"
+  },
+  "ru": {
+    "WITHOUT_PROJECT": "Without a project",
+    "PREVIOUS_WEEK": "Предыдущая неделя",
+    "NEXT_WEEK": "Следующая неделя",
+    "SELECT_DATE": "Выбрать дату",
+    "TIMESHEETS_REPORT": "Отчеты по времени",
+    "WEEK_ACTIVITY": "Недельная активность",
+    "ADD_ACTIVITY": "Добавить активность",
+    "MOMENT": "ru"
+  }
+}

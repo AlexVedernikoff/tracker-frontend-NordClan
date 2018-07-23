@@ -19,6 +19,7 @@ import * as MetricTypes from '../../../constants/Metrics';
 import Tabs from '../../../components/Tabs';
 import Pane from '../../../components/Pane';
 import Button from '../../../components/Button';
+import localize from './Metrics.json';
 
 const filterMetrics = (id, metrics) => {
   return metrics ? metrics.filter(metric => metric.typeId === id) : [];
@@ -127,7 +128,7 @@ class Metrics extends Component {
       http://gitlab.simbirsoft/frontend/sim-track-back/blob/develop/server/services/agent/calculate/metrics.txt
     */
 
-    const { metrics, loading } = this.props;
+    const { metrics, loading, lang } = this.props;
 
     const isProjectAdmin = this.checkIsAdminInProject();
 
@@ -213,7 +214,7 @@ class Metrics extends Component {
                 type="bordered"
                 loading={!!loading}
                 icon={'IconRefresh'}
-                data-tip="Пересчитать метрику"
+                data-tip={localize[lang].RECALCULATE}
               />
               <Tabs
                 addedClassNames={{ [css.tabs]: true }}
@@ -221,10 +222,10 @@ class Metrics extends Component {
                 currentPath={`/projects/${this.props.params.projectId}/analytics`}
                 routable
               >
-                <Pane label="Выгрузка" path="/download">
+                <Pane label={localize[lang].UNLOAD} path="/download">
                   <SprintReport startDate={this.startDate()} endDate={this.endDate()} />
                 </Pane>
-                <Pane label="Метрики по проекту" path="/project">
+                <Pane label={localize[lang].METRICS_BY_PROJECT} path="/project">
                   <StartEndDates startDate={this.startDate()} endDate={this.endDate()} />
                   <Row>
                     <Col xs={12} md={10} lg={6} lgOffset={0}>
@@ -251,7 +252,7 @@ class Metrics extends Component {
                     </Col>
                   </Row>
                 </Pane>
-                <Pane label="Метрики по спринту" path="/sprint">
+                <Pane label={localize[lang].METRICS_BY_SPRINT} path="/sprint">
                   <SprintMetrics
                     chartDefaultOptions={chartDefaultOptions}
                     getBasicLineSettings={getBasicLineSettings}
@@ -262,7 +263,7 @@ class Metrics extends Component {
                     filterById={filterMetrics}
                   />
                 </Pane>
-                <Pane label="Баги на проекте" path="/bugs">
+                <Pane label={localize[lang].BUGS_ON_PROJECT} path="/bugs">
                   <Row>
                     <Col xs={12}>
                       <BugsChart
@@ -275,7 +276,7 @@ class Metrics extends Component {
                     </Col>
                   </Row>
                 </Pane>
-                <Pane label="Затраты по ролям" path="/expenses">
+                <Pane label={localize[lang].COST_BY_ROLE} path="/expenses">
                   <Row>
                     <Col xs={12}>
                       <CostByRoleChart
@@ -305,11 +306,15 @@ const mapStateToProps = state => ({
   sprints: state.Project.project.sprints,
   loading: state.Loading.loading,
   metrics: state.Project.project.metrics,
-  user: state.Auth.user
+  user: state.Auth.user,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
   getMetrics
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Metrics);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Metrics);

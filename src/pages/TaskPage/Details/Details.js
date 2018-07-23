@@ -20,6 +20,8 @@ import { getTaskSpent } from '../../../actions/Task';
 import _ from 'lodash';
 import roundNum from '../../../utils/roundNum';
 import classnames from 'classnames';
+import localize from './Details.json';
+import { getFullName } from '../../../utils/NameLocalisation';
 
 const spentRequestStatus = {
   READY: 0,
@@ -156,7 +158,7 @@ class Details extends Component {
         spentsList.push(
           <div className={css.timeString} key={status}>
             <span>{status}:</span>
-            {spentTime || 0} ч.
+            {spentTime || 0} {localize[this.props.lang].H}.
           </div>
         );
       },
@@ -174,7 +176,7 @@ class Details extends Component {
   };
 
   render() {
-    const { task, sprints, taskTypes, timeSpent, isExternal } = this.props;
+    const { task, sprints, taskTypes, timeSpent, isExternal, lang } = this.props;
     const tags = task.tags.map((tag, i) => {
       const tagName = typeof tag === 'object' ? tag.name : tag;
       return <Tag key={i} name={tagName} taggable="task" taggableId={task.id} />;
@@ -182,7 +184,7 @@ class Details extends Component {
 
     const users = this.props.users.map(item => ({
       value: item.user ? item.user.id : item.id,
-      label: item.user ? item.user.fullNameRu : item.fullNameRu
+      label: item.user ? getFullName(item.user) : getFullName(item)
     }));
 
     const executeTimeTooltip =
@@ -201,17 +203,17 @@ class Details extends Component {
           aria-haspopup="true"
           className="tooltip"
           afterShow={this.onTooltipVisibleChange}
-          getContent={() => <div> Загрузка... </div>}
+          getContent={() => <div> {localize[lang].LOADING} </div>}
         />
       );
-
+    console.log(task.performer);
     return (
       <div className={css.detailsBlock}>
         <table className={css.detailTable}>
           <tbody>
             {task.project ? (
               <tr>
-                <td>Проект:</td>
+                <td>{localize[lang].PROJECT}</td>
                 <td>
                   <Link className="underline-link" to={'/projects/' + this.props.task.project.id}>
                     {task.project.name}
@@ -220,7 +222,7 @@ class Details extends Component {
               </tr>
             ) : null}
             <tr>
-              <td>Тип задачи:</td>
+              <td>{localize[lang].TASK_TYPE}</td>
               <td>
                 <span onClick={this.openTaskTypeModal} className={css.editableCell}>
                   {getTypeById(task.typeId, taskTypes)}
@@ -231,13 +233,13 @@ class Details extends Component {
               </td>
             </tr>
             <tr>
-              <td>От клиента</td>
+              <td>{localize[lang].FROM_CLIENT}</td>
               <td className={css.byClient}>
                 <Checkbox checked={task.isTaskByClient} onChange={this.changeIsTaskByClient} />
               </td>
             </tr>
             <tr>
-              <td>Спринт:</td>
+              <td>{localize[lang].SPRINT}</td>
               <td>
                 <span className={css.editableCell} onClick={this.openSprintModal}>
                   {task.sprint ? task.sprint.name : 'Backlog'}
@@ -251,7 +253,7 @@ class Details extends Component {
               </td>
             </tr>
             <tr>
-              <td>Теги:</td>
+              <td>{localize[lang].TAGS}</td>
               <td className={css.tags}>
                 <Tags taggable="task" taggableId={task.id} create canEdit>
                   {tags}
@@ -260,15 +262,19 @@ class Details extends Component {
             </tr>
             {task.author ? (
               <tr>
-                <td>Автор:</td>
-                <td>{task.author.fullNameRu}</td>
+                <td>{localize[lang].AUTHOR}</td>
+                <td>{getFullName(task.author)}</td>
               </tr>
             ) : null}
             <tr>
-              <td>Исполнитель:</td>
+              <td>{localize[lang].PERFORMER}</td>
               <td>
                 <span onClick={this.openPerformerModal} className={css.editableCell}>
-                  {task.performer ? task.performer.fullNameRu : <span className={css.unassigned}>Не назначено</span>}
+                  {task.performer ? (
+                    getFullName(task.performer)
+                  ) : (
+                    <span className={css.unassigned}>{localize[lang].NOT_SPECIFIED}</span>
+                  )}
                   <span className={css.editIcon}>
                     <IconEdit />
                   </span>
@@ -276,24 +282,25 @@ class Details extends Component {
               </td>
             </tr>
             <tr>
-              <td>Дата создания:</td>
+              <td>{localize[lang].DATE_OF_CREATE}</td>
               <td>{moment(this.props.task.createdAt).format('DD.MM.YYYY')}</td>
             </tr>
             {!isExternal
               ? [
                   <tr key="plannedExecutionTime">
-                    <td>Запланировано:</td>
+                    <td>{localize[lang].PLANNED_TIME}</td>
                     <td>
                       <TaskPlanningTime
                         time={task.plannedExecutionTime ? task.plannedExecutionTime.toString() : '0'}
                         id={task.id}
                         timeIsEditing={this.props.PlanningTimeIsEditing}
                         canEdit={this.props.canEdit}
+                        h={localize[lang].H}
                       />
                     </td>
                   </tr>,
                   <tr key="factExecutionTime">
-                    <td>Всего затрачено:</td>
+                    <td>{localize[lang].SPENT_TIME}</td>
                     <td>
                       <span
                         data-tip={!!Number(task.factExecutionTime)}
@@ -306,7 +313,7 @@ class Details extends Component {
                           [css.success]: +task.factExecutionTime <= +task.plannedExecutionTime
                         })}
                       >
-                        {`${task.factExecutionTime ? roundNum(task.factExecutionTime, 2) : 0} ч.`}
+                        {`${task.factExecutionTime ? roundNum(task.factExecutionTime, 2) : 0} ${localize[lang].H}.`}
                       </span>
                       {Number(task.factExecutionTime) ? executeTimeTooltip : null}
                     </td>
@@ -314,7 +321,7 @@ class Details extends Component {
                 ]
               : null}
             <tr>
-              <td>Из них на QA:</td>
+              <td>{localize[lang].SPENT_QA_TIME}</td>
               <td>
                 <span
                   className={classnames({
@@ -324,7 +331,7 @@ class Details extends Component {
                   })}
                 >
                   {task.qaFactExecutionTime ? roundNum(task.qaFactExecutionTime, 2) : 0} из{' '}
-                  {task.qaPlannedTime ? roundNum(task.qaPlannedTime, 2) : 0} ч.
+                  {task.qaPlannedTime ? roundNum(task.qaPlannedTime, 2) : 0} {localize[lang].H}.
                 </span>
               </td>
             </tr>
@@ -336,7 +343,7 @@ class Details extends Component {
             defaultUser={task.performer ? task.performer.id : null}
             onChoose={this.changePerformer}
             onClose={this.closePerformerModal}
-            title="Изменить исполнителя задачи"
+            title={localize[lang].CHANGE_PERFORMER}
             users={users}
           />
         ) : null}
@@ -345,7 +352,7 @@ class Details extends Component {
             defaultSprint={task.sprint ? task.sprint.id : 0}
             onChoose={this.changeSprint}
             onClose={this.closeSprintModal}
-            title="Изменить спринт задачи"
+            title={localize[lang].CHANGE_SPRINT}
             sprints={sprints}
           />
         ) : null}
@@ -367,7 +374,8 @@ const mapStateToProps = state => ({
   taskTypes: state.Dictionaries.taskTypes,
   PlanningTimeIsEditing: state.Task.PlanningTimeIsEditing,
   ExecutionTimeIsEditing: state.Task.ExecutionTimeIsEditing,
-  timeSpent: state.Task.timeSpent
+  timeSpent: state.Task.timeSpent,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
@@ -377,4 +385,7 @@ const mapDispatchToProps = {
   getTaskSpent
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Details);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Details);

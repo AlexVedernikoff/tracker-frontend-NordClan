@@ -14,10 +14,12 @@ import Participant from '../../../../components/Participant';
 import Button from '../../../../components/Button';
 import Modal from '../../../../components/Modal';
 import SelectDropdown from '../../../../components/SelectDropdown';
+import localize from './participantEditor.json';
 
 class ParticipantEditor extends Component {
   constructor(props) {
     super(props);
+    const { lang } = props;
     this.state = {
       isModalOpenAddUser: false,
       isModalOpenAddExternal: false,
@@ -42,14 +44,11 @@ class ParticipantEditor extends Component {
     ];
     this.ROLES_ID = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '13', '14'];
     this.roleRights = {
-      fullAccess:
-        'Полный доступ к проекту. <br/>Доступны все действия на уровне проекта: <br/>Ведение задач, планирование, настройки проекта и команды, аналитика <br/>Полная рассылка по проекту.',
-      devAccess:
-        'Ограниченный доступ к проекту. <br/>Доступны действия на уровне задач: <br/>Назначение задачи, новый комментарий в задаче, ответ на комментарий, изменение статуса<br/>Ограниченная рассылка.',
-      qaAccess:
-        'Ограниченный доступ к проекту. <br/>Доступны действия на уровне задач. <br/>Полная рассылка по проекту.',
-      unbillableAccess: 'Неоплачиваемая роль',
-      external: 'Внешний пользователь'
+      fullAccess: localize[lang].FULL_ACCESS,
+      devAccess: localize[lang].DEV_ACCESS,
+      qaAccess: localize[lang].QA_ACCESS,
+      unbillableAccess: localize[lang].UNPAID_ROLE,
+      external: localize[lang].EXTERNAL
     };
     this.searchOnChange = debounce(this.searchOnChange, 400);
   }
@@ -192,6 +191,12 @@ class ParticipantEditor extends Component {
     this.setState({ isModalOpenAddExternal: true });
   };
 
+  checkIsPmInProject = () => this.props.users.some(user => user.roles.pm);
+
+  checkIsAuthorProject = () => this.props.user.id === this.props.projectAuthorId;
+
+  disableButton = () => this.checkIsAdminInProject() || this.checkIsPmInProject() || this.checkIsAuthorProject();
+
   handleCloseModalAddUser = () => {
     this.setState({
       isModalOpenAddUser: false,
@@ -215,10 +220,11 @@ class ParticipantEditor extends Component {
   };
 
   render() {
+    const { lang } = this.props;
     const isProjectAdmin = this.checkIsAdminInProject();
     return (
       <div className={css.property}>
-        <h2>Участники</h2>
+        <h2>{localize[lang].PARTICIPANTS}</h2>
         <Row className={classnames(css.memberRow, css.memberHeader)}>
           <Col xs={9} xsOffset={3}>
             <Row>
@@ -252,9 +258,9 @@ class ParticipantEditor extends Component {
               />
             ))
           : null}
-        {isProjectAdmin ? (
+        {this.disableButton() ? (
           <Button
-            text="Добавить участника"
+            text={localize[lang].ADD_MEMBERS}
             type="primary"
             addedClassNames={{ [css.addButton]: true }}
             icon="IconPlus"
@@ -262,7 +268,7 @@ class ParticipantEditor extends Component {
           />
         ) : null}
         <div className={css.externalUsers}>
-          <h2>Внешние пользователи</h2>
+          <h2>{localize[lang].EXTERNAL_USERS}</h2>
           <div className={css.externalTable}>
             {/* <Row className={classnames(css.memberRow, css.memberHeader)} /> */}
             {this.props.externalUsers
@@ -278,7 +284,7 @@ class ParticipantEditor extends Component {
               : null}
           </div>
           <Button
-            text="Добавить внешнего пользователя"
+            text={localize[lang].ADD_EXTERNAL_USERS}
             type="primary"
             addedClassNames={{ [css.addButton]: true }}
             icon="IconPlus"
@@ -288,32 +294,32 @@ class ParticipantEditor extends Component {
         {this.state.isModalOpenAddUser ? (
           <Modal isOpen contentLabel="modal" onRequestClose={this.handleCloseModalAddUser}>
             <div className={css.changeStage}>
-              <h3>Добавление нового участника</h3>
+              <h3>{localize[lang].ADD_NEW_MEMBERS}</h3>
               <div className={css.modalContainer}>
                 <SelectDropdown
                   name="member"
-                  placeholder="Введите имя участника"
+                  placeholder={localize[lang].ENTER_NAME_PARTICIPANT}
                   multi={false}
                   value={this.state.participant}
                   onChange={this.selectNewParticipantValue('participant')}
                   onInputChange={this.searchOnChange}
-                  noResultsText="Нет результатов"
+                  noResultsText={localize[lang].NO_RESULTS}
                   options={this.getUsers()}
                   autofocus
                 />
                 <SelectDropdown
                   name="roles"
-                  placeholder="Введите роль участника"
+                  placeholder={localize[lang].ENTER_ROLE_PARTICIPANT}
                   multi
                   value={this.state.roles}
                   onChange={this.selectNewParticipantValue('roles')}
-                  noResultsText="Нет результатов"
+                  noResultsText={localize[lang].NO_RESULTS}
                   backspaceToRemoveMessage={''}
                   options={this.getRolesOptions()}
                 />
                 <Button
                   type="green"
-                  text="Добавить"
+                  text={localize[lang].ADD}
                   onClick={this.bindUser}
                   disabled={!(this.state.participant && this.state.roles.length)}
                 />
@@ -324,20 +330,25 @@ class ParticipantEditor extends Component {
         {this.state.isModalOpenAddExternal ? (
           <Modal isOpen contentLabel="modal" onRequestClose={this.handleCloseModalAddExternal}>
             <div className={css.changeStage}>
-              <h3>Добавление внешнего пользователя</h3>
+              <h3>{localize[lang].ADD_EXTERNAL_USERS}</h3>
               <div className={css.modalContainer}>
                 <SelectDropdown
                   name="member"
-                  placeholder="Введите имя внешнего пользователя"
+                  placeholder={localize[lang].ENTER_EXTERNAL_USERS}
                   multi={false}
                   value={this.state.participant}
                   onChange={this.selectNewParticipantValue('participant')}
                   onInputChange={this.searchExternalOnChange}
-                  noResultsText="Нет результатов"
+                  noResultsText={localize[lang].NO_RESULTS}
                   options={this.getUsers()}
                   autofocus
                 />
-                <Button type="green" text="Добавить" onClick={this.bindExternal} disabled={!this.state.participant} />
+                <Button
+                  type="green"
+                  text={localize[lang].ADD}
+                  onClick={this.bindExternal}
+                  disabled={!this.state.participant}
+                />
               </div>
             </div>
           </Modal>
@@ -353,14 +364,18 @@ ParticipantEditor.propTypes = {
   getProjectUsers: PropTypes.func,
   id: PropTypes.number,
   user: PropTypes.object.isRequired,
-  users: PropTypes.array.isRequired
+  users: PropTypes.array.isRequired,
+  lang: PropTypes.string.isRequired,
+  projectAuthorId: PropTypes.number.isRequired
 };
 
 const mapStateToProps = state => ({
   id: state.Project.project.id,
   users: state.Project.project.users,
   externalUsers: state.Project.project.externalUsers,
-  user: state.Auth.user
+  user: state.Auth.user,
+  projectAuthorId: state.Project.project.authorId,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
@@ -368,7 +383,4 @@ const mapDispatchToProps = {
   getProjectUsers
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ParticipantEditor);
+export default connect(mapStateToProps, mapDispatchToProps)(ParticipantEditor);

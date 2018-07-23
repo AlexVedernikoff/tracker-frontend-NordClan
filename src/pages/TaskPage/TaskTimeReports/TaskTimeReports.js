@@ -11,6 +11,7 @@ import getColor from '../../../utils/Colors';
 import { ADMIN } from '../../../constants/Roles';
 import RadioGroup from '../../../components/RadioGroup';
 import TimeSheetsHistory from './TimeSheetsHistory.js';
+import localize from './taskTimeReports.json';
 
 class TaskTimeReports extends React.Component {
   constructor(props) {
@@ -150,11 +151,13 @@ class TaskTimeReports extends React.Component {
     const { usersDataSet, users, usersColors } = this.state.userData;
     const { rolesDataSet, roles, rolesColors } = this.state.roleData;
 
-    const { timesheets, project, task, taskStatuses, user: currentUser, preloaders } = this.props;
+    const { timesheets, project, task, taskStatuses, lang, user: currentUser, preloaders } = this.props;
 
     const isStagesDataSet = stagesDataSet.length !== 0;
     const isUsersDataSet = usersDataSet.length !== 0;
     const isRolesDataSet = rolesDataSet.length !== 0;
+    const projectUsers = get(project, 'projectUsers', []);
+    const isCurrentUserIsMember = projectUsers.indexOf(currentUser.id) > -1;
 
     const pmAccess = this.props.project.users.find(user => user.id === this.props.user.id);
 
@@ -162,16 +165,16 @@ class TaskTimeReports extends React.Component {
       <div className={css.timeReports} style={{ position: 'relative' }}>
         {(this.props.globalRole === ADMIN || (pmAccess && (pmAccess.roles.pm || pmAccess.roles.account))) && (
           <div className={css.timeCharts}>
-            <h3>Распределение времени:</h3>
+            <h3>{localize[lang].TIMING}</h3>
             <div className={css.viewSwitcher}>
               <RadioGroup
                 name="chartView"
                 value={this.state.chartBy}
                 onChange={chartBy => this.setState({ chartBy })}
                 options={[
-                  { text: 'По стадиям', value: 'byStage' },
-                  { text: 'По людям', value: 'byUser' },
-                  { text: 'По ролям', value: 'byRole' }
+                  { text: localize[lang].BY_STAGE, value: 'byStage' },
+                  { text: localize[lang].BY_USER, value: 'byUser' },
+                  { text: localize[lang].BY_ROLE, value: 'byRole' }
                 ]}
               />
             </div>
@@ -185,7 +188,7 @@ class TaskTimeReports extends React.Component {
                         className={css.horizontalChart}
                         style={{
                           backgroundColor: stagesColors[index],
-                          width: stagesDataSet[index] / sum(stagesDataSet) * 100 + '%'
+                          width: (stagesDataSet[index] / sum(stagesDataSet)) * 100 + '%'
                         }}
                         title={`${stage}: ${stagesDataSet[index]}`}
                       >
@@ -208,7 +211,7 @@ class TaskTimeReports extends React.Component {
                           className={css.horizontalChart}
                           style={{
                             backgroundColor: usersColors[index],
-                            width: usersDataSet[index] / sum(usersDataSet) * 100 + '%'
+                            width: (usersDataSet[index] / sum(usersDataSet)) * 100 + '%'
                           }}
                           title={`${user}: ${usersDataSet[index]}`}
                         >
@@ -231,7 +234,7 @@ class TaskTimeReports extends React.Component {
                         className={css.horizontalChart}
                         style={{
                           backgroundColor: rolesColors[index],
-                          width: rolesDataSet[index] / sum(rolesDataSet) * 100 + '%'
+                          width: (rolesDataSet[index] / sum(rolesDataSet)) * 100 + '%'
                         }}
                         title={`${role}: ${rolesDataSet[index]}`}
                       >
@@ -244,19 +247,29 @@ class TaskTimeReports extends React.Component {
               )}
             {!isStagesDataSet &&
               !isUsersDataSet &&
-              !isRolesDataSet && <p className={css.noReports}>Нет данных для отображения</p>}
+              !isRolesDataSet && <p className={css.noReports}>{localize[lang].NO_DATA_DISPLAY}</p>}
             <hr />
           </div>
         )}
-        <TimeSheetsHistory
-          users={get(project, 'projectUsers', []).map(projectUser => projectUser.user)}
-          currentUser={currentUser}
-          currentTask={task}
-          timesheets={timesheets}
-          taskStatuses={taskStatuses}
-          createTimesheet={this.props.createTimesheet}
-          preloaders={preloaders}
-        />
+        {
+          isCurrentUserIsMember && (
+            <TimeSheetsHistory
+              users={projectUsers.map(projectUser => projectUser.user)}
+              currentUser={currentUser}
+              currentTask={task}
+              timesheets={timesheets}
+              taskStatuses={taskStatuses}
+              createTimesheet={this.props.createTimesheet}
+              preloaders={preloaders}
+              localizeText={{
+                selectDropdownStatus: localize[lang].STATUS,
+                selectDropdownNoResults: localize[lang].NO_RESULTS,
+                isAlreadyCreatedTrue: localize[lang].IS_ALREADY_CREATE,
+                isAlreadyCreatedFalse: localize[lang].FILL_FIELDS
+              }}
+            />
+          )
+        }
       </div>
     );
   }
@@ -294,7 +307,8 @@ const mapStateToProps = state => ({
   user: state.Auth.user,
   project: state.Project.project,
   task: state.Task.task,
-  globalRole: state.Auth.user.globalRole
+  globalRole: state.Auth.user.globalRole,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
@@ -303,4 +317,7 @@ const mapDispatchToProps = {
   createTimesheet
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskTimeReports);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskTimeReports);

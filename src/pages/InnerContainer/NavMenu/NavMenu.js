@@ -5,7 +5,9 @@ import { IconPlus, IconUser } from '../../../components/Icons';
 import { connect } from 'react-redux';
 import isAdmin from '../../../utils/isAdmin';
 import { EXTERNAL_USER } from '../../../constants/Roles';
+import localize from './navMenu.json';
 import * as css from './NavMenu.scss';
+import { getFirstName, getLastName, getFullName } from '../../../utils/NameLocalisation';
 
 class NavMenu extends Component {
   static propTypes = {
@@ -13,14 +15,18 @@ class NavMenu extends Component {
   };
 
   getPhoto = () => {
-    const { user: { photo, firstNameRu, lastNameRu } } = this.props;
+    const {
+      user: { photo }
+    } = this.props;
     if (photo) {
       return <img src={photo} alt="" />;
     }
-    if (firstNameRu && lastNameRu) {
+    const firstName = getFirstName(this.props.user);
+    const lastName = getLastName(this.props.user);
+    if (firstName && lastName) {
       return `
-          ${firstNameRu.slice(0, 1) || ''}
-          ${lastNameRu.slice(0, 1) || ''}
+          ${firstName.slice(0, 1) || ''}
+          ${lastName.slice(0, 1) || ''}
           `;
     }
     return (
@@ -34,6 +40,7 @@ class NavMenu extends Component {
   };
 
   render() {
+    const { lang } = this.props;
     const iconStyles = {
       width: 16,
       height: 16
@@ -41,14 +48,14 @@ class NavMenu extends Component {
     const usersRolesLink = isAdmin(this.props.user.globalRole) ? (
       <li key="roles" className={css.sidebarItem}>
         <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/roles">
-          Пользователи
+          {localize[lang].USERS}
         </Link>
       </li>
     ) : null;
     const externalUsersLink = isAdmin(this.props.user.globalRole) ? (
       <li key="externalUsers" className={css.sidebarItem}>
         <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/externalUsers">
-          Внешние пользователи
+          {localize[lang].EXTERNAL_USERS}
         </Link>
       </li>
     ) : null;
@@ -56,7 +63,7 @@ class NavMenu extends Component {
       this.props.user.globalRole !== EXTERNAL_USER ? (
         <li key="timesheets" className={css.sidebarItem}>
           <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/timesheets">
-            Отчеты по времени
+            {localize[lang].TIMESHEETS}
           </Link>
         </li>
       ) : null;
@@ -75,7 +82,7 @@ class NavMenu extends Component {
           <IconPlus style={iconStyles} />
         </button>
         <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/projects">
-          Мои проекты
+          {localize[lang].MY_PROJECTS}
         </Link>
       </li>,
       <li key="tasks" className={css.sidebarItem}>
@@ -83,7 +90,7 @@ class NavMenu extends Component {
           <IconPlus style={iconStyles} />
         </button>
         <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/tasks">
-          Мои задачи
+          {localize[lang].MY_TASKS}
         </Link>
       </li>,
       timesheetsLink,
@@ -95,9 +102,7 @@ class NavMenu extends Component {
       <div className={css.sidebarHeader}>
         <div className={css.ava}>{this.getPhoto()}</div>
         <div className={css.userNameContainer}>
-          <div className={css.userName}>
-            {this.props.user.firstNameRu} {this.props.user.lastNameRu}
-          </div>
+          <div className={css.userName}>{getFullName(this.props.user)}</div>
           <div className={css.userGroups}>{this.props.user.department}</div>
         </div>
       </div>
@@ -113,7 +118,8 @@ class NavMenu extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.Auth.user
+  user: state.Auth.user,
+  lang: state.Localize.lang
 });
 
 export default connect(mapStateToProps)(NavMenu);

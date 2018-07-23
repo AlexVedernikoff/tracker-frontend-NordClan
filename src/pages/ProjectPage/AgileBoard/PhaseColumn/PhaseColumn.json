@@ -1,0 +1,11 @@
+{
+  "en": {
+    "TASKS_ON_STAGE": "Tasks on stage",
+    "EXISTS": "is exsits"
+  },
+
+  "ru": {
+    "TASKS_ON_STAGE": "Задачи в стадии",
+    "EXISTS": "отстствуют"
+  }
+}
