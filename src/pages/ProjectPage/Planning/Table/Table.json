@@ -13,7 +13,9 @@
       "October",
       "November",
       "December"
-    ]
+    ],
+    "PLAN": "Plan",
+    "FACT": "Fact"
   },
   "ru": {
     "MONTHS": [
@@ -29,6 +31,8 @@
       "Октябрь",
       "Ноябрь",
       "Декабрь"
-    ]
+    ],
+    "PLAN": "План",
+    "FACT": "Факт"
   }
 }

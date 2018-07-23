@@ -186,7 +186,7 @@ class Table extends React.Component {
 
     return (
       <div className={className}>
-        <span className={css.header}>План</span>
+        <span className={css.header}>{localize[this.props.lang].PLAN}</span>
         {entities.map((entity, i) => {
           return this.detectType(entity) === 'sprint' ? (
             <span key={`sprint-${i}`} className={css.name}>
@@ -211,7 +211,7 @@ class Table extends React.Component {
 
     return (
       <div className={className}>
-        <span className={css.header}>Факт</span>
+        <span className={css.header}>{localize[this.props.lang].FACT}</span>
         {entities.map((entity, i) => {
           return this.detectType(entity) === 'sprint' ? (
             <span key={`sprint-${i}`} className={css.name}>
