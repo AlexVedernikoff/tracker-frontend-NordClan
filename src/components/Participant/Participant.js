@@ -116,7 +116,7 @@ class Participant extends React.Component {
             {this.props.isProjectAdmin ? (
               <IconClose className={css.iconClose} onClick={this.handleOpenConfirmDelete} />
             ) : null}
-            {getFullName(user)}
+            {isExternal ? user.fullNameRu : getFullName(user)}
           </div>
         </Col>
         {!isExternal ? (
@@ -176,4 +176,7 @@ const mapDispatchToProps = {
   showNotification
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Participant);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Participant);
