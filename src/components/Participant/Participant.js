@@ -116,7 +116,7 @@ class Participant extends React.Component {
             {this.props.isProjectAdmin ? (
               <IconClose className={css.iconClose} onClick={this.handleOpenConfirmDelete} />
             ) : null}
-            {isExternal ? user.fullNameRu : getFullName(user)}
+            {getFullName(user)}
           </div>
         </Col>
         {!isExternal ? (

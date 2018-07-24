@@ -17,12 +17,16 @@ export function getFullName(user) {
   if (lang === 'ru') {
     if (user.fullNameRu) {
       return user.fullNameRu;
+    } else if (!user.fullNameRu) {
+      return user.fullNameEn;
     } else {
       return `${user.firstNameRu} ${user.lastNameRu}`;
     }
   } else if (lang === 'en') {
     if (user.fullNameEn) {
       return user.fullNameEn;
+    } else if (!user.fullNameEn) {
+      return user.fullNameRu;
     } else {
       return `${user.firstNameEn} ${user.lastNameEn}`;
     }
