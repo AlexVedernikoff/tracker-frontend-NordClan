@@ -19,12 +19,6 @@ export default class HistoryMessage extends React.Component {
     this.setInitialState();
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.message !== this.props.message) {
-      this.messageWithoutTags = this.deleteHtmlTags(nextProps.message);
-    }
-  }
-
   setInitialState() {
     if (this.isTextMessage()) {
       this.state = {
