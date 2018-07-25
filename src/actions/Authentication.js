@@ -49,6 +49,15 @@ export const setRedirectPath = pathObj => ({
   path: pathObj
 });
 
+export const authTokenReceived = token => ({
+  type: AuthActions.AUTH_TOKEN_RECEIVED,
+  token: token
+});
+
+export const authTokenRemove = () => ({
+  type: AuthActions.AUTH_TOKEN_REMOVED
+});
+
 export const doAuthentication = ({ username, password }) => {
   const URL = `${API_URL}/auth/login`;
 
@@ -67,6 +76,7 @@ export const doAuthentication = ({ username, password }) => {
       .then(response => {
         if (response && response.status === 200) {
           dispatch(authenticationReceived(response.data.user));
+          dispatch(authTokenReceived(response.headers.authorization));
           if (response.data.user.globalRole !== EXTERNAL_USER) {
             dispatch(getTimesheetsPlayerData(startOfCurrentWeek, endOfCurrentWeek));
           }
@@ -86,6 +96,7 @@ export const doLogout = () => {
       .then(response => {
         if (response && response.status === 200) {
           dispatch(logoutComplete());
+          dispatch(authTokenRemove());
         }
       });
   };

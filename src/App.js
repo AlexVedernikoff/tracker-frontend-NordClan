@@ -10,6 +10,7 @@ import { store, history } from './History';
 
 import { Provider } from 'react-redux';
 import { getInfoAboutMe } from './actions/Authentication';
+import { eventEmitter, SOCKET_UP } from './utils/emmiter';
 
 import SocketAdapter from './sockets/SocketAdapter';
 
@@ -26,10 +27,11 @@ const render = App => {
   );
 };
 
-const channels = ['task', 'project', 'timesheet'];
-const socket = new SocketAdapter(store, channels);
-
 store.dispatch(getInfoAboutMe());
+
+if (store.Auth) {
+  eventEmitter.emit(SOCKET_UP, store);
+}
 
 if (process.env.NODE_ENV !== 'production') {
   if (module.hot) {
