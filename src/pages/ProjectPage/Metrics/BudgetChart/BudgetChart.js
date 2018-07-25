@@ -28,31 +28,56 @@ class BudgetChart extends Component {
     super(props);
 
     this.state = {
-      chartRef: null
-    };
-
-    this.chartOptions = {
-      ...props.chartDefaultOptions,
-      scales: {
-        ...props.chartDefaultOptions.scales,
-        yAxes: [
-          {
-            ticks: {
-              beginAtZero: true
-            },
-            display: true,
-            scaleLabel: {
+      chartRef: null,
+      chartOptions: {
+        ...props.chartDefaultOptions,
+        scales: {
+          ...props.chartDefaultOptions.scales,
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true
+              },
               display: true,
-              labelString: 'Бюджет'
+              scaleLabel: {
+                display: true,
+                labelString: localize[props.lang].BUDGET
+              }
             }
-          }
-        ]
+          ]
+        }
       }
     };
   }
 
   componentDidMount() {
+    console.log(1);
     this.setState({ chartRef: this.refs.chart });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.lang !== this.props.lang) {
+      this.setState(state => ({
+        chartOptions: {
+          ...nextProps.chartDefaultOptions,
+          scales: {
+            ...nextProps.chartDefaultOptions.scales,
+            yAxes: [
+              {
+                ticks: {
+                  beginAtZero: true
+                },
+                display: true,
+                scaleLabel: {
+                  display: true,
+                  labelString: localize[nextProps.lang].BUDGET
+                }
+              }
+            ]
+          }
+        }
+      }));
+    }
   }
 
   makeChartData = () => {
@@ -180,7 +205,7 @@ class BudgetChart extends Component {
           />
         </div>
         <ChartWrapper chartRef={this.state.chartRef}>
-          <Line ref="chart" height={250} data={this.makeChartData()} options={this.chartOptions} redraw />
+          <Line ref="chart" height={250} data={this.makeChartData()} options={this.state.chartOptions} redraw />
         </ChartWrapper>
       </div>
     );
