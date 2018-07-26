@@ -10,6 +10,7 @@ import Pagination from '../../../components/Pagination';
 import * as css from './TaskHistory.scss';
 import localize from './TaskHistory.json';
 import { getFullName } from '../../../utils/NameLocalisation';
+import { getMessage } from '../../../utils/MessageLocalisation';
 
 class TaskHistory extends React.Component {
   constructor(props) {
@@ -59,7 +60,7 @@ class TaskHistory extends React.Component {
                   <Link>{getFullName(event.author)}</Link>
                 </UserCard>{' '}
                 <HistoryMessage
-                  message={event.message}
+                  message={getMessage(event)}
                   entities={event.entities}
                   projectId={+this.props.params.projectId}
                 />
