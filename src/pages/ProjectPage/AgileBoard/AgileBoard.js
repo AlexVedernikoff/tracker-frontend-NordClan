@@ -27,6 +27,7 @@ import getTasks from '../../../actions/Tasks';
 import { VISOR, EXTERNAL_USER } from '../../../constants/Roles';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal, getProjectUsers, getProjectInfo } from '../../../actions/Project';
+import { history } from '../../../History';
 
 const filterTasks = array => {
   const taskArray = {
@@ -178,7 +179,10 @@ class AgileBoard extends Component {
       changedTask: null,
       allFilters: [],
       fullFilterView: this.getFilterViewState(),
-      ...this.initialFilters
+      changedFilters: {
+        projectId: this.props.params.projectId
+      },
+      ...this.setQueryFilters()
     };
   }
 
@@ -241,6 +245,59 @@ class AgileBoard extends Component {
 
   componentDidUpdate() {
     ReactTooltip.rebuild();
+  }
+
+  setQueryFilters() {
+    const query = this.props.location.query;
+    const projectId = this.props.params.projectId;
+
+    const translateToNumIfNeeded = value => {
+      const re = /^\d+$/;
+      return re.test(value) ? +value : value;
+    };
+
+    const multipleQueries = queries => {
+      if (Array.isArray(queries)) return queries.map(queryValue => translateToNumIfNeeded(queryValue));
+      return queries ? [translateToNumIfNeeded(queries)] : [];
+    };
+
+    const singleQuery = currentQuery => {
+      return currentQuery ? translateToNumIfNeeded(currentQuery) : null;
+    };
+
+    const getValues = changed => {
+      const name = changed ? 'name' : 'filterByName';
+      if (changed && Object.keys(query).length === 0) return {};
+
+      return {
+        performerId: singleQuery(query.performerId)
+      };
+    };
+
+    return {
+      ...getValues(),
+      changedFilters: {
+        projectId,
+        ...getValues(true)
+      }
+    };
+  }
+
+  changeUrl(changedFilters) {
+    const queryObj = {};
+
+    for (const [key, value] of Object.entries(changedFilters)) {
+      if (value && key !== 'projectId') {
+        queryObj[key] = value;
+      }
+    }
+
+    history.replace({
+      ...this.props.location,
+      query: {
+        ...queryObj
+      }
+    });
   }
 
   initialFilters = {
@@ -345,6 +402,30 @@ class AgileBoard extends Component {
   };
 
   selectValue = (e, name) => {
+    this.setState(state => {
+      let filterValue = e;
+      const changedFilters = state.changedFilters;
+
+      if (name === 'typeId') {
+        filterValue = e.map(singleValue => singleValue.value);
+      }
+      if (~[null, [], undefined, ''].indexOf(filterValue)) {
+        delete changedFilters[name];
+      } else {
+        changedFilters[name] = filterValue;
+      }
+
+      this.changeUrl(changedFilters);
+
+      const newState = {
+        [name]: filterValue,
+        activePage: state[name] !== filterValue ? 1 : state.activePage,
+        changedFilters
+      };
+
+      return newState;
+    });
+
     this.setState({ [name]: e }, () => {
       if (this.props.myTaskBoard) return this.props.getTasks({ performerId: this.props.user.id });
       this.getTasks();
