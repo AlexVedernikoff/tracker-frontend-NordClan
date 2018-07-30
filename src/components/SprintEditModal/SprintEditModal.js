@@ -132,10 +132,8 @@ class SprintEditModal extends Component {
     return false;
   };
 
-  checkAllFields = () => {
-    if (!this.checkNullInputs()) return true;
-    else if (!this.validateDates()) return true;
-    else return false;
+  validateAllFields = () => {
+    return !this.checkNullInputs() || !this.validateDates();
   };
 
   render() {
@@ -269,7 +267,7 @@ class SprintEditModal extends Component {
                   type="green"
                   htmlType="submit"
                   text="Изменить"
-                  disabled={this.checkAllFields()}
+                  disabled={this.validateAllFields()}
                   onClick={this.handleEditSprint}
                 />
               </Col>
