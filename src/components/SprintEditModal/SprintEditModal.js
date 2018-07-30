@@ -41,7 +41,7 @@ class SprintEditModal extends Component {
       this.state.sprint.sprintName.length &&
       this.state.sprint.budget.length &&
       this.state.sprint.riskBudget.length &&
-      this.state.sprint.qaPercent.length
+      this.state.sprint.qaPercent
     );
   };
 
@@ -131,7 +131,11 @@ class SprintEditModal extends Component {
     if (this.state.sprint.dateFrom && !this.state.sprint.dateTo) {
       return moment(this.props.sprint.factFinishDate).isAfter(this.state.sprint.dateFrom);
     }
-    return true;
+    return false;
+  };
+
+  validateAllFields = () => {
+    return !this.checkNullInputs() || !this.validateDates();
   };
 
   render() {
@@ -162,8 +166,10 @@ class SprintEditModal extends Component {
             <hr />
             <Row>
               <Col xs={12} className={css.validateMessages}>
-                {!this.checkNullInputs() ? <span>{localize[lang].FILL}</span> : null}
-                {!this.validateDates() ? <span className={css.redMessage}>{localize[lang].DATE}</span> : null}
+                {!this.checkNullInputs() ? <span>Все поля должны быть заполнены</span> : null}
+                {this.state.sprint.dateTo && !this.validateDates() ? (
+                  <span className={css.redMessage}>Дата окончания должна быть позже даты начала</span>
+                ) : null}
               </Col>
             </Row>
             <label className={css.formField}>
@@ -262,8 +268,8 @@ class SprintEditModal extends Component {
                 <Button
                   type="green"
                   htmlType="submit"
-                  text={localize[lang].CHANGE}
-                  disabled={!this.checkNullInputs() || !this.validateDates()}
+                  text="Изменить"
+                  disabled={this.validateAllFields()}
                   onClick={this.handleEditSprint}
                 />
               </Col>
