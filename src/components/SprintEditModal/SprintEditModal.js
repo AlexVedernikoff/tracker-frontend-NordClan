@@ -39,7 +39,7 @@ class SprintEditModal extends Component {
       this.state.sprint.sprintName.length &&
       this.state.sprint.budget.length &&
       this.state.sprint.riskBudget.length &&
-      this.state.sprint.qaPercent.length
+      this.state.sprint.qaPercent
     );
   };
 
@@ -129,7 +129,13 @@ class SprintEditModal extends Component {
     if (this.state.sprint.dateFrom && !this.state.sprint.dateTo) {
       return moment(this.props.sprint.factFinishDate).isAfter(this.state.sprint.dateFrom);
     }
-    return true;
+    return false;
+  };
+
+  checkAllFields = () => {
+    if (!this.checkNullInputs()) return true;
+    else if (!this.validateDates()) return true;
+    else return false;
   };
 
   render() {
@@ -161,7 +167,7 @@ class SprintEditModal extends Component {
             <Row>
               <Col xs={12} className={css.validateMessages}>
                 {!this.checkNullInputs() ? <span>Все поля должны быть заполнены</span> : null}
-                {!this.validateDates() ? (
+                {this.state.sprint.dateTo && !this.validateDates() ? (
                   <span className={css.redMessage}>Дата окончания должна быть позже даты начала</span>
                 ) : null}
               </Col>
@@ -263,7 +269,7 @@ class SprintEditModal extends Component {
                   type="green"
                   htmlType="submit"
                   text="Изменить"
-                  disabled={!this.checkNullInputs() || !this.validateDates()}
+                  disabled={this.checkAllFields()}
                   onClick={this.handleEditSprint}
                 />
               </Col>
