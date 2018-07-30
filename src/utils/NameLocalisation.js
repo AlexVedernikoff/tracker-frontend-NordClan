@@ -17,18 +17,18 @@ export function getFullName(user) {
   if (lang === 'ru') {
     if (user.fullNameRu) {
       return user.fullNameRu;
-    } else if (!user.fullNameRu) {
-      return user.fullNameEn;
-    } else {
+    } else if (!user.fullNameRu && user.firstNameRu && user.lastNameRu) {
       return `${user.firstNameRu} ${user.lastNameRu}`;
+    } else {
+      return user.fullNameEn || `${user.firstNameEn} ${user.lastNameEn}`;
     }
   } else if (lang === 'en') {
     if (user.fullNameEn) {
       return user.fullNameEn;
-    } else if (!user.fullNameEn) {
-      return user.fullNameRu;
-    } else {
+    } else if (!user.fullNameEn && user.firstNameEn && user.lastNameEn) {
       return `${user.firstNameEn} ${user.lastNameEn}`;
+    } else {
+      return user.fullNameRu || `${user.firstNameRu} ${user.lastNameRu}`;
     }
   }
 }
