@@ -8,6 +8,8 @@ import Modal from '../../components/Modal';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
 import Input from '../../components/Input';
 import moment from 'moment';
+import localize from './SprintEditModal.json';
+import { connect } from 'react-redux';
 
 class SprintEditModal extends Component {
   static propTypes = {
@@ -137,7 +139,7 @@ class SprintEditModal extends Component {
   };
 
   render() {
-    const { sprint } = this.props;
+    const { sprint, lang } = this.props;
     let formattedDayFrom = '';
     let formattedDayTo = '';
 
@@ -160,7 +162,7 @@ class SprintEditModal extends Component {
       <Modal isOpen contentLabel="modal" onRequestClose={this.props.handleCloseModal}>
         <div>
           <form className={css.editSprintForm}>
-            <h3>Редактирование спринта</h3>
+            <h3>{localize[lang].HEADER}</h3>
             <hr />
             <Row>
               <Col xs={12} className={css.validateMessages}>
@@ -173,11 +175,11 @@ class SprintEditModal extends Component {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>Название спринта:</p>
+                  <p>{localize[lang].SPRINT_NAME}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   <Input
-                    placeholder="Введите название спринта"
+                    placeholder={localize[lang].SPRINT_PLACEHOLDER}
                     value={this.state.sprint.sprintName}
                     onChange={this.onChangeName}
                   />
@@ -188,7 +190,7 @@ class SprintEditModal extends Component {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>Дата начала:</p>
+                  <p>{localize[lang].START_DATE}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   <DatepickerDropdown
@@ -203,7 +205,7 @@ class SprintEditModal extends Component {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>Дата окончания:</p>
+                  <p>{localize[lang].END_DATE}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   <DatepickerDropdown
@@ -219,11 +221,11 @@ class SprintEditModal extends Component {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>% на QA:</p>
+                  <p>{localize[lang].QA_PERCENT}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   <Input
-                    placeholder="Введите новое % на QA..."
+                    placeholder={localize[lang].QA_PERCENT_PLACEHOLDER}
                     value={this.state.sprint.qaPercent}
                     onChange={this.onChangePercentQA}
                   />
@@ -234,12 +236,12 @@ class SprintEditModal extends Component {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>Бюджет без рискового резерва:</p>
+                  <p>{localize[lang].WO_RISK}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   <Input
                     value={this.state.sprint.budget}
-                    placeholder="Введите новое значение бюджета без РР"
+                    placeholder={localize[lang].WO_RISK_PLACEHOLDER}
                     onChange={this.onChangeBudget}
                   />
                 </Col>
@@ -249,12 +251,12 @@ class SprintEditModal extends Component {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>Бюджет с рисковым резервом:</p>
+                  <p>{localize[lang].WITH_RISK}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   <Input
                     value={this.state.sprint.riskBudget}
-                    placeholder="Введите новое значение бюджета с РР"
+                    placeholder={localize[lang].WITH_RISK_PLACEHOLDER}
                     onChange={this.onChangeRiskBudget}
                   />
                 </Col>
@@ -279,4 +281,11 @@ class SprintEditModal extends Component {
   }
 }
 
-export default SprintEditModal;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(SprintEditModal);
