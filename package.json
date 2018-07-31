@@ -106,7 +106,7 @@
     "eslint-plugin-react": "^7.1.0",
     "file-loader": "^0.11.2",
     "husky": "^0.14.3",
-    "node-sass": "^4.7.2",
+    "node-sass": "^4.9.2",
     "postcss-cssnext": "^2.9.0",
     "postcss-each": "^0.10.0",
     "postcss-import": "^10.0.0",
