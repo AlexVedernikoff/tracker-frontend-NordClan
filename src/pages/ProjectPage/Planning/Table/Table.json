@@ -13,7 +13,11 @@
       "October",
       "November",
       "December"
-    ]
+    ],
+    "EDIT": "Edit",
+    "DELETE": "Delete",
+    "UNCOMPLETED": "Not completed",
+    "COMPLTED": "Completed"
   },
   "ru": {
     "MONTHS": [
@@ -29,6 +33,10 @@
       "Октябрь",
       "Ноябрь",
       "Декабрь"
-    ]
+    ],
+    "EDIT": "Редактировать",
+    "DELETE": "Удалить",
+    "UNCOMPLETED": "Не выполнено",
+    "COMPLTED": "Выполнено"
   }
 }
