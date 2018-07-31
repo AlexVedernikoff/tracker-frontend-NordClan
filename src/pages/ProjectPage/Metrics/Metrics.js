@@ -79,10 +79,10 @@ class Metrics extends Component {
     }
   }
 
-  getMetricsParams = (createdAt, projectId) => ({
+  getMetricsParams = (createdAt, projectId, endDate) => ({
     projectId: parseInt(projectId),
     startDate: moment(createdAt).format('YYYY-MM-DD HH:mm'),
-    endDate: moment().format('YYYY-MM-DD HH:mm')
+    endDate: endDate ? endDate : null
   });
 
   recalculateMetrics = () => {
@@ -314,7 +314,4 @@ const mapDispatchToProps = {
   getMetrics
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Metrics);
+export default connect(mapStateToProps, mapDispatchToProps)(Metrics);
