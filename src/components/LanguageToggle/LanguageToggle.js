@@ -24,10 +24,12 @@ class LanguageToggle extends Component {
     const { checked } = this.state;
     return (
       <div className={css.wrap}>
+        <span className={css.lang}>EN</span>
         <label className={css.toggle}>
           <input type="checkbox" checked={checked} onChange={this.handleChecked} />
           <span className={css.slider} />
         </label>
+        <span className={css.lang}>RU</span>
       </div>
     );
   }
