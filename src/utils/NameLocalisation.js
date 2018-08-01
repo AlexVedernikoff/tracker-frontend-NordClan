@@ -28,3 +28,7 @@ export function getFullName(user) {
     }
   }
 }
+
+export function getMessage(history) {
+  return lang === 'ru' ? history.message : history.messageEn || history.message;
+}
