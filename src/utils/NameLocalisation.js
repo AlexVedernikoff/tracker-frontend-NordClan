@@ -40,9 +40,9 @@ const getLocalize = ({ full, first, last, altFull, altFirst, altLast }, user) =>
 
   if (user[altFirst] && user[altLast]) {
     return `${user[altFirst]} ${user[altLast]}`;
-  } else {
-    return user.login;
   }
+
+  return user.login;
 };
 
 export function getFullName(user) {
