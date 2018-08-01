@@ -15,7 +15,11 @@
       "December"
     ],
     "PLAN": "Plan",
-    "FACT": "Fact"
+    "FACT": "Fact",
+    "EDIT": "Edit",
+    "DELETE": "Delete",
+    "UNCOMPLETED": "Not completed",
+    "COMPLTED": "Completed"
   },
   "ru": {
     "MONTHS": [
@@ -33,6 +37,10 @@
       "Декабрь"
     ],
     "PLAN": "План",
-    "FACT": "Факт"
+    "FACT": "Факт",
+    "EDIT": "Редактировать",
+    "DELETE": "Удалить",
+    "UNCOMPLETED": "Не выполнено",
+    "COMPLTED": "Выполнено"
   }
 }
