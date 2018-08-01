@@ -10,8 +10,7 @@ import HistoryMessage from '../../../components/HistoryMessage';
 import Pagination from '../../../components/Pagination';
 import UserCard from '../../../components/UserCard';
 import localize from './ProjectHistory.json';
-import { getFullName } from '../../../utils/NameLocalisation';
-import { getMessage } from '../../../utils/MessageLocalisation';
+import { getFullName, getMessage } from '../../../utils/NameLocalisation';
 
 class ProjectHistory extends React.Component {
   constructor(props) {
