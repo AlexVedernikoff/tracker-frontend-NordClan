@@ -73,11 +73,8 @@ class SprintCard extends Component {
   };
 
   render() {
-    const { sprint, inFocus, isExternal, lang } = this.props;
-    const onMouse = {
-      onMouseOver: this.props.onMouseOver,
-      onMouseOut: this.props.onMouseOut
-    };
+    const { sprint, inFocus, isExternal, lang, onMouseOver, onMouseOut, ...other } = this.props;
+    const onMouse = { onMouseOut, onMouseOver };
     return (
       <div
         className={classnames({

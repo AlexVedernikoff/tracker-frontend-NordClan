@@ -14,8 +14,7 @@ class DatepickerDropdown extends Component {
   }
 
   render() {
-    const { disabledDataRanges, lang, ...other } = this.props;
-    delete other.dispatch;
+    const { disabledDataRanges, lang, dispatch, ...other } = this.props;
 
     return (
       <DayPickerInput
@@ -35,6 +34,7 @@ class DatepickerDropdown extends Component {
 
 DatepickerDropdown.propTypes = {
   disabledDataRanges: PropTypes.array,
+  dispatch: PropTypes.func,
   name: PropTypes.string,
   options: PropTypes.array
 };
