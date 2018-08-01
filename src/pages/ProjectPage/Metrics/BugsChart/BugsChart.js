@@ -24,11 +24,17 @@ class BugsChart extends Component {
     this.state = {
       chartRef: null
     };
+  }
 
-    this.chartOptions = {
-      ...props.chartDefaultOptions,
+  componentDidMount() {
+    this.setState({ chartRef: this.refs.chart });
+  }
+
+  getGraphicOptions() {
+    return {
+      ...this.props.chartDefaultOptions,
       scales: {
-        ...props.chartDefaultOptions.scales,
+        ...this.props.chartDefaultOptions.scales,
         yAxes: [
           {
             ticks: {
@@ -37,16 +43,12 @@ class BugsChart extends Component {
             display: true,
             scaleLabel: {
               display: true,
-              labelString: 'Количество багов'
+              labelString: localize[this.props.lang].BUGS_NUM
             }
           }
         ]
       }
     };
-  }
-
-  componentDidMount() {
-    this.setState({ chartRef: this.refs.chart });
   }
 
   makeChartData = () => {
@@ -82,7 +84,7 @@ class BugsChart extends Component {
   render() {
     return (
       <ChartWrapper chartRef={this.state.chartRef} className={css.BugsChart}>
-        <Line ref="chart" data={this.makeChartData()} options={this.chartOptions} redraw />
+        <Line ref="chart" data={this.makeChartData()} options={this.getGraphicOptions()} redraw />
       </ChartWrapper>
     );
   }

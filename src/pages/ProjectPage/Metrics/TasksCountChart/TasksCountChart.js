@@ -26,11 +26,17 @@ class TasksCountChart extends Component {
     this.state = {
       chartRef: null
     };
+  }
 
-    this.chartOptions = {
-      ...props.chartDefaultOptions,
+  componentDidMount() {
+    this.setState({ chartRef: this.refs.chart });
+  }
+
+  getGraphicOptions() {
+    return {
+      ...this.props.chartDefaultOptions,
       scales: {
-        ...props.chartDefaultOptions.scales,
+        ...this.props.chartDefaultOptions.scales,
         yAxes: [
           {
             ticks: {
@@ -39,16 +45,12 @@ class TasksCountChart extends Component {
             display: true,
             scaleLabel: {
               display: true,
-              labelString: 'Количество задач'
+              labelString: localize[this.props.lang].NUMBER_OF_TASKS
             }
           }
         ]
       }
     };
-  }
-
-  componentDidMount() {
-    this.setState({ chartRef: this.refs.chart });
   }
 
   makeChartData() {
@@ -102,7 +104,7 @@ class TasksCountChart extends Component {
             this.chartRef = element;
           }}
           data={this.makeChartData()}
-          options={this.chartOptions}
+          options={this.getGraphicOptions()}
           redraw
         />
       </ChartWrapper>

@@ -24,11 +24,17 @@ class ClosingFeaturesChart extends Component {
     this.state = {
       chartRef: null
     };
+  }
 
-    this.chartOptions = {
-      ...props.chartDefaultOptions,
+  componentDidMount() {
+    this.setState({ chartRef: this.refs.chart });
+  }
+
+  getGraphicOptions() {
+    return {
+      ...this.props.chartDefaultOptions,
       scales: {
-        ...props.chartDefaultOptions.scales,
+        ...this.props.chartDefaultOptions.scales,
         yAxes: [
           {
             ticks: {
@@ -37,16 +43,12 @@ class ClosingFeaturesChart extends Component {
             display: true,
             scaleLabel: {
               display: true,
-              labelString: 'Часы'
+              labelString: localize[this.props.lang].HOURS
             }
           }
         ]
       }
     };
-  }
-
-  componentDidMount() {
-    this.setState({ chartRef: this.refs.chart });
   }
 
   makeChartData = () => {
@@ -84,7 +86,7 @@ class ClosingFeaturesChart extends Component {
     return (
       <ChartWrapper chartRef={this.refs.chart} className={css.ClosingFeaturesChart}>
         <h3>{localize[lang].DYNAMIC}</h3>
-        <Line ref="chart" data={this.makeChartData()} options={this.chartOptions} redraw />
+        <Line ref="chart" data={this.makeChartData()} options={this.getGraphicOptions()} redraw />
       </ChartWrapper>
     );
   }
