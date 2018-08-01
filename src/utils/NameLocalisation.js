@@ -21,17 +21,27 @@ const lastEn = 'lastNameEn';
 const lastRu = 'lastNameRu';
 
 const config = {
-  en: { full: fullEn, altFull: fullRu, first: firstEn, last: lastEn },
-  ru: { full: fullRu, altFull: fullEn, first: firstRu, last: lastRu }
+  en: { full: fullEn, altFull: fullRu, first: firstEn, last: lastEn, altFirst: firstRu, altLast: lastRu },
+  ru: { full: fullRu, altFull: fullEn, first: firstRu, last: lastRu, altFirst: firstEn, altLast: lastEn }
 };
 
-const getLocalize = ({ full, first, last, altFull }, user) => {
+const getLocalize = ({ full, first, last, altFull, altFirst, altLast }, user) => {
   if (user[full]) {
     return user[full];
-  } else if (user[first] && user[last]) {
+  }
+
+  if (user[first] && user[last]) {
     return `${user[first]} ${user[last]}`;
-  } else {
+  }
+
+  if (user[altFull]) {
     return user[altFull];
+  }
+
+  if (user[altFirst] && user[altLast]) {
+    return `${user[altFirst]} ${user[altLast]}`;
+  } else {
+    return user.login;
   }
 };
 
