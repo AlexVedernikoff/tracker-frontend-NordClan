@@ -314,4 +314,7 @@ const mapDispatchToProps = {
   getMetrics
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Metrics);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Metrics);

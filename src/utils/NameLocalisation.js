@@ -13,18 +13,42 @@ export function getLastName(user) {
   return lang === 'ru' ? user.lastNameRu : user.lastNameEn;
 }
 
-export function getFullName(user) {
-  if (lang === 'ru') {
-    if (user.fullNameRu) {
-      return user.fullNameRu;
-    } else {
-      return `${user.firstNameRu} ${user.lastNameRu}`;
-    }
-  } else if (lang === 'en') {
-    if (user.fullNameEn) {
-      return user.fullNameEn;
-    } else {
-      return `${user.firstNameEn} ${user.lastNameEn}`;
-    }
+const fullEn = 'fullNameEn';
+const fullRu = 'fullNameRu';
+const firstEn = 'firstNameEn';
+const firstRu = 'firstNameRu';
+const lastEn = 'lastNameEn';
+const lastRu = 'lastNameRu';
+
+const config = {
+  en: { full: fullEn, altFull: fullRu, first: firstEn, last: lastEn, altFirst: firstRu, altLast: lastRu },
+  ru: { full: fullRu, altFull: fullEn, first: firstRu, last: lastRu, altFirst: firstEn, altLast: lastEn }
+};
+
+const getLocalize = ({ full, first, last, altFull, altFirst, altLast }, user) => {
+  if (user[full]) {
+    return user[full];
   }
+
+  if (user[first] && user[last]) {
+    return `${user[first]} ${user[last]}`;
+  }
+
+  if (user[altFull]) {
+    return user[altFull];
+  }
+
+  if (user[altFirst] && user[altLast]) {
+    return `${user[altFirst]} ${user[altLast]}`;
+  }
+
+  return user.login;
+};
+
+export function getFullName(user) {
+  return getLocalize(config[lang], user);
+}
+
+export function getMessage(history) {
+  return lang === 'ru' ? history.message : history.messageEn || history.message;
 }

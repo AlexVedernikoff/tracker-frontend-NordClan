@@ -129,7 +129,7 @@ class AppRouter extends Component {
           >
             <IndexRoute component={Comments} />
             <Route path="history" component={TaskHistory} onEnter={this.notExternal} />
-            <Route path="time-reports" component={TaskTimeReports} onEnter={this.notExternal} />
+            <Route path="time-reports" component={TaskTimeReports} onEnter={this.requareAdmin} />
           </Route>
 
           <IndexRedirect to="projects" />
