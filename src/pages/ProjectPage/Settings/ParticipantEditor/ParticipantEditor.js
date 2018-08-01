@@ -363,10 +363,10 @@ ParticipantEditor.propTypes = {
   externalUsers: PropTypes.array,
   getProjectUsers: PropTypes.func,
   id: PropTypes.number,
-  user: PropTypes.object.isRequired,
-  users: PropTypes.array.isRequired,
   lang: PropTypes.string.isRequired,
-  projectAuthorId: PropTypes.number.isRequired
+  projectAuthorId: PropTypes.number,
+  user: PropTypes.object.isRequired,
+  users: PropTypes.array.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -383,4 +383,7 @@ const mapDispatchToProps = {
   getProjectUsers
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ParticipantEditor);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ParticipantEditor);
