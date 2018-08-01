@@ -18,17 +18,7 @@ class BugsChart extends Component {
     openedRegressBugsMetrics: PropTypes.array
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      chartRef: null
-    };
-  }
-
-  componentDidMount() {
-    this.setState({ chartRef: this.refs.chart });
-  }
+  chartRef = null;
 
   getGraphicOptions() {
     return {
@@ -81,10 +71,12 @@ class BugsChart extends Component {
     };
   };
 
+  setChartRef = node => (this.chartRef = node);
+
   render() {
     return (
-      <ChartWrapper chartRef={this.state.chartRef} className={css.BugsChart}>
-        <Line ref="chart" data={this.makeChartData()} options={this.getGraphicOptions()} redraw />
+      <ChartWrapper chartRef={this.chartRef} className={css.BugsChart}>
+        <Line ref={this.setChartRef} data={this.makeChartData()} options={this.getGraphicOptions()} redraw />
       </ChartWrapper>
     );
   }

@@ -18,17 +18,7 @@ class ClosingFeaturesChart extends Component {
     sprintWriteOffTimeMetrics: PropTypes.array
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      chartRef: null
-    };
-  }
-
-  componentDidMount() {
-    this.setState({ chartRef: this.refs.chart });
-  }
+  chartRef = null;
 
   getGraphicOptions() {
     return {
@@ -81,12 +71,14 @@ class ClosingFeaturesChart extends Component {
     };
   };
 
+  setChartRef = node => (this.chartRef = node);
+
   render() {
     const { lang } = this.props;
     return (
-      <ChartWrapper chartRef={this.refs.chart} className={css.ClosingFeaturesChart}>
+      <ChartWrapper chartRef={this.chartRef} className={css.ClosingFeaturesChart}>
         <h3>{localize[lang].DYNAMIC}</h3>
-        <Line ref="chart" data={this.makeChartData()} options={this.getGraphicOptions()} redraw />
+        <Line ref={this.setChartRef} data={this.makeChartData()} options={this.getGraphicOptions()} redraw />
       </ChartWrapper>
     );
   }

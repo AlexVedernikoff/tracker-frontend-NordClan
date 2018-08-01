@@ -24,17 +24,9 @@ class BudgetChart extends Component {
     startDate: PropTypes.string
   };
 
-  constructor(props) {
-    super(props);
+  chartRef = null;
 
-    this.state = {
-      chartRef: null
-    };
-  }
-
-  componentDidMount() {
-    this.setState({ chartRef: this.refs.chart });
-  }
+  setChartRef = node => (this.chartRef = node);
 
   getGraphicOptions() {
     return {
@@ -66,8 +58,7 @@ class BudgetChart extends Component {
       startDate,
       endDate,
       sprints,
-      isRisks,
-      lang
+      isRisks
     } = this.props;
 
     getColor.reset();
@@ -181,8 +172,14 @@ class BudgetChart extends Component {
             }
           />
         </div>
-        <ChartWrapper chartRef={this.state.chartRef}>
-          <Line ref="chart" height={250} data={this.makeChartData()} options={this.getGraphicOptions()} redraw />
+        <ChartWrapper chartRef={this.chartRef}>
+          <Line
+            ref={this.setChartRef}
+            height={250}
+            data={this.makeChartData()}
+            options={this.getGraphicOptions()}
+            redraw
+          />
         </ChartWrapper>
       </div>
     );
