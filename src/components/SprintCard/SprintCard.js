@@ -73,8 +73,11 @@ class SprintCard extends Component {
   };
 
   render() {
-    const { sprint, inFocus, isExternal, lang, ...other } = this.props;
-
+    const { sprint, inFocus, isExternal, lang } = this.props;
+    const onMouse = {
+      onMouseOver: this.props.onMouseOver,
+      onMouseOut: this.props.onMouseOut
+    };
     return (
       <div
         className={classnames({
@@ -82,7 +85,7 @@ class SprintCard extends Component {
           [css[sprint.status]]: true,
           [css.INFOCUS]: inFocus
         })}
-        {...other}
+        {...onMouse}
       >
         {!isExternal ? <IconClose className={css.iconClose} onClick={this.openConfirmDeleteModal} /> : null}
         <p className={css.sprintTitle} onClick={this.handleOpenModal}>
@@ -161,6 +164,8 @@ SprintCard.propTypes = {
   editSprint: PropTypes.func.isRequired,
   inFocus: PropTypes.bool,
   isExternal: PropTypes.bool,
+  onMouseOut: PropTypes.func,
+  onMouseOver: PropTypes.func,
   project: PropTypes.object.isRequired,
   sprint: PropTypes.object
 };
@@ -190,7 +195,4 @@ const mapDispatchToProps = {
   editSprint
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SprintCard);
+export default connect(mapStateToProps, mapDispatchToProps)(SprintCard);
