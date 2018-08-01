@@ -28,8 +28,6 @@
   left: 0;
   right: 0;
   bottom: 0;
-  // background: url('/images/Flag_of_the_United_States.svg') no-repeat;
-  // background-size: 70px;
   -webkit-transition: 0.4s;
   transition: 0.4s;
   border-radius: 34px;
@@ -49,7 +47,6 @@
 }
 
 .wrap > label input:checked + .slider {
-  // background: url('/images/Flag_of_Russia.svg') no-repeat;
   background-size: 55px;
   background-position: 0px;
 }
