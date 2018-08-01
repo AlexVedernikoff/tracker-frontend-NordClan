@@ -415,17 +415,10 @@ class Planning extends Component {
       });
     };
 
-    const tasksChanged = [];
-    tasks.forEach(task => {
-      tasksChanged.push(task.id);
-    });
-
     this.props.changeTasks(
       {
-        changeData: {
-          sprintId: sprintId
-        },
-        taskIds: tasksChanged
+        sprintId,
+        taskIds: tasks.map(task => task.id)
       },
       getPlanningTasksAll
     );
