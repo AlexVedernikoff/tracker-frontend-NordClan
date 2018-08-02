@@ -28,3 +28,7 @@ export function getFullName(user) {
     }
   }
 }
+
+export function getDictionaryName(dictionary) {
+  return lang === 'ru' ? dictionary.name : dictionary.nameEn;
+}

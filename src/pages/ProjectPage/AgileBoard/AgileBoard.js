@@ -21,7 +21,7 @@ import getPriorityById from '../../../utils/TaskPriority';
 import * as css from './AgileBoard.scss';
 import { UnmountClosed } from 'react-collapse';
 import localize from './AgileBoard.json';
-import { getFullName } from '../../../utils/NameLocalisation';
+import { getFullName, getDictionaryName } from '../../../utils/NameLocalisation';
 
 import getTasks from '../../../actions/Tasks';
 import { VISOR, EXTERNAL_USER } from '../../../constants/Roles';
@@ -594,7 +594,7 @@ class AgileBoard extends Component {
   createOptions = (array, labelField) => {
     return array.map(element => ({
       value: element.id,
-      label: labelField === 'name' ? element[labelField] : getFullName(element)
+      label: labelField === 'name' ? getDictionaryName(element) : getFullName(element)
     }));
   };
 
