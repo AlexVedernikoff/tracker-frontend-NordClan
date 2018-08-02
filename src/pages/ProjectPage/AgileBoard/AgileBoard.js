@@ -251,7 +251,7 @@ class AgileBoard extends Component {
     name: '',
     authorId: null,
     prioritiesId: null,
-    performerId: null
+    performerId: []
   };
 
   getChangedSprint = props => {
@@ -354,6 +354,7 @@ class AgileBoard extends Component {
   getTasks = customOption => {
     const tags = this.state.filterTags.map(tag => tag.value);
     const typeId = this.state.typeId.map(option => option.value);
+    const performerId = this.state.performerId.map(option => option.value);
     const options = customOption
       ? customOption
       : {
@@ -364,7 +365,7 @@ class AgileBoard extends Component {
           typeId: typeId,
           name: this.state.name,
           tags: tags.join(','),
-          performerId: this.state.performerId
+          performerId: performerId
         };
     this.props.getTasks(options);
     this.saveFiltersToLocalStorage();
@@ -569,7 +570,7 @@ class AgileBoard extends Component {
   };
 
   updateFilterList = () => {
-    const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'performerId', 'changedSprint', 'name'];
+    const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'changedSprint', 'name'];
     const selectedFilters = [];
 
     singleOptionFiltersList.forEach(filterName => {
@@ -586,6 +587,7 @@ class AgileBoard extends Component {
       allFilters: [
         ...selectedFilters,
         ...this.createSelectedOption(null, this.state.typeId, 'typeId'),
+        ...this.createSelectedOption(null, this.state.performerId, 'performerId'),
         ...this.createSelectedOption(null, this.state.filterTags, 'filterTags')
       ]
     });
@@ -741,7 +743,7 @@ class AgileBoard extends Component {
                   </Col>
                   <Col xs={12} sm={3}>
                     <PerformerFilter
-                      onPerformerSelect={option => this.selectValue(option ? option.value : null, 'performerId')}
+                      onPerformerSelect={options => this.selectValue(options, 'performerId')}
                       selectedPerformerId={this.state.performerId}
                     />
                   </Col>
@@ -907,7 +909,4 @@ const mapDispatchToProps = {
   getProjectInfo
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AgileBoard);
+export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);
