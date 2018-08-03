@@ -361,8 +361,8 @@ class Timesheets extends React.Component {
               </tr>
             </thead>
             <tbody>
-              {taskRows}
               {magicActivityRows}
+              {taskRows}
               <tr>
                 <td className={css.total} />
                 {totalRow}
@@ -409,7 +409,4 @@ const mapDispatchToProps = {
   showNotification
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Timesheets);
+export default connect(mapStateToProps, mapDispatchToProps)(Timesheets);
