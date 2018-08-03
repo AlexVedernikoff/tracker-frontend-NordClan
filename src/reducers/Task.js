@@ -72,8 +72,7 @@ export default function Task(state = InitialState, action) {
       return {
         ...state,
         TitleIsEditing: false,
-        PlanningTimeIsEditing: false,
-        DescriptionIsEditing: false
+        PlanningTimeIsEditing: false
       };
 
     case TaskActions.GET_TASK_REQUEST_SUCCESS:
