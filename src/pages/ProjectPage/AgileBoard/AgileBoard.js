@@ -27,6 +27,7 @@ import getTasks from '../../../actions/Tasks';
 import { VISOR, EXTERNAL_USER } from '../../../constants/Roles';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal, getProjectUsers, getProjectInfo } from '../../../actions/Project';
+import { history } from '../../../History';
 
 const filterTasks = array => {
   const taskArray = {
@@ -178,18 +179,17 @@ class AgileBoard extends Component {
       changedTask: null,
       allFilters: [],
       fullFilterView: this.getFilterViewState(),
-      ...this.initialFilters
+      changedFilters: {
+        projectId: this.props.params.projectId
+      },
+      ...this.initialFilters,
+      ...this.getQueryFiltersFromUrl()
     };
   }
 
   componentDidMount() {
-    this.getFiltersFromLocalStorage();
     if (this.props.myTaskBoard) {
       this.selectValue(this.getChangedSprint(this.props), 'changedSprint');
-    } else if (this.props.project.id && this.parseLocalStorageFilters().changedSprint === null) {
-      this.selectValue(this.getCurrentSprint(this.props.sprints), 'changedSprint');
-    } else if (this.props.project.id && this.parseLocalStorageFilters().changedSprint !== null) {
-      this.selectValue(this.parseLocalStorageFilters().changedSprint, 'changedSprint');
     }
   }
 
@@ -204,10 +204,6 @@ class AgileBoard extends Component {
       nextProps.project.id
     ) {
       this.selectValue(this.getChangedSprint(nextProps), 'changedSprint');
-    }
-
-    if (this.props.project.id !== nextProps.project.id) {
-      this.getFiltersFromLocalStorage();
     }
 
     if (nextProps.sprintTasks.length) {
@@ -243,6 +239,77 @@ class AgileBoard extends Component {
     ReactTooltip.rebuild();
   }
 
+  translateToNumIfNeeded = value => {
+    const re = /^\d+$/;
+    return re.test(value) ? +value : value;
+  };
+
+  multipleQueries = queries => {
+    if (Array.isArray(queries)) {
+      return queries.map(queryValue => this.translateToNumIfNeeded(queryValue));
+    }
+
+    return queries ? [this.translateToNumIfNeeded(queries)] : [];
+  };
+
+  singleQuery = currentQuery => {
+    return currentQuery ? this.translateToNumIfNeeded(currentQuery) : null;
+  };
+
+  makeNewObj = (name, value) => {
+    if (!!value && !Array.isArray(value)) {
+      return { [name]: this.singleQuery(value) };
+    }
+    if (!!value && Array.isArray(value)) {
+      return { [name]: this.multipleQueries(value) };
+    }
+  };
+
+  getUrlQueries = () => {
+    const { performerId, name, authorId, prioritiesId, typeId, filterTags, isOnlyMine } = this.query;
+
+    return {
+      ...this.makeNewObj('performerId', performerId),
+      ...this.makeNewObj('name', name),
+      ...this.makeNewObj('authorId', authorId),
+      ...this.makeNewObj('prioritiesId', prioritiesId),
+      ...this.makeNewObj('filterTags', filterTags),
+      ...this.makeNewObj('typeId', typeId),
+      ...this.makeNewObj('isOnlyMine', isOnlyMine)
+    };
+  };
+
+  query = this.props.location.query;
+
+  getQueryFiltersFromUrl() {
+    const projectId = this.props.params.projectId;
+
+    return {
+      ...this.getUrlQueries(),
+      changedFilters: {
+        projectId,
+        ...this.getUrlQueries(true)
+      }
+    };
+  }
+
+  changeUrl(changedFilters) {
+    const queryObj = {};
+
+    for (const [key, value] of Object.entries(changedFilters)) {
+      if (value && key !== 'projectId') {
+        queryObj[key] = value;
+      }
+    }
+
+    history.replace({
+      ...this.props.location,
+      query: {
+        ...queryObj
+      }
+    });
+  }
+
   initialFilters = {
     isOnlyMine: false,
     changedSprint: null,
@@ -265,14 +332,9 @@ class AgileBoard extends Component {
   };
 
   toggleFilterView = () => {
-    this.setState(
-      {
-        fullFilterView: !this.state.fullFilterView
-      },
-      () => {
-        localStorage.setItem('filterViewState', this.state.fullFilterView);
-      }
-    );
+    this.setState({
+      fullFilterView: !this.state.fullFilterView
+    });
   };
 
   getFilterViewState = () => {
@@ -289,72 +351,58 @@ class AgileBoard extends Component {
         isOnlyMine: !currentState.isOnlyMine
       }),
       () => {
+        this.setFiltersToUrl('isOnlyMine');
         this.updateFilterList();
-        this.saveFiltersToLocalStorage();
       }
     );
   };
 
-  getFiltersFromLocalStorage = () => {
-    if (!this.props.myTaskBoard) {
-      const localStorageFilter = this.parseLocalStorageFilters();
-      if (this.props.params.projectId !== localStorageFilter.projectId) return;
-      this.setState({
-        isOnlyMine: localStorageFilter.isOnlyMine,
-        changedSprint: localStorageFilter.changedSprint,
-        filterTags: localStorageFilter.filterTags,
-        typeId: localStorageFilter.typeId,
-        name: localStorageFilter.name,
-        authorId: localStorageFilter.authorId,
-        prioritiesId: localStorageFilter.prioritiesId,
-        performerId: localStorageFilter.performerId
-      });
-    } else {
-      this.removeFiltersFromLocalStorage();
-    }
-  };
+  setFiltersToUrl = (name, e) => {
+    this.setState(state => {
+      let filterValue = e;
+      const changedFilters = state.changedFilters;
 
-  parseLocalStorageFilters = () => {
-    try {
-      const localStorageFilters = localStorage.getItem('agileBoardFilters');
-      return localStorageFilters ? JSON.parse(localStorageFilters) : {};
-    } catch (e) {
-      return {};
-    }
-  };
+      if (name === 'typeId') {
+        filterValue = e.map(singleValue => singleValue.value);
+      }
 
-  saveFiltersToLocalStorage = () => {
-    localStorage.setItem(
-      'agileBoardFilters',
-      JSON.stringify({
-        projectId: this.props.params.projectId,
-        changedSprint: this.state.changedSprint,
-        isOnlyMine: this.state.isOnlyMine,
-        prioritiesId: this.state.prioritiesId,
-        authorId: this.state.authorId,
-        typeId: this.state.typeId,
-        name: this.state.name,
-        filterTags: this.state.filterTags,
-        performerId: this.state.performerId
-      })
-    );
-  };
+      if (name === 'performerId') {
+        filterValue = e.map(singleValue => singleValue.value);
+      }
 
-  removeFiltersFromLocalStorage = () => {
-    localStorage.removeItem('agileBoardFilters');
+      if (name === 'filterTags') {
+        filterValue = e.map(singleValue => singleValue.value).join(',');
+      }
+
+      if (name === 'isOnlyMine') {
+        filterValue = this.state.isOnlyMine;
+      }
+
+      if (~[null, [], undefined, ''].indexOf(filterValue)) {
+        delete changedFilters[name];
+      } else {
+        changedFilters[name] = filterValue;
+      }
+
+      this.changeUrl(changedFilters);
+
+      return {
+        [name]: filterValue,
+        activePage: state[name] !== filterValue ? 1 : state.activePage,
+        changedFilters
+      };
+    });
   };
 
   selectValue = (e, name) => {
-    this.setState({ [name]: e }, () => {
+    this.setFiltersToUrl(name, e);
+    this.setState(() => {
       if (this.props.myTaskBoard) return this.props.getTasks({ performerId: this.props.user.id });
       this.getTasks();
     });
   };
 
   getTasks = customOption => {
-    const tags = this.state.filterTags.map(tag => tag.value);
-    const typeId = this.state.typeId.map(option => option.value);
-    const performerId = this.state.performerId.map(option => option.value);
     const options = customOption
       ? customOption
       : {
@@ -362,13 +410,12 @@ class AgileBoard extends Component {
           sprintId: this.state.changedSprint,
           prioritiesId: this.state.prioritiesId,
           authorId: this.state.authorId,
-          typeId: typeId,
+          typeId: this.state.typeId,
           name: this.state.name,
-          tags: tags.join(','),
-          performerId: performerId
+          tags: this.state.filterTags,
+          performerId: this.state.performerId
         };
     this.props.getTasks(options);
-    this.saveFiltersToLocalStorage();
     this.updateFilterList();
   };
 
@@ -909,4 +956,7 @@ const mapDispatchToProps = {
   getProjectInfo
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AgileBoard);
