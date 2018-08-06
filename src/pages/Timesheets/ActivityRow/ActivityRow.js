@@ -317,7 +317,7 @@ class ActivityRow extends React.Component {
                 {tsh.doubleTimesheets && tsh.doubleTimesheets.length ? (
                   <span
                     className={css.doubleTimesheets}
-                    data-tip={localize[lang].DELETE}
+                    title={localize[lang].DELETE_DUBLICATE}
                     onClick={() =>
                       this.deleteTimesheets(tsh.doubleTimesheets.map(doubleTimesheet => doubleTimesheet.id))
                     }
