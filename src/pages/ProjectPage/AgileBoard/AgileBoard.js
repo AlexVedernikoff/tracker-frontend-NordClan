@@ -182,18 +182,14 @@ class AgileBoard extends Component {
       changedFilters: {
         projectId: this.props.params.projectId
       },
-      ...this.setQueryFilters()
+      ...this.initialFilters,
+      ...this.getQueryFiltersFromUrl()
     };
   }
 
   componentDidMount() {
-    this.getFiltersFromLocalStorage();
     if (this.props.myTaskBoard) {
       this.selectValue(this.getChangedSprint(this.props), 'changedSprint');
-    } else if (this.props.project.id && this.parseLocalStorageFilters().changedSprint === null) {
-      this.selectValue(this.getCurrentSprint(this.props.sprints), 'changedSprint');
-    } else if (this.props.project.id && this.parseLocalStorageFilters().changedSprint !== null) {
-      this.selectValue(this.parseLocalStorageFilters().changedSprint, 'changedSprint');
     }
   }
 
@@ -208,10 +204,6 @@ class AgileBoard extends Component {
       nextProps.project.id
     ) {
       this.selectValue(this.getChangedSprint(nextProps), 'changedSprint');
-    }
-
-    if (this.props.project.id !== nextProps.project.id) {
-      this.getFiltersFromLocalStorage();
     }
 
     if (nextProps.sprintTasks.length) {
@@ -247,38 +239,56 @@ class AgileBoard extends Component {
     ReactTooltip.rebuild();
   }
 
-  setQueryFilters() {
-    const query = this.props.location.query;
-    const projectId = this.props.params.projectId;
+  translateToNumIfNeeded = value => {
+    const re = /^\d+$/;
+    return re.test(value) ? +value : value;
+  };
 
-    const translateToNumIfNeeded = value => {
-      const re = /^\d+$/;
-      return re.test(value) ? +value : value;
-    };
+  multipleQueries = queries => {
+    if (Array.isArray(queries)) {
+      return queries.map(queryValue => this.translateToNumIfNeeded(queryValue));
+    }
 
-    const multipleQueries = queries => {
-      if (Array.isArray(queries)) return queries.map(queryValue => translateToNumIfNeeded(queryValue));
-      return queries ? [translateToNumIfNeeded(queries)] : [];
-    };
+    return queries ? [this.translateToNumIfNeeded(queries)] : [];
+  };
 
-    const singleQuery = currentQuery => {
-      return currentQuery ? translateToNumIfNeeded(currentQuery) : null;
-    };
+  singleQuery = currentQuery => {
+    return currentQuery ? this.translateToNumIfNeeded(currentQuery) : null;
+  };
 
-    const getValues = changed => {
-      const name = changed ? 'name' : 'filterByName';
-      if (changed && Object.keys(query).length === 0) return {};
+  makeNewObj = (name, value) => {
+    if (!!value && !Array.isArray(value)) {
+      return { [name]: this.singleQuery(value) };
+    }
+    if (!!value && Array.isArray(value)) {
+      return { [name]: this.multipleQueries(value) };
+    }
+  };
 
-      return {
-        performerId: singleQuery(query.performerId)
-      };
-    };
+  getUrlQueries = () => {
+    const { performerId, name, authorId, prioritiesId, typeId, filterTags, isOnlyMine } = this.query;
 
     return {
-      ...getValues(),
+      ...this.makeNewObj('performerId', performerId),
+      ...this.makeNewObj('name', name),
+      ...this.makeNewObj('authorId', authorId),
+      ...this.makeNewObj('prioritiesId', prioritiesId),
+      ...this.makeNewObj('filterTags', filterTags),
+      ...this.makeNewObj('typeId', typeId),
+      ...this.makeNewObj('isOnlyMine', isOnlyMine)
+    };
+  };
+
+  query = this.props.location.query;
+
+  getQueryFiltersFromUrl() {
+    const projectId = this.props.params.projectId;
+
+    return {
+      ...this.getUrlQueries(),
       changedFilters: {
         projectId,
-        ...getValues(true)
+        ...this.getUrlQueries(true)
       }
     };
   }
@@ -322,14 +332,9 @@ class AgileBoard extends Component {
   };
 
   toggleFilterView = () => {
-    this.setState(
-      {
-        fullFilterView: !this.state.fullFilterView
-      },
-      () => {
-        localStorage.setItem('filterViewState', this.state.fullFilterView);
-      }
-    );
+    this.setState({
+      fullFilterView: !this.state.fullFilterView
+    });
   };
 
   getFilterViewState = () => {
@@ -346,62 +351,13 @@ class AgileBoard extends Component {
         isOnlyMine: !currentState.isOnlyMine
       }),
       () => {
+        this.setFiltersToUrl('isOnlyMine');
         this.updateFilterList();
-        this.saveFiltersToLocalStorage();
       }
     );
   };
 
-  getFiltersFromLocalStorage = () => {
-    if (!this.props.myTaskBoard) {
-      const localStorageFilter = this.parseLocalStorageFilters();
-      if (this.props.params.projectId !== localStorageFilter.projectId) return;
-      this.setState({
-        isOnlyMine: localStorageFilter.isOnlyMine,
-        changedSprint: localStorageFilter.changedSprint,
-        filterTags: localStorageFilter.filterTags,
-        typeId: localStorageFilter.typeId,
-        name: localStorageFilter.name,
-        authorId: localStorageFilter.authorId,
-        prioritiesId: localStorageFilter.prioritiesId,
-        performerId: localStorageFilter.performerId
-      });
-    } else {
-      this.removeFiltersFromLocalStorage();
-    }
-  };
-
-  parseLocalStorageFilters = () => {
-    try {
-      const localStorageFilters = localStorage.getItem('agileBoardFilters');
-      return localStorageFilters ? JSON.parse(localStorageFilters) : {};
-    } catch (e) {
-      return {};
-    }
-  };
-
-  saveFiltersToLocalStorage = () => {
-    localStorage.setItem(
-      'agileBoardFilters',
-      JSON.stringify({
-        projectId: this.props.params.projectId,
-        changedSprint: this.state.changedSprint,
-        isOnlyMine: this.state.isOnlyMine,
-        prioritiesId: this.state.prioritiesId,
-        authorId: this.state.authorId,
-        typeId: this.state.typeId,
-        name: this.state.name,
-        filterTags: this.state.filterTags,
-        performerId: this.state.performerId
-      })
-    );
-  };
-
-  removeFiltersFromLocalStorage = () => {
-    localStorage.removeItem('agileBoardFilters');
-  };
-
-  selectValue = (e, name) => {
+  setFiltersToUrl = (name, e) => {
     this.setState(state => {
       let filterValue = e;
       const changedFilters = state.changedFilters;
@@ -409,6 +365,15 @@ class AgileBoard extends Component {
       if (name === 'typeId') {
         filterValue = e.map(singleValue => singleValue.value);
       }
+
+      if (name === 'filterTags') {
+        filterValue = e.map(singleValue => singleValue.value).join(',');
+      }
+
+      if (name === 'isOnlyMine') {
+        filterValue = this.state.isOnlyMine;
+      }
+
       if (~[null, [], undefined, ''].indexOf(filterValue)) {
         delete changedFilters[name];
       } else {
@@ -417,24 +382,23 @@ class AgileBoard extends Component {
 
       this.changeUrl(changedFilters);
 
-      const newState = {
+      return {
         [name]: filterValue,
         activePage: state[name] !== filterValue ? 1 : state.activePage,
         changedFilters
       };
-
-      return newState;
     });
+  };
 
-    this.setState({ [name]: e }, () => {
+  selectValue = (e, name) => {
+    this.setFiltersToUrl(name, e);
+    this.setState(() => {
       if (this.props.myTaskBoard) return this.props.getTasks({ performerId: this.props.user.id });
       this.getTasks();
     });
   };
 
   getTasks = customOption => {
-    const tags = this.state.filterTags.map(tag => tag.value);
-    const typeId = this.state.typeId.map(option => option.value);
     const options = customOption
       ? customOption
       : {
@@ -442,13 +406,12 @@ class AgileBoard extends Component {
           sprintId: this.state.changedSprint,
           prioritiesId: this.state.prioritiesId,
           authorId: this.state.authorId,
-          typeId: typeId,
+          typeId: this.state.typeId,
           name: this.state.name,
-          tags: tags.join(','),
+          tags: this.state.filterTags,
           performerId: this.state.performerId
         };
     this.props.getTasks(options);
-    this.saveFiltersToLocalStorage();
     this.updateFilterList();
   };
 
