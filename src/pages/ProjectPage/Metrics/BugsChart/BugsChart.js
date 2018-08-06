@@ -18,17 +18,13 @@ class BugsChart extends Component {
     openedRegressBugsMetrics: PropTypes.array
   };
 
-  constructor(props) {
-    super(props);
+  chartRef = null;
 
-    this.state = {
-      chartRef: null
-    };
-
-    this.chartOptions = {
-      ...props.chartDefaultOptions,
+  getGraphicOptions() {
+    return {
+      ...this.props.chartDefaultOptions,
       scales: {
-        ...props.chartDefaultOptions.scales,
+        ...this.props.chartDefaultOptions.scales,
         yAxes: [
           {
             ticks: {
@@ -37,16 +33,12 @@ class BugsChart extends Component {
             display: true,
             scaleLabel: {
               display: true,
-              labelString: 'Количество багов'
+              labelString: localize[this.props.lang].BUGS_NUM
             }
           }
         ]
       }
     };
-  }
-
-  componentDidMount() {
-    this.setState({ chartRef: this.refs.chart });
   }
 
   makeChartData = () => {
@@ -79,10 +71,12 @@ class BugsChart extends Component {
     };
   };
 
+  setChartRef = node => (this.chartRef = node);
+
   render() {
     return (
-      <ChartWrapper chartRef={this.state.chartRef} className={css.BugsChart}>
-        <Line ref="chart" data={this.makeChartData()} options={this.chartOptions} redraw />
+      <ChartWrapper chartRef={this.chartRef} className={css.BugsChart}>
+        <Line ref={this.setChartRef} data={this.makeChartData()} options={this.getGraphicOptions()} redraw />
       </ChartWrapper>
     );
   }

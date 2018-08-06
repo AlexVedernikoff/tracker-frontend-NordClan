@@ -1,0 +1,34 @@
+{
+  "en": {
+    "HEADER": "Edit sprint",
+    "FILL": "All fields must be filled",
+    "DATE": "The end date must be after the start date ",
+    "SPRINT_NAME": "Sprint name:",
+    "SPRINT_PLACEHOLDER": "Enter sprint name",
+    "START_DATE": "Start date:",
+    "END_DATE": "End date",
+    "QA_PERCENT": "% on QA",
+    "QA_PERCENT_PLACEHOLDER": "Enter new % on QA",
+    "WO_RISK": "Enter budget without risk reserve:",
+    "WO_RISK_PLACEHOLDER": "Enter the new value without RR",
+    "WITH_RISK": "Enter the budget with risk reserve:",
+    "WITH_RISK_PLACEHOLDER": "Enter the new value with RR",
+    "CHANGE": "Change"
+  },
+  "ru": {
+    "HEADER": "Редактирование спринта",
+    "FILL": "Все поля должны быть заполнены",
+    "DATE": "Дата окончания должна быть позже даты начала ",
+    "SPRINT_NAME": "Название спринта:",
+    "SPRINT_PLACEHOLDER": "Введите название спринта",
+    "START_DATE": "Дата начала:",
+    "END_DATE": "Дата окончания:",
+    "QA_PERCENT": "% на QA",
+    "QA_PERCENT_PLACEHOLDER": "Введите новый % на QA",
+    "WO_RISK": "Введите бюджет без рискового резерва:",
+    "WO_RISK_PLACEHOLDER": "Введите новое значение без рискового резерва:",
+    "WITH_RISK": "Введите бюджет с рисковым резервом:",
+    "WITH_RISK_PLACEHOLDER": "Введите новое значение с рисковым резервом:",
+    "CHANGE": "Изменить"
+  }
+}

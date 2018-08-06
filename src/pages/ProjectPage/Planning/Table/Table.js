@@ -106,7 +106,8 @@ class Table extends React.Component {
       openSprintEditModal,
       openMilestoneEditModal,
       isExternal,
-      onDeleteMilestone
+      onDeleteMilestone,
+      lang
     } = this.props;
 
     return (
@@ -133,7 +134,7 @@ class Table extends React.Component {
         <div className={classnames(css.name, { [css.nameMargin]: isProjectAdmin })}>{sprint.name}</div>
 
         {!isExternal ? (
-          <IconEdit className={css.edit} data-tip="Редактировать" onClick={openSprintEditModal(sprint)} />
+          <IconEdit className={css.edit} data-tip={localize[lang].EDIT} onClick={openSprintEditModal(sprint)} />
         ) : null}
       </div>
     );
@@ -150,7 +151,8 @@ class Table extends React.Component {
       openSprintEditModal,
       openMilestoneEditModal,
       isExternal,
-      onDeleteMilestone
+      onDeleteMilestone,
+      lang
     } = this.props;
 
     return (
@@ -168,10 +170,10 @@ class Table extends React.Component {
         <div className={classnames(css.name, { [css.nameMargin]: false })}>{milestone.name}</div>
 
         {!isExternal ? (
-          <IconEdit className={css.edit} data-tip="Редактировать" onClick={openMilestoneEditModal(milestone)} />
+          <IconEdit className={css.edit} data-tip={localize[lang].EDIT} onClick={openMilestoneEditModal(milestone)} />
         ) : null}
         {!isExternal ? (
-          <IconDelete className={css.delete} data-tip="Удалить" onClick={onDeleteMilestone(milestone)} />
+          <IconDelete className={css.delete} data-tip={localize[lang].DELETE} onClick={onDeleteMilestone(milestone)} />
         ) : null}
       </div>
     );
@@ -186,7 +188,7 @@ class Table extends React.Component {
 
     return (
       <div className={className}>
-        <span className={css.header}>План</span>
+        <span className={css.header}>{localize[this.props.lang].PLAN}</span>
         {entities.map((entity, i) => {
           return this.detectType(entity) === 'sprint' ? (
             <span key={`sprint-${i}`} className={css.name}>
@@ -211,7 +213,7 @@ class Table extends React.Component {
 
     return (
       <div className={className}>
-        <span className={css.header}>Факт</span>
+        <span className={css.header}>{localize[this.props.lang].FACT}</span>
         {entities.map((entity, i) => {
           return this.detectType(entity) === 'sprint' ? (
             <span key={`sprint-${i}`} className={css.name}>
@@ -268,7 +270,7 @@ class Table extends React.Component {
   }
 
   getMilestoneLabel(milestone) {
-    const status = milestone.done ? 'Выполнено' : 'Не выполнено';
+    const status = milestone.done ? localize[this.props.lang].COMPLETED : localize[this.props.lang].UNCOMPLETED;
     const date = moment(milestone.date).format('DD.MM');
     return `${milestone.name}. ${date}. ${status}`;
   }
