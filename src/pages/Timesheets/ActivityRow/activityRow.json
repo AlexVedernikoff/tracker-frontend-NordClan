@@ -1,10 +1,12 @@
 {
   "en": {
     "DELETE": "Delete",
-    "CONFIRM_MESSAGE": "Are you sure you want to delete this activity?"
+    "CONFIRM_MESSAGE": "Are you sure you want to delete this activity?",
+    "DELETE_DUBLICATE": "Delete dublicate timesheet."
   },
   "ru": {
     "DELETE": "Удалить",
-    "CONFIRM_MESSAGE": "Вы действительно хотите удалить эту активность?"
+    "CONFIRM_MESSAGE": "Вы действительно хотите удалить эту активность?",
+    "DELETE_DUBLICATE": "Удалить копию таймшита."
   }
 }
