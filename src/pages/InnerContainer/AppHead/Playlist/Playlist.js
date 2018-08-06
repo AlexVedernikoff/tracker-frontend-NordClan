@@ -139,12 +139,7 @@ class Playlist extends Component {
   activeTracks = (tracks, activeDayTab, activeActivityTab) => {
     let activeTracks = this.filterTracksByDayTab(tracks, activeDayTab);
     activeTracks = this.filterTracksByActivityTab(activeTracks.tracks, activeActivityTab);
-
-    const isMagicActivityTab = activeActivityTab !== 'all' && activeActivityTab !== 1;
-    const additionalMagicActivityTracks = isMagicActivityTab ? this.addAdditionalMagicActivities(activeTracks) : [];
-
-    const allTracks = activeTracks.concat(additionalMagicActivityTracks);
-    const allSortedTracks = allTracks.sort((track1, track2) => {
+    const allSortedTracks = activeTracks.sort((track1, track2) => {
       if (!track1.project) {
         return -1;
       }
@@ -382,4 +377,7 @@ const mapDispatchToProps = {
   changeTask
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(onClickOutside(Playlist));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(onClickOutside(Playlist));

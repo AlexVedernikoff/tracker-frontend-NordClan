@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import { createMilestone } from '../../../../actions/Milestone';
 import Select from 'react-select';
 import localize from './CreateMilestoneModal.json';
+import { getDictionaryName } from '../../../../utils/NameLocalisation';
 
 class CreateMilestoneModal extends Component {
   static propTypes = {
@@ -68,8 +69,7 @@ class CreateMilestoneModal extends Component {
       secondCol: 8
     };
     const { milestoneTypes, lang } = this.props;
-    const options = milestoneTypes.map(type => ({ value: type.id, label: type.name }));
-
+    const options = milestoneTypes.map(type => ({ value: type.id, label: getDictionaryName(type) }));
     return (
       <Modal isOpen contentLabel="modal" onRequestClose={this.props.onClose}>
         <div>

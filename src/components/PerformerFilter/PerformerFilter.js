@@ -9,7 +9,7 @@ import { getFullName } from '../../utils/NameLocalisation';
 class PerformerFilter extends React.Component {
   static propTypes = {
     onPerformerSelect: PropTypes.func.isRequired,
-    selectedPerformerId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    selectedPerformerId: PropTypes.array,
     users: PropTypes.array
   };
 
@@ -28,7 +28,7 @@ class PerformerFilter extends React.Component {
       <SelectDropdown
         name="performer"
         placeholder={localize[lang].CHANGE_PERFORMER}
-        multi={false}
+        multi
         value={this.props.selectedPerformerId}
         onChange={this.props.onPerformerSelect}
         noResultsText={localize[lang].NO_RESULTS}

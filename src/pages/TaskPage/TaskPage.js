@@ -18,7 +18,7 @@ import GoBackPanel from '../../components/GoBackPanel';
 import CreateTaskModal from '../../components/CreateTaskModal';
 import HttpError from '../../components/HttpError';
 import { history } from '../../History';
-import { VISOR, EXTERNAL_USER } from '../../constants/Roles';
+import { VISOR, EXTERNAL_USER, ADMIN } from '../../constants/Roles';
 
 import * as TaskStatuses from '../../constants/TaskStatuses';
 
@@ -233,8 +233,16 @@ class TaskPage extends Component {
     this.handleCloseCancelSubTaskModal();
   };
 
+  checkIsAdminInProject = () => {
+    return this.props.user.projectsRoles
+      ? this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1 ||
+          this.props.user.globalRole === ADMIN
+      : false;
+  };
+
   render() {
     const { globalRole, task, params, lang } = this.props;
+    const isProjectAdmin = this.checkIsAdminInProject();
     const isVisor = globalRole === VISOR;
     const isExternal = globalRole === EXTERNAL_USER;
     const projectUrl = task.project ? `/projects/${task.project.id}` : '/';
@@ -247,6 +255,31 @@ class TaskPage extends Component {
           }
         : null;
     const httpError = task.error || notFoundError;
+    const links = [
+      <Link
+        key={`/projects/${params.projectId}/tasks/${params.taskId}`}
+        onlyActiveOnIndex
+        to={`/projects/${params.projectId}/tasks/${params.taskId}`}
+      >
+        {localize[lang].COMMENTS}
+      </Link>,
+      <Link
+        key={`/projects/${params.projectId}/tasks/${params.taskId}`}
+        to={`/projects/${params.projectId}/tasks/${params.taskId}/history`}
+      >
+        {localize[lang].HISTORY}
+      </Link>
+    ];
+    if (isProjectAdmin) {
+      links.push(
+        <Link
+          key={`/projects/${params.projectId}/tasks/${params.taskId}`}
+          to={`/projects/${params.projectId}/tasks/${params.taskId}/time-reports`}
+        >
+          {localize[lang].TIME_REPORTS}
+        </Link>
+      );
+    }
 
     return httpError ? (
       <HttpError error={httpError} />
@@ -280,19 +313,7 @@ class TaskPage extends Component {
                 uploadAttachments={this.uploadAttachments}
                 canEdit={task.statusId !== TaskStatuses.CLOSED}
               />
-              {!isExternal ? (
-                <RouteTabs style={{ marginTop: '2rem', marginBottom: '2rem' }}>
-                  <Link onlyActiveOnIndex to={`/projects/${params.projectId}/tasks/${params.taskId}`}>
-                    {localize[lang].COMMENTS}
-                  </Link>
-                  <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/history`}>
-                    {localize[lang].HISTORY}
-                  </Link>
-                  <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/time-reports`}>
-                    {localize[lang].TIME_REPORTS}
-                  </Link>
-                </RouteTabs>
-              ) : null}
+              {!isExternal ? <RouteTabs style={{ marginTop: '2rem', marginBottom: '2rem' }}>{links}</RouteTabs> : null}
               {this.props.children}
             </main>
           </Col>
@@ -421,4 +442,7 @@ const mapDispatchToProps = {
   getRoles
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskPage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskPage);

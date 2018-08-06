@@ -21,7 +21,7 @@ import getPriorityById from '../../../utils/TaskPriority';
 import * as css from './AgileBoard.scss';
 import { UnmountClosed } from 'react-collapse';
 import localize from './AgileBoard.json';
-import { getFullName } from '../../../utils/NameLocalisation';
+import { getFullName, getDictionaryName } from '../../../utils/NameLocalisation';
 
 import getTasks from '../../../actions/Tasks';
 import { VISOR, EXTERNAL_USER } from '../../../constants/Roles';
@@ -318,7 +318,7 @@ class AgileBoard extends Component {
     name: '',
     authorId: null,
     prioritiesId: null,
-    performerId: null
+    performerId: []
   };
 
   getChangedSprint = props => {
@@ -363,6 +363,10 @@ class AgileBoard extends Component {
       const changedFilters = state.changedFilters;
 
       if (name === 'typeId') {
+        filterValue = e.map(singleValue => singleValue.value);
+      }
+
+      if (name === 'performerId') {
         filterValue = e.map(singleValue => singleValue.value);
       }
 
@@ -613,7 +617,7 @@ class AgileBoard extends Component {
   };
 
   updateFilterList = () => {
-    const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'performerId', 'changedSprint', 'name'];
+    const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'changedSprint', 'name'];
     const selectedFilters = [];
 
     singleOptionFiltersList.forEach(filterName => {
@@ -630,6 +634,7 @@ class AgileBoard extends Component {
       allFilters: [
         ...selectedFilters,
         ...this.createSelectedOption(null, this.state.typeId, 'typeId'),
+        ...this.createSelectedOption(null, this.state.performerId, 'performerId'),
         ...this.createSelectedOption(null, this.state.filterTags, 'filterTags')
       ]
     });
@@ -638,7 +643,7 @@ class AgileBoard extends Component {
   createOptions = (array, labelField) => {
     return array.map(element => ({
       value: element.id,
-      label: labelField === 'name' ? element[labelField] : getFullName(element)
+      label: labelField === 'name' ? getDictionaryName(element) : getFullName(element)
     }));
   };
 
@@ -785,7 +790,7 @@ class AgileBoard extends Component {
                   </Col>
                   <Col xs={12} sm={3}>
                     <PerformerFilter
-                      onPerformerSelect={option => this.selectValue(option ? option.value : null, 'performerId')}
+                      onPerformerSelect={options => this.selectValue(options, 'performerId')}
                       selectedPerformerId={this.state.performerId}
                     />
                   </Col>

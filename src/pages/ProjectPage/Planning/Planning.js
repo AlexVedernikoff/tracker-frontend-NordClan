@@ -415,16 +415,13 @@ class Planning extends Component {
       });
     };
 
-    const tasksChanged = [];
-    tasks.forEach(task => {
-      console.log(task);
-      tasksChanged.push({
-        id: task.id,
-        sprintId: sprintId
-      });
-    });
-
-    this.props.changeTasks(tasksChanged, getPlanningTasksAll);
+    this.props.changeTasks(
+      {
+        sprintId,
+        taskIds: tasks.map(task => task.id)
+      },
+      getPlanningTasksAll
+    );
 
     this.setState({ isModalOpenMoveTasks: false });
   };
