@@ -54,5 +54,5 @@ export function getMessage(history) {
 }
 
 export function getDictionaryName(dictionary) {
-  return lang === 'ru' ? dictionary.name : dictionary.nameEn;
+  return lang === 'ru' ? dictionary.name : dictionary.nameEn || dictionary.name;
 }
