@@ -656,7 +656,6 @@ class AgileBoard extends Component {
         }
       }));
     } else {
-      console.log(optionList);
       const option = optionList.find(element => element.id === selectedOption);
       if (!option) return {};
       return option[optionLabel];
