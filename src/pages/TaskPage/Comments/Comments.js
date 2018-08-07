@@ -26,8 +26,6 @@ import localize from './Comments.json';
 
 const ENTER = 13;
 
-const USERS = ['asdasd', 'qweqwe', 'zxczxc'];
-
 class Comments extends Component {
   constructor(props) {
     super(props);
@@ -104,7 +102,8 @@ class Comments extends Component {
     setHighLighted: PropTypes.func,
     taskId: PropTypes.number,
     updateCurrentCommentText: PropTypes.func,
-    userId: PropTypes.number
+    userId: PropTypes.number,
+    users: PropTypes.array
   };
 
   handleClickOutside = evt => {
@@ -124,35 +123,37 @@ class Comments extends Component {
   };
 
   getMentions = str => {
-    const regEx = /@\w+/g;
+    const regEx = /(@\w+ \w+)|(@\w+)/g;
     let match = [];
     const entities = [];
     while ((match = regEx.exec(str)) !== null) {
       entities.push(match[0].trim().slice(1));
     }
-    entities.pop();
     return entities;
   };
 
-  searchMentions = value => {
+  showSuggestions = value => {
     if (/@/.test(value)) {
-      const mention = /(@\w+)$/.exec(value);
+      const mention = /((@\w+ \w+)|(@\w+))$/.exec(value);
       const mentions = this.getMentions(value);
-      const suggestions = USERS;
+      mentions.pop();
+      const suggestions = this.props.users.map(user => user.fullNameEn);
       if (mention === null) {
         return suggestions;
       }
+      console.log(mention[0]);
       const filtered = suggestions.filter(
         suggestion =>
-          suggestion.toLowerCase().indexOf(mention[0].slice(1)) !== -1 && mentions.indexOf(`${suggestion}`) === -1
+          suggestion.toLowerCase().indexOf(mention[0].slice(1).toLowerCase()) === 0 &&
+          mentions.indexOf(suggestion) === -1
       );
       return filtered;
     }
   };
 
   typeComment = evt => {
-    this.searchMentions(evt.target.value);
-    console.log(this.searchMentions(evt.target.value));
+    this.showSuggestions(evt.target.value);
+    console.log(this.showSuggestions(evt.target.value));
     this.props.updateCurrentCommentText(evt.target.value);
     if (evt.target.value && evt.target.value.trim() !== '') {
       this.state.disabledBtn = false;
@@ -289,6 +290,7 @@ class Comments extends Component {
 const mapStateToProps = ({
   Task: { task: { id: taskId }, comments, currentComment, highlighted },
   Auth: { user: { id: userId } },
+  Project: { project: { users: users } },
   Localize: { lang }
 }) => ({
   taskId,
@@ -296,7 +298,8 @@ const mapStateToProps = ({
   userId,
   currentComment,
   highlighted,
-  lang
+  lang,
+  users
 });
 
 const mapDispatchToProps = {
