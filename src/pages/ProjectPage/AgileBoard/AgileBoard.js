@@ -237,6 +237,10 @@ class AgileBoard extends Component {
         changedTask: null
       });
     }
+
+    if (nextProps.lastUpdatedTask !== this.props.lastUpdatedTask) {
+      this.getTasks();
+    }
   }
 
   componentDidUpdate() {
@@ -871,6 +875,7 @@ AgileBoard.propTypes = {
   globalRole: PropTypes.string,
   isCreateTaskModalOpen: PropTypes.bool,
   lastCreatedTask: PropTypes.object,
+  lastUpdatedTask: PropTypes.object,
   myTaskBoard: PropTypes.bool,
   openCreateTaskModal: PropTypes.func.isRequired,
   params: PropTypes.object,
@@ -886,6 +891,7 @@ AgileBoard.propTypes = {
 
 const mapStateToProps = state => ({
   lastCreatedTask: state.Project.lastCreatedTask,
+  lastUpdatedTask: state.Task.lastUpdatedTask,
   sprintTasks: state.Tasks.tasks,
   sprints: state.Project.project.sprints,
   project: state.Project.project,
