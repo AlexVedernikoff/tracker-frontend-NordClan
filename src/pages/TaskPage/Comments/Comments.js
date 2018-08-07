@@ -130,17 +130,22 @@ class Comments extends Component {
     while ((match = regEx.exec(str)) !== null) {
       entities.push(match[0].trim());
     }
+    entities.pop();
     return entities;
   };
 
   searchMentions = value => {
-    const mention = /(@\w+)$/.exec(value.trim());
+    let mention = [];
+    mention = /(@\w+)$/.exec(value);
+    //console.log(mention + '!!!!');
     const mentions = this.getMentions(value);
     const suggestions = USERS;
-    const filtered = suggestions.filter(
-      suggestion => suggestion.toLowerCase().indexOf(mention[0]) !== -1 && mentions.indexOf(`@${suggestion}`) === -1
-    );
-    return filtered;
+    console.log(mentions);
+
+    //const filtered = suggestions.filter(
+    //  suggestion => suggestion.toLowerCase().indexOf(mention[0]) !== -1 && mentions.indexOf(`@${suggestion}`) === -1
+    //);
+    //return filtered;
   };
 
   typeComment = evt => {
