@@ -36,6 +36,8 @@ import { setRedirectPath } from './actions/Authentication';
 import isAdmin from './utils/isAdmin';
 import { EXTERNAL_USER } from './constants/Roles';
 import TaskTimeReports from './pages/TaskPage/TaskTimeReports/TaskTimeReports';
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContextProvider } from 'react-dnd';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
@@ -88,56 +90,58 @@ class AppRouter extends Component {
   };
 
   router = (
-    <Router history={this.props.history} render={applyRouterMiddleware(useScroll(() => false))}>
-      <Route path="" component={MainContainer}>
-        <Route path="login" component={Login} onEnter={this.isLogged} />
-        <Route path="icons" component={DemoPage} />
-        <Route path="externalUserActivate/:exUserToken" component={ExternalUserActivate} onEnter={this.isLogged} />
-        <Route path="logout" component={Logout} />
-        <Route path="/" component={InnerContainer} onEnter={this.requireAuth}>
-          <Route path="dashboard" component={Dashboard} />
-          <Route path="timesheets" component={Timesheets} onEnter={this.notExternal} />
-          <Route path="roles" component={UsersRoles} onEnter={this.requareAdmin} />
-          <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
-          <Route path="projects" component={Projects} />
-          <Route path="externalUsers" component={ExternalUsers} onEnter={this.requareAdmin} />
-          <Route
-            path="projects/:projectId"
-            component={ProjectPage}
-            scrollToTop
-            onLeave={this.props.clearCurrentProjectAndTasks}
-          >
-            <IndexRoute component={AgileBoard} />
-            <Route path="info" component={Info} />
-            <Route path="property" component={Settings} />
-            <Route path="planning" component={Planning} />
-            <Route path="analytics" component={Metrics}>
-              <Route path=":metricType" component={Metrics} />
+    <DragDropContextProvider backend={HTML5Backend}>
+      <Router history={this.props.history} render={applyRouterMiddleware(useScroll(() => false))}>
+        <Route path="" component={MainContainer}>
+          <Route path="login" component={Login} onEnter={this.isLogged} />
+          <Route path="icons" component={DemoPage} />
+          <Route path="externalUserActivate/:exUserToken" component={ExternalUserActivate} onEnter={this.isLogged} />
+          <Route path="logout" component={Logout} />
+          <Route path="/" component={InnerContainer} onEnter={this.requireAuth}>
+            <Route path="dashboard" component={Dashboard} />
+            <Route path="timesheets" component={Timesheets} onEnter={this.notExternal} />
+            <Route path="roles" component={UsersRoles} onEnter={this.requareAdmin} />
+            <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
+            <Route path="projects" component={Projects} />
+            <Route path="externalUsers" component={ExternalUsers} onEnter={this.requareAdmin} />
+            <Route
+              path="projects/:projectId"
+              component={ProjectPage}
+              scrollToTop
+              onLeave={this.props.clearCurrentProjectAndTasks}
+            >
+              <IndexRoute component={AgileBoard} />
+              <Route path="info" component={Info} />
+              <Route path="property" component={Settings} />
+              <Route path="planning" component={Planning} />
+              <Route path="analytics" component={Metrics}>
+                <Route path=":metricType" component={Metrics} />
+              </Route>
+              <Route path="timesheets" component={ProjectTimesheets} />
+              <Route path="history" component={ProjectHistory} />
+              <Route path="(sprint:sprintId/)tasks" component={TaskList} />
             </Route>
-            <Route path="timesheets" component={ProjectTimesheets} />
-            <Route path="history" component={ProjectHistory} />
-            <Route path="(sprint:sprintId/)tasks" component={TaskList} />
+
+            <Route path="projects/portfolio/:portfolioId" component={Portfolio} scrollToTop />
+
+            <Route
+              path="projects/:projectId/tasks/:taskId"
+              component={TaskPage}
+              onLeave={this.props.clearCurrentTask}
+              ignoreScrollBehavior
+            >
+              <IndexRoute component={Comments} />
+              <Route path="history" component={TaskHistory} onEnter={this.notExternal} />
+              <Route path="time-reports" component={TaskTimeReports} onEnter={this.requareAdmin} />
+            </Route>
+
+            <IndexRedirect to="projects" />
           </Route>
-
-          <Route path="projects/portfolio/:portfolioId" component={Portfolio} scrollToTop />
-
-          <Route
-            path="projects/:projectId/tasks/:taskId"
-            component={TaskPage}
-            onLeave={this.props.clearCurrentTask}
-            ignoreScrollBehavior
-          >
-            <IndexRoute component={Comments} />
-            <Route path="history" component={TaskHistory} onEnter={this.notExternal} />
-            <Route path="time-reports" component={TaskTimeReports} onEnter={this.requareAdmin} />
-          </Route>
-
-          <IndexRedirect to="projects" />
+          <IndexRedirect to="login" />
         </Route>
-        <IndexRedirect to="login" />
-      </Route>
-      <Route path="*" component={NotFound} />
-    </Router>
+        <Route path="*" component={NotFound} />
+      </Router>
+    </DragDropContextProvider>
   );
 
   render() {
@@ -157,7 +161,4 @@ const mapDispatchToProps = {
   clearCurrentProjectAndTasks,
   clearCurrentTask
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AppRouter);
+export default connect(mapStateToProps, mapDispatchToProps)(AppRouter);
