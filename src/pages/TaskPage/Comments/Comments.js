@@ -26,6 +26,8 @@ import localize from './Comments.json';
 
 const ENTER = 13;
 
+const USERS = ['ASD', 'ZXC', 'QWE'];
+
 class Comments extends Component {
   constructor(props) {
     super(props);
@@ -121,7 +123,28 @@ class Comments extends Component {
     });
   };
 
+  getMentions = str => {
+    const regEx = /@\w+/g;
+    let match = [];
+    const entities = [];
+    while ((match = regEx.exec(str)) !== null) {
+      entities.push(match[0].trim());
+    }
+    return entities;
+  };
+
+  searchMentions = value => {
+    const mention = /(@\w+)$/.exec(value.trim());
+    const mentions = this.getMentions(value);
+    const suggestions = USERS;
+    const filtered = suggestions.filter(
+      suggestion => suggestion.toLowerCase().indexOf(mention[0]) !== -1 && mentions.indexOf(`@${suggestion}`) === -1
+    );
+    return filtered;
+  };
+
   typeComment = evt => {
+    this.searchMentions(evt.target.value);
     this.props.updateCurrentCommentText(evt.target.value);
     if (evt.target.value && evt.target.value.trim() !== '') {
       this.state.disabledBtn = false;
@@ -256,15 +279,8 @@ class Comments extends Component {
 }
 
 const mapStateToProps = ({
-  Task: {
-    task: { id: taskId },
-    comments,
-    currentComment,
-    highlighted
-  },
-  Auth: {
-    user: { id: userId }
-  },
+  Task: { task: { id: taskId }, comments, currentComment, highlighted },
+  Auth: { user: { id: userId } },
   Localize: { lang }
 }) => ({
   taskId,
@@ -288,7 +304,4 @@ const mapDispatchToProps = {
   setHighLighted
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(onClickOutside(Comments));
+export default connect(mapStateToProps, mapDispatchToProps)(onClickOutside(Comments));
