@@ -1,0 +1,14 @@
+{
+  "en": {
+    "IN_PROGRESS": "In progress",
+    "IN_HOLD": "In hold",
+    "FINISHED": "Finished",
+    "STATUS": "Status"
+  },
+  "ru": {
+    "IN_PROGRESS": "В процессе",
+    "IN_HOLD": "Приостановлен",
+    "FINISHED": "Завершен",
+    "STATUS": "Статус"
+  }
+}

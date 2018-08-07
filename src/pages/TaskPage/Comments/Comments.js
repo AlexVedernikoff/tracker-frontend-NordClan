@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import classnames from 'classnames';
 import onClickOutside from 'react-onclickoutside';
 import PropTypes from 'prop-types';
-import TextArea from '../../../components/TextArea';
 import TextareaAutosize from 'react-autosize-textarea';
+import shortId from 'shortid';
 import {
   getCommentsByTask,
   publishComment,
@@ -19,9 +20,9 @@ import { connect } from 'react-redux';
 import * as css from './Comments.scss';
 import Comment from './Comment';
 import { history } from '../../../History';
-import Button from '../../../components/Button';
-import * as Icons from '../../../components/Icons';
+import { IconSend, IconComments } from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
+import localize from './Comments.json';
 
 const ENTER = 13;
 
@@ -30,7 +31,8 @@ class Comments extends Component {
     super(props);
     this.state = {
       commentToDelete: null,
-      disabledBtn: true
+      disabledBtn: true,
+      resizeKey: shortId()
     };
   }
 
@@ -38,14 +40,20 @@ class Comments extends Component {
     this.props.getCommentsByTask(this.props.params.taskId);
   }
 
+  componentDidMount = () => {
+    if (this.props.location.hash === '#reply') {
+      setTimeout(() => this.reply.focus());
+    }
+  };
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.params.taskId !== this.props.params.taskId) {
       this.props.getCommentsByTask(nextProps.params.taskId);
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.location.hash === '#reply' && prevProps.location.hash === '#reply') {
+  componentDidUpdate = prevProps => {
+    if (this.props.location.hash === '#reply' && prevProps.location.hash !== '#reply') {
       setTimeout(() => {
         this.reply.focus();
         Comment.conditionalScroll(this.reply);
@@ -75,15 +83,6 @@ class Comments extends Component {
         this.selectComment(this.props.highlighted.id);
       }
     }
-  }
-  componentDidMount() {
-    if (this.props.location.hash === '#reply') {
-      setTimeout(() => this.reply.focus());
-    }
-  }
-
-  static defaultProps = {
-    comments: []
   };
 
   static propTypes = {
@@ -116,6 +115,12 @@ class Comments extends Component {
     Comment.selectComment(id, this.props.location);
   };
 
+  setCommentForEdit = comment => {
+    this.props.setCommentForEdit(comment).then(() => {
+      this.setState({ resizeKey: shortId() });
+    });
+  };
+
   typeComment = evt => {
     this.props.updateCurrentCommentText(evt.target.value);
     if (evt.target.value && evt.target.value.trim() !== '') {
@@ -140,7 +145,6 @@ class Comments extends Component {
       this.state.disabledBtn = true;
     }
   };
-  reply = null;
 
   removeComment = commentId => {
     this.setState({ commentToDelete: commentId });
@@ -160,7 +164,7 @@ class Comments extends Component {
       <Comment
         key={c.id} /*используются id чтобы правильно работал маунт и анмаунт*/
         lightened={c.id === this.props.highlighted.id}
-        editComment={this.props.setCommentForEdit}
+        editComment={this.setCommentForEdit}
         removeComment={this.removeComment}
         reply={this.props.selectParentCommentForReply}
         ownedByMe={c.author.id === this.props.userId}
@@ -169,63 +173,79 @@ class Comments extends Component {
     ));
 
   render() {
+    const { lang } = this.props;
+
     return (
-      <div className="css.comments">
+      <div className={css.comments}>
         <ul className={css.commentList}>
           <form className={css.answerLine}>
             <div className={css.answerLineText}>
               <TextareaAutosize
+                key={this.state.resizeKey}
                 style={{ minHeight: 32 }}
                 className={css.resizeTrue}
                 disabled={this.props.currentComment.disabled || this.props.currentComment.expired}
-                placeholder="Введите текст комментария"
+                placeholder={localize[lang].ENTER_COMMENT}
                 onInput={this.typeComment}
                 onKeyDown={this.publishComment}
-                ref={ref => (this.reply = ref ? ref.refs.input : null)}
+                ref={ref => (this.reply = ref ? ref.textarea : null)}
                 value={this.props.currentComment.text}
               />
               {this.props.currentComment.id ? (
                 <div className={css.answerInfo}>
-                  Редактирование комментария&nbsp;
+                  {localize[lang].EDIT_COMMENT}&nbsp;
                   {this.props.currentComment.expired ? (
-                    <span className={css.outDatedToolTip}>&nbsp;истекло&nbsp;</span>
+                    <span className={css.outDatedToolTip}>&nbsp;{localize[lang].EXPIRED}&nbsp;</span>
                   ) : null}
                   <a onClick={() => this.selectComment(this.props.currentComment.id)}>
                     {`#${this.props.currentComment.id}`}
                   </a>&nbsp;
                   <span className={css.quoteCancel} onClick={() => this.props.resetCurrentEditingComment()}>
-                    (Отмена)
+                    {localize[lang].CANCEL}
                   </span>
                 </div>
               ) : null}
               {this.props.currentComment.parentId && !this.props.currentComment.id ? (
                 <div className={css.answerInfo}>
-                  В ответ на комментарий&nbsp;
+                  {localize[lang].ANSWER}&nbsp;
                   <a onClick={() => this.selectComment(this.props.currentComment.parentId)}>
                     {`#${this.props.currentComment.parentId}`}
                   </a>&nbsp;
                   <span className={css.quoteCancel} onClick={() => this.props.selectParentCommentForReply(null)}>
-                    (Отмена)
+                    {localize[lang].CANCEL}
                   </span>
                 </div>
               ) : null}
-            </div>
-            <div className={css.answerButton}>
-              <Button onClick={this.publishComment} type="green" disabled={this.state.disabledBtn} text="Отправить" />
-              <div className={css.answerSendTooltip}>или ctrl+enter</div>
+              <span
+                onClick={!this.state.disabledBtn ? this.publishComment : null}
+                data-tip={localize[lang].SEND}
+                className={classnames({
+                  [css.sendIcon]: true,
+                  [css.disabled]: this.state.disabledBtn
+                })}
+              >
+                <IconSend />
+              </span>
             </div>
           </form>
           {this.props.comments.length ? (
             this.getCommentList()
           ) : (
-            <div className={css.noCommentsYet}>Комментариев еще нет, Вы можете стать первым!</div>
+            <div className={css.noCommentsYet}>
+              <div className={css.noCommentsIcon}>
+                <IconComments />
+              </div>
+              {localize[lang].COMMENTS_IS_EXISTS}
+              <br />
+              {localize[lang].BE_FIRST}
+            </div>
           )}
         </ul>
         {this.state.commentToDelete ? (
           <ConfirmModal
             isOpen
             contentLabel="modal"
-            text="Вы действительно хотите удалить комментарий?"
+            text={localize[lang].REMOVE_COMMENT}
             onCancel={this.cancelRemoveComment}
             onConfirm={this.confirmRemoveComment}
           />
@@ -236,14 +256,23 @@ class Comments extends Component {
 }
 
 const mapStateToProps = ({
-  Task: { task: { id: taskId }, comments, currentComment, highlighted },
-  Auth: { user: { id: userId } }
+  Task: {
+    task: { id: taskId },
+    comments,
+    currentComment,
+    highlighted
+  },
+  Auth: {
+    user: { id: userId }
+  },
+  Localize: { lang }
 }) => ({
   taskId,
   comments,
   userId,
   currentComment,
-  highlighted
+  highlighted,
+  lang
 });
 
 const mapDispatchToProps = {
@@ -259,4 +288,7 @@ const mapDispatchToProps = {
   setHighLighted
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(onClickOutside(Comments));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(onClickOutside(Comments));

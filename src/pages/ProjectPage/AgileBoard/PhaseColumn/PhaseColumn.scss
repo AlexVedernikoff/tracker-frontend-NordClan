@@ -6,8 +6,12 @@
   transition-property: background-color;
   transition-duration: 0.3s;
   position: relative;
-  width: 100%;
+  width: 20%;
+  padding: 0.5rem;
   height: inherit;
+  @include phone {
+    width: 100%;
+  }
 
   h4 {
     margin-top: 0.5rem;

@@ -9,13 +9,15 @@ import { getProjectHistory } from '../../../actions/Project';
 import HistoryMessage from '../../../components/HistoryMessage';
 import Pagination from '../../../components/Pagination';
 import UserCard from '../../../components/UserCard';
+import localize from './ProjectHistory.json';
+import { getFullName, getMessage } from '../../../utils/NameLocalisation';
 
 class ProjectHistory extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       isUserCardVisible: false,
-      activePage: 0
+      activePage: 1
     };
   }
 
@@ -24,11 +26,11 @@ class ProjectHistory extends React.Component {
   };
 
   showUserCard = id => {
-    this.setState({isUserCardVisible: true, userId: id});
+    this.setState({ isUserCardVisible: true, userId: id });
   };
 
   hideUserCard = () => {
-    this.setState({isUserCardVisible: false});
+    this.setState({ isUserCardVisible: false });
   };
 
   handlePaginationClick = e => {
@@ -48,38 +50,36 @@ class ProjectHistory extends React.Component {
     });
   };
 
-  render () {
-    const { historyEvents, projectId } = this.props;
+  render() {
+    const { historyEvents, projectId, lang } = this.props;
     const eventList = historyEvents.map((event, i) => {
-      return <div className={css.historyEvent} key={event.id}>
-        <span className={css.time}> {moment(event.date).format('DD.MM.YYYY HH:mm:ss')}</span>
-        <div className={css.historyAction}>
-          <UserCard user={event.author}>
-            <Link>{event.author.fullNameRu}</Link>
-          </UserCard>
-          {' '}
-          <HistoryMessage
-            message={event.message}
-            entities={event.entities}
-            projectId={projectId}
-          />
+      return (
+        <div className={css.historyEvent} key={event.id}>
+          <span className={css.time}> {moment(event.date).format('DD.MM.YYYY HH:mm:ss')}</span>
+          <div className={css.historyAction}>
+            {event.author ? (
+              <UserCard user={event.author}>
+                <Link>{getFullName(event.author)}</Link>
+              </UserCard>
+            ) : null}{' '}
+            <HistoryMessage message={getMessage(event)} entities={event.entities} projectId={projectId} />
+          </div>
         </div>
-      </div>;
+      );
     });
 
     return (
       <div className={css.history}>
-        <h3>История изменений</h3>
+        <h3>{localize[lang].CHANGES_HISTORY}</h3>
         {eventList}
 
-        { this.props.pagesCount > 1
-          ? <Pagination
-              itemsCount={this.props.pagesCount}
-              activePage={this.state.activePage}
-              onItemClick={this.handlePaginationClick}
-            />
-          : null
-        }
+        {this.props.pagesCount > 1 ? (
+          <Pagination
+            itemsCount={this.props.pagesCount}
+            activePage={this.state.activePage}
+            onItemClick={this.handlePaginationClick}
+          />
+        ) : null}
       </div>
     );
   }
@@ -95,11 +95,15 @@ ProjectHistory.propTypes = {
 const mapStateToProps = state => ({
   projectId: state.Project.project.id,
   historyEvents: state.Project.project.history.events,
-  pagesCount: state.Project.project.history.pagesCount
+  pagesCount: state.Project.project.history.pagesCount,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
   getProjectHistory
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectHistory);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ProjectHistory);

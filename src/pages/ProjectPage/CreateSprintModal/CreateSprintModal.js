@@ -10,9 +10,10 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { createSprint } from '../../../actions/Sprint';
 import { getSprintsDateRange } from '../../../selectors/getSprintsDateRange';
+import localize from './CreateSprintModal.json';
 
 class CreateSprintModal extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -21,7 +22,7 @@ class CreateSprintModal extends Component {
       budget: '',
       riskBudget: '',
       sprintName: '',
-      allottedTime: ''
+      allottedTimeQa: props.project.percentQA || 30
     };
   }
 
@@ -29,51 +30,51 @@ class CreateSprintModal extends Component {
     if (this.validateNumbers(e.target.value)) {
       this.setState({ budget: e.target.value });
     }
-  }
+  };
 
   onChangeRiskBudget = e => {
     if (this.validateNumbers(e.target.value)) {
       this.setState({ riskBudget: e.target.value });
     }
-  }
+  };
 
-  onChangeTime = e => {
-    if (this.validateNumbers(e.target.value)) {
-      this.setState({ allottedTime: e.target.value });
+  onChangeTimeQA = e => {
+    if (this.validateNumbers(e.target.value) && e.target.value <= 100) {
+      this.setState({ allottedTimeQa: e.target.value });
     }
-  }
+  };
 
   onChangeName = e => {
-    this.setState({ sprintName: e.target.value });
+    this.setState({ sprintName: e.target.value.trim() });
   };
 
   handleDayFromChange = date => {
-    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD') }, () => this.setDefaultTimeValue());
+    this.setState({ dateFrom: moment(date).format('YYYY-MM-DD') });
   };
 
   handleDayToChange = date => {
-    this.setState({ dateTo: moment(date).format('YYYY-MM-DD') }, () => this.setDefaultTimeValue());
+    this.setState({ dateTo: moment(date).format('YYYY-MM-DD') });
   };
 
   checkNullInputs = () => {
     return !!(
-      this.state.sprintName
-      && this.state.dateTo
-      && this.state.dateFrom
-      && this.state.allottedTime
-      && this.state.budget
-      && this.state.riskBudget
+      this.state.sprintName &&
+      this.state.dateTo &&
+      this.state.dateFrom &&
+      this.state.budget &&
+      this.state.riskBudget &&
+      this.state.allottedTimeQa
     );
-  }
+  };
 
   setDefaultTimeValue = () => {
     if (this.state.dateTo && this.state.dateFrom) {
       const calculatedHours = this.calcWorkingHours(this.state.dateFrom, this.state.dateTo);
-      this.setState({ allottedTime: calculatedHours });
+      this.setState({ budget: calculatedHours });
     }
-  }
+  };
 
-  calcWorkingHours (startDate, endDate) {
+  calcWorkingHours(startDate, endDate) {
     const day = moment(startDate);
     let businessDays = 0;
     while (day.isSameOrBefore(endDate, 'day')) {
@@ -83,17 +84,17 @@ class CreateSprintModal extends Component {
     return businessDays * 8;
   }
 
-  validateNumbers (value) {
+  validateNumbers(value) {
     const re = /^\d*(\.\d*)?$/;
     return value !== '' ? re.test(value) : true;
   }
 
   validateDates = () => {
     if (this.state.dateTo && this.state.dateFrom) {
-      return moment(this.state.dateTo).isAfter(this.state.dateFrom);
+      return moment(this.state.dateTo).isSameOrAfter(this.state.dateFrom);
     }
     return true;
-  }
+  };
 
   createSprint = e => {
     e.preventDefault();
@@ -103,19 +104,16 @@ class CreateSprintModal extends Component {
       this.props.projectId,
       this.state.dateFrom,
       this.state.dateTo,
-      Number(this.state.allottedTime),
+      Number(this.state.allottedTimeQa),
       Number(this.state.budget),
       Number(this.state.riskBudget)
     );
   };
 
-  render () {
-    const formattedDayFrom = this.state.dateFrom
-      ? moment(this.state.dateFrom).format('DD.MM.YYYY')
-      : '';
-    const formattedDayTo = this.state.dateTo
-      ? moment(this.state.dateTo).format('DD.MM.YYYY')
-      : '';
+  render() {
+    const { lang } = this.props;
+    const formattedDayFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('DD.MM.YYYY') : '';
+    const formattedDayTo = this.state.dateTo ? moment(this.state.dateTo).format('DD.MM.YYYY') : '';
 
     const formLayout = {
       firstCol: 4,
@@ -128,86 +126,71 @@ class CreateSprintModal extends Component {
           <form className={css.createSprintForm}>
             <Row>
               <Col xs={12}>
-                <h3>Создание нового спринта</h3>
+                <h3>{localize[lang].NEW_SPRINT}</h3>
                 <hr />
               </Col>
             </Row>
             <Row>
               <Col xs={12} className={css.validateMessages}>
-                {
-                  !this.checkNullInputs()
-                    ? <span>
-                        Все поля должны быть заполнены
-                      </span>
-                    : null
-                }
-                {
-                  !this.validateDates()
-                    ? <span className = {css.redMessage}>
-                      Дата окончания должна быть позже даты начала
-                      </span>
-                    : null
-                }
+                {!this.checkNullInputs() ? <span>{localize[lang].INPUT_NOTIFICATION}</span> : null}
+                {!this.validateDates() ? (
+                  <span className={css.redMessage}>{localize[lang].DATE_NOTIFICATION}</span>
+                ) : null}
               </Col>
             </Row>
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Название спринта:</p>
+                <p>{localize[lang].SPRINT_NAME}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input
-                  placeholder="Введите название спринта"
-                  onChange={this.onChangeName}
-                />
+                <Input placeholder={localize[lang].ENTER_SPRINT_NAME} onChange={this.onChangeName} />
               </Col>
             </Row>
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Дата начала:</p>
+                <p>{localize[lang].DATE_OF_START}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <DatepickerDropdown
                   name="dateFrom"
                   value={formattedDayFrom}
                   onDayChange={this.handleDayFromChange}
-                  placeholder="Введите дату начала"
-                  disabledDataRanges={this.props.sprintsDateRanges}
+                  placeholder={localize[lang].ENTER_START_DATE}
+                  // disabledDataRanges={this.props.sprintsDateRanges}
                 />
               </Col>
             </Row>
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Дата окончания:</p>
+                <p>{localize[lang].DATE_OF_ENDING}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <DatepickerDropdown
                   name="dateTo"
                   value={formattedDayTo}
                   onDayChange={this.handleDayToChange}
-                  placeholder="Введите дату окончания"
-                  disabledDataRanges={this.props.sprintsDateRanges}
+                  placeholder={localize[lang].ENTER_END_DATE}
+                  //disabledDataRanges={this.props.sprintsDateRanges}
                 />
               </Col>
             </Row>
+
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Время в часах:</p>
+                <p>% на QA:</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input
-                  placeholder="Введите время в часах"
-                  onChange={this.onChangeTime}
-                  value={this.state.allottedTime}
-                />
+                <Input placeholder="Введите % на QA" onChange={this.onChangeTimeQA} value={this.state.allottedTimeQa} />
               </Col>
             </Row>
+
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Бюджет без РР</p>
+                <p>{localize[lang].WO_RISK_RESERVE}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Input
-                  placeholder="Введите бюджет без рискового резерва"
+                  placeholder={localize[lang].ENTER_BUDGET_WO_RISK_RESERVE}
                   onChange={this.onChangeBudget}
                   value={this.state.budget}
                 />
@@ -215,11 +198,11 @@ class CreateSprintModal extends Component {
             </Row>
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Бюджет с РР</p>
+                <p>{localize[lang].WITH_RISK_RESERVE}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Input
-                  placeholder="Введите бюджет с рисковым резервом"
+                  placeholder={localize[lang].ENTER_BUDGET_WITH_RISK_RESERVE}
                   onChange={this.onChangeRiskBudget}
                   value={this.state.riskBudget}
                 />
@@ -230,7 +213,7 @@ class CreateSprintModal extends Component {
                 <Button
                   type="green"
                   htmlType="submit"
-                  text="Создать"
+                  text={localize[lang].CREATE}
                   onClick={this.createSprint}
                   disabled={!this.checkNullInputs() || !this.validateDates()}
                 />
@@ -246,17 +229,23 @@ class CreateSprintModal extends Component {
 CreateSprintModal.propTypes = {
   createSprint: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  project: PropTypes.object.isRequired,
   projectId: PropTypes.number,
   sprintsDateRanges: PropTypes.array
 };
 
 const mapStateToProps = state => ({
   projectId: state.Project.project.id,
-  sprintsDateRanges: getSprintsDateRange(state.Project.project.sprints)
+  sprintsDateRanges: getSprintsDateRange(state.Project.project.sprints),
+  lang: state.Localize.lang,
+  project: state.Project.project
 });
 
 const mapDispatchToProps = {
   createSprint
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateSprintModal);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CreateSprintModal);

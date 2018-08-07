@@ -8,6 +8,8 @@ import TaskPlanningTime from '../TaskPlanningTime';
 import PerformerModal from '../../../components/PerformerModal';
 import SprintModal from '../../../components/SprintModal';
 import TaskTypeModal from '../../../components/TaskTypeModal';
+import Checkbox from '../../../components/Checkbox/Checkbox';
+import { IconEdit } from '../../../components/Icons';
 import getTypeById from '../../../utils/TaskTypes';
 import { getProjectUsers, getProjectSprints } from '../../../actions/Project';
 import { getTask } from '../../../actions/Task';
@@ -18,6 +20,8 @@ import { getTaskSpent } from '../../../actions/Task';
 import _ from 'lodash';
 import roundNum from '../../../utils/roundNum';
 import classnames from 'classnames';
+import localize from './Details.json';
+import { getFullName } from '../../../utils/NameLocalisation';
 
 const spentRequestStatus = {
   READY: 0,
@@ -34,6 +38,7 @@ class Details extends Component {
     getProjectUsers: PropTypes.func.isRequired,
     getTask: PropTypes.func.isRequired,
     getTaskSpent: PropTypes.func.isRequired,
+    isExternal: PropTypes.bool,
     onChange: PropTypes.func.isRequired,
     sprints: PropTypes.array,
     task: PropTypes.object.isRequired,
@@ -42,7 +47,7 @@ class Details extends Component {
     users: PropTypes.array
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       tooltipKey: 0,
@@ -53,16 +58,19 @@ class Details extends Component {
     };
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.timeSpent !== this.props.timeSpent && this.state.spentRequestStatus === spentRequestStatus.REQUESTED) {
-      this.setState({spentRequestStatus: spentRequestStatus.RECEIVED, tooltipKey: Math.random()});
+  componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.timeSpent !== this.props.timeSpent &&
+      this.state.spentRequestStatus === spentRequestStatus.REQUESTED
+    ) {
+      this.setState({ spentRequestStatus: spentRequestStatus.RECEIVED, tooltipKey: Math.random() });
     }
     if (nextProps.task.factExecutionTime !== this.props.task.factExecutionTime) {
-      this.setState({spentRequestStatus: spentRequestStatus.READY, tooltipKey: Math.random()});
+      this.setState({ spentRequestStatus: spentRequestStatus.READY, tooltipKey: Math.random() });
     }
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     ReactTooltip.rebuild();
   }
 
@@ -76,11 +84,14 @@ class Details extends Component {
     this.setState({ isSprintModalOpen: false });
   };
 
-  changeSprint = (sprintId) => {
-    this.props.onChange({
-      id: this.props.task.id,
-      sprintId: sprintId
-    }, sprintId);
+  changeSprint = sprintId => {
+    this.props.onChange(
+      {
+        id: this.props.task.id,
+        sprintId: sprintId
+      },
+      sprintId
+    );
     this.closeSprintModal();
   };
 
@@ -90,15 +101,22 @@ class Details extends Component {
     this.setState({ isPerformerModalOpen: true });
   };
 
-  closePerformerModal = () => {
-    this.setState({ isPerformerModalOpen: false });
+  closePerformerModal = performerId => {
+    if (performerId === 0) {
+      this.changePerformer(performerId);
+    } else {
+      this.setState({ isPerformerModalOpen: false });
+    }
   };
 
-  changePerformer = (performerId) => {
-    this.props.onChange({
-      id: this.props.task.id,
-      performerId: performerId
-    }, this.props.task.id);
+  changePerformer = performerId => {
+    this.props.onChange(
+      {
+        id: this.props.task.id,
+        performerId: performerId
+      },
+      this.props.task.id
+    );
     this.closePerformerModal();
   };
 
@@ -111,23 +129,41 @@ class Details extends Component {
     this.setState({ isTaskTypeModalOpen: false });
   };
 
-  changeTaskType = (typeId) => {
-    this.props.onChange({
-      id: this.props.task.id,
-      typeId: typeId
-    }, this.props.task.id);
+  changeTaskType = typeId => {
+    this.props.onChange(
+      {
+        id: this.props.task.id,
+        typeId: typeId
+      },
+      this.props.task.id
+    );
 
     this.closeTaskTypeModal();
   };
 
-  spentTooltipRender (spents) {
-    return _.transform(spents, (spentsList, spentTime, status) => {
-      spentsList.push(
-        <div className={css.timeString} key={status}>
-          <span>{status}:</span>{spentTime || 0} ч.
-        </div>
-      );
-    }, []);
+  changeIsTaskByClient = () => {
+    this.props.onChange(
+      {
+        id: this.props.task.id,
+        isTaskByClient: !this.props.task.isTaskByClient
+      },
+      null
+    );
+  };
+
+  spentTooltipRender(spents) {
+    return _.transform(
+      spents,
+      (spentsList, spentTime, status) => {
+        spentsList.push(
+          <div className={css.timeString} key={status}>
+            <span>{status}:</span>
+            {spentTime || 0} {localize[this.props.lang].H}.
+          </div>
+        );
+      },
+      []
+    );
   }
 
   onTooltipVisibleChange = () => {
@@ -139,172 +175,194 @@ class Details extends Component {
     }
   };
 
-  render () {
-    const { task, sprints, taskTypes, timeSpent } = this.props;
+  render() {
+    const { task, sprints, taskTypes, timeSpent, isExternal, lang } = this.props;
     const tags = task.tags.map((tag, i) => {
-      const tagName = (typeof tag === 'object') ? tag.name : tag;
-      return <Tag key={i}
-        name={tagName}
-        taggable="task"
-        taggableId={task.id}
-      />;
+      const tagName = typeof tag === 'object' ? tag.name : tag;
+      return <Tag key={i} name={tagName} taggable="task" taggableId={task.id} />;
     });
 
     const users = this.props.users.map(item => ({
       value: item.user ? item.user.id : item.id,
-      label: item.user ? item.user.fullNameRu : item.fullNameRu
+      label: item.user ? getFullName(item.user) : getFullName(item)
     }));
 
-    const executeTimeTooltip = this.state.spentRequestStatus === spentRequestStatus.RECEIVED
-      ? <ReactTooltip id="time"
-        destroyTooltipOnHide
-        aria-haspopup="true"
-        className="tooltip"
-        getContent={() => this.spentTooltipRender(timeSpent)}
-      />
-      : <ReactTooltip id="notime"
-        destroyTooltipOnHide
-        aria-haspopup="true"
-        className="tooltip"
-        afterShow={this.onTooltipVisibleChange}
-        getContent={() => <div> Загрузка... </div>}
-      />;
-      
+    const executeTimeTooltip =
+      this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? (
+        <ReactTooltip
+          id="time"
+          destroyTooltipOnHide
+          aria-haspopup="true"
+          className="tooltip"
+          getContent={() => this.spentTooltipRender(timeSpent)}
+        />
+      ) : (
+        <ReactTooltip
+          id="notime"
+          destroyTooltipOnHide
+          aria-haspopup="true"
+          className="tooltip"
+          afterShow={this.onTooltipVisibleChange}
+          getContent={() => <div> {localize[lang].LOADING} </div>}
+        />
+      );
+    console.log(task.performer);
     return (
       <div className={css.detailsBlock}>
         <table className={css.detailTable}>
           <tbody>
-            {task.project
-              ? <tr>
-                <td>Проект:</td>
+            {task.project ? (
+              <tr>
+                <td>{localize[lang].PROJECT}</td>
                 <td>
-                  <Link to={'/projects/' + this.props.task.project.id}>
+                  <Link className="underline-link" to={'/projects/' + this.props.task.project.id}>
                     {task.project.name}
                   </Link>
                 </td>
               </tr>
-              : null}
+            ) : null}
             <tr>
-              <td>Тип задачи:</td>
+              <td>{localize[lang].TASK_TYPE}</td>
               <td>
-                <a onClick={this.openTaskTypeModal}>
+                <span onClick={this.openTaskTypeModal} className={css.editableCell}>
                   {getTypeById(task.typeId, taskTypes)}
-                </a>
+                  <span className={css.editIcon}>
+                    <IconEdit />
+                  </span>
+                </span>
               </td>
             </tr>
             <tr>
-              <td>Спринт:</td>
+              <td>{localize[lang].FROM_CLIENT}</td>
+              <td className={css.byClient}>
+                <Checkbox checked={task.isTaskByClient} onChange={this.changeIsTaskByClient} />
+              </td>
+            </tr>
+            <tr>
+              <td>{localize[lang].SPRINT}</td>
               <td>
-                <a onClick={this.openSprintModal}>
-                  { task.sprint
-                    ? task.sprint.name
-                    : 'Backlog'
-                  }
-                </a>
+                <span className={css.editableCell} onClick={this.openSprintModal}>
+                  {task.sprint ? task.sprint.name : 'Backlog'}
+                  <span className={css.editIcon}>
+                    <IconEdit />
+                  </span>
+                </span>
                 {/*<Link to={`/projects/${task.projectId}/agile-board`}>*/}
                 {/*{task.sprint ? task.sprint.name : 'Backlog'}*/}
                 {/*</Link>*/}
               </td>
             </tr>
             <tr>
-              <td>Теги:</td>
+              <td>{localize[lang].TAGS}</td>
               <td className={css.tags}>
-                <Tags
-                  taggable="task"
-                  taggableId={task.id}
-                  create
-                  canEdit
-                >
+                <Tags taggable="task" taggableId={task.id} create canEdit>
                   {tags}
                 </Tags>
               </td>
             </tr>
-            {task.author
-              ? <tr>
-                <td>Автор:</td>
-                <td>{task.author.fullNameRu}</td>
+            {task.author ? (
+              <tr>
+                <td>{localize[lang].AUTHOR}</td>
+                <td>{getFullName(task.author)}</td>
               </tr>
-              : null
-            }
+            ) : null}
             <tr>
-              <td>Исполнитель:</td>
+              <td>{localize[lang].PERFORMER}</td>
               <td>
-                <a onClick={this.openPerformerModal}>
-                  { task.performer
-                    ? task.performer.fullNameRu
-                    : <span className={css.unassigned}>Не назначено</span>
-                  }
-                </a>
+                <span onClick={this.openPerformerModal} className={css.editableCell}>
+                  {task.performer ? (
+                    getFullName(task.performer)
+                  ) : (
+                    <span className={css.unassigned}>{localize[lang].NOT_SPECIFIED}</span>
+                  )}
+                  <span className={css.editIcon}>
+                    <IconEdit />
+                  </span>
+                </span>
               </td>
             </tr>
             <tr>
-              <td>Дата создания:</td>
-              <td>
-                {moment(this.props.task.createdAt).format('DD.MM.YYYY')}
-              </td>
+              <td>{localize[lang].DATE_OF_CREATE}</td>
+              <td>{moment(this.props.task.createdAt).format('DD.MM.YYYY')}</td>
             </tr>
+            {!isExternal
+              ? [
+                  <tr key="plannedExecutionTime">
+                    <td>{localize[lang].PLANNED_TIME}</td>
+                    <td>
+                      <TaskPlanningTime
+                        time={task.plannedExecutionTime ? task.plannedExecutionTime.toString() : '0'}
+                        id={task.id}
+                        timeIsEditing={this.props.PlanningTimeIsEditing}
+                        canEdit={this.props.canEdit}
+                        h={localize[lang].H}
+                      />
+                    </td>
+                  </tr>,
+                  <tr key="factExecutionTime">
+                    <td>{localize[lang].SPENT_TIME}</td>
+                    <td>
+                      <span
+                        data-tip={!!Number(task.factExecutionTime)}
+                        data-place="right"
+                        data-for={this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? 'time' : 'notime'}
+                        key={this.state.tooltipKey}
+                        className={classnames({
+                          [css.factTime]: true,
+                          [css.alert]: +task.factExecutionTime > +task.plannedExecutionTime,
+                          [css.success]: +task.factExecutionTime <= +task.plannedExecutionTime
+                        })}
+                      >
+                        {`${task.factExecutionTime ? roundNum(task.factExecutionTime, 2) : 0} ${localize[lang].H}.`}
+                      </span>
+                      {Number(task.factExecutionTime) ? executeTimeTooltip : null}
+                    </td>
+                  </tr>
+                ]
+              : null}
             <tr>
-              <td>Запланировано:</td>
-              <td>
-                <TaskPlanningTime
-                  time={task.plannedExecutionTime ? task.plannedExecutionTime.toString() : '0'}
-                  id={task.id}
-                  timeIsEditing={this.props.PlanningTimeIsEditing}
-                  canEdit={this.props.canEdit}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>Потрачено:</td>
+              <td>{localize[lang].SPENT_QA_TIME}</td>
               <td>
                 <span
-                  data-tip={!!Number(task.factExecutionTime)}
-                  data-place="right"
-                  data-for={this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? 'time' : 'notime'}
-                  key={this.state.tooltipKey}
                   className={classnames({
-                    [css.alert]: true
+                    [css.factTime]: true,
+                    [css.alert]: +task.qaFactExecutionTime > +task.qaPlannedTime,
+                    [css.success]: +task.qaFactExecutionTime <= +task.qaPlannedTime
                   })}
                 >
-                    {`${task.factExecutionTime ? roundNum(task.factExecutionTime, 2) : 0} ч.`}
+                  {task.qaFactExecutionTime ? roundNum(task.qaFactExecutionTime, 2) : 0} из{' '}
+                  {task.qaPlannedTime ? roundNum(task.qaPlannedTime, 2) : 0} {localize[lang].H}.
                 </span>
-                {Number(task.factExecutionTime) ? executeTimeTooltip : null}
               </td>
             </tr>
           </tbody>
         </table>
 
-        {
-          this.state.isPerformerModalOpen
-            ? <PerformerModal
-              defaultUser={task.performer ? task.performer.id : null}
-              onChoose={this.changePerformer}
-              onClose={this.closePerformerModal}
-              title="Изменить исполнителя задачи"
-              users={users}
-            />
-            : null
-        }
-        {
-          this.state.isSprintModalOpen
-            ? <SprintModal
-              defaultSprint={task.sprint ? task.sprint.id : 0}
-              onChoose={this.changeSprint}
-              onClose={this.closeSprintModal}
-              title="Изменить спринт задачи"
-              sprints={sprints}
-            />
-            : null
-        }
-        {
-          this.state.isTaskTypeModalOpen
-            ? <TaskTypeModal
-              defaultTypeId={task ? task.typeId : null}
-              onChoose={this.changeTaskType}
-              onClose={this.closeTaskTypeModal}
-            />
-            : null
-        }
+        {this.state.isPerformerModalOpen ? (
+          <PerformerModal
+            defaultUser={task.performer ? task.performer.id : null}
+            onChoose={this.changePerformer}
+            onClose={this.closePerformerModal}
+            title={localize[lang].CHANGE_PERFORMER}
+            users={users}
+          />
+        ) : null}
+        {this.state.isSprintModalOpen ? (
+          <SprintModal
+            defaultSprint={task.sprint ? task.sprint.id : 0}
+            onChoose={this.changeSprint}
+            onClose={this.closeSprintModal}
+            title={localize[lang].CHANGE_SPRINT}
+            sprints={sprints}
+          />
+        ) : null}
+        {this.state.isTaskTypeModalOpen ? (
+          <TaskTypeModal
+            defaultTypeId={task ? task.typeId : null}
+            onChoose={this.changeTaskType}
+            onClose={this.closeTaskTypeModal}
+          />
+        ) : null}
       </div>
     );
   }
@@ -316,7 +374,8 @@ const mapStateToProps = state => ({
   taskTypes: state.Dictionaries.taskTypes,
   PlanningTimeIsEditing: state.Task.PlanningTimeIsEditing,
   ExecutionTimeIsEditing: state.Task.ExecutionTimeIsEditing,
-  timeSpent: state.Task.timeSpent
+  timeSpent: state.Task.timeSpent,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
@@ -326,4 +385,7 @@ const mapDispatchToProps = {
   getTaskSpent
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Details);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Details);

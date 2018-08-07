@@ -1,8 +1,8 @@
 import * as TaskActions from '../constants/Task';
 import { API_URL } from '../constants/Settings';
 import axios from 'axios';
+import { finishLoading } from './Loading';
 import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
-import { SOCKET_IO } from '../constants/SocketIO';
 import {
   defaultErrorHandler,
   withFinishLoading,
@@ -42,6 +42,17 @@ const getTaskSpentSuccess = spent => ({
 const getTaskFail = error => ({
   type: TaskActions.GET_TASK_REQUEST_FAIL,
   error: error
+});
+
+const postChangeFail = error => ({
+  type: TaskActions.TASK_CHANGE_REQUEST_FAIL,
+  closeHasError: false,
+  error: error
+});
+
+const clearError = status => ({
+  type: TaskActions.ERROR_CLEAR,
+  status: status
 });
 
 const requestTaskChange = () => ({
@@ -104,21 +115,29 @@ const getTask = id => {
     });
 };
 
-const getTaskHistory = id => {
+const getTaskHistory = (id, options) => {
   if (!id) {
     return () => {};
   }
-  return dispatch =>
-    dispatch({
-      type: REST_API,
-      url: `/task/${id}/history`,
-      method: GET,
-      body,
-      extra,
-      start: withStartLoading(getTaskHistoryStart, true)(dispatch),
-      response: withFinishLoading(response => getTaskHistorySuccess(response.data), true)(dispatch),
-      error: defaultErrorHandler(dispatch)
-    });
+  const URL = `${API_URL}/task/${id}/history`;
+  return dispatch => {
+    axios
+      .get(URL, {
+        params: {
+          ...options
+        }
+      })
+      .then(function(response) {
+        if (response && response.status === 200) {
+          dispatch(getTaskHistorySuccess(response.data), true);
+        }
+        dispatch(finishLoading());
+      })
+      .catch(function(error) {
+        defaultErrorHandler(dispatch);
+        dispatch(finishLoading());
+      });
+  };
 };
 
 const getTaskSpent = id => {
@@ -142,7 +161,7 @@ const changeTask = (ChangedProperties, target, callback) => {
   if (!ChangedProperties.id) {
     return;
   }
-  return dispatch =>
+  return dispatch => {
     dispatch({
       type: REST_API,
       url: `/task/${ChangedProperties.id}`,
@@ -151,14 +170,14 @@ const changeTask = (ChangedProperties, target, callback) => {
       extra,
       start: withStartLoading(requestTaskChange, true)(dispatch),
       response: withFinishLoading(response => {
-        dispatch(successTaskChange(response.data));
-        dispatch(stopTaskEditing(target));
         if (callback) {
           callback();
         }
-      })(dispatch),
-      error: defaultErrorHandler(dispatch)
+        return stopTaskEditing(target);
+      }, true)(dispatch),
+      error: defaultErrorHandler(dispatch(stopTaskEditing(target)))
     });
+  };
 };
 
 const linkTask = (taskId, linkedTaskId) => {
@@ -248,7 +267,7 @@ const uploadAttachments = (taskId, attachments) => {
         body: data,
         extra: withdefaultExtra({
           onUploadProgress: progressEvent => {
-            const progress = Math.round(progressEvent.loaded * 100 / progressEvent.total);
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
             dispatch(attachmentUploadProgress(taskId, attachment, progress));
           }
         }),
@@ -361,7 +380,10 @@ const publishComment = (taskId, comment) => {
   return dispatch => {
     dispatch(commentPublishStart(taskId, comment));
     return axios
-      .post(URL, { text, parentId })
+      .post(URL, {
+        text,
+        parentId
+      })
       .then(
         result => dispatch(commentPublishSuccess(taskId, comment, result.data)),
         error => dispatch(commentPublishFail(taskId, comment, error))
@@ -397,7 +419,9 @@ const editComment = (taskId, commentId, text) => {
   if (!taskId || !commentId) {
     return () => {};
   }
-  const comment = { text };
+  const comment = {
+    text
+  };
   const URL = `${API_URL}/task/${taskId}/comment/${commentId}`;
   return dispatch => {
     dispatch(commentUpdateStart(taskId, commentId, comment));
@@ -459,10 +483,15 @@ const selectParentCommentForReply = parentId => ({
   parentId
 });
 
-const setCommentForEdit = comment => ({
-  type: TaskActions.SET_COMMENT_FOR_EDIT,
-  comment
-});
+const setCommentForEdit = comment => {
+  return dispatch => {
+    dispatch({
+      type: TaskActions.SET_COMMENT_FOR_EDIT,
+      comment
+    });
+    return Promise.resolve();
+  };
+};
 
 const resetCurrentEditingComment = () => ({
   type: TaskActions.RESET_CURRENT_EDITING_COMMENT
@@ -498,5 +527,6 @@ export {
   resetCurrentEditingComment,
   setCurrentCommentExpired,
   setHighLighted,
-  clearCurrentTask
+  clearCurrentTask,
+  clearError
 };

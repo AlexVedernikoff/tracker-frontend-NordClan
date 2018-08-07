@@ -1,0 +1,14 @@
+{
+  "en": {
+    "IN_HOURS": "Show in hours",
+    "IN_PERCENT": "Show in %",
+    "PER_OF_H": "% of hours",
+    "H": "Hours"
+  },
+  "ru": {
+    "IN_HOURS": "Отобразить в часах",
+    "IN_PERCENT": "Отобразить в %",
+    "PER_OF_H": "% часов",
+    "H": "Часов"
+  }
+}

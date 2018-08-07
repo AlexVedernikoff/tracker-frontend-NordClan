@@ -7,6 +7,8 @@ import isAdmin from '../../utils/isAdmin';
 
 import * as css from './UsersRoles.scss';
 import { getUsers, updateUserRole } from '../../actions/UsersRoles';
+import localize from './usersRoles.json';
+import { getLastName, getFullName } from '../../utils/NameLocalisation';
 
 class UsersRoles extends React.Component {
   constructor(props) {
@@ -29,19 +31,20 @@ class UsersRoles extends React.Component {
   };
 
   renderStatusSelector(globalRole, userId) {
+    const { lang } = this.props;
     const statuses = [
       {
-        name: 'Администратор',
+        name: localize[lang].ADMIN,
         value: 'ADMIN',
         id: 1
       },
       {
-        name: 'Пользователь',
+        name: localize[lang].USER,
         value: 'USER',
         id: 2
       },
       {
-        name: 'Наблюдатель',
+        name: localize[lang].VISOR,
         value: 'VISOR',
         id: 3
       }
@@ -67,8 +70,8 @@ class UsersRoles extends React.Component {
   }
 
   renderRowUser(user) {
-    const { id, lastNameRu, firstNameRu, globalRole } = user;
-    const fullName = `${lastNameRu} ${firstNameRu}`;
+    const { id, globalRole } = user;
+    const fullName = getFullName(user);
     const status = this.renderStatusSelector(globalRole, id);
     return (
       <tr key={id} className={css.userRow}>
@@ -80,9 +83,9 @@ class UsersRoles extends React.Component {
 
   renderTableUsers(users) {
     const sortedUsers = users.sort((user1, user2) => {
-      if (user1.lastNameRu > user2.lastNameRu) {
+      if (getLastName(user1) > getLastName(user2)) {
         return 1;
-      } else if (user1.lastNameRu < user2.lastNameRu) {
+      } else if (getLastName(user1) < getLastName(user2)) {
         return -1;
       } else {
         return 0;
@@ -90,8 +93,8 @@ class UsersRoles extends React.Component {
     });
     const tableHead = (
       <tr className={css.usersRolesHeader}>
-        <th>Пользователь</th>
-        <th>Роль</th>
+        <th>{localize[this.props.lang].USER}</th>
+        <th>{localize[this.props.lang].ROLE}</th>
       </tr>
     );
     const tableBody = sortedUsers.map(user => {
@@ -106,11 +109,11 @@ class UsersRoles extends React.Component {
   }
 
   render() {
-    const { users, userGlobalRole } = this.props;
+    const { users, userGlobalRole, lang } = this.props;
     const tableUsers = this.renderTableUsers(users);
     return isAdmin(userGlobalRole) ? (
       <div>
-        <h1>Пользователи</h1>
+        <h1>{localize[lang].USERS}</h1>
         <hr />
         {tableUsers}
       </div>
@@ -127,7 +130,8 @@ UsersRoles.propTypes = {
 
 const mapStateToProps = state => ({
   users: state.UsersRoles.users,
-  userGlobalRole: state.Auth.user.globalRole
+  userGlobalRole: state.Auth.user.globalRole,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
@@ -135,4 +139,7 @@ const mapDispatchToProps = {
   updateUserRole
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(UsersRoles);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UsersRoles);

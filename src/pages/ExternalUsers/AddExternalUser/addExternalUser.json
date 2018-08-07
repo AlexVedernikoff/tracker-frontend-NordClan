@@ -1,0 +1,28 @@
+{
+  "en": {
+    "ACTIVE_PASSWORD_INFO": "To activate, create a password. The password must contain at least 8 characters.",
+    "PASSWORD": "Enter password",
+    "PASSWORD_MESSAGE_ERROR": "Password contains less than 8 characters",
+    "PASSWORD_REPEAT": "Confirm password",
+    "PASSWORD_REPEAT_MESSAGE_ERROR": "Passwords do not match",
+    "ACTIVATE": "Activate",
+    "USERNAME": "User name:",
+    "ENTER_YOUR_USERNAME": "Enter your username",
+    "ENTER_YOUR_EMAIL": "Enter your email",
+    "ENTER_DATE": "Enter date",
+    "ADD_USER": "Add user"
+  },
+  "ru": {
+    "ACTIVE_PASSWORD_INFO": "Для активации придумайте пароль. Пароль должен содержать не менее 8 символов.",
+    "PASSWORD": "Введите пароль",
+    "PASSWORD_MESSAGE_ERROR": "Пароль содержит менее 8 символов",
+    "PASSWORD_REPEAT": "Повторите пароль",
+    "PASSWORD_REPEAT_MESSAGE_ERROR": "Пароли не совпадают",
+    "ACTIVATE": "Активировать",
+    "USERNAME": "Имя пользователя:",
+    "ENTER_YOUR_USERNAME": "Введите свое имя пользователя",
+    "ENTER_YOUR_EMAIL": "Введите свой email",
+    "ENTER_DATE": "Введите дату",
+    "ADD_USER": "Добавить пользователя"
+  }
+}

@@ -7,9 +7,25 @@ import { deleteTag } from '../../actions/Tags';
 import { connect } from 'react-redux';
 
 class Tag extends React.Component {
+  static propTypes = {
+    blocked: PropTypes.bool,
+    create: PropTypes.bool,
+    deleteTagModal: PropTypes.func,
+    deleteHandler: PropTypes.func,
+    deleteTag: PropTypes.func.isRequired,
+    name: PropTypes.string,
+    noRequest: PropTypes.bool,
+    onClick: PropTypes.func,
+    taggable: PropTypes.string,
+    taggableId: PropTypes.number,
+    unclickable: PropTypes.bool
+  };
+
   deleteTag = () => {
     if (this.props.deleteHandler) {
       this.props.deleteHandler();
+    } else if (this.props.noRequest) {
+      this.props.deleteTagModal();
     } else {
       this.props.deleteTag(this.props.name, this.props.taggable, this.props.taggableId);
     }
@@ -20,10 +36,30 @@ class Tag extends React.Component {
   };
 
   render() {
-    const { name, create, blocked, taggable, taggableId, deleteHandler, deleteTag: dt, ...other } = this.props;
+    const {
+      name,
+      create,
+      blocked,
+      deleteTagModal,
+      taggable,
+      taggableId,
+      deleteHandler,
+      unclickable,
+      noRequest,
+      deleteTag: dt,
+      ...other
+    } = this.props;
 
     return (
-      <span {...other} className={classnames({ [css.tag]: true, [css.create]: create })} onClick={this.clickOnTag}>
+      <span
+        {...other}
+        className={classnames({
+          [css.tag]: true,
+          [css.create]: create,
+          [css.unclickable]: unclickable
+        })}
+        onClick={this.clickOnTag}
+      >
         <span className={classnames({ [css.tagPart]: true, [css.tagCreate]: create })}>
           {create ? <IconPlus /> : name}
         </span>
@@ -37,19 +73,11 @@ class Tag extends React.Component {
   }
 }
 
-Tag.propTypes = {
-  blocked: PropTypes.bool,
-  create: PropTypes.bool,
-  deleteHandler: PropTypes.func,
-  deleteTag: PropTypes.func.isRequired,
-  name: PropTypes.string,
-  onClick: PropTypes.func,
-  taggable: PropTypes.string,
-  taggableId: PropTypes.number
-};
-
 const mapDispatchToProps = {
   deleteTag
 };
 
-export default connect(null, mapDispatchToProps)(Tag);
+export default connect(
+  null,
+  mapDispatchToProps
+)(Tag);

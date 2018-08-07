@@ -1,6 +1,6 @@
-@import './normalize';
+// @import './normalize';
 @import './variables';
-@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500&subset=latin,cyrillic);
+// @import url(https://fonts.googleapis.com/css?family=Roboto:400, 300, 500&subset=latin, cyrillic);
 
 html {
   box-sizing: border-box;
@@ -10,8 +10,15 @@ small {
   font-size: 70%;
 }
 
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: inherit;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
 body {
@@ -82,7 +89,6 @@ img {
 input,
 select,
 textarea {
-  
   @include phone {
     font-size: $font-size-mobile;
   }

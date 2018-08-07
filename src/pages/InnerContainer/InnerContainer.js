@@ -14,16 +14,17 @@ import { history } from '../../History';
 const mql = window.matchMedia(`(min-width: ${cssVariables.tabletWidth})`);
 
 class InnerContainer extends Component {
-
   static propTypes = {
     children: PropTypes.object,
     getMagicActivityTypes: PropTypes.func,
+    getMilestoneTypes: PropTypes.func,
+    getProjectTypes: PropTypes.func,
     getTaskStatuses: PropTypes.func,
     getTaskTypes: PropTypes.func,
     user: PropTypes.object
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -36,51 +37,56 @@ class InnerContainer extends Component {
     this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
   }
 
-  componentWillMount () {
+  componentWillMount() {
     mql.addListener(this.mediaQueryChanged);
-    this.setState({mql: mql, sidebarDocked: mql.matches});
+    this.setState({ mql: mql, sidebarDocked: mql.matches });
     this.props.getMagicActivityTypes();
     this.props.getTaskStatuses();
     this.props.getTaskTypes();
+    this.props.getMilestoneTypes();
+    this.props.getProjectTypes();
     this.listenHistory();
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     ReactTooltip.rebuild();
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.state.mql.removeListener(this.mediaQueryChanged);
-    this.listenHistory();
+    this.unlistenHistory();
   }
 
   mediaQueryChanged = () => {
-    this.setState({sidebarDocked: this.state.mql.matches, sidebarOpen: !this.state.mql.matches});
-  }
+    this.setState({ sidebarDocked: this.state.mql.matches, sidebarOpen: this.state.mql.matches });
+  };
 
   listenHistory = () => {
-    history.listen(() => { this.onSetSidebarOpen(false); });
-  }
+    this.unlistenHistory = history.listen(() => {
+      if (this.state.sidebarOpen) {
+        this.onSetSidebarOpen(false);
+      }
+    });
+  };
 
-  onSetSidebarOpen = (open) => {
-    this.setState({sidebarOpen: open});
-  }
+  onSetSidebarOpen = open => {
+    this.setState({ sidebarOpen: open });
+  };
 
-  shouldUpdateScroll (prevLocation, { routes }) {
-
+  shouldUpdateScroll = (prevLocation, { routes }) => {
     if (routes.some(route => route.scrollToTop)) {
       return [0, 0];
     }
 
     // Логика для перехода между роутами со свойством ignoreScrollBehavior и без
-    const routeIgnoreScroll = !!(routes.some(route => route.ignoreScrollBehavior));
+    const routeIgnoreScroll = !!routes.some(route => route.ignoreScrollBehavior);
     const prevRouteIgnoreScroll = !!(prevLocation && prevLocation.routes.some(route => route.ignoreScrollBehavior));
 
     // Если переход осуществлен с ignoreScrollBehavior на ignoreScrollBehavior (между табами) позицию скролла не меняю
     return !(routeIgnoreScroll && prevRouteIgnoreScroll);
-  }
+  };
 
-  render () {
+  render() {
     const sidebar = <NavMenu />;
     const sidebarStyles = {
       sidebar: {
@@ -94,7 +100,6 @@ class InnerContainer extends Component {
       }
     };
     const { sidebarDocked, sidebarOpen } = this.state;
-
     return (
       <div>
         <div>
@@ -107,19 +112,14 @@ class InnerContainer extends Component {
             onSetOpen={this.onSetSidebarOpen}
           >
             <AppHead toggleMenu={() => this.onSetSidebarOpen(true)} />
-            <ScrollContainer
-              scrollKey={'innerContainer'}
-              shouldUpdateScroll={this.shouldUpdateScroll}
-            >
-            <div className={css.contentWrapper}>
-              <div className={css.content}>
-                {this.props.children}
+            <ScrollContainer scrollKey={'innerContainer'} shouldUpdateScroll={this.shouldUpdateScroll}>
+              <div className={css.contentWrapper}>
+                <div className={css.content}>{this.props.children}</div>
               </div>
-            </div>
             </ScrollContainer>
           </Sidebar>
         </div>
-        <ReactTooltip className="tooltip"/>
+        <ReactTooltip className="tooltip" />
       </div>
     );
   }
@@ -131,4 +131,7 @@ const mapDispatchToProps = {
 
 const mapStateToProps = state => ({});
 
-export default connect(mapStateToProps, mapDispatchToProps)(InnerContainer);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(InnerContainer);

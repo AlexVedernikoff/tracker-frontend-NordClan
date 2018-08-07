@@ -1,0 +1,22 @@
+{
+  "en": {
+    "MY_TASKS": "My tasks",
+    "START": "Start",
+    "PAUSE": "Pause",
+    "LINK": "Link on task",
+    "NOT_ASSIGNED": "Not assigned",
+    "PRIORITY": "Priority:",
+    "H": "h.",
+    "OF": "of"
+  },
+  "ru": {
+    "MY_TASKS": "Мои задачи",
+    "START": "Начать",
+    "PAUSE": "Приостановить",
+    "LINK": "Ссылка на задачу",
+    "NOT_ASSIGNED": "Не назначенно",
+    "PRIORITY": "Приоритет:",
+    "H": "ч.",
+    "OF": "из"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "en": {
+    "PARTICIPANTS": "Participants:",
+    "LIMITATION": "Limitation:",
+    "CURRENT_SPRINTS": "Current sprints:"
+  },
+  "ru": {
+    "PARTICIPANTS": "Участников:",
+    "LIMITATION": "Сроки:",
+    "CURRENT_SPRINTS": "Текущие спринты:"
+  }
+}

@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Line } from 'react-chartjs-2';
+import ChartWrapper from '../ChartWrapper';
 import * as css from './ClosingFeaturesChart.scss';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import roundNum from '../../../../utils/roundNum';
 import getColor from '../../../../utils/Colors';
+import localize from './ClosingFeaturesChart.json';
+import { connect } from 'react-redux';
 
 class ClosingFeaturesChart extends Component {
   static propTypes = {
@@ -15,12 +18,13 @@ class ClosingFeaturesChart extends Component {
     sprintWriteOffTimeMetrics: PropTypes.array
   };
 
-  constructor (props) {
-    super(props);
-    this.chartOptions = {
-      ...props.chartDefaultOptions,
+  chartRef = null;
+
+  getGraphicOptions() {
+    return {
+      ...this.props.chartDefaultOptions,
       scales: {
-        ...props.chartDefaultOptions.scales,
+        ...this.props.chartDefaultOptions.scales,
         yAxes: [
           {
             ticks: {
@@ -29,7 +33,7 @@ class ClosingFeaturesChart extends Component {
             display: true,
             scaleLabel: {
               display: true,
-              labelString: 'Часы'
+              labelString: localize[this.props.lang].HOURS
             }
           }
         ]
@@ -44,16 +48,16 @@ class ClosingFeaturesChart extends Component {
 
     return {
       datasets: [
-        this.makeBugsLine(sprintClosingFeaturesMetrics, 'Динамика закрытия задач (с учетом трудозатрат)'),
-        this.makeBugsLine(sprintWriteOffTimeMetrics, 'Динамика списания времени на задачи'),
-        this.makeBugsLine(sprintWorkWithoutEvaluationMetrics, 'Динамика трудозатрат на задачи без оценки')
+        this.makeBugsLine(sprintClosingFeaturesMetrics, localize[this.props.lang].DYNAMIC_CLOSE),
+        this.makeBugsLine(sprintWriteOffTimeMetrics, localize[this.props.lang].DYNAMIC_OFF_TIME),
+        this.makeBugsLine(sprintWorkWithoutEvaluationMetrics, localize[this.props.lang].DYNAMIC_WITHOUT_ELEVATION)
       ]
     };
   };
 
   makeBugsLine = (metrics, label) => {
     const line = metrics
-      .map((metric) => {
+      .map(metric => {
         return {
           x: metric.createdAt,
           y: roundNum(+metric.value, 2)
@@ -67,14 +71,21 @@ class ClosingFeaturesChart extends Component {
     };
   };
 
-  render () {
+  setChartRef = node => (this.chartRef = node);
+
+  render() {
+    const { lang } = this.props;
     return (
-      <div className={css.ClosingFeaturesChart}>
-        <h3 className={css.h3Top}>Динамика закрытия задач</h3>
-        <Line data={this.makeChartData()} options={this.chartOptions} redraw />
-      </div>
+      <ChartWrapper chartRef={this.chartRef} className={css.ClosingFeaturesChart}>
+        <h3>{localize[lang].DYNAMIC}</h3>
+        <Line ref={this.setChartRef} data={this.makeChartData()} options={this.getGraphicOptions()} redraw />
+      </ChartWrapper>
     );
   }
 }
 
-export default ClosingFeaturesChart;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(mapStateToProps)(ClosingFeaturesChart);

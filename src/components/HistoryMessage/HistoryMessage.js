@@ -3,6 +3,7 @@ import Pt from 'prop-types';
 import { Link } from 'react-router';
 import UserCard from '../UserCard';
 import * as css from './HistoryMessage.scss';
+import { getFullName } from '../../utils/NameLocalisation';
 
 export default class HistoryMessage extends React.Component {
   static propTypes = {
@@ -16,6 +17,12 @@ export default class HistoryMessage extends React.Component {
     this.maxLengthTextMessage = 100;
     this.messageWithoutTags = this.deleteHtmlTags(this.props.message);
     this.setInitialState();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.message !== this.props.message) {
+      this.messageWithoutTags = this.deleteHtmlTags(nextProps.message);
+    }
   }
 
   setInitialState() {
@@ -75,7 +82,7 @@ export default class HistoryMessage extends React.Component {
       case 'user':
         return (
           <UserCard user={entities[addition]} key={key}>
-            <Link>{entities[addition].fullNameRu}</Link>
+            <Link>{getFullName(entities[addition])}</Link>
           </UserCard>
         );
       case 'linkedTask':
@@ -93,6 +100,12 @@ export default class HistoryMessage extends React.Component {
             {entities[addition].name}
           </Link>
         );
+      case 'portfolio':
+        return entities[addition] ? (
+          <Link to={`/projects/portfolio/${entities[addition].id}`} key={key}>
+            {entities[addition].name}
+          </Link>
+        ) : null;
       case 'file':
         // реализовать потом
         break;

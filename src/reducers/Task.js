@@ -72,8 +72,7 @@ export default function Task(state = InitialState, action) {
       return {
         ...state,
         TitleIsEditing: false,
-        PlanningTimeIsEditing: false,
-        DescriptionIsEditing: false
+        PlanningTimeIsEditing: false
       };
 
     case TaskActions.GET_TASK_REQUEST_SUCCESS:
@@ -117,10 +116,35 @@ export default function Task(state = InitialState, action) {
         ...state,
         timeSpent: _.chain(action.data)
           .filter(timeSheet => Number(timeSheet.spentTime))
-          .map(spent => ({ job: getJobById(spent.taskStatusId), spent: spent.spentTime }))
+          .map(spent => ({
+            job: getJobById(spent.taskStatusId),
+            spent: spent.spentTime
+          }))
           .transform((byStatus, spent) => {
             const job = spent.job;
             byStatus[job] = Number(spent.spent) + (byStatus[job] ? byStatus[job] : 0);
+          }, {})
+          .value(),
+        userTimeSpent: _.chain(action.data)
+          .filter(timeSheet => Number(timeSheet.spentTime))
+          .map(spent => ({
+            user: spent.user.fullNameRu,
+            spent: spent.spentTime
+          }))
+          .transform((byStatus, spent) => {
+            const user = spent.user;
+            byStatus[user] = Number(spent.spent) + (byStatus[user] ? byStatus[user] : 0);
+          }, {})
+          .value(),
+        roleTimeSpent: _.chain(action.data)
+          .filter(timeSheet => Number(timeSheet.spentTime))
+          .map(spent => ({
+            role: spent.userRole,
+            spent: spent.spentTime
+          }))
+          .transform((byStatus, spent) => {
+            const role = spent.role;
+            byStatus[role] = Number(spent.spent) + (byStatus[role] ? byStatus[role] : 0);
           }, {})
           .value()
       };
@@ -146,6 +170,7 @@ export default function Task(state = InitialState, action) {
       if (state.task.id === action.changedFields.id) {
         return {
           ...state,
+          hasError: false,
           task: {
             ...state.task,
             ...action.changedFields
@@ -154,7 +179,18 @@ export default function Task(state = InitialState, action) {
       } else {
         return state;
       }
-
+    case TaskActions.ERROR_CLEAR:
+      return {
+        ...state,
+        closeHasError: action.closeHasError,
+        hasError: false
+      };
+    case TaskActions.TASK_CHANGE_REQUEST_FAIL:
+      return {
+        ...state,
+        closeHasError: action.closeHasError,
+        hasError: true
+      };
     case TaskActions.TASK_CHANGE_USER_SENT:
       return {
         ...state
@@ -215,9 +251,15 @@ export default function Task(state = InitialState, action) {
       if (currentComment.id === commentId) {
         currentComment = getDefaultCurrentComment();
       } else if (currentComment.parentId === commentId) {
-        currentComment = { ...currentComment, parentId: null };
+        currentComment = {
+          ...currentComment,
+          parentId: null
+        };
       }
-      comments[index] = { ...comments[index], deleting: true };
+      comments[index] = {
+        ...comments[index],
+        deleting: true
+      };
       return {
         ...state,
         comments,

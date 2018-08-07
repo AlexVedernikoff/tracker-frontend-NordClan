@@ -1,0 +1,14 @@
+{
+  "en": {
+    "SELECT_DATA": "Select data",
+    "NOT_SPECIFIED": "Not specified",
+    "SAVE": "Сохранить",
+    "EDIT": "Edit"
+  },
+  "ru": {
+    "SELECT_DATA": "Выберите дату",
+    "NOT_SPECIFIED": "Не указано",
+    "SAVE": "Сохранить",
+    "EDIT": "Редактировать"
+  }
+}

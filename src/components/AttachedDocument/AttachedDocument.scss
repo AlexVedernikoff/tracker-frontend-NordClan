@@ -17,7 +17,7 @@
     left: 0;
     z-index: 1;
     display: flex;
-    transition: all 0.3s ease-out 0s;
+    transition: $transition;
 
     button {
       background: none;
@@ -26,7 +26,7 @@
       height: 50px;
       background: $color-dark;
       color: white;
-      transition: all 0.3s ease-out 0s;
+      transition: $transition;
 
       svg {
         width: 1rem !important;

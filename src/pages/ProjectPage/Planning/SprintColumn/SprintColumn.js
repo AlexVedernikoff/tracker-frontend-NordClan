@@ -2,17 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { DropTarget } from 'react-dnd';
 import { TASK_ROW } from '../../../../constants/DragAndDrop';
+import Pagination from '../../../../components/Pagination';
 import classnames from 'classnames';
 
 import * as css from './SprintColumn.scss';
 
 const columnTarget = {
-  drop (props, monitor) {
+  drop(props, monitor) {
     props.onDrop(monitor.getItem(), props.sprint);
   }
 };
 
-function collect (connect, monitor) {
+function collect(connect, monitor) {
   return {
     connectDropTarget: connect.dropTarget(),
     isOver: monitor.isOver()
@@ -20,20 +21,36 @@ function collect (connect, monitor) {
 }
 
 class SprintColumn extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      activePage: 1
+    };
+  }
 
-  render () {
-    const {
-        tasks,
-        connectDropTarget,
-        isOver
-      } = this.props;
+  handlePaginationClick = e => {
+    this.setState(
+      {
+        activePage: e.activePage
+      },
+      () => this.props.loadTasks(e, this.props.name, this.state.activePage)
+    );
+  };
 
-    return (
-        connectDropTarget(
-          <div className={classnames({[css.dropColumn]: true, [css.canDropColumn]: isOver})} >
-            {tasks}
-          </div>
-        )
+  render() {
+    const { tasks, connectDropTarget, isOver } = this.props;
+
+    return connectDropTarget(
+      <div className={classnames({ [css.dropColumn]: true, [css.canDropColumn]: isOver })}>
+        {tasks}
+        {this.props.pagesCount > 1 ? (
+          <Pagination
+            itemsCount={this.props.pagesCount}
+            activePage={this.state.activePage}
+            onItemClick={this.handlePaginationClick}
+          />
+        ) : null}
+      </div>
     );
   }
 }
@@ -41,7 +58,10 @@ class SprintColumn extends React.Component {
 SprintColumn.propTypes = {
   connectDropTarget: PropTypes.func.isRequired,
   isOver: PropTypes.bool.isRequired,
+  loadTasks: PropTypes.func,
+  name: PropTypes.string,
   onDrop: PropTypes.func.isRequired,
+  pagesCount: PropTypes.number,
   sprint: PropTypes.number.isRequired,
   tasks: PropTypes.array.isRequired
 };

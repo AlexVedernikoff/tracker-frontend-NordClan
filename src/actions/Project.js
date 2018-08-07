@@ -33,6 +33,11 @@ const gettingProjectUsersSuccess = users => ({
   users
 });
 
+const gettingProjectExternalUsersSuccess = users => ({
+  type: ProjectActions.PROJECT_EXTERNAL_USERS_RECEIVE_SUCCESS,
+  users
+});
+
 const gettingProjectSprintsStart = () => ({
   type: ProjectActions.PROJECT_SPRINTS_RECEIVE_START
 });
@@ -123,9 +128,15 @@ const bindUserToProjectsSuccess = users => ({
   type: ProjectActions.BIND_USER_TO_PROJECT_SUCCESS,
   users: users
 });
+
 const unbindUserToProjectsSuccess = users => ({
   type: ProjectActions.UNBIND_USER_TO_PROJECT_SUCCESS,
   users: users
+});
+
+const unbindExternalUserToProjectsSuccess = userId => ({
+  type: ProjectActions.UNBIND_EXTERNAL_USER_TO_PROJECT_SUCCESS,
+  userId
 });
 
 const attachmentUploadStarted = (projectId, attachment) => ({
@@ -177,7 +188,7 @@ const uploadAttachments = (projectId, attachments) => {
         body: data,
         extra: withdefaultExtra({
           onUploadProgress: progressEvent => {
-            const progress = Math.round(progressEvent.loaded * 100 / progressEvent.total);
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
             dispatch(attachmentUploadProgress(projectId, attachment, progress));
           }
         }),
@@ -208,9 +219,43 @@ const failRemoveAttachment = (projectId, attachmentId, error) => ({
   error
 });
 
+const getProjectUsers = (id, isExternal = false) => {
+  const URL = `${API_URL}/project/${id}/users`;
+  return dispatch => {
+    dispatch(gettingProjectUsersStart());
+    dispatch(startLoading());
+    axios
+      .get(
+        URL,
+        isExternal
+          ? {
+              params: {
+                isExternal: 1
+              }
+            }
+          : {},
+        { withCredentials: true }
+      )
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          if (isExternal) {
+            dispatch(gettingProjectExternalUsersSuccess(response.data));
+          } else {
+            dispatch(gettingProjectUsersSuccess(response.data));
+          }
+          dispatch(finishLoading());
+        }
+      });
+  };
+};
+
 export const bindUserToProject = (projectId, userId, rolesIds) => {
   const URL = `${API_URL}/project/${projectId}/users`;
-
+  const isExternal = rolesIds.split(',').includes('11');
   return dispatch => {
     dispatch(bindUserToProjectStart());
     dispatch(startLoading());
@@ -221,14 +266,18 @@ export const bindUserToProject = (projectId, userId, rolesIds) => {
       })
       .then(response => {
         if (response.data) {
-          dispatch(bindUserToProjectsSuccess(response.data));
+          if (isExternal) {
+            dispatch(getProjectUsers(projectId, true));
+          } else {
+            dispatch(bindUserToProjectsSuccess(response.data));
+          }
           dispatch(finishLoading());
         }
       });
   };
 };
 
-export const unbindUserToProject = (projectId, userId) => {
+export const unbindUserToProject = (projectId, userId, isExternal = false) => {
   const URL = `${API_URL}/project/${projectId}/users/${userId}`;
 
   return dispatch => {
@@ -236,7 +285,11 @@ export const unbindUserToProject = (projectId, userId) => {
     dispatch(startLoading());
     axios.delete(URL).then(response => {
       if (response.data) {
-        dispatch(unbindUserToProjectsSuccess(response.data));
+        if (!isExternal) {
+          dispatch(unbindUserToProjectsSuccess(response.data));
+        } else {
+          dispatch(unbindExternalUserToProjectsSuccess(userId));
+        }
         dispatch(finishLoading());
       }
     });
@@ -264,27 +317,6 @@ const getProjectInfo = id => {
   };
 };
 
-const getProjectUsers = id => {
-  const URL = `${API_URL}/project/${id}/users`;
-
-  return dispatch => {
-    dispatch(gettingProjectUsersStart());
-    dispatch(startLoading());
-    axios
-      .get(URL, {}, { withCredentials: true })
-      .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(finishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(gettingProjectUsersSuccess(response.data));
-          dispatch(finishLoading());
-        }
-      });
-  };
-};
-
 const getProjectSprints = id => {
   const URL = `${API_URL}/sprint`;
 
@@ -297,7 +329,7 @@ const getProjectSprints = id => {
         {
           params: {
             projectId: id,
-            fields: 'id,name,factFinishDate'
+            fields: 'id,name,factFinishDate,qaPercent'
           }
         },
         { withCredentials: true }
@@ -374,7 +406,9 @@ const createTask = (task, openTaskPage, callee) => {
       .then(response => {
         if (response && response.status === 200) {
           dispatch(finishLoading());
-          // dispatch(createTaskRequestSuccess(task.projectId, task.sprintId || BACKLOG_ID, response.data.id, response.data));
+          dispatch(
+            createTaskRequestSuccess(task.projectId, task.sprintId || BACKLOG_ID, response.data.id, response.data)
+          );
           dispatch(getTask(task.parentId));
           dispatch(closeCreateTaskModal());
           dispatch(getProjectInfo(task.projectId));

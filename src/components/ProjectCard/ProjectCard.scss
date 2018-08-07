@@ -16,6 +16,7 @@
   font-size: 11px;
   color: gray;
   margin: 0;
+  margin-bottom: 2px;
 
   span {
     display: inline-block;
@@ -54,16 +55,21 @@
   display: inline-block;
   flex-shrink: 0;
   margin-right: 8px;
-  margin-top: 2px;
   vertical-align: middle;
   background-color: lightgray;
   width: 1rem;
   height: 1rem;
   border-radius: 50%;
 
-  &.INPROGRESS { background-color: $color-green; }
-  &.INHOLD { background-color: $color-blue; }
-  &.FINISHED { background-color: $color-dark; }
+  &.INPROGRESS {
+    background-color: $color-green;
+  }
+  &.INHOLD {
+    background-color: $color-blue;
+  }
+  &.FINISHED {
+    background-color: $color-dark;
+  }
 }
 
 .title {

@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as css from './CostByRoleChart.scss';
 import { Line } from 'react-chartjs-2';
-import { connect } from 'react-redux';
-import moment from 'moment';
+import ChartWrapper from '../ChartWrapper';
 import Button from '../../../../components/Button';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import roundNum from '../../../../utils/roundNum';
 import getColor from '../../../../utils/Colors';
+import localize from './CostByRoleChart.json';
+import { connect } from 'react-redux';
 
 class CostByRoleChart extends Component {
   static propTypes = {
@@ -17,14 +18,21 @@ class CostByRoleChart extends Component {
     getBasicLineSettings: PropTypes.func
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
+
     this.state = {
       displayPercent: true
     };
   }
 
-  makeChartData () {
+  chartRef = null;
+
+  setChartRef = node => {
+    this.chartRef = node;
+  };
+
+  makeChartData() {
     const { costByRoleMetrics, costByRolePercentMetrics } = this.props;
     const { displayPercent } = this.state;
 
@@ -48,7 +56,7 @@ class CostByRoleChart extends Component {
             display: true,
             scaleLabel: {
               display: true,
-              labelString: this.state.displayPercent ? '% часов' : 'часы'
+              labelString: this.state.displayPercent ? localize[this.props.lang].PER_OF_H : localize[this.props.lang].H
             }
           }
         ]
@@ -56,10 +64,10 @@ class CostByRoleChart extends Component {
     };
   };
 
-  makeRoleMetricsLine (roleMetrics) {
-    return roleMetrics.map((role) => {
+  makeRoleMetricsLine(roleMetrics) {
+    return roleMetrics.map(role => {
       const line = role.metrics
-        .map((metric) => {
+        .map(metric => {
           return {
             x: metric.createdAt,
             y: roundNum(+metric.value, 2)
@@ -73,7 +81,7 @@ class CostByRoleChart extends Component {
       };
     });
   }
-  switcherClickHandler = (buttonType) => {
+  switcherClickHandler = buttonType => {
     return () => {
       if (buttonType === 'percent' && !this.state.displayPercent) {
         this.setState({ displayPercent: true });
@@ -82,25 +90,31 @@ class CostByRoleChart extends Component {
       }
     };
   };
-  render () {
+  render() {
+    const { lang } = this.props;
+
     return (
-      <div className={css.CostByRoleChart}>
+      <ChartWrapper chartRef={this.chartRef} className={css.CostByRoleChart}>
         <div className={css.CostByRoleSwitcher}>
           <Button
             type={this.state.displayPercent ? 'primary' : 'bordered'}
-            text="Отобразить в %"
+            text={localize[lang].IN_PERCENT}
             onClick={this.switcherClickHandler('percent')}
           />
           <Button
             type={this.state.displayPercent ? 'bordered' : 'primary'}
-            text="Отобразить в часах"
+            text={localize[lang].IN_HOURS}
             onClick={this.switcherClickHandler('hours')}
           />
         </div>
-        <Line data={this.makeChartData()} options={this.getChartOptions()} redraw />
-      </div>
+        <Line ref={this.setChartRef} data={this.makeChartData()} options={this.getChartOptions()} redraw />
+      </ChartWrapper>
     );
   }
 }
 
-export default CostByRoleChart;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(mapStateToProps)(CostByRoleChart);

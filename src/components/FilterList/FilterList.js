@@ -1,37 +1,73 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Row, Col } from 'react-flexbox-grid/lib/index';
+import ReactTooltip from 'react-tooltip';
 import Tag from '../Tag';
 import Button from '../../components/Button';
 import classnames from 'classnames';
-import { IconClose } from '../Icons';
+import { IconClose, IconArrowDownThin, IconBroom } from '../Icons';
 import * as css from './FilterList.scss';
+import { UnmountClosed, Collapse } from 'react-collapse';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { connect } from 'react-redux';
+import localize from './FilterList.json';
 
-export default class FilterList extends React.Component {
+class FilterList extends Component {
+  componentWillReceiveProps() {
+    ReactTooltip.hide();
+  }
+
   render() {
-    const { filters, clearAll, toggleFilterView, fullFilterView, ...other } = this.props;
+    const { filters, clearAll, toggleFilterView, fullFilterView, isVisor, lang } = this.props;
+    const filterTags = filters.map(filter => {
+      return <Tag name={filter.label} deleteHandler={filter.deleteHandler} key={filter.name} unclickable />;
+    });
 
     return (
       <div>
-        {filters.length && !fullFilterView ? (
-          <div className={classnames(css.filterList)}>
-            {filters.map(filter => {
-              return <Tag name={filter.label} deleteHandler={filter.deleteHandler} key={filter.name} />;
-            })}
-            <span className={classnames(css.clearAllFilter)}>
-              <IconClose onClick={clearAll} />
-            </span>
-          </div>
-        ) : (
-          ''
-        )}
+        <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeave={false}>
+          {!fullFilterView && (
+            <Row className={css.filtersRow}>
+              <Col xs>
+                {filterTags.length ? (
+                  <div className={classnames(css.filterList)}>
+                    <div>
+                      {filterTags}
+                      <span className={classnames(css.clearAllFilter)} data-tip={localize[lang].CLEAR_FILTERS}>
+                        <IconBroom onClick={clearAll} />
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className={classnames(css.filterList)}>
+                    <span onClick={toggleFilterView} className={css.emptyFiltersLink}>
+                      {localize[lang].NOT_SELECTED}
+                    </span>
+                  </div>
+                )}
+              </Col>
+              {!isVisor && (
+                <Col className={classnames(css.filterCol)}>
+                  <Button
+                    onClick={this.props.openCreateTaskModal}
+                    type="primary"
+                    text={localize[lang].CREATE_TASK}
+                    icon="IconPlus"
+                    name="right"
+                  />
+                </Col>
+              )}
+            </Row>
+          )}
+        </ReactCSSTransitionGroup>
         <div className={classnames(css.filterListShowMore)}>
-          <hr />
-          <div className={classnames(css.filterListShowMoreButton)}>
-            <Button
-              type="primary"
-              text={fullFilterView ? 'Скрыть фильтры' : 'Показать фильтры'}
-              name="allFilters"
-              onClick={toggleFilterView}
+          <div
+            className={classnames(css.filterListShowMoreButton)}
+            data-tip={fullFilterView ? localize[lang].HIDE_FILTERS : localize[lang].SHOW_FILTERS}
+            onClick={toggleFilterView}
+          >
+            <IconArrowDownThin
+              className={classnames({ [css.filterListShowMoreIcon]: true, [css.iconReverse]: fullFilterView })}
             />
           </div>
         </div>
@@ -44,5 +80,15 @@ FilterList.propTypes = {
   clearAll: PropTypes.func.isRequired,
   filters: PropTypes.array.isRequired,
   fullFilterView: PropTypes.bool.isRequired,
+  isVisor: PropTypes.bool.isRequired,
+  openCreateTaskModal: PropTypes.func.isRequired,
   toggleFilterView: PropTypes.func.isRequired
 };
+
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+export default connect(
+  mapStateToProps,
+  null
+)(FilterList);
