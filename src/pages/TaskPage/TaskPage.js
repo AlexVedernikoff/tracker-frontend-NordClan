@@ -442,4 +442,7 @@ const mapDispatchToProps = {
   getRoles
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskPage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskPage);

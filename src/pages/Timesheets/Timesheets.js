@@ -421,4 +421,7 @@ const mapDispatchToProps = {
   showNotification
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Timesheets);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Timesheets);

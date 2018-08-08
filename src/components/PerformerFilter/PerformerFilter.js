@@ -9,7 +9,7 @@ import { getFullName } from '../../utils/NameLocalisation';
 class PerformerFilter extends React.Component {
   static propTypes = {
     onPerformerSelect: PropTypes.func.isRequired,
-    selectedPerformerId: PropTypes.array,
+    selectedPerformerId: PropTypes.oneOfType([PropTypes.array, PropTypes.number]),
     users: PropTypes.array
   };
 
@@ -49,4 +49,7 @@ const mapDispatchToProps = {
   getTagsFilter
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PerformerFilter);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PerformerFilter);
