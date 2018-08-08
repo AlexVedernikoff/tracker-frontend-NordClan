@@ -23,7 +23,7 @@ import { changeTask, startTaskEditing } from '../../../actions/Task';
 import CreateTaskModal from '../../../components/CreateTaskModal';
 import { openCreateTaskModal } from '../../../actions/Project';
 import localize from './taskList.json';
-import { getFullName } from '../../../utils/NameLocalisation';
+import { getFullName, getDictionaryName } from '../../../utils/NameLocalisation';
 
 class TaskList extends Component {
   constructor(props) {
@@ -297,7 +297,7 @@ class TaskList extends Component {
   createOptions = (array, labelField = 'name') => {
     return array.map(element => ({
       value: element.id,
-      label: element[labelField]
+      label: labelField === 'name' ? getDictionaryName(element) : getFullName(element)
     }));
   };
 

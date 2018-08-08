@@ -314,6 +314,19 @@ class ActivityRow extends React.Component {
                   onChange={e => this.changeFilled(i, tsh.id, tsh.comment, e.target.value)}
                   onBlur={e => this.onBlurFilled(i, tsh.id, tsh.comment, e.target.value)}
                 />
+                {tsh.doubleTimesheets && tsh.doubleTimesheets.length ? (
+                  <span
+                    className={css.doubleTimesheets}
+                    title={localize[lang].DELETE_DUBLICATE}
+                    onClick={() =>
+                      this.deleteTimesheets(tsh.doubleTimesheets.map(doubleTimesheet => doubleTimesheet.id))
+                    }
+                  >
+                    + {tsh.doubleTimesheets.reduce((res, cur) => +cur.spentTime + res, 0)}
+                  </span>
+                ) : (
+                  ''
+                )}
                 <span className={css.toggleComment}>
                   <SingleComment
                     disabled={!canDeleteRow}
@@ -426,4 +439,7 @@ const mapDispatchToProps = {
   deleteTempTimesheets
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ActivityRow);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ActivityRow);
