@@ -157,7 +157,4 @@ const mapDispatchToProps = {
   clearCurrentProjectAndTasks,
   clearCurrentTask
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AppRouter);
+export default connect(mapStateToProps, mapDispatchToProps)(AppRouter);
