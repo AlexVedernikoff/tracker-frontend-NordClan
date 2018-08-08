@@ -22,11 +22,12 @@ import { history } from '../../../History';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import DatepickerDropdown from '../../../components/DatepickerDropdown';
 import moment from 'moment';
-const dateFormat = 'DD.MM.YYYY';
 import CreateTaskModal from '../../../components/CreateTaskModal';
 import { openCreateTaskModal } from '../../../actions/Project';
 import localize from './taskList.json';
 import { getFullName, getDictionaryName } from '../../../utils/NameLocalisation';
+
+const dateFormat = 'DD.MM.YYYY';
 
 class TaskList extends Component {
   constructor(props) {
@@ -35,8 +36,6 @@ class TaskList extends Component {
       activePage: 1,
       isPerformerModalOpen: false,
       isSprintModalOpen: false,
-      dateFrom: undefined,
-      dateTo: undefined,
       ...this.setQueryFilters()
     };
   }
@@ -73,9 +72,11 @@ class TaskList extends Component {
     const singleQuery = currentQuery => {
       return currentQuery ? translateToNumIfNeeded(currentQuery) : null;
     };
+
     const getValues = changed => {
       const name = changed ? 'name' : 'filterByName';
       if (changed && Object.keys(query).length === 0) return {};
+
       return {
         sprintId: singleQuery(query.sprintId),
         performerId: singleQuery(query.performerId),
@@ -84,11 +85,13 @@ class TaskList extends Component {
         statusId: multipleQueries(query.statusId),
         typeId: multipleQueries(query.typeId),
         tags: multipleQueries(query.tags),
+        dateFrom: singleQuery(query.dateFrom),
+        dateTo: singleQuery(query.dateTo),
         [name]: query.name ? query.name : ''
       };
     };
+
     return {
-      ...getValues(),
       changedFilters: {
         projectId,
         ...getValues(true)
@@ -97,19 +100,17 @@ class TaskList extends Component {
   }
 
   changeUrl(changedFilters) {
-    const queryObj = {};
+    const query = {};
 
     for (const [key, value] of Object.entries(changedFilters)) {
       if (value && key !== 'projectId') {
-        queryObj[key] = value;
+        query[key] = value;
       }
     }
 
     history.replace({
       ...this.props.location,
-      query: {
-        ...queryObj
-      }
+      query
     });
   }
 
@@ -212,19 +213,20 @@ class TaskList extends Component {
     this.setState(state => {
       const filterValue = options.map(option => option.value);
       const changedFilters = state.changedFilters;
+
       if (filterValue.length) {
         changedFilters[name] = filterValue;
       } else {
         delete changedFilters[name];
       }
+
       this.changeUrl(changedFilters);
-      const newState = {
+
+      return {
         [name]: filterValue,
         activePage: state[name].length !== filterValue.length ? 1 : state.activePage,
         changedFilters
       };
-
-      return newState;
     }, this.loadTasks);
   };
 
@@ -239,13 +241,13 @@ class TaskList extends Component {
         delete changedFilters.name;
       }
 
-      const newState = {
+      this.changeUrl(changedFilters);
+
+      return {
         filterByName: value,
         activePage: state.filterByName !== value ? 1 : state.activePage,
         changedFilters
       };
-      this.changeUrl(changedFilters);
-      return newState;
     }, this.loadTasks);
   };
 
@@ -306,16 +308,26 @@ class TaskList extends Component {
     }));
   };
 
-  handleDayFromChange = dateFrom => {
-    this.setState({ dateFrom: this.formatDate(dateFrom) });
-  };
+  handleDayChange(value, name) {
+    this.setState(state => {
+      const changedFilters = { ...this.state.changedFilters };
 
-  handleDayToChange = dateTo => {
-    this.setState({ dateTo: this.formatDate(dateTo) });
-  };
+      if (value) {
+        changedFilters[name] = this.formatDate(value);
+      } else {
+        delete changedFilters[name];
+      }
+
+      this.changeUrl(changedFilters);
+
+      return { changedFilters };
+    }, this.loadTasks);
+  }
+
   formatDate = date => date && moment(date).format(dateFormat);
 
   render() {
+    console.log(this.state);
     const { tasksList: tasks, statuses, taskTypes, project, isReceiving, lang } = this.props;
 
     const { prioritiesId, typeId, statusId, sprintId, performerId, authorId, tags, filterByName } = this.state;
@@ -346,6 +358,7 @@ class TaskList extends Component {
         </Row>
       </div>
     );
+
     return (
       <div>
         <section>
@@ -427,20 +440,34 @@ class TaskList extends Component {
               <Col xs={6} sm={3}>
                 <DatepickerDropdown
                   name="dateFrom"
-                  value={this.state.dateFrom}
-                  // disabledDataRanges={[{ after: new Date(this.state.dayTo) }]}
-                  onDayChange={this.handleDayFromChange}
-                  placeholder="От"
+                  value={this.state.changedFilters.dateFrom}
+                  disabledDataRanges={[
+                    {
+                      after:
+                        (this.state.changedFilters.dateTo &&
+                          moment(this.state.changedFilters.dateTo, dateFormat).toDate()) ||
+                        new Date()
+                    }
+                  ]}
+                  onDayChange={option => this.handleDayChange(option, 'dateFrom')}
+                  placeholder={localize[lang].FROM}
                   format={dateFormat}
                 />
               </Col>
               <Col xs={6} sm={3}>
                 <DatepickerDropdown
                   name="dateTo"
-                  value={this.state.dateTo}
-                  onDayChange={this.handleDayToChange}
-                  // disabledDataRanges={[{ before: new Date(this.state.dayFrom) }]}
-                  placeholder="До"
+                  value={this.state.changedFilters.dateTo}
+                  onDayChange={option => this.handleDayChange(option, 'dateTo')}
+                  disabledDataRanges={[
+                    {
+                      before:
+                        this.state.changedFilters.dateFrom &&
+                        moment(this.state.changedFilters.dateFrom, dateFormat).toDate(),
+                      after: new Date()
+                    }
+                  ]}
+                  placeholder={localize[lang].TO}
                   format={dateFormat}
                 />
               </Col>
@@ -528,11 +555,11 @@ TaskList.propTypes = {
   changeTask: PropTypes.func.isRequired,
   getTasks: PropTypes.func.isRequired,
   globalRole: PropTypes.string,
+  isCreateTaskModalOpen: PropTypes.bool,
   isReceiving: PropTypes.bool,
   lastCreatedTask: PropTypes.object,
   location: PropTypes.object,
   openCreateTaskModal: PropTypes.func.isRequired,
-  isCreateTaskModalOpen: PropTypes.bool,
   pagesCount: PropTypes.number.isRequired,
   params: PropTypes.object,
   project: PropTypes.object.isRequired,

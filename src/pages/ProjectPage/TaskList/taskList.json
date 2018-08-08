@@ -11,7 +11,9 @@
     "NO_RESULTS": "No results",
     "ENTER_TITLE_TASK": "Enter a title for the task",
     "EDIT_TASK_PERFORMER": "Edit task performer",
-    "EDIT_TASK_SPRING": "Edit task sprint"
+    "EDIT_TASK_SPRING": "Edit task sprint",
+    "FROM": "From",
+    "TO": "To"
   },
   "ru": {
     "CREATE_TASK": "Создать задачу",
@@ -25,6 +27,8 @@
     "NO_RESULTS": "Нет результатов",
     "ENTER_TITLE_TASK": "Введите название задачи",
     "EDIT_TASK_PERFORMER": "Изменить исполнителя задачи",
-    "EDIT_TASK_SPRING": "Изменить спринт задачи"
+    "EDIT_TASK_SPRING": "Изменить спринт задачи",
+    "FROM": "От",
+    "TO": "Дo"
   }
 }
