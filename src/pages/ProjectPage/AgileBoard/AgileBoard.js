@@ -265,16 +265,8 @@ class AgileBoard extends Component {
 
   getUrlQueries = () => {
     if (!this.props.myTaskBoard) {
-      const {
-        performerId,
-        name,
-        authorId,
-        prioritiesId,
-        typeId,
-        filterTags,
-        isOnlyMine,
-        changedSprint
-      } = this.props.location.query;
+      const { performerId, name, authorId, prioritiesId, typeId, filterTags, isOnlyMine, changedSprint } =
+        (this.props.location && this.props.location.query) || {};
 
       return {
         ...this.makeNewObj('performerId', performerId),
@@ -305,19 +297,17 @@ class AgileBoard extends Component {
 
   changeUrl(changedFilters) {
     if (!this.props.myTaskBoard) {
-      const queryObj = {};
+      const query = {};
 
       for (const [key, value] of Object.entries(changedFilters)) {
         if (value && key !== 'projectId') {
-          queryObj[key] = value;
+          query[key] = value;
         }
       }
 
       history.replace({
         ...this.props.location,
-        query: {
-          ...queryObj
-        }
+        query
       });
     }
   }
@@ -925,6 +915,7 @@ AgileBoard.propTypes = {
   globalRole: PropTypes.string,
   isCreateTaskModalOpen: PropTypes.bool,
   lastCreatedTask: PropTypes.object,
+  location: PropTypes.object,
   myTaskBoard: PropTypes.bool,
   openCreateTaskModal: PropTypes.func.isRequired,
   params: PropTypes.object,
