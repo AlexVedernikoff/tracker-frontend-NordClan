@@ -137,14 +137,13 @@ class Comments extends Component {
       const mention = /((@\w+ \w+)|(@\w+))$/.exec(value);
       const mentions = this.getMentions(value);
       mentions.pop();
-      const suggestions = this.props.users.map(user => user.fullNameEn);
+      const suggestions = this.props.users.map(user => user.fullNameRu);
       if (mention === null) {
         return suggestions;
       }
-      console.log(mention[0]);
       const filtered = suggestions.filter(
         suggestion =>
-          suggestion.toLowerCase().indexOf(mention[0].slice(1).toLowerCase()) === 0 &&
+          suggestion.toLowerCase().indexOf(mention[1].slice(1).toLowerCase()) === 0 &&
           mentions.indexOf(suggestion) === -1
       );
       return filtered;
@@ -152,7 +151,6 @@ class Comments extends Component {
   };
 
   typeComment = evt => {
-    this.showSuggestions(evt.target.value);
     console.log(this.showSuggestions(evt.target.value));
     this.props.updateCurrentCommentText(evt.target.value);
     if (evt.target.value && evt.target.value.trim() !== '') {
@@ -212,17 +210,17 @@ class Comments extends Component {
         <ul className={css.commentList}>
           <form className={css.answerLine}>
             <div className={css.answerLineText}>
-              <TextareaAutosize
-                key={this.state.resizeKey}
-                style={{ minHeight: 32 }}
-                className={css.resizeTrue}
+              <div
+                contentEditable
+                style={{ height: 30, width: 160, border: '1px solid black' }}
                 disabled={this.props.currentComment.disabled || this.props.currentComment.expired}
-                placeholder={localize[lang].ENTER_COMMENT}
+                placeholder="Введите текст комментария"
                 onInput={this.typeComment}
                 onKeyDown={this.publishComment}
-                ref={ref => (this.reply = ref ? ref.textarea : null)}
+                ref={ref => (this.reply = ref)}
                 value={this.props.currentComment.text}
               />
+
               {this.props.currentComment.id ? (
                 <div className={css.answerInfo}>
                   {localize[lang].EDIT_COMMENT}&nbsp;
