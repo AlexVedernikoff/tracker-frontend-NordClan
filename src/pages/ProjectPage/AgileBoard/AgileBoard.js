@@ -179,9 +179,7 @@ class AgileBoard extends Component {
       changedTask: null,
       allFilters: [],
       fullFilterView: this.getFilterViewState(),
-      changedFilters: {
-        projectId: this.props.params.projectId
-      },
+      changedFilters: {},
       ...this.initialFilters,
       ...this.getQueryFiltersFromUrl()
     };
@@ -266,56 +264,62 @@ class AgileBoard extends Component {
   };
 
   getUrlQueries = () => {
-    const {
-      performerId,
-      name,
-      authorId,
-      prioritiesId,
-      typeId,
-      filterTags,
-      isOnlyMine,
-      changedSprint
-    } = this.props.location.query;
+    if (!this.props.myTaskBoard) {
+      const {
+        performerId,
+        name,
+        authorId,
+        prioritiesId,
+        typeId,
+        filterTags,
+        isOnlyMine,
+        changedSprint
+      } = this.props.location.query;
 
-    return {
-      ...this.makeNewObj('performerId', performerId),
-      ...this.makeNewObj('name', name),
-      ...this.makeNewObj('authorId', authorId),
-      ...this.makeNewObj('prioritiesId', prioritiesId),
-      ...this.makeNewObj('filterTags', filterTags),
-      ...this.makeNewObj('typeId', typeId),
-      ...this.makeNewObj('isOnlyMine', isOnlyMine),
-      ...this.makeNewObj('changedSprint', changedSprint)
-    };
+      return {
+        ...this.makeNewObj('performerId', performerId),
+        ...this.makeNewObj('name', name),
+        ...this.makeNewObj('authorId', authorId),
+        ...this.makeNewObj('prioritiesId', prioritiesId),
+        ...this.makeNewObj('filterTags', filterTags),
+        ...this.makeNewObj('typeId', typeId),
+        ...this.makeNewObj('isOnlyMine', isOnlyMine),
+        ...this.makeNewObj('changedSprint', changedSprint)
+      };
+    }
   };
 
   getQueryFiltersFromUrl() {
-    const projectId = this.props.params.projectId;
+    if (!this.props.myTaskBoard) {
+      const projectId = this.props.params.projectId;
 
-    return {
-      ...this.getUrlQueries(),
-      changedFilters: {
-        projectId,
-        ...this.getUrlQueries()
-      }
-    };
+      return {
+        ...this.getUrlQueries(),
+        changedFilters: {
+          projectId,
+          ...this.getUrlQueries()
+        }
+      };
+    }
   }
 
   changeUrl(changedFilters) {
-    const queryObj = {};
+    if (!this.props.myTaskBoard) {
+      const queryObj = {};
 
-    for (const [key, value] of Object.entries(changedFilters)) {
-      if (value && key !== 'projectId') {
-        queryObj[key] = value;
+      for (const [key, value] of Object.entries(changedFilters)) {
+        if (value && key !== 'projectId') {
+          queryObj[key] = value;
+        }
       }
+
+      history.replace({
+        ...this.props.location,
+        query: {
+          ...queryObj
+        }
+      });
     }
-
-    history.replace({
-      ...this.props.location,
-      query: {
-        ...queryObj
-      }
-    });
   }
 
   initialFilters = {
@@ -368,6 +372,10 @@ class AgileBoard extends Component {
     this.setState(state => {
       let filterValue = e;
       const changedFilters = { ...state.changedFilters };
+
+      if (!this.props.myTaskBoard) {
+        changedFilters.projectId = this.props.params.projectId;
+      }
 
       if (name === 'typeId') {
         filterValue = e.map(singleValue => singleValue.value);
@@ -783,7 +791,7 @@ class AgileBoard extends Component {
                   <Col xs={12} sm={6}>
                     <Input
                       placeholder={localize[lang].TASK_NAME}
-                      value={this.state.name}
+                      value={this.state.name || ''}
                       onChange={e => this.selectValue(e.target.value, 'name')}
                     />
                   </Col>
