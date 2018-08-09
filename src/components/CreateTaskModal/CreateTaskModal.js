@@ -364,7 +364,7 @@ CreateTaskModal.propTypes = {
   project: PropTypes.object,
   selectedSprintValue: PropTypes.number,
   taskTypes: PropTypes.array,
-  defaultPerformerId: PropTypes.number
+  defaultPerformerId: PropTypes.oneOfType([PropTypes.array, PropTypes.number])
 };
 
 const mapStateToProps = state => ({
