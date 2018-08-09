@@ -83,24 +83,6 @@ function Auth(state = InitialState, action) {
         redirectPath: action.path
       };
 
-    case AuthActions.AUTH_TOKEN_RECEIVED:
-      return {
-        ...state,
-        Auth: {
-          ...state.Auth,
-          token: action.token
-        }
-      };
-
-    case AuthActions.AUTH_TOKEN_REMOVED:
-      return {
-        ...state,
-        Auth: {
-          ...state.Auth,
-          token: ''
-        }
-      };
-
     default:
       return state;
   }
