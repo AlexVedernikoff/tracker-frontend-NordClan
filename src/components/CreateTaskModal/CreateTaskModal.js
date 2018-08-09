@@ -357,14 +357,14 @@ CreateTaskModal.propTypes = {
   closeCreateTaskModal: PropTypes.func.isRequired,
   column: PropTypes.string,
   createTask: PropTypes.func.isRequired,
+  defaultPerformerId: PropTypes.oneOfType([PropTypes.array, PropTypes.number]),
   isCreateChildTaskModalOpen: PropTypes.bool,
   isCreateTaskModalOpen: PropTypes.bool,
   isCreateTaskRequestInProgress: PropTypes.bool,
   parentTaskId: PropTypes.number,
   project: PropTypes.object,
   selectedSprintValue: PropTypes.number,
-  taskTypes: PropTypes.array,
-  defaultPerformerId: PropTypes.oneOfType([PropTypes.array, PropTypes.number])
+  taskTypes: PropTypes.array
 };
 
 const mapStateToProps = state => ({
