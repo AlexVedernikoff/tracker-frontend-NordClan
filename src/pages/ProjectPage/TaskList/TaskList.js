@@ -114,20 +114,6 @@ class TaskList extends Component {
     });
   }
 
-  initialFilters = {
-    prioritiesId: null,
-    typeId: [],
-    statusId: [],
-    filterByName: '',
-    sprintId: null,
-    performerId: null,
-    authorId: null,
-    tags: [],
-    changedFilters: {
-      projectId: this.props.params.projectId
-    }
-  };
-
   openSprintModal = (taskId, sprintId) => {
     this.setState({
       isSprintModalOpen: true,
@@ -190,29 +176,34 @@ class TaskList extends Component {
   changeSingleFilter = (option, name) => {
     this.setState(state => {
       let filterValue = option ? option.value : null;
-      const changedFilters = state.changedFilters;
+      const changedFilters = { ...state.changedFilters };
       if (name === 'prioritiesId') {
         filterValue = option.prioritiesId;
       }
+
+      if (name === 'performerId') {
+        filterValue = option.map(singleValue => singleValue.value);
+      }
+
       if (~[null, [], undefined, ''].indexOf(filterValue)) {
         delete changedFilters[name];
       } else {
         changedFilters[name] = filterValue;
       }
+
       this.changeUrl(changedFilters);
-      const newState = {
-        [name]: filterValue,
+
+      return {
         activePage: state[name] !== filterValue ? 1 : state.activePage,
         changedFilters
       };
-      return newState;
     }, this.loadTasks);
   };
 
   changeMultiFilter = (options, name) => {
     this.setState(state => {
       const filterValue = options.map(option => option.value);
-      const changedFilters = state.changedFilters;
+      const changedFilters = { ...state.changedFilters };
 
       if (filterValue.length) {
         changedFilters[name] = filterValue;
@@ -223,8 +214,8 @@ class TaskList extends Component {
       this.changeUrl(changedFilters);
 
       return {
-        [name]: filterValue,
-        activePage: state[name].length !== filterValue.length ? 1 : state.activePage,
+        activePage:
+          state.changedFilters[name] && state.changedFilters[name].length !== filterValue.length ? 1 : state.activePage,
         changedFilters
       };
     }, this.loadTasks);
@@ -244,7 +235,6 @@ class TaskList extends Component {
       this.changeUrl(changedFilters);
 
       return {
-        filterByName: value,
         activePage: state.filterByName !== value ? 1 : state.activePage,
         changedFilters
       };
@@ -291,10 +281,7 @@ class TaskList extends Component {
   clearFilters = () => {
     this.setState(
       {
-        ...this.initialFilters,
-        changedFilters: {
-          projectId: this.props.params.projectId
-        }
+        changedFilters: {}
       },
       this.loadTasks
     );
@@ -327,10 +314,9 @@ class TaskList extends Component {
   formatDate = date => date && moment(date).format(dateFormat);
 
   render() {
-    console.log(this.state);
     const { tasksList: tasks, statuses, taskTypes, project, isReceiving, lang } = this.props;
 
-    const { prioritiesId, typeId, statusId, sprintId, performerId, authorId, tags, filterByName } = this.state;
+    const { prioritiesId, typeId, statusId, sprintId, performerId, authorId, tags } = this.state.changedFilters;
 
     const statusOptions = this.createOptions(statuses);
     const typeOptions = this.createOptions(taskTypes);
@@ -474,7 +460,7 @@ class TaskList extends Component {
               <Col xs={12} sm={6}>
                 <Input
                   placeholder={localize[lang].ENTER_TITLE_TASK}
-                  value={filterByName}
+                  value={this.state.changedFilters.name}
                   onChange={this.changeNameFilter}
                 />
               </Col>
@@ -492,9 +478,6 @@ class TaskList extends Component {
                   onTagSelect={options => this.changeMultiFilter(options, 'tags')}
                   filterTags={tags}
                 />
-              </Col>
-              <Col xs={12} sm={6}>
-                <Input placeholder="Введите название задачи" value={filterByName} onChange={this.changeNameFilter} />
               </Col>
             </Row>
           </div>
@@ -535,7 +518,7 @@ class TaskList extends Component {
             defaultSprint={this.state.sprintId}
             onChoose={this.changeSprint}
             onClose={this.closeSprintModal}
-            title={localize[lang].EDIT_TASK_SPRING}
+            title={localize[lang].EDIT_TASK_SPRINT}
             sprints={this.props.project.sprints}
           />
         ) : null}
