@@ -426,7 +426,7 @@ class TaskList extends Component {
               <Col xs={6} sm={3}>
                 <DatepickerDropdown
                   name="dateFrom"
-                  value={this.state.changedFilters.dateFrom}
+                  value={this.state.changedFilters ? this.state.changedFilters.dateFrom : ''}
                   disabledDataRanges={[
                     {
                       after:
@@ -443,7 +443,7 @@ class TaskList extends Component {
               <Col xs={6} sm={3}>
                 <DatepickerDropdown
                   name="dateTo"
-                  value={this.state.changedFilters.dateTo}
+                  value={this.state.changedFilters ? this.state.changedFilters.dateTo : ''}
                   onDayChange={option => this.handleDayChange(option, 'dateTo')}
                   disabledDataRanges={[
                     {
