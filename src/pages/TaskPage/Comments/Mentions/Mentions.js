@@ -1,4 +1,30 @@
-export default class Mentions {
+import React, { Component } from 'react';
+import TextareaAutosize from 'react-autosize-textarea';
+import PropTypes from 'prop-types';
+
+class Mentions extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+  static propTypes = {
+    disabled: PropTypes.bool,
+    key: PropTypes.string,
+    onInput: PropTypes.func,
+    onKeyDown: PropTypes.func,
+    placeholder: PropTypes.string,
+    value: PropTypes.string,
+    updateCurrentCommentText: PropTypes.func,
+    suggestions: PropTypes.array,
+    toggleBtn: PropTypes.func
+  };
+
+  typeComment = evt => {
+    this.showSuggestions(evt.target.value, this.props.suggestions);
+    this.props.updateCurrentCommentText(evt.target.value);
+    this.props.toggleBtn();
+  };
+
   getMentions = str => {
     const regEx = /(@\w+ \w+)|(@\w+)/g;
     let match = [];
@@ -9,12 +35,11 @@ export default class Mentions {
     return entities;
   };
 
-  showSuggestions = value => {
+  showSuggestions = (value, suggestions) => {
     if (/@/.test(value)) {
       const mention = /((@\w+ \w+)|(@\w+))$/.exec(value);
       const mentions = this.getMentions(value);
       mentions.pop();
-      const suggestions = this.props.users.map(user => user.fullNameRu);
       if (mention === null) {
         return suggestions;
       }
@@ -26,4 +51,21 @@ export default class Mentions {
       return filtered;
     }
   };
+  render() {
+    return (
+      <div>
+        <TextareaAutosize
+          key={this.props.key}
+          style={{ minHeight: 32 }}
+          disabled={this.props.disabled}
+          placeholder={this.props.placeholder}
+          onInput={this.typeComment}
+          onKeyDown={this.props.onKeyDown}
+          value={this.props.value}
+        />
+      </div>
+    );
+  }
 }
+
+export default Mentions;

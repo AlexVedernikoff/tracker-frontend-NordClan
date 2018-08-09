@@ -23,6 +23,7 @@ import { history } from '../../../History';
 import { IconSend, IconComments } from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
 import localize from './Comments.json';
+import Mentions from './Mentions/Mentions';
 
 const ENTER = 13;
 
@@ -122,41 +123,19 @@ class Comments extends Component {
     });
   };
 
-  getMentions = str => {
-    const regEx = /(@\w+ \w+)|(@\w+)/g;
-    let match = [];
-    const entities = [];
-    while ((match = regEx.exec(str)) !== null) {
-      entities.push(match[0].trim().slice(1));
-    }
-    return entities;
-  };
-
-  showSuggestions = value => {
-    if (/@/.test(value)) {
-      const mention = /((@\w+ \w+)|(@\w+))$/.exec(value);
-      const mentions = this.getMentions(value);
-      mentions.pop();
-      const suggestions = this.props.users.map(user => user.fullNameRu);
-      if (mention === null) {
-        return suggestions;
-      }
-      const filtered = suggestions.filter(
-        suggestion =>
-          suggestion.toLowerCase().indexOf(mention[1].slice(1).toLowerCase()) === 0 &&
-          mentions.indexOf(suggestion) === -1
-      );
-      return filtered;
-    }
-  };
-
-  typeComment = evt => {
-    console.log(this.showSuggestions(evt.target.value));
-    this.props.updateCurrentCommentText(evt.target.value);
+  //typeComment = evt => {
+  //  this.props.updateCurrentCommentText(evt.target.value);
+  //  if (evt.target.value && evt.target.value.trim() !== '') {
+  //    this.state.disabledBtn = false;
+  //  } else {
+  //    this.state.disabledBtn = true;
+  //  }
+  //};
+  toggleBtn = evt => {
     if (evt.target.value && evt.target.value.trim() !== '') {
-      this.state.disabledBtn = false;
+      this.setState(prevState => ({ ...prevState.disabledBtn, disabledBtn: false }));
     } else {
-      this.state.disabledBtn = true;
+      this.setState(prevState => ({ ...prevState.disabledBtn, disabledBtn: true }));
     }
   };
 
@@ -210,17 +189,20 @@ class Comments extends Component {
         <ul className={css.commentList}>
           <form className={css.answerLine}>
             <div className={css.answerLineText}>
-              <div
-                contentEditable
-                style={{ height: 30, width: 160, border: '1px solid black' }}
+              <Mentions
+                key={this.state.resizeKey}
+                style={{ minHeight: 32 }}
+                className={css.resizeTrue}
                 disabled={this.props.currentComment.disabled || this.props.currentComment.expired}
-                placeholder="Введите текст комментария"
-                onInput={this.typeComment}
+                placeholder={localize[lang].ENTER_COMMENT}
                 onKeyDown={this.publishComment}
-                ref={ref => (this.reply = ref)}
+                ref={ref => (this.reply = ref ? ref.textarea : null)}
                 value={this.props.currentComment.text}
+                updateCurrentCommentText={this.props.updateCurrentCommentText}
+                suggestions={this.props.users.map(user => user.fullNameEn)}
+                toggleBtn={this.toggleBtn}
+                onInput={this.typeComment}
               />
-
               {this.props.currentComment.id ? (
                 <div className={css.answerInfo}>
                   {localize[lang].EDIT_COMMENT}&nbsp;
