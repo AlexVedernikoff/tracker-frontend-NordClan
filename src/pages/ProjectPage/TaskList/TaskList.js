@@ -36,7 +36,7 @@ class TaskList extends Component {
       activePage: 1,
       isPerformerModalOpen: false,
       isSprintModalOpen: false,
-      ...this.setQueryFilters()
+      ...this.getQueryFilters()
     };
   }
 
@@ -56,45 +56,69 @@ class TaskList extends Component {
     }
   }
 
-  setQueryFilters() {
-    const query = this.props.location.query;
+  translateToNumIfNeeded = value => {
+    const re = /^\d+$/;
+    return re.test(value) ? +value : value;
+  };
+
+  multipleQueries = queries => {
+    if (Array.isArray(queries)) return queries.map(queryValue => this.translateToNumIfNeeded(queryValue));
+    return queries ? [this.translateToNumIfNeeded(queries)] : [];
+  };
+
+  singleQuery = currentQuery => {
+    return currentQuery ? this.translateToNumIfNeeded(currentQuery) : null;
+  };
+
+  makeFiltersObject = (name, value) => {
+    if (!!value && !Array.isArray(value)) {
+      return { [name]: this.singleQuery(value) };
+    }
+    if (!!value && Array.isArray(value)) {
+      return { [name]: this.multipleQueries(value) };
+    }
+  };
+
+  getUrlQueries = () => {
+    const {
+      performerId,
+      sprintId,
+      statusId,
+      name,
+      authorId,
+      prioritiesId,
+      typeId,
+      tags,
+      isOnlyMine,
+      changedSprint,
+      dateFrom,
+      dateTo
+    } =
+      (this.props.location && this.props.location.query) || {};
+
+    return {
+      ...this.makeFiltersObject('performerId', performerId),
+      ...this.makeFiltersObject('sprintId', sprintId),
+      ...this.makeFiltersObject('name', name),
+      ...this.makeFiltersObject('authorId', authorId),
+      ...this.makeFiltersObject('prioritiesId', prioritiesId),
+      ...this.makeFiltersObject('tags', tags),
+      ...this.makeFiltersObject('typeId', typeId),
+      ...this.makeFiltersObject('isOnlyMine', isOnlyMine),
+      ...this.makeFiltersObject('changedSprint', changedSprint),
+      ...this.makeFiltersObject('statusId', statusId),
+      ...this.makeFiltersObject('dateFrom', dateFrom),
+      ...this.makeFiltersObject('dateTo', dateTo)
+    };
+  };
+
+  getQueryFilters() {
     const projectId = this.props.params.projectId;
-    const translateToNumIfNeeded = value => {
-      const re = /^\d+$/;
-      return re.test(value) ? +value : value;
-    };
-
-    const multipleQueries = queries => {
-      if (Array.isArray(queries)) return queries.map(queryValue => translateToNumIfNeeded(queryValue));
-      return queries ? [translateToNumIfNeeded(queries)] : [];
-    };
-
-    const singleQuery = currentQuery => {
-      return currentQuery ? translateToNumIfNeeded(currentQuery) : null;
-    };
-
-    const getValues = changed => {
-      const name = changed ? 'name' : 'filterByName';
-      if (changed && Object.keys(query).length === 0) return {};
-
-      return {
-        sprintId: singleQuery(query.sprintId),
-        performerId: singleQuery(query.performerId),
-        prioritiesId: singleQuery(query.prioritiesId),
-        authorId: singleQuery(query.authorId),
-        statusId: multipleQueries(query.statusId),
-        typeId: multipleQueries(query.typeId),
-        tags: multipleQueries(query.tags),
-        dateFrom: singleQuery(query.dateFrom),
-        dateTo: singleQuery(query.dateTo),
-        [name]: query.name ? query.name : ''
-      };
-    };
 
     return {
       changedFilters: {
         projectId,
-        ...getValues(true)
+        ...this.getUrlQueries()
       }
     };
   }
@@ -460,7 +484,7 @@ class TaskList extends Component {
               <Col xs={12} sm={6}>
                 <Input
                   placeholder={localize[lang].ENTER_TITLE_TASK}
-                  value={this.state.changedFilters.name}
+                  value={this.state.changedFilters.name || ''}
                   onChange={this.changeNameFilter}
                 />
               </Col>
