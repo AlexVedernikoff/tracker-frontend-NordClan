@@ -52,6 +52,7 @@ class TaskModal extends Component {
 }
 
 TaskModal.propTypes = {
+  lang: PropTypes.string,
   onChoose: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   tasks: PropTypes.array,
@@ -62,7 +63,4 @@ const mapStateToProps = state => ({
   lang: state.Localize.lang
 });
 
-export default connect(
-  mapStateToProps,
-  null
-)(TaskModal);
+export default connect(mapStateToProps, null)(TaskModal);

@@ -44,6 +44,9 @@ class PerformerModal extends Component {
     removeEventListener('keydown', this.moveList);
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({ users: [...nextProps.users] });
+  }
   handleChoose = value => {
     this.props.onChoose(value);
   };
@@ -99,7 +102,6 @@ class PerformerModal extends Component {
     const { title, defaultUser } = this.props;
     const { users, searchText, selectedIndex } = this.state;
     const currentPerformer = find(this.props.users, u => u.value === defaultUser);
-
     return (
       <Modal isOpen contentLabel="modal" className={css.modalWrapper} onRequestClose={this.onClose}>
         <div>

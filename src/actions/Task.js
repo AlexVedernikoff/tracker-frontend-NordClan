@@ -267,7 +267,7 @@ const uploadAttachments = (taskId, attachments) => {
         body: data,
         extra: withdefaultExtra({
           onUploadProgress: progressEvent => {
-            const progress = Math.round(progressEvent.loaded * 100 / progressEvent.total);
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
             dispatch(attachmentUploadProgress(taskId, attachment, progress));
           }
         }),

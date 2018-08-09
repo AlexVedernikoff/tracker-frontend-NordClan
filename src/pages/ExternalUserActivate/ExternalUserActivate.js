@@ -104,4 +104,7 @@ const mapDispatchToProps = {
   activateExternalUser
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ExternalUserActivate);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ExternalUserActivate);
