@@ -188,4 +188,7 @@ const mapDispatchToProps = {
   editMilestone
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditMilestoneModal);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EditMilestoneModal);

@@ -251,25 +251,23 @@ class TaskTimeReports extends React.Component {
             <hr />
           </div>
         )}
-        {
-          isCurrentUserIsMember && (
-            <TimeSheetsHistory
-              users={projectUsers.map(projectUser => projectUser.user)}
-              currentUser={currentUser}
-              currentTask={task}
-              timesheets={timesheets}
-              taskStatuses={taskStatuses}
-              createTimesheet={this.props.createTimesheet}
-              preloaders={preloaders}
-              localizeText={{
-                selectDropdownStatus: localize[lang].STATUS,
-                selectDropdownNoResults: localize[lang].NO_RESULTS,
-                isAlreadyCreatedTrue: localize[lang].IS_ALREADY_CREATE,
-                isAlreadyCreatedFalse: localize[lang].FILL_FIELDS
-              }}
-            />
-          )
-        }
+        {isCurrentUserIsMember && (
+          <TimeSheetsHistory
+            users={projectUsers.map(projectUser => projectUser.user)}
+            currentUser={currentUser}
+            currentTask={task}
+            timesheets={timesheets}
+            taskStatuses={taskStatuses}
+            createTimesheet={this.props.createTimesheet}
+            preloaders={preloaders}
+            localizeText={{
+              selectDropdownStatus: localize[lang].STATUS,
+              selectDropdownNoResults: localize[lang].NO_RESULTS,
+              isAlreadyCreatedTrue: localize[lang].IS_ALREADY_CREATE,
+              isAlreadyCreatedFalse: localize[lang].FILL_FIELDS
+            }}
+          />
+        )}
       </div>
     );
   }
