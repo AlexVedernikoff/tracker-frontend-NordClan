@@ -120,16 +120,7 @@ class PlaylistItem extends Component {
   giveRealValue = () => this.setState({ itemSpentTime: roundNum(this.props.item.spentTime, 2) });
 
   render() {
-    const {
-      task,
-      project,
-      comment,
-      typeId,
-      taskStatus: createDraftStatus,
-      isDraft,
-      sprint,
-      isVisible
-    } = this.props.item;
+    const { task, project, comment, typeId, taskStatus: createDraftStatus, isDraft, isVisible } = this.props.item;
     const { lang, disabled: timesheetDisabled } = this.props;
     const status = task ? task.taskStatus : null;
     const redColorForTime = task ? parseFloat(task.factExecutionTime) > parseFloat(task.plannedExecutionTime) : false;
@@ -159,7 +150,7 @@ class PlaylistItem extends Component {
             <div className={css.meta}>
               {task && task.prefix ? <span>{task.prefix}</span> : null}
               <span className={css.proName}>{project ? project.name : localize[lang].WITHOUT_PROJECT}</span>
-              <span>{sprint ? sprint.name : 'Backlog'}</span>
+              <span>{task.sprint && task.sprint.name ? task.sprint.name : 'Backlog'}</span>
               {status ? (
                 <span>
                   {createDraftStatus ? (
