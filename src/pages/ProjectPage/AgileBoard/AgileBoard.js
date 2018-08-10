@@ -22,6 +22,7 @@ import * as css from './AgileBoard.scss';
 import { UnmountClosed } from 'react-collapse';
 import localize from './AgileBoard.json';
 import { getFullName } from '../../../utils/NameLocalisation';
+import * as selectors from './selectors';
 
 import getTasks from '../../../actions/Tasks';
 import { VISOR, EXTERNAL_USER } from '../../../constants/Roles';
@@ -95,19 +96,11 @@ const sortTasksAndCreateCard = (
     done: []
   };
 
+  console.log(sortedObject);
+
   for (const key in sortedObject) {
-    sortedObject[key].sort((a, b) => {
-      return a.prioritiesId - b.prioritiesId;
-    });
-
-    taskArray[key] = sortedObject[key].map(task => {
-      const lightedRelatedTask = _.get(task, 'linkedTasks.length')
-        ? task.linkedTasks
-            .concat(task.subTasks, task.parentTask)
-            .map(relatedTask => _.get(relatedTask, 'id', null))
-            .includes(lightedTaskId)
-        : [];
-
+    sortedObject[key].map(task => {
+      const lightedRelatedTask = task.linkedTasks.includes(lightedTaskId);
       const lighted = task.id === lightedTaskId && isCardFocus;
 
       return (
@@ -652,9 +645,8 @@ class AgileBoard extends Component {
     const isVisor = this.props.globalRole === VISOR;
     const isExternal = this.props.globalRole === EXTERNAL_USER;
 
-    let allSorted = filterTasks(this.props.sprintTasks);
-    allSorted = sortTasksAndCreateCard(
-      allSorted,
+    const allSorted = sortTasksAndCreateCard(
+      this.props.tasks,
       'all',
       this.changeStatus,
       this.openPerformerModal,
@@ -879,10 +871,12 @@ AgileBoard.propTypes = {
   statuses: PropTypes.array,
   taskTypes: PropTypes.array,
   tracksChange: PropTypes.number,
+  tasks: PropTypes.object,
   user: PropTypes.object
 };
 
 const mapStateToProps = state => ({
+  tasks: selectors.getTasks(state),
   lastCreatedTask: state.Project.lastCreatedTask,
   sprintTasks: state.Tasks.tasks,
   sprints: state.Project.project.sprints,
@@ -907,7 +901,4 @@ const mapDispatchToProps = {
   getProjectInfo
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AgileBoard);
+export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);

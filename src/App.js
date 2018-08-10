@@ -35,6 +35,8 @@ if (process.env.NODE_ENV !== 'production') {
   if (module.hot) {
     module.hot.accept('./Router', () => render(require('./Router').default));
   }
+  /* const { whyDidYouUpdate } = require('why-did-you-update');
+  whyDidYouUpdate(React);*/
 }
 
 render(AppRoute);
