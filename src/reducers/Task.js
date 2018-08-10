@@ -174,10 +174,14 @@ export default function Task(state = InitialState, action) {
           task: {
             ...state.task,
             ...action.changedFields
-          }
+          },
+          lastUpdatedTask: action.changedFields
         };
       } else {
-        return state;
+        return {
+          ...state,
+          lastUpdatedTask: action.changedFields
+        };
       }
     case TaskActions.ERROR_CLEAR:
       return {
