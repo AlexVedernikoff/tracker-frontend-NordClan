@@ -101,12 +101,8 @@ class Details extends Component {
     this.setState({ isPerformerModalOpen: true });
   };
 
-  closePerformerModal = performerId => {
-    if (performerId === 0) {
-      this.changePerformer(performerId);
-    } else {
-      this.setState({ isPerformerModalOpen: false });
-    }
+  closePerformerModal = () => {
+    this.setState({ isPerformerModalOpen: false });
   };
 
   changePerformer = performerId => {
