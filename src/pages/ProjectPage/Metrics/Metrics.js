@@ -14,7 +14,7 @@ import { getMetrics, calculateMetrics } from './../../../actions/Metrics';
 import moment from 'moment';
 import getColor from '../../../utils/Colors';
 import { chartDefaultOptions, modifyZoomPlugin } from '../../../utils/Charts';
-import { ADMIN } from '../../../constants/Roles';
+import { ADMIN, VISOR } from '../../../constants/Roles';
 import * as MetricTypes from '../../../constants/Metrics';
 import Tabs from '../../../components/Tabs';
 import Pane from '../../../components/Pane';
@@ -122,6 +122,10 @@ class Metrics extends Component {
     );
   };
 
+  checkIsViewer = () => {
+    return this.props.user.globalRole === VISOR ? true : false;
+  };
+
   render() {
     /*
       значение Id типов метрик
@@ -131,6 +135,7 @@ class Metrics extends Component {
     const { metrics, loading, lang } = this.props;
 
     const isProjectAdmin = this.checkIsAdminInProject();
+    const isViewer = this.checkIsViewer();
 
     /*Бюджет без рискового резерва*/
     const projectBudgetMetrics = filterMetrics(MetricTypes.PROJECT_BUDGET_NO_RISK, metrics);
@@ -206,7 +211,7 @@ class Metrics extends Component {
     return (
       <div>
         <section className={css.Metrics}>
-          {isProjectAdmin ? (
+          {isProjectAdmin || isViewer ? (
             <div>
               <Button
                 addedClassNames={{ [css.recalculateBtn]: true }}
@@ -314,7 +319,4 @@ const mapDispatchToProps = {
   getMetrics
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Metrics);
+export default connect(mapStateToProps, mapDispatchToProps)(Metrics);

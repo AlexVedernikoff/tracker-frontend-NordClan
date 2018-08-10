@@ -10,7 +10,7 @@ import * as css from './ProjectPage.scss';
 import ProjectTitle from './ProjectTitle';
 
 import { getProjectInfo as getProject, changeProject } from '../../actions/Project';
-import { ADMIN, EXTERNAL_USER } from '../../constants/Roles';
+import { ADMIN, EXTERNAL_USER, VISOR } from '../../constants/Roles';
 import localize from './projectPage.json';
 
 class ProjectPage extends Component {
@@ -35,7 +35,13 @@ class ProjectPage extends Component {
     getProjectInfo(this.props.params.projectId);
   }
 
+  checkIsViewer = () => {
+    return this.props.user.globalRole === VISOR ? true : false;
+  };
+
   checkIsAdminInProject = () => {
+    console.log('Project roles', this.props.user.projectsRoles);
+    console.log('Global roles', this.props.user.globalRole);
     return this.props.user.projectsRoles
       ? this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1 ||
           this.props.user.globalRole === ADMIN
@@ -68,6 +74,7 @@ class ProjectPage extends Component {
   render() {
     const { projectTypes, lang } = this.props;
     const isProjectAdmin = this.checkIsAdminInProject();
+    const isViewer = this.checkIsViewer();
     const tabs = [
       <Link
         key={`/projects/${this.props.params.projectId}`}
@@ -117,7 +124,8 @@ class ProjectPage extends Component {
         </Link>
       );
     }
-    if (isProjectAdmin) {
+    // TODO: роль viewer
+    if (isProjectAdmin || isViewer) {
       tabs.push(
         <Link
           activeClassName="active"
@@ -185,7 +193,4 @@ const mapDispatchToProps = {
   changeProject
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ProjectPage);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectPage);
