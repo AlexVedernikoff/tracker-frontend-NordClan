@@ -94,8 +94,7 @@ class PerformerModal extends Component {
   };
 
   onClose = () => {
-    const performerId = this.state.users[this.state.selectedIndex].value;
-    this.props.onClose(performerId);
+    this.props.onClose();
   };
 
   render() {
