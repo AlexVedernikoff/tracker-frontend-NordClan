@@ -8,6 +8,8 @@ import FileUpload from '../FileUpload';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
 
+const imageTypes = ['image' /*fallback for old attachments*/, 'image/jpeg', 'image/png', 'image/pjpeg'];
+const isImage = t => imageTypes.indexOf(t) !== -1;
 export default class Attachments extends Component {
   static defaultProps = {
     attachments: []
@@ -25,7 +27,7 @@ export default class Attachments extends Component {
   getAttachmentsNextImageIndex = index => {
     for (let i = index; i < this.props.attachments.length; i++) {
       const file = this.props.attachments[i];
-      if (file && file.type === 'image') {
+      if (file && isImage(file.type)) {
         return i;
       }
     }
@@ -36,7 +38,7 @@ export default class Attachments extends Component {
   getAttachmentsPrevImageIndex = index => {
     for (let i = index; i >= 0; i--) {
       const file = this.props.attachments[i];
-      if (file && file.type === 'image') {
+      if (file && isImage(file.type)) {
         return i;
       }
     }
@@ -79,7 +81,7 @@ export default class Attachments extends Component {
       return <AttachUploading key={`attached-uploading-${index}`} {...file} />;
     }
 
-    if (file.type === 'image') {
+    if (isImage(file.type)) {
       return (
         <AttachedImage
           key={`attached-picture-${index}`}

@@ -206,7 +206,6 @@ class Details extends Component {
           getContent={() => <div> {localize[lang].LOADING} </div>}
         />
       );
-    console.log(task.performer);
     return (
       <div className={css.detailsBlock}>
         <table className={css.detailTable}>
@@ -385,7 +384,4 @@ const mapDispatchToProps = {
   getTaskSpent
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Details);
+export default connect(mapStateToProps, mapDispatchToProps)(Details);
