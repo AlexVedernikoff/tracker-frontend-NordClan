@@ -1,0 +1,12 @@
+@import '../../../../styles/variables.scss';
+
+.mentions {
+  position: relative;
+}
+
+.mentions ul {
+  position: fixed;
+  background-color: white;
+  display: block;
+  z-index: 99999999;
+}

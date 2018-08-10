@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import TextareaAutosize from 'react-autosize-textarea';
 import PropTypes from 'prop-types';
+import * as css from './Mentions.scss';
 
 class Mentions extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      suggestions: this.props.suggestions,
+      showSuggestionsList: false
+    };
   }
   static propTypes = {
     disabled: PropTypes.bool,
@@ -20,9 +24,9 @@ class Mentions extends Component {
   };
 
   typeComment = evt => {
-    this.showSuggestions(evt.target.value, this.props.suggestions);
+    this.getSuggestions(evt.target.value, this.props.suggestions);
     this.props.updateCurrentCommentText(evt.target.value);
-    this.props.toggleBtn();
+    this.props.toggleBtn(evt);
   };
 
   getMentions = str => {
@@ -35,25 +39,61 @@ class Mentions extends Component {
     return entities;
   };
 
-  showSuggestions = (value, suggestions) => {
+  getSuggestions = (value, suggestions) => {
     if (/@/.test(value)) {
       const mention = /((@\w+ \w+)|(@\w+))$/.exec(value);
       const mentions = this.getMentions(value);
-      mentions.pop();
       if (mention === null) {
-        return suggestions;
+        this.setState({
+          suggestions: this.props.suggestions,
+          showSuggestionsList: true
+        });
+        return null;
       }
       const filtered = suggestions.filter(
         suggestion =>
           suggestion.toLowerCase().indexOf(mention[1].slice(1).toLowerCase()) === 0 &&
           mentions.indexOf(suggestion) === -1
       );
-      return filtered;
+      this.setState({
+        suggestions: filtered,
+        showSuggestionsList: true
+      });
+    } else {
+      this.setState({
+        suggestions: this.props.suggestions,
+        showSuggestionsList: false
+      });
     }
   };
+
+  //getSuggestions = (value, suggestions) => {
+  //  if (/@/.test(value)) {
+  //    const mention = /((@\w+ \w+)|(@\w+))$/.exec(value);
+  //    const mentions = this.getMentions(value);
+  //    mentions.pop();
+  //    if (mention === null) {
+  //      this.setState({suggestions: this.props.suggestions});
+  //      return true;
+  //    }
+  //    const filtered = suggestions.filter(
+  //      suggestion =>
+  //        suggestion.toLowerCase().indexOf(mention[1].slice(1).toLowerCase()) === 0 &&
+  //        mentions.indexOf(suggestion) === -1
+  //    );
+  //    this.setState({suggestions: filtered});
+  //  }
+  //};
+
+  showSuggestions = () => {
+    if (this.state.showSuggestionsList) {
+      return <ul>{this.state.suggestions.map(member => <li>{member}</li>)}</ul>;
+    }
+  };
+
   render() {
     return (
-      <div>
+      <div className={css.mentions}>
         <TextareaAutosize
           key={this.props.key}
           style={{ minHeight: 32 }}
@@ -63,6 +103,7 @@ class Mentions extends Component {
           onKeyDown={this.props.onKeyDown}
           value={this.props.value}
         />
+        <ul>{this.showSuggestions()}</ul>
       </div>
     );
   }
