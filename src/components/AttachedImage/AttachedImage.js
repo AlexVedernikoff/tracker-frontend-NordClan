@@ -69,7 +69,7 @@ export default class AttachedImage extends React.Component {
         }}
       >
         <div className={css.actions}>
-          <a target="_blank" href={`/${path}`} onClick={this.stopBubbling} download>
+          <a target="_blank" href={`/${path}`} onClick={this.stopBubbling} download={fileName}>
             <button>
               <IconDownload style={iconStyles} />
             </button>
