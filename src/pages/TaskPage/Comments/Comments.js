@@ -123,14 +123,6 @@ class Comments extends Component {
     });
   };
 
-  //typeComment = evt => {
-  //  this.props.updateCurrentCommentText(evt.target.value);
-  //  if (evt.target.value && evt.target.value.trim() !== '') {
-  //    this.state.disabledBtn = false;
-  //  } else {
-  //    this.state.disabledBtn = true;
-  //  }
-  //};
   toggleBtn = evt => {
     if (evt.target.value && evt.target.value.trim() !== '') {
       this.setState(prevState => ({ ...prevState.disabledBtn, disabledBtn: false }));

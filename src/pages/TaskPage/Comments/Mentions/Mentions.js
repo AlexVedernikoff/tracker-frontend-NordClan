@@ -23,10 +23,10 @@ class Mentions extends Component {
     toggleBtn: PropTypes.func
   };
 
-  typeComment = evt => {
-    this.getSuggestions(evt.target.value, this.props.suggestions);
-    this.props.updateCurrentCommentText(evt.target.value);
-    this.props.toggleBtn(evt);
+  typeComment = event => {
+    this.getSuggestions(event.target.value, this.props.suggestions);
+    this.props.updateCurrentCommentText(event.target.value);
+    this.props.toggleBtn(event);
   };
 
   getMentions = str => {
@@ -67,27 +67,17 @@ class Mentions extends Component {
     }
   };
 
-  //getSuggestions = (value, suggestions) => {
-  //  if (/@/.test(value)) {
-  //    const mention = /((@\w+ \w+)|(@\w+))$/.exec(value);
-  //    const mentions = this.getMentions(value);
-  //    mentions.pop();
-  //    if (mention === null) {
-  //      this.setState({suggestions: this.props.suggestions});
-  //      return true;
-  //    }
-  //    const filtered = suggestions.filter(
-  //      suggestion =>
-  //        suggestion.toLowerCase().indexOf(mention[1].slice(1).toLowerCase()) === 0 &&
-  //        mentions.indexOf(suggestion) === -1
-  //    );
-  //    this.setState({suggestions: filtered});
-  //  }
-  //};
+  chooseMention = event => {
+    this.setState({});
+    console.log(event.target.value);
+    this.setState({ showSuggestionsList: false });
+  };
 
   showSuggestions = () => {
     if (this.state.showSuggestionsList) {
-      return <ul>{this.state.suggestions.map(member => <li>{member}</li>)}</ul>;
+      return (
+        <ul onMouseDown={this.chooseMention}>{this.state.suggestions.map(member => <option>{member}</option>)}</ul>
+      );
     }
   };
 
@@ -101,7 +91,7 @@ class Mentions extends Component {
           placeholder={this.props.placeholder}
           onInput={this.typeComment}
           onKeyDown={this.props.onKeyDown}
-          value={this.props.value}
+          value={this.state.value}
         />
         <ul>{this.showSuggestions()}</ul>
       </div>
