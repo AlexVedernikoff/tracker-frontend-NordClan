@@ -183,7 +183,6 @@ class Timesheets extends React.Component {
     ));
 
     // Создание массива таймшитов по magic activities
-
     let magicActivities = list.length
       ? list.reduce((res, el) => {
           const isTemp = tempTimesheets.some(tempTsh => tempTsh.id === el.id);
@@ -228,6 +227,7 @@ class Timesheets extends React.Component {
             tsh.typeId !== 1 &&
             tsh.typeId === element.typeId &&
             (tsh.project ? tsh.project.id === element.projectId : !tsh.project && !element.projectId) &&
+            (element.sprint ? element.sprint.id : 0) === (tsh.sprint ? tsh.sprint.id : 0) &&
             moment(tsh.onDate).format('DD.MM.YY') ===
               moment(startingDay)
                 .weekday(index)
@@ -421,7 +421,4 @@ const mapDispatchToProps = {
   showNotification
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Timesheets);
+export default connect(mapStateToProps, mapDispatchToProps)(Timesheets);
