@@ -9,6 +9,7 @@ import roundNum from '../../../../utils/roundNum';
 import getColor from '../../../../utils/Colors';
 import localize from './CostByRoleChart.json';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 class CostByRoleChart extends Component {
   static propTypes = {
@@ -57,6 +58,23 @@ class CostByRoleChart extends Component {
             scaleLabel: {
               display: true,
               labelString: this.state.displayPercent ? localize[this.props.lang].PER_OF_H : localize[this.props.lang].H
+            }
+          }
+        ],
+        xAxes: [
+          {
+            type: 'time',
+            time: {
+              displayFormats: {
+                day: 'D MMM'
+              },
+              tooltipFormat: 'DD.MM.YYYY',
+              locale: moment.locale(localize[this.props.lang].LANG)
+            },
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: localize[this.props.lang].DATE
             }
           }
         ]

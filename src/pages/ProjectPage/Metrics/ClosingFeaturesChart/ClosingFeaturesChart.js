@@ -8,6 +8,7 @@ import roundNum from '../../../../utils/roundNum';
 import getColor from '../../../../utils/Colors';
 import localize from './ClosingFeaturesChart.json';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 class ClosingFeaturesChart extends Component {
   static propTypes = {
@@ -34,6 +35,23 @@ class ClosingFeaturesChart extends Component {
             scaleLabel: {
               display: true,
               labelString: localize[this.props.lang].HOURS
+            }
+          }
+        ],
+        xAxes: [
+          {
+            type: 'time',
+            time: {
+              displayFormats: {
+                day: 'D MMM'
+              },
+              tooltipFormat: 'DD.MM.YYYY',
+              locale: moment.locale(localize[this.props.lang].LANG)
+            },
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: localize[this.props.lang].DATE
             }
           }
         ]
