@@ -6,8 +6,6 @@ import * as css from './AgileBoard.scss';
 
 const selectTasks = state => state.Tasks.tasks;
 
-export const getTasks = createSelector([selectTasks], tasks => filterTasks(tasks));
-
 const isFilterEmpty = (initialFilters, filtersState) => {
   const filterKeys = [...Object.keys(initialFilters), 'isOnlyMine'];
   let isEmpty = true;
@@ -75,7 +73,11 @@ const filterTasks = array => {
       task.linkedTasks.concat(task.subTasks, task.parentTask).map(relatedTask => _.get(relatedTask, 'id', null));
     });
   }
+
+  return taskArray;
 };
+
+export const getTasks = createSelector([selectTasks], tasks => filterTasks(tasks));
 
 const getSprints = () => {
   let sprints = _.sortBy(this.props.sprints, sprint => {

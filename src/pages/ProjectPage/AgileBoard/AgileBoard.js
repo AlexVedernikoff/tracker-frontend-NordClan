@@ -96,10 +96,9 @@ const sortTasksAndCreateCard = (
     done: []
   };
 
-  console.log(sortedObject);
-
   for (const key in sortedObject) {
-    sortedObject[key].map(task => {
+    taskArray[key] = sortedObject[key].map(task => {
+      console.log(task);
       const lightedRelatedTask = task.linkedTasks.includes(lightedTaskId);
       const lighted = task.id === lightedTaskId && isCardFocus;
 
@@ -870,8 +869,8 @@ AgileBoard.propTypes = {
   startTaskEditing: PropTypes.func,
   statuses: PropTypes.array,
   taskTypes: PropTypes.array,
-  tracksChange: PropTypes.number,
   tasks: PropTypes.object,
+  tracksChange: PropTypes.number,
   user: PropTypes.object
 };
 
