@@ -101,12 +101,8 @@ class Details extends Component {
     this.setState({ isPerformerModalOpen: true });
   };
 
-  closePerformerModal = performerId => {
-    if (performerId === 0) {
-      this.changePerformer(performerId);
-    } else {
-      this.setState({ isPerformerModalOpen: false });
-    }
+  closePerformerModal = () => {
+    this.setState({ isPerformerModalOpen: false });
   };
 
   changePerformer = performerId => {
@@ -206,7 +202,6 @@ class Details extends Component {
           getContent={() => <div> {localize[lang].LOADING} </div>}
         />
       );
-    console.log(task.performer);
     return (
       <div className={css.detailsBlock}>
         <table className={css.detailTable}>
@@ -385,7 +380,4 @@ const mapDispatchToProps = {
   getTaskSpent
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Details);
+export default connect(mapStateToProps, mapDispatchToProps)(Details);

@@ -150,7 +150,19 @@ class Timesheets extends React.Component {
           );
         });
         if (timesheet) {
-          timeSheets.push(timesheet);
+          const doubleTimesheets = list.filter(
+            tsh =>
+              timesheet.id !== tsh.id &&
+              tsh.task &&
+              tsh.typeId === 1 &&
+              tsh.task.id === element.id &&
+              moment(tsh.onDate).format('DD.MM.YY') ===
+                moment(startingDay)
+                  .weekday(index)
+                  .format('DD.MM.YY') &&
+              tsh.taskStatusId === element.taskStatusId
+          );
+          timeSheets.push({ ...timesheet, doubleTimesheets });
         } else {
           timeSheets.push({
             onDate: moment(startingDay)
@@ -361,8 +373,8 @@ class Timesheets extends React.Component {
               </tr>
             </thead>
             <tbody>
-              {taskRows}
               {magicActivityRows}
+              {taskRows}
               <tr>
                 <td className={css.total} />
                 {totalRow}
@@ -409,7 +421,4 @@ const mapDispatchToProps = {
   showNotification
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Timesheets);
+export default connect(mapStateToProps, mapDispatchToProps)(Timesheets);

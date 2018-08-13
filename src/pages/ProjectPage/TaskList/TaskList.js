@@ -20,10 +20,14 @@ import SprintModal from '../../../components/SprintModal';
 import getTasks from '../../../actions/Tasks';
 import { history } from '../../../History';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
+import DatepickerDropdown from '../../../components/DatepickerDropdown';
+import moment from 'moment';
 import CreateTaskModal from '../../../components/CreateTaskModal';
 import { openCreateTaskModal } from '../../../actions/Project';
 import localize from './taskList.json';
-import { getFullName } from '../../../utils/NameLocalisation';
+import { getFullName, getDictionaryName } from '../../../utils/NameLocalisation';
+
+const dateFormat = 'DD.MM.YYYY';
 
 class TaskList extends Component {
   constructor(props) {
@@ -32,7 +36,7 @@ class TaskList extends Component {
       activePage: 1,
       isPerformerModalOpen: false,
       isSprintModalOpen: false,
-      ...this.setQueryFilters()
+      ...this.getQueryFilters()
     };
   }
 
@@ -52,75 +56,87 @@ class TaskList extends Component {
     }
   }
 
-  setQueryFilters() {
-    const query = this.props.location.query;
-    const projectId = this.props.params.projectId;
-    const translateToNumIfNeeded = value => {
-      const re = /^\d+$/;
-      return re.test(value) ? +value : value;
-    };
+  translateToNumIfNeeded = value => {
+    const re = /^\d+$/;
+    return re.test(value) ? +value : value;
+  };
 
-    const multipleQueries = queries => {
-      if (Array.isArray(queries)) return queries.map(queryValue => translateToNumIfNeeded(queryValue));
-      return queries ? [translateToNumIfNeeded(queries)] : [];
-    };
+  multipleQueries = queries => {
+    if (Array.isArray(queries)) return queries.map(queryValue => this.translateToNumIfNeeded(queryValue));
+    return queries ? [this.translateToNumIfNeeded(queries)] : [];
+  };
 
-    const singleQuery = currentQuery => {
-      return currentQuery ? translateToNumIfNeeded(currentQuery) : null;
-    };
-    const getValues = changed => {
-      const name = changed ? 'name' : 'filterByName';
-      if (changed && Object.keys(query).length === 0) return {};
-      return {
-        sprintId: singleQuery(query.sprintId),
-        performerId: singleQuery(query.performerId),
-        prioritiesId: singleQuery(query.prioritiesId),
-        authorId: singleQuery(query.authorId),
-        statusId: multipleQueries(query.statusId),
-        typeId: multipleQueries(query.typeId),
-        tags: multipleQueries(query.tags),
-        [name]: query.name ? query.name : ''
-      };
-    };
+  singleQuery = currentQuery => {
+    return currentQuery ? this.translateToNumIfNeeded(currentQuery) : null;
+  };
+
+  makeFiltersObject = (name, value) => {
+    if (!!value && !Array.isArray(value)) {
+      return { [name]: this.singleQuery(value) };
+    }
+    if (!!value && Array.isArray(value)) {
+      return { [name]: this.multipleQueries(value) };
+    }
+  };
+
+  getUrlQueries = () => {
+    const {
+      performerId,
+      sprintId,
+      statusId,
+      name,
+      authorId,
+      prioritiesId,
+      typeId,
+      tags,
+      isOnlyMine,
+      changedSprint,
+      dateFrom,
+      dateTo
+    } =
+      (this.props.location && this.props.location.query) || {};
+
     return {
-      ...getValues(),
+      ...this.makeFiltersObject('performerId', performerId),
+      ...this.makeFiltersObject('sprintId', sprintId),
+      ...this.makeFiltersObject('name', name),
+      ...this.makeFiltersObject('authorId', authorId),
+      ...this.makeFiltersObject('prioritiesId', prioritiesId),
+      ...this.makeFiltersObject('tags', tags),
+      ...this.makeFiltersObject('typeId', typeId),
+      ...this.makeFiltersObject('isOnlyMine', isOnlyMine),
+      ...this.makeFiltersObject('changedSprint', changedSprint),
+      ...this.makeFiltersObject('statusId', statusId),
+      ...this.makeFiltersObject('dateFrom', dateFrom),
+      ...this.makeFiltersObject('dateTo', dateTo)
+    };
+  };
+
+  getQueryFilters() {
+    const projectId = this.props.params.projectId;
+
+    return {
       changedFilters: {
         projectId,
-        ...getValues(true)
+        ...this.getUrlQueries()
       }
     };
   }
 
   changeUrl(changedFilters) {
-    const queryObj = {};
+    const query = {};
 
     for (const [key, value] of Object.entries(changedFilters)) {
       if (value && key !== 'projectId') {
-        queryObj[key] = value;
+        query[key] = value;
       }
     }
 
     history.replace({
       ...this.props.location,
-      query: {
-        ...queryObj
-      }
+      query
     });
   }
-
-  initialFilters = {
-    prioritiesId: null,
-    typeId: [],
-    statusId: [],
-    filterByName: '',
-    sprintId: null,
-    performerId: null,
-    authorId: null,
-    tags: [],
-    changedFilters: {
-      projectId: this.props.params.projectId
-    }
-  };
 
   openSprintModal = (taskId, sprintId) => {
     this.setState({
@@ -184,42 +200,48 @@ class TaskList extends Component {
   changeSingleFilter = (option, name) => {
     this.setState(state => {
       let filterValue = option ? option.value : null;
-      const changedFilters = state.changedFilters;
+      const changedFilters = { ...state.changedFilters };
       if (name === 'prioritiesId') {
         filterValue = option.prioritiesId;
       }
+
+      if (name === 'performerId') {
+        filterValue = option.map(singleValue => singleValue.value);
+      }
+
       if (~[null, [], undefined, ''].indexOf(filterValue)) {
         delete changedFilters[name];
       } else {
         changedFilters[name] = filterValue;
       }
+
       this.changeUrl(changedFilters);
-      const newState = {
-        [name]: filterValue,
+
+      return {
         activePage: state[name] !== filterValue ? 1 : state.activePage,
         changedFilters
       };
-      return newState;
     }, this.loadTasks);
   };
 
   changeMultiFilter = (options, name) => {
     this.setState(state => {
       const filterValue = options.map(option => option.value);
-      const changedFilters = state.changedFilters;
+      const changedFilters = { ...state.changedFilters };
+
       if (filterValue.length) {
         changedFilters[name] = filterValue;
       } else {
         delete changedFilters[name];
       }
+
       this.changeUrl(changedFilters);
-      const newState = {
-        [name]: filterValue,
-        activePage: state[name].length !== filterValue.length ? 1 : state.activePage,
+
+      return {
+        activePage:
+          state.changedFilters[name] && state.changedFilters[name].length !== filterValue.length ? 1 : state.activePage,
         changedFilters
       };
-
-      return newState;
     }, this.loadTasks);
   };
 
@@ -234,13 +256,12 @@ class TaskList extends Component {
         delete changedFilters.name;
       }
 
-      const newState = {
-        filterByName: value,
+      this.changeUrl(changedFilters);
+
+      return {
         activePage: state.filterByName !== value ? 1 : state.activePage,
         changedFilters
       };
-      this.changeUrl(changedFilters);
-      return newState;
     }, this.loadTasks);
   };
 
@@ -284,10 +305,7 @@ class TaskList extends Component {
   clearFilters = () => {
     this.setState(
       {
-        ...this.initialFilters,
-        changedFilters: {
-          projectId: this.props.params.projectId
-        }
+        changedFilters: {}
       },
       this.loadTasks
     );
@@ -297,14 +315,32 @@ class TaskList extends Component {
   createOptions = (array, labelField = 'name') => {
     return array.map(element => ({
       value: element.id,
-      label: element[labelField]
+      label: labelField === 'name' ? getDictionaryName(element) : getFullName(element)
     }));
   };
+
+  handleDayChange(value, name) {
+    this.setState(state => {
+      const changedFilters = { ...this.state.changedFilters };
+
+      if (value) {
+        changedFilters[name] = this.formatDate(value);
+      } else {
+        delete changedFilters[name];
+      }
+
+      this.changeUrl(changedFilters);
+
+      return { changedFilters };
+    }, this.loadTasks);
+  }
+
+  formatDate = date => date && moment(date).format(dateFormat);
 
   render() {
     const { tasksList: tasks, statuses, taskTypes, project, isReceiving, lang } = this.props;
 
-    const { prioritiesId, typeId, statusId, sprintId, performerId, authorId, tags, filterByName } = this.state;
+    const { prioritiesId, typeId, statusId, sprintId, performerId, authorId, tags } = this.state.changedFilters;
 
     const statusOptions = this.createOptions(statuses);
     const typeOptions = this.createOptions(taskTypes);
@@ -411,13 +447,49 @@ class TaskList extends Component {
             </Row>
 
             <Row className={css.search}>
+              <Col xs={6} sm={3}>
+                <DatepickerDropdown
+                  name="dateFrom"
+                  value={this.state.changedFilters ? this.state.changedFilters.dateFrom : ''}
+                  disabledDataRanges={[
+                    {
+                      after:
+                        (this.state.changedFilters.dateTo &&
+                          moment(this.state.changedFilters.dateTo, dateFormat).toDate()) ||
+                        new Date()
+                    }
+                  ]}
+                  onDayChange={option => this.handleDayChange(option, 'dateFrom')}
+                  placeholder={localize[lang].FROM}
+                  format={dateFormat}
+                />
+              </Col>
+              <Col xs={6} sm={3}>
+                <DatepickerDropdown
+                  name="dateTo"
+                  value={this.state.changedFilters ? this.state.changedFilters.dateTo : ''}
+                  onDayChange={option => this.handleDayChange(option, 'dateTo')}
+                  disabledDataRanges={[
+                    {
+                      before:
+                        this.state.changedFilters.dateFrom &&
+                        moment(this.state.changedFilters.dateFrom, dateFormat).toDate(),
+                      after: new Date()
+                    }
+                  ]}
+                  placeholder={localize[lang].TO}
+                  format={dateFormat}
+                />
+              </Col>
               <Col xs={12} sm={6}>
                 <Input
                   placeholder={localize[lang].ENTER_TITLE_TASK}
-                  value={filterByName}
+                  value={this.state.changedFilters.name || ''}
                   onChange={this.changeNameFilter}
                 />
               </Col>
+            </Row>
+            <Row className={css.search}>
               <Col xs={12} sm={3}>
                 <PerformerFilter
                   onPerformerSelect={option => this.changeSingleFilter(option, 'performerId')}
@@ -470,7 +542,7 @@ class TaskList extends Component {
             defaultSprint={this.state.sprintId}
             onChoose={this.changeSprint}
             onClose={this.closeSprintModal}
-            title={localize[lang].EDIT_TASK_SPRING}
+            title={localize[lang].EDIT_TASK_SPRINT}
             sprints={this.props.project.sprints}
           />
         ) : null}
@@ -490,11 +562,11 @@ TaskList.propTypes = {
   changeTask: PropTypes.func.isRequired,
   getTasks: PropTypes.func.isRequired,
   globalRole: PropTypes.string,
+  isCreateTaskModalOpen: PropTypes.bool,
   isReceiving: PropTypes.bool,
   lastCreatedTask: PropTypes.object,
   location: PropTypes.object,
   openCreateTaskModal: PropTypes.func.isRequired,
-  isCreateTaskModalOpen: PropTypes.bool,
   pagesCount: PropTypes.number.isRequired,
   params: PropTypes.object,
   project: PropTypes.object.isRequired,
@@ -519,7 +591,4 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = { getTasks, startTaskEditing, changeTask, openCreateTaskModal };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TaskList);
+export default connect(mapStateToProps, mapDispatchToProps)(TaskList);

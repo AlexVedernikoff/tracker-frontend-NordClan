@@ -188,7 +188,7 @@ class TaskTimeReports extends React.Component {
                         className={css.horizontalChart}
                         style={{
                           backgroundColor: stagesColors[index],
-                          width: (stagesDataSet[index] / sum(stagesDataSet)) * 100 + '%'
+                          width: stagesDataSet[index] / sum(stagesDataSet) * 100 + '%'
                         }}
                         title={`${stage}: ${stagesDataSet[index]}`}
                       >
@@ -211,7 +211,7 @@ class TaskTimeReports extends React.Component {
                           className={css.horizontalChart}
                           style={{
                             backgroundColor: usersColors[index],
-                            width: (usersDataSet[index] / sum(usersDataSet)) * 100 + '%'
+                            width: usersDataSet[index] / sum(usersDataSet) * 100 + '%'
                           }}
                           title={`${user}: ${usersDataSet[index]}`}
                         >
@@ -234,7 +234,7 @@ class TaskTimeReports extends React.Component {
                         className={css.horizontalChart}
                         style={{
                           backgroundColor: rolesColors[index],
-                          width: (rolesDataSet[index] / sum(rolesDataSet)) * 100 + '%'
+                          width: rolesDataSet[index] / sum(rolesDataSet) * 100 + '%'
                         }}
                         title={`${role}: ${rolesDataSet[index]}`}
                       >
@@ -251,25 +251,23 @@ class TaskTimeReports extends React.Component {
             <hr />
           </div>
         )}
-        {
-          isCurrentUserIsMember && (
-            <TimeSheetsHistory
-              users={projectUsers.map(projectUser => projectUser.user)}
-              currentUser={currentUser}
-              currentTask={task}
-              timesheets={timesheets}
-              taskStatuses={taskStatuses}
-              createTimesheet={this.props.createTimesheet}
-              preloaders={preloaders}
-              localizeText={{
-                selectDropdownStatus: localize[lang].STATUS,
-                selectDropdownNoResults: localize[lang].NO_RESULTS,
-                isAlreadyCreatedTrue: localize[lang].IS_ALREADY_CREATE,
-                isAlreadyCreatedFalse: localize[lang].FILL_FIELDS
-              }}
-            />
-          )
-        }
+        {isCurrentUserIsMember && (
+          <TimeSheetsHistory
+            users={projectUsers.map(projectUser => projectUser.user)}
+            currentUser={currentUser}
+            currentTask={task}
+            timesheets={timesheets}
+            taskStatuses={taskStatuses}
+            createTimesheet={this.props.createTimesheet}
+            preloaders={preloaders}
+            localizeText={{
+              selectDropdownStatus: localize[lang].STATUS,
+              selectDropdownNoResults: localize[lang].NO_RESULTS,
+              isAlreadyCreatedTrue: localize[lang].IS_ALREADY_CREATE,
+              isAlreadyCreatedFalse: localize[lang].FILL_FIELDS
+            }}
+          />
+        )}
       </div>
     );
   }
@@ -317,7 +315,4 @@ const mapDispatchToProps = {
   createTimesheet
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TaskTimeReports);
+export default connect(mapStateToProps, mapDispatchToProps)(TaskTimeReports);

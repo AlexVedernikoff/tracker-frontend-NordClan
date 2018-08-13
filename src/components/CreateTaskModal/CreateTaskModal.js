@@ -245,6 +245,7 @@ class CreateTaskModal extends Component {
                   value={this.state.selectedType}
                   onChange={this.onTypeChange}
                   noResultsText={localize[lang].NO_RESULTS}
+                  clearable={false}
                 />
                 {this.state.selectedTypeError && <span>{localize[lang].GET_DATA_ERROR}</span>}
               </Col>
@@ -357,14 +358,14 @@ CreateTaskModal.propTypes = {
   closeCreateTaskModal: PropTypes.func.isRequired,
   column: PropTypes.string,
   createTask: PropTypes.func.isRequired,
+  defaultPerformerId: PropTypes.oneOfType([PropTypes.array, PropTypes.number]),
   isCreateChildTaskModalOpen: PropTypes.bool,
   isCreateTaskModalOpen: PropTypes.bool,
   isCreateTaskRequestInProgress: PropTypes.bool,
   parentTaskId: PropTypes.number,
   project: PropTypes.object,
   selectedSprintValue: PropTypes.number,
-  taskTypes: PropTypes.array,
-  defaultPerformerId: PropTypes.number
+  taskTypes: PropTypes.array
 };
 
 const mapStateToProps = state => ({
@@ -380,7 +381,4 @@ const mapDispatchToProps = {
   createTask
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CreateTaskModal);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateTaskModal);

@@ -10,7 +10,7 @@ import HistoryMessage from '../../../components/HistoryMessage';
 import Pagination from '../../../components/Pagination';
 import UserCard from '../../../components/UserCard';
 import localize from './ProjectHistory.json';
-import { getFullName } from '../../../utils/NameLocalisation';
+import { getFullName, getMessage } from '../../../utils/NameLocalisation';
 
 class ProjectHistory extends React.Component {
   constructor(props) {
@@ -62,7 +62,7 @@ class ProjectHistory extends React.Component {
                 <Link>{getFullName(event.author)}</Link>
               </UserCard>
             ) : null}{' '}
-            <HistoryMessage message={event.message} entities={event.entities} projectId={projectId} />
+            <HistoryMessage message={getMessage(event)} entities={event.entities} projectId={projectId} />
           </div>
         </div>
       );
@@ -103,7 +103,4 @@ const mapDispatchToProps = {
   getProjectHistory
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ProjectHistory);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectHistory);

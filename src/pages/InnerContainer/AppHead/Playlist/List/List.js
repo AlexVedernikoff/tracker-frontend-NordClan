@@ -43,6 +43,16 @@ class List extends Component {
   render() {
     const { isDraftShow } = this.state;
     const { tracks, textInfo, textShowHidden, textHide } = this.props;
+    tracks.sort((track1, track2) => {
+      if (track1.typeId < track2.typeId) {
+        return 1;
+      }
+      if (track1.typeId > track2.typeId) {
+        return -1;
+      }
+      return 0;
+    });
+
     const visible = [
       ...tracks.filter(
         item => item.isVisible && item.task && item.taskStatus && item.taskStatus.id === TASK_STATUS_DEVELOP_PLAY
