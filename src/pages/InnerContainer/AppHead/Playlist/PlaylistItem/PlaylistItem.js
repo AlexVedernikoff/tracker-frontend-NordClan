@@ -159,7 +159,11 @@ class PlaylistItem extends Component {
             <div className={css.meta}>
               {task && task.prefix ? <span>{task.prefix}</span> : null}
               <span className={css.proName}>{project ? project.name : localize[lang].WITHOUT_PROJECT}</span>
-              <span>{sprint && sprint.name ? sprint.name : 'Backlog'}</span>
+              {task ? (
+                <span>{task.sprint && task.sprint.name ? task.sprint.name : 'Backlog'}</span>
+              ) : (
+                <span>{sprint && sprint.name ? sprint.name : 'Backlog'}</span>
+              )}
               {status ? (
                 <span>
                   {createDraftStatus ? (
