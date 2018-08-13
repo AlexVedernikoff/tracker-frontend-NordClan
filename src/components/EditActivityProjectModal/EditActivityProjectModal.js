@@ -7,6 +7,9 @@ import SelectDropdown from '../../components/SelectDropdown';
 import { connect } from 'react-redux';
 import { getProjectsForSelect } from '../../actions/Timesheets';
 import * as css from './EditActivityProjectModal.scss';
+import { changeProject, getTasksForSelect } from '../../actions/Timesheets';
+import { getProjectSprints } from '../../actions/Project';
+
 class EditActivityProjectModal extends Component {
   constructor(props) {
     super(props);
@@ -15,6 +18,7 @@ class EditActivityProjectModal extends Component {
       projectValue: null
     };
   }
+
   componentWillMount() {
     this.props.getProjectsForSelect('', false).then(options =>
       this.setState({
@@ -25,8 +29,16 @@ class EditActivityProjectModal extends Component {
   }
 
   handleChangeProject = option => {
+    this.props.changeProject(option);
+    this.loadTasks('', option ? option.value : null);
+    this.props.getProjectSprints(option.value);
     this.setState({ projectValue: option });
   };
+
+  loadTasks = (name = '', projectId = null) => {
+    this.props.getTasksForSelect(name, projectId).then(options => this.setState({ tasks: options.options }));
+  };
+
   onConfirm = () => {
     const updatedFields = {
       project: {
@@ -35,24 +47,50 @@ class EditActivityProjectModal extends Component {
         prefix: this.state.projectValue.body.prefix
       }
     };
+
     this.props.onConfirm(updatedFields);
   };
+
+  getSprintOptions = () => {
+    const { sprints } = this.props;
+
+    return sprints
+      ? sprints.map(sprint => {
+          return {
+            label: sprint.name,
+            value: sprint
+          };
+        })
+      : null;
+  };
+
+  handleChangeSprint = option => {
+    this.setState({ selectedSprint: option });
+  };
+
   render() {
+    console.log(this.state);
+
     const { style, onRequestClose, closeTimeoutMS, text, onConfirm, onCancel, ...other } = this.props;
+
     const formLayout = {
       firstCol: 4,
       secondCol: 8
     };
+
     return (
       <Modal {...other} onRequestClose={onCancel} closeTimeoutMS={200 || closeTimeoutMS}>
         <div className={css.container}>
           <h3 style={{ margin: 0 }}>{text}</h3>
+
           <hr />
+
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>Проект:</p>
               </Col>
+
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <SelectDropdown
                   multi={false}
@@ -65,6 +103,24 @@ class EditActivityProjectModal extends Component {
               </Col>
             </Row>
           </label>
+
+          <label className={css.formField} key="noTaskActivitySprint">
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol}>
+                Спринт:
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol}>
+                <SelectDropdown
+                  multi={false}
+                  value={this.state.selectedSprint}
+                  placeholder="Выберите спринт"
+                  onChange={this.handleChangeSprint}
+                  options={this.getSprintOptions()}
+                />
+              </Col>
+            </Row>
+          </label>
+
           <Button
             text="ОК"
             disabled={!this.state.projectValue}
@@ -80,6 +136,7 @@ class EditActivityProjectModal extends Component {
 }
 
 EditActivityProjectModal.propTypes = {
+  changeProject: PropTypes.func,
   closeTimeoutMS: PropTypes.number,
   error: PropTypes.object,
   getProjectsForSelect: PropTypes.func,
@@ -91,10 +148,18 @@ EditActivityProjectModal.propTypes = {
   text: PropTypes.string
 };
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  sprints: state.Project.project.sprints
+});
 
 const mapDispatchToProps = {
-  getProjectsForSelect
+  getProjectsForSelect,
+  changeProject,
+  getTasksForSelect,
+  getProjectSprints
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditActivityProjectModal);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EditActivityProjectModal);
