@@ -245,6 +245,7 @@ class CreateTaskModal extends Component {
                   value={this.state.selectedType}
                   onChange={this.onTypeChange}
                   noResultsText={localize[lang].NO_RESULTS}
+                  clearable={false}
                 />
                 {this.state.selectedTypeError && <span>{localize[lang].GET_DATA_ERROR}</span>}
               </Col>
@@ -380,7 +381,4 @@ const mapDispatchToProps = {
   createTask
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CreateTaskModal);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateTaskModal);
