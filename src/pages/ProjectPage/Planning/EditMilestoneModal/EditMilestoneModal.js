@@ -86,7 +86,7 @@ class EditMilestoneModal extends Component {
   };
 
   checkNullInputs = () => {
-    return this.state.milestone.name.trim() && this.state.milestone.date;
+    return this.state.milestone.name.trim() && this.state.milestone.date && this.state.milestone.typeId;
   };
 
   render() {
