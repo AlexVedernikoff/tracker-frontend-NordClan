@@ -679,6 +679,32 @@ class AgileBoard extends Component {
     );
   };
 
+  deleteTag = label => {
+    this.setState(
+      {
+        filterTags: this.state.filterTags
+          .split(',')
+          .filter(el => el !== label)
+          .join()
+      },
+      this.getTasks
+    );
+  };
+
+  toOptionArray = (str, name) => {
+    if (!Array.isArray(str) && str) {
+      return str.split(',').map(el => {
+        return {
+          name: name,
+          deleteHandler: () => this.deleteTag(el),
+          label: el
+        };
+      });
+    } else {
+      return [];
+    }
+  };
+
   isFilterEmpty = () => {
     const filterKeys = [...Object.keys(this.initialFilters), 'isOnlyMine'];
     let isEmpty = true;
@@ -854,7 +880,7 @@ class AgileBoard extends Component {
                   clearAll={this.clearFilter}
                   fullFilterView={this.state.fullFilterView}
                   toggleFilterView={this.toggleFilterView}
-                  filters={this.state.allFilters}
+                  filters={[...this.state.allFilters, ...this.toOptionArray(this.state.filterTags, 'filterTags')]}
                   openCreateTaskModal={this.props.openCreateTaskModal}
                   isVisor={isVisor}
                 />
@@ -960,7 +986,4 @@ const mapDispatchToProps = {
   getProjectInfo
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AgileBoard);
+export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);
