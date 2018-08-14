@@ -105,7 +105,4 @@ const mapDispatchToProps = {
   getTaskHistory
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TaskHistory);
+export default connect(mapStateToProps, mapDispatchToProps)(TaskHistory);

@@ -38,7 +38,4 @@ ExternalUsersTable.propTypes = {
   getExternalUsers: PropTypes.func
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ExternalUsersTable);
+export default connect(mapStateToProps, mapDispatchToProps)(ExternalUsersTable);

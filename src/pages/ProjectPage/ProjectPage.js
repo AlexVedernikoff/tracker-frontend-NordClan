@@ -11,6 +11,7 @@ import ProjectTitle from './ProjectTitle';
 
 import { getProjectInfo as getProject, changeProject } from '../../actions/Project';
 import { ADMIN, EXTERNAL_USER } from '../../constants/Roles';
+import { checkIsViewer } from '../../helpers/RoleValidator';
 import localize from './projectPage.json';
 
 class ProjectPage extends Component {
@@ -18,12 +19,12 @@ class ProjectPage extends Component {
     changeProject: PropTypes.func,
     children: PropTypes.object,
     getProjectInfo: PropTypes.func,
+    lang: PropTypes.string.isRequired,
     location: PropTypes.object,
     params: PropTypes.object,
     project: PropTypes.object,
     projectTypes: PropTypes.array,
-    user: PropTypes.object.isRequired,
-    lang: PropTypes.string.isRequired
+    user: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -117,7 +118,8 @@ class ProjectPage extends Component {
         </Link>
       );
     }
-    if (isProjectAdmin) {
+
+    if (isProjectAdmin || checkIsViewer(this.props.user.globalRole)) {
       tabs.push(
         <Link
           activeClassName="active"
@@ -185,7 +187,4 @@ const mapDispatchToProps = {
   changeProject
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ProjectPage);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectPage);

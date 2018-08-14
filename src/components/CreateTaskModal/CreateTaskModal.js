@@ -66,7 +66,7 @@ class CreateTaskModal extends Component {
 
   handleIsTaskByClientChange = () => {
     this.setState({
-      isTaskByClient: true
+      isTaskByClient: !this.state.isTaskByClient
     });
   };
 
@@ -101,7 +101,8 @@ class CreateTaskModal extends Component {
     );
   };
 
-  onTypeChange = value => this.setState({ selectedType: value ? value : this.state.typeList[0] });
+  onTypeChange = value =>
+    this.setState({ selectedType: value && !(Array.isArray(value) && !value.length) ? value : null });
 
   getSprints = () => {
     let sprints = _.sortBy(this.props.project.sprints, sprint => {
@@ -155,6 +156,11 @@ class CreateTaskModal extends Component {
     const tags = this.state.tags.filter(tag => tag !== tagName);
     this.setState({ tags: [...tags] });
   };
+
+  isDisabledSave = () =>
+    this.props.isCreateTaskRequestInProgress ||
+    (this.validator.isDisabled && !this.state.selectedTypeError) ||
+    !this.state.selectedType;
 
   render() {
     const formLayout = {
@@ -331,9 +337,7 @@ class CreateTaskModal extends Component {
               text={localize[lang].CREATE_TASK}
               type="green"
               htmlType="submit"
-              disabled={
-                this.props.isCreateTaskRequestInProgress || (this.validator.isDisabled && !this.state.selectedTypeError)
-              }
+              disabled={this.isDisabledSave()}
               onClick={this.submitTask}
               loading={this.props.isCreateTaskRequestInProgress}
             />
@@ -341,9 +345,7 @@ class CreateTaskModal extends Component {
               text={localize[lang].CREATE_AND_OPEN}
               htmlType="button"
               type="green-lighten"
-              disabled={
-                this.props.isCreateTaskRequestInProgress || (this.validator.isDisabled && !this.state.selectedTypeError)
-              }
+              disabled={this.isDisabledSave()}
               onClick={this.submitTaskAndOpen}
               loading={this.props.isCreateTaskRequestInProgress}
             />
@@ -362,6 +364,7 @@ CreateTaskModal.propTypes = {
   isCreateChildTaskModalOpen: PropTypes.bool,
   isCreateTaskModalOpen: PropTypes.bool,
   isCreateTaskRequestInProgress: PropTypes.bool,
+  lang: PropTypes.string,
   parentTaskId: PropTypes.number,
   project: PropTypes.object,
   selectedSprintValue: PropTypes.number,
