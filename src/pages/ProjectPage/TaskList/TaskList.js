@@ -591,7 +591,4 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = { getTasks, startTaskEditing, changeTask, openCreateTaskModal };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TaskList);
+export default connect(mapStateToProps, mapDispatchToProps)(TaskList);

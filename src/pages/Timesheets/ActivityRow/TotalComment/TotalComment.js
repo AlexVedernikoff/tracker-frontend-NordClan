@@ -135,7 +135,4 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = { updateSheetsArray };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(onClickOutside(TotalComment));
+export default connect(mapStateToProps, mapDispatchToProps)(onClickOutside(TotalComment));
