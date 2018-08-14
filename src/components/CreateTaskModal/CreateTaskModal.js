@@ -66,7 +66,7 @@ class CreateTaskModal extends Component {
 
   handleIsTaskByClientChange = () => {
     this.setState({
-      isTaskByClient: true
+      isTaskByClient: !this.state.isTaskByClient
     });
   };
 
