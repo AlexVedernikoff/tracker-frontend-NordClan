@@ -72,8 +72,7 @@ export default function Task(state = InitialState, action) {
       return {
         ...state,
         TitleIsEditing: false,
-        PlanningTimeIsEditing: false,
-        DescriptionIsEditing: false
+        PlanningTimeIsEditing: false
       };
 
     case TaskActions.GET_TASK_REQUEST_SUCCESS:
@@ -175,10 +174,14 @@ export default function Task(state = InitialState, action) {
           task: {
             ...state.task,
             ...action.changedFields
-          }
+          },
+          lastUpdatedTask: action.changedFields
         };
       } else {
-        return state;
+        return {
+          ...state,
+          lastUpdatedTask: action.changedFields
+        };
       }
     case TaskActions.ERROR_CLEAR:
       return {

@@ -9,7 +9,7 @@ import HistoryMessage from '../../../components/HistoryMessage';
 import Pagination from '../../../components/Pagination';
 import * as css from './TaskHistory.scss';
 import localize from './TaskHistory.json';
-import { getFullName } from '../../../utils/NameLocalisation';
+import { getFullName, getMessage } from '../../../utils/NameLocalisation';
 
 class TaskHistory extends React.Component {
   constructor(props) {
@@ -59,7 +59,7 @@ class TaskHistory extends React.Component {
                   <Link>{getFullName(event.author)}</Link>
                 </UserCard>{' '}
                 <HistoryMessage
-                  message={event.message}
+                  message={getMessage(event)}
                   entities={event.entities}
                   projectId={+this.props.params.projectId}
                 />
@@ -105,7 +105,4 @@ const mapDispatchToProps = {
   getTaskHistory
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TaskHistory);
+export default connect(mapStateToProps, mapDispatchToProps)(TaskHistory);

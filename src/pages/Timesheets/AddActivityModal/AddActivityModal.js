@@ -22,6 +22,7 @@ import {
 import getStatusOptions from '../../../utils/getDraftStatusOptions';
 import * as activityTypes from '../../../constants/ActivityTypes';
 import localize from './addActivityModal.json';
+import { getDictionaryName } from '../../../utils/NameLocalisation';
 
 class AddActivityModal extends Component {
   static propTypes = {
@@ -236,10 +237,11 @@ class AddActivityModal extends Component {
                   options={
                     this.props.activityTypes.length
                       ? this.props.activityTypes.map(element => {
-                          return { label: element.name, value: element.id };
+                          return { label: getDictionaryName(element), value: element.id };
                         })
                       : null
                   }
+                  clearable={false}
                 />
               </Col>
             </Row>
@@ -397,7 +399,4 @@ const mapDispatchToProps = {
   getProjectSprints
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AddActivityModal);
+export default connect(mapStateToProps, mapDispatchToProps)(AddActivityModal);

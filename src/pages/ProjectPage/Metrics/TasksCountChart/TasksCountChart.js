@@ -8,6 +8,7 @@ import getColor from '../../../../utils/Colors';
 import roundNum from '../../../../utils/roundNum';
 import localize from './TasksCountChart.json';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 class TasksCountChart extends Component {
   static propTypes = {
@@ -20,17 +21,17 @@ class TasksCountChart extends Component {
     openedOutOfPlanFeaturesMetric: PropTypes.array
   };
 
-  constructor(props) {
-    super(props);
+  chartRef = null;
 
-    this.state = {
-      chartRef: null
-    };
+  setChartRef = node => {
+    this.chartRef = node;
+  };
 
-    this.chartOptions = {
-      ...props.chartDefaultOptions,
+  getGraphicOptions() {
+    return {
+      ...this.props.chartDefaultOptions,
       scales: {
-        ...props.chartDefaultOptions.scales,
+        ...this.props.chartDefaultOptions.scales,
         yAxes: [
           {
             ticks: {
@@ -39,16 +40,29 @@ class TasksCountChart extends Component {
             display: true,
             scaleLabel: {
               display: true,
-              labelString: 'Количество задач'
+              labelString: localize[this.props.lang].NUMBER_OF_TASKS
+            }
+          }
+        ],
+        xAxes: [
+          {
+            type: 'time',
+            time: {
+              displayFormats: {
+                day: 'D MMM'
+              },
+              tooltipFormat: 'DD.MM.YYYY',
+              locale: moment.locale(localize[this.props.lang].LANG)
+            },
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: localize[this.props.lang].DATE
             }
           }
         ]
       }
     };
-  }
-
-  componentDidMount() {
-    this.setState({ chartRef: this.refs.chart });
   }
 
   makeChartData() {
@@ -97,14 +111,7 @@ class TasksCountChart extends Component {
     return (
       <ChartWrapper chartRef={this.chartRef} className={css.BugsChart}>
         <h3>{localize[lang].NUMBER_OF_TASKS}</h3>
-        <Line
-          ref={element => {
-            this.chartRef = element;
-          }}
-          data={this.makeChartData()}
-          options={this.chartOptions}
-          redraw
-        />
+        <Line ref={this.setChartRef} data={this.makeChartData()} options={this.getGraphicOptions()} redraw />
       </ChartWrapper>
     );
   }

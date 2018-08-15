@@ -10,11 +10,12 @@ import BugsChart from './BugsChart';
 import CostByRoleChart from './CostByRoleChart';
 import SprintReport from './Report';
 import SprintMetrics from './SprintMetrics';
-import { getMetrics, calculateMetrics } from './../../../actions/Metrics';
+import { getMetrics } from './../../../actions/Metrics';
 import moment from 'moment';
 import getColor from '../../../utils/Colors';
 import { chartDefaultOptions, modifyZoomPlugin } from '../../../utils/Charts';
 import { ADMIN } from '../../../constants/Roles';
+import { checkIsViewer } from '../../../helpers/RoleValidator';
 import * as MetricTypes from '../../../constants/Metrics';
 import Tabs from '../../../components/Tabs';
 import Pane from '../../../components/Pane';
@@ -79,10 +80,10 @@ class Metrics extends Component {
     }
   }
 
-  getMetricsParams = (createdAt, projectId) => ({
+  getMetricsParams = (createdAt, projectId, endDate) => ({
     projectId: parseInt(projectId),
     startDate: moment(createdAt).format('YYYY-MM-DD HH:mm'),
-    endDate: moment().format('YYYY-MM-DD HH:mm')
+    endDate: endDate ? endDate : null
   });
 
   recalculateMetrics = () => {
@@ -206,7 +207,7 @@ class Metrics extends Component {
     return (
       <div>
         <section className={css.Metrics}>
-          {isProjectAdmin ? (
+          {isProjectAdmin || checkIsViewer(this.props.user.globalRole) ? (
             <div>
               <Button
                 addedClassNames={{ [css.recalculateBtn]: true }}
@@ -314,7 +315,4 @@ const mapDispatchToProps = {
   getMetrics
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Metrics);
+export default connect(mapStateToProps, mapDispatchToProps)(Metrics);

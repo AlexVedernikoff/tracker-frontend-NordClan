@@ -21,12 +21,24 @@ import getPriorityById from '../../../utils/TaskPriority';
 import * as css from './AgileBoard.scss';
 import { UnmountClosed } from 'react-collapse';
 import localize from './AgileBoard.json';
-import { getFullName } from '../../../utils/NameLocalisation';
+import { getFullName, getDictionaryName } from '../../../utils/NameLocalisation';
 
 import getTasks from '../../../actions/Tasks';
 import { VISOR, EXTERNAL_USER } from '../../../constants/Roles';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal, getProjectUsers, getProjectInfo } from '../../../actions/Project';
+import { history } from '../../../History';
+import { createSelector } from 'reselect';
+
+const selectTasks = state => state.Tasks.tasks;
+
+const selectSprints = state => state.Project.project.sprints;
+
+const selectUserId = state => state.Auth.user.id;
+
+const selectTaskType = state => state.Dictionaries.taskTypes;
+
+const selectProjectUsers = state => state.Project.project.users;
 
 const filterTasks = array => {
   const taskArray = {
@@ -36,6 +48,7 @@ const filterTasks = array => {
     qa: [],
     done: []
   };
+  console.log('sortTasks');
   array.forEach(element => {
     switch (element.statusId) {
       case 1:
@@ -60,8 +73,103 @@ const filterTasks = array => {
         break;
     }
   });
+
+  for (const key in taskArray) {
+    taskArray[key].sort((a, b) => {
+      return a.prioritiesId - b.prioritiesId;
+    });
+    taskArray[key].forEach(task => {
+      task.linkedTasks.concat(task.subTasks, task.parentTask).map(relatedTask => _.get(relatedTask, 'id', null));
+    });
+  }
+
   return taskArray;
 };
+
+const getSortedTasks = createSelector([selectTasks], tasks => filterTasks(tasks));
+
+const myTasks = (tasks, userId) =>
+  tasks.filter(task => {
+    return task.performer && task.performer.id === userId;
+  });
+
+const getMyTasks = createSelector([selectTasks], [selectUserId], (tasks, userId) =>
+  filterTasks(myTasks(tasks, userId))
+);
+
+const getTagsByTask = tasks => {
+  let allTags = tasks.reduce((arr, task) => {
+    return arr.concat(task.tags ? task.tags.map(tags => tags.name) : []);
+  }, []);
+
+  allTags = _.uniq(allTags);
+
+  return allTags.map(tag => ({
+    value: tag,
+    label: tag
+  }));
+};
+
+const getAllTags = createSelector([selectTasks], tasks => getTagsByTask(tasks));
+
+const getSprints = unsortedSprints => {
+  let sprints = _.sortBy(unsortedSprints, sprint => {
+    return new moment(sprint.factFinishDate);
+  });
+
+  sprints = sprints.map(sprint => ({
+    value: sprint.id,
+    label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${
+      sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}` : '- ...'
+    })`,
+    statusId: sprint.statusId,
+    className: classnames({
+      [css.INPROGRESS]: sprint.statusId === 2,
+      [css.sprintMarker]: true,
+      [css.FINISHED]: sprint.statusId === 1
+    })
+  }));
+
+  sprints.push({
+    value: 0,
+    label: 'Backlog',
+    className: classnames({
+      [css.INPROGRESS]: false,
+      [css.sprintMarker]: true
+    })
+  });
+  return sprints;
+};
+
+const getSortedSprints = createSelector([selectSprints], sprints => getSprints(sprints));
+
+const currentSprint = sprints => {
+  const processedSprints = sprints.filter(sprint => {
+    return sprint.statusId === 2;
+  });
+
+  const currentSprints = processedSprints.filter(sprint => {
+    return moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]');
+  });
+
+  return currentSprints.length ? currentSprints[0].id : processedSprints.length ? processedSprints[0].id : 0;
+};
+
+const getCurrentSprint = createSelector([selectSprints], sprints => currentSprint(sprints));
+
+const createOptions = (array, labelField) => {
+  console.log('createOptions');
+  return array.map(element => ({
+    value: element.id,
+    label: labelField === 'name' ? element[labelField] : getFullName(element)
+  }));
+};
+
+const typeOptions = taskTypes => createOptions(taskTypes, 'name');
+const authorOptions = projectUsers => createOptions(projectUsers);
+
+const getTypeOptions = createSelector([selectTaskType], taskTypes => typeOptions(taskTypes));
+const getAuthorOptions = createSelector([selectProjectUsers], projectUsers => authorOptions(projectUsers));
 
 const phaseColumnNameById = {
   1: 'New',
@@ -96,18 +204,8 @@ const sortTasksAndCreateCard = (
   };
 
   for (const key in sortedObject) {
-    sortedObject[key].sort((a, b) => {
-      return a.prioritiesId - b.prioritiesId;
-    });
-
     taskArray[key] = sortedObject[key].map(task => {
-      const lightedRelatedTask = _.get(task, 'linkedTasks.length')
-        ? task.linkedTasks
-            .concat(task.subTasks, task.parentTask)
-            .map(relatedTask => _.get(relatedTask, 'id', null))
-            .includes(lightedTaskId)
-        : [];
-
+      const lightedRelatedTask = task.linkedTasks.includes(lightedTaskId);
       const lighted = task.id === lightedTaskId && isCardFocus;
 
       return (
@@ -178,18 +276,15 @@ class AgileBoard extends Component {
       changedTask: null,
       allFilters: [],
       fullFilterView: this.getFilterViewState(),
-      ...this.initialFilters
+      changedFilters: {},
+      ...this.initialFilters,
+      ...this.getQueryFiltersFromUrl()
     };
   }
 
   componentDidMount() {
-    this.getFiltersFromLocalStorage();
     if (this.props.myTaskBoard) {
       this.selectValue(this.getChangedSprint(this.props), 'changedSprint');
-    } else if (this.props.project.id && this.parseLocalStorageFilters().changedSprint === null) {
-      this.selectValue(this.getCurrentSprint(this.props.sprints), 'changedSprint');
-    } else if (this.props.project.id && this.parseLocalStorageFilters().changedSprint !== null) {
-      this.selectValue(this.parseLocalStorageFilters().changedSprint, 'changedSprint');
     }
   }
 
@@ -204,10 +299,6 @@ class AgileBoard extends Component {
       nextProps.project.id
     ) {
       this.selectValue(this.getChangedSprint(nextProps), 'changedSprint');
-    }
-
-    if (this.props.project.id !== nextProps.project.id) {
-      this.getFiltersFromLocalStorage();
     }
 
     if (nextProps.sprintTasks.length) {
@@ -237,10 +328,89 @@ class AgileBoard extends Component {
         changedTask: null
       });
     }
+
+    if (nextProps.lastUpdatedTask !== this.props.lastUpdatedTask) {
+      this.getTasks();
+    }
   }
 
   componentDidUpdate() {
     ReactTooltip.rebuild();
+  }
+
+  translateToNumIfNeeded = value => {
+    const re = /^\d+$/;
+    return re.test(value) ? +value : value;
+  };
+
+  multipleQueries = queries => {
+    if (Array.isArray(queries)) {
+      return queries.map(queryValue => this.translateToNumIfNeeded(queryValue));
+    }
+
+    return queries ? [this.translateToNumIfNeeded(queries)] : [];
+  };
+
+  singleQuery = currentQuery => {
+    return currentQuery ? this.translateToNumIfNeeded(currentQuery) : null;
+  };
+
+  makeNewObj = (name, value) => {
+    if (!!value && !Array.isArray(value)) {
+      return { [name]: this.singleQuery(value) };
+    }
+    if (!!value && Array.isArray(value)) {
+      return { [name]: this.multipleQueries(value) };
+    }
+  };
+
+  getUrlQueries = () => {
+    if (!this.props.myTaskBoard) {
+      const { performerId, name, authorId, prioritiesId, typeId, filterTags, isOnlyMine, changedSprint } =
+        (this.props.location && this.props.location.query) || {};
+
+      return {
+        ...this.makeNewObj('performerId', performerId),
+        ...this.makeNewObj('name', name),
+        ...this.makeNewObj('authorId', authorId),
+        ...this.makeNewObj('prioritiesId', prioritiesId),
+        ...this.makeNewObj('filterTags', filterTags),
+        ...this.makeNewObj('typeId', typeId),
+        ...this.makeNewObj('isOnlyMine', isOnlyMine),
+        ...this.makeNewObj('changedSprint', changedSprint)
+      };
+    }
+  };
+
+  getQueryFiltersFromUrl() {
+    if (!this.props.myTaskBoard) {
+      const projectId = this.props.params.projectId;
+
+      return {
+        ...this.getUrlQueries(),
+        changedFilters: {
+          projectId,
+          ...this.getUrlQueries()
+        }
+      };
+    }
+  }
+
+  changeUrl(changedFilters) {
+    if (!this.props.myTaskBoard) {
+      const query = {};
+
+      for (const [key, value] of Object.entries(changedFilters)) {
+        if (value && key !== 'projectId') {
+          query[key] = value;
+        }
+      }
+
+      history.replace({
+        ...this.props.location,
+        query
+      });
+    }
   }
 
   initialFilters = {
@@ -248,14 +418,14 @@ class AgileBoard extends Component {
     changedSprint: null,
     filterTags: [],
     typeId: [],
-    name: '',
+    name: null,
     authorId: null,
     prioritiesId: null,
-    performerId: null
+    performerId: []
   };
 
   getChangedSprint = props => {
-    let changedSprint = this.getCurrentSprint(props.sprints);
+    let changedSprint = this.state.changedSprint || this.props.currentSprint;
 
     if (props.lastCreatedTask && Number.isInteger(props.lastCreatedTask.sprintId)) {
       changedSprint = props.lastCreatedTask.sprintId;
@@ -265,14 +435,9 @@ class AgileBoard extends Component {
   };
 
   toggleFilterView = () => {
-    this.setState(
-      {
-        fullFilterView: !this.state.fullFilterView
-      },
-      () => {
-        localStorage.setItem('filterViewState', this.state.fullFilterView);
-      }
-    );
+    this.setState({
+      fullFilterView: !this.state.fullFilterView
+    });
   };
 
   getFilterViewState = () => {
@@ -289,71 +454,55 @@ class AgileBoard extends Component {
         isOnlyMine: !currentState.isOnlyMine
       }),
       () => {
-        this.updateFilterList();
-        this.saveFiltersToLocalStorage();
+        this.setFiltersToUrl('isOnlyMine', this.state.isOnlyMine, this.updateFilterList);
       }
     );
   };
 
-  getFiltersFromLocalStorage = () => {
-    if (!this.props.myTaskBoard) {
-      const localStorageFilter = this.parseLocalStorageFilters();
-      if (this.props.params.projectId !== localStorageFilter.projectId) return;
-      this.setState({
-        isOnlyMine: localStorageFilter.isOnlyMine,
-        changedSprint: localStorageFilter.changedSprint,
-        filterTags: localStorageFilter.filterTags,
-        typeId: localStorageFilter.typeId,
-        name: localStorageFilter.name,
-        authorId: localStorageFilter.authorId,
-        prioritiesId: localStorageFilter.prioritiesId,
-        performerId: localStorageFilter.performerId
-      });
-    } else {
-      this.removeFiltersFromLocalStorage();
-    }
-  };
+  setFiltersToUrl = (name, e, callback) => {
+    this.setState(state => {
+      let filterValue = e;
+      const changedFilters = { ...state.changedFilters };
 
-  parseLocalStorageFilters = () => {
-    try {
-      const localStorageFilters = localStorage.getItem('agileBoardFilters');
-      return localStorageFilters ? JSON.parse(localStorageFilters) : {};
-    } catch (e) {
-      return {};
-    }
-  };
+      if (!this.props.myTaskBoard) {
+        changedFilters.projectId = this.props.params.projectId;
+      }
 
-  saveFiltersToLocalStorage = () => {
-    localStorage.setItem(
-      'agileBoardFilters',
-      JSON.stringify({
-        projectId: this.props.params.projectId,
-        changedSprint: this.state.changedSprint,
-        isOnlyMine: this.state.isOnlyMine,
-        prioritiesId: this.state.prioritiesId,
-        authorId: this.state.authorId,
-        typeId: this.state.typeId,
-        name: this.state.name,
-        filterTags: this.state.filterTags,
-        performerId: this.state.performerId
-      })
-    );
-  };
+      if (name === 'typeId') {
+        filterValue = e.map(singleValue => singleValue.value);
+      }
 
-  removeFiltersFromLocalStorage = () => {
-    localStorage.removeItem('agileBoardFilters');
+      if (name === 'performerId') {
+        filterValue = e.map(singleValue => singleValue.value);
+      }
+
+      if (name === 'filterTags') {
+        filterValue = e.map(singleValue => singleValue.value).join(',');
+      }
+
+      if (~[null, [], undefined, ''].indexOf(filterValue)) {
+        delete changedFilters[name];
+      } else {
+        changedFilters[name] = filterValue;
+      }
+
+      this.changeUrl(changedFilters);
+
+      return {
+        [name]: filterValue,
+        changedFilters
+      };
+    }, callback);
   };
 
   selectValue = (e, name) => {
-    this.setState({ [name]: e }, () => {
-      if (this.props.myTaskBoard) return this.props.getTasks({ performerId: this.props.user.id });
+    this.setFiltersToUrl(name, e, () => {
+      if (this.props.myTaskBoard) return this.getTasks({ performerId: this.props.user.id });
       this.getTasks();
     });
   };
 
   getTasks = customOption => {
-    const tags = this.state.filterTags.map(tag => tag.value);
-    const typeId = this.state.typeId.map(option => option.value);
     const options = customOption
       ? customOption
       : {
@@ -361,13 +510,12 @@ class AgileBoard extends Component {
           sprintId: this.state.changedSprint,
           prioritiesId: this.state.prioritiesId,
           authorId: this.state.authorId,
-          typeId: typeId,
-          name: this.state.name,
-          tags: tags.join(','),
+          typeId: this.state.typeId,
+          name: this.state.name || null,
+          tags: this.state.filterTags,
           performerId: this.state.performerId
         };
     this.props.getTasks(options);
-    this.saveFiltersToLocalStorage();
     this.updateFilterList();
   };
 
@@ -438,47 +586,6 @@ class AgileBoard extends Component {
     );
   };
 
-  getCurrentSprint = sprints => {
-    const processedSprints = sprints.filter(sprint => {
-      return sprint.statusId === 2;
-    });
-
-    const currentSprints = processedSprints.filter(sprint => {
-      return moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]');
-    });
-
-    return currentSprints.length ? currentSprints[0].id : processedSprints.length ? processedSprints[0].id : 0;
-  };
-
-  getSprints = () => {
-    let sprints = _.sortBy(this.props.sprints, sprint => {
-      return new moment(sprint.factFinishDate);
-    });
-
-    sprints = sprints.map(sprint => ({
-      value: sprint.id,
-      label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${
-        sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}` : '- ...'
-      })`,
-      statusId: sprint.statusId,
-      className: classnames({
-        [css.INPROGRESS]: sprint.statusId === 2,
-        [css.sprintMarker]: true,
-        [css.FINISHED]: sprint.statusId === 1
-      })
-    }));
-
-    sprints.push({
-      value: 0,
-      label: 'Backlog',
-      className: classnames({
-        [css.INPROGRESS]: false,
-        [css.sprintMarker]: true
-      })
-    });
-    return sprints;
-  };
-
   getSprintTime = sprintId => {
     if (!sprintId) return false;
     let currentSprint = {};
@@ -488,19 +595,6 @@ class AgileBoard extends Component {
       }
     });
     return `${currentSprint.spentTime || 0} / ${currentSprint.riskBudget || 0}`;
-  };
-
-  getAllTags = () => {
-    let allTags = this.props.sprintTasks.reduce((arr, task) => {
-      return arr.concat(task.tags ? task.tags.map(tags => tags.name) : []);
-    }, []);
-
-    allTags = _.uniq(allTags);
-
-    return allTags.map(tag => ({
-      value: tag,
-      label: tag
-    }));
   };
 
   getUsers = () => {
@@ -515,9 +609,7 @@ class AgileBoard extends Component {
       () => ({
         [name]: this.initialFilters[name]
       }),
-      () => {
-        this.getTasks();
-      }
+      this.getTasks
     );
   };
 
@@ -527,7 +619,7 @@ class AgileBoard extends Component {
       {
         [filterField]: newList
       },
-      () => this.getTasks()
+      this.getTasks
     );
   };
 
@@ -558,7 +650,7 @@ class AgileBoard extends Component {
         ) || 'Не назначено'}`;
       case 'changedSprint':
         return `${this.createSelectedOption(
-          this.getSprints().map(sprint => ({ id: sprint.value, name: sprint.label })),
+          this.props.sortedSprints.map(sprint => ({ id: sprint.value, name: sprint.label })),
           this.state.changedSprint
         )}`;
       case 'name':
@@ -569,7 +661,7 @@ class AgileBoard extends Component {
   };
 
   updateFilterList = () => {
-    const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'performerId', 'changedSprint', 'name'];
+    const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'changedSprint', 'name'];
     const selectedFilters = [];
 
     singleOptionFiltersList.forEach(filterName => {
@@ -585,17 +677,11 @@ class AgileBoard extends Component {
     this.setState({
       allFilters: [
         ...selectedFilters,
-        ...this.createSelectedOption(null, this.state.typeId, 'typeId'),
-        ...this.createSelectedOption(null, this.state.filterTags, 'filterTags')
+        ...this.createSelectedOption([], this.state.typeId, 'typeId'),
+        ...this.createSelectedOption([], this.state.performerId, 'performerId'),
+        ...this.createSelectedOption([], this.state.filterTags, 'filterTags')
       ]
     });
-  };
-
-  createOptions = (array, labelField) => {
-    return array.map(element => ({
-      value: element.id,
-      label: labelField === 'name' ? element[labelField] : getFullName(element)
-    }));
   };
 
   createSelectedOption = (optionList, selectedOption, optionLabel = 'name') => {
@@ -609,7 +695,7 @@ class AgileBoard extends Component {
       }));
     } else {
       const option = optionList.find(element => element.id === selectedOption);
-      if (!option) return null;
+      if (!option) return {};
       return option[optionLabel];
     }
   };
@@ -652,9 +738,8 @@ class AgileBoard extends Component {
     const isVisor = this.props.globalRole === VISOR;
     const isExternal = this.props.globalRole === EXTERNAL_USER;
 
-    let allSorted = filterTasks(this.props.sprintTasks);
-    allSorted = sortTasksAndCreateCard(
-      allSorted,
+    const allSorted = sortTasksAndCreateCard(
+      this.props.tasks,
       'all',
       this.changeStatus,
       this.openPerformerModal,
@@ -665,13 +750,8 @@ class AgileBoard extends Component {
       this.state.isCardFocus
     );
 
-    const myTasks = this.props.sprintTasks.filter(task => {
-      return task.performer && task.performer.id === this.props.user.id;
-    });
-
-    let mineSorted = filterTasks(myTasks);
-    mineSorted = sortTasksAndCreateCard(
-      mineSorted,
+    const mineSorted = sortTasksAndCreateCard(
+      this.props.myTasks,
       'mine',
       this.changeStatus,
       this.openPerformerModal,
@@ -681,9 +761,6 @@ class AgileBoard extends Component {
       this.state.lightedTaskId,
       this.state.isCardFocus
     );
-
-    const typeOptions = this.createOptions(taskTypes, 'name');
-    const authorOptions = this.createOptions(project.users);
 
     return (
       <section className={css.agileBoard}>
@@ -716,7 +793,7 @@ class AgileBoard extends Component {
                       value={this.state.filterTags}
                       onChange={this.selectTagForFiltrated}
                       noResultsText="Нет результатов"
-                      options={this.getAllTags()}
+                      options={this.props.tags}
                     />
                   </Col>
                   {!isVisor ? (
@@ -735,13 +812,13 @@ class AgileBoard extends Component {
                   <Col xs={12} sm={6}>
                     <Input
                       placeholder={localize[lang].TASK_NAME}
-                      value={this.state.name}
+                      value={this.state.name || ''}
                       onChange={e => this.selectValue(e.target.value, 'name')}
                     />
                   </Col>
                   <Col xs={12} sm={3}>
                     <PerformerFilter
-                      onPerformerSelect={option => this.selectValue(option ? option.value : null, 'performerId')}
+                      onPerformerSelect={options => this.selectValue(options, 'performerId')}
                       selectedPerformerId={this.state.performerId}
                     />
                   </Col>
@@ -754,7 +831,7 @@ class AgileBoard extends Component {
                       backspaceToRemoveMessage={''}
                       clearAllText={localize[lang].CLEAR_ALL}
                       value={this.state.typeId}
-                      options={typeOptions}
+                      options={this.props.typeOptions}
                       onChange={options => this.selectValue(options, 'typeId')}
                     />
                   </Col>
@@ -768,7 +845,7 @@ class AgileBoard extends Component {
                       value={this.state.changedSprint}
                       onChange={e => this.selectValue(e !== null ? e.value : null, 'changedSprint')}
                       noResultsText={localize[lang].NO_RESULTS}
-                      options={this.getSprints()}
+                      options={this.props.sortedSprints}
                     />
                     {!isExternal ? (
                       <span className={css.sprintTime}>{this.getSprintTime(this.state.changedSprint) || null}</span>
@@ -782,7 +859,7 @@ class AgileBoard extends Component {
                       value={this.state.authorId}
                       onChange={option => this.selectValue(option ? option.value : null, 'authorId')}
                       noResultsText={localize[lang].NO_RESULTS}
-                      options={authorOptions}
+                      options={this.props.authorOptions}
                     />
                   </Col>
                   <Col className={css.filterButtonCol}>
@@ -869,6 +946,8 @@ AgileBoard.propTypes = {
   globalRole: PropTypes.string,
   isCreateTaskModalOpen: PropTypes.bool,
   lastCreatedTask: PropTypes.object,
+  lastUpdatedTask: PropTypes.object,
+  location: PropTypes.object,
   myTaskBoard: PropTypes.bool,
   openCreateTaskModal: PropTypes.func.isRequired,
   params: PropTypes.object,
@@ -878,12 +957,28 @@ AgileBoard.propTypes = {
   startTaskEditing: PropTypes.func,
   statuses: PropTypes.array,
   taskTypes: PropTypes.array,
+  tasks: PropTypes.object,
+  myTasks: PropTypes.object,
+  tasks: PropTypes.object,
+  tags: PropTypes.array,
+  sortedSprints: PropTypes.array,
+  currentSprint: PropTypes.number,
+  typeOptions: PropTypes.array,
+  authorOptions: PropTypes.array,
   tracksChange: PropTypes.number,
   user: PropTypes.object
 };
 
 const mapStateToProps = state => ({
+  tasks: getSortedTasks(state),
+  myTasks: getMyTasks(state),
+  tags: getAllTags(state),
+  sortedSprints: getSortedSprints(state),
+  currentSprint: getCurrentSprint(state),
+  typeOptions: getTypeOptions(state),
+  authorOptions: getAuthorOptions(state),
   lastCreatedTask: state.Project.lastCreatedTask,
+  lastUpdatedTask: state.Task.lastUpdatedTask,
   sprintTasks: state.Tasks.tasks,
   sprints: state.Project.project.sprints,
   project: state.Project.project,
@@ -907,7 +1002,4 @@ const mapDispatchToProps = {
   getProjectInfo
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AgileBoard);
+export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);

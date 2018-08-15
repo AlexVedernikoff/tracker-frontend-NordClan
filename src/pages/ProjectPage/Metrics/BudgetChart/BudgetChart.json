@@ -6,7 +6,9 @@
     "WITH_RISK": "With risk reserve",
     "WITHOUT_RISK": "Without risk reserve",
     "H": "h.",
-    "BUDGET": "Budget"
+    "BUDGET": "Budget",
+    "DATE": "Date",
+    "LANG": "en"
   },
   "ru": {
     "IDEALLY_FOR_ALL": "Идеальная для всего проекта",
@@ -15,6 +17,8 @@
     "WITH_RISK": "С рисковым резервом",
     "WITHOUT_RISK": "Без рискового резерва",
     "H": "ч.",
-    "BUDGET": "Бюджет"
+    "BUDGET": "Бюджет",
+    "DATE": "Дата",
+    "LANG": "ru"
   }
 }
