@@ -5,9 +5,11 @@ import DayPicker from 'react-day-picker';
 import onClickOutside from 'react-onclickoutside';
 import LocaleUtils from 'react-day-picker/moment';
 import * as css from '../ProjectTimesheets.scss';
+import { connect } from 'react-redux';
 
 class Calendar extends React.Component {
   static propTypes = {
+    lang: PropTypes.string,
     onCancel: PropTypes.func
   };
 
@@ -23,14 +25,18 @@ class Calendar extends React.Component {
   };
 
   render() {
-    const { ...other } = this.props;
+    const { lang, ...other } = this.props;
 
     return (
       <div className={cn(css.dateDropdown, 'st-week-select')}>
-        <DayPicker locale="ru" enableOutsideDays localeUtils={{ ...LocaleUtils }} {...other} />
+        <DayPicker locale={lang} enableOutsideDays localeUtils={{ ...LocaleUtils }} {...other} />
       </div>
     );
   }
 }
 
-export default onClickOutside(Calendar);
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(mapStateToProps)(onClickOutside(Calendar));
