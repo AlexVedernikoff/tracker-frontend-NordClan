@@ -29,11 +29,6 @@ class CreateTaskModal extends Component {
   constructor(props) {
     super(props);
 
-    this.types = props.taskTypes.map(({ name, id }) => ({
-      label: name,
-      value: id
-    }));
-
     this.state = {
       selectedSprint: props.selectedSprintValue,
       selectedPerformer: props.defaultPerformerId || null,
@@ -42,9 +37,8 @@ class CreateTaskModal extends Component {
       plannedExecutionTime: 0,
       openTaskPage: false,
       prioritiesId: 3,
-      selectedType: this.types[0],
-      selectedTypeError: this.types.length === 0,
-      typeList: this.types,
+      selectedType: this.props.taskTypes[0],
+      selectedTypeError: this.props.taskTypes.length === 0,
       isTaskByClient: false,
       tags: []
     };
@@ -168,7 +162,7 @@ class CreateTaskModal extends Component {
       secondCol: 8
     };
 
-    const { lang } = this.props;
+    const { lang, taskTypes } = this.props;
 
     const tags = this.state.tags.map((tagName, i) => {
       return <Tag key={i} name={tagName} noRequest deleteTagModal={() => this.deleteTag()(tagName)} />;
@@ -246,7 +240,7 @@ class CreateTaskModal extends Component {
                   multi={false}
                   ignoreCase
                   placeholder={localize[lang].TYPE_PLACEHOLDER}
-                  options={this.state.typeList}
+                  options={taskTypes}
                   className={css.selectSprint}
                   value={this.state.selectedType}
                   onChange={this.onTypeChange}
@@ -371,10 +365,16 @@ CreateTaskModal.propTypes = {
   taskTypes: PropTypes.array
 };
 
+const getLocaleTaskTypes = (dictionaryTypes, lang) =>
+  dictionaryTypes.map(({ name, nameEn, id }) => ({
+    label: lang === 'ru' ? name : nameEn,
+    value: id
+  }));
+
 const mapStateToProps = state => ({
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
   isCreateChildTaskModalOpen: state.Project.isCreateChildTaskModalOpen,
-  taskTypes: state.Dictionaries.taskTypes,
+  taskTypes: getLocaleTaskTypes(state.Dictionaries.taskTypes, state.Localize.lang),
   isCreateTaskRequestInProgress: state.Project.isCreateTaskRequestInProgress,
   lang: state.Localize.lang
 });
