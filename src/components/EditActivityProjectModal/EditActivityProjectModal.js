@@ -45,9 +45,11 @@ class EditActivityProjectModal extends Component {
         id: this.state.projectValue.body.id,
         name: this.state.projectValue.body.name,
         prefix: this.state.projectValue.body.prefix
-      }
+      },
+      sprint: { name: this.state.selectedSprint ? this.state.selectedSprint.label : 'Backlog' }
     };
 
+    this.props.onCancel();
     this.props.onConfirm(updatedFields);
   };
 
@@ -69,8 +71,6 @@ class EditActivityProjectModal extends Component {
   };
 
   render() {
-    console.log(this.state);
-
     const { style, onRequestClose, closeTimeoutMS, text, onConfirm, onCancel, ...other } = this.props;
 
     const formLayout = {
