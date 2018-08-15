@@ -8,7 +8,8 @@
     "WO_RISK_RESERVE": "Budget without risk reserve",
     "WITH_RISK_RESERVE": "Budget with risk reserve",
     "REMOVE_SPRINT_NOTIFICATION": "Do you really want to remove the sprint?",
-    "H": "h."
+    "H": "h.",
+    "QA_PERCENT": "% on QA:"
   },
   "ru": {
     "DATE_OF_START": "Дата начала:",
@@ -19,6 +20,7 @@
     "WO_RISK_RESERVE": "Бюджет без рискового резерва",
     "WITH_RISK_RESERVE": "Бюджет с рисковым резервом",
     "REMOVE_SPRINT_NOTIFICATION": "Вы действительно хотите удалить спринт?",
-    "H": "ч."
+    "H": "ч.",
+    "QA_PERCENT": "% на QA:"
   }
 }
