@@ -22,7 +22,7 @@ class CreateSprintModal extends Component {
       budget: '',
       riskBudget: '',
       sprintName: '',
-      allottedTimeQa: props.project.percentQA || 30
+      allottedTimeQa: props.project.qaPercent || 30
     };
   }
 
@@ -249,7 +249,4 @@ const mapDispatchToProps = {
   createSprint
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CreateSprintModal);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateSprintModal);
