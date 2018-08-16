@@ -420,7 +420,7 @@ class AgileBoard extends Component {
     name: null,
     authorId: null,
     prioritiesId: null,
-    performerId: []
+    performerId: null
   };
 
   getChangedSprint = props => {
@@ -1026,4 +1026,7 @@ const mapDispatchToProps = {
   getProjectInfo
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AgileBoard);
