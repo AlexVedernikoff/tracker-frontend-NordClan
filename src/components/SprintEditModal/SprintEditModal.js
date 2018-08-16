@@ -10,6 +10,7 @@ import Input from '../../components/Input';
 import moment from 'moment';
 import localize from './SprintEditModal.json';
 import { connect } from 'react-redux';
+import parseInteger from '../../utils/parseInteger';
 
 class SprintEditModal extends Component {
   static propTypes = {
@@ -56,7 +57,7 @@ class SprintEditModal extends Component {
       this.setState(state => ({
         sprint: {
           ...state.sprint,
-          qaPercent: value
+          qaPercent: parseInteger(value)
         }
       }));
     }

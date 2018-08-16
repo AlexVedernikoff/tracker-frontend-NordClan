@@ -547,6 +547,7 @@ class Planning extends Component {
                     header={localize[lang].PERCENT_TEST}
                     value={qaPercent}
                     isProjectAdmin={isProjectAdmin}
+                    integerOnly={Boolean(true)}
                     min={0}
                     max={100}
                   />
