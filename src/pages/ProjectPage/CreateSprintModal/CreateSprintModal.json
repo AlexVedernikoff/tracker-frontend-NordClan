@@ -13,7 +13,9 @@
     "ENTER_BUDGET_WO_RISK_RESERVE": "Enter budget without risk reserve",
     "WITH_RISK_RESERVE": "Budget with risk reserve:",
     "ENTER_BUDGET_WITH_RISK_RESERVE": "Enter budget with risk reserve",
-    "CREATE": "Create"
+    "CREATE": "Create",
+    "QA_PERCENT": "% on QA:",
+    "ENTER_QA_PERCENT": "Enter % on QA"
   },
   "ru": {
     "NEW_SPRINT": "Создание нового спринта",
@@ -29,6 +31,8 @@
     "ENTER_BUDGET_WO_RISK_RESERVE": "Введите бюджет без рискового резерва",
     "WITH_RISK_RESERVE": "Бюджет с рисковым резервом:",
     "ENTER_BUDGET_WITH_RISK_RESERVE": "Введите бюджет с рисковым резервом",
-    "CREATE": "Создать"
+    "CREATE": "Создать",
+    "QA_PERCENT": "% на QA:",
+    "ENTER_QA_PERCENT": "Введите % на QA"
   }
 }

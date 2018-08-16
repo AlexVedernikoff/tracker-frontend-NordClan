@@ -110,7 +110,9 @@ class SprintCard extends Component {
         {!isExternal
           ? [
               <p key="qaPercent" className={css.sprintMeta}>
-                <span>% на QA: {sprint.qaPercent || 30}</span>
+                <span>
+                  {localize[lang].QA_PERCENT} {sprint.qaPercent || 30}
+                </span>
               </p>,
               <p key="spentTime" className={css.sprintMeta}>
                 <span>
@@ -192,4 +194,7 @@ const mapDispatchToProps = {
   editSprint
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SprintCard);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SprintCard);

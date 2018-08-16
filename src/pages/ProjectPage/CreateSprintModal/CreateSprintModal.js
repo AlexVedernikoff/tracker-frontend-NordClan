@@ -22,7 +22,7 @@ class CreateSprintModal extends Component {
       budget: '',
       riskBudget: '',
       sprintName: '',
-      allottedTimeQa: props.project.percentQA || 30
+      allottedTimeQa: props.project.qaPercent || 30
     };
   }
 
@@ -177,10 +177,14 @@ class CreateSprintModal extends Component {
 
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>% на QA:</p>
+                <p>{localize[lang].QA_PERCENT}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input placeholder="Введите % на QA" onChange={this.onChangeTimeQA} value={this.state.allottedTimeQa} />
+                <Input
+                  placeholder={localize[lang].ENTER_QA_PERCENT}
+                  onChange={this.onChangeTimeQA}
+                  value={this.state.allottedTimeQa}
+                />
               </Col>
             </Row>
 
@@ -245,7 +249,4 @@ const mapDispatchToProps = {
   createSprint
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CreateSprintModal);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateSprintModal);
