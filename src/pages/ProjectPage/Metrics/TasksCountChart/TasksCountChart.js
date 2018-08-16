@@ -8,6 +8,7 @@ import getColor from '../../../../utils/Colors';
 import roundNum from '../../../../utils/roundNum';
 import localize from './TasksCountChart.json';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 class TasksCountChart extends Component {
   static propTypes = {
@@ -40,6 +41,23 @@ class TasksCountChart extends Component {
             scaleLabel: {
               display: true,
               labelString: localize[this.props.lang].NUMBER_OF_TASKS
+            }
+          }
+        ],
+        xAxes: [
+          {
+            type: 'time',
+            time: {
+              displayFormats: {
+                day: 'D MMM'
+              },
+              tooltipFormat: 'DD.MM.YYYY',
+              locale: moment.locale(localize[this.props.lang].LANG)
+            },
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: localize[this.props.lang].DATE
             }
           }
         ]

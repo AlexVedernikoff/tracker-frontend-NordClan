@@ -439,7 +439,4 @@ const mapDispatchToProps = {
   deleteTempTimesheets
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ActivityRow);
+export default connect(mapStateToProps, mapDispatchToProps)(ActivityRow);

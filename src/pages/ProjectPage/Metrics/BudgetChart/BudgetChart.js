@@ -9,6 +9,7 @@ import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import roundNum from '../../../../utils/roundNum';
 import getColor from '../../../../utils/Colors';
 import localize from './BudgetChart.json';
+import moment from 'moment';
 
 class BudgetChart extends Component {
   static propTypes = {
@@ -42,6 +43,23 @@ class BudgetChart extends Component {
             scaleLabel: {
               display: true,
               labelString: localize[this.props.lang].BUDGET
+            }
+          }
+        ],
+        xAxes: [
+          {
+            type: 'time',
+            time: {
+              displayFormats: {
+                day: 'D MMM'
+              },
+              tooltipFormat: 'DD.MM.YYYY',
+              locale: moment.locale(localize[this.props.lang].LANG)
+            },
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: localize[this.props.lang].DATE
             }
           }
         ]

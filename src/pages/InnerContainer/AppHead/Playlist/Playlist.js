@@ -377,7 +377,4 @@ const mapDispatchToProps = {
   changeTask
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(onClickOutside(Playlist));
+export default connect(mapStateToProps, mapDispatchToProps)(onClickOutside(Playlist));

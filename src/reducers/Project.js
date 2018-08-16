@@ -282,6 +282,7 @@ export default function Project(state = InitialState, action) {
         project: {
           sprints: [],
           users: [],
+          milestones: [],
           history: {
             events: []
           },
