@@ -48,7 +48,6 @@ const filterTasks = array => {
     qa: [],
     done: []
   };
-  console.log('sortTasks');
   array.forEach(element => {
     switch (element.statusId) {
       case 1:
@@ -79,6 +78,9 @@ const filterTasks = array => {
       return a.prioritiesId - b.prioritiesId;
     });
     taskArray[key].forEach(task => {
+      if (!task.linkedTasks) {
+        task.linkedTasks = [];
+      }
       task.linkedTasks.concat(task.subTasks, task.parentTask).map(relatedTask => _.get(relatedTask, 'id', null));
     });
   }
@@ -158,7 +160,6 @@ const currentSprint = sprints => {
 const getCurrentSprint = createSelector([selectSprints], sprints => currentSprint(sprints));
 
 const createOptions = (array, labelField) => {
-  console.log('createOptions');
   return array.map(element => ({
     value: element.id,
     label: labelField === 'name' ? element[labelField] : getFullName(element)
