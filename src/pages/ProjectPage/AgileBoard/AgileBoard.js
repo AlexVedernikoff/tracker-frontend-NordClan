@@ -633,7 +633,7 @@ class AgileBoard extends Component {
     const selectedFilters = [];
 
     singleOptionFiltersList.forEach(filterName => {
-      if (this.filterIsNotEmpty(filterName)) {
+      if (this.filterIsNotEmpty(filterName) && this.state.changedSprint !== '-1') {
         selectedFilters.push({
           name: filterName,
           label: this.createFilterLabel(filterName),

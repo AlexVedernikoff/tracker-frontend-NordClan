@@ -19,8 +19,7 @@ class FilterList extends Component {
 
   render() {
     const { filters, clearAll, toggleFilterView, fullFilterView, isVisor, lang } = this.props;
-    const filtredfilters = filters.filter(filter => filter.label !== '[object Object]');
-    const filterTags = filtredfilters.map(filter => {
+    const filterTags = filters.map(filter => {
       return <Tag name={filter.label} deleteHandler={filter.deleteHandler} key={filter.name} unclickable />;
     });
     return (
