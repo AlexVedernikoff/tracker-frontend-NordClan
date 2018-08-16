@@ -107,7 +107,6 @@ Budget.propTypes = {
   max: PropTypes.number,
   min: PropTypes.number,
   onEditSubmit: PropTypes.func.isRequired,
-  step: PropTypes.number,
   value: PropTypes.number
 };
 
