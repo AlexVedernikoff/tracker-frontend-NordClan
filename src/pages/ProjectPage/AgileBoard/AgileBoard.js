@@ -78,6 +78,9 @@ const filterTasks = array => {
       return a.prioritiesId - b.prioritiesId;
     });
     taskArray[key].forEach(task => {
+      if (!task.linkedTasks) {
+        task.linkedTasks = [];
+      }
       task.linkedTasks.concat(task.subTasks, task.parentTask).map(relatedTask => _.get(relatedTask, 'id', null));
     });
   }
