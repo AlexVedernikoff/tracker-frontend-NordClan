@@ -1,1 +1,1 @@
-export default value => (value ? +value.toString().replace(/[^\d]/, '') : value);
+export default value => (value ? +value.toString().replace(/[^\d]/g, '') : value);
