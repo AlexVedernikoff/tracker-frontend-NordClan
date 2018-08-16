@@ -103,7 +103,4 @@ const mapDispatchToProps = {
   getProjectHistory
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ProjectHistory);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectHistory);

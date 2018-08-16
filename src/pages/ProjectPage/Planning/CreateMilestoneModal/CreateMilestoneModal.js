@@ -44,7 +44,7 @@ class CreateMilestoneModal extends Component {
   };
 
   checkNullInputs = () => {
-    return this.state.name.trim() && this.state.date;
+    return this.state.name.trim() && this.state.date && this.state.typeId;
   };
 
   dateInputHandler = e => {
