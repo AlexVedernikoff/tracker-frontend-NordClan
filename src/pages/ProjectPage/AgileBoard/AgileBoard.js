@@ -431,7 +431,7 @@ class AgileBoard extends Component {
   };
 
   getChangedSprint = props => {
-    let changedSprint = this.state.isReload ? this.state.changedSprint : this.getCurrentSprint(props.sprints);
+    let changedSprint = this.state.isReload ? this.state.changedSprint : this.props.currentSprint;
 
     if (props.lastCreatedTask && Number.isInteger(props.lastCreatedTask.sprintId)) {
       changedSprint = props.lastCreatedTask.sprintId;
