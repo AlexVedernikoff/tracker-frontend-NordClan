@@ -367,7 +367,6 @@ class AgileBoard extends Component {
     if (!this.props.myTaskBoard) {
       const { performerId, name, authorId, prioritiesId, typeId, filterTags, isOnlyMine, changedSprint } =
         (this.props.location && this.props.location.query) || {};
-
       return {
         ...this.makeNewObj('performerId', performerId),
         ...this.makeNewObj('name', name),
@@ -384,7 +383,6 @@ class AgileBoard extends Component {
   getQueryFiltersFromUrl() {
     if (!this.props.myTaskBoard) {
       const projectId = this.props.params.projectId;
-
       return {
         ...this.getUrlQueries(),
         changedFilters: {
@@ -424,8 +422,7 @@ class AgileBoard extends Component {
   };
 
   getChangedSprint = props => {
-    let changedSprint = this.state.changedSprint || this.props.currentSprint;
-
+    let changedSprint = this.state.changedSprint !== null ? this.state.changedSprint : this.props.currentSprint;
     if (props.lastCreatedTask && Number.isInteger(props.lastCreatedTask.sprintId)) {
       changedSprint = props.lastCreatedTask.sprintId;
     }
@@ -1026,7 +1023,4 @@ const mapDispatchToProps = {
   getProjectInfo
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AgileBoard);
+export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);
