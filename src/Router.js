@@ -54,7 +54,8 @@ class AppRouter extends Component {
     loaded: PropTypes.bool,
     redirectPath: PropTypes.object,
     setRedirectPath: PropTypes.func,
-    userGlobalRole: PropTypes.string
+    userGlobalRole: PropTypes.string,
+    userProjectRoles: PropTypes.object
   };
 
   requireAuth = (nextState, replace, cb) => {
@@ -74,7 +75,10 @@ class AppRouter extends Component {
   };
 
   requareAdmin = (nextState, replace, cb) => {
-    if (!isAdmin(this.props.userGlobalRole)) {
+    if (
+      !isAdmin(this.props.userGlobalRole) &&
+      !this.props.userProjectRoles.admin.find(role => role === +nextState.params.projectId)
+    ) {
       replace('/projects');
     }
     cb();
@@ -149,7 +153,8 @@ const mapStateToProps = ({ Auth: { loaded, isLoggedIn, redirectPath, user } }) =
   loaded,
   isLoggedIn,
   redirectPath,
-  userGlobalRole: user.globalRole
+  userGlobalRole: user.globalRole,
+  userProjectRoles: user.projectsRoles
 });
 
 const mapDispatchToProps = {
