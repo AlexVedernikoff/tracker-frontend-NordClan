@@ -4,88 +4,23 @@ import { connect } from 'react-redux';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './Metrics.scss';
 import StartEndDates from './StartEndDates';
-import { defaults } from 'react-chartjs-2';
+import { Chart } from 'react-chartjs-2';
 import BudgetChart from './BudgetChart';
 import BugsChart from './BugsChart';
 import CostByRoleChart from './CostByRoleChart';
 import SprintReport from './Report';
 import SprintMetrics from './SprintMetrics';
-import { getMetrics, calculateMetrics } from './../../../actions/Metrics';
+import { getMetrics } from './../../../actions/Metrics';
 import moment from 'moment';
 import getColor from '../../../utils/Colors';
+import { chartDefaultOptions, modifyZoomPlugin } from '../../../utils/Charts';
 import { ADMIN } from '../../../constants/Roles';
+import { checkIsViewer } from '../../../helpers/RoleValidator';
 import * as MetricTypes from '../../../constants/Metrics';
 import Tabs from '../../../components/Tabs';
 import Pane from '../../../components/Pane';
 import Button from '../../../components/Button';
-
-const chartDefaultOptions = {
-  responsive: true,
-  hover: { mode: 'nearest' },
-  animation: {
-    duration: 0
-  },
-  title: {
-    display: false
-  },
-  legend: {
-    position: 'bottom',
-    labels: {
-      usePointStyle: true
-    },
-    onClick: function(e, legendItem) {
-      const chartItem = this.chart;
-      const datasetIndex = legendItem.datasetIndex;
-      const defaultLegendClickHandler = defaults.global.legend.onClick.bind(this);
-      const dblClickDelay = 400;
-
-      const legendDoubleClickHandler = () => {
-        chartItem.data.datasets.forEach((el, index) => {
-          const meta = chartItem.getDatasetMeta(index);
-
-          if (index === datasetIndex) {
-            meta.hidden = null;
-          } else {
-            meta.hidden = true;
-          }
-        });
-
-        chartItem.update();
-      };
-
-      if (chartItem.clicked === datasetIndex) {
-        legendDoubleClickHandler();
-        clearTimeout(chartItem.clickTimeout);
-        chartItem.clicked = false;
-      } else {
-        chartItem.clicked = datasetIndex;
-
-        chartItem.clickTimeout = setTimeout(() => {
-          chartItem.clicked = false;
-          defaultLegendClickHandler(e, legendItem);
-        }, dblClickDelay);
-      }
-    }
-  },
-  scales: {
-    xAxes: [
-      {
-        type: 'time',
-        time: {
-          displayFormats: {
-            day: 'D MMM'
-          },
-          tooltipFormat: 'DD.MM.YYYY'
-        },
-        display: true,
-        scaleLabel: {
-          display: true,
-          labelString: 'Дата'
-        }
-      }
-    ]
-  }
-};
+import localize from './Metrics.json';
 
 const filterMetrics = (id, metrics) => {
   return metrics ? metrics.filter(metric => metric.typeId === id) : [];
@@ -132,6 +67,10 @@ class Metrics extends Component {
     }
   }
 
+  componentDidMount() {
+    Chart.pluginService.register(modifyZoomPlugin);
+  }
+
   componentWillReceiveProps(nextProps) {
     const { getMetrics, params, createdAt } = this.props;
 
@@ -141,10 +80,10 @@ class Metrics extends Component {
     }
   }
 
-  getMetricsParams = (createdAt, projectId) => ({
+  getMetricsParams = (createdAt, projectId, endDate) => ({
     projectId: parseInt(projectId),
     startDate: moment(createdAt).format('YYYY-MM-DD HH:mm'),
-    endDate: moment().format('YYYY-MM-DD HH:mm')
+    endDate: endDate ? endDate : null
   });
 
   recalculateMetrics = () => {
@@ -190,7 +129,7 @@ class Metrics extends Component {
       http://gitlab.simbirsoft/frontend/sim-track-back/blob/develop/server/services/agent/calculate/metrics.txt
     */
 
-    const { metrics, loading } = this.props;
+    const { metrics, loading, lang } = this.props;
 
     const isProjectAdmin = this.checkIsAdminInProject();
 
@@ -219,7 +158,10 @@ class Metrics extends Component {
         'Mobile',
         'TeamLead(Code review)',
         'QA',
-        'Unbillable'
+        'Unbillable',
+        'Android',
+        'IOS',
+        'DevOps'
       ];
 
       return typeIds.map((typeId, index) => {
@@ -240,7 +182,10 @@ class Metrics extends Component {
       MetricTypes.MOBILE_COST_PERCENTAGE,
       MetricTypes.TEAMLEAD_COST_PERCENTAGE,
       MetricTypes.QA_COST_PERCENTAGE,
-      MetricTypes.UNBILLABLE_COST_PERCENTAGE
+      MetricTypes.UNBILLABLE_COST_PERCENTAGE,
+      MetricTypes.ANDROID_COST_PERCENTAGE,
+      MetricTypes.IOS_COST_PERCENTAGE,
+      MetricTypes.DEVOPS_COST_PERCENTAGE
     );
 
     const costByRoleMetrics = getCostByRoleMetrics(
@@ -253,20 +198,24 @@ class Metrics extends Component {
       MetricTypes.MOBILE_COST,
       MetricTypes.TEAMLEAD_COST,
       MetricTypes.QA_COST,
-      MetricTypes.UNBILLABLE_COST
+      MetricTypes.UNBILLABLE_COST,
+      MetricTypes.ANDROID_COST,
+      MetricTypes.IOS_COST,
+      MetricTypes.DEVOPS_COST
     );
 
     return (
       <div>
         <section className={css.Metrics}>
-          {isProjectAdmin ? (
+          {isProjectAdmin || checkIsViewer(this.props.user.globalRole) ? (
             <div>
               <Button
                 addedClassNames={{ [css.recalculateBtn]: true }}
                 onClick={this.recalculateMetrics}
                 type="bordered"
-                icon={loading ? 'IconPreloader' : 'IconRefresh'}
-                data-tip="Пересчитать метрику"
+                loading={!!loading}
+                icon={'IconRefresh'}
+                data-tip={localize[lang].RECALCULATE}
               />
               <Tabs
                 addedClassNames={{ [css.tabs]: true }}
@@ -274,10 +223,10 @@ class Metrics extends Component {
                 currentPath={`/projects/${this.props.params.projectId}/analytics`}
                 routable
               >
-                <Pane label="Выгрузка" path="/download">
+                <Pane label={localize[lang].UNLOAD} path="/download">
                   <SprintReport startDate={this.startDate()} endDate={this.endDate()} />
                 </Pane>
-                <Pane label="Метрики по проекту" path="/project">
+                <Pane label={localize[lang].METRICS_BY_PROJECT} path="/project">
                   <StartEndDates startDate={this.startDate()} endDate={this.endDate()} />
                   <Row>
                     <Col xs={12} md={10} lg={6} lgOffset={0}>
@@ -304,7 +253,7 @@ class Metrics extends Component {
                     </Col>
                   </Row>
                 </Pane>
-                <Pane label="Метрики по спринту" path="/sprint">
+                <Pane label={localize[lang].METRICS_BY_SPRINT} path="/sprint">
                   <SprintMetrics
                     chartDefaultOptions={chartDefaultOptions}
                     getBasicLineSettings={getBasicLineSettings}
@@ -315,7 +264,7 @@ class Metrics extends Component {
                     filterById={filterMetrics}
                   />
                 </Pane>
-                <Pane label="Баги на проекте" path="/bugs">
+                <Pane label={localize[lang].BUGS_ON_PROJECT} path="/bugs">
                   <Row>
                     <Col xs={12}>
                       <BugsChart
@@ -328,7 +277,7 @@ class Metrics extends Component {
                     </Col>
                   </Row>
                 </Pane>
-                <Pane label="Затраты по ролям" path="/expenses">
+                <Pane label={localize[lang].COST_BY_ROLE} path="/expenses">
                   <Row>
                     <Col xs={12}>
                       <CostByRoleChart
@@ -358,11 +307,15 @@ const mapStateToProps = state => ({
   sprints: state.Project.project.sprints,
   loading: state.Loading.loading,
   metrics: state.Project.project.metrics,
-  user: state.Auth.user
+  user: state.Auth.user,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
   getMetrics
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Metrics);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Metrics);

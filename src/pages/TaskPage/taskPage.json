@@ -1,0 +1,30 @@
+{
+  "en": {
+    "NOT_FOUND_ERROR": "Task not found",
+    "DESCRIPTION": "Description:",
+    "ATTACHED_FILES": "Attached files:",
+    "COMMENTS": "Comments",
+    "HISTORY": "History",
+    "TIME_REPORTS": "Time reports",
+    "CREATE_NEW_TASK": "Create new task",
+    "BINDING_TASK": "Binding task",
+    "CONFIRM_UNTIE_TASK": "Do you really want to untie the task?",
+    "CONFIRM_LEAVE_PAGE": "Are you sure you want to leave the page? All unsaved data will be lost",
+    "CONFIRM_CANCEL_TASK": "Are you sure you want to cancel the task?",
+    "ERROR_CHANGE_PRIVATE_TASK": "You can not change a private task"
+  },
+  "ru": {
+    "NOT_FOUND_ERROR": "Задача не найдена",
+    "DESCRIPTION": "Описание:",
+    "ATTACHED_FILES": "Прикрепленные файлы:",
+    "COMMENTS": "Комментарии",
+    "HISTORY": "История",
+    "TIME_REPORTS": "Отчеты по времени",
+    "CREATE_NEW_TASK": "Создать новую задачу",
+    "BINDING_TASK": "Связывание задачи",
+    "CONFIRM_UNTIE_TASK": "Вы действительно хотите отвязать задачу?",
+    "CONFIRM_LEAVE_PAGE": "Вы действительно хотите покинуть страницу? Все несохраненные данные будут потеряны",
+    "CONFIRM_CANCEL_TASK": "Вы действительно хотите отменить задачу?",
+    "ERROR_CHANGE_PRIVATE_TASK": "Нельзя изменять закрытую задачу"
+  }
+}

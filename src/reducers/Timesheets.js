@@ -5,6 +5,9 @@ import _ from 'lodash';
 moment.locale('ru');
 
 const InitialState = {
+  preloaders: {
+    creating: false
+  },
   list: [],
   startingDay: moment(),
   dateBegin: moment()
@@ -33,14 +36,34 @@ export default function Timesheets(state = InitialState, action) {
         ...state,
         list: updatedList
       };
+    case TimesheetsActions.CREATE_TIMESHEET_START:
+      return {
+        ...state,
+        preloaders: {
+          ...state.preloaders,
+          creating: true
+        }
+      };
     case TimesheetsActions.CREATE_TIMESHEET_SUCCESS:
-      if (action.timesheet.isDraft) {
+      if (_.get(action, 'timesheet.isDraft')) {
         return state;
       }
 
       return {
         ...state,
-        list: [...state.list, action.timesheet]
+        list: [...state.list, action.timesheet],
+        preloaders: {
+          ...state.preloaders,
+          creating: false
+        }
+      };
+    case TimesheetsActions.CREATE_TIMESHEET_ERROR:
+      return {
+        ...state,
+        preloaders: {
+          ...state.preloaders,
+          creating: false
+        }
       };
     case TimesheetsActions.UPDATE_TIMESHEET_SUCCESS:
       const updatedTimesheets = state.list.map(sheet => {

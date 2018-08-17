@@ -5,7 +5,7 @@ import * as css from './Priority.scss';
 import getProrityById from '../../utils/TaskPriority';
 
 class Priority extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
 
@@ -15,7 +15,7 @@ class Priority extends Component {
 
     if (this.props.canEdit) {
       if (+event.target.innerText !== this.props.priority) {
-        const {onChange} = this.props;
+        const { onChange } = this.props;
         onChange(
           {
             id: this.props.taskId,
@@ -24,7 +24,7 @@ class Priority extends Component {
           'Priority'
         );
       } else {
-        const {onChange} = this.props;
+        const { onChange } = this.props;
         onChange(
           {
             id: this.props.taskId
@@ -41,20 +41,16 @@ class Priority extends Component {
     this.props.onPrioritySet(event.target.innerText);
   };
 
-  render () {
+  render() {
     return (
-      <div className={classnames(css.priority, {[css.vertical]: this.props.vertical})}>
-        {this.props.text === undefined ? 'Приоритет:' : this.props.text}
+      <div className={classnames(css.priority, { [css.vertical]: this.props.vertical })}>
+        {this.props.text === undefined ? this.props.priorityTitle : this.props.text}
         <span className={css.count}>
           {[1, 2, 3, 4, 5].map((priorityId, i) => {
             return (
               <span
                 key={`priority-${i}`}
-                onClick={
-                  this.props.onChange
-                    ? this.changePriority
-                    : this.setPriority
-                }
+                onClick={this.props.onChange ? this.changePriority : this.setPriority}
                 className={classnames({
                   [css.active]: priorityId === this.props.priority
                 })}
@@ -76,6 +72,7 @@ Priority.propTypes = {
   onChangeCallback: PropTypes.func,
   onPrioritySet: PropTypes.func,
   priority: PropTypes.number,
+  priorityTitle: PropTypes.string,
   taskId: PropTypes.number,
   text: PropTypes.string,
   vertical: PropTypes.bool

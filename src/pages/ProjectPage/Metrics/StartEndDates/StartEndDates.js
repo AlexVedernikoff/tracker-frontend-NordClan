@@ -4,19 +4,24 @@ import * as css from './StartEndDates.scss';
 import Input from '../../../../components/Input';
 import moment from 'moment';
 const dateFormat = 'DD.MM.YYYY';
+import localize from './StartEndDates.json';
+import { connect } from 'react-redux';
+
 class StartEndDates extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
-  render () {
+  render() {
+    const { lang } = this.props;
+
     return (
       <div className={css.startEndDatesWrp}>
         <div className={css.startEndDates}>
-          Дата начала:
+          {localize[lang].START_DATE}
           <Input readOnly value={this.props.startDate ? moment(this.props.startDate).format(dateFormat) : ''} />
         </div>
         <div className={css.startEndDates}>
-          Дата завершения:
+          {localize[lang].END_DATE}
           <Input readOnly value={this.props.endDate ? moment(this.props.endDate).format(dateFormat) : ''} />
         </div>
       </div>
@@ -24,7 +29,15 @@ class StartEndDates extends Component {
   }
 }
 StartEndDates.propTypes = {
-  startDate: PropTypes.string,
-  endDate: PropTypes.string
+  endDate: PropTypes.string,
+  startDate: PropTypes.string
 };
-export default StartEndDates;
+
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(StartEndDates);

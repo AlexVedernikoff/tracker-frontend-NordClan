@@ -34,6 +34,12 @@ const successCreateTimesheetRequest = timesheet => ({
   timesheet
 });
 
+const failCreateTimesheetRequest = error => {
+  return {
+    type: TimesheetsActions.CREATE_TIMESHEET_ERROR
+  };
+};
+
 const startUpdateTimesheetRequest = () => ({
   type: TimesheetsActions.UPDATE_TIMESHEET_START
 });
@@ -66,18 +72,42 @@ export const getTimesheets = params => {
     });
 };
 
-export const updateTimesheet = (data, userId, startingDay) => {
+export const getProjectTimesheets = (projectId, params) => {
+  const url = `/project/${projectId}/timesheet`;
   return dispatch =>
     dispatch({
       type: REST_API,
-      url: '/timesheet',
-      method: PUT,
-      body: { ...data },
+      url: url,
+      method: GET,
+      body: { params },
       extra,
-      start: withStartLoading(startUpdateTimesheetRequest, true)(dispatch),
-      response: () => dispatch(finishLoading()),
+      start: withStartLoading(startTimesheetsRequest, true)(dispatch),
+      response: withFinishLoading(response => successTimesheetsRequest(response.data), true)(dispatch),
       error: defaultErrorHandler(dispatch)
     });
+};
+
+export const updateTimesheet = (data, userId, startingDay) => {
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      dispatch({
+        type: REST_API,
+        url: '/timesheet',
+        method: PUT,
+        body: { ...data },
+        extra,
+        start: withStartLoading(startUpdateTimesheetRequest, true)(dispatch),
+        response: response => {
+          dispatch(finishLoading());
+          resolve(response);
+        },
+        error: error => {
+          defaultErrorHandler(dispatch);
+          reject(error);
+        }
+      });
+    });
+  };
 };
 
 export const deleteTimesheets = (ids, userId, startingDay) => {
@@ -106,17 +136,27 @@ export const editTempTimesheet = (id, updatedFields) => ({
 });
 
 export const createTimesheet = (data, userId, startingDay) => {
-  return dispatch =>
-    dispatch({
-      type: REST_API,
-      url: '/timesheet',
-      method: POST,
-      body: { ...data },
-      extra,
-      start: withStartLoading(startCreateTimesheetRequest, true)(dispatch),
-      response: () => dispatch(finishLoading()),
-      error: defaultErrorHandler(dispatch)
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      dispatch({
+        type: REST_API,
+        url: '/timesheet',
+        method: POST,
+        body: { ...data },
+        extra,
+        start: withStartLoading(startCreateTimesheetRequest, true)(dispatch),
+        response: response => {
+          dispatch(finishLoading());
+          resolve(response);
+        },
+        error: error => {
+          withFinishLoading(failCreateTimesheetRequest, true)(dispatch)(error);
+          dispatch(showNotification({ message: error.response.data.message, type: 'error' }));
+          reject(error);
+        }
+      });
     });
+  };
 };
 
 export const updateSheetsArray = (sheetsArr, userId, startingDay) => {
@@ -173,6 +213,25 @@ export const changeWeek = (startingDay, userId) => {
     dispatch(
       getTimesheets({
         userId,
+        dateBegin: moment(startingDay)
+          .weekday(0)
+          .format('YYYY-MM-DD'),
+        dateEnd: moment(startingDay)
+          .weekday(6)
+          .format('YYYY-MM-DD')
+      })
+    );
+  };
+};
+
+export const changeProjectWeek = (startingDay, projectId) => {
+  return dispatch => {
+    dispatch({
+      type: TimesheetsActions.SET_WEEK,
+      startingDay
+    });
+    dispatch(
+      getProjectTimesheets(projectId, {
         dateBegin: moment(startingDay)
           .weekday(0)
           .format('YYYY-MM-DD'),

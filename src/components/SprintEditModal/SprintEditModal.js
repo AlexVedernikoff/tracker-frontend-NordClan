@@ -8,15 +8,18 @@ import Modal from '../../components/Modal';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
 import Input from '../../components/Input';
 import moment from 'moment';
+import localize from './SprintEditModal.json';
+import { connect } from 'react-redux';
 
 class SprintEditModal extends Component {
   static propTypes = {
     handleCloseModal: PropTypes.func.isRequired,
     handleEditSprint: PropTypes.func.isRequired,
+    project: PropTypes.object.isRequired,
     sprint: PropTypes.object.isRequired
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -24,24 +27,39 @@ class SprintEditModal extends Component {
         dateFrom: undefined,
         id: this.props.sprint.id,
         dateTo: undefined,
-        sprintName: '',
-        sprintTime: '',
-        allottedTime: null,
+        sprintName: this.props.sprint.name,
+        qaPercent: this.props.sprint.qaPercent || props.project.qaPercent || '30',
         isHovered: false,
-        budget: 0,
-        riskBudget: 0
+        budget: this.props.sprint.budget || '0.00',
+        riskBudget: this.props.sprint.riskBudget || '0.00'
       }
     };
   }
 
-  onChangeTime = e => {
+  checkNullInputs = () => {
+    return !!(
+      this.state.sprint.sprintName.length &&
+      this.state.sprint.budget.length &&
+      this.state.sprint.riskBudget.length &&
+      this.state.sprint.qaPercent
+    );
+  };
+
+  validateNumbers(value) {
+    const re = /^\d*(\.\d*)?$/;
+    return value !== '' ? re.test(value) : true;
+  }
+
+  onChangePercentQA = e => {
     const value = e.target.value;
-    this.setState(state => ({
-      sprint: {
-        ...state.sprint,
-        allottedTime: value
-      }
-    }));
+    if (this.validateNumbers(value) && value <= 100) {
+      this.setState(state => ({
+        sprint: {
+          ...state.sprint,
+          qaPercent: value
+        }
+      }));
+    }
   };
 
   onChangeName = e => {
@@ -56,22 +74,26 @@ class SprintEditModal extends Component {
 
   onChangeBudget = e => {
     const value = e.target.value;
-    this.setState(state => ({
-      sprint: {
-        ...state.sprint,
-        budget: parseFloat(value)
-      }
-    }));
+    if (this.validateNumbers(value)) {
+      this.setState(state => ({
+        sprint: {
+          ...state.sprint,
+          budget: value
+        }
+      }));
+    }
   };
 
   onChangeRiskBudget = e => {
     const value = e.target.value;
-    this.setState(state => ({
-      sprint: {
-        ...state.sprint,
-        riskBudget: parseFloat(value)
-      }
-    }));
+    if (this.validateNumbers(value)) {
+      this.setState(state => ({
+        sprint: {
+          ...state.sprint,
+          riskBudget: value
+        }
+      }));
+    }
   };
 
   handleDayFromChange = date => {
@@ -94,7 +116,7 @@ class SprintEditModal extends Component {
     }));
   };
 
-  handleEditSprint = (e) => {
+  handleEditSprint = e => {
     e.preventDefault();
     this.props.handleEditSprint(this.state.sprint);
   };
@@ -109,18 +131,20 @@ class SprintEditModal extends Component {
     if (this.state.sprint.dateFrom && !this.state.sprint.dateTo) {
       return moment(this.props.sprint.factFinishDate).isAfter(this.state.sprint.dateFrom);
     }
-    return true;
-  }
+    return false;
+  };
 
-  render () {
-    const { sprint } = this.props;
+  validateAllFields = () => {
+    return !this.checkNullInputs() || !this.validateDates();
+  };
+
+  render() {
+    const { sprint, lang } = this.props;
     let formattedDayFrom = '';
     let formattedDayTo = '';
 
     if (this.state.sprint.dateFrom) {
-      formattedDayFrom = moment(this.state.sprint.dateFrom).format(
-        'DD.MM.YYYY'
-      );
+      formattedDayFrom = moment(this.state.sprint.dateFrom).format('DD.MM.YYYY');
     } else if (sprint.dateFrom) {
       moment(sprint.dateFrom).format('DD.MM.YYYY');
     }
@@ -135,43 +159,28 @@ class SprintEditModal extends Component {
       secondCol: 7
     };
     return (
-      <Modal
-        isOpen
-        contentLabel="modal"
-        onRequestClose={this.props.handleCloseModal}
-      >
+      <Modal isOpen contentLabel="modal" onRequestClose={this.props.handleCloseModal}>
         <div>
           <form className={css.editSprintForm}>
-            <h3>Редактирование спринта</h3>
-            <hr/>
+            <h3>{localize[lang].HEADER}</h3>
+            <hr />
             <Row>
               <Col xs={12} className={css.validateMessages}>
-                {
-                  !this.validateDates()
-                    ? <span className = {css.redMessage}>
-                      Дата окончания должна быть позже даты начала
-                      </span>
-                    : null
-                }
+                {!this.checkNullInputs() ? <span>Все поля должны быть заполнены</span> : null}
+                {this.state.sprint.dateTo && !this.validateDates() ? (
+                  <span className={css.redMessage}>Дата окончания должна быть позже даты начала</span>
+                ) : null}
               </Col>
             </Row>
             <label className={css.formField}>
               <Row>
-                <Col
-                  xs={12}
-                  sm={formLayout.firstCol}
-                  className={css.leftColumn}
-                >
-                  <p>Название спринта:</p>
+                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                  <p>{localize[lang].SPRINT_NAME}</p>
                 </Col>
-                <Col
-                  xs={12}
-                  sm={formLayout.secondCol}
-                  className={css.rightColumn}
-                >
+                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   <Input
-                    placeholder="Введите название спринта"
-                    defaultValue={sprint.name}
+                    placeholder={localize[lang].SPRINT_PLACEHOLDER}
+                    value={this.state.sprint.sprintName}
                     onChange={this.onChangeName}
                   />
                 </Col>
@@ -181,63 +190,29 @@ class SprintEditModal extends Component {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>Дата начала:</p>
+                  <p>{localize[lang].START_DATE}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   <DatepickerDropdown
                     name="dateFrom"
                     value={formattedDayFrom}
                     onDayChange={this.handleDayFromChange}
-                    placeholder={moment(sprint.factStartDate).format(
-                      'DD.MM.YYYY'
-                    )}
+                    placeholder={moment(sprint.factStartDate).format('DD.MM.YYYY')}
                   />
                 </Col>
               </Row>
             </label>
             <label className={css.formField}>
               <Row>
-                <Col
-                  xs={12}
-                  sm={formLayout.firstCol}
-                  className={css.leftColumn}
-                >
-                  <p>Дата окончания:</p>
+                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                  <p>{localize[lang].END_DATE}</p>
                 </Col>
-                <Col
-                  xs={12}
-                  sm={formLayout.secondCol}
-                  className={css.rightColumn}
-                >
+                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   <DatepickerDropdown
                     name="dateTo"
                     value={formattedDayTo}
                     onDayChange={this.handleDayToChange}
-                    placeholder={moment(sprint.factFinishDate).format(
-                      'DD.MM.YYYY'
-                    )}
-                  />
-                </Col>
-              </Row>
-            </label>
-            <label className={css.formField}>
-              <Row>
-                <Col
-                  xs={12}
-                  sm={formLayout.firstCol}
-                  className={css.leftColumn}
-                >
-                  <p>Выделенное время:</p>
-                </Col>
-                <Col
-                  xs={12}
-                  sm={formLayout.secondCol}
-                  className={css.rightColumn}
-                >
-                  <Input
-                    placeholder="Введите новое значение времени..."
-                    defaultValue={sprint.allottedTime || 0}
-                    onChange={this.onChangeTime}
+                    placeholder={moment(sprint.factFinishDate).format('DD.MM.YYYY')}
                   />
                 </Col>
               </Row>
@@ -245,21 +220,28 @@ class SprintEditModal extends Component {
 
             <label className={css.formField}>
               <Row>
-                <Col
-                  xs={12}
-                  sm={formLayout.firstCol}
-                  className={css.leftColumn}
-                >
-                  <p>Бюджет без рискового резерва:</p>
+                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                  <p>{localize[lang].QA_PERCENT}</p>
                 </Col>
-                <Col
-                  xs={12}
-                  sm={formLayout.secondCol}
-                  className={css.rightColumn}
-                >
+                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   <Input
-                    defaultValue={sprint.budget || 0}
-                    placeholder="Введите новое значение бюджета без РР"
+                    placeholder={localize[lang].QA_PERCENT_PLACEHOLDER}
+                    value={this.state.sprint.qaPercent}
+                    onChange={this.onChangePercentQA}
+                  />
+                </Col>
+              </Row>
+            </label>
+
+            <label className={css.formField}>
+              <Row>
+                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                  <p>{localize[lang].WO_RISK}</p>
+                </Col>
+                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                  <Input
+                    value={this.state.sprint.budget}
+                    placeholder={localize[lang].WO_RISK_PLACEHOLDER}
                     onChange={this.onChangeBudget}
                   />
                 </Col>
@@ -268,21 +250,13 @@ class SprintEditModal extends Component {
 
             <label className={css.formField}>
               <Row>
-                <Col
-                  xs={12}
-                  sm={formLayout.firstCol}
-                  className={css.leftColumn}
-                >
-                  <p>Бюджет с рисковым резервом:</p>
+                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                  <p>{localize[lang].WITH_RISK}</p>
                 </Col>
-                <Col
-                  xs={12}
-                  sm={formLayout.secondCol}
-                  className={css.rightColumn}
-                >
+                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   <Input
-                    defaultValue={sprint.riskBudget || 0}
-                    placeholder="Введите новое значение бюджета с РР"
+                    value={this.state.sprint.riskBudget}
+                    placeholder={localize[lang].WITH_RISK_PLACEHOLDER}
                     onChange={this.onChangeRiskBudget}
                   />
                 </Col>
@@ -295,7 +269,7 @@ class SprintEditModal extends Component {
                   type="green"
                   htmlType="submit"
                   text="Изменить"
-                  disabled={!this.validateDates()}
+                  disabled={this.validateAllFields()}
                   onClick={this.handleEditSprint}
                 />
               </Col>
@@ -307,4 +281,11 @@ class SprintEditModal extends Component {
   }
 }
 
-export default SprintEditModal;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(SprintEditModal);

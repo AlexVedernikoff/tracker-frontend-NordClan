@@ -1,0 +1,29 @@
+{
+  "en": {
+    "PRIORITY": "Priority:",
+    "ON_STAGE": "On stage",
+    "PAUSED": "Paused",
+    "IN_PROGRESS": "In progress",
+    "SPRINT": "Sprint:",
+    "PERFORMER": "Performer:",
+    "UNASSIGNED": "Unassigned",
+    "AUTHOR": "Author:",
+    "TIME": "Time:",
+    "H": "h.",
+    "OUT_OF": "out of"
+  },
+
+  "ru": {
+    "PRIORITY": "Приоритет:",
+    "ON_STAGE": "На стадии",
+    "PAUSED": "Приостановлено",
+    "IN_PROGRESS": "В процессе",
+    "SPRINT": "Спринт:",
+    "PERFORMER": "Исполнитель:",
+    "UNASSIGNED": "Не назначено",
+    "AUTHOR": "Автор:",
+    "TIME": "Время:",
+    "H": "ч.",
+    "OUT_OF": "из"
+  }
+}

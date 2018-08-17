@@ -1,61 +1,73 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
-import GanttChart from './GanttChart';
 import classnames from 'classnames';
 import * as css from './Planning.scss';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
-import DraggableTaskRow from './DraggableTaskRow';
-import Button from '../../../components/Button';
-import SelectDropdown from '../../../components/SelectDropdown';
-import CreateTaskModal from '../../../components/CreateTaskModal';
-import SprintColumn from './SprintColumn';
-import { connect } from 'react-redux';
-import moment from 'moment';
-import Budget from '../../../components/PlanningEdit/Budget';
-import ProjectDate from '../../../components/PlanningEdit/ProjectDate';
+
+import { editSprint } from '../../../actions/Sprint';
 import { createSprint } from '../../../actions/Sprint';
-import CreateSprintModal from '../CreateSprintModal';
-import SprintCard from '../../../components/SprintCard';
+import { editMilestone, deleteMilestone } from '../../../actions/Milestone';
 import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
-import { editSprint } from '../../../actions/Sprint';
-import { editMilestone } from '../../../actions/Milestone';
+import { changeTasks } from '../../../actions/Tasks';
 import { openCreateTaskModal, getProjectInfo, changeProject } from '../../../actions/Project';
+
+import Button from '../../../components/Button';
+import RoundButton from '../../../components/RoundButton';
+import SimplePie from '../../../components/SimplePie';
+import Budget from '../../../components/PlanningEdit/Budget';
+import ConfirmModal from '../../../components/ConfirmModal';
+import CreateTaskModal from '../../../components/CreateTaskModal';
+import ProjectDate from '../../../components/PlanningEdit/ProjectDate';
+import SprintCard from '../../../components/SprintCard';
 import SprintEditModal from '../../../components/SprintEditModal';
 import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
-import { IconEdit } from '../../../components/Icons';
+
 import { BACKLOG_ID } from '../../../constants/Sprint';
-import { ADMIN, VISOR } from '../../../constants/Roles';
-import Table from './Table';
+import { ADMIN, VISOR, EXTERNAL_USER } from '../../../constants/Roles';
+import { DONE } from '../../../constants/TaskStatuses';
+
+import CreateSprintModal from '../CreateSprintModal';
 import CreateMilestoneModal from './CreateMilestoneModal';
+import DraggableTaskRow from './DraggableTaskRow';
 import EditMilestoneModal from './EditMilestoneModal';
+import SprintColumnHeader from './SprintColumnHeader/';
+import SprintColumn from './SprintColumn';
+import Table from './Table';
+import localize from './Planning.json';
+
+import moment from 'moment';
+import _ from 'lodash';
 
 class Planning extends Component {
-
   static propTypes = {
     SprintIsEditing: PropTypes.bool,
-    changeTask: PropTypes.func.isRequired,
-    createSprint: PropTypes.func.isRequired,
     changeProject: PropTypes.func,
+    changeTask: PropTypes.func.isRequired,
+    changeTasks: PropTypes.func.isRequired,
+    completedAt: PropTypes.string,
+    createSprint: PropTypes.func.isRequired,
+    createdAt: PropTypes.string,
     editSprint: PropTypes.func.isRequired,
-    getProjectInfo: PropTypes.func.isRequired,
     getPlanningTasks: PropTypes.func.isRequired,
+    getProjectInfo: PropTypes.func.isRequired,
     isCreateTaskModalOpen: PropTypes.bool,
     lastCreatedTask: PropTypes.object,
-    leftColumnTasks: PropTypes.array,
-    createdAt: PropTypes.string,
-    completedAt: PropTypes.string,
+    leftColumnTasks: PropTypes.object,
+    loading: PropTypes.number,
+    milestones: PropTypes.array,
     openCreateTaskModal: PropTypes.func,
     params: PropTypes.object,
     project: PropTypes.object,
-    rightColumnTasks: PropTypes.array,
+    rightColumnTasks: PropTypes.object,
     sprints: PropTypes.array.isRequired,
     startTaskEditing: PropTypes.func,
     user: PropTypes.object.isRequired
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       isOpenSprintList: false,
@@ -64,6 +76,7 @@ class Planning extends Component {
       createTaskCallee: null,
       isModalOpenAddSprint: false,
       isModalOpenAddMilestone: false,
+      isModalOpenMoveTasks: false,
       typeIdHovered: null,
       typeHovered: null,
       grantActiveYear: new Date().getFullYear(),
@@ -74,12 +87,12 @@ class Planning extends Component {
     };
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.selectValue(BACKLOG_ID, 'leftColumn');
     this.selectValue(this.getCurrentSprint(this.props.project.sprints), 'rightColumn');
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (!nextProps.SprintIsEditing && this.props.SprintIsEditing) {
       this.selectValue(this.state.leftColumn, 'leftColumn');
       this.selectValue(this.state.rightColumn, 'rightColumn');
@@ -101,7 +114,7 @@ class Planning extends Component {
     }
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     ReactTooltip.rebuild();
   }
 
@@ -122,14 +135,20 @@ class Planning extends Component {
   };
 
   getCurrentSprint = sprints => {
-    const currentSprints = sprints.filter(sprint =>
-      sprint.statusId === 2 && moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]')
+    const currentSprints = sprints.filter(
+      sprint =>
+        sprint.statusId === 2 &&
+        moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]')
     );
 
     if (currentSprints.length) {
       return currentSprints[0].id;
     } else {
-      return sprints.length ? sprints.sort((a, b) => moment(a.factStartDate).diff(moment(), 'days') - moment(b.factStartDate).diff(moment(), 'days'))[0].id : 0;
+      return sprints.length
+        ? sprints.sort(
+            (a, b) => moment(a.factStartDate).diff(moment(), 'days') - moment(b.factStartDate).diff(moment(), 'days')
+          )[0].id
+        : 0;
     }
   };
 
@@ -138,11 +157,9 @@ class Planning extends Component {
 
     sprints = sprints.map(sprint => ({
       value: sprint.id,
-      label: `${sprint.name} (${moment(sprint.factStartDate).format(
-        'DD.MM.YYYY'
-      )} ${sprint.factFinishDate
-        ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}`
-        : '- ...'})`,
+      label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${
+        sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}` : '- ...'
+      })`,
       statusId: sprint.statusId,
       className: classnames({
         [css.INPROGRESS]: sprint.statusId === 2,
@@ -163,7 +180,7 @@ class Planning extends Component {
     return sprints;
   };
 
-  getEstimatesInfo = (sprintId) => {
+  getEstimatesInfo = sprintId => {
     if (!sprintId) {
       return {
         summary: '',
@@ -173,7 +190,7 @@ class Planning extends Component {
       };
     } else {
       const sprint = this.props.project.sprints.filter(item => item.id === sprintId)[0];
-      const sprintEstimate = sprint && sprint.allottedTime ? +sprint.allottedTime : 0;
+      const sprintEstimate = sprint && sprint.riskBudget ? +sprint.riskBudget : 0;
       const sprintSpentTime = sprint && sprint.spentTime ? +sprint.spentTime : 0;
       const ratio = sprintEstimate === 0 ? 0 : sprintSpentTime / sprintEstimate;
       const width = ratioValue => {
@@ -186,14 +203,15 @@ class Planning extends Component {
         }
       };
       return {
-        summary: `Суммарное время: ${sprintSpentTime} ${sprintEstimate ? ' из ' + sprintEstimate : ''} ч.`,
+        summary: `${localize[this.props.lang].TOTAL_TIME} ${sprintSpentTime} ${
+          sprintEstimate ? localize[this.props.lang].OF + sprintEstimate : ''
+        } ${localize[this.props.lang].H}`,
         width: `${width(ratio)}%`,
         active: sprintEstimate !== 0,
         exceeded: ratio > 1
       };
     }
   };
-
 
   dropTask = (task, sprint) => {
     this.props.changeTask(
@@ -234,12 +252,9 @@ class Planning extends Component {
     this.setState({ typeHovered: null, idHovered: null });
   };
 
-  onClickSprint = (sprintId) => {
+  onClickSprint = sprintId => {
     return () => {
-      this.selectValue(
-        sprintId,
-        'rightColumn'
-      );
+      this.selectValue(sprintId, 'rightColumn');
     };
   };
 
@@ -251,7 +266,7 @@ class Planning extends Component {
     this.setState({ grantActiveYear: --this.state.grantActiveYear });
   };
 
-  openSprintEditModal = (sprint) => {
+  openSprintEditModal = sprint => {
     return () => {
       this.setState({
         editSprint: sprint,
@@ -260,7 +275,7 @@ class Planning extends Component {
     };
   };
 
-  openMilestoneEditModal = (milestone) => {
+  openMilestoneEditModal = milestone => {
     return () => {
       this.setState({
         editMilestone: milestone,
@@ -269,8 +284,9 @@ class Planning extends Component {
     };
   };
 
+  onDeleteMilestone = milestone => () => this.props.deleteMilestone(milestone.id);
 
-  handleEditSprint = (sprint) => {
+  handleEditSprint = sprint => {
     this.setState({ isOpenSprintEditModal: false });
     this.props.editSprint(
       sprint.id,
@@ -278,9 +294,9 @@ class Planning extends Component {
       sprint.sprintName.trim(),
       sprint.dateFrom,
       sprint.dateTo,
-      sprint.allottedTime,
       sprint.budget,
-      sprint.riskBudget
+      sprint.riskBudget,
+      sprint.qaPercent
     );
   };
 
@@ -298,10 +314,13 @@ class Planning extends Component {
     });
   };
 
-
   checkIsAdminInProject = () => {
-    return this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1
-      || this.props.user.globalRole === ADMIN;
+    // if (this.props.user.globalRole === EXTERNAL_USER) {
+    //   return false;
+    // }
+    return (
+      this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1 || this.props.user.globalRole === ADMIN
+    );
   };
 
   sortEntities = (entity1, entity2) => {
@@ -311,7 +330,7 @@ class Planning extends Component {
     return new Date(startDay1) - new Date(startDay2);
   };
 
-  onProjectStartSubmit = (createdAt) => {
+  onProjectStartSubmit = createdAt => {
     this.props.changeProject(
       {
         id: this.props.project.id,
@@ -321,7 +340,7 @@ class Planning extends Component {
     );
   };
 
-  onProjectEndSubmit = (completedAt) => {
+  onProjectEndSubmit = completedAt => {
     this.props.changeProject(
       {
         id: this.props.project.id,
@@ -331,7 +350,7 @@ class Planning extends Component {
     );
   };
 
-  onBudgetSubmit = (budget) => {
+  onBudgetSubmit = budget => {
     this.props.changeProject(
       {
         id: this.props.project.id,
@@ -341,7 +360,7 @@ class Planning extends Component {
     );
   };
 
-  onRiskBudgetSubmit = (riskBudget) => {
+  onRiskBudgetSubmit = riskBudget => {
     this.props.changeProject(
       {
         id: this.props.project.id,
@@ -350,13 +369,88 @@ class Planning extends Component {
       'riskBudget'
     );
   };
-  render () {
+
+  onPercentQaSubmit = qaPercent => {
+    this.props.changeProject(
+      {
+        id: this.props.project.id,
+        qaPercent: qaPercent
+      },
+      'qaPercent'
+    );
+  };
+
+  loadTasks = (e, name, activePage) => {
+    this.props.getPlanningTasks(name === 'leftColumn' ? 'left' : 'right', {
+      projectId: this.props.project.id,
+      sprintId: this.state[name],
+      currentPage: activePage
+    });
+  };
+
+  onMoveTasksModalOpen = () => {
+    this.setState({ isModalOpenMoveTasks: true });
+  };
+
+  onMoveTasksModalCancel = () => {
+    this.setState({ isModalOpenMoveTasks: false });
+  };
+  onMoveTasksModalConfirm = sprintId => {
+    const tasks = this.getUnfinishedLeftTasks();
+
+    const getPlanningTasksAll = () => {
+      const { leftColumnTasks, rightColumnTasks, project } = this.props;
+
+      ['left', 'right'].forEach(side => {
+        this.props.getPlanningTasks(side, {
+          projectId: project.id,
+          sprintId: this.state[`${side}Column`],
+          currentPage:
+            side !== 'left'
+              ? rightColumnTasks.currentPage
+              : tasks.length === leftColumnTasks.rowsCountOnCurrentPage
+                ? Math.max(0, leftColumnTasks.currentPage - 1)
+                : leftColumnTasks.currentPage
+        });
+      });
+    };
+
+    this.props.changeTasks(
+      {
+        sprintId,
+        taskIds: tasks.map(task => task.id)
+      },
+      getPlanningTasksAll
+    );
+
+    this.setState({ isModalOpenMoveTasks: false });
+  };
+
+  getUnfinishedLeftTasks = () => this.props.leftColumnTasks.data.filter(task => task.statusId !== DONE);
+
+  isMoveTasksButtonDisabled = unfinishedLeftTasksCount => {
+    const { leftColumn, rightColumn } = this.state;
+    const { loading } = this.props;
+
+    return (
+      leftColumn === null ||
+      rightColumn === null ||
+      leftColumn === rightColumn ||
+      unfinishedLeftTasksCount === 0 ||
+      loading
+    );
+  };
+
+  render() {
+    const { lang } = this.props;
     const isProjectAdmin = this.checkIsAdminInProject();
     const isVisor = this.props.user.globalRole === VISOR;
+    const isExternal = this.props.user.globalRole === EXTERNAL_USER;
 
-    const leftColumnTasks = this.props.leftColumnTasks.map(task => {
+    const leftColumnTasksData = this.props.leftColumnTasks.data.map(task => {
       return (
         <DraggableTaskRow
+          draggable
           key={`task-${task.id}`}
           task={task}
           prefix={this.props.project.prefix}
@@ -366,284 +460,272 @@ class Planning extends Component {
       );
     });
 
-    const rightColumnTasks
-      = this.props.rightColumnTasks.map(task => {
-        return <DraggableTaskRow
+    const rightColumnTasksData = this.props.rightColumnTasks.data.map(task => {
+      return (
+        <DraggableTaskRow
+          draggable
           key={`task-${task.id}`}
           task={task}
           prefix={this.props.project.prefix}
           shortcut
           card
-        />;
-      });
+        />
+      );
+    });
 
     const leftEstimates = this.getEstimatesInfo(this.state.leftColumn);
     const rightEstimates = this.getEstimatesInfo(this.state.rightColumn);
     const leftColumnSprints = this.getSprints();
     const rightColumnSprints = this.getSprints();
     const filteredSprints = this.props.sprints.filter(sprint => {
-      return (+moment(sprint.factFinishDate).format('YYYY') === this.state.grantActiveYear)
-        || (+moment(sprint.factStartDate).format('YYYY') === this.state.grantActiveYear);
+      return (
+        +moment(sprint.factFinishDate).format('YYYY') === this.state.grantActiveYear ||
+        +moment(sprint.factStartDate).format('YYYY') === this.state.grantActiveYear
+      );
     });
 
     const filteredMilestones = this.props.milestones.filter(milestone => {
       return +moment(milestone.date).format('YYYY') === this.state.grantActiveYear;
     });
 
-    const entities = filteredSprints
-      .concat(filteredMilestones)
-      .sort(this.sortEntities);
-    
+    const entities = filteredSprints.concat(filteredMilestones).sort(this.sortEntities);
+
     const budget = this.props.project.budget;
     const riskBudget = this.props.project.riskBudget;
+    const qaPercent = this.props.project.qaPercent || 30;
+    const { createdAt, completedAt, loading } = this.props;
+    const unfinishedLeftTasksCount = this.getUnfinishedLeftTasks().length;
 
-    const { createdAt, completedAt } = this.props;
     return (
       <div>
         <section>
-          <br />
-          <Row className={css.editRow}>
-            <Col xs={12} sm={5}>
-              <ProjectDate
-                onEditSubmit={this.onProjectStartSubmit}
-                header='Начало проекта:'
-                value={createdAt}
-                isProjectAdmin={isProjectAdmin}
-                disabledDataRanges={[{after: new Date(completedAt)}]}
-              />
-            </Col>
-            <Col xs={12} sm={2}/>
-            <Col xs={12} sm={5}>
-              <ProjectDate
-                onEditSubmit={this.onProjectEndSubmit}
-                header='Конец проекта:'
-                value={completedAt}
-                isProjectAdmin={isProjectAdmin}
-                disabledDataRanges={[{before: new Date(createdAt)}]}
-              />
-            </Col>
-          </Row>
-          <Row className={css.editRow}>
-            <Col xs={12} sm={5}>
-              <Budget
-                onEditSubmit={this.onRiskBudgetSubmit}
-                header='Бюджет с рисковым резервом:'
-                value={riskBudget}
-                isProjectAdmin={isProjectAdmin}
-              />
-            </Col>
-            <Col xs={12} sm={2}/>
-            <Col xs={12} sm={5}>
-              <Budget
-                onEditSubmit={this.onBudgetSubmit}
-                header='Бюджет без рискового резерва:'
-                value={budget}
-                isProjectAdmin={isProjectAdmin}
-              />
-            </Col>
-          </Row>
-          {
-            isProjectAdmin
-            ? <Button
-              text="Создать спринт"
+          <div className={css.dates}>
+            <ProjectDate
+              onEditSubmit={this.onProjectStartSubmit}
+              header={localize[lang].PROJECT_START}
+              value={createdAt}
+              isProjectAdmin={isProjectAdmin}
+              disabledDataRanges={[{ after: new Date(completedAt) }]}
+            />
+            <hr />
+            <ProjectDate
+              onEditSubmit={this.onProjectEndSubmit}
+              header={localize[lang].PROJECT_END}
+              value={completedAt}
+              isProjectAdmin={isProjectAdmin}
+              disabledDataRanges={[{ before: new Date(createdAt) }]}
+            />
+          </div>
+          <div className={css.budgetContainer}>
+            {!!budget && !!riskBudget && <SimplePie value={1 - budget / riskBudget} />}
+            <div className={css.legendContainer}>
+              {!isExternal ? (
+                <div className={css.budgetLegend}>
+                  <div style={{ lineHeight: '1.5rem', fontWeight: 'bold' }}>{localize[lang].BUDGET}</div>
+                  <Budget
+                    onEditSubmit={this.onRiskBudgetSubmit}
+                    header={localize[lang].WITH_RISK_RESERVE}
+                    value={riskBudget}
+                    isProjectAdmin={isProjectAdmin}
+                    min={budget}
+                  />
+                  <Budget
+                    onEditSubmit={this.onBudgetSubmit}
+                    header={localize[lang].WO_RISK_RESERVE}
+                    value={budget}
+                    isProjectAdmin={isProjectAdmin}
+                    max={riskBudget}
+                  />
+                  {!!budget && !!riskBudget && <div className={css.riskMarker}>{localize[lang].RISK_RESERVE}</div>}
+                </div>
+              ) : null}
+              {!isExternal ? (
+                <div className={css.budgetLegend}>
+                  <div style={{ lineHeight: '1.5rem', fontWeight: 'bold' }}>QA:</div>
+                  <Budget
+                    onEditSubmit={this.onPercentQaSubmit}
+                    header={localize[lang].PERCENT_TEST}
+                    value={qaPercent}
+                    isProjectAdmin={isProjectAdmin}
+                    min={0}
+                    max={100}
+                  />
+                </div>
+              ) : null}
+            </div>
+          </div>
+          <hr />
+          {isProjectAdmin ? (
+            <Button
+              text={localize[lang].SPRINT}
               type="primary"
               style={{ float: 'right', marginTop: '-.2rem' }}
               icon="IconPlus"
               onClick={this.handleOpenModalAddSprint}
             />
-            : null
-          }
-          {
-            isProjectAdmin
-            ? <Button
-              text="Создать веху"
+          ) : null}
+          {isProjectAdmin ? (
+            <Button
+              text={localize[lang].MILESTONE}
               type="primary"
               style={{ float: 'right', marginTop: '-.2rem', marginRight: '5px' }}
               icon="IconPlus"
               onClick={this.handleOpenModalAddMilestone}
             />
-            : null
-          }
+          ) : null}
           <div className={css.sprintList}>
-            {this.props.sprints
-              ? <div>
-                <h2 className={css.name} onClick={() => this.setState({
-                  ...this.state,
-                  isOpenSprintList: !this.state.isOpenSprintList
-                })}>
-                {this.state.isOpenSprintList ? <IconArrowDown /> : <IconArrowRight />}
-                Спринты / Фазы
-              </h2>
-              {this.state.isOpenSprintList
-                ? <Row>
-                  {this.props.sprints.map((element, i) =>
-                    <Col xs={12} sm={6} md={3} key={`sprint-${i}`}>
-                      <SprintCard sprint={element} inFocus={this.state.typeHovered === 'sprint' && element.id === this.state.typeIdHovered} onMouseOver={this.onMouseOverRow('sprint', element.id)} onMouseOut={this.onMouseOutRow} />
-                    </Col>
-                  )}
-                </Row>
-                : null}
-              </div> : null}
-            </div>
-            {
-              this.state.isModalOpenAddSprint
-              ? <CreateSprintModal onClose={this.handleCloseModalAddSprint} />
-              : null
-            }
-            {
-              this.state.isModalOpenAddMilestone
-              ? <CreateMilestoneModal onClose={this.handleCloseModalAddMilestone} />
-              : null
-            }
-            <Table
-              entities={entities}
-              typeIdHovered={this.state.typeIdHovered}
-              typeHovered={this.state.typeHovered}
-              isProjectAdmin={isProjectAdmin}
-              onMouseOverRow={this.onMouseOverRow}
-              onMouseOutRow={this.onMouseOutRow}
-              grantYearDecrement={this.grantYearDecrement}
-              grantYearIncrement={this.grantYearIncrement}
-              grantActiveYear={this.state.grantActiveYear}
-              onClickSprint={this.onClickSprint}
-              openSprintEditModal={this.openSprintEditModal}
-              openMilestoneEditModal={this.openMilestoneEditModal}
-            />
-            {
-          !isVisor
-          ? <Row>
-            <Col xs={12} sm={6}>
-              <div className={css.headerColumn}>
-                <div className={css.selectWrapper}>
-                  <SelectDropdown
-                    name="leftColumn"
-                    placeholder="Введите название спринта..."
-                    multi={false}
-                    value={this.state.leftColumn}
-                    onChange={e =>
-                      this.selectValue(
-                        e !== null ? e.value : null,
-                        'leftColumn'
-                      )}
-                      noResultsText="Нет результатов"
-                      options={leftColumnSprints}
-                    />
-                  </div>
-                  <Button
-                    onClick={this.openModal}
-                    type="bordered"
-                    text="Создать задачу"
-                    icon="IconPlus"
-                    name="left"
-                    className={css.button}
-                    data-tip="Создать задачу"
-                  />
-                </div>
-                <div
-                  className={css.progressBarWrapper}
-                  data-tip={leftEstimates.summary}
+            {this.props.sprints ? (
+              <div>
+                <h2
+                  className={css.name}
+                  onClick={() =>
+                    this.setState({
+                      ...this.state,
+                      isOpenSprintList: !this.state.isOpenSprintList
+                    })
+                  }
                 >
-                  <div
-                    className={classnames({
-                      [css.progressBar]: leftEstimates.active,
-                      [css.exceeded]: leftEstimates.exceeded
-                    })}
-                    style={{ width: leftEstimates.width }}
-                  />
-                </div>
-                {this.state.leftColumn || this.state.leftColumn === 0
-                  ? <SprintColumn
+                  {this.state.isOpenSprintList ? <IconArrowDown /> : <IconArrowRight />}
+                  {localize[lang].SPRINTS_AND_PHASES}
+                </h2>
+                {this.state.isOpenSprintList ? (
+                  <Row>
+                    {this.props.sprints.map((element, i) => (
+                      <Col xs={12} sm={6} md={3} key={`sprint-${i}`}>
+                        <SprintCard
+                          sprint={element}
+                          inFocus={this.state.typeHovered === 'sprint' && element.id === this.state.typeIdHovered}
+                          onMouseOver={this.onMouseOverRow('sprint', element.id)}
+                          onMouseOut={this.onMouseOutRow}
+                          isExternal={isExternal}
+                        />
+                      </Col>
+                    ))}
+                  </Row>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+          {this.state.isModalOpenAddSprint ? <CreateSprintModal onClose={this.handleCloseModalAddSprint} /> : null}
+          {this.state.isModalOpenAddMilestone ? (
+            <CreateMilestoneModal onClose={this.handleCloseModalAddMilestone} />
+          ) : null}
+          <Table
+            entities={entities}
+            typeIdHovered={this.state.typeIdHovered}
+            typeHovered={this.state.typeHovered}
+            isProjectAdmin={isProjectAdmin}
+            isExternal={isExternal}
+            onMouseOverRow={this.onMouseOverRow}
+            onMouseOutRow={this.onMouseOutRow}
+            grantYearDecrement={this.grantYearDecrement}
+            grantYearIncrement={this.grantYearIncrement}
+            grantActiveYear={this.state.grantActiveYear}
+            onClickSprint={this.onClickSprint}
+            openSprintEditModal={this.openSprintEditModal}
+            openMilestoneEditModal={this.openMilestoneEditModal}
+            onDeleteMilestone={this.onDeleteMilestone}
+          />
+          {!isVisor && !isExternal ? (
+            <div className={css.moveTasksBtnWrapper}>
+              <div className={css.leftBranch} />
+              <div className={css.moveButton}>
+                <RoundButton
+                  data-tip={localize[lang].REPLACE_UNCLOSED_TASKS}
+                  loading={!!loading}
+                  onClick={this.onMoveTasksModalOpen}
+                  disabled={this.isMoveTasksButtonDisabled(unfinishedLeftTasksCount)}
+                >
+                  »
+                </RoundButton>
+              </div>
+              <div className={css.mobeButtonLabel}>{localize[lang].REPLACE_UNCLOSED}</div>
+              <div className={css.rightBranch} />
+            </div>
+          ) : null}
+          {!isVisor && !isExternal ? (
+            <Row className={css.sprintColumnHeaderWrapper}>
+              <SprintColumnHeader
+                name="left"
+                estimates={leftEstimates}
+                sprints={leftColumnSprints}
+                selectedSprintValue={this.state.leftColumn}
+                onSprintChange={e => this.selectValue(e !== null ? e.value : null, 'leftColumn')}
+                onCreateTaskClick={this.openModal}
+              />
+              <ConfirmModal
+                isOpen={this.state.isModalOpenMoveTasks}
+                contentLabel="modal"
+                onRequestClose={this.onMoveTasksModalCancel}
+                onConfirm={() => {
+                  this.onMoveTasksModalConfirm(this.state.rightColumn);
+                }}
+                onCancel={this.onMoveTasksModalCancel}
+                text={`${localize[lang].WILL_BE_REPLACE} ${unfinishedLeftTasksCount} ${
+                  localize[lang].CONTINUE_REPLACE
+                }`}
+              />
+              <SprintColumnHeader
+                className={css.rightColumn}
+                name="right"
+                estimates={rightEstimates}
+                sprints={rightColumnSprints}
+                selectedSprintValue={this.state.rightColumn}
+                onSprintChange={e => this.selectValue(e !== null ? e.value : null, 'rightColumn')}
+                onCreateTaskClick={this.openModal}
+              />
+              <Col xs={12} sm={6}>
+                {this.state.leftColumn || this.state.leftColumn === 0 ? (
+                  <SprintColumn
                     onDrop={this.dropTask}
                     sprint={this.state.leftColumn}
-                    tasks={leftColumnTasks}
+                    tasks={leftColumnTasksData}
+                    pagesCount={this.props.leftColumnTasks.pagesCount}
+                    loadTasks={this.loadTasks}
+                    name="leftColumn"
                   />
-                  : null}
-                </Col>
-                <Col xs={12} sm={6}>
-                  <div className={css.headerColumn}>
-                    <div className={css.selectWrapper}>
-                      <SelectDropdown
-                        name="rightColumn"
-                        placeholder="Введите название спринта..."
-                        multi={false}
-                        value={this.state.rightColumn}
-                        onChange={e =>
-                          this.selectValue(
-                            e !== null ? e.value : null,
-                            'rightColumn'
-                          )}
-                          noResultsText="Нет результатов"
-                          options={rightColumnSprints}
-                        />
-                      </div>
-                      <Button
-                        onClick={this.openModal}
-                        type="bordered"
-                        text="Создать задачу"
-                        icon="IconPlus"
-                        name="right"
-                        className={css.button}
-                        data-tip="Создать задачу"
-                      />
-                    </div>
-                    <div
-                      className={css.progressBarWrapper}
-                      data-tip={rightEstimates.summary}
-                    >
-                      <div
-                        className={classnames({
-                          [css.progressBar]: rightEstimates.active,
-                          [css.exceeded]: rightEstimates.exceeded
-                        })}
-                        style={{ width: rightEstimates.width }}
-                      />
-                    </div>
-                    {this.state.rightColumn || this.state.rightColumn === 0
-                      ? <SprintColumn
-                        onDrop={this.dropTask}
-                        sprint={this.state.rightColumn}
-                        tasks={rightColumnTasks}
-                      />
-                      : null}
-                    </Col>
-                  </Row>
-          : null
-        }
-      </section>
-      {/* <GanttChart /> */}
-      {
-        this.props.isCreateTaskModalOpen
-          ? <CreateTaskModal
+                ) : null}
+              </Col>
+              <Col className={css.rightColumn} xs={12} sm={6}>
+                {this.state.rightColumn || this.state.rightColumn === 0 ? (
+                  <SprintColumn
+                    onDrop={this.dropTask}
+                    sprint={this.state.rightColumn}
+                    tasks={rightColumnTasksData}
+                    pagesCount={this.props.rightColumnTasks.pagesCount}
+                    loadTasks={this.loadTasks}
+                    name="rightColumn"
+                  />
+                ) : null}
+              </Col>
+            </Row>
+          ) : null}
+        </section>
+        {this.props.isCreateTaskModalOpen ? (
+          <CreateTaskModal
             selectedSprintValue={
-              this.state.createTaskCallee === 'left'
-              ? this.state.leftColumn
-              : this.state.rightColumn
+              this.state.createTaskCallee === 'left' ? this.state.leftColumn : this.state.rightColumn
             }
             project={this.props.project}
             column={this.state.createTaskCallee}
           />
-          : null
-      }
-      {
-        this.state.isOpenSprintEditModal
-          ? <SprintEditModal
+        ) : null}
+        {this.state.isOpenSprintEditModal ? (
+          <SprintEditModal
+            project={this.props.project}
             sprint={this.state.editSprint}
             handleEditSprint={this.handleEditSprint}
             handleCloseModal={this.closeEditSprintModal}
           />
-          : null
-      }
-      {
-        this.state.isOpenMilestoneEditModal
-          ? <EditMilestoneModal
+        ) : null}
+        {this.state.isOpenMilestoneEditModal ? (
+          <EditMilestoneModal
             milestone={this.state.editMilestone}
             handleEditMilestone={this.handleEditMilestone}
             onClose={this.closeEditMilestoneModal}
           />
-          : null
-      }
-
-    </div>
+        ) : null}
+      </div>
     );
   }
 }
@@ -656,10 +738,12 @@ const mapStateToProps = state => ({
   completedAt: state.Project.project.completedAt,
   lastCreatedTask: state.Project.lastCreatedTask,
   leftColumnTasks: state.PlanningTasks.leftColumnTasks,
+  loading: state.Loading.loading,
   rightColumnTasks: state.PlanningTasks.rightColumnTasks,
   SprintIsEditing: state.Task.SprintIsEditing,
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
-  user: state.Auth.user
+  user: state.Auth.user,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
@@ -667,11 +751,16 @@ const mapDispatchToProps = {
   getPlanningTasks,
   editSprint,
   editMilestone,
+  deleteMilestone,
   changeTask,
+  changeTasks,
   startTaskEditing,
   openCreateTaskModal,
   createSprint,
   getProjectInfo
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Planning);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Planning);

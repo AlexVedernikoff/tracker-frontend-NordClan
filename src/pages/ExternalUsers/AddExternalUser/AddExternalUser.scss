@@ -1,0 +1,41 @@
+@import '../../../styles/variables';
+
+@keyframes modalAnimation {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.AddExternalUser {
+  margin-bottom: 20px;
+}
+.rightColumn {
+  display: flex;
+  align-items: center;
+}
+.formField {
+  display: block;
+
+  & + & {
+    margin-top: 1rem;
+  }
+}
+.createButton {
+  margin-top: 10px;
+}
+.container {
+  max-height: 100%;
+  // overflow: hidden;
+  position: relative;
+  padding: 2rem;
+  max-width: 100%;
+  width: 465px;
+  @include phone {
+    width: 100%;
+    padding: 1rem;
+  }
+}

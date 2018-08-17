@@ -34,6 +34,21 @@
   }
 }
 
+.taskRowHighLighted {
+  td {
+    transition: $transition;
+    background: $color-gray;
+
+    &:first-child {
+      padding-right: 2rem;
+    }
+  }
+
+  .deleteTask {
+    opacity: 1;
+  }
+}
+
 .sheetsHeader {
   .changeWeek svg {
     opacity: 0;
@@ -110,7 +125,8 @@
       }
     }
 
-    .toggleComment {
+    .toggleComment,
+    .doubleTimesheets {
       color: rgba(white, 0.5);
 
       &:hover {
@@ -135,9 +151,11 @@
   }
 }
 
-.toggleComment {
+.toggleComment,
+.doubleTimesheets {
   cursor: pointer;
   font-size: 80%;
+  line-height: 1;
   color: silver;
   position: absolute;
   top: 0.25rem;
@@ -154,6 +172,10 @@
       color: lighten($color-green, 10%);
     }
   }
+}
+
+.doubleTimesheets {
+  left: 0.25rem;
 }
 
 .weekend {

@@ -2,17 +2,21 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { scroller, Element } from 'react-scroll';
+import { find } from 'lodash';
+import ReactTooltip from 'react-tooltip';
+
 import * as css from './PerformerModal.scss';
 import Modal from '../Modal';
 import { IconClose, IconSearch } from '../Icons';
 
+const noPerfromerOption = {
+  value: 0,
+  label: 'Не выбрано'
+};
+
 class PerformerModal extends Component {
   constructor(props) {
     super(props);
-    const noPerfromerOption = {
-      value: 0,
-      label: 'Не выбрано'
-    };
     this.userList = this.props.users.concat(noPerfromerOption);
     let selectedIndex = this.userList.length - 1;
     this.props.users.forEach((user, i) => {
@@ -40,6 +44,9 @@ class PerformerModal extends Component {
     removeEventListener('keydown', this.moveList);
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({ users: [...nextProps.users] });
+  }
   handleChoose = value => {
     this.props.onChoose(value);
   };
@@ -49,18 +56,7 @@ class PerformerModal extends Component {
   };
 
   removeCurrentPerformer = () => {
-    this.setState(
-      {
-        searchText: '',
-        users: this.userList,
-        selectedIndex: this.userList.length - 1
-      },
-      () => {
-        scroller.scrollTo(this.state.users[this.state.selectedIndex].value.toString(), {
-          containerId: 'performerList'
-        });
-      }
-    );
+    this.handleChoose(noPerfromerOption.value);
   };
 
   onSearchTextChange = e => {
@@ -98,29 +94,36 @@ class PerformerModal extends Component {
   };
 
   onClose = () => {
-    const performerId = this.state.users[this.state.selectedIndex].value;
-    this.props.onClose(performerId);
+    this.props.onClose();
   };
 
   render() {
-    const { title } = this.props;
-
+    const { title, defaultUser } = this.props;
     const { users, searchText, selectedIndex } = this.state;
-
+    const currentPerformer = find(this.props.users, u => u.value === defaultUser);
     return (
       <Modal isOpen contentLabel="modal" className={css.modalWrapper} onRequestClose={this.onClose}>
         <div>
           <div className={css.header}>
             <h3>{title}</h3>
           </div>
-          <div className={css.currentPerformer}>
-            {users.length ? users[selectedIndex].label : null}
-            {users.length && users[selectedIndex].value !== 0 ? (
-              <div className={css.removeCurrentPerformer} onClick={this.removeCurrentPerformer}>
+          {currentPerformer ? (
+            <span className={css.currentPerformer}>
+              <div
+                className={css.removeCurrentPerformer}
+                onClick={this.removeCurrentPerformer}
+                data-tip="Отменить текущего исполнителя"
+                data-for="removeCurrentPerforver"
+                data-place="left"
+              >
                 <IconClose />
               </div>
-            ) : null}
-          </div>
+              <ReactTooltip id="removeCurrentPerforver" className="tooltip" />
+              {currentPerformer.label}
+            </span>
+          ) : (
+            <span className={classnames([css.currentPerformer, css.noPerformer])}>{noPerfromerOption.label}</span>
+          )}
           <div className={css.inputWrapper}>
             <input
               type="text"
@@ -145,7 +148,11 @@ class PerformerModal extends Component {
               <Element
                 name={user.value.toString()}
                 key={user.value}
-                className={classnames({ [css.user]: true, [css.selected]: selectedIndex === i })}
+                className={classnames({
+                  [css.user]: true,
+                  [css.selected]: selectedIndex === i,
+                  [css.noPerformer]: !user.value
+                })}
                 autoFocus={selectedIndex === i}
                 onClick={() => this.handleChoose(user.value)}
                 tabIndex={i}

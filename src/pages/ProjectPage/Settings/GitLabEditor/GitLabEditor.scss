@@ -1,0 +1,94 @@
+@import '../../../../styles/variables.scss';
+
+.gitLabEditor {
+  margin-top: 2rem;
+  border-top: 1px solid #f1f1f1;
+}
+
+.addButton {
+  width: 16rem;
+}
+
+.projectList {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.newProject {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 18.5rem;
+}
+
+.saveProject {
+  flex-shrink: 0;
+}
+
+.projectCard {
+  position: relative;
+  width: 100%;
+  max-width: 16rem;
+  padding: 1rem;
+  border: 1px solid darken($color-gray, 5%);
+  background-color: $color-lightgray;
+  margin: 0 1rem 1rem 0;
+}
+
+@keyframes newCardAnimation {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.isNew {
+  animation: newCardAnimation 0.2s ease-out 0s;
+}
+
+.repoField {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.gitlabId {
+  color: $color-dark-gray;
+  font-size: $font-size-small;
+  margin-bottom: 0.5rem;
+}
+
+.projectName {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  .gitlabLogo {
+    display: inline-block;
+    font-size: 1rem;
+    margin-right: 0.5rem;
+    opacity: 0.5;
+    vertical-align: middle;
+  }
+}
+
+.deleteProject {
+  position: absolute;
+  cursor: pointer;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+.error {
+  color: $color-red;
+  font-size: $font-size-small;
+  padding: 0.5rem 0;
+  margin-top: 1rem;
+  border-top: 1px solid $color-red;
+}

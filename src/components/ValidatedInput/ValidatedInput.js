@@ -12,36 +12,49 @@ class ValidatedInput extends Component {
     shouldMarkError: PropTypes.bool
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       isError: this.props.shouldMarkError,
-      showSpan: false
+      isFocused: false
     };
   }
 
-  componentWillReceiveProps (nextProps) {
-    this.state.isError !== nextProps.shouldMarkError
-      && this.setState({ isError: nextProps.shouldMarkError });
+  componentWillReceiveProps(nextProps) {
+    if (this.state.isError !== nextProps.shouldMarkError) {
+      this.setState({ isError: nextProps.shouldMarkError });
+    }
   }
 
-  render () {
-    const { onBlur, shouldMarkError, errorText, backendErrorText, ...other } = this.props;
+  removeFocus = () => {
+    const { onBlur } = this.props;
+
+    this.setState({ isFocused: false }, () => {
+      onBlur() && this.setState({ isError: true });
+    });
+  };
+
+  onFocus = () => {
+    this.setState({ isFocused: true });
+  };
+
+  render() {
+    const { errorText, backendErrorText, shouldMarkError, ...other } = this.props;
+    const { isFocused, isError } = this.state;
+
     return (
       <div className={validateCss.fullWrapper}>
         <input
           type="text"
           {...other}
-          onBlur={() => {
-            onBlur() && this.setState({ isError: true, showSpan: true });
-          }}
-          onFocus = {()=> this.setState({ showSpan: false })}
+          onBlur={this.removeFocus}
+          onFocus={this.onFocus}
           className={classnames(css.input, {
-            [css.inputError]: this.state.isError || backendErrorText
+            [css.inputError]: (isError || backendErrorText) && !isFocused
           })}
         />
-        {this.state.showSpan && <span className={css.message}>{errorText}</span>}
-        {backendErrorText && <span>{backendErrorText}</span>}
+        {isError && !isFocused && <span className={css.message}>{errorText}</span>}
+        {backendErrorText && !isFocused && <span>{backendErrorText}</span>}
       </div>
     );
   }

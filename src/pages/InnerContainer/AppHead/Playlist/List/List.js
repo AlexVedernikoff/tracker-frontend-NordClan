@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
-import * as timesheetsConstants from '../../../../../constants/Timesheets';
+import cn from 'classnames';
 
+import { TASK_STATUS_DEVELOP_PLAY } from '../../../../../constants/Task';
 import { IconArrowDown, IconArrowUp } from '../../../../../components/Icons';
-
 import PlaylistItem from '../PlaylistItem';
 import * as css from '../Playlist.scss';
 
 class List extends Component {
   static propTypes = {
+    disabled: PropTypes.bool,
     handleToggleList: PropTypes.func,
     tracks: PropTypes.array
   };
@@ -17,36 +18,15 @@ class List extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isDraftShow: false,
-      colorCurrent: '#5cb85c',
-      areTracksDisabled: this.checkIfshouldBeDisabled(this.props.tracks)
+      isDraftShow: false
     };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      areTracksDisabled: this.checkIfshouldBeDisabled(nextProps.tracks)
-    });
   }
 
   handleShowOther = () => {
     this.setState({ isDraftShow: !this.state.isDraftShow }, () => ReactTooltip.rebuild());
   };
 
-  checkIfshouldBeDisabled = tracks => {
-    return !!tracks.find(
-      track =>
-        track.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
-        track.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED
-    );
-  };
-
   playlistItem = (item, i) => {
-    const [host, projects, idProject, tasks, idTasks] = window.location.pathname.split('/');
-    let thisPageCurrentTask = false;
-    if (parseInt(idProject) === item.projectId && parseInt(idTasks) === item.task.id) {
-      thisPageCurrentTask = true;
-    }
     return (
       <PlaylistItem
         item={item}
@@ -55,31 +35,44 @@ class List extends Component {
         visible
         changeVisibility={this.changeVisibility}
         handleToggleList={this.props.handleToggleList}
-        thisPageCurrentTask={thisPageCurrentTask}
-        disabled={this.state.areTracksDisabled}
+        disabled={this.props.disabled}
       />
     );
   };
 
   render() {
     const { isDraftShow } = this.state;
-    const { tracks } = this.props;
-    const current =
-      tracks && tracks.filter(item => item.isVisible && item.task.taskStatus.id === 2).map(this.playlistItem);
-    const visible =
-      tracks && tracks.filter(item => item.isVisible && item.task.taskStatus.id !== 2).map(this.playlistItem);
+    const { tracks, textInfo, textShowHidden, textHide } = this.props;
+    tracks.sort((track1, track2) => {
+      if (track1.typeId < track2.typeId) {
+        return 1;
+      }
+      if (track1.typeId > track2.typeId) {
+        return -1;
+      }
+      return 0;
+    });
+
+    const visible = [
+      ...tracks.filter(
+        item => item.isVisible && item.task && item.taskStatus && item.taskStatus.id === TASK_STATUS_DEVELOP_PLAY
+      ),
+      ...tracks.filter(
+        item => item.isVisible && (!item.task || (item.taskStatus && item.taskStatus.id !== TASK_STATUS_DEVELOP_PLAY))
+      )
+    ].map(this.playlistItem);
 
     const invisible = tracks && tracks.filter(item => !item.isVisible).map(this.playlistItem);
+    const nothingToShow = <div className={cn(['text-info', css.nothingToShow])}>{textInfo}</div>;
 
     return (
       <div>
-        {current}
-        {visible}
+        {visible.length ? visible : nothingToShow}
         {invisible && invisible.length > 0 ? (
           <div
             className={css.showMore}
             onClick={this.handleShowOther}
-            data-tip={!isDraftShow ? 'Показать скрытые' : 'Скрыть'}
+            data-tip={!isDraftShow ? textShowHidden : textHide}
             data-place="bottom"
           >
             {!isDraftShow && invisible ? <IconArrowDown /> : <IconArrowUp />}

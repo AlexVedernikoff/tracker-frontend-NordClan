@@ -21,6 +21,7 @@ import {
   editTempTimesheet
 } from '../../../actions/Timesheets';
 import EditActivityProjectModal from '../../../components/EditActivityProjectModal';
+import localize from './activityRow.json';
 
 class ActivityRow extends React.Component {
   static propTypes = {
@@ -49,6 +50,7 @@ class ActivityRow extends React.Component {
     this.debouncedCreateTimesheet = _.debounce(this.createTimesheet, debounceTime * 2);
 
     this.state = {
+      hl: false,
       isOpen: false,
       isProjectEditModalOpen: false,
       timeCells: this.getTimeCells(props.item.timeSheets)
@@ -56,6 +58,12 @@ class ActivityRow extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (nextProps.item.hilight && !this.state.hl) {
+      this.setState({ hl: true }, () => setTimeout(() => this.setState({ hl: false }), 1000));
+      if (this.row) {
+        this.row.scrollIntoView();
+      }
+    }
     if (this.props.item !== nextProps.item) {
       const currentTimeSheets = this.props.item.timeSheets;
       const nextTimeSheets = nextProps.item.timeSheets;
@@ -103,7 +111,7 @@ class ActivityRow extends React.Component {
           .weekday(i)
           .format('YYYY-MM-DD'),
         projectId: item.projectId,
-        sprintId: item.sprintId ? item.sprintId : null
+        sprintId: item.sprintId || (item.sprint ? item.sprint.id : null)
       },
       userId,
       startingDay
@@ -285,8 +293,10 @@ class ActivityRow extends React.Component {
     this.closeConfirmModal();
   };
 
+  getRef = ref => (this.row = ref);
+
   render() {
-    const { item, task, ma, statuses, magicActivitiesTypes } = this.props;
+    const { item, task, ma, statuses, magicActivitiesTypes, lang } = this.props;
     const status = task ? _.find(statuses, { id: item.taskStatusId }) : '';
     const maType = ma ? _.find(magicActivitiesTypes, { id: item.typeId }) : '';
     const totalTime = roundNum(_.sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
@@ -299,6 +309,7 @@ class ActivityRow extends React.Component {
     );
     const tempCell = item.timeSheets.find(tsh => tsh.id && tsh.id.toString().includes('temp'));
     const isTempRow = !!tempCell;
+    console.log(item);
     const timeCells = item.timeSheets.map((tsh, i) => {
       if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
         return (
@@ -326,6 +337,19 @@ class ActivityRow extends React.Component {
                   onChange={e => this.changeFilled(i, tsh.id, tsh.comment, e.target.value)}
                   onBlur={e => this.onBlurFilled(i, tsh.id, tsh.comment, e.target.value)}
                 />
+                {tsh.doubleTimesheets && tsh.doubleTimesheets.length ? (
+                  <span
+                    className={css.doubleTimesheets}
+                    title={localize[lang].DELETE_DUBLICATE}
+                    onClick={() =>
+                      this.deleteTimesheets(tsh.doubleTimesheets.map(doubleTimesheet => doubleTimesheet.id))
+                    }
+                  >
+                    + {tsh.doubleTimesheets.reduce((res, cur) => +cur.spentTime + res, 0)}
+                  </span>
+                ) : (
+                  ''
+                )}
                 <span className={css.toggleComment}>
                   <SingleComment
                     disabled={!canDeleteRow}
@@ -364,19 +388,33 @@ class ActivityRow extends React.Component {
         );
       }
     });
+    const getProjectName = () => {
+      if (!item.projectName || (maType && (maType.id === 5 || maType.id === 7))) {
+        return null;
+      }
+
+      return ma && maType.id !== 5 && maType.id !== 7 && canDeleteRow ? (
+        <a onClick={() => this.openProjectEditModal()}>{item.projectName}</a>
+      ) : (
+        <span>{item.projectName}</span>
+      );
+    };
+    const getSprintName = () => {
+      if (maType && (maType.id === 5 || maType.id === 7 || item.projectId === 0)) {
+        return null;
+      }
+      if (item.sprint) {
+        return <span>{item.sprint.name}</span>;
+      }
+      return <span>{'Backlog'}</span>;
+    };
     return (
-      <tr className={css.taskRow}>
+      <tr ref={this.getRef} className={cn(css.taskRow, { [css.taskRowHighLighted]: this.state.hl })}>
         <td>
           <div className={css.taskCard}>
             <div className={css.meta}>
-              {item.projectName ? (
-                ma && maType.id !== 5 && maType.id !== 7 && canDeleteRow ? (
-                  <a onClick={() => this.openProjectEditModal()}>{item.projectName}</a>
-                ) : (
-                  <span>{item.projectName}</span>
-                )
-              ) : null}
-              <span>{item.sprint ? item.sprint.name : 'Backlog'}</span>
+              {getProjectName()}
+              {getSprintName()}
               {status ? <span>{status.name}</span> : null}
             </div>
             <div>
@@ -395,14 +433,14 @@ class ActivityRow extends React.Component {
           </div>
         </td>
         <td className={cn(css.actions)}>
-          <div className={css.deleteTask} onClick={this.openConfirmModal} data-tip="Удалить">
+          <div className={css.deleteTask} onClick={this.openConfirmModal} data-tip={localize[lang].DELETE}>
             {canDeleteRow ? <IconClose /> : null}
           </div>
           {this.state.isConfirmModalOpen ? (
             <ConfirmModal
               isOpen
               contentLabel="modal"
-              text="Вы действительно хотите удалить эту активность?"
+              text={localize[lang].CONFIRM_MESSAGE}
               onCancel={this.closeConfirmModal}
               onConfirm={() => this.deleteActivity(timeSheetIds)}
               onRequestClose={this.closeConfirmModal}
@@ -428,7 +466,8 @@ const mapStateToProps = state => ({
   statuses: state.Dictionaries.taskStatuses,
   magicActivitiesTypes: state.Dictionaries.magicActivityTypes,
   userId: state.Auth.user.id,
-  startingDay: state.Timesheets.startingDay
+  startingDay: state.Timesheets.startingDay,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
@@ -439,4 +478,7 @@ const mapDispatchToProps = {
   editTempTimesheet
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ActivityRow);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ActivityRow);

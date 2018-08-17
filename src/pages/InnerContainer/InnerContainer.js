@@ -17,6 +17,8 @@ class InnerContainer extends Component {
   static propTypes = {
     children: PropTypes.object,
     getMagicActivityTypes: PropTypes.func,
+    getMilestoneTypes: PropTypes.func,
+    getProjectTypes: PropTypes.func,
     getTaskStatuses: PropTypes.func,
     getTaskTypes: PropTypes.func,
     user: PropTypes.object
@@ -41,6 +43,8 @@ class InnerContainer extends Component {
     this.props.getMagicActivityTypes();
     this.props.getTaskStatuses();
     this.props.getTaskTypes();
+    this.props.getMilestoneTypes();
+    this.props.getProjectTypes();
     this.listenHistory();
   }
 
@@ -50,7 +54,7 @@ class InnerContainer extends Component {
 
   componentWillUnmount() {
     this.state.mql.removeListener(this.mediaQueryChanged);
-    this.listenHistory();
+    this.unlistenHistory();
   }
 
   mediaQueryChanged = () => {
@@ -58,8 +62,10 @@ class InnerContainer extends Component {
   };
 
   listenHistory = () => {
-    history.listen(() => {
-      this.onSetSidebarOpen(false);
+    this.unlistenHistory = history.listen(() => {
+      if (this.state.sidebarOpen) {
+        this.onSetSidebarOpen(false);
+      }
     });
   };
 
@@ -125,4 +131,7 @@ const mapDispatchToProps = {
 
 const mapStateToProps = state => ({});
 
-export default connect(mapStateToProps, mapDispatchToProps)(InnerContainer);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(InnerContainer);

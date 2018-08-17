@@ -5,13 +5,15 @@ export default class SocketAdapter {
   constructor(store, channels) {
     this.store = store;
     this.channels = channels;
+    this.userAuthState = false;
+    this.store.subscribe(() => this.onChangeState());
+  }
+
+  setConnection() {
     this.socket = io({
       path: `${API_URL}/socket`,
       transports: ['websocket']
     });
-
-    this.userAuthState = false;
-    this.store.subscribe(() => this.onChangeState());
   }
 
   onChangeState() {
@@ -19,6 +21,9 @@ export default class SocketAdapter {
     const user = this.getUser();
 
     if (this.isSignIn(nextUserAuthState)) {
+      if (!this.socket) {
+        this.setConnection();
+      }
       this.subscribe(user);
     } else if (this.isSignOut(nextUserAuthState)) {
       this.socket.close();
@@ -47,9 +52,9 @@ export default class SocketAdapter {
   subscribe(user) {
     this.socket.open();
     this.channels.map(channel => {
-      this.socket.on(`${channel}_user_${user.id}`, (action) => {
+      this.socket.on(`${channel}_user_${user.id}`, action => {
         this.store.dispatch(action);
-      })
-    })
+      });
+    });
   }
 }

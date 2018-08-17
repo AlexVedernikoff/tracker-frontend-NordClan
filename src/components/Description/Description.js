@@ -8,6 +8,8 @@ import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
 
 import Autolinker from 'autolinker';
+import localize from './Description.json';
+import { connect } from 'react-redux';
 
 class Description extends Component {
   constructor(props) {
@@ -66,11 +68,16 @@ class Description extends Component {
 
   updateText = () => {
     const { onEditSubmit } = this.props;
-
+    const options = {
+      inlineStyles: {
+        SUPERSCRIPT: { element: 'sup' },
+        SUBSCRIPT: { element: 'sub' }
+      }
+    };
     onEditSubmit(
       {
         id: this.props.id,
-        description: stateToHTML(this.TextEditor.state.editorState.getCurrentContent())
+        description: stateToHTML(this.TextEditor.state.editorState.getCurrentContent(), options)
       },
       'Description'
     );
@@ -82,7 +89,7 @@ class Description extends Component {
   };
 
   render() {
-    const { headerType, headerText } = this.props;
+    const { headerType, headerText, lang } = this.props;
 
     let header = null;
 
@@ -133,14 +140,14 @@ class Description extends Component {
                 className={css.save}
                 onClick={this.toggleEditing}
                 id={this.props.id + 1}
-                data-tip="Сохранить"
+                data-tip={localize[lang].SAVE}
               />
             ) : (
               <IconEdit
                 className={css.edit}
                 onClick={this.toggleEditing}
                 id={this.props.id + 1}
-                data-tip="Редактировать"
+                data-tip={localize[lang].EDIT}
               />
             )}
           </div>
@@ -163,4 +170,11 @@ Description.propTypes = {
   text: PropTypes.object
 };
 
-export default Description;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(Description);

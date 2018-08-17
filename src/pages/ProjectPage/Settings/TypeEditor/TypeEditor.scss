@@ -1,0 +1,10 @@
+@import '../../../../styles/variables.scss';
+
+.TypeEditor {
+  margin-top: 2rem;
+  border-top: 1px solid $color-gray;
+}
+.selectType {
+  width: 100%;
+  max-width: 16rem;
+}

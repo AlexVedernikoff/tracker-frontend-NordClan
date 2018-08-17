@@ -1,0 +1,38 @@
+@import '../../styles/variables';
+
+.rightColumn {
+  display: flex;
+  align-items: center;
+}
+
+.container {
+  max-height: 100%;
+  position: relative;
+  padding: 2rem;
+  max-width: 100%;
+  width: 465px;
+  @include phone {
+    width: 100%;
+    padding: 1rem;
+  }
+}
+
+.leftColumn {
+  text-align: right;
+}
+
+.formField {
+  display: block;
+
+  & + & {
+    margin-top: 1rem;
+  }
+}
+
+.footer {
+  margin-top: 2rem;
+}
+
+.selectType {
+  width: 100%;
+}

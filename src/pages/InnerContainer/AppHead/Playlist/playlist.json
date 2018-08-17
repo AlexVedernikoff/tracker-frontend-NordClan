@@ -1,0 +1,28 @@
+{
+  "en": {
+    "Mo": "Mo",
+    "Tu": "Tu",
+    "We": "We",
+    "Th": "Th",
+    "Fr": "Fr",
+    "Sa": "Sa",
+    "Su": "Su",
+    "TOTAL": "Total",
+    "NOTHING_TO_SHOW": "There are no time reports suitable for the selected parameters.",
+    "SHOW_HIDDEN": "Show hidden",
+    "HIDE": "Hide"
+  },
+  "ru": {
+    "Mo": "Пн",
+    "Tu": "Вт",
+    "We": "Ср",
+    "Th": "Чт",
+    "Fr": "Пт",
+    "Sa": "Сб",
+    "Su": "Вс",
+    "TOTAL": "Итого",
+    "NOTHING_TO_SHOW": "Отсутствуют отчеты по времени, подходящие под выбранные параметры.",
+    "SHOW_HIDDEN": "Показать скрытые",
+    "HIDE": "Скрыть"
+  }
+}

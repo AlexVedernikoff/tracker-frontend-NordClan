@@ -2,13 +2,12 @@
 
 .property {
   &:before {
-    content: "";
+    content: '';
     display: table;
   }
 }
 
 .memberRow {
-
   &:hover {
     background-color: $color-lightgray;
   }
@@ -18,7 +17,7 @@
   }
 
   .cell {
-    padding: 8px;
+    padding: 8px 0;
   }
 
   h4 {
@@ -26,9 +25,9 @@
   }
 }
 
-.memberColumn {
-  // text-align: right;
-}
+// .memberColumn {
+//   text-align: right;
+// }
 
 .memberHeader {
   background-color: $color-gray;

@@ -72,7 +72,10 @@ class TaskPlanningTime extends Component {
 
   render() {
     return (
-      <div className={css.wrapper}>
+      <div
+        className={classnames([css.wrapper, { [css.isEdit]: this.props.timeIsEditing }])}
+        onClick={this.props.timeIsEditing ? null : this.editIconClickHandler}
+      >
         <span
           key={this.props.key}
           className={classnames({
@@ -110,13 +113,13 @@ class TaskPlanningTime extends Component {
             : null)}
         >
           {' '}
-          ч.
+          {this.props.h}
         </span>
         {this.props.canEdit ? (
           this.props.timeIsEditing ? (
             <IconCheck onClick={this.editIconClickHandler} className={css.save} />
           ) : (
-            <IconEdit onClick={this.editIconClickHandler} className={css.edit} />
+            <IconEdit className={css.edit} />
           )
         ) : null}
         {this.props.tooltip || null}
@@ -131,9 +134,9 @@ TaskPlanningTime.propTypes = {
   dataFor: PropTypes.string,
   id: PropTypes.number,
   isExecutionTime: PropTypes.bool,
+  key: PropTypes.string,
   startTaskEditing: PropTypes.func.isRequired,
   stopTaskEditing: PropTypes.func.isRequired,
-  key: PropTypes.string,
   time: PropTypes.string.isRequired,
   timeIsEditing: PropTypes.bool.isRequired,
   tooltip: PropTypes.object
@@ -147,4 +150,7 @@ const mapDispatchToProps = {
   changeTask
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskPlanningTime);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskPlanningTime);

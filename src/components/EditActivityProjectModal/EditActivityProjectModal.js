@@ -49,6 +49,7 @@ class EditActivityProjectModal extends Component {
       sprint: { name: this.state.selectedSprint ? this.state.selectedSprint.label : 'Backlog' }
     };
 
+    console.log(this.state.selectedSprint);
     this.props.onCancel();
     this.props.onConfirm(updatedFields);
   };

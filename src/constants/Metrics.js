@@ -28,3 +28,12 @@ export const UNBILLABLE_COST = 29;
 
 export const SPRINT_BUDGET_NO_RISK = 30;
 export const SPRINT_BUDGET_RISK = 31;
+
+export const ANDROID_COST_PERCENTAGE = 51;
+export const IOS_COST_PERCENTAGE = 52;
+
+export const ANDROID_COST = 53;
+export const IOS_COST = 54;
+
+export const DEVOPS_COST_PERCENTAGE = 55;
+export const DEVOPS_COST = 56;

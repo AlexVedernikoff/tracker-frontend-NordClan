@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import AppRoute from './Router';
 
-import 'normalize-css';
+import 'normalize.css';
 import './styles/hooks.css';
 import './styles/App.scss';
 import { store, history } from './History';
@@ -13,13 +13,18 @@ import { getInfoAboutMe } from './actions/Authentication';
 
 import SocketAdapter from './sockets/SocketAdapter';
 
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContextProvider } from 'react-dnd';
+
 const rootEl = document.getElementById('app');
 
-const render = (App) => {
+const render = App => {
   ReactDOM.render(
     <AppContainer>
       <Provider store={store}>
-          <App history={history}/>
+        <DragDropContextProvider backend={HTML5Backend}>
+          <App history={history} />
+        </DragDropContextProvider>
       </Provider>
     </AppContainer>,
     rootEl

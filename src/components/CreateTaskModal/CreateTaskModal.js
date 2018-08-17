@@ -11,6 +11,7 @@ import _ from 'lodash';
 import Button from '../Button';
 import SelectDropdown from '../SelectDropdown';
 import ValidatedInput from '../ValidatedInput';
+import InputNumber from '../../components/InputNumber';
 import ValidatedAutosizeInput from '../ValidatedAutosizeInput';
 import * as css from './CreateTaskModal.scss';
 import Priority from '../Priority';
@@ -18,26 +19,28 @@ import { closeCreateTaskModal, createTask } from '../../actions/Project';
 import { BACKLOG_ID } from '../../constants/Sprint';
 import Validator from '../ValidatedInput/Validator';
 import TextEditor from '../../components/TextEditor';
+import Checkbox from '../../components/Checkbox/Checkbox';
+import localize from './CreateTaskModal.json';
+import Tag from '../../components/Tag';
+import Tags from '../../components/Tags';
+import { getFullName } from '../../utils/NameLocalisation';
 
 class CreateTaskModal extends Component {
   constructor(props) {
     super(props);
 
-    this.types = props.taskTypes.map(({ name, id }) => ({
-      label: name,
-      value: id
-    }));
-
     this.state = {
       selectedSprint: props.selectedSprintValue,
-      selectedPerformer: null,
+      selectedPerformer: props.defaultPerformerId || null,
       taskName: '',
       description: '',
+      plannedExecutionTime: 0,
       openTaskPage: false,
       prioritiesId: 3,
-      selectedType: this.types[0],
-      selectedTypeError: this.types.length === 0,
-      typeList: this.types
+      selectedType: this.props.taskTypes[0],
+      selectedTypeError: this.props.taskTypes.length === 0,
+      isTaskByClient: false,
+      tags: []
     };
 
     this.validator = new Validator();
@@ -52,6 +55,12 @@ class CreateTaskModal extends Component {
   handlePerformerChange = selectedPerformer => {
     this.setState({
       selectedPerformer: selectedPerformer ? selectedPerformer.value : 0
+    });
+  };
+
+  handleIsTaskByClientChange = () => {
+    this.setState({
+      isTaskByClient: !this.state.isTaskByClient
     });
   };
 
@@ -76,14 +85,18 @@ class CreateTaskModal extends Component {
         typeId: this.state.selectedType.value,
         sprintId: this.state.selectedSprint === BACKLOG_ID ? null : this.state.selectedSprint,
         prioritiesId: this.state.prioritiesId,
-        parentId: this.props.parentTaskId
+        plannedExecutionTime: this.state.plannedExecutionTime,
+        parentId: this.props.parentTaskId,
+        isTaskByClient: this.state.isTaskByClient,
+        tags: this.state.tags.join(',')
       },
       this.state.openTaskPage,
       this.props.column
     );
   };
 
-  onTypeChange = value => this.setState({ selectedType: value ? value : this.state.typeList[0] });
+  onTypeChange = value =>
+    this.setState({ selectedType: value && !(Array.isArray(value) && !value.length) ? value : null });
 
   getSprints = () => {
     let sprints = _.sortBy(this.props.project.sprints, sprint => {
@@ -117,7 +130,7 @@ class CreateTaskModal extends Component {
   getUsers = () => {
     return this.props.project.users.map(user => ({
       value: user.id,
-      label: user.fullNameRu
+      label: getFullName(user)
     }));
   };
 
@@ -125,11 +138,35 @@ class CreateTaskModal extends Component {
     this.setState({ [field]: event.target.value.trim() });
   };
 
+  handleChangePlannedTime = plannedExecutionTime => {
+    this.setState({ plannedExecutionTime });
+  };
+
+  addTag = tag => {
+    const unicTags = [...new Set([...this.state.tags, tag])];
+    this.setState({ tags: [...unicTags] });
+  };
+  deleteTag = () => tagName => {
+    const tags = this.state.tags.filter(tag => tag !== tagName);
+    this.setState({ tags: [...tags] });
+  };
+
+  isDisabledSave = () =>
+    this.props.isCreateTaskRequestInProgress ||
+    (this.validator.isDisabled && !this.state.selectedTypeError) ||
+    !this.state.selectedType;
+
   render() {
     const formLayout = {
       firstCol: 4,
       secondCol: 8
     };
+
+    const { lang, taskTypes } = this.props;
+
+    const tags = this.state.tags.map((tagName, i) => {
+      return <Tag key={i} name={tagName} noRequest deleteTagModal={() => this.deleteTag()(tagName)} />;
+    });
     return (
       <Modal
         isOpen={this.props.isCreateTaskModalOpen || this.props.isCreateChildTaskModalOpen}
@@ -137,12 +174,12 @@ class CreateTaskModal extends Component {
         contentLabel="Modal"
       >
         <form className={css.createTaskForm}>
-          <h3>Создать задачу</h3>
+          <h3>{localize[lang].CREATE_TASK}</h3>
           <hr />
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Название задачи:</p>
+                <p>{localize[lang].NAME}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 {this.validator.validate(
@@ -151,11 +188,11 @@ class CreateTaskModal extends Component {
                       maxRows={5}
                       autoFocus
                       name="taskName"
-                      placeholder="Введите название задачи"
+                      placeholder={localize[lang].NAME_PLACEHOLDER}
                       onChange={this.handleChange('taskName')}
                       onBlur={handleBlur}
                       shouldMarkError={shouldMarkError}
-                      errorText="Длина менее 4 символов"
+                      errorText={localize[lang].NAME_ERROR}
                     />
                   ),
                   'taskName',
@@ -167,12 +204,12 @@ class CreateTaskModal extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Описание:</p>
+                <p>{localize[lang].DESCRIPTION}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <TextEditor
                   toolbarHidden
-                  placeholder="Введите описание задачи"
+                  placeholder={localize[lang].PLACEHOLDER_DESCRIPTION}
                   wrapperClassName={css.taskDescriptionWrapper}
                   editorClassName={css.taskDescription}
                   ref={ref => (this.TextEditor = ref)}
@@ -184,27 +221,50 @@ class CreateTaskModal extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Тип задачи:</p>
+                <p>Тэги:</p>
               </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Select
-                  multi={false}
-                  ignoreCase
-                  placeholder="Выберите тип"
-                  options={this.state.typeList}
-                  className={css.selectSprint}
-                  value={this.state.selectedType}
-                  onChange={this.onTypeChange}
-                  noResultsText="Нет результатов"
-                />
-                {this.state.selectedTypeError && <span>Ошибка получения данных</span>}
+              <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
+                <Tags taggable="task" noRequest create canEdit createTagsModalTask={this.addTag}>
+                  {tags}
+                </Tags>
               </Col>
             </Row>
           </label>
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Приоритет:</p>
+                <p>{localize[lang].TYPE}</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                <Select
+                  multi={false}
+                  ignoreCase
+                  placeholder={localize[lang].TYPE_PLACEHOLDER}
+                  options={taskTypes}
+                  className={css.selectSprint}
+                  value={this.state.selectedType}
+                  onChange={this.onTypeChange}
+                  noResultsText={localize[lang].NO_RESULTS}
+                  clearable={false}
+                />
+                {this.state.selectedTypeError && <span>{localize[lang].GET_DATA_ERROR}</span>}
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>{localize[lang].FROM_CLIENT}</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
+                <Checkbox checked={this.state.isTaskByClient} onChange={this.handleIsTaskByClientChange} />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>{localize[lang].PRIORITY}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
                 <Priority priority={this.state.prioritiesId} onPrioritySet={this.handlePriorityChange} text={''} />
@@ -214,17 +274,17 @@ class CreateTaskModal extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Исполнитель:</p>
+                <p>{localize[lang].PERFORMER}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <SelectDropdown
                   name="performer"
-                  placeholder="Введите имя исполнителя"
+                  placeholder={localize[lang].PERFORMER_PLACEHOLDER}
                   multi={false}
                   className={css.selectPerformer}
                   value={this.state.selectedPerformer}
                   onChange={this.handlePerformerChange}
-                  noResultsText="Нет результатов"
+                  noResultsText={localize[lang].NO_RESULTS}
                   options={this.getUsers()}
                 />
               </Col>
@@ -233,42 +293,53 @@ class CreateTaskModal extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Спринт:</p>
+                <p>{localize[lang].SPRINT}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Select
-                  promptTextCreator={label => `Создать спринт '${label}'`}
-                  searchPromptText={'Введите название спринта'}
+                  promptTextCreator={label => `${localize[lang].CREATE_SPRINT} '${label}'`}
+                  searchPromptText={localize[lang].NAME_SPRINT}
                   multi={false}
                   ignoreCase
-                  placeholder="Выберите спринт"
+                  placeholder={localize[lang].SELECT_SPRINT}
                   options={this.getSprints()}
                   className={css.selectSprint}
                   onChange={this.handleModalSprintChange}
                   value={this.state.selectedSprint}
-                  noResultsText="Нет результатов"
+                  noResultsText={localize[lang].NO_RESULTS}
+                />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>{localize[lang].TIMING}</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                <InputNumber
+                  min={0}
+                  postfix={'ч.'}
+                  onChange={this.handleChangePlannedTime}
+                  value={this.state.plannedExecutionTime}
                 />
               </Col>
             </Row>
           </label>
           <div className={css.buttonsContainer}>
             <Button
-              text="Создать задачу"
+              text={localize[lang].CREATE_TASK}
               type="green"
               htmlType="submit"
-              disabled={
-                this.props.isCreateTaskRequestInProgress || (this.validator.isDisabled && !this.state.selectedTypeError)
-              }
+              disabled={this.isDisabledSave()}
               onClick={this.submitTask}
               loading={this.props.isCreateTaskRequestInProgress}
             />
             <Button
-              text="Создать и открыть"
+              text={localize[lang].CREATE_AND_OPEN}
               htmlType="button"
               type="green-lighten"
-              disabled={
-                this.props.isCreateTaskRequestInProgress || (this.validator.isDisabled && !this.state.selectedTypeError)
-              }
+              disabled={this.isDisabledSave()}
               onClick={this.submitTaskAndOpen}
               loading={this.props.isCreateTaskRequestInProgress}
             />
@@ -283,20 +354,29 @@ CreateTaskModal.propTypes = {
   closeCreateTaskModal: PropTypes.func.isRequired,
   column: PropTypes.string,
   createTask: PropTypes.func.isRequired,
+  defaultPerformerId: PropTypes.oneOfType([PropTypes.array, PropTypes.number]),
   isCreateChildTaskModalOpen: PropTypes.bool,
   isCreateTaskModalOpen: PropTypes.bool,
   isCreateTaskRequestInProgress: PropTypes.bool,
+  lang: PropTypes.string,
   parentTaskId: PropTypes.number,
   project: PropTypes.object,
   selectedSprintValue: PropTypes.number,
   taskTypes: PropTypes.array
 };
 
+const getLocaleTaskTypes = (dictionaryTypes, lang) =>
+  dictionaryTypes.map(({ name, nameEn, id }) => ({
+    label: lang === 'ru' ? name : nameEn,
+    value: id
+  }));
+
 const mapStateToProps = state => ({
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
   isCreateChildTaskModalOpen: state.Project.isCreateChildTaskModalOpen,
-  taskTypes: state.Dictionaries.taskTypes,
-  isCreateTaskRequestInProgress: state.Project.isCreateTaskRequestInProgress
+  taskTypes: getLocaleTaskTypes(state.Dictionaries.taskTypes, state.Localize.lang),
+  isCreateTaskRequestInProgress: state.Project.isCreateTaskRequestInProgress,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
@@ -304,4 +384,7 @@ const mapDispatchToProps = {
   createTask
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateTaskModal);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CreateTaskModal);

@@ -14,7 +14,7 @@
   align-items: stretch;
   position: relative;
   text-align: center;
-  margin-left: 4px;
+  margin-left: 0.25rem;
 
   > span {
     display: block;
@@ -42,11 +42,26 @@
       }
     }
 
-    &:nth-child(1) { background-color: $priority1; border-color: $priority1; }
-    &:nth-child(2) { background-color: $priority2; border-color: $priority2; }
-    &:nth-child(3) { background-color: $priority3; border-color: $priority3; }
-    &:nth-child(4) { background-color: $priority4; border-color: $priority4; }
-    &:nth-child(5) { background-color: $priority5; border-color: $priority5; }
+    &:nth-child(1) {
+      background-color: $priority1;
+      border-color: $priority1;
+    }
+    &:nth-child(2) {
+      background-color: $priority2;
+      border-color: $priority2;
+    }
+    &:nth-child(3) {
+      background-color: $priority3;
+      border-color: $priority3;
+    }
+    &:nth-child(4) {
+      background-color: $priority4;
+      border-color: $priority4;
+    }
+    &:nth-child(5) {
+      background-color: $priority5;
+      border-color: $priority5;
+    }
   }
 }
 
