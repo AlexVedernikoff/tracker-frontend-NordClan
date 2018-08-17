@@ -8,6 +8,7 @@ import roundNum from '../../../../utils/roundNum';
 import getColor from '../../../../utils/Colors';
 import localize from './BugsChart.json';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 class BugsChart extends Component {
   static propTypes = {
@@ -18,17 +19,13 @@ class BugsChart extends Component {
     openedRegressBugsMetrics: PropTypes.array
   };
 
-  constructor(props) {
-    super(props);
+  chartRef = null;
 
-    this.state = {
-      chartRef: null
-    };
-
-    this.chartOptions = {
-      ...props.chartDefaultOptions,
+  getGraphicOptions() {
+    return {
+      ...this.props.chartDefaultOptions,
       scales: {
-        ...props.chartDefaultOptions.scales,
+        ...this.props.chartDefaultOptions.scales,
         yAxes: [
           {
             ticks: {
@@ -37,16 +34,29 @@ class BugsChart extends Component {
             display: true,
             scaleLabel: {
               display: true,
-              labelString: 'Количество багов'
+              labelString: localize[this.props.lang].BUGS_NUM
+            }
+          }
+        ],
+        xAxes: [
+          {
+            type: 'time',
+            time: {
+              displayFormats: {
+                day: 'D MMM'
+              },
+              tooltipFormat: 'DD.MM.YYYY',
+              locale: moment.locale(localize[this.props.lang].LANG)
+            },
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: localize[this.props.lang].DATE
             }
           }
         ]
       }
     };
-  }
-
-  componentDidMount() {
-    this.setState({ chartRef: this.refs.chart });
   }
 
   makeChartData = () => {
@@ -79,10 +89,12 @@ class BugsChart extends Component {
     };
   };
 
+  setChartRef = node => (this.chartRef = node);
+
   render() {
     return (
-      <ChartWrapper chartRef={this.state.chartRef} className={css.BugsChart}>
-        <Line ref="chart" data={this.makeChartData()} options={this.chartOptions} redraw />
+      <ChartWrapper chartRef={this.chartRef} className={css.BugsChart}>
+        <Line ref={this.setChartRef} data={this.makeChartData()} options={this.getGraphicOptions()} redraw />
       </ChartWrapper>
     );
   }

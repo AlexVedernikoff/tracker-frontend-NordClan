@@ -9,6 +9,7 @@ import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import roundNum from '../../../../utils/roundNum';
 import getColor from '../../../../utils/Colors';
 import localize from './BudgetChart.json';
+import moment from 'moment';
 
 class BudgetChart extends Component {
   static propTypes = {
@@ -24,17 +25,15 @@ class BudgetChart extends Component {
     startDate: PropTypes.string
   };
 
-  constructor(props) {
-    super(props);
+  chartRef = null;
 
-    this.state = {
-      chartRef: null
-    };
+  setChartRef = node => (this.chartRef = node);
 
-    this.chartOptions = {
-      ...props.chartDefaultOptions,
+  getGraphicOptions() {
+    return {
+      ...this.props.chartDefaultOptions,
       scales: {
-        ...props.chartDefaultOptions.scales,
+        ...this.props.chartDefaultOptions.scales,
         yAxes: [
           {
             ticks: {
@@ -43,16 +42,29 @@ class BudgetChart extends Component {
             display: true,
             scaleLabel: {
               display: true,
-              labelString: 'Бюджет'
+              labelString: localize[this.props.lang].BUDGET
+            }
+          }
+        ],
+        xAxes: [
+          {
+            type: 'time',
+            time: {
+              displayFormats: {
+                day: 'D MMM'
+              },
+              tooltipFormat: 'DD.MM.YYYY',
+              locale: moment.locale(localize[this.props.lang].LANG)
+            },
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: localize[this.props.lang].DATE
             }
           }
         ]
       }
     };
-  }
-
-  componentDidMount() {
-    this.setState({ chartRef: this.refs.chart });
   }
 
   makeChartData = () => {
@@ -64,8 +76,7 @@ class BudgetChart extends Component {
       startDate,
       endDate,
       sprints,
-      isRisks,
-      lang
+      isRisks
     } = this.props;
 
     getColor.reset();
@@ -179,8 +190,14 @@ class BudgetChart extends Component {
             }
           />
         </div>
-        <ChartWrapper chartRef={this.state.chartRef}>
-          <Line ref="chart" height={250} data={this.makeChartData()} options={this.chartOptions} redraw />
+        <ChartWrapper chartRef={this.chartRef}>
+          <Line
+            ref={this.setChartRef}
+            height={250}
+            data={this.makeChartData()}
+            options={this.getGraphicOptions()}
+            redraw
+          />
         </ChartWrapper>
       </div>
     );

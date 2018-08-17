@@ -20,7 +20,7 @@ class FilterList extends Component {
   render() {
     const { filters, clearAll, toggleFilterView, fullFilterView, isVisor, lang } = this.props;
     const filterTags = filters.map(filter => {
-      return <Tag name={filter.label} deleteHandler={filter.deleteHandler} key={filter.name} unclickable />;
+      return <Tag name={filter.label} deleteHandler={filter.deleteHandler} key={filter.label} unclickable />;
     });
 
     return (
@@ -88,7 +88,4 @@ FilterList.propTypes = {
 const mapStateToProps = state => ({
   lang: state.Localize.lang
 });
-export default connect(
-  mapStateToProps,
-  null
-)(FilterList);
+export default connect(mapStateToProps, null)(FilterList);

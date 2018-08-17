@@ -8,6 +8,7 @@ import roundNum from '../../../../utils/roundNum';
 import getColor from '../../../../utils/Colors';
 import localize from './ClosingFeaturesChart.json';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 class ClosingFeaturesChart extends Component {
   static propTypes = {
@@ -18,17 +19,13 @@ class ClosingFeaturesChart extends Component {
     sprintWriteOffTimeMetrics: PropTypes.array
   };
 
-  constructor(props) {
-    super(props);
+  chartRef = null;
 
-    this.state = {
-      chartRef: null
-    };
-
-    this.chartOptions = {
-      ...props.chartDefaultOptions,
+  getGraphicOptions() {
+    return {
+      ...this.props.chartDefaultOptions,
       scales: {
-        ...props.chartDefaultOptions.scales,
+        ...this.props.chartDefaultOptions.scales,
         yAxes: [
           {
             ticks: {
@@ -37,16 +34,29 @@ class ClosingFeaturesChart extends Component {
             display: true,
             scaleLabel: {
               display: true,
-              labelString: 'Часы'
+              labelString: localize[this.props.lang].HOURS
+            }
+          }
+        ],
+        xAxes: [
+          {
+            type: 'time',
+            time: {
+              displayFormats: {
+                day: 'D MMM'
+              },
+              tooltipFormat: 'DD.MM.YYYY',
+              locale: moment.locale(localize[this.props.lang].LANG)
+            },
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: localize[this.props.lang].DATE
             }
           }
         ]
       }
     };
-  }
-
-  componentDidMount() {
-    this.setState({ chartRef: this.refs.chart });
   }
 
   makeChartData = () => {
@@ -79,12 +89,14 @@ class ClosingFeaturesChart extends Component {
     };
   };
 
+  setChartRef = node => (this.chartRef = node);
+
   render() {
     const { lang } = this.props;
     return (
-      <ChartWrapper chartRef={this.refs.chart} className={css.ClosingFeaturesChart}>
+      <ChartWrapper chartRef={this.chartRef} className={css.ClosingFeaturesChart}>
         <h3>{localize[lang].DYNAMIC}</h3>
-        <Line ref="chart" data={this.makeChartData()} options={this.chartOptions} redraw />
+        <Line ref={this.setChartRef} data={this.makeChartData()} options={this.getGraphicOptions()} redraw />
       </ChartWrapper>
     );
   }

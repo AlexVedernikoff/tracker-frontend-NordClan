@@ -150,7 +150,19 @@ class Timesheets extends React.Component {
           );
         });
         if (timesheet) {
-          timeSheets.push(timesheet);
+          const doubleTimesheets = list.filter(
+            tsh =>
+              timesheet.id !== tsh.id &&
+              tsh.task &&
+              tsh.typeId === 1 &&
+              tsh.task.id === element.id &&
+              moment(tsh.onDate).format('DD.MM.YY') ===
+                moment(startingDay)
+                  .weekday(index)
+                  .format('DD.MM.YY') &&
+              tsh.taskStatusId === element.taskStatusId
+          );
+          timeSheets.push({ ...timesheet, doubleTimesheets });
         } else {
           timeSheets.push({
             onDate: moment(startingDay)
@@ -171,7 +183,6 @@ class Timesheets extends React.Component {
     ));
 
     // Создание массива таймшитов по magic activities
-
     let magicActivities = list.length
       ? list.reduce((res, el) => {
           const isTemp = tempTimesheets.some(tempTsh => tempTsh.id === el.id);
@@ -216,6 +227,7 @@ class Timesheets extends React.Component {
             tsh.typeId !== 1 &&
             tsh.typeId === element.typeId &&
             (tsh.project ? tsh.project.id === element.projectId : !tsh.project && !element.projectId) &&
+            (element.sprint ? element.sprint.id : 0) === (tsh.sprint ? tsh.sprint.id : 0) &&
             moment(tsh.onDate).format('DD.MM.YY') ===
               moment(startingDay)
                 .weekday(index)
@@ -361,8 +373,8 @@ class Timesheets extends React.Component {
               </tr>
             </thead>
             <tbody>
-              {taskRows}
               {magicActivityRows}
+              {taskRows}
               <tr>
                 <td className={css.total} />
                 {totalRow}
@@ -409,7 +421,4 @@ const mapDispatchToProps = {
   showNotification
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Timesheets);
+export default connect(mapStateToProps, mapDispatchToProps)(Timesheets);

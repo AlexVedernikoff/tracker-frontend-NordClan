@@ -36,13 +36,13 @@ class Table extends React.Component {
   calcLeftPadding = (activeYear, daysInYear, date) => {
     return +moment(date).format('YYYY') !== +activeYear
       ? '0%'
-      : (((moment(date).dayOfYear() - 1) / daysInYear) * 100).toFixed(1) + '%';
+      : ((moment(date).dayOfYear() - 1) / daysInYear * 100).toFixed(1) + '%';
   };
 
   calcRightPadding = (activeYear, daysInYear, date) => {
     return +moment(date).format('YYYY') !== +activeYear
       ? '0%'
-      : (100 - (moment(date).dayOfYear() / daysInYear) * 100).toFixed(1) + '%';
+      : (100 - moment(date).dayOfYear() / daysInYear * 100).toFixed(1) + '%';
   };
 
   calcTimelinePadding = date => {
@@ -53,7 +53,7 @@ class Table extends React.Component {
 
     return date.getFullYear() !== grantActiveYear
       ? '0%'
-      : (((moment(date).dayOfYear() - 1) / daysInYear) * 100).toFixed(1) + '%';
+      : ((moment(date).dayOfYear() - 1) / daysInYear * 100).toFixed(1) + '%';
   };
 
   getSprintTime = sprint => {
@@ -363,7 +363,4 @@ const mapStateToProps = state => ({
   lang: state.Localize.lang
 });
 
-export default connect(
-  mapStateToProps,
-  null
-)(Table);
+export default connect(mapStateToProps, null)(Table);

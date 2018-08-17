@@ -1,3 +1,3 @@
-import BugsChart from './BugsChart'
+import BugsChart from './BugsChart';
 
 export default BugsChart;

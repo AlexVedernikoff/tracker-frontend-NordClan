@@ -50,6 +50,7 @@
     "exact-math": "^1.0.0",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
+    "node-sass": "^4.7.2",
     "normalize.css": "^7.0.0",
     "rc-input-number": "^4.0.0",
     "react": "^15.6.1",
@@ -78,6 +79,7 @@
     "redux": "^3.7.2",
     "redux-devtools-extension": "^2.13.2",
     "redux-thunk": "^2.2.0",
+    "reselect": "^3.0.1",
     "serve": "^6.4.1",
     "shortid": "^2.2.8",
     "socket.io-client": "^2.0.4"
@@ -106,7 +108,6 @@
     "eslint-plugin-react": "^7.1.0",
     "file-loader": "^0.11.2",
     "husky": "^0.14.3",
-    "node-sass": "^4.7.2",
     "postcss-cssnext": "^2.9.0",
     "postcss-each": "^0.10.0",
     "postcss-import": "^10.0.0",

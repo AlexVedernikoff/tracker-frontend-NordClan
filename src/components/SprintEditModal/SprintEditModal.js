@@ -285,7 +285,4 @@ const mapStateToProps = state => ({
   lang: state.Localize.lang
 });
 
-export default connect(
-  mapStateToProps,
-  null
-)(SprintEditModal);
+export default connect(mapStateToProps, null)(SprintEditModal);
