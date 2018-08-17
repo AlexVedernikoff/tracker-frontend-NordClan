@@ -329,7 +329,11 @@ class AgileBoard extends Component {
     }
 
     if (nextProps.lastUpdatedTask !== this.props.lastUpdatedTask) {
-      this.getTasks();
+      if (this.props.myTaskBoard) {
+        this.getTasks({ performerId: this.props.user.id });
+      } else {
+        this.getTasks();
+      }
     }
   }
 
@@ -1026,7 +1030,4 @@ const mapDispatchToProps = {
   getProjectInfo
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AgileBoard);
+export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);
