@@ -9,6 +9,7 @@ import { getProjectsForSelect } from '../../actions/Timesheets';
 import * as css from './EditActivityProjectModal.scss';
 import { changeProject, getTasksForSelect } from '../../actions/Timesheets';
 import { getProjectSprints } from '../../actions/Project';
+import localize from './EditActivityProjectModal.json';
 
 class EditActivityProjectModal extends Component {
   constructor(props) {
@@ -49,7 +50,6 @@ class EditActivityProjectModal extends Component {
       sprint: { name: this.state.selectedSprint ? this.state.selectedSprint.label : 'Backlog' }
     };
 
-    console.log(this.state.selectedSprint);
     this.props.onCancel();
     this.props.onConfirm(updatedFields);
   };
@@ -72,7 +72,7 @@ class EditActivityProjectModal extends Component {
   };
 
   render() {
-    const { style, onRequestClose, closeTimeoutMS, text, onConfirm, onCancel, ...other } = this.props;
+    const { style, onRequestClose, closeTimeoutMS, text, onConfirm, onCancel, lang, ...other } = this.props;
 
     const formLayout = {
       firstCol: 4,
@@ -89,7 +89,7 @@ class EditActivityProjectModal extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Проект:</p>
+                <p>{localize[lang].PROJECT}</p>
               </Col>
 
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
@@ -97,7 +97,7 @@ class EditActivityProjectModal extends Component {
                   multi={false}
                   className={css.Select}
                   value={this.state.projectValue}
-                  placeholder="Выберите проект"
+                  placeholder={localize[lang].PROJECT_PLACEHOLDER}
                   onChange={this.handleChangeProject}
                   options={this.state.projects}
                 />
@@ -108,13 +108,13 @@ class EditActivityProjectModal extends Component {
           <label className={css.formField} key="noTaskActivitySprint">
             <Row>
               <Col xs={12} sm={formLayout.firstCol}>
-                Спринт:
+                {localize[lang].SPRINT}
               </Col>
               <Col xs={12} sm={formLayout.secondCol}>
                 <SelectDropdown
                   multi={false}
                   value={this.state.selectedSprint}
-                  placeholder="Выберите спринт"
+                  placeholder={localize[lang].SPRINT_PLACEHOLDER}
                   onChange={this.handleChangeSprint}
                   options={this.getSprintOptions()}
                 />
@@ -123,13 +123,13 @@ class EditActivityProjectModal extends Component {
           </label>
 
           <Button
-            text="ОК"
+            text={localize[lang].CONFIRM}
             disabled={!this.state.projectValue}
             type="green"
             style={{ width: '50%' }}
             onClick={this.onConfirm}
           />
-          <Button text="Отмена" type="primary" onClick={onCancel} style={{ width: '50%' }} />
+          <Button text={localize[lang].CANCEL} type="primary" onClick={onCancel} style={{ width: '50%' }} />
         </div>
       </Modal>
     );
@@ -150,7 +150,8 @@ EditActivityProjectModal.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  sprints: state.Project.project.sprints
+  sprints: state.Project.project.sprints,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
