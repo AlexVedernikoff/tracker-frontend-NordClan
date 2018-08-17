@@ -385,19 +385,13 @@ class AgileBoard extends Component {
     if (!this.props.myTaskBoard) {
       const projectId = this.props.params.projectId;
 
-      const options = {
+      return {
         ...this.getUrlQueries(),
         changedFilters: {
           projectId,
           ...this.getUrlQueries()
         }
       };
-      if (this.getUrlQueries().changedSprint === '-1') {
-        options.isReload = true;
-        return options;
-      } else {
-        return options;
-      }
     }
   }
 
@@ -430,7 +424,7 @@ class AgileBoard extends Component {
   };
 
   getChangedSprint = props => {
-    let changedSprint = this.state.isReload ? this.state.changedSprint : this.props.currentSprint;
+    let changedSprint = this.state.changedSprint || this.props.currentSprint;
 
     if (props.lastCreatedTask && Number.isInteger(props.lastCreatedTask.sprintId)) {
       changedSprint = props.lastCreatedTask.sprintId;
@@ -501,23 +495,18 @@ class AgileBoard extends Component {
   };
 
   selectValue = (e, name) => {
-    if (e === -1 && name === 'changedSprint') {
-      this.clearFilter();
-    } else {
-      this.setFiltersToUrl(name, e, () => {
-        if (this.props.myTaskBoard) return this.getTasks({ performerId: this.props.user.id });
-        this.getTasks();
-      });
-    }
+    this.setFiltersToUrl(name, e, () => {
+      if (this.props.myTaskBoard) return this.getTasks({ performerId: this.props.user.id });
+      this.getTasks();
+    });
   };
 
   getTasks = customOption => {
-    const whithoutSprint = this.state.changedSprint === '-1' ? null : this.state.changedSprint;
     const options = customOption
       ? customOption
       : {
           projectId: this.props.params.projectId,
-          sprintId: whithoutSprint,
+          sprintId: this.state.changedSprint,
           prioritiesId: this.state.prioritiesId,
           authorId: this.state.authorId,
           typeId: this.state.typeId,
@@ -675,7 +664,7 @@ class AgileBoard extends Component {
     const selectedFilters = [];
 
     singleOptionFiltersList.forEach(filterName => {
-      if (this.filterIsNotEmpty(filterName) && this.state.changedSprint !== '-1') {
+      if (this.filterIsNotEmpty(filterName)) {
         selectedFilters.push({
           name: filterName,
           label: this.createFilterLabel(filterName),
@@ -711,10 +700,6 @@ class AgileBoard extends Component {
   };
 
   clearFilter = () => {
-    const nullValue = {};
-    nullValue.projectId = this.props.params.projectId;
-    nullValue.changedSprint = -1;
-    this.changeUrl(nullValue);
     this.setState(
       {
         ...this.initialFilters
@@ -882,15 +867,13 @@ class AgileBoard extends Component {
                       name="changedSprint"
                       placeholder={localize[lang].SELECT_SPRINT}
                       multi={false}
-                      value={this.state.changedSprint === '-1' ? null : this.state.changedSprint}
-                      onChange={e => this.selectValue(e !== null ? e.value : -1, 'changedSprint')}
+                      value={this.state.changedSprint}
+                      onChange={e => this.selectValue(e !== null ? e.value : null, 'changedSprint')}
                       noResultsText={localize[lang].NO_RESULTS}
                       options={this.props.sortedSprints}
                     />
                     {!isExternal ? (
-                      <span className={css.sprintTime}>
-                        {this.state.changedSprint === '-1' ? null : this.getSprintTime(this.state.changedSprint)}
-                      </span>
+                      <span className={css.sprintTime}>{this.getSprintTime(this.state.changedSprint) || null}</span>
                     ) : null}
                   </Col>
                   <Col xs>
@@ -1043,7 +1026,4 @@ const mapDispatchToProps = {
   getProjectInfo
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AgileBoard);
+export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);
