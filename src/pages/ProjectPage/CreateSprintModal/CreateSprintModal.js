@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import { createSprint } from '../../../actions/Sprint';
 import { getSprintsDateRange } from '../../../selectors/getSprintsDateRange';
 import localize from './CreateSprintModal.json';
+import parseInteger from '../../../utils/parseInteger';
 
 class CreateSprintModal extends Component {
   constructor(props) {
@@ -40,7 +41,7 @@ class CreateSprintModal extends Component {
 
   onChangeTimeQA = e => {
     if (this.validateNumbers(e.target.value) && e.target.value <= 100) {
-      this.setState({ allottedTimeQa: e.target.value });
+      this.setState({ allottedTimeQa: e.target.value === '' ? '' : parseInteger(e.target.value) });
     }
   };
 
