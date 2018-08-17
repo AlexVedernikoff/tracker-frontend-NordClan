@@ -135,7 +135,7 @@ class SprintEditModal extends Component {
   };
 
   validateAllFields = () => {
-    return !this.checkNullInputs() || !this.validateDates();
+    return !this.checkNullInputs();
   };
 
   render() {
@@ -285,4 +285,7 @@ const mapStateToProps = state => ({
   lang: state.Localize.lang
 });
 
-export default connect(mapStateToProps, null)(SprintEditModal);
+export default connect(
+  mapStateToProps,
+  null
+)(SprintEditModal);
