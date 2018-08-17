@@ -41,7 +41,7 @@ class CreateSprintModal extends Component {
 
   onChangeTimeQA = e => {
     if (this.validateNumbers(e.target.value) && e.target.value <= 100) {
-      this.setState({ allottedTimeQa: parseInteger(e.target.value) });
+      this.setState({ allottedTimeQa: e.target.value === '' ? '' : parseInteger(e.target.value) });
     }
   };
 

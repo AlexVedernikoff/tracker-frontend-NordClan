@@ -1,1 +1,4 @@
-export default value => (value ? +value.toString().replace(/[^\d]/g, '') : value);
+export default value => {
+  const parseIntValue = parseInt(value, 10);
+  return isNaN(parseIntValue) ? 0 : parseIntValue;
+};

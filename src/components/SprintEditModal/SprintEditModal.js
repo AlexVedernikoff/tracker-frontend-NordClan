@@ -57,7 +57,7 @@ class SprintEditModal extends Component {
       this.setState(state => ({
         sprint: {
           ...state.sprint,
-          qaPercent: parseInteger(value)
+          qaPercent: value === '' ? '' : parseInteger(value)
         }
       }));
     }
