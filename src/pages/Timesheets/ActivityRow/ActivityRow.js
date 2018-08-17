@@ -309,7 +309,7 @@ class ActivityRow extends React.Component {
     );
     const tempCell = item.timeSheets.find(tsh => tsh.id && tsh.id.toString().includes('temp'));
     const isTempRow = !!tempCell;
-    console.log(item);
+
     const timeCells = item.timeSheets.map((tsh, i) => {
       if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
         return (
@@ -393,11 +393,13 @@ class ActivityRow extends React.Component {
         return null;
       }
 
-      return ma && maType.id !== 5 && maType.id !== 7 && canDeleteRow ? (
-        <a onClick={() => this.openProjectEditModal()}>{item.projectName}</a>
-      ) : (
-        <span>{item.projectName}</span>
-      );
+      return item.projectName ? (
+        ma && maType.id !== 5 && maType.id !== 7 && canDeleteRow ? (
+          <a onClick={() => this.openProjectEditModal()}>{item.projectName}</a>
+        ) : (
+          <span>{item.projectName}</span>
+        )
+      ) : null;
     };
     const getSprintName = () => {
       if (maType && (maType.id === 5 || maType.id === 7 || item.projectId === 0)) {

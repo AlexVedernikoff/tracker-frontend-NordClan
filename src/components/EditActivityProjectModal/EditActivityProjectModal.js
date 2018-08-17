@@ -32,7 +32,9 @@ class EditActivityProjectModal extends Component {
   handleChangeProject = option => {
     this.props.changeProject(option);
     this.loadTasks('', option ? option.value : null);
-    this.props.getProjectSprints(option.value);
+    if (option) {
+      this.props.getProjectSprints(option.value);
+    }
     this.setState({ projectValue: option });
   };
 
