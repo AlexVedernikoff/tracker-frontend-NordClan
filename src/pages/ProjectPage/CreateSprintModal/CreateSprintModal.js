@@ -22,7 +22,7 @@ class CreateSprintModal extends Component {
       budget: '',
       riskBudget: '',
       sprintName: '',
-      allottedTimeQa: props.project.percentQA || 30
+      allottedTimeQa: props.project.qaPercent || 30
     };
   }
 

@@ -191,7 +191,12 @@ class ParticipantEditor extends Component {
     this.setState({ isModalOpenAddExternal: true });
   };
 
-  checkIsPmInProject = () => this.props.users.some(user => user.roles.pm);
+  checkIsPmInProject = () =>
+    this.props.users.some(user => {
+      if (user.id === this.props.user.id) {
+        return user.roles.pm;
+      }
+    });
 
   checkIsAuthorProject = () => this.props.user.id === this.props.projectAuthorId;
 

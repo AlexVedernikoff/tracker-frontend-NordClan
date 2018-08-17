@@ -109,7 +109,7 @@ class TaskTimeReports extends React.Component {
     if (timeSpent && this.props.roles) {
       for (const role in timeSpent) {
         if (timeSpent.hasOwnProperty(role)) {
-          const roleId = role.match(/[\d+]/g);
+          const roleId = role.match(/\d+/g);
 
           if (roleId.length !== 0) {
             for (const id of roleId) {
