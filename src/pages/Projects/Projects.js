@@ -12,7 +12,7 @@ import StatusCheckbox from './StatusCheckbox';
 import Pagination from '../../components/Pagination';
 import moment from 'moment';
 import TagsFilter from '../../components/TagsFilter';
-import _ from 'lodash';
+import uniqBy from 'lodash/uniqBy';
 
 import CreateProject from './CreateProject';
 import getProjects, {
@@ -213,7 +213,7 @@ class Projects extends Component {
   onClickTag = tag => {
     this.setState(
       {
-        filterTags: _.uniqBy(
+        filterTags: uniqBy(
           this.state.filterTags.concat({
             value: tag,
             label: tag

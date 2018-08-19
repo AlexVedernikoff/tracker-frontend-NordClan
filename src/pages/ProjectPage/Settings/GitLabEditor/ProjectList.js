@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { difference } from 'lodash';
+import difference from 'lodash/difference';
 
 import ProjectCard from './ProjectCard';
 import * as css from './GitLabEditor.scss';

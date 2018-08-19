@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+import get from 'lodash/get';
 
 import * as css from './TaskCard.scss';
 import RelatedTask from './RelatedTask';
@@ -11,8 +11,8 @@ class TaskCard extends PureComponent {
     const { task, lightTask, lightedTaskId, ...other } = this.props;
 
     const factPlanDivision = task.factExecutionTime / task.plannedExecutionTime;
-    const isSubtasks = _.get(task, 'subTasks.length');
-    const isLinkedTasks = _.get(task, 'linkedTasks.length');
+    const isSubtasks = get(task, 'subTasks.length');
+    const isLinkedTasks = get(task, 'linkedTasks.length');
     const isParent = task.parentTask;
 
     const classPriority = 'priority-' + task.prioritiesId;

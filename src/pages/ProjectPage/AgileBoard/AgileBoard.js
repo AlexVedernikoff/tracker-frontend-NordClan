@@ -5,7 +5,9 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import _ from 'lodash';
+import get from 'lodash/get';
+import uniq from 'lodash/uniq';
+import sortBy from 'lodash/sortBy';
 import TaskCard from '../../../components/TaskCard';
 import FilterList from '../../../components/FilterList';
 import PerformerModal from '../../../components/PerformerModal';
@@ -81,7 +83,7 @@ const filterTasks = array => {
       if (!task.linkedTasks) {
         task.linkedTasks = [];
       }
-      task.linkedTasks.concat(task.subTasks, task.parentTask).map(relatedTask => _.get(relatedTask, 'id', null));
+      task.linkedTasks.concat(task.subTasks, task.parentTask).map(relatedTask => get(relatedTask, 'id', null));
     });
   }
 
@@ -102,7 +104,7 @@ const getTagsByTask = tasks => {
     return arr.concat(task.tags ? task.tags.map(tags => tags.name) : []);
   }, []);
 
-  allTags = _.uniq(allTags);
+  allTags = uniq(allTags);
 
   return allTags.map(tag => ({
     value: tag,
@@ -113,7 +115,7 @@ const getTagsByTask = tasks => {
 const getAllTags = createSelector([selectTasks], tasks => getTagsByTask(tasks));
 
 const getSprints = unsortedSprints => {
-  let sprints = _.sortBy(unsortedSprints, sprint => {
+  let sprints = sortBy(unsortedSprints, sprint => {
     return new moment(sprint.factFinishDate);
   });
 

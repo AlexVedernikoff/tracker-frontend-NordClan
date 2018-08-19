@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 import * as css from './Details.scss';
 import moment from 'moment';
 import { getTaskSpent } from '../../../actions/Task';
-import _ from 'lodash';
+import transform from 'lodash/transform';
 import roundNum from '../../../utils/roundNum';
 import classnames from 'classnames';
 import localize from './Details.json';
@@ -148,7 +148,7 @@ class Details extends Component {
   };
 
   spentTooltipRender(spents) {
-    return _.transform(
+    return transform(
       spents,
       (spentsList, spentTime, status) => {
         spentsList.push(

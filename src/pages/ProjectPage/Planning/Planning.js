@@ -39,7 +39,6 @@ import Table from './Table';
 import localize from './Planning.json';
 
 import moment from 'moment';
-import _ from 'lodash';
 
 class Planning extends Component {
   static propTypes = {

@@ -12,7 +12,7 @@ import * as css from './AddExternalUser.scss';
 import { addExternalUser, addExternalUserSuccess } from '../../../actions/ExternalUsers';
 import { showNotification } from '../../../actions/Notifications';
 import { finishLoading } from '../../../actions/Loading';
-import { cloneDeep } from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
 import localize from './addExternalUser.json';
 
 const initialState = {
