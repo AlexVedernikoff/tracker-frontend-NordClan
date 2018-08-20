@@ -20,8 +20,18 @@ class FilterList extends Component {
   render() {
     const { filters, clearAll, toggleFilterView, fullFilterView, isVisor, lang } = this.props;
     const filterTags = filters.map(filter => {
-      return <Tag name={filter.label} deleteHandler={filter.deleteHandler} key={filter.name} unclickable />;
+      if (filter.name === 'changedSprint') {
+        return <Tag name={filter.label} deleteHandler={filter.deleteHandler} key={filter.label} unclickable blocked />;
+      }
+      return <Tag name={filter.label} deleteHandler={filter.deleteHandler} key={filter.label} unclickable />;
     });
+    const clearAllButton =
+      filterTags.length === 1 && filterTags[0].key === 'Backlog' ? null : (
+        <span className={classnames(css.clearAllFilter)} data-tip={localize[lang].CLEAR_FILTERS}>
+          <IconBroom onClick={clearAll} />
+        </span>
+      );
+
     return (
       <div>
         <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeave={false}>
@@ -32,9 +42,7 @@ class FilterList extends Component {
                   <div className={classnames(css.filterList)}>
                     <div>
                       {filterTags}
-                      <span className={classnames(css.clearAllFilter)} data-tip={localize[lang].CLEAR_FILTERS}>
-                        <IconBroom onClick={clearAll} />
-                      </span>
+                      {clearAllButton}
                     </div>
                   </div>
                 ) : (
