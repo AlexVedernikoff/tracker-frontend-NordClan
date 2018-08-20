@@ -86,7 +86,7 @@ const ProjectCard = props => {
               <Link
                 to={`/projects/${id}${
                   props.project.currentSprints[0] === undefined
-                    ? null
+                    ? ''
                     : `?currentSprint=${props.project.currentSprints[0].id}`
                 }`}
               >
