@@ -164,6 +164,12 @@ class Projects extends Component {
     });
   };
 
+  handleModalTypeSelected = type => {
+    this.setState({
+      selectedType: type.value
+    });
+  };
+
   sendRequest = () => {
     let portfolioName = '';
     if (this.state.selectedPortfolio && Object.keys(this.state.selectedPortfolio).length !== 0) {
@@ -176,7 +182,8 @@ class Projects extends Component {
         name: this.state.projectName,
         prefix: this.state.projectPrefix,
         portfolioId: portfolioName ? null : this.state.selectedPortfolio ? this.state.selectedPortfolio.value : null,
-        portfolioName
+        portfolioName,
+        typeId: this.state.selectedType || 0
       },
       this.state.openProjectPage
     );
@@ -343,6 +350,8 @@ class Projects extends Component {
           validateProjectName={this.state.projectName.length > 3}
           validateProjectPrefix={this.state.projectPrefix.length > 1}
           prefixErrorText={this.getFieldError('prefix')}
+          onTypeSelect={this.handleModalTypeSelected}
+          selectedType={this.state.selectedType}
         />
       </div>
     );
