@@ -44,7 +44,7 @@ class CreateMilestoneModal extends Component {
   };
 
   checkNullInputs = () => {
-    return this.state.name.trim() && this.state.date;
+    return this.state.name.trim() && this.state.date && this.state.typeId;
   };
 
   dateInputHandler = e => {
@@ -107,6 +107,7 @@ class CreateMilestoneModal extends Component {
                   onChange={this.changeStatus}
                   placeholder={localize[lang].MILESTONE_TYPE}
                   noResultsText={localize[lang].NO_RESUTLS}
+                  clearable={false}
                 />
               </Col>
             </Row>
@@ -152,7 +153,4 @@ const mapDispatchToProps = {
   createMilestone
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CreateMilestoneModal);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateMilestoneModal);

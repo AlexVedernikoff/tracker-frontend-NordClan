@@ -241,6 +241,7 @@ class AddActivityModal extends Component {
                         })
                       : null
                   }
+                  clearable={false}
                 />
               </Col>
             </Row>
@@ -398,7 +399,4 @@ const mapDispatchToProps = {
   getProjectSprints
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AddActivityModal);
+export default connect(mapStateToProps, mapDispatchToProps)(AddActivityModal);

@@ -112,7 +112,4 @@ const mapDispatchToProps = {
   changeProject
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PortfolioEditor);
+export default connect(mapStateToProps, mapDispatchToProps)(PortfolioEditor);

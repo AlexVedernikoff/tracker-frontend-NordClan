@@ -547,6 +547,7 @@ class Planning extends Component {
                     header={localize[lang].PERCENT_TEST}
                     value={qaPercent}
                     isProjectAdmin={isProjectAdmin}
+                    integerOnly
                     min={0}
                     max={100}
                   />
@@ -760,7 +761,4 @@ const mapDispatchToProps = {
   getProjectInfo
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Planning);
+export default connect(mapStateToProps, mapDispatchToProps)(Planning);

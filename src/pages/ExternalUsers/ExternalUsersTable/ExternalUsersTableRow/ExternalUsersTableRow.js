@@ -212,7 +212,4 @@ const mapDispatchToProps = {
   showNotification
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ExternalUsersTableRow);
+export default connect(mapStateToProps, mapDispatchToProps)(ExternalUsersTableRow);
