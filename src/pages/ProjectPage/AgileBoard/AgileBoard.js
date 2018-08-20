@@ -426,7 +426,10 @@ class AgileBoard extends Component {
   };
 
   getChangedSprint = props => {
-    let changedSprint = this.state.changedSprint || props.currentSprint;
+    let changedSprint =
+      this.props.location.query.currentSprint === undefined
+        ? this.state.changedSprint || 0
+        : +this.props.location.query.currentSprint;
     if (props.lastCreatedTask && Number.isInteger(props.lastCreatedTask.sprintId)) {
       changedSprint = props.lastCreatedTask.sprintId;
     }
@@ -789,7 +792,6 @@ class AgileBoard extends Component {
       this.state.lightedTaskId,
       this.state.isCardFocus
     );
-    console.log(this.props.location.state);
 
     return (
       <section className={css.agileBoard}>
