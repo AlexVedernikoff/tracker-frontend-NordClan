@@ -85,7 +85,7 @@ const ProjectCard = props => {
               ) : null}
               <Link
                 to={`/projects/${id}${
-                  props.project.currentSprints[0] === undefined
+                  !props.project.currentSprints || props.project.currentSprints[0] === undefined
                     ? ''
                     : `?currentSprint=${props.project.currentSprints[0].id}`
                 }`}
@@ -119,8 +119,8 @@ const ProjectCard = props => {
                 <div className={css.currentSprints}>
                   {currentSprints.map((sprint, i) => (
                     <span key={`sprint-${i}`} className={css.sprint}>
-                      {sprint.name} ({moment(sprint.factStartDate).format('DD.MM.YYYY')}
-                      - {moment(sprint.factFinishDate).format('DD.MM.YYYY')})
+                      {sprint.name} ({moment(sprint.factStartDate).format('DD.MM.YYYY')}-{' '}
+                      {moment(sprint.factFinishDate).format('DD.MM.YYYY')})
                     </span>
                   ))}
                 </div>
@@ -158,4 +158,7 @@ const mapStateToProps = state => ({
   lang: state.Localize.lang
 });
 
-export default connect(mapStateToProps, null)(ProjectCard);
+export default connect(
+  mapStateToProps,
+  null
+)(ProjectCard);
