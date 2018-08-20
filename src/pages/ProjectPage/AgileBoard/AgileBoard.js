@@ -426,7 +426,10 @@ class AgileBoard extends Component {
   };
 
   getChangedSprint = props => {
-    let changedSprint = this.state.changedSprint !== null ? this.state.changedSprint : this.props.currentSprint;
+    let changedSprint =
+      this.props.location.query.currentSprint === undefined
+        ? this.state.changedSprint || 0
+        : +this.props.location.query.currentSprint;
     if (props.lastCreatedTask && Number.isInteger(props.lastCreatedTask.sprintId)) {
       changedSprint = props.lastCreatedTask.sprintId;
     }
@@ -701,14 +704,16 @@ class AgileBoard extends Component {
   };
 
   clearFilter = () => {
+    this.changeUrl({ projectId: this.props.params.projectId });
     this.setState(
       {
-        ...this.initialFilters
+        ...this.initialFilters,
+        changedSprint: 0
       },
       () => {
         this.getTasks({
           projectId: this.props.params.projectId,
-          sprintId: null,
+          sprintId: 0,
           ...this.initialFilters
         });
       }
@@ -747,7 +752,7 @@ class AgileBoard extends Component {
     filterKeys.forEach(key => {
       if (Array.isArray(this.state[key]) && this.state[key].length === 0) {
         return;
-      } else if ([null, '', false].indexOf(this.state[key]) === -1) {
+      } else if ([null, '', false, 0].indexOf(this.state[key]) === -1) {
         isEmpty = false;
       }
     });

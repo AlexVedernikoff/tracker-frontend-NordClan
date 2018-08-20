@@ -83,7 +83,15 @@ const ProjectCard = props => {
                   <span className={css.titleSplit}>/</span>{' '}
                 </span>
               ) : null}
-              <Link to={`/projects/${id}`}>{name}</Link>
+              <Link
+                to={`/projects/${id}${
+                  props.project.currentSprints[0] === undefined
+                    ? null
+                    : `?currentSprint=${props.project.currentSprints[0].id}`
+                }`}
+              >
+                {name}
+              </Link>
             </div>
           </h3>
         </Col>
@@ -150,7 +158,4 @@ const mapStateToProps = state => ({
   lang: state.Localize.lang
 });
 
-export default connect(
-  mapStateToProps,
-  null
-)(ProjectCard);
+export default connect(mapStateToProps, null)(ProjectCard);
