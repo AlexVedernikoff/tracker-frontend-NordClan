@@ -1,5 +1,5 @@
 import { ADMIN } from '../constants/Roles';
-import { get } from 'lodash';
+import get from 'lodash/get';
 
 const checkProjectAdmin = (user, projectId) => {
   const isSystemAdmin = user.globalRole === ADMIN;

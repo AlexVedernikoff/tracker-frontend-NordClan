@@ -1,7 +1,7 @@
 import * as TaskActions from '../constants/Task';
 import * as TagsActions from '../constants/Tags';
 import * as TaskStatuses from '../constants/TaskStatuses';
-import _ from 'lodash';
+import chain from 'lodash/chain';
 
 const getDefaultCurrentComment = () => ({
   text: '',
@@ -114,7 +114,7 @@ export default function Task(state = InitialState, action) {
     case TaskActions.GET_TASK_SPENT_REQUEST_SUCCESS:
       return {
         ...state,
-        timeSpent: _.chain(action.data)
+        timeSpent: chain(action.data)
           .filter(timeSheet => Number(timeSheet.spentTime))
           .map(spent => ({
             job: getJobById(spent.taskStatusId),
@@ -125,7 +125,7 @@ export default function Task(state = InitialState, action) {
             byStatus[job] = Number(spent.spent) + (byStatus[job] ? byStatus[job] : 0);
           }, {})
           .value(),
-        userTimeSpent: _.chain(action.data)
+        userTimeSpent: chain(action.data)
           .filter(timeSheet => Number(timeSheet.spentTime))
           .map(spent => ({
             user: spent.user.fullNameRu,
@@ -136,7 +136,7 @@ export default function Task(state = InitialState, action) {
             byStatus[user] = Number(spent.spent) + (byStatus[user] ? byStatus[user] : 0);
           }, {})
           .value(),
-        roleTimeSpent: _.chain(action.data)
+        roleTimeSpent: chain(action.data)
           .filter(timeSheet => Number(timeSheet.spentTime))
           .map(spent => ({
             role: spent.userRole,

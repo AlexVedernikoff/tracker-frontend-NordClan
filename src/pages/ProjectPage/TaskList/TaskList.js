@@ -14,7 +14,7 @@ import * as css from './TaskList.scss';
 import TagsFilter from '../../../components/TagsFilter';
 import PerformerFilter from '../../../components/PerformerFilter';
 import { EXTERNAL_USER } from '../../../constants/Roles';
-import _ from 'lodash';
+import uniqBy from 'lodash/uniqBy';
 import PerformerModal from '../../../components/PerformerModal';
 import SprintModal from '../../../components/SprintModal';
 import getTasks from '../../../actions/Tasks';
@@ -266,7 +266,7 @@ class TaskList extends Component {
   };
 
   onClickTag = tag => {
-    const sortedTags = _.uniqBy(
+    const sortedTags = uniqBy(
       this.state.tags.concat({
         value: tag,
         label: tag

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import _ from 'lodash';
+import sortBy from 'lodash/sortBy';
 import classnames from 'classnames';
 import * as css from './SprintSelector.scss';
 import SelectDropdown from '../SelectDropdown';
@@ -20,7 +20,7 @@ export default class SprintSelector extends Component {
   }
 
   getSprints = () => {
-    let sprints = _.sortBy(this.props.sprints, sprint => {
+    let sprints = sortBy(this.props.sprints, sprint => {
       return new moment(sprint.factFinishDate);
     });
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { scroller, Element } from 'react-scroll';
-import { find } from 'lodash';
+import find from 'lodash/find';
 import ReactTooltip from 'react-tooltip';
 
 import * as css from './PerformerModal.scss';

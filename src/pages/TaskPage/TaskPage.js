@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+import includes from 'lodash/includes';
 
 import TaskHeader from './TaskHeader';
 import Details from './Details';
@@ -184,7 +184,7 @@ class TaskPage extends Component {
       .filter(
         task =>
           task.id !== this.props.task.id &&
-          !_.includes(linkedTasksIds, task.id) &&
+          !includes(linkedTasksIds, task.id) &&
           task.parentId !== this.props.task.id &&
           task.id !== this.props.task.parentId
       )

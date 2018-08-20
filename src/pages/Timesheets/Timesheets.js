@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 import moment from 'moment';
-import _ from 'lodash';
+import find from 'lodash/find';
+import sortBy from 'lodash/sortBy';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as timesheetsActions from '../../actions/Timesheets';
 import * as timesheetsConstants from '../../constants/Timesheets';
@@ -23,6 +24,7 @@ class Timesheets extends React.Component {
     dateEnd: PropTypes.string,
     deleteTempTimesheets: PropTypes.func,
     getTimesheets: PropTypes.func,
+    lang: PropTypes.string,
     list: PropTypes.array,
     showNotification: PropTypes.func,
     startingDay: PropTypes.object,
@@ -102,7 +104,7 @@ class Timesheets extends React.Component {
           const isTemp = tempTimesheets.some(tempTsh => tempTsh.id === el.id);
           const taskNotPushed =
             el.task &&
-            !_.find(res, tsh => {
+            !find(res, tsh => {
               const isExist = tsh.id === el.task.id && tsh.taskStatusId === el.taskStatusId;
               if (isExist && isTemp) {
                 tsh.hilight = true;
@@ -137,7 +139,7 @@ class Timesheets extends React.Component {
       const timeSheets = [];
 
       for (let index = 0; index < 7; index++) {
-        const timesheet = _.find(list, tsh => {
+        const timesheet = find(list, tsh => {
           return (
             tsh.task &&
             tsh.typeId === 1 &&
@@ -176,7 +178,7 @@ class Timesheets extends React.Component {
       return { ...element, timeSheets };
     });
 
-    _.sortBy(tasks, ['name']);
+    sortBy(tasks, ['name']);
 
     const taskRows = tasks.map(item => (
       <ActivityRow key={`${item.id}-${item.taskStatusId}-${startingDay}`} task item={item} />
@@ -188,7 +190,7 @@ class Timesheets extends React.Component {
           const isTemp = tempTimesheets.some(tempTsh => tempTsh.id === el.id);
           const maNotPushed =
             el.typeId !== 1 &&
-            !_.find(res, tsh => {
+            !find(res, tsh => {
               const isSameType = tsh.typeId === el.typeId;
               const isSameProject = el.project ? tsh.projectId === el.project.id : tsh.projectId === 0;
               const isSameSprint = (el.sprint ? el.sprint.id : 0) === (tsh.sprint ? tsh.sprint.id : 0);
@@ -222,7 +224,7 @@ class Timesheets extends React.Component {
     magicActivities = magicActivities.map(element => {
       const timeSheets = [];
       for (let index = 0; index < 7; index++) {
-        const timesheet = _.find(list, tsh => {
+        const timesheet = find(list, tsh => {
           return (
             tsh.typeId !== 1 &&
             tsh.typeId === element.typeId &&

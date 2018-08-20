@@ -7,7 +7,7 @@ import axios from 'axios';
 import { API_URL } from '../../../../constants/Settings';
 import { ADMIN } from '../../../../constants/Roles';
 import { bindUserToProject, getProjectUsers } from '../../../../actions/Project';
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 import ReactTooltip from 'react-tooltip';
 import * as css from './ParticipantEditor.scss';
 import Participant from '../../../../components/Participant';

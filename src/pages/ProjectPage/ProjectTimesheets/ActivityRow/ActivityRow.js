@@ -3,7 +3,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 import { Link } from 'react-router';
-import _ from 'lodash';
+import find from 'lodash/find';
+import forEach from 'lodash/forEach';
+import sumBy from 'lodash/sumBy';
 import moment from 'moment';
 import roundNum from '../../../../utils/roundNum';
 import * as css from '../ProjectTimesheets.scss';
@@ -60,7 +62,7 @@ class ActivityRow extends React.Component {
 
   getTimeCells = timeSheets => {
     const timeCells = {};
-    _.forEach(timeSheets, (tsh, i) => {
+    forEach(timeSheets, (tsh, i) => {
       if (tsh.spentTime) {
         timeCells[i] = roundNum(tsh.spentTime, 2);
       } else {
@@ -138,9 +140,9 @@ class ActivityRow extends React.Component {
   render() {
     const { task, ma, statuses, magicActivitiesTypes } = this.props;
     const { item, editingSpent } = this.state;
-    const status = task ? _.find(statuses, { id: item.taskStatusId }) : '';
-    const maType = ma ? _.find(magicActivitiesTypes, { id: item.typeId }) : '';
-    const totalTime = roundNum(_.sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
+    const status = task ? find(statuses, { id: item.taskStatusId }) : '';
+    const maType = ma ? find(magicActivitiesTypes, { id: item.typeId }) : '';
+    const totalTime = roundNum(sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
 
     const timeCells = item.timeSheets.map((tsh, i) => {
       return (
