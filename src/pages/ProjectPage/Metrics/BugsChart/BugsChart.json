@@ -9,7 +9,7 @@
   },
   "ru": {
     "BUGS_NUMBER": "Количество открытых багов",
-    "BUGS_NUMBER_FROM_CLIENT": "Number of open bugs from client",
+    "BUGS_NUMBER_FROM_CLIENT": "Количество открытых багов от клиента",
     "BUGS_REGRESSION": "Количество открытых регрессионных багов",
     "BUGS_NUM": "Количество багов",
     "DATE": "Дата",
