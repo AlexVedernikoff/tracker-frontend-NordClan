@@ -5,6 +5,7 @@ import { IconEdit, IconCheck } from '../../Icons';
 import ReactTooltip from 'react-tooltip';
 import InputNumber from '../../InputNumber';
 import roundNum from '../../../utils/roundNum';
+import parseInteger from '../../../utils/parseInteger';
 
 class Budget extends Component {
   constructor(props) {
@@ -51,8 +52,7 @@ class Budget extends Component {
 
   onChangeValue = value => {
     this.setState({
-      value
-      // value: parseFloat(parseFloat(e.target.value).toFixed(2))
+      value: this.props.integerOnly ? parseInteger(value) : value
     });
   };
 
@@ -75,6 +75,7 @@ class Budget extends Component {
                 autoFocus
                 defaultValue={this.props.value}
                 onChange={this.onChangeValue}
+                value={this.state.value}
                 max={max}
                 min={min}
               />
@@ -101,6 +102,7 @@ class Budget extends Component {
 Budget.propTypes = {
   header: PropTypes.string.isRequired,
   id: PropTypes.number,
+  integerOnly: PropTypes.bool,
   isProjectAdmin: PropTypes.bool,
   max: PropTypes.number,
   min: PropTypes.number,
