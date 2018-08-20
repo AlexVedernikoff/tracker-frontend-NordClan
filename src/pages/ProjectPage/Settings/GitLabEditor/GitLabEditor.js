@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { get, remove, difference } from 'lodash';
+import get from 'lodash/get';
+import remove from 'lodash/remove';
 
 import * as css from './GitLabEditor.scss';
 import { changeProject } from '../../../../actions/Project';

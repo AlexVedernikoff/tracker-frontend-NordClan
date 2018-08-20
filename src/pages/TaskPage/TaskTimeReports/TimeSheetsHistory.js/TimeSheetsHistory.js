@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { find, get, sortBy } from 'lodash';
+import find from 'lodash/find';
+import get from 'lodash/get';
+import sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import { Link } from 'react-router';
-import classnames from 'classnames';
 
 import NewLine from './NewLine';
 import UserCard from '../../../../components/UserCard';

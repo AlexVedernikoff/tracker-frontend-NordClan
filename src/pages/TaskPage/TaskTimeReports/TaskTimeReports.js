@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { sum, get } from 'lodash';
+import sum from 'lodash/sum';
+import get from 'lodash/get';
 
 import * as css from './TaskTimeReports.scss';
 import { getTaskSpent } from '../../../actions/Task';

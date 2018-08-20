@@ -3,7 +3,11 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 import { Link } from 'react-router';
-import _ from 'lodash';
+import debounce from 'lodash/debounce';
+import forEach from 'lodash/forEach';
+import find from 'lodash/find';
+import sumBy from 'lodash/sumBy';
+import remove from 'lodash/remove';
 import moment from 'moment';
 import roundNum from '../../../utils/roundNum';
 import validateNumber from '../../../utils/validateNumber';
@@ -36,10 +40,9 @@ class ActivityRow extends React.Component {
 
     const debounceTime = 1000;
 
-    this.deleteTimesheets = _.debounce(this.deleteTimesheets, debounceTime);
-
-    this.debouncedUpdateTimesheet = _.debounce(this.updateTimesheet, debounceTime * 2);
-    this.debouncedCreateTimesheet = _.debounce(this.createTimesheet, debounceTime * 2);
+    this.deleteTimesheets = debounce(this.deleteTimesheets, debounceTime);
+    this.debouncedUpdateTimesheet = debounce(this.updateTimesheet, debounceTime * 2);
+    this.debouncedCreateTimesheet = debounce(this.createTimesheet, debounceTime * 2);
 
     this.state = {
       hl: false,
@@ -78,7 +81,7 @@ class ActivityRow extends React.Component {
 
   getTimeCells = timeSheets => {
     const timeCells = {};
-    _.forEach(timeSheets, (tsh, i) => {
+    forEach(timeSheets, (tsh, i) => {
       if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
         timeCells[i] = roundNum(tsh.spentTime, 2);
       } else {
@@ -276,10 +279,10 @@ class ActivityRow extends React.Component {
 
   render() {
     const { item, task, ma, statuses, magicActivitiesTypes, lang } = this.props;
-    const status = task ? _.find(statuses, { id: item.taskStatusId }) : '';
-    const maType = ma ? _.find(magicActivitiesTypes, { id: item.typeId }) : '';
-    const totalTime = roundNum(_.sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
-    const timeSheetIds = _.remove(item.timeSheets.map(tsh => tsh.id), tsh => tsh);
+    const status = task ? find(statuses, { id: item.taskStatusId }) : '';
+    const maType = ma ? find(magicActivitiesTypes, { id: item.typeId }) : '';
+    const totalTime = roundNum(sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
+    const timeSheetIds = remove(item.timeSheets.map(tsh => tsh.id), tsh => tsh);
     const canDeleteRow = !item.timeSheets.find(
       tsh =>
         tsh.id &&

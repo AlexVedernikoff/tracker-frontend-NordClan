@@ -4,7 +4,8 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { history } from '../../../../../History';
 import { updateDraft, updateTimesheet } from '../../../../../actions/TimesheetPlayer';
-import _ from 'lodash';
+import debounce from 'lodash/debounce';
+import find from 'lodash/find';
 import * as css from '../Playlist.scss';
 import getMaIcon from '../../../../../constants/MagicActivityIcons';
 import roundNum from '../../../../../utils/roundNum';
@@ -21,8 +22,8 @@ class PlaylistItem extends Component {
       itemSpentTime: roundNum(this.props.item.spentTime, 2),
       isCommentOpen: false
     };
-    this.debouncedUpdateDraft = _.debounce(this.props.updateDraft, 500);
-    this.debouncedUpdateOnlyTimesheet = _.debounce(this.props.updateTimesheet, 500);
+    this.debouncedUpdateDraft = debounce(this.props.updateDraft, 500);
+    this.debouncedUpdateOnlyTimesheet = debounce(this.props.updateTimesheet, 500);
   }
 
   toggleComment = event => {
@@ -105,7 +106,7 @@ class PlaylistItem extends Component {
   };
 
   getNameByType = typeId => {
-    const activity = _.find(this.props.magicActivitiesTypes, { id: typeId });
+    const activity = find(this.props.magicActivitiesTypes, { id: typeId });
     return activity ? activity.name : localize[this.props.lang].UNDEFINED;
   };
 

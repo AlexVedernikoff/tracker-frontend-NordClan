@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
-import SelectDropdown from '../../../../components/SelectDropdown';
 import SprintSelector from '../../../../components/SprintSelector';
-import _ from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import moment from 'moment/moment';
 import DatepickerDropdown from '../../../../components/DatepickerDropdown/DatepickerDropdown';
 import { API_URL } from '../../../../constants/Settings';
@@ -46,14 +45,14 @@ class SprintReport extends Component {
   }
 
   selectReportPeriod = option => {
-    if (!_.isEmpty(option) && option.value.id) {
+    if (!isEmpty(option) && option.value.id) {
       this.setState({
         selectedName: option.label,
         reportPeriod: option,
         selectedFrom: this.formatDate(option.value.factStartDate),
         selectedTo: this.formatDate(option.value.factFinishDate)
       });
-    } else if (!_.isEmpty(option)) {
+    } else if (!isEmpty(option)) {
       this.setState({
         selectedName: option.label,
         reportPeriod: option,

@@ -4,7 +4,7 @@ import * as css from './Comments.scss';
 import { Link } from 'react-router';
 import cn from 'classnames';
 import moment from 'moment';
-import { get } from 'lodash';
+import get from 'lodash/get';
 import { IconDeleteAnimate } from '../../../components/Icons';
 import CopyThis from '../../../components/CopyThis';
 import { history } from '../../../History';

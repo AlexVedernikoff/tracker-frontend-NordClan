@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
 import SelectDropdown from '../../components/SelectDropdown';
 import isAdmin from '../../utils/isAdmin';
 
@@ -11,12 +10,9 @@ import localize from './usersRoles.json';
 import { getLastName, getFullName } from '../../utils/NameLocalisation';
 
 class UsersRoles extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      users: ''
-    };
-  }
+  state = {
+    users: ''
+  };
 
   componentDidMount() {
     this.props.getUsers();
@@ -123,6 +119,7 @@ class UsersRoles extends React.Component {
 
 UsersRoles.propTypes = {
   getUsers: PropTypes.func.isRequired,
+  lang: PropTypes.string,
   updateUserRole: PropTypes.func,
   userGlobalRole: PropTypes.string.isRequired,
   users: PropTypes.array.isRequired

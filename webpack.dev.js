@@ -15,14 +15,18 @@ const target =
         port: 443
       };
 
+const p = require('./package.json');
+
 const settings = {
   entry: {
+    vendor: Object.keys(p.dependencies),
     bundle: ['babel-polyfill', 'react-hot-loader/patch', './src/App.js']
   },
   output: {
     filename: '[name].js',
     publicPath: '/',
-    path: path.resolve('build')
+    path: path.resolve('build'),
+    sourceMapFilename: '[file].map'
   },
   resolve: {
     extensions: ['.js', '.json', '.css']
@@ -124,7 +128,14 @@ const settings = {
     new webpack.LoaderOptionsPlugin({
       debug: true
     }),
-    new CopyWebpackPlugin([{ from: './src/www', to: './' }])
+    new CopyWebpackPlugin([{ from: './src/www', to: './' }]),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      filename: 'vendor.js'
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'manifest'
+    })
   ]
 };
 
