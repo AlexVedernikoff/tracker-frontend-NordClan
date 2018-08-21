@@ -284,9 +284,7 @@ class AgileBoard extends Component {
   }
 
   componentDidMount() {
-    if (this.props.myTaskBoard) {
-      this.selectValue(this.getChangedSprint(this.props), 'changedSprint');
-    }
+    this.selectValue(this.getChangedSprint(this.props), 'changedSprint');
   }
 
   componentWillReceiveProps(nextProps) {
@@ -428,10 +426,13 @@ class AgileBoard extends Component {
   };
 
   getChangedSprint = props => {
-    let changedSprint =
-      this.props.location.query.currentSprint === undefined
-        ? this.state.changedSprint || 0
-        : +this.props.location.query.currentSprint;
+    let changedSprint = this.state.changedSprint || this.props.currentSprint;
+    if (!this.props.myTaskBoard) {
+      changedSprint =
+        this.props.location.query.currentSprint === undefined
+          ? this.state.changedSprint || 0
+          : +this.props.location.query.currentSprint;
+    }
     if (props.lastCreatedTask && Number.isInteger(props.lastCreatedTask.sprintId)) {
       changedSprint = props.lastCreatedTask.sprintId;
     }
@@ -1034,4 +1035,7 @@ const mapDispatchToProps = {
   getProjectInfo
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AgileBoard);
