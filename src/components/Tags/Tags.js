@@ -9,6 +9,7 @@ import { createTags } from '../../actions/Tags';
 import { connect } from 'react-redux';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import localize from './Tags.json';
+import SelectCreatable from '../SelectCreatable';
 
 class Tags extends Component {
   constructor(props) {
@@ -58,6 +59,26 @@ class Tags extends Component {
     if (this.state.tags.length > this.state.maxLength) {
       sliceTags = this.state.tags.slice(0, this.state.maxLength);
     }
+    //console.log(this.props);
+    //<input
+    //  type="text"
+    //  placeholder={localize[lang].ADD_TAG}
+    //  className={css.tagsInput}
+    //  defaultValue=""
+    //  autoFocus
+    //  onChange={this.onChangeHandler}
+    ///>
+    //<SelectCreatable
+    //type="text"
+    //placeholder={localize[lang].ADD_TAG}
+    //className={css.tagsInput}
+    //defaultValue=""
+    //autoFocus
+    //onChange={this.onChangeHandler}
+    //isMulti
+    //onChange={this.handleChange}
+    //options={[]}
+    ///>
     return (
       <div>
         {!this.state.cutTags ? this.state.tags : sliceTags}
@@ -77,14 +98,6 @@ class Tags extends Component {
                   className={classnames({ [css.tagPopup]: true, [css[this.props.direction]]: true })}
                   onSubmit={this.sendNewTags}
                 >
-                  <input
-                    type="text"
-                    placeholder={localize[lang].ADD_TAG}
-                    className={css.tagsInput}
-                    defaultValue=""
-                    autoFocus
-                    onChange={this.onChangeHandler}
-                  />
                   <Button
                     addedClassNames={{ [css.tagsButton]: true, [css.tagsSubmit]: true }}
                     icon="IconCheck"
@@ -117,7 +130,8 @@ Tags.propTypes = {
   maxLength: PropTypes.number,
   noRequest: PropTypes.bool,
   taggable: PropTypes.string,
-  taggableId: PropTypes.number
+  taggableId: PropTypes.number,
+  tags: PropTypes.array
 };
 
 Tags.defaultProps = {

@@ -6,7 +6,6 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import get from 'lodash/get';
-import uniq from 'lodash/uniq';
 import sortBy from 'lodash/sortBy';
 import TaskCard from '../../../components/TaskCard';
 import FilterList from '../../../components/FilterList';
@@ -24,6 +23,7 @@ import * as css from './AgileBoard.scss';
 import { UnmountClosed } from 'react-collapse';
 import localize from './AgileBoard.json';
 import { getFullName, getDictionaryName } from '../../../utils/NameLocalisation';
+import { getAllTags } from '../../../selectors/getAllTags';
 
 import getTasks from '../../../actions/Tasks';
 import { VISOR, EXTERNAL_USER } from '../../../constants/Roles';
@@ -98,21 +98,6 @@ const myTasks = (tasks, userId) =>
   });
 
 const getMyTasks = createSelector([selectTasks, selectUserId], (tasks, userId) => filterTasks(myTasks(tasks, userId)));
-
-const getTagsByTask = tasks => {
-  let allTags = tasks.reduce((arr, task) => {
-    return arr.concat(task.tags ? task.tags.map(tags => tags.name) : []);
-  }, []);
-
-  allTags = uniq(allTags);
-
-  return allTags.map(tag => ({
-    value: tag,
-    label: tag
-  }));
-};
-
-const getAllTags = createSelector([selectTasks], tasks => getTagsByTask(tasks));
 
 const getSprints = unsortedSprints => {
   let sprints = sortBy(unsortedSprints, sprint => {

@@ -1,0 +1,23 @@
+import uniq from 'lodash/uniq';
+import { createSelector } from 'reselect';
+
+const getTagsByTask = tasks => {
+  console.log('tasks', tasks);
+  let allTags = tasks.reduce((arr, task) => {
+    return arr.concat(task.tags ? task.tags.map(tags => tags.name) : []);
+  }, []);
+
+  allTags = uniq(allTags);
+
+  return allTags.map(tag => ({
+    value: tag,
+    label: tag
+  }));
+};
+
+const selectTasks = state => state.Tasks.tasks;
+
+export const getAllTags = createSelector([selectTasks], tasks => {
+  console.log('TAGS', getTagsByTask(tasks));
+  return getTagsByTask(tasks);
+});
