@@ -68,7 +68,7 @@ class Mentions extends Component {
   };
 
   chooseMention = event => {
-    this.setState({});
+    this.props.updateCurrentCommentText(this.props.value + event.target.value);
     console.log(event.target.value);
     this.setState({ showSuggestionsList: false });
   };
@@ -76,7 +76,11 @@ class Mentions extends Component {
   showSuggestions = () => {
     if (this.state.showSuggestionsList) {
       return (
-        <ul onMouseDown={this.chooseMention}>{this.state.suggestions.map(member => <option>{member}</option>)}</ul>
+        <ul onMouseDown={this.chooseMention}>
+          {this.state.suggestions.map(member => (
+            <option>{member}</option>
+          ))}
+        </ul>
       );
     }
   };
@@ -91,7 +95,7 @@ class Mentions extends Component {
           placeholder={this.props.placeholder}
           onInput={this.typeComment}
           onKeyDown={this.props.onKeyDown}
-          value={this.state.value}
+          value={this.props.value}
         />
         <ul>{this.showSuggestions()}</ul>
       </div>
