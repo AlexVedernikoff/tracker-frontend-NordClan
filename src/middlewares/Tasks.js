@@ -11,8 +11,9 @@ export const taskUpdate = store => next => action => {
   if (targetActions[action.type]) {
     const { routing: { locationBeforeTransitions: location }, Task: { task: { id } } } = store.getState();
     if (RegExp(`${id}\/history\/?$`).test(location.pathname)) {
-      store.getState().Task.history && store.getState().Task.history.pageSize
-        ? store.dispatch(getTaskHistory(id, { pageSize: store.getState().Task.history.pageSize }))
+      const history = store.getState().Task.history;
+      history.pageSize && history.currentPage
+        ? store.dispatch(getTaskHistory(id, { pageSize: history.pageSize, currentPage: history.currentPage }))
         : store.dispatch(getTaskHistory(id));
     }
   }
