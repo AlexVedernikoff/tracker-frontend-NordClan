@@ -1,8 +1,4 @@
-import {
-    TASK_CHANGE_REQUEST_SUCCESS,
-    TASK_CHANGE_USER_SUCCESS,
-    TASK_LINK_SUCCESS
-} from '../constants/Task';
+import { TASK_CHANGE_REQUEST_SUCCESS, TASK_CHANGE_USER_SUCCESS, TASK_LINK_SUCCESS } from '../constants/Task';
 import { getTaskHistory } from '../actions/Task';
 
 const targetActions = {
@@ -11,11 +7,14 @@ const targetActions = {
   [TASK_LINK_SUCCESS]: true
 };
 
-export const taskUpdate = (store) => (next) => (action) => {
+export const taskUpdate = store => next => action => {
   if (targetActions[action.type]) {
-    const {routing: { locationBeforeTransitions: location }, Task: { task: { id } } } = store.getState();
+    const { routing: { locationBeforeTransitions: location }, Task: { task: { id } } } = store.getState();
     if (RegExp(`${id}\/history\/?$`).test(location.pathname)) {
-      store.dispatch(getTaskHistory(id));
+      const history = store.getState().Task.history;
+      history.pageSize && history.currentPage
+        ? store.dispatch(getTaskHistory(id, { pageSize: history.pageSize, currentPage: history.currentPage }))
+        : store.dispatch(getTaskHistory(id));
     }
   }
   next(action);
