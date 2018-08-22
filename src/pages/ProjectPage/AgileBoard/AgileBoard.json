@@ -26,7 +26,7 @@
     "SELECT_SPRINT": "Выберите спринт",
     "NO_RESULTS": "Нет результатов",
     "SELECT_AUTHOR": "Выберите автора задачи",
-    "CLEAR_FILTERS": "Очистить филтры",
+    "CLEAR_FILTERS": "Очистить фильтры",
     "CHANGE_PERFORMER": "Изменить исполнителя задачи"
   }
 }
