@@ -7,7 +7,7 @@ import { stateToHTML } from 'draft-js-export-html';
 import { Col, Row } from 'react-flexbox-grid';
 import moment from 'moment';
 import classnames from 'classnames';
-import _ from 'lodash';
+import sortBy from 'lodash/sortBy';
 import Button from '../Button';
 import SelectDropdown from '../SelectDropdown';
 import ValidatedInput from '../ValidatedInput';
@@ -99,7 +99,7 @@ class CreateTaskModal extends Component {
     this.setState({ selectedType: value && !(Array.isArray(value) && !value.length) ? value : null });
 
   getSprints = () => {
-    let sprints = _.sortBy(this.props.project.sprints, sprint => {
+    let sprints = sortBy(this.props.project.sprints, sprint => {
       return new moment(sprint.factFinishDate);
     });
 

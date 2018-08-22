@@ -1,7 +1,7 @@
 import * as TaskActions from '../constants/Task';
 import * as TagsActions from '../constants/Tags';
 import * as TaskStatuses from '../constants/TaskStatuses';
-import _ from 'lodash';
+import * as _ from 'lodash';
 
 const getDefaultCurrentComment = () => ({
   text: '',

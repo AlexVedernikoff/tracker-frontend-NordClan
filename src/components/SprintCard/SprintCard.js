@@ -194,7 +194,4 @@ const mapDispatchToProps = {
   editSprint
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SprintCard);
+export default connect(mapStateToProps, mapDispatchToProps)(SprintCard);

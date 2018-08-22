@@ -176,7 +176,4 @@ const mapDispatchToProps = {
   showNotification
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Participant);
+export default connect(mapStateToProps, mapDispatchToProps)(Participant);

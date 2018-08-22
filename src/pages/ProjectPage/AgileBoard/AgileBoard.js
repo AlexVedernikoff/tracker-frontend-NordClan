@@ -5,7 +5,9 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import _ from 'lodash';
+import get from 'lodash/get';
+import uniq from 'lodash/uniq';
+import sortBy from 'lodash/sortBy';
 import TaskCard from '../../../components/TaskCard';
 import FilterList from '../../../components/FilterList';
 import PerformerModal from '../../../components/PerformerModal';
@@ -81,7 +83,7 @@ const filterTasks = array => {
       if (!task.linkedTasks) {
         task.linkedTasks = [];
       }
-      task.linkedTasks.concat(task.subTasks, task.parentTask).map(relatedTask => _.get(relatedTask, 'id', null));
+      task.linkedTasks.concat(task.subTasks, task.parentTask).map(relatedTask => get(relatedTask, 'id', null));
     });
   }
 
@@ -102,7 +104,7 @@ const getTagsByTask = tasks => {
     return arr.concat(task.tags ? task.tags.map(tags => tags.name) : []);
   }, []);
 
-  allTags = _.uniq(allTags);
+  allTags = uniq(allTags);
 
   return allTags.map(tag => ({
     value: tag,
@@ -113,7 +115,7 @@ const getTagsByTask = tasks => {
 const getAllTags = createSelector([selectTasks], tasks => getTagsByTask(tasks));
 
 const getSprints = unsortedSprints => {
-  let sprints = _.sortBy(unsortedSprints, sprint => {
+  let sprints = sortBy(unsortedSprints, sprint => {
     return new moment(sprint.factFinishDate);
   });
 
@@ -282,9 +284,7 @@ class AgileBoard extends Component {
   }
 
   componentDidMount() {
-    if (this.props.myTaskBoard) {
-      this.selectValue(this.getChangedSprint(this.props), 'changedSprint');
-    }
+    this.selectValue(this.getChangedSprint(this.props), 'changedSprint');
   }
 
   componentWillReceiveProps(nextProps) {
@@ -426,7 +426,13 @@ class AgileBoard extends Component {
   };
 
   getChangedSprint = props => {
-    let changedSprint = this.state.changedSprint !== null ? this.state.changedSprint : this.props.currentSprint;
+    let changedSprint = this.state.changedSprint || this.props.currentSprint;
+    if (!this.props.myTaskBoard) {
+      changedSprint =
+        this.props.location.query.currentSprint === undefined
+          ? this.state.changedSprint || 0
+          : +this.props.location.query.currentSprint;
+    }
     if (props.lastCreatedTask && Number.isInteger(props.lastCreatedTask.sprintId)) {
       changedSprint = props.lastCreatedTask.sprintId;
     }
@@ -594,7 +600,7 @@ class AgileBoard extends Component {
         currentSprint = sprint;
       }
     });
-    return `${currentSprint.spentTime || 0} / ${currentSprint.riskBudget || 0}`;
+    return `${currentSprint.spentTime || 0} / ${currentSprint.budget || 0}`;
   };
 
   getUsers = () => {
@@ -701,14 +707,16 @@ class AgileBoard extends Component {
   };
 
   clearFilter = () => {
+    this.changeUrl({ projectId: this.props.params.projectId });
     this.setState(
       {
-        ...this.initialFilters
+        ...this.initialFilters,
+        changedSprint: 0
       },
       () => {
         this.getTasks({
           projectId: this.props.params.projectId,
-          sprintId: null,
+          sprintId: 0,
           ...this.initialFilters
         });
       }
@@ -747,7 +755,7 @@ class AgileBoard extends Component {
     filterKeys.forEach(key => {
       if (Array.isArray(this.state[key]) && this.state[key].length === 0) {
         return;
-      } else if ([null, '', false].indexOf(this.state[key]) === -1) {
+      } else if ([null, '', false, 0].indexOf(this.state[key]) === -1) {
         isEmpty = false;
       }
     });

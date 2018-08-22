@@ -1,5 +1,4 @@
 import * as UsersRolesActions from '../constants/UsersRoles';
-import _ from 'lodash';
 
 const InitialState = {
   users: []

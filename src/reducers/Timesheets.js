@@ -1,6 +1,6 @@
 import * as TimesheetsActions from '../constants/Timesheets';
 import moment from 'moment';
-import _ from 'lodash';
+import get from 'lodash/get';
 
 moment.locale('ru');
 
@@ -45,7 +45,7 @@ export default function Timesheets(state = InitialState, action) {
         }
       };
     case TimesheetsActions.CREATE_TIMESHEET_SUCCESS:
-      if (_.get(action, 'timesheet.isDraft')) {
+      if (get(action, 'timesheet.isDraft')) {
         return state;
       }
 

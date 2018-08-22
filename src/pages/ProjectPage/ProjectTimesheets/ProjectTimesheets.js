@@ -3,12 +3,13 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 import moment from 'moment';
-import _ from 'lodash';
+import filter from 'lodash/filter';
+import find from 'lodash/find';
+import sortBy from 'lodash/sortBy';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as timesheetsActions from '../../../actions/Timesheets';
-import * as timesheetsConstants from '../../../constants/Timesheets';
 import * as css from './ProjectTimesheets.scss';
-import { IconPlus, IconArrowLeft, IconArrowRight, IconCalendar } from '../../../components/Icons';
+import { IconArrowLeft, IconArrowRight, IconCalendar } from '../../../components/Icons';
 import Calendar from './Calendar';
 import ActivityRow from './ActivityRow';
 import UserRow from './UserRow';
@@ -22,10 +23,11 @@ class ProjectTimesheets extends React.Component {
     dateBegin: PropTypes.string,
     dateEnd: PropTypes.string,
     getProjectTimesheets: PropTypes.func,
+    lang: PropTypes.string,
     list: PropTypes.array,
+    params: PropTypes.object,
     startingDay: PropTypes.object,
-    tempTimesheets: PropTypes.array,
-    params: PropTypes.object
+    tempTimesheets: PropTypes.array
   };
 
   state = {
@@ -89,7 +91,7 @@ class ProjectTimesheets extends React.Component {
       const timeSheets = [];
 
       for (let index = 0; index < 7; index++) {
-        const timesheet = _.find(arr, tsh => {
+        const timesheet = find(arr, tsh => {
           return (
             tsh.task &&
             tsh.task.id === el.task.id &&
@@ -127,7 +129,7 @@ class ProjectTimesheets extends React.Component {
     const getUserTimesheets = userId => {
       const timeSheets = [];
       for (let index = 0; index < 7; index++) {
-        const dayUserSheets = _.filter(list, tsh => {
+        const dayUserSheets = filter(list, tsh => {
           return (
             tsh.userId === userId &&
             moment(tsh.onDate).format('DD.MM.YY') ===
@@ -182,7 +184,7 @@ class ProjectTimesheets extends React.Component {
       ? list.reduce((res, el) => {
           const maNotPushed =
             el.typeId !== 1 &&
-            !_.find(res, tsh => {
+            !find(res, tsh => {
               const isSameType = tsh.typeId === el.typeId;
               const isSameProject = el.project ? tsh.projectId === el.project.id : tsh.projectId === 0;
               const isSameSprint = (el.sprint ? el.sprint.id : 0) === (tsh.sprint ? tsh.sprint.id : 0);
@@ -209,7 +211,7 @@ class ProjectTimesheets extends React.Component {
       magicActivities.forEach(element => {
         const timeSheets = [];
         for (let index = 0; index < 7; index++) {
-          const timesheet = _.find(list, tsh => {
+          const timesheet = find(list, tsh => {
             return (
               tsh.typeId !== 1 &&
               tsh.userId === userId &&
@@ -272,7 +274,7 @@ class ProjectTimesheets extends React.Component {
       }
     });
 
-    _.sortBy(users, ['userName']);
+    sortBy(users, ['userName']);
 
     const userRows = [];
     for (const user of Object.values(users)) {

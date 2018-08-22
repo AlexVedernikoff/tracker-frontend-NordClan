@@ -1,5 +1,4 @@
 import * as NotificationsActions from '../constants/Notifications';
-import _ from 'lodash';
 
 const InitialState = {
   Notifications: []

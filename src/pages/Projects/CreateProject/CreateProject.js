@@ -95,7 +95,7 @@ class CreateProject extends Component {
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Select
-                  name="performer"
+                  name="projectType"
                   placeholder={localize[lang].TYPE_PLACEHOLDER}
                   multi={false}
                   noResultsText={localize[lang].NO_RESULTS}
@@ -167,7 +167,8 @@ CreateProject.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  projectTypes: state.Dictionaries.projectTypes || []
 });
 
 export default connect(

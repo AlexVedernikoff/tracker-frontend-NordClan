@@ -83,7 +83,15 @@ const ProjectCard = props => {
                   <span className={css.titleSplit}>/</span>{' '}
                 </span>
               ) : null}
-              <Link to={`/projects/${id}`}>{name}</Link>
+              <Link
+                to={`/projects/${id}${
+                  !props.project.currentSprints || props.project.currentSprints[0] === undefined
+                    ? ''
+                    : `?currentSprint=${props.project.currentSprints[0].id}`
+                }`}
+              >
+                {name}
+              </Link>
             </div>
           </h3>
         </Col>
@@ -111,8 +119,8 @@ const ProjectCard = props => {
                 <div className={css.currentSprints}>
                   {currentSprints.map((sprint, i) => (
                     <span key={`sprint-${i}`} className={css.sprint}>
-                      {sprint.name} ({moment(sprint.factStartDate).format('DD.MM.YYYY')}
-                      - {moment(sprint.factFinishDate).format('DD.MM.YYYY')})
+                      {sprint.name} ({moment(sprint.factStartDate).format('DD.MM.YYYY')}-{' '}
+                      {moment(sprint.factFinishDate).format('DD.MM.YYYY')})
                     </span>
                   ))}
                 </div>
