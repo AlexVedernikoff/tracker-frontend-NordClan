@@ -8,7 +8,8 @@
     "NO_RESUTLS": "No results",
     "DATE": "Date:",
     "ENTER_DATE": "Enter the date",
-    "EDIT": "Edit"
+    "EDIT": "Edit",
+    "COMPLETED": "Done"
   },
   "ru": {
     "EDIT_MILESTONE": "Редактирование вехи",
@@ -19,6 +20,7 @@
     "NO_RESUTLS": "Нет результатов",
     "DATE": "Дата:",
     "ENTER_DATE": "Введите дату",
-    "EDIT": "Изменить"
+    "EDIT": "Изменить",
+    "COMPLETED": "Выполнено"
   }
 }

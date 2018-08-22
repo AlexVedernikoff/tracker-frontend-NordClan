@@ -164,7 +164,7 @@ class EditMilestoneModal extends Component {
 
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>{localize[lang].DATE}</p>
+                <p>{localize[lang].COMPLETED}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Checkbox checked={this.state.milestone.done} onChange={this.handleStatusChange} />

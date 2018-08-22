@@ -600,7 +600,7 @@ class AgileBoard extends Component {
         currentSprint = sprint;
       }
     });
-    return `${currentSprint.spentTime || 0} / ${currentSprint.riskBudget || 0}`;
+    return `${currentSprint.spentTime || 0} / ${currentSprint.budget || 0}`;
   };
 
   getUsers = () => {
@@ -1035,7 +1035,4 @@ const mapDispatchToProps = {
   getProjectInfo
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AgileBoard);
+export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);
