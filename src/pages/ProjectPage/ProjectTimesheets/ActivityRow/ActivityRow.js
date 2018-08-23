@@ -90,6 +90,7 @@ class ActivityRow extends React.Component {
     tshRef.spentTime = data.spentTime;
     tshRef.comment = data.comment;
     tshRef.sprint = data.sprint;
+    tshRef.isBillable = data.isBillable;
     const timeCells = this.getTimeCells(this.props.item.timeSheets);
     this.setState({
       timeCells
@@ -112,7 +113,8 @@ class ActivityRow extends React.Component {
       taskStatusId: tshRef.taskStatusId ? tshRef.taskStatusId : null,
       userId: tshRef.userId,
       typeId: tshRef.typeId ? tshRef.typeId : 1,
-      comment: tshRef.comment
+      comment: tshRef.comment,
+      isBillable: tshRef.isBillable
     };
     if (tshRef.id) {
       data.sheetId = tshRef.id;
@@ -130,7 +132,7 @@ class ActivityRow extends React.Component {
           this.setTimesheetData(tshRef, response);
         }
       })
-      .catch(error => {
+      .catch(() => {
         this.setTimesheetData(tshRef, tshPrev); // rollback
       });
 
@@ -239,4 +241,7 @@ const mapDispatchToProps = {
   updateTimesheet
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ActivityRow);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ActivityRow);
