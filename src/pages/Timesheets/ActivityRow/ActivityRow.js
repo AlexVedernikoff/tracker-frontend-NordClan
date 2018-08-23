@@ -3,7 +3,11 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 import { Link } from 'react-router';
-import _ from 'lodash';
+import debounce from 'lodash/debounce';
+import forEach from 'lodash/forEach';
+import find from 'lodash/find';
+import sumBy from 'lodash/sumBy';
+import remove from 'lodash/remove';
 import moment from 'moment';
 import roundNum from '../../../utils/roundNum';
 import validateNumber from '../../../utils/validateNumber';
@@ -14,6 +18,7 @@ import { IconClose } from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal';
 import * as timesheetsConstants from '../../../constants/Timesheets';
 import { createTimesheet, updateTimesheet, deleteTimesheets, deleteTempTimesheets } from '../../../actions/Timesheets';
+import localize from './activityRow.json';
 
 class ActivityRow extends React.Component {
   static propTypes = {
@@ -35,18 +40,24 @@ class ActivityRow extends React.Component {
 
     const debounceTime = 1000;
 
-    this.deleteTimesheets = _.debounce(this.deleteTimesheets, debounceTime);
-
-    this.debouncedUpdateTimesheet = _.debounce(this.updateTimesheet, debounceTime * 2);
-    this.debouncedCreateTimesheet = _.debounce(this.createTimesheet, debounceTime * 2);
+    this.deleteTimesheets = debounce(this.deleteTimesheets, debounceTime);
+    this.debouncedUpdateTimesheet = debounce(this.updateTimesheet, debounceTime * 2);
+    this.debouncedCreateTimesheet = debounce(this.createTimesheet, debounceTime * 2);
 
     this.state = {
+      hl: false,
       isOpen: false,
       timeCells: this.getTimeCells(props.item.timeSheets)
     };
   }
 
   componentWillReceiveProps(nextProps) {
+    if (nextProps.item.hilight && !this.state.hl) {
+      this.setState({ hl: true }, () => setTimeout(() => this.setState({ hl: false }), 1000));
+      if (this.row) {
+        this.row.scrollIntoView();
+      }
+    }
     if (this.props.item !== nextProps.item) {
       const currentTimeSheets = this.props.item.timeSheets;
       const nextTimeSheets = nextProps.item.timeSheets;
@@ -70,7 +81,7 @@ class ActivityRow extends React.Component {
 
   getTimeCells = timeSheets => {
     const timeCells = {};
-    _.forEach(timeSheets, (tsh, i) => {
+    forEach(timeSheets, (tsh, i) => {
       if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
         timeCells[i] = roundNum(tsh.spentTime, 2);
       } else {
@@ -264,12 +275,14 @@ class ActivityRow extends React.Component {
     this.closeConfirmModal();
   };
 
+  getRef = ref => (this.row = ref);
+
   render() {
-    const { item, task, ma, statuses, magicActivitiesTypes } = this.props;
-    const status = task ? _.find(statuses, { id: item.taskStatusId }) : '';
-    const maType = ma ? _.find(magicActivitiesTypes, { id: item.typeId }) : '';
-    const totalTime = roundNum(_.sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
-    const timeSheetIds = _.remove(item.timeSheets.map(tsh => tsh.id), tsh => tsh);
+    const { item, task, ma, statuses, magicActivitiesTypes, lang } = this.props;
+    const status = task ? find(statuses, { id: item.taskStatusId }) : '';
+    const maType = ma ? find(magicActivitiesTypes, { id: item.typeId }) : '';
+    const totalTime = roundNum(sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
+    const timeSheetIds = remove(item.timeSheets.map(tsh => tsh.id), tsh => tsh);
     const canDeleteRow = !item.timeSheets.find(
       tsh =>
         tsh.id &&
@@ -304,6 +317,19 @@ class ActivityRow extends React.Component {
                   onChange={e => this.changeFilled(i, tsh.id, tsh.comment, e.target.value)}
                   onBlur={e => this.onBlurFilled(i, tsh.id, tsh.comment, e.target.value)}
                 />
+                {tsh.doubleTimesheets && tsh.doubleTimesheets.length ? (
+                  <span
+                    className={css.doubleTimesheets}
+                    title={localize[lang].DELETE_DUBLICATE}
+                    onClick={() =>
+                      this.deleteTimesheets(tsh.doubleTimesheets.map(doubleTimesheet => doubleTimesheet.id))
+                    }
+                  >
+                    + {tsh.doubleTimesheets.reduce((res, cur) => +cur.spentTime + res, 0)}
+                  </span>
+                ) : (
+                  ''
+                )}
                 <span className={css.toggleComment}>
                   <SingleComment
                     disabled={!canDeleteRow}
@@ -358,7 +384,7 @@ class ActivityRow extends React.Component {
       return <span>{'Backlog'}</span>;
     };
     return (
-      <tr className={css.taskRow}>
+      <tr ref={this.getRef} className={cn(css.taskRow, { [css.taskRowHighLighted]: this.state.hl })}>
         <td>
           <div className={css.taskCard}>
             <div className={css.meta}>
@@ -382,14 +408,14 @@ class ActivityRow extends React.Component {
           </div>
         </td>
         <td className={cn(css.actions)}>
-          <div className={css.deleteTask} onClick={this.openConfirmModal} data-tip="Удалить">
+          <div className={css.deleteTask} onClick={this.openConfirmModal} data-tip={localize[lang].DELETE}>
             {canDeleteRow ? <IconClose /> : null}
           </div>
           {this.state.isConfirmModalOpen ? (
             <ConfirmModal
               isOpen
               contentLabel="modal"
-              text="Вы действительно хотите удалить эту активность?"
+              text={localize[lang].CONFIRM_MESSAGE}
               onCancel={this.closeConfirmModal}
               onConfirm={() => this.deleteActivity(timeSheetIds)}
               onRequestClose={this.closeConfirmModal}
@@ -405,7 +431,8 @@ const mapStateToProps = state => ({
   statuses: state.Dictionaries.taskStatuses,
   magicActivitiesTypes: state.Dictionaries.magicActivityTypes,
   userId: state.Auth.user.id,
-  startingDay: state.Timesheets.startingDay
+  startingDay: state.Timesheets.startingDay,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {

@@ -8,12 +8,15 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 
 import { editSprint } from '../../../actions/Sprint';
 import { createSprint } from '../../../actions/Sprint';
-import { editMilestone } from '../../../actions/Milestone';
+import { editMilestone, deleteMilestone } from '../../../actions/Milestone';
 import getPlanningTasks from '../../../actions/PlanningTasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
+import { changeTasks } from '../../../actions/Tasks';
 import { openCreateTaskModal, getProjectInfo, changeProject } from '../../../actions/Project';
 
 import Button from '../../../components/Button';
+import RoundButton from '../../../components/RoundButton';
+import SimplePie from '../../../components/SimplePie';
 import Budget from '../../../components/PlanningEdit/Budget';
 import ConfirmModal from '../../../components/ConfirmModal';
 import CreateTaskModal from '../../../components/CreateTaskModal';
@@ -33,15 +36,16 @@ import EditMilestoneModal from './EditMilestoneModal';
 import SprintColumnHeader from './SprintColumnHeader/';
 import SprintColumn from './SprintColumn';
 import Table from './Table';
+import localize from './Planning.json';
 
 import moment from 'moment';
-import _ from 'lodash';
 
 class Planning extends Component {
   static propTypes = {
     SprintIsEditing: PropTypes.bool,
     changeProject: PropTypes.func,
     changeTask: PropTypes.func.isRequired,
+    changeTasks: PropTypes.func.isRequired,
     completedAt: PropTypes.string,
     createSprint: PropTypes.func.isRequired,
     createdAt: PropTypes.string,
@@ -52,6 +56,7 @@ class Planning extends Component {
     lastCreatedTask: PropTypes.object,
     leftColumnTasks: PropTypes.object,
     loading: PropTypes.number,
+    milestones: PropTypes.array,
     openCreateTaskModal: PropTypes.func,
     params: PropTypes.object,
     project: PropTypes.object,
@@ -184,7 +189,7 @@ class Planning extends Component {
       };
     } else {
       const sprint = this.props.project.sprints.filter(item => item.id === sprintId)[0];
-      const sprintEstimate = sprint && sprint.allottedTime ? +sprint.allottedTime : 0;
+      const sprintEstimate = sprint && sprint.riskBudget ? +sprint.riskBudget : 0;
       const sprintSpentTime = sprint && sprint.spentTime ? +sprint.spentTime : 0;
       const ratio = sprintEstimate === 0 ? 0 : sprintSpentTime / sprintEstimate;
       const width = ratioValue => {
@@ -197,7 +202,9 @@ class Planning extends Component {
         }
       };
       return {
-        summary: `Суммарное время: ${sprintSpentTime} ${sprintEstimate ? ' из ' + sprintEstimate : ''} ч.`,
+        summary: `${localize[this.props.lang].TOTAL_TIME} ${sprintSpentTime} ${
+          sprintEstimate ? localize[this.props.lang].OF + sprintEstimate : ''
+        } ${localize[this.props.lang].H}`,
         width: `${width(ratio)}%`,
         active: sprintEstimate !== 0,
         exceeded: ratio > 1
@@ -276,6 +283,8 @@ class Planning extends Component {
     };
   };
 
+  onDeleteMilestone = milestone => () => this.props.deleteMilestone(milestone.id);
+
   handleEditSprint = sprint => {
     this.setState({ isOpenSprintEditModal: false });
     this.props.editSprint(
@@ -284,9 +293,9 @@ class Planning extends Component {
       sprint.sprintName.trim(),
       sprint.dateFrom,
       sprint.dateTo,
-      sprint.allottedTime,
       sprint.budget,
-      sprint.riskBudget
+      sprint.riskBudget,
+      sprint.qaPercent
     );
   };
 
@@ -360,6 +369,16 @@ class Planning extends Component {
     );
   };
 
+  onPercentQaSubmit = qaPercent => {
+    this.props.changeProject(
+      {
+        id: this.props.project.id,
+        qaPercent: qaPercent
+      },
+      'qaPercent'
+    );
+  };
+
   loadTasks = (e, name, activePage) => {
     this.props.getPlanningTasks(name === 'leftColumn' ? 'left' : 'right', {
       projectId: this.props.project.id,
@@ -375,16 +394,14 @@ class Planning extends Component {
   onMoveTasksModalCancel = () => {
     this.setState({ isModalOpenMoveTasks: false });
   };
-
-  // TODO: Избавиться от цикла и множественных вызовов после создания API массового редактирования задач
   onMoveTasksModalConfirm = sprintId => {
     const tasks = this.getUnfinishedLeftTasks();
 
     const getPlanningTasksAll = () => {
-      const { getPlanningTasks, leftColumnTasks, rightColumnTasks, project } = this.props;
+      const { leftColumnTasks, rightColumnTasks, project } = this.props;
 
       ['left', 'right'].forEach(side => {
-        getPlanningTasks(side, {
+        this.props.getPlanningTasks(side, {
           projectId: project.id,
           sprintId: this.state[`${side}Column`],
           currentPage:
@@ -397,16 +414,13 @@ class Planning extends Component {
       });
     };
 
-    tasks.forEach((task, index) => {
-      this.props.changeTask(
-        {
-          id: task.id,
-          sprintId: sprintId
-        },
-        'Sprint',
-        index === tasks.length - 1 ? getPlanningTasksAll : null
-      );
-    });
+    this.props.changeTasks(
+      {
+        sprintId,
+        taskIds: tasks.map(task => task.id)
+      },
+      getPlanningTasksAll
+    );
 
     this.setState({ isModalOpenMoveTasks: false });
   };
@@ -427,16 +441,35 @@ class Planning extends Component {
   };
 
   render() {
+    const { lang } = this.props;
     const isProjectAdmin = this.checkIsAdminInProject();
     const isVisor = this.props.user.globalRole === VISOR;
     const isExternal = this.props.user.globalRole === EXTERNAL_USER;
 
     const leftColumnTasksData = this.props.leftColumnTasks.data.map(task => {
-      return <DraggableTaskRow key={`task-${task.id}`} task={task} prefix={this.props.project.prefix} shortcut card />;
+      return (
+        <DraggableTaskRow
+          draggable
+          key={`task-${task.id}`}
+          task={task}
+          prefix={this.props.project.prefix}
+          shortcut
+          card
+        />
+      );
     });
 
     const rightColumnTasksData = this.props.rightColumnTasks.data.map(task => {
-      return <DraggableTaskRow key={`task-${task.id}`} task={task} prefix={this.props.project.prefix} shortcut card />;
+      return (
+        <DraggableTaskRow
+          draggable
+          key={`task-${task.id}`}
+          task={task}
+          prefix={this.props.project.prefix}
+          shortcut
+          card
+        />
+      );
     });
 
     const leftEstimates = this.getEstimatesInfo(this.state.leftColumn);
@@ -458,58 +491,73 @@ class Planning extends Component {
 
     const budget = this.props.project.budget;
     const riskBudget = this.props.project.riskBudget;
+    const qaPercent = this.props.project.qaPercent || 30;
     const { createdAt, completedAt, loading } = this.props;
     const unfinishedLeftTasksCount = this.getUnfinishedLeftTasks().length;
 
     return (
       <div>
         <section>
-          <br />
-          <Row className={css.editRow}>
-            <Col xs={12} sm={5}>
-              <ProjectDate
-                onEditSubmit={this.onProjectStartSubmit}
-                header="Начало проекта:"
-                value={createdAt}
-                isProjectAdmin={isProjectAdmin}
-                disabledDataRanges={[{ after: new Date(completedAt) }]}
-              />
-            </Col>
-            <Col xs={12} sm={2} />
-            <Col xs={12} sm={5}>
-              <ProjectDate
-                onEditSubmit={this.onProjectEndSubmit}
-                header="Конец проекта:"
-                value={completedAt}
-                isProjectAdmin={isProjectAdmin}
-                disabledDataRanges={[{ before: new Date(createdAt) }]}
-              />
-            </Col>
-          </Row>
-          {!isExternal ? (
-            <Row className={css.editRow}>
-              <Col xs={12} sm={5}>
-                <Budget
-                  onEditSubmit={this.onRiskBudgetSubmit}
-                  header="Бюджет с рисковым резервом:"
-                  value={riskBudget}
-                  isProjectAdmin={isProjectAdmin}
-                />
-              </Col>
-              <Col xs={12} sm={2} />
-              <Col xs={12} sm={5}>
-                <Budget
-                  onEditSubmit={this.onBudgetSubmit}
-                  header="Бюджет без рискового резерва:"
-                  value={budget}
-                  isProjectAdmin={isProjectAdmin}
-                />
-              </Col>
-            </Row>
-          ) : null}
+          <div className={css.dates}>
+            <ProjectDate
+              onEditSubmit={this.onProjectStartSubmit}
+              header={localize[lang].PROJECT_START}
+              value={createdAt}
+              isProjectAdmin={isProjectAdmin}
+              disabledDataRanges={[{ after: new Date(completedAt) }]}
+            />
+            <hr />
+            <ProjectDate
+              onEditSubmit={this.onProjectEndSubmit}
+              header={localize[lang].PROJECT_END}
+              value={completedAt}
+              isProjectAdmin={isProjectAdmin}
+              disabledDataRanges={[{ before: new Date(createdAt) }]}
+            />
+          </div>
+          <div className={css.budgetContainer}>
+            {!!budget && !!riskBudget && <SimplePie value={1 - budget / riskBudget} />}
+            <div className={css.legendContainer}>
+              {!isExternal ? (
+                <div className={css.budgetLegend}>
+                  <div style={{ lineHeight: '1.5rem', fontWeight: 'bold' }}>{localize[lang].BUDGET}</div>
+                  <Budget
+                    onEditSubmit={this.onRiskBudgetSubmit}
+                    header={localize[lang].WITH_RISK_RESERVE}
+                    value={riskBudget}
+                    isProjectAdmin={isProjectAdmin}
+                    min={budget}
+                  />
+                  <Budget
+                    onEditSubmit={this.onBudgetSubmit}
+                    header={localize[lang].WO_RISK_RESERVE}
+                    value={budget}
+                    isProjectAdmin={isProjectAdmin}
+                    max={riskBudget}
+                  />
+                  {!!budget && !!riskBudget && <div className={css.riskMarker}>{localize[lang].RISK_RESERVE}</div>}
+                </div>
+              ) : null}
+              {!isExternal ? (
+                <div className={css.budgetLegend}>
+                  <div style={{ lineHeight: '1.5rem', fontWeight: 'bold' }}>QA:</div>
+                  <Budget
+                    onEditSubmit={this.onPercentQaSubmit}
+                    header={localize[lang].PERCENT_TEST}
+                    value={qaPercent}
+                    isProjectAdmin={isProjectAdmin}
+                    integerOnly
+                    min={0}
+                    max={100}
+                  />
+                </div>
+              ) : null}
+            </div>
+          </div>
+          <hr />
           {isProjectAdmin ? (
             <Button
-              text="спринт"
+              text={localize[lang].SPRINT}
               type="primary"
               style={{ float: 'right', marginTop: '-.2rem' }}
               icon="IconPlus"
@@ -518,7 +566,7 @@ class Planning extends Component {
           ) : null}
           {isProjectAdmin ? (
             <Button
-              text="Создать веху"
+              text={localize[lang].MILESTONE}
               type="primary"
               style={{ float: 'right', marginTop: '-.2rem', marginRight: '5px' }}
               icon="IconPlus"
@@ -538,7 +586,7 @@ class Planning extends Component {
                   }
                 >
                   {this.state.isOpenSprintList ? <IconArrowDown /> : <IconArrowRight />}
-                  Спринты / Фазы
+                  {localize[lang].SPRINTS_AND_PHASES}
                 </h2>
                 {this.state.isOpenSprintList ? (
                   <Row>
@@ -576,7 +624,25 @@ class Planning extends Component {
             onClickSprint={this.onClickSprint}
             openSprintEditModal={this.openSprintEditModal}
             openMilestoneEditModal={this.openMilestoneEditModal}
+            onDeleteMilestone={this.onDeleteMilestone}
           />
+          {!isVisor && !isExternal ? (
+            <div className={css.moveTasksBtnWrapper}>
+              <div className={css.leftBranch} />
+              <div className={css.moveButton}>
+                <RoundButton
+                  data-tip={localize[lang].REPLACE_UNCLOSED_TASKS}
+                  loading={!!loading}
+                  onClick={this.onMoveTasksModalOpen}
+                  disabled={this.isMoveTasksButtonDisabled(unfinishedLeftTasksCount)}
+                >
+                  »
+                </RoundButton>
+              </div>
+              <div className={css.mobeButtonLabel}>{localize[lang].REPLACE_UNCLOSED}</div>
+              <div className={css.rightBranch} />
+            </div>
+          ) : null}
           {!isVisor && !isExternal ? (
             <Row className={css.sprintColumnHeaderWrapper}>
               <SprintColumnHeader
@@ -587,16 +653,6 @@ class Planning extends Component {
                 onSprintChange={e => this.selectValue(e !== null ? e.value : null, 'leftColumn')}
                 onCreateTaskClick={this.openModal}
               />
-              <div className={css.moveTasksBtnWrapper}>
-                <Button
-                  type="bordered"
-                  loading={!!loading}
-                  icon={'IconPointingArrowRight'}
-                  data-tip="Перенести нереализованные задачи в другой спринт"
-                  onClick={this.onMoveTasksModalOpen}
-                  disabled={this.isMoveTasksButtonDisabled(unfinishedLeftTasksCount)}
-                />
-              </div>
               <ConfirmModal
                 isOpen={this.state.isModalOpenMoveTasks}
                 contentLabel="modal"
@@ -605,7 +661,9 @@ class Planning extends Component {
                   this.onMoveTasksModalConfirm(this.state.rightColumn);
                 }}
                 onCancel={this.onMoveTasksModalCancel}
-                text={`Будет перенесено ${unfinishedLeftTasksCount} задач. Продолжить?`}
+                text={`${localize[lang].WILL_BE_REPLACE} ${unfinishedLeftTasksCount} ${
+                  localize[lang].CONTINUE_REPLACE
+                }`}
               />
               <SprintColumnHeader
                 className={css.rightColumn}
@@ -654,6 +712,7 @@ class Planning extends Component {
         ) : null}
         {this.state.isOpenSprintEditModal ? (
           <SprintEditModal
+            project={this.props.project}
             sprint={this.state.editSprint}
             handleEditSprint={this.handleEditSprint}
             handleCloseModal={this.closeEditSprintModal}
@@ -683,7 +742,8 @@ const mapStateToProps = state => ({
   rightColumnTasks: state.PlanningTasks.rightColumnTasks,
   SprintIsEditing: state.Task.SprintIsEditing,
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
-  user: state.Auth.user
+  user: state.Auth.user,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
@@ -691,7 +751,9 @@ const mapDispatchToProps = {
   getPlanningTasks,
   editSprint,
   editMilestone,
+  deleteMilestone,
   changeTask,
+  changeTasks,
   startTaskEditing,
   openCreateTaskModal,
   createSprint,

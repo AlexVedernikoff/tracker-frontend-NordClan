@@ -1,0 +1,18 @@
+{
+  "en": {
+    "BUGS_NUMBER": "Number of open bugs",
+    "BUGS_NUMBER_FROM_CLIENT": "Number of open bugs from client",
+    "BUGS_REGRESSION": "Number of open regression bugs",
+    "BUGS_NUM": "Bugs number",
+    "DATE": "Date",
+    "LANG": "en"
+  },
+  "ru": {
+    "BUGS_NUMBER": "Количество открытых багов",
+    "BUGS_NUMBER_FROM_CLIENT": "Количество открытых багов от клиента",
+    "BUGS_REGRESSION": "Количество открытых регрессионных багов",
+    "BUGS_NUM": "Количество багов",
+    "DATE": "Дата",
+    "LANG": "ru"
+  }
+}

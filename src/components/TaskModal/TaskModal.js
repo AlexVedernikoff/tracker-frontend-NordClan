@@ -4,9 +4,11 @@ import * as css from './TaskModal.scss';
 import Modal from '../Modal';
 import Button from '../Button';
 import SelectDropdown from '../SelectDropdown';
+import { connect } from 'react-redux';
+import localize from './TaskModal.json';
 
 class TaskModal extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       taskId: null
@@ -15,42 +17,33 @@ class TaskModal extends Component {
 
   handleChoose = () => {
     this.props.onChoose(this.state.taskId);
-  }
+  };
 
   selectValue = (e, name) => {
     this.setState({ [name]: e });
   };
 
-  render () {
-    const {
-      title,
-      onClose,
-      tasks
-    } = this.props;
+  render() {
+    const { title, onClose, tasks, lang } = this.props;
 
     return (
-      <Modal
-        isOpen
-        contentLabel="modal"
-        className={css.modalWrapper}
-        onRequestClose={onClose}
-      >
+      <Modal isOpen contentLabel="modal" className={css.modalWrapper} onRequestClose={onClose}>
         <div className={css.changeStage}>
           <h3>{title}</h3>
           <div className={css.modalLine}>
             <SelectDropdown
               name="member"
-              placeholder="Введите название задачи"
+              placeholder={localize[lang].ENTER_NAME}
               multi={false}
               className={css.selectSprint}
               value={this.state.taskId}
               onChange={e => this.selectValue(e !== null ? e.value : 0, 'taskId')}
-              noResultsText="Нет результатов"
+              noResultsText={localize[lang].NO_RESULTS}
               options={tasks}
               autoFocus
               openOnFocus
             />
-            <Button type="green" text="ОК" onClick={this.handleChoose}/>
+            <Button type="green" text="ОК" onClick={this.handleChoose} />
           </div>
         </div>
       </Modal>
@@ -59,10 +52,15 @@ class TaskModal extends Component {
 }
 
 TaskModal.propTypes = {
+  lang: PropTypes.string,
   onChoose: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   tasks: PropTypes.array,
   title: PropTypes.string
 };
 
-export default TaskModal;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(mapStateToProps, null)(TaskModal);

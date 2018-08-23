@@ -14,6 +14,20 @@
   font-size: 13px;
 }
 
+.taskLink {
+  padding-left: 0.4rem;
+}
+
+.taskStatusIcon {
+  padding-left: 0.3em;
+}
+
+.taskStatus {
+  padding-top: 0.3rem;
+  font-size: 11px;
+  width: 40px;
+}
+
 .task {
   display: flex;
   position: relative;
@@ -27,10 +41,11 @@
     background-color: $color-gray;
   }
   .taskLabel {
-    padding-right: 8px;
-    width: 72px;
+    min-width: 72px;
+    max-width: 150px;
     color: lighten($color-black, 20%);
     flex-shrink: 0;
+    display: flex;
   }
 
   a {
@@ -49,6 +64,7 @@
 }
 
 .add {
+  padding: 1rem;
   position: relative;
   box-sizing: border-box;
   height: 48px;

@@ -188,7 +188,7 @@ const uploadAttachments = (projectId, attachments) => {
         body: data,
         extra: withdefaultExtra({
           onUploadProgress: progressEvent => {
-            const progress = Math.round(progressEvent.loaded * 100 / progressEvent.total);
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
             dispatch(attachmentUploadProgress(projectId, attachment, progress));
           }
         }),
@@ -329,7 +329,7 @@ const getProjectSprints = id => {
         {
           params: {
             projectId: id,
-            fields: 'id,name,factFinishDate'
+            fields: 'id,name,factFinishDate,qaPercent'
           }
         },
         { withCredentials: true }

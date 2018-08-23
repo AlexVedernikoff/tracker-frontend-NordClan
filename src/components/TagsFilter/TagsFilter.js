@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import SelectDropdown from '../../components/SelectDropdown';
 import { getTagsFilter } from '../../actions/Tags';
+import localization from './TagsFilter.json';
 
 class TagsFilter extends React.Component {
-
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
 
-  onInputChange = (tagName) => {
+  onInputChange = tagName => {
     if (tagName && tagName.length && tagName.length > 1) {
       this.props.getTagsFilter(tagName, this.props.filterFor);
     }
@@ -18,26 +18,27 @@ class TagsFilter extends React.Component {
 
   options = () => {
     switch (this.props.filterFor) {
-    case 'project':
-      return this.props.projectsTagsOptions.map(el => ({value: el, label: el}));
-    case 'task':
-      return this.props.tasksTagsOptions.map(el => ({value: el, label: el}));
-    default:
-      return [];
+      case 'project':
+        return this.props.projectsTagsOptions.map(el => ({ value: el, label: el }));
+      case 'task':
+        return this.props.tasksTagsOptions.map(el => ({ value: el, label: el }));
+      default:
+        return [];
     }
   };
 
-  render () {
+  render() {
+    const { lang } = this.props;
     return (
       <SelectDropdown
         searchPromptText={'Введите имя тега'}
-        placeholder="Введите название тега"
+        placeholder={localization[lang].TAG_NAME}
         backspaceToRemoveMessage={''}
-        noResultsText="Нет результатов"
+        noResultsText={localization[lang].NOT_FOUNDED}
         multi
         ignoreCase
         options={this.options()}
-        filterOption={el=>el}
+        filterOption={el => el}
         onChange={this.props.onTagSelect}
         value={this.props.filterTags}
         onInputChange={this.onInputChange}
@@ -48,7 +49,7 @@ class TagsFilter extends React.Component {
 
 TagsFilter.propTypes = {
   filterFor: PropTypes.oneOf(['project', 'task']).isRequired,
-  filterTags: PropTypes.array.isRequired,
+  filterTags: PropTypes.array,
   getTagsFilter: PropTypes.func.isRequired,
   onTagSelect: PropTypes.func.isRequired,
   projectsTagsOptions: PropTypes.array.isRequired,
@@ -57,7 +58,8 @@ TagsFilter.propTypes = {
 
 const mapStateToProps = state => ({
   projectsTagsOptions: state.Projects.tagsFilter,
-  tasksTagsOptions: state.TaskList.tagsFilter
+  tasksTagsOptions: state.TaskList.tagsFilter,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {

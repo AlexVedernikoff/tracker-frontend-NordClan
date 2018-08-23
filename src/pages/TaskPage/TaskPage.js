@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+import includes from 'lodash/includes';
 
 import TaskHeader from './TaskHeader';
 import Details from './Details';
@@ -18,7 +18,7 @@ import GoBackPanel from '../../components/GoBackPanel';
 import CreateTaskModal from '../../components/CreateTaskModal';
 import HttpError from '../../components/HttpError';
 import { history } from '../../History';
-import { VISOR, EXTERNAL_USER } from '../../constants/Roles';
+import { VISOR, EXTERNAL_USER, ADMIN } from '../../constants/Roles';
 
 import * as TaskStatuses from '../../constants/TaskStatuses';
 
@@ -37,35 +37,44 @@ import getTasks from '../../actions/Tasks';
 import { getProjectInfo, openCreateTaskModal, openCreateChildTaskModal } from '../../actions/Project';
 
 import * as css from './TaskPage.scss';
+import { getRoles } from '../../actions/Dictionaries';
+import localize from './taskPage.json';
 
 class TaskPage extends Component {
   static propTypes = {
     DescriptionIsEditing: PropTypes.bool,
     changeTask: PropTypes.func.isRequired,
     children: PropTypes.object,
-    getProjectInfo: PropTypes.func.isRequired,
-    getTask: PropTypes.func.isRequired,
     clearError: PropTypes.func,
+    getProjectInfo: PropTypes.func.isRequired,
+    getRoles: PropTypes.func.isRequired,
+    getTask: PropTypes.func.isRequired,
     getTasks: PropTypes.func.isRequired,
     globalRole: PropTypes.string.isRequired,
+    hasError: PropTypes.bool,
     isCreateChildTaskModalOpen: PropTypes.bool,
     isCreateTaskModalOpen: PropTypes.bool,
     linkTask: PropTypes.func.isRequired,
+    location: PropTypes.object,
     openCreateChildTaskModal: PropTypes.func.isRequired,
     openCreateTaskModal: PropTypes.func.isRequired,
     params: PropTypes.shape({
       projectId: PropTypes.string.isRequired,
-      taskId: PropTypes.string.isRequired
+      taskId: PropTypes.string.isRequired,
+      closeHasError: PropTypes.bool
     }),
     project: PropTypes.object,
     projectTasks: PropTypes.array,
     removeAttachment: PropTypes.func,
+    route: PropTypes.object,
+    router: PropTypes.object,
     sprints: PropTypes.array,
     startTaskEditing: PropTypes.func.isRequired,
     stopTaskEditing: PropTypes.func.isRequired,
     task: PropTypes.object,
     unlinkTask: PropTypes.func.isRequired,
-    uploadAttachments: PropTypes.func.isRequired
+    uploadAttachments: PropTypes.func.isRequired,
+    user: PropTypes.object
   };
 
   constructor(props) {
@@ -82,6 +91,7 @@ class TaskPage extends Component {
   }
 
   componentDidMount() {
+    this.props.getRoles();
     this.props.getTask(this.props.params.taskId);
     this.props.getProjectInfo(this.props.params.projectId);
     this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave);
@@ -171,7 +181,13 @@ class TaskPage extends Component {
   getProjectUnlinkedTasks = () => {
     const linkedTasksIds = this.props.task.linkedTasks.map(task => task.id);
     return this.props.projectTasks
-      .filter(task => !_.includes(linkedTasksIds, task.id) && task.id !== this.props.task.id)
+      .filter(
+        task =>
+          task.id !== this.props.task.id &&
+          !includes(linkedTasksIds, task.id) &&
+          task.parentId !== this.props.task.id &&
+          task.id !== this.props.task.parentId
+      )
       .map(task => ({
         value: task.id,
         label: `${this.props.task.project.prefix}-${task.id}. ${task.name}`
@@ -206,37 +222,70 @@ class TaskPage extends Component {
   };
 
   handleCancelSubTask = () => {
-    const { getTask, changeTask, task } = this.props;
+    const { task } = this.props;
     const { canceledSubTaskId } = this.state;
 
-    changeTask(
+    this.props.changeTask(
       {
         id: canceledSubTaskId,
         statusId: TaskStatuses.CANCELED
       },
       'Status',
       () => {
-        getTask(task.id);
+        this.props.getTask(task.id);
       }
     );
 
     this.handleCloseCancelSubTaskModal();
   };
 
+  checkIsAdminInProject = () => {
+    return this.props.user.projectsRoles
+      ? this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1 ||
+          this.props.user.globalRole === ADMIN
+      : false;
+  };
+
   render() {
-    const { globalRole, task, params } = this.props;
+    const { globalRole, task, params, lang } = this.props;
+    const isProjectAdmin = this.checkIsAdminInProject();
     const isVisor = globalRole === VISOR;
     const isExternal = globalRole === EXTERNAL_USER;
     const projectUrl = task.project ? `/projects/${task.project.id}` : '/';
     const notFoundError =
       task.project && task.project.id !== +params.projectId
         ? {
-            message: 'Task not found',
+            message: localize[lang].NOT_FOUND_ERROR,
             name: 'NotFoundError',
             status: 404
           }
         : null;
     const httpError = task.error || notFoundError;
+    const links = [
+      <Link
+        key={`/projects/${params.projectId}/tasks/${params.taskId}`}
+        onlyActiveOnIndex
+        to={`/projects/${params.projectId}/tasks/${params.taskId}`}
+      >
+        {localize[lang].COMMENTS}
+      </Link>,
+      <Link
+        key={`/projects/${params.projectId}/tasks/${params.taskId}`}
+        to={`/projects/${params.projectId}/tasks/${params.taskId}/history`}
+      >
+        {localize[lang].HISTORY}
+      </Link>
+    ];
+    if (isProjectAdmin) {
+      links.push(
+        <Link
+          key={`/projects/${params.projectId}/tasks/${params.taskId}`}
+          to={`/projects/${params.projectId}/tasks/${params.taskId}/time-reports`}
+        >
+          {localize[lang].TIME_REPORTS}
+        </Link>
+      );
+    }
 
     return httpError ? (
       <HttpError error={httpError} />
@@ -255,7 +304,7 @@ class TaskPage extends Component {
                 text={{ __html: task.description }}
                 headerType="h3"
                 id={+params.taskId}
-                headerText="Описание:"
+                headerText={localize[lang].DESCRIPTION}
                 onEditStart={this.props.startTaskEditing}
                 onEditFinish={this.props.stopTaskEditing}
                 onEditSubmit={this.props.changeTask}
@@ -263,21 +312,14 @@ class TaskPage extends Component {
                 canEdit={task.statusId !== TaskStatuses.CLOSED}
               />
               <hr />
-              <h3>Прикрепленные файлы:</h3>
+              <h3>{localize[lang].ATTACHED_FILES}</h3>
               <Attachments
                 attachments={task.attachments}
                 removeAttachment={this.removeAttachment}
                 uploadAttachments={this.uploadAttachments}
                 canEdit={task.statusId !== TaskStatuses.CLOSED}
               />
-              {!isExternal ? (
-                <RouteTabs style={{ marginTop: '2rem', marginBottom: '2rem' }}>
-                  <Link onlyActiveOnIndex to={`/projects/${params.projectId}/tasks/${params.taskId}`}>
-                    Комментарии
-                  </Link>
-                  <Link to={`/projects/${params.projectId}/tasks/${params.taskId}/history`}>История</Link>
-                </RouteTabs>
-              ) : null}
+              {!isExternal ? <RouteTabs style={{ marginTop: '2rem', marginBottom: '2rem' }}>{links}</RouteTabs> : null}
               {this.props.children}
             </main>
           </Col>
@@ -292,7 +334,7 @@ class TaskPage extends Component {
               />
               {!isVisor ? (
                 <button className={css.addTask} onClick={this.props.openCreateTaskModal}>
-                  <span>Создать новую задачу</span>
+                  <span>{localize[lang].CREATE_NEW_TASK}</span>
                   <IconPlus style={{ width: 16, height: 16 }} />
                 </button>
               ) : null}
@@ -326,7 +368,7 @@ class TaskPage extends Component {
           <TaskModal
             onChoose={this.linkTask}
             onClose={this.handleCloseLinkTaskModal}
-            title="Связывание задачи"
+            title={localize[lang].BINDING_TASK}
             tasks={this.getProjectUnlinkedTasks()}
           />
         ) : null}
@@ -335,7 +377,7 @@ class TaskPage extends Component {
           <ConfirmModal
             isOpen
             contentLabel="modal"
-            text="Вы действительно хотите отвязать задачу?"
+            text={localize[lang].CONFIRM_UNTIE_TASK}
             onCancel={this.handleCloseUnlinkTaskModal}
             onConfirm={this.unlinkTask}
           />
@@ -345,7 +387,7 @@ class TaskPage extends Component {
           <ConfirmModal
             isOpen
             contentLabel="modal"
-            text="Вы действительно хотите покинуть страницу? Все не сохранённые данные будут потеряны"
+            text={localize[lang].CONFIRM_LEAVE_PAGE}
             onCancel={this.handleCloseLeaveConfirmModal}
             onConfirm={this.leaveConfirm}
           />
@@ -355,16 +397,16 @@ class TaskPage extends Component {
           <ConfirmModal
             isOpen
             contentLabel="modal"
-            text="Вы действительно хотите отменить задачу?"
+            text={localize[lang].CONFIRM_CANCEL_TASK}
             onCancel={this.handleCloseCancelSubTaskModal}
             onConfirm={this.handleCancelSubTask}
           />
         ) : null}
-        {this.props.hasError === true && this.state.closeHasError !== true ? (
+        {this.props.hasError && !this.state.closeHasError ? (
           <ConfirmModal
             isOpen
             contentLabel="modal"
-            text="Нельзя изменять закрытую задачу"
+            text={localize[lang].ERROR_CHANGE_PRIVATE_TASK}
             onCancel={this.handleCloseCancelInfoTaskModal}
             notification
           />
@@ -384,7 +426,9 @@ const mapStateToProps = state => ({
   isCreateChildTaskModalOpen: state.Project.isCreateChildTaskModalOpen,
   globalRole: state.Auth.user.globalRole,
   hasError: state.Task.hasError,
-  closeHasError: state.Task.closeHasError
+  closeHasError: state.Task.closeHasError,
+  user: state.Auth.user,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
@@ -400,7 +444,8 @@ const mapDispatchToProps = {
   startTaskEditing,
   stopTaskEditing,
   unlinkTask,
-  uploadAttachments
+  uploadAttachments,
+  getRoles
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskPage);

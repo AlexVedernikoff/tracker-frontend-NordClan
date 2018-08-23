@@ -1,0 +1,14 @@
+{
+  "en": {
+    "COMMENT_LINK": "Link on comment #",
+    "REPLY": "Reply",
+    "EDIT": "Edit",
+    "REMOVE": "Remove"
+  },
+  "ru": {
+    "COMMENT_LINK": "Ссылка на комментарий #",
+    "REPLY": "Ответить",
+    "EDIT": "Редактировать",
+    "REMOVE": "Удалить"
+  }
+}

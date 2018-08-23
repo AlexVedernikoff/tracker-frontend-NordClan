@@ -1,0 +1,24 @@
+{
+  "en": {
+    "CREATE_MILESTONE": "Create new milestone",
+    "INPUT_NOTIFICATION": "All fields must be filled in",
+    "MILESTONE_NAME": "Milestone name:",
+    "ENTER_MILESTONE_NAME": "Enter the milestone name",
+    "MILESTONE_TYPE": "Milestone type",
+    "NO_RESUTLS": "No results",
+    "DATE": "Date:",
+    "ENTER_DATE": "Enter the date",
+    "CREATE": "Create"
+  },
+  "ru": {
+    "CREATE_MILESTONE": "Создание новой вехи",
+    "INPUT_NOTIFICATION": "Все поля должны быть заполнены",
+    "MILESTONE_NAME": "Название вехи:",
+    "ENTER_MILESTONE_NAME": "Введите название вехи",
+    "MILESTONE_TYPE": "Тип вехи:",
+    "NO_RESUTLS": "Нет результатов",
+    "DATE": "Дата:",
+    "ENTER_DATE": "Введите дату",
+    "CREATE": "Создать"
+  }
+}

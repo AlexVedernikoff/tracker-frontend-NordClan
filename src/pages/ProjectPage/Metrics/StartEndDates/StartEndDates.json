@@ -1,0 +1,10 @@
+{
+  "en": {
+    "START_DATE": "Start date:",
+    "END_DATE": "End date:"
+  },
+  "ru": {
+    "START_DATE": "Дата начала:",
+    "END_DATE": "Дата окончания:"
+  }
+}

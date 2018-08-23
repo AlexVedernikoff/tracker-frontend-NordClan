@@ -1,9 +1,11 @@
 const path = require('path');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const p = require('./package.json');
 
 const settings = {
   entry: {
+    vendor: Object.keys(p.dependencies),
     bundle: ['babel-polyfill', './src/App.js']
   },
   output: {
@@ -79,23 +81,23 @@ const settings = {
   plugins: [
     new webpack.NamedModulesPlugin(),
     new webpack.LoaderOptionsPlugin({
-      debug: false
+      debug: false,
+      minimize: true
     }),
     new CopyWebpackPlugin([{ from: './src/www', to: './' }]),
-    // new webpack.optimize.UglifyJsPlugin({
-    //   beautify: false,
-    //   comments: false,
-    //   compress: {
-    //     sequences: true,
-    //     booleans: true,
-    //     loops: true,
-    //     unused: true,
-    //     warnings: false,
-    //     drop_console: true,
-    //     unsafe: true
-    //   }
-    // }),
-    new webpack.optimize.ModuleConcatenationPlugin()
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      filename: 'vendor.js'
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'manifest'
+    }),
+    new webpack.DefinePlugin({ // <-- key to reducing React's size
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    }),
+    new webpack.optimize.UglifyJsPlugin() //minify everything
   ]
 };
 

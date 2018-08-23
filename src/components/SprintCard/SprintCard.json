@@ -1,0 +1,26 @@
+{
+  "en": {
+    "DATE_OF_START": "Date of start:",
+    "DATE_OF_END": "Date of the end:",
+    "TOTAL_TASKS": "Total tasks:",
+    "DONE": "Done:",
+    "SPENT_TIME": "Spent time:",
+    "WO_RISK_RESERVE": "Budget without risk reserve",
+    "WITH_RISK_RESERVE": "Budget with risk reserve",
+    "REMOVE_SPRINT_NOTIFICATION": "Do you really want to remove the sprint?",
+    "H": "h.",
+    "QA_PERCENT": "% on QA:"
+  },
+  "ru": {
+    "DATE_OF_START": "Дата начала:",
+    "DATE_OF_END": "Дата окончания:",
+    "TOTAL_TASKS": "Всего задач:",
+    "DONE": "Выполнено:",
+    "SPENT_TIME": "Израсходованное время:",
+    "WO_RISK_RESERVE": "Бюджет без рискового резерва",
+    "WITH_RISK_RESERVE": "Бюджет с рисковым резервом",
+    "REMOVE_SPRINT_NOTIFICATION": "Вы действительно хотите удалить спринт?",
+    "H": "ч.",
+    "QA_PERCENT": "% на QA:"
+  }
+}

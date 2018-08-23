@@ -9,6 +9,8 @@ import { getProjectHistory } from '../../../actions/Project';
 import HistoryMessage from '../../../components/HistoryMessage';
 import Pagination from '../../../components/Pagination';
 import UserCard from '../../../components/UserCard';
+import localize from './ProjectHistory.json';
+import { getFullName, getMessage } from '../../../utils/NameLocalisation';
 
 class ProjectHistory extends React.Component {
   constructor(props) {
@@ -49,7 +51,7 @@ class ProjectHistory extends React.Component {
   };
 
   render() {
-    const { historyEvents, projectId } = this.props;
+    const { historyEvents, projectId, lang } = this.props;
     const eventList = historyEvents.map((event, i) => {
       return (
         <div className={css.historyEvent} key={event.id}>
@@ -57,10 +59,10 @@ class ProjectHistory extends React.Component {
           <div className={css.historyAction}>
             {event.author ? (
               <UserCard user={event.author}>
-                <Link>{event.author.fullNameRu}</Link>
+                <Link>{getFullName(event.author)}</Link>
               </UserCard>
             ) : null}{' '}
-            <HistoryMessage message={event.message} entities={event.entities} projectId={projectId} />
+            <HistoryMessage message={getMessage(event)} entities={event.entities} projectId={projectId} />
           </div>
         </div>
       );
@@ -68,7 +70,7 @@ class ProjectHistory extends React.Component {
 
     return (
       <div className={css.history}>
-        <h3>История изменений</h3>
+        <h3>{localize[lang].CHANGES_HISTORY}</h3>
         {eventList}
 
         {this.props.pagesCount > 1 ? (
@@ -93,7 +95,8 @@ ProjectHistory.propTypes = {
 const mapStateToProps = state => ({
   projectId: state.Project.project.id,
   historyEvents: state.Project.project.history.events,
-  pagesCount: state.Project.project.history.pagesCount
+  pagesCount: state.Project.project.history.pagesCount,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {

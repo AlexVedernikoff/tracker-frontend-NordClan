@@ -6,6 +6,9 @@ import * as css from './ClosingFeaturesChart.scss';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import roundNum from '../../../../utils/roundNum';
 import getColor from '../../../../utils/Colors';
+import localize from './ClosingFeaturesChart.json';
+import { connect } from 'react-redux';
+import moment from 'moment';
 
 class ClosingFeaturesChart extends Component {
   static propTypes = {
@@ -16,17 +19,13 @@ class ClosingFeaturesChart extends Component {
     sprintWriteOffTimeMetrics: PropTypes.array
   };
 
-  constructor(props) {
-    super(props);
+  chartRef = null;
 
-    this.state = {
-      chartRef: null
-    };
-
-    this.chartOptions = {
-      ...props.chartDefaultOptions,
+  getGraphicOptions() {
+    return {
+      ...this.props.chartDefaultOptions,
       scales: {
-        ...props.chartDefaultOptions.scales,
+        ...this.props.chartDefaultOptions.scales,
         yAxes: [
           {
             ticks: {
@@ -35,16 +34,29 @@ class ClosingFeaturesChart extends Component {
             display: true,
             scaleLabel: {
               display: true,
-              labelString: 'Часы'
+              labelString: localize[this.props.lang].HOURS
+            }
+          }
+        ],
+        xAxes: [
+          {
+            type: 'time',
+            time: {
+              displayFormats: {
+                day: 'D MMM'
+              },
+              tooltipFormat: 'DD.MM.YYYY',
+              locale: moment.locale(localize[this.props.lang].LANG)
+            },
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: localize[this.props.lang].DATE
             }
           }
         ]
       }
     };
-  }
-
-  componentDidMount() {
-    this.setState({ chartRef: this.refs.chart });
   }
 
   makeChartData = () => {
@@ -54,9 +66,9 @@ class ClosingFeaturesChart extends Component {
 
     return {
       datasets: [
-        this.makeBugsLine(sprintClosingFeaturesMetrics, 'Динамика закрытия задач (с учетом трудозатрат)'),
-        this.makeBugsLine(sprintWriteOffTimeMetrics, 'Динамика списания времени на задачи'),
-        this.makeBugsLine(sprintWorkWithoutEvaluationMetrics, 'Динамика трудозатрат на задачи без оценки')
+        this.makeBugsLine(sprintClosingFeaturesMetrics, localize[this.props.lang].DYNAMIC_CLOSE),
+        this.makeBugsLine(sprintWriteOffTimeMetrics, localize[this.props.lang].DYNAMIC_OFF_TIME),
+        this.makeBugsLine(sprintWorkWithoutEvaluationMetrics, localize[this.props.lang].DYNAMIC_WITHOUT_ELEVATION)
       ]
     };
   };
@@ -77,14 +89,21 @@ class ClosingFeaturesChart extends Component {
     };
   };
 
+  setChartRef = node => (this.chartRef = node);
+
   render() {
+    const { lang } = this.props;
     return (
-      <ChartWrapper chartRef={this.refs.chart} className={css.ClosingFeaturesChart}>
-        <h3>Динамика закрытия задач</h3>
-        <Line ref="chart" data={this.makeChartData()} options={this.chartOptions} redraw />
+      <ChartWrapper chartRef={this.chartRef} className={css.ClosingFeaturesChart}>
+        <h3>{localize[lang].DYNAMIC}</h3>
+        <Line ref={this.setChartRef} data={this.makeChartData()} options={this.getGraphicOptions()} redraw />
       </ChartWrapper>
     );
   }
 }
 
-export default ClosingFeaturesChart;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(mapStateToProps)(ClosingFeaturesChart);

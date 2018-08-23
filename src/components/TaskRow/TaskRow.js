@@ -4,18 +4,25 @@ import classnames from 'classnames';
 import { Link } from 'react-router';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import getTypeById from '../../utils/TaskTypes';
-import getStatusNameById from '../../utils/TaskStatuses';
+import { getStatusNameById } from '../../utils/TaskStatuses';
 import { connect } from 'react-redux';
 import Tags from '../Tags';
 import Tag from '../Tag';
+import { IconEdit } from '../Icons';
 import * as css from './TaskRow.scss';
 import roundNum from '../../utils/roundNum';
+import localize from './TaskRow.json';
+import { getFullName } from '../../utils/NameLocalisation';
 
-const getTaskTime = (factTime, planTime) => {
+const getTaskTime = (factTime, planTime, lang) => {
   if (factTime) {
-    return planTime ? `${roundNum(factTime, 2)} из ${roundNum(planTime, 2)} ч.` : `${roundNum(factTime, 2)} ч.`;
+    return planTime
+      ? `${roundNum(factTime, 2)} ${localize[lang].OUT_OF} ${roundNum(planTime, 2)} ${localize[lang].H}`
+      : `${roundNum(factTime, 2)} ${localize[lang].H}`;
   } else {
-    return planTime ? `0 из ${roundNum(planTime, 2)} ч.` : '0 из 0 ч.';
+    return planTime
+      ? `0 ${localize[lang].OUT_OF} ${roundNum(planTime, 2)} ${localize[lang].H}`
+      : `0 ${localize[lang].OUT_OF} 0 ${localize[lang].H}`;
   }
 };
 
@@ -41,11 +48,13 @@ class TaskRow extends React.Component {
       shortcut,
       card,
       isDragging,
+      draggable,
       onClickTag,
       taskTypes,
       onOpenPerformerModal,
       onOpenSprintModal,
       isExternal,
+      lang,
       ...other
     } = this.props;
 
@@ -56,6 +65,7 @@ class TaskRow extends React.Component {
       <div
         className={classnames({
           [css.taskCard]: true,
+          [css.draggable]: draggable,
           [css[classPriority]]: true,
           [css.card]: card,
           [css.dropped]: isDragging
@@ -66,22 +76,25 @@ class TaskRow extends React.Component {
           <Col xs={12} sm={shortcut ? 12 : 6}>
             <div className={css.header}>
               <div>
-                <div className={css.priorityMarker} data-tip={`Приоритет: ${task.prioritiesId}`}>
+                <div className={css.priorityMarker} data-tip={`${localize[lang].PRIORITY} ${task.prioritiesId}`}>
                   {task.prioritiesId}
                 </div>
               </div>
               <div className={css.prefix}>{`${prefix}-${task.id}`}</div>
               <div className={css.type}>{getTypeById(task.typeId, taskTypes)}</div>
-              <div className={css.type}>{`На стадии: ${getStatusNameById(task.statusId)}`}</div>
+              <div className={css.type}>{`${localize[lang].ON_STAGE} ${getStatusNameById(task.statusId)}`}</div>
               <div>
                 {task.statusId === 2 || task.statusId === 4 || task.statusId === 6 ? (
-                  <span className={css.greenText}>В процессе</span>
+                  <span className={css.greenText}>{localize[lang].IN_PROGRESS}</span>
                 ) : task.statusId === 3 || task.statusId === 5 || task.statusId === 7 ? (
-                  'Приостановлено'
+                  localize[lang].PAUSED
                 ) : null}
               </div>
             </div>
-            <Link to={`/projects/${task.projectId}/tasks/${task.id}`} className={css.taskName}>
+            <Link
+              to={`/projects/${task.projectId}/tasks/${task.id}`}
+              className={classnames([css.taskName, 'underline-link'])}
+            >
               <h4>{task.name}</h4>
             </Link>
           </Col>
@@ -89,30 +102,34 @@ class TaskRow extends React.Component {
             <Col xs={12} sm>
               <div className={css.metabox}>
                 <p className={css.taskMeta}>
-                  <span>Спринт:</span>
-                  <button onClick={this.handleSprintClick}>{task.sprint ? task.sprint.name : 'Backlog'}</button>
+                  <span className={css.metaKey}>{localize[lang].SPRINT}</span>
+                  <span className={css.metaValue} onClick={this.handleSprintClick}>
+                    {task.sprint ? task.sprint.name : 'Backlog'}
+                    <IconEdit />
+                  </span>
                 </p>
                 <p className={css.taskMeta}>
-                  <span>Исполнитель:</span>
-                  <button onClick={this.handlePerformerClick}>
-                    {task.performer ? task.performer.fullNameRu : 'Не назначено'}
-                  </button>
+                  <span className={css.metaKey}>{localize[lang].PERFORMER}</span>
+                  <span className={css.metaValue} onClick={this.handlePerformerClick}>
+                    {task.performer ? getFullName(task.performer) : localize[lang].UNASSIGNED}
+                    <IconEdit />
+                  </span>
                 </p>
                 <p className={css.taskMeta}>
-                  <span>Автор:</span>
-                  <span>{task.author ? task.author.fullNameRu : ''}</span>
+                  <span className={css.metaKey}>{localize[lang].AUTHOR}</span>
+                  <span>{task.author ? getFullName(task.author) : ''}</span>
                 </p>
                 <p className={css.taskMeta}>
                   {task.statusId !== 1 && !isExternal ? (
                     <span className={css.time}>
-                      <span>Время: </span>
+                      <span className={css.metaKey}>{localize[lang].TIME} </span>
                       <span
                         className={classnames({
                           [css.redText]: task.plannedExecutionTime < task.factExecutionTime,
                           [css.greenText]: task.plannedExecutionTime > task.factExecutionTime
                         })}
                       >
-                        {getTaskTime(task.factExecutionTime, task.plannedExecutionTime)}
+                        {getTaskTime(task.factExecutionTime, task.plannedExecutionTime, lang)}
                       </span>
                     </span>
                   ) : null}
@@ -145,6 +162,7 @@ class TaskRow extends React.Component {
 
 TaskRow.propTypes = {
   card: PropTypes.bool,
+  draggable: PropTypes.bool,
   isDragging: PropTypes.bool,
   isExternal: PropTypes.bool,
   onClickTag: PropTypes.func,
@@ -157,7 +175,11 @@ TaskRow.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  taskTypes: state.Dictionaries.taskTypes
+  taskTypes: state.Dictionaries.taskTypes,
+  lang: state.Localize.lang
 });
 
-export default connect(mapStateToProps, {})(TaskRow);
+export default connect(
+  mapStateToProps,
+  {}
+)(TaskRow);

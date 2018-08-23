@@ -1,3 +1,8 @@
+input,
+textarea {
+  font-family: inherit;
+}
+
 /* Tooltips ===> */
 
 .tooltip {
@@ -132,8 +137,18 @@
   color: darkgray;
 }
 
+.underline-link {
+  text-decoration: none;
+}
+
 .underline-link:hover {
   text-decoration: underline;
+}
+
+.ellipsis {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* <=== App service styles */

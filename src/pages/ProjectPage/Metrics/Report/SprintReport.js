@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
-import SelectDropdown from '../../../../components/SelectDropdown';
 import SprintSelector from '../../../../components/SprintSelector';
-import _ from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import moment from 'moment/moment';
 import DatepickerDropdown from '../../../../components/DatepickerDropdown/DatepickerDropdown';
 import { API_URL } from '../../../../constants/Settings';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './SprintReport.scss';
+import localize from './SprintReport.json';
 
 const dateFormat2 = 'YYYY-MM-DD';
 const dateFormat = 'DD.MM.YYYY';
@@ -45,14 +45,14 @@ class SprintReport extends Component {
   }
 
   selectReportPeriod = option => {
-    if (!_.isEmpty(option) && option.value.id) {
+    if (!isEmpty(option) && option.value.id) {
       this.setState({
         selectedName: option.label,
         reportPeriod: option,
         selectedFrom: this.formatDate(option.value.factStartDate),
         selectedTo: this.formatDate(option.value.factFinishDate)
       });
-    } else if (!_.isEmpty(option)) {
+    } else if (!isEmpty(option)) {
       this.setState({
         selectedName: option.label,
         reportPeriod: option,
@@ -131,7 +131,7 @@ class SprintReport extends Component {
   lastWeekOption = () => {
     const lastWeek = moment().subtract(1, 'weeks');
     return {
-      label: 'За прошлую неделю',
+      label: localize[this.props.lang].WEEK,
       value: {
         factStartDate: lastWeek.startOf('isoWeek').toDate(),
         factFinishDate: lastWeek.endOf('isoWeek').toDate()
@@ -142,7 +142,7 @@ class SprintReport extends Component {
   lastMonthOption = () => {
     const lastMonth = moment().subtract(1, 'month');
     return {
-      label: 'За прошлый месяц',
+      label: localize[this.props.lang].MONTH,
       value: {
         factStartDate: lastMonth.startOf('month').toDate(),
         factFinishDate: lastMonth.endOf('month').toDate()
@@ -152,7 +152,7 @@ class SprintReport extends Component {
 
   fullTimeOption = () => {
     return {
-      label: 'За все время',
+      label: localize[this.props.lang].ALL_TIME,
       value: {
         factStartDate: this.props.startDate,
         factFinishDate: moment()
@@ -162,7 +162,7 @@ class SprintReport extends Component {
 
   wholeProjectTimeOption = () => {
     return {
-      label: 'За весь проект',
+      label: localize[this.props.lang].ALL_PROJECT,
       value: {
         factStartDate: this.props.startDate,
         factFinishDate: this.props.endDate
@@ -260,27 +260,29 @@ class SprintReport extends Component {
   };
 
   render() {
+    const { lang } = this.props;
+
     return (
       <div className={css.SprintReport}>
         <Row center="xs">
           <Col xs={12}>
-            <h2>Выгрузка отчёта</h2>
+            <h2>{localize[lang].REPORT_UNLOAD}</h2>
           </Col>
         </Row>
         <Row className={css.modile_style}>
-          <Col>Спринт: </Col>
+          <Col>{localize[lang].SPRINT}</Col>
           <Col md={4} xs={12}>
             <SprintSelector
               name="sprint"
-              placeholder="Выбирите спринт..."
+              placeholder={localize[lang].SELECT_SPRINT}
               multi={false}
               value={this.state.reportPeriod}
               onChange={option => this.selectReportPeriod(option)}
-              noResultsText="Нет результатов"
+              noResultsText={localize[lang].NO_RESULTS}
               options={this.getSelectOptions()}
             />
           </Col>
-          <Col>С: </Col>
+          <Col>{localize[lang].FROM} </Col>
           <Col md={2} xs={6}>
             <DatepickerDropdown
               name="dateFrom"
@@ -289,19 +291,19 @@ class SprintReport extends Component {
               onDayChange={this.handleDayFromChange}
               onKeyDown={e => this.keyDownValidFrom(e.target.value, e)}
               onKeyUp={e => this.inputValidFrom(e.target.value.substr(0, 10).trim())}
-              placeholder="дд.мм.гггг"
+              placeholder={localize[lang].DATE}
               style={{ borderColor: this.state.borderColorFrom }}
               disabledDataRanges={[{ after: new Date(this.state.selectedTo) }]}
             />
           </Col>
-          <Col>По: </Col>
+          <Col>{localize[lang].TO} </Col>
           <Col md={2} xs={4}>
             <DatepickerDropdown
               name="dateTo"
               format={dateFormat}
               value={this.state.selectedTo}
               onDayChange={this.handleDayToChange}
-              placeholder="дд.мм.гггг"
+              placeholder={localize[lang].DATE}
               disabledDataRanges={[{ before: new Date(this.state.selectedFrom) }]}
               onKeyDown={e => this.keyDownValidTo(e.target.value, e)}
               style={{ borderColor: this.state.borderColorTo }}
@@ -313,7 +315,7 @@ class SprintReport extends Component {
               className={this.isRangeValid() ? css.downLoad : css.disabled}
               href={`${API_URL}/project/${this.props.project.id}/reports/period${this.getQueryParams()}`}
             >
-              Выгрузить отчёт
+              {localize[lang].REPORT_UNLOAD}
             </a>
           </Col>
         </Row>
@@ -324,7 +326,8 @@ class SprintReport extends Component {
 
 const mapStateToProps = state => ({
   project: state.Project.project,
-  sprints: state.Project.project.sprints
+  sprints: state.Project.project.sprints,
+  lang: state.Localize.lang
 });
 
 export default connect(mapStateToProps)(SprintReport);

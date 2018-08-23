@@ -8,6 +8,8 @@ import { connect } from 'react-redux';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import roundNum from '../../../../utils/roundNum';
 import getColor from '../../../../utils/Colors';
+import localize from './BudgetChart.json';
+import moment from 'moment';
 
 class BudgetChart extends Component {
   static propTypes = {
@@ -23,17 +25,15 @@ class BudgetChart extends Component {
     startDate: PropTypes.string
   };
 
-  constructor(props) {
-    super(props);
+  chartRef = null;
 
-    this.state = {
-      chartRef: null
-    };
+  setChartRef = node => (this.chartRef = node);
 
-    this.chartOptions = {
-      ...props.chartDefaultOptions,
+  getGraphicOptions() {
+    return {
+      ...this.props.chartDefaultOptions,
       scales: {
-        ...props.chartDefaultOptions.scales,
+        ...this.props.chartDefaultOptions.scales,
         yAxes: [
           {
             ticks: {
@@ -42,16 +42,29 @@ class BudgetChart extends Component {
             display: true,
             scaleLabel: {
               display: true,
-              labelString: 'Бюджет'
+              labelString: localize[this.props.lang].BUDGET
+            }
+          }
+        ],
+        xAxes: [
+          {
+            type: 'time',
+            time: {
+              displayFormats: {
+                day: 'D MMM'
+              },
+              tooltipFormat: 'DD.MM.YYYY',
+              locale: moment.locale(localize[this.props.lang].LANG)
+            },
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: localize[this.props.lang].DATE
             }
           }
         ]
       }
     };
-  }
-
-  componentDidMount() {
-    this.setState({ chartRef: this.refs.chart });
   }
 
   makeChartData = () => {
@@ -90,7 +103,7 @@ class BudgetChart extends Component {
           y: 0
         }
       ],
-      label: 'Идеальная всего проекта',
+      label: localize[this.props.lang].IDEALLY_FOR_ALL,
       ...this.props.getBasicLineSettings()
     };
   };
@@ -110,7 +123,7 @@ class BudgetChart extends Component {
       .sort(sortChartLineByDates);
     return {
       data: [...burndown],
-      label: 'Весь проект',
+      label: localize[this.props.lang].ALL_PROJECT,
       ...this.props.getBasicLineSettings()
     };
   };
@@ -129,13 +142,13 @@ class BudgetChart extends Component {
       ];
       return {
         data: [...idealBurndown],
-        label: `Идеальная ${sprint.name}`,
+        label: `${localize[this.props.lang].IDEALLY} ${sprint.name}`,
         ...this.props.getBasicLineSettings()
       };
     });
   };
 
-  makeSprintsBurndowns = (metrics, sprints) => {
+  makeSprintsBurndowns = (metrics, sprints, isRisks) => {
     return sprints.map(sprint => {
       const sprintMetrics = metrics.filter(metric => metric.sprintId === sprint.id);
       const burndown = sprintMetrics
@@ -146,8 +159,15 @@ class BudgetChart extends Component {
           };
         })
         .sort(sortChartLineByDates);
+      const fullBurndown = [
+        {
+          x: sprint.factStartDate,
+          y: isRisks ? sprint.riskBudget || 0 : sprint.budget || 0
+        },
+        ...burndown
+      ];
       return {
-        data: burndown,
+        data: fullBurndown,
         label: `${sprint.name}`,
         ...this.props.getBasicLineSettings()
       };
@@ -158,13 +178,26 @@ class BudgetChart extends Component {
     const { isRisks, budget, riskBudget } = this.props;
     return (
       <div className={css.BudgetChart}>
-        <h3>{isRisks ? 'С рисковым резервом' : 'Без рискового резерва'}</h3>
+        <h3>{isRisks ? `${localize[this.props.lang].WITH_RISK}` : `${localize[this.props.lang].WITHOUT_RISK}`}</h3>
         <div className={css.BudgetChartInfo}>
-          Бюджет:
-          <Input readOnly value={isRisks ? `${riskBudget || 0} ч.` : `${budget || 0} ч`} />
+          {localize[this.props.lang].BUDGET}
+          <Input
+            readOnly
+            value={
+              isRisks
+                ? `${riskBudget || 0} ${localize[this.props.lang].H}`
+                : `${budget || 0} ${localize[this.props.lang].H}`
+            }
+          />
         </div>
-        <ChartWrapper chartRef={this.state.chartRef}>
-          <Line ref="chart" height={250} data={this.makeChartData()} options={this.chartOptions} redraw />
+        <ChartWrapper chartRef={this.chartRef}>
+          <Line
+            ref={this.setChartRef}
+            height={250}
+            data={this.makeChartData()}
+            options={this.getGraphicOptions()}
+            redraw
+          />
         </ChartWrapper>
       </div>
     );
@@ -174,7 +207,8 @@ class BudgetChart extends Component {
 const mapStateToProps = state => ({
   budget: state.Project.project.budget,
   riskBudget: state.Project.project.riskBudget,
-  sprints: state.Project.project.sprints
+  sprints: state.Project.project.sprints,
+  lang: state.Localize.lang
 });
 
 export default connect(mapStateToProps)(BudgetChart);

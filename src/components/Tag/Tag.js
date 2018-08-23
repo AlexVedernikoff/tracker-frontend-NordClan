@@ -10,9 +10,11 @@ class Tag extends React.Component {
   static propTypes = {
     blocked: PropTypes.bool,
     create: PropTypes.bool,
+    deleteTagModal: PropTypes.func,
     deleteHandler: PropTypes.func,
     deleteTag: PropTypes.func.isRequired,
     name: PropTypes.string,
+    noRequest: PropTypes.bool,
     onClick: PropTypes.func,
     taggable: PropTypes.string,
     taggableId: PropTypes.number,
@@ -22,6 +24,8 @@ class Tag extends React.Component {
   deleteTag = () => {
     if (this.props.deleteHandler) {
       this.props.deleteHandler();
+    } else if (this.props.noRequest) {
+      this.props.deleteTagModal();
     } else {
       this.props.deleteTag(this.props.name, this.props.taggable, this.props.taggableId);
     }
@@ -36,10 +40,12 @@ class Tag extends React.Component {
       name,
       create,
       blocked,
+      deleteTagModal,
       taggable,
       taggableId,
       deleteHandler,
       unclickable,
+      noRequest,
       deleteTag: dt,
       ...other
     } = this.props;
@@ -71,4 +77,7 @@ const mapDispatchToProps = {
   deleteTag
 };
 
-export default connect(null, mapDispatchToProps)(Tag);
+export default connect(
+  null,
+  mapDispatchToProps
+)(Tag);

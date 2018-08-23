@@ -1,0 +1,22 @@
+{
+  "en": {
+    "NUMBER_OF_TASKS": "Number of tasks",
+    "NUMBER_OPEN_TASKS": "Number of open tasks",
+    "WITHOUT_ELEVATION": "The number of open tasks without evaluation",
+    "OUTSIDE_PLAN": "Number of open tasks outside the plan",
+    "NUMBER_BUGS": "Number of open bugs",
+    "NUMBER_BUGS_FROM_CLIENT": "Number of open bugs from the client",
+    "DATE": "Date",
+    "LANG": "en"
+  },
+  "ru": {
+    "NUMBER_OF_TASKS": "Количество задач",
+    "NUMBER_OPEN_TASKS": "Количество открытых задач",
+    "WITHOUT_ELEVATION": "Количество открытых задач без оценки",
+    "OUTSIDE_PLAN": "Количество открытых задач вне плана",
+    "NUMBER_BUGS": "Количество открытых багов",
+    "NUMBER_BUGS_FROM_CLIENT": "Количество открытых багов от заказчика",
+    "DATE": "Дата",
+    "LANG": "ru"
+  }
+}

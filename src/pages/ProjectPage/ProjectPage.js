@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import ProjectPrefixModal from '../../components/ProjectPrefixModal';
+import MissingProjectFieldsModal from '../../components/MissingProjectFieldsModal';
 import { history } from '../../History';
 import RouteTabs from '../../components/RouteTabs';
 import HttpError from '../../components/HttpError';
@@ -11,15 +11,19 @@ import ProjectTitle from './ProjectTitle';
 
 import { getProjectInfo as getProject, changeProject } from '../../actions/Project';
 import { ADMIN, EXTERNAL_USER } from '../../constants/Roles';
+import { checkIsViewer } from '../../helpers/RoleValidator';
+import localize from './projectPage.json';
 
 class ProjectPage extends Component {
   static propTypes = {
     changeProject: PropTypes.func,
     children: PropTypes.object,
     getProjectInfo: PropTypes.func,
+    lang: PropTypes.string.isRequired,
     location: PropTypes.object,
     params: PropTypes.object,
     project: PropTypes.object,
+    projectTypes: PropTypes.array,
     user: PropTypes.object.isRequired
   };
 
@@ -44,16 +48,26 @@ class ProjectPage extends Component {
       event.preventDefault();
     }
   };
+
+  handleTimesheetsAction = event => {
+    if (this.props.location.pathname.indexOf('timesheets') !== -1) {
+      event.preventDefault();
+    }
+  };
   handleCloseProjectPrefixModal = () => history.push('/projects');
-  handleCloseProjectConfirmModal = prefixValue => () =>
+
+  handleCloseProjectConfirmModal = values => {
     this.props.changeProject(
       {
         id: this.props.params.projectId,
-        prefix: prefixValue
+        ...values
       },
       'Prefix'
     );
+  };
+
   render() {
+    const { projectTypes, lang } = this.props;
     const isProjectAdmin = this.checkIsAdminInProject();
     const tabs = [
       <Link
@@ -62,35 +76,35 @@ class ProjectPage extends Component {
         onlyActiveOnIndex
         to={`/projects/${this.props.params.projectId}`}
       >
-        Доска
+        {localize[lang].BOARD}
       </Link>,
       <Link
         activeClassName="active"
         key={`/projects/${this.props.params.projectId}/tasks`}
         to={`/projects/${this.props.params.projectId}/tasks`}
       >
-        Список задач
+        {localize[lang].TASK_LIST}
       </Link>,
       <Link
         activeClassName="active"
         key={`/projects/${this.props.params.projectId}/planning`}
         to={`/projects/${this.props.params.projectId}/planning`}
       >
-        Планирование
+        {localize[lang].PLANNING}
       </Link>,
       <Link
         activeClassName="active"
         key={`/projects/${this.props.params.projectId}/info`}
         to={`/projects/${this.props.params.projectId}/info`}
       >
-        Информация
+        {localize[lang].INFO}
       </Link>,
       <Link
         activeClassName="active"
         key={`/projects/${this.props.params.projectId}/property`}
         to={`/projects/${this.props.params.projectId}/property`}
       >
-        Настройки
+        {localize[lang].SETTING}
       </Link>
     ];
     if (this.props.user.globalRole !== EXTERNAL_USER) {
@@ -100,11 +114,12 @@ class ProjectPage extends Component {
           key={`/projects/${this.props.params.projectId}/history`}
           to={`/projects/${this.props.params.projectId}/history`}
         >
-          История
+          {localize[lang].HISTORY}
         </Link>
       );
     }
-    if (isProjectAdmin) {
+
+    if (isProjectAdmin || checkIsViewer(this.props.user.globalRole)) {
       tabs.push(
         <Link
           activeClassName="active"
@@ -112,7 +127,19 @@ class ProjectPage extends Component {
           to={`/projects/${this.props.params.projectId}/analytics`}
           onClick={this.handleAnalyticsAction}
         >
-          Аналитика
+          {localize[lang].ANALYTICS}
+        </Link>
+      );
+    }
+    if (isProjectAdmin) {
+      tabs.push(
+        <Link
+          activeClassName="active"
+          key={`/projects/${this.props.params.projectId}/timesheets`}
+          to={`/projects/${this.props.params.projectId}/timesheets`}
+          onClick={this.handleTimesheetsAction}
+        >
+          {localize[lang].TIME_REPORTS}
         </Link>
       );
     }
@@ -133,11 +160,12 @@ class ProjectPage extends Component {
 
         <div className={css.tabContent}>{this.props.children}</div>
         {isProjectAdmin && this.props.project.prefix !== undefined && !this.props.project.prefix ? (
-          <ProjectPrefixModal
+          <MissingProjectFieldsModal
             isOpen
             contentLabel="modal"
-            text="Для дальнейшей работы укажите префикс проекта"
+            text={localize[lang].ENTER_MISSING_DATA}
             error={this.props.project.validationError}
+            projectTypes={projectTypes}
             onCancel={this.handleCloseProjectPrefixModal}
             onConfirm={this.handleCloseProjectConfirmModal}
           />
@@ -149,7 +177,9 @@ class ProjectPage extends Component {
 
 const mapStateToProps = state => ({
   project: state.Project.project,
-  user: state.Auth.user
+  user: state.Auth.user,
+  projectTypes: state.Dictionaries.projectTypes || [],
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {

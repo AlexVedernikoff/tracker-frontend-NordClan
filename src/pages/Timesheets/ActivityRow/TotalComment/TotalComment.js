@@ -8,6 +8,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as css from '../../Timesheets.scss';
 import { IconComments, IconCheckAll } from '../../../../components/Icons';
 import { updateSheetsArray } from '../../../../actions/Timesheets';
+import localize from './totalComment.json';
 
 class TotalComment extends React.Component {
   static propTypes = {
@@ -18,7 +19,7 @@ class TotalComment extends React.Component {
     userId: PropTypes.number
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
     const updatedComments = {};
     if (props.items.length) {
@@ -32,7 +33,7 @@ class TotalComment extends React.Component {
     };
   }
 
-  componentWillReceiveProps (newProps) {
+  componentWillReceiveProps(newProps) {
     if (newProps.items.length) {
       const updatedComments = {};
       newProps.items.forEach(tsh => {
@@ -57,7 +58,7 @@ class TotalComment extends React.Component {
   };
 
   save = () => {
-    const {userId, startingDay} = this.props;
+    const { userId, startingDay } = this.props;
     const body = [];
     for (const sheetId in this.state.updatedComments) {
       body.push({
@@ -78,49 +79,48 @@ class TotalComment extends React.Component {
     });
   };
 
-  render () {
-    const { items, isDisable } = this.props;
-    const filledTimeSheets = items.filter((el) => { return el.id; });
+  render() {
+    const { items, isDisable, lang } = this.props;
+    const filledTimeSheets = items.filter(el => {
+      return el.id;
+    });
     return (
       <div>
-        <IconComments onClick={this.toggle}/>
-        <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
-          {
-            this.state.isOpen
-              ? <div className={cn(css.totalComment)}>
-                <div>
-                  {
-                    filledTimeSheets.map(
-                      tsh => (
-                        <div key={tsh.id} className={css.totalCommentPart}>
-                          <div className={css.commentDay}>
-                            {moment(tsh.onDate).format('dd')}<br/>
-                            {moment(tsh.onDate).format('DD.MM')}
-                          </div>
-                          {
-                            tsh.statusId === 1 || tsh.statusId === 2
-                              ? <textarea
-                                placeholder="Введите текст комментария"
-                                onChange={(e) => this.updateComment(e, tsh)}
-                                value={this.state.updatedComments[tsh.id] || ''}
-                              />
-                              : <span>{this.state.updatedComments[tsh.id]}</span>
-                          }
-                        </div>
-                      )
-                    )
-                  }
-                </div>
-                {
-                  !isDisable
-                    ? <div className={css.checkAll} onClick={this.save}>
-                      <IconCheckAll/>
+        <IconComments onClick={this.toggle} />
+        <ReactCSSTransitionGroup
+          transitionName="animatedElement"
+          transitionEnterTimeout={300}
+          transitionLeaveTimeout={300}
+        >
+          {this.state.isOpen ? (
+            <div className={cn(css.totalComment)}>
+              <div>
+                {filledTimeSheets.map(tsh => (
+                  <div key={tsh.id} className={css.totalCommentPart}>
+                    <div className={css.commentDay}>
+                      {moment(tsh.onDate).format('dd')}
+                      <br />
+                      {moment(tsh.onDate).format('DD.MM')}
                     </div>
-                    : null
-                }
+                    {tsh.statusId === 1 || tsh.statusId === 2 ? (
+                      <textarea
+                        placeholder={localize[lang].ENTER_COMMENT_TEXT}
+                        onChange={e => this.updateComment(e, tsh)}
+                        value={this.state.updatedComments[tsh.id] || ''}
+                      />
+                    ) : (
+                      <span>{this.state.updatedComments[tsh.id]}</span>
+                    )}
+                  </div>
+                ))}
               </div>
-              : null
-          }
+              {!isDisable ? (
+                <div className={css.checkAll} onClick={this.save}>
+                  <IconCheckAll />
+                </div>
+              ) : null}
+            </div>
+          ) : null}
         </ReactCSSTransitionGroup>
       </div>
     );
@@ -129,7 +129,8 @@ class TotalComment extends React.Component {
 
 const mapStateToProps = state => ({
   userId: state.Auth.user.id,
-  startingDay: state.Timesheets.startingDay
+  startingDay: state.Timesheets.startingDay,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = { updateSheetsArray };

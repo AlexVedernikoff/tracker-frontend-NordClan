@@ -4,13 +4,15 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { history } from '../../../../../History';
 import { updateDraft, updateTimesheet } from '../../../../../actions/TimesheetPlayer';
-import _ from 'lodash';
+import debounce from 'lodash/debounce';
+import find from 'lodash/find';
 import * as css from '../Playlist.scss';
 import getMaIcon from '../../../../../constants/MagicActivityIcons';
 import roundNum from '../../../../../utils/roundNum';
 import validateNumber from '../../../../../utils/validateNumber';
 
 import { IconComment, IconCheck, IconEye, IconEyeDisable } from '../../../../../components/Icons';
+import localize from './playlistItem.json';
 
 class PlaylistItem extends Component {
   constructor(props) {
@@ -20,8 +22,8 @@ class PlaylistItem extends Component {
       itemSpentTime: roundNum(this.props.item.spentTime, 2),
       isCommentOpen: false
     };
-    this.debouncedUpdateDraft = _.debounce(this.props.updateDraft, 500);
-    this.debouncedUpdateOnlyTimesheet = _.debounce(this.props.updateTimesheet, 500);
+    this.debouncedUpdateDraft = debounce(this.props.updateDraft, 500);
+    this.debouncedUpdateOnlyTimesheet = debounce(this.props.updateTimesheet, 500);
   }
 
   toggleComment = event => {
@@ -47,28 +49,27 @@ class PlaylistItem extends Component {
       return false;
     }
 
-    this.setState({
-      itemSpentTime: value
-    });
-
-    value = value.replace(',', '.');
-
-    if (+value > 0) {
+    const replacedStr = value.replace(',', '.');
+    value = parseFloat(replacedStr, 10) || 0;
+    if (parseFloat(this.state.itemSpentTime, 10) !== value && this.props.item.spentTime !== value) {
       if (this.props.item.isDraft) {
-        this.debouncedUpdateDraft(
-          {
-            sheetId: this.props.item.id,
-            spentTime: value,
-            isVisible: this.props.item.isVisible,
-            onDate: this.props.item.onDate,
-            typeId: this.props.item.typeId,
-            projectId: this.props.item.project ? this.props.item.project.id : 0,
-            sprintId: this.props.item.task && this.props.item.task.sprint ? this.props.item.task.sprint.id : 0
-          },
-          {
-            onDate: this.props.item.onDate
-          }
-        );
+        if (value > 0) {
+          this.debouncedUpdateDraft(
+            {
+              sheetId: this.props.item.id,
+              spentTime: value,
+              isVisible: this.props.item.isVisible,
+              onDate: this.props.item.onDate,
+              typeId: this.props.item.typeId,
+              projectId: this.props.item.project ? this.props.item.project.id : 0,
+              sprintId: this.props.item.task && this.props.item.task.sprint ? this.props.item.task.sprint.id : 0,
+              taskId: this.props.item.task && this.props.item.task.id
+            },
+            {
+              onDate: this.props.item.onDate
+            }
+          );
+        }
       } else {
         this.debouncedUpdateOnlyTimesheet({
           sheetId: this.props.item.id,
@@ -77,10 +78,14 @@ class PlaylistItem extends Component {
           comment: this.props.item.comment,
           onDate: this.props.item.onDate,
           projectId: this.props.item.project ? this.props.item.project.id : 0,
-          sprintId: this.props.item.sprint ? this.props.item.sprint.id : 0
+          sprintId: this.props.item.sprint ? this.props.item.sprint.id : 0,
+          taskId: this.props.item.task && this.props.item.task.id
         });
       }
     }
+    this.setState({
+      itemSpentTime: replacedStr
+    });
   };
 
   handleChangeComment = e => {
@@ -89,17 +94,20 @@ class PlaylistItem extends Component {
 
   changeVisibility = (e, visibility) => {
     e.stopPropagation();
-    const { item, updateTimesheet, updateDraft } = this.props;
     const params = {
-      sheetId: item.id,
+      sheetId: this.props.item.id,
       isVisible: !!visibility
     };
-    item.isDraft ? updateDraft(params) : updateTimesheet(params);
+    if (this.props.item.isDraft) {
+      this.props.updateDraft(params);
+    } else {
+      this.props.updateTimesheet(params);
+    }
   };
 
   getNameByType = typeId => {
-    const activity = _.find(this.props.magicActivitiesTypes, { id: typeId });
-    return activity ? activity.name : 'Не определено';
+    const activity = find(this.props.magicActivitiesTypes, { id: typeId });
+    return activity ? activity.name : localize[this.props.lang].UNDEFINED;
   };
 
   goToDetailPage = () => {
@@ -110,6 +118,8 @@ class PlaylistItem extends Component {
     }
   };
 
+  giveRealValue = () => this.setState({ itemSpentTime: roundNum(this.props.item.spentTime, 2) });
+
   render() {
     const {
       task,
@@ -118,10 +128,10 @@ class PlaylistItem extends Component {
       typeId,
       taskStatus: createDraftStatus,
       isDraft,
-      sprint,
-      isVisible
+      isVisible,
+      sprint
     } = this.props.item;
-    const timesheetDisabled = this.props.disabled;
+    const { lang, disabled: timesheetDisabled } = this.props;
     const status = task ? task.taskStatus : null;
     const redColorForTime = task ? parseFloat(task.factExecutionTime) > parseFloat(task.plannedExecutionTime) : false;
 
@@ -149,8 +159,12 @@ class PlaylistItem extends Component {
           <div className={css.taskTitle}>
             <div className={css.meta}>
               {task && task.prefix ? <span>{task.prefix}</span> : null}
-              <span className={css.proName}>{project ? project.name : 'Без проекта'}</span>
-              <span>{sprint ? sprint.name : 'Backlog'}</span>
+              <span className={css.proName}>{project ? project.name : localize[lang].WITHOUT_PROJECT}</span>
+              {task ? (
+                <span>{task.sprint && task.sprint.name ? task.sprint.name : 'Backlog'}</span>
+              ) : (
+                <span>{sprint && sprint.name ? sprint.name : 'Backlog'}</span>
+              )}
               {status ? (
                 <span>
                   {createDraftStatus ? (
@@ -161,7 +175,11 @@ class PlaylistItem extends Component {
                   ) : null}
                 </span>
               ) : null}
-              {status ? <span>Тек. статус: {status.name}</span> : null}
+              {status ? (
+                <span>
+                  {localize[lang].CURRENT_STATUS} {status.name}
+                </span>
+              ) : null}
               {!isDraft ? (
                 <span
                   className={classnames({ [css.commentToggler]: true, [css.green]: !!comment })}
@@ -173,14 +191,18 @@ class PlaylistItem extends Component {
 
               {status !== 'education' ? (
                 isVisible ? (
-                  <span className={css.visibleToggler} onClick={e => this.changeVisibility(e, false)} data-tip="Скрыть">
+                  <span
+                    className={css.visibleToggler}
+                    onClick={e => this.changeVisibility(e, false)}
+                    data-tip={localize[lang].HIDE}
+                  >
                     <IconEyeDisable />
                   </span>
                 ) : (
                   <span
                     className={css.visibleToggler}
                     onClick={e => this.changeVisibility(e, true)}
-                    data-tip="Показать"
+                    data-tip={localize[lang].SHOW}
                   >
                     <IconEye />
                   </span>
@@ -200,17 +222,18 @@ class PlaylistItem extends Component {
               onChange={this.handleChangeTime}
               value={this.state.itemSpentTime}
               disabled={timesheetDisabled}
+              onBlur={this.giveRealValue}
             />
           </div>
           <div className={classnames({ [css.other]: true, [css.exceeded]: redColorForTime })}>
-            <span data-tip="Всего потрачено" data-place="bottom">
+            <span data-tip={localize[lang].TOTAL_SPENT} data-place="bottom">
               {task ? roundNum(task.factExecutionTime, 2) : null}
             </span>
             {task ? (
               <span>
                 {' '}
                 /{' '}
-                <span data-tip="Запланировано" data-place="bottom">
+                <span data-tip={localize[lang].SCHEDULED} data-place="bottom">
                   {roundNum(task.plannedExecutionTime, 2)}
                 </span>
               </span>
@@ -224,7 +247,7 @@ class PlaylistItem extends Component {
               onChange={this.handleChangeComment}
               defaultValue={comment}
               value={this.state.comment}
-              placeholder="Введите текст комментария"
+              placeholder={localize[lang].ENTER_COMMENT_TEXT}
               disabled={timesheetDisabled}
             />
             {!timesheetDisabled && (
@@ -254,7 +277,8 @@ PlaylistItem.propTypes = {
 const mapStateToProps = state => {
   return {
     magicActivitiesTypes: state.Dictionaries.magicActivityTypes,
-    task: state.Task.task
+    task: state.Task.task,
+    lang: state.Localize.lang
   };
 };
 

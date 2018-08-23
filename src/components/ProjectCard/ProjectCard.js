@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import classnames from 'classnames';
 import { Link } from 'react-router';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index';
 import moment from 'moment';
+import localization from './ProjectCard.json';
 
 import Tag from '../Tag';
 import Tags from '../Tags';
@@ -23,7 +25,7 @@ const ProjectCard = props => {
     dateFinishLastSprint,
     completedAt
   } = props.project;
-  const { isChild, onClickTag } = props;
+  const { isChild, onClickTag, lang } = props;
 
   const tagList = tags
     ? tags.map((element, i) => <Tag name={element} blocked key={`${i}-tag`} onClick={onClickTag} />)
@@ -81,7 +83,15 @@ const ProjectCard = props => {
                   <span className={css.titleSplit}>/</span>{' '}
                 </span>
               ) : null}
-              <Link to={`/projects/${id}`}>{name}</Link>
+              <Link
+                to={`/projects/${id}${
+                  !props.project.currentSprints || props.project.currentSprints[0] === undefined
+                    ? ''
+                    : `?currentSprint=${props.project.currentSprints[0].id}`
+                }`}
+              >
+                {name}
+              </Link>
             </div>
           </h3>
         </Col>
@@ -89,7 +99,7 @@ const ProjectCard = props => {
           <div className={css.metaBox}>
             {createdAt ? (
               <div className={css.meta}>
-                <span>Сроки:</span>
+                <span>{localization[lang].LIMITATION}</span>
                 <span>
                   {getProjectStartDate(dateStartFirstSprint, createdAt)}
                   {dateFinishLastSprint || completedAt ? ' - ' : ''}
@@ -105,12 +115,12 @@ const ProjectCard = props => {
                   [css.metaSprints]: true
                 })}
               >
-                <span className={css.sprintsMetaText}>Текущие спринты:</span>
+                <span className={css.sprintsMetaText}>{localization[lang].CURRENT_SPRINTS}</span>
                 <div className={css.currentSprints}>
                   {currentSprints.map((sprint, i) => (
                     <span key={`sprint-${i}`} className={css.sprint}>
-                      {sprint.name} ({moment(sprint.factStartDate).format('DD.MM.YYYY')}
-                      - {moment(sprint.factFinishDate).format('DD.MM.YYYY')})
+                      {sprint.name} ({moment(sprint.factStartDate).format('DD.MM.YYYY')}-{' '}
+                      {moment(sprint.factFinishDate).format('DD.MM.YYYY')})
                     </span>
                   ))}
                 </div>
@@ -118,7 +128,7 @@ const ProjectCard = props => {
             ) : null}
 
             <div className={css.meta}>
-              <span>Участников:</span>
+              <span>{localization[lang].PARTICIPANTS}</span>
               <span>{usersCount || 0}</span>
             </div>
           </div>
@@ -144,4 +154,11 @@ ProjectCard.defaultProps = {
   isPortfolio: true
 };
 
-export default ProjectCard;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(ProjectCard);

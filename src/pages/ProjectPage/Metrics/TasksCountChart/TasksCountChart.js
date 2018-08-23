@@ -6,6 +6,9 @@ import { Line } from 'react-chartjs-2';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import getColor from '../../../../utils/Colors';
 import roundNum from '../../../../utils/roundNum';
+import localize from './TasksCountChart.json';
+import { connect } from 'react-redux';
+import moment from 'moment';
 
 class TasksCountChart extends Component {
   static propTypes = {
@@ -18,17 +21,17 @@ class TasksCountChart extends Component {
     openedOutOfPlanFeaturesMetric: PropTypes.array
   };
 
-  constructor(props) {
-    super(props);
+  chartRef = null;
 
-    this.state = {
-      chartRef: null
-    };
+  setChartRef = node => {
+    this.chartRef = node;
+  };
 
-    this.chartOptions = {
-      ...props.chartDefaultOptions,
+  getGraphicOptions() {
+    return {
+      ...this.props.chartDefaultOptions,
       scales: {
-        ...props.chartDefaultOptions.scales,
+        ...this.props.chartDefaultOptions.scales,
         yAxes: [
           {
             ticks: {
@@ -37,16 +40,29 @@ class TasksCountChart extends Component {
             display: true,
             scaleLabel: {
               display: true,
-              labelString: 'Количество задач'
+              labelString: localize[this.props.lang].NUMBER_OF_TASKS
+            }
+          }
+        ],
+        xAxes: [
+          {
+            type: 'time',
+            time: {
+              displayFormats: {
+                day: 'D MMM'
+              },
+              tooltipFormat: 'DD.MM.YYYY',
+              locale: moment.locale(localize[this.props.lang].LANG)
+            },
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: localize[this.props.lang].DATE
             }
           }
         ]
       }
     };
-  }
-
-  componentDidMount() {
-    this.setState({ chartRef: this.refs.chart });
   }
 
   makeChartData() {
@@ -62,11 +78,14 @@ class TasksCountChart extends Component {
 
     return {
       datasets: [
-        this.makeTaskCountMetricsLine(openedFeaturesMetric, 'Количество открытых задач без оценки'),
-        this.makeTaskCountMetricsLine(openedFeaturesWithoutEvaluationMetric, 'Количество открытых задач без оценки'),
-        this.makeTaskCountMetricsLine(openedOutOfPlanFeaturesMetric, 'Количество открытых задач вне плана'),
-        this.makeTaskCountMetricsLine(openedBugsMetrics, 'Количество открытых багов'),
-        this.makeTaskCountMetricsLine(openedCustomerBugsMetrics, 'Количество открытых багов от заказчика')
+        this.makeTaskCountMetricsLine(openedFeaturesMetric, localize[this.props.lang].NUMBER_OPEN_TASKS),
+        this.makeTaskCountMetricsLine(
+          openedFeaturesWithoutEvaluationMetric,
+          localize[this.props.lang].WITHOUT_ELEVATION
+        ),
+        this.makeTaskCountMetricsLine(openedOutOfPlanFeaturesMetric, localize[this.props.lang].OUTSIDE_PLAN),
+        this.makeTaskCountMetricsLine(openedBugsMetrics, localize[this.props.lang].NUMBER_BUGS),
+        this.makeTaskCountMetricsLine(openedCustomerBugsMetrics, localize[this.props.lang].NUMBER_BUGS_FROM_CLIENT)
       ]
     };
   }
@@ -88,20 +107,18 @@ class TasksCountChart extends Component {
   };
 
   render() {
+    const { lang } = this.props;
     return (
       <ChartWrapper chartRef={this.chartRef} className={css.BugsChart}>
-        <h3>Количество задач</h3>
-        <Line
-          ref={element => {
-            this.chartRef = element;
-          }}
-          data={this.makeChartData()}
-          options={this.chartOptions}
-          redraw
-        />
+        <h3>{localize[lang].NUMBER_OF_TASKS}</h3>
+        <Line ref={this.setChartRef} data={this.makeChartData()} options={this.getGraphicOptions()} redraw />
       </ChartWrapper>
     );
   }
 }
 
-export default TasksCountChart;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(mapStateToProps)(TasksCountChart);

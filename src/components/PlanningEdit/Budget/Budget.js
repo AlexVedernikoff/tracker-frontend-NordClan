@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from '../PlanningEdit.scss';
+import * as css from './Budget.scss';
 import { IconEdit, IconCheck } from '../../Icons';
 import ReactTooltip from 'react-tooltip';
-import Input from '../../Input';
-import { formatCurrency } from '../../../utils/Currency';
+import InputNumber from '../../InputNumber';
+import roundNum from '../../../utils/roundNum';
+import parseInteger from '../../../utils/parseInteger';
 
 class Budget extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -16,14 +17,14 @@ class Budget extends Component {
     };
   }
 
-  componentDidMount () {
-  }
+  componentDidMount() {}
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     ReactTooltip.rebuild();
   }
 
-  toggleEditing = () => {
+  toggleEditing = e => {
+    e.preventDefault();
     if (this.state.isEditing) {
       this.saveBudget();
       this.stopEditing();
@@ -49,50 +50,50 @@ class Budget extends Component {
     onEditSubmit(this.state.value);
   };
 
-  onChangeValue = (e) => {
+  onChangeValue = value => {
     this.setState({
-      value: parseFloat(parseFloat(e.target.value).toFixed(2))
+      value: this.props.integerOnly ? parseInteger(value) : value
     });
   };
 
-  render () {
-    const { header } = this.props;
+  selectAll = e => {
+    e.target.select();
+  };
+
+  render() {
+    const { header, max, min } = this.props;
 
     return (
-      <div className={css.PlanningEdit}>
-        <h2>{header}</h2>
+      <div className={css.budget}>
+        <div className={css.title}>{header}</div>
 
         <div className={css.editor}>
-          {
-            this.state.isEditing
-              ? <Input
-                type='number'
+          {this.state.isEditing ? (
+            <form onSubmit={this.toggleEditing}>
+              <InputNumber
+                onFocus={this.selectAll}
+                autoFocus
                 defaultValue={this.props.value}
                 onChange={this.onChangeValue}
+                value={this.state.value}
+                max={max}
+                min={min}
               />
-              : <div>{formatCurrency(this.props.value)}</div>
-          }
+            </form>
+          ) : (
+            <div className={css.budgetValue}>{roundNum(this.props.value, 2)}</div>
+          )}
         </div>
 
-        {
-          this.props.isProjectAdmin
-            ? <div className={css.editBorder}>
-              {
-                this.state.isEditing
-                  ? <IconCheck
-                    className={css.save}
-                    onClick={this.toggleEditing}
-                    data-tip="Сохранить"
-                  />
-                  : <IconEdit
-                    className={css.edit}
-                    onClick={this.toggleEditing}
-                    data-tip="Редактировать"
-                  />
-              }
-            </div>
-            : null
-        }
+        {this.props.isProjectAdmin ? (
+          <div
+            className={css.editIcon}
+            onClick={this.toggleEditing}
+            data-tip={this.state.isEditing ? 'Сохранить' : 'Редактировать'}
+          >
+            {this.state.isEditing ? <IconCheck className={css.save} /> : <IconEdit className={css.edit} />}
+          </div>
+        ) : null}
       </div>
     );
   }
@@ -101,7 +102,10 @@ class Budget extends Component {
 Budget.propTypes = {
   header: PropTypes.string.isRequired,
   id: PropTypes.number,
+  integerOnly: PropTypes.bool,
   isProjectAdmin: PropTypes.bool,
+  max: PropTypes.number,
+  min: PropTypes.number,
   onEditSubmit: PropTypes.func.isRequired,
   value: PropTypes.number
 };

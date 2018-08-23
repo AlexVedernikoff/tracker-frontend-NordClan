@@ -12,6 +12,7 @@ import { changeTask } from '../../../../actions/Task';
 import { IconList } from '../../../../components/Icons';
 import * as timesheetsConstants from '../../../../constants/Timesheets';
 import List from './List';
+import localize from './playlist.json';
 import * as css from './Playlist.scss';
 
 class Playlist extends Component {
@@ -138,12 +139,7 @@ class Playlist extends Component {
   activeTracks = (tracks, activeDayTab, activeActivityTab) => {
     let activeTracks = this.filterTracksByDayTab(tracks, activeDayTab);
     activeTracks = this.filterTracksByActivityTab(activeTracks.tracks, activeActivityTab);
-
-    const isMagicActivityTab = activeActivityTab !== 'all' && activeActivityTab !== 1;
-    const additionalMagicActivityTracks = isMagicActivityTab ? this.addAdditionalMagicActivities(activeTracks) : [];
-
-    const allTracks = activeTracks.concat(additionalMagicActivityTracks);
-    const allSortedTracks = allTracks.sort((track1, track2) => {
+    const allSortedTracks = activeTracks.sort((track1, track2) => {
       if (!track1.project) {
         return -1;
       }
@@ -169,7 +165,7 @@ class Playlist extends Component {
     if (Array.isArray(tracks) && activeDayTab && activeDayTab !== 'all') {
       return tracks.filter(el => el.typeId === activeDayTab);
     } else if (Array.isArray(tracks)) {
-      return tracks.filter(el => el.isDraft === false || el.task !== null); // Фильтрую драфты магической активности
+      return tracks.filter(el => el.isDraft === false || el.task !== null || el.typeId !== 1); // Фильтрую драфты магической активности
     }
     return [];
   };
@@ -255,7 +251,6 @@ class Playlist extends Component {
           track.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
           track.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED
       );
-
       return disabledTimesheetFound;
     });
 
@@ -264,7 +259,7 @@ class Playlist extends Component {
 
   render() {
     const { isPlaylistOpen } = this.state;
-    const { activeTask, tracks, currentUserId } = this.props;
+    const { activeTask, tracks, currentUserId, lang } = this.props;
     const currentUserTracks = this.filterTracksByCurrentUser(tracks, currentUserId);
 
     return (
@@ -274,6 +269,7 @@ class Playlist extends Component {
           onClick={this.handleToggleList}
           activeTask={activeTask}
           changeTask={this.props.changeTask}
+          lang={lang}
         />
         <ReactCSSTransitionGroup
           transitionName="animatedElement"
@@ -284,25 +280,32 @@ class Playlist extends Component {
             <div className={css.list}>
               <div className={css.week}>
                 <div className={this.dayTabStyle(0)} onClick={this.changeActiveDayTab(0)}>
-                  Пн {this.getCountBadge(currentUserTracks, 0)}
+                  {localize[lang].Mo}
+                  {this.getCountBadge(currentUserTracks, 0)}
                 </div>
                 <div className={this.dayTabStyle(1)} onClick={this.changeActiveDayTab(1)}>
-                  Вт {this.getCountBadge(currentUserTracks, 1)}
+                  {localize[lang].Tu}
+                  {this.getCountBadge(currentUserTracks, 1)}
                 </div>
                 <div className={this.dayTabStyle(2)} onClick={this.changeActiveDayTab(2)}>
-                  Ср {this.getCountBadge(currentUserTracks, 2)}
+                  {localize[lang].We}
+                  {this.getCountBadge(currentUserTracks, 2)}
                 </div>
                 <div className={this.dayTabStyle(3)} onClick={this.changeActiveDayTab(3)}>
-                  Чт {this.getCountBadge(currentUserTracks, 3)}
+                  {localize[lang].Th}
+                  {this.getCountBadge(currentUserTracks, 3)}
                 </div>
                 <div className={this.dayTabStyle(4)} onClick={this.changeActiveDayTab(4)}>
-                  Пт {this.getCountBadge(currentUserTracks, 4)}
+                  {localize[lang].Fr}
+                  {this.getCountBadge(currentUserTracks, 4)}
                 </div>
                 <div className={this.dayTabStyle(5)} onClick={this.changeActiveDayTab(5)}>
-                  Сб {this.getCountBadge(currentUserTracks, 5)}
+                  {localize[lang].Sa}
+                  {this.getCountBadge(currentUserTracks, 5)}
                 </div>
                 <div className={this.dayTabStyle(6)} onClick={this.changeActiveDayTab(6)}>
-                  Вс {this.getCountBadge(currentUserTracks, 6)}
+                  {localize[lang].Su}
+                  {this.getCountBadge(currentUserTracks, 6)}
                 </div>
               </div>
               <div className={css.taskWrapper}>
@@ -310,6 +313,9 @@ class Playlist extends Component {
                   handleToggleList={this.handleToggleList}
                   tracks={this.activeTracks(currentUserTracks, this.state.activeDayTab, this.state.activeActivityTab)}
                   disabled={this.checkIfshouldBeDisabled(currentUserTracks)}
+                  textInfo={localize[lang].NOTHING_TO_SHOW}
+                  textShowHidden={localize[lang].SHOW_HIDDEN}
+                  textHide={localize[lang].HIDE}
                 />
               </div>
               <div className={css.activity}>
@@ -332,7 +338,7 @@ class Playlist extends Component {
                     <input
                       type="text"
                       value={this.getScaleAll(currentUserTracks, this.state.activeDayTab) || 0}
-                      data-tip="Итого"
+                      data-tip={localize[lang].TOTAL}
                       onChange={() => {}}
                     />
                   </div>
@@ -361,7 +367,8 @@ const mapStateToProps = state => {
     activeTask: state.TimesheetPlayer.activeTask,
     tracks: state.TimesheetPlayer.tracks,
     availableProjects: state.TimesheetPlayer.availableProjects,
-    magicActivitiesTypes: state.Dictionaries.magicActivityTypes
+    magicActivitiesTypes: state.Dictionaries.magicActivityTypes,
+    lang: state.Localize.lang
   };
 };
 

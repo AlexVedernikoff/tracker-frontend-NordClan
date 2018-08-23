@@ -6,6 +6,9 @@ import { Line } from 'react-chartjs-2';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import roundNum from '../../../../utils/roundNum';
 import getColor from '../../../../utils/Colors';
+import localize from './BugsChart.json';
+import { connect } from 'react-redux';
+import moment from 'moment';
 
 class BugsChart extends Component {
   static propTypes = {
@@ -16,17 +19,13 @@ class BugsChart extends Component {
     openedRegressBugsMetrics: PropTypes.array
   };
 
-  constructor(props) {
-    super(props);
+  chartRef = null;
 
-    this.state = {
-      chartRef: null
-    };
-
-    this.chartOptions = {
-      ...props.chartDefaultOptions,
+  getGraphicOptions() {
+    return {
+      ...this.props.chartDefaultOptions,
       scales: {
-        ...props.chartDefaultOptions.scales,
+        ...this.props.chartDefaultOptions.scales,
         yAxes: [
           {
             ticks: {
@@ -35,7 +34,24 @@ class BugsChart extends Component {
             display: true,
             scaleLabel: {
               display: true,
-              labelString: 'Количество багов'
+              labelString: localize[this.props.lang].BUGS_NUM
+            }
+          }
+        ],
+        xAxes: [
+          {
+            type: 'time',
+            time: {
+              displayFormats: {
+                day: 'D MMM'
+              },
+              tooltipFormat: 'DD.MM.YYYY',
+              locale: moment.locale(localize[this.props.lang].LANG)
+            },
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: localize[this.props.lang].DATE
             }
           }
         ]
@@ -43,20 +59,16 @@ class BugsChart extends Component {
     };
   }
 
-  componentDidMount() {
-    this.setState({ chartRef: this.refs.chart });
-  }
-
   makeChartData = () => {
-    const { openedBugsMetrics, openedCustomerBugsMetrics, openedRegressBugsMetrics } = this.props;
+    const { openedBugsMetrics, openedCustomerBugsMetrics, openedRegressBugsMetrics, lang } = this.props;
 
     getColor.reset();
 
     return {
       datasets: [
-        this.makeBugsLine(openedBugsMetrics, 'Количество открытых багов'),
-        this.makeBugsLine(openedCustomerBugsMetrics, 'Количество открытых багов от Заказчика'),
-        this.makeBugsLine(openedRegressBugsMetrics, 'Количество открытых регрессионных багов')
+        this.makeBugsLine(openedBugsMetrics, localize[lang].BUGS_NUMBER),
+        this.makeBugsLine(openedCustomerBugsMetrics, localize[lang].BUGS_NUMBER_FROM_CLIENT),
+        this.makeBugsLine(openedRegressBugsMetrics, localize[lang].BUGS_REGRESSION)
       ]
     };
   };
@@ -77,13 +89,19 @@ class BugsChart extends Component {
     };
   };
 
+  setChartRef = node => (this.chartRef = node);
+
   render() {
     return (
-      <ChartWrapper chartRef={this.state.chartRef} className={css.BugsChart}>
-        <Line ref="chart" data={this.makeChartData()} options={this.chartOptions} redraw />
+      <ChartWrapper chartRef={this.chartRef} className={css.BugsChart}>
+        <Line ref={this.setChartRef} data={this.makeChartData()} options={this.getGraphicOptions()} redraw />
       </ChartWrapper>
     );
   }
 }
 
-export default BugsChart;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(mapStateToProps)(BugsChart);

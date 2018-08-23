@@ -9,6 +9,7 @@ import { activateExternalUser } from '../../actions/ExternalUsers';
 import bg from '../Login/bg.jpg';
 import { connect } from 'react-redux';
 import { history } from '../../History';
+import localize from './externalUserActivate.json';
 
 class ExternalUserActivate extends Component {
   static propTypes = {
@@ -35,6 +36,7 @@ class ExternalUserActivate extends Component {
     this.props.activateExternalUser(this.props.params.exUserToken, this.state.password);
   };
   render() {
+    const { lang } = this.props;
     return (
       <div className={css.formWrapper} style={{ backgroundImage: `url(${bg})` }}>
         <div className={css.loginForm}>
@@ -42,9 +44,7 @@ class ExternalUserActivate extends Component {
             <Logo onLight={false} style={{ fontSize: '3rem', padding: 0, textAlign: 'center' }} />
           </div>
           <form onSubmit={this.onSubmit}>
-            <div className={css.activatePasswordInfo}>
-              Для активации придумайте пароль. Пароль должен содержать не менее 8 символов.
-            </div>
+            <div className={css.activatePasswordInfo}>{localize[lang].ACTIVE_PASSWORD_INFO}</div>
             <div className={css.inputWrapper}>
               {this.validator.validate(
                 (handleBlur, shouldMarkError) => (
@@ -52,11 +52,11 @@ class ExternalUserActivate extends Component {
                     autoFocus
                     name="password"
                     type="password"
-                    placeholder="Введите пароль"
+                    placeholder={localize[lang].PASSWORD}
                     onChange={this.handleChange}
                     onBlur={handleBlur}
                     shouldMarkError={shouldMarkError}
-                    errorText="Пароль содержит менее 8 символов"
+                    errorText={localize[lang].PASSWORD_MESSAGE_ERROR}
                   />
                 ),
                 'password',
@@ -67,13 +67,13 @@ class ExternalUserActivate extends Component {
               {this.validator.validate(
                 (handleBlur, shouldMarkError) => (
                   <ValidatedInput
-                    placeholder="Повторите пароль"
+                    placeholder={localize[lang].PASSWORD_REPEAT}
                     name="repeatPassword"
                     type="password"
                     onChange={this.handleChange}
                     onBlur={handleBlur}
                     shouldMarkError={shouldMarkError}
-                    errorText="Пароли не совпадают"
+                    errorText={localize[lang].PASSWORD_REPEAT_MESSAGE_ERROR}
                   />
                 ),
                 'repeatPassword',
@@ -84,7 +84,7 @@ class ExternalUserActivate extends Component {
               <Button
                 onClick={this.onSubmit}
                 htmlType="submit"
-                text="Активировать"
+                text={localize[lang].ACTIVATE}
                 type="borderedInverse"
                 disabled={!(this.state.password.length >= 8 && this.state.repeatPassword === this.state.password)}
               />
@@ -96,7 +96,9 @@ class ExternalUserActivate extends Component {
   }
 }
 
-const mapStateToProps = () => ({});
+const mapStateToProps = () => ({
+  lang: state.Localize.lang
+});
 
 const mapDispatchToProps = {
   activateExternalUser

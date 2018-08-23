@@ -1,0 +1,149 @@
+@import '../../../styles/variables.scss';
+
+.timeCharts {
+  margin-bottom: 2rem;
+
+  hr {
+    margin: 1rem 0;
+  }
+}
+
+.timeReports {
+  // padding: 16px 16px 0 16px;
+}
+
+.chartLabelContainer {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.noReports {
+  width: 100%;
+  // text-align: center;
+  color: silver;
+  font-size: $font-size-small;
+  line-height: 1.5;
+}
+
+.chartContainer {
+  display: flex;
+  color: white;
+}
+
+.horizontalChart {
+  position: relative;
+  height: 3.5rem;
+  min-width: auto;
+  display: block;
+  padding: 0.5rem;
+  overflow: hidden;
+  transition: $transition;
+
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    height: 100%;
+    background-color: rgba(white, 0.1);
+  }
+
+  &:hover {
+    opacity: 0.9;
+    transition: $transition;
+  }
+}
+
+.chartNumber {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 0.25rem 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: $font-size-small;
+  opacity: 0.8;
+}
+
+.viewSwitcher {
+  margin-bottom: 1rem;
+}
+
+.historyItem {
+  color: lighten($color-black, 20%);
+
+  .day {
+    padding: 0.5rem 1rem;
+    border-right: 1px solid $color-gray;
+  }
+
+  .status {
+    padding: 0.5rem;
+    // border-right: 1px solid $color-gray;
+  }
+
+  .time {
+    padding: 0.5rem;
+    border-right: 1px solid $color-gray;
+  }
+
+  .user {
+    padding: 0.5rem;
+  }
+}
+
+.ghostItem {
+  color: $color-black;
+
+  .day,
+  .status,
+  .time {
+    padding: 0.5rem 0.5rem 0.5rem 0;
+    border: none;
+  }
+
+  .time {
+    padding-right: 0;
+  }
+
+  .user {
+    padding: 0;
+    padding-left: 0.5rem;
+    vertical-align: middle;
+
+    .confirmNewTimesheet {
+      vertical-align: middle;
+      color: $color-green;
+      border-color: $color-green;
+      margin-left: 0.5rem;
+      width: 24px;
+      height: 24px;
+
+      &:not(:disabled):hover {
+        color: white;
+        background-color: $color-green;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+      }
+    }
+  }
+}
+
+.info {
+  display: inline-block;
+  font-size: 1rem;
+  vertical-align: middle;
+  margin: 0 0.25rem;
+  cursor: pointer;
+  color: $color-dark-gray;
+}
+
+.infoWarning {
+  color: $color-red;
+}

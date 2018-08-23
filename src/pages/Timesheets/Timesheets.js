@@ -3,24 +3,30 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 import moment from 'moment';
-import _ from 'lodash';
+import find from 'lodash/find';
+import sortBy from 'lodash/sortBy';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as timesheetsActions from '../../actions/Timesheets';
 import * as timesheetsConstants from '../../constants/Timesheets';
+import { showNotification } from '../../actions/Notifications';
 import * as css from './Timesheets.scss';
 import { IconPlus, IconArrowLeft, IconArrowRight, IconCalendar } from '../../components/Icons';
 import AddActivityModal from './AddActivityModal';
 import Calendar from './Calendar';
 import ActivityRow from './ActivityRow';
 import exactMath from 'exact-math';
+import localize from './timesheets.json';
 
 class Timesheets extends React.Component {
   static propTypes = {
     changeWeek: PropTypes.func,
     dateBegin: PropTypes.string,
     dateEnd: PropTypes.string,
+    deleteTempTimesheets: PropTypes.func,
     getTimesheets: PropTypes.func,
+    lang: PropTypes.string,
     list: PropTypes.array,
+    showNotification: PropTypes.func,
     startingDay: PropTypes.object,
     tempTimesheets: PropTypes.array,
     userId: PropTypes.number
@@ -61,7 +67,7 @@ class Timesheets extends React.Component {
 
   render() {
     const { isCalendarOpen } = this.state;
-    const { startingDay, tempTimesheets } = this.props;
+    const { startingDay, tempTimesheets, lang } = this.props;
     const canAddActivity = !this.props.list.find(
       tsh =>
         tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
@@ -95,11 +101,25 @@ class Timesheets extends React.Component {
 
     let tasks = list.length
       ? list.reduce((res, el) => {
+          const isTemp = tempTimesheets.some(tempTsh => tempTsh.id === el.id);
           const taskNotPushed =
             el.task &&
-            !_.find(res, tsh => {
-              return tsh.id === el.task.id && tsh.taskStatusId === el.taskStatusId;
+            !find(res, tsh => {
+              const isExist = tsh.id === el.task.id && tsh.taskStatusId === el.taskStatusId;
+              if (isExist && isTemp) {
+                tsh.hilight = true;
+              }
+              return isExist;
             });
+          if (!taskNotPushed && el.task && isTemp) {
+            Promise.resolve().then(() => {
+              this.props.showNotification({
+                message: 'Задача с выбранным статусом уже есть в отчете',
+                type: 'success'
+              });
+              this.props.deleteTempTimesheets([el.id.toString()]);
+            });
+          }
           if (taskNotPushed && isThisWeek(el.onDate)) {
             res.push({
               id: el.task.id,
@@ -119,7 +139,7 @@ class Timesheets extends React.Component {
       const timeSheets = [];
 
       for (let index = 0; index < 7; index++) {
-        const timesheet = _.find(list, tsh => {
+        const timesheet = find(list, tsh => {
           return (
             tsh.task &&
             tsh.typeId === 1 &&
@@ -132,7 +152,19 @@ class Timesheets extends React.Component {
           );
         });
         if (timesheet) {
-          timeSheets.push(timesheet);
+          const doubleTimesheets = list.filter(
+            tsh =>
+              timesheet.id !== tsh.id &&
+              tsh.task &&
+              tsh.typeId === 1 &&
+              tsh.task.id === element.id &&
+              moment(tsh.onDate).format('DD.MM.YY') ===
+                moment(startingDay)
+                  .weekday(index)
+                  .format('DD.MM.YY') &&
+              tsh.taskStatusId === element.taskStatusId
+          );
+          timeSheets.push({ ...timesheet, doubleTimesheets });
         } else {
           timeSheets.push({
             onDate: moment(startingDay)
@@ -146,29 +178,40 @@ class Timesheets extends React.Component {
       return { ...element, timeSheets };
     });
 
-    _.sortBy(tasks, ['name']);
+    sortBy(tasks, ['name']);
 
     const taskRows = tasks.map(item => (
       <ActivityRow key={`${item.id}-${item.taskStatusId}-${startingDay}`} task item={item} />
     ));
 
     // Создание массива таймшитов по magic activities
-
     let magicActivities = list.length
       ? list.reduce((res, el) => {
+          const isTemp = tempTimesheets.some(tempTsh => tempTsh.id === el.id);
           const maNotPushed =
             el.typeId !== 1 &&
-            !_.find(res, tsh => {
+            !find(res, tsh => {
               const isSameType = tsh.typeId === el.typeId;
               const isSameProject = el.project ? tsh.projectId === el.project.id : tsh.projectId === 0;
               const isSameSprint = (el.sprint ? el.sprint.id : 0) === (tsh.sprint ? tsh.sprint.id : 0);
+              if (isSameType && isSameProject && isSameSprint && isTemp) {
+                tsh.hilight = true;
+              }
               return isSameType && isSameProject && isSameSprint;
             });
-
+          if (!maNotPushed && el.typeId !== 1 && isTemp) {
+            Promise.resolve().then(() => {
+              this.props.showNotification({
+                message: 'Задача с выбранным статусом уже есть в отчете',
+                type: 'success'
+              });
+              this.props.deleteTempTimesheets([el.id.toString()]);
+            });
+          }
           if (maNotPushed && isThisWeek(el.onDate)) {
             res.push({
               typeId: el.typeId,
-              projectName: el.project ? el.project.name : 'Без проекта',
+              projectName: el.project ? el.project.name : localize[lang].WITHOUT_PROJECT,
               projectId: el.project ? el.project.id : 0,
               sprintId: el.sprintId ? el.sprintId : null,
               sprint: el.sprint ? el.sprint : null
@@ -181,11 +224,12 @@ class Timesheets extends React.Component {
     magicActivities = magicActivities.map(element => {
       const timeSheets = [];
       for (let index = 0; index < 7; index++) {
-        const timesheet = _.find(list, tsh => {
+        const timesheet = find(list, tsh => {
           return (
             tsh.typeId !== 1 &&
             tsh.typeId === element.typeId &&
             (tsh.project ? tsh.project.id === element.projectId : !tsh.project && !element.projectId) &&
+            (element.sprint ? element.sprint.id : 0) === (tsh.sprint ? tsh.sprint.id : 0) &&
             moment(tsh.onDate).format('DD.MM.YY') ===
               moment(startingDay)
                 .weekday(index)
@@ -220,7 +264,9 @@ class Timesheets extends React.Component {
 
     const days = [];
     for (let number = 0; number < 7; number++) {
-      const currentDay = moment(startingDay).weekday(number);
+      const currentDay = moment(startingDay)
+        .weekday(number)
+        .locale(localize[lang].MOMENT);
       days.push(
         <th
           className={cn({
@@ -301,21 +347,21 @@ class Timesheets extends React.Component {
     return (
       <div>
         <section>
-          <h1>Отчеты по времени</h1>
+          <h1>{localize[lang].TIMESHEETS_REPORT}</h1>
           <hr />
           <table className={css.timeSheetsTable}>
             <thead>
               <tr className={css.sheetsHeader}>
                 <th className={css.prevWeek}>
-                  <div className={css.activityHeader}>Недельная активность:</div>
-                  <IconArrowLeft data-tip="Предыдущая неделя" onClick={this.setPrevWeek} />
+                  <div className={css.activityHeader}>{localize[lang].WEEK_ACTIVITY}</div>
+                  <IconArrowLeft data-tip={localize[lang].PREVIOUS_WEEK} onClick={this.setPrevWeek} />
                 </th>
                 {days}
                 <th className={css.nextWeek}>
-                  <IconArrowRight data-tip="Следующая неделя" onClick={this.setNextWeek} />
+                  <IconArrowRight data-tip={localize[lang].NEXT_WEEK} onClick={this.setNextWeek} />
                 </th>
                 <th className={cn(css.actions)}>
-                  <div className={css.changeWeek} data-tip="Выбрать дату" onClick={this.toggleCalendar}>
+                  <div className={css.changeWeek} data-tip={localize[lang].SELECT_DATE} onClick={this.toggleCalendar}>
                     <IconCalendar />
                   </div>
                   <ReactCSSTransitionGroup
@@ -329,8 +375,8 @@ class Timesheets extends React.Component {
               </tr>
             </thead>
             <tbody>
-              {taskRows}
               {magicActivityRows}
+              {taskRows}
               <tr>
                 <td className={css.total} />
                 {totalRow}
@@ -347,7 +393,7 @@ class Timesheets extends React.Component {
                   <td colSpan="10">
                     <a className={css.add} onClick={() => this.setState({ isModalOpen: true })}>
                       <IconPlus style={{ fontSize: 16 }} />
-                      <div className={css.tooltip}>Добавить активность</div>
+                      <div className={css.tooltip}>{localize[lang].ADD_ACTIVITY}</div>
                     </a>
                   </td>
                 </tr>
@@ -368,11 +414,13 @@ const mapStateToProps = state => ({
   list: state.Timesheets.list,
   tempTimesheets: state.Timesheets.tempTimesheets,
   dateBegin: state.Timesheets.dateBegin,
-  dateEnd: state.Timesheets.dateEnd
+  dateEnd: state.Timesheets.dateEnd,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
-  ...timesheetsActions
+  ...timesheetsActions,
+  showNotification
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Timesheets);

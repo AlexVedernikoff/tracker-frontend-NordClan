@@ -1,7 +1,7 @@
 import * as TaskActions from '../constants/Task';
 import * as TagsActions from '../constants/Tags';
 import * as TaskStatuses from '../constants/TaskStatuses';
-import _ from 'lodash';
+import * as _ from 'lodash';
 
 const getDefaultCurrentComment = () => ({
   text: '',
@@ -72,8 +72,7 @@ export default function Task(state = InitialState, action) {
       return {
         ...state,
         TitleIsEditing: false,
-        PlanningTimeIsEditing: false,
-        DescriptionIsEditing: false
+        PlanningTimeIsEditing: false
       };
 
     case TaskActions.GET_TASK_REQUEST_SUCCESS:
@@ -125,6 +124,28 @@ export default function Task(state = InitialState, action) {
             const job = spent.job;
             byStatus[job] = Number(spent.spent) + (byStatus[job] ? byStatus[job] : 0);
           }, {})
+          .value(),
+        userTimeSpent: _.chain(action.data)
+          .filter(timeSheet => Number(timeSheet.spentTime))
+          .map(spent => ({
+            user: spent.user.fullNameRu,
+            spent: spent.spentTime
+          }))
+          .transform((byStatus, spent) => {
+            const user = spent.user;
+            byStatus[user] = Number(spent.spent) + (byStatus[user] ? byStatus[user] : 0);
+          }, {})
+          .value(),
+        roleTimeSpent: _.chain(action.data)
+          .filter(timeSheet => Number(timeSheet.spentTime))
+          .map(spent => ({
+            role: spent.userRole,
+            spent: spent.spentTime
+          }))
+          .transform((byStatus, spent) => {
+            const role = spent.role;
+            byStatus[role] = Number(spent.spent) + (byStatus[role] ? byStatus[role] : 0);
+          }, {})
           .value()
       };
 
@@ -153,10 +174,14 @@ export default function Task(state = InitialState, action) {
           task: {
             ...state.task,
             ...action.changedFields
-          }
+          },
+          lastUpdatedTask: action.changedFields
         };
       } else {
-        return state;
+        return {
+          ...state,
+          lastUpdatedTask: action.changedFields
+        };
       }
     case TaskActions.ERROR_CLEAR:
       return {
