@@ -11,21 +11,21 @@ import * as css from './EditSpentModal.scss';
 
 class EditSpentModal extends Component {
   static propTypes = {
+    comment: PropTypes.string,
+    isBillable: PropTypes.bool,
+    isMagic: PropTypes.bool,
     onClose: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
-    spentId: PropTypes.number,
-    sprint: PropTypes.object,
-    spentTime: PropTypes.string,
-    typeId: PropTypes.number,
-    taskStatusId: PropTypes.number,
-    comment: PropTypes.string,
-    isBillible: PropTypes.bool,
     projectId: PropTypes.number.isRequired,
     projectSprints: PropTypes.array.isRequired,
+    spentId: PropTypes.number,
+    spentTime: PropTypes.string,
+    sprint: PropTypes.object,
     statuses: PropTypes.array,
+    taskStatusId: PropTypes.number,
     taskTypes: PropTypes.array,
-    isMagic: PropTypes.bool,
-    timesheet: PropTypes.object.isRequired
+    timesheet: PropTypes.object.isRequired,
+    typeId: PropTypes.number
   };
 
   constructor(props) {
@@ -35,9 +35,12 @@ class EditSpentModal extends Component {
       spentId: props.spentId || null,
       sprint: props.sprint || { id: null, name: 'Backlog' },
       spentTime: props.spentTime || 0,
-      comment: props.comment || ''
+      comment: props.comment || '',
+      isBillable: props.isBillable || false
     };
   }
+
+  changeBillable = ({ target: { checked } }) => this.setState({ isBillable: checked });
 
   validateNumbers(value) {
     const re = /^\d*(\.\d*)?$/;
@@ -67,7 +70,7 @@ class EditSpentModal extends Component {
   };
 
   render() {
-    const { spentTime, sprint, comment } = this.state;
+    const { spentTime, sprint, comment, isBillable } = this.state;
     const {
       projectSprints,
       statuses,
@@ -75,7 +78,6 @@ class EditSpentModal extends Component {
       taskStatusId,
       taskTypes,
       onClose,
-      isBillible,
       isMagic,
       onSave,
       timesheet
@@ -162,7 +164,7 @@ class EditSpentModal extends Component {
                     <p>Billable:</p>
                   </Col>
                   <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                    <Checkbox disabled checked={isBillible} />
+                    <Checkbox disabled checked={isBillable} onChange={this.changeBillable} />
                   </Col>
                 </Row>
               </div>

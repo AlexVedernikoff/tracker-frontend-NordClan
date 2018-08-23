@@ -139,7 +139,8 @@
     "test:watch": "npm test -- --watch",
     "precommit": "pretty-quick --staged",
     "preinstall": "rm -rf node_modules/",
-    "eslint": "eslint src --max-warnings 0"
+    "eslint": "eslint src --max-warnings 0",
+    "fix": "eslint --fix"
   },
   "license": "MIT",
   "homepage": "https://github.com/react-toolbox/react-toolbox-example#readme"
