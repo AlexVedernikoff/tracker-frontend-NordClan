@@ -86,6 +86,7 @@ class Tags extends Component {
                     onChange={this.onChangeHandler}
                   />
                   <Button
+                    disabled={!this.state.tag}
                     addedClassNames={{ [css.tagsButton]: true, [css.tagsSubmit]: true }}
                     icon="IconCheck"
                     htmlType="submit"
