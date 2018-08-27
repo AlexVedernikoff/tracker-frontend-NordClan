@@ -31,6 +31,11 @@ const ProjectCard = props => {
     ? tags.map((element, i) => <Tag name={element} blocked key={`${i}-tag`} onClick={onClickTag} />)
     : [];
 
+  const query =
+    !props.project.currentSprints || props.project.currentSprints[0] === undefined
+      ? ''
+      : `?currentSprint=${props.project.currentSprints[0].id}`;
+
   let statusTooltip = '';
   let status = '';
   switch (statusId) {
@@ -84,11 +89,11 @@ const ProjectCard = props => {
                 </span>
               ) : null}
               <Link
-                to={`/projects/${id}${
-                  !props.project.currentSprints || props.project.currentSprints[0] === undefined
-                    ? ''
-                    : `?currentSprint=${props.project.currentSprints[0].id}`
-                }`}
+                to={{
+                  pathname: `/projects/${id}`,
+                  search: query,
+                  state: { filtersData: query }
+                }}
               >
                 {name}
               </Link>
