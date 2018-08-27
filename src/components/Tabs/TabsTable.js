@@ -11,7 +11,8 @@ export default class Tabs extends React.Component {
     children: PropTypes.array,
     currentPath: PropTypes.string,
     routable: PropTypes.bool,
-    selected: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    selected: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    state: PropTypes.object
   };
 
   constructor(props) {
@@ -27,7 +28,7 @@ export default class Tabs extends React.Component {
     const [firstChild] = this.props.children;
 
     if (!this.state.selected) {
-      history.replace(this.setRoute(firstChild.props.path));
+      history.replace({ pathname: this.setRoute(firstChild.props.path), state: this.props.state });
     }
   }
 
@@ -59,8 +60,8 @@ export default class Tabs extends React.Component {
             className={activeClass}
             onClick={this.onClick.bind(this, idx)}
             to={{
-              pathname: this.setRoute(path)
-              //state: this.props.state
+              pathname: this.setRoute(path),
+              state: this.props.state
             }}
           >
             {label}

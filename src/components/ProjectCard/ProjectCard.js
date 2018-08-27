@@ -91,8 +91,8 @@ const ProjectCard = props => {
               <Link
                 to={{
                   pathname: `/projects/${id}`,
-                  search: query
-                  //state: { filtersData: query }
+                  search: query,
+                  state: { filtersData: query }
                 }}
               >
                 {name}
@@ -151,6 +151,7 @@ const ProjectCard = props => {
 ProjectCard.propTypes = {
   isChild: PropTypes.bool,
   isPortfolio: PropTypes.bool,
+  lang: PropTypes.string,
   onClickTag: PropTypes.func,
   project: PropTypes.object.isRequired
 };

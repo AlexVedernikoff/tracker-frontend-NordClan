@@ -68,7 +68,7 @@ class ProjectPage extends Component {
 
   render() {
     const { projectTypes, lang } = this.props;
-    //const filtersData = this.props.location.search || this.props.location.state.filtersData;
+    const filtersData = this.props.location.search || this.props.location.state.filtersData;
     const isProjectAdmin = this.checkIsAdminInProject();
     const tabs = [
       <Link
@@ -76,9 +76,9 @@ class ProjectPage extends Component {
         activeClassName="active"
         onlyActiveOnIndex
         to={{
-          pathname: `/projects/${this.props.params.projectId}`
-          //search: this.props.location.state.filtersData,
-          //state: { filtersData: this.props.location.search }
+          pathname: `/projects/${this.props.params.projectId}`,
+          search: this.props.location.state.filtersData,
+          state: { filtersData: this.props.location.search }
         }}
       >
         {localize[lang].BOARD}
@@ -87,8 +87,8 @@ class ProjectPage extends Component {
         activeClassName="active"
         key={`/projects/${this.props.params.projectId}/tasks`}
         to={{
-          pathname: `/projects/${this.props.params.projectId}/tasks`
-          //state: { filtersData }
+          pathname: `/projects/${this.props.params.projectId}/tasks`,
+          state: { filtersData }
         }}
       >
         {localize[lang].TASK_LIST}
@@ -97,8 +97,8 @@ class ProjectPage extends Component {
         activeClassName="active"
         key={`/projects/${this.props.params.projectId}/planning`}
         to={{
-          pathname: `/projects/${this.props.params.projectId}/planning`
-          //state: { filtersData }
+          pathname: `/projects/${this.props.params.projectId}/planning`,
+          state: { filtersData }
         }}
       >
         {localize[lang].PLANNING}
@@ -107,8 +107,8 @@ class ProjectPage extends Component {
         activeClassName="active"
         key={`/projects/${this.props.params.projectId}/info`}
         to={{
-          pathname: `/projects/${this.props.params.projectId}/info`
-          //state: { filtersData }
+          pathname: `/projects/${this.props.params.projectId}/info`,
+          state: { filtersData }
         }}
       >
         {localize[lang].INFO}
@@ -117,8 +117,8 @@ class ProjectPage extends Component {
         activeClassName="active"
         key={`/projects/${this.props.params.projectId}/property`}
         to={{
-          pathname: `/projects/${this.props.params.projectId}/property`
-          //state: { filtersData }
+          pathname: `/projects/${this.props.params.projectId}/property`,
+          state: { filtersData }
         }}
       >
         {localize[lang].SETTING}
@@ -130,8 +130,8 @@ class ProjectPage extends Component {
           activeClassName="active"
           key={`/projects/${this.props.params.projectId}/history`}
           to={{
-            pathname: `/projects/${this.props.params.projectId}/history`
-            //state: { filtersData }
+            pathname: `/projects/${this.props.params.projectId}/history`,
+            state: { filtersData }
           }}
         >
           {localize[lang].HISTORY}
@@ -145,8 +145,8 @@ class ProjectPage extends Component {
           activeClassName="active"
           key={`/projects/${this.props.params.projectId}/analytics`}
           to={{
-            pathname: `/projects/${this.props.params.projectId}/analytics`
-            //state: { filtersData }
+            pathname: `/projects/${this.props.params.projectId}/analytics`,
+            state: { filtersData }
           }}
           onClick={this.handleAnalyticsAction}
         >
@@ -160,8 +160,8 @@ class ProjectPage extends Component {
           activeClassName="active"
           key={`/projects/${this.props.params.projectId}/timesheets`}
           to={{
-            pathname: `/projects/${this.props.params.projectId}/timesheets`
-            //state: { filtersData }
+            pathname: `/projects/${this.props.params.projectId}/timesheets`,
+            state: { filtersData }
           }}
           onClick={this.handleTimesheetsAction}
         >
