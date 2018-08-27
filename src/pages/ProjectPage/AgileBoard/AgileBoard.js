@@ -973,32 +973,33 @@ class AgileBoard extends Component {
 AgileBoard.propTypes = {
   StatusIsEditing: PropTypes.bool,
   UserIsEditing: PropTypes.bool,
+  authorOptions: PropTypes.array,
   changeTask: PropTypes.func.isRequired,
+  currentSprint: PropTypes.number,
   getProjectInfo: PropTypes.func,
   getProjectUsers: PropTypes.func,
   getTasks: PropTypes.func.isRequired,
   globalRole: PropTypes.string,
   isCreateTaskModalOpen: PropTypes.bool,
+  lang: PropTypes.string,
   lastCreatedTask: PropTypes.object,
   lastUpdatedTask: PropTypes.object,
   location: PropTypes.object,
   myTaskBoard: PropTypes.bool,
+  myTasks: PropTypes.object,
   openCreateTaskModal: PropTypes.func.isRequired,
   params: PropTypes.object,
   project: PropTypes.object,
+  sortedSprints: PropTypes.array,
   sprintTasks: PropTypes.array,
   sprints: PropTypes.array,
   startTaskEditing: PropTypes.func,
   statuses: PropTypes.array,
+  tags: PropTypes.array,
   taskTypes: PropTypes.array,
   tasks: PropTypes.object,
-  myTasks: PropTypes.object,
-  tags: PropTypes.array,
-  sortedSprints: PropTypes.array,
-  currentSprint: PropTypes.number,
-  typeOptions: PropTypes.array,
-  authorOptions: PropTypes.array,
   tracksChange: PropTypes.number,
+  typeOptions: PropTypes.array,
   user: PropTypes.object
 };
 
@@ -1035,4 +1036,7 @@ const mapDispatchToProps = {
   getProjectInfo
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AgileBoard);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AgileBoard);
