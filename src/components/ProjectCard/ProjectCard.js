@@ -151,6 +151,7 @@ const ProjectCard = props => {
 ProjectCard.propTypes = {
   isChild: PropTypes.bool,
   isPortfolio: PropTypes.bool,
+  lang: PropTypes.string,
   onClickTag: PropTypes.func,
   project: PropTypes.object.isRequired
 };

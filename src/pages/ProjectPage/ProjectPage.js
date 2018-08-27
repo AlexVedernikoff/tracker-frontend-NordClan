@@ -88,7 +88,7 @@ class ProjectPage extends Component {
         key={`/projects/${this.props.params.projectId}/tasks`}
         to={{
           pathname: `/projects/${this.props.params.projectId}/tasks`,
-          state: { filtersData: filtersData }
+          state: { filtersData }
         }}
       >
         {localize[lang].TASK_LIST}
@@ -98,7 +98,7 @@ class ProjectPage extends Component {
         key={`/projects/${this.props.params.projectId}/planning`}
         to={{
           pathname: `/projects/${this.props.params.projectId}/planning`,
-          state: { filtersData: filtersData }
+          state: { filtersData }
         }}
       >
         {localize[lang].PLANNING}
@@ -108,7 +108,7 @@ class ProjectPage extends Component {
         key={`/projects/${this.props.params.projectId}/info`}
         to={{
           pathname: `/projects/${this.props.params.projectId}/info`,
-          state: { filtersData: filtersData }
+          state: { filtersData }
         }}
       >
         {localize[lang].INFO}
@@ -118,7 +118,7 @@ class ProjectPage extends Component {
         key={`/projects/${this.props.params.projectId}/property`}
         to={{
           pathname: `/projects/${this.props.params.projectId}/property`,
-          state: { filtersData: filtersData }
+          state: { filtersData }
         }}
       >
         {localize[lang].SETTING}
@@ -131,7 +131,7 @@ class ProjectPage extends Component {
           key={`/projects/${this.props.params.projectId}/history`}
           to={{
             pathname: `/projects/${this.props.params.projectId}/history`,
-            state: { filtersData: filtersData }
+            state: { filtersData }
           }}
         >
           {localize[lang].HISTORY}
@@ -146,7 +146,7 @@ class ProjectPage extends Component {
           key={`/projects/${this.props.params.projectId}/analytics`}
           to={{
             pathname: `/projects/${this.props.params.projectId}/analytics`,
-            state: { filtersData: filtersData }
+            state: { filtersData }
           }}
           onClick={this.handleAnalyticsAction}
         >
@@ -161,7 +161,7 @@ class ProjectPage extends Component {
           key={`/projects/${this.props.params.projectId}/timesheets`}
           to={{
             pathname: `/projects/${this.props.params.projectId}/timesheets`,
-            state: { filtersData: filtersData }
+            state: { filtersData }
           }}
           onClick={this.handleTimesheetsAction}
         >
