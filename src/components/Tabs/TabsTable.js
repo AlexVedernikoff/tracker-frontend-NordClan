@@ -11,22 +11,19 @@ export default class Tabs extends React.Component {
     children: PropTypes.array,
     currentPath: PropTypes.string,
     routable: PropTypes.bool,
-    selected: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
-    ])
-  }
+    selected: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
 
-    const {routable, currentPath} = this.props;
+    const { routable, currentPath } = this.props;
 
     this.currentPath = routable && currentPath;
     this.state = { selected: this.getSelectedIndex() };
   }
 
-  componentWillMount () {
+  componentWillMount() {
     const [firstChild] = this.props.children;
 
     if (!this.state.selected) {
@@ -34,8 +31,8 @@ export default class Tabs extends React.Component {
     }
   }
 
-  getSelectedIndex () {
-    const {children, selected} = this.props;
+  getSelectedIndex() {
+    const { children, selected } = this.props;
     let selectedIndex;
 
     if (this.currentPath) {
@@ -47,18 +44,25 @@ export default class Tabs extends React.Component {
     return children[selectedIndex] ? selectedIndex : 0;
   }
 
-  setRoute (subpath) {
+  setRoute(subpath) {
     return this.currentPath && subpath ? this.currentPath + subpath : '';
   }
 
-  renderTitles () {
-    function labels (child, idx) {
+  renderTitles() {
+    function labels(child, idx) {
       const activeClass = this.state.selected === idx ? css.isActive : '';
-      const {label, path} = child.props;
+      const { label, path } = child.props;
 
       return (
         <li role="tab" key={idx} aria-controls={`panel${idx}`}>
-          <Link className={activeClass} onClick={this.onClick.bind(this, idx)} to={this.setRoute(path)}>
+          <Link
+            className={activeClass}
+            onClick={this.onClick.bind(this, idx)}
+            to={{
+              pathname: this.setRoute(path)
+              //state: this.props.state
+            }}
+          >
             {label}
           </Link>
         </li>
@@ -72,7 +76,7 @@ export default class Tabs extends React.Component {
     );
   }
 
-  onClick (index, event) {
+  onClick(index, event) {
     if (!this.currentPath) {
       event.preventDefault();
     }
@@ -82,12 +86,14 @@ export default class Tabs extends React.Component {
     });
   }
 
-  render () {
+  render() {
     return (
-      <div className={classnames({
-        [css.tabs]: !!css.tabs,
-        ...this.props.addedClassNames
-      })}>
+      <div
+        className={classnames({
+          [css.tabs]: !!css.tabs,
+          ...this.props.addedClassNames
+        })}
+      >
         {this.renderTitles()}
 
         <div className={css.tabs__content}>{this.props.children[this.state.selected]}</div>
