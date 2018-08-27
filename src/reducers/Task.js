@@ -167,19 +167,40 @@ export default function Task(state = InitialState, action) {
       };
 
     case TaskActions.TASK_CHANGE_REQUEST_SUCCESS:
+      let linkedTasks = [];
+      if (
+        state.task.linkedTasks &&
+        action.changedFields.statusId &&
+        state.task.linkedTasks.find(linkedTask => linkedTask.id === action.changedFields.id)
+      ) {
+        state.task.linkedTasks.forEach(linkedTask => {
+          if (linkedTask.id === action.changedFields.id) {
+            linkedTasks.push({ ...linkedTask, ...action.changedFields });
+          } else {
+            linkedTasks.push(linkedTask);
+          }
+        });
+      } else {
+        linkedTasks = state.task.linkedTasks;
+      }
       if (state.task.id === action.changedFields.id) {
         return {
           ...state,
           hasError: false,
           task: {
             ...state.task,
-            ...action.changedFields
+            ...action.changedFields,
+            linkedTasks: linkedTasks
           },
           lastUpdatedTask: action.changedFields
         };
       } else {
         return {
           ...state,
+          task: {
+            ...state.task,
+            linkedTasks: linkedTasks
+          },
           lastUpdatedTask: action.changedFields
         };
       }
