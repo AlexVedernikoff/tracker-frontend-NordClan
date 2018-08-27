@@ -68,41 +68,58 @@ class ProjectPage extends Component {
 
   render() {
     const { projectTypes, lang } = this.props;
+    const filtersData = this.props.location.search || this.props.location.state.filtersData;
     const isProjectAdmin = this.checkIsAdminInProject();
     const tabs = [
       <Link
         key={`/projects/${this.props.params.projectId}`}
         activeClassName="active"
         onlyActiveOnIndex
-        to={`/projects/${this.props.params.projectId}`}
+        to={{
+          pathname: `/projects/${this.props.params.projectId}`,
+          search: this.props.location.state.filtersData,
+          state: { filtersData: this.props.location.search }
+        }}
       >
         {localize[lang].BOARD}
       </Link>,
       <Link
         activeClassName="active"
         key={`/projects/${this.props.params.projectId}/tasks`}
-        to={`/projects/${this.props.params.projectId}/tasks`}
+        to={{
+          pathname: `/projects/${this.props.params.projectId}/tasks`,
+          state: { filtersData: filtersData }
+        }}
       >
         {localize[lang].TASK_LIST}
       </Link>,
       <Link
         activeClassName="active"
         key={`/projects/${this.props.params.projectId}/planning`}
-        to={`/projects/${this.props.params.projectId}/planning`}
+        to={{
+          pathname: `/projects/${this.props.params.projectId}/planning`,
+          state: { filtersData: filtersData }
+        }}
       >
         {localize[lang].PLANNING}
       </Link>,
       <Link
         activeClassName="active"
         key={`/projects/${this.props.params.projectId}/info`}
-        to={`/projects/${this.props.params.projectId}/info`}
+        to={{
+          pathname: `/projects/${this.props.params.projectId}/info`,
+          state: { filtersData: filtersData }
+        }}
       >
         {localize[lang].INFO}
       </Link>,
       <Link
         activeClassName="active"
         key={`/projects/${this.props.params.projectId}/property`}
-        to={`/projects/${this.props.params.projectId}/property`}
+        to={{
+          pathname: `/projects/${this.props.params.projectId}/property`,
+          state: { filtersData: filtersData }
+        }}
       >
         {localize[lang].SETTING}
       </Link>
@@ -112,7 +129,10 @@ class ProjectPage extends Component {
         <Link
           activeClassName="active"
           key={`/projects/${this.props.params.projectId}/history`}
-          to={`/projects/${this.props.params.projectId}/history`}
+          to={{
+            pathname: `/projects/${this.props.params.projectId}/history`,
+            state: { filtersData: filtersData }
+          }}
         >
           {localize[lang].HISTORY}
         </Link>
@@ -124,7 +144,10 @@ class ProjectPage extends Component {
         <Link
           activeClassName="active"
           key={`/projects/${this.props.params.projectId}/analytics`}
-          to={`/projects/${this.props.params.projectId}/analytics`}
+          to={{
+            pathname: `/projects/${this.props.params.projectId}/analytics`,
+            state: { filtersData: filtersData }
+          }}
           onClick={this.handleAnalyticsAction}
         >
           {localize[lang].ANALYTICS}
@@ -136,7 +159,10 @@ class ProjectPage extends Component {
         <Link
           activeClassName="active"
           key={`/projects/${this.props.params.projectId}/timesheets`}
-          to={`/projects/${this.props.params.projectId}/timesheets`}
+          to={{
+            pathname: `/projects/${this.props.params.projectId}/timesheets`,
+            state: { filtersData: filtersData }
+          }}
           onClick={this.handleTimesheetsAction}
         >
           {localize[lang].TIME_REPORTS}
@@ -156,7 +182,7 @@ class ProjectPage extends Component {
           isProjectAdmin={isProjectAdmin}
         />
 
-        <RouteTabs>{tabs}</RouteTabs>
+        <RouteTabs pathname={this.props.location.pathname}>{tabs}</RouteTabs>
 
         <div className={css.tabContent}>{this.props.children}</div>
         {isProjectAdmin && this.props.project.prefix !== undefined && !this.props.project.prefix ? (
@@ -187,4 +213,7 @@ const mapDispatchToProps = {
   changeProject
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectPage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ProjectPage);
