@@ -221,6 +221,7 @@ class Metrics extends Component {
                 addedClassNames={{ [css.tabs]: true }}
                 selected={this.props.params.metricType}
                 currentPath={`/projects/${this.props.params.projectId}/analytics`}
+                //state={this.props.location.state.filtersData}
                 routable
               >
                 <Pane label={localize[lang].UNLOAD} path="/download">
@@ -315,4 +316,7 @@ const mapDispatchToProps = {
   getMetrics
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Metrics);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Metrics);
