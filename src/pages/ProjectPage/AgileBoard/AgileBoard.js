@@ -1031,16 +1031,12 @@ AgileBoard.propTypes = {
   taskTypes: PropTypes.array,
   tasks: PropTypes.object,
   tracksChange: PropTypes.number,
-<<<<<<< HEAD
-  user: PropTypes.object,
   noTagData: PropTypes.shape({
     label: PropTypes.string,
     value: PropTypes.number
-  })
-=======
+  }),
   typeOptions: PropTypes.array,
   user: PropTypes.object
->>>>>>> origin/develop
 };
 
 const mapStateToProps = state => ({
