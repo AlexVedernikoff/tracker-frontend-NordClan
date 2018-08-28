@@ -6,6 +6,7 @@ import remove from 'lodash/remove';
 
 import * as css from './GitLabEditor.scss';
 import { changeProject } from '../../../../actions/Project';
+import { addGitlabProjectByName } from '../../../../actions/Gitlab';
 import ProjectList from './ProjectList';
 import NewProject from './NewProject';
 import Button from '../../../../components/Button';
@@ -14,6 +15,7 @@ import localize from './GitLabEditor.json';
 
 class GitLabEditor extends Component {
   static propTypes = {
+    addGitlabProjectByName: PropTypes.func,
     changeProject: PropTypes.func,
     project: PropTypes.object,
     user: PropTypes.object
@@ -37,11 +39,15 @@ class GitLabEditor extends Component {
   };
 
   saveProject = value => {
-    const isProjectIds = get(this.props.project, 'gitlabProjectIds', false);
-    this.props.changeProject({
-      gitlabProjectIds: isProjectIds ? [...this.props.project.gitlabProjectIds, +value] : [+value],
-      id: this.props.project.id
-    });
+    if (isNaN(value)) {
+      this.props.addGitlabProjectByName(this.props.project.id, value);
+    } else {
+      const isProjectIds = get(this.props.project, 'gitlabProjectIds', false);
+      this.props.changeProject({
+        gitlabProjectIds: isProjectIds ? [...this.props.project.gitlabProjectIds, +value] : [+value],
+        id: this.props.project.id
+      });
+    }
   };
 
   deleteProject = value => {
@@ -63,6 +69,7 @@ class GitLabEditor extends Component {
 
   render() {
     const { project, lang } = this.props;
+    console.log(project.gitlabProjects);
     const { isAdding } = this.state;
     const isProjects = get(project, 'gitlabProjects.length', false);
     const isProjectAdmin = this.checkIsAdminInProject();
@@ -100,7 +107,8 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  changeProject
+  changeProject,
+  addGitlabProjectByName
 };
 
 export default connect(

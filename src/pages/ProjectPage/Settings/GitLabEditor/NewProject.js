@@ -38,7 +38,7 @@ class NewProject extends Component {
 
   render() {
     const { projectIds, lang } = this.props;
-    const invalid = !Number.isInteger(+this.state.projectId) || (projectIds || []).includes(+this.state.projectId);
+    const invalid = false;
 
     return (
       <div className={css.newProject}>
