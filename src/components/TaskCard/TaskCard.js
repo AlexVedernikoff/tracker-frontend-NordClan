@@ -27,8 +27,8 @@ class TaskCard extends PureComponent {
     const isBug = [2, 4, 5].includes(task.typeId);
 
     const iconStyles = {
-      width: 12,
-      height: 12,
+      width: 11,
+      height: 11,
       color: 'inherit',
       fill: 'currentColor'
     };
