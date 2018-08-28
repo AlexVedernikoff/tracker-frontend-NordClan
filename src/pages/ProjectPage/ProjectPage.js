@@ -68,7 +68,8 @@ class ProjectPage extends Component {
 
   render() {
     const { projectTypes, lang } = this.props;
-    const filtersData = this.props.location.search || this.props.location.state.filtersData;
+    const filtersFromLoc = this.props.location.state ? this.props.location.state.filtersData : '';
+    const filtersData = this.props.location.search || filtersFromLoc;
     const isProjectAdmin = this.checkIsAdminInProject();
     const tabs = [
       <Link
@@ -77,7 +78,7 @@ class ProjectPage extends Component {
         onlyActiveOnIndex
         to={{
           pathname: `/projects/${this.props.params.projectId}`,
-          search: this.props.location.state.filtersData,
+          search: filtersFromLoc,
           state: { filtersData: this.props.location.search }
         }}
       >
