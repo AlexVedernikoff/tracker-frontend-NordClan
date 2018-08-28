@@ -284,7 +284,14 @@ class AgileBoard extends Component {
   }
 
   componentDidMount() {
-    this.selectValue(this.getChangedSprint(this.props), 'changedSprint');
+    this.getFiltersFromLocalStorage();
+    if (this.props.myTaskBoard) {
+      this.selectValue(this.getChangedSprint(this.props), 'changedSprint');
+    } else if (this.props.project.id && this.parseLocalStorageFilters().changedSprint === null) {
+      this.selectValue(this.getCurrentSprint(this.props.sprints), 'changedSprint');
+    } else if (this.props.project.id && this.parseLocalStorageFilters().changedSprint !== null) {
+      this.selectValue(this.parseLocalStorageFilters().changedSprint, 'changedSprint');
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -414,6 +421,55 @@ class AgileBoard extends Component {
     }
   }
 
+  getFiltersFromLocalStorage = () => {
+    if (!this.props.myTaskBoard) {
+      const localStorageFilter = this.parseLocalStorageFilters();
+      if (this.props.params.projectId !== localStorageFilter.projectId) return;
+      this.setState({
+        isOnlyMine: localStorageFilter.isOnlyMine,
+        changedSprint: localStorageFilter.changedSprint,
+        filterTags: localStorageFilter.filterTags,
+        typeId: localStorageFilter.typeId,
+        name: localStorageFilter.name,
+        authorId: localStorageFilter.authorId,
+        prioritiesId: localStorageFilter.prioritiesId,
+        performerId: localStorageFilter.performerId
+      });
+    } else {
+      this.removeFiltersFromLocalStorage();
+    }
+  };
+
+  parseLocalStorageFilters = () => {
+    try {
+      const localStorageFilters = localStorage.getItem('agileBoardFilters');
+      return localStorageFilters ? JSON.parse(localStorageFilters) : {};
+    } catch (e) {
+      return {};
+    }
+  };
+
+  saveFiltersToLocalStorage = () => {
+    localStorage.setItem(
+      'agileBoardFilters',
+      JSON.stringify({
+        projectId: this.props.params.projectId,
+        changedSprint: this.state.changedSprint,
+        isOnlyMine: this.state.isOnlyMine,
+        prioritiesId: this.state.prioritiesId,
+        authorId: this.state.authorId,
+        typeId: this.state.typeId,
+        name: this.state.name,
+        filterTags: this.state.filterTags,
+        performerId: this.state.performerId
+      })
+    );
+  };
+
+  removeFiltersFromLocalStorage = () => {
+    localStorage.removeItem('agileBoardFilters');
+  };
+
   initialFilters = {
     isOnlyMine: false,
     changedSprint: null,
@@ -492,8 +548,6 @@ class AgileBoard extends Component {
         changedFilters[name] = filterValue;
       }
 
-      this.changeUrl(changedFilters);
-
       return {
         [name]: filterValue,
         changedFilters
@@ -504,7 +558,10 @@ class AgileBoard extends Component {
   selectValue = (e, name) => {
     this.setFiltersToUrl(name, e, () => {
       if (this.props.myTaskBoard) return this.getTasks({ performerId: this.props.user.id });
-      this.getTasks();
+      () => {
+        this.getTasks();
+        this.saveFiltersToLocalStorage();
+      };
     });
   };
 
@@ -680,14 +737,17 @@ class AgileBoard extends Component {
       }
     });
 
-    this.setState({
-      allFilters: [
-        ...selectedFilters,
-        ...this.createSelectedOption([], this.state.typeId, 'typeId'),
-        ...this.createSelectedOption([], this.state.performerId, 'performerId'),
-        ...this.createSelectedOption([], this.state.filterTags, 'filterTags')
-      ]
-    });
+    this.setState(
+      {
+        allFilters: [
+          ...selectedFilters,
+          ...this.createSelectedOption([], this.state.typeId, 'typeId'),
+          ...this.createSelectedOption([], this.state.performerId, 'performerId'),
+          ...this.createSelectedOption([], this.state.filterTags, 'filterTags')
+        ]
+      },
+      this.saveFiltersToLocalStorage
+    );
   };
 
   createSelectedOption = (optionList, selectedOption, optionLabel = 'name') => {
@@ -707,7 +767,6 @@ class AgileBoard extends Component {
   };
 
   clearFilter = () => {
-    this.changeUrl({ projectId: this.props.params.projectId });
     this.setState(
       {
         ...this.initialFilters,
