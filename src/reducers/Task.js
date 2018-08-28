@@ -167,21 +167,24 @@ export default function Task(state = InitialState, action) {
       };
 
     case TaskActions.TASK_CHANGE_REQUEST_SUCCESS:
-      let linkedTasks = [];
-      if (
-        state.task.linkedTasks &&
-        action.changedFields.statusId &&
-        state.task.linkedTasks.find(linkedTask => linkedTask.id === action.changedFields.id)
-      ) {
-        state.task.linkedTasks.forEach(linkedTask => {
-          if (linkedTask.id === action.changedFields.id) {
-            linkedTasks.push({ ...linkedTask, ...action.changedFields });
+      let taskArray = [];
+      let paramKey;
+      if (state.task.linkedTasks.find(linkedTask => linkedTask.id === action.changedFields.id)) {
+        paramKey = 'linkedTasks';
+      }
+      if (state.task.subTasks.find(subTask => subTask.id === action.changedFields.id)) {
+        paramKey = 'subTasks';
+      }
+      if (paramKey) {
+        state.task[paramKey].forEach(task => {
+          if (task.id === action.changedFields.id) {
+            taskArray.push({ ...task, ...action.changedFields });
           } else {
-            linkedTasks.push(linkedTask);
+            taskArray.push(task);
           }
         });
       } else {
-        linkedTasks = state.task.linkedTasks;
+        taskArray = state.task.linkedTasks;
       }
       if (state.task.id === action.changedFields.id) {
         return {
@@ -190,7 +193,7 @@ export default function Task(state = InitialState, action) {
           task: {
             ...state.task,
             ...action.changedFields,
-            linkedTasks: linkedTasks
+            [paramKey]: taskArray
           },
           lastUpdatedTask: action.changedFields
         };
@@ -199,7 +202,7 @@ export default function Task(state = InitialState, action) {
           ...state,
           task: {
             ...state.task,
-            linkedTasks: linkedTasks
+            [paramKey]: taskArray
           },
           lastUpdatedTask: action.changedFields
         };
