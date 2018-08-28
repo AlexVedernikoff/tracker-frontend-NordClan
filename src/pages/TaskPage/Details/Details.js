@@ -202,6 +202,7 @@ class Details extends Component {
           getContent={() => <div> {localize[lang].LOADING} </div>}
         />
       );
+    const query = localStorage.getItem('filtersData').replace(/changedSprint/, 'currentSprint');
     return (
       <div className={css.detailsBlock}>
         <table className={css.detailTable}>
@@ -210,7 +211,14 @@ class Details extends Component {
               <tr>
                 <td>{localize[lang].PROJECT}</td>
                 <td>
-                  <Link className="underline-link" to={'/projects/' + this.props.task.project.id}>
+                  <Link
+                    className="underline-link"
+                    to={{
+                      pathname: `/projects/${this.props.task.project.id}`,
+                      search: query,
+                      state: { filtersData: query }
+                    }}
+                  >
                     {task.project.name}
                   </Link>
                 </td>
@@ -380,4 +388,7 @@ const mapDispatchToProps = {
   getTaskSpent
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Details);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Details);
