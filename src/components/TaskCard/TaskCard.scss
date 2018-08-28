@@ -313,6 +313,24 @@ svg.red {
 .lightedCard {
   background-color: black;
 }
+.subTasksButton {
+  cursor: pointer;
+  padding: 0.5rem;
+  font-size: $font-size-small;
+  color: #678bad;
+}
+.subTasksBlock {
+  max-height: 0;
+  transition: max-height 0.15s ease-out;
+  overflow: hidden;
+}
+.subTasksShow {
+  max-height: inherit;
+  transition: max-height 0.25s ease-in;
+}
+.subTasksHide {
+  height: 0;
+}
 
 $borderOffset: -0.25rem;
 
