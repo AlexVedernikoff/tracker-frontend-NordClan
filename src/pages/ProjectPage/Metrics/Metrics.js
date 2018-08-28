@@ -45,7 +45,9 @@ class Metrics extends Component {
     completedAt: PropTypes.string,
     createdAt: PropTypes.string,
     getMetrics: PropTypes.func,
+    lang: PropTypes.string,
     loading: PropTypes.number,
+    location: PropTypes.object,
     metrics: PropTypes.array,
     params: PropTypes.object,
     projectId: PropTypes.number,
@@ -221,6 +223,7 @@ class Metrics extends Component {
                 addedClassNames={{ [css.tabs]: true }}
                 selected={this.props.params.metricType}
                 currentPath={`/projects/${this.props.params.projectId}/analytics`}
+                state={this.props.location.state}
                 routable
               >
                 <Pane label={localize[lang].UNLOAD} path="/download">
@@ -305,14 +308,17 @@ const mapStateToProps = state => ({
   budget: state.Project.project.budget,
   riskBudget: state.Project.project.riskBudget,
   sprints: state.Project.project.sprints,
+  lang: state.Localize.lang,
   loading: state.Loading.loading,
   metrics: state.Project.project.metrics,
-  user: state.Auth.user,
-  lang: state.Localize.lang
+  user: state.Auth.user
 });
 
 const mapDispatchToProps = {
   getMetrics
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Metrics);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Metrics);

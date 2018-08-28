@@ -145,7 +145,7 @@ class TaskPage extends Component {
   };
 
   leaveConfirm = () => {
-    this.setState({ leaveConfirmed: true }, () => {
+    this.setState({ leaveConfirmed: true, isLeaveConfirmModalOpen: false }, () => {
       history.push(this.state.nextLocation);
     });
   };
@@ -448,4 +448,7 @@ const mapDispatchToProps = {
   getRoles
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskPage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskPage);

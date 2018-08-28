@@ -17,6 +17,7 @@ const dateFormat = 'DD.MM.YYYY';
 class SprintReport extends Component {
   static propTypes = {
     endDate: PropTypes.string,
+    lang: PropTypes.string,
     project: PropTypes.object,
     sprints: PropTypes.array,
     startDate: PropTypes.string
