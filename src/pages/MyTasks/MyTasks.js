@@ -5,11 +5,14 @@ import { connect } from 'react-redux';
 import localize from './MyTasks.json';
 
 import AgileBoard from '../ProjectPage/AgileBoard';
+import localization from '../Projects/projects';
+import Title, { flushTitle } from 'react-title-component';
 
 class MyTasks extends Component {
   render() {
     return (
       <div>
+        <Title render={`SimTrack - ${localize[this.props.lang].MY_TASKS}`} />
         <h1>{localize[this.props.lang].MY_TASKS}</h1>
         <hr />
         <AgileBoard myTaskBoard />
