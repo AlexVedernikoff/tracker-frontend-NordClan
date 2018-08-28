@@ -15,18 +15,16 @@ class EditActivityProjectModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      projects: [],
       projectValue: null
     };
   }
 
-  componentWillMount() {
-    this.props.getProjectsForSelect('', false).then(options =>
-      this.setState({
-        projects: options.options,
-        projectValue: options.options.find(proj => proj.value === this.props.selectedProject)
-      })
-    );
+  componentDidMount() {
+    this.props.getProjectsForSelect('', false);
+    this.setState(state => ({
+      ...state,
+      projectValue: this.props.projects.find(proj => proj.value === this.props.selectedProject)
+    }));
   }
 
   handleChangeProject = option => {
@@ -101,7 +99,7 @@ class EditActivityProjectModal extends Component {
                   value={this.state.projectValue}
                   placeholder={localize[lang].PROJECT_PLACEHOLDER}
                   onChange={this.handleChangeProject}
-                  options={this.state.projects}
+                  options={this.props.projects}
                 />
               </Col>
             </Row>
@@ -153,7 +151,8 @@ EditActivityProjectModal.propTypes = {
 
 const mapStateToProps = state => ({
   sprints: state.Project.project.sprints,
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  projects: state.Timesheets.projects
 });
 
 const mapDispatchToProps = {

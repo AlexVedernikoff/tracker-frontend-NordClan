@@ -5,6 +5,7 @@ import _ from 'lodash';
 moment.locale('ru');
 
 const InitialState = {
+  projects: [],
   preloaders: {
     creating: false
   },
@@ -107,6 +108,12 @@ export default function Timesheets(state = InitialState, action) {
         ...state,
         selectedTask: action.task,
         selectedTaskStatusId: action.taskStatusId
+      };
+
+    case TimesheetsActions.FILTER_PROJECTS:
+      return {
+        ...state,
+        projects: action.projects
       };
 
     case TimesheetsActions.CHANGE_PROJECT:
