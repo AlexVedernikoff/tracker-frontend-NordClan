@@ -30,7 +30,7 @@ class Projects extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ...Projects.initialFilters,
+      ...this.initialFilters,
       projects: [],
       projectPrefix: '',
       openProjectPage: false,
@@ -39,7 +39,7 @@ class Projects extends Component {
     };
   }
 
-  static initialFilters = {
+  initialFilters = {
     filterTags: [],
     filteredInProgress: false,
     filteredInHold: false,
@@ -249,7 +249,7 @@ class Projects extends Component {
   };
 
   isFiltered() {
-    for (const key in Projects.initialFilters) {
+    for (const key in this.initialFilters) {
       if (this.state[key] && (!Array.isArray(this.state[key]) || this.state[key].length)) {
         return true;
       }
