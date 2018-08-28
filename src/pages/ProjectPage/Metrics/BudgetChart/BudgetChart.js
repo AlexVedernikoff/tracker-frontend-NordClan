@@ -85,7 +85,7 @@ class BudgetChart extends Component {
       datasets: [
         this.makeIdealProjectBurndown(startDate, endDate, budget, riskBudget, isRisks),
         this.makeProjectBurndown(projectBudgetMetrics, startDate, budget, riskBudget, isRisks),
-        ...this.makeSprintsBurndowns(sprintsBudgetMetrics, sprints),
+        ...this.makeSprintsBurndowns(sprintsBudgetMetrics, sprints, isRisks),
         ...this.makeSprintsIdealBurndowns(sprints, isRisks)
       ]
     };

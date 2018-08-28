@@ -32,10 +32,10 @@ class ChartWrapper extends Component {
 
   setZoomState = () => {
     if (this.props.chartRef) {
-      const { chart_instance } = this.props.chartRef;
+      const { chartInstance } = this.props.chartRef;
 
-      if (chart_instance.modifyZoom) {
-        chart_instance.modifyZoom._allowZoom = this.state.selected;
+      if (chartInstance && chartInstance.modifyZoom) {
+        chartInstance.modifyZoom._allowZoom = this.state.selected;
       }
     }
   };

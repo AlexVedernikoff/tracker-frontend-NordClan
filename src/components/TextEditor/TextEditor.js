@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Editor } from 'react-draft-wysiwyg';
-import { EditorState, ContentState, convertFromHTML } from 'draft-js';
+import { EditorState } from 'draft-js';
+import { stateFromHTML } from 'draft-js-import-html'; // fix 7278 and leave empty lines
 import './TextEditor.css';
 import classnames from 'classnames';
 import * as css from './TextEditor.scss';
@@ -10,9 +11,7 @@ class TextEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      editorState: this.props.content
-        ? EditorState.createWithContent(ContentState.createFromBlockArray(convertFromHTML(this.props.content)))
-        : EditorState.createEmpty()
+      editorState: EditorState.createWithContent(stateFromHTML(this.props.content))
     };
   }
 

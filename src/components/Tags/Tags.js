@@ -99,6 +99,7 @@ class Tags extends Component {
                   onSubmit={this.sendNewTags}
                 >
                   <Button
+                    disabled={!this.state.tag}
                     addedClassNames={{ [css.tagsButton]: true, [css.tagsSubmit]: true }}
                     icon="IconCheck"
                     htmlType="submit"

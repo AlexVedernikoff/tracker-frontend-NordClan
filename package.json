@@ -47,6 +47,7 @@
     "dhtmlx-gantt": "^4.2.1",
     "draft-js": "^0.10.5",
     "draft-js-export-html": "^0.5.4",
+    "draft-js-import-html": "^1.2.1",
     "exact-math": "^1.0.0",
     "lodash": "^4.17.10",
     "moment": "^2.22.2",
@@ -139,7 +140,8 @@
     "test:watch": "npm test -- --watch",
     "precommit": "pretty-quick --staged",
     "preinstall": "rm -rf node_modules/",
-    "eslint": "eslint src --max-warnings 0"
+    "eslint": "eslint src --max-warnings 0",
+    "fix": "eslint --fix"
   },
   "license": "MIT",
   "homepage": "https://github.com/react-toolbox/react-toolbox-example#readme"
