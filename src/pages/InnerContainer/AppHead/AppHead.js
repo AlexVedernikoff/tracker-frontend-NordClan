@@ -88,4 +88,7 @@ const mapDispatchToProps = {
   setLocalize
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppHead);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AppHead);

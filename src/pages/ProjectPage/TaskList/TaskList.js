@@ -93,8 +93,7 @@ class TaskList extends Component {
       changedSprint,
       dateFrom,
       dateTo
-    } =
-      (this.props.location && this.props.location.query) || {};
+    } = (this.props.location && this.props.location.query) || {};
 
     return {
       ...this.makeFiltersObject('performerId', performerId),
@@ -591,4 +590,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = { getTasks, startTaskEditing, changeTask, openCreateTaskModal };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskList);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskList);

@@ -5,6 +5,7 @@ import get from 'lodash/get';
 moment.locale('ru');
 
 const InitialState = {
+  projects: [],
   preloaders: {
     creating: false
   },
@@ -109,6 +110,12 @@ export default function Timesheets(state = InitialState, action) {
         selectedTaskStatusId: action.taskStatusId
       };
 
+    case TimesheetsActions.FILTER_PROJECTS:
+      return {
+        ...state,
+        projects: action.projects
+      };
+
     case TimesheetsActions.CHANGE_PROJECT:
       return {
         ...state,
@@ -131,6 +138,21 @@ export default function Timesheets(state = InitialState, action) {
       return {
         ...state,
         tempTimesheets: state.tempTimesheets.filter(el => !~action.ids.indexOf(el.id))
+      };
+
+    case TimesheetsActions.EDIT_TEMP_TIMESHEET:
+      return {
+        ...state,
+        tempTimesheets: state.tempTimesheets.map(el => {
+          if (el.id === action.id) {
+            return {
+              ...el,
+              ...action.updatedFields
+            };
+          } else {
+            return el;
+          }
+        })
       };
 
     case TimesheetsActions.CLEAR_MODAL_STATE:

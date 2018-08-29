@@ -189,7 +189,7 @@ class TaskTimeReports extends React.Component {
                         className={css.horizontalChart}
                         style={{
                           backgroundColor: stagesColors[index],
-                          width: stagesDataSet[index] / sum(stagesDataSet) * 100 + '%'
+                          width: (stagesDataSet[index] / sum(stagesDataSet)) * 100 + '%'
                         }}
                         title={`${stage}: ${stagesDataSet[index]}`}
                       >
@@ -212,7 +212,7 @@ class TaskTimeReports extends React.Component {
                           className={css.horizontalChart}
                           style={{
                             backgroundColor: usersColors[index],
-                            width: usersDataSet[index] / sum(usersDataSet) * 100 + '%'
+                            width: (usersDataSet[index] / sum(usersDataSet)) * 100 + '%'
                           }}
                           title={`${user}: ${usersDataSet[index]}`}
                         >
@@ -235,7 +235,7 @@ class TaskTimeReports extends React.Component {
                         className={css.horizontalChart}
                         style={{
                           backgroundColor: rolesColors[index],
-                          width: rolesDataSet[index] / sum(rolesDataSet) * 100 + '%'
+                          width: (rolesDataSet[index] / sum(rolesDataSet)) * 100 + '%'
                         }}
                         title={`${role}: ${rolesDataSet[index]}`}
                       >
@@ -316,4 +316,7 @@ const mapDispatchToProps = {
   createTimesheet
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskTimeReports);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskTimeReports);

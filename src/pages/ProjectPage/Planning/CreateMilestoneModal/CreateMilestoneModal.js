@@ -153,4 +153,7 @@ const mapDispatchToProps = {
   createMilestone
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateMilestoneModal);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CreateMilestoneModal);
