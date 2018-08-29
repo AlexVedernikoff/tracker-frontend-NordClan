@@ -110,6 +110,15 @@ export default class Attachments extends Component {
     const { attachments } = this.props;
     const nextImageIndex = this.getAttachmentsNextImageIndex;
     const prevImageIndex = this.getAttachmentsPrevImageIndex;
+    const mainSrc = attachments[photoIndex].path;
+    const nextSrc =
+      attachments[nextImageIndex((photoIndex + 1) % attachments.length)].path !== mainSrc
+        ? `/${attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path}`
+        : undefined;
+    const prevSrc =
+      attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path !== mainSrc
+        ? `/${attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path}`
+        : undefined;
 
     return (
       <div className={css.attachments}>
@@ -119,9 +128,9 @@ export default class Attachments extends Component {
         </ul>
         {isOpen && (
           <Lightbox
-            mainSrc={`/${attachments[photoIndex].path}`}
-            nextSrc={`/${attachments[nextImageIndex((photoIndex + 1) % attachments.length)].path}`}
-            prevSrc={`/${attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path}`}
+            mainSrc={`/${mainSrc}`}
+            nextSrc={nextSrc}
+            prevSrc={prevSrc}
             onCloseRequest={this.closeImage}
             onMovePrevRequest={this.prevImage}
             onMoveNextRequest={this.nextImage}
