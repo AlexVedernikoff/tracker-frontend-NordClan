@@ -384,4 +384,7 @@ const mapDispatchToProps = {
   createTask
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateTaskModal);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CreateTaskModal);

@@ -193,13 +193,19 @@ class Comments extends Component {
               />
               {this.props.currentComment.id ? (
                 <div className={css.answerInfo}>
-                  {localize[lang].EDIT_COMMENT}&nbsp;
+                  {localize[lang].EDIT_COMMENT}
+                  &nbsp;
                   {this.props.currentComment.expired ? (
-                    <span className={css.outDatedToolTip}>&nbsp;{localize[lang].EXPIRED}&nbsp;</span>
+                    <span className={css.outDatedToolTip}>
+                      &nbsp;
+                      {localize[lang].EXPIRED}
+                      &nbsp;
+                    </span>
                   ) : null}
                   <a onClick={() => this.selectComment(this.props.currentComment.id)}>
                     {`#${this.props.currentComment.id}`}
-                  </a>&nbsp;
+                  </a>
+                  &nbsp;
                   <span className={css.quoteCancel} onClick={() => this.props.resetCurrentEditingComment()}>
                     {localize[lang].CANCEL}
                   </span>
@@ -207,10 +213,12 @@ class Comments extends Component {
               ) : null}
               {this.props.currentComment.parentId && !this.props.currentComment.id ? (
                 <div className={css.answerInfo}>
-                  {localize[lang].ANSWER}&nbsp;
+                  {localize[lang].ANSWER}
+                  &nbsp;
                   <a onClick={() => this.selectComment(this.props.currentComment.parentId)}>
                     {`#${this.props.currentComment.parentId}`}
-                  </a>&nbsp;
+                  </a>
+                  &nbsp;
                   <span className={css.quoteCancel} onClick={() => this.props.selectParentCommentForReply(null)}>
                     {localize[lang].CANCEL}
                   </span>

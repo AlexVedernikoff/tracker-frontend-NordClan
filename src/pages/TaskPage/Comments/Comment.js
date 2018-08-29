@@ -158,8 +158,10 @@ class Comment extends Component {
             <div className={css.commentMeta}>
               <UserCard user={author}>
                 <Link>{fullName}</Link>
-              </UserCard>,&nbsp;
-              {moment(comment.updatedAt).format('DD.MM.YY HH:mm')},&nbsp;
+              </UserCard>
+              ,&nbsp;
+              {moment(comment.updatedAt).format('DD.MM.YY HH:mm')}
+              ,&nbsp;
               <CopyThis
                 wrapThisInto={'a'}
                 description={`${localize[lang].COMMENT_LINK}${comment.id}`}
@@ -167,7 +169,8 @@ class Comment extends Component {
                   Comment.getHashedPath(comment.id, this.props.location)
                 )}`}
               >
-                {`#${comment.id}`}&nbsp;
+                {`#${comment.id}`}
+                &nbsp;
               </CopyThis>
             </div>
             {parentComment ? (
@@ -175,7 +178,8 @@ class Comment extends Component {
                 className={css.commentQuote}
                 onClick={() => Comment.selectComment(parentComment.id, this.props.location)}
               >
-                <a className={css.commentQuoteAutor}>{Comment.getNames(parentComment.author).fullName},</a>&nbsp;
+                <a className={css.commentQuoteAutor}>{Comment.getNames(parentComment.author).fullName},</a>
+                &nbsp;
                 <span className={css.commentQuoteDate}>
                   {moment(parentComment.updatedAt).format('DD.MM.YY HH:mm')}:
                 </span>

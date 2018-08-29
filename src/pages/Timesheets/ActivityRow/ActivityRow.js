@@ -17,7 +17,14 @@ import * as css from '../Timesheets.scss';
 import { IconClose } from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal';
 import * as timesheetsConstants from '../../../constants/Timesheets';
-import { createTimesheet, updateTimesheet, deleteTimesheets, deleteTempTimesheets } from '../../../actions/Timesheets';
+import {
+  createTimesheet,
+  updateTimesheet,
+  deleteTimesheets,
+  deleteTempTimesheets,
+  editTempTimesheet
+} from '../../../actions/Timesheets';
+import EditActivityProjectModal from '../../../components/EditActivityProjectModal';
 import localize from './activityRow.json';
 
 class ActivityRow extends React.Component {
@@ -25,6 +32,7 @@ class ActivityRow extends React.Component {
     createTimesheet: PropTypes.func,
     deleteTempTimesheets: PropTypes.func,
     deleteTimesheets: PropTypes.func,
+    editTempTimesheet: PropTypes.func,
     item: PropTypes.object,
     ma: PropTypes.bool,
     magicActivitiesTypes: PropTypes.array,
@@ -47,6 +55,7 @@ class ActivityRow extends React.Component {
     this.state = {
       hl: false,
       isOpen: false,
+      isProjectEditModalOpen: false,
       timeCells: this.getTimeCells(props.item.timeSheets)
     };
   }
@@ -127,6 +136,10 @@ class ActivityRow extends React.Component {
       userId,
       startingDay
     );
+  };
+
+  editTempActivity = id => updatedFields => {
+    this.props.editTempTimesheet(id, updatedFields);
   };
 
   deleteTimesheets = ids => {
@@ -259,6 +272,14 @@ class ActivityRow extends React.Component {
     this.setState({ isConfirmModalOpen: false });
   };
 
+  openProjectEditModal = () => {
+    this.setState({ isProjectEditModalOpen: true });
+  };
+
+  closeProjectEditModal = () => {
+    this.setState({ isProjectEditModalOpen: false });
+  };
+
   deleteActivity = ids => {
     const { userId, startingDay } = this.props;
     const realSheetIds = ids.filter(id => !~id.toString().indexOf('temp'));
@@ -289,6 +310,8 @@ class ActivityRow extends React.Component {
         (tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
           tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED)
     );
+    const tempCell = item.timeSheets.find(tsh => tsh.id && tsh.id.toString().includes('temp'));
+    const isTempRow = !!tempCell;
 
     const timeCells = item.timeSheets.map((tsh, i) => {
       if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
@@ -372,7 +395,14 @@ class ActivityRow extends React.Component {
       if (!item.projectName || (maType && (maType.id === 5 || maType.id === 7))) {
         return null;
       }
-      return <span>{item.projectName}</span>;
+
+      return item.projectName ? (
+        ma && maType.id !== 5 && maType.id !== 7 && canDeleteRow ? (
+          <a onClick={() => this.openProjectEditModal()}>{item.projectName}</a>
+        ) : (
+          <span>{item.projectName}</span>
+        )
+      ) : null;
     };
     const getSprintName = () => {
       if (maType && (maType.id === 5 || maType.id === 7 || item.projectId === 0)) {
@@ -421,6 +451,16 @@ class ActivityRow extends React.Component {
               onRequestClose={this.closeConfirmModal}
             />
           ) : null}
+          {this.state.isProjectEditModalOpen ? (
+            <EditActivityProjectModal
+              contentLabel="modal"
+              isOpen
+              onCancel={this.closeProjectEditModal}
+              selectedProject={item.projectId}
+              onConfirm={isTempRow ? this.editTempActivity(tempCell.id) : () => {}}
+              text="Выберите проект"
+            />
+          ) : null}
         </td>
       </tr>
     );
@@ -439,7 +479,11 @@ const mapDispatchToProps = {
   createTimesheet,
   updateTimesheet,
   deleteTimesheets,
-  deleteTempTimesheets
+  deleteTempTimesheets,
+  editTempTimesheet
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ActivityRow);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ActivityRow);

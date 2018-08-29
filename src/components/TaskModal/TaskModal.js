@@ -63,4 +63,7 @@ const mapStateToProps = state => ({
   lang: state.Localize.lang
 });
 
-export default connect(mapStateToProps, null)(TaskModal);
+export default connect(
+  mapStateToProps,
+  null
+)(TaskModal);
