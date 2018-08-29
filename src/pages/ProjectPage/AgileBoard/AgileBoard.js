@@ -31,6 +31,7 @@ import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal, getProjectUsers, getProjectInfo } from '../../../actions/Project';
 import { history } from '../../../History';
 import { createSelector } from 'reselect';
+import withFiltersManager from '../../../components/FiltrersManager/FiltersManager';
 
 const selectTasks = state => state.Tasks.tasks;
 
@@ -284,14 +285,26 @@ class AgileBoard extends Component {
   }
 
   componentDidMount() {
-    this.getFiltersFromLocalStorage();
-    if (this.props.myTaskBoard) {
+    console.log(
+      'getCurrentSprint',
+      this.props.project.id /*&& this.parseSessionStorageFilters().changedSprint !== null*/
+    );
+    console.log(
+      'getSprintFromSession',
+      this.props.project.id /*&& this.parseSessionStorageFilters().changedSprint === null*/
+    );
+    console.log('props', this.props);
+    console.log('currentSrint', this.props.currentSprint);
+    this.getFiltersFromSessionStorage();
+    /*if (this.props.myTaskBoard) {
       this.selectValue(this.getChangedSprint(this.props), 'changedSprint');
-    } else if (this.props.project.id && this.parseLocalStorageFilters().changedSprint === null) {
-      this.selectValue(this.getCurrentSprint(this.props.sprints), 'changedSprint');
-    } else if (this.props.project.id && this.parseLocalStorageFilters().changedSprint !== null) {
-      this.selectValue(this.parseLocalStorageFilters().changedSprint, 'changedSprint');
-    }
+    } else if (this.props.params.projectId && this.parseSessionStorageFilters().changedSprint !== null) {
+      console.log('getCurrentSprint', this.props.project.id && this.parseSessionStorageFilters().changedSprint !== null);
+      this.selectValue(this.props.currentSprint, 'changedSprint');
+    } else if (this.props.params.projectId && this.parseSessionStorageFilters().changedSprint === null) {
+      console.log('getSprintFromSession', this.props.project.id && this.parseSessionStorageFilters().changedSprint === null);
+      this.selectValue(this.parseSessionStorageFilters().changedSprint, 'changedSprint');
+    }*/
   }
 
   componentWillReceiveProps(nextProps) {
@@ -421,29 +434,29 @@ class AgileBoard extends Component {
     }
   }
 
-  getFiltersFromLocalStorage = () => {
+  getFiltersFromSessionStorage = () => {
     if (!this.props.myTaskBoard) {
-      const localStorageFilter = this.parseLocalStorageFilters();
-      if (this.props.params.projectId !== localStorageFilter.projectId) return;
+      const SessionStorageFilter = this.parseSessionStorageFilters();
+      if (this.props.params.projectId !== SessionStorageFilter.projectId) return;
       this.setState({
-        isOnlyMine: localStorageFilter.isOnlyMine,
-        changedSprint: localStorageFilter.changedSprint,
-        filterTags: localStorageFilter.filterTags,
-        typeId: localStorageFilter.typeId,
-        name: localStorageFilter.name,
-        authorId: localStorageFilter.authorId,
-        prioritiesId: localStorageFilter.prioritiesId,
-        performerId: localStorageFilter.performerId
+        isOnlyMine: SessionStorageFilter.isOnlyMine,
+        changedSprint: SessionStorageFilter.changedSprint,
+        filterTags: SessionStorageFilter.filterTags,
+        typeId: SessionStorageFilter.typeId,
+        name: SessionStorageFilter.name,
+        authorId: SessionStorageFilter.authorId,
+        prioritiesId: SessionStorageFilter.prioritiesId,
+        performerId: SessionStorageFilter.performerId
       });
     } else {
-      this.removeFiltersFromLocalStorage();
+      this.removeFiltersFromSessionStorage();
     }
   };
 
-  parseLocalStorageFilters = () => {
+  parseSessionStorageFilters = () => {
     try {
-      const localStorageFilters = localStorage.getItem('agileBoardFilters');
-      return localStorageFilters ? JSON.parse(localStorageFilters) : {};
+      const SessionStorageFilters = localStorage.getItem('agileBoardFilters');
+      return SessionStorageFilters ? JSON.parse(SessionStorageFilters) : {};
     } catch (e) {
       return {};
     }
@@ -466,7 +479,7 @@ class AgileBoard extends Component {
     );
   };
 
-  removeFiltersFromLocalStorage = () => {
+  removeFiltersFromSessionStorage = () => {
     localStorage.removeItem('agileBoardFilters');
   };
 
@@ -482,13 +495,14 @@ class AgileBoard extends Component {
   };
 
   getChangedSprint = props => {
-    let changedSprint = this.state.changedSprint || this.props.currentSprint;
-    if (!this.props.myTaskBoard) {
+    console.log('getChangedSprint', this.props);
+    let changedSprint = this.state.changedSprint === null ? this.state.changedSprint : null;
+    /*if (!this.props.myTaskBoard) {
       changedSprint =
         this.props.location.query.currentSprint === undefined
           ? this.state.changedSprint || 0
           : +this.props.location.query.currentSprint;
-    }
+    }*/
     if (props.lastCreatedTask && Number.isInteger(props.lastCreatedTask.sprintId)) {
       changedSprint = props.lastCreatedTask.sprintId;
     }
@@ -516,12 +530,13 @@ class AgileBoard extends Component {
         isOnlyMine: !currentState.isOnlyMine
       }),
       () => {
-        this.setFiltersToUrl('isOnlyMine', this.state.isOnlyMine, this.updateFilterList);
+        this.setFiltersToSession('isOnlyMine', this.state.isOnlyMine, this.updateFilterList);
       }
     );
   };
 
-  setFiltersToUrl = (name, e, callback) => {
+  setFiltersToSession = (name, e, callback) => {
+    console.log('save', name, e);
     this.setState(state => {
       let filterValue = e;
       const changedFilters = { ...state.changedFilters };
@@ -556,12 +571,10 @@ class AgileBoard extends Component {
   };
 
   selectValue = (e, name) => {
-    this.setFiltersToUrl(name, e, () => {
+    this.setFiltersToSession(name, e, () => {
       if (this.props.myTaskBoard) return this.getTasks({ performerId: this.props.user.id });
-      () => {
-        this.getTasks();
-        this.saveFiltersToLocalStorage();
-      };
+      this.getTasks();
+      this.saveFiltersToSessionStorage();
     });
   };
 
@@ -570,7 +583,7 @@ class AgileBoard extends Component {
       ? customOption
       : {
           projectId: this.props.params.projectId,
-          sprintId: this.state.changedSprint,
+          sprintId: this.state.changedSprint === null ? this.props.currentSprint : this.state.changedSprint,
           prioritiesId: this.state.prioritiesId,
           authorId: this.state.authorId,
           typeId: this.state.typeId,
@@ -935,7 +948,7 @@ class AgileBoard extends Component {
                       name="changedSprint"
                       placeholder={localize[lang].SELECT_SPRINT}
                       multi={false}
-                      value={this.state.changedSprint}
+                      value={this.state.changedSprint === null ? this.props.currentSprint : this.state.changedSprint}
                       onChange={e => this.selectValue(e !== null ? e.value : null, 'changedSprint')}
                       noResultsText={localize[lang].NO_RESULTS}
                       options={this.props.sortedSprints}
@@ -1095,7 +1108,9 @@ const mapDispatchToProps = {
   getProjectInfo
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AgileBoard);
+export default withFiltersManager(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(AgileBoard)
+);
