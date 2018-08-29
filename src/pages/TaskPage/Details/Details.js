@@ -171,6 +171,20 @@ class Details extends Component {
     }
   };
 
+  setQuery = () => {
+    let query = '';
+    let currentSprint = '?changedSprint=0';
+    if (this.props.sprints && this.props.sprints.length > 0) {
+      if (this.props.sprints.every(sprint => sprint.hasOwnProperty('statusId'))) {
+        currentSprint = this.props.sprints.find(sprint => sprint.statusId === 2).id;
+      }
+    }
+    query = localStorage.getItem('filtersData')
+      ? localStorage.getItem('filtersData').replace(/changedSprint/, 'currentSprint')
+      : `?currentSprint=${currentSprint}`;
+    return query;
+  };
+
   render() {
     const { task, sprints, taskTypes, timeSpent, isExternal, lang } = this.props;
     const tags = task.tags.map((tag, i) => {
@@ -202,11 +216,7 @@ class Details extends Component {
           getContent={() => <div> {localize[lang].LOADING} </div>}
         />
       );
-    const currentSprint =
-      this.props.sprints.length > 0 ? this.props.sprints.find(sprint => sprint.statusId === 2).id : '';
-    const query = localStorage.getItem('filtersData')
-      ? localStorage.getItem('filtersData').replace(/changedSprint/, 'currentSprint')
-      : `?currentSprint=${currentSprint}`;
+    const query = this.setQuery();
     return (
       <div className={css.detailsBlock}>
         <table className={css.detailTable}>
