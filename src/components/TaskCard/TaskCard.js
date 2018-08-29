@@ -97,12 +97,15 @@ class TaskCard extends PureComponent {
                       ) : null
                   )}
                 </div>
-                <div onClick={this.handleClick} className={css.subTasksButton}>
-                  {this.state.isOpen ? (
-                    <IconArrowUpThin style={iconStyles} />
-                  ) : (
-                    <IconArrowDownThin style={iconStyles} />
-                  )}
+                <div
+                  onClick={this.handleClick}
+                  className={classnames({
+                    [css.subTasksButton]: true,
+                    [css.subTasksButtonOpen]: this.state.isOpen,
+                    [css.subTasksButtonClose]: !this.state.isOpen
+                  })}
+                >
+                  <IconArrowUpThin style={iconStyles} />
                 </div>
               </div>
             ) : (
