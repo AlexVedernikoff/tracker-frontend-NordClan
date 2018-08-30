@@ -19,18 +19,18 @@ class FiltersManager extends React.Component {
   componentWillMount() {
     this.validateProps();
     if (this.urlQueryIsEmpty()) {
-      if (this.props.useSessionStorage || this.props.useLocalStorage) {
+      if (this.useStorage()) {
         this.state.filters = this.getFiltersFromStorage();
         if (this.props.mapFiltersToUrl) {
           this.setUrlQuery();
         }
       }
-    } else if (this.props.mapFiltersFromUrl) {
+    } else if (this.props.mapFilterFromUrl) {
       this.state.filters = {
         ...this.state.filters,
-        ...this.props.mapFiltersFromUrl(this.getFiltersFromUrl())
+        ...this.props.this.getFiltersFromUrl()
       };
-      if (this.props.useLocalStorage || this.props.useSessionStorage) {
+      if (this.useStorage()) {
         this.saveFiltersToStorage();
       }
       if (!this.props.mapFiltersToUrl) {
@@ -41,15 +41,61 @@ class FiltersManager extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.location.path === nextProps.location.path) {
+      this.clearFilters();
+      if (this.urlQueryIsEmpty()) {
+        if (this.useStorage) {
+          const filters = this.getFiltersFromStorage();
+          this.setState(filters, () => {
+            if (this.props.mapFilterToUrl) {
+              this.setUrlQuery();
+            }
+          });
+        }
+      } else {
+        if (this.props.mapFilterFromUrl) {
+          this.setState(this.getFiltersFromUrl(), () => {
+            if (this.useStorage) {
+              this.saveFiltersToStorage();
+            }
+            if (!this.mapFiltersToUrl) {
+              this.cleanUrlQuery();
+            }
+          });
+        } else {
+          if (this.useStorage) {
+            this.setState(this.getFiltersFromStorage(), () => {
+              if (this.props.mapFilterToUrl) {
+                this.setUrlQuery();
+              }
+            });
+          }
+        }
+      }
     }
   }
 
-  mapFiltersToUrl = () => {
-    return this.state.filters.map(filter => this.props.mapFilterToUrl(filter));
+  useStorage = () => {
+    return this.props.useSessionStorage || this.props.useLocalStorage;
   };
 
-  mapFiltersFromUrl = filtersData => {
+  mapFiltersToUrl = () => {
+    let mappedFilters = {};
+    for (const filter in this.state.filters) {
+      if (this.state.filters.hasOwnProperty(filter)) {
+        if (!this.isEmpty(this.state.filters[filter])) {
+          mappedFilters[filter] = this.props.mapFilterToUrl(filter, this.state.filters[filter]);
+        }
+      }
+    }
+    return mappedFilters;
+  };
+
+  /* mapFiltersFromUrl = filtersData => {
     return filtersData.map(filter => this.props.mapFilterFromUrl(filter));
+  };*/
+
+  getUrlWithFilters = () => {
+    return this.state.filters;
   };
 
   initFilters = () => {
@@ -60,7 +106,11 @@ class FiltersManager extends React.Component {
   };
 
   urlQueryIsEmpty = () => {
-    return Object.keys(this.props.location.query).length === 0 && obj.constructor === Object;
+    return this.isEmpty(this.props.location.query);
+  };
+
+  isEmpty = obj => {
+    return Object.keys(obj).length === 0 && obj.constructor === Object;
   };
 
   validateProps = () => {
@@ -70,7 +120,7 @@ class FiltersManager extends React.Component {
   };
 
   getFiltersFromStorage = () => {
-    let filtersData;
+    let filtersData = {};
     if (this.props.useSessionStorage) {
       filtersData = this.getFiltersFromSessionStorage();
     }
@@ -82,7 +132,7 @@ class FiltersManager extends React.Component {
 
   getFiltersFromLocalStorage = () => {
     try {
-      const LocalStorageFilters = localStorage.getItem(WrappedComponent.name + 'FiltersStorage');
+      const LocalStorageFilters = localStorage.getItem(this.props.location.pathname);
       return LocalStorageFilters ? JSON.parse(LocalStorageFilters) : {};
     } catch (e) {
       return {};
@@ -99,7 +149,7 @@ class FiltersManager extends React.Component {
   };
 
   saveFiltersToLocalStorage = () => {
-    localStorage.setItem(this.props.location.path, JSON.stringify(this.state.filtersData));
+    localStorage.setItem(this.props.location.pathname, JSON.stringify(this.state.filters));
   };
 
   saveFiltersToSessionStorage = () => {};
@@ -108,16 +158,16 @@ class FiltersManager extends React.Component {
     let filtersData;
     this.props.filtersLabel.forEach(label => {
       if (this.props.location.query.hasOwnProperty(label)) {
-        filtersData[label] = this.props.location.query[label];
+        filtersData[label] = this.props.mapFilterFromUrl(label, this.props.location.query[label]);
       }
     });
   };
 
   updateFiltersCallback = () => {
-    if (this.props.mapFiltersToUrl) {
+    if (this.props.mapFilterToUrl) {
       this.setUrlQuery();
     }
-    if (this.props.useLocalStorage || this.props.useSessionStorage) {
+    if (this.useStorage()) {
       this.saveFiltersToStorage();
     }
   };
@@ -130,18 +180,19 @@ class FiltersManager extends React.Component {
     });
   };
 
+  cleanUrlQuery = () => {
+    history.replace({
+      ...this.props.location,
+      query: {}
+    });
+  };
+
   setFilterValue = (label, value, callback) => {
     if (this.state.filtersLabel.indexOf(label) !== -1) {
-      this.setState(
-        {
-          ...this.state.filters,
-          [label]: value
-        },
-        () => {
-          this.updateFiltersCallback();
-          callback();
-        }
-      );
+      this.setState({ [label]: value }, () => {
+        this.updateFiltersCallback();
+        callback();
+      });
     }
   };
 
@@ -150,13 +201,13 @@ class FiltersManager extends React.Component {
   };
 
   render() {
-    const WrappedChild = React.Children.only(this.props.children);
+    const ControlledComponent = React.Children.only(this.props.children);
     return (
-      <WrappedChild
+      <ControlledComponent
         {...this.props}
         filters={this.state.filters}
         selectFilterValue={this.setFilterValue}
-        clearFilters={this.clearFilters()}
+        clearFilters={this.clearFilters}
       />
     );
   }

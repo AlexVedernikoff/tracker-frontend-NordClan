@@ -1108,9 +1108,7 @@ const mapDispatchToProps = {
   getProjectInfo
 };
 
-export default withFiltersManager(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AgileBoard)
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AgileBoard);

@@ -1,4 +1,5 @@
 import FiltersManager from '../../../components/FiltrersManager/FiltersManager';
+import React from 'react';
 
 const filtersSettings = {
   filtersLabel: [
@@ -11,7 +12,7 @@ const filtersSettings = {
     'performerId',
     'typeId'
   ],
-  useSessionStorage: true
+  useLocalStorage: true
 };
 
 const withFiltersManager = AgileBoard => {
@@ -21,3 +22,5 @@ const withFiltersManager = AgileBoard => {
     </FiltersManager>
   );
 };
+
+export default withFiltersManager;
