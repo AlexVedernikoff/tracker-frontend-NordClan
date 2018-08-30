@@ -18,6 +18,5 @@ const getTagsByTask = tasks => {
 const selectTasks = state => state.Tasks.tasks;
 
 export const getAllTags = createSelector([selectTasks], tasks => {
-  console.log('TAGS', getTagsByTask(tasks));
   return getTagsByTask(tasks);
 });
