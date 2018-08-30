@@ -10,7 +10,8 @@ import { getProjectTags } from '../../actions/Project';
 import { connect } from 'react-redux';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import localize from './Tags.json';
-import SelectCreatable from '../SelectCreatable';
+//import SelectCreatable from '../SelectCreatable';
+import CreatableSelect from 'react-select/lib/Creatable';
 
 class Tags extends Component {
   constructor(props) {
@@ -34,8 +35,11 @@ class Tags extends Component {
     this.setState({ visible: !this.state.visible });
   };
 
-  onChangeHandler = e => {
-    this.setState({ tag: e.target.value });
+  //onChangeHandler = e => {
+  //  this.setState({ tag: e.value });
+  //};
+  onChangeHandler = (newValue, actionMeta) => {
+    this.setState({ tag: newValue });
   };
 
   componentWillReceiveProps = nextProps => {
@@ -48,11 +52,12 @@ class Tags extends Component {
 
   sendNewTags = e => {
     e.preventDefault();
+    console.log(this.state.tag);
     this.setState({ visible: !this.state.visible });
-    if (this.state.tag.trim() && !this.props.noRequest) {
-      this.props.createTags(this.state.tag.trim(), this.props.taggable, this.props.taggableId);
+    if (this.state.tag.value.trim() && !this.props.noRequest) {
+      this.props.createTags(this.state.tag.value.trim(), this.props.taggable, this.props.taggableId);
     } else {
-      this.props.createTagsModalTask(this.state.tag.trim());
+      this.props.createTagsModalTask(this.state.tag.value.trim());
     }
   };
 
@@ -66,17 +71,17 @@ class Tags extends Component {
   ///>
 
   render() {
-    const { lang } = this.props;
+    const { lang, tagsFromTasks } = this.props;
     let sliceTags = this.state.tags;
+
     if (this.state.tags.length > this.state.maxLength) {
       sliceTags = this.state.tags.slice(0, this.state.maxLength);
     }
-    console.log();
+
     const options =
-      this.props.tagsFromTasks && this.props.tagsFromTasks
-        ? this.props.tagsFromTasks.map(tag => ({ value: 'asdd', label: 'asd' }))
+      tagsFromTasks && tagsFromTasks
+        ? Object.values(tagsFromTasks).map(tag => ({ value: tag.name, label: tag.name }))
         : [{ value: 0, label: 'нет тегов' }];
-    //const options = [ { value: 'chocolate', label: 'Chocolate' } ];
 
     return (
       <div>
@@ -97,16 +102,11 @@ class Tags extends Component {
                   className={classnames({ [css.tagPopup]: true, [css[this.props.direction]]: true })}
                   onSubmit={this.sendNewTags}
                 >
-                  <SelectCreatable
-                    type="text"
-                    placeholder={localize[lang].ADD_TAG}
-                    className={css.tagsInput}
-                    defaultValue=""
-                    autoFocus
+                  <CreatableSelect
                     onChange={this.onChangeHandler}
-                    isMulti
-                    onChange={this.handleChange}
+                    className={css.tagsInput}
                     options={options}
+                    value={this.state.tag}
                   />
                   <Button
                     disabled={!this.state.tag}
