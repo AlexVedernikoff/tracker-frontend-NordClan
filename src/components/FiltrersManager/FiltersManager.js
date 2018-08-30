@@ -1,19 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { history } from '../../../History';
+import { history } from '../../History';
 
 class FiltersManager extends React.Component {
   static PropTypes = {
     filtersLabel: PropTypes.array,
     useSessionStorage: PropTypes.bool,
     useLocalStorage: PropTypes.bool,
-    mapFiltersToUrl: PropTypes.func,
-    mapFiltersFromUrl: PropTypes.func
+    mapFilterToUrl: PropTypes.func,
+    mapFilterFromUrl: PropTypes.func
   };
 
   constructor(props) {
     super(props);
-    console.log('props', props);
+    this.state.filters = this.initFilters();
   }
 
   componentWillMount() {
@@ -26,7 +26,10 @@ class FiltersManager extends React.Component {
         }
       }
     } else if (this.props.mapFiltersFromUrl) {
-      this.state.filtersData = this.props.mapFiltersFromUrl(this.getFiltersFromUrl());
+      this.state.filters = {
+        ...this.state.filters,
+        ...this.props.mapFiltersFromUrl(this.getFiltersFromUrl())
+      };
       if (this.props.useLocalStorage || this.props.useSessionStorage) {
         this.saveFiltersToStorage();
       }
@@ -35,6 +38,26 @@ class FiltersManager extends React.Component {
       }
     }
   }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.location.path === nextProps.location.path) {
+    }
+  }
+
+  mapFiltersToUrl = () => {
+    return this.state.filters.map(filter => this.props.mapFilterToUrl(filter));
+  };
+
+  mapFiltersFromUrl = filtersData => {
+    return filtersData.map(filter => this.props.mapFilterFromUrl(filter));
+  };
+
+  initFilters = () => {
+    let initFilters;
+    this.props.filtersLabel.forEach(label => {
+      initFilters[label] = {};
+    });
+  };
 
   urlQueryIsEmpty = () => {
     return Object.keys(this.props.location.query).length === 0 && obj.constructor === Object;
