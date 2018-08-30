@@ -28,7 +28,7 @@ import { getAllTags } from '../../../selectors/getAllTags';
 import getTasks from '../../../actions/Tasks';
 import { VISOR, EXTERNAL_USER } from '../../../constants/Roles';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
-import { openCreateTaskModal, getProjectUsers, getProjectInfo } from '../../../actions/Project';
+import { openCreateTaskModal, getProjectUsers, getProjectInfo, getProjectTags } from '../../../actions/Project';
 import { history } from '../../../History';
 import { createSelector } from 'reselect';
 
@@ -289,6 +289,10 @@ class AgileBoard extends Component {
     ReactTooltip.hide();
     if (this.props.tracksChange !== nextProps.tracksChange && this.props.project.id) {
       this.props.getProjectInfo(this.props.project.id);
+    }
+    if (this.props.project.id) {
+      this.props.getProjectTags(this.props.project.id);
+      console.log('PROJECT TAGS', this.props.tags);
     }
 
     if (
@@ -777,7 +781,6 @@ class AgileBoard extends Component {
   getFilterTagsProps() {
     const { filterTags, noTag } = this.state;
     const { tags, noTagData } = this.props;
-
     return {
       value: !noTag ? filterTags : [noTagData].concat(filterTags),
       options: filterTags.length ? tags : [noTagData].concat(tags)
@@ -1055,7 +1058,8 @@ const mapDispatchToProps = {
   startTaskEditing,
   openCreateTaskModal,
   getProjectUsers,
-  getProjectInfo
+  getProjectInfo,
+  getProjectTags
 };
 
 export default connect(

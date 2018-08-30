@@ -2,7 +2,6 @@ import uniq from 'lodash/uniq';
 import { createSelector } from 'reselect';
 
 const getTagsByTask = tasks => {
-  console.log('tasks', tasks);
   let allTags = tasks.reduce((arr, task) => {
     return arr.concat(task.tags ? task.tags.map(tags => tags.name) : []);
   }, []);

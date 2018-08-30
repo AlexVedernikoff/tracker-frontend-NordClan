@@ -24,6 +24,20 @@ const gettingProjectInfoFail = error => ({
   error: error
 });
 
+const gettingProjectTagsStart = () => ({
+  type: ProjectActions.PROJECT_TAGS_RECEIVE_START
+});
+
+const gettingProjectTagsSuccess = tags => ({
+  type: ProjectActions.PROJECT_TAGS_RECEIVE_SUCCESS,
+  tags: tags
+});
+
+const gettingProjectTagsFail = error => ({
+  type: ProjectActions.PROJECT_TAGS_RECEIVE_FAIL,
+  error: error
+});
+
 const gettingProjectUsersStart = () => ({
   type: ProjectActions.PROJECT_USERS_RECEIVE_START
 });
@@ -311,6 +325,27 @@ const getProjectInfo = id => {
       .then(response => {
         if (response && response.status === 200) {
           dispatch(gettingProjectInfoSuccess(response.data));
+          dispatch(finishLoading());
+        }
+      });
+  };
+};
+
+export const getProjectTags = id => {
+  const URL = `${API_URL}/project/${id}/tags`;
+
+  return dispatch => {
+    dispatch(gettingProjectTagsStart());
+    dispatch(startLoading());
+    axios
+      .get(URL)
+      .catch(error => {
+        dispatch(gettingProjectTagsFail(error.response.data));
+        dispatch(finishLoading());
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(gettingProjectTagsSuccess(response.data));
           dispatch(finishLoading());
         }
       });
