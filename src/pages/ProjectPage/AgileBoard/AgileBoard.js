@@ -417,7 +417,13 @@ class AgileBoard extends Component {
 
       for (const [key, value] of Object.entries(changedFilters)) {
         if (value && key !== 'projectId') {
-          query[key] = key === 'filterTags' ? value.map(({ value }) => value).join(',') : value;
+          if (key === 'performerId' || key === 'typeId') {
+            query[key] = Array.isArray(value) ? value.map(singleFilter => singleFilter.value) : value;
+          } else if (key === 'filterTags') {
+            query[key] = value.map(({ value }) => value).join(',');
+          } else {
+            query[key] = value;
+          }
         }
       }
 
@@ -489,15 +495,7 @@ class AgileBoard extends Component {
         changedFilters.projectId = this.props.params.projectId;
       }
 
-      if (name === 'typeId') {
-        filterValue = e.map(singleValue => singleValue.value);
-      }
-
-      if (name === 'performerId') {
-        filterValue = e.map(singleValue => singleValue.value);
-      }
-
-      if (name === 'filterTags') {
+      if (name === 'filterTags' || name === 'performerId' || name === 'typeId') {
         filterValue = e;
       }
 
@@ -531,11 +529,19 @@ class AgileBoard extends Component {
           sprintId: this.state.changedSprint,
           prioritiesId: this.state.prioritiesId,
           authorId: this.state.authorId,
-          typeId: this.state.typeId,
+          typeId: this.state.typeId
+            ? Array.isArray(this.state.typeId)
+              ? this.state.typeId.map(singleType => singleType.value)
+              : this.state.typeId.value
+            : null,
           name: this.state.name || null,
           tags: this.state.filterTags.map(({ value }) => value).join(','),
           noTag: this.state.noTag,
           performerId: this.state.performerId
+            ? Array.isArray(this.state.performerId)
+              ? this.state.performerId.map(singlePerformer => singlePerformer.value)
+              : this.state.performerId.value
+            : null
         };
     this.props.getTasks(options);
     this.updateFilterList();
