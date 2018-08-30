@@ -290,7 +290,7 @@ class AgileBoard extends Component {
     if (this.props.tracksChange !== nextProps.tracksChange && this.props.project.id) {
       this.props.getProjectInfo(this.props.project.id);
     }
-    if (this.props.project.id) {
+    if (this.props.tags !== nextProps.tags && this.props.project.id) {
       this.props.getProjectTags(this.props.project.id);
       console.log('PROJECT TAGS', this.props.tags);
     }

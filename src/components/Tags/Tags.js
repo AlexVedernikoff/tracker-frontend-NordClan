@@ -6,6 +6,7 @@ import Tag from '../Tag';
 import onClickOutside from 'react-onclickoutside';
 import classnames from 'classnames';
 import { createTags } from '../../actions/Tags';
+import { getProjectTags } from '../../actions/Project';
 import { connect } from 'react-redux';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import localize from './Tags.json';
@@ -29,6 +30,7 @@ class Tags extends Component {
   };
 
   showDropdownMenu = () => {
+    this.props.getProjectTags(this.props.project);
     this.setState({ visible: !this.state.visible });
   };
 
@@ -53,32 +55,29 @@ class Tags extends Component {
       this.props.createTagsModalTask(this.state.tag.trim());
     }
   };
+
+  //<input
+  //  type="text"
+  //  placeholder={localize[lang].ADD_TAG}
+  //  className={css.tagsInput}
+  //  defaultValue=""
+  //  autoFocus
+  //  onChange={this.onChangeHandler}
+  ///>
+
   render() {
     const { lang } = this.props;
     let sliceTags = this.state.tags;
     if (this.state.tags.length > this.state.maxLength) {
       sliceTags = this.state.tags.slice(0, this.state.maxLength);
     }
-    //console.log(this.props);
-    //<input
-    //  type="text"
-    //  placeholder={localize[lang].ADD_TAG}
-    //  className={css.tagsInput}
-    //  defaultValue=""
-    //  autoFocus
-    //  onChange={this.onChangeHandler}
-    ///>
-    //<SelectCreatable
-    //type="text"
-    //placeholder={localize[lang].ADD_TAG}
-    //className={css.tagsInput}
-    //defaultValue=""
-    //autoFocus
-    //onChange={this.onChangeHandler}
-    //isMulti
-    //onChange={this.handleChange}
-    //options={[]}
-    ///>
+    console.log();
+    const options =
+      this.props.tagsFromTasks && this.props.tagsFromTasks
+        ? this.props.tagsFromTasks.map(tag => ({ value: 'asdd', label: 'asd' }))
+        : [{ value: 0, label: 'нет тегов' }];
+    //const options = [ { value: 'chocolate', label: 'Chocolate' } ];
+
     return (
       <div>
         {!this.state.cutTags ? this.state.tags : sliceTags}
@@ -98,6 +97,17 @@ class Tags extends Component {
                   className={classnames({ [css.tagPopup]: true, [css[this.props.direction]]: true })}
                   onSubmit={this.sendNewTags}
                 >
+                  <SelectCreatable
+                    type="text"
+                    placeholder={localize[lang].ADD_TAG}
+                    className={css.tagsInput}
+                    defaultValue=""
+                    autoFocus
+                    onChange={this.onChangeHandler}
+                    isMulti
+                    onChange={this.handleChange}
+                    options={options}
+                  />
                   <Button
                     disabled={!this.state.tag}
                     addedClassNames={{ [css.tagsButton]: true, [css.tagsSubmit]: true }}
@@ -128,11 +138,13 @@ Tags.propTypes = {
   createTags: PropTypes.func.isRequired,
   createTagsModalTask: PropTypes.func,
   direction: PropTypes.string,
+  getProjectTags: PropTypes.func,
   maxLength: PropTypes.number,
   noRequest: PropTypes.bool,
+  project: PropTypes.number,
   taggable: PropTypes.string,
   taggableId: PropTypes.number,
-  tags: PropTypes.array
+  tagsFromTasks: PropTypes.object
 };
 
 Tags.defaultProps = {
@@ -140,10 +152,13 @@ Tags.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  project: state.Project.project.id,
+  tagsFromTasks: state.Project.tags
 });
 
 const mapDispatchToProps = {
+  getProjectTags,
   createTags
 };
 
