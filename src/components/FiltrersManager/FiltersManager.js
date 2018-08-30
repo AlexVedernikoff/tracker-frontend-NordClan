@@ -1,216 +1,217 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { history } from '../../History';
+import * as _ from 'lodash';
 
-class FiltersManager extends React.Component {
-  static PropTypes = {
-    filtersLabel: PropTypes.array,
-    useSessionStorage: PropTypes.bool,
-    useLocalStorage: PropTypes.bool,
-    mapFilterToUrl: PropTypes.func,
-    mapFilterFromUrl: PropTypes.func
-  };
+const withFiltersManager = (ControlledComponent, settings) =>
+  class FiltersManager extends React.Component {
+    configureManager(settings) {
+      this.settings = {};
+      this.validateSettings(settings);
+      this.settings.filtersLabel = settings.filtersLabel;
+      this.settings.useSessionStorage = settings.useSessionStorage;
+      this.settings.useLocalStorage = settings.useLocalStorage;
+      this.settings.mapFilterToUrl = settings.mapFilterToUrl;
+      this.settings.mapFilterFromUrl = settings.mapFilterFromUrl;
+    }
 
-  constructor(props) {
-    super(props);
-    this.state.filters = this.initFilters();
-  }
+    constructor(props) {
+      super(props);
+      this.configureManager(settings);
+      this.state = this.initState();
+    }
 
-  componentWillMount() {
-    this.validateProps();
-    if (this.urlQueryIsEmpty()) {
-      if (this.useStorage()) {
-        this.state.filters = this.getFiltersFromStorage();
-        if (this.props.mapFiltersToUrl) {
-          this.setUrlQuery();
+    componentWillMount() {
+      if (this.urlQueryIsEmpty()) {
+        console.log('UrlEmpty');
+        if (this.useStorage()) {
+          this.state.filters = {
+            ...this.state.filters,
+            ...this.getFiltersFromStorage()
+          };
+          if (this.settings.mapFilterToUrl) {
+            this.setUrlQuery();
+          }
         }
-      }
-    } else if (this.props.mapFilterFromUrl) {
-      this.state.filters = {
-        ...this.state.filters,
-        ...this.props.this.getFiltersFromUrl()
-      };
-      if (this.useStorage()) {
-        this.saveFiltersToStorage();
-      }
-      if (!this.props.mapFiltersToUrl) {
-        this.props.location.query = {};
+      } else if (this.settings.mapFilterFromUrl) {
+        console.log('UrlEmpty not empty');
+        const filtersFromUrl = this.getFiltersFromUrl();
+        if (!this.filtersIsEmpty(filtersFromUrl)) {
+          this.state = {
+            filters: {
+              ...this.state.filters,
+              ...filtersFromUrl
+            }
+          };
+          if (this.useStorage()) {
+            this.saveFiltersToStorage();
+          }
+        } else if (this.useStorage) {
+          this.state.filters = this.getFiltersFromStorage();
+        }
+        if (!this.settings.mapFiltersToUrl) {
+          this.cleanUrlQuery();
+        }
       }
     }
-  }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.location.path === nextProps.location.path) {
-      this.clearFilters();
-      if (this.urlQueryIsEmpty()) {
-        if (this.useStorage) {
-          const filters = this.getFiltersFromStorage();
-          this.setState(filters, () => {
-            if (this.props.mapFilterToUrl) {
-              this.setUrlQuery();
-            }
-          });
+    filtersIsEmpty = filters => {
+      console.log('filterIsEmpty', filters);
+      let isEmpty = true;
+      for (const key in filters) {
+        if (
+          this.settings.filtersLabel.indexOf(key) !== -1 &&
+          (filters[key] || filters[key] === 0 || filters[key] === false)
+        ) {
+          isEmpty = false;
         }
-      } else {
-        if (this.props.mapFilterFromUrl) {
-          this.setState(this.getFiltersFromUrl(), () => {
-            if (this.useStorage) {
-              this.saveFiltersToStorage();
-            }
-            if (!this.mapFiltersToUrl) {
-              this.cleanUrlQuery();
-            }
-          });
-        } else {
-          if (this.useStorage) {
-            this.setState(this.getFiltersFromStorage(), () => {
-              if (this.props.mapFilterToUrl) {
-                this.setUrlQuery();
-              }
-            });
+      }
+      return isEmpty;
+    };
+
+    useStorage = () => {
+      return this.settings.useSessionStorage || this.settings.useLocalStorage;
+    };
+
+    mapFiltersToUrl = () => {
+      let mappedFilters = {};
+      for (const filter in this.state.filters) {
+        if (this.state.filters.hasOwnProperty(filter)) {
+          if (!this.isEmpty(this.state.filters[filter])) {
+            mappedFilters[filter] = this.settings.mapFilterToUrl(filter, this.state.filters[filter]);
           }
         }
       }
-    }
-  }
+      return mappedFilters;
+    };
 
-  useStorage = () => {
-    return this.props.useSessionStorage || this.props.useLocalStorage;
-  };
+    getUrlWithFilters = () => {
+      return this.state.filters;
+    };
 
-  mapFiltersToUrl = () => {
-    let mappedFilters = {};
-    for (const filter in this.state.filters) {
-      if (this.state.filters.hasOwnProperty(filter)) {
-        if (!this.isEmpty(this.state.filters[filter])) {
-          mappedFilters[filter] = this.props.mapFilterToUrl(filter, this.state.filters[filter]);
+    initState = () => {
+      let initFilters = {};
+      this.settings.filtersLabel.forEach(label => {
+        initFilters[label] = null;
+      });
+      return {
+        filters: initFilters
+      };
+    };
+
+    urlQueryIsEmpty = () => {
+      console.log('query', this.props.location.query);
+      return this.isEmpty(this.props.location.query);
+    };
+
+    isEmpty = obj => {
+      for (const key in obj) {
+        return false;
+      }
+      return true;
+    };
+
+    validateSettings = settings => {
+      if (settings.useSessionStorage && settings.useLocalStorage) {
+        throw new Error('');
+      }
+    };
+
+    getFiltersFromStorage = () => {
+      let filtersData = {};
+      if (this.settings.useSessionStorage) {
+        filtersData = this.getFiltersFromSessionStorage();
+      }
+      if (this.settings.useLocalStorage) {
+        filtersData = this.getFiltersFromLocalStorage();
+      }
+      return filtersData;
+    };
+
+    getFiltersFromLocalStorage = () => {
+      try {
+        const LocalStorageFilters = localStorage.getItem(this.props.location.pathname);
+        return LocalStorageFilters ? JSON.parse(LocalStorageFilters) : {};
+      } catch (e) {
+        return {};
+      }
+    };
+
+    saveFiltersToStorage = () => {
+      if (this.settings.useLocalStorage) {
+        this.saveFiltersToLocalStorage();
+      }
+      if (this.settings.useSessionStorage) {
+        this.saveFiltersToSessionStorage();
+      }
+    };
+
+    saveFiltersToLocalStorage = () => {
+      console.log('saveFiltersToLocalStorage');
+      localStorage.setItem(this.props.location.pathname, JSON.stringify(this.state.filters));
+    };
+
+    saveFiltersToSessionStorage = () => {};
+
+    getFiltersFromUrl = () => {
+      console.log('getFiltersFromUrl');
+      let filtersData = {};
+      for (const key in this.props.location.query) {
+        if (this.settings.filtersLabel.indexOf(key) !== -1) {
+          console.log('ietrateKey');
+          filtersData[key] = this.settings.mapFilterFromUrl(key, this.props.location.query[key]);
         }
       }
-    }
-    return mappedFilters;
-  };
+      console.log('filtersData', filtersData);
+      return filtersData;
+    };
 
-  /* mapFiltersFromUrl = filtersData => {
-    return filtersData.map(filter => this.props.mapFilterFromUrl(filter));
-  };*/
-
-  getUrlWithFilters = () => {
-    return this.state.filters;
-  };
-
-  initFilters = () => {
-    let initFilters;
-    this.props.filtersLabel.forEach(label => {
-      initFilters[label] = {};
-    });
-  };
-
-  urlQueryIsEmpty = () => {
-    return this.isEmpty(this.props.location.query);
-  };
-
-  isEmpty = obj => {
-    return Object.keys(obj).length === 0 && obj.constructor === Object;
-  };
-
-  validateProps = () => {
-    if (this.props.useSessionStorage && this.props.useLocalStorage) {
-      throw new Error('');
-    }
-  };
-
-  getFiltersFromStorage = () => {
-    let filtersData = {};
-    if (this.props.useSessionStorage) {
-      filtersData = this.getFiltersFromSessionStorage();
-    }
-    if (this.props.useLocalStorage) {
-      filtersData = this.getFiltersFromLocalStorage();
-    }
-    return filtersData;
-  };
-
-  getFiltersFromLocalStorage = () => {
-    try {
-      const LocalStorageFilters = localStorage.getItem(this.props.location.pathname);
-      return LocalStorageFilters ? JSON.parse(LocalStorageFilters) : {};
-    } catch (e) {
-      return {};
-    }
-  };
-
-  saveFiltersToStorage = () => {
-    if (this.props.useLocalStorage) {
-      this.saveFiltersToLocalStorage();
-    }
-    if (this.props.useSessionStorage) {
-      this.saveFiltersToSessionStorage();
-    }
-  };
-
-  saveFiltersToLocalStorage = () => {
-    localStorage.setItem(this.props.location.pathname, JSON.stringify(this.state.filters));
-  };
-
-  saveFiltersToSessionStorage = () => {};
-
-  getFiltersFromUrl = () => {
-    let filtersData;
-    this.props.filtersLabel.forEach(label => {
-      if (this.props.location.query.hasOwnProperty(label)) {
-        filtersData[label] = this.props.mapFilterFromUrl(label, this.props.location.query[label]);
+    updateFiltersCallback = () => {
+      if (this.settings.mapFilterToUrl) {
+        this.setUrlQuery();
       }
-    });
-  };
+      if (this.useStorage()) {
+        this.saveFiltersToStorage();
+      }
+    };
 
-  updateFiltersCallback = () => {
-    if (this.props.mapFilterToUrl) {
-      this.setUrlQuery();
-    }
-    if (this.useStorage()) {
-      this.saveFiltersToStorage();
-    }
-  };
-
-  setUrlQuery = () => {
-    const query = this.props.mapFiltersToUrl(this.state.filters);
-    history.replace({
-      ...this.props.location,
-      query
-    });
-  };
-
-  cleanUrlQuery = () => {
-    history.replace({
-      ...this.props.location,
-      query: {}
-    });
-  };
-
-  setFilterValue = (label, value, callback) => {
-    if (this.state.filtersLabel.indexOf(label) !== -1) {
-      this.setState({ [label]: value }, () => {
-        this.updateFiltersCallback();
-        callback();
+    setUrlQuery = () => {
+      const query = this.mapFiltersToUrl(this.state.filters);
+      history.replace({
+        ...this.props.location,
+        query
       });
+    };
+
+    cleanUrlQuery = () => {
+      history.replace({
+        ...this.props.location,
+        query: {}
+      });
+    };
+
+    setFilterValue = (label, value, callback) => {
+      if (this.state.filtersLabel.indexOf(label) !== -1) {
+        this.setState({ [label]: value }, () => {
+          this.updateFiltersCallback();
+          callback();
+        });
+      }
+    };
+
+    clearFilters = () => {
+      this.setState({ filters: {} }, this.updateFiltersCallback);
+    };
+
+    render() {
+      return (
+        <ControlledComponent
+          {...this.props}
+          filters={this.state.filters}
+          selectFilterValue={this.setFilterValue}
+          clearFilters={this.clearFilters}
+        />
+      );
     }
   };
 
-  clearFilters = () => {
-    this.setState({ filters: {} }, this.updateFiltersCallback);
-  };
-
-  render() {
-    const ControlledComponent = React.Children.only(this.props.children);
-    return (
-      <ControlledComponent
-        {...this.props}
-        filters={this.state.filters}
-        selectFilterValue={this.setFilterValue}
-        clearFilters={this.clearFilters}
-      />
-    );
-  }
-}
-
-export default FiltersManager;
+export default withFiltersManager;
