@@ -288,7 +288,7 @@ class Details extends Component {
             <tr>
               <td>{localize[lang].PERFORMER}</td>
               <td>
-                {this.props.task.statusId !== 8 ? (
+                {this.props.task.statusId !== 10 ? (
                   <span onClick={this.openPerformerModal} className={css.editableCell}>
                     {task.performer ? (
                       getFullName(task.performer)
