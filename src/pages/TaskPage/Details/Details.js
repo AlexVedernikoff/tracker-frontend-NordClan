@@ -288,16 +288,26 @@ class Details extends Component {
             <tr>
               <td>{localize[lang].PERFORMER}</td>
               <td>
-                <span onClick={this.openPerformerModal} className={css.editableCell}>
-                  {task.performer ? (
-                    getFullName(task.performer)
-                  ) : (
-                    <span className={css.unassigned}>{localize[lang].NOT_SPECIFIED}</span>
-                  )}
-                  <span className={css.editIcon}>
-                    <IconEdit />
+                {this.props.task.statusId !== 8 ? (
+                  <span onClick={this.openPerformerModal} className={css.editableCell}>
+                    {task.performer ? (
+                      getFullName(task.performer)
+                    ) : (
+                      <span className={css.unassigned}>{localize[lang].NOT_SPECIFIED}</span>
+                    )}
+                    <span className={css.editIcon}>
+                      <IconEdit />
+                    </span>
                   </span>
-                </span>
+                ) : (
+                  <span>
+                    {task.performer ? (
+                      getFullName(task.performer)
+                    ) : (
+                      <span className={css.unassigned}>{localize[lang].NOT_SPECIFIED}</span>
+                    )}
+                  </span>
+                )}
               </td>
             </tr>
             <tr>
