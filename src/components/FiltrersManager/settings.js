@@ -1,4 +1,4 @@
-const mapFilterFromUrl = (label, value) => {
+const mapFilterFromUrl = (label, value, type) => {
   console.log('reg', value.test);
   if (label === 'isOnlyMine') {
     return true;

@@ -1,23 +1,24 @@
 import React from 'react';
 import { history } from '../../History';
-import * as _ from 'lodash';
+import FilterTypes from './filter-types';
 
-const withFiltersManager = (ControlledComponent, settings) =>
+const FiltersManager = (ControlledComponent, settings, filtersSetting) =>
   class FiltersManager extends React.Component {
-    configureManager(settings) {
+    configureManager() {
+      console.error('settings', settings);
+      console.error('props', this.props);
       this.settings = {};
       this.validateSettings(settings);
-      this.settings.filtersLabel = settings.filtersLabel;
-      this.settings.useSessionStorage = settings.useSessionStorage;
-      this.settings.useLocalStorage = settings.useLocalStorage;
-      this.settings.mapFilterToUrl = settings.mapFilterToUrl;
-      this.settings.mapFilterFromUrl = settings.mapFilterFromUrl;
+      this.validateFiltersSetting(filtersSetting);
+      this.settings.useSessionStorage = settings.useSessionStorage ? settings.useSessionStorage : null;
+      this.settings.useLocalStorage = settings.useLocalStorage ? settings.useLocalStorage : null;
+      this.settings.mapFilterToUrl = settings.mapFilterToUrl ? settings.mapFilterToUrl : null;
+      this.settings.mapFilterFromUrl = settings.mapFilterFromUrl ? settings.mapFilterFromUrl : null;
     }
 
     constructor(props) {
       super(props);
-      this.configureManager(settings);
-      this.state = this.initState();
+      this.configureManager();
     }
 
     componentWillMount() {
@@ -53,6 +54,53 @@ const withFiltersManager = (ControlledComponent, settings) =>
         }
       }
     }
+
+    validateFiltersSetting = filtersSettings => {
+      for (const filterKey in filtersSettings) {
+        if (filtersSettings[filterKey].type) {
+          if (filtersSettings[filterKey].value) {
+            switch (filtersSettings[filterKey].type) {
+              case FilterTypes.number:
+                if (!(typeof filtersSettings[filterKey] === 'number')) {
+                  throw new Error(`For filters property ${filterKey} must be number`);
+                }
+                break;
+              case FilterTypes.array:
+                if (!Array.isArray(filtersSettings[filterKey])) {
+                  throw new Error(`For filters property ${filterKey} must be array`);
+                } else {
+                  if (filtersSettings[filterKey].itemType) {
+                    if (isArray(filtersSettings[filterKey].value)) {
+                      filtersSettings[filterKey].value.forEach(el => {
+                        if (typeof el !== filtersSettings[filterKey].type) {
+                          throw new Error(`filters property ${filtersSettings[filterKey]}: incorrect item types `);
+                        }
+                      });
+                    } else {
+                      throw new Error(`filter value for ${filterKey} must be array`);
+                    }
+                  } else {
+                    throw new Error(`filter type for ${filterKey} filter property is required`);
+                  }
+                }
+                break;
+              case FilterTypes.boolean:
+                if (!(typeof filtersSettings[filterKey] === 'boolean')) {
+                  throw new Error(`For filters property ${filterKey} must be boolean`);
+                }
+              case FilterTypes.string:
+                if (!(typeof filtersSettings[filterKey] === 'string')) {
+                  throw new Error(`For filters property ${filterKey} must be boolean`);
+                }
+            }
+          }
+        } else {
+          throw new Error('type for filter is required');
+        }
+      }
+    };
+
+    validateSettings = settings => {};
 
     filtersIsEmpty = filters => {
       console.log('filterIsEmpty', filters);
@@ -108,12 +156,6 @@ const withFiltersManager = (ControlledComponent, settings) =>
         return false;
       }
       return true;
-    };
-
-    validateSettings = settings => {
-      if (settings.useSessionStorage && settings.useLocalStorage) {
-        throw new Error('');
-      }
     };
 
     getFiltersFromStorage = () => {
@@ -214,4 +256,4 @@ const withFiltersManager = (ControlledComponent, settings) =>
     }
   };
 
-export default withFiltersManager;
+export default FiltersManager;
