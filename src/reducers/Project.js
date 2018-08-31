@@ -187,7 +187,16 @@ export default function Project(state = InitialState, action) {
         ...state,
         project: {
           ...state.project,
-          gitlabProjects: [...state.project.gitlabProjects, action.payload]
+          gitlabProjects: [...state.project.gitlabProjects, action.project]
+        }
+      };
+
+    case GitlabActions.CREATE_GITLAB_PROJECT_SUCCESS:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          gitlabProjects: [...state.project.gitlabProjects, action.project]
         }
       };
 
