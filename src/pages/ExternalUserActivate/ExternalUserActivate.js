@@ -96,7 +96,7 @@ class ExternalUserActivate extends Component {
   }
 }
 
-const mapStateToProps = () => ({
+const mapStateToProps = state => ({
   lang: state.Localize.lang
 });
 
@@ -104,4 +104,7 @@ const mapDispatchToProps = {
   activateExternalUser
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ExternalUserActivate);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ExternalUserActivate);
