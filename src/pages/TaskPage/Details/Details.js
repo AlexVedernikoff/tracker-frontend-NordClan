@@ -176,7 +176,9 @@ class Details extends Component {
     let currentSprint = '?changedSprint=0';
     if (this.props.sprints && this.props.sprints.length > 0) {
       if (this.props.sprints.every(sprint => sprint.hasOwnProperty('statusId'))) {
-        currentSprint = this.props.sprints.find(sprint => sprint.statusId === 2).id;
+        if (this.props.sprints.find(sprint => sprint.statusId === 2)) {
+          currentSprint = this.props.sprints.find(sprint => sprint.statusId === 2).id;
+        }
       }
     }
     query = localStorage.getItem('filtersData')
