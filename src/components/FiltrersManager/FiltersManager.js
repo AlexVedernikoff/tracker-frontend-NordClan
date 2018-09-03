@@ -1,15 +1,15 @@
 import React from 'react';
 import { history } from '../../History';
-import FilterTypes from './filter-types';
+import { filterTypeCheck } from './filter-types';
 
-const FiltersManager = (ControlledComponent, settings, filtersSetting) =>
-  class FiltersManager extends React.Component {
+const FiltersManager = (ControlledComponent, settings, filtersDescribe) => {
+  return class extends React.Component {
     configureManager() {
       console.error('settings', settings);
       console.error('props', this.props);
       this.settings = {};
+      this.setInitFilterState(filtersDescribe);
       this.validateSettings(settings);
-      this.validateFiltersSetting(filtersSetting);
       this.settings.useSessionStorage = settings.useSessionStorage ? settings.useSessionStorage : null;
       this.settings.useLocalStorage = settings.useLocalStorage ? settings.useLocalStorage : null;
       this.settings.mapFilterToUrl = settings.mapFilterToUrl ? settings.mapFilterToUrl : null;
@@ -55,52 +55,25 @@ const FiltersManager = (ControlledComponent, settings, filtersSetting) =>
       }
     }
 
-    validateFiltersSetting = filtersSettings => {
-      for (const filterKey in filtersSettings) {
-        if (filtersSettings[filterKey].type) {
-          if (filtersSettings[filterKey].value) {
-            switch (filtersSettings[filterKey].type) {
-              case FilterTypes.number:
-                if (!(typeof filtersSettings[filterKey] === 'number')) {
-                  throw new Error(`For filters property ${filterKey} must be number`);
-                }
-                break;
-              case FilterTypes.array:
-                if (!Array.isArray(filtersSettings[filterKey])) {
-                  throw new Error(`For filters property ${filterKey} must be array`);
-                } else {
-                  if (filtersSettings[filterKey].itemType) {
-                    if (isArray(filtersSettings[filterKey].value)) {
-                      filtersSettings[filterKey].value.forEach(el => {
-                        if (typeof el !== filtersSettings[filterKey].type) {
-                          throw new Error(`filters property ${filtersSettings[filterKey]}: incorrect item types `);
-                        }
-                      });
-                    } else {
-                      throw new Error(`filter value for ${filterKey} must be array`);
-                    }
-                  } else {
-                    throw new Error(`filter type for ${filterKey} filter property is required`);
-                  }
-                }
-                break;
-              case FilterTypes.boolean:
-                if (!(typeof filtersSettings[filterKey] === 'boolean')) {
-                  throw new Error(`For filters property ${filterKey} must be boolean`);
-                }
-              case FilterTypes.string:
-                if (!(typeof filtersSettings[filterKey] === 'string')) {
-                  throw new Error(`For filters property ${filterKey} must be boolean`);
-                }
-            }
-          }
-        } else {
-          throw new Error('type for filter is required');
+    setInitFilterState = filters => {
+      const filtersState = {};
+      for (const key in filters) {
+        if (filterTypeCheck(filters[key])) {
+          filtersState[key] = filters[key];
+        } else if (process.env.NODE_ENV !== 'production') {
+          throw new Error(`Types check failed for ${key} property`);
+        }
+      }
+      this.state.filters = filtersState;
+    };
+
+    validateSettings = sett => {
+      if (sett.useSessionStorage && sett.useLocalStorage) {
+        if (process.env.NODE_ENV !== 'production') {
+          throw new Error('useSessionStorage and useLocalStorage can not be both true');
         }
       }
     };
-
-    validateSettings = settings => {};
 
     filtersIsEmpty = filters => {
       console.log('filterIsEmpty', filters);
@@ -121,7 +94,7 @@ const FiltersManager = (ControlledComponent, settings, filtersSetting) =>
     };
 
     mapFiltersToUrl = () => {
-      let mappedFilters = {};
+      const mappedFilters = {};
       for (const filter in this.state.filters) {
         if (this.state.filters.hasOwnProperty(filter)) {
           if (!this.isEmpty(this.state.filters[filter])) {
@@ -137,7 +110,7 @@ const FiltersManager = (ControlledComponent, settings, filtersSetting) =>
     };
 
     initState = () => {
-      let initFilters = {};
+      const initFilters = {};
       this.settings.filtersLabel.forEach(label => {
         initFilters[label] = null;
       });
@@ -161,18 +134,47 @@ const FiltersManager = (ControlledComponent, settings, filtersSetting) =>
     getFiltersFromStorage = () => {
       let filtersData = {};
       if (this.settings.useSessionStorage) {
-        filtersData = this.getFiltersFromSessionStorage();
+        filtersData = this.compareWithState(this.getFiltersFromSessionStorage());
       }
       if (this.settings.useLocalStorage) {
-        filtersData = this.getFiltersFromLocalStorage();
+        filtersData = this.compareWithState(this.getFiltersFromLocalStorage());
       }
       return filtersData;
+    };
+
+    compareWithState = filtersData => {
+      const result = {};
+      for (const key in filtersData) {
+        if (
+          this.state.filters[key] &&
+          this.state.filters[key].value === filtersData.value &&
+          this.state.filters[key].type === filtersData[key].type
+        ) {
+          if (this.state.filters[key].itemType) {
+            if (this.state.filters[key].itemType === filtersData[key].itemType) {
+              result[key] = filtersData[key];
+            } else {
+              result[key] = filtersData[key];
+            }
+          }
+        }
+      }
+      return result;
     };
 
     getFiltersFromLocalStorage = () => {
       try {
         const LocalStorageFilters = localStorage.getItem(this.props.location.pathname);
         return LocalStorageFilters ? JSON.parse(LocalStorageFilters) : {};
+      } catch (e) {
+        return {};
+      }
+    };
+
+    getFiltersFromSessionStorage = () => {
+      try {
+        const SessionStorageFilters = sessionStorage.getItem(this.props.location.pathname);
+        return SessionStorageFilters ? JSON.parse(SessionStorageFilters) : {};
       } catch (e) {
         return {};
       }
@@ -196,11 +198,14 @@ const FiltersManager = (ControlledComponent, settings, filtersSetting) =>
 
     getFiltersFromUrl = () => {
       console.log('getFiltersFromUrl');
-      let filtersData = {};
+      const filtersData = {};
       for (const key in this.props.location.query) {
-        if (this.settings.filtersLabel.indexOf(key) !== -1) {
-          console.log('ietrateKey');
-          filtersData[key] = this.settings.mapFilterFromUrl(key, this.props.location.query[key]);
+        if (this.state.filters[key]) {
+          filtersData[key] = this.settings.mapFilterFromUrl(
+            key,
+            this.props.location.query[key],
+            this.state.filters[key]
+          );
         }
       }
       console.log('filtersData', filtersData);
@@ -255,5 +260,6 @@ const FiltersManager = (ControlledComponent, settings, filtersSetting) =>
       );
     }
   };
+};
 
 export default FiltersManager;
