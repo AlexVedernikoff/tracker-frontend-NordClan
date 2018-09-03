@@ -399,4 +399,7 @@ const mapDispatchToProps = {
   getProjectSprints
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddActivityModal);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AddActivityModal);

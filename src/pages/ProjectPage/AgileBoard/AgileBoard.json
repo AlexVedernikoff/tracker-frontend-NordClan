@@ -12,7 +12,8 @@
     "NO_RESULTS": "No results",
     "SELECT_AUTHOR": "Select the author of task",
     "CLEAR_FILTERS": "Clear filters",
-    "CHANGE_PERFORMER": "Change other performer for task"
+    "CHANGE_PERFORMER": "Change other performer for task",
+    "WITHOUT_TAG": "No tag"
   },
   "ru": {
     "PRIORITY": "Приоритет:",
@@ -27,6 +28,7 @@
     "NO_RESULTS": "Нет результатов",
     "SELECT_AUTHOR": "Выберите автора задачи",
     "CLEAR_FILTERS": "Очистить фильтры",
-    "CHANGE_PERFORMER": "Изменить исполнителя задачи"
+    "CHANGE_PERFORMER": "Изменить исполнителя задачи",
+    "WITHOUT_TAG": "Без тега"
   }
 }

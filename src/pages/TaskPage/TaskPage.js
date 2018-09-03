@@ -19,6 +19,7 @@ import CreateTaskModal from '../../components/CreateTaskModal';
 import HttpError from '../../components/HttpError';
 import { history } from '../../History';
 import { VISOR, EXTERNAL_USER, ADMIN } from '../../constants/Roles';
+import Title, { flushTitle } from 'react-title-component';
 
 import * as TaskStatuses from '../../constants/TaskStatuses';
 
@@ -145,7 +146,7 @@ class TaskPage extends Component {
   };
 
   leaveConfirm = () => {
-    this.setState({ leaveConfirmed: true }, () => {
+    this.setState({ leaveConfirmed: true, isLeaveConfirmModalOpen: false }, () => {
       history.push(this.state.nextLocation);
     });
   };
@@ -291,6 +292,7 @@ class TaskPage extends Component {
       <HttpError error={httpError} />
     ) : (
       <div ref="taskPage" className={css.taskPage}>
+        <Title render={`SimTrack - ST-${task.id} ${task.name}`} />
         <Row>
           <Col xs={12} sm={8}>
             <TaskHeader
@@ -448,4 +450,7 @@ const mapDispatchToProps = {
   getRoles
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskPage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskPage);

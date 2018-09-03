@@ -131,4 +131,7 @@ TaskTitle.propTypes = {
   TitleIsEditing: PropTypes.bool
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskTitle);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskTitle);

@@ -95,4 +95,7 @@ FilterList.propTypes = {
 const mapStateToProps = state => ({
   lang: state.Localize.lang
 });
-export default connect(mapStateToProps, null)(FilterList);
+export default connect(
+  mapStateToProps,
+  null
+)(FilterList);

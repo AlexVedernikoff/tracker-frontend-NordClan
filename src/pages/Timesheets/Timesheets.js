@@ -16,6 +16,7 @@ import Calendar from './Calendar';
 import ActivityRow from './ActivityRow';
 import exactMath from 'exact-math';
 import localize from './timesheets.json';
+import Title, { flushTitle } from 'react-title-component';
 
 class Timesheets extends React.Component {
   static propTypes = {
@@ -346,6 +347,7 @@ class Timesheets extends React.Component {
 
     return (
       <div>
+        <Title render={`SimTrack - ${localize[lang].TIMESHEETS_REPORT}`} />
         <section>
           <h1>{localize[lang].TIMESHEETS_REPORT}</h1>
           <hr />
@@ -423,4 +425,7 @@ const mapDispatchToProps = {
   showNotification
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Timesheets);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Timesheets);

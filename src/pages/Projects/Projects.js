@@ -23,8 +23,10 @@ import getProjects, {
 import { getErrorMessageByType } from '../../utils/ErrorMessages';
 import { ADMIN } from '../../constants/Roles';
 import localization from './projects.json';
+import Title, { flushTitle } from 'react-title-component';
 
 import 'moment/locale/ru';
+import localize from '../ExternalUsers/ExternalUsers';
 
 class Projects extends Component {
   constructor(props) {
@@ -252,6 +254,7 @@ class Projects extends Component {
 
     return (
       <div>
+        <Title render={`SimTrack - ${localization[lang].MY_PROJECTS}`} />
         <section>
           <header className={css.title}>
             <h1 className={css.title}>{localization[lang].MY_PROJECTS}</h1>

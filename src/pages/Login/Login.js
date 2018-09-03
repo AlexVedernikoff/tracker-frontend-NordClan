@@ -9,6 +9,8 @@ import bg from './bg.jpg';
 import { connect } from 'react-redux';
 import { history } from '../../History';
 import { doAuthentication, clearRedirect } from '../../actions/Authentication';
+import localization from '../Projects/projects';
+import Title, { flushTitle } from 'react-title-component';
 
 class Login extends Component {
   static propTypes = {
@@ -20,7 +22,7 @@ class Login extends Component {
     redirectPath: PropTypes.object
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       username: '',
@@ -30,7 +32,7 @@ class Login extends Component {
     this.validator = new Validator();
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     if (this.props.isLoggedIn) {
       const { redirectPath, defaultRedirectPath } = this.props;
       const nextLocation = redirectPath || defaultRedirectPath;
@@ -49,22 +51,17 @@ class Login extends Component {
 
   onSubmit = event => {
     event.preventDefault();
-    const { doAuthentication } = this.props;//eslint-disable-line
+    const { doAuthentication } = this.props; //eslint-disable-line
     doAuthentication(this.state);
   };
 
-  render () {
+  render() {
     return (
-      <div
-        className={css.formWrapper}
-        style={{ backgroundImage: `url(${bg})` }}
-      >
+      <div className={css.formWrapper} style={{ backgroundImage: `url(${bg})` }}>
+        <Title render={`SimTrack - Login`} />
         <div className={css.loginForm}>
           <div className={css.logoWrapper}>
-            <Logo
-              onLight={false}
-              style={{ fontSize: '3rem', padding: 0, textAlign: 'center' }}
-            />
+            <Logo onLight={false} style={{ fontSize: '3rem', padding: 0, textAlign: 'center' }} />
           </div>
           <form onSubmit={this.onSubmit}>
             {this.props.errorMessage ? <div className={css.errorMessage}>{this.props.errorMessage}</div> : null}
@@ -130,4 +127,7 @@ const mapDispatchToProps = {
   clearRedirect
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login);

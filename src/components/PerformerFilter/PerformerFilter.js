@@ -49,4 +49,7 @@ const mapDispatchToProps = {
   getTagsFilter
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PerformerFilter);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PerformerFilter);
