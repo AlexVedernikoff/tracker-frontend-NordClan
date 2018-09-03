@@ -112,6 +112,7 @@
     "husky": "^0.14.3",
     "jest": "^23.5.0",
     "jest-enzyme": "^6.0.4",
+    "jest-localstorage-mock": "^2.2.0",
     "node-sass": "^4.9.3",
     "postcss-cssnext": "^2.9.0",
     "postcss-each": "^0.10.0",
@@ -151,7 +152,8 @@
   },
   "jest": {
     "setupFiles": [
-      "./test/jestsetup.js"
+      "./test/jestsetup.js",
+      "jest-localstorage-mock"
     ],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"

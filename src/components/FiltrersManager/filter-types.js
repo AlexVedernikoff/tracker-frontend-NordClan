@@ -15,15 +15,15 @@ export const typeCheck = {
 export const filterTypeCheck = filter => {
   let valid = true;
   if (filter && filter.type && typeCheck[filter.type]) {
-    console.log(filter.type);
     if (filter.type === filterTypes.array) {
-      if (filter.itemType && typeCheck[filterTypes.array](filter.value)) {
-        filter.value.forEach(item => {
-          console.log(item, typeCheck[filter.itemType](item));
-          if (!typeCheck[filter.itemType](item)) {
-            valid = false;
-          }
-        });
+      if (filter.itemType) {
+        if (filter.value) {
+          filter.value.forEach(item => {
+            if (!typeCheck[filter.itemType](item)) {
+              valid = false;
+            }
+          });
+        }
       } else {
         valid = false;
       }

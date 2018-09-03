@@ -12,18 +12,10 @@ const mapFilterFromUrl = (label, value, type) => {
 };
 
 const filtersSettings = {
-  filtersLabel: [
-    'prioritiesId',
-    'isOnlyMine',
-    'performerId',
-    'changedSprint',
-    'authorId',
-    'performerId',
-    'typeId',
-    'tags'
-  ],
   useLocalStorage: true,
-  mapFilterFromUrl: mapFilterFromUrl
+  mapFilterFromUrl: mapFilterFromUrl,
+  mapFilterToUrl: false,
+  useSessionStorage: false
 };
 
 export default filtersSettings;
