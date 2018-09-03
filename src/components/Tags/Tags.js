@@ -50,36 +50,29 @@ class Tags extends Component {
   sendNewTags = e => {
     e.preventDefault();
     this.setState({ visible: !this.state.visible });
-    if (this.state.tag.value.trim() && !this.props.noRequest) {
-      this.props.createTags(this.state.tag.value.trim(), this.props.taggable, this.props.taggableId);
-    } else {
-      this.props.createTagsModalTask(this.state.tag.value.trim());
-    }
+    this.state.multiValue.forEach(tag => {
+      if (tag.value.trim() && !this.props.noRequest) {
+        this.props.createTags(tag.value.trim(), this.props.taggable, this.props.taggableId);
+      } else {
+        this.props.createTagsModalTask(tag.value.trim());
+      }
+    });
+    this.setState({ multiValue: [] });
   };
-
-  //<input
-  //  type='text'
-  //  placeholder={localize[lang].ADD_TAG}
-  //  className={css.tagsInput}
-  //  defaultValue=''
-  //  autoFocus
-  //  onChange={this.onChangeHandler}
-  ///>
 
   render() {
     const { lang, tagsFromTasks } = this.props;
     const { multiValue } = this.state;
     let sliceTags = this.state.tags;
-
+    const tags = this.state.tags.map(tag => tag.props.name);
     if (this.state.tags.length > this.state.maxLength) {
       sliceTags = this.state.tags.slice(0, this.state.maxLength);
     }
-
     const options =
       tagsFromTasks && Object.values(tagsFromTasks).length > 0
         ? Object.values(tagsFromTasks).map(tag => ({ value: tag.name, label: tag.name }))
-        : [{ value: 0, label: 'нет тегов' }];
-
+        : [];
+    const filtred = options.filter(option => !tags.includes(option));
     return (
       <div>
         {!this.state.cutTags ? this.state.tags : sliceTags}
@@ -102,7 +95,7 @@ class Tags extends Component {
                   <CreatableMulti
                     name="tags"
                     noResultsText={localize[lang].NO_RESULTS}
-                    options={options}
+                    options={filtred}
                     placeholder={localize[lang].ADD_TAG}
                     className={css.tagsInput}
                     autoFocus
