@@ -50,13 +50,13 @@ class Tags extends Component {
   sendNewTags = e => {
     e.preventDefault();
     this.setState({ visible: !this.state.visible });
-    this.state.multiValue.forEach(tag => {
-      if (tag.value.trim() && !this.props.noRequest) {
-        this.props.createTags(tag.value.trim(), this.props.taggable, this.props.taggableId);
-      } else {
-        this.props.createTagsModalTask(tag.value.trim());
-      }
-    });
+
+    const tagsToSend = this.state.multiValue.map(tag => tag.value.trim());
+    if (!this.props.noRequest) {
+      this.props.createTags(tagsToSend.join(), this.props.taggable, this.props.taggableId);
+    } else {
+      this.props.createTagsModalTask(tagsToSend.join());
+    }
     this.setState({ multiValue: [] });
   };
 
@@ -72,7 +72,7 @@ class Tags extends Component {
       tagsFromTasks && Object.values(tagsFromTasks).length > 0
         ? Object.values(tagsFromTasks).map(tag => ({ value: tag.name, label: tag.name }))
         : [];
-    const filtred = options.filter(option => !tags.includes(option));
+    const filtred = options.filter(option => !tags.includes(option.value));
     return (
       <div>
         {!this.state.cutTags ? this.state.tags : sliceTags}
