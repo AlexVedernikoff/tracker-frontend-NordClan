@@ -169,10 +169,13 @@ export default function Task(state = InitialState, action) {
     case TaskActions.TASK_CHANGE_REQUEST_SUCCESS:
       let taskArray = [];
       let paramKey;
-      if (state.task.linkedTasks.find(linkedTask => linkedTask.id === action.changedFields.id)) {
+      if (
+        state.task.linkedTasks &&
+        state.task.linkedTasks.find(linkedTask => linkedTask.id === action.changedFields.id)
+      ) {
         paramKey = 'linkedTasks';
       }
-      if (state.task.subTasks.find(subTask => subTask.id === action.changedFields.id)) {
+      if (state.task.subTasks && state.task.subTasks.find(subTask => subTask.id === action.changedFields.id)) {
         paramKey = 'subTasks';
       }
       if (paramKey) {
