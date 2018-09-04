@@ -110,16 +110,20 @@ export default class Attachments extends Component {
     const { attachments } = this.props;
     const nextImageIndex = this.getAttachmentsNextImageIndex;
     const prevImageIndex = this.getAttachmentsPrevImageIndex;
-    const mainSrc = attachments[photoIndex].path;
-    const nextSrc =
-      attachments[nextImageIndex((photoIndex + 1) % attachments.length)].path !== mainSrc
-        ? `/${attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path}`
-        : undefined;
-    const prevSrc =
-      attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path !== mainSrc
-        ? `/${attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path}`
-        : undefined;
-
+    let nextSrc = '';
+    let prevSrc = '';
+    let mainSrc = '';
+    if (attachments.length) {
+      mainSrc = attachments[photoIndex].path;
+      nextSrc =
+        attachments[nextImageIndex((photoIndex + 1) % attachments.length)].path !== mainSrc
+          ? `/${attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path}`
+          : undefined;
+      prevSrc =
+        attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path !== mainSrc
+          ? `/${attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path}`
+          : undefined;
+    }
     return (
       <div className={css.attachments}>
         <ul className={css.attachmentsContainer}>
