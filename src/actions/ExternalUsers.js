@@ -161,11 +161,11 @@ export const refreshExternalUserLinkSuccess = changedUser => ({
   changedUser
 });
 export const refreshExternalUserLink = exUser => {
-  const URL = `${API_URL}/user/external/${exUser.id}/refresh`;
+  const URL = `${API_URL}/user/external/refresh`;
   return dispatch => {
     dispatch(refreshExternalUserLinkStart());
     dispatch(startLoading());
-    axios.get(URL, exUser).then(
+    axios.put(URL, exUser).then(
       response => {
         if (response.data) {
           dispatch(refreshExternalUserLinkSuccess(response.data));
