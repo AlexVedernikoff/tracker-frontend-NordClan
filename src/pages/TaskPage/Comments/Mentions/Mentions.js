@@ -27,66 +27,30 @@ class Mentions extends Component {
 
   typeComment = event => {
     this.getMention(event.target.value);
-    this.suggestionsFilter();
     this.toggleSuggestionsList(event.target.value);
-    //this.getMentions(event.target.value);
-    //this.getSuggestions(event.target.value);
     this.props.updateCurrentCommentText(event.target.value);
     this.props.toggleBtn(event);
   };
 
-  //getMentions = str => {
-  //  const regEx = /(@\S+ \S+)|(@\S+)/g;
-  //  let match = [];
-  //  const entities = [];
-  //  while ((match = regEx.exec(str)) !== null) {
-  //    entities.push(match[0].trim().slice(1));
-  //  }
-  //  this.setState({mentions: entities});
-  //  return entities;
-  //};
-  //
-  //getSuggestions = (value) => {
-  //  if (/@/.test(value)) {
-  //    const mention = /(@\S+)$/.exec(value);
-  //    if (mention === null) {
-  //      this.setState({
-  //        suggestions: this.props.suggestions,
-  //        showSuggestionsList: true
-  //      });
-  //      return null;
-  //    }
-  //    const filtered = this.state.suggestions.filter(
-  //      suggestion =>
-  //        suggestion.toLowerCase().indexOf(mention[1].slice(1).toLowerCase()) === 0 &&
-  //        this.state.mentions.indexOf(suggestion) === -1
-  //    );
-  //    this.setState({
-  //      suggestions: filtered,
-  //      showSuggestionsList: true
-  //    });
-  //  } else {
-  //    this.setState({
-  //      suggestions: this.props.suggestions,
-  //      showSuggestionsList: false
-  //    });
-  //  }
-  //};
-
   chooseMention = event => {
-    this.props.updateCurrentCommentText(this.props.value + event.target.value);
-    this.setState({ showSuggestionsList: false });
+    this.props.updateCurrentCommentText(this.props.value.replace(/(@\w*)$/, `@${event.target.value} `));
+    this.setState({ isShownSuggestionsList: false });
   };
 
   getMention = value => {
     let mention = null;
-    if (/( |^)@\w+$/.test(value)) {
+    if (/( |^)@\w*$/.test(value)) {
       mention = /(@\w+)$/.exec(value);
       mention = mention === null ? mention : mention[0].slice(1).toLowerCase();
     }
-    console.log(mention);
-    this.setState({ mention: mention });
-    console.log(this.state.mention);
+    this.setState({ mention: mention }, function() {
+      this.suggestionsFilter();
+    });
+  };
+
+  removeMentionedSuggestions = () => {
+    const suggestions = this.props.suggestions;
+    return suggestions;
   };
 
   suggestionsFilter = () => {
@@ -94,7 +58,7 @@ class Mentions extends Component {
     let filteredSuggestions = this.props.suggestions;
     if (mention !== null) {
       filteredSuggestions = this.props.suggestions.filter(
-        suggestion => suggestion.toLowerCase().indexOf(mention) === 0
+        suggestion => suggestion.fullNameEn.toLowerCase().indexOf(mention) === 0
       );
     }
     this.setState({ suggestions: filteredSuggestions });
@@ -109,15 +73,13 @@ class Mentions extends Component {
   };
 
   SuggestionsList = () => {
-    if (this.state.isShownSuggestionsList) {
-      return (
-        <ul onMouseDown={this.chooseMention}>
-          {this.state.suggestions.map(member => (
-            <option key={member}>{member}</option>
-          ))}
-        </ul>
-      );
-    }
+    return (
+      <ul onMouseDown={this.chooseMention}>
+        {this.state.suggestions.map(suggestion => (
+          <option key={suggestion.id}>{suggestion.fullNameEn}</option>
+        ))}
+      </ul>
+    );
   };
 
   render() {
@@ -132,7 +94,7 @@ class Mentions extends Component {
           onKeyDown={this.props.onKeyDown}
           value={this.props.value}
         />
-        {this.SuggestionsList()}
+        {this.state.isShownSuggestionsList ? this.SuggestionsList() : null}
       </div>
     );
   }

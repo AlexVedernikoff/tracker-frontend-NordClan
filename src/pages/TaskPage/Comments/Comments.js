@@ -191,7 +191,11 @@ class Comments extends Component {
                 ref={ref => (this.reply = ref ? ref.textarea : null)}
                 value={this.props.currentComment.text}
                 updateCurrentCommentText={this.props.updateCurrentCommentText}
-                suggestions={this.props.users.map(user => user.fullNameEn)}
+                suggestions={this.props.users.map(user => ({
+                  id: user.id,
+                  fullNameEn: user.fullNameEn,
+                  fullNameRu: user.fullNameRu
+                }))}
                 toggleBtn={this.toggleBtn}
                 onInput={this.typeComment}
               />
