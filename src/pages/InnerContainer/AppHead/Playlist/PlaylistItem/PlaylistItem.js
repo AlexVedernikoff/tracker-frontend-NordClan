@@ -287,4 +287,7 @@ const mapDispatchToProps = {
   updateTimesheet
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlaylistItem);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PlaylistItem);

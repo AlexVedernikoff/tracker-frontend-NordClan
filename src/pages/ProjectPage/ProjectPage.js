@@ -13,6 +13,7 @@ import { getProjectInfo as getProject, changeProject } from '../../actions/Proje
 import { ADMIN, EXTERNAL_USER } from '../../constants/Roles';
 import { checkIsViewer } from '../../helpers/RoleValidator';
 import localize from './projectPage.json';
+import Title, { flushTitle } from 'react-title-component';
 
 class ProjectPage extends Component {
   static propTypes = {
@@ -175,6 +176,7 @@ class ProjectPage extends Component {
       <HttpError error={this.props.project.error} />
     ) : (
       <div id="project-page">
+        <Title render={`SimTrack - ${this.props.project.name || ''}`} />
         <ProjectTitle
           portfolio={this.props.project.portfolio}
           name={this.props.project.name || ''}

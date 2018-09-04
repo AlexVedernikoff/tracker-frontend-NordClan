@@ -760,4 +760,7 @@ const mapDispatchToProps = {
   getProjectInfo
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Planning);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Planning);

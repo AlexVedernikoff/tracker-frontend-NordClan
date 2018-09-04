@@ -388,4 +388,7 @@ const mapDispatchToProps = {
   getProjectUsers
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ParticipantEditor);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ParticipantEditor);

@@ -46,4 +46,7 @@ const mapDispatchToProps = {
   editSprint
 };
 
-export default connect(null, mapDispatchToProps)(SprintEditModal);
+export default connect(
+  null,
+  mapDispatchToProps
+)(SprintEditModal);
