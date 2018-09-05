@@ -156,6 +156,13 @@ const getSprints = unsortedSprints => {
   return sprints;
 };
 
+const createOptions = (array, labelField) => {
+  return array.map(element => ({
+    value: element.id,
+    label: labelField === 'name' ? element[labelField] : getFullName(element)
+  }));
+};
+
 const getSortedSprints = createSelector([selectSprints], sprints => getSprints(sprints));
 
 const currentSprint = sprints => {
@@ -167,17 +174,11 @@ const currentSprint = sprints => {
     return moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]');
   });
 
-  return currentSprints.length ? currentSprints[0].id : processedSprints.length ? processedSprints[0].id : 0;
+  return createOptions(currentSprints.length ? currentSprints : processedSprints);
+  // return currentSprints.length ? currentSprints[0].id : processedSprints.length ? processedSprints[0].id : 0;
 };
 
 const getCurrentSprint = createSelector([selectSprints], sprints => currentSprint(sprints));
-
-const createOptions = (array, labelField) => {
-  return array.map(element => ({
-    value: element.id,
-    label: labelField === 'name' ? element[labelField] : getFullName(element)
-  }));
-};
 
 const typeOptions = taskTypes => createOptions(taskTypes, 'name');
 const authorOptions = projectUsers => createOptions(projectUsers);
@@ -380,6 +381,11 @@ class AgileBoard extends Component {
     }
   };
 
+  //todo: this function can be constant
+  mapUrlMultiQuery(query) {
+    return query ? (Array.isArray(query) ? query : [query]).map(value => ({ value })) : [];
+  }
+
   getUrlQueries = () => {
     if (!this.props.myTaskBoard) {
       const { performerId, name, authorId, prioritiesId, typeId, filterTags, isOnlyMine, changedSprint, noTag } =
@@ -393,7 +399,7 @@ class AgileBoard extends Component {
         ...this.makeNewObj('noTag', noTag),
         ...this.makeNewObj('typeId', typeId),
         ...this.makeNewObj('isOnlyMine', isOnlyMine === 'true'),
-        ...this.makeNewObj('changedSprint', changedSprint)
+        ...this.makeNewObj('changedSprint', this.mapUrlMultiQuery(changedSprint))
       };
     }
   };
@@ -417,7 +423,7 @@ class AgileBoard extends Component {
 
       for (const [key, value] of Object.entries(changedFilters)) {
         if (value && key !== 'projectId') {
-          if (key === 'performerId' || key === 'typeId') {
+          if (key === 'performerId' || key === 'typeId' || key === 'changedSprint') {
             query[key] = Array.isArray(value) ? value.map(singleFilter => singleFilter.value) : value;
           } else if (key === 'filterTags') {
             query[key] = value.map(({ value }) => value).join(',');
@@ -436,7 +442,7 @@ class AgileBoard extends Component {
 
   initialFilters = {
     isOnlyMine: false,
-    changedSprint: null,
+    changedSprint: [],
     filterTags: [],
     noTag: null,
     typeId: [],
@@ -447,15 +453,15 @@ class AgileBoard extends Component {
   };
 
   getChangedSprint = props => {
-    let changedSprint = this.state.changedSprint || this.props.currentSprint;
+    let changedSprint = this.state.changedSprint.length ? this.state.changedSprint : this.props.currentSprint;
     if (!this.props.myTaskBoard) {
       changedSprint =
         this.props.location.query.currentSprint === undefined
-          ? this.state.changedSprint || 0
-          : +this.props.location.query.currentSprint;
+          ? this.state.changedSprint || []
+          : [{ value: +this.props.location.query.currentSprint }];
     }
     if (props.lastCreatedTask && Number.isInteger(props.lastCreatedTask.sprintId)) {
-      changedSprint = props.lastCreatedTask.sprintId;
+      changedSprint = [{ value: props.lastCreatedTask.sprintId }];
     }
 
     return changedSprint;
@@ -526,7 +532,7 @@ class AgileBoard extends Component {
       ? customOption
       : {
           projectId: this.props.params.projectId,
-          sprintId: this.state.changedSprint,
+          sprintId: this.state.changedSprint ? this.state.typeId.map(singleType => singleType.value) : null,
           prioritiesId: this.state.prioritiesId,
           authorId: this.state.authorId,
           typeId: this.state.typeId
@@ -622,16 +628,14 @@ class AgileBoard extends Component {
     );
   };
 
-  getSprintTime = sprintId => {
-    if (!sprintId) return false;
-    let currentSprint = {};
-    this.props.sprints.forEach(sprint => {
-      if (sprint.id === sprintId) {
-        currentSprint = sprint;
-      }
-    });
-    return `${currentSprint.spentTime || 0} / ${currentSprint.budget || 0}`;
-  };
+  getSprintTime(sprints) {
+    return sprints && sprints.length && this.props.sprints.length
+      ? sprints.map(sprint => {
+          const sprintData = this.props.sprints.find(data => data.id === +sprint.value) || {};
+          return `${sprintData.spentTime || 0} / ${sprintData.budget || 0}`;
+        })
+      : [];
+  }
 
   getUsers = () => {
     return this.props.project.users.map(user => ({
@@ -686,11 +690,6 @@ class AgileBoard extends Component {
           this.state.performerId,
           'fullNameRu'
         ) || 'Не назначено'}`;
-      case 'changedSprint':
-        return `${this.createSelectedOption(
-          this.props.sortedSprints.map(sprint => ({ id: sprint.value, name: sprint.label })),
-          this.state.changedSprint
-        )}`;
       case 'name':
         return `${this.state.name}`;
       default:
@@ -699,7 +698,7 @@ class AgileBoard extends Component {
   };
 
   updateFilterList = () => {
-    const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'changedSprint', 'name', 'noTag'];
+    const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'name', 'noTag'];
     const selectedFilters = [];
 
     singleOptionFiltersList.forEach(filterName => {
@@ -712,9 +711,18 @@ class AgileBoard extends Component {
       }
     });
 
+    const changedSprint = this.state.changedSprint.map(sprint => {
+      const option = this.props.sortedSprints.find(el => el.value === +sprint.value);
+      return {
+        ...sprint,
+        ...option
+      };
+    });
+
     this.setState({
       allFilters: [
         ...selectedFilters,
+        ...this.createSelectedOption([], changedSprint, 'changedSprint'),
         ...this.createSelectedOption([], this.state.typeId, 'typeId'),
         ...this.createSelectedOption([], this.state.performerId, 'performerId'),
         ...this.createSelectedOption([], this.state.filterTags, 'filterTags')
@@ -742,8 +750,7 @@ class AgileBoard extends Component {
     this.changeUrl({ projectId: this.props.params.projectId });
     this.setState(
       {
-        ...this.initialFilters,
-        changedSprint: 0
+        ...this.initialFilters
       },
       () => {
         this.getTasks({
@@ -913,15 +920,19 @@ class AgileBoard extends Component {
                     <SelectDropdown
                       name="changedSprint"
                       placeholder={localize[lang].SELECT_SPRINT}
-                      multi={false}
-                      value={this.state.changedSprint}
-                      onChange={e => this.selectValue(e !== null ? e.value : null, 'changedSprint')}
+                      multi
+                      value={this.state.changedSprint.map(sprint => sprint.value)}
+                      onChange={options => this.selectValue(options, 'changedSprint')}
                       noResultsText={localize[lang].NO_RESULTS}
                       options={this.props.sortedSprints}
                     />
-                    {!isExternal ? (
-                      <span className={css.sprintTime}>{this.getSprintTime(this.state.changedSprint) || null}</span>
-                    ) : null}
+                    <div className={css.sprintTimeWrapper}>
+                      {!isExternal
+                        ? this.getSprintTime(this.state.changedSprint).map(time => (
+                            <span className={css.sprintTime}>{time}</span>
+                          ))
+                        : null}
+                    </div>
                   </Col>
                   <Col xs>
                     <SelectDropdown
@@ -996,7 +1007,7 @@ class AgileBoard extends Component {
             users={this.getUsers()}
           />
         ) : null}
-        {this.props.isCreateTaskModalOpen ? (
+        {this.props.isCreateTaskModalOpen ? ( //todo:
           <CreateTaskModal
             selectedSprintValue={this.state.changedSprint}
             project={this.props.project}
@@ -1013,7 +1024,7 @@ AgileBoard.propTypes = {
   UserIsEditing: PropTypes.bool,
   authorOptions: PropTypes.array,
   changeTask: PropTypes.func.isRequired,
-  currentSprint: PropTypes.number,
+  currentSprint: PropTypes.array,
   getProjectInfo: PropTypes.func,
   getProjectUsers: PropTypes.func,
   getTasks: PropTypes.func.isRequired,
@@ -1025,6 +1036,10 @@ AgileBoard.propTypes = {
   location: PropTypes.object,
   myTaskBoard: PropTypes.bool,
   myTasks: PropTypes.object,
+  noTagData: PropTypes.shape({
+    label: PropTypes.string,
+    value: PropTypes.number
+  }),
   openCreateTaskModal: PropTypes.func.isRequired,
   params: PropTypes.object,
   project: PropTypes.object,
@@ -1037,10 +1052,6 @@ AgileBoard.propTypes = {
   taskTypes: PropTypes.array,
   tasks: PropTypes.object,
   tracksChange: PropTypes.number,
-  noTagData: PropTypes.shape({
-    label: PropTypes.string,
-    value: PropTypes.number
-  }),
   typeOptions: PropTypes.array,
   user: PropTypes.object
 };
