@@ -1,10 +1,8 @@
 {
   "en": {
-    "CLEAR": "Clear",
-    "NO_RESULTS": "No results"
+    "CREATE_NEW_OPTION": "Create new"
   },
   "ru": {
-    "CLEAR": "Очистить",
-    "NO_RESULTS": "Нет результатов"
+    "CREATE_NEW_OPTION": "Создать"
   }
 }

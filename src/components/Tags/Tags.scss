@@ -7,28 +7,50 @@
   display: flex;
   position: absolute;
   top: 1.5rem;
-  
+
   box-shadow: $box-shadow;
   z-index: $z-dropdown-layer;
   background-color: white;
 
   &:before {
-    content: "";
+    z-index: 2;
+    border: solid transparent;
+    content: ' ';
+    height: 0;
+    width: 0;
     position: absolute;
-    display: block;
-    background: white;
-    height: 16px;
-    width: 16px;
-    transform: rotate(45deg);
-    box-shadow: $box-shadow;
+    pointer-events: none;
+    border-color: rgba(255, 255, 255, 0);
+    border-bottom-color: #fff;
+    border-width: 11px;
+    margin-left: -11px;
+  }
+  &:after {
+    z-index: 1;
+    border: solid transparent;
+    content: ' ';
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-color: rgba(255, 255, 255, 0);
+    border-bottom-color: rgba(0, 0, 0, 0.17);
+    border-width: 13px;
+    margin-left: -13px;
   }
 
   &.left {
     left: -9rem;
 
     &:before {
-      left: 146px;
-      top: -8px;
+      bottom: 100%;
+      left: 154px;
+      //left: 146px;
+      //top: -8px;
+    }
+    &:after {
+      bottom: 100%;
+      left: 156px;
     }
   }
 
@@ -47,7 +69,6 @@
   position: relative;
   flex-shrink: 0; // ie fix
   width: 10rem;
-  padding: 7px 15px;
   line-height: 1rem;
   border: 1px solid $color-gray;
   border-right: none;
@@ -73,4 +94,15 @@
   font-size: 11px;
   text-decoration: underline;
   cursor: pointer;
+}
+
+.tagsMultiInput {
+  width: 12rem;
+  padding-right: 35px;
+}
+.tagsSubmitAbsolute {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  right: 0;
 }

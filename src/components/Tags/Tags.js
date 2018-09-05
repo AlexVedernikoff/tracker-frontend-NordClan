@@ -97,14 +97,15 @@ class Tags extends Component {
                     noResultsText={localize[lang].NO_RESULTS}
                     options={filtred}
                     placeholder={localize[lang].ADD_TAG}
-                    className={css.tagsInput}
+                    className={classnames(css.tagsInput, css.tagsMultiInput)}
                     autoFocus
                     value={multiValue}
                     onChange={this.handleOnChange}
+                    backspaceToRemoveMessage={''}
                   />
                   <Button
                     disabled={!this.state.multiValue.length > 0}
-                    addedClassNames={{ [css.tagsButton]: true, [css.tagsSubmit]: true }}
+                    addedClassNames={{ [css.tagsButton]: true, [css.tagsSubmit]: true, [css.tagsSubmitAbsolute]: true }}
                     icon="IconCheck"
                     htmlType="submit"
                     type="green"

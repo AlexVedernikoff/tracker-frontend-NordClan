@@ -13,11 +13,19 @@ class CreatableMulti extends Component {
   };
 
   render() {
-    const { options, onChange, value, ...other } = this.props;
+    const { options, onChange, value, lang, ...other } = this.props;
 
     return (
       <div>
-        <Select.Creatable multi showNewOptionAtTop options={options} onChange={onChange} value={value} {...other} />
+        <Select.Creatable
+          multi
+          showNewOptionAtTop
+          options={options}
+          onChange={onChange}
+          value={value}
+          promptTextCreator={label => `${localize[lang].CREATE_NEW_OPTION}: ${label}`}
+          {...other}
+        />
       </div>
     );
   }
