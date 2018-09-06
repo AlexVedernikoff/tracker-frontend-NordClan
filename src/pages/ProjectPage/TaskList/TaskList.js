@@ -439,7 +439,8 @@ class TaskList extends Component {
                 <SprintSelector
                   value={sprintId}
                   sprints={project.sprints}
-                  onChange={option => this.changeSingleFilter(option, 'sprintId')}
+                  onChange={option => this.changeMultiFilter(option, 'sprintId')}
+                  multi
                   useId
                 />
               </Col>
@@ -547,7 +548,7 @@ class TaskList extends Component {
         ) : null}
         {this.props.isCreateTaskModalOpen ? (
           <CreateTaskModal
-            selectedSprintValue={this.state.sprintId}
+            selectedSprintValue={Array.isArray(sprintId) ? (sprintId.length === 1 ? sprintId[0] : null) : sprintId}
             project={this.props.project}
             defaultPerformerId={performerId}
           />

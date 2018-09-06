@@ -50,11 +50,6 @@
   margin-left: -4px;
 }
 
-.sprintMarker + :not(.sprintMarker) {
-  position: absolute;
-  margin-left: 0;
-}
-
 .sprintMarker {
   display: flex !important;
   align-items: center;

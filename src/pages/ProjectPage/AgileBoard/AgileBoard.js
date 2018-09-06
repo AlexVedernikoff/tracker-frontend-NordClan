@@ -23,7 +23,7 @@ import getPriorityById from '../../../utils/TaskPriority';
 import * as css from './AgileBoard.scss';
 import { UnmountClosed } from 'react-collapse';
 import localize from './AgileBoard.json';
-import { getFullName, getDictionaryName } from '../../../utils/NameLocalisation';
+import { getFullName } from '../../../utils/NameLocalisation';
 
 import getTasks from '../../../actions/Tasks';
 import { VISOR, EXTERNAL_USER } from '../../../constants/Roles';
@@ -31,6 +31,7 @@ import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal, getProjectUsers, getProjectInfo } from '../../../actions/Project';
 import { history } from '../../../History';
 import { createSelector } from 'reselect';
+import SprintSelector from '../../../components/SprintSelector';
 
 const selectTasks = state => state.Tasks.tasks;
 
@@ -280,6 +281,10 @@ const getNewStatusOnClick = oldStatusId => {
   return newStatusId;
 };
 
+const mapUrlMultiQuery = query => {
+  return query ? (Array.isArray(query) ? query : [query]).map(value => ({ value })) : [];
+};
+
 class AgileBoard extends Component {
   constructor(props) {
     super(props);
@@ -381,11 +386,6 @@ class AgileBoard extends Component {
     }
   };
 
-  //todo: this function can be constant
-  mapUrlMultiQuery(query) {
-    return query ? (Array.isArray(query) ? query : [query]).map(value => ({ value })) : [];
-  }
-
   getUrlQueries = () => {
     if (!this.props.myTaskBoard) {
       const { performerId, name, authorId, prioritiesId, typeId, filterTags, isOnlyMine, changedSprint, noTag } =
@@ -399,7 +399,7 @@ class AgileBoard extends Component {
         ...this.makeNewObj('noTag', noTag),
         ...this.makeNewObj('typeId', typeId),
         ...this.makeNewObj('isOnlyMine', isOnlyMine === 'true'),
-        ...this.makeNewObj('changedSprint', this.mapUrlMultiQuery(changedSprint))
+        ...this.makeNewObj('changedSprint', mapUrlMultiQuery(changedSprint))
       };
     }
   };
@@ -532,7 +532,7 @@ class AgileBoard extends Component {
       ? customOption
       : {
           projectId: this.props.params.projectId,
-          sprintId: this.state.changedSprint ? this.state.typeId.map(singleType => singleType.value) : null,
+          sprintId: this.state.changedSprint ? this.state.changedSprint.map(singleType => singleType.value) : null,
           prioritiesId: this.state.prioritiesId,
           authorId: this.state.authorId,
           typeId: this.state.typeId
@@ -711,6 +711,7 @@ class AgileBoard extends Component {
       }
     });
 
+    //todo:
     const changedSprint = this.state.changedSprint.map(sprint => {
       const option = this.props.sortedSprints.find(el => el.value === +sprint.value);
       return {
@@ -917,10 +918,11 @@ class AgileBoard extends Component {
                 </Row>
                 <Row className={css.filtersRow}>
                   <Col xs={12} sm={6} className={css.changedSprint}>
-                    <SelectDropdown
+                    <SprintSelector
                       name="changedSprint"
                       placeholder={localize[lang].SELECT_SPRINT}
                       multi
+                      backspaceToRemoveMessage=""
                       value={this.state.changedSprint.map(sprint => sprint.value)}
                       onChange={options => this.selectValue(options, 'changedSprint')}
                       noResultsText={localize[lang].NO_RESULTS}
@@ -928,8 +930,10 @@ class AgileBoard extends Component {
                     />
                     <div className={css.sprintTimeWrapper}>
                       {!isExternal
-                        ? this.getSprintTime(this.state.changedSprint).map(time => (
-                            <span className={css.sprintTime}>{time}</span>
+                        ? this.getSprintTime(this.state.changedSprint).map((time, key) => (
+                            <span key={key} className={css.sprintTime}>
+                              {time}
+                            </span>
                           ))
                         : null}
                     </div>
@@ -1007,9 +1011,9 @@ class AgileBoard extends Component {
             users={this.getUsers()}
           />
         ) : null}
-        {this.props.isCreateTaskModalOpen ? ( //todo:
+        {this.props.isCreateTaskModalOpen ? (
           <CreateTaskModal
-            selectedSprintValue={this.state.changedSprint}
+            selectedSprintValue={this.state.changedSprint.length === 1 ? this.state.changedSprint[0].value : null}
             project={this.props.project}
             defaultPerformerId={this.state.performerId}
           />
