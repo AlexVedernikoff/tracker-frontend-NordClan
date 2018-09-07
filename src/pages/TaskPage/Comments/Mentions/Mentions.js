@@ -108,8 +108,8 @@ class Mentions extends Component {
 
   suggestionsList = () => {
     const { lang } = this.props;
-    const suggestions = this.state.suggestions;
-    suggestions = suggestions.length > 5 ? (suggestions.length = 5) : null;
+    let suggestions = this.state.suggestions;
+    suggestions = suggestions.length > 5 ? (suggestions.length = 5) : suggestions;
     return (
       <ul>
         {suggestions && suggestions.length ? (
