@@ -481,17 +481,6 @@ class AgileBoard extends Component {
     }
   };
 
-  toggleMine = () => {
-    this.setState(
-      currentState => ({
-        isOnlyMine: !currentState.isOnlyMine
-      }),
-      () => {
-        this.setFiltersToUrl('isOnlyMine', this.state.isOnlyMine, this.updateFilterList);
-      }
-    );
-  };
-
   setFiltersToUrl = (name, e, callback) => {
     this.setState(state => {
       let filterValue = e;
@@ -813,11 +802,28 @@ class AgileBoard extends Component {
     };
   }
 
+  onPrioritiesFilterChange = option => this.selectValue(option.prioritiesId, 'prioritiesId');
+  onSprintsFilterChange = options => this.selectValue(options, 'changedSprint');
+  onAuthorFilterChange = option => this.selectValue(option ? option.value : null, 'authorId');
+  onTypeFilterChange = options => this.selectValue(options, 'typeId');
+  onNameFilterChange = e => this.selectValue(e.target.value, 'name');
+  onIsOnlyMineFilterChange = () => {
+    this.setState(
+      currentState => ({
+        isOnlyMine: !currentState.isOnlyMine
+      }),
+      () => {
+        this.setFiltersToUrl('isOnlyMine', this.state.isOnlyMine, this.updateFilterList);
+      }
+    );
+  };
+
   render() {
     const { lang } = this.props;
 
     const isVisor = this.props.globalRole === VISOR;
     const isExternal = this.props.globalRole === EXTERNAL_USER;
+    const singleSprint = this.state.changedSprint.length === 1 ? this.state.changedSprint[0].value : null;
 
     const allSorted = sortTasksAndCreateCard(
       this.props.tasks,
@@ -852,7 +858,7 @@ class AgileBoard extends Component {
                 <Row className={css.filtersRow}>
                   <Col className={css.filterButtonCol}>
                     <Priority
-                      onChange={option => this.selectValue(option.prioritiesId, 'prioritiesId')}
+                      onChange={this.onPrioritiesFilterChange}
                       priority={this.state.prioritiesId}
                       priorityTitle={localize[lang].PRIORITY}
                       canEdit
@@ -861,7 +867,7 @@ class AgileBoard extends Component {
                   <Col className={css.filterButtonCol}>
                     <Checkbox
                       checked={this.state.isOnlyMine}
-                      onChange={this.toggleMine}
+                      onChange={this.onIsOnlyMineFilterChange}
                       label={localize[lang].MY_TASKS}
                     />
                   </Col>
@@ -893,7 +899,7 @@ class AgileBoard extends Component {
                     <Input
                       placeholder={localize[lang].TASK_NAME}
                       value={this.state.name || ''}
-                      onChange={e => this.selectValue(e.target.value, 'name')}
+                      onChange={this.onNameFilterChange}
                     />
                   </Col>
                   <Col xs={12} sm={3}>
@@ -912,7 +918,7 @@ class AgileBoard extends Component {
                       clearAllText={localize[lang].CLEAR_ALL}
                       value={this.state.typeId}
                       options={this.props.typeOptions}
-                      onChange={options => this.selectValue(options, 'typeId')}
+                      onChange={this.onTypeFilterChange}
                     />
                   </Col>
                 </Row>
@@ -924,7 +930,7 @@ class AgileBoard extends Component {
                       multi
                       backspaceToRemoveMessage=""
                       value={this.state.changedSprint.map(sprint => sprint.value)}
-                      onChange={options => this.selectValue(options, 'changedSprint')}
+                      onChange={this.onSprintsFilterChange}
                       noResultsText={localize[lang].NO_RESULTS}
                       options={this.props.sortedSprints}
                     />
@@ -944,7 +950,7 @@ class AgileBoard extends Component {
                       placeholder={localize[lang].SELECT_AUTHOR}
                       multi={false}
                       value={this.state.authorId}
-                      onChange={option => this.selectValue(option ? option.value : null, 'authorId')}
+                      onChange={this.onAuthorFilterChange}
                       noResultsText={localize[lang].NO_RESULTS}
                       options={this.props.authorOptions}
                     />
@@ -1013,7 +1019,7 @@ class AgileBoard extends Component {
         ) : null}
         {this.props.isCreateTaskModalOpen ? (
           <CreateTaskModal
-            selectedSprintValue={this.state.changedSprint.length === 1 ? this.state.changedSprint[0].value : null}
+            selectedSprintValue={singleSprint}
             project={this.props.project}
             defaultPerformerId={this.state.performerId}
           />
