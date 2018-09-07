@@ -31,6 +31,7 @@ import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal, getProjectUsers, getProjectInfo } from '../../../actions/Project';
 import { history } from '../../../History';
 import { createSelector } from 'reselect';
+import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
 
 const selectTasks = state => state.Tasks.tasks;
 
@@ -38,7 +39,7 @@ const selectSprints = state => state.Project.project.sprints;
 
 const selectUserId = state => state.Auth.user.id;
 
-const selectTaskType = state => state.Dictionaries.taskTypes;
+const selectTaskType = state => getLocalizedTaskTypes(state);
 
 const selectProjectUsers = state => state.Project.project.users;
 
@@ -1066,7 +1067,7 @@ const mapStateToProps = state => ({
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
   globalRole: state.Auth.user.globalRole,
   statuses: state.Dictionaries.taskStatuses,
-  taskTypes: state.Dictionaries.taskTypes,
+  taskTypes: getLocalizedTaskTypes(state),
   lang: state.Localize.lang
 });
 
