@@ -10,9 +10,9 @@ const target =
         port: process.env.API_PORT
       }
     : {
-        host: 'simtrack-dev.simbirsoft',
-        protocol: 'https:',
-        port: 443
+        host: 'localhost',
+        protocol: 'http:',
+        port: 8000
       };
 
 const p = require('./package.json');

@@ -132,16 +132,21 @@ class Comments extends Component {
   };
 
   publishComment = evt => {
+    const comment = this.props.currentComment;
+    const mentions = this.state.mentions;
+    if (mentions && mentions.length) {
+      comment.text = this.replaceMentionWithId(comment.text, mentions);
+    }
     const { ctrlKey, keyCode, shiftKey } = evt;
     if (((ctrlKey && keyCode === ENTER) || evt.button === 0) && this.state.disabledBtn === false) {
-      if (this.props.currentComment.id) {
-        if (!Comment.isExpiredForUpdate(this.props.currentComment.createdAt)) {
-          this.props.editComment(this.props.taskId, this.props.currentComment.id, this.props.currentComment.text);
+      if (comment.id) {
+        if (!Comment.isExpiredForUpdate(comment.createdAt)) {
+          this.props.editComment(this.props.taskId, comment.id, comment.text);
         } else {
           this.props.setCurrentCommentExpired();
         }
       } else {
-        this.props.publishComment(this.props.taskId, this.props.currentComment);
+        this.props.publishComment(this.props.taskId, comment);
       }
       this.state.disabledBtn = true;
     }
@@ -160,22 +165,63 @@ class Comments extends Component {
     this.setState({ commentToDelete: null }, () => this.props.removeComment(this.props.taskId, commentId));
   };
 
+  replaceMentionWithId = (text, mentions) => {
+    let str = text;
+    mentions.map(mention => {
+      str = str.toLowerCase().replace(`@${mention.name}`, `{@${mention.id}}`);
+    });
+    return str;
+  };
+
+  replaceIdWithMention = text => {
+    let result = null;
+    const users = this.props.users;
+    const regExp = /{@\w+}/g;
+    let resultStr = text;
+
+    function getNameByID(id) {
+      if (id === 'all') {
+        return 'Всем';
+      }
+      return users.find(user => user.id === +id).fullNameEn;
+    }
+    while ((result = regExp.exec(text))) {
+      const name = getNameByID(result[0].replace(/[{@}]/g, ''));
+      resultStr = resultStr.replace(/{@\w+}/, name);
+    }
+
+    return resultStr;
+  };
+
+  getMentions = mentions => {
+    this.setState({ mentions });
+  };
+
   getCommentList = () =>
-    this.props.comments.map(c => (
-      <Comment
-        key={c.id} /*используются id чтобы правильно работал маунт и анмаунт*/
-        lightened={c.id === this.props.highlighted.id}
-        editComment={this.setCommentForEdit}
-        removeComment={this.removeComment}
-        reply={this.props.selectParentCommentForReply}
-        ownedByMe={c.author.id === this.props.userId}
-        comment={c}
-      />
-    ));
+    this.props.comments.map(c => {
+      c.text = /{@\w+}/.test(c.text) ? this.replaceIdWithMention(c.text) : c.text;
+      return (
+        <Comment
+          key={c.id} /*используются id чтобы правильно работал маунт и анмаунт*/
+          lightened={c.id === this.props.highlighted.id}
+          editComment={this.setCommentForEdit}
+          removeComment={this.removeComment}
+          reply={this.props.selectParentCommentForReply}
+          ownedByMe={c.author.id === this.props.userId}
+          comment={c}
+        />
+      );
+    });
 
   render() {
     const { lang } = this.props;
-
+    const suggestions = [{ id: 'all', fullNameEn: 'all', fullNameRu: 'всем' }].concat(
+      this.props.users.map(user => ({
+        id: user.id,
+        fullNameEn: user.fullNameEn,
+        fullNameRu: user.fullNameRu
+      }))
+    );
     return (
       <div className={css.comments}>
         <ul className={css.commentList}>
@@ -191,13 +237,10 @@ class Comments extends Component {
                 ref={ref => (this.reply = ref ? ref.textarea : null)}
                 value={this.props.currentComment.text}
                 updateCurrentCommentText={this.props.updateCurrentCommentText}
-                suggestions={this.props.users.map(user => ({
-                  id: user.id,
-                  fullNameEn: user.fullNameEn,
-                  fullNameRu: user.fullNameRu
-                }))}
+                suggestions={suggestions}
                 toggleBtn={this.toggleBtn}
                 onInput={this.typeComment}
+                getMentions={this.getMentions}
               />
               {this.props.currentComment.id ? (
                 <div className={css.answerInfo}>
