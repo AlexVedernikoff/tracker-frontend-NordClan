@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import * as css from '../TaskCard.scss';
 import { Link } from 'react-router';
 
-import { history } from '../../../History';
-import CopyThis from '../../../components/CopyThis';
 import { IconFileTree, IconLink } from '../../Icons';
+import { scrollTo } from '../../../utils/scroll';
 
 class componentName extends PureComponent {
   static propTypes = {
@@ -45,25 +44,31 @@ class componentName extends PureComponent {
     }
   };
 
+  scrollToTask = () => {
+    const {
+      task: { id }
+    } = this.props;
+
+    scrollTo(`#task-${id}`);
+  };
+
   render() {
     const { onHover, task, isLighted, mode, prefix, projectId } = this.props;
     const { className, icon, dataTip } = this.getOptions(mode);
 
     return (
-      <div onMouseEnter={() => onHover(task.id, true)} onMouseLeave={() => onHover(null, false)} className={className}>
+      <div
+        onMouseEnter={() => onHover(task.id, true)}
+        onMouseLeave={() => onHover(null, false)}
+        className={className}
+        onClick={this.scrollToTask}
+      >
         {isLighted ? <div className={css.lightedBorder} /> : null}
         <div className="ellipsis" title={task.name}>
-          <CopyThis
-            wrapThisInto={'span'}
-            isCopiedBackground
-            description={`Ссылка на задачу ${prefix}-${task.id}`}
-            textToCopy={`${location.origin}${history.createHref(`/projects/${projectId}/tasks/${task.id}`)}`}
-          >
-            <span className={css.shortNumber} data-tip={dataTip}>
-              <span className={css.relatedTaskIcon}>{icon}</span>
-              {prefix}-{task.id}:
-            </span>
-          </CopyThis>
+          <span className={css.shortNumber} data-tip={dataTip}>
+            <span className={css.relatedTaskIcon}>{icon}</span>
+            {prefix}-{task.id}:
+          </span>
           <Link to={`/projects/${projectId}/tasks/${task.id}`} className={css.relatedTaskName}>
             {task.name}
           </Link>
