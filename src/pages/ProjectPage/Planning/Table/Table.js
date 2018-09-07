@@ -192,7 +192,7 @@ class Table extends React.Component {
         {entities.map((entity, i) => {
           return this.detectType(entity) === 'sprint' ? (
             <span key={`sprint-${i}`} className={css.name}>
-              {!isExternal ? roundNum(entity.riskBudget, 2) : ''}
+              {!isExternal ? roundNum(entity.budget, 2) : ''}
             </span>
           ) : (
             <span key={`milestone-${i}`} className={css.name}>
