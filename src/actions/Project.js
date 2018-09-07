@@ -339,15 +339,17 @@ export const getProjectTags = id => {
     dispatch(startLoading());
     axios
       .get(URL)
-      .catch(error => {
-        dispatch(gettingProjectTagsFail(error.response.data));
-        dispatch(finishLoading());
-      })
       .then(response => {
         if (response && response.status === 200) {
           dispatch(gettingProjectTagsSuccess(response.data));
           dispatch(finishLoading());
+          return;
         }
+        throw new Error('Not200Error');
+      })
+      .catch(error => {
+        dispatch(gettingProjectTagsFail(error.response ? error.response.data : error.message));
+        dispatch(finishLoading());
       });
   };
 };

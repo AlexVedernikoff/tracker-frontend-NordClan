@@ -13,7 +13,7 @@ class CreatableMulti extends Component {
   };
 
   render() {
-    const { options, onChange, value, lang, ...other } = this.props;
+    const { options, onChange, value, lang, noResultsText, ...other } = this.props;
 
     return (
       <div>
@@ -24,6 +24,7 @@ class CreatableMulti extends Component {
           onChange={onChange}
           value={value}
           promptTextCreator={label => `${localize[lang].CREATE_NEW_OPTION}: ${label}`}
+          noResultsText={localize[lang].NO_RESULTS}
           {...other}
         />
       </div>
