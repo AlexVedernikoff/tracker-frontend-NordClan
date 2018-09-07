@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import TextareaAutosize from 'react-autosize-textarea';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import * as css from './Mentions.scss';
+import localize from './Mentions.json';
 
 class Mentions extends Component {
   static propTypes = {
     disabled: PropTypes.bool,
     getMentions: PropTypes.func,
+    lang: PropTypes.string,
     onInput: PropTypes.func,
     onKeyDown: PropTypes.func,
     placeholder: PropTypes.string,
@@ -35,9 +38,9 @@ class Mentions extends Component {
 
   chooseMention = event => {
     const target = event.target;
-    this.props.updateCurrentCommentText(this.props.value.replace(/(@\w*)$/, `@${target.value} `));
+    this.props.updateCurrentCommentText(this.props.value.replace(/(@\S*)$/, `@${target.innerHTML} `));
     this.setState(
-      prevState => prevState.mentions.push({ id: target.id, name: target.value.toLowerCase() }),
+      prevState => prevState.mentions.push({ id: target.id, name: target.innerHTML.toLowerCase() }),
       function() {
         this.props.getMentions(this.state.mentions);
       }
@@ -47,8 +50,8 @@ class Mentions extends Component {
 
   getMention = value => {
     let mention = null;
-    if (/( |^)@\w*$/.test(value)) {
-      mention = /(@\w+)$/.exec(value);
+    if (/( |^)@\S*$/.test(value)) {
+      mention = /(@\S+)$/.exec(value);
       mention = mention === null ? mention : mention[0].slice(1).toLowerCase();
     }
     this.setState({ mention: mention }, function() {
@@ -60,14 +63,18 @@ class Mentions extends Component {
     let mentions = this.state.mentions;
     const mention = this.state.mention;
     let filteredSuggestions = this.props.suggestions;
+    const { lang } = this.props;
     if (value.toLowerCase().indexOf('@all') !== -1) {
       this.setState({ suggestions: [] });
     } else {
       this.state.mentions.map(ment => {
         if (value.toLowerCase().indexOf(`@${ment.name}`) !== -1) {
-          filteredSuggestions = filteredSuggestions.filter(
-            suggestion => suggestion.fullNameEn.toLowerCase() !== ment.name.toLowerCase()
-          );
+          filteredSuggestions = filteredSuggestions.filter(suggestion => {
+            if (lang === 'ru') {
+              return suggestion.fullNameRu.toLowerCase() !== ment.name.toLowerCase();
+            }
+            return suggestion.fullNameEn.toLowerCase() !== ment.name.toLowerCase();
+          });
         } else {
           mentions = mentions.filter(el => el.name !== ment.name);
         }
@@ -76,17 +83,23 @@ class Mentions extends Component {
         this.props.getMentions(this.state.mentions);
       });
       if (mention !== null) {
-        filteredSuggestions = filteredSuggestions.filter(
-          suggestion =>
+        filteredSuggestions = filteredSuggestions.filter(suggestion => {
+          if (lang === 'ru') {
+            return (
+              suggestion.fullNameRu.toLowerCase().indexOf(mention) === 0 && this.state.mentions.indexOf(mention) === -1
+            );
+          }
+          return (
             suggestion.fullNameEn.toLowerCase().indexOf(mention) === 0 && this.state.mentions.indexOf(mention) === -1
-        );
+          );
+        });
       }
       this.setState({ suggestions: filteredSuggestions });
     }
   };
 
   toggleSuggestionsList = value => {
-    if (/( |^)@\w*$/.test(value)) {
+    if (/( |^)@\S*$/.test(value)) {
       this.setState({ isShownSuggestionsList: true });
     } else {
       this.setState({ isShownSuggestionsList: false });
@@ -94,13 +107,20 @@ class Mentions extends Component {
   };
 
   suggestionsList = () => {
+    const { lang } = this.props;
+    const suggestions = this.state.suggestions;
+    suggestions = suggestions.length > 5 ? (suggestions.length = 5) : null;
     return (
-      <ul onMouseDown={this.chooseMention}>
-        {this.state.suggestions.map(suggestion => (
-          <option key={suggestion.id} id={suggestion.id}>
-            {suggestion.fullNameEn}
-          </option>
-        ))}
+      <ul>
+        {suggestions && suggestions.length ? (
+          suggestions.map(suggestion => (
+            <li onClick={this.chooseMention} key={suggestion.id} id={suggestion.id}>
+              {lang === 'en' ? suggestion.fullNameEn : suggestion.fullNameRu}
+            </li>
+          ))
+        ) : (
+          <li>{localize[lang].NO_RESULTS}</li>
+        )}
       </ul>
     );
   };
@@ -123,4 +143,11 @@ class Mentions extends Component {
   }
 }
 
-export default Mentions;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(Mentions);

@@ -178,13 +178,21 @@ class Comments extends Component {
     const users = this.props.users;
     const regExp = /{@\w+}/g;
     let resultStr = text;
+    const lang = this.props.lang;
 
     function getNameByID(id) {
       if (id === 'all') {
-        return 'Всем';
+        if (lang === 'ru') {
+          return 'Всем';
+        }
+        return 'All';
+      }
+      if (lang === 'ru') {
+        return users.find(user => user.id === +id).fullNameRu;
       }
       return users.find(user => user.id === +id).fullNameEn;
     }
+
     while ((result = regExp.exec(text))) {
       const name = getNameByID(result[0].replace(/[{@}]/g, ''));
       resultStr = resultStr.replace(/{@\w+}/, name);
@@ -215,7 +223,7 @@ class Comments extends Component {
 
   render() {
     const { lang } = this.props;
-    const suggestions = [{ id: 'all', fullNameEn: 'all', fullNameRu: 'всем' }].concat(
+    const suggestions = [{ id: 'all', fullNameEn: 'all', fullNameRu: 'Всем' }].concat(
       this.props.users.map(user => ({
         id: user.id,
         fullNameEn: user.fullNameEn,
@@ -287,7 +295,7 @@ class Comments extends Component {
               </span>
             </div>
           </form>
-          {this.props.comments.length ? (
+          {this.props.comments.length && this.props.users.length ? (
             this.getCommentList()
           ) : (
             <div className={css.noCommentsYet}>
@@ -325,7 +333,7 @@ const mapStateToProps = ({
     user: { id: userId }
   },
   Project: {
-    project: { users: users }
+    project: { users }
   },
   Localize: { lang }
 }) => ({
