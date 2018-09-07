@@ -13,6 +13,7 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { editMilestone } from '../../../../actions/Milestone';
 import Select from 'react-select';
+import { getLocalizedMilestoneTypes } from '../../../../selectors/dictionaries';
 
 class EditMilestoneModal extends Component {
   static propTypes = {
@@ -191,7 +192,7 @@ class EditMilestoneModal extends Component {
 
 const mapStateToProps = state => ({
   projectId: state.Project.project.id,
-  milestoneTypes: state.Dictionaries.milestoneTypes || [],
+  milestoneTypes: getLocalizedMilestoneTypes(state) || [],
   lang: state.Localize.lang
 });
 

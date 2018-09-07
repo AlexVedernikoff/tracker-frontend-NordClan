@@ -26,7 +26,7 @@ import CreateTaskModal from '../../../components/CreateTaskModal';
 import { openCreateTaskModal } from '../../../actions/Project';
 import localize from './taskList.json';
 import { getFullName, getDictionaryName } from '../../../utils/NameLocalisation';
-import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
+import { getLocalizedTaskTypes, getLocalizedTaskStatuses } from '../../../selectors/dictionaries';
 
 const dateFormat = 'DD.MM.YYYY';
 
@@ -584,7 +584,7 @@ const mapStateToProps = state => ({
   isReceiving: state.TaskList.isReceiving,
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
   project: state.Project.project,
-  statuses: state.Dictionaries.taskStatuses,
+  statuses: getLocalizedTaskStatuses(state),
   taskTypes: getLocalizedTaskTypes(state),
   lang: state.Localize.lang
 });
