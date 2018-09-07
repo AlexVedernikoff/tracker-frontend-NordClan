@@ -20,23 +20,13 @@ class FilterList extends Component {
   render() {
     const { filters, clearAll, toggleFilterView, fullFilterView, isVisor, lang } = this.props;
     const filterTags = filters.map(filter => {
-      if (filter.name === 'changedSprint') {
-        return (
-          <Tag
-            name={filter.label}
-            deleteHandler={filter.deleteHandler}
-            key={`${filter.name}_${filter.label}`}
-            unclickable
-            blocked
-          />
-        );
-      }
       return (
         <Tag
           name={filter.label}
           deleteHandler={filter.deleteHandler}
           key={`${filter.name}_${filter.label}`}
           unclickable
+          blocked={filter.name === 'changedSprint'}
         />
       );
     });
