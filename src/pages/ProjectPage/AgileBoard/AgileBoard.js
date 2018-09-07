@@ -724,7 +724,7 @@ class AgileBoard extends Component {
     if (Array.isArray(selectedOption)) {
       return selectedOption.map(currentId => ({
         name: `${optionLabel}-${currentId.value}`,
-        label: currentId.label,
+        label: optionLabel === 'performerId' ? `исполнитель: ${currentId.label}` : currentId.label,
         deleteHandler: () => {
           this.removeSelectOptionByIdFromFilter(selectedOption, currentId.value, optionLabel);
         }
