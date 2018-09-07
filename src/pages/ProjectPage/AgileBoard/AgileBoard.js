@@ -700,7 +700,6 @@ class AgileBoard extends Component {
       }
     });
 
-    //todo:
     const changedSprint = this.state.changedSprint.map(sprint => {
       const option = this.props.sortedSprints.find(el => el.value === +sprint.value);
       return {
