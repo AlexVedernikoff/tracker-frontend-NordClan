@@ -1,7 +1,8 @@
 import * as TaskActions from '../constants/Task';
 import { API_URL } from '../constants/Settings';
 import axios from 'axios';
-import { finishLoading } from './Loading';
+import { startLoading, finishLoading } from './Loading';
+import { showNotification } from './Notifications';
 import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
 import {
   defaultErrorHandler,
@@ -92,9 +93,43 @@ const stopTaskEditing = target => ({
   target
 });
 
-const clearCurrentTask = target => ({
+const clearCurrentTask = () => ({
   type: TaskActions.CLEAR_CURRENT_TASK
 });
+
+const getGitlabBranchesStart = () => ({
+  type: TaskActions.GET_GITLAB_BRANCHES_START
+});
+
+const getGitlabBranchesFail = () => ({
+  type: TaskActions.GET_GITLAB_BRANCHES_FAIL
+});
+
+const getGitlabBranchesSuccess = branches => ({
+  type: TaskActions.GET_GITLAB_BRANCHES_SUCCESS,
+  branches
+});
+
+const getGitlabBranches = taskId => {
+  const URL = `${API_URL}/task/${taskId}/getGitlabBranchesById/`;
+  return dispatch => {
+    dispatch(startLoading());
+    dispatch(getGitlabBranchesStart());
+    axios
+      .get(URL)
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(getGitlabBranchesFail(error.response.data));
+        dispatch(finishLoading());
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(getGitlabBranchesSuccess(response.data));
+          dispatch(finishLoading());
+        }
+      });
+  };
+};
 
 const getTask = id => {
   if (!id) {
@@ -267,7 +302,7 @@ const uploadAttachments = (taskId, attachments) => {
         body: data,
         extra: withdefaultExtra({
           onUploadProgress: progressEvent => {
-            const progress = Math.round(progressEvent.loaded * 100 / progressEvent.total);
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
             dispatch(attachmentUploadProgress(taskId, attachment, progress));
           }
         }),
@@ -508,6 +543,7 @@ const setHighLighted = comment => ({
 
 export {
   getTask,
+  getGitlabBranches,
   getTaskHistory,
   getTaskSpent,
   startTaskEditing,

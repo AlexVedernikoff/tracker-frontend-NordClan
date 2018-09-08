@@ -417,6 +417,16 @@ export default function Task(state = InitialState, action) {
       };
     }
 
+    case TaskActions.GET_GITLAB_BRANCHES_SUCCESS: {
+      return {
+        ...state,
+        task: {
+          ...state.task,
+          branches: [...action.branches]
+        }
+      };
+    }
+
     default:
       return state;
   }

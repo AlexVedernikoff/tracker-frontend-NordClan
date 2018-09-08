@@ -8,6 +8,7 @@ import includes from 'lodash/includes';
 import TaskHeader from './TaskHeader';
 import Details from './Details';
 import RelatedTasks from './RelatedTasks';
+import TaskGitlabBranch from './TaskGitlabBranch';
 import Attachments from '../../components/Attachments';
 import { IconPlus } from '../../components/Icons';
 import Description from '../../components/Description';
@@ -354,6 +355,7 @@ class TaskPage extends Component {
                   onDelete={task.statusId !== TaskStatuses.CANCELED ? this.handleOpenCancelSubTaskModal : null}
                 />
               ) : null}
+              <TaskGitlabBranch taskId={this.props.params.taskId} />
             </aside>
           </Col>
         </Row>
@@ -448,4 +450,7 @@ const mapDispatchToProps = {
   getRoles
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskPage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskPage);
