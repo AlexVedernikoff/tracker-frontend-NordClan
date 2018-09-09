@@ -10,6 +10,7 @@ import getColor from '../../../../utils/Colors';
 import localize from './CostByRoleChart.json';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import datalabels from 'chartjs-plugin-datalabels';
 
 class CostByRoleChart extends Component {
   static propTypes = {
@@ -78,6 +79,14 @@ class CostByRoleChart extends Component {
             }
           }
         ]
+      },
+      plugins: {
+        datalabels: {
+          formatter: function(value) {
+            return value.y;
+          },
+          align: 'end'
+        }
       }
     };
   };
