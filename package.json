@@ -1,42 +1,28 @@
 {
-  "name": "react-toolbox-example",
-  "description": "A set of complementary tools to ReactJS.",
-  "version": "0.12.0",
+  "name": "sim-track",
+  "description": "SimbirSoft task tracker",
+  "version": "0.13.0",
   "author": {
-    "name": "React Toolbox Team",
-    "url": "http://github.com/react-toolbox"
+    "name": "SimbirSoft Frontend Team",
+    "url": "https://simbirsoft.com"
   },
-  "contributors": [
-    {
-      "name": "Javi Jimenez Villar",
-      "email": "javi.jimenez.villar@gmail.com",
-      "url": "http://soyjavi.com/"
-    },
-    {
-      "name": "Javi Velasco Arjona",
-      "email": "javier.velasco86@gmail.com",
-      "url": "http://javivelasco.com/"
-    },
-    {
-      "name": "Oleg Stepura",
-      "email": "oleg[at]stepura.com",
-      "url": "http://oleg.stepura.com/"
-    }
-  ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/react-toolbox/react-toolbox-example.git"
+    "url": "git+http://gitlab.simbirsoft/frontend/sim-track"
   },
   "bugs": {
-    "url": "https://github.com/react-toolbox/react-toolbox/issues",
-    "email": "issues@react-toolbox.com"
+    "url": "https://sim-track.simbirsoft1.com/projects/2",
+    "email": "tatyana.babich@simbirsoft.com"
   },
   "keywords": [
-    "react"
+    "SimbirSoft",
+    "task",
+    "tracker",
+    "sim-track"
   ],
   "engines": {
-    "node": ">=4.3.0",
-    "npm": ">=4.0.1"
+    "node": ">=8.9.0",
+    "npm": ">=5.0.1"
   },
   "dependencies": {
     "autolinker": "^1.7.1",
@@ -145,5 +131,5 @@
     "fix": "eslint --fix"
   },
   "license": "MIT",
-  "homepage": "https://github.com/react-toolbox/react-toolbox-example#readme"
+  "homepage": "https://simbirsoft.com"
 }
