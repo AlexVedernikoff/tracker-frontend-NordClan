@@ -28,6 +28,27 @@ import Mentions from './Mentions/Mentions';
 const ENTER = 13;
 
 class Comments extends Component {
+  static propTypes = {
+    comments: PropTypes.array,
+    currentComment: PropTypes.object,
+    editComment: PropTypes.func,
+    getCommentsByTask: PropTypes.func,
+    highlighted: PropTypes.object,
+    lang: PropTypes.string,
+    location: PropTypes.object,
+    params: PropTypes.object,
+    publishComment: PropTypes.func,
+    removeComment: PropTypes.func,
+    resetCurrentEditingComment: PropTypes.func,
+    selectParentCommentForReply: PropTypes.func,
+    setCommentForEdit: PropTypes.func,
+    setCurrentCommentExpired: PropTypes.func,
+    setHighLighted: PropTypes.func,
+    taskId: PropTypes.number,
+    updateCurrentCommentText: PropTypes.func,
+    userId: PropTypes.number,
+    users: PropTypes.array
+  };
   constructor(props) {
     super(props);
     this.state = {
@@ -84,27 +105,6 @@ class Comments extends Component {
         this.selectComment(this.props.highlighted.id);
       }
     }
-  };
-
-  static propTypes = {
-    comments: PropTypes.array,
-    currentComment: PropTypes.object,
-    editComment: PropTypes.func,
-    getCommentsByTask: PropTypes.func,
-    highlighted: PropTypes.object,
-    location: PropTypes.object,
-    params: PropTypes.object,
-    publishComment: PropTypes.func,
-    removeComment: PropTypes.func,
-    resetCurrentEditingComment: PropTypes.func,
-    selectParentCommentForReply: PropTypes.func,
-    setCommentForEdit: PropTypes.func,
-    setCurrentCommentExpired: PropTypes.func,
-    setHighLighted: PropTypes.func,
-    taskId: PropTypes.number,
-    updateCurrentCommentText: PropTypes.func,
-    userId: PropTypes.number,
-    users: PropTypes.array
   };
 
   handleClickOutside = evt => {
@@ -173,31 +173,26 @@ class Comments extends Component {
     return str;
   };
 
+  getNameByID = id => {
+    const users = this.props.users;
+    const lang = this.props.lang;
+    if (id === 'all') {
+      return localize[lang].ALL;
+    }
+    if (lang === 'ru') {
+      return users.find(user => user.id === +id).fullNameRu;
+    }
+    return users.find(user => user.id === +id).fullNameEn;
+  };
+
   replaceIdWithMention = text => {
     let result = null;
-    const users = this.props.users;
     const regExp = /{@\w+}/g;
     let resultStr = text;
-    const lang = this.props.lang;
-
-    function getNameByID(id) {
-      if (id === 'all') {
-        if (lang === 'ru') {
-          return 'Всем';
-        }
-        return 'All';
-      }
-      if (lang === 'ru') {
-        return users.find(user => user.id === +id).fullNameRu;
-      }
-      return users.find(user => user.id === +id).fullNameEn;
-    }
-
     while ((result = regExp.exec(text))) {
-      const name = getNameByID(result[0].replace(/[{@}]/g, ''));
+      const name = this.getNameByID(result[0].replace(/[{@}]/g, ''));
       resultStr = resultStr.replace(/{@\w+}/, name);
     }
-
     return resultStr;
   };
 
@@ -223,7 +218,7 @@ class Comments extends Component {
 
   render() {
     const { lang } = this.props;
-    const suggestions = [{ id: 'all', fullNameEn: 'all', fullNameRu: 'Всем' }].concat(
+    const suggestions = [{ id: 'all', fullNameEn: 'All', fullNameRu: 'Всем' }].concat(
       this.props.users.map(user => ({
         id: user.id,
         fullNameEn: user.fullNameEn,
