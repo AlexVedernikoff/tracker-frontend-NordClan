@@ -124,11 +124,9 @@ class Comments extends Component {
   };
 
   toggleBtn = evt => {
-    if (evt.target.value && evt.target.value.trim() !== '') {
-      this.setState(prevState => ({ ...prevState.disabledBtn, disabledBtn: false }));
-    } else {
-      this.setState(prevState => ({ ...prevState.disabledBtn, disabledBtn: true }));
-    }
+    evt.target.value && evt.target.value.trim() !== ''
+      ? this.setState({ disabledBtn: false })
+      : this.setState({ disabledBtn: true });
   };
 
   publishComment = evt => {
