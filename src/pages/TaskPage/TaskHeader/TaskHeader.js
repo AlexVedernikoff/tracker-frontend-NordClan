@@ -15,6 +15,7 @@ import { history } from '../../../History';
 import getTypeById from '../../../utils/TaskTypes';
 import localize from './TaskHeader.json';
 import { getFullName } from '../../../utils/NameLocalisation';
+import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
 
 const getNewStatus = newPhase => {
   let newStatusId;
@@ -329,7 +330,7 @@ TaskHeader.propTypes = {
 const mapStateToProps = state => ({
   users: state.Project.project.users,
   location: state.routing.locationBeforeTransitions,
-  taskTypes: state.Dictionaries.taskTypes,
+  taskTypes: getLocalizedTaskTypes(state),
   lang: state.Localize.lang
 });
 

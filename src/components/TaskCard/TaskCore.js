@@ -138,6 +138,7 @@ class TaskCore extends PureComponent {
         onMouseEnter={() => lightTask(task.id, false)}
         onMouseLeave={() => lightTask(null, false)}
         onClick={this.goToDetailPage}
+        id={`task-${task.id}`}
         // {...other}
       >
         {isTaskInWork(task.statusId) ? (

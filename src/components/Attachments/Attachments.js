@@ -32,10 +32,11 @@ export default class Attachments extends Component {
       }
     }
 
-    return this.getAttachmentsNextImageIndex(0) ? this.getAttachmentsPrevImageIndex(0) : 0;
+    return index ? this.getAttachmentsNextImageIndex(0) : 0;
   };
 
   getAttachmentsPrevImageIndex = index => {
+    const lastIndex = this.props.attachments.length - 1;
     for (let i = index; i >= 0; i--) {
       const file = this.props.attachments[i];
       if (file && isImage(file.type)) {
@@ -43,9 +44,7 @@ export default class Attachments extends Component {
       }
     }
 
-    return this.getAttachmentsPrevImageIndex(this.props.attachments.length - 1)
-      ? this.getAttachmentsPrevImageIndex(this.props.attachments.length - 1)
-      : 0;
+    return index < lastIndex ? this.getAttachmentsPrevImageIndex(lastIndex) : 0;
   };
 
   openImage = index => {

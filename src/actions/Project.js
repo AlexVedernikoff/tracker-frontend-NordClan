@@ -329,7 +329,7 @@ const getProjectSprints = id => {
         {
           params: {
             projectId: id,
-            fields: 'id,name,factFinishDate,qaPercent'
+            fields: 'id,name,factFinishDate,qaPercent,statusId'
           }
         },
         { withCredentials: true }
