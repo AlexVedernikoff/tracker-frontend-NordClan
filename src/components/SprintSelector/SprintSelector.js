@@ -10,7 +10,7 @@ export default class SprintSelector extends Component {
   static propTypes = {
     onChange: PropTypes.func,
     sprints: PropTypes.array,
-    value: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
+    value: PropTypes.oneOfType([PropTypes.object, PropTypes.number, PropTypes.array]),
     useId: PropTypes.bool
   };
 
@@ -18,6 +18,13 @@ export default class SprintSelector extends Component {
     super(props);
     this.state = {};
   }
+
+  onSelectFocus = () => {
+    this.setState({ inputFocused: true });
+  };
+  onSelectBlur = () => {
+    this.setState({ inputFocused: false });
+  };
 
   getSprints = () => {
     let sprints = sortBy(this.props.sprints, sprint => {
@@ -62,8 +69,14 @@ export default class SprintSelector extends Component {
         value={value}
         options={this.getSprints()}
         clearable={false}
+        onFocus={this.onSelectFocus}
+        onBlur={this.onSelectBlur}
         onChange={option => onChange(option)}
         {...otherProps}
+        inputProps={{
+          className: this.state.inputFocused ? null : css.sprintInputBlured,
+          ...otherProps.inputProps
+        }}
       />
     );
   }
