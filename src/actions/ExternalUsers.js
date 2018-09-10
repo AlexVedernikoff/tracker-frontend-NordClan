@@ -22,6 +22,7 @@ export const getExternalUsers = () => {
     axios.get(URL).then(
       response => {
         if (response.data) {
+          console.log('response.data', response.data);
           dispatch(getExternalUsersSuccess(response.data));
           dispatch(finishLoading());
         }
