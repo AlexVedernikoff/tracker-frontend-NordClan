@@ -26,8 +26,16 @@ class Tags extends Component {
     };
   }
 
-  handleClickOutside = () => {
-    this.setState({ visible: false });
+  componentWillReceiveProps = nextProps => {
+    this.setState({ tags: nextProps.children });
+    if (!this.state.cutTagsShow) {
+      this.setState({ cutTags: nextProps.children.length > this.state.maxLength });
+    }
+    this.setState({ cutTagsShow: true });
+  };
+
+  handleOnChange = value => {
+    this.setState({ multiValue: value });
   };
 
   showDropdownMenu = () => {
@@ -35,16 +43,8 @@ class Tags extends Component {
     this.setState({ visible: !this.state.visible });
   };
 
-  handleOnChange = value => {
-    this.setState({ multiValue: value });
-  };
-
-  componentWillReceiveProps = nextProps => {
-    this.setState({ tags: nextProps.children });
-    if (!this.state.cutTagsShow) {
-      this.setState({ cutTags: nextProps.children.length > this.state.maxLength });
-    }
-    this.setState({ cutTagsShow: true });
+  handleClickOutside = () => {
+    this.setState({ visible: false });
   };
 
   sendNewTags = e => {
@@ -68,10 +68,9 @@ class Tags extends Component {
     if (this.state.tags.length > this.state.maxLength) {
       sliceTags = this.state.tags.slice(0, this.state.maxLength);
     }
-    const options =
-      tagsFromTasks && Object.values(tagsFromTasks).length > 0
-        ? Object.values(tagsFromTasks).map(tag => ({ value: tag.name, label: tag.name }))
-        : [];
+    const options = tagsFromTasks
+      ? Object.values(tagsFromTasks).map(tag => ({ value: tag.name, label: tag.name }))
+      : [];
     const filtred = options.filter(option => !tags.includes(option.value));
     return (
       <div>
@@ -134,6 +133,7 @@ Tags.propTypes = {
   createTagsModalTask: PropTypes.func,
   direction: PropTypes.string,
   getProjectTags: PropTypes.func,
+  lang: PropTypes.string,
   maxLength: PropTypes.number,
   noRequest: PropTypes.bool,
   project: PropTypes.number,
