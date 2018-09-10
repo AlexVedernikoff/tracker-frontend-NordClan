@@ -6,6 +6,8 @@ import { Link } from 'react-router';
 import { IconFileTree, IconLink } from '../../Icons';
 import { scrollTo } from '../../../utils/scroll';
 
+const CARD_IS_FOCUSED = true;
+
 class componentName extends PureComponent {
   static propTypes = {
     isLighted: PropTypes.bool,
@@ -52,14 +54,18 @@ class componentName extends PureComponent {
     scrollTo(`#task-${id}`);
   };
 
+  highlightTaskOnBoard = () => this.props.onHover(this.props.task.id, CARD_IS_FOCUSED);
+
+  removeTaskHighlighting = () => this.props.onHover(null, !CARD_IS_FOCUSED);
+
   render() {
-    const { onHover, task, isLighted, mode, prefix, projectId } = this.props;
+    const { task, isLighted, mode, prefix, projectId } = this.props;
     const { className, icon, dataTip } = this.getOptions(mode);
 
     return (
       <div
-        onMouseEnter={() => onHover(task.id, true)}
-        onMouseLeave={() => onHover(null, false)}
+        onMouseEnter={this.highlightTaskOnBoard}
+        onMouseLeave={this.removeTaskHighlighting}
         className={className}
         onClick={this.scrollToTask}
       >
