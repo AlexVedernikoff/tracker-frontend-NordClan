@@ -6,14 +6,20 @@
     flex-basis: auto;
     margin-bottom: 1rem;
   }
-  .sprintTime {
-    position: absolute;
-    top: 0;
-    right: 40px;
-    line-height: 2rem;
+  .sprintTimeWrapper {
     pointer-events: none;
-    @include phone {
-      display: none;
+    position: absolute;
+    top: 5px;
+    right: 40px;
+
+    .sprintTime {
+      display: block;
+      text-align: right;
+      line-height: 1rem;
+      margin: 2px 0;
+      @include phone {
+        display: none;
+      }
     }
   }
 }
