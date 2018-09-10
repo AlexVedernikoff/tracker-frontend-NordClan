@@ -1,5 +1,8 @@
-
 @import '../../styles/variables.scss';
+
+.sprintInputBlured {
+  position: absolute;
+}
 
 .sprintMarker {
   display: flex !important;
@@ -10,7 +13,7 @@
   }
 
   &:before {
-    content: "";
+    content: '';
     flex-shrink: 0;
     display: inline-block;
     width: 1rem;
@@ -31,5 +34,5 @@
 }
 
 .FINISHED:before {
-  background-color: darken($color-gray, 10%);;
+  background-color: darken($color-gray, 10%);
 }
