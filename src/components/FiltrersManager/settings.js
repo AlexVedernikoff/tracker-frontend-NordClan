@@ -1,4 +1,4 @@
-const mapFilterFromUrl = (label, value, type) => {
+export const mapFilterFromUrl = (label, value, filter) => {
   console.log('reg', value.test);
   if (label === 'isOnlyMine') {
     return true;
@@ -11,11 +11,5 @@ const mapFilterFromUrl = (label, value, type) => {
   }
 };
 
-const filtersSettings = {
-  useLocalStorage: true,
-  mapFilterFromUrl: mapFilterFromUrl,
-  mapFilterToUrl: false,
-  useSessionStorage: false
-};
-
-export default filtersSettings;
+export const useLocalStorage = false;
+export const useSessionStorage = true;

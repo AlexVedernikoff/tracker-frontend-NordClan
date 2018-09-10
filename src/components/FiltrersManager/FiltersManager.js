@@ -1,33 +1,26 @@
 import React from 'react';
 import { history } from '../../History';
-import { filterTypeCheck } from './filter-types';
-import settings from './settings';
+import * as settings from './settings';
+import * as _ from 'lodash';
 
-const FiltersManager = (ControlledComponent, filtersDescribe) => {
+const FiltersManager = (ControlledComponent, initialFilters) => {
   return class extends React.Component {
     constructor(props) {
       super(props);
-      this.validateSettings(settings);
+      this.state = {
+        filters: initialFilters
+      };
     }
 
     componentWillMount() {
-      this.state = {
-        filters: this.getInitFilterState(filtersDescribe)
-      };
-      console.log('filtersDescribe', filtersDescribe);
       if (this.urlQueryIsEmpty()) {
-        console.log('UrlEmpty');
         if (this.useStorage()) {
           this.state.filters = {
             ...this.state.filters,
             ...this.getFiltersFromStorage()
           };
-          if (settings.mapFilterToUrl) {
-            this.setUrlQuery();
-          }
         }
       } else if (settings.mapFilterFromUrl) {
-        console.log('UrlEmpty not empty');
         const filtersFromUrl = this.getFiltersFromUrl();
         if (!this.filtersIsEmpty(filtersFromUrl)) {
           this.state = {
@@ -39,55 +32,17 @@ const FiltersManager = (ControlledComponent, filtersDescribe) => {
           if (this.useStorage()) {
             this.saveFiltersToStorage();
           }
-        } else if (this.useStorage) {
+        } else if (this.useStorage()) {
           this.state.filters = this.getFiltersFromStorage();
         }
-        if (!settings.mapFiltersToUrl) {
-          this.cleanUrlQuery();
-        }
+        this.cleanUrlQuery();
       }
     }
 
-    getInitFilterState = filtersDesc => {
-      console.log('log filter', filtersDesc);
-      const filtersState = {};
-      for (const key in filtersDesc) {
-        console.log('key', key);
-        if (filterTypeCheck(filtersDesc[key])) {
-          filtersState[key] = filtersDesc[key];
-          if (!filtersState[key].value === undefined) {
-            filtersState[key].value = {
-              ...filtersState[key],
-              value: null
-            };
-          }
-        } else if (process.env.NODE_ENV !== 'production') {
-          throw new Error(`Types check failed for ${key} property`);
-        }
-      }
-      return filtersState;
-    };
+    filtersIsEmpty = filters => {};
 
-    validateSettings = sett => {
-      if (sett.useSessionStorage && sett.useLocalStorage) {
-        if (process.env.NODE_ENV !== 'production') {
-          throw new Error('useSessionStorage and useLocalStorage can not be both true');
-        }
-      }
-    };
-
-    filtersIsEmpty = filters => {
-      console.log('filterIsEmpty', filters);
-      let isEmpty = true;
-      for (const key in filters) {
-        if (
-          settings.filtersLabel.indexOf(key) !== -1 &&
-          (filters[key] || filters[key] === 0 || filters[key] === false)
-        ) {
-          isEmpty = false;
-        }
-      }
-      return isEmpty;
+    filtersStateIsEmpty = () => {
+      return this.filtersIsEmpty(this.state.filters);
     };
 
     useStorage = () => {
@@ -110,18 +65,7 @@ const FiltersManager = (ControlledComponent, filtersDescribe) => {
       return this.state.filters;
     };
 
-    initState = () => {
-      const initFilters = {};
-      settings.filtersLabel.forEach(label => {
-        initFilters[label] = null;
-      });
-      return {
-        filters: initFilters
-      };
-    };
-
     urlQueryIsEmpty = () => {
-      console.log('query', this.props.location.query);
       return this.isEmpty(this.props.location.query);
     };
 
@@ -135,32 +79,22 @@ const FiltersManager = (ControlledComponent, filtersDescribe) => {
     getFiltersFromStorage = () => {
       let filtersData = {};
       if (settings.useSessionStorage) {
-        console.log('localSTOORAGE', this.getFiltersFromSessionStorage());
-        filtersData = this.compareWithState(this.getFiltersFromSessionStorage());
+        filtersData = this.compareWithInitFilters(this.getFiltersFromSessionStorage());
       }
       if (settings.useLocalStorage) {
-        console.log('localSTOORAGE', this.getFiltersFromLocalStorage());
-        filtersData = this.compareWithState(this.getFiltersFromLocalStorage());
-        console.log('editing', filtersData);
+        filtersData = this.compareWithInitFilters(this.getFiltersFromLocalStorage());
       }
       return filtersData;
     };
 
-    compareWithState = filtersData => {
-      const result = {};
-      console.log('filtersData', filtersData);
+    compareWithInitFilters = filtersData => {
+      const validFilters = {};
       for (const key in filtersData) {
-        if (this.state.filters[key] && filtersData[key] && this.state.filters[key].type === filtersData[key].type) {
-          if (this.state.filters[key].itemType) {
-            if (this.state.filters[key].itemType === filtersData[key].itemType) {
-              result[key] = filtersData[key];
-            }
-          } else {
-            result[key] = filtersData[key];
-          }
+        if (initialFilters[key] !== undefined) {
+          validFilters[key] = initialFilters[key];
         }
       }
-      return result;
+      return validFilters;
     };
 
     getFiltersFromLocalStorage = () => {
@@ -191,39 +125,21 @@ const FiltersManager = (ControlledComponent, filtersDescribe) => {
     };
 
     saveFiltersToLocalStorage = () => {
-      console.log('saveFiltersToLocalStorage');
       localStorage.setItem(this.props.location.pathname, JSON.stringify(this.state.filters));
     };
 
-    saveFiltersToSessionStorage = () => {};
+    saveFiltersToSessionStorage = () => {
+      sessionStorage.setItem(this.props.location.pathname, JSON.stringify(this.state.filters));
+    };
 
     getFiltersFromUrl = () => {
-      console.log('getFiltersFromUrl');
       const filtersData = {};
       for (const key in this.props.location.query) {
         if (this.state.filters[key]) {
-          filtersData[key] = settings.mapFilterFromUrl(key, this.props.location.query[key], this.state.filters[key]);
+          filtersData[key] = settings.mapFilterFromUrl(key, this.props.location.query[key]);
         }
       }
-      console.log('filtersData', filtersData);
       return filtersData;
-    };
-
-    updateFiltersCallback = () => {
-      if (settings.mapFilterToUrl) {
-        this.setUrlQuery();
-      }
-      if (this.useStorage()) {
-        this.saveFiltersToStorage();
-      }
-    };
-
-    setUrlQuery = () => {
-      const query = this.mapFiltersToUrl(this.state.filters);
-      history.replace({
-        ...this.props.location,
-        query
-      });
     };
 
     cleanUrlQuery = () => {
@@ -234,29 +150,42 @@ const FiltersManager = (ControlledComponent, filtersDescribe) => {
     };
 
     setFilterValue = (label, value, callback) => {
-      if (this.state.filters.hasOwnProperty(label)) {
+      if (Array.isArray(this.state.filters[label])) {
+        this.setState(
+          {
+            filters: {
+              [label]: [...this.state.filters, value]
+            }
+          },
+          this.checkCallback(callback)
+        );
+      } else if (this.state.filters[label] !== undefined) {
         this.setState(
           {
             filters: {
               ...this.state.filters,
-              [label]: {
-                ...this.state.filters[label],
-                value: value
-              }
+              [label]: value
             }
           },
-          () => {
-            this.updateFiltersCallback();
-            if (callback) {
-              callback();
-            }
-          }
+          this.checkCallback(callback)
         );
       }
+      this.saveFiltersToStorage();
     };
 
-    clearFilters = () => {
-      this.setState({ filters: {} }, this.updateFiltersCallback);
+    clearFilters = callback => {
+      this.setState(
+        {
+          filters: initialFilters
+        },
+        this.checkCallback(callback)
+      );
+    };
+
+    checkCallback = callback => {
+      if (callback) {
+        callback();
+      }
     };
 
     render() {
@@ -266,6 +195,7 @@ const FiltersManager = (ControlledComponent, filtersDescribe) => {
           filters={this.state.filters}
           setFilterValue={this.setFilterValue}
           clearFilters={this.clearFilters}
+          filtersIsEmpty={this.filtersStateIsEmpty}
         />
       );
     }

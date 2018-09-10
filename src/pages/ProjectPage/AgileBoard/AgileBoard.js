@@ -31,7 +31,6 @@ import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal, getProjectUsers, getProjectInfo } from '../../../actions/Project';
 import { createSelector } from 'reselect';
 import withFiltersManager from '../../../components/FiltrersManager/FiltersManager';
-import filterTypes from '../../../components/FiltrersManager/filter-types';
 
 const selectTasks = state => state.Tasks.tasks;
 
@@ -42,6 +41,17 @@ const selectUserId = state => state.Auth.user.id;
 const selectTaskType = state => state.Dictionaries.taskTypes;
 
 const selectProjectUsers = state => state.Project.project.users;
+
+const initialFilters = {
+  isOnlyMine: false,
+  changedSprint: null,
+  filterTags: [],
+  typeId: [],
+  name: null,
+  authorId: null,
+  prioritiesId: null,
+  performerId: null
+};
 
 const filterTasks = array => {
   const taskArray = {
@@ -335,6 +345,17 @@ class AgileBoard extends Component {
     ReactTooltip.rebuild();
   }
 
+  componentDidMount() {
+    this.getTasks();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      ...this.state,
+      filters: nextProps.filters
+    });
+  }
+
   /*translateToNumIfNeeded = value => {
     const re = /^\d+$/;
     return re.test(value) ? +value : value;
@@ -457,20 +478,9 @@ class AgileBoard extends Component {
     localStorage.removeItem('agileBoardFilters');
   };*/
 
-  initialFilters = {
-    isOnlyMine: false,
-    changedSprint: null,
-    filterTags: [],
-    typeId: [],
-    name: null,
-    authorId: null,
-    prioritiesId: null,
-    performerId: null
-  };
-
   getChangedSprint = props => {
     console.log('getChangedSprint', this.props);
-    let changedSprint = this.state.changedSprint === null ? this.state.changedSprint : null;
+    const changedSprint = this.state.changedSprint === null ? this.state.changedSprint : null;
     /* if (!this.props.myTaskBoard) {
       changedSprint =
         this.props.location.query.currentSprint === undefined
@@ -485,7 +495,7 @@ class AgileBoard extends Component {
   };
 
   toggleFilterView = () => {
-    this.setFilterValue('fullFilterView', !this.props.filters.fullFilterView.value);
+    this.setFilterValue('fullFilterView', !this.props.filters.fullFilterView);
   };
 
   /*getFilterViewState = () => {
@@ -548,16 +558,17 @@ class AgileBoard extends Component {
       ? customOption
       : {
           projectId: this.props.params.projectId,
-          sprintId: this.state.changedSprint === null ? this.props.currentSprint : this.state.changedSprint,
-          prioritiesId: this.state.prioritiesId,
-          authorId: this.state.authorId,
-          typeId: this.state.typeId,
-          name: this.state.name || null,
-          tags: this.state.filterTags,
-          performerId: this.state.performerId
+          sprintId: this.props.filters.changedSprint === null ? this.props.currentSprint : this.state.changedSprint,
+          prioritiesId: this.props.filters.prioritiesId,
+          authorId: this.props.filters.authorId,
+          typeId: this.props.filters.typeId,
+          name: this.props.filters.taskName || null,
+          tags: this.props.filters.tags,
+          performerId: this.props.filters.performerId
         };
+    console.log('OPTIONS', options);
     this.props.getTasks(options);
-    this.updateFilterList();
+    //this.updateFilterList();
   };
 
   /*selectTagForFiltrated = options => {
@@ -719,8 +730,8 @@ class AgileBoard extends Component {
       {
         allFilters: [
           ...selectedFilters,
-          ...this.createSelectedOption([], this.props.filters.typeId.value, 'typeId'),
-          ...this.createSelectedOption([], this.props.filters.performerId.value, 'performerId'),
+          ...this.createSelectedOption([], this.props.filters.typeId, 'typeId'),
+          ...this.createSelectedOption([], this.props.filters.performerId, 'performerId'),
           ...this.createSelectedOption([], this.state.filterTags, 'filterTags')
         ]
       },
@@ -813,12 +824,23 @@ class AgileBoard extends Component {
     return isEmpty;
   };*/
 
+  setFilterValue = (label, options) => {
+    console.log('Label', options, label);
+    this.props.setFilterValue(label, options, this.getTasks);
+  };
+
+  clearFilters = () => {
+    this.props.clearFilters(this.getTasks);
+  };
+
   lightTask = (lightedTaskId, isCardFocus) => {
     this.setState({ lightedTaskId, isCardFocus });
   };
 
   render() {
     const { taskTypes, project, lang } = this.props;
+
+    console.log('filtersEEEEEEEE', this.props.filters);
 
     const isVisor = this.props.globalRole === VISOR;
     const isExternal = this.props.globalRole === EXTERNAL_USER;
@@ -858,15 +880,15 @@ class AgileBoard extends Component {
                 <Row className={css.filtersRow}>
                   <Col className={css.filterButtonCol}>
                     <Priority
-                      onChange={option => this.props.setFilterValue('prioritiesId', option.prioritiesId)}
-                      priority={this.props.filters.prioritiesId.value}
+                      onChange={option => this.setFilterValue('prioritiesId', option.prioritiesId)}
+                      priority={this.props.filters.prioritiesId}
                       priorityTitle={localize[lang].PRIORITY}
                       canEdit
                     />
                   </Col>
                   <Col className={css.filterButtonCol}>
                     <Checkbox
-                      checked={this.props.filters.isOnlyMine.value}
+                      checked={this.props.filters.isOnlyMine}
                       onChange={this.toggleMine}
                       label={localize[lang].MY_TASKS}
                     />
@@ -877,7 +899,7 @@ class AgileBoard extends Component {
                       multi
                       placeholder={localize[lang].TAG_NAME}
                       backspaceToRemoveMessage=""
-                      value={this.props.filters.tags.value}
+                      value={this.props.filters.tags}
                       onChange={this.selectTagForFiltrated}
                       noResultsText="Нет результатов"
                       options={this.props.tags}
@@ -899,14 +921,14 @@ class AgileBoard extends Component {
                   <Col xs={12} sm={6}>
                     <Input
                       placeholder={localize[lang].TASK_NAME}
-                      value={this.props.filters.taskName.value || ''}
-                      onChange={e => this.props.setFilterValue('name', e.target.value)}
+                      value={this.props.filters.taskName || ''}
+                      onChange={e => this.setFilterValue('name', e.target)}
                     />
                   </Col>
                   <Col xs={12} sm={3}>
                     <PerformerFilter
-                      onPerformerSelect={options => this.props.setFilterValue('performerId', options)}
-                      selectedPerformerId={this.props.filters.performerId.value}
+                      onPerformerSelect={options => this.setFilterValue('performerId', options)}
+                      selectedPerformerId={this.props.filters.performerId}
                     />
                   </Col>
                   <Col xs={12} sm={3}>
@@ -917,9 +939,9 @@ class AgileBoard extends Component {
                       noResultsText={localize[lang].TYPE_IS_MISS}
                       backspaceToRemoveMessage={''}
                       clearAllText={localize[lang].CLEAR_ALL}
-                      value={this.state.typeId}
+                      value={this.props.filters.typeId}
                       options={this.props.typeOptions}
-                      onChange={options => this.props.setFilterValue('typeId', options)}
+                      onChange={options => this.setFilterValue('typeId', options)}
                     />
                   </Col>
                 </Row>
@@ -930,13 +952,13 @@ class AgileBoard extends Component {
                       placeholder={localize[lang].SELECT_SPRINT}
                       multi={false}
                       value={this.state.changedSprint === null ? this.props.currentSprint : this.state.changedSprint}
-                      onChange={e => this.props.setFilterValue('changedSprint', e !== null ? e.value : null)}
+                      onChange={e => this.setFilterValue('changedSprint', e !== null ? e.value : null)}
                       noResultsText={localize[lang].NO_RESULTS}
                       options={this.props.sortedSprints}
                     />
                     {!isExternal ? (
                       <span className={css.sprintTime}>
-                        {this.getSprintTime(this.props.filters.changedSprint.value) || null}
+                        {this.getSprintTime(this.props.filters.changedSprint) || null}
                       </span>
                     ) : null}
                   </Col>
@@ -945,20 +967,20 @@ class AgileBoard extends Component {
                       name="author"
                       placeholder={localize[lang].SELECT_AUTHOR}
                       multi={false}
-                      value={this.props.filters.authorId.value}
-                      onChange={option => this.props.setFilterValue('authorId', option ? option.value : null)}
+                      value={this.props.filters.authorId}
+                      onChange={option => this.setFilterValue('authorId', option ? option.value : null)}
                       noResultsText={localize[lang].NO_RESULTS}
                       options={this.props.authorOptions}
                     />
                   </Col>
                   <Col className={css.filterButtonCol}>
                     <Button
-                      onClick={this.props.clearFilters}
+                      onClick={this.clearFilters}
                       type="primary"
                       text={localize[lang].CLEAR_FILTERS}
                       icon="IconBroom"
                       name="right"
-                      disabled={this.props.filtersIsEmpty}
+                      disabled={!this.props.filtersIsEmpty}
                     />
                   </Col>
                 </Row>
@@ -968,7 +990,7 @@ class AgileBoard extends Component {
               <Col xs={12} sm={12}>
                 {/*<FilterList
                   clearAll={this.props.clearFilters}
-                  fullFilterView={this.state.fullFilterView}
+                  fullFilterView={this.state.full\FilterView}
                   toggleFilterView={this.toggleFilterView}
                   filters={[...this.toOptionArray(this.props.filters)]}
                   openCreateTaskModal={this.props.openCreateTaskModal}
@@ -1091,45 +1113,10 @@ const mapDispatchToProps = {
   getProjectInfo
 };
 
-const filtersDescribe = {
-  fullFilterView: {
-    type: filterTypes.boolean,
-    value: false
-  },
-  isOnlyMine: {
-    type: filterTypes.boolean,
-    value: false
-  },
-  changedSprint: {
-    type: filterTypes.number
-  },
-  performerId: {
-    type: filterTypes.array,
-    itemType: filterTypes.number
-  },
-  typeId: {
-    type: filterTypes.array,
-    itemType: filterTypes.number
-  },
-  authorId: {
-    type: filterTypes.number
-  },
-  tags: {
-    type: filterTypes.array,
-    itemType: filterTypes.number
-  },
-  prioritiesId: {
-    type: filterTypes.number
-  },
-  taskName: {
-    type: filterTypes.string
-  }
-};
-
 export default withFiltersManager(
   connect(
     mapStateToProps,
     mapDispatchToProps
   )(AgileBoard),
-  filtersDescribe
+  initialFilters
 );
