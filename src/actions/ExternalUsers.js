@@ -85,7 +85,6 @@ export const addExternalUser = exUser => {
         },
         error => {
           reject({ message: error.response.data ? error.response.data.message : error.message });
-          dispatch(showNotification({ message: error.message, type: 'error' }));
           dispatch(finishLoading());
         }
       );
