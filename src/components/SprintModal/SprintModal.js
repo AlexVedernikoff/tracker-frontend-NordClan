@@ -4,7 +4,7 @@ import * as css from './SprintModal.scss';
 import Modal from '../Modal';
 import Button from '../Button';
 import SelectDropdown from '../SelectDropdown';
-import { getSprintMarkersClass } from '../../utils/Markers/';
+import { getSprintMarkersClass } from '../../utils/markers';
 
 class SprintModal extends Component {
   constructor(props) {
