@@ -124,9 +124,7 @@ class Comments extends Component {
   };
 
   toggleBtn = evt => {
-    evt.target.value && evt.target.value.trim() !== ''
-      ? this.setState({ disabledBtn: false })
-      : this.setState({ disabledBtn: true });
+    this.setState({ disabledBtn: !evt.target.value || evt.target.value.trim() === '' });
   };
 
   publishComment = evt => {
