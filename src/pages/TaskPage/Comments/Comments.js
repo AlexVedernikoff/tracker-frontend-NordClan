@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 import onClickOutside from 'react-onclickoutside';
 import PropTypes from 'prop-types';
-import TextareaAutosize from 'react-autosize-textarea';
 import shortId from 'shortid';
 import {
   getCommentsByTask,
@@ -24,6 +23,7 @@ import { IconSend, IconComments } from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
 import localize from './Comments.json';
 import Mentions from './Mentions/Mentions';
+import { getFullName } from '../../../utils/NameLocalisation';
 
 const ENTER = 13;
 
@@ -54,7 +54,8 @@ class Comments extends Component {
     this.state = {
       commentToDelete: null,
       disabledBtn: true,
-      resizeKey: shortId()
+      resizeKey: shortId(),
+      mentions: []
     };
   }
 
@@ -107,7 +108,7 @@ class Comments extends Component {
     }
   };
 
-  handleClickOutside = evt => {
+  handleClickOutside = () => {
     if (this.props.location.hash) {
       history.replace({ ...this.props.location, hash: '' });
     }
@@ -133,7 +134,7 @@ class Comments extends Component {
     if (mentions && mentions.length) {
       comment.text = this.replaceMentionWithId(comment.text, mentions);
     }
-    const { ctrlKey, keyCode, shiftKey } = evt;
+    const { ctrlKey, keyCode } = evt;
     if (((ctrlKey && keyCode === ENTER) || evt.button === 0) && this.state.disabledBtn === false) {
       if (comment.id) {
         if (!Comment.isExpiredForUpdate(comment.createdAt)) {
@@ -175,10 +176,7 @@ class Comments extends Component {
     if (id === 'all') {
       return localize[lang].ALL;
     }
-    if (lang === 'ru') {
-      return users.find(user => user.id === +id).fullNameRu;
-    }
-    return users.find(user => user.id === +id).fullNameEn;
+    return getFullName(users.find(user => user.id === +id));
   };
 
   replaceIdWithMention = text => {
@@ -192,22 +190,22 @@ class Comments extends Component {
     return resultStr;
   };
 
-  getMentions = mentions => {
+  setMentions = mentions => {
     this.setState({ mentions });
   };
 
   getCommentList = () =>
     this.props.comments.map(c => {
-      c.text = /{@\w+}/.test(c.text) ? this.replaceIdWithMention(c.text) : c.text;
+      const comment = { ...c, text: /{@\w+}/.test(c.text) ? this.replaceIdWithMention(c.text) : c.text };
       return (
         <Comment
-          key={c.id} /*используются id чтобы правильно работал маунт и анмаунт*/
-          lightened={c.id === this.props.highlighted.id}
+          key={comment.id} /*используются id чтобы правильно работал маунт и анмаунт*/
+          lightened={comment.id === this.props.highlighted.id}
           editComment={this.setCommentForEdit}
           removeComment={this.removeComment}
           reply={this.props.selectParentCommentForReply}
-          ownedByMe={c.author.id === this.props.userId}
-          comment={c}
+          ownedByMe={comment.author.id === this.props.userId}
+          comment={comment}
         />
       );
     });
@@ -227,7 +225,7 @@ class Comments extends Component {
           <form className={css.answerLine}>
             <div className={css.answerLineText}>
               <Mentions
-                keresizeKeyy={this.state.resizeKey}
+                keresizeKey={this.state.resizeKey}
                 style={{ minHeight: 32 }}
                 className={css.resizeTrue}
                 disabled={this.props.currentComment.disabled || this.props.currentComment.expired}
@@ -239,7 +237,7 @@ class Comments extends Component {
                 suggestions={suggestions}
                 toggleBtn={this.toggleBtn}
                 onInput={this.typeComment}
-                getMentions={this.getMentions}
+                setMentions={this.setMentions}
               />
               {this.props.currentComment.id ? (
                 <div className={css.answerInfo}>

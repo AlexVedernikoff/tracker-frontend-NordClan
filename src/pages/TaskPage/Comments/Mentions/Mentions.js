@@ -8,12 +8,12 @@ import localize from './Mentions.json';
 class Mentions extends Component {
   static propTypes = {
     disabled: PropTypes.bool,
-    getMentions: PropTypes.func,
     lang: PropTypes.string,
     onInput: PropTypes.func,
     onKeyDown: PropTypes.func,
     placeholder: PropTypes.string,
     resizeKey: PropTypes.string,
+    setMentions: PropTypes.func,
     suggestions: PropTypes.array,
     toggleBtn: PropTypes.func,
     updateCurrentCommentText: PropTypes.func,
@@ -22,7 +22,7 @@ class Mentions extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      suggestions: this.props.suggestions,
+      suggestions: [],
       mention: null,
       mentions: [],
       isShownSuggestionsList: false
@@ -42,7 +42,7 @@ class Mentions extends Component {
     this.setState(
       prevState => prevState.mentions.push({ id: target.id, name: target.innerHTML.toLowerCase() }),
       function() {
-        this.props.getMentions(this.state.mentions);
+        this.props.setMentions(this.state.mentions);
       }
     );
     this.setState({ isShownSuggestionsList: false });
@@ -59,57 +59,32 @@ class Mentions extends Component {
     });
   };
 
-  suggestionsFilter = value => {
-    let mentions = this.state.mentions;
+  suggestionsFilter = () => {
     const mention = this.state.mention;
     let filteredSuggestions = this.props.suggestions;
     const { lang } = this.props;
-    if (value.toLowerCase().indexOf('@all') !== -1) {
-      this.setState({ suggestions: [] });
-    } else {
-      this.state.mentions.map(ment => {
-        if (value.toLowerCase().indexOf(`@${ment.name}`) !== -1) {
-          filteredSuggestions = filteredSuggestions.filter(suggestion => {
-            if (lang === 'ru') {
-              return suggestion.fullNameRu.toLowerCase() !== ment.name.toLowerCase();
-            }
-            return suggestion.fullNameEn.toLowerCase() !== ment.name.toLowerCase();
-          });
-        } else {
-          mentions = mentions.filter(el => el.name !== ment.name);
-        }
-      });
-      this.setState({ mentions }, function() {
-        this.props.getMentions(this.state.mentions);
-      });
-      if (mention !== null) {
-        filteredSuggestions = filteredSuggestions.filter(suggestion => {
-          if (lang === 'ru') {
-            return (
-              suggestion.fullNameRu.toLowerCase().indexOf(mention) === 0 && this.state.mentions.indexOf(mention) === -1
-            );
-          }
+    if (mention !== null) {
+      filteredSuggestions = filteredSuggestions.filter(suggestion => {
+        if (lang === 'ru') {
           return (
-            suggestion.fullNameEn.toLowerCase().indexOf(mention) === 0 && this.state.mentions.indexOf(mention) === -1
+            suggestion.fullNameRu.toLowerCase().indexOf(mention) === 0 && this.state.mentions.indexOf(mention) === -1
           );
-        });
-      }
-      this.setState({ suggestions: filteredSuggestions });
+        }
+        return (
+          suggestion.fullNameEn.toLowerCase().indexOf(mention) === 0 && this.state.mentions.indexOf(mention) === -1
+        );
+      });
     }
+    this.setState({ suggestions: filteredSuggestions });
   };
 
   toggleSuggestionsList = value => {
-    if (/( |^)@\S*$/.test(value)) {
-      this.setState({ isShownSuggestionsList: true });
-    } else {
-      this.setState({ isShownSuggestionsList: false });
-    }
+    this.setState({ isShownSuggestionsList: /( |^)@\S*$/.test(value) });
   };
 
   suggestionsList = () => {
     const { lang } = this.props;
-    let suggestions = this.state.suggestions;
-    suggestions = suggestions.length > 5 ? (suggestions.length = 5) : suggestions;
+    const suggestions = this.state.suggestions.slice(0, 5);
     return (
       <ul>
         {suggestions && suggestions.length ? (

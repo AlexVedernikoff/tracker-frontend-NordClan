@@ -80,6 +80,7 @@ class Comment extends Component {
     comment: PropTypes.object,
     commentsLoadedDate: PropTypes.string,
     editComment: PropTypes.func,
+    lang: PropTypes.string,
     lightened: PropTypes.bool,
     location: PropTypes.object,
     ownedByMe: PropTypes.bool,
