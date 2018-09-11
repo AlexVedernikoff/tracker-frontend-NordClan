@@ -345,10 +345,12 @@ export const getProjectTags = id => {
           dispatch(finishLoading());
           return;
         }
-        throw new Error(`Status ${response.status} not allowed. Status 200 expected`);
+        const error = new Error(`Status ${response.status} not allowed. Status 200 expected`);
+        error.resp = response;
+        throw error;
       })
       .catch(error => {
-        dispatch(gettingProjectTagsFail(error.response ? error.response.data : error.message));
+        dispatch(gettingProjectTagsFail(error.response ? error.response.data : error.resp));
         dispatch(finishLoading());
       });
   };
