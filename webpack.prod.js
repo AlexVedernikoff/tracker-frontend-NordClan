@@ -6,7 +6,7 @@ const p = require('./package.json');
 const settings = {
   entry: {
     vendor: Object.keys(p.dependencies),
-    bundle: ['babel-polyfill', './src/App.js']
+    bundle: ['./src/App.js']
   },
   output: {
     filename: '[name].js',
@@ -92,9 +92,10 @@ const settings = {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'manifest'
     }),
-    new webpack.DefinePlugin({ // <-- key to reducing React's size
+    new webpack.DefinePlugin({
+      // <-- key to reducing React's size
       'process.env': {
-        'NODE_ENV': JSON.stringify('production')
+        NODE_ENV: JSON.stringify('production')
       }
     }),
     new webpack.optimize.UglifyJsPlugin() //minify everything

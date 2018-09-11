@@ -20,7 +20,7 @@ const p = require('./package.json');
 const settings = {
   entry: {
     vendor: Object.keys(p.dependencies),
-    bundle: ['babel-polyfill', 'react-hot-loader/patch', './src/App.js']
+    bundle: ['react-hot-loader/patch', './src/App.js']
   },
   output: {
     filename: '[name].js',
