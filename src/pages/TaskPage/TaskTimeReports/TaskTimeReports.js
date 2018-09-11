@@ -13,6 +13,7 @@ import { ADMIN } from '../../../constants/Roles';
 import RadioGroup from '../../../components/RadioGroup';
 import TimeSheetsHistory from './TimeSheetsHistory.js';
 import localize from './taskTimeReports.json';
+import { getLocalizedTaskStatuses, getLocalizedRoles } from '../../../selectors/dictionaries';
 
 class TaskTimeReports extends React.Component {
   constructor(props) {
@@ -299,10 +300,10 @@ const mapStateToProps = state => ({
   timeSpent: state.Task.timeSpent,
   timesheets: state.Timesheets.list,
   preloaders: state.Timesheets.preloaders,
-  taskStatuses: state.Dictionaries.taskStatuses,
+  taskStatuses: getLocalizedTaskStatuses(state),
   userTimeSpent: state.Task.userTimeSpent,
   roleTimeSpent: state.Task.roleTimeSpent,
-  roles: state.Dictionaries.roles,
+  roles: getLocalizedRoles(state),
   user: state.Auth.user,
   project: state.Project.project,
   task: state.Task.task,

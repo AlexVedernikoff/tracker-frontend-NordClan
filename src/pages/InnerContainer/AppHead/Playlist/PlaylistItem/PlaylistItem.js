@@ -13,6 +13,7 @@ import validateNumber from '../../../../../utils/validateNumber';
 
 import { IconComment, IconCheck, IconEye, IconEyeDisable } from '../../../../../components/Icons';
 import localize from './playlistItem.json';
+import { getLocalizedMagicActiveTypes } from '../../../../../selectors/dictionaries';
 
 class PlaylistItem extends Component {
   constructor(props) {
@@ -276,7 +277,7 @@ PlaylistItem.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    magicActivitiesTypes: state.Dictionaries.magicActivityTypes,
+    magicActivitiesTypes: getLocalizedMagicActiveTypes(state),
     task: state.Task.task,
     lang: state.Localize.lang
   };
