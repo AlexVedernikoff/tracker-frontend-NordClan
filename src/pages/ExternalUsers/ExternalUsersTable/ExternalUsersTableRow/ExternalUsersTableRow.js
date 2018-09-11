@@ -7,7 +7,6 @@ import ExternalUserExpiredDate from './ExternalUserExpiredDate';
 import { IconEdit, IconCheck, IconClose } from '../../../../components/Icons';
 import ExternalUserDelete from './ExternalUserDelete';
 import ExternalUserRefreshLink from './ExternalUserRefreshLink';
-import ExternalUserDescription from './ExternalUserDescription';
 import { connect } from 'react-redux';
 import { editExternalUser, deleteExternalUser, refreshExternalUserLink } from '../../../../actions/ExternalUsers';
 import { showNotification } from '../../../../actions/Notifications';
