@@ -36,7 +36,7 @@ class Mentions extends Component {
 
   chooseMention = event => {
     const target = event.target;
-    this.props.updateCurrentCommentText(this.props.value.replace(/(@\S*)$/, `@${target.innerHTML} `));
+    this.props.updateCurrentCommentText(this.props.value.replace(/@(\S+ S*|\S*)$/, `@${target.innerHTML}  `));
     this.setState(
       prevState => prevState.mentions.push({ id: target.id, name: target.innerHTML.toLowerCase() }),
       () => this.props.setMentions(this.state.mentions)
@@ -47,8 +47,8 @@ class Mentions extends Component {
   getMention = () => {
     const value = this.props.value;
     let mention = null;
-    if (/( |^)@\S*$/.test(value)) {
-      mention = /(@\S+)$/.exec(value);
+    if (/( |^)@(\S+ \S*|\S*)$/.test(value)) {
+      mention = /@(\S+ \S*|\S*)$/.exec(value);
       mention = mention === null ? mention : mention[0].slice(1).toLowerCase();
     }
     return mention;
@@ -70,7 +70,7 @@ class Mentions extends Component {
   };
 
   toggleSuggestionsList = value => {
-    this.setState({ isShownSuggestionsList: /( |^)@\S*$/.test(value) });
+    this.setState({ isShownSuggestionsList: /( |^)@(\S*|\S+ \S*)$/.test(value) });
   };
 
   suggestionsList = () => {

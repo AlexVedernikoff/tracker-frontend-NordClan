@@ -184,7 +184,7 @@ class Comments extends Component {
     let resultStr = text;
     while ((result = regExp.exec(text))) {
       const name = this.getNameByID(result[0].replace(/[{@}]/g, ''));
-      resultStr = resultStr.replace(/{@\w+}/, name);
+      resultStr = resultStr.replace(/{@\w+}/, `@${name}`);
     }
     return resultStr;
   };
