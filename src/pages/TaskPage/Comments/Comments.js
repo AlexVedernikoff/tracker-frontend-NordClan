@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 import onClickOutside from 'react-onclickoutside';
 import PropTypes from 'prop-types';
-import TextareaAutosize from 'react-autosize-textarea';
 import shortId from 'shortid';
 import {
   getCommentsByTask,
@@ -23,16 +22,40 @@ import { history } from '../../../History';
 import { IconSend, IconComments } from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
 import localize from './Comments.json';
+import Mentions from './Mentions/Mentions';
+import { getFullName } from '../../../utils/NameLocalisation';
 
 const ENTER = 13;
 
 class Comments extends Component {
+  static propTypes = {
+    comments: PropTypes.array,
+    currentComment: PropTypes.object,
+    editComment: PropTypes.func,
+    getCommentsByTask: PropTypes.func,
+    highlighted: PropTypes.object,
+    lang: PropTypes.string,
+    location: PropTypes.object,
+    params: PropTypes.object,
+    publishComment: PropTypes.func,
+    removeComment: PropTypes.func,
+    resetCurrentEditingComment: PropTypes.func,
+    selectParentCommentForReply: PropTypes.func,
+    setCommentForEdit: PropTypes.func,
+    setCurrentCommentExpired: PropTypes.func,
+    setHighLighted: PropTypes.func,
+    taskId: PropTypes.number,
+    updateCurrentCommentText: PropTypes.func,
+    userId: PropTypes.number,
+    users: PropTypes.array
+  };
   constructor(props) {
     super(props);
     this.state = {
       commentToDelete: null,
       disabledBtn: true,
-      resizeKey: shortId()
+      resizeKey: shortId(),
+      mentions: []
     };
   }
 
@@ -85,27 +108,7 @@ class Comments extends Component {
     }
   };
 
-  static propTypes = {
-    comments: PropTypes.array,
-    currentComment: PropTypes.object,
-    editComment: PropTypes.func,
-    getCommentsByTask: PropTypes.func,
-    highlighted: PropTypes.object,
-    location: PropTypes.object,
-    params: PropTypes.object,
-    publishComment: PropTypes.func,
-    removeComment: PropTypes.func,
-    resetCurrentEditingComment: PropTypes.func,
-    selectParentCommentForReply: PropTypes.func,
-    setCommentForEdit: PropTypes.func,
-    setCurrentCommentExpired: PropTypes.func,
-    setHighLighted: PropTypes.func,
-    taskId: PropTypes.number,
-    updateCurrentCommentText: PropTypes.func,
-    userId: PropTypes.number
-  };
-
-  handleClickOutside = evt => {
+  handleClickOutside = () => {
     if (this.props.location.hash) {
       history.replace({ ...this.props.location, hash: '' });
     }
@@ -121,26 +124,26 @@ class Comments extends Component {
     });
   };
 
-  typeComment = evt => {
-    this.props.updateCurrentCommentText(evt.target.value);
-    if (evt.target.value && evt.target.value.trim() !== '') {
-      this.state.disabledBtn = false;
-    } else {
-      this.state.disabledBtn = true;
-    }
+  toggleBtn = evt => {
+    this.setState({ disabledBtn: !evt.target.value || evt.target.value.trim() === '' });
   };
 
   publishComment = evt => {
-    const { ctrlKey, keyCode, shiftKey } = evt;
+    const comment = this.props.currentComment;
+    const mentions = this.state.mentions;
+    if (mentions && mentions.length) {
+      comment.text = this.replaceMentionWithId(comment.text, mentions);
+    }
+    const { ctrlKey, keyCode } = evt;
     if (((ctrlKey && keyCode === ENTER) || evt.button === 0) && this.state.disabledBtn === false) {
-      if (this.props.currentComment.id) {
-        if (!Comment.isExpiredForUpdate(this.props.currentComment.createdAt)) {
-          this.props.editComment(this.props.taskId, this.props.currentComment.id, this.props.currentComment.text);
+      if (comment.id) {
+        if (!Comment.isExpiredForUpdate(comment.createdAt)) {
+          this.props.editComment(this.props.taskId, comment.id, comment.text);
         } else {
           this.props.setCurrentCommentExpired();
         }
       } else {
-        this.props.publishComment(this.props.taskId, this.props.currentComment);
+        this.props.publishComment(this.props.taskId, comment);
       }
       this.state.disabledBtn = true;
     }
@@ -159,37 +162,81 @@ class Comments extends Component {
     this.setState({ commentToDelete: null }, () => this.props.removeComment(this.props.taskId, commentId));
   };
 
+  replaceMentionWithId = (text, mentions) => {
+    let str = text;
+    mentions.map(mention => {
+      str = str.toLowerCase().replace(`@${mention.name}`, `{@${mention.id}}`);
+    });
+    return str;
+  };
+
+  getNameByID = id => {
+    const { users, lang } = this.props;
+    if (id === 'all') {
+      return localize[lang].ALL;
+    }
+    return getFullName(users.find(user => user.id === +id));
+  };
+
+  replaceIdWithMention = text => {
+    let result = null;
+    const regExp = /{@\w+}/g;
+    let resultStr = text;
+    while ((result = regExp.exec(text))) {
+      const name = this.getNameByID(result[0].replace(/[{@}]/g, ''));
+      resultStr = resultStr.replace(/{@\w+}/, `@${name}`);
+    }
+    return resultStr;
+  };
+
+  setMentions = mentions => {
+    this.setState({ mentions });
+  };
+
   getCommentList = () =>
-    this.props.comments.map(c => (
-      <Comment
-        key={c.id} /*используются id чтобы правильно работал маунт и анмаунт*/
-        lightened={c.id === this.props.highlighted.id}
-        editComment={this.setCommentForEdit}
-        removeComment={this.removeComment}
-        reply={this.props.selectParentCommentForReply}
-        ownedByMe={c.author.id === this.props.userId}
-        comment={c}
-      />
-    ));
+    this.props.comments.map(c => {
+      const comment = { ...c, text: /{@\w+}/.test(c.text) ? this.replaceIdWithMention(c.text) : c.text };
+      return (
+        <Comment
+          key={comment.id} /*используются id чтобы правильно работал маунт и анмаунт*/
+          lightened={comment.id === this.props.highlighted.id}
+          editComment={this.setCommentForEdit}
+          removeComment={this.removeComment}
+          reply={this.props.selectParentCommentForReply}
+          ownedByMe={comment.author.id === this.props.userId}
+          comment={comment}
+        />
+      );
+    });
 
   render() {
     const { lang } = this.props;
-
+    const suggestions = [{ id: 'all', fullNameEn: 'All', fullNameRu: 'Всем' }].concat(
+      this.props.users.map(user => ({
+        id: user.id,
+        fullNameEn: user.fullNameEn,
+        fullNameRu: user.fullNameRu
+      }))
+    );
     return (
       <div className={css.comments}>
         <ul className={css.commentList}>
           <form className={css.answerLine}>
             <div className={css.answerLineText}>
-              <TextareaAutosize
-                key={this.state.resizeKey}
+              <Mentions
+                resizeKey={this.state.resizeKey}
                 style={{ minHeight: 32 }}
                 className={css.resizeTrue}
                 disabled={this.props.currentComment.disabled || this.props.currentComment.expired}
                 placeholder={localize[lang].ENTER_COMMENT}
-                onInput={this.typeComment}
                 onKeyDown={this.publishComment}
                 ref={ref => (this.reply = ref ? ref.textarea : null)}
                 value={this.props.currentComment.text}
+                updateCurrentCommentText={this.props.updateCurrentCommentText}
+                suggestions={suggestions}
+                toggleBtn={this.toggleBtn}
+                onInput={this.typeComment}
+                setMentions={this.setMentions}
               />
               {this.props.currentComment.id ? (
                 <div className={css.answerInfo}>
@@ -236,7 +283,7 @@ class Comments extends Component {
               </span>
             </div>
           </form>
-          {this.props.comments.length ? (
+          {this.props.comments.length && this.props.users.length ? (
             this.getCommentList()
           ) : (
             <div className={css.noCommentsYet}>
@@ -273,6 +320,9 @@ const mapStateToProps = ({
   Auth: {
     user: { id: userId }
   },
+  Project: {
+    project: { users }
+  },
   Localize: { lang }
 }) => ({
   taskId,
@@ -280,7 +330,8 @@ const mapStateToProps = ({
   userId,
   currentComment,
   highlighted,
-  lang
+  lang,
+  users
 });
 
 const mapDispatchToProps = {
