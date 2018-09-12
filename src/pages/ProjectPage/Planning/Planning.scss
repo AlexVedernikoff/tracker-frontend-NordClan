@@ -204,17 +204,6 @@
   justify-content: center;
 }
 
-.sprintList {
-  margin-bottom: 32px;
-  min-height: 25px;
-
-  .name {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-  }
-}
-
 .sprintNames {
   width: 9rem;
   padding-top: 4rem;
@@ -508,7 +497,7 @@ $tooltip-border: 1px solid lighten(black, 85%);
   position: absolute;
   border-left: 1px solid $color-green;
   border-right: 1px solid $color-green;
-  height: calc(100% - 64px);
+  height: calc(100% - 96px);
   z-index: 2;
   opacity: 0.5;
   top: 64px;
@@ -571,4 +560,20 @@ $tooltip-border: 1px solid lighten(black, 85%);
   @include phone {
     order: 5;
   }
+}
+
+.resultLine {
+  border-bottom: 1px solid lighten($color-black, 70%);
+  border-right: 1px solid lighten($color-black, 70%);
+  background-color: $color-lightgray;
+  height: 33px;
+}
+
+.resultName {
+  font-weight: 700;
+  border-top: 1px solid lighten($color-black, 70%);
+}
+
+.resultTime {
+  border-top: 1px solid lighten($color-black, 70%);
 }

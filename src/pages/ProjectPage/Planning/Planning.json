@@ -6,8 +6,6 @@
     "WO_RISK_RESERVE": "Without a risk reserve",
     "BUDGET": "Budget",
     "RISK_RESERVE": "Risk reserve",
-    "SPRINT": "Sprint",
-    "MILESTONE": "Milestone",
     "SPRINTS_AND_PHASES": "Sprints / Phases",
     "REPLACE_UNCLOSED_TASKS": "Replace all unclosed tasks",
     "REPLACE_UNCLOSED": "Replace all unclosed",
@@ -16,8 +14,7 @@
     "TOTAL_TIME": "Total time",
     "OF": "of",
     "H": "h.",
-    "PERCENT_TEST": "Percent on testing:",
-    "RISK_RESERVE": "Risk reserve"
+    "PERCENT_TEST": "Percent on testing:"
   },
   "ru": {
     "PROJECT_START": "Начало проекта:",
@@ -26,8 +23,6 @@
     "WO_RISK_RESERVE": "Без рискового резерва",
     "BUDGET": "Бюджет",
     "RISK_RESERVE": "Рисковый резерв",
-    "SPRINT": "Спринт",
-    "MILESTONE": "Веха",
     "SPRINTS_AND_PHASES": "Спринты / Фазы",
     "REPLACE_UNCLOSED_TASKS": "Перенести все незакрытые задачи",
     "REPLACE_UNCLOSED": "Перенести все незакрытые",
@@ -36,7 +31,6 @@
     "TOTAL_TIME": "Суммарное время",
     "OF": "из",
     "H": "ч.",
-    "PERCENT_TEST": "Процент на тестирование:",
-    "RISK_RESERVE": "Рисковый резерв"
+    "PERCENT_TEST": "Процент на тестирование:"
   }
 }
