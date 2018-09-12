@@ -739,7 +739,11 @@ class AgileBoard extends Component {
     this.setState(
       {
         ...this.initialFilters,
-        changedSprint: 0
+        changedSprint: 0,
+        changedFilters: {
+          projectId: this.props.params.projectId,
+          sprintId: 0
+        }
       },
       () => {
         this.getTasks({
