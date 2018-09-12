@@ -33,6 +33,7 @@ class PerformerFilter extends React.Component {
         onChange={this.props.onPerformerSelect}
         noResultsText={localize[lang].NO_RESULTS}
         options={this.getUsers()}
+        backspaceToRemoveMessage={''}
       />
     );
   }

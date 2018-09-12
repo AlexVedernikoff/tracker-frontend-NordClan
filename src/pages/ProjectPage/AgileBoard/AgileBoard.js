@@ -6,7 +6,6 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import get from 'lodash/get';
-import uniq from 'lodash/uniq';
 import sortBy from 'lodash/sortBy';
 import TaskCard from '../../../components/TaskCard';
 import FilterList from '../../../components/FilterList';
@@ -24,11 +23,12 @@ import * as css from './AgileBoard.scss';
 import { UnmountClosed } from 'react-collapse';
 import localize from './AgileBoard.json';
 import { getFullName } from '../../../utils/NameLocalisation';
+import { getAllTags } from '../../../selectors/getAllTags';
 
 import getTasks from '../../../actions/Tasks';
 import { VISOR, EXTERNAL_USER } from '../../../constants/Roles';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
-import { openCreateTaskModal, getProjectUsers, getProjectInfo } from '../../../actions/Project';
+import { openCreateTaskModal, getProjectUsers, getProjectInfo, getProjectTags } from '../../../actions/Project';
 import { history } from '../../../History';
 import { createSelector } from 'reselect';
 import { getLocalizedTaskTypes, getLocalizedTaskStatuses } from '../../../selectors/dictionaries';
@@ -113,21 +113,6 @@ const getNoTagData = createSelector(
 const parseTagsQuery = tagsQuery => {
   return tagsQuery ? tagsQuery.split(',').map(value => ({ label: value, value })) : [];
 };
-
-const getTagsByTask = tasks => {
-  let allTags = tasks.reduce((arr, task) => {
-    return arr.concat(task.tags ? task.tags.map(tags => tags.name) : []);
-  }, []);
-
-  allTags = uniq(allTags);
-
-  return allTags.map(tag => ({
-    value: tag,
-    label: tag
-  }));
-};
-
-const getAllTags = createSelector([selectTasks], tasks => getTagsByTask(tasks));
 
 const getSprints = unsortedSprints => {
   let sprints = sortBy(unsortedSprints, sprint => {
@@ -311,6 +296,9 @@ class AgileBoard extends Component {
     ReactTooltip.hide();
     if (this.props.tracksChange !== nextProps.tracksChange && this.props.project.id) {
       this.props.getProjectInfo(this.props.project.id);
+    }
+    if (this.props.tags !== nextProps.tags && this.props.project.id) {
+      this.props.getProjectTags(this.props.project.id);
     }
 
     if (
@@ -795,7 +783,6 @@ class AgileBoard extends Component {
   getFilterTagsProps() {
     const { filterTags, noTag } = this.state;
     const { tags, noTagData } = this.props;
-
     return {
       value: !noTag ? filterTags : [noTagData].concat(filterTags),
       options: filterTags.length ? tags : [noTagData].concat(tags)
@@ -1097,7 +1084,8 @@ const mapDispatchToProps = {
   startTaskEditing,
   openCreateTaskModal,
   getProjectUsers,
-  getProjectInfo
+  getProjectInfo,
+  getProjectTags
 };
 
 export default connect(

@@ -124,6 +124,32 @@ export default function Project(state = InitialState, action) {
         isProjectInfoReceiving: false
       };
 
+    case ProjectActions.PROJECT_TAGS_RECEIVE_START:
+      return {
+        ...state,
+        isProjectTagsReceiving: true
+      };
+
+    case ProjectActions.PROJECT_TAGS_RECEIVE_SUCCESS:
+      return {
+        ...state,
+        tags: {
+          ...state.tags,
+          ...action.tags
+        },
+        isProjectTagsReceiving: false
+      };
+
+    case ProjectActions.PROJECT_TAGS_RECEIVE_FAIL:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          error: action.error
+        },
+        isProjectTagsReceiving: false
+      };
+
     case ProjectActions.PROJECT_USERS_RECEIVE_START:
       return {
         ...state
