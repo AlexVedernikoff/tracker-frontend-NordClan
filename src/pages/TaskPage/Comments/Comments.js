@@ -171,8 +171,7 @@ class Comments extends Component {
   };
 
   getNameByID = id => {
-    const users = this.props.users;
-    const lang = this.props.lang;
+    const { users, lang } = this.props;
     if (id === 'all') {
       return localize[lang].ALL;
     }
@@ -225,7 +224,7 @@ class Comments extends Component {
           <form className={css.answerLine}>
             <div className={css.answerLineText}>
               <Mentions
-                keresizeKey={this.state.resizeKey}
+                resizeKey={this.state.resizeKey}
                 style={{ minHeight: 32 }}
                 className={css.resizeTrue}
                 disabled={this.props.currentComment.disabled || this.props.currentComment.expired}
