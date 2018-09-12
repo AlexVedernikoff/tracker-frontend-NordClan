@@ -120,7 +120,7 @@
     "start": "npm run prebuild&&npm run dev",
     "serve": "serve build -p 8080 -d",
     "prebuild": "rm -rf build/",
-    "build:prod": "webpack --config webpack.prod.js",
+    "build:prod": "cross-env NODE_ENV=production webpack --config webpack.prod.js",
     "build": "npm run prebuild&&npm run build:prod",
     "prod": "npm run build && npm run serve",
     "docker": "docker build -t simtrack_front .",

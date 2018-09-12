@@ -79,6 +79,12 @@ const settings = {
     ]
   },
   plugins: [
+    new webpack.DefinePlugin({
+      // <-- key to reducing React's size
+      'process.env': {
+        NODE_ENV: JSON.stringify('production')
+      }
+    }),
     new webpack.NamedModulesPlugin(),
     new webpack.LoaderOptionsPlugin({
       debug: false,
@@ -91,12 +97,6 @@ const settings = {
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'manifest'
-    }),
-    new webpack.DefinePlugin({
-      // <-- key to reducing React's size
-      'process.env': {
-        NODE_ENV: JSON.stringify('production')
-      }
     }),
     new webpack.optimize.UglifyJsPlugin() //minify everything
   ]
