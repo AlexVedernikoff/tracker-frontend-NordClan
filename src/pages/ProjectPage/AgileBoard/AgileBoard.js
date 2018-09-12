@@ -354,14 +354,6 @@ class AgileBoard extends Component {
     return re.test(value) ? +value : value;
   };
 
-  multipleQueries = queries => {
-    if (Array.isArray(queries)) {
-      return queries.map(queryValue => this.translateToNumIfNeeded(queryValue));
-    }
-
-    return queries ? [this.translateToNumIfNeeded(queries)] : [];
-  };
-
   singleQuery = currentQuery => {
     return currentQuery ? this.translateToNumIfNeeded(currentQuery) : null;
   };
@@ -370,9 +362,13 @@ class AgileBoard extends Component {
     if (!!value && !Array.isArray(value)) {
       return { [name]: this.singleQuery(value) };
     }
+  };
+
+  makeNewMultipleOdj = (name, value, sourse) => {
     if (!!value && Array.isArray(value) && value.length) {
-      return { [name]: this.multipleQueries(value) };
+      return { [name]: sourse.filter(option => value.includes(`${option.value}`)) };
     }
+    return { [name]: sourse.filter(option => value === `${option.value}`) };
   };
 
   getUrlQueries = () => {
@@ -380,13 +376,13 @@ class AgileBoard extends Component {
       const { performerId, name, authorId, prioritiesId, typeId, filterTags, isOnlyMine, changedSprint, noTag } =
         (this.props.location && this.props.location.query) || {};
       return {
-        ...this.makeNewObj('performerId', performerId),
         ...this.makeNewObj('name', name),
         ...this.makeNewObj('authorId', authorId),
         ...this.makeNewObj('prioritiesId', prioritiesId),
         ...this.makeNewObj('filterTags', parseTagsQuery(filterTags)),
         ...this.makeNewObj('noTag', noTag),
-        ...this.makeNewObj('typeId', typeId),
+        ...this.makeNewMultipleOdj('typeId', typeId, this.props.typeOptions),
+        ...this.makeNewMultipleOdj('performerId', performerId, this.getUsers()),
         ...this.makeNewObj('isOnlyMine', isOnlyMine === 'true'),
         ...this.makeNewObj('changedSprint', mapUrlMultiQuery(changedSprint))
       };
@@ -498,8 +494,8 @@ class AgileBoard extends Component {
     }, callback);
   };
 
-  selectValue = (e, name) => {
-    this.setFiltersToUrl(name, e, () => {
+  selectValue = (option, name) => {
+    this.setFiltersToUrl(name, option, () => {
       if (this.props.myTaskBoard) return this.getTasks({ performerId: this.props.user.id });
       this.getTasks();
     });
@@ -728,7 +724,12 @@ class AgileBoard extends Component {
     this.changeUrl({ projectId: this.props.params.projectId });
     this.setState(
       {
-        ...this.initialFilters
+        ...this.initialFilters,
+        changedSprint: 0,
+        changedFilters: {
+          projectId: this.props.params.projectId,
+          sprintId: 0
+        }
       },
       () => {
         this.getTasks({
@@ -835,7 +836,6 @@ class AgileBoard extends Component {
       this.state.lightedTaskId,
       this.state.isCardFocus
     );
-
     return (
       <section className={css.agileBoard}>
         {!this.props.myTaskBoard ? (
