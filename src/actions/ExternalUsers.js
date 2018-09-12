@@ -85,7 +85,6 @@ export const addExternalUser = exUser => {
         },
         error => {
           reject({ message: error.response.data ? error.response.data.message : error.message });
-          dispatch(showNotification({ message: error.message, type: 'error' }));
           dispatch(finishLoading());
         }
       );
@@ -150,5 +149,33 @@ export const deleteExternalUser = id => {
           dispatch(finishLoading());
         }
       );
+  };
+};
+
+export const refreshExternalUserLinkStart = () => ({
+  type: externalUsersActions.REFRESH_EXTERNAL_USER_LINK_START
+});
+export const refreshExternalUserLinkSuccess = changedUser => ({
+  type: externalUsersActions.REFRESH_EXTERNAL_USER_LINK_SUCCESS,
+  changedUser
+});
+export const refreshExternalUserLink = exUser => {
+  const URL = `${API_URL}/user/external/${exUser.id}/refresh`;
+  return dispatch => {
+    dispatch(refreshExternalUserLinkStart());
+    dispatch(startLoading());
+    axios.put(URL, exUser).then(
+      response => {
+        if (response.data) {
+          dispatch(refreshExternalUserLinkSuccess(response.data));
+          dispatch(finishLoading());
+        }
+      },
+      error => {
+        dispatch(refreshExternalUserLinkSuccess(exUser));
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      }
+    );
   };
 };

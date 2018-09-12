@@ -5,6 +5,7 @@ import * as css from './TaskTypeModal.scss';
 import Modal from '../Modal';
 import Button from '../Button';
 import SelectDropdown from '../SelectDropdown';
+import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
 
 class TaskTypeModal extends Component {
   constructor(props) {
@@ -66,7 +67,10 @@ TaskTypeModal.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  taskTypes: state.Dictionaries.taskTypes
+  taskTypes: getLocalizedTaskTypes(state)
 });
 
-export default connect(mapStateToProps, {})(TaskTypeModal);
+export default connect(
+  mapStateToProps,
+  {}
+)(TaskTypeModal);

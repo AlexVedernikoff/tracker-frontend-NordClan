@@ -24,6 +24,20 @@ const gettingProjectInfoFail = error => ({
   error: error
 });
 
+const gettingProjectTagsStart = () => ({
+  type: ProjectActions.PROJECT_TAGS_RECEIVE_START
+});
+
+const gettingProjectTagsSuccess = tags => ({
+  type: ProjectActions.PROJECT_TAGS_RECEIVE_SUCCESS,
+  tags: tags
+});
+
+const gettingProjectTagsFail = error => ({
+  type: ProjectActions.PROJECT_TAGS_RECEIVE_FAIL,
+  error: error
+});
+
 const gettingProjectUsersStart = () => ({
   type: ProjectActions.PROJECT_USERS_RECEIVE_START
 });
@@ -317,6 +331,31 @@ const getProjectInfo = id => {
   };
 };
 
+export const getProjectTags = id => {
+  const URL = `${API_URL}/project/${id}/tags`;
+
+  return dispatch => {
+    dispatch(gettingProjectTagsStart());
+    dispatch(startLoading());
+    axios
+      .get(URL)
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(gettingProjectTagsSuccess(response.data));
+          dispatch(finishLoading());
+          return;
+        }
+        const error = new Error(`Status ${response.status} not allowed. Status 200 expected`);
+        error.response = response;
+        throw error;
+      })
+      .catch(error => {
+        dispatch(gettingProjectTagsFail(error.response ? error.response.data : error.message));
+        dispatch(finishLoading());
+      });
+  };
+};
+
 const getProjectSprints = id => {
   const URL = `${API_URL}/sprint`;
 
@@ -329,7 +368,7 @@ const getProjectSprints = id => {
         {
           params: {
             projectId: id,
-            fields: 'id,name,factFinishDate,qaPercent'
+            fields: 'id,name,factFinishDate,qaPercent,statusId'
           }
         },
         { withCredentials: true }
