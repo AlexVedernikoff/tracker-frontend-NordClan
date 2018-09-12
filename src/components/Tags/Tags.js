@@ -6,9 +6,11 @@ import Tag from '../Tag';
 import onClickOutside from 'react-onclickoutside';
 import classnames from 'classnames';
 import { createTags } from '../../actions/Tags';
+import { getProjectTags } from '../../actions/Project';
 import { connect } from 'react-redux';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import localize from './Tags.json';
+import CreatableMulti from '../CreatableMulti';
 
 class Tags extends Component {
   constructor(props) {
@@ -19,21 +21,10 @@ class Tags extends Component {
       tags: this.props.children || [],
       visible: false,
       tag: '',
-      maxLength: this.props.maxLength || 6
+      maxLength: this.props.maxLength || 6,
+      multiValue: []
     };
   }
-
-  handleClickOutside = () => {
-    this.setState({ visible: false });
-  };
-
-  showDropdownMenu = () => {
-    this.setState({ visible: !this.state.visible });
-  };
-
-  onChangeHandler = e => {
-    this.setState({ tag: e.target.value });
-  };
 
   componentWillReceiveProps = nextProps => {
     this.setState({ tags: nextProps.children });
@@ -43,21 +34,44 @@ class Tags extends Component {
     this.setState({ cutTagsShow: true });
   };
 
+  handleOnChange = value => {
+    this.setState({ multiValue: value });
+  };
+
+  showDropdownMenu = () => {
+    this.props.getProjectTags(this.props.project);
+    this.setState({ visible: !this.state.visible });
+  };
+
+  handleClickOutside = () => {
+    this.setState({ visible: false });
+  };
+
   sendNewTags = e => {
     e.preventDefault();
     this.setState({ visible: !this.state.visible });
-    if (this.state.tag.trim() && !this.props.noRequest) {
-      this.props.createTags(this.state.tag.trim(), this.props.taggable, this.props.taggableId);
+
+    const tagsToSend = this.state.multiValue.map(tag => tag.value.trim());
+    if (!this.props.noRequest) {
+      this.props.createTags(tagsToSend.join(), this.props.taggable, this.props.taggableId);
     } else {
-      this.props.createTagsModalTask(this.state.tag.trim());
+      this.props.createTagsModalTask(tagsToSend.join());
     }
+    this.setState({ multiValue: [] });
   };
+
   render() {
-    const { lang } = this.props;
+    const { lang, tagsFromTasks } = this.props;
+    const { multiValue } = this.state;
     let sliceTags = this.state.tags;
+    const tags = this.state.tags.map(tag => tag.props.name);
     if (this.state.tags.length > this.state.maxLength) {
       sliceTags = this.state.tags.slice(0, this.state.maxLength);
     }
+    const options = tagsFromTasks
+      ? Object.values(tagsFromTasks).map(tag => ({ value: tag.name, label: tag.name }))
+      : [];
+    const filtred = options.filter(option => !tags.includes(option.value));
     return (
       <div>
         {!this.state.cutTags ? this.state.tags : sliceTags}
@@ -77,17 +91,20 @@ class Tags extends Component {
                   className={classnames({ [css.tagPopup]: true, [css[this.props.direction]]: true })}
                   onSubmit={this.sendNewTags}
                 >
-                  <input
-                    type="text"
+                  <CreatableMulti
+                    name="tags"
+                    noResultsText={localize[lang].NO_RESULTS}
+                    options={filtred}
                     placeholder={localize[lang].ADD_TAG}
-                    className={css.tagsInput}
-                    defaultValue=""
+                    className={classnames(css.tagsInput, css.tagsMultiInput)}
                     autoFocus
-                    onChange={this.onChangeHandler}
+                    value={multiValue}
+                    onChange={this.handleOnChange}
+                    backspaceToRemoveMessage={''}
                   />
                   <Button
-                    disabled={!this.state.tag}
-                    addedClassNames={{ [css.tagsButton]: true, [css.tagsSubmit]: true }}
+                    disabled={!this.state.multiValue.length > 0}
+                    addedClassNames={{ [css.tagsButton]: true, [css.tagsSubmit]: true, [css.tagsSubmitAbsolute]: true }}
                     icon="IconCheck"
                     htmlType="submit"
                     type="green"
@@ -115,10 +132,14 @@ Tags.propTypes = {
   createTags: PropTypes.func.isRequired,
   createTagsModalTask: PropTypes.func,
   direction: PropTypes.string,
+  getProjectTags: PropTypes.func,
+  lang: PropTypes.string,
   maxLength: PropTypes.number,
   noRequest: PropTypes.bool,
+  project: PropTypes.number,
   taggable: PropTypes.string,
-  taggableId: PropTypes.number
+  taggableId: PropTypes.number,
+  tagsFromTasks: PropTypes.object
 };
 
 Tags.defaultProps = {
@@ -126,10 +147,13 @@ Tags.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  project: state.Project.project.id,
+  tagsFromTasks: state.Project.tags
 });
 
 const mapDispatchToProps = {
+  getProjectTags,
   createTags
 };
 
