@@ -6,7 +6,7 @@ const Pane = props => {
 };
 
 Pane.propTypes = {
-  children: PropTypes.array,
+  children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   label: PropTypes.string.isRequired
 };
 

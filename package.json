@@ -32,7 +32,7 @@
     "chartjs-plugin-zoom": "^0.6.4",
     "dhtmlx-gantt": "^4.2.1",
     "draft-js": "^0.10.5",
-    "draft-js-export-html": "^0.5.4",
+    "draft-js-export-html": "^1.2.0",
     "draft-js-import-html": "^1.2.1",
     "exact-math": "^1.0.0",
     "lodash": "^4.17.10",
