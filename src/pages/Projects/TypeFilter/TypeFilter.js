@@ -40,7 +40,6 @@ class TypeFilter extends Component {
 
     const requestOptions = this.TwoWayOptions.requestOptions(values);
     const filteredOptions = this.TwoWayOptions.filteredOptions(values);
-
     this.props.onChange(filteredOptions, requestOptions);
   };
 

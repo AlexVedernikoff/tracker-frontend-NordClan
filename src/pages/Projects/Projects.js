@@ -24,6 +24,7 @@ import { getErrorMessageByType } from '../../utils/ErrorMessages';
 import { ADMIN } from '../../constants/Roles';
 import localization from './projects.json';
 import Title, { flushTitle } from 'react-title-component';
+import TypeFilter from './TypeFilter';
 
 import 'moment/locale/ru';
 import localize from '../ExternalUsers/ExternalUsers';
@@ -31,13 +32,18 @@ import localize from '../ExternalUsers/ExternalUsers';
 class Projects extends Component {
   constructor(props) {
     super(props);
+    const projectListFilters = this.getSavedFilters();
     this.state = {
       ...this.initialFilters,
       projects: [],
       projectPrefix: '',
       openProjectPage: false,
       selectedPortfolio: null,
-      activePage: 1
+      activePage: 1,
+      filterSelectedTypes: [],
+      filterRequestTypes: [],
+      selectedType: 1,
+      ...projectListFilters
     };
   }
 
@@ -56,8 +62,15 @@ class Projects extends Component {
     this.loadProjects();
   }
 
+  selectType = (filterSelectedTypes, filterRequestTypes) => {
+    this.setState({ filterSelectedTypes, filterRequestTypes }, () => {
+      this.loadProjects();
+    });
+  };
+
   loadProjects = (dateFrom, dateTo) => {
     const tags = this.state.filterTags.map(el => el.value).join(',');
+    const typeId = this.state.filterRequestTypes.join(',');
     const statuses = [];
     if (this.state.filteredInProgress) statuses.push(1);
     if (this.state.filteredInHold) statuses.push(2);
@@ -70,8 +83,27 @@ class Projects extends Component {
       this.state.filterByName,
       dateFrom,
       dateTo,
+      typeId,
       statuses.join(',')
     );
+    this.saveFilters();
+  };
+
+  saveFilters = () => {
+    // const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
+
+    localStorage.setItem(
+      'projectListFilters',
+      JSON.stringify({
+        filterSelectedTypes: this.state.filterSelectedTypes,
+        filterRequestTypes: this.state.filterRequestTypes
+      })
+    );
+  };
+
+  getSavedFilters = () => {
+    const filters = JSON.parse(localStorage.getItem('projectListFilters'));
+    return filters;
   };
 
   check = (name, callback = () => {}) => {
@@ -82,6 +114,11 @@ class Projects extends Component {
       },
       callback
     );
+  };
+
+  onTypeSelect = option => {
+    const selectedType = option ? option.value : 1;
+    this.setState({ selectedType });
   };
 
   handlePaginationClick = e => {
@@ -261,7 +298,8 @@ class Projects extends Component {
 
   render() {
     const { lang } = this.props;
-    const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
+    const { filteredInProgress, filteredInHold, filteredFinished, filterSelectedTypes } = this.state;
+    const { projectTypes } = this.props;
     const formattedDayFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('DD.MM.YYYY') : '';
     const formattedDayTo = this.state.dateTo ? moment(this.state.dateTo).format('DD.MM.YYYY') : '';
     const isAdmin = this.props.globalRole === ADMIN;
@@ -284,32 +322,39 @@ class Projects extends Component {
           </header>
           <hr />
           <div className={css.projectsHeader}>
-            <div className={css.statusFilters}>
-              <StatusCheckbox
-                type="INPROGRESS"
-                checked={filteredInProgress}
-                onClick={() => {
-                  this.check('filteredInProgress', this.handleFilterChange);
-                }}
-                label={localization[lang].INPROGRESS}
-              />
-              <StatusCheckbox
-                type="INHOLD"
-                checked={filteredInHold}
-                onClick={() => {
-                  this.check('filteredInHold', this.handleFilterChange);
-                }}
-                label={localization[lang].INHOLD}
-              />
-              <StatusCheckbox
-                type="FINISHED"
-                checked={filteredFinished}
-                onClick={() => {
-                  this.check('filteredFinished', this.handleFilterChange);
-                }}
-                label={localization[lang].FINISHED}
-              />
-            </div>
+            <Row>
+              <Col xs={12} sm={8}>
+                <div className={css.statusFilters}>
+                  <StatusCheckbox
+                    type="INPROGRESS"
+                    checked={filteredInProgress}
+                    onClick={() => {
+                      this.check('filteredInProgress', this.handleFilterChange);
+                    }}
+                    label="В процессе"
+                  />
+                  <StatusCheckbox
+                    type="INHOLD"
+                    checked={filteredInHold}
+                    onClick={() => {
+                      this.check('filteredInHold', this.handleFilterChange);
+                    }}
+                    label="Приостановлен"
+                  />
+                  <StatusCheckbox
+                    type="FINISHED"
+                    checked={filteredFinished}
+                    onClick={() => {
+                      this.check('filteredFinished', this.handleFilterChange);
+                    }}
+                    label="Завершен"
+                  />
+                </div>
+              </Col>
+              <Col xs={12} sm={4}>
+                <TypeFilter onChange={this.selectType} value={filterSelectedTypes} dictionary={projectTypes} />
+              </Col>
+            </Row>
             <Row className={css.search}>
               <Col xs={12} sm={4}>
                 <Input onChange={this.changeNameFilter} placeholder={localization[lang].NAME_PROJECT} />
@@ -396,6 +441,7 @@ const mapStateToProps = state => ({
   loading: state.Loading.loading,
   projectError: state.Projects.error,
   globalRole: state.Auth.user.globalRole,
+  projectTypes: state.Dictionaries.projectTypes,
   lang: state.Localize.lang
 });
 
@@ -415,6 +461,7 @@ Projects.propTypes = {
   onRequestClose: PropTypes.func,
   openCreateProjectModal: PropTypes.func,
   projectList: PropTypes.array,
+  projectTypes: PropTypes.array,
   requestProjectCreate: PropTypes.func
 };
 
