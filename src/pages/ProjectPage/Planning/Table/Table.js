@@ -101,7 +101,7 @@ class Table extends React.Component {
   };
 
   renderEntityLabels() {
-    const { entities } = this.props;
+    const { entities, lang } = this.props;
 
     if (!entities.length) {
       return null;
@@ -114,7 +114,7 @@ class Table extends React.Component {
             ? this.renderSprintLabel(entity, i)
             : this.renderMilestoneLabel(entity, i);
         })}
-        <div className={classnames(css.name, css.resultName)}>Итого</div>
+        <div className={classnames(css.name, css.resultName)}>{localize[lang].TOTAL}</div>
       </div>
     );
   }
