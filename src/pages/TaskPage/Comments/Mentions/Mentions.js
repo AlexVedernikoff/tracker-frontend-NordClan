@@ -75,7 +75,7 @@ class Mentions extends Component {
 
   suggestionsList = () => {
     const { lang } = this.props;
-    const suggestions = this.suggestionsFilter().slice(0, 5);
+    const suggestions = this.suggestionsFilter();
     return (
       <ul>
         {suggestions && suggestions.length ? (

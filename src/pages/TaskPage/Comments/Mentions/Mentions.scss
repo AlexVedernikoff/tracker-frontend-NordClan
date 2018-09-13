@@ -2,6 +2,8 @@
   position: relative;
   ul {
     position: absolute;
+    max-height: 10rem;
+    overflow-y: scroll;
     padding-left: 0;
     z-index: 2; /* Global z-index context (dropdown-layer) */
     background-color: white;
