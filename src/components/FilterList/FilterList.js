@@ -7,7 +7,7 @@ import Button from '../../components/Button';
 import classnames from 'classnames';
 import { IconClose, IconArrowDownThin, IconBroom } from '../Icons';
 import * as css from './FilterList.scss';
-import { UnmountClosed, Collapse } from 'react-collapse';
+// import { UnmountClosed, Collapse } from 'react-collapse';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { connect } from 'react-redux';
 import localize from './FilterList.json';
@@ -93,6 +93,7 @@ FilterList.propTypes = {
   filters: PropTypes.array.isRequired,
   fullFilterView: PropTypes.bool.isRequired,
   isVisor: PropTypes.bool.isRequired,
+  lang: PropTypes.string.isRequired,
   openCreateTaskModal: PropTypes.func.isRequired,
   toggleFilterView: PropTypes.func.isRequired
 };

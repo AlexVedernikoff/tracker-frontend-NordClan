@@ -2,11 +2,8 @@ import React, { Component } from 'react';
 import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
-import classnames from 'classnames';
+// import classnames from 'classnames';
 import { connect } from 'react-redux';
-import moment from 'moment';
-import get from 'lodash/get';
-import sortBy from 'lodash/sortBy';
 import TaskCard from '../../../components/TaskCard';
 import FilterList from '../../../components/FilterList';
 import PerformerModal from '../../../components/PerformerModal';
@@ -23,27 +20,16 @@ import * as css from './AgileBoard.scss';
 import { UnmountClosed } from 'react-collapse';
 import localize from './AgileBoard.json';
 import { getFullName } from '../../../utils/NameLocalisation';
-import { getAllTags } from '../../../selectors/getAllTags';
+import { agileBoardSelector } from '../../../selectors/agileBoard';
 
 import getTasks from '../../../actions/Tasks';
 import { VISOR, EXTERNAL_USER } from '../../../constants/Roles';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal, getProjectUsers, getProjectInfo, getProjectTags } from '../../../actions/Project';
-import { history } from '../../../History';
-import { createSelector } from 'reselect';
-import { getLocalizedTaskTypes, getLocalizedTaskStatuses } from '../../../selectors/dictionaries';
 import SprintSelector from '../../../components/SprintSelector';
 import withFiltersManager from '../../../components/FiltrersManager/FiltersManager';
 
-const selectTasks = state => state.Tasks.tasks;
-
-const selectSprints = state => state.Project.project.sprints;
-
-const selectUserId = state => state.Auth.user.id;
-
-const selectTaskType = state => getLocalizedTaskTypes(state);
-
-const selectProjectUsers = state => state.Project.project.users;
+const NO_TAG_VALUE = -1;
 
 const initialFilters = {
   isOnlyMine: false,
@@ -55,135 +41,6 @@ const initialFilters = {
   prioritiesId: null,
   performerId: null
 };
-
-const filterTasks = array => {
-  const taskArray = {
-    new: [],
-    dev: [],
-    codeReview: [],
-    qa: [],
-    done: []
-  };
-  array.forEach(element => {
-    switch (element.statusId) {
-      case 1:
-        taskArray.new.push(element);
-        break;
-      case 2:
-      case 3:
-        taskArray.dev.push(element);
-        break;
-      case 4:
-      case 5:
-        taskArray.codeReview.push(element);
-        break;
-      case 6:
-      case 7:
-        taskArray.qa.push(element);
-        break;
-      case 8:
-        taskArray.done.push(element);
-        break;
-      default:
-        break;
-    }
-  });
-
-  for (const key in taskArray) {
-    taskArray[key].sort((a, b) => {
-      return a.prioritiesId - b.prioritiesId;
-    });
-    taskArray[key].forEach(task => {
-      if (!task.linkedTasks) {
-        task.linkedTasks = [];
-      }
-      task.linkedTasks.concat(task.subTasks, task.parentTask).map(relatedTask => get(relatedTask, 'id', null));
-    });
-  }
-
-  return taskArray;
-};
-
-const getSortedTasks = createSelector([selectTasks], tasks => filterTasks(tasks));
-
-const myTasks = (tasks, userId) =>
-  tasks.filter(task => {
-    return task.performer && task.performer.id === userId;
-  });
-
-const getMyTasks = createSelector([selectTasks, selectUserId], (tasks, userId) => filterTasks(myTasks(tasks, userId)));
-
-const NO_TAG_VALUE = -1;
-const getNoTagData = createSelector(
-  state => state.Localize.lang,
-  lang => ({
-    label: localize[lang].WITHOUT_TAG,
-    value: NO_TAG_VALUE
-  })
-);
-
-const parseTagsQuery = tagsQuery => {
-  return tagsQuery ? tagsQuery.split(',').map(value => ({ label: value, value })) : [];
-};
-
-const getSprints = unsortedSprints => {
-  let sprints = sortBy(unsortedSprints, sprint => {
-    return new moment(sprint.factFinishDate);
-  });
-
-  sprints = sprints.map(sprint => ({
-    value: sprint.id,
-    label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${
-      sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}` : '- ...'
-    })`,
-    statusId: sprint.statusId,
-    className: classnames({
-      [css.INPROGRESS]: sprint.statusId === 2,
-      [css.sprintMarker]: true,
-      [css.FINISHED]: sprint.statusId === 1
-    })
-  }));
-
-  sprints.push({
-    value: 0,
-    label: 'Backlog',
-    className: classnames({
-      [css.INPROGRESS]: false,
-      [css.sprintMarker]: true
-    })
-  });
-  return sprints;
-};
-
-const createOptions = (array, labelField) => {
-  return array.map(element => ({
-    value: element.id,
-    label: labelField === 'name' ? element[labelField] : getFullName(element)
-  }));
-};
-
-const getSortedSprints = createSelector([selectSprints], sprints => getSprints(sprints));
-
-const currentSprint = sprints => {
-  const processedSprints = sprints.filter(sprint => {
-    return sprint.statusId === 2;
-  });
-
-  const currentSprints = processedSprints.filter(sprint => {
-    return moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]');
-  });
-
-  return createOptions(currentSprints.length ? currentSprints : processedSprints);
-  // return currentSprints.length ? currentSprints[0].id : processedSprints.length ? processedSprints[0].id : 0;
-};
-
-const getCurrentSprint = createSelector([selectSprints], sprints => currentSprint(sprints));
-
-const typeOptions = taskTypes => createOptions(taskTypes, 'name');
-const authorOptions = projectUsers => createOptions(projectUsers);
-
-const getTypeOptions = createSelector([selectTaskType], taskTypes => typeOptions(taskTypes));
-const getAuthorOptions = createSelector([selectProjectUsers], projectUsers => authorOptions(projectUsers));
 
 const phaseColumnNameById = {
   1: 'New',
@@ -279,10 +136,6 @@ const getNewStatusOnClick = oldStatusId => {
   return newStatusId;
 };
 
-const mapUrlMultiQuery = query => {
-  return query ? (Array.isArray(query) ? query : [query]).map(value => ({ value })) : [];
-};
-
 class AgileBoard extends Component {
   constructor(props) {
     super(props);
@@ -299,55 +152,6 @@ class AgileBoard extends Component {
 
   componentWillReceiveProps(nextProps) {
     ReactTooltip.hide();
-    /*if (this.props.tracksChange !== nextProps.tracksChange && this.props.project.id) {
-      this.props.getProjectInfo(this.props.project.id);
-    }
-    if (this.props.tags !== nextProps.tags && this.props.project.id) {
-      this.props.getProjectTags(this.props.project.id);
-    }
-
-    /*if (
-      (this.props.sprints !== nextProps.sprints || this.props.lastCreatedTask !== nextProps.lastCreatedTask) &&
-      nextProps.project.id
-    ) {
-      this.selectValue(this.getChangedSprint(nextProps), 'changedSprint');
-    }*/
-
-    /*if (nextProps.sprintTasks.length) {
-      this.setState({
-        isSectionOpen: {
-          myTasks: true,
-          allTasks: true
-        }
-      });
-    } else {
-      this.setState({
-        isSectionOpen: {
-          myTasks: false,
-          allTasks: false
-        }
-      });
-    }*/
-
-    /*if (!nextProps.StatusIsEditing && this.props.StatusIsEditing) {
-      this.selectValue(this.state.changedSprint, 'changedSprint');
-    }
-    if (!nextProps.UserIsEditing && this.props.UserIsEditing) {
-      this.selectValue(this.state.changedSprint, 'changedSprint');
-      this.setState({
-        isModalOpen: false,
-        performer: null,
-        changedTask: null
-      });
-    }*/
-
-    /*if (nextProps.lastUpdatedTask !== this.props.lastUpdatedTask) {
-      if (this.props.myTaskBoard) {
-        this.getTasks({ performerId: this.props.user.id });
-      } else {
-        this.getTasks();
-      }
-    }*/
   }
 
   componentDidUpdate() {
@@ -365,81 +169,6 @@ class AgileBoard extends Component {
     });
   }
 
-  /*translateToNumIfNeeded = value => {
-    const re = /^\d+$/;
-    return re.test(value) ? +value : value;
-  };*/
-
-  /*singleQuery = currentQuery => {
-    return currentQuery ? this.translateToNumIfNeeded(currentQuery) : null;
-  };*/
-
-  /*makeNewObj = (name, value) => {
-    if (!!value && !Array.isArray(value)) {
-      return { [name]: this.singleQuery(value) };
-    }
-  };
-
-  makeNewMultipleOdj = (name, value, sourse) => {
-    if (!!value && Array.isArray(value) && value.length) {
-      return { [name]: sourse.filter(option => value.includes(`${option.value}`)) };
-    }
-  };*/
-
-  /* getUrlQueries = () => {
-    if (!this.props.myTaskBoard) {
-      const { performerId, name, authorId, prioritiesId, typeId, filterTags, isOnlyMine, changedSprint, noTag } =
-        (this.props.location && this.props.location.query) || {};
-      return {
-        ...this.makeNewObj('name', name),
-        ...this.makeNewObj('authorId', authorId),
-        ...this.makeNewObj('prioritiesId', prioritiesId),
-        ...this.makeNewObj('filterTags', parseTagsQuery(filterTags)),
-        ...this.makeNewObj('noTag', noTag),
-        ...this.makeNewMultipleOdj('typeId', typeId, this.props.typeOptions),
-        ...this.makeNewMultipleOdj('performerId', performerId, this.getUsers()),
-        ...this.makeNewObj('isOnlyMine', isOnlyMine === 'true'),
-        ...this.makeNewObj('changedSprint', mapUrlMultiQuery(changedSprint))
-      };
-    }
-  };*/
-
-  /* getQueryFiltersFromUrl() {
-    if (!this.props.myTaskBoard) {
-      const projectId = this.props.params.projectId;
-      return {
-        ...this.getUrlQueries(),
-        changedFilters: {
-          projectId,
-          ...this.getUrlQueries()
-        }
-      };
-    }
-  }*/
-
-  /*changeUrl(changedFilters) {
-    if (!this.props.myTaskBoard) {
-      const query = {};
-
-      for (const [key, value] of Object.entries(changedFilters)) {
-        if (value && key !== 'projectId') {
-          if (key === 'performerId' || key === 'typeId' || key === 'changedSprint') {
-            query[key] = Array.isArray(value) ? value.map(singleFilter => singleFilter.value) : value;
-          } else if (key === 'filterTags') {
-            query[key] = value.map(({ value }) => value).join(',');
-          } else {
-            query[key] = value;
-          }
-        }
-      }
-
-      history.replace({
-        ...this.props.location,
-        query
-      });
-    }
-  }*/
-
   initialFilters = {
     isOnlyMine: false,
     changedSprint: [],
@@ -453,11 +182,11 @@ class AgileBoard extends Component {
   };
 
   getChangedSprint = props => {
-    let changedSprint = this.state.changedSprint.length ? this.state.changedSprint : this.props.currentSprint;
+    let changedSprint = this.changedSprint.length ? this.changedSprint : this.props.currentSprint;
     if (!this.props.myTaskBoard) {
       changedSprint =
         this.props.location.query.currentSprint === undefined
-          ? this.state.changedSprint || []
+          ? this.props.filters.changedSprint || []
           : [{ value: +this.props.location.query.currentSprint }];
     }
     if (props.lastCreatedTask && Number.isInteger(props.lastCreatedTask.sprintId)) {
@@ -471,76 +200,35 @@ class AgileBoard extends Component {
     this.setFilterValue('fullFilterView', !this.props.filters.fullFilterView);
   };
 
-  /*getFilterViewState = () => {
-    try {
-      return JSON.parse(localStorage.getItem('filterViewState')) || false;
-    } catch (e) {
-      return false;
-    }
-  };*/
-
   toggleMine = () => {
     this.setFilterValue('isOnlyMine', true);
   };
 
-  /*setFiltersToSession = (name, e, callback) => {
-    console.log('save', name, e);
-    this.setState(state => {
-      let filterValue = e;
-      const changedFilters = { ...state.changedFilters };
-
-      if (!this.props.myTaskBoard) {
-        changedFilters.projectId = this.props.params.projectId;
-      }
-
-      if (name === 'filterTags' || name === 'performerId' || name === 'typeId') {
-        filterValue = e;
-      }
-
-      if (~[null, undefined, ''].indexOf(filterValue) || (Array.isArray(filterValue) && !filterValue.length)) {
-        delete changedFilters[name];
-      } else {
-        changedFilters[name] = filterValue;
-      }
-
-      return {
-        [name]: filterValue,
-        changedFilters
-      };
-    }, callback);
-  };*/
-
-  /*selectValue = (option, name) => {
-    this.setFiltersToUrl(name, option, () => {
-      if (this.props.myTaskBoard) return this.getTasks({ performerId: this.props.user.id });
-      this.getTasks();
-      this.saveFiltersToSessionStorage();
-    });
-  };*/
-
   getTasks = customOption => {
+    console.log(this.props.filters);
     const options = customOption
       ? customOption
       : {
           projectId: this.props.params.projectId,
-          sprintId: this.state.changedSprint ? this.state.changedSprint.map(singleType => singleType.value) : null,
-          prioritiesId: this.state.prioritiesId,
-          authorId: this.state.authorId,
-          typeId: this.state.typeId
-            ? Array.isArray(this.state.typeId)
-              ? this.state.typeId.map(singleType => singleType.value)
-              : this.state.typeId.value
+          sprintId: this.props.filters.changedSprint
+            ? this.props.filters.changedSprint.map(singleType => singleType.value)
             : null,
-          name: this.state.name || null,
-          tags: this.state.filterTags.map(({ value }) => value).join(','),
-          noTag: this.state.noTag,
-          performerId: this.state.performerId
+          prioritiesId: this.props.filters.prioritiesId,
+          authorId: this.props.filters.authorId,
+          typeId: this.props.filters.typeId
+            ? Array.isArray(this.state.typeId)
+              ? this.props.filters.typeId.map(singleType => singleType.value)
+              : this.props.filters.typeId.value
+            : null,
+          name: this.props.filters.name || null,
+          tags: this.props.filters.filterTags.map(({ value }) => value).join(','),
+          noTag: this.props.filters.noTag,
+          performerId: this.props.filters.performerId
             ? Array.isArray(this.state.performerId)
-              ? this.state.performerId.map(singlePerformer => singlePerformer.value)
-              : this.state.performerId.value
+              ? this.props.filters.performerId.map(singlePerformer => singlePerformer.value)
+              : this.props.filters.performerId.value
             : null
         };
-    console.log('OPTIONS', options);
     this.props.getTasks(options);
     //this.updateFilterList();
   };
@@ -655,17 +343,6 @@ class AgileBoard extends Component {
     );
   };
 
-  /* filterIsNotEmpty = filterName => {
-    if (
-      typeof this.state[filterName] === 'string' ||
-      this.state[filterName] instanceof String ||
-      Array.isArray(this.state[filterName])
-    ) {
-      return this.state[filterName].length > 0;
-    }
-    return this.state[filterName] !== null && this.state[filterName] !== false;
-  };*/
-
   createFilterLabel = filterName => {
     switch (filterName) {
       case 'isOnlyMine':
@@ -690,20 +367,10 @@ class AgileBoard extends Component {
   };
 
   updateFilterList = () => {
-    const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'name', 'noTag'];
+    // const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'name', 'noTag'];
     const selectedFilters = [];
 
-    /*singleOptionFiltersList.forEach(filterName => {
-      if (this.filterIsNotEmpty(filterName)) {
-        selectedFilters.push({
-          name: filterName,
-          label: this.createFilterLabel(filterName),
-          deleteHandler: () => this.resetFiled(filterName)
-        });
-      }
-    });*/
-
-    const changedSprint = this.state.changedSprint.map(sprint => {
+    const changedSprint = this.changedSprint.map(sprint => {
       const option = this.props.sortedSprints.find(el => el.value === +sprint.value);
       return {
         ...sprint,
@@ -738,26 +405,6 @@ class AgileBoard extends Component {
     }
   };
 
-  clearFilter = () => {
-    /*this.setState(
-      {
-        ...this.initialFilters,
-        changedSprint: 0,
-        changedFilters: {
-          projectId: this.props.params.projectId,
-          sprintId: 0
-        }
-      },
-      () => {
-        this.getTasks({
-          projectId: this.props.params.projectId,
-          sprintId: 0,
-          ...this.initialFilters
-        });
-      }
-    );*/
-  };
-
   deleteTag = value => {
     this.setState(
       {
@@ -781,19 +428,6 @@ class AgileBoard extends Component {
     }
   };
 
-  /*isFilterEmpty = () => {
-    const filterKeys = [...Object.keys(this.initialFilters), 'isOnlyMine'];
-    let isEmpty = true;
-    filterKeys.forEach(key => {
-      if (Array.isArray(this.state[key]) && this.state[key].length === 0) {
-        return;
-      } else if ([null, '', false, 0].indexOf(this.state[key]) === -1) {
-        isEmpty = false;
-      }
-    });
-    return isEmpty;
-  };*/
-
   setFilterValue = (label, options) => {
     console.log('Label', options, label);
     this.props.setFilterValue(label, options, this.getTasks);
@@ -808,8 +442,11 @@ class AgileBoard extends Component {
   };
 
   getFilterTagsProps() {
-    const { filterTags, noTag } = this.state;
-    const { tags, noTagData } = this.props;
+    const {
+      tags,
+      noTagData,
+      filters: { filterTags, noTag }
+    } = this.props;
     return {
       value: !noTag ? filterTags : [noTagData].concat(filterTags),
       options: filterTags.length ? tags : [noTagData].concat(tags)
@@ -832,14 +469,16 @@ class AgileBoard extends Component {
     );
   };
 
-  render() {
-    const { lang } = this.props;
+  get changedSprint() {
+    return this.props.filters.changedSprint || [];
+  }
 
-    console.log('filtersEEEEEEEE', this.props.filters);
+  render() {
+    const { lang, filters } = this.props;
 
     const isVisor = this.props.globalRole === VISOR;
     const isExternal = this.props.globalRole === EXTERNAL_USER;
-    const singleSprint = this.state.changedSprint.length === 1 ? this.state.changedSprint[0].value : null;
+    const singleSprint = this.changedSprint.length === 1 ? filters.changedSprint[0].value : null;
 
     const allSorted = sortTasksAndCreateCard(
       this.props.tasks,
@@ -944,14 +583,14 @@ class AgileBoard extends Component {
                       placeholder={localize[lang].SELECT_SPRINT}
                       multi
                       backspaceToRemoveMessage=""
-                      value={this.state.changedSprint.map(sprint => sprint.value)}
+                      value={this.changedSprint.map(sprint => sprint.value)}
                       onChange={this.onSprintsFilterChange}
                       noResultsText={localize[lang].NO_RESULTS}
                       options={this.props.sortedSprints}
                     />
                     <div className={css.sprintTimeWrapper}>
                       {!isExternal
-                        ? this.getSprintTime(this.state.changedSprint).map((time, key) => (
+                        ? this.getSprintTime(this.changedSprint).map((time, key) => (
                             <span key={key} className={css.sprintTime}>
                               {time}
                             </span>
@@ -985,14 +624,14 @@ class AgileBoard extends Component {
             </UnmountClosed>
             <Row className={css.filtersRow}>
               <Col xs={12} sm={12}>
-                {/*<FilterList
+                <FilterList
                   clearAll={this.props.clearFilters}
-                  fullFilterView={this.state.full\FilterView}
+                  fullFilterView={this.state.fullFilterView}
                   toggleFilterView={this.toggleFilterView}
-                  filters={this.state.allFilters}
+                  filters={[]}
                   openCreateTaskModal={this.props.openCreateTaskModal}
                   isVisor={isVisor}
-                />*/}
+                />
               </Col>
             </Row>
           </div>
@@ -1081,30 +720,7 @@ AgileBoard.propTypes = {
   user: PropTypes.object
 };
 
-const mapStateToProps = state => ({
-  tasks: getSortedTasks(state),
-  myTasks: getMyTasks(state),
-  tags: getAllTags(state),
-  sortedSprints: getSortedSprints(state),
-  currentSprint: getCurrentSprint(state),
-  typeOptions: getTypeOptions(state),
-  authorOptions: getAuthorOptions(state),
-  noTagData: getNoTagData(state),
-  lastCreatedTask: state.Project.lastCreatedTask,
-  lastUpdatedTask: state.Task.lastUpdatedTask,
-  sprintTasks: state.Tasks.tasks,
-  sprints: state.Project.project.sprints,
-  project: state.Project.project,
-  tracksChange: state.TimesheetPlayer.tracksChange,
-  StatusIsEditing: state.Task.StatusIsEditing,
-  UserIsEditing: state.Task.UserIsEditing,
-  user: state.Auth.user,
-  isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
-  globalRole: state.Auth.user.globalRole,
-  statuses: getLocalizedTaskStatuses(state),
-  taskTypes: getLocalizedTaskTypes(state),
-  lang: state.Localize.lang
-});
+const mapStateToProps = state => agileBoardSelector(state);
 
 const mapDispatchToProps = {
   getTasks,
