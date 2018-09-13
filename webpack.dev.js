@@ -20,7 +20,7 @@ const p = require('./package.json');
 const settings = {
   entry: {
     vendor: Object.keys(p.dependencies),
-    bundle: ['babel-polyfill', 'react-hot-loader/patch', './src/App.js']
+    bundle: ['react-hot-loader/patch', './src/Dev.js']
   },
   output: {
     filename: '[name].js',
@@ -123,6 +123,12 @@ const settings = {
     }
   },
   plugins: [
+    new webpack.DefinePlugin({
+      // <-- key to reducing React's size
+      'process.env': {
+        NODE_ENV: JSON.stringify('development')
+      }
+    }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
     new webpack.LoaderOptionsPlugin({

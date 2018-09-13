@@ -6,20 +6,24 @@
   font-weight: 600;
 }
 .TableCellName {
-  flex-basis: 23%;
-  max-width: 23%;
+  flex-basis: 20%;
+  max-width: 20%;
 }
 .TableCellLogin {
-  flex-basis: 29%;
-  max-width: 29%;
+  flex-basis: 21%;
+  max-width: 21%;
 }
-.TableCellDate {
+.TableCellDesc {
   flex-basis: 23%;
   max-width: 23%;
 }
+.TableCellDate {
+  flex-basis: 18%;
+  max-width: 18%;
+}
 .TableCellActivity {
-  flex-basis: 16%;
-  max-width: 16%;
+  flex-basis: 10%;
+  max-width: 10%;
   text-align: center;
 }
 

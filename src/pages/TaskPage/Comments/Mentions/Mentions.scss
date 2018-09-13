@@ -1,0 +1,25 @@
+.mentions {
+  position: relative;
+  ul {
+    position: absolute;
+    padding-left: 0;
+    z-index: 2; /* Global z-index context (dropdown-layer) */
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.17);
+    top: calc(100% + 1px);
+    left: -1px;
+    right: -1px;
+    width: 40%;
+  }
+  li {
+    padding: 7px 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: 0.3s ease-out 0s;
+    &:hover {
+      background-color: #f1f1f1;
+      transition: 0.3s ease-out 0s;
+    }
+  }
+}

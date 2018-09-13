@@ -8,7 +8,8 @@
     "SEND": "Send (Ctrl + Enter)",
     "COMMENTS_IS_EXISTS": "Comments is exists",
     "BE_FIRST": "You can be the first!",
-    "REMOVE_COMMENT": "Do you really want to remove comment?"
+    "REMOVE_COMMENT": "Do you really want to remove comment?",
+    "ALL": "All"
   },
   "ru": {
     "ENTER_COMMENT": "Введите текст комментария",
@@ -19,6 +20,7 @@
     "SEND": "Отправить (Ctrl + Enter)",
     "COMMENTS_IS_EXISTS": "Комментариев еще нет",
     "BE_FIRST": "Вы можете стать первым!",
-    "REMOVE_COMMENT": "Вы действительно хотите удалить комментарий?"
+    "REMOVE_COMMENT": "Вы действительно хотите удалить комментарий?",
+    "ALL": "Всем"
   }
 }

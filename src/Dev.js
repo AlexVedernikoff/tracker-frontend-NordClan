@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './Router';
+import AppRoute from './Router';
 
 import 'normalize.css';
 import './styles/hooks.css';
@@ -16,6 +16,7 @@ import SocketAdapter from './sockets/SocketAdapter';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContextProvider } from 'react-dnd';
 
+import { AppContainer } from 'react-hot-loader';
 const rootEl = document.getElementById('app');
 
 const channels = ['task', 'project', 'timesheet'];
@@ -23,11 +24,21 @@ const socket = new SocketAdapter(store, channels);
 
 store.dispatch(getInfoAboutMe());
 
-ReactDOM.render(
-  <Provider store={store}>
-    <DragDropContextProvider backend={HTML5Backend}>
-      <App history={history} socket={socket} />
-    </DragDropContextProvider>
-  </Provider>,
-  rootEl
-);
+const render = App => {
+  ReactDOM.render(
+    <AppContainer>
+      <Provider store={store}>
+        <DragDropContextProvider backend={HTML5Backend}>
+          <App history={history} socket={socket} />
+        </DragDropContextProvider>
+      </Provider>
+    </AppContainer>,
+    rootEl
+  );
+};
+
+if (module.hot) {
+  module.hot.accept('./Router', () => render(require('./Router').default));
+}
+
+render(AppRoute);
