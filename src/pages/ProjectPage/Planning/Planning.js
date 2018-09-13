@@ -14,29 +14,25 @@ import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { changeTasks } from '../../../actions/Tasks';
 import { openCreateTaskModal, getProjectInfo, changeProject } from '../../../actions/Project';
 
-import Button from '../../../components/Button';
 import RoundButton from '../../../components/RoundButton';
 import SimplePie from '../../../components/SimplePie';
 import Budget from '../../../components/PlanningEdit/Budget';
 import ConfirmModal from '../../../components/ConfirmModal';
 import CreateTaskModal from '../../../components/CreateTaskModal';
 import ProjectDate from '../../../components/PlanningEdit/ProjectDate';
-import SprintCard from '../../../components/SprintCard';
 import SprintEditModal from '../../../components/SprintEditModal';
-import { IconArrowDown, IconArrowRight } from '../../../components/Icons';
 
 import { BACKLOG_ID } from '../../../constants/Sprint';
 import { ADMIN, VISOR, EXTERNAL_USER } from '../../../constants/Roles';
 import { DONE } from '../../../constants/TaskStatuses';
 
-import CreateSprintModal from '../CreateSprintModal';
-import CreateMilestoneModal from './CreateMilestoneModal';
 import DraggableTaskRow from './DraggableTaskRow';
 import EditMilestoneModal from './EditMilestoneModal';
 import SprintColumnHeader from './SprintColumnHeader/';
 import SprintColumn from './SprintColumn';
 import Table from './Table';
 import localize from './Planning.json';
+import SprintList from './SprintList';
 
 import moment from 'moment';
 
@@ -49,10 +45,12 @@ class Planning extends Component {
     completedAt: PropTypes.string,
     createSprint: PropTypes.func.isRequired,
     createdAt: PropTypes.string,
+    deleteMilestone: PropTypes.func,
     editSprint: PropTypes.func.isRequired,
     getPlanningTasks: PropTypes.func.isRequired,
     getProjectInfo: PropTypes.func.isRequired,
     isCreateTaskModalOpen: PropTypes.bool,
+    lang: PropTypes.string.isRequired,
     lastCreatedTask: PropTypes.object,
     leftColumnTasks: PropTypes.object,
     loading: PropTypes.number,
@@ -116,22 +114,6 @@ class Planning extends Component {
   componentDidUpdate() {
     ReactTooltip.rebuild();
   }
-
-  handleOpenModalAddSprint = () => {
-    this.setState({ isModalOpenAddSprint: true });
-  };
-
-  handleCloseModalAddSprint = () => {
-    this.setState({ isModalOpenAddSprint: false });
-  };
-
-  handleOpenModalAddMilestone = () => {
-    this.setState({ isModalOpenAddMilestone: true });
-  };
-
-  handleCloseModalAddMilestone = () => {
-    this.setState({ isModalOpenAddMilestone: false });
-  };
 
   getCurrentSprint = sprints => {
     const currentSprints = sprints.filter(
@@ -555,61 +537,16 @@ class Planning extends Component {
             </div>
           </div>
           <hr />
-          {isProjectAdmin ? (
-            <Button
-              text={localize[lang].SPRINT}
-              type="primary"
-              style={{ float: 'right', marginTop: '-.2rem' }}
-              icon="IconPlus"
-              onClick={this.handleOpenModalAddSprint}
-            />
-          ) : null}
-          {isProjectAdmin ? (
-            <Button
-              text={localize[lang].MILESTONE}
-              type="primary"
-              style={{ float: 'right', marginTop: '-.2rem', marginRight: '5px' }}
-              icon="IconPlus"
-              onClick={this.handleOpenModalAddMilestone}
-            />
-          ) : null}
-          <div className={css.sprintList}>
-            {this.props.sprints ? (
-              <div>
-                <h2
-                  className={css.name}
-                  onClick={() =>
-                    this.setState({
-                      ...this.state,
-                      isOpenSprintList: !this.state.isOpenSprintList
-                    })
-                  }
-                >
-                  {this.state.isOpenSprintList ? <IconArrowDown /> : <IconArrowRight />}
-                  {localize[lang].SPRINTS_AND_PHASES}
-                </h2>
-                {this.state.isOpenSprintList ? (
-                  <Row>
-                    {this.props.sprints.map((element, i) => (
-                      <Col xs={12} sm={6} md={3} key={`sprint-${i}`}>
-                        <SprintCard
-                          sprint={element}
-                          inFocus={this.state.typeHovered === 'sprint' && element.id === this.state.typeIdHovered}
-                          onMouseOver={this.onMouseOverRow('sprint', element.id)}
-                          onMouseOut={this.onMouseOutRow}
-                          isExternal={isExternal}
-                        />
-                      </Col>
-                    ))}
-                  </Row>
-                ) : null}
-              </div>
-            ) : null}
-          </div>
-          {this.state.isModalOpenAddSprint ? <CreateSprintModal onClose={this.handleCloseModalAddSprint} /> : null}
-          {this.state.isModalOpenAddMilestone ? (
-            <CreateMilestoneModal onClose={this.handleCloseModalAddMilestone} />
-          ) : null}
+          <SprintList
+            sprints={this.props.sprints}
+            isExternal={isExternal}
+            typeIdHovered={this.state.typeIdHovered}
+            typeHovered={this.state.typeHovered}
+            onMouseOverRow={this.onMouseOverRow}
+            onMouseOutRow={this.onMouseOutRow}
+            lang={lang}
+            isProjectAdmin={isProjectAdmin}
+          />
           <Table
             entities={entities}
             typeIdHovered={this.state.typeIdHovered}
@@ -760,4 +697,7 @@ const mapDispatchToProps = {
   getProjectInfo
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Planning);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Planning);

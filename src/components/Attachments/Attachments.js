@@ -32,10 +32,11 @@ export default class Attachments extends Component {
       }
     }
 
-    return this.getAttachmentsNextImageIndex(0) ? this.getAttachmentsPrevImageIndex(0) : 0;
+    return index ? this.getAttachmentsNextImageIndex(0) : 0;
   };
 
   getAttachmentsPrevImageIndex = index => {
+    const lastIndex = this.props.attachments.length - 1;
     for (let i = index; i >= 0; i--) {
       const file = this.props.attachments[i];
       if (file && isImage(file.type)) {
@@ -43,9 +44,7 @@ export default class Attachments extends Component {
       }
     }
 
-    return this.getAttachmentsPrevImageIndex(this.props.attachments.length - 1)
-      ? this.getAttachmentsPrevImageIndex(this.props.attachments.length - 1)
-      : 0;
+    return index < lastIndex ? this.getAttachmentsPrevImageIndex(lastIndex) : 0;
   };
 
   openImage = index => {
@@ -110,7 +109,20 @@ export default class Attachments extends Component {
     const { attachments } = this.props;
     const nextImageIndex = this.getAttachmentsNextImageIndex;
     const prevImageIndex = this.getAttachmentsPrevImageIndex;
-
+    let nextSrc = '';
+    let prevSrc = '';
+    let mainSrc = '';
+    if (attachments.length) {
+      mainSrc = attachments[photoIndex].path;
+      nextSrc =
+        attachments[nextImageIndex((photoIndex + 1) % attachments.length)].path !== mainSrc
+          ? `/${attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path}`
+          : undefined;
+      prevSrc =
+        attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path !== mainSrc
+          ? `/${attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path}`
+          : undefined;
+    }
     return (
       <div className={css.attachments}>
         <ul className={css.attachmentsContainer}>
@@ -119,9 +131,9 @@ export default class Attachments extends Component {
         </ul>
         {isOpen && (
           <Lightbox
-            mainSrc={`/${attachments[photoIndex].path}`}
-            nextSrc={`/${attachments[nextImageIndex((photoIndex + 1) % attachments.length)].path}`}
-            prevSrc={`/${attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path}`}
+            mainSrc={`/${mainSrc}`}
+            nextSrc={nextSrc}
+            prevSrc={prevSrc}
             onCloseRequest={this.closeImage}
             onMovePrevRequest={this.prevImage}
             onMoveNextRequest={this.nextImage}

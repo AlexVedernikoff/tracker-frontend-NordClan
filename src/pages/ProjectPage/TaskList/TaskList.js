@@ -26,6 +26,7 @@ import CreateTaskModal from '../../../components/CreateTaskModal';
 import { openCreateTaskModal } from '../../../actions/Project';
 import localize from './taskList.json';
 import { getFullName, getDictionaryName } from '../../../utils/NameLocalisation';
+import { getLocalizedTaskTypes, getLocalizedTaskStatuses } from '../../../selectors/dictionaries';
 
 const dateFormat = 'DD.MM.YYYY';
 
@@ -93,8 +94,7 @@ class TaskList extends Component {
       changedSprint,
       dateFrom,
       dateTo
-    } =
-      (this.props.location && this.props.location.query) || {};
+    } = (this.props.location && this.props.location.query) || {};
 
     return {
       ...this.makeFiltersObject('performerId', performerId),
@@ -337,6 +337,16 @@ class TaskList extends Component {
 
   formatDate = date => date && moment(date).format(dateFormat);
 
+  onChangePrioritiesFilter = option => this.changeSingleFilter(option, 'prioritiesId');
+  onChangeTypeFilter = options => this.changeMultiFilter(options, 'typeId');
+  onChangeStatusFilter = options => this.changeMultiFilter(options, 'statusId');
+  onChangeAuthorFilter = option => this.changeSingleFilter(option, 'authorId');
+  onChangeSprintFilter = options => this.changeMultiFilter(options, 'sprintId');
+  onChangeDateFromFilter = option => this.handleDayChange(option, 'dateFrom');
+  onChangeDateToFilter = option => this.handleDayChange(option, 'dateTo');
+  onChangePerformerFilter = option => this.changeSingleFilter(option, 'performerId');
+  onChangeTagFilter = options => this.changeMultiFilter(options, 'tags');
+
   render() {
     const { tasksList: tasks, statuses, taskTypes, project, isReceiving, lang } = this.props;
 
@@ -348,6 +358,7 @@ class TaskList extends Component {
     const isFilter = Object.keys(this.state.changedFilters).length > 1;
     const isLoading = isReceiving && !tasks.length;
     const isExternal = this.props.globalRole === EXTERNAL_USER;
+    const singleSprint = Array.isArray(sprintId) ? (sprintId.length === 1 ? sprintId[0] : null) : sprintId;
     const taskHolder = (
       <div style={{ marginBottom: '1rem' }}>
         <hr style={{ margin: '0 0 1rem 0' }} />
@@ -375,11 +386,7 @@ class TaskList extends Component {
           <div className={css.filters}>
             <Row className={css.search} top="xs">
               <Col xs={12} sm={3} className={css.priorityFilter}>
-                <Priority
-                  onChange={option => this.changeSingleFilter(option, 'prioritiesId')}
-                  priority={prioritiesId}
-                  canEdit
-                />
+                <Priority onChange={this.onChangePrioritiesFilter} priority={prioritiesId} canEdit />
               </Col>
               <Col smOffset={4} xs={12} sm={5} className={css.clearFilters}>
                 <Button
@@ -409,7 +416,7 @@ class TaskList extends Component {
                   clearAllText={localize[lang].CLEAR_ALL}
                   value={typeId}
                   options={typeOptions}
-                  onChange={options => this.changeMultiFilter(options, 'typeId')}
+                  onChange={this.onChangeTypeFilter}
                 />
               </Col>
               <Col xs={12} sm={3}>
@@ -422,7 +429,7 @@ class TaskList extends Component {
                   clearAllText={localize[lang].CLEAR_ALL}
                   value={statusId}
                   options={statusOptions}
-                  onChange={options => this.changeMultiFilter(options, 'statusId')}
+                  onChange={this.onChangeStatusFilter}
                 />
               </Col>
               <Col xs={12} sm={3}>
@@ -431,7 +438,7 @@ class TaskList extends Component {
                   placeholder={localize[lang].SELECT_AUTHOR_TASK}
                   multi={false}
                   value={authorId}
-                  onChange={option => this.changeSingleFilter(option, 'authorId')}
+                  onChange={this.onChangeAuthorFilter}
                   noResultsText={localize[lang].NO_RESULTS}
                   options={authorOptions}
                 />
@@ -440,7 +447,8 @@ class TaskList extends Component {
                 <SprintSelector
                   value={sprintId}
                   sprints={project.sprints}
-                  onChange={option => this.changeSingleFilter(option, 'sprintId')}
+                  onChange={this.onChangeSprintFilter}
+                  multi
                   useId
                 />
               </Col>
@@ -459,7 +467,7 @@ class TaskList extends Component {
                         new Date()
                     }
                   ]}
-                  onDayChange={option => this.handleDayChange(option, 'dateFrom')}
+                  onDayChange={this.onChangeDateFromFilter}
                   placeholder={localize[lang].FROM}
                   format={dateFormat}
                 />
@@ -468,7 +476,7 @@ class TaskList extends Component {
                 <DatepickerDropdown
                   name="dateTo"
                   value={this.state.changedFilters ? this.state.changedFilters.dateTo : ''}
-                  onDayChange={option => this.handleDayChange(option, 'dateTo')}
+                  onDayChange={this.onChangeDateToFilter}
                   disabledDataRanges={[
                     {
                       before:
@@ -491,17 +499,10 @@ class TaskList extends Component {
             </Row>
             <Row className={css.search}>
               <Col xs={12} sm={3}>
-                <PerformerFilter
-                  onPerformerSelect={option => this.changeSingleFilter(option, 'performerId')}
-                  selectedPerformerId={performerId}
-                />
+                <PerformerFilter onPerformerSelect={this.onChangePerformerFilter} selectedPerformerId={performerId} />
               </Col>
               <Col xs={12} sm={3}>
-                <TagsFilter
-                  filterFor={'task'}
-                  onTagSelect={options => this.changeMultiFilter(options, 'tags')}
-                  filterTags={tags}
-                />
+                <TagsFilter filterFor={'task'} onTagSelect={this.onChangeTagFilter} filterTags={tags} />
               </Col>
             </Row>
           </div>
@@ -548,7 +549,7 @@ class TaskList extends Component {
         ) : null}
         {this.props.isCreateTaskModalOpen ? (
           <CreateTaskModal
-            selectedSprintValue={this.state.sprintId}
+            selectedSprintValue={singleSprint}
             project={this.props.project}
             defaultPerformerId={performerId}
           />
@@ -584,11 +585,14 @@ const mapStateToProps = state => ({
   isReceiving: state.TaskList.isReceiving,
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
   project: state.Project.project,
-  statuses: state.Dictionaries.taskStatuses,
-  taskTypes: state.Dictionaries.taskTypes,
+  statuses: getLocalizedTaskStatuses(state),
+  taskTypes: getLocalizedTaskTypes(state),
   lang: state.Localize.lang
 });
 
 const mapDispatchToProps = { getTasks, startTaskEditing, changeTask, openCreateTaskModal };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskList);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskList);

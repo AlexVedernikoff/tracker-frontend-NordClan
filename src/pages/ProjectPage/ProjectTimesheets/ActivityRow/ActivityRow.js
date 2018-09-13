@@ -13,6 +13,7 @@ import { IconEdit } from '../../../../components/Icons';
 import * as timesheetsConstants from '../../../../constants/Timesheets';
 import EditSpentModal from '../EditSpentModal';
 import { createTimesheet, updateTimesheet } from '../../../../actions/Timesheets';
+import { getLocalizedTaskStatuses, getLocalizedMagicActiveTypes } from '../../../../selectors/dictionaries';
 
 class ActivityRow extends React.Component {
   static propTypes = {
@@ -230,8 +231,8 @@ class ActivityRow extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  statuses: state.Dictionaries.taskStatuses,
-  magicActivitiesTypes: state.Dictionaries.magicActivityTypes,
+  statuses: getLocalizedTaskStatuses(state),
+  magicActivitiesTypes: getLocalizedMagicActiveTypes(state),
   userId: state.Auth.user.id,
   startingDay: state.Timesheets.startingDay
 });

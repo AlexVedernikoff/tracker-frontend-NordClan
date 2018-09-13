@@ -261,6 +261,7 @@ svg.red {
   white-space: nowrap;
   border: 1px solid darken($color-gray, 10%);
   transition: $transition;
+  cursor: pointer;
 
   &:hover,
   &.lighted {
@@ -315,9 +316,16 @@ svg.red {
 }
 .subTasksButton {
   cursor: pointer;
-  padding: 0.5rem;
+  position: relative;
   font-size: $font-size-small;
-  color: #678bad;
+  background-color: $color-lightgray;
+  padding: 0.05rem;
+  white-space: nowrap;
+  border: 1px solid darken($color-gray, 10%);
+  transition: $transition;
+  margin-left: 0.5rem;
+  border-top: 0;
+  text-align: center;
 }
 .subTasksBlock {
   max-height: 0;

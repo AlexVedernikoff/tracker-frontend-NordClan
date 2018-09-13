@@ -21,6 +21,12 @@ export default function ExternalUsers(state = InitialState, action) {
         ...state,
         users: updatedUsers
       };
+    case externalUsersActions.REFRESH_EXTERNAL_USER_LINK_SUCCESS:
+      const users = state.users.map(user => (user.id === action.id ? action.changedUser : user));
+      return {
+        ...state,
+        users
+      };
     case externalUsersActions.ADD_EXTERNAL_USER_SUCCESS:
       const concatedUsers = [action.exUser].concat(state.users);
       return {

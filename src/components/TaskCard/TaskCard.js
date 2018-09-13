@@ -7,6 +7,10 @@ import * as css from './TaskCard.scss';
 import RelatedTask from './RelatedTask';
 import TaskCore from './TaskCore';
 import classnames from 'classnames';
+import { IconPlus } from '../Icons';
+import { IconArrowUpThin } from '../Icons';
+import { IconArrowDownThin } from '../Icons';
+import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
 class TaskCard extends PureComponent {
   state = {
     isOpen: false
@@ -22,6 +26,13 @@ class TaskCard extends PureComponent {
 
     const classPriority = 'priority-' + task.prioritiesId;
     const isBug = [2, 4, 5].includes(task.typeId);
+
+    const iconStyles = {
+      width: 11,
+      height: 11,
+      color: 'inherit',
+      fill: 'currentColor'
+    };
 
     return (
       <div className={css.taskWrapper}>
@@ -88,7 +99,11 @@ class TaskCard extends PureComponent {
                   )}
                 </div>
                 <div onClick={this.handleClick} className={css.subTasksButton}>
-                  {this.state.isOpen ? 'Скрыть последние' : `... еще ${task.subTasks.length - 5}`}
+                  {this.state.isOpen ? (
+                    <IconArrowUpThin style={iconStyles} />
+                  ) : (
+                    <IconArrowDownThin style={iconStyles} />
+                  )}
                 </div>
               </div>
             ) : (
@@ -147,7 +162,7 @@ TaskCard.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  taskTypes: state.Dictionaries.taskTypes
+  taskTypes: getLocalizedTaskTypes(state)
 });
 
 export default connect(

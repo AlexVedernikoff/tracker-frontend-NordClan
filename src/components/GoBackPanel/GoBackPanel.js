@@ -40,4 +40,7 @@ const mapStateToProps = state => ({
   lang: state.Localize.lang
 });
 
-export default connect(mapStateToProps, null)(GoBackPanel);
+export default connect(
+  mapStateToProps,
+  null
+)(GoBackPanel);

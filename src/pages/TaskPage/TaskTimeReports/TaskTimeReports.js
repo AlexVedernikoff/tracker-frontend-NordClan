@@ -13,6 +13,7 @@ import { ADMIN } from '../../../constants/Roles';
 import RadioGroup from '../../../components/RadioGroup';
 import TimeSheetsHistory from './TimeSheetsHistory.js';
 import localize from './taskTimeReports.json';
+import { getLocalizedTaskStatuses, getLocalizedRoles } from '../../../selectors/dictionaries';
 
 class TaskTimeReports extends React.Component {
   constructor(props) {
@@ -189,7 +190,7 @@ class TaskTimeReports extends React.Component {
                         className={css.horizontalChart}
                         style={{
                           backgroundColor: stagesColors[index],
-                          width: stagesDataSet[index] / sum(stagesDataSet) * 100 + '%'
+                          width: (stagesDataSet[index] / sum(stagesDataSet)) * 100 + '%'
                         }}
                         title={`${stage}: ${stagesDataSet[index]}`}
                       >
@@ -212,7 +213,7 @@ class TaskTimeReports extends React.Component {
                           className={css.horizontalChart}
                           style={{
                             backgroundColor: usersColors[index],
-                            width: usersDataSet[index] / sum(usersDataSet) * 100 + '%'
+                            width: (usersDataSet[index] / sum(usersDataSet)) * 100 + '%'
                           }}
                           title={`${user}: ${usersDataSet[index]}`}
                         >
@@ -235,7 +236,7 @@ class TaskTimeReports extends React.Component {
                         className={css.horizontalChart}
                         style={{
                           backgroundColor: rolesColors[index],
-                          width: rolesDataSet[index] / sum(rolesDataSet) * 100 + '%'
+                          width: (rolesDataSet[index] / sum(rolesDataSet)) * 100 + '%'
                         }}
                         title={`${role}: ${rolesDataSet[index]}`}
                       >
@@ -299,10 +300,10 @@ const mapStateToProps = state => ({
   timeSpent: state.Task.timeSpent,
   timesheets: state.Timesheets.list,
   preloaders: state.Timesheets.preloaders,
-  taskStatuses: state.Dictionaries.taskStatuses,
+  taskStatuses: getLocalizedTaskStatuses(state),
   userTimeSpent: state.Task.userTimeSpent,
   roleTimeSpent: state.Task.roleTimeSpent,
-  roles: state.Dictionaries.roles,
+  roles: getLocalizedRoles(state),
   user: state.Auth.user,
   project: state.Project.project,
   task: state.Task.task,
@@ -316,4 +317,7 @@ const mapDispatchToProps = {
   createTimesheet
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskTimeReports);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskTimeReports);

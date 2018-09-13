@@ -23,28 +23,34 @@ import getProjects, {
 import { getErrorMessageByType } from '../../utils/ErrorMessages';
 import { ADMIN } from '../../constants/Roles';
 import localization from './projects.json';
+import Title, { flushTitle } from 'react-title-component';
 
 import 'moment/locale/ru';
+import localize from '../ExternalUsers/ExternalUsers';
 
 class Projects extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      filterTags: [],
-      filteredInProgress: false,
-      filteredInHold: false,
-      filteredFinished: false,
+      ...this.initialFilters,
       projects: [],
-      filterByName: '',
-      dateFrom: '',
-      dateTo: '',
-      projectName: '',
       projectPrefix: '',
       openProjectPage: false,
       selectedPortfolio: null,
       activePage: 1
     };
   }
+
+  initialFilters = {
+    filterTags: [],
+    filteredInProgress: false,
+    filteredInHold: false,
+    filteredFinished: false,
+    filterByName: '',
+    dateFrom: '',
+    dateTo: '',
+    projectName: ''
+  };
 
   componentDidMount() {
     this.loadProjects();
@@ -243,15 +249,27 @@ class Projects extends Component {
 
     return null;
   };
+
+  isFiltered() {
+    for (const key in this.initialFilters) {
+      if (this.state[key] && (!Array.isArray(this.state[key]) || this.state[key].length)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   render() {
     const { lang } = this.props;
     const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
     const formattedDayFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('DD.MM.YYYY') : '';
     const formattedDayTo = this.state.dateTo ? moment(this.state.dateTo).format('DD.MM.YYYY') : '';
     const isAdmin = this.props.globalRole === ADMIN;
+    const isFiltered = this.isFiltered();
 
     return (
       <div>
+        <Title render={`SimTrack - ${localization[lang].MY_PROJECTS}`} />
         <section>
           <header className={css.title}>
             <h1 className={css.title}>{localization[lang].MY_PROJECTS}</h1>
@@ -328,7 +346,9 @@ class Projects extends Component {
               ))}
             </div>
           ) : (
-            <div className={css.notFound}>{localization[lang].NOTHING_FOUND}</div>
+            <div className={css.notFound}>
+              {localization[lang][isFiltered ? 'NOTHING_FOUND' : 'NO_PROJECT_ASSIGNED']}
+            </div>
           )}
           {this.props.pagesCount > 1 ? (
             <Pagination

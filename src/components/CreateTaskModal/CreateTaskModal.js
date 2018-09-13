@@ -24,6 +24,7 @@ import localize from './CreateTaskModal.json';
 import Tag from '../../components/Tag';
 import Tags from '../../components/Tags';
 import { getFullName } from '../../utils/NameLocalisation';
+import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
 
 class CreateTaskModal extends Component {
   constructor(props) {
@@ -365,16 +366,16 @@ CreateTaskModal.propTypes = {
   taskTypes: PropTypes.array
 };
 
-const getLocaleTaskTypes = (dictionaryTypes, lang) =>
-  dictionaryTypes.map(({ name, nameEn, id }) => ({
-    label: lang === 'ru' ? name : nameEn,
+const getTaskTypes = dictionaryTypes =>
+  dictionaryTypes.map(({ name, id }) => ({
+    label: name,
     value: id
   }));
 
 const mapStateToProps = state => ({
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
   isCreateChildTaskModalOpen: state.Project.isCreateChildTaskModalOpen,
-  taskTypes: getLocaleTaskTypes(state.Dictionaries.taskTypes, state.Localize.lang),
+  taskTypes: getTaskTypes(getLocalizedTaskTypes(state)),
   isCreateTaskRequestInProgress: state.Project.isCreateTaskRequestInProgress,
   lang: state.Localize.lang
 });
@@ -384,4 +385,7 @@ const mapDispatchToProps = {
   createTask
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateTaskModal);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CreateTaskModal);

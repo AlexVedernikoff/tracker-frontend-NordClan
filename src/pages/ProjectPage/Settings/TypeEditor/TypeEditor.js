@@ -7,6 +7,7 @@ import Select from '../../../../components/SelectDropdown';
 import * as css from './TypeEditor.scss';
 import checkProjectAdmin from '../../../../utils/checkProjectAdmin';
 import localize from './TypeEditor.json';
+import { getLocalizedProjectTypes } from '../../../../selectors/dictionaries';
 
 class TypeEditor extends Component {
   static propTypes = {
@@ -55,7 +56,7 @@ class TypeEditor extends Component {
 
 function mapStateToProps(state) {
   return {
-    projectTypes: state.Dictionaries.projectTypes || [],
+    projectTypes: getLocalizedProjectTypes(state) || [],
     project: state.Project.project,
     user: state.Auth.user,
     lang: state.Localize.lang

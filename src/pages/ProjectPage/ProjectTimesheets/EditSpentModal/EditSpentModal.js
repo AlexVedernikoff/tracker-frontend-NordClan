@@ -8,6 +8,14 @@ import Checkbox from '../../../../components/Checkbox';
 import SelectDropdown from '../../../../components/SelectDropdown';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './EditSpentModal.scss';
+import {
+  TASK_STATUS_CODE_REVIEW_PLAY,
+  TASK_STATUS_CODE_REVIEW_STOP,
+  TASK_STATUS_DEVELOP_PLAY,
+  TASK_STATUS_DEVELOP_STOP,
+  TASK_STATUS_QA_PLAY,
+  TASK_STATUS_QA_STOP
+} from '../../../../constants/Task';
 
 class EditSpentModal extends Component {
   static propTypes = {
@@ -94,6 +102,24 @@ class EditSpentModal extends Component {
       secondCol: 8
     };
 
+    const billableRow = () => {
+      return taskStatusId !== TASK_STATUS_DEVELOP_PLAY &&
+        taskStatusId !== TASK_STATUS_DEVELOP_STOP &&
+        taskStatusId !== TASK_STATUS_CODE_REVIEW_PLAY &&
+        taskStatusId !== TASK_STATUS_CODE_REVIEW_STOP &&
+        taskStatusId !== TASK_STATUS_QA_STOP &&
+        taskStatusId !== TASK_STATUS_QA_PLAY ? (
+        <Row className={css.inputRow}>
+          <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+            <p>Billable:</p>
+          </Col>
+          <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+            <Checkbox disabled checked={isBillable} onChange={this.changeBillable} />
+          </Col>
+        </Row>
+      ) : null;
+    };
+
     return (
       <Modal isOpen contentLabel="modal" onRequestClose={onClose}>
         <div>
@@ -159,14 +185,7 @@ class EditSpentModal extends Component {
                     <Input disabled value={status} />
                   </Col>
                 </Row>
-                <Row className={css.inputRow}>
-                  <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                    <p>Billable:</p>
-                  </Col>
-                  <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                    <Checkbox disabled checked={isBillable} onChange={this.changeBillable} />
-                  </Col>
-                </Row>
+                {billableRow()}
               </div>
             ) : null}
             <div className={css.buttonWrap}>

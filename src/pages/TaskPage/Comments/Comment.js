@@ -80,6 +80,7 @@ class Comment extends Component {
     comment: PropTypes.object,
     commentsLoadedDate: PropTypes.string,
     editComment: PropTypes.func,
+    lang: PropTypes.string,
     lightened: PropTypes.bool,
     location: PropTypes.object,
     ownedByMe: PropTypes.bool,
@@ -126,9 +127,23 @@ class Comment extends Component {
     }
   };
 
+  editMentions(text) {
+    let result = null;
+    const regExp = /@(\S+ \S*|\S*)/g;
+    const mentions = [];
+    let resultStr = text;
+    while ((result = regExp.exec(text))) {
+      mentions.push(result[0]);
+    }
+    mentions.map(mention => {
+      resultStr = resultStr.replace(/(^| )@(\S+ \S*|\S*) /, ` <strong>${mention}</strong> `);
+    });
+    return resultStr;
+  }
+
   render() {
     const {
-      comment: { author, parentComment },
+      comment: { author, parentComment, text },
       comment,
       lang
     } = this.props;
@@ -142,7 +157,7 @@ class Comment extends Component {
       }
       typoAvatar.toLocaleUpperCase();
     }
-
+    const withMentions = this.editMentions(text);
     return (
       <li
         ref="comment"
@@ -158,8 +173,10 @@ class Comment extends Component {
             <div className={css.commentMeta}>
               <UserCard user={author}>
                 <Link>{fullName}</Link>
-              </UserCard>,&nbsp;
-              {moment(comment.updatedAt).format('DD.MM.YY HH:mm')},&nbsp;
+              </UserCard>
+              ,&nbsp;
+              {moment(comment.updatedAt).format('DD.MM.YY HH:mm')}
+              ,&nbsp;
               <CopyThis
                 wrapThisInto={'a'}
                 description={`${localize[lang].COMMENT_LINK}${comment.id}`}
@@ -167,7 +184,8 @@ class Comment extends Component {
                   Comment.getHashedPath(comment.id, this.props.location)
                 )}`}
               >
-                {`#${comment.id}`}&nbsp;
+                {`#${comment.id}`}
+                &nbsp;
               </CopyThis>
             </div>
             {parentComment ? (
@@ -175,7 +193,8 @@ class Comment extends Component {
                 className={css.commentQuote}
                 onClick={() => Comment.selectComment(parentComment.id, this.props.location)}
               >
-                <a className={css.commentQuoteAutor}>{Comment.getNames(parentComment.author).fullName},</a>&nbsp;
+                <a className={css.commentQuoteAutor}>{Comment.getNames(parentComment.author).fullName},</a>
+                &nbsp;
                 <span className={css.commentQuoteDate}>
                   {moment(parentComment.updatedAt).format('DD.MM.YY HH:mm')}:
                 </span>
@@ -183,7 +202,7 @@ class Comment extends Component {
               </div>
             ) : null}
             <div
-              dangerouslySetInnerHTML={{ __html: Autolinker.link(comment.text) }}
+              dangerouslySetInnerHTML={{ __html: Autolinker.link(withMentions) }}
               className={css.commentText}
               data-key="textContainer"
               onClick={this.handleSelect}

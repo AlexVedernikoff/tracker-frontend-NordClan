@@ -22,6 +22,7 @@ import roundNum from '../../../utils/roundNum';
 import classnames from 'classnames';
 import localize from './Details.json';
 import { getFullName } from '../../../utils/NameLocalisation';
+import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
 
 const spentRequestStatus = {
   READY: 0,
@@ -171,6 +172,22 @@ class Details extends Component {
     }
   };
 
+  setQuery = () => {
+    let query = '';
+    let currentSprint = '?changedSprint=0';
+    if (this.props.sprints && this.props.sprints.length > 0) {
+      if (this.props.sprints.every(sprint => sprint.hasOwnProperty('statusId'))) {
+        if (this.props.sprints.find(sprint => sprint.statusId === 2)) {
+          currentSprint = this.props.sprints.find(sprint => sprint.statusId === 2).id;
+        }
+      }
+    }
+    query = localStorage.getItem('filtersData')
+      ? localStorage.getItem('filtersData').replace(/changedSprint/, 'currentSprint')
+      : `?currentSprint=${currentSprint}`;
+    return query;
+  };
+
   render() {
     const { task, sprints, taskTypes, timeSpent, isExternal, lang } = this.props;
     const tags = task.tags.map((tag, i) => {
@@ -202,7 +219,7 @@ class Details extends Component {
           getContent={() => <div> {localize[lang].LOADING} </div>}
         />
       );
-    const query = localStorage.getItem('filtersData').replace(/changedSprint/, 'currentSprint');
+    const query = this.setQuery();
     return (
       <div className={css.detailsBlock}>
         <table className={css.detailTable}>
@@ -374,7 +391,7 @@ class Details extends Component {
 const mapStateToProps = state => ({
   users: state.Project.project.users,
   sprints: state.Project.project.sprints,
-  taskTypes: state.Dictionaries.taskTypes,
+  taskTypes: getLocalizedTaskTypes(state),
   PlanningTimeIsEditing: state.Task.PlanningTimeIsEditing,
   ExecutionTimeIsEditing: state.Task.ExecutionTimeIsEditing,
   timeSpent: state.Task.timeSpent,

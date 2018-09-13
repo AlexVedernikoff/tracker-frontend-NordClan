@@ -4,9 +4,10 @@ import * as css from './SprintModal.scss';
 import Modal from '../Modal';
 import Button from '../Button';
 import SelectDropdown from '../SelectDropdown';
+import { getSprintMarkersClass } from '../../utils/markers';
 
 class SprintModal extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       sprint: this.props.defaultSprint
@@ -21,35 +22,32 @@ class SprintModal extends Component {
     this.setState({ [name]: e });
   };
 
-  render () {
+  get options() {
     let options = [];
-    const {
-      title,
-      onClose,
-      sprints
-    } = this.props;
+    const { sprints } = this.props;
 
     if (sprints) {
-      options = sprints.map(el => {
-        return {
-          label: el.name,
-          value: el.id
-        };
-      });
+      options = sprints.map(sprint => ({
+        label: sprint.name,
+        value: sprint.id,
+        className: getSprintMarkersClass(sprint.statusId)
+      }));
     }
 
     options.push({
       label: 'Backlog',
-      value: 0
+      value: 0,
+      className: getSprintMarkersClass()
     });
 
+    return options;
+  }
+
+  render() {
+    const { title, onClose } = this.props;
+
     return (
-      <Modal
-        isOpen
-        contentLabel="modal"
-        className={css.modalWrapper}
-        onRequestClose={onClose}
-      >
+      <Modal isOpen contentLabel="modal" className={css.modalWrapper} onRequestClose={onClose}>
         <div className={css.changeStage}>
           <h3>{title}</h3>
           <div className={css.modalLine}>
@@ -60,11 +58,11 @@ class SprintModal extends Component {
               value={this.state.sprint}
               onChange={e => this.selectValue(e !== null ? e.value : 0, 'sprint')}
               noResultsText="Нет результатов"
-              options={options}
+              options={this.options}
               autoFocus
               openOnFocus
             />
-            <Button type="green" text="ОК" onClick={this.handleChoose}/>
+            <Button type="green" text="ОК" onClick={this.handleChoose} />
           </div>
         </div>
       </Modal>
@@ -76,8 +74,8 @@ SprintModal.propTypes = {
   defaultSprint: PropTypes.number,
   onChoose: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
-  title: PropTypes.string,
-  sprints: PropTypes.array
+  sprints: PropTypes.array,
+  title: PropTypes.string
 };
 
 export default SprintModal;
