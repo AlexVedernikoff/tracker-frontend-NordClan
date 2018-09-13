@@ -99,6 +99,15 @@ export const getInfoAboutMe = () => {
     dispatch(startLoading());
     return axios
       .get(URL, {}, { withCredentials: true })
+      .then(response => {
+        if (response && response.status === 200) {
+          if (response.data.globalRole !== EXTERNAL_USER) {
+            dispatch(getTimesheetsPlayerData(startOfCurrentWeek, endOfCurrentWeek));
+          }
+          dispatch(userInfoReceived(response.data));
+          dispatch(finishLoading());
+        }
+      })
       .catch(error => {
         dispatch(finishLoading());
         const pathname = history.getCurrentLocation().pathname;
@@ -109,15 +118,6 @@ export const getInfoAboutMe = () => {
           dispatch(showNotification({ message: error.message, type: 'error' }));
         }
         dispatch(userInfoReceiveFailed());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          if (response.data.globalRole !== EXTERNAL_USER) {
-            dispatch(getTimesheetsPlayerData(startOfCurrentWeek, endOfCurrentWeek));
-          }
-          dispatch(userInfoReceived(response.data));
-          dispatch(finishLoading());
-        }
       });
   };
 };

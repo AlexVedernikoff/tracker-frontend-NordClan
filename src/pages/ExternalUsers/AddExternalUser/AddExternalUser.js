@@ -9,9 +9,7 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './AddExternalUser.scss';
-import { addExternalUser, addExternalUserSuccess } from '../../../actions/ExternalUsers';
-import { showNotification } from '../../../actions/Notifications';
-import { finishLoading } from '../../../actions/Loading';
+import { addExternalUser } from '../../../actions/ExternalUsers';
 import cloneDeep from 'lodash/cloneDeep';
 import localize from './addExternalUser.json';
 

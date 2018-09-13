@@ -250,10 +250,6 @@ const getProjectUsers = (id, isExternal = false) => {
           : {},
         { withCredentials: true }
       )
-      .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(finishLoading());
-      })
       .then(response => {
         if (response && response.status === 200) {
           if (isExternal) {
@@ -261,8 +257,12 @@ const getProjectUsers = (id, isExternal = false) => {
           } else {
             dispatch(gettingProjectUsersSuccess(response.data));
           }
-          dispatch(finishLoading());
         }
+        dispatch(finishLoading());
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
       });
   };
 };
@@ -285,8 +285,8 @@ export const bindUserToProject = (projectId, userId, rolesIds) => {
           } else {
             dispatch(bindUserToProjectsSuccess(response.data));
           }
-          dispatch(finishLoading());
         }
+        dispatch(finishLoading());
       });
   };
 };
@@ -304,8 +304,8 @@ export const unbindUserToProject = (projectId, userId, isExternal = false) => {
         } else {
           dispatch(unbindExternalUserToProjectsSuccess(userId));
         }
-        dispatch(finishLoading());
       }
+      dispatch(finishLoading());
     });
   };
 };
@@ -318,15 +318,15 @@ const getProjectInfo = id => {
     dispatch(startLoading());
     axios
       .get(URL, {}, { withCredentials: true })
-      .catch(error => {
-        dispatch(gettingProjectInfoFail(error.response.data));
-        dispatch(finishLoading());
-      })
       .then(response => {
         if (response && response.status === 200) {
           dispatch(gettingProjectInfoSuccess(response.data));
-          dispatch(finishLoading());
         }
+        dispatch(finishLoading());
+      })
+      .catch(error => {
+        dispatch(gettingProjectInfoFail(error.response.data));
+        dispatch(finishLoading());
       });
   };
 };
@@ -342,12 +342,8 @@ export const getProjectTags = id => {
       .then(response => {
         if (response && response.status === 200) {
           dispatch(gettingProjectTagsSuccess(response.data));
-          dispatch(finishLoading());
-          return;
         }
-        const error = new Error(`Status ${response.status} not allowed. Status 200 expected`);
-        error.response = response;
-        throw error;
+        dispatch(finishLoading());
       })
       .catch(error => {
         dispatch(gettingProjectTagsFail(error.response ? error.response.data : error.message));
@@ -373,15 +369,15 @@ const getProjectSprints = id => {
         },
         { withCredentials: true }
       )
-      .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(finishLoading());
-      })
       .then(response => {
         if (response && response.status === 200) {
           dispatch(gettingProjectSprintsSuccess(response.data.data));
-          dispatch(finishLoading());
         }
+        dispatch(finishLoading());
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
       });
   };
 };
@@ -401,6 +397,13 @@ const changeProject = (changedProperties, target) => {
       .put(URL, changedProperties, {
         withCredentials: true
       })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(projectChangeSuccess(response.data));
+          dispatch(stopEditing(target));
+        }
+        dispatch(finishLoading());
+      })
       .catch(error => {
         if (error.response.data.name === 'ValidationError') {
           dispatch(projectChangeFailValidation(error.response.data));
@@ -408,13 +411,6 @@ const changeProject = (changedProperties, target) => {
           dispatch(showNotification({ message: error.message, type: 'error' }));
         }
         dispatch(finishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(projectChangeSuccess(response.data));
-          dispatch(finishLoading());
-          dispatch(stopEditing(target));
-        }
       });
   };
 };
@@ -437,14 +433,8 @@ const createTask = (task, openTaskPage, callee) => {
       .post(URL, task, {
         withCredentials: true
       })
-      .catch(error => {
-        dispatch(finishLoading());
-        dispatch(createTaskRequestError());
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-      })
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(finishLoading());
           dispatch(
             createTaskRequestSuccess(task.projectId, task.sprintId || BACKLOG_ID, response.data.id, response.data)
           );
@@ -459,6 +449,12 @@ const createTask = (task, openTaskPage, callee) => {
             history.push(`/projects/${task.projectId}/tasks/${response.data.id}`);
           }
         }
+        dispatch(finishLoading());
+      })
+      .catch(error => {
+        dispatch(finishLoading());
+        dispatch(createTaskRequestError());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
       });
   };
 };
@@ -481,15 +477,15 @@ const getProjectHistory = (id, options) => {
         },
         { withCredentials: true }
       )
-      .catch(error => {
-        dispatch(finishLoading());
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-      })
       .then(response => {
-        dispatch(finishLoading());
         if (response && response.status === 200) {
           dispatch(getProjectHistorySuccess(response.data));
         }
+        dispatch(finishLoading());
+      })
+      .catch(error => {
+        dispatch(finishLoading());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
       });
   };
 };

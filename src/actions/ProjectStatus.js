@@ -25,8 +25,8 @@ export const updateProjectStatus = (projectId, statusId) => {
         if (response.data) {
           dispatch(updateProjectStatusSuccess(response.data));
           dispatch(showNotification({ message: 'Статус обновлен' }));
-          dispatch(finishLoading());
         }
+        dispatch(finishLoading());
       })
       .catch(error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
