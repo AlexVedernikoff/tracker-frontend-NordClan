@@ -196,6 +196,11 @@ class Comments extends Component {
   getCommentList = () =>
     this.props.comments.map(c => {
       const comment = { ...c, text: /{@\w+}/.test(c.text) ? this.replaceIdWithMention(c.text) : c.text };
+      if (c.parentComment && c.parentComment.text) {
+        c.parentComment.text = /{@\w+}/.test(c.parentComment.text)
+          ? this.replaceIdWithMention(c.parentComment.text)
+          : c.parentComment.text;
+      }
       return (
         <Comment
           key={comment.id} /*используются id чтобы правильно работал маунт и анмаунт*/
