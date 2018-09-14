@@ -3,7 +3,6 @@ import TextareaAutosize from 'react-autosize-textarea';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as css from './Mentions.scss';
-import localize from './Mentions.json';
 import { getFullName } from '../../../../utils/NameLocalisation';
 
 class Mentions extends Component {
@@ -25,38 +24,36 @@ class Mentions extends Component {
     this.state = {
       mentions: [],
       isShownSuggestionsList: false,
-      selectedIndex: -1
+      selectedIndex: 0
     };
-  }
-
-  componentDidMount() {
-    addEventListener('keydown', this.moveList);
-  }
-
-  componentWillUnmount() {
-    removeEventListener('keydown', this.moveList);
   }
 
   moveList = e => {
     const down = e.keyCode === 40;
     const up = e.keyCode === 38;
     const enter = e.keyCode === 13;
-    if (down || up || enter) e.preventDefault();
+    const esc = e.keyCode === 27;
+    const tab = e.keyCode === 9;
+    if (down || up || enter || esc || tab) e.preventDefault();
     const indexIsMax = this.state.selectedIndex === this.suggestionsFilter().length - 1;
     const indexIsMin = this.state.selectedIndex === 0;
     const onChanged = () => {
       this.list.children[this.state.selectedIndex].focus();
     };
-    if (down && !indexIsMax) {
-      this.setState(state => ({ selectedIndex: state.selectedIndex + 1 }), onChanged);
+    if (down || tab) {
+      const selectedIndex = indexIsMax ? 0 : this.state.selectedIndex + 1;
+      this.setState({ selectedIndex }, onChanged);
     }
-
-    if (up && !indexIsMin) {
-      this.setState(state => ({ selectedIndex: state.selectedIndex - 1 }), onChanged);
+    if (up) {
+      const selectedIndex = indexIsMin ? this.suggestionsFilter().length - 1 : this.state.selectedIndex - 1;
+      console.log(selectedIndex);
+      this.setState({ selectedIndex }, onChanged);
     }
-
-    if (enter) {
+    if (enter && !!e.srcElement.id) {
       this.chooseMention(e);
+    }
+    if (esc) {
+      this.returnToInput();
     }
   };
 
@@ -66,23 +63,33 @@ class Mentions extends Component {
     this.props.toggleBtn(event);
   };
 
+  returnToInput = () => {
+    this.textarea.focus();
+    this.setState({ isShownSuggestionsList: false, selectedIndex: 0 }, () => {
+      this.toggleListeners();
+    });
+  };
+
+  isMentioned(value) {
+    return /( |^)@(\S+ \S*|\S*)$/.test(value);
+  }
+
   chooseMention = event => {
     const target = event.target;
-    this.props.updateCurrentCommentText(this.props.value.replace(/@(\S+ S*|\S*)$/, `@${target.innerHTML}  `));
+    this.props.updateCurrentCommentText(this.props.value.replace(/@(\S+ \S*|\S*)$/, `@${target.innerHTML}  `));
     this.setState(
       prevState => prevState.mentions.push({ id: target.id, name: target.innerHTML.toLowerCase() }),
       () => this.props.setMentions(this.state.mentions)
     );
-    this.textarea.focus();
-    this.setState({ isShownSuggestionsList: false, selectedIndex: -1 });
+    this.returnToInput();
   };
 
   getMention = () => {
     const value = this.props.value;
     let mention = null;
-    if (/( |^)@(\S+ \S*|\S*)$/.test(value)) {
+    if (this.isMentioned(value)) {
       mention = /@(\S+ \S*|\S*)$/.exec(value);
-      mention = mention === null ? mention : mention[0].slice(1).toLowerCase();
+      mention = mention ? mention[0].slice(1).toLowerCase() : mention;
     }
     return mention;
   };
@@ -90,7 +97,7 @@ class Mentions extends Component {
   suggestionsFilter = () => {
     const mention = this.getMention();
     let filteredSuggestions = this.props.suggestions;
-    if (mention !== null) {
+    if (mention) {
       filteredSuggestions = filteredSuggestions.filter(suggestion => {
         return (
           getFullName(suggestion)
@@ -103,11 +110,18 @@ class Mentions extends Component {
   };
 
   toggleSuggestionsList = value => {
-    this.setState({ isShownSuggestionsList: /( |^)@(\S*|\S+ \S*)$/.test(value) });
+    this.setState({ isShownSuggestionsList: this.isMentioned(value) }, () => this.toggleListeners());
+  };
+
+  toggleListeners = () => {
+    if (this.state.isShownSuggestionsList && this.suggestionsFilter().length) {
+      addEventListener('keydown', this.moveList);
+    } else {
+      removeEventListener('keydown', this.moveList);
+    }
   };
 
   suggestionsList = () => {
-    const { lang } = this.props;
     const { selectedIndex } = this.state;
     const suggestions = this.suggestionsFilter();
     return (
@@ -116,21 +130,17 @@ class Mentions extends Component {
           this.list = ref;
         }}
       >
-        {suggestions && suggestions.length ? (
-          suggestions.map((suggestion, i) => (
-            <li
-              onClick={this.chooseMention}
-              key={suggestion.id}
-              id={suggestion.id}
-              autoFocus={selectedIndex === i}
-              tabIndex={i}
-            >
-              {getFullName(suggestion)}
-            </li>
-          ))
-        ) : (
-          <li>{localize[lang].NO_RESULTS}</li>
-        )}
+        {suggestions.map((suggestion, i) => (
+          <li
+            onClick={this.chooseMention}
+            key={suggestion.id}
+            id={suggestion.id}
+            autoFocus={selectedIndex === i}
+            tabIndex={i}
+          >
+            {getFullName(suggestion)}
+          </li>
+        ))}
       </ul>
     );
   };
@@ -151,7 +161,7 @@ class Mentions extends Component {
           onKeyDown={this.props.onKeyDown}
           value={this.props.value}
         />
-        {this.state.isShownSuggestionsList ? this.suggestionsList() : null}
+        {this.state.isShownSuggestionsList && this.suggestionsFilter().length ? this.suggestionsList() : null}
       </div>
     );
   }
