@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import * as css from './../Planning.scss';
 import classnames from 'classnames';
 import moment from 'moment';
@@ -10,6 +11,24 @@ import localize from './Table.json';
 import roundNum from '../../../../utils/roundNum';
 
 class Table extends React.Component {
+  static propTypes = {
+    entities: PropTypes.array,
+    grantActiveYear: PropTypes.string,
+    grantYearDecrement: PropTypes.func.isRequired,
+    grantYearIncrement: PropTypes.func.isRequired,
+    isExternal: PropTypes.bool,
+    isProjectAdmin: PropTypes.bool,
+    lang: PropTypes.string.isRequired,
+    onClickSprint: PropTypes.func.isRequired,
+    onDeleteMilestone: PropTypes.func.isRequired,
+    onMouseOutRow: PropTypes.func.isRequired,
+    onMouseOverRow: PropTypes.func.isRequired,
+    openMilestoneEditModal: PropTypes.func.isRequired,
+    openSprintEditModal: PropTypes.func.isRequired,
+    typeHovered: PropTypes.string,
+    typeIdHovered: PropTypes.number
+  };
+
   getSprintBlock = (sprint, activeYear) => {
     const { factStartDate: start, factFinishDate: end } = sprint;
     const daysInYear = moment()
@@ -82,7 +101,11 @@ class Table extends React.Component {
   };
 
   renderEntityLabels() {
-    const { entities } = this.props;
+    const { entities, lang } = this.props;
+
+    if (!entities.length) {
+      return null;
+    }
 
     return (
       <div className={css.sprintNames}>
@@ -91,6 +114,7 @@ class Table extends React.Component {
             ? this.renderSprintLabel(entity, i)
             : this.renderMilestoneLabel(entity, i);
         })}
+        <div className={classnames(css.name, css.resultName)}>{localize[lang].TOTAL}</div>
       </div>
     );
   }
@@ -104,9 +128,7 @@ class Table extends React.Component {
       onMouseOutRow,
       isProjectAdmin,
       openSprintEditModal,
-      openMilestoneEditModal,
       isExternal,
-      onDeleteMilestone,
       lang
     } = this.props;
 
@@ -144,11 +166,8 @@ class Table extends React.Component {
     const {
       typeHovered,
       typeIdHovered,
-      onClickSprint,
       onMouseOverRow,
       onMouseOutRow,
-      isProjectAdmin,
-      openSprintEditModal,
       openMilestoneEditModal,
       isExternal,
       onDeleteMilestone,
@@ -179,58 +198,39 @@ class Table extends React.Component {
     );
   }
 
-  renderPlanColumn() {
+  renderTimeColumn(type) {
     const { entities, isExternal } = this.props;
     const className = classnames({
       [css.sprintNames]: true,
       [css.spentTime]: true
     });
+    let timeSumm = 0;
 
     return (
       <div className={className}>
-        <span className={css.header}>{localize[this.props.lang].PLAN}</span>
+        <span className={css.header}>{localize[this.props.lang][type]}</span>
         {entities.map((entity, i) => {
-          return this.detectType(entity) === 'sprint' ? (
-            <span key={`sprint-${i}`} className={css.name}>
-              {!isExternal ? roundNum(entity.budget, 2) : ''}
-            </span>
-          ) : (
+          if (this.detectType(entity) === 'sprint') {
+            timeSumm += !isExternal ? +entity.budget : 0;
+            return (
+              <span key={`sprint-${i}`} className={css.name}>
+                {!isExternal ? roundNum(entity[type === 'PLAN' ? 'budget' : 'spentTime'], 2) : ''}
+              </span>
+            );
+          }
+          return (
             <span key={`milestone-${i}`} className={css.name}>
               -
             </span>
           );
         })}
-      </div>
-    );
-  }
-
-  renderFactColumn() {
-    const { entities, isExternal } = this.props;
-    const className = classnames({
-      [css.sprintNames]: true,
-      [css.spentTime]: true
-    });
-
-    return (
-      <div className={className}>
-        <span className={css.header}>{localize[this.props.lang].FACT}</span>
-        {entities.map((entity, i) => {
-          return this.detectType(entity) === 'sprint' ? (
-            <span key={`sprint-${i}`} className={css.name}>
-              {!isExternal ? roundNum(entity.spentTime, 2) : ''}
-            </span>
-          ) : (
-            <span key={`milestone-${i}`} className={css.name}>
-              -
-            </span>
-          );
-        })}
+        {entities.length ? <span className={classnames(css.name, css.resultTime)}>{roundNum(timeSumm, 2)}</span> : null}
       </div>
     );
   }
 
   renderEntities() {
-    const { entities, grantActiveYear } = this.props;
+    const { entities } = this.props;
 
     return entities.map((entity, i) => {
       return this.detectType(entity) === 'sprint' ? this.renderSprint(entity, i) : this.renderMilestone(entity, i);
@@ -297,16 +297,7 @@ class Table extends React.Component {
   }
 
   render() {
-    const {
-      onMouseOverSprint,
-      onClickSprint,
-      openEditModal,
-      grantActiveYear,
-      grantYearDecrement,
-      grantYearIncrement,
-      isProjectAdmin,
-      lang
-    } = this.props;
+    const { grantActiveYear, grantYearDecrement, grantYearIncrement, lang } = this.props;
 
     const months = localize[lang].MONTHS;
 
@@ -314,8 +305,8 @@ class Table extends React.Component {
       <div className={css.graph}>
         <div className={css.wrapper}>
           {this.renderEntityLabels()}
-          {this.renderPlanColumn()}
-          {this.renderFactColumn()}
+          {this.renderTimeColumn('PLAN')}
+          {this.renderTimeColumn('FACT')}
 
           <div className={css.table}>
             <div className={css.tr}>
@@ -343,15 +334,7 @@ class Table extends React.Component {
             </div>
             {this.currentTimeline()}
             {this.renderEntities()}
-
-            <div className={css.grid}>
-              {months.map((el, i) => (
-                <span
-                  key={`sprint-${i}`}
-                  style={{ flex: moment(`${grantActiveYear}-${i + 1}`, 'YYYY-MM').daysInMonth() }}
-                />
-              ))}
-            </div>
+            <div className={classnames(css.tr, css.resultLine)} />
           </div>
         </div>
       </div>

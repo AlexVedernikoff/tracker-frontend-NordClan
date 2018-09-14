@@ -1,0 +1,12 @@
+{
+  "en": {
+    "SPRINT": "Sprint",
+    "MILESTONE": "Milestone",
+    "SPRINTS_AND_PHASES": "Sprints / Phases"
+  },
+  "ru": {
+    "SPRINT": "Спринт",
+    "MILESTONE": "Веха",
+    "SPRINTS_AND_PHASES": "Спринты / Фазы"
+  }
+}

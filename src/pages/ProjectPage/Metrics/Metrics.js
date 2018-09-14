@@ -30,7 +30,7 @@ const getBasicLineSettings = () => {
   const lineColor = getColor();
 
   return {
-    lineTension: 0,
+    lineTension: 0.4,
     borderWidth: 2,
     pointRadius: 2,
     borderColor: lineColor,

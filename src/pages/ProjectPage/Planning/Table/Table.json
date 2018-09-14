@@ -19,7 +19,8 @@
     "EDIT": "Edit",
     "DELETE": "Delete",
     "UNCOMPLETED": "Not completed",
-    "COMPLETED": "Completed"
+    "COMPLETED": "Completed",
+    "TOTAL": "Total"
   },
   "ru": {
     "MONTHS": [
@@ -41,6 +42,7 @@
     "EDIT": "Редактировать",
     "DELETE": "Удалить",
     "UNCOMPLETED": "Не выполнено",
-    "COMPLETED": "Выполнено"
+    "COMPLETED": "Выполнено",
+    "TOTAL": "Итого"
   }
 }
