@@ -25,6 +25,7 @@ import { ADMIN } from '../../constants/Roles';
 import localization from './projects.json';
 import Title, { flushTitle } from 'react-title-component';
 import TypeFilter from './TypeFilter';
+import { getLocalizedProjectTypes } from './../../selectors/dictionaries';
 
 import 'moment/locale/ru';
 import localize from '../ExternalUsers/ExternalUsers';
@@ -90,8 +91,6 @@ class Projects extends Component {
   };
 
   saveFilters = () => {
-    // const { filteredInProgress, filteredInHold, filteredFinished } = this.state;
-
     localStorage.setItem(
       'projectListFilters',
       JSON.stringify({
@@ -441,8 +440,8 @@ const mapStateToProps = state => ({
   loading: state.Loading.loading,
   projectError: state.Projects.error,
   globalRole: state.Auth.user.globalRole,
-  projectTypes: state.Dictionaries.projectTypes,
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  projectTypes: getLocalizedProjectTypes(state) || []
 });
 
 const mapDispatchToProps = {
