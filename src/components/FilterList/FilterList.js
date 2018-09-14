@@ -11,14 +11,122 @@ import * as css from './FilterList.scss';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { connect } from 'react-redux';
 import localize from './FilterList.json';
+import getPriorityById from '../../utils/TaskPriority';
 
 class FilterList extends Component {
+  state = {
+    fullFilterView: false
+  };
+
   componentWillReceiveProps() {
     ReactTooltip.hide();
   }
 
+  // createFilterLabel = filterName => {
+  //   switch (filterName) {
+  //     case 'isOnlyMine':
+  //       return 'мои задачи';
+  //     case 'noTag':
+  //       return this.props.noTagData.label;
+  //     case 'prioritiesId':
+  //       return `${getPriorityById(this.state.prioritiesId)}`;
+  //     case 'authorId':
+  //       return `автор: ${this.createSelectedOption(this.props.project.users, this.state.authorId, 'fullNameRu')}`;
+  //     case 'performerId':
+  //       return `исполнитель: ${this.createSelectedOption(
+  //         this.props.project.users,
+  //         this.state.performerId,
+  //         'fullNameRu'
+  //       ) || 'Не назначено'}`;
+  //     case 'name':
+  //       return `${this.state.name}`;
+  //     default:
+  //       return '';
+  //   }
+  // };
+
+  updateFilterList = () => {
+    // const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'name', 'noTag'];
+    const selectedFilters = [];
+
+    const changedSprint = this.changedSprint.map(sprint => {
+      const option = this.props.sortedSprints.find(el => el.value === +sprint.value);
+      return {
+        ...sprint,
+        ...option
+      };
+    });
+
+    this.setState({
+      allFilters: [
+        ...selectedFilters,
+        ...this.createSelectedOption([], changedSprint, 'changedSprint'),
+        ...this.createSelectedOption([], this.state.typeId, 'typeId'),
+        ...this.createSelectedOption([], this.state.performerId, 'performerId'),
+        ...this.createSelectedOption([], this.state.filterTags, 'filterTags')
+      ]
+    });
+  };
+
+  deleteTag = value => {
+    this.setState(
+      {
+        filterTags: this.state.filterTags.filter(el => el.value !== value)
+      },
+      this.getTasks
+    );
+  };
+
+  toOptionArray = (arr, name) => {
+    if (Array.isArray(arr)) {
+      return arr.map(el => {
+        return {
+          name: name,
+          deleteHandler: () => this.deleteTag(el.value),
+          label: el.label
+        };
+      });
+    } else {
+      return [];
+    }
+  };
+
+  toggleFilterView = () => {
+    this.setState(prevState => ({ fullFilterView: !prevState.fullFilterView }));
+  };
+
+  toggleMine = () => {
+    this.setFilterValue('isOnlyMine', true);
+  };
+
+  removeSelectOptionByIdFromFilter = (list, id, filterField) => {
+    const newList = list.filter(item => item.value !== id);
+    this.setState(
+      {
+        [filterField]: newList
+      },
+      this.getTasks
+    );
+  };
+
+  createSelectedOption = (optionList, selectedOption, optionLabel = 'name') => {
+    if (Array.isArray(selectedOption)) {
+      return selectedOption.map(currentId => ({
+        name: `${optionLabel}-${currentId.value}`,
+        label: optionLabel === 'performerId' ? `исполнитель: ${currentId.label}` : currentId.label,
+        deleteHandler: () => {
+          this.removeSelectOptionByIdFromFilter(selectedOption, currentId.value, optionLabel);
+        }
+      }));
+    } else {
+      const option = optionList.find(element => element.id === selectedOption);
+      if (!option) return {};
+      return option[optionLabel];
+    }
+  };
+
   render() {
-    const { filters, clearAll, toggleFilterView, fullFilterView, isVisor, lang } = this.props;
+    const { filters, clearAll, isVisor, lang } = this.props;
     const filterTags = filters.map(filter => {
       return (
         <Tag
@@ -39,8 +147,8 @@ class FilterList extends Component {
 
     return (
       <div>
-        <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeave={false}>
-          {!fullFilterView && (
+        <ReactCSSTransitionGroup transitionEnterTimeout={300} transitionLeave={false}>
+          {!this.state.fullFilterView && (
             <Row className={css.filtersRow}>
               <Col xs>
                 {filterTags.length ? (
@@ -52,7 +160,7 @@ class FilterList extends Component {
                   </div>
                 ) : (
                   <div className={classnames(css.filterList)}>
-                    <span onClick={toggleFilterView} className={css.emptyFiltersLink}>
+                    <span onClick={this.toggleFilterView} className={css.emptyFiltersLink}>
                       {localize[lang].NOT_SELECTED}
                     </span>
                   </div>
@@ -75,11 +183,14 @@ class FilterList extends Component {
         <div className={classnames(css.filterListShowMore)}>
           <div
             className={classnames(css.filterListShowMoreButton)}
-            data-tip={fullFilterView ? localize[lang].HIDE_FILTERS : localize[lang].SHOW_FILTERS}
-            onClick={toggleFilterView}
+            data-tip={this.state.fullFilterView ? localize[lang].HIDE_FILTERS : localize[lang].SHOW_FILTERS}
+            onClick={this.toggleFilterView}
           >
             <IconArrowDownThin
-              className={classnames({ [css.filterListShowMoreIcon]: true, [css.iconReverse]: fullFilterView })}
+              className={classnames({
+                [css.filterListShowMoreIcon]: true,
+                [css.iconReverse]: this.state.fullFilterView
+              })}
             />
           </div>
         </div>
