@@ -9,6 +9,7 @@ import getColor from '../../../../utils/Colors';
 import localize from './ClosingFeaturesChart.json';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import datalabels from 'chartjs-plugin-datalabels';
 
 class ClosingFeaturesChart extends Component {
   static propTypes = {
@@ -43,7 +44,7 @@ class ClosingFeaturesChart extends Component {
             type: 'time',
             time: {
               displayFormats: {
-                day: 'D MMM'
+                hour: 'h:mm a'
               },
               tooltipFormat: 'DD.MM.YYYY',
               locale: moment.locale(localize[this.props.lang].LANG)
@@ -55,6 +56,14 @@ class ClosingFeaturesChart extends Component {
             }
           }
         ]
+      },
+      plugins: {
+        datalabels: {
+          formatter: function(value) {
+            return value.y;
+          },
+          align: 'end'
+        }
       }
     };
   }

@@ -9,20 +9,24 @@
 }
 
 .TableCellName {
+  flex-basis: 20%;
+  max-width: 20%;
+}
+.TableCellLogin {
+  flex-basis: 21%;
+  max-width: 21%;
+}
+.TableCellDesc {
   flex-basis: 23%;
   max-width: 23%;
 }
-.TableCellLogin {
-  flex-basis: 29%;
-  max-width: 29%;
-}
 .TableCellDate {
-  flex-basis: 22%;
-  max-width: 22%;
+  flex-basis: 13%;
+  max-width: 13%;
 }
 .TableCellActivity {
-  flex-basis: 16%;
-  max-width: 16%;
+  flex-basis: 9%;
+  max-width: 9%;
   justify-content: center;
 }
 .TableCellEdit {
