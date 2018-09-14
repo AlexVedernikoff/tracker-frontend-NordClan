@@ -24,9 +24,41 @@ class Mentions extends Component {
     super(props);
     this.state = {
       mentions: [],
-      isShownSuggestionsList: false
+      isShownSuggestionsList: false,
+      selectedIndex: -1
     };
   }
+
+  componentDidMount() {
+    addEventListener('keydown', this.moveList);
+  }
+
+  componentWillUnmount() {
+    removeEventListener('keydown', this.moveList);
+  }
+
+  moveList = e => {
+    const down = e.keyCode === 40;
+    const up = e.keyCode === 38;
+    const enter = e.keyCode === 13;
+    if (down || up || enter) e.preventDefault();
+    const indexIsMax = this.state.selectedIndex === this.suggestionsFilter().length - 1;
+    const indexIsMin = this.state.selectedIndex === 0;
+    const onChanged = () => {
+      this.list.children[this.state.selectedIndex].focus();
+    };
+    if (down && !indexIsMax) {
+      this.setState(state => ({ selectedIndex: state.selectedIndex + 1 }), onChanged);
+    }
+
+    if (up && !indexIsMin) {
+      this.setState(state => ({ selectedIndex: state.selectedIndex - 1 }), onChanged);
+    }
+
+    if (enter) {
+      this.chooseMention(e);
+    }
+  };
 
   typeComment = event => {
     this.toggleSuggestionsList(event.target.value);
@@ -41,7 +73,8 @@ class Mentions extends Component {
       prevState => prevState.mentions.push({ id: target.id, name: target.innerHTML.toLowerCase() }),
       () => this.props.setMentions(this.state.mentions)
     );
-    this.setState({ isShownSuggestionsList: false });
+    this.textarea.focus();
+    this.setState({ isShownSuggestionsList: false, selectedIndex: -1 });
   };
 
   getMention = () => {
@@ -75,12 +108,23 @@ class Mentions extends Component {
 
   suggestionsList = () => {
     const { lang } = this.props;
+    const { selectedIndex } = this.state;
     const suggestions = this.suggestionsFilter();
     return (
-      <ul>
+      <ul
+        ref={ref => {
+          this.list = ref;
+        }}
+      >
         {suggestions && suggestions.length ? (
-          suggestions.map(suggestion => (
-            <li onClick={this.chooseMention} key={suggestion.id} id={suggestion.id}>
+          suggestions.map((suggestion, i) => (
+            <li
+              onClick={this.chooseMention}
+              key={suggestion.id}
+              id={suggestion.id}
+              autoFocus={selectedIndex === i}
+              tabIndex={i}
+            >
               {getFullName(suggestion)}
             </li>
           ))
@@ -95,6 +139,10 @@ class Mentions extends Component {
     return (
       <div className={css.mentions}>
         <TextareaAutosize
+          autoFocus
+          innerRef={ref => {
+            this.textarea = ref;
+          }}
           key={this.props.resizeKey}
           style={{ minHeight: 32 }}
           disabled={this.props.disabled}

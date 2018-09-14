@@ -19,7 +19,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
     transition: 0.3s ease-out 0s;
-    &:hover {
+    &:hover,
+    &:focus {
       background-color: #f1f1f1;
       transition: 0.3s ease-out 0s;
     }
