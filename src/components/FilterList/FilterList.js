@@ -11,39 +11,11 @@ import * as css from './FilterList.scss';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { connect } from 'react-redux';
 import localize from './FilterList.json';
-import getPriorityById from '../../utils/TaskPriority';
 
 class FilterList extends Component {
-  state = {
-    fullFilterView: false
-  };
-
   componentWillReceiveProps() {
     ReactTooltip.hide();
   }
-
-  // createFilterLabel = filterName => {
-  //   switch (filterName) {
-  //     case 'isOnlyMine':
-  //       return 'мои задачи';
-  //     case 'noTag':
-  //       return this.props.noTagData.label;
-  //     case 'prioritiesId':
-  //       return `${getPriorityById(this.state.prioritiesId)}`;
-  //     case 'authorId':
-  //       return `автор: ${this.createSelectedOption(this.props.project.users, this.state.authorId, 'fullNameRu')}`;
-  //     case 'performerId':
-  //       return `исполнитель: ${this.createSelectedOption(
-  //         this.props.project.users,
-  //         this.state.performerId,
-  //         'fullNameRu'
-  //       ) || 'Не назначено'}`;
-  //     case 'name':
-  //       return `${this.state.name}`;
-  //     default:
-  //       return '';
-  //   }
-  // };
 
   updateFilterList = () => {
     // const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'name', 'noTag'];
@@ -89,10 +61,6 @@ class FilterList extends Component {
     } else {
       return [];
     }
-  };
-
-  toggleFilterView = () => {
-    this.setState(prevState => ({ fullFilterView: !prevState.fullFilterView }));
   };
 
   toggleMine = () => {
@@ -148,7 +116,7 @@ class FilterList extends Component {
     return (
       <div>
         <ReactCSSTransitionGroup transitionEnterTimeout={300} transitionLeave={false}>
-          {!this.state.fullFilterView && (
+          {!this.props.fullFilterView && (
             <Row className={css.filtersRow}>
               <Col xs>
                 {filterTags.length ? (
@@ -160,7 +128,7 @@ class FilterList extends Component {
                   </div>
                 ) : (
                   <div className={classnames(css.filterList)}>
-                    <span onClick={this.toggleFilterView} className={css.emptyFiltersLink}>
+                    <span onClick={this.props.toggleFilterView} className={css.emptyFiltersLink}>
                       {localize[lang].NOT_SELECTED}
                     </span>
                   </div>
@@ -184,7 +152,7 @@ class FilterList extends Component {
           <div
             className={classnames(css.filterListShowMoreButton)}
             data-tip={this.state.fullFilterView ? localize[lang].HIDE_FILTERS : localize[lang].SHOW_FILTERS}
-            onClick={this.toggleFilterView}
+            onClick={this.props.toggleFilterView}
           >
             <IconArrowDownThin
               className={classnames({

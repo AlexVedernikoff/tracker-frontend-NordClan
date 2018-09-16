@@ -25,6 +25,7 @@ import SprintSelector from '../../../components/SprintSelector';
 import withFiltersManager from '../../../components/FiltrersManager/FiltersManager';
 
 import { getFullName } from '../../../utils/NameLocalisation';
+import getPriorityById from '../../../utils/TaskPriority';
 import { agileBoardSelector } from '../../../selectors/agileBoard';
 
 import { VISOR, EXTERNAL_USER } from '../../../constants/Roles';
@@ -42,7 +43,8 @@ class AgileBoard extends Component {
       performer: null,
       changedTask: null,
       // TODO: implement fullFilterView
-      fullFilterView: false
+      fullFilterView: false,
+      allFilters: []
     };
   }
 
@@ -87,7 +89,7 @@ class AgileBoard extends Component {
             : null
         };
     this.props.getTasks(options);
-    //this.updateFilterList();
+    this.updateFilterList();
   };
 
   selectTagForFiltrated = options => {
@@ -182,7 +184,6 @@ class AgileBoard extends Component {
   };
 
   setFilterValue = (label, options) => {
-    console.log('Label', options, label);
     this.props.setFilterValue(label, options, this.getTasks);
   };
 
@@ -217,7 +218,7 @@ class AgileBoard extends Component {
         isOnlyMine: !currentState.isOnlyMine
       }),
       () => {
-        this.setFiltersToUrl('isOnlyMine', this.state.isOnlyMine, this.updateFilterList);
+        this.props.setFilterValue('isOnlyMine', this.props.filters.isOnlyMine, this.updateFilterList);
       }
     );
   };
@@ -230,7 +231,7 @@ class AgileBoard extends Component {
     return this.props.globalRole === EXTERNAL_USER;
   }
 
-  getTasks(type) {
+  getTasksList(type) {
     return sortTasksAndCreateCard(
       this.props.tasks,
       type,
@@ -245,12 +246,11 @@ class AgileBoard extends Component {
   }
 
   get allSortedTasks() {
-    console.log(this.getTasks('all'));
-    return this.getTasks('all');
+    return this.getTasksList('all');
   }
 
   get mineSortedTasks() {
-    return this.getTasks('mine');
+    return this.getTasksList('mine');
   }
 
   get isVisor() {
@@ -260,6 +260,112 @@ class AgileBoard extends Component {
   get singleSprint() {
     return this.changedSprint.length === 1 ? this.props.filters.changedSprint[0].value : null;
   }
+
+  updateFilterList = () => {
+    const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'name', 'noTag'];
+    const selectedFilters = [];
+
+    singleOptionFiltersList.forEach(filterName => {
+      if (this.filterIsNotEmpty(filterName)) {
+        selectedFilters.push({
+          name: filterName,
+          label: this.createFilterLabel(filterName),
+          deleteHandler: () => this.resetFiled(filterName)
+        });
+      }
+    });
+
+    const changedSprint = this.changedSprint.map(sprint => {
+      const option = this.props.sortedSprints.find(el => el.value === +sprint.value);
+      return {
+        ...sprint,
+        ...option
+      };
+    });
+
+    this.setState({
+      allFilters: [
+        ...selectedFilters,
+        ...this.createSelectedOption([], changedSprint, 'changedSprint'),
+        ...this.createSelectedOption([], this.state.typeId, 'typeId'),
+        ...this.createSelectedOption([], this.state.performerId, 'performerId'),
+        ...this.createSelectedOption([], this.state.filterTags, 'filterTags')
+      ]
+    });
+  };
+
+  createSelectedOption = (optionList, selectedOption, optionLabel = 'name') => {
+    if (Array.isArray(selectedOption)) {
+      return selectedOption.map(currentId => ({
+        name: `${optionLabel}-${currentId.value}`,
+        label: optionLabel === 'performerId' ? `исполнитель: ${currentId.label}` : currentId.label,
+        deleteHandler: () => {
+          this.removeSelectOptionByIdFromFilter(selectedOption, currentId.value, optionLabel);
+        }
+      }));
+    } else {
+      const option = optionList.find(element => element.id === selectedOption);
+      if (!option) return {};
+      return option[optionLabel];
+    }
+  };
+
+  resetFiled = name => {
+    this.setState(
+      () => ({
+        [name]: this.initialFilters[name]
+      }),
+      this.getTasks
+    );
+  };
+
+  removeSelectOptionByIdFromFilter = (list, id, filterField) => {
+    const newList = list.filter(item => item.value !== id);
+    this.setState(
+      {
+        [filterField]: newList
+      },
+      this.getTasks
+    );
+  };
+
+  filterIsNotEmpty = filterName => {
+    if (
+      typeof this.state[filterName] === 'string' ||
+      this.state[filterName] instanceof String ||
+      Array.isArray(this.state[filterName])
+    ) {
+      return this.state[filterName].length > 0;
+    }
+    return this.state[filterName] !== null && this.state[filterName] !== false;
+  };
+
+  createFilterLabel = filterName => {
+    switch (filterName) {
+      case 'isOnlyMine':
+        return 'мои задачи';
+      case 'noTag':
+        return this.props.noTagData.label;
+      case 'prioritiesId':
+        return `${getPriorityById(this.state.prioritiesId)}`;
+      case 'authorId':
+        return `автор: ${this.createSelectedOption(this.props.project.users, this.state.authorId, 'fullNameRu')}`;
+      case 'performerId':
+        return `исполнитель: ${this.createSelectedOption(
+          this.props.project.users,
+          this.state.performerId,
+          'fullNameRu'
+        ) || 'Не назначено'}`;
+      case 'name':
+        return `${this.state.name}`;
+      default:
+        return '';
+    }
+  };
+
+  toggleFilterView = () => {
+    this.setState(prevState => ({ fullFilterView: !prevState.fullFilterView }));
+  };
 
   render() {
     const { lang } = this.props;
@@ -387,9 +493,10 @@ class AgileBoard extends Component {
               <Col xs={12} sm={12}>
                 <FilterList
                   clearAll={this.props.clearFilters}
-                  // fullFilterView={this.state.fullFilterView}
-                  // toggleFilterView={this.toggleFilterView}
-                  filters={[]}
+                  fullFilterView={this.state.fullFilterView}
+                  toggleFilterView={this.toggleFilterView}
+                  sortedSprints={this.props.sortedSprints}
+                  filters={this.state.allFilters}
                   openCreateTaskModal={this.props.openCreateTaskModal}
                   isVisor={this.isVisor}
                 />
