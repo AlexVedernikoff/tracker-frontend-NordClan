@@ -56,14 +56,6 @@ export const doAuthentication = ({ username, password }) => {
     dispatch(startAuthentication());
     axios
       .post(URL, { login: username, password: password }, { withCredentials: true })
-      .catch(error => {
-        if (error.response.data.status === 404) {
-          dispatch(authenticationError(getErrorMessageByType(error.response.data.name)));
-        } else {
-          dispatch(showNotification({ message: error.message, type: 'error' }));
-        }
-        dispatch(userInfoReceiveFailed());
-      })
       .then(response => {
         if (response && response.status === 200) {
           dispatch(authenticationReceived(response.data.user));
@@ -71,6 +63,16 @@ export const doAuthentication = ({ username, password }) => {
             dispatch(getTimesheetsPlayerData(startOfCurrentWeek, endOfCurrentWeek));
           }
         }
+      })
+      .catch(error => {
+        console, log(error);
+        debugger;
+        if (error.response.data.status === 404) {
+          dispatch(authenticationError(getErrorMessageByType(error.response.data.name)));
+        } else {
+          dispatch(showNotification({ message: error.message, type: 'error' }));
+        }
+        dispatch(userInfoReceiveFailed());
       });
   };
 };

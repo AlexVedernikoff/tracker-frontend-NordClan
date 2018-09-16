@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import * as css from './Comments.scss';
 import { Link } from 'react-router';
 import cn from 'classnames';
 import moment from 'moment';
-import get from 'lodash/get';
 import { IconDeleteAnimate } from '../../../components/Icons';
 import CopyThis from '../../../components/CopyThis';
 import { history } from '../../../History';
@@ -14,9 +13,11 @@ import Autolinker from 'autolinker';
 import localize from './Comment.json';
 import { getFirstName, getLastName, getFullName } from '../../../utils/NameLocalisation';
 
+import { parseCommentForDisplay } from './Mentions/mentionService';
+
 const UPDATE_EXPIRATION_TIMEOUT = 10 * 60 * 1000; //10 минут
 
-class Comment extends Component {
+class Comment extends PureComponent {
   static getNames = person => {
     //унификация имени
     const firstName = getFirstName(person);
@@ -86,7 +87,8 @@ class Comment extends Component {
     ownedByMe: PropTypes.bool,
     removeComment: PropTypes.func,
     reply: PropTypes.func,
-    selectComment: PropTypes.func
+    selectComment: PropTypes.func,
+    users: PropTypes.array
   };
 
   constructor(props) {
@@ -122,24 +124,29 @@ class Comment extends Component {
   }
 
   handleSelect = e => {
-    if (get(e, 'target.dataset.key') === 'textContainer') {
-      Comment.selectComment(this.props.comment.id, this.props.location);
-    }
+    Comment.selectComment(this.props.comment.id, this.props.location);
   };
 
-  editMentions(text) {
-    let result = null;
-    const regExp = /@(\S+ \S*|\S*)/g;
-    const mentions = [];
-    let resultStr = text;
-    while ((result = regExp.exec(text))) {
-      mentions.push(result[0].slice(1));
+  getCard = (user, i) => {
+    if (user.id === 'all') {
+      return this.getBold(user, i);
     }
-    mentions.map(mention => {
-      resultStr = resultStr.replace(/(^| )@(\S+ \S*|\S*) /, ` <strong>${mention}</strong> `);
-    });
-    return resultStr;
-  }
+    const name = getFullName(user);
+    return (
+      <UserCard key={name + i} user={user}>
+        <strong>{name}</strong>
+      </UserCard>
+    );
+  };
+
+  getBold = (s, i) => `<strong key={${getFullName(s) + i}}>${getFullName(s)}</strong>`;
+
+  compileComment = text =>
+    parseCommentForDisplay(text, this.props.users, this.getCard).map(
+      t => (typeof t === 'string' ? Autolinker.link(t) : t)
+    );
+
+  compileParent = text => parseCommentForDisplay(text, this.props.users, this.getBold).join('');
 
   render() {
     const {
@@ -157,10 +164,11 @@ class Comment extends Component {
       }
       typoAvatar.toLocaleUpperCase();
     }
-
     return (
       <li
+        data-key="textContainer"
         ref="comment"
+        onClick={this.handleSelect}
         className={cn(css.commentContainer, {
           [css.selected]: this.props.lightened
         })}
@@ -198,15 +206,17 @@ class Comment extends Component {
                 <span className={css.commentQuoteDate}>
                   {moment(parentComment.updatedAt).format('DD.MM.YY HH:mm')}:
                 </span>
-                <div className={css.quoteText}>«{parentComment.text}»</div>
+                <div
+                  className={css.quoteText}
+                  dangerouslySetInnerHTML={{ __html: `«${this.compileParent(parentComment.text)}»` }}
+                />
               </div>
             ) : null}
-            <div
-              dangerouslySetInnerHTML={{ __html: Autolinker.link(this.editMentions(text)) }}
-              className={css.commentText}
-              data-key="textContainer"
-              onClick={this.handleSelect}
-            />
+            <div className={css.commentText}>
+              {this.compileComment(text).map(
+                (t, i) => (typeof t === 'string' ? <span key={t + i} dangerouslySetInnerHTML={{ __html: t }} /> : t)
+              )}
+            </div>
             <div className={css.commentAction}>
               {!comment.deleting ? (
                 <a onClick={() => this.props.reply(comment.id)} href="#reply">

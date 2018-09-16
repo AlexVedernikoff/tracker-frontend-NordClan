@@ -16,6 +16,7 @@ import {
   setHighLighted
 } from '../../../actions/Task';
 import { connect } from 'react-redux';
+import UserCard from '../../../components/UserCard/UserCard';
 import * as css from './Comments.scss';
 import Comment from './Comment';
 import { history } from '../../../History';
@@ -32,11 +33,13 @@ class Comments extends Component {
     comments: PropTypes.array,
     currentComment: PropTypes.object,
     editComment: PropTypes.func,
+    externalUsers: PropTypes.array,
     getCommentsByTask: PropTypes.func,
     highlighted: PropTypes.object,
     lang: PropTypes.string,
     location: PropTypes.object,
     params: PropTypes.object,
+    projectUsers: PropTypes.array,
     publishComment: PropTypes.func,
     removeComment: PropTypes.func,
     resetCurrentEditingComment: PropTypes.func,
@@ -49,6 +52,12 @@ class Comments extends Component {
     userId: PropTypes.number,
     users: PropTypes.array
   };
+
+  static defaultProps = {
+    projectUsers: [],
+    externalUsers: []
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -119,7 +128,7 @@ class Comments extends Component {
   };
 
   setCommentForEdit = comment => {
-    this.props.setCommentForEdit(comment).then(() => {
+    this.props.setCommentForEdit(this.props.comments.find(c => c.id === comment.id)).then(() => {
       this.setState({ resizeKey: shortId() });
     });
   };
@@ -162,45 +171,16 @@ class Comments extends Component {
     this.setState({ commentToDelete: null }, () => this.props.removeComment(this.props.taskId, commentId));
   };
 
-  replaceMentionWithId = (text, mentions) => {
-    let str = text;
-    mentions.map(mention => {
-      str = str.toLowerCase().replace(`@${mention.name}`, `{@${mention.id}}`);
-    });
-    return str;
-  };
-
-  getNameByID = id => {
-    const { users, lang } = this.props;
-    if (id === 'all') {
-      return localize[lang].ALL;
-    }
-    return getFullName(users.find(user => user.id === +id));
-  };
-
-  replaceIdWithMention = text => {
-    let result = null;
-    const regExp = /{@\w+}/g;
-    let resultStr = text;
-    while ((result = regExp.exec(text))) {
-      const name = this.getNameByID(result[0].replace(/[{@}]/g, ''));
-      resultStr = resultStr.replace(/{@\w+}/, `@${name}`);
-    }
-    return resultStr;
-  };
-
-  setMentions = mentions => {
-    this.setState({ mentions });
-  };
+  get users() {
+    return [
+      { id: 'all', fullNameEn: localize.en.ALL, fullNameRu: localize.ru.ALL },
+      ...this.props.projectUsers.map(u => u.user),
+      ...this.props.externalUsers.map(u => u.user)
+    ];
+  }
 
   getCommentList = () =>
-    this.props.comments.map(c => {
-      const comment = { ...c, text: /{@\w+}/.test(c.text) ? this.replaceIdWithMention(c.text) : c.text };
-      if (c.parentComment && c.parentComment.text) {
-        c.parentComment.text = /{@\w+}/.test(c.parentComment.text)
-          ? this.replaceIdWithMention(c.parentComment.text)
-          : c.parentComment.text;
-      }
+    this.props.comments.map(comment => {
       return (
         <Comment
           key={comment.id} /*используются id чтобы правильно работал маунт и анмаунт*/
@@ -210,19 +190,13 @@ class Comments extends Component {
           reply={this.props.selectParentCommentForReply}
           ownedByMe={comment.author.id === this.props.userId}
           comment={comment}
+          users={this.users}
         />
       );
     });
 
   render() {
     const { lang } = this.props;
-    const suggestions = [{ id: 'all', fullNameEn: 'All', fullNameRu: 'Всем' }].concat(
-      this.props.users.map(user => ({
-        id: user.id,
-        fullNameEn: user.fullNameEn,
-        fullNameRu: user.fullNameRu
-      }))
-    );
     return (
       <div className={css.comments}>
         <ul className={css.commentList}>
@@ -238,7 +212,7 @@ class Comments extends Component {
                 ref={ref => (this.reply = ref ? ref.textarea : null)}
                 value={this.props.currentComment.text}
                 updateCurrentCommentText={this.props.updateCurrentCommentText}
-                suggestions={suggestions}
+                suggestions={this.users}
                 toggleBtn={this.toggleBtn}
                 onInput={this.typeComment}
                 setMentions={this.setMentions}
@@ -326,7 +300,7 @@ const mapStateToProps = ({
     user: { id: userId }
   },
   Project: {
-    project: { users }
+    project: { users, projectUsers, externalUsers }
   },
   Localize: { lang }
 }) => ({
@@ -336,7 +310,9 @@ const mapStateToProps = ({
   currentComment,
   highlighted,
   lang,
-  users
+  users,
+  projectUsers,
+  externalUsers
 });
 
 const mapDispatchToProps = {

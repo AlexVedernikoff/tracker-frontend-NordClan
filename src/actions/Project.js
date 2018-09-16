@@ -325,7 +325,7 @@ const getProjectInfo = id => {
         dispatch(finishLoading());
       })
       .catch(error => {
-        dispatch(gettingProjectInfoFail(error.response.data));
+        dispatch(gettingProjectInfoFail(error.response ? error.response.data : error.message));
         dispatch(finishLoading());
       });
   };
