@@ -129,21 +129,21 @@ class Comments extends Component {
   };
 
   publishComment = evt => {
-    const comment = this.props.currentComment;
+    const newComment = { ...this.props.currentComment };
     const mentions = this.state.mentions;
     if (mentions && mentions.length) {
-      comment.text = this.replaceMentionWithId(comment.text, mentions);
+      newComment.text = this.replaceMentionWithId(newComment.text, mentions);
     }
     const { ctrlKey, keyCode } = evt;
     if (((ctrlKey && keyCode === ENTER) || evt.button === 0) && this.state.disabledBtn === false) {
-      if (comment.id) {
-        if (!Comment.isExpiredForUpdate(comment.createdAt)) {
-          this.props.editComment(this.props.taskId, comment.id, comment.text);
+      if (newComment.id) {
+        if (!Comment.isExpiredForUpdate(newComment.createdAt)) {
+          this.props.editComment(this.props.taskId, newComment.id, newComment.text);
         } else {
           this.props.setCurrentCommentExpired();
         }
       } else {
-        this.props.publishComment(this.props.taskId, comment);
+        this.props.publishComment(this.props.taskId, newComment);
       }
       this.state.disabledBtn = true;
     }
@@ -196,6 +196,11 @@ class Comments extends Component {
   getCommentList = () =>
     this.props.comments.map(c => {
       const comment = { ...c, text: /{@\w+}/.test(c.text) ? this.replaceIdWithMention(c.text) : c.text };
+      if (c.parentComment && c.parentComment.text) {
+        c.parentComment.text = /{@\w+}/.test(c.parentComment.text)
+          ? this.replaceIdWithMention(c.parentComment.text)
+          : c.parentComment.text;
+      }
       return (
         <Comment
           key={comment.id} /*используются id чтобы правильно работал маунт и анмаунт*/

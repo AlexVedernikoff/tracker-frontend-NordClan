@@ -133,7 +133,7 @@ class Comment extends Component {
     const mentions = [];
     let resultStr = text;
     while ((result = regExp.exec(text))) {
-      mentions.push(result[0]);
+      mentions.push(result[0].slice(1));
     }
     mentions.map(mention => {
       resultStr = resultStr.replace(/(^| )@(\S+ \S*|\S*) /, ` <strong>${mention}</strong> `);
@@ -157,7 +157,7 @@ class Comment extends Component {
       }
       typoAvatar.toLocaleUpperCase();
     }
-    const withMentions = this.editMentions(text);
+
     return (
       <li
         ref="comment"
@@ -202,7 +202,7 @@ class Comment extends Component {
               </div>
             ) : null}
             <div
-              dangerouslySetInnerHTML={{ __html: Autolinker.link(withMentions) }}
+              dangerouslySetInnerHTML={{ __html: Autolinker.link(this.editMentions(text)) }}
               className={css.commentText}
               data-key="textContainer"
               onClick={this.handleSelect}
