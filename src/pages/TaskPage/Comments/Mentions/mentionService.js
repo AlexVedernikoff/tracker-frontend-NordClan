@@ -1,6 +1,8 @@
 /**
  Сервис обработки меншенов
  */
+import { getFullName } from '../../../../utils/NameLocalisation';
+
 export const ALL = 'all';
 const expectedMentionReg = /({@all}|{@[0-9]+})/;
 const expectedMentionSeparatorsReg = /[{@}]/g;
@@ -18,8 +20,8 @@ export const replaceWithMentions = (array, suggestions, replace) => {
   });
 };
 
-export const replaceLabelWithAt = m => `@${m.label}`;
-export const replaceValueWithIdPattern = m => `{@${m.value}}`;
+export const replaceLabelWithAt = m => `@${getFullName(m)}`;
+export const replaceValueWithIdPattern = m => `{@${m.id}}`;
 
 export const parseCommentForDisplay = (text, suggestions, replace) =>
   replaceWithMentions(splitCommentByMentions(text), suggestions, replace);
@@ -36,7 +38,7 @@ export const replaceUserMentionsWithMentionsId = (array, suggests) => {
   return array.map(x => {
     if (!userMentionReg.test(x)) return x;
     const label = x.slice(1);
-    const suggest = suggests.find(s => s.label === label);
+    const suggest = suggests.find(s => getFullName(s) === label);
     return suggest ? replaceValueWithIdPattern(suggest) : x;
   });
 };

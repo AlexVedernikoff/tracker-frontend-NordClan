@@ -26,6 +26,8 @@ import localize from './Comments.json';
 import Mentions from './Mentions/Mentions';
 import { getFullName } from '../../../utils/NameLocalisation';
 
+import { stringifyCommentForSend } from '../Comments/Mentions/mentionService';
+
 const ENTER = 13;
 
 class Comments extends Component {
@@ -139,10 +141,7 @@ class Comments extends Component {
 
   publishComment = evt => {
     const newComment = { ...this.props.currentComment };
-    const mentions = this.state.mentions;
-    if (mentions && mentions.length) {
-      newComment.text = this.replaceMentionWithId(newComment.text, mentions);
-    }
+    newComment.text = stringifyCommentForSend(newComment.text, this.users);
     const { ctrlKey, keyCode } = evt;
     if (((ctrlKey && keyCode === ENTER) || evt.button === 0) && this.state.disabledBtn === false) {
       if (newComment.id) {
