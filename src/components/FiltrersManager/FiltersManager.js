@@ -48,31 +48,40 @@ const FiltersManager = (ControlledComponent, initialFilters) => {
     filtersIsEmpty = filters => {};
 
     filtersStateIsEmpty = () => {
-      return this.filtersIsEmpty(this.filters);
+      return this.filtersIsEmpty(this.state.filters);
     };
 
     get useStorage() {
       return config.useSessionStorage || config.useLocalStorage;
     }
 
+    get storageType() {
+      if (config.useSessionStorage) {
+        return 'session';
+      }
+
+      if (config.useLocalStorage) {
+        return 'local';
+      }
+    }
+
     mapFiltersToUrl = () => {
       const mappedFilters = {};
-      const filtersKeys = Object.keys(this.filters);
+      const filtersKeys = Object.keys(this.state.filters);
 
       filtersKeys.forEach(filter => {
-        if (!this.isEmpty(this.filters[filter])) {
-          mappedFilters[filter] = config.mapFilterToUrl(filter, this.filters[filter]);
+        if (!this.isEmpty(this.state.filters[filter])) {
+          mappedFilters[filter] = config.mapFilterToUrl(filter, this.state.filters[filter]);
         }
       });
 
       return mappedFilters;
     };
 
-    get filters() {
-      return this.state.filters;
-    }
-
     get urlQueryIsEmpty() {
+      if (!this.props.location) {
+        return true;
+      }
       return this.isEmpty(this.props.location.query);
     }
 
@@ -101,25 +110,25 @@ const FiltersManager = (ControlledComponent, initialFilters) => {
       return validFilters;
     };
 
-    _getFiltersFromStorage(storageType) {
-      const storage = storageType === 'local' ? localStorage : sessionStorage;
+    _getFiltersFromStorage() {
+      const storage = this.storageType === 'local' ? localStorage : sessionStorage;
       try {
-        const filters = storage.getItem(this.props.location.pathname);
+        const filters = storage.getItem('filtersData');
         return filters ? JSON.parse(filters) : {};
       } catch (e) {
         return {};
       }
     }
 
-    saveFiltersToStorage(storageType) {
-      const storage = storageType === 'local' ? localStorage : sessionStorage;
-      storage.setItem(this.props.location.pathname, JSON.stringify(this.filters));
+    saveFiltersToStorage() {
+      const storage = this.storageType === 'local' ? localStorage : sessionStorage;
+      storage.setItem('filtersData', JSON.stringify(this.state.filters));
     }
 
     getFiltersFromUrl = () => {
       const filtersData = {};
       for (const key in this.props.location.query) {
-        if (this.filters[key]) {
+        if (this.state.filters[key]) {
           filtersData[key] = mapFilterFromUrl(key, this.props.location.query[key]);
         }
       }
@@ -134,7 +143,7 @@ const FiltersManager = (ControlledComponent, initialFilters) => {
     };
 
     setFilterValue = (label, value, callback) => {
-      if (this.filters[label] === undefined) {
+      if (this.state.filters[label] === undefined) {
         return;
       }
 
@@ -174,7 +183,7 @@ const FiltersManager = (ControlledComponent, initialFilters) => {
       return (
         <ControlledComponent
           {...this.props}
-          filters={this.filters}
+          filters={this.state.filters}
           setFilterValue={this.setFilterValue}
           clearFilters={this.clearFilters}
           filtersIsEmpty={this.filtersStateIsEmpty}
@@ -182,6 +191,12 @@ const FiltersManager = (ControlledComponent, initialFilters) => {
       );
     }
   };
+};
+
+FiltersManager.defaultProps = {
+  location: {
+    query: {}
+  }
 };
 
 export default FiltersManager;

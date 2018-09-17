@@ -2,15 +2,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import ReactTooltip from 'react-tooltip';
-import Tag from '../Tag';
-import Button from '../../components/Button';
 import classnames from 'classnames';
-import { IconClose, IconArrowDownThin, IconBroom } from '../Icons';
-import * as css from './FilterList.scss';
-// import { UnmountClosed, Collapse } from 'react-collapse';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { connect } from 'react-redux';
+
+import * as css from './FilterList.scss';
 import localize from './FilterList.json';
+
+import Tag from '../Tag';
+import Button from '../Button';
+import { IconArrowDownThin, IconBroom } from '../Icons';
 
 class FilterList extends Component {
   componentWillReceiveProps() {
@@ -115,7 +116,7 @@ class FilterList extends Component {
 
     return (
       <div>
-        <ReactCSSTransitionGroup transitionEnterTimeout={300} transitionLeave={false}>
+        <ReactCSSTransitionGroup transitionEnterTimeout={300} transitionLeave={false} transitionName="fff">
           {!this.props.fullFilterView && (
             <Row className={css.filtersRow}>
               <Col xs>
@@ -151,13 +152,13 @@ class FilterList extends Component {
         <div className={classnames(css.filterListShowMore)}>
           <div
             className={classnames(css.filterListShowMoreButton)}
-            data-tip={this.state.fullFilterView ? localize[lang].HIDE_FILTERS : localize[lang].SHOW_FILTERS}
+            data-tip={this.props.fullFilterView ? localize[lang].HIDE_FILTERS : localize[lang].SHOW_FILTERS}
             onClick={this.props.toggleFilterView}
           >
             <IconArrowDownThin
               className={classnames({
                 [css.filterListShowMoreIcon]: true,
-                [css.iconReverse]: this.state.fullFilterView
+                [css.iconReverse]: this.props.fullFilterView
               })}
             />
           </div>
