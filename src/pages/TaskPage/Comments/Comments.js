@@ -16,7 +16,6 @@ import {
   setHighLighted
 } from '../../../actions/Task';
 import { connect } from 'react-redux';
-import UserCard from '../../../components/UserCard/UserCard';
 import * as css from './Comments.scss';
 import Comment from './Comment';
 import { history } from '../../../History';
@@ -24,9 +23,8 @@ import { IconSend, IconComments } from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
 import localize from './Comments.json';
 import Mentions from './Mentions/Mentions';
-import { getFullName } from '../../../utils/NameLocalisation';
 
-import { stringifyCommentForSend } from '../Comments/Mentions/mentionService';
+import { prepairCommentForEdit, stringifyCommentForSend } from '../Comments/Mentions/mentionService';
 
 const ENTER = 13;
 
@@ -209,7 +207,7 @@ class Comments extends Component {
                 placeholder={localize[lang].ENTER_COMMENT}
                 onKeyDown={this.publishComment}
                 ref={ref => (this.reply = ref ? ref.textarea : null)}
-                value={this.props.currentComment.text}
+                value={prepairCommentForEdit(this.props.currentComment.text, this.users)}
                 updateCurrentCommentText={this.props.updateCurrentCommentText}
                 suggestions={this.users}
                 toggleBtn={this.toggleBtn}
