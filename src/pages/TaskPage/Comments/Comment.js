@@ -13,7 +13,7 @@ import Autolinker from 'autolinker';
 import localize from './Comment.json';
 import { getFirstName, getLastName, getFullName } from '../../../utils/NameLocalisation';
 
-import { parseCommentForDisplay } from './Mentions/mentionService';
+import { parseCommentForDisplay, prepairCommentForEdit } from './Mentions/mentionService';
 
 const UPDATE_EXPIRATION_TIMEOUT = 10 * 60 * 1000; //10 минут
 
@@ -141,12 +141,16 @@ class Comment extends PureComponent {
 
   getBold = (s, i) => `<strong key={${getFullName(s) + i}}>${getFullName(s)}</strong>`;
 
+  getMention = user => `@${getFullName(user)}`;
+
   compileComment = text =>
     parseCommentForDisplay(text, this.props.users, this.getCard).map(
       t => (typeof t === 'string' ? Autolinker.link(t) : t)
     );
 
   compileParent = text => parseCommentForDisplay(text, this.props.users, this.getBold).join('');
+
+  prepairTextForEditing = text => prepairCommentForEdit(text, this.props.users, this.getMention);
 
   render() {
     const {
@@ -164,6 +168,7 @@ class Comment extends PureComponent {
       }
       typoAvatar.toLocaleUpperCase();
     }
+    const editingComment = { ...comment, text: this.prepairTextForEditing(comment.text) };
     return (
       <li
         data-key="textContainer"
@@ -225,7 +230,7 @@ class Comment extends PureComponent {
               ) : null}
               {this.state.canBeUpdated && !comment.deleting
                 ? [
-                    <a onClick={() => this.props.editComment(comment)} href="#reply" key={0}>
+                    <a onClick={() => this.props.editComment(editingComment)} href="#reply" key={0}>
                       {localize[lang].EDIT}
                     </a>,
                     <a onClick={() => this.props.removeComment(comment.id)} key={1}>
