@@ -65,8 +65,6 @@ export const doAuthentication = ({ username, password }) => {
         }
       })
       .catch(error => {
-        console, log(error);
-        debugger;
         if (error.response.data.status === 404) {
           dispatch(authenticationError(getErrorMessageByType(error.response.data.name)));
         } else {
