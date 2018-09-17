@@ -355,7 +355,7 @@ class TaskPage extends Component {
                   onDelete={task.statusId !== TaskStatuses.CANCELED ? this.handleOpenCancelSubTaskModal : null}
                 />
               ) : null}
-              <TaskGitlabBranch taskId={this.props.params.taskId} />
+              <TaskGitlabBranch taskId={this.props.params.taskId} projectId={params.projectId} />
             </aside>
           </Col>
         </Row>

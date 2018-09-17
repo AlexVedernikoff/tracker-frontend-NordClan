@@ -111,3 +111,31 @@
     color: $color-dark;
   }
 }
+
+.createGitlabProject {
+  min-width: 330px;
+  max-width: 500px;
+  padding: 2rem;
+
+  @include phone {
+    padding: 1rem;
+    min-width: 250px;
+  }
+
+  h3 {
+    margin-top: 0;
+  }
+}
+
+.modalContainer {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  > div {
+    margin-bottom: 1rem;
+  }
+  > button {
+    width: 100px;
+    align-self: center;
+  }
+}

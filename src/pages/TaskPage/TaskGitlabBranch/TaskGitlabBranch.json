@@ -1,8 +1,18 @@
 {
   "en": {
-    "GITLAB_BRANCHES": "Gitlab branches"
+    "GITLAB_BRANCHES": "Gitlab branches",
+    "CREATE_GITLAB_BRANCH": "Create Gitlab branch",
+    "REPOSITORY": "Select repository",
+    "SOURCE_BRANCH": "Source branch",
+    "BRANCH_NAME": "New branch name",
+    "CREATE_BRANCH": "Create"
   },
   "ru": {
-    "GITLAB_BRANCHES": "Gitlab ветки"
+    "GITLAB_BRANCHES": "Gitlab ветки",
+    "CREATE_GITLAB_BRANCH": "Создать Gitlab ветку",
+    "REPOSITORY": "Выберите репозиторий",
+    "SOURCE_BRANCH": "Родительская ветка",
+    "BRANCH_NAME": "Название новой ветки",
+    "CREATE_BRANCH": "Создать"
   }
 }
