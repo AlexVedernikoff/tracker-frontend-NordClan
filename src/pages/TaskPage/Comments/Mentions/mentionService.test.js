@@ -38,31 +38,24 @@ describe('Меншены', () => {
     expect(splitCommentByMentions(str)).toEqual(['{@99}', 'Я строка ', '{@all}', ' 123@12', '{@123}', '@11']);
   });
   test('Замена id и all из массива suggests', () => {
-    const suggests = [{ value: ALL, label: 'Всем' }, { value: 99, label: 'User1' }, { value: 123, label: 'User2' }];
-    expect(replaceWithMentions(['{@99}', 'Я строка ', '{@all}', ' 123@12', '{@123}', '@11'], suggests)).toEqual([
-      suggests[1].label,
-      'Я строка ',
-      suggests[0].label,
-      ' 123@12',
-      suggests[2].label,
-      '@11'
-    ]);
+    const suggests = [{ id: ALL, label: 'Всем' }, { id: 99, label: 'User1' }, { id: 123, label: 'User2' }];
+    const replace = suggest => suggest.label;
+    expect(
+      replaceWithMentions(['{@99}', 'Я строка ', '{@all}', ' 123@12', '{@123}', '@11'], suggests, replace)
+    ).toEqual([suggests[1].label, 'Я строка ', suggests[0].label, ' 123@12', suggests[2].label, '@11']);
   });
   test('Потерянный меншен не заменяется', () => {
-    const suggests = [{ value: ALL, label: 'Всем' }, { value: 99, label: 'User1' }];
-    expect(replaceWithMentions(['{@99}', 'Я строка ', '{@all}', ' 123@12', '{@123}', '@11'], suggests)).toEqual([
-      suggests[1].label,
-      'Я строка ',
-      suggests[0].label,
-      ' 123@12',
-      '{@123}',
-      '@11'
-    ]);
+    const suggests = [{ id: ALL, label: 'Всем' }, { id: 99, label: 'User1' }];
+    const replace = suggest => suggest.label;
+    expect(
+      replaceWithMentions(['{@99}', 'Я строка ', '{@all}', ' 123@12', '{@123}', '@11'], suggests, replace)
+    ).toEqual([suggests[1].label, 'Я строка ', suggests[0].label, ' 123@12', '{@123}', '@11']);
   });
   test('Полный парсинг строки', () => {
     const str = '{@99}Я строка {@all} 123@12{@123}@11';
-    const suggests = [{ value: ALL, label: 'Всем' }, { value: 99, label: 'User1' }, { value: 123, label: 'User2' }];
-    expect(parseCommentForDisplay(str, suggests)).toEqual([
+    const suggests = [{ id: ALL, label: 'Всем' }, { id: 99, label: 'User1' }, { id: 123, label: 'User2' }];
+    const replace = suggest => suggest.label;
+    expect(parseCommentForDisplay(str, suggests, replace)).toEqual([
       suggests[1].label,
       'Я строка ',
       suggests[0].label,
@@ -73,43 +66,59 @@ describe('Меншены', () => {
   });
   /** РЕДАКТИРОВАНИЕ */
   test('Полная подготовка строки для редактирования', () => {
-    const suggests = [{ value: ALL, label: 'Всем' }, { value: 99, label: 'User1' }, { value: 123, label: 'User2' }];
-    const result = `@${suggests[1].label}Я строка @${suggests[0].label} 123@12@${suggests[2].label}@11`;
-    const input = `{@${suggests[1].value}}Я строка {@${suggests[0].value}} 123@12{@${suggests[2].value}}@11`;
+    const suggests = [
+      { id: ALL, fullNameRu: 'Всем' },
+      { id: 99, fullNameRu: 'User1' },
+      { id: 123, fullNameRu: 'User2' }
+    ];
+    const result = `@${suggests[1].fullNameRu}Я строка @${suggests[0].fullNameRu} 123@12@${suggests[2].fullNameRu}@11`;
+    const input = `{@${suggests[1].id}}Я строка {@${suggests[0].id}} 123@12{@${suggests[2].id}}@11`;
     expect(prepairCommentForEdit(input, suggests)).toEqual(result);
   });
   test('Разбиение редактируемой строки по меншенам', () => {
-    const suggests = [{ value: ALL, label: 'Всем' }, { value: 99, label: 'User1' }, { value: 123, label: 'User2' }];
-    const input = `@${suggests[1].label}Я строка @${suggests[0].label} 123@12@${suggests[2].label}@11`;
+    const suggests = [
+      { id: ALL, fullNameRu: 'Всем' },
+      { id: 99, fullNameRu: 'User1' },
+      { id: 123, fullNameRu: 'User2' }
+    ];
+    const input = `@${suggests[1].fullNameRu}Я строка @${suggests[0].fullNameRu} 123@12@${suggests[2].fullNameRu}@11`;
     expect(splitUserCommentByMentionLabels(input, suggests)).toEqual([
-      `@${suggests[1].label}`,
+      `@${suggests[1].fullNameRu}`,
       'Я строка ',
-      `@${suggests[0].label}`,
+      `@${suggests[0].fullNameRu}`,
       ' 123@12',
-      `@${suggests[2].label}`,
+      `@${suggests[2].fullNameRu}`,
       '@11'
     ]);
   });
   test('Замена labels меншенов редактируемой строки на их id-паттерны {@123}', () => {
-    const suggests = [{ value: ALL, label: 'Всем' }, { value: 99, label: 'User1' }, { value: 123, label: 'User2' }];
+    const suggests = [
+      { id: ALL, fullNameRu: 'Всем' },
+      { id: 99, fullNameRu: 'User1' },
+      { id: 123, fullNameRu: 'User2' }
+    ];
     expect(
       replaceUserMentionsWithMentionsId(
-        [`@${suggests[1].label}`, 'Я строка ', `@${suggests[0].label}`, ' 123@12', `@${suggests[2].label}`, '@11'],
+        [
+          `@${suggests[1].fullNameRu}`,
+          'Я строка ',
+          `@${suggests[0].fullNameRu}`,
+          ' 123@12',
+          `@${suggests[2].fullNameRu}`,
+          '@11'
+        ],
         suggests
       )
-    ).toEqual([
-      `{@${suggests[1].value}}`,
-      'Я строка ',
-      `{@${suggests[0].value}}`,
-      ' 123@12',
-      `{@${suggests[2].value}}`,
-      '@11'
-    ]);
+    ).toEqual([`{@${suggests[1].id}}`, 'Я строка ', `{@${suggests[0].id}}`, ' 123@12', `{@${suggests[2].id}}`, '@11']);
   });
   test('Полная склейка редактируемой строки', () => {
-    const suggests = [{ value: ALL, label: 'Всем' }, { value: 99, label: 'User1' }, { value: 123, label: 'User2' }];
-    const input = `@${suggests[1].label}Я строка @${suggests[0].label} 123@12@${suggests[2].label}@11`;
-    const result = `{@${suggests[1].value}}Я строка {@${suggests[0].value}} 123@12{@${suggests[2].value}}@11`;
+    const suggests = [
+      { id: ALL, fullNameRu: 'Всем' },
+      { id: 99, fullNameRu: 'User1' },
+      { id: 123, fullNameRu: 'User2' }
+    ];
+    const input = `@${suggests[1].fullNameRu}Я строка @${suggests[0].fullNameRu} 123@12@${suggests[2].fullNameRu}@11`;
+    const result = `{@${suggests[1].id}}Я строка {@${suggests[0].id}} 123@12{@${suggests[2].id}}@11`;
 
     expect(stringifyCommentForSend(input, suggests)).toEqual(result);
   });
