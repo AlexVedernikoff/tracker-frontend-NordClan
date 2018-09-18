@@ -16,9 +16,15 @@ class TextEditor extends Component {
   }
 
   onEditorStateChange = editorState => {
+    this.validate(editorState);
     this.setState({
       editorState
     });
+  };
+
+  validate = editorState => {
+    const { validator } = this.props;
+    validator && validator(editorState.getCurrentContent().getPlainText());
   };
 
   render() {
@@ -44,7 +50,8 @@ TextEditor.propTypes = {
   content: PropTypes.string,
   placeholder: PropTypes.string,
   toolbarClassName: PropTypes.string,
-  toolbarHidden: PropTypes.bool
+  toolbarHidden: PropTypes.bool,
+  validator: PropTypes.func
 };
 
 export default TextEditor;
