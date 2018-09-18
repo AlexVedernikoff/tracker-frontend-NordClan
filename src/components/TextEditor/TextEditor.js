@@ -29,6 +29,7 @@ class TextEditor extends Component {
         onEditorStateChange={this.onEditorStateChange}
         toolbarHidden={toolbarHidden}
         placeholder={placeholder}
+        stripPastedStyles
         toolbar={{
           options: ['inline', 'blockType', 'list', 'history']
         }}

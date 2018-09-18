@@ -4,21 +4,27 @@
     "UNDO": "Undo",
     "EDIT": "Edit",
     "DELETE": "Delete",
+    "SEND": "Send",
     "ERROR_MESSAGE": "The name must contain at least two characters",
     "ENTER_VALID_EMAIL": "Please enter a valid e-mail",
     "SPECIFY_DATE": "Specify date",
     "ENTER_DATE": "Enter the date",
-    "CONFIRM_DELETE_USER": "Are you sure you want to delete the user"
+    "CONFIRM_DELETE_USER": "Are you sure you want to delete the user",
+    "CONFIRM_REFRESH_LINK": "Are you sure you want to send new link for external user's registration",
+    "LONG_DESCRIPTION": "Description is too big. Field should contain not more than 5000 characters."
   },
   "ru": {
     "SAVE": "Сохранить",
     "UNDO": "Отмена",
     "EDIT": "Редактировать",
     "DELETE": "Удалить",
+    "SEND": "Отправить",
     "ERROR_MESSAGE": "Имя должно содержать не менее двух символов",
     "ENTER_VALID_EMAIL": "Введите корректный e-mail",
     "SPECIFY_DATE": "Укажите дату",
     "ENTER_DATE": "Введите дату",
-    "CONFIRM_DELETE_USER": "Вы действительно хотите удалить пользователя"
+    "CONFIRM_DELETE_USER": "Вы действительно хотите удалить пользователя",
+    "CONFIRM_REFRESH_LINK": "Вы действиетльно хотите обновить ссылку для регистрации внешнего пользователя",
+    "LONG_DESCRIPTION": "Слишком длинное описание. Поле должно содержать не больше 5000 символов."
   }
 }

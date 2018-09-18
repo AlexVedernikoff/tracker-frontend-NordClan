@@ -10,6 +10,7 @@ import Select from 'react-select';
 import getPortfolios from '../../../utils/getPortfolios';
 import { connect } from 'react-redux';
 import localize from './CreateProject.json';
+import { getLocalizedProjectTypes } from '../../../selectors/dictionaries';
 
 class CreateProject extends Component {
   constructor(props) {
@@ -168,7 +169,7 @@ CreateProject.propTypes = {
 
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
-  projectTypes: state.Dictionaries.projectTypes || []
+  projectTypes: getLocalizedProjectTypes(state) || []
 });
 
 export default connect(

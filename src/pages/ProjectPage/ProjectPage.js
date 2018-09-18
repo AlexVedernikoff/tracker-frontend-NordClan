@@ -14,6 +14,7 @@ import { ADMIN, EXTERNAL_USER } from '../../constants/Roles';
 import { checkIsViewer } from '../../helpers/RoleValidator';
 import localize from './projectPage.json';
 import Title, { flushTitle } from 'react-title-component';
+import { getLocalizedProjectTypes } from '../../selectors/dictionaries';
 
 class ProjectPage extends Component {
   static propTypes = {
@@ -207,7 +208,7 @@ class ProjectPage extends Component {
 const mapStateToProps = state => ({
   project: state.Project.project,
   user: state.Auth.user,
-  projectTypes: state.Dictionaries.projectTypes || [],
+  projectTypes: getLocalizedProjectTypes(state) || [],
   lang: state.Localize.lang
 });
 

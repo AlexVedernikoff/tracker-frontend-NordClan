@@ -23,6 +23,7 @@ import classnames from 'classnames';
 import localize from './Details.json';
 import { getFullName } from '../../../utils/NameLocalisation';
 import { TASK_STATUS_CLOSED } from '../../../constants/Task';
+import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
 
 const spentRequestStatus = {
   READY: 0,
@@ -397,7 +398,7 @@ class Details extends Component {
 const mapStateToProps = state => ({
   users: state.Project.project.users,
   sprints: state.Project.project.sprints,
-  taskTypes: state.Dictionaries.taskTypes,
+  taskTypes: getLocalizedTaskTypes(state),
   PlanningTimeIsEditing: state.Task.PlanningTimeIsEditing,
   ExecutionTimeIsEditing: state.Task.ExecutionTimeIsEditing,
   timeSpent: state.Task.timeSpent,

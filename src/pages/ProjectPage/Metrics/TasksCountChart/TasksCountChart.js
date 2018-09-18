@@ -9,6 +9,7 @@ import roundNum from '../../../../utils/roundNum';
 import localize from './TasksCountChart.json';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import datalabels from 'chartjs-plugin-datalabels';
 
 class TasksCountChart extends Component {
   static propTypes = {
@@ -61,6 +62,14 @@ class TasksCountChart extends Component {
             }
           }
         ]
+      },
+      plugins: {
+        datalabels: {
+          formatter: function(value) {
+            return value.y;
+          },
+          align: 'end'
+        }
       }
     };
   }

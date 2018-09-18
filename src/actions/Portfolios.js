@@ -21,15 +21,15 @@ const getPortfolios = () => {
 
     axios
       .get(URL, { withCredentials: true })
-      .catch(error => {
-        dispatch(finishLoading());
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-      })
       .then(response => {
         if (response && response.status === 200) {
           dispatch(successPortfoliosRequest(response.data.data));
-          dispatch(finishLoading());
         }
+        dispatch(finishLoading());
+      })
+      .catch(error => {
+        dispatch(finishLoading());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
       });
   };
 };

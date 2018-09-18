@@ -18,9 +18,13 @@
 }
 
 .modalLine {
-  display: flex;
+  > * {
+    width: 83%;
+    display: inline-block;
+  }
 
-  > *:first-child {
-    flex-grow: 1;
+  button {
+    width: 17%;
+    float: right;
   }
 }

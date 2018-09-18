@@ -23,8 +23,8 @@ export const getExternalUsers = () => {
       response => {
         if (response.data) {
           dispatch(getExternalUsersSuccess(response.data));
-          dispatch(finishLoading());
         }
+        dispatch(finishLoading());
       },
       error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
@@ -50,8 +50,8 @@ export const editExternalUser = (id, changedFields) => {
       response => {
         if (response.data) {
           dispatch(editExternalUserSuccess(id, response.data));
-          dispatch(finishLoading());
         }
+        dispatch(finishLoading());
       },
       error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
@@ -78,14 +78,13 @@ export const addExternalUser = exUser => {
           if (response.data) {
             resolve(response.data);
             dispatch(addExternalUserSuccess(response.data));
-            dispatch(finishLoading());
           }
+          dispatch(finishLoading());
 
           resolve(null);
         },
         error => {
           reject({ message: error.response.data ? error.response.data.message : error.message });
-          dispatch(showNotification({ message: error.message, type: 'error' }));
           dispatch(finishLoading());
         }
       );
@@ -111,9 +110,9 @@ export const activateExternalUser = (token, password) => {
         response => {
           if (response && response.status === 200) {
             dispatch(activateExternalUserSuccess());
-            dispatch(finishLoading());
             history.push('/login');
           }
+          dispatch(finishLoading());
         },
         error => {
           dispatch(showNotification({ message: error.message, type: 'error' }));
@@ -142,13 +141,41 @@ export const deleteExternalUser = id => {
         response => {
           if (response.data) {
             dispatch(deleteExternalUserSuccess(id));
-            dispatch(finishLoading());
           }
+          dispatch(finishLoading());
         },
         error => {
           dispatch(showNotification({ message: error.message, type: 'error' }));
           dispatch(finishLoading());
         }
       );
+  };
+};
+
+export const refreshExternalUserLinkStart = () => ({
+  type: externalUsersActions.REFRESH_EXTERNAL_USER_LINK_START
+});
+export const refreshExternalUserLinkSuccess = changedUser => ({
+  type: externalUsersActions.REFRESH_EXTERNAL_USER_LINK_SUCCESS,
+  changedUser
+});
+export const refreshExternalUserLink = exUser => {
+  const URL = `${API_URL}/user/external/${exUser.id}/refresh`;
+  return dispatch => {
+    dispatch(refreshExternalUserLinkStart());
+    dispatch(startLoading());
+    axios.put(URL, exUser).then(
+      response => {
+        if (response.data) {
+          dispatch(refreshExternalUserLinkSuccess(response.data));
+        }
+        dispatch(finishLoading());
+      },
+      error => {
+        dispatch(refreshExternalUserLinkSuccess(exUser));
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      }
+    );
   };
 };
