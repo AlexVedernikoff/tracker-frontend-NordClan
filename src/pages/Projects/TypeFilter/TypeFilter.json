@@ -1,0 +1,10 @@
+{
+  "en": {
+    "PLACEHOLDER": "Select project type",
+    "NO_RESULTS": "No results"
+  },
+  "ru": {
+    "PLACEHOLDER": "Выберите тип проекта",
+    "NO_RESULTS": "Нет результатов"
+  }
+}
