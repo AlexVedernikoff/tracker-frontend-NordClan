@@ -22,6 +22,7 @@ import roundNum from '../../../utils/roundNum';
 import classnames from 'classnames';
 import localize from './Details.json';
 import { getFullName } from '../../../utils/NameLocalisation';
+import { TASK_STATUS_CLOSED } from '../../../constants/Task';
 
 const spentRequestStatus = {
   READY: 0,
@@ -288,7 +289,7 @@ class Details extends Component {
             <tr>
               <td>{localize[lang].PERFORMER}</td>
               <td>
-                {this.props.task.statusId !== 10 ? (
+                {this.props.task.statusId !== TASK_STATUS_CLOSED ? (
                   <span onClick={this.openPerformerModal} className={css.editableCell}>
                     {task.performer ? (
                       getFullName(task.performer)
