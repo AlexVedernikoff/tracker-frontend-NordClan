@@ -80,6 +80,7 @@ class Comment extends Component {
     comment: PropTypes.object,
     commentsLoadedDate: PropTypes.string,
     editComment: PropTypes.func,
+    lang: PropTypes.string,
     lightened: PropTypes.bool,
     location: PropTypes.object,
     ownedByMe: PropTypes.bool,
@@ -126,9 +127,23 @@ class Comment extends Component {
     }
   };
 
+  editMentions(text) {
+    let result = null;
+    const regExp = /@(\S+ \S*|\S*)/g;
+    const mentions = [];
+    let resultStr = text;
+    while ((result = regExp.exec(text))) {
+      mentions.push(result[0]);
+    }
+    mentions.map(mention => {
+      resultStr = resultStr.replace(/(^| )@(\S+ \S*|\S*) /, ` <strong>${mention}</strong> `);
+    });
+    return resultStr;
+  }
+
   render() {
     const {
-      comment: { author, parentComment },
+      comment: { author, parentComment, text },
       comment,
       lang
     } = this.props;
@@ -142,7 +157,7 @@ class Comment extends Component {
       }
       typoAvatar.toLocaleUpperCase();
     }
-
+    const withMentions = this.editMentions(text);
     return (
       <li
         ref="comment"
@@ -187,7 +202,7 @@ class Comment extends Component {
               </div>
             ) : null}
             <div
-              dangerouslySetInnerHTML={{ __html: Autolinker.link(comment.text) }}
+              dangerouslySetInnerHTML={{ __html: Autolinker.link(withMentions) }}
               className={css.commentText}
               data-key="textContainer"
               onClick={this.handleSelect}

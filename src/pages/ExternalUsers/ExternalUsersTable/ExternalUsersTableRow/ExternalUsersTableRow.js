@@ -54,6 +54,16 @@ class ExternalUsersTableRow extends Component {
           return false;
         }
         return true;
+      },
+      description: value => {
+        if (value.length > 5000) {
+          this.props.showNotification({
+            message: localize[lang].LONG_DESCRIPTION,
+            type: 'error'
+          });
+          return false;
+        }
+        return true;
       }
     };
   }
@@ -100,7 +110,8 @@ class ExternalUsersTableRow extends Component {
     if (
       (changedFields.firstNameRu !== undefined && !this.validation.name(changedFields.firstNameRu)) ||
       (changedFields.login !== undefined && !this.validation.email(changedFields.login)) ||
-      (changedFields.expiredDate !== undefined && !this.validation.expiredDate(changedFields.expiredDate))
+      (changedFields.expiredDate !== undefined && !this.validation.expiredDate(changedFields.expiredDate)) ||
+      (changedFields.description !== undefined && !this.validation.description(changedFields.description))
     ) {
       return;
     }
@@ -154,6 +165,14 @@ class ExternalUsersTableRow extends Component {
             isEditing={this.state.isEditing}
             onValueChange={this.onEditValues('login', 'email')}
             isValid={this.state.isValid.login}
+          />
+        </div>
+        <div className={classnames(css.TableCell, css.TableCellDesc)}>
+          <ExternalUserInput
+            value={this.props.exUser.description}
+            isEditing={this.state.isEditing}
+            onValueChange={this.onEditValues('description')}
+            isValid={this.state.isValid.description}
           />
         </div>
         <div className={classnames(css.TableCell, css.TableCellActivity)}>

@@ -8,6 +8,7 @@ import { getFullName } from '../../utils/NameLocalisation';
 
 class PerformerFilter extends React.Component {
   static propTypes = {
+    lang: PropTypes.string,
     onPerformerSelect: PropTypes.func.isRequired,
     selectedPerformerId: PropTypes.oneOfType([PropTypes.array, PropTypes.number]),
     users: PropTypes.array
@@ -33,6 +34,7 @@ class PerformerFilter extends React.Component {
         onChange={this.props.onPerformerSelect}
         noResultsText={localize[lang].NO_RESULTS}
         options={this.getUsers()}
+        backspaceToRemoveMessage={''}
       />
     );
   }
