@@ -1,35 +1,25 @@
 import React, { Component } from 'react';
 import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
-import { Row, Col } from 'react-flexbox-grid/lib/index';
+import { Row } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
-// import { UnmountClosed } from 'react-collapse';
 
 import * as css from './AgileBoard.scss';
 import localize from './AgileBoard.json';
 import PhaseColumn from './PhaseColumn';
 import { getNewStatus, getNewStatusOnClick } from './helpers';
 import { sortTasksAndCreateCard } from './TaskList';
-import { initialFilters, NO_TAG_VALUE, phaseColumnNameById } from './constants';
+import { initialFilters, phaseColumnNameById } from './constants';
 
-// import FilterList from '../../../components/FilterList';
 import PerformerModal from '../../../components/PerformerModal';
 import AgileBoardFilter from '../../../components/AgileBoardFilter';
-// import Input from '../../../components/Input';
-// import SelectDropdown from '../../../components/SelectDropdown';
-// import Button from '../../../components/Button';
-// import Priority from '../../../components/Priority';
-// import Checkbox from '../../../components/Checkbox';
 import CreateTaskModal from '../../../components/CreateTaskModal';
-// import PerformerFilter from '../../../components/PerformerFilter';
-// import SprintSelector from '../../../components/SprintSelector';
 import withFiltersManager from '../../../components/FiltrersManager/FiltersManager';
 
 import { getFullName } from '../../../utils/NameLocalisation';
-// import getPriorityById from '../../../utils/TaskPriority';
 import { agileBoardSelector } from '../../../selectors/agileBoard';
 
-import { VISOR, EXTERNAL_USER } from '../../../constants/Roles';
+import { EXTERNAL_USER } from '../../../constants/Roles';
 import getTasks from '../../../actions/Tasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal, getProjectUsers, getProjectInfo, getProjectTags } from '../../../actions/Project';
@@ -63,31 +53,25 @@ class AgileBoard extends Component {
   }
 
   getTasks = customOption => {
+    const { filters } = this.props;
     const options = customOption
       ? customOption
       : {
           projectId: this.props.params.projectId,
-          sprintId: this.props.filters.changedSprint
-            ? this.props.filters.changedSprint.map(singleType => singleType.value)
-            : null,
-          prioritiesId: this.props.filters.prioritiesId,
-          authorId: this.props.filters.authorId,
-          typeId: this.props.filters.typeId
+          sprintId: filters.changedSprint ? filters.changedSprint.map(singleType => singleType.value) : null,
+          prioritiesId: filters.prioritiesId,
+          authorId: filters.authorId,
+          typeId: filters.typeId
             ? Array.isArray(this.state.typeId)
-              ? this.props.filters.typeId.map(singleType => singleType.value)
-              : this.props.filters.typeId.value
+              ? filters.typeId.map(singleType => singleType.value)
+              : filters.typeId.value
             : null,
-          name: this.props.filters.name || null,
-          tags: this.props.filters.filterTags.map(({ value }) => value).join(','),
-          noTag: this.props.filters.noTag,
-          performerId: this.props.filters.performerId
-            ? Array.isArray(this.state.performerId)
-              ? this.props.filters.performerId.map(singlePerformer => singlePerformer.value)
-              : this.props.filters.performerId.value
-            : null
+          name: filters.name || null,
+          tags: filters.filterTags.map(({ value }) => value).join(','),
+          noTag: filters.noTag,
+          performerId: filters.performerId ? filters.performerId.map(p => p.value) : null
         };
     this.props.getTasks(options);
-    // this.updateFilterList();
   };
 
   dropTask = (task, phase) => {
@@ -203,7 +187,7 @@ class AgileBoard extends Component {
 
     return (
       <section className={css.agileBoard}>
-        <AgileBoardFilter {...this.props} />
+        <AgileBoardFilter {...this.props} getTasks={this.getTasks} initialFilters={initialFilters} />
         <div className={css.boardContainer}>
           {this.props.myTaskBoard || this.state.isOnlyMine ? (
             <Row>

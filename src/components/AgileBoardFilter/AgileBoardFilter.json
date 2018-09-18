@@ -1,30 +1,25 @@
 {
   "en": {
-    "PRIORITY": "Priority",
-    "MY_TASKS": "Only my tasks",
-    "TAG_NAME": "Enter tag name",
-    "CREATE_TASK": "Create new task",
-    "TASK_NAME": "Enter the task name",
-    "TASK_TYPE": "Select task type",
-    "TYPE_IS_MISS": "No suitable types",
-    "CLEAR_ALL": "Clear all",
-    "SELECT_SPRINT": "Select the sprint",
-    "NO_RESULTS": "No results",
-    "SELECT_AUTHOR": "Select the author of task",
-    "CLEAR_FILTERS": "Clear filters"
+    "NOT_SELECTED": "Filters is not selected",
+    "HIDE_FILTERS": "Hide filters",
+    "SHOW_FILTERS": "Show filters",
+    "CLEAR_FILTERS": "Clear filters",
+    "CREATE_TASK": "Create task",
+    "MY_TASKS": "my tasks",
+    "AUTHOR": "author",
+    "PERFORMER": "performer",
+    "NOT_CHANGED": "Not changed"
   },
+
   "ru": {
-    "PRIORITY": "Приоритет:",
-    "MY_TASKS": "Только мои задачи",
-    "TAG_NAME": "Введите название тега",
+    "NOT_SELECTED": "Фильтры не выбраны",
+    "HIDE_FILTERS": "Скрыть фильтры",
+    "SHOW_FILTERS": "Показать фильтры",
+    "CLEAR_FILTERS": "Очистить фильтры",
     "CREATE_TASK": "Создать задачу",
-    "TASK_NAME": "Введите название задачи",
-    "TASK_TYPE": "Выберите тип задачи",
-    "TYPE_IS_MISS": "Нет подходящих типов",
-    "CLEAR_ALL": "Очистить все",
-    "SELECT_SPRINT": "Выберите спринт",
-    "NO_RESULTS": "Нет результатов",
-    "SELECT_AUTHOR": "Выберите автора задачи",
-    "CLEAR_FILTERS": "Очистить фильтры"
+    "MY_TASKS": "мои задачи",
+    "AUTHOR": "автор",
+    "PERFORMER": "исполнитель",
+    "NOT_CHANGED": "Не назначено"
   }
 }

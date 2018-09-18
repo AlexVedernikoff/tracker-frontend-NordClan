@@ -1,2 +1,2 @@
-export const useLocalStorage = true;
-export const useSessionStorage = false;
+export const useLocalStorage = false;
+export const useSessionStorage = true;

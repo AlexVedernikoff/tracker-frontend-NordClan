@@ -96,6 +96,7 @@ class AppRouter extends Component {
     if (nextState.location.search === '') {
       localStorage.setItem('filtersData', '?changedSprint=0');
     }
+    // localStorage.removeItem('filtersData');
     this.props.clearCurrentProjectAndTasks();
   };
 

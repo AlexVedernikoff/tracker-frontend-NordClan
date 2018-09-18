@@ -2,7 +2,6 @@ import React from 'react';
 import { history } from '../../History';
 import * as config from './config';
 import { mapFilterFromUrl } from './helpers';
-// import * as _ from 'lodash';
 
 const FiltersManager = (ControlledComponent, initialFilters) => {
   return class extends React.Component {
@@ -63,6 +62,8 @@ const FiltersManager = (ControlledComponent, initialFilters) => {
       if (config.useLocalStorage) {
         return 'local';
       }
+
+      return false;
     }
 
     mapFiltersToUrl = () => {
@@ -86,22 +87,19 @@ const FiltersManager = (ControlledComponent, initialFilters) => {
     }
 
     isEmpty = obj => {
-      return Object.keys(obj).length;
+      return !Object.keys(obj).length;
     };
 
     getFiltersFromStorage = () => {
       let filtersData = {};
-      if (config.useSessionStorage) {
-        filtersData = this.compareWithInitFilters(this._getFiltersFromStorage('session'));
-      }
-      if (config.useLocalStorage) {
-        filtersData = this.compareWithInitFilters(this._getFiltersFromStorage('local'));
+      if (this.storageType) {
+        filtersData = this.compareWithInitFilters(this._getFiltersFromStorage(this.storageType));
       }
       return filtersData;
     };
 
     compareWithInitFilters = filtersData => {
-      const validFilters = {};
+      const validFilters = { ...filtersData };
       for (const key in filtersData) {
         if (!!initialFilters[key] && !filtersData[key]) {
           validFilters[key] = initialFilters[key];
@@ -142,26 +140,24 @@ const FiltersManager = (ControlledComponent, initialFilters) => {
       });
     };
 
+    updateFilterCb = cb => {
+      this.saveFiltersToStorage();
+      this.checkCallback(cb);
+    };
+
     setFilterValue = (label, value, callback) => {
-      if (this.state.filters[label] === undefined) {
+      if (!Object.keys(this.state.filters).includes(label)) {
         return;
       }
 
       this.setState(prevState => {
-        const stateValue = prevState.filters[label];
-        const newValue = Array.isArray(stateValue) ? [...stateValue, value] : value;
-
         return {
           filters: {
             ...prevState.filters,
-            [label]: newValue
+            [label]: value
           }
         };
-      }, this.checkCallback(callback));
-
-      if (this.useStorage) {
-        this.saveFiltersToStorage();
-      }
+      }, this.updateFilterCb.bind(this, callback));
     };
 
     clearFilters = callback => {
@@ -169,7 +165,7 @@ const FiltersManager = (ControlledComponent, initialFilters) => {
         {
           filters: initialFilters
         },
-        this.checkCallback(callback)
+        this.updateFilterCb.bind(this, callback)
       );
     };
 
@@ -191,12 +187,6 @@ const FiltersManager = (ControlledComponent, initialFilters) => {
       );
     }
   };
-};
-
-FiltersManager.defaultProps = {
-  location: {
-    query: {}
-  }
 };
 
 export default FiltersManager;
