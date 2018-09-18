@@ -23,8 +23,8 @@ export const getExternalUsers = () => {
       response => {
         if (response.data) {
           dispatch(getExternalUsersSuccess(response.data));
-          dispatch(finishLoading());
         }
+        dispatch(finishLoading());
       },
       error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
@@ -50,8 +50,8 @@ export const editExternalUser = (id, changedFields) => {
       response => {
         if (response.data) {
           dispatch(editExternalUserSuccess(id, response.data));
-          dispatch(finishLoading());
         }
+        dispatch(finishLoading());
       },
       error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
@@ -78,8 +78,8 @@ export const addExternalUser = exUser => {
           if (response.data) {
             resolve(response.data);
             dispatch(addExternalUserSuccess(response.data));
-            dispatch(finishLoading());
           }
+          dispatch(finishLoading());
 
           resolve(null);
         },
@@ -110,9 +110,9 @@ export const activateExternalUser = (token, password) => {
         response => {
           if (response && response.status === 200) {
             dispatch(activateExternalUserSuccess());
-            dispatch(finishLoading());
             history.push('/login');
           }
+          dispatch(finishLoading());
         },
         error => {
           dispatch(showNotification({ message: error.message, type: 'error' }));
@@ -141,8 +141,8 @@ export const deleteExternalUser = id => {
         response => {
           if (response.data) {
             dispatch(deleteExternalUserSuccess(id));
-            dispatch(finishLoading());
           }
+          dispatch(finishLoading());
         },
         error => {
           dispatch(showNotification({ message: error.message, type: 'error' }));
@@ -168,8 +168,8 @@ export const refreshExternalUserLink = exUser => {
       response => {
         if (response.data) {
           dispatch(refreshExternalUserLinkSuccess(response.data));
-          dispatch(finishLoading());
         }
+        dispatch(finishLoading());
       },
       error => {
         dispatch(refreshExternalUserLinkSuccess(exUser));
