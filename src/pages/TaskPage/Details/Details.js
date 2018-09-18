@@ -199,6 +199,12 @@ class Details extends Component {
       value: item.user ? item.user.id : item.id,
       label: item.user ? getFullName(item.user) : getFullName(item)
     }));
+    console.log(task.performer);
+    const performerTag = task.performer ? (
+      getFullName(task.performer)
+    ) : (
+      <span className={css.unassigned}>{localize[lang].NOT_SPECIFIED}</span>
+    );
 
     const executeTimeTooltip =
       this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? (
@@ -291,23 +297,13 @@ class Details extends Component {
               <td>
                 {this.props.task.statusId !== TASK_STATUS_CLOSED ? (
                   <span onClick={this.openPerformerModal} className={css.editableCell}>
-                    {task.performer ? (
-                      getFullName(task.performer)
-                    ) : (
-                      <span className={css.unassigned}>{localize[lang].NOT_SPECIFIED}</span>
-                    )}
+                    {performerTag}
                     <span className={css.editIcon}>
                       <IconEdit />
                     </span>
                   </span>
                 ) : (
-                  <span>
-                    {task.performer ? (
-                      getFullName(task.performer)
-                    ) : (
-                      <span className={css.unassigned}>{localize[lang].NOT_SPECIFIED}</span>
-                    )}
-                  </span>
+                  <span>{performerTag}</span>
                 )}
               </td>
             </tr>
