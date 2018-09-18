@@ -200,7 +200,7 @@ class Details extends Component {
       value: item.user ? item.user.id : item.id,
       label: item.user ? getFullName(item.user) : getFullName(item)
     }));
-    console.log(task.performer);
+
     const performerTag = task.performer ? (
       getFullName(task.performer)
     ) : (
