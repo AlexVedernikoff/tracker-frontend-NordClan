@@ -6,6 +6,7 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import get from 'lodash/get';
+import debounce from 'lodash/debounce';
 import sortBy from 'lodash/sortBy';
 import TaskCard from '../../../components/TaskCard';
 import FilterList from '../../../components/FilterList';
@@ -286,6 +287,8 @@ class AgileBoard extends Component {
       ...this.initialFilters,
       ...this.getQueryFiltersFromUrl()
     };
+
+    this.debouncedSelectValue = debounce(this.selectValue, 500);
   }
 
   componentDidMount() {
@@ -794,7 +797,10 @@ class AgileBoard extends Component {
   onSprintsFilterChange = options => this.selectValue(options, 'changedSprint');
   onAuthorFilterChange = option => this.selectValue(option ? option.value : null, 'authorId');
   onTypeFilterChange = options => this.selectValue(options, 'typeId');
-  onNameFilterChange = e => this.selectValue(e.target.value, 'name');
+  onNameFilterChange = e =>
+    this.setState({ name: e.target.value }, () => {
+      this.debouncedSelectValue(this.state.name, 'name');
+    });
   onIsOnlyMineFilterChange = () => {
     this.setState(
       currentState => ({
