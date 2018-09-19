@@ -31,8 +31,6 @@ class UserCard extends React.Component {
       height: 112
     };
 
-    if (this.state.visible) console.log(user);
-
     return (
       <div onClick={this.showCard} className={css.wrapper}>
         {this.props.children}

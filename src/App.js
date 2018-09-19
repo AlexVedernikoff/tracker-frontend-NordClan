@@ -21,6 +21,8 @@ const rootEl = document.getElementById('app');
 const channels = ['task', 'project', 'timesheet'];
 const socket = new SocketAdapter(store, channels);
 
+window.log = require('./utils/logger/noop');
+
 store.dispatch(getInfoAboutMe());
 
 ReactDOM.render(
