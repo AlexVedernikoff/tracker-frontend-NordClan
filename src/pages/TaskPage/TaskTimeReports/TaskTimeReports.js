@@ -280,6 +280,7 @@ TaskTimeReports.propTypes = {
   getTaskSpent: PropTypes.func.isRequired,
   getTimesheets: PropTypes.func.isRequired,
   globalRole: PropTypes.string.isRequired,
+  lang: PropTypes.string,
   params: PropTypes.shape({
     projectId: PropTypes.string.isRequired,
     taskId: PropTypes.string.isRequired
