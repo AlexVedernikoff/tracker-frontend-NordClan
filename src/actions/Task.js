@@ -1,7 +1,7 @@
 import * as TaskActions from '../constants/Task';
 import { API_URL } from '../constants/Settings';
 import axios from 'axios';
-import { finishLoading } from './Loading';
+import { finishLoading, startLoading } from './Loading';
 import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
 import {
   defaultErrorHandler,
@@ -121,6 +121,7 @@ const getTaskHistory = (id, options) => {
   }
   const URL = `${API_URL}/task/${id}/history`;
   return dispatch => {
+    dispatch(startLoading());
     axios
       .get(URL, {
         params: {

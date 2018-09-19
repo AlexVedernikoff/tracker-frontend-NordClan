@@ -56,22 +56,19 @@ const getTasks = (options, onlyTaskListUpdate = false) => {
         },
         { withCredentials: true }
       )
-      .catch(error => {
-        dispatch(finishLoading());
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-      })
       .then(response => {
-        if (!response) {
-          dispatch(finishLoading());
-          return;
-        } else {
+        if (response) {
           if (onlyTaskListUpdate) {
             dispatch(tasksListReceived(response.data));
           } else {
             dispatch(tasksReceived(response.data));
           }
-          dispatch(finishLoading());
         }
+        dispatch(finishLoading());
+      })
+      .catch(error => {
+        dispatch(finishLoading());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
       });
   };
 };

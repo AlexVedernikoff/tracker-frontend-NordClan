@@ -52,8 +52,8 @@ export const editSprint = (id, statusId, name, dateForm, dateTo, budget, riskBud
       response => {
         if (response.data) {
           dispatch(editSprintSuccess(response.data));
-          dispatch(finishLoading());
         }
+        dispatch(finishLoading());
       },
       error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
@@ -73,8 +73,8 @@ export const deleteSprint = id => {
       response => {
         if (response.data) {
           dispatch(deleteSprintSuccess(response.data));
-          dispatch(finishLoading());
         }
+        dispatch(finishLoading());
       },
       error => {
         if (error.response.data.type === 'sprintHasActiveTasks') {
@@ -112,8 +112,8 @@ export const createSprint = (name, projectId, factStartDate, factFinishDate, qaP
         response => {
           if (response.data) {
             dispatch(createSprintSuccess(response.data.sprints));
-            dispatch(finishLoading());
           }
+          dispatch(finishLoading());
         },
         error => {
           dispatch(showNotification({ message: error.message, type: 'error' }));
