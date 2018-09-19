@@ -116,14 +116,14 @@ class TaskTimeReports extends React.Component {
           if (roleId.length !== 0) {
             for (const id of roleId) {
               const roleName = this.props.roles.find(roleDictionary => roleDictionary.id === Number(id));
-              const roleExist = roles.length !== 0 && roles.findIndex(o => o === roleName.name);
-
-              if (roleExist === -1 || !roleExist) {
-                roles.push(roleName.name);
-                rolesDataSet.push(timeSpent[role]);
-                rolesColors.push(getColor());
-              } else {
-                rolesDataSet[roleExist] = rolesDataSet[roleExist] + timeSpent[role];
+              if (roleName) {
+                if (roles.find(el => el === roleName.name)) {
+                  rolesDataSet[roles.findIndex(el => el === roleName.name)] += timeSpent[role];
+                } else {
+                  roles.push(roleName.name);
+                  rolesDataSet.push(timeSpent[role]);
+                  rolesColors.push(getColor());
+                }
               }
             }
           }
