@@ -26,9 +26,13 @@ class BudgetChart extends Component {
     startDate: PropTypes.string
   };
 
-  chartRef = null;
+  state = { chartRef: null };
 
-  setChartRef = node => (this.chartRef = node);
+  setChartRef = node => {
+    this.setState({
+      chartRef: node
+    });
+  };
 
   getGraphicOptions() {
     return {
@@ -199,7 +203,7 @@ class BudgetChart extends Component {
             }
           />
         </div>
-        <ChartWrapper chartRef={this.chartRef}>
+        <ChartWrapper chartRef={this.state.chartRef}>
           <Line
             ref={this.setChartRef}
             height={250}

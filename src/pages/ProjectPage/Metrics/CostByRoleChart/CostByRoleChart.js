@@ -24,14 +24,15 @@ class CostByRoleChart extends Component {
     super(props);
 
     this.state = {
-      displayPercent: true
+      displayPercent: true,
+      chartRef: null
     };
   }
 
-  chartRef = null;
-
   setChartRef = node => {
-    this.chartRef = node;
+    this.setState({
+      chartRef: node
+    });
   };
 
   makeChartData() {
@@ -121,7 +122,7 @@ class CostByRoleChart extends Component {
     const { lang } = this.props;
 
     return (
-      <ChartWrapper chartRef={this.chartRef} className={css.CostByRoleChart}>
+      <ChartWrapper chartRef={this.state.chartRef} className={css.CostByRoleChart}>
         <div className={css.CostByRoleSwitcher}>
           <Button
             type={this.state.displayPercent ? 'primary' : 'bordered'}
