@@ -22,14 +22,22 @@ class FilterForm extends React.Component {
 
   onPrioritiesFilterChange = option =>
     this.props.setFilterValue('prioritiesId', option.prioritiesId, this.updateListsAndTasks);
-  onSprintsFilterChange = options => this.props.setFilterValue('changedSprint', options, this.updateListsAndTasks);
+  onSprintsFilterChange = options =>
+    this.props.setFilterValue('changedSprint', options.map(op => op.value), this.updateListsAndTasks);
   onAuthorFilterChange = option =>
     this.props.setFilterValue('authorId', option ? option.value : null, this.updateListsAndTasks);
-  onTypeFilterChange = options => this.props.setFilterValue('typeId', options, this.updateListsAndTasks);
+  onTypeFilterChange = options =>
+    this.props.setFilterValue('typeId', options.map(op => op.value), this.updateListsAndTasks);
   onNameFilterChange = e => this.props.setFilterValue('name', e.target.value, this.updateListsAndTasks);
   onIsOnlyMineFilterChange = () => {
-    this.props.setFilterValue('isOnlyMine', !this.props.filters.isOnlyMine, this.updateListsAndTasks);
+    const isOnlyMine = !this.props.filters.isOnlyMine;
+    this.props.setFilterValue('isOnlyMine', isOnlyMine, () => {
+      this.props.updateFilterList();
+      this.props.changeOnlyMineCb(isOnlyMine);
+    });
   };
+  onPerformerFilterChange = options =>
+    this.props.setFilterValue('performerId', options.map(op => op.value), this.updateListsAndTasks);
 
   getFilterTagsProps() {
     const {
@@ -110,9 +118,7 @@ class FilterForm extends React.Component {
             </Col>
             <Col xs={12} sm={3}>
               <PerformerFilter
-                onPerformerSelect={options =>
-                  this.props.setFilterValue('performerId', options, this.updateListsAndTasks)
-                }
+                onPerformerSelect={this.onPerformerFilterChange}
                 selectedPerformerId={this.props.filters.performerId}
               />
             </Col>
@@ -137,7 +143,7 @@ class FilterForm extends React.Component {
                 placeholder={localize[lang].SELECT_SPRINT}
                 multi
                 backspaceToRemoveMessage=""
-                value={filters.changedSprint.map(sprint => sprint.value)}
+                value={filters.changedSprint}
                 onChange={this.onSprintsFilterChange}
                 noResultsText={localize[lang].NO_RESULTS}
                 options={this.props.sortedSprints}
@@ -170,7 +176,7 @@ class FilterForm extends React.Component {
                 text={localize[lang].CLEAR_FILTERS}
                 icon="IconBroom"
                 name="right"
-                disabled={!this.props.filtersIsEmpty}
+                disabled={this.props.isFilterEmpty}
               />
             </Col>
           </Row>

@@ -1,4 +1,4 @@
-export const mapFilterFromUrl = (label, value, filter) => {
+export const mapFilterFromUrl = (label, value) => {
   if (label === 'isOnlyMine') {
     return true;
   }
@@ -12,6 +12,24 @@ export const mapFilterFromUrl = (label, value, filter) => {
   }
 
   return null;
+};
+
+export const mapFilterToUrl = (filter, key) => {
+  let value = filter;
+
+  if (Array.isArray(filter)) {
+    if (filter.every(el => typeof el === 'object')) {
+      value = filter.map(el => el.value);
+    }
+
+    return `${key}[]=${value}`;
+  }
+
+  if (typeof filter === 'object') {
+    return `${key}=${JSON.stringify(value)}`;
+  }
+
+  return `${key}=${value}`;
 };
 
 export const parseTagsQuery = tagsQuery => {

@@ -3,7 +3,7 @@ import React from 'react';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import classnames from 'classnames';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import isEqual from 'lodash/isEqual';
+import copy from 'copy-to-clipboard';
 
 import * as css from './AgileBoardFilter.scss';
 import localize from './AgileBoardFilter.json';
@@ -14,6 +14,7 @@ import getPriorityById from '../../utils/TaskPriority';
 import Button from '../Button';
 import { IconArrowDownThin, IconBroom } from '../Icons';
 import { VISOR } from '../../constants/Roles';
+import { getFullName } from '../../utils/NameLocalisation';
 
 class AgileBoardFilter extends React.Component {
   static propTypes = {};
@@ -44,14 +45,30 @@ class AgileBoardFilter extends React.Component {
     return this.props.globalRole === VISOR;
   }
 
+  getOptionData(label, value) {
+    const {
+      project: { users }
+    } = this.props;
+    switch (label) {
+      case 'performerId':
+        const user = users.find(u => u.id === value);
+        return getFullName(user);
+      default:
+        return value;
+    }
+  }
+
   createSelectedOption = (optionList, selectedOption, optionLabel = 'name') => {
     const { lang } = this.props;
     if (Array.isArray(selectedOption)) {
       return selectedOption.map(currentId => ({
-        name: `${optionLabel}-${currentId.value}`,
-        label: optionLabel === 'performerId' ? `${localize[lang].PERFORMER}: ${currentId.label}` : currentId.label,
+        name: `${optionLabel}-${currentId}`,
+        label:
+          optionLabel === 'performerId'
+            ? `${localize[lang].PERFORMER}: ${this.getOptionData(optionLabel, currentId)}`
+            : this.getOptionData(optionLabel, currentId),
         deleteHandler: () => {
-          this.removeSelectOptionByIdFromFilter(selectedOption, currentId.value, optionLabel);
+          this.removeSelectOptionByIdFromFilter(selectedOption, currentId, optionLabel);
         }
       }));
     } else {
@@ -104,39 +121,27 @@ class AgileBoardFilter extends React.Component {
     }
   };
 
-  filterIsNotEmpty = filterName => {
-    const filter = this.props.filters[filterName];
-    if (typeof filter === 'string' || filter instanceof String || Array.isArray(filter)) {
-      return filter.length > 0;
-    }
-    return filter !== null && filter !== false;
-  };
-
   resetFiled = name => {
     this.props.setFilterValue(name, this.props.initialFilters[name], this.updateListsAndTasks);
   };
 
   updateFilterList = () => {
     const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'name', 'noTag'];
-    const selectedFilters = [];
 
-    singleOptionFiltersList.forEach(filterName => {
-      if (this.filterIsNotEmpty(filterName)) {
-        selectedFilters.push({
+    const selectedFilters = singleOptionFiltersList.reduce((result, filterName) => {
+      if (!this.props.checkFilterItemEmpty(filterName)) {
+        result.push({
           name: filterName,
           label: this.createFilterLabel(filterName),
           deleteHandler: () => this.resetFiled(filterName)
         });
       }
-    });
+      return result;
+    }, []);
 
-    const changedSprint = this.props.filters.changedSprint.map(sprint => {
-      const option = this.props.sortedSprints.find(el => el.value === +sprint.value);
-      return {
-        ...sprint,
-        ...option
-      };
-    });
+    const changedSprint = this.props.filters.changedSprint.map(sprint =>
+      this.props.sortedSprints.find(el => el.value === +sprint)
+    );
 
     this.setState({
       allFilters: [
@@ -149,8 +154,25 @@ class AgileBoardFilter extends React.Component {
     });
   };
 
+  generateShareLink = () => {
+    try {
+      const link = this.props.mapFiltersToUrl();
+      copy(link);
+      this.props.showNotification({
+        message: localize[this.props.lang].SHARE_SUCCESS,
+        type: 'success'
+      });
+    } catch (e) {
+      this.props.showNotification({
+        message: localize[this.props.lang].SHARE_ERROR,
+        type: 'error'
+      });
+      return {};
+    }
+  };
+
   render() {
-    const { clearAll, lang } = this.props;
+    const { clearAll, lang, changeOnlyMineCb } = this.props;
     const filterTags = this.state.allFilters.map(filter => {
       return (
         <Tag
@@ -171,7 +193,12 @@ class AgileBoardFilter extends React.Component {
 
     return (
       <div>
-        <FilterForm {...this.props} isOpened={this.state.isOpened} updateFilterList={this.updateFilterList} />
+        <FilterForm
+          {...this.props}
+          isOpened={this.state.isOpened}
+          updateFilterList={this.updateFilterList}
+          changeOnlyMineCb={changeOnlyMineCb}
+        />
         <Row className={css.filtersRow}>
           <Col xs={12} sm={12}>
             <ReactCSSTransitionGroup transitionEnterTimeout={300} transitionLeave={false} transitionName="filter">
@@ -204,6 +231,16 @@ class AgileBoardFilter extends React.Component {
                       />
                     </Col>
                   )}
+                  <Col className={classnames(css.filterCol)}>
+                    <Button
+                      onClick={this.generateShareLink}
+                      type="primary"
+                      text={localize[lang].SHARE}
+                      icon="IconLink"
+                      name="right"
+                      disabled={this.props.isFilterEmpty}
+                    />
+                  </Col>
                 </Row>
               )}
             </ReactCSSTransitionGroup>

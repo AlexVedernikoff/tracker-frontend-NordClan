@@ -8,7 +8,10 @@
     "MY_TASKS": "my tasks",
     "AUTHOR": "author",
     "PERFORMER": "performer",
-    "NOT_CHANGED": "Not changed"
+    "NOT_CHANGED": "Not changed",
+    "SHARE": "Share",
+    "SHARE_SUCCESS": "Filter copied successfully",
+    "SHARE_ERROR": "Error while copying filter"
   },
 
   "ru": {
@@ -20,6 +23,9 @@
     "MY_TASKS": "мои задачи",
     "AUTHOR": "автор",
     "PERFORMER": "исполнитель",
-    "NOT_CHANGED": "Не назначено"
+    "NOT_CHANGED": "Не назначено",
+    "SHARE": "Поделиться",
+    "SHARE_SUCCESS": "Фильтр успешно скопирован",
+    "SHARE_ERROR": "Ошибка при копировании фильтра"
   }
 }

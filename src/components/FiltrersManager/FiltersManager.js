@@ -1,9 +1,9 @@
 import React from 'react';
 import { history } from '../../History';
 import * as config from './config';
-import { mapFilterFromUrl } from './helpers';
+import { mapFilterFromUrl, mapFilterToUrl } from './helpers';
 
-const FiltersManager = (ControlledComponent, initialFilters) => {
+const FiltersManager = (ControlledComponent, initialFilters = {}, getDataForFilterFromUrl = value => value) => {
   return class extends React.Component {
     constructor(props) {
       super(props);
@@ -12,7 +12,7 @@ const FiltersManager = (ControlledComponent, initialFilters) => {
       };
     }
 
-    componentWillMount() {
+    componentDidMount() {
       // если в query приходят параметры фильтра, то берем значения из него
       if (!this.urlQueryIsEmpty) {
         this.applyFiltersFromUrl();
@@ -22,33 +22,41 @@ const FiltersManager = (ControlledComponent, initialFilters) => {
       this.updateStateFilters(this.getFiltersFromStorage());
     }
 
-    updateStateFilters(newFilters) {
-      this.setState(prevState => ({
-        filters: {
-          ...prevState.filters,
-          ...newFilters
-        }
-      }));
+    updateStateFilters(newFilters, cb = () => {}) {
+      this.setState(
+        prevState => ({
+          filters: {
+            ...prevState.filters,
+            ...newFilters
+          }
+        }),
+        cb
+      );
     }
 
     applyFiltersFromUrl() {
       const filtersFromUrl = this.getFiltersFromUrl();
-      if (!this.filtersIsEmpty(filtersFromUrl)) {
-        this.updateStateFilters(filtersFromUrl);
+      this.updateStateFilters(filtersFromUrl, () => {
         if (this.useStorage) {
           this.saveFiltersToStorage();
         }
-      } else if (this.useStorage) {
-        this.updateStateFilters(this.getFiltersFromStorage());
-      }
+      });
       this.cleanUrlQuery();
     }
 
-    filtersIsEmpty = filters => {};
-
-    filtersStateIsEmpty = () => {
-      return this.filtersIsEmpty(this.state.filters);
+    checkFilterItemEmpty = filterName => {
+      const filter = this.state.filters[filterName];
+      if (typeof filter === 'string' || filter instanceof String || Array.isArray(filter)) {
+        return !filter.length;
+      }
+      return filter === null || filter === false;
     };
+
+    isFilterEmpty = () => Object.keys(this.state.filters).every(key => this.checkFilterItemEmpty(key));
+
+    get filtersStateIsEmpty() {
+      return this.isFilterEmpty(this.state.filters);
+    }
 
     get useStorage() {
       return config.useSessionStorage || config.useLocalStorage;
@@ -67,16 +75,16 @@ const FiltersManager = (ControlledComponent, initialFilters) => {
     }
 
     mapFiltersToUrl = () => {
-      const mappedFilters = {};
+      let query = `${window.location}?`;
       const filtersKeys = Object.keys(this.state.filters);
 
-      filtersKeys.forEach(filter => {
-        if (!this.isEmpty(this.state.filters[filter])) {
-          mappedFilters[filter] = config.mapFilterToUrl(filter, this.state.filters[filter]);
+      filtersKeys.forEach(key => {
+        if (!this.checkFilterItemEmpty(key)) {
+          query += `${mapFilterToUrl(this.state.filters[key], key)}&`;
         }
       });
 
-      return mappedFilters;
+      return query.slice(0, query.length - 1);
     };
 
     get urlQueryIsEmpty() {
@@ -126,8 +134,12 @@ const FiltersManager = (ControlledComponent, initialFilters) => {
     getFiltersFromUrl = () => {
       const filtersData = {};
       for (const key in this.props.location.query) {
-        if (this.state.filters[key]) {
-          filtersData[key] = mapFilterFromUrl(key, this.props.location.query[key]);
+        const isArray = key.indexOf('[') !== -1;
+        const filterName = isArray ? key.replace(/\[\]/g, '') : key;
+        if (this.state.filters.hasOwnProperty(filterName)) {
+          let value = mapFilterFromUrl(filterName, this.props.location.query[key]);
+          value = getDataForFilterFromUrl(value, filterName, this.props);
+          filtersData[filterName] = isArray ? [value] : value;
         }
       }
       return filtersData;
@@ -182,7 +194,9 @@ const FiltersManager = (ControlledComponent, initialFilters) => {
           filters={this.state.filters}
           setFilterValue={this.setFilterValue}
           clearFilters={this.clearFilters}
-          filtersIsEmpty={this.filtersStateIsEmpty}
+          checkFilterItemEmpty={this.checkFilterItemEmpty}
+          isFilterEmpty={this.filtersStateIsEmpty}
+          mapFiltersToUrl={this.mapFiltersToUrl}
         />
       );
     }
