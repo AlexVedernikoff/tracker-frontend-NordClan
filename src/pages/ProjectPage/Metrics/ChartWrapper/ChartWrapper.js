@@ -9,7 +9,8 @@ class ChartWrapper extends Component {
     super(props);
 
     this.state = {
-      selected: false
+      selected: false,
+      zoomAllowed: false
     };
   }
 
@@ -22,12 +23,13 @@ class ChartWrapper extends Component {
   };
 
   setChartSelection = state => {
-    this.setState(
-      {
-        selected: state
-      },
-      this.setZoomState
-    );
+    this.setState({
+      selected: state
+    });
+  };
+
+  setZoomAllowed = zoomAllowed => () => {
+    this.setState({ zoomAllowed }, this.setZoomState);
   };
 
   setZoomState = () => {
@@ -35,7 +37,7 @@ class ChartWrapper extends Component {
       const { chartInstance } = this.props.chartRef;
 
       if (chartInstance && chartInstance.modifyZoom) {
-        chartInstance.modifyZoom._allowZoom = this.state.selected;
+        chartInstance.modifyZoom._allowZoom = this.state.zoomAllowed;
       }
     }
   };
@@ -49,6 +51,8 @@ class ChartWrapper extends Component {
           [css.selected]: this.state.selected
         })}
         onMouseDown={this.handleMouseDown}
+        onMouseOver={this.setZoomAllowed(true)}
+        onMouseLeave={this.setZoomAllowed(false)}
       >
         {this.props.children}
       </div>

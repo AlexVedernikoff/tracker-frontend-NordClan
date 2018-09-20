@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import localize from './Tags.json';
 import CreatableMulti from '../CreatableMulti';
+import layoutAgnosticFilter from '../../utils/layoutAgnosticFilter';
 
 class Tags extends Component {
   constructor(props) {
@@ -101,6 +102,7 @@ class Tags extends Component {
                     value={multiValue}
                     onChange={this.handleOnChange}
                     backspaceToRemoveMessage={''}
+                    filterOption={layoutAgnosticFilter}
                   />
                   <Button
                     disabled={!this.state.multiValue.length > 0}

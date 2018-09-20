@@ -6,6 +6,7 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import get from 'lodash/get';
+import debounce from 'lodash/debounce';
 import sortBy from 'lodash/sortBy';
 import TaskCard from '../../../components/TaskCard';
 import FilterList from '../../../components/FilterList';
@@ -24,6 +25,7 @@ import { UnmountClosed } from 'react-collapse';
 import localize from './AgileBoard.json';
 import { getFullName } from '../../../utils/NameLocalisation';
 import { getAllTags } from '../../../selectors/getAllTags';
+import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
 
 import getTasks from '../../../actions/Tasks';
 import { VISOR, EXTERNAL_USER } from '../../../constants/Roles';
@@ -286,6 +288,8 @@ class AgileBoard extends Component {
       ...this.initialFilters,
       ...this.getQueryFiltersFromUrl()
     };
+
+    this.debouncedSelectValue = debounce(this.selectValue, 500);
   }
 
   componentDidMount() {
@@ -794,7 +798,10 @@ class AgileBoard extends Component {
   onSprintsFilterChange = options => this.selectValue(options, 'changedSprint');
   onAuthorFilterChange = option => this.selectValue(option ? option.value : null, 'authorId');
   onTypeFilterChange = options => this.selectValue(options, 'typeId');
-  onNameFilterChange = e => this.selectValue(e.target.value, 'name');
+  onNameFilterChange = e =>
+    this.setState({ name: e.target.value }, () => {
+      this.debouncedSelectValue(this.state.name, 'name');
+    });
   onIsOnlyMineFilterChange = () => {
     this.setState(
       currentState => ({
@@ -866,6 +873,7 @@ class AgileBoard extends Component {
                       backspaceToRemoveMessage=""
                       onChange={this.selectTagForFiltrated}
                       noResultsText="Нет результатов"
+                      filterOption={layoutAgnosticFilter}
                       {...this.getFilterTagsProps()}
                     />
                   </Col>
@@ -920,6 +928,7 @@ class AgileBoard extends Component {
                       onChange={this.onSprintsFilterChange}
                       noResultsText={localize[lang].NO_RESULTS}
                       options={this.props.sortedSprints}
+                      filterOption={layoutAgnosticFilter}
                     />
                     <div className={css.sprintTimeWrapper}>
                       {!isExternal
