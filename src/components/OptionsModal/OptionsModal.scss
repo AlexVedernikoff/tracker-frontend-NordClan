@@ -1,0 +1,92 @@
+@import '../../styles/variables';
+
+.modalWrapper {
+  width: 100%;
+  max-width: 360px !important;
+}
+
+.header {
+  padding: 1rem 2rem;
+
+  h3 {
+    margin-bottom: 0;
+  }
+}
+
+.search {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 2rem;
+  line-height: 1rem;
+  border: none;
+  transition: 0.3s ease-out 0s;
+  border: 1px solid $color-gray;
+  border-left: none;
+  border-right: none;
+  &:focus {
+    border-color: darken($color-gray, 10%);
+    transition: $transition;
+  }
+  &::placeholder {
+    color: silver;
+  }
+}
+
+.selectorContainer {
+  max-height: 15rem;
+  padding-bottom: 2rem;
+  padding-top: 0.5rem;
+  overflow: auto;
+}
+
+.currentOption {
+  padding: 0.5rem 2rem 0.5rem 0;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  .removeCurrentOption {
+    color: darken($color-gray, 20%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    cursor: pointer;
+    transition: $transition;
+
+    &:hover {
+      color: $color-dark;
+      transition: $transition;
+    }
+  }
+  &.cantRemove {
+    padding: 0.5rem 2rem;
+  }
+}
+.inputWrapper {
+  position: relative;
+  > .searchIco {
+    position: absolute;
+    top: 0.65rem;
+    transform: translateX(-50%);
+    left: 1rem;
+    svg {
+      fill: darken($color-gray, 20%);
+    }
+  }
+}
+.option {
+  padding: 0.5rem 2rem;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover,
+  &.selected {
+    background-color: rgba($color-black, 0.07);
+    transition: $transition;
+  }
+}
+
+.noOption {
+  padding-left: 2rem;
+  color: lighten(black, 70%);
+}
