@@ -303,9 +303,13 @@ class TaskList extends Component {
   };
 
   clearFilters = () => {
+    console.log(13525232);
+
     this.setState(
       {
-        changedFilters: {}
+        changedFilters: {
+          projectId: this.props.params.projectId
+        }
       },
       this.loadTasks
     );
@@ -453,7 +457,6 @@ class TaskList extends Component {
                 />
               </Col>
             </Row>
-
             <Row className={css.search}>
               <Col xs={6} sm={3}>
                 <DatepickerDropdown
