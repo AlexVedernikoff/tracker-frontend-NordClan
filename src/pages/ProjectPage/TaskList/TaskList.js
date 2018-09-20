@@ -303,8 +303,6 @@ class TaskList extends Component {
   };
 
   clearFilters = () => {
-    console.log(13525232);
-
     this.setState(
       {
         changedFilters: {
