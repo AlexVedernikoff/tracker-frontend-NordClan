@@ -1,10 +1,10 @@
 {
   "en": {
     "MESSAGE": "This is the only role. A participant must have at least one role",
-    "DELETE": "Do you really want to remove this participant?"
+    "DELETE": "Do you really want to remove this participant"
   },
   "ru": {
     "MESSAGE": "Это единственная роль. Участник должен обладать хотя бы одной ролью",
-    "DELETE": "Вы действительно хотите удалить этого участника?"
+    "DELETE": "Вы действительно хотите удалить этого участника"
   }
 }
