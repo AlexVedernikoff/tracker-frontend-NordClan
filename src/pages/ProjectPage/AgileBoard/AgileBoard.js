@@ -453,9 +453,13 @@ class AgileBoard extends Component {
     if (changedSprint.length === 0) {
       changedSprint = [
         {
-          name: 'ChangeSprint_0',
+          value: 0,
           label: 'Backlog',
-          deleteHandler: () => this.resetFiled(filterName)
+          deleteHandler: () => this.resetFiled(filterName),
+          className: classnames({
+            [css.INPROGRESS]: false,
+            [css.sprintMarker]: true
+          })
         }
       ];
     }
