@@ -25,6 +25,7 @@ import { UnmountClosed } from 'react-collapse';
 import localize from './AgileBoard.json';
 import { getFullName } from '../../../utils/NameLocalisation';
 import { getAllTags } from '../../../selectors/getAllTags';
+import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
 
 import getTasks from '../../../actions/Tasks';
 import { VISOR, EXTERNAL_USER } from '../../../constants/Roles';
@@ -872,6 +873,7 @@ class AgileBoard extends Component {
                       backspaceToRemoveMessage=""
                       onChange={this.selectTagForFiltrated}
                       noResultsText="Нет результатов"
+                      filterOption={layoutAgnosticFilter}
                       {...this.getFilterTagsProps()}
                     />
                   </Col>
@@ -926,6 +928,7 @@ class AgileBoard extends Component {
                       onChange={this.onSprintsFilterChange}
                       noResultsText={localize[lang].NO_RESULTS}
                       options={this.props.sortedSprints}
+                      filterOption={layoutAgnosticFilter}
                     />
                     <div className={css.sprintTimeWrapper}>
                       {!isExternal
