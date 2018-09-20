@@ -5,11 +5,25 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import localize from './CreatableMulti.json';
 
+const ru = require('convert-layout/ru');
+
 class CreatableMulti extends Component {
   static propTypes = {
     hint: PropTypes.string,
     label: PropTypes.string,
     options: PropTypes.array
+  };
+
+  layoutAgnosticFilter = (option, filter) => {
+    const filterValue = filter.toLowerCase().trim();
+    const testValue = option.label.toLowerCase().trim();
+    if (typeof testValue === 'string') {
+      return (
+        testValue.indexOf(filterValue) === 0 ||
+        testValue.indexOf(ru.toEn(filterValue)) === 0 ||
+        testValue.indexOf(ru.fromEn(filterValue)) === 0
+      );
+    }
   };
 
   render() {
@@ -25,6 +39,7 @@ class CreatableMulti extends Component {
           value={value}
           promptTextCreator={label => `${localize[lang].CREATE_NEW_OPTION}: ${label}`}
           noResultsText={localize[lang].NO_RESULTS}
+          filterOption={this.layoutAgnosticFilter}
           {...other}
         />
       </div>
