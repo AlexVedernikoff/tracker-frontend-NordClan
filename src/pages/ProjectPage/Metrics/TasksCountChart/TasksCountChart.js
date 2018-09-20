@@ -17,6 +17,7 @@ class TasksCountChart extends Component {
     getBasicLineSettings: PropTypes.func,
     openedBugsMetrics: PropTypes.array,
     openedCustomerBugsMetrics: PropTypes.array,
+    openedFeaturesFromClient: PropTypes.array,
     openedFeaturesMetric: PropTypes.array,
     openedFeaturesWithoutEvaluationMetric: PropTypes.array,
     openedOutOfPlanFeaturesMetric: PropTypes.array
@@ -80,7 +81,8 @@ class TasksCountChart extends Component {
       openedFeaturesWithoutEvaluationMetric,
       openedOutOfPlanFeaturesMetric,
       openedBugsMetrics,
-      openedCustomerBugsMetrics
+      openedCustomerBugsMetrics,
+      openedFeaturesFromClient
     } = this.props;
 
     getColor.reset();
@@ -94,7 +96,8 @@ class TasksCountChart extends Component {
         ),
         this.makeTaskCountMetricsLine(openedOutOfPlanFeaturesMetric, localize[this.props.lang].OUTSIDE_PLAN),
         this.makeTaskCountMetricsLine(openedBugsMetrics, localize[this.props.lang].NUMBER_BUGS),
-        this.makeTaskCountMetricsLine(openedCustomerBugsMetrics, localize[this.props.lang].NUMBER_BUGS_FROM_CLIENT)
+        this.makeTaskCountMetricsLine(openedCustomerBugsMetrics, localize[this.props.lang].NUMBER_BUGS_FROM_CLIENT),
+        this.makeTaskCountMetricsLine(openedFeaturesFromClient, localize[this.props.lang].NUMBER_OPEN_TASKS_FROM_CLIENT)
       ]
     };
   }
