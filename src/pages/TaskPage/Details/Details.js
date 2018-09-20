@@ -22,6 +22,7 @@ import roundNum from '../../../utils/roundNum';
 import classnames from 'classnames';
 import localize from './Details.json';
 import { getFullName } from '../../../utils/NameLocalisation';
+import { TASK_STATUS_CLOSED } from '../../../constants/Task';
 import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
 
 const spentRequestStatus = {
@@ -184,6 +185,12 @@ class Details extends Component {
       label: item.user ? getFullName(item.user) : getFullName(item)
     }));
 
+    const performerTag = task.performer ? (
+      getFullName(task.performer)
+    ) : (
+      <span className={css.unassigned}>{localize[lang].NOT_SPECIFIED}</span>
+    );
+
     const executeTimeTooltip =
       this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? (
         <ReactTooltip
@@ -265,16 +272,16 @@ class Details extends Component {
             <tr>
               <td>{localize[lang].PERFORMER}</td>
               <td>
-                <span onClick={this.openPerformerModal} className={css.editableCell}>
-                  {task.performer ? (
-                    getFullName(task.performer)
-                  ) : (
-                    <span className={css.unassigned}>{localize[lang].NOT_SPECIFIED}</span>
-                  )}
-                  <span className={css.editIcon}>
-                    <IconEdit />
+                {this.props.task.statusId !== TASK_STATUS_CLOSED ? (
+                  <span onClick={this.openPerformerModal} className={css.editableCell}>
+                    {performerTag}
+                    <span className={css.editIcon}>
+                      <IconEdit />
+                    </span>
                   </span>
-                </span>
+                ) : (
+                  <span>{performerTag}</span>
+                )}
               </td>
             </tr>
             <tr>

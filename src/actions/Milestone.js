@@ -60,8 +60,8 @@ export const createMilestone = (name, projectId, date, typeId) => {
         response => {
           if (response.data) {
             dispatch(createMilestoneSuccess(response.data));
-            dispatch(finishLoading());
           }
+          dispatch(finishLoading());
         },
         error => {
           dispatch(createMilestoneFailure());
@@ -82,8 +82,8 @@ export const editMilestone = milestone => {
       response => {
         if (response.data) {
           dispatch(editMilestoneSuccess(response.data));
-          dispatch(finishLoading());
         }
+        dispatch(finishLoading());
       },
       error => {
         dispatch(editMilestoneFailure());

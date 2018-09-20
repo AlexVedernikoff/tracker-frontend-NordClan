@@ -22,10 +22,12 @@ class TasksCountChart extends Component {
     openedOutOfPlanFeaturesMetric: PropTypes.array
   };
 
-  chartRef = null;
+  state = { chartRef: null };
 
   setChartRef = node => {
-    this.chartRef = node;
+    this.setState({
+      chartRef: node
+    });
   };
 
   getGraphicOptions() {
@@ -118,7 +120,7 @@ class TasksCountChart extends Component {
   render() {
     const { lang } = this.props;
     return (
-      <ChartWrapper chartRef={this.chartRef} className={css.BugsChart}>
+      <ChartWrapper chartRef={this.state.chartRef} className={css.BugsChart}>
         <h3>{localize[lang].NUMBER_OF_TASKS}</h3>
         <Line ref={this.setChartRef} data={this.makeChartData()} options={this.getGraphicOptions()} redraw />
       </ChartWrapper>

@@ -33,6 +33,7 @@
     "chartjs-plugin-datalabels": "^0.4.0",
     "chartjs-plugin-zoom": "^0.6.4",
     "copy-to-clipboard": "^3.0.8",
+    "convert-layout": "^0.7.0",
     "dhtmlx-gantt": "^4.2.1",
     "draft-js": "^0.10.5",
     "draft-js-export-html": "^1.2.0",

@@ -14,6 +14,8 @@ import Checkbox from '../../Checkbox';
 import PerformerFilter from '../../PerformerFilter';
 import SprintSelector from '../../SprintSelector';
 
+import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
+
 class FilterForm extends React.Component {
   updateListsAndTasks = () => {
     this.props.getTasks();
@@ -89,7 +91,8 @@ class FilterForm extends React.Component {
                 placeholder={localize[lang].TAG_NAME}
                 backspaceToRemoveMessage=""
                 onChange={this.selectTagForFiltrated}
-                noResultsText={localize[lang].NO_RESULTS}
+                noResultsText="Нет результатов"
+                filterOption={layoutAgnosticFilter}
                 {...this.getFilterTagsProps()}
               />
             </Col>
@@ -154,6 +157,7 @@ class FilterForm extends React.Component {
                 onChange={this.onSprintsFilterChange}
                 noResultsText={localize[lang].NO_RESULTS}
                 options={this.props.sortedSprints}
+                filterOption={layoutAgnosticFilter}
               />
               <div className={css.sprintTimeWrapper}>
                 {!this.isExternal

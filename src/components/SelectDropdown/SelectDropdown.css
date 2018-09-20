@@ -173,3 +173,14 @@
   padding: 7px 15px;
   color: gray;
 }
+
+.Select--multi.black-theme .Select-multi-value-wrapper .Select-value {
+  font-size: 13px;
+  color: black;
+  background-color: white;
+}
+
+.Select--multi.black-theme .Select-multi-value-wrapper .Select-value:hover {
+  background-color: #ebebeb;
+  transition: 0.3s ease-out 0s;
+}

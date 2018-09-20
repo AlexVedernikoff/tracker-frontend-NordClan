@@ -26,6 +26,8 @@ import Tags from '../../components/Tags';
 import { getFullName } from '../../utils/NameLocalisation';
 import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
 
+const MAX_DESCRIPTION_LENGTH = 250;
+
 class CreateTaskModal extends Component {
   constructor(props) {
     super(props);
@@ -41,6 +43,7 @@ class CreateTaskModal extends Component {
       selectedType: this.props.taskTypes[0],
       selectedTypeError: this.props.taskTypes.length === 0,
       isTaskByClient: false,
+      descriptionInvalid: false,
       tags: []
     };
 
@@ -155,7 +158,12 @@ class CreateTaskModal extends Component {
   isDisabledSave = () =>
     this.props.isCreateTaskRequestInProgress ||
     (this.validator.isDisabled && !this.state.selectedTypeError) ||
-    !this.state.selectedType;
+    !this.state.selectedType ||
+    this.state.descriptionInvalid;
+
+  validateDescription = description => {
+    this.setState({ descriptionInvalid: description.length > MAX_DESCRIPTION_LENGTH });
+  };
 
   render() {
     const formLayout = {
@@ -215,6 +223,7 @@ class CreateTaskModal extends Component {
                   editorClassName={css.taskDescription}
                   ref={ref => (this.TextEditor = ref)}
                   content={''}
+                  validator={this.validateDescription}
                 />
               </Col>
             </Row>
