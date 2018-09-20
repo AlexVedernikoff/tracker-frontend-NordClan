@@ -1,9 +1,9 @@
 import React from 'react';
 import { history } from '../../History';
 import * as config from './config';
-import { mapFilterFromUrl, mapFilterToUrl } from './helpers';
+import { mapFilterFromUrl, mapFilterToUrl, storageType } from './helpers';
 
-const FiltersManager = (ControlledComponent, initialFilters = {}, getDataForFilterFromUrl = value => value) => {
+const FiltersManager = (ControlledComponent, initialFilters = {}) => {
   return class extends React.Component {
     constructor(props) {
       super(props);
@@ -62,18 +62,6 @@ const FiltersManager = (ControlledComponent, initialFilters = {}, getDataForFilt
       return config.useSessionStorage || config.useLocalStorage;
     }
 
-    get storageType() {
-      if (config.useSessionStorage) {
-        return 'session';
-      }
-
-      if (config.useLocalStorage) {
-        return 'local';
-      }
-
-      return false;
-    }
-
     mapFiltersToUrl = () => {
       let query = `${window.location}?`;
       const filtersKeys = Object.keys(this.state.filters);
@@ -94,14 +82,18 @@ const FiltersManager = (ControlledComponent, initialFilters = {}, getDataForFilt
       return this.isEmpty(this.props.location.query);
     }
 
+    get storage() {
+      return storageType === 'local' ? localStorage : sessionStorage;
+    }
+
     isEmpty = obj => {
       return !Object.keys(obj).length;
     };
 
     getFiltersFromStorage = () => {
       let filtersData = {};
-      if (this.storageType) {
-        filtersData = this.compareWithInitFilters(this._getFiltersFromStorage(this.storageType));
+      if (storageType) {
+        filtersData = this.compareWithInitFilters(this._getFiltersFromStorage(storageType));
       }
       return filtersData;
     };
@@ -117,9 +109,8 @@ const FiltersManager = (ControlledComponent, initialFilters = {}, getDataForFilt
     };
 
     _getFiltersFromStorage() {
-      const storage = this.storageType === 'local' ? localStorage : sessionStorage;
       try {
-        const filters = storage.getItem('filtersData');
+        const filters = this.storage.getItem('filtersData');
         return filters ? JSON.parse(filters) : {};
       } catch (e) {
         return {};
@@ -127,8 +118,7 @@ const FiltersManager = (ControlledComponent, initialFilters = {}, getDataForFilt
     }
 
     saveFiltersToStorage() {
-      const storage = this.storageType === 'local' ? localStorage : sessionStorage;
-      storage.setItem('filtersData', JSON.stringify(this.state.filters));
+      this.storage.setItem('filtersData', JSON.stringify(this.state.filters));
     }
 
     getFiltersFromUrl = () => {
@@ -137,9 +127,7 @@ const FiltersManager = (ControlledComponent, initialFilters = {}, getDataForFilt
         const isArray = key.indexOf('[') !== -1;
         const filterName = isArray ? key.replace(/\[\]/g, '') : key;
         if (this.state.filters.hasOwnProperty(filterName)) {
-          let value = mapFilterFromUrl(filterName, this.props.location.query[key]);
-          value = getDataForFilterFromUrl(value, filterName, this.props);
-          filtersData[filterName] = isArray ? [value] : value;
+          filtersData[filterName] = mapFilterFromUrl(filterName, this.props.location.query[key], isArray);
         }
       }
       return filtersData;

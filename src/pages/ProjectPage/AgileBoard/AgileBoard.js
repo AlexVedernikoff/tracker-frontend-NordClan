@@ -3,6 +3,7 @@ import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
 import { Row } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
+import isEqual from 'lodash/isEqual';
 
 import * as css from './AgileBoard.scss';
 import localize from './AgileBoard.json';
@@ -34,7 +35,7 @@ class AgileBoard extends Component {
       isModalOpen: false,
       performer: null,
       changedTask: null,
-      isOnlyMine: false
+      isOnlyMine: props.filters.isOnlyMine
     };
   }
 
@@ -44,14 +45,18 @@ class AgileBoard extends Component {
 
   componentWillReceiveProps(nextProps) {
     ReactTooltip.hide();
-    this.setState({
-      ...this.state,
-      filters: nextProps.filters
-    });
+
+    if (nextProps.filters.isOnlyMine !== this.state.isOnlyMine) {
+      this.setState({
+        isOnlyMine: nextProps.filters.isOnlyMine
+      });
+    }
   }
 
-  componentDidUpdate() {
-    ReactTooltip.rebuild();
+  componentDidUpdate(prevProps) {
+    if (!isEqual(prevProps.filters, this.props.filters)) {
+      this.getTasks();
+    }
   }
 
   changeOnlyMineState = isOnlyMine => {
@@ -190,34 +195,21 @@ class AgileBoard extends Component {
     return this.props.myTaskBoard || this.state.isOnlyMine;
   }
 
-  get tasksKey() {
-    return this.isOnlyMine ? 'mine' : 'all';
-  }
-
   render() {
     const { lang } = this.props;
     const tasksList = this.isOnlyMine ? this.getMineSortedTasks() : this.getAllSortedTasks();
+    const tasksKey = this.isOnlyMine ? 'mine' : 'all';
 
     return (
       <section className={css.agileBoard}>
-        <AgileBoardFilter
-          {...this.props}
-          getTasks={this.getTasks}
-          initialFilters={initialFilters}
-          changeOnlyMineCb={this.changeOnlyMineState}
-        />
+        <AgileBoardFilter {...this.props} getTasks={this.getTasks} initialFilters={initialFilters} />
         <div className={css.boardContainer}>
           <Row>
-            <PhaseColumn onDrop={this.dropTask} section={this.tasksKey} title={'New'} tasks={tasksList.new} />
-            <PhaseColumn onDrop={this.dropTask} section={this.tasksKey} title={'Dev'} tasks={tasksList.dev} />
-            <PhaseColumn
-              onDrop={this.dropTask}
-              section={this.tasksKey}
-              title={'Code Review'}
-              tasks={tasksList.codeReview}
-            />
-            <PhaseColumn onDrop={this.dropTask} section={this.tasksKey} title={'QA'} tasks={tasksList.qa} />
-            <PhaseColumn onDrop={this.dropTask} section={this.tasksKey} title={'Done'} tasks={tasksList.done} />
+            <PhaseColumn onDrop={this.dropTask} section={tasksKey} title={'New'} tasks={tasksList.new} />
+            <PhaseColumn onDrop={this.dropTask} section={tasksKey} title={'Dev'} tasks={tasksList.dev} />
+            <PhaseColumn onDrop={this.dropTask} section={tasksKey} title={'Code Review'} tasks={tasksList.codeReview} />
+            <PhaseColumn onDrop={this.dropTask} section={tasksKey} title={'QA'} tasks={tasksList.qa} />
+            <PhaseColumn onDrop={this.dropTask} section={tasksKey} title={'Done'} tasks={tasksList.done} />
           </Row>
         </div>
 
@@ -293,16 +285,7 @@ const mapDispatchToProps = {
   showNotification
 };
 
-const getDataForFilterFromUrl = (value, key, props) => {
-  switch (key) {
-    case 'performerId':
-      return props.authorOptions.filter(el => value.includes(el.id));
-    default:
-      return value;
-  }
-};
-
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withFiltersManager(AgileBoard, initialFilters, getDataForFilterFromUrl));
+)(withFiltersManager(AgileBoard, initialFilters));

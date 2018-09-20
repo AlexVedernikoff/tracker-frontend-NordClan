@@ -1,9 +1,11 @@
-export const mapFilterFromUrl = (label, value) => {
+import * as config from './config';
+
+export const mapFilterFromUrl = (label, value, isArray = false) => {
   if (label === 'isOnlyMine') {
     return true;
   }
 
-  if (Number.isInteger(+value)) {
+  if (Number.isInteger(+value) && !isArray) {
     return +value;
   }
 
@@ -11,7 +13,7 @@ export const mapFilterFromUrl = (label, value) => {
     return value.split(',').map(val => +val);
   }
 
-  return null;
+  return value;
 };
 
 export const mapFilterToUrl = (filter, key) => {
@@ -35,3 +37,17 @@ export const mapFilterToUrl = (filter, key) => {
 export const parseTagsQuery = tagsQuery => {
   return tagsQuery ? tagsQuery.split(',').map(value => ({ label: value, value })) : [];
 };
+
+const getStorageType = () => {
+  if (config.useSessionStorage) {
+    return 'session';
+  }
+
+  if (config.useLocalStorage) {
+    return 'local';
+  }
+
+  return false;
+};
+
+export const storageType = getStorageType();

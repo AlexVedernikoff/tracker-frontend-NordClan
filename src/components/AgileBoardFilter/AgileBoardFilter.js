@@ -28,9 +28,12 @@ class AgileBoardFilter extends React.Component {
     this.updateFilterList();
   };
 
-  componentWillReceiveProps = nextProps => {
-    // TODO: на смену языка нужно обновлять стейт в FiltersManager
-    if (nextProps.lang !== this.props.lang || nextProps.project.users !== this.props.project.users) {
+  componentDidUpdate = prevProps => {
+    if (
+      prevProps.project.users !== this.props.project.users ||
+      prevProps.typeOptions !== this.props.typeOptions ||
+      (!this.state.allFilters.length && !this.props.isFilterEmpty)
+    ) {
       this.updateFilterList();
     }
   };
@@ -47,12 +50,17 @@ class AgileBoardFilter extends React.Component {
 
   getOptionData(label, value) {
     const {
-      project: { users }
+      project: { users },
+      typeOptions
     } = this.props;
     switch (label) {
       case 'performerId':
         const user = users.find(u => u.id === value);
-        return getFullName(user);
+        return user ? getFullName(user) : '';
+      case 'changedSprint':
+        return this.props.sortedSprints.find(el => el.value === value).label;
+      case 'typeId':
+        return typeOptions.find(el => el.value === value).label;
       default:
         return value;
     }
@@ -79,18 +87,13 @@ class AgileBoardFilter extends React.Component {
   };
 
   removeSelectOptionByIdFromFilter = (list, id, filterField) => {
-    const newList = list.filter(item => item.value !== id);
-    this.props.setFilterValue(filterField, newList, this.updateListsAndTasks);
+    const newList = list.filter(item => item !== id);
+    this.props.setFilterValue(filterField, newList, this.updateFilterList);
   };
 
   get nameField() {
     return this.props.lang === 'ru' ? 'fullNameRu' : 'fullNameEn';
   }
-
-  updateListsAndTasks = () => {
-    this.props.getTasks();
-    this.updateFilterList();
-  };
 
   createFilterLabel = filterName => {
     const {
@@ -107,13 +110,9 @@ class AgileBoardFilter extends React.Component {
       case 'prioritiesId':
         return `${getPriorityById(filters.prioritiesId)}`;
       case 'authorId':
-        // TODO: не обновляется автор после получения списка юзеров
         return `${localize[lang].AUTHOR}: ${
-          users.length ? users.find(user => user.id === filters.authorId)[this.nameField] : ''
+          users.length ? getFullName(users.find(user => user.id === filters.authorId)) : ''
         }`;
-      case 'performerId':
-        return `${localize[lang].PERFORMER}: ${this.createSelectedOption(users, filters.performerId, this.nameField) ||
-          localize[lang].NOT_CHANGED}`;
       case 'name':
         return `${filters.name}`;
       default:
@@ -122,10 +121,15 @@ class AgileBoardFilter extends React.Component {
   };
 
   resetFiled = name => {
-    this.props.setFilterValue(name, this.props.initialFilters[name], this.updateListsAndTasks);
+    this.props.setFilterValue(name, this.props.initialFilters[name], this.updateFilterList);
   };
 
   updateFilterList = () => {
+    if (!this.props.project.users.length || !this.props.typeOptions.length) {
+      return;
+    }
+
+    const { filters } = this.props;
     const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'name', 'noTag'];
 
     const selectedFilters = singleOptionFiltersList.reduce((result, filterName) => {
@@ -139,17 +143,13 @@ class AgileBoardFilter extends React.Component {
       return result;
     }, []);
 
-    const changedSprint = this.props.filters.changedSprint.map(sprint =>
-      this.props.sortedSprints.find(el => el.value === +sprint)
-    );
-
     this.setState({
       allFilters: [
         ...selectedFilters,
-        ...this.createSelectedOption([], changedSprint, 'changedSprint'),
-        ...this.createSelectedOption([], this.props.filters.typeId, 'typeId'),
-        ...this.createSelectedOption([], this.props.filters.performerId, 'performerId'),
-        ...this.createSelectedOption([], this.props.filters.filterTags, 'filterTags')
+        ...this.createSelectedOption([], filters.changedSprint, 'changedSprint'),
+        ...this.createSelectedOption([], filters.typeId, 'typeId'),
+        ...this.createSelectedOption([], filters.performerId, 'performerId'),
+        ...this.createSelectedOption([], filters.filterTags, 'filterTags')
       ]
     });
   };
@@ -171,8 +171,12 @@ class AgileBoardFilter extends React.Component {
     }
   };
 
+  clearFilters = () => {
+    this.props.clearFilters(this.updateFilterList);
+  };
+
   render() {
-    const { clearAll, lang, changeOnlyMineCb } = this.props;
+    const { lang } = this.props;
     const filterTags = this.state.allFilters.map(filter => {
       return (
         <Tag
@@ -186,8 +190,8 @@ class AgileBoardFilter extends React.Component {
     });
     const clearAllButton =
       filterTags.length === 1 && filterTags[0].key === 'Backlog' ? null : (
-        <span className={classnames(css.clearAllFilter)} data-tip={localize[lang].CLEAR_FILTERS}>
-          <IconBroom onClick={clearAll} />
+        <span className={css.clearAllFilter} data-tip={localize[lang].CLEAR_FILTERS} onClick={this.clearFilters}>
+          <IconBroom />
         </span>
       );
 
@@ -197,7 +201,8 @@ class AgileBoardFilter extends React.Component {
           {...this.props}
           isOpened={this.state.isOpened}
           updateFilterList={this.updateFilterList}
-          changeOnlyMineCb={changeOnlyMineCb}
+          generateShareLink={this.generateShareLink}
+          shareButtonText={localize[lang].SHARE}
         />
         <Row className={css.filtersRow}>
           <Col xs={12} sm={12}>
@@ -206,14 +211,14 @@ class AgileBoardFilter extends React.Component {
                 <Row className={css.filtersRow}>
                   <Col xs>
                     {filterTags.length ? (
-                      <div className={classnames(css.filterList)}>
+                      <div className={css.filterList}>
                         <div>
                           {filterTags}
                           {clearAllButton}
                         </div>
                       </div>
                     ) : (
-                      <div className={classnames(css.filterList)}>
+                      <div className={css.filterList}>
                         <span onClick={this.toggleOpen} className={css.emptyFiltersLink}>
                           {localize[lang].NOT_SELECTED}
                         </span>
@@ -221,7 +226,7 @@ class AgileBoardFilter extends React.Component {
                     )}
                   </Col>
                   {!this.isVisor && (
-                    <Col className={classnames(css.filterCol)}>
+                    <Col className={css.filterCol}>
                       <Button
                         onClick={this.props.openCreateTaskModal}
                         type="primary"
@@ -231,7 +236,7 @@ class AgileBoardFilter extends React.Component {
                       />
                     </Col>
                   )}
-                  <Col className={classnames(css.filterCol)}>
+                  <Col className={css.filterCol}>
                     <Button
                       onClick={this.generateShareLink}
                       type="primary"
@@ -244,9 +249,9 @@ class AgileBoardFilter extends React.Component {
                 </Row>
               )}
             </ReactCSSTransitionGroup>
-            <div className={classnames(css.filterListShowMore)}>
+            <div className={css.filterListShowMore}>
               <div
-                className={classnames(css.filterListShowMoreButton)}
+                className={css.filterListShowMoreButton}
                 data-tip={this.state.isOpened ? localize[lang].HIDE_FILTERS : localize[lang].SHOW_FILTERS}
                 onClick={this.toggleOpen}
               >

@@ -31,10 +31,7 @@ class FilterForm extends React.Component {
   onNameFilterChange = e => this.props.setFilterValue('name', e.target.value, this.updateListsAndTasks);
   onIsOnlyMineFilterChange = () => {
     const isOnlyMine = !this.props.filters.isOnlyMine;
-    this.props.setFilterValue('isOnlyMine', isOnlyMine, () => {
-      this.props.updateFilterList();
-      this.props.changeOnlyMineCb(isOnlyMine);
-    });
+    this.props.setFilterValue('isOnlyMine', isOnlyMine, this.props.updateFilterList);
   };
   onPerformerFilterChange = options =>
     this.props.setFilterValue('performerId', options.map(op => op.value), this.updateListsAndTasks);
@@ -107,6 +104,16 @@ class FilterForm extends React.Component {
                 />
               </Col>
             ) : null}
+            <Col className={css.filterButtonCol}>
+              <Button
+                onClick={this.props.generateShareLink}
+                type="primary"
+                text={this.props.shareButtonText}
+                icon="IconLink"
+                name="right"
+                disabled={this.props.isFilterEmpty}
+              />
+            </Col>
           </Row>
           <Row className={css.filtersRow}>
             <Col xs={12} sm={6}>
