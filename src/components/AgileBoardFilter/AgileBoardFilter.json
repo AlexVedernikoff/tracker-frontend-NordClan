@@ -11,7 +11,8 @@
     "NOT_CHANGED": "Not changed",
     "SHARE": "Share",
     "SHARE_SUCCESS": "Filter copied successfully",
-    "SHARE_ERROR": "Error while copying filter"
+    "SHARE_ERROR": "Error while copying filter",
+    "NOT_ASSIGNED": "Not assigned"
   },
 
   "ru": {
@@ -26,6 +27,7 @@
     "NOT_CHANGED": "Не назначено",
     "SHARE": "Поделиться",
     "SHARE_SUCCESS": "Фильтр успешно скопирован",
-    "SHARE_ERROR": "Ошибка при копировании фильтра"
+    "SHARE_ERROR": "Ошибка при копировании фильтра",
+    "NOT_ASSIGNED": "Не назначенно"
   }
 }

@@ -51,11 +51,15 @@ class AgileBoardFilter extends React.Component {
   getOptionData(label, value) {
     const {
       project: { users },
-      typeOptions
+      typeOptions,
+      lang
     } = this.props;
     switch (label) {
       case 'performerId':
-        const user = users.find(u => u.id === value);
+        if (+value === 0) {
+          return localize[lang].NOT_ASSIGNED;
+        }
+        const user = users.find(u => u.id === +value);
         return user ? getFullName(user) : '';
       case 'changedSprint':
         return this.props.sortedSprints.find(el => el.value === value).label;
