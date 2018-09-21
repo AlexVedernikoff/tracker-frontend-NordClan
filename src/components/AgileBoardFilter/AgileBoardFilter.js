@@ -36,6 +36,10 @@ class AgileBoardFilter extends React.Component {
     ) {
       this.updateFilterList();
     }
+
+    if (this.props.currentSprint.length && this.props.currentSprint !== prevProps.currentSprint) {
+      this.props.setFilterValue('changedSprint', [this.props.currentSprint[0].value], this.updateFilterList);
+    }
   };
 
   toggleOpen = () => {
