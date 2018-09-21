@@ -8,7 +8,6 @@ const TaskModal = ({ title, onClose, tasks, lang, onChoose }) => (
   <OptionsModal
     options={tasks}
     noCurrentOption
-    defaultOption={1923}
     title={title}
     onClose={onClose}
     onChoose={onChoose}
