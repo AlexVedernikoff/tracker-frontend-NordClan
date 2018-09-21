@@ -161,10 +161,12 @@ export const refreshExternalUserLinkSuccess = changedUser => ({
 });
 export const refreshExternalUserLink = exUser => {
   const URL = `${API_URL}/user/external/${exUser.id}/refresh`;
+  const exUserRU = { ...exUser };
+  delete exUserRU.fullNameEn;
   return dispatch => {
     dispatch(refreshExternalUserLinkStart());
     dispatch(startLoading());
-    axios.put(URL, exUser).then(
+    axios.put(URL, exUserRU).then(
       response => {
         if (response.data) {
           dispatch(refreshExternalUserLinkSuccess(response.data));
@@ -172,7 +174,7 @@ export const refreshExternalUserLink = exUser => {
         dispatch(finishLoading());
       },
       error => {
-        dispatch(refreshExternalUserLinkSuccess(exUser));
+        dispatch(refreshExternalUserLinkSuccess(exUserRU));
         dispatch(showNotification({ message: error.message, type: 'error' }));
         dispatch(finishLoading());
       }
