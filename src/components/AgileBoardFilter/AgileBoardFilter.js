@@ -91,10 +91,6 @@ class AgileBoardFilter extends React.Component {
     this.props.setFilterValue(filterField, newList, this.updateFilterList);
   };
 
-  get nameField() {
-    return this.props.lang === 'ru' ? 'fullNameRu' : 'fullNameEn';
-  }
-
   createFilterLabel = filterName => {
     const {
       lang,

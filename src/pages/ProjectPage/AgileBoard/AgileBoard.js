@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { Row } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 import isEqual from 'lodash/isEqual';
-import debounce from 'lodash/debounce';
 
 import * as css from './AgileBoard.scss';
 import localize from './AgileBoard.json';
@@ -38,8 +37,6 @@ class AgileBoard extends Component {
       changedTask: null,
       isOnlyMine: props.filters.isOnlyMine
     };
-
-    this.debouncedSelectValue = debounce(this.selectValue, 500);
   }
 
   componentDidMount() {
