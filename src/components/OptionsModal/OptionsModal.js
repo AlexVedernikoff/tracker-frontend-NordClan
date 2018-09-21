@@ -17,11 +17,13 @@ const notSelectedOption = {
 class OptionsModal extends Component {
   constructor(props) {
     super(props);
-    this.optionsList = this.getOptionsList(props.options, props.canBeNotSelected);
+
+    const { options, canBeNotSelected } = props;
+    this.optionsList = this.getOptionsList(options, canBeNotSelected);
 
     this.state = {
       options: this.optionsList,
-      selectedIndex: this.getDefaultSelectedIndex(),
+      selectedIndex: this.getSelectedIndex(options),
       searchText: ''
     };
   }
@@ -29,27 +31,43 @@ class OptionsModal extends Component {
   componentDidMount() {
     const { options, selectedIndex } = this.state;
     addEventListener('keydown', this.moveList);
-    setTimeout(() => {
-      scroller.scrollTo(options[selectedIndex].value.toString(), { containerId: 'optionsList' });
-    }, 100);
+    setTimeout(this.scrollToSelectedOption(options, selectedIndex), 100);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ options: [...nextProps.options] });
+    const { options, canBeNotSelected } = nextProps;
+    const newOptions = this.getOptionsList(options, canBeNotSelected);
+    const newSelectedIndex = this.getSelectedIndex(options);
+
+    this.setState({ options: newOptions, selectedIndex: newSelectedIndex }, () => {
+      this.optionsList = newOptions;
+      this.scrollToSelectedOption(newOptions, newSelectedIndex)();
+    });
   }
 
   componentWillUnmount() {
     removeEventListener('keydown', this.moveList);
   }
 
+  scrollToSelectedOption = (options, selectedIndex) => () => {
+    if (selectedIndex < 0) {
+      return;
+    }
+
+    scroller.scrollTo(options[selectedIndex].value.toString(), {
+      containerId: 'optionsList',
+      offset: 0
+    });
+  };
+
   getOptionsList(options, canBeNotSelected) {
     const optionsList = [...options];
     return canBeNotSelected ? optionsList.concat(notSelectedOption) : optionsList;
   }
 
-  getDefaultSelectedIndex() {
+  getSelectedIndex(options) {
     let selectedIndex = this.optionsList.length - 1;
-    this.props.options.forEach((option, i) => {
+    options.forEach((option, i) => {
       if (option.value === this.props.defaultOption) {
         selectedIndex = i;
       }
@@ -109,7 +127,7 @@ class OptionsModal extends Component {
   };
 
   render() {
-    const { title, canBeNotSelected, removeCurOptionTip, inputPlaceholder } = this.props;
+    const { title, canBeNotSelected, removeCurOptionTip, inputPlaceholder, noCurrentOption } = this.props;
     const { options, searchText, selectedIndex } = this.state;
     const currentOption = this.getCurrentOption();
 
@@ -119,7 +137,7 @@ class OptionsModal extends Component {
           <div className={css.header}>
             <h3>{title}</h3>
           </div>
-          {currentOption ? (
+          {noCurrentOption ? null : currentOption ? (
             <span
               className={classnames({
                 [css.currentOption]: true,
@@ -195,6 +213,7 @@ OptionsModal.propTypes = {
   canBeNotSelected: PropTypes.bool,
   defaultOption: PropTypes.number,
   inputPlaceholder: PropTypes.string,
+  noCurrentOption: PropTypes.bool,
   onChoose: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   options: PropTypes.array,
