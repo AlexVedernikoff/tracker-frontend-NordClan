@@ -443,6 +443,7 @@ class AgileBoard extends Component {
 
   getChangedSprint = props => {
     let changedSprint = this.state.changedSprint.length ? this.state.changedSprint : this.props.currentSprint;
+
     if (!this.props.myTaskBoard) {
       changedSprint =
         this.props.location.query.currentSprint === undefined
@@ -451,6 +452,20 @@ class AgileBoard extends Component {
     }
     if (props.lastCreatedTask && Number.isInteger(props.lastCreatedTask.sprintId)) {
       changedSprint = [{ value: props.lastCreatedTask.sprintId }];
+    }
+
+    if (changedSprint.length === 0) {
+      changedSprint = [
+        {
+          value: 0,
+          label: 'Backlog',
+          deleteHandler: () => this.resetFiled(filterName),
+          className: classnames({
+            [css.INPROGRESS]: false,
+            [css.sprintMarker]: true
+          })
+        }
+      ];
     }
 
     return changedSprint;
@@ -527,7 +542,11 @@ class AgileBoard extends Component {
               : this.state.performerId.value
             : null
         };
-    this.props.getTasks(options);
+
+    if (this.state.changedSprint[0].label !== 'Backlog') {
+      this.props.getTasks(options);
+    }
+
     this.updateFilterList();
   };
 
