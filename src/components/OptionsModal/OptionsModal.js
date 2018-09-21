@@ -66,13 +66,8 @@ class OptionsModal extends Component {
   }
 
   getSelectedIndex(options) {
-    let selectedIndex = this.optionsList.length - 1;
-    options.forEach((option, i) => {
-      if (option.value === this.props.defaultOption) {
-        selectedIndex = i;
-      }
-    });
-    return selectedIndex;
+    const foundIndex = options.findIndex(option => option.value === this.props.defaultOption);
+    return foundIndex !== -1 ? foundIndex : this.optionsList.length - 1;
   }
 
   handleChoose = value => {
