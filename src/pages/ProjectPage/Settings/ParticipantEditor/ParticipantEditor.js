@@ -15,6 +15,7 @@ import Button from '../../../../components/Button';
 import Modal from '../../../../components/Modal';
 import SelectDropdown from '../../../../components/SelectDropdown';
 import localize from './participantEditor.json';
+import layoutAgnosticFilter from '../../../../utils/layoutAgnosticFilter';
 
 class ParticipantEditor extends Component {
   constructor(props) {
@@ -350,7 +351,7 @@ class ParticipantEditor extends Component {
                   noResultsText={localize[lang].NO_RESULTS}
                   options={this.getUsers()}
                   autofocus
-                  filterOption={el => el}
+                  filterOption={layoutAgnosticFilter}
                 />
                 <Button
                   type="green"
