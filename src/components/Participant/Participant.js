@@ -146,6 +146,7 @@ class Participant extends React.Component {
             isOpen
             contentLabel="modal"
             text={`${localize[lang].DELETE} <${getFullName(user)}>?`}
+            lang={lang}
             onCancel={this.handleCloseConfirmDelete}
             onConfirm={this.unbindUser}
             onRequestClose={this.handleCloseConfirmDelete}
