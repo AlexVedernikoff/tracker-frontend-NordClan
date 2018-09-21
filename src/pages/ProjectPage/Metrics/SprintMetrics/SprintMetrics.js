@@ -128,8 +128,8 @@ class SprintMetrics extends Component {
       getBasicLineSettings,
       metrics,
       filterById,
-      openedBugsMetrics,
-      openedCustomerBugsMetrics
+      openedBugsMetrics, // TODO: пересчитываются ниже, почему приходит не то?
+      openedCustomerBugsMetrics // пересчитываются ниже, почему приходит не то?
     } = this.props;
     const currentSprintId = this.state.sprintSelected ? this.state.sprintSelected.value.id : null;
     /*Динамика закрытия фич*/
@@ -142,10 +142,10 @@ class SprintMetrics extends Component {
     const openedFeaturesMetric = filterById(35, metrics);
     const openedOutOfPlanFeaturesMetric = filterById(41, metrics);
 
-    const openedFeaturesFromClient = filterById(58, metrics); // работает
-    const openedBugsFromClient = filterById(39, metrics); // работает
+    const openedFeaturesFromClient = filterById(58, metrics);
+    const openedBugsFromClient = filterById(39, metrics);
+    const openedBugsMetric = filterById(37, metrics);
 
-    console.log(1);
     return (
       <div>
         <div className={css.sprintSelectWrapper}>
@@ -184,7 +184,7 @@ class SprintMetrics extends Component {
               )}
               openedFeaturesMetric={this.filterBySprint(currentSprintId, openedFeaturesMetric)}
               openedOutOfPlanFeaturesMetric={this.filterBySprint(currentSprintId, openedOutOfPlanFeaturesMetric)}
-              openedBugsMetrics={this.filterBySprint(currentSprintId, openedBugsMetrics)}
+              openedBugsMetrics={this.filterBySprint(currentSprintId, openedBugsMetric)}
               openedCustomerBugsMetrics={this.filterBySprint(currentSprintId, openedBugsFromClient)}
               openedFeaturesFromClient={this.filterBySprint(currentSprintId, openedFeaturesFromClient)}
             />
