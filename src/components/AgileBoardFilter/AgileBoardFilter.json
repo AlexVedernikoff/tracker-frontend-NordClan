@@ -1,0 +1,31 @@
+{
+  "en": {
+    "NOT_SELECTED": "Filters is not selected",
+    "HIDE_FILTERS": "Hide filters",
+    "SHOW_FILTERS": "Show filters",
+    "CLEAR_FILTERS": "Clear filters",
+    "CREATE_TASK": "Create new task",
+    "MY_TASKS": "my tasks",
+    "AUTHOR": "author",
+    "PERFORMER": "performer",
+    "NOT_CHANGED": "Not changed",
+    "SHARE": "Share",
+    "SHARE_SUCCESS": "Filter copied successfully",
+    "SHARE_ERROR": "Error while copying filter"
+  },
+
+  "ru": {
+    "NOT_SELECTED": "Фильтры не выбраны",
+    "HIDE_FILTERS": "Скрыть фильтры",
+    "SHOW_FILTERS": "Показать фильтры",
+    "CLEAR_FILTERS": "Очистить фильтры",
+    "CREATE_TASK": "Создать задачу",
+    "MY_TASKS": "мои задачи",
+    "AUTHOR": "автор",
+    "PERFORMER": "исполнитель",
+    "NOT_CHANGED": "Не назначено",
+    "SHARE": "Поделиться",
+    "SHARE_SUCCESS": "Фильтр успешно скопирован",
+    "SHARE_ERROR": "Ошибка при копировании фильтра"
+  }
+}
