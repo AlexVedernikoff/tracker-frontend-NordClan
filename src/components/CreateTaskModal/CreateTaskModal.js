@@ -100,7 +100,9 @@ class CreateTaskModal extends Component {
   };
 
   validateAndSubmit = () => {
-    !this.isDisabledSave() && this.submitTask();
+    if (!this.isDisabledSave()) {
+      this.submitTask();
+    }
   };
 
   onTypeChange = value =>
