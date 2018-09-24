@@ -29,6 +29,11 @@ class AgileBoardFilter extends React.Component {
   };
 
   componentDidUpdate = prevProps => {
+    const { currentSprint } = this.props;
+    if (currentSprint.length && currentSprint !== prevProps.currentSprint && this.isBacklogSelected) {
+      this.props.setFilterValue('changedSprint', [currentSprint[0].value], this.updateFilterList);
+    }
+
     if (
       prevProps.project.users !== this.props.project.users ||
       prevProps.typeOptions !== this.props.typeOptions ||
@@ -44,18 +49,41 @@ class AgileBoardFilter extends React.Component {
     }));
   };
 
+  get isBacklogSelected() {
+    const {
+      filters: { changedSprint }
+    } = this.props;
+    return changedSprint.length === 1 && changedSprint[0] === 0;
+  }
+
   get isVisor() {
     return this.props.globalRole === VISOR;
+  }
+
+  removeSprint(list, value, filterName) {
+    if (list.length === 1) {
+      if (value === 0) {
+        return;
+      }
+      this.props.setFilterValue(filterName, [0], this.updateFilterList);
+      return;
+    }
+
+    this.removeSelectOptionByIdFromFilter(list, value, filterName);
   }
 
   getOptionData(label, value) {
     const {
       project: { users },
-      typeOptions
+      typeOptions,
+      lang
     } = this.props;
     switch (label) {
       case 'performerId':
-        const user = users.find(u => u.id === value);
+        if (+value === 0) {
+          return localize[lang].NOT_ASSIGNED;
+        }
+        const user = users.find(u => u.id === +value);
         return user ? getFullName(user) : '';
       case 'changedSprint':
         return this.props.sortedSprints.find(el => el.value === value).label;
@@ -76,6 +104,10 @@ class AgileBoardFilter extends React.Component {
             ? `${localize[lang].PERFORMER}: ${this.getOptionData(optionLabel, currentId)}`
             : this.getOptionData(optionLabel, currentId),
         deleteHandler: () => {
+          if (optionLabel === 'changedSprint') {
+            this.removeSprint(selectedOption, currentId, optionLabel);
+            return;
+          }
           this.removeSelectOptionByIdFromFilter(selectedOption, currentId, optionLabel);
         }
       }));
