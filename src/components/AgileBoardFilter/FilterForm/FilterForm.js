@@ -25,10 +25,19 @@ class FilterForm extends React.Component {
     this.props.updateFilterList();
   };
 
+  getSprintValue(options) {
+    if (options.length) {
+      return options.map(op => op.value);
+    }
+
+    return [0];
+  }
+
   onPrioritiesFilterChange = option =>
     this.props.setFilterValue('prioritiesId', option.prioritiesId, this.updateListsAndTasks);
-  onSprintsFilterChange = options =>
-    this.props.setFilterValue('changedSprint', options.map(op => op.value), this.updateListsAndTasks);
+  onSprintsFilterChange = options => {
+    this.props.setFilterValue('changedSprint', this.getSprintValue(options), this.updateListsAndTasks);
+  };
   onAuthorFilterChange = option =>
     this.props.setFilterValue('authorId', option ? option.value : null, this.updateListsAndTasks);
   onTypeFilterChange = options =>

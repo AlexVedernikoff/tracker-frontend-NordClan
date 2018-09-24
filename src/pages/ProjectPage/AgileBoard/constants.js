@@ -15,7 +15,7 @@ export const NO_TAG_VALUE = -1;
 
 export const initialFilters = {
   isOnlyMine: false,
-  changedSprint: [],
+  changedSprint: [0],
   filterTags: [],
   noTag: null,
   typeId: [],
