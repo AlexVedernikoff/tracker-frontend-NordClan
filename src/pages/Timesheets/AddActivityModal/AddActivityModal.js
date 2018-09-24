@@ -91,7 +91,9 @@ class AddActivityModal extends Component {
     }
   };
 
-  addActivity = () => {
+  addActivity = e => {
+    e.preventDefault();
+
     const { selectedTask, selectedActivityType, selectedProject, selectedTaskStatusId, startingDay } = this.props;
     const { selectedSprint } = this.state;
     // ТШ должен создаваться в stop статусе
@@ -221,7 +223,7 @@ class AddActivityModal extends Component {
     this.getSprintOptions(2);
     return (
       <Modal isOpen onRequestClose={this.props.onClose} contentLabel="Modal" closeTimeoutMS={200}>
-        <div className={css.addActivityForm}>
+        <form className={css.addActivityForm}>
           <h3>{localize[lang].ADD_ACTIVITY}</h3>
           <hr />
           <label className={css.formField}>
@@ -369,7 +371,7 @@ class AddActivityModal extends Component {
               onClick={this.addActivity}
             />
           </div>
-        </div>
+        </form>
       </Modal>
     );
   }
