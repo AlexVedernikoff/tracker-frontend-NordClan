@@ -109,7 +109,7 @@ class NavMenu extends Component {
     );
 
     return (
-      <div className={css.navigation}>
+      <div className={css.navigation} onClick={this.props.toggleMenu}>
         {sidebarHeader}
         <ul className={css.sidebarLinks}>{links}</ul>
       </div>
