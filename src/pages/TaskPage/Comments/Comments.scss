@@ -204,6 +204,11 @@
   }
 }
 
+.attachIcon {
+  @extend .sendIcon;
+  left: -2rem;
+}
+
 .disabled {
   cursor: not-allowed;
   opacity: 0.3;
@@ -250,4 +255,72 @@
 .outDatedToolTip {
   color: $color-red;
   text-decoration: underline dotted;
+}
+
+.attachments {
+  padding: 0px 0 30px 0px;
+  display: flex;
+  flex-wrap: wrap;
+
+  .attachWrap {
+    margin: 10px;
+    font-size: 12px;
+    width: 100px;
+    min-height: 143px;
+    position: relative;
+
+    .docIcon {
+      position: relative;
+      display: flex;
+      width: 100px;
+      height: 100px;
+      box-sizing: border-box;
+      margin-bottom: 8px;
+      justify-content: center;
+      align-items: center;
+      background: lighten($color-black, 75%);
+      border: 1px solid lighten($color-black, 70%);
+      color: lighten($color-black, 50%);
+      transition: 0.3s ease-out 0s;
+    }
+
+    .thumbnailWrap {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 0.5rem;
+      box-sizing: border-box;
+      border: 1px solid lighten($color-black, 70%);
+    }
+    .thumbnail {
+      position: absolute;
+      top: 1px;
+      bottom: 1px;
+      right: 1px;
+      left: 1px;
+      width: 98px;
+      height: 98px;
+      object-fit: cover;
+    }
+
+    .attachmentName {
+      word-wrap: break-word;
+      width: 100px;
+      text-align: center;
+      color: lighten($color-dark, 30%);
+    }
+  }
+}
+.iconFile {
+  width: 24px;
+  height: 24px;
+  color: inherit;
+}
+.iconRemove {
+  position: absolute;
+  right: -14px;
+  cursor: pointer;
+  color: #678bad;
+  width: 12px;
+  height: 12px;
+  color: inherit;
 }

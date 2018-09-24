@@ -19,10 +19,13 @@ import { connect } from 'react-redux';
 import * as css from './Comments.scss';
 import Comment from './Comment';
 import { history } from '../../../History';
-import { IconSend, IconComments } from '../../../components/Icons';
+import { IconSend, IconComments, IconFilePdf, IconFileDocument, IconClose } from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
 import localize from './Comments.json';
 import Mentions from './Mentions/Mentions';
+import FileUpload from '../../../components/FileUpload';
+import AttachedImage from './../../../components/AttachedImage';
+import AttachedDocument from './../../../components/AttachedDocument';
 
 import { prepairCommentForEdit, stringifyCommentForSend } from '../Comments/Mentions/mentionService';
 
@@ -64,7 +67,8 @@ class Comments extends Component {
       commentToDelete: null,
       disabledBtn: true,
       resizeKey: shortId(),
-      mentions: []
+      mentions: [],
+      attachments: []
     };
   }
 
@@ -168,6 +172,43 @@ class Comments extends Component {
     this.setState({ commentToDelete: null }, () => this.props.removeComment(this.props.taskId, commentId));
   };
 
+  hanldeAttachedFiles = (attached, rejected) => {
+    if (attached) {
+      this.setState({ attachments: [...attached] });
+    }
+  };
+
+  handleRemoveAttachment = file => {
+    this.setState({ attachments: this.state.attachments.filter(i => i !== file) });
+  };
+
+  isImage = item => {
+    const types = ['image/jpeg', 'image/png', 'image/pjpeg'];
+    return types.indexOf(item) !== -1;
+  };
+
+  getAttachment = (file, index) => {
+    return (
+      <div key={index} className={css.attachWrap}>
+        <IconClose className={css.iconRemove} onClick={() => this.handleRemoveAttachment(file)} />
+        {this.isImage(file.type) ? (
+          <div className={css.thumbnailWrap}>
+            <img src={file.preview} className={css.thumbnail} />
+          </div>
+        ) : (
+          <div className={css.docIcon}>
+            {/\.pdf$/.test(file.name) ? (
+              <IconFilePdf className={css.iconFile} />
+            ) : (
+              <IconFileDocument className={css.iconFile} />
+            )}
+          </div>
+        )}
+        <div className={css.attachmentName}>{file.name}</div>
+      </div>
+    );
+  };
+
   get users() {
     return [
       { id: 'all', fullNameEn: localize.en.ALL, fullNameRu: localize.ru.ALL },
@@ -248,6 +289,15 @@ class Comments extends Component {
                 </div>
               ) : null}
               <span
+                data-tip={localize[lang].ATTACH}
+                className={classnames({
+                  [css.attachIcon]: true
+                  // [css.disabled]: this.state.disabledBtn
+                })}
+              >
+                <FileUpload onDrop={this.hanldeAttachedFiles} isMinimal={true} />
+              </span>
+              <span
                 onClick={!this.state.disabledBtn ? this.publishComment : null}
                 data-tip={localize[lang].SEND}
                 className={classnames({
@@ -259,6 +309,11 @@ class Comments extends Component {
               </span>
             </div>
           </form>
+          {this.state.attachments.length ? (
+            <div className={css.attachments}>
+              {this.state.attachments.map((item, key) => this.getAttachment(item, key))}
+            </div>
+          ) : null}
           {this.props.comments.length && this.props.users.length ? (
             this.getCommentList()
           ) : (
