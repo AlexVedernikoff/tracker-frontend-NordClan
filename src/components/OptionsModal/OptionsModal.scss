@@ -37,14 +37,15 @@
   padding-bottom: 2rem;
   padding-top: 0.5rem;
   overflow: auto;
+  position: relative;
 }
 
-.currentPerformer {
+.currentOption {
   padding: 0.5rem 2rem 0.5rem 0;
   margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
-  > .removeCurrentPerformer {
+  .removeCurrentOption {
     color: darken($color-gray, 20%);
     display: inline-flex;
     align-items: center;
@@ -57,6 +58,9 @@
       color: $color-dark;
       transition: $transition;
     }
+  }
+  &.cantRemove {
+    padding: 0.5rem 2rem;
   }
 }
 .inputWrapper {
@@ -71,7 +75,7 @@
     }
   }
 }
-.user {
+.option {
   padding: 0.5rem 2rem;
   cursor: pointer;
   transition: $transition;
@@ -83,7 +87,7 @@
   }
 }
 
-.noPerformer {
+.noOption {
   padding-left: 2rem;
   color: lighten(black, 70%);
 }
