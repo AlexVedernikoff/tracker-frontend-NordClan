@@ -24,6 +24,9 @@ import localize from './CreateTaskModal.json';
 import Tag from '../../components/Tag';
 import Tags from '../../components/Tags';
 import { getFullName } from '../../utils/NameLocalisation';
+import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
+
+const MAX_DESCRIPTION_LENGTH = 250;
 
 class CreateTaskModal extends Component {
   constructor(props) {
@@ -40,6 +43,7 @@ class CreateTaskModal extends Component {
       selectedType: this.props.taskTypes[0],
       selectedTypeError: this.props.taskTypes.length === 0,
       isTaskByClient: false,
+      descriptionInvalid: false,
       tags: []
     };
 
@@ -154,7 +158,12 @@ class CreateTaskModal extends Component {
   isDisabledSave = () =>
     this.props.isCreateTaskRequestInProgress ||
     (this.validator.isDisabled && !this.state.selectedTypeError) ||
-    !this.state.selectedType;
+    !this.state.selectedType ||
+    this.state.descriptionInvalid;
+
+  validateDescription = description => {
+    this.setState({ descriptionInvalid: description.length > MAX_DESCRIPTION_LENGTH });
+  };
 
   render() {
     const formLayout = {
@@ -214,6 +223,7 @@ class CreateTaskModal extends Component {
                   editorClassName={css.taskDescription}
                   ref={ref => (this.TextEditor = ref)}
                   content={''}
+                  validator={this.validateDescription}
                 />
               </Col>
             </Row>
@@ -365,16 +375,16 @@ CreateTaskModal.propTypes = {
   taskTypes: PropTypes.array
 };
 
-const getLocaleTaskTypes = (dictionaryTypes, lang) =>
-  dictionaryTypes.map(({ name, nameEn, id }) => ({
-    label: lang === 'ru' ? name : nameEn,
+const getTaskTypes = dictionaryTypes =>
+  dictionaryTypes.map(({ name, id }) => ({
+    label: name,
     value: id
   }));
 
 const mapStateToProps = state => ({
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
   isCreateChildTaskModalOpen: state.Project.isCreateChildTaskModalOpen,
-  taskTypes: getLocaleTaskTypes(state.Dictionaries.taskTypes, state.Localize.lang),
+  taskTypes: getTaskTypes(getLocalizedTaskTypes(state)),
   isCreateTaskRequestInProgress: state.Project.isCreateTaskRequestInProgress,
   lang: state.Localize.lang
 });

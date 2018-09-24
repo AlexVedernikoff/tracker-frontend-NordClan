@@ -15,6 +15,7 @@ import Button from '../../../../components/Button';
 import Modal from '../../../../components/Modal';
 import SelectDropdown from '../../../../components/SelectDropdown';
 import localize from './participantEditor.json';
+import layoutAgnosticFilter from '../../../../utils/layoutAgnosticFilter';
 
 class ParticipantEditor extends Component {
   constructor(props) {
@@ -84,10 +85,10 @@ class ParticipantEditor extends Component {
   };
 
   bindUser = () => {
-    const { id, bindUserToProject } = this.props;
+    const { id } = this.props;
     const { participant, roles } = this.state;
     const rolesIds = roles.map(role => role.value).join(',');
-    bindUserToProject(id, participant.value, rolesIds);
+    this.props.bindUserToProject(id, participant.value, rolesIds);
     this.setState({
       roles: [],
       isModalOpenAddUser: false,
@@ -97,9 +98,9 @@ class ParticipantEditor extends Component {
   };
 
   bindExternal = () => {
-    const { id, bindUserToProject } = this.props;
+    const { id } = this.props;
     const { participant } = this.state;
-    bindUserToProject(id, participant.value, '11');
+    this.props.bindUserToProject(id, participant.value, '11');
     this.setState({
       roles: [],
       isModalOpenAddExternal: false,
@@ -111,6 +112,7 @@ class ParticipantEditor extends Component {
   searchOnChange = name => {
     const userName = name.trim();
     if (userName.length > 1) {
+      /** TODO вынести в actions */
       const URL = `${API_URL}/user/autocompleter/?userName=${userName}`;
       axios.get(URL, {}).then(response => {
         if (response.data) {
@@ -126,7 +128,7 @@ class ParticipantEditor extends Component {
           this.setState({ participants: response.data });
         }
       });
-    } else {
+    } else if (this.state.participants.length > 0) {
       this.setState({ participants: [] });
     }
   };
@@ -134,6 +136,7 @@ class ParticipantEditor extends Component {
   searchExternalOnChange = name => {
     const userName = name.trim();
     if (userName.length > 1) {
+      /** TODO вынести в actions */
       const URL = `${API_URL}/user/autocompleter/external/?userName=${userName}`;
       axios.get(URL, {}).then(response => {
         if (response.data) {
@@ -142,7 +145,7 @@ class ParticipantEditor extends Component {
           this.setState({ participants: newParticipantsState });
         }
       });
-    } else {
+    } else if (this.state.participants.length > 0) {
       this.setState({ participants: [] });
     }
   };
@@ -311,6 +314,7 @@ class ParticipantEditor extends Component {
                   noResultsText={localize[lang].NO_RESULTS}
                   options={this.getUsers()}
                   autofocus
+                  filterOption={el => el}
                 />
                 <SelectDropdown
                   name="roles"
@@ -347,6 +351,7 @@ class ParticipantEditor extends Component {
                   noResultsText={localize[lang].NO_RESULTS}
                   options={this.getUsers()}
                   autofocus
+                  filterOption={layoutAgnosticFilter}
                 />
                 <Button
                   type="green"

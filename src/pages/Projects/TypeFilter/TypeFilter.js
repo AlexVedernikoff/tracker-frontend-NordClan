@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import TwoWayOptionsClass from '../../../utils/TwoWayOptionsClass';
 import * as css from './TypeFilter.scss';
 import Select from '../../../components/SelectDropdown';
+import localize from './TypeFilter.json';
 
 class TypeFilter extends Component {
   static propTypes = {
@@ -40,20 +42,19 @@ class TypeFilter extends Component {
 
     const requestOptions = this.TwoWayOptions.requestOptions(values);
     const filteredOptions = this.TwoWayOptions.filteredOptions(values);
-
     this.props.onChange(filteredOptions, requestOptions);
   };
 
   render() {
-    const { onChange, ...other } = this.props;
+    const { onChange, lang, ...other } = this.props;
 
     return (
       <div className={css.typeFilter}>
         <Select
           name="performer"
-          placeholder="Выберите тип проекта"
+          placeholder={localize[lang].PLACEHOLDER}
           multi
-          noResultsText="Нет результатов"
+          noResultsText={localize[lang].NO_RESULTS}
           backspaceRemoves={false}
           options={this.options}
           onChange={this.onChange}
@@ -64,4 +65,16 @@ class TypeFilter extends Component {
   }
 }
 
-export default TypeFilter;
+// export default TypeFilter;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+const mapDispatchToProps = {
+  TypeFilter
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TypeFilter);

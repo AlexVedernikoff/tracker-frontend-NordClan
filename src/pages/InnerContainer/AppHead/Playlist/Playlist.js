@@ -14,6 +14,7 @@ import * as timesheetsConstants from '../../../../constants/Timesheets';
 import List from './List';
 import localize from './playlist.json';
 import * as css from './Playlist.scss';
+import { getLocalizedMagicActiveTypes } from '../../../../selectors/dictionaries';
 
 class Playlist extends Component {
   constructor(props) {
@@ -367,7 +368,7 @@ const mapStateToProps = state => {
     activeTask: state.TimesheetPlayer.activeTask,
     tracks: state.TimesheetPlayer.tracks,
     availableProjects: state.TimesheetPlayer.availableProjects,
-    magicActivitiesTypes: state.Dictionaries.magicActivityTypes,
+    magicActivitiesTypes: getLocalizedMagicActiveTypes(state),
     lang: state.Localize.lang
   };
 };

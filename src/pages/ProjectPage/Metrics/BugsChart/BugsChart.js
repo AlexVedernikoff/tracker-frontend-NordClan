@@ -9,7 +9,7 @@ import getColor from '../../../../utils/Colors';
 import localize from './BugsChart.json';
 import { connect } from 'react-redux';
 import moment from 'moment';
-
+import datalabels from 'chartjs-plugin-datalabels';
 class BugsChart extends Component {
   static propTypes = {
     chartDefaultOptions: PropTypes.object,
@@ -19,7 +19,7 @@ class BugsChart extends Component {
     openedRegressBugsMetrics: PropTypes.array
   };
 
-  chartRef = null;
+  state = { chartRef: null };
 
   getGraphicOptions() {
     return {
@@ -55,6 +55,14 @@ class BugsChart extends Component {
             }
           }
         ]
+      },
+      plugins: {
+        datalabels: {
+          formatter: function(value) {
+            return value.y;
+          },
+          align: 'end'
+        }
       }
     };
   }
@@ -89,11 +97,15 @@ class BugsChart extends Component {
     };
   };
 
-  setChartRef = node => (this.chartRef = node);
+  setChartRef = node => {
+    this.setState({
+      chartRef: node
+    });
+  };
 
   render() {
     return (
-      <ChartWrapper chartRef={this.chartRef} className={css.BugsChart}>
+      <ChartWrapper chartRef={this.state.chartRef} className={css.BugsChart}>
         <Line ref={this.setChartRef} data={this.makeChartData()} options={this.getGraphicOptions()} redraw />
       </ChartWrapper>
     );

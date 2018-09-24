@@ -16,9 +16,15 @@ class TextEditor extends Component {
   }
 
   onEditorStateChange = editorState => {
+    this.validate(editorState);
     this.setState({
       editorState
     });
+  };
+
+  validate = editorState => {
+    const { validator } = this.props;
+    validator && validator(editorState.getCurrentContent().getPlainText());
   };
 
   render() {
@@ -29,6 +35,7 @@ class TextEditor extends Component {
         onEditorStateChange={this.onEditorStateChange}
         toolbarHidden={toolbarHidden}
         placeholder={placeholder}
+        stripPastedStyles
         toolbar={{
           options: ['inline', 'blockType', 'list', 'history']
         }}
@@ -43,7 +50,8 @@ TextEditor.propTypes = {
   content: PropTypes.string,
   placeholder: PropTypes.string,
   toolbarClassName: PropTypes.string,
-  toolbarHidden: PropTypes.bool
+  toolbarHidden: PropTypes.bool,
+  validator: PropTypes.func
 };
 
 export default TextEditor;

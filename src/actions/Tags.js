@@ -46,9 +46,7 @@ const TagsFilterError = err => ({
   error: err
 });
 
-export const createTags = (tags,
-                           taggable,
-                           taggableId) => {
+export const createTags = (tags, taggable, taggableId) => {
   const URL = `${API_URL}/${taggable}/${taggableId}/tag`;
   return dispatch => {
     dispatch(startTagsCreate());
@@ -60,63 +58,62 @@ export const createTags = (tags,
         taggableId: taggableId
       })
       .then(res => {
+        dispatch(finishLoading());
         if (!res.data) return;
 
-        dispatch(tagsCreateSucces({
-          taggableId: taggableId,
-          tags: res.data
-        }));
-        dispatch(finishLoading());
+        dispatch(
+          tagsCreateSucces({
+            taggableId: taggableId,
+            tags: res.data
+          })
+        );
       });
   };
 };
 
-export const deleteTag = (tag,
-                          taggable,
-                          taggableId) => {
+export const deleteTag = (tag, taggable, taggableId) => {
   const URL = `${API_URL}/${taggable}/${taggableId}/tag/${tag}`;
   return dispatch => {
     dispatch(startTagsDelete());
     dispatch(startLoading());
-    axios
-      .delete(URL)
-      .then(res => {
-        if (!res.data) return;
+    axios.delete(URL).then(res => {
+      dispatch(finishLoading());
+      if (!res.data) return;
 
-        dispatch(tagsDeleteSucces({
+      dispatch(
+        tagsDeleteSucces({
           taggableId: taggableId,
           tags: res.data
-        }));
-        dispatch(finishLoading());
-      });
+        })
+      );
+    });
   };
 };
 
-
-export const getTagsFilter = (tagName,
-                          filterFor) => {
+export const getTagsFilter = (tagName, filterFor) => {
   return dispatch => {
     dispatch(startTagsFilter());
     dispatch(startLoading());
     axios
-      .get(`${API_URL}/${filterFor}/tag`,
-        { params: { tagName } },
-        { withCredentials: true }
-      )
+      .get(`${API_URL}/${filterFor}/tag`, { params: { tagName } }, { withCredentials: true })
       .then(response => {
-        if (!response) return;
-
-        dispatch(TagsFilterSucces({
-          filteredTags: response.data,
-          filterFor: filterFor
-        }));
         dispatch(finishLoading());
+        if (!response.data) return;
+
+        dispatch(
+          TagsFilterSucces({
+            filteredTags: response.data,
+            filterFor: filterFor
+          })
+        );
       })
       .catch(error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(TagsFilterError({
-          error: error
-        }));
+        dispatch(
+          TagsFilterError({
+            error: error
+          })
+        );
         dispatch(finishLoading());
       });
   };

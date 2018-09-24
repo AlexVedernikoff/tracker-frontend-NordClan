@@ -10,6 +10,7 @@ import classnames from 'classnames';
 import { IconPlus } from '../Icons';
 import { IconArrowUpThin } from '../Icons';
 import { IconArrowDownThin } from '../Icons';
+import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
 class TaskCard extends PureComponent {
   state = {
     isOpen: false
@@ -164,7 +165,7 @@ TaskCard.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  taskTypes: state.Dictionaries.taskTypes
+  taskTypes: getLocalizedTaskTypes(state)
 });
 
 export default connect(

@@ -6,8 +6,9 @@ import ExternalUserActivity from './ExternalUserActivity';
 import ExternalUserExpiredDate from './ExternalUserExpiredDate';
 import { IconEdit, IconCheck, IconClose } from '../../../../components/Icons';
 import ExternalUserDelete from './ExternalUserDelete';
+import ExternalUserRefreshLink from './ExternalUserRefreshLink';
 import { connect } from 'react-redux';
-import { editExternalUser, deleteExternalUser } from '../../../../actions/ExternalUsers';
+import { editExternalUser, deleteExternalUser, refreshExternalUserLink } from '../../../../actions/ExternalUsers';
 import { showNotification } from '../../../../actions/Notifications';
 import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
@@ -48,6 +49,16 @@ class ExternalUsersTableRow extends Component {
         if (!value) {
           this.props.showNotification({
             message: localize[lang].SPECIFY_DATE,
+            type: 'error'
+          });
+          return false;
+        }
+        return true;
+      },
+      description: value => {
+        if (value.length > 5000) {
+          this.props.showNotification({
+            message: localize[lang].LONG_DESCRIPTION,
             type: 'error'
           });
           return false;
@@ -99,7 +110,8 @@ class ExternalUsersTableRow extends Component {
     if (
       (changedFields.firstNameRu !== undefined && !this.validation.name(changedFields.firstNameRu)) ||
       (changedFields.login !== undefined && !this.validation.email(changedFields.login)) ||
-      (changedFields.expiredDate !== undefined && !this.validation.expiredDate(changedFields.expiredDate))
+      (changedFields.expiredDate !== undefined && !this.validation.expiredDate(changedFields.expiredDate)) ||
+      (changedFields.description !== undefined && !this.validation.description(changedFields.description))
     ) {
       return;
     }
@@ -131,6 +143,10 @@ class ExternalUsersTableRow extends Component {
   startEdit = () => {
     this.setState(state => ({ isEditing: !state.isEditing }), () => ReactTooltip.hide());
   };
+
+  startRefresh = () => {
+    this.props.refreshExternalUserLink(this.props.exUser);
+  };
   render() {
     const { lang } = this.props;
     return (
@@ -149,6 +165,14 @@ class ExternalUsersTableRow extends Component {
             isEditing={this.state.isEditing}
             onValueChange={this.onEditValues('login', 'email')}
             isValid={this.state.isValid.login}
+          />
+        </div>
+        <div className={classnames(css.TableCell, css.TableCellDesc)}>
+          <ExternalUserInput
+            value={this.props.exUser.description}
+            isEditing={this.state.isEditing}
+            onValueChange={this.onEditValues('description')}
+            isValid={this.state.isValid.description}
           />
         </div>
         <div className={classnames(css.TableCell, css.TableCellActivity)}>
@@ -186,6 +210,14 @@ class ExternalUsersTableRow extends Component {
           )}
         </div>
         <div className={css.TableCellDelete}>
+          <ExternalUserRefreshLink
+            onConfirm={this.startRefresh}
+            data-tip={localize[lang].SEND}
+            username={this.props.exUser.firstNameRu}
+            text={localize[lang].CONFIRM_REFRESH_LINK}
+          />
+        </div>
+        <div className={css.TableCellDelete}>
           <ExternalUserDelete
             onDelete={this.deleteUser}
             username={this.props.exUser.firstNameRu}
@@ -201,6 +233,7 @@ ExternalUsersTableRow.propTypes = {
   deleteExternalUser: PropTypes.func,
   editExternalUser: PropTypes.func,
   exUser: PropTypes.object,
+  refreshExternalUserLink: PropTypes.func,
   showNotification: PropTypes.func
 };
 const mapStateToProps = state => ({
@@ -209,7 +242,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   deleteExternalUser,
   editExternalUser,
-  showNotification
+  showNotification,
+  refreshExternalUserLink
 };
 
 export default connect(

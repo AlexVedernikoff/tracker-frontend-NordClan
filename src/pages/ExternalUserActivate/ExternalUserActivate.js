@@ -96,7 +96,7 @@ class ExternalUserActivate extends Component {
   }
 }
 
-const mapStateToProps = () => ({
+const mapStateToProps = state => ({
   lang: state.Localize.lang
 });
 

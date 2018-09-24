@@ -1,62 +1,31 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import * as css from './TaskTypeModal.scss';
-import Modal from '../Modal';
-import Button from '../Button';
-import SelectDropdown from '../SelectDropdown';
+import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
+import OptionsModal from '../OptionsModal';
 
-class TaskTypeModal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      typeId: this.props.defaultTypeId
-    };
+const getOptions = taskTypes => {
+  const options = [];
+  for (const type of taskTypes) {
+    options.push({
+      label: type.name,
+      value: type.id
+    });
   }
 
-  handleChoose = () => {
-    this.props.onChoose(this.state.typeId);
-  };
+  return options;
+};
 
-  selectValue = value => {
-    this.setState({ typeId: value });
-  };
-
-  render() {
-    const { onClose, taskTypes } = this.props;
-
-    const options = [];
-
-    for (const type of taskTypes) {
-      options.push({
-        label: type.name,
-        value: type.id
-      });
-    }
-
-    return (
-      <Modal isOpen contentLabel="modal" className={css.modalWrapper} onRequestClose={onClose}>
-        <div className={css.changeStage}>
-          <h3>Изменить тип задачи</h3>
-          <div className={css.modalLine}>
-            <SelectDropdown
-              name="member"
-              placeholder="Выберите тип задачи..."
-              multi={false}
-              value={this.state.typeId}
-              onChange={e => this.selectValue(e !== null ? e.value : 1)}
-              noResultsText="Нет результатов"
-              options={options}
-              autoFocus
-              openOnFocus
-            />
-            <Button type="green" text="ОК" onClick={this.handleChoose} />
-          </div>
-        </div>
-      </Modal>
-    );
-  }
-}
+const TaskTypeModal = ({ onClose, taskTypes, defaultTypeId, onChoose }) => (
+  <OptionsModal
+    defaultOption={defaultTypeId}
+    onChoose={onChoose}
+    onClose={onClose}
+    title="Изменить тип задачи"
+    inputPlaceholder="Выберите тип задачи..."
+    options={getOptions(taskTypes)}
+  />
+);
 
 TaskTypeModal.propTypes = {
   defaultTypeId: PropTypes.number,
@@ -66,7 +35,10 @@ TaskTypeModal.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  taskTypes: state.Dictionaries.taskTypes
+  taskTypes: getLocalizedTaskTypes(state)
 });
 
-export default connect(mapStateToProps, {})(TaskTypeModal);
+export default connect(
+  mapStateToProps,
+  {}
+)(TaskTypeModal);

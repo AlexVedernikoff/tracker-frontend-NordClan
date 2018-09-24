@@ -6,6 +6,7 @@
     "FINISHED": "Finished",
     "NAME_PROJECT": "Enter the name of the project ...",
     "NOTHING_FOUND": "Nothing found",
+    "NO_PROJECT_ASSIGNED": "No projects available",
     "TO": "To",
     "FROM": "From",
     "CREATE_PROJECT": "Create project"
@@ -17,6 +18,7 @@
     "FINISHED": "Завершен",
     "NAME_PROJECT": "Введите название проекта...",
     "NOTHING_FOUND": "Ничего не найдено",
+    "NO_PROJECT_ASSIGNED": "Нет доступных проектов",
     "TO": "От",
     "FROM": "До",
     "CREATE_PROJECT": "Создать проект"

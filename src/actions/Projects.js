@@ -69,15 +69,15 @@ const getProjects = (
         },
         { withCredentials: true }
       )
-      .catch(error => {
-        dispatch(finishLoading());
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-      })
       .then(response => {
         if (response && response.status === 200) {
           dispatch(projectsReceived(response.data));
-          dispatch(finishLoading());
         }
+        dispatch(finishLoading());
+      })
+      .catch(error => {
+        dispatch(finishLoading());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
       });
   };
 };
@@ -97,17 +97,8 @@ export const requestProjectCreate = (project, openProjectPage) => {
       .post(URL, project, {
         withCredentials: true
       })
-      .catch(error => {
-        dispatch(finishLoading());
-        if (error.response.status === 400) {
-          dispatch(projectCreateFail(error.response.data));
-        } else {
-          dispatch(showNotification({ message: error.message, type: 'error' }));
-        }
-      })
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(finishLoading());
           dispatch(projectCreateSuccess(response.data));
           dispatch(closeCreateProjectModal());
           dispatch(getInfoAboutMe());
@@ -116,6 +107,15 @@ export const requestProjectCreate = (project, openProjectPage) => {
           if (openProjectPage) {
             history.push(`projects/${response.data.id}`);
           }
+        }
+        dispatch(finishLoading());
+      })
+      .catch(error => {
+        dispatch(finishLoading());
+        if (error.response.status === 400) {
+          dispatch(projectCreateFail(error.response.data));
+        } else {
+          dispatch(showNotification({ message: error.message, type: 'error' }));
         }
       });
   };
