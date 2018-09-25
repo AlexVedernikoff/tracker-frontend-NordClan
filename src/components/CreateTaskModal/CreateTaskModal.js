@@ -99,8 +99,16 @@ class CreateTaskModal extends Component {
     );
   };
 
+  validateAndSubmit = () => {
+    if (!this.isDisabledSave()) {
+      this.submitTask();
+    }
+  };
+
   onTypeChange = value =>
-    this.setState({ selectedType: value && !(Array.isArray(value) && !value.length) ? value : null });
+    this.setState({
+      selectedType: value && !(Array.isArray(value) && !value.length) ? value : this.props.taskTypes[0]
+    });
 
   getSprints = () => {
     let sprints = sortBy(this.props.project.sprints, sprint => {
@@ -200,6 +208,7 @@ class CreateTaskModal extends Component {
                       placeholder={localize[lang].NAME_PLACEHOLDER}
                       onChange={this.handleChange('taskName')}
                       onBlur={handleBlur}
+                      onEnter={this.validateAndSubmit}
                       shouldMarkError={shouldMarkError}
                       errorText={localize[lang].NAME_ERROR}
                     />
