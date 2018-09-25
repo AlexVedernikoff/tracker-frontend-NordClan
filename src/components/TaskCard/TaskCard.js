@@ -8,6 +8,7 @@ import RelatedTask from './RelatedTask';
 import TaskCore from './TaskCore';
 import classnames from 'classnames';
 import { IconArrowUpThin } from '../Icons';
+import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
 
 const iconStyles = {
   width: 11,
@@ -128,7 +129,7 @@ TaskCard.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  taskTypes: state.Dictionaries.taskTypes
+  taskTypes: getLocalizedTaskTypes(state)
 });
 
 export default connect(
