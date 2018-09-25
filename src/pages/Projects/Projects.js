@@ -28,7 +28,6 @@ import TypeFilter from './TypeFilter';
 import { getLocalizedProjectTypes } from './../../selectors/dictionaries';
 
 import 'moment/locale/ru';
-import localize from '../ExternalUsers/ExternalUsers';
 
 class Projects extends Component {
   constructor(props) {
