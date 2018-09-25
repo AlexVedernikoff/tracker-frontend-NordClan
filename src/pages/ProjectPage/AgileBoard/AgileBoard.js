@@ -133,8 +133,8 @@ class AgileBoard extends Component {
       },
       'User'
     );
-
     this.props.startTaskEditing('User');
+    this.closeModal();
   };
 
   closeModal = performerId => {
