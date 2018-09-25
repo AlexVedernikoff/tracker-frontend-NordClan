@@ -327,7 +327,11 @@ svg.red {
   border-top: 0;
   text-align: center;
   line-height: 6px;
+  &.linked {
+    margin-left: 0rem;
+  }
 }
+
 .subTasksButtonOpen {
   svg {
     transform: rotate(180deg);
