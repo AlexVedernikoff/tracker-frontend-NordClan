@@ -145,7 +145,8 @@ class Participant extends React.Component {
           <ConfirmModal
             isOpen
             contentLabel="modal"
-            text={localize[lang].DELETE}
+            text={`${localize[lang].DELETE} <${getFullName(user)}>?`}
+            lang={lang}
             onCancel={this.handleCloseConfirmDelete}
             onConfirm={this.unbindUser}
             onRequestClose={this.handleCloseConfirmDelete}
@@ -176,4 +177,7 @@ const mapDispatchToProps = {
   showNotification
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Participant);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Participant);
