@@ -60,8 +60,10 @@ class EditSpentModal extends Component {
   };
 
   onChangeSpentTime = e => {
+    const hoursPerDay = 24;
+    const spentTime = e.target.value < hoursPerDay ? e.target.value : hoursPerDay;
     if (this.validateNumbers(e.target.value)) {
-      this.setState({ spentTime: e.target.value });
+      this.setState({ spentTime: spentTime });
     }
   };
 

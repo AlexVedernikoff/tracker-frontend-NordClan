@@ -84,7 +84,9 @@ class ParticipantEditor extends Component {
     }
   };
 
-  bindUser = () => {
+  bindUser = e => {
+    e.preventDefault();
+
     const { id } = this.props;
     const { participant, roles } = this.state;
     const rolesIds = roles.map(role => role.value).join(',');
@@ -97,7 +99,9 @@ class ParticipantEditor extends Component {
     });
   };
 
-  bindExternal = () => {
+  bindExternal = e => {
+    e.preventDefault();
+
     const { id } = this.props;
     const { participant } = this.state;
     this.props.bindUserToProject(id, participant.value, '11');
@@ -301,7 +305,7 @@ class ParticipantEditor extends Component {
         </div>
         {this.state.isModalOpenAddUser ? (
           <Modal isOpen contentLabel="modal" onRequestClose={this.handleCloseModalAddUser}>
-            <div className={css.changeStage}>
+            <form className={css.changeStage}>
               <h3>{localize[lang].ADD_NEW_MEMBERS}</h3>
               <div className={css.modalContainer}>
                 <SelectDropdown
@@ -330,15 +334,16 @@ class ParticipantEditor extends Component {
                   type="green"
                   text={localize[lang].ADD}
                   onClick={this.bindUser}
+                  htmlType="submit"
                   disabled={!(this.state.participant && this.state.roles.length)}
                 />
               </div>
-            </div>
+            </form>
           </Modal>
         ) : null}
         {this.state.isModalOpenAddExternal ? (
           <Modal isOpen contentLabel="modal" onRequestClose={this.handleCloseModalAddExternal}>
-            <div className={css.changeStage}>
+            <form className={css.changeStage}>
               <h3>{localize[lang].ADD_EXTERNAL_USERS}</h3>
               <div className={css.modalContainer}>
                 <SelectDropdown
@@ -358,9 +363,10 @@ class ParticipantEditor extends Component {
                   text={localize[lang].ADD}
                   onClick={this.bindExternal}
                   disabled={!this.state.participant}
+                  htmlType="submit"
                 />
               </div>
-            </div>
+            </form>
           </Modal>
         ) : null}
       </div>
