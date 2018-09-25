@@ -40,8 +40,6 @@ class AppHead extends Component {
       height: 16
     };
 
-    console.log('this.props.toggleMenuIcon', this.props.toggleMenuIcon);
-
     const { globalRole } = this.props;
     return (
       <div className={css.toppanel}>
