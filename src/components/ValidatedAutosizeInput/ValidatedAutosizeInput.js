@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import * as css from '../Input/Input.scss';
 import * as validateCss from '../ValidatedInput/ValidatedInput.scss';
 import TextareaAutosize from 'react-autosize-textarea';
+import { ENTER } from '../../constants/KeyCodes';
 
 class ValidatedAutosizeInput extends Component {
   static propTypes = {
@@ -25,12 +26,31 @@ class ValidatedAutosizeInput extends Component {
     this.state.isError !== nextProps.shouldMarkError && this.setState({ isError: nextProps.shouldMarkError });
   }
 
+  handleKeyDown = e => {
+    const { onKeyDown, onEnter } = this.props;
+
+    if (onKeyDown) {
+      onKeyDown(e);
+      return;
+    }
+
+    if (!onEnter) {
+      return;
+    }
+
+    if (e.keyCode === ENTER) {
+      e.preventDefault();
+      onEnter();
+    }
+  };
+
   render() {
-    const { onBlur, shouldMarkError, errorText, backendErrorText, ...other } = this.props;
+    const { onBlur, shouldMarkError, errorText, backendErrorText, onEnter, ...other } = this.props;
     return (
       <div className={validateCss.fullWrapper}>
         <TextareaAutosize
           {...other}
+          onKeyDown={this.handleKeyDown}
           onBlur={() => {
             onBlur() && this.setState({ isError: true, showSpan: true });
           }}
