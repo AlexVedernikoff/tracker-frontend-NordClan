@@ -55,3 +55,7 @@ export default connect(
   mapStateToProps,
   null
 )(FileUpload);
+
+FileUpload.defaultProps = {
+  isMinimal: false
+};

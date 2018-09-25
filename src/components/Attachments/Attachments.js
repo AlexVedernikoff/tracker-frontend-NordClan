@@ -127,7 +127,7 @@ export default class Attachments extends Component {
       <div className={css.attachments}>
         <ul className={css.attachmentsContainer}>
           {attachments.map((file, index) => this.getAttachment(file, index))}
-          {this.props.canEdit ? <FileUpload onDrop={this.onDrop} isMinimal={this.props.isMinimal} /> : null}
+          {this.props.canEdit ? <FileUpload onDrop={this.onDrop} /> : null}
         </ul>
         {isOpen && (
           <Lightbox
@@ -149,8 +149,4 @@ Attachments.propTypes = {
   canEdit: PropTypes.bool,
   removeAttachment: PropTypes.func.isRequired,
   uploadAttachments: PropTypes.func.isRequired
-};
-
-Attachments.defaultProps = {
-  isMinimal: false
 };
