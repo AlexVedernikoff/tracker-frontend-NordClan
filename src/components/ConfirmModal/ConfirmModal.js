@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactModal from 'react-modal';
 import classnames from 'classnames';
-import { connect } from 'react-redux';
 import Button from '../Button';
 import * as css from './ConfirmModal.scss';
 import cssVariables from '!!sass-variable-loader!../../styles/variables.scss';
@@ -87,11 +86,4 @@ ConfirmModal.propTypes = {
   text: PropTypes.string
 };
 
-const mapStateToProps = state => ({
-  lang: state.Localize.lang
-});
-
-export default connect(
-  mapStateToProps,
-  null
-)(ConfirmModal);
+export default ConfirmModal;
