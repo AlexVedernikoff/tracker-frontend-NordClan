@@ -33,7 +33,7 @@ class CreateTaskModal extends Component {
     super(props);
 
     this.state = {
-      selectedSprint: props.selectedSprintValue,
+      selectedSprint: props.selectedSprintValue || 0,
       selectedPerformer: props.defaultPerformerId || null,
       taskName: '',
       description: '',
