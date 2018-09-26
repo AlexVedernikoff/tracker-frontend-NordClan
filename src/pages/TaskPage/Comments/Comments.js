@@ -13,19 +13,19 @@ import {
   setCommentForEdit,
   resetCurrentEditingComment,
   setCurrentCommentExpired,
-  setHighLighted
+  setHighLighted,
+  uploadAttachments,
+  removeAttachment
 } from '../../../actions/Task';
 import { connect } from 'react-redux';
 import * as css from './Comments.scss';
 import Comment from './Comment';
 import { history } from '../../../History';
-import { IconSend, IconComments, IconFilePdf, IconFileDocument, IconClose } from '../../../components/Icons';
+import { IconSend, IconComments, IconClose } from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
 import localize from './Comments.json';
 import Mentions from './Mentions/Mentions';
 import FileUpload from '../../../components/FileUpload';
-import AttachedImage from './../../../components/AttachedImage';
-import AttachedDocument from './../../../components/AttachedDocument';
 
 import { prepairCommentForEdit, stringifyCommentForSend } from '../Comments/Mentions/mentionService';
 
@@ -33,6 +33,7 @@ const ENTER = 13;
 
 class Comments extends Component {
   static propTypes = {
+    attachments: PropTypes.array,
     comments: PropTypes.array,
     currentComment: PropTypes.object,
     editComment: PropTypes.func,
@@ -44,6 +45,7 @@ class Comments extends Component {
     params: PropTypes.object,
     projectUsers: PropTypes.array,
     publishComment: PropTypes.func,
+    removeAttachment: PropTypes.func,
     removeComment: PropTypes.func,
     resetCurrentEditingComment: PropTypes.func,
     selectParentCommentForReply: PropTypes.func,
@@ -52,6 +54,7 @@ class Comments extends Component {
     setHighLighted: PropTypes.func,
     taskId: PropTypes.number,
     updateCurrentCommentText: PropTypes.func,
+    uploadAttachments: PropTypes.func,
     userId: PropTypes.number,
     users: PropTypes.array
   };
@@ -68,7 +71,8 @@ class Comments extends Component {
       disabledBtn: true,
       resizeKey: shortId(),
       mentions: [],
-      attachments: []
+      attachments: props.attachments,
+      isAttachedToComment: false
     };
   }
 
@@ -118,6 +122,14 @@ class Comments extends Component {
       ) {
         this.selectComment(this.props.highlighted.id);
       }
+    }
+    if (prevProps.attachments.length !== this.props.attachments.length) {
+      const diff = _.difference(this.props.attachments, prevProps.attachments);
+      const attachments = diff.map(attachment => {
+        attachment.display = this.state.isAttachedToComment;
+        return attachment;
+      });
+      this.setState({ attachments: [...this.state.attachments, ...attachments], isAttachedToComment: false });
     }
   };
 
@@ -172,41 +184,31 @@ class Comments extends Component {
     this.setState({ commentToDelete: null }, () => this.props.removeComment(this.props.taskId, commentId));
   };
 
-  hanldeAttachedFiles = (attached, rejected) => {
-    if (attached) {
-      this.setState({ attachments: [...attached] });
+  hanldeAttachedFiles = files => {
+    this.setState({ isAttachedToComment: true });
+    this.props.uploadAttachments(this.props.taskId, files);
+  };
+
+  handleRemoveAttachment = index => {
+    this.setState({
+      attachments: this.state.attachments.filter(i => i !== this.state.attachments[index]),
+      isAttachedToComment: true
+    });
+    this.props.removeAttachment(this.props.taskId, this.props.attachments[index].id);
+  };
+
+  getAttachment = index => {
+    const attachment = this.props.attachments[index];
+    if (attachment && !attachment.uploading && !attachment.deleting) {
+      return (
+        <li key={index} className={css.attachmentsItemWrap}>
+          <a target="_blank" href={attachment.path}>
+            {attachment.fileName}
+          </a>
+          <IconClose className={css.removeAttachIcon} onClick={() => this.handleRemoveAttachment(index)} />
+        </li>
+      );
     }
-  };
-
-  handleRemoveAttachment = file => {
-    this.setState({ attachments: this.state.attachments.filter(i => i !== file) });
-  };
-
-  isImage = item => {
-    const types = ['image/jpeg', 'image/png', 'image/pjpeg'];
-    return types.indexOf(item) !== -1;
-  };
-
-  getAttachment = (file, index) => {
-    return (
-      <div key={index} className={css.attachWrap}>
-        <IconClose className={css.iconRemove} onClick={() => this.handleRemoveAttachment(file)} />
-        {this.isImage(file.type) ? (
-          <div className={css.thumbnailWrap}>
-            <img src={file.preview} className={css.thumbnail} />
-          </div>
-        ) : (
-          <div className={css.docIcon}>
-            {/\.pdf$/.test(file.name) ? (
-              <IconFilePdf className={css.iconFile} />
-            ) : (
-              <IconFileDocument className={css.iconFile} />
-            )}
-          </div>
-        )}
-        <div className={css.attachmentName}>{file.name}</div>
-      </div>
-    );
   };
 
   get users() {
@@ -309,11 +311,11 @@ class Comments extends Component {
               </span>
             </div>
           </form>
-          {this.state.attachments.length ? (
-            <div className={css.attachments}>
-              {this.state.attachments.map((item, key) => this.getAttachment(item, key))}
-            </div>
-          ) : null}
+          <div className={css.attachmentWrap}>
+            {this.state.attachments.length ? (
+              <ul>{this.state.attachments.map((item, index) => (item.display ? this.getAttachment(index) : null))}</ul>
+            ) : null}
+          </div>
           {this.props.comments.length && this.props.users.length ? (
             this.getCommentList()
           ) : (
@@ -343,7 +345,7 @@ class Comments extends Component {
 
 const mapStateToProps = ({
   Task: {
-    task: { id: taskId },
+    task: { id: taskId, attachments },
     comments,
     currentComment,
     highlighted
@@ -357,6 +359,7 @@ const mapStateToProps = ({
   Localize: { lang }
 }) => ({
   taskId,
+  attachments,
   comments,
   userId,
   currentComment,
@@ -375,9 +378,11 @@ const mapDispatchToProps = {
   updateCurrentCommentText,
   selectParentCommentForReply,
   setCommentForEdit,
+  removeAttachment,
   resetCurrentEditingComment,
   setCurrentCommentExpired,
-  setHighLighted
+  setHighLighted,
+  uploadAttachments
 };
 
 export default connect(
