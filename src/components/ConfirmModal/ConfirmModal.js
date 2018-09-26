@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactModal from 'react-modal';
 import classnames from 'classnames';
+import { connect } from 'react-redux';
 import Button from '../Button';
 import * as css from './ConfirmModal.scss';
 import cssVariables from '!!sass-variable-loader!../../styles/variables.scss';
@@ -53,7 +54,6 @@ const iconStyles = {
 
 const ConfirmModal = props => {
   const { style, onRequestClose, closeTimeoutMS, text, onConfirm, onCancel, notification, lang, ...other } = props;
-
   return (
     <ReactModal
       {...other}
@@ -66,12 +66,12 @@ const ConfirmModal = props => {
       </div>
       {notification ? (
         <div>
-          <Button text={`{$localize[lang].CANCEL}`} type="primary" style={{ width: '100%' }} onClick={onCancel} />
+          <Button text={localize[lang].CANCEL} type="primary" style={{ width: '100%' }} onClick={onCancel} />
         </div>
       ) : (
         <div>
-          <Button text={`${localize[lang].OK}`} type="green" style={{ width: '50%' }} onClick={onConfirm} />
-          <Button text={`${localize[lang].CANCEL}`} type="primary" style={{ width: '50%' }} onClick={onCancel} />
+          <Button text={localize[lang].OK} type="green" style={{ width: '50%' }} onClick={onConfirm} />
+          <Button text={localize[lang].CANCEL} type="primary" style={{ width: '50%' }} onClick={onCancel} />
         </div>
       )}
     </ReactModal>
@@ -87,4 +87,11 @@ ConfirmModal.propTypes = {
   text: PropTypes.string
 };
 
-export default ConfirmModal;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(ConfirmModal);
