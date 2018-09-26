@@ -4,6 +4,7 @@ import ReactModal from 'react-modal';
 import Button from '../Button';
 import * as css from './ConfirmModal.scss';
 import cssVariables from '!!sass-variable-loader!../../styles/variables.scss';
+import localize from './ConfirmModal.json';
 
 const ReactModalStyles = {
   overlay: {
@@ -50,8 +51,7 @@ const ReactModalStyles = {
 // };
 
 const ConfirmModal = props => {
-  const { style, closeTimeoutMS, text, onConfirm, onCancel, notification, ...other } = props;
-
+  const { style, onRequestClose, closeTimeoutMS, text, onConfirm, onCancel, notification, lang, ...other } = props;
   return (
     <ReactModal
       {...other}
@@ -64,12 +64,12 @@ const ConfirmModal = props => {
       </div>
       {notification ? (
         <div>
-          <Button text="Отмена" type="primary" style={{ width: '100%' }} onClick={onCancel} />
+          <Button text={localize[lang].CANCEL} type="primary" style={{ width: '100%' }} onClick={onCancel} />
         </div>
       ) : (
         <div>
-          <Button text="ОК" type="green" style={{ width: '50%' }} onClick={onConfirm} />
-          <Button text="Отмена" type="primary" style={{ width: '50%' }} onClick={onCancel} />
+          <Button text={localize[lang].OK} type="green" style={{ width: '50%' }} onClick={onConfirm} />
+          <Button text={localize[lang].CANCEL} type="primary" style={{ width: '50%' }} onClick={onCancel} />
         </div>
       )}
     </ReactModal>
