@@ -106,7 +106,9 @@ class CreateTaskModal extends Component {
   };
 
   onTypeChange = value =>
-    this.setState({ selectedType: value && !(Array.isArray(value) && !value.length) ? value : null });
+    this.setState({
+      selectedType: value && !(Array.isArray(value) && !value.length) ? value : this.props.taskTypes[0]
+    });
 
   getSprints = () => {
     let sprints = sortBy(this.props.project.sprints, sprint => {
