@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-import moment from 'moment';
+// import moment from 'moment';
 import './style.css';
 import * as css from './DatepickerDropdown.scss';
 import 'moment/locale/ru';
@@ -14,7 +14,7 @@ class DatepickerDropdown extends Component {
   }
 
   render() {
-    const { disabledDataRanges, lang, dispatch, ...other } = this.props;
+    const { disabledDataRanges, lang, ...other } = this.props;
 
     return (
       <DayPickerInput

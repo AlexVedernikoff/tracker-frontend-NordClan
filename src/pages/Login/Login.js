@@ -9,8 +9,7 @@ import bg from './bg.jpg';
 import { connect } from 'react-redux';
 import { history } from '../../History';
 import { doAuthentication, clearRedirect } from '../../actions/Authentication';
-import localization from '../Projects/projects';
-import Title, { flushTitle } from 'react-title-component';
+import Title from 'react-title-component';
 
 class Login extends Component {
   static propTypes = {
@@ -58,7 +57,7 @@ class Login extends Component {
   render() {
     return (
       <div className={css.formWrapper} style={{ backgroundImage: `url(${bg})` }}>
-        <Title render={`SimTrack - Login`} />
+        <Title render={'SimTrack - Login'} />
         <div className={css.loginForm}>
           <div className={css.logoWrapper}>
             <Logo onLight={false} style={{ fontSize: '3rem', padding: 0, textAlign: 'center' }} />

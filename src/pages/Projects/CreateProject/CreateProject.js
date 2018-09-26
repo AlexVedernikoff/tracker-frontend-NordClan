@@ -153,6 +153,7 @@ class CreateProject extends Component {
 CreateProject.propTypes = {
   handleCheckBox: PropTypes.func,
   isOpen: PropTypes.bool,
+  lang: PropTypes.string,
   onChange: PropTypes.func,
   onPortfolioSelect: PropTypes.func,
   onRequestClose: PropTypes.func,

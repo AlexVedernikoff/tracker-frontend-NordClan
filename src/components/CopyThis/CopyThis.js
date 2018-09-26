@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import Pt from 'prop-types';
-import cn from 'classnames';
 
 import { showNotification } from '../../actions/Notifications';
 import css from './CopyThis.scss';
@@ -16,7 +15,7 @@ class CopyThis extends PureComponent {
     wrapThisInto: Pt.any.isRequired
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
 
@@ -27,19 +26,14 @@ class CopyThis extends PureComponent {
     if (res) this.props.showNotification({ message: `Скопировано: ${this.props.description}`, type: 'success' });
   };
 
-  render () {
+  render() {
     const Wrap = this.props.wrapThisInto;
     return (
       <div className={css.copyThis}>
         <Wrap className={css.copyLink} onClick={this.copy}>
           {this.props.children}
         </Wrap>
-        <textarea
-          ref="copy"
-          className={css.copy}
-          value={this.props.textToCopy}
-          readOnly
-        />
+        <textarea ref="copy" className={css.copy} value={this.props.textToCopy} readOnly />
       </div>
     );
   }
@@ -49,6 +43,7 @@ const mapDispatchToProps = {
   showNotification
 };
 
-const mapStateToProps = state => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(CopyThis);
+export default connect(
+  null,
+  mapDispatchToProps
+)(CopyThis);

@@ -21,9 +21,9 @@ const getTaskSuccess = task => ({
   data: task
 });
 
-const getTaskHistoryStart = () => ({
-  type: TaskActions.GET_TASK_HISTORY_REQUEST_SENT
-});
+// const getTaskHistoryStart = () => ({
+//   type: TaskActions.GET_TASK_HISTORY_REQUEST_SENT
+// });
 
 const getTaskHistorySuccess = history => ({
   type: TaskActions.GET_TASK_HISTORY_REQUEST_SUCCESS,
@@ -44,11 +44,11 @@ const getTaskFail = error => ({
   error: error
 });
 
-const postChangeFail = error => ({
-  type: TaskActions.TASK_CHANGE_REQUEST_FAIL,
-  closeHasError: false,
-  error: error
-});
+// const postChangeFail = error => ({
+//   type: TaskActions.TASK_CHANGE_REQUEST_FAIL,
+//   closeHasError: false,
+//   error: error
+// });
 
 const clearError = status => ({
   type: TaskActions.ERROR_CLEAR,
@@ -59,19 +59,19 @@ const requestTaskChange = () => ({
   type: TaskActions.TASK_CHANGE_REQUEST_SENT
 });
 
-const successTaskChange = changedFields => ({
-  type: TaskActions.TASK_CHANGE_REQUEST_SUCCESS,
-  changedFields
-});
+// const successTaskChange = changedFields => ({
+//   type: TaskActions.TASK_CHANGE_REQUEST_SUCCESS,
+//   changedFields
+// });
 
-const requestTaskChangeUser = () => ({
-  type: TaskActions.TASK_CHANGE_REQUEST_SENT
-});
+// const requestTaskChangeUser = () => ({
+//   type: TaskActions.TASK_CHANGE_REQUEST_SENT
+// });
 
-const successTaskChangeUser = changedFields => ({
-  type: TaskActions.TASK_CHANGE_USER_SUCCESS,
-  changedFields
-});
+// const successTaskChangeUser = changedFields => ({
+//   type: TaskActions.TASK_CHANGE_USER_SUCCESS,
+//   changedFields
+// });
 
 const requestTaskLink = () => ({
   type: TaskActions.TASK_LINK_SENT
@@ -92,7 +92,7 @@ const stopTaskEditing = target => ({
   target
 });
 
-const clearCurrentTask = target => ({
+const clearCurrentTask = () => ({
   type: TaskActions.CLEAR_CURRENT_TASK
 });
 
@@ -134,7 +134,7 @@ const getTaskHistory = (id, options) => {
         }
         dispatch(finishLoading());
       })
-      .catch(function(error) {
+      .catch(() => {
         defaultErrorHandler(dispatch);
         dispatch(finishLoading());
       });
@@ -170,7 +170,7 @@ const changeTask = (ChangedProperties, target, callback) => {
       body: ChangedProperties,
       extra,
       start: withStartLoading(requestTaskChange, true)(dispatch),
-      response: withFinishLoading(response => {
+      response: withFinishLoading(() => {
         if (callback) {
           callback();
         }

@@ -7,13 +7,19 @@ import * as css from './TaskCard.scss';
 import RelatedTask from './RelatedTask';
 import TaskCore from './TaskCore';
 import classnames from 'classnames';
-import { IconPlus } from '../Icons';
+// import { IconPlus } from '../Icons';
 import { IconArrowUpThin } from '../Icons';
 import { IconArrowDownThin } from '../Icons';
 import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
 class TaskCard extends PureComponent {
   state = {
     isOpen: false
+  };
+
+  handleClick = () => {
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
   };
 
   render() {
@@ -142,11 +148,6 @@ class TaskCard extends PureComponent {
       </div>
     );
   }
-  handleClick = () => {
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
-  };
 }
 
 TaskCard.propTypes = {

@@ -12,9 +12,9 @@ import localize from './portfolioEditor.json';
 class PortfolioEditor extends Component {
   static propTypes = {
     changeProject: PropTypes.func,
+    lang: PropTypes.string.isRequired,
     project: PropTypes.object.isRequired,
-    user: PropTypes.object.isRequired,
-    lang: PropTypes.string.isRequired
+    user: PropTypes.object.isRequired
   };
 
   constructor(props) {

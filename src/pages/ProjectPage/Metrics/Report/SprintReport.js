@@ -213,6 +213,7 @@ class SprintReport extends Component {
     }
   };
   inputValidFrom = val => {
+    let currentVal = val;
     /*if (val.length === 2) {
       if (val > 31) {
         val = '';
@@ -227,10 +228,10 @@ class SprintReport extends Component {
         val += '.';
       }
     }*/
-    if (val.match(/^\d{2}$/) !== null) {
-      val = val + '.';
-    } else if (val.match(/^\d{2}\.\d{2}$/) !== null) {
-      val = val + '.';
+    if (currentVal.match(/^\d{2}$/) !== null) {
+      currentVal = currentVal + '.';
+    } else if (currentVal.match(/^\d{2}\.\d{2}$/) !== null) {
+      currentVal = currentVal + '.';
     }
     if (moment(val, 'DD.MM.YYYY', true).isValid() === false) {
       this.state.borderColorFrom = 'red';
@@ -247,10 +248,11 @@ class SprintReport extends Component {
     this.setState({ selectedFrom: val });
   };
   inputValidTo = val => {
-    if (val.match(/^\d{2}$/) !== null) {
-      val = val + '.';
-    } else if (val.match(/^\d{2}\.\d{2}$/) !== null) {
-      val = val + '.';
+    let currentVal = val;
+    if (currentVal.match(/^\d{2}$/) !== null) {
+      currentVal = currentVal + '.';
+    } else if (currentVal.match(/^\d{2}\.\d{2}$/) !== null) {
+      currentVal = currentVal + '.';
     }
     if (moment(val, 'DD.MM.YYYY', true).isValid() === false) {
       this.state.borderColorTo = 'red';

@@ -17,6 +17,7 @@ import { getLocalizedMilestoneTypes } from '../../../../selectors/dictionaries';
 class CreateMilestoneModal extends Component {
   static propTypes = {
     createMilestone: PropTypes.func,
+    lang: PropTypes.string,
     milestoneTypes: PropTypes.array,
     onClose: PropTypes.func,
     projectId: PropTypes.number

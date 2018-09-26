@@ -51,6 +51,7 @@ TagsFilter.propTypes = {
   filterFor: PropTypes.oneOf(['project', 'task']).isRequired,
   filterTags: PropTypes.array,
   getTagsFilter: PropTypes.func.isRequired,
+  lang: PropTypes.string,
   onTagSelect: PropTypes.func.isRequired,
   projectsTagsOptions: PropTypes.array.isRequired,
   tasksTagsOptions: PropTypes.array.isRequired

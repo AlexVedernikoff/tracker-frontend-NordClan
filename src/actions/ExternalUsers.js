@@ -161,7 +161,7 @@ export const refreshExternalUserLinkSuccess = changedUser => ({
 });
 export const refreshExternalUserLink = exUser => {
   const URL = `${API_URL}/user/external/${exUser.id}/refresh`;
-  const { fullNameEn, ...exUserRU } = exUser;
+  const { ...exUserRU } = exUser;
   return dispatch => {
     dispatch(refreshExternalUserLinkStart());
     dispatch(startLoading());

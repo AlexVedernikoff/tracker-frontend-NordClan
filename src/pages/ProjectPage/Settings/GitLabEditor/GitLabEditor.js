@@ -15,6 +15,7 @@ import localize from './GitLabEditor.json';
 class GitLabEditor extends Component {
   static propTypes = {
     changeProject: PropTypes.func,
+    lang: PropTypes.string,
     project: PropTypes.object,
     user: PropTypes.object
   };

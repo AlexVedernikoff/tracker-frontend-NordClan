@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactModal from 'react-modal';
-import classnames from 'classnames';
 import Button from '../Button';
 import * as css from './ConfirmModal.scss';
 import cssVariables from '!!sass-variable-loader!../../styles/variables.scss';
@@ -43,15 +42,15 @@ const ReactModalStyles = {
   }
 };
 
-const iconStyles = {
-  width: 24,
-  height: 24,
-  color: 'inherit',
-  fill: 'currentColor'
-};
+// const iconStyles = {
+//   width: 24,
+//   height: 24,
+//   color: 'inherit',
+//   fill: 'currentColor'
+// };
 
 const ConfirmModal = props => {
-  const { style, onRequestClose, closeTimeoutMS, text, onConfirm, onCancel, notification, ...other } = props;
+  const { style, closeTimeoutMS, text, onConfirm, onCancel, notification, ...other } = props;
 
   return (
     <ReactModal

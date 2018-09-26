@@ -123,7 +123,7 @@ class Comment extends PureComponent {
     }
   }
 
-  handleSelect = e => {
+  handleSelect = () => {
     Comment.selectComment(this.props.comment.id, this.props.location);
   };
 

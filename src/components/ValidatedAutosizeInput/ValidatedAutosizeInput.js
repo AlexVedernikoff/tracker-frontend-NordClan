@@ -45,7 +45,7 @@ class ValidatedAutosizeInput extends Component {
   };
 
   render() {
-    const { onBlur, shouldMarkError, errorText, backendErrorText, onEnter, ...other } = this.props;
+    const { onBlur, errorText, backendErrorText, ...other } = this.props;
     return (
       <div className={validateCss.fullWrapper}>
         <TextareaAutosize

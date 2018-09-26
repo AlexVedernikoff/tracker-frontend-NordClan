@@ -6,9 +6,9 @@ import ConfirmModal from '../ConfirmModal';
 export default class AttachedImage extends React.Component {
   static propTypes = {
     canEdit: PropTypes.bool,
+    fileName: PropTypes.string.isRequired,
     id: PropTypes.number,
     index: PropTypes.number,
-    fileName: PropTypes.string.isRequired,
     open: PropTypes.func,
     path: PropTypes.string.isRequired,
     previewPath: PropTypes.string.isRequired,
@@ -53,11 +53,11 @@ export default class AttachedImage extends React.Component {
       fill: 'currentColor'
     };
 
-    const imageStyles = {
-      maxHeight: 'calc(100vh - 2rem)',
-      maxWidth: '100%',
-      display: 'block'
-    };
+    // const imageStyles = {
+    //   maxHeight: 'calc(100vh - 2rem)',
+    //   maxWidth: '100%',
+    //   display: 'block'
+    // };
 
     const { fileName, path, previewPath, canEdit, open, index } = this.props;
 

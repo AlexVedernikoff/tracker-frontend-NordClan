@@ -42,6 +42,7 @@ class TaskList extends Component {
   }
 
   componentDidMount() {
+    console.log(this.state);
     if (this.props.project.id) {
       this.loadTasks();
     }
@@ -333,7 +334,7 @@ class TaskList extends Component {
 
       this.changeUrl(changedFilters);
 
-      return { changedFilters };
+      return { ...state, changedFilters };
     }, this.loadTasks);
   }
 
@@ -566,6 +567,7 @@ TaskList.propTypes = {
   globalRole: PropTypes.string,
   isCreateTaskModalOpen: PropTypes.bool,
   isReceiving: PropTypes.bool,
+  lang: PropTypes.string,
   lastCreatedTask: PropTypes.object,
   location: PropTypes.object,
   openCreateTaskModal: PropTypes.func.isRequired,

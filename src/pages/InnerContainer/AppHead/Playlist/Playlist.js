@@ -358,6 +358,7 @@ Playlist.propTypes = {
   availableProjects: PropTypes.array,
   changeTask: PropTypes.func,
   currentUserId: PropTypes.number,
+  lang: PropTypes.string,
   magicActivitiesTypes: PropTypes.array,
   tracks: PropTypes.object
 };

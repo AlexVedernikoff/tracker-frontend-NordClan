@@ -39,6 +39,7 @@ const mapStateToProps = state => ({
 });
 
 FileUpload.propTypes = {
+  lang: PropTypes.string,
   onDrop: PropTypes.func.isRequired
 };
 

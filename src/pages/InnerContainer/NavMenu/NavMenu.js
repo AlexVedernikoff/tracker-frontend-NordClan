@@ -11,6 +11,7 @@ import { getFirstName, getLastName, getFullName } from '../../../utils/NameLocal
 
 class NavMenu extends Component {
   static propTypes = {
+    lang: PropTypes.string,
     user: PropTypes.object
   };
 

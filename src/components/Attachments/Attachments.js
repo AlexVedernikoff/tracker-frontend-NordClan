@@ -20,7 +20,7 @@ export default class Attachments extends Component {
     isOpen: false
   };
 
-  onDrop = (acceptedFiles, rejectedFiles) => {
+  onDrop = acceptedFiles => {
     this.props.uploadAttachments(acceptedFiles);
   };
 

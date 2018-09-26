@@ -5,7 +5,7 @@ import { BACKLOG_ID } from '../constants/Sprint';
 import { history } from '../History';
 import { showNotification } from './Notifications';
 import { startLoading, finishLoading } from './Loading';
-import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
+import { POST, REST_API } from '../constants/RestApi';
 import getPlanningTasks from './PlanningTasks';
 import { getTask } from './Task';
 import { withFinishLoading, withStartLoading, withdefaultExtra } from './Common';
@@ -491,7 +491,7 @@ const getProjectHistory = (id, options) => {
 };
 
 export const getPortfolios = (name = '') => {
-  return dispatch => {
+  return () => {
     return axios
       .get(`${API_URL}/portfolio`, { params: { name } }, { withCredentials: true })
       .then(response => response.data.data)

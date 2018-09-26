@@ -23,7 +23,7 @@ const InitialState = {
   tracks: {}
 };
 
-exports[TIMESHEET_PLAYER_RECEIVE_START] = (state = InitialState, action) => {
+exports[TIMESHEET_PLAYER_RECEIVE_START] = (state = InitialState) => {
   return {
     ...state,
     isReceiving: true

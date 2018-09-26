@@ -73,7 +73,7 @@ class SprintCard extends Component {
   };
 
   render() {
-    const { sprint, inFocus, isExternal, lang, onMouseOver, onMouseOut, ...other } = this.props;
+    const { sprint, inFocus, isExternal, lang, onMouseOver, onMouseOut } = this.props;
     const onMouse = { onMouseOut, onMouseOver };
     return (
       <div
@@ -194,4 +194,7 @@ const mapDispatchToProps = {
   editSprint
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SprintCard);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SprintCard);

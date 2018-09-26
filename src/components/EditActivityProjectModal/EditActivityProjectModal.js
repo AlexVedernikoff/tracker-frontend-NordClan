@@ -72,7 +72,7 @@ class EditActivityProjectModal extends Component {
   };
 
   render() {
-    const { style, onRequestClose, closeTimeoutMS, text, onConfirm, onCancel, lang, ...other } = this.props;
+    const { closeTimeoutMS, text, onCancel, lang, ...other } = this.props;
 
     const formLayout = {
       firstCol: 4,

@@ -4,7 +4,7 @@ import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
-import { stopTaskEditing } from './Task';
+// import { stopTaskEditing } from './Task';
 import { PUT, REST_API } from '../constants/RestApi';
 import { defaultErrorHandler, defaultExtra as extra, withFinishLoading, withStartLoading } from './Common';
 
@@ -26,16 +26,16 @@ const requestTasksChange = () => ({
   type: TaskAction.TASK_CHANGE_REQUEST_SENT
 });
 
-const successTaskChange = changedFields => ({
-  type: TaskAction.TASK_CHANGE_REQUEST_SUCCESS,
-  changedFields
-});
+// const successTaskChange = changedFields => ({
+//   type: TaskAction.TASK_CHANGE_REQUEST_SUCCESS,
+//   changedFields
+// });
 
-const postChangeFail = error => ({
-  type: TaskActions.TASK_CHANGE_REQUEST_FAIL,
-  closeHasError: false,
-  error: error
-});
+// const postChangeFail = error => ({
+//   type: TaskActions.TASK_CHANGE_REQUEST_FAIL,
+//   closeHasError: false,
+//   error: error
+// });
 
 const getTasks = (options, onlyTaskListUpdate = false) => {
   const URL = `${API_URL}/task`;
@@ -82,7 +82,7 @@ export const changeTasks = (ChangedTasksProperties, callback) => {
       body: ChangedTasksProperties,
       extra,
       start: withStartLoading(requestTasksChange, true)(dispatch),
-      response: withFinishLoading(response => {
+      response: withFinishLoading(() => {
         if (callback) {
           callback();
         }

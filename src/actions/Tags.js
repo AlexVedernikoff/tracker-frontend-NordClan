@@ -13,10 +13,10 @@ const tagsCreateSucces = tags => ({
   data: tags
 });
 
-const tagsCreateError = err => ({
-  type: TagsActions.TAGS_CREATE_ERROR,
-  error: err
-});
+// const tagsCreateError = err => ({
+//   type: TagsActions.TAGS_CREATE_ERROR,
+//   error: err
+// });
 
 const startTagsDelete = () => ({
   type: TagsActions.TAGS_DELETE_START
@@ -27,10 +27,10 @@ const tagsDeleteSucces = tags => ({
   data: tags
 });
 
-const tagsDeleteError = err => ({
-  type: TagsActions.TAGS_DELETE_ERROR,
-  error: err
-});
+// const tagsDeleteError = err => ({
+//   type: TagsActions.TAGS_DELETE_ERROR,
+//   error: err
+// });
 
 const startTagsFilter = () => ({
   type: TagsActions.GET_TAGS_FILTER_START
