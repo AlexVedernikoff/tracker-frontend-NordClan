@@ -338,6 +338,7 @@ class CreateTaskModal extends Component {
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <InputNumber
                   min={0}
+                  maxLength={5}
                   postfix={'ч.'}
                   onChange={this.handleChangePlannedTime}
                   value={this.state.plannedExecutionTime}
