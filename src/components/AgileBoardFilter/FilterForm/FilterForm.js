@@ -49,6 +49,8 @@ class FilterForm extends React.Component {
   };
   onPerformerFilterChange = options =>
     this.props.setFilterValue('performerId', options.map(op => op.value), this.updateListsAndTasks);
+  selectTagForFiltrated = options =>
+    this.props.setFilterValue('filterTags', options.map(op => op.value), this.updateListsAndTasks);
 
   getFilterTagsProps() {
     const {
@@ -134,7 +136,7 @@ class FilterForm extends React.Component {
             <Col xs={12} sm={6}>
               <Input
                 placeholder={localize[lang].TASK_NAME}
-                value={filters.name || ''}
+                defaultValue={filters.name || ''}
                 onChange={this.onNameFilterChange}
               />
             </Col>

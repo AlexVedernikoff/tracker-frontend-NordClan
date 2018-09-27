@@ -33,7 +33,10 @@ class CreateTaskModal extends Component {
     super(props);
 
     this.state = {
-      selectedSprint: props.selectedSprintValue,
+      selectedSprint:
+        props.selectedSprintValue || props.sprints.length > 0
+          ? props.sprints.find(sprint => sprint.statusId === 2).id
+          : 0,
       selectedPerformer: props.defaultPerformerId || null,
       taskName: '',
       description: '',
@@ -338,6 +341,7 @@ class CreateTaskModal extends Component {
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <InputNumber
                   min={0}
+                  maxLength={5}
                   postfix={'ч.'}
                   onChange={this.handleChangePlannedTime}
                   value={this.state.plannedExecutionTime}
@@ -381,6 +385,7 @@ CreateTaskModal.propTypes = {
   parentTaskId: PropTypes.number,
   project: PropTypes.object,
   selectedSprintValue: PropTypes.number,
+  sprints: PropTypes.array,
   taskTypes: PropTypes.array
 };
 
@@ -395,7 +400,8 @@ const mapStateToProps = state => ({
   isCreateChildTaskModalOpen: state.Project.isCreateChildTaskModalOpen,
   taskTypes: getTaskTypes(getLocalizedTaskTypes(state)),
   isCreateTaskRequestInProgress: state.Project.isCreateTaskRequestInProgress,
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  sprints: state.Project.project.sprints
 });
 
 const mapDispatchToProps = {

@@ -1,4 +1,5 @@
 import * as TimesheetsActions from '../constants/Timesheets';
+import { findTimesheet } from '../utils/Timesheets';
 import moment from 'moment';
 import get from 'lodash/get';
 
@@ -50,9 +51,15 @@ export default function Timesheets(state = InitialState, action) {
         return state;
       }
 
+      const tempTsh = findTimesheet(state.tempTimesheets, action.timesheet);
+      const newTempTimesheets = tempTsh
+        ? state.tempTimesheets.filter(tsh => tsh.id !== tempTsh.id)
+        : state.tempTimesheets;
+
       return {
         ...state,
         list: [...state.list, action.timesheet],
+        tempTimesheets: [...newTempTimesheets],
         preloaders: {
           ...state.preloaders,
           creating: false

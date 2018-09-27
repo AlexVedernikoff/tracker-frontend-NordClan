@@ -1,3 +1,11 @@
 import ConfirmModal from './ConfirmModal';
+import { connect } from 'react-redux';
 
-export default ConfirmModal;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(ConfirmModal);
