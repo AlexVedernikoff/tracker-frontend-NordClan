@@ -114,10 +114,6 @@ class Timesheets extends React.Component {
             });
           if (!taskNotPushed && el.task && isTemp) {
             Promise.resolve().then(() => {
-              this.props.showNotification({
-                message: 'Задача с выбранным статусом уже есть в отчете',
-                type: 'success'
-              });
               this.props.deleteTempTimesheets([el.id.toString()]);
             });
           }
@@ -202,10 +198,6 @@ class Timesheets extends React.Component {
             });
           if (!maNotPushed && el.typeId !== 1 && isTemp) {
             Promise.resolve().then(() => {
-              this.props.showNotification({
-                message: 'Задача с выбранным статусом уже есть в отчете',
-                type: 'success'
-              });
               this.props.deleteTempTimesheets([el.id.toString()]);
             });
           }
