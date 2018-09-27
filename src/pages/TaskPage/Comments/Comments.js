@@ -123,13 +123,14 @@ class Comments extends Component {
         this.selectComment(this.props.highlighted.id);
       }
     }
-    if (prevProps.attachments.length !== this.props.attachments.length) {
+    if (prevProps.attachments.length !== this.props.attachments.length && this.state.isAttachedToComment) {
       const diff = _.difference(this.props.attachments, prevProps.attachments);
-      const attachments = diff.map(attachment => {
-        attachment.display = this.state.isAttachedToComment;
+      const attachments = this.props.attachments.map(item => {
+        const attachment = { ...item };
+        attachment.display = diff.some(i => i === item) ? true : false;
         return attachment;
       });
-      this.setState({ attachments: [...this.state.attachments, ...attachments], isAttachedToComment: false });
+      this.setState({ attachments: [...attachments], isAttachedToComment: false });
     }
   };
 
@@ -153,6 +154,11 @@ class Comments extends Component {
     this.setState({ disabledBtn: !evt.target.value || evt.target.value.trim() === '' });
   };
 
+  getAttached = () => {
+    console.log('this.props.attachments', this.props.attachments);
+    // commentAttachments =
+  };
+
   publishComment = evt => {
     const newComment = { ...this.props.currentComment };
     newComment.text = stringifyCommentForSend(newComment.text, this.users);
@@ -165,7 +171,8 @@ class Comments extends Component {
           this.props.setCurrentCommentExpired();
         }
       } else {
-        this.props.publishComment(this.props.taskId, newComment);
+        const attached = this.getAttached();
+        // this.props.publishComment(this.props.taskId, newComment);
       }
       this.state.disabledBtn = true;
     }
@@ -191,8 +198,7 @@ class Comments extends Component {
 
   handleRemoveAttachment = index => {
     this.setState({
-      attachments: this.state.attachments.filter(i => i !== this.state.attachments[index]),
-      isAttachedToComment: true
+      attachments: this.state.attachments.filter(i => i !== this.state.attachments[index])
     });
     this.props.removeAttachment(this.props.taskId, this.props.attachments[index].id);
   };
@@ -303,8 +309,8 @@ class Comments extends Component {
                 onClick={!this.state.disabledBtn ? this.publishComment : null}
                 data-tip={localize[lang].SEND}
                 className={classnames({
-                  [css.sendIcon]: true,
-                  [css.disabled]: this.state.disabledBtn
+                  [css.sendIcon]: true
+                  // [css.disabled]: this.state.disabledBtn
                 })}
               >
                 <IconSend />
