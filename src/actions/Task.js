@@ -376,14 +376,15 @@ const publishComment = (taskId, comment) => {
   if (!taskId || !comment) {
     return () => {};
   }
-  const { text, parentId } = comment;
+  const { text, parentId, attachmentIds } = comment;
   const URL = `${API_URL}/task/${taskId}/comment`;
   return dispatch => {
     dispatch(commentPublishStart(taskId, comment));
     return axios
       .post(URL, {
         text,
-        parentId
+        parentId,
+        attachmentIds
       })
       .then(
         result => dispatch(commentPublishSuccess(taskId, comment, result.data)),

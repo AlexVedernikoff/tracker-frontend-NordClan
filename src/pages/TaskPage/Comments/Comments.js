@@ -154,9 +154,26 @@ class Comments extends Component {
     this.setState({ disabledBtn: !evt.target.value || evt.target.value.trim() === '' });
   };
 
-  getAttached = () => {
-    console.log('this.props.attachments', this.props.attachments);
-    // commentAttachments =
+  getAttachmentIds = () => {
+    const { attachments } = this.props;
+    const attachmentIds = [];
+    this.state.attachments.forEach((item, key) => {
+      if (item.display) {
+        attachmentIds.push(attachments[key].id);
+      }
+    });
+    return JSON.stringify(attachmentIds);
+  };
+
+  stashAttachments = attachmentIds => {
+    if (attachmentIds.length) {
+      let { attachments } = this.state;
+      attachments = attachments.map(item => {
+        item.display = false;
+        return item;
+      });
+      this.setState({ attachments: attachments });
+    }
   };
 
   publishComment = evt => {
@@ -171,8 +188,9 @@ class Comments extends Component {
           this.props.setCurrentCommentExpired();
         }
       } else {
-        const attached = this.getAttached();
-        // this.props.publishComment(this.props.taskId, newComment);
+        newComment.attachmentIds = this.getAttachmentIds();
+        this.props.publishComment(this.props.taskId, newComment);
+        this.stashAttachments(JSON.parse(newComment.attachmentIds));
       }
       this.state.disabledBtn = true;
     }
