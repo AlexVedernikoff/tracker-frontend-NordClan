@@ -17,6 +17,7 @@ import * as css from './CreateTaskModal.scss';
 import Priority from '../Priority';
 import { closeCreateTaskModal, createTask } from '../../actions/Project';
 import { BACKLOG_ID } from '../../constants/Sprint';
+import { IN_PROGRESS } from '../../constants/SprintStatuses';
 import Validator from '../ValidatedInput/Validator';
 import TextEditor from '../../components/TextEditor';
 import Checkbox from '../../components/Checkbox/Checkbox';
@@ -33,10 +34,7 @@ class CreateTaskModal extends Component {
     super(props);
 
     this.state = {
-      selectedSprint:
-        props.selectedSprintValue || props.sprints.length > 0
-          ? props.sprints.find(sprint => sprint.statusId === 2).id
-          : 0,
+      selectedSprint: this.getInitialSprint(props),
       selectedPerformer: props.defaultPerformerId || null,
       taskName: '',
       description: '',
@@ -52,6 +50,16 @@ class CreateTaskModal extends Component {
 
     this.validator = new Validator();
   }
+
+  getInitialSprint = ({ selectedSprintValue, sprints }) => {
+    if (selectedSprintValue) {
+      return selectedSprintValue;
+    }
+
+    const activeSprint = sprints.find(sprint => sprint.statusId === IN_PROGRESS);
+
+    return activeSprint ? activeSprint.id : 0;
+  };
 
   handleModalSprintChange = selectedSprint => {
     this.setState({
