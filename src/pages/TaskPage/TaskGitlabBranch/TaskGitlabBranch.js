@@ -43,13 +43,22 @@ class TaskGitlabBranch extends React.Component {
     this.setState({
       isOpenModalGitlabBranch: false,
       sourceBranch: null,
-      repository: null
+      repository: null,
+      branchName: ''
     });
   };
 
   selectRepository = key => {
     return option => {
       this.props.getGitlabBranchesByRepoId(this.props.taskId, option.value);
+      this.setState({
+        [key]: option
+      });
+    };
+  };
+
+  selectBranch = key => {
+    return option => {
       this.setState({
         [key]: option
       });
@@ -81,20 +90,13 @@ class TaskGitlabBranch extends React.Component {
 
     let branchesInfo = [];
 
-    if (branches) {
-      branches.map(binfo => {
-        const repoBranches = binfo.branches.map(b => {
-          return Object.assign(b, { repository: binfo.project });
-        });
-        branchesInfo = [...repoBranches];
-      });
-
-      branchesInfo = branchesInfo.map(binfo => {
+    if (branches && branches.length !== 0) {
+      branchesInfo = branches.map(binfo => {
         return (
-          <li key={`${binfo.name}`} className={css.task}>
+          <li key={`${binfo.branch}`} className={css.task}>
             <div className={css.taskLabel}>
-              <div className={css.taskLeftContent}>{`${binfo.repository.name_with_namespace}`}</div>
-              <div className={css.taskRightContent}>{`${binfo.name}`}</div>
+              <div className={css.taskLeftContent}>{`${binfo.project}`}</div>
+              <div className={css.taskRightContent}>{`${binfo.branch}`}</div>
             </div>
           </li>
         );
@@ -128,7 +130,7 @@ class TaskGitlabBranch extends React.Component {
                   placeholder={localize[lang].SOURCE_BRANCH}
                   multi={false}
                   value={this.state.sourceBranch}
-                  onChange={this.selectRepository('sourceBranch')}
+                  onChange={this.selectBranch('sourceBranch')}
                   options={this.props.repoBranches}
                 />
                 <div>

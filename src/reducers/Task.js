@@ -32,6 +32,7 @@ const InitialState = {
     tags: [],
     error: false,
     attachments: [],
+    branches: [],
     plannedExecutionTime: '0.00'
   },
   comments: [],
@@ -79,6 +80,7 @@ export default function Task(state = InitialState, action) {
       return {
         ...state,
         task: {
+          ...state.task,
           ...action.data,
           history: state.task.history
         }
@@ -430,7 +432,7 @@ export default function Task(state = InitialState, action) {
     case TaskActions.GET_GITLAB_BRANCHES_BY_REPO_SUCCESS: {
       let branchNames = [];
       if (action.repoBranches.length !== 0) {
-        branchNames = action.repoBranches[0].branches.map(b => {
+        branchNames = action.repoBranches.map(b => {
           return { value: b.name, label: b.name };
         });
       }
@@ -448,7 +450,7 @@ export default function Task(state = InitialState, action) {
         ...state,
         task: {
           ...state.task,
-          branches: [...state.task.branches, ...action.createdGitlabBranch]
+          branches: [...state.task.branches, action.createdGitlabBranch]
         }
       };
     }
