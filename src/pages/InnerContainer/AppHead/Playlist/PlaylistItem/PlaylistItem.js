@@ -253,7 +253,7 @@ class PlaylistItem extends Component {
             />
             {!timesheetDisabled && (
               <div className={css.actionButton} onClick={this.pushComment(this.state.comment)}>
-                <IconCheck style={{ width: '1.5rem', height: '1.5rem' }} />
+                <IconCheck style={{ width: '1.5rem', height: '1.5rem', color: '#fff', opacity: '0.9' }} />
               </div>
             )}
           </div>
