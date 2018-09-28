@@ -38,10 +38,9 @@ class AgileBoardFilter extends React.Component {
       prevProps.project.users !== this.props.project.users ||
       prevProps.typeOptions !== this.props.typeOptions ||
       (!this.state.allFilters.length && !this.props.isFilterEmpty) ||
-      (this.state.allFilters.length &&
-        this.state.allFilters[0].label === 'Backlog' &&
-        this.props.filters.changedSprint[0] !== 0) ||
-      (this.state.allFilters.length === 1 && boolFilters.indexOf(true) !== boolFilters.lastIndexOf(true))
+      (this.state.allFilters.length =
+        1 && this.state.allFilters[0].label === 'Backlog' && this.props.filters.changedSprint[0] !== 0) ||
+      (this.state.allFilters.length === 1 && boolFilters.filter(f => f).length > 1)
     ) {
       this.updateFilterList();
     }
