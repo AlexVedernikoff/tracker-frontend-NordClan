@@ -199,10 +199,13 @@ class AgileBoard extends Component {
     const { lang } = this.props;
     const tasksList = this.isOnlyMine ? this.getMineSortedTasks() : this.getAllSortedTasks();
     const tasksKey = this.isOnlyMine ? 'mine' : 'all';
+    const filtersComponent = this.isOnlyMine ? null : (
+      <AgileBoardFilter {...this.props} getTasks={this.getTasks} initialFilters={initialFilters} />
+    );
 
     return (
       <section className={css.agileBoard}>
-        <AgileBoardFilter {...this.props} getTasks={this.getTasks} initialFilters={initialFilters} />
+        {filtersComponent}
         <div className={css.boardContainer}>
           <Row>
             <PhaseColumn onDrop={this.dropTask} section={tasksKey} title={'New'} tasks={tasksList.new} />
