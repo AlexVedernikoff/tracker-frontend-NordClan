@@ -144,10 +144,21 @@ class Comments extends Component {
     Comment.selectComment(id, this.props.location);
   };
 
-  setCommentForEdit = comment => {
+  prepareAttachmentsForEdit = ids => {
+    const { attachments } = this.state;
+    this.props.attachments.forEach((attachment, key) => {
+      if (ids.indexOf(attachment.id) !== -1) {
+        attachments[key].display = true;
+        this.setState(attachments);
+      }
+    });
+  };
+
+  setCommentForEdit = (comment, attachmentIds) => {
     this.props.setCommentForEdit(this.props.comments.find(c => c.id === comment.id)).then(() => {
       this.setState({ resizeKey: shortId() });
     });
+    attachmentIds ? this.prepareAttachmentsForEdit(attachmentIds) : null;
   };
 
   toggleBtn = evt => {
@@ -162,36 +173,34 @@ class Comments extends Component {
         attachmentIds.push(attachments[key].id);
       }
     });
-    return JSON.stringify(attachmentIds);
+    return attachmentIds.length ? JSON.stringify(attachmentIds) : null;
   };
 
-  stashAttachments = attachmentIds => {
-    if (attachmentIds.length) {
-      let { attachments } = this.state;
-      attachments = attachments.map(item => {
-        item.display = false;
-        return item;
-      });
-      this.setState({ attachments: attachments });
-    }
+  stashAttachments = () => {
+    let { attachments } = this.state;
+    attachments = attachments.map(item => {
+      item.display = false;
+      return item;
+    });
+    this.setState({ attachments: attachments });
   };
 
   publishComment = evt => {
     const newComment = { ...this.props.currentComment };
     newComment.text = stringifyCommentForSend(newComment.text, this.users);
+    newComment.attachmentIds = this.getAttachmentIds();
     const { ctrlKey, keyCode } = evt;
     if (((ctrlKey && keyCode === ENTER) || evt.button === 0) && this.state.disabledBtn === false) {
       if (newComment.id) {
         if (!Comment.isExpiredForUpdate(newComment.createdAt)) {
-          this.props.editComment(this.props.taskId, newComment.id, newComment.text);
+          this.props.editComment(this.props.taskId, newComment.id, newComment.text, newComment.attachmentIds);
         } else {
           this.props.setCurrentCommentExpired();
         }
       } else {
-        newComment.attachmentIds = this.getAttachmentIds();
         this.props.publishComment(this.props.taskId, newComment);
-        this.stashAttachments(JSON.parse(newComment.attachmentIds));
       }
+      this.stashAttachments();
       this.state.disabledBtn = true;
     }
   };
@@ -215,10 +224,11 @@ class Comments extends Component {
   };
 
   handleRemoveAttachment = index => {
+    const attachments = [...this.state.attachments];
+    attachments[index].display = false;
     this.setState({
-      attachments: this.state.attachments.filter(i => i !== this.state.attachments[index])
+      attachments: [...attachments]
     });
-    this.props.removeAttachment(this.props.taskId, this.props.attachments[index].id);
   };
 
   getAttachment = index => {
@@ -255,6 +265,8 @@ class Comments extends Component {
           ownedByMe={comment.author.id === this.props.userId}
           comment={comment}
           users={this.users}
+          attachments={this.props.attachments}
+          prepareAttachmentsForEdit={this.prepareAttachmentsForEdit}
         />
       );
     });
@@ -318,7 +330,6 @@ class Comments extends Component {
                 data-tip={localize[lang].ATTACH}
                 className={classnames({
                   [css.attachIcon]: true
-                  // [css.disabled]: this.state.disabledBtn
                 })}
               >
                 <FileUpload onDrop={this.hanldeAttachedFiles} isMinimal={true} />
@@ -327,8 +338,8 @@ class Comments extends Component {
                 onClick={!this.state.disabledBtn ? this.publishComment : null}
                 data-tip={localize[lang].SEND}
                 className={classnames({
-                  [css.sendIcon]: true
-                  // [css.disabled]: this.state.disabledBtn
+                  [css.sendIcon]: true,
+                  [css.disabled]: this.state.disabledBtn
                 })}
               >
                 <IconSend />

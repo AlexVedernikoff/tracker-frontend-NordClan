@@ -8,10 +8,6 @@
   li {
     list-style-type: none;
   }
-
-  ul {
-    padding-left: 36px;
-  }
 }
 
 .commentContainer {
@@ -258,6 +254,9 @@
 
 .attachmentWrap {
   margin-bottom: 2rem;
+  ul {
+    padding: 0;
+  }
   .attachmentsItemWrap {
     line-height: 20px;
     .removeAttachIcon {
@@ -269,4 +268,7 @@
       cursor: pointer;
     }
   }
+}
+.commentAttachmentWrap {
+  padding-top: 10px;
 }
