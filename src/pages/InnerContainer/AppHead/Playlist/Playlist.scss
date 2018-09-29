@@ -326,6 +326,15 @@
       width: 100%;
     }
   }
+  .actionButton {
+    background-color: $color-green;
+    &.locked:hover {
+      background-color: $color-green;
+    }
+    &:hover {
+      background-color: lighten($color-green, 10%);
+    }
+  }
 }
 
 .nothingToShow {

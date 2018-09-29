@@ -58,8 +58,17 @@ class TaskPlanningTime extends Component {
     }
   };
 
+  onTextPaste = e => {
+    const text = e.clipboardData.getData('Text');
+    if (text.length > 5) this.taskPlanningTime.innerText = text.slice(0, 5);
+    e.preventDefault();
+  };
+
   handleKeyPress = event => {
-    if (this.props.timeIsEditing && event.keyCode === 13) {
+    if (
+      (this.props.timeIsEditing && event.keyCode === 13) ||
+      (event.target.innerText.length === 5 && event.keyCode !== 8 && event.keyCode !== 46)
+    ) {
       event.preventDefault();
       this.validateAndSubmit(event);
     } else if (event.keyCode === 27) {
@@ -88,6 +97,7 @@ class TaskPlanningTime extends Component {
           contentEditable={this.props.timeIsEditing}
           suppressContentEditableWarning
           onBlur={this.validateAndSubmit}
+          onPaste={this.onTextPaste}
           onKeyDown={this.handleKeyPress}
           {...(this.props.tooltip
             ? {
