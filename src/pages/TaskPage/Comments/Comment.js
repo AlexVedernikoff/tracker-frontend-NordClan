@@ -163,7 +163,6 @@ class Comment extends PureComponent {
     const ids = JSON.parse(attachmentIds);
     const { attachments } = this.props;
     const files = attachments.filter(i => ids.indexOf(i.id) !== -1);
-    console.log('files', files);
     return (
       <div className={css.commentAttachmentWrap}>
         <Attachments attachments={files} canEdit={false} style={{ paddingLeft: 0, paddingTop: 10 }} />
