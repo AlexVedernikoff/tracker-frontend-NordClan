@@ -6,7 +6,7 @@ import { deleteSprint, editSprint } from '../../actions/Sprint';
 import moment from 'moment';
 import SprintEditModal from '../../components/SprintEditModal';
 import { formatCurrency } from '../../utils/Currency';
-import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
+import ConfirmModal from '../../components/ConfirmModal';
 
 import { IconClose } from '../Icons';
 import * as css from './SprintCard.scss';
@@ -194,4 +194,7 @@ const mapDispatchToProps = {
   editSprint
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SprintCard);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SprintCard);
