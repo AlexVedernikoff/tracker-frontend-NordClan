@@ -45,6 +45,9 @@ class GitLabEditor extends Component {
     if (get(newProps, 'project.gitlabProjectIds.length') !== get(this, 'props.project.gitlabProjectIds.length')) {
       this.setState({ isAdding: false });
     }
+    if (get(newProps, 'project.gitlabProjects.length') !== get(this, 'props.project.gitlabProjects.length')) {
+      this.setState({ isAdding: false });
+    }
   }
 
   toggleCreating = () => {
@@ -82,7 +85,7 @@ class GitLabEditor extends Component {
   };
 
   deleteProject = value => {
-    const idsWithoutRemoved = [...get(this.props.project, 'gitlabProjectIds', [])];
+    const idsWithoutRemoved = [...this.props.project.gitlabProjectIds];
     remove(idsWithoutRemoved, id => id === value);
 
     this.props.changeProject({

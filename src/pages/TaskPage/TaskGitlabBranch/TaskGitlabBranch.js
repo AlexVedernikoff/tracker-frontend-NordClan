@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router';
+import { GITLAB_HOST } from '../../../constants/Settings';
 import classnames from 'classnames';
 import * as css from './TaskGitlabBranch.scss';
 import { IconPlus } from '../../../components/Icons';
@@ -69,6 +69,11 @@ class TaskGitlabBranch extends React.Component {
     this.setState({ branchName: e.target.value });
   };
 
+  linkGitlabBranch = e => {
+    const [group, repo] = e.project.split(' / ');
+    window.open(`${GITLAB_HOST}/${group}/${repo}/tree/${e.branch}`);
+  };
+
   createBranch = () => {
     this.props.createGitlabBranch(
       this.props.taskId,
@@ -93,7 +98,7 @@ class TaskGitlabBranch extends React.Component {
     if (branches && branches.length !== 0) {
       branchesInfo = branches.map(binfo => {
         return (
-          <li key={`${binfo.branch}`} className={css.task}>
+          <li key={`${binfo.branch}`} className={css.task} onClick={() => this.linkGitlabBranch(binfo)}>
             <div className={css.taskLabel}>
               <div className={css.taskLeftContent}>{`${binfo.project}`}</div>
               <div className={css.taskRightContent}>{`${binfo.branch}`}</div>
