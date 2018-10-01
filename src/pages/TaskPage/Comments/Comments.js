@@ -22,7 +22,7 @@ import * as css from './Comments.scss';
 import Comment from './Comment';
 import { history } from '../../../History';
 import { IconSend, IconComments, IconClose } from '../../../components/Icons';
-import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
+import ConfirmModal from '../../../components/ConfirmModal';
 import localize from './Comments.json';
 import Mentions from './Mentions/Mentions';
 import FileUpload from '../../../components/FileUpload';
