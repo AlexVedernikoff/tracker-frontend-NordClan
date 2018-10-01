@@ -76,8 +76,7 @@ class AgileBoard extends Component {
           authorId: filters.authorId,
           typeId: filters.typeId || null,
           name: filters.name || null,
-          tags: filters.filterTags.join(','),
-          noTag: filters.noTag,
+          tags: filters.filterTags,
           performerId: filters.performerId || null
         };
     this.props.getTasks(options);
@@ -196,11 +195,16 @@ class AgileBoard extends Component {
   }
 
   render() {
-    const { lang } = this.props;
+    const { lang, tags, noTagData } = this.props;
     const tasksList = this.isOnlyMine ? this.getMineSortedTasks() : this.getAllSortedTasks();
     const tasksKey = this.isOnlyMine ? 'mine' : 'all';
     const filtersComponent = this.isOnlyMine ? null : (
-      <AgileBoardFilter {...this.props} getTasks={this.getTasks} initialFilters={initialFilters} />
+      <AgileBoardFilter
+        {...this.props}
+        getTasks={this.getTasks}
+        initialFilters={initialFilters}
+        tags={[noTagData].concat(tags)}
+      />
     );
 
     return (
@@ -257,7 +261,7 @@ AgileBoard.propTypes = {
   myTasks: PropTypes.object,
   noTagData: PropTypes.shape({
     label: PropTypes.string,
-    value: PropTypes.number
+    value: PropTypes.string
   }),
   openCreateTaskModal: PropTypes.func.isRequired,
   params: PropTypes.object,

@@ -131,14 +131,11 @@ class AgileBoardFilter extends React.Component {
     const {
       lang,
       filters,
-      project: { users },
-      noTagData
+      project: { users }
     } = this.props;
     switch (filterName) {
       case 'isOnlyMine':
         return localize[lang].MY_TASKS;
-      case 'noTag':
-        return noTagData.label;
       case 'prioritiesId':
         return `${getPriorityById(filters.prioritiesId)}`;
       case 'authorId':
@@ -162,7 +159,7 @@ class AgileBoardFilter extends React.Component {
     }
 
     const { filters } = this.props;
-    const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'name', 'noTag'];
+    const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'name'];
 
     const selectedFilters = singleOptionFiltersList.reduce((result, filterName) => {
       if (!this.props.checkFilterItemEmpty(filterName)) {

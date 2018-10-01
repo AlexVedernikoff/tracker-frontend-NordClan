@@ -55,12 +55,11 @@ class FilterForm extends React.Component {
   getFilterTagsProps() {
     const {
       tags,
-      noTagData,
-      filters: { filterTags, noTag }
+      filters: { filterTags }
     } = this.props;
     return {
-      value: !noTag ? filterTags : [noTagData].concat(filterTags),
-      options: filterTags.length ? tags : [noTagData].concat(tags)
+      value: filterTags,
+      options: tags
     };
   }
 

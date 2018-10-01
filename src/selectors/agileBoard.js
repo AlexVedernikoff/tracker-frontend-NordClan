@@ -76,12 +76,11 @@ const myTasks = (tasks, userId) =>
 
 const getMyTasks = createSelector([selectTasks, selectUserId], (tasks, userId) => filterTasks(myTasks(tasks, userId)));
 
-const NO_TAG_VALUE = -1;
 const getNoTagData = createSelector(
   state => state.Localize.lang,
   lang => ({
     label: localize[lang].WITHOUT_TAG,
-    value: NO_TAG_VALUE
+    value: localize[lang].WITHOUT_TAG
   })
 );
 
