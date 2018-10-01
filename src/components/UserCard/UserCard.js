@@ -18,17 +18,12 @@ class UserCard extends React.Component {
     this.setState({ visible: false });
   };
 
-  showCard = () => {
+  showCard = e => {
+    e.stopPropagation();
     this.setState({ visible: true });
   };
 
   render() {
-    const childrenWithProps = React.Children.map(this.props.children, child =>
-      React.cloneElement(child, {
-        onClick: () => this.showCard()
-      })
-    );
-
     const { user } = this.props;
 
     const iconUserStyles = {
@@ -37,8 +32,8 @@ class UserCard extends React.Component {
     };
 
     return (
-      <div className={css.wrapper}>
-        {childrenWithProps}
+      <div onClick={this.showCard} className={css.wrapper}>
+        {this.props.children}
         <ReactCSSTransitionGroup
           transitionName="animatedElement"
           transitionEnterTimeout={300}

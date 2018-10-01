@@ -8,7 +8,7 @@ const updateProjectStatusStart = () => ({
   type: ProjectActions.UPDATE_PROJECT_STATUS_START
 });
 
-const updateProjectStatusSuccess = (data) => ({
+const updateProjectStatusSuccess = data => ({
   type: ProjectActions.UPDATE_PROJECT_STATUS_SUCCESS,
   updatedStatusId: data.statusId
 });
@@ -21,16 +21,16 @@ export const updateProjectStatus = (projectId, statusId) => {
     dispatch(startLoading());
     axios
       .put(url, { statusId })
-      .then((response) => {
+      .then(response => {
         if (response.data) {
           dispatch(updateProjectStatusSuccess(response.data));
           dispatch(showNotification({ message: 'Статус обновлен' }));
-          dispatch(finishLoading());
         }
-      })
-      .catch((error) => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
         dispatch(finishLoading());
       })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
+      });
   };
-}
+};

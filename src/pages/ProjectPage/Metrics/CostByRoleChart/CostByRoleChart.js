@@ -10,6 +10,7 @@ import getColor from '../../../../utils/Colors';
 import localize from './CostByRoleChart.json';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import datalabels from 'chartjs-plugin-datalabels';
 
 class CostByRoleChart extends Component {
   static propTypes = {
@@ -23,14 +24,15 @@ class CostByRoleChart extends Component {
     super(props);
 
     this.state = {
-      displayPercent: true
+      displayPercent: true,
+      chartRef: null
     };
   }
 
-  chartRef = null;
-
   setChartRef = node => {
-    this.chartRef = node;
+    this.setState({
+      chartRef: node
+    });
   };
 
   makeChartData() {
@@ -78,6 +80,14 @@ class CostByRoleChart extends Component {
             }
           }
         ]
+      },
+      plugins: {
+        datalabels: {
+          formatter: function(value) {
+            return value.y;
+          },
+          align: 'end'
+        }
       }
     };
   };
@@ -112,7 +122,7 @@ class CostByRoleChart extends Component {
     const { lang } = this.props;
 
     return (
-      <ChartWrapper chartRef={this.chartRef} className={css.CostByRoleChart}>
+      <ChartWrapper chartRef={this.state.chartRef} className={css.CostByRoleChart}>
         <div className={css.CostByRoleSwitcher}>
           <Button
             type={this.state.displayPercent ? 'primary' : 'bordered'}

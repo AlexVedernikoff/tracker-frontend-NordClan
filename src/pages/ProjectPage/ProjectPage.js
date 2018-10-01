@@ -13,6 +13,8 @@ import { getProjectInfo as getProject, changeProject } from '../../actions/Proje
 import { ADMIN, EXTERNAL_USER } from '../../constants/Roles';
 import { checkIsViewer } from '../../helpers/RoleValidator';
 import localize from './projectPage.json';
+import Title, { flushTitle } from 'react-title-component';
+import { getLocalizedProjectTypes } from '../../selectors/dictionaries';
 
 class ProjectPage extends Component {
   static propTypes = {
@@ -67,53 +69,32 @@ class ProjectPage extends Component {
   };
 
   render() {
-    const { projectTypes, lang } = this.props;
+    const {
+      projectTypes,
+      lang,
+      params: { projectId }
+    } = this.props;
     const isProjectAdmin = this.checkIsAdminInProject();
     const tabs = [
-      <Link
-        key={`/projects/${this.props.params.projectId}`}
-        activeClassName="active"
-        onlyActiveOnIndex
-        to={`/projects/${this.props.params.projectId}`}
-      >
+      <Link key={`/projects/${projectId}`} activeClassName="active" onlyActiveOnIndex to={`/projects/${projectId}`}>
         {localize[lang].BOARD}
       </Link>,
-      <Link
-        activeClassName="active"
-        key={`/projects/${this.props.params.projectId}/tasks`}
-        to={`/projects/${this.props.params.projectId}/tasks`}
-      >
+      <Link activeClassName="active" key={`/projects/${projectId}/tasks`} to={`/projects/${projectId}/tasks`}>
         {localize[lang].TASK_LIST}
       </Link>,
-      <Link
-        activeClassName="active"
-        key={`/projects/${this.props.params.projectId}/planning`}
-        to={`/projects/${this.props.params.projectId}/planning`}
-      >
+      <Link activeClassName="active" key={`/projects/${projectId}/planning`} to={`/projects/${projectId}/planning`}>
         {localize[lang].PLANNING}
       </Link>,
-      <Link
-        activeClassName="active"
-        key={`/projects/${this.props.params.projectId}/info`}
-        to={`/projects/${this.props.params.projectId}/info`}
-      >
+      <Link activeClassName="active" key={`/projects/${projectId}/info`} to={`/projects/${projectId}/info`}>
         {localize[lang].INFO}
       </Link>,
-      <Link
-        activeClassName="active"
-        key={`/projects/${this.props.params.projectId}/property`}
-        to={`/projects/${this.props.params.projectId}/property`}
-      >
+      <Link activeClassName="active" key={`/projects/${projectId}/property`} to={`/projects/${projectId}/property`}>
         {localize[lang].SETTING}
       </Link>
     ];
     if (this.props.user.globalRole !== EXTERNAL_USER) {
       tabs.push(
-        <Link
-          activeClassName="active"
-          key={`/projects/${this.props.params.projectId}/history`}
-          to={`/projects/${this.props.params.projectId}/history`}
-        >
+        <Link activeClassName="active" key={`/projects/${projectId}/history`} to={`/projects/${projectId}/history`}>
           {localize[lang].HISTORY}
         </Link>
       );
@@ -123,8 +104,8 @@ class ProjectPage extends Component {
       tabs.push(
         <Link
           activeClassName="active"
-          key={`/projects/${this.props.params.projectId}/analytics`}
-          to={`/projects/${this.props.params.projectId}/analytics`}
+          key={`/projects/${projectId}/analytics`}
+          to={`/projects/${projectId}/analytics`}
           onClick={this.handleAnalyticsAction}
         >
           {localize[lang].ANALYTICS}
@@ -135,8 +116,8 @@ class ProjectPage extends Component {
       tabs.push(
         <Link
           activeClassName="active"
-          key={`/projects/${this.props.params.projectId}/timesheets`}
-          to={`/projects/${this.props.params.projectId}/timesheets`}
+          key={`/projects/${projectId}/timesheets`}
+          to={`/projects/${projectId}/timesheets`}
           onClick={this.handleTimesheetsAction}
         >
           {localize[lang].TIME_REPORTS}
@@ -148,6 +129,7 @@ class ProjectPage extends Component {
       <HttpError error={this.props.project.error} />
     ) : (
       <div id="project-page">
+        <Title render={`SimTrack - ${this.props.project.name || ''}`} />
         <ProjectTitle
           portfolio={this.props.project.portfolio}
           name={this.props.project.name || ''}
@@ -156,7 +138,7 @@ class ProjectPage extends Component {
           isProjectAdmin={isProjectAdmin}
         />
 
-        <RouteTabs>{tabs}</RouteTabs>
+        <RouteTabs pathname={this.props.location.pathname}>{tabs}</RouteTabs>
 
         <div className={css.tabContent}>{this.props.children}</div>
         {isProjectAdmin && this.props.project.prefix !== undefined && !this.props.project.prefix ? (
@@ -178,7 +160,7 @@ class ProjectPage extends Component {
 const mapStateToProps = state => ({
   project: state.Project.project,
   user: state.Auth.user,
-  projectTypes: state.Dictionaries.projectTypes || [],
+  projectTypes: getLocalizedProjectTypes(state) || [],
   lang: state.Localize.lang
 });
 
@@ -187,4 +169,7 @@ const mapDispatchToProps = {
   changeProject
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectPage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ProjectPage);

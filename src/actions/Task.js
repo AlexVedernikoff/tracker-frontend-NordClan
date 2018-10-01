@@ -262,6 +262,7 @@ const getTaskHistory = (id, options) => {
   }
   const URL = `${API_URL}/task/${id}/history`;
   return dispatch => {
+    dispatch(startLoading());
     axios
       .get(URL, {
         params: {

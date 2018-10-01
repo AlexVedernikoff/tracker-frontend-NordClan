@@ -38,17 +38,15 @@ const getPlanningTasks = (side, options) => {
         },
         { withCredentials: true }
       )
+      .then(response => {
+        if (response) {
+          dispatch(tasksReceived(side, response.data));
+        }
+        dispatch(finishLoading());
+      })
       .catch(error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
         dispatch(finishLoading());
-      })
-      .then(response => {
-        if (!response) {
-          return;
-        } else {
-          dispatch(tasksReceived(side, response.data));
-          dispatch(finishLoading());
-        }
       });
   };
 };

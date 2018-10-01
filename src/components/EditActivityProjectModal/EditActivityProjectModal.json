@@ -1,0 +1,18 @@
+{
+  "en": {
+    "PROJECT": "Project:",
+    "SPRINT": "Sprint:",
+    "PROJECT_PLACEHOLDER": "Change project",
+    "SPRINT_PLACEHOLDER": "Change sprint",
+    "CONFIRM": "Confirm",
+    "CANCEL": "Cancel"
+  },
+  "ru": {
+    "PROJECT": "Проект:",
+    "SPRINT": "Спринт:",
+    "PROJECT_PLACEHOLDER": "Выберите проект",
+    "SPRINT_PLACEHOLDER": "Выберите спринт",
+    "CONFIRM": "Принять",
+    "CANCEL": "Отмена"
+  }
+}

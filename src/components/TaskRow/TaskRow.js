@@ -13,6 +13,7 @@ import * as css from './TaskRow.scss';
 import roundNum from '../../utils/roundNum';
 import localize from './TaskRow.json';
 import { getFullName } from '../../utils/NameLocalisation';
+import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
 
 const getTaskTime = (factTime, planTime, lang) => {
   if (factTime) {
@@ -175,7 +176,7 @@ TaskRow.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  taskTypes: state.Dictionaries.taskTypes,
+  taskTypes: getLocalizedTaskTypes(state),
   lang: state.Localize.lang
 });
 

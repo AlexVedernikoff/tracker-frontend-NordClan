@@ -1,0 +1,46 @@
+@import '../../../styles/variables.scss';
+
+.changedSprint {
+  position: relative;
+  @include phone {
+    flex-basis: auto;
+    margin-bottom: 1rem;
+  }
+  .sprintTimeWrapper {
+    pointer-events: none;
+    position: absolute;
+    top: 5px;
+    right: 40px;
+
+    .sprintTime {
+      display: block;
+      text-align: right;
+      line-height: 1rem;
+      margin: 2px 0;
+      @include phone {
+        display: none;
+      }
+    }
+  }
+}
+
+.filtersRow {
+  margin-bottom: 1rem;
+  .filterButtonCol {
+    align-items: center;
+    display: flex;
+    padding: 0 8px;
+  }
+  @include phone {
+    flex-direction: column; // ie fix
+    flex-basis: auto; // ie fix
+    > div {
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+//Fixes collapsing margin blinking issue during transition
+.filtersRowWrapper {
+  padding: 1px;
+}

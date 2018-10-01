@@ -129,6 +129,12 @@ export const deleteTempTimesheets = ids => ({
   ids
 });
 
+export const editTempTimesheet = (id, updatedFields) => ({
+  type: TimesheetsActions.EDIT_TEMP_TIMESHEET,
+  id,
+  updatedFields
+});
+
 export const createTimesheet = (data, userId, startingDay) => {
   return dispatch => {
     return new Promise((resolve, reject) => {
@@ -309,12 +315,12 @@ export const getProjectsForSelect = (name = '', hideEmptyValue) => {
       .get(`${API_URL}/project`, { params: { name } }, { withCredentials: true })
       .then(response => response.data.data)
       .then(projects => {
-        dispatch(filterProjects(projects));
         const options = projects.map(project => ({
           label: project.name,
           value: project.id,
           body: project
         }));
+        dispatch(filterProjects(options));
         return {
           options: hideEmptyValue
             ? options

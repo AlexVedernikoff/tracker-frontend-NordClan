@@ -10,6 +10,7 @@ import roundNum from '../../../../utils/roundNum';
 import getColor from '../../../../utils/Colors';
 import localize from './BudgetChart.json';
 import moment from 'moment';
+import datalabels from 'chartjs-plugin-datalabels';
 
 class BudgetChart extends Component {
   static propTypes = {
@@ -25,9 +26,13 @@ class BudgetChart extends Component {
     startDate: PropTypes.string
   };
 
-  chartRef = null;
+  state = { chartRef: null };
 
-  setChartRef = node => (this.chartRef = node);
+  setChartRef = node => {
+    this.setState({
+      chartRef: node
+    });
+  };
 
   getGraphicOptions() {
     return {
@@ -63,6 +68,14 @@ class BudgetChart extends Component {
             }
           }
         ]
+      },
+      plugins: {
+        datalabels: {
+          formatter: function(value) {
+            return value.y;
+          },
+          align: 'end'
+        }
       }
     };
   }
@@ -85,7 +98,7 @@ class BudgetChart extends Component {
       datasets: [
         this.makeIdealProjectBurndown(startDate, endDate, budget, riskBudget, isRisks),
         this.makeProjectBurndown(projectBudgetMetrics, startDate, budget, riskBudget, isRisks),
-        ...this.makeSprintsBurndowns(sprintsBudgetMetrics, sprints),
+        ...this.makeSprintsBurndowns(sprintsBudgetMetrics, sprints, isRisks),
         ...this.makeSprintsIdealBurndowns(sprints, isRisks)
       ]
     };
@@ -190,7 +203,7 @@ class BudgetChart extends Component {
             }
           />
         </div>
-        <ChartWrapper chartRef={this.chartRef}>
+        <ChartWrapper chartRef={this.state.chartRef}>
           <Line
             ref={this.setChartRef}
             height={250}

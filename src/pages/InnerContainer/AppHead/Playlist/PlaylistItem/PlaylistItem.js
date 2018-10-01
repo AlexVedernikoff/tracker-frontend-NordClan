@@ -13,6 +13,7 @@ import validateNumber from '../../../../../utils/validateNumber';
 
 import { IconComment, IconCheck, IconEye, IconEyeDisable } from '../../../../../components/Icons';
 import localize from './playlistItem.json';
+import { getLocalizedMagicActiveTypes } from '../../../../../selectors/dictionaries';
 
 class PlaylistItem extends Component {
   constructor(props) {
@@ -252,7 +253,7 @@ class PlaylistItem extends Component {
             />
             {!timesheetDisabled && (
               <div className={css.actionButton} onClick={this.pushComment(this.state.comment)}>
-                <IconCheck style={{ width: '1.5rem', height: '1.5rem' }} />
+                <IconCheck style={{ width: '1.5rem', height: '1.5rem', color: '#fff', opacity: '0.9' }} />
               </div>
             )}
           </div>
@@ -276,7 +277,7 @@ PlaylistItem.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    magicActivitiesTypes: state.Dictionaries.magicActivityTypes,
+    magicActivitiesTypes: getLocalizedMagicActiveTypes(state),
     task: state.Task.task,
     lang: state.Localize.lang
   };
@@ -287,4 +288,7 @@ const mapDispatchToProps = {
   updateTimesheet
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlaylistItem);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PlaylistItem);

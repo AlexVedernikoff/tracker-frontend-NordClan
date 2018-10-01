@@ -52,7 +52,7 @@ class ProjectHistory extends React.Component {
 
   render() {
     const { historyEvents, projectId, lang } = this.props;
-    const eventList = historyEvents.map((event, i) => {
+    const eventList = historyEvents.filter(event => event).map((event, i) => {
       return (
         <div className={css.historyEvent} key={event.id}>
           <span className={css.time}> {moment(event.date).format('DD.MM.YYYY HH:mm:ss')}</span>
@@ -103,4 +103,7 @@ const mapDispatchToProps = {
   getProjectHistory
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectHistory);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ProjectHistory);
