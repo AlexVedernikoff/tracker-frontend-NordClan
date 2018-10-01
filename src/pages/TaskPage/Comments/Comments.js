@@ -126,10 +126,9 @@ class Comments extends Component {
     if (prevProps.attachments.length !== this.props.attachments.length && this.state.isAttachedToComment) {
       const diff = _.difference(this.props.attachments, prevProps.attachments);
       const attachments = this.props.attachments.map(item => {
-        const attachment = { ...item };
-        attachment.display = diff.some(i => i === item) ? true : false;
-        return attachment;
+        return { ...item, display: diff.some(i => i === item) };
       });
+
       this.setState({ attachments: [...attachments], isAttachedToComment: false });
     }
   };
@@ -145,7 +144,7 @@ class Comments extends Component {
   };
 
   prepareAttachmentsForEdit = ids => {
-    const { attachments } = this.state;
+    const attachments = [...this.state.attachments];
     this.props.attachments.forEach((attachment, key) => {
       if (ids.indexOf(attachment.id) !== -1) {
         attachments[key].display = true;
@@ -167,28 +166,22 @@ class Comments extends Component {
 
   getAttachmentIds = () => {
     const { attachments } = this.props;
-    const attachmentIds = [];
-    this.state.attachments.forEach((item, key) => {
-      if (item.display) {
-        attachmentIds.push(attachments[key].id);
-      }
-    });
+    const attachmentIds = attachments.filter((item, key) => this.state.attachments[key].display).map(item => item.id);
     return attachmentIds.length ? JSON.stringify(attachmentIds) : null;
   };
 
   stashAttachments = () => {
-    let { attachments } = this.state;
-    attachments = attachments.map(item => {
-      item.display = false;
-      return item;
+    const { attachments } = this.state;
+    const attachmentsToHide = attachments.map(item => {
+      return { ...item, display: false };
     });
-    this.setState({ attachments: attachments });
+    this.setState({ attachments: attachmentsToHide });
   };
 
   publishComment = evt => {
     const newComment = { ...this.props.currentComment };
     newComment.text = stringifyCommentForSend(newComment.text, this.users);
-    newComment.attachmentIds = this.getAttachmentIds();
+    newComment.attachmentIds = this.state.attachments.length ? this.getAttachmentIds() : null;
     const { ctrlKey, keyCode } = evt;
     if (((ctrlKey && keyCode === ENTER) || evt.button === 0) && this.state.disabledBtn === false) {
       if (newComment.id) {
@@ -226,9 +219,7 @@ class Comments extends Component {
   handleRemoveAttachment = index => {
     const attachments = [...this.state.attachments];
     attachments[index].display = false;
-    this.setState({
-      attachments: [...attachments]
-    });
+    this.setState({ attachments: attachments });
   };
 
   getAttachment = index => {
