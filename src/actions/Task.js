@@ -1,7 +1,8 @@
 import * as TaskActions from '../constants/Task';
 import { API_URL } from '../constants/Settings';
 import axios from 'axios';
-import { finishLoading, startLoading } from './Loading';
+import { startLoading, finishLoading } from './Loading';
+import { showNotification } from './Notifications';
 import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
 import {
   defaultErrorHandler,
@@ -92,9 +93,149 @@ const stopTaskEditing = target => ({
   target
 });
 
-const clearCurrentTask = target => ({
+const clearCurrentTask = () => ({
   type: TaskActions.CLEAR_CURRENT_TASK
 });
+
+const getGitlabBranchesStart = () => ({
+  type: TaskActions.GET_GITLAB_BRANCHES_START
+});
+
+const getGitlabBranchesFail = () => ({
+  type: TaskActions.GET_GITLAB_BRANCHES_FAIL
+});
+
+const getGitlabBranchesSuccess = branches => ({
+  type: TaskActions.GET_GITLAB_BRANCHES_SUCCESS,
+  branches
+});
+
+const getGitlabBranchesByRepoStart = () => ({
+  type: TaskActions.GET_GITLAB_BRANCHES_BY_REPO_START
+});
+
+const getGitlabBranchesByRepoFail = () => ({
+  type: TaskActions.GET_GITLAB_BRANCHES_BY_REPO_FAIL
+});
+
+const getGitlabBranchesByRepoSuccess = repoBranches => ({
+  type: TaskActions.GET_GITLAB_BRANCHES_BY_REPO_SUCCESS,
+  repoBranches
+});
+
+const createGitlabBranchStart = () => ({
+  type: TaskActions.CREATE_GITLAB_BRANCH_START
+});
+
+const createGitlabBranchFail = () => ({
+  type: TaskActions.CREATE_GITLAB_BRANCH_FAIL
+});
+
+const createGitlabBranchSuccess = createdGitlabBranch => ({
+  type: TaskActions.CREATE_GITLAB_BRANCH_SUCCESS,
+  createdGitlabBranch
+});
+
+const getProjectReposStart = () => ({
+  type: TaskActions.GET_PROJECT_REPOS_START
+});
+
+const getProjectReposFail = () => ({
+  type: TaskActions.GET_PROJECT_REPOS_FAIL
+});
+
+const getProjectReposSuccess = projectRepos => ({
+  type: TaskActions.GET_PROJECT_REPOS_SUCCESS,
+  projectRepos
+});
+
+const getProjectRepos = projectId => {
+  const URL = `${API_URL}/project/${projectId}/getGitlabProjects`;
+  return dispatch => {
+    dispatch(startLoading());
+    dispatch(getProjectReposStart());
+    axios
+      .get(URL)
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(getProjectReposSuccess(response.data));
+          dispatch(finishLoading());
+        }
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(getProjectReposFail(error.response.data));
+        dispatch(finishLoading());
+      });
+  };
+};
+
+const createGitlabBranch = (taskId, repoId, branchSource, branchName) => {
+  const URL = `${API_URL}/task/${taskId}/createGitlabBranch`;
+  return dispatch => {
+    dispatch(startLoading());
+    dispatch(createGitlabBranchStart());
+    axios
+      .post(URL, {
+        repoId,
+        branchSource,
+        branchName
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(createGitlabBranchSuccess(response.data));
+          dispatch(finishLoading());
+        }
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(createGitlabBranchFail(error.response.data));
+        dispatch(finishLoading());
+      });
+  };
+};
+
+const getGitlabBranchesByRepoId = (taskId, repoId) => {
+  const URL = `${API_URL}/task/${taskId}/getGitlabBranchesByRepoId?repoId=${repoId}`;
+  return dispatch => {
+    dispatch(startLoading());
+    dispatch(getGitlabBranchesByRepoStart());
+    axios
+      .get(URL)
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(getGitlabBranchesByRepoSuccess(response.data));
+          dispatch(finishLoading());
+        }
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(getGitlabBranchesByRepoFail(error.response.data));
+        dispatch(finishLoading());
+      });
+  };
+};
+
+const getGitlabBranches = taskId => {
+  const URL = `${API_URL}/task/${taskId}/getGitlabBranchesById/`;
+  return dispatch => {
+    dispatch(startLoading());
+    dispatch(getGitlabBranchesStart());
+    axios
+      .get(URL)
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(getGitlabBranchesSuccess(response.data));
+          dispatch(finishLoading());
+        }
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(getGitlabBranchesFail(error.response.data));
+        dispatch(finishLoading());
+      });
+  };
+};
 
 const getTask = id => {
   if (!id) {
@@ -514,6 +655,10 @@ const setHighLighted = comment => ({
 
 export {
   getTask,
+  getProjectRepos,
+  getGitlabBranches,
+  createGitlabBranch,
+  getGitlabBranchesByRepoId,
   getTaskHistory,
   getTaskSpent,
   startTaskEditing,
