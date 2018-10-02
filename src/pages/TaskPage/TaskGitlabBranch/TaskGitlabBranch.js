@@ -162,3 +162,5 @@ TaskGitlabBranch.propTypes = {
   repoBranches: PropTypes.array,
   taskId: PropTypes.string
 };
+
+export default TaskGitlabBranch;
