@@ -217,7 +217,7 @@ class Comments extends Component {
 
   handleRemoveAttachment = index => {
     const attachments = this.state.attachments.map((item, key) => {
-      const attachment = index === key ? { ...item, display: false } : { ...item };
+      const attachment = index === key ? { ...item, display: false } : item;
       return attachment;
     });
     this.setState({ attachments: attachments });
