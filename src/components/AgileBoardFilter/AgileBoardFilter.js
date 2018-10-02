@@ -4,6 +4,7 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import classnames from 'classnames';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import copy from 'copy-to-clipboard';
+import ReactTooltip from 'react-tooltip';
 
 import * as css from './AgileBoardFilter.scss';
 import localize from './AgileBoardFilter.json';
@@ -27,6 +28,10 @@ class AgileBoardFilter extends React.Component {
   componentDidMount = () => {
     this.updateFilterList();
   };
+
+  componentDidUpdate() {
+    ReactTooltip.rebuild();
+  }
 
   componentDidUpdate = prevProps => {
     const { currentSprint } = this.props;
@@ -231,7 +236,7 @@ class AgileBoardFilter extends React.Component {
           isOpened={this.state.isOpened}
           updateFilterList={this.updateFilterList}
           generateShareLink={this.generateShareLink}
-          shareButtonText={localize[lang].SHARE}
+          shareButtonText={localize[lang].SHARE_FILTERS}
         />
         <Row className={css.filtersRow}>
           <Col xs={12} sm={12}>
@@ -268,8 +273,8 @@ class AgileBoardFilter extends React.Component {
                   <Col className={css.filterCol}>
                     <Button
                       onClick={this.generateShareLink}
+                      data-tip={localize[lang].SHARE_FILTERS}
                       type="primary"
-                      text={localize[lang].SHARE}
                       icon="IconLink"
                       name="right"
                       disabled={this.props.isFilterEmpty}
