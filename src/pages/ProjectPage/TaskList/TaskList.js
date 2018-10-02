@@ -416,7 +416,7 @@ class TaskList extends Component {
                 />
               </Col>
             </Row>
-            <Row className={css.filtersRow} top="xs">
+            <Row className={css.search} top="xs">
               <Col xs={12} sm={3}>
                 <SprintSelector
                   value={sprintId}
@@ -444,7 +444,7 @@ class TaskList extends Component {
                 <TagsFilter filterFor={'task'} onTagSelect={this.onChangeTagFilter} filterTags={tags} />
               </Col>
             </Row>
-            <Row className={css.filtersRow}>
+            <Row className={css.search}>
               <Col xs={6} sm={3}>
                 <SelectDropdown
                   name="status"
