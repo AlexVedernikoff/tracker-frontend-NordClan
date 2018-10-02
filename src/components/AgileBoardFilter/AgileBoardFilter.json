@@ -9,7 +9,7 @@
     "AUTHOR": "author",
     "PERFORMER": "performer",
     "NOT_CHANGED": "Not changed",
-    "SHARE": "Share",
+    "SHARE_FILTERS": "Share filters",
     "SHARE_SUCCESS": "Filter copied successfully",
     "SHARE_ERROR": "Error while copying filter",
     "NOT_ASSIGNED": "Not assigned"
@@ -25,7 +25,7 @@
     "AUTHOR": "автор",
     "PERFORMER": "исполнитель",
     "NOT_CHANGED": "Не назначено",
-    "SHARE": "Поделиться",
+    "SHARE_FILTERS": "Поделиться фильтрами",
     "SHARE_SUCCESS": "Фильтр успешно скопирован",
     "SHARE_ERROR": "Ошибка при копировании фильтра",
     "NOT_ASSIGNED": "Не назначенно"
