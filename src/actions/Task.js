@@ -156,16 +156,16 @@ const getProjectRepos = projectId => {
     dispatch(getProjectReposStart());
     axios
       .get(URL)
-      .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(getProjectReposFail(error.response.data));
-        dispatch(finishLoading());
-      })
       .then(response => {
         if (response && response.status === 200) {
           dispatch(getProjectReposSuccess(response.data));
           dispatch(finishLoading());
         }
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(getProjectReposFail(error.response.data));
+        dispatch(finishLoading());
       });
   };
 };
@@ -181,16 +181,16 @@ const createGitlabBranch = (taskId, repoId, branchSource, branchName) => {
         branchSource,
         branchName
       })
-      .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(createGitlabBranchFail(error.response.data));
-        dispatch(finishLoading());
-      })
       .then(response => {
         if (response && response.status === 200) {
           dispatch(createGitlabBranchSuccess(response.data));
           dispatch(finishLoading());
         }
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(createGitlabBranchFail(error.response.data));
+        dispatch(finishLoading());
       });
   };
 };
@@ -202,16 +202,16 @@ const getGitlabBranchesByRepoId = (taskId, repoId) => {
     dispatch(getGitlabBranchesByRepoStart());
     axios
       .get(URL)
-      .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(getGitlabBranchesByRepoFail(error.response.data));
-        dispatch(finishLoading());
-      })
       .then(response => {
         if (response && response.status === 200) {
           dispatch(getGitlabBranchesByRepoSuccess(response.data));
           dispatch(finishLoading());
         }
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(getGitlabBranchesByRepoFail(error.response.data));
+        dispatch(finishLoading());
       });
   };
 };
@@ -223,16 +223,16 @@ const getGitlabBranches = taskId => {
     dispatch(getGitlabBranchesStart());
     axios
       .get(URL)
-      .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(getGitlabBranchesFail(error.response.data));
-        dispatch(finishLoading());
-      })
       .then(response => {
         if (response && response.status === 200) {
           dispatch(getGitlabBranchesSuccess(response.data));
           dispatch(finishLoading());
         }
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(getGitlabBranchesFail(error.response.data));
+        dispatch(finishLoading());
       });
   };
 };
