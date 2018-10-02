@@ -18,6 +18,7 @@ import Timesheets from './Timesheets';
 import UsersRoles from './UsersRoles';
 import ExternalUsers from './ExternalUsers';
 import Localize from './Localize';
+import Gitlab from './Gitlab';
 
 const rootReducer = combineReducers({
   Auth,
@@ -37,6 +38,7 @@ const rootReducer = combineReducers({
   UsersRoles,
   ExternalUsers,
   Localize,
+  Gitlab,
   routing: routerReducer
 });
 

@@ -6,12 +6,13 @@ import InputNumber from '../../../../components/InputNumber';
 import ValidatedInput from '../../../../components/ValidatedInput';
 import Validator from '../../../../components/ValidatedInput/Validator';
 import RoundButton from '../../../../components/RoundButton';
-import { IconCheck } from '../../../../components/Icons';
+import { IconCheck, IconClose } from '../../../../components/Icons';
 import { connect } from 'react-redux';
 import localize from './NewProject.json';
 
 class NewProject extends Component {
   static propTypes = {
+    onCancel: PropTypes.func,
     onSubmit: PropTypes.func,
     projectIds: PropTypes.array
   };
@@ -32,13 +33,17 @@ class NewProject extends Component {
     this.setState({ projectId: e.target.value });
   };
 
+  cancelBound = () => {
+    this.props.onCancel();
+  };
+
   submit = () => {
     this.props.onSubmit(this.state.projectId);
   };
 
   render() {
     const { projectIds, lang } = this.props;
-    const invalid = !Number.isInteger(+this.state.projectId) || (projectIds || []).includes(+this.state.projectId);
+    const invalid = false;
 
     return (
       <div className={css.newProject}>
@@ -64,6 +69,14 @@ class NewProject extends Component {
           disabled={invalid}
         >
           <IconCheck />
+        </RoundButton>
+        <RoundButton
+          style={{ marginLeft: '0.5rem' }}
+          onClick={this.cancelBound}
+          className={css.saveProject}
+          disabled={invalid}
+        >
+          <IconClose />
         </RoundButton>
       </div>
     );
