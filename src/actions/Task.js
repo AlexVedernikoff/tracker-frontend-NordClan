@@ -376,14 +376,15 @@ const publishComment = (taskId, comment) => {
   if (!taskId || !comment) {
     return () => {};
   }
-  const { text, parentId } = comment;
+  const { text, parentId, attachmentIds } = comment;
   const URL = `${API_URL}/task/${taskId}/comment`;
   return dispatch => {
     dispatch(commentPublishStart(taskId, comment));
     return axios
       .post(URL, {
         text,
-        parentId
+        parentId,
+        attachmentIds
       })
       .then(
         result => dispatch(commentPublishSuccess(taskId, comment, result.data)),
@@ -393,45 +394,49 @@ const publishComment = (taskId, comment) => {
   };
 };
 
-const commentUpdateStart = (taskId, commentId, comment) => ({
+const commentUpdateStart = (taskId, commentId, comment, attachmentIds) => ({
   type: TaskActions.UPDATE_COMMENT_REQUEST,
   taskId,
   commentId,
-  comment
+  comment,
+  attachmentIds
 });
 
-const commentUpdateSuccess = (taskId, commentId, comment, result) => ({
+const commentUpdateSuccess = (taskId, commentId, comment, attachmentIds, result) => ({
   type: TaskActions.UPDATE_COMMENT_SUCCESS,
   taskId,
   commentId,
   comment,
+  attachmentIds,
   result
 });
 
-const commentUpdateFail = (taskId, commentId, comment, error) => ({
+const commentUpdateFail = (taskId, commentId, comment, attachmentIds, error) => ({
   type: TaskActions.UPDATE_COMMENT_FAIL,
   taskId,
   commentId,
   comment,
+  attachmentIds,
   error
 });
 
-const editComment = (taskId, commentId, text) => {
+const editComment = (taskId, commentId, text, attachmentIds) => {
   if (!taskId || !commentId) {
     return () => {};
   }
   const comment = {
-    text
+    text,
+    attachmentIds
   };
   const URL = `${API_URL}/task/${taskId}/comment/${commentId}`;
   return dispatch => {
-    dispatch(commentUpdateStart(taskId, commentId, comment));
+    dispatch(commentUpdateStart(taskId, commentId, comment, attachmentIds));
     axios.put(URL, comment).then(
       result => {
         dispatch(getCommentsByTask(taskId));
-        return dispatch(commentUpdateSuccess(taskId, commentId, comment, result));
+        return dispatch(commentUpdateSuccess(taskId, commentId, comment, attachmentIds, result));
       },
-      error => dispatch(commentUpdateFail(taskId, commentId, comment, error))
+      error => dispatch(commentUpdateFail(taskId, commentId, comment, attachmentIds, error))
     );
   };
 };

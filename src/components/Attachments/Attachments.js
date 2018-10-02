@@ -147,6 +147,6 @@ export default class Attachments extends Component {
 Attachments.propTypes = {
   attachments: PropTypes.array,
   canEdit: PropTypes.bool,
-  removeAttachment: PropTypes.func.isRequired,
-  uploadAttachments: PropTypes.func.isRequired
+  removeAttachment: PropTypes.func,
+  uploadAttachments: PropTypes.func
 };
