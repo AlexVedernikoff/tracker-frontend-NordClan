@@ -129,7 +129,7 @@ class Comments extends Component {
         return { ...item, display: diff.some(i => i === item) };
       });
 
-      this.setState({ attachments: [...attachments], isAttachedToComment: false });
+      this.setState({ attachments: attachments, isAttachedToComment: false });
     }
   };
 
@@ -144,13 +144,12 @@ class Comments extends Component {
   };
 
   prepareAttachmentsForEdit = ids => {
-    const attachments = [...this.state.attachments];
-    this.props.attachments.forEach((attachment, key) => {
-      if (ids.indexOf(attachment.id) !== -1) {
-        attachments[key].display = true;
-        this.setState(attachments);
-      }
+    const attachments = this.props.attachments.map(attachment => {
+      const stateAttachment =
+        ids.indexOf(attachment.id) !== -1 ? { ...attachment, display: true } : { ...attachment, display: false };
+      return stateAttachment;
     });
+    this.setState({ attachments: attachments });
   };
 
   setCommentForEdit = (comment, attachmentIds) => {
@@ -217,8 +216,10 @@ class Comments extends Component {
   };
 
   handleRemoveAttachment = index => {
-    const attachments = [...this.state.attachments];
-    attachments[index].display = false;
+    const attachments = this.state.attachments.map((item, key) => {
+      const attachment = index === key ? { ...item, display: false } : { ...item };
+      return attachment;
+    });
     this.setState({ attachments: attachments });
   };
 
