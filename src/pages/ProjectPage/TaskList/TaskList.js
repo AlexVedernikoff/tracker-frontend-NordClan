@@ -386,28 +386,28 @@ class TaskList extends Component {
       <div>
         <section>
           <div>
-            <Row className={css.filtersRow} top="xs">
-              <Col className={css.priorityFilter}>
+            <Row className={css.search} top="xs">
+              <Col xs={12} sm={1} className={css.priorityFilter}>
                 <Priority onChange={this.onChangePrioritiesFilter} priority={prioritiesId} canEdit />
               </Col>
-              <Col xs style={{ minWidth: 200 }}>
+              <Col xs={12} sm={7} style={{ padding: '0 20px' }}>
                 <Input
                   placeholder={localize[lang].ENTER_TITLE_TASK}
                   value={this.state.changedFilters.name || ''}
                   onChange={this.changeNameFilter}
                 />
               </Col>
-              <Col className={css.filterButtonCol}>
+              <Col xs={12} sm={4} className={css.buttons}>
                 <Button
+                  style={{ marginRight: '20px', width: '50%' }}
                   onClick={this.props.openCreateTaskModal}
                   type="primary"
                   text={localize[lang].CREATE_TASK}
                   icon="IconPlus"
                   name="right"
                 />
-              </Col>
-              <Col className={css.filterButtonCol}>
                 <Button
+                  style={{ width: '50%' }}
                   type="primary"
                   text={localize[lang].CLEAR_FILTERS}
                   icon="IconBroom"

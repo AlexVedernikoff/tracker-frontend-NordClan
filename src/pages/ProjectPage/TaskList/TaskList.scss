@@ -4,32 +4,33 @@
   text-align: center;
   margin-top: 2rem;
 }
-
-.filtersRow {
-  margin-bottom: 1rem;
-  .priorityFilter {
-    color: silver;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    padding: 0.5rem 8px;
-  }
-  .filterButtonCol {
-    display: flex;
-    padding: 0 8px;
-  }
-  @include phone {
-    flex-direction: column; // ie fix
-    flex-basis: auto; // ie fix
-    > div {
-      margin-bottom: 1rem;
-    }
-  }
-}
 .search {
   margin-bottom: 1rem;
+
   > div {
     @include phone {
       margin-bottom: 1rem;
     }
   }
+}
+
+.priorityFilter {
+  color: silver;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.clearFilters {
+  text-align: right;
+
+  @include phone {
+    text-align: left;
+  }
+}
+
+.buttons {
+  justify-content: space-between;
+  display: flex;
+  flex-flow: row nowrap;
+  text-align: right;
 }
