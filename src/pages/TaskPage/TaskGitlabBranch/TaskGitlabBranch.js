@@ -3,29 +3,20 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import * as css from './TaskGitlabBranch.scss';
 import { IconPlus } from '../../../components/Icons';
-import { connect } from 'react-redux';
+
 import localize from './TaskGitlabBranch.json';
 import Modal from '../../../components/Modal';
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 import SelectDropdown from '../../../components/SelectDropdown';
-import {
-  getGitlabBranches,
-  getGitlabBranchesByRepoId,
-  createGitlabBranch,
-  getProjectRepos
-} from '../../../actions/Task';
 
 class TaskGitlabBranch extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isOpenModalGitlabBranch: false,
-      repository: '',
-      sourceBranch: '',
-      branchName: ''
-    };
-  }
+  state = {
+    isOpenModalGitlabBranch: false,
+    repository: '',
+    sourceBranch: '',
+    branchName: ''
+  };
 
   componentDidMount() {
     this.props.getGitlabBranches(this.props.taskId);
@@ -171,24 +162,3 @@ TaskGitlabBranch.propTypes = {
   repoBranches: PropTypes.array,
   taskId: PropTypes.string
 };
-
-const mapStateToProps = state => ({
-  lang: state.Localize.lang,
-  branches: state.Task.task.branches,
-  repoBranches: state.Task.task.repoBranches,
-  task: state.Task.task,
-  projectRepos: state.Task.task.projectRepos,
-  GITLAB_HOST: state.Task.task.GITLAB_HOSTNAME
-});
-
-const mapDispatchToProps = {
-  getGitlabBranches,
-  getProjectRepos,
-  getGitlabBranchesByRepoId,
-  createGitlabBranch
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TaskGitlabBranch);

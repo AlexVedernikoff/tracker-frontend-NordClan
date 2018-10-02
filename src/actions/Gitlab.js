@@ -52,16 +52,16 @@ const addGitlabProjectByName = (projectId, path) => {
         },
         { withCredentials: true }
       )
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(addingGitlabProjectSuccess(response.data));
+        }
+        dispatch(finishLoading());
+      })
       .catch(error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
         dispatch(addingGitlabProjectFail(error.response.data));
         dispatch(finishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(addingGitlabProjectSuccess(response.data));
-          dispatch(finishLoading());
-        }
       });
   };
 };
@@ -72,16 +72,16 @@ const getNamespaces = () => {
     dispatch(startLoading());
     axios
       .get(URL)
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(getNamespacesSuccess(response.data));
+        }
+        dispatch(finishLoading());
+      })
       .catch(error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
         dispatch(getNamespacesFail());
         dispatch(finishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(getNamespacesSuccess(response.data));
-          dispatch(finishLoading());
-        }
       });
   };
 };
@@ -99,16 +99,16 @@ const createGitlabProject = (projectId, name, namespace_id) => {
         },
         { withCredentials: true }
       )
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(createGitlabProjectSuccess(response.data));
+        }
+        dispatch(finishLoading());
+      })
       .catch(error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
         dispatch(createGitlabProjectFail());
         dispatch(finishLoading());
-      })
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(createGitlabProjectSuccess(response.data));
-          dispatch(finishLoading());
-        }
       });
   };
 };
