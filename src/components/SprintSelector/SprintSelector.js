@@ -62,7 +62,8 @@ export default class SprintSelector extends Component {
     return (
       <SelectDropdown
         name="sprint"
-        thisClassName="black-theme"
+        searchable={false}
+        thisClassName="sprintSelector"
         placeholder="Выберите спринт"
         noResultsText="Нет подходящих спринтов"
         backspaceToRemoveMessage={''}
