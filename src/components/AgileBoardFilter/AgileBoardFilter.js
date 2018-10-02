@@ -33,11 +33,15 @@ class AgileBoardFilter extends React.Component {
     if (currentSprint.length && currentSprint !== prevProps.currentSprint && this.isBacklogSelected) {
       this.props.setFilterValue('changedSprint', [currentSprint[0].value], this.updateFilterList);
     }
-
+    const boolFilters = Object.values(this.props.filters).map(f => (Array.isArray(f) ? !!f.length : !!f));
     if (
       prevProps.project.users !== this.props.project.users ||
       prevProps.typeOptions !== this.props.typeOptions ||
-      (!this.state.allFilters.length && !this.props.isFilterEmpty)
+      (!this.state.allFilters.length && !this.props.isFilterEmpty) ||
+      (this.state.allFilters.length === 1 &&
+        this.state.allFilters[0].label === 'Backlog' &&
+        this.props.filters.changedSprint.length > 1) ||
+      (this.state.allFilters.length === 1 && boolFilters.filter(f => f).length > 1)
     ) {
       this.updateFilterList();
     }
@@ -127,14 +131,11 @@ class AgileBoardFilter extends React.Component {
     const {
       lang,
       filters,
-      project: { users },
-      noTagData
+      project: { users }
     } = this.props;
     switch (filterName) {
       case 'isOnlyMine':
         return localize[lang].MY_TASKS;
-      case 'noTag':
-        return noTagData.label;
       case 'prioritiesId':
         return `${getPriorityById(filters.prioritiesId)}`;
       case 'authorId':
@@ -158,7 +159,7 @@ class AgileBoardFilter extends React.Component {
     }
 
     const { filters } = this.props;
-    const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'name', 'noTag'];
+    const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'name'];
 
     const selectedFilters = singleOptionFiltersList.reduce((result, filterName) => {
       if (!this.props.checkFilterItemEmpty(filterName)) {
