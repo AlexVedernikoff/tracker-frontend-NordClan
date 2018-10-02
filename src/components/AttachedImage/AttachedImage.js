@@ -12,7 +12,7 @@ export default class AttachedImage extends React.Component {
     open: PropTypes.func,
     path: PropTypes.string.isRequired,
     previewPath: PropTypes.string.isRequired,
-    removeAttachment: PropTypes.func.isRequired,
+    removeAttachment: PropTypes.func,
     removeInProgress: PropTypes.bool,
     type: PropTypes.string.isRequired
   };

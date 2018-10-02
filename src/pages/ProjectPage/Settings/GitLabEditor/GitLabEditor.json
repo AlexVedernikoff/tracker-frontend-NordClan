@@ -1,8 +1,16 @@
 {
   "en": {
-    "BOUND_REPO": "Bound repository"
+    "BOUND_REPO": "Bound repository",
+    "CREATE_REPO": "Create repository",
+    "NAMESPACE": "Namespace",
+    "PROJECT_NAME": "Project name",
+    "CREATE": "Create"
   },
   "ru": {
-    "BOUND_REPO": "Привязать репозиторий"
+    "BOUND_REPO": "Привязать репозиторий",
+    "CREATE_REPO": "Создать репозиторий",
+    "NAMESPACE": "Пространство имен",
+    "PROJECT_NAME": "Имя проекта",
+    "CREATE": "Создать"
   }
 }

@@ -3,6 +3,7 @@ import * as TagsActions from '../constants/Tags';
 import * as SprintActions from '../constants/Sprint';
 import * as TasksActions from '../constants/Tasks';
 import * as MilestoneActions from '../constants/Milestone';
+import * as GitlabActions from '../constants/Gitlab';
 
 const InitialState = {
   project: {
@@ -204,6 +205,24 @@ export default function Project(state = InitialState, action) {
         project: {
           ...state.project,
           ...action.changedFields
+        }
+      };
+
+    case GitlabActions.ADDING_GITLAB_PROJECT_SUCCESS:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          gitlabProjects: [...state.project.gitlabProjects, action.project]
+        }
+      };
+
+    case GitlabActions.CREATE_GITLAB_PROJECT_SUCCESS:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          gitlabProjects: [...state.project.gitlabProjects, action.project]
         }
       };
 
