@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { GITLAB_HOST } from '../../../constants/Settings';
 import classnames from 'classnames';
 import * as css from './TaskGitlabBranch.scss';
 import { IconPlus } from '../../../components/Icons';
@@ -71,7 +70,7 @@ class TaskGitlabBranch extends React.Component {
 
   linkGitlabBranch = e => {
     const [group, repo] = e.project.split(' / ');
-    window.open(`${GITLAB_HOST}/${group}/${repo}/tree/${e.branch}`);
+    window.open(`http://${this.props.GITLAB_HOST}/${group}/${repo}/tree/${e.branch}`);
   };
 
   createBranch = () => {
@@ -161,6 +160,7 @@ class TaskGitlabBranch extends React.Component {
 }
 
 TaskGitlabBranch.propTypes = {
+  GITLAB_HOST: PropTypes.string,
   branches: PropTypes.array,
   createGitlabBranch: PropTypes.func,
   getGitlabBranches: PropTypes.func,
@@ -177,7 +177,8 @@ const mapStateToProps = state => ({
   branches: state.Task.task.branches,
   repoBranches: state.Task.task.repoBranches,
   task: state.Task.task,
-  projectRepos: state.Task.task.projectRepos
+  projectRepos: state.Task.task.projectRepos,
+  GITLAB_HOST: state.Task.task.GITLAB_HOSTNAME
 });
 
 const mapDispatchToProps = {
