@@ -67,9 +67,7 @@ class Tags extends Component {
     const noTagValueEn = 'no tag';
     if (typeof testValue === 'string') {
       testValue = testValue.toLowerCase().trim();
-      return typeof testValue === 'string' && testValue.length > 0
-        ? !(testValue === noTagValueEn || testValue === noTagValueRu)
-        : false;
+      return testValue.length > 0 ? !(testValue === noTagValueEn || testValue === noTagValueRu) : false;
     }
     return false;
   };
