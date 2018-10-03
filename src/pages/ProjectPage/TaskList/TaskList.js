@@ -42,7 +42,6 @@ class TaskList extends Component {
   }
 
   componentDidMount() {
-    console.log(this.state);
     if (this.props.project.id) {
       this.loadTasks();
     }

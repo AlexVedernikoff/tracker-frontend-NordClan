@@ -162,6 +162,7 @@ CreateProject.propTypes = {
   onSubmit: PropTypes.func,
   onSubmitAndOpen: PropTypes.func,
   onTypeSelect: PropTypes.func,
+  portfolios: PropTypes.array,
   prefixErrorText: PropTypes.string,
   projectTypes: PropTypes.array,
   selectedPortfolio: PropTypes.object,

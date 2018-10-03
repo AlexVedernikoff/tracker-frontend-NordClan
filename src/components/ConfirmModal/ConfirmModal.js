@@ -51,7 +51,7 @@ const ReactModalStyles = {
 // };
 
 const ConfirmModal = props => {
-  const { style, onRequestClose, closeTimeoutMS, text, onConfirm, onCancel, notification, lang, ...other } = props;
+  const { style, closeTimeoutMS, text, onConfirm, onCancel, notification, lang, ...other } = props;
   return (
     <ReactModal
       {...other}
@@ -80,7 +80,6 @@ ConfirmModal.propTypes = {
   closeTimeoutMS: PropTypes.number,
   onCancel: PropTypes.func,
   onConfirm: PropTypes.func,
-  onRequestClose: PropTypes.func,
   style: PropTypes.object,
   text: PropTypes.string
 };
