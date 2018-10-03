@@ -62,12 +62,16 @@ class Tags extends Component {
   };
 
   isValidNewOption = label => {
-    const testValue = label.label;
+    let testValue = label.label;
     const noTagValueRu = 'без тега';
     const noTagValueEn = 'no tag';
-    return typeof testValue === 'string' && testValue.length > 0
-      ? !(testValue.toLowerCase().trim() === noTagValueEn || testValue.toLowerCase().trim() === noTagValueRu)
-      : false;
+    if (typeof testValue === 'string') {
+      testValue = testValue.toLowerCase().trim();
+      return typeof testValue === 'string' && testValue.length > 0
+        ? !(testValue === noTagValueEn || testValue === noTagValueRu)
+        : false;
+    }
+    return false;
   };
 
   render() {
