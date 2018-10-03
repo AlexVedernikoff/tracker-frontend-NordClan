@@ -20,6 +20,7 @@ import getProjects, {
   openCreateProjectModal,
   closeCreateProjectModal
 } from '../../actions/Projects';
+import { getPortfolios } from '../../actions/Portfolios';
 import { getErrorMessageByType } from '../../utils/ErrorMessages';
 import { ADMIN } from '../../constants/Roles';
 import localization from './projects.json';
@@ -49,6 +50,7 @@ class Projects extends Component {
 
   componentDidMount() {
     this.loadProjects();
+    this.props.getPortfolios();
   }
 
   initialFilters = {
@@ -422,6 +424,7 @@ class Projects extends Component {
 }
 Projects.propTypes = {
   closeCreateProjectModal: PropTypes.func.isRequired,
+  getPortfolios: PropTypes.func.isRequired,
   getProjects: PropTypes.func.isRequired,
   globalRole: PropTypes.string.isRequired,
   isCreateProjectModalOpen: PropTypes.bool.isRequired,
@@ -450,6 +453,7 @@ const mapDispatchToProps = {
   requestProjectCreate,
   openCreateProjectModal,
   closeCreateProjectModal,
+  getPortfolios,
   getProjects
 };
 

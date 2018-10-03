@@ -490,20 +490,6 @@ const getProjectHistory = (id, options) => {
   };
 };
 
-export const getPortfolios = (name = '') => {
-  return () => {
-    return axios
-      .get(`${API_URL}/portfolio`, { params: { name } }, { withCredentials: true })
-      .then(response => response.data.data)
-      .then(portfolios => ({
-        options: portfolios.map(portfolio => ({
-          label: portfolio.name,
-          value: portfolio.id
-        }))
-      }));
-  };
-};
-
 const removeAttachment = (projectId, attachmentId) => {
   if (!projectId || !attachmentId) {
     return () => {};

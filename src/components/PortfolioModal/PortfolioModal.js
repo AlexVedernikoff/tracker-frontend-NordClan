@@ -5,9 +5,6 @@ import * as css from './PortfolioModal.scss';
 import Modal from '../Modal';
 import Button from '../Button';
 import Select from 'react-select';
-const SelectAsync = Select.AsyncCreatable;
-
-import { getPortfolios } from '../../actions/Project';
 
 class PortfolioModal extends Component {
   static propTypes = {
@@ -50,18 +47,23 @@ class PortfolioModal extends Component {
   render() {
     const { title, onClose } = this.props;
 
+    const portfoliosOptions = this.props.portfolios.map(portfolio => ({
+      label: portfolio.name,
+      value: portfolio.id
+    }));
+
     return (
       <Modal isOpen contentLabel="modal" className={css.modalWrapper} onRequestClose={onClose}>
         <div className={css.changeStage}>
           <h3>{title}</h3>
           <div className={css.modalLine}>
-            <SelectAsync
+            <Select
               promptTextCreator={label => `Поиск портфеля '${label}'`}
               searchPromptText={'Введите название портфеля'}
               multi={false}
               ignoreCase={false}
               placeholder="Выберите портфель"
-              loadOptions={this.props.getPortfolios}
+              options={portfoliosOptions}
               filterOption={el => el}
               onChange={this.onPortfolioSelect}
               value={this.state.portfolio}
@@ -74,11 +76,11 @@ class PortfolioModal extends Component {
   }
 }
 
-const mapDispatchToProps = {
-  getPortfolios
-};
+const mapStateToProps = state => ({
+  portfolios: state.Portfolios.portfolios
+});
 
 export default connect(
-  null,
-  mapDispatchToProps
+  mapStateToProps,
+  null
 )(PortfolioModal);

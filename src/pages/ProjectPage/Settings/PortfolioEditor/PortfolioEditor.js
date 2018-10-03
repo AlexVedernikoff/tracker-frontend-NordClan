@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import Select from 'react-select';
 import * as css from './PortfolioEditor.scss';
-import getPortfolios from '../../../../utils/getPortfolios';
+// import getPortfolios from '../../../../utils/getPortfolios';
 import { changeProject } from '../../../../actions/Project';
 import checkProjectAdmin from '../../../../utils/checkProjectAdmin';
 import localize from './portfolioEditor.json';
@@ -13,6 +13,7 @@ class PortfolioEditor extends Component {
   static propTypes = {
     changeProject: PropTypes.func,
     lang: PropTypes.string.isRequired,
+    portfolios: PropTypes.array,
     project: PropTypes.object.isRequired,
     user: PropTypes.object.isRequired
   };
@@ -77,20 +78,24 @@ class PortfolioEditor extends Component {
   };
 
   render() {
-    const SelectAsync = Select.AsyncCreatable;
     const { user, project, lang } = this.props;
     const isProjectAdmin = checkProjectAdmin(user, project.id);
+
+    const portfoliosOptions = this.props.portfolios.map(portfolio => ({
+      label: portfolio.name,
+      value: portfolio.id
+    }));
 
     return (
       <div className={css.PortfolioEditor}>
         <h2>{localize[lang].PORTFOLIO}</h2>
-        <SelectAsync
+        <Select
           promptTextCreator={label => `${localize[lang].PORTFOLIO} '${label}'`}
           searchPromptText={localize[lang].ENTER_NAME_PORTFOLIO}
           multi={false}
           ignoreCase={false}
           placeholder={localize[lang].SELECT_PORTFOLIO}
-          loadOptions={getPortfolios}
+          options={portfoliosOptions}
           filterOption={el => el}
           disabled={!isProjectAdmin}
           onChange={this.handlePortfolioChange}
@@ -103,6 +108,7 @@ class PortfolioEditor extends Component {
 }
 
 const mapStateToProps = state => ({
+  portfolios: state.Portfolios.portfolios,
   project: state.Project.project,
   user: state.Auth.user,
   lang: state.Localize.lang
