@@ -114,14 +114,13 @@ export default class Attachments extends Component {
     let mainSrc = '';
 
     if (attachments.length) {
-      mainSrc = `/${attachments[photoIndex].path}`;
+      mainSrc = attachments[photoIndex].path;
       nextSrc =
-        attachments[nextImageIndex((photoIndex + 1) % attachments.length)].path !== mainSrc && attachments.length > 1
+        attachments[nextImageIndex((photoIndex + 1) % attachments.length)].path !== mainSrc
           ? attachments[nextImageIndex((photoIndex + 1) % attachments.length)].path
           : undefined;
       prevSrc =
-        attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path !== mainSrc &&
-        attachments.length > 1
+        attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path !== mainSrc
           ? attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path
           : undefined;
     }
@@ -134,6 +133,7 @@ export default class Attachments extends Component {
         </ul>
         {isOpen && (
           <Lightbox
+            mainSrc={`/${mainSrc}`}
             nextSrc={nextSrc}
             prevSrc={prevSrc}
             onCloseRequest={this.closeImage}
