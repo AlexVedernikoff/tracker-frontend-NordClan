@@ -63,8 +63,8 @@ class Tags extends Component {
 
   isValidNewOption = label => {
     let testValue = label.label;
-    const noTagValueRu = 'без тега';
-    const noTagValueEn = 'no tag';
+    const noTagValueRu = localize.ru.WITHOUT_TAG.toLowerCase();
+    const noTagValueEn = localize.en.WITHOUT_TAG.toLowerCase();
     if (typeof testValue === 'string') {
       testValue = testValue.toLowerCase().trim();
       return testValue.length > 0 ? !(testValue === noTagValueEn || testValue === noTagValueRu) : false;
