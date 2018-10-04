@@ -96,48 +96,49 @@
   height: 3rem;
   margin: calc(0.5rem - 2px);
   position: relative;
-
-  &.weekend {
-    background-color: lighten(black, 93%);
-    transition: $transition;
-  }
-
-  &.submitted {
-    input {
-      background-color: $color-dark-gray;
-      color: rgba(white, 0.9);
+  &.hasValue {
+    &.weekend {
+      background-color: lighten(black, 93%);
+      transition: $transition;
     }
-  }
 
-  &.approved {
-    input {
-      background-color: $color-green;
-      color: rgba(white, 0.9);
-    }
-  }
-
-  &.rejected {
-    input {
-      background-color: $color-light-red;
-      color: rgba(white, 0.9);
-    }
-  }
-
-  &.filled {
-    input {
-      background: $color-dark;
-      color: rgba(white, 0.7);
-
-      &:focus {
-        color: white;
+    &.submitted {
+      input {
+        background-color: $color-dark-gray;
+        color: rgba(white, 0.9);
       }
     }
 
-    .toggleComment {
-      color: rgba(white, 0.5);
+    &.approved {
+      input {
+        background-color: $color-green;
+        color: rgba(white, 0.9);
+      }
+    }
 
-      &:hover {
-        color: rgba(white, 0.8);
+    &.rejected {
+      input {
+        background-color: $color-light-red;
+        color: rgba(white, 0.9);
+      }
+    }
+
+    &.filled {
+      input {
+        background: $color-dark;
+        color: rgba(white, 0.7);
+
+        &:focus {
+          color: white;
+        }
+      }
+
+      .toggleComment {
+        color: rgba(white, 0.5);
+
+        &:hover {
+          color: rgba(white, 0.8);
+        }
       }
     }
   }

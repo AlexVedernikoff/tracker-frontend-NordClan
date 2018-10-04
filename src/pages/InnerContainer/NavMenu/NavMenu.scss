@@ -1,9 +1,19 @@
-@import "../../../styles/variables.scss";
+@import '../../../styles/variables.scss';
 
 .navigation {
   background: $color-lightgray;
   border-right: 1px solid $color-gray;
   width: 240px;
+  box-sizing: border-box;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.navigationMenuClosed {
+  background: $color-lightgray;
+  border-right: 1px solid $color-gray;
+  width: 60px;
   box-sizing: border-box;
   height: 100%;
   display: flex;
@@ -58,7 +68,7 @@
   padding: 16px 16px 16px 56px;
   line-height: 16px;
   text-decoration: none;
-  transition: background .3s ease-out 0s;
+  transition: background 0.3s ease-out 0s;
   margin-right: -1px;
 
   &:visited,
@@ -70,7 +80,28 @@
 
   &:hover {
     background: $color-gray;
-    transition: background .3s ease-out 0s;
+    transition: background 0.3s ease-out 0s;
+  }
+}
+
+.sidebarLinkClosed {
+  display: block;
+  padding: 16px 16px 16px 16px;
+  line-height: 16px;
+  text-decoration: none;
+  transition: background 0.3s ease-out 0s;
+  margin-right: -1px;
+
+  &:visited,
+  &:active,
+  &:focus,
+  & {
+    color: inherit;
+  }
+
+  &:hover {
+    background: $color-gray;
+    transition: background 0.3s ease-out 0s;
   }
 }
 
@@ -134,4 +165,10 @@
     width: 100%;
     object-fit: cover;
   }
+}
+
+.toggleButton {
+  width: 100%;
+  position: absolute;
+  bottom: 0px;
 }
