@@ -224,11 +224,12 @@ class PlaylistItem extends Component {
             <input
               className={classnames({
                 [css.withStatus]: statusId,
-                [css.filled]: +spentTime,
+                [css.filled]: +spentTime && statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED,
                 [css.approved]: statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED,
                 [css.submitted]: statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED,
                 [css.rejected]: statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED,
-                [css.input]: true
+                [css.input]: true,
+                [css.editable]: true
               })}
               type="text"
               onChange={this.handleChangeTime}
