@@ -229,7 +229,7 @@ class PlaylistItem extends Component {
                 [css.submitted]: statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED,
                 [css.rejected]: statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED,
                 [css.input]: true,
-                [css.editable]: true
+                [css.editable]: !timesheetDisabled
               })}
               type="text"
               onChange={this.handleChangeTime}
