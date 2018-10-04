@@ -71,7 +71,6 @@ class InnerContainer extends Component {
 
   toggleMenu = () => {
     this.setState({
-      sidebarDocked: !this.state.sidebarDocked,
       sidebarOpen: !this.state.sidebarOpen
     });
   };
@@ -94,10 +93,16 @@ class InnerContainer extends Component {
   };
 
   render() {
-    const sidebar = <NavMenu toggleMenu={this.toggleMenu} />;
+    const sidebar = (
+      <NavMenu
+        toggleMenu={this.toggleMenu}
+        mqlMatches={!!this.state.mql.matches}
+        sidebarOpened={this.state.sidebarOpen}
+      />
+    );
     const sidebarStyles = {
       sidebar: {
-        width: 240,
+        width: this.state.sidebarOpen ? 240 : 60,
         zIndex: cssVariables.zSidebarLayer
       },
       content: {
