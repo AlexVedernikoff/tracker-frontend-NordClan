@@ -295,13 +295,15 @@ class ParticipantEditor extends Component {
                 ))
               : null}
           </div>
-          <Button
-            text={localize[lang].ADD_EXTERNAL_USERS}
-            type="primary"
-            addedClassNames={{ [css.addButton]: true }}
-            icon="IconPlus"
-            onClick={this.handleOpenModalAddExternal}
-          />
+          {this.disableButton() ? (
+            <Button
+              text={localize[lang].ADD_EXTERNAL_USERS}
+              type="primary"
+              addedClassNames={{ [css.addButton]: true }}
+              icon="IconPlus"
+              onClick={this.handleOpenModalAddExternal}
+            />
+          ) : null}
         </div>
         {this.state.isModalOpenAddUser ? (
           <Modal isOpen contentLabel="modal" onRequestClose={this.handleCloseModalAddUser}>
