@@ -7,6 +7,7 @@ import { updateDraft, updateTimesheet } from '../../../../../actions/TimesheetPl
 import debounce from 'lodash/debounce';
 import find from 'lodash/find';
 import * as css from '../Playlist.scss';
+import * as timesheetsConstants from '../../../../../constants/Timesheets';
 import getMaIcon from '../../../../../constants/MagicActivityIcons';
 import roundNum from '../../../../../utils/roundNum';
 import validateNumber from '../../../../../utils/validateNumber';
@@ -130,7 +131,9 @@ class PlaylistItem extends Component {
       taskStatus: createDraftStatus,
       isDraft,
       isVisible,
-      sprint
+      sprint,
+      statusId,
+      spentTime
     } = this.props.item;
     const { lang, disabled: timesheetDisabled } = this.props;
     const status = task ? task.taskStatus : null;
@@ -219,6 +222,15 @@ class PlaylistItem extends Component {
         <div className={css.time}>
           <div className={css.today}>
             <input
+              className={classnames({
+                [css.withStatus]: statusId,
+                [css.filled]: +spentTime && statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED,
+                [css.approved]: statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED,
+                [css.submitted]: statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED,
+                [css.rejected]: statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED,
+                [css.input]: true,
+                [css.editable]: !timesheetDisabled
+              })}
               type="text"
               onChange={this.handleChangeTime}
               value={this.state.itemSpentTime}
