@@ -69,6 +69,12 @@ class InnerContainer extends Component {
     });
   };
 
+  toggleMenu = () => {
+    this.setState({
+      sidebarOpen: !this.state.sidebarOpen
+    });
+  };
+
   onSetSidebarOpen = open => {
     this.setState({ sidebarOpen: open });
   };
@@ -87,10 +93,16 @@ class InnerContainer extends Component {
   };
 
   render() {
-    const sidebar = <NavMenu />;
+    const sidebar = (
+      <NavMenu
+        toggleMenu={this.toggleMenu}
+        mqlMatches={!!this.state.mql.matches}
+        sidebarOpened={this.state.sidebarOpen}
+      />
+    );
     const sidebarStyles = {
       sidebar: {
-        width: 240,
+        width: this.state.sidebarOpen ? 240 : 60,
         zIndex: cssVariables.zSidebarLayer
       },
       content: {
@@ -100,6 +112,7 @@ class InnerContainer extends Component {
       }
     };
     const { sidebarDocked, sidebarOpen } = this.state;
+
     return (
       <div>
         <div>
@@ -111,7 +124,12 @@ class InnerContainer extends Component {
             styles={sidebarStyles}
             onSetOpen={this.onSetSidebarOpen}
           >
-            <AppHead toggleMenu={() => this.onSetSidebarOpen(true)} />
+            <AppHead
+              toggleMenu={
+                this.state.mql.matches && !sidebarDocked ? this.toggleMenu : () => this.onSetSidebarOpen(true)
+              }
+              toggleMenuIcon={this.state.mql.matches && !sidebarDocked}
+            />
             <ScrollContainer scrollKey={'innerContainer'} shouldUpdateScroll={this.shouldUpdateScroll}>
               <div className={css.contentWrapper}>
                 <div className={css.content}>{this.props.children}</div>
