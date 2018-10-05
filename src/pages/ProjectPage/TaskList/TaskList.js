@@ -385,20 +385,31 @@ class TaskList extends Component {
     return (
       <div>
         <section>
-          <div className={css.filters}>
+          <div>
             <Row className={css.search} top="xs">
-              <Col xs={12} sm={3} className={css.priorityFilter}>
+              <Col xs={12} sm={2} className={css.priorityFilter}>
                 <Priority onChange={this.onChangePrioritiesFilter} priority={prioritiesId} canEdit />
               </Col>
-              <Col smOffset={4} xs={12} sm={5} className={css.clearFilters}>
+              <Col xs={12} sm={6}>
+                <Input
+                  placeholder={localize[lang].ENTER_TITLE_TASK}
+                  value={this.state.changedFilters.name || ''}
+                  onChange={this.changeNameFilter}
+                />
+              </Col>
+              <Col xs={6} sm={2}>
                 <Button
+                  style={{ width: '100%' }}
                   onClick={this.props.openCreateTaskModal}
                   type="primary"
                   text={localize[lang].CREATE_TASK}
                   icon="IconPlus"
                   name="right"
                 />
+              </Col>
+              <Col xs={6} sm={2}>
                 <Button
+                  style={{ width: '100%' }}
                   type="primary"
                   text={localize[lang].CLEAR_FILTERS}
                   icon="IconBroom"
@@ -409,29 +420,12 @@ class TaskList extends Component {
             </Row>
             <Row className={css.search} top="xs">
               <Col xs={12} sm={3}>
-                <SelectDropdown
-                  name="type"
-                  placeholder={localize[lang].SELECT_TYPE_TASK}
+                <SprintSelector
+                  value={sprintId}
+                  sprints={project.sprints}
+                  onChange={this.onChangeSprintFilter}
                   multi
-                  noResultsText={localize[lang].SELECT_TYPE_TASK_EMPTY}
-                  backspaceToRemoveMessage={''}
-                  clearAllText={localize[lang].CLEAR_ALL}
-                  value={typeId}
-                  options={typeOptions}
-                  onChange={this.onChangeTypeFilter}
-                />
-              </Col>
-              <Col xs={12} sm={3}>
-                <SelectDropdown
-                  name="status"
-                  placeholder={localize[lang].SELECT_STATUS_TASK}
-                  multi
-                  noResultsText={localize[lang].NO_MATCH_STATUS}
-                  backspaceToRemoveMessage={''}
-                  clearAllText={localize[lang].CLEAR_ALL}
-                  value={statusId}
-                  options={statusOptions}
-                  onChange={this.onChangeStatusFilter}
+                  useId
                 />
               </Col>
               <Col xs={12} sm={3}>
@@ -446,16 +440,39 @@ class TaskList extends Component {
                 />
               </Col>
               <Col xs={12} sm={3}>
-                <SprintSelector
-                  value={sprintId}
-                  sprints={project.sprints}
-                  onChange={this.onChangeSprintFilter}
-                  multi
-                  useId
-                />
+                <PerformerFilter onPerformerSelect={this.onChangePerformerFilter} selectedPerformerId={performerId} />
+              </Col>
+              <Col xs={12} sm={3}>
+                <TagsFilter filterFor={'task'} onTagSelect={this.onChangeTagFilter} filterTags={tags} />
               </Col>
             </Row>
             <Row className={css.search}>
+              <Col xs={6} sm={3}>
+                <SelectDropdown
+                  name="status"
+                  placeholder={localize[lang].SELECT_STATUS_TASK}
+                  multi
+                  noResultsText={localize[lang].NO_MATCH_STATUS}
+                  backspaceToRemoveMessage={''}
+                  clearAllText={localize[lang].CLEAR_ALL}
+                  value={statusId}
+                  options={statusOptions}
+                  onChange={this.onChangeStatusFilter}
+                />
+              </Col>
+              <Col xs={6} sm={3}>
+                <SelectDropdown
+                  name="type"
+                  placeholder={localize[lang].SELECT_TYPE_TASK}
+                  multi
+                  noResultsText={localize[lang].SELECT_TYPE_TASK_EMPTY}
+                  backspaceToRemoveMessage={''}
+                  clearAllText={localize[lang].CLEAR_ALL}
+                  value={typeId}
+                  options={typeOptions}
+                  onChange={this.onChangeTypeFilter}
+                />
+              </Col>
               <Col xs={6} sm={3}>
                 <DatepickerDropdown
                   name="dateFrom"
@@ -489,21 +506,6 @@ class TaskList extends Component {
                   placeholder={localize[lang].TO}
                   format={dateFormat}
                 />
-              </Col>
-              <Col xs={12} sm={6}>
-                <Input
-                  placeholder={localize[lang].ENTER_TITLE_TASK}
-                  value={this.state.changedFilters.name || ''}
-                  onChange={this.changeNameFilter}
-                />
-              </Col>
-            </Row>
-            <Row className={css.search}>
-              <Col xs={12} sm={3}>
-                <PerformerFilter onPerformerSelect={this.onChangePerformerFilter} selectedPerformerId={performerId} />
-              </Col>
-              <Col xs={12} sm={3}>
-                <TagsFilter filterFor={'task'} onTagSelect={this.onChangeTagFilter} filterTags={tags} />
               </Col>
             </Row>
           </div>

@@ -1,0 +1,142 @@
+@import '../../../styles/variables.scss';
+
+.relatedTasks {
+  padding: 16px 0 0 16px;
+
+  @include phone {
+    padding: 16px 0 0 0;
+  }
+}
+
+.taskList {
+  padding: 0;
+  margin: 0;
+  font-size: 13px;
+}
+
+.taskLink {
+  padding-left: 0.4rem;
+}
+
+.taskStatusIcon {
+  padding-left: 0.3em;
+}
+
+.taskStatus {
+  padding-top: 0.3rem;
+  font-size: 11px;
+  width: 40px;
+}
+
+.task {
+  display: flex;
+  cursor: pointer;
+  position: relative;
+  z-index: 0; // New z-index stack created
+  list-style-type: none;
+  padding: 1rem 2.5rem 1rem 1rem;
+  transition: background-color 0.3s ease-out 0s;
+  border-top: 1px solid $color-gray;
+  position: relative;
+  &.completed {
+    background-color: $color-gray;
+  }
+  .taskLabel {
+    color: lighten($color-black, 20%);
+    flex-shrink: 0;
+    display: flex;
+  }
+
+  .taskLeftContent {
+    flex-grow: 2;
+  }
+
+  .taskRightContent {
+    padding-left: 30px;
+    flex-grow: 1;
+  }
+
+  a {
+    text-decoration: none;
+    flex-grow: 0;
+  }
+
+  &:hover {
+    background-color: rgba($color-black, 0.05);
+    transition: background-color 0.3s ease-out 0s;
+
+    .iconClose {
+      opacity: 0.7;
+    }
+  }
+}
+
+.add {
+  padding: 1rem;
+  position: relative;
+  box-sizing: border-box;
+  height: 48px;
+  font-size: 13px;
+  color: lighten($color-black, 40%);
+  text-align: center;
+  text-decoration: none;
+  justify-content: center;
+  border-bottom: 1px solid $color-gray;
+
+  .tooltip {
+    display: inline-block;
+  }
+  svg {
+    display: none;
+  }
+
+  &:hover {
+    .tooltip {
+      display: none;
+    }
+    svg {
+      display: inline-block;
+    }
+  }
+}
+
+.iconClose {
+  position: absolute;
+  opacity: 0;
+  right: 1rem;
+  top: 1rem;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    color: $color-dark;
+  }
+}
+
+.createGitlabProject {
+  min-width: 330px;
+  max-width: 500px;
+  padding: 2rem;
+
+  @include phone {
+    padding: 1rem;
+    min-width: 250px;
+  }
+
+  h3 {
+    margin-top: 0;
+  }
+}
+
+.modalContainer {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  > div {
+    margin-bottom: 1rem;
+  }
+  > button {
+    width: 100px;
+    align-self: center;
+  }
+}

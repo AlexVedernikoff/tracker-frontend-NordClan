@@ -17,6 +17,7 @@ import * as css from './CreateTaskModal.scss';
 import Priority from '../Priority';
 import { closeCreateTaskModal, createTask } from '../../actions/Project';
 import { BACKLOG_ID } from '../../constants/Sprint';
+import { IN_PROGRESS } from '../../constants/SprintStatuses';
 import Validator from '../ValidatedInput/Validator';
 import TextEditor from '../../components/TextEditor';
 import Checkbox from '../../components/Checkbox/Checkbox';
@@ -33,7 +34,7 @@ class CreateTaskModal extends Component {
     super(props);
 
     this.state = {
-      selectedSprint: props.selectedSprintValue,
+      selectedSprint: this.getInitialSprint(props),
       selectedPerformer: props.defaultPerformerId || null,
       taskName: '',
       description: '',
@@ -49,6 +50,16 @@ class CreateTaskModal extends Component {
 
     this.validator = new Validator();
   }
+
+  getInitialSprint = ({ selectedSprintValue, sprints }) => {
+    if (selectedSprintValue) {
+      return selectedSprintValue;
+    }
+
+    const activeSprint = sprints.find(sprint => sprint.statusId === IN_PROGRESS);
+
+    return activeSprint ? activeSprint.id : 0;
+  };
 
   handleModalSprintChange = selectedSprint => {
     this.setState({
@@ -214,7 +225,7 @@ class CreateTaskModal extends Component {
                     />
                   ),
                   'taskName',
-                  this.state.taskName.length < 4
+                  this.state.taskName.length < 4 || this.state.taskName.length > 256
                 )}
               </Col>
             </Row>
@@ -338,6 +349,7 @@ class CreateTaskModal extends Component {
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <InputNumber
                   min={0}
+                  maxLength={5}
                   postfix={'ч.'}
                   onChange={this.handleChangePlannedTime}
                   value={this.state.plannedExecutionTime}
@@ -381,6 +393,7 @@ CreateTaskModal.propTypes = {
   parentTaskId: PropTypes.number,
   project: PropTypes.object,
   selectedSprintValue: PropTypes.number,
+  sprints: PropTypes.array,
   taskTypes: PropTypes.array
 };
 
@@ -395,7 +408,8 @@ const mapStateToProps = state => ({
   isCreateChildTaskModalOpen: state.Project.isCreateChildTaskModalOpen,
   taskTypes: getTaskTypes(getLocalizedTaskTypes(state)),
   isCreateTaskRequestInProgress: state.Project.isCreateTaskRequestInProgress,
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  sprints: state.Project.project.sprints
 });
 
 const mapDispatchToProps = {

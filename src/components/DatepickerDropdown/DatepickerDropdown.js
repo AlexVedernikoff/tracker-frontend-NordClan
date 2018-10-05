@@ -7,6 +7,7 @@ import * as css from './DatepickerDropdown.scss';
 import 'moment/locale/ru';
 import LocaleUtils from 'react-day-picker/moment';
 import { connect } from 'react-redux';
+import InputWithDateMask from './InputWithDateMask';
 
 class DatepickerDropdown extends Component {
   constructor(props) {
@@ -19,6 +20,7 @@ class DatepickerDropdown extends Component {
     return (
       <DayPickerInput
         {...other}
+        component={InputWithDateMask}
         clickUnselectsDay
         className={css.dropdown}
         format="DD.MM.YYYY"

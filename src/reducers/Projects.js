@@ -15,11 +15,6 @@ const InitialState = {
 
 function Projects(state = InitialState, action) {
   switch (action.type) {
-    case ProjectsActions.PROJECTS_RECEIVE_START:
-      return {
-        ...state
-      };
-
     case ProjectsActions.PROJECTS_RECEIVE_SUCCESS:
       return {
         ...state,

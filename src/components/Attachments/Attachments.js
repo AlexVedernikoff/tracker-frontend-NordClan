@@ -112,17 +112,19 @@ export default class Attachments extends Component {
     let nextSrc = '';
     let prevSrc = '';
     let mainSrc = '';
+
     if (attachments.length) {
       mainSrc = attachments[photoIndex].path;
       nextSrc =
         attachments[nextImageIndex((photoIndex + 1) % attachments.length)].path !== mainSrc
-          ? `/${attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path}`
+          ? attachments[nextImageIndex((photoIndex + 1) % attachments.length)].path
           : undefined;
       prevSrc =
         attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path !== mainSrc
-          ? `/${attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path}`
+          ? attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path
           : undefined;
     }
+
     return (
       <div className={css.attachments}>
         <ul className={css.attachmentsContainer}>
@@ -147,6 +149,6 @@ export default class Attachments extends Component {
 Attachments.propTypes = {
   attachments: PropTypes.array,
   canEdit: PropTypes.bool,
-  removeAttachment: PropTypes.func.isRequired,
-  uploadAttachments: PropTypes.func.isRequired
+  removeAttachment: PropTypes.func,
+  uploadAttachments: PropTypes.func
 };

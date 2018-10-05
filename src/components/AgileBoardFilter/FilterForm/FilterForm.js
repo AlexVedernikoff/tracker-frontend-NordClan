@@ -3,6 +3,7 @@ import React from 'react';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { UnmountClosed } from 'react-collapse';
 import debounce from 'lodash/debounce';
+import ReactTooltip from 'react-tooltip';
 
 import * as css from './FilterForm.scss';
 import localize from './FilterForm.json';
@@ -19,6 +20,10 @@ import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
 
 class FilterForm extends React.Component {
   debouncedSelectValue = debounce(this.props.setFilterValue, 500);
+
+  componentDidUpdate() {
+    ReactTooltip.rebuild();
+  }
 
   updateListsAndTasks = () => {
     this.props.getTasks();
@@ -55,12 +60,11 @@ class FilterForm extends React.Component {
   getFilterTagsProps() {
     const {
       tags,
-      noTagData,
-      filters: { filterTags, noTag }
+      filters: { filterTags }
     } = this.props;
     return {
-      value: !noTag ? filterTags : [noTagData].concat(filterTags),
-      options: filterTags.length ? tags : [noTagData].concat(tags)
+      value: filterTags,
+      options: tags
     };
   }
 
@@ -125,7 +129,7 @@ class FilterForm extends React.Component {
               <Button
                 onClick={this.props.generateShareLink}
                 type="primary"
-                text={this.props.shareButtonText}
+                data-tip={this.props.shareButtonText}
                 icon="IconLink"
                 name="right"
                 disabled={this.props.isFilterEmpty}
@@ -136,7 +140,7 @@ class FilterForm extends React.Component {
             <Col xs={12} sm={6}>
               <Input
                 placeholder={localize[lang].TASK_NAME}
-                value={filters.name || ''}
+                defaultValue={filters.name || ''}
                 onChange={this.onNameFilterChange}
               />
             </Col>

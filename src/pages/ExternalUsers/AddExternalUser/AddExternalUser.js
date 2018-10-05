@@ -172,7 +172,7 @@ class AddExternalUser extends Component {
           closeTimeoutMS={200}
         >
           <div className={css.container}>
-            <h3 style={{ margin: 0 }}>{localize[lang].ADD_EXTERNAL_USER}</h3>
+            <h3 style={{ margin: 0 }}>{localize[lang].ADD_EXTERNAL_USER_TITLE}</h3>
             <hr />
             {errorNotice}
             <label className={css.formField}>

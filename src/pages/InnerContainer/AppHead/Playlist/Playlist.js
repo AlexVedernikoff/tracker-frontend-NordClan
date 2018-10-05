@@ -337,6 +337,7 @@ class Playlist extends Component {
                 <div className={css.time}>
                   <div className={css.today}>
                     <input
+                      className={css.input}
                       type="text"
                       value={this.getScaleAll(currentUserTracks, this.state.activeDayTab) || 0}
                       data-tip={localize[lang].TOTAL}
