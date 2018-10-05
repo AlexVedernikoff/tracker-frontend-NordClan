@@ -12,8 +12,8 @@
     "ENTER_TITLE_TASK": "Enter a title for the task",
     "EDIT_TASK_PERFORMER": "Edit task performer",
     "EDIT_TASK_SPRINT": "Edit task sprint",
-    "FROM": "From",
-    "TO": "To"
+    "FROM": "Choose date of creation (from)",
+    "TO": "Choose date of creation (to)"
   },
   "ru": {
     "CREATE_TASK": "Создать задачу",
@@ -28,7 +28,7 @@
     "ENTER_TITLE_TASK": "Введите название задачи",
     "EDIT_TASK_PERFORMER": "Изменить исполнителя задачи",
     "EDIT_TASK_SPRINT": "Изменить спринт задачи",
-    "FROM": "От",
-    "TO": "Дo"
+    "FROM": "Выберите дату создания (от)",
+    "TO": "Выберите дату создания (дo)"
   }
 }

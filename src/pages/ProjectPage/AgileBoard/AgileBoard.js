@@ -198,7 +198,7 @@ class AgileBoard extends Component {
     const { lang, tags, noTagData } = this.props;
     const tasksList = this.isOnlyMine ? this.getMineSortedTasks() : this.getAllSortedTasks();
     const tasksKey = this.isOnlyMine ? 'mine' : 'all';
-    const filtersComponent = this.isOnlyMine ? null : (
+    const filtersComponent = this.props.myTaskBoard ? null : (
       <AgileBoardFilter
         {...this.props}
         getTasks={this.getTasks}
