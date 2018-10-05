@@ -3,7 +3,7 @@
   width: 34rem;
   display: block;
   @include phone {
-    display: none;
+    width: calc(100% - 7rem);
   }
 }
 
@@ -34,6 +34,9 @@
   height: 100%;
   &:hover {
     background-color: rgba(white, 0.1);
+  }
+  @include phone {
+    width: calc(100% - 10px);
   }
 }
 
@@ -97,6 +100,12 @@
   padding: 0 0.5rem;
   display: flex;
   align-items: center;
+  &.title {
+    @include phone {
+      width: calc(100% - 3.5rem);
+      padding: 0 0 0 0.5rem;
+    }
+  }
   &.currentItem {
     .taskName {
       position: relative;
@@ -158,6 +167,10 @@
   position: relative;
   box-shadow: $box-shadow;
   background: white;
+  @include phone {
+    left: -54px;
+    width: calc(100% + 108px);
+  }
 }
 
 .time {
@@ -223,38 +236,52 @@
       margin-bottom: 0;
     }
   }
-  .type {
-    flex: 1;
+  .activities {
     display: flex;
-    position: relative;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 0.5rem;
-    cursor: pointer;
-    background-color: lighten(black, 95%);
-    transition: $transition;
-    .countBadge {
-      position: absolute;
-      opacity: 1;
-      color: darken(silver, 10%);
-      top: -0.25rem;
-      right: -0.25rem;
-      z-index: 2;
-      background: white;
-      border-color: silver;
-    }
-    svg {
-      width: 16px;
-      height: 16px;
-      opacity: 0.7;
-    }
-    &:hover {
-      background-color: lighten(black, 90%);
+    width: calc(100% - 56px);
+    .type {
+      background-color: aqua;
+      flex: 1;
+      display: flex;
+      position: relative;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0.5rem;
+      cursor: pointer;
+      background-color: lighten(black, 95%);
       transition: $transition;
+      .countBadge {
+        position: absolute;
+        opacity: 1;
+        color: darken(silver, 10%);
+        top: -0.25rem;
+        right: -0.25rem;
+        z-index: 2;
+        background: white;
+        border-color: silver;
+      }
+      svg {
+        width: 16px;
+        height: 16px;
+        opacity: 0.7;
+      }
+      &:hover {
+        background-color: lighten(black, 90%);
+        transition: $transition;
+      }
+      &.active {
+        background-color: lighten(black, 85%);
+      }
+      @include phone {
+        min-width: 56px;
+        min-height: 36px;
+      }
     }
-    &.active {
-      background-color: lighten(black, 85%);
+    @include phone {
+      flex-shrink: 0;
+      overflow-y: auto;
+      overflow-x: scroll;
     }
   }
 }

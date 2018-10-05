@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { IconPause, IconPlay, IconList } from '../../../../../components/Icons';
+import classnames from 'classnames';
 import localization from './activeTaskPanel.json';
 import * as css from '../Playlist.scss';
 
@@ -75,7 +76,7 @@ class ActiveTaskPanel extends Component {
         <div className={css.actionButton} onClick={this.changeStatus}>
           <Icon />
         </div>
-        <div className={css.taskNameWrapper}>
+        <div className={classnames(css.taskNameWrapper, css.title)}>
           <div className={css.taskTitle}>
             <div className={css.meta}>{title}</div>
             <div className={css.taskName}>{taskName}</div>

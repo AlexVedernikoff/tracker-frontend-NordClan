@@ -6,7 +6,9 @@
   color: #ebebeb;
   display: block;
   text-decoration: none;
-  @include phone {padding: 16px;}
+  @include phone {
+    display: none;
+  }
 
   &.onLight {
     color: $color-dark;
