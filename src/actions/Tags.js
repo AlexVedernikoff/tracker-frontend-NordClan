@@ -13,24 +13,24 @@ const tagsCreateSucces = tags => ({
   data: tags
 });
 
-// const tagsCreateError = err => ({
-//   type: TagsActions.TAGS_CREATE_ERROR,
-//   error: err
-// });
+const tagsCreateError = err => ({
+  type: TagsActions.TAGS_CREATE_ERROR,
+  error: err
+});
 
 const startTagsDelete = () => ({
   type: TagsActions.TAGS_DELETE_START
 });
 
-const tagsDeleteSucces = tags => ({
+const tagsDeleteSuccess = tags => ({
   type: TagsActions.TAGS_DELETE_SUCCESS,
   data: tags
 });
 
-// const tagsDeleteError = err => ({
-//   type: TagsActions.TAGS_DELETE_ERROR,
-//   error: err
-// });
+const tagsDeleteError = err => ({
+  type: TagsActions.TAGS_DELETE_ERROR,
+  error: err
+});
 
 const startTagsFilter = () => ({
   type: TagsActions.GET_TAGS_FILTER_START
@@ -58,7 +58,6 @@ export const createTags = (tags, taggable, taggableId) => {
         taggableId: taggableId
       })
       .then(res => {
-        dispatch(finishLoading());
         if (!res.data) return;
 
         dispatch(
@@ -67,7 +66,11 @@ export const createTags = (tags, taggable, taggableId) => {
             tags: res.data
           })
         );
-      });
+      })
+      .catch(error => {
+        dispatch(tagsCreateError(error));
+      })
+      .finally(() => dispatch(finishLoading()));
   };
 };
 
@@ -76,17 +79,22 @@ export const deleteTag = (tag, taggable, taggableId) => {
   return dispatch => {
     dispatch(startTagsDelete());
     dispatch(startLoading());
-    axios.delete(URL).then(res => {
-      dispatch(finishLoading());
-      if (!res.data) return;
+    axios
+      .delete(URL)
+      .then(res => {
+        if (!res.data) return;
 
-      dispatch(
-        tagsDeleteSucces({
-          taggableId: taggableId,
-          tags: res.data
-        })
-      );
-    });
+        dispatch(
+          tagsDeleteSuccess({
+            taggableId: taggableId,
+            tags: res.data
+          })
+        );
+      })
+      .catch(error => {
+        dispatch(tagsDeleteError(error));
+      })
+      .finally(() => dispatch(finishLoading()));
   };
 };
 
@@ -114,7 +122,7 @@ export const getTagsFilter = (tagName, filterFor) => {
             error: error
           })
         );
-        dispatch(finishLoading());
-      });
+      })
+      .finally(() => dispatch(finishLoading()));
   };
 };
