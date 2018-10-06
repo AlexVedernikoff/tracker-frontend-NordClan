@@ -2,16 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import {
-  IconPlus,
   IconArrowLeft,
   IconArrowRight,
-  IconTime,
   IconCalendar,
   IconEdit,
   IconPortfolio,
   IconUsers,
   IconExternalUsers,
-  IconCall,
   IconUser
 } from '../../../components/Icons';
 import { connect } from 'react-redux';

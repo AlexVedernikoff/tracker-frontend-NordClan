@@ -19,11 +19,11 @@ import SprintSelector from '../../SprintSelector';
 import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
 
 class FilterForm extends React.Component {
-  debouncedSelectValue = debounce(this.props.setFilterValue, 500);
-
   componentDidUpdate() {
     ReactTooltip.rebuild();
   }
+
+  debouncedSelectValue = debounce(this.props.setFilterValue, 500);
 
   updateListsAndTasks = () => {
     this.props.getTasks();

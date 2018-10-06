@@ -21,7 +21,8 @@ class AppHead extends Component {
     lang: PropTypes.string,
     loading: PropTypes.number,
     setLocalize: PropTypes.func,
-    toggleMenu: PropTypes.func
+    toggleMenu: PropTypes.func,
+    toggleMenuIcon: PropTypes.bool
   };
 
   constructor(props) {

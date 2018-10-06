@@ -42,7 +42,7 @@ class NewProject extends Component {
   };
 
   render() {
-    const { projectIds, lang } = this.props;
+    const { lang } = this.props;
     const invalid = false;
 
     return (
