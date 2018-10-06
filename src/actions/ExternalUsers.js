@@ -95,12 +95,12 @@ export const activateExternalUserStart = () => ({
   type: externalUsersActions.ACTIVATE_EXTERNAL_USER_START
 });
 export const activateExternalUserSuccess = () => ({
-  type: externalUsersActions.AСTIVATE_EXTERNAL_USER_SUCCESS
+  type: externalUsersActions.ACTIVATE_EXTERNAL_USER_SUCCESS
 });
 export const activateExternalUser = (token, password) => {
   const URL = `${API_URL}/user/password/${token}`;
   return dispatch => {
-    dispatch(addExternalUserStart());
+    dispatch(activateExternalUserStart());
     dispatch(startLoading());
     axios
       .put(URL, {
