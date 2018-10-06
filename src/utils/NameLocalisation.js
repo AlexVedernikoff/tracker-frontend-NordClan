@@ -6,11 +6,17 @@ store.subscribe(() => {
 });
 
 export function getFirstName(user) {
-  return lang === 'ru' ? user.firstNameRu : user.firstNameEn;
+  if (lang === 'ru' && user.firstNameRu) {
+    return user.firstNameRu;
+  }
+  return (user.firstNameEn && user.firstNameEn) || user.firstNameRu || '';
 }
 
 export function getLastName(user) {
-  return lang === 'ru' ? user.lastNameRu : user.lastNameEn;
+  if (lang === 'ru' && user.lastNameRu) {
+    return user.lastNameRu;
+  }
+  return (user.lastNameEn && user.lastNameEn) || user.lastNameRu || '';
 }
 
 const fullEn = 'fullNameEn';
