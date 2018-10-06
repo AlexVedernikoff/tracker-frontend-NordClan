@@ -138,6 +138,7 @@
     "test": "jest",
     "precommit": "pretty-quick --staged",
     "preinstall": "rm -rf node_modules/",
+    "prepush": "npm run eslint && npm test",
     "eslint": "eslint src --max-warnings 0",
     "fix": "eslint --fix"
   },
