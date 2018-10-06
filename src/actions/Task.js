@@ -22,9 +22,9 @@ const getTaskSuccess = task => ({
   data: task
 });
 
-// const getTaskHistoryStart = () => ({
-//   type: TaskActions.GET_TASK_HISTORY_REQUEST_SENT
-// });
+const getTaskHistoryStart = () => ({
+  type: TaskActions.GET_TASK_HISTORY_REQUEST_SENT
+});
 
 const getTaskHistorySuccess = history => ({
   type: TaskActions.GET_TASK_HISTORY_REQUEST_SUCCESS,
@@ -263,6 +263,7 @@ const getTaskHistory = (id, options) => {
   const URL = `${API_URL}/task/${id}/history`;
   return dispatch => {
     dispatch(startLoading());
+    dispatch(getTaskHistoryStart());
     axios
       .get(URL, {
         params: {
