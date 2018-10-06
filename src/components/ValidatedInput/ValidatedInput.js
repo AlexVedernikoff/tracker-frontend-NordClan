@@ -39,7 +39,9 @@ class ValidatedInput extends Component {
   };
 
   render() {
-    const { errorText, backendErrorText, ...other } = this.props;
+    /* eslint-disable no-unused-vars */
+    const { errorText, backendErrorText, shouldMarkError, ...other } = this.props; //shouldMarkError попадает в инпут
+    /* eslint-enable no-unused-vars*/
     const { isFocused, isError } = this.state;
 
     return (
