@@ -387,11 +387,12 @@ class TaskList extends Component {
         <section>
           <div>
             <Row className={css.search} top="xs">
-              <Col xs={12} sm={2} className={css.priorityFilter}>
-                <Priority onChange={this.onChangePrioritiesFilter} priority={prioritiesId} canEdit />
-              </Col>
-              <Col xs={12} sm={6}>
+              <Col xs={12} sm={8} className={css.withPriority}>
+                <div className={css.priorityFilter}>
+                  <Priority onChange={this.onChangePrioritiesFilter} priority={prioritiesId} canEdit />
+                </div>
                 <Input
+                  className={css.input}
                   placeholder={localize[lang].ENTER_TITLE_TASK}
                   value={this.state.changedFilters.name || ''}
                   onChange={this.changeNameFilter}
