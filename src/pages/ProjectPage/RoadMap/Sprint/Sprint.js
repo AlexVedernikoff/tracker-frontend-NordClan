@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import TimeLine from '../TimeLine';
 import styles from './Sprint.scss';
+import Goal from '../Goal';
 
 class Sprint extends Component {
   static propTypes = {
@@ -21,10 +22,16 @@ class Sprint extends Component {
 
   render() {
     const { item, globalStart, globalEnd } = this.props;
+    const goals = item.goals.map(goal => <Goal key={goal.id} item={goal} />);
     return (
       <div className={styles.sprint}>
         <div className={styles.leftBlock}>
           <h2>{item.name}</h2>
+          <div className={styles.meta}>
+            <div className={styles.metaItem}>{item.budget} ч.</div>
+            <div className={styles.metaItem}>{item.riskBudget} ч. - риск.</div>
+            <div className={styles.metaItem}>{item.qaPercent} % на QA</div>
+          </div>
         </div>
         <div className={styles.rightBlock}>
           <TimeLine
@@ -33,6 +40,7 @@ class Sprint extends Component {
             sprintStart={item.factStartDate}
             sprintEnd={item.factFinishDate}
           />
+          <div className={styles.goals}>{goals}</div>
         </div>
       </div>
     );

@@ -1,5 +1,12 @@
 @import '../../../../styles/variables.scss';
 
+.lineContainer {
+  position: relative;
+  height: 1px;
+  margin-top: 1.75rem;
+  margin-bottom: 1.25rem;
+}
+
 .timeline {
   position: absolute;
   height: 1px;
@@ -11,4 +18,35 @@
   position: absolute;
   bottom: 0;
   border-top: 1px dashed white;
+
+  .start,
+  .end {
+    content: '';
+    display: block;
+    width: 0.5rem;
+    height: 0.5rem;
+    position: absolute;
+    top: -0.25rem;
+    border: 1px solid gray;
+    background-color: white;
+    border-radius: 50%;
+
+    .date {
+      font-size: $font-size-small;
+      position: absolute;
+      color: gray;
+      top: -1rem;
+      width: 4rem;
+      left: -2rem;
+      text-align: center;
+    }
+  }
+
+  .start {
+    left: -0.25rem;
+  }
+
+  .end {
+    right: -0.25rem;
+  }
 }

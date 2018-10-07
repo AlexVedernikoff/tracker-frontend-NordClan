@@ -39,7 +39,6 @@ class TimeLine extends Component {
   }
 
   get sprintPosition() {
-    console.log(this.sprintStart, this.lineStart);
     const left = this.sprintStart.diff(this.lineStart, 'days') * this.segment + '%';
     const right = this.lineEnd.diff(this.sprintEnd, 'days') * this.segment + '%';
     return { left, right };
@@ -47,8 +46,17 @@ class TimeLine extends Component {
 
   render() {
     return (
-      <div className={styles.timeline}>
-        <div className={styles.currentSprint} style={this.sprintPosition} />
+      <div className={styles.lineContainer}>
+        <div className={styles.timeline}>
+          <div className={styles.currentSprint} style={this.sprintPosition}>
+            <div className={styles.start}>
+              <span className={styles.date}>{this.sprintStart.format('DD.MM.YYYY')}</span>
+            </div>
+            <div className={styles.end}>
+              <span className={styles.date}>{this.sprintEnd.format('DD.MM.YYYY')}</span>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

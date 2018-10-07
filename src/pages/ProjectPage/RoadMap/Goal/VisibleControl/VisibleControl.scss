@@ -1,0 +1,13 @@
+@import '../../../../../styles/variables.scss';
+
+.visibleControl {
+  display: block;
+  margin-left: -1.25rem;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  color: $color-dark-gray;
+}
+
+.invisible {
+  opacity: 0.4;
+}

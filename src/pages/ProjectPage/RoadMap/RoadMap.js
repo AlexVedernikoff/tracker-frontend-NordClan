@@ -22,7 +22,7 @@ const mock = [
         done: false,
         visible: true,
         description:
-          'Предполагается, что здесь будет обширный и подробный комментарий, который в дополнение к название, красиво опишет цель',
+          'Предполагается, что здесь будет обширный и подробный комментарий, который в дополнение к названию, красиво опишет цель',
         budget: null,
         tasksCount: 15,
         removedFromSprint: null,
@@ -31,7 +31,7 @@ const mock = [
       {
         id: 2,
         name: 'Готовая верстка внешних виджетов',
-        done: false,
+        done: true,
         visible: true,
         description: null,
         budget: 50,

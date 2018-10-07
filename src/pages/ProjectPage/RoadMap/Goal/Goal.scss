@@ -1,0 +1,25 @@
+@import '../../../../styles/variables.scss';
+
+.goal {
+  & + .goal {
+    margin-top: 0.75rem;
+  }
+}
+
+.mainContainer {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+}
+
+.description {
+  margin-left: 1.5rem;
+  max-width: 30rem;
+  font-size: $font-size-small;
+  color: gray;
+  margin-top: 0.25rem;
+}
+
+.checkbox {
+  margin-right: 0.5rem;
+}
