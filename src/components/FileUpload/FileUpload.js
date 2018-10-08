@@ -22,7 +22,7 @@ class FileUpload extends React.Component {
     };
 
     return (
-      <div>
+      <div style={{ height: '100%', width: '100%' }}>
         {!this.props.isMinimal ? (
           <Dropzone onDrop={this.props.onDrop} style={{}}>
             <li className={css.attachment}>

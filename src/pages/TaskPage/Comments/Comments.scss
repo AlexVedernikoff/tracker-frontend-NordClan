@@ -142,7 +142,7 @@
     flex-shrink: 0;
   }
   textarea {
-    padding-right: 2.5rem;
+    padding-right: 3.25rem;
     width: 100%;
     max-width: 100%;
     transition: height 0.3s;
@@ -200,8 +200,13 @@
 }
 
 .attachIcon {
-  @extend .sendIcon;
-  left: -2rem;
+  right: 3.5rem;
+  position: absolute;
+  font-size: 1.5rem;
+  top: 0.25rem;
+  opacity: 0.4;
+  cursor: pointer;
+  transition: $transition;
 }
 
 .disabled {
