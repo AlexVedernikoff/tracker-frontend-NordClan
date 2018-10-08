@@ -145,14 +145,16 @@ class NavMenu extends Component {
           <span>{localize[lang].MY_PROJECTS}</span>
         </Link>
       </li>,
-      <li key="tasks" className={css.sidebarItem}>
-        <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/tasks">
-          <button>
-            <IconEdit style={iconStyles} />
-          </button>
-          <span>{localize[lang].MY_TASKS}</span>
-        </Link>
-      </li>,
+      this.props.user.globalRole !== EXTERNAL_USER && (
+        <li key="tasks" className={css.sidebarItem}>
+          <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/tasks">
+            <button>
+              <IconEdit style={iconStyles} />
+            </button>
+            <span>{localize[lang].MY_TASKS}</span>
+          </Link>
+        </li>
+      ),
       timesheetsLink,
       usersRolesLink,
       externalUsersLink,
