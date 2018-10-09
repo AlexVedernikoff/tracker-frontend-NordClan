@@ -140,7 +140,7 @@ class FilterForm extends React.Component {
             <Col xs={12} sm={6}>
               <Input
                 placeholder={localize[lang].TASK_NAME}
-                defaultValue={filters.name || ''}
+                value={filters.name || ''}
                 onChange={this.onNameFilterChange}
               />
             </Col>
