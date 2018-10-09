@@ -32,8 +32,8 @@ class Sprint extends Component {
             <div className={styles.metaItem}>{item.budget} ч.</div>
             <div className={styles.metaItem}>{item.riskBudget} ч. - риск.</div>
             <div className={styles.metaItem}>{item.qaPercent}% на QA</div>
-            <div className={`${styles.metaItem}, ${styles.export}`} data-tip="Выгрузить спринт">
-              <IconDownload />
+            <div className={`${styles.metaItem}, ${styles.export}`}>
+              <IconDownload data-tip="Выгрузить спринт" />
             </div>
           </div>
         </div>
