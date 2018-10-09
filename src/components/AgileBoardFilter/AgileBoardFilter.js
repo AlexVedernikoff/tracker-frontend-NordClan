@@ -25,10 +25,6 @@ class AgileBoardFilter extends React.Component {
     allFilters: []
   };
 
-  componentDidMount = () => {
-    this.updateFilterList();
-  };
-
   componentDidUpdate() {
     ReactTooltip.rebuild();
   }

@@ -13,6 +13,10 @@ export const mapFilterFromUrl = (label, value, isArray = false) => {
     return value.split(',').map(val => +val);
   }
 
+  if (label === 'filterTags') {
+    return value.split(',').map(val => val);
+  }
+
   return value;
 };
 
