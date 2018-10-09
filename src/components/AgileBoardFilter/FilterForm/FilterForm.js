@@ -2,7 +2,6 @@ import React from 'react';
 
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { UnmountClosed } from 'react-collapse';
-import debounce from 'lodash/debounce';
 import ReactTooltip from 'react-tooltip';
 
 import * as css from './FilterForm.scss';
@@ -19,8 +18,6 @@ import SprintSelector from '../../SprintSelector';
 import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
 
 class FilterForm extends React.Component {
-  debouncedSelectValue = debounce(this.props.setFilterValue, 500);
-
   componentDidUpdate() {
     ReactTooltip.rebuild();
   }
@@ -47,7 +44,7 @@ class FilterForm extends React.Component {
     this.props.setFilterValue('authorId', option ? option.value : null, this.updateListsAndTasks);
   onTypeFilterChange = options =>
     this.props.setFilterValue('typeId', options.map(op => op.value), this.updateListsAndTasks);
-  onNameFilterChange = e => this.debouncedSelectValue('name', e.target.value, this.updateListsAndTasks);
+  onNameFilterChange = e => this.props.setFilterValue('name', e.target.value, this.updateListsAndTasks);
   onIsOnlyMineFilterChange = () => {
     const isOnlyMine = !this.props.filters.isOnlyMine;
     this.props.setFilterValue('isOnlyMine', isOnlyMine, this.props.updateFilterList);
