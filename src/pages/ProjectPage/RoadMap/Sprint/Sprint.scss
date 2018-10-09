@@ -2,6 +2,10 @@
 
 .sprint {
   display: flex;
+
+  & + .sprint {
+    margin-top: 2rem;
+  }
 }
 
 .leftBlock {
@@ -20,4 +24,32 @@
 
 .goals {
   // margin-top: 2rem;
+}
+
+.addingButton {
+  margin-top: 0.75rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: $transition;
+
+  &:hover {
+    opacity: 1;
+    transition: 1;
+  }
+}
+
+.addingIcon {
+  color: $color-dark-gray;
+  margin-right: 0.5rem;
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
+}
+
+.export {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
 }

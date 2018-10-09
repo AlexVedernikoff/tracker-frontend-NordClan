@@ -6,6 +6,10 @@
   }
 }
 
+.name {
+  line-height: 1.3;
+}
+
 .mainContainer {
   display: flex;
   flex-wrap: nowrap;
@@ -22,4 +26,17 @@
 
 .checkbox {
   margin-right: 0.5rem;
+}
+
+.removedIcon {
+  margin-right: 0.5rem;
+  font-size: 1rem;
+  height: 1rem;
+  width: 1rem;
+  color: $color-dark-gray;
+}
+
+.removed {
+  color: $color-dark-gray;
+  text-decoration: line-through;
 }

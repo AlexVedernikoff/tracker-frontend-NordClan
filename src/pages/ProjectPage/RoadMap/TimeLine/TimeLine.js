@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 
 import styles from './TimeLine.scss';
+import { IconArrowDown } from '../../../../components/Icons';
 
 class TimeLine extends Component {
   static propTypes = {
@@ -15,6 +16,10 @@ class TimeLine extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+  }
+
+  get currentDate() {
+    return moment();
   }
 
   get lineStart() {
@@ -33,6 +38,17 @@ class TimeLine extends Component {
     return moment(this.props.sprintEnd);
   }
 
+  get progressStart() {
+    return moment(this.props.sprintStart);
+  }
+
+  get progressEnd() {
+    if (this.currentDate.isAfter(this.sprintEnd)) {
+      return this.sprintEnd;
+    }
+    return this.currentDate;
+  }
+
   get segment() {
     const daysCount = this.lineEnd.diff(this.lineStart, 'days');
     return 100 / daysCount;
@@ -42,6 +58,25 @@ class TimeLine extends Component {
     const left = this.sprintStart.diff(this.lineStart, 'days') * this.segment + '%';
     const right = this.lineEnd.diff(this.sprintEnd, 'days') * this.segment + '%';
     return { left, right };
+  }
+
+  get progressPosition() {
+    const left = this.progressStart.diff(this.lineStart, 'days') * this.segment + '%';
+    const right = this.lineEnd.diff(this.progressEnd, 'days') * this.segment + '%';
+    return { left, right };
+  }
+
+  get todayPosition() {
+    const right = this.lineEnd.diff(this.currentDate, 'days') * this.segment + '%';
+    return { right };
+  }
+
+  get isProgress() {
+    return this.currentDate.isAfter(this.sprintStart);
+  }
+
+  get isCurrentSprint() {
+    return this.currentDate.isAfter(this.sprintStart) && this.currentDate.isBefore(this.sprintEnd);
   }
 
   render() {
@@ -57,6 +92,8 @@ class TimeLine extends Component {
             </div>
           </div>
         </div>
+        {this.isProgress && <div className={styles.progress} style={this.progressPosition} />}
+        {this.isCurrentSprint && <IconArrowDown className={styles.today} style={this.todayPosition} />}
       </div>
     );
   }
