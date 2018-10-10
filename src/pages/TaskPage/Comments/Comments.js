@@ -193,7 +193,7 @@ class Comments extends Component {
         this.props.publishComment(this.props.taskId, newComment);
       }
       this.stashAttachments();
-      this.state.disabledBtn = true;
+      this.setState({ disabledBtn: true });
     }
   };
 
@@ -211,7 +211,7 @@ class Comments extends Component {
   };
 
   hanldeAttachedFiles = files => {
-    this.setState({ isAttachedToComment: true });
+    this.setState({ isAttachedToComment: true, disabledBtn: false });
     this.props.uploadAttachments(this.props.taskId, files);
   };
 
