@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { Row, Col } from 'react-flexbox-grid/lib/index';
-import debounce from 'lodash/debounce';
 import ReactTooltip from 'react-tooltip';
 
 import * as css from './FilterForm.scss';
@@ -18,8 +17,6 @@ import SprintSelector from '../../SprintSelector';
 import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
 
 class FilterForm extends React.Component {
-  debouncedSelectValue = debounce(this.props.setFilterValue, 500);
-
   componentDidUpdate() {
     ReactTooltip.rebuild();
   }
@@ -46,7 +43,7 @@ class FilterForm extends React.Component {
     this.props.setFilterValue('authorId', option ? option.value : null, this.updateListsAndTasks);
   onTypeFilterChange = options =>
     this.props.setFilterValue('typeId', options.map(op => op.value), this.updateListsAndTasks);
-  onNameFilterChange = e => this.debouncedSelectValue('name', e.target.value, this.updateListsAndTasks);
+  onNameFilterChange = e => this.props.setFilterValue('name', e.target.value, this.updateListsAndTasks);
   onIsOnlyMineFilterChange = () => {
     const isOnlyMine = !this.props.filters.isOnlyMine;
     this.props.setFilterValue('isOnlyMine', isOnlyMine, this.props.updateFilterList);
@@ -68,7 +65,7 @@ class FilterForm extends React.Component {
   }
 
   getSprintTime(sprints) {
-    return sprints && sprints.length && this.props.sprints.length
+    return sprints && sprints.length && this.props.sprints && this.props.sprints.length
       ? sprints.map(sprint => {
           const sprintData = this.props.sprints.find(data => data.id === +sprint.value) || {};
           return `${sprintData.spentTime || 0} / ${sprintData.budget || 0}`;
@@ -77,7 +74,7 @@ class FilterForm extends React.Component {
   }
 
   clearFilters = () => {
-    this.props.clearFilters(this.updateListsAndTasks);
+    this.props.clearFilters({ changedSprint: [0] }, this.updateListsAndTasks);
   };
 
   render() {

@@ -24,28 +24,20 @@ class AgileBoardFilter extends React.Component {
     allFilters: []
   };
 
-  componentDidMount = () => {
-    this.updateFilterList();
-  };
-
   componentDidUpdate = prevProps => {
-    const { currentSprint } = this.props;
     ReactTooltip.rebuild();
-    if (currentSprint.length && currentSprint !== prevProps.currentSprint && this.isBacklogSelected) {
-      this.props.setFilterValue('changedSprint', [currentSprint[0].value], this.updateFilterList);
+
+    const { currentSprint } = this.props;
+
+    if (currentSprint !== prevProps.currentSprint && this.isSprintFilterEmpty) {
+      const sprintValue = currentSprint.length ? currentSprint[0].value : 0;
+      this.props.setFilterValue('changedSprint', [sprintValue], this.updateFilterList);
     }
-    const boolFilters = Object.values(this.props.filters).map(f => (Array.isArray(f) ? !!f.length : !!f));
+
     if (
       prevProps.project.users !== this.props.project.users ||
       prevProps.typeOptions !== this.props.typeOptions ||
-      (!this.state.allFilters.length && !this.props.isFilterEmpty) ||
-      (this.state.allFilters.length === 1 &&
-        this.state.allFilters[0].label === 'Backlog' &&
-        this.props.filters.changedSprint[0] !== 0) ||
-      (this.state.allFilters.length === 1 &&
-        this.state.allFilters[0].label === 'Backlog' &&
-        this.props.filters.changedSprint.length > 1) ||
-      (this.state.allFilters.length === 1 && boolFilters.filter(f => f).length > 1)
+      (!this.state.allFilters.length && !this.props.isFilterEmpty)
     ) {
       this.updateFilterList();
     }
@@ -57,11 +49,11 @@ class AgileBoardFilter extends React.Component {
     }));
   };
 
-  get isBacklogSelected() {
+  get isSprintFilterEmpty() {
     const {
       filters: { changedSprint }
     } = this.props;
-    return changedSprint.length === 1 && changedSprint[0] === 0;
+    return !changedSprint.length;
   }
 
   get isVisor() {
@@ -205,7 +197,7 @@ class AgileBoardFilter extends React.Component {
   };
 
   clearFilters = () => {
-    this.props.clearFilters(this.updateFilterList);
+    this.props.clearFilters({ changedSprint: [0] }, this.updateFilterList);
   };
 
   render() {
