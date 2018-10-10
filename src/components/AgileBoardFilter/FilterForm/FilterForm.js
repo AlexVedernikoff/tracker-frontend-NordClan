@@ -66,7 +66,7 @@ class FilterForm extends React.Component {
   }
 
   getSprintTime(sprints) {
-    return sprints && sprints.length && this.props.sprints.length
+    return sprints && sprints.length && this.props.sprints && this.props.sprints.length
       ? sprints.map(sprint => {
           const sprintData = this.props.sprints.find(data => data.id === +sprint.value) || {};
           return `${sprintData.spentTime || 0} / ${sprintData.budget || 0}`;
@@ -75,7 +75,7 @@ class FilterForm extends React.Component {
   }
 
   clearFilters = () => {
-    this.props.clearFilters(this.updateListsAndTasks);
+    this.props.clearFilters({ changedSprint: [0] }, this.updateListsAndTasks);
   };
 
   render() {
