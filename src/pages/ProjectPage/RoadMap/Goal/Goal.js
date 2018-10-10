@@ -4,9 +4,8 @@ import cn from 'classnames';
 
 import Checkbox from '../../../../components/Checkbox';
 import VisibleControl from './VisibleControl';
-import AddingButton from './AddingButton';
 import Meta from './Meta';
-import { IconArrowLeft } from '../../../../components/Icons';
+import { IconArrowLeft, IconEdit, IconDelete, IconPlus, IconArrowRight } from '../../../../components/Icons';
 
 import styles from './Goal.scss';
 
@@ -50,8 +49,11 @@ class Sprint extends Component {
           <span className={cn(styles.name, { [styles.removed]: !!removedToSprint })}>{item.name}</span>
           <Meta {...metaProps} />
           {!removedToSprint && (
-            <span>
-              <AddingButton />
+            <span className={styles.actionButtons}>
+              <IconPlus className={styles.actionIcon} data-tip="Добавить задачу в цель" />
+              <IconEdit className={styles.actionIcon} data-tip="Изменить цель" />
+              <IconDelete className={styles.actionIcon} data-tip="Удалить цель" />
+              <IconArrowRight className={styles.actionIcon} data-tip="Перенести в следующий спринт" />
             </span>
           )}
         </div>

@@ -9,12 +9,6 @@
   height: 1rem;
   background-color: $color-dark-gray;
   color: white;
-  opacity: 0.3;
   margin-left: 0.75rem;
   transition: $transition;
-
-  &:hover {
-    opacity: 1;
-    transition: $transition;
-  }
 }

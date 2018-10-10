@@ -4,7 +4,22 @@
   display: flex;
 
   & + .sprint {
-    margin-top: 2rem;
+    // margin-top: 0.5rem;
+  }
+}
+
+.collapseIcon {
+  cursor: pointer;
+  margin-top: 1rem;
+  height: 1.25rem;
+  width: 1.25rem;
+  font-size: 1.25rem;
+  opacity: 0.5;
+  transition: $transition;
+
+  &:hover {
+    opacity: 1;
+    transition: $transition;
   }
 }
 
@@ -23,7 +38,7 @@
 }
 
 .goals {
-  // margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 
 .addingButton {

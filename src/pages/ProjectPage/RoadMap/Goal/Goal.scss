@@ -4,6 +4,13 @@
   & + .goal {
     margin-top: 0.75rem;
   }
+
+  &:hover {
+    .actionIcon {
+      opacity: 0.6;
+      transition: $transition;
+    }
+  }
 }
 
 .name {
@@ -39,4 +46,26 @@
 .removed {
   color: $color-dark-gray;
   text-decoration: line-through;
+}
+
+.actionButtons {
+  display: flex;
+  align-items: center;
+  height: 1rem;
+  margin-left: 0.5rem;
+  line-height: $font-size-base;
+
+  & > .actionIcon {
+    font-size: 1rem;
+    color: gray;
+    opacity: 0;
+    margin-left: 0.4rem;
+    cursor: pointer;
+    transition: $transition;
+
+    &:hover {
+      opacity: 1;
+      transition: $transition;
+    }
+  }
 }
