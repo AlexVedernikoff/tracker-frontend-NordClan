@@ -124,9 +124,8 @@ class Comments extends Component {
       }
     }
     if (prevProps.attachments.length !== this.props.attachments.length && this.state.isAttachedToComment) {
-      const diff = _.difference(this.props.attachments, prevProps.attachments);
       const attachments = this.props.attachments.map(item => {
-        return { ...item, display: diff.some(i => i === item) };
+        return { ...item, display: true };
       });
 
       this.setState({ attachments: attachments, isAttachedToComment: false });
