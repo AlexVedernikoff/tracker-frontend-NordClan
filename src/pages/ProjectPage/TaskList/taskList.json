@@ -13,7 +13,9 @@
     "EDIT_TASK_PERFORMER": "Edit task performer",
     "EDIT_TASK_SPRINT": "Edit task sprint",
     "FROM": "Choose date of creation (from)",
-    "TO": "Choose date of creation (to)"
+    "TO": "Choose date of creation (to)",
+    "AUTHOR": "author",
+    "MY_TASKS": "my tasks"
   },
   "ru": {
     "CREATE_TASK": "Создать задачу",
@@ -29,6 +31,8 @@
     "EDIT_TASK_PERFORMER": "Изменить исполнителя задачи",
     "EDIT_TASK_SPRINT": "Изменить спринт задачи",
     "FROM": "Выберите дату создания (от)",
-    "TO": "Выберите дату создания (дo)"
+    "TO": "Выберите дату создания (дo)",
+    "AUTHOR": "автор",
+    "MY_TASKS": "мои задачи"
   }
 }
