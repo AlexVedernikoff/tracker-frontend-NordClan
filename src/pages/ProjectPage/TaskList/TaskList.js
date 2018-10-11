@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
+import moment from 'moment';
+import uniqBy from 'lodash/uniqBy';
+
 import TaskRow from '../../../components/TaskRow';
 import InlineHolder from '../../../components/InlineHolder';
 import Priority from '../../../components/Priority';
@@ -10,30 +13,46 @@ import SprintSelector from '../../../components/SprintSelector';
 import SelectDropdown from '../../../components/SelectDropdown';
 import Input from '../../../components/Input';
 import Pagination from '../../../components/Pagination';
-import * as css from './TaskList.scss';
 import TagsFilter from '../../../components/TagsFilter';
 import PerformerFilter from '../../../components/PerformerFilter';
+import CollapsibleRow from '../../../components/CollapsibleRow';
 import { EXTERNAL_USER } from '../../../constants/Roles';
-import uniqBy from 'lodash/uniqBy';
 import PerformerModal from '../../../components/PerformerModal';
 import SprintModal from '../../../components/SprintModal';
-import getTasks from '../../../actions/Tasks';
-import { history } from '../../../History';
-import { changeTask, startTaskEditing } from '../../../actions/Task';
 import DatepickerDropdown from '../../../components/DatepickerDropdown';
-import moment from 'moment';
 import CreateTaskModal from '../../../components/CreateTaskModal';
-import { openCreateTaskModal } from '../../../actions/Project';
-import localize from './taskList.json';
+import Tag from '../../../components/Tag';
+import withFiltersManager from '../../../components/FiltrersManager/FiltersManager';
+import getPriorityById from '../../../utils/TaskPriority';
+
 import { getFullName, getDictionaryName } from '../../../utils/NameLocalisation';
+import { openCreateTaskModal } from '../../../actions/Project';
+import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { getLocalizedTaskTypes, getLocalizedTaskStatuses } from '../../../selectors/dictionaries';
+import { history } from '../../../History';
+import getTasks from '../../../actions/Tasks';
+import * as css from './TaskList.scss';
+import localize from './taskList.json';
+import { IconBroom } from '../../../components/Icons';
 
 const dateFormat = 'DD.MM.YYYY';
+
+export const initialFilters = {
+  isOnlyMine: false,
+  changedSprint: [],
+  filterTags: [],
+  typeId: [],
+  name: null,
+  authorId: null,
+  prioritiesId: null,
+  performerId: null
+};
 
 class TaskList extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      allFilters: [],
       activePage: 1,
       isPerformerModalOpen: false,
       isSprintModalOpen: false,
@@ -44,6 +63,7 @@ class TaskList extends Component {
   componentDidMount() {
     if (this.props.project.id) {
       this.loadTasks();
+      this.updateFilterList();
     }
   }
 
@@ -225,24 +245,30 @@ class TaskList extends Component {
   };
 
   changeMultiFilter = (options, name) => {
-    this.setState(state => {
-      const filterValue = options.map(option => option.value);
-      const changedFilters = { ...state.changedFilters };
+    this.setState(
+      state => {
+        const filterValue = options.map(option => option.value);
+        const changedFilters = { ...state.changedFilters };
 
-      if (filterValue.length) {
-        changedFilters[name] = filterValue;
-      } else {
-        delete changedFilters[name];
-      }
+        if (filterValue.length) {
+          changedFilters[name] = filterValue;
+        } else {
+          delete changedFilters[name];
+        }
 
-      this.changeUrl(changedFilters);
+        this.changeUrl(changedFilters);
 
-      return {
-        activePage:
-          state.changedFilters[name] && state.changedFilters[name].length !== filterValue.length ? 1 : state.activePage,
-        changedFilters
-      };
-    }, this.loadTasks);
+        return {
+          activePage:
+            state.changedFilters[name] && state.changedFilters[name].length !== filterValue.length
+              ? 1
+              : state.activePage,
+          changedFilters
+        };
+      },
+      this.loadTasks,
+      this.updateFilterList
+    );
   };
 
   changeNameFilter = event => {
@@ -322,7 +348,7 @@ class TaskList extends Component {
   };
 
   handleDayChange(value, name) {
-    this.setState(state => {
+    this.setState(() => {
       const changedFilters = { ...this.state.changedFilters };
 
       if (value) {
@@ -336,6 +362,89 @@ class TaskList extends Component {
       return { changedFilters };
     }, this.loadTasks);
   }
+
+  updateFilterList = () => {
+    if (!this.props.project.users.length) {
+      return;
+    }
+
+    const { filters } = this.props;
+    const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'name'];
+
+    const selectedFilters = singleOptionFiltersList.reduce((result, filterName) => {
+      if (!this.props.checkFilterItemEmpty(filterName)) {
+        result.push({
+          name: filterName,
+          label: this.createFilterLabel(filterName),
+          deleteHandler: () => this.resetFiled(filterName)
+        });
+      }
+      return result;
+    }, []);
+    log('changedSprint', filters);
+    this.setState({
+      allFilters: [
+        ...selectedFilters,
+        ...this.createSelectedOption([], filters.changedSprint, 'changedSprint'),
+        ...this.createSelectedOption([], filters.typeId, 'typeId'),
+        ...this.createSelectedOption([], filters.performerId, 'performerId'),
+        ...this.createSelectedOption([], filters.filterTags, 'filterTags')
+      ]
+    });
+  };
+
+  createSelectedOption = (optionList, selectedOption, optionLabel = 'name') => {
+    log('selectedOption', selectedOption);
+    const { lang } = this.props;
+    if (Array.isArray(selectedOption)) {
+      return selectedOption.map(currentId => ({
+        name: `${optionLabel}-${currentId}`,
+        label:
+          optionLabel === 'performerId'
+            ? `${localize[lang].PERFORMER}: ${this.getOptionData(optionLabel, currentId)}`
+            : this.getOptionData(optionLabel, currentId),
+        deleteHandler: () => {
+          if (optionLabel === 'changedSprint') {
+            this.removeSprint(selectedOption, currentId, optionLabel);
+            return;
+          }
+          this.removeSelectOptionByIdFromFilter(selectedOption, currentId, optionLabel);
+        }
+      }));
+    } else {
+      const option = optionList.find(element => element.id === selectedOption);
+      if (!option) return {};
+      log('option[optionLabel]', option[optionLabel]);
+      return option[optionLabel];
+    }
+  };
+
+  removeSelectOptionByIdFromFilter = (list, id, filterField) => {
+    const newList = list.filter(item => item !== id);
+    this.props.setFilterValue(filterField, newList, this.updateFilterList);
+  };
+
+  createFilterLabel = filterName => {
+    const {
+      lang,
+      filters,
+      project: { users }
+    } = this.props;
+    switch (filterName) {
+      case 'isOnlyMine':
+        return localize[lang].MY_TASKS;
+      case 'prioritiesId':
+        return `${getPriorityById(filters.prioritiesId)}`;
+      case 'authorId':
+        return `${localize[lang].AUTHOR}: ${
+          users.length ? getFullName(users.find(user => user.id === filters.authorId)) : ''
+        }`;
+      case 'name':
+        return `${filters.name}`;
+      default:
+        return '';
+    }
+  };
 
   formatDate = date => date && moment(date).format(dateFormat);
 
@@ -351,7 +460,24 @@ class TaskList extends Component {
 
   render() {
     const { tasksList: tasks, statuses, taskTypes, project, isReceiving, lang } = this.props;
+    const filterTags = this.state.allFilters.map(filter => {
+      return (
+        <Tag
+          name={filter.label}
+          deleteHandler={filter.deleteHandler}
+          key={`${filter.name}_${filter.label}`}
+          unclickable
+          blocked={filter.name === 'changedSprint'}
+        />
+      );
+    });
 
+    const clearAllButton =
+      filterTags.length === 1 && filterTags[0].key === 'Backlog' ? null : (
+        <span className={css.clearAllFilter} data-tip={localize[lang].CLEAR_FILTERS} onClick={this.clearFilters}>
+          <IconBroom />
+        </span>
+      );
     const { prioritiesId, typeId, statusId, sprintId, performerId, authorId, tags } = this.state.changedFilters;
 
     const statusOptions = this.createOptions(statuses);
@@ -385,19 +511,136 @@ class TaskList extends Component {
     return (
       <div>
         <section>
-          <div>
+          <CollapsibleRow>
+            <div>
+              <Row className={css.search} top="xs">
+                <Col xs={12} sm={8} className={css.withPriority}>
+                  <div className={css.priorityFilter}>
+                    <Priority onChange={this.onChangePrioritiesFilter} priority={prioritiesId} canEdit />
+                  </div>
+                  <Input
+                    className={css.input}
+                    placeholder={localize[lang].ENTER_TITLE_TASK}
+                    value={this.state.changedFilters.name || ''}
+                    onChange={this.changeNameFilter}
+                  />
+                </Col>
+                <Col xs={6} sm={2}>
+                  <Button
+                    style={{ width: '100%' }}
+                    onClick={this.props.openCreateTaskModal}
+                    type="primary"
+                    text={localize[lang].CREATE_TASK}
+                    icon="IconPlus"
+                    name="right"
+                  />
+                </Col>
+                <Col xs={6} sm={2}>
+                  <Button
+                    style={{ width: '100%' }}
+                    type="primary"
+                    text={localize[lang].CLEAR_FILTERS}
+                    icon="IconBroom"
+                    disabled={!isFilter}
+                    onClick={this.clearFilters}
+                  />
+                </Col>
+              </Row>
+              <Row className={css.search} top="xs">
+                <Col xs={12} sm={3}>
+                  <SprintSelector
+                    value={sprintId}
+                    sprints={project.sprints}
+                    onChange={this.onChangeSprintFilter}
+                    multi
+                    useId
+                  />
+                </Col>
+                <Col xs={12} sm={3}>
+                  <SelectDropdown
+                    name="author"
+                    placeholder={localize[lang].SELECT_AUTHOR_TASK}
+                    multi={false}
+                    value={authorId}
+                    onChange={this.onChangeAuthorFilter}
+                    noResultsText={localize[lang].NO_RESULTS}
+                    options={authorOptions}
+                  />
+                </Col>
+                <Col xs={12} sm={3}>
+                  <PerformerFilter onPerformerSelect={this.onChangePerformerFilter} selectedPerformerId={performerId} />
+                </Col>
+                <Col xs={12} sm={3}>
+                  <TagsFilter filterFor={'task'} onTagSelect={this.onChangeTagFilter} filterTags={tags} />
+                </Col>
+              </Row>
+              <Row className={css.search}>
+                <Col xs={6} sm={3}>
+                  <SelectDropdown
+                    name="status"
+                    placeholder={localize[lang].SELECT_STATUS_TASK}
+                    multi
+                    noResultsText={localize[lang].NO_MATCH_STATUS}
+                    backspaceToRemoveMessage={''}
+                    clearAllText={localize[lang].CLEAR_ALL}
+                    value={statusId}
+                    options={statusOptions}
+                    onChange={this.onChangeStatusFilter}
+                  />
+                </Col>
+                <Col xs={6} sm={3}>
+                  <SelectDropdown
+                    name="type"
+                    placeholder={localize[lang].SELECT_TYPE_TASK}
+                    multi
+                    noResultsText={localize[lang].SELECT_TYPE_TASK_EMPTY}
+                    backspaceToRemoveMessage={''}
+                    clearAllText={localize[lang].CLEAR_ALL}
+                    value={typeId}
+                    options={typeOptions}
+                    onChange={this.onChangeTypeFilter}
+                  />
+                </Col>
+                <Col xs={6} sm={3}>
+                  <DatepickerDropdown
+                    name="dateFrom"
+                    value={this.state.changedFilters ? this.state.changedFilters.dateFrom : ''}
+                    disabledDataRanges={[
+                      {
+                        after:
+                          (this.state.changedFilters.dateTo &&
+                            moment(this.state.changedFilters.dateTo, dateFormat).toDate()) ||
+                          new Date()
+                      }
+                    ]}
+                    onDayChange={this.onChangeDateFromFilter}
+                    placeholder={localize[lang].FROM}
+                    format={dateFormat}
+                  />
+                </Col>
+                <Col xs={6} sm={3}>
+                  <DatepickerDropdown
+                    name="dateTo"
+                    value={this.state.changedFilters ? this.state.changedFilters.dateTo : ''}
+                    onDayChange={this.onChangeDateToFilter}
+                    disabledDataRanges={[
+                      {
+                        before:
+                          this.state.changedFilters.dateFrom &&
+                          moment(this.state.changedFilters.dateFrom, dateFormat).toDate(),
+                        after: new Date()
+                      }
+                    ]}
+                    placeholder={localize[lang].TO}
+                    format={dateFormat}
+                  />
+                </Col>
+              </Row>
+            </div>
             <Row className={css.search} top="xs">
-              <Col xs={12} sm={8} className={css.withPriority}>
-                <div className={css.priorityFilter}>
-                  <Priority onChange={this.onChangePrioritiesFilter} priority={prioritiesId} canEdit />
-                </div>
-                <Input
-                  className={css.input}
-                  placeholder={localize[lang].ENTER_TITLE_TASK}
-                  value={this.state.changedFilters.name || ''}
-                  onChange={this.changeNameFilter}
-                />
-              </Col>
+              <Col xs={12} sm={8} className={css.withPriority} />
+              {filterTags}
+              {clearAllButton}
               <Col xs={6} sm={2}>
                 <Button
                   style={{ width: '100%' }}
@@ -419,97 +662,7 @@ class TaskList extends Component {
                 />
               </Col>
             </Row>
-            <Row className={css.search} top="xs">
-              <Col xs={12} sm={3}>
-                <SprintSelector
-                  value={sprintId}
-                  sprints={project.sprints}
-                  onChange={this.onChangeSprintFilter}
-                  multi
-                  useId
-                />
-              </Col>
-              <Col xs={12} sm={3}>
-                <SelectDropdown
-                  name="author"
-                  placeholder={localize[lang].SELECT_AUTHOR_TASK}
-                  multi={false}
-                  value={authorId}
-                  onChange={this.onChangeAuthorFilter}
-                  noResultsText={localize[lang].NO_RESULTS}
-                  options={authorOptions}
-                />
-              </Col>
-              <Col xs={12} sm={3}>
-                <PerformerFilter onPerformerSelect={this.onChangePerformerFilter} selectedPerformerId={performerId} />
-              </Col>
-              <Col xs={12} sm={3}>
-                <TagsFilter filterFor={'task'} onTagSelect={this.onChangeTagFilter} filterTags={tags} />
-              </Col>
-            </Row>
-            <Row className={css.search}>
-              <Col xs={6} sm={3}>
-                <SelectDropdown
-                  name="status"
-                  placeholder={localize[lang].SELECT_STATUS_TASK}
-                  multi
-                  noResultsText={localize[lang].NO_MATCH_STATUS}
-                  backspaceToRemoveMessage={''}
-                  clearAllText={localize[lang].CLEAR_ALL}
-                  value={statusId}
-                  options={statusOptions}
-                  onChange={this.onChangeStatusFilter}
-                />
-              </Col>
-              <Col xs={6} sm={3}>
-                <SelectDropdown
-                  name="type"
-                  placeholder={localize[lang].SELECT_TYPE_TASK}
-                  multi
-                  noResultsText={localize[lang].SELECT_TYPE_TASK_EMPTY}
-                  backspaceToRemoveMessage={''}
-                  clearAllText={localize[lang].CLEAR_ALL}
-                  value={typeId}
-                  options={typeOptions}
-                  onChange={this.onChangeTypeFilter}
-                />
-              </Col>
-              <Col xs={6} sm={3}>
-                <DatepickerDropdown
-                  name="dateFrom"
-                  value={this.state.changedFilters ? this.state.changedFilters.dateFrom : ''}
-                  disabledDataRanges={[
-                    {
-                      after:
-                        (this.state.changedFilters.dateTo &&
-                          moment(this.state.changedFilters.dateTo, dateFormat).toDate()) ||
-                        new Date()
-                    }
-                  ]}
-                  onDayChange={this.onChangeDateFromFilter}
-                  placeholder={localize[lang].FROM}
-                  format={dateFormat}
-                />
-              </Col>
-              <Col xs={6} sm={3}>
-                <DatepickerDropdown
-                  name="dateTo"
-                  value={this.state.changedFilters ? this.state.changedFilters.dateTo : ''}
-                  onDayChange={this.onChangeDateToFilter}
-                  disabledDataRanges={[
-                    {
-                      before:
-                        this.state.changedFilters.dateFrom &&
-                        moment(this.state.changedFilters.dateFrom, dateFormat).toDate(),
-                      after: new Date()
-                    }
-                  ]}
-                  placeholder={localize[lang].TO}
-                  format={dateFormat}
-                />
-              </Col>
-            </Row>
-          </div>
+          </CollapsibleRow>
 
           {isLoading
             ? taskHolder
@@ -565,20 +718,25 @@ class TaskList extends Component {
 
 TaskList.propTypes = {
   changeTask: PropTypes.func.isRequired,
+  checkFilterItemEmpty: PropTypes.func,
+  filters: PropTypes.array,
   getTasks: PropTypes.func.isRequired,
   globalRole: PropTypes.string,
   isCreateTaskModalOpen: PropTypes.bool,
   isReceiving: PropTypes.bool,
+  lang: PropTypes.string,
   lastCreatedTask: PropTypes.object,
   location: PropTypes.object,
   openCreateTaskModal: PropTypes.func.isRequired,
   pagesCount: PropTypes.number.isRequired,
   params: PropTypes.object,
   project: PropTypes.object.isRequired,
+  setFilterValue: PropTypes.func,
   startTaskEditing: PropTypes.func.isRequired,
   statuses: PropTypes.array,
   taskTypes: PropTypes.array,
-  tasksList: PropTypes.array.isRequired
+  tasksList: PropTypes.array.isRequired,
+  typeOptions: PropTypes.array
 };
 
 const mapStateToProps = state => ({
@@ -599,4 +757,4 @@ const mapDispatchToProps = { getTasks, startTaskEditing, changeTask, openCreateT
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(TaskList);
+)(withFiltersManager(TaskList, initialFilters));
