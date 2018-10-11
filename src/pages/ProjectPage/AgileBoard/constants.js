@@ -13,7 +13,7 @@ export const phaseColumnNameById = {
 
 export const initialFilters = {
   isOnlyMine: false,
-  changedSprint: [0],
+  changedSprint: [],
   filterTags: [],
   typeId: [],
   name: null,
