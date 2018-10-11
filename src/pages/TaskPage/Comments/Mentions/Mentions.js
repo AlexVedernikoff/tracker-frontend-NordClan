@@ -75,7 +75,7 @@ class Mentions extends Component {
   };
 
   isMentioned(value) {
-    return /( |^)@(\S+ \S*|\S*)$/.test(value);
+    return /@(\S+ \S*|\S*)$/.test(value);
   }
 
   chooseMention = event => {
