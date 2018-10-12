@@ -242,24 +242,30 @@ class TaskList extends Component {
   };
 
   changeMultiFilter = (options, name) => {
-    this.setState(state => {
-      const filterValue = options.map(option => option.value);
-      const changedFilters = { ...state.changedFilters };
+    this.setState(
+      state => {
+        const filterValue = options.map(option => option.value);
+        const changedFilters = { ...state.changedFilters };
 
-      if (filterValue.length) {
-        changedFilters[name] = filterValue;
-      } else {
-        delete changedFilters[name];
-      }
+        if (filterValue.length) {
+          changedFilters[name] = filterValue;
+        } else {
+          delete changedFilters[name];
+        }
 
-      this.changeUrl(changedFilters);
+        this.changeUrl(changedFilters);
 
-      return {
-        activePage:
-          state.changedFilters[name] && state.changedFilters[name].length !== filterValue.length ? 1 : state.activePage,
-        changedFilters
-      };
-    }, this.loadTasks);
+        return {
+          activePage:
+            state.changedFilters[name] && state.changedFilters[name].length !== filterValue.length
+              ? 1
+              : state.activePage,
+          changedFilters
+        };
+      },
+      this.loadTasks,
+      this.updateFilterList
+    );
   };
 
   changeNameFilter = event => {
@@ -571,7 +577,7 @@ class TaskList extends Component {
       <div>
         <section>
           <CollapsibleRow>
-            <div className={css.forCollapse}>
+            <div className={css.rowWrapper}>
               <Row className={css.search} top="xs">
                 <Col xs={12} sm={8} className={css.withPriority}>
                   <div className={css.priorityFilter}>
@@ -722,7 +728,6 @@ class TaskList extends Component {
               </Col>
             </Row>
           </CollapsibleRow>
-
           {isLoading
             ? taskHolder
             : tasks.map(task => (
