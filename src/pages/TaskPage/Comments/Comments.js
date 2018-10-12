@@ -193,7 +193,7 @@ class Comments extends Component {
         this.props.publishComment(this.props.taskId, newComment);
       }
       this.stashAttachments();
-      this.state.disabledBtn = true;
+      this.setState({ disabledBtn: true });
     }
   };
 
@@ -211,7 +211,7 @@ class Comments extends Component {
   };
 
   hanldeAttachedFiles = files => {
-    this.setState({ isAttachedToComment: true });
+    this.setState({ isAttachedToComment: true, disabledBtn: false });
     this.props.uploadAttachments(this.props.taskId, files);
   };
 
@@ -245,6 +245,10 @@ class Comments extends Component {
     ];
   }
 
+  getTextAreaNode = node => {
+    this.reply = node;
+  };
+
   getCommentList = () =>
     this.props.comments.map(comment => {
       return (
@@ -277,13 +281,13 @@ class Comments extends Component {
                 disabled={this.props.currentComment.disabled || this.props.currentComment.expired}
                 placeholder={localize[lang].ENTER_COMMENT}
                 onKeyDown={this.publishComment}
-                ref={ref => (this.reply = ref ? ref.textarea : null)}
                 value={prepairCommentForEdit(this.props.currentComment.text, this.users)}
                 updateCurrentCommentText={this.props.updateCurrentCommentText}
                 suggestions={this.users}
                 toggleBtn={this.toggleBtn}
                 onInput={this.typeComment}
                 setMentions={this.setMentions}
+                getTextAreaNode={this.getTextAreaNode}
               />
               {this.props.currentComment.id ? (
                 <div className={css.answerInfo}>

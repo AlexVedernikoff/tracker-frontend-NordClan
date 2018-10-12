@@ -189,13 +189,42 @@
   }
   .today {
     font-size: 16px;
-    background-color: rgba(black, 0.05);
     margin-bottom: 0.3rem;
-    input {
+    .input {
       width: 100%;
-      background: none;
+      background-color: rgba(black, 0.05);
       border: none;
       text-align: center;
+      &.editable {
+        box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.17);
+      }
+    }
+    .withStatus {
+      width: 100%;
+      border: none;
+      text-align: center;
+      &.filled {
+        background: lighten($color-dark, 15%);
+        color: rgba(white, 0.7);
+        box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.17);
+        &:focus {
+          color: white;
+        }
+      }
+      &.submitted {
+        background-color: $color-dark-gray;
+        color: rgba(white, 0.9);
+        box-shadow: none;
+      }
+      &.approved {
+        background-color: $color-green;
+        color: rgba(white, 0.9);
+        box-shadow: none;
+      }
+      &.rejected {
+        background-color: $color-light-red;
+        color: rgba(white, 0.9);
+      }
     }
   }
 }

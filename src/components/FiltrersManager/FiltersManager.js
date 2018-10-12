@@ -160,10 +160,13 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
       }, this.updateFilterCb.bind(this, callback));
     };
 
-    clearFilters = callback => {
+    clearFilters = (customFields, callback) => {
       this.setState(
         {
-          filters: initialFilters
+          filters: {
+            ...initialFilters,
+            ...customFields
+          }
         },
         this.updateFilterCb.bind(this, callback)
       );

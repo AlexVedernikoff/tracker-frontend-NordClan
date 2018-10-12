@@ -61,6 +61,17 @@ class Tags extends Component {
     this.setState({ multiValue: [] });
   };
 
+  isValidNewOption = label => {
+    let testValue = label.label;
+    const noTagValueRu = localize.ru.WITHOUT_TAG.toLowerCase();
+    const noTagValueEn = localize.en.WITHOUT_TAG.toLowerCase();
+    if (typeof testValue === 'string') {
+      testValue = testValue.toLowerCase().trim();
+      return testValue.length > 0 ? !(testValue === noTagValueEn || testValue === noTagValueRu) : false;
+    }
+    return false;
+  };
+
   render() {
     const { lang, tagsFromTasks } = this.props;
     const { multiValue } = this.state;
@@ -103,6 +114,7 @@ class Tags extends Component {
                     onChange={this.handleOnChange}
                     backspaceToRemoveMessage={''}
                     filterOption={layoutAgnosticFilter}
+                    isValidNewOption={this.isValidNewOption}
                   />
                   <Button
                     disabled={!this.state.multiValue.length > 0}

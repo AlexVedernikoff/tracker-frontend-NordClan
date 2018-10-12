@@ -1,8 +1,7 @@
 import React from 'react';
 
 import { Row, Col } from 'react-flexbox-grid/lib/index';
-import classnames from 'classnames';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import CollapsibleRow from '../CollapsibleRow';
 import copy from 'copy-to-clipboard';
 import ReactTooltip from 'react-tooltip';
 
@@ -13,7 +12,7 @@ import FilterForm from './FilterForm';
 import Tag from '../Tag';
 import getPriorityById from '../../utils/TaskPriority';
 import Button from '../Button';
-import { IconArrowDownThin, IconBroom } from '../Icons';
+import { IconBroom } from '../Icons';
 import { VISOR } from '../../constants/Roles';
 import { getFullName } from '../../utils/NameLocalisation';
 
@@ -25,28 +24,20 @@ class AgileBoardFilter extends React.Component {
     allFilters: []
   };
 
-  componentDidMount = () => {
-    this.updateFilterList();
-  };
-
-  componentDidUpdate() {
-    ReactTooltip.rebuild();
-  }
-
   componentDidUpdate = prevProps => {
+    ReactTooltip.rebuild();
+
     const { currentSprint } = this.props;
-    if (currentSprint.length && currentSprint !== prevProps.currentSprint && this.isBacklogSelected) {
-      this.props.setFilterValue('changedSprint', [currentSprint[0].value], this.updateFilterList);
+
+    if (currentSprint !== prevProps.currentSprint && this.isSprintFilterEmpty) {
+      const sprintValue = currentSprint && currentSprint.length ? currentSprint[0].value : 0;
+      this.props.setFilterValue('changedSprint', [sprintValue], this.updateFilterList);
     }
-    const boolFilters = Object.values(this.props.filters).map(f => (Array.isArray(f) ? !!f.length : !!f));
+
     if (
       prevProps.project.users !== this.props.project.users ||
       prevProps.typeOptions !== this.props.typeOptions ||
-      (!this.state.allFilters.length && !this.props.isFilterEmpty) ||
-      (this.state.allFilters.length === 1 &&
-        this.state.allFilters[0].label === 'Backlog' &&
-        this.props.filters.changedSprint.length > 1) ||
-      (this.state.allFilters.length === 1 && boolFilters.filter(f => f).length > 1)
+      (!this.state.allFilters.length && !this.props.isFilterEmpty)
     ) {
       this.updateFilterList();
     }
@@ -58,11 +49,11 @@ class AgileBoardFilter extends React.Component {
     }));
   };
 
-  get isBacklogSelected() {
+  get isSprintFilterEmpty() {
     const {
       filters: { changedSprint }
     } = this.props;
-    return changedSprint.length === 1 && changedSprint[0] === 0;
+    return !changedSprint.length;
   }
 
   get isVisor() {
@@ -206,11 +197,12 @@ class AgileBoardFilter extends React.Component {
   };
 
   clearFilters = () => {
-    this.props.clearFilters(this.updateFilterList);
+    this.props.clearFilters({ changedSprint: [0] }, this.updateFilterList);
   };
 
   render() {
     const { lang } = this.props;
+    const { isOpened } = this.state;
     const filterTags = this.state.allFilters.map(filter => {
       return (
         <Tag
@@ -228,78 +220,54 @@ class AgileBoardFilter extends React.Component {
           <IconBroom />
         </span>
       );
-
     return (
-      <div>
+      <CollapsibleRow isOpened={isOpened} toggleOpen={this.toggleOpen}>
         <FilterForm
           {...this.props}
-          isOpened={this.state.isOpened}
           updateFilterList={this.updateFilterList}
           generateShareLink={this.generateShareLink}
           shareButtonText={localize[lang].SHARE_FILTERS}
         />
         <Row className={css.filtersRow}>
-          <Col xs={12} sm={12}>
-            <ReactCSSTransitionGroup transitionEnterTimeout={300} transitionLeave={false} transitionName="filter">
-              {!this.state.isOpened && (
-                <Row className={css.filtersRow}>
-                  <Col xs>
-                    {filterTags.length ? (
-                      <div className={css.filterList}>
-                        <div>
-                          {filterTags}
-                          {clearAllButton}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className={css.filterList}>
-                        <span onClick={this.toggleOpen} className={css.emptyFiltersLink}>
-                          {localize[lang].NOT_SELECTED}
-                        </span>
-                      </div>
-                    )}
-                  </Col>
-                  {!this.isVisor && (
-                    <Col className={css.filterCol}>
-                      <Button
-                        onClick={this.props.openCreateTaskModal}
-                        type="primary"
-                        text={localize[lang].CREATE_TASK}
-                        icon="IconPlus"
-                        name="right"
-                      />
-                    </Col>
-                  )}
-                  <Col className={css.filterCol}>
-                    <Button
-                      onClick={this.generateShareLink}
-                      data-tip={localize[lang].SHARE_FILTERS}
-                      type="primary"
-                      icon="IconLink"
-                      name="right"
-                      disabled={this.props.isFilterEmpty}
-                    />
-                  </Col>
-                </Row>
-              )}
-            </ReactCSSTransitionGroup>
-            <div className={css.filterListShowMore}>
-              <div
-                className={css.filterListShowMoreButton}
-                data-tip={this.state.isOpened ? localize[lang].HIDE_FILTERS : localize[lang].SHOW_FILTERS}
-                onClick={this.toggleOpen}
-              >
-                <IconArrowDownThin
-                  className={classnames({
-                    [css.filterListShowMoreIcon]: true,
-                    [css.iconReverse]: this.state.isOpened
-                  })}
-                />
+          <Col xs>
+            {filterTags.length ? (
+              <div className={css.filterList}>
+                <div>
+                  {filterTags}
+                  {clearAllButton}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className={css.filterList}>
+                <span onClick={this.toggleOpen} className={css.emptyFiltersLink}>
+                  {localize[lang].NOT_SELECTED}
+                </span>
+              </div>
+            )}
+          </Col>
+          {!this.isVisor && (
+            <Col className={css.filterCol}>
+              <Button
+                onClick={this.props.openCreateTaskModal}
+                type="primary"
+                text={localize[lang].CREATE_TASK}
+                icon="IconPlus"
+                name="right"
+              />
+            </Col>
+          )}
+          <Col className={css.filterCol}>
+            <Button
+              onClick={this.generateShareLink}
+              data-tip={localize[lang].SHARE_FILTERS}
+              type="primary"
+              icon="IconLink"
+              name="right"
+              disabled={this.props.isFilterEmpty}
+            />
           </Col>
         </Row>
-      </div>
+      </CollapsibleRow>
     );
   }
 }

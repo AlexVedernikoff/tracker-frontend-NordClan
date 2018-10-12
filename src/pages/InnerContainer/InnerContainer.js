@@ -63,8 +63,10 @@ class InnerContainer extends Component {
 
   listenHistory = () => {
     this.unlistenHistory = history.listen(() => {
-      if (this.state.sidebarOpen) {
-        this.onSetSidebarOpen(false);
+      if (!mql.matches) {
+        if (this.state.sidebarOpen) {
+          this.onSetSidebarOpen(false);
+        }
       }
     });
   };
