@@ -1,0 +1,36 @@
+@import '../../styles/variables';
+
+.collapseShowMoreIcon {
+  fill: $color-dark-gray;
+  width: 21px;
+  height: 21px;
+  transition: transform 0.3s ease;
+  will-change: transform;
+}
+
+.collapseRow {
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.iconReverse {
+  transform-origin: 50% 50%;
+  transform: scale(1, -1);
+}
+
+.collapseShowMore {
+  position: relative;
+  height: 0;
+  margin: 1rem 0;
+  border-top: 1px solid #ebebeb;
+  text-align: center;
+}
+
+.collapseShowMoreButton {
+  display: inline-block;
+  padding: 0 1rem;
+  margin-top: -1rem;
+  font-size: 0;
+  background-color: #fff;
+  cursor: pointer;
+}

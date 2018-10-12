@@ -40,7 +40,7 @@ class AgileBoard extends Component {
   }
 
   componentDidMount() {
-    this.getTasks();
+    if (this.props.myTaskBoard) this.getTasks();
   }
 
   componentWillReceiveProps(nextProps) {

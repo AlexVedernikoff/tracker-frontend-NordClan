@@ -43,13 +43,6 @@ const ReactModalStyles = {
   }
 };
 
-// const iconStyles = {
-//   width: 24,
-//   height: 24,
-//   color: 'inherit',
-//   fill: 'currentColor'
-// };
-
 const ConfirmModal = props => {
   const { style, closeTimeoutMS, text, onConfirm, onCancel, notification, lang, ...other } = props;
   return (

@@ -25,7 +25,8 @@ const InitialState = {
   isCreateChildTaskModalOpen: false,
   PortfolioIsEditing: false,
   isProjectInfoReceiving: false,
-  isCreateTaskRequestInProgress: false
+  isCreateTaskRequestInProgress: false,
+  isSprintsReceiving: false
 };
 
 export default function Project(state = InitialState, action) {
@@ -38,6 +39,7 @@ export default function Project(state = InitialState, action) {
           users: action.users
         }
       };
+
     case ProjectActions.UNBIND_USER_TO_PROJECT_SUCCESS:
       return {
         ...state,
@@ -46,6 +48,7 @@ export default function Project(state = InitialState, action) {
           users: action.users
         }
       };
+
     case ProjectActions.UNBIND_EXTERNAL_USER_TO_PROJECT_SUCCESS:
       return {
         ...state,
@@ -54,13 +57,27 @@ export default function Project(state = InitialState, action) {
           externalUsers: state.project.externalUsers.filter(item => item.id !== action.userId)
         }
       };
+
     case SprintActions.SPRINTS_EDIT_SUCCESS:
       return {
         ...state,
         project: {
           ...state.project,
           sprints: action.sprints
-        }
+        },
+        isSprintsReceiving: false
+      };
+
+    case SprintActions.SPRINTS_EDIT_START:
+      return {
+        ...state,
+        isSprintsReceiving: true
+      };
+
+    case SprintActions.SPRINTS_EDIT_FAIL:
+      return {
+        ...state,
+        isSprintsReceiving: false
       };
 
     case SprintActions.SPRINTS_CREATE_SUCCESS:
