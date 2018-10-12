@@ -9,58 +9,47 @@ import * as css from './CollapsibleRow.scss';
 import { IconArrowDownThin } from '../Icons';
 import localize from './CollapsibleRow.json';
 
-class CollapsibleRow extends React.Component {
-  state = {
-    isOpened: false
-  };
-
-  toggleOpen = () => {
-    this.setState(prevState => ({
-      isOpened: !prevState.isOpened
-    }));
-  };
-
-  render() {
-    const { children, lang } = this.props;
-    const { isOpened } = this.state;
-    const contentWillHide = children[0];
-    const contentWhenHidden = children[1] || null;
-    return (
-      <div>
-        <UnmountClosed isOpened={isOpened} springConfig={{ stiffness: 90, damping: 15 }}>
-          {contentWillHide}
-        </UnmountClosed>
-        <Row className={css.collapseRow}>
-          <Col xs={12} sm={12}>
-            <ReactCSSTransitionGroup transitionEnterTimeout={300} transitionLeave={false} transitionName="filter">
-              {!isOpened && contentWhenHidden}
-            </ReactCSSTransitionGroup>
-            <div className={css.collapseShowMore}>
-              <div
-                className={css.collapseShowMoreButton}
-                data-tip={isOpened ? localize[lang].HIDE_FILTERS : localize[lang].SHOW_FILTERS}
-                onClick={this.toggleOpen}
-              >
-                <IconArrowDownThin
-                  className={classnames({
-                    [css.collapseShowMoreIcon]: true,
-                    [css.iconReverse]: isOpened
-                  })}
-                />
-              </div>
+const CollapsibleRow = props => {
+  const { children, lang, isOpened, toggleOpen } = props;
+  const contentWillHide = children[0];
+  const contentWhenHidden = children[1] || null;
+  return (
+    <div>
+      <UnmountClosed isOpened={isOpened} springConfig={{ stiffness: 90, damping: 15 }}>
+        {contentWillHide}
+      </UnmountClosed>
+      <Row className={css.collapseRow}>
+        <Col xs={12} sm={12}>
+          <ReactCSSTransitionGroup transitionEnterTimeout={300} transitionLeave={false} transitionName="filter">
+            {!isOpened && contentWhenHidden}
+          </ReactCSSTransitionGroup>
+          <div className={css.collapseShowMore}>
+            <div
+              className={css.collapseShowMoreButton}
+              data-tip={isOpened ? localize[lang].HIDE_FILTERS : localize[lang].SHOW_FILTERS}
+              onClick={toggleOpen}
+            >
+              <IconArrowDownThin
+                className={classnames({
+                  [css.collapseShowMoreIcon]: true,
+                  [css.iconReverse]: isOpened
+                })}
+              />
             </div>
-          </Col>
-        </Row>
-      </div>
-    );
-  }
-}
+          </div>
+        </Col>
+      </Row>
+    </div>
+  );
+};
 
 CollapsibleRow.propTypes = {
   children: PropTypes.arrayOf(PropTypes.element),
   closedContent: PropTypes.node,
+  isOpened: PropTypes.bool,
   lang: PropTypes.string,
-  openedContent: PropTypes.node
+  openedContent: PropTypes.node,
+  toggleOpen: PropTypes.func
 };
 
 export default CollapsibleRow;

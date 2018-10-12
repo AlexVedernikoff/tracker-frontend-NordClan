@@ -1,6 +1,5 @@
 {
   "en": {
-    "NOT_SELECTED": "Filters is not selected",
     "SHOW_FILTERS": "Show filters",
     "CLEAR_FILTERS": "Clear filters",
     "CREATE_TASK": "Create new task",
@@ -15,7 +14,6 @@
   },
 
   "ru": {
-    "NOT_SELECTED": "Фильтры не выбраны",
     "SHOW_FILTERS": "Показать фильтры",
     "CLEAR_FILTERS": "Очистить фильтры",
     "CREATE_TASK": "Создать задачу",

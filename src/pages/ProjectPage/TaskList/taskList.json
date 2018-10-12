@@ -19,6 +19,7 @@
     "TAG_TO": "To",
     "PERFORMER": "performer",
     "NOT_ASSIGNED": "Not assigned",
+    "NOT_SELECTED": "Filters is not selected",
     "MY_TASKS": "my tasks"
   },
   "ru": {
@@ -41,6 +42,7 @@
     "TAG_TO": "До",
     "PERFORMER": "исполнитель",
     "NOT_ASSIGNED": "Не назначенно",
+    "NOT_SELECTED": "Фильтры не выбраны",
     "MY_TASKS": "мои задачи"
   }
 }

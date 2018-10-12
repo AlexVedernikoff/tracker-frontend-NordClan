@@ -50,6 +50,7 @@ class TaskList extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isOpened: false,
       allFilters: [],
       activePage: 1,
       isPerformerModalOpen: false,
@@ -139,6 +140,12 @@ class TaskList extends Component {
       }
     };
   }
+
+  toggleOpen = () => {
+    this.setState(prevState => ({
+      isOpened: !prevState.isOpened
+    }));
+  };
 
   changeUrl(changedFilters) {
     const query = {};
@@ -544,6 +551,7 @@ class TaskList extends Component {
     });
 
     const { prioritiesId, typeId, statusId, sprintId, performerId, authorId, tags } = this.state.changedFilters;
+    const { isOpened } = this.state;
 
     const statusOptions = this.createOptions(statuses);
     const typeOptions = this.createOptions(taskTypes);
@@ -576,7 +584,7 @@ class TaskList extends Component {
     return (
       <div>
         <section>
-          <CollapsibleRow>
+          <CollapsibleRow isOpened={isOpened} toggleOpen={this.toggleOpen}>
             <div className={css.rowWrapper}>
               <Row className={css.search} top="xs">
                 <Col xs={12} sm={8} className={css.withPriority}>
@@ -704,7 +712,7 @@ class TaskList extends Component {
             </div>
             <Row className={css.search} top="xs">
               <Col xs={12} sm={8}>
-                {filterTags}
+                {filterTags.length ? filterTags : <span onClick={this.toggleOpen}>{localize[lang].NOT_SELECTED}</span>}
               </Col>
               <Col xs={6} sm={2}>
                 <Button
