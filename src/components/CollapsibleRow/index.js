@@ -1,4 +1,4 @@
-import AttachedImage from './AttachedImage';
+import CollapsibleRow from './CollapsibleRow';
 import { connect } from 'react-redux';
 
 const mapStateToProps = state => ({
@@ -8,4 +8,4 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   null
-)(AttachedImage);
+)(CollapsibleRow);

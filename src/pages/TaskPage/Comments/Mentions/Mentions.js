@@ -28,6 +28,10 @@ class Mentions extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.getTextAreaNode(this.textarea);
+  }
+
   moveList = e => {
     const down = e.keyCode === 40;
     const up = e.keyCode === 38;
@@ -71,7 +75,7 @@ class Mentions extends Component {
   };
 
   isMentioned(value) {
-    return /( |^)@(\S+ \S*|\S*)$/.test(value);
+    return /( |^)@(\S+ \S*|\S*)$/m.test(value);
   }
 
   chooseMention = event => {
