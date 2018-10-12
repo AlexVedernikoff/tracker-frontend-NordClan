@@ -30,7 +30,7 @@ class AgileBoardFilter extends React.Component {
     const { currentSprint } = this.props;
 
     if (currentSprint !== prevProps.currentSprint && this.isSprintFilterEmpty) {
-      const sprintValue = currentSprint.length ? currentSprint[0].value : 0;
+      const sprintValue = currentSprint && currentSprint.length ? currentSprint[0].value : 0;
       this.props.setFilterValue('changedSprint', [sprintValue], this.updateFilterList);
     }
 
