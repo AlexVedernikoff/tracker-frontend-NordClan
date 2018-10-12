@@ -27,7 +27,9 @@ class CollapsibleRow extends React.Component {
     const contentWhenHidden = children[1] || null;
     return (
       <div>
-        <UnmountClosed isOpened={isOpened}>{contentWillHide}</UnmountClosed>
+        <UnmountClosed isOpened={isOpened} springConfig={{ stiffness: 90, damping: 15 }}>
+          {contentWillHide}
+        </UnmountClosed>
         <Row className={css.collapseRow}>
           <Col xs={12} sm={12}>
             <ReactCSSTransitionGroup transitionEnterTimeout={300} transitionLeave={false} transitionName="filter">

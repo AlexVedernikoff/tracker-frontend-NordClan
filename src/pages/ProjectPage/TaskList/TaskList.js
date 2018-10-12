@@ -571,7 +571,7 @@ class TaskList extends Component {
       <div>
         <section>
           <CollapsibleRow>
-            <div>
+            <div className={css.forCollapse}>
               <Row className={css.search} top="xs">
                 <Col xs={12} sm={8} className={css.withPriority}>
                   <div className={css.priorityFilter}>
