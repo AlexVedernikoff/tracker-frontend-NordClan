@@ -32,7 +32,6 @@ import { history } from '../../../History';
 import getTasks from '../../../actions/Tasks';
 import * as css from './TaskList.scss';
 import localize from './taskList.json';
-import { IconBroom } from '../../../components/Icons';
 
 const dateFormat = 'DD.MM.YYYY';
 
@@ -321,6 +320,19 @@ class TaskList extends Component {
     this.updateFilterList();
   };
 
+  removeFilter = filterName => {
+    this.setState(
+      prevState => ({
+        ...prevState,
+        changedFilters: {
+          ...prevState.changedFilters,
+          [filterName]: null
+        }
+      }),
+      this.loadTasks
+    );
+  };
+
   clearFilters = () => {
     this.setState(
       {
@@ -373,12 +385,10 @@ class TaskList extends Component {
   getOptionData(label, value) {
     const {
       project: { users, sprints },
-      typeOptions,
+      taskTypes,
+      statuses,
       lang
     } = this.props;
-    log('label', label);
-    log('value', value);
-    log('sprints', sprints);
     switch (label) {
       case 'performerId':
         if (+value === 0) {
@@ -387,10 +397,11 @@ class TaskList extends Component {
         const user = users.find(u => u.id === +value);
         return user ? getFullName(user) : '';
       case 'changedSprint':
-        //log('this.getEditedSprints(sprints)', this.getEditedSprints(sprints));
         return this.getEditedSprints(sprints).find(el => el.value === value).label;
       case 'typeId':
-        return typeOptions.find(el => el.value === value).label;
+        return taskTypes.find(el => el.id === value).name;
+      case 'statusId':
+        return statuses.find(el => el.id === value).name;
       default:
         return value;
     }
@@ -406,7 +417,7 @@ class TaskList extends Component {
 
   updateFilterList = () => {
     const filters = this.state.changedFilters;
-    const singleOptionFiltersList = ['prioritiesId', 'authorId', 'name'];
+    const singleOptionFiltersList = ['prioritiesId', 'authorId', 'name', 'dateFrom', 'dateTo'];
 
     const selectedFilters = singleOptionFiltersList.reduce((result, filterName) => {
       if (!this.checkFilterItemEmpty(filterName)) {
@@ -418,25 +429,30 @@ class TaskList extends Component {
       }
       return result;
     }, []);
-    //log('changedSprint', filters);
     this.setState({
       allFilters: [
         ...selectedFilters,
         ...this.createSelectedOption([], filters.sprintId, 'changedSprint'),
         ...this.createSelectedOption([], filters.typeId, 'typeId'),
         ...this.createSelectedOption([], filters.performerId, 'performerId'),
-        ...this.createSelectedOption([], filters.filterTags, 'filterTags')
+        ...this.createSelectedOption([], filters.statusId, 'statusId'),
+        ...this.createSelectedOption([], filters.tags, 'tags')
       ]
     });
   };
 
   createSelectedOption = (optionList, selectedOption, optionLabel = 'name') => {
-    //log('________________________________');
-    //log('optionList', optionList);
-    //log('selectedOption', selectedOption);
-    //log('optionLabel', optionLabel);
     const { lang } = this.props;
     if (Array.isArray(selectedOption)) {
+      if (optionLabel === 'tags') {
+        return selectedOption.map(tag => ({
+          name: tag,
+          label: tag,
+          deleteHandler: () => {
+            this.removeSelectOptionByIdFromFilter(selectedOption, tag, optionLabel);
+          }
+        }));
+      }
       return selectedOption.map(currentId => ({
         name: `${optionLabel}-${currentId}`,
         label:
@@ -455,15 +471,15 @@ class TaskList extends Component {
   };
 
   removeSelectOptionByIdFromFilter = (list, id, filterField) => {
+    const filterName = filterField === 'changedSprint' ? 'sprintId' : filterField;
     const newList = list.filter(item => item !== id);
     this.setState(
       prevState => ({
         ...prevState,
         changedFilters: {
           ...prevState.changedFilters,
-          [filterField]: null
-        },
-        allFilters: [...newList]
+          [filterName]: newList
+        }
       }),
       this.loadTasks
     );
@@ -484,10 +500,16 @@ class TaskList extends Component {
         }`;
       case 'name':
         return `${changedFilters.name}`;
+      case 'dateFrom':
+        return `${localize[lang].TAG_FROM} ${changedFilters[filterName]}`;
+      case 'dateTo':
+        return `${localize[lang].TAG_TO} ${changedFilters[filterName]}`;
       default:
         return '';
     }
   };
+
+  isFilters = () => Object.values(this.state.allFilters).length;
 
   formatDate = date => date && moment(date).format(dateFormat);
 
@@ -502,7 +524,6 @@ class TaskList extends Component {
   onChangeTagFilter = options => this.changeMultiFilter(options, 'tags');
 
   render() {
-    log(this.state);
     const { tasksList: tasks, statuses, taskTypes, project, isReceiving, lang } = this.props;
     const filterTags = this.state.allFilters.map(filter => {
       return (
@@ -515,18 +536,13 @@ class TaskList extends Component {
         />
       );
     });
-    const clearAllButton = (
-      <span className={css.clearAllFilter} data-tip={localize[lang].CLEAR_FILTERS} onClick={this.clearFilters}>
-        <IconBroom />
-      </span>
-    );
 
     const { prioritiesId, typeId, statusId, sprintId, performerId, authorId, tags } = this.state.changedFilters;
 
     const statusOptions = this.createOptions(statuses);
     const typeOptions = this.createOptions(taskTypes);
     const authorOptions = this.createOptions(project.users, 'fullNameRu');
-    const isFilter = Object.keys(this.state.changedFilters).length > 1;
+    const isFilter = this.isFilters();
     const isLoading = isReceiving && !tasks.length;
     const isExternal = this.props.globalRole === EXTERNAL_USER;
     const singleSprint = Array.isArray(sprintId) ? (sprintId.length === 1 ? sprintId[0] : null) : sprintId;
@@ -681,8 +697,9 @@ class TaskList extends Component {
               </Row>
             </div>
             <Row className={css.search} top="xs">
-              <Col xs={12} sm={8} />
-              {filterTags}
+              <Col xs={12} sm={8}>
+                {filterTags}
+              </Col>
               <Col xs={6} sm={2}>
                 <Button
                   style={{ width: '100%' }}

@@ -15,6 +15,10 @@
     "FROM": "Choose date of creation (from)",
     "TO": "Choose date of creation (to)",
     "AUTHOR": "author",
+    "TAG_FROM": "From",
+    "TAG_TO": "To",
+    "PERFORMER": "performer",
+    "NOT_ASSIGNED": "Not assigned",
     "MY_TASKS": "my tasks"
   },
   "ru": {
@@ -33,6 +37,10 @@
     "FROM": "Выберите дату создания (от)",
     "TO": "Выберите дату создания (дo)",
     "AUTHOR": "автор",
+    "TAG_FROM": "От",
+    "TAG_TO": "До",
+    "PERFORMER": "исполнитель",
+    "NOT_ASSIGNED": "Не назначенно",
     "MY_TASKS": "мои задачи"
   }
 }
