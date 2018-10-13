@@ -1,13 +1,11 @@
-import JiraEditor from './JiraEditor';
+import Wizard from './Wizard';
 import { connect } from 'react-redux';
 
-const mapStateToProps = state => ({
-  lang: state.Localize.lang
-});
+const mapStateToProps = state => ({});
 
 const mapDispatchToProps = {};
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(JiraEditor);
+)(Wizard);
