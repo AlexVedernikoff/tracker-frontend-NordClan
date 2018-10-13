@@ -37,17 +37,14 @@ class AgileBoardFilter extends React.Component {
   componentDidUpdate = prevProps => {
     ReactTooltip.rebuild();
 
-    const { currentSprint, filters } = this.props;
-    const isSprintFilterChanged = +storage.getItem('sprintFilterChanged');
+    const { currentSprint } = this.props;
 
-    if (
-      !this.isSprintFilterEmpty &&
-      currentSprint &&
-      currentSprint.length &&
-      !isEqual(currentSprint.map(s => s.value), filters.changedSprint) &&
-      !isSprintFilterChanged
-    ) {
+    if (this.isActiveSprintsChanged) {
       this.props.setFilterValue('changedSprint', currentSprint.map(s => s.value), this.updateFilterList);
+    }
+
+    if (this.isNoActiveSprintsLeft) {
+      this.props.setFilterValue('changedSprint', [0], this.updateFilterList);
     }
 
     if (currentSprint !== prevProps.currentSprint && this.isSprintFilterEmpty) {
@@ -69,6 +66,32 @@ class AgileBoardFilter extends React.Component {
       isOpened: !prevState.isOpened
     }));
   };
+
+  get isActiveSprintsChanged() {
+    const { currentSprint, filters } = this.props;
+    const isSprintFilterChanged = +storage.getItem('sprintFilterChanged');
+
+    return (
+      !this.isSprintFilterEmpty &&
+      currentSprint &&
+      currentSprint.length &&
+      !isEqual(currentSprint.map(s => s.value), filters.changedSprint) &&
+      !isSprintFilterChanged
+    );
+  }
+
+  get isNoActiveSprintsLeft() {
+    const { currentSprint, filters } = this.props;
+    const isSprintFilterChanged = +storage.getItem('sprintFilterChanged');
+
+    return (
+      !this.isSprintFilterEmpty &&
+      currentSprint &&
+      !currentSprint.length &&
+      filters.changedSprint[0] !== 0 &&
+      !isSprintFilterChanged
+    );
+  }
 
   get isSprintFilterEmpty() {
     const {
@@ -174,14 +197,16 @@ class AgileBoardFilter extends React.Component {
   updateFilterList = () => {
     const {
       filters,
-      project: { users, sprints }
+      project: { users },
+      sortedSprints
     } = this.props;
+    const sortedSprintsValues = sortedSprints.map(el => el.value);
 
     // проверяем, пришли ли данные по юзерам в проекте, если они есть в фильтре
     if (
       (!users.length && (filters.authorId || filters.performerId)) ||
       !this.props.typeOptions.length ||
-      (!sprints.length && filters.changedSprint.length)
+      (filters.changedSprint.length && !filters.changedSprint.every(el => sortedSprintsValues.includes(el)))
     ) {
       return;
     }
