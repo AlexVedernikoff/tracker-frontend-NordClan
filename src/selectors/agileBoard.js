@@ -13,7 +13,8 @@ const selectTasks = state => state.Tasks.tasks;
 
 const selectSprints = state => state.Project.project.sprints;
 
-const selectSprintsFetching = state => state.Project.isProjectInfoReceiving || state.Project.isSprintsReceiving;
+const selectSprintsFetching = state =>
+  state.Project.isProjectInfoReceiving || state.Project.isSprintsReceiving || !state.Project.project.id;
 
 const selectUserId = state => state.Auth.user.id;
 
