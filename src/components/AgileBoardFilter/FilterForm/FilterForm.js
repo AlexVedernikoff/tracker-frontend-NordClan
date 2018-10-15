@@ -15,6 +15,9 @@ import PerformerFilter from '../../PerformerFilter';
 import SprintSelector from '../../SprintSelector';
 
 import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
+import { storageType } from '../../FiltrersManager/helpers';
+
+const storage = storageType === 'local' ? localStorage : sessionStorage;
 
 class FilterForm extends React.Component {
   componentDidUpdate() {
@@ -40,6 +43,7 @@ class FilterForm extends React.Component {
     this.props.setFilterValue('prioritiesId', option.prioritiesId, this.updateListsAndTasks);
   onSprintsFilterChange = options => {
     this.props.setFilterValue('changedSprint', this.getSprintValue(options), this.updateListsAndTasks);
+    storage.setItem('sprintFilterChanged', 1);
   };
   onAuthorFilterChange = option =>
     this.props.setFilterValue('authorId', option ? option.value : null, this.updateListsAndTasks);
@@ -77,6 +81,7 @@ class FilterForm extends React.Component {
 
   clearFilters = () => {
     this.props.clearFilters({ changedSprint: [0] }, this.updateListsAndTasks);
+    storage.setItem('sprintFilterChanged', 1);
   };
 
   render() {
