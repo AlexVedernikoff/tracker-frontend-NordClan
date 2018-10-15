@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
-import { IconExitApp, IconMenu, IconSearch } from '../../../components/Icons';
+import { IconExitApp, IconMenu } from '../../../components/Icons';
 import Toggle from '../../../components/LanguageToggle';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Logo from '../../../components/Logo';
@@ -21,7 +21,8 @@ class AppHead extends Component {
     lang: PropTypes.string,
     loading: PropTypes.number,
     setLocalize: PropTypes.func,
-    toggleMenu: PropTypes.func
+    toggleMenu: PropTypes.func,
+    toggleMenuIcon: PropTypes.bool
   };
 
   constructor(props) {
@@ -53,18 +54,7 @@ class AppHead extends Component {
           <Logo />
         </Link>
         {globalRole !== EXTERNAL_USER ? <Playlist /> : null}
-        {/* <div className={css.search}>
-          <input
-            type="text"
-            id="mainSearch"
-            className={css.searchInput}
-            placeholder="Поиск по названию"
-          />
-          <label htmlFor="mainSearch" className={css.searchButton}>
-            <IconSearch style={iconStyles} />
-          </label>
-        </div> */}
-        <Toggle lang={this.props.lang} onChange={this.toggleLanguage} />
+        <Toggle lang={this.props.lang} onChange={this.toggleLanguage} location="appHead" />
 
         <div className={css.logoutButton} onClick={this.handleLogout}>
           <IconExitApp style={iconStyles} />
