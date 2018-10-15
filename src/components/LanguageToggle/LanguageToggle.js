@@ -11,6 +11,15 @@ class LanguageToggle extends Component {
     };
   }
 
+  componentDidUpdate = () => {
+    if (this.props.lang === 'ru' && this.state.checked !== true) {
+      this.setState({ checked: true });
+    }
+    if (this.props.lang === 'en' && this.state.checked !== false) {
+      this.setState({ checked: false });
+    }
+  };
+
   handleChecked = ({ target: { checked } }) => {
     this.setState(
       {
