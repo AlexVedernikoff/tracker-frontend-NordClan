@@ -3,6 +3,7 @@ import * as TagsActions from '../constants/Tags';
 import * as SprintActions from '../constants/Sprint';
 import * as TasksActions from '../constants/Tasks';
 import * as MilestoneActions from '../constants/Milestone';
+import * as GitlabActions from '../constants/Gitlab';
 
 const InitialState = {
   project: {
@@ -24,7 +25,8 @@ const InitialState = {
   isCreateChildTaskModalOpen: false,
   PortfolioIsEditing: false,
   isProjectInfoReceiving: false,
-  isCreateTaskRequestInProgress: false
+  isCreateTaskRequestInProgress: false,
+  isSprintsReceiving: false
 };
 
 export default function Project(state = InitialState, action) {
@@ -37,6 +39,7 @@ export default function Project(state = InitialState, action) {
           users: action.users
         }
       };
+
     case ProjectActions.UNBIND_USER_TO_PROJECT_SUCCESS:
       return {
         ...state,
@@ -45,6 +48,7 @@ export default function Project(state = InitialState, action) {
           users: action.users
         }
       };
+
     case ProjectActions.UNBIND_EXTERNAL_USER_TO_PROJECT_SUCCESS:
       return {
         ...state,
@@ -53,13 +57,27 @@ export default function Project(state = InitialState, action) {
           externalUsers: state.project.externalUsers.filter(item => item.id !== action.userId)
         }
       };
+
     case SprintActions.SPRINTS_EDIT_SUCCESS:
       return {
         ...state,
         project: {
           ...state.project,
           sprints: action.sprints
-        }
+        },
+        isSprintsReceiving: false
+      };
+
+    case SprintActions.SPRINTS_EDIT_START:
+      return {
+        ...state,
+        isSprintsReceiving: true
+      };
+
+    case SprintActions.SPRINTS_EDIT_FAIL:
+      return {
+        ...state,
+        isSprintsReceiving: false
       };
 
     case SprintActions.SPRINTS_CREATE_SUCCESS:
@@ -124,6 +142,32 @@ export default function Project(state = InitialState, action) {
         isProjectInfoReceiving: false
       };
 
+    case ProjectActions.PROJECT_TAGS_RECEIVE_START:
+      return {
+        ...state,
+        isProjectTagsReceiving: true
+      };
+
+    case ProjectActions.PROJECT_TAGS_RECEIVE_SUCCESS:
+      return {
+        ...state,
+        tags: {
+          ...state.tags,
+          ...action.tags
+        },
+        isProjectTagsReceiving: false
+      };
+
+    case ProjectActions.PROJECT_TAGS_RECEIVE_FAIL:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          error: action.error
+        },
+        isProjectTagsReceiving: false
+      };
+
     case ProjectActions.PROJECT_USERS_RECEIVE_START:
       return {
         ...state
@@ -178,6 +222,24 @@ export default function Project(state = InitialState, action) {
         project: {
           ...state.project,
           ...action.changedFields
+        }
+      };
+
+    case GitlabActions.ADDING_GITLAB_PROJECT_SUCCESS:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          gitlabProjects: [...state.project.gitlabProjects, action.project]
+        }
+      };
+
+    case GitlabActions.CREATE_GITLAB_PROJECT_SUCCESS:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          gitlabProjects: [...state.project.gitlabProjects, action.project]
         }
       };
 
@@ -295,7 +357,7 @@ export default function Project(state = InitialState, action) {
 
     case ProjectActions.PROJECT_ATTACHMENT_REMOVE_SUCCESS: {
       const { attachmentId } = action;
-      const { attachments } = state.project.attachments;
+      const { attachments } = state.project;
       const newAttachments = attachments
         ? attachments.map(attach => ({ ...attach, deleting: attach.id === attachmentId || attach.deleting }))
         : [];

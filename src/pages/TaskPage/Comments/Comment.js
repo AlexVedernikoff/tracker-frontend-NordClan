@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import * as css from './Comments.scss';
 import { Link } from 'react-router';
 import cn from 'classnames';
 import moment from 'moment';
-import get from 'lodash/get';
 import { IconDeleteAnimate } from '../../../components/Icons';
 import CopyThis from '../../../components/CopyThis';
 import { history } from '../../../History';
@@ -13,10 +12,13 @@ import UserCard from '../../../components/UserCard';
 import Autolinker from 'autolinker';
 import localize from './Comment.json';
 import { getFirstName, getLastName, getFullName } from '../../../utils/NameLocalisation';
+import Attachments from '../../../components/Attachments';
+
+import { parseCommentForDisplay, prepairCommentForEdit } from './Mentions/mentionService';
 
 const UPDATE_EXPIRATION_TIMEOUT = 10 * 60 * 1000; //10 минут
 
-class Comment extends Component {
+class Comment extends PureComponent {
   static getNames = person => {
     //унификация имени
     const firstName = getFirstName(person);
@@ -77,15 +79,18 @@ class Comment extends Component {
   };
 
   static propTypes = {
+    attachments: PropTypes.array,
     comment: PropTypes.object,
     commentsLoadedDate: PropTypes.string,
     editComment: PropTypes.func,
+    lang: PropTypes.string,
     lightened: PropTypes.bool,
     location: PropTypes.object,
     ownedByMe: PropTypes.bool,
     removeComment: PropTypes.func,
     reply: PropTypes.func,
-    selectComment: PropTypes.func
+    selectComment: PropTypes.func,
+    users: PropTypes.array
   };
 
   constructor(props) {
@@ -121,14 +126,52 @@ class Comment extends Component {
   }
 
   handleSelect = e => {
-    if (get(e, 'target.dataset.key') === 'textContainer') {
-      Comment.selectComment(this.props.comment.id, this.props.location);
+    Comment.selectComment(this.props.comment.id, this.props.location);
+  };
+
+  getCard = (user, i) => {
+    if (user.id === 'all') {
+      return this.getBold(user, i);
     }
+    const name = getFullName(user);
+    return (
+      <UserCard key={name + i} user={user}>
+        <strong>{name}</strong>
+      </UserCard>
+    );
+  };
+
+  getBold = (s, i) => `<strong key={${getFullName(s) + i}}>${getFullName(s)}</strong>`;
+
+  getMention = user => `@${getFullName(user)}`;
+
+  compileComment = text =>
+    parseCommentForDisplay(text, this.props.users, this.getCard).map(
+      t => (typeof t === 'string' ? Autolinker.link(t) : t)
+    );
+
+  compileParent = text => parseCommentForDisplay(text, this.props.users, this.getBold).join('');
+
+  prepairTextForEditing = text => prepairCommentForEdit(text, this.props.users, this.getMention);
+
+  isImage = type => {
+    const imageTypes = ['image', 'image/jpeg', 'image/png', 'image/pjpeg'];
+    return imageTypes.indexOf(type) !== -1;
+  };
+
+  getAttachments = attachmentIds => {
+    const { attachments } = this.props;
+    const files = attachments.filter(i => attachmentIds.indexOf(i.id) !== -1);
+    return (
+      <div className={css.commentAttachmentWrap}>
+        <Attachments attachments={files} canEdit={false} style={{ paddingLeft: 0, paddingTop: 10 }} />
+      </div>
+    );
   };
 
   render() {
     const {
-      comment: { author, parentComment },
+      comment: { author, parentComment, text, attachmentIds },
       comment,
       lang
     } = this.props;
@@ -142,10 +185,12 @@ class Comment extends Component {
       }
       typoAvatar.toLocaleUpperCase();
     }
-
+    const editingComment = { ...comment, text: this.prepairTextForEditing(comment.text) };
     return (
       <li
+        data-key="textContainer"
         ref="comment"
+        onClick={this.handleSelect}
         className={cn(css.commentContainer, {
           [css.selected]: this.props.lightened
         })}
@@ -158,8 +203,10 @@ class Comment extends Component {
             <div className={css.commentMeta}>
               <UserCard user={author}>
                 <Link>{fullName}</Link>
-              </UserCard>,&nbsp;
-              {moment(comment.updatedAt).format('DD.MM.YY HH:mm')},&nbsp;
+              </UserCard>
+              ,&nbsp;
+              {moment(comment.updatedAt).format('DD.MM.YY HH:mm')}
+              ,&nbsp;
               <CopyThis
                 wrapThisInto={'a'}
                 description={`${localize[lang].COMMENT_LINK}${comment.id}`}
@@ -167,7 +214,8 @@ class Comment extends Component {
                   Comment.getHashedPath(comment.id, this.props.location)
                 )}`}
               >
-                {`#${comment.id}`}&nbsp;
+                {`#${comment.id}`}
+                &nbsp;
               </CopyThis>
             </div>
             {parentComment ? (
@@ -175,19 +223,23 @@ class Comment extends Component {
                 className={css.commentQuote}
                 onClick={() => Comment.selectComment(parentComment.id, this.props.location)}
               >
-                <a className={css.commentQuoteAutor}>{Comment.getNames(parentComment.author).fullName},</a>&nbsp;
+                <a className={css.commentQuoteAutor}>{Comment.getNames(parentComment.author).fullName},</a>
+                &nbsp;
                 <span className={css.commentQuoteDate}>
                   {moment(parentComment.updatedAt).format('DD.MM.YY HH:mm')}:
                 </span>
-                <div className={css.quoteText}>«{parentComment.text}»</div>
+                <div
+                  className={css.quoteText}
+                  dangerouslySetInnerHTML={{ __html: `«${this.compileParent(parentComment.text)}»` }}
+                />
               </div>
             ) : null}
-            <div
-              dangerouslySetInnerHTML={{ __html: Autolinker.link(comment.text) }}
-              className={css.commentText}
-              data-key="textContainer"
-              onClick={this.handleSelect}
-            />
+            <div className={css.commentText}>
+              {this.compileComment(text).map(
+                (t, i) => (typeof t === 'string' ? <span key={t + i} dangerouslySetInnerHTML={{ __html: t }} /> : t)
+              )}
+            </div>
+            {attachmentIds ? this.getAttachments(attachmentIds) : null}
             <div className={css.commentAction}>
               {!comment.deleting ? (
                 <a onClick={() => this.props.reply(comment.id)} href="#reply">
@@ -196,7 +248,7 @@ class Comment extends Component {
               ) : null}
               {this.state.canBeUpdated && !comment.deleting
                 ? [
-                    <a onClick={() => this.props.editComment(comment)} href="#reply" key={0}>
+                    <a onClick={() => this.props.editComment(editingComment, attachmentIds)} href="#reply" key={0}>
                       {localize[lang].EDIT}
                     </a>,
                     <a onClick={() => this.props.removeComment(comment.id)} key={1}>

@@ -7,12 +7,73 @@ import * as css from './TaskCard.scss';
 import RelatedTask from './RelatedTask';
 import TaskCore from './TaskCore';
 import classnames from 'classnames';
-import { IconPlus } from '../Icons';
 import { IconArrowUpThin } from '../Icons';
-import { IconArrowDownThin } from '../Icons';
+import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
+
+const iconStyles = {
+  width: 11,
+  height: 11,
+  color: 'inherit',
+  fill: 'currentColor'
+};
+const maxLength = 5;
+
 class TaskCard extends PureComponent {
   state = {
-    isOpen: false
+    sub: false,
+    linked: false
+  };
+
+  handleClick = name => {
+    this.setState(state => ({ [name]: !state[name] }));
+  };
+
+  relatedTask = (t, mode) => {
+    return (
+      <RelatedTask
+        key={t.id}
+        onHover={this.props.lightTask}
+        task={t}
+        isLighted={this.props.lightedTaskId === t.id}
+        mode={mode}
+        prefix={this.props.task.prefix}
+        projectId={this.props.task.projectId}
+      />
+    );
+  };
+
+  shortView = (array, mode, length = maxLength) => {
+    if (array.length > length) {
+      const open = array.slice(0, length);
+      const hidden = array.slice(length);
+      return (
+        <div>
+          {open.map(t => this.relatedTask(t, mode))}
+          <div
+            className={classnames({
+              [css.subTasksBlock]: true,
+              [css.subTasksShow]: this.state[mode],
+              [css.subTasksHide]: !this.state[mode]
+            })}
+          >
+            {hidden.map(t => this.relatedTask(t, mode))}
+          </div>
+          <div
+            name={mode}
+            onClick={this.handleClick.bind(this, mode)}
+            className={classnames({
+              [css.subTasksButton]: true,
+              [css.linkedTasksButton]: mode === 'linked',
+              [css.subTasksButtonOpen]: this.state[mode],
+              [css.subTasksButtonClose]: !this.state[mode]
+            })}
+          >
+            <IconArrowUpThin style={iconStyles} />
+          </div>
+        </div>
+      );
+    }
+    return array.map(t => this.relatedTask(t, mode));
   };
 
   render() {
@@ -25,14 +86,6 @@ class TaskCard extends PureComponent {
 
     const classPriority = 'priority-' + task.prioritiesId;
     const isBug = [2, 4, 5].includes(task.typeId);
-
-    const iconStyles = {
-      width: 11,
-      height: 11,
-      color: 'inherit',
-      fill: 'currentColor'
-    };
-
     return (
       <div className={css.taskWrapper}>
         {isParent ? (
@@ -56,96 +109,11 @@ class TaskCard extends PureComponent {
             ...other
           }}
         />
-
-        {isSubtasks ? (
-          <div className={css.subTasks}>
-            {isSubtasks > 5 ? (
-              <div>
-                {task.subTasks.map(
-                  (subTask, key) =>
-                    key <= 4 ? (
-                      <RelatedTask
-                        key={subTask.id}
-                        onHover={lightTask}
-                        task={subTask}
-                        isLighted={lightedTaskId === subTask.id}
-                        mode="sub"
-                        prefix={task.prefix}
-                        projectId={task.projectId}
-                      />
-                    ) : null
-                )}
-                <div
-                  className={classnames({
-                    [css.subTasksBlock]: true,
-                    [css.subTasksShow]: this.state.isOpen,
-                    [css.subTasksHide]: !this.state.isOpen
-                  })}
-                >
-                  {task.subTasks.map(
-                    (subTask, key) =>
-                      key > 4 ? (
-                        <RelatedTask
-                          key={subTask.id}
-                          onHover={lightTask}
-                          task={subTask}
-                          isLighted={lightedTaskId === subTask.id}
-                          mode="sub"
-                          prefix={task.prefix}
-                          projectId={task.projectId}
-                        />
-                      ) : null
-                  )}
-                </div>
-                <div onClick={this.handleClick} className={css.subTasksButton}>
-                  {this.state.isOpen ? (
-                    <IconArrowUpThin style={iconStyles} />
-                  ) : (
-                    <IconArrowDownThin style={iconStyles} />
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div>
-                {task.subTasks.map(subTask => (
-                  <RelatedTask
-                    key={subTask.id}
-                    onHover={lightTask}
-                    task={subTask}
-                    isLighted={lightedTaskId === subTask.id}
-                    mode="sub"
-                    prefix={task.prefix}
-                    projectId={task.projectId}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        ) : null}
-
-        {isLinkedTasks ? (
-          <div className={css.linkedTasks}>
-            {task.linkedTasks.map(linkedTask => (
-              <RelatedTask
-                key={linkedTask.id}
-                onHover={lightTask}
-                task={linkedTask}
-                isLighted={lightedTaskId === linkedTask.id}
-                mode="linked"
-                prefix={task.prefix}
-                projectId={task.projectId}
-              />
-            ))}
-          </div>
-        ) : null}
+        {isSubtasks ? <div className={css.subTasks}>{this.shortView(task.subTasks, 'sub')}</div> : null}
+        {isLinkedTasks ? <div className={css.linkedTasks}>{this.shortView(task.linkedTasks, 'linked')}</div> : null}
       </div>
     );
   }
-  handleClick = () => {
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
-  };
 }
 
 TaskCard.propTypes = {
@@ -161,7 +129,7 @@ TaskCard.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  taskTypes: state.Dictionaries.taskTypes
+  taskTypes: getLocalizedTaskTypes(state)
 });
 
 export default connect(

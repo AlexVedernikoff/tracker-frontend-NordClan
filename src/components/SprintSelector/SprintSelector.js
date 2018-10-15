@@ -10,7 +10,7 @@ export default class SprintSelector extends Component {
   static propTypes = {
     onChange: PropTypes.func,
     sprints: PropTypes.array,
-    value: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
+    value: PropTypes.oneOfType([PropTypes.object, PropTypes.number, PropTypes.array]),
     useId: PropTypes.bool
   };
 
@@ -18,6 +18,13 @@ export default class SprintSelector extends Component {
     super(props);
     this.state = {};
   }
+
+  onSelectFocus = () => {
+    this.setState({ inputFocused: true });
+  };
+  onSelectBlur = () => {
+    this.setState({ inputFocused: false });
+  };
 
   getSprints = () => {
     let sprints = sortBy(this.props.sprints, sprint => {
@@ -53,18 +60,28 @@ export default class SprintSelector extends Component {
   render() {
     const { value, sprints, onChange, ...otherProps } = this.props;
     return (
-      <SelectDropdown
-        name="sprint"
-        placeholder="Выберите спринт"
-        noResultsText="Нет подходящих спринтов"
-        backspaceToRemoveMessage={''}
-        clearAllText="Очистить все"
-        value={value}
-        options={this.getSprints()}
-        clearable={false}
-        onChange={option => onChange(option)}
-        {...otherProps}
-      />
+      <div className="sprint-dropdown">
+        <SelectDropdown
+          name="sprint"
+          searchable={false}
+          thisClassName="sprintSelector"
+          placeholder="Выберите спринт"
+          noResultsText="Нет подходящих спринтов"
+          backspaceToRemoveMessage={''}
+          clearAllText="Очистить все"
+          value={value}
+          options={this.getSprints()}
+          clearable={false}
+          onFocus={this.onSelectFocus}
+          onBlur={this.onSelectBlur}
+          onChange={option => onChange(option)}
+          {...otherProps}
+          inputProps={{
+            className: this.state.inputFocused ? null : css.sprintInputBlured,
+            ...otherProps.inputProps
+          }}
+        />
+      </div>
     );
   }
 }

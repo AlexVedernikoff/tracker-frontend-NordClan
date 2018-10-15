@@ -12,6 +12,7 @@ import { createMilestone } from '../../../../actions/Milestone';
 import Select from 'react-select';
 import localize from './CreateMilestoneModal.json';
 import { getDictionaryName } from '../../../../utils/NameLocalisation';
+import { getLocalizedMilestoneTypes } from '../../../../selectors/dictionaries';
 
 class CreateMilestoneModal extends Component {
   static propTypes = {
@@ -145,7 +146,7 @@ class CreateMilestoneModal extends Component {
 
 const mapStateToProps = state => ({
   projectId: state.Project.project.id,
-  milestoneTypes: state.Dictionaries.milestoneTypes || [],
+  milestoneTypes: getLocalizedMilestoneTypes(state) || [],
   lang: state.Localize.lang
 });
 
@@ -153,4 +154,7 @@ const mapDispatchToProps = {
   createMilestone
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateMilestoneModal);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CreateMilestoneModal);

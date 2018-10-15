@@ -13,6 +13,7 @@ import { IconEdit } from '../../../../components/Icons';
 import * as timesheetsConstants from '../../../../constants/Timesheets';
 import EditSpentModal from '../EditSpentModal';
 import { createTimesheet, updateTimesheet } from '../../../../actions/Timesheets';
+import { getLocalizedTaskStatuses, getLocalizedMagicActiveTypes } from '../../../../selectors/dictionaries';
 
 class ActivityRow extends React.Component {
   static propTypes = {
@@ -159,16 +160,20 @@ class ActivityRow extends React.Component {
             <div
               className={cn({
                 [css.timeCell]: true,
-                [css.filled]: +tsh.spentTime,
+                [css.hasValue]: +tsh.spentTime,
+                [css.filled]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED,
                 [css.submitted]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED,
                 [css.approved]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED,
                 [css.rejected]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED
               })}
             >
               <input type="text" disabled value={this.state.timeCells[i]} />
-              <span className={css.toggleComment}>
-                <IconEdit onClick={this.openEditModal.bind(this, tsh)} />
-              </span>
+              {tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED ||
+              tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED ? (
+                <span className={css.toggleComment}>
+                  <IconEdit onClick={this.openEditModal.bind(this, tsh)} />
+                </span>
+              ) : null}
             </div>
           </div>
         </td>
@@ -230,8 +235,8 @@ class ActivityRow extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  statuses: state.Dictionaries.taskStatuses,
-  magicActivitiesTypes: state.Dictionaries.magicActivityTypes,
+  statuses: getLocalizedTaskStatuses(state),
+  magicActivitiesTypes: getLocalizedMagicActiveTypes(state),
   userId: state.Auth.user.id,
   startingDay: state.Timesheets.startingDay
 });

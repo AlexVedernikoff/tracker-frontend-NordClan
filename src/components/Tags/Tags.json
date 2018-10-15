@@ -1,10 +1,12 @@
 {
   "en": {
     "ADD_TAG": "Add tag",
-    "SHOW_ALL": "Show all"
+    "SHOW_ALL": "Show all",
+    "WITHOUT_TAG": "No tag"
   },
   "ru": {
     "ADD_TAG": "Добавить тег",
-    "SHOW_ALL": "Показать все"
+    "SHOW_ALL": "Показать все",
+    "WITHOUT_TAG": "Без тега"
   }
 }

@@ -9,6 +9,7 @@ import roundNum from '../../../../utils/roundNum';
 import localize from './TasksCountChart.json';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import datalabels from 'chartjs-plugin-datalabels';
 
 class TasksCountChart extends Component {
   static propTypes = {
@@ -16,15 +17,18 @@ class TasksCountChart extends Component {
     getBasicLineSettings: PropTypes.func,
     openedBugsMetrics: PropTypes.array,
     openedCustomerBugsMetrics: PropTypes.array,
+    openedFeaturesFromClient: PropTypes.array,
     openedFeaturesMetric: PropTypes.array,
     openedFeaturesWithoutEvaluationMetric: PropTypes.array,
     openedOutOfPlanFeaturesMetric: PropTypes.array
   };
 
-  chartRef = null;
+  state = { chartRef: null };
 
   setChartRef = node => {
-    this.chartRef = node;
+    this.setState({
+      chartRef: node
+    });
   };
 
   getGraphicOptions() {
@@ -61,6 +65,14 @@ class TasksCountChart extends Component {
             }
           }
         ]
+      },
+      plugins: {
+        datalabels: {
+          formatter: function(value) {
+            return value.y;
+          },
+          align: 'end'
+        }
       }
     };
   }
@@ -71,7 +83,8 @@ class TasksCountChart extends Component {
       openedFeaturesWithoutEvaluationMetric,
       openedOutOfPlanFeaturesMetric,
       openedBugsMetrics,
-      openedCustomerBugsMetrics
+      openedCustomerBugsMetrics,
+      openedFeaturesFromClient
     } = this.props;
 
     getColor.reset();
@@ -85,7 +98,8 @@ class TasksCountChart extends Component {
         ),
         this.makeTaskCountMetricsLine(openedOutOfPlanFeaturesMetric, localize[this.props.lang].OUTSIDE_PLAN),
         this.makeTaskCountMetricsLine(openedBugsMetrics, localize[this.props.lang].NUMBER_BUGS),
-        this.makeTaskCountMetricsLine(openedCustomerBugsMetrics, localize[this.props.lang].NUMBER_BUGS_FROM_CLIENT)
+        this.makeTaskCountMetricsLine(openedCustomerBugsMetrics, localize[this.props.lang].NUMBER_BUGS_FROM_CLIENT),
+        this.makeTaskCountMetricsLine(openedFeaturesFromClient, localize[this.props.lang].NUMBER_OPEN_TASKS_FROM_CLIENT)
       ]
     };
   }
@@ -109,7 +123,7 @@ class TasksCountChart extends Component {
   render() {
     const { lang } = this.props;
     return (
-      <ChartWrapper chartRef={this.chartRef} className={css.BugsChart}>
+      <ChartWrapper chartRef={this.state.chartRef} className={css.BugsChart}>
         <h3>{localize[lang].NUMBER_OF_TASKS}</h3>
         <Line ref={this.setChartRef} data={this.makeChartData()} options={this.getGraphicOptions()} redraw />
       </ChartWrapper>

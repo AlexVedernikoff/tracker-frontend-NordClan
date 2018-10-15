@@ -19,7 +19,10 @@
 
 .Select-control {
   padding: 7px 15px;
-  padding-right: 32px;
+}
+
+.sprint-dropdown .Select-value-label {
+  margin-right: 15%;
 }
 
 .Select-clear-zone {
@@ -173,4 +176,26 @@
 .Select-noresults {
   padding: 7px 15px;
   color: gray;
+}
+
+/* Styles for Sprints selector */
+
+.Select--multi.sprintSelector .Select-multi-value-wrapper .Select-value {
+  font-size: 13px;
+  color: black;
+  background-color: white;
+  padding: 15px;
+  margin: 0;
+}
+
+.Select--multi.sprintSelector .Select-multi-value-wrapper .Select-value:hover {
+  background-color: #ebebeb;
+  transition: 0.3s ease-out 0s;
+}
+
+.Select--multi.sprintSelector .Select-multi-value-wrapper .Select-input {
+  display: none !important;
+}
+.Select--multi.sprintSelector .Select-control {
+  padding: 0;
 }

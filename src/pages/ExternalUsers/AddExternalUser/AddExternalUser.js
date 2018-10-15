@@ -9,9 +9,7 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './AddExternalUser.scss';
-import { addExternalUser, addExternalUserSuccess } from '../../../actions/ExternalUsers';
-import { showNotification } from '../../../actions/Notifications';
-import { finishLoading } from '../../../actions/Loading';
+import { addExternalUser } from '../../../actions/ExternalUsers';
 import cloneDeep from 'lodash/cloneDeep';
 import localize from './addExternalUser.json';
 
@@ -19,6 +17,7 @@ const initialState = {
   isModalOpen: false,
   name: '',
   email: '',
+  description: '',
   expiredDate: '',
   errorMessage: '',
   errors: {
@@ -91,12 +90,13 @@ class AddExternalUser extends Component {
   }
 
   addUser = () => {
-    const { name, email, expiredDate } = this.state;
+    const { name, email, description, expiredDate } = this.state;
     this.setState({ errorMessage: null });
     this.props
       .addExternalUser({
         firstNameRu: name,
         login: email,
+        description: description,
         expiredDate
       })
       .then(() => {
@@ -157,7 +157,7 @@ class AddExternalUser extends Component {
       secondCol: 7
     };
     const { lang } = this.props;
-    const { isModalOpen, name, email, expiredDate, errors, errorMessage } = this.state;
+    const { isModalOpen, name, email, description, expiredDate, errors, errorMessage } = this.state;
     const errorNotice = errorMessage ? <p style={{ color: 'red' }}>{errorMessage}</p> : null;
 
     const formattedDay = expiredDate ? moment(expiredDate).format('DD.MM.YYYY') : '';
@@ -172,7 +172,7 @@ class AddExternalUser extends Component {
           closeTimeoutMS={200}
         >
           <div className={css.container}>
-            <h3 style={{ margin: 0 }}>{localize[lang].ADD_EXTERNAL_USER}</h3>
+            <h3 style={{ margin: 0 }}>{localize[lang].ADD_EXTERNAL_USER_TITLE}</h3>
             <hr />
             {errorNotice}
             <label className={css.formField}>
@@ -221,6 +221,30 @@ class AddExternalUser extends Component {
                     ),
                     'exUserEmail',
                     errors.email.error || (!!email.length && !this.validateEmail(email))
+                  )}
+                </Col>
+              </Row>
+            </label>
+            <label className={css.formField}>
+              <Row>
+                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                  <p>{localize[lang].DESCRIPTION}</p>
+                </Col>
+                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                  {this.validator.validate(
+                    (handleBlur, shouldMarkError) => (
+                      <ValidatedInput
+                        onChange={this.onInputChange('description')}
+                        value={description}
+                        name="exUserDescription"
+                        placeholder={localize[lang].ENTER_YOUR_DESCRIPTION}
+                        onBlur={handleBlur}
+                        shouldMarkError={shouldMarkError}
+                        errorText={localize[lang].DESCRIPTION_MAXLENGTH}
+                      />
+                    ),
+                    'exUserDescription',
+                    description.length > 5000
                   )}
                 </Col>
               </Row>

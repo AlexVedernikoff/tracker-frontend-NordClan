@@ -11,6 +11,7 @@ import { history } from '../../../History';
 import Playlist from './Playlist';
 import { connect } from 'react-redux';
 import { setLocalize } from '../../../actions/localize';
+import classNames from 'classnames';
 
 import * as css from './AppHead.scss'; // Стили для плавного появления и скрытия лоадера
 
@@ -38,10 +39,14 @@ class AppHead extends Component {
       width: 16,
       height: 16
     };
+
     const { globalRole } = this.props;
     return (
       <div className={css.toppanel}>
-        <div className={css.menuToggle} onClick={this.props.toggleMenu}>
+        <div
+          className={classNames(css.menuToggle, this.props.toggleMenuIcon ? css.toggleMenuIcon : null)}
+          onClick={this.props.toggleMenu}
+        >
           <IconMenu style={iconStyles} />
         </div>
         <Link to="/" style={{ textDecoration: 'none' }}>
@@ -88,4 +93,7 @@ const mapDispatchToProps = {
   setLocalize
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppHead);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AppHead);

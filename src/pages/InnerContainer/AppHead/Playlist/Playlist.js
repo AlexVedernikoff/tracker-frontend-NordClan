@@ -14,6 +14,7 @@ import * as timesheetsConstants from '../../../../constants/Timesheets';
 import List from './List';
 import localize from './playlist.json';
 import * as css from './Playlist.scss';
+import { getLocalizedMagicActiveTypes } from '../../../../selectors/dictionaries';
 
 class Playlist extends Component {
   constructor(props) {
@@ -336,6 +337,7 @@ class Playlist extends Component {
                 <div className={css.time}>
                   <div className={css.today}>
                     <input
+                      className={css.input}
                       type="text"
                       value={this.getScaleAll(currentUserTracks, this.state.activeDayTab) || 0}
                       data-tip={localize[lang].TOTAL}
@@ -367,7 +369,7 @@ const mapStateToProps = state => {
     activeTask: state.TimesheetPlayer.activeTask,
     tracks: state.TimesheetPlayer.tracks,
     availableProjects: state.TimesheetPlayer.availableProjects,
-    magicActivitiesTypes: state.Dictionaries.magicActivityTypes,
+    magicActivitiesTypes: getLocalizedMagicActiveTypes(state),
     lang: state.Localize.lang
   };
 };
@@ -376,4 +378,7 @@ const mapDispatchToProps = {
   changeTask
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(onClickOutside(Playlist));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(onClickOutside(Playlist));

@@ -8,6 +8,7 @@ import * as css from './UsersRoles.scss';
 import { getUsers, updateUserRole } from '../../actions/UsersRoles';
 import localize from './usersRoles.json';
 import { getLastName, getFullName } from '../../utils/NameLocalisation';
+import Title, { flushTitle } from 'react-title-component';
 
 class UsersRoles extends React.Component {
   state = {
@@ -109,6 +110,7 @@ class UsersRoles extends React.Component {
     const tableUsers = this.renderTableUsers(users);
     return isAdmin(userGlobalRole) ? (
       <div>
+        <Title render={`SimTrack - ${localize[lang].USERS}`} />
         <h1>{localize[lang].USERS}</h1>
         <hr />
         {tableUsers}

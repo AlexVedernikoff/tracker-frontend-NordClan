@@ -18,7 +18,9 @@ class ExternalUsersTable extends Component {
     return (
       <div className={css.ExternalUsersTable}>
         <ExternalUsersTableHeader />
-        {this.props.exUsers.map(item => <ExternalUsersTableRow key={item.id} exUser={item} />)}
+        {this.props.exUsers.map(item => (
+          <ExternalUsersTableRow key={item.id} exUser={item} />
+        ))}
       </div>
     );
   }
@@ -38,4 +40,7 @@ ExternalUsersTable.propTypes = {
   getExternalUsers: PropTypes.func
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ExternalUsersTable);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ExternalUsersTable);

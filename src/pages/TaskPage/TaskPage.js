@@ -8,6 +8,7 @@ import includes from 'lodash/includes';
 import TaskHeader from './TaskHeader';
 import Details from './Details';
 import RelatedTasks from './RelatedTasks';
+import TaskGitlabBranch from './TaskGitlabBranch';
 import Attachments from '../../components/Attachments';
 import { IconPlus } from '../../components/Icons';
 import Description from '../../components/Description';
@@ -19,6 +20,7 @@ import CreateTaskModal from '../../components/CreateTaskModal';
 import HttpError from '../../components/HttpError';
 import { history } from '../../History';
 import { VISOR, EXTERNAL_USER, ADMIN } from '../../constants/Roles';
+import Title, { flushTitle } from 'react-title-component';
 
 import * as TaskStatuses from '../../constants/TaskStatuses';
 
@@ -291,6 +293,7 @@ class TaskPage extends Component {
       <HttpError error={httpError} />
     ) : (
       <div ref="taskPage" className={css.taskPage}>
+        <Title render={`SimTrack - ST-${task.id} ${task.name}`} />
         <Row>
           <Col xs={12} sm={8}>
             <TaskHeader
@@ -353,6 +356,9 @@ class TaskPage extends Component {
                   onAction={this.props.openCreateChildTaskModal}
                   onDelete={task.statusId !== TaskStatuses.CANCELED ? this.handleOpenCancelSubTaskModal : null}
                 />
+              ) : null}
+              {this.props.user.globalRole !== EXTERNAL_USER ? (
+                <TaskGitlabBranch taskId={this.props.params.taskId} projectId={params.projectId} />
               ) : null}
             </aside>
           </Col>

@@ -14,6 +14,7 @@ import createHash from '../../../../utils/createHash';
 import * as css from '../TaskTimeReports.scss';
 import localize from './TimeSheetsHistory.json';
 import { connect } from 'react-redux';
+import { getLocalizedTaskStatuses, getLocalizedRoles } from '../../../../selectors/dictionaries';
 
 class TimeSheetsHistory extends Component {
   static propTypes = {
@@ -98,10 +99,10 @@ const mapStateToProps = state => ({
   timeSpent: state.Task.timeSpent,
   timesheets: state.Timesheets.list,
   preloaders: state.Timesheets.preloaders,
-  taskStatuses: state.Dictionaries.taskStatuses,
+  taskStatuses: getLocalizedTaskStatuses(state),
   userTimeSpent: state.Task.userTimeSpent,
   roleTimeSpent: state.Task.roleTimeSpent,
-  roles: state.Dictionaries.roles,
+  roles: getLocalizedRoles(state),
   user: state.Auth.user,
   project: state.Project.project,
   task: state.Task.task,

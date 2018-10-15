@@ -1,83 +1,45 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import * as css from './SprintModal.scss';
-import Modal from '../Modal';
-import Button from '../Button';
-import SelectDropdown from '../SelectDropdown';
+import { getSprintMarkersClass } from '../../utils/markers';
+import OptionsModal from '../OptionsModal';
 
-class SprintModal extends Component {
-  constructor (props) {
-    super(props);
-    this.state = {
-      sprint: this.props.defaultSprint
-    };
+const getOptions = sprints => {
+  let options = [];
+
+  if (sprints) {
+    options = sprints.map(sprint => ({
+      label: sprint.name,
+      value: sprint.id,
+      className: getSprintMarkersClass(sprint.statusId)
+    }));
   }
 
-  handleChoose = () => {
-    this.props.onChoose(this.state.sprint);
-  };
+  options.push({
+    label: 'Backlog',
+    value: 0,
+    className: getSprintMarkersClass()
+  });
 
-  selectValue = (e, name) => {
-    this.setState({ [name]: e });
-  };
+  return options;
+};
 
-  render () {
-    let options = [];
-    const {
-      title,
-      onClose,
-      sprints
-    } = this.props;
-
-    if (sprints) {
-      options = sprints.map(el => {
-        return {
-          label: el.name,
-          value: el.id
-        };
-      });
-    }
-
-    options.push({
-      label: 'Backlog',
-      value: 0
-    });
-
-    return (
-      <Modal
-        isOpen
-        contentLabel="modal"
-        className={css.modalWrapper}
-        onRequestClose={onClose}
-      >
-        <div className={css.changeStage}>
-          <h3>{title}</h3>
-          <div className={css.modalLine}>
-            <SelectDropdown
-              name="member"
-              placeholder="Введите название спринта..."
-              multi={false}
-              value={this.state.sprint}
-              onChange={e => this.selectValue(e !== null ? e.value : 0, 'sprint')}
-              noResultsText="Нет результатов"
-              options={options}
-              autoFocus
-              openOnFocus
-            />
-            <Button type="green" text="ОК" onClick={this.handleChoose}/>
-          </div>
-        </div>
-      </Modal>
-    );
-  }
-}
+const SprintModal = ({ title, onClose, onChoose, sprints, defaultSprint }) => (
+  <OptionsModal
+    options={getOptions(sprints)}
+    defaultOption={defaultSprint}
+    inputPlaceholder="Введите название спринта..."
+    onClose={onClose}
+    onChoose={onChoose}
+    title={title}
+  />
+);
 
 SprintModal.propTypes = {
   defaultSprint: PropTypes.number,
   onChoose: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
-  title: PropTypes.string,
-  sprints: PropTypes.array
+  sprints: PropTypes.array,
+  title: PropTypes.string
 };
 
 export default SprintModal;

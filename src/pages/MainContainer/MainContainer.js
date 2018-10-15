@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import * as css from './MainContainer.scss';
+import './MainContainer.scss';
 import NotificationContainer from '../NotificationContainer';
 
 class MainContainer extends Component {

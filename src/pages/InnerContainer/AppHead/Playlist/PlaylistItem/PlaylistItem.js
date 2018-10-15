@@ -7,12 +7,14 @@ import { updateDraft, updateTimesheet } from '../../../../../actions/TimesheetPl
 import debounce from 'lodash/debounce';
 import find from 'lodash/find';
 import * as css from '../Playlist.scss';
+import * as timesheetsConstants from '../../../../../constants/Timesheets';
 import getMaIcon from '../../../../../constants/MagicActivityIcons';
 import roundNum from '../../../../../utils/roundNum';
 import validateNumber from '../../../../../utils/validateNumber';
 
 import { IconComment, IconCheck, IconEye, IconEyeDisable } from '../../../../../components/Icons';
 import localize from './playlistItem.json';
+import { getLocalizedMagicActiveTypes } from '../../../../../selectors/dictionaries';
 
 class PlaylistItem extends Component {
   constructor(props) {
@@ -129,7 +131,9 @@ class PlaylistItem extends Component {
       taskStatus: createDraftStatus,
       isDraft,
       isVisible,
-      sprint
+      sprint,
+      statusId,
+      spentTime
     } = this.props.item;
     const { lang, disabled: timesheetDisabled } = this.props;
     const status = task ? task.taskStatus : null;
@@ -218,6 +222,15 @@ class PlaylistItem extends Component {
         <div className={css.time}>
           <div className={css.today}>
             <input
+              className={classnames({
+                [css.withStatus]: statusId,
+                [css.filled]: +spentTime && statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED,
+                [css.approved]: statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED,
+                [css.submitted]: statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED,
+                [css.rejected]: statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED,
+                [css.input]: true,
+                [css.editable]: !timesheetDisabled
+              })}
               type="text"
               onChange={this.handleChangeTime}
               value={this.state.itemSpentTime}
@@ -252,7 +265,7 @@ class PlaylistItem extends Component {
             />
             {!timesheetDisabled && (
               <div className={css.actionButton} onClick={this.pushComment(this.state.comment)}>
-                <IconCheck style={{ width: '1.5rem', height: '1.5rem' }} />
+                <IconCheck style={{ width: '1.5rem', height: '1.5rem', color: '#fff', opacity: '0.9' }} />
               </div>
             )}
           </div>
@@ -276,7 +289,7 @@ PlaylistItem.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    magicActivitiesTypes: state.Dictionaries.magicActivityTypes,
+    magicActivitiesTypes: getLocalizedMagicActiveTypes(state),
     task: state.Task.task,
     lang: state.Localize.lang
   };
@@ -287,4 +300,7 @@ const mapDispatchToProps = {
   updateTimesheet
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlaylistItem);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PlaylistItem);

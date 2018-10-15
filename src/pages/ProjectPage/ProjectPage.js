@@ -13,6 +13,8 @@ import { getProjectInfo as getProject, changeProject } from '../../actions/Proje
 import { ADMIN, EXTERNAL_USER } from '../../constants/Roles';
 import { checkIsViewer } from '../../helpers/RoleValidator';
 import localize from './projectPage.json';
+import Title, { flushTitle } from 'react-title-component';
+import { getLocalizedProjectTypes } from '../../selectors/dictionaries';
 
 class ProjectPage extends Component {
   static propTypes = {
@@ -67,74 +69,32 @@ class ProjectPage extends Component {
   };
 
   render() {
-    const { projectTypes, lang } = this.props;
-    const filtersFromLoc = this.props.location.state ? this.props.location.state.filtersData : '';
-    const filtersData = this.props.location.search || filtersFromLoc;
+    const {
+      projectTypes,
+      lang,
+      params: { projectId }
+    } = this.props;
     const isProjectAdmin = this.checkIsAdminInProject();
     const tabs = [
-      <Link
-        key={`/projects/${this.props.params.projectId}`}
-        activeClassName="active"
-        onlyActiveOnIndex
-        to={{
-          pathname: `/projects/${this.props.params.projectId}`,
-          search: filtersFromLoc,
-          state: { filtersData: this.props.location.search }
-        }}
-      >
+      <Link key={`/projects/${projectId}`} activeClassName="active" onlyActiveOnIndex to={`/projects/${projectId}`}>
         {localize[lang].BOARD}
       </Link>,
-      <Link
-        activeClassName="active"
-        key={`/projects/${this.props.params.projectId}/tasks`}
-        to={{
-          pathname: `/projects/${this.props.params.projectId}/tasks`,
-          state: { filtersData }
-        }}
-      >
+      <Link activeClassName="active" key={`/projects/${projectId}/tasks`} to={`/projects/${projectId}/tasks`}>
         {localize[lang].TASK_LIST}
       </Link>,
-      <Link
-        activeClassName="active"
-        key={`/projects/${this.props.params.projectId}/planning`}
-        to={{
-          pathname: `/projects/${this.props.params.projectId}/planning`,
-          state: { filtersData }
-        }}
-      >
+      <Link activeClassName="active" key={`/projects/${projectId}/planning`} to={`/projects/${projectId}/planning`}>
         {localize[lang].PLANNING}
       </Link>,
-      <Link
-        activeClassName="active"
-        key={`/projects/${this.props.params.projectId}/info`}
-        to={{
-          pathname: `/projects/${this.props.params.projectId}/info`,
-          state: { filtersData }
-        }}
-      >
+      <Link activeClassName="active" key={`/projects/${projectId}/info`} to={`/projects/${projectId}/info`}>
         {localize[lang].INFO}
       </Link>,
-      <Link
-        activeClassName="active"
-        key={`/projects/${this.props.params.projectId}/property`}
-        to={{
-          pathname: `/projects/${this.props.params.projectId}/property`,
-          state: { filtersData }
-        }}
-      >
+      <Link activeClassName="active" key={`/projects/${projectId}/property`} to={`/projects/${projectId}/property`}>
         {localize[lang].SETTING}
       </Link>
     ];
     if (this.props.user.globalRole !== EXTERNAL_USER) {
       tabs.push(
-        <Link
-          activeClassName="active"
-          key={`/projects/${this.props.params.projectId}/history`}
-          to={{
-            pathname: `/projects/${this.props.params.projectId}/history`,
-            state: { filtersData }
-          }}
-        >
+        <Link activeClassName="active" key={`/projects/${projectId}/history`} to={`/projects/${projectId}/history`}>
           {localize[lang].HISTORY}
         </Link>
       );
@@ -144,11 +104,8 @@ class ProjectPage extends Component {
       tabs.push(
         <Link
           activeClassName="active"
-          key={`/projects/${this.props.params.projectId}/analytics`}
-          to={{
-            pathname: `/projects/${this.props.params.projectId}/analytics`,
-            state: { filtersData }
-          }}
+          key={`/projects/${projectId}/analytics`}
+          to={`/projects/${projectId}/analytics`}
           onClick={this.handleAnalyticsAction}
         >
           {localize[lang].ANALYTICS}
@@ -159,11 +116,8 @@ class ProjectPage extends Component {
       tabs.push(
         <Link
           activeClassName="active"
-          key={`/projects/${this.props.params.projectId}/timesheets`}
-          to={{
-            pathname: `/projects/${this.props.params.projectId}/timesheets`,
-            state: { filtersData }
-          }}
+          key={`/projects/${projectId}/timesheets`}
+          to={`/projects/${projectId}/timesheets`}
           onClick={this.handleTimesheetsAction}
         >
           {localize[lang].TIME_REPORTS}
@@ -175,6 +129,7 @@ class ProjectPage extends Component {
       <HttpError error={this.props.project.error} />
     ) : (
       <div id="project-page">
+        <Title render={`SimTrack - ${this.props.project.name || ''}`} />
         <ProjectTitle
           portfolio={this.props.project.portfolio}
           name={this.props.project.name || ''}
@@ -205,7 +160,7 @@ class ProjectPage extends Component {
 const mapStateToProps = state => ({
   project: state.Project.project,
   user: state.Auth.user,
-  projectTypes: state.Dictionaries.projectTypes || [],
+  projectTypes: getLocalizedProjectTypes(state) || [],
   lang: state.Localize.lang
 });
 

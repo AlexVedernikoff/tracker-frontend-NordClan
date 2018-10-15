@@ -1,0 +1,29 @@
+@import '../../styles/variables.scss';
+
+.marker {
+  display: flex !important;
+  align-items: center;
+
+  span {
+    display: inline-block;
+  }
+
+  &:before {
+    content: '';
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background-color: silver;
+    margin-right: 0.5rem;
+    vertical-align: text-top;
+  }
+}
+
+.green:before {
+  background-color: $color-green;
+}
+
+.gray:before {
+  background-color: darken($color-gray, 10%);
+}

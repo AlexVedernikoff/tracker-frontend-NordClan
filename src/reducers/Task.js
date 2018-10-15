@@ -32,6 +32,7 @@ const InitialState = {
     tags: [],
     error: false,
     attachments: [],
+    branches: [],
     plannedExecutionTime: '0.00'
   },
   comments: [],
@@ -79,6 +80,7 @@ export default function Task(state = InitialState, action) {
       return {
         ...state,
         task: {
+          ...state.task,
           ...action.data,
           history: state.task.history
         }
@@ -169,10 +171,13 @@ export default function Task(state = InitialState, action) {
     case TaskActions.TASK_CHANGE_REQUEST_SUCCESS:
       let taskArray = [];
       let paramKey;
-      if (state.task.linkedTasks.find(linkedTask => linkedTask.id === action.changedFields.id)) {
+      if (
+        state.task.linkedTasks &&
+        state.task.linkedTasks.find(linkedTask => linkedTask.id === action.changedFields.id)
+      ) {
         paramKey = 'linkedTasks';
       }
-      if (state.task.subTasks.find(subTask => subTask.id === action.changedFields.id)) {
+      if (state.task.subTasks && state.task.subTasks.find(subTask => subTask.id === action.changedFields.id)) {
         paramKey = 'subTasks';
       }
       if (paramKey) {
@@ -437,6 +442,54 @@ export default function Task(state = InitialState, action) {
         task: {
           ...state.task,
           attachments: [...action.result.data, ...attachments]
+        }
+      };
+    }
+
+    case TaskActions.GET_GITLAB_BRANCHES_SUCCESS: {
+      return {
+        ...state,
+        task: {
+          ...state.task,
+          branches: [...action.branches]
+        }
+      };
+    }
+
+    case TaskActions.GET_GITLAB_BRANCHES_BY_REPO_SUCCESS: {
+      let branchNames = [];
+      if (action.repoBranches.length !== 0) {
+        branchNames = action.repoBranches.map(b => {
+          return { value: b.name, label: b.name };
+        });
+      }
+      return {
+        ...state,
+        task: {
+          ...state.task,
+          repoBranches: [...branchNames]
+        }
+      };
+    }
+
+    case TaskActions.CREATE_GITLAB_BRANCH_SUCCESS: {
+      return {
+        ...state,
+        task: {
+          ...state.task,
+          branches: [...state.task.branches, action.createdGitlabBranch]
+        }
+      };
+    }
+    case TaskActions.GET_PROJECT_REPOS_SUCCESS: {
+      const repos = action.projectRepos.map(pr => {
+        return { value: pr.id, label: pr.name_with_namespace };
+      });
+      return {
+        ...state,
+        task: {
+          ...state.task,
+          projectRepos: [...repos]
         }
       };
     }

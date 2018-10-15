@@ -23,6 +23,7 @@ import getStatusOptions from '../../../utils/getDraftStatusOptions';
 import * as activityTypes from '../../../constants/ActivityTypes';
 import localize from './addActivityModal.json';
 import { getDictionaryName } from '../../../utils/NameLocalisation';
+import { getLocalizedTaskStatuses, getLocalizedMagicActiveTypes } from '../../../selectors/dictionaries';
 
 class AddActivityModal extends Component {
   static propTypes = {
@@ -90,7 +91,9 @@ class AddActivityModal extends Component {
     }
   };
 
-  addActivity = () => {
+  addActivity = e => {
+    e.preventDefault();
+
     const { selectedTask, selectedActivityType, selectedProject, selectedTaskStatusId, startingDay } = this.props;
     const { selectedSprint } = this.state;
     // ТШ должен создаваться в stop статусе
@@ -220,7 +223,7 @@ class AddActivityModal extends Component {
     this.getSprintOptions(2);
     return (
       <Modal isOpen onRequestClose={this.props.onClose} contentLabel="Modal" closeTimeoutMS={200}>
-        <div className={css.addActivityForm}>
+        <form className={css.addActivityForm}>
           <h3>{localize[lang].ADD_ACTIVITY}</h3>
           <hr />
           <label className={css.formField}>
@@ -368,20 +371,20 @@ class AddActivityModal extends Component {
               onClick={this.addActivity}
             />
           </div>
-        </div>
+        </form>
       </Modal>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  activityTypes: state.Dictionaries.magicActivityTypes,
+  activityTypes: getLocalizedMagicActiveTypes(state),
   selectedActivityType: state.Timesheets.selectedActivityType,
   selectedTask: state.Timesheets.selectedTask,
   selectedTaskStatusId: state.Timesheets.selectedTaskStatusId,
   selectedProject: state.Timesheets.selectedProject,
   startingDay: state.Timesheets.startingDay,
-  taskStatuses: state.Dictionaries.taskStatuses,
+  taskStatuses: getLocalizedTaskStatuses(state),
   filteredTasks: state.Timesheets.filteredTasks,
   sprints: state.Project.project.sprints,
   userId: state.Auth.user.id,
@@ -399,4 +402,7 @@ const mapDispatchToProps = {
   getProjectSprints
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddActivityModal);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AddActivityModal);
