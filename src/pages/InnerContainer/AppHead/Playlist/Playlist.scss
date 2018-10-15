@@ -36,7 +36,7 @@
     background-color: rgba(white, 0.1);
   }
   @include phone {
-    width: calc(100% - 10px);
+    width: 100%;
   }
 }
 
@@ -131,6 +131,9 @@
 
 .taskTitle {
   width: 100%;
+  @include phone {
+    width: calc(100% - 20px);
+  }
 }
 
 .taskName {
@@ -159,6 +162,9 @@
       margin-left: 0.3rem;
       padding-left: 0.3rem;
     }
+  }
+  @include phone {
+    display: none;
   }
 }
 
@@ -255,6 +261,14 @@
     & + .day {
       border-left: 1px solid lighten($color-dark, 20%);
     }
+    @include phone {
+      min-width: 56px;
+      min-height: 36px;
+    }
+  }
+  @include phone {
+    flex-shrink: 0;
+    overflow-x: scroll;
   }
 }
 
@@ -289,6 +303,9 @@
         z-index: 2;
         background: white;
         border-color: silver;
+        @include phone {
+          top: 0;
+        }
       }
       svg {
         width: 16px;
@@ -309,7 +326,6 @@
     }
     @include phone {
       flex-shrink: 0;
-      overflow-y: auto;
       overflow-x: scroll;
     }
   }
@@ -362,6 +378,15 @@
   &:hover {
     color: lighten(black, 30%);
     transition: $transition;
+  }
+}
+
+.phoneVisibleToggle {
+  display: none;
+  padding-bottom: 5px;
+  @include phone {
+    display: inline-block;
+    text-align: right;
   }
 }
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { IconPause, IconPlay, IconList } from '../../../../../components/Icons';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import { IconPause, IconPlay, IconList } from '../../../../../components/Icons';
 import localization from './activeTaskPanel.json';
 import * as css from '../Playlist.scss';
 
@@ -59,10 +60,10 @@ class ActiveTaskPanel extends Component {
     const taskTitle = `${activeTask.project.prefix}-${activeTask.id}`;
 
     if (~this.playStatuses.indexOf(activeTask.statusId)) {
-      return `${localization[lang].ACTIVE_TASKS}: ${taskTitle}`;
+      return `${localization[lang].ACTIVE_TASK}: ${taskTitle}`;
     }
 
-    return `${localization[lang].LAST_ACTIVE_TASKS}: ${taskTitle}`;
+    return `${localization[lang].LAST_ACTIVE_TASK}: ${taskTitle}`;
   }
 
   render() {
@@ -86,5 +87,13 @@ class ActiveTaskPanel extends Component {
     );
   }
 }
+
+ActiveTaskPanel.propTypes = {
+  activeTask: PropTypes.object,
+  changeTask: PropTypes.func,
+  className: PropTypes.string,
+  lang: PropTypes.string,
+  onClick: PropTypes.func
+};
 
 export default ActiveTaskPanel;
