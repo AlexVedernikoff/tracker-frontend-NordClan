@@ -1,7 +1,7 @@
 import * as TimesheetPlayer from '../constants/TimesheetPlayer';
-import { API_URL } from '../constants/Settings';
-import { GET, POST, PUT, REST_API } from '../constants/RestApi';
-import { withFinishLoading, withStartLoading, defaultExtra as extra, withdefaultExtra } from './Common';
+// import { API_URL } from '../constants/Settings';
+import { GET, PUT, REST_API } from '../constants/RestApi';
+import { withFinishLoading, withStartLoading, defaultExtra as extra } from './Common';
 
 const startReceivePlayerData = () => ({
   type: TimesheetPlayer.TIMESHEET_PLAYER_RECEIVE_START
@@ -16,13 +16,13 @@ const playerDataReceiveFailed = () => ({
   type: TimesheetPlayer.TIMESHEET_PLAYER_RECEIVE_FAIL
 });
 
-const playerDataUpdateReceived = (data, date) => {
-  return {
-    type: TimesheetPlayer.TIMESHEET_PLAYER_UPDATE_RECEIVE_SUCCESS,
-    data,
-    date
-  };
-};
+// const playerDataUpdateReceived = (data, date) => {
+//   return {
+//     type: TimesheetPlayer.TIMESHEET_PLAYER_UPDATE_RECEIVE_SUCCESS,
+//     data,
+//     date
+//   };
+// };
 
 const playerTimesheetUpdateReceived = timesheet => {
   return {
@@ -84,7 +84,7 @@ export const updateTimesheet = data => {
     });
 };
 
-const getActiveTask = task => ({
-  type: TimesheetPlayer.GET_ACTIVE_TASK,
-  task
-});
+// const getActiveTask = task => ({
+//   type: TimesheetPlayer.GET_ACTIVE_TASK,
+//   task
+// });

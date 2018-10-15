@@ -149,9 +149,7 @@ const mapDispatchToProps = {
   ...dictionaryActions
 };
 
-const mapStateToProps = state => ({});
-
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(InnerContainer);

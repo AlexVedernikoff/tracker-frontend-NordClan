@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import * as css from './SprintEditModal.scss';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
@@ -16,6 +15,7 @@ class SprintEditModal extends Component {
   static propTypes = {
     handleCloseModal: PropTypes.func.isRequired,
     handleEditSprint: PropTypes.func.isRequired,
+    lang: PropTypes.string,
     project: PropTypes.object.isRequired,
     sprint: PropTypes.object.isRequired
   };

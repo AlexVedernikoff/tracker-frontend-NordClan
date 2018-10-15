@@ -20,10 +20,11 @@ import getProjects, {
   openCreateProjectModal,
   closeCreateProjectModal
 } from '../../actions/Projects';
+import { getPortfolios } from '../../actions/Portfolios';
 import { getErrorMessageByType } from '../../utils/ErrorMessages';
 import { ADMIN } from '../../constants/Roles';
 import localization from './projects.json';
-import Title, { flushTitle } from 'react-title-component';
+import Title from 'react-title-component';
 import TypeFilter from './TypeFilter';
 import { getLocalizedProjectTypes } from './../../selectors/dictionaries';
 
@@ -47,6 +48,11 @@ class Projects extends Component {
     };
   }
 
+  componentDidMount() {
+    this.loadProjects();
+    this.props.getPortfolios();
+  }
+
   initialFilters = {
     filterTags: [],
     filteredInProgress: false,
@@ -57,10 +63,6 @@ class Projects extends Component {
     dateTo: '',
     projectName: ''
   };
-
-  componentDidMount() {
-    this.loadProjects();
-  }
 
   selectType = (filterSelectedTypes, filterRequestTypes) => {
     this.setState({ filterSelectedTypes, filterRequestTypes }, () => {
@@ -149,9 +151,9 @@ class Projects extends Component {
         activePage: this.state.dateFrom !== dateFrom ? 1 : this.state.activePage
       },
       () => {
-        dateFrom = dateFrom ? moment(this.state.dateFrom).format('YYYY-MM-DD') : '';
+        const newDateFrom = dateFrom ? moment(this.state.dateFrom).format('YYYY-MM-DD') : '';
         const dateTo = this.state.dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
-        this.loadProjects(dateFrom, dateTo);
+        this.loadProjects(newDateFrom, dateTo);
       }
     );
   };
@@ -164,8 +166,8 @@ class Projects extends Component {
       },
       () => {
         const dateFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('YYYY-MM-DD') : '';
-        dateTo = dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
-        this.loadProjects(dateFrom, dateTo);
+        const newDateTo = dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
+        this.loadProjects(dateFrom, newDateTo);
       }
     );
   };
@@ -184,16 +186,16 @@ class Projects extends Component {
   };
 
   handleModal = () => {
-    const { isCreateProjectModalOpen, openCreateProjectModal, closeCreateProjectModal } = this.props;
+    const { isCreateProjectModalOpen } = this.props;
     if (isCreateProjectModalOpen) {
       this.setState({
         projectName: '',
         projectPrefix: '',
         selectedPortfolio: null
       });
-      closeCreateProjectModal();
+      this.props.closeCreateProjectModal();
     } else {
-      openCreateProjectModal();
+      this.props.openCreateProjectModal();
     }
   };
 
@@ -329,7 +331,7 @@ class Projects extends Component {
                     onClick={() => {
                       this.check('filteredInProgress', this.handleFilterChange);
                     }}
-                    label="В процессе"
+                    label={localization[lang].INPROGRESS}
                   />
                   <StatusCheckbox
                     type="INHOLD"
@@ -337,7 +339,7 @@ class Projects extends Component {
                     onClick={() => {
                       this.check('filteredInHold', this.handleFilterChange);
                     }}
-                    label="Приостановлен"
+                    label={localization[lang].INHOLD}
                   />
                   <StatusCheckbox
                     type="FINISHED"
@@ -345,7 +347,7 @@ class Projects extends Component {
                     onClick={() => {
                       this.check('filteredFinished', this.handleFilterChange);
                     }}
-                    label="Завершен"
+                    label={localization[lang].FINISHED}
                   />
                 </div>
               </Col>
@@ -422,14 +424,18 @@ class Projects extends Component {
 }
 Projects.propTypes = {
   closeCreateProjectModal: PropTypes.func.isRequired,
+  getPortfolios: PropTypes.func.isRequired,
   getProjects: PropTypes.func.isRequired,
   globalRole: PropTypes.string.isRequired,
   isCreateProjectModalOpen: PropTypes.bool.isRequired,
+  lang: PropTypes.string,
   loading: PropTypes.number,
   openCreateProjectModal: PropTypes.func.isRequired,
   pagesCount: PropTypes.number.isRequired,
   projectError: PropTypes.object,
-  projectList: PropTypes.array.isRequired
+  projectList: PropTypes.array.isRequired,
+  projectTypes: PropTypes.array,
+  requestProjectCreate: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -447,20 +453,8 @@ const mapDispatchToProps = {
   requestProjectCreate,
   openCreateProjectModal,
   closeCreateProjectModal,
+  getPortfolios,
   getProjects
-};
-
-Projects.propTypes = {
-  GetProjects: PropTypes.func,
-  closeCreateProjectModal: PropTypes.func,
-  isCreateProjectModalOpen: PropTypes.bool,
-  isOpen: PropTypes.bool,
-  onChange: PropTypes.func,
-  onRequestClose: PropTypes.func,
-  openCreateProjectModal: PropTypes.func,
-  projectList: PropTypes.array,
-  projectTypes: PropTypes.array,
-  requestProjectCreate: PropTypes.func
 };
 
 export default connect(

@@ -106,6 +106,7 @@ class RelatedTasks extends React.Component {
 }
 
 RelatedTasks.propTypes = {
+  lang: PropTypes.string,
   onAction: PropTypes.func,
   onDelete: PropTypes.func,
   task: PropTypes.object.isRequired,

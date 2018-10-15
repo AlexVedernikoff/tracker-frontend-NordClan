@@ -47,8 +47,9 @@ const mapStateToProps = state => ({
 });
 
 FileUpload.propTypes = {
-  onDrop: PropTypes.func.isRequired,
-  isMinimal: PropTypes.bool
+  isMinimal: PropTypes.bool,
+  lang: PropTypes.string,
+  onDrop: PropTypes.func.isRequired
 };
 
 export default connect(

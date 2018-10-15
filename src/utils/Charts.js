@@ -1,5 +1,5 @@
 import { defaults } from 'react-chartjs-2';
-import * as zoom from 'chartjs-plugin-zoom';
+// import * as zoom from 'chartjs-plugin-zoom';
 
 const chartDefaultOptions = {
   responsive: true,

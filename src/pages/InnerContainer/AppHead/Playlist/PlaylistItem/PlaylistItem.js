@@ -280,6 +280,7 @@ PlaylistItem.propTypes = {
   handleToggleList: PropTypes.func,
   index: PropTypes.number.isRequired,
   item: PropTypes.object.isRequired,
+  lang: PropTypes.string,
   magicActivitiesTypes: PropTypes.array,
   task: PropTypes.object,
   updateDraft: PropTypes.func,

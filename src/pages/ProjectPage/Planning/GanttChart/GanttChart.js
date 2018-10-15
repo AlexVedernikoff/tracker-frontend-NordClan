@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Toolbar from './Toolbar';
-import 'dhtmlx-gantt';
+import gantt from 'dhtmlx-gantt';
 import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
 
 // tutorial https://dhtmlx.com/blog/create-react-gantt-chart-component-dhtmlxgantt/
@@ -26,6 +27,12 @@ const data = {
 };
 
 class GanttChart extends Component {
+  static propTypes = {
+    onLinkUpdated: PropTypes.func,
+    onTaskUpdated: PropTypes.func,
+    zoom: PropTypes.string
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -68,11 +75,19 @@ class GanttChart extends Component {
       }
     });
 
-    gantt.attachEvent('onAfterLinkDelete', (id, link) => {
+    gantt.attachEvent('onAfterLinkDelete', id => {
       if (this.props.onLinkUpdated) {
         this.props.onLinkUpdated(id, 'deleted');
       }
     });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props.zoom !== nextState.zoom;
+  }
+
+  componentDidUpdate() {
+    gantt.render();
   }
 
   setZoom(value) {
@@ -102,14 +117,6 @@ class GanttChart extends Component {
       default:
         break;
     }
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.zoom !== nextState.zoom;
-  }
-
-  componentDidUpdate() {
-    gantt.render();
   }
 
   handleZoomChange = zoom => {

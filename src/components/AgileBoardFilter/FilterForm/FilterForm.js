@@ -24,6 +24,8 @@ class FilterForm extends React.Component {
     ReactTooltip.rebuild();
   }
 
+  debouncedSelectValue = debounce(this.props.setFilterValue, 500);
+
   updateListsAndTasks = () => {
     this.props.getTasks();
     this.props.updateFilterList();

@@ -35,6 +35,7 @@ class ActivityRow extends React.Component {
     deleteTimesheets: PropTypes.func,
     editTempTimesheet: PropTypes.func,
     item: PropTypes.object,
+    lang: PropTypes.string,
     ma: PropTypes.bool,
     magicActivitiesTypes: PropTypes.array,
     startingDay: PropTypes.object,

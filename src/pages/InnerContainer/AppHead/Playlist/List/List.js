@@ -12,6 +12,9 @@ class List extends Component {
   static propTypes = {
     disabled: PropTypes.bool,
     handleToggleList: PropTypes.func,
+    textHide: PropTypes.string,
+    textInfo: PropTypes.string,
+    textShowHidden: PropTypes.string,
     tracks: PropTypes.array
   };
 

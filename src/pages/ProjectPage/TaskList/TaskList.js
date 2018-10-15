@@ -377,7 +377,7 @@ class TaskList extends Component {
 
       this.changeUrl(changedFilters);
 
-      return { changedFilters };
+      return { ...state, changedFilters };
     }, this.loadTasks);
   }
 
