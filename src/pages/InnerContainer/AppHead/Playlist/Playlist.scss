@@ -123,6 +123,9 @@
         position: absolute;
         top: 1px;
         left: 0;
+        @include phone {
+          top: 10px;
+        }
       }
     }
   }
