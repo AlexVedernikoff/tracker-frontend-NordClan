@@ -12,6 +12,7 @@ import { getLocalizedProjectTypes } from '../../../../selectors/dictionaries';
 class TypeEditor extends Component {
   static propTypes = {
     changeProject: PropTypes.func,
+    lang: PropTypes.string,
     project: PropTypes.object,
     projectTypes: PropTypes.array,
     user: PropTypes.object

@@ -45,7 +45,6 @@ export default class HistoryMessage extends React.Component {
   }
 
   renderTextMessage() {
-    const { message } = this.props;
     const shortText = this.messageWithoutTags.slice(0, this.maxLengthTextMessage).concat('...');
 
     if (this.state.isLongText) {

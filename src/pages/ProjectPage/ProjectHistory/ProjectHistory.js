@@ -52,7 +52,7 @@ class ProjectHistory extends React.Component {
 
   render() {
     const { historyEvents, projectId, lang } = this.props;
-    const eventList = historyEvents.filter(event => event).map((event, i) => {
+    const eventList = historyEvents.filter(event => event).map(event => {
       return (
         <div className={css.historyEvent} key={event.id}>
           <span className={css.time}> {moment(event.date).format('DD.MM.YYYY HH:mm:ss')}</span>
@@ -88,7 +88,9 @@ class ProjectHistory extends React.Component {
 ProjectHistory.propTypes = {
   getProjectHistory: PropTypes.func.isRequired,
   historyEvents: PropTypes.array,
+  lang: PropTypes.string,
   pagesCount: PropTypes.number,
+  params: PropTypes.object,
   projectId: PropTypes.number
 };
 

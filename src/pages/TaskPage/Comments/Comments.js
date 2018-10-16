@@ -124,9 +124,8 @@ class Comments extends Component {
       }
     }
     if (prevProps.attachments.length !== this.props.attachments.length && this.state.isAttachedToComment) {
-      const diff = _.difference(this.props.attachments, prevProps.attachments);
       const attachments = this.props.attachments.map(item => {
-        return { ...item, display: diff.some(i => i === item) };
+        return { ...item, display: true };
       });
 
       this.setState({ attachments: attachments, isAttachedToComment: false });
@@ -145,9 +144,7 @@ class Comments extends Component {
 
   prepareAttachmentsForEdit = ids => {
     const attachments = this.props.attachments.map(attachment => {
-      const stateAttachment =
-        ids.indexOf(attachment.id) !== -1 ? { ...attachment, display: true } : { ...attachment, display: false };
-      return stateAttachment;
+      return ids.indexOf(attachment.id) !== -1 ? { ...attachment, display: true } : { ...attachment, display: false };
     });
     this.setState({ attachments: attachments });
   };
@@ -156,7 +153,9 @@ class Comments extends Component {
     this.props.setCommentForEdit(this.props.comments.find(c => c.id === comment.id)).then(() => {
       this.setState({ resizeKey: shortId() });
     });
-    attachmentIds ? this.prepareAttachmentsForEdit(attachmentIds) : null;
+    if (attachmentIds) {
+      this.prepareAttachmentsForEdit(attachmentIds);
+    }
   };
 
   toggleBtn = evt => {
@@ -217,8 +216,7 @@ class Comments extends Component {
 
   handleRemoveAttachment = index => {
     const attachments = this.state.attachments.map((item, key) => {
-      const attachment = index === key ? { ...item, display: false } : item;
-      return attachment;
+      return index === key ? { ...item, display: false } : item;
     });
     this.setState({ attachments: attachments });
   };
@@ -328,7 +326,7 @@ class Comments extends Component {
                   [css.attachIcon]: true
                 })}
               >
-                <FileUpload onDrop={this.hanldeAttachedFiles} isMinimal={true} />
+                <FileUpload onDrop={this.hanldeAttachedFiles} isMinimal />
               </span>
               <span
                 onClick={!this.state.disabledBtn ? this.publishComment : null}

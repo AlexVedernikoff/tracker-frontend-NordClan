@@ -11,6 +11,7 @@ class SprintColumnHeader extends Component {
   static propTypes = {
     className: PropTypes.string,
     estimates: PropTypes.object.isRequired,
+    lang: PropTypes.string,
     name: PropTypes.string.isRequired,
     onCreateTaskClick: PropTypes.func.isRequired,
     onSprintChange: PropTypes.func.isRequired,

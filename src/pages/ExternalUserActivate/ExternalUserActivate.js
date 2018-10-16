@@ -8,12 +8,12 @@ import Button from '../../components/Button';
 import { activateExternalUser } from '../../actions/ExternalUsers';
 import bg from '../Login/bg.jpg';
 import { connect } from 'react-redux';
-import { history } from '../../History';
 import localize from './externalUserActivate.json';
 
 class ExternalUserActivate extends Component {
   static propTypes = {
     activateExternalUser: PropTypes.func,
+    lang: PropTypes.string,
     params: PropTypes.object
   };
 

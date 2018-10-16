@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Modal from '../../components/Modal';
-import Input from '../../components/Input';
+// import Input from '../../components/Input';
 import ValidatedInput from '../../components/ValidatedInput';
 import Validator from '../../components/ValidatedInput/Validator';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
@@ -56,12 +56,11 @@ class MissingProjectFieldsModal extends Component {
 
   render() {
     const {
-      style,
-      onRequestClose,
-      error: requestError,
+      // style,
+      // onRequestClose,
+      // error: requestError,
       closeTimeoutMS,
       text,
-      onConfirm,
       onCancel,
       projectTypes,
       ...other

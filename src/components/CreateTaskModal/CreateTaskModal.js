@@ -10,7 +10,7 @@ import classnames from 'classnames';
 import sortBy from 'lodash/sortBy';
 import Button from '../Button';
 import SelectDropdown from '../SelectDropdown';
-import ValidatedInput from '../ValidatedInput';
+// import ValidatedInput from '../ValidatedInput';
 import InputNumber from '../../components/InputNumber';
 import ValidatedAutosizeInput from '../ValidatedAutosizeInput';
 import * as css from './CreateTaskModal.scss';
@@ -126,7 +126,7 @@ class CreateTaskModal extends Component {
       return new moment(sprint.factFinishDate);
     });
 
-    sprints = sprints.map((sprint, i) => ({
+    sprints = sprints.map(sprint => ({
       value: sprint.id,
       label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${
         sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}` : '- ...'

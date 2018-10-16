@@ -4,6 +4,7 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import CollapsibleRow from '../CollapsibleRow';
 import copy from 'copy-to-clipboard';
 import ReactTooltip from 'react-tooltip';
+import isEqual from 'lodash/isEqual';
 
 import * as css from './AgileBoardFilter.scss';
 import localize from './AgileBoardFilter.json';
@@ -15,6 +16,9 @@ import Button from '../Button';
 import { IconBroom } from '../Icons';
 import { VISOR } from '../../constants/Roles';
 import { getFullName } from '../../utils/NameLocalisation';
+import { storageType } from '../FiltrersManager/helpers';
+
+const storage = storageType === 'local' ? localStorage : sessionStorage;
 
 class AgileBoardFilter extends React.Component {
   static propTypes = {};
@@ -24,14 +28,28 @@ class AgileBoardFilter extends React.Component {
     allFilters: []
   };
 
+  componentDidMount() {
+    if (storage.getItem('sprintFilterChanged') === null) {
+      storage.setItem('sprintFilterChanged', 0);
+    }
+  }
+
   componentDidUpdate = prevProps => {
     ReactTooltip.rebuild();
 
     const { currentSprint } = this.props;
 
+    if (this.isActiveSprintsChanged) {
+      this.props.setFilterValue('changedSprint', currentSprint.map(s => s.value), this.updateFilterList);
+    }
+
+    if (this.isNoActiveSprintsLeft) {
+      this.props.setFilterValue('changedSprint', [0], this.updateFilterList);
+    }
+
     if (currentSprint !== prevProps.currentSprint && this.isSprintFilterEmpty) {
-      const sprintValue = currentSprint && currentSprint.length ? currentSprint[0].value : 0;
-      this.props.setFilterValue('changedSprint', [sprintValue], this.updateFilterList);
+      const sprintValue = currentSprint && currentSprint.length ? currentSprint.map(s => s.value) : [0];
+      this.props.setFilterValue('changedSprint', sprintValue, this.updateFilterList);
     }
 
     if (
@@ -48,6 +66,32 @@ class AgileBoardFilter extends React.Component {
       isOpened: !prevState.isOpened
     }));
   };
+
+  get isActiveSprintsChanged() {
+    const { currentSprint, filters } = this.props;
+    const isSprintFilterChanged = +storage.getItem('sprintFilterChanged');
+
+    return (
+      !this.isSprintFilterEmpty &&
+      currentSprint &&
+      currentSprint.length &&
+      !isEqual(currentSprint.map(s => s.value), filters.changedSprint) &&
+      !isSprintFilterChanged
+    );
+  }
+
+  get isNoActiveSprintsLeft() {
+    const { currentSprint, filters } = this.props;
+    const isSprintFilterChanged = +storage.getItem('sprintFilterChanged');
+
+    return (
+      !this.isSprintFilterEmpty &&
+      currentSprint &&
+      !currentSprint.length &&
+      filters.changedSprint[0] !== 0 &&
+      !isSprintFilterChanged
+    );
+  }
 
   get isSprintFilterEmpty() {
     const {
@@ -105,6 +149,7 @@ class AgileBoardFilter extends React.Component {
             : this.getOptionData(optionLabel, currentId),
         deleteHandler: () => {
           if (optionLabel === 'changedSprint') {
+            storage.setItem('sprintFilterChanged', 1);
             this.removeSprint(selectedOption, currentId, optionLabel);
             return;
           }
@@ -150,11 +195,22 @@ class AgileBoardFilter extends React.Component {
   };
 
   updateFilterList = () => {
-    if (!this.props.project.users.length || !this.props.typeOptions.length) {
+    const {
+      filters,
+      project: { users },
+      sortedSprints
+    } = this.props;
+    const sortedSprintsValues = sortedSprints.map(el => el.value);
+
+    // проверяем, пришли ли данные по юзерам в проекте, если они есть в фильтре
+    if (
+      (!users.length && (filters.authorId || filters.performerId)) ||
+      !this.props.typeOptions.length ||
+      (filters.changedSprint.length && !filters.changedSprint.every(el => sortedSprintsValues.includes(el)))
+    ) {
       return;
     }
 
-    const { filters } = this.props;
     const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'name'];
 
     const selectedFilters = singleOptionFiltersList.reduce((result, filterName) => {
@@ -198,6 +254,7 @@ class AgileBoardFilter extends React.Component {
 
   clearFilters = () => {
     this.props.clearFilters({ changedSprint: [0] }, this.updateFilterList);
+    storage.setItem('sprintFilterChanged', 1);
   };
 
   render() {

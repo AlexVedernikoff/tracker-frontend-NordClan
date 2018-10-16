@@ -23,6 +23,7 @@ export const routerWithSession = store => next => action => {
 
       if (storage.getItem('filtersData')) {
         storage.removeItem('filtersData');
+        storage.removeItem('sprintFilterChanged');
         store.dispatch(clearCurrentProjectAndTasks());
       }
     }

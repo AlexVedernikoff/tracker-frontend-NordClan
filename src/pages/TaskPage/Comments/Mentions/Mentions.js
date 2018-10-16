@@ -8,6 +8,7 @@ import { getFullName } from '../../../../utils/NameLocalisation';
 class Mentions extends Component {
   static propTypes = {
     disabled: PropTypes.bool,
+    getTextAreaNode: PropTypes.func,
     lang: PropTypes.string,
     onInput: PropTypes.func,
     onKeyDown: PropTypes.func,
@@ -75,7 +76,7 @@ class Mentions extends Component {
   };
 
   isMentioned(value) {
-    return /( |^)@(\S+ \S*|\S*)$/.test(value);
+    return /( |^)@(\S+ \S*|\S*)$/m.test(value);
   }
 
   chooseMention = event => {

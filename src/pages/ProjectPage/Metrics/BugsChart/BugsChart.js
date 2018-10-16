@@ -9,11 +9,13 @@ import getColor from '../../../../utils/Colors';
 import localize from './BugsChart.json';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import datalabels from 'chartjs-plugin-datalabels';
+// import datalabels from 'chartjs-plugin-datalabels';
+
 class BugsChart extends Component {
   static propTypes = {
     chartDefaultOptions: PropTypes.object,
     getBasicLineSettings: PropTypes.func,
+    lang: PropTypes.string,
     openedBugsMetrics: PropTypes.array,
     openedCustomerBugsMetrics: PropTypes.array,
     openedRegressBugsMetrics: PropTypes.array

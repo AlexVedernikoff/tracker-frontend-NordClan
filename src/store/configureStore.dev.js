@@ -6,9 +6,10 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import { restApi } from '../middlewares/RestApi';
 import { routerWithSession } from '../middlewares/RouterWithSession';
 
-const configureStore = preloadedState => {
+const configureStore = (preloadedState = {}) => {
   const store = createStore(
     rootReducer,
+    preloadedState,
     composeWithDevTools(applyMiddleware(thunkMiddleware, routerWithSession, taskUpdate, restApi))
   );
 

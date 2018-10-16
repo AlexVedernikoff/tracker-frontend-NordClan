@@ -9,12 +9,19 @@ const targetActions = {
 
 export const taskUpdate = store => next => action => {
   if (targetActions[action.type]) {
-    const { routing: { locationBeforeTransitions: location }, Task: { task: { id } } } = store.getState();
+    const {
+      routing: { locationBeforeTransitions: location },
+      Task: {
+        task: { id }
+      }
+    } = store.getState();
     if (RegExp(`${id}\/history\/?$`).test(location.pathname)) {
       const history = store.getState().Task.history;
-      history.pageSize && history.currentPage
-        ? store.dispatch(getTaskHistory(id, { pageSize: history.pageSize, currentPage: history.currentPage }))
-        : store.dispatch(getTaskHistory(id));
+      if (history.pageSize && history.currentPage) {
+        store.dispatch(getTaskHistory(id, { pageSize: history.pageSize, currentPage: history.currentPage }));
+      } else {
+        store.dispatch(getTaskHistory(id));
+      }
     }
   }
   next(action);

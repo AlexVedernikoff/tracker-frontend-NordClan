@@ -319,6 +319,7 @@ TaskHeader.propTypes = {
   canEdit: PropTypes.bool,
   css: PropTypes.object,
   getProjectUsers: PropTypes.func.isRequired,
+  lang: PropTypes.string,
   location: PropTypes.object,
   onChange: PropTypes.func.isRequired,
   projectId: PropTypes.string.isRequired,

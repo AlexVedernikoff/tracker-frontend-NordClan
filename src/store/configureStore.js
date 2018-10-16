@@ -5,8 +5,12 @@ import { taskUpdate } from '../middlewares/Tasks';
 import { restApi } from '../middlewares/RestApi';
 import { routerWithSession } from '../middlewares/RouterWithSession';
 
-const configureStore = preloadedState => {
-  const store = createStore(rootReducer, applyMiddleware(thunkMiddleware, routerWithSession, taskUpdate, restApi));
+const configureStore = (preloadedState = {}) => {
+  const store = createStore(
+    rootReducer,
+    preloadedState,
+    applyMiddleware(thunkMiddleware, routerWithSession, taskUpdate, restApi)
+  );
 
   return store;
 };

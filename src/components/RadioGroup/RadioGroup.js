@@ -17,7 +17,7 @@ class RadionGroup extends Component {
   }
 
   render() {
-    const { options, name, value, onChange, ...other } = this.props;
+    const { options, name, value, onChange } = this.props;
 
     return (
       <div className={css.group}>

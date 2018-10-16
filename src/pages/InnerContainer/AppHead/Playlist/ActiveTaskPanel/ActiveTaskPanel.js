@@ -8,6 +8,14 @@ import * as css from '../Playlist.scss';
 const phoneWidth = 768;
 
 class ActiveTaskPanel extends Component {
+  static propTypes = {
+    activeTask: PropTypes.object,
+    changeTask: PropTypes.func,
+    className: PropTypes.object,
+    lang: PropTypes.string,
+    onClick: PropTypes.func
+  };
+
   constructor(props) {
     super(props);
     this.stopStatuses = [3, 5, 7];

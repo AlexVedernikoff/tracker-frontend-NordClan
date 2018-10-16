@@ -14,6 +14,7 @@ class TotalComment extends React.Component {
   static propTypes = {
     isDisable: PropTypes.bool,
     items: PropTypes.array,
+    lang: PropTypes.string,
     startingDay: PropTypes.object,
     updateSheetsArray: PropTypes.func,
     userId: PropTypes.number

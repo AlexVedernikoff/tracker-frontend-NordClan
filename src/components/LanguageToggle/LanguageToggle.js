@@ -4,6 +4,11 @@ import * as css from './LanguageToggle.scss';
 import classNames from 'classnames';
 
 class LanguageToggle extends Component {
+  static propTypes = {
+    lang: PropTypes.string,
+    onChange: PropTypes.func
+  };
+
   constructor(props) {
     super(props);
     this.state = {
