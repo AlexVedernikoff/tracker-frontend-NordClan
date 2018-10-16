@@ -366,7 +366,7 @@ class TaskList extends Component {
   };
 
   handleDayChange(value, name) {
-    this.setState(() => {
+    this.setState(state => {
       const changedFilters = { ...this.state.changedFilters };
 
       if (value) {
