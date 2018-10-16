@@ -166,7 +166,7 @@ class EditSpentModal extends Component {
                     <p>Billable:</p>
                   </Col>
                   <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                    <Checkbox disabled checked={isBillable} onChange={this.changeBillable} />
+                    <Checkbox checked={isBillable} onChange={this.changeBillable} />
                   </Col>
                 </Row>
               </div>
