@@ -14,9 +14,14 @@
     display: none;
     @include phone {
       display: flex;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
       justify-content: flex-end;
-      align-items: flex-end;
-      padding-bottom: 1.2rem;
+      padding: 1.25rem 0;
+      border-top: solid;
+      border-width: 1px;
+      background-color: lighten(#adb7c0, 20%);
     }
   }
 }
@@ -34,7 +39,6 @@
   @include phone {
     position: relative;
     color: #333;
-    bottom: 5px;
   }
 }
 
