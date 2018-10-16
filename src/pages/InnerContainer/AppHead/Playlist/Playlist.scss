@@ -1,7 +1,11 @@
 @import '../../../../styles/variables.scss';
+
 .playlistWrapper {
   width: 34rem;
   display: block;
+  @include app-head-width {
+    width: calc(34rem - 5px);
+  }
   @include phone {
     width: calc(100% - 7rem);
   }
@@ -138,12 +142,19 @@
 
 .taskName {
   max-width: 100%;
-  //white-space: nowrap;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   > span {
     padding-right: 5px;
     color: gray;
+    @include phone {
+      display: block;
+    }
+  }
+  @include phone {
+    font-size: 14px;
+    white-space: normal;
   }
 }
 

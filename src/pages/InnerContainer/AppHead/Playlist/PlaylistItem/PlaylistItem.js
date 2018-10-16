@@ -16,6 +16,8 @@ import { IconComment, IconCheck, IconEye, IconEyeDisable } from '../../../../../
 import localize from './playlistItem.json';
 import { getLocalizedMagicActiveTypes } from '../../../../../selectors/dictionaries';
 
+const phoneWidth = 768;
+
 class PlaylistItem extends Component {
   constructor(props) {
     super(props);
@@ -23,7 +25,7 @@ class PlaylistItem extends Component {
     this.state = {
       itemSpentTime: roundNum(this.props.item.spentTime, 2),
       isCommentOpen: false,
-      maxLength: 110
+      maxLength: 150
     };
     this.debouncedUpdateDraft = debounce(this.props.updateDraft, 500);
     this.debouncedUpdateOnlyTimesheet = debounce(this.props.updateTimesheet, 500);
@@ -40,8 +42,8 @@ class PlaylistItem extends Component {
 
   onResize = () => {
     const width = window.innerWidth;
-    if (width < 768) {
-      this.setState({ maxLength: (width - 170) / 4 });
+    if (width < phoneWidth) {
+      this.setState({ maxLength: Math.floor((width - 150) / 8) });
     }
   };
 
@@ -142,7 +144,6 @@ class PlaylistItem extends Component {
   trimTaskName = () => {};
 
   render() {
-    log('max', this.state.maxLength);
     const {
       task,
       project,
@@ -156,15 +157,15 @@ class PlaylistItem extends Component {
       spentTime
     } = this.props.item;
     const { lang, disabled: timesheetDisabled } = this.props;
+    const { maxLength } = this.state;
     const status = task ? task.taskStatus : null;
     const redColorForTime = task ? parseFloat(task.factExecutionTime) > parseFloat(task.plannedExecutionTime) : false;
     const taskName = task ? task.name : this.getNameByType(typeId);
-    //log('render', this.taskName ? this.taskName.firstChild.innerText.length : null);
 
     const prefix = project && project.prefix ? `${project.prefix}-` : '';
     const taskLabel = task && prefix ? prefix + task.id : null;
-    //log(this.state.maxSymbols ? taskLabel.length + taskName.length > this.state.maxSymbols : null);
-    log(taskName.length + taskLabel.length > this.state.maxLength);
+    const trimTaskName =
+      taskName.length + taskLabel.length > maxLength ? taskName.slice(0, maxLength - 3) + '...' : taskName;
 
     const createDraftStatusName = createDraftStatus ? createDraftStatus.name.replace(' stop', '') : '';
     return (
@@ -237,14 +238,9 @@ class PlaylistItem extends Component {
                 )
               ) : null}
             </div>
-            <div
-              className={css.taskName}
-              ref={ref => {
-                this.taskName = ref;
-              }}
-            >
+            <div className={css.taskName}>
               {taskLabel ? <span>{taskLabel}</span> : null}
-              {taskName}
+              {trimTaskName}
             </div>
           </div>
           <div className={css.phoneVisibleToggle}>

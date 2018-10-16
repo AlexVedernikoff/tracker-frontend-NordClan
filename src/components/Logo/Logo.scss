@@ -6,7 +6,7 @@
   color: #ebebeb;
   display: block;
   text-decoration: none;
-  @include phone {
+  @include app-head-width {
     display: none;
   }
 
