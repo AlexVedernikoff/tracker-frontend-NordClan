@@ -4,14 +4,23 @@ import classnames from 'classnames';
 import { scroller, Element } from 'react-scroll';
 import find from 'lodash/find';
 import ReactTooltip from 'react-tooltip';
-
+import { Col, Row } from 'react-flexbox-grid';
+import InputNumber from '../InputNumber';
 import * as css from './OptionsModal.scss';
 import Modal from '../Modal';
+import SelectDropdown from '../SelectDropdown';
 import { IconClose, IconSearch } from '../Icons';
+import TextArea from '../TextArea';
+import Button from '../Button';
 
 const notSelectedOption = {
   value: 0,
   label: 'Не выбрано'
+};
+
+const formLayout = {
+  firstCol: 4,
+  secondCol: 8
 };
 
 class OptionsModal extends Component {
@@ -24,7 +33,9 @@ class OptionsModal extends Component {
     this.state = {
       options: this.optionsList,
       selectedIndex: this.getSelectedIndex(options),
-      searchText: ''
+      searchText: '',
+      plannedExecutionTime: 0,
+      selectedPerformer: props.defaultOption || null
     };
   }
 
@@ -121,8 +132,31 @@ class OptionsModal extends Component {
     }
   };
 
+  handleChangePlannedTime = plannedExecutionTime => {
+    this.setState({ plannedExecutionTime });
+  };
+
+  handlePerformerChange = selectedPerformer => {
+    this.setState({
+      selectedPerformer: selectedPerformer ? selectedPerformer.value : 0
+    });
+  };
+
+  changePerformer = e => {
+    e.preventDefault();
+    this.props.onChoose(this.state.selectedPerformer);
+  };
+
   render() {
-    const { title, canBeNotSelected, removeCurOptionTip, inputPlaceholder, noCurrentOption } = this.props;
+    console.log(this.state);
+    const {
+      title,
+      canBeNotSelected,
+      removeCurOptionTip,
+      inputPlaceholder,
+      noCurrentOption,
+      isPerformerChanged
+    } = this.props;
     const { options, searchText, selectedIndex } = this.state;
     const currentOption = this.getCurrentOption();
 
@@ -132,7 +166,8 @@ class OptionsModal extends Component {
           <div className={css.header}>
             <h3>{title}</h3>
           </div>
-          {noCurrentOption ? null : currentOption ? (
+          <form className={css.createTaskForm}>
+            {/* {noCurrentOption ? null : currentOption ? (
             <span
               className={classnames({
                 [css.currentOption]: true,
@@ -156,48 +191,124 @@ class OptionsModal extends Component {
               {currentOption.label}
             </span>
           ) : (
-            <span className={classnames([css.currentOption, css.noOption])}>{notSelectedOption.label}</span>
+            <span className={classnames([css.currentOption, css.noOption])}>
+              {canBeNotSelected && (
+                <div>
+                  <div
+                    className={css.removeCurrentOption}
+                    onClick={this.removeCurrentOption}
+                    data-tip={removeCurOptionTip}
+                    data-for="removeCurrentOption"
+                    data-place="left"
+                  >
+                    <IconClose />
+                  </div>
+                  <ReactTooltip id="removeCurrentOption" className="tooltip" />
+                </div>
+              )}
+              {notSelectedOption.label}
+            </span>
           )}
 
-          <div className={css.inputWrapper}>
-            <input
-              type="text"
-              autoFocus
-              className={css.search}
-              placeholder={inputPlaceholder}
-              value={searchText}
-              onChange={this.onSearchTextChange}
-            />
-            <div className={css.searchIco}>
-              <IconSearch />
+          {!isPerformerChanged && (
+            <div className={css.inputWrapper}>
+              <input
+                type="text"
+                autoFocus
+                className={css.search}
+                placeholder={inputPlaceholder}
+                value={searchText}
+                onChange={this.onSearchTextChange}
+              />
+              <div className={css.searchIco}>
+                <IconSearch />
+              </div>
             </div>
-          </div>
+          )} */}
 
-          <div
+            <label className={css.formField}>
+              <Row>
+                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                  <p className={css.label}>Performer: </p>
+                </Col>
+                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                  <SelectDropdown
+                    name="performer"
+                    placeholder="Change the performer"
+                    multi={false}
+                    className={css.selectPerformer}
+                    value={this.state.selectedPerformer}
+                    onChange={this.handlePerformerChange}
+                    noResultsText="No results"
+                    options={options}
+                  />
+                </Col>
+              </Row>
+            </label>
+
+            <label className={css.formField}>
+              <Row>
+                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                  <p className={css.label}>Planning Time:</p>
+                </Col>
+                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                  <InputNumber
+                    min={0}
+                    maxLength={5}
+                    postfix={'ч.'}
+                    onChange={this.handleChangePlannedTime}
+                    value={this.state.plannedExecutionTime}
+                  />
+                </Col>
+              </Row>
+            </label>
+
+            <label className={css.formField}>
+              <Row>
+                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                  <p className={css.label}>Add comment:</p>
+                </Col>
+                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                  <TextArea
+                    toolbarHidden
+                    placeholder="Add comment here"
+                    wrapperClassName={css.taskCommentWrapper}
+                    editorClassName={css.taskComment}
+                  />
+                </Col>
+              </Row>
+            </label>
+            <div className={css.changePerformerButton}>
+              <Button text="Change Performer" type="green" htmlType="submit" onClick={this.changePerformer} />
+            </div>
+
+            {/* <div
             className={css.selectorContainer}
             ref={ref => {
               this.list = ref;
             }}
             id="optionsList"
           >
-            {options.map((option, i) => (
-              <Element
-                name={option.value.toString()}
-                key={option.value}
-                className={classnames({
-                  [css.option]: true,
-                  [css.selected]: selectedIndex === i,
-                  [css.noOption]: !option.value,
-                  [option.className]: option.className
-                })}
-                autoFocus={selectedIndex === i}
-                onClick={() => this.handleChoose(option.value)}
-                tabIndex={i}
-              >
-                {option.label}
-              </Element>
-            ))}
-          </div>
+            {!isPerformerChanged &&
+              options.map((option, i) => (
+                <Element
+                  name={option.value.toString()}
+                  key={option.value}
+                  className={classnames({
+                    [css.option]: true,
+                    [css.selected]: selectedIndex === i,
+                    [css.noOption]: !option.value,
+                    [option.className]: option.className
+                  })}
+                  autoFocus={selectedIndex === i}
+                  onClick={() => this.handleChoose(option.value)}
+                  tabIndex={i}
+                >
+                  {option.label}
+                </Element>
+              ))}
+          </div> */}
+          </form>
         </div>
       </Modal>
     );
@@ -208,6 +319,7 @@ OptionsModal.propTypes = {
   canBeNotSelected: PropTypes.bool,
   defaultOption: PropTypes.number,
   inputPlaceholder: PropTypes.string,
+  isPerformerChanged: PropTypes.bool,
   noCurrentOption: PropTypes.bool,
   onChoose: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,

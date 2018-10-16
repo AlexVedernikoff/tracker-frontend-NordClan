@@ -56,7 +56,9 @@ class Details extends Component {
       isSprintModalOpen: false,
       isPerformerModalOpen: false,
       isTaskTypeModalOpen: false,
-      spentRequestStatus: spentRequestStatus.READY
+      spentRequestStatus: spentRequestStatus.READY,
+      isPerformerChanged: false,
+      plannedExecutionTime: 0
     };
   }
 
@@ -107,6 +109,10 @@ class Details extends Component {
     this.setState({ isPerformerModalOpen: false });
   };
 
+  performerToggle() {
+    this.setState({ isPerformerChanged: !this.state.isPerformerChanged });
+  }
+
   changePerformer = performerId => {
     this.props.onChange(
       {
@@ -115,7 +121,8 @@ class Details extends Component {
       },
       this.props.task.id
     );
-    this.closePerformerModal();
+    this.performerToggle();
+    // this.closePerformerModal();
   };
 
   // Действия с типом задачи
@@ -137,6 +144,10 @@ class Details extends Component {
     );
 
     this.closeTaskTypeModal();
+  };
+
+  handleChangePlannedTime = plannedExecutionTime => {
+    this.setState({ plannedExecutionTime });
   };
 
   changeIsTaskByClient = () => {
@@ -347,7 +358,10 @@ class Details extends Component {
             onChoose={this.changePerformer}
             onClose={this.closePerformerModal}
             title={localize[lang].CHANGE_PERFORMER}
+            isPerformerChanged={this.state.isPerformerChanged}
             users={users}
+            handleChangePlannedTime={this.handleChangePlannedTime}
+            plannedExecutionTime={this.state.plannedExecutionTime}
           />
         ) : null}
         {this.state.isSprintModalOpen ? (
