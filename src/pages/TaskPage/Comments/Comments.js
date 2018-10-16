@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import difference from 'lodash/difference';
 import onClickOutside from 'react-onclickoutside';
 import PropTypes from 'prop-types';
 import shortId from 'shortid';

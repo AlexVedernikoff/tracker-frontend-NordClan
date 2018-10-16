@@ -8,6 +8,7 @@ import { getFullName } from '../../../../utils/NameLocalisation';
 class Mentions extends Component {
   static propTypes = {
     disabled: PropTypes.bool,
+    getTextAreaNode: PropTypes.func,
     lang: PropTypes.string,
     onInput: PropTypes.func,
     onKeyDown: PropTypes.func,
