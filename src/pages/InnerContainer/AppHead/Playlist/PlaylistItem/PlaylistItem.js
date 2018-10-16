@@ -141,8 +141,6 @@ class PlaylistItem extends Component {
 
   giveRealValue = () => this.setState({ itemSpentTime: roundNum(this.props.item.spentTime, 2) });
 
-  trimTaskName = () => {};
-
   render() {
     const {
       task,
