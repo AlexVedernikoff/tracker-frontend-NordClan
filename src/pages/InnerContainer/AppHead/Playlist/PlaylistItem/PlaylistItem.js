@@ -16,6 +16,8 @@ import { IconComment, IconCheck, IconEye, IconEyeDisable } from '../../../../../
 import localize from './playlistItem.json';
 import { getLocalizedMagicActiveTypes } from '../../../../../selectors/dictionaries';
 
+const maxSymbols = (window.innerWidth - 146) / 2;
+
 class PlaylistItem extends Component {
   constructor(props) {
     super(props);
@@ -27,6 +29,12 @@ class PlaylistItem extends Component {
     this.debouncedUpdateDraft = debounce(this.props.updateDraft, 500);
     this.debouncedUpdateOnlyTimesheet = debounce(this.props.updateTimesheet, 500);
   }
+
+  //componentDidMount () {
+  //  const width = this.taskName.clientWidth;
+  //    const maxSymbols = width / 4;
+  //    this.setState({maxSymbols});
+  //}
 
   toggleComment = event => {
     event.stopPropagation();
@@ -123,6 +131,7 @@ class PlaylistItem extends Component {
   giveRealValue = () => this.setState({ itemSpentTime: roundNum(this.props.item.spentTime, 2) });
 
   render() {
+    log('max', (window.innerWidth - 146) / 2);
     const {
       task,
       project,
@@ -138,9 +147,13 @@ class PlaylistItem extends Component {
     const { lang, disabled: timesheetDisabled } = this.props;
     const status = task ? task.taskStatus : null;
     const redColorForTime = task ? parseFloat(task.factExecutionTime) > parseFloat(task.plannedExecutionTime) : false;
+    const taskName = task ? task.name : this.getNameByType(typeId);
+    //log('render', this.taskName ? this.taskName.firstChild.innerText.length : null);
 
     const prefix = project && project.prefix ? `${project.prefix}-` : '';
     const taskLabel = task && prefix ? prefix + task.id : null;
+    //log(this.state.maxSymbols ? taskLabel.length + taskName.length > this.state.maxSymbols : null);
+    log(taskName.length + taskLabel.length);
 
     const createDraftStatusName = createDraftStatus ? createDraftStatus.name.replace(' stop', '') : '';
     return (
@@ -213,9 +226,14 @@ class PlaylistItem extends Component {
                 )
               ) : null}
             </div>
-            <div className={css.taskName}>
+            <div
+              className={css.taskName}
+              ref={ref => {
+                this.taskName = ref;
+              }}
+            >
               {taskLabel ? <span>{taskLabel}</span> : null}
-              {task ? task.name : this.getNameByType(typeId)}
+              {taskName}
             </div>
           </div>
           <div className={css.phoneVisibleToggle}>
