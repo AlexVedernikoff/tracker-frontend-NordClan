@@ -16,25 +16,34 @@ import { IconComment, IconCheck, IconEye, IconEyeDisable } from '../../../../../
 import localize from './playlistItem.json';
 import { getLocalizedMagicActiveTypes } from '../../../../../selectors/dictionaries';
 
-const maxSymbols = (window.innerWidth - 146) / 2;
-
 class PlaylistItem extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       itemSpentTime: roundNum(this.props.item.spentTime, 2),
-      isCommentOpen: false
+      isCommentOpen: false,
+      maxLength: 110
     };
     this.debouncedUpdateDraft = debounce(this.props.updateDraft, 500);
     this.debouncedUpdateOnlyTimesheet = debounce(this.props.updateTimesheet, 500);
   }
 
-  //componentDidMount () {
-  //  const width = this.taskName.clientWidth;
-  //    const maxSymbols = width / 4;
-  //    this.setState({maxSymbols});
-  //}
+  componentDidMount() {
+    this.onResize();
+    addEventListener('resize', this.onResize);
+  }
+
+  componentWillUnmount() {
+    removeEventListener('resize', this.onResize);
+  }
+
+  onResize = () => {
+    const width = window.innerWidth;
+    if (width < 768) {
+      this.setState({ maxLength: (width - 170) / 4 });
+    }
+  };
 
   toggleComment = event => {
     event.stopPropagation();
@@ -130,8 +139,10 @@ class PlaylistItem extends Component {
 
   giveRealValue = () => this.setState({ itemSpentTime: roundNum(this.props.item.spentTime, 2) });
 
+  trimTaskName = () => {};
+
   render() {
-    log('max', (window.innerWidth - 146) / 2);
+    log('max', this.state.maxLength);
     const {
       task,
       project,
@@ -153,7 +164,7 @@ class PlaylistItem extends Component {
     const prefix = project && project.prefix ? `${project.prefix}-` : '';
     const taskLabel = task && prefix ? prefix + task.id : null;
     //log(this.state.maxSymbols ? taskLabel.length + taskName.length > this.state.maxSymbols : null);
-    log(taskName.length + taskLabel.length);
+    log(taskName.length + taskLabel.length > this.state.maxLength);
 
     const createDraftStatusName = createDraftStatus ? createDraftStatus.name.replace(' stop', '') : '';
     return (
