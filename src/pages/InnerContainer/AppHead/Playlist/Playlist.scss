@@ -399,6 +399,7 @@
   display: none;
   padding-bottom: 5px;
   @include phone {
+    width: 26px;
     display: inline-block;
     text-align: right;
   }
