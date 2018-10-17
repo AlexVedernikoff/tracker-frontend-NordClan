@@ -83,8 +83,8 @@ class Projects extends Component {
       this.state.filterByName,
       dateFrom,
       dateTo,
-      typeId,
-      statuses.join(',')
+      statuses.join(','),
+      typeId
     );
     this.saveFilters();
   };
