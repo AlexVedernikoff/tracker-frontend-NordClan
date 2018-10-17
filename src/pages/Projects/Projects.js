@@ -8,6 +8,7 @@ import Button from '../../components/Button';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
 import Input from '../../components/Input';
 import ProjectCard from '../../components/ProjectCard';
+import Wizard from '../../components/Wizard';
 import StatusCheckbox from './StatusCheckbox';
 import Pagination from '../../components/Pagination';
 import moment from 'moment';
@@ -35,6 +36,7 @@ class Projects extends Component {
     const projectListFilters = this.getSavedFilters();
     this.state = {
       ...this.initialFilters,
+      isWizardOpened: false,
       projects: [],
       projectPrefix: '',
       openProjectPage: false,
@@ -183,20 +185,6 @@ class Projects extends Component {
     );
   };
 
-  handleModal = () => {
-    const { isCreateProjectModalOpen, openCreateProjectModal, closeCreateProjectModal } = this.props;
-    if (isCreateProjectModalOpen) {
-      this.setState({
-        projectName: '',
-        projectPrefix: '',
-        selectedPortfolio: null
-      });
-      closeCreateProjectModal();
-    } else {
-      openCreateProjectModal();
-    }
-  };
-
   handleModalChange = event => {
     const { target } = event;
     const { name } = event.target;
@@ -294,9 +282,35 @@ class Projects extends Component {
     return false;
   }
 
+  handleModal = () => {
+    const { isCreateProjectModalOpen, openCreateProjectModal, closeCreateProjectModal } = this.props;
+    if (isCreateProjectModalOpen) {
+      this.setState({
+        projectName: '',
+        projectPrefix: '',
+        selectedPortfolio: null
+      });
+      closeCreateProjectModal();
+    } else {
+      openCreateProjectModal();
+    }
+  };
+
+  handleWizard = () => {
+    this.setState({
+      isWizardOpened: true
+    });
+  };
+
+  onWizardClose = () => {
+    this.setState({
+      isWizardOpened: false
+    });
+  };
+
   render() {
     const { lang } = this.props;
-    const { filteredInProgress, filteredInHold, filteredFinished, filterSelectedTypes } = this.state;
+    const { filteredInProgress, filteredInHold, filteredFinished, filterSelectedTypes, isWizardOpened } = this.state;
     const { projectTypes } = this.props;
     const formattedDayFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('DD.MM.YYYY') : '';
     const formattedDayTo = this.state.dateTo ? moment(this.state.dateTo).format('DD.MM.YYYY') : '';
@@ -310,12 +324,24 @@ class Projects extends Component {
           <header className={css.title}>
             <h1 className={css.title}>{localization[lang].MY_PROJECTS}</h1>
             {isAdmin ? (
-              <Button
-                onClick={this.handleModal}
-                text={localization[lang].CREATE_PROJECT}
-                type="primary"
-                icon="IconPlus"
-              />
+              <div>
+                <div>
+                  <Button
+                    onClick={this.handleModal}
+                    text={localization[lang].CREATE_PROJECT}
+                    type="primary"
+                    icon="IconPlus"
+                  />
+                </div>
+                <div>
+                  <Button
+                    onClick={this.handleWizard}
+                    text={localization[lang].CREATE_PROJECT_WITH_JIRA}
+                    type="primary"
+                    icon="IconPlus"
+                  />
+                </div>
+              </div>
             ) : null}
           </header>
           <hr />
@@ -416,6 +442,7 @@ class Projects extends Component {
           onTypeSelect={this.handleModalTypeSelected}
           selectedType={this.state.selectedType}
         />
+        <Wizard lang={lang} isOpen={this.state.isWizardOpened} onRequestClose={this.onWizardClose} />
       </div>
     );
   }
