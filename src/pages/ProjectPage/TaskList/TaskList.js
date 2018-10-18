@@ -4,6 +4,7 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { uniqBy, debounce } from 'lodash';
+import ReactTooltip from 'react-tooltip';
 
 import TaskRow from '../../../components/TaskRow';
 import InlineHolder from '../../../components/InlineHolder';
@@ -543,7 +544,10 @@ class TaskList extends Component {
 
   formatDate = date => date && moment(date).format(dateFormat);
 
-  onChangePrioritiesFilter = option => this.changeSingleFilter(option, 'prioritiesId');
+  onChangePrioritiesFilter = option => {
+    ReactTooltip.hide();
+    return this.changeSingleFilter(option, 'prioritiesId');
+  };
   onChangeTypeFilter = options => this.changeMultiFilter(options, 'typeId');
   onChangeStatusFilter = options => this.changeMultiFilter(options, 'statusId');
   onChangeAuthorFilter = option => this.changeSingleFilter(option, 'authorId');
