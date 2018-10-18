@@ -43,6 +43,7 @@ class Details extends Component {
     isExternal: PropTypes.bool,
     lang: PropTypes.string,
     onChange: PropTypes.func.isRequired,
+    plannedExecutionTime: PropTypes.number,
     sprints: PropTypes.array,
     task: PropTypes.object.isRequired,
     taskTypes: PropTypes.array,

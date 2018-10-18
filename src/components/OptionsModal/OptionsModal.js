@@ -12,6 +12,7 @@ import { changeTask, publishComment } from '../../actions/Task';
 
 import TextArea from '../TextArea';
 import Button from '../Button';
+import localize from './OptionsModal.json';
 
 const notSelectedOption = {
   value: 0,
@@ -127,7 +128,7 @@ class OptionsModal extends Component {
   };
 
   render() {
-    const { title } = this.props;
+    const { title, lang } = this.props;
     const { options } = this.state;
 
     return (
@@ -140,12 +141,12 @@ class OptionsModal extends Component {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p className={css.label}>Performer: </p>
+                  <p className={css.label}>{localize[lang].PERFORMER}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   <SelectDropdown
                     name="performer"
-                    placeholder="Change the performer"
+                    placeholder={localize[lang].PERFORMER_PLACEHOLDER}
                     multi={false}
                     className={css.selectPerformer}
                     value={this.state.selectedPerformer}
@@ -160,7 +161,7 @@ class OptionsModal extends Component {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p className={css.label}>Planning Time:</p>
+                  <p className={css.label}>{localize[lang].PLANNING_TIME}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   <InputNumber
@@ -177,12 +178,12 @@ class OptionsModal extends Component {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p className={css.label}>Add comment:</p>
+                  <p className={css.label}>{localize[lang].COMMENT}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   <TextArea
                     toolbarHidden
-                    placeholder="Add comment here"
+                    placeholder={localize[lang].COMMENT_PLACEHOLDER}
                     wrapperClassName={css.taskCommentWrapper}
                     editorClassName={css.taskComment}
                     onChange={this.setComment}
@@ -211,12 +212,15 @@ OptionsModal.propTypes = {
   onChoose: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   options: PropTypes.array,
+  plannedExecutionTime: PropTypes.number,
   publishComment: PropTypes.func,
   removeCurOptionTip: PropTypes.string,
   title: PropTypes.string
 };
 
-const mapStateToProps = () => ({});
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
 
 const mapDispatchToProps = {
   changeTask,

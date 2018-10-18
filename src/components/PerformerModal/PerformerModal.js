@@ -29,9 +29,11 @@ const PerformerModal = ({
 
 PerformerModal.propTypes = {
   defaultUser: PropTypes.number,
+  id: PropTypes.number,
   isPerformerChanged: PropTypes.bool,
   onChoose: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  plannedExecutionTime: PropTypes.number,
   title: PropTypes.string,
   users: PropTypes.array
 };

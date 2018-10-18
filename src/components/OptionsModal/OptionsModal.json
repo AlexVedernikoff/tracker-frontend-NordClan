@@ -1,0 +1,16 @@
+{
+  "en": {
+    "PERFORMER": "Performer:",
+    "PERFORMER_PLACEHOLDER": "Change the performer",
+    "PLANNING_TIME": "Planning time:",
+    "COMMENT": "Comment:",
+    "COMMENT_PLACEHOLDER": "Add comment here"
+  },
+  "ru": {
+    "PERFORMER": "Исполнитель:",
+    "PERFORMER_PLACEHOLDER": "Выберите исполнителя",
+    "PLANNING_TIME": "Планируемое время:",
+    "COMMENT": "Comment:",
+    "COMMENT_PLACEHOLDER": "Добавьте комментарий"
+  }
+}
