@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import uniqBy from 'lodash/uniqBy';
+import { uniqBy, debounce } from 'lodash';
 
 import TaskRow from '../../../components/TaskRow';
 import InlineHolder from '../../../components/InlineHolder';
@@ -55,8 +55,11 @@ class TaskList extends Component {
       activePage: 1,
       isPerformerModalOpen: false,
       isSprintModalOpen: false,
+      nameInputValue: null,
       ...this.getQueryFilters()
     };
+
+    this.debouncedSubmitNameFilter = debounce(this.submitNameFilter, 1000);
   }
 
   componentDidMount() {
@@ -73,6 +76,10 @@ class TaskList extends Component {
     if (this.props.lastCreatedTask !== nextProps.lastCreatedTask && nextProps.project.id) {
       this.loadTasks();
     }
+  }
+
+  componentWillUnmount() {
+    this.debouncedSubmitNameFilter.cancel();
   }
 
   translateToNumIfNeeded = value => {
@@ -276,8 +283,16 @@ class TaskList extends Component {
   };
 
   changeNameFilter = event => {
-    const value = event.target.value;
+    const { value, name } = event.target;
+    this.setState({ nameInputValue: value });
+    if (name === 'closedInput') {
+      this.debouncedSubmitNameFilter(value);
+    } else {
+      this.submitNameFilter(value);
+    }
+  };
 
+  submitNameFilter = value => {
     this.setState(state => {
       const changedFilters = state.changedFilters;
       if (value) {
@@ -288,9 +303,11 @@ class TaskList extends Component {
 
       this.changeUrl(changedFilters);
 
+      const nameInputValue = changedFilters.name ? changedFilters.name : '';
       return {
         activePage: state.filterByName !== value ? 1 : state.activePage,
-        changedFilters
+        changedFilters,
+        nameInputValue
       };
     }, this.loadTasks);
   };
@@ -592,9 +609,10 @@ class TaskList extends Component {
                     <Priority onChange={this.onChangePrioritiesFilter} priority={prioritiesId} canEdit />
                   </div>
                   <Input
+                    name="openedInput"
                     className={css.input}
                     placeholder={localize[lang].ENTER_TITLE_TASK}
-                    value={this.state.changedFilters.name || ''}
+                    value={this.state.nameInputValue || ''}
                     onChange={this.changeNameFilter}
                   />
                 </Col>
@@ -720,9 +738,10 @@ class TaskList extends Component {
                       <Priority onChange={this.onChangePrioritiesFilter} priority={prioritiesId} canEdit />
                     </div>
                     <Input
+                      name="closedInput"
                       className={css.input}
                       placeholder={localize[lang].ENTER_TITLE_TASK}
-                      value={this.state.changedFilters.name || ''}
+                      value={this.state.nameInputValue || ''}
                       onChange={this.changeNameFilter}
                     />
                   </Col>
