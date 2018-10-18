@@ -712,7 +712,21 @@ class TaskList extends Component {
             </div>
             <Row className={css.search} top="xs">
               <Col xs={12} sm={8}>
-                {filterTags.length ? filterTags : <span onClick={this.toggleOpen}>{localize[lang].NOT_SELECTED}</span>}
+                {filterTags.length ? (
+                  filterTags
+                ) : (
+                  <Col xs={12} sm={12} className={css.withPriority}>
+                    <div className={css.priorityFilter}>
+                      <Priority onChange={this.onChangePrioritiesFilter} priority={prioritiesId} canEdit />
+                    </div>
+                    <Input
+                      className={css.input}
+                      placeholder={localize[lang].ENTER_TITLE_TASK}
+                      value={this.state.changedFilters.name || ''}
+                      onChange={this.changeNameFilter}
+                    />
+                  </Col>
+                )}
               </Col>
               <Col xs={6} sm={2}>
                 <Button
