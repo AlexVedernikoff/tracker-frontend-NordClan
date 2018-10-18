@@ -2,7 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import OptionsModal from '../OptionsModal';
 
-const PerformerModal = ({ defaultUser, users, onClose, onChoose, title, isPerformerChanged }) => (
+const PerformerModal = ({
+  defaultUser,
+  users,
+  onClose,
+  onChoose,
+  title,
+  isPerformerChanged,
+  id,
+  plannedExecutionTime
+}) => (
   <OptionsModal
     defaultOption={defaultUser}
     options={users}
@@ -13,6 +22,8 @@ const PerformerModal = ({ defaultUser, users, onClose, onChoose, title, isPerfor
     title={title}
     canBeNotSelected
     isPerformerChanged={isPerformerChanged}
+    plannedExecutionTime={plannedExecutionTime}
+    id={id}
   />
 );
 

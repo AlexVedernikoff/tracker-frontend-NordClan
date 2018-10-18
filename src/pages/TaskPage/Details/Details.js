@@ -122,7 +122,7 @@ class Details extends Component {
       this.props.task.id
     );
     this.performerToggle();
-    // this.closePerformerModal();
+    this.closePerformerModal();
   };
 
   // Действия с типом задачи
@@ -360,8 +360,9 @@ class Details extends Component {
             title={localize[lang].CHANGE_PERFORMER}
             isPerformerChanged={this.state.isPerformerChanged}
             users={users}
+            id={task.id}
             handleChangePlannedTime={this.handleChangePlannedTime}
-            plannedExecutionTime={this.state.plannedExecutionTime}
+            plannedExecutionTime={this.props.plannedExecutionTime}
           />
         ) : null}
         {this.state.isSprintModalOpen ? (
@@ -389,6 +390,7 @@ const mapStateToProps = state => ({
   users: state.Project.project.users,
   sprints: state.Project.project.sprints,
   taskTypes: getLocalizedTaskTypes(state),
+  plannedExecutionTime: state.Task.task.plannedExecutionTime,
   PlanningTimeIsEditing: state.Task.PlanningTimeIsEditing,
   ExecutionTimeIsEditing: state.Task.ExecutionTimeIsEditing,
   timeSpent: state.Task.timeSpent,
