@@ -118,6 +118,7 @@ Info.propTypes = {
   description: PropTypes.string,
   descriptionIsEditing: PropTypes.bool,
   id: PropTypes.number,
+  lang: PropTypes.string,
   removeAttachment: PropTypes.func,
   riskBudget: PropTypes.number,
   startEditing: PropTypes.func,

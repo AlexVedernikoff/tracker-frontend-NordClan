@@ -4,7 +4,7 @@ import * as css from '../ProjectTimesheets.scss';
 import _forEach from 'lodash/forEach';
 import _sumBy from 'lodash/sumBy';
 import { IconArrowDown, IconArrowUp } from '../../../../components/Icons';
-import * as timesheetsConstants from '../../../../constants/Timesheets';
+// import * as timesheetsConstants from '../../../../constants/Timesheets';
 import cn from 'classnames';
 import moment from 'moment/moment';
 import roundNum from '../../../../utils/roundNum';
@@ -45,13 +45,13 @@ class UserRow extends React.Component {
   };
 
   render() {
-    const { user, activityRows, isOpen } = this.state;
-    const canDeleteRow = !user.tasks.find(
-      tsh =>
-        tsh.id &&
-        (tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
-          tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED)
-    );
+    const { user, isOpen } = this.state;
+    // const canDeleteRow = !user.tasks.find(
+    //   tsh =>
+    //     tsh.id &&
+    //     (tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
+    //       tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED)
+    // );
     const totalTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.spentTime), 2);
 
     const timeCells = user.timesheets.map((tsh, i) => {

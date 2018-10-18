@@ -2,15 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import {
-  IconPlus,
   IconArrowLeft,
   IconArrowRight,
-  IconTime,
   IconCalendar,
   IconEdit,
-  IconList,
-  IconOrganization,
-  IconCall,
+  IconPortfolio,
+  IconUsers,
+  IconExternalUsers,
   IconUser
 } from '../../../components/Icons';
 import { connect } from 'react-redux';
@@ -23,6 +21,7 @@ import classNames from 'classnames';
 
 class NavMenu extends Component {
   static propTypes = {
+    lang: PropTypes.string,
     mqlMatches: PropTypes.bool,
     sidebarDocked: PropTypes.bool,
     sidebarOpened: PropTypes.bool,
@@ -64,7 +63,10 @@ class NavMenu extends Component {
     const usersRolesLink = isAdmin(this.props.user.globalRole) ? (
       <li key="roles" className={css.sidebarItem}>
         <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/roles">
-          {localize[lang].USERS}
+          <button>
+            <IconUsers style={iconStyles} />
+          </button>
+          <span>{localize[lang].USERS}</span>
         </Link>
       </li>
     ) : null;
@@ -72,7 +74,7 @@ class NavMenu extends Component {
     const usersRolesLinkButton = isAdmin(this.props.user.globalRole) ? (
       <li key="roles">
         <Link className={css.sidebarLinkClosed} activeClassName={css.activeLink} to="/roles">
-          <IconOrganization style={iconStyles} />
+          <IconUsers style={iconStyles} />
         </Link>
       </li>
     ) : null;
@@ -80,7 +82,10 @@ class NavMenu extends Component {
     const externalUsersLink = isAdmin(this.props.user.globalRole) ? (
       <li key="externalUsers" className={css.sidebarItem}>
         <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/externalUsers">
-          {localize[lang].EXTERNAL_USERS}
+          <button>
+            <IconExternalUsers style={iconStyles} />
+          </button>
+          <span>{localize[lang].EXTERNAL_USERS}</span>
         </Link>
       </li>
     ) : null;
@@ -88,7 +93,7 @@ class NavMenu extends Component {
     const externalUsersLinkButton = isAdmin(this.props.user.globalRole) ? (
       <li key="externalUsers">
         <Link className={css.sidebarLinkClosed} activeClassName={css.activeLink} to="/externalUsers">
-          <IconCall style={iconStyles} />
+          <IconExternalUsers style={iconStyles} />
         </Link>
       </li>
     ) : null;
@@ -97,7 +102,10 @@ class NavMenu extends Component {
       this.props.user.globalRole !== EXTERNAL_USER ? (
         <li key="timesheets" className={css.sidebarItem}>
           <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/timesheets">
-            {localize[lang].TIMESHEETS}
+            <button>
+              <IconCalendar style={iconStyles} />
+            </button>
+            <span>{localize[lang].TIMESHEETS}</span>
           </Link>
         </li>
       ) : null;
@@ -128,21 +136,23 @@ class NavMenu extends Component {
         </Link>
       </li>, */
       <li key="projects" className={css.sidebarItem}>
-        <button>
-          <IconPlus style={iconStyles} />
-        </button>
         <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/projects">
-          {localize[lang].MY_PROJECTS}
+          <button>
+            <IconPortfolio style={iconStyles} />
+          </button>
+          <span>{localize[lang].MY_PROJECTS}</span>
         </Link>
       </li>,
-      <li key="tasks" className={css.sidebarItem}>
-        <button>
-          <IconPlus style={iconStyles} />
-        </button>
-        <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/tasks">
-          {localize[lang].MY_TASKS}
-        </Link>
-      </li>,
+      this.props.user.globalRole !== EXTERNAL_USER && (
+        <li key="tasks" className={css.sidebarItem}>
+          <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/tasks">
+            <button>
+              <IconEdit style={iconStyles} />
+            </button>
+            <span>{localize[lang].MY_TASKS}</span>
+          </Link>
+        </li>
+      ),
       timesheetsLink,
       usersRolesLink,
       externalUsersLink,
@@ -152,7 +162,7 @@ class NavMenu extends Component {
     const buttons = [
       <li key="projects">
         <Link className={css.sidebarLinkClosed} activeClassName={css.activeLink} to="/projects">
-          <IconList style={iconStyles} />
+          <IconPortfolio style={iconStyles} />
         </Link>
       </li>,
       <li key="tasks">

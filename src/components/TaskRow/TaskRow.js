@@ -52,8 +52,6 @@ class TaskRow extends React.Component {
       draggable,
       onClickTag,
       taskTypes,
-      onOpenPerformerModal,
-      onOpenSprintModal,
       isExternal,
       lang,
       ...other

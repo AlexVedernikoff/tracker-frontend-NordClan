@@ -21,6 +21,10 @@
   padding: 7px 15px;
 }
 
+.sprint-dropdown .Select-value-label {
+  margin-right: 15%;
+}
+
 .Select-clear-zone {
   cursor: pointer;
   position: absolute;

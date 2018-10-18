@@ -23,6 +23,7 @@ class GitLabEditor extends Component {
     changeProject: PropTypes.func,
     createGitlabProject: PropTypes.func,
     getNamespaces: PropTypes.func,
+    lang: PropTypes.string,
     namespaces: PropTypes.array,
     project: PropTypes.object,
     user: PropTypes.object

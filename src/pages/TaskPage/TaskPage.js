@@ -20,7 +20,7 @@ import CreateTaskModal from '../../components/CreateTaskModal';
 import HttpError from '../../components/HttpError';
 import { history } from '../../History';
 import { VISOR, EXTERNAL_USER, ADMIN } from '../../constants/Roles';
-import Title, { flushTitle } from 'react-title-component';
+import Title from 'react-title-component';
 
 import * as TaskStatuses from '../../constants/TaskStatuses';
 
@@ -56,6 +56,7 @@ class TaskPage extends Component {
     hasError: PropTypes.bool,
     isCreateChildTaskModalOpen: PropTypes.bool,
     isCreateTaskModalOpen: PropTypes.bool,
+    lang: PropTypes.string,
     linkTask: PropTypes.func.isRequired,
     location: PropTypes.object,
     openCreateChildTaskModal: PropTypes.func.isRequired,
@@ -99,20 +100,6 @@ class TaskPage extends Component {
     this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave);
   }
 
-  routerWillLeave = nextLocation => {
-    if (this.props.DescriptionIsEditing) {
-      if (this.state.leaveConfirmed) return true;
-      this.setState({
-        isLeaveConfirmModalOpen: true,
-        nextLocation: nextLocation.pathname,
-        currentLocation: this.props.location.pathname
-      });
-      return false;
-    } else {
-      return true;
-    }
-  };
-
   componentWillReceiveProps(nextProps) {
     if (nextProps.params.closeHasError !== this.state.closeHasError) {
       this.setState({
@@ -127,6 +114,20 @@ class TaskPage extends Component {
       this.props.getProjectInfo(this.props.params.projectId);
     }
   }
+
+  routerWillLeave = nextLocation => {
+    if (this.props.DescriptionIsEditing) {
+      if (this.state.leaveConfirmed) return true;
+      this.setState({
+        isLeaveConfirmModalOpen: true,
+        nextLocation: nextLocation.pathname,
+        currentLocation: this.props.location.pathname
+      });
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   linkTask = linkedTaskId => {
     this.props.linkTask(this.props.params.taskId, linkedTaskId.toString());
@@ -357,7 +358,9 @@ class TaskPage extends Component {
                   onDelete={task.statusId !== TaskStatuses.CANCELED ? this.handleOpenCancelSubTaskModal : null}
                 />
               ) : null}
-              <TaskGitlabBranch taskId={this.props.params.taskId} projectId={params.projectId} />
+              {this.props.user.globalRole !== EXTERNAL_USER ? (
+                <TaskGitlabBranch taskId={this.props.params.taskId} projectId={params.projectId} />
+              ) : null}
             </aside>
           </Col>
         </Row>

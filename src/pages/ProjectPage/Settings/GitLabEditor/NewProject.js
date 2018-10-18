@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import * as css from './GitLabEditor.scss';
-import InputNumber from '../../../../components/InputNumber';
 import ValidatedInput from '../../../../components/ValidatedInput';
 import Validator from '../../../../components/ValidatedInput/Validator';
 import RoundButton from '../../../../components/RoundButton';
@@ -12,6 +11,7 @@ import localize from './NewProject.json';
 
 class NewProject extends Component {
   static propTypes = {
+    lang: PropTypes.string,
     onCancel: PropTypes.func,
     onSubmit: PropTypes.func,
     projectIds: PropTypes.array
@@ -42,7 +42,7 @@ class NewProject extends Component {
   };
 
   render() {
-    const { projectIds, lang } = this.props;
+    const { lang } = this.props;
     const invalid = false;
 
     return (

@@ -9,6 +9,17 @@ import { startTaskEditing, stopTaskEditing, changeTask } from '../../../actions/
 import localize from './taskTitle.json';
 
 class TaskTitle extends Component {
+  static propTypes = {
+    canEdit: PropTypes.bool,
+    changeTask: PropTypes.func,
+    id: PropTypes.number,
+    lang: PropTypes.string,
+    name: PropTypes.string,
+    startTaskEditing: PropTypes.func,
+    stopTaskEditing: PropTypes.func,
+    titleIsEditing: PropTypes.bool
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -28,19 +39,16 @@ class TaskTitle extends Component {
   };
 
   startEditing = () => {
-    const { startTaskEditing } = this.props;
-    startTaskEditing('Title');
+    this.props.startTaskEditing('Title');
   };
 
   stopEditing = () => {
-    const { stopTaskEditing } = this.props;
-    stopTaskEditing('Title');
+    this.props.stopTaskEditing('Title');
   };
 
   validateAndSubmit = () => {
-    const { changeTask } = this.props;
     !this.state.submitError &&
-      changeTask(
+      this.props.changeTask(
         {
           id: this.props.id,
           name: this.taskName.innerText.trim()
@@ -123,12 +131,6 @@ const mapDispatchToProps = {
   startTaskEditing,
   stopTaskEditing,
   changeTask
-};
-
-TaskTitle.propTypes = {
-  startTaskEditing: PropTypes.func,
-  canEdit: PropTypes.bool,
-  TitleIsEditing: PropTypes.bool
 };
 
 export default connect(

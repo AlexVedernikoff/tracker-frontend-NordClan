@@ -19,7 +19,7 @@ class Radio extends Component {
   };
 
   render() {
-    const { label, onChange, value, checked, name, ...other } = this.props;
+    const { label, value, checked, name, ...other } = this.props;
 
     return (
       <label className={css.container} {...other}>

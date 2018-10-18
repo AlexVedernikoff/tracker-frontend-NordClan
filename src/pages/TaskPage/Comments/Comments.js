@@ -124,9 +124,8 @@ class Comments extends Component {
       }
     }
     if (prevProps.attachments.length !== this.props.attachments.length && this.state.isAttachedToComment) {
-      const diff = _.difference(this.props.attachments, prevProps.attachments);
       const attachments = this.props.attachments.map(item => {
-        return { ...item, display: diff.some(i => i === item) };
+        return { ...item, display: true };
       });
 
       this.setState({ attachments: attachments, isAttachedToComment: false });
@@ -145,9 +144,7 @@ class Comments extends Component {
 
   prepareAttachmentsForEdit = ids => {
     const attachments = this.props.attachments.map(attachment => {
-      const stateAttachment =
-        ids.indexOf(attachment.id) !== -1 ? { ...attachment, display: true } : { ...attachment, display: false };
-      return stateAttachment;
+      return ids.indexOf(attachment.id) !== -1 ? { ...attachment, display: true } : { ...attachment, display: false };
     });
     this.setState({ attachments: attachments });
   };
@@ -156,7 +153,9 @@ class Comments extends Component {
     this.props.setCommentForEdit(this.props.comments.find(c => c.id === comment.id)).then(() => {
       this.setState({ resizeKey: shortId() });
     });
-    attachmentIds ? this.prepareAttachmentsForEdit(attachmentIds) : null;
+    if (attachmentIds) {
+      this.prepareAttachmentsForEdit(attachmentIds);
+    }
   };
 
   toggleBtn = evt => {
@@ -193,7 +192,7 @@ class Comments extends Component {
         this.props.publishComment(this.props.taskId, newComment);
       }
       this.stashAttachments();
-      this.state.disabledBtn = true;
+      this.setState({ disabledBtn: true });
     }
   };
 
@@ -211,14 +210,13 @@ class Comments extends Component {
   };
 
   hanldeAttachedFiles = files => {
-    this.setState({ isAttachedToComment: true });
+    this.setState({ isAttachedToComment: true, disabledBtn: false });
     this.props.uploadAttachments(this.props.taskId, files);
   };
 
   handleRemoveAttachment = index => {
     const attachments = this.state.attachments.map((item, key) => {
-      const attachment = index === key ? { ...item, display: false } : item;
-      return attachment;
+      return index === key ? { ...item, display: false } : item;
     });
     this.setState({ attachments: attachments });
   };
@@ -244,6 +242,10 @@ class Comments extends Component {
       ...this.props.externalUsers.map(u => u.user)
     ];
   }
+
+  getTextAreaNode = node => {
+    this.reply = node;
+  };
 
   getCommentList = () =>
     this.props.comments.map(comment => {
@@ -277,13 +279,13 @@ class Comments extends Component {
                 disabled={this.props.currentComment.disabled || this.props.currentComment.expired}
                 placeholder={localize[lang].ENTER_COMMENT}
                 onKeyDown={this.publishComment}
-                ref={ref => (this.reply = ref ? ref.textarea : null)}
                 value={prepairCommentForEdit(this.props.currentComment.text, this.users)}
                 updateCurrentCommentText={this.props.updateCurrentCommentText}
                 suggestions={this.users}
                 toggleBtn={this.toggleBtn}
                 onInput={this.typeComment}
                 setMentions={this.setMentions}
+                getTextAreaNode={this.getTextAreaNode}
               />
               {this.props.currentComment.id ? (
                 <div className={css.answerInfo}>
@@ -324,7 +326,7 @@ class Comments extends Component {
                   [css.attachIcon]: true
                 })}
               >
-                <FileUpload onDrop={this.hanldeAttachedFiles} isMinimal={true} />
+                <FileUpload onDrop={this.hanldeAttachedFiles} isMinimal />
               </span>
               <span
                 onClick={!this.state.disabledBtn ? this.publishComment : null}

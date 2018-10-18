@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import * as css from './EditMilestoneModal.scss';
 import { Row, Col } from 'react-flexbox-grid/lib/index';

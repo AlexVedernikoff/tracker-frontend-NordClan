@@ -1,27 +1,10 @@
 @import '../../../styles/variables';
 
-.checkedFilters {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  width: 100%;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  padding-left: 1rem;
-
-  label {
-
-    @include phone {
-      margin-bottom: 1rem;
-    }
-  }
-}
 .notFound {
   text-align: center;
   margin-top: 2rem;
 }
 .search {
-
   margin-bottom: 1rem;
 
   > div {
@@ -31,10 +14,18 @@
   }
 }
 
+.withPriority {
+  justify-content: space-between;
+  display: flex;
+  flex-flow: row nowrap;
+  text-align: right;
+}
 .priorityFilter {
+  margin-right: 16px;
   color: silver;
-  padding-top: .5rem;
-  padding-bottom: .5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  text-align: center;
 }
 
 .clearFilters {
@@ -43,4 +34,8 @@
   @include phone {
     text-align: left;
   }
+}
+
+.rowWrapper {
+  padding: 1px;
 }

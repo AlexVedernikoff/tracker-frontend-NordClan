@@ -5,11 +5,6 @@ import * as css from './PortfolioModal.scss';
 import Modal from '../Modal';
 import Button from '../Button';
 import Select from 'react-select';
-const SelectAsync = Select.AsyncCreatable;
-
-import {
-  getPortfolios
-} from '../../actions/Project';
 
 class PortfolioModal extends Component {
   static propTypes = {
@@ -22,59 +17,58 @@ class PortfolioModal extends Component {
     title: PropTypes.string
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
     const { defaultPortfolio } = this.props;
     this.state = {
       portfolio: defaultPortfolio
         ? {
-          label: defaultPortfolio.name,
-          value: defaultPortfolio.id
-        }
+            label: defaultPortfolio.name,
+            value: defaultPortfolio.id
+          }
         : null
     };
   }
 
   handleChoose = () => {
-    this.props.onChoose({
-      id: this.props.projectId,
-      portfolioId: this.state.portfolio ? this.state.portfolio.value : 0
-    },
-    'Portfolio');
+    this.props.onChoose(
+      {
+        id: this.props.projectId,
+        portfolioId: this.state.portfolio ? this.state.portfolio.value : 0
+      },
+      'Portfolio'
+    );
   };
 
-  onPortfolioSelect = (e) => {
+  onPortfolioSelect = e => {
     this.setState({ portfolio: e });
   };
 
-  render () {
-    const {
-      title,
-      onClose
-    } = this.props;
+  render() {
+    const { title, onClose } = this.props;
+
+    const portfoliosOptions = this.props.portfolios.map(portfolio => ({
+      label: portfolio.name,
+      value: portfolio.id
+    }));
 
     return (
-      <Modal
-        isOpen
-        contentLabel="modal"
-        className={css.modalWrapper}
-        onRequestClose={onClose}
-      >
+      <Modal isOpen contentLabel="modal" className={css.modalWrapper} onRequestClose={onClose}>
         <div className={css.changeStage}>
           <h3>{title}</h3>
           <div className={css.modalLine}>
-            <SelectAsync
+            <Select
               promptTextCreator={label => `Поиск портфеля '${label}'`}
               searchPromptText={'Введите название портфеля'}
               multi={false}
               ignoreCase={false}
               placeholder="Выберите портфель"
-              loadOptions={this.props.getPortfolios}
+              options={portfoliosOptions}
               filterOption={el => el}
               onChange={this.onPortfolioSelect}
               value={this.state.portfolio}
             />
-            <Button type="green" text="ОК" onClick={this.handleChoose}/>
+            <Button type="green" text="ОК" onClick={this.handleChoose} />
           </div>
         </div>
       </Modal>
@@ -82,10 +76,11 @@ class PortfolioModal extends Component {
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  portfolios: state.Portfolios.portfolios
+});
 
-const mapDispatchToProps = {
-  getPortfolios
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(PortfolioModal);
+export default connect(
+  mapStateToProps,
+  null
+)(PortfolioModal);

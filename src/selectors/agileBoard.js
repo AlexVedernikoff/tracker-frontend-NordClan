@@ -13,6 +13,9 @@ const selectTasks = state => state.Tasks.tasks;
 
 const selectSprints = state => state.Project.project.sprints;
 
+const selectSprintsFetching = state =>
+  state.Project.isProjectInfoReceiving || state.Project.isSprintsReceiving || !state.Project.project.id;
+
 const selectUserId = state => state.Auth.user.id;
 
 const selectTaskType = state => getLocalizedTaskTypes(state);
@@ -134,7 +137,10 @@ const currentSprint = sprints => {
   return createOptions(currentSprints.length ? currentSprints : processedSprints);
 };
 
-const getCurrentSprint = createSelector([selectSprints], sprints => currentSprint(sprints));
+const getCurrentSprint = createSelector(
+  [selectSprints, selectSprintsFetching],
+  (sprints, fetching) => (fetching ? null : currentSprint(sprints))
+);
 
 const typeOptions = taskTypes => createOptions(taskTypes, 'name');
 const authorOptions = projectUsers => createOptions(projectUsers);

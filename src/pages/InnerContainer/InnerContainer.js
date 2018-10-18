@@ -63,8 +63,10 @@ class InnerContainer extends Component {
 
   listenHistory = () => {
     this.unlistenHistory = history.listen(() => {
-      if (this.state.sidebarOpen) {
-        this.onSetSidebarOpen(false);
+      if (!mql.matches) {
+        if (this.state.sidebarOpen) {
+          this.onSetSidebarOpen(false);
+        }
       }
     });
   };
@@ -147,9 +149,7 @@ const mapDispatchToProps = {
   ...dictionaryActions
 };
 
-const mapStateToProps = state => ({});
-
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(InnerContainer);

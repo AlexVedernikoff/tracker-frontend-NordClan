@@ -9,12 +9,13 @@ import roundNum from '../../../../utils/roundNum';
 import localize from './TasksCountChart.json';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import datalabels from 'chartjs-plugin-datalabels';
+// import datalabels from 'chartjs-plugin-datalabels';
 
 class TasksCountChart extends Component {
   static propTypes = {
     chartDefaultOptions: PropTypes.object,
     getBasicLineSettings: PropTypes.func,
+    lang: PropTypes.string,
     openedBugsMetrics: PropTypes.array,
     openedCustomerBugsMetrics: PropTypes.array,
     openedFeaturesFromClient: PropTypes.array,

@@ -10,8 +10,8 @@ export default class SprintSelector extends Component {
   static propTypes = {
     onChange: PropTypes.func,
     sprints: PropTypes.array,
-    value: PropTypes.oneOfType([PropTypes.object, PropTypes.number, PropTypes.array]),
-    useId: PropTypes.bool
+    useId: PropTypes.bool,
+    value: PropTypes.oneOfType([PropTypes.object, PropTypes.number, PropTypes.array])
   };
 
   constructor(props) {
@@ -31,7 +31,7 @@ export default class SprintSelector extends Component {
       return new moment(sprint.factFinishDate);
     });
 
-    sprints = sprints.map((sprint, i) => ({
+    sprints = sprints.map(sprint => ({
       value: this.props.useId ? sprint.id : sprint,
       label: `${sprint.name} (${moment(sprint.factStartDate).format(dateFormat)} ${
         sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format(dateFormat)}` : '- ...'
@@ -58,28 +58,30 @@ export default class SprintSelector extends Component {
   };
 
   render() {
-    const { value, sprints, onChange, ...otherProps } = this.props;
+    const { value, onChange, ...otherProps } = this.props;
     return (
-      <SelectDropdown
-        name="sprint"
-        searchable={false}
-        thisClassName="sprintSelector"
-        placeholder="Выберите спринт"
-        noResultsText="Нет подходящих спринтов"
-        backspaceToRemoveMessage={''}
-        clearAllText="Очистить все"
-        value={value}
-        options={this.getSprints()}
-        clearable={false}
-        onFocus={this.onSelectFocus}
-        onBlur={this.onSelectBlur}
-        onChange={option => onChange(option)}
-        {...otherProps}
-        inputProps={{
-          className: this.state.inputFocused ? null : css.sprintInputBlured,
-          ...otherProps.inputProps
-        }}
-      />
+      <div className="sprint-dropdown">
+        <SelectDropdown
+          name="sprint"
+          searchable={false}
+          thisClassName="sprintSelector"
+          placeholder="Выберите спринт"
+          noResultsText="Нет подходящих спринтов"
+          backspaceToRemoveMessage={''}
+          clearAllText="Очистить все"
+          value={value}
+          options={this.getSprints()}
+          clearable={false}
+          onFocus={this.onSelectFocus}
+          onBlur={this.onSelectBlur}
+          onChange={option => onChange(option)}
+          {...otherProps}
+          inputProps={{
+            className: this.state.inputFocused ? null : css.sprintInputBlured,
+            ...otherProps.inputProps
+          }}
+        />
+      </div>
     );
   }
 }

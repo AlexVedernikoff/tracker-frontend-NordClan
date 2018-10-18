@@ -1,4 +1,4 @@
-import React, { Component, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import ReactTooltip from 'react-tooltip';
@@ -57,6 +57,7 @@ class TaskCore extends PureComponent {
     isBug: PropTypes.bool,
     isDragging: PropTypes.bool,
     isExternal: PropTypes.bool,
+    lang: PropTypes.string,
     lightTask: PropTypes.func,
     lighted: PropTypes.bool,
     myTaskBoard: PropTypes.bool,
@@ -114,13 +115,10 @@ class TaskCore extends PureComponent {
       lightTask,
       task,
       taskTypes,
-      section,
       myTaskBoard,
       isExternal,
       lighted,
       factPlanDivision,
-      onChangeStatus,
-      onOpenPerformerModal,
       connectDragSource,
       isDragging,
       lang

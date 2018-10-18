@@ -22,7 +22,7 @@ class FileUpload extends React.Component {
     };
 
     return (
-      <div>
+      <div style={{ height: '100%', width: '100%' }}>
         {!this.props.isMinimal ? (
           <Dropzone onDrop={this.props.onDrop} style={{}}>
             <li className={css.attachment}>
@@ -47,8 +47,9 @@ const mapStateToProps = state => ({
 });
 
 FileUpload.propTypes = {
-  onDrop: PropTypes.func.isRequired,
-  isMinimal: PropTypes.bool
+  isMinimal: PropTypes.bool,
+  lang: PropTypes.string,
+  onDrop: PropTypes.func.isRequired
 };
 
 export default connect(

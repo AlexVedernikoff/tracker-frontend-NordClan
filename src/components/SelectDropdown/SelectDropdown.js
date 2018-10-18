@@ -43,7 +43,7 @@ class SelectDropdown extends Component {
   };
 
   render() {
-    const { name, options, thisClassName, noResultsText, lang, ...other } = this.props;
+    const { name, options, thisClassName, lang, ...other } = this.props;
 
     return (
       <InnerSelect

@@ -127,9 +127,9 @@ class SprintMetrics extends Component {
       chartDefaultOptions,
       getBasicLineSettings,
       metrics,
-      filterById,
-      openedBugsMetrics, // TODO: пересчитываются ниже, почему приходит не то?
-      openedCustomerBugsMetrics // пересчитываются ниже, почему приходит не то?
+      filterById
+      // openedBugsMetrics, // TODO: пересчитываются ниже, почему приходит не то?
+      // openedCustomerBugsMetrics // пересчитываются ниже, почему приходит не то?
     } = this.props;
     const currentSprintId = this.state.sprintSelected ? this.state.sprintSelected.value.id : null;
     /*Динамика закрытия фич*/
