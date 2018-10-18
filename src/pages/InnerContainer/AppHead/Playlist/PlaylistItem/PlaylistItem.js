@@ -16,36 +16,17 @@ import { IconComment, IconCheck, IconEye, IconEyeDisable } from '../../../../../
 import localize from './playlistItem.json';
 import { getLocalizedMagicActiveTypes } from '../../../../../selectors/dictionaries';
 
-const phoneWidth = 768;
-
 class PlaylistItem extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       itemSpentTime: roundNum(this.props.item.spentTime, 2),
-      isCommentOpen: false,
-      maxLength: 150
+      isCommentOpen: false
     };
     this.debouncedUpdateDraft = debounce(this.props.updateDraft, 500);
     this.debouncedUpdateOnlyTimesheet = debounce(this.props.updateTimesheet, 500);
   }
-
-  componentDidMount() {
-    this.onResize();
-    addEventListener('resize', this.onResize);
-  }
-
-  componentWillUnmount() {
-    removeEventListener('resize', this.onResize);
-  }
-
-  onResize = () => {
-    const width = window.innerWidth;
-    if (width < phoneWidth) {
-      this.setState({ maxLength: Math.floor((width - 150) / 8) });
-    }
-  };
 
   toggleComment = event => {
     event.stopPropagation();
@@ -155,15 +136,12 @@ class PlaylistItem extends Component {
       spentTime
     } = this.props.item;
     const { lang, disabled: timesheetDisabled } = this.props;
-    const { maxLength } = this.state;
     const status = task ? task.taskStatus : null;
     const redColorForTime = task ? parseFloat(task.factExecutionTime) > parseFloat(task.plannedExecutionTime) : false;
     const taskName = task ? task.name : this.getNameByType(typeId);
 
     const prefix = project && project.prefix ? `${project.prefix}-` : '';
     const taskLabel = task && prefix ? prefix + task.id : null;
-    const trimTaskName =
-      taskName.length + taskLabel.length > maxLength ? taskName.slice(0, maxLength - 3) + '...' : taskName;
 
     const createDraftStatusName = createDraftStatus ? createDraftStatus.name.replace(' stop', '') : '';
     return (
@@ -236,9 +214,9 @@ class PlaylistItem extends Component {
                 )
               ) : null}
             </div>
-            <div className={css.taskName}>
+            <div className={classnames(css.taskName, css.listItem)}>
               {taskLabel ? <span>{taskLabel}</span> : null}
-              {trimTaskName}
+              {taskName}
             </div>
           </div>
           <div className={css.phoneVisibleToggle}>

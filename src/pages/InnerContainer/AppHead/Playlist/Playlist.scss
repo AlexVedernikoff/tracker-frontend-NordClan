@@ -159,6 +159,9 @@
     font-size: 14px;
     white-space: normal;
   }
+  &.listItem {
+    white-space: nowrap;
+  }
 }
 
 .meta {
