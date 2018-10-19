@@ -6,9 +6,11 @@ import { states } from './States';
 import Button from '../Button';
 import StateMachine from './StateMachine';
 
+import Auth from './steps/auth/Auth';
 class Wizard extends Component {
   static propTypes = {
     isOpen: PropTypes.bool,
+    jiraAuthorize: PropTypes.func,
     lang: PropTypes.string,
     onRequestClose: PropTypes.func
   };
@@ -18,21 +20,24 @@ class Wizard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentState: states.AUTH,
-      result: []
+      currentState: states.AUTH
     };
     this.stateMachine = new StateMachine();
   }
 
-  nextStep = () => {
-    // запись данных из формы в стейт
-    this.setState({
-      currentState: this.stateMachine.forward(this.state.currentState)
+  nextStep = formData => {
+    this.props.jiraAuthorize(formData).then(res => {
+      const { token } = res;
+      if (token) {
+        this.setState({
+          currentState: this.stateMachine.forward(this.state.currentState)
+        });
+      }
     });
   };
 
   previousStep = () => {
-    // удаление из объекта даты данных текущего стейта
+    this.state.result.pop();
     this.setState({
       currentState: this.stateMachine.backward(this.state.currentState)
     });
@@ -42,18 +47,46 @@ class Wizard extends Component {
     // финал со всеми запросами на бэк
   };
 
-  currentStep() {
+  currentStep(lang) {
     switch (this.state.currentState) {
       case states.AUTH:
-        return <div>AUTH</div>;
+        return (
+          <div>
+            <Auth lang={lang} previousStep={this.previousStep} nextStep={this.nextStep} />
+          </div>
+        );
       case states.CREATE_PROJECT:
-        return <div>CREATE_PROJECT</div>;
+        return (
+          <div>
+            <div>CREATE_PROJECT</div>
+            <Button text="Назад" onClick={this.previousStep} type="green" />
+            <Button text="Вперед" onClick={this.nextStep} type="green" />
+          </div>
+        );
       case states.SET_ASSOCIATIONS:
-        return <div>SET_ASSOCIATIONS</div>;
+        return (
+          <div>
+            <div>SET_ASSOCIATIONS</div>
+            <Button text="Назад" onClick={this.previousStep} type="green" />
+            <Button text="Вперед" onClick={this.nextStep} type="green" />
+          </div>
+        );
       case states.FINISH:
-        return <div>FINISH</div>;
+        return (
+          <div>
+            <div>FINISH</div>
+            <Button text="Назад" onClick={this.previousStep} type="green" />
+            <Button text="Вперед" onClick={this.nextStep} type="green" />
+          </div>
+        );
       default:
-        return <div>default</div>;
+        return (
+          <div>
+            <div>default</div>
+            <Button text="Назад" onClick={this.previousStep} type="green" />
+            <Button text="Вперед" onClick={this.nextStep} type="green" />
+          </div>
+        );
     }
   }
 
@@ -65,9 +98,7 @@ class Wizard extends Component {
       <div>
         <Modal isOpen={isOpen} onRequestClose={onRequestClose}>
           <div className={css.baseForm}>
-            <div>{this.currentStep()}</div>
-            <Button text="Назад" onClick={this.previousStep} type="green" />
-            <Button text="Вперед" onClick={this.nextStep} type="green" />
+            <div>{this.currentStep(lang)}</div>
           </div>
         </Modal>
       </div>

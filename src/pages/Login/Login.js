@@ -57,7 +57,7 @@ class Login extends Component {
   render() {
     return (
       <div className={css.formWrapper} style={{ backgroundImage: `url(${bg})` }}>
-        <Title render={`SimTrack - Login`} />
+        <Title render={'SimTrack - Login'} />
         <div className={css.loginForm}>
           <div className={css.logoWrapper}>
             <Logo onLight={false} style={{ fontSize: '3rem', padding: 0, textAlign: 'center' }} />

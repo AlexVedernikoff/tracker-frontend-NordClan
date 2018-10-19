@@ -1,0 +1,23 @@
+.leftColumn {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  text-align: right;
+
+  p {
+    margin: 0;
+  }
+}
+
+.rightColumn {
+  display: flex;
+  align-items: center;
+}
+
+.formField {
+  display: block;
+
+  & + & {
+    margin-top: 1rem;
+  }
+}
