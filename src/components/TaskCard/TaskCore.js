@@ -124,7 +124,6 @@ class TaskCore extends PureComponent {
       connectDragSource,
       isDragging,
       lang
-      // ...other
     } = this.props;
 
     return connectDragSource(
@@ -139,7 +138,6 @@ class TaskCore extends PureComponent {
         onMouseLeave={() => lightTask(null, false)}
         onClick={this.goToDetailPage}
         id={`task-${task.id}`}
-        // {...other}
       >
         {isTaskInWork(task.statusId) ? (
           <div
@@ -160,12 +158,12 @@ class TaskCore extends PureComponent {
         <CopyThis
           wrapThisInto={'div'}
           isCopiedBackground
-          description={`${localize[lang].LINK} ${task.prefix}-${task.id}`}
+          description={`${localize[lang].LINK} ${prefix}-${task.id}`}
           textToCopy={`${location.origin}${history.createHref(`/projects/${task.projectId}/tasks/${task.id}`)}`}
         >
           <div className={css.header}>
             <span className={css.taskNum}>
-              {isBug ? <IconBug style={{ verticalAlign: 'top' }} /> : null} {task.prefix}-{task.id}
+              {isBug ? <IconBug style={{ verticalAlign: 'top' }} /> : null} {prefix}-{task.id}
             </span>{' '}
             | {getTypeById(task.typeId, taskTypes)}
           </div>
