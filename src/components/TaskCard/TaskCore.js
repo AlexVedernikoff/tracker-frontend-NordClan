@@ -62,6 +62,8 @@ class TaskCore extends PureComponent {
     myTaskBoard: PropTypes.bool,
     onChangeStatus: PropTypes.func,
     onOpenPerformerModal: PropTypes.func,
+    projectPrefix: PropTypes.string,
+    projectUsers: PropTypes.arrayOf(PropTypes.object),
     section: PropTypes.string.isRequired,
     task: PropTypes.object,
     taskTypes: PropTypes.array
@@ -107,6 +109,16 @@ class TaskCore extends PureComponent {
     history.push(`/projects/${this.props.task.projectId}/tasks/${this.props.task.id}`);
   };
 
+  getPrefixFromProject = () => {
+    const { projectPrefix } = this.props;
+    return projectPrefix ? projectPrefix : '';
+  };
+
+  getUserFromProject = id => {
+    const { projectUsers } = this.props;
+    return projectUsers.find(user => user.id === id);
+  };
+
   render() {
     const {
       classPriority,
@@ -125,6 +137,9 @@ class TaskCore extends PureComponent {
       isDragging,
       lang
     } = this.props;
+
+    const prefix = task.prefix ? task.prefix : this.getPrefixFromProject();
+    const performer = task.performer ? task.performer : this.getUserFromProject(task.performerId);
 
     return connectDragSource(
       <div
@@ -178,9 +193,9 @@ class TaskCore extends PureComponent {
         <p className={css.taskMeta} onClick={this.handlePerformerClick}>
           {!myTaskBoard && (
             <span className={css.performer}>
-              {task.performer ? (
+              {task.performerId ? (
                 <span>
-                  {getFullName(task.performer)}
+                  {getFullName(performer)}
                   <span className={css.preformerEditIcon}>
                     <IconEdit />
                   </span>
@@ -239,7 +254,9 @@ class TaskCore extends PureComponent {
 }
 
 const mapStateToProps = state => ({
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  projectPrefix: state.Project.project.prefix,
+  projectUsers: state.Project.project.users
 });
 
 export default compose(
