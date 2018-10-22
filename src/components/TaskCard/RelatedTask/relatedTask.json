@@ -1,0 +1,12 @@
+{
+  "en": {
+    "PARENT_TASK": "Parent task",
+    "LINKED_TASK": "Linked task",
+    "SUB_TASK": "Subtask"
+  },
+  "ru": {
+    "PARENT_TASK": "Родительская задача",
+    "LINKED_TASK": "Связанная задача",
+    "SUB_TASK": "Подзадача"
+  }
+}
