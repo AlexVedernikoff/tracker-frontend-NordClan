@@ -7,12 +7,17 @@ import Button from '../Button';
 import StateMachine from './StateMachine';
 
 import Auth from './steps/auth/Auth';
+import CreateProject from './steps/createProject/createProject';
+
 class Wizard extends Component {
   static propTypes = {
+    getJiraProjects: PropTypes.func,
     isOpen: PropTypes.bool,
     jiraAuthorize: PropTypes.func,
+    jiraCreateProject: PropTypes.func,
     lang: PropTypes.string,
-    onRequestClose: PropTypes.func
+    onRequestClose: PropTypes.func,
+    projects: PropTypes.array
   };
 
   // wizard result = [{step1data}, {step2data}, {step3data}] - state визарда
@@ -24,8 +29,8 @@ class Wizard extends Component {
     };
     this.stateMachine = new StateMachine();
   }
-
-  nextStep = formData => {
+  // Auth forward function
+  authNext = formData => {
     this.props.jiraAuthorize(formData).then(res => {
       const { token } = res;
       if (token) {
@@ -36,15 +41,23 @@ class Wizard extends Component {
     });
   };
 
-  previousStep = () => {
-    this.state.result.pop();
-    this.setState({
-      currentState: this.stateMachine.backward(this.state.currentState)
+  // Create project forward function
+  createProjectNext = formData => {
+    this.props.jiraCreateProject(formData).then(res => {
+      const { project } = res;
+      if (project) {
+        this.setState({
+          currentState: this.stateMachine.forward(this.state.currentState)
+        });
+      }
     });
   };
 
-  finalStep = () => {
-    // финал со всеми запросами на бэк
+  // Create project backward function
+  createProjectPrevious = () => {
+    this.setState({
+      currentState: this.stateMachine.backward(this.state.currentState)
+    });
   };
 
   currentStep(lang) {
@@ -52,39 +65,44 @@ class Wizard extends Component {
       case states.AUTH:
         return (
           <div>
-            <Auth lang={lang} previousStep={this.previousStep} nextStep={this.nextStep} />
+            <Auth lang={lang} nextStep={this.authNext} />
           </div>
         );
       case states.CREATE_PROJECT:
         return (
           <div>
-            <div>CREATE_PROJECT</div>
-            <Button text="Назад" onClick={this.previousStep} type="green" />
-            <Button text="Вперед" onClick={this.nextStep} type="green" />
+            <CreateProject
+              token={this.props.token}
+              lang={lang}
+              getJiraProjects={this.props.getJiraProjects}
+              previousStep={this.createProjectPrevious}
+              nextStep={this.createProjectNext}
+              jiraProjects={this.props.projects}
+            />
           </div>
         );
       case states.SET_ASSOCIATIONS:
         return (
           <div>
             <div>SET_ASSOCIATIONS</div>
-            <Button text="Назад" onClick={this.previousStep} type="green" />
-            <Button text="Вперед" onClick={this.nextStep} type="green" />
+            <Button text="Назад" type="green" />
+            <Button text="Вперед" type="green" />
           </div>
         );
       case states.FINISH:
         return (
           <div>
             <div>FINISH</div>
-            <Button text="Назад" onClick={this.previousStep} type="green" />
-            <Button text="Вперед" onClick={this.nextStep} type="green" />
+            <Button text="Назад" type="green" />
+            <Button text="Вперед" type="green" />
           </div>
         );
       default:
         return (
           <div>
             <div>default</div>
-            <Button text="Назад" onClick={this.previousStep} type="green" />
-            <Button text="Вперед" onClick={this.nextStep} type="green" />
+            <Button text="Назад" type="green" />
+            <Button text="Вперед" type="green" />
           </div>
         );
     }

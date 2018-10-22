@@ -1,11 +1,18 @@
 import Wizard from './Wizard';
 import { connect } from 'react-redux';
-import { jiraAuthorize } from '../../actions/Jira';
+import { jiraAuthorize, jiraCreateProject, getJiraProjects } from '../../actions/Jira';
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => {
+  return {
+    projects: state.Jira.projects,
+    token: state.Jira.token
+  };
+};
 
 const mapDispatchToProps = {
-  jiraAuthorize
+  jiraAuthorize,
+  jiraCreateProject,
+  getJiraProjects
 };
 
 export default connect(

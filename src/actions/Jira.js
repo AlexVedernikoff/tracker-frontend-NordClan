@@ -50,4 +50,84 @@ const jiraAuthorize = credentials => {
   };
 };
 
-export { jiraAuthorize };
+const jiraCreateProjectStart = () => ({
+  type: JiraActions.JIRA_CREATE_PROJECT_START
+});
+
+const jiraCreateProjectSuccess = project => ({
+  type: JiraActions.JIRA_CREATE_PROJECT_SUCCESS,
+  project
+});
+
+const jiraCreateProjectError = () => ({
+  type: JiraActions.JIRA_CREATE_PROJECT_ERROR
+});
+
+const jiraCreateProject = data => {
+  const { jiraProjectId: id, prefix, authorId } = data;
+  const URL = `${API_URL}/jira/project`;
+  return dispatch => {
+    dispatch(startLoading());
+    dispatch(jiraCreateProjectStart());
+    return axios
+      .post(
+        URL,
+        {
+          id,
+          authorId,
+          prefix
+        },
+        { withCredentials: true }
+      )
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(jiraCreateProjectSuccess(response.data));
+        }
+        dispatch(finishLoading());
+        return response.data;
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(jiraCreateProjectError(error.response.data));
+        dispatch(finishLoading());
+        throw error;
+      });
+  };
+};
+
+const getJiraProjectsStart = () => ({
+  type: JiraActions.GET_JIRA_PROJECTS_START
+});
+
+const getJiraProjectsSuccess = projects => ({
+  type: JiraActions.GET_JIRA_PROJECTS_SUCCESS,
+  projects
+});
+
+const getJiraProjectsError = () => ({
+  type: JiraActions.GET_JIRA_PROJECTS_ERROR
+});
+
+const getJiraProjects = headers => {
+  const URL = `${API_URL}/jira/projects`;
+  return dispatch => {
+    dispatch(startLoading());
+    dispatch(getJiraProjectsStart());
+    axios
+      .get(URL, { headers })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(getJiraProjectsSuccess(response.data.projects));
+        }
+        dispatch(finishLoading());
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(getJiraProjectsError(error.response.data));
+        dispatch(finishLoading());
+        throw error;
+      });
+  };
+};
+
+export { jiraAuthorize, jiraCreateProject, getJiraProjects };

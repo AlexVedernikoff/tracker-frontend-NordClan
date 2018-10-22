@@ -8,6 +8,11 @@ import Input from '../../../Input';
 import Button from '../../../Button';
 
 class AuthForm extends Component {
+  static propTypes = {
+    lang: PropTypes.string,
+    nextStep: PropTypes.func
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -25,7 +30,7 @@ class AuthForm extends Component {
   };
 
   render() {
-    const { lang, previousStep, nextStep } = this.props;
+    const { lang, nextStep } = this.props;
     const formLayout = {
       firstCol: 5,
       secondCol: 7
