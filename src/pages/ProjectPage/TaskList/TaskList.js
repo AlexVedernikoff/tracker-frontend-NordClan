@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import uniqBy from 'lodash/uniqBy';
+import { uniqBy, debounce } from 'lodash';
+import ReactTooltip from 'react-tooltip';
 
 import TaskRow from '../../../components/TaskRow';
 import InlineHolder from '../../../components/InlineHolder';
@@ -55,8 +56,11 @@ class TaskList extends Component {
       activePage: 1,
       isPerformerModalOpen: false,
       isSprintModalOpen: false,
+      nameInputValue: null,
       ...this.getQueryFilters()
     };
+
+    this.debouncedSubmitNameFilter = debounce(this.submitNameFilter, 1000);
   }
 
   componentDidMount() {
@@ -73,6 +77,10 @@ class TaskList extends Component {
     if (this.props.lastCreatedTask !== nextProps.lastCreatedTask && nextProps.project.id) {
       this.loadTasks();
     }
+  }
+
+  componentWillUnmount() {
+    this.debouncedSubmitNameFilter.cancel();
   }
 
   translateToNumIfNeeded = value => {
@@ -276,8 +284,16 @@ class TaskList extends Component {
   };
 
   changeNameFilter = event => {
-    const value = event.target.value;
+    const { value, name } = event.target;
+    this.setState({ nameInputValue: value });
+    if (name === 'closedInput') {
+      this.debouncedSubmitNameFilter(value);
+    } else {
+      this.submitNameFilter(value);
+    }
+  };
 
+  submitNameFilter = value => {
     this.setState(state => {
       const changedFilters = state.changedFilters;
       if (value) {
@@ -288,9 +304,11 @@ class TaskList extends Component {
 
       this.changeUrl(changedFilters);
 
+      const nameInputValue = changedFilters.name ? changedFilters.name : '';
       return {
         activePage: state.filterByName !== value ? 1 : state.activePage,
-        changedFilters
+        changedFilters,
+        nameInputValue
       };
     }, this.loadTasks);
   };
@@ -526,7 +544,10 @@ class TaskList extends Component {
 
   formatDate = date => date && moment(date).format(dateFormat);
 
-  onChangePrioritiesFilter = option => this.changeSingleFilter(option, 'prioritiesId');
+  onChangePrioritiesFilter = option => {
+    ReactTooltip.hide();
+    return this.changeSingleFilter(option, 'prioritiesId');
+  };
   onChangeTypeFilter = options => this.changeMultiFilter(options, 'typeId');
   onChangeStatusFilter = options => this.changeMultiFilter(options, 'statusId');
   onChangeAuthorFilter = option => this.changeSingleFilter(option, 'authorId');
@@ -592,9 +613,10 @@ class TaskList extends Component {
                     <Priority onChange={this.onChangePrioritiesFilter} priority={prioritiesId} canEdit />
                   </div>
                   <Input
+                    name="openedInput"
                     className={css.input}
                     placeholder={localize[lang].ENTER_TITLE_TASK}
-                    value={this.state.changedFilters.name || ''}
+                    value={this.state.nameInputValue || ''}
                     onChange={this.changeNameFilter}
                   />
                 </Col>
@@ -712,7 +734,22 @@ class TaskList extends Component {
             </div>
             <Row className={css.search} top="xs">
               <Col xs={12} sm={8}>
-                {filterTags.length ? filterTags : <span onClick={this.toggleOpen}>{localize[lang].NOT_SELECTED}</span>}
+                {filterTags.length ? (
+                  filterTags
+                ) : (
+                  <Col xs={12} sm={12} className={css.withPriority}>
+                    <div className={css.priorityFilter}>
+                      <Priority onChange={this.onChangePrioritiesFilter} priority={prioritiesId} canEdit />
+                    </div>
+                    <Input
+                      name="closedInput"
+                      className={css.input}
+                      placeholder={localize[lang].ENTER_TITLE_TASK}
+                      value={this.state.nameInputValue || ''}
+                      onChange={this.changeNameFilter}
+                    />
+                  </Col>
+                )}
               </Col>
               <Col xs={6} sm={2}>
                 <Button
