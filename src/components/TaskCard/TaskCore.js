@@ -63,6 +63,8 @@ class TaskCore extends PureComponent {
     myTaskBoard: PropTypes.bool,
     onChangeStatus: PropTypes.func,
     onOpenPerformerModal: PropTypes.func,
+    projectPrefix: PropTypes.string,
+    projectUsers: PropTypes.arrayOf(PropTypes.object),
     section: PropTypes.string.isRequired,
     task: PropTypes.object,
     taskTypes: PropTypes.array
@@ -108,6 +110,16 @@ class TaskCore extends PureComponent {
     history.push(`/projects/${this.props.task.projectId}/tasks/${this.props.task.id}`);
   };
 
+  getPrefixFromProject = () => {
+    const { projectPrefix } = this.props;
+    return projectPrefix ? projectPrefix : '';
+  };
+
+  getUserFromProject = id => {
+    const { projectUsers } = this.props;
+    return projectUsers.find(user => user.id === id);
+  };
+
   render() {
     const {
       classPriority,
@@ -122,8 +134,10 @@ class TaskCore extends PureComponent {
       connectDragSource,
       isDragging,
       lang
-      // ...other
     } = this.props;
+
+    const prefix = task.prefix ? task.prefix : this.getPrefixFromProject();
+    const performer = task.performer ? task.performer : this.getUserFromProject(task.performerId);
 
     return connectDragSource(
       <div
@@ -137,7 +151,6 @@ class TaskCore extends PureComponent {
         onMouseLeave={() => lightTask(null, false)}
         onClick={this.goToDetailPage}
         id={`task-${task.id}`}
-        // {...other}
       >
         {isTaskInWork(task.statusId) ? (
           <div
@@ -158,12 +171,12 @@ class TaskCore extends PureComponent {
         <CopyThis
           wrapThisInto={'div'}
           isCopiedBackground
-          description={`${localize[lang].LINK} ${task.prefix}-${task.id}`}
+          description={`${localize[lang].LINK} ${prefix}-${task.id}`}
           textToCopy={`${location.origin}${history.createHref(`/projects/${task.projectId}/tasks/${task.id}`)}`}
         >
           <div className={css.header}>
             <span className={css.taskNum}>
-              {isBug ? <IconBug style={{ verticalAlign: 'top' }} /> : null} {task.prefix}-{task.id}
+              {isBug ? <IconBug style={{ verticalAlign: 'top' }} /> : null} {prefix}-{task.id}
             </span>{' '}
             | {getTypeById(task.typeId, taskTypes)}
           </div>
@@ -178,9 +191,9 @@ class TaskCore extends PureComponent {
         <p className={css.taskMeta} onClick={this.handlePerformerClick}>
           {!myTaskBoard && (
             <span className={css.performer}>
-              {task.performer ? (
+              {task.performerId ? (
                 <span>
-                  {getFullName(task.performer)}
+                  {getFullName(performer)}
                   <span className={css.preformerEditIcon}>
                     <IconEdit />
                   </span>
@@ -239,7 +252,9 @@ class TaskCore extends PureComponent {
 }
 
 const mapStateToProps = state => ({
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  projectPrefix: state.Project.project.prefix,
+  projectUsers: state.Project.project.users
 });
 
 export default compose(
