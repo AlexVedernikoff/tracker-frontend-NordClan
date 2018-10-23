@@ -29,7 +29,11 @@ import FileUpload from '../../../components/FileUpload';
 import InlineHolder from '../../../components/InlineHolder';
 import { IconPreloader } from '../../../components/Icons';
 
-import { prepairCommentForEdit, stringifyCommentForSend } from '../Comments/Mentions/mentionService';
+import {
+  prepairCommentForEdit,
+  stringifyCommentForSend,
+  replaceEnterSymbol
+} from '../Comments/Mentions/mentionService';
 
 const ENTER = 13;
 
@@ -193,6 +197,7 @@ class Comments extends Component {
           this.props.setCurrentCommentExpired();
         }
       } else {
+        newComment.text = replaceEnterSymbol(newComment.text);
         this.props.publishComment(this.props.taskId, newComment);
       }
       this.stashAttachments();
