@@ -54,18 +54,7 @@ class AppHead extends Component {
           <Logo />
         </Link>
         {globalRole !== EXTERNAL_USER ? <Playlist /> : null}
-        {/* <div className={css.search}>
-          <input
-            type="text"
-            id="mainSearch"
-            className={css.searchInput}
-            placeholder="Поиск по названию"
-          />
-          <label htmlFor="mainSearch" className={css.searchButton}>
-            <IconSearch style={iconStyles} />
-          </label>
-        </div> */}
-        <Toggle lang={this.props.lang} onChange={this.toggleLanguage} />
+        <Toggle lang={this.props.lang} onChange={this.toggleLanguage} location="appHead" />
 
         <div className={css.logoutButton} onClick={this.handleLogout}>
           <IconExitApp style={iconStyles} />
