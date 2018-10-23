@@ -43,6 +43,15 @@ export const replaceUserMentionsWithMentionsId = (array, suggests) => {
   });
 };
 
+export const replaceEnterSymbol = text => {
+  const c = String.fromCharCode(10);
+  let temp = text;
+  while (temp.search(c) !== -1) {
+    temp = temp.replace(c, '<br>');
+  }
+  return temp;
+};
+
 export const stringifyCommentForSend = (text, suggests) => {
   return replaceUserMentionsWithMentionsId(splitUserCommentByMentionLabels(text, suggests), suggests).join('');
 };

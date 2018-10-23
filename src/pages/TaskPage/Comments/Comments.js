@@ -27,7 +27,11 @@ import localize from './Comments.json';
 import Mentions from './Mentions/Mentions';
 import FileUpload from '../../../components/FileUpload';
 
-import { prepairCommentForEdit, stringifyCommentForSend } from '../Comments/Mentions/mentionService';
+import {
+  prepairCommentForEdit,
+  stringifyCommentForSend,
+  replaceEnterSymbol
+} from '../Comments/Mentions/mentionService';
 
 const ENTER = 13;
 
@@ -189,6 +193,7 @@ class Comments extends Component {
           this.props.setCurrentCommentExpired();
         }
       } else {
+        newComment.text = replaceEnterSymbol(newComment.text);
         this.props.publishComment(this.props.taskId, newComment);
       }
       this.stashAttachments();
