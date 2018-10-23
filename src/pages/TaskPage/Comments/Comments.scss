@@ -43,6 +43,13 @@
   }
 }
 
+.commentPreloader {
+  border: 1px solid darken($color-gray, 5%);
+  padding: 0.5rem 1rem 1rem;
+  margin-bottom: 1rem;
+  font-size: initial;
+}
+
 .ava {
   height: 56px;
   width: 56px;

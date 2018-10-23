@@ -10,9 +10,9 @@ class Tag extends React.Component {
   static propTypes = {
     blocked: PropTypes.bool,
     create: PropTypes.bool,
-    deleteTagModal: PropTypes.func,
     deleteHandler: PropTypes.func,
     deleteTag: PropTypes.func.isRequired,
+    deleteTagModal: PropTypes.func,
     name: PropTypes.string,
     noRequest: PropTypes.bool,
     onClick: PropTypes.func,
@@ -36,19 +36,7 @@ class Tag extends React.Component {
   };
 
   render() {
-    const {
-      name,
-      create,
-      blocked,
-      deleteTagModal,
-      taggable,
-      taggableId,
-      deleteHandler,
-      unclickable,
-      noRequest,
-      deleteTag: dt,
-      ...other
-    } = this.props;
+    const { name, create, blocked, unclickable, ...other } = this.props;
 
     return (
       <span

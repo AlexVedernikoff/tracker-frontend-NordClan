@@ -8,6 +8,7 @@ import { getFullName } from '../../../../utils/NameLocalisation';
 class Mentions extends Component {
   static propTypes = {
     disabled: PropTypes.bool,
+    getTextAreaNode: PropTypes.func,
     lang: PropTypes.string,
     onInput: PropTypes.func,
     onKeyDown: PropTypes.func,
@@ -50,7 +51,6 @@ class Mentions extends Component {
     }
     if (up) {
       const selectedIndex = indexIsMin ? this.suggestionsFilter().length - 1 : this.state.selectedIndex - 1;
-      console.log(selectedIndex);
       this.setState({ selectedIndex }, onChanged);
     }
     if (enter && !!e.srcElement.id) {

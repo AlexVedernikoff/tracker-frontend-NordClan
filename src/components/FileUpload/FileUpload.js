@@ -21,23 +21,19 @@ class FileUpload extends React.Component {
       fill: 'currentColor'
     };
 
-    return (
-      <div style={{ height: '100%', width: '100%' }}>
-        {!this.props.isMinimal ? (
-          <Dropzone onDrop={this.props.onDrop} style={{}}>
-            <li className={css.attachment}>
-              <div className={css.attachmentIcon}>
-                <IconPlus style={iconStyles} />
-              </div>
-              <div className={css.attachmentName}>{localize[lang].ADD_FILE}</div>
-            </li>
-          </Dropzone>
-        ) : (
-          <Dropzone onDrop={this.props.onDrop} style={{ width: 0, height: 0, border: 'none' }}>
+    return !this.props.isMinimal ? (
+      <Dropzone onDrop={this.props.onDrop} style={{}}>
+        <li className={css.attachment}>
+          <div className={css.attachmentIcon}>
             <IconPlus style={iconStyles} />
-          </Dropzone>
-        )}
-      </div>
+          </div>
+          <div className={css.attachmentName}>{localize[lang].ADD_FILE}</div>
+        </li>
+      </Dropzone>
+    ) : (
+      <Dropzone onDrop={this.props.onDrop} style={{ width: 0, height: 0, border: 'none' }}>
+        <IconPlus style={iconStyles} />
+      </Dropzone>
     );
   }
 }
@@ -47,8 +43,9 @@ const mapStateToProps = state => ({
 });
 
 FileUpload.propTypes = {
-  onDrop: PropTypes.func.isRequired,
-  isMinimal: PropTypes.bool
+  isMinimal: PropTypes.bool,
+  lang: PropTypes.string,
+  onDrop: PropTypes.func.isRequired
 };
 
 export default connect(

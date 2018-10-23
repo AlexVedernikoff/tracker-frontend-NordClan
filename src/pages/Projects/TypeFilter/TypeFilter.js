@@ -9,8 +9,8 @@ import localize from './TypeFilter.json';
 
 class TypeFilter extends Component {
   static propTypes = {
-    onChange: PropTypes.func,
-    dictionary: PropTypes.array
+    dictionary: PropTypes.array,
+    onChange: PropTypes.func
   };
 
   static defaultProps = {
@@ -46,7 +46,7 @@ class TypeFilter extends Component {
   };
 
   render() {
-    const { onChange, lang, ...other } = this.props;
+    const { lang, ...other } = this.props;
 
     return (
       <div className={css.typeFilter}>

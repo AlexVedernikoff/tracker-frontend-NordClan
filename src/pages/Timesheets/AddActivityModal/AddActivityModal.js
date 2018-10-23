@@ -9,7 +9,7 @@ import Button from '../../../components/Button';
 import SelectDropdown from '../../../components/SelectDropdown';
 import * as css from '../Timesheets.scss';
 import Checkbox from '../../../components/Checkbox/Checkbox';
-import { getProjectSprints, getProjectHistory } from '../../../actions/Project';
+import { getProjectSprints } from '../../../actions/Project';
 import {
   changeTask,
   changeProject,
@@ -37,6 +37,7 @@ class AddActivityModal extends Component {
     getProjectSprints: PropTypes.func,
     getProjectsForSelect: PropTypes.func,
     getTasksForSelect: PropTypes.func,
+    lang: PropTypes.string,
     onClose: PropTypes.func,
     selectedActivityType: PropTypes.number,
     selectedProject: PropTypes.object,

@@ -20,8 +20,8 @@ class StatusEditor extends React.Component {
   }
 
   switchStatus = (event, statusId) => {
-    const { updateProjectStatus, projectId } = this.props;
-    updateProjectStatus(projectId, statusId);
+    const { projectId } = this.props;
+    this.props.updateProjectStatus(projectId, statusId);
   };
 
   checkIsAdminInProject = () => {
@@ -61,11 +61,11 @@ class StatusEditor extends React.Component {
 
 StatusEditor.propTypes = {
   currentStatusId: PropTypes.number,
+  lang: PropTypes.string.isRequired,
   projectId: PropTypes.number,
   updateProjectStatus: PropTypes.func.isRequired,
   updatedStatusId: PropTypes.number,
-  user: PropTypes.object.isRequired,
-  lang: PropTypes.string.isRequired
+  user: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({

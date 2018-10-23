@@ -18,6 +18,8 @@ class NewLine extends Component {
     currentStatus: PropTypes.number,
     currentUser: PropTypes.object,
     hashCodes: PropTypes.array,
+    localizeH: PropTypes.string,
+    localizeText: PropTypes.object,
     onSubmit: PropTypes.func,
     preloading: PropTypes.bool,
     taskStatuses: PropTypes.array

@@ -140,7 +140,7 @@ class ProjectTimesheets extends React.Component {
         });
         if (dayUserSheets && dayUserSheets.length) {
           const dayTime = dayUserSheets.reduce((a, b) => {
-            return a + parseFloat(b['spentTime']);
+            return a + parseFloat(b.spentTime);
           }, 0);
           timeSheets.push({
             onDate: moment(startingDay)

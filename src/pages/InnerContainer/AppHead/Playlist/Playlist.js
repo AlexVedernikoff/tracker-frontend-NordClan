@@ -320,20 +320,22 @@ class Playlist extends Component {
                 />
               </div>
               <div className={css.activity}>
-                {this.activityTabs.map((element, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className={this.activityTabStyle(element.activityId)}
-                      data-tip={element.description}
-                      onClick={this.changeActiveActivityTab(element.activityId)}
-                      data-place="bottom"
-                    >
-                      {element.icon}
-                      {this.getScale(currentUserTracks, this.state.activeDayTab, element.activityId)}
-                    </div>
-                  );
-                })}
+                <div className={css.activities}>
+                  {this.activityTabs.map((element, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className={this.activityTabStyle(element.activityId)}
+                        data-tip={element.description}
+                        onClick={this.changeActiveActivityTab(element.activityId)}
+                        data-place="bottom"
+                      >
+                        {element.icon}
+                        {this.getScale(currentUserTracks, this.state.activeDayTab, element.activityId)}
+                      </div>
+                    );
+                  })}
+                </div>
                 <div className={css.time}>
                   <div className={css.today}>
                     <input
@@ -359,6 +361,7 @@ Playlist.propTypes = {
   availableProjects: PropTypes.array,
   changeTask: PropTypes.func,
   currentUserId: PropTypes.number,
+  lang: PropTypes.string,
   magicActivitiesTypes: PropTypes.array,
   tracks: PropTypes.object
 };

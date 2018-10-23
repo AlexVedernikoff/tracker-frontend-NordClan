@@ -233,6 +233,7 @@ ExternalUsersTableRow.propTypes = {
   deleteExternalUser: PropTypes.func,
   editExternalUser: PropTypes.func,
   exUser: PropTypes.object,
+  lang: PropTypes.string,
   refreshExternalUserLink: PropTypes.func,
   showNotification: PropTypes.func
 };
