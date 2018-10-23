@@ -5,7 +5,8 @@ import { jiraAuthorize, jiraCreateProject, getJiraProjects } from '../../actions
 const mapStateToProps = state => {
   return {
     projects: state.Jira.projects,
-    token: state.Jira.token
+    token: state.Jira.token,
+    authorId: state.Auth.user.id
   };
 };
 

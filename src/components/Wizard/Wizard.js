@@ -11,13 +11,15 @@ import CreateProject from './steps/createProject/createProject';
 
 class Wizard extends Component {
   static propTypes = {
+    authorId: PropTypes.number,
     getJiraProjects: PropTypes.func,
     isOpen: PropTypes.bool,
     jiraAuthorize: PropTypes.func,
     jiraCreateProject: PropTypes.func,
     lang: PropTypes.string,
     onRequestClose: PropTypes.func,
-    projects: PropTypes.array
+    projects: PropTypes.array,
+    token: PropTypes.string
   };
 
   // wizard result = [{step1data}, {step2data}, {step3data}] - state визарда
@@ -42,10 +44,9 @@ class Wizard extends Component {
   };
 
   // Create project forward function
-  createProjectNext = formData => {
-    this.props.jiraCreateProject(formData).then(res => {
-      const { project } = res;
-      if (project) {
+  createProjectNext = (headers, formData) => {
+    this.props.jiraCreateProject(headers, formData).then(res => {
+      if (res) {
         this.setState({
           currentState: this.stateMachine.forward(this.state.currentState)
         });
@@ -78,6 +79,7 @@ class Wizard extends Component {
               previousStep={this.createProjectPrevious}
               nextStep={this.createProjectNext}
               jiraProjects={this.props.projects}
+              authorId={this.props.authorId}
             />
           </div>
         );

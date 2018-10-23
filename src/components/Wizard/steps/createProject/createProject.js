@@ -10,6 +10,7 @@ import SelectDropdown from '../../../SelectDropdown';
 
 class CreateProjectForm extends Component {
   static propTypes = {
+    authorId: PropTypes.string,
     getJiraProjects: PropTypes.func,
     jiraProjects: PropTypes.array,
     lang: PropTypes.string,
@@ -21,6 +22,7 @@ class CreateProjectForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      authorId: this.props.authorId,
       jiraProjectId: '',
       prefix: ''
     };
@@ -32,7 +34,13 @@ class CreateProjectForm extends Component {
 
   onChange = (name, e) => {
     this.setState({
-      [name]: e.value
+      [name]: e ? e.value : ''
+    });
+  };
+
+  onChangePrefix = (name, e) => {
+    this.setState({
+      [name]: e.target.value
     });
   };
 
@@ -81,14 +89,14 @@ class CreateProjectForm extends Component {
             <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
               <Input
                 placeholder={localize[lang].PREFIX}
-                onChange={e => this.onChange('prefix', e)}
+                onChange={e => this.onChangePrefix('prefix', e)}
                 value={this.state.prefix}
               />
             </Col>
           </Row>
         </label>
         <Button text="Назад" onClick={() => previousStep(this.state)} type="green" />
-        <Button text="Вперед" onClick={() => nextStep(this.state)} type="green" />
+        <Button text="Вперед" onClick={() => nextStep({ 'X-Jira-Auth': this.props.token }, this.state)} type="green" />
       </div>
     );
   }

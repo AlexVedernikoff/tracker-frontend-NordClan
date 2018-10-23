@@ -63,7 +63,7 @@ const jiraCreateProjectError = () => ({
   type: JiraActions.JIRA_CREATE_PROJECT_ERROR
 });
 
-const jiraCreateProject = data => {
+const jiraCreateProject = (headers, data) => {
   const { jiraProjectId: id, prefix, authorId } = data;
   const URL = `${API_URL}/jira/project`;
   return dispatch => {
@@ -77,7 +77,10 @@ const jiraCreateProject = data => {
           authorId,
           prefix
         },
-        { withCredentials: true }
+        {
+          withCredentials: true,
+          headers
+        }
       )
       .then(response => {
         if (response && response.status === 200) {
