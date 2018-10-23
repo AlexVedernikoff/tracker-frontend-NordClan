@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { Link } from 'react-router';
@@ -7,6 +8,7 @@ import includes from 'lodash/includes';
 
 import TaskHeader from './TaskHeader';
 import Details from './Details';
+import ScrollTop from '../../components/ScrollTop';
 import RelatedTasks from './RelatedTasks';
 import TaskGitlabBranch from './TaskGitlabBranch';
 import Attachments from '../../components/Attachments';
@@ -418,6 +420,7 @@ class TaskPage extends Component {
             notification
           />
         ) : null}
+        <ScrollTop />
         <GoBackPanel defaultPreviousUrl={projectUrl} parentRef={this.refs.taskPage} />
       </div>
     );
