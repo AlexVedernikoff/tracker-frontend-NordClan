@@ -210,11 +210,7 @@ class Details extends Component {
           getContent={() => <div> {localize[lang].LOADING} </div>}
         />
       );
-    const currentSprint =
-      this.props.sprints.length > 0 ? this.props.sprints.find(sprint => sprint.statusId === 2).id : '';
-    const query = localStorage.getItem('filtersData')
-      ? localStorage.getItem('filtersData').replace(/changedSprint/, 'currentSprint')
-      : `?currentSprint=${currentSprint}`;
+
     return (
       <div className={css.detailsBlock}>
         <table className={css.detailTable}>
