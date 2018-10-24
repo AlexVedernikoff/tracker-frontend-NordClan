@@ -9,7 +9,7 @@ import getColor from '../../../../utils/Colors';
 import localize from './BugsChart.json';
 import { connect } from 'react-redux';
 import moment from 'moment';
-// import datalabels from 'chartjs-plugin-datalabels';
+import { dataLabelsPlugin } from '../../../../utils/Charts';
 
 class BugsChart extends Component {
   static propTypes = {
@@ -58,14 +58,7 @@ class BugsChart extends Component {
           }
         ]
       },
-      plugins: {
-        datalabels: {
-          formatter: function(value) {
-            return value.y;
-          },
-          align: 'end'
-        }
-      }
+      plugins: dataLabelsPlugin
     };
   }
 
