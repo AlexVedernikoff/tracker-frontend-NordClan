@@ -10,7 +10,7 @@ import roundNum from '../../../../utils/roundNum';
 import getColor from '../../../../utils/Colors';
 import localize from './BudgetChart.json';
 import moment from 'moment';
-// import datalabels from 'chartjs-plugin-datalabels';
+import { dataLabelsPlugin } from '../../../../utils/Charts';
 
 class BudgetChart extends Component {
   static propTypes = {
@@ -70,14 +70,7 @@ class BudgetChart extends Component {
           }
         ]
       },
-      plugins: {
-        datalabels: {
-          formatter: function(value) {
-            return value.y;
-          },
-          align: 'end'
-        }
-      }
+      plugins: dataLabelsPlugin
     };
   }
 

@@ -9,7 +9,7 @@ import getColor from '../../../../utils/Colors';
 import localize from './ClosingFeaturesChart.json';
 import { connect } from 'react-redux';
 import moment from 'moment';
-// import datalabels from 'chartjs-plugin-datalabels';
+import { dataLabelsPlugin } from '../../../../utils/Charts';
 
 class ClosingFeaturesChart extends Component {
   static propTypes = {
@@ -58,14 +58,7 @@ class ClosingFeaturesChart extends Component {
           }
         ]
       },
-      plugins: {
-        datalabels: {
-          formatter: function(value) {
-            return value.y;
-          },
-          align: 'end'
-        }
-      }
+      plugins: dataLabelsPlugin
     };
   }
 
