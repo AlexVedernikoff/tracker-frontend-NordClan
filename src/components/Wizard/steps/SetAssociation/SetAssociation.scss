@@ -1,0 +1,29 @@
+@import '../../../../styles/variables.scss';
+
+.usersRolesTable {
+  position: relative;
+  th,
+  td {
+    height: 3rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+.userRow {
+  &:hover {
+    td {
+      transition: $transition;
+      background: $color-gray;
+    }
+  }
+}
+
+.usersRolesHeader {
+  text-align: left;
+  &:hover {
+    th {
+      transition: $transition;
+      background: $color-gray;
+    }
+  }
+}

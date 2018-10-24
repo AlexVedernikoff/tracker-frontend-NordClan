@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
-import localize from './createProject.json';
-import * as css from './createProject.scss';
+import localize from './CreateProject.json';
+import * as css from './CreateProject.scss';
 
 import Input from '../../../Input';
 import Button from '../../../Button';

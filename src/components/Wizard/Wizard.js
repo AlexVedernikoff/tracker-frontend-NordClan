@@ -6,8 +6,9 @@ import { states } from './States';
 import Button from '../Button';
 import StateMachine from './StateMachine';
 
-import Auth from './steps/auth/Auth';
-import CreateProject from './steps/createProject/createProject';
+import Auth from './Steps/Auth/Auth';
+import CreateProject from './Steps/CreateProject/CreateProject';
+import SetAssociationIssueTypesForm from './Steps/SetAssociation/SetAssociation';
 
 class Wizard extends Component {
   static propTypes = {
@@ -18,11 +19,10 @@ class Wizard extends Component {
     jiraCreateProject: PropTypes.func,
     lang: PropTypes.string,
     onRequestClose: PropTypes.func,
+    project: PropTypes.object,
     projects: PropTypes.array,
     token: PropTypes.string
   };
-
-  // wizard result = [{step1data}, {step2data}, {step3data}] - state визарда
 
   constructor(props) {
     super(props);
@@ -86,9 +86,12 @@ class Wizard extends Component {
       case states.SET_ASSOCIATIONS:
         return (
           <div>
-            <div>SET_ASSOCIATIONS</div>
-            <Button text="Назад" type="green" />
-            <Button text="Вперед" type="green" />
+            <SetAssociationIssueTypesForm
+              lang={lang}
+              previousStep={this.createProjectPrevious}
+              nextStep={this.createProjectNext}
+              project={this.props.project}
+            />
           </div>
         );
       case states.FINISH:
