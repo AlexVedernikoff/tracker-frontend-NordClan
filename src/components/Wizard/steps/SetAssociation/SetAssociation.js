@@ -8,12 +8,14 @@ import StateMachine from '../../StateMachine';
 import Button from '../../../Button';
 import { associationStates } from './AssociationStates';
 
-class SetAssociationIssueTypesForm extends Component {
+class SetAssociationForm extends Component {
   static propTypes = {
     lang: PropTypes.string,
     nextStep: PropTypes.func,
     previousStep: PropTypes.func,
     project: PropTypes.object,
+    taskStatuses: PropTypes.array,
+    taskTypes: PropTypes.array,
     token: PropTypes.string
   };
 
@@ -31,7 +33,7 @@ class SetAssociationIssueTypesForm extends Component {
     });
   };
 
-  renderRow(entity) {
+  renderJiraRow(entity) {
     let id;
     switch (this.state.currentState) {
       case 'USERS':
@@ -49,24 +51,28 @@ class SetAssociationIssueTypesForm extends Component {
           </tr>
         );
     }
-    /* ---- issue_types
-      description
-      id
-      name
-      */
-
-    /* ---- status_types
-      description
-      id
-      name
-      */
-
-    /* ---- users
-      email
-      key
-      name
-      */
   }
+
+  renderSimtrackRow(entity) {
+    let id;
+    switch (this.state.currentState) {
+      case 'USERS':
+        id = `${entity.key}${entity.email}`;
+        return (
+          <tr key={id} className={css.userRow}>
+            <td>{entity.email}</td>
+          </tr>
+        );
+      default:
+        id = `${entity.id}${entity.nameEn}`;
+        return (
+          <tr key={id} className={css.userRow}>
+            <td>{entity.name}</td>
+          </tr>
+        );
+    }
+  }
+
   nextAssociationStep = () => {
     this.setState({
       currentState: this.stateMachine.nextAssociation(this.state.currentState)
@@ -80,23 +86,31 @@ class SetAssociationIssueTypesForm extends Component {
   };
 
   render() {
-    const { lang, previousStep, nextStep, project } = this.props;
-    let tableBody;
+    const { lang, previousStep, nextStep, project, taskTypes, taskStatuses } = this.props;
+    let JiraTableBody;
+    let SimtrackTableBody;
     switch (this.state.currentState) {
       case associationStates.ISSUE_TYPES:
-        tableBody = project.issue_types.map(entity => {
-          return this.renderRow(entity);
+        JiraTableBody = project.issue_types.map(entity => {
+          return this.renderJiraRow(entity);
+        });
+        SimtrackTableBody = taskTypes.map(entity => {
+          return this.renderSimtrackRow(entity);
         });
         break;
       case associationStates.STATUS_TYPES:
-        tableBody = project.status_types.map(entity => {
-          return this.renderRow(entity);
+        JiraTableBody = project.status_types.map(entity => {
+          return this.renderJiraRow(entity);
+        });
+        SimtrackTableBody = taskStatuses.map(entity => {
+          return this.renderSimtrackRow(entity);
         });
         break;
       case associationStates.USERS:
-        tableBody = project.users.map(entity => {
-          return this.renderRow(entity);
+        JiraTableBody = project.users.map(entity => {
+          return this.renderJiraRow(entity);
         });
+        SimtrackTableBody = [];
         break;
       default:
         break;
@@ -115,7 +129,16 @@ class SetAssociationIssueTypesForm extends Component {
                 <th>{localize[this.props.lang].SIMTRACK_EMAIL}</th>
               </tr>
             </thead>
-            <tbody>{tableBody}</tbody>
+            <tbody>{JiraTableBody}</tbody>
+          </table>
+
+          <table className={css.usersRolesTable}>
+            <thead>
+              <tr className={css.usersRolesHeader}>
+                <th>{localize[this.props.lang].SIMTRACK_EMAIL}</th>
+              </tr>
+            </thead>
+            <tbody>{SimtrackTableBody}</tbody>
           </table>
         </label>
         {this.state.currentState === associationStates.ISSUE_TYPES ? (
@@ -137,4 +160,4 @@ class SetAssociationIssueTypesForm extends Component {
   }
 }
 
-export default SetAssociationIssueTypesForm;
+export default SetAssociationForm;

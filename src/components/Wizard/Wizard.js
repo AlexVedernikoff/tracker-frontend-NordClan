@@ -8,7 +8,7 @@ import StateMachine from './StateMachine';
 
 import Auth from './Steps/Auth/Auth';
 import CreateProject from './Steps/CreateProject/CreateProject';
-import SetAssociationIssueTypesForm from './Steps/SetAssociation/SetAssociation';
+import SetAssociationForm from './Steps/SetAssociation/SetAssociation';
 
 class Wizard extends Component {
   static propTypes = {
@@ -21,6 +21,8 @@ class Wizard extends Component {
     onRequestClose: PropTypes.func,
     project: PropTypes.object,
     projects: PropTypes.array,
+    taskStatuses: PropTypes.array,
+    taskTypes: PropTypes.array,
     token: PropTypes.string
   };
 
@@ -86,11 +88,13 @@ class Wizard extends Component {
       case states.SET_ASSOCIATIONS:
         return (
           <div>
-            <SetAssociationIssueTypesForm
+            <SetAssociationForm
               lang={lang}
               previousStep={this.createProjectPrevious}
               nextStep={this.createProjectNext}
               project={this.props.project}
+              taskTypes={this.props.taskTypes}
+              taskStatuses={this.props.taskStatuses}
             />
           </div>
         );

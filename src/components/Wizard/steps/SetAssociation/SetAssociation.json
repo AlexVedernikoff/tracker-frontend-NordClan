@@ -1,9 +1,13 @@
 {
   "en": {
-    "SIMTRACK_EMAIL": "SimTrack email"
+    "SIMTRACK_EMAIL": "SimTrack email",
+    "JIRA_EMAIL": "Jira email",
+    "SIMTRACK_ISSUE_TYPES": "SimTrack email",
+    "SIMTRACK_STATUS_TYPES": "SimTrack email"
   },
 
   "ru": {
-    "SIMTRACK_EMAIL": "SimTrack email"
+    "SIMTRACK_EMAIL": "SimTrack email",
+    "JIRA_EMAIL": "Jira email"
   }
 }
