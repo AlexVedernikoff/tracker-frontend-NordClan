@@ -529,8 +529,7 @@ class Planning extends Component {
                     value={qaPercent}
                     isProjectAdmin={isProjectAdmin}
                     integerOnly
-                    min={0}
-                    max={100}
+                    percents
                   />
                 </div>
               ) : null}

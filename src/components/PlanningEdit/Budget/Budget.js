@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import * as css from './Budget.scss';
 import { IconEdit, IconCheck } from '../../Icons';
 import ReactTooltip from 'react-tooltip';
-import InputNumber from '../../InputNumber';
 import roundNum from '../../../utils/roundNum';
 import parseInteger from '../../../utils/parseInteger';
+import validateNumber from '../../../utils/validateNumber';
+import Input from '../../../components/Input';
 
 class Budget extends Component {
   constructor(props) {
@@ -50,10 +51,20 @@ class Budget extends Component {
     onEditSubmit(this.state.value);
   };
 
-  onChangeValue = value => {
-    this.setState({
-      value: this.props.integerOnly ? parseInteger(value) : value
-    });
+  onChangeValue = e => {
+    const { percents } = this.props;
+    const value = e.target.value;
+    if (percents) {
+      if (validateNumber(value) && value <= 100) {
+        this.setState({
+          value: this.props.integerOnly ? parseInteger(value) : value
+        });
+      }
+    } else {
+      this.setState({
+        value: this.props.integerOnly ? parseInteger(value) : value
+      });
+    }
   };
 
   selectAll = e => {
@@ -61,8 +72,7 @@ class Budget extends Component {
   };
 
   render() {
-    const { header, max, min } = this.props;
-
+    const { header } = this.props;
     return (
       <div className={css.budget}>
         <div className={css.title}>{header}</div>
@@ -70,15 +80,7 @@ class Budget extends Component {
         <div className={css.editor}>
           {this.state.isEditing ? (
             <form onSubmit={this.toggleEditing}>
-              <InputNumber
-                onFocus={this.selectAll}
-                autoFocus
-                defaultValue={this.props.value}
-                onChange={this.onChangeValue}
-                value={this.state.value}
-                max={max}
-                min={min}
-              />
+              <Input onFocus={this.selectAll} autoFocus onChange={this.onChangeValue} value={this.state.value} />
             </form>
           ) : (
             <div className={css.budgetValue}>{roundNum(this.props.value, 2)}</div>
@@ -104,9 +106,8 @@ Budget.propTypes = {
   id: PropTypes.number,
   integerOnly: PropTypes.bool,
   isProjectAdmin: PropTypes.bool,
-  max: PropTypes.number,
-  min: PropTypes.number,
   onEditSubmit: PropTypes.func.isRequired,
+  percents: PropTypes.bool,
   value: PropTypes.number
 };
 
