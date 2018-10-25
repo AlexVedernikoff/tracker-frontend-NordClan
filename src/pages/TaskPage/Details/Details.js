@@ -150,6 +150,16 @@ class Details extends Component {
     );
   };
 
+  changeDevOpsAttribute = () => {
+    this.props.onChange(
+      {
+        id: this.props.task.id,
+        isDevOps: !this.props.task.isDevOps
+      },
+      null
+    );
+  };
+
   spentTooltipRender(spents) {
     return transform(
       spents,
@@ -243,8 +253,14 @@ class Details extends Component {
             </tr>
             <tr>
               <td>{localize[lang].FROM_CLIENT}</td>
-              <td className={css.byClient}>
+              <td className={css.checkAttribute}>
                 <Checkbox checked={task.isTaskByClient} onChange={this.changeIsTaskByClient} />
+              </td>
+            </tr>
+            <tr>
+              <td>{localize[lang].DEV_OPS}</td>
+              <td className={css.checkAttribute}>
+                <Checkbox checked={task.isDevOps} onChange={this.changeDevOpsAttribute} />
               </td>
             </tr>
             <tr>
