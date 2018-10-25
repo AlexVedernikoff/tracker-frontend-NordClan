@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import { scroller } from 'react-scroll';
 import find from 'lodash/find';
 import { Col, Row } from 'react-flexbox-grid';
-import InputNumber from '../InputNumber';
 import * as css from './OptionsModal.scss';
 import Modal from '../Modal';
 import SelectDropdown from '../SelectDropdown';
 import { changeTask, publishComment } from '../../actions/Task';
+import TaskTimesheet from './TaskTimesheet';
 
 import TextArea from '../TextArea';
 import Button from '../Button';
@@ -20,7 +20,7 @@ const notSelectedOption = {
 };
 
 const formLayout = {
-  firstCol: 4,
+  firstCol: 3,
   secondCol: 8
 };
 
@@ -34,7 +34,7 @@ class OptionsModal extends Component {
     this.state = {
       options: this.optionsList,
       selectedIndex: this.getSelectedIndex(options),
-      plannedExecutionTime: props.plannedExecutionTime || 0,
+      loggedTime: 0,
       selectedPerformer: props.defaultOption || null,
       commentText: ''
     };
@@ -98,8 +98,8 @@ class OptionsModal extends Component {
     return find(options, option => option.value === defaultOption);
   };
 
-  handleChangePlannedTime = plannedExecutionTime => {
-    this.setState({ plannedExecutionTime });
+  handleChangePlannedTime = loggedTime => {
+    this.setState({ loggedTime });
   };
 
   handlePerformerChange = selectedPerformer => {
@@ -110,15 +110,14 @@ class OptionsModal extends Component {
 
   changePerformer = e => {
     e.preventDefault();
-    const { plannedExecutionTime, commentText } = this.state;
+    const { commentText } = this.state;
+    const { id } = this.props;
     this.props.onChoose(this.state.selectedPerformer);
-    this.props.changeTask({
-      id: this.props.id,
-      plannedExecutionTime
-    });
-    this.props.publishComment(this.props.id, {
-      text: commentText
-    });
+    if (commentText) {
+      this.props.publishComment(id, {
+        text: commentText
+      });
+    }
   };
 
   setComment = e => {
@@ -161,16 +160,11 @@ class OptionsModal extends Component {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p className={css.label}>{localize[lang].PLANNING_TIME}</p>
+                  <p className={css.label}>Timesheets:</p>
                 </Col>
+
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                  <InputNumber
-                    min={0}
-                    maxLength={5}
-                    postfix={'ч.'}
-                    onChange={this.handleChangePlannedTime}
-                    value={this.state.plannedExecutionTime}
-                  />
+                  <TaskTimesheet />
                 </Col>
               </Row>
             </label>
@@ -208,11 +202,12 @@ OptionsModal.propTypes = {
   id: PropTypes.number,
   inputPlaceholder: PropTypes.string,
   isPerformerChanged: PropTypes.bool,
+  lang: PropTypes.string,
+  loggedTime: PropTypes.number,
   noCurrentOption: PropTypes.bool,
   onChoose: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   options: PropTypes.array,
-  plannedExecutionTime: PropTypes.number,
   publishComment: PropTypes.func,
   removeCurOptionTip: PropTypes.string,
   title: PropTypes.string
