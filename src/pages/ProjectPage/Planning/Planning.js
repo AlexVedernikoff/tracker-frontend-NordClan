@@ -473,7 +473,7 @@ class Planning extends Component {
 
     const budget = this.props.project.budget;
     const riskBudget = this.props.project.riskBudget;
-    const qaPercent = this.props.project.qaPercent || 30;
+    const qaPercent = this.props.project.qaPercent;
     const { createdAt, completedAt, loading } = this.props;
     const unfinishedLeftTasksCount = this.getUnfinishedLeftTasks().length;
 
@@ -508,14 +508,12 @@ class Planning extends Component {
                     header={localize[lang].WITH_RISK_RESERVE}
                     value={riskBudget}
                     isProjectAdmin={isProjectAdmin}
-                    min={budget}
                   />
                   <Budget
                     onEditSubmit={this.onBudgetSubmit}
                     header={localize[lang].WO_RISK_RESERVE}
                     value={budget}
                     isProjectAdmin={isProjectAdmin}
-                    max={riskBudget}
                   />
                   {!!budget && !!riskBudget && <div className={css.riskMarker}>{localize[lang].RISK_RESERVE}</div>}
                 </div>

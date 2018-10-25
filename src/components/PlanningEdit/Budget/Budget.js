@@ -15,7 +15,7 @@ class Budget extends Component {
 
     this.state = {
       isEditing: false,
-      value: props.value
+      value: typeof props.value === 'number' ? props.value : ''
     };
   }
 
@@ -27,7 +27,7 @@ class Budget extends Component {
 
   toggleEditing = e => {
     e.preventDefault();
-    if (this.state.isEditing) {
+    if (this.state.isEditing && this.state.value) {
       this.saveBudget();
       this.stopEditing();
     } else {
@@ -61,7 +61,7 @@ class Budget extends Component {
           value: this.props.integerOnly ? parseInteger(value) : value
         });
       }
-    } else {
+    } else if (validateNumber(value)) {
       this.setState({
         value: this.props.integerOnly ? parseInteger(value) : value
       });
@@ -74,6 +74,7 @@ class Budget extends Component {
 
   render() {
     const { header, lang } = this.props;
+    const saveDataTip = this.state.value ? localize[lang].SAVE : localize[lang].ENTER_NUMBER;
     return (
       <div className={css.budget}>
         <div className={css.title}>{header}</div>
@@ -92,7 +93,7 @@ class Budget extends Component {
           <div
             className={css.editIcon}
             onClick={this.toggleEditing}
-            data-tip={this.state.isEditing ? localize[lang].SAVE : localize[lang].EDIT}
+            data-tip={this.state.isEditing ? saveDataTip : localize[lang].EDIT}
           >
             {this.state.isEditing ? <IconCheck className={css.save} /> : <IconEdit className={css.edit} />}
           </div>
