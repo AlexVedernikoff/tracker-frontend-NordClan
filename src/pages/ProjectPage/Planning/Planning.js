@@ -473,7 +473,7 @@ class Planning extends Component {
 
     const budget = this.props.project.budget;
     const riskBudget = this.props.project.riskBudget;
-    const qaPercent = this.props.project.qaPercent;
+    const qaPercent = this.props.project.qaPercent || 30;
     const { createdAt, completedAt, loading } = this.props;
     const unfinishedLeftTasksCount = this.getUnfinishedLeftTasks().length;
 
