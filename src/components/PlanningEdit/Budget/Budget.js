@@ -7,6 +7,7 @@ import roundNum from '../../../utils/roundNum';
 import parseInteger from '../../../utils/parseInteger';
 import validateNumber from '../../../utils/validateNumber';
 import Input from '../../../components/Input';
+import localize from './Budget.json';
 
 class Budget extends Component {
   constructor(props) {
@@ -72,7 +73,7 @@ class Budget extends Component {
   };
 
   render() {
-    const { header } = this.props;
+    const { header, lang } = this.props;
     return (
       <div className={css.budget}>
         <div className={css.title}>{header}</div>
@@ -91,7 +92,7 @@ class Budget extends Component {
           <div
             className={css.editIcon}
             onClick={this.toggleEditing}
-            data-tip={this.state.isEditing ? 'Сохранить' : 'Редактировать'}
+            data-tip={this.state.isEditing ? localize[lang].SAVE : localize[lang].EDIT}
           >
             {this.state.isEditing ? <IconCheck className={css.save} /> : <IconEdit className={css.edit} />}
           </div>
@@ -106,6 +107,7 @@ Budget.propTypes = {
   id: PropTypes.number,
   integerOnly: PropTypes.bool,
   isProjectAdmin: PropTypes.bool,
+  lang: PropTypes.string,
   onEditSubmit: PropTypes.func.isRequired,
   percents: PropTypes.bool,
   value: PropTypes.number
