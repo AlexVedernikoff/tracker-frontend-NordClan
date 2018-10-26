@@ -19,7 +19,7 @@ import GoBackPanel from '../../components/GoBackPanel';
 import CreateTaskModal from '../../components/CreateTaskModal';
 import HttpError from '../../components/HttpError';
 import { history } from '../../History';
-import { VISOR, EXTERNAL_USER, ADMIN } from '../../constants/Roles';
+import { VISOR, EXTERNAL_USER } from '../../constants/Roles';
 import Title from 'react-title-component';
 
 import * as TaskStatuses from '../../constants/TaskStatuses';
@@ -41,6 +41,8 @@ import { getProjectInfo, openCreateTaskModal, openCreateChildTaskModal } from '.
 import * as css from './TaskPage.scss';
 import { getRoles } from '../../actions/Dictionaries';
 import localize from './taskPage.json';
+import { checkIsAdminInProject } from '../../utils/isAdmin';
+import { isOnlyDevOps } from '../../utils/isDevOps';
 
 class TaskPage extends Component {
   static propTypes = {
@@ -242,16 +244,9 @@ class TaskPage extends Component {
     this.handleCloseCancelSubTaskModal();
   };
 
-  checkIsAdminInProject = () => {
-    return this.props.user.projectsRoles
-      ? this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1 ||
-          this.props.user.globalRole === ADMIN
-      : false;
-  };
-
   render() {
-    const { globalRole, task, params, lang } = this.props;
-    const isProjectAdmin = this.checkIsAdminInProject();
+    const { globalRole, task, params, lang, user, project } = this.props;
+    const isProjectAdmin = checkIsAdminInProject(user, project.id);
     const isVisor = globalRole === VISOR;
     const isExternal = globalRole === EXTERNAL_USER;
     const projectUrl = task.project ? `/projects/${task.project.id}` : '/';
@@ -336,7 +331,7 @@ class TaskPage extends Component {
                 onChange={this.props.changeTask}
                 canEdit={task.statusId !== TaskStatuses.CLOSED}
               />
-              {!isVisor ? (
+              {!isVisor && !isOnlyDevOps(user, project.id) ? (
                 <button className={css.addTask} onClick={this.props.openCreateTaskModal}>
                   <span>{localize[lang].CREATE_NEW_TASK}</span>
                   <IconPlus style={{ width: 16, height: 16 }} />

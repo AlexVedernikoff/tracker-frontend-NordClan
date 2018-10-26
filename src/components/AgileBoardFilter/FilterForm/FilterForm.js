@@ -16,6 +16,7 @@ import SprintSelector from '../../SprintSelector';
 
 import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
 import { storageType } from '../../FiltrersManager/helpers';
+import { isOnlyDevOps } from '../../../utils/isDevOps';
 
 const storage = storageType === 'local' ? localStorage : sessionStorage;
 
@@ -82,7 +83,7 @@ class FilterForm extends React.Component {
   };
 
   render() {
-    const { filters, lang } = this.props;
+    const { filters, lang, user, project } = this.props;
     return (
       <div className={css.filtersRowWrapper}>
         <Row className={css.filtersRow}>
@@ -113,7 +114,7 @@ class FilterForm extends React.Component {
               {...this.getFilterTagsProps()}
             />
           </Col>
-          {!this.isVisor ? (
+          {!this.isVisor && !isOnlyDevOps(user, project.id) ? (
             <Col className={css.filterButtonCol}>
               <Button
                 onClick={this.props.openCreateTaskModal}
