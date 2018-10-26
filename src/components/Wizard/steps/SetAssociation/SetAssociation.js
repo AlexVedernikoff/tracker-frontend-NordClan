@@ -6,7 +6,7 @@ import * as css from './setAssociation.scss';
 
 import StateMachine from '../../StateMachine';
 import Button from '../../../Button';
-import SelectDropdown from '../../../SelectDropdown';
+import Input from '../../../Input';
 import { associationStates } from './AssociationStates';
 import debounce from 'lodash/debounce';
 
@@ -26,7 +26,11 @@ class SetAssociationForm extends Component {
     super(props);
     this.state = {
       currentState: associationStates.ISSUE_TYPES,
-      users: []
+      users: [],
+
+      issueTypesAssociation: [],
+      statusesAssociation: [],
+      userEmailAssociation: []
     };
     this.stateMachine = new StateMachine();
     this.searchOnChange = debounce(this.searchOnChange, 400);
@@ -43,58 +47,111 @@ class SetAssociationForm extends Component {
     }
   };
 
-  getUsers = () => {
-    return this.state.users.map(user => ({
-      value: user.id,
-      label: user.fullNameRu
-    }));
+  select = (key, value) => {
+    this.setState({ [key]: value });
   };
 
-  selectUser = key => {
-    return option => {
-      this.setState({ [key]: option });
-    };
+  associate = () => {
+    switch (this.state.currentState) {
+      case associationStates.USERS:
+        this.setState({
+          userEmailAssociation: [
+            this.state.issueTypesAssociation,
+            ...{ externalUserEmail: this.state.jiraUser, internalUserId: this.state.simtrackUser }
+          ]
+        });
+        break;
+      case associationStates.ISSUE_TYPES:
+        this.setState({
+          issueTypesAssociation: [
+            this.state.issueTypesAssociation,
+            ...{ externalTaskTypeId: this.state.jiraIssueType, internalTaskTypeId: this.state.simtrackIssueType }
+          ]
+        });
+        break;
+      case associationStates.STATUS_TYPES:
+        this.setState({
+          statusesAssociation: [
+            this.state.issueTypesAssociation,
+            ...{ externalStatusId: this.state.jiraStatusType, internalStatusId: this.state.simtrackStatusType }
+          ]
+        });
+        break;
+      default:
+        break;
+    }
   };
 
   // --------------------------------
 
+  isDisabledAssociation = () => {
+    switch (this.state.currentState) {
+      case associationStates.USERS:
+        return !(this.state.jiraUser && this.state.simtrackUser);
+      case associationStates.ISSUE_TYPES:
+        return !(this.state.jiraIssueType && this.state.simtrackIssueType);
+      case associationStates.STATUS_TYPES:
+        return !(this.state.jiraStatusType && this.state.simtrackStatusType);
+      default:
+        return true;
+    }
+  };
+
   renderJiraRow(entity) {
     let id;
     switch (this.state.currentState) {
-      case 'USERS':
+      case associationStates.USERS:
         id = `${entity.key}${entity.email}`;
         return (
-          <tr key={id} className={css.userRow}>
+          <tr key={id} className={css.userRow} onClick={() => this.select('jiraUser', entity.email)}>
             <td>{entity.email}</td>
           </tr>
         );
-      default:
+      case associationStates.ISSUE_TYPES:
         id = `${entity.id}${entity.description}`;
         return (
-          <tr key={id} className={css.userRow}>
+          <tr key={id} className={css.userRow} onClick={() => this.select('jiraIssueType', entity.id)}>
             <td>{entity.name}</td>
           </tr>
         );
+      case associationStates.STATUS_TYPES:
+        id = `${entity.id}${entity.description}`;
+        return (
+          <tr key={id} className={css.userRow} onClick={() => this.select('jiraStatusType', entity.id)}>
+            <td>{entity.name}</td>
+          </tr>
+        );
+      default:
+        break;
     }
   }
 
   renderSimtrackRow(entity) {
     let id;
     switch (this.state.currentState) {
-      case 'USERS':
-        id = `${entity.key}${entity.email}`;
+      case associationStates.USERS:
+        id = `${entity.id}`;
         return (
-          <tr key={id} className={css.userRow}>
-            <td>{entity.email}</td>
+          <tr key={id} className={css.userRow} onClick={() => this.select('simtrackUser', entity.id)}>
+            <td>{entity.fullNameRu}</td>
           </tr>
         );
-      default:
+      case associationStates.ISSUE_TYPES:
         id = `${entity.id}${entity.nameEn}`;
         return (
-          <tr key={id} className={css.userRow}>
+          <tr key={id} className={css.userRow} onClick={() => this.select('simtrackIssueType', entity)}>
             <td>{entity.name}</td>
           </tr>
         );
+      case associationStates.STATUS_TYPES:
+        id = `${entity.id}${entity.nameEn}`;
+        return (
+          <tr key={id} className={css.userRow} onClick={() => this.select('simtrackStatusType', entity)}>
+            <td>{entity.name}</td>
+          </tr>
+        );
+      default:
+        break;
     }
   }
 
@@ -111,7 +168,7 @@ class SetAssociationForm extends Component {
   };
 
   render() {
-    const { lang, previousStep, nextStep, project, taskTypes, taskStatuses, getSimtrackUsers } = this.props;
+    const { lang, previousStep, nextStep, project, taskTypes, taskStatuses } = this.props;
     let JiraTableBody;
     let SimtrackTableBody;
     switch (this.state.currentState) {
@@ -135,7 +192,9 @@ class SetAssociationForm extends Component {
         JiraTableBody = project.users.map(entity => {
           return this.renderJiraRow(entity);
         });
-        SimtrackTableBody = [];
+        SimtrackTableBody = this.state.users.map(entity => {
+          return this.renderSimtrackRow(entity);
+        });
         break;
       default:
         break;
@@ -166,14 +225,10 @@ class SetAssociationForm extends Component {
             <tbody>
               {this.state.currentState === associationStates.USERS ? (
                 <tr className={css.userRow}>
-                  <SelectDropdown
+                  <Input
                     name="user_association"
                     placeholder={localize[lang].NAME}
-                    multi={false}
-                    onInputChange={this.searchOnChange}
-                    options={this.getUsers()}
-                    value={this.state.user}
-                    onChange={this.selectUser('user')}
+                    onChange={e => this.searchOnChange(e.target.value)}
                     autofocus
                   />
                 </tr>
@@ -182,6 +237,7 @@ class SetAssociationForm extends Component {
             </tbody>
           </table>
         </label>
+        <Button text="Ассоциация" onClick={() => null} type="green" disabled={this.isDisabledAssociation()} />
         {this.state.currentState === associationStates.ISSUE_TYPES ? (
           <Button text="Назад" onClick={() => previousStep(this.state)} type="green" />
         ) : (
