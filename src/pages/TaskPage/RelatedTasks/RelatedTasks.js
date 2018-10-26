@@ -113,6 +113,8 @@ RelatedTasks.propTypes = {
   onAction: PropTypes.func,
   onDelete: PropTypes.func,
   task: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  project: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired
 };
 

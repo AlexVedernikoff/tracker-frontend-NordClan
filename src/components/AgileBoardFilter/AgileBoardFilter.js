@@ -14,7 +14,7 @@ import Tag from '../Tag';
 import getPriorityById from '../../utils/TaskPriority';
 import Button from '../Button';
 import { IconBroom } from '../Icons';
-import { VISOR, DEV_OPS } from '../../constants/Roles';
+import { VISOR } from '../../constants/Roles';
 import { getFullName } from '../../utils/NameLocalisation';
 import { storageType } from '../FiltrersManager/helpers';
 import { isOnlyDevOps } from '../../utils/isDevOps';
