@@ -3,11 +3,13 @@
     "SIMTRACK_EMAIL": "SimTrack email",
     "JIRA_EMAIL": "Jira email",
     "SIMTRACK_ISSUE_TYPES": "SimTrack email",
-    "SIMTRACK_STATUS_TYPES": "SimTrack email"
+    "SIMTRACK_STATUS_TYPES": "SimTrack email",
+    "NAME": "Name"
   },
 
   "ru": {
     "SIMTRACK_EMAIL": "SimTrack email",
-    "JIRA_EMAIL": "Jira email"
+    "JIRA_EMAIL": "Jira email",
+    "NAME": "Имя"
   }
 }

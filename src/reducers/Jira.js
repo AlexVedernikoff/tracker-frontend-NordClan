@@ -62,6 +62,28 @@ export default function Jira(state = InitialState, action) {
         isGetJiraProjectsError: true
       };
 
+    // ------------------
+
+    case JiraActions.GET_SIMTRACK_USERS_BY_NAME_START:
+      return {
+        ...state,
+        isGetSimtrackUsersByNameStart: true
+      };
+
+    case JiraActions.GET_SIMTRACK_USERS_BY_NAME_SUCCESS:
+      return {
+        ...state,
+        isGetSimtrackUsersByNameSuccess: true,
+        simtrackUsers: [...action.simtrackUsers]
+      };
+    case JiraActions.GET_SIMTRACK_USERS_BY_NAME_ERROR:
+      return {
+        ...state,
+        isGetSimtrackUsersByNameError: true
+      };
+
+    // ------------------
+
     default:
       return {
         ...state

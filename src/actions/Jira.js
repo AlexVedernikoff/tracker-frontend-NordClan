@@ -133,4 +133,40 @@ const getJiraProjects = headers => {
   };
 };
 
-export { jiraAuthorize, jiraCreateProject, getJiraProjects };
+const getSimtrackUsersByNameStart = () => ({
+  type: JiraActions.GET_SIMTRACK_USERS_BY_NAME_START
+});
+
+const getSimtrackUsersByNameSuccess = simtrackUsers => ({
+  type: JiraActions.GET_SIMTRACK_USERS_BY_NAME_SUCCESS,
+  simtrackUsers
+});
+
+const getSimtrackUsersByNameError = () => ({
+  type: JiraActions.GET_SIMTRACK_USERS_BY_NAME_ERROR
+});
+
+const getSimtrackUsersByName = name => {
+  const URL = `${API_URL}/user/autocompleter/?userName=${name}`;
+  return dispatch => {
+    dispatch(startLoading());
+    dispatch(getSimtrackUsersByNameStart());
+    return axios
+      .get(URL)
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(getSimtrackUsersByNameSuccess(response.data));
+        }
+        dispatch(finishLoading());
+        return response.data;
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(getSimtrackUsersByNameError(error.response.data));
+        dispatch(finishLoading());
+        throw error;
+      });
+  };
+};
+
+export { jiraAuthorize, jiraCreateProject, getJiraProjects, getSimtrackUsersByName };

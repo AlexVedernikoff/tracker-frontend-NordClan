@@ -6,10 +6,13 @@ import * as css from './setAssociation.scss';
 
 import StateMachine from '../../StateMachine';
 import Button from '../../../Button';
+import SelectDropdown from '../../../SelectDropdown';
 import { associationStates } from './AssociationStates';
+import debounce from 'lodash/debounce';
 
 class SetAssociationForm extends Component {
   static propTypes = {
+    getSimtrackUsers: PropTypes.func,
     lang: PropTypes.string,
     nextStep: PropTypes.func,
     previousStep: PropTypes.func,
@@ -22,16 +25,38 @@ class SetAssociationForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentState: associationStates.ISSUE_TYPES
+      currentState: associationStates.ISSUE_TYPES,
+      users: []
     };
     this.stateMachine = new StateMachine();
+    this.searchOnChange = debounce(this.searchOnChange, 400);
   }
 
-  onChange = (name, e) => {
-    this.setState({
-      [name]: e ? e.target.value : ''
-    });
+  searchOnChange = name => {
+    const userName = name.trim();
+    if (userName.length > 1) {
+      this.props.getSimtrackUsers(name).then(users => {
+        this.setState({
+          users
+        });
+      });
+    }
   };
+
+  getUsers = () => {
+    return this.state.users.map(user => ({
+      value: user.id,
+      label: user.fullNameRu
+    }));
+  };
+
+  selectUser = key => {
+    return option => {
+      this.setState({ [key]: option });
+    };
+  };
+
+  // --------------------------------
 
   renderJiraRow(entity) {
     let id;
@@ -86,7 +111,7 @@ class SetAssociationForm extends Component {
   };
 
   render() {
-    const { lang, previousStep, nextStep, project, taskTypes, taskStatuses } = this.props;
+    const { lang, previousStep, nextStep, project, taskTypes, taskStatuses, getSimtrackUsers } = this.props;
     let JiraTableBody;
     let SimtrackTableBody;
     switch (this.state.currentState) {
@@ -138,7 +163,23 @@ class SetAssociationForm extends Component {
                 <th>{localize[this.props.lang].SIMTRACK_EMAIL}</th>
               </tr>
             </thead>
-            <tbody>{SimtrackTableBody}</tbody>
+            <tbody>
+              {this.state.currentState === associationStates.USERS ? (
+                <tr className={css.userRow}>
+                  <SelectDropdown
+                    name="user_association"
+                    placeholder={localize[lang].NAME}
+                    multi={false}
+                    onInputChange={this.searchOnChange}
+                    options={this.getUsers()}
+                    value={this.state.user}
+                    onChange={this.selectUser('user')}
+                    autofocus
+                  />
+                </tr>
+              ) : null}
+              {SimtrackTableBody}
+            </tbody>
           </table>
         </label>
         {this.state.currentState === associationStates.ISSUE_TYPES ? (

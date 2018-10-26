@@ -14,6 +14,7 @@ class Wizard extends Component {
   static propTypes = {
     authorId: PropTypes.number,
     getJiraProjects: PropTypes.func,
+    getSimtrackUsersByName: PropTypes.func,
     isOpen: PropTypes.bool,
     jiraAuthorize: PropTypes.func,
     jiraCreateProject: PropTypes.func,
@@ -95,6 +96,7 @@ class Wizard extends Component {
               project={this.props.project}
               taskTypes={this.props.taskTypes}
               taskStatuses={this.props.taskStatuses}
+              getSimtrackUsers={this.props.getSimtrackUsersByName}
             />
           </div>
         );
