@@ -20,7 +20,7 @@ export const replaceWithMentions = (array, suggestions, replace) => {
   });
 };
 
-export const replaceLabelWithAt = m => `@${getFullName(m)}`;
+export const replaceLabelWithAt = m => `@[${getFullName(m)}]`;
 export const replaceValueWithIdPattern = m => `{@${m.id}}`;
 
 export const parseCommentForDisplay = (text, suggestions, replace) =>
@@ -37,7 +37,7 @@ export const splitUserCommentByMentionLabels = (text, suggests, replace = replac
 export const replaceUserMentionsWithMentionsId = (array, suggests) => {
   return array.map(x => {
     if (!userMentionReg.test(x)) return x;
-    const label = x.slice(1);
+    const label = x.slice(2, -1);
     const suggest = suggests.find(s => getFullName(s) === label);
     return suggest ? replaceValueWithIdPattern(suggest) : x;
   });
