@@ -112,16 +112,16 @@ RelatedTasks.propTypes = {
   lang: PropTypes.string,
   onAction: PropTypes.func,
   onDelete: PropTypes.func,
-  task: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired,
   project: PropTypes.object.isRequired,
-  type: PropTypes.string.isRequired
+  task: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired,
+  user: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
-  user: state.Auth.user,
-  project: state.Project.project
+  project: state.Project.project,
+  user: state.Auth.user
 });
 
 export default connect(

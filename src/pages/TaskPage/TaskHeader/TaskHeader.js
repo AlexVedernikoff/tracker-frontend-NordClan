@@ -330,6 +330,7 @@ TaskHeader.propTypes = {
 
 const mapStateToProps = state => ({
   users: state.Project.project.users,
+  devOps: state.devOps,
   location: state.routing.locationBeforeTransitions,
   taskTypes: getLocalizedTaskTypes(state),
   lang: state.Localize.lang
