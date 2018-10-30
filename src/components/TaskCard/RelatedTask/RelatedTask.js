@@ -11,12 +11,12 @@ const CARD_IS_FOCUSED = true;
 class componentName extends PureComponent {
   static propTypes = {
     isLighted: PropTypes.bool,
+    lang: PropTypes.string.isRequired,
     mode: PropTypes.string,
     onHover: PropTypes.func,
     prefix: PropTypes.string,
     projectId: PropTypes.number,
-    task: PropTypes.object,
-    lang: PropTypes.string.isRequired
+    task: PropTypes.object
   };
 
   getOptions = mode => {

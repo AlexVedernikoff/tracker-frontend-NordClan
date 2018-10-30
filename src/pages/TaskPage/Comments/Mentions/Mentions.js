@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { updateCurrentCommentText } from '../../../../actions/Task';
 import * as css from './Mentions.scss';
-import _lineHeight from 'line-height';
 
 class Mentions extends Component {
   static propTypes = {
