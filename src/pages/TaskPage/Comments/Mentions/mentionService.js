@@ -20,7 +20,7 @@ export const replaceWithMentions = (array, suggestions, replace) => {
   });
 };
 
-export const replaceLabelWithAt = m => `@[${getFullName(m)}]`;
+export const replaceLabelWithAt = m => `@\\[${getFullName(m)}\\]`;
 export const replaceValueWithIdPattern = m => `{@${m.id}}`;
 
 export const parseCommentForDisplay = (text, suggestions, replace) =>
