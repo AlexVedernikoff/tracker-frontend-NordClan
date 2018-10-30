@@ -15,10 +15,13 @@ class PerformerFilter extends React.Component {
   };
 
   getUsers = () => {
-    const users = this.props.users.map(user => ({
-      value: user.id,
-      label: getFullName(user)
-    }));
+    console.log('users', this.props.users);
+    const users = _.uniqWith(this.props.users.concat(this.props.devOpsUsers), (val, val2) => val.id === val2.id).map(
+      user => ({
+        value: user.id,
+        label: getFullName(user)
+      })
+    );
     users.unshift({ value: '0', label: localize[this.props.lang].NOT_CHANGED });
     return users;
   };
@@ -43,6 +46,7 @@ class PerformerFilter extends React.Component {
 const mapStateToProps = state => {
   return {
     users: state.Project.project.users,
+    devOpsUsers: state.UserList.devOpsUsers,
     lang: state.Localize.lang
   };
 };

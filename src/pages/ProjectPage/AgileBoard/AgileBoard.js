@@ -25,6 +25,7 @@ import getTasks from '../../../actions/Tasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal, getProjectUsers, getProjectInfo, getProjectTags } from '../../../actions/Project';
 import { showNotification } from '../../../actions/Notifications';
+import { getDevOpsUsers } from '../../../actions/Users';
 
 class AgileBoard extends Component {
   constructor(props) {
@@ -33,6 +34,7 @@ class AgileBoard extends Component {
       lightedTaskId: null,
       isCardFocus: false,
       isModalOpen: false,
+      changedTaskIsDevOps: false,
       performer: null,
       changedTask: null,
       isOnlyMine: props.filters.isOnlyMine
@@ -41,6 +43,7 @@ class AgileBoard extends Component {
 
   componentDidMount() {
     if (this.props.myTaskBoard) this.getTasks();
+    if (!this.props.devOpsUsers) this.props.getDevOpsUsers();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -90,7 +93,8 @@ class AgileBoard extends Component {
       });
       const performerId = taskProps.performerId || null;
       const projectId = taskProps.projectId || null;
-      this.openPerformerModal(task.id, performerId, projectId, task.statusId, phase);
+      console.log(task);
+      this.openPerformerModal(task, performerId, projectId, task.statusId, phase);
     } else {
       this.changeStatus(task.id, task.statusId, phase);
     }
@@ -110,7 +114,7 @@ class AgileBoard extends Component {
     this.props.startTaskEditing('Status');
   };
 
-  openPerformerModal = (taskId, performerId, projectId, statusId, phase) => {
+  openPerformerModal = (taskId, performerId, projectId, statusId, phase, isDevOps) => {
     if (this.props.myTaskBoard) {
       this.props.getProjectUsers(projectId);
     }
@@ -118,6 +122,7 @@ class AgileBoard extends Component {
       isModalOpen: true,
       performer: performerId,
       changedTask: taskId,
+      changedTaskIsDevOps: isDevOps,
       statusId,
       phase
     });
@@ -145,11 +150,20 @@ class AgileBoard extends Component {
     );
   };
 
-  getUsers = () => {
-    return this.props.project.users.map(user => ({
-      value: user.id,
-      label: getFullName(user)
-    }));
+  getUsers = (withDevOps = false) => {
+    return withDevOps && this.props.devOpsUsers
+      ? _.uniqWith(this.props.project.users.concat(this.props.devOpsUsers), _.isEqual).map(user => ({
+          value: user.id,
+          label: getFullName(user)
+        }))
+      : this.props.project.users.map(user => ({
+          value: user.id,
+          label: getFullName(user)
+        }));
+  };
+
+  getUsersWithDevOps = () => {
+    return this.state.changedTaskIsDevOps ? this.getUsers(true) : this.getUsers(false);
   };
 
   lightTask = (lightedTaskId, isCardFocus) => {
@@ -198,9 +212,16 @@ class AgileBoard extends Component {
     const { lang, tags, noTagData } = this.props;
     const tasksList = this.isOnlyMine ? this.getMineSortedTasks() : this.getAllSortedTasks();
     const tasksKey = this.isOnlyMine ? 'mine' : 'all';
+    const agileFilterProps = {
+      ...this.props,
+      project: {
+        ...this.props.project,
+        users: _.uniqWith(this.props.project.users.concat(this.props.devOpsUsers), _.isEqual)
+      }
+    };
     const filtersComponent = this.props.myTaskBoard ? null : (
       <AgileBoardFilter
-        {...this.props}
+        {...agileFilterProps}
         getTasks={this.getTasks}
         initialFilters={initialFilters}
         tags={[noTagData].concat(tags)}
@@ -226,7 +247,7 @@ class AgileBoard extends Component {
             onChoose={this.changePerformer}
             onClose={this.closeModal}
             title={localize[lang].CHANGE_PERFORMER}
-            users={this.getUsers()}
+            users={this.getUsersWithDevOps()}
           />
         ) : null}
         {this.props.isCreateTaskModalOpen ? (
@@ -282,6 +303,7 @@ AgileBoard.propTypes = {
 const mapStateToProps = state => agileBoardSelector(state);
 
 const mapDispatchToProps = {
+  getDevOpsUsers,
   getTasks,
   changeTask,
   startTaskEditing,

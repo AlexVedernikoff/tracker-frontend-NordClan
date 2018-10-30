@@ -24,6 +24,7 @@ import localize from './Details.json';
 import { getFullName } from '../../../utils/NameLocalisation';
 import { TASK_STATUS_CLOSED } from '../../../constants/Task';
 import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
+import { getDevOpsUsers } from '../../../actions/Users';
 
 const spentRequestStatus = {
   READY: 0,
@@ -33,6 +34,7 @@ const spentRequestStatus = {
 
 class Details extends Component {
   static propTypes = {
+    devOpsUsers: PropTypes.any,
     ExecutionTimeIsEditing: PropTypes.bool,
     PlanningTimeIsEditing: PropTypes.bool,
     canEdit: PropTypes.bool,
@@ -75,6 +77,12 @@ class Details extends Component {
 
   componentDidUpdate() {
     ReactTooltip.rebuild();
+  }
+
+  componentDidMount() {
+    if (!this.props.devOpsUsers) {
+      this.props.getDevOpsUsers();
+    }
   }
 
   // Действия со спринтами
@@ -174,6 +182,11 @@ class Details extends Component {
     }
   };
 
+  getUsers = () =>
+    this.props.task.isDevOps && this.props.devOpsUsers
+      ? _.uniqWith(this.props.users.concat(this.props.devOpsUsers), _.isEqual)
+      : this.props.users;
+
   render() {
     const { task, sprints, taskTypes, timeSpent, isExternal, lang } = this.props;
     const tags = task.tags.map((tag, i) => {
@@ -181,7 +194,7 @@ class Details extends Component {
       return <Tag key={i} name={tagName} taggable="task" taggableId={task.id} />;
     });
 
-    const users = this.props.users.map(item => ({
+    const users = this.getUsers().map(item => ({
       value: item.user ? item.user.id : item.id,
       label: item.user ? getFullName(item.user) : getFullName(item)
     }));
@@ -375,6 +388,7 @@ class Details extends Component {
 
 const mapStateToProps = state => ({
   users: state.Project.project.users,
+  devOpsUsers: state.UserList.devOpsUsers,
   sprints: state.Project.project.sprints,
   taskTypes: getLocalizedTaskTypes(state),
   PlanningTimeIsEditing: state.Task.PlanningTimeIsEditing,

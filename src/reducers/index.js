@@ -19,6 +19,7 @@ import UsersRoles from './UsersRoles';
 import ExternalUsers from './ExternalUsers';
 import Localize from './Localize';
 import Gitlab from './Gitlab';
+import UserList from './Users';
 
 const rootReducer = combineReducers({
   Auth,
@@ -36,6 +37,7 @@ const rootReducer = combineReducers({
   TimesheetPlayer,
   Dictionaries,
   UsersRoles,
+  UserList,
   ExternalUsers,
   Localize,
   Gitlab,
