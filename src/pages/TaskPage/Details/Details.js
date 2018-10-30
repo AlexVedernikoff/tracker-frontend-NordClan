@@ -387,7 +387,8 @@ const mapDispatchToProps = {
   getProjectUsers,
   getProjectSprints,
   getTask,
-  getTaskSpent
+  getTaskSpent,
+  getDevOpsUsers
 };
 
 export default connect(
