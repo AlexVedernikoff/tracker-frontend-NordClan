@@ -15,7 +15,6 @@ class PerformerFilter extends React.Component {
   };
 
   getUsers = () => {
-    console.log('users', this.props.users);
     const users = _.uniqWith(this.props.users.concat(this.props.devOpsUsers), (val, val2) => val.id === val2.id).map(
       user => ({
         value: user.id,

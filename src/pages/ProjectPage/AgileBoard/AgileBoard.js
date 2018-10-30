@@ -93,7 +93,6 @@ class AgileBoard extends Component {
       });
       const performerId = taskProps.performerId || null;
       const projectId = taskProps.projectId || null;
-      console.log(task);
       this.openPerformerModal(task, performerId, projectId, task.statusId, phase);
     } else {
       this.changeStatus(task.id, task.statusId, phase);
