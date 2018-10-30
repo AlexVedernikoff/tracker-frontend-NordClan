@@ -138,10 +138,6 @@
 }
 
 .answerLine {
-  display: flex;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  position: relative;
   @include phone {
     flex-direction: column;
   }
@@ -178,13 +174,8 @@
   }
 }
 .answerLineText {
-  flex-basis: 60%;
-  flex-grow: 1;
+  width: 100%;
   position: relative;
-
-  textarea {
-    line-height: 1.3;
-  }
 
   @include phone {
     width: 100%;

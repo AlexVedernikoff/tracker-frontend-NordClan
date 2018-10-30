@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { updateCurrentCommentText } from '../../../../actions/Task';
 import * as css from './Mentions.scss';
+import _lineHeight from 'line-height';
 
 class Mentions extends Component {
   static propTypes = {
@@ -27,7 +28,7 @@ class Mentions extends Component {
   }
 
   componentDidMount() {
-    this.props.getTextAreaNode(this.textarea);
+    this.props.getTextAreaNode(document.querySelector(`.${css.mentions}__input`));
   }
 
   typeComment = event => {
@@ -42,11 +43,8 @@ class Mentions extends Component {
       <MentionsInput
         className={css.mentions}
         autoFocus
-        innerRef={ref => {
-          this.textarea = ref;
-        }}
         key={this.props.resizeKey}
-        style={{ minHeight: 32 }}
+        style={{ minHeight: 32, paddingTop: '16px' }}
         disabled={this.props.disabled}
         placeholder={this.props.placeholder}
         onChange={this.typeComment}
