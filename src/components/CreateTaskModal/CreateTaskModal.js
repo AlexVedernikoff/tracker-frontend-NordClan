@@ -44,6 +44,7 @@ class CreateTaskModal extends Component {
       selectedType: this.props.taskTypes[0],
       selectedTypeError: this.props.taskTypes.length === 0,
       isTaskByClient: false,
+      isDevOps: false,
       descriptionInvalid: false,
       tags: []
     };
@@ -79,6 +80,12 @@ class CreateTaskModal extends Component {
     });
   };
 
+  handleIsDevOpsChange = () => {
+    this.setState({
+      isDevOps: !this.state.isDevOps
+    });
+  };
+
   handlePriorityChange = priorityId => this.setState({ prioritiesId: +priorityId });
 
   submitTaskAndOpen = () => this.setState({ openTaskPage: true }, () => this.submitTask());
@@ -103,6 +110,7 @@ class CreateTaskModal extends Component {
         plannedExecutionTime: this.state.plannedExecutionTime,
         parentId: this.props.parentTaskId,
         isTaskByClient: this.state.isTaskByClient,
+        isDevOps: this.state.isDevOps,
         tags: this.state.tags.join(',')
       },
       this.state.openTaskPage,
@@ -288,6 +296,16 @@ class CreateTaskModal extends Component {
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
                 <Checkbox checked={this.state.isTaskByClient} onChange={this.handleIsTaskByClientChange} />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>{localize[lang].DEV_OPS}</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
+                <Checkbox checked={this.state.isDevOps} onChange={this.handleIsDevOpsChange} />
               </Col>
             </Row>
           </label>
