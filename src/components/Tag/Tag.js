@@ -36,7 +36,7 @@ class Tag extends React.Component {
   };
 
   render() {
-    const { name, create, blocked, unclickable, ...other } = this.props;
+    const { name, create, blocked, unclickable, deleteHandler, deleteTag, ...other } = this.props;
 
     return (
       <span
