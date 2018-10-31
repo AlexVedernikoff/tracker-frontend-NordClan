@@ -4,6 +4,8 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import localize from './setAssociation.json';
 import * as css from './setAssociation.scss';
 
+import cn from 'classnames';
+
 import StateMachine from '../../StateMachine';
 import Button from '../../../Button';
 import Input from '../../../Input';
@@ -30,7 +32,10 @@ class SetAssociationForm extends Component {
 
       issueTypesAssociation: [],
       statusesAssociation: [],
-      userEmailAssociation: []
+      userEmailAssociation: [],
+
+      selectedSimtrackCol: null,
+      selectedJiraCols: []
     };
     this.stateMachine = new StateMachine();
     this.searchOnChange = debounce(this.searchOnChange, 400);
@@ -48,7 +53,45 @@ class SetAssociationForm extends Component {
   };
 
   select = (key, value) => {
-    this.setState({ [key]: value });
+    let ind;
+    switch (key) {
+      case 'jiraIssueType':
+        // multiselect
+        if (~(ind = this.state.selectedJiraCols.findIndex(el => el.id === value.id))) {
+          const arr = [...this.state.selectedJiraCols];
+          arr.splice(ind, 1);
+          this.setState({ selectedJiraCols: arr });
+        } else {
+          this.setState({ selectedJiraCols: [...this.state.selectedJiraCols, value] });
+        }
+        break;
+      case 'jiraUser':
+        // singleselect
+        this.setState({ selectedJiraCols: [value] });
+        break;
+      case 'jiraStatusType':
+        // multiselect
+        if (~(ind = this.state.selectedJiraCols.findIndex(el => el.id === value.id))) {
+          const arr = [...this.state.selectedJiraCols];
+          arr.splice(ind, 1);
+          this.setState({ selectedJiraCols: arr });
+        } else {
+          this.setState({ selectedJiraCols: [...this.state.selectedJiraCols, value] });
+        }
+        break;
+      case 'simtrackIssueType':
+        this.setState({ selectedJiraCols: [], selectedSimtrackCol: value });
+        break;
+      case 'simtrackStatusType':
+        this.setState({ selectedJiraCols: [], selectedSimtrackCol: value });
+        break;
+      case 'simtrackUser':
+        this.setState({ selectedJiraCols: [], selectedSimtrackCol: value });
+        break;
+      default:
+        // TODO: передавать объект в стейт и оттуда брать ид строки tr
+        break;
+    }
   };
 
   associate = () => {
@@ -85,15 +128,15 @@ class SetAssociationForm extends Component {
   // --------------------------------
 
   isDisabledAssociation = () => {
+    return !(this.state.selectedSimtrackCol && this.state.selectedJiraCols.length > 0);
+  };
+
+  isActiveJiraColItems = id => {
     switch (this.state.currentState) {
       case associationStates.USERS:
-        return !(this.state.jiraUser && this.state.simtrackUser);
-      case associationStates.ISSUE_TYPES:
-        return !(this.state.jiraIssueType && this.state.simtrackIssueType);
-      case associationStates.STATUS_TYPES:
-        return !(this.state.jiraStatusType && this.state.simtrackStatusType);
+        return this.state.selectedJiraCols.find(el => `${el.key}${el.email}` === id);
       default:
-        return true;
+        return this.state.selectedJiraCols.find(el => `${el.id}${el.description}` === id);
     }
   };
 
@@ -103,21 +146,48 @@ class SetAssociationForm extends Component {
       case associationStates.USERS:
         id = `${entity.key}${entity.email}`;
         return (
-          <tr key={id} className={css.userRow} onClick={() => this.select('jiraUser', entity.email)}>
+          <tr
+            key={id}
+            className={
+              (css.userRow,
+              cn(css.userRow, {
+                [css.userRow__active]: this.isActiveJiraColItems(id)
+              }))
+            }
+            onClick={() => this.select('jiraUser', entity)}
+          >
             <td>{entity.email}</td>
           </tr>
         );
       case associationStates.ISSUE_TYPES:
         id = `${entity.id}${entity.description}`;
         return (
-          <tr key={id} className={css.userRow} onClick={() => this.select('jiraIssueType', entity.id)}>
+          <tr
+            key={id}
+            className={
+              (css.userRow,
+              cn(css.userRow, {
+                [css.userRow__active]: this.isActiveJiraColItems(id)
+              }))
+            }
+            onClick={() => this.select('jiraIssueType', entity)}
+          >
             <td>{entity.name}</td>
           </tr>
         );
       case associationStates.STATUS_TYPES:
         id = `${entity.id}${entity.description}`;
         return (
-          <tr key={id} className={css.userRow} onClick={() => this.select('jiraStatusType', entity.id)}>
+          <tr
+            key={id}
+            className={
+              (css.userRow,
+              cn(css.userRow, {
+                [css.userRow__active]: this.isActiveJiraColItems(id)
+              }))
+            }
+            onClick={() => this.select('jiraStatusType', entity)}
+          >
             <td>{entity.name}</td>
           </tr>
         );
@@ -132,21 +202,54 @@ class SetAssociationForm extends Component {
       case associationStates.USERS:
         id = `${entity.id}`;
         return (
-          <tr key={id} className={css.userRow} onClick={() => this.select('simtrackUser', entity.id)}>
+          <tr
+            key={id}
+            className={
+              (css.userRow,
+              cn(css.userRow, {
+                [css.userRow__active]: this.state.selectedSimtrackCol
+                  ? this.state.selectedSimtrackCol.id.toString() === id
+                  : false
+              }))
+            }
+            onClick={() => this.select('simtrackUser', entity)}
+          >
             <td>{entity.fullNameRu}</td>
           </tr>
         );
       case associationStates.ISSUE_TYPES:
-        id = `${entity.id}${entity.nameEn}`;
+        id = `${entity.id}`;
         return (
-          <tr key={id} className={css.userRow} onClick={() => this.select('simtrackIssueType', entity)}>
+          <tr
+            key={id}
+            className={
+              (css.userRow,
+              cn(css.userRow, {
+                [css.userRow__active]: this.state.selectedSimtrackCol
+                  ? this.state.selectedSimtrackCol.id.toString() === id
+                  : false
+              }))
+            }
+            onClick={() => this.select('simtrackIssueType', entity)}
+          >
             <td>{entity.name}</td>
           </tr>
         );
       case associationStates.STATUS_TYPES:
-        id = `${entity.id}${entity.nameEn}`;
+        id = `${entity.id}`;
         return (
-          <tr key={id} className={css.userRow} onClick={() => this.select('simtrackStatusType', entity)}>
+          <tr
+            key={id}
+            className={
+              (css.userRow,
+              cn(css.userRow, {
+                [css.userRow__active]: this.state.selectedSimtrackCol
+                  ? this.state.selectedSimtrackCol.id.toString() === id
+                  : false
+              }))
+            }
+            onClick={() => this.select('simtrackStatusType', entity)}
+          >
             <td>{entity.name}</td>
           </tr>
         );
@@ -157,13 +260,17 @@ class SetAssociationForm extends Component {
 
   nextAssociationStep = () => {
     this.setState({
-      currentState: this.stateMachine.nextAssociation(this.state.currentState)
+      currentState: this.stateMachine.nextAssociation(this.state.currentState),
+      selectedSimtrackCol: null,
+      selectedJiraCols: []
     });
   };
 
   previousAssociationStep = () => {
     this.setState({
-      currentState: this.stateMachine.prevoiusAssociation(this.state.currentState)
+      currentState: this.stateMachine.prevoiusAssociation(this.state.currentState),
+      selectedSimtrackCol: null,
+      selectedJiraCols: []
     });
   };
 
@@ -200,58 +307,81 @@ class SetAssociationForm extends Component {
         break;
     }
 
-    return (
-      <div>
-        <h3>
-          <p>{localize[lang].CREATE_PROJECT}</p>
-        </h3>
-        <hr />
-        <label className={css.formField}>
-          <table className={css.usersRolesTable}>
-            <thead>
-              <tr className={css.usersRolesHeader}>
-                <th>{localize[this.props.lang].SIMTRACK_EMAIL}</th>
-              </tr>
-            </thead>
-            <tbody>{JiraTableBody}</tbody>
-          </table>
+    const formLayout = {
+      firstCol: 6,
+      secondCol: 6
+    };
 
-          <table className={css.usersRolesTable}>
-            <thead>
-              <tr className={css.usersRolesHeader}>
-                <th>{localize[this.props.lang].SIMTRACK_EMAIL}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.currentState === associationStates.USERS ? (
-                <tr className={css.userRow}>
-                  <Input
-                    name="user_association"
-                    placeholder={localize[lang].NAME}
-                    onChange={e => this.searchOnChange(e.target.value)}
-                    autofocus
-                  />
-                </tr>
-              ) : null}
-              {SimtrackTableBody}
-            </tbody>
-          </table>
+    return (
+      <div className={css.mainContainer}>
+        <label className={css.formField}>
+          <Row>
+            <div className={css.innerFirstCol}>
+              <Col xs={12} sm={formLayout.firstCol}>
+                <table className={css.usersRolesTable}>
+                  <thead>
+                    <tr className={css.usersRolesHeader}>
+                      <th>{localize[this.props.lang].SIMTRACK_EMAIL}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {this.state.currentState === associationStates.USERS ? (
+                      <tr className={css.userRow}>
+                        <Input
+                          name="user_association"
+                          placeholder={localize[lang].NAME}
+                          onChange={e => this.searchOnChange(e.target.value)}
+                          autofocus
+                        />
+                      </tr>
+                    ) : null}
+                    {SimtrackTableBody}
+                  </tbody>
+                </table>
+              </Col>
+            </div>
+            <div className={css.innerFirstCol}>
+              <Col xs={12} sm={formLayout.secondCol}>
+                <table className={css.usersRolesTable}>
+                  <thead>
+                    <tr className={css.usersRolesHeader}>
+                      <th>{localize[this.props.lang].SIMTRACK_EMAIL}</th>
+                    </tr>
+                  </thead>
+                  <tbody>{JiraTableBody}</tbody>
+                </table>
+              </Col>
+            </div>
+          </Row>
         </label>
-        <Button text="Ассоциация" onClick={() => null} type="green" disabled={this.isDisabledAssociation()} />
-        {this.state.currentState === associationStates.ISSUE_TYPES ? (
-          <Button text="Назад" onClick={() => previousStep(this.state)} type="green" />
-        ) : (
-          <Button text="Назад" onClick={this.previousAssociationStep} type="green" />
-        )}
-        {this.state.currentState === associationStates.USERS ? (
-          <Button
-            text="Вперед2"
-            onClick={() => nextStep({ 'X-Jira-Auth': this.props.token }, this.state)}
-            type="green"
-          />
-        ) : (
-          <Button text="Вперед1" onClick={this.nextAssociationStep} type="green" />
-        )}
+
+        <Row center="xs" className={css.associationRow}>
+          <Button text="Ассоциация" onClick={this.associate} type="green" disabled={this.isDisabledAssociation()} />
+        </Row>
+        <Row>
+          <Col xs={12} sm={formLayout.firstCol}>
+            <Row center="xs">
+              {this.state.currentState === associationStates.ISSUE_TYPES ? (
+                <Button text="Назад" onClick={() => previousStep(this.state)} type="green" />
+              ) : (
+                <Button text="Назад" onClick={this.previousAssociationStep} type="green" />
+              )}
+            </Row>
+          </Col>
+          <Col xs={12} sm={formLayout.secondCol}>
+            <Row center="xs">
+              {this.state.currentState === associationStates.USERS ? (
+                <Button
+                  text="Вперед2"
+                  onClick={() => nextStep({ 'X-Jira-Auth': this.props.token }, this.state)}
+                  type="green"
+                />
+              ) : (
+                <Button text="Вперед1" onClick={this.nextAssociationStep} type="green" />
+              )}
+            </Row>
+          </Col>
+        </Row>
       </div>
     );
   }

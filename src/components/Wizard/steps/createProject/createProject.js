@@ -60,7 +60,7 @@ class CreateProjectForm extends Component {
       secondCol: 7
     };
     return (
-      <div>
+      <div className={css.mainContainer}>
         <h3>
           <p>{localize[lang].CREATE_PROJECT}</p>
         </h3>

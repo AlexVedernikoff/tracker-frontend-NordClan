@@ -16,6 +16,10 @@
       background: $color-gray;
     }
   }
+  &__active {
+    transition: $transition;
+    background: $color-gray;
+  }
 }
 
 .usersRolesHeader {
@@ -25,5 +29,43 @@
       transition: $transition;
       background: $color-gray;
     }
+  }
+}
+
+.mainContainer {
+  min-width: 330px;
+  max-width: 500px;
+  padding: 2rem;
+
+  h3 {
+    margin-top: 0;
+  }
+}
+
+.associationRow {
+  padding: 1rem;
+}
+
+/*
+.cell {
+  padding: 1rem;
+  &:after {
+    //content: 'Max';
+  }
+  &:before {
+    //content: 'Ivan';
+  }
+  &__active {
+    &:after {
+      content: 'trololo';
+    }
+  }
+}
+*/
+
+.innerFirstCol {
+  box-sizing: border-box;
+  &:last-child {
+    border-left: 1px solid #ddd;
   }
 }

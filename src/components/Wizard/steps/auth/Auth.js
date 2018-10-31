@@ -36,7 +36,7 @@ class AuthForm extends Component {
       secondCol: 7
     };
     return (
-      <div>
+      <div className={css.mainContainer}>
         <h3>
           <p>{localize[lang].AUTH}</p>
         </h3>
