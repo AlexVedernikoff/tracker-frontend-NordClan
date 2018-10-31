@@ -2,104 +2,137 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as css from './TaskTimesheet.scss';
 import moment from 'moment';
+import find from 'lodash/find';
 import cn from 'classnames';
-import SingleComment from '../../../pages/Timesheets/ActivityRow/SingleComment';
-import validateNumber from '../../../utils/validateNumber';
-import { createTimesheet } from '../../../actions/Timesheets';
-// import * as timesheetsConstants from '../../../constants/Timesheets';
 import PropTypes from 'prop-types';
+import ActivityRowForTask from './ActivityRowForTask';
+import * as timesheetsActions from '../../../actions/Timesheets';
+import { getLocalizedMagicActiveTypes } from '../../../selectors/dictionaries';
 
 class TaskTimesheet extends Component {
-  state = {
-    timeCells: []
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      activityType: 0
+    };
+  }
 
-  changeEmpty = (i, value) => {
-    const { task, startingDay } = this.props;
-    if (!validateNumber(value) || +value > 24) {
-      return false;
-    }
+  componentDidMount() {
+    const { getTimesheets, userId, dateBegin, dateEnd } = this.props;
 
-    this.setState(
-      state => {
-        const timeCells = {
-          ...state.timeCells
-        };
-
-        timeCells[i] = value;
-
-        return {
-          timeCells
-        };
-      },
-
-      () => {
-        if (value !== '') {
-          this.props.createTimesheet({
-            isDraft: false,
-            taskId: task.id || null,
-            taskStatusId: task.id ? task.taskStatusId : null,
-            typeId: task.id ? '1' : task.typeId,
-            spentTime: +value,
-            onDate: moment(startingDay)
-              .weekday(i)
-              .format('YYYY-MM-DD'),
-            projectId: task.project.id,
-            sprintId: task.sprintId || (task.sprint ? task.sprint.id : null)
-          });
-        }
-      }
-    );
-  };
+    getTimesheets({ userId, dateBegin, dateEnd });
+  }
 
   render() {
     const days = [];
-    const timeCells = [];
+    const { tempTimesheets, startingDay, deleteTempTimesheets, task } = this.props;
 
-    // const filledTimeCells = this.props.list.map((tsh, i) => {
-    //   if (tsh.id) {
-    //     return (
-    //       <td
-    //         key={moment(tsh.onDate).format('X')}
-    //         className={cn({
-    //           [css.today]: moment().format('YYYY-MM-DD') === moment(tsh.onDate).format('YYYY-MM-DD'),
-    //           [css.weekend]: i === 5 || i === 6
-    //         })}
-    //       >
-    //         <div>
-    //           <div
-    //             className={cn({
-    //               [css.timeCell]: true,
-    //               [css.filled]: +tsh.spentTime && tsh.statusId === 1,
-    //               [css.submitted]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED,
-    //               [css.approved]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED,
-    //               [css.rejected]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED
-    //             })}
-    //           >
-    //             <input
-    //               type="text"
-    //               value={this.state.timeCells[i]}
-    //               onChange={e => this.changeFilled(i, tsh.id, tsh.comment, e.target.value)}
-    //               onBlur={e => this.onBlurFilled(i, tsh.id, tsh.comment, e.target.value)}
-    //             />
+    const defaultTaskStatusId = 2;
+    const tempTimesheetsList = tempTimesheets.map(timesheet => {
+      return {
+        ...timesheet,
+        taskStatusId: timesheet.taskStatusId || defaultTaskStatusId
+      };
+    });
 
-    //             <span className={css.toggleComment}>
-    //               <SingleComment
-    //                 comment={tsh.comment}
-    //                 onChange={text => this.changeFilledComment(text, tsh.spentTime, i, tsh.id)}
-    //               />
-    //             </span>
-    //           </div>
-    //         </div>
-    //       </td>
-    //     );
-    //   }
-    // });
+    const list = [...this.props.list, ...tempTimesheetsList];
+
+    const isThisWeek = date => {
+      const getMidnight = dayOfWeek => {
+        return moment(startingDay)
+          .weekday(dayOfWeek)
+          .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+          .format('X');
+      };
+
+      const timesheetOndDate = moment(date).format('X');
+      return timesheetOndDate <= getMidnight(6) && timesheetOndDate >= getMidnight(0);
+    };
+
+    let tasks = list.length
+      ? list.reduce((res, el) => {
+          const isTemp = tempTimesheets.some(tempTsh => tempTsh.id === el.id);
+
+          const taskNotPushed =
+            el.task &&
+            !find(res, tsh => {
+              const isExist = tsh.id === el.task.id && tsh.taskStatusId === el.taskStatusId;
+              if (isExist && isTemp) {
+                tsh.hilight = true;
+              }
+              return isExist;
+            });
+
+          if (!taskNotPushed && el.task && isTemp) {
+            Promise.resolve().then(() => {
+              deleteTempTimesheets([el.id.toString()]);
+            });
+          }
+
+          if (taskNotPushed && isThisWeek(el.onDate)) {
+            res.push({
+              id: el.task.id,
+              name: `${el.project.prefix}-${el.task.id}: ${el.task.name}`,
+              projectId: el.project.id,
+              projectName: el.project.name,
+              taskStatusId: el.taskStatusId,
+              sprintId: el.task.sprint ? el.task.sprint.id : null,
+              sprint: el.task.sprint ? el.task.sprint : null
+            });
+          }
+          return res;
+        }, [])
+      : [];
+
+    tasks = tasks.map(element => {
+      const timeSheets = [];
+
+      for (let index = 0; index < 7; index++) {
+        const timesheet = find(list, tsh => {
+          return (
+            tsh.task &&
+            tsh.typeId === 1 &&
+            tsh.task.id === element.id &&
+            moment(tsh.onDate).format('DD.MM.YY') ===
+              moment(startingDay)
+                .weekday(index)
+                .format('DD.MM.YY') &&
+            tsh.taskStatusId === element.taskStatusId
+          );
+        });
+
+        if (timesheet) {
+          const doubleTimesheets = list.filter(
+            tsh =>
+              timesheet.id !== tsh.id &&
+              tsh.task &&
+              tsh.typeId === 1 &&
+              tsh.task.id === element.id &&
+              moment(tsh.onDate).format('DD.MM.YY') ===
+                moment(startingDay)
+                  .weekday(index)
+                  .format('DD.MM.YY') &&
+              tsh.taskStatusId === element.taskStatusId
+          );
+          timeSheets.push({ ...timesheet, doubleTimesheets });
+        } else {
+          timeSheets.push({
+            onDate: moment(startingDay)
+              .weekday(index)
+              .format(),
+            spentTime: '0'
+          });
+        }
+      }
+
+      return { ...element, timeSheets };
+    });
 
     for (let day = 0; day < 7; day++) {
       const currentDay = moment(this.props.startingDay)
         .weekday(day)
         .locale('en');
+
       days.push(
         <th
           className={cn({
@@ -116,61 +149,61 @@ class TaskTimesheet extends Component {
           </div>
         </th>
       );
-
-      timeCells.push(
-        <td
-          key={day}
-          className={cn({
-            [css.today]: moment().format('DD.MM.YY') === currentDay.format('DD.MM.YY'),
-            [css.weekend]: day === 5 || day === 6
-          })}
-        >
-          <div>
-            <div className={css.timeCell}>
-              <input
-                type="text"
-                value={this.state.timeCells[day] || 0}
-                onChange={e => this.changeEmpty(day, e.target.value)}
-              />
-              <span className={css.toggleComment}>
-                <SingleComment />
-              </span>
-            </div>
-          </div>
-        </td>
-      );
     }
 
-    console.log(this.props);
+    const currentTask = tasks.find(singleTask => singleTask.id === task.id);
+
+    const taskRow = currentTask.timeSheets ? (
+      <ActivityRowForTask
+        key={`${currentTask.id}-${currentTask.taskStatusId}-${startingDay}`}
+        task
+        item={currentTask}
+      />
+    ) : null;
 
     return (
       <table>
         <thead>
           <tr>{days}</tr>
         </thead>
-        <tbody>
-          <tr>{timeCells}</tr>
-          {/* <tr>{filledTimeCells}</tr> */}
-        </tbody>
+        <tbody>{taskRow}</tbody>
       </table>
     );
   }
 }
 
 TaskTimesheet.propTypes = {
+  addActivity: PropTypes.func,
+  changeWeek: PropTypes.func,
   createTimesheet: PropTypes.func,
-  list: PropTypes.object,
+  dateBegin: PropTypes.string,
+  dateEnd: PropTypes.string,
+  deleteTempTimesheets: PropTypes.func,
+  getTimesheets: PropTypes.func,
+  lang: PropTypes.string,
+  list: PropTypes.array,
+  showNotification: PropTypes.func,
   startingDay: PropTypes.string,
-  task: PropTypes.object
+  task: PropTypes.object,
+  tempTimesheets: PropTypes.array,
+  userId: PropTypes.number
 };
 
 const mapStateToProps = state => ({
+  activityTypes: getLocalizedMagicActiveTypes(state),
   task: state.Task.task,
+  selectedActivityType: state.Timesheets.selectedActivityType,
+  selectedTask: state.Timesheets.selectedTask,
+  selectedTaskStatusId: state.Timesheets.selectedTaskStatusId,
   startingDay: state.Timesheets.startingDay,
-  list: state.Timesheets.list
+  tempTimesheets: state.Timesheets.tempTimesheets,
+  list: state.Timesheets.list,
+  userId: state.Auth.user.id,
+  dateBegin: state.Timesheets.dateBegin,
+  dateEnd: state.Timesheets.dateEnd
 });
 const mapDispatchToProps = {
-  createTimesheet
+  ...timesheetsActions
 };
 
 export default connect(

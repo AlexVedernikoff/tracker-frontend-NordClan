@@ -1,0 +1,498 @@
+@import '../../../../styles/variables';
+
+.timeSheetsTable {
+  position: relative;
+  z-index: 0; // New z-index stack created
+  td,
+  th {
+    padding: 0;
+
+    &.actions {
+      padding: 0.5rem;
+      position: relative;
+    }
+  }
+}
+
+.taskRow {
+  td {
+    transition: $transition;
+  }
+
+  &:hover {
+    td {
+      background: $color-gray;
+    }
+
+    .deleteTask {
+      opacity: 1;
+    }
+  }
+}
+
+.taskRowHighLighted {
+  td {
+    transition: $transition;
+    background: $color-gray;
+
+    &:first-child {
+      padding-right: 2rem;
+    }
+  }
+
+  .deleteTask {
+    opacity: 1;
+  }
+}
+
+.sheetsHeader {
+  .changeWeek svg {
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  &:hover {
+    th {
+      background: $color-gray;
+      transition: $transition;
+
+      &.weekend {
+        background-color: lighten(black, 93%);
+        transition: $transition;
+      }
+    }
+
+    .changeWeek svg {
+      opacity: 0.7;
+    }
+  }
+}
+
+.tableContainer {
+  @include phone {
+    overflow-x: auto;
+  }
+}
+
+.taskCard {
+  padding-left: 1rem;
+  max-width: 20rem;
+}
+
+.timeCell {
+  width: 2.6rem;
+  height: 2.6rem;
+  margin: calc(0.5rem - 2px);
+  position: relative;
+
+  &.weekend {
+    background-color: lighten(black, 93%);
+    transition: $transition;
+  }
+
+  &.submitted {
+    input {
+      background-color: $color-dark-gray;
+      color: rgba(white, 0.9);
+    }
+  }
+
+  &.approved {
+    input {
+      background-color: $color-green;
+      color: rgba(white, 0.9);
+    }
+  }
+
+  &.rejected {
+    input {
+      background-color: $color-light-red;
+      color: rgba(white, 0.9);
+    }
+  }
+
+  &.filled {
+    input {
+      background: $color-dark;
+      color: rgba(white, 0.7);
+
+      &:focus {
+        color: white;
+      }
+    }
+
+    .toggleComment,
+    .doubleTimesheets {
+      color: rgba(white, 0.5);
+
+      &:hover {
+        color: rgba(white, 0.8);
+      }
+    }
+  }
+
+  input {
+    // padding: 1rem;
+    border: none;
+    background: rgba(black, 0.05);
+    text-align: center;
+    @include absolute;
+    -moz-appearance: textfield;
+
+    &[type='number']::-webkit-inner-spin-button,
+    &[type='number']::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+}
+
+.toggleComment,
+.doubleTimesheets {
+  cursor: pointer;
+  font-size: 80%;
+  line-height: 1;
+  color: silver;
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+
+  &:hover {
+    color: gray;
+  }
+
+  &.checked {
+    color: $color-green;
+
+    &:hover {
+      color: lighten($color-green, 10%);
+    }
+  }
+}
+
+.doubleTimesheets {
+  left: 0.25rem;
+}
+
+.weekend {
+  background-color: lighten(black, 98%);
+}
+
+.meta {
+  max-width: 100%;
+  overflow: hidden;
+  opacity: 0.7;
+  font-size: 11px;
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  a {
+    text-decoration: underline;
+  }
+  span,
+  a {
+    display: inline-block;
+
+    & + span,
+    a {
+      border-left: 1px solid rgba(black, 0.3);
+      margin-left: 0.3rem;
+      padding-left: 0.3rem;
+    }
+  }
+}
+
+.today {
+  padding: 1px 0;
+  border: 1px solid $color-green;
+}
+
+th.today {
+  border-bottom-width: 0;
+  border-top: 1px solid $color-green;
+}
+
+td.today {
+  border-top-width: 0;
+  border-bottom-width: 0;
+}
+tr:last-child td.today {
+  border-bottom-width: 1px;
+}
+.total > div {
+  padding: 0.5rem 1rem;
+  text-align: center;
+
+  & > div {
+    display: inline-block;
+  }
+
+  .toggleComment {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    font-size: 100%;
+    vertical-align: middle;
+    margin-left: 0.5rem;
+  }
+}
+
+.day {
+  width: calc(4rem - 2px);
+
+  & > div {
+    padding: 0.5rem;
+    border-top: 1px solid transparent;
+
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
+}
+
+.deleteTask {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: $transition;
+}
+
+.totalWeek {
+  font-weight: bold;
+}
+
+.totalRow {
+  text-align: left;
+  position: relative;
+  padding-right: 1.5rem;
+}
+
+.add {
+  display: flex;
+  margin-top: 1rem;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: 3rem;
+  color: lighten($color-black, 40%);
+  text-align: center;
+  text-decoration: none;
+  border-bottom: 1px solid $color-gray;
+  border-top: 1px solid $color-gray;
+  transition: $transition;
+
+  .tooltip {
+    display: none;
+  }
+
+  &:hover {
+    background: rgba($color-black, 0.05);
+    transition: $transition;
+
+    .tooltip {
+      display: block;
+    }
+    svg {
+      display: none !important;
+    }
+  }
+}
+
+.prevWeek,
+.nextWeek {
+  font-size: 1.5rem;
+
+  svg {
+    cursor: pointer;
+    opacity: 0.5;
+    transition: $transition;
+
+    &:hover {
+      opacity: 1;
+      transition: $transition;
+    }
+  }
+}
+
+.prevWeek {
+  position: relative;
+
+  svg {
+    position: absolute;
+    top: 50%;
+    margin-top: -1rem;
+    right: 0;
+  }
+}
+
+.nextWeek {
+  text-align: left;
+}
+
+.activityHeader {
+  float: left;
+  padding: 0.5rem 1rem;
+  padding-right: 2rem;
+  font-size: $font-size-base;
+  min-width: 16rem;
+  text-align: left;
+}
+
+.dateDropdown {
+  box-shadow: $box-shadow;
+  background: white;
+  border: 1px solid $color-gray;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+}
+
+.singleComment,
+.totalComment {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+}
+
+.totalComment {
+  display: flex;
+  background-color: white;
+  align-items: stretch;
+  box-shadow: $box-shadow;
+
+  textarea,
+  span {
+    resize: none;
+    height: 3.5rem;
+    width: 15rem;
+  }
+
+  span {
+    border: 1px solid #ebebeb;
+    padding: 0.5rem;
+  }
+}
+
+.commentDropdown {
+  display: flex;
+  z-index: 3;
+  background: white;
+  color: $color-black;
+  font-size: 13px;
+  box-shadow: $box-shadow;
+
+  textarea {
+    resize: none;
+    height: 3.5rem;
+    width: 15rem;
+  }
+
+  span {
+    resize: none;
+    height: 3.5rem;
+    width: 15rem;
+    border: 1px solid #ebebeb;
+    padding: 0.5rem;
+  }
+}
+
+.filledComment {
+  color: $color-green;
+}
+
+.saveBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $color-green;
+  font-size: 1.5rem;
+  color: white;
+  width: 3.5rem;
+  height: 3.5rem;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    background-color: lighten($color-green, 10%);
+    transition: $transition;
+  }
+}
+
+.checkAll {
+  @extend .saveBtn;
+  height: auto;
+}
+
+.totalCommentPart {
+  display: flex;
+
+  .commentDay {
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    padding: 0.5rem;
+    border: 1px solid $color-gray;
+    border-right: none;
+    color: gray;
+    transition: $transition;
+
+    &:first-letter {
+      text-transform: uppercase;
+    }
+  }
+
+  &:hover .commentDay {
+    background: $color-gray;
+  }
+
+  & + .totalCommentPart {
+    textarea,
+    .commentDay {
+      border-top: none;
+    }
+  }
+}
+
+.addActivityForm {
+  padding: 2rem;
+  @include desktop {
+    width: 30rem;
+  }
+  @include tablet {
+    width: 30rem;
+  }
+  @include phone {
+    width: 22.5rem;
+  }
+
+  .footer {
+    margin-top: 2rem;
+    text-align: right;
+  }
+
+  .formField {
+    display: block;
+
+    & + .formField {
+      margin-top: 1rem;
+    }
+
+    & > div {
+      align-items: center;
+
+      & > div {
+        &:first-child {
+          text-align: right;
+        }
+      }
+    }
+  }
+}

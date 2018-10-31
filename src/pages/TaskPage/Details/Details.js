@@ -24,6 +24,8 @@ import localize from './Details.json';
 import { getFullName } from '../../../utils/NameLocalisation';
 import { TASK_STATUS_CLOSED } from '../../../constants/Task';
 import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
+import shortid from 'shortid';
+import { addActivity } from '../../../actions/Timesheets';
 
 const spentRequestStatus = {
   READY: 0,
@@ -35,6 +37,7 @@ class Details extends Component {
   static propTypes = {
     ExecutionTimeIsEditing: PropTypes.bool,
     PlanningTimeIsEditing: PropTypes.bool,
+    addActivity: PropTypes.func,
     canEdit: PropTypes.bool,
     getProjectSprints: PropTypes.func.isRequired,
     getProjectUsers: PropTypes.func.isRequired,
@@ -45,6 +48,7 @@ class Details extends Component {
     onChange: PropTypes.func.isRequired,
     plannedExecutionTime: PropTypes.number,
     sprints: PropTypes.array,
+    startingDay: PropTypes.string,
     task: PropTypes.object.isRequired,
     taskTypes: PropTypes.array,
     timeSpent: PropTypes.object,
@@ -104,7 +108,27 @@ class Details extends Component {
   // Действия с исполнителем
   openPerformerModal = () => {
     this.props.getProjectUsers(this.props.task.project.id);
-    this.setState({ isPerformerModalOpen: true });
+    this.props.addActivity({
+      id: `temp-${shortid.generate()}`,
+      comment: null,
+      task: {
+        id: this.props.task.id,
+        name: this.props.task.name,
+        sprint: this.props.task.sprint
+      },
+      taskStatusId: this.props.task.statusId,
+      typeId: this.props.task.typeId,
+      spentTime: '0',
+      sprintId: this.props.task.sprint.id,
+      sprint: this.props.task.sprint,
+      onDate: moment(this.props.startingDay).format('YYYY-MM-DD'),
+      project: {
+        id: this.props.task.project.id,
+        name: this.props.task.project.name,
+        prefix: this.props.task.project.prefix
+      }
+    });
+    this.setState(state => ({ ...state, isPerformerModalOpen: true }));
   };
 
   closePerformerModal = () => {
@@ -394,12 +418,14 @@ const mapStateToProps = state => ({
   taskTypes: getLocalizedTaskTypes(state),
   plannedExecutionTime: state.Task.task.plannedExecutionTime,
   PlanningTimeIsEditing: state.Task.PlanningTimeIsEditing,
+  startingDay: state.Timesheets.startingDay,
   ExecutionTimeIsEditing: state.Task.ExecutionTimeIsEditing,
   timeSpent: state.Task.timeSpent,
   lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
+  addActivity,
   getProjectUsers,
   getProjectSprints,
   getTask,

@@ -138,7 +138,7 @@ class OptionsModal extends Component {
           </div>
           <form className={css.createTaskForm}>
             <label className={css.formField}>
-              <Row>
+              <Row className={css.taskFormRow}>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                   <p className={css.label}>{localize[lang].PERFORMER}</p>
                 </Col>
@@ -157,34 +157,39 @@ class OptionsModal extends Component {
               </Row>
             </label>
 
-            <label className={css.formField}>
-              <Row>
-                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p className={css.label}>Timesheets:</p>
-                </Col>
+            {this.props.task.statusId !== 1 && (
+              <label className={css.formField}>
+                <Row className={css.taskFormRow}>
+                  <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                    <p className={css.label}>Timesheets:</p>
+                  </Col>
 
-                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                  <TaskTimesheet />
-                </Col>
-              </Row>
-            </label>
+                  <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                    <TaskTimesheet />
+                  </Col>
+                </Row>
+              </label>
+            )}
 
-            <label className={css.formField}>
-              <Row>
-                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p className={css.label}>{localize[lang].COMMENT}</p>
-                </Col>
-                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                  <TextArea
-                    toolbarHidden
-                    placeholder={localize[lang].COMMENT_PLACEHOLDER}
-                    wrapperClassName={css.taskCommentWrapper}
-                    editorClassName={css.taskComment}
-                    onChange={this.setComment}
-                  />
-                </Col>
-              </Row>
-            </label>
+            {this.props.task.statusId !== 1 && (
+              <label className={css.formField}>
+                <Row className={css.taskFormRow}>
+                  <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                    <p className={css.label}>{localize[lang].COMMENT}</p>
+                  </Col>
+                  <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                    <TextArea
+                      toolbarHidden
+                      placeholder={localize[lang].COMMENT_PLACEHOLDER}
+                      wrapperClassName={css.taskCommentWrapper}
+                      editorClassName={css.taskComment}
+                      onChange={this.setComment}
+                    />
+                  </Col>
+                </Row>
+              </label>
+            )}
+
             <div className={css.changePerformerButton}>
               <Button text="Change Performer" type="green" htmlType="submit" onClick={this.changePerformer} />
             </div>
@@ -210,11 +215,13 @@ OptionsModal.propTypes = {
   options: PropTypes.array,
   publishComment: PropTypes.func,
   removeCurOptionTip: PropTypes.string,
+  task: PropTypes.object,
   title: PropTypes.string
 };
 
 const mapStateToProps = state => ({
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  task: state.Task.task
 });
 
 const mapDispatchToProps = {

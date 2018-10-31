@@ -1,4 +1,4 @@
-@import '../../../styles/variables.scss';
+@import '../../../styles/variables';
 
 .timeCell {
   width: 2.6rem;
@@ -84,4 +84,17 @@ td.today {
 }
 tr:last-child td.today {
   border-bottom-width: 1px;
+}
+
+.day {
+  width: calc(4rem - 2px);
+
+  & > div {
+    padding: 0.5rem;
+    border-top: 1px solid transparent;
+
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
 }
