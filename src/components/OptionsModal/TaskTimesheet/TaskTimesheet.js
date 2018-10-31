@@ -183,7 +183,7 @@ TaskTimesheet.propTypes = {
   lang: PropTypes.string,
   list: PropTypes.array,
   showNotification: PropTypes.func,
-  startingDay: PropTypes.string,
+  startingDay: PropTypes.object,
   task: PropTypes.object,
   tempTimesheets: PropTypes.array,
   userId: PropTypes.number

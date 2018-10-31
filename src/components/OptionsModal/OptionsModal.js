@@ -179,10 +179,10 @@ class OptionsModal extends Component {
                   </Col>
                   <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                     <TextArea
-                      toolbarHidden
+                      // toolbarHidden
                       placeholder={localize[lang].COMMENT_PLACEHOLDER}
-                      wrapperClassName={css.taskCommentWrapper}
-                      editorClassName={css.taskComment}
+                      // wrapperClassName={css.taskCommentWrapper}
+                      // editorClassName={css.taskComment}
                       onChange={this.setComment}
                     />
                   </Col>

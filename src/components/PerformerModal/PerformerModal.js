@@ -33,7 +33,7 @@ PerformerModal.propTypes = {
   isPerformerChanged: PropTypes.bool,
   onChoose: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
-  plannedExecutionTime: PropTypes.number,
+  plannedExecutionTime: PropTypes.string,
   title: PropTypes.string,
   users: PropTypes.array
 };
