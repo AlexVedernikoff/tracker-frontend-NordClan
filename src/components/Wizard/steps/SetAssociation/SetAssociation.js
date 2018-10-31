@@ -89,35 +89,36 @@ class SetAssociationForm extends Component {
         this.setState({ selectedJiraCols: [], selectedSimtrackCol: value });
         break;
       default:
-        // TODO: передавать объект в стейт и оттуда брать ид строки tr
         break;
     }
   };
 
   associate = () => {
+    console.log(this.state.issueTypesAssociation, this.state.statusesAssociation, this.state.userEmailAssociation);
+    let arr;
     switch (this.state.currentState) {
       case associationStates.USERS:
+        arr = this.state.selectedJiraCols.map(e => {
+          return { externalUserEmail: e.email, internalUserId: this.state.selectedSimtrackCol.id };
+        });
         this.setState({
-          userEmailAssociation: [
-            this.state.issueTypesAssociation,
-            ...{ externalUserEmail: this.state.jiraUser, internalUserId: this.state.simtrackUser }
-          ]
+          userEmailAssociation: [...this.state.userEmailAssociation, ...arr]
         });
         break;
       case associationStates.ISSUE_TYPES:
+        arr = this.state.selectedJiraCols.map(e => {
+          return { externalIssueTypeId: e.id, internalIssueTypeId: this.state.selectedSimtrackCol.id };
+        });
         this.setState({
-          issueTypesAssociation: [
-            this.state.issueTypesAssociation,
-            ...{ externalTaskTypeId: this.state.jiraIssueType, internalTaskTypeId: this.state.simtrackIssueType }
-          ]
+          issueTypesAssociation: [...this.state.issueTypesAssociation, ...arr]
         });
         break;
       case associationStates.STATUS_TYPES:
+        arr = this.state.selectedJiraCols.map(e => {
+          return { externalStatusTypeId: e.id, internalStatusTypeId: this.state.selectedSimtrackCol.id };
+        });
         this.setState({
-          statusesAssociation: [
-            this.state.issueTypesAssociation,
-            ...{ externalStatusId: this.state.jiraStatusType, internalStatusId: this.state.simtrackStatusType }
-          ]
+          statusesAssociation: [...this.state.statusesAssociation, ...arr]
         });
         break;
       default:
@@ -138,6 +139,10 @@ class SetAssociationForm extends Component {
       default:
         return this.state.selectedJiraCols.find(el => `${el.id}${el.description}` === id);
     }
+  };
+
+  isActiveSimtrackColItems = id => {
+    return this.state.selectedSimtrackCol ? this.state.selectedSimtrackCol.id.toString() === id : false;
   };
 
   renderJiraRow(entity) {
@@ -207,9 +212,7 @@ class SetAssociationForm extends Component {
             className={
               (css.userRow,
               cn(css.userRow, {
-                [css.userRow__active]: this.state.selectedSimtrackCol
-                  ? this.state.selectedSimtrackCol.id.toString() === id
-                  : false
+                [css.userRow__active]: this.isActiveSimtrackColItems(id)
               }))
             }
             onClick={() => this.select('simtrackUser', entity)}
@@ -225,9 +228,7 @@ class SetAssociationForm extends Component {
             className={
               (css.userRow,
               cn(css.userRow, {
-                [css.userRow__active]: this.state.selectedSimtrackCol
-                  ? this.state.selectedSimtrackCol.id.toString() === id
-                  : false
+                [css.userRow__active]: this.isActiveSimtrackColItems(id)
               }))
             }
             onClick={() => this.select('simtrackIssueType', entity)}
@@ -243,9 +244,7 @@ class SetAssociationForm extends Component {
             className={
               (css.userRow,
               cn(css.userRow, {
-                [css.userRow__active]: this.state.selectedSimtrackCol
-                  ? this.state.selectedSimtrackCol.id.toString() === id
-                  : false
+                [css.userRow__active]: this.isActiveSimtrackColItems(id)
               }))
             }
             onClick={() => this.select('simtrackStatusType', entity)}
@@ -331,7 +330,7 @@ class SetAssociationForm extends Component {
                           name="user_association"
                           placeholder={localize[lang].NAME}
                           onChange={e => this.searchOnChange(e.target.value)}
-                          autofocus
+                          autoFocus
                         />
                       </tr>
                     ) : null}
