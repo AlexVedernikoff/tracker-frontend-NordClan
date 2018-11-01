@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import ReactTooltip from 'react-tooltip';
+
 import * as css from './Budget.scss';
 import { IconEdit, IconCheck } from '../../Icons';
-import ReactTooltip from 'react-tooltip';
 import InputNumber from '../../InputNumber';
 import roundNum from '../../../utils/roundNum';
 import parseInteger from '../../../utils/parseInteger';
+import localize from './Budget.json';
 
 class Budget extends Component {
   constructor(props) {
@@ -61,19 +63,20 @@ class Budget extends Component {
   };
 
   render() {
-    const { header, max, min } = this.props;
+    const { header, max, min, lang, value } = this.props;
+    const { isEditing } = this.state;
 
     return (
       <div className={css.budget}>
         <div className={css.title}>{header}</div>
 
         <div className={css.editor}>
-          {this.state.isEditing ? (
+          {isEditing ? (
             <form onSubmit={this.toggleEditing}>
               <InputNumber
                 onFocus={this.selectAll}
                 autoFocus
-                defaultValue={this.props.value}
+                defaultValue={value}
                 onChange={this.onChangeValue}
                 value={this.state.value}
                 max={max}
@@ -81,7 +84,7 @@ class Budget extends Component {
               />
             </form>
           ) : (
-            <div className={css.budgetValue}>{roundNum(this.props.value, 2)}</div>
+            <div className={css.budgetValue}>{roundNum(value, 2)}</div>
           )}
         </div>
 
@@ -89,9 +92,9 @@ class Budget extends Component {
           <div
             className={css.editIcon}
             onClick={this.toggleEditing}
-            data-tip={this.state.isEditing ? 'Сохранить' : 'Редактировать'}
+            data-tip={isEditing ? localize[lang].SAVE : localize[lang].EDIT}
           >
-            {this.state.isEditing ? <IconCheck className={css.save} /> : <IconEdit className={css.edit} />}
+            {isEditing ? <IconCheck className={css.save} /> : <IconEdit className={css.edit} />}
           </div>
         ) : null}
       </div>
@@ -104,6 +107,7 @@ Budget.propTypes = {
   id: PropTypes.number,
   integerOnly: PropTypes.bool,
   isProjectAdmin: PropTypes.bool,
+  lang: PropTypes.string,
   max: PropTypes.number,
   min: PropTypes.number,
   onEditSubmit: PropTypes.func.isRequired,
