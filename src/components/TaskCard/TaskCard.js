@@ -76,12 +76,6 @@ class TaskCard extends PureComponent {
     return array.map(t => this.relatedTask(t, mode));
   };
 
-  handleClick = () => {
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
-  };
-
   render() {
     const { task, lang, lightTask, lightedTaskId, ...other } = this.props;
     const factPlanDivision = task.factExecutionTime / task.plannedExecutionTime;
