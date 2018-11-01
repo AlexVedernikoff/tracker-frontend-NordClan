@@ -307,7 +307,7 @@ class ActivityRowForTask extends React.Component {
     const isTempRow = !!tempCell;
 
     const timeCells = item.timeSheets.map((tsh, i) => {
-      if (tsh.id) {
+      if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
         return (
           <td
             key={moment(tsh.onDate).format('X')}

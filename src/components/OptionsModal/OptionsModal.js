@@ -184,6 +184,7 @@ class OptionsModal extends Component {
                       // wrapperClassName={css.taskCommentWrapper}
                       // editorClassName={css.taskComment}
                       onChange={this.setComment}
+                      value={this.state.commentText}
                     />
                   </Col>
                 </Row>
