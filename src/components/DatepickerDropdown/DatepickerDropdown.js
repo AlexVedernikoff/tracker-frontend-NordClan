@@ -15,7 +15,7 @@ class DatepickerDropdown extends Component {
   }
 
   render() {
-    const { disabledDataRanges, lang, ...other } = this.props;
+    const { disabledDataRanges, dispatch, lang, ...other } = this.props;
 
     return (
       <DayPickerInput

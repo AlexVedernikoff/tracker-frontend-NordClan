@@ -15,11 +15,17 @@ const InitialState = {
 
 function Projects(state = InitialState, action) {
   switch (action.type) {
+    case ProjectsActions.PROJECTS_RECEIVE_START:
+      return {
+        ...state,
+        isProjectsReceived: false
+      };
     case ProjectsActions.PROJECTS_RECEIVE_SUCCESS:
       return {
         ...state,
         projects: action.data.data,
-        pagesCount: action.data.pagesCount
+        pagesCount: action.data.pagesCount,
+        isProjectsReceived: true
       };
 
     case ProjectsActions.OPEN_CREATE_PROJECT_MODAL:
