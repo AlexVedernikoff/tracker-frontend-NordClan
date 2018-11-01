@@ -19,8 +19,6 @@ class Budget extends Component {
     };
   }
 
-  componentDidMount() {}
-
   componentDidUpdate() {
     ReactTooltip.rebuild();
   }
