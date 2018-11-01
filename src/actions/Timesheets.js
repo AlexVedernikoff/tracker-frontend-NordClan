@@ -311,7 +311,7 @@ export const getTasksForSelect = (name = '', projectId) => {
 export const getProjectsForSelect = (name = '', hideEmptyValue) => {
   return dispatch => {
     return axios
-      .get(`${API_URL}/project`, { params: { name } }, { withCredentials: true })
+      .get(`${API_URL}/project`, { params: { name, userIsParticipant: true } }, { withCredentials: true })
       .then(response => response.data.data)
       .then(projects => {
         const options = projects.map(project => ({
