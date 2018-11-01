@@ -326,7 +326,7 @@ class Playlist extends Component {
                       <div
                         key={index}
                         className={this.activityTabStyle(element.activityId)}
-                        data-tip={element.description}
+                        data-tip={element.description === 'Все активности' ? localize[lang].ALL : element.description}
                         onClick={this.changeActiveActivityTab(element.activityId)}
                         data-place="bottom"
                       >

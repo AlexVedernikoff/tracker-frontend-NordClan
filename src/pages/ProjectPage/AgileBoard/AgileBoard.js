@@ -54,6 +54,7 @@ class AgileBoard extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    ReactTooltip.rebuild();
     if (!isEqual(prevProps.filters, this.props.filters)) {
       this.getTasks();
     }
