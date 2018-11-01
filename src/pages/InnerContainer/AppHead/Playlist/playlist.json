@@ -10,7 +10,8 @@
     "TOTAL": "Total",
     "NOTHING_TO_SHOW": "There are no time reports suitable for the selected parameters.",
     "SHOW_HIDDEN": "Show hidden",
-    "HIDE": "Hide"
+    "HIDE": "Hide",
+    "ALL": "All activities"
   },
   "ru": {
     "Mo": "Пн",
@@ -23,6 +24,7 @@
     "TOTAL": "Итого",
     "NOTHING_TO_SHOW": "Отсутствуют отчеты по времени, подходящие под выбранные параметры.",
     "SHOW_HIDDEN": "Показать скрытые",
-    "HIDE": "Скрыть"
+    "HIDE": "Скрыть",
+    "ALL": "Все активности"
   }
 }
