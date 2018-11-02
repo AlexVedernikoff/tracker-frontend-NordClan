@@ -1,6 +1,6 @@
 import { states } from './States.js';
 
-import { associationStates } from './Steps/SetAssociation/AssociationStates';
+import { associationStates } from './steps/SetAssociation/AssociationStates';
 
 class StateMachine {
   constructor() {

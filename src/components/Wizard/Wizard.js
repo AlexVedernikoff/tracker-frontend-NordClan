@@ -6,9 +6,9 @@ import { states } from './States';
 import Button from '../Button';
 import StateMachine from './StateMachine';
 
-import Auth from './Steps/Auth/Auth';
-import CreateProject from './Steps/CreateProject/CreateProject';
-import SetAssociationForm from './Steps/SetAssociation/SetAssociation';
+import Auth from './steps/auth/Auth';
+import CreateProject from './steps/createProject/CreateProject';
+import SetAssociationForm from './steps/SetAssociation/SetAssociation';
 
 class Wizard extends Component {
   static propTypes = {
