@@ -25,7 +25,6 @@ class FilterForm extends React.Component {
   }
 
   updateListsAndTasks = () => {
-    this.props.getTasks();
     this.props.updateFilterList();
   };
 

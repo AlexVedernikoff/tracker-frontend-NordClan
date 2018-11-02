@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
-
 import * as css from './TaskCard.scss';
 import RelatedTask from './RelatedTask';
 import TaskCore from './TaskCore';
@@ -38,6 +37,7 @@ class TaskCard extends PureComponent {
         mode={mode}
         prefix={this.props.task.prefix}
         projectId={this.props.task.projectId}
+        lang={this.props.lang}
       />
     );
   };
@@ -76,15 +76,8 @@ class TaskCard extends PureComponent {
     return array.map(t => this.relatedTask(t, mode));
   };
 
-  handleClick = () => {
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
-  };
-
   render() {
-    const { task, lightTask, lightedTaskId, ...other } = this.props;
-
+    const { task, lang, lightTask, lightedTaskId, ...other } = this.props;
     const factPlanDivision = task.factExecutionTime / task.plannedExecutionTime;
     const isSubtasks = get(task, 'subTasks.length');
     const isLinkedTasks = get(task, 'linkedTasks.length');
@@ -102,6 +95,7 @@ class TaskCard extends PureComponent {
             mode="parent"
             prefix={task.prefix}
             projectId={task.projectId}
+            lang={lang}
           />
         ) : null}
 
@@ -135,10 +129,8 @@ TaskCard.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  taskTypes: getLocalizedTaskTypes(state)
+  taskTypes: getLocalizedTaskTypes(state),
+  lang: state.Localize.lang
 });
 
-export default connect(
-  mapStateToProps,
-  {}
-)(TaskCard);
+export default connect(mapStateToProps)(TaskCard);

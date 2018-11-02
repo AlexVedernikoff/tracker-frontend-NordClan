@@ -247,6 +247,7 @@ class Details extends Component {
           getContent={() => <div> {localize[lang].LOADING} </div>}
         />
       );
+
     return (
       <div className={css.detailsBlock}>
         <table className={css.detailTable}>

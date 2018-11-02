@@ -205,13 +205,12 @@ class Table extends React.Component {
       [css.spentTime]: true
     });
     let timeSumm = 0;
-
     return (
       <div className={className}>
         <span className={css.header}>{localize[this.props.lang][type]}</span>
         {entities.map((entity, i) => {
           if (this.detectType(entity) === 'sprint') {
-            timeSumm += !isExternal ? +entity.budget : 0;
+            timeSumm += !isExternal ? +entity[type === 'PLAN' ? 'budget' : 'spentTime'] : 0;
             return (
               <span key={`sprint-${i}`} className={css.name}>
                 {!isExternal ? roundNum(entity[type === 'PLAN' ? 'budget' : 'spentTime'], 2) : ''}
