@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 import debounce from 'lodash/debounce';
@@ -12,17 +11,10 @@ import SingleComment from '../../../../pages/Timesheets/ActivityRow/SingleCommen
 import * as css from './ActivityRowForTask.scss';
 import ConfirmModal from '../../../../components/ConfirmModal';
 import * as timesheetsConstants from '../../../../constants/Timesheets';
-import {
-  createTimesheet,
-  updateTimesheet,
-  deleteTimesheets,
-  deleteTempTimesheets,
-  editTempTimesheet
-} from '../../../../actions/Timesheets';
 import EditActivityProjectModal from '../../../../components/EditActivityProjectModal';
 import localize from './ActivityRowForTask.json';
 
-class ActivityRowForTask extends React.Component {
+export default class ActivityRowForTask extends React.Component {
   static propTypes = {
     createTimesheet: PropTypes.func,
     deleteTempTimesheets: PropTypes.func,
@@ -411,22 +403,3 @@ class ActivityRowForTask extends React.Component {
     );
   }
 }
-
-const mapStateToProps = state => ({
-  userId: state.Auth.user.id,
-  startingDay: state.Timesheets.startingDay,
-  lang: state.Localize.lang
-});
-
-const mapDispatchToProps = {
-  createTimesheet,
-  updateTimesheet,
-  deleteTimesheets,
-  deleteTempTimesheets,
-  editTempTimesheet
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ActivityRowForTask);

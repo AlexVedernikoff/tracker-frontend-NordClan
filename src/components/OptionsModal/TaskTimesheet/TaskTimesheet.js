@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import * as css from './TaskTimesheet.scss';
 import moment from 'moment';
 import find from 'lodash/find';
 import cn from 'classnames';
 import PropTypes from 'prop-types';
 import ActivityRowForTask from './ActivityRowForTask';
-import * as timesheetsActions from '../../../actions/Timesheets';
-import { getLocalizedMagicActiveTypes } from '../../../selectors/dictionaries';
 
-class TaskTimesheet extends Component {
+export default class TaskTimesheet extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -188,25 +185,3 @@ TaskTimesheet.propTypes = {
   tempTimesheets: PropTypes.array,
   userId: PropTypes.number
 };
-
-const mapStateToProps = state => ({
-  activityTypes: getLocalizedMagicActiveTypes(state),
-  task: state.Task.task,
-  selectedActivityType: state.Timesheets.selectedActivityType,
-  selectedTask: state.Timesheets.selectedTask,
-  selectedTaskStatusId: state.Timesheets.selectedTaskStatusId,
-  startingDay: state.Timesheets.startingDay,
-  tempTimesheets: state.Timesheets.tempTimesheets,
-  list: state.Timesheets.list,
-  userId: state.Auth.user.id,
-  dateBegin: state.Timesheets.dateBegin,
-  dateEnd: state.Timesheets.dateEnd
-});
-const mapDispatchToProps = {
-  ...timesheetsActions
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TaskTimesheet);
