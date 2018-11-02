@@ -5,12 +5,14 @@ import onClickOutside from 'react-onclickoutside';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as css from '../../Timesheets.scss';
 import { IconComment, IconCheck } from '../../../../components/Icons';
+import localize from './SingleComment.json';
 
 class SingleComment extends React.Component {
   static propTypes = {
     approved: PropTypes.bool,
     comment: PropTypes.string,
     disabled: PropTypes.bool,
+    lang: PropTypes.string,
     onChange: PropTypes.func,
     rejected: PropTypes.bool
   };
@@ -57,7 +59,7 @@ class SingleComment extends React.Component {
   };
 
   render() {
-    const { comment, disabled, rejected, approved } = this.props;
+    const { comment, disabled, rejected, approved, lang } = this.props;
 
     return (
       <div>
@@ -79,7 +81,7 @@ class SingleComment extends React.Component {
               {!disabled ? (
                 <textarea
                   autoFocus
-                  placeholder="Введите текст комментария"
+                  placeholder={localize[lang].ENTER_COMMENT}
                   onChange={this.changeText}
                   onKeyDown={this.saveWithEnter}
                   value={this.state.text}
