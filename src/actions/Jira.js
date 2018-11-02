@@ -169,4 +169,51 @@ const getSimtrackUsersByName = name => {
   };
 };
 
-export { jiraAuthorize, jiraCreateProject, getJiraProjects, getSimtrackUsersByName };
+const setAssociationStart = () => ({
+  type: JiraActions.SET_ASSOCIATION_START
+});
+
+const setAssociationSuccess = associations => ({
+  type: JiraActions.SET_ASSOCIATION_SUCCESS,
+  associations
+});
+
+const setAssociationError = () => ({
+  type: JiraActions.SET_ASSOCIATION_ERROR
+});
+
+const setAssociation = (headers, issueTypesAssociation, statusesAssociation, userEmailAssociation) => {
+  const URL = `${API_URL}/jira/setProjectAssociation`;
+  return dispatch => {
+    dispatch(startLoading());
+    dispatch(setAssociationStart());
+    return axios
+      .post(
+        URL,
+        {
+          issueTypesAssociation,
+          statusesAssociation,
+          userEmailAssociation
+        },
+        {
+          withCredentials: true,
+          headers
+        }
+      )
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(setAssociationSuccess(response.data));
+        }
+        dispatch(finishLoading());
+        return response.data;
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(setAssociationError(error.response.data));
+        dispatch(finishLoading());
+        throw error;
+      });
+  };
+};
+
+export { jiraAuthorize, jiraCreateProject, getJiraProjects, getSimtrackUsersByName, setAssociation };

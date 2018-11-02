@@ -22,6 +22,7 @@ class Wizard extends Component {
     onRequestClose: PropTypes.func,
     project: PropTypes.object,
     projects: PropTypes.array,
+    setAssociation: PropTypes.func,
     taskStatuses: PropTypes.array,
     taskTypes: PropTypes.array,
     token: PropTypes.string
@@ -58,10 +59,28 @@ class Wizard extends Component {
   };
 
   // Create project backward function
-  createProjectPrevious = () => {
+  backward = () => {
     this.setState({
       currentState: this.stateMachine.backward(this.state.currentState)
     });
+  };
+
+  // Set Association forward function
+  setAssociation = (headers, formData) => {
+    this.props.setAssociation(headers, formData).then(res => {
+      if (res) {
+        this.setState({
+          currentState: this.stateMachine.forward(this.state.currentState)
+        });
+      }
+    });
+  };
+
+  onRequestClose = () => {
+    this.setState({
+      currentState: states.AUTH
+    });
+    this.props.onRequestClose();
   };
 
   currentStep(lang) {
@@ -79,7 +98,7 @@ class Wizard extends Component {
               token={this.props.token}
               lang={lang}
               getJiraProjects={this.props.getJiraProjects}
-              previousStep={this.createProjectPrevious}
+              previousStep={this.backward}
               nextStep={this.createProjectNext}
               jiraProjects={this.props.projects}
               authorId={this.props.authorId}
@@ -91,8 +110,8 @@ class Wizard extends Component {
           <div>
             <SetAssociationForm
               lang={lang}
-              previousStep={this.createProjectPrevious}
-              nextStep={this.createProjectNext}
+              previousStep={this.backward}
+              nextStep={this.setAssociation}
               project={this.props.project}
               taskTypes={this.props.taskTypes}
               taskStatuses={this.props.taskStatuses}
@@ -120,12 +139,12 @@ class Wizard extends Component {
   }
 
   render() {
-    const { lang, isOpen, onRequestClose } = this.props;
+    const { lang, isOpen } = this.props;
     const {} = this.state;
 
     return (
       <div>
-        <Modal isOpen={isOpen} onRequestClose={onRequestClose}>
+        <Modal isOpen={isOpen} onRequestClose={this.onRequestClose}>
           <div className={css.baseForm}>
             <div>{this.currentStep(lang)}</div>
           </div>

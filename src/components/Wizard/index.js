@@ -1,6 +1,12 @@
 import Wizard from './Wizard';
 import { connect } from 'react-redux';
-import { jiraAuthorize, jiraCreateProject, getJiraProjects, getSimtrackUsersByName } from '../../actions/Jira';
+import {
+  jiraAuthorize,
+  jiraCreateProject,
+  getJiraProjects,
+  getSimtrackUsersByName,
+  setAssociation
+} from '../../actions/Jira';
 
 const mapStateToProps = state => {
   return {
@@ -17,7 +23,8 @@ const mapDispatchToProps = {
   jiraAuthorize,
   jiraCreateProject,
   getJiraProjects,
-  getSimtrackUsersByName
+  getSimtrackUsersByName,
+  setAssociation
 };
 
 export default connect(

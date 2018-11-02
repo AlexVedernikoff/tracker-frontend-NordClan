@@ -84,6 +84,27 @@ export default function Jira(state = InitialState, action) {
 
     // ------------------
 
+    case JiraActions.SET_ASSOCIATION_START:
+      return {
+        ...state,
+        isSetAssociationStart: true
+      };
+
+    case JiraActions.SET_ASSOCIATION_SUCCESS:
+      return {
+        ...state,
+        isSetAssociationSuccess: true,
+        associations: [...action.associations]
+      };
+
+    case JiraActions.SET_ASSOCIATION_ERROR:
+      return {
+        ...state,
+        isSetAssociationError: true
+      };
+
+    // ------------------
+
     default:
       return {
         ...state

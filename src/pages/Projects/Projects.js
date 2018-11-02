@@ -310,7 +310,7 @@ class Projects extends Component {
 
   render() {
     const { lang } = this.props;
-    const { filteredInProgress, filteredInHold, filteredFinished, filterSelectedTypes, isWizardOpened } = this.state;
+    const { filteredInProgress, filteredInHold, filteredFinished, filterSelectedTypes } = this.state;
     const { projectTypes } = this.props;
     const formattedDayFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('DD.MM.YYYY') : '';
     const formattedDayTo = this.state.dateTo ? moment(this.state.dateTo).format('DD.MM.YYYY') : '';
