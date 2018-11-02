@@ -5,14 +5,18 @@ import * as css from './Checkbox.scss';
 import { IconCheck } from '../Icons';
 
 const Checkbox = props => {
-  const { checked, disabled, onChange, label, className, ...other } = props;
+  const { checked, disabled, onChange, label, className, refCallback, ...other } = props;
 
+  const type = 'checkbox';
+  const ref = refCallback ? el => refCallback(el) : null;
+  const baseProps = { type, disabled, onChange, ref };
+  const inputCheckbox = checked ? <input checked={checked} {...baseProps} /> : <input {...baseProps} />;
   return (
     <label
       {...other}
       className={classnames({ [css.wrapper]: true, [className]: true, checked: checked, [css.disabled]: disabled })}
     >
-      <input type="checkbox" checked={checked} onChange={onChange} disabled={disabled} />
+      {inputCheckbox}
       <span className={classnames({ [css.pseudoSquare]: true, [css.withText]: !!label })}>
         <IconCheck />
       </span>
@@ -29,6 +33,7 @@ Checkbox.defaultProps = {
 Checkbox.propTypes = {
   checked: PropTypes.bool,
   className: PropTypes.string,
+  refCallback: PropTypes.func,
   disabled: PropTypes.bool,
   label: PropTypes.string,
   onChange: PropTypes.func

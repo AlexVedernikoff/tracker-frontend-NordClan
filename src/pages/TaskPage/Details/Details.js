@@ -140,21 +140,21 @@ class Details extends Component {
     this.closeTaskTypeModal();
   };
 
-  changeIsTaskByClient = () => {
+  changeIsTaskByClient = event => {
     this.props.onChange(
       {
         id: this.props.task.id,
-        isTaskByClient: !this.props.task.isTaskByClient
+        isTaskByClient: event.target.checked
       },
       null
     );
   };
 
-  changeDevOpsAttribute = () => {
+  changeDevOpsAttribute = event => {
     this.props.onChange(
       {
         id: this.props.task.id,
-        isDevOps: !this.props.task.isDevOps
+        isDevOps: event.target.checked
       },
       null
     );
