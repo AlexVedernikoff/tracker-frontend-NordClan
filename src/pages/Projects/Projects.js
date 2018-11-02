@@ -469,7 +469,7 @@ const mapStateToProps = state => ({
   projectError: state.Projects.error,
   globalRole: state.Auth.user.globalRole,
   lang: state.Localize.lang,
-  isProjectsReceived: state.Projects.projects.isProjectsReceived,
+  isProjectsReceived: state.Projects.isProjectsReceived,
   projectTypes: getLocalizedProjectTypes(state) || []
 });
 
