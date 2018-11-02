@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import ReactTooltip from 'react-tooltip';
+
 import * as css from './Budget.scss';
 import { IconEdit, IconCheck } from '../../Icons';
-import ReactTooltip from 'react-tooltip';
 import roundNum from '../../../utils/roundNum';
 import parseInteger from '../../../utils/parseInteger';
 import validateNumber from '../../../utils/validateNumber';
@@ -18,8 +19,6 @@ class Budget extends Component {
       value: typeof props.value === 'number' ? props.value : ''
     };
   }
-
-  componentDidMount() {}
 
   componentDidUpdate() {
     ReactTooltip.rebuild();
@@ -74,18 +73,19 @@ class Budget extends Component {
 
   render() {
     const { header, lang } = this.props;
+    const { isEditing, value } = this.state;
     const saveDataTip = this.state.value ? localize[lang].SAVE : localize[lang].ENTER_NUMBER;
     return (
       <div className={css.budget}>
         <div className={css.title}>{header}</div>
 
         <div className={css.editor}>
-          {this.state.isEditing ? (
+          {isEditing ? (
             <form onSubmit={this.toggleEditing}>
-              <Input onFocus={this.selectAll} autoFocus onChange={this.onChangeValue} value={this.state.value} />
+              <Input onFocus={this.selectAll} autoFocus onChange={this.onChangeValue} value={value} />
             </form>
           ) : (
-            <div className={css.budgetValue}>{roundNum(this.props.value, 2)}</div>
+            <div className={css.budgetValue}>{roundNum(value, 2)}</div>
           )}
         </div>
 
@@ -95,7 +95,7 @@ class Budget extends Component {
             onClick={this.toggleEditing}
             data-tip={this.state.isEditing ? saveDataTip : localize[lang].EDIT}
           >
-            {this.state.isEditing ? <IconCheck className={css.save} /> : <IconEdit className={css.edit} />}
+            {isEditing ? <IconCheck className={css.save} /> : <IconEdit className={css.edit} />}
           </div>
         ) : null}
       </div>
