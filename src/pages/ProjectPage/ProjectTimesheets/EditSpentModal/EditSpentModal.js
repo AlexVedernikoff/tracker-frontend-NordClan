@@ -8,12 +8,14 @@ import Checkbox from '../../../../components/Checkbox';
 import SelectDropdown from '../../../../components/SelectDropdown';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './EditSpentModal.scss';
+import localize from './EditSpentModal.json';
 
 class EditSpentModal extends Component {
   static propTypes = {
     comment: PropTypes.string,
     isBillable: PropTypes.bool,
     isMagic: PropTypes.bool,
+    lang: PropTypes.string,
     onClose: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
     projectId: PropTypes.number.isRequired,
@@ -82,7 +84,8 @@ class EditSpentModal extends Component {
       onClose,
       isMagic,
       onSave,
-      timesheet
+      timesheet,
+      lang
     } = this.props;
     const status = taskStatusId ? statuses.find(el => el.id === taskStatusId).name : '';
     const taskType = typeId ? taskTypes.find(el => el.id === typeId).name : '';
@@ -102,52 +105,60 @@ class EditSpentModal extends Component {
           <form className={css.editSpentForm}>
             <Row>
               <Col xs={12}>
-                <h3>Редактирование</h3>
+                <h3>{localize[lang].EDITING}</h3>
                 <hr />
               </Col>
             </Row>
             <Row>
               <Col xs={12} className={css.validateMessages}>
                 {!this.checkNullInputs() ? (
-                  <span className={css.redMessage}>Все поля должны быть заполнены</span>
+                  <span className={css.redMessage}>{localize[lang].ALL_FIELDS_MUST_BE_FILLED}</span>
                 ) : null}
               </Col>
             </Row>
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Потрачено времени:</p>
+                <p>{localize[lang].TIME_SPANT}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input placeholder="Введите потраченное время" onChange={this.onChangeSpentTime} value={spentTime} />
+                <Input
+                  placeholder={localize[lang].ENTER_SPANT_TIME}
+                  onChange={this.onChangeSpentTime}
+                  value={spentTime}
+                />
               </Col>
             </Row>
             {!isMagic ? (
               <div>
                 <Row className={css.inputRow}>
                   <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                    <p>Спринт:</p>
+                    <p>{localize[lang].SPRINT}</p>
                   </Col>
                   <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                     <SelectDropdown
                       className={css.fullwidth}
                       onChange={this.changeSprint}
                       value={sprint ? sprint.id : null}
-                      placeholder={'Выберите спринт'}
+                      placeholder={localize[lang].SHOOSE_SPRINT}
                       options={projectSprintsOptions}
                     />
                   </Col>
                 </Row>
                 <Row className={css.inputRow}>
                   <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                    <p>Комментарий:</p>
+                    <p>{localize[lang].COMMENT}</p>
                   </Col>
                   <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                    <Textarea onChange={this.onChangeComment} placeholder="Введите комментарий" value={comment} />
+                    <Textarea
+                      onChange={this.onChangeComment}
+                      placeholder={localize[lang].ENTER_COMMENT}
+                      value={comment}
+                    />
                   </Col>
                 </Row>
                 <Row className={css.inputRow}>
                   <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                    <p>Тип активности:</p>
+                    <p>{localize[lang].ACTIVITY_TYPE}</p>
                   </Col>
                   <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                     <Input disabled value={taskType} />
@@ -155,7 +166,7 @@ class EditSpentModal extends Component {
                 </Row>
                 <Row className={css.inputRow}>
                   <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                    <p>Статус:</p>
+                    <p>{localize[lang].STATUS}</p>
                   </Col>
                   <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                     <Input disabled value={status} />
@@ -174,7 +185,7 @@ class EditSpentModal extends Component {
             <div className={css.buttonWrap}>
               <Button
                 onClick={onSave.bind(this, this.state, timesheet)}
-                text="Сохранить"
+                text={localize[lang].SAVE}
                 type="green"
                 icon="IconCheck"
               />

@@ -16,6 +16,7 @@ import {
   openPortfolioModal,
   closePortfolioModal
 } from '../../../actions/Project';
+import localize from './ProjectTitle.json';
 
 class ProjectTitle extends Component {
   static propTypes = {
@@ -24,6 +25,7 @@ class ProjectTitle extends Component {
     closePortfolioModal: PropTypes.func,
     id: PropTypes.any,
     isProjectAdmin: PropTypes.bool,
+    lang: PropTypes.string,
     name: PropTypes.string.isRequired,
     openPortfolioModal: PropTypes.func,
     portfolio: PropTypes.object,
@@ -173,6 +175,7 @@ class ProjectTitle extends Component {
   };
 
   render() {
+    const { lang } = this.props;
     return (
       <div className={css.projectTitle}>
         {this.props.name ? (
@@ -214,9 +217,9 @@ class ProjectTitle extends Component {
             </span>
             {this.props.isProjectAdmin ? (
               this.props.titleIsEditing ? (
-                <IconCheck className={css.save} data-tip="Сохранить" onClick={this.editIconClickHandler} />
+                <IconCheck className={css.save} data-tip={localize[lang].SAVE} onClick={this.editIconClickHandler} />
               ) : (
-                <IconEdit className={css.edit} data-tip="Редактировать" onClick={this.editIconClickHandler} />
+                <IconEdit className={css.edit} data-tip={localize[lang].EDIT} onClick={this.editIconClickHandler} />
               )
             ) : null}
           </h1>
@@ -227,7 +230,6 @@ class ProjectTitle extends Component {
             projectId={this.props.projectId}
             onClose={this.props.closePortfolioModal}
             onChoose={this.props.changeProject}
-            title="Изменить портфель проекта"
           />
         ) : null}
       </div>
@@ -236,6 +238,7 @@ class ProjectTitle extends Component {
 }
 
 const mapStateToProps = state => ({
+  lang: state.Localize.lang,
   titleIsEditing: state.Project.TitleIsEditing,
   PortfolioIsEditing: state.Project.PortfolioIsEditing,
   projectId: state.Project.project.id

@@ -16,8 +16,7 @@ class PortfolioModal extends Component {
     onChoose: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
     portfolios: PropTypes.array,
-    projectId: PropTypes.number,
-    title: PropTypes.string
+    projectId: PropTypes.number
   };
 
   constructor(props) {
@@ -48,7 +47,7 @@ class PortfolioModal extends Component {
   };
 
   render() {
-    const { title, onClose, lang } = this.props;
+    const { onClose, lang } = this.props;
 
     const portfoliosOptions = this.props.portfolios.map(portfolio => ({
       label: portfolio.name,
@@ -58,7 +57,7 @@ class PortfolioModal extends Component {
     return (
       <Modal isOpen contentLabel="modal" className={css.modalWrapper} onRequestClose={onClose}>
         <div className={css.changeStage}>
-          <h3>{title}</h3>
+          <h3>{localize[lang].TITLE}</h3>
           <div className={css.modalLine}>
             <Select
               promptTextCreator={label => `${localize[lang].PORTFOLIO_SEARCH} '${label}'`}
