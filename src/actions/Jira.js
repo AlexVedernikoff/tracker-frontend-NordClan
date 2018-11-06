@@ -182,7 +182,7 @@ const setAssociationError = () => ({
   type: JiraActions.SET_ASSOCIATION_ERROR
 });
 
-const setAssociation = (headers, issueTypesAssociation, statusesAssociation, userEmailAssociation) => {
+const setAssociation = (headers, projectId, issueTypesAssociation, statusesAssociation, userEmailAssociation) => {
   const URL = `${API_URL}/jira/setProjectAssociation`;
   return dispatch => {
     dispatch(startLoading());
@@ -191,6 +191,7 @@ const setAssociation = (headers, issueTypesAssociation, statusesAssociation, use
       .post(
         URL,
         {
+          projectId,
           issueTypesAssociation,
           statusesAssociation,
           userEmailAssociation
@@ -216,4 +217,48 @@ const setAssociation = (headers, issueTypesAssociation, statusesAssociation, use
   };
 };
 
-export { jiraAuthorize, jiraCreateProject, getJiraProjects, getSimtrackUsersByName, setAssociation };
+const createBatchStart = () => ({
+  type: JiraActions.CREATE_BATCH_START
+});
+
+const createBatchSuccess = () => ({
+  type: JiraActions.CREATE_BATCH_SUCCESS
+});
+
+const createBatchError = () => ({
+  type: JiraActions.CREATE_BATCH_ERROR
+});
+
+const createBatch = (headers, pid) => {
+  const URL = `${API_URL}/jira/batch`;
+  return dispatch => {
+    dispatch(startLoading());
+    dispatch(createBatchStart());
+    return axios
+      .post(
+        URL,
+        {
+          pid
+        },
+        {
+          withCredentials: true,
+          headers
+        }
+      )
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(createBatchSuccess(response.data));
+        }
+        dispatch(finishLoading());
+        return response.data;
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(createBatchError(error.response.data));
+        dispatch(finishLoading());
+        throw error;
+      });
+  };
+};
+
+export { jiraAuthorize, jiraCreateProject, getJiraProjects, getSimtrackUsersByName, setAssociation, createBatch };

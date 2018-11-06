@@ -84,11 +84,11 @@ class SetAssociationForm extends Component {
         }
         break;
       case 'simtrackIssueType':
-        associatedArr = this.state.issueTypesAssociation.filter(e => value.id === e.internalIssueTypeId);
+        associatedArr = this.state.issueTypesAssociation.filter(e => value.id === e.internalTaskTypeId);
         this.setState({ selectedJiraCols: [...associatedArr], selectedSimtrackCol: value });
         break;
       case 'simtrackStatusType':
-        associatedArr = this.state.statusesAssociation.filter(e => value.id === e.internalStatusTypeId);
+        associatedArr = this.state.statusesAssociation.filter(e => value.id === e.internalStatusId);
         this.setState({ selectedJiraCols: [...associatedArr], selectedSimtrackCol: value });
         break;
       case 'simtrackUser':
@@ -112,7 +112,7 @@ class SetAssociationForm extends Component {
           });
         } else {
           arr = this.state.selectedJiraCols.map(e => {
-            return { email: e.email, internalUserId: this.state.selectedSimtrackCol.id };
+            return { externalUserEmail: e.email, internalUserId: this.state.selectedSimtrackCol.id };
           });
           this.setState({
             userEmailAssociation: [...this.state.userEmailAssociation, ...arr]
@@ -123,10 +123,10 @@ class SetAssociationForm extends Component {
 
       case associationStates.ISSUE_TYPES:
         arr = this.state.selectedJiraCols.map(e => {
-          return { id: e.id, internalIssueTypeId: this.state.selectedSimtrackCol.id };
+          return { externalTaskTypeId: e.id, internalTaskTypeId: this.state.selectedSimtrackCol.id };
         });
         oldarr = this.state.issueTypesAssociation.filter(
-          e => e.internalIssueTypeId !== this.state.selectedSimtrackCol.id
+          e => e.internalTaskTypeId !== this.state.selectedSimtrackCol.id
         );
         this.setState({
           issueTypesAssociation: [...oldarr, ...arr]
@@ -135,11 +135,9 @@ class SetAssociationForm extends Component {
 
       case associationStates.STATUS_TYPES:
         arr = this.state.selectedJiraCols.map(e => {
-          return { id: e.id, internalStatusTypeId: this.state.selectedSimtrackCol.id };
+          return { externalStatusId: e.id, internalStatusId: this.state.selectedSimtrackCol.id };
         });
-        oldarr = this.state.statusesAssociation.filter(
-          e => e.internalStatusTypeId !== this.state.selectedSimtrackCol.id
-        );
+        oldarr = this.state.statusesAssociation.filter(e => e.internalStatusId !== this.state.selectedSimtrackCol.id);
         this.setState({
           statusesAssociation: [...oldarr, ...arr]
         });
@@ -167,11 +165,11 @@ class SetAssociationForm extends Component {
   isActiveJiraColItems = id => {
     switch (this.state.currentState) {
       case associationStates.ISSUE_TYPES:
-        return this.state.selectedJiraCols.find(el => `${el.id}` === id);
+        return this.state.selectedJiraCols.find(el => `${el.id}` === id || `${el.externalTaskTypeId}` === id);
       case associationStates.STATUS_TYPES:
-        return this.state.selectedJiraCols.find(el => `${el.id}` === id);
+        return this.state.selectedJiraCols.find(el => `${el.id}` === id || `${el.externalStatusId}` === id);
       case associationStates.USERS:
-        return this.state.selectedJiraCols.find(el => `${el.email}` === id);
+        return this.state.selectedJiraCols.find(el => `${el.email}` === id || `${el.externalUserEmail}` === id);
       default:
         break;
     }

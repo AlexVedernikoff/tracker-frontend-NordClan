@@ -9,6 +9,7 @@ import StateMachine from './StateMachine';
 import Auth from './steps/auth/Auth';
 import CreateProject from './steps/createProject/CreateProject';
 import SetAssociationForm from './steps/SetAssociation/SetAssociation';
+import Finish from './steps/Finish/Finish';
 
 class Wizard extends Component {
   static propTypes = {
@@ -67,13 +68,32 @@ class Wizard extends Component {
 
   // Set Association forward function
   setAssociation = (headers, formData) => {
-    this.props.setAssociation(headers, formData).then(res => {
-      if (res) {
-        this.setState({
-          currentState: this.stateMachine.forward(this.state.currentState)
-        });
-      }
-    });
+    const projectId = this.props.project.id;
+    const { issueTypesAssociation, statusesAssociation, userEmailAssociation } = formData;
+    this.props
+      .setAssociation(headers, projectId, issueTypesAssociation, statusesAssociation, userEmailAssociation)
+      .then(res => {
+        if (res) {
+          this.setState({
+            currentState: this.stateMachine.forward(this.state.currentState)
+          });
+        }
+      });
+  };
+
+  // Finish forward function
+  synchronize = (headers, formData) => {
+    const projectId = this.props.project.id;
+    const { issueTypesAssociation, statusesAssociation, userEmailAssociation } = formData;
+    this.props
+      .setAssociation(headers, projectId, issueTypesAssociation, statusesAssociation, userEmailAssociation)
+      .then(res => {
+        if (res) {
+          this.setState({
+            currentState: this.stateMachine.forward(this.state.currentState)
+          });
+        }
+      });
   };
 
   onRequestClose = () => {
@@ -122,19 +142,11 @@ class Wizard extends Component {
       case states.FINISH:
         return (
           <div>
-            <div>FINISH</div>
-            <Button text="Назад" type="green" />
-            <Button text="Вперед" type="green" />
+            <Finish lang={lang} previousStep={this.backward} nextStep={this.createBatch} />
           </div>
         );
       default:
-        return (
-          <div>
-            <div>default</div>
-            <Button text="Назад" type="green" />
-            <Button text="Вперед" type="green" />
-          </div>
-        );
+        break;
     }
   }
 
