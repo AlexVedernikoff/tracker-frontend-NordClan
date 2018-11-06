@@ -167,9 +167,9 @@ class SprintEditModal extends Component {
             <hr />
             <Row>
               <Col xs={12} className={css.validateMessages}>
-                {!this.checkNullInputs() ? <span>Все поля должны быть заполнены</span> : null}
+                {!this.checkNullInputs() ? <span>{localize[lang].FILL}</span> : null}
                 {this.state.sprint.dateTo && !this.validateDates() ? (
-                  <span className={css.redMessage}>Дата окончания должна быть позже даты начала</span>
+                  <span className={css.redMessage}>{localize[lang].DATE}</span>
                 ) : null}
               </Col>
             </Row>

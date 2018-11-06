@@ -3,11 +3,16 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import sortBy from 'lodash/sortBy';
 import classnames from 'classnames';
+
 import * as css from './SprintSelector.scss';
 import SelectDropdown from '../SelectDropdown';
+import localize from './SprintSelector.json';
+
 const dateFormat = 'DD.MM.YYYY';
+
 export default class SprintSelector extends Component {
   static propTypes = {
+    lang: PropTypes.lang,
     onChange: PropTypes.func,
     sprints: PropTypes.array,
     useId: PropTypes.bool,
@@ -58,17 +63,17 @@ export default class SprintSelector extends Component {
   };
 
   render() {
-    const { value, onChange, ...otherProps } = this.props;
+    const { value, onChange, lang, ...otherProps } = this.props;
     return (
       <div className="sprint-dropdown">
         <SelectDropdown
           name="sprint"
           searchable={false}
           thisClassName="sprintSelector"
-          placeholder="Выберите спринт"
-          noResultsText="Нет подходящих спринтов"
+          placeholder={localize[lang].CHOOSE_SPRINT}
+          noResultsText={localize[lang].NO_MATCHING_SPRINTS}
           backspaceToRemoveMessage={''}
-          clearAllText="Очистить все"
+          clearAllText={localize[lang].CLEAR_ALL}
           value={value}
           options={this.getSprints()}
           clearable={false}
