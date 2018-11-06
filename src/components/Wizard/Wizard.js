@@ -105,6 +105,12 @@ class Wizard extends Component {
     this.props.onRequestClose();
   };
 
+  createBatch = (headers, pid) => {
+    this.props.createBatch(headers, pid).then(() => {
+      this.onRequestClose();
+    });
+  };
+
   currentStep(lang) {
     switch (this.state.currentState) {
       case states.AUTH:
@@ -149,7 +155,7 @@ class Wizard extends Component {
               lang={lang}
               token={this.props.token}
               previousStep={this.onRequestClose}
-              nextStep={this.props.createBatch}
+              nextStep={this.createBatch}
               project={this.props.project}
             />
           </div>

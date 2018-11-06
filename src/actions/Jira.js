@@ -234,7 +234,7 @@ const createBatch = (headers, pid) => {
   return dispatch => {
     dispatch(startLoading());
     dispatch(createBatchStart());
-    axios
+    return axios
       .post(
         URL,
         {
@@ -250,6 +250,7 @@ const createBatch = (headers, pid) => {
           dispatch(createBatchSuccess(response.data));
         }
         dispatch(finishLoading());
+        return response.data;
       })
       .catch(error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
