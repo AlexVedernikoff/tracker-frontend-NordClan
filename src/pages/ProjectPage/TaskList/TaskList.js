@@ -644,10 +644,12 @@ class TaskList extends Component {
               <Row className={css.search} top="xs">
                 <Col xs={12} sm={3}>
                   <SprintSelector
-                    value={sprintId}
-                    sprints={project.sprints}
-                    onChange={this.onChangeSprintFilter}
                     multi
+                    searchable={false}
+                    clearable
+                    value={sprintId}
+                    onChange={this.onChangeSprintFilter}
+                    sprints={project.sprints}
                     useId
                   />
                 </Col>

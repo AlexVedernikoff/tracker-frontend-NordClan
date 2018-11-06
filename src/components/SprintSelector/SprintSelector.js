@@ -5,7 +5,10 @@ import sortBy from 'lodash/sortBy';
 import classnames from 'classnames';
 import * as css from './SprintSelector.scss';
 import SelectDropdown from '../SelectDropdown';
+import layoutAgnosticFilter from '../../utils/layoutAgnosticFilter';
+
 const dateFormat = 'DD.MM.YYYY';
+
 export default class SprintSelector extends Component {
   static propTypes = {
     onChange: PropTypes.func,
@@ -58,20 +61,21 @@ export default class SprintSelector extends Component {
   };
 
   render() {
-    const { value, onChange, ...otherProps } = this.props;
+    const { value, onChange, multi, searchable, clearable, ...otherProps } = this.props;
     return (
       <div className="sprint-dropdown">
         <SelectDropdown
           name="sprint"
-          searchable={false}
           thisClassName="sprintSelector"
           placeholder="Выберите спринт"
           noResultsText="Нет подходящих спринтов"
-          backspaceToRemoveMessage={''}
+          backspaceToRemoveMessage=""
           clearAllText="Очистить все"
+          multi={multi}
+          searchable={searchable}
+          clearable={clearable}
           value={value}
           options={this.getSprints()}
-          clearable={false}
           onFocus={this.onSelectFocus}
           onBlur={this.onSelectBlur}
           onChange={option => onChange(option)}
@@ -80,6 +84,7 @@ export default class SprintSelector extends Component {
             className: this.state.inputFocused ? null : css.sprintInputBlured,
             ...otherProps.inputProps
           }}
+          filterOption={layoutAgnosticFilter}
         />
       </div>
     );

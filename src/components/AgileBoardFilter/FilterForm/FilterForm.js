@@ -166,15 +166,12 @@ class FilterForm extends React.Component {
         <Row className={css.filtersRow}>
           <Col xs={12} sm={6} className={css.changedSprint}>
             <SprintSelector
-              name="changedSprint"
-              placeholder={localize[lang].SELECT_SPRINT}
               multi
-              backspaceToRemoveMessage=""
+              searchable={false}
+              clearable={false}
               value={filters.changedSprint}
               onChange={this.onSprintsFilterChange}
-              noResultsText={localize[lang].NO_RESULTS}
               options={this.props.sortedSprints}
-              filterOption={layoutAgnosticFilter}
             />
             <div className={css.sprintTimeWrapper}>
               {!this.isExternal
