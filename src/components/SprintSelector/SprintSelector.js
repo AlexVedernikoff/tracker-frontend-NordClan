@@ -12,7 +12,7 @@ const dateFormat = 'DD.MM.YYYY';
 
 export default class SprintSelector extends Component {
   static propTypes = {
-    lang: PropTypes.lang,
+    lang: PropTypes.string,
     onChange: PropTypes.func,
     sprints: PropTypes.array,
     useId: PropTypes.bool,
