@@ -14,6 +14,7 @@ import debounce from 'lodash/debounce';
 
 class SetAssociationForm extends Component {
   static propTypes = {
+    getProjectAssociation: PropTypes.func,
     getSimtrackUsers: PropTypes.func,
     lang: PropTypes.string,
     nextStep: PropTypes.func,
@@ -43,6 +44,16 @@ class SetAssociationForm extends Component {
     this.searchOnChange = debounce(this.searchOnChange, 400);
   }
 
+  componentDidMount() {
+    this.props.getProjectAssociation(this.props.project.id).then(association => {
+      this.setState({
+        issueTypesAssociation: association.issueTypesAssociation,
+        statusesAssociation: association.statusesAssociation,
+        userEmailAssociation: association.userEmailAssociation
+      });
+    });
+  }
+
   searchOnChange = name => {
     const userName = name.trim();
     if (userName.length > 1) {
@@ -59,7 +70,11 @@ class SetAssociationForm extends Component {
     let associatedArr;
     switch (key) {
       case 'jiraIssueType':
-        if (~(ind = this.state.selectedJiraCols.findIndex(el => el.id === value.id))) {
+        if (
+          ~(ind = this.state.selectedJiraCols.findIndex(
+            el => (el.externalTaskTypeId ? el.externalTaskTypeId.toString() === value.id : el.id === value.id)
+          ))
+        ) {
           const arr = [...this.state.selectedJiraCols];
           arr.splice(ind, 1);
           this.setState({ selectedJiraCols: arr });
@@ -75,7 +90,11 @@ class SetAssociationForm extends Component {
         }
         break;
       case 'jiraStatusType':
-        if (~(ind = this.state.selectedJiraCols.findIndex(el => el.id === value.id))) {
+        if (
+          ~(ind = this.state.selectedJiraCols.findIndex(
+            el => (el.externalStatusId ? el.externalStatusId.toString() === value.id : el.id === value.id)
+          ))
+        ) {
           const arr = [...this.state.selectedJiraCols];
           arr.splice(ind, 1);
           this.setState({ selectedJiraCols: arr });
@@ -118,12 +137,14 @@ class SetAssociationForm extends Component {
             userEmailAssociation: [...this.state.userEmailAssociation, ...arr]
           });
         }
-
         break;
 
       case associationStates.ISSUE_TYPES:
         arr = this.state.selectedJiraCols.map(e => {
-          return { externalTaskTypeId: e.id, internalTaskTypeId: this.state.selectedSimtrackCol.id };
+          return {
+            externalTaskTypeId: e.externalTaskTypeId ? e.externalTaskTypeId : e.id,
+            internalTaskTypeId: this.state.selectedSimtrackCol.id
+          };
         });
         oldarr = this.state.issueTypesAssociation.filter(
           e => e.internalTaskTypeId !== this.state.selectedSimtrackCol.id
@@ -135,7 +156,10 @@ class SetAssociationForm extends Component {
 
       case associationStates.STATUS_TYPES:
         arr = this.state.selectedJiraCols.map(e => {
-          return { externalStatusId: e.id, internalStatusId: this.state.selectedSimtrackCol.id };
+          return {
+            externalStatusId: e.externalStatusId ? e.externalStatusId : e.id,
+            internalStatusId: this.state.selectedSimtrackCol.id
+          };
         });
         oldarr = this.state.statusesAssociation.filter(e => e.internalStatusId !== this.state.selectedSimtrackCol.id);
         this.setState({
@@ -150,7 +174,7 @@ class SetAssociationForm extends Component {
   // --------------------------------
 
   isDisabledAssociation = () => {
-    switch (this.state.currentState) {
+    /* switch (this.state.currentState) {
       case associationStates.ISSUE_TYPES:
         return !(this.state.selectedSimtrackCol && this.state.selectedJiraCols.length > 0);
       case associationStates.STATUS_TYPES:
@@ -159,7 +183,8 @@ class SetAssociationForm extends Component {
         return !this.state.selectedSimtrackCol;
       default:
         break;
-    }
+    }*/
+    return !this.state.selectedSimtrackCol;
   };
 
   isActiveJiraColItems = id => {
@@ -405,12 +430,12 @@ class SetAssociationForm extends Component {
             <Row center="xs">
               {this.state.currentState === associationStates.USERS ? (
                 <Button
-                  text="Вперед2"
+                  text="Вперед"
                   onClick={() => nextStep({ 'X-Jira-Auth': this.props.token }, this.state)}
                   type="green"
                 />
               ) : (
-                <Button text="Вперед1" onClick={this.nextAssociationStep} type="green" />
+                <Button text="Вперед" onClick={this.nextAssociationStep} type="green" />
               )}
             </Row>
           </Col>

@@ -105,6 +105,27 @@ export default function Jira(state = InitialState, action) {
 
     // ------------------
 
+    case JiraActions.GET_PROJECT_ASSOCIATION_START:
+      return {
+        ...state,
+        isGetProjectAssociationStart: true
+      };
+
+    case JiraActions.GET_PROJECT_ASSOCIATION_SUCCESS:
+      return {
+        ...state,
+        isGetProjectAssociationSuccess: true,
+        associations: [...action.associations]
+      };
+
+    case JiraActions.GET_PROJECT_ASSOCIATION_ERROR:
+      return {
+        ...state,
+        isGetProjectAssociationError: true
+      };
+
+    // ------------------
+
     default:
       return {
         ...state

@@ -261,4 +261,48 @@ const createBatch = (headers, pid) => {
   };
 };
 
-export { jiraAuthorize, jiraCreateProject, getJiraProjects, getSimtrackUsersByName, setAssociation, createBatch };
+const getProjectAssociationStart = () => ({
+  type: JiraActions.GET_PROJECT_ASSOCIATION_START
+});
+
+const getProjectAssociationSuccess = associations => ({
+  type: JiraActions.GET_PROJECT_ASSOCIATION_SUCCESS,
+  associations
+});
+
+const getProjectAssociationError = () => ({
+  type: JiraActions.GET_PROJECT_ASSOCIATION_ERROR
+});
+
+const getProjectAssociation = projectId => {
+  const URL = `${API_URL}/jira/getProjectAssociation?projectId=${projectId}`;
+  return dispatch => {
+    dispatch(startLoading());
+    dispatch(getProjectAssociationStart());
+    return axios
+      .get(URL)
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(getProjectAssociationSuccess(response.data));
+        }
+        dispatch(finishLoading());
+        return response.data;
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(getProjectAssociationError(error.response.data));
+        dispatch(finishLoading());
+        throw error;
+      });
+  };
+};
+
+export {
+  jiraAuthorize,
+  jiraCreateProject,
+  getJiraProjects,
+  getSimtrackUsersByName,
+  setAssociation,
+  createBatch,
+  getProjectAssociation
+};
