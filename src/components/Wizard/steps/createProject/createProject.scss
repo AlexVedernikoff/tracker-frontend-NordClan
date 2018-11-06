@@ -7,3 +7,30 @@
     margin-top: 0;
   }
 }
+
+.formField {
+  display: block;
+
+  & + & {
+    margin-top: 1rem;
+  }
+}
+
+.buttonsContainer {
+  margin-top: 2rem;
+  text-align: center;
+  button {
+    width: 50%;
+  }
+}
+
+.leftColumn {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  text-align: right;
+
+  p {
+    margin: 0;
+  }
+}

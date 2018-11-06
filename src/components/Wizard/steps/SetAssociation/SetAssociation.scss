@@ -8,8 +8,16 @@
     padding: 0.5rem 1rem;
   }
 }
+.formField {
+  display: block;
+
+  & + & {
+    margin-top: 1rem;
+  }
+}
 
 .userRow {
+  text-align: center;
   &:hover {
     td {
       transition: $transition;
@@ -23,7 +31,7 @@
 }
 
 .usersRolesHeader {
-  text-align: left;
+  text-align: center;
   &:hover {
     th {
       transition: $transition;
@@ -42,28 +50,24 @@
   }
 }
 
-.associationRow {
-  padding: 1rem;
+.associationButtonContainer {
+  margin-top: 2rem;
+  text-align: center;
+  button {
+    width: 50%;
+  }
 }
 
-/*
-.cell {
-  padding: 1rem;
-  &:after {
-    //content: 'Max';
-  }
-  &:before {
-    //content: 'Ivan';
-  }
-  &__active {
-    &:after {
-      content: 'trololo';
-    }
+.buttonsContainer {
+  margin-top: 2rem;
+  text-align: center;
+  button {
+    width: 50%;
   }
 }
-*/
 
 .innerFirstCol {
+  width: 50%;
   box-sizing: border-box;
   &:last-child {
     border-left: 1px solid #ddd;

@@ -14,6 +14,7 @@ import Finish from './steps/Finish/Finish';
 class Wizard extends Component {
   static propTypes = {
     authorId: PropTypes.number,
+    createBatch: PropTypes.func,
     getJiraProjects: PropTypes.func,
     getProjectAssociation: PropTypes.func,
     getSimtrackUsersByName: PropTypes.func,
@@ -144,7 +145,13 @@ class Wizard extends Component {
       case states.FINISH:
         return (
           <div>
-            <Finish lang={lang} previousStep={this.backward} nextStep={this.createBatch} />
+            <Finish
+              lang={lang}
+              token={this.props.token}
+              previousStep={this.onRequestClose}
+              nextStep={this.props.createBatch}
+              project={this.props.project}
+            />
           </div>
         );
       default:

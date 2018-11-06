@@ -32,8 +32,8 @@ class AuthForm extends Component {
   render() {
     const { lang, nextStep } = this.props;
     const formLayout = {
-      firstCol: 5,
-      secondCol: 7
+      firstCol: 3,
+      secondCol: 9
     };
     return (
       <div className={css.mainContainer}>
@@ -54,6 +54,8 @@ class AuthForm extends Component {
               />
             </Col>
           </Row>
+        </label>
+        <label className={css.formField}>
           <Row>
             <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
               {localize[lang].PASSWORD}
@@ -67,6 +69,8 @@ class AuthForm extends Component {
               />
             </Col>
           </Row>
+        </label>
+        <label className={css.formField}>
           <Row>
             <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
               {localize[lang].SERVER}
@@ -79,6 +83,8 @@ class AuthForm extends Component {
               />
             </Col>
           </Row>
+        </label>
+        <label className={css.formField}>
           <Row>
             <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
               {localize[lang].EMAIL}
@@ -93,7 +99,9 @@ class AuthForm extends Component {
             </Col>
           </Row>
         </label>
-        <Button text="Вперед" onClick={() => nextStep(this.state)} type="green" />
+        <div className={css.buttonsContainer}>
+          <Button text="Вперед" onClick={() => nextStep(this.state)} type="green" />
+        </div>
       </div>
     );
   }

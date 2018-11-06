@@ -4,17 +4,19 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import localize from './Finish.json';
 import * as css from './Finish.scss';
 
-import Input from '../../../Input';
 import Button from '../../../Button';
 
 class FinishForm extends Component {
   static propTypes = {
     lang: PropTypes.string,
-    nextStep: PropTypes.func
+    nextStep: PropTypes.func,
+    previousStep: PropTypes.func,
+    project: PropTypes.object,
+    token: PropTypes.string
   };
 
   render() {
-    const { lang, nextStep } = this.props;
+    const { lang, nextStep, previousStep, project, token } = this.props;
     return (
       <div className={css.mainContainer}>
         <h3>
@@ -23,8 +25,10 @@ class FinishForm extends Component {
         <hr />
         <label className={css.formField} />
         <div>{localize[lang].SYNC_BODY}</div>
-        <Button text="Нет" onClick={() => nextStep(this.state)} type="green" />
-        <Button text="Да" onClick={() => nextStep(this.state)} type="green" />
+        <div className={css.buttonsContainer}>
+          <Button text="Нет" onClick={() => previousStep()} type="green" />
+          <Button text="Да" onClick={() => nextStep({ 'X-Jira-Auth': token }, project.externalId)} type="green" />
+        </div>
       </div>
     );
   }

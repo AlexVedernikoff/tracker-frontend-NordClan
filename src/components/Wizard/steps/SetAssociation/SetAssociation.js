@@ -174,16 +174,6 @@ class SetAssociationForm extends Component {
   // --------------------------------
 
   isDisabledAssociation = () => {
-    /* switch (this.state.currentState) {
-      case associationStates.ISSUE_TYPES:
-        return !(this.state.selectedSimtrackCol && this.state.selectedJiraCols.length > 0);
-      case associationStates.STATUS_TYPES:
-        return !(this.state.selectedSimtrackCol && this.state.selectedJiraCols.length > 0);
-      case associationStates.USERS:
-        return !this.state.selectedSimtrackCol;
-      default:
-        break;
-    }*/
     return !this.state.selectedSimtrackCol;
   };
 
@@ -366,8 +356,8 @@ class SetAssociationForm extends Component {
     }
 
     const formLayout = {
-      firstCol: 6,
-      secondCol: 6
+      firstCol: 1,
+      secondCol: 11
     };
 
     return (
@@ -375,11 +365,19 @@ class SetAssociationForm extends Component {
         <label className={css.formField}>
           <Row>
             <div className={css.innerFirstCol}>
-              <Col xs={12} sm={formLayout.firstCol}>
+              <Col xs={12}>
                 <table className={css.usersRolesTable}>
                   <thead>
                     <tr className={css.usersRolesHeader}>
-                      <th>{localize[this.props.lang].SIMTRACK_EMAIL}</th>
+                      {this.state.currentState === associationStates.ISSUE_TYPES ? (
+                        <th>{localize[this.props.lang].SIMTRACK_ISSUE_TYPES}</th>
+                      ) : null}
+                      {this.state.currentState === associationStates.STATUS_TYPES ? (
+                        <th>{localize[this.props.lang].SIMTRACK_STATUS_TYPES}</th>
+                      ) : null}
+                      {this.state.currentState === associationStates.USERS ? (
+                        <th>{localize[this.props.lang].SIMTRACK_USER}</th>
+                      ) : null}
                     </tr>
                   </thead>
                   <tbody>
@@ -399,11 +397,19 @@ class SetAssociationForm extends Component {
               </Col>
             </div>
             <div className={css.innerFirstCol}>
-              <Col xs={12} sm={formLayout.secondCol}>
+              <Col xs={12}>
                 <table className={css.usersRolesTable}>
                   <thead>
                     <tr className={css.usersRolesHeader}>
-                      <th>{localize[this.props.lang].SIMTRACK_EMAIL}</th>
+                      {this.state.currentState === associationStates.ISSUE_TYPES ? (
+                        <th>{localize[this.props.lang].JIRA_ISSUE_TYPES}</th>
+                      ) : null}
+                      {this.state.currentState === associationStates.STATUS_TYPES ? (
+                        <th>{localize[this.props.lang].JIRA_STATUS_TYPES}</th>
+                      ) : null}
+                      {this.state.currentState === associationStates.USERS ? (
+                        <th>{localize[this.props.lang].JIRA_EMAIL}</th>
+                      ) : null}
                     </tr>
                   </thead>
                   <tbody>{JiraTableBody}</tbody>
@@ -412,34 +418,25 @@ class SetAssociationForm extends Component {
             </div>
           </Row>
         </label>
-
-        <Row center="xs" className={css.associationRow}>
+        <div className={css.associationButtonContainer}>
           <Button text="Ассоциация" onClick={this.associate} type="green" disabled={this.isDisabledAssociation()} />
-        </Row>
-        <Row>
-          <Col xs={12} sm={formLayout.firstCol}>
-            <Row center="xs">
-              {this.state.currentState === associationStates.ISSUE_TYPES ? (
-                <Button text="Назад" onClick={() => previousStep(this.state)} type="green" />
-              ) : (
-                <Button text="Назад" onClick={this.previousAssociationStep} type="green" />
-              )}
-            </Row>
-          </Col>
-          <Col xs={12} sm={formLayout.secondCol}>
-            <Row center="xs">
-              {this.state.currentState === associationStates.USERS ? (
-                <Button
-                  text="Вперед"
-                  onClick={() => nextStep({ 'X-Jira-Auth': this.props.token }, this.state)}
-                  type="green"
-                />
-              ) : (
-                <Button text="Вперед" onClick={this.nextAssociationStep} type="green" />
-              )}
-            </Row>
-          </Col>
-        </Row>
+        </div>
+        <div className={css.buttonsContainer}>
+          {this.state.currentState === associationStates.ISSUE_TYPES ? (
+            <Button text="Назад" onClick={() => previousStep(this.state)} type="green" />
+          ) : (
+            <Button text="Назад" onClick={this.previousAssociationStep} type="green" />
+          )}
+          {this.state.currentState === associationStates.USERS ? (
+            <Button
+              text="Вперед"
+              onClick={() => nextStep({ 'X-Jira-Auth': this.props.token }, this.state)}
+              type="green"
+            />
+          ) : (
+            <Button text="Вперед" onClick={this.nextAssociationStep} type="green" />
+          )}
+        </div>
       </div>
     );
   }

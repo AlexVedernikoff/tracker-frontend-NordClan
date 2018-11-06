@@ -56,8 +56,8 @@ class CreateProjectForm extends Component {
   render() {
     const { lang, previousStep, nextStep } = this.props;
     const formLayout = {
-      firstCol: 5,
-      secondCol: 7
+      firstCol: 3,
+      secondCol: 9
     };
     return (
       <div className={css.mainContainer}>
@@ -82,6 +82,8 @@ class CreateProjectForm extends Component {
               />
             </Col>
           </Row>
+        </label>
+        <label className={css.formField}>
           <Row>
             <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
               {localize[lang].PREFIX}
@@ -95,8 +97,14 @@ class CreateProjectForm extends Component {
             </Col>
           </Row>
         </label>
-        <Button text="Назад" onClick={() => previousStep(this.state)} type="green" />
-        <Button text="Вперед" onClick={() => nextStep({ 'X-Jira-Auth': this.props.token }, this.state)} type="green" />
+        <div className={css.buttonsContainer}>
+          <Button text="Назад" onClick={() => previousStep(this.state)} type="green" />
+          <Button
+            text="Вперед"
+            onClick={() => nextStep({ 'X-Jira-Auth': this.props.token }, this.state)}
+            type="green"
+          />
+        </div>
       </div>
     );
   }
