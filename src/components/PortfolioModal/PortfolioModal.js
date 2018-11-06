@@ -64,7 +64,7 @@ class PortfolioModal extends Component {
               searchPromptText={localize[lang].ENTER_PORTFOLIO_NAME}
               multi={false}
               ignoreCase={false}
-              placeholder={localize[lang].CHOOSE_PORTFILIO}
+              placeholder={localize[lang].CHOOSE_PORTFOLIO}
               options={portfoliosOptions}
               filterOption={el => el}
               onChange={this.onPortfolioSelect}

@@ -269,7 +269,7 @@ class SprintEditModal extends Component {
                 <Button
                   type="green"
                   htmlType="submit"
-                  text="Изменить"
+                  text={localize[lang].CHANGE}
                   disabled={this.validateAllFields()}
                   onClick={this.handleEditSprint}
                 />

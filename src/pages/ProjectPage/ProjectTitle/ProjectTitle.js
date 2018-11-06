@@ -83,10 +83,11 @@ class ProjectTitle extends Component {
   };
 
   handleIncorrectInput() {
+    const { lang } = this.props;
     if (this.projectName.innerText.length < 4 || this.projectName.innerText.length > 255) {
       this.setState({ nameIsIncorrect: true }, () =>
         this.props.showNotification({
-          message: 'Имя проекта должно содержать от 4 до 255 символов',
+          message: localize[lang].PROJECT_NAME_MESSAGE,
           type: 'error'
         })
       );
@@ -97,7 +98,7 @@ class ProjectTitle extends Component {
     if (this.projectPrefix.innerText.length < 2 || this.projectPrefix.innerText.length > 8) {
       this.setState({ prefixIsIncorrect: true }, () =>
         this.props.showNotification({
-          message: 'Префикс должен содержать от 2 до 8 символов',
+          message: localize[lang].PROJECT_PREFIX_MESSAGE,
           type: 'error'
         })
       );

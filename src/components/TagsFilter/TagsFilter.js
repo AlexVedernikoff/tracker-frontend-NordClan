@@ -31,7 +31,7 @@ class TagsFilter extends React.Component {
     const { lang } = this.props;
     return (
       <SelectDropdown
-        searchPromptText={'Введите имя тега'}
+        searchPromptText={localization[lang].TAG_NAME}
         placeholder={localization[lang].TAG_NAME}
         backspaceToRemoveMessage={''}
         noResultsText={localization[lang].NOT_FOUNDED}
