@@ -23,6 +23,9 @@
 
 .sprint-dropdown .Select-value-label {
   margin-right: 15%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .Select-clear-zone {
@@ -198,4 +201,8 @@
 }
 .Select--multi.sprintSelector .Select-control {
   padding: 0;
+}
+
+.Select.sprintReportSelector .Select-multi-value-wrapper .Select-value .Select-value-label {
+  margin-right: 0;
 }
