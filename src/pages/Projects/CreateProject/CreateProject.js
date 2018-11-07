@@ -7,7 +7,6 @@ import Validator from '../../../components/ValidatedInput/Validator';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './CreateProject.scss';
 import Select from 'react-select';
-import getPortfolios from '../../../utils/getPortfolios';
 import { connect } from 'react-redux';
 import localize from './CreateProject.json';
 import { getLocalizedProjectTypes } from '../../../selectors/dictionaries';
@@ -27,7 +26,10 @@ class CreateProject extends Component {
       secondCol: 7
     };
 
-    const SelectAsync = Select.AsyncCreatable;
+    const portfoliosOptions = this.props.portfolios.map(portfolio => ({
+      label: portfolio.name,
+      value: portfolio.id
+    }));
 
     return (
       <Modal
@@ -115,13 +117,13 @@ class CreateProject extends Component {
                 <p>{localize[lang].ADD_TO_PORTFOLIO}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <SelectAsync
+                <Select
                   promptTextCreator={label => `Создать портфель '${label}'`}
                   searchPromptText={'Введите название портфеля'}
                   multi={false}
                   ignoreCase={false}
                   placeholder="Выберите портфель"
-                  loadOptions={getPortfolios}
+                  options={portfoliosOptions}
                   filterOption={el => el}
                   onChange={this.props.onPortfolioSelect}
                   value={this.props.selectedPortfolio}
@@ -153,12 +155,14 @@ class CreateProject extends Component {
 CreateProject.propTypes = {
   handleCheckBox: PropTypes.func,
   isOpen: PropTypes.bool,
+  lang: PropTypes.string,
   onChange: PropTypes.func,
   onPortfolioSelect: PropTypes.func,
   onRequestClose: PropTypes.func,
   onSubmit: PropTypes.func,
   onSubmitAndOpen: PropTypes.func,
   onTypeSelect: PropTypes.func,
+  portfolios: PropTypes.array,
   prefixErrorText: PropTypes.string,
   projectTypes: PropTypes.array,
   selectedPortfolio: PropTypes.object,
@@ -169,6 +173,7 @@ CreateProject.propTypes = {
 
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
+  portfolios: state.Portfolios.portfolios,
   projectTypes: getLocalizedProjectTypes(state) || []
 });
 

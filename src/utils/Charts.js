@@ -1,5 +1,5 @@
 import { defaults } from 'react-chartjs-2';
-import * as zoom from 'chartjs-plugin-zoom';
+// import * as zoom from 'chartjs-plugin-zoom';
 
 const chartDefaultOptions = {
   responsive: true,
@@ -110,4 +110,19 @@ const modifyZoomPlugin = {
   }
 };
 
-export { chartDefaultOptions, modifyZoomPlugin };
+const dataLabelsPlugin = {
+  datalabels: {
+    formatter: function(value) {
+      return value.y;
+    },
+    align: 'end',
+    display: function(context) {
+      const length = context.dataset.data.length;
+      const index = context.dataIndex;
+      const iteration = Math.round(length * 0.1);
+      return length > 2 ? index % iteration === 0 : true;
+    }
+  }
+};
+
+export { chartDefaultOptions, modifyZoomPlugin, dataLabelsPlugin };

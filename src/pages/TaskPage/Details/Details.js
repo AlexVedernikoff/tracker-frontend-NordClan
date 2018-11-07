@@ -41,6 +41,7 @@ class Details extends Component {
     getTask: PropTypes.func.isRequired,
     getTaskSpent: PropTypes.func.isRequired,
     isExternal: PropTypes.bool,
+    lang: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     sprints: PropTypes.array,
     task: PropTypes.object.isRequired,
@@ -210,6 +211,7 @@ class Details extends Component {
           getContent={() => <div> {localize[lang].LOADING} </div>}
         />
       );
+
     return (
       <div className={css.detailsBlock}>
         <table className={css.detailTable}>

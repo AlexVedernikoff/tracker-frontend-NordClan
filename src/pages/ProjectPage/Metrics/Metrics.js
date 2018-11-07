@@ -61,11 +61,11 @@ class Metrics extends Component {
   }
 
   componentWillMount() {
-    const { getMetrics, params, createdAt } = this.props;
+    const { params, createdAt } = this.props;
 
     if (createdAt) {
       const metricsParams = this.getMetricsParams(createdAt, params.projectId);
-      getMetrics(metricsParams);
+      this.props.getMetrics(metricsParams);
     }
   }
 
@@ -74,11 +74,11 @@ class Metrics extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { getMetrics, params, createdAt } = this.props;
+    const { params, createdAt } = this.props;
 
     if (nextProps.createdAt !== createdAt) {
       const metricsParams = this.getMetricsParams(nextProps.createdAt, params.projectId);
-      getMetrics(metricsParams);
+      this.props.getMetrics(metricsParams);
     }
   }
 
@@ -90,10 +90,10 @@ class Metrics extends Component {
 
   recalculateMetrics = () => {
     if (!this.props.loading) {
-      const { getMetrics, params, createdAt } = this.props;
+      const { params, createdAt } = this.props;
       const metricsParams = this.getMetricsParams(createdAt, params.projectId);
 
-      getMetrics({
+      this.props.getMetrics({
         ...metricsParams,
         recalculate: true
       });

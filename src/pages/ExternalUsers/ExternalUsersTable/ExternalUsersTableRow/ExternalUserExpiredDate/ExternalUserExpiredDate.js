@@ -45,6 +45,7 @@ class ExternalUserExpiredDate extends Component {
 ExternalUserExpiredDate.propTypes = {
   isEditing: PropTypes.bool,
   onValueChange: PropTypes.func,
+  placeholder: PropTypes.string,
   value: PropTypes.string
 };
 export default ExternalUserExpiredDate;

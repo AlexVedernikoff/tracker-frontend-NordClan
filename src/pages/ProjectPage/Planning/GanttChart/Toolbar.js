@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import * as css from './GanttChart.scss';
 import classnames from 'classnames';
 
 export default class Toolbar extends Component {
-  constructor (props) {
+  static propTypes = {
+    onZoomChange: PropTypes.func,
+    zoom: PropTypes.string
+  };
+
+  constructor(props) {
     super(props);
   }
 
@@ -13,7 +19,7 @@ export default class Toolbar extends Component {
     }
   };
 
-  render () {
+  render() {
     const zoomRadios = ['Hours', 'Days', 'Months'].map(value => {
       const isActive = this.props.zoom === value;
       return (
@@ -24,12 +30,7 @@ export default class Toolbar extends Component {
             [css.radioLabelActive]: isActive
           })}
         >
-          <input
-            type="radio"
-            checked={isActive}
-            onChange={this.handleZoomChange}
-            value={value}
-          />
+          <input type="radio" checked={isActive} onChange={this.handleZoomChange} value={value} />
           {value}
         </label>
       );

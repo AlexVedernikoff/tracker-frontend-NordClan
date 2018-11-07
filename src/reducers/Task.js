@@ -255,11 +255,19 @@ export default function Task(state = InitialState, action) {
         }
       };
 
+    case TaskActions.GET_COMMENTS_BY_TASK_REQUEST: {
+      return {
+        ...state,
+        isCommentsReceived: false
+      };
+    }
+
     case TaskActions.GET_COMMENTS_BY_TASK_SUCCESS: {
       return {
         ...state,
         commentsLoadedDate: action.result.headers.date,
-        comments: action.result.data.reverse()
+        comments: action.result.data.reverse(),
+        isCommentsReceived: true
       };
     }
 

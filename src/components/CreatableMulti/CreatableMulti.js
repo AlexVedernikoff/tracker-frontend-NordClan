@@ -13,7 +13,7 @@ class CreatableMulti extends Component {
   };
 
   render() {
-    const { options, onChange, value, lang, noResultsText, ...other } = this.props;
+    const { options, onChange, value, lang, ...other } = this.props;
 
     return (
       <div>

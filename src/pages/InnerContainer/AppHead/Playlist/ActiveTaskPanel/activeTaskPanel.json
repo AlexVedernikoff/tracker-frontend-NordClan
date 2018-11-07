@@ -1,12 +1,12 @@
 {
   "en": {
-    "ACTIVE_TASKS": "Active task",
+    "ACTIVE_TASK": "Active task",
     "NO_ACTIVE_TASKS": "No active tasks",
-    "LAST_ACTIVE_TASKS": "Last active task"
+    "LAST_ACTIVE_TASK": "Last active task"
   },
   "ru": {
-    "ACTIVE_TASKS": "Активная задача",
+    "ACTIVE_TASK": "Активная задача",
     "NO_ACTIVE_TASKS": "Нет активных задач",
-    "LAST_ACTIVE_TASKS": "Последняя активная задача"
+    "LAST_ACTIVE_TASK": "Последняя активная задача"
   }
 }

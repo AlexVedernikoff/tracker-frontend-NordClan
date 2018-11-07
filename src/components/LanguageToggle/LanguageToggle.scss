@@ -1,8 +1,29 @@
+@import '../../styles/variables.scss';
+
 .wrap {
   display: flex;
   justify-content: flex-end;
   flex-grow: 12;
   align-items: center;
+  &.appHead {
+    @include phone {
+      display: none;
+    }
+  }
+  &.navMenu {
+    display: none;
+    @include phone {
+      display: flex;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      justify-content: flex-end;
+      padding: 1.25rem 0;
+      border-top: solid;
+      border-width: 1px;
+      background-color: lighten(#adb7c0, 20%);
+    }
+  }
 }
 
 .toggle {
@@ -15,6 +36,10 @@
 .lang {
   padding: 0 10px;
   color: #fff;
+  @include phone {
+    position: relative;
+    color: #333;
+  }
 }
 
 .wrap > .toggle input {

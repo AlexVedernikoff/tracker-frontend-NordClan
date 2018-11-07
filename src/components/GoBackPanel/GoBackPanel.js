@@ -10,6 +10,7 @@ import localize from './GoBackPanel.json';
 class GoBackPanel extends Component {
   static propTypes = {
     defaultPreviousUrl: PropTypes.string,
+    lang: PropTypes.string,
     parentRef: PropTypes.object
   };
 

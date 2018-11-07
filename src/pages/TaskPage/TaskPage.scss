@@ -86,14 +86,23 @@
   background: none;
   border: 1px solid $color-gray;
   border-top: none;
-  svg { display: none; }
-  span { display: inline-block; }
+  cursor: pointer;
+  svg {
+    display: none;
+  }
+  span {
+    display: inline-block;
+  }
 
   &:hover {
     background-color: rgba($color-black, 0.05);
     transition: $transition;
-    svg { display: inline-block; }
-    span { display: none; }
+    svg {
+      display: inline-block;
+    }
+    span {
+      display: none;
+    }
   }
 
   @include phone {

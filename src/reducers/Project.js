@@ -217,6 +217,7 @@ export default function Project(state = InitialState, action) {
       };
 
     case ProjectActions.PROJECT_CHANGE_SUCCESS:
+      if (state.project.id !== action.changedFields.id) return state;
       return {
         ...state,
         project: {

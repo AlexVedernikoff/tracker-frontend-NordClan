@@ -9,12 +9,13 @@ import roundNum from '../../../../utils/roundNum';
 import localize from './TasksCountChart.json';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import datalabels from 'chartjs-plugin-datalabels';
+import { dataLabelsPlugin } from '../../../../utils/Charts';
 
 class TasksCountChart extends Component {
   static propTypes = {
     chartDefaultOptions: PropTypes.object,
     getBasicLineSettings: PropTypes.func,
+    lang: PropTypes.string,
     openedBugsMetrics: PropTypes.array,
     openedCustomerBugsMetrics: PropTypes.array,
     openedFeaturesFromClient: PropTypes.array,
@@ -66,14 +67,7 @@ class TasksCountChart extends Component {
           }
         ]
       },
-      plugins: {
-        datalabels: {
-          formatter: function(value) {
-            return value.y;
-          },
-          align: 'end'
-        }
-      }
+      plugins: dataLabelsPlugin
     };
   }
 

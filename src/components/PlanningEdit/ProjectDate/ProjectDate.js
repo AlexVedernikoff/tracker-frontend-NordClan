@@ -19,15 +19,15 @@ class ProjectDate extends Component {
     };
   }
 
-  componentDidUpdate() {
-    ReactTooltip.rebuild();
-  }
-
   componentWillReceiveProps = newProps => {
     if (this.props.value !== newProps.value) {
       this.setState({ value: newProps.value });
     }
   };
+
+  componentDidUpdate() {
+    ReactTooltip.rebuild();
+  }
 
   toggleEditing = () => {
     if (this.state.isEditing) {
@@ -110,12 +110,13 @@ class ProjectDate extends Component {
 }
 
 ProjectDate.propTypes = {
+  disabledDataRanges: PropTypes.array.isRequired,
   header: PropTypes.string.isRequired,
   id: PropTypes.number,
   isProjectAdmin: PropTypes.bool,
+  lang: PropTypes.string,
   onEditSubmit: PropTypes.func.isRequired,
-  value: PropTypes.string,
-  disabledDataRanges: PropTypes.array.isRequired
+  value: PropTypes.string
 };
 
 const mapStateToProps = state => ({
