@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import ReactTooltip from 'react-tooltip';
+import { createSelector } from 'reselect';
 import Tag from '../../../components/Tag';
 import Tags from '../../../components/Tags';
 import TaskPlanningTime from '../TaskPlanningTime';
@@ -30,6 +31,19 @@ const spentRequestStatus = {
   REQUESTED: 1,
   RECEIVED: 2
 };
+
+const userRoles = ['back', 'front', 'ios', 'android'];
+
+const usersSelector = state => state.Project.project.users;
+
+const sortedUsersSelector = createSelector(usersSelector, users => {
+  const userArray = {
+    back: [],
+    front: [],
+    ios: [],
+    android: []
+  };
+});
 
 class Details extends Component {
   static propTypes = {
@@ -180,6 +194,8 @@ class Details extends Component {
       const tagName = typeof tag === 'object' ? tag.name : tag;
       return <Tag key={i} name={tagName} taggable="task" taggableId={task.id} />;
     });
+
+    console.log('users', this.props.users);
 
     const users = this.props.users.map(item => ({
       value: item.user ? item.user.id : item.id,
