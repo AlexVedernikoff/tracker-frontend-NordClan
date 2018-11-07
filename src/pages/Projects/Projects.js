@@ -301,16 +301,20 @@ class Projects extends Component {
   }
 
   handleModal = () => {
-    const { isCreateProjectModalOpen, openCreateProjectModal, closeCreateProjectModal } = this.props;
+    const {
+      isCreateProjectModalOpen,
+      openCreateProjectModal: openCreateProjectModalFunc,
+      closeCreateProjectModal: closeCreateProjectModalFunc
+    } = this.props;
     if (isCreateProjectModalOpen) {
       this.setState({
         projectName: '',
         projectPrefix: '',
         selectedPortfolio: null
       });
-      closeCreateProjectModal();
+      closeCreateProjectModalFunc();
     } else {
-      openCreateProjectModal();
+      openCreateProjectModalFunc();
     }
   };
 
