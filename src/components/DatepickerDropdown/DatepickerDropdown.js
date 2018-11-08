@@ -15,7 +15,7 @@ class DatepickerDropdown extends Component {
   }
 
   render() {
-    const { disabledDataRanges, dispatch, lang, ...other } = this.props;
+    const { disabledDataRanges, ...other } = this.props.ownProps;
 
     return (
       <DayPickerInput
@@ -25,7 +25,7 @@ class DatepickerDropdown extends Component {
         className={css.dropdown}
         format="DD.MM.YYYY"
         dayPickerProps={{
-          locale: lang,
+          locale: this.props.lang,
           localeUtils: { ...LocaleUtils },
           disabledDays: disabledDataRanges
         }}
@@ -41,8 +41,9 @@ DatepickerDropdown.propTypes = {
   options: PropTypes.array
 };
 
-const mapStateToProps = state => ({
-  lang: state.Localize.lang
+const mapStateToProps = (state, ownProps) => ({
+  lang: state.Localize.lang,
+  ownProps
 });
 
 export default connect(mapStateToProps)(DatepickerDropdown);
