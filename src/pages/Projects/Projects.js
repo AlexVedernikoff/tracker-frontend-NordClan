@@ -27,6 +27,8 @@ import localization from './projects.json';
 import Title from 'react-title-component';
 import TypeFilter from './TypeFilter';
 import { getLocalizedProjectTypes } from './../../selectors/dictionaries';
+import { IconPreloader } from '../../components/Icons';
+import InlineHolder from '../../components/InlineHolder';
 
 import 'moment/locale/ru';
 
@@ -296,14 +298,44 @@ class Projects extends Component {
     return false;
   }
 
+  renderProjectsList = () =>
+    this.props.projectList.map(project => (
+      <ProjectCard key={`project-${project.id}`} project={project} onClickTag={this.onClickTag} />
+    ));
+
+  renderPreloader = () => {
+    return (
+      <div className={css.projectsPreloader}>
+        <Row>
+          <Col xs={12} sm={4}>
+            <IconPreloader style={{ color: 'silver', fontSize: '2rem', marginRight: 10, float: 'left' }} />
+            <InlineHolder length="60%" />
+          </Col>
+          <Col xs={12} sm={4} className={css.box}>
+            <InlineHolder length="80%" />
+            <InlineHolder length="40%" />
+          </Col>
+          <Col xs={12} sm={4} className={css.box}>
+            <InlineHolder length="30%" />
+          </Col>
+        </Row>
+      </div>
+    );
+  };
+
   render() {
-    const { lang } = this.props;
+    const { lang, isProjectsReceived } = this.props;
     const { filteredInProgress, filteredInHold, filteredFinished, filterSelectedTypes } = this.state;
     const { projectTypes } = this.props;
     const formattedDayFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('DD.MM.YYYY') : '';
     const formattedDayTo = this.state.dateTo ? moment(this.state.dateTo).format('DD.MM.YYYY') : '';
     const isAdmin = this.props.globalRole === ADMIN;
     const isFiltered = this.isFiltered();
+    const withoutProjects = isProjectsReceived ? (
+      <div className={css.notFound}>{localization[lang][isFiltered ? 'NOTHING_FOUND' : 'NO_PROJECT_ASSIGNED']}</div>
+    ) : (
+      this.renderPreloader()
+    );
 
     return (
       <div>
@@ -384,17 +416,7 @@ class Projects extends Component {
               </Col>
             </Row>
           </div>
-          {this.props.projectList.length ? (
-            <div>
-              {this.props.projectList.map(project => (
-                <ProjectCard key={`project-${project.id}`} project={project} onClickTag={this.onClickTag} />
-              ))}
-            </div>
-          ) : (
-            <div className={css.notFound}>
-              {localization[lang][isFiltered ? 'NOTHING_FOUND' : 'NO_PROJECT_ASSIGNED']}
-            </div>
-          )}
+          {this.props.projectList.length ? this.renderProjectsList() : withoutProjects}
           {this.props.pagesCount > 1 ? (
             <Pagination
               itemsCount={this.props.pagesCount}
@@ -428,6 +450,7 @@ Projects.propTypes = {
   getProjects: PropTypes.func.isRequired,
   globalRole: PropTypes.string.isRequired,
   isCreateProjectModalOpen: PropTypes.bool.isRequired,
+  isProjectsReceived: PropTypes.bool,
   lang: PropTypes.string,
   loading: PropTypes.number,
   openCreateProjectModal: PropTypes.func.isRequired,
@@ -446,6 +469,7 @@ const mapStateToProps = state => ({
   projectError: state.Projects.error,
   globalRole: state.Auth.user.globalRole,
   lang: state.Localize.lang,
+  isProjectsReceived: state.Projects.projects.isProjectsReceived,
   projectTypes: getLocalizedProjectTypes(state) || []
 });
 
