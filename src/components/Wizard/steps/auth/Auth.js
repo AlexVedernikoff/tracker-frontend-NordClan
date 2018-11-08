@@ -44,6 +44,20 @@ class AuthForm extends Component {
         <label className={css.formField}>
           <Row>
             <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+              {localize[lang].SERVER}
+            </Col>
+            <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+              <Input
+                placeholder={localize[lang].SERVER}
+                onChange={e => this.onChange('server', e)}
+                value={this.state.server}
+              />
+            </Col>
+          </Row>
+        </label>
+        <label className={css.formField}>
+          <Row>
+            <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
               {localize[lang].USERNAME}
             </Col>
             <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
@@ -66,20 +80,6 @@ class AuthForm extends Component {
                 type="password"
                 onChange={e => this.onChange('password', e)}
                 value={this.state.password}
-              />
-            </Col>
-          </Row>
-        </label>
-        <label className={css.formField}>
-          <Row>
-            <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-              {localize[lang].SERVER}
-            </Col>
-            <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-              <Input
-                placeholder={localize[lang].SERVER}
-                onChange={e => this.onChange('server', e)}
-                value={this.state.server}
               />
             </Col>
           </Row>
