@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import * as _ from 'lodash';
 import Button from '../../../components/Button';
 import ConfirmModal from '../../../components/ConfirmModal';
 import { Link } from 'react-router';
@@ -193,6 +194,9 @@ class TaskHeader extends Component {
         break;
       case 'QA':
         unionPerformers = users.qa;
+        break;
+      default:
+        unionPerformers = _.union(users.back, users.front, users.ios, users.android);
     }
 
     const usersFullNames = unionPerformers.map(item => ({

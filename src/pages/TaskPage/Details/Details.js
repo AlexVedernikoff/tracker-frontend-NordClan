@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import * as _ from 'lodash';
 import { Link } from 'react-router';
 import ReactTooltip from 'react-tooltip';
 import { createSelector } from 'reselect';

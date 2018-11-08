@@ -1,3 +1,12 @@
+const getRoles = user => {
+  for (const key in user.roles) {
+    if (user.roles[key]) {
+      return key;
+    }
+  }
+  return 'other';
+};
+
 const sortPerformer = users => {
   const userArray = {
     back: [],
@@ -12,7 +21,7 @@ const sortPerformer = users => {
     if (userArray[role]) {
       userArray[role].push(user);
     } else {
-      userArray['other'].push(user);
+      userArray.other.push(user);
     }
   });
   for (const key in userArray) {
@@ -23,15 +32,6 @@ const sortPerformer = users => {
     });
   }
   return userArray;
-};
-
-const getRoles = user => {
-  for (const key in user.roles) {
-    if (user.roles[key]) {
-      return key;
-    }
-  }
-  return 'other';
 };
 
 export default sortPerformer;
