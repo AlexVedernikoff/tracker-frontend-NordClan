@@ -25,6 +25,7 @@ import localize from './Details.json';
 import { getFullName } from '../../../utils/NameLocalisation';
 import { TASK_STATUS_CLOSED } from '../../../constants/Task';
 import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
+import sortPerformer from '../../../utils/sortPerformer';
 
 const spentRequestStatus = {
   READY: 0,
@@ -32,18 +33,9 @@ const spentRequestStatus = {
   RECEIVED: 2
 };
 
-const userRoles = ['back', 'front', 'ios', 'android'];
-
 const usersSelector = state => state.Project.project.users;
 
-const sortedUsersSelector = createSelector(usersSelector, users => {
-  const userArray = {
-    back: [],
-    front: [],
-    ios: [],
-    android: []
-  };
-});
+const sortedUsersSelector = createSelector(usersSelector, users => sortPerformer(users));
 
 class Details extends Component {
   static propTypes = {
@@ -61,7 +53,7 @@ class Details extends Component {
     task: PropTypes.object.isRequired,
     taskTypes: PropTypes.array,
     timeSpent: PropTypes.object,
-    users: PropTypes.array
+    users: PropTypes.object
   };
 
   constructor(props) {
@@ -189,15 +181,15 @@ class Details extends Component {
   };
 
   render() {
-    const { task, sprints, taskTypes, timeSpent, isExternal, lang } = this.props;
+    const { task, sprints, taskTypes, timeSpent, isExternal, lang, users } = this.props;
     const tags = task.tags.map((tag, i) => {
       const tagName = typeof tag === 'object' ? tag.name : tag;
       return <Tag key={i} name={tagName} taggable="task" taggableId={task.id} />;
     });
 
-    console.log('users', this.props.users);
+    const unionPerformers = _.union(users.back, users.front, users.ios, users.android, users.qa, users.other);
 
-    const users = this.props.users.map(item => ({
+    const usersFullNames = unionPerformers.map(item => ({
       value: item.user ? item.user.id : item.id,
       label: item.user ? getFullName(item.user) : getFullName(item)
     }));
@@ -365,7 +357,7 @@ class Details extends Component {
             onChoose={this.changePerformer}
             onClose={this.closePerformerModal}
             title={localize[lang].CHANGE_PERFORMER}
-            users={users}
+            users={usersFullNames}
           />
         ) : null}
         {this.state.isSprintModalOpen ? (
@@ -390,7 +382,7 @@ class Details extends Component {
 }
 
 const mapStateToProps = state => ({
-  users: state.Project.project.users,
+  users: sortedUsersSelector(state),
   sprints: state.Project.project.sprints,
   taskTypes: getLocalizedTaskTypes(state),
   PlanningTimeIsEditing: state.Task.PlanningTimeIsEditing,
