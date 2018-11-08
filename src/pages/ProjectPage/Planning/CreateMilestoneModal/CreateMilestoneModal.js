@@ -9,7 +9,7 @@ import * as css from './CreateMilestoneModal.scss';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { createMilestone } from '../../../../actions/Milestone';
-import Select from 'react-select';
+import SelectDropdown from '../../../../components/SelectDropdown';
 import localize from './CreateMilestoneModal.json';
 import { getDictionaryName } from '../../../../utils/NameLocalisation';
 import { getLocalizedMilestoneTypes } from '../../../../selectors/dictionaries';
@@ -63,6 +63,10 @@ class CreateMilestoneModal extends Component {
     this.props.createMilestone(this.state.name.trim(), this.props.projectId, this.state.date, this.state.typeId);
   };
 
+  onClear() {
+    this.setState({ typeId: 1 });
+  }
+
   render() {
     const formattedDay = this.state.date ? moment(this.state.date).format('DD.MM.YYYY') : '';
 
@@ -100,7 +104,7 @@ class CreateMilestoneModal extends Component {
                 <p>{localize[lang].MILESTONE_TYPE}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Select
+                <SelectDropdown
                   value={this.state.typeId}
                   options={options}
                   multi={false}
@@ -110,6 +114,8 @@ class CreateMilestoneModal extends Component {
                   placeholder={localize[lang].MILESTONE_TYPE}
                   noResultsText={localize[lang].NO_RESUTLS}
                   clearable={false}
+                  onClear={() => this.onClear()}
+                  canClear
                 />
               </Col>
             </Row>
