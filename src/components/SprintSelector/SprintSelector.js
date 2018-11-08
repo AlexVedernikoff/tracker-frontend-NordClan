@@ -30,6 +30,7 @@ export default class SprintSelector extends Component {
     let sprints = sortBy(arr, sprint => {
       return new moment(sprint.factFinishDate);
     });
+    const { multi } = this.props;
 
     sprints = sprints.map(sprint => ({
       value: this.props.useId ? sprint.id : sprint,
@@ -44,7 +45,8 @@ export default class SprintSelector extends Component {
         [css.sprintMarker]: true,
         [css.FINISHED]: sprint.statusId === 1,
         [css.picked]: this.isOptionPicked(this.props.useId ? sprint.id : sprint)
-      })
+      }),
+      disabled: !multi && this.isOptionPicked(this.props.useId ? sprint.id : sprint)
     }));
 
     sprints.push({
@@ -54,12 +56,14 @@ export default class SprintSelector extends Component {
         [css.INPROGRESS]: false,
         [css.sprintMarker]: true,
         [css.picked]: this.isOptionPicked(0)
-      })
+      }),
+      disabled: !multi && this.isOptionPicked(0)
     });
     return sprints;
   };
 
   getOptions = arr => {
+    const { multi } = this.props;
     const options = arr.map(option => ({
       ...option,
       className: classnames({
@@ -67,7 +71,8 @@ export default class SprintSelector extends Component {
         [css.sprintMarker]: true,
         [css.FINISHED]: option.statusId === 1,
         [css.picked]: this.isOptionPicked(option.value)
-      })
+      }),
+      disabled: !multi && this.isOptionPicked(option.value)
     }));
     return options;
   };
@@ -84,12 +89,13 @@ export default class SprintSelector extends Component {
   };
 
   render() {
-    const { value, onChange, options, sprints, ...otherProps } = this.props;
+    const { value, onChange, options, sprints, multi, ...otherProps } = this.props;
     return (
       <div className="sprint-dropdown">
         <SelectDropdown
           name="sprint"
           removeSelected={false}
+          multi={multi}
           searchable={false}
           thisClassName="sprintSelector"
           placeholder="Выберите спринт"
