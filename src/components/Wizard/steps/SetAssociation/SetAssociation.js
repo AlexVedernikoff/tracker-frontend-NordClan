@@ -44,13 +44,46 @@ class SetAssociationForm extends Component {
 
   componentDidMount() {
     this.props.getProjectAssociation(this.props.project.id).then(association => {
-      this.setState({
-        issueTypesAssociation: association.issueTypesAssociation,
-        statusesAssociation: association.statusesAssociation,
-        userEmailAssociation: association.userEmailAssociation
-      });
+      this.setState(
+        {
+          issueTypesAssociation: association.issueTypesAssociation,
+          statusesAssociation: association.statusesAssociation,
+          userEmailAssociation: association.userEmailAssociation
+        },
+        () => this.setDefault()
+      );
     });
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.currentState !== this.state.currentState) this.setDefault();
+  }
+
+  setDefault = () => {
+    const { currentState, issueTypesAssociation, statusesAssociation, userEmailAssociation } = this.state;
+    let associatedArr;
+    let value;
+    switch (currentState) {
+      case associationStates.USERS:
+        value = this.state.userEmailAssociation[0];
+        associatedArr = userEmailAssociation.filter(e => (value.internalUserId || value.id) === e.internalUserId);
+        break;
+
+      case associationStates.ISSUE_TYPES:
+        value = this.props.taskTypes.find(el => el.id === 1);
+        associatedArr = issueTypesAssociation.filter(e => value.id === e.internalTaskTypeId);
+        break;
+
+      case associationStates.STATUS_TYPES:
+        value = this.props.taskStatuses.find(el => el.id === 1);
+        associatedArr = statusesAssociation.filter(e => value.id === e.internalStatusId);
+        break;
+      default:
+        break;
+    }
+
+    this.setState({ selectedJiraCols: [...associatedArr], selectedSimtrackCol: value });
+  };
 
   searchOnChange = name => {
     const userName = name.trim();
@@ -124,10 +157,6 @@ class SetAssociationForm extends Component {
   };
 
   associateOnClick = (key, value) => {
-    if (!this.state.selectedSimtrackCol) {
-      alert('choose SimId');
-      return;
-    }
     const { issueTypesAssociation, statusesAssociation, userEmailAssociation } = this.state;
     const id = this.state.selectedSimtrackCol.id;
     let newArr;
@@ -171,7 +200,7 @@ class SetAssociationForm extends Component {
         break;
       case 'jiraUser':
         newArr = userEmailAssociation;
-
+        if (!id) break;
         association = {
           externalUserEmail: value.email,
           internalUserId: id,
