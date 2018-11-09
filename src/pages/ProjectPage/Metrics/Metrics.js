@@ -126,6 +126,14 @@ class Metrics extends Component {
     );
   };
 
+  parseTeamMetrics(teamMetrics) {
+    return (teamMetrics && teamMetrics.length && JSON.parse(teamMetrics[0].value)) || [];
+  }
+
+  getSprintsFromMetric(teamMetrics) {
+    return teamMetrics.map(item => item.sprint);
+  }
+
   render() {
     /*
       значение Id типов метрик
@@ -309,14 +317,6 @@ class Metrics extends Component {
         </section>
       </div>
     );
-  }
-
-  parseTeamMetrics(teamMetrics) {
-    return (teamMetrics && teamMetrics.length && JSON.parse(teamMetrics[0].value)) || [];
-  }
-
-  getSprintsFromMetric(teamMetrics) {
-    return teamMetrics.map(item => item.sprint);
   }
 }
 

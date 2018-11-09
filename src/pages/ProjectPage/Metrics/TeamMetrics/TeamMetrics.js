@@ -27,7 +27,6 @@ class TeamMetrics extends Component {
     const { sprints } = this.props;
     if (sprints && sprints.length > 0) {
       const options = this.getCurrentSprint(sprints);
-      console.log('options componentWillMount', options);
       this.setState({ sprintSelected: options });
     }
   }
@@ -36,16 +35,48 @@ class TeamMetrics extends Component {
     const { sprints } = this.props;
     if (nextProps.sprints && nextProps.sprints.length !== sprints.length) {
       const options = this.getCurrentSprint(nextProps.sprints);
-      console.log('options componentWillReceiveProps', options);
       this.setState({ sprintSelected: options });
     }
   }
 
+  getCurrentSprint = sprints => {
+    const processedSprints = sprints.filter(sprint => {
+      return sprint.statusId === 2;
+    });
+    const currentSprints = processedSprints.filter(sprint => {
+      return moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]');
+    });
+    const getOption = sprint => {
+      return {
+        value: sprint,
+        label: `${sprint.name} (${moment(sprint.factStartDate).format(dateFormat)} ${
+          sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format(dateFormat)}` : '- ...'
+        })`,
+        statusId: sprint.statusId,
+        className: classnames({
+          [css.INPROGRESS]: sprint.statusId === 2,
+          [css.sprintMarker]: true,
+          [css.FINISHED]: sprint.statusId === 1
+        })
+      };
+    };
+    if (currentSprints.length) {
+      return getOption(currentSprints[0]);
+    } else if (processedSprints.length) {
+      return getOption(processedSprints[0]);
+    } else if (sprints.length) {
+      return getOption(sprints[sprints.length - 1]);
+    }
+  };
+
+  changeSprint = option => {
+    if (option) {
+      this.setState({ sprintSelected: option });
+    }
+  };
+
   render() {
     const { lang, teamMetrics, sprints } = this.props;
-
-    // console.log('teamMetrics ', teamMetrics);
-    console.log('sprintSelected ', this.state.sprintSelected);
 
     if (!teamMetrics) {
       return <Loader />;
@@ -110,43 +141,6 @@ class TeamMetrics extends Component {
       </div>
     );
   }
-
-  changeSprint = option => {
-    if (option) {
-      this.setState({ sprintSelected: option });
-    }
-  };
-
-  getCurrentSprint = sprints => {
-    console.log('sprints ', sprints);
-    const processedSprints = sprints.filter(sprint => {
-      return sprint.statusId === 2;
-    });
-    const currentSprints = processedSprints.filter(sprint => {
-      return moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]');
-    });
-    const getOption = sprint => {
-      return {
-        value: sprint,
-        label: `${sprint.name} (${moment(sprint.factStartDate).format(dateFormat)} ${
-          sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format(dateFormat)}` : '- ...'
-        })`,
-        statusId: sprint.statusId,
-        className: classnames({
-          [css.INPROGRESS]: sprint.statusId === 2,
-          [css.sprintMarker]: true,
-          [css.FINISHED]: sprint.statusId === 1
-        })
-      };
-    };
-    if (currentSprints.length) {
-      return getOption(currentSprints[0]);
-    } else if (processedSprints.length) {
-      return getOption(processedSprints[0]);
-    } else if (sprints.length) {
-      return getOption(sprints[sprints.length - 1]);
-    }
-  };
 }
 
 const mapStateToProps = state => ({
