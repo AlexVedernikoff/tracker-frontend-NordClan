@@ -1,0 +1,22 @@
+{
+  "en": {
+    "SPRINT": "Sprint:",
+    "PARTICIPANT": "Participant",
+    "FEATURES_DONE_COUNT": "Features done",
+    "FEATURES_RETURN_COUNT": "Features return",
+    "BUGS_DONE_COUNT": "Bugs done",
+    "BUGS_RETURN_COUNT": "Bugs return",
+    "LINKED_BUGS_COUNT": "Linked bugs",
+    "NO_DATA": "No data"
+  },
+  "ru": {
+    "SPRINT": "Спринт:",
+    "PARTICIPANT": "Участник",
+    "FEATURES_DONE_COUNT": "Выполненно фич",
+    "FEATURES_RETURN_COUNT": "Возвратов фич",
+    "BUGS_DONE_COUNT": "Выполненно багов",
+    "BUGS_RETURN_COUNT": "Возвратов багов",
+    "LINKED_BUGS_COUNT": "Связанных багов",
+    "NO_DATA": "Нет данных"
+  }
+}
