@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import Modal from '../Modal';
 import * as css from './Wizard.scss';
 import { states } from './States';
@@ -111,6 +112,10 @@ class Wizard extends Component {
   };
 
   currentStep(lang) {
+    const statuses = _.chain(this.props.taskStatuses)
+      .filter(obj => !obj.name.includes('play'))
+      .sortBy('id')
+      .value();
     switch (this.state.currentState) {
       case states.AUTH:
         return (
@@ -141,7 +146,7 @@ class Wizard extends Component {
               nextStep={this.setAssociation}
               project={this.props.project}
               taskTypes={this.props.taskTypes}
-              taskStatuses={this.props.taskStatuses}
+              taskStatuses={statuses}
               getSimtrackUsers={this.props.getSimtrackUsersByName}
               getProjectAssociation={this.props.getProjectAssociation}
             />
