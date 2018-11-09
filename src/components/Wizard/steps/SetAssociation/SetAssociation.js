@@ -157,8 +157,9 @@ class SetAssociationForm extends Component {
   };
 
   associateOnClick = (key, value) => {
-    const { issueTypesAssociation, statusesAssociation, userEmailAssociation } = this.state;
-    const id = this.state.selectedSimtrackCol.id;
+    const { issueTypesAssociation, statusesAssociation, userEmailAssociation, selectedSimtrackCol } = this.state;
+    if (!selectedSimtrackCol) return;
+    const { id } = selectedSimtrackCol;
     let newArr;
     let association;
     let foundIndex;
@@ -166,8 +167,8 @@ class SetAssociationForm extends Component {
       case 'jiraIssueType':
         newArr = issueTypesAssociation;
         association = {
-          externalTaskTypeId: value.externalTaskTypeId ? value.externalTaskTypeId : value.id,
-          internalTaskTypeId: id
+          externalTaskTypeId: value.externalTaskTypeId ? +value.externalTaskTypeId : +value.id,
+          internalTaskTypeId: +id
         };
         foundIndex = issueTypesAssociation.findIndex(
           el =>
@@ -184,8 +185,8 @@ class SetAssociationForm extends Component {
       case 'jiraStatusType':
         newArr = statusesAssociation;
         association = {
-          externalStatusId: value.externalStatusId ? value.externalStatusId : value.id,
-          internalStatusId: id
+          externalStatusId: value.externalStatusId ? +value.externalStatusId : +value.id,
+          internalStatusId: +id
         };
         foundIndex = statusesAssociation.findIndex(
           el =>
@@ -200,10 +201,9 @@ class SetAssociationForm extends Component {
         break;
       case 'jiraUser':
         newArr = userEmailAssociation;
-        if (!id) break;
         association = {
           externalUserEmail: value.email,
-          internalUserId: id,
+          internalUserId: +id,
           fullNameRu: this.state.selectedSimtrackCol.fullNameRu
         };
         foundIndex = userEmailAssociation.findIndex(
@@ -215,75 +215,7 @@ class SetAssociationForm extends Component {
         } else {
           newArr.push(association);
         }
-        this.setState({ userEmailAssociation: newArr });
-        break;
-      default:
-        break;
-    }
-  };
-
-  associate = () => {
-    let arr;
-    let oldarr;
-    let ind;
-    switch (this.state.currentState) {
-      case associationStates.USERS:
-        if (this.state.selectedJiraCols.length === 0) {
-          // почему то тут различия
-          oldarr = this.state.userEmailAssociation.filter(
-            e =>
-              e.internalUserId !== (this.state.selectedSimtrackCol.internalUserId || this.state.selectedSimtrackCol.id)
-          );
-          this.setState({
-            userEmailAssociation: [...oldarr]
-          });
-        } else {
-          arr = this.state.selectedJiraCols.map(e => {
-            return {
-              externalUserEmail: e.email,
-              internalUserId: this.state.selectedSimtrackCol.internalUserId || this.state.selectedSimtrackCol.id,
-              fullNameRu: this.state.selectedSimtrackCol.fullNameRu
-            };
-          });
-          oldarr = [...this.state.userEmailAssociation];
-          arr.map(el => {
-            ind = oldarr.findIndex(e => {
-              return e.internalUserId === el.internalUserId;
-            });
-          });
-          if (~ind) oldarr.splice(ind, 1);
-          this.setState({
-            userEmailAssociation: [...oldarr, ...arr]
-          });
-        }
-        break;
-
-      case associationStates.ISSUE_TYPES:
-        arr = this.state.selectedJiraCols.map(e => {
-          return {
-            externalTaskTypeId: e.externalTaskTypeId ? e.externalTaskTypeId : e.id,
-            internalTaskTypeId: this.state.selectedSimtrackCol.id
-          };
-        });
-        oldarr = this.state.issueTypesAssociation.filter(
-          e => e.internalTaskTypeId !== this.state.selectedSimtrackCol.id
-        );
-        this.setState({
-          issueTypesAssociation: [...oldarr, ...arr]
-        });
-        break;
-
-      case associationStates.STATUS_TYPES:
-        arr = this.state.selectedJiraCols.map(e => {
-          return {
-            externalStatusId: e.externalStatusId ? e.externalStatusId : e.id,
-            internalStatusId: this.state.selectedSimtrackCol.id
-          };
-        });
-        oldarr = this.state.statusesAssociation.filter(e => e.internalStatusId !== this.state.selectedSimtrackCol.id);
-        this.setState({
-          statusesAssociation: [...oldarr, ...arr]
-        });
+        this.setState({ userEmailAssociation: newArr }, () => log(this.state.userEmailAssociation));
         break;
       default:
         break;
@@ -544,9 +476,6 @@ class SetAssociationForm extends Component {
             </div>
           </Row>
         </label>
-        <div className={css.associationButtonContainer}>
-          <Button text="Ассоциация" onClick={this.associate} type="green" disabled={this.isDisabledAssociation()} />
-        </div>
         <div className={css.buttonsContainer}>
           {this.state.currentState === associationStates.ISSUE_TYPES ? (
             <Button text="Назад" onClick={() => previousStep(this.state)} type="green" />
