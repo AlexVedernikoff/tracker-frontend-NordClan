@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-// import moment from 'moment';
 import './style.css';
 import * as css from './DatepickerDropdown.scss';
 import 'moment/locale/ru';
@@ -36,7 +35,6 @@ class DatepickerDropdown extends Component {
 
 DatepickerDropdown.propTypes = {
   disabledDataRanges: PropTypes.array,
-  dispatch: PropTypes.func,
   name: PropTypes.string,
   options: PropTypes.array
 };
