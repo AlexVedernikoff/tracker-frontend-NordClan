@@ -8,8 +8,9 @@ import { showNotification } from './Notifications';
 import { PUT, REST_API } from '../constants/RestApi';
 import { defaultErrorHandler, defaultExtra as extra, withFinishLoading, withStartLoading } from './Common';
 
-const startTasksReceive = () => ({
-  type: TaskActions.TASKS_RECEIVE_START
+const startTasksReceive = id => ({
+  type: TaskActions.TASKS_RECEIVE_START,
+  data: id
 });
 
 const tasksReceived = tasks => ({
@@ -39,8 +40,9 @@ const requestTasksChange = () => ({
 
 const getTasks = (options, onlyTaskListUpdate = false) => {
   const URL = `${API_URL}/task`;
+  options.queryId = Date.now().toString();
   return dispatch => {
-    dispatch(startTasksReceive());
+    dispatch(startTasksReceive(options.queryId));
     dispatch(startLoading());
     axios
       .get(

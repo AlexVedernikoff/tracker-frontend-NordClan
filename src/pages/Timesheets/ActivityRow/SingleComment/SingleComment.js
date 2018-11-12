@@ -5,15 +5,19 @@ import onClickOutside from 'react-onclickoutside';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as css from '../../Timesheets.scss';
 import { IconComment, IconCheck } from '../../../../components/Icons';
+import localize from './SingleComment.json';
 
 class SingleComment extends React.Component {
   static propTypes = {
+    approved: PropTypes.bool,
     comment: PropTypes.string,
     disabled: PropTypes.bool,
-    onChange: PropTypes.func
+    lang: PropTypes.string,
+    onChange: PropTypes.func,
+    rejected: PropTypes.bool
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       isOpen: false,
@@ -21,8 +25,8 @@ class SingleComment extends React.Component {
     };
   }
 
-  componentWillReceiveProps (newProps) {
-    this.setState({text: newProps.comment});
+  componentWillReceiveProps(newProps) {
+    this.setState({ text: newProps.comment });
   }
 
   handleClickOutside = () => {
@@ -31,8 +35,8 @@ class SingleComment extends React.Component {
     });
   };
 
-  changeText = (e) => {
-    this.setState({text: e.target.value});
+  changeText = e => {
+    this.setState({ text: e.target.value });
   };
 
   save = () => {
@@ -40,7 +44,7 @@ class SingleComment extends React.Component {
     this.toggle();
   };
 
-  saveWithEnter = (evt) => {
+  saveWithEnter = evt => {
     const { ctrlKey, keyCode } = evt;
     if (ctrlKey && keyCode === 13) {
       this.props.onChange(this.state.text);
@@ -54,37 +58,44 @@ class SingleComment extends React.Component {
     });
   };
 
-  render () {
-    const { comment, disabled } = this.props;
+  render() {
+    const { comment, disabled, rejected, approved, lang } = this.props;
 
     return (
       <div>
-        <IconComment className={cn({[css.filledComment]: comment})} onClick={this.toggle}/>
-        <ReactCSSTransitionGroup transitionName="animatedElement" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
-          {
-            this.state.isOpen
-              ? <div className={cn(css.commentDropdown, css.singleComment)}>
-                {
-                  !disabled
-                    ? <textarea
-                      autoFocus
-                      placeholder="Введите текст комментария"
-                      onChange={this.changeText}
-                      onKeyDown={this.saveWithEnter}
-                      value={this.state.text}
-                    />
-                    : <span>{comment}</span>
-                }
-                {
-                  !disabled
-                    ? <div onClick={this.save} className={css.saveBtn}>
-                      <IconCheck/>
-                    </div>
-                    : null
-                }
-              </div>
-              : null
-          }
+        <IconComment
+          className={cn({
+            [css.filledComment]: comment,
+            [css.rejected]: rejected,
+            [css.approved]: approved
+          })}
+          onClick={this.toggle}
+        />
+        <ReactCSSTransitionGroup
+          transitionName="animatedElement"
+          transitionEnterTimeout={300}
+          transitionLeaveTimeout={300}
+        >
+          {this.state.isOpen ? (
+            <div className={cn(css.commentDropdown, css.singleComment)}>
+              {!disabled ? (
+                <textarea
+                  autoFocus
+                  placeholder={localize[lang].ENTER_COMMENT}
+                  onChange={this.changeText}
+                  onKeyDown={this.saveWithEnter}
+                  value={this.state.text}
+                />
+              ) : (
+                <span>{comment}</span>
+              )}
+              {!disabled ? (
+                <div onClick={this.save} className={css.saveBtn}>
+                  <IconCheck />
+                </div>
+              ) : null}
+            </div>
+          ) : null}
         </ReactCSSTransitionGroup>
       </div>
     );
@@ -94,4 +105,3 @@ class SingleComment extends React.Component {
 SingleComment = onClickOutside(SingleComment);
 
 export default SingleComment;
-
