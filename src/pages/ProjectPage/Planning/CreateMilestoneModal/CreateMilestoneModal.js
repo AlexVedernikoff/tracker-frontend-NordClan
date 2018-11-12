@@ -29,7 +29,8 @@ class CreateMilestoneModal extends Component {
     this.state = {
       date: undefined,
       name: '',
-      typeId: 1
+      typeId: 1,
+      isValidDate: false
     };
   }
 
@@ -38,7 +39,7 @@ class CreateMilestoneModal extends Component {
   };
 
   handleDayChange = date => {
-    this.setState({ date: date ? moment(date).format('YYYY-MM-DD') : '' });
+    this.setState({ date: date ? moment(date).format('YYYY-MM-DD') : '', isValidDate: true });
   };
 
   changeStatus = status => {
@@ -46,15 +47,12 @@ class CreateMilestoneModal extends Component {
   };
 
   checkNullInputs = () => {
-    return this.state.name.trim() && this.state.date && this.state.typeId;
+    return this.state.name.trim() && this.state.date && this.state.isValidDate && this.state.typeId;
   };
 
   dateInputHandler = e => {
     const inputValue = e.target.value;
-    const isValidValue = moment(inputValue, 'DD.MM.YYYY', true).isValid();
-    if (!isValidValue && this.state.date) {
-      this.setState({ date: '' });
-    }
+    this.setState({ isValidDate: moment(inputValue, 'DD.MM.YYYY', true).isValid() });
   };
 
   createMilestone = e => {
