@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Modal from '../../components/Modal';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import { stateToHTML } from 'draft-js-export-html';
@@ -8,9 +7,10 @@ import { Col, Row } from 'react-flexbox-grid';
 import moment from 'moment';
 import classnames from 'classnames';
 import sortBy from 'lodash/sortBy';
+
+import Modal from '../../components/Modal';
 import Button from '../Button';
 import SelectDropdown from '../SelectDropdown';
-// import ValidatedInput from '../ValidatedInput';
 import InputNumber from '../../components/InputNumber';
 import ValidatedAutosizeInput from '../ValidatedAutosizeInput';
 import * as css from './CreateTaskModal.scss';
@@ -26,6 +26,7 @@ import Tag from '../../components/Tag';
 import Tags from '../../components/Tags';
 import { getFullName } from '../../utils/NameLocalisation';
 import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
+import parseInteger from '../../utils/parseInteger';
 
 const MAX_DESCRIPTION_LENGTH = 2500;
 
@@ -162,7 +163,9 @@ class CreateTaskModal extends Component {
   };
 
   handleChangePlannedTime = plannedExecutionTime => {
-    this.setState({ plannedExecutionTime });
+    this.setState({
+      plannedExecutionTime: parseInteger(plannedExecutionTime)
+    });
   };
 
   addTag = tag => {
