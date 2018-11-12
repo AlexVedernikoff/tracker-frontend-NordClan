@@ -7,6 +7,11 @@
   transition: 0.3s ease-out 0s;
 }
 
+.InnerSelectWrap {
+  width: 100%;
+  position: relative;
+}
+
 .Select.is-disabled {
   cursor: not-allowed;
   background-color: rgb(235, 235, 228);
@@ -186,6 +191,14 @@
   background-color: white;
   padding: 15px;
   margin: 0;
+}
+
+.ClearValue {
+  position: absolute;
+  top: 6px;
+  right: 7px;
+  cursor: pointer;
+  padding: 2px;
 }
 
 .Select--multi.sprintSelector .Select-multi-value-wrapper .Select-value:hover {

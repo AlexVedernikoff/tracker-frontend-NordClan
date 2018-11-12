@@ -10,10 +10,12 @@ import localize from './SingleComment.json';
 
 class SingleComment extends React.Component {
   static propTypes = {
+    approved: PropTypes.bool,
     comment: PropTypes.string,
     disabled: PropTypes.bool,
     lang: PropTypes.string,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    rejected: PropTypes.bool
   };
 
   constructor(props) {
@@ -58,11 +60,18 @@ class SingleComment extends React.Component {
   };
 
   render() {
-    const { comment, disabled, lang } = this.props;
+    const { comment, disabled, rejected, approved, lang } = this.props;
 
     return (
       <div>
-        <IconComment className={cn({ [css.filledComment]: comment })} onClick={this.toggle} />
+        <IconComment
+          className={cn({
+            [css.filledComment]: comment,
+            [css.rejected]: rejected,
+            [css.approved]: approved
+          })}
+          onClick={this.toggle}
+        />
         <ReactCSSTransitionGroup
           transitionName="animatedElement"
           transitionEnterTimeout={300}
