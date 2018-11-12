@@ -4,7 +4,8 @@ import * as ProjectActions from '../constants/Project';
 
 const InitialState = {
   tasks: [],
-  isReceiving: false
+  isReceiving: false,
+  queryId: null
 };
 
 function Tasks (state = InitialState, action) {
@@ -12,10 +13,14 @@ function Tasks (state = InitialState, action) {
   case TasksActions.TASKS_RECEIVE_START:
     return {
       ...state,
-      isReceiving: true
+      isReceiving: true,
+      queryId: action.data
     };
 
   case TasksActions.TASKS_RECEIVE_SUCCESS:
+    if (action.data.queryId !== state.queryId) {
+      return {...state}
+    }
     return {
       ...state,
       tasks: action.data.data,
