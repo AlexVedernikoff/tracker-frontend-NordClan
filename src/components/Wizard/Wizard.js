@@ -7,7 +7,6 @@ import { states } from './States';
 import StateMachine from './StateMachine';
 
 import Auth from './steps/auth/Auth';
-import CreateProject from './steps/createProject/CreateProject';
 import SetAssociationForm from './steps/SetAssociation/SetAssociation';
 import Finish from './steps/Finish/Finish';
 
@@ -42,30 +41,31 @@ class Wizard extends Component {
 
   // Auth forward function
   authNext = formData => {
-    const { projectData, jiraAuthorize, getJiraProjects, jiraCreateProject, authorId } = this.props;
-    jiraAuthorize(formData).then(res => {
-      const { token } = res;
-      if (token) {
-        Promise.resolve(token)
-          .then(tkn => getJiraProjects({ 'X-Jira-Auth': tkn }))
-          .then(() => {
-            const currentProject = this.props.projects
-              ? this.props.projects.find(project => project.name === projectData.name)
-              : null;
-            jiraCreateProject(
-              { 'X-Jira-Auth': token },
-              {
-                authorId: authorId,
-                prefix: projectData.prefix,
-                jiraProjectId: currentProject ? currentProject.id : null
-              }
-            );
-          });
+    this.props
+      .jiraAuthorize(formData)
+      .then(res => {
+        const { token } = res;
+        return token;
+      })
+      .then(res => {
+        return this.props.getJiraProjects({ 'X-Jira-Auth': res });
+      })
+      .then(res => {
+        const currentProject = res.projects.find(project => project.name === this.props.projectData.name);
+        return this.props.jiraCreateProject(
+          { 'X-Jira-Auth': this.props.token },
+          {
+            authorId: this.props.authorId,
+            prefix: this.props.projectData.prefix,
+            jiraProjectId: currentProject ? currentProject.id : null
+          }
+        );
+      })
+      .then(() => {
         this.setState({
           currentState: this.stateMachine.forward(this.state.currentState)
         });
-      }
-    });
+      });
   };
 
   // Create project forward function
@@ -139,20 +139,6 @@ class Wizard extends Component {
         return (
           <div>
             <Auth lang={lang} nextStep={this.authNext} />
-          </div>
-        );
-      case states.CREATE_PROJECT:
-        return (
-          <div>
-            <CreateProject
-              token={this.props.token}
-              lang={lang}
-              getJiraProjects={this.props.getJiraProjects}
-              previousStep={this.backward}
-              nextStep={this.createProjectNext}
-              jiraProjects={this.props.projects}
-              authorId={this.props.authorId}
-            />
           </div>
         );
       case states.SET_ASSOCIATIONS:
