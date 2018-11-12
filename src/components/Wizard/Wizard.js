@@ -24,6 +24,7 @@ class Wizard extends Component {
     lang: PropTypes.string,
     onRequestClose: PropTypes.func,
     project: PropTypes.object,
+    projectData: PropTypes.obj,
     projects: PropTypes.array,
     setAssociation: PropTypes.func,
     taskStatuses: PropTypes.array,
@@ -38,11 +39,28 @@ class Wizard extends Component {
     };
     this.stateMachine = new StateMachine();
   }
+
   // Auth forward function
   authNext = formData => {
-    this.props.jiraAuthorize(formData).then(res => {
+    const { projectData, jiraAuthorize, getJiraProjects, jiraCreateProject, authorId } = this.props;
+    jiraAuthorize(formData).then(res => {
       const { token } = res;
       if (token) {
+        Promise.resolve(token)
+          .then(tkn => getJiraProjects({ 'X-Jira-Auth': tkn }))
+          .then(() => {
+            const currentProject = this.props.projects
+              ? this.props.projects.find(project => project.name === projectData.name)
+              : null;
+            jiraCreateProject(
+              { 'X-Jira-Auth': token },
+              {
+                authorId: authorId,
+                prefix: projectData.prefix,
+                jiraProjectId: currentProject ? currentProject.id : null
+              }
+            );
+          });
         this.setState({
           currentState: this.stateMachine.forward(this.state.currentState)
         });

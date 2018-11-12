@@ -215,7 +215,7 @@ class SetAssociationForm extends Component {
         } else {
           newArr.push(association);
         }
-        this.setState({ userEmailAssociation: newArr }, () => log(this.state.userEmailAssociation));
+        this.setState({ userEmailAssociation: newArr });
         break;
       default:
         break;
