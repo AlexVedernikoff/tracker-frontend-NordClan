@@ -8,9 +8,10 @@ import cn from 'classnames';
 
 import StateMachine from '../../StateMachine';
 import Button from '../../../Button';
-import Input from '../../../Input';
+import { Async } from 'react-select';
 import { associationStates } from './AssociationStates';
 import debounce from 'lodash/debounce';
+import { getFullName } from '../../../../utils/NameLocalisation.js';
 
 class SetAssociationForm extends Component {
   static propTypes = {
@@ -83,6 +84,21 @@ class SetAssociationForm extends Component {
     }
 
     this.setState({ selectedJiraCols: [...associatedArr], selectedSimtrackCol: value });
+  };
+
+  selectUser = value => {
+    const users = this.state.users;
+    users.push({ id: value.value, fullName: value.label });
+    this.setState({ users });
+  };
+
+  getOptions = input => {
+    if (!input) {
+      return Promise.resolve({ options: [] });
+    }
+    return this.props.getSimtrackUsers(input).then(users => {
+      return { options: users.map(user => ({ value: user.id, label: getFullName(user) })) };
+    });
   };
 
   searchOnChange = name => {
@@ -204,7 +220,7 @@ class SetAssociationForm extends Component {
         association = {
           externalUserEmail: value.email,
           internalUserId: +id,
-          fullNameRu: this.state.selectedSimtrackCol.fullNameRu
+          fullName: this.state.selectedSimtrackCol.fullName
         };
         foundIndex = userEmailAssociation.findIndex(
           el =>
@@ -324,7 +340,7 @@ class SetAssociationForm extends Component {
             }
             onClick={() => this.select('simtrackUser', entity)}
           >
-            <td>{entity.fullNameRu}</td>
+            <td>{entity.fullName}</td>
           </tr>
         );
       case associationStates.ISSUE_TYPES:
@@ -441,11 +457,15 @@ class SetAssociationForm extends Component {
                     <tbody>{SimtrackAssociatedUsers}</tbody>
                     {this.state.currentState === associationStates.USERS ? (
                       <tr className={css.userRow}>
-                        <Input
-                          name="user_association"
-                          placeholder={localize[lang].NAME}
-                          onChange={e => this.searchOnChange(e.target.value)}
+                        <Async
                           autoFocus
+                          name="user_association"
+                          loadOptions={this.getOptions}
+                          onChange={this.selectUser}
+                          placeholder={localize[lang].NAME}
+                          filterOptions={options => {
+                            return options;
+                          }}
                         />
                       </tr>
                     ) : null}

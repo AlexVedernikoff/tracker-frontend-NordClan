@@ -23,7 +23,7 @@ class Wizard extends Component {
     lang: PropTypes.string,
     onRequestClose: PropTypes.func,
     project: PropTypes.object,
-    projectData: PropTypes.obj,
+    projectData: PropTypes.object,
     projects: PropTypes.array,
     setAssociation: PropTypes.func,
     taskStatuses: PropTypes.array,
