@@ -68,6 +68,11 @@ class SetAssociationForm extends Component {
       case associationStates.USERS:
         value = this.state.userEmailAssociation[0];
         associatedArr = userEmailAssociation.filter(e => (value.internalUserId || value.id) === e.internalUserId);
+        if (this.state.userEmailAssociation.length) {
+          this.setState({
+            users: userEmailAssociation.map(user => ({ fullNameRu: user.fullNameRu, id: user.internalUserId }))
+          });
+        }
         break;
 
       case associationStates.ISSUE_TYPES:
@@ -88,7 +93,7 @@ class SetAssociationForm extends Component {
 
   selectUser = value => {
     const users = this.state.users;
-    users.push({ id: value.value, fullName: value.label });
+    users.push({ id: value.value, fullNameRu: value.label });
     this.setState({ users });
   };
 
@@ -132,12 +137,7 @@ class SetAssociationForm extends Component {
         this.setState({ selectedJiraCols: newState }, this.associateOnClick(key, value));
         break;
       case 'jiraUser':
-        if (this.state.selectedJiraCols.length > 0) {
-          newState = [];
-        } else {
-          newState = [value];
-        }
-        this.setState({ selectedJiraCols: newState }, this.associateOnClick(key, value));
+        this.setState({ selectedJiraCols: [value] }, this.associateOnClick(key, value));
         break;
       case 'jiraStatusType':
         if (
@@ -220,14 +220,15 @@ class SetAssociationForm extends Component {
         association = {
           externalUserEmail: value.email,
           internalUserId: +id,
-          fullName: this.state.selectedSimtrackCol.fullName
+          fullNameRu: this.state.selectedSimtrackCol.fullNameRu
         };
-        foundIndex = userEmailAssociation.findIndex(
-          el =>
-            el.externalUserEmail === association.externalUserEmail && el.internalUserId === association.internalUserId
-        );
+        foundIndex = userEmailAssociation.findIndex(el => el.internalUserId === association.internalUserId);
         if (foundIndex !== -1) {
-          newArr.splice(foundIndex, 1);
+          if (userEmailAssociation[foundIndex].externalUserEmail === association.externalUserEmail) {
+            newArr.splice(foundIndex, 1);
+          } else {
+            newArr.splice(foundIndex, 1, association);
+          }
         } else {
           newArr.push(association);
         }
@@ -328,6 +329,7 @@ class SetAssociationForm extends Component {
     let id;
     switch (this.state.currentState) {
       case associationStates.USERS:
+        const association = this.state.userEmailAssociation.find(el => +el.internalUserId === +entity.id);
         id = `${entity.id || entity.internalUserId}`;
         return (
           <tr
@@ -340,7 +342,10 @@ class SetAssociationForm extends Component {
             }
             onClick={() => this.select('simtrackUser', entity)}
           >
-            <td>{entity.fullName}</td>
+            <td>
+              <p>{entity.fullNameRu}</p>
+              <p>{association ? association.externalUserEmail : 'not associated'}</p>
+            </td>
           </tr>
         );
       case associationStates.ISSUE_TYPES:
@@ -421,9 +426,6 @@ class SetAssociationForm extends Component {
       case associationStates.USERS:
         JiraTableBody = project.users.map(entity => {
           return this.renderJiraRow(entity);
-        });
-        SimtrackAssociatedUsers = this.state.userEmailAssociation.map(u => {
-          return this.renderSimtrackRow(u);
         });
         SimtrackTableBody = this.state.users.map(entity => {
           return this.renderSimtrackRow(entity);
