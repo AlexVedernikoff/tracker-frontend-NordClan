@@ -9,12 +9,6 @@ class ScrollTop extends Component {
     this.state = { showButton: false };
   }
 
-  onWheel = () => {
-    this.setState({
-      showButton: this.getParentYOffset() > 150 ? true : false
-    });
-  };
-
   componentDidMount() {
     this.parentEl = ReactDOM.findDOMNode(this._reactInternalInstance._currentElement._owner._instance).parentNode;
 
@@ -52,6 +46,12 @@ class ScrollTop extends Component {
       window.removeEventListener('onmousewheel', this.onWheel, { passive: true });
     }
   }
+
+  onWheel = () => {
+    this.setState({
+      showButton: this.getParentYOffset() > 150 ? true : false
+    });
+  };
 
   getParentYOffset = () => Math.abs(this.parentEl.getBoundingClientRect().top);
 
