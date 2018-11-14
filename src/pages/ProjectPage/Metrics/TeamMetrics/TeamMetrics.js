@@ -120,7 +120,6 @@ class TeamMetrics extends Component {
           <tbody>
             {teamMetric && Array.isArray(teamMetric.value) && teamMetric.value.length > 0 ? (
               teamMetric.value.map(item => {
-                console.log('item', item);
                 return (
                   <tr key={teamMetric.sprintId + '_' + item.user.id}>
                     <td>
