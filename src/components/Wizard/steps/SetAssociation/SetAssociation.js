@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
-import localize from './setAssociation.json';
-import * as css from './setAssociation.scss';
+import localize from './SetAssociation.json';
+import * as css from './SetAssociation.scss';
 
 import cn from 'classnames';
 
