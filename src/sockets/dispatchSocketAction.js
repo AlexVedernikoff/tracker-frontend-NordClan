@@ -16,6 +16,9 @@ const dispatchSocketAction = (action, store) => {
       if (taskId && action.data.taskId === taskId) {
         store.dispatch(socketActionDispatcher[NEED_TO_UPDATE_TASK_COMMENTS](taskId));
       }
+      break;
+    default:
+      break;
   }
 };
 
