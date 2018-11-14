@@ -18,7 +18,7 @@ import { DragDropContextProvider } from 'react-dnd';
 
 const rootEl = document.getElementById('app');
 
-const channels = ['task', 'project', 'timesheet'];
+const channels = ['task', 'project', 'timesheet', 'comments'];
 const socket = new SocketAdapter(store, channels);
 
 window.log = require('./utils/logger/noop');
