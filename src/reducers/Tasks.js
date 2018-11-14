@@ -21,6 +21,7 @@ function Tasks(state = InitialState, action) {
       if (action.data.queryId !== state.queryId) {
         return { ...state };
       }
+
       return {
         ...state,
         tasks: action.data.data,
