@@ -1,27 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { scroller } from 'react-scroll';
+import classnames from 'classnames';
+import { scroller, Element } from 'react-scroll';
 import find from 'lodash/find';
-import { Col, Row } from 'react-flexbox-grid';
+import ReactTooltip from 'react-tooltip';
+
 import * as css from './OptionsModal.scss';
 import Modal from '../Modal';
-import SelectDropdown from '../SelectDropdown';
-import { changeTask, publishComment } from '../../actions/Task';
-import TaskTimesheet from './TaskTimesheet';
-
-import TextArea from '../TextArea';
-import Button from '../Button';
-import localize from './OptionsModal.json';
+import { IconClose, IconSearch } from '../Icons';
 
 const notSelectedOption = {
   value: 0,
   label: 'Не выбрано'
-};
-
-const formLayout = {
-  firstCol: 3,
-  secondCol: 8
 };
 
 class OptionsModal extends Component {
@@ -34,14 +24,13 @@ class OptionsModal extends Component {
     this.state = {
       options: this.optionsList,
       selectedIndex: this.getSelectedIndex(options),
-      loggedTime: 0,
-      selectedPerformer: props.defaultOption || null,
-      commentText: ''
+      searchText: ''
     };
   }
 
   componentDidMount() {
     const { options, selectedIndex } = this.state;
+    addEventListener('keydown', this.moveList);
     setTimeout(this.scrollToSelectedOption(options, selectedIndex), 100);
   }
 
@@ -89,6 +78,16 @@ class OptionsModal extends Component {
     this.props.onClose();
   };
 
+  onSearchTextChange = e => {
+    const searchText = e.target.value;
+    const searchReg = new RegExp(searchText.toLowerCase());
+    this.setState({
+      searchText,
+      options: this.optionsList.filter(option => option.label.toLowerCase().match(searchReg)),
+      selectedIndex: 0
+    });
+  };
+
   removeCurrentOption = () => {
     this.handleChoose(notSelectedOption.value);
   };
@@ -98,37 +97,34 @@ class OptionsModal extends Component {
     return find(options, option => option.value === defaultOption);
   };
 
-  handleChangePlannedTime = loggedTime => {
-    this.setState({ loggedTime });
-  };
+  moveList = e => {
+    const down = e.keyCode === 40;
+    const up = e.keyCode === 38;
+    const enter = e.keyCode === 13;
+    if (down || up || enter) e.preventDefault();
+    const indexIsMax = this.state.selectedIndex === this.state.options.length - 1;
+    const indexIsMin = this.state.selectedIndex === 0;
+    const onChanged = () => {
+      this.list.children[this.state.selectedIndex].focus();
+    };
 
-  handlePerformerChange = selectedPerformer => {
-    this.setState({
-      selectedPerformer: selectedPerformer ? selectedPerformer.value : 0
-    });
-  };
+    if (down && !indexIsMax) {
+      this.setState(state => ({ selectedIndex: state.selectedIndex + 1 }), onChanged);
+    }
+    if (up && !indexIsMin) {
+      this.setState(state => ({ selectedIndex: state.selectedIndex - 1 }), onChanged);
+    }
 
-  changePerformer = e => {
-    e.preventDefault();
-    const { commentText } = this.state;
-    const { id } = this.props;
-    this.props.onChoose(this.state.selectedPerformer);
-    if (commentText) {
-      this.props.publishComment(id, {
-        text: commentText
-      });
+    if (enter) {
+      const { options, selectedIndex } = this.state;
+      this.handleChoose(options[selectedIndex].value);
     }
   };
 
-  setComment = e => {
-    this.setState({
-      commentText: e.target.value
-    });
-  };
-
   render() {
-    const { title, lang } = this.props;
-    const { options } = this.state;
+    const { title, canBeNotSelected, removeCurOptionTip, inputPlaceholder, noCurrentOption } = this.props;
+    const { options, searchText, selectedIndex } = this.state;
+    const currentOption = this.getCurrentOption();
 
     return (
       <Modal isOpen contentLabel="modal" className={css.modalWrapper} onRequestClose={this.onClose}>
@@ -136,65 +132,72 @@ class OptionsModal extends Component {
           <div className={css.header}>
             <h3>{title}</h3>
           </div>
-          <form className={css.createTaskForm}>
-            <label className={css.formField}>
-              <Row className={css.taskFormRow}>
-                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p className={css.label}>{localize[lang].PERFORMER}</p>
-                </Col>
-                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                  <SelectDropdown
-                    name="performer"
-                    placeholder={localize[lang].PERFORMER_PLACEHOLDER}
-                    multi={false}
-                    className={css.selectPerformer}
-                    value={this.state.selectedPerformer}
-                    onChange={this.handlePerformerChange}
-                    noResultsText="No results"
-                    options={options}
-                  />
-                </Col>
-              </Row>
-            </label>
+          {noCurrentOption ? null : currentOption ? (
+            <span
+              className={classnames({
+                [css.currentOption]: true,
+                [css.cantRemove]: !this.props.canBeNotSelected
+              })}
+            >
+              {canBeNotSelected && (
+                <div>
+                  <div
+                    className={css.removeCurrentOption}
+                    onClick={this.removeCurrentOption}
+                    data-tip={removeCurOptionTip}
+                    data-for="removeCurrentOption"
+                    data-place="left"
+                  >
+                    <IconClose />
+                  </div>
+                  <ReactTooltip id="removeCurrentOption" className="tooltip" />
+                </div>
+              )}
+              {currentOption.label}
+            </span>
+          ) : (
+            <span className={classnames([css.currentOption, css.noOption])}>{notSelectedOption.label}</span>
+          )}
 
-            {this.props.task.statusId !== 1 && (
-              <label className={css.formField}>
-                <Row className={css.taskFormRow}>
-                  <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                    <p className={css.label}>{localize[lang].TIMESHEETS}</p>
-                  </Col>
-
-                  <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                    <TaskTimesheet />
-                  </Col>
-                </Row>
-              </label>
-            )}
-
-            {this.props.task.statusId !== 1 && (
-              <label className={css.formField}>
-                <Row className={css.taskFormRow}>
-                  <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                    <p className={css.label}>{localize[lang].COMMENT}</p>
-                  </Col>
-                  <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                    <TextArea
-                      // toolbarHidden
-                      placeholder={localize[lang].COMMENT_PLACEHOLDER}
-                      // wrapperClassName={css.taskCommentWrapper}
-                      // editorClassName={css.taskComment}
-                      onChange={this.setComment}
-                      value={this.state.commentText}
-                    />
-                  </Col>
-                </Row>
-              </label>
-            )}
-
-            <div className={css.changePerformerButton}>
-              <Button text="Change Performer" type="green" htmlType="submit" onClick={this.changePerformer} />
+          <div className={css.inputWrapper}>
+            <input
+              type="text"
+              autoFocus
+              className={css.search}
+              placeholder={inputPlaceholder}
+              value={searchText}
+              onChange={this.onSearchTextChange}
+            />
+            <div className={css.searchIco}>
+              <IconSearch />
             </div>
-          </form>
+          </div>
+
+          <div
+            className={css.selectorContainer}
+            ref={ref => {
+              this.list = ref;
+            }}
+            id="optionsList"
+          >
+            {options.map((option, i) => (
+              <Element
+                name={option.value.toString()}
+                key={option.value}
+                className={classnames({
+                  [css.option]: true,
+                  [css.selected]: selectedIndex === i,
+                  [css.noOption]: !option.value,
+                  [option.className]: option.className
+                })}
+                autoFocus={selectedIndex === i}
+                onClick={() => this.handleChoose(option.value)}
+                tabIndex={i}
+              >
+                {option.label}
+              </Element>
+            ))}
+          </div>
         </div>
       </Modal>
     );
@@ -203,34 +206,14 @@ class OptionsModal extends Component {
 
 OptionsModal.propTypes = {
   canBeNotSelected: PropTypes.bool,
-  changeTask: PropTypes.func,
   defaultOption: PropTypes.number,
-  id: PropTypes.number,
   inputPlaceholder: PropTypes.string,
-  isPerformerChanged: PropTypes.bool,
-  lang: PropTypes.string,
-  loggedTime: PropTypes.number,
   noCurrentOption: PropTypes.bool,
   onChoose: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   options: PropTypes.array,
-  publishComment: PropTypes.func,
   removeCurOptionTip: PropTypes.string,
-  task: PropTypes.object,
   title: PropTypes.string
 };
 
-const mapStateToProps = state => ({
-  lang: state.Localize.lang,
-  task: state.Task.task
-});
-
-const mapDispatchToProps = {
-  changeTask,
-  publishComment
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(OptionsModal);
+export default OptionsModal;

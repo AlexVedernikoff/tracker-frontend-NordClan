@@ -2,11 +2,7 @@
 
 .modalWrapper {
   width: 100%;
-  max-width: 660px !important;
-}
-
-.taskFormRow {
-  align-items: center;
+  max-width: 360px !important;
 }
 
 .header {
@@ -92,43 +88,6 @@
 }
 
 .noOption {
+  padding-left: 2rem;
   color: lighten(black, 70%);
-}
-
-.createTaskForm {
-  max-width: 100%;
-  width: 680px;
-  padding: 2rem;
-}
-
-.formField {
-  display: block;
-
-  & + & {
-    margin-top: 1rem;
-  }
-}
-
-.taskCommentWrapper {
-  width: 100%;
-}
-
-.taskComment {
-  width: 100%;
-  min-height: 5rem;
-  cursor: text;
-  padding: 0.5rem 1rem;
-  border: 1px solid $color-gray;
-  transition: $transition;
-}
-
-.changePerformerButton {
-  display: flex;
-  align-items: center;
-  margin-top: 2rem;
-  justify-content: flex-end;
-}
-
-.label {
-  text-align: right;
 }
