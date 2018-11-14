@@ -159,7 +159,7 @@ class ParticipantEditor extends Component {
   getUsers = () => {
     return this.state.participants.map(user => ({
       value: user.id,
-      label: user.fullNameRu
+      label: this.props.lang === 'ru' ? user.fullNameRu : user.fullNameEn
     }));
   };
 

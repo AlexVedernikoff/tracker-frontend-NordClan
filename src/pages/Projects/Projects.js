@@ -216,9 +216,10 @@ class Projects extends Component {
   };
 
   sendRequest = () => {
+    const { selectedPortfolio } = this.state;
     let portfolioName = '';
-    if (this.state.selectedPortfolio && Object.keys(this.state.selectedPortfolio).length !== 0) {
-      portfolioName = !Number.isInteger(this.state.selectedPortfolio.value) ? this.state.selectedPortfolio.value : null;
+    if (selectedPortfolio && Object.keys(selectedPortfolio).length !== 0) {
+      portfolioName = !Number.isInteger(selectedPortfolio.value) ? selectedPortfolio.value : null;
     } else {
       portfolioName = null;
     }
@@ -226,7 +227,7 @@ class Projects extends Component {
       {
         name: this.state.projectName,
         prefix: this.state.projectPrefix,
-        portfolioId: portfolioName ? null : this.state.selectedPortfolio ? this.state.selectedPortfolio.value : null,
+        portfolioId: portfolioName ? null : selectedPortfolio ? selectedPortfolio.value : null,
         portfolioName,
         typeId: this.state.selectedType || 0
       },
@@ -342,11 +343,10 @@ class Projects extends Component {
   };
 
   render() {
-    const { lang, isProjectsReceived } = this.props;
-    const { filteredInProgress, filteredInHold, filteredFinished, filterSelectedTypes } = this.state;
-    const { projectTypes } = this.props;
-    const formattedDayFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('DD.MM.YYYY') : '';
-    const formattedDayTo = this.state.dateTo ? moment(this.state.dateTo).format('DD.MM.YYYY') : '';
+    const { lang, isProjectsReceived, projectTypes, pagesCount } = this.props;
+    const { filteredInProgress, filteredInHold, filteredFinished, filterSelectedTypes, dateFrom, dateTo } = this.state;
+    const formattedDayFrom = dateFrom ? moment(dateFrom).format('DD.MM.YYYY') : '';
+    const formattedDayTo = dateTo ? moment(dateTo).format('DD.MM.YYYY') : '';
     const isAdmin = this.props.globalRole === ADMIN;
     const isFiltered = this.isFiltered();
     const withoutProjects = isProjectsReceived ? (
@@ -439,9 +439,9 @@ class Projects extends Component {
             </Row>
           </div>
           {this.props.projectList.length ? this.renderProjectsList() : withoutProjects}
-          {this.props.pagesCount > 1 ? (
+          {pagesCount > 1 ? (
             <Pagination
-              itemsCount={this.props.pagesCount}
+              itemsCount={pagesCount}
               activePage={this.state.activePage}
               onItemClick={this.handlePaginationClick}
             />
@@ -491,7 +491,7 @@ const mapStateToProps = state => ({
   projectError: state.Projects.error,
   globalRole: state.Auth.user.globalRole,
   lang: state.Localize.lang,
-  isProjectsReceived: state.Projects.projects.isProjectsReceived,
+  isProjectsReceived: state.Projects.isProjectsReceived,
   projectTypes: getLocalizedProjectTypes(state) || []
 });
 
