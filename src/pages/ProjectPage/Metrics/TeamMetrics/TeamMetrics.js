@@ -88,9 +88,11 @@ class TeamMetrics extends Component {
       return <Loader />;
     }
 
-    const teamMetric = this.state.sprintSelected
-      ? teamMetrics.find(data => data.sprintId === this.state.sprintSelected.value.id)
-      : null;
+    // Ищу последний элемент т.к. в нем самые свежие данные
+    const lastMetricIndex =
+      this.state.sprintSelected &&
+      _.findLastIndex(teamMetrics, item => item.sprintId === this.state.sprintSelected.value.id);
+    const teamMetric = lastMetricIndex >= 0 ? metrics[lastMetricIndex] : null;
 
     return (
       <div>
