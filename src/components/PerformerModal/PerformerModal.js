@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import OptionsModal from '../OptionsModal';
+import PerformerOptions from '../PerformerOptions';
 
 const PerformerModal = ({
   defaultUser,
@@ -12,7 +12,7 @@ const PerformerModal = ({
   id,
   plannedExecutionTime
 }) => (
-  <OptionsModal
+  <PerformerOptions
     defaultOption={defaultUser}
     options={users}
     inputPlaceholder="Введите имя исполнителя"
