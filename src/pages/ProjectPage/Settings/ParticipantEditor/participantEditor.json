@@ -14,7 +14,9 @@
     "ENTER_ROLE_PARTICIPANT": "Enter the member role",
     "ENTER_EXTERNAL_USERS": "Enter the name of the external user",
     "ADD": "Add",
-    "PARTICIPANTS": "Participants"
+    "PARTICIPANTS": "Participants",
+    "CREATE_PROJECT_WITH_JIRA": "Create project with Jira",
+    "SYNCHRONIZATION_WITH_JIRA": "Synchronization with Jira"
   },
   "ru": {
     "FULL_ACCESS": "Полный доступ к проекту. <br/>Доступны все действия на уровне проекта: <br/>Ведение задач, планирование, настройки проекта и команды, аналитика <br/>Полная рассылка по проекту.",
@@ -31,6 +33,8 @@
     "ENTER_ROLE_PARTICIPANT": "Введите роль участника",
     "ENTER_EXTERNAL_USERS": "Введите имя внешнего пользователя",
     "ADD": "Добавить",
-    "PARTICIPANTS": "Участники:"
+    "PARTICIPANTS": "Участники:",
+    "CREATE_PROJECT_WITH_JIRA": "Создать проект с Jira",
+    "SYNCHRONIZATION_WITH_JIRA": "Синхронизация с Jira"
   }
 }

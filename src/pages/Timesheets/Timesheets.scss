@@ -103,14 +103,14 @@
 
   &.approved {
     input {
-      background-color: $color-green;
+      background-color: darken($color-green, 15%);
       color: rgba(white, 0.9);
     }
   }
 
   &.rejected {
     input {
-      background-color: $color-light-red;
+      background-color: darken($color-light-red, 10%);
       color: rgba(white, 0.9);
     }
   }
@@ -408,6 +408,12 @@ tr:last-child td.today {
 
 .filledComment {
   color: $color-green;
+  &.rejected {
+    color: lighten($color-light-red, 5%);
+  }
+  &.approved {
+    color: lighten($color-green, 10%);
+  }
 }
 
 .saveBtn {

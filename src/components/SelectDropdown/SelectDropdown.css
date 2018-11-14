@@ -7,6 +7,11 @@
   transition: 0.3s ease-out 0s;
 }
 
+.InnerSelectWrap {
+  width: 100%;
+  position: relative;
+}
+
 .Select.is-disabled {
   cursor: not-allowed;
   background-color: rgb(235, 235, 228);
@@ -23,6 +28,9 @@
 
 .sprint-dropdown .Select-value-label {
   margin-right: 15%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .Select-clear-zone {
@@ -188,6 +196,14 @@
   margin: 0;
 }
 
+.ClearValue {
+  position: absolute;
+  top: 6px;
+  right: 7px;
+  cursor: pointer;
+  padding: 2px;
+}
+
 .Select--multi.sprintSelector .Select-multi-value-wrapper .Select-value:hover {
   background-color: #ebebeb;
   transition: 0.3s ease-out 0s;
@@ -198,4 +214,8 @@
 }
 .Select--multi.sprintSelector .Select-control {
   padding: 0;
+}
+
+.Select.sprintReportSelector .Select-multi-value-wrapper .Select-value .Select-value-label {
+  margin-right: 0;
 }

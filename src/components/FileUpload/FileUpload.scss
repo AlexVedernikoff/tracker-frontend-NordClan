@@ -46,3 +46,9 @@
   text-align: center;
   color: lighten($color-dark, 30%);
 }
+
+.dropzoneWrap {
+  order: -1;
+  margin-right: 16px;
+  margin-bottom: 16px;
+}
