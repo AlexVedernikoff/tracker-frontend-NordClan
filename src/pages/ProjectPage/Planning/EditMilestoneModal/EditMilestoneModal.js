@@ -150,7 +150,7 @@ class EditMilestoneModal extends Component {
 
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Дата:</p>
+                <p>{localize[lang].DATE}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <DatepickerDropdown

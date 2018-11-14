@@ -5,6 +5,7 @@
     "PREV_WEEK": "Previous week",
     "NEXT_WEEK": "Next week",
     "SELECT_DATE": "Select date",
+    "WITHOUT_PROJECT": "Without project",
     "MOMENT": "en"
   },
   "ru": {
@@ -13,6 +14,7 @@
     "PREV_WEEK": "Предыдущая неделя",
     "NEXT_WEEK": "Следущая неделя",
     "SELECT_DATE": "Выбрать дату",
+    "WITHOUT_PROJECT": "Без проекта",
     "MOMENT": "ru"
   }
 }

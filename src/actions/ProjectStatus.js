@@ -3,6 +3,15 @@ import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
 import * as ProjectActions from '../constants/Project';
 import { API_URL } from '../constants/Settings';
+import { store } from '../History';
+
+let lang = 'en';
+store.subscribe(() => {
+  lang = store.getState().Localize.lang;
+});
+
+const statusUpdatedEn = 'Status updated';
+const statusUpdatedRu = 'Статус обновлен';
 
 const updateProjectStatusStart = () => ({
   type: ProjectActions.UPDATE_PROJECT_STATUS_START
@@ -24,7 +33,7 @@ export const updateProjectStatus = (projectId, statusId) => {
       .then(response => {
         if (response.data) {
           dispatch(updateProjectStatusSuccess(response.data));
-          dispatch(showNotification({ message: 'Статус обновлен' }));
+          dispatch(showNotification({ message: lang === 'en' ? statusUpdatedEn : statusUpdatedRu }));
         }
         dispatch(finishLoading());
       })

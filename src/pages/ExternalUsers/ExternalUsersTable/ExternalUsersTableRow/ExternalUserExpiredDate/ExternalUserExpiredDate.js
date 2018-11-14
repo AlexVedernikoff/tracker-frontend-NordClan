@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import DatepickerDropdown from '../../../../../components/DatepickerDropdown';
 import moment from 'moment';
+import localize from './ExternalUserExpiredDate.json';
 
 class ExternalUserExpiredDate extends Component {
   constructor(props) {
@@ -22,7 +23,7 @@ class ExternalUserExpiredDate extends Component {
   };
 
   render() {
-    const { placeholder } = this.props;
+    const { lang } = this.props;
     const formattedDay = moment(this.props.value).format('DD.MM.YYYY');
     const formattedStateDay = moment(this.state.value).format('DD.MM.YYYY');
     return (
@@ -33,7 +34,7 @@ class ExternalUserExpiredDate extends Component {
             value={formattedStateDay}
             onDayChange={this.handleDayToChange}
             disabledDataRanges={[{ before: new Date() }]}
-            placeholder={placeholder || 'Введите дату'}
+            placeholder={localize[lang].ENTER_DATE}
           />
         ) : (
           <div>{formattedDay}</div>
@@ -44,8 +45,8 @@ class ExternalUserExpiredDate extends Component {
 }
 ExternalUserExpiredDate.propTypes = {
   isEditing: PropTypes.bool,
+  lang: PropTypes.string,
   onValueChange: PropTypes.func,
-  placeholder: PropTypes.string,
   value: PropTypes.string
 };
 export default ExternalUserExpiredDate;

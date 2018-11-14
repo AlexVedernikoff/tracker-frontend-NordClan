@@ -10,6 +10,7 @@ import 'react-image-lightbox/style.css';
 
 const imageTypes = ['image' /*fallback for old attachments*/, 'image/jpeg', 'image/png', 'image/pjpeg'];
 const isImage = t => imageTypes.indexOf(t) !== -1;
+
 export default class Attachments extends Component {
   static defaultProps = {
     attachments: []
