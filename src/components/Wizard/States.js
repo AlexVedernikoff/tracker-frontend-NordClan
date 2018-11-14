@@ -1,0 +1,6 @@
+export const states = {
+  AUTH: 'AUTH',
+  CREATE_PROJECT: 'CREATE_PROJECT',
+  SET_ASSOCIATIONS: 'SET_ASSOCIATIONS',
+  FINISH: 'FINISH'
+};
