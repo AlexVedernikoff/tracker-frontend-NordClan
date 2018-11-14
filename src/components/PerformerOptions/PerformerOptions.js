@@ -127,7 +127,7 @@ class PerformerOptions extends Component {
   };
 
   render() {
-    const { title, lang, task } = this.props;
+    const { title, lang, task, activeUser } = this.props;
     const { options } = this.state;
 
     return (
@@ -157,39 +157,41 @@ class PerformerOptions extends Component {
               </Row>
             </label>
 
-            {task.statusId !== 1 && (
-              <label className={css.formField}>
-                <Row className={css.taskFormRow}>
-                  <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                    <p className={css.label}>{localize[lang].TIMESHEETS}</p>
-                  </Col>
+            {task.statusId !== 1 &&
+              activeUser.id === task.performerId && (
+                <label className={css.formField}>
+                  <Row className={css.taskFormRow}>
+                    <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                      <p className={css.label}>{localize[lang].TIMESHEETS}</p>
+                    </Col>
 
-                  <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                    <TaskTimesheet />
-                  </Col>
-                </Row>
-              </label>
-            )}
+                    <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                      <TaskTimesheet />
+                    </Col>
+                  </Row>
+                </label>
+              )}
 
-            {task.statusId !== 1 && (
-              <label className={css.formField}>
-                <Row className={css.taskFormRow}>
-                  <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                    <p className={css.label}>{localize[lang].COMMENT}</p>
-                  </Col>
-                  <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                    <TextArea
-                      // toolbarHidden
-                      placeholder={localize[lang].COMMENT_PLACEHOLDER}
-                      // wrapperClassName={css.taskCommentWrapper}
-                      // editorClassName={css.taskComment}
-                      onChange={this.setComment}
-                      value={this.state.commentText}
-                    />
-                  </Col>
-                </Row>
-              </label>
-            )}
+            {task.statusId !== 1 &&
+              activeUser.id === task.performerId && (
+                <label className={css.formField}>
+                  <Row className={css.taskFormRow}>
+                    <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                      <p className={css.label}>{localize[lang].COMMENT}</p>
+                    </Col>
+                    <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                      <TextArea
+                        // toolbarHidden
+                        placeholder={localize[lang].COMMENT_PLACEHOLDER}
+                        // wrapperClassName={css.taskCommentWrapper}
+                        // editorClassName={css.taskComment}
+                        onChange={this.setComment}
+                        value={this.state.commentText}
+                      />
+                    </Col>
+                  </Row>
+                </label>
+              )}
 
             <div className={css.changePerformerButton}>
               <Button text="Change Performer" type="green" htmlType="submit" onClick={this.changePerformer} />
@@ -202,6 +204,7 @@ class PerformerOptions extends Component {
 }
 
 PerformerOptions.propTypes = {
+  activeUser: PropTypes.object,
   canBeNotSelected: PropTypes.bool,
   changeTask: PropTypes.func,
   defaultOption: PropTypes.number,
@@ -221,6 +224,7 @@ PerformerOptions.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  activeUser: state.Auth.user,
   lang: state.Localize.lang,
   task: state.Task.task
 });
