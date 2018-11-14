@@ -1,3 +1,16 @@
 import CopyThis from './CopyThis';
+import { connect } from 'react-redux';
+import { showNotification } from '../../actions/Notifications';
 
-export default CopyThis;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+const mapDispatchToProps = {
+  showNotification
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CopyThis);

@@ -62,7 +62,7 @@ class SprintReport extends Component {
       });
     } else {
       this.setState({
-        selectedName: option.label,
+        selectedName: '',
         reportPeriod: null,
         selectedFrom: this.formatDate(this.props.startDate),
         selectedTo: moment().format(dateFormat)
@@ -279,12 +279,12 @@ class SprintReport extends Component {
           <Col>{localize[lang].SPRINT}</Col>
           <Col md={4} xs={12}>
             <SprintSelector
-              name="sprint"
-              placeholder={localize[lang].SELECT_SPRINT}
+              thisClassName="sprintReportSelector"
               multi={false}
+              searchable
+              clearable
               value={this.state.reportPeriod}
               onChange={option => this.selectReportPeriod(option)}
-              noResultsText={localize[lang].NO_RESULTS}
               options={this.getSelectOptions()}
             />
           </Col>
