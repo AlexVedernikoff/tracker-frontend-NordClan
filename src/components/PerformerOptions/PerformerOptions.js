@@ -21,7 +21,7 @@ const notSelectedOption = {
 
 const formLayout = {
   firstCol: 3,
-  secondCol: 8
+  secondCol: 9
 };
 
 class PerformerOptions extends Component {
