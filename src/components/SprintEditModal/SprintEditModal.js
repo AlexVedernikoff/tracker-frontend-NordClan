@@ -10,12 +10,13 @@ import moment from 'moment';
 import localize from './SprintEditModal.json';
 import { connect } from 'react-redux';
 import parseInteger from '../../utils/parseInteger';
+import validateNumber from '../../utils/validateNumber';
 
 class SprintEditModal extends Component {
   static propTypes = {
     handleCloseModal: PropTypes.func.isRequired,
     handleEditSprint: PropTypes.func.isRequired,
-    lang: PropTypes.string,
+    lang: PropTypes.string.isRequired,
     project: PropTypes.object.isRequired,
     sprint: PropTypes.object.isRequired
   };
@@ -46,14 +47,9 @@ class SprintEditModal extends Component {
     );
   };
 
-  validateNumbers(value) {
-    const re = /^\d*(\.\d*)?$/;
-    return value !== '' ? re.test(value) : true;
-  }
-
   onChangePercentQA = e => {
     const value = e.target.value;
-    if (this.validateNumbers(value) && value <= 100) {
+    if (validateNumber(value) && value <= 100) {
       this.setState(state => ({
         sprint: {
           ...state.sprint,
@@ -75,7 +71,7 @@ class SprintEditModal extends Component {
 
   onChangeBudget = e => {
     const value = e.target.value;
-    if (this.validateNumbers(value)) {
+    if (validateNumber(value)) {
       this.setState(state => ({
         sprint: {
           ...state.sprint,
@@ -87,7 +83,7 @@ class SprintEditModal extends Component {
 
   onChangeRiskBudget = e => {
     const value = e.target.value;
-    if (this.validateNumbers(value)) {
+    if (validateNumber(value)) {
       this.setState(state => ({
         sprint: {
           ...state.sprint,
@@ -269,7 +265,7 @@ class SprintEditModal extends Component {
                 <Button
                   type="green"
                   htmlType="submit"
-                  text="Изменить"
+                  text={localize[lang].CHANGE}
                   disabled={this.validateAllFields()}
                   onClick={this.handleEditSprint}
                 />

@@ -134,6 +134,7 @@ class SprintReport extends Component {
     return {
       label: localize[this.props.lang].WEEK,
       value: {
+        id: 'WEEK',
         factStartDate: lastWeek.startOf('isoWeek').toDate(),
         factFinishDate: lastWeek.endOf('isoWeek').toDate()
       }
@@ -145,6 +146,7 @@ class SprintReport extends Component {
     return {
       label: localize[this.props.lang].MONTH,
       value: {
+        id: 'MONTH',
         factStartDate: lastMonth.startOf('month').toDate(),
         factFinishDate: lastMonth.endOf('month').toDate()
       }
@@ -155,6 +157,7 @@ class SprintReport extends Component {
     return {
       label: localize[this.props.lang].ALL_TIME,
       value: {
+        id: 'FULL',
         factStartDate: this.props.startDate,
         factFinishDate: moment()
       }
