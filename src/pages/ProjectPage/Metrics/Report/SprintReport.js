@@ -62,7 +62,7 @@ class SprintReport extends Component {
       });
     } else {
       this.setState({
-        selectedName: option.label,
+        selectedName: '',
         reportPeriod: null,
         selectedFrom: this.formatDate(this.props.startDate),
         selectedTo: moment().format(dateFormat)
@@ -134,6 +134,7 @@ class SprintReport extends Component {
     return {
       label: localize[this.props.lang].WEEK,
       value: {
+        id: 'WEEK',
         factStartDate: lastWeek.startOf('isoWeek').toDate(),
         factFinishDate: lastWeek.endOf('isoWeek').toDate()
       }
@@ -145,6 +146,7 @@ class SprintReport extends Component {
     return {
       label: localize[this.props.lang].MONTH,
       value: {
+        id: 'MONTH',
         factStartDate: lastMonth.startOf('month').toDate(),
         factFinishDate: lastMonth.endOf('month').toDate()
       }
@@ -155,6 +157,7 @@ class SprintReport extends Component {
     return {
       label: localize[this.props.lang].ALL_TIME,
       value: {
+        id: 'FULL',
         factStartDate: this.props.startDate,
         factFinishDate: moment()
       }
@@ -276,12 +279,12 @@ class SprintReport extends Component {
           <Col>{localize[lang].SPRINT}</Col>
           <Col md={4} xs={12}>
             <SprintSelector
-              name="sprint"
-              placeholder={localize[lang].SELECT_SPRINT}
+              thisClassName="sprintReportSelector"
               multi={false}
+              searchable
+              clearable
               value={this.state.reportPeriod}
               onChange={option => this.selectReportPeriod(option)}
-              noResultsText={localize[lang].NO_RESULTS}
               options={this.getSelectOptions()}
             />
           </Col>

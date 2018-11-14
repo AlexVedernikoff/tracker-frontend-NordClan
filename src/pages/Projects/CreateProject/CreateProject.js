@@ -118,11 +118,11 @@ class CreateProject extends Component {
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Select
-                  promptTextCreator={label => `Создать портфель '${label}'`}
-                  searchPromptText={'Введите название портфеля'}
+                  promptTextCreator={label => `${localize[lang].CREATE_PORTFOLIO} '${label}'`}
+                  searchPromptText={localize[lang].ENTER_PORTFOLIO_NAME}
                   multi={false}
                   ignoreCase={false}
-                  placeholder="Выберите портфель"
+                  placeholder={localize[lang].CHOOSE_PORTFOLIO}
                   options={portfoliosOptions}
                   filterOption={el => el}
                   onChange={this.props.onPortfolioSelect}

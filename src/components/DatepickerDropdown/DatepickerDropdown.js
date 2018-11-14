@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-// import moment from 'moment';
 import './style.css';
 import * as css from './DatepickerDropdown.scss';
 import 'moment/locale/ru';
@@ -15,7 +14,7 @@ class DatepickerDropdown extends Component {
   }
 
   render() {
-    const { disabledDataRanges, lang, ...other } = this.props;
+    const { disabledDataRanges, ...other } = this.props.ownProps;
 
     return (
       <DayPickerInput
@@ -25,7 +24,7 @@ class DatepickerDropdown extends Component {
         className={css.dropdown}
         format="DD.MM.YYYY"
         dayPickerProps={{
-          locale: lang,
+          locale: this.props.lang,
           localeUtils: { ...LocaleUtils },
           disabledDays: disabledDataRanges
         }}
@@ -36,13 +35,13 @@ class DatepickerDropdown extends Component {
 
 DatepickerDropdown.propTypes = {
   disabledDataRanges: PropTypes.array,
-  dispatch: PropTypes.func,
   name: PropTypes.string,
   options: PropTypes.array
 };
 
-const mapStateToProps = state => ({
-  lang: state.Localize.lang
+const mapStateToProps = (state, ownProps) => ({
+  lang: state.Localize.lang,
+  ownProps
 });
 
 export default connect(mapStateToProps)(DatepickerDropdown);

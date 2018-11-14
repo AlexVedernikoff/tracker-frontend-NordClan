@@ -27,6 +27,8 @@ import localization from './projects.json';
 import Title from 'react-title-component';
 import TypeFilter from './TypeFilter';
 import { getLocalizedProjectTypes } from './../../selectors/dictionaries';
+import { IconPreloader } from '../../components/Icons';
+import InlineHolder from '../../components/InlineHolder';
 
 import 'moment/locale/ru';
 
@@ -214,9 +216,10 @@ class Projects extends Component {
   };
 
   sendRequest = () => {
+    const { selectedPortfolio } = this.state;
     let portfolioName = '';
-    if (this.state.selectedPortfolio && Object.keys(this.state.selectedPortfolio).length !== 0) {
-      portfolioName = !Number.isInteger(this.state.selectedPortfolio.value) ? this.state.selectedPortfolio.value : null;
+    if (selectedPortfolio && Object.keys(selectedPortfolio).length !== 0) {
+      portfolioName = !Number.isInteger(selectedPortfolio.value) ? selectedPortfolio.value : null;
     } else {
       portfolioName = null;
     }
@@ -224,7 +227,7 @@ class Projects extends Component {
       {
         name: this.state.projectName,
         prefix: this.state.projectPrefix,
-        portfolioId: portfolioName ? null : this.state.selectedPortfolio ? this.state.selectedPortfolio.value : null,
+        portfolioId: portfolioName ? null : selectedPortfolio ? selectedPortfolio.value : null,
         portfolioName,
         typeId: this.state.selectedType || 0
       },
@@ -296,14 +299,61 @@ class Projects extends Component {
     return false;
   }
 
+  handleModal = () => {
+    const {
+      isCreateProjectModalOpen,
+      openCreateProjectModal: openCreateProjectModalFunc,
+      closeCreateProjectModal: closeCreateProjectModalFunc
+    } = this.props;
+    if (isCreateProjectModalOpen) {
+      this.setState({
+        projectName: '',
+        projectPrefix: '',
+        selectedPortfolio: null
+      });
+      closeCreateProjectModalFunc();
+    } else {
+      openCreateProjectModalFunc();
+    }
+  };
+
+  renderProjectsList = () =>
+    this.props.projectList.map(project => (
+      <ProjectCard key={`project-${project.id}`} project={project} onClickTag={this.onClickTag} />
+    ));
+
+  renderPreloader = () => {
+    return (
+      <div className={css.projectsPreloader}>
+        <Row>
+          <Col xs={12} sm={4}>
+            <IconPreloader style={{ color: 'silver', fontSize: '2rem', marginRight: 10, float: 'left' }} />
+            <InlineHolder length="60%" />
+          </Col>
+          <Col xs={12} sm={4} className={css.box}>
+            <InlineHolder length="80%" />
+            <InlineHolder length="40%" />
+          </Col>
+          <Col xs={12} sm={4} className={css.box}>
+            <InlineHolder length="30%" />
+          </Col>
+        </Row>
+      </div>
+    );
+  };
+
   render() {
-    const { lang } = this.props;
-    const { filteredInProgress, filteredInHold, filteredFinished, filterSelectedTypes } = this.state;
-    const { projectTypes } = this.props;
-    const formattedDayFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('DD.MM.YYYY') : '';
-    const formattedDayTo = this.state.dateTo ? moment(this.state.dateTo).format('DD.MM.YYYY') : '';
+    const { lang, isProjectsReceived, projectTypes, pagesCount } = this.props;
+    const { filteredInProgress, filteredInHold, filteredFinished, filterSelectedTypes, dateFrom, dateTo } = this.state;
+    const formattedDayFrom = dateFrom ? moment(dateFrom).format('DD.MM.YYYY') : '';
+    const formattedDayTo = dateTo ? moment(dateTo).format('DD.MM.YYYY') : '';
     const isAdmin = this.props.globalRole === ADMIN;
     const isFiltered = this.isFiltered();
+    const withoutProjects = isProjectsReceived ? (
+      <div className={css.notFound}>{localization[lang][isFiltered ? 'NOTHING_FOUND' : 'NO_PROJECT_ASSIGNED']}</div>
+    ) : (
+      this.renderPreloader()
+    );
 
     return (
       <div>
@@ -312,12 +362,16 @@ class Projects extends Component {
           <header className={css.title}>
             <h1 className={css.title}>{localization[lang].MY_PROJECTS}</h1>
             {isAdmin ? (
-              <Button
-                onClick={this.handleModal}
-                text={localization[lang].CREATE_PROJECT}
-                type="primary"
-                icon="IconPlus"
-              />
+              <div>
+                <div>
+                  <Button
+                    onClick={this.handleModal}
+                    text={localization[lang].CREATE_PROJECT}
+                    type="primary"
+                    icon="IconPlus"
+                  />
+                </div>
+              </div>
             ) : null}
           </header>
           <hr />
@@ -384,20 +438,10 @@ class Projects extends Component {
               </Col>
             </Row>
           </div>
-          {this.props.projectList.length ? (
-            <div>
-              {this.props.projectList.map(project => (
-                <ProjectCard key={`project-${project.id}`} project={project} onClickTag={this.onClickTag} />
-              ))}
-            </div>
-          ) : (
-            <div className={css.notFound}>
-              {localization[lang][isFiltered ? 'NOTHING_FOUND' : 'NO_PROJECT_ASSIGNED']}
-            </div>
-          )}
-          {this.props.pagesCount > 1 ? (
+          {this.props.projectList.length ? this.renderProjectsList() : withoutProjects}
+          {pagesCount > 1 ? (
             <Pagination
-              itemsCount={this.props.pagesCount}
+              itemsCount={pagesCount}
               activePage={this.state.activePage}
               onItemClick={this.handlePaginationClick}
             />
@@ -428,6 +472,7 @@ Projects.propTypes = {
   getProjects: PropTypes.func.isRequired,
   globalRole: PropTypes.string.isRequired,
   isCreateProjectModalOpen: PropTypes.bool.isRequired,
+  isProjectsReceived: PropTypes.bool,
   lang: PropTypes.string,
   loading: PropTypes.number,
   openCreateProjectModal: PropTypes.func.isRequired,
@@ -446,6 +491,7 @@ const mapStateToProps = state => ({
   projectError: state.Projects.error,
   globalRole: state.Auth.user.globalRole,
   lang: state.Localize.lang,
+  isProjectsReceived: state.Projects.isProjectsReceived,
   projectTypes: getLocalizedProjectTypes(state) || []
 });
 

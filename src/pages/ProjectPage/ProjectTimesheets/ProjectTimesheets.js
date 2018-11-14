@@ -194,7 +194,7 @@ class ProjectTimesheets extends React.Component {
           if (maNotPushed && isThisWeek(el.onDate)) {
             res.push({
               typeId: el.typeId,
-              projectName: el.project ? el.project.name : 'Без проекта',
+              projectName: el.project ? el.project.name : localize[lang].WITHOUT_PROJECT,
               projectId: el.project ? el.project.id : 0,
               sprintId: null,
               sprint: null,

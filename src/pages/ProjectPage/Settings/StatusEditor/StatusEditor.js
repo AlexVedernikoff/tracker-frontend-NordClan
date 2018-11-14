@@ -11,12 +11,7 @@ import localize from './statusEditor.json';
 class StatusEditor extends React.Component {
   constructor(props) {
     super(props);
-    const { lang } = props;
-    this.statusesInfo = [
-      [1, 'INPROGRESS', localize[lang].IN_PROGRESS],
-      [2, 'INHOLD', localize[lang].IN_HOLD],
-      [3, 'FINISHED', localize[lang].FINISHED]
-    ];
+    this.statusesInfo = [[1, 'INPROGRESS'], [2, 'INHOLD'], [3, 'FINISHED']];
   }
 
   switchStatus = (event, statusId) => {
@@ -40,7 +35,7 @@ class StatusEditor extends React.Component {
       <div className={css.container}>
         <h2>{localize[lang].STATUS}</h2>
         <Row>
-          {this.statusesInfo.map(([statusId, type, name]) => {
+          {this.statusesInfo.map(([statusId, type]) => {
             return (
               <StatusCheckbox
                 key={type}
@@ -48,7 +43,7 @@ class StatusEditor extends React.Component {
                 statusId={statusId}
                 checked={(updatedStatusId || currentStatusId) === statusId}
                 onClick={this.switchStatus}
-                label={name}
+                label={localize[lang][type]}
                 disabled={!isProjectAdmin}
               />
             );
