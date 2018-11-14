@@ -68,11 +68,11 @@ class SetAssociationForm extends Component {
       case associationStates.USERS:
         value = this.state.userEmailAssociation[0];
         associatedArr = userEmailAssociation.filter(e => (value.internalUserId || value.id) === e.internalUserId);
+        const users = userEmailAssociation.map(user => ({ fullNameRu: user.fullNameRu, id: user.internalUserId }));
         if (this.state.userEmailAssociation.length) {
-          this.setState({
-            users: userEmailAssociation.map(user => ({ fullNameRu: user.fullNameRu, id: user.internalUserId }))
-          });
+          this.setState({ users });
         }
+        value = users[0];
         break;
 
       case associationStates.ISSUE_TYPES:
@@ -93,8 +93,10 @@ class SetAssociationForm extends Component {
 
   selectUser = value => {
     const users = this.state.users;
-    users.push({ id: value.value, fullNameRu: value.label });
+    const newUser = { id: value.value, fullNameRu: value.label };
+    users.push(newUser);
     this.setState({ users });
+    this.setState({ selectedSimtrackCol: newUser });
   };
 
   getOptions = input => {
@@ -401,11 +403,16 @@ class SetAssociationForm extends Component {
     });
   };
 
+  filtredJiraUsers = users => {
+    const { userEmailAssociation } = this.state;
+    const pickedEmails = userEmailAssociation.map(el => el.externalUserEmail);
+    return users.filter(user => !pickedEmails.includes(user.email));
+  };
+
   render() {
     const { lang, previousStep, nextStep, project, taskTypes, taskStatuses } = this.props;
     let JiraTableBody;
     let SimtrackTableBody;
-    let SimtrackAssociatedUsers;
     switch (this.state.currentState) {
       case associationStates.ISSUE_TYPES:
         JiraTableBody = project.issue_types.map(entity => {
@@ -424,7 +431,7 @@ class SetAssociationForm extends Component {
         });
         break;
       case associationStates.USERS:
-        JiraTableBody = project.users.map(entity => {
+        JiraTableBody = this.filtredJiraUsers(project.users).map(entity => {
           return this.renderJiraRow(entity);
         });
         SimtrackTableBody = this.state.users.map(entity => {
@@ -456,7 +463,6 @@ class SetAssociationForm extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    <tbody>{SimtrackAssociatedUsers}</tbody>
                     {this.state.currentState === associationStates.USERS ? (
                       <tr className={css.userRow}>
                         <Async
