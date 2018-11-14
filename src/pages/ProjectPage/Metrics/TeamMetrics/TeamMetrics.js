@@ -6,14 +6,19 @@ import { connect } from 'react-redux';
 import SprintSelector from '../../../../components/SprintSelector';
 import moment from 'moment';
 import classnames from 'classnames';
-import Loader from '../../../InnerContainer/AppHead/Loader';
+import * as MetricTypes from '../../../../constants/Metrics';
 const dateFormat = 'DD.MM.YYYY';
+import findLastIndex from 'lodash/findLastIndex';
+
+const filterMetrics = (id, metrics) => {
+  return metrics ? metrics.filter(metric => metric.typeId === id) : [];
+};
 
 class TeamMetrics extends Component {
   static propTypes = {
     lang: PropTypes.string,
-    sprints: PropTypes.array,
-    teamMetrics: PropTypes.array
+    metrics: PropTypes.array,
+    sprints: PropTypes.array
   };
 
   constructor(props) {
@@ -76,20 +81,19 @@ class TeamMetrics extends Component {
   };
 
   render() {
-    const { lang, teamMetrics, sprints } = this.props;
+    const { lang, metrics, sprints } = this.props;
+    const teamMetrics = filterMetrics(MetricTypes.COMMAND_METRICS, metrics);
 
-    if (!teamMetrics) {
-      return <Loader />;
-    }
-
-    const filteredMetrics = this.state.sprintSelected
-      ? teamMetrics.filter(data => data.sprint.id === this.state.sprintSelected.value.id)
-      : [];
+    // Ищу последний элемент т.к. в нем самые свежие данные
+    const lastMetricIndex =
+      this.state.sprintSelected &&
+      findLastIndex(teamMetrics, item => item.sprintId === this.state.sprintSelected.value.id);
+    const teamMetric = lastMetricIndex >= 0 ? metrics[lastMetricIndex] : null;
 
     return (
       <div>
         <div className={css.sprintSelectWrapper}>
-          <div>{localize[lang].SPRINT}</div>
+          <div className={css.text}>{localize[lang].SPRINT}</div>
           <SprintSelector
             multi={false}
             value={this.state.sprintSelected}
@@ -112,22 +116,20 @@ class TeamMetrics extends Component {
             </tr>
           </thead>
           <tbody>
-            {Array.isArray(filteredMetrics) && filteredMetrics.length > 0 ? (
-              filteredMetrics.map(item => {
-                return item.data.map(userData => {
-                  return (
-                    <tr>
-                      <td>
-                        <span>{userData.user.fullNameRu}</span>
-                      </td>
-                      <td>{userData.taskDoneCount}</td>
-                      <td>{userData.taskReturnCount}</td>
-                      <td>{userData.bugDoneCount}</td>
-                      <td>{userData.bugReturnCount}</td>
-                      <td>{userData.linkedBugsCount}</td>
-                    </tr>
-                  );
-                });
+            {teamMetric && Array.isArray(teamMetric.value) && teamMetric.value.length > 0 ? (
+              teamMetric.value.map(item => {
+                return (
+                  <tr key={teamMetric.sprintId + '_' + item.user.id}>
+                    <td>
+                      <span>{item.user.fullNameRu}</span>
+                    </td>
+                    <td>{item.taskDoneCount}</td>
+                    <td>{item.taskReturnCount}</td>
+                    <td>{item.bugDoneCount}</td>
+                    <td>{item.bugReturnCount}</td>
+                    <td>{item.linkedBugsCount}</td>
+                  </tr>
+                );
               })
             ) : (
               <tr>
@@ -144,7 +146,9 @@ class TeamMetrics extends Component {
 }
 
 const mapStateToProps = state => ({
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  sprints: state.Project.project.sprints,
+  metrics: state.Project.project.metrics
 });
 
 export default connect(mapStateToProps)(TeamMetrics);
