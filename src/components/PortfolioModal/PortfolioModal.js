@@ -1,20 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import Select from 'react-select';
+
 import * as css from './PortfolioModal.scss';
 import Modal from '../Modal';
 import Button from '../Button';
-import Select from 'react-select';
+import localize from './PortfolioModal.json';
 
 class PortfolioModal extends Component {
   static propTypes = {
     defaultPortfolio: PropTypes.object,
     getPortfolios: PropTypes.func.isRequired,
+    lang: PropTypes.string.isRequired,
     onChoose: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
     portfolios: PropTypes.array,
-    projectId: PropTypes.number,
-    title: PropTypes.string
+    projectId: PropTypes.number
   };
 
   constructor(props) {
@@ -45,7 +47,7 @@ class PortfolioModal extends Component {
   };
 
   render() {
-    const { title, onClose } = this.props;
+    const { onClose, lang } = this.props;
 
     const portfoliosOptions = this.props.portfolios.map(portfolio => ({
       label: portfolio.name,
@@ -55,14 +57,14 @@ class PortfolioModal extends Component {
     return (
       <Modal isOpen contentLabel="modal" className={css.modalWrapper} onRequestClose={onClose}>
         <div className={css.changeStage}>
-          <h3>{title}</h3>
+          <h3>{localize[lang].TITLE}</h3>
           <div className={css.modalLine}>
             <Select
-              promptTextCreator={label => `Поиск портфеля '${label}'`}
-              searchPromptText={'Введите название портфеля'}
+              promptTextCreator={label => `${localize[lang].PORTFOLIO_SEARCH} '${label}'`}
+              searchPromptText={localize[lang].ENTER_PORTFOLIO_NAME}
               multi={false}
               ignoreCase={false}
-              placeholder="Выберите портфель"
+              placeholder={localize[lang].CHOOSE_PORTFOLIO}
               options={portfoliosOptions}
               filterOption={el => el}
               onChange={this.onPortfolioSelect}
@@ -77,7 +79,8 @@ class PortfolioModal extends Component {
 }
 
 const mapStateToProps = state => ({
-  portfolios: state.Portfolios.portfolios
+  portfolios: state.Portfolios.portfolios,
+  lang: state.Localize.lang
 });
 
 export default connect(

@@ -150,6 +150,7 @@ class ProjectPage extends Component {
             projectTypes={projectTypes}
             onCancel={this.handleCloseProjectPrefixModal}
             onConfirm={this.handleCloseProjectConfirmModal}
+            lang={lang}
           />
         ) : null}
       </div>

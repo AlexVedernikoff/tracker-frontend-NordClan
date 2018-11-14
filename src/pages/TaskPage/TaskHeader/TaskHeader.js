@@ -160,12 +160,12 @@ class TaskHeader extends Component {
   };
 
   getButtonTip = (inProcessStatusId, inHoldStatusId, phase) => {
-    const { task } = this.props;
+    const { task, lang } = this.props;
     let tip;
     if (task.statusId === inProcessStatusId) {
-      tip = 'Приостановить';
+      tip = localize[lang].STOP;
     } else if (task.statusId === inHoldStatusId) {
-      tip = 'Начать';
+      tip = localize[lang].PLAY;
     } else {
       tip = `${localize[this.props.lang].MOVE_TO} ${phase}`;
     }
@@ -225,7 +225,7 @@ class TaskHeader extends Component {
         <div className={css.taskTopInfo}>
           <CopyThis
             wrapThisInto={'div'}
-            description={`Ссылка на задачу ${task.project ? task.project.prefix + '-' : ''}${task.id}`}
+            description={`${localize[lang].TASK_LINK} ${task.project ? task.project.prefix + '-' : ''}${task.id}`}
             textToCopy={`${location.origin}${history.createHref(this.props.location)}`}
           >
             {task.project ? (

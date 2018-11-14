@@ -1,3 +1,8 @@
 import PerformerModal from './PerformerModal';
+import { connect } from 'react-redux';
 
-export default PerformerModal;
+const mapStateToProps = state => ({
+  lang: state.Localization.lang
+});
+
+export default connect(mapStateToProps)(PerformerModal);
