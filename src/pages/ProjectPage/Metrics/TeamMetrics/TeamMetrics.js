@@ -6,9 +6,9 @@ import { connect } from 'react-redux';
 import SprintSelector from '../../../../components/SprintSelector';
 import moment from 'moment';
 import classnames from 'classnames';
-import Loader from '../../../InnerContainer/AppHead/Loader';
 import * as MetricTypes from '../../../../constants/Metrics';
 const dateFormat = 'DD.MM.YYYY';
+import findLastIndex from 'lodash/findLastIndex';
 
 const filterMetrics = (id, metrics) => {
   return metrics ? metrics.filter(metric => metric.typeId === id) : [];
@@ -87,7 +87,7 @@ class TeamMetrics extends Component {
     // Ищу последний элемент т.к. в нем самые свежие данные
     const lastMetricIndex =
       this.state.sprintSelected &&
-      _.findLastIndex(teamMetrics, item => item.sprintId === this.state.sprintSelected.value.id);
+      findLastIndex(teamMetrics, item => item.sprintId === this.state.sprintSelected.value.id);
     const teamMetric = lastMetricIndex >= 0 ? metrics[lastMetricIndex] : null;
 
     return (
