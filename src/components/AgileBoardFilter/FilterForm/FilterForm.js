@@ -108,7 +108,7 @@ class FilterForm extends React.Component {
               placeholder={localize[lang].TAG_NAME}
               backspaceToRemoveMessage=""
               onChange={this.selectTagForFiltrated}
-              noResultsText="Нет результатов"
+              noResultsText={localize[lang].NO_RESULTS}
               filterOption={layoutAgnosticFilter}
               {...this.getFilterTagsProps()}
             />

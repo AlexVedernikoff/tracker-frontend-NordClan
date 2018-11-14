@@ -1,0 +1,11 @@
+{
+  "en": {
+    "ENTER_PERFORMER_NAME": "Enter performer name",
+    "CANCEL_CURRENT_PERFORMER": "Cancel current performer"
+  },
+
+  "ru": {
+    "ENTER_PERFORMER_NAME": "Введите имя исполнителя",
+    "CANCEL_CURRENT_PERFORMER": "Отменить текущего исполнителя"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "en": {
+    "PORTFOLIO_SEARCH": "Searching portfolio",
+    "ENTER_PORTFOLIO_NAME": "Enter portfolio name",
+    "CHOOSE_PORTFOLIO": "Choose portfolio",
+    "TITLE": "Change project portfolio"
+  },
+
+  "ru": {
+    "PORTFOLIO_SEARCH": "Поиск портфеля",
+    "ENTER_PORTFOLIO_NAME": "Введите название портфеля",
+    "CHOOSE_PORTFOLIO": "Выберите портфель",
+    "TITLE": "Изменить портфель проекта"
+  }
+}

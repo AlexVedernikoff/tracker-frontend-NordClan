@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import cn from 'classnames';
 import onClickOutside from 'react-onclickoutside';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+
 import * as css from '../../Timesheets.scss';
 import { IconComment, IconCheck } from '../../../../components/Icons';
 import localize from './SingleComment.json';
@@ -81,7 +82,7 @@ class SingleComment extends React.Component {
               {!disabled ? (
                 <textarea
                   autoFocus
-                  placeholder={localize[lang].ENTER_COMMENT}
+                  placeholder={localize[lang].ENTER_COMMENT_TEXT}
                   onChange={this.changeText}
                   onKeyDown={this.saveWithEnter}
                   value={this.state.text}
