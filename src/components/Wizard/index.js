@@ -17,7 +17,8 @@ const mapStateToProps = state => {
     token: state.Jira.token,
     authorId: state.Auth.user.id,
     taskTypes: state.Dictionaries.taskTypes,
-    taskStatuses: state.Dictionaries.taskStatuses
+    taskStatuses: state.Dictionaries.taskStatuses,
+    projectData: { name: state.Project.project.name, prefix: state.Project.project.prefix }
   };
 };
 

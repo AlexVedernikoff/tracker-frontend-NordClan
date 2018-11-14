@@ -116,13 +116,14 @@ const getJiraProjects = headers => {
   return dispatch => {
     dispatch(startLoading());
     dispatch(getJiraProjectsStart());
-    axios
+    return axios
       .get(URL, { headers })
       .then(response => {
         if (response && response.status === 200) {
           dispatch(getJiraProjectsSuccess(response.data.projects));
         }
         dispatch(finishLoading());
+        return response.data;
       })
       .catch(error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
