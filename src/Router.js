@@ -91,7 +91,7 @@ class AppRouter extends Component {
     cb();
   };
 
-  onProjectPageLeave = (nextState, replace, cb) => {
+  onProjectPageLeave = nextState => {
     localStorage.setItem('filtersData', nextState.location.search);
     if (nextState.location.search === '') {
       localStorage.setItem('filtersData', '?changedSprint=0');
