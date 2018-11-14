@@ -84,10 +84,6 @@ class TeamMetrics extends Component {
     const { lang, metrics, sprints } = this.props;
     const teamMetrics = filterMetrics(MetricTypes.COMMAND_METRICS, metrics);
 
-    if (teamMetrics.length === 0) {
-      return <Loader />;
-    }
-
     // Ищу последний элемент т.к. в нем самые свежие данные
     const lastMetricIndex =
       this.state.sprintSelected &&
