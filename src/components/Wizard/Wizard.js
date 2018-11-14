@@ -34,10 +34,23 @@ class Wizard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentState: states.AUTH
+      currentState: states.AUTH,
+      authData: {
+        username: '',
+        password: '',
+        server: '',
+        email: ''
+      }
     };
     this.stateMachine = new StateMachine();
   }
+
+  onChange = (name, e) => {
+    e.persist();
+    this.setState(state => ({
+      authData: { ...state.authData, [name]: e.target.value }
+    }));
+  };
 
   // Auth forward function
   authNext = formData => {
@@ -138,7 +151,7 @@ class Wizard extends Component {
       case states.AUTH:
         return (
           <div>
-            <Auth lang={lang} nextStep={this.authNext} />
+            <Auth lang={lang} nextStep={this.authNext} onChange={this.onChange} authData={this.state.authData} />
           </div>
         );
       case states.SET_ASSOCIATIONS:

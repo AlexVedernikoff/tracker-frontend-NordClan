@@ -9,28 +9,18 @@ import Button from '../../../Button';
 
 class AuthForm extends Component {
   static propTypes = {
+    authData: PropTypes.object,
     lang: PropTypes.string,
-    nextStep: PropTypes.func
+    nextStep: PropTypes.func,
+    onChange: PropTypes.func
   };
 
   constructor(props) {
     super(props);
-    this.state = {
-      username: '',
-      password: '',
-      server: '',
-      email: ''
-    };
   }
 
-  onChange = (name, e) => {
-    this.setState({
-      [name]: e.target.value
-    });
-  };
-
   render() {
-    const { lang, nextStep } = this.props;
+    const { lang, nextStep, onChange, authData } = this.props;
     const formLayout = {
       firstCol: 3,
       secondCol: 9
@@ -49,8 +39,8 @@ class AuthForm extends Component {
             <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
               <Input
                 placeholder={localize[lang].SERVER}
-                onChange={e => this.onChange('server', e)}
-                value={this.state.server}
+                onChange={e => onChange('server', e)}
+                value={authData.server}
               />
             </Col>
           </Row>
@@ -63,8 +53,8 @@ class AuthForm extends Component {
             <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
               <Input
                 placeholder={localize[lang].USERNAME}
-                onChange={e => this.onChange('username', e)}
-                value={this.state.username}
+                onChange={e => onChange('username', e)}
+                value={authData.username}
               />
             </Col>
           </Row>
@@ -78,8 +68,8 @@ class AuthForm extends Component {
               <Input
                 placeholder={localize[lang].PASSWORD}
                 type="password"
-                onChange={e => this.onChange('password', e)}
-                value={this.state.password}
+                onChange={e => onChange('password', e)}
+                value={authData.password}
               />
             </Col>
           </Row>
@@ -93,14 +83,14 @@ class AuthForm extends Component {
               <Input
                 placeholder={localize[lang].EMAIL}
                 label="email"
-                onChange={e => this.onChange('email', e)}
-                value={this.state.email}
+                onChange={e => onChange('email', e)}
+                value={authData.email}
               />
             </Col>
           </Row>
         </label>
         <div className={css.buttonsContainer}>
-          <Button text="Вперед" onClick={() => nextStep(this.state)} type="green" />
+          <Button text="Вперед" onClick={() => nextStep(authData)} type="green" />
         </div>
       </div>
     );
