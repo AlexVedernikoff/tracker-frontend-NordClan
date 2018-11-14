@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import * as _ from 'lodash';
 import { Link } from 'react-router';
 import ReactTooltip from 'react-tooltip';
+import { createSelector } from 'reselect';
 import Tag from '../../../components/Tag';
 import Tags from '../../../components/Tags';
 import TaskPlanningTime from '../TaskPlanningTime';
@@ -26,12 +28,17 @@ import { TASK_STATUS_CLOSED } from '../../../constants/Task';
 import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
 import shortid from 'shortid';
 import { addActivity } from '../../../actions/Timesheets';
+import sortPerformer from '../../../utils/sortPerformer';
 
 const spentRequestStatus = {
   READY: 0,
   REQUESTED: 1,
   RECEIVED: 2
 };
+
+const usersSelector = state => state.Project.project.users;
+
+const sortedUsersSelector = createSelector(usersSelector, users => sortPerformer(users));
 
 class Details extends Component {
   static propTypes = {
@@ -52,7 +59,7 @@ class Details extends Component {
     task: PropTypes.object.isRequired,
     taskTypes: PropTypes.array,
     timeSpent: PropTypes.object,
-    users: PropTypes.array
+    users: PropTypes.object
   };
 
   constructor(props) {
@@ -211,13 +218,15 @@ class Details extends Component {
   };
 
   render() {
-    const { task, sprints, taskTypes, timeSpent, isExternal, lang } = this.props;
+    const { task, sprints, taskTypes, timeSpent, isExternal, lang, users } = this.props;
     const tags = task.tags.map((tag, i) => {
       const tagName = typeof tag === 'object' ? tag.name : tag;
       return <Tag key={i} name={tagName} taggable="task" taggableId={task.id} />;
     });
 
-    const users = this.props.users.map(item => ({
+    const unionPerformers = _.union(users.back, users.front, users.ios, users.android, users.qa, users.other);
+
+    const usersFullNames = unionPerformers.map(item => ({
       value: item.user ? item.user.id : item.id,
       label: item.user ? getFullName(item.user) : getFullName(item)
     }));
@@ -386,10 +395,10 @@ class Details extends Component {
             onClose={this.closePerformerModal}
             title={localize[lang].CHANGE_PERFORMER}
             isPerformerChanged={this.state.isPerformerChanged}
-            users={users}
             id={task.id}
             handleChangePlannedTime={this.handleChangePlannedTime}
             plannedExecutionTime={this.props.plannedExecutionTime}
+            users={usersFullNames}
           />
         ) : null}
         {this.state.isSprintModalOpen ? (
@@ -414,7 +423,7 @@ class Details extends Component {
 }
 
 const mapStateToProps = state => ({
-  users: state.Project.project.users,
+  users: sortedUsersSelector(state),
   sprints: state.Project.project.sprints,
   taskTypes: getLocalizedTaskTypes(state),
   plannedExecutionTime: state.Task.task.plannedExecutionTime,

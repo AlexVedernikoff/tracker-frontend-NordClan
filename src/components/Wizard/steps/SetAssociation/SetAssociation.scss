@@ -1,0 +1,75 @@
+@import '../../../../styles/variables.scss';
+
+.usersRolesTable {
+  position: relative;
+  th,
+  td {
+    height: 3rem;
+    padding: 0.5rem 1rem;
+  }
+}
+.formField {
+  display: block;
+
+  & + & {
+    margin-top: 1rem;
+  }
+}
+
+.userRow {
+  text-align: center;
+  &:hover {
+    td {
+      transition: $transition;
+      background: $color-gray;
+    }
+  }
+  &__active {
+    transition: $transition;
+    background: $color-gray;
+  }
+}
+
+.usersRolesHeader {
+  text-align: center;
+  &:hover {
+    th {
+      transition: $transition;
+      background: $color-gray;
+    }
+  }
+}
+
+.mainContainer {
+  min-width: 330px;
+  max-width: 500px;
+  padding: 2rem;
+
+  h3 {
+    margin-top: 0;
+  }
+}
+
+.associationButtonContainer {
+  margin-top: 2rem;
+  text-align: center;
+  button {
+    width: 50%;
+  }
+}
+
+.buttonsContainer {
+  margin-top: 2rem;
+  text-align: center;
+  button {
+    width: 50%;
+  }
+}
+
+.innerFirstCol {
+  width: 50%;
+  box-sizing: border-box;
+  &:last-child {
+    border-left: 1px solid #ddd;
+  }
+}

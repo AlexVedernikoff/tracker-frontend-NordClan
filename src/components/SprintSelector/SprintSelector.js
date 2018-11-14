@@ -26,10 +26,11 @@ export default class SprintSelector extends Component {
     this.setState({ inputFocused: false });
   };
 
-  getSprints = () => {
-    let sprints = sortBy(this.props.sprints, sprint => {
+  getSprints = arr => {
+    let sprints = sortBy(arr, sprint => {
       return new moment(sprint.factFinishDate);
     });
+    const { multi } = this.props;
 
     sprints = sprints.map(sprint => ({
       value: this.props.useId ? sprint.id : sprint,
@@ -42,8 +43,10 @@ export default class SprintSelector extends Component {
       className: classnames({
         [css.INPROGRESS]: sprint.statusId === 2,
         [css.sprintMarker]: true,
-        [css.FINISHED]: sprint.statusId === 1
-      })
+        [css.FINISHED]: sprint.statusId === 1,
+        [css.picked]: this.isOptionPicked(this.props.useId ? sprint.id : sprint)
+      }),
+      disabled: !multi && this.isOptionPicked(this.props.useId ? sprint.id : sprint)
     }));
 
     sprints.push({
@@ -51,18 +54,48 @@ export default class SprintSelector extends Component {
       label: 'Backlog',
       className: classnames({
         [css.INPROGRESS]: false,
-        [css.sprintMarker]: true
-      })
+        [css.sprintMarker]: true,
+        [css.picked]: this.isOptionPicked(0)
+      }),
+      disabled: !multi && this.isOptionPicked(0)
     });
     return sprints;
   };
 
+  getOptions = arr => {
+    const { multi } = this.props;
+    const options = arr.map(option => ({
+      ...option,
+      className: classnames({
+        [css.INPROGRESS]: option.statusId === 2,
+        [css.sprintMarker]: true,
+        [css.FINISHED]: option.statusId === 1,
+        [css.picked]: this.isOptionPicked(option.value)
+      }),
+      disabled: !multi && this.isOptionPicked(option.value)
+    }));
+    return options;
+  };
+
+  isOptionPicked = id => {
+    const { value } = this.props;
+    if (value) {
+      if (value.length && value.length) {
+        return value.includes(id);
+      }
+      if (value.value.id) return value.value.id === id.id;
+    }
+    return false;
+  };
+
   render() {
-    const { value, onChange, ...otherProps } = this.props;
+    const { value, onChange, options, sprints, multi, ...otherProps } = this.props;
     return (
       <div className="sprint-dropdown">
         <SelectDropdown
           name="sprint"
+          removeSelected={false}
+          multi={multi}
           searchable={false}
           thisClassName="sprintSelector"
           placeholder="Выберите спринт"
@@ -70,7 +103,7 @@ export default class SprintSelector extends Component {
           backspaceToRemoveMessage={''}
           clearAllText="Очистить все"
           value={value}
-          options={this.getSprints()}
+          options={sprints ? this.getSprints(sprints) : this.getOptions(options)}
           clearable={false}
           onFocus={this.onSelectFocus}
           onBlur={this.onSelectBlur}

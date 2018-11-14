@@ -499,14 +499,12 @@ class Planning extends Component {
                     header={localize[lang].WITH_RISK_RESERVE}
                     value={riskBudget}
                     isProjectAdmin={isProjectAdmin}
-                    min={budget}
                   />
                   <Budget
                     onEditSubmit={this.onBudgetSubmit}
                     header={localize[lang].WO_RISK_RESERVE}
                     value={budget}
                     isProjectAdmin={isProjectAdmin}
-                    max={riskBudget}
                   />
                   {!!budget && !!riskBudget && <div className={css.riskMarker}>{localize[lang].RISK_RESERVE}</div>}
                 </div>
@@ -520,8 +518,7 @@ class Planning extends Component {
                     value={qaPercent}
                     isProjectAdmin={isProjectAdmin}
                     integerOnly
-                    min={0}
-                    max={100}
+                    percents
                   />
                 </div>
               ) : null}
