@@ -644,10 +644,12 @@ class TaskList extends Component {
               <Row className={css.search} top="xs">
                 <Col xs={12} sm={3}>
                   <SprintSelector
-                    value={sprintId}
-                    sprints={project.sprints}
-                    onChange={this.onChangeSprintFilter}
                     multi
+                    searchable={false}
+                    clearable
+                    value={sprintId}
+                    onChange={this.onChangeSprintFilter}
+                    sprints={project.sprints}
                     useId
                   />
                 </Col>
@@ -786,7 +788,7 @@ class TaskList extends Component {
                   isExternal={isExternal}
                 />
               ))}
-          {!isLoading && tasks.length === 0 ? <div className={css.notFound}>Ничего не найдено</div> : null}
+          {!isLoading && tasks.length === 0 ? <div className={css.notFound}>{localize[lang].NOTHING_FOUND}</div> : null}
           {this.props.pagesCount > 1 ? (
             <Pagination
               itemsCount={this.props.pagesCount}

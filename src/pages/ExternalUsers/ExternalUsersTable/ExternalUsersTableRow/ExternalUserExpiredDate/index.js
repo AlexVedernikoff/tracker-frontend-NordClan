@@ -1,3 +1,8 @@
 import ExternalUserExpiredDate from './ExternalUserExpiredDate';
+import { connect } from 'react-redux';
 
-export default ExternalUserExpiredDate;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(mapStateToProps)(ExternalUserExpiredDate);

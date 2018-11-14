@@ -3,6 +3,15 @@ import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
+import { store } from '../History';
+
+let lang = 'en';
+store.subscribe(() => {
+  lang = store.getState().Localize.lang;
+});
+
+const sprintHasActiveTasksRu = 'В спринте есть активные задачи. Удаление невозможно';
+const sprintHasActiveTasksEn = 'There are active tasks in the sprint. Unable to delete';
 
 const createSprintStart = () => ({
   type: SprintActions.SPRINTS_CREATE_START
@@ -80,7 +89,7 @@ export const deleteSprint = id => {
         if (error.response.data.type === 'sprintHasActiveTasks') {
           dispatch(
             showNotification({
-              message: 'В спринте есть активные задачи. Удаление невозможно',
+              message: lang === 'en' ? sprintHasActiveTasksEn : sprintHasActiveTasksRu,
               type: 'error'
             })
           );

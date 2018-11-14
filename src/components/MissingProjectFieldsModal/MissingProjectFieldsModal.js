@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Modal from '../../components/Modal';
-// import Input from '../../components/Input';
 import ValidatedInput from '../../components/ValidatedInput';
 import Validator from '../../components/ValidatedInput/Validator';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
@@ -9,6 +8,7 @@ import Button from '../Button';
 import Select from '../SelectDropdown';
 import * as css from './MissingProjectFieldsModal.scss';
 import { getErrorMessageByType } from '../../utils/ErrorMessages';
+import localize from './MissingProjectFieldsModal.json';
 
 class MissingProjectFieldsModal extends Component {
   constructor(props) {
@@ -55,41 +55,27 @@ class MissingProjectFieldsModal extends Component {
   };
 
   render() {
-    const {
-      // style,
-      // onRequestClose,
-      // error: requestError,
-      closeTimeoutMS,
-      text,
-      onCancel,
-      projectTypes,
-      ...other
-    } = this.props;
+    const { closeTimeoutMS, text, onCancel, projectTypes, lang, ...other } = this.props;
     const { error, typeId, prefix } = this.state;
     const formLayout = {
       firstCol: 5,
       secondCol: 7
     };
     return (
-      <Modal
-        {...other}
-        onRequestClose={onCancel}
-        // style={style || ReactModalStyles}
-        closeTimeoutMS={200 || closeTimeoutMS}
-      >
+      <Modal {...other} onRequestClose={onCancel} closeTimeoutMS={200 || closeTimeoutMS}>
         <div className={css.container}>
           <h3 style={{ margin: 0 }}>{text}</h3>
           <hr />
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Префикс проекта:</p>
+                <p>{localize[lang].PROJECT_PREFIX}:</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 {this.validator.validate(
                   (handleBlur, shouldMarkError) => (
                     <ValidatedInput
-                      placeholder="Префикс проекта"
+                      placeholder={localize[lang].PROJECT_PREFIX}
                       onChange={this.onPrefixInputChange}
                       onBlur={handleBlur}
                       name="prefix"
@@ -106,14 +92,14 @@ class MissingProjectFieldsModal extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Тип проекта:</p>
+                <p>{localize[lang].PROJECT_TYPE}:</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Select
                   name="performer"
-                  placeholder="Выберите тип проекта"
+                  placeholder={localize[lang].CHOOSE_PROJECT_TYPE}
                   multi={false}
-                  noResultsText="Нет результатов"
+                  noResultsText={localize[lang].NO_RESULTS}
                   backspaceRemoves={false}
                   options={projectTypes.map(type => ({ value: type.id, label: type.name }))}
                   className={css.selectType}
@@ -131,7 +117,12 @@ class MissingProjectFieldsModal extends Component {
               onClick={this.onConfirm}
               disabled={prefix.length < 2}
             />
-            <Button text="Вернуться в «Мои проекты»" type="primary" style={{ width: '50%' }} onClick={onCancel} />
+            <Button
+              text={localize[lang].RETURN_TO_MY_PROJECTS}
+              type="primary"
+              style={{ width: '50%' }}
+              onClick={onCancel}
+            />
           </div>
         </div>
       </Modal>
@@ -142,6 +133,7 @@ class MissingProjectFieldsModal extends Component {
 MissingProjectFieldsModal.propTypes = {
   closeTimeoutMS: PropTypes.number,
   error: PropTypes.object,
+  lang: PropTypes.string,
   onCancel: PropTypes.func,
   onConfirm: PropTypes.func,
   onRequestClose: PropTypes.func,

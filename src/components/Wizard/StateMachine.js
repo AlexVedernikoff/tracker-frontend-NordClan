@@ -5,8 +5,7 @@ import { associationStates } from './steps/SetAssociation/AssociationStates';
 class StateMachine {
   constructor() {
     this.transitions = {
-      [states.AUTH]: states.CREATE_PROJECT,
-      [states.CREATE_PROJECT]: states.SET_ASSOCIATIONS,
+      [states.AUTH]: states.SET_ASSOCIATIONS,
       [states.SET_ASSOCIATIONS]: states.FINISH
     };
 

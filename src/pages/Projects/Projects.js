@@ -8,7 +8,6 @@ import Button from '../../components/Button';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
 import Input from '../../components/Input';
 import ProjectCard from '../../components/ProjectCard';
-import Wizard from '../../components/Wizard';
 import StatusCheckbox from './StatusCheckbox';
 import Pagination from '../../components/Pagination';
 import moment from 'moment';
@@ -39,7 +38,6 @@ class Projects extends Component {
     const projectListFilters = this.getSavedFilters();
     this.state = {
       ...this.initialFilters,
-      isWizardOpened: false,
       projects: [],
       projectPrefix: '',
       openProjectPage: false,
@@ -319,17 +317,6 @@ class Projects extends Component {
     }
   };
 
-  handleWizard = () => {
-    this.setState({
-      isWizardOpened: true
-    });
-  };
-
-  onWizardClose = () => {
-    this.setState({
-      isWizardOpened: false
-    });
-  };
   renderProjectsList = () =>
     this.props.projectList.map(project => (
       <ProjectCard key={`project-${project.id}`} project={project} onClickTag={this.onClickTag} />
@@ -380,14 +367,6 @@ class Projects extends Component {
                   <Button
                     onClick={this.handleModal}
                     text={localization[lang].CREATE_PROJECT}
-                    type="primary"
-                    icon="IconPlus"
-                  />
-                </div>
-                <div>
-                  <Button
-                    onClick={this.handleWizard}
-                    text={localization[lang].CREATE_PROJECT_WITH_JIRA}
                     type="primary"
                     icon="IconPlus"
                   />
@@ -483,7 +462,6 @@ class Projects extends Component {
           onTypeSelect={this.handleModalTypeSelected}
           selectedType={this.state.selectedType}
         />
-        <Wizard lang={lang} isOpen={this.state.isWizardOpened} onRequestClose={this.onWizardClose} />
       </div>
     );
   }

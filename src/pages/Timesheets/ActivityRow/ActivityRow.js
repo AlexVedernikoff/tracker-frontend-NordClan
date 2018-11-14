@@ -466,7 +466,7 @@ class ActivityRow extends React.Component {
               onCancel={this.closeProjectEditModal}
               selectedProject={item.projectId}
               onConfirm={isTempRow ? this.editTempActivity(tempCell.id) : () => {}}
-              text="Выберите проект"
+              text={localize[lang].CHOOSE_PROJECT}
             />
           ) : null}
         </td>
