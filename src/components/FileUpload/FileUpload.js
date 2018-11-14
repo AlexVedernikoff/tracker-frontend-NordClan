@@ -22,7 +22,7 @@ class FileUpload extends React.Component {
     };
 
     return !this.props.isMinimal ? (
-      <Dropzone onDrop={this.props.onDrop} style={{}}>
+      <Dropzone onDrop={this.props.onDrop} className={css.dropzoneWrap}>
         <li className={css.attachment}>
           <div className={css.attachmentIcon}>
             <IconPlus style={iconStyles} />

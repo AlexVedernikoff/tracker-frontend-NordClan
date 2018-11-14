@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import * as _ from 'lodash';
 import Button from '../../../components/Button';
 import ConfirmModal from '../../../components/ConfirmModal';
 import { Link } from 'react-router';
@@ -16,6 +17,12 @@ import getTypeById from '../../../utils/TaskTypes';
 import localize from './TaskHeader.json';
 import { getFullName } from '../../../utils/NameLocalisation';
 import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
+import { createSelector } from 'reselect';
+import sortPerformer from '../../../utils/sortPerformer';
+
+const usersSelector = state => state.Project.project.users;
+
+const sortedUsersSelector = createSelector(usersSelector, users => sortPerformer(users));
 
 const getNewStatus = newPhase => {
   let newStatusId;
@@ -174,9 +181,25 @@ class TaskHeader extends Component {
   };
 
   render() {
-    const { task, taskTypes, canEdit, lang } = this.props;
+    const { task, taskTypes, canEdit, lang, users } = this.props;
     const css = require('./TaskHeader.scss');
-    const users = this.props.users.map(item => ({
+
+    let unionPerformers = [];
+    switch (this.state.clickedStatus) {
+      case 'Develop':
+        unionPerformers = _.union(users.back, users.front, users.ios, users.android);
+        break;
+      case 'Code Review':
+        unionPerformers = _.union(users.back, users.front, users.ios, users.android);
+        break;
+      case 'QA':
+        unionPerformers = users.qa;
+        break;
+      default:
+        unionPerformers = _.union(users.back, users.front, users.ios, users.android);
+    }
+
+    const usersFullNames = unionPerformers.map(item => ({
       value: item.user ? item.user.id : item.id,
       label: item.user ? getFullName(item.user) : getFullName(item)
     }));
@@ -307,7 +330,7 @@ class TaskHeader extends Component {
             onChoose={this.changePerformer}
             onClose={this.handleCloseModal}
             title={this.state.modalTitle}
-            users={users}
+            users={usersFullNames}
           />
         ) : null}
       </div>
@@ -325,11 +348,11 @@ TaskHeader.propTypes = {
   projectId: PropTypes.string.isRequired,
   task: PropTypes.object.isRequired,
   taskTypes: PropTypes.array,
-  users: PropTypes.array
+  users: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  users: state.Project.project.users,
+  users: sortedUsersSelector(state),
   location: state.routing.locationBeforeTransitions,
   taskTypes: getLocalizedTaskTypes(state),
   lang: state.Localize.lang

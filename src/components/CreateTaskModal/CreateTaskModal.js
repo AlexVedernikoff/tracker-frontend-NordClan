@@ -152,10 +152,16 @@ class CreateTaskModal extends Component {
   };
 
   getUsers = () => {
-    return this.props.project.users.map(user => ({
-      value: user.id,
-      label: getFullName(user)
-    }));
+    return this.props.project.users
+      .sort((a, b) => {
+        if (a.fullNameRu < b.fullNameRu) return -1;
+        else if (a.fullNameRu > b.fullNameRu) return 1;
+        return 0;
+      })
+      .map(user => ({
+        value: user.id,
+        label: getFullName(user)
+      }));
   };
 
   handleChange = field => event => {
