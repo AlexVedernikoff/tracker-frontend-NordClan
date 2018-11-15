@@ -147,11 +147,21 @@ class Details extends Component {
     this.closeTaskTypeModal();
   };
 
-  changeIsTaskByClient = () => {
+  changeIsTaskByClient = event => {
     this.props.onChange(
       {
         id: this.props.task.id,
-        isTaskByClient: !this.props.task.isTaskByClient
+        isTaskByClient: event.target.checked
+      },
+      null
+    );
+  };
+
+  changeDevOpsAttribute = event => {
+    this.props.onChange(
+      {
+        id: this.props.task.id,
+        isDevOps: event.target.checked
       },
       null
     );
@@ -248,8 +258,14 @@ class Details extends Component {
             </tr>
             <tr>
               <td>{localize[lang].FROM_CLIENT}</td>
-              <td className={css.byClient}>
+              <td className={css.checkAttribute}>
                 <Checkbox checked={task.isTaskByClient} onChange={this.changeIsTaskByClient} />
+              </td>
+            </tr>
+            <tr>
+              <td>{localize[lang].DEV_OPS}</td>
+              <td className={css.checkAttribute}>
+                <Checkbox checked={task.isDevOps} onChange={this.changeDevOpsAttribute} />
               </td>
             </tr>
             <tr>

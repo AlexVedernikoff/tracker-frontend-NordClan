@@ -45,6 +45,7 @@ class CreateTaskModal extends Component {
       selectedType: this.props.taskTypes[0],
       selectedTypeError: this.props.taskTypes.length === 0,
       isTaskByClient: false,
+      isDevOps: false,
       descriptionInvalid: false,
       tags: []
     };
@@ -74,10 +75,12 @@ class CreateTaskModal extends Component {
     });
   };
 
-  handleIsTaskByClientChange = () => {
-    this.setState({
-      isTaskByClient: !this.state.isTaskByClient
-    });
+  getDevOpsInputRef = el => {
+    this.devOpsInput = el;
+  };
+
+  getIsByClientRef = el => {
+    this.byClientInput = el;
   };
 
   handlePriorityChange = priorityId => this.setState({ prioritiesId: +priorityId });
@@ -103,7 +106,8 @@ class CreateTaskModal extends Component {
         prioritiesId: this.state.prioritiesId,
         plannedExecutionTime: this.state.plannedExecutionTime,
         parentId: this.props.parentTaskId,
-        isTaskByClient: this.state.isTaskByClient,
+        isTaskByClient: this.byClientInput.checked,
+        isDevOps: this.devOpsInput.checked,
         tags: this.state.tags.join(',')
       },
       this.state.openTaskPage,
@@ -296,7 +300,17 @@ class CreateTaskModal extends Component {
                 <p>{localize[lang].FROM_CLIENT}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
-                <Checkbox checked={this.state.isTaskByClient} onChange={this.handleIsTaskByClientChange} />
+                <Checkbox refCallback={this.getIsByClientRef} />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>{localize[lang].DEV_OPS}</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
+                <Checkbox refCallback={this.getDevOpsInputRef} />
               </Col>
             </Row>
           </label>
