@@ -22,6 +22,7 @@ import Validator from '../ValidatedInput/Validator';
 import TextEditor from '../../components/TextEditor';
 import Checkbox from '../../components/Checkbox/Checkbox';
 import localize from './CreateTaskModal.json';
+import { createTags } from '../../actions/Tags';
 import Tag from '../../components/Tag';
 import Tags from '../../components/Tags';
 import { getFullName } from '../../utils/NameLocalisation';
@@ -91,24 +92,29 @@ class CreateTaskModal extends Component {
     if (!this.state.selectedType || !this.state.selectedType.value) {
       return;
     }
-    this.props.createTask(
-      {
-        name: this.state.taskName,
-        projectId: this.props.project.id,
-        description: stateToHTML(this.TextEditor.state.editorState.getCurrentContent()),
-        performerId: this.state.selectedPerformer,
-        statusId: 1,
-        typeId: this.state.selectedType.value,
-        sprintId: this.state.selectedSprint === BACKLOG_ID ? null : this.state.selectedSprint,
-        prioritiesId: this.state.prioritiesId,
-        plannedExecutionTime: this.state.plannedExecutionTime,
-        parentId: this.props.parentTaskId,
-        isTaskByClient: this.state.isTaskByClient,
-        tags: this.state.tags.join(',')
-      },
-      this.state.openTaskPage,
-      this.props.column
-    );
+    this.props
+      .createTask(
+        {
+          name: this.state.taskName,
+          projectId: this.props.project.id,
+          description: stateToHTML(this.TextEditor.state.editorState.getCurrentContent()),
+          performerId: this.state.selectedPerformer,
+          statusId: 1,
+          typeId: this.state.selectedType.value,
+          sprintId: this.state.selectedSprint === BACKLOG_ID ? null : this.state.selectedSprint,
+          prioritiesId: this.state.prioritiesId,
+          plannedExecutionTime: this.state.plannedExecutionTime,
+          parentId: this.props.parentTaskId,
+          isTaskByClient: this.state.isTaskByClient
+        },
+        this.state.openTaskPage,
+        this.props.column
+      )
+      .then(id => {
+        if (this.state.tags) {
+          this.props.createTags(this.state.tags.join(), 'task', id);
+        }
+      });
   };
 
   validateAndSubmit = () => {
@@ -175,7 +181,7 @@ class CreateTaskModal extends Component {
   };
 
   addTag = tag => {
-    const unicTags = [...new Set([...this.state.tags, tag])];
+    const unicTags = [...new Set([...this.state.tags, ...tag])];
     this.setState({ tags: [...unicTags] });
   };
   deleteTag = () => tagName => {
@@ -393,6 +399,7 @@ class CreateTaskModal extends Component {
 CreateTaskModal.propTypes = {
   closeCreateTaskModal: PropTypes.func.isRequired,
   column: PropTypes.string,
+  createTags: PropTypes.func.isRequired,
   createTask: PropTypes.func.isRequired,
   defaultPerformerId: PropTypes.oneOfType([PropTypes.array, PropTypes.number]),
   isCreateChildTaskModalOpen: PropTypes.bool,
@@ -423,7 +430,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   closeCreateTaskModal,
-  createTask
+  createTask,
+  createTags
 };
 
 export default connect(
