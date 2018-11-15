@@ -111,7 +111,7 @@ class CreateTaskModal extends Component {
         this.props.column
       )
       .then(id => {
-        if (this.state.tags) {
+        if (this.state.tags.length) {
           this.props.createTags(this.state.tags.join(), 'task', id);
         }
       });
