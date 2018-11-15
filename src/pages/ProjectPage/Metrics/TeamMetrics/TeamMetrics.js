@@ -88,7 +88,7 @@ class TeamMetrics extends Component {
     const lastMetricIndex =
       this.state.sprintSelected &&
       findLastIndex(teamMetrics, item => item.sprintId === this.state.sprintSelected.value.id);
-    const teamMetric = lastMetricIndex >= 0 ? metrics[lastMetricIndex] : null;
+    const teamMetric = lastMetricIndex >= 0 ? teamMetrics[lastMetricIndex] : null;
 
     return (
       <div>
