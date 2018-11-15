@@ -33,10 +33,10 @@ Checkbox.defaultProps = {
 Checkbox.propTypes = {
   checked: PropTypes.bool,
   className: PropTypes.string,
-  refCallback: PropTypes.func,
   disabled: PropTypes.bool,
   label: PropTypes.string,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  refCallback: PropTypes.func
 };
 
 export default Checkbox;
