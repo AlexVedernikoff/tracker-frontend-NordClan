@@ -28,7 +28,7 @@ import { getFullName } from '../../utils/NameLocalisation';
 import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
 import parseInteger from '../../utils/parseInteger';
 
-const MAX_DESCRIPTION_LENGTH = 2500;
+const MAX_DESCRIPTION_LENGTH = 25000;
 
 class CreateTaskModal extends Component {
   constructor(props) {
