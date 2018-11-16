@@ -4,6 +4,10 @@
   position: absolute;
 }
 
+.sprintInputFocused {
+  position: static;
+}
+
 .sprintMarker {
   display: flex !important;
   align-items: center;

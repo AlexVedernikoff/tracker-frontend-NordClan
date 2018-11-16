@@ -206,9 +206,18 @@
   transition: 0.3s ease-out 0s;
 }
 
-.Select--multi.sprintSelector .Select-multi-value-wrapper .Select-input {
-  display: none !important;
+[class*='sprintInputFocused'].Select-input::before {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background: url('../../www/favicons/search.png') no-repeat;
+  background-size: cover;
+  vertical-align: middle;
+  margin-left: 9px;
+  margin-right: 6px;
 }
+
 .Select--multi.sprintSelector .Select-control {
   padding: 0;
 }

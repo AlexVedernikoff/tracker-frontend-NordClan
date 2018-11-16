@@ -63,7 +63,6 @@ export default class SprintSelector extends Component {
       <div className="sprint-dropdown">
         <SelectDropdown
           name="sprint"
-          searchable={false}
           thisClassName="sprintSelector"
           placeholder="Выберите спринт"
           noResultsText="Нет подходящих спринтов"
@@ -77,7 +76,7 @@ export default class SprintSelector extends Component {
           onChange={option => onChange(option)}
           {...otherProps}
           inputProps={{
-            className: this.state.inputFocused ? null : css.sprintInputBlured,
+            className: this.state.inputFocused ? css.sprintInputFocused : css.sprintInputBlured,
             ...otherProps.inputProps
           }}
         />
