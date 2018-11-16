@@ -1,0 +1,100 @@
+@import '../../../styles/variables';
+
+.timeCell {
+  width: 2.6rem;
+  height: 2.6rem;
+  margin: calc(0.5rem - 2px);
+  position: relative;
+
+  &.weekend {
+    background-color: lighten(black, 93%);
+    transition: $transition;
+  }
+
+  &.submitted {
+    input {
+      background-color: $color-dark-gray;
+      color: rgba(white, 0.9);
+    }
+  }
+
+  &.approved {
+    input {
+      background-color: $color-green;
+      color: rgba(white, 0.9);
+    }
+  }
+
+  &.rejected {
+    input {
+      background-color: $color-light-red;
+      color: rgba(white, 0.9);
+    }
+  }
+
+  &.filled {
+    input {
+      background: $color-dark;
+      color: rgba(white, 0.7);
+
+      &:focus {
+        color: white;
+      }
+    }
+
+    .toggleComment,
+    .doubleTimesheets {
+      color: rgba(white, 0.5);
+
+      &:hover {
+        color: rgba(white, 0.8);
+      }
+    }
+  }
+
+  input {
+    // padding: 1rem;
+    border: none;
+    background: rgba(black, 0.05);
+    text-align: center;
+    @include absolute;
+    -moz-appearance: textfield;
+
+    &[type='number']::-webkit-inner-spin-button,
+    &[type='number']::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+}
+
+.today {
+  padding: 1px 0;
+  border: 1px solid $color-green;
+}
+
+th.today {
+  border-bottom-width: 0;
+  border-top: 1px solid $color-green;
+}
+
+td.today {
+  border-top-width: 0;
+  border-bottom-width: 0;
+}
+tr:last-child td.today {
+  border-bottom-width: 1px;
+}
+
+.day {
+  width: calc(4rem - 2px);
+
+  & > div {
+    padding: 0.5rem;
+    border-top: 1px solid transparent;
+
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
+}
