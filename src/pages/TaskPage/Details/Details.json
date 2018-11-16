@@ -15,6 +15,7 @@
     "CHANGE_PERFORMER": "Change performer of task:",
     "CHANGE_SPRINT": "Change sprint:",
     "NOT_SPECIFIED": "Not specified",
+    "DEV_OPS": "DevOps",
     "H": "h."
   },
   "ru": {
@@ -33,6 +34,7 @@
     "CHANGE_PERFORMER": "Изменить исполнителя задачи:",
     "CHANGE_SPRINT": "Изменить спринт:",
     "NOT_SPECIFIED": "Не указано",
+    "DEV_OPS": "DevOps",
     "H": "ч."
   }
 }

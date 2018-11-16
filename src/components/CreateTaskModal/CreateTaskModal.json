@@ -19,6 +19,7 @@
     "NAME_SPRINT": "Введите название спринта",
     "SELECT_SPRINT": "Select sprint",
     "TIMING": "Timing:",
+    "DEV_OPS": "DevOps",
     "CREATE_AND_OPEN": "Create and open"
   },
   "ru": {
@@ -41,6 +42,7 @@
     "NAME_SPRINT": "Введите название спринта",
     "SELECT_SPRINT": "Выберите спринт",
     "TIMING": "Оценка по времени:",
+    "DEV_OPS": "DevOps",
     "CREATE_AND_OPEN": "Создать и открыть"
   }
 }
