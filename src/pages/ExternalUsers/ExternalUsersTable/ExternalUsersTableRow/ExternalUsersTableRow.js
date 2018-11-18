@@ -196,7 +196,6 @@ class ExternalUsersTableRow extends Component {
         </div>
         <div className={classnames(css.TableCell, css.TableCellDate)}>
           <ExternalUserExpiredDate
-            placeholder={localize[lang].ENTER_DATE}
             value={exUser.expiredDate}
             isEditing={isEditing}
             onValueChange={this.onEditValues('expiredDate')}

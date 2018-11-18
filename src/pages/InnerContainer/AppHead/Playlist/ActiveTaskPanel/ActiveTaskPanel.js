@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { IconPause, IconPlay, IconList } from '../../../../../components/Icons';
-import localization from './activeTaskPanel.json';
+import localize from './activeTaskPanel.json';
 import * as css from '../Playlist.scss';
 
 const phoneWidth = 768;
@@ -84,16 +84,16 @@ class ActiveTaskPanel extends Component {
     const { activeTask, lang } = this.props;
 
     if (!activeTask) {
-      return localization[lang].NO_ACTIVE_TASKS;
+      return localize[lang].NO_ACTIVE_TASKS;
     }
 
     const taskTitle = `${activeTask.project.prefix}-${activeTask.id}`;
 
     if (~this.playStatuses.indexOf(activeTask.statusId)) {
-      return `${localization[lang].ACTIVE_TASK}: ${taskTitle}`;
+      return `${localize[lang].ACTIVE_TASK}: ${taskTitle}`;
     }
 
-    return `${localization[lang].LAST_ACTIVE_TASK}: ${taskTitle}`;
+    return `${localize[lang].LAST_ACTIVE_TASK}: ${taskTitle}`;
   }
 
   render() {

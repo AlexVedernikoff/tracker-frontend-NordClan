@@ -151,6 +151,8 @@ class SprintMetrics extends Component {
         <div className={css.sprintSelectWrapper}>
           <SprintSelector
             multi={false}
+            searchable={false}
+            clearable
             value={this.state.sprintSelected}
             sprints={this.props.sprints}
             onChange={option => this.changeSprint(option)}

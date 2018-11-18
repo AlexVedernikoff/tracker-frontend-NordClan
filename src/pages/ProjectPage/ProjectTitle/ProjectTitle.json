@@ -1,0 +1,14 @@
+{
+  "en": {
+    "EDIT": "Edit",
+    "SAVE": "Save",
+    "PROJECT_NAME_MESSAGE": "Project name must contain from 4 to 255 characters",
+    "PROJECT_PREFIX_MESSAGE": "Prefix must be from 2 to 8 characters"
+  },
+  "ru": {
+    "EDITING": "Редактировать",
+    "SAVE": "Сохранить",
+    "PROJECT_NAME_MESSAGE": "Имя проекта должно содержать от 4 до 255 символов",
+    "PROJECT_PREFIX_MESSAGE": "Префикс должен содержать от 2 до 8 символов"
+  }
+}

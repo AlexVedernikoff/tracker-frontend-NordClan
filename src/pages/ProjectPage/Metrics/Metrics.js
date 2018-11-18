@@ -126,14 +126,6 @@ class Metrics extends Component {
     );
   };
 
-  parseTeamMetrics(teamMetrics) {
-    return (teamMetrics && teamMetrics.length && JSON.parse(teamMetrics[0].value)) || [];
-  }
-
-  getSprintsFromMetric(teamMetrics) {
-    return teamMetrics.map(item => item.sprint);
-  }
-
   render() {
     /*
       значение Id типов метрик
@@ -156,9 +148,6 @@ class Metrics extends Component {
     const openedBugsMetrics = filterMetrics(MetricTypes.OPENED_BUGS, metrics);
     const openedCustomerBugsMetrics = filterMetrics(MetricTypes.OPENED_CUSTOMER_BUGS, metrics);
     const openedRegressBugsMetrics = filterMetrics(MetricTypes.OPENED_REGRESSION_BUGS, metrics);
-
-    /*Метрики по комманде*/
-    const teamMetrics = this.parseTeamMetrics(filterMetrics(MetricTypes.COMMAND_METRICS, metrics));
 
     /*Затраты по ролям*/
     const getCostByRoleMetrics = (...typeIds) => {
@@ -307,7 +296,7 @@ class Metrics extends Component {
                 <Pane label={localize[lang].METRICS_BY_TEAM} path="/team">
                   <Row>
                     <Col xs={12}>
-                      <TeamMetrics teamMetrics={teamMetrics} sprints={this.getSprintsFromMetric(teamMetrics)} />
+                      <TeamMetrics />
                     </Col>
                   </Row>
                 </Pane>

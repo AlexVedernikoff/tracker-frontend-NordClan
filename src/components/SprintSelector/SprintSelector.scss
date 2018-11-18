@@ -40,3 +40,7 @@
 .FINISHED:before {
   background-color: darken($color-gray, 10%);
 }
+
+.picked {
+  background-color: #ebebeb;
+}
