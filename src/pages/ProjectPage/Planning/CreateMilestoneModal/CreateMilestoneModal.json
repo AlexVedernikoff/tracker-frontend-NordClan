@@ -1,10 +1,10 @@
 {
   "en": {
     "CREATE_MILESTONE": "Create new milestone",
-    "INPUT_NOTIFICATION": "All fields must be filled in",
+    "INPUT_NOTIFICATION": "All fields must be filled",
     "MILESTONE_NAME": "Milestone name:",
     "ENTER_MILESTONE_NAME": "Enter the milestone name",
-    "MILESTONE_TYPE": "Milestone type",
+    "MILESTONE_TYPE": "Milestone type:",
     "NO_RESUTLS": "No results",
     "DATE": "Date:",
     "ENTER_DATE": "Enter the date",

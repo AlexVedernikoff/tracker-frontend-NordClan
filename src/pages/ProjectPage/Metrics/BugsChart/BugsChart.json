@@ -3,7 +3,7 @@
     "BUGS_NUMBER": "Number of open bugs (Task type Bug + bug from client)",
     "BUGS_NUMBER_FROM_CLIENT": "Number of open bugs from client",
     "BUGS_REGRESSION": "Number of open regression bugs",
-    "BUGS_NUM": "Bugs number",
+    "BUGS_NUM": "Number of bugs",
     "DATE": "Date",
     "LANG": "en"
   },

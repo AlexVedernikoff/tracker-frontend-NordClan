@@ -1,11 +1,11 @@
 {
   "en": {
     "TAG_NAME": "Enter tag name",
-    "NOT_FOUNDED": "Not founded"
+    "NOT_FOUND": "Not found"
   },
 
   "ru": {
     "TAG_NAME": "Введите название тега",
-    "NOT_FOUNDED": "Ничего не найдено"
+    "NOT_FOUND": "Ничего не найдено"
   }
 }

@@ -85,6 +85,7 @@ class TotalComment extends React.Component {
     const filledTimeSheets = items.filter(el => {
       return el.id;
     });
+    moment.locale(lang);
     return (
       <div>
         <IconComments onClick={this.toggle} />

@@ -1,9 +1,9 @@
 {
   "en": {
-    "DYNAMIC": "The dynamics of closing tasks",
-    "DYNAMIC_CLOSE": "The dynamics of closing tasks( in view of labor costs)",
+    "DYNAMIC": "Dynamics of closing tasks",
+    "DYNAMIC_CLOSE": "Dynamics of closing tasks (taking into account labor costs)",
     "DYNAMIC_OFF_TIME": "Dynamics of writing down the time for tasks",
-    "DYNAMIC_WITHOUT_ELEVATION": "Dynamics of work for tasks without evaluation",
+    "DYNAMIC_WITHOUT_ELEVATION": "Dynamics of labor for tasks without evaluation",
     "HOURS": "Hours",
     "DATE": "Date",
     "LANG": "en"

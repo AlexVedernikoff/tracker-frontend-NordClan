@@ -3,7 +3,7 @@
     "PROJECT_START": "The start date of project:",
     "PROJECT_END": "The end date of project:",
     "WITH_RISK_RESERVE": "With a risk reserve:",
-    "WO_RISK_RESERVE": "Without a risk reserve",
+    "WO_RISK_RESERVE": "Without a risk reserve:",
     "BUDGET": "Budget",
     "RISK_RESERVE": "Risk reserve",
     "SPRINTS_AND_PHASES": "Sprints / Phases",

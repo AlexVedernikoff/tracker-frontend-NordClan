@@ -46,14 +46,7 @@ class UserRow extends React.Component {
 
   render() {
     const { user, isOpen } = this.state;
-    // const canDeleteRow = !user.tasks.find(
-    //   tsh =>
-    //     tsh.id &&
-    //     (tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
-    //       tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED)
-    // );
     const totalTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.spentTime), 2);
-
     const timeCells = user.timesheets.map((tsh, i) => {
       return (
         <td

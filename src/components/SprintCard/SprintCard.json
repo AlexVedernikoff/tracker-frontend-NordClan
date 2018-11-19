@@ -7,7 +7,7 @@
     "SPENT_TIME": "Spent time:",
     "WO_RISK_RESERVE": "Budget without risk reserve",
     "WITH_RISK_RESERVE": "Budget with risk reserve",
-    "REMOVE_SPRINT_NOTIFICATION": "Do you really want to remove the sprint?",
+    "REMOVE_SPRINT_NOTIFICATION": "Are you sure you want to remove the sprint?",
     "H": "h.",
     "QA_PERCENT": "% on QA:"
   },

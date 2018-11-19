@@ -420,7 +420,7 @@ class Projects extends Component {
                       name="dateFrom"
                       value={formattedDayFrom}
                       onDayChange={this.handleDayFromChange}
-                      placeholder={localization[lang].TO}
+                      placeholder={localization[lang].FROM}
                     />
                   </Col>
                   <Col xs={6} sm={6}>
@@ -428,7 +428,7 @@ class Projects extends Component {
                       name="dateTo"
                       value={formattedDayTo}
                       onDayChange={this.handleDayToChange}
-                      placeholder={localization[lang].FROM}
+                      placeholder={localization[lang].TO}
                     />
                   </Col>
                 </Row>

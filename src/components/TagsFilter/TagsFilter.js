@@ -34,7 +34,7 @@ class TagsFilter extends React.Component {
         searchPromptText={localization[lang].TAG_NAME}
         placeholder={localization[lang].TAG_NAME}
         backspaceToRemoveMessage={''}
-        noResultsText={localization[lang].NOT_FOUNDED}
+        noResultsText={localization[lang].NOT_FOUND}
         multi
         ignoreCase
         options={this.options()}
