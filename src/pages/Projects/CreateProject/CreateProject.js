@@ -31,6 +31,11 @@ class CreateProject extends Component {
       value: portfolio.id
     }));
 
+    const options = projectTypes.map(type => {
+      //fix localization
+      const label = type.name === 'Intenrship' ? 'Internship' : type.name;
+      return { value: type.id, label: label };
+    });
     return (
       <Modal
         isOpen={isOpen}
@@ -103,7 +108,7 @@ class CreateProject extends Component {
                   multi={false}
                   noResultsText={localize[lang].NO_RESULTS}
                   backspaceRemoves={false}
-                  options={projectTypes.map(type => ({ value: type.id, label: type.name }))}
+                  options={options}
                   className={css.selectType}
                   onChange={this.props.onTypeSelect}
                   value={this.props.selectedType}

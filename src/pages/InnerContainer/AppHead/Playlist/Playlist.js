@@ -258,6 +258,21 @@ class Playlist extends Component {
     return disabledTrackFound;
   };
 
+  activitiesTabsLabelsFix(tab, lang) {
+    switch (tab) {
+      case 'Все активности':
+        return localize[lang].ALL;
+      case 'Presale and mark':
+        return 'Presale and estimation';
+      case 'Hospital':
+        return 'On sick leave';
+      case 'Control':
+        return 'Managment';
+      default:
+        return tab;
+    }
+  }
+
   render() {
     const { isPlaylistOpen } = this.state;
     const { activeTask, tracks, currentUserId, lang } = this.props;
@@ -326,7 +341,7 @@ class Playlist extends Component {
                       <div
                         key={index}
                         className={this.activityTabStyle(element.activityId)}
-                        data-tip={element.description === 'Все активности' ? localize[lang].ALL : element.description}
+                        data-tip={this.activitiesTabsLabelsFix(element.description, lang)}
                         onClick={this.changeActiveActivityTab(element.activityId)}
                         data-place="bottom"
                       >

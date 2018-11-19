@@ -19,8 +19,8 @@
   "ru": {
     "PROJECT_START": "Начало проекта:",
     "PROJECT_END": "Конец проекта:",
-    "WITH_RISK_RESERVE": "С рисковым резервом",
-    "WO_RISK_RESERVE": "Без рискового резерва",
+    "WITH_RISK_RESERVE": "С рисковым резервом:",
+    "WO_RISK_RESERVE": "Без рискового резерва:",
     "BUDGET": "Бюджет",
     "RISK_RESERVE": "Рисковый резерв",
     "SPRINTS_AND_PHASES": "Спринты / Фазы",

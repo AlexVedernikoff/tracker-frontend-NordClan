@@ -65,6 +65,17 @@ class CreateMilestoneModal extends Component {
     this.setState({ typeId: 1 });
   }
 
+  typesLabelsLocalizationFix(label) {
+    switch (label) {
+      case 'Внутренняя демо':
+        return 'Внутреннее демо';
+      case 'Get feedback':
+        return 'Receive feedback';
+      default:
+        return label;
+    }
+  }
+
   render() {
     const formattedDay = this.state.date ? moment(this.state.date).format('DD.MM.YYYY') : '';
 
@@ -73,7 +84,10 @@ class CreateMilestoneModal extends Component {
       secondCol: 8
     };
     const { milestoneTypes, lang } = this.props;
-    const options = milestoneTypes.map(type => ({ value: type.id, label: getDictionaryName(type) }));
+    const options = milestoneTypes.map(type => ({
+      value: type.id,
+      label: this.typesLabelsLocalizationFix(getDictionaryName(type))
+    }));
     return (
       <Modal isOpen contentLabel="modal" onRequestClose={this.props.onClose}>
         <div>
