@@ -176,7 +176,7 @@ class FilterForm extends React.Component {
           <Col xs={12} sm={6} className={css.changedSprint}>
             <SprintSelector
               multi
-              searchable={false}
+              searchable
               clearable={false}
               value={filters.changedSprint}
               onChange={this.onSprintsFilterChange}
