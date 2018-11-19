@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import { Link } from 'react-router';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import moment from 'moment';
-import localization from './ProjectCard.json';
+import localize from './ProjectCard.json';
 
 import Tag from '../Tag';
 import Tags from '../Tags';
@@ -40,22 +40,22 @@ const ProjectCard = props => {
   let status = '';
   switch (statusId) {
     case 1:
-      statusTooltip = localization[lang].INPROGRESS;
+      statusTooltip = localize[lang].INPROGRESS;
       status = 'INPROGRESS';
       break;
 
     case 2:
-      statusTooltip = localization[lang].INHOLD;
+      statusTooltip = localize[lang].INHOLD;
       status = 'INHOLD';
       break;
 
     case 3:
-      statusTooltip = localization[lang].FINISHED;
+      statusTooltip = localize[lang].FINISHED;
       status = 'FINISHED';
       break;
 
     default:
-      statusTooltip = localization[lang].FINISHED;
+      statusTooltip = localize[lang].FINISHED;
       status = 'FINISHED';
   }
 
@@ -104,7 +104,7 @@ const ProjectCard = props => {
           <div className={css.metaBox}>
             {createdAt ? (
               <div className={css.meta}>
-                <span>{localization[lang].TIMEFRAME}</span>
+                <span>{localize[lang].TIMEFRAME}</span>
                 <span>
                   {getProjectStartDate(dateStartFirstSprint, createdAt)}
                   {dateFinishLastSprint || completedAt ? ' - ' : ''}
@@ -120,7 +120,7 @@ const ProjectCard = props => {
                   [css.metaSprints]: true
                 })}
               >
-                <span className={css.sprintsMetaText}>{localization[lang].CURRENT_SPRINTS}</span>
+                <span className={css.sprintsMetaText}>{localize[lang].CURRENT_SPRINTS}</span>
                 <div className={css.currentSprints}>
                   {currentSprints.map((sprint, i) => (
                     <span key={`sprint-${i}`} className={css.sprint}>
@@ -133,7 +133,7 @@ const ProjectCard = props => {
             ) : null}
 
             <div className={css.meta}>
-              <span>{localization[lang].PARTICIPANTS}</span>
+              <span>{localize[lang].PARTICIPANTS}</span>
               <span>{usersCount || 0}</span>
             </div>
           </div>

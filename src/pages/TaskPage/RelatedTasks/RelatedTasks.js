@@ -7,6 +7,7 @@ import { isTaskInProgress, getStatusNameById, isTaskInHold } from '../../../util
 import * as css from './RelatedTasks.scss';
 import { connect } from 'react-redux';
 import localize from './RelatedTasks.json';
+import { isOnlyDevOps } from '../../../utils/isDevOps';
 
 class RelatedTasks extends React.Component {
   taskStyle = statusId => {
@@ -46,7 +47,7 @@ class RelatedTasks extends React.Component {
   }
 
   render() {
-    const { lang } = this.props;
+    const { lang, user, project } = this.props;
     const iconStyles = {
       width: 16,
       height: 16,
@@ -86,20 +87,22 @@ class RelatedTasks extends React.Component {
               : null}
         </h3>
         <ul className={css.taskList}>{tasks}</ul>
-        <a onClick={this.props.onAction} className={classnames([css.task, css.add])}>
-          {this.props.type === 'linkedTasks' ? (
-            <IconLink style={iconStyles} />
-          ) : this.props.type === 'subTasks' ? (
-            <IconPlus style={iconStyles} />
-          ) : null}
-          <div className={css.tooltip}>
-            {this.props.type === 'linkedTasks'
-              ? localize[lang].BOUND_WITH_OTHER_TASK
-              : this.props.type === 'subTasks'
-                ? localize[lang].ADD_SUBTASKS
-                : null}
-          </div>
-        </a>
+        {isOnlyDevOps(user, project.id) ? null : (
+          <a onClick={this.props.onAction} className={classnames([css.task, css.add])}>
+            {this.props.type === 'linkedTasks' ? (
+              <IconLink style={iconStyles} />
+            ) : this.props.type === 'subTasks' ? (
+              <IconPlus style={iconStyles} />
+            ) : null}
+            <div className={css.tooltip}>
+              {this.props.type === 'linkedTasks'
+                ? localize[lang].BOUND_WITH_OTHER_TASK
+                : this.props.type === 'subTasks'
+                  ? localize[lang].ADD_SUBTASKS
+                  : null}
+            </div>
+          </a>
+        )}
       </div>
     );
   }
@@ -109,12 +112,16 @@ RelatedTasks.propTypes = {
   lang: PropTypes.string,
   onAction: PropTypes.func,
   onDelete: PropTypes.func,
+  project: PropTypes.object.isRequired,
   task: PropTypes.object.isRequired,
-  type: PropTypes.string.isRequired
+  type: PropTypes.string.isRequired,
+  user: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  project: state.Project.project,
+  user: state.Auth.user
 });
 
 export default connect(

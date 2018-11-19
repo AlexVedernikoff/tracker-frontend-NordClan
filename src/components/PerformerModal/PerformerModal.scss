@@ -1,0 +1,20 @@
+.leftColumn {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  text-align: right;
+  line-height: 1rem;
+
+  p {
+    margin: 0.5rem;
+  }
+}
+
+.rightColumn {
+  display: flex;
+  align-items: flex-start;
+}
+
+.selectPerformer {
+  width: 100%;
+}

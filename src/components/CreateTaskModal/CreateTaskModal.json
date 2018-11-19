@@ -20,6 +20,7 @@
     "SELECT_SPRINT": "Select sprint",
     "TIMING": "Timing:",
     "CREATE_AND_OPEN": "Create and open",
+    "DEV_OPS": "DevOps",
     "TAGS": "Tags:",
     "HOURS": "h."
   },
@@ -44,6 +45,7 @@
     "SELECT_SPRINT": "Выберите спринт",
     "TIMING": "Оценка по времени:",
     "CREATE_AND_OPEN": "Создать и открыть",
+    "DEV_OPS": "DevOps",
     "TAGS": "Теги:",
     "HOURS": "ч."
   }
