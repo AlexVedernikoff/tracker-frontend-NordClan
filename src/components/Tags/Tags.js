@@ -56,7 +56,7 @@ class Tags extends Component {
     if (!this.props.noRequest) {
       this.props.createTags(tagsToSend.join(), this.props.taggable, this.props.taggableId);
     } else {
-      this.props.createTagsModalTask(tagsToSend.join());
+      this.props.createTagsModalTask(tagsToSend);
     }
     this.setState({ multiValue: [] });
   };

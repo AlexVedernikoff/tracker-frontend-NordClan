@@ -23,7 +23,7 @@ import getProjects, {
 import { getPortfolios } from '../../actions/Portfolios';
 import { getErrorMessageByType } from '../../utils/ErrorMessages';
 import { ADMIN } from '../../constants/Roles';
-import localization from './projects.json';
+import localize from './projects.json';
 import Title from 'react-title-component';
 import TypeFilter from './TypeFilter';
 import { getLocalizedProjectTypes } from './../../selectors/dictionaries';
@@ -350,23 +350,23 @@ class Projects extends Component {
     const isAdmin = this.props.globalRole === ADMIN;
     const isFiltered = this.isFiltered();
     const withoutProjects = isProjectsReceived ? (
-      <div className={css.notFound}>{localization[lang][isFiltered ? 'NOTHING_FOUND' : 'NO_PROJECT_ASSIGNED']}</div>
+      <div className={css.notFound}>{localize[lang][isFiltered ? 'NOTHING_FOUND' : 'NO_PROJECT_ASSIGNED']}</div>
     ) : (
       this.renderPreloader()
     );
 
     return (
       <div>
-        <Title render={`SimTrack - ${localization[lang].MY_PROJECTS}`} />
+        <Title render={`SimTrack - ${localize[lang].MY_PROJECTS}`} />
         <section>
           <header className={css.title}>
-            <h1 className={css.title}>{localization[lang].MY_PROJECTS}</h1>
+            <h1 className={css.title}>{localize[lang].MY_PROJECTS}</h1>
             {isAdmin ? (
               <div>
                 <div>
                   <Button
                     onClick={this.handleModal}
-                    text={localization[lang].CREATE_PROJECT}
+                    text={localize[lang].CREATE_PROJECT}
                     type="primary"
                     icon="IconPlus"
                   />
@@ -385,7 +385,7 @@ class Projects extends Component {
                     onClick={() => {
                       this.check('filteredInProgress', this.handleFilterChange);
                     }}
-                    label={localization[lang].INPROGRESS}
+                    label={localize[lang].INPROGRESS}
                   />
                   <StatusCheckbox
                     type="INHOLD"
@@ -393,7 +393,7 @@ class Projects extends Component {
                     onClick={() => {
                       this.check('filteredInHold', this.handleFilterChange);
                     }}
-                    label={localization[lang].INHOLD}
+                    label={localize[lang].INHOLD}
                   />
                   <StatusCheckbox
                     type="FINISHED"
@@ -401,7 +401,7 @@ class Projects extends Component {
                     onClick={() => {
                       this.check('filteredFinished', this.handleFilterChange);
                     }}
-                    label={localization[lang].FINISHED}
+                    label={localize[lang].FINISHED}
                   />
                 </div>
               </Col>
@@ -411,7 +411,7 @@ class Projects extends Component {
             </Row>
             <Row className={css.search}>
               <Col xs={12} sm={4}>
-                <Input onChange={this.changeNameFilter} placeholder={localization[lang].NAME_PROJECT} />
+                <Input onChange={this.changeNameFilter} placeholder={localize[lang].NAME_PROJECT} />
               </Col>
               <Col xs={12} sm={4}>
                 <Row>
@@ -420,7 +420,7 @@ class Projects extends Component {
                       name="dateFrom"
                       value={formattedDayFrom}
                       onDayChange={this.handleDayFromChange}
-                      placeholder={localization[lang].TO}
+                      placeholder={localize[lang].TO}
                     />
                   </Col>
                   <Col xs={6} sm={6}>
@@ -428,7 +428,7 @@ class Projects extends Component {
                       name="dateTo"
                       value={formattedDayTo}
                       onDayChange={this.handleDayToChange}
-                      placeholder={localization[lang].FROM}
+                      placeholder={localize[lang].FROM}
                     />
                   </Col>
                 </Row>

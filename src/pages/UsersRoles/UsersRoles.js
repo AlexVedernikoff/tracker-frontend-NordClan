@@ -44,6 +44,11 @@ class UsersRoles extends React.Component {
         name: localize[lang].VISOR,
         value: 'VISOR',
         id: 3
+      },
+      {
+        name: localize[lang].DEV_OPS,
+        value: 'DEV_OPS',
+        id: 4
       }
     ];
 
