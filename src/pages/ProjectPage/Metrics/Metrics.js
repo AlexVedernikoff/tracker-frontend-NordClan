@@ -36,7 +36,8 @@ const getBasicLineSettings = () => {
     pointRadius: 2,
     borderColor: lineColor,
     backgroundColor: lineColor,
-    fill: false
+    fill: false,
+    steppedLine: true
   };
 };
 
