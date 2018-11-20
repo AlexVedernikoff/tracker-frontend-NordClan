@@ -159,12 +159,19 @@ class Comments extends Component {
   };
 
   setCommentForEdit = (comment, attachmentIds) => {
-    this.props.setCommentForEdit(this.props.comments.find(c => c.id === comment.id)).then(() => {
+    const editedComment = this.props.comments.find(c => c.id === comment.id);
+    editedComment.text = this.replaceHTMLCharacters(editedComment.text);
+    this.props.setCommentForEdit(editedComment).then(() => {
       this.setState({ resizeKey: shortId() });
     });
     if (attachmentIds) {
       this.prepareAttachmentsForEdit(attachmentIds);
     }
+  };
+
+  replaceHTMLCharacters = text => {
+    const newText = text.replace(/<br>/g, '\n');
+    return newText;
   };
 
   toggleBtn = evt => {
