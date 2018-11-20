@@ -2,11 +2,17 @@
   "en": {
     "PARTICIPANTS": "Participants:",
     "LIMITATION": "Limitation:",
-    "CURRENT_SPRINTS": "Current sprints:"
+    "CURRENT_SPRINTS": "Current sprints:",
+    "INPROGRESS": "In progress",
+    "INHOLD": "In hold",
+    "FINISHED": "Finished"
   },
   "ru": {
     "PARTICIPANTS": "Участников:",
     "LIMITATION": "Сроки:",
-    "CURRENT_SPRINTS": "Текущие спринты:"
+    "CURRENT_SPRINTS": "Текущие спринты:",
+    "INPROGRESS": "В процессе",
+    "INHOLD": "Приостановлен",
+    "FINISHED": "Завершен"
   }
 }

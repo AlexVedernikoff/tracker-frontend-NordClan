@@ -1,0 +1,25 @@
+{
+  "en": {
+    "SIMTRACK_ISSUE_TYPES": "SimTrack Issue Types",
+    "JIRA_ISSUE_TYPES": "Jira Issue Types",
+
+    "SIMTRACK_STATUS_TYPES": "SimTrack Status Types",
+    "JIRA_STATUS_TYPES": "Jira Status Types",
+
+    "SIMTRACK_USER": "SimTrack User",
+    "JIRA_EMAIL": "Jira User Email",
+    "NAME": "Name"
+  },
+
+  "ru": {
+    "SIMTRACK_ISSUE_TYPES": "Типы задач SimTrack",
+    "JIRA_ISSUE_TYPES": "Типы задач Jira",
+
+    "SIMTRACK_STATUS_TYPES": "Статусы в SimTrack",
+    "JIRA_STATUS_TYPES": "Статусы в Jira",
+
+    "SIMTRACK_USER": "Пользователь SimTrack",
+    "JIRA_EMAIL": "Почта пользователя Jira",
+    "NAME": "Имя"
+  }
+}

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import * as _ from 'lodash';
 import { Link } from 'react-router';
 import ReactTooltip from 'react-tooltip';
+import { createSelector } from 'reselect';
 import Tag from '../../../components/Tag';
 import Tags from '../../../components/Tags';
 import TaskPlanningTime from '../TaskPlanningTime';
@@ -25,6 +27,9 @@ import { getFullName } from '../../../utils/NameLocalisation';
 import { TASK_STATUS_CLOSED } from '../../../constants/Task';
 import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
 import { getDevOpsUsers } from '../../../actions/Users';
+import shortid from 'shortid';
+import { addActivity } from '../../../actions/Timesheets';
+import sortPerformer from '../../../utils/sortPerformer';
 
 const spentRequestStatus = {
   READY: 0,
@@ -32,11 +37,16 @@ const spentRequestStatus = {
   RECEIVED: 2
 };
 
+const usersSelector = state => state.Project.project.users;
+
+const sortedUsersSelector = createSelector(usersSelector, users => sortPerformer(users));
+
 class Details extends Component {
   static propTypes = {
     devOpsUsers: PropTypes.any,
     ExecutionTimeIsEditing: PropTypes.bool,
     PlanningTimeIsEditing: PropTypes.bool,
+    addActivity: PropTypes.func,
     canEdit: PropTypes.bool,
     getProjectSprints: PropTypes.func.isRequired,
     getProjectUsers: PropTypes.func.isRequired,
@@ -45,11 +55,13 @@ class Details extends Component {
     isExternal: PropTypes.bool,
     lang: PropTypes.string,
     onChange: PropTypes.func.isRequired,
+    plannedExecutionTime: PropTypes.string,
     sprints: PropTypes.array,
+    startingDay: PropTypes.object,
     task: PropTypes.object.isRequired,
     taskTypes: PropTypes.array,
     timeSpent: PropTypes.object,
-    users: PropTypes.array
+    users: PropTypes.object
   };
 
   constructor(props) {
@@ -59,7 +71,9 @@ class Details extends Component {
       isSprintModalOpen: false,
       isPerformerModalOpen: false,
       isTaskTypeModalOpen: false,
-      spentRequestStatus: spentRequestStatus.READY
+      spentRequestStatus: spentRequestStatus.READY,
+      isPerformerChanged: false,
+      plannedExecutionTime: 0
     };
   }
 
@@ -109,12 +123,36 @@ class Details extends Component {
   // Действия с исполнителем
   openPerformerModal = () => {
     this.props.getProjectUsers(this.props.task.project.id);
-    this.setState({ isPerformerModalOpen: true });
+    this.props.addActivity({
+      id: `temp-${shortid.generate()}`,
+      comment: null,
+      task: {
+        id: this.props.task.id,
+        name: this.props.task.name,
+        sprint: this.props.task.sprint
+      },
+      taskStatusId: this.props.task.statusId,
+      typeId: this.props.task.typeId,
+      spentTime: '0',
+      sprintId: this.props.task.sprint.id,
+      sprint: this.props.task.sprint,
+      onDate: moment(this.props.startingDay).format('YYYY-MM-DD'),
+      project: {
+        id: this.props.task.project.id,
+        name: this.props.task.project.name,
+        prefix: this.props.task.project.prefix
+      }
+    });
+    this.setState(state => ({ ...state, isPerformerModalOpen: true }));
   };
 
   closePerformerModal = () => {
     this.setState({ isPerformerModalOpen: false });
   };
+
+  performerToggle() {
+    this.setState({ isPerformerChanged: !this.state.isPerformerChanged });
+  }
 
   changePerformer = performerId => {
     this.props.onChange(
@@ -124,6 +162,7 @@ class Details extends Component {
       },
       this.props.task.id
     );
+    this.performerToggle();
     this.closePerformerModal();
   };
 
@@ -148,11 +187,25 @@ class Details extends Component {
     this.closeTaskTypeModal();
   };
 
-  changeIsTaskByClient = () => {
+  handleChangePlannedTime = plannedExecutionTime => {
+    this.setState({ plannedExecutionTime });
+  };
+
+  changeIsTaskByClient = event => {
     this.props.onChange(
       {
         id: this.props.task.id,
-        isTaskByClient: !this.props.task.isTaskByClient
+        isTaskByClient: event.target.checked
+      },
+      null
+    );
+  };
+
+  changeDevOpsAttribute = event => {
+    this.props.onChange(
+      {
+        id: this.props.task.id,
+        isDevOps: event.target.checked
       },
       null
     );
@@ -194,7 +247,9 @@ class Details extends Component {
       return <Tag key={i} name={tagName} taggable="task" taggableId={task.id} />;
     });
 
-    const users = this.getUsers().map(item => ({
+    const unionPerformers = _.union(users.back, users.front, users.ios, users.android, users.qa, users.other);
+
+    const usersFullNames = unionPerformers.map(item => ({
       value: item.user ? item.user.id : item.id,
       label: item.user ? getFullName(item.user) : getFullName(item)
     }));
@@ -252,8 +307,14 @@ class Details extends Component {
             </tr>
             <tr>
               <td>{localize[lang].FROM_CLIENT}</td>
-              <td className={css.byClient}>
+              <td className={css.checkAttribute}>
                 <Checkbox checked={task.isTaskByClient} onChange={this.changeIsTaskByClient} />
+              </td>
+            </tr>
+            <tr>
+              <td>{localize[lang].DEV_OPS}</td>
+              <td className={css.checkAttribute}>
+                <Checkbox checked={task.isDevOps} onChange={this.changeDevOpsAttribute} />
               </td>
             </tr>
             <tr>
@@ -362,7 +423,11 @@ class Details extends Component {
             onChoose={this.changePerformer}
             onClose={this.closePerformerModal}
             title={localize[lang].CHANGE_PERFORMER}
-            users={users}
+            isPerformerChanged={this.state.isPerformerChanged}
+            id={task.id}
+            handleChangePlannedTime={this.handleChangePlannedTime}
+            plannedExecutionTime={this.props.plannedExecutionTime}
+            users={usersFullNames}
           />
         ) : null}
         {this.state.isSprintModalOpen ? (
@@ -387,17 +452,19 @@ class Details extends Component {
 }
 
 const mapStateToProps = state => ({
-  users: state.Project.project.users,
-  devOpsUsers: state.UserList.devOpsUsers,
+  users: sortedUsersSelector(state),
   sprints: state.Project.project.sprints,
   taskTypes: getLocalizedTaskTypes(state),
+  plannedExecutionTime: state.Task.task.plannedExecutionTime,
   PlanningTimeIsEditing: state.Task.PlanningTimeIsEditing,
+  startingDay: state.Timesheets.startingDay,
   ExecutionTimeIsEditing: state.Task.ExecutionTimeIsEditing,
   timeSpent: state.Task.timeSpent,
   lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
+  addActivity,
   getProjectUsers,
   getProjectSprints,
   getTask,

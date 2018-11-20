@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import SelectDropdown from '../../components/SelectDropdown';
 import { getTagsFilter } from '../../actions/Tags';
-import localization from './TagsFilter.json';
+import localize from './TagsFilter.json';
 
 class TagsFilter extends React.Component {
   constructor(props) {
@@ -31,10 +31,10 @@ class TagsFilter extends React.Component {
     const { lang } = this.props;
     return (
       <SelectDropdown
-        searchPromptText={'Введите имя тега'}
-        placeholder={localization[lang].TAG_NAME}
+        searchPromptText={localize[lang].TAG_NAME}
+        placeholder={localize[lang].TAG_NAME}
         backspaceToRemoveMessage={''}
-        noResultsText={localization[lang].NOT_FOUNDED}
+        noResultsText={localize[lang].NOT_FOUNDED}
         multi
         ignoreCase
         options={this.options()}

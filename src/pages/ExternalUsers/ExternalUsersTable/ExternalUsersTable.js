@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import { Row, Col } from 'react-flexbox-grid/lib/index';
 import PropTypes from 'prop-types';
 import * as css from './ExternalUsersTable.scss';
 import { connect } from 'react-redux';
@@ -31,11 +30,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   getExternalUsers
-  // editExternalUser
 };
 
 ExternalUsersTable.propTypes = {
-  // editExternalUser: PropTypes.func,
   exUsers: PropTypes.array,
   getExternalUsers: PropTypes.func
 };

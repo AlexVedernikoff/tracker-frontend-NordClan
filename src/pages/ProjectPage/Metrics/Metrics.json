@@ -5,7 +5,8 @@
     "METRICS_BY_PROJECT": "Metrics by the project",
     "METRICS_BY_SPRINT": "Metrics by the sprint",
     "BUGS_ON_PROJECT": "Bugs on the project",
-    "COST_BY_ROLE": "Cost by role"
+    "COST_BY_ROLE": "Cost by role",
+    "METRICS_BY_TEAM": "Metrics by the team"
   },
   "ru": {
     "RECALCULATE": "Пересчитать метрику",
@@ -13,6 +14,7 @@
     "METRICS_BY_PROJECT": "Метрики по проекту",
     "METRICS_BY_SPRINT": "Метрики по спринту",
     "BUGS_ON_PROJECT": "Баги на проекте",
-    "COST_BY_ROLE": "Затраты по ролям"
+    "COST_BY_ROLE": "Затраты по ролям",
+    "METRICS_BY_TEAM": "Метрики по команде"
   }
 }

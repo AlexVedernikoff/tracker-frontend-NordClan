@@ -125,7 +125,11 @@ class NavMenu extends Component {
       ) : null;
 
     const toggleButton = mqlMatches ? (
-      <button className={classNames(css.sidebarClosed, css.toggleButton)} onClick={this.props.toggleMenu}>
+      <button
+        key="toggleButton"
+        className={classNames(css.sidebarClosed, css.toggleButton)}
+        onClick={this.props.toggleMenu}
+      >
         {this.props.sidebarOpened ? <IconArrowLeft style={iconStyles} /> : <IconArrowRight style={iconStyles} />}
       </button>
     ) : null;

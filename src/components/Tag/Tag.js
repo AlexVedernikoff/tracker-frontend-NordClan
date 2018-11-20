@@ -36,11 +36,10 @@ class Tag extends React.Component {
   };
 
   render() {
-    const { name, create, blocked, unclickable, ...other } = this.props;
+    const { name, create, blocked, unclickable } = this.props;
 
     return (
       <span
-        {...other}
         className={classnames({
           [css.tag]: true,
           [css.create]: create,

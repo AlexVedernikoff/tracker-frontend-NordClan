@@ -242,7 +242,7 @@ class TaskCore extends PureComponent {
           <div
             className={css.priorityMarker}
             onClick={this.showPriorityBox}
-            data-tip={`${localize[lang].NOT_ASSIGNED} ${getProrityById(this.props.task.prioritiesId)}`}
+            data-tip={`${localize[lang].PRIORITY} ${getProrityById(this.props.task.prioritiesId)}`}
           />
         )}
         {lighted ? <div className={css.lightedBorder} /> : null}

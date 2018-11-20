@@ -429,7 +429,7 @@ const createTask = (task, openTaskPage, callee) => {
     dispatch(startLoading());
     dispatch(createTaskRequestStart());
 
-    axios
+    return axios
       .post(URL, task, {
         withCredentials: true
       })
@@ -448,6 +448,7 @@ const createTask = (task, openTaskPage, callee) => {
           if (openTaskPage) {
             history.push(`/projects/${task.projectId}/tasks/${response.data.id}`);
           }
+          return response.data.id;
         }
         dispatch(finishLoading());
       })

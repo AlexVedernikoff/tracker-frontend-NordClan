@@ -1,15 +1,15 @@
 import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
 import Pt from 'prop-types';
 
-import { showNotification } from '../../actions/Notifications';
 import css from './CopyThis.scss';
+import localize from './CopyThis.json';
 
 class CopyThis extends PureComponent {
   static propTypes = {
     children: Pt.any,
     description: Pt.string,
     isCopiedBackground: Pt.bool,
+    lang: Pt.string,
     showNotification: Pt.func.isRequired,
     textToCopy: Pt.string.isRequired,
     wrapThisInto: Pt.any.isRequired
@@ -20,10 +20,11 @@ class CopyThis extends PureComponent {
   }
 
   copy = evt => {
+    const { lang, description, showNotification } = this.props;
     evt.stopPropagation();
     this.refs.copy.select();
     const res = document.execCommand('copy');
-    if (res) this.props.showNotification({ message: `Скопировано: ${this.props.description}`, type: 'success' });
+    if (res) showNotification({ message: `${localize[lang].COPIED} ${description}`, type: 'success' });
   };
 
   render() {
@@ -39,11 +40,4 @@ class CopyThis extends PureComponent {
   }
 }
 
-const mapDispatchToProps = {
-  showNotification
-};
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(CopyThis);
+export default CopyThis;

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Modal from '../../components/Modal';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import { stateToHTML } from 'draft-js-export-html';
@@ -8,9 +7,10 @@ import { Col, Row } from 'react-flexbox-grid';
 import moment from 'moment';
 import classnames from 'classnames';
 import sortBy from 'lodash/sortBy';
+
+import Modal from '../../components/Modal';
 import Button from '../Button';
 import SelectDropdown from '../SelectDropdown';
-// import ValidatedInput from '../ValidatedInput';
 import InputNumber from '../../components/InputNumber';
 import ValidatedAutosizeInput from '../ValidatedAutosizeInput';
 import * as css from './CreateTaskModal.scss';
@@ -22,12 +22,14 @@ import Validator from '../ValidatedInput/Validator';
 import TextEditor from '../../components/TextEditor';
 import Checkbox from '../../components/Checkbox/Checkbox';
 import localize from './CreateTaskModal.json';
+import { createTags } from '../../actions/Tags';
 import Tag from '../../components/Tag';
 import Tags from '../../components/Tags';
 import { getFullName } from '../../utils/NameLocalisation';
 import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
+import parseInteger from '../../utils/parseInteger';
 
-const MAX_DESCRIPTION_LENGTH = 2500;
+const MAX_DESCRIPTION_LENGTH = 25000;
 
 class CreateTaskModal extends Component {
   constructor(props) {
@@ -44,6 +46,7 @@ class CreateTaskModal extends Component {
       selectedType: this.props.taskTypes[0],
       selectedTypeError: this.props.taskTypes.length === 0,
       isTaskByClient: false,
+      isDevOps: false,
       descriptionInvalid: false,
       tags: []
     };
@@ -73,10 +76,12 @@ class CreateTaskModal extends Component {
     });
   };
 
-  handleIsTaskByClientChange = () => {
-    this.setState({
-      isTaskByClient: !this.state.isTaskByClient
-    });
+  getDevOpsInputRef = el => {
+    this.devOpsInput = el;
+  };
+
+  getIsByClientRef = el => {
+    this.byClientInput = el;
   };
 
   handlePriorityChange = priorityId => this.setState({ prioritiesId: +priorityId });
@@ -90,24 +95,30 @@ class CreateTaskModal extends Component {
     if (!this.state.selectedType || !this.state.selectedType.value) {
       return;
     }
-    this.props.createTask(
-      {
-        name: this.state.taskName,
-        projectId: this.props.project.id,
-        description: stateToHTML(this.TextEditor.state.editorState.getCurrentContent()),
-        performerId: this.state.selectedPerformer,
-        statusId: 1,
-        typeId: this.state.selectedType.value,
-        sprintId: this.state.selectedSprint === BACKLOG_ID ? null : this.state.selectedSprint,
-        prioritiesId: this.state.prioritiesId,
-        plannedExecutionTime: this.state.plannedExecutionTime,
-        parentId: this.props.parentTaskId,
-        isTaskByClient: this.state.isTaskByClient,
-        tags: this.state.tags.join(',')
-      },
-      this.state.openTaskPage,
-      this.props.column
-    );
+    this.props
+      .createTask(
+        {
+          name: this.state.taskName,
+          projectId: this.props.project.id,
+          description: stateToHTML(this.TextEditor.state.editorState.getCurrentContent()),
+          performerId: this.state.selectedPerformer,
+          statusId: 1,
+          typeId: this.state.selectedType.value,
+          sprintId: this.state.selectedSprint === BACKLOG_ID ? null : this.state.selectedSprint,
+          prioritiesId: this.state.prioritiesId,
+          plannedExecutionTime: this.state.plannedExecutionTime,
+          parentId: this.props.parentTaskId,
+          isTaskByClient: this.byClientInput.checked,
+          isDevOps: this.devOpsInput.checked
+        },
+        this.state.openTaskPage,
+        this.props.column
+      )
+      .then(id => {
+        if (this.state.tags.length) {
+          this.props.createTags(this.state.tags.join(), 'task', id);
+        }
+      });
   };
 
   validateAndSubmit = () => {
@@ -151,10 +162,16 @@ class CreateTaskModal extends Component {
   };
 
   getUsers = () => {
-    return this.props.project.users.map(user => ({
-      value: user.id,
-      label: getFullName(user)
-    }));
+    return this.props.project.users
+      .sort((a, b) => {
+        if (a.fullNameRu < b.fullNameRu) return -1;
+        else if (a.fullNameRu > b.fullNameRu) return 1;
+        return 0;
+      })
+      .map(user => ({
+        value: user.id,
+        label: getFullName(user)
+      }));
   };
 
   handleChange = field => event => {
@@ -162,11 +179,13 @@ class CreateTaskModal extends Component {
   };
 
   handleChangePlannedTime = plannedExecutionTime => {
-    this.setState({ plannedExecutionTime });
+    this.setState({
+      plannedExecutionTime: parseInteger(plannedExecutionTime)
+    });
   };
 
   addTag = tag => {
-    const unicTags = [...new Set([...this.state.tags, tag])];
+    const unicTags = [...new Set([...this.state.tags, ...tag])];
     this.setState({ tags: [...unicTags] });
   };
   deleteTag = () => tagName => {
@@ -287,7 +306,17 @@ class CreateTaskModal extends Component {
                 <p>{localize[lang].FROM_CLIENT}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
-                <Checkbox checked={this.state.isTaskByClient} onChange={this.handleIsTaskByClientChange} />
+                <Checkbox refCallback={this.getIsByClientRef} />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>{localize[lang].DEV_OPS}</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
+                <Checkbox refCallback={this.getDevOpsInputRef} />
               </Col>
             </Row>
           </label>
@@ -384,6 +413,7 @@ class CreateTaskModal extends Component {
 CreateTaskModal.propTypes = {
   closeCreateTaskModal: PropTypes.func.isRequired,
   column: PropTypes.string,
+  createTags: PropTypes.func.isRequired,
   createTask: PropTypes.func.isRequired,
   defaultPerformerId: PropTypes.oneOfType([PropTypes.array, PropTypes.number]),
   isCreateChildTaskModalOpen: PropTypes.bool,
@@ -414,7 +444,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   closeCreateTaskModal,
-  createTask
+  createTask,
+  createTags
 };
 
 export default connect(

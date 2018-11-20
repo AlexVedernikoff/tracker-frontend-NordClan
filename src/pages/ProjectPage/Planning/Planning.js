@@ -90,17 +90,18 @@ class Planning extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!nextProps.SprintIsEditing && this.props.SprintIsEditing) {
+    const { project, SprintIsEditing } = this.props;
+    if (!nextProps.SprintIsEditing && SprintIsEditing) {
       this.selectValue(this.state.leftColumn, 'leftColumn');
       this.selectValue(this.state.rightColumn, 'rightColumn');
     }
 
-    if (this.props.project.sprints.length === 0 && nextProps.project.sprints.length > 0) {
+    if (project.sprints.length === 0 && nextProps.project.sprints.length > 0) {
       this.selectValue(BACKLOG_ID, 'leftColumn');
       this.selectValue(this.getCurrentSprint(nextProps.project.sprints), 'rightColumn');
     }
 
-    if (this.props.project.sprints !== nextProps.project.sprints) {
+    if (project.sprints !== nextProps.project.sprints) {
       if (nextProps.lastCreatedTask && Number.isInteger(nextProps.lastCreatedTask.sprintId)) {
         if (this.state.createTaskCallee === 'left') {
           this.selectValue(nextProps.lastCreatedTask.sprintId, 'leftColumn');
@@ -134,7 +135,7 @@ class Planning extends Component {
   };
 
   getSprints = () => {
-    let sprints = this.props.project.sprints;
+    let { sprints } = this.props.project;
 
     sprints = sprints.map(sprint => ({
       value: sprint.id,
@@ -162,6 +163,7 @@ class Planning extends Component {
   };
 
   getEstimatesInfo = sprintId => {
+    const { lang } = this.props;
     if (!sprintId) {
       return {
         summary: '',
@@ -184,9 +186,9 @@ class Planning extends Component {
         }
       };
       return {
-        summary: `${localize[this.props.lang].TOTAL_TIME} ${sprintSpentTime} ${
-          sprintEstimate ? localize[this.props.lang].OF + sprintEstimate : ''
-        } ${localize[this.props.lang].H}`,
+        summary: `${localize[lang].TOTAL_TIME} ${sprintSpentTime} ${
+          sprintEstimate ? localize[lang].OF + sprintEstimate : ''
+        } ${localize[lang].H}`,
         width: `${width(ratio)}%`,
         active: sprintEstimate !== 0,
         exceeded: ratio > 1
@@ -296,9 +298,6 @@ class Planning extends Component {
   };
 
   checkIsAdminInProject = () => {
-    // if (this.props.user.globalRole === EXTERNAL_USER) {
-    //   return false;
-    // }
     return (
       this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1 || this.props.user.globalRole === ADMIN
     );
@@ -423,58 +422,50 @@ class Planning extends Component {
   };
 
   render() {
-    const { lang } = this.props;
+    const {
+      lang,
+      rightColumnTasks,
+      leftColumnTasks,
+      project,
+      sprints,
+      createdAt,
+      completedAt,
+      loading,
+      user
+    } = this.props;
+    const { leftColumn, rightColumn, grantActiveYear, typeIdHovered, typeHovered, createTaskCallee } = this.state;
     const isProjectAdmin = this.checkIsAdminInProject();
-    const isVisor = this.props.user.globalRole === VISOR;
-    const isExternal = this.props.user.globalRole === EXTERNAL_USER;
+    const isVisor = user.globalRole === VISOR;
+    const isExternal = user.globalRole === EXTERNAL_USER;
 
-    const leftColumnTasksData = this.props.leftColumnTasks.data.map(task => {
-      return (
-        <DraggableTaskRow
-          draggable
-          key={`task-${task.id}`}
-          task={task}
-          prefix={this.props.project.prefix}
-          shortcut
-          card
-        />
-      );
+    const leftColumnTasksData = leftColumnTasks.data.map(task => {
+      return <DraggableTaskRow draggable key={`task-${task.id}`} task={task} prefix={project.prefix} shortcut card />;
     });
 
-    const rightColumnTasksData = this.props.rightColumnTasks.data.map(task => {
-      return (
-        <DraggableTaskRow
-          draggable
-          key={`task-${task.id}`}
-          task={task}
-          prefix={this.props.project.prefix}
-          shortcut
-          card
-        />
-      );
+    const rightColumnTasksData = rightColumnTasks.data.map(task => {
+      return <DraggableTaskRow draggable key={`task-${task.id}`} task={task} prefix={project.prefix} shortcut card />;
     });
 
-    const leftEstimates = this.getEstimatesInfo(this.state.leftColumn);
-    const rightEstimates = this.getEstimatesInfo(this.state.rightColumn);
+    const leftEstimates = this.getEstimatesInfo(leftColumn);
+    const rightEstimates = this.getEstimatesInfo(rightColumn);
     const leftColumnSprints = this.getSprints();
     const rightColumnSprints = this.getSprints();
-    const filteredSprints = this.props.sprints.filter(sprint => {
+    const filteredSprints = sprints.filter(sprint => {
       return (
-        +moment(sprint.factFinishDate).format('YYYY') === this.state.grantActiveYear ||
-        +moment(sprint.factStartDate).format('YYYY') === this.state.grantActiveYear
+        +moment(sprint.factFinishDate).format('YYYY') === grantActiveYear ||
+        +moment(sprint.factStartDate).format('YYYY') === grantActiveYear
       );
     });
 
     const filteredMilestones = this.props.milestones.filter(milestone => {
-      return +moment(milestone.date).format('YYYY') === this.state.grantActiveYear;
+      return +moment(milestone.date).format('YYYY') === grantActiveYear;
     });
 
     const entities = filteredSprints.concat(filteredMilestones).sort(this.sortEntities);
 
-    const budget = this.props.project.budget;
-    const riskBudget = this.props.project.riskBudget;
-    const qaPercent = this.props.project.qaPercent || 30;
-    const { createdAt, completedAt, loading } = this.props;
+    const budget = project.budget;
+    const riskBudget = project.riskBudget;
+    const qaPercent = project.qaPercent || 30;
     const unfinishedLeftTasksCount = this.getUnfinishedLeftTasks().length;
 
     return (
@@ -508,14 +499,12 @@ class Planning extends Component {
                     header={localize[lang].WITH_RISK_RESERVE}
                     value={riskBudget}
                     isProjectAdmin={isProjectAdmin}
-                    min={budget}
                   />
                   <Budget
                     onEditSubmit={this.onBudgetSubmit}
                     header={localize[lang].WO_RISK_RESERVE}
                     value={budget}
                     isProjectAdmin={isProjectAdmin}
-                    max={riskBudget}
                   />
                   {!!budget && !!riskBudget && <div className={css.riskMarker}>{localize[lang].RISK_RESERVE}</div>}
                 </div>
@@ -529,8 +518,7 @@ class Planning extends Component {
                     value={qaPercent}
                     isProjectAdmin={isProjectAdmin}
                     integerOnly
-                    min={0}
-                    max={100}
+                    percents
                   />
                 </div>
               ) : null}
@@ -538,10 +526,10 @@ class Planning extends Component {
           </div>
           <hr />
           <SprintList
-            sprints={this.props.sprints}
+            sprints={sprints}
             isExternal={isExternal}
-            typeIdHovered={this.state.typeIdHovered}
-            typeHovered={this.state.typeHovered}
+            typeIdHovered={typeIdHovered}
+            typeHovered={typeHovered}
             onMouseOverRow={this.onMouseOverRow}
             onMouseOutRow={this.onMouseOutRow}
             lang={lang}
@@ -549,15 +537,15 @@ class Planning extends Component {
           />
           <Table
             entities={entities}
-            typeIdHovered={this.state.typeIdHovered}
-            typeHovered={this.state.typeHovered}
+            typeIdHovered={typeIdHovered}
+            typeHovered={typeHovered}
             isProjectAdmin={isProjectAdmin}
             isExternal={isExternal}
             onMouseOverRow={this.onMouseOverRow}
             onMouseOutRow={this.onMouseOutRow}
             grantYearDecrement={this.grantYearDecrement}
             grantYearIncrement={this.grantYearIncrement}
-            grantActiveYear={this.state.grantActiveYear}
+            grantActiveYear={grantActiveYear}
             onClickSprint={this.onClickSprint}
             openSprintEditModal={this.openSprintEditModal}
             openMilestoneEditModal={this.openMilestoneEditModal}
@@ -586,7 +574,7 @@ class Planning extends Component {
                 name="left"
                 estimates={leftEstimates}
                 sprints={leftColumnSprints}
-                selectedSprintValue={this.state.leftColumn}
+                selectedSprintValue={leftColumn}
                 onSprintChange={e => this.selectValue(e !== null ? e.value : null, 'leftColumn')}
                 onCreateTaskClick={this.openModal}
               />
@@ -595,7 +583,7 @@ class Planning extends Component {
                 contentLabel="modal"
                 onRequestClose={this.onMoveTasksModalCancel}
                 onConfirm={() => {
-                  this.onMoveTasksModalConfirm(this.state.rightColumn);
+                  this.onMoveTasksModalConfirm(rightColumn);
                 }}
                 onCancel={this.onMoveTasksModalCancel}
                 text={`${localize[lang].WILL_BE_REPLACE} ${unfinishedLeftTasksCount} ${
@@ -607,29 +595,29 @@ class Planning extends Component {
                 name="right"
                 estimates={rightEstimates}
                 sprints={rightColumnSprints}
-                selectedSprintValue={this.state.rightColumn}
+                selectedSprintValue={rightColumn}
                 onSprintChange={e => this.selectValue(e !== null ? e.value : null, 'rightColumn')}
                 onCreateTaskClick={this.openModal}
               />
               <Col xs={12} sm={6}>
-                {this.state.leftColumn || this.state.leftColumn === 0 ? (
+                {leftColumn || leftColumn === 0 ? (
                   <SprintColumn
                     onDrop={this.dropTask}
-                    sprint={this.state.leftColumn}
+                    sprint={leftColumn}
                     tasks={leftColumnTasksData}
-                    pagesCount={this.props.leftColumnTasks.pagesCount}
+                    pagesCount={leftColumnTasks.pagesCount}
                     loadTasks={this.loadTasks}
                     name="leftColumn"
                   />
                 ) : null}
               </Col>
               <Col className={css.rightColumn} xs={12} sm={6}>
-                {this.state.rightColumn || this.state.rightColumn === 0 ? (
+                {rightColumn || rightColumn === 0 ? (
                   <SprintColumn
                     onDrop={this.dropTask}
-                    sprint={this.state.rightColumn}
+                    sprint={rightColumn}
                     tasks={rightColumnTasksData}
-                    pagesCount={this.props.rightColumnTasks.pagesCount}
+                    pagesCount={rightColumnTasks.pagesCount}
                     loadTasks={this.loadTasks}
                     name="rightColumn"
                   />
@@ -640,16 +628,14 @@ class Planning extends Component {
         </section>
         {this.props.isCreateTaskModalOpen ? (
           <CreateTaskModal
-            selectedSprintValue={
-              this.state.createTaskCallee === 'left' ? this.state.leftColumn : this.state.rightColumn
-            }
-            project={this.props.project}
-            column={this.state.createTaskCallee}
+            selectedSprintValue={createTaskCallee === 'left' ? leftColumn : rightColumn}
+            project={project}
+            column={createTaskCallee}
           />
         ) : null}
         {this.state.isOpenSprintEditModal ? (
           <SprintEditModal
-            project={this.props.project}
+            project={project}
             sprint={this.state.editSprint}
             handleEditSprint={this.handleEditSprint}
             handleCloseModal={this.closeEditSprintModal}

@@ -317,6 +317,10 @@ class ActivityRow extends React.Component {
 
     const timeCells = item.timeSheets.map((tsh, i) => {
       if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
+        const filled = +tsh.spentTime && tsh.statusId === 1;
+        const rejected = tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED;
+        const submitted = tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED;
+        const approved = tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED;
         return (
           <td
             key={moment(tsh.onDate).format('X')}
@@ -329,10 +333,10 @@ class ActivityRow extends React.Component {
               <div
                 className={cn({
                   [css.timeCell]: true,
-                  [css.filled]: +tsh.spentTime && tsh.statusId === 1,
-                  [css.submitted]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED,
-                  [css.approved]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED,
-                  [css.rejected]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED
+                  [css.filled]: filled,
+                  [css.submitted]: submitted,
+                  [css.approved]: approved,
+                  [css.rejected]: rejected
                 })}
               >
                 <input
@@ -358,6 +362,8 @@ class ActivityRow extends React.Component {
                 <span className={css.toggleComment}>
                   <SingleComment
                     disabled={!canDeleteRow}
+                    rejected={rejected}
+                    approved={approved}
                     comment={tsh.comment}
                     onChange={text => this.changeFilledComment(text, tsh.spentTime, i, tsh.id)}
                   />
@@ -460,7 +466,7 @@ class ActivityRow extends React.Component {
               onCancel={this.closeProjectEditModal}
               selectedProject={item.projectId}
               onConfirm={isTempRow ? this.editTempActivity(tempCell.id) : () => {}}
-              text="Выберите проект"
+              text={localize[lang].CHOOSE_PROJECT}
             />
           ) : null}
         </td>

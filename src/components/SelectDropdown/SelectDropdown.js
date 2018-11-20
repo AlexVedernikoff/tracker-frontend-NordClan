@@ -42,19 +42,44 @@ class SelectDropdown extends Component {
     options: PropTypes.array
   };
 
+  state = {
+    isHovered: false
+  };
+
+  onClear() {
+    this.props.onClear();
+  }
+
+  showCross() {
+    this.setState({ isHovered: true });
+  }
+
+  hideCross() {
+    this.setState({ isHovered: false });
+  }
+
   render() {
-    const { name, options, thisClassName, lang, ...other } = this.props;
+    const { name, options, thisClassName, lang, canClear, ...other } = this.props;
 
     return (
-      <InnerSelect
-        className={thisClassName}
-        name={name}
-        options={options}
-        noResultsText={localize[lang].NO_RESULTS}
-        onFocus={e => e.stopPropagation()}
-        clearValueText={localize[lang].CLEAR}
-        {...other}
-      />
+      <div onMouseEnter={() => this.showCross()} onMouseLeave={() => this.hideCross()} className="InnerSelectWrap">
+        <InnerSelect
+          className={thisClassName}
+          name={name}
+          options={options}
+          noResultsText={localize[lang].NO_RESULTS}
+          onFocus={e => e.stopPropagation()}
+          clearValueText={localize[lang].CLEAR}
+          {...other}
+        />
+
+        {canClear &&
+          this.state.isHovered && (
+            <span className="ClearValue" onClick={() => this.onClear()}>
+              ×
+            </span>
+          )}
+      </div>
     );
   }
 }
