@@ -66,7 +66,8 @@ class Projects extends Component {
     projectName: ''
   };
 
-  selectType = (filterSelectedTypes, filterRequestTypes) => {
+  selectType = filterSelectedTypes => {
+    const filterRequestTypes = filterSelectedTypes.map(type => type.value);
     this.setState({ filterSelectedTypes, filterRequestTypes }, () => {
       this.loadProjects();
     });
