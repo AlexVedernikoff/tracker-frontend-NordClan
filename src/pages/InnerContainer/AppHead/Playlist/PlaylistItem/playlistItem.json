@@ -7,7 +7,16 @@
     "SHOW": "Show",
     "TOTAL_SPENT": "Total amount spent",
     "SCHEDULED": "Scheduled",
-    "ENTER_COMMENT_TEXT": "Enter comment text"
+    "ENTER_COMMENT_TEXT": "Leave your comment",
+    "ALL": "All activities",
+    "IMPLEMENTATION": "Implementation",
+    "MEETING": "Meeting",
+    "PRESALE": "Presale and estimation",
+    "EDUCATION": "Education",
+    "VACATION": "Vacation",
+    "BUSINESS_TRIP": "Business trip",
+    "CONTROL": "Managment",
+    "HOSPITAL": "On sick leave"
   },
   "ru": {
     "UNDEFINED": "Не определено",
@@ -17,6 +26,15 @@
     "SHOW": "Показать",
     "TOTAL_SPENT": "Всего потрачено",
     "SCHEDULED": "Запланировано",
-    "ENTER_COMMENT_TEXT": "Введите текст комментария"
+    "ENTER_COMMENT_TEXT": "Введите текст комментария",
+    "ALL": "Все активности",
+    "IMPLEMENTATION": "Implementation",
+    "MEETING": "Совещание",
+    "PRESALE": "Преселлинг и оценка",
+    "EDUCATION": "Обучение",
+    "VACATION": "Отпуск",
+    "BUSINESS_TRIP": "Командировка",
+    "CONTROL": "Управление",
+    "HOSPITAL": "Больничный"
   }
 }

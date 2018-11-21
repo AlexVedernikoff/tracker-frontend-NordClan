@@ -61,6 +61,7 @@ class MissingProjectFieldsModal extends Component {
       firstCol: 5,
       secondCol: 7
     };
+    const options = projectTypes.map(type => ({ value: type.id, label: localize[lang][type.codename] }));
     return (
       <Modal {...other} onRequestClose={onCancel} closeTimeoutMS={200 || closeTimeoutMS}>
         <div className={css.container}>
@@ -101,7 +102,7 @@ class MissingProjectFieldsModal extends Component {
                   multi={false}
                   noResultsText={localize[lang].NO_RESULTS}
                   backspaceRemoves={false}
-                  options={projectTypes.map(type => ({ value: type.id, label: type.name }))}
+                  options={options}
                   className={css.selectType}
                   onChange={this.onTypeChange}
                   value={typeId}

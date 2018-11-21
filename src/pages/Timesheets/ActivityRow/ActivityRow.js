@@ -26,7 +26,7 @@ import {
 } from '../../../actions/Timesheets';
 import EditActivityProjectModal from '../../../components/EditActivityProjectModal';
 import localize from './activityRow.json';
-import { getLocalizedTaskStatuses, getLocalizedMagicActiveTypes } from '../../../selectors/dictionaries';
+import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../selectors/dictionaries';
 
 class ActivityRow extends React.Component {
   static propTypes = {
@@ -432,7 +432,7 @@ class ActivityRow extends React.Component {
             </div>
             <div>
               {task && <Link to={`/projects/${item.projectId}/tasks/${item.id}`}>{item.name}</Link>}
-              {ma && maType && <span>{maType.name}</span>}
+              {ma && maType && <span>{localize[lang][maType.codename]}</span>}
             </div>
           </div>
         </td>
@@ -477,7 +477,7 @@ class ActivityRow extends React.Component {
 
 const mapStateToProps = state => ({
   statuses: getLocalizedTaskStatuses(state),
-  magicActivitiesTypes: getLocalizedMagicActiveTypes(state),
+  magicActivitiesTypes: getMagicActiveTypes(state),
   userId: state.Auth.user.id,
   startingDay: state.Timesheets.startingDay,
   lang: state.Localize.lang

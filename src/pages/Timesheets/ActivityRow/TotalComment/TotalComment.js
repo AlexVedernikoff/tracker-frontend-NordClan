@@ -28,6 +28,7 @@ class TotalComment extends React.Component {
         if (tsh.id) updatedComments[tsh.id] = tsh.comment;
       });
     }
+    moment.locale(props.lang);
     this.state = {
       isOpen: false,
       updatedComments
@@ -44,6 +45,9 @@ class TotalComment extends React.Component {
         updatedComments
       });
     }
+  }
+  componentDidUpdate() {
+    moment.locale(this.props.lang);
   }
 
   handleClickOutside = () => {
@@ -85,6 +89,7 @@ class TotalComment extends React.Component {
     const filledTimeSheets = items.filter(el => {
       return el.id;
     });
+
     return (
       <div>
         <IconComments onClick={this.toggle} />
