@@ -124,8 +124,8 @@ class TaskRow extends React.Component {
                       <span className={css.metaKey}>{localize[lang].TIME} </span>
                       <span
                         className={classnames({
-                          [css.redText]: task.plannedExecutionTime < task.factExecutionTime,
-                          [css.greenText]: task.plannedExecutionTime > task.factExecutionTime
+                          [css.redText]: +task.plannedExecutionTime < +task.factExecutionTime,
+                          [css.greenText]: +task.plannedExecutionTime > +task.factExecutionTime
                         })}
                       >
                         {getTaskTime(task.factExecutionTime, task.plannedExecutionTime, lang)}
