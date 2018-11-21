@@ -27,7 +27,7 @@ const filterMetrics = (id, metrics) => {
   return metrics ? metrics.filter(metric => metric.typeId === id) : [];
 };
 
-const getBasicLineSettings = () => {
+export const getBasicLineSettings = () => {
   const lineColor = getColor();
 
   return {
