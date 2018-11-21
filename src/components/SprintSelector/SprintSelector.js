@@ -11,7 +11,7 @@ import layoutAgnosticFilter from '../../utils/layoutAgnosticFilter';
 import { IconSearch } from '../../components/Icons/index.js';
 
 const dateFormat = 'DD.MM.YYYY';
-const iconSearchStyle = { position: 'absolute', width: 22, height: 22, top: 31, left: 23 };
+const iconSearchStyle = { position: 'absolute', width: 22, height: 22, bottom: 4, left: 23 };
 
 export default class SprintSelector extends Component {
   static propTypes = {
