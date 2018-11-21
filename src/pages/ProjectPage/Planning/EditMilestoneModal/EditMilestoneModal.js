@@ -12,7 +12,7 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { editMilestone } from '../../../../actions/Milestone';
 import Select from 'react-select';
-import { getLocalizedMilestoneTypes } from '../../../../selectors/dictionaries';
+import { getMilestoneTypes } from '../../../../selectors/dictionaries';
 
 class EditMilestoneModal extends Component {
   static propTypes = {
@@ -99,7 +99,7 @@ class EditMilestoneModal extends Component {
 
     const { milestoneTypes, lang } = this.props;
 
-    const options = milestoneTypes.map(type => ({ value: type.id, label: type.name }));
+    const options = milestoneTypes.map(type => ({ value: type.id, label: localize[lang][type.codename] }));
 
     return (
       <Modal isOpen contentLabel="modal" onRequestClose={this.props.onClose}>
@@ -191,7 +191,7 @@ class EditMilestoneModal extends Component {
 
 const mapStateToProps = state => ({
   projectId: state.Project.project.id,
-  milestoneTypes: getLocalizedMilestoneTypes(state) || [],
+  milestoneTypes: getMilestoneTypes(state) || [],
   lang: state.Localize.lang
 });
 

@@ -9,7 +9,12 @@
     "DATE": "Date:",
     "ENTER_DATE": "Enter the date",
     "EDIT": "Edit",
-    "COMPLETED": "Done"
+    "COMPLETED": "Done",
+    "CREATE": "Create",
+    "GET_REVIEW": "Receive feedback",
+    "DEMO_CLIENT": "Demo for client",
+    "DEMO_INSIDE": "Inner demo",
+    "OTHER": "Other"
   },
   "ru": {
     "EDIT_MILESTONE": "Редактирование вехи",
@@ -21,6 +26,11 @@
     "DATE": "Дата:",
     "ENTER_DATE": "Введите дату",
     "EDIT": "Изменить",
-    "COMPLETED": "Выполнено"
+    "COMPLETED": "Выполнено",
+    "CREATE": "Создать",
+    "GET_REVIEW": "Получение отзыва",
+    "DEMO_CLIENT": "Демо Клиенту",
+    "DEMO_INSIDE": "Внутреннее демо",
+    "OTHER": "Другое"
   }
 }

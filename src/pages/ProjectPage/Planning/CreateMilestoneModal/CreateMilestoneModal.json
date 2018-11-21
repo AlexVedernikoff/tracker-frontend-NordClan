@@ -8,7 +8,11 @@
     "NO_RESUTLS": "No results",
     "DATE": "Date:",
     "ENTER_DATE": "Enter the date",
-    "CREATE": "Create"
+    "CREATE": "Create",
+    "GET_REVIEW": "Receive feedback",
+    "DEMO_CLIENT": "Demo for client",
+    "DEMO_INSIDE": "Inner demo",
+    "OTHER": "Other"
   },
   "ru": {
     "CREATE_MILESTONE": "Создание новой вехи",
@@ -19,6 +23,10 @@
     "NO_RESUTLS": "Нет результатов",
     "DATE": "Дата:",
     "ENTER_DATE": "Введите дату",
-    "CREATE": "Создать"
+    "CREATE": "Создать",
+    "GET_REVIEW": "Получение отзыва",
+    "DEMO_CLIENT": "Демо Клиенту",
+    "DEMO_INSIDE": "Внутреннее демо",
+    "OTHER": "Другое"
   }
 }
