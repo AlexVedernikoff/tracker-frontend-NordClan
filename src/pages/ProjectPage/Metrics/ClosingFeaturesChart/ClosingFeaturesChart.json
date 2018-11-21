@@ -6,7 +6,8 @@
     "DYNAMIC_WITHOUT_ELEVATION": "Dynamics of work for tasks without evaluation",
     "HOURS": "Hours",
     "DATE": "Date",
-    "LANG": "en"
+    "LANG": "en",
+    "END_SPRINT": "after the sprint"
   },
   "ru": {
     "DYNAMIC": "Динамика закрытия задач",
@@ -15,6 +16,7 @@
     "DYNAMIC_WITHOUT_ELEVATION": "Динамика трудозатрат на задачи без оценки",
     "HOURS": "Часы",
     "DATE": "Дата",
-    "LANG": "ru"
+    "LANG": "ru",
+    "END_SPRINT": "после окончания спринта"
   }
 }
