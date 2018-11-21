@@ -14,7 +14,7 @@ import * as timesheetsConstants from '../../../../constants/Timesheets';
 import List from './List';
 import localize from './playlist.json';
 import * as css from './Playlist.scss';
-import { getLocalizedMagicActiveTypes } from '../../../../selectors/dictionaries';
+import { getMagicActiveTypes } from '../../../../selectors/dictionaries';
 
 class Playlist extends Component {
   constructor(props) {
@@ -34,16 +34,17 @@ class Playlist extends Component {
   }
 
   componentWillReceiveProps(newProps) {
+    const { lang } = newProps;
     if (newProps.magicActivitiesTypes.length) {
       this.activityTabs = newProps.magicActivitiesTypes.map(element => ({
         activityId: element.id,
-        description: element.name,
+        description: localize[lang][element.codename],
         icon: getMaIcon(element.id)
       }));
 
       this.activityTabs.unshift({
         activityId: 'all',
-        description: 'Все активности',
+        description: localize[lang].ALL,
         icon: <IconList />
       });
     }
@@ -258,21 +259,6 @@ class Playlist extends Component {
     return disabledTrackFound;
   };
 
-  activitiesTabsLabelsFix(tab, lang) {
-    switch (tab) {
-      case 'Все активности':
-        return localize[lang].ALL;
-      case 'Presale and mark':
-        return 'Presale and estimation';
-      case 'Hospital':
-        return 'On sick leave';
-      case 'Control':
-        return 'Managment';
-      default:
-        return tab;
-    }
-  }
-
   render() {
     const { isPlaylistOpen } = this.state;
     const { activeTask, tracks, currentUserId, lang } = this.props;
@@ -341,7 +327,7 @@ class Playlist extends Component {
                       <div
                         key={index}
                         className={this.activityTabStyle(element.activityId)}
-                        data-tip={this.activitiesTabsLabelsFix(element.description, lang)}
+                        data-tip={element.description}
                         onClick={this.changeActiveActivityTab(element.activityId)}
                         data-place="bottom"
                       >
@@ -387,7 +373,7 @@ const mapStateToProps = state => {
     activeTask: state.TimesheetPlayer.activeTask,
     tracks: state.TimesheetPlayer.tracks,
     availableProjects: state.TimesheetPlayer.availableProjects,
-    magicActivitiesTypes: getLocalizedMagicActiveTypes(state),
+    magicActivitiesTypes: getMagicActiveTypes(state),
     lang: state.Localize.lang
   };
 };

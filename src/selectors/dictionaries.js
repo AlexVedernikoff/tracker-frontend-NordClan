@@ -7,6 +7,8 @@ const getLocalizedDictionary = function(lang, dictionary) {
   }));
 };
 
+const selectMagicActiveTypes = state => state.Dictionaries.magicActivityTypes;
+
 export const getLocalizedTaskTypes = createSelector(
   state => state.Localize.lang,
   state => state.Dictionaries.taskTypes,
@@ -16,12 +18,6 @@ export const getLocalizedTaskTypes = createSelector(
 export const getLocalizedTaskStatuses = createSelector(
   state => state.Localize.lang,
   state => state.Dictionaries.taskStatuses,
-  getLocalizedDictionary
-);
-
-export const getLocalizedMagicActiveTypes = createSelector(
-  state => state.Localize.lang,
-  state => state.Dictionaries.magicActivityTypes,
   getLocalizedDictionary
 );
 
@@ -41,4 +37,13 @@ export const getLocalizedRoles = createSelector(
   state => state.Localize.lang,
   state => state.Dictionaries.roles,
   getLocalizedDictionary
+);
+
+export const getMagicActiveTypes = createSelector([selectMagicActiveTypes], types =>
+  types.map(type => ({
+    id: type.id,
+    codename: type.codeName,
+    isMagicActivity: type.isMagicActivity,
+    order: type.order
+  }))
 );

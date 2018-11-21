@@ -1,9 +1,5 @@
 {
   "en": {
-    "DELETE": "Delete",
-    "CONFIRM_MESSAGE": "Are you sure you want to delete this activity?",
-    "DELETE_DUBLICATE": "Delete dublicate timesheet.",
-    "CHOOSE_PROJECT": "Choose project",
     "ALL": "All activities",
     "IMPLEMENTATION": "Implementation",
     "MEETING": "Meeting",
@@ -15,10 +11,6 @@
     "HOSPITAL": "On sick leave"
   },
   "ru": {
-    "DELETE": "Удалить",
-    "CONFIRM_MESSAGE": "Вы действительно хотите удалить эту активность?",
-    "DELETE_DUBLICATE": "Удалить копию таймшита.",
-    "CHOOSE_PROJECT": "Выберите проект",
     "ALL": "Все активности",
     "IMPLEMENTATION": "Implementation",
     "MEETING": "Совещание",
