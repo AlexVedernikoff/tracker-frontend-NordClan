@@ -26,7 +26,6 @@ import { ADMIN } from '../../constants/Roles';
 import localize from './projects.json';
 import Title from 'react-title-component';
 import TypeFilter from './TypeFilter';
-import { getLocalizedProjectTypes } from './../../selectors/dictionaries';
 import { IconPreloader } from '../../components/Icons';
 import InlineHolder from '../../components/InlineHolder';
 
@@ -343,7 +342,7 @@ class Projects extends Component {
   };
 
   render() {
-    const { lang, isProjectsReceived, projectTypes, pagesCount } = this.props;
+    const { lang, isProjectsReceived, pagesCount } = this.props;
     const { filteredInProgress, filteredInHold, filteredFinished, filterSelectedTypes, dateFrom, dateTo } = this.state;
     const formattedDayFrom = dateFrom ? moment(dateFrom).format('DD.MM.YYYY') : '';
     const formattedDayTo = dateTo ? moment(dateTo).format('DD.MM.YYYY') : '';
@@ -406,7 +405,7 @@ class Projects extends Component {
                 </div>
               </Col>
               <Col xs={12} sm={4}>
-                <TypeFilter onChange={this.selectType} value={filterSelectedTypes} dictionary={projectTypes} />
+                <TypeFilter onChange={this.selectType} value={filterSelectedTypes} />
               </Col>
             </Row>
             <Row className={css.search}>
@@ -491,8 +490,7 @@ const mapStateToProps = state => ({
   projectError: state.Projects.error,
   globalRole: state.Auth.user.globalRole,
   lang: state.Localize.lang,
-  isProjectsReceived: state.Projects.isProjectsReceived,
-  projectTypes: getLocalizedProjectTypes(state) || []
+  isProjectsReceived: state.Projects.isProjectsReceived
 });
 
 const mapDispatchToProps = {

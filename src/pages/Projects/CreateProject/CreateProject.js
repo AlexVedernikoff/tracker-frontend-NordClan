@@ -9,7 +9,7 @@ import * as css from './CreateProject.scss';
 import Select from 'react-select';
 import { connect } from 'react-redux';
 import localize from './CreateProject.json';
-import { getLocalizedProjectTypes } from '../../../selectors/dictionaries';
+import { getProjectTypes } from '../../../selectors/dictionaries';
 
 class CreateProject extends Component {
   constructor(props) {
@@ -31,11 +31,8 @@ class CreateProject extends Component {
       value: portfolio.id
     }));
 
-    const options = projectTypes.map(type => {
-      //fix localization
-      const label = type.name === 'Intenrship' ? 'Internship' : type.name;
-      return { value: type.id, label: label };
-    });
+    const options = projectTypes.map(type => ({ value: type.id, label: localize[lang][type.codename] }));
+
     return (
       <Modal
         isOpen={isOpen}
@@ -179,7 +176,7 @@ CreateProject.propTypes = {
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
   portfolios: state.Portfolios.portfolios,
-  projectTypes: getLocalizedProjectTypes(state) || []
+  projectTypes: getProjectTypes(state) || []
 });
 
 export default connect(
