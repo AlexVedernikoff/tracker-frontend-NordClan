@@ -8,8 +8,10 @@ import * as css from './SprintSelector.scss';
 import SelectDropdown from '../SelectDropdown';
 import localize from './SprintSelector.json';
 import layoutAgnosticFilter from '../../utils/layoutAgnosticFilter';
+import { IconSearch } from '../../components/Icons/index.js';
 
 const dateFormat = 'DD.MM.YYYY';
+const iconSearchStyle = { position: 'absolute', width: 22, height: 22, top: 31, left: 23 };
 
 export default class SprintSelector extends Component {
   static propTypes = {
@@ -22,7 +24,9 @@ export default class SprintSelector extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      inputFocused: false
+    };
   }
 
   onSelectFocus = () => {
@@ -98,6 +102,7 @@ export default class SprintSelector extends Component {
     const { value, lang, onChange, options, sprints, multi, searchable, clearable, ...otherProps } = this.props;
     return (
       <div className="sprint-dropdown">
+        {this.state.inputFocused && <IconSearch style={iconSearchStyle} />}
         <SelectDropdown
           name="sprint"
           removeSelected={false}
