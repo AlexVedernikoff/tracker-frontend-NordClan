@@ -19,6 +19,9 @@ import { getFullName } from '../../../utils/NameLocalisation';
 import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
 import { createSelector } from 'reselect';
 import sortPerformer from '../../../utils/sortPerformer';
+import { addActivity } from '../../../actions/Timesheets';
+import moment from 'moment';
+import shortid from 'shortid';
 
 const usersSelector = state => state.Project.project.users;
 
@@ -85,6 +88,26 @@ class TaskHeader extends Component {
 
   handleOpenModal = () => {
     this.props.getProjectUsers(this.props.projectId);
+    this.props.addActivity({
+      id: `temp-${shortid.generate()}`,
+      comment: null,
+      task: {
+        id: this.props.task.id,
+        name: this.props.task.name,
+        sprint: this.props.task.sprint
+      },
+      taskStatusId: this.props.task.statusId,
+      typeId: this.props.task.typeId,
+      spentTime: '0',
+      sprintId: this.props.task.sprint.id,
+      sprint: this.props.task.sprint,
+      onDate: moment(this.props.startingDay).format('YYYY-MM-DD'),
+      project: {
+        id: this.props.task.project.id,
+        name: this.props.task.project.name,
+        prefix: this.props.task.project.prefix
+      }
+    });
     this.setState({
       performer: this.props.task.performer ? this.props.task.performer.id : null,
       isPerformerModalOpen: true,
@@ -339,6 +362,7 @@ class TaskHeader extends Component {
 }
 
 TaskHeader.propTypes = {
+  addActivity: PropTypes.func,
   canEdit: PropTypes.bool,
   css: PropTypes.object,
   getProjectUsers: PropTypes.func.isRequired,
@@ -346,6 +370,7 @@ TaskHeader.propTypes = {
   location: PropTypes.object,
   onChange: PropTypes.func.isRequired,
   projectId: PropTypes.string.isRequired,
+  startingDay: PropTypes.object,
   task: PropTypes.object.isRequired,
   taskTypes: PropTypes.array,
   users: PropTypes.object
@@ -354,11 +379,14 @@ TaskHeader.propTypes = {
 const mapStateToProps = state => ({
   users: sortedUsersSelector(state),
   location: state.routing.locationBeforeTransitions,
+  startingDay: state.Timesheets.startingDay,
+  task: state.Task.task,
   taskTypes: getLocalizedTaskTypes(state),
   lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
+  addActivity,
   getProjectUsers
 };
 
