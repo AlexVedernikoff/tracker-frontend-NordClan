@@ -29,7 +29,7 @@ import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
 import { getDevOpsUsers } from '../../../actions/Users';
 import shortid from 'shortid';
 import { addActivity } from '../../../actions/Timesheets';
-import sortPerformer from '../../../utils/sortPerformer';
+import sortPerformer, { alphabeticallyComparator, devOpsUsersSelector } from '../../../utils/sortPerformer';
 
 const spentRequestStatus = {
   READY: 0,
@@ -43,11 +43,11 @@ const sortedUsersSelector = createSelector(usersSelector, users => sortPerformer
 
 class Details extends Component {
   static propTypes = {
-    devOpsUsers: PropTypes.any,
     ExecutionTimeIsEditing: PropTypes.bool,
     PlanningTimeIsEditing: PropTypes.bool,
     addActivity: PropTypes.func,
     canEdit: PropTypes.bool,
+    devOpsUsers: PropTypes.array,
     getProjectSprints: PropTypes.func.isRequired,
     getProjectUsers: PropTypes.func.isRequired,
     getTask: PropTypes.func.isRequired,
@@ -91,12 +91,6 @@ class Details extends Component {
 
   componentDidUpdate() {
     ReactTooltip.rebuild();
-  }
-
-  componentDidMount() {
-    if (!this.props.devOpsUsers) {
-      this.props.getDevOpsUsers();
-    }
   }
 
   // Действия со спринтами
@@ -235,19 +229,21 @@ class Details extends Component {
     }
   };
 
-  getUsers = () =>
-    this.props.task.isDevOps && this.props.devOpsUsers
-      ? _.uniqWith(this.props.users.concat(this.props.devOpsUsers), _.isEqual)
-      : this.props.users;
-
   render() {
-    const { task, sprints, taskTypes, timeSpent, isExternal, lang } = this.props;
+    const { task, sprints, taskTypes, timeSpent, isExternal, lang, users } = this.props;
     const tags = task.tags.map((tag, i) => {
       const tagName = typeof tag === 'object' ? tag.name : tag;
       return <Tag key={i} name={tagName} taggable="task" taggableId={task.id} />;
     });
 
-    const unionPerformers = _.union(users.back, users.front, users.ios, users.android, users.qa, users.other);
+    const unionPerformers = _.union(
+      users.back,
+      users.front,
+      users.ios,
+      users.android,
+      users.qa,
+      task.isDevOps ? users.other.concat(this.props.devOpsUsers) : users.other
+    );
 
     const usersFullNames = unionPerformers.map(item => ({
       value: item.user ? item.user.id : item.id,
@@ -452,6 +448,7 @@ class Details extends Component {
 }
 
 const mapStateToProps = state => ({
+  devOpsUsers: devOpsUsersSelector(state),
   users: sortedUsersSelector(state),
   sprints: state.Project.project.sprints,
   taskTypes: getLocalizedTaskTypes(state),

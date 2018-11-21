@@ -8,6 +8,7 @@ import { getFullName } from '../../utils/NameLocalisation';
 
 class PerformerFilter extends React.Component {
   static propTypes = {
+    devOpsUsers: PropTypes.array,
     lang: PropTypes.string,
     onPerformerSelect: PropTypes.func.isRequired,
     selectedPerformerId: PropTypes.oneOfType([PropTypes.array, PropTypes.number]),

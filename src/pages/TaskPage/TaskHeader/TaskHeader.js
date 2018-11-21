@@ -18,7 +18,7 @@ import localize from './TaskHeader.json';
 import { getFullName } from '../../../utils/NameLocalisation';
 import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
 import { createSelector } from 'reselect';
-import sortPerformer from '../../../utils/sortPerformer';
+import sortPerformer, { devOpsUsersSelector } from '../../../utils/sortPerformer';
 
 const usersSelector = state => state.Project.project.users;
 
@@ -181,13 +181,13 @@ class TaskHeader extends Component {
   };
 
   render() {
-    const { task, taskTypes, canEdit, lang, users } = this.props;
+    const { task, taskTypes, canEdit, lang, users, devOpsUsers } = this.props;
     const css = require('./TaskHeader.scss');
 
     let unionPerformers = [];
     switch (this.state.clickedStatus) {
       case 'Develop':
-        unionPerformers = _.union(users.back, users.front, users.ios, users.android);
+        unionPerformers = _.union(users.back, users.front, users.ios, users.android, task.isDevOps ? devOpsUsers : []);
         break;
       case 'Code Review':
         unionPerformers = _.union(users.back, users.front, users.ios, users.android);
@@ -341,6 +341,7 @@ class TaskHeader extends Component {
 TaskHeader.propTypes = {
   canEdit: PropTypes.bool,
   css: PropTypes.object,
+  devOpsUsers: PropTypes.array,
   getProjectUsers: PropTypes.func.isRequired,
   lang: PropTypes.string,
   location: PropTypes.object,
@@ -353,6 +354,7 @@ TaskHeader.propTypes = {
 
 const mapStateToProps = state => ({
   users: sortedUsersSelector(state),
+  devOpsUsers: devOpsUsersSelector(state),
   location: state.routing.locationBeforeTransitions,
   taskTypes: getLocalizedTaskTypes(state),
   lang: state.Localize.lang

@@ -13,7 +13,6 @@ const getDevOpsUsersSuccess = data => ({
 });
 
 export const getDevOpsUsers = () => {
-  console.log('run');
   const URL = `${API_URL}/users/devops`;
 
   return dispatch => {

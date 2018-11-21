@@ -7,6 +7,15 @@ const getRoles = user => {
   return 'other';
 };
 
+export const alphabeticallyComparator = (a, b) => {
+  if (a.fullNameRu < b.fullNameRu) return -1;
+  else if (a.fullNameRu > b.fullNameRu) return 1;
+  return 0;
+};
+
+export const devOpsUsersSelector = state =>
+  state.UserList.devOpsUsers ? state.UserList.devOpsUsers.sort(alphabeticallyComparator) : [];
+
 const sortPerformer = users => {
   const userArray = {
     back: [],
@@ -25,11 +34,7 @@ const sortPerformer = users => {
     }
   });
   for (const key in userArray) {
-    userArray[key].sort((a, b) => {
-      if (a.fullNameRu < b.fullNameRu) return -1;
-      else if (a.fullNameRu > b.fullNameRu) return 1;
-      return 0;
-    });
+    userArray[key].sort(alphabeticallyComparator);
   }
   return userArray;
 };
