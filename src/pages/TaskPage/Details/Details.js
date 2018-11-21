@@ -29,7 +29,7 @@ import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
 import { getDevOpsUsers } from '../../../actions/Users';
 import shortid from 'shortid';
 import { addActivity } from '../../../actions/Timesheets';
-import sortPerformer, { alphabeticallyComparator, devOpsUsersSelector } from '../../../utils/sortPerformer';
+import sortPerformer, { devOpsUsersSelector } from '../../../utils/sortPerformer';
 
 const spentRequestStatus = {
   READY: 0,

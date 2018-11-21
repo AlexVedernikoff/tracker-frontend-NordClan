@@ -5,6 +5,7 @@ import SelectDropdown from '../../components/SelectDropdown';
 import { getTagsFilter } from '../../actions/Tags';
 import localize from './PerformerFilter.json';
 import { getFullName } from '../../utils/NameLocalisation';
+import * as _ from 'lodash';
 
 class PerformerFilter extends React.Component {
   static propTypes = {

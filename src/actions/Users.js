@@ -26,7 +26,7 @@ export const getDevOpsUsers = () => {
           dispatch(finishLoading());
         }
       })
-      .catch(err => {
+      .catch(() => {
         dispatch(finishLoading());
       });
   };

@@ -26,6 +26,7 @@ import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal, getProjectUsers, getProjectInfo, getProjectTags } from '../../../actions/Project';
 import { showNotification } from '../../../actions/Notifications';
 import { getDevOpsUsers } from '../../../actions/Users';
+import * as _ from 'lodash';
 
 class AgileBoard extends Component {
   constructor(props) {
