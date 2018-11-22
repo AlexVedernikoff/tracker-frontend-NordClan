@@ -220,6 +220,7 @@
 
 .Select--multi.sprintSelector .Select-control {
   padding: 0;
+  min-height: 30px;
 }
 
 .Select.sprintReportSelector .Select-multi-value-wrapper .Select-value .Select-value-label {
