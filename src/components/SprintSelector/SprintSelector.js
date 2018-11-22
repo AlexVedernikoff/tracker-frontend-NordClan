@@ -94,7 +94,7 @@ export default class SprintSelector extends Component {
       if (value.length && value.length) {
         return value.includes(id);
       }
-      if (value.value.id) return value.value.id === id.id;
+      if (value.value) return value.value.id === id.id;
     }
     return false;
   };
