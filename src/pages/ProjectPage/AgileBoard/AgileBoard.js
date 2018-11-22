@@ -164,7 +164,7 @@ class AgileBoard extends Component {
   };
 
   getUsersWithDevOps = () => {
-    return this.state.changedTaskIsDevOps ? this.getUsers(true) : this.getUsers(false);
+    return this.getUsers(this.state.changedTaskIsDevOps);
   };
 
   lightTask = (lightedTaskId, isCardFocus) => {
