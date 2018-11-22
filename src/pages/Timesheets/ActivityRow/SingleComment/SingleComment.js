@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import cn from 'classnames';
 import onClickOutside from 'react-onclickoutside';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import TextareaAutosize from 'react-autosize-textarea';
 
 import * as css from '../../Timesheets.scss';
 import { IconComment, IconCheck } from '../../../../components/Icons';
@@ -78,9 +79,9 @@ class SingleComment extends React.Component {
           transitionLeaveTimeout={300}
         >
           {this.state.isOpen ? (
-            <div className={cn(css.commentDropdown, css.singleComment)}>
+            <div className={cn({ [css.commentDropdown]: true, [css.singleComment]: true, [css.disabled]: disabled })}>
               {!disabled ? (
-                <textarea
+                <TextareaAutosize
                   autoFocus
                   placeholder={localize[lang].ENTER_COMMENT_TEXT}
                   onChange={this.changeText}

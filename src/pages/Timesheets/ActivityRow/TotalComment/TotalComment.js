@@ -5,6 +5,8 @@ import cn from 'classnames';
 import moment from 'moment';
 import onClickOutside from 'react-onclickoutside';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import TextareaAutosize from 'react-autosize-textarea';
+
 import * as css from '../../Timesheets.scss';
 import { IconComments, IconCheckAll } from '../../../../components/Icons';
 import { updateSheetsArray } from '../../../../actions/Timesheets';
@@ -99,17 +101,16 @@ class TotalComment extends React.Component {
           transitionLeaveTimeout={300}
         >
           {this.state.isOpen ? (
-            <div className={cn(css.totalComment)}>
+            <div className={cn({ [css.totalComment]: true, [css.disabled]: isDisable })}>
               <div>
                 {filledTimeSheets.map(tsh => (
                   <div key={tsh.id} className={css.totalCommentPart}>
                     <div className={css.commentDay}>
-                      {moment(tsh.onDate).format('dd')}
-                      <br />
+                      {moment(tsh.onDate).format('dddd') + ' '}
                       {moment(tsh.onDate).format('DD.MM')}
                     </div>
                     {tsh.statusId === 1 || tsh.statusId === 2 ? (
-                      <textarea
+                      <TextareaAutosize
                         placeholder={localize[lang].ENTER_COMMENT_TEXT}
                         onChange={e => this.updateComment(e, tsh)}
                         value={this.state.updatedComments[tsh.id] || ''}
