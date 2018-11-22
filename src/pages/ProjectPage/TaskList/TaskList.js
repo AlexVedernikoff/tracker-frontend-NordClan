@@ -643,15 +643,18 @@ class TaskList extends Component {
               </Row>
               <Row className={css.search} top="xs">
                 <Col xs={12} sm={3}>
-                  <SprintSelector
-                    multi
-                    searchable={false}
-                    clearable
-                    value={sprintId}
-                    onChange={this.onChangeSprintFilter}
-                    sprints={project.sprints}
-                    useId
-                  />
+                  <div className="sprint-dropdown">
+                    <SprintSelector
+                      multi
+                      searchable
+                      clearable
+                      value={sprintId}
+                      onChange={this.onChangeSprintFilter}
+                      sprints={project.sprints}
+                      useId
+                      taskListClass
+                    />
+                  </div>
                 </Col>
                 <Col xs={12} sm={3}>
                   <SelectDropdown

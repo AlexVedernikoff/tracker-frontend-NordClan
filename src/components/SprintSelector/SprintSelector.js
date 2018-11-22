@@ -11,7 +11,8 @@ import layoutAgnosticFilter from '../../utils/layoutAgnosticFilter';
 import { IconSearch } from '../../components/Icons/index.js';
 
 const dateFormat = 'DD.MM.YYYY';
-const iconSearchStyle = { position: 'absolute', width: 22, height: 22, bottom: 4, left: 23 };
+const boardIconSearchStyle = { position: 'absolute', width: 22, height: 22, bottom: 4, left: 23 };
+const taskListIconSearchStyle = { position: 'absolute', width: 22, height: 22, bottom: 4, left: 15 };
 
 export default class SprintSelector extends Component {
   static propTypes = {
@@ -99,15 +100,33 @@ export default class SprintSelector extends Component {
   };
 
   render() {
-    const { value, lang, onChange, options, sprints, multi, searchable, clearable, ...otherProps } = this.props;
+    const {
+      value,
+      lang,
+      onChange,
+      options,
+      sprints,
+      multi,
+      searchable,
+      taskListClass,
+      clearable,
+      ...otherProps
+    } = this.props;
+
+    const thisClassName = classnames({
+      sprintSelector: true,
+      taskListClass: this.props.taskListClass && !value
+    });
+
     return (
       <div className="sprint-dropdown">
-        {this.state.inputFocused && <IconSearch style={iconSearchStyle} />}
+        {this.state.inputFocused &&
+          value && <IconSearch style={taskListClass ? taskListIconSearchStyle : boardIconSearchStyle} />}
         <SelectDropdown
           name="sprint"
           removeSelected={false}
           multi={multi}
-          thisClassName="sprintSelector"
+          thisClassName={thisClassName}
           placeholder={localize[lang].CHOOSE_SPRINT}
           noResultsText={localize[lang].NO_MATCHING_SPRINTS}
           clearAllText={localize[lang].CLEAR_ALL}
