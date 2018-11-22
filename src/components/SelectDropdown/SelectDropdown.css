@@ -214,6 +214,10 @@
   padding: 6px 0 7px;
 }
 
+.Select--multi.taskListClass .Select-multi-value-wrapper .Select-input {
+  margin-left: 15px;
+}
+
 .Select--multi.sprintSelector .Select-control {
   padding: 0;
 }
