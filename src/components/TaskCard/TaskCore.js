@@ -137,7 +137,7 @@ class TaskCore extends PureComponent {
     } = this.props;
 
     const prefix = task.prefix ? task.prefix : this.getPrefixFromProject();
-    const performer = task.performer ? task.performer : this.getUserFromProject(task.performerId);
+    const performer = getFullName(this.getUserFromProject(task.performerId));
 
     return connectDragSource(
       <div
@@ -193,7 +193,7 @@ class TaskCore extends PureComponent {
             <span className={css.performer}>
               {task.performerId ? (
                 <span>
-                  {getFullName(performer)}
+                  {performer}
                   <span className={css.preformerEditIcon}>
                     <IconEdit />
                   </span>
