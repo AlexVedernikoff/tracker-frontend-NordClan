@@ -194,7 +194,12 @@ class PerformerOptions extends Component {
               )}
 
             <div className={css.changePerformerButton}>
-              <Button text="Change Performer" type="green" htmlType="submit" onClick={this.changePerformer} />
+              <Button
+                text={localize[lang].CHANGE_PERFORMER}
+                type="green"
+                htmlType="submit"
+                onClick={this.changePerformer}
+              />
             </div>
           </form>
         </div>

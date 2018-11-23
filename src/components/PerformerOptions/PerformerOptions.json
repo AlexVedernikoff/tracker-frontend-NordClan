@@ -5,7 +5,8 @@
     "PLANNING_TIME": "Planning time:",
     "COMMENT": "Comment:",
     "COMMENT_PLACEHOLDER": "Add comment here",
-    "TIMESHEETS": "Time report:"
+    "TIMESHEETS": "Time report:",
+    "CHANGE_PERFORMER": "Change performer"
   },
   "ru": {
     "PERFORMER": "Исполнитель:",
@@ -13,6 +14,7 @@
     "PLANNING_TIME": "Планируемое время:",
     "COMMENT": "Comment:",
     "COMMENT_PLACEHOLDER": "Добавьте комментарий",
-    "TIMESHEETS": "Затраченное время:"
+    "TIMESHEETS": "Затраченное время:",
+    "CHANGE_PERFORMER": "Изменить исполнителя"
   }
 }
