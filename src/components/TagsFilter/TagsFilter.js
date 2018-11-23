@@ -19,9 +19,9 @@ class TagsFilter extends React.Component {
   options = () => {
     switch (this.props.filterFor) {
       case 'project':
-        return this.props.projectsTagsOptions.map(el => ({ value: el, label: el }));
+        return this.props.projectsTagsOptions.map(el => ({ value: el.name, label: el.name }));
       case 'task':
-        return this.props.tasksTagsOptions.map(el => ({ value: el, label: el }));
+        return this.props.tasksTagsOptions.map(el => ({ value: el.name, label: el.name }));
       default:
         return [];
     }
@@ -58,8 +58,8 @@ TagsFilter.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  projectsTagsOptions: state.Projects.tagsFilter,
-  tasksTagsOptions: state.TaskList.tagsFilter,
+  projectsTagsOptions: state.Projects.allTags,
+  tasksTagsOptions: state.TaskList.allTags,
   lang: state.Localize.lang
 });
 
