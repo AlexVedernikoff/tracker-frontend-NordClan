@@ -8,6 +8,7 @@ const InitialState = {
   currentPage: 1,
   pagesCount: 1,
   tags: '',
+  allTags: [],
   isCreateProjectModalOpen: false,
   tagsFilter: [],
   error: null
@@ -24,6 +25,7 @@ function Projects(state = InitialState, action) {
       return {
         ...state,
         projects: action.data.data,
+        allTags: action.data.allTags,
         pagesCount: action.data.pagesCount,
         isProjectsReceived: true
       };
