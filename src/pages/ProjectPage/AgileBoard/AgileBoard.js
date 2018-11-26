@@ -134,7 +134,9 @@ class AgileBoard extends Component {
       'User'
     );
     this.props.startTaskEditing('User');
-    this.closeModal();
+    this.setState({
+      isModalOpen: false
+    });
   };
 
   closeModal = performerId => {
