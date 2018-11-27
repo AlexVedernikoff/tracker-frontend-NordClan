@@ -124,26 +124,26 @@ export default class SprintSelector extends Component {
           value && <IconSearch style={taskListClass ? taskListIconSearchStyle : boardIconSearchStyle} />}
         <SelectDropdown
           name="sprint"
-          removeSelected={false}
-          multi={multi}
           thisClassName={thisClassName}
           placeholder={localize[lang].CHOOSE_SPRINT}
           noResultsText={localize[lang].NO_MATCHING_SPRINTS}
           clearAllText={localize[lang].CLEAR_ALL}
-          value={value}
-          options={sprints ? this.getSprints(sprints) : this.getOptions(options)}
+          filterOption={layoutAgnosticFilter}
+          removeSelected={false}
           backspaceToRemoveMessage=""
-          searchable={searchable}
-          clearable={clearable}
           onFocus={this.onSelectFocus}
           onBlur={this.onSelectBlur}
+          multi={multi}
+          value={value}
+          searchable={searchable}
+          clearable={clearable}
+          options={sprints ? this.getSprints(sprints) : this.getOptions(options)}
           onChange={option => onChange(option)}
           {...otherProps}
           inputProps={{
             className: this.state.inputFocused ? css.sprintInputFocused : css.sprintInputBlured,
             ...otherProps.inputProps
           }}
-          filterOption={layoutAgnosticFilter}
         />
       </div>
     );
