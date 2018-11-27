@@ -210,16 +210,50 @@ class TaskHeader extends Component {
     let unionPerformers = [];
     switch (this.state.clickedStatus) {
       case 'Develop':
-        unionPerformers = _.union(users.back, users.front, users.ios, users.android);
+        unionPerformers = _.union(
+          users.pm,
+          users.account,
+          users.teamlead,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android
+        );
         break;
       case 'Code Review':
-        unionPerformers = _.union(users.back, users.front, users.ios, users.android);
+        unionPerformers = _.union(
+          users.teamlead,
+          users.account,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android
+        );
         break;
       case 'QA':
         unionPerformers = users.qa;
         break;
       default:
-        unionPerformers = _.union(users.back, users.front, users.ios, users.android);
+        unionPerformers = _.union(
+          users.pm,
+          users.account,
+          users.teamlead,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android,
+          users.qa,
+          users.devops
+        );
     }
 
     const usersFullNames = unionPerformers.map(item => ({
