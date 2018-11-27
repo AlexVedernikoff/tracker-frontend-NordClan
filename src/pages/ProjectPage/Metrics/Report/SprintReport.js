@@ -299,7 +299,7 @@ class SprintReport extends Component {
               onKeyUp={e => this.inputValidFrom(e.target.value.substr(0, 10).trim())}
               placeholder={localize[lang].DATE}
               style={{ borderColor: this.state.borderColorFrom }}
-              disabledDataRanges={[{ after: new Date(this.state.selectedTo) }]}
+              disabledDataRanges={[{ after: new Date() }]}
             />
           </Col>
           <Col>{localize[lang].TO} </Col>
@@ -310,7 +310,12 @@ class SprintReport extends Component {
               value={this.state.selectedTo}
               onDayChange={this.handleDayToChange}
               placeholder={localize[lang].DATE}
-              disabledDataRanges={[{ before: new Date(this.state.selectedFrom) }]}
+              disabledDataRanges={[
+                {
+                  before: this.state.selectedFrom && moment(this.state.selectedFrom, dateFormat).toDate(),
+                  after: new Date()
+                }
+              ]}
               onKeyDown={e => this.keyDownValidTo(e.target.value, e)}
               style={{ borderColor: this.state.borderColorTo }}
               onKeyUp={e => this.inputValidTo(e.target.value.substr(0, 10).trim())}
