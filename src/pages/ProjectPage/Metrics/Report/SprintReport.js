@@ -54,12 +54,22 @@ class SprintReport extends Component {
         selectedTo: this.formatDate(option.value.factFinishDate)
       });
     } else if (!isEmpty(option)) {
-      this.setState({
-        selectedName: option.label,
-        reportPeriod: option,
-        selectedFrom: this.formatDate(option.value.factStartDate),
-        selectedTo: this.formatDate(option.value.factFinishDate)
-      });
+      //check backlog
+      if (option.value === 0) {
+        this.setState({
+          selectedName: option.label,
+          reportPeriod: option,
+          selectedFrom: this.formatDate(this.props.startDate),
+          selectedTo: this.formatDate(this.props.endDate)
+        });
+      } else {
+        this.setState({
+          selectedName: option.label,
+          reportPeriod: option,
+          selectedFrom: this.formatDate(option.value.factStartDate),
+          selectedTo: this.formatDate(option.value.factFinishDate)
+        });
+      }
     } else {
       this.setState({
         selectedName: '',
@@ -111,7 +121,15 @@ class SprintReport extends Component {
           [css.sprintMarker]: true,
           [css.FINISHED]: value.statusId === 1
         })
-      }))
+      })),
+      {
+        value: 0,
+        label: 'Backlog',
+        className: classnames({
+          [css.INPROGRESS]: false,
+          [css.sprintMarker]: true
+        })
+      }
     ];
   };
 
@@ -175,22 +193,26 @@ class SprintReport extends Component {
   };
 
   getQueryParams = () => {
-    const reportPeriod = this.state;
-    const labelName = this.state.selectedName;
-    const selectedFrom = moment(this.state.selectedFrom, dateFormat, true).format(dateFormat2);
-    const selectedTo = moment(this.state.selectedTo, dateFormat, true).format(dateFormat2);
-
-    const checkSprint = reportPeriod && reportPeriod.value && reportPeriod.value.sprintId;
-    const checkDate = selectedFrom && selectedTo;
-    const selectedDate = `?startDate=${selectedFrom}&endDate=${selectedTo}`;
+    const { reportPeriod, selectedFrom, selectedName, selectedTo } = this.state;
+    const { startDate, endDate } = this.props;
+    const from = moment(selectedFrom, dateFormat, true).format(dateFormat2);
+    const to = moment(selectedTo, dateFormat, true).format(dateFormat2);
+    const checkSprint = reportPeriod && reportPeriod.value && typeof reportPeriod.value.id === 'number';
+    const backlogCondition = reportPeriod && reportPeriod.value === 0;
+    const checkDate = from && to;
+    const selectedDate = `?startDate=${from}&endDate=${to}`;
     if (checkDate && checkSprint) {
       // запрос отчета по спринту
-      const { sprintId, sprintStartDate, sprintFinishDate } = reportPeriod.value;
-      const sprintDate = `&sprintStartDate=${sprintStartDate}&sprintFinishDate=${sprintFinishDate}`;
-      return `${selectedDate}&sprintId=${sprintId}&label=${labelName}${sprintDate}`;
+      const { id, factStartDate, factFinishDate } = reportPeriod.value;
+      const sprintDate = `&sprintStartDate=${factStartDate}&sprintFinishDate=${factFinishDate}`;
+      return `${selectedDate}&sprintId=${id}&label=${selectedName}${sprintDate}`;
+    } else if (checkDate && backlogCondition) {
+      // запрос для бэклога
+      const sprintDate = `&sprintStartDate=${startDate}&sprintFinishDate=${endDate}`;
+      return `${selectedDate}&sprintId=${0}&label=${selectedName}${sprintDate}`;
     } else if (checkDate && reportPeriod) {
       // запрос отчета определенного типа
-      return `${selectedDate}&label=${labelName}`;
+      return `${selectedDate}&label=${selectedName}`;
     } else {
       // запрос отчета по дате, без выбора типа
       return selectedDate;
@@ -217,20 +239,6 @@ class SprintReport extends Component {
   };
   inputValidFrom = val => {
     let currentVal = val;
-    /*if (val.length === 2) {
-      if (val > 31) {
-        val = '';
-      } else {
-        val += '.';
-      }
-    }
-    if (val.length === 5) {
-      if (val.substr(3, 4) > 12) {
-        val = val.substring(0, val.length - 2);
-      } else {
-        val += '.';
-      }
-    }*/
     if (currentVal.match(/^\d{2}$/) !== null) {
       currentVal = currentVal + '.';
     } else if (currentVal.match(/^\d{2}\.\d{2}$/) !== null) {
@@ -241,13 +249,7 @@ class SprintReport extends Component {
     } else {
       this.state.borderColorFrom = '#ebebeb';
     }
-    /*
-    console.log('isValid', val, moment(val, 'DD.MM.YYYY').isValid());
-    if (moment(val, 'DD.MM.YYYY').isValid() === false) {
-      this.state.borderColorFrom = 'red';
-    } else {
-      this.state.borderColorFrom = '#ebebeb';
-    }*/
+
     this.setState({ selectedFrom: val });
   };
   inputValidTo = val => {
