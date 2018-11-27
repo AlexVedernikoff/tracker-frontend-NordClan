@@ -408,7 +408,7 @@ const changeProject = (changedProperties, target) => {
         if (error.response.data.name === 'ValidationError') {
           dispatch(projectChangeFailValidation(error.response.data));
         } else {
-          dispatch(showNotification({ message: error.message, type: 'error' }));
+          dispatch(showNotification({ message: error.response.data.message || error.message, type: 'error' }));
         }
         dispatch(finishLoading());
       });
