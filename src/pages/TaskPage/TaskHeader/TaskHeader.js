@@ -99,7 +99,7 @@ class TaskHeader extends Component {
       taskStatusId: this.props.task.statusId,
       typeId: this.props.task.typeId,
       spentTime: '0',
-      sprintId: this.props.task.sprint.id,
+      sprintId: this.props.task.sprint && this.props.task.sprint.id,
       sprint: this.props.task.sprint,
       onDate: moment(this.props.startingDay).format('YYYY-MM-DD'),
       project: {

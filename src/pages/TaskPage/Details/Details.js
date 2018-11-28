@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 import { Link } from 'react-router';
 import ReactTooltip from 'react-tooltip';
-import { createSelector } from 'reselect';
 import Tag from '../../../components/Tag';
 import Tags from '../../../components/Tags';
 import TaskPlanningTime from '../TaskPlanningTime';
@@ -28,17 +27,13 @@ import { TASK_STATUS_CLOSED } from '../../../constants/Task';
 import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
 import shortid from 'shortid';
 import { addActivity } from '../../../actions/Timesheets';
-import sortPerformer from '../../../utils/sortPerformer';
+import { sortedUsersSelector } from '../../../selectors/Project';
 
 const spentRequestStatus = {
   READY: 0,
   REQUESTED: 1,
   RECEIVED: 2
 };
-
-const usersSelector = state => state.Project.project.users;
-
-const sortedUsersSelector = createSelector(usersSelector, users => sortPerformer(users));
 
 class Details extends Component {
   static propTypes = {
@@ -126,7 +121,7 @@ class Details extends Component {
       taskStatusId: this.props.task.statusId,
       typeId: this.props.task.typeId,
       spentTime: '0',
-      sprintId: this.props.task.sprint.id,
+      sprintId: this.props.task.sprint && this.props.task.sprint.id,
       sprint: this.props.task.sprint,
       onDate: moment(this.props.startingDay).format('YYYY-MM-DD'),
       project: {
@@ -234,7 +229,21 @@ class Details extends Component {
       return <Tag key={i} name={tagName} taggable="task" taggableId={task.id} />;
     });
 
-    const unionPerformers = _.union(users.back, users.front, users.ios, users.android, users.qa, users.other);
+    const unionPerformers = _.union(
+      users.devops,
+      users.pm,
+      users.teamLead,
+      users.account,
+      users.analyst,
+      users.back,
+      users.front,
+      users.ux,
+      users.mobile,
+      users.ios,
+      users.android,
+      users.qa,
+      users.other
+    );
 
     const usersFullNames = unionPerformers.map(item => ({
       value: item.user ? item.user.id : item.id,
