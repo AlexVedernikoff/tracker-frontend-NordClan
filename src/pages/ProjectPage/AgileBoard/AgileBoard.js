@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactTooltip from 'react-tooltip';
+import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Row } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
@@ -25,6 +26,8 @@ import getTasks from '../../../actions/Tasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal, getProjectUsers, getProjectInfo, getProjectTags } from '../../../actions/Project';
 import { showNotification } from '../../../actions/Notifications';
+
+import { sortedUsersSelector } from '../../../selectors/Project';
 
 class AgileBoard extends Component {
   constructor(props) {
@@ -149,7 +152,22 @@ class AgileBoard extends Component {
   };
 
   getUsers = () => {
-    return this.props.project.users.map(user => ({
+    const { sortedUsers } = this.props;
+    return _.union(
+      sortedUsers.devops,
+      sortedUsers.pm,
+      sortedUsers.teamLead,
+      sortedUsers.account,
+      sortedUsers.analyst,
+      sortedUsers.back,
+      sortedUsers.front,
+      sortedUsers.ux,
+      sortedUsers.mobile,
+      sortedUsers.ios,
+      sortedUsers.android,
+      sortedUsers.qa,
+      sortedUsers.other
+    ).map(user => ({
       value: user.id,
       label: getFullName(user)
     }));
@@ -270,6 +288,7 @@ AgileBoard.propTypes = {
   params: PropTypes.object,
   project: PropTypes.object,
   sortedSprints: PropTypes.array,
+  sortedUsers: PropTypes.object,
   sprintTasks: PropTypes.array,
   sprints: PropTypes.array,
   startTaskEditing: PropTypes.func,
@@ -282,7 +301,10 @@ AgileBoard.propTypes = {
   user: PropTypes.object
 };
 
-const mapStateToProps = state => agileBoardSelector(state);
+const mapStateToProps = state => ({
+  ...agileBoardSelector(state),
+  sortedUsers: sortedUsersSelector(state)
+});
 
 const mapDispatchToProps = {
   getTasks,
