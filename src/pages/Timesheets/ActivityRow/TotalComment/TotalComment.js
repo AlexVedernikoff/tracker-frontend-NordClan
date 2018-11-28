@@ -70,7 +70,7 @@ class TotalComment extends React.Component {
     for (const sheetId in this.state.updatedComments) {
       body.push({
         sheetId,
-        comment: this.state.updatedComments[sheetId]
+        comment: this.state.updatedComments[sheetId].trim()
       });
     }
     this.props.updateSheetsArray(body, userId, startingDay);
