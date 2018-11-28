@@ -8,11 +8,7 @@ import ReactTooltip from 'react-tooltip';
 import * as css from './OptionsModal.scss';
 import Modal from '../Modal';
 import { IconClose, IconSearch } from '../Icons';
-
-const notSelectedOption = {
-  value: 0,
-  label: 'Не выбрано'
-};
+import localize from './OptionsModal.json';
 
 class OptionsModal extends Component {
   constructor(props) {
@@ -60,9 +56,16 @@ class OptionsModal extends Component {
     });
   };
 
+  notSelectedOption = () => {
+    return {
+      value: 0,
+      label: localize[this.props.lang].NOT_SELECTED
+    };
+  };
+
   getOptionsList(options, canBeNotSelected) {
     const optionsList = [...options];
-    return canBeNotSelected ? optionsList.concat(notSelectedOption) : optionsList;
+    return canBeNotSelected ? optionsList.concat(this.notSelectedOption()) : optionsList;
   }
 
   getSelectedIndex(options) {
@@ -89,7 +92,7 @@ class OptionsModal extends Component {
   };
 
   removeCurrentOption = () => {
-    this.handleChoose(notSelectedOption.value);
+    this.handleChoose(this.notSelectedOption().value);
   };
 
   getCurrentOption = () => {
@@ -156,7 +159,7 @@ class OptionsModal extends Component {
               {currentOption.label}
             </span>
           ) : (
-            <span className={classnames([css.currentOption, css.noOption])}>{notSelectedOption.label}</span>
+            <span className={classnames([css.currentOption, css.noOption])}>{this.notSelectedOption().label}</span>
           )}
 
           <div className={css.inputWrapper}>
@@ -208,6 +211,7 @@ OptionsModal.propTypes = {
   canBeNotSelected: PropTypes.bool,
   defaultOption: PropTypes.number,
   inputPlaceholder: PropTypes.string,
+  lang: PropTypes.string,
   noCurrentOption: PropTypes.bool,
   onChoose: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,

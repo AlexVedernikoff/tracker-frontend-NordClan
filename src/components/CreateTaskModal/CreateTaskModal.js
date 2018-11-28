@@ -270,7 +270,7 @@ class CreateTaskModal extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Тэги:</p>
+                <p>{localize[lang].TAGS}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
                 <Tags taggable="task" noRequest create canEdit createTagsModalTask={this.addTag}>
@@ -379,7 +379,7 @@ class CreateTaskModal extends Component {
                 <InputNumber
                   min={0}
                   maxLength={5}
-                  postfix={'ч.'}
+                  postfix={localize[lang].HOURS}
                   onChange={this.handleChangePlannedTime}
                   value={this.state.plannedExecutionTime}
                 />

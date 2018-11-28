@@ -8,8 +8,11 @@ import * as css from './SprintSelector.scss';
 import SelectDropdown from '../SelectDropdown';
 import localize from './SprintSelector.json';
 import layoutAgnosticFilter from '../../utils/layoutAgnosticFilter';
+import { IconSearch } from '../../components/Icons/index.js';
 
 const dateFormat = 'DD.MM.YYYY';
+const boardIconSearchStyle = { position: 'absolute', width: 22, height: 22, bottom: 4, left: 23 };
+const taskListIconSearchStyle = { position: 'absolute', width: 22, height: 22, bottom: 4, left: 15 };
 
 export default class SprintSelector extends Component {
   static propTypes = {
@@ -22,7 +25,9 @@ export default class SprintSelector extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      inputFocused: false
+    };
   }
 
   onSelectFocus = () => {
@@ -89,37 +94,56 @@ export default class SprintSelector extends Component {
       if (value.length && value.length) {
         return value.includes(id);
       }
-      if (value.value.id) return value.value.id === id.id;
+      if (value.value) return value.value.id === id.id;
     }
     return false;
   };
 
   render() {
-    const { value, lang, onChange, options, sprints, multi, searchable, clearable, ...otherProps } = this.props;
+    const {
+      value,
+      lang,
+      onChange,
+      options,
+      sprints,
+      multi,
+      searchable,
+      taskListClass,
+      clearable,
+      ...otherProps
+    } = this.props;
+
+    const thisClassName = classnames({
+      sprintSelector: true,
+      taskListClass: this.props.taskListClass && !value
+    });
+
     return (
       <div className="sprint-dropdown">
+        {this.state.inputFocused &&
+          value && <IconSearch style={taskListClass ? taskListIconSearchStyle : boardIconSearchStyle} />}
         <SelectDropdown
           name="sprint"
-          removeSelected={false}
-          multi={multi}
-          thisClassName="sprintSelector"
+          thisClassName={thisClassName}
           placeholder={localize[lang].CHOOSE_SPRINT}
           noResultsText={localize[lang].NO_MATCHING_SPRINTS}
           clearAllText={localize[lang].CLEAR_ALL}
-          value={value}
-          options={sprints ? this.getSprints(sprints) : this.getOptions(options)}
+          filterOption={layoutAgnosticFilter}
+          removeSelected={false}
           backspaceToRemoveMessage=""
-          searchable={searchable}
-          clearable={clearable}
           onFocus={this.onSelectFocus}
           onBlur={this.onSelectBlur}
+          multi={multi}
+          value={value}
+          searchable={searchable}
+          clearable={clearable}
+          options={sprints ? this.getSprints(sprints) : this.getOptions(options)}
           onChange={option => onChange(option)}
           {...otherProps}
           inputProps={{
-            className: this.state.inputFocused ? null : css.sprintInputBlured,
+            className: this.state.inputFocused ? css.sprintInputFocused : css.sprintInputBlured,
             ...otherProps.inputProps
           }}
-          filterOption={layoutAgnosticFilter}
         />
       </div>
     );

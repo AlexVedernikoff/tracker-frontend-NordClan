@@ -150,7 +150,7 @@ class PerformerOptions extends Component {
                     className={css.selectPerformer}
                     value={this.state.selectedPerformer}
                     onChange={this.handlePerformerChange}
-                    noResultsText="No results"
+                    noResultsText={localize[lang].NO_RESULTS}
                     options={options}
                   />
                 </Col>
@@ -194,7 +194,12 @@ class PerformerOptions extends Component {
               )}
 
             <div className={css.changePerformerButton}>
-              <Button text="Change Performer" type="green" htmlType="submit" onClick={this.changePerformer} />
+              <Button
+                text={localize[lang].CHANGE_PERFORMER}
+                type="green"
+                htmlType="submit"
+                onClick={this.changePerformer}
+              />
             </div>
           </form>
         </div>

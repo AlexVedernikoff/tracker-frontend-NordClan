@@ -22,8 +22,7 @@ import {
 import getStatusOptions from '../../../utils/getDraftStatusOptions';
 import * as activityTypes from '../../../constants/ActivityTypes';
 import localize from './addActivityModal.json';
-import { getDictionaryName } from '../../../utils/NameLocalisation';
-import { getLocalizedTaskStatuses, getLocalizedMagicActiveTypes } from '../../../selectors/dictionaries';
+import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../selectors/dictionaries';
 
 class AddActivityModal extends Component {
   static propTypes = {
@@ -241,7 +240,7 @@ class AddActivityModal extends Component {
                   options={
                     this.props.activityTypes.length
                       ? this.props.activityTypes.map(element => {
-                          return { label: getDictionaryName(element), value: element.id };
+                          return { label: localize[lang][element.codename], value: element.id };
                         })
                       : null
                   }
@@ -379,7 +378,7 @@ class AddActivityModal extends Component {
 }
 
 const mapStateToProps = state => ({
-  activityTypes: getLocalizedMagicActiveTypes(state),
+  activityTypes: getMagicActiveTypes(state),
   selectedActivityType: state.Timesheets.selectedActivityType,
   selectedTask: state.Timesheets.selectedTask,
   selectedTaskStatusId: state.Timesheets.selectedTaskStatusId,

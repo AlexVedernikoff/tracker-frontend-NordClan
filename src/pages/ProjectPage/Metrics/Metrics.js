@@ -27,7 +27,7 @@ const filterMetrics = (id, metrics) => {
   return metrics ? metrics.filter(metric => metric.typeId === id) : [];
 };
 
-const getBasicLineSettings = () => {
+export const getBasicLineSettings = () => {
   const lineColor = getColor();
 
   return {
@@ -36,7 +36,8 @@ const getBasicLineSettings = () => {
     pointRadius: 2,
     borderColor: lineColor,
     backgroundColor: lineColor,
-    fill: false
+    fill: false,
+    steppedLine: true
   };
 };
 

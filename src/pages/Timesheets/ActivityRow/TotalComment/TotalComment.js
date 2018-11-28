@@ -5,6 +5,8 @@ import cn from 'classnames';
 import moment from 'moment';
 import onClickOutside from 'react-onclickoutside';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import TextareaAutosize from 'react-autosize-textarea';
+
 import * as css from '../../Timesheets.scss';
 import { IconComments, IconCheckAll } from '../../../../components/Icons';
 import { updateSheetsArray } from '../../../../actions/Timesheets';
@@ -28,6 +30,7 @@ class TotalComment extends React.Component {
         if (tsh.id) updatedComments[tsh.id] = tsh.comment;
       });
     }
+    moment.locale(props.lang);
     this.state = {
       isOpen: false,
       updatedComments
@@ -44,6 +47,9 @@ class TotalComment extends React.Component {
         updatedComments
       });
     }
+  }
+  componentDidUpdate() {
+    moment.locale(this.props.lang);
   }
 
   handleClickOutside = () => {
@@ -85,6 +91,7 @@ class TotalComment extends React.Component {
     const filledTimeSheets = items.filter(el => {
       return el.id;
     });
+
     return (
       <div>
         <IconComments onClick={this.toggle} />
@@ -94,17 +101,16 @@ class TotalComment extends React.Component {
           transitionLeaveTimeout={300}
         >
           {this.state.isOpen ? (
-            <div className={cn(css.totalComment)}>
+            <div className={cn({ [css.totalComment]: true, [css.disabled]: isDisable })}>
               <div>
                 {filledTimeSheets.map(tsh => (
                   <div key={tsh.id} className={css.totalCommentPart}>
                     <div className={css.commentDay}>
-                      {moment(tsh.onDate).format('dd')}
-                      <br />
+                      {moment(tsh.onDate).format('dddd') + ' '}
                       {moment(tsh.onDate).format('DD.MM')}
                     </div>
                     {tsh.statusId === 1 || tsh.statusId === 2 ? (
-                      <textarea
+                      <TextareaAutosize
                         placeholder={localize[lang].ENTER_COMMENT_TEXT}
                         onChange={e => this.updateComment(e, tsh)}
                         value={this.state.updatedComments[tsh.id] || ''}

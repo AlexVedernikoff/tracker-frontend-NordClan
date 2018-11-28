@@ -31,7 +31,10 @@ export const prepairCommentForEdit = (text, suggestions, replace = replaceLabelW
 
 export const splitUserCommentByMentionLabels = (text, suggests, replace = replaceLabelWithAt) => {
   const dinamicRegexp = new RegExp(`(${suggests.map(replace).join('|')})`);
-  return text.split(dinamicRegexp).filter(x => x);
+  return text
+    .trim()
+    .split(dinamicRegexp)
+    .filter(x => x);
 };
 
 export const replaceUserMentionsWithMentionsId = (array, suggests) => {

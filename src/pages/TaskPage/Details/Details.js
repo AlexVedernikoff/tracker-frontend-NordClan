@@ -441,6 +441,7 @@ class Details extends Component {
 const mapStateToProps = state => ({
   users: sortedUsersSelector(state),
   sprints: state.Project.project.sprints,
+  task: state.Task.task,
   taskTypes: getLocalizedTaskTypes(state),
   plannedExecutionTime: state.Task.task.plannedExecutionTime,
   PlanningTimeIsEditing: state.Task.PlanningTimeIsEditing,

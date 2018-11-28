@@ -1,7 +1,7 @@
 {
   "en": {
     "CREATE_TASK": "Create task",
-    "NAME": "Task name",
+    "NAME": "Task name:",
     "NAME_PLACEHOLDER": "Enter the task name",
     "NAME_ERROR": "Length less than 4 characters",
     "DESCRIPTION": "Description:",
@@ -16,11 +16,13 @@
     "PERFORMER_PLACEHOLDER": "Select name of performer",
     "SPRINT": "Sprint:",
     "CREATE_SPRINT": "Create sprint",
-    "NAME_SPRINT": "Введите название спринта",
+    "NAME_SPRINT": "Enter sprint name",
     "SELECT_SPRINT": "Select sprint",
     "TIMING": "Timing:",
+    "CREATE_AND_OPEN": "Create and open",
     "DEV_OPS": "DevOps",
-    "CREATE_AND_OPEN": "Create and open"
+    "TAGS": "Tags:",
+    "HOURS": "h."
   },
   "ru": {
     "CREATE_TASK": "Создать задачу",
@@ -42,7 +44,9 @@
     "NAME_SPRINT": "Введите название спринта",
     "SELECT_SPRINT": "Выберите спринт",
     "TIMING": "Оценка по времени:",
+    "CREATE_AND_OPEN": "Создать и открыть",
     "DEV_OPS": "DevOps",
-    "CREATE_AND_OPEN": "Создать и открыть"
+    "TAGS": "Теги:",
+    "HOURS": "ч."
   }
 }

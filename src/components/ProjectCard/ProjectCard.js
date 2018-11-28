@@ -104,7 +104,7 @@ const ProjectCard = props => {
           <div className={css.metaBox}>
             {createdAt ? (
               <div className={css.meta}>
-                <span>{localize[lang].LIMITATION}</span>
+                <span>{localize[lang].TIMEFRAME}</span>
                 <span>
                   {getProjectStartDate(dateStartFirstSprint, createdAt)}
                   {dateFinishLastSprint || completedAt ? ' - ' : ''}

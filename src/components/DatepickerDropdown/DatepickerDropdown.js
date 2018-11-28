@@ -20,7 +20,6 @@ class DatepickerDropdown extends Component {
       <DayPickerInput
         {...other}
         component={InputWithDateMask}
-        clickUnselectsDay
         className={css.dropdown}
         format="DD.MM.YYYY"
         dayPickerProps={{
