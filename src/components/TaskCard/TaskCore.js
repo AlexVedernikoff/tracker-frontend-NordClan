@@ -90,7 +90,12 @@ class TaskCore extends PureComponent {
   handlePerformerClick = event => {
     event.stopPropagation();
     const { task, onOpenPerformerModal } = this.props;
-    onOpenPerformerModal(task.id, task.performer ? task.performer.id : null);
+    onOpenPerformerModal(
+      task.id,
+      task.performer ? task.performer.id : null,
+      task.project ? task.project.id : null,
+      task.statusId
+    );
   };
 
   togglePriorityBox = () => {

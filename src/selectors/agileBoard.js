@@ -6,6 +6,7 @@ import localize from '../pages/ProjectPage/AgileBoard/AgileBoard.json';
 import { getLocalizedTaskTypes, getLocalizedTaskStatuses } from './dictionaries';
 import { getFullName } from '../utils/NameLocalisation';
 import getSortedSprints from './sprints';
+import sortPerformer from '../utils/sortPerformer';
 
 const selectTasks = state => state.Tasks.tasks;
 
@@ -115,6 +116,9 @@ const authorOptions = projectUsers => createOptions(projectUsers);
 const getTypeOptions = createSelector([selectTaskType], taskTypes => typeOptions(taskTypes));
 const getAuthorOptions = createSelector([selectProjectUsers], projectUsers => authorOptions(projectUsers));
 
+const usersSelector = state => state.Project.project.users;
+const sortedUsersSelector = createSelector(usersSelector, users => sortPerformer(users));
+
 const agileBoardSelector = state => {
   return {
     tasks: getSortedTasks(state),
@@ -138,7 +142,8 @@ const agileBoardSelector = state => {
     globalRole: state.Auth.user.globalRole,
     statuses: getLocalizedTaskStatuses(state),
     taskTypes: getLocalizedTaskTypes(state),
-    lang: state.Localize.lang
+    lang: state.Localize.lang,
+    users: sortedUsersSelector(state)
   };
 };
 

@@ -214,9 +214,90 @@ class AgileBoard extends Component {
   get isOnlyMine() {
     return this.props.myTaskBoard || this.state.isOnlyMine;
   }
+  unionPerformers = [];
+
+  sortPerformersList = users => {
+    switch (this.state.statusId) {
+      case 2:
+        this.unionPerformers = _.union(
+          users.pm,
+          users.account,
+          users.teamLead,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android
+        );
+        break;
+      case 3:
+        this.unionPerformers = _.union(
+          users.pm,
+          users.account,
+          users.teamLead,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android
+        );
+        break;
+      case 4:
+        this.unionPerformers = _.union(
+          users.teamLead,
+          users.account,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android
+        );
+        break;
+      case 5:
+        this.unionPerformers = _.union(
+          users.teamLead,
+          users.account,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android
+        );
+        break;
+      case 6:
+        this.unionPerformers = users.qa;
+        break;
+      case 7:
+        this.unionPerformers = users.qa;
+        break;
+      default:
+        this.unionPerformers = _.union(
+          users.pm,
+          users.account,
+          users.teamlead,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android,
+          users.qa,
+          users.devops
+        );
+    }
+  };
 
   render() {
-    const { lang, tags, noTagData } = this.props;
+    const { lang, tags, noTagData, users } = this.props;
     const tasksList = this.isOnlyMine ? this.getMineSortedTasks() : this.getAllSortedTasks();
     const tasksKey = this.isOnlyMine ? 'mine' : 'all';
     const filtersComponent = this.props.myTaskBoard ? null : (
@@ -227,6 +308,12 @@ class AgileBoard extends Component {
         tags={[noTagData].concat(tags)}
       />
     );
+    this.sortPerformersList(users);
+
+    const usersFullNames = this.unionPerformers.map(item => ({
+      value: item.user ? item.user.id : item.id,
+      label: item.user ? getFullName(item.user) : getFullName(item)
+    }));
 
     return (
       <section className={css.agileBoard}>
@@ -247,7 +334,7 @@ class AgileBoard extends Component {
             onChoose={this.changePerformer}
             onClose={this.closeModal}
             title={localize[lang].CHANGE_PERFORMER}
-            users={this.getUsers()}
+            users={usersFullNames}
           />
         ) : null}
         {this.props.isCreateTaskModalOpen ? (
