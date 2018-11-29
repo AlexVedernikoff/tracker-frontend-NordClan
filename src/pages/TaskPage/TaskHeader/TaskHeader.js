@@ -69,6 +69,14 @@ class TaskHeader extends Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.task.project && nextProps.task.project) {
+      this.setState({
+        isTaskLoaded: true
+      });
+    }
+  }
+
   createChangeStatusHandler = (statusStop, statusPlay, statusName) => () => {
     const currentStatus = this.props.task.statusId;
     const statusTransition = {
@@ -203,14 +211,6 @@ class TaskHeader extends Component {
       this.changeStatus(status);
     }
   };
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.task.project && nextProps.task.project) {
-      this.setState({
-        isTaskLoaded: true
-      });
-    }
-  }
 
   render() {
     const { task, taskTypes, canEdit, lang, users } = this.props;
