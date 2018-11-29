@@ -229,21 +229,97 @@ class Details extends Component {
       return <Tag key={i} name={tagName} taggable="task" taggableId={task.id} />;
     });
 
-    const unionPerformers = _.union(
-      users.devops,
-      users.pm,
-      users.teamLead,
-      users.account,
-      users.analyst,
-      users.back,
-      users.front,
-      users.ux,
-      users.mobile,
-      users.ios,
-      users.android,
-      users.qa,
-      users.other
-    );
+    let unionPerformers = [];
+
+    switch (this.props.task.statusId) {
+      case 2:
+        unionPerformers = _.union(
+          users.devops,
+          users.pm,
+          users.teamLead,
+          users.account,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android,
+          users.qa,
+          users.other
+        );
+        break;
+
+      case 3:
+        unionPerformers = _.union(
+          users.devops,
+          users.pm,
+          users.teamLead,
+          users.account,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android,
+          users.qa,
+          users.other
+        );
+        break;
+
+      case 4:
+        unionPerformers = _.union(
+          users.teamLead,
+          users.account,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android
+        );
+        break;
+
+      case 5:
+        unionPerformers = _.union(
+          users.teamLead,
+          users.account,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android
+        );
+        break;
+
+      case 6:
+        unionPerformers = users.qa;
+        break;
+
+      case 7:
+        unionPerformers = users.qa;
+        break;
+
+      default:
+        unionPerformers = _.union(
+          users.pm,
+          users.account,
+          users.teamlead,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android,
+          users.qa,
+          users.devops
+        );
+    }
 
     const usersFullNames = unionPerformers.map(item => ({
       value: item.user ? item.user.id : item.id,
