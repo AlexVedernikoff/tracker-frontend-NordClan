@@ -64,8 +64,17 @@ class TaskHeader extends Component {
       isPerformerModalOpen: false,
       modalTitle: '',
       performer: null,
-      clickedStatus: ''
+      clickedStatus: '',
+      isTaskLoaded: false
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.task.project && nextProps.task.project) {
+      this.setState({
+        isTaskLoaded: true
+      });
+    }
   }
 
   createChangeStatusHandler = (statusStop, statusPlay, statusName) => () => {
@@ -206,7 +215,6 @@ class TaskHeader extends Component {
   render() {
     const { task, taskTypes, canEdit, lang, users } = this.props;
     const css = require('./TaskHeader.scss');
-
     let unionPerformers = [];
     switch (this.state.clickedStatus) {
       case 'Develop':
@@ -309,7 +317,7 @@ class TaskHeader extends Component {
             data-place="bottom"
             addedClassNames={{ [css.buttonCancel]: true }}
             onClick={task.statusId !== TaskStatuses.CANCELED ? this.handleOpenCancelModal : null}
-            disabled={!canEdit}
+            disabled={!canEdit || !this.state.isTaskLoaded}
           />
           <ButtonGroup type="lifecircle" stage="full">
             <Button
@@ -318,6 +326,7 @@ class TaskHeader extends Component {
               data-tip={task.statusId === TaskStatuses.NEW ? null : localize[lang].MOVE_TO_NEW}
               data-place="bottom"
               onClick={this.handleChangeSingleStateStatus(TaskStatuses.NEW, 'New')}
+              disabled={!this.state.isTaskLoaded}
             />
             <Button
               text="Develop"
@@ -326,7 +335,7 @@ class TaskHeader extends Component {
               icon={this.getButtonIcon(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY)}
               onClick={this.createChangeStatusHandler(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY, 'Develop')}
               data-place="bottom"
-              disabled={!canEdit}
+              disabled={!canEdit || !this.state.isTaskLoaded}
             />
             <Button
               text="Code Review"
@@ -339,7 +348,7 @@ class TaskHeader extends Component {
                 'Code Review'
               )}
               data-place="bottom"
-              disabled={!canEdit}
+              disabled={!canEdit || !this.state.isTaskLoaded}
             />
             <Button
               text="QA"
@@ -348,7 +357,7 @@ class TaskHeader extends Component {
               icon={this.getButtonIcon(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY)}
               onClick={this.createChangeStatusHandler(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY, 'QA')}
               data-place="bottom"
-              disabled={!canEdit}
+              disabled={!canEdit || !this.state.isTaskLoaded}
             />
             <Button
               text="Done"
@@ -356,7 +365,7 @@ class TaskHeader extends Component {
               data-tip={task.statusId === TaskStatuses.DONE ? null : localize[lang].MOVE_TO_DONE}
               data-place="bottom"
               onClick={this.handleChangeSingleStateStatus(TaskStatuses.DONE)}
-              disabled={!canEdit}
+              disabled={!canEdit || !this.state.isTaskLoaded}
             />
           </ButtonGroup>
           <Button
@@ -366,7 +375,7 @@ class TaskHeader extends Component {
             data-place="bottom"
             addedClassNames={{ [css.buttonOk]: true }}
             onClick={this.handleChangeSingleStateStatus(TaskStatuses.CLOSED)}
-            disabled={!canEdit}
+            disabled={!canEdit || !this.state.isTaskLoaded}
           />
         </div>
         <hr />
