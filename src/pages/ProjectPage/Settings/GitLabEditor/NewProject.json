@@ -1,10 +1,14 @@
 {
   "en": {
-    "PLACEHOLDER": "ID of project in GitLab",
-    "ERROR_TEXT": "Must be a unique integer"
+    "PLACEHOLDER": "ID or path of project in GitLab",
+    "ERROR_TEXT": "Must be a unique integer",
+    "ERROR_ALREADY_LINKED": "Project is already linked",
+    "ERROR_NOT_FULL_PATH": "Path must be in form of 'namespace/project-name'"
   },
   "ru": {
-    "PLACEHOLDER": "ID проекта в GitLab",
-    "ERROR_TEXT": "Должен быть уникальным целым числом"
+    "PLACEHOLDER": "ID или путь проекта в GitLab",
+    "ERROR_TEXT": "Должен быть уникальным целым числом",
+    "ERROR_ALREADY_LINKED": "Проект уже привязан",
+    "ERROR_NOT_FULL_PATH": "Путь должен быть в виде 'пространство-имен/имя-проекта'"
   }
 }

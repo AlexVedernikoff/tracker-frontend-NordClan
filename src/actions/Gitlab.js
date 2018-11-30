@@ -59,7 +59,7 @@ const addGitlabProjectByName = (projectId, path) => {
         dispatch(finishLoading());
       })
       .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(showNotification({ message: error.response.data.message || error.message, type: 'error' }));
         dispatch(addingGitlabProjectFail(error.response.data));
         dispatch(finishLoading());
       });
