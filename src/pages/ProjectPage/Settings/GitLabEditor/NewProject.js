@@ -48,6 +48,7 @@ class NewProject extends Component {
     const projectId = this.state.projectId;
     if (isNaN(projectId)) {
       if (!/^[a-zA-Z0-9\-]+\/[a-zA-Z0-9\-]+$/.test(projectId)) {
+        // checks if projectId (as path) is in form of namespace/project-name
         return this.setState({ errorCode: validErrorCodes.NotFullPath });
       }
     } else if (_.includes(this.props.projectIds, +projectId)) {
