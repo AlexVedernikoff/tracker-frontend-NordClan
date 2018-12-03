@@ -15,18 +15,18 @@ const getRoles = user => {
 
 const sortPerformer = users => {
   const userArray = {
+    devops: [],
     pm: [],
+    teamLead: [],
     account: [],
     analyst: [],
-    teamLead: [],
-    ux: [],
     back: [],
     front: [],
+    ux: [],
     mobile: [],
     ios: [],
     android: [],
     qa: [],
-    devops: [],
     other: []
   };
   users.forEach(user => {
@@ -41,8 +41,8 @@ const sortPerformer = users => {
   });
   for (const key in userArray) {
     userArray[key].sort((a, b) => {
-      if (a.lastNameRu < b.lastNameRu) return -1;
-      else if (a.lastNameRu > b.lastNameRu) return 1;
+      if (a.firstNameRu < b.firstNameRu) return -1;
+      else if (a.firstNameRu > b.firstNameRu) return 1;
       return 0;
     });
   }

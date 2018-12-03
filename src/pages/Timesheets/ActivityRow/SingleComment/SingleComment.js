@@ -42,7 +42,7 @@ class SingleComment extends React.Component {
   };
 
   save = () => {
-    this.props.onChange(this.state.text);
+    this.props.onChange(this.state.text.trim());
     this.toggle();
   };
 

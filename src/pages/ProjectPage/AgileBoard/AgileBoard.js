@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactTooltip from 'react-tooltip';
+import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Row } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
@@ -25,6 +26,8 @@ import getTasks from '../../../actions/Tasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal, getProjectUsers, getProjectInfo, getProjectTags } from '../../../actions/Project';
 import { showNotification } from '../../../actions/Notifications';
+
+import { sortedUsersSelector } from '../../../selectors/Project';
 
 class AgileBoard extends Component {
   constructor(props) {
@@ -149,7 +152,22 @@ class AgileBoard extends Component {
   };
 
   getUsers = () => {
-    return this.props.project.users.map(user => ({
+    const { sortedUsers } = this.props;
+    return _.union(
+      sortedUsers.devops,
+      sortedUsers.pm,
+      sortedUsers.teamLead,
+      sortedUsers.account,
+      sortedUsers.analyst,
+      sortedUsers.back,
+      sortedUsers.front,
+      sortedUsers.ux,
+      sortedUsers.mobile,
+      sortedUsers.ios,
+      sortedUsers.android,
+      sortedUsers.qa,
+      sortedUsers.other
+    ).map(user => ({
       value: user.id,
       label: getFullName(user)
     }));
@@ -196,9 +214,90 @@ class AgileBoard extends Component {
   get isOnlyMine() {
     return this.props.myTaskBoard || this.state.isOnlyMine;
   }
+  unionPerformers = [];
+
+  sortPerformersList = users => {
+    switch (this.state.statusId) {
+      case 2:
+        this.unionPerformers = _.union(
+          users.pm,
+          users.account,
+          users.teamLead,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android
+        );
+        break;
+      case 3:
+        this.unionPerformers = _.union(
+          users.pm,
+          users.account,
+          users.teamLead,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android
+        );
+        break;
+      case 4:
+        this.unionPerformers = _.union(
+          users.teamLead,
+          users.account,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android
+        );
+        break;
+      case 5:
+        this.unionPerformers = _.union(
+          users.teamLead,
+          users.account,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android
+        );
+        break;
+      case 6:
+        this.unionPerformers = users.qa;
+        break;
+      case 7:
+        this.unionPerformers = users.qa;
+        break;
+      default:
+        this.unionPerformers = _.union(
+          users.pm,
+          users.account,
+          users.teamlead,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android,
+          users.qa,
+          users.devops
+        );
+    }
+  };
 
   render() {
-    const { lang, tags, noTagData } = this.props;
+    const { lang, tags, noTagData, users } = this.props;
     const tasksList = this.isOnlyMine ? this.getMineSortedTasks() : this.getAllSortedTasks();
     const tasksKey = this.isOnlyMine ? 'mine' : 'all';
     const filtersComponent = this.props.myTaskBoard ? null : (
@@ -209,6 +308,12 @@ class AgileBoard extends Component {
         tags={[noTagData].concat(tags)}
       />
     );
+    this.sortPerformersList(users);
+
+    const usersFullNames = this.unionPerformers.map(item => ({
+      value: item.user ? item.user.id : item.id,
+      label: item.user ? getFullName(item.user) : getFullName(item)
+    }));
 
     return (
       <section className={css.agileBoard}>
@@ -229,7 +334,7 @@ class AgileBoard extends Component {
             onChoose={this.changePerformer}
             onClose={this.closeModal}
             title={localize[lang].CHANGE_PERFORMER}
-            users={this.getUsers()}
+            users={usersFullNames}
           />
         ) : null}
         {this.props.isCreateTaskModalOpen ? (
@@ -270,6 +375,7 @@ AgileBoard.propTypes = {
   params: PropTypes.object,
   project: PropTypes.object,
   sortedSprints: PropTypes.array,
+  sortedUsers: PropTypes.object,
   sprintTasks: PropTypes.array,
   sprints: PropTypes.array,
   startTaskEditing: PropTypes.func,
@@ -282,7 +388,10 @@ AgileBoard.propTypes = {
   user: PropTypes.object
 };
 
-const mapStateToProps = state => agileBoardSelector(state);
+const mapStateToProps = state => ({
+  ...agileBoardSelector(state),
+  sortedUsers: sortedUsersSelector(state)
+});
 
 const mapDispatchToProps = {
   getTasks,
