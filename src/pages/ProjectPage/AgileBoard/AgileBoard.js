@@ -142,7 +142,7 @@ class AgileBoard extends Component {
     });
   };
 
-  closeModal = performerId => {
+  closeModal = () => {
     this.setState({
       isModalOpen: false
     });
