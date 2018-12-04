@@ -219,9 +219,10 @@ class TaskHeader extends Component {
     switch (this.state.clickedStatus) {
       case 'Develop':
         unionPerformers = _.union(
+          users.devops,
           users.pm,
-          users.account,
           users.teamLead,
+          users.account,
           users.analyst,
           users.back,
           users.front,
