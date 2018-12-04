@@ -148,7 +148,9 @@ export default class TaskTimesheet extends Component {
       );
     }
 
-    const currentTask = tasks.find(singleTask => singleTask.id === task.id);
+    const currentTask = tasks.find(
+      singleTask => singleTask.id === task.id && this.props.task.statusId === singleTask.taskStatusId
+    );
 
     const taskRow = currentTask.timeSheets ? (
       <ActivityRowForTask
