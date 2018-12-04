@@ -240,7 +240,7 @@ export default function Project(state = InitialState, action) {
         ...state,
         project: {
           ...state.project,
-          gitlabProjectIds: [...state.project.gitlabProjectIds, action.project.Id],
+          gitlabProjectIds: [...state.project.gitlabProjectIds, action.project.id],
           gitlabProjects: [...state.project.gitlabProjects, action.project]
         }
       };

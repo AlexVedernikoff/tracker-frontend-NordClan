@@ -37,7 +37,6 @@ export default class ActivityRowForTask extends React.Component {
     const debounceTime = 1000;
 
     this.deleteTimesheets = debounce(this.deleteTimesheets, debounceTime);
-    this.debouncedUpdateTimesheet = debounce(this.updateTimesheet, debounceTime * 2);
     this.debouncedCreateTimesheet = debounce(this.createTimesheet, debounceTime * 2);
 
     this.state = {
@@ -199,16 +198,12 @@ export default class ActivityRowForTask extends React.Component {
         };
       },
       () => {
-        this.debouncedUpdateTimesheet(i, id, comment);
+        this.updateTimesheet(i, id, comment);
       }
     );
   };
 
   onBlurFilled = (i, id, comment, value) => {
-    if (this.state.timeCells[i] !== +value) {
-      this.debouncedUpdateTimesheet.flush();
-    }
-
     if (value === '') {
       this.resetCell(i);
     }

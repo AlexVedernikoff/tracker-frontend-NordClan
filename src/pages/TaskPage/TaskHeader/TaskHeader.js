@@ -22,6 +22,7 @@ import sortPerformer from '../../../utils/sortPerformer';
 import { addActivity } from '../../../actions/Timesheets';
 import moment from 'moment';
 import shortid from 'shortid';
+import { isOnlyDevOps } from '../../../utils/isDevOps';
 
 const usersSelector = state => state.Project.project.users;
 
@@ -310,15 +311,17 @@ class TaskHeader extends Component {
         </div>
         <TaskTitle name={task.name} id={task.id} canEdit={canEdit} />
         <div className={css.progressButtons}>
-          <Button
-            type={task.statusId === TaskStatuses.CANCELED ? 'red' : 'red-bordered'}
-            icon="IconClose"
-            data-tip={task.statusId === TaskStatuses.CANCELED ? null : localize[lang].CANCEL}
-            data-place="bottom"
-            addedClassNames={{ [css.buttonCancel]: true }}
-            onClick={task.statusId !== TaskStatuses.CANCELED ? this.handleOpenCancelModal : null}
-            disabled={!canEdit || !this.state.isTaskLoaded}
-          />
+          {!isOnlyDevOps(this.props.user, this.props.project.id) ? (
+            <Button
+              type={task.statusId === TaskStatuses.CANCELED ? 'red' : 'red-bordered'}
+              icon="IconClose"
+              data-tip={task.statusId === TaskStatuses.CANCELED ? null : localize[lang].CANCEL}
+              data-place="bottom"
+              addedClassNames={{ [css.buttonCancel]: true }}
+              onClick={task.statusId !== TaskStatuses.CANCELED ? this.handleOpenCancelModal : null}
+              disabled={!canEdit || !this.state.isTaskLoaded}
+            />
+          ) : null}
           <ButtonGroup type="lifecircle" stage="full">
             <Button
               text="New"
@@ -412,15 +415,19 @@ TaskHeader.propTypes = {
   lang: PropTypes.string,
   location: PropTypes.object,
   onChange: PropTypes.func.isRequired,
+  project: PropTypes.object,
   projectId: PropTypes.string.isRequired,
   startingDay: PropTypes.object,
   task: PropTypes.object.isRequired,
   taskTypes: PropTypes.array,
+  user: PropTypes.object,
   users: PropTypes.object
 };
 
 const mapStateToProps = state => ({
   users: sortedUsersSelector(state),
+  project: state.Project.project,
+  user: state.Auth.user,
   location: state.routing.locationBeforeTransitions,
   startingDay: state.Timesheets.startingDay,
   task: state.Task.task,
