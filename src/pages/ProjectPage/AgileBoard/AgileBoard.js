@@ -142,13 +142,10 @@ class AgileBoard extends Component {
     });
   };
 
-  closeModal = performerId => {
-    this.setState(
-      {
-        isModalOpen: false
-      },
-      () => this.changeStatus(this.state.changedTask, this.state.statusId, this.state.phase, performerId)
-    );
+  closeModal = () => {
+    this.setState({
+      isModalOpen: false
+    });
   };
 
   getUsers = () => {
