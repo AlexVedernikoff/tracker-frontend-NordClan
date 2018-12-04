@@ -203,6 +203,12 @@ class CreateTaskModal extends Component {
     this.setState({ descriptionInvalid: description.length > MAX_DESCRIPTION_LENGTH });
   };
 
+  generateError = () => {
+    return this.state.taskName.length < 4
+      ? localize[this.props.lang].NAME_ERROR_LESS_SYMBOLS
+      : localize[this.props.lang].NAME_ERROR_MORE_SYMBOLS;
+  };
+
   render() {
     const formLayout = {
       firstCol: 4,
@@ -240,7 +246,7 @@ class CreateTaskModal extends Component {
                       onBlur={handleBlur}
                       onEnter={this.validateAndSubmit}
                       shouldMarkError={shouldMarkError}
-                      errorText={localize[lang].NAME_ERROR}
+                      errorText={this.generateError()}
                     />
                   ),
                   'taskName',
