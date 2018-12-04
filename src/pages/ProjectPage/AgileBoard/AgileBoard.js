@@ -38,7 +38,8 @@ class AgileBoard extends Component {
       isModalOpen: false,
       performer: null,
       changedTask: null,
-      isOnlyMine: props.filters.isOnlyMine
+      isOnlyMine: props.filters.isOnlyMine,
+      fromTaskCore: false
     };
   }
 
@@ -114,7 +115,7 @@ class AgileBoard extends Component {
     this.props.startTaskEditing('Status');
   };
 
-  openPerformerModal = (taskId, performerId, projectId, statusId, phase) => {
+  openPerformerModal = (taskId, performerId, projectId, statusId, phase, fromTaskCore) => {
     if (this.props.myTaskBoard) {
       this.props.getProjectUsers(projectId);
     }
@@ -123,7 +124,8 @@ class AgileBoard extends Component {
       performer: performerId,
       changedTask: taskId,
       statusId,
-      phase
+      phase,
+      fromTaskCore
     });
   };
 
@@ -149,28 +151,6 @@ class AgileBoard extends Component {
       },
       () => this.changeStatus(this.state.changedTask, this.state.statusId, this.state.phase, performerId)
     );
-  };
-
-  getUsers = () => {
-    const { sortedUsers } = this.props;
-    return _.union(
-      sortedUsers.devops,
-      sortedUsers.pm,
-      sortedUsers.teamLead,
-      sortedUsers.account,
-      sortedUsers.analyst,
-      sortedUsers.back,
-      sortedUsers.front,
-      sortedUsers.ux,
-      sortedUsers.mobile,
-      sortedUsers.ios,
-      sortedUsers.android,
-      sortedUsers.qa,
-      sortedUsers.other
-    ).map(user => ({
-      value: user.id,
-      label: getFullName(user)
-    }));
   };
 
   lightTask = (lightedTaskId, isCardFocus) => {
@@ -217,12 +197,64 @@ class AgileBoard extends Component {
   unionPerformers = [];
 
   sortPerformersList = users => {
+    switch (this.state.phase) {
+      case 'Dev':
+        this.unionPerformers = _.union(
+          users.devops,
+          users.pm,
+          users.teamLead,
+          users.account,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android
+        );
+        break;
+      case 'Code Review':
+        this.unionPerformers = _.union(
+          users.teamLead,
+          users.account,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android
+        );
+        break;
+      case 'QA':
+        this.unionPerformers = users.qa;
+        break;
+      default:
+        this.unionPerformers = _.union(
+          users.devops,
+          users.pm,
+          users.teamLead,
+          users.account,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android,
+          users.qa
+        );
+    }
+  };
+
+  sortPerformersListForTaskCore = users => {
     switch (this.state.statusId) {
       case 2:
         this.unionPerformers = _.union(
+          users.devops,
           users.pm,
-          users.account,
           users.teamLead,
+          users.account,
           users.analyst,
           users.back,
           users.front,
@@ -232,11 +264,13 @@ class AgileBoard extends Component {
           users.android
         );
         break;
+
       case 3:
         this.unionPerformers = _.union(
+          users.devops,
           users.pm,
-          users.account,
           users.teamLead,
+          users.account,
           users.analyst,
           users.back,
           users.front,
@@ -246,6 +280,7 @@ class AgileBoard extends Component {
           users.android
         );
         break;
+
       case 4:
         this.unionPerformers = _.union(
           users.teamLead,
@@ -259,6 +294,7 @@ class AgileBoard extends Component {
           users.android
         );
         break;
+
       case 5:
         this.unionPerformers = _.union(
           users.teamLead,
@@ -272,17 +308,21 @@ class AgileBoard extends Component {
           users.android
         );
         break;
+
       case 6:
         this.unionPerformers = users.qa;
         break;
+
       case 7:
         this.unionPerformers = users.qa;
         break;
+
       default:
         this.unionPerformers = _.union(
+          users.devops,
           users.pm,
+          users.teamLead,
           users.account,
-          users.teamlead,
           users.analyst,
           users.back,
           users.front,
@@ -290,8 +330,7 @@ class AgileBoard extends Component {
           users.mobile,
           users.ios,
           users.android,
-          users.qa,
-          users.devops
+          users.qa
         );
     }
   };
@@ -308,7 +347,12 @@ class AgileBoard extends Component {
         tags={[noTagData].concat(tags)}
       />
     );
-    this.sortPerformersList(users);
+
+    if (this.state.fromTaskCore) {
+      this.sortPerformersListForTaskCore(users);
+    } else {
+      this.sortPerformersList(users);
+    }
 
     const usersFullNames = this.unionPerformers.map(item => ({
       value: item.user ? item.user.id : item.id,

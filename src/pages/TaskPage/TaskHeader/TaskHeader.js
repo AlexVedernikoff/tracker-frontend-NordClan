@@ -250,9 +250,10 @@ class TaskHeader extends Component {
         break;
       default:
         unionPerformers = _.union(
+          users.devops,
           users.pm,
+          users.teamLead,
           users.account,
-          users.teamlead,
           users.analyst,
           users.back,
           users.front,
@@ -260,8 +261,7 @@ class TaskHeader extends Component {
           users.mobile,
           users.ios,
           users.android,
-          users.qa,
-          users.devops
+          users.qa
         );
     }
 
