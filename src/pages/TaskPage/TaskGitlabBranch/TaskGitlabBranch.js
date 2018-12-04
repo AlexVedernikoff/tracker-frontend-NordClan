@@ -40,7 +40,9 @@ class TaskGitlabBranch extends React.Component {
 
   selectRepository = key => {
     return option => {
-      this.props.getGitlabBranchesByRepoId(this.props.taskId, option.value);
+      if (option) {
+        this.props.getGitlabBranchesByRepoId(this.props.taskId, option.value);
+      }
       this.setState({
         [key]: option
       });

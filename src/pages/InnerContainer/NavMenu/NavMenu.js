@@ -77,7 +77,7 @@ class NavMenu extends Component {
     ) : null;
 
     const usersRolesLinkButton = isAdmin(this.props.user.globalRole) ? (
-      <li key="roles">
+      <li key="roles_btn">
         <Link className={css.sidebarLinkClosed} activeClassName={css.activeLink} to="/roles">
           <IconUsers style={iconStyles} />
         </Link>
@@ -96,7 +96,7 @@ class NavMenu extends Component {
     ) : null;
 
     const externalUsersLinkButton = isAdmin(this.props.user.globalRole) ? (
-      <li key="externalUsers">
+      <li key="externalUsers_btn">
         <Link className={css.sidebarLinkClosed} activeClassName={css.activeLink} to="/externalUsers">
           <IconExternalUsers style={iconStyles} />
         </Link>
@@ -117,7 +117,7 @@ class NavMenu extends Component {
 
     const timesheetsLinkButton =
       this.props.user.globalRole !== EXTERNAL_USER ? (
-        <li key="timesheets">
+        <li key="timesheets_btn">
           <Link className={css.sidebarLinkClosed} activeClassName={css.activeLink} to="/timesheets">
             <IconCalendar style={iconStyles} />
           </Link>
@@ -126,7 +126,7 @@ class NavMenu extends Component {
 
     const toggleButton = mqlMatches ? (
       <button
-        key="toggleButton"
+        key="toggle_btn"
         className={classNames(css.sidebarClosed, css.toggleButton)}
         onClick={this.props.toggleMenu}
       >
