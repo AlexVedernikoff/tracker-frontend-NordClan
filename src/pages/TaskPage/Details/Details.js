@@ -244,9 +244,7 @@ class Details extends Component {
           users.ux,
           users.mobile,
           users.ios,
-          users.android,
-          users.qa,
-          users.other
+          users.android
         );
         break;
 
@@ -262,9 +260,7 @@ class Details extends Component {
           users.ux,
           users.mobile,
           users.ios,
-          users.android,
-          users.qa,
-          users.other
+          users.android
         );
         break;
 
@@ -306,9 +302,10 @@ class Details extends Component {
 
       default:
         unionPerformers = _.union(
+          users.devops,
           users.pm,
+          users.teamLead,
           users.account,
-          users.teamlead,
           users.analyst,
           users.back,
           users.front,
@@ -316,8 +313,7 @@ class Details extends Component {
           users.mobile,
           users.ios,
           users.android,
-          users.qa,
-          users.devops
+          users.qa
         );
     }
 
