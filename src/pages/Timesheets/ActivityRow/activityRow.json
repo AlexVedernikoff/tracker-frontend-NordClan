@@ -2,11 +2,31 @@
   "en": {
     "DELETE": "Delete",
     "CONFIRM_MESSAGE": "Are you sure you want to delete this activity?",
-    "DELETE_DUBLICATE": "Delete dublicate timesheet."
+    "DELETE_DUBLICATE": "Delete dublicate timesheet.",
+    "CHOOSE_PROJECT": "Choose project",
+    "ALL": "All activities",
+    "IMPLEMENTATION": "Implementation",
+    "MEETING": "Meeting",
+    "PRESALE": "Presale and estimation",
+    "EDUCATION": "Education",
+    "VACATION": "Vacation",
+    "BUSINESS_TRIP": "Business trip",
+    "CONTROL": "Managment",
+    "HOSPITAL": "On sick leave"
   },
   "ru": {
     "DELETE": "Удалить",
     "CONFIRM_MESSAGE": "Вы действительно хотите удалить эту активность?",
-    "DELETE_DUBLICATE": "Удалить копию таймшита."
+    "DELETE_DUBLICATE": "Удалить копию таймшита.",
+    "CHOOSE_PROJECT": "Выберите проект",
+    "ALL": "Все активности",
+    "IMPLEMENTATION": "Implementation",
+    "MEETING": "Совещание",
+    "PRESALE": "Преселлинг и оценка",
+    "EDUCATION": "Обучение",
+    "VACATION": "Отпуск",
+    "BUSINESS_TRIP": "Командировка",
+    "CONTROL": "Управление",
+    "HOSPITAL": "Больничный"
   }
 }

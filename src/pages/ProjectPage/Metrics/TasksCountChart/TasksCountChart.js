@@ -3,13 +3,12 @@ import PropTypes from 'prop-types';
 import * as css from './TasksCountChart.scss';
 import ChartWrapper from '../ChartWrapper';
 import { Line } from 'react-chartjs-2';
-import sortChartLineByDates from '../../../../utils/sortChartLineByDates';
 import getColor from '../../../../utils/Colors';
-import roundNum from '../../../../utils/roundNum';
 import localize from './TasksCountChart.json';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { dataLabelsPlugin } from '../../../../utils/Charts';
+import { makeLine, transformMetrics } from '../../../../utils/chartMetrics';
 
 class TasksCountChart extends Component {
   static propTypes = {
@@ -85,33 +84,53 @@ class TasksCountChart extends Component {
 
     return {
       datasets: [
-        this.makeTaskCountMetricsLine(openedFeaturesMetric, localize[this.props.lang].NUMBER_OPEN_TASKS),
-        this.makeTaskCountMetricsLine(
-          openedFeaturesWithoutEvaluationMetric,
-          localize[this.props.lang].WITHOUT_ELEVATION
+        ...this.andDottedLine(
+          makeLine(openedFeaturesMetric.beforeEndOfSprintMetrics, localize[this.props.lang].NUMBER_OPEN_TASKS),
+          transformMetrics(openedFeaturesMetric.afterEndOfSprintMetrics)
         ),
-        this.makeTaskCountMetricsLine(openedOutOfPlanFeaturesMetric, localize[this.props.lang].OUTSIDE_PLAN),
-        this.makeTaskCountMetricsLine(openedBugsMetrics, localize[this.props.lang].NUMBER_BUGS),
-        this.makeTaskCountMetricsLine(openedCustomerBugsMetrics, localize[this.props.lang].NUMBER_BUGS_FROM_CLIENT),
-        this.makeTaskCountMetricsLine(openedFeaturesFromClient, localize[this.props.lang].NUMBER_OPEN_TASKS_FROM_CLIENT)
+        ...this.andDottedLine(
+          makeLine(
+            openedFeaturesWithoutEvaluationMetric.beforeEndOfSprintMetrics,
+            localize[this.props.lang].WITHOUT_ELEVATION
+          ),
+          transformMetrics(openedFeaturesWithoutEvaluationMetric.afterEndOfSprintMetrics)
+        ),
+        ...this.andDottedLine(
+          makeLine(openedOutOfPlanFeaturesMetric.beforeEndOfSprintMetrics, localize[this.props.lang].OUTSIDE_PLAN),
+          transformMetrics(openedOutOfPlanFeaturesMetric.afterEndOfSprintMetrics)
+        ),
+        ...this.andDottedLine(
+          makeLine(openedBugsMetrics.beforeEndOfSprintMetrics, localize[this.props.lang].NUMBER_BUGS),
+          transformMetrics(openedBugsMetrics.afterEndOfSprintMetrics)
+        ),
+        ...this.andDottedLine(
+          makeLine(
+            openedFeaturesFromClient.beforeEndOfSprintMetrics,
+            localize[this.props.lang].NUMBER_OPEN_TASKS_FROM_CLIENT
+          ),
+          transformMetrics(openedFeaturesFromClient.afterEndOfSprintMetrics)
+        ),
+        ...this.andDottedLine(
+          makeLine(
+            openedCustomerBugsMetrics.beforeEndOfSprintMetrics,
+            localize[this.props.lang].NUMBER_BUGS_FROM_CLIENT
+          ),
+          transformMetrics(openedCustomerBugsMetrics.afterEndOfSprintMetrics)
+        )
       ]
     };
   }
 
-  makeTaskCountMetricsLine = (metrics, label) => {
-    const line = metrics
-      .map(metric => {
-        return {
-          x: metric.createdAt,
-          y: roundNum(+metric.value, 2)
-        };
-      })
-      .sort(sortChartLineByDates);
-    return {
-      data: [...line],
-      label: label,
-      ...this.props.getBasicLineSettings()
-    };
+  andDottedLine = (data, dottedLineData) => {
+    return [
+      data,
+      {
+        ...data,
+        label: `${data.label} ${localize[this.props.lang].END_SPRINT}`,
+        data: dottedLineData,
+        borderDash: [10, 5]
+      }
+    ];
   };
 
   render() {

@@ -29,6 +29,7 @@ import { getFullName, getDictionaryName } from '../../../utils/NameLocalisation'
 import { openCreateTaskModal } from '../../../actions/Project';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { getLocalizedTaskTypes, getLocalizedTaskStatuses } from '../../../selectors/dictionaries';
+import getSortedSprints from '../../../selectors/sprints';
 import { history } from '../../../History';
 import getTasks from '../../../actions/Tasks';
 import * as css from './TaskList.scss';
@@ -558,7 +559,7 @@ class TaskList extends Component {
   onChangeTagFilter = options => this.changeMultiFilter(options, 'tags');
 
   render() {
-    const { tasksList: tasks, statuses, taskTypes, project, isReceiving, lang } = this.props;
+    const { tasksList: tasks, statuses, taskTypes, project, isReceiving, lang, sprints } = this.props;
     const filterTags = this.state.allFilters.map(filter => {
       return (
         <Tag
@@ -643,13 +644,18 @@ class TaskList extends Component {
               </Row>
               <Row className={css.search} top="xs">
                 <Col xs={12} sm={3}>
-                  <SprintSelector
-                    value={sprintId}
-                    sprints={project.sprints}
-                    onChange={this.onChangeSprintFilter}
-                    multi
-                    useId
-                  />
+                  <div className="sprint-dropdown">
+                    <SprintSelector
+                      multi
+                      searchable
+                      clearable
+                      value={sprintId}
+                      onChange={this.onChangeSprintFilter}
+                      options={sprints}
+                      useId
+                      taskListClass
+                    />
+                  </div>
                 </Col>
                 <Col xs={12} sm={3}>
                   <SelectDropdown
@@ -786,7 +792,7 @@ class TaskList extends Component {
                   isExternal={isExternal}
                 />
               ))}
-          {!isLoading && tasks.length === 0 ? <div className={css.notFound}>Ничего не найдено</div> : null}
+          {!isLoading && tasks.length === 0 ? <div className={css.notFound}>{localize[lang].NOTHING_FOUND}</div> : null}
           {this.props.pagesCount > 1 ? (
             <Pagination
               itemsCount={this.props.pagesCount}
@@ -841,6 +847,7 @@ TaskList.propTypes = {
   params: PropTypes.object,
   project: PropTypes.object.isRequired,
   setFilterValue: PropTypes.func,
+  sprints: PropTypes.arrayOf(PropTypes.object),
   startTaskEditing: PropTypes.func.isRequired,
   statuses: PropTypes.array,
   taskTypes: PropTypes.array,
@@ -858,7 +865,8 @@ const mapStateToProps = state => ({
   project: state.Project.project,
   statuses: getLocalizedTaskStatuses(state),
   taskTypes: getLocalizedTaskTypes(state),
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  sprints: getSortedSprints(state)
 });
 
 const mapDispatchToProps = { getTasks, startTaskEditing, changeTask, openCreateTaskModal };

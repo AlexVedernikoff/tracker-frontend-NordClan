@@ -1,9 +1,10 @@
 {
   "en": {
     "CREATE_TASK": "Create task",
-    "NAME": "Task name",
+    "NAME": "Task name:",
     "NAME_PLACEHOLDER": "Enter the task name",
-    "NAME_ERROR": "Length less than 4 characters",
+    "NAME_ERROR_LESS_SYMBOLS": "Length less than 4 characters",
+    "NAME_ERROR_MORE_SYMBOLS": "Length more than 256 characters",
     "DESCRIPTION": "Description:",
     "PLACEHOLDER_DESCRIPTION": "Enter the task description",
     "TYPE": "Task type:",
@@ -16,16 +17,20 @@
     "PERFORMER_PLACEHOLDER": "Select name of performer",
     "SPRINT": "Sprint:",
     "CREATE_SPRINT": "Create sprint",
-    "NAME_SPRINT": "Введите название спринта",
+    "NAME_SPRINT": "Enter sprint name",
     "SELECT_SPRINT": "Select sprint",
     "TIMING": "Timing:",
-    "CREATE_AND_OPEN": "Create and open"
+    "CREATE_AND_OPEN": "Create and open",
+    "DEV_OPS": "DevOps",
+    "TAGS": "Tags:",
+    "HOURS": "h."
   },
   "ru": {
     "CREATE_TASK": "Создать задачу",
     "NAME": "Название задачи:",
     "NAME_PLACEHOLDER": "Введите название задачи",
-    "NAME_ERROR": "Длина менее 4 символов",
+    "NAME_ERROR_LESS_SYMBOLS": "Длина менее 4 символов",
+    "NAME_ERROR_MORE_SYMBOLS": "Длина более 256 символов",
     "DESCRIPTION": "Описание:",
     "PLACEHOLDER_DESCRIPTION": "Введите описание задачи",
     "TYPE": "Тип задачи:",
@@ -41,6 +46,9 @@
     "NAME_SPRINT": "Введите название спринта",
     "SELECT_SPRINT": "Выберите спринт",
     "TIMING": "Оценка по времени:",
-    "CREATE_AND_OPEN": "Создать и открыть"
+    "CREATE_AND_OPEN": "Создать и открыть",
+    "DEV_OPS": "DevOps",
+    "TAGS": "Теги:",
+    "HOURS": "ч."
   }
 }

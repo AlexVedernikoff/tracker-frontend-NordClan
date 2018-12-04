@@ -2,9 +2,9 @@
   "en": {
     "MY_PROJECTS": "My Projects",
     "INPROGRESS": "In progress",
-    "INHOLD": "In hold",
+    "INHOLD": "On hold",
     "FINISHED": "Finished",
-    "NAME_PROJECT": "Enter the name of the project ...",
+    "NAME_PROJECT": "Enter the project name",
     "NOTHING_FOUND": "Nothing found",
     "NO_PROJECT_ASSIGNED": "No projects available",
     "TO": "To",
@@ -16,11 +16,11 @@
     "INPROGRESS": "В процессе",
     "INHOLD": "Приостановлен",
     "FINISHED": "Завершен",
-    "NAME_PROJECT": "Введите название проекта...",
+    "NAME_PROJECT": "Введите название проекта",
     "NOTHING_FOUND": "Ничего не найдено",
     "NO_PROJECT_ASSIGNED": "Нет доступных проектов",
-    "TO": "От",
-    "FROM": "До",
+    "TO": "До",
+    "FROM": "От",
     "CREATE_PROJECT": "Создать проект"
   }
 }

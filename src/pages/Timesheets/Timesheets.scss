@@ -103,14 +103,14 @@
 
   &.approved {
     input {
-      background-color: $color-green;
+      background-color: darken($color-green, 15%);
       color: rgba(white, 0.9);
     }
   }
 
   &.rejected {
     input {
-      background-color: $color-light-red;
+      background-color: darken($color-light-red, 10%);
       color: rgba(white, 0.9);
     }
   }
@@ -229,6 +229,7 @@ tr:last-child td.today {
 
   & > div {
     display: inline-block;
+    min-width: 16px;
   }
 
   .toggleComment {
@@ -362,12 +363,19 @@ tr:last-child td.today {
   z-index: 2;
   top: 0;
   right: 0;
+  &.disabled {
+    position: absolute;
+    left: -229px;
+  }
 }
 
 .totalComment {
   display: flex;
   background-color: white;
   align-items: stretch;
+  position: absolute;
+  left: -284px;
+  width: 240px;
   box-shadow: $box-shadow;
 
   textarea,
@@ -390,11 +398,16 @@ tr:last-child td.today {
   color: $color-black;
   font-size: 13px;
   box-shadow: $box-shadow;
+  position: absolute;
+  width: 240px;
+  left: -285px;
 
   textarea {
     resize: none;
-    height: 3.5rem;
+    min-height: 3.5rem;
+    max-height: 15rem;
     width: 15rem;
+    border-right: white;
   }
 
   span {
@@ -403,11 +416,18 @@ tr:last-child td.today {
     width: 15rem;
     border: 1px solid #ebebeb;
     padding: 0.5rem;
+    overflow: auto;
   }
 }
 
 .filledComment {
   color: $color-green;
+  &.rejected {
+    color: lighten($color-light-red, 5%);
+  }
+  &.approved {
+    color: lighten($color-green, 10%);
+  }
 }
 
 .saveBtn {
@@ -421,6 +441,9 @@ tr:last-child td.today {
   height: 3.5rem;
   cursor: pointer;
   transition: $transition;
+  position: absolute;
+  left: 100%;
+  box-shadow: $box-shadow;
 
   &:hover {
     background-color: lighten($color-green, 10%);
@@ -430,18 +453,13 @@ tr:last-child td.today {
 
 .checkAll {
   @extend .saveBtn;
-  height: auto;
 }
 
 .totalCommentPart {
-  display: flex;
-
+  width: 240px;
+  min-height: 56px;
   .commentDay {
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
-    width: 3.5rem;
-    height: 3.5rem;
+    height: 2rem;
     padding: 0.5rem;
     border: 1px solid $color-gray;
     border-right: none;
@@ -451,6 +469,16 @@ tr:last-child td.today {
     &:first-letter {
       text-transform: uppercase;
     }
+  }
+
+  textarea {
+    min-height: 2.5rem;
+    max-height: 9rem;
+    display: block;
+  }
+  span {
+    display: block;
+    overflow: auto;
   }
 
   &:hover .commentDay {

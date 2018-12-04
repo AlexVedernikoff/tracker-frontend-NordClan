@@ -6,7 +6,10 @@
     "MOVE_TO": "Move to ",
     "MOVE_TO_DONE": "Move to Done",
     "CANCEL_MESSAGE": "Do you really want to cancel this task?",
-    "PARENT_TASK": "Parent task"
+    "PARENT_TASK": "Parent task",
+    "STOP": "Stop",
+    "PLAY": "Play",
+    "TASK_LINK": "Task link"
   },
   "ru": {
     "CANCEL": "Отменить",
@@ -15,6 +18,9 @@
     "MOVE_TO": "Перевести в стадию ",
     "MOVE_TO_DONE": "Перевести в стадию Done",
     "CANCEL_MESSAGE": "Вы действительно хотите отменить задачу?",
-    "PARENT_TASK": "Родительская задача"
+    "PARENT_TASK": "Родительская задача",
+    "STOP": "Приостановить",
+    "PLAY": "Начать",
+    "TASK_LINK": "Ссылка на задачу"
   }
 }

@@ -90,7 +90,12 @@ class TaskCore extends PureComponent {
   handlePerformerClick = event => {
     event.stopPropagation();
     const { task, onOpenPerformerModal } = this.props;
-    onOpenPerformerModal(task.id, task.performer ? task.performer.id : null);
+    onOpenPerformerModal(
+      task.id,
+      task.performer ? task.performer.id : null,
+      task.project ? task.project.id : null,
+      task.statusId
+    );
   };
 
   togglePriorityBox = () => {
@@ -137,7 +142,7 @@ class TaskCore extends PureComponent {
     } = this.props;
 
     const prefix = task.prefix ? task.prefix : this.getPrefixFromProject();
-    const performer = task.performer ? task.performer : this.getUserFromProject(task.performerId);
+    const performer = getFullName(this.getUserFromProject(task.performerId));
 
     return connectDragSource(
       <div
@@ -193,7 +198,7 @@ class TaskCore extends PureComponent {
             <span className={css.performer}>
               {task.performerId ? (
                 <span>
-                  {getFullName(performer)}
+                  {performer}
                   <span className={css.preformerEditIcon}>
                     <IconEdit />
                   </span>
@@ -242,7 +247,7 @@ class TaskCore extends PureComponent {
           <div
             className={css.priorityMarker}
             onClick={this.showPriorityBox}
-            data-tip={`${localize[lang].NOT_ASSIGNED} ${getProrityById(this.props.task.prioritiesId)}`}
+            data-tip={`${localize[lang].PRIORITY} ${getProrityById(this.props.task.prioritiesId)}`}
           />
         )}
         {lighted ? <div className={css.lightedBorder} /> : null}

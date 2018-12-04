@@ -13,12 +13,14 @@ import { IconEdit } from '../../../../components/Icons';
 import * as timesheetsConstants from '../../../../constants/Timesheets';
 import EditSpentModal from '../EditSpentModal';
 import { createTimesheet, updateTimesheet } from '../../../../actions/Timesheets';
-import { getLocalizedTaskStatuses, getLocalizedMagicActiveTypes } from '../../../../selectors/dictionaries';
+import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../../selectors/dictionaries';
+import localize from './ActivityRow.json';
 
 class ActivityRow extends React.Component {
   static propTypes = {
     createTimesheet: PropTypes.func.isRequired,
     item: PropTypes.object,
+    lang: PropTypes.string,
     ma: PropTypes.bool,
     magicActivitiesTypes: PropTypes.array,
     startingDay: PropTypes.object,
@@ -141,7 +143,7 @@ class ActivityRow extends React.Component {
   };
 
   render() {
-    const { task, ma, statuses, magicActivitiesTypes } = this.props;
+    const { task, ma, statuses, magicActivitiesTypes, lang } = this.props;
     const { item, editingSpent } = this.state;
     const status = task ? find(statuses, { id: item.taskStatusId }) : '';
     const maType = ma ? find(magicActivitiesTypes, { id: item.typeId }) : '';
@@ -206,7 +208,7 @@ class ActivityRow extends React.Component {
             </div>
             <div>
               {task && <Link to={`/projects/${item.projectId}/tasks/${item.id}`}>{item.name}</Link>}
-              {ma && maType && <span>{maType.name}</span>}
+              {ma && maType && <span>{localize[lang][maType.codename]}</span>}
             </div>
           </div>
         </td>
@@ -236,9 +238,10 @@ class ActivityRow extends React.Component {
 
 const mapStateToProps = state => ({
   statuses: getLocalizedTaskStatuses(state),
-  magicActivitiesTypes: getLocalizedMagicActiveTypes(state),
+  magicActivitiesTypes: getMagicActiveTypes(state),
   userId: state.Auth.user.id,
-  startingDay: state.Timesheets.startingDay
+  startingDay: state.Timesheets.startingDay,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {

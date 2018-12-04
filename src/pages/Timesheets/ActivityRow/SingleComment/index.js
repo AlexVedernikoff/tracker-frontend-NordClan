@@ -1,3 +1,8 @@
 import SingleComment from './SingleComment';
+import { connect } from 'react-redux';
 
-export default SingleComment;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(mapStateToProps)(SingleComment);

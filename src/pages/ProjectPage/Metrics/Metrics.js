@@ -21,12 +21,13 @@ import Tabs from '../../../components/Tabs';
 import Pane from '../../../components/Pane';
 import Button from '../../../components/Button';
 import localize from './Metrics.json';
+import TeamMetrics from './TeamMetrics';
 
 const filterMetrics = (id, metrics) => {
   return metrics ? metrics.filter(metric => metric.typeId === id) : [];
 };
 
-const getBasicLineSettings = () => {
+export const getBasicLineSettings = () => {
   const lineColor = getColor();
 
   return {
@@ -35,7 +36,8 @@ const getBasicLineSettings = () => {
     pointRadius: 2,
     borderColor: lineColor,
     backgroundColor: lineColor,
-    fill: false
+    fill: false,
+    steppedLine: true
   };
 };
 
@@ -289,6 +291,13 @@ class Metrics extends Component {
                         costByRoleMetrics={costByRoleMetrics}
                         costByRolePercentMetrics={costByRolePercentMetrics}
                       />
+                    </Col>
+                  </Row>
+                </Pane>
+                <Pane label={localize[lang].METRICS_BY_TEAM} path="/team">
+                  <Row>
+                    <Col xs={12}>
+                      <TeamMetrics />
                     </Col>
                   </Row>
                 </Pane>

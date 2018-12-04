@@ -14,7 +14,7 @@ import validateNumber from '../../../../../utils/validateNumber';
 
 import { IconComment, IconCheck, IconEye, IconEyeDisable } from '../../../../../components/Icons';
 import localize from './playlistItem.json';
-import { getLocalizedMagicActiveTypes } from '../../../../../selectors/dictionaries';
+import { getMagicActiveTypes } from '../../../../../selectors/dictionaries';
 
 class PlaylistItem extends Component {
   constructor(props) {
@@ -108,8 +108,9 @@ class PlaylistItem extends Component {
   };
 
   getNameByType = typeId => {
+    const { lang } = this.props;
     const activity = find(this.props.magicActivitiesTypes, { id: typeId });
-    return activity ? activity.name : localize[this.props.lang].UNDEFINED;
+    return activity ? localize[lang][activity.codename] : localize[lang].UNDEFINED;
   };
 
   goToDetailPage = () => {
@@ -321,7 +322,7 @@ PlaylistItem.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    magicActivitiesTypes: getLocalizedMagicActiveTypes(state),
+    magicActivitiesTypes: getMagicActiveTypes(state),
     task: state.Task.task,
     lang: state.Localize.lang
   };

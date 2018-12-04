@@ -1,0 +1,25 @@
+{
+  "en": {
+    "PROJECT_PREFIX": "Project prefix",
+    "PROJECT_TYPE": "Project type",
+    "CHOOSE_PROJECT_TYPE": "Choose project type",
+    "NO_RESULTS": "No results",
+    "RETURN_TO_MY_PROJECTS": "Return to \"My Projects\"",
+    "UNDEFINED": "No type",
+    "PRODUCT": "Product",
+    "INTERNSHIP": "Internship",
+    "INTERNAL": "Internal"
+  },
+
+  "ru": {
+    "PROJECT_PREFIX": "Префикс проекта",
+    "PROJECT_TYPE": "Тип проекта",
+    "CHOOSE_PROJECT_TYPE": "Выберите тип проекта",
+    "NO_RESULTS": "Нет результатов",
+    "RETURN_TO_MY_PROJECTS": "Вернуться в «Мои проекты»",
+    "UNDEFINED": "Без типа",
+    "PRODUCT": "Продуктовый",
+    "INTERNSHIP": "Стажировка",
+    "INTERNAL": "Внутренний"
+  }
+}

@@ -14,7 +14,7 @@ import * as timesheetsConstants from '../../../../constants/Timesheets';
 import List from './List';
 import localize from './playlist.json';
 import * as css from './Playlist.scss';
-import { getLocalizedMagicActiveTypes } from '../../../../selectors/dictionaries';
+import { getMagicActiveTypes } from '../../../../selectors/dictionaries';
 
 class Playlist extends Component {
   constructor(props) {
@@ -34,16 +34,17 @@ class Playlist extends Component {
   }
 
   componentWillReceiveProps(newProps) {
+    const { lang } = newProps;
     if (newProps.magicActivitiesTypes.length) {
       this.activityTabs = newProps.magicActivitiesTypes.map(element => ({
         activityId: element.id,
-        description: element.name,
+        description: localize[lang][element.codename],
         icon: getMaIcon(element.id)
       }));
 
       this.activityTabs.unshift({
         activityId: 'all',
-        description: 'Все активности',
+        description: localize[lang].ALL,
         icon: <IconList />
       });
     }
@@ -372,7 +373,7 @@ const mapStateToProps = state => {
     activeTask: state.TimesheetPlayer.activeTask,
     tracks: state.TimesheetPlayer.tracks,
     availableProjects: state.TimesheetPlayer.availableProjects,
-    magicActivitiesTypes: getLocalizedMagicActiveTypes(state),
+    magicActivitiesTypes: getMagicActiveTypes(state),
     lang: state.Localize.lang
   };
 };

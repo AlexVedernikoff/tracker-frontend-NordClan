@@ -1,0 +1,28 @@
+{
+  "en": {
+    "EDITING": "Editing",
+    "ALL_FIELDS_MUST_BE_FILLED": "All fields must be filled",
+    "TIME_SPANT": "Time spant:",
+    "ENTER_SPANT_TIME": "Enter spant time",
+    "SPRINT": "Sprint:",
+    "SHOOSE_SPRINT": "Select sprint",
+    "COMMENT": "Comment:",
+    "ENTER_COMMENT": "Enter a comment",
+    "ACTIVITY_TYPE": "Activity type:",
+    "STATUS": "Status:",
+    "SAVE": "Save"
+  },
+  "ru": {
+    "EDITING": "Редактирование",
+    "ALL_FIELDS_MUST_BE_FILLED": "Все поля должны быть заполнены",
+    "TIME_SPANT": "Потрачено времени:",
+    "ENTER_SPANT_TIME": "Введите потраченное время",
+    "SPRINT": "Спринт:",
+    "SHOOSE_SPRINT": "Выберите спринт",
+    "COMMENT": "Комментарий:",
+    "ENTER_COMMENT": "Введите комментарий",
+    "ACTIVITY_TYPE": "Тип активности:",
+    "STATUS": "Статус:",
+    "SAVE": "Сохранить"
+  }
+}

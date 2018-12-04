@@ -16,6 +16,7 @@ import SprintSelector from '../../SprintSelector';
 
 import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
 import { storageType } from '../../FiltrersManager/helpers';
+import { isOnlyDevOps } from '../../../utils/isDevOps';
 
 const storage = storageType === 'local' ? localStorage : sessionStorage;
 
@@ -67,22 +68,26 @@ class FilterForm extends React.Component {
     };
   }
 
-  getSprintTime(sprints) {
-    return sprints && sprints.length && this.props.sprints && this.props.sprints.length
-      ? sprints.map(sprint => {
-          const sprintData = this.props.sprints.find(data => data.id === +sprint.value) || {};
+  getSprintTime(sprintIds) {
+    return sprintIds && sprintIds.length && this.props.sprints && this.props.sprints.length
+      ? sprintIds.map(sprintId => {
+          const sprintData = this.props.sprints.find(data => data.id === +sprintId) || {};
           return `${sprintData.spentTime || 0} / ${sprintData.budget || 0}`;
         })
       : [];
   }
 
-  clearFilters = () => {
-    this.props.clearFilters({ changedSprint: [0] }, this.updateListsAndTasks);
-    storage.setItem('sprintFilterChanged', 1);
+  clearFilters = type => {
+    if (type === 'sprints') {
+      this.props.clearFilters({ changedSprint: [0] }, this.updateListsAndTasks);
+      storage.setItem('sprintFilterChanged', 1);
+    } else {
+      this.props.setFilterValue(type, [], this.updateListsAndTasks);
+    }
   };
 
   render() {
-    const { filters, lang } = this.props;
+    const { filters, lang, user, project } = this.props;
     return (
       <div className={css.filtersRowWrapper}>
         <Row className={css.filtersRow}>
@@ -108,12 +113,14 @@ class FilterForm extends React.Component {
               placeholder={localize[lang].TAG_NAME}
               backspaceToRemoveMessage=""
               onChange={this.selectTagForFiltrated}
-              noResultsText="Нет результатов"
+              noResultsText={localize[lang].NO_RESULTS}
               filterOption={layoutAgnosticFilter}
+              canClear
+              onClear={() => this.clearFilters('filterTags')}
               {...this.getFilterTagsProps()}
             />
           </Col>
-          {!this.isVisor ? (
+          {!this.isVisor && !isOnlyDevOps(user, project.id) ? (
             <Col className={css.filterButtonCol}>
               <Button
                 onClick={this.props.openCreateTaskModal}
@@ -160,21 +167,20 @@ class FilterForm extends React.Component {
               value={this.props.filters.typeId}
               options={this.props.typeOptions}
               onChange={this.onTypeFilterChange}
+              canClear
+              onClear={() => this.clearFilters('typeId')}
             />
           </Col>
         </Row>
         <Row className={css.filtersRow}>
           <Col xs={12} sm={6} className={css.changedSprint}>
             <SprintSelector
-              name="changedSprint"
-              placeholder={localize[lang].SELECT_SPRINT}
               multi
-              backspaceToRemoveMessage=""
+              searchable
+              clearable={false}
               value={filters.changedSprint}
               onChange={this.onSprintsFilterChange}
-              noResultsText={localize[lang].NO_RESULTS}
               options={this.props.sortedSprints}
-              filterOption={layoutAgnosticFilter}
             />
             <div className={css.sprintTimeWrapper}>
               {!this.isExternal
@@ -199,7 +205,7 @@ class FilterForm extends React.Component {
           </Col>
           <Col className={css.filterButtonCol}>
             <Button
-              onClick={this.clearFilters}
+              onClick={() => this.clearFilters('sprints')}
               type="primary"
               text={localize[lang].CLEAR_FILTERS}
               icon="IconBroom"

@@ -2,11 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { IconFileDocument, IconFilePdf, IconDelete, IconDownload } from '../Icons';
 import ConfirmModal from '../ConfirmModal';
+import localize from './AttachedDocument.json';
 
 export default class AttachedDocument extends React.Component {
   static propTypes = {
+    canEdit: PropTypes.bool,
     fileName: PropTypes.string.isRequired,
     id: PropTypes.number,
+    lang: PropTypes.string,
     path: PropTypes.string.isRequired,
     removeAttachment: PropTypes.func.isRequired,
     removeInProgress: PropTypes.bool,
@@ -49,7 +52,7 @@ export default class AttachedDocument extends React.Component {
       fill: 'currentColor'
     };
 
-    const { fileName, path, canEdit } = this.props;
+    const { fileName, path, canEdit, lang } = this.props;
 
     return (
       <li className={css.attachment}>
@@ -74,7 +77,7 @@ export default class AttachedDocument extends React.Component {
           <ConfirmModal
             isOpen
             contentLabel="modal"
-            text="Вы действительно хотите удалить этот файл?"
+            text={localize[lang].CONFIRM_DELETE}
             onCancel={this.handleCloseConfirmDelete}
             onConfirm={this.handleRemove}
             onRequestClose={this.handleCloseConfirmDelete}
@@ -84,6 +87,3 @@ export default class AttachedDocument extends React.Component {
     );
   }
 }
-AttachedDocument.propTypes = {
-  canEdit: PropTypes.bool
-};

@@ -12,7 +12,14 @@
     "NAME_PLACEHOLDER": "Project Name",
     "PREFIX_PLACEHOLDER": "Project prefix",
     "TYPE_PLACEHOLDER": "Type of project",
-    "NO_RESULTS": "No results"
+    "NO_RESULTS": "No results",
+    "CHOOSE_PORTFOLIO": "Choose portfolio",
+    "ENTER_PORTFOLIO_NAME": "Enter portfolio name",
+    "CREATE_PORTFOLIO": "Create portfolio",
+    "UNDEFINED": "No type",
+    "PRODUCT": "Product",
+    "INTERNSHIP": "Internship",
+    "INTERNAL": "Internal"
   },
 
   "ru": {
@@ -28,6 +35,13 @@
     "NAME_PLACEHOLDER": "Название проекта",
     "PREFIX_PLACEHOLDER": "Префикс проекта",
     "TYPE_PLACEHOLDER": "Тип проекта",
-    "NO_RESULTS": "Нет результатов"
+    "NO_RESULTS": "Нет результатов",
+    "CHOOSE_PORTFOLIO": "Выберите портфель",
+    "ENTER_PORTFOLIO_NAME": "Введите название портфеля",
+    "CREATE_PORTFOLIO": "Создать портфель",
+    "UNDEFINED": "Без типа",
+    "PRODUCT": "Продуктовый",
+    "INTERNSHIP": "Стажировка",
+    "INTERNAL": "Внутренний"
   }
 }

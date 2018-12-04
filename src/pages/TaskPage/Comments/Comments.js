@@ -28,6 +28,7 @@ import Mentions from './Mentions/Mentions';
 import FileUpload from '../../../components/FileUpload';
 import InlineHolder from '../../../components/InlineHolder';
 import { IconPreloader } from '../../../components/Icons';
+import { getFullName } from '../../../utils/NameLocalisation';
 
 import {
   prepairCommentForEdit,
@@ -158,12 +159,19 @@ class Comments extends Component {
   };
 
   setCommentForEdit = (comment, attachmentIds) => {
-    this.props.setCommentForEdit(this.props.comments.find(c => c.id === comment.id)).then(() => {
+    const editedComment = this.props.comments.find(c => c.id === comment.id);
+    editedComment.text = this.replaceHTMLCharacters(editedComment.text);
+    this.props.setCommentForEdit(editedComment).then(() => {
       this.setState({ resizeKey: shortId() });
     });
     if (attachmentIds) {
       this.prepareAttachmentsForEdit(attachmentIds);
     }
+  };
+
+  replaceHTMLCharacters = text => {
+    const newText = text.replace(/<br>/g, '\n');
+    return newText;
   };
 
   toggleBtn = evt => {
@@ -294,21 +302,21 @@ class Comments extends Component {
           <InlineHolder length="30%" />
         </div>
       );
+    const users = this.users.map(u => ({ id: u.id, display: getFullName(u) }));
     return (
       <div className={css.comments}>
         <ul className={css.commentList}>
           <form className={css.answerLine}>
             <div className={css.answerLineText}>
               <Mentions
+                suggestions={users}
                 resizeKey={this.state.resizeKey}
-                style={{ minHeight: 32 }}
                 className={css.resizeTrue}
                 disabled={this.props.currentComment.disabled || this.props.currentComment.expired}
                 placeholder={localize[lang].ENTER_COMMENT}
                 onKeyDown={this.publishComment}
                 value={prepairCommentForEdit(this.props.currentComment.text, this.users)}
                 updateCurrentCommentText={this.props.updateCurrentCommentText}
-                suggestions={this.users}
                 toggleBtn={this.toggleBtn}
                 onInput={this.typeComment}
                 setMentions={this.setMentions}

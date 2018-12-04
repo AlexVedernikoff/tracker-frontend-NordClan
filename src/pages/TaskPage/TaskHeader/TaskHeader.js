@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import * as _ from 'lodash';
 import Button from '../../../components/Button';
 import ConfirmModal from '../../../components/ConfirmModal';
 import { Link } from 'react-router';
@@ -16,6 +17,15 @@ import getTypeById from '../../../utils/TaskTypes';
 import localize from './TaskHeader.json';
 import { getFullName } from '../../../utils/NameLocalisation';
 import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
+import { createSelector } from 'reselect';
+import sortPerformer from '../../../utils/sortPerformer';
+import { addActivity } from '../../../actions/Timesheets';
+import moment from 'moment';
+import shortid from 'shortid';
+
+const usersSelector = state => state.Project.project.users;
+
+const sortedUsersSelector = createSelector(usersSelector, users => sortPerformer(users));
 
 const getNewStatus = newPhase => {
   let newStatusId;
@@ -54,8 +64,17 @@ class TaskHeader extends Component {
       isPerformerModalOpen: false,
       modalTitle: '',
       performer: null,
-      clickedStatus: ''
+      clickedStatus: '',
+      isTaskLoaded: false
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.task.project && nextProps.task.project) {
+      this.setState({
+        isTaskLoaded: true
+      });
+    }
   }
 
   createChangeStatusHandler = (statusStop, statusPlay, statusName) => () => {
@@ -78,6 +97,26 @@ class TaskHeader extends Component {
 
   handleOpenModal = () => {
     this.props.getProjectUsers(this.props.projectId);
+    this.props.addActivity({
+      id: `temp-${shortid.generate()}`,
+      comment: null,
+      task: {
+        id: this.props.task.id,
+        name: this.props.task.name,
+        sprint: this.props.task.sprint
+      },
+      taskStatusId: this.props.task.statusId,
+      typeId: this.props.task.typeId,
+      spentTime: '0',
+      sprintId: this.props.task.sprint && this.props.task.sprint.id,
+      sprint: this.props.task.sprint,
+      onDate: moment(this.props.startingDay).format('YYYY-MM-DD'),
+      project: {
+        id: this.props.task.project.id,
+        name: this.props.task.project.name,
+        prefix: this.props.task.project.prefix
+      }
+    });
     this.setState({
       performer: this.props.task.performer ? this.props.task.performer.id : null,
       isPerformerModalOpen: true,
@@ -153,12 +192,12 @@ class TaskHeader extends Component {
   };
 
   getButtonTip = (inProcessStatusId, inHoldStatusId, phase) => {
-    const { task } = this.props;
+    const { task, lang } = this.props;
     let tip;
     if (task.statusId === inProcessStatusId) {
-      tip = 'Приостановить';
+      tip = localize[lang].STOP;
     } else if (task.statusId === inHoldStatusId) {
-      tip = 'Начать';
+      tip = localize[lang].PLAY;
     } else {
       tip = `${localize[this.props.lang].MOVE_TO} ${phase}`;
     }
@@ -174,9 +213,58 @@ class TaskHeader extends Component {
   };
 
   render() {
-    const { task, taskTypes, canEdit, lang } = this.props;
+    const { task, taskTypes, canEdit, lang, users } = this.props;
     const css = require('./TaskHeader.scss');
-    const users = this.props.users.map(item => ({
+    let unionPerformers = [];
+    switch (this.state.clickedStatus) {
+      case 'Develop':
+        unionPerformers = _.union(
+          users.pm,
+          users.account,
+          users.teamLead,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android
+        );
+        break;
+      case 'Code Review':
+        unionPerformers = _.union(
+          users.teamLead,
+          users.account,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android
+        );
+        break;
+      case 'QA':
+        unionPerformers = users.qa;
+        break;
+      default:
+        unionPerformers = _.union(
+          users.pm,
+          users.account,
+          users.teamlead,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android,
+          users.qa,
+          users.devops
+        );
+    }
+
+    const usersFullNames = unionPerformers.map(item => ({
       value: item.user ? item.user.id : item.id,
       label: item.user ? getFullName(item.user) : getFullName(item)
     }));
@@ -202,7 +290,7 @@ class TaskHeader extends Component {
         <div className={css.taskTopInfo}>
           <CopyThis
             wrapThisInto={'div'}
-            description={`Ссылка на задачу ${task.project ? task.project.prefix + '-' : ''}${task.id}`}
+            description={`${localize[lang].TASK_LINK} ${task.project ? task.project.prefix + '-' : ''}${task.id}`}
             textToCopy={`${location.origin}${history.createHref(this.props.location)}`}
           >
             {task.project ? (
@@ -229,7 +317,7 @@ class TaskHeader extends Component {
             data-place="bottom"
             addedClassNames={{ [css.buttonCancel]: true }}
             onClick={task.statusId !== TaskStatuses.CANCELED ? this.handleOpenCancelModal : null}
-            disabled={!canEdit}
+            disabled={!canEdit || !this.state.isTaskLoaded}
           />
           <ButtonGroup type="lifecircle" stage="full">
             <Button
@@ -238,6 +326,7 @@ class TaskHeader extends Component {
               data-tip={task.statusId === TaskStatuses.NEW ? null : localize[lang].MOVE_TO_NEW}
               data-place="bottom"
               onClick={this.handleChangeSingleStateStatus(TaskStatuses.NEW, 'New')}
+              disabled={!this.state.isTaskLoaded}
             />
             <Button
               text="Develop"
@@ -246,7 +335,7 @@ class TaskHeader extends Component {
               icon={this.getButtonIcon(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY)}
               onClick={this.createChangeStatusHandler(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY, 'Develop')}
               data-place="bottom"
-              disabled={!canEdit}
+              disabled={!canEdit || !this.state.isTaskLoaded}
             />
             <Button
               text="Code Review"
@@ -259,7 +348,7 @@ class TaskHeader extends Component {
                 'Code Review'
               )}
               data-place="bottom"
-              disabled={!canEdit}
+              disabled={!canEdit || !this.state.isTaskLoaded}
             />
             <Button
               text="QA"
@@ -268,7 +357,7 @@ class TaskHeader extends Component {
               icon={this.getButtonIcon(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY)}
               onClick={this.createChangeStatusHandler(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY, 'QA')}
               data-place="bottom"
-              disabled={!canEdit}
+              disabled={!canEdit || !this.state.isTaskLoaded}
             />
             <Button
               text="Done"
@@ -276,7 +365,7 @@ class TaskHeader extends Component {
               data-tip={task.statusId === TaskStatuses.DONE ? null : localize[lang].MOVE_TO_DONE}
               data-place="bottom"
               onClick={this.handleChangeSingleStateStatus(TaskStatuses.DONE)}
-              disabled={!canEdit}
+              disabled={!canEdit || !this.state.isTaskLoaded}
             />
           </ButtonGroup>
           <Button
@@ -286,7 +375,7 @@ class TaskHeader extends Component {
             data-place="bottom"
             addedClassNames={{ [css.buttonOk]: true }}
             onClick={this.handleChangeSingleStateStatus(TaskStatuses.CLOSED)}
-            disabled={!canEdit}
+            disabled={!canEdit || !this.state.isTaskLoaded}
           />
         </div>
         <hr />
@@ -307,7 +396,7 @@ class TaskHeader extends Component {
             onChoose={this.changePerformer}
             onClose={this.handleCloseModal}
             title={this.state.modalTitle}
-            users={users}
+            users={usersFullNames}
           />
         ) : null}
       </div>
@@ -316,6 +405,7 @@ class TaskHeader extends Component {
 }
 
 TaskHeader.propTypes = {
+  addActivity: PropTypes.func,
   canEdit: PropTypes.bool,
   css: PropTypes.object,
   getProjectUsers: PropTypes.func.isRequired,
@@ -323,19 +413,23 @@ TaskHeader.propTypes = {
   location: PropTypes.object,
   onChange: PropTypes.func.isRequired,
   projectId: PropTypes.string.isRequired,
+  startingDay: PropTypes.object,
   task: PropTypes.object.isRequired,
   taskTypes: PropTypes.array,
-  users: PropTypes.array
+  users: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  users: state.Project.project.users,
+  users: sortedUsersSelector(state),
   location: state.routing.locationBeforeTransitions,
+  startingDay: state.Timesheets.startingDay,
+  task: state.Task.task,
   taskTypes: getLocalizedTaskTypes(state),
   lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
+  addActivity,
   getProjectUsers
 };
 

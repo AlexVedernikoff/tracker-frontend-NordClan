@@ -1,0 +1,12 @@
+{
+  "en": {
+    "SAVE": "Save",
+    "EDIT": "Edit",
+    "ENTER_NUMBER": "Enter number"
+  },
+  "ru": {
+    "SAVE": "Сохранить",
+    "EDIT": "Редактировать",
+    "ENTER_NUMBER": "Введите число"
+  }
+}
