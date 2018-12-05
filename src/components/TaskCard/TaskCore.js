@@ -94,7 +94,9 @@ class TaskCore extends PureComponent {
       task.id,
       task.performer ? task.performer.id : null,
       task.project ? task.project.id : null,
-      task.statusId
+      task.statusId,
+      null,
+      true
     );
   };
 
