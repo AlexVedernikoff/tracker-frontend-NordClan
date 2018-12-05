@@ -50,32 +50,31 @@ const jiraAuthorize = credentials => {
   };
 };
 
-const jiraCreateProjectStart = () => ({
+const jiraAssociateProjectStart = () => ({
   type: JiraActions.JIRA_CREATE_PROJECT_START
 });
 
-const jiraCreateProjectSuccess = project => ({
+const jiraAssociateProjectSuccess = project => ({
   type: JiraActions.JIRA_CREATE_PROJECT_SUCCESS,
   project
 });
 
-const jiraCreateProjectError = () => ({
+const jiraAssociateProjectError = () => ({
   type: JiraActions.JIRA_CREATE_PROJECT_ERROR
 });
 
-const jiraCreateProject = (headers, data) => {
-  const { jiraProjectId: id, prefix, authorId } = data;
-  const URL = `${API_URL}/jira/project`;
+const associateWithJiraProject = (headers, data) => {
+  const { jiraProjectId: id, simtrackProjectId, jiraHostName } = data;
+  const URL = `${API_URL}/jira/associateProjectWithJira`;
   return dispatch => {
     dispatch(startLoading());
-    dispatch(jiraCreateProjectStart());
+    dispatch(jiraAssociateProjectStart());
     return axios
       .post(
         URL,
         {
-          id,
-          authorId,
-          prefix
+          jiraProjectId: id,
+          simtrackProjectId
         },
         {
           withCredentials: true,
@@ -84,14 +83,14 @@ const jiraCreateProject = (headers, data) => {
       )
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(jiraCreateProjectSuccess(response.data));
+          dispatch(jiraAssociateProjectSuccess(response.data));
         }
         dispatch(finishLoading());
         return response.data;
       })
       .catch(error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(jiraCreateProjectError(error.response.data));
+        dispatch(jiraAssociateProjectError(error.response.data));
         dispatch(finishLoading());
         throw error;
       });
@@ -116,14 +115,13 @@ const getJiraProjects = headers => {
   return dispatch => {
     dispatch(startLoading());
     dispatch(getJiraProjectsStart());
-    return axios
+    axios
       .get(URL, { headers })
       .then(response => {
         if (response && response.status === 200) {
           dispatch(getJiraProjectsSuccess(response.data.projects));
         }
         dispatch(finishLoading());
-        return response.data;
       })
       .catch(error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
@@ -300,7 +298,7 @@ const getProjectAssociation = projectId => {
 
 export {
   jiraAuthorize,
-  jiraCreateProject,
+  associateWithJiraProject,
   getJiraProjects,
   getSimtrackUsersByName,
   setAssociation,
