@@ -25,8 +25,10 @@ import localize from './Details.json';
 import { getFullName } from '../../../utils/NameLocalisation';
 import { TASK_STATUS_CLOSED } from '../../../constants/Task';
 import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
+import { getDevOpsUsers } from '../../../actions/Users';
 import shortid from 'shortid';
 import { addActivity } from '../../../actions/Timesheets';
+import { devOpsUsersSelector } from '../../../utils/sortPerformer';
 import { sortedUsersSelector } from '../../../selectors/Project';
 
 const spentRequestStatus = {
@@ -41,6 +43,7 @@ class Details extends Component {
     PlanningTimeIsEditing: PropTypes.bool,
     addActivity: PropTypes.func,
     canEdit: PropTypes.bool,
+    devOpsUsers: PropTypes.array,
     getProjectSprints: PropTypes.func.isRequired,
     getProjectUsers: PropTypes.func.isRequired,
     getTask: PropTypes.func.isRequired,
@@ -234,7 +237,7 @@ class Details extends Component {
     switch (this.props.task.statusId) {
       case 2:
         unionPerformers = _.union(
-          users.devops,
+          task.isDevOps ? this.props.devOpsUsers : [],
           users.pm,
           users.teamLead,
           users.account,
@@ -250,7 +253,7 @@ class Details extends Component {
 
       case 3:
         unionPerformers = _.union(
-          users.devops,
+          task.isDevOps ? this.props.devOpsUsers : [],
           users.pm,
           users.teamLead,
           users.account,
@@ -302,7 +305,7 @@ class Details extends Component {
 
       default:
         unionPerformers = _.union(
-          users.devops,
+          task.isDevOps ? this.props.devOpsUsers : [],
           users.pm,
           users.teamLead,
           users.account,
@@ -520,6 +523,7 @@ class Details extends Component {
 }
 
 const mapStateToProps = state => ({
+  devOpsUsers: devOpsUsersSelector(state),
   users: sortedUsersSelector(state),
   sprints: state.Project.project.sprints,
   task: state.Task.task,
@@ -537,7 +541,8 @@ const mapDispatchToProps = {
   getProjectUsers,
   getProjectSprints,
   getTask,
-  getTaskSpent
+  getTaskSpent,
+  getDevOpsUsers
 };
 
 export default connect(

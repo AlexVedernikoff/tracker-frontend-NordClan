@@ -121,6 +121,7 @@ const sortedUsersSelector = createSelector(usersSelector, users => sortPerformer
 
 const agileBoardSelector = state => {
   return {
+    devOpsUsers: state.UserList.devOpsUsers,
     tasks: getSortedTasks(state),
     myTasks: getMyTasks(state),
     tags: getAllTags(state),

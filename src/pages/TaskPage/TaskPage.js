@@ -44,6 +44,7 @@ import { getRoles } from '../../actions/Dictionaries';
 import localize from './taskPage.json';
 import { checkIsAdminInProject } from '../../utils/isAdmin';
 import { isOnlyDevOps } from '../../utils/isDevOps';
+import { getDevOpsUsers } from '../../actions/Users';
 
 class TaskPage extends Component {
   static propTypes = {
@@ -51,6 +52,8 @@ class TaskPage extends Component {
     changeTask: PropTypes.func.isRequired,
     children: PropTypes.object,
     clearError: PropTypes.func,
+    devOpsUsers: PropTypes.array,
+    getDevOpsUsers: PropTypes.func,
     getProjectInfo: PropTypes.func.isRequired,
     getRoles: PropTypes.func.isRequired,
     getTask: PropTypes.func.isRequired,
@@ -101,6 +104,9 @@ class TaskPage extends Component {
     this.props.getTask(this.props.params.taskId);
     this.props.getProjectInfo(this.props.params.projectId);
     this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave);
+    if (!this.props.devOpsUsers) {
+      this.props.getDevOpsUsers();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -422,6 +428,7 @@ class TaskPage extends Component {
 }
 
 const mapStateToProps = state => ({
+  devOpsUsers: state.UserList.devOpsUsers,
   project: state.Project.project,
   projectTasks: state.Tasks.tasks,
   task: state.Task.task,
@@ -441,6 +448,7 @@ const mapDispatchToProps = {
   clearError,
   getTasks,
   getProjectInfo,
+  getDevOpsUsers,
   linkTask,
   openCreateTaskModal,
   openCreateChildTaskModal,
