@@ -6,6 +6,7 @@ import TwoWayOptionsClass from '../../../utils/TwoWayOptionsClass';
 import * as css from './TypeFilter.scss';
 import Select from '../../../components/SelectDropdown';
 import localize from './TypeFilter.json';
+import { getProjectTypes } from '../../../selectors/dictionaries';
 
 class TypeFilter extends Component {
   static propTypes = {
@@ -46,8 +47,8 @@ class TypeFilter extends Component {
   };
 
   render() {
-    const { lang, ...other } = this.props;
-
+    const { lang, projectTypes, ...other } = this.props;
+    const options = projectTypes.map(type => ({ value: type.id, label: localize[this.props.lang][type.codename] }));
     return (
       <div className={css.typeFilter}>
         <Select
@@ -56,7 +57,7 @@ class TypeFilter extends Component {
           multi
           noResultsText={localize[lang].NO_RESULTS}
           backspaceRemoves={false}
-          options={this.options}
+          options={options}
           onChange={this.onChange}
           {...other}
         />
@@ -65,16 +66,9 @@ class TypeFilter extends Component {
   }
 }
 
-// export default TypeFilter;
 const mapStateToProps = state => ({
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  projectTypes: getProjectTypes(state) || []
 });
 
-const mapDispatchToProps = {
-  TypeFilter
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TypeFilter);
+export default connect(mapStateToProps)(TypeFilter);

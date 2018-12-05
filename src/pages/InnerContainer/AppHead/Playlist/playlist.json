@@ -11,7 +11,15 @@
     "NOTHING_TO_SHOW": "There are no time reports suitable for the selected parameters.",
     "SHOW_HIDDEN": "Show hidden",
     "HIDE": "Hide",
-    "ALL": "All activities"
+    "ALL": "All activities",
+    "IMPLEMENTATION": "Implementation",
+    "MEETING": "Meeting",
+    "PRESALE": "Presale and estimation",
+    "EDUCATION": "Education",
+    "VACATION": "Vacation",
+    "BUSINESS_TRIP": "Business trip",
+    "CONTROL": "Managment",
+    "HOSPITAL": "On sick leave"
   },
   "ru": {
     "Mo": "Пн",
@@ -25,6 +33,14 @@
     "NOTHING_TO_SHOW": "Отсутствуют отчеты по времени, подходящие под выбранные параметры.",
     "SHOW_HIDDEN": "Показать скрытые",
     "HIDE": "Скрыть",
-    "ALL": "Все активности"
+    "ALL": "Все активности",
+    "IMPLEMENTATION": "Implementation",
+    "MEETING": "Совещание",
+    "PRESALE": "Преселлинг и оценка",
+    "EDUCATION": "Обучение",
+    "VACATION": "Отпуск",
+    "BUSINESS_TRIP": "Командировка",
+    "CONTROL": "Управление",
+    "HOSPITAL": "Больничный"
   }
 }

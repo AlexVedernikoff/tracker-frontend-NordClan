@@ -11,8 +11,7 @@ import { connect } from 'react-redux';
 import { createMilestone } from '../../../../actions/Milestone';
 import SelectDropdown from '../../../../components/SelectDropdown';
 import localize from './CreateMilestoneModal.json';
-import { getDictionaryName } from '../../../../utils/NameLocalisation';
-import { getLocalizedMilestoneTypes } from '../../../../selectors/dictionaries';
+import { getMilestoneTypes } from '../../../../selectors/dictionaries';
 
 class CreateMilestoneModal extends Component {
   static propTypes = {
@@ -73,7 +72,11 @@ class CreateMilestoneModal extends Component {
       secondCol: 8
     };
     const { milestoneTypes, lang } = this.props;
-    const options = milestoneTypes.map(type => ({ value: type.id, label: getDictionaryName(type) }));
+    const options = milestoneTypes.map(type => ({
+      value: type.id,
+      label: localize[lang][type.codename]
+    }));
+
     return (
       <Modal isOpen contentLabel="modal" onRequestClose={this.props.onClose}>
         <div>
@@ -151,7 +154,7 @@ class CreateMilestoneModal extends Component {
 
 const mapStateToProps = state => ({
   projectId: state.Project.project.id,
-  milestoneTypes: getLocalizedMilestoneTypes(state) || [],
+  milestoneTypes: getMilestoneTypes(state) || [],
   lang: state.Localize.lang
 });
 

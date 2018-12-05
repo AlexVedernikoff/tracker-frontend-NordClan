@@ -58,8 +58,13 @@
     left: -1rem;
 
     &:before {
-      left: 19px;
-      top: -8px;
+      left: 25px;
+      bottom: 100%;
+    }
+
+    &:after {
+      bottom: 100%;
+      left: 27px;
     }
   }
 }

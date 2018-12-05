@@ -2,11 +2,19 @@
   "en": {
     "PROJECT_TYPE": "Type of project",
     "SELECT_PROJECT_TYPE": "Select type of project",
-    "NO_RESULTS": "No results"
+    "NO_RESULTS": "No results",
+    "UNDEFINED": "No type",
+    "PRODUCT": "Product",
+    "INTERNSHIP": "Internship",
+    "INTERNAL": "Internal"
   },
   "ru": {
     "PROJECT_TYPE": "Тип проекта",
     "SELECT_PROJECT_TYPE": "Выберите тип проекта",
-    "NO_RESULTS": "Нет результатов"
+    "NO_RESULTS": "Нет результатов",
+    "UNDEFINED": "Без типа",
+    "PRODUCT": "Продуктовый",
+    "INTERNSHIP": "Стажировка",
+    "INTERNAL": "Внутренний"
   }
 }

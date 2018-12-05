@@ -59,7 +59,7 @@ const addGitlabProjectByName = (projectId, path) => {
         dispatch(finishLoading());
       })
       .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(showNotification({ message: error.response.data.message || error.message, type: 'error' }));
         dispatch(addingGitlabProjectFail(error.response.data));
         dispatch(finishLoading());
       });
@@ -106,7 +106,8 @@ const createGitlabProject = (projectId, name, namespace_id) => {
         dispatch(finishLoading());
       })
       .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
+        const message = error.response ? error.response.data.status + ' ' + error.response.data.message : error.message;
+        dispatch(showNotification({ message, type: 'error' }));
         dispatch(createGitlabProjectFail());
         dispatch(finishLoading());
       });

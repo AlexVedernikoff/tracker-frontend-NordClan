@@ -203,6 +203,12 @@ class CreateTaskModal extends Component {
     this.setState({ descriptionInvalid: description.length > MAX_DESCRIPTION_LENGTH });
   };
 
+  generateError = () => {
+    return this.state.taskName.length < 4
+      ? localize[this.props.lang].NAME_ERROR_LESS_SYMBOLS
+      : localize[this.props.lang].NAME_ERROR_MORE_SYMBOLS;
+  };
+
   render() {
     const formLayout = {
       firstCol: 4,
@@ -240,7 +246,7 @@ class CreateTaskModal extends Component {
                       onBlur={handleBlur}
                       onEnter={this.validateAndSubmit}
                       shouldMarkError={shouldMarkError}
-                      errorText={localize[lang].NAME_ERROR}
+                      errorText={this.generateError()}
                     />
                   ),
                   'taskName',
@@ -270,7 +276,7 @@ class CreateTaskModal extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Тэги:</p>
+                <p>{localize[lang].TAGS}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
                 <Tags taggable="task" noRequest create canEdit createTagsModalTask={this.addTag}>
@@ -379,7 +385,7 @@ class CreateTaskModal extends Component {
                 <InputNumber
                   min={0}
                   maxLength={5}
-                  postfix={'ч.'}
+                  postfix={localize[lang].HOURS}
                   onChange={this.handleChangePlannedTime}
                   value={this.state.plannedExecutionTime}
                 />

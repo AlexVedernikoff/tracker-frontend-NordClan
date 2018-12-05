@@ -1,9 +1,15 @@
 const getRoles = user => {
+  const roles = [];
   for (const key in user.roles) {
     if (user.roles[key]) {
-      return key;
+      roles.push(key);
     }
   }
+
+  if (roles.length) {
+    return roles;
+  }
+
   return 'other';
 };
 
@@ -18,20 +24,29 @@ export const devOpsUsersSelector = state =>
 
 const sortPerformer = users => {
   const userArray = {
+    devops: [],
+    pm: [],
+    teamLead: [],
+    account: [],
+    analyst: [],
     back: [],
     front: [],
+    ux: [],
+    mobile: [],
     ios: [],
     android: [],
     qa: [],
     other: []
   };
   users.forEach(user => {
-    const role = getRoles(user);
-    if (userArray[role]) {
-      userArray[role].push(user);
-    } else {
-      userArray.other.push(user);
-    }
+    const roles = getRoles(user);
+    roles.forEach(role => {
+      if (userArray[role]) {
+        userArray[role].push(user);
+      } else {
+        userArray.other.push(user);
+      }
+    });
   });
   for (const key in userArray) {
     userArray[key].sort(alphabeticallyComparator);

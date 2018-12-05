@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 import { Link } from 'react-router';
 import ReactTooltip from 'react-tooltip';
-import { createSelector } from 'reselect';
 import Tag from '../../../components/Tag';
 import Tags from '../../../components/Tags';
 import TaskPlanningTime from '../TaskPlanningTime';
@@ -29,17 +28,14 @@ import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
 import { getDevOpsUsers } from '../../../actions/Users';
 import shortid from 'shortid';
 import { addActivity } from '../../../actions/Timesheets';
-import sortPerformer, { devOpsUsersSelector } from '../../../utils/sortPerformer';
+import { devOpsUsersSelector } from '../../../utils/sortPerformer';
+import { sortedUsersSelector } from '../../../selectors/Project';
 
 const spentRequestStatus = {
   READY: 0,
   REQUESTED: 1,
   RECEIVED: 2
 };
-
-const usersSelector = state => state.Project.project.users;
-
-const sortedUsersSelector = createSelector(usersSelector, users => sortPerformer(users));
 
 class Details extends Component {
   static propTypes = {
@@ -128,7 +124,7 @@ class Details extends Component {
       taskStatusId: this.props.task.statusId,
       typeId: this.props.task.typeId,
       spentTime: '0',
-      sprintId: this.props.task.sprint.id,
+      sprintId: this.props.task.sprint && this.props.task.sprint.id,
       sprint: this.props.task.sprint,
       onDate: moment(this.props.startingDay).format('YYYY-MM-DD'),
       project: {
@@ -236,14 +232,93 @@ class Details extends Component {
       return <Tag key={i} name={tagName} taggable="task" taggableId={task.id} />;
     });
 
-    const unionPerformers = _.union(
-      users.back,
-      users.front,
-      users.ios,
-      users.android,
-      users.qa,
-      task.isDevOps ? users.other.concat(this.props.devOpsUsers) : users.other
-    );
+    let unionPerformers = [];
+
+    switch (this.props.task.statusId) {
+      case 2:
+        unionPerformers = _.union(
+          task.isDevOps ? this.props.devOpsUsers : [],
+          users.pm,
+          users.teamLead,
+          users.account,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android
+        );
+        break;
+
+      case 3:
+        unionPerformers = _.union(
+          task.isDevOps ? this.props.devOpsUsers : [],
+          users.pm,
+          users.teamLead,
+          users.account,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android
+        );
+        break;
+
+      case 4:
+        unionPerformers = _.union(
+          users.teamLead,
+          users.account,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android
+        );
+        break;
+
+      case 5:
+        unionPerformers = _.union(
+          users.teamLead,
+          users.account,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android
+        );
+        break;
+
+      case 6:
+        unionPerformers = users.qa;
+        break;
+
+      case 7:
+        unionPerformers = users.qa;
+        break;
+
+      default:
+        unionPerformers = _.union(
+          task.isDevOps ? this.props.devOpsUsers : [],
+          users.pm,
+          users.teamLead,
+          users.account,
+          users.analyst,
+          users.back,
+          users.front,
+          users.ux,
+          users.mobile,
+          users.ios,
+          users.android,
+          users.qa
+        );
+    }
 
     const usersFullNames = unionPerformers.map(item => ({
       value: item.user ? item.user.id : item.id,
@@ -451,6 +526,7 @@ const mapStateToProps = state => ({
   devOpsUsers: devOpsUsersSelector(state),
   users: sortedUsersSelector(state),
   sprints: state.Project.project.sprints,
+  task: state.Task.task,
   taskTypes: getLocalizedTaskTypes(state),
   plannedExecutionTime: state.Task.task.plannedExecutionTime,
   PlanningTimeIsEditing: state.Task.PlanningTimeIsEditing,

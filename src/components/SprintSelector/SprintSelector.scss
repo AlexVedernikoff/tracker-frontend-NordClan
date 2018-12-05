@@ -1,7 +1,15 @@
 @import '../../styles/variables.scss';
 
+.sprint-dropdown {
+  position: relative;
+}
+
 .sprintInputBlured {
   position: absolute;
+}
+
+.sprintInputFocused {
+  position: static;
 }
 
 .sprintMarker {

@@ -17,12 +17,14 @@ class PerformerFilter extends React.Component {
   };
 
   getUsers = () => {
-    const users = _.uniqWith(this.props.users.concat(this.props.devOpsUsers), (val, val2) => val.id === val2.id).map(
-      user => ({
-        value: user.id,
-        label: getFullName(user)
-      })
-    );
+    const { devOpsUsers } = this.props;
+    const users = _.uniqWith(
+      this.props.users.concat(devOpsUsers ? devOpsUsers : []),
+      (val, val2) => val.id === val2.id
+    ).map(user => ({
+      value: user.id,
+      label: getFullName(user)
+    }));
     users.unshift({ value: '0', label: localize[this.props.lang].NOT_CHANGED });
     return users;
   };

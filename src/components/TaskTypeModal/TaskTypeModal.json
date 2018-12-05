@@ -1,11 +1,11 @@
 {
   "en": {
     "CHANGE_TASK_TYPE": "Change task type",
-    "CHOOSE_TASK_TYPE": "Choose task type..."
+    "CHOOSE_TASK_TYPE": "Select the type of task"
   },
 
   "ru": {
     "CHANGE_TASK_TYPE": "Изменить тип задачи",
-    "CHOOSE_TASK_TYPE": "Выберите тип задачи..."
+    "CHOOSE_TASK_TYPE": "Выберите тип задачи"
   }
 }

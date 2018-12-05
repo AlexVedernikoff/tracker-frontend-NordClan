@@ -77,9 +77,13 @@ class FilterForm extends React.Component {
       : [];
   }
 
-  clearFilters = () => {
-    this.props.clearFilters({ changedSprint: [0] }, this.updateListsAndTasks);
-    storage.setItem('sprintFilterChanged', 1);
+  clearFilters = type => {
+    if (type === 'sprints') {
+      this.props.clearFilters({ changedSprint: [0] }, this.updateListsAndTasks);
+      storage.setItem('sprintFilterChanged', 1);
+    } else {
+      this.props.setFilterValue(type, [], this.updateListsAndTasks);
+    }
   };
 
   render() {
@@ -111,6 +115,8 @@ class FilterForm extends React.Component {
               onChange={this.selectTagForFiltrated}
               noResultsText={localize[lang].NO_RESULTS}
               filterOption={layoutAgnosticFilter}
+              canClear
+              onClear={() => this.clearFilters('filterTags')}
               {...this.getFilterTagsProps()}
             />
           </Col>
@@ -161,6 +167,8 @@ class FilterForm extends React.Component {
               value={this.props.filters.typeId}
               options={this.props.typeOptions}
               onChange={this.onTypeFilterChange}
+              canClear
+              onClear={() => this.clearFilters('typeId')}
             />
           </Col>
         </Row>
@@ -168,7 +176,7 @@ class FilterForm extends React.Component {
           <Col xs={12} sm={6} className={css.changedSprint}>
             <SprintSelector
               multi
-              searchable={false}
+              searchable
               clearable={false}
               value={filters.changedSprint}
               onChange={this.onSprintsFilterChange}
@@ -197,7 +205,7 @@ class FilterForm extends React.Component {
           </Col>
           <Col className={css.filterButtonCol}>
             <Button
-              onClick={this.clearFilters}
+              onClick={() => this.clearFilters('sprints')}
               type="primary"
               text={localize[lang].CLEAR_FILTERS}
               icon="IconBroom"

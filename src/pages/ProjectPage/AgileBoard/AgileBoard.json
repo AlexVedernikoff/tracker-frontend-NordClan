@@ -1,6 +1,6 @@
 {
   "en": {
-    "PRIORITY": "Priority",
+    "PRIORITY": "Priority:",
     "MY_TASKS": "Only my tasks",
     "TAG_NAME": "Enter tag name",
     "CREATE_TASK": "Create new task",
@@ -12,7 +12,7 @@
     "NO_RESULTS": "No results",
     "SELECT_AUTHOR": "Select the author of task",
     "CLEAR_FILTERS": "Clear filters",
-    "CHANGE_PERFORMER": "Change other performer for task",
+    "CHANGE_PERFORMER": "Change task performer",
     "WITHOUT_TAG": "No tag"
   },
   "ru": {

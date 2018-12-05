@@ -192,7 +192,7 @@ class AddExternalUser extends Component {
                         placeholder={localize[lang].ENTER_YOUR_USERNAME}
                         onBlur={handleBlur}
                         shouldMarkError={shouldMarkError}
-                        errorText={localize[lang].ENTER_YOUR_USERNAME}
+                        errorText={localize[lang].MUST_BE_FILLED}
                       />
                     ),
                     'exUserName',

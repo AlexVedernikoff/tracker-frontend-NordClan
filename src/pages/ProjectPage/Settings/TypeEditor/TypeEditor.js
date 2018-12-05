@@ -7,7 +7,7 @@ import Select from '../../../../components/SelectDropdown';
 import * as css from './TypeEditor.scss';
 import checkProjectAdmin from '../../../../utils/checkProjectAdmin';
 import localize from './TypeEditor.json';
-import { getLocalizedProjectTypes } from '../../../../selectors/dictionaries';
+import { getProjectTypes } from '../../../../selectors/dictionaries';
 
 class TypeEditor extends Component {
   static propTypes = {
@@ -32,7 +32,7 @@ class TypeEditor extends Component {
   render() {
     const { projectTypes, project, user, lang } = this.props;
     const isProjectAdmin = checkProjectAdmin(user, project.id);
-    const options = projectTypes.map(type => ({ value: type.id, label: type.name }));
+    const options = projectTypes.map(type => ({ value: type.id, label: localize[lang][type.codename] }));
 
     return (
       <div className={css.TypeEditor}>
@@ -57,7 +57,7 @@ class TypeEditor extends Component {
 
 function mapStateToProps(state) {
   return {
-    projectTypes: getLocalizedProjectTypes(state) || [],
+    projectTypes: getProjectTypes(state) || [],
     project: state.Project.project,
     user: state.Auth.user,
     lang: state.Localize.lang

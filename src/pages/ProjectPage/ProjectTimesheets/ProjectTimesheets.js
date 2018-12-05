@@ -27,7 +27,8 @@ class ProjectTimesheets extends React.Component {
     list: PropTypes.array,
     params: PropTypes.object,
     startingDay: PropTypes.object,
-    tempTimesheets: PropTypes.array
+    tempTimesheets: PropTypes.array,
+    users: PropTypes.arrayOf(PropTypes.object)
   };
 
   state = {
@@ -278,10 +279,12 @@ class ProjectTimesheets extends React.Component {
 
     const userRows = [];
     for (const user of Object.values(users)) {
+      const userName = getFullName(this.props.users.find(el => el.id === user.id));
       userRows.push([
         <UserRow
           key={`${user.id}-${startingDay}`}
           user={user}
+          userName={userName} //fix bug with names
           items={[
             ...user.tasks.map((task, index) => (
               <ActivityRow key={`${task.id}-${startingDay}-task-${index}`} task item={task} />
@@ -430,7 +433,8 @@ const mapStateToProps = state => ({
   tempTimesheets: state.Timesheets.tempTimesheets,
   dateBegin: state.Timesheets.dateBegin,
   dateEnd: state.Timesheets.dateEnd,
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  users: state.Project.project.users
 });
 
 const mapDispatchToProps = {

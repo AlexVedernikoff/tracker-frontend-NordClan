@@ -90,7 +90,15 @@ class TaskCore extends PureComponent {
   handlePerformerClick = event => {
     event.stopPropagation();
     const { task, onOpenPerformerModal } = this.props;
-    onOpenPerformerModal(task.id, task.performer ? task.performer.id : null, null, null, null, task.isDevOps);
+    onOpenPerformerModal(
+      task.id,
+      task.performer ? task.performer.id : null,
+      task.project ? task.project.id : null,
+      task.statusId,
+      null,
+      true,
+      task.isDevOps
+    );
   };
 
   togglePriorityBox = () => {
@@ -137,7 +145,7 @@ class TaskCore extends PureComponent {
     } = this.props;
 
     const prefix = task.prefix ? task.prefix : this.getPrefixFromProject();
-    const performer = task.performer ? task.performer : this.getUserFromProject(task.performerId);
+    const performer = getFullName(this.getUserFromProject(task.performerId));
 
     return connectDragSource(
       <div
@@ -193,7 +201,7 @@ class TaskCore extends PureComponent {
             <span className={css.performer}>
               {task.performerId ? (
                 <span>
-                  {getFullName(performer)}
+                  {performer}
                   <span className={css.preformerEditIcon}>
                     <IconEdit />
                   </span>

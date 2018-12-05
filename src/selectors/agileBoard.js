@@ -1,13 +1,12 @@
 import { createSelector } from 'reselect';
 import moment from 'moment';
 import get from 'lodash/get';
-import sortBy from 'lodash/sortBy';
 import { getAllTags } from './getAllTags';
 import localize from '../pages/ProjectPage/AgileBoard/AgileBoard.json';
-import * as css from '../pages/ProjectPage/AgileBoard/AgileBoard.scss';
 import { getLocalizedTaskTypes, getLocalizedTaskStatuses } from './dictionaries';
 import { getFullName } from '../utils/NameLocalisation';
-import classnames from 'classnames';
+import getSortedSprints from './sprints';
+import sortPerformer from '../utils/sortPerformer';
 
 const selectTasks = state => state.Tasks.tasks;
 
@@ -87,43 +86,12 @@ const getNoTagData = createSelector(
   })
 );
 
-const getSprints = unsortedSprints => {
-  let sprints = sortBy(unsortedSprints, sprint => {
-    return new moment(sprint.factFinishDate);
-  });
-
-  sprints = sprints.map(sprint => ({
-    value: sprint.id,
-    label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${
-      sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}` : '- ...'
-    })`,
-    statusId: sprint.statusId,
-    className: classnames({
-      [css.INPROGRESS]: sprint.statusId === 2,
-      [css.sprintMarker]: true,
-      [css.FINISHED]: sprint.statusId === 1
-    })
-  }));
-
-  sprints.push({
-    value: 0,
-    label: 'Backlog',
-    className: classnames({
-      [css.INPROGRESS]: false,
-      [css.sprintMarker]: true
-    })
-  });
-  return sprints;
-};
-
 const createOptions = (array, labelField) => {
   return array.map(element => ({
     value: element.id,
     label: labelField === 'name' ? element[labelField] : getFullName(element)
   }));
 };
-
-const getSortedSprints = createSelector([selectSprints], sprints => getSprints(sprints));
 
 const currentSprint = sprints => {
   const processedSprints = sprints.filter(sprint => {
@@ -147,6 +115,9 @@ const authorOptions = projectUsers => createOptions(projectUsers);
 
 const getTypeOptions = createSelector([selectTaskType], taskTypes => typeOptions(taskTypes));
 const getAuthorOptions = createSelector([selectProjectUsers], projectUsers => authorOptions(projectUsers));
+
+const usersSelector = state => state.Project.project.users;
+const sortedUsersSelector = createSelector(usersSelector, users => sortPerformer(users));
 
 const agileBoardSelector = state => {
   return {
@@ -172,7 +143,8 @@ const agileBoardSelector = state => {
     globalRole: state.Auth.user.globalRole,
     statuses: getLocalizedTaskStatuses(state),
     taskTypes: getLocalizedTaskTypes(state),
-    lang: state.Localize.lang
+    lang: state.Localize.lang,
+    users: sortedUsersSelector(state)
   };
 };
 

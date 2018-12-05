@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { scroller } from 'react-scroll';
-import find from 'lodash/find';
 import { Col, Row } from 'react-flexbox-grid';
 import * as css from './PerformerOptions.scss';
 import Modal from '../Modal';
@@ -33,73 +31,28 @@ class PerformerOptions extends Component {
 
     this.state = {
       options: this.optionsList,
-      selectedIndex: this.getSelectedIndex(options),
       loggedTime: 0,
       selectedPerformer: props.defaultOption || null,
       commentText: ''
     };
   }
 
-  componentDidMount() {
-    const { options, selectedIndex } = this.state;
-    setTimeout(this.scrollToSelectedOption(options, selectedIndex), 100);
-  }
-
   componentWillReceiveProps(nextProps) {
     const { options, canBeNotSelected } = nextProps;
     const newOptions = this.getOptionsList(options, canBeNotSelected);
-    const newSelectedIndex = this.getSelectedIndex(options);
 
-    this.setState({ options: newOptions, selectedIndex: newSelectedIndex }, () => {
+    this.setState({ options: newOptions }, () => {
       this.optionsList = newOptions;
-      this.scrollToSelectedOption(newOptions, newSelectedIndex)();
     });
   }
-
-  componentWillUnmount() {
-    removeEventListener('keydown', this.moveList);
-  }
-
-  scrollToSelectedOption = (options, selectedIndex) => () => {
-    if (selectedIndex < 0) {
-      return;
-    }
-
-    scroller.scrollTo(options[selectedIndex].value.toString(), {
-      containerId: 'optionsList',
-      offset: 0
-    });
-  };
 
   getOptionsList(options, canBeNotSelected) {
     const optionsList = [...options];
     return canBeNotSelected ? optionsList.concat(notSelectedOption) : optionsList;
   }
 
-  getSelectedIndex(options) {
-    const foundIndex = options.findIndex(option => option.value === this.props.defaultOption);
-    return foundIndex !== -1 ? foundIndex : this.optionsList.length - 1;
-  }
-
-  handleChoose = value => {
-    this.props.onChoose(value);
-  };
-
   onClose = () => {
     this.props.onClose();
-  };
-
-  removeCurrentOption = () => {
-    this.handleChoose(notSelectedOption.value);
-  };
-
-  getCurrentOption = () => {
-    const { options, defaultOption } = this.props;
-    return find(options, option => option.value === defaultOption);
-  };
-
-  handleChangePlannedTime = loggedTime => {
-    this.setState({ loggedTime });
   };
 
   handlePerformerChange = selectedPerformer => {
@@ -150,7 +103,7 @@ class PerformerOptions extends Component {
                     className={css.selectPerformer}
                     value={this.state.selectedPerformer}
                     onChange={this.handlePerformerChange}
-                    noResultsText="No results"
+                    noResultsText={localize[lang].NO_RESULTS}
                     options={options}
                   />
                 </Col>
@@ -194,7 +147,12 @@ class PerformerOptions extends Component {
               )}
 
             <div className={css.changePerformerButton}>
-              <Button text="Change Performer" type="green" htmlType="submit" onClick={this.changePerformer} />
+              <Button
+                text={localize[lang].CHANGE_PERFORMER}
+                type="green"
+                htmlType="submit"
+                onClick={this.changePerformer}
+              />
             </div>
           </form>
         </div>

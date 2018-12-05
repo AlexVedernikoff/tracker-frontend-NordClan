@@ -2,27 +2,25 @@
   "en": {
     "MY_PROJECTS": "My Projects",
     "INPROGRESS": "In progress",
-    "INHOLD": "In hold",
+    "INHOLD": "On hold",
     "FINISHED": "Finished",
-    "NAME_PROJECT": "Enter the name of the project ...",
+    "NAME_PROJECT": "Enter the project name",
     "NOTHING_FOUND": "Nothing found",
     "NO_PROJECT_ASSIGNED": "No projects available",
     "TO": "To",
     "FROM": "From",
-    "CREATE_PROJECT": "Create project",
-    "CREATE_PROJECT_WITH_JIRA": "Create project with Jira"
+    "CREATE_PROJECT": "Create project"
   },
   "ru": {
     "MY_PROJECTS": "Мои проекты",
     "INPROGRESS": "В процессе",
     "INHOLD": "Приостановлен",
     "FINISHED": "Завершен",
-    "NAME_PROJECT": "Введите название проекта...",
+    "NAME_PROJECT": "Введите название проекта",
     "NOTHING_FOUND": "Ничего не найдено",
     "NO_PROJECT_ASSIGNED": "Нет доступных проектов",
-    "TO": "От",
-    "FROM": "До",
-    "CREATE_PROJECT": "Создать проект",
-    "CREATE_PROJECT_WITH_JIRA": "Создать проект с Jira"
+    "TO": "До",
+    "FROM": "От",
+    "CREATE_PROJECT": "Создать проект"
   }
 }
