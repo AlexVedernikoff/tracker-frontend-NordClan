@@ -7,7 +7,8 @@
     "COMMENT_PLACEHOLDER": "Add comment here",
     "TIMESHEETS": "Time report:",
     "NO_RESULTS": "No results",
-    "CHANGE_PERFORMER": "Change performer"
+    "CHANGE_PERFORMER": "Change performer",
+    "NOT_SELECTED": "Not selected"
   },
   "ru": {
     "PERFORMER": "Исполнитель:",
@@ -17,6 +18,7 @@
     "COMMENT_PLACEHOLDER": "Добавьте комментарий",
     "TIMESHEETS": "Затраченное время:",
     "NO_RESULTS": "Ничего не найдено",
-    "CHANGE_PERFORMER": "Изменить исполнителя"
+    "CHANGE_PERFORMER": "Изменить исполнителя",
+    "NOT_SELECTED": "Не выбрано"
   }
 }
