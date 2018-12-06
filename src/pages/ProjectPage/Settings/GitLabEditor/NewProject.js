@@ -87,12 +87,7 @@ class NewProject extends Component {
         >
           <IconCheck />
         </RoundButton>
-        <RoundButton
-          style={{ marginLeft: '0.5rem' }}
-          onClick={this.cancelBound}
-          className={css.saveProject}
-          disabled={invalid}
-        >
+        <RoundButton style={{ marginLeft: '0.5rem' }} onClick={this.cancelBound} className={css.saveProject}>
           <IconClose />
         </RoundButton>
       </div>
