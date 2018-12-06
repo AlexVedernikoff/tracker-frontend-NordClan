@@ -119,7 +119,7 @@ class PerformerOptions extends Component {
                     </Col>
 
                     <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                      <TaskTimesheet />
+                      <TaskTimesheet lang={lang} />
                     </Col>
                   </Row>
                 </label>
