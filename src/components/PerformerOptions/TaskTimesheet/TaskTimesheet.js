@@ -22,7 +22,7 @@ export default class TaskTimesheet extends Component {
 
   render() {
     const days = [];
-    const { tempTimesheets, startingDay, deleteTempTimesheets, task } = this.props;
+    const { tempTimesheets, startingDay, deleteTempTimesheets, task, lang } = this.props;
 
     const defaultTaskStatusId = 2;
     const tempTimesheetsList = tempTimesheets.map(timesheet => {
@@ -128,7 +128,7 @@ export default class TaskTimesheet extends Component {
     for (let day = 0; day < 7; day++) {
       const currentDay = moment(this.props.startingDay)
         .weekday(day)
-        .locale('en');
+        .locale(lang);
 
       days.push(
         <th
