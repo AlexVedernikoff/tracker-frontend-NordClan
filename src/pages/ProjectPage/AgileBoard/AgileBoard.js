@@ -6,8 +6,6 @@ import { connect } from 'react-redux';
 import isEqual from 'lodash/isEqual';
 import union from 'lodash/union';
 import uniqWith from 'lodash/uniqWith';
-import moment from 'moment';
-import shortid from 'shortid';
 
 import * as css from './AgileBoard.scss';
 import localize from './AgileBoard.json';
