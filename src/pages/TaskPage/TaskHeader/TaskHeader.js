@@ -402,6 +402,7 @@ class TaskHeader extends Component {
             onClose={this.handleCloseModal}
             title={this.state.modalTitle}
             users={usersFullNames}
+            id={task.id}
           />
         ) : null}
       </div>

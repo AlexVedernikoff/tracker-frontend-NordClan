@@ -37,6 +37,7 @@ PerformerModal.propTypes = {
   onChoose: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   plannedExecutionTime: PropTypes.string,
+  taskId: PropTypes.number,
   title: PropTypes.string,
   users: PropTypes.array
 };

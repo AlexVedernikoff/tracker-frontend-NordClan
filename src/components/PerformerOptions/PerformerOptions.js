@@ -5,7 +5,7 @@ import { Col, Row } from 'react-flexbox-grid';
 import * as css from './PerformerOptions.scss';
 import Modal from '../Modal';
 import SelectDropdown from '../SelectDropdown';
-import { changeTask, publishComment } from '../../actions/Task';
+import { changeTask, publishComment, getTask } from '../../actions/Task';
 import TaskTimesheet from './TaskTimesheet';
 
 import TextArea from '../TextArea';
@@ -30,6 +30,14 @@ class PerformerOptions extends Component {
       selectedPerformer: props.defaultOption || null,
       commentText: ''
     };
+  }
+
+  componentDidMount() {
+    const { id, task } = this.props;
+
+    if (!task.id || task.id !== id) {
+      this.props.getTask(id);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -119,7 +127,7 @@ class PerformerOptions extends Component {
                     </Col>
 
                     <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                      <TaskTimesheet lang={lang} />
+                      <TaskTimesheet userId={activeUser.id} />
                     </Col>
                   </Row>
                 </label>
@@ -166,6 +174,7 @@ PerformerOptions.propTypes = {
   canBeNotSelected: PropTypes.bool,
   changeTask: PropTypes.func,
   defaultOption: PropTypes.number,
+  getTask: PropTypes.func,
   id: PropTypes.number,
   inputPlaceholder: PropTypes.string,
   isPerformerChanged: PropTypes.bool,
@@ -178,6 +187,7 @@ PerformerOptions.propTypes = {
   publishComment: PropTypes.func,
   removeCurOptionTip: PropTypes.string,
   task: PropTypes.object,
+  taskId: PropTypes.number,
   title: PropTypes.string
 };
 
@@ -189,7 +199,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   changeTask,
-  publishComment
+  publishComment,
+  getTask
 };
 
 export default connect(
