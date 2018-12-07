@@ -27,6 +27,7 @@ class Wizard extends Component {
     projectData: PropTypes.object,
     projects: PropTypes.array,
     setAssociation: PropTypes.func,
+    simtrackProjectId: PropTypes.number,
     taskStatuses: PropTypes.array,
     taskTypes: PropTypes.array,
     token: PropTypes.string
@@ -67,13 +68,18 @@ class Wizard extends Component {
 
   // Create project forward function
   selectJiraProjectNext = (headers, formData) => {
-    this.props.associateWithJiraProject(headers, formData).then(res => {
-      if (res) {
-        this.setState({
-          currentState: this.stateMachine.forward(this.state.currentState)
-        });
-      }
-    });
+    this.props
+      .associateWithJiraProject(headers, {
+        ...formData,
+        simtrackProjectId: this.props.simtrackProjectId
+      })
+      .then(res => {
+        if (res) {
+          this.setState({
+            currentState: this.stateMachine.forward(this.state.currentState)
+          });
+        }
+      });
   };
 
   // Create project backward function

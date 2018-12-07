@@ -1,0 +1,17 @@
+.jiraCard {
+  margin-top: 2rem;
+  border-top: 1px solid #f1f1f1;
+}
+.projectList {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.newProject {
+  align-items: center;
+  width: 100%;
+  max-width: 18.5rem;
+  display: inline-flex;
+  vertical-align: top;
+}

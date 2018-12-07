@@ -1,6 +1,9 @@
 import * as JiraActions from '../constants/Jira';
 
-const InitialState = {};
+const InitialState = {
+  projects: [],
+  project: {}
+};
 
 export default function Jira(state = InitialState, action) {
   switch (action.type) {
@@ -122,6 +125,12 @@ export default function Jira(state = InitialState, action) {
       return {
         ...state,
         isGetProjectAssociationError: true
+      };
+
+    case JiraActions.GET_JIRA_PROJECT_SUCCESS:
+      return {
+        ...state,
+        isGetJiraProjectSuccess: true
       };
 
     // ------------------

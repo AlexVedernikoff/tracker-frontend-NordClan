@@ -74,7 +74,8 @@ const associateWithJiraProject = (headers, data) => {
         URL,
         {
           jiraProjectId: id,
-          simtrackProjectId
+          simtrackProjectId,
+          jiraHostName
         },
         {
           withCredentials: true,
@@ -83,14 +84,19 @@ const associateWithJiraProject = (headers, data) => {
       )
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(jiraAssociateProjectSuccess(response.data));
+          dispatch(
+            jiraAssociateProjectSuccess({
+              jiraHostName: data.jiraHostName,
+              id: data.jiraProjectId
+            })
+          );
         }
         dispatch(finishLoading());
         return response.data;
       })
       .catch(error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(jiraAssociateProjectError(error.response.data));
+        dispatch(jiraAssociateProjectError(error));
         dispatch(finishLoading());
         throw error;
       });
@@ -110,6 +116,19 @@ const getJiraProjectsError = () => ({
   type: JiraActions.GET_JIRA_PROJECTS_ERROR
 });
 
+const getJiraProjectStart = () => ({
+  type: JiraActions.GET_JIRA_PROJECT_START
+});
+
+const getJiraProjectSuccess = projects => ({
+  type: JiraActions.GET_JIRA_PROJECT_SUCCESS,
+  projects
+});
+
+const getJiraProjectError = () => ({
+  type: JiraActions.GET_JIRA_PROJECTS_ERROR
+});
+
 const getJiraProjects = headers => {
   const URL = `${API_URL}/jira/projects`;
   return dispatch => {
@@ -126,6 +145,28 @@ const getJiraProjects = headers => {
       .catch(error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
         dispatch(getJiraProjectsError(error.response.data));
+        dispatch(finishLoading());
+        throw error;
+      });
+  };
+};
+
+const getJiraProject = simtrackProjectId => {
+  const URL = `${API_URL}/jira/project/${simtrackProjectId}`;
+  return dispatch => {
+    dispatch(startLoading());
+    dispatch(getJiraProjectStart());
+    axios
+      .get(URL)
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(getJiraProjectSuccess(response.data.projects));
+        }
+        dispatch(finishLoading());
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(getJiraProjectError(error.response.data));
         dispatch(finishLoading());
         throw error;
       });
@@ -297,6 +338,7 @@ const getProjectAssociation = projectId => {
 };
 
 export {
+  getJiraProject,
   jiraAuthorize,
   associateWithJiraProject,
   getJiraProjects,

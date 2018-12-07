@@ -12,6 +12,7 @@ import {
 
 const mapStateToProps = state => {
   return {
+    simtrackProjectId: state.Project.project.id,
     projects: state.Jira.projects,
     project: state.Jira.project,
     token: state.Jira.token,
