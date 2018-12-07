@@ -94,7 +94,7 @@ export default class ActivityRowForTask extends React.Component {
       {
         isDraft: false,
         taskId: item.id || null,
-        taskStatusId: item.id ? item.taskStatusId : null,
+        taskStatusId: item.id ? item.statusId : null,
         typeId: item.id ? '1' : item.typeId,
         spentTime: +value,
         onDate: moment(startingDay)
