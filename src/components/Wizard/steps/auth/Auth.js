@@ -90,7 +90,7 @@ class AuthForm extends Component {
           </Row>
         </label>
         <div className={css.buttonsContainer}>
-          <Button text="Вперед" onClick={() => nextStep(authData)} type="green" />
+          <Button text={localize[lang].GO_AHEAD} onClick={() => nextStep(authData)} type="green" />
         </div>
       </div>
     );

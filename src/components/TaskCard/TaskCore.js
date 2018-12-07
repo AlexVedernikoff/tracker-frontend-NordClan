@@ -96,7 +96,8 @@ class TaskCore extends PureComponent {
       task.project ? task.project.id : null,
       task.statusId,
       null,
-      true
+      true,
+      task.isDevOps
     );
   };
 

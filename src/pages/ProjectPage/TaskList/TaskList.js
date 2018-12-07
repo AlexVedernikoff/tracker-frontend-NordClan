@@ -270,7 +270,6 @@ class TaskList extends Component {
         }
 
         this.changeUrl(changedFilters);
-
         return {
           activePage:
             state.changedFilters[name] && state.changedFilters[name].length !== filterValue.length
@@ -345,10 +344,12 @@ class TaskList extends Component {
   };
 
   loadTasks = () => {
-    this.props.getTasks(
-      { ...this.state.changedFilters, allStatuses: true, currentPage: this.state.activePage, pageSize: 25 },
-      true
-    );
+    const { changedFilters } = this.state;
+    const params = { ...changedFilters, allStatuses: true, currentPage: this.state.activePage, pageSize: 25 };
+    if (changedFilters.tags) {
+      params.tags = changedFilters.tags.join(',');
+    }
+    this.props.getTasks(params, true);
     this.updateFilterList();
   };
 
@@ -571,8 +572,13 @@ class TaskList extends Component {
         />
       );
     });
+    const { prioritiesId, typeId, statusId, sprintId, performerId, authorId } = this.state.changedFilters;
 
-    const { prioritiesId, typeId, statusId, sprintId, performerId, authorId, tags } = this.state.changedFilters;
+    let tags = this.state.changedFilters.tags;
+    if (tags && Array.isArray(tags)) {
+      tags = tags.map(el => ({ label: el, value: el }));
+    }
+
     const { isOpened } = this.state;
 
     const statusOptions = this.createOptions(statuses);

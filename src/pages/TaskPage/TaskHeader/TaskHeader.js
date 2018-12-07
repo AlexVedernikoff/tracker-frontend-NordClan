@@ -23,6 +23,7 @@ import { addActivity } from '../../../actions/Timesheets';
 import moment from 'moment';
 import shortid from 'shortid';
 import { isOnlyDevOps } from '../../../utils/isDevOps';
+import { devOpsUsersSelector } from '../../../utils/sortPerformer';
 
 const usersSelector = state => state.Project.project.users;
 
@@ -214,13 +215,13 @@ class TaskHeader extends Component {
   };
 
   render() {
-    const { task, taskTypes, canEdit, lang, users } = this.props;
+    const { task, taskTypes, canEdit, lang, users, devOpsUsers } = this.props;
     const css = require('./TaskHeader.scss');
     let unionPerformers = [];
     switch (this.state.clickedStatus) {
       case 'Develop':
         unionPerformers = _.union(
-          users.devops,
+          task.isDevOps ? devOpsUsers : [],
           users.pm,
           users.teamLead,
           users.account,
@@ -251,7 +252,7 @@ class TaskHeader extends Component {
         break;
       default:
         unionPerformers = _.union(
-          users.devops,
+          task.isDevOps ? devOpsUsers : [],
           users.pm,
           users.teamLead,
           users.account,
@@ -412,6 +413,7 @@ TaskHeader.propTypes = {
   addActivity: PropTypes.func,
   canEdit: PropTypes.bool,
   css: PropTypes.object,
+  devOpsUsers: PropTypes.array,
   getProjectUsers: PropTypes.func.isRequired,
   lang: PropTypes.string,
   location: PropTypes.object,
@@ -429,6 +431,7 @@ const mapStateToProps = state => ({
   users: sortedUsersSelector(state),
   project: state.Project.project,
   user: state.Auth.user,
+  devOpsUsers: devOpsUsersSelector(state),
   location: state.routing.locationBeforeTransitions,
   startingDay: state.Timesheets.startingDay,
   task: state.Task.task,

@@ -9,6 +9,9 @@ import { POST, REST_API } from '../constants/RestApi';
 import getPlanningTasks from './PlanningTasks';
 import { getTask } from './Task';
 import { withFinishLoading, withStartLoading, withdefaultExtra } from './Common';
+import { langSelector } from '../selectors/Localize';
+
+import localize from './Project.i18n.json';
 
 const gettingProjectInfoStart = () => ({
   type: ProjectActions.PROJECT_INFO_RECEIVE_START
@@ -389,7 +392,7 @@ const changeProject = (changedProperties, target) => {
 
   const URL = `${API_URL}/project/${changedProperties.id}`;
 
-  return dispatch => {
+  return (dispatch, getState) => {
     dispatch(startProjectChange());
     dispatch(startLoading());
 
@@ -408,7 +411,10 @@ const changeProject = (changedProperties, target) => {
         if (error.response.data.name === 'ValidationError') {
           dispatch(projectChangeFailValidation(error.response.data));
         } else {
-          dispatch(showNotification({ message: error.response.data.message || error.message, type: 'error' }));
+          const errorCode = error.response.data.message;
+          const message = localize[langSelector(getState())][errorCode] || errorCode || error.message;
+
+          dispatch(showNotification({ message, type: 'error' }));
         }
         dispatch(finishLoading());
       });

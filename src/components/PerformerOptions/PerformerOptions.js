@@ -12,11 +12,6 @@ import TextArea from '../TextArea';
 import Button from '../Button';
 import localize from './PerformerOptions.json';
 
-const notSelectedOption = {
-  value: 0,
-  label: 'Не выбрано'
-};
-
 const formLayout = {
   firstCol: 3,
   secondCol: 9
@@ -48,7 +43,12 @@ class PerformerOptions extends Component {
 
   getOptionsList(options, canBeNotSelected) {
     const optionsList = [...options];
-    return canBeNotSelected ? optionsList.concat(notSelectedOption) : optionsList;
+    return canBeNotSelected
+      ? optionsList.concat({
+          value: 0,
+          label: localize[this.props.lang].NOT_SELECTED
+        })
+      : optionsList;
   }
 
   onClose = () => {
@@ -119,7 +119,7 @@ class PerformerOptions extends Component {
                     </Col>
 
                     <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                      <TaskTimesheet />
+                      <TaskTimesheet lang={lang} />
                     </Col>
                   </Row>
                 </label>
