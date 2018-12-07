@@ -16,7 +16,7 @@ class Budget extends Component {
 
     this.state = {
       isEditing: false,
-      value: typeof props.value === 'number' ? props.value : ''
+      value: undefined
     };
   }
 
@@ -26,7 +26,7 @@ class Budget extends Component {
 
   toggleEditing = e => {
     e.preventDefault();
-    if (this.state.isEditing && this.state.value) {
+    if (this.state.isEditing && (this.state.value !== '' && this.state.value !== undefined)) {
       this.saveBudget();
       this.stopEditing();
     } else {
@@ -73,7 +73,8 @@ class Budget extends Component {
 
   render() {
     const { header, lang } = this.props;
-    const { isEditing, value } = this.state;
+    const { isEditing } = this.state;
+    const value = this.state.value !== undefined ? this.state.value : this.props.value || '';
     const saveDataTip = this.state.value ? localize[lang].SAVE : localize[lang].ENTER_NUMBER;
     return (
       <div className={css.budget}>
