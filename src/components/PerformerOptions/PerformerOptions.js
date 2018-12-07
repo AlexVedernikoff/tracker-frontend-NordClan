@@ -118,7 +118,8 @@ class PerformerOptions extends Component {
               </Row>
             </label>
 
-            {task.statusId !== 1 &&
+            {!this.props.isTshAndCommentsHidden &&
+              task.statusId !== 1 &&
               activeUser.id === task.performerId && (
                 <label className={css.formField}>
                   <Row className={css.taskFormRow}>
@@ -133,7 +134,8 @@ class PerformerOptions extends Component {
                 </label>
               )}
 
-            {task.statusId !== 1 &&
+            {!this.props.isTshAndCommentsHidden &&
+              task.statusId !== 1 &&
               activeUser.id === task.performerId && (
                 <label className={css.formField}>
                   <Row className={css.taskFormRow}>
@@ -178,6 +180,7 @@ PerformerOptions.propTypes = {
   id: PropTypes.number,
   inputPlaceholder: PropTypes.string,
   isPerformerChanged: PropTypes.bool,
+  isTshAndCommentsHidden: PropTypes.bool,
   lang: PropTypes.string,
   loggedTime: PropTypes.number,
   noCurrentOption: PropTypes.bool,

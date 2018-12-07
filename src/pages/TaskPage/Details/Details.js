@@ -499,6 +499,7 @@ class Details extends Component {
             handleChangePlannedTime={this.handleChangePlannedTime}
             plannedExecutionTime={this.props.plannedExecutionTime}
             users={usersFullNames}
+            isTshAndCommentsHidden
           />
         ) : null}
         {this.state.isSprintModalOpen ? (
