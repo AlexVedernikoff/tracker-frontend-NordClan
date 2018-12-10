@@ -12,7 +12,8 @@ const PerformerModal = ({
   isPerformerChanged,
   id,
   plannedExecutionTime,
-  lang
+  lang,
+  ...other
 }) => (
   <PerformerOptions
     defaultOption={defaultUser}
@@ -26,6 +27,7 @@ const PerformerModal = ({
     isPerformerChanged={isPerformerChanged}
     plannedExecutionTime={plannedExecutionTime}
     id={id}
+    {...other}
   />
 );
 

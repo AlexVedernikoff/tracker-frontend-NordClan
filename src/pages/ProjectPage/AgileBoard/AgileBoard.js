@@ -43,7 +43,8 @@ class AgileBoard extends Component {
       performer: null,
       changedTask: null,
       isOnlyMine: props.filters.isOnlyMine,
-      fromTaskCore: false
+      fromTaskCore: false,
+      isTshAndCommentsHidden: false
     };
   }
 
@@ -120,7 +121,16 @@ class AgileBoard extends Component {
     this.props.startTaskEditing('Status');
   };
 
-  openPerformerModal = (task, performerId, projectId, statusId, phase, fromTaskCore, isDevOps) => {
+  openPerformerModal = (
+    task,
+    performerId,
+    projectId,
+    statusId,
+    phase,
+    fromTaskCore,
+    isDevOps,
+    isTshAndCommentsHidden
+  ) => {
     if (this.props.myTaskBoard) {
       this.props.getProjectUsers(projectId);
     }
@@ -131,7 +141,8 @@ class AgileBoard extends Component {
       changedTaskIsDevOps: isDevOps,
       statusId,
       phase,
-      fromTaskCore
+      fromTaskCore,
+      isTshAndCommentsHidden
     });
   };
 
@@ -392,6 +403,7 @@ class AgileBoard extends Component {
             title={localize[lang].CHANGE_PERFORMER}
             users={usersFullNames}
             id={this.state.changedTask.id}
+            isTshAndCommentsHidden={this.state.isTshAndCommentsHidden}
           />
         ) : null}
         {this.props.isCreateTaskModalOpen ? (
