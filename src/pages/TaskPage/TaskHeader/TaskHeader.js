@@ -369,7 +369,7 @@ class TaskHeader extends Component {
               type={task.statusId === TaskStatuses.DONE ? 'green' : 'bordered'}
               data-tip={task.statusId === TaskStatuses.DONE ? null : localize[lang].MOVE_TO_DONE}
               data-place="bottom"
-              onClick={this.handleChangeSingleStateStatus(TaskStatuses.DONE)}
+              onClick={this.handleChangeSingleStateStatus(TaskStatuses.DONE, 'Done')}
               disabled={!canEdit || !this.state.isTaskLoaded}
             />
           </ButtonGroup>
