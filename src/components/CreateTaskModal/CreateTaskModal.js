@@ -27,7 +27,6 @@ import Tag from '../../components/Tag';
 import Tags from '../../components/Tags';
 import { getFullName } from '../../utils/NameLocalisation';
 import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
-import parseInteger from '../../utils/parseInteger';
 
 const MAX_DESCRIPTION_LENGTH = 25000;
 
@@ -180,7 +179,7 @@ class CreateTaskModal extends Component {
 
   handleChangePlannedTime = plannedExecutionTime => {
     this.setState({
-      plannedExecutionTime: parseInteger(plannedExecutionTime)
+      plannedExecutionTime: plannedExecutionTime || 0
     });
   };
 
