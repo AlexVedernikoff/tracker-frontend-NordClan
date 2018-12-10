@@ -465,7 +465,7 @@ class Planning extends Component {
 
     const budget = project.budget;
     const riskBudget = project.riskBudget;
-    const qaPercent = project.qaPercent || 30;
+    const qaPercent = project.qaPercent;
     const unfinishedLeftTasksCount = this.getUnfinishedLeftTasks().length;
 
     return (

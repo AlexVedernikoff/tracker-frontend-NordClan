@@ -814,6 +814,7 @@ class TaskList extends Component {
             onClose={this.closePerformerModal}
             title={localize[lang].EDIT_TASK_PERFORMER}
             users={this.getUsers()}
+            id={this.state.changedTask.id}
           />
         ) : null}
         {this.state.isSprintModalOpen ? (

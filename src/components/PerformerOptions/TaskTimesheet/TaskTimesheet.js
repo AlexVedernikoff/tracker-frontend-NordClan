@@ -2,9 +2,29 @@ import React, { Component } from 'react';
 import * as css from './TaskTimesheet.scss';
 import moment from 'moment';
 import find from 'lodash/find';
+import times from 'lodash/times';
 import cn from 'classnames';
 import PropTypes from 'prop-types';
 import ActivityRowForTask from './ActivityRowForTask';
+
+function generateEmptyTimeSheets(task) {
+  const dayOfWeek = moment().day();
+  const date = moment().subtract(dayOfWeek, 'days');
+  return times(
+    7,
+    i =>
+      date.add(1, 'days') && {
+        spentTime: 0,
+        taskStatusId: task.statusId,
+        onDate: date.toISOString(true),
+        ...(i === dayOfWeek - 1
+          ? {
+              id: 'temp'
+            }
+          : null)
+      }
+  );
+}
 
 export default class TaskTimesheet extends Component {
   constructor(props) {
@@ -152,13 +172,13 @@ export default class TaskTimesheet extends Component {
       singleTask => singleTask.id === task.id && this.props.task.statusId === singleTask.taskStatusId
     );
 
-    const taskRow = currentTask.timeSheets ? (
+    const taskRow = (
       <ActivityRowForTask
-        key={`${currentTask.id}-${currentTask.taskStatusId}-${startingDay}`}
+        key={`${task.id}-${task.taskStatusId}-${startingDay}`}
         task
-        item={currentTask}
+        item={{ timeSheets: generateEmptyTimeSheets(task), ...task, ...currentTask }}
       />
-    ) : null;
+    );
 
     return (
       <table>

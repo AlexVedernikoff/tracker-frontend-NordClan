@@ -12,7 +12,8 @@ const PerformerModal = ({
   isPerformerChanged,
   id,
   plannedExecutionTime,
-  lang
+  lang,
+  ...other
 }) => (
   <PerformerOptions
     defaultOption={defaultUser}
@@ -26,6 +27,7 @@ const PerformerModal = ({
     isPerformerChanged={isPerformerChanged}
     plannedExecutionTime={plannedExecutionTime}
     id={id}
+    {...other}
   />
 );
 
@@ -37,6 +39,7 @@ PerformerModal.propTypes = {
   onChoose: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   plannedExecutionTime: PropTypes.string,
+  taskId: PropTypes.number,
   title: PropTypes.string,
   users: PropTypes.array
 };

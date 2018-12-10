@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { Row } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 import isEqual from 'lodash/isEqual';
+import union from 'lodash/union';
+import uniqWith from 'lodash/uniqWith';
 
 import * as css from './AgileBoard.scss';
 import localize from './AgileBoard.json';
@@ -26,7 +28,7 @@ import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { openCreateTaskModal, getProjectUsers, getProjectInfo, getProjectTags } from '../../../actions/Project';
 import { showNotification } from '../../../actions/Notifications';
 import { getDevOpsUsers } from '../../../actions/Users';
-import * as _ from 'lodash';
+import { addActivity } from '../../../actions/Timesheets';
 
 import { sortedUsersSelector } from '../../../selectors/Project';
 
@@ -41,7 +43,8 @@ class AgileBoard extends Component {
       performer: null,
       changedTask: null,
       isOnlyMine: props.filters.isOnlyMine,
-      fromTaskCore: false
+      fromTaskCore: false,
+      isTshAndCommentsHidden: false
     };
   }
 
@@ -118,25 +121,35 @@ class AgileBoard extends Component {
     this.props.startTaskEditing('Status');
   };
 
-  openPerformerModal = (taskId, performerId, projectId, statusId, phase, fromTaskCore, isDevOps) => {
+  openPerformerModal = (
+    task,
+    performerId,
+    projectId,
+    statusId,
+    phase,
+    fromTaskCore,
+    isDevOps,
+    isTshAndCommentsHidden
+  ) => {
     if (this.props.myTaskBoard) {
       this.props.getProjectUsers(projectId);
     }
     this.setState({
       isModalOpen: true,
       performer: performerId,
-      changedTask: taskId,
+      changedTask: task,
       changedTaskIsDevOps: isDevOps,
       statusId,
       phase,
-      fromTaskCore
+      fromTaskCore,
+      isTshAndCommentsHidden
     });
   };
 
   changePerformer = performerId => {
     this.props.changeTask(
       {
-        id: this.state.changedTask,
+        id: this.state.changedTask.id,
         performerId: performerId,
         statusId: getNewStatus(this.state.phase)
       },
@@ -201,7 +214,7 @@ class AgileBoard extends Component {
     const devOpsUsers = this.state.changedTaskIsDevOps && this.props.devOpsUsers ? this.props.devOpsUsers : [];
     switch (this.state.phase) {
       case 'Dev':
-        this.unionPerformers = _.union(
+        this.unionPerformers = union(
           devOpsUsers,
           users.pm,
           users.teamLead,
@@ -216,7 +229,7 @@ class AgileBoard extends Component {
         );
         break;
       case 'Code Review':
-        this.unionPerformers = _.union(
+        this.unionPerformers = union(
           users.teamLead,
           users.account,
           users.analyst,
@@ -232,7 +245,7 @@ class AgileBoard extends Component {
         this.unionPerformers = users.qa;
         break;
       default:
-        this.unionPerformers = _.union(
+        this.unionPerformers = union(
           devOpsUsers,
           users.pm,
           users.teamLead,
@@ -253,7 +266,7 @@ class AgileBoard extends Component {
     const devOpsUsers = this.state.changedTaskIsDevOps && this.props.devOpsUsers ? this.props.devOpsUsers : [];
     switch (this.state.statusId) {
       case 2:
-        this.unionPerformers = _.union(
+        this.unionPerformers = union(
           devOpsUsers,
           users.pm,
           users.teamLead,
@@ -269,7 +282,7 @@ class AgileBoard extends Component {
         break;
 
       case 3:
-        this.unionPerformers = _.union(
+        this.unionPerformers = union(
           devOpsUsers,
           users.pm,
           users.teamLead,
@@ -285,7 +298,7 @@ class AgileBoard extends Component {
         break;
 
       case 4:
-        this.unionPerformers = _.union(
+        this.unionPerformers = union(
           users.teamLead,
           users.account,
           users.analyst,
@@ -299,7 +312,7 @@ class AgileBoard extends Component {
         break;
 
       case 5:
-        this.unionPerformers = _.union(
+        this.unionPerformers = union(
           users.teamLead,
           users.account,
           users.analyst,
@@ -321,7 +334,7 @@ class AgileBoard extends Component {
         break;
 
       default:
-        this.unionPerformers = _.union(
+        this.unionPerformers = union(
           devOpsUsers,
           users.pm,
           users.teamLead,
@@ -346,7 +359,7 @@ class AgileBoard extends Component {
       ...this.props,
       project: {
         ...this.props.project,
-        users: _.uniqWith(this.props.project.users.concat(this.props.devOpsUsers), _.isEqual)
+        users: uniqWith(this.props.project.users.concat(this.props.devOpsUsers), isEqual)
       }
     };
     const filtersComponent = this.props.myTaskBoard ? null : (
@@ -389,6 +402,8 @@ class AgileBoard extends Component {
             onClose={this.closeModal}
             title={localize[lang].CHANGE_PERFORMER}
             users={usersFullNames}
+            id={this.state.changedTask.id}
+            isTshAndCommentsHidden={this.state.isTshAndCommentsHidden}
           />
         ) : null}
         {this.props.isCreateTaskModalOpen ? (
@@ -406,6 +421,7 @@ class AgileBoard extends Component {
 AgileBoard.propTypes = {
   StatusIsEditing: PropTypes.bool,
   UserIsEditing: PropTypes.bool,
+  addActivity: PropTypes.func,
   authorOptions: PropTypes.array,
   changeTask: PropTypes.func.isRequired,
   currentSprint: PropTypes.array,
@@ -448,6 +464,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+  addActivity,
   getDevOpsUsers,
   getTasks,
   changeTask,
