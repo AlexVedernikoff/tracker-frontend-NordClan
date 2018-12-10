@@ -23,7 +23,7 @@ import roundNum from '../../../utils/roundNum';
 import classnames from 'classnames';
 import localize from './Details.json';
 import { getFullName } from '../../../utils/NameLocalisation';
-import { TASK_STATUS_CLOSED } from '../../../constants/Task';
+import { TASK_STATUSES } from '../../../constants/TaskStatuses';
 import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
 import { getDevOpsUsers } from '../../../actions/Users';
 import shortid from 'shortid';
@@ -419,7 +419,7 @@ class Details extends Component {
             <tr>
               <td>{localize[lang].PERFORMER}</td>
               <td>
-                {this.props.task.statusId !== TASK_STATUS_CLOSED ? (
+                {this.props.task.statusId !== TASK_STATUSES.CLOSED ? (
                   <span onClick={this.openPerformerModal} className={css.editableCell}>
                     {performerTag}
                     <span className={css.editIcon}>
