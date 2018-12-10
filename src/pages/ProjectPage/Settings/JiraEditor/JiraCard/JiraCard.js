@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
 import * as css from './JiraCard.scss';
 import localize from './JiraCard.json';
-import Button from '../../../../../components/Button/Button';
 import ConfirmModal from '../../../../../components/ConfirmModal/ConfirmModal';
-import CopyThis from '../../../../../components/CopyThis/CopyThis';
-import { IconClose, IconGitlab } from '../../../../../components/Icons';
-import Input from '../../../../../components/Input/Input';
+import { IconClose, IconJira } from '../../../../../components/Icons';
 
 class JiraCard extends Component {
   static propTypes = {
@@ -42,7 +38,7 @@ class JiraCard extends Component {
         <div className={css.jiraId}>Jira Id: {project.id}</div>
         <div className={css.projectName}>
           <span className={css.gitlabLogo}>
-            <IconGitlab />{' '}
+            <IconJira />{' '}
           </span>
           <a className="underline-link" href={project.hostname} title={project.name}>
             {project.name}
@@ -57,7 +53,7 @@ class JiraCard extends Component {
             contentLabel="modal"
             text={`${localize[lang].CONFIRM_CANSEL} ${project.name}?`}
             onCancel={this.toggleConfirm}
-            onConfirm={() => this.props.deleteProject(project.id)}
+            onConfirm={() => this.props.deleteProject(project.simtrackProjectId)}
             onRequestClose={this.toggleConfirm}
           />
         ) : null}

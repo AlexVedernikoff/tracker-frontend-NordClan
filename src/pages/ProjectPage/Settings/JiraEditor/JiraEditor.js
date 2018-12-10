@@ -5,10 +5,11 @@ import localize from './JiraEditor.json';
 import Button from '../../../../components/Button';
 import { connect } from 'react-redux';
 import JiraCard from './JiraCard/JiraCard';
-import { getJiraProject } from '../../../../actions/Jira';
+import { cleanJiraAssociation } from '../../../../actions/Jira';
 
 class JiraEditor extends Component {
   static propTypes = {
+    cleanJiraAssociation: PropTypes.func,
     getJiraProject: PropTypes.func,
     jiraProject: PropTypes.object,
     jiraProjects: PropTypes.array,
@@ -17,24 +18,11 @@ class JiraEditor extends Component {
     simtrackProject: PropTypes.object
   };
 
-  getJiraProjectName = () => {
-    const project = this.props.jiraProjects.find(p => p.id === this.props.jiraProject.id);
-    return project ? project.name : '';
-  };
-
-  componentDidMount() {
-    if (this.props.jiraProject) {
-      this.props.getJiraProject(this.props.simtrackProject.id);
-    }
-  }
-
   render() {
-    const { lang, openJiraWizard } = this.props;
-    const projectName = this.getJiraProjectName();
-    console.log(projectName);
-    const { jiraProject } = this.props;
+    const { lang, openJiraWizard, simtrackProject } = this.props;
     return (
       <div className={css.jiraCard}>
+        simtrackProjectId
         <h2>{localize[lang].SYNCHRONIZATION_WITH_JIRA}</h2>
         <Button
           onClick={openJiraWizard}
@@ -42,12 +30,14 @@ class JiraEditor extends Component {
           type="primary"
           icon="IconPlus"
         />
-        {this.props.jiraProject.id ? (
+        {simtrackProject.externalId ? (
           <JiraCard
+            simtrackProjectId={simtrackProject.id}
+            deleteProject={this.props.cleanJiraAssociation}
             project={{
-              id: jiraProject.id,
-              name: projectName,
-              hostname: this.props.jiraProject.jiraHostName
+              id: simtrackProject.externalId,
+              name: simtrackProject.jiraProjectName,
+              hostname: simtrackProject.jiraHostName
             }}
           />
         ) : null}
@@ -57,14 +47,13 @@ class JiraEditor extends Component {
 }
 
 const mapStateToProps = state => ({
-  jiraProject: state.Jira.project,
   jiraProjects: state.Jira.projects,
   simtrackProject: state.Project.project,
   lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
-  getJiraProject
+  cleanJiraAssociation
 };
 
 export default connect(

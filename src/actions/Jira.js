@@ -51,11 +51,11 @@ const jiraAuthorize = credentials => {
 };
 
 const jiraAssociateProjectStart = () => ({
-  type: JiraActions.JIRA_CREATE_PROJECT_START
+  type: JiraActions.JIRA_ASSOCIATE_PROJECT_START
 });
 
 const jiraAssociateProjectSuccess = project => ({
-  type: JiraActions.JIRA_CREATE_PROJECT_SUCCESS,
+  type: JiraActions.JIRA_ASSOCIATE_PROJECT_SUCCESS,
   project
 });
 
@@ -87,7 +87,9 @@ const associateWithJiraProject = (headers, data) => {
           dispatch(
             jiraAssociateProjectSuccess({
               jiraHostName: data.jiraHostName,
-              id: data.jiraProjectId
+              id: response.data.jiraExternalId,
+              jiraProjectName: response.data.jiraProjectName,
+              simtrackProjectId
             })
           );
         }
@@ -116,17 +118,9 @@ const getJiraProjectsError = () => ({
   type: JiraActions.GET_JIRA_PROJECTS_ERROR
 });
 
-const getJiraProjectStart = () => ({
-  type: JiraActions.GET_JIRA_PROJECT_START
-});
-
-const getJiraProjectSuccess = projects => ({
-  type: JiraActions.GET_JIRA_PROJECT_SUCCESS,
-  projects
-});
-
-const getJiraProjectError = () => ({
-  type: JiraActions.GET_JIRA_PROJECTS_ERROR
+const cleanJiraAssociationSuccess = projectId => ({
+  type: JiraActions.CLEAN_JIRA_ASSOCIATION_SUCCESS,
+  id: projectId
 });
 
 const getJiraProjects = headers => {
@@ -145,28 +139,6 @@ const getJiraProjects = headers => {
       .catch(error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
         dispatch(getJiraProjectsError(error.response.data));
-        dispatch(finishLoading());
-        throw error;
-      });
-  };
-};
-
-const getJiraProject = simtrackProjectId => {
-  const URL = `${API_URL}/jira/project/${simtrackProjectId}`;
-  return dispatch => {
-    dispatch(startLoading());
-    dispatch(getJiraProjectStart());
-    axios
-      .get(URL)
-      .then(response => {
-        if (response && response.status === 200) {
-          dispatch(getJiraProjectSuccess(response.data.projects));
-        }
-        dispatch(finishLoading());
-      })
-      .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-        dispatch(getJiraProjectError(error.response.data));
         dispatch(finishLoading());
         throw error;
       });
@@ -337,8 +309,29 @@ const getProjectAssociation = projectId => {
   };
 };
 
+const cleanJiraAssociation = simtrackProjectId => {
+  const URL = `${API_URL}/jira/cleanProjectAssociation/${simtrackProjectId}`;
+  return dispatch => {
+    dispatch(startLoading());
+    return axios
+      .get(URL)
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(cleanJiraAssociationSuccess(response.data));
+        }
+        dispatch(finishLoading());
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(getProjectAssociationError(error.response.data));
+        dispatch(finishLoading());
+        throw error;
+      });
+  };
+};
+
 export {
-  getJiraProject,
+  cleanJiraAssociation,
   jiraAuthorize,
   associateWithJiraProject,
   getJiraProjects,

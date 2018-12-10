@@ -1,8 +1,7 @@
 import * as JiraActions from '../constants/Jira';
 
 const InitialState = {
-  projects: [],
-  project: {}
+  projects: []
 };
 
 export default function Jira(state = InitialState, action) {
@@ -27,17 +26,16 @@ export default function Jira(state = InitialState, action) {
 
     // -----------------
 
-    case JiraActions.JIRA_CREATE_PROJECT_START:
+    case JiraActions.JIRA_ASSOCIATE_PROJECT_START:
       return {
         ...state,
         isJiraCreateProjectStart: true
       };
 
-    case JiraActions.JIRA_CREATE_PROJECT_SUCCESS:
+    case JiraActions.JIRA_ASSOCIATE_PROJECT_SUCCESS:
       return {
         ...state,
-        isJiraCreateProjectSuccess: true,
-        project: action.project
+        isJiraCreateProjectSuccess: true
       };
     case JiraActions.JIRA_CREATE_PROJECT_ERROR:
       return {
@@ -126,13 +124,6 @@ export default function Jira(state = InitialState, action) {
         ...state,
         isGetProjectAssociationError: true
       };
-
-    case JiraActions.GET_JIRA_PROJECT_SUCCESS:
-      return {
-        ...state,
-        isGetJiraProjectSuccess: true
-      };
-
     // ------------------
 
     default:
