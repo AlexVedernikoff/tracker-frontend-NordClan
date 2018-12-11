@@ -207,7 +207,7 @@ class TaskHeader extends Component {
   };
 
   handleChangeSingleStateStatus = (status, statusName) => () => {
-    if (statusName && statusName !== 'New') {
+    if (statusName && statusName !== 'New' && statusName !== this.state.clickedStatus) {
       this.setState({ clickedStatus: statusName }, this.handleOpenModal);
     } else {
       this.changeStatus(status);
