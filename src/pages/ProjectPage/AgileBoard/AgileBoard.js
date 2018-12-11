@@ -44,12 +44,15 @@ class AgileBoard extends Component {
       changedTask: null,
       isOnlyMine: props.filters.isOnlyMine,
       fromTaskCore: false,
-      isTshAndCommentsHidden: false
+      isTshAndCommentsHidden: false,
+      changedTags: []
     };
   }
 
   componentDidMount() {
-    if (this.props.myTaskBoard) this.getTasks();
+    if (this.props.myTaskBoard) {
+      this.getTasks();
+    }
     if (!this.props.devOpsUsers) this.props.getDevOpsUsers();
   }
 
@@ -66,6 +69,7 @@ class AgileBoard extends Component {
   componentDidUpdate(prevProps) {
     ReactTooltip.rebuild();
     if (!isEqual(prevProps.filters, this.props.filters)) {
+      this.setTagsFromString(this.props.filters.filterTags);
       this.getTasks();
     }
   }
@@ -351,8 +355,29 @@ class AgileBoard extends Component {
     }
   };
 
+  setFilterValue = (key, value) => {
+    if (key === 'filterTags') {
+      this.setTagsFromString(value);
+    }
+    this.props.setFilterValue(key, value);
+  };
+
+  setTagsFromString = tags => {
+    this.setState({
+      changedTags: tags
+        ? tags.map(item => {
+            return {
+              label: item,
+              value: item
+            };
+          })
+        : []
+    });
+  };
+
   render() {
-    const { lang, tags, noTagData, users } = this.props;
+    const { lang, noTagData, users } = this.props;
+    const tags = this.props.tags.length ? this.props.tags : this.state.changedTags;
     const tasksList = this.isOnlyMine ? this.getMineSortedTasks() : this.getAllSortedTasks();
     const tasksKey = this.isOnlyMine ? 'mine' : 'all';
     const agileFilterProps = {
@@ -368,6 +393,7 @@ class AgileBoard extends Component {
         getTasks={this.getTasks}
         initialFilters={initialFilters}
         tags={[noTagData].concat(tags)}
+        setFilterValue={this.setFilterValue}
       />
     );
 
