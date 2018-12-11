@@ -12,9 +12,9 @@
   "ru": {
     "SPRINT": "Спринт:",
     "PARTICIPANT": "Участник",
-    "FEATURES_DONE_COUNT": "Выполненно фич",
+    "FEATURES_DONE_COUNT": "Выполнено фич",
     "FEATURES_RETURN_COUNT": "Возвратов фич",
-    "BUGS_DONE_COUNT": "Выполненно багов",
+    "BUGS_DONE_COUNT": "Выполнено багов",
     "BUGS_RETURN_COUNT": "Возвратов багов",
     "LINKED_BUGS_COUNT": "Связанных багов",
     "NO_DATA": "Нет данных"
