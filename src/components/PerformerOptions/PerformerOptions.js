@@ -13,7 +13,7 @@ import { getFullName } from '../../utils/NameLocalisation';
 import Button from '../Button';
 import localize from './PerformerOptions.json';
 
-import { prepairCommentForEdit } from '../../pages/TaskPage/Comments/Mentions/mentionService';
+import { prepairCommentForEdit, stringifyCommentForSend } from '../../pages/TaskPage/Comments/Mentions/mentionService';
 
 const formLayout = {
   firstCol: 3,
@@ -74,8 +74,7 @@ class PerformerOptions extends Component {
 
   changePerformer = e => {
     e.preventDefault();
-    const { commentText } = this.state;
-    console.log(commentText);
+    const commentText = stringifyCommentForSend(this.state.commentText, this.users);
     const { id } = this.props;
     this.props.onChoose(this.state.selectedPerformer);
     if (commentText) {
@@ -109,7 +108,6 @@ class PerformerOptions extends Component {
 
   render() {
     const { title, lang, task, activeUser } = this.props;
-    console.log(this.users);
     const { options } = this.state;
     const users = this.users.map(u => ({ id: u.id, display: getFullName(u) }));
 
@@ -170,7 +168,6 @@ class PerformerOptions extends Component {
                         value={prepairCommentForEdit(this.state.commentText, this.users)}
                         getTextAreaNode={this.getTextAreaNode}
                         toggleBtn={this.setComment}
-                        className={css.resizeTrue}
                         suggestions={users}
                       />
                     </Col>

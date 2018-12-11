@@ -99,6 +99,11 @@
   max-width: 100%;
   width: 680px;
   padding: 2rem;
+
+  textarea {
+    resize: vertical !important;
+    position: relative !important;
+  }
 }
 
 .formField {
