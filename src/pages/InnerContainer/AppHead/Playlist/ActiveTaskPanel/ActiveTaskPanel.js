@@ -19,8 +19,8 @@ class ActiveTaskPanel extends Component {
 
   constructor(props) {
     super(props);
-    this.stopStatuses = [3, 5, 7];
-    this.playStatuses = [2, 4, 6];
+    this.stopStatuses = [TASK_STATUSES.DEV_STOP, TASK_STATUSES.CODE_REVIEW_STOP, TASK_STATUSES.QA_STOP];
+    this.playStatuses = [TASK_STATUSES.DEV_PLAY, TASK_STATUSES.CODE_REVIEW_PLAY, TASK_STATUSES.QA_PLAY];
 
     this.state = {
       maxLength: 150

@@ -25,7 +25,6 @@ import shortid from 'shortid';
 import { isOnlyDevOps } from '../../../utils/isDevOps';
 import { devOpsUsersSelector } from '../../../utils/sortPerformer';
 
-
 const usersSelector = state => state.Project.project.users;
 
 const sortedUsersSelector = createSelector(usersSelector, users => sortPerformer(users));
@@ -183,7 +182,7 @@ class TaskHeader extends Component {
     return type;
   };
 
-  getButtonIcon = (inProcessStatusId, inHoldStatusId) => {
+  getButtonIcon = (inHoldStatusId, inProcessStatusId) => {
     const { task } = this.props;
     let icon = null;
     if (task.statusId === inProcessStatusId) {
@@ -346,7 +345,11 @@ class TaskHeader extends Component {
             <Button
               text="Code Review"
               type={this.getButtonType(TASK_STATUSES.CODE_REVIEW_STOP, TASK_STATUSES.CODE_REVIEW_PLAY)}
-              data-tip={this.getButtonTip(TASK_STATUSES.CODE_REVIEW_STOP, TASK_STATUSES.CODE_REVIEW_PLAY, 'Code Review')}
+              data-tip={this.getButtonTip(
+                TASK_STATUSES.CODE_REVIEW_STOP,
+                TASK_STATUSES.CODE_REVIEW_PLAY,
+                'Code Review'
+              )}
               icon={this.getButtonIcon(TASK_STATUSES.CODE_REVIEW_STOP, TASK_STATUSES.CODE_REVIEW_PLAY)}
               onClick={this.createChangeStatusHandler(
                 TASK_STATUSES.CODE_REVIEW_STOP,

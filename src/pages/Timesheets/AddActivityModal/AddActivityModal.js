@@ -23,7 +23,7 @@ import getStatusOptions from '../../../utils/getDraftStatusOptions';
 import * as activityTypes from '../../../constants/ActivityTypes';
 import localize from './addActivityModal.json';
 import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../selectors/dictionaries';
-import { getStopStatusByGroup } from '../../../constants/TaskStatuses';
+import { getStopStatusByGroup } from '../../../utils/TaskStatuses';
 
 class AddActivityModal extends Component {
   static propTypes = {

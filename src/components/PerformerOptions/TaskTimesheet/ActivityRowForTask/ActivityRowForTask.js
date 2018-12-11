@@ -13,7 +13,7 @@ import ConfirmModal from '../../../../components/ConfirmModal';
 import * as timesheetsConstants from '../../../../constants/Timesheets';
 import EditActivityProjectModal from '../../../../components/EditActivityProjectModal';
 import localize from './ActivityRowForTask.json';
-import { getStopStatusByGroup } from '../../../../constants/TaskStatuses';
+import { getStopStatusByGroup } from '../../../../utils/TaskStatuses';
 
 export default class ActivityRowForTask extends React.Component {
   static propTypes = {

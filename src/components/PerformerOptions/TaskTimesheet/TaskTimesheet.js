@@ -6,7 +6,8 @@ import times from 'lodash/times';
 import cn from 'classnames';
 import PropTypes from 'prop-types';
 import ActivityRowForTask from './ActivityRowForTask';
-import { getStopStatusByGroup, isSameStatuses, TASK_STATUSES } from '../../../constants/TaskStatuses';
+import { TASK_STATUSES } from '../../../constants/TaskStatuses';
+import { getStopStatusByGroup, isSameStatuses } from '../../../utils/TaskStatuses';
 
 function generateEmptyTimeSheets(task) {
   const dayOfWeek = moment().day();
