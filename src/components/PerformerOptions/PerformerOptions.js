@@ -7,11 +7,15 @@ import Modal from '../Modal';
 import SelectDropdown from '../SelectDropdown';
 import { changeTask, publishComment, getTask } from '../../actions/Task';
 import TaskTimesheet from './TaskTimesheet';
+import MentionsInput from '../../pages/TaskPage/Comments/Mentions';
+import { getFullName } from '../../utils/NameLocalisation';
+import shortId from 'shortid';
 
-import TextArea from '../TextArea';
 import Button from '../Button';
 import localize from './PerformerOptions.json';
 import { TASK_STATUSES } from '../../constants/TaskStatuses';
+
+import { prepairCommentForEdit, stringifyCommentForSend } from '../../pages/TaskPage/Comments/Mentions/mentionService';
 
 const formLayout = {
   firstCol: 3,
@@ -29,7 +33,8 @@ class PerformerOptions extends Component {
       options: this.optionsList,
       loggedTime: 0,
       selectedPerformer: props.defaultOption || null,
-      commentText: ''
+      commentText: '',
+      resizeKey: shortId()
     };
   }
 
@@ -72,7 +77,7 @@ class PerformerOptions extends Component {
 
   changePerformer = e => {
     e.preventDefault();
-    const { commentText } = this.state;
+    const commentText = stringifyCommentForSend(this.state.commentText, this.users);
     const { id } = this.props;
     this.props.onChoose(this.state.selectedPerformer);
     if (commentText) {
@@ -84,13 +89,31 @@ class PerformerOptions extends Component {
 
   setComment = e => {
     this.setState({
-      commentText: e.target.value
+      commentText: e.target.value,
+      resizeKey: shortId()
     });
+  };
+
+  get users() {
+    return [
+      { id: 'all', fullNameEn: localize.en.ALL, fullNameRu: localize.ru.ALL },
+      ...this.props.projectUsers.map(u => u.user),
+      ...this.props.externalUsers.map(u => u.user)
+    ];
+  }
+
+  getTextAreaNode = node => {
+    this.reply = node;
+  };
+
+  toggleBtn = evt => {
+    this.setState({ disabledBtn: !evt.target.value || evt.target.value.trim() === '' });
   };
 
   render() {
     const { title, lang, task, activeUser, isTshAndCommentsHidden } = this.props;
     const { options } = this.state;
+    const users = this.users.map(u => ({ id: u.id, display: getFullName(u) }));
 
     return (
       <Modal isOpen contentLabel="modal" className={css.modalWrapper} onRequestClose={this.onClose}>
@@ -144,13 +167,13 @@ class PerformerOptions extends Component {
                       <p className={css.label}>{localize[lang].COMMENT}</p>
                     </Col>
                     <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                      <TextArea
-                        // toolbarHidden
+                      <MentionsInput
                         placeholder={localize[lang].COMMENT_PLACEHOLDER}
-                        // wrapperClassName={css.taskCommentWrapper}
-                        // editorClassName={css.taskComment}
-                        onChange={this.setComment}
-                        value={this.state.commentText}
+                        value={prepairCommentForEdit(this.state.commentText, this.users)}
+                        getTextAreaNode={this.getTextAreaNode}
+                        toggleBtn={this.setComment}
+                        suggestions={users}
+                        resizeKey={this.state.resizeKey}
                       />
                     </Col>
                   </Row>
@@ -177,10 +200,12 @@ PerformerOptions.propTypes = {
   canBeNotSelected: PropTypes.bool,
   changeTask: PropTypes.func,
   defaultOption: PropTypes.number,
+  externalUsers: PropTypes.array,
   getTask: PropTypes.func,
   id: PropTypes.number,
   inputPlaceholder: PropTypes.string,
   isPerformerChanged: PropTypes.bool,
+  isProjectInfoReceiving: PropTypes.bool,
   isTshAndCommentsHidden: PropTypes.bool,
   lang: PropTypes.string,
   loggedTime: PropTypes.number,
@@ -188,6 +213,7 @@ PerformerOptions.propTypes = {
   onChoose: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   options: PropTypes.array,
+  projectUsers: PropTypes.array,
   publishComment: PropTypes.func,
   removeCurOptionTip: PropTypes.string,
   task: PropTypes.object,
@@ -198,7 +224,10 @@ PerformerOptions.propTypes = {
 const mapStateToProps = state => ({
   activeUser: state.Auth.user,
   lang: state.Localize.lang,
-  task: state.Task.task
+  task: state.Task.task,
+  projectUsers: state.Project.project.projectUsers,
+  externalUsers: state.Project.project.externalUsers,
+  isProjectInfoReceiving: state.Project.isProjectInfoReceiving
 });
 
 const mapDispatchToProps = {
