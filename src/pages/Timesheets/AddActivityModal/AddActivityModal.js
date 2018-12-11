@@ -187,7 +187,9 @@ class AddActivityModal extends Component {
 
   loadProjects = activityType => {
     const hideEmptyValue = activityType === 1;
-    this.props.getProjectsForSelect('', hideEmptyValue).then(options => this.setState({ projects: options.options }));
+    this.props
+      .getProjectsForSelect('', hideEmptyValue, true)
+      .then(options => this.setState({ projects: options.options }));
   };
 
   handleChangeSprint = option => {
