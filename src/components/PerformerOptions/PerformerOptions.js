@@ -9,6 +9,7 @@ import { changeTask, publishComment, getTask } from '../../actions/Task';
 import TaskTimesheet from './TaskTimesheet';
 import MentionsInput from '../../pages/TaskPage/Comments/Mentions';
 import { getFullName } from '../../utils/NameLocalisation';
+import shortId from 'shortid';
 
 import Button from '../Button';
 import localize from './PerformerOptions.json';
@@ -32,7 +33,8 @@ class PerformerOptions extends Component {
       options: this.optionsList,
       loggedTime: 0,
       selectedPerformer: props.defaultOption || null,
-      commentText: ''
+      commentText: '',
+      resizeKey: shortId()
     };
   }
 
@@ -87,7 +89,8 @@ class PerformerOptions extends Component {
 
   setComment = e => {
     this.setState({
-      commentText: e.target.value
+      commentText: e.target.value,
+      resizeKey: shortId()
     });
   };
 
@@ -170,6 +173,7 @@ class PerformerOptions extends Component {
                         getTextAreaNode={this.getTextAreaNode}
                         toggleBtn={this.setComment}
                         suggestions={users}
+                        resizeKey={this.state.resizeKey}
                       />
                     </Col>
                   </Row>
