@@ -10,11 +10,19 @@ import {
   getProjectAssociation
 } from '../../actions/Jira';
 
+const selectJiraProject = state => {
+  return {
+    id: state.Project.project.externalId,
+    hostname: state.Project.project.jiraHostname,
+    jiraProjectName: state.Project.project.jiraProjectName
+  };
+};
+
 const mapStateToProps = state => {
   return {
     simtrackProjectId: state.Project.project.id,
     projects: state.Jira.projects,
-    project: state.Jira.project,
+    project: selectJiraProject(state),
     token: state.Jira.token,
     authorId: state.Auth.user.id,
     taskTypes: state.Dictionaries.taskTypes,
