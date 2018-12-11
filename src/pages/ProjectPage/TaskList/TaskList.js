@@ -369,6 +369,7 @@ class TaskList extends Component {
   clearFilters = () => {
     this.setState(
       {
+        nameInputValue: '',
         changedFilters: {
           projectId: this.props.params.projectId
         }

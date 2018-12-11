@@ -12,6 +12,7 @@ import { getFullName } from '../../utils/NameLocalisation';
 
 import Button from '../Button';
 import localize from './PerformerOptions.json';
+import { TASK_STATUSES } from '../../constants/TaskStatuses';
 
 import { prepairCommentForEdit, stringifyCommentForSend } from '../../pages/TaskPage/Comments/Mentions/mentionService';
 
@@ -107,7 +108,7 @@ class PerformerOptions extends Component {
   };
 
   render() {
-    const { title, lang, task, activeUser } = this.props;
+    const { title, lang, task, activeUser, isTshAndCommentsHidden } = this.props;
     const { options } = this.state;
     const users = this.users.map(u => ({ id: u.id, display: getFullName(u) }));
 
@@ -138,8 +139,8 @@ class PerformerOptions extends Component {
               </Row>
             </label>
 
-            {!this.props.isTshAndCommentsHidden &&
-              task.statusId !== 1 &&
+            {!isTshAndCommentsHidden &&
+              task.statusId !== TASK_STATUSES.NEW &&
               activeUser.id === task.performerId && (
                 <label className={css.formField}>
                   <Row className={css.taskFormRow}>
@@ -154,8 +155,8 @@ class PerformerOptions extends Component {
                 </label>
               )}
 
-            {!this.props.isTshAndCommentsHidden &&
-              task.statusId !== 1 &&
+            {!isTshAndCommentsHidden &&
+              task.statusId !== TASK_STATUSES.NEW &&
               activeUser.id === task.performerId && (
                 <label className={css.formField}>
                   <Row className={css.taskFormRow}>
