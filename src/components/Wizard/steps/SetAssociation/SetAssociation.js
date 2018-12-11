@@ -415,28 +415,34 @@ class SetAssociationForm extends Component {
     let SimtrackTableBody;
     switch (this.state.currentState) {
       case associationStates.ISSUE_TYPES:
-        JiraTableBody = project.issue_types.map(entity => {
-          return this.renderJiraRow(entity);
-        });
-        SimtrackTableBody = taskTypes.map(entity => {
-          return this.renderSimtrackRow(entity);
-        });
+        if (project.issue_types) {
+          JiraTableBody = project.issue_types.map(entity => {
+            return this.renderJiraRow(entity);
+          });
+          SimtrackTableBody = taskTypes.map(entity => {
+            return this.renderSimtrackRow(entity);
+          });
+        }
         break;
       case associationStates.STATUS_TYPES:
-        JiraTableBody = project.status_types.map(entity => {
-          return this.renderJiraRow(entity);
-        });
-        SimtrackTableBody = taskStatuses.map(entity => {
-          return this.renderSimtrackRow(entity);
-        });
+        if (project.status_types) {
+          JiraTableBody = project.status_types.map(entity => {
+            return this.renderJiraRow(entity);
+          });
+          SimtrackTableBody = taskStatuses.map(entity => {
+            return this.renderSimtrackRow(entity);
+          });
+        }
         break;
       case associationStates.USERS:
-        JiraTableBody = this.filtredJiraUsers(project.users).map(entity => {
-          return this.renderJiraRow(entity);
-        });
-        SimtrackTableBody = this.state.users.map(entity => {
-          return this.renderSimtrackRow(entity);
-        });
+        if (project.users) {
+          JiraTableBody = this.filtredJiraUsers(project.users).map(entity => {
+            return this.renderJiraRow(entity);
+          });
+          SimtrackTableBody = this.state.users.map(entity => {
+            return this.renderSimtrackRow(entity);
+          });
+        }
         break;
       default:
         break;

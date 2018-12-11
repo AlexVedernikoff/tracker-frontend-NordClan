@@ -1,7 +1,8 @@
 import * as JiraActions from '../constants/Jira';
 
 const InitialState = {
-  projects: []
+  projects: [],
+  project: {}
 };
 
 export default function Jira(state = InitialState, action) {

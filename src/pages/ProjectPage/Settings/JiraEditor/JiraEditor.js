@@ -11,6 +11,7 @@ class JiraEditor extends Component {
   static propTypes = {
     cleanJiraAssociation: PropTypes.func,
     getJiraProject: PropTypes.func,
+    jiraExternalId: PropTypes.number,
     jiraProject: PropTypes.object,
     jiraProjects: PropTypes.array,
     lang: PropTypes.string,
@@ -19,10 +20,9 @@ class JiraEditor extends Component {
   };
 
   render() {
-    const { lang, openJiraWizard, simtrackProject } = this.props;
+    const { lang, openJiraWizard, simtrackProject, jiraExternalId } = this.props;
     return (
       <div className={css.jiraCard}>
-        simtrackProjectId
         <h2>{localize[lang].SYNCHRONIZATION_WITH_JIRA}</h2>
         <Button
           onClick={openJiraWizard}
@@ -30,12 +30,12 @@ class JiraEditor extends Component {
           type="primary"
           icon="IconPlus"
         />
-        {simtrackProject.externalId ? (
+        {jiraExternalId ? (
           <JiraCard
             simtrackProjectId={simtrackProject.id}
             deleteProject={this.props.cleanJiraAssociation}
             project={{
-              id: simtrackProject.externalId,
+              id: jiraExternalId,
               name: simtrackProject.jiraProjectName,
               hostname: simtrackProject.jiraHostName
             }}
@@ -47,6 +47,7 @@ class JiraEditor extends Component {
 }
 
 const mapStateToProps = state => ({
+  jiraExternalId: state.Project.project.externalId,
   jiraProjects: state.Jira.projects,
   simtrackProject: state.Project.project,
   lang: state.Localize.lang

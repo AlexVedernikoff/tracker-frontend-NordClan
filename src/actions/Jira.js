@@ -317,7 +317,7 @@ const cleanJiraAssociation = simtrackProjectId => {
       .get(URL)
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(cleanJiraAssociationSuccess(response.data));
+          dispatch(cleanJiraAssociationSuccess(simtrackProjectId));
         }
         dispatch(finishLoading());
       })

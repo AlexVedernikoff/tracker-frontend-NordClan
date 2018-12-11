@@ -11,7 +11,8 @@ class JiraCard extends Component {
     deleteProject: PropTypes.func,
     isNew: PropTypes.bool,
     lang: PropTypes.string,
-    project: PropTypes.object
+    project: PropTypes.object,
+    simtrackProjectId: PropTypes.number
   };
 
   constructor(props) {
@@ -30,7 +31,7 @@ class JiraCard extends Component {
   };
 
   render() {
-    const { project, lang } = this.props;
+    const { project, lang, simtrackProjectId } = this.props;
     const { isConfirm } = this.state;
 
     return (
@@ -53,7 +54,7 @@ class JiraCard extends Component {
             contentLabel="modal"
             text={`${localize[lang].CONFIRM_CANSEL} ${project.name}?`}
             onCancel={this.toggleConfirm}
-            onConfirm={() => this.props.deleteProject(project.simtrackProjectId)}
+            onConfirm={() => this.props.deleteProject(simtrackProjectId)}
             onRequestClose={this.toggleConfirm}
           />
         ) : null}
