@@ -33,7 +33,7 @@ export const TASK_STATUSES_GROUPS = {
   CLOSED: [CLOSED]
 };
 
-export const TASK_TATUSES_TITLES = {
+export const TASK_STATUSES_TITLES = {
   [TASK_STATUSES.NEW]: 'New',
   [TASK_STATUSES.DEV_PLAY]: 'Develop',
   [TASK_STATUSES.DEV_STOP]: 'Develop',
