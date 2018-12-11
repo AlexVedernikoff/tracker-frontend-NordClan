@@ -319,15 +319,16 @@ class ParticipantEditor extends Component {
             />
           ) : null}
         </div>
-        <div className={css.externalUsers}>
-          <h2>{localize[lang].SYNCHRONIZATION_WITH_JIRA}</h2>
-          <Button
-            onClick={this.handleOpenModalWizard}
-            text={localize[lang].CREATE_PROJECT_WITH_JIRA}
-            type="primary"
-            icon="IconPlus"
-          />
-        </div>
+        {/* скрыл блок в соответсвии с задаче ST-12647 */}
+        {/*<div className={css.externalUsers}>*/}
+        {/*<h2>{localize[lang].SYNCHRONIZATION_WITH_JIRA}</h2>*/}
+        {/*<Button*/}
+        {/*onClick={this.handleOpenModalWizard}*/}
+        {/*text={localize[lang].CREATE_PROJECT_WITH_JIRA}*/}
+        {/*type="primary"*/}
+        {/*icon="IconPlus"*/}
+        {/*/>*/}
+        {/*</div>*/}
         {this.state.isModalOpenAddUser ? (
           <Modal isOpen contentLabel="modal" onRequestClose={this.handleCloseModalAddUser}>
             <form className={css.changeStage}>
