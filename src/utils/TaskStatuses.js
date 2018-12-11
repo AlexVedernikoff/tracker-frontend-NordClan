@@ -1,37 +1,37 @@
-import * as taskStatus from '../constants/TaskStatuses';
+import { TASK_STATUSES } from '../constants/TaskStatuses';
 
 export const getStatusNameById = statusId => {
   let status;
 
   switch (statusId) {
-    case 1:
+    case TASK_STATUSES.NEW:
       status = 'New';
       break;
-    case 2:
+    case TASK_STATUSES.DEV_PLAY:
       status = 'Develop'; // Develop play
       break;
-    case 3:
+    case TASK_STATUSES.DEV_STOP:
       status = 'Develop'; // Develop stop
       break;
-    case 4:
+    case TASK_STATUSES.CODE_REVIEW_PLAY:
       status = 'Code Review'; // Code Review play
       break;
-    case 5:
+    case TASK_STATUSES.CODE_REVIEW_STOP:
       status = 'Code Review'; // Code Review stop
       break;
-    case 6:
+    case TASK_STATUSES.QA_PLAY:
       status = 'QA'; // QA play
       break;
-    case 7:
+    case TASK_STATUSES.QA_STOP:
       status = 'QA'; // QA stop
       break;
-    case 8:
+    case TASK_STATUSES.DONE:
       status = 'Done';
       break;
-    case 9:
+    case TASK_STATUSES.CANCELED:
       status = 'Canceled';
       break;
-    case 10:
+    case TASK_STATUSES.CLOSED:
       status = 'Closed';
       break;
     default:
@@ -41,13 +41,13 @@ export const getStatusNameById = statusId => {
 };
 
 export const isTaskInWork = statusId =>
-  statusId !== taskStatus.NEW &&
-  statusId !== taskStatus.DONE &&
-  statusId !== taskStatus.CLOSED &&
-  statusId !== taskStatus.CANCELED;
+  statusId !== TASK_STATUSES.NEW &&
+  statusId !== TASK_STATUSES.DONE &&
+  statusId !== TASK_STATUSES.CLOSED &&
+  statusId !== TASK_STATUSES.CANCELED;
 
 export const isTaskInProgress = statusId =>
-  statusId === taskStatus.CODE_REVIEW_PLAY || statusId === taskStatus.DEV_PLAY || statusId === taskStatus.QA_PLAY;
+  statusId === TASK_STATUSES.CODE_REVIEW_PLAY || statusId === TASK_STATUSES.DEV_PLAY || statusId === TASK_STATUSES.QA_PLAY;
 
 export const isTaskInHold = statusId =>
-  statusId === taskStatus.DEV_STOP || statusId === taskStatus.CODE_REVIEW_STOP || statusId === taskStatus.QA_STOP;
+  statusId === TASK_STATUSES.DEV_STOP || statusId === TASK_STATUSES.CODE_REVIEW_STOP || statusId === TASK_STATUSES.QA_STOP;

@@ -33,7 +33,7 @@ export const TASK_STATUSES_GROUPS = {
   CLOSED: [CLOSED]
 };
 
-export function getMainStatusByGroup(statusId) {
+export function getStopStatusByGroup(statusId) {
   if (TASK_STATUSES_GROUPS.DEV.indexOf(statusId) !== -1) {
     return DEV_STOP;
   }
@@ -48,5 +48,5 @@ export function getMainStatusByGroup(statusId) {
 }
 
 export function isSameStatuses(statusOne, statusTwo) {
-  return statusOne === statusTwo || getMainStatusByGroup(statusOne) === getMainStatusByGroup(statusTwo);
+  return statusOne === statusTwo || getStopStatusByGroup(statusOne) === getStopStatusByGroup(statusTwo);
 }

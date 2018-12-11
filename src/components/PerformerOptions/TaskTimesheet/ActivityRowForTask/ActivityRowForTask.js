@@ -13,7 +13,7 @@ import ConfirmModal from '../../../../components/ConfirmModal';
 import * as timesheetsConstants from '../../../../constants/Timesheets';
 import EditActivityProjectModal from '../../../../components/EditActivityProjectModal';
 import localize from './ActivityRowForTask.json';
-import { getMainStatusByGroup } from '../../../../constants/TaskStatuses';
+import { getStopStatusByGroup } from '../../../../constants/TaskStatuses';
 
 export default class ActivityRowForTask extends React.Component {
   static propTypes = {
@@ -95,7 +95,7 @@ export default class ActivityRowForTask extends React.Component {
       {
         isDraft: false,
         taskId: item.id || null,
-        taskStatusId: item.id ? getMainStatusByGroup(item.statusId) : null,
+        taskStatusId: item.id ? getStopStatusByGroup(item.statusId) : null,
         typeId: item.id ? '1' : item.typeId,
         spentTime: +value,
         onDate: moment(startingDay)

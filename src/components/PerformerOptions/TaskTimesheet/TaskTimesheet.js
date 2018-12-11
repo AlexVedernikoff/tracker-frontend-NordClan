@@ -6,7 +6,7 @@ import times from 'lodash/times';
 import cn from 'classnames';
 import PropTypes from 'prop-types';
 import ActivityRowForTask from './ActivityRowForTask';
-import { getMainStatusByGroup, isSameStatuses, TASK_STATUSES } from '../../../constants/TaskStatuses';
+import { getStopStatusByGroup, isSameStatuses, TASK_STATUSES } from '../../../constants/TaskStatuses';
 
 function generateEmptyTimeSheets(task) {
   const dayOfWeek = moment().day();
@@ -16,7 +16,7 @@ function generateEmptyTimeSheets(task) {
     i =>
       date.add(1, 'days') && {
         spentTime: 0,
-        taskStatusId: getMainStatusByGroup(task.statusId),
+        taskStatusId: getStopStatusByGroup(task.statusId),
         onDate: date.toISOString(true),
         ...(i === dayOfWeek - 1
           ? {
@@ -49,7 +49,7 @@ export default class TaskTimesheet extends Component {
     const tempTimesheetsList = tempTimesheets.map(timesheet => {
       return {
         ...timesheet,
-        taskStatusId: getMainStatusByGroup(timesheet.taskStatusId || defaultTaskStatusId)
+        taskStatusId: getStopStatusByGroup(timesheet.taskStatusId || defaultTaskStatusId)
       };
     });
 

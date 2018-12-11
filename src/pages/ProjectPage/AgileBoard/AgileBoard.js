@@ -31,6 +31,7 @@ import { getDevOpsUsers } from '../../../actions/Users';
 import { addActivity } from '../../../actions/Timesheets';
 
 import { sortedUsersSelector } from '../../../selectors/Project';
+import { TASK_STATUSES } from '../../../constants/TaskStatuses';
 
 class AgileBoard extends Component {
   constructor(props) {
@@ -265,7 +266,7 @@ class AgileBoard extends Component {
   sortPerformersListForTaskCore = users => {
     const devOpsUsers = this.state.changedTaskIsDevOps && this.props.devOpsUsers ? this.props.devOpsUsers : [];
     switch (this.state.statusId) {
-      case 2:
+      case TASK_STATUSES.DEV_PLAY:
         this.unionPerformers = union(
           devOpsUsers,
           users.pm,
@@ -281,7 +282,7 @@ class AgileBoard extends Component {
         );
         break;
 
-      case 3:
+      case TASK_STATUSES.DEV_STOP:
         this.unionPerformers = union(
           devOpsUsers,
           users.pm,
@@ -297,7 +298,7 @@ class AgileBoard extends Component {
         );
         break;
 
-      case 4:
+      case TASK_STATUSES.CODE_REVIEW_PLAY:
         this.unionPerformers = union(
           users.teamLead,
           users.account,
@@ -311,7 +312,7 @@ class AgileBoard extends Component {
         );
         break;
 
-      case 5:
+      case TASK_STATUSES.CODE_REVIEW_STOP:
         this.unionPerformers = union(
           users.teamLead,
           users.account,
@@ -325,11 +326,11 @@ class AgileBoard extends Component {
         );
         break;
 
-      case 6:
+      case TASK_STATUSES.QA_PLAY:
         this.unionPerformers = users.qa;
         break;
 
-      case 7:
+      case TASK_STATUSES.QA_STOP:
         this.unionPerformers = users.qa;
         break;
 
