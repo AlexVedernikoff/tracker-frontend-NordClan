@@ -235,7 +235,7 @@ class Details extends Component {
     let unionPerformers = [];
 
     switch (this.props.task.statusId) {
-      case 2:
+      case TASK_STATUSES.DEV_PLAY:
         unionPerformers = _.union(
           task.isDevOps ? this.props.devOpsUsers : [],
           users.pm,
@@ -251,7 +251,7 @@ class Details extends Component {
         );
         break;
 
-      case 3:
+      case TASK_STATUSES.DEV_STOP:
         unionPerformers = _.union(
           task.isDevOps ? this.props.devOpsUsers : [],
           users.pm,
@@ -267,7 +267,7 @@ class Details extends Component {
         );
         break;
 
-      case 4:
+      case TASK_STATUSES.CODE_REVIEW_PLAY:
         unionPerformers = _.union(
           users.teamLead,
           users.account,
@@ -281,7 +281,7 @@ class Details extends Component {
         );
         break;
 
-      case 5:
+      case TASK_STATUSES.CODE_REVIEW_STOP:
         unionPerformers = _.union(
           users.teamLead,
           users.account,
@@ -295,11 +295,11 @@ class Details extends Component {
         );
         break;
 
-      case 6:
+      case TASK_STATUSES.QA_PLAY:
         unionPerformers = users.qa;
         break;
 
-      case 7:
+      case TASK_STATUSES.QA_STOP:
         unionPerformers = users.qa;
         break;
 

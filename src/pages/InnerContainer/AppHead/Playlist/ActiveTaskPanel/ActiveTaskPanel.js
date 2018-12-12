@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { IconPause, IconPlay, IconList } from '../../../../../components/Icons';
 import localize from './activeTaskPanel.json';
 import * as css from '../Playlist.scss';
+import { TASK_STATUSES } from '../../../../../constants/TaskStatuses';
 
 const phoneWidth = 768;
 
@@ -18,8 +19,8 @@ class ActiveTaskPanel extends Component {
 
   constructor(props) {
     super(props);
-    this.stopStatuses = [3, 5, 7];
-    this.playStatuses = [2, 4, 6];
+    this.stopStatuses = [TASK_STATUSES.DEV_STOP, TASK_STATUSES.CODE_REVIEW_STOP, TASK_STATUSES.QA_STOP];
+    this.playStatuses = [TASK_STATUSES.DEV_PLAY, TASK_STATUSES.CODE_REVIEW_PLAY, TASK_STATUSES.QA_PLAY];
 
     this.state = {
       maxLength: 150
@@ -50,12 +51,12 @@ class ActiveTaskPanel extends Component {
     }
 
     const statusTransition = {
-      3: 2,
-      2: 3,
-      5: 4,
-      4: 5,
-      7: 6,
-      6: 7
+      [TASK_STATUSES.DEV_STOP]: TASK_STATUSES.DEV_PLAY,
+      [TASK_STATUSES.DEV_PLAY]: TASK_STATUSES.DEV_STOP,
+      [TASK_STATUSES.CODE_REVIEW_PLAY]: TASK_STATUSES.CODE_REVIEW_STOP,
+      [TASK_STATUSES.CODE_REVIEW_STOP]: TASK_STATUSES.CODE_REVIEW_PLAY,
+      [TASK_STATUSES.QA_PLAY]: TASK_STATUSES.QA_STOP,
+      [TASK_STATUSES.QA_STOP]: TASK_STATUSES.QA_PLAY
     };
 
     const updatedStatus = statusTransition[activeTask.statusId];

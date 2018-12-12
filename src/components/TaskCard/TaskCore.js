@@ -170,9 +170,9 @@ class TaskCore extends PureComponent {
             })}
           >
             {isTaskInProgress(task.statusId) ? (
-              <IconPlay data-tip={localize[lang].START} onClick={this.handleClick} />
-            ) : (
               <IconPause data-tip={localize[lang].PAUSE} onClick={this.handleClick} />
+            ) : (
+              <IconPlay data-tip={localize[lang].START} onClick={this.handleClick} />
             )}
           </div>
         ) : null}

@@ -33,20 +33,15 @@ export const TASK_STATUSES_GROUPS = {
   CLOSED: [CLOSED]
 };
 
-export function getMainStatusByGroup(statusId) {
-  if (TASK_STATUSES_GROUPS.DEV.indexOf(statusId) !== -1) {
-    return DEV_STOP;
-  }
-  if (TASK_STATUSES_GROUPS.CODE_REVIEW.indexOf(statusId) !== -1) {
-    return CODE_REVIEW_STOP;
-  }
-  if (TASK_STATUSES_GROUPS.QA.indexOf(statusId) !== -1) {
-    return QA_STOP;
-  }
-
-  return statusId;
-}
-
-export function isSameStatuses(statusOne, statusTwo) {
-  return statusOne === statusTwo || getMainStatusByGroup(statusOne) === getMainStatusByGroup(statusTwo);
-}
+export const TASK_STATUSES_TITLES = {
+  [TASK_STATUSES.NEW]: 'New',
+  [TASK_STATUSES.DEV_PLAY]: 'Develop',
+  [TASK_STATUSES.DEV_STOP]: 'Develop',
+  [TASK_STATUSES.CODE_REVIEW_PLAY]: 'Code Review',
+  [TASK_STATUSES.CODE_REVIEW_STOP]: 'Code Review',
+  [TASK_STATUSES.QA_PLAY]: 'QA',
+  [TASK_STATUSES.QA_STOP]: 'QA',
+  [TASK_STATUSES.DONE]: 'Done',
+  [TASK_STATUSES.CANCELED]: 'Canceled',
+  [TASK_STATUSES.CLOSED]: 'Closed'
+};

@@ -23,6 +23,7 @@ import getStatusOptions from '../../../utils/getDraftStatusOptions';
 import * as activityTypes from '../../../constants/ActivityTypes';
 import localize from './addActivityModal.json';
 import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../selectors/dictionaries';
+import { getStopStatusByGroup } from '../../../utils/TaskStatuses';
 
 class AddActivityModal extends Component {
   static propTypes = {
@@ -96,8 +97,6 @@ class AddActivityModal extends Component {
 
     const { selectedTask, selectedActivityType, selectedProject, selectedTaskStatusId, startingDay } = this.props;
     const { selectedSprint } = this.state;
-    // ТШ должен создаваться в stop статусе
-    const checkPlayStatus = status => status === 2 || status === 4 || status === 6;
     const taskStatusId = selectedTask ? selectedTaskStatusId : null;
 
     const getSprint = () => {
@@ -142,7 +141,7 @@ class AddActivityModal extends Component {
             sprint: getSprint()
           }
         : null,
-      taskStatusId: checkPlayStatus(taskStatusId) ? taskStatusId + 1 : taskStatusId,
+      taskStatusId: getStopStatusByGroup(taskStatusId),
       typeId: selectedActivityType,
       spentTime: '0',
       sprintId: getSprint() ? getSprint().id : null,
