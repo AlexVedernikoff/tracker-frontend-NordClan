@@ -85,8 +85,6 @@ class Comments extends Component {
     };
   }
 
-  addedAttachments = [];
-
   componentWillMount() {
     this.props.getCommentsByTask(this.props.params.taskId);
   }
@@ -164,6 +162,8 @@ class Comments extends Component {
   selectComment = id => {
     Comment.selectComment(id, this.props.location);
   };
+
+  addedAttachments = [];
 
   prepareAttachmentsForEdit = ids => {
     const attachments = this.props.attachments.map(attachment => {
