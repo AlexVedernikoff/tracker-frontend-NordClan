@@ -31,6 +31,7 @@ import { getDevOpsUsers } from '../../../actions/Users';
 import { addActivity } from '../../../actions/Timesheets';
 
 import { sortedUsersSelector } from '../../../selectors/Project';
+import { TASK_STATUSES } from '../../../constants/TaskStatuses';
 
 class AgileBoard extends Component {
   constructor(props) {
@@ -44,12 +45,15 @@ class AgileBoard extends Component {
       changedTask: null,
       isOnlyMine: props.filters.isOnlyMine,
       fromTaskCore: false,
-      isTshAndCommentsHidden: false
+      isTshAndCommentsHidden: false,
+      changedTags: []
     };
   }
 
   componentDidMount() {
-    if (this.props.myTaskBoard) this.getTasks();
+    if (this.props.myTaskBoard) {
+      this.getTasks();
+    }
     if (!this.props.devOpsUsers) this.props.getDevOpsUsers();
   }
 
@@ -66,6 +70,7 @@ class AgileBoard extends Component {
   componentDidUpdate(prevProps) {
     ReactTooltip.rebuild();
     if (!isEqual(prevProps.filters, this.props.filters)) {
+      this.setTagsFromString(this.props.filters.filterTags);
       this.getTasks();
     }
   }
@@ -95,7 +100,7 @@ class AgileBoard extends Component {
 
   dropTask = (task, phase) => {
     if (phaseColumnNameById[task.statusId] === phase) return;
-    if (!(phase === 'New' || phase === 'Done')) {
+    if (!(phase === 'New')) {
       const taskProps = this.props.sprintTasks.find(sprintTask => {
         return task.id === sprintTask.id;
       });
@@ -265,7 +270,7 @@ class AgileBoard extends Component {
   sortPerformersListForTaskCore = users => {
     const devOpsUsers = this.state.changedTaskIsDevOps && this.props.devOpsUsers ? this.props.devOpsUsers : [];
     switch (this.state.statusId) {
-      case 2:
+      case TASK_STATUSES.DEV_PLAY:
         this.unionPerformers = union(
           devOpsUsers,
           users.pm,
@@ -281,7 +286,7 @@ class AgileBoard extends Component {
         );
         break;
 
-      case 3:
+      case TASK_STATUSES.DEV_STOP:
         this.unionPerformers = union(
           devOpsUsers,
           users.pm,
@@ -297,7 +302,7 @@ class AgileBoard extends Component {
         );
         break;
 
-      case 4:
+      case TASK_STATUSES.CODE_REVIEW_PLAY:
         this.unionPerformers = union(
           users.teamLead,
           users.account,
@@ -311,7 +316,7 @@ class AgileBoard extends Component {
         );
         break;
 
-      case 5:
+      case TASK_STATUSES.CODE_REVIEW_STOP:
         this.unionPerformers = union(
           users.teamLead,
           users.account,
@@ -325,11 +330,11 @@ class AgileBoard extends Component {
         );
         break;
 
-      case 6:
+      case TASK_STATUSES.QA_PLAY:
         this.unionPerformers = users.qa;
         break;
 
-      case 7:
+      case TASK_STATUSES.QA_STOP:
         this.unionPerformers = users.qa;
         break;
 
@@ -351,8 +356,29 @@ class AgileBoard extends Component {
     }
   };
 
+  setFilterValue = (key, value) => {
+    if (key === 'filterTags') {
+      this.setTagsFromString(value);
+    }
+    this.props.setFilterValue(key, value);
+  };
+
+  setTagsFromString = tags => {
+    this.setState({
+      changedTags: tags
+        ? tags.map(item => {
+            return {
+              label: item,
+              value: item
+            };
+          })
+        : []
+    });
+  };
+
   render() {
-    const { lang, tags, noTagData, users } = this.props;
+    const { lang, noTagData, users } = this.props;
+    const tags = this.props.tags.length ? this.props.tags : this.state.changedTags;
     const tasksList = this.isOnlyMine ? this.getMineSortedTasks() : this.getAllSortedTasks();
     const tasksKey = this.isOnlyMine ? 'mine' : 'all';
     const agileFilterProps = {
@@ -368,6 +394,7 @@ class AgileBoard extends Component {
         getTasks={this.getTasks}
         initialFilters={initialFilters}
         tags={[noTagData].concat(tags)}
+        setFilterValue={this.setFilterValue}
       />
     );
 

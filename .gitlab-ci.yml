@@ -32,6 +32,8 @@ build_fe:
     when: on_success
     paths:
       - build/
+  tags:
+   - docker
 
 build_docker_fe:
   image: docker:stable
@@ -39,6 +41,8 @@ build_docker_fe:
   script:
     - cp -f ci/Dockerfile.fe ./
     - docker build --rm --tag $DOCKER_PREFIX/fe:$TAG -f Dockerfile.fe .
+  tags:
+   - docker
 
 release:
   image: docker:stable
@@ -48,6 +52,8 @@ release:
     - docker push $DOCKER_PREFIX/fe:$TAG
     - docker push $DOCKER_PREFIX/fe:$CI_SHORT_REF_NAME
     - docker rmi $DOCKER_PREFIX/fe:$CI_SHORT_REF_NAME
+  tags:
+   - docker
 
 deploy_to_dev:
   image: dr.simbirsoft1.com/library/ansible:2.4
@@ -70,6 +76,8 @@ deploy_to_dev:
   environment:
     name: dev
     url: https://simtrack-dev.simbirsoft/
+  tags:
+   - docker
 
 deploy_to_test:
   image: dr.simbirsoft1.com/library/ansible:2.4
@@ -93,6 +101,8 @@ deploy_to_test:
   environment:
     name: test
     url: https://simtrack-test.simbirsoft/
+  tags:
+   - docker
 
 deploy_to_prod:
   image: dr.simbirsoft1.com/library/ansible:2.4
@@ -116,7 +126,8 @@ deploy_to_prod:
   environment:
     name: prod
     url: https://simtrack.simbirsoft/
-
+  tags:
+   - docker
 
 deploy_to_custom:
   image: dr.simbirsoft1.com/library/ansible:2.4
@@ -138,4 +149,6 @@ deploy_to_custom:
   environment:
     name: custom
     url: http://simtrack-custom.simbirsoft/
+  tags:
+   - docker    
 

@@ -8,7 +8,8 @@
     "TIMESHEETS": "Time report:",
     "NO_RESULTS": "No results",
     "CHANGE_PERFORMER": "Change performer",
-    "NOT_SELECTED": "Not selected"
+    "NOT_SELECTED": "Not selected",
+    "ALL": "All"
   },
   "ru": {
     "PERFORMER": "Исполнитель:",
@@ -19,6 +20,7 @@
     "TIMESHEETS": "Затраченное время:",
     "NO_RESULTS": "Ничего не найдено",
     "CHANGE_PERFORMER": "Изменить исполнителя",
-    "NOT_SELECTED": "Не выбрано"
+    "NOT_SELECTED": "Не выбрано",
+    "ALL": "Всем"
   }
 }

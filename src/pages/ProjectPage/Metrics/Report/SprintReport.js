@@ -301,7 +301,9 @@ class SprintReport extends Component {
               onKeyUp={e => this.inputValidFrom(e.target.value.substr(0, 10).trim())}
               placeholder={localize[lang].DATE}
               style={{ borderColor: this.state.borderColorFrom }}
-              disabledDataRanges={[{ after: new Date() }]}
+              disabledDataRanges={[
+                { after: this.state.selectedTo && moment(this.state.selectedTo, dateFormat).toDate() }
+              ]}
             />
           </Col>
           <Col>{localize[lang].TO} </Col>

@@ -42,7 +42,9 @@ class CreateMilestoneModal extends Component {
   };
 
   changeStatus = status => {
-    this.setState({ typeId: status.value });
+    if (status) {
+      this.setState({ typeId: status.value });
+    }
   };
 
   checkNullInputs = () => {
