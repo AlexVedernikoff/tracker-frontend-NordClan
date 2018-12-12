@@ -342,7 +342,7 @@ class ParticipantEditor extends Component {
                   onInputChange={this.searchOnChange}
                   noResultsText={localize[lang].NO_RESULTS}
                   options={this.getUsers()}
-                  autofocus
+                  autoFocus
                   filterOption={el => el}
                 />
                 <SelectDropdown
@@ -380,7 +380,7 @@ class ParticipantEditor extends Component {
                   onInputChange={this.searchExternalOnChange}
                   noResultsText={localize[lang].NO_RESULTS}
                   options={this.getUsers()}
-                  autofocus
+                  autoFocus
                   filterOption={layoutAgnosticFilter}
                 />
                 <Button
