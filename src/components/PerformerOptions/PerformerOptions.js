@@ -95,10 +95,30 @@ class PerformerOptions extends Component {
   };
 
   get users() {
+    const { options } = this.state;
+    let projectUsers = this.props.projectUsers;
+    const externalUsers = this.props.externalUsers;
+    if (!projectUsers) {
+      projectUsers = [];
+
+      if (options && options.length) {
+        options.forEach(user => {
+          if (user.value) {
+            projectUsers.push({
+              user: {
+                ...user,
+                login: user.label,
+                id: user.value
+              }
+            });
+          }
+        });
+      }
+    }
     return [
       { id: 'all', fullNameEn: localize.en.ALL, fullNameRu: localize.ru.ALL },
-      ...this.props.projectUsers.map(u => u.user),
-      ...this.props.externalUsers.map(u => u.user)
+      ...projectUsers.map(u => u.user),
+      ...externalUsers.map(u => u.user)
     ];
   }
 
@@ -114,7 +134,6 @@ class PerformerOptions extends Component {
     const { title, lang, task, activeUser, isTshAndCommentsHidden } = this.props;
     const { options } = this.state;
     const users = this.users.map(u => ({ id: u.id, display: getFullName(u) }));
-
     return (
       <Modal isOpen contentLabel="modal" className={css.modalWrapper} onRequestClose={this.onClose}>
         <div>
