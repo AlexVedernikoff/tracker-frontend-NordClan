@@ -58,12 +58,14 @@ class EditMilestoneModal extends Component {
   };
 
   changeStatus = status => {
-    this.setState(state => ({
-      milestone: {
-        ...state.milestone,
-        typeId: status.value
-      }
-    }));
+    if (status) {
+      this.setState(state => ({
+        milestone: {
+          ...state.milestone,
+          typeId: status.value
+        }
+      }));
+    }
   };
 
   handleStatusChange = e => {
