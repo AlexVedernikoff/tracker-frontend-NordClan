@@ -100,7 +100,7 @@ class AgileBoard extends Component {
 
   dropTask = (task, phase) => {
     if (phaseColumnNameById[task.statusId] === phase) return;
-    if (!(phase === 'New' || phase === 'Done')) {
+    if (!(phase === 'New')) {
       const taskProps = this.props.sprintTasks.find(sprintTask => {
         return task.id === sprintTask.id;
       });
