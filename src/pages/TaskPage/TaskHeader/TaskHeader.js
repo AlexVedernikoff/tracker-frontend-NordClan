@@ -128,7 +128,9 @@ class TaskHeader extends Component {
   };
 
   handleCloseModal = () => {
-    this.setState(prevState => ({ isPerformerModalOpen: false, clickedStatus: prevState.prevClickedStatus }));
+    this.closePerformerModal(prevState => ({
+      clickedStatus: prevState.prevClickedStatus
+    }));
   };
 
   handleOpenCancelModal = () => {
@@ -168,9 +170,30 @@ class TaskHeader extends Component {
       'User'
     );
 
-    this.setState({
-      isPerformerModalOpen: false
-    });
+    this.closePerformerModal();
+  };
+
+  changeClickedStatus = statusName => {
+    this.setState(
+      prevState => ({
+        clickedStatus: statusName,
+        // we save previous clicked status in order to
+        // restore it if user decided to not change task status
+        // and closed performer modal.
+        // And we set prevClickedStatus equal either to the value
+        // of clickedStatus in prevState or to the new value 'statusName'
+        // if clickedStatus hasn't been set yet.
+        prevClickedStatus: prevState.clickedStatus || statusName
+      }),
+      this.handleOpenModal
+    );
+  };
+
+  closePerformerModal = (updater = () => ({})) => {
+    this.setState(prevState => ({
+      isPerformerModalOpen: false,
+      ...updater(prevState)
+    }));
   };
 
   getButtonType = (inProcessStatusId, inHoldStatusId) => {
@@ -216,22 +239,6 @@ class TaskHeader extends Component {
     } else {
       this.changeStatus(status);
     }
-  };
-
-  changeClickedStatus = statusName => {
-    this.setState(
-      prevState => ({
-        clickedStatus: statusName,
-        // we save previous clicked status in order to
-        // restore it if user decided to not change task status
-        // and closed performer modal.
-        // And we set prevClickedStatus equal either to the value
-        // of clickedStatus in prevState or to the new value 'statusName'
-        // if clickedStatus hasn't been set yet.
-        prevClickedStatus: prevState.clickedStatus || statusName
-      }),
-      this.handleOpenModal
-    );
   };
 
   render() {
