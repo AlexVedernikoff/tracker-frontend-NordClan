@@ -120,7 +120,8 @@ export default class SprintSelector extends Component {
 
     return (
       <div className="sprint-dropdown">
-        {this.state.inputFocused &&
+        {multi &&
+          this.state.inputFocused &&
           value && <IconSearch style={taskListClass ? taskListIconSearchStyle : boardIconSearchStyle} />}
         <SelectDropdown
           name="sprint"
