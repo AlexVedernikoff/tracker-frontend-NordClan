@@ -28,7 +28,7 @@ class TagsFilter extends React.Component {
   };
 
   render() {
-    const { lang } = this.props;
+    const { lang, onClear } = this.props;
     return (
       <SelectDropdown
         searchPromptText={localize[lang].TAG_NAME}
@@ -40,6 +40,8 @@ class TagsFilter extends React.Component {
         options={this.options()}
         filterOption={el => el}
         onChange={this.props.onTagSelect}
+        canClear
+        onClear={onClear}
         value={this.props.filterTags}
         onInputChange={this.onInputChange}
       />
@@ -52,6 +54,7 @@ TagsFilter.propTypes = {
   filterTags: PropTypes.array,
   getTagsFilter: PropTypes.func.isRequired,
   lang: PropTypes.string,
+  onClear: PropTypes.func,
   onTagSelect: PropTypes.func.isRequired,
   projectsTagsOptions: PropTypes.array.isRequired,
   tasksTagsOptions: PropTypes.array.isRequired
