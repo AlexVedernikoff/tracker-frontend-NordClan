@@ -29,9 +29,17 @@ export const getNewStatus = newPhase => {
 export const getNewStatusOnClick = oldStatusId => {
   let newStatusId;
 
-  if (oldStatusId === TASK_STATUSES.DEV_PLAY || oldStatusId === TASK_STATUSES.CODE_REVIEW_PLAY || oldStatusId === TASK_STATUSES.QA_PLAY) {
+  if (
+    oldStatusId === TASK_STATUSES.DEV_PLAY ||
+    oldStatusId === TASK_STATUSES.CODE_REVIEW_PLAY ||
+    oldStatusId === TASK_STATUSES.QA_PLAY
+  ) {
     newStatusId = oldStatusId + 1;
-  } else if (oldStatusId === TASK_STATUSES.DEV_STOP || oldStatusId === TASK_STATUSES.CODE_REVIEW_STOP || oldStatusId === TASK_STATUSES.QA_STOP) {
+  } else if (
+    oldStatusId === TASK_STATUSES.DEV_STOP ||
+    oldStatusId === TASK_STATUSES.CODE_REVIEW_STOP ||
+    oldStatusId === TASK_STATUSES.QA_STOP
+  ) {
     newStatusId = oldStatusId - 1;
   }
 
