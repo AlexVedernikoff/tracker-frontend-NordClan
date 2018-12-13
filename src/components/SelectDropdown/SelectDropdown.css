@@ -27,7 +27,7 @@
 }
 
 .sprint-dropdown .Select-value-label {
-  margin-right: 15%;
+  padding-right: 12px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

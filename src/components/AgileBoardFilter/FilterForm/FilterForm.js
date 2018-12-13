@@ -72,7 +72,7 @@ class FilterForm extends React.Component {
     return sprintIds && sprintIds.length && this.props.sprints && this.props.sprints.length
       ? sprintIds.map(sprintId => {
           const sprintData = this.props.sprints.find(data => data.id === +sprintId) || {};
-          return `${sprintData.spentTime || 0} / ${sprintData.budget || 0}`;
+          return `${sprintData.spentTime || 0} / ${sprintData.riskBudget || 0}`;
         })
       : [];
   }
@@ -80,6 +80,7 @@ class FilterForm extends React.Component {
   clearFilters = type => {
     if (type === 'sprints') {
       this.props.clearFilters({ changedSprint: [0] }, this.updateListsAndTasks);
+      this.taskNameRef.value = '';
       storage.setItem('sprintFilterChanged', 1);
     } else {
       this.props.setFilterValue(type, [], this.updateListsAndTasks);
@@ -148,6 +149,7 @@ class FilterForm extends React.Component {
               placeholder={localize[lang].TASK_NAME}
               defaultValue={filters.name || ''}
               onChange={this.onNameFilterChange}
+              inputRef={ref => (this.taskNameRef = ref)}
             />
           </Col>
           <Col xs={12} sm={3}>

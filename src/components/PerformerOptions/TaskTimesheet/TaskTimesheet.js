@@ -2,9 +2,31 @@ import React, { Component } from 'react';
 import * as css from './TaskTimesheet.scss';
 import moment from 'moment';
 import find from 'lodash/find';
+import times from 'lodash/times';
 import cn from 'classnames';
 import PropTypes from 'prop-types';
 import ActivityRowForTask from './ActivityRowForTask';
+import { TASK_STATUSES } from '../../../constants/TaskStatuses';
+import { getStopStatusByGroup, isSameStatuses } from '../../../utils/TaskStatuses';
+
+function generateEmptyTimeSheets(task) {
+  const dayOfWeek = moment().day();
+  const date = moment().subtract(dayOfWeek, 'days');
+  return times(
+    7,
+    i =>
+      date.add(1, 'days') && {
+        spentTime: 0,
+        taskStatusId: getStopStatusByGroup(task.statusId),
+        onDate: date.toISOString(true),
+        ...(i === dayOfWeek - 1
+          ? {
+              id: 'temp'
+            }
+          : null)
+      }
+  );
+}
 
 export default class TaskTimesheet extends Component {
   constructor(props) {
@@ -22,13 +44,13 @@ export default class TaskTimesheet extends Component {
 
   render() {
     const days = [];
-    const { tempTimesheets, startingDay, deleteTempTimesheets, task } = this.props;
+    const { tempTimesheets, startingDay, deleteTempTimesheets, task, lang } = this.props;
 
-    const defaultTaskStatusId = 2;
+    const defaultTaskStatusId = TASK_STATUSES.DEV_STOP;
     const tempTimesheetsList = tempTimesheets.map(timesheet => {
       return {
         ...timesheet,
-        taskStatusId: timesheet.taskStatusId || defaultTaskStatusId
+        taskStatusId: getStopStatusByGroup(timesheet.taskStatusId || defaultTaskStatusId)
       };
     });
 
@@ -53,7 +75,7 @@ export default class TaskTimesheet extends Component {
           const taskNotPushed =
             el.task &&
             !find(res, tsh => {
-              const isExist = tsh.id === el.task.id && tsh.taskStatusId === el.taskStatusId;
+              const isExist = tsh.id === el.task.id && isSameStatuses(tsh.taskStatusId, el.taskStatusId);
               if (isExist && isTemp) {
                 tsh.hilight = true;
               }
@@ -94,7 +116,7 @@ export default class TaskTimesheet extends Component {
               moment(startingDay)
                 .weekday(index)
                 .format('DD.MM.YY') &&
-            tsh.taskStatusId === element.taskStatusId
+            isSameStatuses(tsh.taskStatusId, element.taskStatusId)
           );
         });
 
@@ -109,7 +131,7 @@ export default class TaskTimesheet extends Component {
                 moment(startingDay)
                   .weekday(index)
                   .format('DD.MM.YY') &&
-              tsh.taskStatusId === element.taskStatusId
+              isSameStatuses(tsh.taskStatusId, element.taskStatusId)
           );
           timeSheets.push({ ...timesheet, doubleTimesheets });
         } else {
@@ -128,7 +150,7 @@ export default class TaskTimesheet extends Component {
     for (let day = 0; day < 7; day++) {
       const currentDay = moment(this.props.startingDay)
         .weekday(day)
-        .locale('en');
+        .locale(lang);
 
       days.push(
         <th
@@ -148,15 +170,17 @@ export default class TaskTimesheet extends Component {
       );
     }
 
-    const currentTask = tasks.find(singleTask => singleTask.id === task.id);
+    const currentTask = tasks.find(
+      singleTask => singleTask.id === task.id && isSameStatuses(task.statusId, singleTask.taskStatusId)
+    );
 
-    const taskRow = currentTask.timeSheets ? (
+    const taskRow = (
       <ActivityRowForTask
-        key={`${currentTask.id}-${currentTask.taskStatusId}-${startingDay}`}
+        key={`${task.id}-${task.taskStatusId}-${startingDay}`}
         task
-        item={currentTask}
+        item={{ timeSheets: generateEmptyTimeSheets(task), ...task, ...currentTask }}
       />
-    ) : null;
+    );
 
     return (
       <table>

@@ -17,6 +17,7 @@ import SelectDropdown from '../../../../components/SelectDropdown';
 import localize from './participantEditor.json';
 import layoutAgnosticFilter from '../../../../utils/layoutAgnosticFilter';
 import Wizard from '../../../../components/Wizard';
+import { getFullName } from '../../../../utils/NameLocalisation';
 
 class ParticipantEditor extends Component {
   constructor(props) {
@@ -159,7 +160,7 @@ class ParticipantEditor extends Component {
   getUsers = () => {
     return this.state.participants.map(user => ({
       value: user.id,
-      label: this.props.lang === 'ru' ? user.fullNameRu : user.fullNameEn
+      label: getFullName(user)
     }));
   };
 
@@ -319,15 +320,16 @@ class ParticipantEditor extends Component {
             />
           ) : null}
         </div>
-        <div className={css.externalUsers}>
-          <h2>{localize[lang].SYNCHRONIZATION_WITH_JIRA}</h2>
-          <Button
-            onClick={this.handleOpenModalWizard}
-            text={localize[lang].CREATE_PROJECT_WITH_JIRA}
-            type="primary"
-            icon="IconPlus"
-          />
-        </div>
+        {/* скрыл блок в соответсвии с задаче ST-12647 */}
+        {/*<div className={css.externalUsers}>*/}
+        {/*<h2>{localize[lang].SYNCHRONIZATION_WITH_JIRA}</h2>*/}
+        {/*<Button*/}
+        {/*onClick={this.handleOpenModalWizard}*/}
+        {/*text={localize[lang].CREATE_PROJECT_WITH_JIRA}*/}
+        {/*type="primary"*/}
+        {/*icon="IconPlus"*/}
+        {/*/>*/}
+        {/*</div>*/}
         {this.state.isModalOpenAddUser ? (
           <Modal isOpen contentLabel="modal" onRequestClose={this.handleCloseModalAddUser}>
             <form className={css.changeStage}>
@@ -342,7 +344,7 @@ class ParticipantEditor extends Component {
                   onInputChange={this.searchOnChange}
                   noResultsText={localize[lang].NO_RESULTS}
                   options={this.getUsers()}
-                  autofocus
+                  autoFocus
                   filterOption={el => el}
                 />
                 <SelectDropdown
@@ -380,7 +382,7 @@ class ParticipantEditor extends Component {
                   onInputChange={this.searchExternalOnChange}
                   noResultsText={localize[lang].NO_RESULTS}
                   options={this.getUsers()}
-                  autofocus
+                  autoFocus
                   filterOption={layoutAgnosticFilter}
                 />
                 <Button

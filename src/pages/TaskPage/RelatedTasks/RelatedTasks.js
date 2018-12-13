@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { IconPlay, IconPause, IconPlus, IconLink, IconUnLink, IconClose } from '../../../components/Icons';
 import classnames from 'classnames';
-import { isTaskInProgress, getStatusNameById, isTaskInHold } from '../../../utils/TaskStatuses';
+import { isTaskInProgress, isTaskInHold } from '../../../utils/TaskStatuses';
+import { TASK_STATUSES_TITLES } from '../../../constants/TaskStatuses';
 import * as css from './RelatedTasks.scss';
 import { connect } from 'react-redux';
 import localize from './RelatedTasks.json';
@@ -61,10 +62,10 @@ class RelatedTasks extends React.Component {
           <span className={css.taskLabel}>
             <div>
               <div>{`${this.props.task.project.prefix}-${task.id}`}</div>
-              <div className={css.taskStatus}>{getStatusNameById(task.statusId)}</div>
+              <div className={css.taskStatus}>{TASK_STATUSES_TITLES[task.statusId]}</div>
             </div>
             <div className={css.taskStatusIcon}>
-              {isTaskInProgress(task.statusId) ? <IconPlay /> : isTaskInHold(task.statusId) ? <IconPause /> : null}
+              {isTaskInHold(task.statusId) ? <IconPlay /> : isTaskInProgress(task.statusId) ? <IconPause /> : null}
             </div>
           </span>
           <div className={css.taskLink}>

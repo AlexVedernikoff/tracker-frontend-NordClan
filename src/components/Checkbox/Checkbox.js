@@ -10,7 +10,7 @@ const Checkbox = props => {
   const type = 'checkbox';
   const ref = refCallback ? el => refCallback(el) : null;
   const baseProps = { type, disabled, onChange, ref };
-  const inputCheckbox = checked ? <input checked={checked} {...baseProps} /> : <input {...baseProps} />;
+  const inputCheckbox = checked !== undefined ? <input checked={checked} {...baseProps} /> : <input {...baseProps} />;
   return (
     <label
       {...other}
@@ -26,7 +26,6 @@ const Checkbox = props => {
 };
 
 Checkbox.defaultProps = {
-  checked: false,
   onChange: () => {}
 };
 

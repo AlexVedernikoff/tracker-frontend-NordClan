@@ -8,6 +8,7 @@ import * as css from './SprintStartControl.scss';
 import { IconPlay, IconPause } from '../Icons';
 import { editSprint } from '../../actions/Sprint';
 import localize from './SprintEditModal.json';
+import { TASK_STATUSES } from '../../constants/TaskStatuses';
 
 class SprintEditModal extends Component {
   static propTypes = {
@@ -23,7 +24,11 @@ class SprintEditModal extends Component {
   }
 
   changeStatus = sprint => {
-    return () => this.props.editSprint(sprint.id, sprint.statusId === 1 ? 2 : 1);
+    return () =>
+      this.props.editSprint(
+        sprint.id,
+        sprint.statusId === TASK_STATUSES.NEW ? TASK_STATUSES.DEV_PLAY : TASK_STATUSES.NEW
+      );
   };
 
   render() {
@@ -37,9 +42,9 @@ class SprintEditModal extends Component {
           [css.inprogress]: sprint.statusId === 2,
           [css.inhold]: sprint.statusId === 1
         })}
-        data-tip={sprint.statusId === 2 ? localize[lang].STOP : localize[lang].PLAY}
+        data-tip={sprint.statusId === TASK_STATUSES.DEV_PLAY ? localize[lang].STOP : localize[lang].PLAY}
       >
-        {sprint.statusId === 2 ? <IconPause /> : <IconPlay />}
+        {sprint.statusId === TASK_STATUSES.DEV_PLAY ? <IconPause /> : <IconPlay />}
       </span>
     );
   }

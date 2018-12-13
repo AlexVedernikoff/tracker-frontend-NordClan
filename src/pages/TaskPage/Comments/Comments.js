@@ -134,8 +134,20 @@ class Comments extends Component {
     }
     if (prevProps.attachments.length !== this.props.attachments.length && this.state.isAttachedToComment) {
       const attachments = this.props.attachments.map(item => {
-        return { ...item, display: true };
+        return { ...item, display: item.display ? item.display : false };
       });
+      Object.keys(this.addedAttachments).forEach(key => {
+        if (key) {
+          attachments[key].display = true;
+        }
+      });
+      let length = this.props.attachments.length;
+      const prevLength = prevProps.attachments.length;
+      while (length > prevLength) {
+        attachments[length - 1].display = true;
+        this.addedAttachments[length - 1] = { file: attachments[length - 1] };
+        length--;
+      }
 
       this.setState({ attachments: attachments, isAttachedToComment: false });
     }
@@ -150,6 +162,8 @@ class Comments extends Component {
   selectComment = id => {
     Comment.selectComment(id, this.props.location);
   };
+
+  addedAttachments = [];
 
   prepareAttachmentsForEdit = ids => {
     const attachments = this.props.attachments.map(attachment => {
@@ -233,6 +247,9 @@ class Comments extends Component {
 
   handleRemoveAttachment = index => {
     const attachments = this.state.attachments.map((item, key) => {
+      if (index === key && this.addedAttachments[key]) {
+        delete this.addedAttachments[key];
+      }
       return index === key ? { ...item, display: false } : item;
     });
     this.setState({ attachments: attachments });

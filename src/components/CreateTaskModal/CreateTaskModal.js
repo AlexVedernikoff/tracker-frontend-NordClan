@@ -27,7 +27,6 @@ import Tag from '../../components/Tag';
 import Tags from '../../components/Tags';
 import { getFullName } from '../../utils/NameLocalisation';
 import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
-import parseInteger from '../../utils/parseInteger';
 
 const MAX_DESCRIPTION_LENGTH = 25000;
 
@@ -180,7 +179,7 @@ class CreateTaskModal extends Component {
 
   handleChangePlannedTime = plannedExecutionTime => {
     this.setState({
-      plannedExecutionTime: parseInteger(plannedExecutionTime)
+      plannedExecutionTime: plannedExecutionTime || 0
     });
   };
 
@@ -201,6 +200,12 @@ class CreateTaskModal extends Component {
 
   validateDescription = description => {
     this.setState({ descriptionInvalid: description.length > MAX_DESCRIPTION_LENGTH });
+  };
+
+  generateError = () => {
+    return this.state.taskName.length < 4
+      ? localize[this.props.lang].NAME_ERROR_LESS_SYMBOLS
+      : localize[this.props.lang].NAME_ERROR_MORE_SYMBOLS;
   };
 
   render() {
@@ -240,7 +245,7 @@ class CreateTaskModal extends Component {
                       onBlur={handleBlur}
                       onEnter={this.validateAndSubmit}
                       shouldMarkError={shouldMarkError}
-                      errorText={localize[lang].NAME_ERROR}
+                      errorText={this.generateError()}
                     />
                   ),
                   'taskName',

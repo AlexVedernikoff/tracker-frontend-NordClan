@@ -13,6 +13,7 @@ import ConfirmModal from '../../../../components/ConfirmModal';
 import * as timesheetsConstants from '../../../../constants/Timesheets';
 import EditActivityProjectModal from '../../../../components/EditActivityProjectModal';
 import localize from './ActivityRowForTask.json';
+import { getStopStatusByGroup } from '../../../../utils/TaskStatuses';
 
 export default class ActivityRowForTask extends React.Component {
   static propTypes = {
@@ -37,7 +38,6 @@ export default class ActivityRowForTask extends React.Component {
     const debounceTime = 1000;
 
     this.deleteTimesheets = debounce(this.deleteTimesheets, debounceTime);
-    this.debouncedUpdateTimesheet = debounce(this.updateTimesheet, debounceTime * 2);
     this.debouncedCreateTimesheet = debounce(this.createTimesheet, debounceTime * 2);
 
     this.state = {
@@ -95,7 +95,7 @@ export default class ActivityRowForTask extends React.Component {
       {
         isDraft: false,
         taskId: item.id || null,
-        taskStatusId: item.id ? item.taskStatusId : null,
+        taskStatusId: item.id ? getStopStatusByGroup(item.statusId) : null,
         typeId: item.id ? '1' : item.typeId,
         spentTime: +value,
         onDate: moment(startingDay)
@@ -199,16 +199,12 @@ export default class ActivityRowForTask extends React.Component {
         };
       },
       () => {
-        this.debouncedUpdateTimesheet(i, id, comment);
+        this.updateTimesheet(i, id, comment);
       }
     );
   };
 
   onBlurFilled = (i, id, comment, value) => {
-    if (this.state.timeCells[i] !== +value) {
-      this.debouncedUpdateTimesheet.flush();
-    }
-
     if (value === '') {
       this.resetCell(i);
     }

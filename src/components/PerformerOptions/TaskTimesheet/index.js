@@ -12,7 +12,8 @@ const mapStateToProps = state => ({
   list: state.Timesheets.list,
   userId: state.Auth.user.id,
   dateBegin: state.Timesheets.dateBegin,
-  dateEnd: state.Timesheets.dateEnd
+  dateEnd: state.Timesheets.dateEnd,
+  lang: state.Localize.lang
 });
 const mapDispatchToProps = {
   ...timesheetsActions

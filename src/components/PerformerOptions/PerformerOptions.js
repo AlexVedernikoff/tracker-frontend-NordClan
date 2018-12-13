@@ -1,23 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { scroller } from 'react-scroll';
-import find from 'lodash/find';
 import { Col, Row } from 'react-flexbox-grid';
 import * as css from './PerformerOptions.scss';
 import Modal from '../Modal';
 import SelectDropdown from '../SelectDropdown';
-import { changeTask, publishComment } from '../../actions/Task';
+import { changeTask, publishComment, getTask } from '../../actions/Task';
 import TaskTimesheet from './TaskTimesheet';
+import MentionsInput from '../../pages/TaskPage/Comments/Mentions';
+import { getFullName } from '../../utils/NameLocalisation';
+import shortId from 'shortid';
 
-import TextArea from '../TextArea';
 import Button from '../Button';
 import localize from './PerformerOptions.json';
+import { TASK_STATUSES } from '../../constants/TaskStatuses';
 
-const notSelectedOption = {
-  value: 0,
-  label: 'Не выбрано'
-};
+import { prepairCommentForEdit, stringifyCommentForSend } from '../../pages/TaskPage/Comments/Mentions/mentionService';
 
 const formLayout = {
   firstCol: 3,
@@ -33,73 +31,42 @@ class PerformerOptions extends Component {
 
     this.state = {
       options: this.optionsList,
-      selectedIndex: this.getSelectedIndex(options),
       loggedTime: 0,
       selectedPerformer: props.defaultOption || null,
-      commentText: ''
+      commentText: '',
+      resizeKey: shortId()
     };
   }
 
   componentDidMount() {
-    const { options, selectedIndex } = this.state;
-    setTimeout(this.scrollToSelectedOption(options, selectedIndex), 100);
+    const { id, task } = this.props;
+
+    if (!task.id || task.id !== id) {
+      this.props.getTask(id);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
     const { options, canBeNotSelected } = nextProps;
     const newOptions = this.getOptionsList(options, canBeNotSelected);
-    const newSelectedIndex = this.getSelectedIndex(options);
 
-    this.setState({ options: newOptions, selectedIndex: newSelectedIndex }, () => {
+    this.setState({ options: newOptions }, () => {
       this.optionsList = newOptions;
-      this.scrollToSelectedOption(newOptions, newSelectedIndex)();
     });
   }
-
-  componentWillUnmount() {
-    removeEventListener('keydown', this.moveList);
-  }
-
-  scrollToSelectedOption = (options, selectedIndex) => () => {
-    if (selectedIndex < 0) {
-      return;
-    }
-
-    scroller.scrollTo(options[selectedIndex].value.toString(), {
-      containerId: 'optionsList',
-      offset: 0
-    });
-  };
 
   getOptionsList(options, canBeNotSelected) {
     const optionsList = [...options];
-    return canBeNotSelected ? optionsList.concat(notSelectedOption) : optionsList;
+    return canBeNotSelected
+      ? optionsList.concat({
+          value: 0,
+          label: localize[this.props.lang].NOT_SELECTED
+        })
+      : optionsList;
   }
-
-  getSelectedIndex(options) {
-    const foundIndex = options.findIndex(option => option.value === this.props.defaultOption);
-    return foundIndex !== -1 ? foundIndex : this.optionsList.length - 1;
-  }
-
-  handleChoose = value => {
-    this.props.onChoose(value);
-  };
 
   onClose = () => {
     this.props.onClose();
-  };
-
-  removeCurrentOption = () => {
-    this.handleChoose(notSelectedOption.value);
-  };
-
-  getCurrentOption = () => {
-    const { options, defaultOption } = this.props;
-    return find(options, option => option.value === defaultOption);
-  };
-
-  handleChangePlannedTime = loggedTime => {
-    this.setState({ loggedTime });
   };
 
   handlePerformerChange = selectedPerformer => {
@@ -110,7 +77,7 @@ class PerformerOptions extends Component {
 
   changePerformer = e => {
     e.preventDefault();
-    const { commentText } = this.state;
+    const commentText = stringifyCommentForSend(this.state.commentText, this.users);
     const { id } = this.props;
     this.props.onChoose(this.state.selectedPerformer);
     if (commentText) {
@@ -122,14 +89,51 @@ class PerformerOptions extends Component {
 
   setComment = e => {
     this.setState({
-      commentText: e.target.value
+      commentText: e.target.value,
+      resizeKey: shortId()
     });
   };
 
-  render() {
-    const { title, lang, task, activeUser } = this.props;
+  get users() {
     const { options } = this.state;
+    let projectUsers = this.props.projectUsers;
+    const externalUsers = this.props.externalUsers;
+    if (!projectUsers) {
+      projectUsers = [];
 
+      if (options && options.length) {
+        options.forEach(user => {
+          if (user.value) {
+            projectUsers.push({
+              user: {
+                ...user,
+                login: user.label,
+                id: user.value
+              }
+            });
+          }
+        });
+      }
+    }
+    return [
+      { id: 'all', fullNameEn: localize.en.ALL, fullNameRu: localize.ru.ALL },
+      ...projectUsers.map(u => u.user),
+      ...externalUsers.map(u => u.user)
+    ];
+  }
+
+  getTextAreaNode = node => {
+    this.reply = node;
+  };
+
+  toggleBtn = evt => {
+    this.setState({ disabledBtn: !evt.target.value || evt.target.value.trim() === '' });
+  };
+
+  render() {
+    const { title, lang, task, activeUser, isTshAndCommentsHidden } = this.props;
+    const { options } = this.state;
+    const users = this.users.map(u => ({ id: u.id, display: getFullName(u) }));
     return (
       <Modal isOpen contentLabel="modal" className={css.modalWrapper} onRequestClose={this.onClose}>
         <div>
@@ -157,7 +161,8 @@ class PerformerOptions extends Component {
               </Row>
             </label>
 
-            {task.statusId !== 1 &&
+            {!isTshAndCommentsHidden &&
+              task.statusId !== TASK_STATUSES.NEW &&
               activeUser.id === task.performerId && (
                 <label className={css.formField}>
                   <Row className={css.taskFormRow}>
@@ -166,13 +171,14 @@ class PerformerOptions extends Component {
                     </Col>
 
                     <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                      <TaskTimesheet />
+                      <TaskTimesheet userId={activeUser.id} />
                     </Col>
                   </Row>
                 </label>
               )}
 
-            {task.statusId !== 1 &&
+            {!isTshAndCommentsHidden &&
+              task.statusId !== TASK_STATUSES.NEW &&
               activeUser.id === task.performerId && (
                 <label className={css.formField}>
                   <Row className={css.taskFormRow}>
@@ -180,13 +186,13 @@ class PerformerOptions extends Component {
                       <p className={css.label}>{localize[lang].COMMENT}</p>
                     </Col>
                     <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                      <TextArea
-                        // toolbarHidden
+                      <MentionsInput
                         placeholder={localize[lang].COMMENT_PLACEHOLDER}
-                        // wrapperClassName={css.taskCommentWrapper}
-                        // editorClassName={css.taskComment}
-                        onChange={this.setComment}
-                        value={this.state.commentText}
+                        value={prepairCommentForEdit(this.state.commentText, this.users)}
+                        getTextAreaNode={this.getTextAreaNode}
+                        toggleBtn={this.setComment}
+                        suggestions={users}
+                        resizeKey={this.state.resizeKey}
                       />
                     </Col>
                   </Row>
@@ -213,30 +219,40 @@ PerformerOptions.propTypes = {
   canBeNotSelected: PropTypes.bool,
   changeTask: PropTypes.func,
   defaultOption: PropTypes.number,
+  externalUsers: PropTypes.array,
+  getTask: PropTypes.func,
   id: PropTypes.number,
   inputPlaceholder: PropTypes.string,
   isPerformerChanged: PropTypes.bool,
+  isProjectInfoReceiving: PropTypes.bool,
+  isTshAndCommentsHidden: PropTypes.bool,
   lang: PropTypes.string,
   loggedTime: PropTypes.number,
   noCurrentOption: PropTypes.bool,
   onChoose: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   options: PropTypes.array,
+  projectUsers: PropTypes.array,
   publishComment: PropTypes.func,
   removeCurOptionTip: PropTypes.string,
   task: PropTypes.object,
+  taskId: PropTypes.number,
   title: PropTypes.string
 };
 
 const mapStateToProps = state => ({
   activeUser: state.Auth.user,
   lang: state.Localize.lang,
-  task: state.Task.task
+  task: state.Task.task,
+  projectUsers: state.Project.project.projectUsers,
+  externalUsers: state.Project.project.externalUsers,
+  isProjectInfoReceiving: state.Project.isProjectInfoReceiving
 });
 
 const mapDispatchToProps = {
   changeTask,
-  publishComment
+  publishComment,
+  getTask
 };
 
 export default connect(

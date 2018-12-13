@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { getFullName } from '../utils/NameLocalisation';
 
 const getLocalizedDictionary = function(lang, dictionary) {
   return (dictionary || []).map(({ name, nameEn, ...rest }) => ({
@@ -15,6 +16,17 @@ export const getLocalizedTaskTypes = createSelector(
   state => state.Localize.lang,
   state => state.Dictionaries.taskTypes,
   getLocalizedDictionary
+);
+
+export const getLocalizedUsers = createSelector(
+  state => state.Project.project.users,
+  state => state.Localize.lang,
+  users => {
+    const localizedUsers = users.map(user => {
+      return { ...user, name: getFullName(user) };
+    });
+    return localizedUsers;
+  }
 );
 
 export const getLocalizedTaskStatuses = createSelector(

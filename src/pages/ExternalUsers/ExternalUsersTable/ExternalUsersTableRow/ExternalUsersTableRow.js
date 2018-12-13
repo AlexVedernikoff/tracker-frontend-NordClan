@@ -13,6 +13,7 @@ import { showNotification } from '../../../../actions/Notifications';
 import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
 import localize from './externalUsersTableRow.json';
+import { getFirstName } from '../../../../utils/NameLocalisation';
 
 class ExternalUsersTableRow extends Component {
   constructor(props) {
@@ -224,14 +225,14 @@ class ExternalUsersTableRow extends Component {
           <ExternalUserRefreshLink
             onConfirm={this.startRefresh}
             dataTip={localize[lang].REFRESH}
-            username={exUser.firstNameRu}
+            username={getFirstName(exUser)}
             text={localize[lang].CONFIRM_REFRESH_LINK}
           />
         </div>
         <div className={css.TableCellDelete}>
           <ExternalUserDelete
             onDelete={this.deleteUser}
-            username={exUser.firstNameRu}
+            username={getFirstName(exUser)}
             text={localize[lang].CONFIRM_DELETE_USER}
             dataTip={localize[lang].DELETE}
           />

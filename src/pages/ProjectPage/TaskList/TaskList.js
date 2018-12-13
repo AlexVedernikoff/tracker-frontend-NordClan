@@ -270,7 +270,6 @@ class TaskList extends Component {
         }
 
         this.changeUrl(changedFilters);
-
         return {
           activePage:
             state.changedFilters[name] && state.changedFilters[name].length !== filterValue.length
@@ -278,6 +277,20 @@ class TaskList extends Component {
               : state.activePage,
           changedFilters
         };
+      },
+      this.loadTasks,
+      this.updateFilterList
+    );
+  };
+
+  clearFilter = name => {
+    this.setState(
+      state => {
+        if (state.changedFilters[name]) {
+          const filters = state.changedFilters;
+          delete filters[name];
+          return { changedFilters: filters };
+        }
       },
       this.loadTasks,
       this.updateFilterList
@@ -345,10 +358,12 @@ class TaskList extends Component {
   };
 
   loadTasks = () => {
-    this.props.getTasks(
-      { ...this.state.changedFilters, allStatuses: true, currentPage: this.state.activePage, pageSize: 25 },
-      true
-    );
+    const { changedFilters } = this.state;
+    const params = { ...changedFilters, allStatuses: true, currentPage: this.state.activePage, pageSize: 25 };
+    if (changedFilters.tags) {
+      params.tags = changedFilters.tags.join(',');
+    }
+    this.props.getTasks(params, true);
     this.updateFilterList();
   };
 
@@ -368,6 +383,7 @@ class TaskList extends Component {
   clearFilters = () => {
     this.setState(
       {
+        nameInputValue: '',
         changedFilters: {
           projectId: this.props.params.projectId
         }
@@ -571,8 +587,13 @@ class TaskList extends Component {
         />
       );
     });
+    const { prioritiesId, typeId, statusId, sprintId, performerId, authorId } = this.state.changedFilters;
 
-    const { prioritiesId, typeId, statusId, sprintId, performerId, authorId, tags } = this.state.changedFilters;
+    let tags = this.state.changedFilters.tags;
+    if (tags && Array.isArray(tags)) {
+      tags = tags.map(el => ({ label: el, value: el }));
+    }
+
     const { isOpened } = this.state;
 
     const statusOptions = this.createOptions(statuses);
@@ -672,7 +693,12 @@ class TaskList extends Component {
                   <PerformerFilter onPerformerSelect={this.onChangePerformerFilter} selectedPerformerId={performerId} />
                 </Col>
                 <Col xs={12} sm={3}>
-                  <TagsFilter filterFor={'task'} onTagSelect={this.onChangeTagFilter} filterTags={tags} />
+                  <TagsFilter
+                    filterFor={'task'}
+                    onTagSelect={this.onChangeTagFilter}
+                    filterTags={tags}
+                    onClear={() => this.clearFilter('tags')}
+                  />
                 </Col>
               </Row>
               <Row className={css.search}>
@@ -686,6 +712,8 @@ class TaskList extends Component {
                     clearAllText={localize[lang].CLEAR_ALL}
                     value={statusId}
                     options={statusOptions}
+                    canClear
+                    onClear={() => this.clearFilter('statusId')}
                     onChange={this.onChangeStatusFilter}
                   />
                 </Col>
@@ -699,6 +727,8 @@ class TaskList extends Component {
                     clearAllText={localize[lang].CLEAR_ALL}
                     value={typeId}
                     options={typeOptions}
+                    canClear
+                    onClear={() => this.clearFilter('typeId')}
                     onChange={this.onChangeTypeFilter}
                   />
                 </Col>
@@ -808,6 +838,7 @@ class TaskList extends Component {
             onClose={this.closePerformerModal}
             title={localize[lang].EDIT_TASK_PERFORMER}
             users={this.getUsers()}
+            id={this.state.changedTask.id}
           />
         ) : null}
         {this.state.isSprintModalOpen ? (

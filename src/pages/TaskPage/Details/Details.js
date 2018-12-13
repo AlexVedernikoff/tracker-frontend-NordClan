@@ -23,10 +23,12 @@ import roundNum from '../../../utils/roundNum';
 import classnames from 'classnames';
 import localize from './Details.json';
 import { getFullName } from '../../../utils/NameLocalisation';
-import { TASK_STATUS_CLOSED } from '../../../constants/Task';
+import { TASK_STATUSES } from '../../../constants/TaskStatuses';
 import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
+import { getDevOpsUsers } from '../../../actions/Users';
 import shortid from 'shortid';
 import { addActivity } from '../../../actions/Timesheets';
+import { devOpsUsersSelector } from '../../../utils/sortPerformer';
 import { sortedUsersSelector } from '../../../selectors/Project';
 
 const spentRequestStatus = {
@@ -41,6 +43,7 @@ class Details extends Component {
     PlanningTimeIsEditing: PropTypes.bool,
     addActivity: PropTypes.func,
     canEdit: PropTypes.bool,
+    devOpsUsers: PropTypes.array,
     getProjectSprints: PropTypes.func.isRequired,
     getProjectUsers: PropTypes.func.isRequired,
     getTask: PropTypes.func.isRequired,
@@ -232,9 +235,9 @@ class Details extends Component {
     let unionPerformers = [];
 
     switch (this.props.task.statusId) {
-      case 2:
+      case TASK_STATUSES.DEV_PLAY:
         unionPerformers = _.union(
-          users.devops,
+          task.isDevOps ? this.props.devOpsUsers : [],
           users.pm,
           users.teamLead,
           users.account,
@@ -244,15 +247,13 @@ class Details extends Component {
           users.ux,
           users.mobile,
           users.ios,
-          users.android,
-          users.qa,
-          users.other
+          users.android
         );
         break;
 
-      case 3:
+      case TASK_STATUSES.DEV_STOP:
         unionPerformers = _.union(
-          users.devops,
+          task.isDevOps ? this.props.devOpsUsers : [],
           users.pm,
           users.teamLead,
           users.account,
@@ -262,13 +263,11 @@ class Details extends Component {
           users.ux,
           users.mobile,
           users.ios,
-          users.android,
-          users.qa,
-          users.other
+          users.android
         );
         break;
 
-      case 4:
+      case TASK_STATUSES.CODE_REVIEW_PLAY:
         unionPerformers = _.union(
           users.teamLead,
           users.account,
@@ -282,7 +281,7 @@ class Details extends Component {
         );
         break;
 
-      case 5:
+      case TASK_STATUSES.CODE_REVIEW_STOP:
         unionPerformers = _.union(
           users.teamLead,
           users.account,
@@ -296,19 +295,20 @@ class Details extends Component {
         );
         break;
 
-      case 6:
+      case TASK_STATUSES.QA_PLAY:
         unionPerformers = users.qa;
         break;
 
-      case 7:
+      case TASK_STATUSES.QA_STOP:
         unionPerformers = users.qa;
         break;
 
       default:
         unionPerformers = _.union(
+          task.isDevOps ? this.props.devOpsUsers : [],
           users.pm,
+          users.teamLead,
           users.account,
-          users.teamlead,
           users.analyst,
           users.back,
           users.front,
@@ -316,8 +316,7 @@ class Details extends Component {
           users.mobile,
           users.ios,
           users.android,
-          users.qa,
-          users.devops
+          users.qa
         );
     }
 
@@ -420,7 +419,7 @@ class Details extends Component {
             <tr>
               <td>{localize[lang].PERFORMER}</td>
               <td>
-                {this.props.task.statusId !== TASK_STATUS_CLOSED ? (
+                {this.props.task.statusId !== TASK_STATUSES.CLOSED ? (
                   <span onClick={this.openPerformerModal} className={css.editableCell}>
                     {performerTag}
                     <span className={css.editIcon}>
@@ -500,6 +499,7 @@ class Details extends Component {
             handleChangePlannedTime={this.handleChangePlannedTime}
             plannedExecutionTime={this.props.plannedExecutionTime}
             users={usersFullNames}
+            isTshAndCommentsHidden
           />
         ) : null}
         {this.state.isSprintModalOpen ? (
@@ -524,6 +524,7 @@ class Details extends Component {
 }
 
 const mapStateToProps = state => ({
+  devOpsUsers: devOpsUsersSelector(state),
   users: sortedUsersSelector(state),
   sprints: state.Project.project.sprints,
   task: state.Task.task,
@@ -541,7 +542,8 @@ const mapDispatchToProps = {
   getProjectUsers,
   getProjectSprints,
   getTask,
-  getTaskSpent
+  getTaskSpent,
+  getDevOpsUsers
 };
 
 export default connect(

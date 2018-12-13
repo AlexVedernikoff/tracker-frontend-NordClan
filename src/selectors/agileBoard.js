@@ -3,10 +3,11 @@ import moment from 'moment';
 import get from 'lodash/get';
 import { getAllTags } from './getAllTags';
 import localize from '../pages/ProjectPage/AgileBoard/AgileBoard.json';
-import { getLocalizedTaskTypes, getLocalizedTaskStatuses } from './dictionaries';
+import { getLocalizedTaskTypes, getLocalizedTaskStatuses, getLocalizedUsers } from './dictionaries';
 import { getFullName } from '../utils/NameLocalisation';
 import getSortedSprints from './sprints';
 import sortPerformer from '../utils/sortPerformer';
+import { TASK_STATUSES } from '../constants/TaskStatuses';
 
 const selectTasks = state => state.Tasks.tasks;
 
@@ -19,7 +20,7 @@ const selectUserId = state => state.Auth.user.id;
 
 const selectTaskType = state => getLocalizedTaskTypes(state);
 
-const selectProjectUsers = state => state.Project.project.users;
+const selectProjectUsers = state => getLocalizedUsers(state);
 
 const filterTasks = array => {
   const taskArray = {
@@ -31,22 +32,22 @@ const filterTasks = array => {
   };
   array.forEach(element => {
     switch (element.statusId) {
-      case 1:
+      case TASK_STATUSES.NEW:
         taskArray.new.push(element);
         break;
-      case 2:
-      case 3:
+      case TASK_STATUSES.DEV_PLAY:
+      case TASK_STATUSES.DEV_STOP:
         taskArray.dev.push(element);
         break;
-      case 4:
-      case 5:
+      case TASK_STATUSES.CODE_REVIEW_PLAY:
+      case TASK_STATUSES.CODE_REVIEW_STOP:
         taskArray.codeReview.push(element);
         break;
-      case 6:
-      case 7:
+      case TASK_STATUSES.QA_PLAY:
+      case TASK_STATUSES.QA_STOP:
         taskArray.qa.push(element);
         break;
-      case 8:
+      case TASK_STATUSES.DONE:
         taskArray.done.push(element);
         break;
       default:
@@ -111,7 +112,7 @@ const getCurrentSprint = createSelector(
 );
 
 const typeOptions = taskTypes => createOptions(taskTypes, 'name');
-const authorOptions = projectUsers => createOptions(projectUsers);
+const authorOptions = projectUsers => createOptions(projectUsers, 'name');
 
 const getTypeOptions = createSelector([selectTaskType], taskTypes => typeOptions(taskTypes));
 const getAuthorOptions = createSelector([selectProjectUsers], projectUsers => authorOptions(projectUsers));
@@ -121,6 +122,7 @@ const sortedUsersSelector = createSelector(usersSelector, users => sortPerformer
 
 const agileBoardSelector = state => {
   return {
+    devOpsUsers: state.UserList.devOpsUsers,
     tasks: getSortedTasks(state),
     myTasks: getMyTasks(state),
     tags: getAllTags(state),

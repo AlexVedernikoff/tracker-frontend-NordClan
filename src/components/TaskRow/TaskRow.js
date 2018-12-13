@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { Link } from 'react-router';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import getTypeById from '../../utils/TaskTypes';
-import { getStatusNameById } from '../../utils/TaskStatuses';
+import { TASK_STATUSES_TITLES } from '../../constants/TaskStatuses';
 import { connect } from 'react-redux';
 import Tags from '../Tags';
 import Tag from '../Tag';
@@ -81,7 +81,7 @@ class TaskRow extends React.Component {
               </div>
               <div className={css.prefix}>{`${prefix}-${task.id}`}</div>
               <div className={css.type}>{getTypeById(task.typeId, taskTypes)}</div>
-              <div className={css.type}>{`${localize[lang].ON_STAGE} ${getStatusNameById(task.statusId)}`}</div>
+              <div className={css.type}>{`${localize[lang].ON_STAGE} ${TASK_STATUSES_TITLES[task.statusId]}`}</div>
               <div>
                 {task.statusId === 2 || task.statusId === 4 || task.statusId === 6 ? (
                   <span className={css.greenText}>{localize[lang].IN_PROGRESS}</span>

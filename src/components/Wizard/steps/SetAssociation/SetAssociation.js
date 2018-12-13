@@ -452,13 +452,13 @@ class SetAssociationForm extends Component {
                   <thead>
                     <tr className={css.usersRolesHeader}>
                       {this.state.currentState === associationStates.ISSUE_TYPES ? (
-                        <th>{localize[this.props.lang].SIMTRACK_ISSUE_TYPES}</th>
+                        <th>{localize[lang].SIMTRACK_ISSUE_TYPES}</th>
                       ) : null}
                       {this.state.currentState === associationStates.STATUS_TYPES ? (
-                        <th>{localize[this.props.lang].SIMTRACK_STATUS_TYPES}</th>
+                        <th>{localize[lang].SIMTRACK_STATUS_TYPES}</th>
                       ) : null}
                       {this.state.currentState === associationStates.USERS ? (
-                        <th>{localize[this.props.lang].SIMTRACK_USER}</th>
+                        <th>{localize[lang].SIMTRACK_USER}</th>
                       ) : null}
                     </tr>
                   </thead>
@@ -488,13 +488,13 @@ class SetAssociationForm extends Component {
                   <thead>
                     <tr className={css.usersRolesHeader}>
                       {this.state.currentState === associationStates.ISSUE_TYPES ? (
-                        <th>{localize[this.props.lang].JIRA_ISSUE_TYPES}</th>
+                        <th>{localize[lang].JIRA_ISSUE_TYPES}</th>
                       ) : null}
                       {this.state.currentState === associationStates.STATUS_TYPES ? (
-                        <th>{localize[this.props.lang].JIRA_STATUS_TYPES}</th>
+                        <th>{localize[lang].JIRA_STATUS_TYPES}</th>
                       ) : null}
                       {this.state.currentState === associationStates.USERS ? (
-                        <th>{localize[this.props.lang].JIRA_EMAIL}</th>
+                        <th>{localize[lang].JIRA_EMAIL}</th>
                       ) : null}
                     </tr>
                   </thead>
@@ -512,12 +512,12 @@ class SetAssociationForm extends Component {
           )}
           {this.state.currentState === associationStates.USERS ? (
             <Button
-              text="Вперед"
+              text={localize[lang].GO_AHEAD}
               onClick={() => nextStep({ 'X-Jira-Auth': this.props.token }, this.state)}
               type="green"
             />
           ) : (
-            <Button text="Вперед" onClick={this.nextAssociationStep} type="green" />
+            <Button text={localize[lang].GO_AHEAD} onClick={this.nextAssociationStep} type="green" />
           )}
         </div>
       </div>

@@ -11,9 +11,9 @@ const target =
       }
     : {
         // TODO:
-        host: 'simtrack-dev.simbirsoft', // localhost
-        protocol: 'https:', // http:
-        port: 443 // 8000
+        host: 'localhost', // localhost
+        protocol: 'http:', // http:
+        port: 8000 // 8000
       };
 
 const p = require('./package.json');

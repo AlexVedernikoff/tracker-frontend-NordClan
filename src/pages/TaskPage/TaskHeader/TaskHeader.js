@@ -9,7 +9,7 @@ import Priority from '../../../components/Priority';
 import ButtonGroup from '../../../components/ButtonGroup';
 import TaskTitle from '../TaskTitle';
 import { getProjectUsers } from '../../../actions/Project';
-import * as TaskStatuses from '../../../constants/TaskStatuses';
+import { TASK_STATUSES } from '../../../constants/TaskStatuses';
 import { connect } from 'react-redux';
 import CopyThis from '../../../components/CopyThis';
 import { history } from '../../../History';
@@ -22,6 +22,8 @@ import sortPerformer from '../../../utils/sortPerformer';
 import { addActivity } from '../../../actions/Timesheets';
 import moment from 'moment';
 import shortid from 'shortid';
+import { isOnlyDevOps } from '../../../utils/isDevOps';
+import { devOpsUsersSelector } from '../../../utils/sortPerformer';
 
 const usersSelector = state => state.Project.project.users;
 
@@ -32,22 +34,22 @@ const getNewStatus = newPhase => {
 
   switch (newPhase) {
     case 'New':
-      newStatusId = TaskStatuses.NEW;
+      newStatusId = TASK_STATUSES.NEW;
       break;
     case 'Develop':
-      newStatusId = TaskStatuses.DEV_PLAY;
+      newStatusId = TASK_STATUSES.DEV_PLAY;
       break;
     case 'Code Review':
-      newStatusId = TaskStatuses.CODE_REVIEW_PLAY;
+      newStatusId = TASK_STATUSES.CODE_REVIEW_PLAY;
       break;
     case 'QA':
-      newStatusId = TaskStatuses.QA_PLAY;
+      newStatusId = TASK_STATUSES.QA_PLAY;
       break;
     case 'Done':
-      newStatusId = TaskStatuses.DONE;
+      newStatusId = TASK_STATUSES.DONE;
       break;
     case 'Closed':
-      newStatusId = TaskStatuses.CLOSED;
+      newStatusId = TASK_STATUSES.CLOSED;
       break;
     default:
       break;
@@ -80,12 +82,12 @@ class TaskHeader extends Component {
   createChangeStatusHandler = (statusStop, statusPlay, statusName) => () => {
     const currentStatus = this.props.task.statusId;
     const statusTransition = {
-      3: 2,
-      2: 3,
-      5: 4,
-      4: 5,
-      7: 6,
-      6: 7
+      [TASK_STATUSES.DEV_STOP]: TASK_STATUSES.DEV_PLAY,
+      [TASK_STATUSES.DEV_PLAY]: TASK_STATUSES.DEV_STOP,
+      [TASK_STATUSES.CODE_REVIEW_PLAY]: TASK_STATUSES.CODE_REVIEW_STOP,
+      [TASK_STATUSES.CODE_REVIEW_STOP]: TASK_STATUSES.CODE_REVIEW_PLAY,
+      [TASK_STATUSES.QA_PLAY]: TASK_STATUSES.QA_STOP,
+      [TASK_STATUSES.QA_STOP]: TASK_STATUSES.QA_PLAY
     };
     if (currentStatus !== statusStop && currentStatus !== statusPlay) {
       this.setState({ clickedStatus: statusName }, this.handleOpenModal);
@@ -137,7 +139,7 @@ class TaskHeader extends Component {
   };
 
   handleCancelTask = () => {
-    this.changeStatus(TaskStatuses.CANCELED);
+    this.changeStatus(TASK_STATUSES.CANCELED);
     this.handleCloseCancelModal();
   };
 
@@ -180,7 +182,7 @@ class TaskHeader extends Component {
     return type;
   };
 
-  getButtonIcon = (inProcessStatusId, inHoldStatusId) => {
+  getButtonIcon = (inHoldStatusId, inProcessStatusId) => {
     const { task } = this.props;
     let icon = null;
     if (task.statusId === inProcessStatusId) {
@@ -205,7 +207,7 @@ class TaskHeader extends Component {
   };
 
   handleChangeSingleStateStatus = (status, statusName) => () => {
-    if (statusName && statusName !== 'New') {
+    if (statusName && statusName !== 'New' && statusName !== this.state.clickedStatus) {
       this.setState({ clickedStatus: statusName }, this.handleOpenModal);
     } else {
       this.changeStatus(status);
@@ -213,15 +215,16 @@ class TaskHeader extends Component {
   };
 
   render() {
-    const { task, taskTypes, canEdit, lang, users } = this.props;
+    const { task, taskTypes, canEdit, lang, users, devOpsUsers } = this.props;
     const css = require('./TaskHeader.scss');
     let unionPerformers = [];
     switch (this.state.clickedStatus) {
       case 'Develop':
         unionPerformers = _.union(
+          task.isDevOps ? devOpsUsers : [],
           users.pm,
-          users.account,
           users.teamLead,
+          users.account,
           users.analyst,
           users.back,
           users.front,
@@ -249,9 +252,10 @@ class TaskHeader extends Component {
         break;
       default:
         unionPerformers = _.union(
+          task.isDevOps ? devOpsUsers : [],
           users.pm,
+          users.teamLead,
           users.account,
-          users.teamlead,
           users.analyst,
           users.back,
           users.front,
@@ -259,8 +263,7 @@ class TaskHeader extends Component {
           users.mobile,
           users.ios,
           users.android,
-          users.qa,
-          users.devops
+          users.qa
         );
     }
 
@@ -310,41 +313,47 @@ class TaskHeader extends Component {
         </div>
         <TaskTitle name={task.name} id={task.id} canEdit={canEdit} />
         <div className={css.progressButtons}>
-          <Button
-            type={task.statusId === TaskStatuses.CANCELED ? 'red' : 'red-bordered'}
-            icon="IconClose"
-            data-tip={task.statusId === TaskStatuses.CANCELED ? null : localize[lang].CANCEL}
-            data-place="bottom"
-            addedClassNames={{ [css.buttonCancel]: true }}
-            onClick={task.statusId !== TaskStatuses.CANCELED ? this.handleOpenCancelModal : null}
-            disabled={!canEdit || !this.state.isTaskLoaded}
-          />
+          {!isOnlyDevOps(this.props.user, this.props.project.id) ? (
+            <Button
+              type={task.statusId === TASK_STATUSES.CANCELED ? 'red' : 'red-bordered'}
+              icon="IconClose"
+              data-tip={task.statusId === TASK_STATUSES.CANCELED ? null : localize[lang].CANCEL}
+              data-place="bottom"
+              addedClassNames={{ [css.buttonCancel]: true }}
+              onClick={task.statusId !== TASK_STATUSES.CANCELED ? this.handleOpenCancelModal : null}
+              disabled={!canEdit || !this.state.isTaskLoaded}
+            />
+          ) : null}
           <ButtonGroup type="lifecircle" stage="full">
             <Button
               text="New"
-              type={task.statusId === TaskStatuses.NEW ? 'green' : 'bordered'}
-              data-tip={task.statusId === TaskStatuses.NEW ? null : localize[lang].MOVE_TO_NEW}
+              type={task.statusId === TASK_STATUSES.NEW ? 'green' : 'bordered'}
+              data-tip={task.statusId === TASK_STATUSES.NEW ? null : localize[lang].MOVE_TO_NEW}
               data-place="bottom"
-              onClick={this.handleChangeSingleStateStatus(TaskStatuses.NEW, 'New')}
+              onClick={this.handleChangeSingleStateStatus(TASK_STATUSES.NEW, 'New')}
               disabled={!this.state.isTaskLoaded}
             />
             <Button
               text="Develop"
-              type={this.getButtonType(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY)}
-              data-tip={this.getButtonTip(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY, 'Develop')}
-              icon={this.getButtonIcon(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY)}
-              onClick={this.createChangeStatusHandler(TaskStatuses.DEV_STOP, TaskStatuses.DEV_PLAY, 'Develop')}
+              type={this.getButtonType(TASK_STATUSES.DEV_STOP, TASK_STATUSES.DEV_PLAY)}
+              data-tip={this.getButtonTip(TASK_STATUSES.DEV_STOP, TASK_STATUSES.DEV_PLAY, 'Develop')}
+              icon={this.getButtonIcon(TASK_STATUSES.DEV_STOP, TASK_STATUSES.DEV_PLAY)}
+              onClick={this.createChangeStatusHandler(TASK_STATUSES.DEV_STOP, TASK_STATUSES.DEV_PLAY, 'Develop')}
               data-place="bottom"
               disabled={!canEdit || !this.state.isTaskLoaded}
             />
             <Button
               text="Code Review"
-              type={this.getButtonType(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY)}
-              data-tip={this.getButtonTip(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY, 'Code Review')}
-              icon={this.getButtonIcon(TaskStatuses.CODE_REVIEW_STOP, TaskStatuses.CODE_REVIEW_PLAY)}
+              type={this.getButtonType(TASK_STATUSES.CODE_REVIEW_STOP, TASK_STATUSES.CODE_REVIEW_PLAY)}
+              data-tip={this.getButtonTip(
+                TASK_STATUSES.CODE_REVIEW_STOP,
+                TASK_STATUSES.CODE_REVIEW_PLAY,
+                'Code Review'
+              )}
+              icon={this.getButtonIcon(TASK_STATUSES.CODE_REVIEW_STOP, TASK_STATUSES.CODE_REVIEW_PLAY)}
               onClick={this.createChangeStatusHandler(
-                TaskStatuses.CODE_REVIEW_STOP,
-                TaskStatuses.CODE_REVIEW_PLAY,
+                TASK_STATUSES.CODE_REVIEW_STOP,
+                TASK_STATUSES.CODE_REVIEW_PLAY,
                 'Code Review'
               )}
               data-place="bottom"
@@ -352,29 +361,29 @@ class TaskHeader extends Component {
             />
             <Button
               text="QA"
-              type={this.getButtonType(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY)}
-              data-tip={this.getButtonTip(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY, 'QA')}
-              icon={this.getButtonIcon(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY)}
-              onClick={this.createChangeStatusHandler(TaskStatuses.QA_STOP, TaskStatuses.QA_PLAY, 'QA')}
+              type={this.getButtonType(TASK_STATUSES.QA_STOP, TASK_STATUSES.QA_PLAY)}
+              data-tip={this.getButtonTip(TASK_STATUSES.QA_STOP, TASK_STATUSES.QA_PLAY, 'QA')}
+              icon={this.getButtonIcon(TASK_STATUSES.QA_STOP, TASK_STATUSES.QA_PLAY)}
+              onClick={this.createChangeStatusHandler(TASK_STATUSES.QA_STOP, TASK_STATUSES.QA_PLAY, 'QA')}
               data-place="bottom"
               disabled={!canEdit || !this.state.isTaskLoaded}
             />
             <Button
               text="Done"
-              type={task.statusId === TaskStatuses.DONE ? 'green' : 'bordered'}
-              data-tip={task.statusId === TaskStatuses.DONE ? null : localize[lang].MOVE_TO_DONE}
+              type={task.statusId === TASK_STATUSES.DONE ? 'green' : 'bordered'}
+              data-tip={task.statusId === TASK_STATUSES.DONE ? null : localize[lang].MOVE_TO_DONE}
               data-place="bottom"
-              onClick={this.handleChangeSingleStateStatus(TaskStatuses.DONE)}
+              onClick={this.handleChangeSingleStateStatus(TASK_STATUSES.DONE, 'Done')}
               disabled={!canEdit || !this.state.isTaskLoaded}
             />
           </ButtonGroup>
           <Button
-            type={task.statusId === TaskStatuses.CLOSED ? 'green' : 'bordered'}
+            type={task.statusId === TASK_STATUSES.CLOSED ? 'green' : 'bordered'}
             icon="IconCheck"
-            data-tip={task.statusId === TaskStatuses.CLOSED ? null : localize[lang].ACCEPT}
+            data-tip={task.statusId === TASK_STATUSES.CLOSED ? null : localize[lang].ACCEPT}
             data-place="bottom"
             addedClassNames={{ [css.buttonOk]: true }}
-            onClick={this.handleChangeSingleStateStatus(TaskStatuses.CLOSED)}
+            onClick={this.handleChangeSingleStateStatus(TASK_STATUSES.CLOSED)}
             disabled={!canEdit || !this.state.isTaskLoaded}
           />
         </div>
@@ -397,6 +406,7 @@ class TaskHeader extends Component {
             onClose={this.handleCloseModal}
             title={this.state.modalTitle}
             users={usersFullNames}
+            id={task.id}
           />
         ) : null}
       </div>
@@ -408,19 +418,25 @@ TaskHeader.propTypes = {
   addActivity: PropTypes.func,
   canEdit: PropTypes.bool,
   css: PropTypes.object,
+  devOpsUsers: PropTypes.array,
   getProjectUsers: PropTypes.func.isRequired,
   lang: PropTypes.string,
   location: PropTypes.object,
   onChange: PropTypes.func.isRequired,
+  project: PropTypes.object,
   projectId: PropTypes.string.isRequired,
   startingDay: PropTypes.object,
   task: PropTypes.object.isRequired,
   taskTypes: PropTypes.array,
+  user: PropTypes.object,
   users: PropTypes.object
 };
 
 const mapStateToProps = state => ({
   users: sortedUsersSelector(state),
+  project: state.Project.project,
+  user: state.Auth.user,
+  devOpsUsers: devOpsUsersSelector(state),
   location: state.routing.locationBeforeTransitions,
   startingDay: state.Timesheets.startingDay,
   task: state.Task.task,
