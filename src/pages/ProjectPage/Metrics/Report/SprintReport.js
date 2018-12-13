@@ -46,11 +46,13 @@ class SprintReport extends Component {
   }
 
   selectReportPeriod = option => {
+    const sprintStart = option && option.value ? this.formatDate(option.value.factStartDate) : null;
     if (!isEmpty(option) && option.value.id) {
       this.setState({
         selectedName: option.label,
         reportPeriod: option,
-        selectedFrom: this.formatDate(option.value.factStartDate),
+        reportPeriodStart: sprintStart,
+        selectedFrom: sprintStart,
         selectedTo: this.formatDate(option.value.factFinishDate)
       });
     } else if (!isEmpty(option)) {
@@ -66,7 +68,7 @@ class SprintReport extends Component {
         this.setState({
           selectedName: option.label,
           reportPeriod: option,
-          selectedFrom: this.formatDate(option.value.factStartDate),
+          selectedFrom: sprintStart,
           selectedTo: this.formatDate(option.value.factFinishDate)
         });
       }
@@ -269,7 +271,6 @@ class SprintReport extends Component {
 
   render() {
     const { lang } = this.props;
-
     return (
       <div className={css.SprintReport}>
         <Row center="xs">
@@ -302,7 +303,10 @@ class SprintReport extends Component {
               placeholder={localize[lang].DATE}
               style={{ borderColor: this.state.borderColorFrom }}
               disabledDataRanges={[
-                { after: this.state.selectedTo && moment(this.state.selectedTo, dateFormat).toDate() }
+                {
+                  before: this.state.reportPeriod && moment(this.state.reportPeriodStart, dateFormat).toDate(),
+                  after: this.state.selectedTo && moment(this.state.selectedTo, dateFormat).toDate()
+                }
               ]}
             />
           </Col>
