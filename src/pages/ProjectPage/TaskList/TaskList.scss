@@ -14,6 +14,10 @@
   }
 }
 
+.sprintSelector {
+  position: relative;
+}
+
 .withPriority {
   justify-content: space-between;
   display: flex;
@@ -38,8 +42,4 @@
 
 .rowWrapper {
   padding: 1px;
-}
-
-.sprint-dropdown {
-  position: relative;
 }

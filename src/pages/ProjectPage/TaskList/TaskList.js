@@ -665,7 +665,7 @@ class TaskList extends Component {
               </Row>
               <Row className={css.search} top="xs">
                 <Col xs={12} sm={3}>
-                  <div className="sprint-dropdown">
+                  <div className={css.sprintSelector}>
                     <SprintSelector
                       multi
                       searchable
