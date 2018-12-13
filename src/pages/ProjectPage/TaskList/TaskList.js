@@ -284,6 +284,20 @@ class TaskList extends Component {
     );
   };
 
+  clearFilter = name => {
+    this.setState(
+      state => {
+        if (state.changedFilters[name]) {
+          const filters = state.changedFilters;
+          delete filters[name];
+          return { changedFilters: filters };
+        }
+      },
+      this.loadTasks,
+      this.updateFilterList
+    );
+  };
+
   changeNameFilter = event => {
     const { value, name } = event.target;
     this.setState({ nameInputValue: value });
@@ -672,7 +686,12 @@ class TaskList extends Component {
                   <PerformerFilter onPerformerSelect={this.onChangePerformerFilter} selectedPerformerId={performerId} />
                 </Col>
                 <Col xs={12} sm={3}>
-                  <TagsFilter filterFor={'task'} onTagSelect={this.onChangeTagFilter} filterTags={tags} />
+                  <TagsFilter
+                    filterFor={'task'}
+                    onTagSelect={this.onChangeTagFilter}
+                    filterTags={tags}
+                    onClear={() => this.clearFilter('tags')}
+                  />
                 </Col>
               </Row>
               <Row className={css.search}>
@@ -686,6 +705,8 @@ class TaskList extends Component {
                     clearAllText={localize[lang].CLEAR_ALL}
                     value={statusId}
                     options={statusOptions}
+                    canClear
+                    onClear={() => this.clearFilter('statusId')}
                     onChange={this.onChangeStatusFilter}
                   />
                 </Col>
@@ -699,6 +720,8 @@ class TaskList extends Component {
                     clearAllText={localize[lang].CLEAR_ALL}
                     value={typeId}
                     options={typeOptions}
+                    canClear
+                    onClear={() => this.clearFilter('typeId')}
                     onChange={this.onChangeTypeFilter}
                   />
                 </Col>
