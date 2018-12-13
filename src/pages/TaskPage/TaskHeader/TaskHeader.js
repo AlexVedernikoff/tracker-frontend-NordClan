@@ -37,13 +37,13 @@ const getNewStatus = newPhase => {
       newStatusId = TASK_STATUSES.NEW;
       break;
     case 'Develop':
-      newStatusId = TASK_STATUSES.DEV_PLAY;
+      newStatusId = TASK_STATUSES.DEV_STOP;
       break;
     case 'Code Review':
-      newStatusId = TASK_STATUSES.CODE_REVIEW_PLAY;
+      newStatusId = TASK_STATUSES.CODE_REVIEW_STOP;
       break;
     case 'QA':
-      newStatusId = TASK_STATUSES.QA_PLAY;
+      newStatusId = TASK_STATUSES.QA_STOP;
       break;
     case 'Done':
       newStatusId = TASK_STATUSES.DONE;
@@ -169,7 +169,7 @@ class TaskHeader extends Component {
     this.handleCloseModal();
   };
 
-  getButtonType = (inProcessStatusId, inHoldStatusId) => {
+  getButtonType = (inHoldStatusId, inProcessStatusId) => {
     const { task } = this.props;
     let type;
     if (task.statusId === inProcessStatusId) {
@@ -193,7 +193,7 @@ class TaskHeader extends Component {
     return icon;
   };
 
-  getButtonTip = (inProcessStatusId, inHoldStatusId, phase) => {
+  getButtonTip = (inHoldStatusId, inProcessStatusId, phase) => {
     const { task, lang } = this.props;
     let tip;
     if (task.statusId === inProcessStatusId) {
