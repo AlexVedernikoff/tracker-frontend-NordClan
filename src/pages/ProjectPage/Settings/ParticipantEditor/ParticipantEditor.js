@@ -17,6 +17,7 @@ import SelectDropdown from '../../../../components/SelectDropdown';
 import localize from './participantEditor.json';
 import layoutAgnosticFilter from '../../../../utils/layoutAgnosticFilter';
 import Wizard from '../../../../components/Wizard';
+import { getFullName } from '../../../../utils/NameLocalisation';
 
 class ParticipantEditor extends Component {
   constructor(props) {
@@ -159,7 +160,7 @@ class ParticipantEditor extends Component {
   getUsers = () => {
     return this.state.participants.map(user => ({
       value: user.id,
-      label: this.props.lang === 'ru' ? user.fullNameRu : user.fullNameEn
+      label: getFullName(user)
     }));
   };
 
