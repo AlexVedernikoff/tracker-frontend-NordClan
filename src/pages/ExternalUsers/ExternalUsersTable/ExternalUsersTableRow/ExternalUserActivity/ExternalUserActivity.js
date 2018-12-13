@@ -8,6 +8,15 @@ class ExternalUserActivity extends Component {
       checked: props.checked
     };
   }
+
+  componentDidUpdate = prevProps => {
+    if (prevProps.isEditing !== this.props.isEditing && !this.props.isLoading) {
+      this.setState({
+        checked: this.props.checked
+      });
+    }
+  };
+
   onActivityChange = () => {
     const newCheckboxState = !this.state.checked;
     this.setState(
@@ -18,13 +27,16 @@ class ExternalUserActivity extends Component {
     );
   };
   render() {
-    return <Checkbox checked={this.state.checked} disabled={!this.props.isEditing} onChange={this.onActivityChange} />;
+    const { isLoading, isEditing } = this.props;
+    const checked = isEditing || isLoading ? this.state.checked : this.props.checked;
+    return <Checkbox checked={checked} disabled={!isEditing} onChange={this.onActivityChange} />;
   }
 }
 ExternalUserActivity.propTypes = {
   checked: PropTypes.bool,
   fieldType: PropTypes.string,
   isEditing: PropTypes.bool,
+  isLoading: PropTypes.bool,
   onValueChange: PropTypes.func
 };
 export default ExternalUserActivity;
