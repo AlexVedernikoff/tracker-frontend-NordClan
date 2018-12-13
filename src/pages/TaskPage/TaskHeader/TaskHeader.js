@@ -128,9 +128,12 @@ class TaskHeader extends Component {
   };
 
   handleCloseModal = () => {
-    this.closePerformerModal(prevState => ({
-      clickedStatus: prevState.prevClickedStatus
-    }));
+    this.setState(
+      prevState => ({
+        clickedStatus: prevState.prevClickedStatus
+      }),
+      this.closePerformerModal
+    );
   };
 
   handleOpenCancelModal = () => {
@@ -189,11 +192,8 @@ class TaskHeader extends Component {
     );
   };
 
-  closePerformerModal = (updater = () => ({})) => {
-    this.setState(prevState => ({
-      isPerformerModalOpen: false,
-      ...updater(prevState)
-    }));
+  closePerformerModal = () => {
+    this.setState({ isPerformerModalOpen: false });
   };
 
   getButtonType = (inProcessStatusId, inHoldStatusId) => {
