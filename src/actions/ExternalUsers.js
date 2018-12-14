@@ -34,8 +34,9 @@ export const getExternalUsers = () => {
       .finally(() => dispatch(finishLoading()));
   };
 };
-export const editExternalUserStart = () => ({
-  type: externalUsersActions.EDIT_EXTERNAL_USER_START
+export const editExternalUserStart = id => ({
+  type: externalUsersActions.EDIT_EXTERNAL_USER_START,
+  id
 });
 export const editExternalUserSuccess = (id, changedUser) => ({
   type: externalUsersActions.EDIT_EXTERNAL_USER_SUCCESS,
@@ -45,21 +46,25 @@ export const editExternalUserSuccess = (id, changedUser) => ({
 export const editExternalUser = (id, changedFields) => {
   const URL = `${API_URL}/user/external/${id}`;
   return dispatch => {
-    dispatch(editExternalUserStart());
-    dispatch(startLoading());
-    axios
-      .put(URL, changedFields)
-      .then(
-        response => {
-          if (response.data) {
-            dispatch(editExternalUserSuccess(id, response.data));
+    return new Promise((resolve, reject) => {
+      dispatch(editExternalUserStart(id));
+      dispatch(startLoading());
+      axios
+        .put(URL, changedFields)
+        .then(
+          response => {
+            resolve();
+            if (response.data) {
+              dispatch(editExternalUserSuccess(id, response.data));
+            }
+          },
+          error => {
+            reject();
+            dispatch(showNotification({ message: error.message, type: 'error' }));
           }
-        },
-        error => {
-          dispatch(showNotification({ message: error.message, type: 'error' }));
-        }
-      )
-      .finally(() => dispatch(finishLoading()));
+        )
+        .finally(() => dispatch(finishLoading()));
+    });
   };
 };
 export const addExternalUserStart = () => ({
