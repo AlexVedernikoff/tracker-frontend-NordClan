@@ -3,7 +3,7 @@ import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
-import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
+import { DELETE, GET, POST, REST_API } from '../constants/RestApi';
 import {
   defaultErrorHandler,
   withFinishLoading,
@@ -303,6 +303,7 @@ const changeTask = (ChangedProperties, target, callback) => {
   return dispatch => {
     const URL = `${API_URL}/task/${ChangedProperties.id}`;
     dispatch(startLoading());
+    dispatch(requestTaskChange());
     axios
       .put(URL, ChangedProperties)
       .then(res => {
