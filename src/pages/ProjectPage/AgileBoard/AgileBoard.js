@@ -154,7 +154,8 @@ class AgileBoard extends Component {
   changePerformer = performerId => {
     this.props.changeTask(
       {
-        id: this.state.changedTask.id,
+        // Hot fix TODO: fix it
+        id: this.state.changedTask.id ? this.state.changedTask.id : this.state.changedTask,
         performerId: performerId,
         statusId: getNewStatus(this.state.phase)
       },
