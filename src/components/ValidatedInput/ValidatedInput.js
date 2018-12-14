@@ -41,7 +41,7 @@ class ValidatedInput extends Component {
 
   get elem() {
     /* eslint-disable no-unused-vars */
-    const { errorText, backendErrorText, shouldMarkError, type, ...other } = this.props;
+    const { errorText, backendErrorText, shouldMarkError, elementType, ...other } = this.props;
     const { isFocused, isError } = this.state;
     const elems = {
       input: (
@@ -67,7 +67,8 @@ class ValidatedInput extends Component {
         />
       )
     };
-    return elems[type || 'input'];
+
+    return elems[elementType] || elems.input;
   }
 
   render() {
