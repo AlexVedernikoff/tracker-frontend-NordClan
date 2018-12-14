@@ -67,6 +67,7 @@ class TaskHeader extends Component {
       modalTitle: '',
       performer: null,
       clickedStatus: '',
+      prevClickedStatus: '',
       isTaskLoaded: false
     };
   }
@@ -90,7 +91,7 @@ class TaskHeader extends Component {
       [TASK_STATUSES.QA_STOP]: TASK_STATUSES.QA_PLAY
     };
     if (currentStatus !== statusStop && currentStatus !== statusPlay) {
-      this.setState({ clickedStatus: statusName }, this.handleOpenModal);
+      this.changeClickedStatus(statusName);
       return;
     } else {
       this.changeStatus(statusTransition[currentStatus]);
@@ -127,7 +128,12 @@ class TaskHeader extends Component {
   };
 
   handleCloseModal = () => {
-    this.setState({ isPerformerModalOpen: false });
+    this.setState(
+      prevState => ({
+        clickedStatus: prevState.prevClickedStatus
+      }),
+      this.closePerformerModal
+    );
   };
 
   handleOpenCancelModal = () => {
@@ -166,7 +172,28 @@ class TaskHeader extends Component {
       },
       'User'
     );
-    this.handleCloseModal();
+
+    this.closePerformerModal();
+  };
+
+  changeClickedStatus = statusName => {
+    this.setState(
+      prevState => ({
+        clickedStatus: statusName,
+        // we save previous clicked status in order to
+        // restore it if user decided to not change task status
+        // and closed performer modal.
+        // And we set prevClickedStatus equal either to the value
+        // of clickedStatus in prevState or to the new value 'statusName'
+        // if clickedStatus hasn't been set yet.
+        prevClickedStatus: prevState.clickedStatus || statusName
+      }),
+      this.handleOpenModal
+    );
+  };
+
+  closePerformerModal = () => {
+    this.setState({ isPerformerModalOpen: false });
   };
 
   getButtonType = (inProcessStatusId, inHoldStatusId) => {
@@ -208,7 +235,7 @@ class TaskHeader extends Component {
 
   handleChangeSingleStateStatus = (status, statusName) => () => {
     if (statusName && statusName !== 'New' && statusName !== this.state.clickedStatus) {
-      this.setState({ clickedStatus: statusName }, this.handleOpenModal);
+      this.changeClickedStatus(statusName);
     } else {
       this.changeStatus(status);
     }
