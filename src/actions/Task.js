@@ -307,7 +307,6 @@ const changeTask = (ChangedProperties, target, callback) => {
     axios
       .put(URL, ChangedProperties)
       .then(res => {
-        console.log(res);
         if (res.data.length) {
           res.data.forEach(task => dispatch(successTaskChange(task)));
           if (callback) {
