@@ -308,18 +308,12 @@ export const getTasksForSelect = (name = '', projectId) => {
 };
 
 // Поиск по проектам
-export const getProjectsForSelect = (name = '', hideEmptyValue, onlyUserInProject = false) => {
+export const getProjectsForSelect = (name = '', hideEmptyValue) => {
   return dispatch => {
     return axios
       .get(
         `${API_URL}/project`,
-        {
-          params: {
-            name,
-            serIsParticipant: true,
-            onlyUserInProject: onlyUserInProject ? true : undefined
-          }
-        },
+        { params: { name, userIsParticipant: true, onlyUserInProject: true } },
         { withCredentials: true }
       )
       .then(response => response.data.data)

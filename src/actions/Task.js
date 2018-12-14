@@ -3,7 +3,7 @@ import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
-import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
+import { DELETE, GET, POST, REST_API } from '../constants/RestApi';
 import {
   defaultErrorHandler,
   withFinishLoading,
@@ -60,14 +60,10 @@ const requestTaskChange = () => ({
   type: TaskActions.TASK_CHANGE_REQUEST_SENT
 });
 
-// const successTaskChange = changedFields => ({
-//   type: TaskActions.TASK_CHANGE_REQUEST_SUCCESS,
-//   changedFields
-// });
-
-// const requestTaskChangeUser = () => ({
-//   type: TaskActions.TASK_CHANGE_REQUEST_SENT
-// });
+const successTaskChange = changedFields => ({
+  type: TaskActions.TASK_CHANGE_REQUEST_SUCCESS,
+  changedFields
+});
 
 // const successTaskChangeUser = changedFields => ({
 //   type: TaskActions.TASK_CHANGE_USER_SUCCESS,
@@ -305,21 +301,26 @@ const changeTask = (ChangedProperties, target, callback) => {
     return;
   }
   return dispatch => {
-    dispatch({
-      type: REST_API,
-      url: `/task/${ChangedProperties.id}`,
-      method: PUT,
-      body: ChangedProperties,
-      extra,
-      start: withStartLoading(requestTaskChange, true)(dispatch),
-      response: withFinishLoading(() => {
-        if (callback) {
-          callback();
+    const URL = `${API_URL}/task/${ChangedProperties.id}`;
+    dispatch(startLoading());
+    dispatch(requestTaskChange());
+    axios
+      .put(URL, ChangedProperties)
+      .then(res => {
+        if (res.data.length) {
+          res.data.forEach(task => dispatch(successTaskChange(task)));
+          if (callback) {
+            callback();
+          }
         }
-        return stopTaskEditing(target);
-      }, true)(dispatch),
-      error: defaultErrorHandler(dispatch(stopTaskEditing(target)))
-    });
+        dispatch(finishLoading());
+        stopTaskEditing(target);
+      })
+      .catch(() => {
+        defaultErrorHandler(dispatch);
+        stopTaskEditing(target);
+        dispatch(finishLoading());
+      });
   };
 };
 
