@@ -57,6 +57,7 @@ class Details extends Component {
     task: PropTypes.object.isRequired,
     taskTypes: PropTypes.array,
     timeSpent: PropTypes.object,
+    user: PropTypes.object,
     users: PropTypes.object
   };
 
@@ -226,7 +227,7 @@ class Details extends Component {
   };
 
   render() {
-    const { task, sprints, taskTypes, timeSpent, isExternal, lang, users } = this.props;
+    const { task, sprints, taskTypes, timeSpent, isExternal, lang, users, user } = this.props;
     const tags = task.tags.map((tag, i) => {
       const tagName = typeof tag === 'object' ? tag.name : tag;
       return <Tag key={i} name={tagName} taggable="task" taggableId={task.id} />;
@@ -405,7 +406,7 @@ class Details extends Component {
             <tr>
               <td>{localize[lang].TAGS}</td>
               <td className={css.tags}>
-                <Tags taggable="task" taggableId={task.id} create canEdit>
+                <Tags taggable="task" taggableId={task.id} create canEdit={!(user.globalRole === 'EXTERNAL_USER')}>
                   {tags}
                 </Tags>
               </td>
@@ -524,6 +525,7 @@ class Details extends Component {
 }
 
 const mapStateToProps = state => ({
+  user: state.Auth.user,
   devOpsUsers: devOpsUsersSelector(state),
   users: sortedUsersSelector(state),
   sprints: state.Project.project.sprints,
