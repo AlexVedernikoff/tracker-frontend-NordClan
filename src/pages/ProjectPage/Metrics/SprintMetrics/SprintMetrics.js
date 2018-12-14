@@ -127,6 +127,11 @@ class SprintMetrics extends Component {
       beforeEndOfSprintMetrics: [],
       afterEndOfSprintMetrics: []
     };
+
+    if (!this.state.sprintSelected) {
+      return result;
+    }
+
     const endDate = this.state.sprintSelected.value.factFinishDate;
     const dayPattern = 'DD';
     const monthPattern = 'MM';
