@@ -4,7 +4,7 @@
     "NUMBER_OPEN_TASKS": "Number of open tasks",
     "WITHOUT_ELEVATION": "Number of open tasks without evaluation",
     "OUTSIDE_PLAN": "Number of open tasks out of plan",
-    "NUMBER_OPEN_TASKS_FROM_CLIENT": "Number of open tasks from the customer",
+    "NUMBER_OPEN_TASKS_FROM_CLIENT": "The number of open tasks from the client",
     "NUMBER_BUGS": "Number of open bugs (Problem type Bug)",
     "NUMBER_BUGS_FROM_CLIENT": "The number of open bugs from the customer",
     "DATE": "Date",
