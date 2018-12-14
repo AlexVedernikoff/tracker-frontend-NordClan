@@ -258,7 +258,7 @@ class AddExternalUser extends Component {
                     (handleBlur, shouldMarkError) => (
                       <ValidatedInput
                         name="date"
-                        type="date"
+                        elementType="date"
                         value={formattedDay}
                         onBlur={handleBlur}
                         onDayChange={this.handleDayToChange}
