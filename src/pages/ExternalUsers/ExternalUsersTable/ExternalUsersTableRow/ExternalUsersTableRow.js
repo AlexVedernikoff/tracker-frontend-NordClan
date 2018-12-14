@@ -21,7 +21,8 @@ class ExternalUsersTableRow extends Component {
     this.state = {
       isEditing: false,
       tempValues: {},
-      isValid: {}
+      isValid: {},
+      isLoading: false
     };
     const { lang } = props;
     this.validation = {
@@ -126,13 +127,20 @@ class ExternalUsersTableRow extends Component {
     this.setState(
       {
         isEditing: false,
+        isLoading: true,
         changedFields: {}
       },
       () => {
         ReactTooltip.hide();
-        this.props.editExternalUser(id, {
-          ...changedFields
-        });
+        this.props
+          .editExternalUser(id, {
+            ...changedFields
+          })
+          .then(() => {
+            this.setState({
+              isLoading: false
+            });
+          });
       }
     );
   };
@@ -192,6 +200,7 @@ class ExternalUsersTableRow extends Component {
           <ExternalUserActivity
             checked={!!exUser.isActive}
             isEditing={isEditing}
+            isLoading={this.state.isLoading}
             onValueChange={this.onEditValues('isActive')}
           />
         </div>
