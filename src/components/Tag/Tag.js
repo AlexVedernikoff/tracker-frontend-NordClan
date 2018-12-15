@@ -18,7 +18,8 @@ class Tag extends React.Component {
     onClick: PropTypes.func,
     taggable: PropTypes.string,
     taggableId: PropTypes.number,
-    unclickable: PropTypes.bool
+    unclickable: PropTypes.bool,
+    user: PropTypes.object
   };
 
   deleteTag = () => {
@@ -31,12 +32,15 @@ class Tag extends React.Component {
     }
   };
 
+  isExternalUser = () => this.props.user.globalRole === 'EXTERNAL_USER';
+
   clickOnTag = () => {
     if (this.props.onClick) this.props.onClick(this.props.name);
   };
 
   render() {
     const { name, create, blocked, unclickable } = this.props;
+    const isExternal = this.isExternalUser();
 
     return (
       <span
@@ -47,10 +51,10 @@ class Tag extends React.Component {
         })}
         onClick={this.clickOnTag}
       >
-        <span className={classnames({ [css.tagPart]: true, [css.tagCreate]: create })}>
+        <span className={classnames({ [css.tagPart]: true, [css.tagCreate]: create, [css.noClosable]: isExternal })}>
           {create ? <IconPlus /> : name}
         </span>
-        {create ? null : (
+        {create || isExternal ? null : (
           <span className={classnames(css.tagPart, css.tagClose)}>
             {blocked ? null : <IconClose onClick={this.deleteTag} />}
           </span>
@@ -64,7 +68,11 @@ const mapDispatchToProps = {
   deleteTag
 };
 
+const mapStateToProps = state => ({
+  user: state.Auth.user
+});
+
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(Tag);
