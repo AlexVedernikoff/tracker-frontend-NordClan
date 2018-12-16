@@ -186,7 +186,7 @@ export default function Project(state = InitialState, action) {
         ...state,
         project: {
           ...state.project,
-          externalUsers: action.users
+          externalUsers: action.users || []
         }
       };
     case ProjectActions.PROJECT_SPRINTS_RECEIVE_START:

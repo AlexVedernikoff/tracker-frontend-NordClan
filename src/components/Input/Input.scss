@@ -17,7 +17,7 @@
 }
 
 .inputError {
-  border-color: $color-red;
+  border-color: $color-red !important;
 
   & + .message {
     color: $color-red;
