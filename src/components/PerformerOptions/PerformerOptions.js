@@ -71,7 +71,7 @@ class PerformerOptions extends Component {
 
   handlePerformerChange = selectedPerformer => {
     this.setState({
-      selectedPerformer: selectedPerformer ? selectedPerformer.value : 0
+      selectedPerformer: selectedPerformer ? selectedPerformer.value : null
     });
   };
 
