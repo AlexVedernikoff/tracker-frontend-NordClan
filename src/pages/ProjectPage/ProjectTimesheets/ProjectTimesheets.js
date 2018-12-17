@@ -16,6 +16,7 @@ import UserRow from './UserRow';
 import exactMath from 'exact-math';
 import localize from './ProjectTimesheets.json';
 import { getFullName } from '../../../utils/NameLocalisation';
+import { createSelector } from 'reselect';
 
 class ProjectTimesheets extends React.Component {
   static propTypes = {
@@ -27,7 +28,6 @@ class ProjectTimesheets extends React.Component {
     list: PropTypes.array,
     params: PropTypes.object,
     startingDay: PropTypes.object,
-    tempTimesheets: PropTypes.array,
     users: PropTypes.arrayOf(PropTypes.object)
   };
 
@@ -61,46 +61,159 @@ class ProjectTimesheets extends React.Component {
     });
   };
 
-  render() {
-    const { isCalendarOpen } = this.state;
-    const { startingDay, tempTimesheets, lang } = this.props;
-    const defaultTaskStatusId = 2;
-    const tempTimesheetsList = tempTimesheets.map(timesheet => {
-      return {
-        ...timesheet,
-        taskStatusId: timesheet.taskStatusId || defaultTaskStatusId
-      };
-    });
-
-    //TODO важен порядок сложения списков
-    const list = this.props.list.concat(tempTimesheetsList);
-
-    const isThisWeek = date => {
-      const getMidnight = dayOfWeek => {
-        return moment(startingDay)
-          .weekday(dayOfWeek)
-          .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-          .format('X');
-      };
-
-      const timesheetOndDate = moment(date).format('X');
-      return timesheetOndDate <= getMidnight(6) && timesheetOndDate >= getMidnight(0);
+  isThisWeek(date) {
+    const { startingDay } = this.props;
+    const getMidnight = dayOfWeek => {
+      return moment(startingDay)
+        .weekday(dayOfWeek)
+        .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+        .format('X');
     };
 
-    // Timesheets for task by week
-    const getTaskTimesheets = (arr, el, day, userId) => {
-      const timeSheets = [];
+    const timesheetOndDate = moment(date).format('X');
+    return timesheetOndDate <= getMidnight(6) && timesheetOndDate >= getMidnight(0);
+  }
 
+  // Timesheets for task by week
+  getTaskTimesheets(arr, el, day, userId) {
+    const timeSheets = [];
+
+    for (let index = 0; index < 7; index++) {
+      const timesheet = find(arr, tsh => {
+        return (
+          tsh.task &&
+          tsh.task.id === el.task.id &&
+          moment(tsh.onDate).format('DD.MM.YY') ===
+            moment(day)
+              .weekday(index)
+              .format('DD.MM.YY') &&
+          tsh.taskStatusId === el.taskStatusId
+        );
+      });
+      if (timesheet) {
+        timeSheets.push(timesheet);
+      } else {
+        timeSheets.push({
+          comment: '',
+          task: el.task,
+          typeId: el.typeId,
+          taskStatusId: el.taskStatusId,
+          isBillable: el.isBillable,
+          sprint: el.sprint,
+          statusId: el.statusId,
+          userId: userId,
+          onDate: moment(day)
+            .weekday(index)
+            .format(),
+          spentTime: '0'
+        });
+      }
+    }
+
+    return timeSheets;
+  }
+
+  // Overall time by week for user tasks
+  getUserTimesheets(userId) {
+    const { list, startingDay } = this.props;
+    const timeSheets = [];
+    for (let index = 0; index < 7; index++) {
+      const dayUserSheets = filter(list, tsh => {
+        return (
+          tsh.userId === userId &&
+          moment(tsh.onDate).format('DD.MM.YY') ===
+            moment(startingDay)
+              .weekday(index)
+              .format('DD.MM.YY')
+        );
+      });
+      if (dayUserSheets && dayUserSheets.length) {
+        const dayTime = dayUserSheets.reduce((a, b) => {
+          return a + parseFloat(b.spentTime);
+        }, 0);
+        timeSheets.push({
+          onDate: moment(startingDay)
+            .weekday(index)
+            .format(),
+          spentTime: dayTime + ''
+        });
+      } else {
+        timeSheets.push({
+          onDate: moment(startingDay)
+            .weekday(index)
+            .format(),
+          spentTime: '0'
+        });
+      }
+    }
+
+    return timeSheets;
+  }
+
+  pushTaskToUser(user, el) {
+    const { list, startingDay } = this.props;
+    const exists = user.tasks.find(usrTask => {
+      return usrTask.taskStatusId === el.taskStatusId && usrTask.id === el.task.id;
+    });
+    if (!exists) {
+      user.tasks.push({
+        id: el.task.id,
+        name: `${el.project.prefix}-${el.task.id}: ${el.task.name}`,
+        projectId: el.project.id,
+        projectName: el.project.name,
+        taskStatusId: el.taskStatusId,
+        sprintId: el.task.sprint ? el.task.sprint.id : null,
+        sprint: el.task.sprint ? el.task.sprint : null,
+        timeSheets: this.getTaskTimesheets(list, el, startingDay, user.id)
+      });
+    }
+  }
+
+  getMagicActivities() {
+    const { list, lang } = this.props;
+
+    return list.reduce((res, el) => {
+      const maNotPushed =
+        el.typeId !== 1 &&
+        !find(res, tsh => {
+          const isSameType = tsh.typeId === el.typeId;
+          const isSameProject = el.project ? tsh.projectId === el.project.id : tsh.projectId === 0;
+          const isSameSprint = (el.sprint ? el.sprint.id : 0) === (tsh.sprint ? tsh.sprint.id : 0);
+          return isSameType && isSameProject && isSameSprint;
+        });
+
+      if (maNotPushed && this.isThisWeek(el.onDate)) {
+        res.push({
+          typeId: el.typeId,
+          projectName: el.project ? el.project.name : localize[lang].WITHOUT_PROJECT,
+          projectId: el.project ? el.project.id : 0,
+          sprintId: null,
+          sprint: null,
+          userId: el.userId ? el.userId : null,
+          task: null
+        });
+      }
+      return res;
+    }, []);
+  }
+
+  userMagicActivities(userId) {
+    const { list, startingDay } = this.props;
+    const tasks = [];
+    // Создание массива таймшитов по magic activities
+    const magicActivities = list.length ? this.getMagicActivities() : [];
+    magicActivities.filter(activity => activity.userId === userId).forEach(element => {
+      const timeSheets = [];
       for (let index = 0; index < 7; index++) {
-        const timesheet = find(arr, tsh => {
+        const timesheet = find(list, tsh => {
           return (
-            tsh.task &&
-            tsh.task.id === el.task.id &&
+            tsh.typeId !== 1 &&
+            tsh.typeId === element.typeId &&
+            (tsh.project ? tsh.project.id === element.projectId : !tsh.project && !element.projectId) &&
             moment(tsh.onDate).format('DD.MM.YY') ===
-              moment(day)
+              moment(startingDay)
                 .weekday(index)
-                .format('DD.MM.YY') &&
-            tsh.taskStatusId === el.taskStatusId
+                .format('DD.MM.YY')
           );
         });
         if (timesheet) {
@@ -108,49 +221,13 @@ class ProjectTimesheets extends React.Component {
         } else {
           timeSheets.push({
             comment: '',
-            task: el.task,
-            typeId: el.typeId,
-            taskStatusId: el.taskStatusId,
-            isBillable: el.isBillable,
-            sprint: el.sprint,
-            statusId: el.statusId,
+            task: element.task,
+            typeId: element.typeId,
+            taskStatusId: element.taskStatusId,
+            isBillable: element.isBillable,
+            sprint: element.sprint,
+            statusId: element.statusId,
             userId: userId,
-            onDate: moment(day)
-              .weekday(index)
-              .format(),
-            spentTime: '0'
-          });
-        }
-      }
-
-      return timeSheets;
-    };
-
-    // Overall time by week for user tasks
-    const getUserTimesheets = userId => {
-      const timeSheets = [];
-      for (let index = 0; index < 7; index++) {
-        const dayUserSheets = filter(list, tsh => {
-          return (
-            tsh.userId === userId &&
-            moment(tsh.onDate).format('DD.MM.YY') ===
-              moment(startingDay)
-                .weekday(index)
-                .format('DD.MM.YY')
-          );
-        });
-        if (dayUserSheets && dayUserSheets.length) {
-          const dayTime = dayUserSheets.reduce((a, b) => {
-            return a + parseFloat(b.spentTime);
-          }, 0);
-          timeSheets.push({
-            onDate: moment(startingDay)
-              .weekday(index)
-              .format(),
-            spentTime: dayTime + ''
-          });
-        } else {
-          timeSheets.push({
             onDate: moment(startingDay)
               .weekday(index)
               .format(),
@@ -159,103 +236,20 @@ class ProjectTimesheets extends React.Component {
         }
       }
 
-      return timeSheets;
-    };
+      tasks.push({ ...element, timeSheets });
+    });
 
-    const pushTaskToUser = (user, el) => {
-      const exists = user.tasks.find(usrTask => {
-        return usrTask.taskStatusId === el.taskStatusId && usrTask.id === el.task.id;
-      });
-      if (!exists) {
-        user.tasks.push({
-          id: el.task.id,
-          name: `${el.project.prefix}-${el.task.id}: ${el.task.name}`,
-          projectId: el.project.id,
-          projectName: el.project.name,
-          taskStatusId: el.taskStatusId,
-          sprintId: el.task.sprint ? el.task.sprint.id : null,
-          sprint: el.task.sprint ? el.task.sprint : null,
-          timeSheets: getTaskTimesheets(list, el, startingDay, user.id)
-        });
-      }
-    };
+    return tasks;
+  }
 
-    // Создание массива таймшитов по magic activities
-    const magicActivities = list.length
-      ? list.reduce((res, el) => {
-          const maNotPushed =
-            el.typeId !== 1 &&
-            !find(res, tsh => {
-              const isSameType = tsh.typeId === el.typeId;
-              const isSameProject = el.project ? tsh.projectId === el.project.id : tsh.projectId === 0;
-              const isSameSprint = (el.sprint ? el.sprint.id : 0) === (tsh.sprint ? tsh.sprint.id : 0);
-              return isSameType && isSameProject && isSameSprint;
-            });
-
-          if (maNotPushed && isThisWeek(el.onDate)) {
-            res.push({
-              typeId: el.typeId,
-              projectName: el.project ? el.project.name : localize[lang].WITHOUT_PROJECT,
-              projectId: el.project ? el.project.id : 0,
-              sprintId: null,
-              sprint: null,
-              userId: el.userId ? el.userId : null,
-              task: null
-            });
-          }
-          return res;
-        }, [])
-      : [];
-
-    const userMagicActivities = userId => {
-      const tasks = [];
-      magicActivities.forEach(element => {
-        const timeSheets = [];
-        for (let index = 0; index < 7; index++) {
-          const timesheet = find(list, tsh => {
-            return (
-              tsh.typeId !== 1 &&
-              tsh.userId === userId &&
-              tsh.typeId === element.typeId &&
-              (tsh.project ? tsh.project.id === element.projectId : !tsh.project && !element.projectId) &&
-              moment(tsh.onDate).format('DD.MM.YY') ===
-                moment(startingDay)
-                  .weekday(index)
-                  .format('DD.MM.YY')
-            );
-          });
-          if (timesheet) {
-            timeSheets.push(timesheet);
-          } else {
-            timeSheets.push({
-              comment: '',
-              task: element.task,
-              typeId: element.typeId,
-              taskStatusId: element.taskStatusId,
-              isBillable: element.isBillable,
-              sprint: element.sprint,
-              statusId: element.statusId,
-              userId: userId,
-              onDate: moment(startingDay)
-                .weekday(index)
-                .format(),
-              spentTime: '0'
-            });
-          }
-        }
-
-        tasks.push({ ...element, timeSheets });
-      });
-
-      return tasks;
-    };
-
-    // Create users object where key user.id = user with timesheets
+  // Create users object where key user.id = user with timesheets
+  getUsersWithTimeSheets() {
+    const { list } = this.props;
     const users = {};
     list.forEach(el => {
       if (el.user) {
         const userNotPushed = !users[el.user.id];
-        if (isThisWeek(el.onDate)) {
+        if (this.isThisWeek(el.onDate)) {
           // add new users key
           if (userNotPushed) {
             users[el.user.id] = {
@@ -263,20 +257,26 @@ class ProjectTimesheets extends React.Component {
               userName: getFullName(el.user) ? getFullName(el.user) : null,
               isOpen: false,
               tasks: [],
-              timesheets: getUserTimesheets(el.user.id),
-              ma: userMagicActivities(el.user.id) || []
+              timesheets: this.getUserTimesheets(el.user.id),
+              ma: this.userMagicActivities(el.user.id) || []
             };
           }
 
           if (el.task) {
-            pushTaskToUser(users[el.user.id], el);
+            this.pushTaskToUser(users[el.user.id], el);
           }
         }
       }
     });
-
     sortBy(users, ['userName']);
 
+    return users;
+  }
+
+  render() {
+    const { isCalendarOpen } = this.state;
+    const { startingDay, list, lang } = this.props;
+    const users = this.getUsersWithTimeSheets();
     const userRows = [];
     for (const user of Object.values(users)) {
       const userName = getFullName(this.props.users.find(el => el.id === user.id));
@@ -427,10 +427,26 @@ class ProjectTimesheets extends React.Component {
   }
 }
 
+const timeSheetsSelector = createSelector(
+  state => state.Timesheets.list,
+  state => state.Timesheets.tempTimesheets,
+  function(list, tempTimesheets) {
+    const defaultTaskStatusId = 2;
+    const tempTimesheetsList = tempTimesheets.map(timesheet => {
+      return {
+        ...timesheet,
+        taskStatusId: timesheet.taskStatusId || defaultTaskStatusId
+      };
+    });
+
+    //TODO важен порядок сложения списков
+    return list.concat(tempTimesheetsList);
+  }
+);
+
 const mapStateToProps = state => ({
   startingDay: state.Timesheets.startingDay,
-  list: state.Timesheets.list,
-  tempTimesheets: state.Timesheets.tempTimesheets,
+  list: timeSheetsSelector(state),
   dateBegin: state.Timesheets.dateBegin,
   dateEnd: state.Timesheets.dateEnd,
   lang: state.Localize.lang,
@@ -443,5 +459,5 @@ const mapDispatchToProps = {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(ProjectTimesheets);
