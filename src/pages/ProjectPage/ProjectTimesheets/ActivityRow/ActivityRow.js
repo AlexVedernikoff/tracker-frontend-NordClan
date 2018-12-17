@@ -173,7 +173,7 @@ class ActivityRow extends React.Component {
               {tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED ||
               tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED ? (
                 <span className={css.toggleComment}>
-                  <IconEdit onClick={this.openEditModal.bind(this, { ...tsh, typeId: tsh.task.typeId })} />
+                  <IconEdit onClick={this.openEditModal.bind(this, tsh)} />
                 </span>
               ) : null}
             </div>
