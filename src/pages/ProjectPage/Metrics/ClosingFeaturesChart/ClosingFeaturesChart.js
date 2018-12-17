@@ -44,7 +44,7 @@ class ClosingFeaturesChart extends Component {
             type: 'time',
             time: {
               displayFormats: {
-                hour: 'h:mm a'
+                day: 'D MMM'
               },
               tooltipFormat: 'DD.MM.YYYY',
               locale: moment.locale(localize[this.props.lang].LANG)
