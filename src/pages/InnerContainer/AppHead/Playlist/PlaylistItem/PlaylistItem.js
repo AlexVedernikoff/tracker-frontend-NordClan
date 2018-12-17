@@ -14,7 +14,7 @@ import validateNumber from '../../../../../utils/validateNumber';
 
 import { IconComment, IconCheck, IconEye, IconEyeDisable } from '../../../../../components/Icons';
 import localize from './playlistItem.json';
-import { getLocalizedMagicActiveTypes } from '../../../../../selectors/dictionaries';
+import { getMagicActiveTypes } from '../../../../../selectors/dictionaries';
 
 class PlaylistItem extends Component {
   constructor(props) {
@@ -108,8 +108,9 @@ class PlaylistItem extends Component {
   };
 
   getNameByType = typeId => {
+    const { lang } = this.props;
     const activity = find(this.props.magicActivitiesTypes, { id: typeId });
-    return activity ? activity.name : localize[this.props.lang].UNDEFINED;
+    return activity ? localize[lang][activity.codename] : localize[lang].UNDEFINED;
   };
 
   goToDetailPage = () => {
@@ -138,6 +139,7 @@ class PlaylistItem extends Component {
     const { lang, disabled: timesheetDisabled } = this.props;
     const status = task ? task.taskStatus : null;
     const redColorForTime = task ? parseFloat(task.factExecutionTime) > parseFloat(task.plannedExecutionTime) : false;
+    const taskName = task ? task.name : this.getNameByType(typeId);
 
     const prefix = project && project.prefix ? `${project.prefix}-` : '';
     const taskLabel = task && prefix ? prefix + task.id : null;
@@ -213,10 +215,40 @@ class PlaylistItem extends Component {
                 )
               ) : null}
             </div>
-            <div className={css.taskName}>
+            <div className={classnames(css.taskName, css.listItem)}>
               {taskLabel ? <span>{taskLabel}</span> : null}
-              {task ? task.name : this.getNameByType(typeId)}
+              {taskName}
             </div>
+          </div>
+          <div className={css.phoneVisibleToggle}>
+            {!isDraft ? (
+              <span
+                className={classnames({ [css.commentToggler]: true, [css.green]: !!comment })}
+                onClick={this.toggleComment}
+              >
+                <IconComment />
+              </span>
+            ) : null}
+
+            {status !== 'education' ? (
+              isVisible ? (
+                <span
+                  className={css.commentToggler}
+                  onClick={e => this.changeVisibility(e, false)}
+                  data-tip={localize[lang].HIDE}
+                >
+                  <IconEyeDisable />
+                </span>
+              ) : (
+                <span
+                  className={css.commentToggler}
+                  onClick={e => this.changeVisibility(e, true)}
+                  data-tip={localize[lang].SHOW}
+                >
+                  <IconEye />
+                </span>
+              )
+            ) : null}
           </div>
         </div>
         <div className={css.time}>
@@ -280,6 +312,7 @@ PlaylistItem.propTypes = {
   handleToggleList: PropTypes.func,
   index: PropTypes.number.isRequired,
   item: PropTypes.object.isRequired,
+  lang: PropTypes.string,
   magicActivitiesTypes: PropTypes.array,
   task: PropTypes.object,
   updateDraft: PropTypes.func,
@@ -289,7 +322,7 @@ PlaylistItem.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    magicActivitiesTypes: getLocalizedMagicActiveTypes(state),
+    magicActivitiesTypes: getMagicActiveTypes(state),
     task: state.Task.task,
     lang: state.Localize.lang
   };

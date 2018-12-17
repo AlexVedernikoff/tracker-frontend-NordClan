@@ -20,12 +20,14 @@ import getProjects, {
   openCreateProjectModal,
   closeCreateProjectModal
 } from '../../actions/Projects';
+import { getPortfolios } from '../../actions/Portfolios';
 import { getErrorMessageByType } from '../../utils/ErrorMessages';
 import { ADMIN } from '../../constants/Roles';
-import localization from './projects.json';
-import Title, { flushTitle } from 'react-title-component';
+import localize from './projects.json';
+import Title from 'react-title-component';
 import TypeFilter from './TypeFilter';
-import { getLocalizedProjectTypes } from './../../selectors/dictionaries';
+import { IconPreloader } from '../../components/Icons';
+import InlineHolder from '../../components/InlineHolder';
 
 import 'moment/locale/ru';
 
@@ -47,6 +49,11 @@ class Projects extends Component {
     };
   }
 
+  componentDidMount() {
+    this.loadProjects();
+    this.props.getPortfolios();
+  }
+
   initialFilters = {
     filterTags: [],
     filteredInProgress: false,
@@ -58,11 +65,8 @@ class Projects extends Component {
     projectName: ''
   };
 
-  componentDidMount() {
-    this.loadProjects();
-  }
-
-  selectType = (filterSelectedTypes, filterRequestTypes) => {
+  selectType = filterSelectedTypes => {
+    const filterRequestTypes = filterSelectedTypes.map(type => type.value);
     this.setState({ filterSelectedTypes, filterRequestTypes }, () => {
       this.loadProjects();
     });
@@ -83,8 +87,8 @@ class Projects extends Component {
       this.state.filterByName,
       dateFrom,
       dateTo,
-      typeId,
-      statuses.join(',')
+      statuses.join(','),
+      typeId
     );
     this.saveFilters();
   };
@@ -149,9 +153,9 @@ class Projects extends Component {
         activePage: this.state.dateFrom !== dateFrom ? 1 : this.state.activePage
       },
       () => {
-        dateFrom = dateFrom ? moment(this.state.dateFrom).format('YYYY-MM-DD') : '';
+        const newDateFrom = dateFrom ? moment(this.state.dateFrom).format('YYYY-MM-DD') : '';
         const dateTo = this.state.dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
-        this.loadProjects(dateFrom, dateTo);
+        this.loadProjects(newDateFrom, dateTo);
       }
     );
   };
@@ -164,8 +168,8 @@ class Projects extends Component {
       },
       () => {
         const dateFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('YYYY-MM-DD') : '';
-        dateTo = dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
-        this.loadProjects(dateFrom, dateTo);
+        const newDateTo = dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
+        this.loadProjects(dateFrom, newDateTo);
       }
     );
   };
@@ -184,16 +188,16 @@ class Projects extends Component {
   };
 
   handleModal = () => {
-    const { isCreateProjectModalOpen, openCreateProjectModal, closeCreateProjectModal } = this.props;
+    const { isCreateProjectModalOpen } = this.props;
     if (isCreateProjectModalOpen) {
       this.setState({
         projectName: '',
         projectPrefix: '',
         selectedPortfolio: null
       });
-      closeCreateProjectModal();
+      this.props.closeCreateProjectModal();
     } else {
-      openCreateProjectModal();
+      this.props.openCreateProjectModal();
     }
   };
 
@@ -212,9 +216,10 @@ class Projects extends Component {
   };
 
   sendRequest = () => {
+    const { selectedPortfolio } = this.state;
     let portfolioName = '';
-    if (this.state.selectedPortfolio && Object.keys(this.state.selectedPortfolio).length !== 0) {
-      portfolioName = !Number.isInteger(this.state.selectedPortfolio.value) ? this.state.selectedPortfolio.value : null;
+    if (selectedPortfolio && Object.keys(selectedPortfolio).length !== 0) {
+      portfolioName = !Number.isInteger(selectedPortfolio.value) ? selectedPortfolio.value : null;
     } else {
       portfolioName = null;
     }
@@ -222,7 +227,7 @@ class Projects extends Component {
       {
         name: this.state.projectName,
         prefix: this.state.projectPrefix,
-        portfolioId: portfolioName ? null : this.state.selectedPortfolio ? this.state.selectedPortfolio.value : null,
+        portfolioId: portfolioName ? null : selectedPortfolio ? selectedPortfolio.value : null,
         portfolioName,
         typeId: this.state.selectedType || 0
       },
@@ -294,28 +299,79 @@ class Projects extends Component {
     return false;
   }
 
+  handleModal = () => {
+    const {
+      isCreateProjectModalOpen,
+      openCreateProjectModal: openCreateProjectModalFunc,
+      closeCreateProjectModal: closeCreateProjectModalFunc
+    } = this.props;
+    if (isCreateProjectModalOpen) {
+      this.setState({
+        projectName: '',
+        projectPrefix: '',
+        selectedPortfolio: null
+      });
+      closeCreateProjectModalFunc();
+    } else {
+      openCreateProjectModalFunc();
+    }
+  };
+
+  renderProjectsList = () =>
+    this.props.projectList.map(project => (
+      <ProjectCard key={`project-${project.id}`} project={project} onClickTag={this.onClickTag} />
+    ));
+
+  renderPreloader = () => {
+    return (
+      <div className={css.projectsPreloader}>
+        <Row>
+          <Col xs={12} sm={4}>
+            <IconPreloader style={{ color: 'silver', fontSize: '2rem', marginRight: 10, float: 'left' }} />
+            <InlineHolder length="60%" />
+          </Col>
+          <Col xs={12} sm={4} className={css.box}>
+            <InlineHolder length="80%" />
+            <InlineHolder length="40%" />
+          </Col>
+          <Col xs={12} sm={4} className={css.box}>
+            <InlineHolder length="30%" />
+          </Col>
+        </Row>
+      </div>
+    );
+  };
+
   render() {
-    const { lang } = this.props;
-    const { filteredInProgress, filteredInHold, filteredFinished, filterSelectedTypes } = this.state;
-    const { projectTypes } = this.props;
-    const formattedDayFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('DD.MM.YYYY') : '';
-    const formattedDayTo = this.state.dateTo ? moment(this.state.dateTo).format('DD.MM.YYYY') : '';
+    const { lang, isProjectsReceived, pagesCount } = this.props;
+    const { filteredInProgress, filteredInHold, filteredFinished, filterSelectedTypes, dateFrom, dateTo } = this.state;
+    const formattedDayFrom = dateFrom ? moment(dateFrom).format('DD.MM.YYYY') : '';
+    const formattedDayTo = dateTo ? moment(dateTo).format('DD.MM.YYYY') : '';
     const isAdmin = this.props.globalRole === ADMIN;
     const isFiltered = this.isFiltered();
+    const withoutProjects = isProjectsReceived ? (
+      <div className={css.notFound}>{localize[lang][isFiltered ? 'NOTHING_FOUND' : 'NO_PROJECT_ASSIGNED']}</div>
+    ) : (
+      this.renderPreloader()
+    );
 
     return (
       <div>
-        <Title render={`SimTrack - ${localization[lang].MY_PROJECTS}`} />
+        <Title render={`SimTrack - ${localize[lang].MY_PROJECTS}`} />
         <section>
           <header className={css.title}>
-            <h1 className={css.title}>{localization[lang].MY_PROJECTS}</h1>
+            <h1 className={css.title}>{localize[lang].MY_PROJECTS}</h1>
             {isAdmin ? (
-              <Button
-                onClick={this.handleModal}
-                text={localization[lang].CREATE_PROJECT}
-                type="primary"
-                icon="IconPlus"
-              />
+              <div>
+                <div>
+                  <Button
+                    onClick={this.handleModal}
+                    text={localize[lang].CREATE_PROJECT}
+                    type="primary"
+                    icon="IconPlus"
+                  />
+                </div>
+              </div>
             ) : null}
           </header>
           <hr />
@@ -329,7 +385,7 @@ class Projects extends Component {
                     onClick={() => {
                       this.check('filteredInProgress', this.handleFilterChange);
                     }}
-                    label="В процессе"
+                    label={localize[lang].INPROGRESS}
                   />
                   <StatusCheckbox
                     type="INHOLD"
@@ -337,7 +393,7 @@ class Projects extends Component {
                     onClick={() => {
                       this.check('filteredInHold', this.handleFilterChange);
                     }}
-                    label="Приостановлен"
+                    label={localize[lang].INHOLD}
                   />
                   <StatusCheckbox
                     type="FINISHED"
@@ -345,17 +401,17 @@ class Projects extends Component {
                     onClick={() => {
                       this.check('filteredFinished', this.handleFilterChange);
                     }}
-                    label="Завершен"
+                    label={localize[lang].FINISHED}
                   />
                 </div>
               </Col>
               <Col xs={12} sm={4}>
-                <TypeFilter onChange={this.selectType} value={filterSelectedTypes} dictionary={projectTypes} />
+                <TypeFilter onChange={this.selectType} value={filterSelectedTypes} />
               </Col>
             </Row>
             <Row className={css.search}>
               <Col xs={12} sm={4}>
-                <Input onChange={this.changeNameFilter} placeholder={localization[lang].NAME_PROJECT} />
+                <Input onChange={this.changeNameFilter} placeholder={localize[lang].NAME_PROJECT} />
               </Col>
               <Col xs={12} sm={4}>
                 <Row>
@@ -364,7 +420,7 @@ class Projects extends Component {
                       name="dateFrom"
                       value={formattedDayFrom}
                       onDayChange={this.handleDayFromChange}
-                      placeholder={localization[lang].TO}
+                      placeholder={localize[lang].FROM}
                     />
                   </Col>
                   <Col xs={6} sm={6}>
@@ -372,7 +428,7 @@ class Projects extends Component {
                       name="dateTo"
                       value={formattedDayTo}
                       onDayChange={this.handleDayToChange}
-                      placeholder={localization[lang].FROM}
+                      placeholder={localize[lang].TO}
                     />
                   </Col>
                 </Row>
@@ -382,20 +438,10 @@ class Projects extends Component {
               </Col>
             </Row>
           </div>
-          {this.props.projectList.length ? (
-            <div>
-              {this.props.projectList.map(project => (
-                <ProjectCard key={`project-${project.id}`} project={project} onClickTag={this.onClickTag} />
-              ))}
-            </div>
-          ) : (
-            <div className={css.notFound}>
-              {localization[lang][isFiltered ? 'NOTHING_FOUND' : 'NO_PROJECT_ASSIGNED']}
-            </div>
-          )}
-          {this.props.pagesCount > 1 ? (
+          {this.props.projectList.length ? this.renderProjectsList() : withoutProjects}
+          {pagesCount > 1 ? (
             <Pagination
-              itemsCount={this.props.pagesCount}
+              itemsCount={pagesCount}
               activePage={this.state.activePage}
               onItemClick={this.handlePaginationClick}
             />
@@ -422,14 +468,19 @@ class Projects extends Component {
 }
 Projects.propTypes = {
   closeCreateProjectModal: PropTypes.func.isRequired,
+  getPortfolios: PropTypes.func.isRequired,
   getProjects: PropTypes.func.isRequired,
   globalRole: PropTypes.string.isRequired,
   isCreateProjectModalOpen: PropTypes.bool.isRequired,
+  isProjectsReceived: PropTypes.bool,
+  lang: PropTypes.string,
   loading: PropTypes.number,
   openCreateProjectModal: PropTypes.func.isRequired,
   pagesCount: PropTypes.number.isRequired,
   projectError: PropTypes.object,
-  projectList: PropTypes.array.isRequired
+  projectList: PropTypes.array.isRequired,
+  projectTypes: PropTypes.array,
+  requestProjectCreate: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -440,27 +491,15 @@ const mapStateToProps = state => ({
   projectError: state.Projects.error,
   globalRole: state.Auth.user.globalRole,
   lang: state.Localize.lang,
-  projectTypes: getLocalizedProjectTypes(state) || []
+  isProjectsReceived: state.Projects.isProjectsReceived
 });
 
 const mapDispatchToProps = {
   requestProjectCreate,
   openCreateProjectModal,
   closeCreateProjectModal,
+  getPortfolios,
   getProjects
-};
-
-Projects.propTypes = {
-  GetProjects: PropTypes.func,
-  closeCreateProjectModal: PropTypes.func,
-  isCreateProjectModalOpen: PropTypes.bool,
-  isOpen: PropTypes.bool,
-  onChange: PropTypes.func,
-  onRequestClose: PropTypes.func,
-  openCreateProjectModal: PropTypes.func,
-  projectList: PropTypes.array,
-  projectTypes: PropTypes.array,
-  requestProjectCreate: PropTypes.func
 };
 
 export default connect(

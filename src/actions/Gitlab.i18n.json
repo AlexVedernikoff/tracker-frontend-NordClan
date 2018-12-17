@@ -1,0 +1,12 @@
+{
+  "en": {
+    "GITLAB_PROJECT_ALREADY_LINKED": "Repository is already linked",
+    "GITLAB_ERROR_PROJECT_NOT_FOUND": "Repository not found",
+    "GITLAB_ERROR": "Gitlab error: maybe the repository already exists"
+  },
+  "ru": {
+    "GITLAB_PROJECT_ALREADY_LINKED": "Репозиторий уже привязан к проекту",
+    "GITLAB_ERROR_PROJECT_NOT_FOUND": "Репозиторий не найден",
+    "GITLAB_ERROR": "Ошибка Gitlab: возможно репозиторий уже существует"
+  }
+}

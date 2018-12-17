@@ -2,15 +2,16 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import * as css from '../TaskCard.scss';
 import { Link } from 'react-router';
-
 import { IconFileTree, IconLink } from '../../Icons';
 import { scrollTo } from '../../../utils/scroll';
+import localize from './relatedTask.json';
 
 const CARD_IS_FOCUSED = true;
 
 class componentName extends PureComponent {
   static propTypes = {
     isLighted: PropTypes.bool,
+    lang: PropTypes.string.isRequired,
     mode: PropTypes.string,
     onHover: PropTypes.func,
     prefix: PropTypes.string,
@@ -19,26 +20,27 @@ class componentName extends PureComponent {
   };
 
   getOptions = mode => {
+    const { lang } = this.props;
     switch (mode) {
       case 'parent':
         return {
           icon: <IconFileTree />,
           className: css.parentTask,
-          dataTip: 'Родительская задача'
+          dataTip: localize[lang].PARENT_TASK
         };
 
       case 'linked':
         return {
           icon: <IconLink />,
           className: css.linkedTask,
-          dataTip: 'Связанная задача'
+          dataTip: localize[lang].LINKED_TASK
         };
 
       case 'sub':
         return {
           icon: <IconFileTree />,
           className: css.subTask,
-          dataTip: 'Подзадача'
+          dataTip: localize[lang].SUB_TASK
         };
 
       default:

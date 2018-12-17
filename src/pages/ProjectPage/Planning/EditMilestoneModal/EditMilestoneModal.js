@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import * as css from './EditMilestoneModal.scss';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
@@ -13,7 +12,7 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { editMilestone } from '../../../../actions/Milestone';
 import Select from 'react-select';
-import { getLocalizedMilestoneTypes } from '../../../../selectors/dictionaries';
+import { getMilestoneTypes } from '../../../../selectors/dictionaries';
 
 class EditMilestoneModal extends Component {
   static propTypes = {
@@ -59,12 +58,14 @@ class EditMilestoneModal extends Component {
   };
 
   changeStatus = status => {
-    this.setState(state => ({
-      milestone: {
-        ...state.milestone,
-        typeId: status.value
-      }
-    }));
+    if (status) {
+      this.setState(state => ({
+        milestone: {
+          ...state.milestone,
+          typeId: status.value
+        }
+      }));
+    }
   };
 
   handleStatusChange = e => {
@@ -100,7 +101,7 @@ class EditMilestoneModal extends Component {
 
     const { milestoneTypes, lang } = this.props;
 
-    const options = milestoneTypes.map(type => ({ value: type.id, label: type.name }));
+    const options = milestoneTypes.map(type => ({ value: type.id, label: localize[lang][type.codename] }));
 
     return (
       <Modal isOpen contentLabel="modal" onRequestClose={this.props.onClose}>
@@ -151,7 +152,7 @@ class EditMilestoneModal extends Component {
 
             <Row className={css.inputRow}>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Дата:</p>
+                <p>{localize[lang].DATE}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <DatepickerDropdown
@@ -192,7 +193,7 @@ class EditMilestoneModal extends Component {
 
 const mapStateToProps = state => ({
   projectId: state.Project.project.id,
-  milestoneTypes: getLocalizedMilestoneTypes(state) || [],
+  milestoneTypes: getMilestoneTypes(state) || [],
   lang: state.Localize.lang
 });
 

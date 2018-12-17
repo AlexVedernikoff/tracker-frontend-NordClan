@@ -13,8 +13,7 @@ import { getProjectInfo as getProject, changeProject } from '../../actions/Proje
 import { ADMIN, EXTERNAL_USER } from '../../constants/Roles';
 import { checkIsViewer } from '../../helpers/RoleValidator';
 import localize from './projectPage.json';
-import Title, { flushTitle } from 'react-title-component';
-import { getLocalizedProjectTypes } from '../../selectors/dictionaries';
+import Title from 'react-title-component';
 
 class ProjectPage extends Component {
   static propTypes = {
@@ -70,7 +69,6 @@ class ProjectPage extends Component {
 
   render() {
     const {
-      projectTypes,
       lang,
       params: { projectId }
     } = this.props;
@@ -139,7 +137,6 @@ class ProjectPage extends Component {
         />
 
         <RouteTabs pathname={this.props.location.pathname}>{tabs}</RouteTabs>
-
         <div className={css.tabContent}>{this.props.children}</div>
         {isProjectAdmin && this.props.project.prefix !== undefined && !this.props.project.prefix ? (
           <MissingProjectFieldsModal
@@ -147,7 +144,6 @@ class ProjectPage extends Component {
             contentLabel="modal"
             text={localize[lang].ENTER_MISSING_DATA}
             error={this.props.project.validationError}
-            projectTypes={projectTypes}
             onCancel={this.handleCloseProjectPrefixModal}
             onConfirm={this.handleCloseProjectConfirmModal}
           />
@@ -160,7 +156,6 @@ class ProjectPage extends Component {
 const mapStateToProps = state => ({
   project: state.Project.project,
   user: state.Auth.user,
-  projectTypes: getLocalizedProjectTypes(state) || [],
   lang: state.Localize.lang
 });
 

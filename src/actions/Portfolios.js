@@ -13,7 +13,7 @@ const successPortfoliosRequest = portfolios => ({
 });
 
 const getPortfolios = () => {
-  const URL = 'api/portfolio';
+  const URL = '/api/v1/portfolio';
 
   return dispatch => {
     dispatch(startPortfoliosRequest());

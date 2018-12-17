@@ -35,6 +35,7 @@ class PhaseColumn extends React.Component {
     isOver: PropTypes.bool.isRequired,
     isProjectLoading: PropTypes.bool,
     isTasksLoad: PropTypes.bool,
+    lang: PropTypes.string,
     onDrop: PropTypes.func.isRequired,
     section: PropTypes.string.isRequired,
     tasks: PropTypes.array,

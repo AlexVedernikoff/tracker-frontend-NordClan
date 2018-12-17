@@ -23,10 +23,6 @@ class Description extends Component {
     window.addEventListener('keydown', this.checkEscapeKeyPress);
   }
 
-  componentDidUpdate() {
-    ReactTooltip.rebuild();
-  }
-
   componentWillReceiveProps(nextProps) {
     if (this.props.text !== nextProps.text) {
       this.setState({
@@ -36,6 +32,10 @@ class Description extends Component {
     if (this.props.isEditing !== nextProps.isEditing) {
       ReactTooltip.hide();
     }
+  }
+
+  componentDidUpdate() {
+    ReactTooltip.rebuild();
   }
 
   componentWillUnmount() {
@@ -164,6 +164,7 @@ Description.propTypes = {
   headerType: PropTypes.string,
   id: PropTypes.number,
   isEditing: PropTypes.bool.isRequired,
+  lang: PropTypes.string,
   onEditFinish: PropTypes.func.isRequired,
   onEditStart: PropTypes.func.isRequired,
   onEditSubmit: PropTypes.func.isRequired,

@@ -1,22 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
 import {
-  IconPlus,
   IconArrowLeft,
   IconArrowRight,
-  IconTime,
   IconCalendar,
   IconEdit,
   IconPortfolio,
   IconUsers,
   IconExternalUsers,
-  IconCall,
   IconUser
 } from '../../../components/Icons';
-import { connect } from 'react-redux';
 import isAdmin from '../../../utils/isAdmin';
 import { EXTERNAL_USER } from '../../../constants/Roles';
+import Toggle from '../../../components/LanguageToggle';
+import { setLocalize } from '../../../actions/localize';
 import localize from './navMenu.json';
 import * as css from './NavMenu.scss';
 import { getFirstName, getLastName, getFullName } from '../../../utils/NameLocalisation';
@@ -24,7 +23,9 @@ import classNames from 'classnames';
 
 class NavMenu extends Component {
   static propTypes = {
+    lang: PropTypes.string,
     mqlMatches: PropTypes.bool,
+    setLocalize: PropTypes.func,
     sidebarDocked: PropTypes.bool,
     sidebarOpened: PropTypes.bool,
     toggleMenu: PropTypes.func,
@@ -56,6 +57,8 @@ class NavMenu extends Component {
     );
   };
 
+  toggleLanguage = lang => this.props.setLocalize(lang);
+
   render() {
     const { lang, mqlMatches } = this.props;
     const iconStyles = {
@@ -74,7 +77,7 @@ class NavMenu extends Component {
     ) : null;
 
     const usersRolesLinkButton = isAdmin(this.props.user.globalRole) ? (
-      <li key="roles">
+      <li key="roles_btn">
         <Link className={css.sidebarLinkClosed} activeClassName={css.activeLink} to="/roles">
           <IconUsers style={iconStyles} />
         </Link>
@@ -93,7 +96,7 @@ class NavMenu extends Component {
     ) : null;
 
     const externalUsersLinkButton = isAdmin(this.props.user.globalRole) ? (
-      <li key="externalUsers">
+      <li key="externalUsers_btn">
         <Link className={css.sidebarLinkClosed} activeClassName={css.activeLink} to="/externalUsers">
           <IconExternalUsers style={iconStyles} />
         </Link>
@@ -114,7 +117,7 @@ class NavMenu extends Component {
 
     const timesheetsLinkButton =
       this.props.user.globalRole !== EXTERNAL_USER ? (
-        <li key="timesheets">
+        <li key="timesheets_btn">
           <Link className={css.sidebarLinkClosed} activeClassName={css.activeLink} to="/timesheets">
             <IconCalendar style={iconStyles} />
           </Link>
@@ -122,21 +125,16 @@ class NavMenu extends Component {
       ) : null;
 
     const toggleButton = mqlMatches ? (
-      <button className={classNames(css.sidebarClosed, css.toggleButton)} onClick={this.props.toggleMenu}>
+      <button
+        key="toggle_btn"
+        className={classNames(css.sidebarClosed, css.toggleButton)}
+        onClick={this.props.toggleMenu}
+      >
         {this.props.sidebarOpened ? <IconArrowLeft style={iconStyles} /> : <IconArrowRight style={iconStyles} />}
       </button>
     ) : null;
 
     const links = [
-      /*<li key="dashboard" className={css.sidebarItem}>
-        <Link
-          className={css.sidebarLink}
-          activeClassName={css.activeLink}
-          to="/dashboard"
-        >
-          Монитор
-        </Link>
-      </li>, */
       <li key="projects" className={css.sidebarItem}>
         <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/projects">
           <button>
@@ -196,6 +194,7 @@ class NavMenu extends Component {
       <div className={this.props.sidebarOpened ? css.navigation : css.navigationMenuClosed}>
         {sidebarHeader}
         <ul className={css.sidebarLinks}>{links_vs_buttons}</ul>
+        <Toggle lang={this.props.lang} onChange={this.toggleLanguage} location="navMenu" />
       </div>
     );
   }
@@ -206,4 +205,11 @@ const mapStateToProps = state => ({
   lang: state.Localize.lang
 });
 
-export default connect(mapStateToProps)(NavMenu);
+const mapDispatchToProps = {
+  setLocalize
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(NavMenu);

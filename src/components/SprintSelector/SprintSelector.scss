@@ -1,7 +1,15 @@
 @import '../../styles/variables.scss';
 
+.sprint-dropdown {
+  position: relative;
+}
+
 .sprintInputBlured {
   position: absolute;
+}
+
+.sprintInputFocused {
+  position: static;
 }
 
 .sprintMarker {
@@ -35,4 +43,8 @@
 
 .FINISHED:before {
   background-color: darken($color-gray, 10%);
+}
+
+.picked {
+  background-color: #ebebeb;
 }

@@ -20,7 +20,8 @@
     "PERFORMER": "performer",
     "NOT_ASSIGNED": "Not assigned",
     "NOT_SELECTED": "Filters is not selected",
-    "MY_TASKS": "my tasks"
+    "MY_TASKS": "my tasks",
+    "NOTHING_FOUND": "Not found"
   },
   "ru": {
     "CREATE_TASK": "Создать задачу",
@@ -43,6 +44,7 @@
     "PERFORMER": "исполнитель",
     "NOT_ASSIGNED": "Не назначенно",
     "NOT_SELECTED": "Фильтры не выбраны",
-    "MY_TASKS": "мои задачи"
+    "MY_TASKS": "мои задачи",
+    "NOTHING_FOUND": "Ничего не найдено"
   }
 }

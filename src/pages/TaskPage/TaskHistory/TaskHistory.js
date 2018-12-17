@@ -50,7 +50,7 @@ class TaskHistory extends React.Component {
   render() {
     const { history, lang } = this.props;
     const eventList = history.data
-      ? history.data.map((event, i) => {
+      ? history.data.map(event => {
           return (
             <div className={css.historyEvent} key={event.id}>
               <span className={css.time}> {moment(event.date).format('DD.MM.YYYY HH:mm:ss')}</span>
@@ -88,6 +88,7 @@ class TaskHistory extends React.Component {
 TaskHistory.propTypes = {
   getTaskHistory: PropTypes.func.isRequired,
   history: PropTypes.object,
+  lang: PropTypes.string,
   pagesCount: PropTypes.number,
   params: PropTypes.shape({
     projectId: PropTypes.string.isRequired,

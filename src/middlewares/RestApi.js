@@ -57,6 +57,7 @@ const sendToApi = ({ method, body, extra, start, error, response, url }) => {
     .catch(err => console.error(err));
 };
 
+/*eslint-disable no-unused-vars*/
 export const restApi = store => next => action => {
   if (action.type !== REST_API) {
     return next(action);
@@ -68,3 +69,4 @@ export const restApi = store => next => action => {
 
   return Promise.reject();
 };
+/*eslint-enable no-unused-vars*/

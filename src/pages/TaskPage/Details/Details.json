@@ -8,13 +8,14 @@
     "TAGS": "Tags:",
     "AUTHOR": "Author:",
     "PERFORMER": "Performer:",
-    "DATE_OF_CREATE": "The date of create:",
+    "DATE_OF_CREATE": "Date of creation:",
     "PLANNED_TIME": "Planned time:",
     "SPENT_TIME": "Spent time:",
     "SPENT_QA_TIME": "Spent time on QA:",
     "CHANGE_PERFORMER": "Change performer of task:",
     "CHANGE_SPRINT": "Change sprint:",
     "NOT_SPECIFIED": "Not specified",
+    "DEV_OPS": "DevOps",
     "H": "h."
   },
   "ru": {
@@ -33,6 +34,7 @@
     "CHANGE_PERFORMER": "Изменить исполнителя задачи:",
     "CHANGE_SPRINT": "Изменить спринт:",
     "NOT_SPECIFIED": "Не указано",
+    "DEV_OPS": "DevOps",
     "H": "ч."
   }
 }

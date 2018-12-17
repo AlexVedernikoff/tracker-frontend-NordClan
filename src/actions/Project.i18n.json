@@ -1,0 +1,8 @@
+{
+  "en": {
+    "GITLAB_ERROR_PROJECT_NOT_FOUND": "Repository not found"
+  },
+  "ru": {
+    "GITLAB_ERROR_PROJECT_NOT_FOUND": "Репозиторий не найден"
+  }
+}

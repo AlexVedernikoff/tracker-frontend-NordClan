@@ -1,21 +1,23 @@
+import { TASK_STATUSES } from '../../../constants/TaskStatuses';
+
 export const getNewStatus = newPhase => {
   let newStatusId;
 
   switch (newPhase) {
     case 'New':
-      newStatusId = 1;
+      newStatusId = TASK_STATUSES.NEW;
       break;
     case 'Dev':
-      newStatusId = 3;
+      newStatusId = TASK_STATUSES.DEV_STOP;
       break;
     case 'Code Review':
-      newStatusId = 5;
+      newStatusId = TASK_STATUSES.CODE_REVIEW_STOP;
       break;
     case 'QA':
-      newStatusId = 7;
+      newStatusId = TASK_STATUSES.QA_STOP;
       break;
     case 'Done':
-      newStatusId = 8;
+      newStatusId = TASK_STATUSES.DONE;
       break;
     default:
       break;
@@ -27,9 +29,17 @@ export const getNewStatus = newPhase => {
 export const getNewStatusOnClick = oldStatusId => {
   let newStatusId;
 
-  if (oldStatusId === 2 || oldStatusId === 4 || oldStatusId === 6) {
+  if (
+    oldStatusId === TASK_STATUSES.DEV_PLAY ||
+    oldStatusId === TASK_STATUSES.CODE_REVIEW_PLAY ||
+    oldStatusId === TASK_STATUSES.QA_PLAY
+  ) {
     newStatusId = oldStatusId + 1;
-  } else if (oldStatusId === 3 || oldStatusId === 5 || oldStatusId === 7) {
+  } else if (
+    oldStatusId === TASK_STATUSES.DEV_STOP ||
+    oldStatusId === TASK_STATUSES.CODE_REVIEW_STOP ||
+    oldStatusId === TASK_STATUSES.QA_STOP
+  ) {
     newStatusId = oldStatusId - 1;
   }
 

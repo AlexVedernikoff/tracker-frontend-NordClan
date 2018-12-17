@@ -2,14 +2,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import ReactTooltip from 'react-tooltip';
+
 import * as css from './SprintStartControl.scss';
 import { IconPlay, IconPause } from '../Icons';
 import { editSprint } from '../../actions/Sprint';
-import ReactTooltip from 'react-tooltip';
+import localize from './SprintEditModal.json';
+import { TASK_STATUSES } from '../../constants/TaskStatuses';
 
 class SprintEditModal extends Component {
   static propTypes = {
     editSprint: PropTypes.func.isRequired,
+    lang: PropTypes.string,
     sprint: PropTypes.object.isRequired
   };
 
@@ -20,11 +24,15 @@ class SprintEditModal extends Component {
   }
 
   changeStatus = sprint => {
-    return () => this.props.editSprint(sprint.id, sprint.statusId === 1 ? 2 : 1);
+    return () =>
+      this.props.editSprint(
+        sprint.id,
+        sprint.statusId === TASK_STATUSES.NEW ? TASK_STATUSES.DEV_PLAY : TASK_STATUSES.NEW
+      );
   };
 
   render() {
-    const { sprint } = this.props;
+    const { sprint, lang } = this.props;
 
     return (
       <span
@@ -34,19 +42,23 @@ class SprintEditModal extends Component {
           [css.inprogress]: sprint.statusId === 2,
           [css.inhold]: sprint.statusId === 1
         })}
-        data-tip={sprint.statusId === 2 ? 'Остановить' : 'Запустить'}
+        data-tip={sprint.statusId === TASK_STATUSES.DEV_PLAY ? localize[lang].STOP : localize[lang].PLAY}
       >
-        {sprint.statusId === 2 ? <IconPause /> : <IconPlay />}
+        {sprint.statusId === TASK_STATUSES.DEV_PLAY ? <IconPause /> : <IconPlay />}
       </span>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
 
 const mapDispatchToProps = {
   editSprint
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(SprintEditModal);

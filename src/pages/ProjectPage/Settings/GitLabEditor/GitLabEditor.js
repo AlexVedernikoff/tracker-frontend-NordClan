@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import get from 'lodash/get';
 import remove from 'lodash/remove';
 
@@ -23,6 +24,7 @@ class GitLabEditor extends Component {
     changeProject: PropTypes.func,
     createGitlabProject: PropTypes.func,
     getNamespaces: PropTypes.func,
+    lang: PropTypes.string,
     namespaces: PropTypes.array,
     project: PropTypes.object,
     user: PropTypes.object
@@ -76,9 +78,9 @@ class GitLabEditor extends Component {
     if (isNaN(value)) {
       this.props.addGitlabProjectByName(this.props.project.id, value);
     } else {
-      const isProjectIds = get(this.props.project, 'gitlabProjectIds', false);
+      const { gitlabProjectIds } = this.props.project;
       this.props.changeProject({
-        gitlabProjectIds: isProjectIds ? [...this.props.project.gitlabProjectIds, +value] : [+value],
+        gitlabProjectIds: _.union(gitlabProjectIds, [+value]),
         id: this.props.project.id
       });
     }

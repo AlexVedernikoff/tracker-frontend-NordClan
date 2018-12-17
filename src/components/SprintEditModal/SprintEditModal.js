@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import * as css from './SprintEditModal.scss';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
@@ -11,11 +10,13 @@ import moment from 'moment';
 import localize from './SprintEditModal.json';
 import { connect } from 'react-redux';
 import parseInteger from '../../utils/parseInteger';
+import validateNumber from '../../utils/validateNumber';
 
 class SprintEditModal extends Component {
   static propTypes = {
     handleCloseModal: PropTypes.func.isRequired,
     handleEditSprint: PropTypes.func.isRequired,
+    lang: PropTypes.string.isRequired,
     project: PropTypes.object.isRequired,
     sprint: PropTypes.object.isRequired
   };
@@ -46,14 +47,9 @@ class SprintEditModal extends Component {
     );
   };
 
-  validateNumbers(value) {
-    const re = /^\d*(\.\d*)?$/;
-    return value !== '' ? re.test(value) : true;
-  }
-
   onChangePercentQA = e => {
     const value = e.target.value;
-    if (this.validateNumbers(value) && value <= 100) {
+    if (validateNumber(value) && value <= 100) {
       this.setState(state => ({
         sprint: {
           ...state.sprint,
@@ -75,7 +71,7 @@ class SprintEditModal extends Component {
 
   onChangeBudget = e => {
     const value = e.target.value;
-    if (this.validateNumbers(value)) {
+    if (validateNumber(value)) {
       this.setState(state => ({
         sprint: {
           ...state.sprint,
@@ -87,7 +83,7 @@ class SprintEditModal extends Component {
 
   onChangeRiskBudget = e => {
     const value = e.target.value;
-    if (this.validateNumbers(value)) {
+    if (validateNumber(value)) {
       this.setState(state => ({
         sprint: {
           ...state.sprint,
@@ -167,9 +163,9 @@ class SprintEditModal extends Component {
             <hr />
             <Row>
               <Col xs={12} className={css.validateMessages}>
-                {!this.checkNullInputs() ? <span>Все поля должны быть заполнены</span> : null}
+                {!this.checkNullInputs() ? <span>{localize[lang].FILL}</span> : null}
                 {this.state.sprint.dateTo && !this.validateDates() ? (
-                  <span className={css.redMessage}>Дата окончания должна быть позже даты начала</span>
+                  <span className={css.redMessage}>{localize[lang].DATE}</span>
                 ) : null}
               </Col>
             </Row>
@@ -269,7 +265,7 @@ class SprintEditModal extends Component {
                 <Button
                   type="green"
                   htmlType="submit"
-                  text="Изменить"
+                  text={localize[lang].CHANGE}
                   disabled={this.validateAllFields()}
                   onClick={this.handleEditSprint}
                 />

@@ -7,7 +7,9 @@
   height: 56px;
   background: $color-dark;
   display: flex;
-  // justify-content: space-between;
+  @include phone {
+    justify-content: space-between;
+  }
 }
 
 .menuToggle {
@@ -54,6 +56,10 @@
   color: $color-lightgray;
   flex-shrink: 0;
   cursor: pointer;
+
+  @include phone {
+    margin-left: 0;
+  }
 
   svg {
     opacity: 0.4;

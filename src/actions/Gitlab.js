@@ -3,6 +3,9 @@ import { API_URL } from '../constants/Settings';
 import * as GitlabActions from '../constants/Gitlab';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
+import { langSelector } from '../selectors/Localize';
+
+import localize from './Gitlab.i18n.json';
 
 const addingGitlabProjectStart = () => ({
   type: GitlabActions.ADDING_GITLAB_PROJECT_START
@@ -40,7 +43,7 @@ const addGitlabProjectByName = (projectId, path) => {
     return () => {};
   }
   const URL = `${API_URL}/project/addGitlabProject`;
-  return dispatch => {
+  return (dispatch, getState) => {
     dispatch(startLoading());
     dispatch(addingGitlabProjectStart());
     axios
@@ -59,7 +62,9 @@ const addGitlabProjectByName = (projectId, path) => {
         dispatch(finishLoading());
       })
       .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
+        const errorCode = error.response.data.message;
+        const message = localize[langSelector(getState())][errorCode] || errorCode || error.message;
+        dispatch(showNotification({ message, type: 'error' }));
         dispatch(addingGitlabProjectFail(error.response.data));
         dispatch(finishLoading());
       });
@@ -88,7 +93,7 @@ const getNamespaces = () => {
 
 const createGitlabProject = (projectId, name, namespace_id) => {
   const URL = `${API_URL}/project/${projectId}/createGitlabProject`;
-  return dispatch => {
+  return (dispatch, getState) => {
     dispatch(startLoading());
     axios
       .post(
@@ -106,7 +111,10 @@ const createGitlabProject = (projectId, name, namespace_id) => {
         dispatch(finishLoading());
       })
       .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
+        const errorCode = error.response && error.response.data.message;
+        const message = localize[langSelector(getState())][errorCode] || errorCode || error.message;
+        // const message = error.response ? error.response.data.status + ' ' + error.response.data.message : error.message;
+        dispatch(showNotification({ message, type: 'error' }));
         dispatch(createGitlabProjectFail());
         dispatch(finishLoading());
       });

@@ -27,7 +27,8 @@ class ProjectTimesheets extends React.Component {
     list: PropTypes.array,
     params: PropTypes.object,
     startingDay: PropTypes.object,
-    tempTimesheets: PropTypes.array
+    tempTimesheets: PropTypes.array,
+    users: PropTypes.arrayOf(PropTypes.object)
   };
 
   state = {
@@ -140,7 +141,7 @@ class ProjectTimesheets extends React.Component {
         });
         if (dayUserSheets && dayUserSheets.length) {
           const dayTime = dayUserSheets.reduce((a, b) => {
-            return a + parseFloat(b['spentTime']);
+            return a + parseFloat(b.spentTime);
           }, 0);
           timeSheets.push({
             onDate: moment(startingDay)
@@ -194,7 +195,7 @@ class ProjectTimesheets extends React.Component {
           if (maNotPushed && isThisWeek(el.onDate)) {
             res.push({
               typeId: el.typeId,
-              projectName: el.project ? el.project.name : 'Без проекта',
+              projectName: el.project ? el.project.name : localize[lang].WITHOUT_PROJECT,
               projectId: el.project ? el.project.id : 0,
               sprintId: null,
               sprint: null,
@@ -278,10 +279,12 @@ class ProjectTimesheets extends React.Component {
 
     const userRows = [];
     for (const user of Object.values(users)) {
+      const userName = getFullName(this.props.users.find(el => el.id === user.id));
       userRows.push([
         <UserRow
           key={`${user.id}-${startingDay}`}
           user={user}
+          userName={userName} //fix bug with names
           items={[
             ...user.tasks.map((task, index) => (
               <ActivityRow key={`${task.id}-${startingDay}-task-${index}`} task item={task} />
@@ -430,7 +433,8 @@ const mapStateToProps = state => ({
   tempTimesheets: state.Timesheets.tempTimesheets,
   dateBegin: state.Timesheets.dateBegin,
   dateEnd: state.Timesheets.dateEnd,
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  users: state.Project.project.users
 });
 
 const mapDispatchToProps = {

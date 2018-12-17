@@ -17,6 +17,7 @@ import { IconBroom } from '../Icons';
 import { VISOR } from '../../constants/Roles';
 import { getFullName } from '../../utils/NameLocalisation';
 import { storageType } from '../FiltrersManager/helpers';
+import { isOnlyDevOps } from '../../utils/isDevOps';
 
 const storage = storageType === 'local' ? localStorage : sessionStorage;
 
@@ -258,7 +259,7 @@ class AgileBoardFilter extends React.Component {
   };
 
   render() {
-    const { lang } = this.props;
+    const { lang, user, project } = this.props;
     const { isOpened } = this.state;
     const filterTags = this.state.allFilters.map(filter => {
       return (
@@ -302,17 +303,18 @@ class AgileBoardFilter extends React.Component {
               </div>
             )}
           </Col>
-          {!this.isVisor && (
-            <Col className={css.filterCol}>
-              <Button
-                onClick={this.props.openCreateTaskModal}
-                type="primary"
-                text={localize[lang].CREATE_TASK}
-                icon="IconPlus"
-                name="right"
-              />
-            </Col>
-          )}
+          {!this.isVisor &&
+            !isOnlyDevOps(user, project.id) && (
+              <Col className={css.filterCol}>
+                <Button
+                  onClick={this.props.openCreateTaskModal}
+                  type="primary"
+                  text={localize[lang].CREATE_TASK}
+                  icon="IconPlus"
+                  name="right"
+                />
+              </Col>
+            )}
           <Col className={css.filterCol}>
             <Button
               onClick={this.generateShareLink}

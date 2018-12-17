@@ -3,7 +3,7 @@ import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
-import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
+import { DELETE, GET, POST, REST_API } from '../constants/RestApi';
 import {
   defaultErrorHandler,
   withFinishLoading,
@@ -45,11 +45,11 @@ const getTaskFail = error => ({
   error: error
 });
 
-const postChangeFail = error => ({
-  type: TaskActions.TASK_CHANGE_REQUEST_FAIL,
-  closeHasError: false,
-  error: error
-});
+// const postChangeFail = error => ({
+//   type: TaskActions.TASK_CHANGE_REQUEST_FAIL,
+//   closeHasError: false,
+//   error: error
+// });
 
 const clearError = status => ({
   type: TaskActions.ERROR_CLEAR,
@@ -65,14 +65,10 @@ const successTaskChange = changedFields => ({
   changedFields
 });
 
-const requestTaskChangeUser = () => ({
-  type: TaskActions.TASK_CHANGE_REQUEST_SENT
-});
-
-const successTaskChangeUser = changedFields => ({
-  type: TaskActions.TASK_CHANGE_USER_SUCCESS,
-  changedFields
-});
+// const successTaskChangeUser = changedFields => ({
+//   type: TaskActions.TASK_CHANGE_USER_SUCCESS,
+//   changedFields
+// });
 
 const requestTaskLink = () => ({
   type: TaskActions.TASK_LINK_SENT
@@ -263,6 +259,7 @@ const getTaskHistory = (id, options) => {
   const URL = `${API_URL}/task/${id}/history`;
   return dispatch => {
     dispatch(startLoading());
+    dispatch(getTaskHistoryStart());
     axios
       .get(URL, {
         params: {
@@ -275,7 +272,7 @@ const getTaskHistory = (id, options) => {
         }
         dispatch(finishLoading());
       })
-      .catch(function(error) {
+      .catch(() => {
         defaultErrorHandler(dispatch);
         dispatch(finishLoading());
       });
@@ -304,21 +301,26 @@ const changeTask = (ChangedProperties, target, callback) => {
     return;
   }
   return dispatch => {
-    dispatch({
-      type: REST_API,
-      url: `/task/${ChangedProperties.id}`,
-      method: PUT,
-      body: ChangedProperties,
-      extra,
-      start: withStartLoading(requestTaskChange, true)(dispatch),
-      response: withFinishLoading(response => {
-        if (callback) {
-          callback();
+    const URL = `${API_URL}/task/${ChangedProperties.id}`;
+    dispatch(startLoading());
+    dispatch(requestTaskChange());
+    axios
+      .put(URL, ChangedProperties)
+      .then(res => {
+        if (res.data.length) {
+          res.data.forEach(task => dispatch(successTaskChange(task)));
+          if (callback) {
+            callback();
+          }
         }
-        return stopTaskEditing(target);
-      }, true)(dispatch),
-      error: defaultErrorHandler(dispatch(stopTaskEditing(target)))
-    });
+        dispatch(finishLoading());
+        stopTaskEditing(target);
+      })
+      .catch(() => {
+        defaultErrorHandler(dispatch);
+        stopTaskEditing(target);
+        dispatch(finishLoading());
+      });
   };
 };
 

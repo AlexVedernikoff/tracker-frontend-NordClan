@@ -13,6 +13,7 @@ import { showNotification } from '../../../../actions/Notifications';
 import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
 import localize from './externalUsersTableRow.json';
+import { getFirstName } from '../../../../utils/NameLocalisation';
 
 class ExternalUsersTableRow extends Component {
   constructor(props) {
@@ -20,7 +21,8 @@ class ExternalUsersTableRow extends Component {
     this.state = {
       isEditing: false,
       tempValues: {},
-      isValid: {}
+      isValid: {},
+      isLoading: false
     };
     const { lang } = props;
     this.validation = {
@@ -67,9 +69,14 @@ class ExternalUsersTableRow extends Component {
       }
     };
   }
+  componentDidMount() {
+    ReactTooltip.rebuild();
+  }
+
   componentDidUpdate() {
     ReactTooltip.rebuild();
   }
+
   onEditValues = (fieldName, type) => value => {
     this.setState(state => ({
       tempValues: {
@@ -82,6 +89,7 @@ class ExternalUsersTableRow extends Component {
       }
     }));
   };
+
   onValidate = (value, type) => {
     switch (type) {
       case 'name': {
@@ -95,8 +103,9 @@ class ExternalUsersTableRow extends Component {
         return false;
     }
   };
+
   saveEditChanges = () => {
-    const id = this.props.exUser.id;
+    const { id } = this.props.exUser;
     const changedFields = this.state.tempValues;
     if (!Object.keys(changedFields).length) {
       this.setState(
@@ -118,16 +127,24 @@ class ExternalUsersTableRow extends Component {
     this.setState(
       {
         isEditing: false,
+        isLoading: true,
         changedFields: {}
       },
       () => {
         ReactTooltip.hide();
-        this.props.editExternalUser(id, {
-          ...changedFields
-        });
+        this.props
+          .editExternalUser(id, {
+            ...changedFields
+          })
+          .then(() => {
+            this.setState({
+              isLoading: false
+            });
+          });
       }
     );
   };
+
   undoChanges = () => {
     this.setState(
       {
@@ -137,9 +154,11 @@ class ExternalUsersTableRow extends Component {
       () => ReactTooltip.hide()
     );
   };
+
   deleteUser = () => {
     this.props.deleteExternalUser(this.props.exUser.id);
   };
+
   startEdit = () => {
     this.setState(state => ({ isEditing: !state.isEditing }), () => ReactTooltip.hide());
   };
@@ -147,51 +166,53 @@ class ExternalUsersTableRow extends Component {
   startRefresh = () => {
     this.props.refreshExternalUserLink(this.props.exUser);
   };
+
   render() {
-    const { lang } = this.props;
+    const { lang, exUser } = this.props;
+    const { isEditing, isValid } = this.state;
     return (
       <div className={css.TableRow}>
         <div className={classnames(css.TableCell, css.TableCellName)}>
           <ExternalUserInput
-            value={this.props.exUser.firstNameRu}
-            isEditing={this.state.isEditing}
+            value={exUser.firstNameRu}
+            isEditing={isEditing}
             onValueChange={this.onEditValues('firstNameRu', 'name')}
-            isValid={this.state.isValid.firstNameRu}
+            isValid={isValid.firstNameRu}
           />
         </div>
         <div className={classnames(css.TableCell, css.TableCellLogin)}>
           <ExternalUserInput
-            value={this.props.exUser.login}
-            isEditing={this.state.isEditing}
+            value={exUser.login}
+            isEditing={isEditing}
             onValueChange={this.onEditValues('login', 'email')}
-            isValid={this.state.isValid.login}
+            isValid={isValid.login}
           />
         </div>
         <div className={classnames(css.TableCell, css.TableCellDesc)}>
           <ExternalUserInput
-            value={this.props.exUser.description}
-            isEditing={this.state.isEditing}
+            value={exUser.description}
+            isEditing={isEditing}
             onValueChange={this.onEditValues('description')}
-            isValid={this.state.isValid.description}
+            isValid={isValid.description}
           />
         </div>
         <div className={classnames(css.TableCell, css.TableCellActivity)}>
           <ExternalUserActivity
-            checked={!!this.props.exUser.isActive}
-            isEditing={this.state.isEditing}
+            checked={!!exUser.isActive}
+            isEditing={isEditing}
+            isLoading={this.state.isLoading}
             onValueChange={this.onEditValues('isActive')}
           />
         </div>
         <div className={classnames(css.TableCell, css.TableCellDate)}>
           <ExternalUserExpiredDate
-            placeholder={localize[lang].ENTER_DATE}
-            value={this.props.exUser.expiredDate}
-            isEditing={this.state.isEditing}
+            value={exUser.expiredDate}
+            isEditing={isEditing}
             onValueChange={this.onEditValues('expiredDate')}
           />
         </div>
         <div className={css.TableCellEdit}>
-          {this.state.isEditing ? (
+          {isEditing ? (
             [
               <IconCheck
                 className={css.icon}
@@ -212,15 +233,15 @@ class ExternalUsersTableRow extends Component {
         <div className={css.TableCellDelete}>
           <ExternalUserRefreshLink
             onConfirm={this.startRefresh}
-            data-tip={localize[lang].SEND}
-            username={this.props.exUser.firstNameRu}
+            dataTip={localize[lang].REFRESH}
+            username={getFirstName(exUser)}
             text={localize[lang].CONFIRM_REFRESH_LINK}
           />
         </div>
         <div className={css.TableCellDelete}>
           <ExternalUserDelete
             onDelete={this.deleteUser}
-            username={this.props.exUser.firstNameRu}
+            username={getFirstName(exUser)}
             text={localize[lang].CONFIRM_DELETE_USER}
             dataTip={localize[lang].DELETE}
           />
@@ -233,6 +254,7 @@ ExternalUsersTableRow.propTypes = {
   deleteExternalUser: PropTypes.func,
   editExternalUser: PropTypes.func,
   exUser: PropTypes.object,
+  lang: PropTypes.string,
   refreshExternalUserLink: PropTypes.func,
   showNotification: PropTypes.func
 };

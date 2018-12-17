@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import uniqBy from 'lodash/uniqBy';
+import { uniqBy, debounce } from 'lodash';
+import ReactTooltip from 'react-tooltip';
 
 import TaskRow from '../../../components/TaskRow';
 import InlineHolder from '../../../components/InlineHolder';
@@ -28,6 +29,7 @@ import { getFullName, getDictionaryName } from '../../../utils/NameLocalisation'
 import { openCreateTaskModal } from '../../../actions/Project';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { getLocalizedTaskTypes, getLocalizedTaskStatuses } from '../../../selectors/dictionaries';
+import getSortedSprints from '../../../selectors/sprints';
 import { history } from '../../../History';
 import getTasks from '../../../actions/Tasks';
 import * as css from './TaskList.scss';
@@ -55,8 +57,11 @@ class TaskList extends Component {
       activePage: 1,
       isPerformerModalOpen: false,
       isSprintModalOpen: false,
+      nameInputValue: null,
       ...this.getQueryFilters()
     };
+
+    this.debouncedSubmitNameFilter = debounce(this.submitNameFilter, 1000);
   }
 
   componentDidMount() {
@@ -73,6 +78,10 @@ class TaskList extends Component {
     if (this.props.lastCreatedTask !== nextProps.lastCreatedTask && nextProps.project.id) {
       this.loadTasks();
     }
+  }
+
+  componentWillUnmount() {
+    this.debouncedSubmitNameFilter.cancel();
   }
 
   translateToNumIfNeeded = value => {
@@ -261,7 +270,6 @@ class TaskList extends Component {
         }
 
         this.changeUrl(changedFilters);
-
         return {
           activePage:
             state.changedFilters[name] && state.changedFilters[name].length !== filterValue.length
@@ -275,9 +283,31 @@ class TaskList extends Component {
     );
   };
 
-  changeNameFilter = event => {
-    const value = event.target.value;
+  clearFilter = name => {
+    this.setState(
+      state => {
+        if (state.changedFilters[name]) {
+          const filters = state.changedFilters;
+          delete filters[name];
+          return { changedFilters: filters };
+        }
+      },
+      this.loadTasks,
+      this.updateFilterList
+    );
+  };
 
+  changeNameFilter = event => {
+    const { value, name } = event.target;
+    this.setState({ nameInputValue: value });
+    if (name === 'closedInput') {
+      this.debouncedSubmitNameFilter(value);
+    } else {
+      this.submitNameFilter(value);
+    }
+  };
+
+  submitNameFilter = value => {
     this.setState(state => {
       const changedFilters = state.changedFilters;
       if (value) {
@@ -288,9 +318,11 @@ class TaskList extends Component {
 
       this.changeUrl(changedFilters);
 
+      const nameInputValue = changedFilters.name ? changedFilters.name : '';
       return {
         activePage: state.filterByName !== value ? 1 : state.activePage,
-        changedFilters
+        changedFilters,
+        nameInputValue
       };
     }, this.loadTasks);
   };
@@ -326,10 +358,12 @@ class TaskList extends Component {
   };
 
   loadTasks = () => {
-    this.props.getTasks(
-      { ...this.state.changedFilters, allStatuses: true, currentPage: this.state.activePage, pageSize: 25 },
-      true
-    );
+    const { changedFilters } = this.state;
+    const params = { ...changedFilters, allStatuses: true, currentPage: this.state.activePage, pageSize: 25 };
+    if (changedFilters.tags) {
+      params.tags = changedFilters.tags.join(',');
+    }
+    this.props.getTasks(params, true);
     this.updateFilterList();
   };
 
@@ -349,6 +383,7 @@ class TaskList extends Component {
   clearFilters = () => {
     this.setState(
       {
+        nameInputValue: '',
         changedFilters: {
           projectId: this.props.params.projectId
         }
@@ -366,8 +401,8 @@ class TaskList extends Component {
   };
 
   handleDayChange(value, name) {
-    this.setState(() => {
-      const changedFilters = { ...this.state.changedFilters };
+    this.setState(state => {
+      const changedFilters = { ...state.changedFilters };
 
       if (value) {
         changedFilters[name] = this.formatDate(value);
@@ -377,7 +412,7 @@ class TaskList extends Component {
 
       this.changeUrl(changedFilters);
 
-      return { changedFilters };
+      return { ...state, changedFilters };
     }, this.loadTasks);
   }
 
@@ -526,7 +561,10 @@ class TaskList extends Component {
 
   formatDate = date => date && moment(date).format(dateFormat);
 
-  onChangePrioritiesFilter = option => this.changeSingleFilter(option, 'prioritiesId');
+  onChangePrioritiesFilter = option => {
+    ReactTooltip.hide();
+    return this.changeSingleFilter(option, 'prioritiesId');
+  };
   onChangeTypeFilter = options => this.changeMultiFilter(options, 'typeId');
   onChangeStatusFilter = options => this.changeMultiFilter(options, 'statusId');
   onChangeAuthorFilter = option => this.changeSingleFilter(option, 'authorId');
@@ -537,7 +575,7 @@ class TaskList extends Component {
   onChangeTagFilter = options => this.changeMultiFilter(options, 'tags');
 
   render() {
-    const { tasksList: tasks, statuses, taskTypes, project, isReceiving, lang } = this.props;
+    const { tasksList: tasks, statuses, taskTypes, project, isReceiving, lang, sprints } = this.props;
     const filterTags = this.state.allFilters.map(filter => {
       return (
         <Tag
@@ -549,8 +587,13 @@ class TaskList extends Component {
         />
       );
     });
+    const { prioritiesId, typeId, statusId, sprintId, performerId, authorId } = this.state.changedFilters;
 
-    const { prioritiesId, typeId, statusId, sprintId, performerId, authorId, tags } = this.state.changedFilters;
+    let tags = this.state.changedFilters.tags;
+    if (tags && Array.isArray(tags)) {
+      tags = tags.map(el => ({ label: el, value: el }));
+    }
+
     const { isOpened } = this.state;
 
     const statusOptions = this.createOptions(statuses);
@@ -592,9 +635,10 @@ class TaskList extends Component {
                     <Priority onChange={this.onChangePrioritiesFilter} priority={prioritiesId} canEdit />
                   </div>
                   <Input
+                    name="openedInput"
                     className={css.input}
                     placeholder={localize[lang].ENTER_TITLE_TASK}
-                    value={this.state.changedFilters.name || ''}
+                    value={this.state.nameInputValue || ''}
                     onChange={this.changeNameFilter}
                   />
                 </Col>
@@ -621,13 +665,18 @@ class TaskList extends Component {
               </Row>
               <Row className={css.search} top="xs">
                 <Col xs={12} sm={3}>
-                  <SprintSelector
-                    value={sprintId}
-                    sprints={project.sprints}
-                    onChange={this.onChangeSprintFilter}
-                    multi
-                    useId
-                  />
+                  <div className={css.sprintSelector}>
+                    <SprintSelector
+                      multi
+                      searchable
+                      clearable
+                      value={sprintId}
+                      onChange={this.onChangeSprintFilter}
+                      options={sprints}
+                      useId
+                      taskListClass
+                    />
+                  </div>
                 </Col>
                 <Col xs={12} sm={3}>
                   <SelectDropdown
@@ -644,7 +693,12 @@ class TaskList extends Component {
                   <PerformerFilter onPerformerSelect={this.onChangePerformerFilter} selectedPerformerId={performerId} />
                 </Col>
                 <Col xs={12} sm={3}>
-                  <TagsFilter filterFor={'task'} onTagSelect={this.onChangeTagFilter} filterTags={tags} />
+                  <TagsFilter
+                    filterFor={'task'}
+                    onTagSelect={this.onChangeTagFilter}
+                    filterTags={tags}
+                    onClear={() => this.clearFilter('tags')}
+                  />
                 </Col>
               </Row>
               <Row className={css.search}>
@@ -658,6 +712,8 @@ class TaskList extends Component {
                     clearAllText={localize[lang].CLEAR_ALL}
                     value={statusId}
                     options={statusOptions}
+                    canClear
+                    onClear={() => this.clearFilter('statusId')}
                     onChange={this.onChangeStatusFilter}
                   />
                 </Col>
@@ -671,6 +727,8 @@ class TaskList extends Component {
                     clearAllText={localize[lang].CLEAR_ALL}
                     value={typeId}
                     options={typeOptions}
+                    canClear
+                    onClear={() => this.clearFilter('typeId')}
                     onChange={this.onChangeTypeFilter}
                   />
                 </Col>
@@ -712,7 +770,22 @@ class TaskList extends Component {
             </div>
             <Row className={css.search} top="xs">
               <Col xs={12} sm={8}>
-                {filterTags.length ? filterTags : <span onClick={this.toggleOpen}>{localize[lang].NOT_SELECTED}</span>}
+                {filterTags.length ? (
+                  filterTags
+                ) : (
+                  <Col xs={12} sm={12} className={css.withPriority}>
+                    <div className={css.priorityFilter}>
+                      <Priority onChange={this.onChangePrioritiesFilter} priority={prioritiesId} canEdit />
+                    </div>
+                    <Input
+                      name="closedInput"
+                      className={css.input}
+                      placeholder={localize[lang].ENTER_TITLE_TASK}
+                      value={this.state.nameInputValue || ''}
+                      onChange={this.changeNameFilter}
+                    />
+                  </Col>
+                )}
               </Col>
               <Col xs={6} sm={2}>
                 <Button
@@ -749,7 +822,7 @@ class TaskList extends Component {
                   isExternal={isExternal}
                 />
               ))}
-          {!isLoading && tasks.length === 0 ? <div className={css.notFound}>Ничего не найдено</div> : null}
+          {!isLoading && tasks.length === 0 ? <div className={css.notFound}>{localize[lang].NOTHING_FOUND}</div> : null}
           {this.props.pagesCount > 1 ? (
             <Pagination
               itemsCount={this.props.pagesCount}
@@ -765,6 +838,7 @@ class TaskList extends Component {
             onClose={this.closePerformerModal}
             title={localize[lang].EDIT_TASK_PERFORMER}
             users={this.getUsers()}
+            id={this.state.changedTask.id}
           />
         ) : null}
         {this.state.isSprintModalOpen ? (
@@ -804,6 +878,7 @@ TaskList.propTypes = {
   params: PropTypes.object,
   project: PropTypes.object.isRequired,
   setFilterValue: PropTypes.func,
+  sprints: PropTypes.arrayOf(PropTypes.object),
   startTaskEditing: PropTypes.func.isRequired,
   statuses: PropTypes.array,
   taskTypes: PropTypes.array,
@@ -821,7 +896,8 @@ const mapStateToProps = state => ({
   project: state.Project.project,
   statuses: getLocalizedTaskStatuses(state),
   taskTypes: getLocalizedTaskTypes(state),
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  sprints: getSortedSprints(state)
 });
 
 const mapDispatchToProps = { getTasks, startTaskEditing, changeTask, openCreateTaskModal };

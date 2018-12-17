@@ -67,8 +67,8 @@ class Participant extends React.Component {
   };
 
   unbindUser = () => {
-    const { unbindUserToProject, projectId, user, isExternal } = this.props;
-    this.setState({ isConfirmDeleteOpen: false }, () => unbindUserToProject(projectId, user.id, isExternal));
+    const { projectId, user, isExternal } = this.props;
+    this.setState({ isConfirmDeleteOpen: false }, () => this.props.unbindUserToProject(projectId, user.id, isExternal));
   };
 
   setRoles = prop => {
@@ -93,7 +93,7 @@ class Participant extends React.Component {
   };
 
   render() {
-    const { user, isExternal, lang, ...other } = this.props;
+    const { user, isExternal, lang } = this.props;
 
     const roles = user.roles;
     return (
@@ -145,7 +145,7 @@ class Participant extends React.Component {
           <ConfirmModal
             isOpen
             contentLabel="modal"
-            text={`${localize[lang].DELETE} <${getFullName(user)}>?`}
+            text={`${localize[lang].DELETE} ${getFullName(user)}?`}
             lang={lang}
             onCancel={this.handleCloseConfirmDelete}
             onConfirm={this.unbindUser}
@@ -159,10 +159,11 @@ class Participant extends React.Component {
 
 Participant.propTypes = {
   bindUserToProject: PropTypes.func.isRequired,
-  showNotification: PropTypes.func,
-  projectId: PropTypes.number,
-  isProjectAdmin: PropTypes.bool,
   isExternal: PropTypes.bool,
+  isProjectAdmin: PropTypes.bool,
+  lang: PropTypes.string,
+  projectId: PropTypes.number,
+  showNotification: PropTypes.func,
   unbindUserToProject: PropTypes.func.isRequired,
   user: PropTypes.object
 };

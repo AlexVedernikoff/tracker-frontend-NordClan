@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { getSprintMarkersClass } from '../../utils/markers';
 import OptionsModal from '../OptionsModal';
+import localize from './SprintModal.json';
 
 const getOptions = sprints => {
   let options = [];
@@ -23,11 +24,11 @@ const getOptions = sprints => {
   return options;
 };
 
-const SprintModal = ({ title, onClose, onChoose, sprints, defaultSprint }) => (
+const SprintModal = ({ title, onClose, onChoose, sprints, defaultSprint, lang }) => (
   <OptionsModal
     options={getOptions(sprints)}
     defaultOption={defaultSprint}
-    inputPlaceholder="Введите название спринта..."
+    inputPlaceholder={localize[lang].ENTER_SPRINT_NAME}
     onClose={onClose}
     onChoose={onChoose}
     title={title}
@@ -36,6 +37,7 @@ const SprintModal = ({ title, onClose, onChoose, sprints, defaultSprint }) => (
 
 SprintModal.propTypes = {
   defaultSprint: PropTypes.number,
+  lang: PropTypes.string,
   onChoose: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   sprints: PropTypes.array,

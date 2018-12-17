@@ -9,14 +9,14 @@ import * as css from './CreateMilestoneModal.scss';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { createMilestone } from '../../../../actions/Milestone';
-import Select from 'react-select';
+import SelectDropdown from '../../../../components/SelectDropdown';
 import localize from './CreateMilestoneModal.json';
-import { getDictionaryName } from '../../../../utils/NameLocalisation';
-import { getLocalizedMilestoneTypes } from '../../../../selectors/dictionaries';
+import { getMilestoneTypes } from '../../../../selectors/dictionaries';
 
 class CreateMilestoneModal extends Component {
   static propTypes = {
     createMilestone: PropTypes.func,
+    lang: PropTypes.string,
     milestoneTypes: PropTypes.array,
     onClose: PropTypes.func,
     projectId: PropTypes.number
@@ -28,7 +28,8 @@ class CreateMilestoneModal extends Component {
     this.state = {
       date: undefined,
       name: '',
-      typeId: 1
+      typeId: 1,
+      isValidDate: false
     };
   }
 
@@ -37,23 +38,22 @@ class CreateMilestoneModal extends Component {
   };
 
   handleDayChange = date => {
-    this.setState({ date: date ? moment(date).format('YYYY-MM-DD') : '' });
+    this.setState({ date: date ? moment(date).format('YYYY-MM-DD') : '', isValidDate: true });
   };
 
   changeStatus = status => {
-    this.setState({ typeId: status.value });
+    if (status) {
+      this.setState({ typeId: status.value });
+    }
   };
 
   checkNullInputs = () => {
-    return this.state.name.trim() && this.state.date && this.state.typeId;
+    return this.state.name.trim() && this.state.date && this.state.isValidDate && this.state.typeId;
   };
 
   dateInputHandler = e => {
     const inputValue = e.target.value;
-    const isValidValue = moment(inputValue, 'DD.MM.YYYY', true).isValid();
-    if (!isValidValue && this.state.date) {
-      this.setState({ date: '' });
-    }
+    this.setState({ isValidDate: moment(inputValue, 'DD.MM.YYYY', true).isValid() });
   };
 
   createMilestone = e => {
@@ -61,6 +61,10 @@ class CreateMilestoneModal extends Component {
     this.props.onClose();
     this.props.createMilestone(this.state.name.trim(), this.props.projectId, this.state.date, this.state.typeId);
   };
+
+  onClear() {
+    this.setState({ typeId: 1 });
+  }
 
   render() {
     const formattedDay = this.state.date ? moment(this.state.date).format('DD.MM.YYYY') : '';
@@ -70,7 +74,11 @@ class CreateMilestoneModal extends Component {
       secondCol: 8
     };
     const { milestoneTypes, lang } = this.props;
-    const options = milestoneTypes.map(type => ({ value: type.id, label: getDictionaryName(type) }));
+    const options = milestoneTypes.map(type => ({
+      value: type.id,
+      label: localize[lang][type.codename]
+    }));
+
     return (
       <Modal isOpen contentLabel="modal" onRequestClose={this.props.onClose}>
         <div>
@@ -99,7 +107,7 @@ class CreateMilestoneModal extends Component {
                 <p>{localize[lang].MILESTONE_TYPE}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Select
+                <SelectDropdown
                   value={this.state.typeId}
                   options={options}
                   multi={false}
@@ -109,6 +117,8 @@ class CreateMilestoneModal extends Component {
                   placeholder={localize[lang].MILESTONE_TYPE}
                   noResultsText={localize[lang].NO_RESUTLS}
                   clearable={false}
+                  onClear={() => this.onClear()}
+                  canClear
                 />
               </Col>
             </Row>
@@ -146,7 +156,7 @@ class CreateMilestoneModal extends Component {
 
 const mapStateToProps = state => ({
   projectId: state.Project.project.id,
-  milestoneTypes: getLocalizedMilestoneTypes(state) || [],
+  milestoneTypes: getMilestoneTypes(state) || [],
   lang: state.Localize.lang
 });
 

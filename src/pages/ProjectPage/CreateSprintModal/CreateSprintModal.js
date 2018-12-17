@@ -233,6 +233,7 @@ class CreateSprintModal extends Component {
 
 CreateSprintModal.propTypes = {
   createSprint: PropTypes.func.isRequired,
+  lang: PropTypes.string,
   onClose: PropTypes.func.isRequired,
   project: PropTypes.object.isRequired,
   projectId: PropTypes.number,
@@ -250,4 +251,7 @@ const mapDispatchToProps = {
   createSprint
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateSprintModal);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CreateSprintModal);

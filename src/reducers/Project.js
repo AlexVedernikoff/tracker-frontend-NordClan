@@ -186,7 +186,7 @@ export default function Project(state = InitialState, action) {
         ...state,
         project: {
           ...state.project,
-          externalUsers: action.users
+          externalUsers: action.users || []
         }
       };
     case ProjectActions.PROJECT_SPRINTS_RECEIVE_START:
@@ -217,6 +217,7 @@ export default function Project(state = InitialState, action) {
       };
 
     case ProjectActions.PROJECT_CHANGE_SUCCESS:
+      if (state.project.id !== action.changedFields.id) return state;
       return {
         ...state,
         project: {
@@ -239,6 +240,7 @@ export default function Project(state = InitialState, action) {
         ...state,
         project: {
           ...state.project,
+          gitlabProjectIds: [...state.project.gitlabProjectIds, action.project.id],
           gitlabProjects: [...state.project.gitlabProjects, action.project]
         }
       };

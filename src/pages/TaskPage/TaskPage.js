@@ -7,6 +7,7 @@ import includes from 'lodash/includes';
 
 import TaskHeader from './TaskHeader';
 import Details from './Details';
+import ScrollTop from '../../components/ScrollTop';
 import RelatedTasks from './RelatedTasks';
 import TaskGitlabBranch from './TaskGitlabBranch';
 import Attachments from '../../components/Attachments';
@@ -19,8 +20,8 @@ import GoBackPanel from '../../components/GoBackPanel';
 import CreateTaskModal from '../../components/CreateTaskModal';
 import HttpError from '../../components/HttpError';
 import { history } from '../../History';
-import { VISOR, EXTERNAL_USER, ADMIN } from '../../constants/Roles';
-import Title, { flushTitle } from 'react-title-component';
+import { VISOR, EXTERNAL_USER } from '../../constants/Roles';
+import Title from 'react-title-component';
 
 import * as TaskStatuses from '../../constants/TaskStatuses';
 
@@ -41,6 +42,9 @@ import { getProjectInfo, openCreateTaskModal, openCreateChildTaskModal } from '.
 import * as css from './TaskPage.scss';
 import { getRoles } from '../../actions/Dictionaries';
 import localize from './taskPage.json';
+import { checkIsAdminInProject } from '../../utils/isAdmin';
+import { isOnlyDevOps } from '../../utils/isDevOps';
+import { getDevOpsUsers } from '../../actions/Users';
 
 class TaskPage extends Component {
   static propTypes = {
@@ -48,6 +52,8 @@ class TaskPage extends Component {
     changeTask: PropTypes.func.isRequired,
     children: PropTypes.object,
     clearError: PropTypes.func,
+    devOpsUsers: PropTypes.array,
+    getDevOpsUsers: PropTypes.func,
     getProjectInfo: PropTypes.func.isRequired,
     getRoles: PropTypes.func.isRequired,
     getTask: PropTypes.func.isRequired,
@@ -56,6 +62,7 @@ class TaskPage extends Component {
     hasError: PropTypes.bool,
     isCreateChildTaskModalOpen: PropTypes.bool,
     isCreateTaskModalOpen: PropTypes.bool,
+    lang: PropTypes.string,
     linkTask: PropTypes.func.isRequired,
     location: PropTypes.object,
     openCreateChildTaskModal: PropTypes.func.isRequired,
@@ -97,21 +104,10 @@ class TaskPage extends Component {
     this.props.getTask(this.props.params.taskId);
     this.props.getProjectInfo(this.props.params.projectId);
     this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave);
-  }
-
-  routerWillLeave = nextLocation => {
-    if (this.props.DescriptionIsEditing) {
-      if (this.state.leaveConfirmed) return true;
-      this.setState({
-        isLeaveConfirmModalOpen: true,
-        nextLocation: nextLocation.pathname,
-        currentLocation: this.props.location.pathname
-      });
-      return false;
-    } else {
-      return true;
+    if (!this.props.devOpsUsers) {
+      this.props.getDevOpsUsers();
     }
-  };
+  }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.params.closeHasError !== this.state.closeHasError) {
@@ -127,6 +123,20 @@ class TaskPage extends Component {
       this.props.getProjectInfo(this.props.params.projectId);
     }
   }
+
+  routerWillLeave = nextLocation => {
+    if (this.props.DescriptionIsEditing) {
+      if (this.state.leaveConfirmed) return true;
+      this.setState({
+        isLeaveConfirmModalOpen: true,
+        nextLocation: nextLocation.pathname,
+        currentLocation: this.props.location.pathname
+      });
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   linkTask = linkedTaskId => {
     this.props.linkTask(this.props.params.taskId, linkedTaskId.toString());
@@ -241,16 +251,9 @@ class TaskPage extends Component {
     this.handleCloseCancelSubTaskModal();
   };
 
-  checkIsAdminInProject = () => {
-    return this.props.user.projectsRoles
-      ? this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1 ||
-          this.props.user.globalRole === ADMIN
-      : false;
-  };
-
   render() {
-    const { globalRole, task, params, lang } = this.props;
-    const isProjectAdmin = this.checkIsAdminInProject();
+    const { globalRole, task, params, lang, user, project } = this.props;
+    const isProjectAdmin = checkIsAdminInProject(user, project.id);
     const isVisor = globalRole === VISOR;
     const isExternal = globalRole === EXTERNAL_USER;
     const projectUrl = task.project ? `/projects/${task.project.id}` : '/';
@@ -335,7 +338,7 @@ class TaskPage extends Component {
                 onChange={this.props.changeTask}
                 canEdit={task.statusId !== TaskStatuses.CLOSED}
               />
-              {!isVisor ? (
+              {!isVisor && !isOnlyDevOps(user, project.id) ? (
                 <button className={css.addTask} onClick={this.props.openCreateTaskModal}>
                   <span>{localize[lang].CREATE_NEW_TASK}</span>
                   <IconPlus style={{ width: 16, height: 16 }} />
@@ -417,6 +420,7 @@ class TaskPage extends Component {
             notification
           />
         ) : null}
+        <ScrollTop />
         <GoBackPanel defaultPreviousUrl={projectUrl} parentRef={this.refs.taskPage} />
       </div>
     );
@@ -424,6 +428,7 @@ class TaskPage extends Component {
 }
 
 const mapStateToProps = state => ({
+  devOpsUsers: state.UserList.devOpsUsers,
   project: state.Project.project,
   projectTasks: state.Tasks.tasks,
   task: state.Task.task,
@@ -443,6 +448,7 @@ const mapDispatchToProps = {
   clearError,
   getTasks,
   getProjectInfo,
+  getDevOpsUsers,
   linkTask,
   openCreateTaskModal,
   openCreateChildTaskModal,

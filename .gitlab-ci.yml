@@ -32,11 +32,8 @@ build_fe:
     when: on_success
     paths:
       - build/
-  only:
-    - develop
-    - test
-    - master
-    - feature/ci
+  tags:
+   - docker
 
 build_docker_fe:
   image: docker:stable
@@ -44,11 +41,8 @@ build_docker_fe:
   script:
     - cp -f ci/Dockerfile.fe ./
     - docker build --rm --tag $DOCKER_PREFIX/fe:$TAG -f Dockerfile.fe .
-  only:
-    - develop
-    - test
-    - master
-    - feature/ci
+  tags:
+   - docker
 
 release:
   image: docker:stable
@@ -58,11 +52,8 @@ release:
     - docker push $DOCKER_PREFIX/fe:$TAG
     - docker push $DOCKER_PREFIX/fe:$CI_SHORT_REF_NAME
     - docker rmi $DOCKER_PREFIX/fe:$CI_SHORT_REF_NAME
-  only:
-    - develop
-    - test
-    - master
-    - feature/ci
+  tags:
+   - docker
 
 deploy_to_dev:
   image: dr.simbirsoft1.com/library/ansible:2.4
@@ -85,6 +76,8 @@ deploy_to_dev:
   environment:
     name: dev
     url: https://simtrack-dev.simbirsoft/
+  tags:
+   - docker
 
 deploy_to_test:
   image: dr.simbirsoft1.com/library/ansible:2.4
@@ -108,6 +101,8 @@ deploy_to_test:
   environment:
     name: test
     url: https://simtrack-test.simbirsoft/
+  tags:
+   - docker
 
 deploy_to_prod:
   image: dr.simbirsoft1.com/library/ansible:2.4
@@ -131,3 +126,29 @@ deploy_to_prod:
   environment:
     name: prod
     url: https://simtrack.simbirsoft/
+  tags:
+   - docker
+
+deploy_to_custom:
+  image: dr.simbirsoft1.com/library/ansible:2.4
+  stage: deploy
+  variables:
+    CURRENT_DEPLOYMENT_KEY: "$DEV_DEPLOYMENT_KEY"
+    CURRENT_DEPLOYMENT_ENV: "custom"
+  script:
+    - mkdir -p ~/.ssh/
+    - echo -e "Host *\n\rStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - echo "$CURRENT_DEPLOYMENT_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - eval $(ssh-agent -s)
+    - ssh-add ~/.ssh/id_rsa
+    - git clone $DEPLOYMENT_REPO ~/deploy
+    - cd ~/deploy
+    - ansible-playbook -i environments/${CURRENT_DEPLOYMENT_ENV}/inventory deploy.yaml --extra-vars "fe_version=$TAG be_version=$CI_SHORT_REF_NAME"
+  when: manual
+  environment:
+    name: custom
+    url: http://simtrack-custom.simbirsoft/
+  tags:
+   - docker    
+

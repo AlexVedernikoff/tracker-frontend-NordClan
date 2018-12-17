@@ -5,10 +5,13 @@ import { BACKLOG_ID } from '../constants/Sprint';
 import { history } from '../History';
 import { showNotification } from './Notifications';
 import { startLoading, finishLoading } from './Loading';
-import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
+import { POST, REST_API } from '../constants/RestApi';
 import getPlanningTasks from './PlanningTasks';
 import { getTask } from './Task';
 import { withFinishLoading, withStartLoading, withdefaultExtra } from './Common';
+import { langSelector } from '../selectors/Localize';
+
+import localize from './Project.i18n.json';
 
 const gettingProjectInfoStart = () => ({
   type: ProjectActions.PROJECT_INFO_RECEIVE_START
@@ -389,7 +392,7 @@ const changeProject = (changedProperties, target) => {
 
   const URL = `${API_URL}/project/${changedProperties.id}`;
 
-  return dispatch => {
+  return (dispatch, getState) => {
     dispatch(startProjectChange());
     dispatch(startLoading());
 
@@ -408,7 +411,10 @@ const changeProject = (changedProperties, target) => {
         if (error.response.data.name === 'ValidationError') {
           dispatch(projectChangeFailValidation(error.response.data));
         } else {
-          dispatch(showNotification({ message: error.message, type: 'error' }));
+          const errorCode = error.response.data.message;
+          const message = localize[langSelector(getState())][errorCode] || errorCode || error.message;
+
+          dispatch(showNotification({ message, type: 'error' }));
         }
         dispatch(finishLoading());
       });
@@ -429,7 +435,7 @@ const createTask = (task, openTaskPage, callee) => {
     dispatch(startLoading());
     dispatch(createTaskRequestStart());
 
-    axios
+    return axios
       .post(URL, task, {
         withCredentials: true
       })
@@ -448,6 +454,7 @@ const createTask = (task, openTaskPage, callee) => {
           if (openTaskPage) {
             history.push(`/projects/${task.projectId}/tasks/${response.data.id}`);
           }
+          return response.data.id;
         }
         dispatch(finishLoading());
       })
@@ -487,20 +494,6 @@ const getProjectHistory = (id, options) => {
         dispatch(finishLoading());
         dispatch(showNotification({ message: error.message, type: 'error' }));
       });
-  };
-};
-
-export const getPortfolios = (name = '') => {
-  return dispatch => {
-    return axios
-      .get(`${API_URL}/portfolio`, { params: { name } }, { withCredentials: true })
-      .then(response => response.data.data)
-      .then(portfolios => ({
-        options: portfolios.map(portfolio => ({
-          label: portfolio.name,
-          value: portfolio.id
-        }))
-      }));
   };
 };
 
