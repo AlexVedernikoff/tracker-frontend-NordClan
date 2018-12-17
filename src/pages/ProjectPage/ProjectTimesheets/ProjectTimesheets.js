@@ -202,7 +202,10 @@ class ProjectTimesheets extends React.Component {
     const tasks = [];
     // Создание массива таймшитов по magic activities
     const magicActivities = list.length ? this.getMagicActivities() : [];
-    magicActivities.filter(activity => activity.userId === userId).forEach(element => {
+    magicActivities.forEach(element => {
+      if (element.userId !== userId) {
+        return;
+      }
       const timeSheets = [];
       for (let index = 0; index < 7; index++) {
         const timesheet = find(list, tsh => {
