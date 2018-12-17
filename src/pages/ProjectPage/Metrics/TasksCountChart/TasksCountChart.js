@@ -7,7 +7,7 @@ import getColor from '../../../../utils/Colors';
 import localize from './TasksCountChart.json';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { dataLabelsPlugin } from '../../../../utils/Charts';
+import { dataLabelsPlugin, defaultTimeDisplayFormats } from '../../../../utils/Charts';
 import { makeLine, transformMetrics } from '../../../../utils/chartMetrics';
 
 class TasksCountChart extends Component {
@@ -52,9 +52,7 @@ class TasksCountChart extends Component {
           {
             type: 'time',
             time: {
-              displayFormats: {
-                day: 'D MMM'
-              },
+              displayFormats: defaultTimeDisplayFormats,
               tooltipFormat: 'DD.MM.YYYY',
               locale: moment.locale(localize[this.props.lang].LANG)
             },
