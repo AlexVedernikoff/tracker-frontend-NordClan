@@ -43,7 +43,7 @@ class SprintEditModal extends Component {
       this.state.sprint.sprintName.length &&
       this.state.sprint.budget.length &&
       this.state.sprint.riskBudget.length &&
-      this.state.sprint.qaPercent
+      this.state.sprint.qaPercent !== ''
     );
   };
 
