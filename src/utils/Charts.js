@@ -76,6 +76,11 @@ const chartDefaultOptions = {
   }
 };
 
+const defaultTimeDisplayFormats = {
+  day: 'D MMM',
+  hour: 'h:mm a'
+};
+
 //Custom plugin which modifies chartjs-plugin-zoom behaviour.
 //Disables browser's context menu and resets zoom to the initial level on right mouse button click
 const modifyZoomPlugin = {
@@ -125,4 +130,4 @@ const dataLabelsPlugin = {
   }
 };
 
-export { chartDefaultOptions, modifyZoomPlugin, dataLabelsPlugin };
+export { chartDefaultOptions, defaultTimeDisplayFormats, modifyZoomPlugin, dataLabelsPlugin };
