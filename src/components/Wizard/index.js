@@ -7,7 +7,8 @@ import {
   getSimtrackUsersByName,
   setAssociation,
   createBatch,
-  getProjectAssociation
+  getProjectAssociation,
+  getJiraIssueAndStatusTypes
 } from '../../actions/Jira';
 
 const selectJiraProject = state => {
@@ -37,7 +38,8 @@ const mapDispatchToProps = {
   getSimtrackUsersByName,
   setAssociation,
   createBatch,
-  getProjectAssociation
+  getProjectAssociation,
+  getJiraIssueAndStatusTypes
 };
 
 export default connect(

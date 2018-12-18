@@ -15,6 +15,7 @@ import { getFullName } from '../../../../utils/NameLocalisation.js';
 
 class SetAssociationForm extends Component {
   static propTypes = {
+    getJiraIssueAndStatusTypes: PropTypes.func,
     getProjectAssociation: PropTypes.func,
     getSimtrackUsers: PropTypes.func,
     lang: PropTypes.string,
@@ -44,6 +45,7 @@ class SetAssociationForm extends Component {
   }
 
   componentDidMount() {
+    this.props.getJiraIssueAndStatusTypes(this.props.project.id, this.props.token);
     this.props.getProjectAssociation(this.props.project.id).then(association => {
       this.setState(
         {

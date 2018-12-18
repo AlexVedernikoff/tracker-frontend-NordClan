@@ -11,7 +11,7 @@ class JiraEditor extends Component {
   static propTypes = {
     cleanJiraAssociation: PropTypes.func,
     getJiraProject: PropTypes.func,
-    jiraExternalId: PropTypes.number,
+    jiraExternalId: PropTypes.string,
     jiraProject: PropTypes.object,
     jiraProjects: PropTypes.array,
     lang: PropTypes.string,

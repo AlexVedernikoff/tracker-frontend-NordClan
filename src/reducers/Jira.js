@@ -127,6 +127,16 @@ export default function Jira(state = InitialState, action) {
       };
     // ------------------
 
+    case JiraActions.GET_JIRA_ISSUE_AND_STATUS_TYPES_SUCCESS:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          issueTypes: action.data.issue_type,
+          statusTypes: action.data.status_type
+        }
+      };
+
     default:
       return {
         ...state

@@ -16,6 +16,7 @@ class Wizard extends Component {
     associateWithJiraProject: PropTypes.func,
     authorId: PropTypes.number,
     createBatch: PropTypes.func,
+    getJiraIssueAndStatusTypes: PropTypes.func,
     getJiraProjects: PropTypes.func,
     getProjectAssociation: PropTypes.func,
     getSimtrackUsersByName: PropTypes.func,
@@ -169,8 +170,10 @@ class Wizard extends Component {
               project={this.props.project}
               taskTypes={this.props.taskTypes}
               taskStatuses={statuses}
+              token={this.props.token}
               getSimtrackUsers={this.props.getSimtrackUsersByName}
               getProjectAssociation={this.props.getProjectAssociation}
+              getJiraIssueAndStatusTypes={this.props.getJiraIssueAndStatusTypes}
             />
           </div>
         );

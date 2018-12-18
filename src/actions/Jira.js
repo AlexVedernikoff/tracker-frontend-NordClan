@@ -17,6 +17,15 @@ const jiraAuthorizeError = () => ({
   type: JiraActions.JIRA_AUTHORIZE_ERROR
 });
 
+const getJiraIssueAndStatusTypesStart = () => ({
+  type: JiraActions.GET_JIRA_ISSUE_AND_STATUS_TYPES_START
+});
+
+const getJiraIssueAndStatusTypesSuccess = data => ({
+  type: JiraActions.GET_JIRA_ISSUE_AND_STATUS_TYPES_SUCCESS,
+  data
+});
+
 const jiraAuthorize = credentials => {
   const { username, password, server, email } = credentials;
   const URL = `${API_URL}/jira/auth`;
@@ -133,6 +142,29 @@ const getJiraProjects = headers => {
       .then(response => {
         if (response && response.status === 200) {
           dispatch(getJiraProjectsSuccess(response.data.projects));
+        }
+        dispatch(finishLoading());
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(getJiraProjectsError(error.response.data));
+        dispatch(finishLoading());
+        throw error;
+      });
+  };
+};
+
+const getJiraIssueAndStatusTypes = (jiraProjectId, token) => {
+  const URL = `${API_URL}/jira/project/${jiraProjectId}`;
+  const headers = { 'X-Jira-Auth': token };
+  return dispatch => {
+    dispatch(startLoading());
+    dispatch(getJiraIssueAndStatusTypesStart());
+    axios
+      .get(URL, { headers, withCredentials: true })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(getJiraIssueAndStatusTypesSuccess(response.data));
         }
         dispatch(finishLoading());
       })
@@ -338,5 +370,6 @@ export {
   getSimtrackUsersByName,
   setAssociation,
   createBatch,
-  getProjectAssociation
+  getProjectAssociation,
+  getJiraIssueAndStatusTypes
 };
