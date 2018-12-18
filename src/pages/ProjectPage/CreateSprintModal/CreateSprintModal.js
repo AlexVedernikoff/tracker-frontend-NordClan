@@ -62,9 +62,9 @@ class CreateSprintModal extends Component {
       this.state.sprintName &&
       this.state.dateTo &&
       this.state.dateFrom &&
-      this.state.budget &&
-      this.state.riskBudget &&
-      this.state.allottedTimeQa
+      this.state.budget !== '' &&
+      this.state.riskBudget !== '' &&
+      this.state.allottedTimeQa !== ''
     );
   };
 

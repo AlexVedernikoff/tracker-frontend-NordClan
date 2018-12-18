@@ -10,7 +10,7 @@ import getColor from '../../../../utils/Colors';
 import localize from './CostByRoleChart.json';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { dataLabelsPlugin } from '../../../../utils/Charts';
+import { dataLabelsPlugin, defaultTimeDisplayFormats } from '../../../../utils/Charts';
 
 class CostByRoleChart extends Component {
   static propTypes = {
@@ -68,9 +68,7 @@ class CostByRoleChart extends Component {
           {
             type: 'time',
             time: {
-              displayFormats: {
-                day: 'D MMM'
-              },
+              displayFormats: defaultTimeDisplayFormats,
               tooltipFormat: 'DD.MM.YYYY',
               locale: moment.locale(localize[this.props.lang].LANG)
             },
