@@ -104,6 +104,21 @@ export default class Attachments extends Component {
     );
   };
 
+  handleModalOpen = () => {
+    try {
+      const buttonIn = document.querySelector('.ril-zoom-in');
+      const buttonOut = document.querySelector('.ril-zoom-out');
+      setTimeout(() => {
+        buttonIn.click();
+        buttonOut.click();
+        const image = document.querySelector('.ril-image-current');
+        image.classList.add('in');
+      }, 150);
+    } catch (e) {
+      return;
+    }
+  };
+
   render() {
     const css = require('./Attachments.scss');
     const { photoIndex, isOpen } = this.state;
@@ -140,6 +155,9 @@ export default class Attachments extends Component {
             onCloseRequest={this.closeImage}
             onMovePrevRequest={this.prevImage}
             onMoveNextRequest={this.nextImage}
+            reactModalProps={{
+              onAfterOpen: this.handleModalOpen
+            }}
           />
         )}
       </div>
