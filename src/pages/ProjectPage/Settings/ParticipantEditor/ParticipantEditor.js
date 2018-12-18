@@ -18,6 +18,7 @@ import localize from './participantEditor.json';
 import layoutAgnosticFilter from '../../../../utils/layoutAgnosticFilter';
 import Wizard from '../../../../components/Wizard';
 import { getFullName } from '../../../../utils/NameLocalisation';
+import JiraEditor from '../JiraEditor/JiraEditor';
 
 class ParticipantEditor extends Component {
   constructor(props) {
@@ -320,16 +321,7 @@ class ParticipantEditor extends Component {
             />
           ) : null}
         </div>
-        {/* скрыл блок в соответсвии с задаче ST-12647 */}
-        {/*<div className={css.externalUsers}>*/}
-        {/*<h2>{localize[lang].SYNCHRONIZATION_WITH_JIRA}</h2>*/}
-        {/*<Button*/}
-        {/*onClick={this.handleOpenModalWizard}*/}
-        {/*text={localize[lang].CREATE_PROJECT_WITH_JIRA}*/}
-        {/*type="primary"*/}
-        {/*icon="IconPlus"*/}
-        {/*/>*/}
-        {/*</div>*/}
+        <JiraEditor openJiraWizard={this.handleOpenModalWizard} />
         {this.state.isModalOpenAddUser ? (
           <Modal isOpen contentLabel="modal" onRequestClose={this.handleCloseModalAddUser}>
             <form className={css.changeStage}>

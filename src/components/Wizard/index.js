@@ -2,34 +2,44 @@ import Wizard from './Wizard';
 import { connect } from 'react-redux';
 import {
   jiraAuthorize,
-  jiraCreateProject,
+  associateWithJiraProject,
   getJiraProjects,
   getSimtrackUsersByName,
   setAssociation,
   createBatch,
-  getProjectAssociation
+  getProjectAssociation,
+  getJiraIssueAndStatusTypes
 } from '../../actions/Jira';
+
+const selectJiraProject = state => {
+  return {
+    id: state.Project.project.externalId,
+    hostname: state.Project.project.jiraHostname,
+    jiraProjectName: state.Project.project.jiraProjectName
+  };
+};
 
 const mapStateToProps = state => {
   return {
+    simtrackProjectId: state.Project.project.id,
     projects: state.Jira.projects,
-    project: state.Jira.project,
+    project: selectJiraProject(state),
     token: state.Jira.token,
     authorId: state.Auth.user.id,
     taskTypes: state.Dictionaries.taskTypes,
-    taskStatuses: state.Dictionaries.taskStatuses,
-    projectData: { name: state.Project.project.name, prefix: state.Project.project.prefix }
+    taskStatuses: state.Dictionaries.taskStatuses
   };
 };
 
 const mapDispatchToProps = {
   jiraAuthorize,
-  jiraCreateProject,
+  associateWithJiraProject,
   getJiraProjects,
   getSimtrackUsersByName,
   setAssociation,
   createBatch,
-  getProjectAssociation
+  getProjectAssociation,
+  getJiraIssueAndStatusTypes
 };
 
 export default connect(
