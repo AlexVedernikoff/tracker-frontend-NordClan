@@ -204,6 +204,15 @@
   justify-content: center;
 }
 
+.sprintsListLine {
+  &:hover {
+    .delete,
+    .edit {
+      opacity: 1;
+    }
+  }
+}
+
 .sprintNames {
   width: 9rem;
   padding-top: 4rem;
