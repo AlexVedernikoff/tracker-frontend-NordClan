@@ -351,7 +351,7 @@ class TaskHeader extends Component {
               disabled={!canEdit || !this.state.isTaskLoaded}
             />
           ) : null}
-          <ButtonGroup type="lifecircle" stage="full">
+          <ButtonGroup type="lifecircle" stage="full" key={task.statusId}>
             <Button
               text="New"
               type={task.statusId === TASK_STATUSES.NEW ? 'green' : 'bordered'}
