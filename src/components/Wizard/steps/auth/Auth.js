@@ -9,7 +9,7 @@ import Button from '../../../Button';
 
 class AuthForm extends Component {
   static propTypes = {
-    authData: PropTypes.object,
+    authDataStep: PropTypes.object,
     lang: PropTypes.string,
     nextStep: PropTypes.func,
     onChange: PropTypes.func

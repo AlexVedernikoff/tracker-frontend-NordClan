@@ -1,36 +1,39 @@
-import { states } from './States.js';
-
-import { associationStates } from './steps/SetAssociation/AssociationStates';
-
 class StateMachine {
-  constructor() {
-    this.transitions = {
-      [states.AUTH]: states.SELECT_JIRA_PROJECT,
-      [states.SELECT_JIRA_PROJECT]: states.SET_ASSOCIATIONS,
-      [states.SET_ASSOCIATIONS]: states.FINISH
-    };
-
-    this.associationTransitions = {
-      [associationStates.ISSUE_TYPES]: associationStates.STATUS_TYPES,
-      [associationStates.STATUS_TYPES]: associationStates.USERS
-    };
-  }
-  forward(currentPosition) {
-    return this.transitions[states[currentPosition]] || currentPosition;
-  }
-  backward(currentPosition) {
-    return Object.keys(this.transitions).find(key => this.transitions[key] === currentPosition) || currentPosition;
+  constructor(steps) {
+    this.steps = steps;
   }
 
-  nextAssociation(currentPosition) {
-    return this.associationTransitions[associationStates[currentPosition]] || currentPosition;
-  }
-  prevoiusAssociation(currentPosition) {
-    return (
-      Object.keys(this.associationTransitions).find(key => this.associationTransitions[key] === currentPosition) ||
-      currentPosition
-    );
-  }
+  currentStepIndex = 0;
+
+  getCurrentStep = () => this.steps[this.currentStepIndex];
+
+  createNotExpectedSetError = (expectedStep, factStep) => `Expected ${expectedStep} step but found ${factStep}`;
+
+  checkExpectedStep = (expectedStep, nextStep) => {
+    if (expectedStep === nextStep) {
+      throw this.createNotExpectedSetError(expectedStep, nextStep);
+    }
+  };
+
+  getNextStep = (expectedStep = null) => {
+    if (this.steps.length - 1 > this.currentStepIndex) {
+      const nextStep = this.steps[this.currentStepIndex + 1];
+      if (process.env.NODE_ENV === 'development' && expectedStep) {
+        this.checkExpectedStep(expectedStep, nextStep);
+      }
+      this.currentStepIndex++;
+      return nextStep;
+    }
+  };
+
+  getPreviousStep = (expectedStep = null) => {
+    if (this.currentStepIndex > 0) {
+      const nextStep = this.steps[this.currentStepIndex - 1];
+      if (process.env.NODE_ENV === 'development' && expectedStep) {
+        this.checkExpectedStep(expectedStep, nextStep);
+      }
+    }
+  };
 }
 
 export default StateMachine;

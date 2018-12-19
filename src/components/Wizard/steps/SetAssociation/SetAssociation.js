@@ -6,18 +6,21 @@ import * as css from './SetAssociation.scss';
 
 import cn from 'classnames';
 
-import StateMachine from '../../StateMachine';
 import Button from '../../../Button';
 import { Async } from 'react-select';
 import { associationStates } from './AssociationStates';
 import debounce from 'lodash/debounce';
 import { getFullName } from '../../../../utils/NameLocalisation.js';
+import { createStepsManager } from '../../wizardConfigurer';
+
+const ASSOCIATIONS_STEPS = [associationStates.ISSUE_TYPES, associationStates.STATUS_TYPES, associationStates.USERS];
 
 class SetAssociationForm extends Component {
   static propTypes = {
     getJiraIssueAndStatusTypes: PropTypes.func,
     getProjectAssociation: PropTypes.func,
     getSimtrackUsers: PropTypes.func,
+    jiraData: PropTypes.object,
     lang: PropTypes.string,
     nextStep: PropTypes.func,
     previousStep: PropTypes.func,
@@ -29,8 +32,9 @@ class SetAssociationForm extends Component {
 
   constructor(props) {
     super(props);
+    this.stepsManager = createStepsManager(ASSOCIATIONS_STEPS);
     this.state = {
-      currentState: associationStates.ISSUE_TYPES,
+      currentState: this.stepsManager.currentStep,
       users: [],
 
       issueTypesAssociation: [],
@@ -40,7 +44,6 @@ class SetAssociationForm extends Component {
       selectedSimtrackCol: null,
       selectedJiraCols: []
     };
-    this.stateMachine = new StateMachine();
     this.searchOnChange = debounce(this.searchOnChange, 400);
   }
 
@@ -391,7 +394,7 @@ class SetAssociationForm extends Component {
 
   nextAssociationStep = () => {
     this.setState({
-      currentState: this.stateMachine.nextAssociation(this.state.currentState),
+      currentState: this.stepsManager[this.state.currentStep].forwardStep(),
       selectedSimtrackCol: null,
       selectedJiraCols: []
     });
@@ -399,7 +402,7 @@ class SetAssociationForm extends Component {
 
   previousAssociationStep = () => {
     this.setState({
-      currentState: this.stateMachine.prevoiusAssociation(this.state.currentState),
+      currentState: this.stepsManager[this.state.currentStep].backwardStep(),
       selectedSimtrackCol: null,
       selectedJiraCols: []
     });
@@ -412,13 +415,13 @@ class SetAssociationForm extends Component {
   };
 
   render() {
-    const { lang, previousStep, nextStep, project, taskTypes, taskStatuses } = this.props;
+    const { lang, previousStep, nextStep, project, taskTypes, taskStatuses, jiraData } = this.props;
     let JiraTableBody;
     let SimtrackTableBody;
     switch (this.state.currentState) {
       case associationStates.ISSUE_TYPES:
-        if (project.issue_types) {
-          JiraTableBody = project.issue_types.map(entity => {
+        if (taskTypes && jiraData.issueTypes) {
+          JiraTableBody = jiraData.issueTypes.map(entity => {
             return this.renderJiraRow(entity);
           });
           SimtrackTableBody = taskTypes.map(entity => {
@@ -427,8 +430,8 @@ class SetAssociationForm extends Component {
         }
         break;
       case associationStates.STATUS_TYPES:
-        if (project.status_types) {
-          JiraTableBody = project.status_types.map(entity => {
+        if (taskStatuses && jiraData.statusTypes) {
+          JiraTableBody = jiraData.statusTypes.map(entity => {
             return this.renderJiraRow(entity);
           });
           SimtrackTableBody = taskStatuses.map(entity => {

@@ -24,6 +24,7 @@ const mapStateToProps = state => {
     simtrackProjectId: state.Project.project.id,
     projects: state.Jira.projects,
     project: selectJiraProject(state),
+    jiraData: state.Jira.project,
     token: state.Jira.token,
     authorId: state.Auth.user.id,
     taskTypes: state.Dictionaries.taskTypes,

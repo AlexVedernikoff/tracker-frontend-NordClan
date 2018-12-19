@@ -9,7 +9,7 @@ import SelectDropdown from '../../../SelectDropdown';
 
 class CreateProjectForm extends Component {
   static propTypes = {
-    authData: PropTypes.object,
+    authDataStep: PropTypes.object,
     getJiraProjects: PropTypes.func,
     jiraProjects: PropTypes.array,
     lang: PropTypes.string,
@@ -77,13 +77,7 @@ class CreateProjectForm extends Component {
         </label>
         <div className={css.buttonsContainer}>
           <Button text="Назад" onClick={() => previousStep(this.state)} type="green" />
-          <Button
-            text="Вперед"
-            onClick={() =>
-              nextStep({ 'X-Jira-Auth': this.props.token }, { ...this.state, jiraHostName: this.props.authData.server })
-            }
-            type="green"
-          />
+          <Button text="Вперед" onClick={() => nextStep(this.state)} type="green" />
         </div>
       </div>
     );
