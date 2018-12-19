@@ -57,14 +57,24 @@ class Wizard extends Component {
 
   // Auth forward function
   authNext = formData => {
-    this.props.jiraAuthorize(formData).then(res => {
-      const { token } = res;
-      if (token) {
-        this.setState({
-          currentState: this.stateMachine.forward(this.state.currentState)
-        });
-      }
-    });
+    this.props
+      .jiraAuthorize(formData)
+      .then(res => {
+        const { token } = res;
+        if (token) {
+          this.setState({
+            currentState: this.stateMachine.forward(this.state.currentState)
+          });
+        }
+      })
+      .catch(() => {
+        this.setState(state => ({
+          authData: {
+            ...state.authData,
+            username: ''
+          }
+        }));
+      });
   };
 
   // Create project forward function
