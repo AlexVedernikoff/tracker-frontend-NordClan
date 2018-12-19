@@ -42,6 +42,10 @@ class AuthForm extends Component {
     this.validator = new Validator();
   }
 
+  componentDidMount() {
+    ReactTooltip.rebuild();
+  }
+
   getErrors() {
     const errors = {};
 
