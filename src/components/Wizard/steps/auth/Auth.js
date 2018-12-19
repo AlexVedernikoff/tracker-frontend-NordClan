@@ -8,6 +8,10 @@ import Validator from '../../../../components/ValidatedInput/Validator';
 import validateEmail from '../../../../helpers/EmailValidator';
 import Button from '../../../Button';
 
+/* eslint-disable no-unused-vars */
+import ReactTooltip from 'react-tooltip';
+import classnames from 'classnames';
+
 const validationRules = {
   email: value => {
     return value && validateEmail(value);
@@ -26,6 +30,8 @@ const validationRules = {
 class AuthForm extends Component {
   static propTypes = {
     authData: PropTypes.object,
+    isJiraAuthorizeError: PropTypes.any,
+    jiraCaptachaLink: PropTypes.any,
     lang: PropTypes.string,
     nextStep: PropTypes.func,
     onChange: PropTypes.func
@@ -55,7 +61,7 @@ class AuthForm extends Component {
   }
 
   render() {
-    const { lang, nextStep, onChange, authData } = this.props;
+    const { lang, nextStep, onChange, authData, isJiraAuthorizeError, jiraCaptachaLink } = this.props;
     const formLayout = {
       firstCol: 3,
       secondCol: 9
@@ -140,7 +146,12 @@ class AuthForm extends Component {
         </label>
         <label className={css.formField}>
           <Row>
-            <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+            <Col
+              xs={12}
+              sm={formLayout.firstCol}
+              className={classnames(css.leftColumn, css.emailLabel)}
+              data-tip={localize[lang].EMAIL_FIELD_TIP}
+            >
               {localize[lang].EMAIL}
             </Col>
             <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
@@ -162,6 +173,14 @@ class AuthForm extends Component {
             </Col>
           </Row>
         </label>
+        {isJiraAuthorizeError &&
+          jiraCaptachaLink && (
+            <div data-tip={localize[lang].LOGIN_VIA_JIRA_TIP} className={css.jiraCaptchaLink}>
+              <a href={jiraCaptachaLink} target="_blank">
+                {localize[lang].LOGIN_VIA_JIRA}
+              </a>
+            </div>
+          )}
         <div className={css.buttonsContainer}>
           <Button
             text={localize[lang].GO_AHEAD}

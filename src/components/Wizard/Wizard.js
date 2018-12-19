@@ -20,8 +20,10 @@ class Wizard extends Component {
     getJiraProjects: PropTypes.func,
     getProjectAssociation: PropTypes.func,
     getSimtrackUsersByName: PropTypes.func,
+    isJiraAuthorizeError: PropTypes.any,
     isOpen: PropTypes.bool,
     jiraAuthorize: PropTypes.func,
+    jiraCaptachaLink: PropTypes.any,
     lang: PropTypes.string,
     onRequestClose: PropTypes.func,
     project: PropTypes.object,
@@ -148,11 +150,19 @@ class Wizard extends Component {
       .filter(obj => !obj.name.includes('play'))
       .sortBy('id')
       .value();
+    const { jiraCaptachaLink, isJiraAuthorizeError } = this.props;
     switch (this.state.currentState) {
       case states.AUTH:
         return (
           <div>
-            <Auth lang={lang} nextStep={this.authNext} onChange={this.onChange} authData={this.state.authData} />
+            <Auth
+              lang={lang}
+              nextStep={this.authNext}
+              onChange={this.onChange}
+              jiraCaptachaLink={jiraCaptachaLink}
+              isJiraAuthorizeError={isJiraAuthorizeError}
+              authData={this.state.authData}
+            />
           </div>
         );
       case states.SELECT_JIRA_PROJECT:

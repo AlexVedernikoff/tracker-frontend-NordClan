@@ -27,7 +27,9 @@ const mapStateToProps = state => {
     token: state.Jira.token,
     authorId: state.Auth.user.id,
     taskTypes: state.Dictionaries.taskTypes,
-    taskStatuses: state.Dictionaries.taskStatuses
+    taskStatuses: state.Dictionaries.taskStatuses,
+    isJiraAuthorizeError: state.Jira.isJiraAuthorizeError,
+    jiraCaptachaLink: state.Jira.jiraCaptachaLink
   };
 };
 

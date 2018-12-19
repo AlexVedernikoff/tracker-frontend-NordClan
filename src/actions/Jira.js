@@ -13,9 +13,12 @@ const jiraAuthorizeSucess = token => ({
   token
 });
 
-const jiraAuthorizeError = () => ({
-  type: JiraActions.JIRA_AUTHORIZE_ERROR
-});
+const jiraAuthorizeError = data => {
+  return {
+    type: JiraActions.JIRA_AUTHORIZE_ERROR,
+    captcha: data && data.message && data.message.captcha
+  };
+};
 
 const getJiraIssueAndStatusTypesStart = () => ({
   type: JiraActions.GET_JIRA_ISSUE_AND_STATUS_TYPES_START
