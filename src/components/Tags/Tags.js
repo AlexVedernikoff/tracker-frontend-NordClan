@@ -85,7 +85,7 @@ class Tags extends Component {
       : [];
     const filtred = options.filter(option => !tags.includes(option.value));
     return (
-      <div>
+      <div className={classnames(this.props.className)}>
         {!this.state.cutTags ? this.state.tags : sliceTags}
         <span className={css.wrapperAddTags}>
           {this.props.create && this.props.canEdit ? (
@@ -142,6 +142,7 @@ class Tags extends Component {
 Tags.propTypes = {
   canEdit: PropTypes.bool,
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.array]),
+  className: PropTypes.string,
   create: PropTypes.bool,
   createTags: PropTypes.func.isRequired,
   createTagsModalTask: PropTypes.func,

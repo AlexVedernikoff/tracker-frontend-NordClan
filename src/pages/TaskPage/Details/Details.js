@@ -406,7 +406,13 @@ class Details extends Component {
             <tr>
               <td>{localize[lang].TAGS}</td>
               <td className={css.tags}>
-                <Tags taggable="task" taggableId={task.id} create canEdit={!(user.globalRole === 'EXTERNAL_USER')}>
+                <Tags
+                  taggable="task"
+                  taggableId={task.id}
+                  create
+                  canEdit={!(user.globalRole === 'EXTERNAL_USER')}
+                  className={css.tagsContainer}
+                >
                   {tags}
                 </Tags>
               </td>

@@ -16,6 +16,7 @@ class EditSpentModal extends Component {
     isBillable: PropTypes.bool,
     isMagic: PropTypes.bool,
     lang: PropTypes.string,
+    magicActivitiesTypes: PropTypes.array,
     onClose: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
     projectId: PropTypes.number.isRequired,
@@ -25,7 +26,6 @@ class EditSpentModal extends Component {
     sprint: PropTypes.object,
     statuses: PropTypes.array,
     taskStatusId: PropTypes.number,
-    taskTypes: PropTypes.array,
     timesheet: PropTypes.object.isRequired,
     typeId: PropTypes.number
   };
@@ -80,7 +80,7 @@ class EditSpentModal extends Component {
       statuses,
       typeId,
       taskStatusId,
-      taskTypes,
+      magicActivitiesTypes,
       onClose,
       isMagic,
       onSave,
@@ -88,7 +88,7 @@ class EditSpentModal extends Component {
       lang
     } = this.props;
     const status = taskStatusId ? statuses.find(el => el.id === taskStatusId).name : '';
-    const taskType = typeId ? taskTypes.find(el => el.id === typeId).name : '';
+    const activityType = typeId ? magicActivitiesTypes.find(el => el.id === typeId).name : '';
 
     const projectSprintsOptions = projectSprints.map(el => {
       return { value: el.id, label: el.name };
@@ -161,7 +161,7 @@ class EditSpentModal extends Component {
                     <p>{localize[lang].ACTIVITY_TYPE}</p>
                   </Col>
                   <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                    <Input disabled value={taskType} />
+                    <Input disabled value={activityType} />
                   </Col>
                 </Row>
                 <Row className={css.inputRow}>
