@@ -47,9 +47,9 @@ export const editSprint = (id, statusId, name, dateForm, dateTo, budget, riskBud
   if (dateForm) params.factStartDate = dateForm;
   if (dateTo) params.factFinishDate = dateTo;
   if (statusId) params.statusId = statusId;
-  if (budget) params.budget = budget;
-  if (riskBudget) params.riskBudget = riskBudget;
-  if (qaPercent) params.qaPercent = qaPercent;
+  if (budget || budget === 0) params.budget = budget;
+  if (riskBudget || riskBudget === 0) params.riskBudget = riskBudget;
+  if (qaPercent || qaPercent === 0) params.qaPercent = qaPercent;
 
   return dispatch => {
     if (!id || !(statusId || name || dateForm || dateTo || qaPercent || budget || riskBudget)) {
