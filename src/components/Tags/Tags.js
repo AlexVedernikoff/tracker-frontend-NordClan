@@ -67,7 +67,9 @@ class Tags extends Component {
     const noTagValueEn = localize.en.WITHOUT_TAG.toLowerCase();
     if (typeof testValue === 'string') {
       testValue = testValue.toLowerCase().trim();
-      return testValue.length > 0 ? !(testValue === noTagValueEn || testValue === noTagValueRu) : false;
+      return testValue.length > 0 && testValue.length < 50
+        ? !(testValue === noTagValueEn || testValue === noTagValueRu)
+        : false;
     }
     return false;
   };
