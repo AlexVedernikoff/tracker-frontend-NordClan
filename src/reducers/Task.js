@@ -171,36 +171,58 @@ export default function Task(state = InitialState, action) {
     case TaskActions.TASK_CHANGE_REQUEST_SUCCESS:
       let taskArray = [];
       let paramKey;
+      let updatedTaskIndex;
+      const { changedFields } = action;
       if (
-        state.task.linkedTasks &&
-        state.task.linkedTasks.find(linkedTask => linkedTask.id === action.changedFields.id)
+        (state.task.linkedTasks &&
+          state.task.linkedTasks.find((linkedTask, index) => {
+            if (linkedTask.id === changedFields.id) {
+              updatedTaskIndex = index;
+              return true;
+            }
+            return false;
+          })) ||
+        (changedFields.linkedTasks && changedFields.linkedTasks.find(link => link.id === state.task.id))
       ) {
         paramKey = 'linkedTasks';
       }
-      if (state.task.subTasks && state.task.subTasks.find(subTask => subTask.id === action.changedFields.id)) {
+
+      if (
+        (state.task.subTasks &&
+          state.task.subTasks.find((subTask, index) => {
+            if (subTask.id === changedFields.id) {
+              updatedTaskIndex = index;
+              return true;
+            }
+            return false;
+          })) ||
+        changedFields.parentId === state.task.id
+      ) {
         paramKey = 'subTasks';
       }
       if (paramKey) {
-        state.task[paramKey].forEach(task => {
-          if (task.id === action.changedFields.id) {
-            taskArray.push({ ...task, ...action.changedFields });
-          } else {
-            taskArray.push(task);
-          }
-        });
+        if (updatedTaskIndex === undefined) {
+          taskArray = [changedFields, ...state.task[paramKey]];
+        } else {
+          taskArray = [
+            ...state.task[paramKey].slice(0, updatedTaskIndex),
+            changedFields,
+            ...state.task[paramKey].slice(updatedTaskIndex + 1)
+          ];
+        }
       } else {
         taskArray = state.task.linkedTasks;
       }
-      if (state.task.id === action.changedFields.id) {
+      if (state.task.id === changedFields.id) {
         return {
           ...state,
           hasError: false,
           task: {
             ...state.task,
-            ...action.changedFields,
+            ...changedFields,
             [paramKey]: taskArray
           },
-          lastUpdatedTask: action.changedFields
+          lastUpdatedTask: changedFields
         };
       } else {
         return {
@@ -209,7 +231,7 @@ export default function Task(state = InitialState, action) {
             ...state.task,
             [paramKey]: taskArray
           },
-          lastUpdatedTask: action.changedFields
+          lastUpdatedTask: changedFields
         };
       }
     case TaskActions.ERROR_CLEAR:
