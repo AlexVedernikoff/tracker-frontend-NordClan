@@ -12,6 +12,15 @@ textarea {
   opacity: 0.8 !important;
 }
 
+.ril-image-current {
+  transition: 0.3s;
+  opacity: 0;
+}
+
+.ril-image-current.in {
+  opacity: 1;
+}
+
 .tooltip.place-bottom:after {
   border-bottom-color: #2b3e50 !important;
 }
