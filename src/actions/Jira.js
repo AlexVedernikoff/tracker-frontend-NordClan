@@ -160,11 +160,13 @@ const getJiraIssueAndStatusTypes = (jiraProjectId, token) => {
   return dispatch => {
     dispatch(startLoading());
     dispatch(getJiraIssueAndStatusTypesStart());
-    axios
+    return axios
       .get(URL, { headers, withCredentials: true })
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(getJiraIssueAndStatusTypesSuccess(response.data));
+          dispatch(finishLoading());
+          console.log('response', response);
+          return response.data;
         }
         dispatch(finishLoading());
       })

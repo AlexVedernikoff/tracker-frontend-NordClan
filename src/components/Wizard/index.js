@@ -21,6 +21,7 @@ const selectJiraProject = state => {
 
 const mapStateToProps = state => {
   return {
+    lang: state.Localize.lang,
     simtrackProjectId: state.Project.project.id,
     projects: state.Jira.projects,
     project: selectJiraProject(state),
