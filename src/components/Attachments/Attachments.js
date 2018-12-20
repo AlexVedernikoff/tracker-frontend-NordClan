@@ -105,18 +105,22 @@ export default class Attachments extends Component {
   };
 
   handleImageLoad = () => {
-    try {
-      const buttonIn = document.querySelector('.ril-zoom-in');
-      const buttonOut = document.querySelector('.ril-zoom-out');
-      setTimeout(() => {
+    setTimeout(() => {
+      try {
+        const buttonIn = document.querySelector('.ril-zoom-in');
+        const buttonOut = document.querySelector('.ril-zoom-out');
         buttonIn.click();
         buttonOut.click();
         const image = document.querySelector('.ril-image-current');
         image.classList.add('in');
-      }, 150);
-    } catch (e) {
-      return;
-    }
+      } catch (e) {
+        const image = document.querySelector('.ril-image-current');
+        if (image && image.classList) {
+          image.classList.add('in');
+        }
+        return;
+      }
+    }, 150);
   };
 
   render() {
