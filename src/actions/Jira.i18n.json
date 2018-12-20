@@ -1,0 +1,10 @@
+{
+  "en": {
+    "JIRA_AUTHORIZE_ERROR": "Error has occured while authorization.",
+    "JIRA_WRONG_CREDENTIALS": "User credentials are wrong."
+  },
+  "ru": {
+    "JIRA_AUTHORIZE_ERROR": "Произошла ошибка авторизации.",
+    "JIRA_WRONG_CREDENTIALS": "Пользовательские данные неверны."
+  }
+}
