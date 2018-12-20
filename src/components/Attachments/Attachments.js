@@ -104,7 +104,7 @@ export default class Attachments extends Component {
     );
   };
 
-  handleModalOpen = () => {
+  handleImageLoad = () => {
     try {
       const buttonIn = document.querySelector('.ril-zoom-in');
       const buttonOut = document.querySelector('.ril-zoom-out');
@@ -155,9 +155,7 @@ export default class Attachments extends Component {
             onCloseRequest={this.closeImage}
             onMovePrevRequest={this.prevImage}
             onMoveNextRequest={this.nextImage}
-            reactModalProps={{
-              onAfterOpen: this.handleModalOpen
-            }}
+            onImageLoad={this.handleImageLoad}
           />
         )}
       </div>
