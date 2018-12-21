@@ -7,7 +7,7 @@ import find from 'lodash/find';
 import sortBy from 'lodash/sortBy';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as timesheetsActions from '../../actions/Timesheets';
-// import * as timesheetsConstants from '../../constants/Timesheets';
+import * as timesheetsConstants from '../../constants/Timesheets';
 import { showNotification } from '../../actions/Notifications';
 import * as css from './Timesheets.scss';
 import { IconPlus, IconArrowLeft, IconArrowRight, IconCalendar } from '../../components/Icons';
@@ -69,11 +69,11 @@ class Timesheets extends React.Component {
   render() {
     const { isCalendarOpen } = this.state;
     const { startingDay, tempTimesheets, lang } = this.props;
-    // const canAddActivity = !this.props.list.find(
-    //   tsh =>
-    //     tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
-    //     tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED
-    // );
+    const canAddActivity = !this.props.list.find(
+      tsh =>
+        tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
+        tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED
+    );
     // const countTsWithTime = this.props.list.filter(tsh => tsh.spentTime !== 0).length;
     const defaultTaskStatusId = 2;
     const tempTimesheetsList = tempTimesheets.map(timesheet => {
@@ -380,8 +380,7 @@ class Timesheets extends React.Component {
                 <td className={css.total} />
               </tr>
             </tbody>
-            {
-              // canAddActivity || !countTsWithTime ? (
+            {canAddActivity ? (
               <tfoot>
                 <tr>
                   <td colSpan="10">
@@ -392,8 +391,7 @@ class Timesheets extends React.Component {
                   </td>
                 </tr>
               </tfoot>
-              // ) : null
-            }
+            ) : null}
           </table>
         </section>
         {this.state.isModalOpen ? <AddActivityModal onClose={() => this.setState({ isModalOpen: false })} /> : null}

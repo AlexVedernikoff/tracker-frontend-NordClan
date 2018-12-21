@@ -1,6 +1,30 @@
 import { createSelector } from 'reselect';
 import { getFullName } from '../utils/NameLocalisation';
 
+//todo: ST-12988: убрать дублирование локализаций, либо убрать локализацию с клиента
+const MagicActiveTypesDictionary = {
+  en: {
+    'IMPLEMENTATION': 'Implementation',
+    'MEETING': 'Meeting',
+    'PRESALE': 'Presale and estimation',
+    'EDUCATION': 'Education',
+    'VACATION': 'Vacation',
+    'BUSINESS_TRIP': 'Business trip',
+    'CONTROL': 'Managment',
+    'HOSPITAL': 'On sick leave'
+  },
+  ru: {
+    'IMPLEMENTATION': 'Implementation',
+    'MEETING': 'Совещание',
+    'PRESALE': 'Преселлинг и оценка',
+    'EDUCATION': 'Обучение',
+    'VACATION': 'Отпуск',
+    'BUSINESS_TRIP': 'Командировка',
+    'CONTROL': 'Управление',
+    'HOSPITAL': 'Больничный'
+  }
+};
+
 const getLocalizedDictionary = function(lang, dictionary) {
   return (dictionary || []).map(({ name, nameEn, ...rest }) => ({
     name: lang === 'ru' ? name : nameEn,
@@ -39,6 +63,17 @@ export const getLocalizedRoles = createSelector(
   state => state.Localize.lang,
   state => state.Dictionaries.roles,
   getLocalizedDictionary
+);
+
+export const getLocalizedMagicActiveTypes = createSelector(
+  state => state.Localize.lang,
+  state => state.Dictionaries.magicActivityTypes,
+  (lang, dictionary) => {
+    return (dictionary || []).map(props => ({
+      name: MagicActiveTypesDictionary[lang][props.codename],
+      ...props
+    }));
+  }
 );
 
 export const getProjectTypes = createSelector([selectProjectTypes], types =>

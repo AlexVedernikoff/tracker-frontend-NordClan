@@ -16,14 +16,14 @@ import parseInteger from '../../../utils/parseInteger';
 class CreateSprintModal extends Component {
   constructor(props) {
     super(props);
-
+    const { qaPercent } = props.project;
     this.state = {
       dateFrom: undefined,
       dateTo: undefined,
       budget: '',
       riskBudget: '',
       sprintName: '',
-      allottedTimeQa: props.project.qaPercent || 30
+      allottedTimeQa: qaPercent !== null && qaPercent !== undefined ? qaPercent : 30
     };
   }
 
@@ -62,9 +62,9 @@ class CreateSprintModal extends Component {
       this.state.sprintName &&
       this.state.dateTo &&
       this.state.dateFrom &&
-      this.state.budget &&
-      this.state.riskBudget &&
-      this.state.allottedTimeQa
+      this.state.budget !== '' &&
+      this.state.riskBudget !== '' &&
+      this.state.allottedTimeQa !== ''
     );
   };
 

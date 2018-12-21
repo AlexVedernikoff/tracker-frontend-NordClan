@@ -104,6 +104,25 @@ export default class Attachments extends Component {
     );
   };
 
+  handleImageLoad = () => {
+    setTimeout(() => {
+      try {
+        const buttonIn = document.querySelector('.ril-zoom-in');
+        const buttonOut = document.querySelector('.ril-zoom-out');
+        buttonIn.click();
+        buttonOut.click();
+        const image = document.querySelector('.ril-image-current');
+        image.classList.add('in');
+      } catch (e) {
+        const image = document.querySelector('.ril-image-current');
+        if (image && image.classList) {
+          image.classList.add('in');
+        }
+        return;
+      }
+    }, 150);
+  };
+
   render() {
     const css = require('./Attachments.scss');
     const { photoIndex, isOpen } = this.state;
@@ -140,6 +159,7 @@ export default class Attachments extends Component {
             onCloseRequest={this.closeImage}
             onMovePrevRequest={this.prevImage}
             onMoveNextRequest={this.nextImage}
+            onImageLoad={this.handleImageLoad}
           />
         )}
       </div>

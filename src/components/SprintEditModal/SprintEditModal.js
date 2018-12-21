@@ -11,6 +11,7 @@ import localize from './SprintEditModal.json';
 import { connect } from 'react-redux';
 import parseInteger from '../../utils/parseInteger';
 import validateNumber from '../../utils/validateNumber';
+import * as commonUtils from '../../utils/common';
 
 class SprintEditModal extends Component {
   static propTypes = {
@@ -30,7 +31,7 @@ class SprintEditModal extends Component {
         id: this.props.sprint.id,
         dateTo: undefined,
         sprintName: this.props.sprint.name,
-        qaPercent: this.props.sprint.qaPercent || props.project.qaPercent || '30',
+        qaPercent: commonUtils.firstTruthyOrZero(props.sprint.qaPercent, props.project.qaPercent, '30'),
         isHovered: false,
         budget: this.props.sprint.budget || '0.00',
         riskBudget: this.props.sprint.riskBudget || '0.00'
@@ -43,7 +44,7 @@ class SprintEditModal extends Component {
       this.state.sprint.sprintName.length &&
       this.state.sprint.budget.length &&
       this.state.sprint.riskBudget.length &&
-      this.state.sprint.qaPercent
+      this.state.sprint.qaPercent !== ''
     );
   };
 
