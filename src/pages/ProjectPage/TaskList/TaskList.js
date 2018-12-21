@@ -42,6 +42,7 @@ export const initialFilters = {
   changedSprint: [],
   filterTags: [],
   typeId: [],
+  sprintId: [],
   name: null,
   authorId: null,
   prioritiesId: null,
