@@ -166,7 +166,8 @@ class TaskList extends Component {
       changedFilters: {
         projectId,
         ...this.getUrlQueries()
-      }
+      },
+      nameInputValue: (this.props.location && this.props.location.query.name) || null
     };
   }
 
