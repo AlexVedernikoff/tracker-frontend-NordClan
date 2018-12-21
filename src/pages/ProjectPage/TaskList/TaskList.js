@@ -53,6 +53,7 @@ class TaskList extends Component {
     super(props);
     this.state = {
       isOpened: false,
+      isProjectLoaded: false,
       allFilters: [],
       activePage: 1,
       isPerformerModalOpen: false,
@@ -60,13 +61,23 @@ class TaskList extends Component {
       nameInputValue: null,
       ...this.getQueryFilters()
     };
-
     this.debouncedSubmitNameFilter = debounce(this.submitNameFilter, 1000);
   }
 
   componentDidMount() {
     if (this.props.project.id) {
       this.loadTasks();
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.isProjectReceiving && !this.props.isProjectReceiving && !this.state.isProjectLoaded) {
+      this.setState(
+        {
+          isProjectLoaded: true
+        },
+        this.updateFilterList
+      );
     }
   }
 
@@ -99,6 +110,7 @@ class TaskList extends Component {
   };
 
   makeFiltersObject = (name, value) => {
+    if (name === 'sprintId') debugger;
     if (!!value && !Array.isArray(value)) {
       return { [name]: this.singleQuery(value) };
     }
@@ -445,7 +457,8 @@ class TaskList extends Component {
         const user = users.find(u => u.id === +value);
         return user ? getFullName(user) : '';
       case 'changedSprint':
-        return this.getEditedSprints(sprints).find(el => el.value === value).label;
+        const editedSprints = this.getEditedSprints(sprints).find(el => el.value === value);
+        return editedSprints && editedSprints.label;
       case 'typeId':
         return taskTypes.find(el => el.id === value).name;
       case 'statusId':
@@ -869,6 +882,7 @@ TaskList.propTypes = {
   getTasks: PropTypes.func.isRequired,
   globalRole: PropTypes.string,
   isCreateTaskModalOpen: PropTypes.bool,
+  isProjectReceiving: PropTypes.bool,
   isReceiving: PropTypes.bool,
   lang: PropTypes.string,
   lastCreatedTask: PropTypes.object,
@@ -892,6 +906,7 @@ const mapStateToProps = state => ({
   tasksList: state.TaskList.tasks,
   pagesCount: state.TaskList.pagesCount,
   isReceiving: state.TaskList.isReceiving,
+  isProjectReceiving: state.Project.isProjectInfoReceiving,
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
   project: state.Project.project,
   statuses: getLocalizedTaskStatuses(state),
