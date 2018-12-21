@@ -174,7 +174,7 @@ export default function Task(state = InitialState, action) {
       let updatedTaskIndex;
       const { changedFields } = action;
       if (
-        (state.task.linkedTasks &&
+        (Array.isArray(state.task.linkedTasks) &&
           state.task.linkedTasks.find((linkedTask, index) => {
             if (linkedTask.id === changedFields.id) {
               updatedTaskIndex = index;
@@ -188,7 +188,7 @@ export default function Task(state = InitialState, action) {
       }
 
       if (
-        (state.task.subTasks &&
+        (Array.isArray(state.task.subTasks) &&
           state.task.subTasks.find((subTask, index) => {
             if (subTask.id === changedFields.id) {
               updatedTaskIndex = index;
