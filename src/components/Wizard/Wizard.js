@@ -20,6 +20,7 @@ class Wizard extends Component {
     authorId: PropTypes.number,
     createBatch: PropTypes.func,
     getJiraIssueAndStatusTypes: PropTypes.func,
+    getJiraProjectUsers: PropTypes.func,
     getJiraProjects: PropTypes.func,
     getProjectAssociation: PropTypes.func,
     getSimtrackUsersByName: PropTypes.func,
@@ -56,6 +57,7 @@ class Wizard extends Component {
 
       associationState: {
         users: [],
+        jiraUsers: [],
 
         issueTypesAssociation: [],
         statusesAssociation: [],
@@ -112,20 +114,12 @@ class Wizard extends Component {
 
   // Set Association forward function
   setAssociation = () => {
-    const { issueTypesAssociation, statusesAssociation, userEmailAssociation } = this.state.associationState;
     this.setState({
-      currentStep: this.stepsManager[states.SET_ASSOCIATIONS].forwardStep(),
-      associationState: {
-        ...this.this.associationState,
-        issueTypesAssociation,
-        statusesAssociation,
-        userEmailAssociation
-      }
+      currentStep: this.stepsManager[states.SET_ASSOCIATIONS].forwardStep()
     });
   };
 
-  setAssociationState = (association, jiraTypes) => {
-    console.log('jiraTypes', jiraTypes);
+  setAssociationState = (association, jiraAssociations) => {
     this.setState(
       {
         associationState: {
@@ -133,8 +127,9 @@ class Wizard extends Component {
           issueTypesAssociation: association.issueTypesAssociation,
           statusesAssociation: association.statusesAssociation,
           userEmailAssociation: association.userEmailAssociation,
-          jiraIssueTypes: jiraTypes.issueTypes,
-          jiraStatusTypes: jiraTypes.statusTypes
+          jiraIssueTypes: jiraAssociations.issueTypes,
+          jiraStatusTypes: jiraAssociations.statusTypes,
+          jiraUsers: jiraAssociations.users
         }
       },
       () => this.setAssociationStateDefault()
@@ -272,10 +267,11 @@ class Wizard extends Component {
               getJiraIssueAndStatusTypes={this.props.getJiraIssueAndStatusTypes}
               simtrackProjectId={simtrackProjectId}
               jiraProjectId={selectJiraProjectState.jiraProjectId}
-              setAssociationAndTypes={this.setAssociationState}
+              setAssociation={this.setAssociationState}
               setDefault={this.setAssociationStateDefault}
               associationState={this.state.associationState}
               mergeAssociationState={this.mergeAssociationState}
+              getJiraProjectUsers={this.props.getJiraProjectUsers}
             />
           </div>
         );

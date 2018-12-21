@@ -155,7 +155,7 @@ const getJiraProjects = headers => {
 };
 
 const getJiraIssueAndStatusTypes = (jiraProjectId, token) => {
-  const URL = `${API_URL}/jira/project/${jiraProjectId}`;
+  const URL = `${API_URL}/jira/project/${jiraProjectId}/association`;
   const headers = { 'X-Jira-Auth': token };
   return dispatch => {
     dispatch(startLoading());
@@ -165,7 +165,6 @@ const getJiraIssueAndStatusTypes = (jiraProjectId, token) => {
       .then(response => {
         if (response && response.status === 200) {
           dispatch(finishLoading());
-          console.log('response', response);
           return response.data;
         }
         dispatch(finishLoading());
@@ -321,7 +320,7 @@ const getProjectAssociationError = () => ({
 });
 
 const getProjectAssociation = projectId => {
-  const URL = `${API_URL}/jira/getProjectAssociation?projectId=${projectId}`;
+  const URL = `${API_URL}/project/${projectId}/jira/association`;
   return dispatch => {
     dispatch(startLoading());
     dispatch(getProjectAssociationStart());

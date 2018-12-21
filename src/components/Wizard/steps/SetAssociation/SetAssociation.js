@@ -20,6 +20,7 @@ class SetAssociationForm extends Component {
   static propTypes = {
     associationState: PropTypes.object,
     getJiraIssueAndStatusTypes: PropTypes.func,
+    getJiraProjectUsers: PropTypes.func,
     getProjectAssociation: PropTypes.func,
     getSimtrackUsers: PropTypes.func,
     jiraProjectId: PropTypes.number,
@@ -28,7 +29,7 @@ class SetAssociationForm extends Component {
     nextStep: PropTypes.func,
     previousStep: PropTypes.func,
     project: PropTypes.object,
-    setAssociationAndTypes: PropTypes.func,
+    setAssociation: PropTypes.func,
     setDefault: PropTypes.func,
     simtrackProjectId: PropTypes.number,
     taskStatuses: PropTypes.array,
@@ -47,17 +48,16 @@ class SetAssociationForm extends Component {
 
   async componentDidMount() {
     try {
-      const jiraTypes = await this.props.getJiraIssueAndStatusTypes(this.props.jiraProjectId, this.props.token);
-      console.log('load', jiraTypes);
+      const jiraAssociations = await this.props.getJiraIssueAndStatusTypes(this.props.jiraProjectId, this.props.token);
       const associations = await this.props.getProjectAssociation(this.props.simtrackProjectId);
-      this.props.setAssociationAndTypes(associations, jiraTypes);
+      this.props.setAssociation(associations, jiraAssociations);
     } catch (e) {
       defaultErrorHandler(e);
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.currentStep !== this.state.currentStep) this.setDefault();
+    if (prevState.currentStep !== this.state.currentStep) this.props.setDefault();
   }
 
   selectUser = value => {
@@ -257,7 +257,7 @@ class SetAssociationForm extends Component {
 
   renderJiraRow(entity) {
     let id;
-    switch (this.props.associationState.currentStep) {
+    switch (this.state.currentStep) {
       case associationStates.USERS:
         id = `${entity.email}`;
         return (
@@ -392,7 +392,7 @@ class SetAssociationForm extends Component {
         selectedJiraCols: []
       },
       () => {
-        this.setState({ currentStep: this.stepsManager[this.state.currentStep].backwardStep() });
+        this.props.previousStep();
       }
     );
   };
@@ -404,11 +404,10 @@ class SetAssociationForm extends Component {
   };
 
   render() {
-    const { jiraIssueTypes, jiraStatusTypes } = this.props.associationState;
-    const { project, taskTypes, taskStatuses, lang, nextStep } = this.props;
+    const { jiraIssueTypes, jiraStatusTypes, jiraUsers } = this.props.associationState;
+    const { taskTypes, taskStatuses, lang, nextStep } = this.props;
     let JiraTableBody;
     let SimtrackTableBody;
-    console.log('jiraIssue', this.props.associationState);
     switch (this.state.currentStep) {
       case associationStates.ISSUE_TYPES:
         if (taskTypes && jiraIssueTypes) {
@@ -431,8 +430,8 @@ class SetAssociationForm extends Component {
         }
         break;
       case associationStates.USERS:
-        if (project.users) {
-          JiraTableBody = this.filtredJiraUsers(project.users).map(entity => {
+        if (jiraUsers) {
+          JiraTableBody = this.filtredJiraUsers(jiraUsers).map(entity => {
             return this.renderJiraRow(entity);
           });
           SimtrackTableBody = this.props.associationState.users.map(entity => {
@@ -443,6 +442,14 @@ class SetAssociationForm extends Component {
       default:
         break;
     }
+
+    const nextButtonFunction = this.stepsManager[this.state.currentStep].forwardStep
+      ? () => this.nextAssociationStep()
+      : () => this.props.nextStep();
+
+    const backButtonFunction = this.stepsManager[this.state.currentStep].backwardStep
+      ? () => this.previousAssociationStep()
+      : () => this.props.previousStep();
 
     return (
       <div className={css.mainContainer}>
@@ -505,20 +512,8 @@ class SetAssociationForm extends Component {
           </Row>
         </label>
         <div className={css.buttonsContainer}>
-          {this.state.currentStep === associationStates.ISSUE_TYPES ? (
-            <Button
-              text="Назад"
-              onClick={() => this.stepsManager[associationStates.ISSUE_TYPES].backwardStep()}
-              type="green"
-            />
-          ) : (
-            <Button text="Назад" onClick={this.previousAssociationStep} type="green" />
-          )}
-          {this.state.currentStep === associationStates.USERS ? (
-            <Button text={localize[lang].GO_AHEAD} onClick={() => nextStep()} type="green" />
-          ) : (
-            <Button text={localize[lang].GO_AHEAD} onClick={this.nextAssociationStep} type="green" />
-          )}
+          <Button text={localize[lang].GO_BACK} onClick={() => backButtonFunction()} type="green" />
+          <Button text={localize[lang].GO_AHEAD} onClick={() => nextButtonFunction()} type="green" />
         </div>
       </div>
     );
