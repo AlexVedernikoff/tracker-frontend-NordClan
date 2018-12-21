@@ -70,17 +70,6 @@ class TaskList extends Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.isProjectReceiving && !this.props.isProjectReceiving && !this.state.isProjectLoaded) {
-      this.setState(
-        {
-          isProjectLoaded: true
-        },
-        this.updateFilterList
-      );
-    }
-  }
-
   componentWillReceiveProps(nextProps) {
     if (this.props.project.id !== nextProps.project.id) {
       this.loadTasks();
@@ -91,10 +80,24 @@ class TaskList extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.isProjectReceiving && !this.props.isProjectReceiving && !this.state.isProjectLoaded) {
+      this.setProjectLoadedFlag();
+    }
+  }
+
   componentWillUnmount() {
     this.debouncedSubmitNameFilter.cancel();
   }
 
+  setProjectLoadedFlag = () => {
+    this.setState(
+      {
+        isProjectLoaded: true
+      },
+      this.updateFilterList
+    );
+  };
   translateToNumIfNeeded = value => {
     const re = /^\d+$/;
     return re.test(value) ? +value : value;
@@ -110,7 +113,6 @@ class TaskList extends Component {
   };
 
   makeFiltersObject = (name, value) => {
-    if (name === 'sprintId') debugger;
     if (!!value && !Array.isArray(value)) {
       return { [name]: this.singleQuery(value) };
     }
