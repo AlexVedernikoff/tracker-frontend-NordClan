@@ -113,12 +113,18 @@ class TaskList extends Component {
   };
 
   makeFiltersObject = (name, value) => {
-    if (!!value && !Array.isArray(value)) {
-      return { [name]: this.singleQuery(value) };
+    let processedValue;
+    if (name === 'sprintId' || name === 'performerId' || name === 'statusId' || name === 'typeId' || name === 'tags') {
+      processedValue = this.multipleQueries(value);
+    } else if (value) {
+      if (!Array.isArray(value)) {
+        processedValue = this.singleQuery(value);
+      } else {
+        processedValue = this.multipleQueries(value);
+      }
     }
-    if (!!value && Array.isArray(value)) {
-      return { [name]: this.multipleQueries(value) };
-    }
+
+    return { [name]: processedValue };
   };
 
   getUrlQueries = () => {
@@ -136,7 +142,6 @@ class TaskList extends Component {
       dateFrom,
       dateTo
     } = (this.props.location && this.props.location.query) || {};
-
     return {
       ...this.makeFiltersObject('performerId', performerId),
       ...this.makeFiltersObject('sprintId', sprintId),
@@ -282,7 +287,6 @@ class TaskList extends Component {
         } else {
           delete changedFilters[name];
         }
-
         this.changeUrl(changedFilters);
         return {
           activePage:
