@@ -11,6 +11,7 @@ import SelectProject from './steps/CreateProject/SelectJiraProject';
 import SetAssociationForm from './steps/SetAssociation/SetAssociation';
 import Finish from './steps/Finish/Finish';
 import { associationStates } from './steps/SetAssociation/AssociationStates';
+import { associateWithJiraProject } from '../../actions/Jira';
 
 const JIRA_WIZARD_STEPS = [states.AUTH, states.SELECT_JIRA_PROJECT, states.SET_ASSOCIATIONS, states.FINISH];
 
@@ -280,10 +281,15 @@ class Wizard extends Component {
           <div>
             <Finish
               lang={lang}
-              token={this.props.token}
+              token={this.state.token}
               previousStep={this.onRequestClose}
               nextStep={this.createBatch}
               project={this.props.project}
+              jiraHostName={authDataState.server}
+              simtrackProjectId={simtrackProjectId}
+              jiraProjectId={selectJiraProjectState.jiraProjectId}
+              associationState={this.state.associationState}
+              associateWithJiraProject={this.props.associateWithJiraProject}
             />
           </div>
         );

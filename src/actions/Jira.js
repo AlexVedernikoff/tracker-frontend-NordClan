@@ -21,11 +21,6 @@ const getJiraIssueAndStatusTypesStart = () => ({
   type: JiraActions.GET_JIRA_ISSUE_AND_STATUS_TYPES_START
 });
 
-const getJiraIssueAndStatusTypesSuccess = data => ({
-  type: JiraActions.GET_JIRA_ISSUE_AND_STATUS_TYPES_SUCCESS,
-  data
-});
-
 const jiraAuthorize = credentials => {
   const { username, password, server, email } = credentials;
   const URL = `${API_URL}/jira/auth`;
@@ -72,9 +67,17 @@ const jiraAssociateProjectError = () => ({
   type: JiraActions.JIRA_CREATE_PROJECT_ERROR
 });
 
-const associateWithJiraProject = (headers, data) => {
-  const { jiraProjectId: id, simtrackProjectId, jiraHostName } = data;
-  const URL = `${API_URL}/jira/associateProjectWithJira`;
+const associateWithJiraProject = (token, data) => {
+  const {
+    jiraProjectId: id,
+    simtrackProjectId,
+    jiraHostName,
+    issueTypesAssociation,
+    statusesAssociation,
+    userEmailAssociation
+  } = data;
+  const headers = { 'X-Jira-Auth': token };
+  const URL = `${API_URL}/project/${simtrackProjectId}/jira/link`;
   return dispatch => {
     dispatch(startLoading());
     dispatch(jiraAssociateProjectStart());
@@ -84,7 +87,10 @@ const associateWithJiraProject = (headers, data) => {
         {
           jiraProjectId: id,
           simtrackProjectId,
-          jiraHostName
+          jiraHostName,
+          issueTypesAssociation,
+          statusesAssociation,
+          userEmailAssociation
         },
         {
           withCredentials: true,
@@ -133,7 +139,7 @@ const cleanJiraAssociationSuccess = projectId => ({
 });
 
 const getJiraProjects = headers => {
-  const URL = `${API_URL}/jira/projects`;
+  const URL = `${API_URL}/jira/project`;
   return dispatch => {
     dispatch(startLoading());
     dispatch(getJiraProjectsStart());
@@ -155,7 +161,7 @@ const getJiraProjects = headers => {
 };
 
 const getJiraIssueAndStatusTypes = (jiraProjectId, token) => {
-  const URL = `${API_URL}/jira/project/${jiraProjectId}/association`;
+  const URL = `${API_URL}/jira/project/${jiraProjectId}/info`;
   const headers = { 'X-Jira-Auth': token };
   return dispatch => {
     dispatch(startLoading());

@@ -7,12 +7,29 @@ import Button from '../../../Button';
 
 class FinishForm extends Component {
   static propTypes = {
+    associateWithJiraProject: PropTypes.func,
+    associationState: PropTypes.object,
+    jiraProjectId: PropTypes.any,
     lang: PropTypes.string,
     nextStep: PropTypes.func,
     previousStep: PropTypes.func,
     project: PropTypes.object,
+    simtrackProjectId: PropTypes.any,
     token: PropTypes.string
   };
+
+  async componentDidMount() {
+    const { jiraHostName, simtrackProjectId, jiraProjectId, associationState } = this.props;
+    const { issueTypesAssociation, statusesAssociation, userEmailAssociation } = associationState;
+    this.props.associateWithJiraProject(this.props.token, {
+      jiraHostName,
+      simtrackProjectId,
+      jiraProjectId,
+      issueTypesAssociation,
+      statusesAssociation,
+      userEmailAssociation
+    });
+  }
 
   render() {
     const { lang, nextStep, previousStep, project, token } = this.props;

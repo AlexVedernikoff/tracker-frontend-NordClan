@@ -392,7 +392,7 @@ class SetAssociationForm extends Component {
         selectedJiraCols: []
       },
       () => {
-        this.props.previousStep();
+        this.setState({ currentStep: this.stepsManager[this.state.currentStep].backwardStep() });
       }
     );
   };

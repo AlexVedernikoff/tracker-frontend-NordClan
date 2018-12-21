@@ -8,8 +8,7 @@ import {
   setAssociation,
   createBatch,
   getProjectAssociation,
-  getJiraIssueAndStatusTypes,
-  getJiraProjectUsers
+  getJiraIssueAndStatusTypes
 } from '../../actions/Jira';
 
 const selectJiraProject = state => {
@@ -42,8 +41,7 @@ const mapDispatchToProps = {
   setAssociation,
   createBatch,
   getProjectAssociation,
-  getJiraIssueAndStatusTypes,
-  getJiraProjectUsers
+  getJiraIssueAndStatusTypes
 };
 
 export default connect(
