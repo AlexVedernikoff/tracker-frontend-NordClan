@@ -394,9 +394,13 @@ class TaskList extends Component {
         changedFilters: {
           ...prevState.changedFilters,
           [filterName]: null
-        }
+        },
+        nameInputValue: filterName === 'name' ? null : prevState.nameInputValue
       }),
-      this.loadTasks
+      () => {
+        this.loadTasks();
+        this.changeUrl(this.state.changedFilters);
+      }
     );
   };
 
@@ -550,7 +554,10 @@ class TaskList extends Component {
           [filterName]: newList
         }
       }),
-      this.loadTasks
+      () => {
+        this.loadTasks();
+        this.changeUrl(this.state.changedFilters);
+      }
     );
   };
 
