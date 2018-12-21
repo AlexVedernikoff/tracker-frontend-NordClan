@@ -106,3 +106,17 @@ export const getMilestoneTypes = () => {
       error: defaultErrorHandler(dispatch)
     });
 };
+
+export function getGitlabRoles() {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/dictionary/gitLab/roles',
+      method: GET,
+      body,
+      extra,
+      start: withStartLoading(startDictionaryRequest, true)(dispatch),
+      response: withFinishLoading(response => successDictionaryRequest(response.data, 'gitlabRoles'), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+}
