@@ -182,7 +182,7 @@ export default function Task(state = InitialState, action) {
             }
             return false;
           })) ||
-        (changedFields.linkedTasks && changedFields.linkedTasks.find(link => link.id === state.task.id))
+        (Array.isArray(changedFields.linkedTasks) && changedFields.linkedTasks.find(link => link.id === state.task.id))
       ) {
         paramKey = 'linkedTasks';
       }
