@@ -30,6 +30,7 @@ const validationRules = {
 class AuthForm extends Component {
   static propTypes = {
     authData: PropTypes.object,
+    authDataStep: PropTypes.object,
     isJiraAuthorizeError: PropTypes.any,
     jiraCaptachaLink: PropTypes.any,
     lang: PropTypes.string,

@@ -3,13 +3,16 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import Modal from '../Modal';
 import * as css from './Wizard.scss';
-import { states } from './States';
-import StateMachine from './StateMachine';
+import { createStepsManager } from './wizardConfigurer';
+import { states } from './states';
 
 import Auth from './steps/auth/Auth';
 import SelectProject from './steps/CreateProject/SelectJiraProject';
 import SetAssociationForm from './steps/SetAssociation/SetAssociation';
 import Finish from './steps/Finish/Finish';
+import { associationStates } from './steps/SetAssociation/AssociationStates';
+
+const JIRA_WIZARD_STEPS = [states.AUTH, states.SELECT_JIRA_PROJECT, states.SET_ASSOCIATIONS, states.FINISH];
 
 class Wizard extends Component {
   static propTypes = {
@@ -17,6 +20,7 @@ class Wizard extends Component {
     authorId: PropTypes.number,
     createBatch: PropTypes.func,
     getJiraIssueAndStatusTypes: PropTypes.func,
+    getJiraProjectUsers: PropTypes.func,
     getJiraProjects: PropTypes.func,
     getProjectAssociation: PropTypes.func,
     getSimtrackUsersByName: PropTypes.func,
@@ -24,6 +28,7 @@ class Wizard extends Component {
     isOpen: PropTypes.bool,
     jiraAuthorize: PropTypes.func,
     jiraCaptachaLink: PropTypes.any,
+    jiraData: PropTypes.object,
     lang: PropTypes.string,
     onRequestClose: PropTypes.func,
     project: PropTypes.object,
@@ -38,34 +43,56 @@ class Wizard extends Component {
 
   constructor(props) {
     super(props);
+    this.stepsManager = createStepsManager(JIRA_WIZARD_STEPS);
     this.state = {
-      currentState: states.AUTH,
-      authData: {
+      currentStep: this.stepsManager.currentStep,
+      authDataState: {
         username: '',
         password: '',
         server: '',
         email: ''
-      }
+      },
+
+      selectJiraProjectState: {
+        jiraProjectId: null
+      },
+
+      associationState: {
+        users: [],
+        jiraUsers: [],
+
+        issueTypesAssociation: [],
+        statusesAssociation: [],
+        userEmailAssociation: [],
+
+        selectedSimtrackCol: null,
+        selectedJiraCols: [],
+
+        jiraIssueTypes: [],
+        jiraStatusTypes: []
+      },
+      token: null
     };
-    this.stateMachine = new StateMachine();
   }
 
   onChange = (name, e) => {
     e.persist();
     this.setState(state => ({
-      authData: { ...state.authData, [name]: e.target.value }
+      ...state,
+      authDataState: { ...state.authDataState, [name]: e.target.value }
     }));
   };
 
   // Auth forward function
-  authNext = formData => {
+  authNextStep = formData => {
     this.props
       .jiraAuthorize(formData)
       .then(res => {
         const { token } = res;
         if (token) {
           this.setState({
-            currentState: this.stateMachine.forward(this.state.currentState)
+            currentStep: this.stepsManager[states.AUTH].forwardStep(),
+            token
           });
         }
       })
@@ -80,45 +107,107 @@ class Wizard extends Component {
   };
 
   // Create project forward function
-  selectJiraProjectNext = (headers, formData) => {
-    this.props
-      .associateWithJiraProject(headers, {
-        ...formData,
-        simtrackProjectId: this.props.simtrackProjectId
-      })
-      .then(res => {
-        if (res) {
-          this.setState({
-            currentState: this.stateMachine.forward(this.state.currentState)
-          });
-        }
-      });
+  selectJiraProjectNext = formData => {
+    const { jiraProjectId } = formData;
+    this.setState({
+      currentStep: this.stepsManager[states.SELECT_JIRA_PROJECT].forwardStep(),
+      selectJiraProjectState: {
+        jiraProjectId
+      }
+    });
   };
 
   // Create project backward function
-  backward = () => {
+  backward = step => {
     this.setState({
-      currentState: this.stateMachine.backward(this.state.currentState)
+      currentStep: step.backwardStep()
     });
   };
 
   // Set Association forward function
-  setAssociation = (headers, formData) => {
-    const projectId = this.props.project.id;
-    const { issueTypesAssociation, statusesAssociation, userEmailAssociation } = formData;
-    this.props
-      .setAssociation(headers, projectId, issueTypesAssociation, statusesAssociation, userEmailAssociation)
-      .then(res => {
-        if (res) {
-          this.setState({
-            currentState: this.stateMachine.forward(this.state.currentState)
-          });
+  setAssociation = () => {
+    this.setState({
+      currentStep: this.stepsManager[states.SET_ASSOCIATIONS].forwardStep()
+    });
+  };
+
+  setAssociationState = (association, jiraAssociations) => {
+    this.setState(
+      {
+        associationState: {
+          ...this.state.associationState,
+          issueTypesAssociation: association.issueTypesAssociation,
+          statusesAssociation: association.statusesAssociation,
+          userEmailAssociation: association.userEmailAssociation,
+          jiraIssueTypes: jiraAssociations.issueTypes,
+          jiraStatusTypes: jiraAssociations.statusTypes,
+          jiraUsers: jiraAssociations.users
         }
-      });
+      },
+      () => this.setAssociationStateDefault()
+    );
+  };
+
+  setAssociationStateDefault = () => {
+    const {
+      currentState,
+      issueTypesAssociation,
+      statusesAssociation,
+      userEmailAssociation
+    } = this.state.associationState;
+    let associatedArr;
+    let value;
+    switch (currentState) {
+      case associationStates.USERS:
+        value = this.state.userEmailAssociation[0];
+        associatedArr = userEmailAssociation.filter(e => (value.internalUserId || value.id) === e.internalUserId);
+        const users = userEmailAssociation.map(user => ({ fullNameRu: user.fullNameRu, id: user.internalUserId }));
+        if (this.state.userEmailAssociation.length) {
+          this.setState({ users });
+        }
+        value = users[0];
+        break;
+
+      case associationStates.ISSUE_TYPES:
+        value = this.props.taskTypes.find(el => el.id === 1);
+        associatedArr = issueTypesAssociation.filter(e => value.id === e.internalTaskTypeId);
+        break;
+
+      case associationStates.STATUS_TYPES:
+        value = this.props.taskStatuses.find(el => el.id === 1);
+        associatedArr = statusesAssociation.filter(e => value.id === e.internalStatusId);
+        break;
+      default:
+        break;
+    }
+
+    this.setState({
+      associationState: {
+        ...this.state.associationState,
+        selectedJiraCols: [...associatedArr],
+        selectedSimtrackCol: value
+      }
+    });
+  };
+
+  mergeAssociationState = (mergeData, callback) => {
+    this.setState(
+      {
+        associationState: {
+          ...this.state.associationState,
+          ...mergeData
+        }
+      },
+      () => {
+        if (callback) {
+          callback();
+        }
+      }
+    );
   };
 
   // Finish forward function
-  synchronize = (headers, formData) => {
+  /*synchronize = (headers, formData) => {
     const projectId = this.props.project.id;
     const { issueTypesAssociation, statusesAssociation, userEmailAssociation } = formData;
     this.props
@@ -126,15 +215,15 @@ class Wizard extends Component {
       .then(res => {
         if (res) {
           this.setState({
-            currentState: this.stateMachine.forward(this.state.currentState)
+            currentStep: this.stateMachine.getNextStep()
           });
         }
       });
-  };
+  };*/
 
   onRequestClose = () => {
     this.setState({
-      currentState: states.AUTH
+      currentStep: states.AUTH
     });
     this.props.onRequestClose();
   };
@@ -146,22 +235,24 @@ class Wizard extends Component {
   };
 
   currentStep(lang) {
+    const { authDataState, selectJiraProjectState } = this.state;
+    const { simtrackProjectId } = this.props;
     const statuses = _.chain(this.props.taskStatuses)
       .filter(obj => !obj.name.includes('play'))
       .sortBy('id')
       .value();
     const { jiraCaptachaLink, isJiraAuthorizeError } = this.props;
-    switch (this.state.currentState) {
+    switch (this.state.currentStep) {
       case states.AUTH:
         return (
           <div>
             <Auth
               lang={lang}
-              nextStep={this.authNext}
+              nextStep={this.authNextStep}
               onChange={this.onChange}
               jiraCaptachaLink={jiraCaptachaLink}
               isJiraAuthorizeError={isJiraAuthorizeError}
-              authData={this.state.authData}
+              authData={authDataState}
             />
           </div>
         );
@@ -172,11 +263,11 @@ class Wizard extends Component {
               token={this.props.token}
               lang={lang}
               getJiraProjects={this.props.getJiraProjects}
-              previousStep={this.backward}
+              previousStep={() => this.backward(this.stepsManager[states.SELECT_JIRA_PROJECT])}
               nextStep={this.selectJiraProjectNext}
               jiraProjects={this.props.projects}
               authorId={this.props.authorId}
-              authData={this.state.authData}
+              authData={authDataState}
             />
           </div>
         );
@@ -185,7 +276,7 @@ class Wizard extends Component {
           <div>
             <SetAssociationForm
               lang={lang}
-              previousStep={this.backward}
+              previousStep={() => this.backward(this.stepsManager[states.SET_ASSOCIATIONS])}
               nextStep={this.setAssociation}
               project={this.props.project}
               taskTypes={this.props.taskTypes}
@@ -194,6 +285,13 @@ class Wizard extends Component {
               getSimtrackUsers={this.props.getSimtrackUsersByName}
               getProjectAssociation={this.props.getProjectAssociation}
               getJiraIssueAndStatusTypes={this.props.getJiraIssueAndStatusTypes}
+              simtrackProjectId={simtrackProjectId}
+              jiraProjectId={selectJiraProjectState.jiraProjectId}
+              setAssociation={this.setAssociationState}
+              setDefault={this.setAssociationStateDefault}
+              associationState={this.state.associationState}
+              mergeAssociationState={this.mergeAssociationState}
+              getJiraProjectUsers={this.props.getJiraProjectUsers}
             />
           </div>
         );
@@ -202,10 +300,15 @@ class Wizard extends Component {
           <div>
             <Finish
               lang={lang}
-              token={this.props.token}
+              token={this.state.token}
               previousStep={this.onRequestClose}
               nextStep={this.createBatch}
               project={this.props.project}
+              jiraHostName={authDataState.server}
+              simtrackProjectId={simtrackProjectId}
+              jiraProjectId={selectJiraProjectState.jiraProjectId}
+              associationState={this.state.associationState}
+              associateWithJiraProject={this.props.associateWithJiraProject}
             />
           </div>
         );
