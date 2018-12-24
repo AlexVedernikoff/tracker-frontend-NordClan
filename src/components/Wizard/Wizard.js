@@ -139,8 +139,8 @@ class Wizard extends Component {
           issueTypesAssociation: association.issueTypesAssociation,
           statusesAssociation: association.statusesAssociation,
           userEmailAssociation: association.userEmailAssociation,
-          jiraIssueTypes: jiraAssociations.issueTypes,
-          jiraStatusTypes: jiraAssociations.statusTypes,
+          jiraIssueTypes: jiraAssociations.issue_type,
+          jiraStatusTypes: jiraAssociations.status_type,
           jiraUsers: jiraAssociations.users
         }
       },

@@ -306,16 +306,14 @@ const createBatchError = () => ({
 });
 
 const createBatch = (headers, pid) => {
-  const URL = `${API_URL}/jira/batch`;
+  const URL = `${API_URL}/jira/project/${pid}/handleSync`;
   return dispatch => {
     dispatch(startLoading());
     dispatch(createBatchStart());
     return axios
       .post(
         URL,
-        {
-          pid
-        },
+        {},
         {
           withCredentials: true,
           headers
