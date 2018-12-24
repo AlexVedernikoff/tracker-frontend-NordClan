@@ -106,6 +106,9 @@ class Login extends Component {
                 type="borderedInverse"
                 disabled={!(this.state.username && this.state.password)}
               />
+              <p>
+                <a href="http://localhost:8000/api/v1/auth/sso">Авторизация через SSO</a>
+              </p>
             </div>
           </form>
         </div>
