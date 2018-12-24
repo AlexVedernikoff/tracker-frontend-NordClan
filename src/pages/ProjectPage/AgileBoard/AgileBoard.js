@@ -30,7 +30,7 @@ import { showNotification } from '../../../actions/Notifications';
 import { getDevOpsUsers } from '../../../actions/Users';
 import { addActivity } from '../../../actions/Timesheets';
 
-import { sortedUsersSelector } from '../../../selectors/Project';
+import { sortedUsersSelector, usersSelector } from '../../../selectors/Project';
 import { TASK_STATUSES } from '../../../constants/TaskStatuses';
 
 class AgileBoard extends Component {
@@ -266,6 +266,7 @@ class AgileBoard extends Component {
           users.qa
         );
     }
+    this.unionPerformers = union(this.unionPerformers, this.props.unsortedUsers);
   };
 
   sortPerformersListForTaskCore = users => {
@@ -355,6 +356,7 @@ class AgileBoard extends Component {
           users.qa
         );
     }
+    this.unionPerformers = union(this.unionPerformers, this.props.unsortedUsers);
   };
 
   setFilterValue = (key, value) => {
@@ -483,12 +485,14 @@ AgileBoard.propTypes = {
   tasks: PropTypes.object,
   tracksChange: PropTypes.number,
   typeOptions: PropTypes.array,
+  unsortedUsers: PropTypes.array,
   user: PropTypes.object
 };
 
 const mapStateToProps = state => ({
   ...agileBoardSelector(state),
-  sortedUsers: sortedUsersSelector(state)
+  sortedUsers: sortedUsersSelector(state),
+  unsortedUsers: usersSelector(state)
 });
 
 const mapDispatchToProps = {

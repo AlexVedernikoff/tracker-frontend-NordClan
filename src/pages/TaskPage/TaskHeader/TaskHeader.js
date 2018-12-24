@@ -242,13 +242,14 @@ class TaskHeader extends Component {
   };
 
   render() {
-    const { task, taskTypes, canEdit, lang, users, devOpsUsers } = this.props;
+    const { task, taskTypes, canEdit, lang, users, unsortedUsers, devOpsUsers } = this.props;
     const css = require('./TaskHeader.scss');
     let unionPerformers = [];
     switch (this.state.clickedStatus) {
       case 'Develop':
         unionPerformers = _.union(
           task.isDevOps ? devOpsUsers : [],
+          task.isDevOps ? users.devops : [],
           users.pm,
           users.teamLead,
           users.account,
@@ -280,6 +281,7 @@ class TaskHeader extends Component {
       default:
         unionPerformers = _.union(
           task.isDevOps ? devOpsUsers : [],
+          task.isDevOps ? users.devops : [],
           users.pm,
           users.teamLead,
           users.account,
@@ -293,7 +295,7 @@ class TaskHeader extends Component {
           users.qa
         );
     }
-
+    unionPerformers = _.union(unionPerformers, unsortedUsers);
     const usersFullNames = unionPerformers.map(item => ({
       value: item.user ? item.user.id : item.id,
       label: item.user ? getFullName(item.user) : getFullName(item)
@@ -455,12 +457,14 @@ TaskHeader.propTypes = {
   startingDay: PropTypes.object,
   task: PropTypes.object.isRequired,
   taskTypes: PropTypes.array,
+  unsortedUsers: PropTypes.array,
   user: PropTypes.object,
   users: PropTypes.object
 };
 
 const mapStateToProps = state => ({
   users: sortedUsersSelector(state),
+  unsortedUsers: usersSelector(state),
   project: state.Project.project,
   user: state.Auth.user,
   devOpsUsers: devOpsUsersSelector(state),
