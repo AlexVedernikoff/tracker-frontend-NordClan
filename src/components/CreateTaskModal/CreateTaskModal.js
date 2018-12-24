@@ -278,7 +278,14 @@ class CreateTaskModal extends Component {
                 <p>{localize[lang].TAGS}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
-                <Tags taggable="task" noRequest create canEdit createTagsModalTask={this.addTag}>
+                <Tags
+                  taggable="task"
+                  noRequest
+                  create
+                  canEdit
+                  createTagsModalTask={this.addTag}
+                  className={css.tagsContainer}
+                >
                   {tags}
                 </Tags>
               </Col>

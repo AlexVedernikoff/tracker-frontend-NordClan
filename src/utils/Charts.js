@@ -78,7 +78,7 @@ const chartDefaultOptions = {
 
 const defaultTimeDisplayFormats = {
   day: 'D MMM',
-  hour: 'h:mm a'
+  hour: 'h:mm A'
 };
 
 //Custom plugin which modifies chartjs-plugin-zoom behaviour.

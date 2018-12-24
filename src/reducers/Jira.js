@@ -17,12 +17,14 @@ export default function Jira(state = InitialState, action) {
       return {
         ...state,
         isJiraAuthorizeSuccess: true,
+        isJiraAuthorizeError: null,
         token: action.token
       };
     case JiraActions.JIRA_AUTHORIZE_ERROR:
       return {
         ...state,
-        isJiraAuthorizeError: true
+        isJiraAuthorizeError: true,
+        jiraCaptachaLink: action.captcha
       };
 
     // -----------------

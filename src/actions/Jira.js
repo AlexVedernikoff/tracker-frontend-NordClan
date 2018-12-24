@@ -3,6 +3,26 @@ import { API_URL } from '../constants/Settings';
 import * as JiraActions from '../constants/Jira';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
+import { langSelector } from '../selectors/Localize';
+
+import localize from './Jira.i18n.json';
+
+const getJiraAuhorizationError = (error, lang) => {
+  let errorText = localize[lang].JIRA_AUTHORIZE_ERROR;
+  let status;
+  const response = error.response;
+
+  if (response) {
+    status = response.status;
+    if (status === 401) {
+      errorText = `${errorText} ${localize[lang].JIRA_WRONG_CREDENTIALS}`;
+    }
+  }
+  if (error.message) {
+    errorText = `${errorText} ${error.message}`;
+  }
+  return errorText;
+};
 
 const jiraAuthorizeStart = () => ({
   type: JiraActions.JIRA_AUTHORIZE_START
@@ -13,9 +33,12 @@ const jiraAuthorizeSucess = token => ({
   token
 });
 
-const jiraAuthorizeError = () => ({
-  type: JiraActions.JIRA_AUTHORIZE_ERROR
-});
+const jiraAuthorizeError = data => {
+  return {
+    type: JiraActions.JIRA_AUTHORIZE_ERROR,
+    captcha: data && data.message && data.message.captcha
+  };
+};
 
 const getJiraIssueAndStatusTypesStart = () => ({
   type: JiraActions.GET_JIRA_ISSUE_AND_STATUS_TYPES_START
@@ -24,7 +47,7 @@ const getJiraIssueAndStatusTypesStart = () => ({
 const jiraAuthorize = credentials => {
   const { username, password, server, email } = credentials;
   const URL = `${API_URL}/jira/auth`;
-  return dispatch => {
+  return (dispatch, getState) => {
     dispatch(startLoading());
     dispatch(jiraAuthorizeStart());
     return axios
@@ -46,7 +69,9 @@ const jiraAuthorize = credentials => {
         return response.data;
       })
       .catch(error => {
-        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(
+          showNotification({ message: getJiraAuhorizationError(error, langSelector(getState())), type: 'error' }, 4000)
+        );
         dispatch(jiraAuthorizeError(error.response.data));
         dispatch(finishLoading());
         throw error;

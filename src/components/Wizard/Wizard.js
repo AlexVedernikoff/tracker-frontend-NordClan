@@ -25,8 +25,10 @@ class Wizard extends Component {
     getJiraProjects: PropTypes.func,
     getProjectAssociation: PropTypes.func,
     getSimtrackUsersByName: PropTypes.func,
+    isJiraAuthorizeError: PropTypes.any,
     isOpen: PropTypes.bool,
     jiraAuthorize: PropTypes.func,
+    jiraCaptachaLink: PropTypes.any,
     jiraData: PropTypes.object,
     lang: PropTypes.string,
     onRequestClose: PropTypes.func,
@@ -84,15 +86,25 @@ class Wizard extends Component {
 
   // Auth forward function
   authNextStep = formData => {
-    this.props.jiraAuthorize(formData).then(res => {
-      const { token } = res;
-      if (token) {
-        this.setState({
-          currentStep: this.stepsManager[states.AUTH].forwardStep(),
-          token
-        });
-      }
-    });
+    this.props
+      .jiraAuthorize(formData)
+      .then(res => {
+        const { token } = res;
+        if (token) {
+          this.setState({
+            currentStep: this.stepsManager[states.AUTH].forwardStep(),
+            token
+          });
+        }
+      })
+      .catch(() => {
+        this.setState(state => ({
+          authData: {
+            ...state.authData,
+            username: ''
+          }
+        }));
+      });
   };
 
   // Create project forward function
@@ -230,11 +242,19 @@ class Wizard extends Component {
       .filter(obj => !obj.name.includes('play'))
       .sortBy('id')
       .value();
+    const { jiraCaptachaLink, isJiraAuthorizeError } = this.props;
     switch (this.state.currentStep) {
       case states.AUTH:
         return (
           <div>
-            <Auth lang={lang} nextStep={this.authNextStep} onChange={this.onChange} authData={authDataState} />
+            <Auth
+              lang={lang}
+              nextStep={this.authNextStep}
+              onChange={this.onChange}
+              jiraCaptachaLink={jiraCaptachaLink}
+              isJiraAuthorizeError={isJiraAuthorizeError}
+              authData={authDataState}
+            />
           </div>
         );
       case states.SELECT_JIRA_PROJECT:
