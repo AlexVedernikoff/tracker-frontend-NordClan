@@ -11,7 +11,6 @@ import SelectProject from './steps/CreateProject/SelectJiraProject';
 import SetAssociationForm from './steps/SetAssociation/SetAssociation';
 import Finish from './steps/Finish/Finish';
 import { associationStates } from './steps/SetAssociation/AssociationStates';
-import { associateWithJiraProject } from '../../actions/Jira';
 
 const JIRA_WIZARD_STEPS = [states.AUTH, states.SELECT_JIRA_PROJECT, states.SET_ASSOCIATIONS, states.FINISH];
 

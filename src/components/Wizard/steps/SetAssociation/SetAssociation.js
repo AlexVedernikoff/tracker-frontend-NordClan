@@ -405,7 +405,7 @@ class SetAssociationForm extends Component {
 
   render() {
     const { jiraIssueTypes, jiraStatusTypes, jiraUsers } = this.props.associationState;
-    const { taskTypes, taskStatuses, lang, nextStep } = this.props;
+    const { taskTypes, taskStatuses, lang } = this.props;
     let JiraTableBody;
     let SimtrackTableBody;
     switch (this.state.currentStep) {
