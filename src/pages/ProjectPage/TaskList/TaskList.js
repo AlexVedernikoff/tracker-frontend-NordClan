@@ -115,7 +115,7 @@ class TaskList extends Component {
 
   makeFiltersObject = (name, value) => {
     let processedValue;
-    if (name === 'sprintId' || name === 'performerId' || name === 'statusId' || name === 'typeId' || name === 'tags') {
+    if (['sprintId', 'performerId', 'statusId', 'typeId', 'tags'].indexOf(name) !== -1) {
       processedValue = this.multipleQueries(value);
     } else if (value) {
       if (!Array.isArray(value)) {
