@@ -249,6 +249,7 @@ class TaskHeader extends Component {
       case 'Develop':
         unionPerformers = _.union(
           task.isDevOps ? devOpsUsers : [],
+          task.isDevOps ? users.devops : [],
           users.pm,
           users.teamLead,
           users.account,
@@ -280,6 +281,7 @@ class TaskHeader extends Component {
       default:
         unionPerformers = _.union(
           task.isDevOps ? devOpsUsers : [],
+          task.isDevOps ? users.devops : [],
           users.pm,
           users.teamLead,
           users.account,
@@ -293,7 +295,6 @@ class TaskHeader extends Component {
           users.qa
         );
     }
-
     const usersFullNames = unionPerformers.map(item => ({
       value: item.user ? item.user.id : item.id,
       label: item.user ? getFullName(item.user) : getFullName(item)

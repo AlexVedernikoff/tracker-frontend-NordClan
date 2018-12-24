@@ -239,6 +239,7 @@ class Details extends Component {
       case TASK_STATUSES.DEV_PLAY:
         unionPerformers = _.union(
           task.isDevOps ? this.props.devOpsUsers : [],
+          task.isDevOps ? users.devops : [],
           users.pm,
           users.teamLead,
           users.account,
@@ -255,6 +256,7 @@ class Details extends Component {
       case TASK_STATUSES.DEV_STOP:
         unionPerformers = _.union(
           task.isDevOps ? this.props.devOpsUsers : [],
+          task.isDevOps ? users.devops : [],
           users.pm,
           users.teamLead,
           users.account,
@@ -307,6 +309,7 @@ class Details extends Component {
       default:
         unionPerformers = _.union(
           task.isDevOps ? this.props.devOpsUsers : [],
+          task.isDevOps ? users.devops : [],
           users.pm,
           users.teamLead,
           users.account,
