@@ -113,17 +113,15 @@ export default class SprintSelector extends Component {
       ...otherProps
     } = this.props;
 
+    const toShowMagnifier = !!(multi && this.state.inputFocused && this.props.value && this.props.value.length);
     const thisClassName = classnames({
       sprintSelector: true,
-      taskListClass: this.props.taskListClass && !value
+      taskListClass: (this.props.taskListClass && !value) || !toShowMagnifier
     });
 
     return (
       <div className="sprint-dropdown">
-        {multi &&
-          this.state.inputFocused && (
-            <IconSearch style={taskListClass ? taskListIconSearchStyle : boardIconSearchStyle} />
-          )}
+        {toShowMagnifier && <IconSearch style={taskListClass ? taskListIconSearchStyle : boardIconSearchStyle} />}
         <SelectDropdown
           name="sprint"
           thisClassName={thisClassName}
