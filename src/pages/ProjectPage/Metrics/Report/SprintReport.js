@@ -58,10 +58,12 @@ class SprintReport extends Component {
     } else if (!isEmpty(option)) {
       //check backlog
       if (option.value === 0) {
+        const startDate = this.formatDate(this.props.startDate);
         this.setState({
           selectedName: option.label,
           reportPeriod: option,
-          selectedFrom: this.formatDate(this.props.startDate),
+          reportPeriodStart: startDate,
+          selectedFrom: startDate,
           selectedTo: this.formatDate(this.props.endDate)
         });
       } else {
