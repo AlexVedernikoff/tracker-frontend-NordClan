@@ -198,13 +198,13 @@ class SprintReport extends Component {
 
   getQueryParams = () => {
     const { reportPeriod, selectedFrom, selectedName, selectedTo } = this.state;
-    const { startDate, endDate } = this.props;
+    const { startDate, endDate, lang } = this.props;
     const from = moment(selectedFrom, dateFormat, true).format(dateFormat2);
     const to = moment(selectedTo, dateFormat, true).format(dateFormat2);
     const checkSprint = reportPeriod && reportPeriod.value && typeof reportPeriod.value.id === 'number';
     const backlogCondition = reportPeriod && reportPeriod.value === 0;
     const checkDate = from && to;
-    const selectedDate = `?startDate=${from}&endDate=${to}`;
+    const selectedDate = `?lang=${lang}&startDate=${from}&endDate=${to}`;
     if (checkDate && checkSprint) {
       // запрос отчета по спринту
       const { id, factStartDate, factFinishDate } = reportPeriod.value;
