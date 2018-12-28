@@ -17,6 +17,7 @@ import ActivityRow from './ActivityRow';
 import exactMath from 'exact-math';
 import localize from './timesheets.json';
 import Title from 'react-title-component';
+import { isTimesheetsCanBeChanged } from '../../utils/Timesheets';
 
 class Timesheets extends React.Component {
   static propTypes = {
@@ -69,12 +70,8 @@ class Timesheets extends React.Component {
   render() {
     const { isCalendarOpen } = this.state;
     const { startingDay, tempTimesheets, lang } = this.props;
-    const canAddActivity = !this.props.list.find(
-      tsh =>
-        tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
-        tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED
-    );
-    // const countTsWithTime = this.props.list.filter(tsh => tsh.spentTime !== 0).length;
+    const canAddActivity = isTimesheetsCanBeChanged(this.props.list);
+
     const defaultTaskStatusId = 2;
     const tempTimesheetsList = tempTimesheets.map(timesheet => {
       return {
