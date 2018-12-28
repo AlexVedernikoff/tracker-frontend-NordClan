@@ -296,7 +296,7 @@ class TaskPage extends Component {
       <HttpError error={httpError} />
     ) : (
       <div ref="taskPage" className={css.taskPage}>
-        <Title render={`SimTrack - ST-${task.id} ${task.name}`} />
+        <Title render={`SimTrack - ${project.prefix}-${task.id} ${task.name}`} />
         <Row>
           <Col xs={12} sm={8}>
             <TaskHeader
