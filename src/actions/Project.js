@@ -454,6 +454,8 @@ const createTask = (task, openTaskPage, callee) => {
           if (openTaskPage) {
             history.push(`/projects/${task.projectId}/tasks/${response.data.id}`);
           }
+
+          dispatch(finishLoading());
           return response.data.id;
         }
         dispatch(finishLoading());
