@@ -3,8 +3,7 @@ import * as dictionariesActions from '../constants/Dictionaries';
 const InitialState = {
   taskTypes: [],
   taskStatuses: [],
-  magicActivityTypes: [],
-  gitlabRoles: []
+  magicActivityTypes: []
 };
 
 export default function Portfolios(state = InitialState, action) {

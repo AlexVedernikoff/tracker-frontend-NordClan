@@ -66,6 +66,14 @@ class Participant extends React.Component {
     }
   };
 
+  getProjectUserGitlabRole(projectId) {
+    const { user } = this.props;
+    if (user.gitlabRoles) {
+      return (user.gitlabRoles.find(({ gitlabProjectId }) => gitlabProjectId === projectId) || {}).access_level;
+    }
+    return '-';
+  }
+
   unbindUser = () => {
     const { projectId, user, isExternal } = this.props;
     this.setState({ isConfirmDeleteOpen: false }, () => this.props.unbindUserToProject(projectId, user.id, isExternal));
@@ -93,7 +101,7 @@ class Participant extends React.Component {
   };
 
   render() {
-    const { user, isExternal, lang } = this.props;
+    const { user, isExternal, lang, gitlabProjects } = this.props;
 
     const roles = user.roles;
     return (
@@ -122,6 +130,11 @@ class Participant extends React.Component {
         {!isExternal ? (
           <Col xs={12} sm={10} md={10} lg={9}>
             <Row>
+              {gitlabProjects.map(({ id }) => (
+                <Col key={id} xs={6} sm={3} md={3} lg className={css.cellColumn}>
+                  {this.getProjectUserGitlabRole(id)}
+                </Col>
+              ))}
               {this.ROLES_NAME
                 ? this.ROLES_NAME.map((ROLES_NAME, i) => (
                     <Col xs={6} sm={3} md={3} lg key={`${i}-roles-checkbox`} className={css.cellColumn}>
@@ -159,6 +172,7 @@ class Participant extends React.Component {
 
 Participant.propTypes = {
   bindUserToProject: PropTypes.func.isRequired,
+  gitlabProjects: PropTypes.arrayOf(PropTypes.object),
   isExternal: PropTypes.bool,
   isProjectAdmin: PropTypes.bool,
   lang: PropTypes.string,
