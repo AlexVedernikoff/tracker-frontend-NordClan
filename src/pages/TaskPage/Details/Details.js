@@ -28,8 +28,9 @@ import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
 import { getDevOpsUsers } from '../../../actions/Users';
 import shortid from 'shortid';
 import { addActivity } from '../../../actions/Timesheets';
-import { devOpsUsersSelector } from '../../../utils/sortPerformer';
+import { alphabeticallyComparatorLang, devOpsUsersSelector } from '../../../utils/sortPerformer';
 import { sortedUsersSelector, usersSelector } from '../../../selectors/Project';
+import union from 'lodash/union';
 
 const spentRequestStatus = {
   READY: 0,
@@ -299,12 +300,9 @@ class Details extends Component {
         );
         break;
 
-      case TASK_STATUSES.QA_PLAY:
-        unionPerformers = users.qa;
-        break;
-
       case TASK_STATUSES.QA_STOP:
-        unionPerformers = users.qa;
+      case TASK_STATUSES.QA_PLAY:
+        unionPerformers = union(users.qa, unsortedUsers.sort(alphabeticallyComparatorLang(lang)));
         break;
 
       default:
