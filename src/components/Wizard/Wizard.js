@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import Modal from '../Modal';
 import * as css from './Wizard.scss';
 import { createStepsManager } from './wizardConfigurer';
 import { states } from './states';
+import statesTranslates from './states.json';
 
 import Auth from './steps/auth/Auth';
 import SelectProject from './steps/CreateProject/SelectJiraProject';
 import SetAssociationForm from './steps/SetAssociation/SetAssociation';
 import Finish from './steps/Finish/Finish';
 import { associationStates } from './steps/SetAssociation/AssociationStates';
+import WizardHeader from './WizardHeader';
 
 const JIRA_WIZARD_STEPS = [states.AUTH, states.SELECT_JIRA_PROJECT, states.SET_ASSOCIATIONS, states.FINISH];
 
@@ -25,17 +26,16 @@ class Wizard extends Component {
     getProjectAssociation: PropTypes.func,
     getSimtrackUsersByName: PropTypes.func,
     isJiraAuthorizeError: PropTypes.any,
-    isOpen: PropTypes.bool,
     jiraAuthorize: PropTypes.func,
     jiraCaptachaLink: PropTypes.any,
     jiraData: PropTypes.object,
     lang: PropTypes.string,
     onRequestClose: PropTypes.func,
+    params: PropTypes.object,
     project: PropTypes.object,
     projectData: PropTypes.object,
     projects: PropTypes.array,
     setAssociation: PropTypes.func,
-    simtrackProjectId: PropTypes.number,
     taskStatuses: PropTypes.array,
     taskTypes: PropTypes.array,
     token: PropTypes.string
@@ -234,9 +234,13 @@ class Wizard extends Component {
     });
   };
 
+  getStepsUI = () => {
+    return <WizardHeader lang={this.props.lang} activeStep={this.state.currentStep} />;
+  };
+
   currentStep(lang) {
     const { authDataState, selectJiraProjectState } = this.state;
-    const { simtrackProjectId } = this.props;
+    const simtrackProjectId = this.props.params.projectId;
     const statuses = _.chain(this.props.taskStatuses)
       .filter(obj => !obj.name.includes('play'))
       .sortBy('id')
@@ -318,16 +322,14 @@ class Wizard extends Component {
   }
 
   render() {
-    const { lang, isOpen } = this.props;
-    const {} = this.state;
+    const { lang } = this.props;
 
     return (
       <div>
-        <Modal isOpen={isOpen} onRequestClose={this.onRequestClose}>
-          <div className={css.baseForm}>
-            <div>{this.currentStep(lang)}</div>
-          </div>
-        </Modal>
+        <h1>Синхронизация с проектом Jira</h1>
+        <hr />
+        <div>{this.getStepsUI()}</div>
+        {this.currentStep(lang)}
       </div>
     );
   }

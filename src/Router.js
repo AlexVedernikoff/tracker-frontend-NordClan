@@ -36,6 +36,7 @@ import { setRedirectPath } from './actions/Authentication';
 import isAdmin from './utils/isAdmin';
 import { EXTERNAL_USER } from './constants/Roles';
 import TaskTimeReports from './pages/TaskPage/TaskTimeReports/TaskTimeReports';
+import JiraWizard from './components/Wizard';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
@@ -125,6 +126,7 @@ class AppRouter extends Component {
             <Route path="history" component={ProjectHistory} />
             <Route path="(sprint:sprintId/)tasks" component={TaskList} />
           </Route>
+          <Route path="projects/:projectId/jira-wizard" component={JiraWizard} scrollToTop />
 
           <Route path="projects/portfolio/:portfolioId" component={Portfolio} scrollToTop />
 

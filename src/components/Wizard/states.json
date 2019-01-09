@@ -1,0 +1,14 @@
+{
+  "en": {
+    "AUTH": "Jira Settings",
+    "SELECT_JIRA_PROJECT": "Select Jira Project",
+    "SET_ASSOCIATIONS": "Set Associations",
+    "FINISH": "Done"
+  },
+  "ru": {
+    "AUTH": "Данные Jira",
+    "SELECT_JIRA_PROJECT": "Выбрать проект Jira",
+    "SET_ASSOCIATIONS": "Выбрать ассоциации",
+    "FINISH": "Готово"
+  }
+}
