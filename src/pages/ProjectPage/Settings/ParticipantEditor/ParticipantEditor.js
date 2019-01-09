@@ -4,6 +4,7 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import moment from 'moment';
 import { API_URL } from '../../../../constants/Settings';
 import { ADMIN } from '../../../../constants/Roles';
 import { bindUserToProject, getProjectUsers } from '../../../../actions/Project';
@@ -207,7 +208,7 @@ class ParticipantEditor extends Component {
           ...state.selectedGitlabRoles,
           [projectId]: {
             ...state.selectedGitlabRoles[projectId],
-            [key]: option
+            [key]: moment.isMoment(option) ? option.format('DD.MM.YYYY') : option
           }
         }
       }));
@@ -352,6 +353,7 @@ class ParticipantEditor extends Component {
                 projectId={this.props.id}
                 isProjectAdmin={isProjectAdmin}
                 gitlabProjects={gitlabProjects}
+                gitlabRoles={gitlabRoles}
               />
             ))
           : null}

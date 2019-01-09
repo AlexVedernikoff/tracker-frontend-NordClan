@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import moment from 'moment';
 import * as css from './Participant.scss';
 import { IconClose } from '../Icons';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
@@ -11,6 +12,10 @@ import ConfirmModal from '../ConfirmModal';
 import { showNotification } from '../../actions/Notifications';
 import localize from './Participant.json';
 import { getFullName } from '../../utils/NameLocalisation';
+import Button from '../Button';
+import Modal from '../Modal';
+import SelectDropdown from '../SelectDropdown';
+import DatepickerDropdown from '../DatepickerDropdown';
 
 class Participant extends React.Component {
   static defaultProps = {
@@ -66,12 +71,39 @@ class Participant extends React.Component {
     }
   };
 
-  getProjectUserGitlabRole(projectId) {
-    const { user } = this.props;
-    if (user.gitlabRoles) {
-      return (user.gitlabRoles.find(({ gitlabProjectId }) => gitlabProjectId === projectId) || {}).access_level;
+  changeGitlabRole = (option, attr) => {
+    this.setState({
+      editingGitlabRole: {
+        ...this.state.editingGitlabRole,
+        [attr]: moment.isMoment(option) ? option.format('DD.MM.YYYY') : option.value
+      }
+    });
+  };
+
+  saveGitlabRole = e => {
+    e.preventDefault();
+    const { editingGitlabRoleForProjectId, editingGitlabRole, sendRoles } = this.state;
+    const { projectId } = this.props;
+    const gitLabRole = this.getProjectUserGitlabRole(editingGitlabRoleForProjectId);
+    if (
+      editingGitlabRole.accessLevel !== gitLabRole.accessLevel ||
+      editingGitlabRole.expiresAt !== gitLabRole.expiresAt
+    ) {
+      this.props.bindUserToProject(projectId, this.props.user.id, sendRoles.join(','), [editingGitlabRole]);
     }
-    return '-';
+    this.handleCloseGitlabRoleEdit();
+  };
+
+  getProjectUserGitlabRole(projectId) {
+    const { user, gitlabRoles } = this.props;
+    if (user.gitlabRoles) {
+      const userGitlabRole = user.gitlabRoles.find(({ gitlabProjectId }) => gitlabProjectId === projectId) || {};
+      return {
+        ...userGitlabRole,
+        ...gitlabRoles.find(({ value }) => value === userGitlabRole.accessLevel)
+      };
+    }
+    return { label: localize[this.props.lang].UNSET_GITLAB_USER_ROLE };
   }
 
   unbindUser = () => {
@@ -89,6 +121,20 @@ class Participant extends React.Component {
     }
 
     return sendRoles;
+  };
+
+  handleOpenGitlabRoleEdit = projectId => {
+    this.setState({
+      editingGitlabRoleForProjectId: projectId,
+      editingGitlabRole: this.getProjectUserGitlabRole(projectId)
+    });
+  };
+
+  handleCloseGitlabRoleEdit = () => {
+    this.setState({
+      editingGitlabRoleForProjectId: null,
+      editingGitlabRole: {}
+    });
   };
 
   handleOpenConfirmDelete = event => {
@@ -132,7 +178,11 @@ class Participant extends React.Component {
             <Row>
               {gitlabProjects.map(({ id }) => (
                 <Col key={id} xs={6} sm={3} md={3} lg className={css.cellColumn}>
-                  {this.getProjectUserGitlabRole(id)}
+                  <div className={classnames(css.cell, css.gitlabRoleCellWrap)}>
+                    <div className={classnames(css.gitlabRoleCell)}>
+                      <a onClick={() => this.handleOpenGitlabRoleEdit(id)}>{this.getProjectUserGitlabRole(id).label}</a>
+                    </div>
+                  </div>
                 </Col>
               ))}
               {this.ROLES_NAME
@@ -165,6 +215,39 @@ class Participant extends React.Component {
             onRequestClose={this.handleCloseConfirmDelete}
           />
         ) : null}
+        {this.state.editingGitlabRoleForProjectId ? (
+          <Modal isOpen contentLabel="modal" onRequestClose={this.handleCloseGitlabRoleEdit}>
+            <form className={css.changeStage}>
+              <h3>{localize[lang].EDIT_GITLAB_ROLE}</h3>
+              <div>
+                <div className={css.gitlabRoleParams}>
+                  <SelectDropdown
+                    name="access_level"
+                    placeholder={localize[lang].SELECT_GITLAB_ROLE}
+                    value={this.state.editingGitlabRole.accessLevel}
+                    onChange={value => this.changeGitlabRole(value, 'accessLevel')}
+                    noResultsText={localize[lang].NO_RESULTS}
+                    backspaceToRemoveMessage={''}
+                    options={this.props.gitlabRoles}
+                  />
+                  <DatepickerDropdown
+                    name="expires_at"
+                    value={this.state.editingGitlabRole.expiresAt || ''}
+                    onDayChange={value => this.changeGitlabRole(value, 'expiresAt')}
+                    placeholder={localize[lang].SELECT_DATA}
+                  />
+                </div>
+                <Button
+                  type="green"
+                  text={localize[lang].SAVE_GITLAB_ROLE}
+                  onClick={this.saveGitlabRole}
+                  htmlType="submit"
+                  disabled={!this.state.editingGitlabRole.accessLevel || !this.state.editingGitlabRole.expiresAt}
+                />
+              </div>
+            </form>
+          </Modal>
+        ) : null}
       </Row>
     );
   }
@@ -173,6 +256,12 @@ class Participant extends React.Component {
 Participant.propTypes = {
   bindUserToProject: PropTypes.func.isRequired,
   gitlabProjects: PropTypes.arrayOf(PropTypes.object),
+  gitlabRoles: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.number,
+      label: PropTypes.string
+    })
+  ),
   isExternal: PropTypes.bool,
   isProjectAdmin: PropTypes.bool,
   lang: PropTypes.string,
