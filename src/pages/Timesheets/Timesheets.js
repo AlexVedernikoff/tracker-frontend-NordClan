@@ -69,7 +69,7 @@ class Timesheets extends React.Component {
   render() {
     const { isCalendarOpen } = this.state;
     const { startingDay, tempTimesheets, lang } = this.props;
-    const canAddActivity = isTimesheetsCanBeChanged(this.props.list);
+    const canAddActivity = isTimesheetsCanBeChanged(this.props.list, startingDay);
 
     const defaultTaskStatusId = 2;
     const tempTimesheetsList = tempTimesheets.map(timesheet => {
