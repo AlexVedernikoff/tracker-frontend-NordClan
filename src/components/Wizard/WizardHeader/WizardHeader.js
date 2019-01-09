@@ -12,7 +12,6 @@ class Steps extends Component {
   render() {
     const { lang, activeStep } = this.props;
     const stepNodes = Object.keys(states).map(state => {
-      console.log(activeStep, state);
       return (
         <div key={state}>
           {localize[lang][state]}

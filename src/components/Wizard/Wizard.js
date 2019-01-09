@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import * as css from './Wizard.scss';
 import { createStepsManager } from './wizardConfigurer';
 import { states } from './states';
-import statesTranslates from './states.json';
 
 import Auth from './steps/auth/Auth';
 import SelectProject from './steps/CreateProject/SelectJiraProject';
