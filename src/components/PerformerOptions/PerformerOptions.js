@@ -6,7 +6,7 @@ import * as css from './PerformerOptions.scss';
 import Modal from '../Modal';
 import SelectDropdown from '../SelectDropdown';
 import { changeTask, publishComment, getTask } from '../../actions/Task';
-import { changeProjectWeek } from '../../actions/Timesheets';
+import { changeWeek } from '../../actions/Timesheets';
 import TaskTimesheet from './TaskTimesheet';
 import MentionsInput from '../../pages/TaskPage/Comments/Mentions';
 import { getFullName } from '../../utils/NameLocalisation';
@@ -49,7 +49,7 @@ class PerformerOptions extends Component {
     }
 
     if (!isTshAndCommentsHidden) {
-      this.props.changeProjectWeek(moment(), activeUser.id);
+      this.props.changeWeek(moment(), activeUser.id);
     }
   }
 
@@ -62,7 +62,7 @@ class PerformerOptions extends Component {
     });
 
     if (!isTshAndCommentsHidden && !isTimesheetsCanBeChanged(nextProps.list)) {
-      this.props.changeProjectWeek(startingDay.add(7, 'days'), activeUser.id);
+      this.props.changeWeek(startingDay.add(7, 'days'), activeUser.id);
     }
   }
 
@@ -228,8 +228,8 @@ class PerformerOptions extends Component {
 PerformerOptions.propTypes = {
   activeUser: PropTypes.object,
   canBeNotSelected: PropTypes.bool,
-  changeProjectWeek: PropTypes.func,
   changeTask: PropTypes.func,
+  changeWeek: PropTypes.func,
   defaultOption: PropTypes.number,
   externalUsers: PropTypes.array,
   getTask: PropTypes.func,
@@ -267,7 +267,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   changeTask,
-  changeProjectWeek,
+  changeWeek,
   publishComment,
   getTask
 };
