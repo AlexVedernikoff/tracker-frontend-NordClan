@@ -75,7 +75,7 @@ class Participant extends React.Component {
     this.setState({
       editingGitlabRole: {
         ...this.state.editingGitlabRole,
-        [attr]: moment.isMoment(option) ? option.format('DD.MM.YYYY') : option.value
+        [attr]: moment.isMoment(option) ? option : option.value
       }
     });
   };
@@ -89,14 +89,19 @@ class Participant extends React.Component {
       editingGitlabRole.accessLevel !== gitLabRole.accessLevel ||
       editingGitlabRole.expiresAt !== gitLabRole.expiresAt
     ) {
-      this.props.bindUserToProject(projectId, this.props.user.id, sendRoles.join(','), [editingGitlabRole]);
+      this.props.bindUserToProject(projectId, this.props.user.id, sendRoles.join(','), [
+        {
+          ...editingGitlabRole,
+          gitlabProjectId: editingGitlabRoleForProjectId
+        }
+      ]);
     }
     this.handleCloseGitlabRoleEdit();
   };
 
   getProjectUserGitlabRole(projectId) {
     const { user, gitlabRoles } = this.props;
-    if (user.gitlabRoles) {
+    if (user.gitlabRoles && user.gitlabRoles.length) {
       const userGitlabRole = user.gitlabRoles.find(({ gitlabProjectId }) => gitlabProjectId === projectId) || {};
       return {
         ...userGitlabRole,
@@ -148,6 +153,7 @@ class Participant extends React.Component {
 
   render() {
     const { user, isExternal, lang, gitlabProjects } = this.props;
+    const { editingGitlabRole } = this.state;
 
     const roles = user.roles;
     return (
@@ -224,7 +230,7 @@ class Participant extends React.Component {
                   <SelectDropdown
                     name="access_level"
                     placeholder={localize[lang].SELECT_GITLAB_ROLE}
-                    value={this.state.editingGitlabRole.accessLevel}
+                    value={editingGitlabRole.accessLevel}
                     onChange={value => this.changeGitlabRole(value, 'accessLevel')}
                     noResultsText={localize[lang].NO_RESULTS}
                     backspaceToRemoveMessage={''}
@@ -232,7 +238,7 @@ class Participant extends React.Component {
                   />
                   <DatepickerDropdown
                     name="expires_at"
-                    value={this.state.editingGitlabRole.expiresAt || ''}
+                    value={editingGitlabRole.expiresAt ? moment(editingGitlabRole.expiresAt).format('DD.MM.YYYY') : ''}
                     onDayChange={value => this.changeGitlabRole(value, 'expiresAt')}
                     placeholder={localize[lang].SELECT_DATA}
                   />
@@ -242,7 +248,7 @@ class Participant extends React.Component {
                   text={localize[lang].SAVE_GITLAB_ROLE}
                   onClick={this.saveGitlabRole}
                   htmlType="submit"
-                  disabled={!this.state.editingGitlabRole.accessLevel || !this.state.editingGitlabRole.expiresAt}
+                  disabled={!editingGitlabRole.accessLevel || !editingGitlabRole.expiresAt}
                 />
               </div>
             </form>

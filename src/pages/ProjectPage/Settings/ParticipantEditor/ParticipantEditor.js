@@ -104,10 +104,10 @@ class ParticipantEditor extends Component {
     const { id } = this.props;
     const { participant, roles, selectedGitlabRoles } = this.state;
     const rolesIds = roles.map(role => role.value).join(',');
-    const gitlabRolesArray = Object.keys(selectedGitlabRoles).map(projectId => ({
-      accessLevel: selectedGitlabRoles[projectId].role.value,
-      expiresAt: selectedGitlabRoles[projectId].expiresAt,
-      projectId
+    const gitlabRolesArray = Object.keys(selectedGitlabRoles).map(gitlabProjectId => ({
+      accessLevel: selectedGitlabRoles[gitlabProjectId].role.value,
+      expiresAt: selectedGitlabRoles[gitlabProjectId].expiresAt,
+      gitlabProjectId
     }));
     this.props.bindUserToProject(id, participant.value, rolesIds, gitlabRolesArray);
     this.setState({
@@ -198,7 +198,8 @@ class ParticipantEditor extends Component {
   }
 
   getGitlabRoleParam(projectId, key) {
-    return this.state.selectedGitlabRoles[projectId] ? this.state.selectedGitlabRoles[projectId][key] : null;
+    const { selectedGitlabRoles } = this.state;
+    return selectedGitlabRoles[projectId] ? selectedGitlabRoles[projectId][key] : null;
   }
 
   selectGitlabRoleParam(projectId, key) {
@@ -208,7 +209,7 @@ class ParticipantEditor extends Component {
           ...state.selectedGitlabRoles,
           [projectId]: {
             ...state.selectedGitlabRoles[projectId],
-            [key]: moment.isMoment(option) ? option.format('DD.MM.YYYY') : option
+            [key]: moment.isMoment(option) ? option : option
           }
         }
       }));
@@ -447,7 +448,7 @@ class ParticipantEditor extends Component {
                         <div className={css.gitlabRoleProjectName}>{name}:</div>
                         <div className={css.gitlabRoleParams}>
                           <SelectDropdown
-                            name="gitlabRoles"
+                            name="accessLevel"
                             placeholder={localize[lang].SELECT_GITLAB_ROLE}
                             value={this.getGitlabRoleParam(id, 'role') || ''}
                             onChange={this.selectGitlabRoleParam(id, 'role')}
@@ -456,8 +457,12 @@ class ParticipantEditor extends Component {
                             options={gitlabRoles}
                           />
                           <DatepickerDropdown
-                            name="date"
-                            value={this.getGitlabRoleParam(id, 'expiresAt') || ''}
+                            name="expiresAt"
+                            value={
+                              this.getGitlabRoleParam(id, 'expiresAt')
+                                ? moment(this.getGitlabRoleParam(id, 'expiresAt')).format('DD.MM.YYYY')
+                                : ''
+                            }
                             onDayChange={this.selectGitlabRoleParam(id, 'expiresAt')}
                             placeholder={localize[lang].SELECT_DATA}
                           />
