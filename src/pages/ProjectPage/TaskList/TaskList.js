@@ -26,6 +26,7 @@ import Tag from '../../../components/Tag';
 import getPriorityById from '../../../utils/TaskPriority';
 
 import { getFullName, getDictionaryName } from '../../../utils/NameLocalisation';
+import { removeNumChars } from '../../../utils/formatter';
 import { openCreateTaskModal } from '../../../actions/Project';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { getLocalizedTaskTypes, getLocalizedTaskStatuses } from '../../../selectors/dictionaries';
@@ -42,6 +43,7 @@ export const initialFilters = {
   changedSprint: [],
   filterTags: [],
   typeId: [],
+  sprintId: [],
   name: null,
   authorId: null,
   prioritiesId: null,
@@ -53,6 +55,7 @@ class TaskList extends Component {
     super(props);
     this.state = {
       isOpened: false,
+      isProjectLoaded: false,
       allFilters: [],
       activePage: 1,
       isPerformerModalOpen: false,
@@ -60,7 +63,6 @@ class TaskList extends Component {
       nameInputValue: null,
       ...this.getQueryFilters()
     };
-
     this.debouncedSubmitNameFilter = debounce(this.submitNameFilter, 1000);
   }
 
@@ -80,10 +82,24 @@ class TaskList extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.isProjectReceiving && !this.props.isProjectReceiving && !this.state.isProjectLoaded) {
+      this.setProjectLoadedFlag();
+    }
+  }
+
   componentWillUnmount() {
     this.debouncedSubmitNameFilter.cancel();
   }
 
+  setProjectLoadedFlag = () => {
+    this.setState(
+      {
+        isProjectLoaded: true
+      },
+      this.updateFilterList
+    );
+  };
   translateToNumIfNeeded = value => {
     const re = /^\d+$/;
     return re.test(value) ? +value : value;
@@ -99,12 +115,18 @@ class TaskList extends Component {
   };
 
   makeFiltersObject = (name, value) => {
-    if (!!value && !Array.isArray(value)) {
-      return { [name]: this.singleQuery(value) };
+    let processedValue;
+    if (['sprintId', 'performerId', 'statusId', 'typeId', 'tags'].indexOf(name) !== -1) {
+      processedValue = this.multipleQueries(value);
+    } else if (value) {
+      if (!Array.isArray(value)) {
+        processedValue = this.singleQuery(value);
+      } else {
+        processedValue = this.multipleQueries(value);
+      }
     }
-    if (!!value && Array.isArray(value)) {
-      return { [name]: this.multipleQueries(value) };
-    }
+
+    return { [name]: processedValue };
   };
 
   getUrlQueries = () => {
@@ -122,7 +144,6 @@ class TaskList extends Component {
       dateFrom,
       dateTo
     } = (this.props.location && this.props.location.query) || {};
-
     return {
       ...this.makeFiltersObject('performerId', performerId),
       ...this.makeFiltersObject('sprintId', sprintId),
@@ -146,7 +167,8 @@ class TaskList extends Component {
       changedFilters: {
         projectId,
         ...this.getUrlQueries()
-      }
+      },
+      nameInputValue: (this.props.location && this.props.location.query.name) || null
     };
   }
 
@@ -268,7 +290,6 @@ class TaskList extends Component {
         } else {
           delete changedFilters[name];
         }
-
         this.changeUrl(changedFilters);
         return {
           activePage:
@@ -374,9 +395,13 @@ class TaskList extends Component {
         changedFilters: {
           ...prevState.changedFilters,
           [filterName]: null
-        }
+        },
+        nameInputValue: filterName === 'name' ? null : prevState.nameInputValue
       }),
-      this.loadTasks
+      () => {
+        this.loadTasks();
+        this.changeUrl(this.state.changedFilters);
+      }
     );
   };
 
@@ -445,7 +470,8 @@ class TaskList extends Component {
         const user = users.find(u => u.id === +value);
         return user ? getFullName(user) : '';
       case 'changedSprint':
-        return this.getEditedSprints(sprints).find(el => el.value === value).label;
+        const editedSprints = this.getEditedSprints(sprints).find(el => el.value === value);
+        return editedSprints && editedSprints.label;
       case 'typeId':
         return taskTypes.find(el => el.id === value).name;
       case 'statusId':
@@ -529,7 +555,10 @@ class TaskList extends Component {
           [filterName]: newList
         }
       }),
-      this.loadTasks
+      () => {
+        this.loadTasks();
+        this.changeUrl(this.state.changedFilters);
+      }
     );
   };
 
@@ -685,6 +714,7 @@ class TaskList extends Component {
                     multi={false}
                     value={authorId}
                     onChange={this.onChangeAuthorFilter}
+                    onInputChange={removeNumChars}
                     noResultsText={localize[lang].NO_RESULTS}
                     options={authorOptions}
                   />
@@ -869,6 +899,7 @@ TaskList.propTypes = {
   getTasks: PropTypes.func.isRequired,
   globalRole: PropTypes.string,
   isCreateTaskModalOpen: PropTypes.bool,
+  isProjectReceiving: PropTypes.bool,
   isReceiving: PropTypes.bool,
   lang: PropTypes.string,
   lastCreatedTask: PropTypes.object,
@@ -892,6 +923,7 @@ const mapStateToProps = state => ({
   tasksList: state.TaskList.tasks,
   pagesCount: state.TaskList.pagesCount,
   isReceiving: state.TaskList.isReceiving,
+  isProjectReceiving: state.Project.isProjectInfoReceiving,
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
   project: state.Project.project,
   statuses: getLocalizedTaskStatuses(state),

@@ -28,8 +28,9 @@ import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
 import { getDevOpsUsers } from '../../../actions/Users';
 import shortid from 'shortid';
 import { addActivity } from '../../../actions/Timesheets';
-import { devOpsUsersSelector } from '../../../utils/sortPerformer';
-import { sortedUsersSelector } from '../../../selectors/Project';
+import { alphabeticallyComparatorLang, devOpsUsersSelector } from '../../../utils/sortPerformer';
+import { sortedUsersSelector, usersSelector } from '../../../selectors/Project';
+import union from 'lodash/union';
 
 const spentRequestStatus = {
   READY: 0,
@@ -57,6 +58,7 @@ class Details extends Component {
     task: PropTypes.object.isRequired,
     taskTypes: PropTypes.array,
     timeSpent: PropTypes.object,
+    unsortedUsers: PropTypes.array,
     user: PropTypes.object,
     users: PropTypes.object
   };
@@ -227,7 +229,7 @@ class Details extends Component {
   };
 
   render() {
-    const { task, sprints, taskTypes, timeSpent, isExternal, lang, users, user } = this.props;
+    const { task, sprints, taskTypes, timeSpent, isExternal, lang, users, unsortedUsers, user } = this.props;
     const tags = task.tags.map((tag, i) => {
       const tagName = typeof tag === 'object' ? tag.name : tag;
       return <Tag key={i} name={tagName} taggable="task" taggableId={task.id} />;
@@ -239,6 +241,7 @@ class Details extends Component {
       case TASK_STATUSES.DEV_PLAY:
         unionPerformers = _.union(
           task.isDevOps ? this.props.devOpsUsers : [],
+          task.isDevOps ? users.devops : [],
           users.pm,
           users.teamLead,
           users.account,
@@ -255,6 +258,7 @@ class Details extends Component {
       case TASK_STATUSES.DEV_STOP:
         unionPerformers = _.union(
           task.isDevOps ? this.props.devOpsUsers : [],
+          task.isDevOps ? users.devops : [],
           users.pm,
           users.teamLead,
           users.account,
@@ -296,17 +300,15 @@ class Details extends Component {
         );
         break;
 
-      case TASK_STATUSES.QA_PLAY:
-        unionPerformers = users.qa;
-        break;
-
       case TASK_STATUSES.QA_STOP:
-        unionPerformers = users.qa;
+      case TASK_STATUSES.QA_PLAY:
+        unionPerformers = union(users.qa, unsortedUsers.sort(alphabeticallyComparatorLang(lang)));
         break;
 
       default:
         unionPerformers = _.union(
           task.isDevOps ? this.props.devOpsUsers : [],
+          task.isDevOps ? users.devops : [],
           users.pm,
           users.teamLead,
           users.account,
@@ -320,6 +322,7 @@ class Details extends Component {
           users.qa
         );
     }
+    unionPerformers = _.union(unionPerformers, unsortedUsers);
 
     const usersFullNames = unionPerformers.map(item => ({
       value: item.user ? item.user.id : item.id,
@@ -534,6 +537,7 @@ const mapStateToProps = state => ({
   user: state.Auth.user,
   devOpsUsers: devOpsUsersSelector(state),
   users: sortedUsersSelector(state),
+  unsortedUsers: usersSelector(state),
   sprints: state.Project.project.sprints,
   task: state.Task.task,
   taskTypes: getLocalizedTaskTypes(state),

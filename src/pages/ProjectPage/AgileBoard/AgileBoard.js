@@ -20,6 +20,7 @@ import CreateTaskModal from '../../../components/CreateTaskModal';
 import withFiltersManager from '../../../components/FiltrersManager/FiltersManager';
 
 import { getFullName } from '../../../utils/NameLocalisation';
+import { alphabeticallyComparatorLang } from '../../../utils/sortPerformer';
 import { agileBoardSelector } from '../../../selectors/agileBoard';
 
 import { EXTERNAL_USER } from '../../../constants/Roles';
@@ -30,7 +31,7 @@ import { showNotification } from '../../../actions/Notifications';
 import { getDevOpsUsers } from '../../../actions/Users';
 import { addActivity } from '../../../actions/Timesheets';
 
-import { sortedUsersSelector } from '../../../selectors/Project';
+import { sortedUsersSelector, usersSelector } from '../../../selectors/Project';
 import { TASK_STATUSES } from '../../../constants/TaskStatuses';
 
 class AgileBoard extends Component {
@@ -217,6 +218,8 @@ class AgileBoard extends Component {
   unionPerformers = [];
 
   sortPerformersList = users => {
+    const { lang } = this.props;
+
     const devOpsUsers = this.state.changedTaskIsDevOps && this.props.devOpsUsers ? this.props.devOpsUsers : [];
     switch (this.state.phase) {
       case 'Dev':
@@ -248,7 +251,7 @@ class AgileBoard extends Component {
         );
         break;
       case 'QA':
-        this.unionPerformers = users.qa;
+        this.unionPerformers = union(users.qa, this.props.unsortedUsers.sort(alphabeticallyComparatorLang(lang)));
         break;
       default:
         this.unionPerformers = union(
@@ -266,9 +269,12 @@ class AgileBoard extends Component {
           users.qa
         );
     }
+    this.unionPerformers = union(this.unionPerformers, this.props.unsortedUsers);
   };
 
   sortPerformersListForTaskCore = users => {
+    const { lang } = this.props;
+
     const devOpsUsers = this.state.changedTaskIsDevOps && this.props.devOpsUsers ? this.props.devOpsUsers : [];
     switch (this.state.statusId) {
       case TASK_STATUSES.DEV_PLAY:
@@ -332,11 +338,8 @@ class AgileBoard extends Component {
         break;
 
       case TASK_STATUSES.QA_PLAY:
-        this.unionPerformers = users.qa;
-        break;
-
       case TASK_STATUSES.QA_STOP:
-        this.unionPerformers = users.qa;
+        this.unionPerformers = union(users.qa, this.props.unsortedUsers.sort(alphabeticallyComparatorLang(lang)));
         break;
 
       default:
@@ -355,6 +358,7 @@ class AgileBoard extends Component {
           users.qa
         );
     }
+    this.unionPerformers = union(this.unionPerformers, this.props.unsortedUsers);
   };
 
   setFilterValue = (key, value) => {
@@ -483,12 +487,14 @@ AgileBoard.propTypes = {
   tasks: PropTypes.object,
   tracksChange: PropTypes.number,
   typeOptions: PropTypes.array,
+  unsortedUsers: PropTypes.array,
   user: PropTypes.object
 };
 
 const mapStateToProps = state => ({
   ...agileBoardSelector(state),
-  sortedUsers: sortedUsersSelector(state)
+  sortedUsers: sortedUsersSelector(state),
+  unsortedUsers: usersSelector(state)
 });
 
 const mapDispatchToProps = {

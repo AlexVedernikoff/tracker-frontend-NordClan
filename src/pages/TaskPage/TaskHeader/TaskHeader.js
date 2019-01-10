@@ -18,12 +18,13 @@ import localize from './TaskHeader.json';
 import { getFullName } from '../../../utils/NameLocalisation';
 import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
 import { createSelector } from 'reselect';
-import sortPerformer from '../../../utils/sortPerformer';
+import sortPerformer, { alphabeticallyComparatorLang } from '../../../utils/sortPerformer';
 import { addActivity } from '../../../actions/Timesheets';
 import moment from 'moment';
 import shortid from 'shortid';
 import { isOnlyDevOps } from '../../../utils/isDevOps';
 import { devOpsUsersSelector } from '../../../utils/sortPerformer';
+import union from 'lodash/union';
 
 const usersSelector = state => state.Project.project.users;
 
@@ -242,13 +243,14 @@ class TaskHeader extends Component {
   };
 
   render() {
-    const { task, taskTypes, canEdit, lang, users, devOpsUsers } = this.props;
+    const { task, taskTypes, canEdit, lang, users, unsortedUsers, devOpsUsers } = this.props;
     const css = require('./TaskHeader.scss');
     let unionPerformers = [];
     switch (this.state.clickedStatus) {
       case 'Develop':
         unionPerformers = _.union(
           task.isDevOps ? devOpsUsers : [],
+          task.isDevOps ? users.devops : [],
           users.pm,
           users.teamLead,
           users.account,
@@ -275,11 +277,12 @@ class TaskHeader extends Component {
         );
         break;
       case 'QA':
-        unionPerformers = users.qa;
+        unionPerformers = union(users.qa, unsortedUsers.sort(alphabeticallyComparatorLang(lang)));
         break;
       default:
         unionPerformers = _.union(
           task.isDevOps ? devOpsUsers : [],
+          task.isDevOps ? users.devops : [],
           users.pm,
           users.teamLead,
           users.account,
@@ -293,7 +296,7 @@ class TaskHeader extends Component {
           users.qa
         );
     }
-
+    unionPerformers = _.union(unionPerformers, unsortedUsers);
     const usersFullNames = unionPerformers.map(item => ({
       value: item.user ? item.user.id : item.id,
       label: item.user ? getFullName(item.user) : getFullName(item)
@@ -455,12 +458,14 @@ TaskHeader.propTypes = {
   startingDay: PropTypes.object,
   task: PropTypes.object.isRequired,
   taskTypes: PropTypes.array,
+  unsortedUsers: PropTypes.array,
   user: PropTypes.object,
   users: PropTypes.object
 };
 
 const mapStateToProps = state => ({
   users: sortedUsersSelector(state),
+  unsortedUsers: usersSelector(state),
   project: state.Project.project,
   user: state.Auth.user,
   devOpsUsers: devOpsUsersSelector(state),

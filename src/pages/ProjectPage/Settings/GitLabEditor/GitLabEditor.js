@@ -162,7 +162,7 @@ class GitLabEditor extends Component {
         ) : null}
         {this.state.isModalOpenCreateGitlabProject ? (
           <Modal isOpen contentLabel="modal" onRequestClose={this.handleCloseModalAddGitlabProject}>
-            <div className={css.createGitlabProject}>
+            <form className={css.createGitlabProject}>
               <h3>{localize[lang].CREATE_REPO}</h3>
               <div className={css.modalContainer}>
                 <SelectDropdown
@@ -183,12 +183,13 @@ class GitLabEditor extends Component {
                 </div>
                 <Button
                   type="green"
+                  htmlType="submit"
                   text={localize[lang].CREATE}
                   onClick={this.createProject}
                   disabled={!(this.state.namespace && this.state.projectName)}
                 />
               </div>
-            </div>
+            </form>
           </Modal>
         ) : null}
         {isProjects ? <ProjectList deleteProject={this.deleteProject} projects={project.gitlabProjects} /> : null}

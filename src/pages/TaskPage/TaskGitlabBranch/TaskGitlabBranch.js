@@ -110,7 +110,7 @@ class TaskGitlabBranch extends React.Component {
         </a>
         {this.state.isOpenModalGitlabBranch ? (
           <Modal isOpen contentLabel="modal" onRequestClose={this.handleCloseModalGitlabBranch}>
-            <div className={css.createGitlabProject}>
+            <form className={css.createGitlabProject}>
               <h3>{localize[lang].CREATE_GITLAB_BRANCH}</h3>
               <div className={css.modalContainer}>
                 <SelectDropdown
@@ -139,12 +139,13 @@ class TaskGitlabBranch extends React.Component {
                 </div>
                 <Button
                   type="green"
+                  htmlType="submit"
                   text={localize[lang].CREATE_BRANCH}
                   onClick={this.createBranch}
                   disabled={!(this.state.repository && this.state.sourceBranch && this.state.branchName)}
                 />
               </div>
-            </div>
+            </form>
           </Modal>
         ) : null}
       </div>
