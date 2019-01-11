@@ -316,7 +316,7 @@ class ParticipantEditor extends Component {
           <Col xs={9} xsOffset={3}>
             <Row>
               {gitlabProjects.map(project => (
-                <Col xs lg key="edit">
+                <Col xs lg key={project.id}>
                   <h4>
                     <div className={`${css.cell} ${css.gitlabProjectTableCaptionWrap}`}>
                       <div className={css.gitlabProjectTableCaption} data-tip={project.name}>
