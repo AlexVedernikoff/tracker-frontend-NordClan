@@ -5,26 +5,33 @@ import SelectDropdown from '../../components/SelectDropdown';
 import { getTagsFilter } from '../../actions/Tags';
 import localize from './TagsFilter.json';
 
+const isFilterNeeded = tagName => tagName && tagName.length && tagName.length > 1;
+
 class TagsFilter extends React.Component {
   constructor(props) {
     super(props);
   }
 
+  state = {
+    tagName: '',
+    filtered: false
+  };
+
   onInputChange = tagName => {
-    if (tagName && tagName.length && tagName.length > 1) {
-      this.props.getTagsFilter(tagName, this.props.filterFor);
+    this.setState({ tagName });
+    if (isFilterNeeded(tagName)) {
+      this.props
+        .getTagsFilter(tagName, this.props.filterFor)
+        .then(() => this.setState({ filtered: isFilterNeeded(this.state.tagName) }));
+    } else {
+      this.setState({ filtered: false });
     }
   };
 
   options = () => {
-    switch (this.props.filterFor) {
-      case 'project':
-        return this.props.projectsTagsOptions.map(el => ({ value: el.name, label: el.name }));
-      case 'task':
-        return this.props.tasksTagsOptions.map(el => ({ value: el.name, label: el.name }));
-      default:
-        return [];
-    }
+    const { allTags, filteredTags } = this.props;
+    const optionsSource = this.state.filtered ? filteredTags : allTags;
+    return optionsSource.map(tagName => ({ value: tagName, label: tagName }));
   };
 
   render() {
@@ -50,21 +57,38 @@ class TagsFilter extends React.Component {
 }
 
 TagsFilter.propTypes = {
+  allTags: PropTypes.array.isRequired,
   filterFor: PropTypes.oneOf(['project', 'task']).isRequired,
   filterTags: PropTypes.array,
+  filteredTags: PropTypes.array.isRequired,
   getTagsFilter: PropTypes.func.isRequired,
   lang: PropTypes.string,
   onClear: PropTypes.func,
-  onTagSelect: PropTypes.func.isRequired,
-  projectsTagsOptions: PropTypes.array.isRequired,
-  tasksTagsOptions: PropTypes.array.isRequired
+  onTagSelect: PropTypes.func.isRequired
 };
 
-const mapStateToProps = state => ({
-  projectsTagsOptions: state.Projects.allTags,
-  tasksTagsOptions: state.TaskList.allTags,
-  lang: state.Localize.lang
-});
+const mapStateToProps = (state, ownProps) => {
+  let allTags, filteredTags;
+  switch (ownProps.filterFor) {
+    case 'project':
+      allTags = state.Projects.allTags.map(o => o.name);
+      filteredTags = state.Projects.tagsFilter;
+      break;
+    case 'task':
+      allTags = state.TaskList.allTags.map(o => o.name);
+      filteredTags = state.TaskList.tagsFilter;
+      break;
+    default:
+      allTags = [];
+      filteredTags = [];
+  }
+
+  return {
+    allTags,
+    filteredTags,
+    lang: state.Localize.lang
+  };
+};
 
 const mapDispatchToProps = {
   getTagsFilter
