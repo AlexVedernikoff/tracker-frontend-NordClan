@@ -1,5 +1,6 @@
 import find from 'lodash/find';
 import * as timesheetsConstants from '../constants/Timesheets';
+import moment from 'moment';
 
 export const findTimesheet = (timesheetList, targetTimesheet) =>
   targetTimesheet.task
@@ -22,7 +23,7 @@ export const findTimesheet = (timesheetList, targetTimesheet) =>
       : null;
 
 // Проходит по массиву таймшитов и возвращает false если хотябы один таймшит засабмичен или апрувед
-export const isTimesheetsCanBeChanged = timesheetList => {
+export const isTimesheetsCanBeChanged = (timesheetList, startingDay) => {
   if (!Array.isArray(timesheetList)) {
     return true;
   }
@@ -31,9 +32,15 @@ export const isTimesheetsCanBeChanged = timesheetList => {
     return true;
   }
 
+  const startingMoment = moment(startingDay).weekday(0);
+  const weekDays = [0, 1, 2, 3, 4, 5, 6, 7].map((value, index) => {
+    return startingMoment.add(index, 'days').format('DD.MM.YY');
+  });
+
   return !timesheetList.find(
     tsh =>
-      tsh.statusId !== timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
-      tsh.statusId !== timesheetsConstants.TIMESHEET_STATUS_APPROVED
+      weekDays.indexOf(moment(tsh.onDate).format('DD.MM.YY')) !== -1 &&
+      (tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
+        tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED)
   );
 };

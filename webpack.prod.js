@@ -6,7 +6,7 @@ const p = require('./package.json');
 const settings = {
   entry: {
     vendor: Object.keys(p.dependencies),
-    bundle: ['./src/App.js']
+    bundle: ['./src/BrowserDefaults.js', './src/App.js']
   },
   output: {
     filename: '[name].js',

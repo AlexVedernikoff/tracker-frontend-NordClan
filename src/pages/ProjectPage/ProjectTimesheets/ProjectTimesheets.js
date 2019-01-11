@@ -173,22 +173,23 @@ class ProjectTimesheets extends React.Component {
     const { list, lang } = this.props;
 
     return list.reduce((res, el) => {
-      const maNotPushed =
-        el.typeId !== 1 &&
-        !find(res, tsh => {
-          const isSameType = tsh.typeId === el.typeId;
-          const isSameProject = el.project ? tsh.projectId === el.project.id : tsh.projectId === 0;
-          const isSameSprint = (el.sprint ? el.sprint.id : 0) === (tsh.sprint ? tsh.sprint.id : 0);
-          return isSameType && isSameProject && isSameSprint;
-        });
+      if (el.typeId === 1) {
+        return res;
+      }
+
+      const maNotPushed = !res.find(tsh => {
+        const usSameUser = tsh.userId === el.userId;
+        const isSameType = tsh.typeId === el.typeId;
+        const isSameSprint = (el.sprint ? el.sprint.id : 0) === (tsh.sprint ? tsh.sprint.id : 0);
+        return isSameType && isSameSprint && usSameUser;
+      });
 
       if (maNotPushed && this.isThisWeek(el.onDate)) {
         res.push({
           typeId: el.typeId,
           projectName: el.project ? el.project.name : localize[lang].WITHOUT_PROJECT,
           projectId: el.project ? el.project.id : 0,
-          sprintId: null,
-          sprint: null,
+          sprint: el.sprint ? el.sprint : null,
           userId: el.userId ? el.userId : null,
           task: null
         });
@@ -289,11 +290,13 @@ class ProjectTimesheets extends React.Component {
           user={user}
           userName={userName} //fix bug with names
           items={[
-            ...user.tasks.map((task, index) => (
-              <ActivityRow key={`${task.id}-${startingDay}-task-${index}`} task item={task} />
-            )),
-            ...user.ma.map((task, index) => (
-              <ActivityRow key={`${user.id}-${startingDay}-ma-${index}`} ma item={task} />
+            ...user.tasks.map(task => <ActivityRow key={`${task.id}-${startingDay}-task`} task item={task} />),
+            ...user.ma.map(task => (
+              <ActivityRow
+                key={`${user.id}-${startingDay}-${task.typeId}-${task.sprint ? task.sprint.id : 0}-ma`}
+                ma
+                item={task}
+              />
             ))
           ]}
         />
@@ -462,5 +465,5 @@ const mapDispatchToProps = {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(ProjectTimesheets);

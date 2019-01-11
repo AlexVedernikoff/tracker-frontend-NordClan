@@ -6,6 +6,7 @@ import { getTagsFilter } from '../../actions/Tags';
 import localize from './PerformerFilter.json';
 import { getFullName } from '../../utils/NameLocalisation';
 import * as _ from 'lodash';
+import { removeNumChars } from '../../utils/formatter';
 
 class PerformerFilter extends React.Component {
   static propTypes = {
@@ -38,6 +39,7 @@ class PerformerFilter extends React.Component {
         multi
         value={this.props.selectedPerformerId}
         onChange={this.props.onPerformerSelect}
+        onInputChange={removeNumChars}
         noResultsText={localize[lang].NO_RESULTS}
         options={this.getUsers()}
         backspaceToRemoveMessage={''}
