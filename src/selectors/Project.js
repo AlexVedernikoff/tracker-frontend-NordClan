@@ -13,3 +13,4 @@ export const localizedGitlabRolesSelector = createSelector(
   state => state.Localize.lang,
   lang => getGitlabProjectRoles(lang)
 );
+export const projectIdSelector = state => state.Project.project.id;
