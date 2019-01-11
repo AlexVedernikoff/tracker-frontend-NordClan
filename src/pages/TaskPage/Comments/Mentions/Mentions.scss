@@ -33,4 +33,9 @@
       transition: 0.3s ease-out 0s;
     }
   }
+
+  [class*='__input'] {
+    box-sizing: content-box !important;
+    top: -8px !important;
+  }
 }

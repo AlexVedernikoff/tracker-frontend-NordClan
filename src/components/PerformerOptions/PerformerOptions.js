@@ -11,7 +11,6 @@ import TaskTimesheet from './TaskTimesheet';
 import MentionsInput from '../../pages/TaskPage/Comments/Mentions';
 import { getFullName } from '../../utils/NameLocalisation';
 import { isTimesheetsCanBeChanged } from '../../utils/Timesheets';
-import shortId from 'shortid';
 
 import Button from '../Button';
 import localize from './PerformerOptions.json';
@@ -36,8 +35,7 @@ class PerformerOptions extends Component {
       options: this.optionsList,
       loggedTime: 0,
       selectedPerformer: props.defaultOption || null,
-      commentText: '',
-      resizeKey: shortId()
+      commentText: ''
     };
   }
 
@@ -61,7 +59,13 @@ class PerformerOptions extends Component {
       this.optionsList = newOptions;
     });
 
-    if (!isTshAndCommentsHidden && !isTimesheetsCanBeChanged(nextProps.list)) {
+    const timesheetChanged = nextProps.list !== this.props.list;
+
+    if (
+      !isTshAndCommentsHidden &&
+      timesheetChanged &&
+      !isTimesheetsCanBeChanged(nextProps.list, this.props.startingDay)
+    ) {
       this.props.changeWeek(startingDay.add(7, 'days'), activeUser.id);
     }
   }
@@ -100,8 +104,7 @@ class PerformerOptions extends Component {
 
   setComment = e => {
     this.setState({
-      commentText: e.target.value,
-      resizeKey: shortId()
+      commentText: e.target.value
     });
   };
 
@@ -203,7 +206,6 @@ class PerformerOptions extends Component {
                         getTextAreaNode={this.getTextAreaNode}
                         toggleBtn={this.setComment}
                         suggestions={users}
-                        resizeKey={this.state.resizeKey}
                       />
                     </Col>
                   </Row>
