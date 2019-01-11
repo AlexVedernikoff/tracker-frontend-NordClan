@@ -14,7 +14,6 @@ class Mentions extends Component {
     onInput: PropTypes.func,
     onKeyDown: PropTypes.func,
     placeholder: PropTypes.string,
-    resizeKey: PropTypes.string,
     setMentions: PropTypes.func,
     suggestions: PropTypes.arrayOf(PropTypes.object),
     toggleBtn: PropTypes.func,
@@ -42,8 +41,7 @@ class Mentions extends Component {
       <MentionsInput
         className={css.mentions}
         autoFocus
-        key={this.props.resizeKey}
-        style={{ minHeight: 32, paddingTop: '16px' }}
+        style={{ minHeight: 16 }}
         disabled={this.props.disabled}
         placeholder={this.props.placeholder}
         onChange={this.typeComment}
