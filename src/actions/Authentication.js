@@ -8,6 +8,7 @@ import { EXTERNAL_USER } from '../constants/Roles';
 import { startOfCurrentWeek, endOfCurrentWeek } from '../utils/date';
 import { history } from '../History';
 import { getErrorMessageByType } from '../utils/ErrorMessages';
+import { initSSO } from '../utils/Keycloak';
 
 const startAuthentication = () => ({
   type: AuthActions.AUTHENTICATION_START
@@ -97,28 +98,30 @@ export const getInfoAboutMe = () => {
   return dispatch => {
     dispatch(startReceiveUserInfo());
     dispatch(startLoading());
-    return axios
-      .get(URL, {}, { withCredentials: true })
-      .then(response => {
-        if (response && response.status === 200) {
-          if (response.data.globalRole !== EXTERNAL_USER) {
-            dispatch(getTimesheetsPlayerData(startOfCurrentWeek, endOfCurrentWeek));
+    return initSSO().then(() => {
+      axios
+        .get(URL, {}, { withCredentials: true })
+        .then(response => {
+          if (response && response.status === 200) {
+            if (response.data.globalRole !== EXTERNAL_USER) {
+              dispatch(getTimesheetsPlayerData(startOfCurrentWeek, endOfCurrentWeek));
+            }
+            dispatch(userInfoReceived(response.data));
+            dispatch(finishLoading());
           }
-          dispatch(userInfoReceived(response.data));
+        })
+        .catch(error => {
           dispatch(finishLoading());
-        }
-      })
-      .catch(error => {
-        dispatch(finishLoading());
-        const pathname = history.getCurrentLocation().pathname;
-        if (
-          error.response.data.name !== 'UnauthorizedError' ||
-          !(pathname === '/login' || /\/externalUserActivate\//i.test(pathname))
-        ) {
-          dispatch(showNotification({ message: error.message, type: 'error' }));
-        }
-        dispatch(userInfoReceiveFailed());
-      });
+          const pathname = history.getCurrentLocation().pathname;
+          if (
+            error.response.data.name !== 'UnauthorizedError' ||
+            !(pathname === '/login' || /\/externalUserActivate\//i.test(pathname))
+          ) {
+            dispatch(showNotification({ message: error.message, type: 'error' }));
+          }
+          dispatch(userInfoReceiveFailed());
+        });
+    });
   };
 };
 

@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { history } from '../../History';
 import { doAuthentication, clearRedirect } from '../../actions/Authentication';
 import Title from 'react-title-component';
+import { getAuthUrl } from '../../utils/Keycloak';
 
 class Login extends Component {
   static propTypes = {
@@ -26,7 +27,8 @@ class Login extends Component {
     this.state = {
       username: '',
       password: '',
-      errorMessage: ''
+      errorMessage: '',
+      ssoUrl: getAuthUrl()
     };
     this.validator = new Validator();
   }
@@ -107,7 +109,7 @@ class Login extends Component {
                 disabled={!(this.state.username && this.state.password)}
               />
               <p>
-                <a href="http://localhost:8000/api/v1/auth/sso">Авторизация через SSO</a>
+                <a href={this.state.ssoUrl}>Авторизация через SSO</a>
               </p>
             </div>
           </form>
