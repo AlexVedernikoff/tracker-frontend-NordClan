@@ -61,7 +61,13 @@ class PerformerOptions extends Component {
       this.optionsList = newOptions;
     });
 
-    if (!isTshAndCommentsHidden && !isTimesheetsCanBeChanged(nextProps.list)) {
+    const timesheetChanged = nextProps.list !== this.props.list;
+
+    if (
+      !isTshAndCommentsHidden &&
+      timesheetChanged &&
+      !isTimesheetsCanBeChanged(nextProps.list, this.props.startingDay)
+    ) {
       this.props.changeWeek(startingDay.add(7, 'days'), activeUser.id);
     }
   }

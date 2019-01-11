@@ -8,7 +8,8 @@ moment.locale('ru');
 const InitialState = {
   projects: [],
   preloaders: {
-    creating: false
+    creating: false,
+    gettingTimesheets: false
   },
   list: [],
   startingDay: moment(),
@@ -84,12 +85,31 @@ export default function Timesheets(state = InitialState, action) {
       };
 
     case TimesheetsActions.GET_TIMESHEETS_START:
-      return state;
+      return {
+        ...state,
+        preloaders: {
+          ...state.preloaders,
+          gettingTimesheets: true
+        }
+      };
 
     case TimesheetsActions.GET_TIMESHEETS_SUCCESS:
       return {
         ...state,
-        list: action.data
+        list: action.data,
+        preloaders: {
+          ...state.preloaders,
+          gettingTimesheets: false
+        }
+      };
+
+    case TimesheetsActions.GET_TIMESHEETS_ERROR:
+      return {
+        ...state,
+        preloaders: {
+          ...state.preloaders,
+          gettingTimesheets: false
+        }
       };
 
     case TimesheetsActions.SET_WEEK:
