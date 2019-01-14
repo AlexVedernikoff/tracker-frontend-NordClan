@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import { history } from '../../History';
 import { doAuthentication, clearRedirect } from '../../actions/Authentication';
 import Title from 'react-title-component';
-import { getAuthUrl } from '../../utils/Keycloak';
+import { getAuthUrl } from '../../utils/keycloak';
 
 class Login extends Component {
   static propTypes = {

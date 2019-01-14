@@ -1,5 +1,5 @@
 import Keycloak from 'keycloak-js';
-import { setCookies } from './Cookies';
+import { setCookies } from './cookies';
 
 const keycloak = Keycloak({
   url: process.env.KEYCLOAK_URL || 'http://sso.simbirsoft:8080/auth',

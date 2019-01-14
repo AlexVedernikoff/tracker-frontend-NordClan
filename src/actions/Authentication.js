@@ -8,7 +8,7 @@ import { EXTERNAL_USER } from '../constants/Roles';
 import { startOfCurrentWeek, endOfCurrentWeek } from '../utils/date';
 import { history } from '../History';
 import { getErrorMessageByType } from '../utils/ErrorMessages';
-import { initSSO } from '../utils/Keycloak';
+import { initSSO } from '../utils/keycloak';
 
 const startAuthentication = () => ({
   type: AuthActions.AUTHENTICATION_START
