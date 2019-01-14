@@ -3,6 +3,7 @@ import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
+import { projectIdSelector } from '../selectors/Project';
 
 const startTagsCreate = () => ({
   type: TagsActions.TAGS_CREATE_START
@@ -99,18 +100,30 @@ export const deleteTag = (tag, taggable, taggableId) => {
 };
 
 export const getTagsFilter = (tagName, filterFor) => {
-  return dispatch => {
+  return (dispatch, getState) => {
     dispatch(startTagsFilter());
     dispatch(startLoading());
-    axios
-      .get(`${API_URL}/${filterFor}/tag`, { params: { tagName } }, { withCredentials: true })
-      .then(response => {
+
+    let requestedTagsList;
+    if (filterFor === 'task') {
+      const projectId = projectIdSelector(getState());
+      requestedTagsList = axios
+        .get(`${API_URL}/project/${projectId}/tags`, { params: { tagName } }, { withCredentials: true })
+        .then(response => response.data.map(o => o.name));
+    } else {
+      requestedTagsList = axios
+        .get(`${API_URL}/${filterFor}/tag`, { params: { tagName } }, { withCredentials: true })
+        .then(response => response.data);
+    }
+
+    return requestedTagsList
+      .then(data => {
         dispatch(finishLoading());
-        if (!response.data) return;
+        if (!data) return;
 
         dispatch(
           TagsFilterSucces({
-            filteredTags: response.data,
+            filteredTags: data,
             filterFor: filterFor
           })
         );

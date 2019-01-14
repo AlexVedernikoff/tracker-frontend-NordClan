@@ -21,7 +21,7 @@ const p = require('./package.json');
 const settings = {
   entry: {
     vendor: Object.keys(p.dependencies),
-    bundle: ['react-hot-loader/patch', './src/Dev.js']
+    bundle: ['react-hot-loader/patch', './src/BrowserDefaults.js', './src/Dev.js']
   },
   output: {
     filename: '[name].js',

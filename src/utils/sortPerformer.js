@@ -13,6 +13,18 @@ const getRoles = user => {
   return 'other';
 };
 
+export const alphabeticallyComparatorLang = lang => {
+  const fullName = lang === 'en' ? 'fullNameEn' : 'fullNameRu';
+
+  return (a, b) => {
+    if (a[fullName] < b[fullName]) {
+      return -1;
+    }
+
+    return 1;
+  };
+};
+
 export const alphabeticallyComparator = (a, b) => {
   if (a.fullNameRu < b.fullNameRu) return -1;
   else if (a.fullNameRu > b.fullNameRu) return 1;
