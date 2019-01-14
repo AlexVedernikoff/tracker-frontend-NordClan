@@ -98,8 +98,8 @@ export const getInfoAboutMe = () => {
   return async dispatch => {
     dispatch(startReceiveUserInfo());
     dispatch(startLoading());
-    await initSSO();
     try {
+      await initSSO();
       const response = await axios.get(URL, {}, { withCredentials: true });
       if (response && response.status === 200) {
         if (response.data.globalRole !== EXTERNAL_USER) {
