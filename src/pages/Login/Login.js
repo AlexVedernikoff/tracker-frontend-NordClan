@@ -27,8 +27,7 @@ class Login extends Component {
     this.state = {
       username: '',
       password: '',
-      errorMessage: '',
-      ssoUrl: getAuthUrl()
+      errorMessage: ''
     };
     this.validator = new Validator();
   }
@@ -109,7 +108,7 @@ class Login extends Component {
                 disabled={!(this.state.username && this.state.password)}
               />
               <p>
-                <a href={this.state.ssoUrl}>Авторизация через SSO</a>
+                <a href={getAuthUrl()}>Авторизация через SSO</a>
               </p>
             </div>
           </form>

@@ -95,33 +95,30 @@ export const doLogout = () => {
 export const getInfoAboutMe = () => {
   const URL = `${API_URL}/user/me`;
 
-  return dispatch => {
+  return async dispatch => {
     dispatch(startReceiveUserInfo());
     dispatch(startLoading());
-    return initSSO().then(() => {
-      axios
-        .get(URL, {}, { withCredentials: true })
-        .then(response => {
-          if (response && response.status === 200) {
-            if (response.data.globalRole !== EXTERNAL_USER) {
-              dispatch(getTimesheetsPlayerData(startOfCurrentWeek, endOfCurrentWeek));
-            }
-            dispatch(userInfoReceived(response.data));
-            dispatch(finishLoading());
-          }
-        })
-        .catch(error => {
-          dispatch(finishLoading());
-          const pathname = history.getCurrentLocation().pathname;
-          if (
-            error.response.data.name !== 'UnauthorizedError' ||
-            !(pathname === '/login' || /\/externalUserActivate\//i.test(pathname))
-          ) {
-            dispatch(showNotification({ message: error.message, type: 'error' }));
-          }
-          dispatch(userInfoReceiveFailed());
-        });
-    });
+    await initSSO();
+    try {
+      const response = await axios.get(URL, {}, { withCredentials: true });
+      if (response && response.status === 200) {
+        if (response.data.globalRole !== EXTERNAL_USER) {
+          dispatch(getTimesheetsPlayerData(startOfCurrentWeek, endOfCurrentWeek));
+        }
+        dispatch(userInfoReceived(response.data));
+        dispatch(finishLoading());
+      }
+    } catch (error) {
+      dispatch(finishLoading());
+      const pathname = history.getCurrentLocation().pathname;
+      if (
+        error.response.data.name !== 'UnauthorizedError' ||
+        !(pathname === '/login' || /\/externalUserActivate\//i.test(pathname))
+      ) {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+      }
+      dispatch(userInfoReceiveFailed());
+    }
   };
 };
 
