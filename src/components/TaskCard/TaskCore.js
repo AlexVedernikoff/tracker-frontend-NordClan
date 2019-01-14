@@ -129,6 +129,12 @@ class TaskCore extends PureComponent {
     return projectUsers.find(user => user.id === id);
   };
 
+  handleTaskNameClick = event => {
+    // fix for FF to open task page only in the new and not in the same tab
+    // on mouse middle button click
+    event.stopPropagation();
+  };
+
   render() {
     const {
       classPriority,
@@ -192,7 +198,11 @@ class TaskCore extends PureComponent {
         </CopyThis>
 
         <div>
-          <Link to={`/projects/${task.projectId}/tasks/${task.id}`} className={css.taskName}>
+          <Link
+            onClick={this.handleTaskNameClick}
+            to={`/projects/${task.projectId}/tasks/${task.id}`}
+            className={css.taskName}
+          >
             {task.name}
           </Link>
         </div>

@@ -6,16 +6,18 @@ import * as css from './PerformerOptions.scss';
 import Modal from '../Modal';
 import SelectDropdown from '../SelectDropdown';
 import { changeTask, publishComment, getTask } from '../../actions/Task';
+import { changeWeek } from '../../actions/Timesheets';
 import TaskTimesheet from './TaskTimesheet';
 import MentionsInput from '../../pages/TaskPage/Comments/Mentions';
 import { getFullName } from '../../utils/NameLocalisation';
-import shortId from 'shortid';
+import { isTimesheetsCanBeChanged } from '../../utils/Timesheets';
 
 import Button from '../Button';
 import localize from './PerformerOptions.json';
 import { TASK_STATUSES } from '../../constants/TaskStatuses';
 
 import { prepairCommentForEdit, stringifyCommentForSend } from '../../pages/TaskPage/Comments/Mentions/mentionService';
+import moment from 'moment';
 
 const formLayout = {
   firstCol: 3,
@@ -33,26 +35,39 @@ class PerformerOptions extends Component {
       options: this.optionsList,
       loggedTime: 0,
       selectedPerformer: props.defaultOption || null,
-      commentText: '',
-      resizeKey: shortId()
+      commentText: ''
     };
   }
 
   componentDidMount() {
-    const { id, task } = this.props;
+    const { id, task, activeUser, isTshAndCommentsHidden } = this.props;
 
     if (!task.id || task.id !== id) {
       this.props.getTask(id);
     }
+
+    if (!isTshAndCommentsHidden) {
+      this.props.changeWeek(moment(), activeUser.id);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { options, canBeNotSelected } = nextProps;
+    const { options, canBeNotSelected, isTshAndCommentsHidden, activeUser, startingDay } = nextProps;
     const newOptions = this.getOptionsList(options, canBeNotSelected);
 
     this.setState({ options: newOptions }, () => {
       this.optionsList = newOptions;
     });
+
+    const timesheetChanged = nextProps.list !== this.props.list;
+
+    if (
+      !isTshAndCommentsHidden &&
+      timesheetChanged &&
+      !isTimesheetsCanBeChanged(nextProps.list, this.props.startingDay)
+    ) {
+      this.props.changeWeek(startingDay.add(7, 'days'), activeUser.id);
+    }
   }
 
   getOptionsList(options, canBeNotSelected) {
@@ -89,8 +104,7 @@ class PerformerOptions extends Component {
 
   setComment = e => {
     this.setState({
-      commentText: e.target.value,
-      resizeKey: shortId()
+      commentText: e.target.value
     });
   };
 
@@ -192,7 +206,6 @@ class PerformerOptions extends Component {
                         getTextAreaNode={this.getTextAreaNode}
                         toggleBtn={this.setComment}
                         suggestions={users}
-                        resizeKey={this.state.resizeKey}
                       />
                     </Col>
                   </Row>
@@ -218,6 +231,7 @@ PerformerOptions.propTypes = {
   activeUser: PropTypes.object,
   canBeNotSelected: PropTypes.bool,
   changeTask: PropTypes.func,
+  changeWeek: PropTypes.func,
   defaultOption: PropTypes.number,
   externalUsers: PropTypes.array,
   getTask: PropTypes.func,
@@ -227,6 +241,7 @@ PerformerOptions.propTypes = {
   isProjectInfoReceiving: PropTypes.bool,
   isTshAndCommentsHidden: PropTypes.bool,
   lang: PropTypes.string,
+  list: PropTypes.array,
   loggedTime: PropTypes.number,
   noCurrentOption: PropTypes.bool,
   onChoose: PropTypes.func.isRequired,
@@ -235,6 +250,7 @@ PerformerOptions.propTypes = {
   projectUsers: PropTypes.array,
   publishComment: PropTypes.func,
   removeCurOptionTip: PropTypes.string,
+  startingDay: PropTypes.object,
   task: PropTypes.object,
   taskId: PropTypes.number,
   title: PropTypes.string
@@ -243,14 +259,17 @@ PerformerOptions.propTypes = {
 const mapStateToProps = state => ({
   activeUser: state.Auth.user,
   lang: state.Localize.lang,
+  list: state.Timesheets.list,
   task: state.Task.task,
   projectUsers: state.Project.project.projectUsers,
+  startingDay: state.Timesheets.startingDay,
   externalUsers: state.Project.project.externalUsers,
   isProjectInfoReceiving: state.Project.isProjectInfoReceiving
 });
 
 const mapDispatchToProps = {
   changeTask,
+  changeWeek,
   publishComment,
   getTask
 };

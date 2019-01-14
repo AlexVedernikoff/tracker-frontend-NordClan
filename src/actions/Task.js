@@ -314,11 +314,11 @@ const changeTask = (ChangedProperties, target, callback) => {
           }
         }
         dispatch(finishLoading());
-        stopTaskEditing(target);
+        dispatch(stopTaskEditing(target));
       })
       .catch(() => {
         defaultErrorHandler(dispatch);
-        stopTaskEditing(target);
+        dispatch(stopTaskEditing(target));
         dispatch(finishLoading());
       });
   };

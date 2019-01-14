@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import MaskedInput from 'react-text-mask';
 import get from 'lodash/get';
 import { dateMask } from '../../utils/masks';
+import createAutoCorrectedDatePipe from '../../utils/createAutoCorrectedDatePipe';
+
+const autoCorrectedDatePipe = createAutoCorrectedDatePipe('dd.mm.yyyy');
 
 class InputWithDateMask extends Component {
   // Method 'focus' is a workaround for an error with custom inputs in react-day-picker library.
@@ -19,7 +22,16 @@ class InputWithDateMask extends Component {
   };
 
   render() {
-    return <MaskedInput ref={this.handleRef} mask={dateMask} {...this.props} />;
+    return (
+      <MaskedInput
+        autoComplete="off"
+        ref={this.handleRef}
+        mask={dateMask}
+        pipe={autoCorrectedDatePipe}
+        keepCharPositions
+        {...this.props}
+      />
+    );
   }
 }
 

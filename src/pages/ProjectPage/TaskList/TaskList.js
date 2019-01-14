@@ -26,6 +26,7 @@ import Tag from '../../../components/Tag';
 import getPriorityById from '../../../utils/TaskPriority';
 
 import { getFullName, getDictionaryName } from '../../../utils/NameLocalisation';
+import { removeNumChars } from '../../../utils/formatter';
 import { openCreateTaskModal } from '../../../actions/Project';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { getLocalizedTaskTypes, getLocalizedTaskStatuses } from '../../../selectors/dictionaries';
@@ -713,6 +714,7 @@ class TaskList extends Component {
                     multi={false}
                     value={authorId}
                     onChange={this.onChangeAuthorFilter}
+                    onInputChange={removeNumChars}
                     noResultsText={localize[lang].NO_RESULTS}
                     options={authorOptions}
                   />

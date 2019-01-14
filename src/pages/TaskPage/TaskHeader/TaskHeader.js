@@ -18,12 +18,13 @@ import localize from './TaskHeader.json';
 import { getFullName } from '../../../utils/NameLocalisation';
 import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
 import { createSelector } from 'reselect';
-import sortPerformer from '../../../utils/sortPerformer';
+import sortPerformer, { alphabeticallyComparatorLang } from '../../../utils/sortPerformer';
 import { addActivity } from '../../../actions/Timesheets';
 import moment from 'moment';
 import shortid from 'shortid';
 import { isOnlyDevOps } from '../../../utils/isDevOps';
 import { devOpsUsersSelector } from '../../../utils/sortPerformer';
+import union from 'lodash/union';
 
 const usersSelector = state => state.Project.project.users;
 
@@ -276,7 +277,7 @@ class TaskHeader extends Component {
         );
         break;
       case 'QA':
-        unionPerformers = users.qa;
+        unionPerformers = union(users.qa, unsortedUsers.sort(alphabeticallyComparatorLang(lang)));
         break;
       default:
         unionPerformers = _.union(
