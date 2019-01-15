@@ -248,7 +248,7 @@ class Participant extends React.Component {
                   text={localize[lang].SAVE_GITLAB_ROLE}
                   onClick={this.saveGitlabRole}
                   htmlType="submit"
-                  disabled={!editingGitlabRole.accessLevel || !editingGitlabRole.expiresAt}
+                  disabled={!editingGitlabRole.accessLevel}
                 />
               </div>
             </form>

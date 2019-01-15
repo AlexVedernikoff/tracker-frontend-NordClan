@@ -299,10 +299,7 @@ class ParticipantEditor extends Component {
   isAllGitlabRolesParamsSelected() {
     const { gitlabProjects, selectedGitlabRoles } = this.state;
     return gitlabProjects.every(
-      ({ value: projectId }) =>
-        selectedGitlabRoles[projectId] &&
-        selectedGitlabRoles[projectId].role &&
-        selectedGitlabRoles[projectId].expiresAt
+      ({ value: projectId }) => selectedGitlabRoles[projectId] && selectedGitlabRoles[projectId].role
     );
   }
 
