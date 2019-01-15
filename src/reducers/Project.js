@@ -231,7 +231,8 @@ export default function Project(state = InitialState, action) {
         ...state,
         project: {
           ...state.project,
-          gitlabProjects: [...state.project.gitlabProjects, action.project]
+          gitlabProjects: [...state.project.gitlabProjects, action.project.gitlabProject],
+          users: action.project.projectUsers
         }
       };
 
@@ -241,7 +242,8 @@ export default function Project(state = InitialState, action) {
         project: {
           ...state.project,
           gitlabProjectIds: [...state.project.gitlabProjectIds, action.project.id],
-          gitlabProjects: [...state.project.gitlabProjects, action.project]
+          gitlabProjects: [...state.project.gitlabProjects, action.project.gitlabProject],
+          users: action.project.projectUsers
         }
       };
 
