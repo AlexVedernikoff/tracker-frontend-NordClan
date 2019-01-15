@@ -8,6 +8,7 @@ import cn from 'classnames';
 
 class Mentions extends Component {
   static propTypes = {
+    className: PropTypes.string,
     currentComment: PropTypes.string,
     disabled: PropTypes.bool,
     getTextAreaNode: PropTypes.func,
