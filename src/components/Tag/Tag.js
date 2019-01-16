@@ -5,11 +5,13 @@ import * as css from './Tag.scss';
 import { IconPlus, IconClose } from '../Icons';
 import { deleteTag } from '../../actions/Tags';
 import { connect } from 'react-redux';
+import ReactTooltip from 'react-tooltip';
 
 class Tag extends React.Component {
   static propTypes = {
     blocked: PropTypes.bool,
     create: PropTypes.bool,
+    dataTip: PropTypes.string,
     deleteHandler: PropTypes.func,
     deleteTag: PropTypes.func.isRequired,
     deleteTagModal: PropTypes.func,
@@ -20,6 +22,10 @@ class Tag extends React.Component {
     taggableId: PropTypes.number,
     unclickable: PropTypes.bool,
     user: PropTypes.object
+  };
+
+  componentDidMount = () => {
+    ReactTooltip.rebuild();
   };
 
   deleteTag = () => {
@@ -39,9 +45,8 @@ class Tag extends React.Component {
   };
 
   render() {
-    const { name, create, blocked, unclickable } = this.props;
+    const { name, create, blocked, unclickable, dataTip } = this.props;
     const isExternal = this.isExternalUser();
-
     return (
       <span
         className={classnames({
@@ -49,6 +54,7 @@ class Tag extends React.Component {
           [css.create]: create,
           [css.unclickable]: unclickable
         })}
+        data-tip={dataTip}
         onClick={this.clickOnTag}
       >
         <span className={classnames({ [css.tagPart]: true, [css.tagCreate]: create, [css.noClosable]: isExternal })}>

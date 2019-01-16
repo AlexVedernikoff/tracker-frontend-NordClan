@@ -217,7 +217,9 @@ class CreateTaskModal extends Component {
     const { lang, taskTypes } = this.props;
 
     const tags = this.state.tags.map((tagName, i) => {
-      return <Tag key={i} name={tagName} noRequest deleteTagModal={() => this.deleteTag()(tagName)} />;
+      return (
+        <Tag key={i} name={tagName} noRequest dataTip={tagName} deleteTagModal={() => this.deleteTag()(tagName)} />
+      );
     });
     return (
       <Modal
