@@ -201,6 +201,7 @@ class PerformerOptions extends Component {
                     </Col>
                     <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                       <MentionsInput
+                        className={css.taskCommentInput}
                         placeholder={localize[lang].COMMENT_PLACEHOLDER}
                         value={prepairCommentForEdit(this.state.commentText, this.users)}
                         getTextAreaNode={this.getTextAreaNode}
