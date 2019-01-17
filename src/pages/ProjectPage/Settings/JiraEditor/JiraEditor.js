@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router';
 import * as css from './JiraEditor.scss';
 import localize from './JiraEditor.json';
 import Button from '../../../../components/Button';
@@ -20,16 +21,13 @@ class JiraEditor extends Component {
   };
 
   render() {
-    const { lang, openJiraWizard, simtrackProject, jiraExternalId } = this.props;
+    const { lang, simtrackProject, jiraExternalId } = this.props;
     return (
       <div className={css.jiraCard}>
         <h2>{localize[lang].SYNCHRONIZATION_WITH_JIRA}</h2>
-        <Button
-          onClick={openJiraWizard}
-          text={localize[lang].ASSOCIATE_PROJECT_WITH_JIRA}
-          type="primary"
-          icon="IconPlus"
-        />
+        <Link to={`projects/${simtrackProject.id}/jira-wizard`}>
+          <Button text={localize[lang].ASSOCIATE_PROJECT_WITH_JIRA} type="primary" icon="IconPlus" />
+        </Link>
         {jiraExternalId ? (
           <JiraCard
             simtrackProjectId={simtrackProject.id}
