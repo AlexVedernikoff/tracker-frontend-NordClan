@@ -1,0 +1,19 @@
+@import '../../styles/variables';
+
+.circle-step {
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+}
+
+.step-line {
+  border-width: 1px;
+  border-style: solid;
+  border-color: $color-dark;
+}
+
+.steps-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}

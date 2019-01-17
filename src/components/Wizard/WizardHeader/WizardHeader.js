@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { states } from '../states';
 import localize from '../states.json';
 
-class Steps extends Component {
+class StepsHeader extends Component {
   static propTypes = {
     activeStep: PropTypes.string,
     lang: PropTypes.string
@@ -23,4 +23,4 @@ class Steps extends Component {
   }
 }
 
-export default Steps;
+export default StepsHeader;
