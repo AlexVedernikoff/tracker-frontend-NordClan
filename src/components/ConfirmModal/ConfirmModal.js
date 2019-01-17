@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ReactModal from 'react-modal';
 import Button from '../Button';
@@ -126,4 +127,8 @@ ConfirmModal.propTypes = {
   text: PropTypes.string
 };
 
-export default ConfirmModal;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(mapStateToProps)(ConfirmModal);

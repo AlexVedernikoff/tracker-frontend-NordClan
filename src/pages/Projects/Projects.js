@@ -366,7 +366,7 @@ class Projects extends Component {
                 <div>
                   <Button
                     onClick={this.handleModal}
-                    text={localize[lang].CREATE_PROJECT}
+                    text={localize[lang].SELECT_JIRA_PROJECT}
                     type="primary"
                     icon="IconPlus"
                   />
