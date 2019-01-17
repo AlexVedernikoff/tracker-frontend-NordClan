@@ -233,7 +233,7 @@ class Wizard extends Component {
   };
 
   getStepsUI = () => {
-    return <WizardHeader lang={this.props.lang} activeStep={this.state.currentStep} />;
+    return <WizardHeader lang={this.props.lang} activeStep={this.state.currentStep} jiraSteps={JIRA_WIZARD_STEPS} />;
   };
 
   currentStep(lang) {

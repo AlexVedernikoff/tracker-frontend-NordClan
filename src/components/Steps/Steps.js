@@ -2,32 +2,44 @@ import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import * as css from './Steps.scss';
-import Button from '../Button';
 
 const Steps = props => {
   const { steps, activeStepNumber } = props;
   return (
-    <div>
+    <div className={css['steps-container']}>
       {steps.map(step => {
-        const isLastStep = step.stepNumber === steps.length;
+        const isFirstStep = step.stepNumber === 0;
+        const isLastStep = step.stepNumber === steps.length - 1;
         const isActiveStep = step.stepNumber === activeStepNumber;
         const isPreviousStep = step.stepNumber < activeStepNumber;
         return (
-          <div className={'steps-container'}>
-            <Button
-              text={step.labelText}
-              className={classnames({
-                [css['circle-step']]: true,
-                [css['active-step']]: isActiveStep
-              })}
-            />
-            {isLastStep ? null : (
-              <hr
+          <div className={css.step}>
+            {isFirstStep ? null : (
+              <div
                 className={classnames({
-                  [css['step-line']]: true
-                  /*[css['previous-step-line']]: isPreviousStep
-                [css['active-step-line']]: isActiveStep,
-                [css['next-step-line']]: isPreviousStep*/
+                  [css['step-line']]: true,
+                  [css['not-lighted-line']]: !isPreviousStep && !isActiveStep,
+                  [css['lighted-line']]: isActiveStep || isPreviousStep
+                })}
+              />
+            )}
+            <div className={css['step-container']}>
+              <div
+                className={classnames({
+                  [css['circle-step']]: true,
+                  [css['active-step']]: isActiveStep
+                })}
+              >
+                {step.stepNumber}
+              </div>
+              <div className={css['step-content']}>{step.description}</div>
+            </div>
+            {isLastStep ? null : (
+              <div
+                className={classnames({
+                  [css['step-line']]: true,
+                  [css['not-lighted-line']]: !isPreviousStep,
+                  [css['lighted-line']]: isPreviousStep
                 })}
               />
             )}

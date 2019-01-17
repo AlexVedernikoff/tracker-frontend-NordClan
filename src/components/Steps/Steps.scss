@@ -4,16 +4,43 @@
   border-radius: 50%;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
-}
-
-.step-line {
   border-width: 1px;
   border-style: solid;
   border-color: $color-dark;
+  height: 22px;
+  width: 22px;
+  text-align: center;
+  padding-top: 3px;
+}
+
+.active-step {
+  border-color: #344b61;
+  background-color: #344b61;
+  color: #ffffff;
+}
+
+.step-line {
+  margin-top: 11px;
+  height: 1px;
+  width: 10px;
+  background-color: $color-dark;
 }
 
 .steps-container {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
+}
+
+.step {
+  display: flex;
+}
+
+.step-content {
+  padding: 5px;
+}
+
+.step-container {
+  display: flex;
+  margin-left: 6px;
 }
