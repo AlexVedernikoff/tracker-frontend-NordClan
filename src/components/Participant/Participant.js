@@ -182,11 +182,14 @@ class Participant extends React.Component {
         {!isExternal ? (
           <Col xs={12} sm={10} md={10} lg={9}>
             <Row>
-              {gitlabProjects.map(({ id }) => (
+              {gitlabProjects.map(({ id, name }) => (
                 <Col key={id} xs={6} sm={3} md={3} lg className={css.cellColumn}>
                   <div className={classnames(css.cell, css.gitlabRoleCellWrap)}>
                     <div className={classnames(css.gitlabRoleCell)}>
-                      <a onClick={() => this.handleOpenGitlabRoleEdit(id)}>{this.getProjectUserGitlabRole(id).label}</a>
+                      <a onClick={() => this.handleOpenGitlabRoleEdit(id)}>
+                        {this.getProjectUserGitlabRole(id).label}
+                        <span className={classnames(css.gitlabRoleProjectName)}> / {name}</span>
+                      </a>
                     </div>
                   </div>
                 </Col>
