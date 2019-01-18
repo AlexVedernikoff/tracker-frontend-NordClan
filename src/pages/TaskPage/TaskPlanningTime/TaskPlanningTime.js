@@ -79,6 +79,11 @@ class TaskPlanningTime extends Component {
     }
   };
 
+  onBlur = () => {
+    this.stopEditing();
+    this.validateAndSubmit();
+  };
+
   render() {
     return (
       <div
@@ -96,7 +101,7 @@ class TaskPlanningTime extends Component {
           ref={ref => (this.taskPlanningTime = ref)}
           contentEditable={this.props.timeIsEditing}
           suppressContentEditableWarning
-          onBlur={this.validateAndSubmit}
+          onBlur={this.onBlur}
           onPaste={this.onTextPaste}
           onKeyDown={this.handleKeyPress}
           {...(this.props.tooltip
