@@ -145,6 +145,18 @@ class SetAssociationForm extends Component {
     }
   };
 
+  isValidJiraRow = (id, associations) => {
+    return associations.find(el => el.externalTaskTypeId === id);
+  };
+
+  isValidJiraIssueRow = id => {
+    return this.isValidJiraRow(id, this.props.associationState.issueTypesAssociation);
+  };
+
+  isValidJiraStatusRow = id => {
+    return this.isValidJiraRow(id, this.props.associationState.statusesAssociation);
+  };
+
   associateOnClick = (key, value) => {
     const {
       issueTypesAssociation,
