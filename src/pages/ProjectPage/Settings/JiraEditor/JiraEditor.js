@@ -25,7 +25,7 @@ class JiraEditor extends Component {
     return (
       <div className={css.jiraCard}>
         <h2>{localize[lang].SYNCHRONIZATION_WITH_JIRA}</h2>
-        <Link to={`projects/${simtrackProject.id}/jira-wizard`}>
+        <Link to={`/projects/${simtrackProject.id}/jira-wizard`}>
           <Button text={localize[lang].ASSOCIATE_PROJECT_WITH_JIRA} type="primary" icon="IconPlus" />
         </Link>
         {jiraExternalId ? (
