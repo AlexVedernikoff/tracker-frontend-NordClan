@@ -13,10 +13,10 @@ class StepsHeader extends Component {
   render() {
     const { lang, activeStep, jiraSteps } = this.props;
     const steps = jiraSteps.map((step, index) => ({
-      stepNumber: index,
+      stepNumber: index + 1,
       description: localize[lang][step]
     }));
-    return <Steps activeStepNumber={jiraSteps.indexOf(activeStep)} steps={steps} />;
+    return <Steps activeStepNumber={jiraSteps.indexOf(activeStep) + 1} steps={steps} />;
   }
 }
 

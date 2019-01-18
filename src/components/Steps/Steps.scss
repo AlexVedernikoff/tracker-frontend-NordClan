@@ -11,11 +11,18 @@
   width: 22px;
   text-align: center;
   padding-top: 3px;
+  transition: all 0.5s;
 }
 
 .active-step {
   border-color: #344b61;
   background-color: #344b61;
+  color: #ffffff;
+}
+
+.last-step {
+  border-color: #5cb85c;
+  background-color: #5cb85c;
   color: #ffffff;
 }
 

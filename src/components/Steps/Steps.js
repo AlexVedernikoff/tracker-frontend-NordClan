@@ -1,6 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import { IconCheck } from '../../components/Icons';
 import * as css from './Steps.scss';
 
 const Steps = props => {
@@ -8,8 +9,8 @@ const Steps = props => {
   return (
     <div className={css['steps-container']}>
       {steps.map(step => {
-        const isFirstStep = step.stepNumber === 0;
-        const isLastStep = step.stepNumber === steps.length - 1;
+        const isFirstStep = step.stepNumber === 1;
+        const isLastStep = step.stepNumber === steps.length;
         const isActiveStep = step.stepNumber === activeStepNumber;
         const isPreviousStep = step.stepNumber < activeStepNumber;
         return (
@@ -27,10 +28,11 @@ const Steps = props => {
               <div
                 className={classnames({
                   [css['circle-step']]: true,
-                  [css['active-step']]: isActiveStep
+                  [css['active-step']]: isActiveStep && !isLastStep,
+                  [css['last-step']]: isLastStep && isActiveStep
                 })}
               >
-                {step.stepNumber}
+                {isLastStep ? <IconCheck /> : step.stepNumber}
               </div>
               <div className={css['step-content']}>{step.description}</div>
             </div>
