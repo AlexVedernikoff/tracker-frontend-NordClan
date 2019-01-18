@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import Sprint from './Sprint';
 
@@ -179,7 +181,10 @@ const mock = [
 ];
 
 class RoadMap extends Component {
-  static propTypes = {};
+  static propTypes = {
+    project: PropTypes.object,
+    sprints: PropTypes.array.isRequired
+  };
 
   constructor(props) {
     super(props);
@@ -187,9 +192,25 @@ class RoadMap extends Component {
   }
 
   render() {
-    const sprints = mock.map(sprint => <Sprint item={sprint} key={sprint.id} {...{ globalEnd, globalStart }} />);
+    console.log('!', this.props.sprints, this.props.project);
+    //const sprints = mock.map(sprint => <Sprint item={sprint} key={sprint.id} {...{ globalEnd, globalStart }} />);
+    const sprints = this.props.sprints.map(sprint => (
+      <Sprint item={sprint} key={sprint.id} {...{ globalEnd, globalStart }} />
+    ));
     return <div>{sprints}</div>;
   }
 }
 
-export default RoadMap;
+const mapStateToProps = state => ({
+  sprints: state.Project.project.sprints,
+  project: state.Project.project
+});
+
+const mapDispatchToProps = {
+  //
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(RoadMap);
