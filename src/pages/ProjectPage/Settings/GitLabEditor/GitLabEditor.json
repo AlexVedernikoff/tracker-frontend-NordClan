@@ -4,13 +4,15 @@
     "CREATE_REPO": "Create repository",
     "NAMESPACE": "Namespace",
     "PROJECT_NAME": "Project name",
-    "CREATE": "Create"
+    "CREATE": "Create",
+    "GITLAB_WARNING_POPUP_CAPTION": "Some users did not access the repository"
   },
   "ru": {
     "BOUND_REPO": "Привязать репозиторий",
     "CREATE_REPO": "Создать репозиторий",
     "NAMESPACE": "Пространство имен",
     "PROJECT_NAME": "Имя проекта",
-    "CREATE": "Создать"
+    "CREATE": "Создать",
+    "GITLAB_WARNING_POPUP_CAPTION": "Некоторые пользователи не получили доступ к репозиторию"
   }
 }
