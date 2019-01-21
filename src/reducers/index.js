@@ -18,6 +18,7 @@ import Timesheets from './Timesheets';
 import UsersRoles from './UsersRoles';
 import ExternalUsers from './ExternalUsers';
 import Localize from './Localize';
+import Goals from './Goals';
 
 const rootReducer = combineReducers({
   Auth,
@@ -37,6 +38,7 @@ const rootReducer = combineReducers({
   UsersRoles,
   ExternalUsers,
   Localize,
+  Goals,
   routing: routerReducer
 });
 

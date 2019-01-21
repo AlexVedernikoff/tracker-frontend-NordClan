@@ -7,6 +7,7 @@ import { showNotification } from './Notifications';
 import { stopTaskEditing } from './Task';
 import { PUT, REST_API } from '../constants/RestApi';
 import { defaultErrorHandler, defaultExtra as extra, withFinishLoading, withStartLoading } from './Common';
+import { clearGoals } from './Goals';
 
 const startTasksReceive = () => ({
   type: TaskActions.TASKS_RECEIVE_START
@@ -94,6 +95,11 @@ export const changeTasks = (ChangedTasksProperties, callback) => {
 
 export default getTasks;
 
-export const clearCurrentProjectAndTasks = () => ({
-  type: TaskActions.CLEAR_CURRENT_PROJECT_AND_TASKS
-});
+export const clearCurrentProjectAndTasks = () => {
+  return dispatch => {
+    dispatch({
+      type: TaskActions.CLEAR_CURRENT_PROJECT_AND_TASKS
+    });
+    dispatch(clearGoals());
+  };
+};

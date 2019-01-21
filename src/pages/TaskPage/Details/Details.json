@@ -15,7 +15,9 @@
     "CHANGE_PERFORMER": "Change performer of task:",
     "CHANGE_SPRINT": "Change sprint:",
     "NOT_SPECIFIED": "Not specified",
-    "H": "h."
+    "H": "h.",
+    "GOAL": "Goal:",
+    "CHANGE_GOAL": "Change goal of task:"
   },
   "ru": {
     "LOADING": "Загрузка...",
@@ -33,6 +35,8 @@
     "CHANGE_PERFORMER": "Изменить исполнителя задачи:",
     "CHANGE_SPRINT": "Изменить спринт:",
     "NOT_SPECIFIED": "Не указано",
-    "H": "ч."
+    "H": "ч.",
+    "GOAL": "Цель:",
+    "CHANGE_GOAL": "Изменить цель задачи:"
   }
 }

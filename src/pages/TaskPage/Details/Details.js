@@ -8,11 +8,13 @@ import TaskPlanningTime from '../TaskPlanningTime';
 import PerformerModal from '../../../components/PerformerModal';
 import SprintModal from '../../../components/SprintModal';
 import TaskTypeModal from '../../../components/TaskTypeModal';
+import TaskGoalModal from '../../../components/TaskGoalModal';
 import Checkbox from '../../../components/Checkbox/Checkbox';
 import { IconEdit } from '../../../components/Icons';
 import getTypeById from '../../../utils/TaskTypes';
 import { getProjectUsers, getProjectSprints } from '../../../actions/Project';
 import { getTask } from '../../../actions/Task';
+import { getGoalsBySprint } from '../../../actions/Goals';
 import { connect } from 'react-redux';
 import * as css from './Details.scss';
 import moment from 'moment';
@@ -36,10 +38,12 @@ class Details extends Component {
     ExecutionTimeIsEditing: PropTypes.bool,
     PlanningTimeIsEditing: PropTypes.bool,
     canEdit: PropTypes.bool,
+    getGoalsBySprint: PropTypes.func.isRequired,
     getProjectSprints: PropTypes.func.isRequired,
     getProjectUsers: PropTypes.func.isRequired,
     getTask: PropTypes.func.isRequired,
     getTaskSpent: PropTypes.func.isRequired,
+    goals: PropTypes.array,
     isExternal: PropTypes.bool,
     onChange: PropTypes.func.isRequired,
     sprints: PropTypes.array,
@@ -56,6 +60,7 @@ class Details extends Component {
       isSprintModalOpen: false,
       isPerformerModalOpen: false,
       isTaskTypeModalOpen: false,
+      isTaskGoalModalOpen: false,
       spentRequestStatus: spentRequestStatus.READY
     };
   }
@@ -149,6 +154,27 @@ class Details extends Component {
     );
   };
 
+  // Действия с целью
+  openTaskGoalModal = () => {
+    this.props.getGoalsBySprint(this.props.task.sprint.id);
+    this.setState({ isTaskGoalModalOpen: true });
+  };
+
+  closeTaskGoalModal = () => {
+    this.setState({ isTaskGoalModalOpen: false });
+  };
+
+  changeGoal = goalId => {
+    this.props.onChange(
+      {
+        id: this.props.task.id,
+        goalId: goalId
+      },
+      this.props.task.id
+    );
+    this.closeTaskGoalModal();
+  };
+
   spentTooltipRender(spents) {
     return transform(
       spents,
@@ -190,6 +216,18 @@ class Details extends Component {
     ) : (
       <span className={css.unassigned}>{localize[lang].NOT_SPECIFIED}</span>
     );
+
+    const goals = this.props.goals.map(item => ({
+      value: item.id,
+      label: item.name
+    }));
+
+    const goalTag =
+      task.goals && task.goals[0] ? (
+        task.goals[0].name
+      ) : (
+        <span className={css.unassigned}>{localize[lang].NOT_SPECIFIED}</span>
+      );
 
     const executeTimeTooltip =
       this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? (
@@ -285,6 +323,21 @@ class Details extends Component {
               </td>
             </tr>
             <tr>
+              <td>{localize[lang].GOAL}</td>
+              <td>
+                {this.props.task.statusId !== TASK_STATUS_CLOSED ? (
+                  <span onClick={this.openTaskGoalModal} className={css.editableCell}>
+                    {goalTag}
+                    <span className={css.editIcon}>
+                      <IconEdit />
+                    </span>
+                  </span>
+                ) : (
+                  <span>{goalTag}</span>
+                )}
+              </td>
+            </tr>
+            <tr>
               <td>{localize[lang].DATE_OF_CREATE}</td>
               <td>{moment(this.props.task.createdAt).format('DD.MM.YYYY')}</td>
             </tr>
@@ -366,6 +419,15 @@ class Details extends Component {
             onClose={this.closeTaskTypeModal}
           />
         ) : null}
+        {this.state.isTaskGoalModalOpen ? (
+          <TaskGoalModal
+            defaultGoal={task.goals && task.goals[0] ? task.goals[0].id : null}
+            onChoose={this.changeGoal}
+            onClose={this.closeTaskGoalModal}
+            title={localize[lang].CHANGE_GOAL}
+            goals={goals}
+          />
+        ) : null}
       </div>
     );
   }
@@ -375,6 +437,7 @@ const mapStateToProps = state => ({
   users: state.Project.project.users,
   sprints: state.Project.project.sprints,
   taskTypes: getLocalizedTaskTypes(state),
+  goals: state.Goals.goals,
   PlanningTimeIsEditing: state.Task.PlanningTimeIsEditing,
   ExecutionTimeIsEditing: state.Task.ExecutionTimeIsEditing,
   timeSpent: state.Task.timeSpent,
@@ -385,7 +448,8 @@ const mapDispatchToProps = {
   getProjectUsers,
   getProjectSprints,
   getTask,
-  getTaskSpent
+  getTaskSpent,
+  getGoalsBySprint
 };
 
 export default connect(
