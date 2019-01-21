@@ -232,7 +232,7 @@ class Details extends Component {
     const { task, sprints, taskTypes, timeSpent, isExternal, lang, users, unsortedUsers, user } = this.props;
     const tags = task.tags.map((tag, i) => {
       const tagName = typeof tag === 'object' ? tag.name : tag;
-      return <Tag key={i} name={tagName} taggable="task" taggableId={task.id} />;
+      return <Tag key={i} name={tagName} taggable="task" taggableId={task.id} dataTip={tagName} />;
     });
 
     let unionPerformers = [];
