@@ -13,6 +13,7 @@ import debounce from 'lodash/debounce';
 import { getFullName } from '../../../../utils/NameLocalisation.js';
 import { createStepsManager } from '../../wizardConfigurer';
 import { defaultErrorHandler } from '../../../../actions/Common';
+import { IconCheck } from '../../../Icons';
 
 const ASSOCIATIONS_STEPS = [associationStates.ISSUE_TYPES, associationStates.STATUS_TYPES, associationStates.USERS];
 
@@ -41,7 +42,8 @@ class SetAssociationForm extends Component {
     super(props);
     this.stepsManager = createStepsManager(ASSOCIATIONS_STEPS);
     this.state = {
-      currentStep: this.stepsManager.currentStep
+      currentStep: this.stepsManager.currentStep,
+      errors: []
     };
     this.searchOnChange = debounce(this.searchOnChange, 400);
   }
@@ -146,7 +148,7 @@ class SetAssociationForm extends Component {
   };
 
   isValidJiraRow = (id, associations) => {
-    return associations.find(el => el.externalTaskTypeId === id);
+    return associations.find(el => el.externalTaskTypeId === +id);
   };
 
   isValidJiraIssueRow = id => {
@@ -156,6 +158,8 @@ class SetAssociationForm extends Component {
   isValidJiraStatusRow = id => {
     return this.isValidJiraRow(id, this.props.associationState.statusesAssociation);
   };
+
+  isErrorField = id => this.state.errors.find(el => +el === +id);
 
   associateOnClick = (key, value) => {
     const {
@@ -299,6 +303,13 @@ class SetAssociationForm extends Component {
             }
             onClick={() => this.select('jiraIssueType', entity)}
           >
+            <td>
+              {this.isValidJiraIssueRow(id) ? (
+                <div className={css.circleContainer}>
+                  <IconCheck />
+                </div>
+              ) : null}
+            </td>
             <td>{entity.name}</td>
           </tr>
         );
@@ -386,15 +397,21 @@ class SetAssociationForm extends Component {
   }
 
   nextAssociationStep = () => {
-    this.props.mergeAssociationState(
-      {
-        selectedSimtrackCol: null,
-        selectedJiraCols: []
-      },
-      () => {
-        this.setState({ currentStep: this.stepsManager[this.state.currentStep].forwardStep() });
-      }
-    );
+    const errors = this.getFormErrors();
+    errors.length === 0
+      ? this.props.mergeAssociationState(
+          {
+            selectedSimtrackCol: null,
+            selectedJiraCols: []
+          },
+          () => {
+            this.setState({
+              currentStep: this.stepsManager[this.state.currentStep].forwardStep(),
+              errors: []
+            });
+          }
+        )
+      : this.setState({ errors });
   };
 
   previousAssociationStep = () => {
@@ -415,11 +432,28 @@ class SetAssociationForm extends Component {
     return users.filter(user => !pickedEmails.includes(user.email));
   };
 
+  getFormErrors = () => {
+    const { jiraIssueTypes, jiraStatusTypes, issueTypesAssociation, statusesAssociation } = this.props.associationState;
+    const incorrectFields = [];
+    switch (this.state.currentStep) {
+      case associationStates.ISSUE_TYPES:
+        jiraIssueTypes.map(el => {
+          if (!this.isValidJiraIssueRow(el.id)) {
+            incorrectFields.push(el.id);
+          }
+        });
+        return incorrectFields;
+      default:
+        return [];
+    }
+  };
+
   render() {
     const { jiraIssueTypes, jiraStatusTypes, jiraUsers } = this.props.associationState;
     const { taskTypes, taskStatuses, lang } = this.props;
     let JiraTableBody;
     let SimtrackTableBody;
+    const hasErrors = !(this.getFormErrors().length === 0);
     switch (this.state.currentStep) {
       case associationStates.ISSUE_TYPES:
         if (taskTypes && jiraIssueTypes) {
@@ -509,10 +543,10 @@ class SetAssociationForm extends Component {
                   <thead>
                     <tr className={css.usersRolesHeader}>
                       {this.state.currentStep === associationStates.ISSUE_TYPES ? (
-                        <th>{localize[lang].JIRA_ISSUE_TYPES}</th>
+                        <th colSpan={2}>{localize[lang].JIRA_ISSUE_TYPES}</th>
                       ) : null}
                       {this.state.currentStep === associationStates.STATUS_TYPES ? (
-                        <th>{localize[lang].JIRA_STATUS_TYPES}</th>
+                        <th colSpan={2}>{localize[lang].JIRA_STATUS_TYPES}</th>
                       ) : null}
                       {this.state.currentStep === associationStates.USERS ? <th>{localize[lang].JIRA_EMAIL}</th> : null}
                     </tr>
@@ -525,7 +559,12 @@ class SetAssociationForm extends Component {
         </label>
         <div className={css.buttonsContainer}>
           <Button text={localize[lang].GO_BACK} onClick={() => backButtonFunction()} type="green" />
-          <Button text={localize[lang].GO_AHEAD} onClick={() => nextButtonFunction()} type="green" />
+          <Button
+            disabled={hasErrors}
+            text={localize[lang].GO_AHEAD}
+            onClick={() => nextButtonFunction()}
+            type="green"
+          />
         </div>
       </div>
     );

@@ -1,11 +1,27 @@
 @import '../../../../styles/variables.scss';
 
+.circleContainer {
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-width: 1.5px;
+  border-style: solid;
+  border-color: #36be36;
+  height: 22px;
+  width: 22px;
+  text-align: center;
+  padding-top: 3px;
+  transition: all 0.5s;
+}
+
 .usersRolesTable {
   position: relative;
+  padding-left: 0.3rem;
   th,
   td {
     height: 3rem;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.5rem 0.5rem 0.3rem;
+    text-align: left;
   }
 }
 .formField {
