@@ -10,6 +10,7 @@ import {
   getProjectAssociation,
   getJiraIssueAndStatusTypes
 } from '../../actions/Jira';
+import { usersSelector } from '../../selectors/Project';
 
 const selectJiraProject = state => {
   return {
@@ -23,6 +24,7 @@ const mapStateToProps = state => {
   return {
     lang: state.Localize.lang,
     simtrackProjectId: state.Project.project.id,
+    simtrackProjectUsers: usersSelector(state),
     projects: state.Jira.projects,
     project: selectJiraProject(state),
     jiraData: state.Jira.project,
