@@ -198,16 +198,17 @@ class SprintMetrics extends Component {
     return (
       <div>
         <div className={css.sprintSelectWrapper}>
-          <SprintSelector
-            multi={false}
-            searchable={false}
-            clearable
-            value={this.state.sprintSelected}
-            sprints={this.props.sprints}
-            onChange={option => this.changeSprint(option)}
-            className={css.sprintSelector}
-          />
-
+          <div className={css.sprintWrapper}>
+            <SprintSelector
+              multi={false}
+              searchable={false}
+              clearable
+              value={this.state.sprintSelected}
+              sprints={this.props.sprints}
+              onChange={option => this.changeSprint(option)}
+              className={css.sprintSelector}
+            />
+          </div>
           <StartEndDates startDate={this.sprintStartDate()} endDate={this.sprintEndDate()} />
         </div>
         <Row>
