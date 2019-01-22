@@ -38,7 +38,7 @@ import localize from './taskList.json';
 
 const dateFormat = 'DD.MM.YYYY';
 
-export const initialFilters = {
+export const emptyFilters = {
   sprintId: [0]
 };
 
@@ -108,7 +108,7 @@ class TaskList extends Component {
 
   makeFiltersObject = (name, value) => {
     let processedValue;
-    const defaultValue = initialFilters[name];
+    const defaultValue = emptyFilters[name];
     if (['sprintId', 'performerId', 'statusId', 'typeId', 'tags'].indexOf(name) !== -1) {
       processedValue = this.multipleQueries(value, defaultValue);
     } else if (value) {
@@ -280,8 +280,8 @@ class TaskList extends Component {
 
         if (filterValue.length) {
           changedFilters[name] = filterValue;
-        } else if (initialFilters[name] && initialFilters[name].length) {
-          changedFilters[name] = [...initialFilters[name]];
+        } else if (emptyFilters[name] && emptyFilters[name].length) {
+          changedFilters[name] = [...emptyFilters[name]];
         } else {
           delete changedFilters[name];
         }
