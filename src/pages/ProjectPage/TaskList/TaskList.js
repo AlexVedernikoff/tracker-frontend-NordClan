@@ -39,15 +39,7 @@ import localize from './taskList.json';
 const dateFormat = 'DD.MM.YYYY';
 
 export const initialFilters = {
-  isOnlyMine: false,
-  changedSprint: [],
-  filterTags: [],
-  typeId: [],
-  sprintId: [],
-  name: null,
-  authorId: null,
-  prioritiesId: null,
-  performerId: null
+  sprintId: [0]
 };
 
 class TaskList extends Component {
@@ -105,24 +97,25 @@ class TaskList extends Component {
     return re.test(value) ? +value : value;
   };
 
-  multipleQueries = queries => {
+  multipleQueries = (queries, defaultValue) => {
     if (Array.isArray(queries)) return queries.map(queryValue => this.translateToNumIfNeeded(queryValue));
-    return queries ? [this.translateToNumIfNeeded(queries)] : [];
+    return queries ? [this.translateToNumIfNeeded(queries)] : defaultValue || [];
   };
 
-  singleQuery = currentQuery => {
-    return currentQuery ? this.translateToNumIfNeeded(currentQuery) : null;
+  singleQuery = (defaultValue, currentQuery) => {
+    return currentQuery ? this.translateToNumIfNeeded(currentQuery) : defaultValue || null;
   };
 
   makeFiltersObject = (name, value) => {
     let processedValue;
+    const defaultValue = initialFilters[name];
     if (['sprintId', 'performerId', 'statusId', 'typeId', 'tags'].indexOf(name) !== -1) {
-      processedValue = this.multipleQueries(value);
+      processedValue = this.multipleQueries(value, defaultValue);
     } else if (value) {
       if (!Array.isArray(value)) {
-        processedValue = this.singleQuery(value);
+        processedValue = this.singleQuery(value, defaultValue);
       } else {
-        processedValue = this.multipleQueries(value);
+        processedValue = this.multipleQueries(value, defaultValue);
       }
     }
 
@@ -287,6 +280,8 @@ class TaskList extends Component {
 
         if (filterValue.length) {
           changedFilters[name] = filterValue;
+        } else if (initialFilters[name] && initialFilters[name].length) {
+          changedFilters[name] = [...initialFilters[name]];
         } else {
           delete changedFilters[name];
         }
