@@ -1,26 +1,23 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { states } from '../states';
+import Steps from '../../Steps';
 import localize from '../states.json';
 
-class Steps extends Component {
+class StepsHeader extends Component {
   static propTypes = {
     activeStep: PropTypes.string,
+    jiraSteps: PropTypes.array,
     lang: PropTypes.string
   };
 
   render() {
-    const { lang, activeStep } = this.props;
-    const stepNodes = Object.keys(states).map(state => {
-      return (
-        <div key={state}>
-          {localize[lang][state]}
-          {state === activeStep ? ' (Текущий шаг)' : null}
-        </div>
-      );
-    });
-    return <div>{stepNodes}</div>;
+    const { lang, activeStep, jiraSteps } = this.props;
+    const steps = jiraSteps.map((step, index) => ({
+      stepNumber: index + 1,
+      description: localize[lang][step]
+    }));
+    return <Steps activeStepNumber={jiraSteps.indexOf(activeStep) + 1} steps={steps} />;
   }
 }
 
-export default Steps;
+export default StepsHeader;

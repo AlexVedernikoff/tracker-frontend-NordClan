@@ -10,6 +10,7 @@ import SetAssociationForm from './steps/SetAssociation/SetAssociation';
 import Finish from './steps/Finish/Finish';
 import { associationStates } from './steps/SetAssociation/AssociationStates';
 import WizardHeader from './WizardHeader';
+import { history } from '../../History';
 
 const JIRA_WIZARD_STEPS = [states.AUTH, states.SELECT_JIRA_PROJECT, states.SET_ASSOCIATIONS, states.FINISH];
 
@@ -217,9 +218,8 @@ class Wizard extends Component {
 
   onRequestClose = () => {
     this.setState({
-      currentStep: states.AUTH
+      currentStep: states.CLOSED
     });
-    this.props.onRequestClose();
   };
 
   createBatch = (headers, pid) => {
@@ -229,7 +229,7 @@ class Wizard extends Component {
   };
 
   getStepsUI = () => {
-    return <WizardHeader lang={this.props.lang} activeStep={this.state.currentStep} />;
+    return <WizardHeader lang={this.props.lang} activeStep={this.state.currentStep} jiraSteps={JIRA_WIZARD_STEPS} />;
   };
 
   currentStep(lang) {
@@ -311,6 +311,9 @@ class Wizard extends Component {
             />
           </div>
         );
+      case states.CLOSED:
+        history.push(`/projects/${simtrackProjectId}/property`);
+        break;
       default:
         break;
     }
