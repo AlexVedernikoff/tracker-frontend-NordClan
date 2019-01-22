@@ -28,13 +28,18 @@ class CreateProject extends Component {
         ? localize[lang].ERROR_NAME_MORE_SYMBOL_TEXT
         : null;
     const projectPrefixLessSymbols = this.props.projectPrefix.length < 2;
-    const projectPrefixTextError = localize[lang].ERROR_PREFIX_TEXT;
-
+    const projectPrefixMoreSymbols = this.props.projectPrefix.length > 8;
+    const projectPrefixTextError = projectPrefixLessSymbols
+      ? localize[lang].ERROR_PREFIX_TEXT_LESS
+      : projectPrefixMoreSymbols
+        ? localize[lang].ERROR_PREFIX_TEXT_MORE
+        : null;
     return {
       projectNameMoreSymbol,
       projectNameLessSymbol,
       projectNameTextError,
       projectPrefixLessSymbols,
+      projectPrefixMoreSymbols,
       projectPrefixTextError
     };
   };
@@ -58,8 +63,10 @@ class CreateProject extends Component {
       projectNameLessSymbol,
       projectNameTextError,
       projectPrefixLessSymbols,
+      projectPrefixMoreSymbols,
       projectPrefixTextError
     } = this.getErrorText();
+
     return (
       <Modal
         isOpen={isOpen}
@@ -115,7 +122,7 @@ class CreateProject extends Component {
                     />
                   ),
                   'projectPrefix',
-                  projectPrefixLessSymbols
+                  projectPrefixLessSymbols || projectPrefixMoreSymbols
                 )}
               </Col>
             </Row>
@@ -167,13 +174,17 @@ class CreateProject extends Component {
               type="green"
               htmlType="submit"
               onClick={this.props.onSubmit}
-              disabled={projectNameMoreSymbol || projectNameLessSymbol || projectPrefixLessSymbols}
+              disabled={
+                projectNameMoreSymbol || projectNameLessSymbol || projectPrefixLessSymbols || projectPrefixMoreSymbols
+              }
             />
             <Button
               text={localize[lang].CREATE_AND_OPEN}
               type="green-lighten"
               onClick={this.props.onSubmitAndOpen}
-              disabled={projectNameMoreSymbol || projectNameLessSymbol || projectPrefixLessSymbols}
+              disabled={
+                projectNameMoreSymbol || projectNameLessSymbol || projectPrefixLessSymbols || projectPrefixMoreSymbols
+              }
             />
           </div>
         </form>
