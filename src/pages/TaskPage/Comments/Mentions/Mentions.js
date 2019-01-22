@@ -4,9 +4,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { updateCurrentCommentText } from '../../../../actions/Task';
 import * as css from './Mentions.scss';
+import cn from 'classnames';
 
 class Mentions extends Component {
   static propTypes = {
+    className: PropTypes.string,
     currentComment: PropTypes.string,
     disabled: PropTypes.bool,
     getTextAreaNode: PropTypes.func,
@@ -36,12 +38,11 @@ class Mentions extends Component {
   };
 
   render() {
-    const { suggestions, currentComment } = this.props;
+    const { suggestions, currentComment, className } = this.props;
     return (
       <MentionsInput
-        className={css.mentions}
+        className={cn([css.mentions, className])}
         autoFocus
-        style={{ minHeight: 16 }}
         disabled={this.props.disabled}
         placeholder={this.props.placeholder}
         onChange={this.typeComment}

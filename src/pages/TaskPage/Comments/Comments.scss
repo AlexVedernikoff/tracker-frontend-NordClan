@@ -176,6 +176,17 @@
 .answerLineText {
   width: 100%;
   position: relative;
+  border: 1px solid #ebebeb;
+  padding: 8px;
+
+  .commentMentionsInput {
+    width: calc(100% - 44px);
+
+    [class*='__input'] {
+      padding: 0;
+      border: 0;
+    }
+  }
 
   @include phone {
     width: 100%;
