@@ -7,12 +7,10 @@ import * as css from './SetAssociation.scss';
 import cn from 'classnames';
 
 import Button from '../../../Button';
-import { Async } from 'react-select';
 import { associationStates } from './AssociationStates';
-import debounce from 'lodash/debounce';
-import { getFullName } from '../../../../utils/NameLocalisation.js';
 import { createStepsManager } from '../../wizardConfigurer';
 import { defaultErrorHandler } from '../../../../actions/Common';
+import { capitalize } from '../../../../utils/formatter';
 
 const ASSOCIATIONS_STEPS = [associationStates.ISSUE_TYPES, associationStates.STATUS_TYPES, associationStates.USERS];
 
@@ -32,6 +30,7 @@ class SetAssociationForm extends Component {
     setAssociation: PropTypes.func,
     setDefault: PropTypes.func,
     simtrackProjectId: PropTypes.number,
+    simtrackProjectUsers: PropTypes.array,
     taskStatuses: PropTypes.array,
     taskTypes: PropTypes.array,
     token: PropTypes.string
@@ -43,334 +42,192 @@ class SetAssociationForm extends Component {
     this.state = {
       currentStep: this.stepsManager.currentStep
     };
-    this.searchOnChange = debounce(this.searchOnChange, 400);
   }
 
   async componentDidMount() {
     try {
       const jiraAssociations = await this.props.getJiraIssueAndStatusTypes(this.props.jiraProjectId, this.props.token);
       const associations = await this.props.getProjectAssociation(this.props.simtrackProjectId);
-      this.props.setAssociation(associations, jiraAssociations);
+      this.props.setAssociation(associations, jiraAssociations, this.state.currentStep);
     } catch (e) {
       defaultErrorHandler(e);
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.currentStep !== this.state.currentStep) this.props.setDefault();
+    if (prevState.currentStep !== this.state.currentStep) {
+      this.props.setDefault(this.state.currentStep);
+    }
   }
 
-  selectUser = value => {
-    const users = this.props.associationState.users;
-    const newUser = { id: value.value, fullNameRu: value.label };
-    users.push(newUser);
-    this.props.mergeAssociationState({ users });
-    this.props.mergeAssociationState({ selectedSimtrackCol: newUser });
-  };
+  get associationConfig() {
+    return {
+      [associationStates.ISSUE_TYPES]: {
+        associationType: 'issueTypesAssociation',
+        externalAssociationKey: 'externalTaskTypeId',
+        internalAssociationKey: 'internalTaskTypeId',
+        jiraKey: 'id',
+        simTrackKey: 'id',
+        jiraDisplayField: 'name',
+        simTrackDisplayField: 'name',
+        oneToOne: false,
+        createAssociation: (jiraValue, simTrackValue) => ({
+          externalTaskTypeId: jiraValue.id,
+          internalTaskTypeId: simTrackValue.id
+        })
+      },
+      [associationStates.STATUS_TYPES]: {
+        associationType: 'statusesAssociation',
+        externalAssociationKey: 'externalStatusId',
+        internalAssociationKey: 'internalStatusId',
+        jiraKey: 'id',
+        simTrackKey: 'id',
+        jiraDisplayField: 'name',
+        simTrackDisplayField: 'name',
+        oneToOne: false,
+        createAssociation: (jiraValue, simTrackValue) => ({
+          externalStatusId: jiraValue.id,
+          internalStatusId: simTrackValue.id
+        })
+      },
+      [associationStates.USERS]: {
+        associationType: 'userEmailAssociation',
+        externalAssociationKey: 'externalUserEmail',
+        internalAssociationKey: 'internalUserId',
+        jiraKey: 'email',
+        simTrackKey: 'id',
+        jiraDisplayField: 'email',
+        simTrackDisplayField: `fullName${capitalize(this.props.lang)}`,
+        oneToOne: true,
+        createAssociation: (jiraValue, simTrackValue) => ({
+          externalUserEmail: jiraValue.email,
+          internalUserId: simTrackValue.id,
+          fullNameRu: simTrackValue.fullNameRu
+        })
+      }
+    };
+  }
 
-  getOptions = input => {
-    if (!input) {
-      return Promise.resolve({ options: [] });
-    }
-    return this.props.getSimtrackUsers(input).then(users => {
-      return { options: users.map(user => ({ value: user.id, label: getFullName(user) })) };
+  selectJiraCol = value => () => {
+    this.props.mergeAssociationState({
+      selectedJiraCol: value,
+      selectedSimtrackCol: this.getAssociatedSimtrackCol(value)
     });
   };
 
-  searchOnChange = name => {
-    const userName = name.trim();
-    if (userName.length > 1) {
-      this.props.getSimtrackUsers(name).then(users => {
-        this.props.mergeAssociationState({
-          users
-        });
-      });
-    }
+  getAssociatedSimtrackCol = value => {
+    const { associationType, jiraKey, externalAssociationKey } = this.associationConfig[this.state.currentStep];
+
+    return this.props.associationState[associationType].find(
+      association => value[jiraKey] === association[externalAssociationKey]
+    );
   };
 
-  select = (key, value) => {
-    let ind;
-    let associatedArr;
-    let newState;
-    switch (key) {
-      case 'jiraIssueType':
-        if (
-          ~(ind = this.props.associationState.selectedJiraCols.findIndex(
-            el => (el.externalTaskTypeId ? el.externalTaskTypeId.toString() === value.id : el.id === value.id)
-          ))
-        ) {
-          const arr = [...this.props.associationState.selectedJiraCols];
-          arr.splice(ind, 1);
-          newState = arr;
-        } else {
-          newState = [...this.props.associationState.selectedJiraCols, value];
-        }
-        this.props.mergeAssociationState({ selectedJiraCols: newState }, this.associateOnClick(key, value));
-        break;
-      case 'jiraUser':
-        this.props.mergeAssociationState({ selectedJiraCols: [value] }, this.associateOnClick(key, value));
-        break;
-      case 'jiraStatusType':
-        if (
-          ~(ind = this.props.associationState.selectedJiraCols.findIndex(
-            el => (el.externalStatusId ? el.externalStatusId.toString() === value.id : el.id === value.id)
-          ))
-        ) {
-          const arr = [...this.props.associationState.selectedJiraCols];
-          arr.splice(ind, 1);
-          newState = arr;
-        } else {
-          newState = [...this.props.associationState.selectedJiraCols, value];
-        }
-        this.props.mergeAssociationState({ selectedJiraCols: newState }, this.associateOnClick(key, value));
-        break;
-      case 'simtrackIssueType':
-        associatedArr = this.props.associationState.issueTypesAssociation.filter(
-          e => value.id === e.internalTaskTypeId
-        );
-        this.props.mergeAssociationState({ selectedJiraCols: [...associatedArr], selectedSimtrackCol: value });
-        break;
-      case 'simtrackStatusType':
-        associatedArr = this.props.associationState.statusesAssociation.filter(e => value.id === e.internalStatusId);
-        this.props.mergeAssociationState({ selectedJiraCols: [...associatedArr], selectedSimtrackCol: value });
-        break;
-      case 'simtrackUser':
-        associatedArr = this.props.associationState.userEmailAssociation.filter(
-          e => (value.internalUserId || value.id) === e.internalUserId
-        );
-        this.props.mergeAssociationState({ selectedJiraCols: [...associatedArr], selectedSimtrackCol: value });
-        break;
-      default:
-        break;
-    }
+  selectSimtrackCol = value => () => {
+    this.createAssociation(value);
   };
 
-  associateOnClick = (key, value) => {
-    const {
-      issueTypesAssociation,
-      statusesAssociation,
-      userEmailAssociation,
-      selectedSimtrackCol
-    } = this.props.associationState;
-    if (!selectedSimtrackCol) return;
-    const { id } = selectedSimtrackCol;
-    let newArr;
-    let association;
-    let foundIndex;
-    switch (key) {
-      case 'jiraIssueType':
-        newArr = issueTypesAssociation;
-        association = {
-          externalTaskTypeId: value.externalTaskTypeId ? +value.externalTaskTypeId : +value.id,
-          internalTaskTypeId: +id
-        };
-        foundIndex = issueTypesAssociation.findIndex(
-          el =>
-            el.externalTaskTypeId === association.externalTaskTypeId &&
-            el.internalTaskTypeId === association.internalTaskTypeId
-        );
-        if (foundIndex !== -1) {
-          newArr.splice(foundIndex, 1);
-        } else {
-          newArr.push(association);
-        }
-        this.props.mergeAssociationState({ issueTypesAssociation: newArr });
-        break;
-      case 'jiraStatusType':
-        newArr = statusesAssociation;
-        association = {
-          externalStatusId: value.externalStatusId ? +value.externalStatusId : +value.id,
-          internalStatusId: +id
-        };
-        foundIndex = statusesAssociation.findIndex(
-          el =>
-            el.externalStatusId === association.externalStatusId && el.internalStatusId === association.internalStatusId
-        );
-        if (foundIndex !== -1) {
-          newArr.splice(foundIndex, 1);
-        } else {
-          newArr.push(association);
-        }
-        this.props.mergeAssociationState({ statusesAssociation: newArr });
-        break;
-      case 'jiraUser':
-        newArr = userEmailAssociation;
-        association = {
-          externalUserEmail: value.email,
-          internalUserId: +id,
-          fullNameRu: this.props.associationState.selectedSimtrackCol.fullNameRu
-        };
-        foundIndex = userEmailAssociation.findIndex(el => el.internalUserId === association.internalUserId);
-        if (foundIndex !== -1) {
-          if (userEmailAssociation[foundIndex].externalUserEmail === association.externalUserEmail) {
-            newArr.splice(foundIndex, 1);
-          } else {
-            newArr.splice(foundIndex, 1, association);
-          }
-        } else {
-          newArr.push(association);
-        }
-        this.props.mergeAssociationState({ userEmailAssociation: newArr }, () =>
-          log(this.props.associationState.userEmailAssociation)
-        );
-        break;
-      default:
-        break;
+  createAssociation = value => {
+    const { associationType, createAssociation, oneToOne } = this.associationConfig[this.state.currentStep];
+    const associations = [...this.props.associationState[associationType]];
+
+    const foundAssociationIndex = oneToOne
+      ? this.findAssociationForSelectedSimtrackCol(value)
+      : this.findAssociationForSelectedJiraCol();
+
+    if (foundAssociationIndex !== -1) {
+      associations.splice(foundAssociationIndex, 1);
     }
+
+    const newAssociation = createAssociation(this.props.associationState.selectedJiraCol, value);
+    associations.push(newAssociation);
+
+    this.props.mergeAssociationState({ [associationType]: associations });
+  };
+
+  findAssociationForSelectedJiraCol = () => {
+    const { jiraKey, associationType, externalAssociationKey } = this.associationConfig[this.state.currentStep];
+    const { selectedJiraCol } = this.props.associationState;
+
+    return this.props.associationState[associationType].findIndex(
+      association => selectedJiraCol[jiraKey] === association[externalAssociationKey]
+    );
+  };
+
+  findAssociationForSelectedSimtrackCol = value => {
+    const { associationType, simTrackKey, internalAssociationKey } = this.associationConfig[this.state.currentStep];
+
+    return this.props.associationState[associationType].findIndex(
+      association => association[internalAssociationKey] === value[simTrackKey]
+    );
   };
 
   // --------------------------------
 
-  isDisabledAssociation = () => {
-    return !this.state.selectedSimtrackCol;
-  };
-
-  isActiveJiraColItems = id => {
-    switch (this.state.currentStep) {
-      case associationStates.ISSUE_TYPES:
-        return this.props.associationState.selectedJiraCols.find(
-          el => `${el.id}` === id || `${el.externalTaskTypeId}` === id
-        );
-      case associationStates.STATUS_TYPES:
-        return this.props.associationState.selectedJiraCols.find(
-          el => `${el.id}` === id || `${el.externalStatusId}` === id
-        );
-      case associationStates.USERS:
-        return this.props.associationState.selectedJiraCols.find(
-          el => `${el.email}` === id || `${el.externalUserEmail}` === id
-        );
-      default:
-        break;
+  isJiraColItemActive = id => {
+    if (!this.props.associationState.selectedJiraCol) {
+      return false;
     }
+
+    const { jiraKey } = this.associationConfig[this.state.currentStep];
+
+    return this.props.associationState.selectedJiraCol[jiraKey] === id;
   };
 
-  isActiveSimtrackColItems = id => {
-    if (this.props.associationState.selectedSimtrackCol) {
-      if (this.props.associationState.selectedSimtrackCol.id) {
-        return this.props.associationState.selectedSimtrackCol.id.toString() === id;
-      }
-      if (this.props.associationState.selectedSimtrackCol.internalUserId) {
-        return this.props.associationState.selectedSimtrackCol.internalUserId.toString() === id;
-      }
-    } else return false;
+  isSimtrackColItemActive = id => {
+    if (!this.props.associationState.selectedJiraCol) {
+      return false;
+    }
+
+    const { associationType, internalAssociationKey } = this.associationConfig[this.state.currentStep];
+    const foundAssociationIndex = this.findAssociationForSelectedJiraCol();
+
+    if (foundAssociationIndex === -1) {
+      return false;
+    }
+
+    const foundAssociation = this.props.associationState[associationType][foundAssociationIndex];
+    return foundAssociation[internalAssociationKey] === id;
   };
 
   renderJiraRow(entity) {
-    let id;
-    switch (this.state.currentStep) {
-      case associationStates.USERS:
-        id = `${entity.email}`;
-        return (
-          <tr
-            key={id}
-            className={
-              (css.userRow,
-              cn(css.userRow, {
-                [css.userRow__active]: this.isActiveJiraColItems(id)
-              }))
-            }
-            onClick={() => this.select('jiraUser', entity)}
-          >
-            <td>{entity.email}</td>
-          </tr>
-        );
-      case associationStates.ISSUE_TYPES:
-        id = `${entity.id}`;
-        return (
-          <tr
-            key={id}
-            className={
-              (css.userRow,
-              cn(css.userRow, {
-                [css.userRow__active]: this.isActiveJiraColItems(id)
-              }))
-            }
-            onClick={() => this.select('jiraIssueType', entity)}
-          >
-            <td>{entity.name}</td>
-          </tr>
-        );
-      case associationStates.STATUS_TYPES:
-        id = `${entity.id}`;
-        return (
-          <tr
-            key={id}
-            className={
-              (css.userRow,
-              cn(css.userRow, {
-                [css.userRow__active]: this.isActiveJiraColItems(id)
-              }))
-            }
-            onClick={() => this.select('jiraStatusType', entity)}
-          >
-            <td>{entity.name}</td>
-          </tr>
-        );
-      default:
-        break;
-    }
+    const { jiraKey, jiraDisplayField } = this.associationConfig[this.state.currentStep];
+    const id = entity[jiraKey];
+
+    return (
+      <tr
+        key={id}
+        className={
+          (css.userRow,
+          cn(css.userRow, {
+            [css.userRow__active]: this.isJiraColItemActive(id)
+          }))
+        }
+        onClick={this.selectJiraCol(entity)}
+      >
+        <td>{entity[jiraDisplayField]}</td>
+      </tr>
+    );
   }
 
   renderSimtrackRow(entity) {
-    let id;
-    switch (this.state.currentStep) {
-      case associationStates.USERS:
-        const association = this.props.associationState.userEmailAssociation.find(
-          el => +el.internalUserId === +entity.id
-        );
-        id = `${entity.id || entity.internalUserId}`;
-        return (
-          <tr
-            key={id}
-            className={
-              (css.userRow,
-              cn(css.userRow, {
-                [css.userRow__active]: this.isActiveSimtrackColItems(id)
-              }))
-            }
-            onClick={() => this.select('simtrackUser', entity)}
-          >
-            <td>
-              <p>{entity.fullNameRu}</p>
-              <p>{association ? association.externalUserEmail : 'not associated'}</p>
-            </td>
-          </tr>
-        );
-      case associationStates.ISSUE_TYPES:
-        id = `${entity.id}`;
-        return (
-          <tr
-            key={id}
-            className={
-              (css.userRow,
-              cn(css.userRow, {
-                [css.userRow__active]: this.isActiveSimtrackColItems(id)
-              }))
-            }
-            onClick={() => this.select('simtrackIssueType', entity)}
-          >
-            <td>{entity.name}</td>
-          </tr>
-        );
-      case associationStates.STATUS_TYPES:
-        id = `${entity.id}`;
-        return (
-          <tr
-            key={id}
-            className={
-              (css.userRow,
-              cn(css.userRow, {
-                [css.userRow__active]: this.isActiveSimtrackColItems(id)
-              }))
-            }
-            onClick={() => this.select('simtrackStatusType', entity)}
-          >
-            <td>{entity.name}</td>
-          </tr>
-        );
-      default:
-        break;
-    }
+    const { simTrackDisplayField, simTrackKey } = this.associationConfig[this.state.currentStep];
+    const id = entity[simTrackKey];
+
+    return (
+      <tr
+        key={id}
+        className={
+          (css.userRow,
+          cn(css.userRow, {
+            [css.userRow__active]: this.isSimtrackColItemActive(id)
+          }))
+        }
+        onClick={this.selectSimtrackCol(entity)}
+      >
+        <td>{entity[simTrackDisplayField]}</td>
+      </tr>
+    );
   }
 
   nextAssociationStep = () => {
@@ -397,15 +254,9 @@ class SetAssociationForm extends Component {
     );
   };
 
-  filtredJiraUsers = users => {
-    const { userEmailAssociation } = this.props.associationState;
-    const pickedEmails = userEmailAssociation.map(el => el.externalUserEmail);
-    return users.filter(user => !pickedEmails.includes(user.email));
-  };
-
   render() {
     const { jiraIssueTypes, jiraStatusTypes, jiraUsers } = this.props.associationState;
-    const { taskTypes, taskStatuses, lang } = this.props;
+    const { taskTypes, taskStatuses, simtrackProjectUsers, lang } = this.props;
     let JiraTableBody;
     let SimtrackTableBody;
     switch (this.state.currentStep) {
@@ -430,11 +281,11 @@ class SetAssociationForm extends Component {
         }
         break;
       case associationStates.USERS:
-        if (jiraUsers) {
-          JiraTableBody = this.filtredJiraUsers(jiraUsers).map(entity => {
+        if (jiraUsers && simtrackProjectUsers) {
+          JiraTableBody = jiraUsers.map(entity => {
             return this.renderJiraRow(entity);
           });
-          SimtrackTableBody = this.props.associationState.users.map(entity => {
+          SimtrackTableBody = simtrackProjectUsers.map(entity => {
             return this.renderSimtrackRow(entity);
           });
         }
@@ -461,6 +312,24 @@ class SetAssociationForm extends Component {
                   <thead>
                     <tr className={css.usersRolesHeader}>
                       {this.state.currentStep === associationStates.ISSUE_TYPES ? (
+                        <th>{localize[lang].JIRA_ISSUE_TYPES}</th>
+                      ) : null}
+                      {this.state.currentStep === associationStates.STATUS_TYPES ? (
+                        <th>{localize[lang].JIRA_STATUS_TYPES}</th>
+                      ) : null}
+                      {this.state.currentStep === associationStates.USERS ? <th>{localize[lang].JIRA_EMAIL}</th> : null}
+                    </tr>
+                  </thead>
+                  <tbody>{JiraTableBody}</tbody>
+                </table>
+              </Col>
+            </div>
+            <div className={css.innerFirstCol}>
+              <Col xs={12}>
+                <table className={css.usersRolesTable}>
+                  <thead>
+                    <tr className={css.usersRolesHeader}>
+                      {this.state.currentStep === associationStates.ISSUE_TYPES ? (
                         <th>{localize[lang].SIMTRACK_ISSUE_TYPES}</th>
                       ) : null}
                       {this.state.currentStep === associationStates.STATUS_TYPES ? (
@@ -471,41 +340,7 @@ class SetAssociationForm extends Component {
                       ) : null}
                     </tr>
                   </thead>
-                  <tbody>
-                    {this.state.currentStep === associationStates.USERS ? (
-                      <tr className={css.userRow}>
-                        <Async
-                          autoFocus
-                          name="user_association"
-                          loadOptions={this.getOptions}
-                          onChange={this.selectUser}
-                          placeholder={localize[lang].NAME}
-                          filterOptions={options => {
-                            return options;
-                          }}
-                        />
-                      </tr>
-                    ) : null}
-                    {SimtrackTableBody}
-                  </tbody>
-                </table>
-              </Col>
-            </div>
-            <div className={css.innerFirstCol}>
-              <Col xs={12}>
-                <table className={css.usersRolesTable}>
-                  <thead>
-                    <tr className={css.usersRolesHeader}>
-                      {this.state.currentStep === associationStates.ISSUE_TYPES ? (
-                        <th>{localize[lang].JIRA_ISSUE_TYPES}</th>
-                      ) : null}
-                      {this.state.currentStep === associationStates.STATUS_TYPES ? (
-                        <th>{localize[lang].JIRA_STATUS_TYPES}</th>
-                      ) : null}
-                      {this.state.currentStep === associationStates.USERS ? <th>{localize[lang].JIRA_EMAIL}</th> : null}
-                    </tr>
-                  </thead>
-                  <tbody>{JiraTableBody}</tbody>
+                  <tbody>{SimtrackTableBody}</tbody>
                 </table>
               </Col>
             </div>

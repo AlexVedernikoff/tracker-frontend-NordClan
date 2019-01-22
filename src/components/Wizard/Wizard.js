@@ -35,6 +35,7 @@ class Wizard extends Component {
     projectData: PropTypes.object,
     projects: PropTypes.array,
     setAssociation: PropTypes.func,
+    simtrackProjectUsers: PropTypes.array,
     taskStatuses: PropTypes.array,
     taskTypes: PropTypes.array,
     token: PropTypes.string
@@ -64,8 +65,7 @@ class Wizard extends Component {
         statusesAssociation: [],
         userEmailAssociation: [],
 
-        selectedSimtrackCol: null,
-        selectedJiraCols: [],
+        selectedJiraCol: null,
 
         jiraIssueTypes: [],
         jiraStatusTypes: []
@@ -130,7 +130,7 @@ class Wizard extends Component {
     });
   };
 
-  setAssociationState = (association, jiraAssociations) => {
+  setAssociationState = (association, jiraAssociations, step) => {
     this.setState(
       {
         associationState: {
@@ -143,49 +143,45 @@ class Wizard extends Component {
           jiraUsers: jiraAssociations.users
         }
       },
-      () => this.setAssociationStateDefault()
+      () => {
+        this.setAssociationStateDefault(step);
+      }
     );
   };
 
-  setAssociationStateDefault = () => {
-    const {
-      currentState,
-      issueTypesAssociation,
-      statusesAssociation,
-      userEmailAssociation
-    } = this.state.associationState;
-    let associatedArr;
-    let value;
-    switch (currentState) {
-      case associationStates.USERS:
-        value = this.state.userEmailAssociation[0];
-        associatedArr = userEmailAssociation.filter(e => (value.internalUserId || value.id) === e.internalUserId);
-        const users = userEmailAssociation.map(user => ({ fullNameRu: user.fullNameRu, id: user.internalUserId }));
-        if (this.state.userEmailAssociation.length) {
-          this.setState({ users });
-        }
-        value = users[0];
-        break;
+  getJiraDataSource = (associationState, step) => {
+    const { jiraIssueTypes, jiraStatusTypes, jiraUsers } = associationState;
+    let dataSource;
 
+    switch (step) {
       case associationStates.ISSUE_TYPES:
-        value = this.props.taskTypes.find(el => el.id === 1);
-        associatedArr = issueTypesAssociation.filter(e => value.id === e.internalTaskTypeId);
+        dataSource = jiraIssueTypes;
         break;
-
       case associationStates.STATUS_TYPES:
-        value = this.props.taskStatuses.find(el => el.id === 1);
-        associatedArr = statusesAssociation.filter(e => value.id === e.internalStatusId);
+        dataSource = jiraStatusTypes;
+        break;
+      case associationStates.USERS:
+        dataSource = jiraUsers;
         break;
       default:
+        dataSource = [];
         break;
     }
 
-    this.setState({
-      associationState: {
-        ...this.state.associationState,
-        selectedJiraCols: [...associatedArr],
-        selectedSimtrackCol: value
-      }
+    return dataSource;
+  };
+
+  setAssociationStateDefault = step => {
+    this.setState(state => {
+      const jiraDataSource = this.getJiraDataSource(state.associationState, step);
+      const value = jiraDataSource.length ? jiraDataSource[0] : null;
+
+      return {
+        associationState: {
+          ...state.associationState,
+          selectedJiraCol: value
+        }
+      };
     });
   };
 
@@ -294,6 +290,7 @@ class Wizard extends Component {
               associationState={this.state.associationState}
               mergeAssociationState={this.mergeAssociationState}
               getJiraProjectUsers={this.props.getJiraProjectUsers}
+              simtrackProjectUsers={this.props.simtrackProjectUsers}
             />
           </div>
         );
