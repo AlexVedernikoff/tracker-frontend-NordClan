@@ -13,7 +13,7 @@ const goalsListReceived = goals => ({
   data: goals
 });
 
-export const getGoalsBySprint = sprintId => {
+export const getGoalsByProject = projectId => {
   const URL = `${API_URL}/goal`;
   return dispatch => {
     dispatch(startGoalsReceive());
@@ -23,7 +23,7 @@ export const getGoalsBySprint = sprintId => {
         URL,
         {
           params: {
-            sprintId
+            projectId
           }
         },
         { withCredentials: true }
