@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import localize from './SelectDropdown.json';
 import { ENTER } from '../../constants/KeyCodes';
+import { isEmpty } from 'lodash';
 
 // workaround for submit on enter press
 // we want key down event to propagate
@@ -47,7 +48,9 @@ class SelectDropdown extends Component {
   };
 
   onClear() {
-    this.props.onClear();
+    if (this.props.onClear) {
+      this.props.onClear();
+    }
   }
 
   showCross() {
@@ -60,7 +63,6 @@ class SelectDropdown extends Component {
 
   render() {
     const { name, options, thisClassName, lang, canClear, ...other } = this.props;
-
     return (
       <div onMouseEnter={() => this.showCross()} onMouseLeave={() => this.hideCross()} className="InnerSelectWrap">
         <InnerSelect
@@ -74,6 +76,7 @@ class SelectDropdown extends Component {
         />
 
         {canClear &&
+          !isEmpty(other.value) &&
           this.state.isHovered && (
             <span className="ClearValue" onClick={() => this.onClear()}>
               ×

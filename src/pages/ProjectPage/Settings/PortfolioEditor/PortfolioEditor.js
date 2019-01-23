@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import Select from 'react-select';
+import Select from '../../../../components/SelectDropdown';
 import * as css from './PortfolioEditor.scss';
 // import getPortfolios from '../../../../utils/getPortfolios';
 import { changeProject } from '../../../../actions/Project';
@@ -80,7 +80,6 @@ class PortfolioEditor extends Component {
   render() {
     const { user, project, lang } = this.props;
     const isProjectAdmin = checkProjectAdmin(user, project.id);
-
     const portfoliosOptions = this.props.portfolios.map(portfolio => ({
       label: portfolio.name,
       value: portfolio.id

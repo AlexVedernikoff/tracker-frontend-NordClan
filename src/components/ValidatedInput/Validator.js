@@ -1,5 +1,5 @@
 class Validator {
-  constructor () {
+  constructor() {
     this.touched = {};
     this.validatedFields = {};
     this.isDisabled = true;
@@ -16,18 +16,15 @@ class Validator {
 
   resetTouched = () => {
     this.touched = {};
-  }
+  };
 
-  validate (decorateFunc, field, isError) {
+  validate(decorateFunc, field, isError) {
     if (!this.touched[field]) {
       this.touched[field] = false;
     }
     this.validatedFields[field] = isError;
     this.isDisabled = Object.values(this.validatedFields).some(error => error);
-    return decorateFunc(
-      this.handleBlur(field, isError),
-      this.shouldMarkError(field, isError)
-    );
+    return decorateFunc(this.handleBlur(field, isError), this.shouldMarkError(field, isError));
   }
 }
 
