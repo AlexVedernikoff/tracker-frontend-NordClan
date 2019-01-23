@@ -79,6 +79,18 @@
   }
 }
 
+.projectTitle__text {
+  max-width: 100%;
+  #projectName {
+    display: inline-block;
+  }
+}
+
+.projectTitle__title {
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .projectPic {
   width: 3.5rem;
   height: 3.5rem;
