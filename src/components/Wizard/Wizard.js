@@ -11,6 +11,7 @@ import Finish from './steps/Finish/Finish';
 import { associationStates } from './steps/SetAssociation/AssociationStates';
 import WizardHeader from './WizardHeader';
 import { history } from '../../History';
+import localize from './localization';
 
 const JIRA_WIZARD_STEPS = [states.AUTH, states.SELECT_JIRA_PROJECT, states.SET_ASSOCIATIONS, states.FINISH];
 
@@ -23,6 +24,7 @@ class Wizard extends Component {
     getJiraProjectUsers: PropTypes.func,
     getJiraProjects: PropTypes.func,
     getProjectAssociation: PropTypes.func,
+    getProjectInfo: PropTypes.func,
     getSimtrackUsersByName: PropTypes.func,
     isJiraAuthorizeError: PropTypes.any,
     jiraAuthorize: PropTypes.func,
@@ -35,6 +37,7 @@ class Wizard extends Component {
     projectData: PropTypes.object,
     projects: PropTypes.array,
     setAssociation: PropTypes.func,
+    simtrackProjectName: PropTypes.string,
     simtrackProjectUsers: PropTypes.array,
     taskStatuses: PropTypes.array,
     taskTypes: PropTypes.array,
@@ -72,6 +75,12 @@ class Wizard extends Component {
       },
       token: null
     };
+  }
+
+  componentDidMount() {
+    if (!this.props.simtrackProjectUsers.length) {
+      this.props.getProjectInfo(this.props.params.projectId);
+    }
   }
 
   onChange = (name, e) => {
@@ -219,6 +228,22 @@ class Wizard extends Component {
     });
   };
 
+  associateWithJira = () => {
+    const { server } = this.state.authDataState;
+    const { issueTypesAssociation, statusesAssociation, userEmailAssociation } = this.state.associationState;
+    this.props
+      .associateWithJiraProject(this.props.token, {
+        jiraHostName: server,
+        simtrackProjectId: this.props.params.projectId,
+        jiraProjectId: this.state.selectJiraProjectState.jiraProjectId,
+        issueTypesAssociation,
+        statusesAssociation,
+        userEmailAssociation
+      })
+      .then(() => this.onRequestClose())
+      .catch(() => this.onRequestClose());
+  };
+
   createBatch = (headers, pid) => {
     this.props.createBatch(headers, pid).then(() => {
       this.onRequestClose();
@@ -298,13 +323,7 @@ class Wizard extends Component {
               lang={lang}
               token={this.state.token}
               previousStep={this.onRequestClose}
-              nextStep={this.createBatch}
-              project={this.props.project}
-              jiraHostName={authDataState.server}
-              simtrackProjectId={simtrackProjectId}
-              jiraProjectId={selectJiraProjectState.jiraProjectId}
-              associationState={this.state.associationState}
-              associateWithJiraProject={this.props.associateWithJiraProject}
+              nextStep={this.associateWithJira}
             />
           </div>
         );
@@ -317,11 +336,11 @@ class Wizard extends Component {
   }
 
   render() {
-    const { lang } = this.props;
+    const { lang, simtrackProjectName } = this.props;
 
     return (
       <div>
-        <h1>Синхронизация с проектом Jira</h1>
+        <h1>localize[lang].SYNC_WITH_JIRA(simtrackProjectName)</h1>
         <hr />
         <div>{this.getStepsUI()}</div>
         {this.currentStep(lang)}

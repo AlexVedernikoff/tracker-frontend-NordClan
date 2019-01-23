@@ -12,7 +12,6 @@ import { createStepsManager } from '../../wizardConfigurer';
 import { defaultErrorHandler } from '../../../../actions/Common';
 import { capitalize } from '../../../../utils/formatter';
 import { IconCheck } from '../../../Icons';
-import { states } from '../../states';
 
 const ASSOCIATIONS_STEPS = [associationStates.ISSUE_TYPES, associationStates.STATUS_TYPES, associationStates.USERS];
 
@@ -140,6 +139,8 @@ class SetAssociationForm extends Component {
         return this.isValidJiraIssueRow(id);
       case associationStates.STATUS_TYPES:
         return this.isValidJiraStatusRow(id);
+      case associationStates.USERS:
+        return this.isValidJiraUserRow(id);
       default:
     }
   };
@@ -154,6 +155,10 @@ class SetAssociationForm extends Component {
 
   selectSimtrackCol = value => () => {
     this.createAssociation(value);
+  };
+
+  isValidJiraUserRow = email => {
+    return this.props.associationState.userEmailAssociation.find(el => el.externalUserEmail === email);
   };
 
   createAssociation = value => {
@@ -222,10 +227,11 @@ class SetAssociationForm extends Component {
   renderJiraRow(entity) {
     const { jiraKey, jiraDisplayField } = this.associationConfig[this.state.currentStep];
     const id = entity[jiraKey];
+    console.log('id', id);
 
     return (
       <tr key={id} onClick={this.selectJiraCol(entity)}>
-        <td>
+        <td className={css.iconCheckCell}>
           {this.isValidJiraRow(id) ? (
             <div className={css.circleContainer}>
               <IconCheck />
@@ -297,7 +303,7 @@ class SetAssociationForm extends Component {
   };
 
   getFormErrors = () => {
-    const { jiraIssueTypes, jiraStatusTypes, issueTypesAssociation, statusesAssociation } = this.props.associationState;
+    const { jiraIssueTypes, jiraStatusTypes, jiraUsers } = this.props.associationState;
     const incorrectFields = [];
     switch (this.state.currentStep) {
       case associationStates.ISSUE_TYPES:
@@ -306,10 +312,20 @@ class SetAssociationForm extends Component {
             incorrectFields.push(el.id);
           }
         });
-        return incorrectFields;
+        break;
+      case associationStates.STATUS_TYPES:
+        jiraStatusTypes.map(el => {
+          if (!this.isValidJiraStatusRow(el.id)) {
+            incorrectFields.push(el.id);
+          }
+        });
+        break;
+      case associationStates.USERS:
+        return this.props.associationState.userEmailAssociation.length === 0 ? incorrectFields.push('error') : [];
       default:
         return [];
     }
+    return incorrectFields;
   };
 
   render() {
@@ -370,15 +386,14 @@ class SetAssociationForm extends Component {
                 <table className={css.usersRolesTable}>
                   <thead>
                     <tr className={css.usersRolesHeader}>
+                      <th />
                       {this.state.currentStep === associationStates.ISSUE_TYPES ? (
-                        <th colSpan={2}>{localize[lang].JIRA_ISSUE_TYPES}</th>
+                        <th>{localize[lang].JIRA_ISSUE_TYPES}</th>
                       ) : null}
                       {this.state.currentStep === associationStates.STATUS_TYPES ? (
-                        <th colSpan={2}>{localize[lang].JIRA_STATUS_TYPES}</th>
+                        <th>{localize[lang].JIRA_STATUS_TYPES}</th>
                       ) : null}
-                      {this.state.currentStep === associationStates.USERS ? (
-                        <th colSpan={2}>{localize[lang].JIRA_EMAIL}</th>
-                      ) : null}
+                      {this.state.currentStep === associationStates.USERS ? <th>{localize[lang].JIRA_EMAIL}</th> : null}
                     </tr>
                   </thead>
                   <tbody>{JiraTableBody}</tbody>
@@ -391,7 +406,7 @@ class SetAssociationForm extends Component {
                   <thead>
                     <tr className={css.usersRolesHeader}>
                       {this.state.currentStep === associationStates.ISSUE_TYPES ? (
-                        <th colSpan={2}>{localize[lang].SIMTRACK_ISSUE_TYPES}</th>
+                        <th>{localize[lang].SIMTRACK_ISSUE_TYPES}</th>
                       ) : null}
                       {this.state.currentStep === associationStates.STATUS_TYPES ? (
                         <th colSpan={2}>{localize[lang].SIMTRACK_STATUS_TYPES}</th>

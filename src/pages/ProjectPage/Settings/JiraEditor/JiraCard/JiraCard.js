@@ -22,17 +22,8 @@ class JiraCard extends Component {
     };
   }
 
-  deleteProject = () => {
-    this.toggleConfirm();
-  };
-
-  toggleConfirm = () => {
-    this.setState({ isConfirm: !this.state.isConfirm });
-  };
-
   render() {
-    const { project, lang, simtrackProjectId } = this.props;
-    const { isConfirm } = this.state;
+    const { project } = this.props;
 
     return (
       <div className={css.projectCard}>
@@ -45,19 +36,6 @@ class JiraCard extends Component {
             {project.name}
           </a>
         </div>
-        <div onClick={this.toggleConfirm} className={css.deleteProject}>
-          <IconClose data-tip={localize[lang].CANSEL_CONNECT} />
-        </div>
-        {isConfirm ? (
-          <ConfirmModal
-            isOpen
-            contentLabel="modal"
-            text={`${localize[lang].CONFIRM_CANSEL} ${project.name}?`}
-            onCancel={this.toggleConfirm}
-            onConfirm={() => this.props.deleteProject(simtrackProjectId)}
-            onRequestClose={this.toggleConfirm}
-          />
-        ) : null}
       </div>
     );
   }
