@@ -4,9 +4,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { updateCurrentCommentText } from '../../../../actions/Task';
 import * as css from './Mentions.scss';
+import cn from 'classnames';
 
 class Mentions extends Component {
   static propTypes = {
+    className: PropTypes.string,
     currentComment: PropTypes.string,
     disabled: PropTypes.bool,
     getTextAreaNode: PropTypes.func,
@@ -14,7 +16,6 @@ class Mentions extends Component {
     onInput: PropTypes.func,
     onKeyDown: PropTypes.func,
     placeholder: PropTypes.string,
-    resizeKey: PropTypes.string,
     setMentions: PropTypes.func,
     suggestions: PropTypes.arrayOf(PropTypes.object),
     toggleBtn: PropTypes.func,
@@ -37,13 +38,11 @@ class Mentions extends Component {
   };
 
   render() {
-    const { suggestions, currentComment } = this.props;
+    const { suggestions, currentComment, className } = this.props;
     return (
       <MentionsInput
-        className={css.mentions}
+        className={cn([css.mentions, className])}
         autoFocus
-        key={this.props.resizeKey}
-        style={{ minHeight: 32, paddingTop: '16px' }}
         disabled={this.props.disabled}
         placeholder={this.props.placeholder}
         onChange={this.typeComment}

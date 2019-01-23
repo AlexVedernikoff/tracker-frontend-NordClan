@@ -328,7 +328,7 @@ class Comments extends Component {
               <Mentions
                 suggestions={users}
                 resizeKey={this.state.resizeKey}
-                className={css.resizeTrue}
+                className={css.commentMentionsInput}
                 disabled={this.props.currentComment.disabled || this.props.currentComment.expired}
                 placeholder={localize[lang].ENTER_COMMENT}
                 onKeyDown={this.publishComment}

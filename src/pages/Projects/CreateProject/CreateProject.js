@@ -42,7 +42,7 @@ class CreateProject extends Component {
         }}
         contentLabel="Modal"
       >
-        <div className={css.createProjectForm}>
+        <form className={css.createProjectForm}>
           <h3 className={css.header}>{localize[lang].CREATE}</h3>
           <hr />
           <label className={css.formField}>
@@ -138,6 +138,7 @@ class CreateProject extends Component {
             <Button
               text={localize[lang].ADD}
               type="green"
+              htmlType="submit"
               onClick={this.props.onSubmit}
               disabled={!(this.props.validateProjectName && this.props.validateProjectPrefix)}
             />
@@ -148,7 +149,7 @@ class CreateProject extends Component {
               disabled={!(this.props.validateProjectName && this.props.validateProjectPrefix)}
             />
           </div>
-        </div>
+        </form>
       </Modal>
     );
   }

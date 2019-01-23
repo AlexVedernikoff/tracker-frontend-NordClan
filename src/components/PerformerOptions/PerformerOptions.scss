@@ -104,6 +104,12 @@
 .formField {
   display: block;
 
+  .taskCommentInput {
+    [class*='__input'] {
+      top: -8px !important;
+    }
+  }
+
   & + & {
     margin-top: 1rem;
   }
