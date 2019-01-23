@@ -195,7 +195,7 @@ class ProjectTitle extends Component {
           <h1>
             <span
               id="projectName"
-              className={classnames({ [css.wrong]: this.state.nameIsIncorrect, [css.projectTitle__title]: true })}
+              className={classnames({ [css.wrong]: this.state.nameIsIncorrect })}
               ref={ref => (this.projectName = ref)}
               onKeyDown={this.handleKeyPress}
               contentEditable={this.props.titleIsEditing}
