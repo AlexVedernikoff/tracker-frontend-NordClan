@@ -270,7 +270,7 @@ const getProjectUsers = (id, isExternal = false) => {
   };
 };
 
-export const bindUserToProject = (projectId, userId, rolesIds) => {
+export const bindUserToProject = (projectId, userId, rolesIds, gitlabRoles = []) => {
   const URL = `${API_URL}/project/${projectId}/users`;
   const isExternal = rolesIds.split(',').includes('11');
   return dispatch => {
@@ -279,7 +279,8 @@ export const bindUserToProject = (projectId, userId, rolesIds) => {
     axios
       .post(URL, {
         userId: userId,
-        rolesIds: rolesIds || '0'
+        rolesIds: rolesIds || '0',
+        gitlabRoles
       })
       .then(response => {
         if (response.data) {
