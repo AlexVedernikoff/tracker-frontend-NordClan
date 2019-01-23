@@ -86,6 +86,13 @@ class GitLabEditor extends Component {
     });
   };
 
+  handleNamespacesSearch = name => {
+    clearTimeout(this.namespacesTimeout);
+    this.namespacesTimeout = setTimeout(() => {
+      this.props.getNamespaces(name);
+    }, 200);
+  };
+
   saveProject = value => {
     if (isNaN(value)) {
       this.props.addGitlabProjectByName(this.props.project.id, value);
@@ -185,6 +192,7 @@ class GitLabEditor extends Component {
                   value={this.state.namespace}
                   onChange={this.selectNamespace('namespace')}
                   options={this.getNamespaces()}
+                  onInputChange={this.handleNamespacesSearch}
                   autofocus
                 />
                 <div>
