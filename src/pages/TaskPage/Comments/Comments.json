@@ -1,14 +1,15 @@
 {
   "en": {
-    "ENTER_COMMENT": "Enter text of comment",
+    "ENTER_COMMENT": "Leave your comment",
     "EDDIT_COMMENT": "Eddit comment",
     "EXPIRED": "has been expired",
     "CANCEL": "(cancel)",
-    "ANSWER": "In answer to comment",
+    "ANSWER": "Reply to comment",
     "SEND": "Send (Ctrl + Enter)",
-    "COMMENTS_IS_EXISTS": "Comments is exists",
+    "ATTACH": "Attach a file",
+    "COMMENTS_IS_EXISTS": "No comments yet",
     "BE_FIRST": "You can be the first!",
-    "REMOVE_COMMENT": "Do you really want to remove comment?",
+    "REMOVE_COMMENT": "Are you sure you want to delete the comment?",
     "ALL": "All"
   },
   "ru": {
@@ -18,6 +19,7 @@
     "CANCEL": "(отмена)",
     "ANSWER": "В ответ на комментарий",
     "SEND": "Отправить (Ctrl + Enter)",
+    "ATTACH": "Прикрепить файл",
     "COMMENTS_IS_EXISTS": "Комментариев еще нет",
     "BE_FIRST": "Вы можете стать первым!",
     "REMOVE_COMMENT": "Вы действительно хотите удалить комментарий?",

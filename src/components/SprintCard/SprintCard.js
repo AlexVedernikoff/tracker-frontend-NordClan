@@ -6,12 +6,13 @@ import { deleteSprint, editSprint } from '../../actions/Sprint';
 import moment from 'moment';
 import SprintEditModal from '../../components/SprintEditModal';
 import { formatCurrency } from '../../utils/Currency';
-import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
+import ConfirmModal from '../../components/ConfirmModal';
 
 import { IconClose } from '../Icons';
 import * as css from './SprintCard.scss';
 import SprintStartControl from '../SprintStartControl';
 import localize from './SprintCard.json';
+import * as commonUtils from '../../utils/common';
 
 class SprintCard extends Component {
   constructor(props) {
@@ -73,7 +74,7 @@ class SprintCard extends Component {
   };
 
   render() {
-    const { sprint, inFocus, isExternal, lang, onMouseOver, onMouseOut, ...other } = this.props;
+    const { sprint, project, inFocus, isExternal, lang, onMouseOver, onMouseOut } = this.props;
     const onMouse = { onMouseOut, onMouseOver };
     return (
       <div
@@ -111,7 +112,7 @@ class SprintCard extends Component {
           ? [
               <p key="qaPercent" className={css.sprintMeta}>
                 <span>
-                  {localize[lang].QA_PERCENT} {sprint.qaPercent || 30}
+                  {localize[lang].QA_PERCENT} {commonUtils.firstTruthyOrZero(sprint.qaPercent, project.qaPercent, 30)}
                 </span>
               </p>,
               <p key="spentTime" className={css.sprintMeta}>
@@ -194,4 +195,7 @@ const mapDispatchToProps = {
   editSprint
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SprintCard);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SprintCard);

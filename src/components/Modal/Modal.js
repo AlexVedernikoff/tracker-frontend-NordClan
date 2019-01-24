@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactModal from 'react-modal';
-import classnames from 'classnames';
 import * as css from './Modal.scss';
 import { IconClose } from '../Icons';
 import cssVariables from '!!sass-variable-loader!../../styles/variables.scss';
@@ -49,28 +48,18 @@ const iconStyles = {
   fill: 'currentColor'
 };
 
-const Modal = (props) => {
-
-  const {
-    children,
-    style,
-    onRequestClose,
-    closeTimeoutMS,
-    ...other
-  } = props;
+const Modal = props => {
+  const { children, style, onRequestClose, closeTimeoutMS, ...other } = props;
 
   return (
-    <ReactModal {...other} onRequestClose={onRequestClose}
-                           style={style || ReactModalStyles}
-                           closeTimeoutMS={200 || closeTimeoutMS}>
-      <IconClose
-        style={iconStyles}
-        className={css.iconClose}
-        onClick={onRequestClose}
-      />
-      <div className={css.container}>
-        {children}
-      </div>
+    <ReactModal
+      {...other}
+      onRequestClose={onRequestClose}
+      style={style || ReactModalStyles}
+      closeTimeoutMS={200 || closeTimeoutMS}
+    >
+      <IconClose style={iconStyles} className={css.iconClose} onClick={onRequestClose} />
+      <div className={css.container}>{children}</div>
     </ReactModal>
   );
 };

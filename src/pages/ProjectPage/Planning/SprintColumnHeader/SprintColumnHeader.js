@@ -11,6 +11,7 @@ class SprintColumnHeader extends Component {
   static propTypes = {
     className: PropTypes.string,
     estimates: PropTypes.object.isRequired,
+    lang: PropTypes.string,
     name: PropTypes.string.isRequired,
     onCreateTaskClick: PropTypes.func.isRequired,
     onSprintChange: PropTypes.func.isRequired,
@@ -19,39 +20,48 @@ class SprintColumnHeader extends Component {
   };
 
   render() {
-    const { lang } = this.props;
+    const {
+      lang,
+      name,
+      className,
+      selectedSprintValue,
+      onSprintChange,
+      sprints,
+      onCreateTaskClick,
+      estimates
+    } = this.props;
 
     return (
-      <div className={classnames(css.headerColumnWrapper, this.props.className)}>
+      <div className={classnames(css.headerColumnWrapper, className)}>
         <div className={css.headerColumn}>
           <div className={css.selectWrapper}>
             <SelectDropdown
-              name={`${this.props.name}Column`}
+              name={`${name}Column`}
               placeholder={localize[lang].ENTER_SPRINT_NAME}
               multi={false}
-              value={this.props.selectedSprintValue}
-              onChange={this.props.onSprintChange}
+              value={selectedSprintValue}
+              onChange={onSprintChange}
               noResultsText={localize[lang].NO_RESULTS}
-              options={this.props.sprints}
+              options={sprints}
             />
           </div>
           <Button
-            onClick={this.props.onCreateTaskClick}
+            onClick={onCreateTaskClick}
             type="bordered"
             text={localize[lang].CREATE_TASK}
             icon="IconPlus"
-            name={this.props.name}
+            name={name}
             addedClassNames={{ [css.button]: true }}
             data-tip={localize[lang].CREATE_TASK}
           />
         </div>
-        <div className={css.progressBarWrapper} data-tip={this.props.estimates.summary}>
+        <div className={css.progressBarWrapper} data-tip={estimates.summary}>
           <div
             className={classnames({
-              [css.progressBar]: this.props.estimates.active,
-              [css.exceeded]: this.props.estimates.exceeded
+              [css.progressBar]: estimates.active,
+              [css.exceeded]: estimates.exceeded
             })}
-            style={{ width: this.props.estimates.width }}
+            style={{ width: estimates.width }}
           />
         </div>
       </div>

@@ -2,17 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { IconDelete, IconDownload } from '../Icons';
 import ConfirmModal from '../ConfirmModal';
+import localize from './AttachedImage.json';
 
 export default class AttachedImage extends React.Component {
   static propTypes = {
     canEdit: PropTypes.bool,
+    fileName: PropTypes.string.isRequired,
     id: PropTypes.number,
     index: PropTypes.number,
-    fileName: PropTypes.string.isRequired,
+    lang: PropTypes.string,
     open: PropTypes.func,
     path: PropTypes.string.isRequired,
     previewPath: PropTypes.string.isRequired,
-    removeAttachment: PropTypes.func.isRequired,
+    removeAttachment: PropTypes.func,
     removeInProgress: PropTypes.bool,
     type: PropTypes.string.isRequired
   };
@@ -53,13 +55,7 @@ export default class AttachedImage extends React.Component {
       fill: 'currentColor'
     };
 
-    const imageStyles = {
-      maxHeight: 'calc(100vh - 2rem)',
-      maxWidth: '100%',
-      display: 'block'
-    };
-
-    const { fileName, path, previewPath, canEdit, open, index } = this.props;
+    const { fileName, path, previewPath, canEdit, open, index, lang } = this.props;
 
     return (
       <li
@@ -91,7 +87,7 @@ export default class AttachedImage extends React.Component {
             onRequestClose={this.handleCloseConfirmDelete}
             onConfirm={this.handleRemove}
             onCancel={this.handleCloseConfirmDelete}
-            text="Вы уверены, что хотите удалить этот файл?"
+            text={localize[lang].CONFIRM_DELETE}
           />
         ) : null}
       </li>

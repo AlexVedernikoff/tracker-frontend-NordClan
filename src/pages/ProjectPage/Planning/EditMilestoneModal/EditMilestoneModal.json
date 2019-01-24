@@ -1,15 +1,20 @@
 {
   "en": {
     "EDIT_MILESTONE": "Edit milestone",
-    "INPUT_NOTIFICATION": "All fields must be filled in",
+    "INPUT_NOTIFICATION": "All fields must be filled",
     "MILESTONE_NAME": "Milestone name:",
     "ENTER_MILESTONE_NAME": "Enter the milestone name",
-    "MILESTONE_TYPE": "Milestone type",
+    "MILESTONE_TYPE": "Milestone type:",
     "NO_RESUTLS": "No results",
     "DATE": "Date:",
     "ENTER_DATE": "Enter the date",
     "EDIT": "Edit",
-    "COMPLETED": "Done"
+    "COMPLETED": "Done",
+    "CREATE": "Create",
+    "GET_REVIEW": "Receive feedback",
+    "DEMO_CLIENT": "Demo for client",
+    "DEMO_INSIDE": "Internal Demo",
+    "OTHER": "Other"
   },
   "ru": {
     "EDIT_MILESTONE": "Редактирование вехи",
@@ -21,6 +26,11 @@
     "DATE": "Дата:",
     "ENTER_DATE": "Введите дату",
     "EDIT": "Изменить",
-    "COMPLETED": "Выполнено"
+    "COMPLETED": "Выполнено",
+    "CREATE": "Создать",
+    "GET_REVIEW": "Получение отзыва",
+    "DEMO_CLIENT": "Демо Клиенту",
+    "DEMO_INSIDE": "Внутреннее демо",
+    "OTHER": "Другое"
   }
 }

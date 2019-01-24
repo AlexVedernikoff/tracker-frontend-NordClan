@@ -16,6 +16,8 @@ import {
   openPortfolioModal,
   closePortfolioModal
 } from '../../../actions/Project';
+import localize from './ProjectTitle.json';
+import classnames from 'classnames';
 
 class ProjectTitle extends Component {
   static propTypes = {
@@ -24,11 +26,13 @@ class ProjectTitle extends Component {
     closePortfolioModal: PropTypes.func,
     id: PropTypes.any,
     isProjectAdmin: PropTypes.bool,
+    lang: PropTypes.string,
     name: PropTypes.string.isRequired,
     openPortfolioModal: PropTypes.func,
     portfolio: PropTypes.object,
     prefix: PropTypes.string.isRequired,
     projectId: PropTypes.number,
+    showNotification: PropTypes.func.isRequired,
     startEditing: PropTypes.func.isRequired,
     stopEditing: PropTypes.func.isRequired,
     titleIsEditing: PropTypes.bool
@@ -80,10 +84,11 @@ class ProjectTitle extends Component {
   };
 
   handleIncorrectInput() {
+    const { lang } = this.props;
     if (this.projectName.innerText.length < 4 || this.projectName.innerText.length > 255) {
       this.setState({ nameIsIncorrect: true }, () =>
         this.props.showNotification({
-          message: `Имя проекта должно содержать от 4 до 255 символов`,
+          message: localize[lang].PROJECT_NAME_MESSAGE,
           type: 'error'
         })
       );
@@ -94,7 +99,7 @@ class ProjectTitle extends Component {
     if (this.projectPrefix.innerText.length < 2 || this.projectPrefix.innerText.length > 8) {
       this.setState({ prefixIsIncorrect: true }, () =>
         this.props.showNotification({
-          message: `Префикс должен содержать от 2 до 8 символов`,
+          message: localize[lang].PROJECT_PREFIX_MESSAGE,
           type: 'error'
         })
       );
@@ -172,6 +177,7 @@ class ProjectTitle extends Component {
   };
 
   render() {
+    const { lang } = this.props;
     return (
       <div className={css.projectTitle}>
         {this.props.name ? (
@@ -179,7 +185,7 @@ class ProjectTitle extends Component {
         ) : (
           <IconPreloader style={{ color: 'silver', fontSize: '3rem', marginRight: 10 }} />
         )}
-        <div>
+        <div className={css.projectTitle__text}>
           {this.props.portfolio ? (
             <span className={css.portfolio}>
               <Link to={`/projects/portfolio/${this.props.portfolio.id}`}>{this.props.portfolio.name}</Link>
@@ -189,7 +195,7 @@ class ProjectTitle extends Component {
           <h1>
             <span
               id="projectName"
-              className={this.state.nameIsIncorrect ? css.wrong : ''}
+              className={classnames({ [css.wrong]: this.state.nameIsIncorrect })}
               ref={ref => (this.projectName = ref)}
               onKeyDown={this.handleKeyPress}
               contentEditable={this.props.titleIsEditing}
@@ -213,9 +219,9 @@ class ProjectTitle extends Component {
             </span>
             {this.props.isProjectAdmin ? (
               this.props.titleIsEditing ? (
-                <IconCheck className={css.save} data-tip="Сохранить" onClick={this.editIconClickHandler} />
+                <IconCheck className={css.save} data-tip={localize[lang].SAVE} onClick={this.editIconClickHandler} />
               ) : (
-                <IconEdit className={css.edit} data-tip="Редактировать" onClick={this.editIconClickHandler} />
+                <IconEdit className={css.edit} data-tip={localize[lang].EDIT} onClick={this.editIconClickHandler} />
               )
             ) : null}
           </h1>
@@ -226,7 +232,6 @@ class ProjectTitle extends Component {
             projectId={this.props.projectId}
             onClose={this.props.closePortfolioModal}
             onChoose={this.props.changeProject}
-            title="Изменить портфель проекта"
           />
         ) : null}
       </div>
@@ -235,6 +240,7 @@ class ProjectTitle extends Component {
 }
 
 const mapStateToProps = state => ({
+  lang: state.Localize.lang,
   titleIsEditing: state.Project.TitleIsEditing,
   PortfolioIsEditing: state.Project.PortfolioIsEditing,
   projectId: state.Project.project.id
@@ -249,4 +255,7 @@ const mapDispatchToProps = {
   showNotification
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectTitle);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ProjectTitle);

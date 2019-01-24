@@ -3,6 +3,7 @@ import classnames from 'classnames';
 import onClickOutside from 'react-onclickoutside';
 import PropTypes from 'prop-types';
 import shortId from 'shortid';
+import { connect } from 'react-redux';
 import {
   getCommentsByTask,
   publishComment,
@@ -13,34 +14,47 @@ import {
   setCommentForEdit,
   resetCurrentEditingComment,
   setCurrentCommentExpired,
-  setHighLighted
+  setHighLighted,
+  uploadAttachments,
+  removeAttachment
 } from '../../../actions/Task';
-import { connect } from 'react-redux';
 import * as css from './Comments.scss';
 import Comment from './Comment';
 import { history } from '../../../History';
-import { IconSend, IconComments } from '../../../components/Icons';
-import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
+import { IconSend, IconComments, IconClose } from '../../../components/Icons';
+import ConfirmModal from '../../../components/ConfirmModal';
 import localize from './Comments.json';
 import Mentions from './Mentions/Mentions';
+import FileUpload from '../../../components/FileUpload';
+import InlineHolder from '../../../components/InlineHolder';
+import { IconPreloader } from '../../../components/Icons';
+import { getFullName } from '../../../utils/NameLocalisation';
 
-import { prepairCommentForEdit, stringifyCommentForSend } from '../Comments/Mentions/mentionService';
+import {
+  prepairCommentForEdit,
+  stringifyCommentForSend,
+  replaceEnterSymbol
+} from '../Comments/Mentions/mentionService';
 
 const ENTER = 13;
 
 class Comments extends Component {
   static propTypes = {
+    attachments: PropTypes.array,
     comments: PropTypes.array,
     currentComment: PropTypes.object,
     editComment: PropTypes.func,
     externalUsers: PropTypes.array,
     getCommentsByTask: PropTypes.func,
     highlighted: PropTypes.object,
+    isCommentsReceived: PropTypes.bool,
+    isProjectInfoReceiving: PropTypes.bool,
     lang: PropTypes.string,
     location: PropTypes.object,
     params: PropTypes.object,
     projectUsers: PropTypes.array,
     publishComment: PropTypes.func,
+    removeAttachment: PropTypes.func,
     removeComment: PropTypes.func,
     resetCurrentEditingComment: PropTypes.func,
     selectParentCommentForReply: PropTypes.func,
@@ -49,6 +63,7 @@ class Comments extends Component {
     setHighLighted: PropTypes.func,
     taskId: PropTypes.number,
     updateCurrentCommentText: PropTypes.func,
+    uploadAttachments: PropTypes.func,
     userId: PropTypes.number,
     users: PropTypes.array
   };
@@ -64,7 +79,9 @@ class Comments extends Component {
       commentToDelete: null,
       disabledBtn: true,
       resizeKey: shortId(),
-      mentions: []
+      mentions: [],
+      attachments: props.attachments,
+      isAttachedToComment: false
     };
   }
 
@@ -115,6 +132,25 @@ class Comments extends Component {
         this.selectComment(this.props.highlighted.id);
       }
     }
+    if (prevProps.attachments.length !== this.props.attachments.length && this.state.isAttachedToComment) {
+      const attachments = this.props.attachments.map(item => {
+        return { ...item, display: item.display ? item.display : false };
+      });
+      Object.keys(this.addedAttachments).forEach(key => {
+        if (key) {
+          attachments[key].display = true;
+        }
+      });
+      let length = this.props.attachments.length;
+      const prevLength = prevProps.attachments.length;
+      while (length > prevLength) {
+        attachments[length - 1].display = true;
+        this.addedAttachments[length - 1] = { file: attachments[length - 1] };
+        length--;
+      }
+
+      this.setState({ attachments: attachments, isAttachedToComment: false });
+    }
   };
 
   handleClickOutside = () => {
@@ -127,31 +163,67 @@ class Comments extends Component {
     Comment.selectComment(id, this.props.location);
   };
 
-  setCommentForEdit = comment => {
-    this.props.setCommentForEdit(this.props.comments.find(c => c.id === comment.id)).then(() => {
+  addedAttachments = [];
+
+  prepareAttachmentsForEdit = ids => {
+    const attachments = this.props.attachments.map(attachment => {
+      return ids.indexOf(attachment.id) !== -1 ? { ...attachment, display: true } : { ...attachment, display: false };
+    });
+    this.setState({ attachments: attachments });
+  };
+
+  setCommentForEdit = (comment, attachmentIds) => {
+    const editedComment = this.props.comments.find(c => c.id === comment.id);
+    editedComment.text = this.replaceHTMLCharacters(editedComment.text);
+    this.props.setCommentForEdit(editedComment).then(() => {
       this.setState({ resizeKey: shortId() });
     });
+    if (attachmentIds) {
+      this.prepareAttachmentsForEdit(attachmentIds);
+    }
+  };
+
+  replaceHTMLCharacters = text => {
+    const newText = text.replace(/<br>/g, '\n');
+    return newText;
   };
 
   toggleBtn = evt => {
     this.setState({ disabledBtn: !evt.target.value || evt.target.value.trim() === '' });
   };
 
+  getAttachmentIds = () => {
+    const { attachments } = this.props;
+    const attachmentIds = attachments.filter((item, key) => this.state.attachments[key].display).map(item => item.id);
+    return attachmentIds.length ? JSON.stringify(attachmentIds) : null;
+  };
+
+  stashAttachments = () => {
+    const { attachments } = this.state;
+    const attachmentsToHide = attachments.map(item => {
+      return { ...item, display: false };
+    });
+    this.setState({ attachments: attachmentsToHide });
+  };
+
   publishComment = evt => {
     const newComment = { ...this.props.currentComment };
     newComment.text = stringifyCommentForSend(newComment.text, this.users);
+    newComment.attachmentIds = this.state.attachments.length ? this.getAttachmentIds() : null;
     const { ctrlKey, keyCode } = evt;
     if (((ctrlKey && keyCode === ENTER) || evt.button === 0) && this.state.disabledBtn === false) {
       if (newComment.id) {
         if (!Comment.isExpiredForUpdate(newComment.createdAt)) {
-          this.props.editComment(this.props.taskId, newComment.id, newComment.text);
+          this.props.editComment(this.props.taskId, newComment.id, newComment.text, newComment.attachmentIds);
         } else {
           this.props.setCurrentCommentExpired();
         }
       } else {
+        newComment.text = replaceEnterSymbol(newComment.text);
         this.props.publishComment(this.props.taskId, newComment);
       }
-      this.state.disabledBtn = true;
+      this.stashAttachments();
+      this.setState({ disabledBtn: true });
     }
   };
 
@@ -168,6 +240,35 @@ class Comments extends Component {
     this.setState({ commentToDelete: null }, () => this.props.removeComment(this.props.taskId, commentId));
   };
 
+  hanldeAttachedFiles = files => {
+    this.setState({ isAttachedToComment: true, disabledBtn: false });
+    this.props.uploadAttachments(this.props.taskId, files);
+  };
+
+  handleRemoveAttachment = index => {
+    const attachments = this.state.attachments.map((item, key) => {
+      if (index === key && this.addedAttachments[key]) {
+        delete this.addedAttachments[key];
+      }
+      return index === key ? { ...item, display: false } : item;
+    });
+    this.setState({ attachments: attachments });
+  };
+
+  getAttachment = index => {
+    const attachment = this.props.attachments[index];
+    if (attachment && !attachment.uploading && !attachment.deleting) {
+      return (
+        <li key={index} className={css.attachmentsItemWrap}>
+          <a target="_blank" href={attachment.path}>
+            {attachment.fileName}
+          </a>
+          <IconClose className={css.removeAttachIcon} onClick={() => this.handleRemoveAttachment(index)} />
+        </li>
+      );
+    }
+  };
+
   get users() {
     return [
       { id: 'all', fullNameEn: localize.en.ALL, fullNameRu: localize.ru.ALL },
@@ -175,6 +276,10 @@ class Comments extends Component {
       ...this.props.externalUsers.map(u => u.user)
     ];
   }
+
+  getTextAreaNode = node => {
+    this.reply = node;
+  };
 
   getCommentList = () =>
     this.props.comments.map(comment => {
@@ -188,31 +293,51 @@ class Comments extends Component {
           ownedByMe={comment.author.id === this.props.userId}
           comment={comment}
           users={this.users}
+          attachments={this.props.attachments}
+          prepareAttachmentsForEdit={this.prepareAttachmentsForEdit}
         />
       );
     });
 
   render() {
-    const { lang } = this.props;
+    const { lang, isCommentsReceived, isProjectInfoReceiving } = this.props;
+    const withoutComments =
+      isCommentsReceived && !isProjectInfoReceiving ? (
+        <div className={css.noCommentsYet}>
+          <div className={css.noCommentsIcon}>
+            <IconComments />
+          </div>
+          {localize[lang].COMMENTS_IS_EXISTS}
+          <br />
+          {localize[lang].BE_FIRST}
+        </div>
+      ) : (
+        <div className={css.commentPreloader}>
+          <IconPreloader style={{ color: 'silver', fontSize: '4rem', marginRight: 10, float: 'left' }} />
+          <InlineHolder length="40%" />
+          <InlineHolder length="80%" />
+          <InlineHolder length="30%" />
+        </div>
+      );
+    const users = this.users.map(u => ({ id: u.id, display: getFullName(u) }));
     return (
       <div className={css.comments}>
         <ul className={css.commentList}>
           <form className={css.answerLine}>
             <div className={css.answerLineText}>
               <Mentions
+                suggestions={users}
                 resizeKey={this.state.resizeKey}
-                style={{ minHeight: 32 }}
-                className={css.resizeTrue}
+                className={css.commentMentionsInput}
                 disabled={this.props.currentComment.disabled || this.props.currentComment.expired}
                 placeholder={localize[lang].ENTER_COMMENT}
                 onKeyDown={this.publishComment}
-                ref={ref => (this.reply = ref ? ref.textarea : null)}
                 value={prepairCommentForEdit(this.props.currentComment.text, this.users)}
                 updateCurrentCommentText={this.props.updateCurrentCommentText}
-                suggestions={this.users}
                 toggleBtn={this.toggleBtn}
                 onInput={this.typeComment}
                 setMentions={this.setMentions}
+                getTextAreaNode={this.getTextAreaNode}
               />
               {this.props.currentComment.id ? (
                 <div className={css.answerInfo}>
@@ -248,6 +373,14 @@ class Comments extends Component {
                 </div>
               ) : null}
               <span
+                data-tip={localize[lang].ATTACH}
+                className={classnames({
+                  [css.attachIcon]: true
+                })}
+              >
+                <FileUpload onDrop={this.hanldeAttachedFiles} isMinimal />
+              </span>
+              <span
                 onClick={!this.state.disabledBtn ? this.publishComment : null}
                 data-tip={localize[lang].SEND}
                 className={classnames({
@@ -259,18 +392,12 @@ class Comments extends Component {
               </span>
             </div>
           </form>
-          {this.props.comments.length && this.props.users.length ? (
-            this.getCommentList()
-          ) : (
-            <div className={css.noCommentsYet}>
-              <div className={css.noCommentsIcon}>
-                <IconComments />
-              </div>
-              {localize[lang].COMMENTS_IS_EXISTS}
-              <br />
-              {localize[lang].BE_FIRST}
-            </div>
-          )}
+          <div className={css.attachmentWrap}>
+            {this.state.attachments.length ? (
+              <ul>{this.state.attachments.map((item, index) => (item.display ? this.getAttachment(index) : null))}</ul>
+            ) : null}
+          </div>
+          {this.props.comments.length && this.props.users.length ? this.getCommentList() : withoutComments}
         </ul>
         {this.state.commentToDelete ? (
           <ConfirmModal
@@ -288,20 +415,23 @@ class Comments extends Component {
 
 const mapStateToProps = ({
   Task: {
-    task: { id: taskId },
+    task: { id: taskId, attachments },
     comments,
     currentComment,
-    highlighted
+    highlighted,
+    isCommentsReceived
   },
   Auth: {
     user: { id: userId }
   },
   Project: {
-    project: { users, projectUsers, externalUsers }
+    project: { users, projectUsers, externalUsers },
+    isProjectInfoReceiving
   },
   Localize: { lang }
 }) => ({
   taskId,
+  attachments,
   comments,
   userId,
   currentComment,
@@ -309,7 +439,9 @@ const mapStateToProps = ({
   lang,
   users,
   projectUsers,
-  externalUsers
+  externalUsers,
+  isCommentsReceived,
+  isProjectInfoReceiving
 });
 
 const mapDispatchToProps = {
@@ -320,9 +452,11 @@ const mapDispatchToProps = {
   updateCurrentCommentText,
   selectParentCommentForReply,
   setCommentForEdit,
+  removeAttachment,
   resetCurrentEditingComment,
   setCurrentCommentExpired,
-  setHighLighted
+  setHighLighted,
+  uploadAttachments
 };
 
 export default connect(

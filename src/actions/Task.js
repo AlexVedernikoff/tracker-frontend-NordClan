@@ -1,8 +1,9 @@
 import * as TaskActions from '../constants/Task';
 import { API_URL } from '../constants/Settings';
 import axios from 'axios';
-import { finishLoading, startLoading } from './Loading';
-import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
+import { startLoading, finishLoading } from './Loading';
+import { showNotification } from './Notifications';
+import { DELETE, GET, POST, REST_API } from '../constants/RestApi';
 import {
   defaultErrorHandler,
   withFinishLoading,
@@ -44,11 +45,11 @@ const getTaskFail = error => ({
   error: error
 });
 
-const postChangeFail = error => ({
-  type: TaskActions.TASK_CHANGE_REQUEST_FAIL,
-  closeHasError: false,
-  error: error
-});
+// const postChangeFail = error => ({
+//   type: TaskActions.TASK_CHANGE_REQUEST_FAIL,
+//   closeHasError: false,
+//   error: error
+// });
 
 const clearError = status => ({
   type: TaskActions.ERROR_CLEAR,
@@ -64,14 +65,10 @@ const successTaskChange = changedFields => ({
   changedFields
 });
 
-const requestTaskChangeUser = () => ({
-  type: TaskActions.TASK_CHANGE_REQUEST_SENT
-});
-
-const successTaskChangeUser = changedFields => ({
-  type: TaskActions.TASK_CHANGE_USER_SUCCESS,
-  changedFields
-});
+// const successTaskChangeUser = changedFields => ({
+//   type: TaskActions.TASK_CHANGE_USER_SUCCESS,
+//   changedFields
+// });
 
 const requestTaskLink = () => ({
   type: TaskActions.TASK_LINK_SENT
@@ -92,9 +89,149 @@ const stopTaskEditing = target => ({
   target
 });
 
-const clearCurrentTask = target => ({
+const clearCurrentTask = () => ({
   type: TaskActions.CLEAR_CURRENT_TASK
 });
+
+const getGitlabBranchesStart = () => ({
+  type: TaskActions.GET_GITLAB_BRANCHES_START
+});
+
+const getGitlabBranchesFail = () => ({
+  type: TaskActions.GET_GITLAB_BRANCHES_FAIL
+});
+
+const getGitlabBranchesSuccess = branches => ({
+  type: TaskActions.GET_GITLAB_BRANCHES_SUCCESS,
+  branches
+});
+
+const getGitlabBranchesByRepoStart = () => ({
+  type: TaskActions.GET_GITLAB_BRANCHES_BY_REPO_START
+});
+
+const getGitlabBranchesByRepoFail = () => ({
+  type: TaskActions.GET_GITLAB_BRANCHES_BY_REPO_FAIL
+});
+
+const getGitlabBranchesByRepoSuccess = repoBranches => ({
+  type: TaskActions.GET_GITLAB_BRANCHES_BY_REPO_SUCCESS,
+  repoBranches
+});
+
+const createGitlabBranchStart = () => ({
+  type: TaskActions.CREATE_GITLAB_BRANCH_START
+});
+
+const createGitlabBranchFail = () => ({
+  type: TaskActions.CREATE_GITLAB_BRANCH_FAIL
+});
+
+const createGitlabBranchSuccess = createdGitlabBranch => ({
+  type: TaskActions.CREATE_GITLAB_BRANCH_SUCCESS,
+  createdGitlabBranch
+});
+
+const getProjectReposStart = () => ({
+  type: TaskActions.GET_PROJECT_REPOS_START
+});
+
+const getProjectReposFail = () => ({
+  type: TaskActions.GET_PROJECT_REPOS_FAIL
+});
+
+const getProjectReposSuccess = projectRepos => ({
+  type: TaskActions.GET_PROJECT_REPOS_SUCCESS,
+  projectRepos
+});
+
+const getProjectRepos = projectId => {
+  const URL = `${API_URL}/project/${projectId}/getGitlabProjects`;
+  return dispatch => {
+    dispatch(startLoading());
+    dispatch(getProjectReposStart());
+    axios
+      .get(URL)
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(getProjectReposSuccess(response.data));
+          dispatch(finishLoading());
+        }
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(getProjectReposFail(error.response.data));
+        dispatch(finishLoading());
+      });
+  };
+};
+
+const createGitlabBranch = (taskId, repoId, branchSource, branchName) => {
+  const URL = `${API_URL}/task/${taskId}/createGitlabBranch`;
+  return dispatch => {
+    dispatch(startLoading());
+    dispatch(createGitlabBranchStart());
+    axios
+      .post(URL, {
+        repoId,
+        branchSource,
+        branchName
+      })
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(createGitlabBranchSuccess(response.data));
+          dispatch(finishLoading());
+        }
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(createGitlabBranchFail(error.response.data));
+        dispatch(finishLoading());
+      });
+  };
+};
+
+const getGitlabBranchesByRepoId = (taskId, repoId) => {
+  const URL = `${API_URL}/task/${taskId}/getGitlabBranchesByRepoId?repoId=${repoId}`;
+  return dispatch => {
+    dispatch(startLoading());
+    dispatch(getGitlabBranchesByRepoStart());
+    axios
+      .get(URL)
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(getGitlabBranchesByRepoSuccess(response.data));
+          dispatch(finishLoading());
+        }
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(getGitlabBranchesByRepoFail(error.response.data));
+        dispatch(finishLoading());
+      });
+  };
+};
+
+const getGitlabBranches = taskId => {
+  const URL = `${API_URL}/task/${taskId}/getGitlabBranchesById/`;
+  return dispatch => {
+    dispatch(startLoading());
+    dispatch(getGitlabBranchesStart());
+    axios
+      .get(URL)
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(getGitlabBranchesSuccess(response.data));
+          dispatch(finishLoading());
+        }
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(getGitlabBranchesFail(error.response.data));
+        dispatch(finishLoading());
+      });
+  };
+};
 
 const getTask = id => {
   if (!id) {
@@ -122,6 +259,7 @@ const getTaskHistory = (id, options) => {
   const URL = `${API_URL}/task/${id}/history`;
   return dispatch => {
     dispatch(startLoading());
+    dispatch(getTaskHistoryStart());
     axios
       .get(URL, {
         params: {
@@ -134,7 +272,7 @@ const getTaskHistory = (id, options) => {
         }
         dispatch(finishLoading());
       })
-      .catch(function(error) {
+      .catch(() => {
         defaultErrorHandler(dispatch);
         dispatch(finishLoading());
       });
@@ -163,21 +301,26 @@ const changeTask = (ChangedProperties, target, callback) => {
     return;
   }
   return dispatch => {
-    dispatch({
-      type: REST_API,
-      url: `/task/${ChangedProperties.id}`,
-      method: PUT,
-      body: ChangedProperties,
-      extra,
-      start: withStartLoading(requestTaskChange, true)(dispatch),
-      response: withFinishLoading(response => {
-        if (callback) {
-          callback();
+    const URL = `${API_URL}/task/${ChangedProperties.id}`;
+    dispatch(startLoading());
+    dispatch(requestTaskChange());
+    axios
+      .put(URL, ChangedProperties)
+      .then(res => {
+        if (res.data.length) {
+          res.data.forEach(task => dispatch(successTaskChange(task)));
+          if (callback) {
+            callback();
+          }
         }
-        return stopTaskEditing(target);
-      }, true)(dispatch),
-      error: defaultErrorHandler(dispatch(stopTaskEditing(target)))
-    });
+        dispatch(finishLoading());
+        dispatch(stopTaskEditing(target));
+      })
+      .catch(() => {
+        defaultErrorHandler(dispatch);
+        dispatch(stopTaskEditing(target));
+        dispatch(finishLoading());
+      });
   };
 };
 
@@ -376,14 +519,15 @@ const publishComment = (taskId, comment) => {
   if (!taskId || !comment) {
     return () => {};
   }
-  const { text, parentId } = comment;
+  const { text, parentId, attachmentIds } = comment;
   const URL = `${API_URL}/task/${taskId}/comment`;
   return dispatch => {
     dispatch(commentPublishStart(taskId, comment));
     return axios
       .post(URL, {
         text,
-        parentId
+        parentId,
+        attachmentIds
       })
       .then(
         result => dispatch(commentPublishSuccess(taskId, comment, result.data)),
@@ -393,45 +537,49 @@ const publishComment = (taskId, comment) => {
   };
 };
 
-const commentUpdateStart = (taskId, commentId, comment) => ({
+const commentUpdateStart = (taskId, commentId, comment, attachmentIds) => ({
   type: TaskActions.UPDATE_COMMENT_REQUEST,
   taskId,
   commentId,
-  comment
+  comment,
+  attachmentIds
 });
 
-const commentUpdateSuccess = (taskId, commentId, comment, result) => ({
+const commentUpdateSuccess = (taskId, commentId, comment, attachmentIds, result) => ({
   type: TaskActions.UPDATE_COMMENT_SUCCESS,
   taskId,
   commentId,
   comment,
+  attachmentIds,
   result
 });
 
-const commentUpdateFail = (taskId, commentId, comment, error) => ({
+const commentUpdateFail = (taskId, commentId, comment, attachmentIds, error) => ({
   type: TaskActions.UPDATE_COMMENT_FAIL,
   taskId,
   commentId,
   comment,
+  attachmentIds,
   error
 });
 
-const editComment = (taskId, commentId, text) => {
+const editComment = (taskId, commentId, text, attachmentIds) => {
   if (!taskId || !commentId) {
     return () => {};
   }
   const comment = {
-    text
+    text,
+    attachmentIds
   };
   const URL = `${API_URL}/task/${taskId}/comment/${commentId}`;
   return dispatch => {
-    dispatch(commentUpdateStart(taskId, commentId, comment));
+    dispatch(commentUpdateStart(taskId, commentId, comment, attachmentIds));
     axios.put(URL, comment).then(
       result => {
         dispatch(getCommentsByTask(taskId));
-        return dispatch(commentUpdateSuccess(taskId, commentId, comment, result));
+        return dispatch(commentUpdateSuccess(taskId, commentId, comment, attachmentIds, result));
       },
-      error => dispatch(commentUpdateFail(taskId, commentId, comment, error))
+      error => dispatch(commentUpdateFail(taskId, commentId, comment, attachmentIds, error))
     );
   };
 };
@@ -509,6 +657,10 @@ const setHighLighted = comment => ({
 
 export {
   getTask,
+  getProjectRepos,
+  getGitlabBranches,
+  createGitlabBranch,
+  getGitlabBranchesByRepoId,
   getTaskHistory,
   getTaskSpent,
   startTaskEditing,

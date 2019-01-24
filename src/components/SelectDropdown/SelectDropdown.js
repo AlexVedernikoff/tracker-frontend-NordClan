@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import localize from './SelectDropdown.json';
 import { ENTER } from '../../constants/KeyCodes';
+import { isEmpty } from 'lodash';
 
 // workaround for submit on enter press
 // we want key down event to propagate
@@ -42,19 +43,46 @@ class SelectDropdown extends Component {
     options: PropTypes.array
   };
 
-  render() {
-    const { name, options, thisClassName, noResultsText, lang, ...other } = this.props;
+  state = {
+    isHovered: false
+  };
 
+  onClear() {
+    if (this.props.onClear) {
+      this.props.onClear();
+    }
+  }
+
+  showCross() {
+    this.setState({ isHovered: true });
+  }
+
+  hideCross() {
+    this.setState({ isHovered: false });
+  }
+
+  render() {
+    const { name, options, thisClassName, lang, canClear, ...other } = this.props;
     return (
-      <InnerSelect
-        className={thisClassName}
-        name={name}
-        options={options}
-        noResultsText={localize[lang].NO_RESULTS}
-        onFocus={e => e.stopPropagation()}
-        clearValueText={localize[lang].CLEAR}
-        {...other}
-      />
+      <div onMouseEnter={() => this.showCross()} onMouseLeave={() => this.hideCross()} className="InnerSelectWrap">
+        <InnerSelect
+          className={thisClassName}
+          name={name}
+          options={options}
+          noResultsText={localize[lang].NO_RESULTS}
+          onFocus={e => e.stopPropagation()}
+          clearValueText={localize[lang].CLEAR}
+          {...other}
+        />
+
+        {canClear &&
+          !isEmpty(other.value) &&
+          this.state.isHovered && (
+            <span className="ClearValue" onClick={() => this.onClear()}>
+              ×
+            </span>
+          )}
+      </div>
     );
   }
 }

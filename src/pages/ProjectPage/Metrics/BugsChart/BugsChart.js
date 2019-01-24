@@ -9,11 +9,13 @@ import getColor from '../../../../utils/Colors';
 import localize from './BugsChart.json';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import datalabels from 'chartjs-plugin-datalabels';
+import { dataLabelsPlugin, defaultTimeDisplayFormats } from '../../../../utils/Charts';
+
 class BugsChart extends Component {
   static propTypes = {
     chartDefaultOptions: PropTypes.object,
     getBasicLineSettings: PropTypes.func,
+    lang: PropTypes.string,
     openedBugsMetrics: PropTypes.array,
     openedCustomerBugsMetrics: PropTypes.array,
     openedRegressBugsMetrics: PropTypes.array
@@ -42,9 +44,7 @@ class BugsChart extends Component {
           {
             type: 'time',
             time: {
-              displayFormats: {
-                day: 'D MMM'
-              },
+              displayFormats: defaultTimeDisplayFormats,
               tooltipFormat: 'DD.MM.YYYY',
               locale: moment.locale(localize[this.props.lang].LANG)
             },
@@ -56,14 +56,7 @@ class BugsChart extends Component {
           }
         ]
       },
-      plugins: {
-        datalabels: {
-          formatter: function(value) {
-            return value.y;
-          },
-          align: 'end'
-        }
-      }
+      plugins: dataLabelsPlugin
     };
   }
 

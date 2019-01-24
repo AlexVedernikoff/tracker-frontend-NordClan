@@ -1,7 +1,7 @@
 {
   "en": {
     "NEW_SPRINT": "Create new sprint",
-    "INPUT_NOTIFICATION": "All fields must be filled in",
+    "INPUT_NOTIFICATION": "All fields must be filled",
     "DATE_NOTIFICATION": "The end date must be after the start date",
     "SPRINT_NAME": "Sprint name:",
     "ENTER_SPRINT_NAME": "Enter the sprint name",

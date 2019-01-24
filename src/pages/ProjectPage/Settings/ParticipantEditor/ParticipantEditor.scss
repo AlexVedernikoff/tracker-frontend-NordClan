@@ -112,3 +112,31 @@
     align-self: center;
   }
 }
+
+.gitlabRoleProjectName {
+  line-height: 30px;
+}
+
+.gitlabRoleParams {
+  display: flex;
+  margin-bottom: 16px;
+  margin-bottom: 1rem;
+
+  & > * + * {
+    margin-left: 10px;
+  }
+}
+
+.gitlabProjectTableCaptionWrap {
+  width: 100%;
+  display: table;
+  table-layout: fixed;
+}
+
+.gitlabProjectTableCaption {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  word-wrap: break-word;
+}

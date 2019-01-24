@@ -12,6 +12,7 @@ import UserCard from '../../../components/UserCard';
 import Autolinker from 'autolinker';
 import localize from './Comment.json';
 import { getFirstName, getLastName, getFullName } from '../../../utils/NameLocalisation';
+import Attachments from '../../../components/Attachments';
 
 import { parseCommentForDisplay, prepairCommentForEdit } from './Mentions/mentionService';
 
@@ -78,6 +79,7 @@ class Comment extends PureComponent {
   };
 
   static propTypes = {
+    attachments: PropTypes.array,
     comment: PropTypes.object,
     commentsLoadedDate: PropTypes.string,
     editComment: PropTypes.func,
@@ -123,7 +125,7 @@ class Comment extends PureComponent {
     }
   }
 
-  handleSelect = e => {
+  handleSelect = () => {
     Comment.selectComment(this.props.comment.id, this.props.location);
   };
 
@@ -152,9 +154,24 @@ class Comment extends PureComponent {
 
   prepairTextForEditing = text => prepairCommentForEdit(text, this.props.users, this.getMention);
 
+  isImage = type => {
+    const imageTypes = ['image', 'image/jpeg', 'image/png', 'image/pjpeg'];
+    return imageTypes.indexOf(type) !== -1;
+  };
+
+  getAttachments = attachmentIds => {
+    const { attachments } = this.props;
+    const files = attachments.filter(i => attachmentIds.indexOf(i.id) !== -1);
+    return (
+      <div className={css.commentAttachmentWrap}>
+        <Attachments attachments={files} canEdit={false} style={{ paddingLeft: 0, paddingTop: 10 }} />
+      </div>
+    );
+  };
+
   render() {
     const {
-      comment: { author, parentComment, text },
+      comment: { author, parentComment, text, attachmentIds },
       comment,
       lang
     } = this.props;
@@ -222,6 +239,7 @@ class Comment extends PureComponent {
                 (t, i) => (typeof t === 'string' ? <span key={t + i} dangerouslySetInnerHTML={{ __html: t }} /> : t)
               )}
             </div>
+            {attachmentIds ? this.getAttachments(attachmentIds) : null}
             <div className={css.commentAction}>
               {!comment.deleting ? (
                 <a onClick={() => this.props.reply(comment.id)} href="#reply">
@@ -230,7 +248,7 @@ class Comment extends PureComponent {
               ) : null}
               {this.state.canBeUpdated && !comment.deleting
                 ? [
-                    <a onClick={() => this.props.editComment(editingComment)} href="#reply" key={0}>
+                    <a onClick={() => this.props.editComment(editingComment, attachmentIds)} href="#reply" key={0}>
                       {localize[lang].EDIT}
                     </a>,
                     <a onClick={() => this.props.removeComment(comment.id)} key={1}>

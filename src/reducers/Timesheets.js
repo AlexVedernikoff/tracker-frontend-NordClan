@@ -1,4 +1,5 @@
 import * as TimesheetsActions from '../constants/Timesheets';
+import { findTimesheet } from '../utils/Timesheets';
 import moment from 'moment';
 import get from 'lodash/get';
 
@@ -7,7 +8,8 @@ moment.locale('ru');
 const InitialState = {
   projects: [],
   preloaders: {
-    creating: false
+    creating: false,
+    gettingTimesheets: false
   },
   list: [],
   startingDay: moment(),
@@ -50,9 +52,15 @@ export default function Timesheets(state = InitialState, action) {
         return state;
       }
 
+      const tempTsh = findTimesheet(state.tempTimesheets, action.timesheet);
+      const newTempTimesheets = tempTsh
+        ? state.tempTimesheets.filter(tsh => tsh.id !== tempTsh.id)
+        : state.tempTimesheets;
+
       return {
         ...state,
         list: [...state.list, action.timesheet],
+        tempTimesheets: [...newTempTimesheets],
         preloaders: {
           ...state.preloaders,
           creating: false
@@ -77,12 +85,31 @@ export default function Timesheets(state = InitialState, action) {
       };
 
     case TimesheetsActions.GET_TIMESHEETS_START:
-      return state;
+      return {
+        ...state,
+        preloaders: {
+          ...state.preloaders,
+          gettingTimesheets: true
+        }
+      };
 
     case TimesheetsActions.GET_TIMESHEETS_SUCCESS:
       return {
         ...state,
-        list: action.data
+        list: action.data,
+        preloaders: {
+          ...state.preloaders,
+          gettingTimesheets: false
+        }
+      };
+
+    case TimesheetsActions.GET_TIMESHEETS_ERROR:
+      return {
+        ...state,
+        preloaders: {
+          ...state.preloaders,
+          gettingTimesheets: false
+        }
       };
 
     case TimesheetsActions.SET_WEEK:

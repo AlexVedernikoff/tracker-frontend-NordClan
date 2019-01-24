@@ -137,7 +137,8 @@ class Table extends React.Component {
         key={`sprint-${i}`}
         className={classnames({
           [css.unactive]: sprint.statusId === 1,
-          [css.active]: sprint.statusId === 2
+          [css.active]: sprint.statusId === 2,
+          [css.sprintsListLine]: true
         })}
       >
         <span
@@ -156,7 +157,11 @@ class Table extends React.Component {
         <div className={classnames(css.name, { [css.nameMargin]: isProjectAdmin })}>{sprint.name}</div>
 
         {!isExternal ? (
-          <IconEdit className={css.edit} data-tip={localize[lang].EDIT} onClick={openSprintEditModal(sprint)} />
+          <IconEdit
+            className={classnames(css.edit, 'edit')}
+            data-tip={localize[lang].EDIT}
+            onClick={openSprintEditModal(sprint)}
+          />
         ) : null}
       </div>
     );
@@ -175,7 +180,7 @@ class Table extends React.Component {
     } = this.props;
 
     return (
-      <div key={`milestone-${i}`}>
+      <div key={`milestone-${i}`} className={css.sprintsListLine}>
         <span
           className={classnames({
             [css.selection]: true,
@@ -189,10 +194,18 @@ class Table extends React.Component {
         <div className={classnames(css.name, { [css.nameMargin]: false })}>{milestone.name}</div>
 
         {!isExternal ? (
-          <IconEdit className={css.edit} data-tip={localize[lang].EDIT} onClick={openMilestoneEditModal(milestone)} />
+          <IconEdit
+            className={classnames(css.edit, 'edit')}
+            data-tip={localize[lang].EDIT}
+            onClick={openMilestoneEditModal(milestone)}
+          />
         ) : null}
         {!isExternal ? (
-          <IconDelete className={css.delete} data-tip={localize[lang].DELETE} onClick={onDeleteMilestone(milestone)} />
+          <IconDelete
+            className={classnames(css.delete, 'delete')}
+            data-tip={localize[lang].DELETE}
+            onClick={onDeleteMilestone(milestone)}
+          />
         ) : null}
       </div>
     );
@@ -205,13 +218,12 @@ class Table extends React.Component {
       [css.spentTime]: true
     });
     let timeSumm = 0;
-
     return (
       <div className={className}>
         <span className={css.header}>{localize[this.props.lang][type]}</span>
         {entities.map((entity, i) => {
           if (this.detectType(entity) === 'sprint') {
-            timeSumm += !isExternal ? +entity.budget : 0;
+            timeSumm += !isExternal ? +entity[type === 'PLAN' ? 'budget' : 'spentTime'] : 0;
             return (
               <span key={`sprint-${i}`} className={css.name}>
                 {!isExternal ? roundNum(entity[type === 'PLAN' ? 'budget' : 'spentTime'], 2) : ''}

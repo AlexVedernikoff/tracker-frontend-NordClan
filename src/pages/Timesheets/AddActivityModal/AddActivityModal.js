@@ -9,7 +9,7 @@ import Button from '../../../components/Button';
 import SelectDropdown from '../../../components/SelectDropdown';
 import * as css from '../Timesheets.scss';
 import Checkbox from '../../../components/Checkbox/Checkbox';
-import { getProjectSprints, getProjectHistory } from '../../../actions/Project';
+import { getProjectSprints } from '../../../actions/Project';
 import {
   changeTask,
   changeProject,
@@ -22,8 +22,8 @@ import {
 import getStatusOptions from '../../../utils/getDraftStatusOptions';
 import * as activityTypes from '../../../constants/ActivityTypes';
 import localize from './addActivityModal.json';
-import { getDictionaryName } from '../../../utils/NameLocalisation';
-import { getLocalizedTaskStatuses, getLocalizedMagicActiveTypes } from '../../../selectors/dictionaries';
+import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../selectors/dictionaries';
+import { getStopStatusByGroup } from '../../../utils/TaskStatuses';
 
 class AddActivityModal extends Component {
   static propTypes = {
@@ -37,6 +37,7 @@ class AddActivityModal extends Component {
     getProjectSprints: PropTypes.func,
     getProjectsForSelect: PropTypes.func,
     getTasksForSelect: PropTypes.func,
+    lang: PropTypes.string,
     onClose: PropTypes.func,
     selectedActivityType: PropTypes.number,
     selectedProject: PropTypes.object,
@@ -96,8 +97,6 @@ class AddActivityModal extends Component {
 
     const { selectedTask, selectedActivityType, selectedProject, selectedTaskStatusId, startingDay } = this.props;
     const { selectedSprint } = this.state;
-    // ТШ должен создаваться в stop статусе
-    const checkPlayStatus = status => status === 2 || status === 4 || status === 6;
     const taskStatusId = selectedTask ? selectedTaskStatusId : null;
 
     const getSprint = () => {
@@ -142,7 +141,7 @@ class AddActivityModal extends Component {
             sprint: getSprint()
           }
         : null,
-      taskStatusId: checkPlayStatus(taskStatusId) ? taskStatusId + 1 : taskStatusId,
+      taskStatusId: getStopStatusByGroup(taskStatusId),
       typeId: selectedActivityType,
       spentTime: '0',
       sprintId: getSprint() ? getSprint().id : null,
@@ -187,7 +186,9 @@ class AddActivityModal extends Component {
 
   loadProjects = activityType => {
     const hideEmptyValue = activityType === 1;
-    this.props.getProjectsForSelect('', hideEmptyValue).then(options => this.setState({ projects: options.options }));
+    this.props
+      .getProjectsForSelect('', hideEmptyValue, true)
+      .then(options => this.setState({ projects: options.options }));
   };
 
   handleChangeSprint = option => {
@@ -240,7 +241,7 @@ class AddActivityModal extends Component {
                   options={
                     this.props.activityTypes.length
                       ? this.props.activityTypes.map(element => {
-                          return { label: getDictionaryName(element), value: element.id };
+                          return { label: localize[lang][element.codename], value: element.id };
                         })
                       : null
                   }
@@ -378,7 +379,7 @@ class AddActivityModal extends Component {
 }
 
 const mapStateToProps = state => ({
-  activityTypes: getLocalizedMagicActiveTypes(state),
+  activityTypes: getMagicActiveTypes(state),
   selectedActivityType: state.Timesheets.selectedActivityType,
   selectedTask: state.Timesheets.selectedTask,
   selectedTaskStatusId: state.Timesheets.selectedTaskStatusId,

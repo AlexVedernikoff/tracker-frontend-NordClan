@@ -1,0 +1,13 @@
+{
+  "en": {
+    "CHOOSE_SPRINT": "Select sprint",
+    "NO_MATCHING_SPRINTS": "No matching sprints",
+    "CLEAR_ALL": "Clear all"
+  },
+
+  "ru": {
+    "CHOOSE_SPRINT": "Выберите спринт",
+    "NO_MATCHING_SPRINTS": "Нет подходящих спринтов",
+    "CLEAR_ALL": "Очистить все"
+  }
+}

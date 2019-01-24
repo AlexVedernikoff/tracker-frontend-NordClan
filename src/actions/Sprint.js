@@ -3,6 +3,15 @@ import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
+import { store } from '../History';
+
+let lang = 'en';
+store.subscribe(() => {
+  lang = store.getState().Localize.lang;
+});
+
+const sprintHasActiveTasksRu = 'В спринте есть активные задачи. Удаление невозможно';
+const sprintHasActiveTasksEn = 'There are active tasks in the sprint. Unable to delete';
 
 const createSprintStart = () => ({
   type: SprintActions.SPRINTS_CREATE_START
@@ -38,9 +47,9 @@ export const editSprint = (id, statusId, name, dateForm, dateTo, budget, riskBud
   if (dateForm) params.factStartDate = dateForm;
   if (dateTo) params.factFinishDate = dateTo;
   if (statusId) params.statusId = statusId;
-  if (budget) params.budget = budget;
-  if (riskBudget) params.riskBudget = riskBudget;
-  if (qaPercent) params.qaPercent = qaPercent;
+  if (budget || budget === 0) params.budget = budget;
+  if (riskBudget || riskBudget === 0) params.riskBudget = riskBudget;
+  if (qaPercent || qaPercent === 0) params.qaPercent = qaPercent;
 
   return dispatch => {
     if (!id || !(statusId || name || dateForm || dateTo || qaPercent || budget || riskBudget)) {
@@ -80,7 +89,7 @@ export const deleteSprint = id => {
         if (error.response.data.type === 'sprintHasActiveTasks') {
           dispatch(
             showNotification({
-              message: 'В спринте есть активные задачи. Удаление невозможно',
+              message: lang === 'en' ? sprintHasActiveTasksEn : sprintHasActiveTasksRu,
               type: 'error'
             })
           );

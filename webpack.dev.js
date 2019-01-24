@@ -10,9 +10,10 @@ const target =
         port: process.env.API_PORT
       }
     : {
-        host: 'simtrack-dev.simbirsoft',
-        protocol: 'https:',
-        port: 443
+        // TODO:
+        host: 'sim-track.simbirsoft', // localhost
+        protocol: 'https:', // http:
+        port: 443 // 8000
       };
 
 const p = require('./package.json');
@@ -20,7 +21,7 @@ const p = require('./package.json');
 const settings = {
   entry: {
     vendor: Object.keys(p.dependencies),
-    bundle: ['react-hot-loader/patch', './src/Dev.js']
+    bundle: ['react-hot-loader/patch', './src/BrowserDefaults.js', './src/Dev.js']
   },
   output: {
     filename: '[name].js',

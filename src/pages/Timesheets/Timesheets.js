@@ -7,7 +7,6 @@ import find from 'lodash/find';
 import sortBy from 'lodash/sortBy';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as timesheetsActions from '../../actions/Timesheets';
-import * as timesheetsConstants from '../../constants/Timesheets';
 import { showNotification } from '../../actions/Notifications';
 import * as css from './Timesheets.scss';
 import { IconPlus, IconArrowLeft, IconArrowRight, IconCalendar } from '../../components/Icons';
@@ -16,7 +15,8 @@ import Calendar from './Calendar';
 import ActivityRow from './ActivityRow';
 import exactMath from 'exact-math';
 import localize from './timesheets.json';
-import Title, { flushTitle } from 'react-title-component';
+import Title from 'react-title-component';
+import { isTimesheetsCanBeChanged } from '../../utils/Timesheets';
 
 class Timesheets extends React.Component {
   static propTypes = {
@@ -69,12 +69,8 @@ class Timesheets extends React.Component {
   render() {
     const { isCalendarOpen } = this.state;
     const { startingDay, tempTimesheets, lang } = this.props;
-    const canAddActivity = !this.props.list.find(
-      tsh =>
-        tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
-        tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED
-    );
-    const countTsWithTime = this.props.list.filter(tsh => tsh.spentTime !== 0).length;
+    const canAddActivity = isTimesheetsCanBeChanged(this.props.list, startingDay);
+
     const defaultTaskStatusId = 2;
     const tempTimesheetsList = tempTimesheets.map(timesheet => {
       return {
@@ -114,10 +110,6 @@ class Timesheets extends React.Component {
             });
           if (!taskNotPushed && el.task && isTemp) {
             Promise.resolve().then(() => {
-              this.props.showNotification({
-                message: 'Задача с выбранным статусом уже есть в отчете',
-                type: 'success'
-              });
               this.props.deleteTempTimesheets([el.id.toString()]);
             });
           }
@@ -202,10 +194,6 @@ class Timesheets extends React.Component {
             });
           if (!maNotPushed && el.typeId !== 1 && isTemp) {
             Promise.resolve().then(() => {
-              this.props.showNotification({
-                message: 'Задача с выбранным статусом уже есть в отчете',
-                type: 'success'
-              });
               this.props.deleteTempTimesheets([el.id.toString()]);
             });
           }
@@ -388,8 +376,7 @@ class Timesheets extends React.Component {
                 <td className={css.total} />
               </tr>
             </tbody>
-            {
-              // canAddActivity || !countTsWithTime ? (
+            {canAddActivity ? (
               <tfoot>
                 <tr>
                   <td colSpan="10">
@@ -400,8 +387,7 @@ class Timesheets extends React.Component {
                   </td>
                 </tr>
               </tfoot>
-              // ) : null
-            }
+            ) : null}
           </table>
         </section>
         {this.state.isModalOpen ? <AddActivityModal onClose={() => this.setState({ isModalOpen: false })} /> : null}

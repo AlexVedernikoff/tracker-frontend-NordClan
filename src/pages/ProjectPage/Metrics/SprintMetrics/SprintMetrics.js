@@ -122,41 +122,93 @@ class SprintMetrics extends Component {
 
   filterBySprint = (sprintId, metrics) => metrics.filter(metric => metric.sprintId === sprintId);
 
+  splitBySprintEndDate = metrics => {
+    const result = {
+      beforeEndOfSprintMetrics: [],
+      afterEndOfSprintMetrics: []
+    };
+
+    if (!this.state.sprintSelected) {
+      return result;
+    }
+
+    const endDate = this.state.sprintSelected.value.factFinishDate;
+    const dayPattern = 'DD';
+    const monthPattern = 'MM';
+    const yearPattern = 'YYYY';
+    const endOfSprintDate = moment(endDate);
+    metrics.forEach(metric => {
+      const metricCreatedDate = moment(metric.createdAt);
+      if (+metricCreatedDate.format(yearPattern) > +endOfSprintDate.format(yearPattern)) {
+        result.afterEndOfSprintMetrics.push(metric);
+      } else if (+metricCreatedDate.format(yearPattern) < +endOfSprintDate.format(yearPattern)) {
+        result.beforeEndOfSprintMetrics.push(metric);
+      } else if (+metricCreatedDate.format(monthPattern) > +endOfSprintDate.format(monthPattern)) {
+        result.afterEndOfSprintMetrics.push(metric);
+      } else if (+metricCreatedDate.format(monthPattern) < +endOfSprintDate.format(monthPattern)) {
+        result.beforeEndOfSprintMetrics.push(metric);
+      } else if (+metricCreatedDate.format(dayPattern) < +endOfSprintDate.format(dayPattern)) {
+        result.beforeEndOfSprintMetrics.push(metric);
+      } else {
+        result.afterEndOfSprintMetrics.push(metric);
+      }
+    });
+    return result;
+  };
+
   render() {
     const {
       chartDefaultOptions,
       getBasicLineSettings,
       metrics,
-      filterById,
-      openedBugsMetrics, // TODO: пересчитываются ниже, почему приходит не то?
-      openedCustomerBugsMetrics // пересчитываются ниже, почему приходит не то?
+      filterById
+      // openedBugsMetrics, // TODO: пересчитываются ниже, почему приходит не то?
+      // openedCustomerBugsMetrics // пересчитываются ниже, почему приходит не то?
     } = this.props;
     const currentSprintId = this.state.sprintSelected ? this.state.sprintSelected.value.id : null;
     /*Динамика закрытия фич*/
-    const sprintClosingFeaturesMetrics = filterById(32, metrics);
-    const sprintWriteOffTimeMetrics = filterById(34, metrics);
-    const sprintWorkWithoutEvaluationMetrics = filterById(33, metrics);
+    const sprintClosingFeaturesMetrics = this.splitBySprintEndDate(
+      this.filterBySprint(currentSprintId, filterById(32, metrics))
+    );
+    const sprintWriteOffTimeMetrics = this.splitBySprintEndDate(
+      this.filterBySprint(currentSprintId, filterById(34, metrics))
+    );
+    const sprintWorkWithoutEvaluationMetrics = this.splitBySprintEndDate(
+      this.filterBySprint(currentSprintId, filterById(33, metrics))
+    );
 
     /*Количество задач*/
-    const openedFeaturesWithoutEvaluationMetric = filterById(40, metrics);
-    const openedFeaturesMetric = filterById(35, metrics);
-    const openedOutOfPlanFeaturesMetric = filterById(41, metrics);
-
-    const openedFeaturesFromClient = filterById(58, metrics);
-    const openedBugsFromClient = filterById(39, metrics);
-    const openedBugsMetric = filterById(37, metrics);
+    const openedFeaturesWithoutEvaluationMetric = this.splitBySprintEndDate(
+      this.filterBySprint(currentSprintId, filterById(40, metrics))
+    );
+    const openedFeaturesMetric = this.splitBySprintEndDate(
+      this.filterBySprint(currentSprintId, filterById(35, metrics))
+    );
+    const openedOutOfPlanFeaturesMetric = this.splitBySprintEndDate(
+      this.filterBySprint(currentSprintId, filterById(41, metrics))
+    );
+    const openedFeaturesFromClient = this.splitBySprintEndDate(
+      this.filterBySprint(currentSprintId, filterById(58, metrics))
+    );
+    const openedBugsFromClient = this.splitBySprintEndDate(
+      this.filterBySprint(currentSprintId, filterById(39, metrics))
+    );
+    const openedBugsMetric = this.splitBySprintEndDate(this.filterBySprint(currentSprintId, filterById(37, metrics)));
 
     return (
       <div>
         <div className={css.sprintSelectWrapper}>
-          <SprintSelector
-            multi={false}
-            value={this.state.sprintSelected}
-            sprints={this.props.sprints}
-            onChange={option => this.changeSprint(option)}
-            className={css.sprintSelector}
-          />
-
+          <div className={css.sprintWrapper}>
+            <SprintSelector
+              multi={false}
+              searchable={false}
+              clearable
+              value={this.state.sprintSelected}
+              sprints={this.props.sprints}
+              onChange={option => this.changeSprint(option)}
+              className={css.sprintSelector}
+            />
+          </div>
           <StartEndDates startDate={this.sprintStartDate()} endDate={this.sprintEndDate()} />
         </div>
         <Row>
@@ -166,27 +218,21 @@ class SprintMetrics extends Component {
               endDate={this.sprintEndDate()}
               chartDefaultOptions={chartDefaultOptions}
               getBasicLineSettings={getBasicLineSettings}
-              sprintClosingFeaturesMetrics={this.filterBySprint(currentSprintId, sprintClosingFeaturesMetrics)}
-              sprintWriteOffTimeMetrics={this.filterBySprint(currentSprintId, sprintWriteOffTimeMetrics)}
-              sprintWorkWithoutEvaluationMetrics={this.filterBySprint(
-                currentSprintId,
-                sprintWorkWithoutEvaluationMetrics
-              )}
+              sprintClosingFeaturesMetrics={sprintClosingFeaturesMetrics}
+              sprintWriteOffTimeMetrics={sprintWriteOffTimeMetrics}
+              sprintWorkWithoutEvaluationMetrics={sprintWorkWithoutEvaluationMetrics}
             />
           </Col>
           <Col xs={12}>
             <TasksCountChart
               chartDefaultOptions={chartDefaultOptions}
               getBasicLineSettings={getBasicLineSettings}
-              openedFeaturesWithoutEvaluationMetric={this.filterBySprint(
-                currentSprintId,
-                openedFeaturesWithoutEvaluationMetric
-              )}
-              openedFeaturesMetric={this.filterBySprint(currentSprintId, openedFeaturesMetric)}
-              openedOutOfPlanFeaturesMetric={this.filterBySprint(currentSprintId, openedOutOfPlanFeaturesMetric)}
-              openedBugsMetrics={this.filterBySprint(currentSprintId, openedBugsMetric)}
-              openedCustomerBugsMetrics={this.filterBySprint(currentSprintId, openedBugsFromClient)}
-              openedFeaturesFromClient={this.filterBySprint(currentSprintId, openedFeaturesFromClient)}
+              openedFeaturesWithoutEvaluationMetric={openedFeaturesWithoutEvaluationMetric}
+              openedFeaturesMetric={openedFeaturesMetric}
+              openedOutOfPlanFeaturesMetric={openedOutOfPlanFeaturesMetric}
+              openedBugsMetrics={openedBugsMetric}
+              openedCustomerBugsMetrics={openedBugsFromClient}
+              openedFeaturesFromClient={openedFeaturesFromClient}
             />
           </Col>
         </Row>

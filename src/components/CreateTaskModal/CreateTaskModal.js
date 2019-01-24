@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Modal from '../../components/Modal';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import { stateToHTML } from 'draft-js-export-html';
@@ -8,32 +7,35 @@ import { Col, Row } from 'react-flexbox-grid';
 import moment from 'moment';
 import classnames from 'classnames';
 import sortBy from 'lodash/sortBy';
+
+import Modal from '../../components/Modal';
 import Button from '../Button';
 import SelectDropdown from '../SelectDropdown';
-import ValidatedInput from '../ValidatedInput';
 import InputNumber from '../../components/InputNumber';
 import ValidatedAutosizeInput from '../ValidatedAutosizeInput';
 import * as css from './CreateTaskModal.scss';
 import Priority from '../Priority';
 import { closeCreateTaskModal, createTask } from '../../actions/Project';
 import { BACKLOG_ID } from '../../constants/Sprint';
+import { IN_PROGRESS } from '../../constants/SprintStatuses';
 import Validator from '../ValidatedInput/Validator';
 import TextEditor from '../../components/TextEditor';
 import Checkbox from '../../components/Checkbox/Checkbox';
 import localize from './CreateTaskModal.json';
+import { createTags } from '../../actions/Tags';
 import Tag from '../../components/Tag';
 import Tags from '../../components/Tags';
 import { getFullName } from '../../utils/NameLocalisation';
 import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
 
-const MAX_DESCRIPTION_LENGTH = 250;
+const MAX_DESCRIPTION_LENGTH = 25000;
 
 class CreateTaskModal extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      selectedSprint: props.selectedSprintValue,
+      selectedSprint: this.getInitialSprint(props),
       selectedPerformer: props.defaultPerformerId || null,
       taskName: '',
       description: '',
@@ -43,12 +45,23 @@ class CreateTaskModal extends Component {
       selectedType: this.props.taskTypes[0],
       selectedTypeError: this.props.taskTypes.length === 0,
       isTaskByClient: false,
+      isDevOps: false,
       descriptionInvalid: false,
       tags: []
     };
 
     this.validator = new Validator();
   }
+
+  getInitialSprint = ({ selectedSprintValue, sprints }) => {
+    if (selectedSprintValue) {
+      return selectedSprintValue;
+    }
+
+    const activeSprint = sprints.find(sprint => sprint.statusId === IN_PROGRESS);
+
+    return activeSprint ? activeSprint.id : 0;
+  };
 
   handleModalSprintChange = selectedSprint => {
     this.setState({
@@ -62,10 +75,12 @@ class CreateTaskModal extends Component {
     });
   };
 
-  handleIsTaskByClientChange = () => {
-    this.setState({
-      isTaskByClient: !this.state.isTaskByClient
-    });
+  getDevOpsInputRef = el => {
+    this.devOpsInput = el;
+  };
+
+  getIsByClientRef = el => {
+    this.byClientInput = el;
   };
 
   handlePriorityChange = priorityId => this.setState({ prioritiesId: +priorityId });
@@ -79,24 +94,30 @@ class CreateTaskModal extends Component {
     if (!this.state.selectedType || !this.state.selectedType.value) {
       return;
     }
-    this.props.createTask(
-      {
-        name: this.state.taskName,
-        projectId: this.props.project.id,
-        description: stateToHTML(this.TextEditor.state.editorState.getCurrentContent()),
-        performerId: this.state.selectedPerformer,
-        statusId: 1,
-        typeId: this.state.selectedType.value,
-        sprintId: this.state.selectedSprint === BACKLOG_ID ? null : this.state.selectedSprint,
-        prioritiesId: this.state.prioritiesId,
-        plannedExecutionTime: this.state.plannedExecutionTime,
-        parentId: this.props.parentTaskId,
-        isTaskByClient: this.state.isTaskByClient,
-        tags: this.state.tags.join(',')
-      },
-      this.state.openTaskPage,
-      this.props.column
-    );
+    this.props
+      .createTask(
+        {
+          name: this.state.taskName,
+          projectId: this.props.project.id,
+          description: stateToHTML(this.TextEditor.state.editorState.getCurrentContent()),
+          performerId: this.state.selectedPerformer,
+          statusId: 1,
+          typeId: this.state.selectedType.value,
+          sprintId: this.state.selectedSprint === BACKLOG_ID ? null : this.state.selectedSprint,
+          prioritiesId: this.state.prioritiesId,
+          plannedExecutionTime: this.state.plannedExecutionTime,
+          parentId: this.props.parentTaskId,
+          isTaskByClient: this.byClientInput.checked,
+          isDevOps: this.devOpsInput.checked
+        },
+        this.state.openTaskPage,
+        this.props.column
+      )
+      .then(id => {
+        if (this.state.tags.length) {
+          this.props.createTags(this.state.tags.join(), 'task', id);
+        }
+      });
   };
 
   validateAndSubmit = () => {
@@ -115,7 +136,7 @@ class CreateTaskModal extends Component {
       return new moment(sprint.factFinishDate);
     });
 
-    sprints = sprints.map((sprint, i) => ({
+    sprints = sprints.map(sprint => ({
       value: sprint.id,
       label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${
         sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}` : '- ...'
@@ -140,10 +161,16 @@ class CreateTaskModal extends Component {
   };
 
   getUsers = () => {
-    return this.props.project.users.map(user => ({
-      value: user.id,
-      label: getFullName(user)
-    }));
+    return this.props.project.users
+      .sort((a, b) => {
+        if (a.fullNameRu < b.fullNameRu) return -1;
+        else if (a.fullNameRu > b.fullNameRu) return 1;
+        return 0;
+      })
+      .map(user => ({
+        value: user.id,
+        label: getFullName(user)
+      }));
   };
 
   handleChange = field => event => {
@@ -151,11 +178,13 @@ class CreateTaskModal extends Component {
   };
 
   handleChangePlannedTime = plannedExecutionTime => {
-    this.setState({ plannedExecutionTime });
+    this.setState({
+      plannedExecutionTime: plannedExecutionTime || 0
+    });
   };
 
   addTag = tag => {
-    const unicTags = [...new Set([...this.state.tags, tag])];
+    const unicTags = [...new Set([...this.state.tags, ...tag])];
     this.setState({ tags: [...unicTags] });
   };
   deleteTag = () => tagName => {
@@ -173,6 +202,12 @@ class CreateTaskModal extends Component {
     this.setState({ descriptionInvalid: description.length > MAX_DESCRIPTION_LENGTH });
   };
 
+  generateError = () => {
+    return this.state.taskName.length < 4
+      ? localize[this.props.lang].NAME_ERROR_LESS_SYMBOLS
+      : localize[this.props.lang].NAME_ERROR_MORE_SYMBOLS;
+  };
+
   render() {
     const formLayout = {
       firstCol: 4,
@@ -182,7 +217,9 @@ class CreateTaskModal extends Component {
     const { lang, taskTypes } = this.props;
 
     const tags = this.state.tags.map((tagName, i) => {
-      return <Tag key={i} name={tagName} noRequest deleteTagModal={() => this.deleteTag()(tagName)} />;
+      return (
+        <Tag key={i} name={tagName} noRequest dataTip={tagName} deleteTagModal={() => this.deleteTag()(tagName)} />
+      );
     });
     return (
       <Modal
@@ -210,11 +247,11 @@ class CreateTaskModal extends Component {
                       onBlur={handleBlur}
                       onEnter={this.validateAndSubmit}
                       shouldMarkError={shouldMarkError}
-                      errorText={localize[lang].NAME_ERROR}
+                      errorText={this.generateError()}
                     />
                   ),
                   'taskName',
-                  this.state.taskName.length < 4
+                  this.state.taskName.length < 4 || this.state.taskName.length > 256
                 )}
               </Col>
             </Row>
@@ -240,10 +277,17 @@ class CreateTaskModal extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>Тэги:</p>
+                <p>{localize[lang].TAGS}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
-                <Tags taggable="task" noRequest create canEdit createTagsModalTask={this.addTag}>
+                <Tags
+                  taggable="task"
+                  noRequest
+                  create
+                  canEdit
+                  createTagsModalTask={this.addTag}
+                  className={css.tagsContainer}
+                >
                   {tags}
                 </Tags>
               </Col>
@@ -276,7 +320,17 @@ class CreateTaskModal extends Component {
                 <p>{localize[lang].FROM_CLIENT}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
-                <Checkbox checked={this.state.isTaskByClient} onChange={this.handleIsTaskByClientChange} />
+                <Checkbox refCallback={this.getIsByClientRef} />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>{localize[lang].DEV_OPS}</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
+                <Checkbox refCallback={this.getDevOpsInputRef} />
               </Col>
             </Row>
           </label>
@@ -339,7 +393,7 @@ class CreateTaskModal extends Component {
                 <InputNumber
                   min={0}
                   maxLength={5}
-                  postfix={'ч.'}
+                  postfix={localize[lang].HOURS}
                   onChange={this.handleChangePlannedTime}
                   value={this.state.plannedExecutionTime}
                 />
@@ -373,6 +427,7 @@ class CreateTaskModal extends Component {
 CreateTaskModal.propTypes = {
   closeCreateTaskModal: PropTypes.func.isRequired,
   column: PropTypes.string,
+  createTags: PropTypes.func.isRequired,
   createTask: PropTypes.func.isRequired,
   defaultPerformerId: PropTypes.oneOfType([PropTypes.array, PropTypes.number]),
   isCreateChildTaskModalOpen: PropTypes.bool,
@@ -382,6 +437,7 @@ CreateTaskModal.propTypes = {
   parentTaskId: PropTypes.number,
   project: PropTypes.object,
   selectedSprintValue: PropTypes.number,
+  sprints: PropTypes.array,
   taskTypes: PropTypes.array
 };
 
@@ -396,12 +452,14 @@ const mapStateToProps = state => ({
   isCreateChildTaskModalOpen: state.Project.isCreateChildTaskModalOpen,
   taskTypes: getTaskTypes(getLocalizedTaskTypes(state)),
   isCreateTaskRequestInProgress: state.Project.isCreateTaskRequestInProgress,
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  sprints: state.Project.project.sprints
 });
 
 const mapDispatchToProps = {
   closeCreateTaskModal,
-  createTask
+  createTask,
+  createTags
 };
 
 export default connect(

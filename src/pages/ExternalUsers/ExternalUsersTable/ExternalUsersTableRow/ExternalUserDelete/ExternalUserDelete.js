@@ -44,7 +44,9 @@ class ExternalUserDelete extends Component {
   }
 }
 ExternalUserDelete.propTypes = {
+  dataTip: PropTypes.string,
   onDelete: PropTypes.func,
+  text: PropTypes.string,
   username: PropTypes.string
 };
 export default ExternalUserDelete;

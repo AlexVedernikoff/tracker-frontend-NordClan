@@ -21,6 +21,8 @@ class TimeSheetsHistory extends Component {
     createTimesheet: PropTypes.func.isRequired,
     currentTask: PropTypes.object,
     currentUser: PropTypes.object,
+    lang: PropTypes.string,
+    localizeText: PropTypes.object,
     preloaders: PropTypes.object,
     taskStatuses: PropTypes.array,
     timesheets: PropTypes.array,
@@ -38,7 +40,7 @@ class TimeSheetsHistory extends Component {
       projectId: currentTask.projectId,
       typeId: 1
     };
-    this.props.createTimesheet(data, this.props.currentUser.id);
+    this.props.createTimesheet(data, currentUser.id);
   };
 
   render() {

@@ -92,6 +92,14 @@ class AppRouter extends Component {
     cb();
   };
 
+  onProjectPageLeave = nextState => {
+    localStorage.setItem('filtersData', nextState.location.search);
+    if (nextState.location.search === '') {
+      localStorage.setItem('filtersData', '?changedSprint=0');
+    }
+    this.props.clearCurrentProjectAndTasks();
+  };
+
   router = (
     <Router history={this.props.history} render={applyRouterMiddleware(useScroll(() => false))}>
       <Route path="" component={MainContainer}>

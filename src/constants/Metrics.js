@@ -37,3 +37,4 @@ export const IOS_COST = 54;
 
 export const DEVOPS_COST_PERCENTAGE = 55;
 export const DEVOPS_COST = 56;
+export const COMMAND_METRICS = 61;

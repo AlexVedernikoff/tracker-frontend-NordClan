@@ -5,13 +5,13 @@ import classnames from 'classnames';
 import * as css from './StatusCheckbox.scss';
 
 class StatusCheckbox extends React.Component {
-  handlerChange = (event) => {
+  handlerChange = event => {
     const { statusId, onClick } = this.props;
     onClick(event, statusId);
-  }
+  };
 
   render() {
-    const { checked, label, type, onChange, statusId, disabled, ...other } = this.props;
+    const { checked, label, type, disabled, ...other } = this.props;
     return (
       <label
         {...other}
@@ -20,21 +20,20 @@ class StatusCheckbox extends React.Component {
           [css.checked]: checked,
           [css.disabled]: disabled
         })}
-        onClick={!disabled ? this.handlerChange : () => {}}>
-        {type ? <span className={classnames([css.marker], [css[type]])}/> : null}
+        onClick={!disabled ? this.handlerChange : () => {}}
+      >
+        {type ? <span className={classnames([css.marker], [css[type]])} /> : null}
         <span>{label}</span>
       </label>
     );
   }
-};
+}
 
 StatusCheckbox.propTypes = {
   checked: PropTypes.bool,
   disabled: PropTypes.bool,
   label: PropTypes.string,
-  onChange: PropTypes.func,
   onClick: PropTypes.func,
-  statusId: PropTypes.number,
   type: PropTypes.string
 };
 

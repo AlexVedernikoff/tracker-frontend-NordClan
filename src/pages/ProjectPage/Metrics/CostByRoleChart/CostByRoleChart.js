@@ -10,14 +10,15 @@ import getColor from '../../../../utils/Colors';
 import localize from './CostByRoleChart.json';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import datalabels from 'chartjs-plugin-datalabels';
+import { dataLabelsPlugin, defaultTimeDisplayFormats } from '../../../../utils/Charts';
 
 class CostByRoleChart extends Component {
   static propTypes = {
     chartDefaultOptions: PropTypes.object,
     costByRoleMetrics: PropTypes.array,
     costByRolePercentMetrics: PropTypes.array,
-    getBasicLineSettings: PropTypes.func
+    getBasicLineSettings: PropTypes.func,
+    lang: PropTypes.string
   };
 
   constructor(props) {
@@ -67,9 +68,7 @@ class CostByRoleChart extends Component {
           {
             type: 'time',
             time: {
-              displayFormats: {
-                day: 'D MMM'
-              },
+              displayFormats: defaultTimeDisplayFormats,
               tooltipFormat: 'DD.MM.YYYY',
               locale: moment.locale(localize[this.props.lang].LANG)
             },
@@ -81,14 +80,7 @@ class CostByRoleChart extends Component {
           }
         ]
       },
-      plugins: {
-        datalabels: {
-          formatter: function(value) {
-            return value.y;
-          },
-          align: 'end'
-        }
-      }
+      plugins: dataLabelsPlugin
     };
   };
 

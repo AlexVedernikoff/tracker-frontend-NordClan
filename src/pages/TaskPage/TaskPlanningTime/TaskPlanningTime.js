@@ -7,6 +7,8 @@ import { connect } from 'react-redux';
 import { startTaskEditing, stopTaskEditing, changeTask } from '../../../actions/Task';
 import roundNum from '../../../utils/roundNum';
 
+const TIME_MAX = 99;
+
 class TaskPlanningTime extends Component {
   constructor(props) {
     super(props);
@@ -39,7 +41,8 @@ class TaskPlanningTime extends Component {
 
   validateAndSubmit = () => {
     this.taskPlanningTime.innerText = this.taskPlanningTime.innerText.replace(',', '.').trim();
-    if (!/^\d+(\.\d{0,})?$/.test(this.taskPlanningTime.innerText)) {
+
+    if (!/^\d+(\.\d{0,})?$/.test(this.taskPlanningTime.innerText) || this.taskPlanningTime.innerText > TIME_MAX) {
       this.setState({ submitError: true });
     } else {
       this.setState(
@@ -58,8 +61,17 @@ class TaskPlanningTime extends Component {
     }
   };
 
+  onTextPaste = e => {
+    const text = e.clipboardData.getData('Text');
+    if (text.length > 5) this.taskPlanningTime.innerText = text.slice(0, 5);
+    e.preventDefault();
+  };
+
   handleKeyPress = event => {
-    if (this.props.timeIsEditing && event.keyCode === 13) {
+    if (
+      (this.props.timeIsEditing && event.keyCode === 13) ||
+      (event.target.innerText.length === 5 && event.keyCode !== 8 && event.keyCode !== 46)
+    ) {
       event.preventDefault();
       this.validateAndSubmit(event);
     } else if (event.keyCode === 27) {
@@ -68,6 +80,11 @@ class TaskPlanningTime extends Component {
         submitError: false
       });
     }
+  };
+
+  onBlur = () => {
+    this.stopEditing();
+    this.validateAndSubmit();
   };
 
   render() {
@@ -87,7 +104,8 @@ class TaskPlanningTime extends Component {
           ref={ref => (this.taskPlanningTime = ref)}
           contentEditable={this.props.timeIsEditing}
           suppressContentEditableWarning
-          onBlur={this.validateAndSubmit}
+          onBlur={this.onBlur}
+          onPaste={this.onTextPaste}
           onKeyDown={this.handleKeyPress}
           {...(this.props.tooltip
             ? {

@@ -2,13 +2,14 @@
   "en": {
     "NUMBER_OF_TASKS": "Number of tasks",
     "NUMBER_OPEN_TASKS": "Number of open tasks",
-    "WITHOUT_ELEVATION": "The number of open tasks without evaluation",
-    "OUTSIDE_PLAN": "Number of open tasks outside the plan",
-    "NUMBER_OPEN_TASKS_FROM_CLIENT": "Number of open tasks from the client",
-    "NUMBER_BUGS": "Number of open bugs (Task type Bug)",
-    "NUMBER_BUGS_FROM_CLIENT": "Number of open bugs from the client",
+    "WITHOUT_ELEVATION": "Number of open tasks without evaluation",
+    "OUTSIDE_PLAN": "Number of open tasks out of plan",
+    "NUMBER_OPEN_TASKS_FROM_CLIENT": "The number of open tasks from the client",
+    "NUMBER_BUGS": "Number of open bugs (Problem type Bug)",
+    "NUMBER_BUGS_FROM_CLIENT": "The number of open bugs from the customer",
     "DATE": "Date",
-    "LANG": "en"
+    "LANG": "en",
+    "END_SPRINT": "after the sprint"
   },
   "ru": {
     "NUMBER_OF_TASKS": "Количество задач",
@@ -19,6 +20,7 @@
     "NUMBER_BUGS": "Количество открытых багов (Тип задачи Баг)",
     "NUMBER_BUGS_FROM_CLIENT": "Количество открытых багов от заказчика",
     "DATE": "Дата",
-    "LANG": "ru"
+    "LANG": "ru",
+    "END_SPRINT": "после окончания спринта"
   }
 }

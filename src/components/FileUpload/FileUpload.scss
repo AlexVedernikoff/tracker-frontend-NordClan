@@ -6,7 +6,6 @@
   width: 100px;
   cursor: pointer;
   position: relative;
-  margin-right: 16px;
 
   &:hover {
     .attachmentIcon {
@@ -46,4 +45,10 @@
   width: 100px;
   text-align: center;
   color: lighten($color-dark, 30%);
+}
+
+.dropzoneWrap {
+  order: -1;
+  margin-right: 16px;
+  margin-bottom: 16px;
 }

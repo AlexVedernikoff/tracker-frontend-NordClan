@@ -6,7 +6,7 @@
 }
 
 .addButton {
-  width: 16rem;
+  margin: 0 1rem 1rem 0;
 }
 
 .projectList {
@@ -16,14 +16,20 @@
 }
 
 .newProject {
-  display: flex;
   align-items: center;
   width: 100%;
   max-width: 18.5rem;
+  display: inline-flex;
+  vertical-align: top;
 }
 
 .saveProject {
   flex-shrink: 0;
+}
+
+.addNewProject {
+  display: inline-flex;
+  vertical-align: top;
 }
 
 .projectCard {
@@ -91,4 +97,40 @@
   padding: 0.5rem 0;
   margin-top: 1rem;
   border-top: 1px solid $color-red;
+}
+
+.createGitlabProject {
+  min-width: 330px;
+  max-width: 500px;
+  padding: 2rem;
+
+  @include phone {
+    padding: 1rem;
+    min-width: 250px;
+  }
+
+  h3 {
+    margin-top: 0;
+  }
+}
+
+.modalContainer {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  > div {
+    margin-bottom: 1rem;
+  }
+  > button {
+    width: 100px;
+    align-self: center;
+  }
+}
+
+.modalWarningContent {
+  ul {
+    margin-bottom: 0;
+    padding: 0;
+    font-size: 13px;
+  }
 }

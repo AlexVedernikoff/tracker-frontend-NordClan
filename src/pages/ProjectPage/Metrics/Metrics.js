@@ -21,12 +21,13 @@ import Tabs from '../../../components/Tabs';
 import Pane from '../../../components/Pane';
 import Button from '../../../components/Button';
 import localize from './Metrics.json';
+import TeamMetrics from './TeamMetrics';
 
 const filterMetrics = (id, metrics) => {
   return metrics ? metrics.filter(metric => metric.typeId === id) : [];
 };
 
-const getBasicLineSettings = () => {
+export const getBasicLineSettings = () => {
   const lineColor = getColor();
 
   return {
@@ -35,7 +36,8 @@ const getBasicLineSettings = () => {
     pointRadius: 2,
     borderColor: lineColor,
     backgroundColor: lineColor,
-    fill: false
+    fill: false,
+    steppedLine: true
   };
 };
 
@@ -61,11 +63,11 @@ class Metrics extends Component {
   }
 
   componentWillMount() {
-    const { getMetrics, params, createdAt } = this.props;
+    const { params, createdAt } = this.props;
 
     if (createdAt) {
       const metricsParams = this.getMetricsParams(createdAt, params.projectId);
-      getMetrics(metricsParams);
+      this.props.getMetrics(metricsParams);
     }
   }
 
@@ -74,11 +76,11 @@ class Metrics extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { getMetrics, params, createdAt } = this.props;
+    const { params, createdAt } = this.props;
 
     if (nextProps.createdAt !== createdAt) {
       const metricsParams = this.getMetricsParams(nextProps.createdAt, params.projectId);
-      getMetrics(metricsParams);
+      this.props.getMetrics(metricsParams);
     }
   }
 
@@ -90,10 +92,10 @@ class Metrics extends Component {
 
   recalculateMetrics = () => {
     if (!this.props.loading) {
-      const { getMetrics, params, createdAt } = this.props;
+      const { params, createdAt } = this.props;
       const metricsParams = this.getMetricsParams(createdAt, params.projectId);
 
-      getMetrics({
+      this.props.getMetrics({
         ...metricsParams,
         recalculate: true
       });
@@ -289,6 +291,13 @@ class Metrics extends Component {
                         costByRoleMetrics={costByRoleMetrics}
                         costByRolePercentMetrics={costByRolePercentMetrics}
                       />
+                    </Col>
+                  </Row>
+                </Pane>
+                <Pane label={localize[lang].METRICS_BY_TEAM} path="/team">
+                  <Row>
+                    <Col xs={12}>
+                      <TeamMetrics />
                     </Col>
                   </Row>
                 </Pane>

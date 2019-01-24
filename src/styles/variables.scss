@@ -22,6 +22,14 @@ $color-modal-bg: $color-white;
 $phone-width: 768px;
 $tablet-width: 1024px;
 $desktop-width: 1280px;
+$app-head-min-width: 920px;
+
+@mixin app-head-width {
+  //Фикс бага с улетающим вправо переключателем языка
+  @media (max-width: #{$app-head-min-width + 1px}) {
+    @content;
+  }
+}
 
 @mixin phone {
   @media (max-width: #{$phone-width - 1px}) {
@@ -61,13 +69,14 @@ $font-size-small: 11px;
 
 // Transitions
 $transition: all 0.3s ease-out 0s;
-$box-shadow: 4px 4px 0 rgba(0,0,0,0.17);
+$box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.17);
 
 // Utils
 @mixin link-reset {
   &:active,
   &:focus,
-  &:visited, & {
+  &:visited,
+  & {
     color: inherit;
     text-decoration: none;
   }

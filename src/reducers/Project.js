@@ -3,6 +3,7 @@ import * as TagsActions from '../constants/Tags';
 import * as SprintActions from '../constants/Sprint';
 import * as TasksActions from '../constants/Tasks';
 import * as MilestoneActions from '../constants/Milestone';
+import * as GitlabActions from '../constants/Gitlab';
 
 const InitialState = {
   project: {
@@ -16,7 +17,8 @@ const InitialState = {
     },
     error: false,
     validationError: null,
-    metrics: []
+    metrics: [],
+    notProcessedGitlabUsers: []
   },
   TitleIsEditing: false,
   DescriptionIsEditing: false,
@@ -24,7 +26,8 @@ const InitialState = {
   isCreateChildTaskModalOpen: false,
   PortfolioIsEditing: false,
   isProjectInfoReceiving: false,
-  isCreateTaskRequestInProgress: false
+  isCreateTaskRequestInProgress: false,
+  isSprintsReceiving: false
 };
 
 export default function Project(state = InitialState, action) {
@@ -37,6 +40,7 @@ export default function Project(state = InitialState, action) {
           users: action.users
         }
       };
+
     case ProjectActions.UNBIND_USER_TO_PROJECT_SUCCESS:
       return {
         ...state,
@@ -45,6 +49,7 @@ export default function Project(state = InitialState, action) {
           users: action.users
         }
       };
+
     case ProjectActions.UNBIND_EXTERNAL_USER_TO_PROJECT_SUCCESS:
       return {
         ...state,
@@ -53,13 +58,27 @@ export default function Project(state = InitialState, action) {
           externalUsers: state.project.externalUsers.filter(item => item.id !== action.userId)
         }
       };
+
     case SprintActions.SPRINTS_EDIT_SUCCESS:
       return {
         ...state,
         project: {
           ...state.project,
           sprints: action.sprints
-        }
+        },
+        isSprintsReceiving: false
+      };
+
+    case SprintActions.SPRINTS_EDIT_START:
+      return {
+        ...state,
+        isSprintsReceiving: true
+      };
+
+    case SprintActions.SPRINTS_EDIT_FAIL:
+      return {
+        ...state,
+        isSprintsReceiving: false
       };
 
     case SprintActions.SPRINTS_CREATE_SUCCESS:
@@ -168,7 +187,7 @@ export default function Project(state = InitialState, action) {
         ...state,
         project: {
           ...state.project,
-          externalUsers: action.users
+          externalUsers: action.users || []
         }
       };
     case ProjectActions.PROJECT_SPRINTS_RECEIVE_START:
@@ -199,11 +218,52 @@ export default function Project(state = InitialState, action) {
       };
 
     case ProjectActions.PROJECT_CHANGE_SUCCESS:
+      if (state.project.id !== action.changedFields.id) return state;
       return {
         ...state,
         project: {
           ...state.project,
           ...action.changedFields
+        }
+      };
+
+    case GitlabActions.ADDING_GITLAB_PROJECT_START:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          notProcessedGitlabUsers: []
+        }
+      };
+    case GitlabActions.ADDING_GITLAB_PROJECT_SUCCESS:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          gitlabProjectIds: [...state.project.gitlabProjectIds, action.project.gitlabProject.id],
+          gitlabProjects: [...state.project.gitlabProjects, action.project.gitlabProject],
+          users: action.project.projectUsers,
+          notProcessedGitlabUsers: action.project.notProcessedGitlabUsers
+        }
+      };
+
+    case GitlabActions.CREATE_GITLAB_PROJECT_START:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          notProcessedGitlabUsers: []
+        }
+      };
+    case GitlabActions.CREATE_GITLAB_PROJECT_SUCCESS:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          gitlabProjectIds: [...state.project.gitlabProjectIds, action.project.gitlabProject.id],
+          gitlabProjects: [...state.project.gitlabProjects, action.project.gitlabProject],
+          users: action.project.projectUsers,
+          notProcessedGitlabUsers: action.project.notProcessedGitlabUsers
         }
       };
 

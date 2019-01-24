@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import DatepickerDropdown from '../../components/DatepickerDropdown';
 import * as css from '../Input/Input.scss';
 import * as validateCss from './ValidatedInput.scss';
 
@@ -38,12 +39,12 @@ class ValidatedInput extends Component {
     this.setState({ isFocused: true });
   };
 
-  render() {
-    const { errorText, backendErrorText, shouldMarkError, ...other } = this.props;
+  get elem() {
+    /* eslint-disable no-unused-vars */
+    const { errorText, backendErrorText, shouldMarkError, elementType, ...other } = this.props;
     const { isFocused, isError } = this.state;
-
-    return (
-      <div className={validateCss.fullWrapper}>
+    const elems = {
+      input: (
         <input
           type="text"
           {...other}
@@ -53,6 +54,30 @@ class ValidatedInput extends Component {
             [css.inputError]: (isError || backendErrorText) && !isFocused
           })}
         />
+      ),
+      date: (
+        <DatepickerDropdown
+          {...other}
+          onBlur={this.removeFocus}
+          onFocus={this.onFocus}
+          className={classnames(css.input, {
+            [css.inputError]: (isError || backendErrorText) && !isFocused,
+            error: (isError || backendErrorText) && !isFocused
+          })}
+        />
+      )
+    };
+
+    return elems[elementType] || elems.input;
+  }
+
+  render() {
+    const { errorText, backendErrorText } = this.props;
+    const { isFocused, isError } = this.state;
+
+    return (
+      <div className={validateCss.fullWrapper}>
+        {this.elem}
         {isError && !isFocused && <span className={css.message}>{errorText}</span>}
         {backendErrorText && !isFocused && <span>{backendErrorText}</span>}
       </div>

@@ -56,9 +56,22 @@ class Tags extends Component {
     if (!this.props.noRequest) {
       this.props.createTags(tagsToSend.join(), this.props.taggable, this.props.taggableId);
     } else {
-      this.props.createTagsModalTask(tagsToSend.join());
+      this.props.createTagsModalTask(tagsToSend);
     }
     this.setState({ multiValue: [] });
+  };
+
+  isValidNewOption = label => {
+    let testValue = label.label;
+    const noTagValueRu = localize.ru.WITHOUT_TAG.toLowerCase();
+    const noTagValueEn = localize.en.WITHOUT_TAG.toLowerCase();
+    if (typeof testValue === 'string') {
+      testValue = testValue.toLowerCase().trim();
+      return testValue.length > 0 && testValue.length < 50
+        ? !(testValue === noTagValueEn || testValue === noTagValueRu)
+        : false;
+    }
+    return false;
   };
 
   render() {
@@ -74,7 +87,7 @@ class Tags extends Component {
       : [];
     const filtred = options.filter(option => !tags.includes(option.value));
     return (
-      <div>
+      <div className={classnames(this.props.className)}>
         {!this.state.cutTags ? this.state.tags : sliceTags}
         <span className={css.wrapperAddTags}>
           {this.props.create && this.props.canEdit ? (
@@ -103,6 +116,7 @@ class Tags extends Component {
                     onChange={this.handleOnChange}
                     backspaceToRemoveMessage={''}
                     filterOption={layoutAgnosticFilter}
+                    isValidNewOption={this.isValidNewOption}
                   />
                   <Button
                     disabled={!this.state.multiValue.length > 0}
@@ -130,6 +144,7 @@ class Tags extends Component {
 Tags.propTypes = {
   canEdit: PropTypes.bool,
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.array]),
+  className: PropTypes.string,
   create: PropTypes.bool,
   createTags: PropTypes.func.isRequired,
   createTagsModalTask: PropTypes.func,

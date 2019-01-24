@@ -8,85 +8,88 @@ const InitialState = {
   currentPage: 1,
   pagesCount: 1,
   tags: '',
+  allTags: [],
   isCreateProjectModalOpen: false,
   tagsFilter: [],
   error: null
 };
 
-function Projects (state = InitialState, action) {
+function Projects(state = InitialState, action) {
   switch (action.type) {
-  case ProjectsActions.PROJECTS_RECEIVE_START:
-    return {
-      ...state
-    };
-
+    case ProjectsActions.PROJECTS_RECEIVE_START:
+      return {
+        ...state,
+        isProjectsReceived: false
+      };
     case ProjectsActions.PROJECTS_RECEIVE_SUCCESS:
       return {
         ...state,
         projects: action.data.data,
-        pagesCount: action.data.pagesCount
+        allTags: action.data.allTags,
+        pagesCount: action.data.pagesCount,
+        isProjectsReceived: true
       };
 
-  case ProjectsActions.OPEN_CREATE_PROJECT_MODAL:
-    return {
-      ...state,
-      isCreateProjectModalOpen: true
-    };
-
-  case ProjectsActions.CLOSE_CREATE_PROJECT_MODAL:
-    return {
-      ...state,
-      error: null,
-      isCreateProjectModalOpen: false
-    };
-
-  case ProjectsActions.PROJECT_CREATE_START:
-    return {
-      ...state,
-      error: null
-    };
-
-  case ProjectsActions.PROJECT_CREATE_SUCCESS:
-    return {
-      ...state,
-      projects: [action.createdProject, ...state.projects]
-    };
-
-  case ProjectsActions.PROJECT_CREATE_FAIL:
-    return {
-      ...state,
-      error: action.error
-    };
-
-  case TagsActions.GET_TAGS_FILTER_SUCCESS:
-    if (action.data.filterFor === 'project') {
+    case ProjectsActions.OPEN_CREATE_PROJECT_MODAL:
       return {
         ...state,
-        tagsFilter: action.data.filteredTags
+        isCreateProjectModalOpen: true
       };
-    }
-    return {
-      ...state
-    };
 
-  case ProjectActions.PROJECT_CHANGE_SUCCESS:
-    const updatedProjects = state.projects.map(project => {
-      if (project.id === action.changedFields.id) {
+    case ProjectsActions.CLOSE_CREATE_PROJECT_MODAL:
+      return {
+        ...state,
+        error: null,
+        isCreateProjectModalOpen: false
+      };
+
+    case ProjectsActions.PROJECT_CREATE_START:
+      return {
+        ...state,
+        error: null
+      };
+
+    case ProjectsActions.PROJECT_CREATE_SUCCESS:
+      return {
+        ...state,
+        projects: [action.createdProject, ...state.projects]
+      };
+
+    case ProjectsActions.PROJECT_CREATE_FAIL:
+      return {
+        ...state,
+        error: action.error
+      };
+
+    case TagsActions.GET_TAGS_FILTER_SUCCESS:
+      if (action.data.filterFor === 'project') {
         return {
-          ...project,
-          ...action.changedFields
-        }
-      } else {
-        return project;
+          ...state,
+          tagsFilter: action.data.filteredTags
+        };
       }
-    })
-    return {
-      ...state,
-      projects: updatedProjects
-    };
+      return {
+        ...state
+      };
 
-  default:
-    return state;
+    case ProjectActions.PROJECT_CHANGE_SUCCESS:
+      const updatedProjects = state.projects.map(project => {
+        if (project.id === action.changedFields.id) {
+          return {
+            ...project,
+            ...action.changedFields
+          };
+        } else {
+          return project;
+        }
+      });
+      return {
+        ...state,
+        projects: updatedProjects
+      };
+
+    default:
+      return state;
   }
 }
 

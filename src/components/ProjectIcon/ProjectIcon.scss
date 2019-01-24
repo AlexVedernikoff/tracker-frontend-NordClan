@@ -1,13 +1,14 @@
 .projectIcon {
-    width: 3rem;
-    height: 3rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    margin-right: 10px;
-    cursor: default;
-    span {
-        font-size: 1.5rem;
-    }
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-right: 10px;
+  flex-shrink: 0;
+  cursor: default;
+  span {
+    font-size: 1.5rem;
+  }
 }

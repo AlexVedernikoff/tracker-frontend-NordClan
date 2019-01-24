@@ -1,2 +1,8 @@
 import SprintSelector from './SprintSelector';
-export default SprintSelector;
+import { connect } from 'react-redux';
+
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(mapStateToProps)(SprintSelector);

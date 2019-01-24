@@ -20,7 +20,7 @@ export const replaceWithMentions = (array, suggestions, replace) => {
   });
 };
 
-export const replaceLabelWithAt = m => `@${getFullName(m)}`;
+export const replaceLabelWithAt = m => `@\\[${getFullName(m)}\\]`;
 export const replaceValueWithIdPattern = m => `{@${m.id}}`;
 
 export const parseCommentForDisplay = (text, suggestions, replace) =>
@@ -31,16 +31,28 @@ export const prepairCommentForEdit = (text, suggestions, replace = replaceLabelW
 
 export const splitUserCommentByMentionLabels = (text, suggests, replace = replaceLabelWithAt) => {
   const dinamicRegexp = new RegExp(`(${suggests.map(replace).join('|')})`);
-  return text.split(dinamicRegexp).filter(x => x);
+  return text
+    .trim()
+    .split(dinamicRegexp)
+    .filter(x => x);
 };
 
 export const replaceUserMentionsWithMentionsId = (array, suggests) => {
   return array.map(x => {
     if (!userMentionReg.test(x)) return x;
-    const label = x.slice(1);
+    const label = x.slice(2, -1);
     const suggest = suggests.find(s => getFullName(s) === label);
     return suggest ? replaceValueWithIdPattern(suggest) : x;
   });
+};
+
+export const replaceEnterSymbol = text => {
+  const c = String.fromCharCode(10);
+  let temp = text;
+  while (temp.search(c) !== -1) {
+    temp = temp.replace(c, '<br>');
+  }
+  return temp;
 };
 
 export const stringifyCommentForSend = (text, suggests) => {

@@ -1,10 +1,20 @@
 {
   "en": {
     "MESSAGE": "This is the only role. A participant must have at least one role",
-    "DELETE": "Do you really want to remove participant"
+    "DELETE": "Are you sure you want to remove participant",
+    "UNSET_GITLAB_USER_ROLE": "none",
+    "EDIT_GITLAB_ROLE": "Change the role of a participant",
+    "SELECT_GITLAB_ROLE": "Select role",
+    "SELECT_DATA": "Expires at",
+    "SAVE_GITLAB_ROLE": "Save"
   },
   "ru": {
     "MESSAGE": "Это единственная роль. Участник должен обладать хотя бы одной ролью",
-    "DELETE": "Вы действительно хотите удалить участника"
+    "DELETE": "Вы действительно хотите удалить участника",
+    "UNSET_GITLAB_USER_ROLE": "none",
+    "EDIT_GITLAB_ROLE": "Изменение роли участника",
+    "SELECT_GITLAB_ROLE": "Выберите роль",
+    "SELECT_DATA": "Дата истечения",
+    "SAVE_GITLAB_ROLE": "Сохранить"
   }
 }

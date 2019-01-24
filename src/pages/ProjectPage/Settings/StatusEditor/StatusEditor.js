@@ -11,17 +11,12 @@ import localize from './statusEditor.json';
 class StatusEditor extends React.Component {
   constructor(props) {
     super(props);
-    const { lang } = props;
-    this.statusesInfo = [
-      [1, 'INPROGRESS', localize[lang].IN_PROGRESS],
-      [2, 'INHOLD', localize[lang].IN_HOLD],
-      [3, 'FINISHED', localize[lang].FINISHED]
-    ];
+    this.statusesInfo = [[1, 'INPROGRESS'], [2, 'INHOLD'], [3, 'FINISHED']];
   }
 
   switchStatus = (event, statusId) => {
-    const { updateProjectStatus, projectId } = this.props;
-    updateProjectStatus(projectId, statusId);
+    const { projectId } = this.props;
+    this.props.updateProjectStatus(projectId, statusId);
   };
 
   checkIsAdminInProject = () => {
@@ -40,7 +35,7 @@ class StatusEditor extends React.Component {
       <div className={css.container}>
         <h2>{localize[lang].STATUS}</h2>
         <Row>
-          {this.statusesInfo.map(([statusId, type, name]) => {
+          {this.statusesInfo.map(([statusId, type]) => {
             return (
               <StatusCheckbox
                 key={type}
@@ -48,7 +43,7 @@ class StatusEditor extends React.Component {
                 statusId={statusId}
                 checked={(updatedStatusId || currentStatusId) === statusId}
                 onClick={this.switchStatus}
-                label={name}
+                label={localize[lang][type]}
                 disabled={!isProjectAdmin}
               />
             );
@@ -61,11 +56,11 @@ class StatusEditor extends React.Component {
 
 StatusEditor.propTypes = {
   currentStatusId: PropTypes.number,
+  lang: PropTypes.string.isRequired,
   projectId: PropTypes.number,
   updateProjectStatus: PropTypes.func.isRequired,
   updatedStatusId: PropTypes.number,
-  user: PropTypes.object.isRequired,
-  lang: PropTypes.string.isRequired
+  user: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({

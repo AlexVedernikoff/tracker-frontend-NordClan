@@ -12,8 +12,7 @@ import {
   withFinishLoading,
   withStartLoading,
   defaultBody as body,
-  defaultExtra as extra,
-  withdefaultExtra
+  defaultExtra as extra
 } from './Common';
 
 const startTimesheetsRequest = () => ({
@@ -29,12 +28,12 @@ const startCreateTimesheetRequest = () => ({
   type: TimesheetsActions.CREATE_TIMESHEET_START
 });
 
-const successCreateTimesheetRequest = timesheet => ({
-  type: TimesheetsActions.CREATE_TIMESHEET_SUCCESS,
-  timesheet
-});
+// const successCreateTimesheetRequest = timesheet => ({
+//   type: TimesheetsActions.CREATE_TIMESHEET_SUCCESS,
+//   timesheet
+// });
 
-const failCreateTimesheetRequest = error => {
+const failCreateTimesheetRequest = () => {
   return {
     type: TimesheetsActions.CREATE_TIMESHEET_ERROR
   };
@@ -53,10 +52,10 @@ const startDeleteTimesheetRequest = () => ({
   type: TimesheetsActions.DELETE_TIMESHEET_START
 });
 
-const successDeleteTimesheetRequest = timesheet => ({
-  type: TimesheetsActions.DELETE_TIMESHEET_SUCCESS,
-  timesheet
-});
+// const successDeleteTimesheetRequest = timesheet => ({
+//   type: TimesheetsActions.DELETE_TIMESHEET_SUCCESS,
+//   timesheet
+// });
 
 export const getTimesheets = params => {
   return dispatch =>
@@ -87,7 +86,7 @@ export const getProjectTimesheets = (projectId, params) => {
     });
 };
 
-export const updateTimesheet = (data, userId, startingDay) => {
+export const updateTimesheet = data => {
   return dispatch => {
     return new Promise((resolve, reject) => {
       dispatch({
@@ -110,7 +109,7 @@ export const updateTimesheet = (data, userId, startingDay) => {
   };
 };
 
-export const deleteTimesheets = (ids, userId, startingDay) => {
+export const deleteTimesheets = ids => {
   return dispatch =>
     dispatch({
       type: REST_API,
@@ -135,7 +134,7 @@ export const editTempTimesheet = (id, updatedFields) => ({
   updatedFields
 });
 
-export const createTimesheet = (data, userId, startingDay) => {
+export const createTimesheet = data => {
   return dispatch => {
     return new Promise((resolve, reject) => {
       dispatch({
@@ -176,7 +175,7 @@ export const updateSheetsArray = (sheetsArr, userId, startingDay) => {
     Promise.all(allPromises).then(response => {
       let isOk = false;
 
-      isOk = response.every(element => {
+      isOk = response.every(() => {
         if (response.status === 200) {
           return true;
         } else {
@@ -312,7 +311,11 @@ export const getTasksForSelect = (name = '', projectId) => {
 export const getProjectsForSelect = (name = '', hideEmptyValue) => {
   return dispatch => {
     return axios
-      .get(`${API_URL}/project`, { params: { name } }, { withCredentials: true })
+      .get(
+        `${API_URL}/project`,
+        { params: { name, userIsParticipant: true, onlyUserInProject: true } },
+        { withCredentials: true }
+      )
       .then(response => response.data.data)
       .then(projects => {
         const options = projects.map(project => ({

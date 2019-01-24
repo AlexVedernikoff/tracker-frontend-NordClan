@@ -32,6 +32,7 @@ const InitialState = {
     tags: [],
     error: false,
     attachments: [],
+    branches: [],
     plannedExecutionTime: '0.00'
   },
   comments: [],
@@ -79,6 +80,7 @@ export default function Task(state = InitialState, action) {
       return {
         ...state,
         task: {
+          ...state.task,
           ...action.data,
           history: state.task.history
         }
@@ -169,36 +171,58 @@ export default function Task(state = InitialState, action) {
     case TaskActions.TASK_CHANGE_REQUEST_SUCCESS:
       let taskArray = [];
       let paramKey;
+      let updatedTaskIndex;
+      const { changedFields } = action;
       if (
-        state.task.linkedTasks &&
-        state.task.linkedTasks.find(linkedTask => linkedTask.id === action.changedFields.id)
+        (Array.isArray(state.task.linkedTasks) &&
+          state.task.linkedTasks.find((linkedTask, index) => {
+            if (linkedTask.id === changedFields.id) {
+              updatedTaskIndex = index;
+              return true;
+            }
+            return false;
+          })) ||
+        (Array.isArray(changedFields.linkedTasks) && changedFields.linkedTasks.find(link => link.id === state.task.id))
       ) {
         paramKey = 'linkedTasks';
       }
-      if (state.task.subTasks && state.task.subTasks.find(subTask => subTask.id === action.changedFields.id)) {
+
+      if (
+        (Array.isArray(state.task.subTasks) &&
+          state.task.subTasks.find((subTask, index) => {
+            if (subTask.id === changedFields.id) {
+              updatedTaskIndex = index;
+              return true;
+            }
+            return false;
+          })) ||
+        changedFields.parentId === state.task.id
+      ) {
         paramKey = 'subTasks';
       }
       if (paramKey) {
-        state.task[paramKey].forEach(task => {
-          if (task.id === action.changedFields.id) {
-            taskArray.push({ ...task, ...action.changedFields });
-          } else {
-            taskArray.push(task);
-          }
-        });
+        if (updatedTaskIndex === undefined) {
+          taskArray = [changedFields, ...state.task[paramKey]];
+        } else {
+          taskArray = [
+            ...state.task[paramKey].slice(0, updatedTaskIndex),
+            changedFields,
+            ...state.task[paramKey].slice(updatedTaskIndex + 1)
+          ];
+        }
       } else {
         taskArray = state.task.linkedTasks;
       }
-      if (state.task.id === action.changedFields.id) {
+      if (state.task.id === changedFields.id) {
         return {
           ...state,
           hasError: false,
           task: {
             ...state.task,
-            ...action.changedFields,
+            ...changedFields,
             [paramKey]: taskArray
           },
-          lastUpdatedTask: action.changedFields
+          lastUpdatedTask: changedFields
         };
       } else {
         return {
@@ -207,7 +231,7 @@ export default function Task(state = InitialState, action) {
             ...state.task,
             [paramKey]: taskArray
           },
-          lastUpdatedTask: action.changedFields
+          lastUpdatedTask: changedFields
         };
       }
     case TaskActions.ERROR_CLEAR:
@@ -253,11 +277,19 @@ export default function Task(state = InitialState, action) {
         }
       };
 
+    case TaskActions.GET_COMMENTS_BY_TASK_REQUEST: {
+      return {
+        ...state,
+        isCommentsReceived: false
+      };
+    }
+
     case TaskActions.GET_COMMENTS_BY_TASK_SUCCESS: {
       return {
         ...state,
         commentsLoadedDate: action.result.headers.date,
-        comments: action.result.data.reverse()
+        comments: action.result.data.reverse(),
+        isCommentsReceived: true
       };
     }
 
@@ -440,6 +472,54 @@ export default function Task(state = InitialState, action) {
         task: {
           ...state.task,
           attachments: [...action.result.data, ...attachments]
+        }
+      };
+    }
+
+    case TaskActions.GET_GITLAB_BRANCHES_SUCCESS: {
+      return {
+        ...state,
+        task: {
+          ...state.task,
+          branches: [...action.branches]
+        }
+      };
+    }
+
+    case TaskActions.GET_GITLAB_BRANCHES_BY_REPO_SUCCESS: {
+      let branchNames = [];
+      if (action.repoBranches.length !== 0) {
+        branchNames = action.repoBranches.map(b => {
+          return { value: b.name, label: b.name };
+        });
+      }
+      return {
+        ...state,
+        task: {
+          ...state.task,
+          repoBranches: [...branchNames]
+        }
+      };
+    }
+
+    case TaskActions.CREATE_GITLAB_BRANCH_SUCCESS: {
+      return {
+        ...state,
+        task: {
+          ...state.task,
+          branches: [...state.task.branches, action.createdGitlabBranch]
+        }
+      };
+    }
+    case TaskActions.GET_PROJECT_REPOS_SUCCESS: {
+      const repos = action.projectRepos.map(pr => {
+        return { value: pr.id, label: pr.name_with_namespace };
+      });
+      return {
+        ...state,
+        task: {
+          ...state.task,
+          projectRepos: [...repos]
         }
       };
     }

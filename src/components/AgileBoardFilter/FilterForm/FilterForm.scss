@@ -16,7 +16,7 @@
       display: block;
       text-align: right;
       line-height: 1rem;
-      margin: 2px 0;
+      margin: 4px 0 14px;
       @include phone {
         display: none;
       }
@@ -27,9 +27,9 @@
 .filtersRow {
   margin-bottom: 1rem;
   .filterButtonCol {
-    align-items: center;
     display: flex;
     padding: 0 8px;
+    align-items: flex-start;
   }
   @include phone {
     flex-direction: column; // ie fix

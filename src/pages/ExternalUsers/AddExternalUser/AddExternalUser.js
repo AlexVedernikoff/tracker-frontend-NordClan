@@ -4,7 +4,6 @@ import ValidatedInput from '../../../components/ValidatedInput';
 import Validator from '../../../components/ValidatedInput/Validator';
 import Button from '../../../components/Button';
 import Modal from '../../../components/Modal';
-import DatepickerDropdown from '../../../components/DatepickerDropdown';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
@@ -172,7 +171,7 @@ class AddExternalUser extends Component {
           closeTimeoutMS={200}
         >
           <div className={css.container}>
-            <h3 style={{ margin: 0 }}>{localize[lang].ADD_EXTERNAL_USER}</h3>
+            <h3 style={{ margin: 0 }}>{localize[lang].ADD_EXTERNAL_USER_TITLE}</h3>
             <hr />
             {errorNotice}
             <label className={css.formField}>
@@ -192,7 +191,7 @@ class AddExternalUser extends Component {
                         placeholder={localize[lang].ENTER_YOUR_USERNAME}
                         onBlur={handleBlur}
                         shouldMarkError={shouldMarkError}
-                        errorText={localize[lang].ENTER_YOUR_USERNAME}
+                        errorText={localize[lang].MUST_BE_FILLED}
                       />
                     ),
                     'exUserName',
@@ -255,13 +254,22 @@ class AddExternalUser extends Component {
                   <p>{localize[lang].ACTIVE_BEFORE}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                  <DatepickerDropdown
-                    name="date"
-                    value={formattedDay}
-                    onDayChange={this.handleDayToChange}
-                    disabledDataRanges={[{ before: new Date() }]}
-                    placeholder={localize[lang].ENTER_DATE}
-                  />
+                  {this.validator.validate(
+                    (handleBlur, shouldMarkError) => (
+                      <ValidatedInput
+                        name="date"
+                        elementType="date"
+                        value={formattedDay}
+                        onBlur={handleBlur}
+                        onDayChange={this.handleDayToChange}
+                        disabledDataRanges={[{ before: new Date() }]}
+                        placeholder={localize[lang].ENTER_DATE}
+                        shouldMarkError={shouldMarkError}
+                      />
+                    ),
+                    'exUserDate',
+                    !expiredDate
+                  )}
                 </Col>
               </Row>
             </label>
@@ -291,7 +299,8 @@ const mapDispatchToProps = {
 };
 
 AddExternalUser.propTypes = {
-  addExternalUser: PropTypes.func
+  addExternalUser: PropTypes.func,
+  lang: PropTypes.string
 };
 export default connect(
   mapStateToProps,

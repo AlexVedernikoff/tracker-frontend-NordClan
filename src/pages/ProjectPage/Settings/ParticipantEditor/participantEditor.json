@@ -5,16 +5,21 @@
     "QA_ACCESS": "Limited access to the project. <br/> Actions are available at the task level. <br/> Full mailing on the project.",
     "UNPAID_ROLE": "Unpaid role",
     "EXTERNAL": "External user",
-    "ADD_MEMBERS": "Add member",
-    "EXTERNAL_USERS": "External Users",
+    "ADD_MEMBERS": "Add participant",
+    "EXTERNAL_USERS": "External users",
     "ADD_EXTERNAL_USERS": "Add external user",
-    "ADD_NEW_MEMBERS": "Adding a new member",
+    "ADD_NEW_MEMBERS": "Adding a new participant",
     "ENTER_NAME_PARTICIPANT": "Enter the name of the participant",
     "NO_RESULTS": "No results",
-    "ENTER_ROLE_PARTICIPANT": "Enter the member role",
+    "ENTER_ROLE_PARTICIPANT": "Enter the participant role",
     "ENTER_EXTERNAL_USERS": "Enter the name of the external user",
     "ADD": "Add",
-    "PARTICIPANTS": "Participants"
+    "PARTICIPANTS": "Participants",
+    "CREATE_PROJECT_WITH_JIRA": "Create project with Jira",
+    "SYNCHRONIZATION_WITH_JIRA": "Synchronization with Jira",
+    "SELECT_GITLAB_PROJECT": "Select Gitlab repository",
+    "SELECT_GITLAB_ROLE": "Select role",
+    "SELECT_DATA": "Expires at"
   },
   "ru": {
     "FULL_ACCESS": "Полный доступ к проекту. <br/>Доступны все действия на уровне проекта: <br/>Ведение задач, планирование, настройки проекта и команды, аналитика <br/>Полная рассылка по проекту.",
@@ -31,6 +36,11 @@
     "ENTER_ROLE_PARTICIPANT": "Введите роль участника",
     "ENTER_EXTERNAL_USERS": "Введите имя внешнего пользователя",
     "ADD": "Добавить",
-    "PARTICIPANTS": "Участники:"
+    "PARTICIPANTS": "Участники:",
+    "CREATE_PROJECT_WITH_JIRA": "Создать проект с Jira",
+    "SYNCHRONIZATION_WITH_JIRA": "Синхронизация с Jira",
+    "SELECT_GITLAB_PROJECT": "Выберите репозиторий Gitlab",
+    "SELECT_GITLAB_ROLE": "Выберите роль",
+    "SELECT_DATA": "Дата истечения"
   }
 }

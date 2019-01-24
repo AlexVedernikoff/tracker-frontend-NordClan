@@ -1,16 +1,34 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
-import { IconPlus, IconUser } from '../../../components/Icons';
 import { connect } from 'react-redux';
+import {
+  IconArrowLeft,
+  IconArrowRight,
+  IconCalendar,
+  IconEdit,
+  IconPortfolio,
+  IconUsers,
+  IconExternalUsers,
+  IconUser
+} from '../../../components/Icons';
 import isAdmin from '../../../utils/isAdmin';
 import { EXTERNAL_USER } from '../../../constants/Roles';
+import Toggle from '../../../components/LanguageToggle';
+import { setLocalize } from '../../../actions/localize';
 import localize from './navMenu.json';
 import * as css from './NavMenu.scss';
 import { getFirstName, getLastName, getFullName } from '../../../utils/NameLocalisation';
+import classNames from 'classnames';
 
 class NavMenu extends Component {
   static propTypes = {
+    lang: PropTypes.string,
+    mqlMatches: PropTypes.bool,
+    setLocalize: PropTypes.func,
+    sidebarDocked: PropTypes.bool,
+    sidebarOpened: PropTypes.bool,
+    toggleMenu: PropTypes.func,
     user: PropTypes.object
   };
 
@@ -39,8 +57,10 @@ class NavMenu extends Component {
     );
   };
 
+  toggleLanguage = lang => this.props.setLocalize(lang);
+
   render() {
-    const { lang } = this.props;
+    const { lang, mqlMatches } = this.props;
     const iconStyles = {
       width: 16,
       height: 16
@@ -48,70 +68,133 @@ class NavMenu extends Component {
     const usersRolesLink = isAdmin(this.props.user.globalRole) ? (
       <li key="roles" className={css.sidebarItem}>
         <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/roles">
-          {localize[lang].USERS}
+          <button>
+            <IconUsers style={iconStyles} />
+          </button>
+          <span>{localize[lang].USERS}</span>
         </Link>
       </li>
     ) : null;
+
+    const usersRolesLinkButton = isAdmin(this.props.user.globalRole) ? (
+      <li key="roles_btn">
+        <Link className={css.sidebarLinkClosed} activeClassName={css.activeLink} to="/roles">
+          <IconUsers style={iconStyles} />
+        </Link>
+      </li>
+    ) : null;
+
     const externalUsersLink = isAdmin(this.props.user.globalRole) ? (
       <li key="externalUsers" className={css.sidebarItem}>
         <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/externalUsers">
-          {localize[lang].EXTERNAL_USERS}
+          <button>
+            <IconExternalUsers style={iconStyles} />
+          </button>
+          <span>{localize[lang].EXTERNAL_USERS}</span>
         </Link>
       </li>
     ) : null;
+
+    const externalUsersLinkButton = isAdmin(this.props.user.globalRole) ? (
+      <li key="externalUsers_btn">
+        <Link className={css.sidebarLinkClosed} activeClassName={css.activeLink} to="/externalUsers">
+          <IconExternalUsers style={iconStyles} />
+        </Link>
+      </li>
+    ) : null;
+
     const timesheetsLink =
       this.props.user.globalRole !== EXTERNAL_USER ? (
         <li key="timesheets" className={css.sidebarItem}>
           <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/timesheets">
-            {localize[lang].TIMESHEETS}
+            <button>
+              <IconCalendar style={iconStyles} />
+            </button>
+            <span>{localize[lang].TIMESHEETS}</span>
           </Link>
         </li>
       ) : null;
+
+    const timesheetsLinkButton =
+      this.props.user.globalRole !== EXTERNAL_USER ? (
+        <li key="timesheets_btn">
+          <Link className={css.sidebarLinkClosed} activeClassName={css.activeLink} to="/timesheets">
+            <IconCalendar style={iconStyles} />
+          </Link>
+        </li>
+      ) : null;
+
+    const toggleButton = mqlMatches ? (
+      <button
+        key="toggle_btn"
+        className={classNames(css.sidebarClosed, css.toggleButton)}
+        onClick={this.props.toggleMenu}
+      >
+        {this.props.sidebarOpened ? <IconArrowLeft style={iconStyles} /> : <IconArrowRight style={iconStyles} />}
+      </button>
+    ) : null;
+
     const links = [
-      /*<li key="dashboard" className={css.sidebarItem}>
-        <Link
-          className={css.sidebarLink}
-          activeClassName={css.activeLink}
-          to="/dashboard"
-        >
-          Монитор
-        </Link>
-      </li>, */
       <li key="projects" className={css.sidebarItem}>
-        <button>
-          <IconPlus style={iconStyles} />
-        </button>
         <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/projects">
-          {localize[lang].MY_PROJECTS}
+          <button>
+            <IconPortfolio style={iconStyles} />
+          </button>
+          <span>{localize[lang].MY_PROJECTS}</span>
         </Link>
       </li>,
-      <li key="tasks" className={css.sidebarItem}>
-        <button>
-          <IconPlus style={iconStyles} />
-        </button>
-        <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/tasks">
-          {localize[lang].MY_TASKS}
-        </Link>
-      </li>,
+      this.props.user.globalRole !== EXTERNAL_USER && (
+        <li key="tasks" className={css.sidebarItem}>
+          <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/tasks">
+            <button>
+              <IconEdit style={iconStyles} />
+            </button>
+            <span>{localize[lang].MY_TASKS}</span>
+          </Link>
+        </li>
+      ),
       timesheetsLink,
       usersRolesLink,
-      externalUsersLink
+      externalUsersLink,
+      toggleButton
     ];
+
+    const buttons = [
+      <li key="projects">
+        <Link className={css.sidebarLinkClosed} activeClassName={css.activeLink} to="/projects">
+          <IconPortfolio style={iconStyles} />
+        </Link>
+      </li>,
+      <li key="tasks">
+        <Link className={css.sidebarLinkClosed} activeClassName={css.activeLink} to="/tasks">
+          <IconEdit style={iconStyles} />
+        </Link>
+      </li>,
+      timesheetsLinkButton,
+      usersRolesLinkButton,
+      externalUsersLinkButton,
+      toggleButton
+    ];
+
+    const links_vs_buttons = this.props.sidebarOpened ? links : buttons;
 
     const sidebarHeader = (
       <div className={css.sidebarHeader}>
         <div className={css.ava}>{this.getPhoto()}</div>
-        <div className={css.userNameContainer}>
-          <div className={css.userName}>{getFullName(this.props.user)}</div>
-          <div className={css.userGroups}>{this.props.user.department}</div>
-        </div>
+        {this.props.sidebarOpened ? (
+          <div className={css.userNameContainer}>
+            <div className={css.userName}>{getFullName(this.props.user)}</div>
+            <div className={css.userGroups}>{this.props.user.department}</div>
+          </div>
+        ) : null}
       </div>
     );
 
     return (
-      <div className={css.navigation}>
+      <div className={this.props.sidebarOpened ? css.navigation : css.navigationMenuClosed}>
         {sidebarHeader}
-        <ul className={css.sidebarLinks}>{links}</ul>
+        <ul className={css.sidebarLinks}>{links_vs_buttons}</ul>
+        <Toggle lang={this.props.lang} onChange={this.toggleLanguage} location="navMenu" />
       </div>
     );
   }
@@ -122,4 +205,11 @@ const mapStateToProps = state => ({
   lang: state.Localize.lang
 });
 
-export default connect(mapStateToProps)(NavMenu);
+const mapDispatchToProps = {
+  setLocalize
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(NavMenu);

@@ -7,6 +7,11 @@
   transition: 0.3s ease-out 0s;
 }
 
+.InnerSelectWrap {
+  width: 100%;
+  position: relative;
+}
+
 .Select.is-disabled {
   cursor: not-allowed;
   background-color: rgb(235, 235, 228);
@@ -19,6 +24,13 @@
 
 .Select-control {
   padding: 7px 15px;
+}
+
+.sprint-dropdown .Select-value-label {
+  padding-right: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .Select-clear-zone {
@@ -174,13 +186,43 @@
   color: gray;
 }
 
-.Select--multi.black-theme .Select-multi-value-wrapper .Select-value {
+/* Styles for Sprints selector */
+
+.Select--multi.sprintSelector .Select-multi-value-wrapper .Select-value {
   font-size: 13px;
   color: black;
   background-color: white;
+  padding: 15px;
+  margin: 0;
 }
 
-.Select--multi.black-theme .Select-multi-value-wrapper .Select-value:hover {
+.ClearValue {
+  position: absolute;
+  top: 6px;
+  right: 7px;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.Select--multi.sprintSelector .Select-multi-value-wrapper .Select-value:hover {
   background-color: #ebebeb;
   transition: 0.3s ease-out 0s;
+}
+
+.Select--multi.sprintSelector .Select-multi-value-wrapper .Select-input {
+  margin-left: 40px;
+  padding: 6px 0 7px;
+}
+
+.Select--multi.taskListClass .Select-multi-value-wrapper .Select-input {
+  margin-left: 15px;
+}
+
+.Select--multi.sprintSelector .Select-control {
+  padding: 0;
+  min-height: 30px;
+}
+
+.Select.sprintReportSelector .Select-multi-value-wrapper .Select-value .Select-value-label {
+  margin-right: 0;
 }

@@ -8,7 +8,7 @@ import * as css from './UsersRoles.scss';
 import { getUsers, updateUserRole } from '../../actions/UsersRoles';
 import localize from './usersRoles.json';
 import { getLastName, getFullName } from '../../utils/NameLocalisation';
-import Title, { flushTitle } from 'react-title-component';
+import Title from 'react-title-component';
 
 class UsersRoles extends React.Component {
   state = {
@@ -44,6 +44,11 @@ class UsersRoles extends React.Component {
         name: localize[lang].VISOR,
         value: 'VISOR',
         id: 3
+      },
+      {
+        name: localize[lang].DEV_OPS,
+        value: 'DEV_OPS',
+        id: 4
       }
     ];
 

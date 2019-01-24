@@ -13,12 +13,14 @@ import { IconEdit } from '../../../../components/Icons';
 import * as timesheetsConstants from '../../../../constants/Timesheets';
 import EditSpentModal from '../EditSpentModal';
 import { createTimesheet, updateTimesheet } from '../../../../actions/Timesheets';
-import { getLocalizedTaskStatuses, getLocalizedMagicActiveTypes } from '../../../../selectors/dictionaries';
+import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../../selectors/dictionaries';
+import localize from './ActivityRow.json';
 
 class ActivityRow extends React.Component {
   static propTypes = {
     createTimesheet: PropTypes.func.isRequired,
     item: PropTypes.object,
+    lang: PropTypes.string,
     ma: PropTypes.bool,
     magicActivitiesTypes: PropTypes.array,
     startingDay: PropTypes.object,
@@ -141,7 +143,7 @@ class ActivityRow extends React.Component {
   };
 
   render() {
-    const { task, ma, statuses, magicActivitiesTypes } = this.props;
+    const { task, ma, statuses, magicActivitiesTypes, lang } = this.props;
     const { item, editingSpent } = this.state;
     const status = task ? find(statuses, { id: item.taskStatusId }) : '';
     const maType = ma ? find(magicActivitiesTypes, { id: item.typeId }) : '';
@@ -160,16 +162,20 @@ class ActivityRow extends React.Component {
             <div
               className={cn({
                 [css.timeCell]: true,
-                [css.filled]: +tsh.spentTime,
+                [css.hasValue]: +tsh.spentTime,
+                [css.filled]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED,
                 [css.submitted]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED,
                 [css.approved]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED,
                 [css.rejected]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED
               })}
             >
               <input type="text" disabled value={this.state.timeCells[i]} />
-              <span className={css.toggleComment}>
-                <IconEdit onClick={this.openEditModal.bind(this, tsh)} />
-              </span>
+              {tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED ||
+              tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED ? (
+                <span className={css.toggleComment}>
+                  <IconEdit onClick={this.openEditModal.bind(this, tsh)} />
+                </span>
+              ) : null}
             </div>
           </div>
         </td>
@@ -202,7 +208,7 @@ class ActivityRow extends React.Component {
             </div>
             <div>
               {task && <Link to={`/projects/${item.projectId}/tasks/${item.id}`}>{item.name}</Link>}
-              {ma && maType && <span>{maType.name}</span>}
+              {ma && maType && <span>{localize[lang][maType.codename]}</span>}
             </div>
           </div>
         </td>
@@ -232,9 +238,10 @@ class ActivityRow extends React.Component {
 
 const mapStateToProps = state => ({
   statuses: getLocalizedTaskStatuses(state),
-  magicActivitiesTypes: getLocalizedMagicActiveTypes(state),
+  magicActivitiesTypes: getMagicActiveTypes(state),
   userId: state.Auth.user.id,
-  startingDay: state.Timesheets.startingDay
+  startingDay: state.Timesheets.startingDay,
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {

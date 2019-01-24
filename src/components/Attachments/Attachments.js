@@ -10,6 +10,7 @@ import 'react-image-lightbox/style.css';
 
 const imageTypes = ['image' /*fallback for old attachments*/, 'image/jpeg', 'image/png', 'image/pjpeg'];
 const isImage = t => imageTypes.indexOf(t) !== -1;
+
 export default class Attachments extends Component {
   static defaultProps = {
     attachments: []
@@ -20,7 +21,7 @@ export default class Attachments extends Component {
     isOpen: false
   };
 
-  onDrop = (acceptedFiles, rejectedFiles) => {
+  onDrop = acceptedFiles => {
     this.props.uploadAttachments(acceptedFiles);
   };
 
@@ -103,6 +104,25 @@ export default class Attachments extends Component {
     );
   };
 
+  handleImageLoad = () => {
+    setTimeout(() => {
+      try {
+        const buttonIn = document.querySelector('.ril-zoom-in');
+        const buttonOut = document.querySelector('.ril-zoom-out');
+        buttonIn.click();
+        buttonOut.click();
+        const image = document.querySelector('.ril-image-current');
+        image.classList.add('in');
+      } catch (e) {
+        const image = document.querySelector('.ril-image-current');
+        if (image && image.classList) {
+          image.classList.add('in');
+        }
+        return;
+      }
+    }, 150);
+  };
+
   render() {
     const css = require('./Attachments.scss');
     const { photoIndex, isOpen } = this.state;
@@ -112,17 +132,19 @@ export default class Attachments extends Component {
     let nextSrc = '';
     let prevSrc = '';
     let mainSrc = '';
+
     if (attachments.length) {
       mainSrc = attachments[photoIndex].path;
       nextSrc =
         attachments[nextImageIndex((photoIndex + 1) % attachments.length)].path !== mainSrc
-          ? `/${attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path}`
+          ? attachments[nextImageIndex((photoIndex + 1) % attachments.length)].path
           : undefined;
       prevSrc =
         attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path !== mainSrc
-          ? `/${attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path}`
+          ? attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path
           : undefined;
     }
+
     return (
       <div className={css.attachments}>
         <ul className={css.attachmentsContainer}>
@@ -137,6 +159,7 @@ export default class Attachments extends Component {
             onCloseRequest={this.closeImage}
             onMovePrevRequest={this.prevImage}
             onMoveNextRequest={this.nextImage}
+            onImageLoad={this.handleImageLoad}
           />
         )}
       </div>
@@ -147,6 +170,6 @@ export default class Attachments extends Component {
 Attachments.propTypes = {
   attachments: PropTypes.array,
   canEdit: PropTypes.bool,
-  removeAttachment: PropTypes.func.isRequired,
-  uploadAttachments: PropTypes.func.isRequired
+  removeAttachment: PropTypes.func,
+  uploadAttachments: PropTypes.func
 };

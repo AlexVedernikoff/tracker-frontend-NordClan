@@ -1,4 +1,4 @@
-import React, { Component, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import ReactTooltip from 'react-tooltip';
@@ -57,11 +57,14 @@ class TaskCore extends PureComponent {
     isBug: PropTypes.bool,
     isDragging: PropTypes.bool,
     isExternal: PropTypes.bool,
+    lang: PropTypes.string,
     lightTask: PropTypes.func,
     lighted: PropTypes.bool,
     myTaskBoard: PropTypes.bool,
     onChangeStatus: PropTypes.func,
     onOpenPerformerModal: PropTypes.func,
+    projectPrefix: PropTypes.string,
+    projectUsers: PropTypes.arrayOf(PropTypes.object),
     section: PropTypes.string.isRequired,
     task: PropTypes.object,
     taskTypes: PropTypes.array
@@ -87,7 +90,16 @@ class TaskCore extends PureComponent {
   handlePerformerClick = event => {
     event.stopPropagation();
     const { task, onOpenPerformerModal } = this.props;
-    onOpenPerformerModal(task.id, task.performer ? task.performer.id : null);
+    onOpenPerformerModal(
+      task.id,
+      task.performer ? task.performer.id : null,
+      task.project ? task.project.id : null,
+      task.statusId,
+      null,
+      true,
+      task.isDevOps,
+      true
+    );
   };
 
   togglePriorityBox = () => {
@@ -107,6 +119,22 @@ class TaskCore extends PureComponent {
     history.push(`/projects/${this.props.task.projectId}/tasks/${this.props.task.id}`);
   };
 
+  getPrefixFromProject = () => {
+    const { projectPrefix } = this.props;
+    return projectPrefix ? projectPrefix : '';
+  };
+
+  getUserFromProject = id => {
+    const { projectUsers } = this.props;
+    return projectUsers.find(user => user.id === id);
+  };
+
+  handleTaskNameClick = event => {
+    // fix for FF to open task page only in the new and not in the same tab
+    // on mouse middle button click
+    event.stopPropagation();
+  };
+
   render() {
     const {
       classPriority,
@@ -114,18 +142,17 @@ class TaskCore extends PureComponent {
       lightTask,
       task,
       taskTypes,
-      section,
       myTaskBoard,
       isExternal,
       lighted,
       factPlanDivision,
-      onChangeStatus,
-      onOpenPerformerModal,
       connectDragSource,
       isDragging,
       lang
-      // ...other
     } = this.props;
+
+    const prefix = task.prefix ? task.prefix : this.getPrefixFromProject();
+    const performer = getFullName(this.getUserFromProject(task.performerId));
 
     return connectDragSource(
       <div
@@ -139,7 +166,6 @@ class TaskCore extends PureComponent {
         onMouseLeave={() => lightTask(null, false)}
         onClick={this.goToDetailPage}
         id={`task-${task.id}`}
-        // {...other}
       >
         {isTaskInWork(task.statusId) ? (
           <div
@@ -150,9 +176,9 @@ class TaskCore extends PureComponent {
             })}
           >
             {isTaskInProgress(task.statusId) ? (
-              <IconPlay data-tip={localize[lang].START} onClick={this.handleClick} />
-            ) : (
               <IconPause data-tip={localize[lang].PAUSE} onClick={this.handleClick} />
+            ) : (
+              <IconPlay data-tip={localize[lang].START} onClick={this.handleClick} />
             )}
           </div>
         ) : null}
@@ -160,19 +186,23 @@ class TaskCore extends PureComponent {
         <CopyThis
           wrapThisInto={'div'}
           isCopiedBackground
-          description={`${localize[lang].LINK} ${task.prefix}-${task.id}`}
+          description={`${localize[lang].LINK} ${prefix}-${task.id}`}
           textToCopy={`${location.origin}${history.createHref(`/projects/${task.projectId}/tasks/${task.id}`)}`}
         >
           <div className={css.header}>
             <span className={css.taskNum}>
-              {isBug ? <IconBug style={{ verticalAlign: 'top' }} /> : null} {task.prefix}-{task.id}
+              {isBug ? <IconBug style={{ verticalAlign: 'top' }} /> : null} {prefix}-{task.id}
             </span>{' '}
             | {getTypeById(task.typeId, taskTypes)}
           </div>
         </CopyThis>
 
         <div>
-          <Link to={`/projects/${task.projectId}/tasks/${task.id}`} className={css.taskName}>
+          <Link
+            onClick={this.handleTaskNameClick}
+            to={`/projects/${task.projectId}/tasks/${task.id}`}
+            className={css.taskName}
+          >
             {task.name}
           </Link>
         </div>
@@ -180,9 +210,9 @@ class TaskCore extends PureComponent {
         <p className={css.taskMeta} onClick={this.handlePerformerClick}>
           {!myTaskBoard && (
             <span className={css.performer}>
-              {task.performer ? (
+              {task.performerId ? (
                 <span>
-                  {getFullName(task.performer)}
+                  {performer}
                   <span className={css.preformerEditIcon}>
                     <IconEdit />
                   </span>
@@ -231,7 +261,7 @@ class TaskCore extends PureComponent {
           <div
             className={css.priorityMarker}
             onClick={this.showPriorityBox}
-            data-tip={`${localize[lang].NOT_ASSIGNED} ${getProrityById(this.props.task.prioritiesId)}`}
+            data-tip={`${localize[lang].PRIORITY} ${getProrityById(this.props.task.prioritiesId)}`}
           />
         )}
         {lighted ? <div className={css.lightedBorder} /> : null}
@@ -241,7 +271,9 @@ class TaskCore extends PureComponent {
 }
 
 const mapStateToProps = state => ({
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  projectPrefix: state.Project.project.prefix,
+  projectUsers: state.Project.project.users
 });
 
 export default compose(

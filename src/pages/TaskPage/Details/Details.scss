@@ -12,6 +12,14 @@
   }
 }
 
+.tagsContainer {
+  max-width: 200px;
+
+  @media (max-width: 1360px) {
+    max-width: 100px;
+  }
+}
+
 .detailTable {
   width: 100%;
 
@@ -35,7 +43,7 @@
       padding-left: 6px;
     }
 
-    &.byClient {
+    &.checkAttribute {
       padding-top: 6px;
       padding-bottom: 6px;
       padding-left: 6px;

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 // import * as css from './ExternalUsersTableRow.scss';
 import PropTypes from 'prop-types';
-import Input from '../../../../../components/Input';
-import { IconEdit, IconCheck, IconClose } from '../../../../../components/Icons';
+// import Input from '../../../../../components/Input';
+// import { IconEdit, IconCheck, IconClose } from '../../../../../components/Icons';
 import * as css from '../../../../../components/Input/Input.scss';
 import classnames from 'classnames';
 

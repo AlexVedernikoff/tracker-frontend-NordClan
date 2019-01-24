@@ -12,8 +12,16 @@
     "ENTER_TITLE_TASK": "Enter a title for the task",
     "EDIT_TASK_PERFORMER": "Edit task performer",
     "EDIT_TASK_SPRINT": "Edit task sprint",
-    "FROM": "From",
-    "TO": "To"
+    "FROM": "Choose date of creation (from)",
+    "TO": "Choose date of creation (to)",
+    "AUTHOR": "author",
+    "TAG_FROM": "From",
+    "TAG_TO": "To",
+    "PERFORMER": "performer",
+    "NOT_ASSIGNED": "Not assigned",
+    "NOT_SELECTED": "Filters is not selected",
+    "MY_TASKS": "my tasks",
+    "NOTHING_FOUND": "Not found"
   },
   "ru": {
     "CREATE_TASK": "Создать задачу",
@@ -28,7 +36,15 @@
     "ENTER_TITLE_TASK": "Введите название задачи",
     "EDIT_TASK_PERFORMER": "Изменить исполнителя задачи",
     "EDIT_TASK_SPRINT": "Изменить спринт задачи",
-    "FROM": "От",
-    "TO": "Дo"
+    "FROM": "Выберите дату создания (от)",
+    "TO": "Выберите дату создания (дo)",
+    "AUTHOR": "автор",
+    "TAG_FROM": "От",
+    "TAG_TO": "До",
+    "PERFORMER": "исполнитель",
+    "NOT_ASSIGNED": "Не назначенно",
+    "NOT_SELECTED": "Фильтры не выбраны",
+    "MY_TASKS": "мои задачи",
+    "NOTHING_FOUND": "Ничего не найдено"
   }
 }

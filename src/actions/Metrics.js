@@ -1,7 +1,5 @@
-import axios from 'axios';
 import * as ProjectActions from '../constants/Project';
-import { GET, POST, REST_API } from '../constants/RestApi';
-import { API_URL } from '../constants/Settings';
+import { POST, REST_API } from '../constants/RestApi';
 import { withFinishLoading, withStartLoading, defaultExtra as extra } from './Common';
 
 const getMetricsRequest = () => ({

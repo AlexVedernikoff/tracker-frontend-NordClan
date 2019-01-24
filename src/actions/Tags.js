@@ -3,6 +3,7 @@ import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
+import { projectIdSelector } from '../selectors/Project';
 
 const startTagsCreate = () => ({
   type: TagsActions.TAGS_CREATE_START
@@ -22,7 +23,7 @@ const startTagsDelete = () => ({
   type: TagsActions.TAGS_DELETE_START
 });
 
-const tagsDeleteSucces = tags => ({
+const tagsDeleteSuccess = tags => ({
   type: TagsActions.TAGS_DELETE_SUCCESS,
   data: tags
 });
@@ -58,7 +59,6 @@ export const createTags = (tags, taggable, taggableId) => {
         taggableId: taggableId
       })
       .then(res => {
-        dispatch(finishLoading());
         if (!res.data) return;
 
         dispatch(
@@ -67,7 +67,11 @@ export const createTags = (tags, taggable, taggableId) => {
             tags: res.data
           })
         );
-      });
+      })
+      .catch(error => {
+        dispatch(tagsCreateError(error));
+      })
+      .finally(() => dispatch(finishLoading()));
   };
 };
 
@@ -76,33 +80,50 @@ export const deleteTag = (tag, taggable, taggableId) => {
   return dispatch => {
     dispatch(startTagsDelete());
     dispatch(startLoading());
-    axios.delete(URL).then(res => {
-      dispatch(finishLoading());
-      if (!res.data) return;
+    axios
+      .delete(URL)
+      .then(res => {
+        if (!res.data) return;
 
-      dispatch(
-        tagsDeleteSucces({
-          taggableId: taggableId,
-          tags: res.data
-        })
-      );
-    });
+        dispatch(
+          tagsDeleteSuccess({
+            taggableId: taggableId,
+            tags: res.data
+          })
+        );
+      })
+      .catch(error => {
+        dispatch(tagsDeleteError(error));
+      })
+      .finally(() => dispatch(finishLoading()));
   };
 };
 
 export const getTagsFilter = (tagName, filterFor) => {
-  return dispatch => {
+  return (dispatch, getState) => {
     dispatch(startTagsFilter());
     dispatch(startLoading());
-    axios
-      .get(`${API_URL}/${filterFor}/tag`, { params: { tagName } }, { withCredentials: true })
-      .then(response => {
+
+    let requestedTagsList;
+    if (filterFor === 'task') {
+      const projectId = projectIdSelector(getState());
+      requestedTagsList = axios
+        .get(`${API_URL}/project/${projectId}/tags`, { params: { tagName } }, { withCredentials: true })
+        .then(response => response.data.map(o => o.name));
+    } else {
+      requestedTagsList = axios
+        .get(`${API_URL}/${filterFor}/tag`, { params: { tagName } }, { withCredentials: true })
+        .then(response => response.data);
+    }
+
+    return requestedTagsList
+      .then(data => {
         dispatch(finishLoading());
-        if (!response.data) return;
+        if (!data) return;
 
         dispatch(
           TagsFilterSucces({
-            filteredTags: response.data,
+            filteredTags: data,
             filterFor: filterFor
           })
         );
@@ -114,7 +135,7 @@ export const getTagsFilter = (tagName, filterFor) => {
             error: error
           })
         );
-        dispatch(finishLoading());
-      });
+      })
+      .finally(() => dispatch(finishLoading()));
   };
 };
