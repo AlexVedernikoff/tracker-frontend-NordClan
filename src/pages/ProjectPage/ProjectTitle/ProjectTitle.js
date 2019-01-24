@@ -17,6 +17,7 @@ import {
   closePortfolioModal
 } from '../../../actions/Project';
 import localize from './ProjectTitle.json';
+import classnames from 'classnames';
 
 class ProjectTitle extends Component {
   static propTypes = {
@@ -184,7 +185,7 @@ class ProjectTitle extends Component {
         ) : (
           <IconPreloader style={{ color: 'silver', fontSize: '3rem', marginRight: 10 }} />
         )}
-        <div>
+        <div className={css.projectTitle__text}>
           {this.props.portfolio ? (
             <span className={css.portfolio}>
               <Link to={`/projects/portfolio/${this.props.portfolio.id}`}>{this.props.portfolio.name}</Link>
@@ -194,7 +195,7 @@ class ProjectTitle extends Component {
           <h1>
             <span
               id="projectName"
-              className={this.state.nameIsIncorrect ? css.wrong : ''}
+              className={classnames({ [css.wrong]: this.state.nameIsIncorrect })}
               ref={ref => (this.projectName = ref)}
               onKeyDown={this.handleKeyPress}
               contentEditable={this.props.titleIsEditing}
