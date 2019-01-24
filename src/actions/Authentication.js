@@ -8,6 +8,7 @@ import { EXTERNAL_USER } from '../constants/Roles';
 import { startOfCurrentWeek, endOfCurrentWeek } from '../utils/date';
 import { history } from '../History';
 import { getErrorMessageByType } from '../utils/ErrorMessages';
+import { initSSO } from '../utils/keycloak';
 
 const startAuthentication = () => ({
   type: AuthActions.AUTHENTICATION_START
@@ -94,31 +95,30 @@ export const doLogout = () => {
 export const getInfoAboutMe = () => {
   const URL = `${API_URL}/user/me`;
 
-  return dispatch => {
+  return async dispatch => {
     dispatch(startReceiveUserInfo());
     dispatch(startLoading());
-    return axios
-      .get(URL, {}, { withCredentials: true })
-      .then(response => {
-        if (response && response.status === 200) {
-          if (response.data.globalRole !== EXTERNAL_USER) {
-            dispatch(getTimesheetsPlayerData(startOfCurrentWeek, endOfCurrentWeek));
-          }
-          dispatch(userInfoReceived(response.data));
-          dispatch(finishLoading());
+    try {
+      await initSSO();
+      const response = await axios.get(URL, {}, { withCredentials: true });
+      if (response && response.status === 200) {
+        if (response.data.globalRole !== EXTERNAL_USER) {
+          dispatch(getTimesheetsPlayerData(startOfCurrentWeek, endOfCurrentWeek));
         }
-      })
-      .catch(error => {
+        dispatch(userInfoReceived(response.data));
         dispatch(finishLoading());
-        const pathname = history.getCurrentLocation().pathname;
-        if (
-          error.response.data.name !== 'UnauthorizedError' ||
-          !(pathname === '/login' || /\/externalUserActivate\//i.test(pathname))
-        ) {
-          dispatch(showNotification({ message: error.message, type: 'error' }));
-        }
-        dispatch(userInfoReceiveFailed());
-      });
+      }
+    } catch (error) {
+      dispatch(finishLoading());
+      const pathname = history.getCurrentLocation().pathname;
+      if (
+        error.response.data.name !== 'UnauthorizedError' ||
+        !(pathname === '/login' || /\/externalUserActivate\//i.test(pathname))
+      ) {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+      }
+      dispatch(userInfoReceiveFailed());
+    }
   };
 };
 

@@ -7,6 +7,8 @@ import { connect } from 'react-redux';
 import { startTaskEditing, stopTaskEditing, changeTask } from '../../../actions/Task';
 import roundNum from '../../../utils/roundNum';
 
+const TIME_MAX = 99;
+
 class TaskPlanningTime extends Component {
   constructor(props) {
     super(props);
@@ -39,7 +41,8 @@ class TaskPlanningTime extends Component {
 
   validateAndSubmit = () => {
     this.taskPlanningTime.innerText = this.taskPlanningTime.innerText.replace(',', '.').trim();
-    if (!/^\d+(\.\d{0,})?$/.test(this.taskPlanningTime.innerText)) {
+
+    if (!/^\d+(\.\d{0,})?$/.test(this.taskPlanningTime.innerText) || this.taskPlanningTime.innerText > TIME_MAX) {
       this.setState({ submitError: true });
     } else {
       this.setState(

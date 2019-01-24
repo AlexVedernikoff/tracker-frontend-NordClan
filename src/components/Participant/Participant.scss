@@ -87,6 +87,53 @@
   z-index: 0; // New z-index stack created
 }
 
+.changeStage {
+  min-width: 330px;
+  max-width: 500px;
+  padding: 2rem;
+
+  @include phone {
+    padding: 1rem;
+    min-width: 250px;
+  }
+
+  h3 {
+    margin-top: 0;
+  }
+}
+
+.gitlabRoleParams {
+  display: flex;
+  margin-bottom: 16px;
+  margin-bottom: 1rem;
+
+  & > * + * {
+    margin-left: 10px;
+  }
+}
+
+.gitlabRoleCellWrap {
+  width: 100%;
+  display: table;
+  table-layout: fixed;
+}
+
+.gitlabRoleCell {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+
+.gitlabRoleProjectName {
+  display: none;
+
+  @include tablet {
+    display: inline;
+  }
+}
+
 .iconClose {
   opacity: 0;
   position: absolute;

@@ -67,15 +67,19 @@
   }
 
   span[contenteditable='false'] {
-    text-overflow: ellipsis;
     max-width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
   }
 
   span:empty {
     display: inline-block;
     min-width: 0.5rem;
+  }
+}
+
+.projectTitle__text {
+  max-width: 100%;
+  #projectName {
+    display: inline-block;
   }
 }
 
