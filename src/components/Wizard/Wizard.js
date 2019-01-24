@@ -340,7 +340,7 @@ class Wizard extends Component {
 
     return (
       <div>
-        <h1>localize[lang].SYNC_WITH_JIRA(simtrackProjectName)</h1>
+        <h1>{localize[lang].SYNC_WITH_JIRA(simtrackProjectName)}</h1>
         <hr />
         <div>{this.getStepsUI()}</div>
         {this.currentStep(lang)}
