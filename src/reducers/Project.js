@@ -18,7 +18,8 @@ const InitialState = {
     },
     error: false,
     validationError: null,
-    metrics: []
+    metrics: [],
+    notProcessedGitlabUsers: []
   },
   TitleIsEditing: false,
   DescriptionIsEditing: false,
@@ -227,22 +228,43 @@ export default function Project(state = InitialState, action) {
         }
       };
 
+    case GitlabActions.ADDING_GITLAB_PROJECT_START:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          notProcessedGitlabUsers: []
+        }
+      };
     case GitlabActions.ADDING_GITLAB_PROJECT_SUCCESS:
       return {
         ...state,
         project: {
           ...state.project,
-          gitlabProjects: [...state.project.gitlabProjects, action.project]
+          gitlabProjectIds: [...state.project.gitlabProjectIds, action.project.gitlabProject.id],
+          gitlabProjects: [...state.project.gitlabProjects, action.project.gitlabProject],
+          users: action.project.projectUsers,
+          notProcessedGitlabUsers: action.project.notProcessedGitlabUsers
         }
       };
 
+    case GitlabActions.CREATE_GITLAB_PROJECT_START:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          notProcessedGitlabUsers: []
+        }
+      };
     case GitlabActions.CREATE_GITLAB_PROJECT_SUCCESS:
       return {
         ...state,
         project: {
           ...state.project,
-          gitlabProjectIds: [...state.project.gitlabProjectIds, action.project.id],
-          gitlabProjects: [...state.project.gitlabProjects, action.project]
+          gitlabProjectIds: [...state.project.gitlabProjectIds, action.project.gitlabProject.id],
+          gitlabProjects: [...state.project.gitlabProjects, action.project.gitlabProject],
+          users: action.project.projectUsers,
+          notProcessedGitlabUsers: action.project.notProcessedGitlabUsers
         }
       };
 

@@ -456,8 +456,8 @@ class Projects extends Component {
           handleCheckBox={this.handleModalCheckBoxChange}
           onPortfolioSelect={this.handlePortfolioChange}
           selectedPortfolio={this.state.selectedPortfolio}
-          validateProjectName={this.state.projectName.length > 3}
-          validateProjectPrefix={this.state.projectPrefix.length > 1}
+          projectName={this.state.projectName}
+          projectPrefix={this.state.projectPrefix}
           prefixErrorText={this.getFieldError('prefix')}
           onTypeSelect={this.handleModalTypeSelected}
           selectedType={this.state.selectedType}

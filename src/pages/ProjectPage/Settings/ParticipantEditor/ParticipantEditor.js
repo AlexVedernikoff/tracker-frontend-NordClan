@@ -4,6 +4,7 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import moment from 'moment';
 import { API_URL } from '../../../../constants/Settings';
 import { ADMIN } from '../../../../constants/Roles';
 import { bindUserToProject, getProjectUsers } from '../../../../actions/Project';
@@ -27,9 +28,7 @@ class ParticipantEditor extends Component {
       isModalOpenAddUser: false,
       isModalOpenAddExternal: false,
       isModalOpenWizard: false,
-      participant: null,
-      roles: [],
-      participants: []
+      ...getEmptyState()
     };
     this.ROLES_FULL_NAME = [
       'Account',
@@ -91,14 +90,17 @@ class ParticipantEditor extends Component {
     e.preventDefault();
 
     const { id } = this.props;
-    const { participant, roles } = this.state;
+    const { participant, roles, selectedGitlabRoles } = this.state;
     const rolesIds = roles.map(role => role.value).join(',');
-    this.props.bindUserToProject(id, participant.value, rolesIds);
+    const gitlabRolesArray = Object.keys(selectedGitlabRoles).map(gitlabProjectId => ({
+      accessLevel: selectedGitlabRoles[gitlabProjectId].role.value,
+      expiresAt: selectedGitlabRoles[gitlabProjectId].expiresAt,
+      gitlabProjectId
+    }));
+    this.props.bindUserToProject(id, participant.value, rolesIds, gitlabRolesArray);
     this.setState({
-      roles: [],
       isModalOpenAddUser: false,
-      participants: [],
-      participant: null
+      ...getEmptyState()
     });
   };
 
@@ -109,10 +111,8 @@ class ParticipantEditor extends Component {
     const { participant } = this.state;
     this.props.bindUserToProject(id, participant.value, '11');
     this.setState({
-      roles: [],
       isModalOpenAddExternal: false,
-      participants: [],
-      participant: null
+      ...getEmptyState()
     });
   };
 
@@ -163,6 +163,46 @@ class ParticipantEditor extends Component {
       label: getFullName(user)
     }));
   };
+
+  getGitlabProjectsOptions() {
+    return this.props.gitlabProjects.map(({ id, name }) => ({
+      value: id,
+      label: name
+    }));
+  }
+
+  selectGitlabProject() {
+    return option => {
+      this.setState(state => ({
+        gitlabProjects: option,
+        selectedGitlabRoles: option.reduce((acc, { id }) => {
+          if (state.selectedGitlabRoles[id]) {
+            acc[id] = state.selectedGitlabRoles[id];
+          }
+          return acc;
+        }, {})
+      }));
+    };
+  }
+
+  getGitlabRoleParam(projectId, key) {
+    const { selectedGitlabRoles } = this.state;
+    return selectedGitlabRoles[projectId] ? selectedGitlabRoles[projectId][key] : null;
+  }
+
+  selectGitlabRoleParam(projectId, key) {
+    return option => {
+      this.setState(state => ({
+        selectedGitlabRoles: {
+          ...state.selectedGitlabRoles,
+          [projectId]: {
+            ...state.selectedGitlabRoles[projectId],
+            [key]: moment.isMoment(option) ? option : option
+          }
+        }
+      }));
+    };
+  }
 
   getRolesOptions = () => {
     return this.ROLES_FULL_NAME.map((role, i) => ({
@@ -215,15 +255,13 @@ class ParticipantEditor extends Component {
   handleCloseModalAddUser = () => {
     this.setState({
       isModalOpenAddUser: false,
-      participants: [],
-      roles: []
+      ...getEmptyState()
     });
   };
   handleCloseModalAddExternal = () => {
     this.setState({
       isModalOpenAddExternal: false,
-      participants: [],
-      participant: null
+      ...getEmptyState()
     });
   };
 
@@ -234,8 +272,15 @@ class ParticipantEditor extends Component {
     );
   };
 
+  isAllGitlabRolesParamsSelected() {
+    const { gitlabProjects, selectedGitlabRoles } = this.state;
+    return gitlabProjects.every(
+      ({ value: projectId }) => selectedGitlabRoles[projectId] && selectedGitlabRoles[projectId].role
+    );
+  }
+
   render() {
-    const { lang } = this.props;
+    const { lang, gitlabProjects, gitlabRoles } = this.props;
     const isProjectAdmin = this.checkIsAdminInProject();
     return (
       <div className={css.property}>
@@ -243,6 +288,17 @@ class ParticipantEditor extends Component {
         <Row className={classnames(css.memberRow, css.memberHeader)}>
           <Col xs={9} xsOffset={3}>
             <Row>
+              {gitlabProjects.map(project => (
+                <Col xs lg key={project.id}>
+                  <h4>
+                    <div className={`${css.cell} ${css.gitlabProjectTableCaptionWrap}`}>
+                      <div className={css.gitlabProjectTableCaption} data-tip={project.name}>
+                        <span>{project.name}</span>
+                      </div>
+                    </div>
+                  </h4>
+                </Col>
+              ))}
               {this.ROLES_FULL_NAME
                 ? this.ROLES_FULL_NAME.map((ROLES_FULL_NAME, i) => (
                     <Col xs lg key={`${i}-roles-name`}>
@@ -270,6 +326,8 @@ class ParticipantEditor extends Component {
                 key={`${user.id}-user`}
                 projectId={this.props.id}
                 isProjectAdmin={isProjectAdmin}
+                gitlabProjects={gitlabProjects}
+                gitlabRoles={gitlabRoles}
               />
             ))
           : null}
@@ -336,12 +394,54 @@ class ParticipantEditor extends Component {
                   backspaceToRemoveMessage={''}
                   options={this.getRolesOptions()}
                 />
+                {gitlabProjects && gitlabProjects.length ? (
+                  <SelectDropdown
+                    name="gitlabProjects"
+                    placeholder={localize[lang].SELECT_GITLAB_PROJECT}
+                    multi
+                    value={this.state.gitlabProjects}
+                    onChange={this.selectGitlabProject()}
+                    noResultsText={localize[lang].NO_RESULTS}
+                    backspaceToRemoveMessage={''}
+                    options={this.getGitlabProjectsOptions()}
+                  />
+                ) : null}
+                {this.state.gitlabProjects.length
+                  ? this.state.gitlabProjects.map(({ label: name, value: id }) => (
+                      <div key={id}>
+                        <div className={css.gitlabRoleProjectName}>{name}:</div>
+                        <div className={css.gitlabRoleParams}>
+                          <SelectDropdown
+                            name="accessLevel"
+                            placeholder={localize[lang].SELECT_GITLAB_ROLE}
+                            value={this.getGitlabRoleParam(id, 'role') || ''}
+                            onChange={this.selectGitlabRoleParam(id, 'role')}
+                            noResultsText={localize[lang].NO_RESULTS}
+                            backspaceToRemoveMessage={''}
+                            options={gitlabRoles}
+                          />
+                          <DatepickerDropdown
+                            name="expiresAt"
+                            value={
+                              this.getGitlabRoleParam(id, 'expiresAt')
+                                ? moment(this.getGitlabRoleParam(id, 'expiresAt')).format('DD.MM.YYYY')
+                                : ''
+                            }
+                            onDayChange={this.selectGitlabRoleParam(id, 'expiresAt')}
+                            placeholder={localize[lang].SELECT_DATA}
+                          />
+                        </div>
+                      </div>
+                    ))
+                  : null}
                 <Button
                   type="green"
                   text={localize[lang].ADD}
                   onClick={this.bindUser}
                   htmlType="submit"
-                  disabled={!(this.state.participant && this.state.roles.length)}
+                  disabled={
+                    !this.state.participant || !this.state.roles.length || !this.isAllGitlabRolesParamsSelected()
+                  }
                 />
               </div>
             </form>
@@ -384,6 +484,8 @@ ParticipantEditor.propTypes = {
   bindUserToProject: PropTypes.func.isRequired,
   externalUsers: PropTypes.array,
   getProjectUsers: PropTypes.func,
+  gitlabProjects: PropTypes.array,
+  gitlabRoles: PropTypes.array,
   id: PropTypes.number,
   lang: PropTypes.string.isRequired,
   projectAuthorId: PropTypes.number,
@@ -397,7 +499,9 @@ const mapStateToProps = state => ({
   externalUsers: state.Project.project.externalUsers,
   user: state.Auth.user,
   projectAuthorId: state.Project.project.authorId,
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  gitlabProjects: gitLabProjectsSelector(state),
+  gitlabRoles: localizedGitlabRolesSelector(state)
 });
 
 const mapDispatchToProps = {
