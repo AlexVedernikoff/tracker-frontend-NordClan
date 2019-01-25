@@ -20,7 +20,7 @@ export default function Gitlab(state = InitialState, action) {
       return {
         ...state,
         isAddingGitlabProjectSuccess: true,
-        gitlabProject: action.project
+        gitlabProject: action.project.gitlabProject
       };
 
     case GitlabActions.GET_GITLAB_NAMESPACES_SUCCESS:

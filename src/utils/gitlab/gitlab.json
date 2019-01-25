@@ -1,0 +1,16 @@
+{
+  "en": {
+    "GUEST": "Guest",
+    "REPORTER": "Reporter",
+    "DEVELOPER": "Developer",
+    "MAINTAINER": "Maintainer",
+    "OWNER": "Owner"
+  },
+  "ru": {
+    "GUEST": "Guest",
+    "REPORTER": "Reporter",
+    "DEVELOPER": "Developer",
+    "MAINTAINER": "Maintainer",
+    "OWNER": "Owner"
+  }
+}

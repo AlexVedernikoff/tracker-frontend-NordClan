@@ -6,22 +6,22 @@ const InitialState = {
   magicActivityTypes: []
 };
 
-export default function Portfolios (state = InitialState, action) {
+export default function Portfolios(state = InitialState, action) {
   switch (action.type) {
-  case dictionariesActions.GET_DICTIONARY_START:
-    return {
-      ...state
-    };
+    case dictionariesActions.GET_DICTIONARY_START:
+      return {
+        ...state
+      };
 
-  case dictionariesActions.GET_DICTIONARY_SUCCESS:
-    return {
-      ...state,
-      [action.name]: action.data
-    };
+    case dictionariesActions.GET_DICTIONARY_SUCCESS:
+      return {
+        ...state,
+        [action.name]: action.data
+      };
 
-  default:
-    return {
-      ...state
-    };
+    default:
+      return {
+        ...state
+      };
   }
 }
