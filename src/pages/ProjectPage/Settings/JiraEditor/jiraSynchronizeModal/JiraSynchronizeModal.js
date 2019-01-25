@@ -10,6 +10,8 @@ import * as states from './states';
 import * as css from './JiraSynchronizeModal.scss';
 import localize from './JiraSynchronizeModal.json';
 import FinishForm from '../../../../../components/Wizard/steps/Finish/Finish';
+import { selectJiraProject } from '../../../../../selectors/Project';
+import { jiraAuthorize } from '../../../../../actions/Jira';
 
 const JIRA_SYNHRONIZE_STEPS = [states.JIRA_SYNHRONIZE_AUTHORIZATION, states.JIRA_SYNHRONIZE_CONFIRM];
 
@@ -17,7 +19,9 @@ class JiraSynchronizeModal extends Component {
   static propTypes = {
     closeSynchronizeModal: PropTypes.func,
     isJiraAuthorizeError: PropTypes.bool,
+    jiraAuthorize: PropTypes.func,
     jiraCaptachaLink: PropTypes.any,
+    jiraProject: PropTypes.object,
     lang: PropTypes.string,
     project: PropTypes.object,
     synchronize: PropTypes.func,
@@ -32,10 +36,31 @@ class JiraSynchronizeModal extends Component {
   state = {
     currentStep: !this.props.token ? states.JIRA_SYNHRONIZE_AUTHORIZATION : states.JIRA_SYNHRONIZE_CONFIRM,
     authDataState: {
-      server: this.props.project.jiraHostName,
       username: '',
-      password: ''
+      password: '',
+      email: 'yyaa@yande.ryry'
     }
+  };
+
+  authNextStep = formData => {
+    this.props
+      .jiraAuthorize({ ...formData, server: this.props.jiraProject.hostname })
+      .then(res => {
+        const { token } = res;
+        if (token) {
+          this.setState({
+            currentStep: this.stepsManager[states.JIRA_SYNHRONIZE_AUTHORIZATION].forwardStep()
+          });
+        }
+      })
+      .catch(() => {
+        this.setState(state => ({
+          authData: {
+            ...state.authData,
+            username: ''
+          }
+        }));
+      });
   };
 
   onChange = (name, e) => {
@@ -46,14 +71,16 @@ class JiraSynchronizeModal extends Component {
     }));
   };
 
-  authNextStep = () => {
-    this.setState({
-      currentStep: this.stepsManager[states.JIRA_SYNHRONIZE_AUTHORIZATION].forwardStep()
-    });
-  };
-
   render() {
-    const { lang, jiraCaptachaLink, isJiraAuthorizeError, token, closeSynchronizeModal, synchronize } = this.props;
+    const {
+      lang,
+      jiraCaptachaLink,
+      isJiraAuthorizeError,
+      token,
+      closeSynchronizeModal,
+      synchronize,
+      jiraProject
+    } = this.props;
     const steps = JIRA_SYNHRONIZE_STEPS.map((step, index) => ({
       stepNumber: index + 1,
       description: localize[lang][step]
@@ -75,6 +102,7 @@ class JiraSynchronizeModal extends Component {
               authData={authDataState}
               disabledFields={['server']}
               excludeFields={['email']}
+              autoFillField={{ server: jiraProject.hostname }}
             />
           ) : (
             <FinishForm lang={lang} token={token} previousStep={closeSynchronizeModal} nextStep={synchronize} />
@@ -87,10 +115,17 @@ class JiraSynchronizeModal extends Component {
 
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
-  project: state.Project.project,
+  jiraProject: selectJiraProject(state),
   jiraCaptachaLink: state.Jira.jiraCaptachaLink,
   isJiraAuthorizeError: state.Jira.isJiraAuthorizeError,
   token: state.Jira.token
 });
 
-export default connect(mapStateToProps)(JiraSynchronizeModal);
+const mapDispatchToProps = {
+  jiraAuthorize
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(JiraSynchronizeModal);

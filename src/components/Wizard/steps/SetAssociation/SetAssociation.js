@@ -52,7 +52,9 @@ class SetAssociationForm extends Component {
       const associations = {};
       this.sortJiraData(jiraAssociations);
       this.props.setAssociation(associations, jiraAssociations, this.state.currentStep);
+      console.log('jiraAssociations', jiraAssociations);
     } catch (e) {
+      console.log(e);
       defaultErrorHandler(e);
     }
   }
@@ -303,7 +305,7 @@ class SetAssociationForm extends Component {
   };
 
   getFormErrors = () => {
-    const { jiraIssueTypes, jiraStatusTypes, jiraUsers } = this.props.associationState;
+    const { jiraIssueTypes, jiraStatusTypes } = this.props.associationState;
     const incorrectFields = [];
     switch (this.state.currentStep) {
       case associationStates.ISSUE_TYPES:

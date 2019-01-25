@@ -10,16 +10,8 @@ import {
   getProjectAssociation,
   getJiraIssueAndStatusTypes
 } from '../../actions/Jira';
-import { usersSelector } from '../../selectors/Project';
+import { selectJiraProject, usersSelector } from '../../selectors/Project';
 import { getProjectInfo } from '../../actions/Project';
-
-const selectJiraProject = state => {
-  return {
-    id: state.Project.project.externalId,
-    hostname: state.Project.project.jiraHostname,
-    jiraProjectName: state.Project.project.jiraProjectName
-  };
-};
 
 const mapStateToProps = state => {
   return {

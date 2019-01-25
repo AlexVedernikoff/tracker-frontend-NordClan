@@ -31,6 +31,7 @@ class AuthForm extends Component {
   static propTypes = {
     authData: PropTypes.object,
     authDataStep: PropTypes.object,
+    autoFillField: PropTypes.object,
     disabledFields: PropTypes.array,
     excludeFields: PropTypes.array,
     isJiraAuthorizeError: PropTypes.any,
@@ -75,8 +76,9 @@ class AuthForm extends Component {
       authData,
       isJiraAuthorizeError,
       jiraCaptachaLink,
-      disabledFields,
-      excludeFields
+      disabledFields = [],
+      excludeFields = [],
+      autoFillField = {}
     } = this.props;
     const formLayout = {
       firstCol: 3,
@@ -101,7 +103,7 @@ class AuthForm extends Component {
                     disabled={disabledFields.indexOf('server') !== -1}
                     placeholder={localize[lang].SERVER}
                     onChange={e => onChange('server', e)}
-                    value={authData.server}
+                    value={autoFillField.server ? autoFillField.server : authData.server}
                     name="server"
                     onBlur={handleBlur}
                     shouldMarkError={shouldMarkError}

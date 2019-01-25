@@ -7,10 +7,11 @@ import Button from '../../../../components/Button';
 import { connect } from 'react-redux';
 import JiraCard from './JiraCard/JiraCard';
 import { cleanJiraAssociation, createBatch } from '../../../../actions/Jira';
-import JiraSynchronizeModal from './jiraSynchronizeModal/JiraSynchronizeModal';
+import JiraSynchronizeModal from './jiraSynchronizeModal';
 
 class JiraEditor extends Component {
   static propTypes = {
+    autoFillFiled: PropTypes.object,
     cleanJiraAssociation: PropTypes.func,
     createBatch: PropTypes.func,
     getJiraProject: PropTypes.func,
@@ -45,7 +46,8 @@ class JiraEditor extends Component {
   };
 
   render() {
-    const { lang, simtrackProject, jiraExternalId, startSynchronize } = this.props;
+    const { lang, simtrackProject, jiraExternalId } = this.props;
+    const { startSynchronize } = this.state;
     return (
       <div className={css.jiraCard}>
         <h2>{localize[lang].SYNCHRONIZATION_WITH_JIRA}</h2>
@@ -56,7 +58,7 @@ class JiraEditor extends Component {
         ) : (
           <Button
             onClick={this.toggleConfirm}
-            text={localize[lang].SYNCHRONIZE_PROJECT_WITH_JIRA}
+            text={localize[lang].SYNCHRONIZATION_WITH_JIRA}
             type="primary"
             icon="IconPlus"
           />

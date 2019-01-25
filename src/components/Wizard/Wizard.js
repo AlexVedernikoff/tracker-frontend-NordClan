@@ -144,8 +144,8 @@ class Wizard extends Component {
       {
         associationState: {
           ...this.state.associationState,
-          jiraIssueTypes: jiraAssociations.issue_type,
-          jiraStatusTypes: jiraAssociations.status_type,
+          jiraIssueTypes: jiraAssociations.issueTypes,
+          jiraStatusTypes: jiraAssociations.statusTypes,
           jiraUsers: jiraAssociations.users
         }
       },
