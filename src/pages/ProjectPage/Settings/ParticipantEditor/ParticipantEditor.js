@@ -19,6 +19,18 @@ import localize from './participantEditor.json';
 import layoutAgnosticFilter from '../../../../utils/layoutAgnosticFilter';
 import { getFullName } from '../../../../utils/NameLocalisation';
 import JiraEditor from '../JiraEditor/JiraEditor';
+import { gitLabProjectsSelector, localizedGitlabRolesSelector } from '../../../../selectors/Project';
+import DatepickerDropdown from '../../../../components/DatepickerDropdown';
+
+function getEmptyState() {
+  return {
+    roles: [],
+    participants: [],
+    participant: null,
+    gitlabProjects: [],
+    selectedGitlabRoles: {}
+  };
+}
 
 class ParticipantEditor extends Component {
   constructor(props) {
