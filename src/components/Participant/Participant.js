@@ -104,11 +104,12 @@ class Participant extends React.Component {
     const defaultLabel = localize[this.props.lang].UNSET_GITLAB_USER_ROLE;
     if (user.gitlabRoles && user.gitlabRoles.length) {
       const userGitlabRole = user.gitlabRoles.find(({ gitlabProjectId }) => gitlabProjectId === projectId) || {};
-      const { label, ...gitlabRoleParams } = gitlabRoles.find(({ value }) => value === userGitlabRole.accessLevel);
+      const { label, ...gitlabRoleParams } =
+        gitlabRoles.find(({ value }) => value === userGitlabRole.accessLevel) || {};
       return {
         ...userGitlabRole,
-        label: label || defaultLabel,
-        ...gitlabRoleParams
+        ...gitlabRoleParams,
+        label: label || defaultLabel
       };
     }
     return { label: defaultLabel };
