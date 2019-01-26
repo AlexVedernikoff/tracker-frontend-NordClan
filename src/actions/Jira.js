@@ -93,6 +93,7 @@ const jiraAssociateProjectError = () => ({
 });
 
 const associateWithJiraProject = (token, data) => {
+  console.log('data', data);
   const {
     jiraProjectId: id,
     simtrackProjectId,

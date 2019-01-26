@@ -11,6 +11,7 @@ import { associationStates } from './AssociationStates';
 import { createStepsManager } from '../../wizardConfigurer';
 import { defaultErrorHandler } from '../../../../actions/Common';
 import { capitalize } from '../../../../utils/formatter';
+import { IconCheck } from '../../../Icons';
 
 const ASSOCIATIONS_STEPS = [associationStates.ISSUE_TYPES, associationStates.STATUS_TYPES, associationStates.USERS];
 
@@ -40,16 +41,20 @@ class SetAssociationForm extends Component {
     super(props);
     this.stepsManager = createStepsManager(ASSOCIATIONS_STEPS);
     this.state = {
-      currentStep: this.stepsManager.currentStep
+      currentStep: this.stepsManager.currentStep,
+      errors: []
     };
   }
 
   async componentDidMount() {
     try {
       const jiraAssociations = await this.props.getJiraIssueAndStatusTypes(this.props.jiraProjectId, this.props.token);
-      const associations = await this.props.getProjectAssociation(this.props.simtrackProjectId);
+      const associations = {};
+      this.sortJiraData(jiraAssociations);
       this.props.setAssociation(associations, jiraAssociations, this.state.currentStep);
+      console.log('jiraAssociations', jiraAssociations);
     } catch (e) {
+      console.log(e);
       defaultErrorHandler(e);
     }
   }
@@ -59,6 +64,13 @@ class SetAssociationForm extends Component {
       this.props.setDefault(this.state.currentStep);
     }
   }
+
+  sortJiraData = jiraData => {
+    const keys = Object.keys(jiraData);
+    keys.forEach(key => {
+      jiraData[key].sort((a, b) => a.name.localeCompare(b.name));
+    });
+  };
 
   get associationConfig() {
     return {
@@ -123,8 +135,32 @@ class SetAssociationForm extends Component {
     );
   };
 
+  isValidJiraRow = id => {
+    switch (this.state.currentStep) {
+      case associationStates.ISSUE_TYPES:
+        return this.isValidJiraIssueRow(id);
+      case associationStates.STATUS_TYPES:
+        return this.isValidJiraStatusRow(id);
+      case associationStates.USERS:
+        return this.isValidJiraUserRow(id);
+      default:
+    }
+  };
+
+  isValidJiraIssueRow = id => {
+    return this.props.associationState.issueTypesAssociation.find(el => +el.externalTaskTypeId === +id);
+  };
+
+  isValidJiraStatusRow = id => {
+    return this.props.associationState.statusesAssociation.find(el => +el.externalStatusId === +id);
+  };
+
   selectSimtrackCol = value => () => {
     this.createAssociation(value);
+  };
+
+  isValidJiraUserRow = email => {
+    return this.props.associationState.userEmailAssociation.find(el => el.externalUserEmail === email);
   };
 
   createAssociation = value => {
@@ -193,19 +229,27 @@ class SetAssociationForm extends Component {
   renderJiraRow(entity) {
     const { jiraKey, jiraDisplayField } = this.associationConfig[this.state.currentStep];
     const id = entity[jiraKey];
+    console.log('id', id);
 
     return (
-      <tr
-        key={id}
-        className={
-          (css.userRow,
-          cn(css.userRow, {
-            [css.userRow__active]: this.isJiraColItemActive(id)
-          }))
-        }
-        onClick={this.selectJiraCol(entity)}
-      >
-        <td>{entity[jiraDisplayField]}</td>
+      <tr key={id} onClick={this.selectJiraCol(entity)}>
+        <td className={css.iconCheckCell}>
+          {this.isValidJiraRow(id) ? (
+            <div className={css.circleContainer}>
+              <IconCheck />
+            </div>
+          ) : null}
+        </td>
+        <td
+          className={
+            (css.userRow,
+            cn(css.userRow, {
+              [css.userRow__active]: this.isJiraColItemActive(id)
+            }))
+          }
+        >
+          {entity[jiraDisplayField]}
+        </td>
       </tr>
     );
   }
@@ -231,15 +275,21 @@ class SetAssociationForm extends Component {
   }
 
   nextAssociationStep = () => {
-    this.props.mergeAssociationState(
-      {
-        selectedSimtrackCol: null,
-        selectedJiraCols: []
-      },
-      () => {
-        this.setState({ currentStep: this.stepsManager[this.state.currentStep].forwardStep() });
-      }
-    );
+    const errors = this.getFormErrors();
+    errors.length === 0
+      ? this.props.mergeAssociationState(
+          {
+            selectedSimtrackCol: null,
+            selectedJiraCols: []
+          },
+          () => {
+            this.setState({
+              currentStep: this.stepsManager[this.state.currentStep].forwardStep(),
+              errors: []
+            });
+          }
+        )
+      : this.setState({ errors });
   };
 
   previousAssociationStep = () => {
@@ -254,11 +304,38 @@ class SetAssociationForm extends Component {
     );
   };
 
+  getFormErrors = () => {
+    const { jiraIssueTypes, jiraStatusTypes } = this.props.associationState;
+    const incorrectFields = [];
+    switch (this.state.currentStep) {
+      case associationStates.ISSUE_TYPES:
+        jiraIssueTypes.map(el => {
+          if (!this.isValidJiraIssueRow(el.id)) {
+            incorrectFields.push(el.id);
+          }
+        });
+        break;
+      case associationStates.STATUS_TYPES:
+        jiraStatusTypes.map(el => {
+          if (!this.isValidJiraStatusRow(el.id)) {
+            incorrectFields.push(el.id);
+          }
+        });
+        break;
+      case associationStates.USERS:
+        return this.props.associationState.userEmailAssociation.length === 0 ? incorrectFields.push('error') : [];
+      default:
+        return [];
+    }
+    return incorrectFields;
+  };
+
   render() {
     const { jiraIssueTypes, jiraStatusTypes, jiraUsers } = this.props.associationState;
     const { taskTypes, taskStatuses, simtrackProjectUsers, lang } = this.props;
     let JiraTableBody;
     let SimtrackTableBody;
+    const hasErrors = !(this.getFormErrors().length === 0);
     switch (this.state.currentStep) {
       case associationStates.ISSUE_TYPES:
         if (taskTypes && jiraIssueTypes) {
@@ -311,6 +388,7 @@ class SetAssociationForm extends Component {
                 <table className={css.usersRolesTable}>
                   <thead>
                     <tr className={css.usersRolesHeader}>
+                      <th />
                       {this.state.currentStep === associationStates.ISSUE_TYPES ? (
                         <th>{localize[lang].JIRA_ISSUE_TYPES}</th>
                       ) : null}
@@ -326,17 +404,17 @@ class SetAssociationForm extends Component {
             </div>
             <div className={css.innerFirstCol}>
               <Col xs={12}>
-                <table className={css.usersRolesTable}>
+                <table className={cn(css.usersRolesTable, css.simtrackTable)}>
                   <thead>
                     <tr className={css.usersRolesHeader}>
                       {this.state.currentStep === associationStates.ISSUE_TYPES ? (
                         <th>{localize[lang].SIMTRACK_ISSUE_TYPES}</th>
                       ) : null}
                       {this.state.currentStep === associationStates.STATUS_TYPES ? (
-                        <th>{localize[lang].SIMTRACK_STATUS_TYPES}</th>
+                        <th colSpan={2}>{localize[lang].SIMTRACK_STATUS_TYPES}</th>
                       ) : null}
                       {this.state.currentStep === associationStates.USERS ? (
-                        <th>{localize[lang].SIMTRACK_USER}</th>
+                        <th colSpan={2}>{localize[lang].SIMTRACK_USER}</th>
                       ) : null}
                     </tr>
                   </thead>
@@ -348,7 +426,12 @@ class SetAssociationForm extends Component {
         </label>
         <div className={css.buttonsContainer}>
           <Button text={localize[lang].GO_BACK} onClick={() => backButtonFunction()} type="green" />
-          <Button text={localize[lang].GO_AHEAD} onClick={() => nextButtonFunction()} type="green" />
+          <Button
+            disabled={hasErrors}
+            text={localize[lang].GO_AHEAD}
+            onClick={() => nextButtonFunction()}
+            type="green"
+          />
         </div>
       </div>
     );

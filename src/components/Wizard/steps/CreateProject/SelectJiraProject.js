@@ -77,7 +77,12 @@ class CreateProjectForm extends Component {
         </label>
         <div className={css.buttonsContainer}>
           <Button text="Назад" onClick={() => previousStep(this.state)} type="green" />
-          <Button text="Вперед" onClick={() => nextStep(this.state)} type="green" />
+          <Button
+            text="Вперед"
+            disabled={!this.state.jiraProjectId}
+            onClick={() => nextStep(this.state)}
+            type="green"
+          />
         </div>
       </div>
     );

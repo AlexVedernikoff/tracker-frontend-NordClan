@@ -14,3 +14,10 @@ export const localizedGitlabRolesSelector = createSelector(
   lang => getGitlabProjectRoles(lang)
 );
 export const projectIdSelector = state => state.Project.project.id;
+export const selectJiraProject = state => {
+  return {
+    id: state.Project.project.externalId,
+    hostname: state.Project.project.jiraHostname,
+    jiraProjectName: state.Project.project.jiraProjectName
+  };
+};

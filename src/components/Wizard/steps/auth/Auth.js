@@ -31,6 +31,9 @@ class AuthForm extends Component {
   static propTypes = {
     authData: PropTypes.object,
     authDataStep: PropTypes.object,
+    autoFillField: PropTypes.object,
+    disabledFields: PropTypes.array,
+    excludeFields: PropTypes.array,
     isJiraAuthorizeError: PropTypes.any,
     jiraCaptachaLink: PropTypes.any,
     lang: PropTypes.string,
@@ -66,7 +69,17 @@ class AuthForm extends Component {
   }
 
   render() {
-    const { lang, nextStep, onChange, authData, isJiraAuthorizeError, jiraCaptachaLink } = this.props;
+    const {
+      lang,
+      nextStep,
+      onChange,
+      authData,
+      isJiraAuthorizeError,
+      jiraCaptachaLink,
+      disabledFields = [],
+      excludeFields = [],
+      autoFillField = {}
+    } = this.props;
     const formLayout = {
       firstCol: 3,
       secondCol: 9
@@ -87,9 +100,10 @@ class AuthForm extends Component {
               {this.validator.validate(
                 (handleBlur, shouldMarkError) => (
                   <ValidatedInput
+                    disabled={disabledFields.indexOf('server') !== -1}
                     placeholder={localize[lang].SERVER}
                     onChange={e => onChange('server', e)}
-                    value={authData.server}
+                    value={autoFillField.server ? autoFillField.server : authData.server}
                     name="server"
                     onBlur={handleBlur}
                     shouldMarkError={shouldMarkError}
@@ -149,35 +163,37 @@ class AuthForm extends Component {
             </Col>
           </Row>
         </label>
-        <label className={css.formField}>
-          <Row>
-            <Col
-              xs={12}
-              sm={formLayout.firstCol}
-              className={classnames(css.leftColumn, css.emailLabel)}
-              data-tip={localize[lang].EMAIL_FIELD_TIP}
-            >
-              {localize[lang].EMAIL}
-            </Col>
-            <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-              {this.validator.validate(
-                (handleBlur, shouldMarkError) => (
-                  <ValidatedInput
-                    placeholder={localize[lang].EMAIL}
-                    label="email"
-                    onChange={e => onChange('email', e)}
-                    value={authData.email}
-                    onBlur={handleBlur}
-                    shouldMarkError={shouldMarkError}
-                    errorText={localize[lang].FIELD_IS_NOT_FILLED}
-                  />
-                ),
-                'email',
-                errors.email
-              )}
-            </Col>
-          </Row>
-        </label>
+        {excludeFields.indexOf('email') === -1 && (
+          <label className={css.formField}>
+            <Row>
+              <Col
+                xs={12}
+                sm={formLayout.firstCol}
+                className={classnames(css.leftColumn, css.emailLabel)}
+                data-tip={localize[lang].EMAIL_FIELD_TIP}
+              >
+                {localize[lang].EMAIL}
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                {this.validator.validate(
+                  (handleBlur, shouldMarkError) => (
+                    <ValidatedInput
+                      placeholder={localize[lang].EMAIL}
+                      label="email"
+                      onChange={e => onChange('email', e)}
+                      value={authData.email}
+                      onBlur={handleBlur}
+                      shouldMarkError={shouldMarkError}
+                      errorText={localize[lang].FIELD_IS_NOT_FILLED}
+                    />
+                  ),
+                  'email',
+                  errors.email
+                )}
+              </Col>
+            </Row>
+          </label>
+        )}
         {isJiraAuthorizeError &&
           jiraCaptachaLink && (
             <div data-tip={localize[lang].LOGIN_VIA_JIRA_TIP} className={css.jiraCaptchaLink}>

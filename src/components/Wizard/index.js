@@ -10,20 +10,14 @@ import {
   getProjectAssociation,
   getJiraIssueAndStatusTypes
 } from '../../actions/Jira';
-import { usersSelector } from '../../selectors/Project';
-
-const selectJiraProject = state => {
-  return {
-    id: state.Project.project.externalId,
-    hostname: state.Project.project.jiraHostname,
-    jiraProjectName: state.Project.project.jiraProjectName
-  };
-};
+import { selectJiraProject, usersSelector } from '../../selectors/Project';
+import { getProjectInfo } from '../../actions/Project';
 
 const mapStateToProps = state => {
   return {
     lang: state.Localize.lang,
     simtrackProjectId: state.Project.project.id,
+    simtrackProjectName: state.Project.project.name,
     simtrackProjectUsers: usersSelector(state),
     projects: state.Jira.projects,
     project: selectJiraProject(state),
@@ -38,6 +32,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
+  getProjectInfo,
   jiraAuthorize,
   associateWithJiraProject,
   getJiraProjects,
