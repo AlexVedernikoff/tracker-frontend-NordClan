@@ -13,7 +13,6 @@ import Portfolio from './pages/Portfolio';
 import AgileBoard from './pages/ProjectPage/AgileBoard';
 import Info from './pages/ProjectPage/Info';
 import Settings from './pages/ProjectPage/Settings';
-//import Planning from './pages/ProjectPage/Planning';
 import RoadMap from './pages/ProjectPage/RoadMap/RoadMap';
 import Metrics from './pages/ProjectPage/Metrics';
 import TaskList from './pages/ProjectPage/TaskList';
