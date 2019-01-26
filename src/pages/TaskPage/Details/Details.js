@@ -482,7 +482,7 @@ class Details extends Component {
             <tr>
               <td>{localize[lang].GOAL}</td>
               <td>
-                {this.props.task.statusId !== TASK_STATUS_CLOSED ? (
+                {this.props.task.statusId !== TASK_STATUSES.CLOSED ? (
                   <span onClick={this.openTaskGoalModal} className={css.editableCell}>
                     {goalTag}
                     <span className={css.editIcon}>
