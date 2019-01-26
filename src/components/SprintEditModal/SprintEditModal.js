@@ -39,6 +39,17 @@ class SprintEditModal extends Component {
     };
   }
 
+  componentDidMount = () => {
+    const { sprint } = this.props;
+    if (sprint.factStartDate) {
+      this.handleDayFromChange(sprint.factStartDate);
+    }
+
+    if (sprint.factFinishDate) {
+      this.handleDayToChange(sprint.factFinishDate);
+    }
+  };
+
   checkNullInputs = () => {
     return !!(
       this.state.sprint.sprintName.length &&
