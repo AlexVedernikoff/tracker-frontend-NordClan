@@ -276,20 +276,22 @@ class SetAssociationForm extends Component {
 
   nextAssociationStep = () => {
     const errors = this.getFormErrors();
-    errors.length === 0
-      ? this.props.mergeAssociationState(
-          {
-            selectedSimtrackCol: null,
-            selectedJiraCols: []
-          },
-          () => {
-            this.setState({
-              currentStep: this.stepsManager[this.state.currentStep].forwardStep(),
-              errors: []
-            });
-          }
-        )
-      : this.setState({ errors });
+    if (errors.length === 0) {
+      this.props.mergeAssociationState(
+        {
+          selectedSimtrackCol: null,
+          selectedJiraCols: []
+        },
+        () => {
+          this.setState({
+            currentStep: this.stepsManager[this.state.currentStep].forwardStep(),
+            errors: []
+          });
+        }
+      );
+    } else {
+      this.setState({ errors });
+    }
   };
 
   previousAssociationStep = () => {

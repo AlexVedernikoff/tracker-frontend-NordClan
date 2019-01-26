@@ -32,7 +32,7 @@ class FinishForm extends Component {
   }
 
   render() {
-    const { lang, nextStep, previousStep, token, jiraProjectId } = this.props;
+    const { lang, nextStep, previousStep } = this.props;
     return (
       <div className={css.mainContainer}>
         <h3>

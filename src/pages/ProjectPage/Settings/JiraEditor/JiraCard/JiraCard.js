@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as css from './JiraCard.scss';
-import localize from './JiraCard.json';
-import ConfirmModal from '../../../../../components/ConfirmModal/ConfirmModal';
-import { IconClose, IconJira } from '../../../../../components/Icons';
+import { IconJira } from '../../../../../components/Icons';
 
 class JiraCard extends Component {
   static propTypes = {
