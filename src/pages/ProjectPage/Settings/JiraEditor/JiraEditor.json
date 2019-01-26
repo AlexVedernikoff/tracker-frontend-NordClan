@@ -1,0 +1,10 @@
+{
+  "en": {
+    "ASSOCIATE_PROJECT_WITH_JIRA": "Associate project with Jira",
+    "SYNCHRONIZATION_WITH_JIRA": "Synchronization with Jira"
+  },
+  "ru": {
+    "ASSOCIATE_PROJECT_WITH_JIRA": "Связать проект с Jira",
+    "SYNCHRONIZATION_WITH_JIRA": "Синхронизация с Jira"
+  }
+}

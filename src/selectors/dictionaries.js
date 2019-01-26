@@ -4,24 +4,24 @@ import { getFullName } from '../utils/NameLocalisation';
 //todo: ST-12988: убрать дублирование локализаций, либо убрать локализацию с клиента
 const MagicActiveTypesDictionary = {
   en: {
-    'IMPLEMENTATION': 'Implementation',
-    'MEETING': 'Meeting',
-    'PRESALE': 'Presale and estimation',
-    'EDUCATION': 'Education',
-    'VACATION': 'Vacation',
-    'BUSINESS_TRIP': 'Business trip',
-    'CONTROL': 'Managment',
-    'HOSPITAL': 'On sick leave'
+    IMPLEMENTATION: 'Implementation',
+    MEETING: 'Meeting',
+    PRESALE: 'Presale and estimation',
+    EDUCATION: 'Education',
+    VACATION: 'Vacation',
+    BUSINESS_TRIP: 'Business trip',
+    CONTROL: 'Managment',
+    HOSPITAL: 'On sick leave'
   },
   ru: {
-    'IMPLEMENTATION': 'Implementation',
-    'MEETING': 'Совещание',
-    'PRESALE': 'Преселлинг и оценка',
-    'EDUCATION': 'Обучение',
-    'VACATION': 'Отпуск',
-    'BUSINESS_TRIP': 'Командировка',
-    'CONTROL': 'Управление',
-    'HOSPITAL': 'Больничный'
+    IMPLEMENTATION: 'Implementation',
+    MEETING: 'Совещание',
+    PRESALE: 'Преселлинг и оценка',
+    EDUCATION: 'Обучение',
+    VACATION: 'Отпуск',
+    BUSINESS_TRIP: 'Командировка',
+    CONTROL: 'Управление',
+    HOSPITAL: 'Больничный'
   }
 };
 
