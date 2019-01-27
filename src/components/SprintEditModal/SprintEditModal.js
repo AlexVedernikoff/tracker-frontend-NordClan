@@ -144,7 +144,7 @@ class SprintEditModal extends Component {
   };
 
   validateAllFields = () => {
-    return !this.checkNullInputs();
+    return !this.checkNullInputs() || !this.validateDates();
   };
 
   render() {
