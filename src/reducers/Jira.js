@@ -1,6 +1,9 @@
 import * as JiraActions from '../constants/Jira';
 
-const InitialState = {};
+const InitialState = {
+  projects: [],
+  project: {}
+};
 
 export default function Jira(state = InitialState, action) {
   switch (action.type) {
@@ -14,27 +17,28 @@ export default function Jira(state = InitialState, action) {
       return {
         ...state,
         isJiraAuthorizeSuccess: true,
+        isJiraAuthorizeError: null,
         token: action.token
       };
     case JiraActions.JIRA_AUTHORIZE_ERROR:
       return {
         ...state,
-        isJiraAuthorizeError: true
+        isJiraAuthorizeError: true,
+        jiraCaptachaLink: action.captcha
       };
 
     // -----------------
 
-    case JiraActions.JIRA_CREATE_PROJECT_START:
+    case JiraActions.JIRA_ASSOCIATE_PROJECT_START:
       return {
         ...state,
         isJiraCreateProjectStart: true
       };
 
-    case JiraActions.JIRA_CREATE_PROJECT_SUCCESS:
+    case JiraActions.JIRA_ASSOCIATE_PROJECT_SUCCESS:
       return {
         ...state,
-        isJiraCreateProjectSuccess: true,
-        project: action.project
+        isJiraCreateProjectSuccess: true
       };
     case JiraActions.JIRA_CREATE_PROJECT_ERROR:
       return {
@@ -123,8 +127,17 @@ export default function Jira(state = InitialState, action) {
         ...state,
         isGetProjectAssociationError: true
       };
-
     // ------------------
+
+    case JiraActions.GET_JIRA_ISSUE_AND_STATUS_TYPES_SUCCESS:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          issueTypes: action.data.issue_type,
+          statusTypes: action.data.status_type
+        }
+      };
 
     default:
       return {

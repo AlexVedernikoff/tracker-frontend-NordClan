@@ -1,11 +1,13 @@
 {
   "en": {
-    "SYNC_HEADER": "Синхронизация",
-    "SYNC_BODY": "Хотите синхронизовать данные проектов?"
+    "SYNC_HEADER": "Confirm binding to jira",
+    "SYNC_BODY": "Link the project with jira?",
+    "CONFIRM_SYNC": "Want to sync project data?"
   },
 
   "ru": {
-    "SYNC_HEADER": "Синхронизация",
-    "SYNC_BODY": "Начать процесс синхронизации данных?"
+    "SYNC_HEADER": "Подтверждение связывания с jira",
+    "SYNC_BODY": "Связать проект с jira?",
+    "CONFIRM_SYNC": "Хотите синхронизировать данные проектов?"
   }
 }

@@ -8,7 +8,9 @@
   margin-bottom: 1rem;
   border: 1px solid darken($color-gray, 5%);
   min-height: 93px;
-  &.INPROGRESS {border-color: $color-green};
+  &.INPROGRESS {
+    border-color: $color-green;
+  }
   &.INFOCUS {
     background-color: $color-lightgray;
   }
@@ -19,6 +21,8 @@
   margin: 0 0 8px 0;
   text-decoration: underline;
   color: #5ea5e0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .sprintTitle:hover {
   cursor: pointer;

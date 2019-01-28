@@ -9,7 +9,8 @@
     "SIMTRACK_USER": "SimTrack User",
     "JIRA_EMAIL": "Jira User Email",
     "NAME": "Name",
-    "GO_AHEAD": "Forward"
+    "GO_AHEAD": "Forward",
+    "GO_BACK": "Backward"
   },
 
   "ru": {
@@ -22,6 +23,7 @@
     "SIMTRACK_USER": "Пользователь SimTrack",
     "JIRA_EMAIL": "Почта пользователя Jira",
     "NAME": "Имя",
-    "GO_AHEAD": "Вперед"
+    "GO_AHEAD": "Вперед",
+    "GO_BACK": "Назад"
   }
 }
