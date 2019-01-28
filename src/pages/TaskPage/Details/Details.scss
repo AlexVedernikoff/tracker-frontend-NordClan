@@ -121,7 +121,19 @@
 }
 
 .editableCell {
-  cursor: pointer;
+  &__canEdit {
+    cursor: pointer;
+
+    &:hover {
+      color: $color-dark;
+      color: lighten($color-dark, 30%);
+
+      .editIcon {
+        opacity: 0.7;
+        transition: $transition;
+      }
+    }
+  }
 
   .editIcon {
     display: inline-block;
@@ -130,15 +142,5 @@
     line-height: 0;
     opacity: 0;
     transition: $transition;
-  }
-
-  &:hover {
-    color: $color-dark;
-    color: lighten($color-dark, 30%);
-
-    .editIcon {
-      opacity: 0.7;
-      transition: $transition;
-    }
   }
 }
