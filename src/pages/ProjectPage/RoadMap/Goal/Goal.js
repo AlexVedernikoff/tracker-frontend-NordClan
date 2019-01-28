@@ -29,7 +29,8 @@ class Sprint extends Component {
       budget,
       tasksCount,
       removedFromSprint,
-      removedToSprint
+      removedToSprint,
+      item
     };
 
     return (

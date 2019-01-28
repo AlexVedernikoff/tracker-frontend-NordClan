@@ -30,7 +30,6 @@ import { openCreateTaskModal, getProjectUsers, getProjectInfo, getProjectTags } 
 import { showNotification } from '../../../actions/Notifications';
 import { getDevOpsUsers } from '../../../actions/Users';
 import { addActivity } from '../../../actions/Timesheets';
-import { getGoalsByProject } from '../../../actions/Goals';
 
 import { sortedUsersSelector, usersSelector } from '../../../selectors/Project';
 import { TASK_STATUSES } from '../../../constants/TaskStatuses';
@@ -57,7 +56,6 @@ class AgileBoard extends Component {
       this.getTasks();
     }
     if (!this.props.devOpsUsers) this.props.getDevOpsUsers();
-    this.props.getGoalsByProject(this.props.params.projectId);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -512,8 +510,7 @@ const mapDispatchToProps = {
   getProjectUsers,
   getProjectInfo,
   getProjectTags,
-  showNotification,
-  getGoalsByProject
+  showNotification
 };
 
 export default connect(

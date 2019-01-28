@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router';
+import { connect } from 'react-redux';
 
 import { IconArrowLeft } from '../../../../../components/Icons';
 import styles from './Meta.scss';
@@ -7,9 +9,11 @@ import styles from './Meta.scss';
 class Meta extends Component {
   static propTypes = {
     budget: PropTypes.number,
+    item: PropTypes.object,
+    project: PropTypes.object,
     removedFromSprint: PropTypes.object,
     removedToSprint: PropTypes.object,
-    tasksCount: PropTypes.number
+    tasksCount: PropTypes.string
   };
 
   constructor(props) {
@@ -22,7 +26,7 @@ class Meta extends Component {
     const budgetNode = !!budget && <div className={styles.item}>{budget} ч.</div>;
     const tasksCountNode = !!tasksCount && (
       <div className={styles.item}>
-        <a href="#">{tasksCount} задач</a>
+        <Link to={`/projects/${this.props.project.id}?goal[]=${this.props.item.id}`}>{tasksCount} задач</Link>
       </div>
     );
     const removedFromSprintNode = !!removedFromSprint && (
@@ -48,4 +52,15 @@ class Meta extends Component {
   }
 }
 
-export default Meta;
+const mapStateToProps = state => ({
+  project: state.Project.project
+});
+
+const mapDispatchToProps = {
+  //
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Meta);

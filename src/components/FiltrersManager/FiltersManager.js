@@ -36,6 +36,7 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
 
     applyFiltersFromUrl() {
       const filtersFromUrl = this.getFiltersFromUrl();
+      console.log('!filtersFromUrl', JSON.stringify(filtersFromUrl));
       this.updateStateFilters(filtersFromUrl, () => {
         if (this.useStorage) {
           this.saveFiltersToStorage();

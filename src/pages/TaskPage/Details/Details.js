@@ -15,7 +15,6 @@ import { IconEdit } from '../../../components/Icons';
 import getTypeById from '../../../utils/TaskTypes';
 import { getProjectUsers, getProjectSprints } from '../../../actions/Project';
 import { getTask } from '../../../actions/Task';
-import { getGoalsByProject } from '../../../actions/Goals';
 import { connect } from 'react-redux';
 import * as css from './Details.scss';
 import moment from 'moment';
@@ -47,7 +46,6 @@ class Details extends Component {
     addActivity: PropTypes.func,
     canEdit: PropTypes.bool,
     devOpsUsers: PropTypes.array,
-    getGoalsByProject: PropTypes.func.isRequired,
     getProjectSprints: PropTypes.func.isRequired,
     getProjectUsers: PropTypes.func.isRequired,
     getTask: PropTypes.func.isRequired,
@@ -211,7 +209,6 @@ class Details extends Component {
 
   // Действия с целью
   openTaskGoalModal = () => {
-    this.props.getGoalsByProject(this.props.task.project.id);
     this.setState({ isTaskGoalModalOpen: true });
   };
 
@@ -618,8 +615,7 @@ const mapDispatchToProps = {
   getProjectSprints,
   getTask,
   getTaskSpent,
-  getDevOpsUsers,
-  getGoalsByProject
+  getDevOpsUsers
 };
 
 export default connect(
