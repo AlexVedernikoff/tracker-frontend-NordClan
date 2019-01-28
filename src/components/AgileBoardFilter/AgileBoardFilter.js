@@ -38,7 +38,7 @@ class AgileBoardFilter extends React.Component {
   componentDidUpdate = prevProps => {
     ReactTooltip.rebuild();
 
-    const { currentSprint } = this.props;
+    const { currentSprint, goal } = this.props;
 
     if (this.isActiveSprintsChanged) {
       this.props.setFilterValue('changedSprint', currentSprint.map(s => s.value), this.updateFilterList);
@@ -134,6 +134,8 @@ class AgileBoardFilter extends React.Component {
         return this.props.sortedSprints.find(el => el.value === value).label;
       case 'typeId':
         return typeOptions.find(el => el.value === value).label;
+      case 'goal':
+        return this.props.goals.find(el => el.id === value).name;
       default:
         return value;
     }
@@ -224,14 +226,14 @@ class AgileBoardFilter extends React.Component {
       }
       return result;
     }, []);
-
     this.setState({
       allFilters: [
         ...selectedFilters,
         ...this.createSelectedOption([], filters.changedSprint, 'changedSprint'),
         ...this.createSelectedOption([], filters.typeId, 'typeId'),
         ...this.createSelectedOption([], filters.performerId, 'performerId'),
-        ...this.createSelectedOption([], filters.filterTags, 'filterTags')
+        ...this.createSelectedOption([], filters.filterTags, 'filterTags'),
+        ...this.createSelectedOption([], filters.goal, 'goal')
       ]
     });
   };

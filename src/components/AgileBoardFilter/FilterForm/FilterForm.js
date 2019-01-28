@@ -13,6 +13,7 @@ import Priority from '../../Priority';
 import Checkbox from '../../Checkbox';
 import PerformerFilter from '../../PerformerFilter';
 import SprintSelector from '../../SprintSelector';
+import GoalSelector from '../../GoalSelector';
 
 import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
 import { storageType } from '../../FiltrersManager/helpers';
@@ -56,6 +57,8 @@ class FilterForm extends React.Component {
     this.props.setFilterValue('performerId', options.map(op => op.value), this.updateListsAndTasks);
   selectTagForFiltrated = options =>
     this.props.setFilterValue('filterTags', options.map(op => op.value), this.updateListsAndTasks);
+  onGoalsFilterChange = options =>
+    this.props.setFilterValue('goal', options.map(op => op.value), this.updateListsAndTasks);
 
   getFilterTagsProps() {
     const {
@@ -203,6 +206,18 @@ class FilterForm extends React.Component {
               onChange={this.onAuthorFilterChange}
               noResultsText={localize[lang].NO_RESULTS}
               options={this.props.authorOptions}
+            />
+          </Col>
+        </Row>
+        <Row className={css.filtersRow}>
+          <Col xs={12} sm={6} className={css.changedGoal}>
+            <GoalSelector
+              multi
+              searchable
+              clearable={false}
+              value={filters.goal}
+              onChange={this.onGoalsFilterChange}
+              options={this.props.goals}
             />
           </Col>
           <Col className={css.filterButtonCol}>

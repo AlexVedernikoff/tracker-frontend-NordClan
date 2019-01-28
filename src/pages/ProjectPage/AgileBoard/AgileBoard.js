@@ -30,6 +30,7 @@ import { openCreateTaskModal, getProjectUsers, getProjectInfo, getProjectTags } 
 import { showNotification } from '../../../actions/Notifications';
 import { getDevOpsUsers } from '../../../actions/Users';
 import { addActivity } from '../../../actions/Timesheets';
+import { getGoalsByProject } from '../../../actions/Goals';
 
 import { sortedUsersSelector, usersSelector } from '../../../selectors/Project';
 import { TASK_STATUSES } from '../../../constants/TaskStatuses';
@@ -56,6 +57,7 @@ class AgileBoard extends Component {
       this.getTasks();
     }
     if (!this.props.devOpsUsers) this.props.getDevOpsUsers();
+    this.props.getGoalsByProject(this.props.params.projectId);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -94,7 +96,8 @@ class AgileBoard extends Component {
           typeId: filters.typeId || null,
           name: filters.name || null,
           tags: filters.filterTags,
-          performerId: filters.performerId || null
+          performerId: filters.performerId || null,
+          goalId: filters.goal || null
         };
     this.props.getTasks(options);
   };
@@ -462,6 +465,7 @@ AgileBoard.propTypes = {
   getProjectUsers: PropTypes.func,
   getTasks: PropTypes.func.isRequired,
   globalRole: PropTypes.string,
+  goals: PropTypes.array,
   isCreateTaskModalOpen: PropTypes.bool,
   lang: PropTypes.string,
   lastCreatedTask: PropTypes.object,
@@ -494,7 +498,8 @@ AgileBoard.propTypes = {
 const mapStateToProps = state => ({
   ...agileBoardSelector(state),
   sortedUsers: sortedUsersSelector(state),
-  unsortedUsers: usersSelector(state)
+  unsortedUsers: usersSelector(state),
+  goals: state.Goals.goals
 });
 
 const mapDispatchToProps = {
@@ -507,7 +512,8 @@ const mapDispatchToProps = {
   getProjectUsers,
   getProjectInfo,
   getProjectTags,
-  showNotification
+  showNotification,
+  getGoalsByProject
 };
 
 export default connect(
