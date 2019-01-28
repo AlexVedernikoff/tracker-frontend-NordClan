@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
-import sortBy from 'lodash/sortBy';
 import classnames from 'classnames';
 
 import * as css from './GoalSelector.scss';
@@ -10,15 +8,14 @@ import localize from './GoalSelector.json';
 import layoutAgnosticFilter from '../../utils/layoutAgnosticFilter';
 import { IconSearch } from '../../components/Icons/index.js';
 
-const dateFormat = 'DD.MM.YYYY';
 const boardIconSearchStyle = { position: 'absolute', width: 22, height: 22, bottom: 4, left: 23 };
 const taskListIconSearchStyle = { position: 'absolute', width: 22, height: 22, bottom: 4, left: 15 };
 
 export default class GoalSelector extends Component {
   static propTypes = {
+    goals: PropTypes.array,
     lang: PropTypes.string,
     onChange: PropTypes.func,
-    goals: PropTypes.array,
     useId: PropTypes.bool,
     value: PropTypes.oneOfType([PropTypes.object, PropTypes.number, PropTypes.array])
   };
