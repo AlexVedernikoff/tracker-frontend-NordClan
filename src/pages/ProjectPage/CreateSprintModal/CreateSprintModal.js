@@ -113,8 +113,9 @@ class CreateSprintModal extends Component {
 
   render() {
     const { lang } = this.props;
-    const formattedDayFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('DD.MM.YYYY') : '';
-    const formattedDayTo = this.state.dateTo ? moment(this.state.dateTo).format('DD.MM.YYYY') : '';
+    const { dateFrom, dateTo } = this.state;
+    const formattedDayFrom = dateFrom ? moment(dateFrom).format('DD.MM.YYYY') : '';
+    const formattedDayTo = dateTo ? moment(dateTo).format('DD.MM.YYYY') : '';
 
     const formLayout = {
       firstCol: 4,
@@ -157,7 +158,7 @@ class CreateSprintModal extends Component {
                   value={formattedDayFrom}
                   onDayChange={this.handleDayFromChange}
                   placeholder={localize[lang].ENTER_START_DATE}
-                  // disabledDataRanges={this.props.sprintsDateRanges}
+                  disabledDataRanges={[{ after: dateTo && moment(dateTo).toDate() }]}
                 />
               </Col>
             </Row>
@@ -171,7 +172,7 @@ class CreateSprintModal extends Component {
                   value={formattedDayTo}
                   onDayChange={this.handleDayToChange}
                   placeholder={localize[lang].ENTER_END_DATE}
-                  //disabledDataRanges={this.props.sprintsDateRanges}
+                  disabledDataRanges={[{ before: dateFrom && moment(dateFrom).toDate() }]}
                 />
               </Col>
             </Row>
