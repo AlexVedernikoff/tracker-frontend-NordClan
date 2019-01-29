@@ -10,7 +10,7 @@ import PerformerModal from '../../../components/PerformerModal';
 import SprintModal from '../../../components/SprintModal';
 import TaskTypeModal from '../../../components/TaskTypeModal';
 import Checkbox from '../../../components/Checkbox/Checkbox';
-import { IconEdit } from '../../../components/Icons';
+import EditableRow from './EditableRow';
 import getTypeById from '../../../utils/TaskTypes';
 import { getProjectUsers, getProjectSprints } from '../../../actions/Project';
 import { getTask } from '../../../actions/Task';
@@ -229,7 +229,7 @@ class Details extends Component {
   };
 
   render() {
-    const { task, sprints, taskTypes, timeSpent, isExternal, lang, users, unsortedUsers, user } = this.props;
+    const { task, sprints, taskTypes, timeSpent, isExternal, lang, users, unsortedUsers, user, canEdit } = this.props;
     const tags = task.tags.map((tag, i) => {
       const tagName = typeof tag === 'object' ? tag.name : tag;
       return <Tag key={i} name={tagName} taggable="task" taggableId={task.id} dataTip={tagName} />;
@@ -369,43 +369,43 @@ class Details extends Component {
                 </td>
               </tr>
             ) : null}
-            <tr>
-              <td>{localize[lang].TASK_TYPE}</td>
-              <td>
-                <span onClick={this.openTaskTypeModal} className={css.editableCell}>
-                  {getTypeById(task.typeId, taskTypes)}
-                  <span className={css.editIcon}>
-                    <IconEdit />
-                  </span>
-                </span>
-              </td>
-            </tr>
+
+            <EditableRow
+              title={localize[lang].TASK_TYPE}
+              value={getTypeById(task.typeId, taskTypes)}
+              handler={this.openTaskTypeModal}
+              canEdit={canEdit}
+            />
+
             <tr>
               <td>{localize[lang].FROM_CLIENT}</td>
               <td className={css.checkAttribute}>
-                <Checkbox checked={task.isTaskByClient} onChange={this.changeIsTaskByClient} />
+                <Checkbox
+                  checked={task.isTaskByClient}
+                  disabled={!this.props.canEdit}
+                  onChange={this.changeIsTaskByClient}
+                />
               </td>
             </tr>
+
             <tr>
               <td>{localize[lang].DEV_OPS}</td>
               <td className={css.checkAttribute}>
-                <Checkbox checked={task.isDevOps} onChange={this.changeDevOpsAttribute} />
+                <Checkbox
+                  checked={task.isDevOps}
+                  disabled={!this.props.canEdit}
+                  onChange={this.changeDevOpsAttribute}
+                />
               </td>
             </tr>
-            <tr>
-              <td>{localize[lang].SPRINT}</td>
-              <td>
-                <span className={css.editableCell} onClick={this.openSprintModal}>
-                  {task.sprint ? task.sprint.name : 'Backlog'}
-                  <span className={css.editIcon}>
-                    <IconEdit />
-                  </span>
-                </span>
-                {/*<Link to={`/projects/${task.projectId}/agile-board`}>*/}
-                {/*{task.sprint ? task.sprint.name : 'Backlog'}*/}
-                {/*</Link>*/}
-              </td>
-            </tr>
+
+            <EditableRow
+              title={localize[lang].SPRINT}
+              value={task.sprint ? task.sprint.name : 'Backlog'}
+              handler={this.openSprintModal}
+              canEdit={canEdit}
+            />
+
             <tr>
               <td>{localize[lang].TAGS}</td>
               <td className={css.tags}>
@@ -420,31 +420,26 @@ class Details extends Component {
                 </Tags>
               </td>
             </tr>
+
             {task.author ? (
               <tr>
                 <td>{localize[lang].AUTHOR}</td>
                 <td>{getFullName(task.author)}</td>
               </tr>
             ) : null}
-            <tr>
-              <td>{localize[lang].PERFORMER}</td>
-              <td>
-                {this.props.task.statusId !== TASK_STATUSES.CLOSED ? (
-                  <span onClick={this.openPerformerModal} className={css.editableCell}>
-                    {performerTag}
-                    <span className={css.editIcon}>
-                      <IconEdit />
-                    </span>
-                  </span>
-                ) : (
-                  <span>{performerTag}</span>
-                )}
-              </td>
-            </tr>
+
+            <EditableRow
+              title={localize[lang].PERFORMER}
+              value={performerTag}
+              handler={this.openPerformerModal}
+              canEdit={canEdit}
+            />
+
             <tr>
               <td>{localize[lang].DATE_OF_CREATE}</td>
               <td>{moment(this.props.task.createdAt).format('DD.MM.YYYY')}</td>
             </tr>
+
             {!isExternal
               ? [
                   <tr key="plannedExecutionTime">
@@ -480,6 +475,7 @@ class Details extends Component {
                   </tr>
                 ]
               : null}
+
             <tr>
               <td>{localize[lang].SPENT_QA_TIME}</td>
               <td>
