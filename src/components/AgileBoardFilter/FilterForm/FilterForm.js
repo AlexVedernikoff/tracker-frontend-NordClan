@@ -18,6 +18,7 @@ import GoalSelector from '../../GoalSelector';
 import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
 import { storageType } from '../../FiltrersManager/helpers';
 import { isOnlyDevOps } from '../../../utils/isDevOps';
+import { checkIsAdminInProject } from '../../../utils/isAdmin';
 
 const storage = storageType === 'local' ? localStorage : sessionStorage;
 
@@ -210,16 +211,18 @@ class FilterForm extends React.Component {
           </Col>
         </Row>
         <Row className={css.filtersRow}>
-          <Col xs={12} sm={6} className={css.changedGoal}>
-            <GoalSelector
-              multi
-              searchable
-              clearable={false}
-              value={filters.goal}
-              onChange={this.onGoalsFilterChange}
-              options={this.props.goals}
-            />
-          </Col>
+          {checkIsAdminInProject(user, project.id) ? (
+            <Col xs={12} sm={6} className={css.changedGoal}>
+              <GoalSelector
+                multi
+                searchable
+                clearable={false}
+                value={filters.goal}
+                onChange={this.onGoalsFilterChange}
+                options={this.props.goals}
+              />
+            </Col>
+          ) : null}
           <Col className={css.filterButtonCol}>
             <Button
               onClick={() => this.clearFilters('sprints')}
