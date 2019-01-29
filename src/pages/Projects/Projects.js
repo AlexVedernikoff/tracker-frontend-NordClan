@@ -44,6 +44,7 @@ class Projects extends Component {
       activePage: 1,
       filterSelectedTypes: [],
       filterRequestTypes: [],
+      wasTouchedAfterRequest: undefined,
       selectedType: 1,
       ...projectListFilters
     };
@@ -204,9 +205,10 @@ class Projects extends Component {
   handleModalChange = event => {
     const { target } = event;
     const { name } = event.target;
-    this.setState({
-      [name]: target.value.trim()
-    });
+    this.setState(prevState => ({
+      [name]: target.value.trim(),
+      wasTouchedAfterRequest: prevState.wasTouchedAfterRequest !== undefined ? true : undefined
+    }));
   };
 
   handleModalTypeSelected = type => {
@@ -233,6 +235,9 @@ class Projects extends Component {
       },
       this.state.openProjectPage
     );
+    this.setState({
+      wasTouchedAfterRequest: false
+    });
   };
 
   sendRequestAndOpen = () => {
@@ -344,7 +349,15 @@ class Projects extends Component {
 
   render() {
     const { lang, isProjectsReceived, pagesCount } = this.props;
-    const { filteredInProgress, filteredInHold, filteredFinished, filterSelectedTypes, dateFrom, dateTo } = this.state;
+    const {
+      filteredInProgress,
+      filteredInHold,
+      filteredFinished,
+      filterSelectedTypes,
+      dateFrom,
+      dateTo,
+      wasTouchedAfterRequest
+    } = this.state;
     const formattedDayFrom = dateFrom ? moment(dateFrom).format('DD.MM.YYYY') : '';
     const formattedDayTo = dateTo ? moment(dateTo).format('DD.MM.YYYY') : '';
     const isAdmin = this.props.globalRole === ADMIN;
@@ -458,7 +471,7 @@ class Projects extends Component {
           selectedPortfolio={this.state.selectedPortfolio}
           projectName={this.state.projectName}
           projectPrefix={this.state.projectPrefix}
-          prefixErrorText={this.getFieldError('prefix')}
+          prefixErrorText={!wasTouchedAfterRequest ? this.getFieldError('prefix') : null}
           onTypeSelect={this.handleModalTypeSelected}
           selectedType={this.state.selectedType}
         />
