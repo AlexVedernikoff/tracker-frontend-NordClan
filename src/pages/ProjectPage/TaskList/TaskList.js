@@ -877,6 +877,7 @@ class TaskList extends Component {
         ) : null}
         {this.props.isCreateTaskModalOpen ? (
           <CreateTaskModal
+            afterCreate={this.loadTasks}
             selectedSprintValue={singleSprint}
             project={this.props.project}
             defaultPerformerId={performerId}

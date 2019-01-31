@@ -117,6 +117,10 @@ class CreateTaskModal extends Component {
         if (this.state.tags.length) {
           this.props.createTags(this.state.tags.join(), 'task', id);
         }
+
+        if (this.props.afterCreate) {
+          this.props.afterCreate();
+        }
       });
   };
 
@@ -425,6 +429,7 @@ class CreateTaskModal extends Component {
 }
 
 CreateTaskModal.propTypes = {
+  afterCreate: PropTypes.func,
   closeCreateTaskModal: PropTypes.func.isRequired,
   column: PropTypes.string,
   createTags: PropTypes.func.isRequired,
