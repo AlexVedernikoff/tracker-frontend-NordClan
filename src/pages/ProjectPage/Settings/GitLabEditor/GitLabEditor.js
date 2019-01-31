@@ -136,7 +136,13 @@ class GitLabEditor extends Component {
   };
 
   selectProjectName = e => {
-    this.setState({ projectName: e.target.value });
+    const pattern = /^[A-Za-zА-Яа-я0-9 _]*$/;
+    const result = pattern.test(e.target.value);
+    if (result === true) {
+      this.setState({
+        projectName: e.target.value
+      });
+    }
   };
 
   createProject = () => {

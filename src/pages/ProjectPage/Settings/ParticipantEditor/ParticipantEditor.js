@@ -40,6 +40,7 @@ class ParticipantEditor extends Component {
       isModalOpenAddUser: false,
       isModalOpenAddExternal: false,
       isModalOpenWizard: false,
+      tabIndex: 0,
       ...getEmptyState()
     };
     this.ROLES_FULL_NAME = [
@@ -78,6 +79,12 @@ class ParticipantEditor extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.id !== this.props.id) {
       this.props.getProjectUsers(nextProps.id, true);
+      this.handleChangeTab(0);
+    }
+    if (nextProps.gitlabProjects.length && this.state.tabIndex === 1) {
+      this.handleChangeTab(0);
+    } else if (!nextProps.gitlabProjects.length && this.state.tabIndex === 0) {
+      this.handleChangeTab(1);
     }
   }
 
@@ -253,6 +260,10 @@ class ParticipantEditor extends Component {
     this.setState({ isModalOpenAddExternal: true });
   };
 
+  handleChangeTab = index => {
+    this.setState({ tabIndex: index });
+  };
+
   checkIsPmInProject = () =>
     this.props.users.some(user => {
       if (user.id === this.props.user.id) {
@@ -296,22 +307,49 @@ class ParticipantEditor extends Component {
     const isProjectAdmin = this.checkIsAdminInProject();
     return (
       <div className={css.property}>
-        <h2>{localize[lang].PARTICIPANTS}</h2>
+        <Row>
+          <Col xs={3}>
+            <h2>{localize[lang].PARTICIPANTS}</h2>
+          </Col>
+          <Col xs={9}>
+            <div className={css.tabs}>
+              {gitlabProjects.length ? (
+                <div
+                  className={classnames(css.tab, { [css.tabActive]: this.state.tabIndex === 0 })}
+                  onClick={() => this.handleChangeTab(0)}
+                >
+                  <p>GitLab</p>
+                  <small>{localize[lang].ACCESS_REP}</small>
+                </div>
+              ) : null}
+              <div
+                className={classnames(css.tab, { [css.tabActive]: this.state.tabIndex === 1 })}
+                onClick={() => this.handleChangeTab(1)}
+              >
+                <p>SimTrack</p>
+                <small>{localize[lang].PROJECT_ROLES}</small>
+              </div>
+            </div>
+          </Col>
+        </Row>
+
         <Row className={classnames(css.memberRow, css.memberHeader)}>
           <Col xs={9} xsOffset={3}>
             <Row>
-              {gitlabProjects.map(project => (
-                <Col xs lg key={project.id}>
-                  <h4>
-                    <div className={`${css.cell} ${css.gitlabProjectTableCaptionWrap}`}>
-                      <div className={css.gitlabProjectTableCaption} data-tip={project.name}>
-                        <span>{project.name}</span>
-                      </div>
-                    </div>
-                  </h4>
-                </Col>
-              ))}
-              {this.ROLES_FULL_NAME
+              {this.state.tabIndex === 0 && gitlabProjects.length
+                ? gitlabProjects.map(project => (
+                    <Col xs lg key={project.id}>
+                      <h4>
+                        <div className={`${css.cell} ${css.gitlabProjectTableCaptionWrap}`}>
+                          <div className={css.gitlabProjectTableCaption} data-tip={project.name}>
+                            <span>{project.name}</span>
+                          </div>
+                        </div>
+                      </h4>
+                    </Col>
+                  ))
+                : null}
+              {this.ROLES_FULL_NAME && this.state.tabIndex === 1
                 ? this.ROLES_FULL_NAME.map((ROLES_FULL_NAME, i) => (
                     <Col xs lg key={`${i}-roles-name`}>
                       <h4>
@@ -340,6 +378,7 @@ class ParticipantEditor extends Component {
                 isProjectAdmin={isProjectAdmin}
                 gitlabProjects={gitlabProjects}
                 gitlabRoles={gitlabRoles}
+                tabIndex={this.state.tabIndex}
               />
             ))
           : null}
