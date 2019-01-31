@@ -140,3 +140,41 @@
   word-break: break-all;
   word-wrap: break-word;
 }
+
+.tabs {
+  display: flex;
+  height: 100%;
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  background-color: #fff;
+  border-right: 1px solid #e4e4e4;
+  flex-basis: 165px;
+  max-width: 165px;
+  cursor: pointer;
+  padding: 10px;
+
+  & > p {
+    font-size: 13px;
+    margin-top: 0;
+    margin-bottom: 2px;
+  }
+
+  & > small {
+    color: #b1b1b1;
+    font-size: 11px;
+  }
+
+  &:last-child {
+    border-right: 0;
+  }
+}
+
+.tabActive {
+  cursor: default;
+  background-color: #ebebeb;
+}
