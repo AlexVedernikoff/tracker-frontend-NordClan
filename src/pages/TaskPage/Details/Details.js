@@ -31,6 +31,8 @@ import shortid from 'shortid';
 import { addActivity } from '../../../actions/Timesheets';
 import { alphabeticallyComparatorLang, devOpsUsersSelector } from '../../../utils/sortPerformer';
 import { sortedUsersSelector, usersSelector } from '../../../selectors/Project';
+import { checkIsAdminInProject } from '../../../utils/isAdmin';
+
 import union from 'lodash/union';
 
 const spentRequestStatus = {
@@ -479,7 +481,8 @@ class Details extends Component {
             <tr>
               <td>{localize[lang].GOAL}</td>
               <td>
-                {this.props.task.statusId !== TASK_STATUSES.CLOSED ? (
+                {checkIsAdminInProject(user, this.props.task.projectId) &&
+                this.props.task.statusId !== TASK_STATUSES.CLOSED ? (
                   <span onClick={this.openTaskGoalModal} className={css.editableCell}>
                     {goalTag}
                     <span className={css.editIcon}>
