@@ -35,12 +35,12 @@ import { history } from '../../../History';
 import getTasks from '../../../actions/Tasks';
 import * as css from './TaskList.scss';
 import localize from './taskList.json';
+import { BACKLOG_ID } from '../../../constants/Sprint';
+import { IN_PROGRESS } from '../../../constants/SprintStatuses';
 
 const dateFormat = 'DD.MM.YYYY';
 
-export const emptyFilters = {
-  sprintId: [0]
-};
+export const emptyFilters = {};
 
 class TaskList extends Component {
   constructor(props) {
@@ -62,6 +62,9 @@ class TaskList extends Component {
     if (this.props.project.id) {
       this.loadTasks();
     }
+    if (this.props.isReceiving) {
+      this.setBacklogSprintIfNoActiveSprints();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -77,6 +80,7 @@ class TaskList extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.isProjectReceiving && !this.props.isProjectReceiving && !this.state.isProjectLoaded) {
       this.setProjectLoadedFlag();
+      this.setBacklogSprintIfNoActiveSprints();
     }
   }
 
@@ -92,6 +96,23 @@ class TaskList extends Component {
       this.updateFilterList
     );
   };
+
+  setBacklogSprintIfNoActiveSprints() {
+    const hasActiveSprints =
+      this.props.project.sprints && this.props.project.sprints.find(sprint => sprint.statusId === IN_PROGRESS);
+
+    if (!hasActiveSprints) {
+      const backlog = this.props.sprints.find(sprint => sprint.value === BACKLOG_ID);
+      const backlogAlreadySelected = this.state.changedFilters.sprintId.some(value => value === BACKLOG_ID);
+
+      if (backlog && !backlogAlreadySelected) {
+        const changedFiltersSprint = this.state.changedFilters.sprintId.map(value => ({ value }));
+
+        this.onChangeSprintFilter([...changedFiltersSprint, backlog]);
+      }
+    }
+  }
+
   translateToNumIfNeeded = value => {
     const re = /^\d+$/;
     return re.test(value) ? +value : value;
