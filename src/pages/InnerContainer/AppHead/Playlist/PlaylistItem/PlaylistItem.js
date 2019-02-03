@@ -217,7 +217,7 @@ class PlaylistItem extends Component {
             </div>
             <div className={classnames(css.taskName, css.listItem)}>
               {taskLabel ? <span>{taskLabel}</span> : null}
-              {taskName}
+              <span title={taskName}>{taskName}</span>
             </div>
           </div>
           <div className={css.phoneVisibleToggle}>
