@@ -304,7 +304,11 @@ class Planning extends Component {
   };
 
   userCanEditPlan = () => {
-    return this.props.user.usersProjects.some(project => project.roles.some(role => role.id === 1 || role.id === 2));
+    return this.props.user.usersProjects.some(
+      project =>
+        project.roles.some(role => role.projectRoleId === 1 || role.projectRoleId === 2) &&
+        project.projectId === project.id
+    );
   };
 
   sortEntities = (entity1, entity2) => {
@@ -550,7 +554,7 @@ class Planning extends Component {
             grantYearDecrement={this.grantYearDecrement}
             grantYearIncrement={this.grantYearIncrement}
             grantActiveYear={grantActiveYear}
-            userCanEditPlan={this.userCanEditPlan() && this.checkIsAdminInProject()}
+            canEditPlan={this.userCanEditPlan() || this.checkIsAdminInProject()}
             onClickSprint={this.onClickSprint}
             openSprintEditModal={this.openSprintEditModal}
             openMilestoneEditModal={this.openMilestoneEditModal}
