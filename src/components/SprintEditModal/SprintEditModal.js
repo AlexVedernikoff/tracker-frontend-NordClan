@@ -206,6 +206,9 @@ class SprintEditModal extends Component {
                     name="dateFrom"
                     value={formattedDayFrom}
                     onDayChange={this.handleDayFromChange}
+                    disabledDataRanges={[
+                      { after: this.state.sprint.dateTo && moment(this.state.sprint.dateTo).toDate() }
+                    ]}
                     placeholder={moment(sprint.factStartDate).format('DD.MM.YYYY')}
                   />
                 </Col>
@@ -221,6 +224,9 @@ class SprintEditModal extends Component {
                     name="dateTo"
                     value={formattedDayTo}
                     onDayChange={this.handleDayToChange}
+                    disabledDataRanges={[
+                      { before: this.state.sprint.dateFrom && moment(this.state.sprint.dateFrom).toDate() }
+                    ]}
                     placeholder={moment(sprint.factFinishDate).format('DD.MM.YYYY')}
                   />
                 </Col>

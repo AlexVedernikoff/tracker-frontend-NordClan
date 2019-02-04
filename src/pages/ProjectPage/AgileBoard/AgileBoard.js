@@ -441,6 +441,7 @@ class AgileBoard extends Component {
         ) : null}
         {this.props.isCreateTaskModalOpen ? (
           <CreateTaskModal
+            afterCreate={this.getTasks}
             selectedSprintValue={this.singleSprint}
             project={this.props.project}
             defaultPerformerId={this.state.performer}

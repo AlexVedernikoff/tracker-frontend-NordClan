@@ -42,6 +42,8 @@ class Priority extends Component {
   };
 
   render() {
+    const { canEdit } = this.props;
+
     return (
       <div className={classnames(css.priority, { [css.vertical]: this.props.vertical })}>
         {this.props.text === undefined ? this.props.priorityTitle : this.props.text}
@@ -52,7 +54,8 @@ class Priority extends Component {
                 key={`priority-${i}`}
                 onClick={this.props.onChange ? this.changePriority : this.setPriority}
                 className={classnames({
-                  [css.active]: priorityId === this.props.priority
+                  [css.active]: priorityId === this.props.priority,
+                  [css.canEdit]: canEdit
                 })}
                 data-tip={getProrityById(priorityId)}
               >

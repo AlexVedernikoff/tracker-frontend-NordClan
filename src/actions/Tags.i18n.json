@@ -1,0 +1,10 @@
+{
+  "en": {
+    "TAG_CREATE_ERROR": "Error occured while creating tags",
+    "TAG_NAME_LENGTH_ERROR": "Tag should contain at least 2 characters"
+  },
+  "ru": {
+    "TAG_CREATE_ERROR": "Возникла ошибка при добавлении тегов",
+    "TAG_NAME_LENGTH_ERROR": "Тег должен содержать не менее 2 символов"
+  }
+}

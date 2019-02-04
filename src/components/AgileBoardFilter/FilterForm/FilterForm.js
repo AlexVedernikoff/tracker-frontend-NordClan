@@ -18,6 +18,7 @@ import GoalSelector from '../../GoalSelector';
 import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
 import { storageType } from '../../FiltrersManager/helpers';
 import { isOnlyDevOps } from '../../../utils/isDevOps';
+import { removeNumChars } from '../../../utils/formatter';
 import { checkIsAdminInProject } from '../../../utils/isAdmin';
 
 const storage = storageType === 'local' ? localStorage : sessionStorage;
@@ -205,6 +206,7 @@ class FilterForm extends React.Component {
               multi={false}
               value={filters.authorId}
               onChange={this.onAuthorFilterChange}
+              onInputChange={removeNumChars}
               noResultsText={localize[lang].NO_RESULTS}
               options={this.props.authorOptions}
             />
