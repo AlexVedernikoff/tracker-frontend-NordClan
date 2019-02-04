@@ -15,6 +15,7 @@ class FinishForm extends Component {
     previousStep: PropTypes.func,
     project: PropTypes.object,
     simtrackProjectId: PropTypes.any,
+    synchronizeNow: PropTypes.bool,
     token: PropTypes.string
   };
 
@@ -32,15 +33,15 @@ class FinishForm extends Component {
   }
 
   render() {
-    const { lang, nextStep, previousStep } = this.props;
+    const { lang, nextStep, previousStep, synchronizeNow } = this.props;
     return (
       <div className={css.mainContainer}>
         <h3>
-          <p>{localize[lang].SYNC_HEADER}</p>
+          <p>{synchronizeNow ? localize[lang].CONFIRM_SYNC : localize[lang].SYNC_HEADER}</p>
         </h3>
         <hr />
         <label className={css.formField} />
-        <div>{localize[lang].SYNC_BODY}</div>
+        <div>{synchronizeNow ? null : localize[lang].SYNC_BODY}</div>
         <div className={css.buttonsContainer}>
           <Button text="Нет" onClick={() => previousStep()} type="green" />
           <Button text="Да" onClick={() => nextStep()} type="green" />

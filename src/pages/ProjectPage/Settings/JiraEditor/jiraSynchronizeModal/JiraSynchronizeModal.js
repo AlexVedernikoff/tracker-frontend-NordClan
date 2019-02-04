@@ -27,7 +27,7 @@ class JiraSynchronizeModal extends Component {
       <div className={css.container}>
         <Modal isOpen onRequestClose={closeSynchronizeModal} contentLabel="Modal">
           <div className={css.stepsContainer}>{localize[lang].JIRA_SYNHRONIZE_CONFIRM}</div>
-          <FinishForm lang={lang} token={token} nextStep={synchronize} />
+          <FinishForm lang={lang} token={token} nextStep={synchronize} synchronizeNow />
         </Modal>
       </div>
     );
