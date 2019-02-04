@@ -93,14 +93,14 @@ const jiraAssociateProjectError = () => ({
 });
 
 const associateWithJiraProject = (token, data) => {
-  console.log('data', data);
   const {
     jiraProjectId: id,
     simtrackProjectId,
     jiraHostName,
     issueTypesAssociation,
     statusesAssociation,
-    userEmailAssociation
+    userEmailAssociation,
+    jiraToken
   } = data;
   const headers = { 'X-Jira-Auth': token };
   const URL = `${API_URL}/project/${simtrackProjectId}/jira/link`;
@@ -116,7 +116,8 @@ const associateWithJiraProject = (token, data) => {
           jiraHostName,
           issueTypesAssociation,
           statusesAssociation,
-          userEmailAssociation
+          userEmailAssociation,
+          jiraToken
         },
         {
           withCredentials: true,

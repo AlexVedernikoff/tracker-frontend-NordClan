@@ -52,9 +52,7 @@ class SetAssociationForm extends Component {
       const associations = {};
       this.sortJiraData(jiraAssociations);
       this.props.setAssociation(associations, jiraAssociations, this.state.currentStep);
-      console.log('jiraAssociations', jiraAssociations);
     } catch (e) {
-      console.log(e);
       defaultErrorHandler(e);
     }
   }
@@ -229,7 +227,6 @@ class SetAssociationForm extends Component {
   renderJiraRow(entity) {
     const { jiraKey, jiraDisplayField } = this.associationConfig[this.state.currentStep];
     const id = entity[jiraKey];
-    console.log('id', id);
 
     return (
       <tr key={id} onClick={this.selectJiraCol(entity)}>

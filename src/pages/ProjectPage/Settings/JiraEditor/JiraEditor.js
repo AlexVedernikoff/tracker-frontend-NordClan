@@ -18,11 +18,11 @@ class JiraEditor extends Component {
     jiraExternalId: PropTypes.string,
     jiraProject: PropTypes.object,
     jiraProjects: PropTypes.array,
+    jiraToken: PropTypes.any,
     lang: PropTypes.string,
     openJiraWizard: PropTypes.func,
     simtrackProject: PropTypes.object,
-    startSynchronize: PropTypes.bool,
-    token: PropTypes.any
+    startSynchronize: PropTypes.bool
   };
 
   state = {
@@ -36,7 +36,7 @@ class JiraEditor extends Component {
   };
 
   synchronizeWithJira = () => {
-    this.createBatch({ 'x-jira-auth': this.props.token }, this.props.jiraExternalId).finally(() =>
+    this.createBatch({ 'x-jira-auth': this.props.jiraToken }, this.props.jiraExternalId).finally(() =>
       this.toggleConfirm()
     );
   };
@@ -46,7 +46,7 @@ class JiraEditor extends Component {
   };
 
   render() {
-    const { lang, simtrackProject, jiraExternalId } = this.props;
+    const { lang, simtrackProject, jiraExternalId, jiraToken } = this.props;
     const { startSynchronize } = this.state;
     return (
       <div className={css.jiraCard}>
@@ -75,7 +75,11 @@ class JiraEditor extends Component {
           />
         ) : null}
         {startSynchronize ? (
-          <JiraSynchronizeModal closeSynchronizeModal={this.toggleConfirm} synchronize={this.synchronizeWithJira} />
+          <JiraSynchronizeModal
+            closeSynchronizeModal={this.toggleConfirm}
+            synchronize={this.synchronizeWithJira}
+            token={jiraToken}
+          />
         ) : null}
       </div>
     );
@@ -84,6 +88,7 @@ class JiraEditor extends Component {
 
 const mapStateToProps = state => ({
   jiraExternalId: state.Project.project.externalId,
+  jiraToken: state.Project.project.jiraToken,
   jiraProjects: state.Jira.projects,
   simtrackProject: state.Project.project,
   token: state.Jira.token,
