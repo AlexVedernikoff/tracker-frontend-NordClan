@@ -11,7 +11,7 @@ const target =
       }
     : {
         // TODO:
-        host: 'sim-track.simbirsoft', // localhost
+        host: 'simtrack-dev.simbirsoft', // localhost
         protocol: 'https:', // http:
         port: 443 // 8000
       };

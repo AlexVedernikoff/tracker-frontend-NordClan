@@ -1,5 +1,6 @@
 import * as TasksActions from '../constants/Tasks';
 import * as TagsActions from '../constants/Tags';
+import * as TaskActions from '../constants/Task';
 
 const InitialState = {
   tasks: [],
@@ -24,6 +25,22 @@ function Tasks(state = InitialState, action) {
         pagesCount: action.data.pagesCount,
         allTags: action.data.allTags,
         isReceiving: false
+      };
+
+    case TaskActions.TASK_CHANGE_REQUEST_SUCCESS:
+      const tasks = state.tasks.map(
+        task =>
+          task.id === action.changedFields.id
+            ? {
+                ...task,
+                ...action.changedFields
+              }
+            : task
+      );
+
+      return {
+        ...state,
+        tasks
       };
 
     case TagsActions.GET_TAGS_FILTER_SUCCESS:

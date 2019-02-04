@@ -1,0 +1,58 @@
+@import '../../../../../styles/variables.scss';
+
+.projectList {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.newProject {
+  align-items: center;
+  width: 100%;
+  max-width: 18.5rem;
+  display: inline-flex;
+  vertical-align: top;
+}
+
+.projectCard {
+  position: relative;
+  width: 100%;
+  max-width: 16rem;
+  padding: 1rem;
+  border: 1px solid darken($color-gray, 5%);
+  background-color: $color-lightgray;
+  margin: 1rem 1rem 1rem 0;
+}
+
+.projectName {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.jiraId {
+  color: $color-dark-gray;
+  font-size: $font-size-small;
+  margin-bottom: 0.5rem;
+}
+
+.projectName {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.repoField {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.deleteProject {
+  position: absolute;
+  cursor: pointer;
+  top: 0.5rem;
+  right: 0.5rem;
+}

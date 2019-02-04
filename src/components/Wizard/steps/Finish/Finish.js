@@ -7,26 +7,44 @@ import Button from '../../../Button';
 
 class FinishForm extends Component {
   static propTypes = {
+    associateWithJiraProject: PropTypes.func,
+    associationState: PropTypes.object,
+    jiraProjectId: PropTypes.any,
     lang: PropTypes.string,
     nextStep: PropTypes.func,
     previousStep: PropTypes.func,
     project: PropTypes.object,
+    simtrackProjectId: PropTypes.any,
+    synchronizeNow: PropTypes.bool,
     token: PropTypes.string
   };
 
+  async componentDidMount() {
+    const { jiraHostName, simtrackProjectId, jiraProjectId, associationState } = this.props;
+    const { issueTypesAssociation, statusesAssociation, userEmailAssociation } = associationState;
+    await this.props.associateWithJiraProject(this.props.token, {
+      jiraHostName,
+      simtrackProjectId,
+      jiraProjectId,
+      issueTypesAssociation,
+      statusesAssociation,
+      userEmailAssociation
+    });
+  }
+
   render() {
-    const { lang, nextStep, previousStep, project, token } = this.props;
+    const { lang, nextStep, previousStep, synchronizeNow } = this.props;
     return (
       <div className={css.mainContainer}>
         <h3>
-          <p>{localize[lang].SYNC_HEADER}</p>
+          <p>{synchronizeNow ? localize[lang].CONFIRM_SYNC : localize[lang].SYNC_HEADER}</p>
         </h3>
         <hr />
         <label className={css.formField} />
-        <div>{localize[lang].SYNC_BODY}</div>
+        <div>{synchronizeNow ? null : localize[lang].SYNC_BODY}</div>
         <div className={css.buttonsContainer}>
           <Button text="Нет" onClick={() => previousStep()} type="green" />
-          <Button text="Да" onClick={() => nextStep({ 'X-Jira-Auth': token }, project.externalId)} type="green" />
+          <Button text="Да" onClick={() => nextStep()} type="green" />
         </div>
       </div>
     );

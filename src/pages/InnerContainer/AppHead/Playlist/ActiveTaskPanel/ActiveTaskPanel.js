@@ -113,7 +113,9 @@ class ActiveTaskPanel extends Component {
         <div className={classnames(css.taskNameWrapper, css.title)}>
           <div className={css.taskTitle}>
             <div className={css.meta}>{title}</div>
-            <div className={css.taskName}>{trimTaskName}</div>
+            <div className={css.taskName} title={trimTaskName}>
+              {trimTaskName}
+            </div>
           </div>
         </div>
       </div>

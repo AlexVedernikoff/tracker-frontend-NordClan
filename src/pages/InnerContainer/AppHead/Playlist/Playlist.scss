@@ -218,6 +218,9 @@
       background-color: rgba(black, 0.05);
       border: none;
       text-align: center;
+      &.non-editable {
+        cursor: default;
+      }
       &.editable {
         box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.17);
       }

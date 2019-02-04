@@ -91,7 +91,7 @@ class TaskPlanningTime extends Component {
     return (
       <div
         className={classnames([css.wrapper, { [css.isEdit]: this.props.timeIsEditing }])}
-        onClick={this.props.timeIsEditing ? null : this.editIconClickHandler}
+        onClick={!this.props.canEdit || this.props.timeIsEditing ? null : this.editIconClickHandler}
       >
         <span
           key={this.props.key}

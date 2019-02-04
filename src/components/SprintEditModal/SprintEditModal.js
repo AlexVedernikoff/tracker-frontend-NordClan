@@ -39,6 +39,17 @@ class SprintEditModal extends Component {
     };
   }
 
+  componentDidMount = () => {
+    const { sprint } = this.props;
+    if (sprint.factStartDate) {
+      this.handleDayFromChange(sprint.factStartDate);
+    }
+
+    if (sprint.factFinishDate) {
+      this.handleDayToChange(sprint.factFinishDate);
+    }
+  };
+
   checkNullInputs = () => {
     return !!(
       this.state.sprint.sprintName.length &&
@@ -133,7 +144,7 @@ class SprintEditModal extends Component {
   };
 
   validateAllFields = () => {
-    return !this.checkNullInputs();
+    return !this.checkNullInputs() || !this.validateDates();
   };
 
   render() {
@@ -195,6 +206,9 @@ class SprintEditModal extends Component {
                     name="dateFrom"
                     value={formattedDayFrom}
                     onDayChange={this.handleDayFromChange}
+                    disabledDataRanges={[
+                      { after: this.state.sprint.dateTo && moment(this.state.sprint.dateTo).toDate() }
+                    ]}
                     placeholder={moment(sprint.factStartDate).format('DD.MM.YYYY')}
                   />
                 </Col>
@@ -210,6 +224,9 @@ class SprintEditModal extends Component {
                     name="dateTo"
                     value={formattedDayTo}
                     onDayChange={this.handleDayToChange}
+                    disabledDataRanges={[
+                      { before: this.state.sprint.dateFrom && moment(this.state.sprint.dateFrom).toDate() }
+                    ]}
                     placeholder={moment(sprint.factFinishDate).format('DD.MM.YYYY')}
                   />
                 </Col>

@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 // import { IconEdit, IconCheck, IconClose } from '../../../../../components/Icons';
 import * as css from '../../../../../components/Input/Input.scss';
 import classnames from 'classnames';
+import * as ownStyles from './ExternalUserInput.scss';
 
 class ExternalUserInput extends Component {
   constructor(props) {
@@ -18,7 +19,7 @@ class ExternalUserInput extends Component {
   render() {
     const { isValid } = this.props;
     return (
-      <div>
+      <div className={ownStyles.container}>
         {this.props.isEditing ? (
           <input
             type="text"
@@ -30,7 +31,9 @@ class ExternalUserInput extends Component {
             })}
           />
         ) : (
-          <div>{this.props.value}</div>
+          <div title={this.props.value} className={ownStyles.value}>
+            {this.props.value}
+          </div>
         )}
       </div>
     );

@@ -4,6 +4,7 @@ import * as SprintActions from '../constants/Sprint';
 import * as TasksActions from '../constants/Tasks';
 import * as MilestoneActions from '../constants/Milestone';
 import * as GitlabActions from '../constants/Gitlab';
+import * as JiraActions from '../constants/Jira';
 
 const InitialState = {
   project: {
@@ -485,6 +486,35 @@ export default function Project(state = InitialState, action) {
           milestones: delelteMilestones
         }
       };
+
+    case JiraActions.JIRA_ASSOCIATE_PROJECT_SUCCESS:
+      if (action.project.simtrackProjectId === state.project.id) {
+        return {
+          ...state,
+          project: {
+            ...state.project,
+            jiraHostname: action.project.jiraHostName,
+            jiraProjectName: action.project.jiraProjectName,
+            externalId: action.project.id
+          }
+        };
+      }
+      return state;
+
+    case JiraActions.CLEAN_JIRA_ASSOCIATION_SUCCESS:
+      if (action.id === state.project.id) {
+        return {
+          ...state,
+          project: {
+            ...state.project,
+            jiraHostname: null,
+            jiraProjectName: null,
+            externalId: null
+          }
+        };
+      }
+      return state;
+
     default:
       return {
         ...state

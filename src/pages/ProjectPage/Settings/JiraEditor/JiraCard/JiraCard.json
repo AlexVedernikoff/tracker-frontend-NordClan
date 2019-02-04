@@ -1,0 +1,14 @@
+{
+  "en": {
+    "REPOSITORY_ADDRESS": "Repository address",
+    "COPY_ADDRESS": "Copy address (ssh)",
+    "CANSEL_CONNECT": "Cancel connection",
+    "CONFIRM_CANSEL": "Are you sure you want to disconnect jira project"
+  },
+  "ru": {
+    "REPOSITORY_ADDRESS": "Адрес репозитория",
+    "COPY_ADDRESS": "Скопировать адрес (ssh)",
+    "CANSEL_CONNECT": "Отменить связь",
+    "CONFIRM_CANSEL": "Вы действительно хотите отвязать проект от jira"
+  }
+}

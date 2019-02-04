@@ -10,7 +10,8 @@
     "WEEK": "For last week",
     "MONTH": "For last month",
     "ALL_TIME": "For all time",
-    "ALL_PROJECT": "For all project time"
+    "ALL_PROJECT": "For all project time",
+    "DATE_RANGE_ERROR": "Invalid date range"
   },
   "ru": {
     "REPORT_UNLOAD": "Выгрузка отчета",
@@ -23,6 +24,7 @@
     "WEEK": "За последнюю неделю",
     "MONTH": "За прошлый месяц",
     "ALL_TIME": "За все время",
-    "ALL_PROJECT": "За весь проект"
+    "ALL_PROJECT": "За весь проект",
+    "DATE_RANGE_ERROR": "Указан некорректный временной отрезок"
   }
 }
