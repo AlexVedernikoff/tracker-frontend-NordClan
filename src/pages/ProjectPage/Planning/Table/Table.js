@@ -156,7 +156,7 @@ class Table extends React.Component {
 
         <div className={classnames(css.name, { [css.nameMargin]: isProjectAdmin })}>{sprint.name}</div>
 
-        {!isExternal ? (
+        {!isExternal && canEditPlan ? (
           <IconEdit
             className={classnames(css.edit, 'edit')}
             data-tip={localize[lang].EDIT}
