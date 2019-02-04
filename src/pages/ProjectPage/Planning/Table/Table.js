@@ -12,6 +12,7 @@ import roundNum from '../../../../utils/roundNum';
 
 class Table extends React.Component {
   static propTypes = {
+    canEditPlan: PropTypes.bool,
     entities: PropTypes.array,
     grantActiveYear: PropTypes.string,
     grantYearDecrement: PropTypes.func.isRequired,
@@ -129,7 +130,8 @@ class Table extends React.Component {
       isProjectAdmin,
       openSprintEditModal,
       isExternal,
-      lang
+      lang,
+      canEditPlan
     } = this.props;
 
     return (
@@ -176,7 +178,8 @@ class Table extends React.Component {
       openMilestoneEditModal,
       isExternal,
       onDeleteMilestone,
-      lang
+      lang,
+      canEditPlan
     } = this.props;
 
     return (
@@ -193,14 +196,14 @@ class Table extends React.Component {
 
         <div className={classnames(css.name, { [css.nameMargin]: false })}>{milestone.name}</div>
 
-        {!isExternal ? (
+        {!isExternal && canEditPlan ? (
           <IconEdit
             className={classnames(css.edit, 'edit')}
             data-tip={localize[lang].EDIT}
             onClick={openMilestoneEditModal(milestone)}
           />
         ) : null}
-        {!isExternal ? (
+        {!isExternal && canEditPlan ? (
           <IconDelete
             className={classnames(css.delete, 'delete')}
             data-tip={localize[lang].DELETE}
