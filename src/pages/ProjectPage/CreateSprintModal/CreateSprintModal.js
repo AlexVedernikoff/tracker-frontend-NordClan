@@ -46,7 +46,12 @@ class CreateSprintModal extends Component {
   };
 
   onChangeName = e => {
-    this.setState({ sprintName: e.target.value.trim() });
+    const value = e.target.value;
+    if (value.length <= 255) {
+      this.setState({ sprintName: e.target.value.trim() });
+    } else {
+      e.target.value = this.state.sprintName;
+    }
   };
 
   handleDayFromChange = date => {
