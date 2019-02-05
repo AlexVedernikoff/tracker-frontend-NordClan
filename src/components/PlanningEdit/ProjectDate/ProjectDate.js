@@ -66,7 +66,7 @@ class ProjectDate extends Component {
     this.setState(
       {
         disabled: false,
-        value: moment(date).format()
+        value: date ? moment(date).format() : null
       },
       this.toggleEditing
     );
