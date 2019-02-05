@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import cn from 'classnames';
+import localize from './JiraCard.json';
 import * as css from './JiraCard.scss';
-import { IconJira } from '../../../../../components/Icons';
+import { IconCheck, IconClose, IconJira } from '../../../../../components/Icons';
 
 class JiraCard extends Component {
   static propTypes = {
@@ -21,18 +23,37 @@ class JiraCard extends Component {
   }
 
   render() {
-    const { project } = this.props;
+    const { project, syncSuccess = false, lang } = this.props;
 
     return (
       <div className={css.projectCard}>
-        <div className={css.jiraId}>Jira Id: {project.id}</div>
-        <div className={css.projectName}>
-          <span className={css.gitlabLogo}>
-            <IconJira />{' '}
-          </span>
-          <a className="underline-link" href={project.hostname} title={project.name}>
-            {project.name}
-          </a>
+        <div className={css.cardContentContainer}>
+          <div className={css.jiraInfo}>
+            <div className={css.jiraId}>Jira Id: {project.id}</div>
+            <div className={css.projectName}>
+              <span className={css.gitlabLogo}>
+                <IconJira />{' '}
+              </span>
+              <a className="underline-link" href={project.hostname} title={project.name}>
+                {project.name}
+              </a>
+            </div>
+          </div>
+          <div className={css.syncInfo}>
+            {syncSuccess ? <div>{localize[lang].success}</div> : <div>{localize[lang].failed}</div>}
+            <div>
+              {$localize[lang].lastSync}: {}
+            </div>
+          </div>
+          <div>
+            <div
+              className={cn(css.circleContainer, {
+                [css.failedIcon]: !syncSuccess
+              })}
+            >
+              {syncSuccess ? <IconCheck /> : <IconClose />}
+            </div>
+          </div>
         </div>
       </div>
     );
