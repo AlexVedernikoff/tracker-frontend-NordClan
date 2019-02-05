@@ -1,5 +1,3 @@
-image: docker:stable
-
 stages:
   - build
   - docker
@@ -54,6 +52,35 @@ release:
     - docker rmi $DOCKER_PREFIX/fe:$CI_SHORT_REF_NAME
   tags:
     - docker
+
+.deploy_ansible:
+  image: $ANSIBLE_IMAGE
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - mkdir -p ~/.ssh/
+    - echo -e "Host *\n\rStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - echo "$CURRENT_DEPLOYMENT_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - eval $(ssh-agent -s)
+    - ssh-add ~/.ssh/id_rsa
+    - git clone --depth 1 -b feature/improve-deploy $DEPLOYMENT_REPO ~/deploy
+    - cd ~/deploy
+    - ansible-playbook -i environments/${CURRENT_ENV}/inventory deploy.yaml --tags=tti
+  tags:
+    - docker
+
+deploy_dev_new:
+  variables:
+    CURRENT_ENV: "dev"
+    CURRENT_DEPLOYMENT_KEY: "$DEPLOYMENT_DEV_KEY"
+  only:
+    - develop
+  environment:
+    name: $CURRENT_ENV
+    url: https://simtrack-dev.docker.simbirsoft/
+  extends: .deploy_ansible
 
 deploy_to_dev:
   image: dr.simbirsoft1.com/library/ansible:2.4
@@ -177,4 +204,3 @@ deploy_to_demo:
   environment:
     name: demo
     url: http://simtrack-demo.simbirsoft/
-
