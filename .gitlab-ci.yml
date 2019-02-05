@@ -6,9 +6,8 @@ stages:
 
 before_script:
   - mkdir -p ~/.docker/ && echo "$DOCKER_AUTH_CONFIG" > ~/.docker/config.json
-  - export DOCKER_PREFIX=dr.simbirsoft1.com/simtrack
-  - export CI_SHORT_REF_NAME=$(echo $CI_COMMIT_REF_NAME | sed 's/\//-/g' )
-  - export TAG="${CI_SHORT_REF_NAME}-${CI_COMMIT_SHA:0:8}"
+  - export TAG="${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA:0:8}"
+  - export DOCKER_REGISTRY_IMAGE=$DOCKER_REGISTRY_PREFIX/fe
 
 build_fe:
   image: node:8-alpine
@@ -35,7 +34,11 @@ build_docker_fe:
   stage: docker
   script:
     - cp -f ci/Dockerfile.fe ./
-    - docker build --rm --tag $DOCKER_PREFIX/fe:$TAG -f Dockerfile.fe .
+    - docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_PASS $DOCKER_REGISTRY
+    - docker pull $DOCKER_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG || true
+    - docker build --rm -t $DOCKER_REGISTRY_IMAGE:$CI_COMMIT_SHA -f Dockerfile.fe .
+    - docker push $DOCKER_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker logout $DOCKER_REGISTRY
   tags:
     - docker
 
@@ -43,10 +46,13 @@ release:
   image: docker:stable
   stage: release
   script:
-    - docker tag $DOCKER_PREFIX/fe:$TAG $DOCKER_PREFIX/fe:$CI_SHORT_REF_NAME
-    - docker push $DOCKER_PREFIX/fe:$TAG
-    - docker push $DOCKER_PREFIX/fe:$CI_SHORT_REF_NAME
-    - docker rmi $DOCKER_PREFIX/fe:$CI_SHORT_REF_NAME
+    - docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_PASS $DOCKER_REGISTRY
+    - docker pull $DOCKER_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker tag $DOCKER_REGISTRY_IMAGE:$CI_COMMIT_SHA $DOCKER_REGISTRY_IMAGE:$TAG
+    - docker tag $DOCKER_REGISTRY_IMAGE:$CI_COMMIT_SHA $DOCKER_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    - docker push $DOCKER_REGISTRY_IMAGE:$TAG
+    - docker push $DOCKER_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    - docker logout $DOCKER_REGISTRY
   tags:
     - docker
 
