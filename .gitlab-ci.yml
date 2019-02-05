@@ -4,9 +4,6 @@ stages:
   - release
   - deploy
 
-variables:
-  DEPLOYMENT_REPO: git@gitlab.simbirsoft:devops/simtrack.git
-
 before_script:
   - mkdir -p ~/.docker/ && echo "$DOCKER_AUTH_CONFIG" > ~/.docker/config.json
   - export DOCKER_PREFIX=dr.simbirsoft1.com/simtrack
@@ -67,7 +64,7 @@ release:
     - ssh-add ~/.ssh/id_rsa
     - git clone --depth 1 -b feature/improve-deploy $DEPLOYMENT_REPO ~/deploy
     - cd ~/deploy
-    - ansible-playbook -i environments/${CURRENT_ENV}/inventory deploy.yaml --tags=tti
+    - ansible-playbook -i environments/${CURRENT_ENV}/inventory deploy.yaml --tags=fe
   tags:
     - docker
 
