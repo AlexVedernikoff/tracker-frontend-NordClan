@@ -98,7 +98,7 @@ class AgileBoardFilter extends React.Component {
     const {
       filters: { changedSprint }
     } = this.props;
-    return !changedSprint.length;
+    return !(changedSprint.length > 1);
   }
 
   get isVisor() {
