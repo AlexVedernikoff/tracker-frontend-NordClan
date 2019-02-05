@@ -18,6 +18,7 @@ import { VISOR } from '../../constants/Roles';
 import { getFullName } from '../../utils/NameLocalisation';
 import { storageType } from '../FiltrersManager/helpers';
 import { isOnlyDevOps } from '../../utils/isDevOps';
+import { BACKLOG_ID } from '../../constants/Sprint';
 
 const storage = storageType === 'local' ? localStorage : sessionStorage;
 
@@ -89,16 +90,14 @@ class AgileBoardFilter extends React.Component {
       !this.isSprintFilterEmpty &&
       currentSprint &&
       !currentSprint.length &&
-      filters.changedSprint[0] !== 0 &&
+      !filters.changedSprint.filter(sprint => sprint !== BACKLOG_ID).length &&
       !isSprintFilterChanged
     );
   }
 
   get isSprintFilterEmpty() {
-    const {
-      filters: { changedSprint }
-    } = this.props;
-    return !(changedSprint.length > 1);
+    const changedSprint = this.props.filters.changedSprint.filter(item => item !== BACKLOG_ID);
+    return !changedSprint.length;
   }
 
   get isVisor() {
