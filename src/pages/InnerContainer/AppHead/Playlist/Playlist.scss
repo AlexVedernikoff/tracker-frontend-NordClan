@@ -131,7 +131,8 @@
   }
   .proName {
     max-width: 95px;
-    overflow-x: hidden;
+    overflow: hidden;
+    text-overflow: ellipsis;
     vertical-align: middle;
   }
 }
