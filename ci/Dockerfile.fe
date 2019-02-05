@@ -1,4 +1,4 @@
 FROM nginx:stable-alpine
-COPY ci/nginx.conf /etc/nginx/conf.d/
+COPY ci/nginx.conf /etc/nginx/conf.d/default.conf
 COPY build/ /var/www
 EXPOSE 80
