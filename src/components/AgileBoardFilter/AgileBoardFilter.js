@@ -38,9 +38,9 @@ class AgileBoardFilter extends React.Component {
   componentDidUpdate = prevProps => {
     ReactTooltip.rebuild();
 
-    const { currentSprint } = this.props;
+    const { currentSprint, isProjectInfoReceiving } = this.props;
 
-    if (this.isActiveSprintsChanged) {
+    if (!isProjectInfoReceiving && prevProps.isProjectInfoReceiving && this.isActiveSprintsChanged) {
       this.props.setFilterValue('changedSprint', currentSprint.map(s => s.value), this.updateFilterList);
     }
 
@@ -73,7 +73,7 @@ class AgileBoardFilter extends React.Component {
     const isSprintFilterChanged = +storage.getItem('sprintFilterChanged');
 
     return (
-      !this.isSprintFilterEmpty &&
+      this.isSprintFilterEmpty &&
       currentSprint &&
       currentSprint.length &&
       !isEqual(currentSprint.map(s => s.value), filters.changedSprint) &&
