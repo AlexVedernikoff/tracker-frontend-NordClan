@@ -1,19 +1,5 @@
 @import '../../../../../styles/variables.scss';
 
-.circleContainer {
-  border-radius: 50%;
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
-  border-width: 1.5px;
-  border-style: solid;
-  border-color: #36be36;
-  height: 30px;
-  width: 30px;
-  text-align: center;
-  padding-top: 7px;
-  transition: all 0.5s;
-}
-
 .statusNotSync {
   padding: 5px 8px 0px 30px;
 }
