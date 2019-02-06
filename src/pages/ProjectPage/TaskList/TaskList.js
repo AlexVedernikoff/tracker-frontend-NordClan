@@ -326,6 +326,7 @@ class TaskList extends Component {
         if (state.changedFilters[name]) {
           const filters = state.changedFilters;
           delete filters[name];
+          this.changeUrl(filters);
           return { changedFilters: filters };
         }
       },
@@ -733,10 +734,17 @@ class TaskList extends Component {
                     onInputChange={removeNumChars}
                     noResultsText={localize[lang].NO_RESULTS}
                     options={authorOptions}
+                    canClear
+                    onClear={() => this.clearFilter('authorId')}
                   />
                 </Col>
                 <Col xs={12} sm={3}>
-                  <PerformerFilter onPerformerSelect={this.onChangePerformerFilter} selectedPerformerId={performerId} />
+                  <PerformerFilter
+                    onPerformerSelect={this.onChangePerformerFilter}
+                    selectedPerformerId={performerId}
+                    canClear
+                    onClear={() => this.clearFilter('performerId')}
+                  />
                 </Col>
                 <Col xs={12} sm={3}>
                   <TagsFilter
@@ -794,7 +802,7 @@ class TaskList extends Component {
                     placeholder={localize[lang].FROM}
                     format={dateFormat}
                     canClear
-                    onClear={() => this.onChangeDateFromFilter(null)}
+                    onClear={() => this.clearFilter('dateFrom')}
                   />
                 </Col>
                 <Col xs={6} sm={3}>
@@ -813,7 +821,7 @@ class TaskList extends Component {
                     placeholder={localize[lang].TO}
                     format={dateFormat}
                     canClear
-                    onClear={() => this.onChangeDateToFilter(null)}
+                    onClear={() => this.clearFilter('dateTo')}
                   />
                 </Col>
               </Row>
