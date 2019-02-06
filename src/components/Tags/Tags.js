@@ -74,6 +74,12 @@ class Tags extends Component {
     return false;
   };
 
+  handleInputKeyDown = e => {
+    if (e.key === 'б') {
+      e.stopPropagation();
+    }
+  };
+
   render() {
     const { lang, tagsFromTasks } = this.props;
     const { multiValue } = this.state;
@@ -117,6 +123,9 @@ class Tags extends Component {
                     backspaceToRemoveMessage={''}
                     filterOption={layoutAgnosticFilter}
                     isValidNewOption={this.isValidNewOption}
+                    inputProps={{
+                      onKeyDown: this.handleInputKeyDown
+                    }}
                   />
                   <Button
                     disabled={!this.state.multiValue.length > 0}
