@@ -793,6 +793,8 @@ class TaskList extends Component {
                     onDayChange={this.onChangeDateFromFilter}
                     placeholder={localize[lang].FROM}
                     format={dateFormat}
+                    canClear
+                    onClear={() => this.onChangeDateFromFilter(null)}
                   />
                 </Col>
                 <Col xs={6} sm={3}>
@@ -810,6 +812,8 @@ class TaskList extends Component {
                     ]}
                     placeholder={localize[lang].TO}
                     format={dateFormat}
+                    canClear
+                    onClear={() => this.onChangeDateToFilter(null)}
                   />
                 </Col>
               </Row>
