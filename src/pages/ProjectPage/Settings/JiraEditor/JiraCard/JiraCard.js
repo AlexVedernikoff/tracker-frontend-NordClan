@@ -55,7 +55,7 @@ class JiraCard extends Component {
               </a>
             </div>
           </div>
-          {simtrackProject.status !== 'NOT_SYNC' ? (
+          {simtrackProject.status ? (
             <div className={css.syncInfo}>
               {simtrackProject.status === 'SUCCESS' ? (
                 <div className={classNameForSync}>{localize[lang].SUCCESS}</div>
