@@ -4,9 +4,10 @@ import { connect } from 'react-redux';
 import cn from 'classnames';
 import localize from './JiraCard.json';
 import * as css from './JiraCard.scss';
-import { IconJira } from '../../../../../components/Icons';
+import { IconClose, IconJira } from '../../../../../components/Icons';
 import { getJiraSyncInfo } from '../../../../../actions/Jira';
 import moment from 'moment';
+import ConfirmModal from '../../../../../components/ConfirmModal/ConfirmModal';
 
 class JiraCard extends Component {
   static propTypes = {
@@ -33,8 +34,13 @@ class JiraCard extends Component {
     this.props.getJiraSyncInfo(this.props.simtrackProject.id);
   }
 
+  toggleConfirm = () => {
+    this.setState({ isConfirm: !this.state.isConfirm });
+  };
+
   render() {
-    const { project, lang, simtrackProject } = this.props;
+    const { isConfirm } = this.state;
+    const { project, lang, simtrackProject, simtrackProjectId } = this.props;
 
     const classNameForSync = cn(css.syncStatus, {
       [css.failedStatus]: simtrackProject.status === 'FAILED',
@@ -70,6 +76,19 @@ class JiraCard extends Component {
             <div className={css.statusNotSync}>{localize[lang].NOT_SYNC}</div>
           )}
         </div>
+        <div onClick={this.toggleConfirm} className={css.deleteProject}>
+          <IconClose data-tip={localize[lang].CANSEL_CONNECT} />
+        </div>
+        {isConfirm ? (
+          <ConfirmModal
+            isOpen
+            contentLabel="modal"
+            text={`${localize[lang].CONFIRM_CANSEL} ${project.name}?`}
+            onCancel={this.toggleConfirm}
+            onConfirm={() => this.props.deleteProject(simtrackProjectId)}
+            onRequestClose={this.toggleConfirm}
+          />
+        ) : null}
       </div>
     );
   }
