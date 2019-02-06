@@ -515,6 +515,19 @@ export default function Project(state = InitialState, action) {
       }
       return state;
 
+    case JiraActions.JIRA_STATUS_RECEIVE_INFO:
+      if (action.data.length > 0) {
+        return {
+          ...state,
+          project: {
+            ...state.project,
+            lastSyncDate: action.data[0].date,
+            status: action.data[0].status
+          }
+        };
+      }
+      return state;
+
     default:
       return {
         ...state

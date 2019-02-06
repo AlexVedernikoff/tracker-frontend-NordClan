@@ -4,15 +4,22 @@ import { connect } from 'react-redux';
 import cn from 'classnames';
 import localize from './JiraCard.json';
 import * as css from './JiraCard.scss';
-import { IconCheck, IconClose, IconJira } from '../../../../../components/Icons';
+import { IconJira } from '../../../../../components/Icons';
+import { getJiraSyncInfo } from '../../../../../actions/Jira';
+import moment from 'moment';
 
 class JiraCard extends Component {
   static propTypes = {
     deleteProject: PropTypes.func,
+    getJiraSyncInfo: PropTypes.func,
     isNew: PropTypes.bool,
+    isSync: PropTypes.bool,
     lang: PropTypes.string,
     project: PropTypes.object,
-    simtrackProjectId: PropTypes.number
+    simtrackProject: PropTypes.object,
+    simtrackProjectId: PropTypes.number,
+    syncDatesArray: PropTypes.array,
+    syncSuccess: PropTypes.bool
   };
 
   constructor(props) {
@@ -22,8 +29,17 @@ class JiraCard extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.getJiraSyncInfo(this.props.simtrackProject.id);
+  }
+
   render() {
-    const { project, syncSuccess = false, lang } = this.props;
+    const { project, lang, simtrackProject } = this.props;
+
+    const classNameForSync = cn(css.syncStatus, {
+      [css.failedStatus]: simtrackProject.status === 'FAILED',
+      [css.successStatus]: simtrackProject.status === 'SUCCESS'
+    });
 
     return (
       <div className={css.projectCard}>
@@ -39,21 +55,20 @@ class JiraCard extends Component {
               </a>
             </div>
           </div>
-          <div className={css.syncInfo}>
-            {syncSuccess ? <div>{localize[lang].success}</div> : <div>{localize[lang].failed}</div>}
-            <div>
-              {$localize[lang].lastSync}: {}
+          {simtrackProject.status !== 'NOT_SYNC' ? (
+            <div className={css.syncInfo}>
+              {simtrackProject.status === 'SUCCESS' ? (
+                <div className={classNameForSync}>{localize[lang].SUCCESS}</div>
+              ) : (
+                <div className={classNameForSync}>{localize[lang].SYNC_FAILED}</div>
+              )}
+              <div className={classNameForSync}>
+                {localize[lang].LAST_SYNC}: {moment(simtrackProject.lastSyncDate).format('DD.MM.YYYY')}
+              </div>
             </div>
-          </div>
-          <div>
-            <div
-              className={cn(css.circleContainer, {
-                [css.failedIcon]: !syncSuccess
-              })}
-            >
-              {syncSuccess ? <IconCheck /> : <IconClose />}
-            </div>
-          </div>
+          ) : (
+            <div className={css.statusNotSync}>{localize[lang].NOT_SYNC}</div>
+          )}
         </div>
       </div>
     );
@@ -61,10 +76,15 @@ class JiraCard extends Component {
 }
 
 const mapStateToProps = state => ({
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  simtrackProject: state.Project.project
 });
+
+const mapDispatchToProps = {
+  getJiraSyncInfo
+};
 
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(JiraCard);
