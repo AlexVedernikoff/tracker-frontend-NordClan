@@ -3,12 +3,20 @@
     "REPOSITORY_ADDRESS": "Repository address",
     "COPY_ADDRESS": "Copy address (ssh)",
     "CANSEL_CONNECT": "Cancel connection",
-    "CONFIRM_CANSEL": "Are you sure you want to disconnect jira project"
+    "CONFIRM_CANSEL": "Are you sure you want to disconnect jira project",
+    "SUCCESS": "Synchronized",
+    "SYNC_FAILED": "Synchronization error",
+    "LAST_SYNC": "Last sync date",
+    "NOT_SYNC": "not synchronized"
   },
   "ru": {
     "REPOSITORY_ADDRESS": "Адрес репозитория",
     "COPY_ADDRESS": "Скопировать адрес (ssh)",
     "CANSEL_CONNECT": "Отменить связь",
-    "CONFIRM_CANSEL": "Вы действительно хотите отвязать проект от jira"
+    "CONFIRM_CANSEL": "Вы действительно хотите отвязать проект от jira",
+    "SUCCESS": "Синхронизированно",
+    "SYNC_FAILED": "Ошибка синхронизации",
+    "LAST_SYNC": "Дата последней синхронизации",
+    "NOT_SYNC": "Не синхронизировано"
   }
 }
