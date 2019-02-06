@@ -75,7 +75,7 @@ class Participant extends React.Component {
     this.setState({
       editingGitlabRole: {
         ...this.state.editingGitlabRole,
-        [attr]: moment.isMoment(option) ? option : option.value
+        [attr]: moment.isMoment(option) ? option : option && option.value
       }
     });
   };
@@ -244,6 +244,8 @@ class Participant extends React.Component {
                     noResultsText={localize[lang].NO_RESULTS}
                     backspaceToRemoveMessage={''}
                     options={this.props.gitlabRoles}
+                    canClear
+                    onClear={() => this.changeGitlabRole(null, 'accessLevel')}
                   />
                   <DatepickerDropdown
                     name="expires_at"
