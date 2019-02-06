@@ -54,7 +54,15 @@ class InputWithDateMask extends Component {
           {...this.props}
         />
         {canClear && (
-          <span className="ClearValue" onClick={this.props.onClear}>
+          <span
+            className="ClearValue"
+            onClick={e => {
+              e.stopPropagation();
+              if (this.props.onClear) {
+                this.props.onClear();
+              }
+            }}
+          >
             ×
           </span>
         )}
