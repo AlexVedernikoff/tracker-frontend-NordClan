@@ -81,11 +81,15 @@ class FilterForm extends React.Component {
   clearFilters = type => {
     if (type === 'sprints') {
       this.props.clearFilters({ changedSprint: [0] }, this.updateListsAndTasks);
-      this.taskNameRef.value = '';
+      this.resetName();
       storage.setItem('sprintFilterChanged', 1);
     } else {
       this.props.setFilterValue(type, [], this.updateListsAndTasks);
     }
+  };
+
+  resetName = () => {
+    this.taskNameRef.value = '';
   };
 
   render() {
@@ -151,6 +155,11 @@ class FilterForm extends React.Component {
               defaultValue={filters.name || ''}
               onChange={this.onNameFilterChange}
               inputRef={ref => (this.taskNameRef = ref)}
+              canClear
+              onClear={() => {
+                this.resetName();
+                this.props.setFilterValue('name', '', this.updateListsAndTasks);
+              }}
             />
           </Col>
           <Col xs={12} sm={3}>
