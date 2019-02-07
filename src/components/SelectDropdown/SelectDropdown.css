@@ -132,6 +132,10 @@
   transition: 0.3s ease-out 0s;
 }
 
+.Select-option.is-selected {
+  background-color: #f1f1f1;
+}
+
 .Select-option.is-focused {
   background-color: #f1f1f1;
   transition: 0.3s ease-out 0s;
