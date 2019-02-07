@@ -73,7 +73,7 @@ class FilterForm extends React.Component {
     return sprintIds && sprintIds.length && this.props.sprints && this.props.sprints.length
       ? sprintIds.map(sprintId => {
           const sprintData = this.props.sprints.find(data => data.id === +sprintId) || {};
-          return `${sprintData.spentTime || 0} / ${sprintData.riskBudget || 0}`;
+          return `${sprintData.spentTime || 0} / ${sprintData.budget || 0}`;
         })
       : [];
   }
