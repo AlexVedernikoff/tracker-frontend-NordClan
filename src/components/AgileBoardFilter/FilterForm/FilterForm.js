@@ -166,6 +166,8 @@ class FilterForm extends React.Component {
             <PerformerFilter
               onPerformerSelect={this.onPerformerFilterChange}
               selectedPerformerId={this.props.filters.performerId}
+              canClear
+              onClear={() => this.clearFilters('performerId')}
             />
           </Col>
           <Col xs={12} sm={3}>
@@ -214,6 +216,8 @@ class FilterForm extends React.Component {
               onInputChange={removeNumChars}
               noResultsText={localize[lang].NO_RESULTS}
               options={this.props.authorOptions}
+              canClear
+              onClear={() => this.props.setFilterValue('authorId', null, this.updateListsAndTasks)}
             />
           </Col>
           <Col className={css.filterButtonCol}>
