@@ -686,6 +686,8 @@ class TaskList extends Component {
                     placeholder={localize[lang].ENTER_TITLE_TASK}
                     value={this.state.nameInputValue || ''}
                     onChange={this.changeNameFilter}
+                    canClear
+                    onClear={() => this.changeNameFilter({ target: { value: '' } })}
                   />
                 </Col>
                 <Col xs={6} sm={2}>
@@ -841,6 +843,8 @@ class TaskList extends Component {
                       placeholder={localize[lang].ENTER_TITLE_TASK}
                       value={this.state.nameInputValue || ''}
                       onChange={this.changeNameFilter}
+                      canClear
+                      onClear={() => this.changeNameFilter({ target: { value: '' } })}
                     />
                   </Col>
                 )}
