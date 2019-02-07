@@ -575,7 +575,7 @@ class Planning extends Component {
                 estimates={leftEstimates}
                 sprints={leftColumnSprints}
                 selectedSprintValue={leftColumn}
-                onSprintChange={e => this.selectValue(e !== null ? e.value : null, 'leftColumn')}
+                onSprintChange={e => this.selectValue(e !== null ? e.value : BACKLOG_ID, 'leftColumn')}
                 onCreateTaskClick={this.openModal}
               />
               <ConfirmModal
@@ -596,7 +596,7 @@ class Planning extends Component {
                 estimates={rightEstimates}
                 sprints={rightColumnSprints}
                 selectedSprintValue={rightColumn}
-                onSprintChange={e => this.selectValue(e !== null ? e.value : null, 'rightColumn')}
+                onSprintChange={e => this.selectValue(e !== null ? e.value : BACKLOG_ID, 'rightColumn')}
                 onCreateTaskClick={this.openModal}
               />
               <Col xs={12} sm={6}>
