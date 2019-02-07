@@ -40,6 +40,13 @@ const jiraAuthorizeError = data => {
   };
 };
 
+const JiraInfoStatusSuccess = data => {
+  return {
+    type: JiraActions.JIRA_STATUS_RECEIVE_INFO,
+    data: data
+  };
+};
+
 const getJiraIssueAndStatusTypesStart = () => ({
   type: JiraActions.GET_JIRA_ISSUE_AND_STATUS_TYPES_START
 });
@@ -394,6 +401,25 @@ const cleanJiraAssociation = simtrackProjectId => {
   };
 };
 
+const getJiraSyncInfo = simtrackProjectId => {
+  const URL = `${API_URL}/jira/getJiraSyncStatuses/${simtrackProjectId}`;
+  return dispatch => {
+    dispatch(startLoading());
+    return axios
+      .get(URL)
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(JiraInfoStatusSuccess(response.data));
+        }
+        dispatch(finishLoading());
+      })
+      .catch(error => {
+        dispatch(finishLoading());
+        throw error;
+      });
+  };
+};
+
 export {
   cleanJiraAssociation,
   jiraAuthorize,
@@ -403,5 +429,6 @@ export {
   setAssociation,
   createBatch,
   getProjectAssociation,
-  getJiraIssueAndStatusTypes
+  getJiraIssueAndStatusTypes,
+  getJiraSyncInfo
 };
