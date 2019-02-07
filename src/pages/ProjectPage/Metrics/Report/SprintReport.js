@@ -164,7 +164,7 @@ class SprintReport extends Component {
         })
       })),
       {
-        value: 0,
+        value: '0',
         label: 'Backlog',
         className: classnames({
           [css.INPROGRESS]: false,
@@ -227,6 +227,7 @@ class SprintReport extends Component {
     return {
       label: localize[this.props.lang].ALL_PROJECT,
       value: {
+        id: 'FULL_PROJECT',
         factStartDate: this.props.startDate,
         factFinishDate: this.props.endDate
       }
@@ -239,7 +240,7 @@ class SprintReport extends Component {
     const from = moment(selectedFrom, dateFormat, true).format(dateFormat2);
     const to = moment(selectedTo, dateFormat, true).format(dateFormat2);
     const checkSprint = reportPeriod && reportPeriod.value && typeof reportPeriod.value.id === 'number';
-    const backlogCondition = reportPeriod && reportPeriod.value === 0;
+    const backlogCondition = reportPeriod && reportPeriod.value === '0';
     const checkDate = from && to;
     const selectedDate = `?lang=${lang}&startDate=${from}&endDate=${to}`;
     if (checkDate && checkSprint) {
