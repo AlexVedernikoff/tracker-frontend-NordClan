@@ -157,6 +157,7 @@ class FilterForm extends React.Component {
             <PerformerFilter
               onPerformerSelect={this.onPerformerFilterChange}
               selectedPerformerId={this.props.filters.performerId}
+              filterOption={layoutAgnosticFilter}
             />
           </Col>
           <Col xs={12} sm={3}>
@@ -171,6 +172,7 @@ class FilterForm extends React.Component {
               options={this.props.typeOptions}
               onChange={this.onTypeFilterChange}
               canClear
+              filterOption={layoutAgnosticFilter}
               onClear={() => this.clearFilters('typeId')}
             />
           </Col>

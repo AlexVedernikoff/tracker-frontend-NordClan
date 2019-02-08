@@ -43,6 +43,7 @@ class PerformerFilter extends React.Component {
         noResultsText={localize[lang].NO_RESULTS}
         options={this.getUsers()}
         backspaceToRemoveMessage={''}
+        {...this.props}
       />
     );
   }
