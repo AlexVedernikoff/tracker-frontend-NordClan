@@ -15,9 +15,9 @@ class SprintColumnHeader extends Component {
     name: PropTypes.string.isRequired,
     onCreateTaskClick: PropTypes.func.isRequired,
     onSprintChange: PropTypes.func.isRequired,
+    projectSprints: PropTypes.array.isRequired,
     selectedSprintValue: PropTypes.number,
-    sprints: PropTypes.array.isRequired,
-    projectSprints: PropTypes.array.isRequired
+    sprints: PropTypes.array.isRequired
   };
 
   getSprintTime = sprintIds => {
