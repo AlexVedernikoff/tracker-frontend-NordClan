@@ -101,6 +101,7 @@ class Participant extends React.Component {
 
   getProjectUserGitlabRole(projectId) {
     const { user, gitlabRoles } = this.props;
+    const isExpired = moment(user.gitlabRoles[0].expiresAt) - moment(new Date()) < 0;
     const defaultLabel = localize[this.props.lang].UNSET_GITLAB_USER_ROLE;
     if (user.gitlabRoles && user.gitlabRoles.length) {
       const userGitlabRole = user.gitlabRoles.find(({ gitlabProjectId }) => gitlabProjectId === projectId) || {};
@@ -109,7 +110,8 @@ class Participant extends React.Component {
       return {
         ...userGitlabRole,
         ...gitlabRoleParams,
-        label: label || defaultLabel
+        label: label || defaultLabel,
+        isExpired
       };
     }
     return { label: defaultLabel };
@@ -191,7 +193,10 @@ class Participant extends React.Component {
                     <Col key={id} xs={6} sm={3} md={3} lg className={css.cellColumn}>
                       <div className={classnames(css.cell, css.gitlabRoleCellWrap)}>
                         <div className={classnames(css.gitlabRoleCell)}>
-                          <a onClick={() => this.handleOpenGitlabRoleEdit(id)}>
+                          <a
+                            style={this.getProjectUserGitlabRole(id).isExpired ? { color: '#d9534f' } : {}}
+                            onClick={() => this.handleOpenGitlabRoleEdit(id)}
+                          >
                             {this.getProjectUserGitlabRole(id).label}
                             <span className={classnames(css.gitlabRoleProjectName)}> / {name}</span>
                           </a>
