@@ -136,7 +136,6 @@ export const getTagsFilter = (tagName, filterFor) => {
 
     return requestedTagsList
       .then(data => {
-        dispatch(finishLoading());
         if (!data) return;
 
         dispatch(
