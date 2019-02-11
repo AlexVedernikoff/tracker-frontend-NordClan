@@ -124,6 +124,7 @@ class ActivityRow extends React.Component {
   };
 
   updateTimesheet = (i, sheetId, comment) => {
+    const { item } = this.props;
     const value = this.state.timeCells[i].toString().replace(',', '.');
     const { userId, startingDay } = this.props;
     if (!value && !comment) {
@@ -133,7 +134,8 @@ class ActivityRow extends React.Component {
     this.props.updateTimesheet(
       {
         sheetId,
-        spentTime: +value
+        spentTime: +value,
+        taskId: item.id
       },
       userId,
       startingDay
