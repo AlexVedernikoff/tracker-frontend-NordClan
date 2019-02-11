@@ -26,6 +26,13 @@ class PerformerFilter extends React.Component {
       value: user.id,
       label: getFullName(user)
     }));
+    users.sort((a, b) => {
+      if (a.label < b.label) {
+        return -1;
+      } else if (a.label > b.label) {
+        return 1;
+      }
+    });
     users.unshift({ value: '0', label: localize[this.props.lang].NOT_CHANGED });
     return users;
   };
