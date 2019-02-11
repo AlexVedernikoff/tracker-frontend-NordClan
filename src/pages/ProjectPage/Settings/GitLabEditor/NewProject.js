@@ -68,11 +68,14 @@ class NewProject extends Component {
         value: trimmedValue
       }
     });
+    if (this.inputRef) {
+      this.inputRef.value = trimmedValue;
+    }
   };
 
   render() {
     const { lang } = this.props;
-    const { errorCode, projectId } = this.state;
+    const { errorCode } = this.state;
     const invalid = !!errorCode;
 
     return (
@@ -86,9 +89,9 @@ class NewProject extends Component {
               placeholder={localize[lang].PLACEHOLDER}
               onChange={this.changeValue}
               onBlur={handleBlur}
+              onRef={elem => (this.inputRef = elem)}
               shouldMarkError={shouldMarkError}
               errorText={localize[lang][errorCode || 'ERROR_TEXT']}
-              value={projectId}
             />
           ),
           'projectId',
