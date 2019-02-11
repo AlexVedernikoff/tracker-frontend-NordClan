@@ -10,6 +10,7 @@ import SelectDropdown from '../../../components/SelectDropdown';
 import * as css from '../Timesheets.scss';
 import Checkbox from '../../../components/Checkbox/Checkbox';
 import { getProjectSprints } from '../../../actions/Project';
+import { showNotification } from '../../../actions/Notifications';
 import {
   changeTask,
   changeProject,
@@ -43,9 +44,12 @@ class AddActivityModal extends Component {
     selectedProject: PropTypes.object,
     selectedTask: PropTypes.object,
     selectedTaskStatusId: PropTypes.number,
+    showNotification: PropTypes.func,
     sprints: PropTypes.array,
     startingDay: PropTypes.object,
     taskStatuses: PropTypes.array,
+    tempTimesheetsList: PropTypes.array,
+    timesheetsList: PropTypes.array,
     userId: PropTypes.number
   };
 
@@ -92,12 +96,47 @@ class AddActivityModal extends Component {
     }
   };
 
+  activityAlreadyExists = (selectedTask, taskStatusId, timesheetsCurrentList) => {
+    const {
+      body: { id, typeId }
+    } = selectedTask;
+    const _taskStatusId = getStopStatusByGroup(taskStatusId);
+    for (let i = 0; i < timesheetsCurrentList.length; i++) {
+      const item = timesheetsCurrentList[i];
+      if (item.task.id === id && item.typeId === typeId && item.taskStatusId === _taskStatusId) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
   addActivity = e => {
     e.preventDefault();
 
-    const { selectedTask, selectedActivityType, selectedProject, selectedTaskStatusId, startingDay } = this.props;
+    const {
+      selectedTask,
+      selectedActivityType,
+      selectedProject,
+      selectedTaskStatusId,
+      startingDay,
+      timesheetsList,
+      tempTimesheetsList
+    } = this.props;
     const { selectedSprint } = this.state;
     const taskStatusId = selectedTask ? selectedTaskStatusId : null;
+    if (
+      this.activityAlreadyExists(selectedTask, taskStatusId, timesheetsList) ||
+      this.activityAlreadyExists(selectedTask, taskStatusId, tempTimesheetsList)
+    ) {
+      this.props.showNotification(
+        {
+          message: localize[this.props.lang].ACTIVITY_ALREADY_EXISTS,
+          type: 'error'
+        },
+        4000
+      );
+    }
 
     const getSprint = () => {
       if (this.isNoTaskProjectActivity() && selectedSprint) {
@@ -389,7 +428,9 @@ const mapStateToProps = state => ({
   filteredTasks: state.Timesheets.filteredTasks,
   sprints: state.Project.project.sprints,
   userId: state.Auth.user.id,
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  timesheetsList: state.Timesheets.list,
+  tempTimesheetsList: state.Timesheets.tempTimesheets
 });
 
 const mapDispatchToProps = {
@@ -400,7 +441,8 @@ const mapDispatchToProps = {
   changeActivityType,
   getTasksForSelect,
   getProjectsForSelect,
-  getProjectSprints
+  getProjectSprints,
+  showNotification
 };
 
 export default connect(
