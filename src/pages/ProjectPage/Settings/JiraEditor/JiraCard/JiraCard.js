@@ -41,11 +41,11 @@ class JiraCard extends Component {
 
   getStatusInfo = status => {
     const { lang, simtrackProject } = this.props;
-    const dateWithTimeZone = moment.utc(simtrackProject.lastSyncDate).local;
+    const dateWithTimeZone = moment.utc(simtrackProject.lastSyncDate).local();
 
     const classNameForSync = cn(css.syncStatus, {
-      [css.failedStatus]: status === syncStatuses.SUCCESS,
-      [css.successStatus]: status === syncStatuses.FAILED
+      [css.successStatus]: status === syncStatuses.SUCCESS,
+      [css.failedStatus]: status === syncStatuses.FAILED
     });
 
     const statusBlock = (clazz, statusText) => <div className={clazz}>{statusText}</div>;
@@ -60,7 +60,7 @@ class JiraCard extends Component {
       case syncStatuses.SUCCESS:
         return (
           <div>
-            {statusBlock(localize[lang].SUCCESS)}
+            {statusBlock(classNameForSync, localize[lang].SUCCESS)}
             {lastDateSyncBlock(classNameForSync, dateWithTimeZone)}
           </div>
         );
@@ -103,7 +103,9 @@ class JiraCard extends Component {
               </a>
             </div>
           </div>
-          <div className={css.syncStatus}>{this.getStatusInfo(simtrackProject.status)}</div>
+          {simtrackProject.status ? (
+            <div className={css.syncStatus}>{this.getStatusInfo(simtrackProject.status)}</div>
+          ) : null}
         </div>
         <div onClick={this.toggleConfirm} className={css.deleteProject}>
           <IconClose data-tip={localize[lang].CANSEL_CONNECT} />
