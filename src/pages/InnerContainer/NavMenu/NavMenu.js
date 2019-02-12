@@ -10,10 +10,12 @@ import {
   IconPortfolio,
   IconUsers,
   IconExternalUsers,
-  IconUser
+  IconUser,
+  IconCheckAll,
+  IconList
 } from '../../../components/Icons';
 import isAdmin from '../../../utils/isAdmin';
-import { EXTERNAL_USER } from '../../../constants/Roles';
+import { DEV_OPS, EXTERNAL_USER } from '../../../constants/Roles';
 import Toggle from '../../../components/LanguageToggle';
 import { setLocalize } from '../../../actions/localize';
 import localize from './navMenu.json';
@@ -124,6 +126,27 @@ class NavMenu extends Component {
         </li>
       ) : null;
 
+    const timesheetsDevOpsLink =
+      isAdmin(this.props.user.globalRole) || this.props.user.globalRole === DEV_OPS ? (
+        <li key="devops" className={css.sidebarItem}>
+          <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/tasks-devops">
+            <button>
+              <IconList style={iconStyles} />
+            </button>
+            <span>{localize[lang].MY_TASKS_DEVOPS}</span>
+          </Link>
+        </li>
+      ) : null;
+
+    const timesheetsDevOpsLinkButton =
+      isAdmin(this.props.user.globalRole) || this.props.user.globalRole === DEV_OPS ? (
+        <li key="devops">
+          <Link className={css.sidebarLinkClosed} activeClassName={css.activeLink} to="/tasks-devops">
+            <IconList style={iconStyles} />
+          </Link>
+        </li>
+      ) : null;
+
     const toggleButton = mqlMatches ? (
       <button
         key="toggle_btn"
@@ -153,6 +176,7 @@ class NavMenu extends Component {
           </Link>
         </li>
       ),
+      timesheetsDevOpsLink,
       timesheetsLink,
       usersRolesLink,
       externalUsersLink,
@@ -170,6 +194,7 @@ class NavMenu extends Component {
           <IconEdit style={iconStyles} />
         </Link>
       </li>,
+      timesheetsDevOpsLinkButton,
       timesheetsLinkButton,
       usersRolesLinkButton,
       externalUsersLinkButton,
