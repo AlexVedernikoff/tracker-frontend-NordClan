@@ -21,12 +21,8 @@ class Table extends React.Component {
     lang: PropTypes.string.isRequired,
     onClickSprint: PropTypes.func.isRequired,
     onDeleteMilestone: PropTypes.func.isRequired,
-    onMouseOutRow: PropTypes.func.isRequired,
-    onMouseOverRow: PropTypes.func.isRequired,
     openMilestoneEditModal: PropTypes.func.isRequired,
-    openSprintEditModal: PropTypes.func.isRequired,
-    typeHovered: PropTypes.string,
-    typeIdHovered: PropTypes.number
+    openSprintEditModal: PropTypes.func.isRequired
   };
 
   getSprintBlock = (sprint, activeYear) => {
@@ -120,17 +116,7 @@ class Table extends React.Component {
   }
 
   renderSprintLabel(sprint, i) {
-    const {
-      typeHovered,
-      typeIdHovered,
-      onClickSprint,
-      onMouseOverRow,
-      onMouseOutRow,
-      isProjectAdmin,
-      openSprintEditModal,
-      isExternal,
-      lang
-    } = this.props;
+    const { onClickSprint, isProjectAdmin, openSprintEditModal, isExternal, lang } = this.props;
 
     return (
       <div
@@ -143,13 +129,10 @@ class Table extends React.Component {
       >
         <span
           className={classnames({
-            [css.selection]: true,
-            [css.hover]: typeHovered === 'sprint' && sprint.id === typeIdHovered
+            [css.selection]: true
           })}
           /*data-tip={this.getSprintTime(sprint)}*/
           onClick={onClickSprint(sprint.id)}
-          onMouseOver={onMouseOverRow('sprint', sprint.id)}
-          onMouseOut={onMouseOutRow}
         />
 
         {isProjectAdmin ? <SprintStartControl sprint={sprint} /> : null}
@@ -168,27 +151,15 @@ class Table extends React.Component {
   }
 
   renderMilestoneLabel(milestone, i) {
-    const {
-      typeHovered,
-      typeIdHovered,
-      onMouseOverRow,
-      onMouseOutRow,
-      openMilestoneEditModal,
-      isExternal,
-      onDeleteMilestone,
-      lang
-    } = this.props;
+    const { openMilestoneEditModal, isExternal, onDeleteMilestone, lang } = this.props;
 
     return (
       <div key={`milestone-${i}`} className={css.sprintsListLine}>
         <span
           className={classnames({
-            [css.selection]: true,
-            [css.hover]: typeHovered === 'milestone' && milestone.id === typeIdHovered
+            [css.selection]: true
           })}
           data-tip={this.getMilestoneLabel(milestone)}
-          onMouseOver={onMouseOverRow('milestone', milestone.id)}
-          onMouseOut={onMouseOutRow}
         />
 
         <div className={classnames(css.name, { [css.nameMargin]: false })}>{milestone.name}</div>
