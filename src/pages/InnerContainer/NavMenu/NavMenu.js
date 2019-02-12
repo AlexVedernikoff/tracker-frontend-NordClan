@@ -11,7 +11,6 @@ import {
   IconUsers,
   IconExternalUsers,
   IconUser,
-  IconCheckAll,
   IconList
 } from '../../../components/Icons';
 import isAdmin from '../../../utils/isAdmin';
