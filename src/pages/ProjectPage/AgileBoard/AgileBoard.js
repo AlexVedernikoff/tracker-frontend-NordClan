@@ -94,7 +94,8 @@ class AgileBoard extends Component {
           typeId: filters.typeId || null,
           name: filters.name || null,
           tags: filters.filterTags,
-          performerId: filters.performerId || null
+          performerId: filters.performerId || null,
+          isDevOps: this.props.isDevOps || false
         };
     this.props.getTasks(options);
   };
@@ -464,6 +465,7 @@ AgileBoard.propTypes = {
   getTasks: PropTypes.func.isRequired,
   globalRole: PropTypes.string,
   isCreateTaskModalOpen: PropTypes.bool,
+  isDevOps: PropTypes.bool,
   lang: PropTypes.string,
   lastCreatedTask: PropTypes.object,
   lastUpdatedTask: PropTypes.object,
