@@ -76,6 +76,24 @@ class JiraCard extends Component {
           <div>
             {statusBlock(localize[lang].SYNC_RUNNING)}
             <div className={classNameForSync}>
+              {localize[lang].LAST_DATE_RUNNING}: {moment(dateWithTimeZone).format('DD.MM.YYYY hh:mm')}
+            </div>
+          </div>
+        );
+      case syncStatuses.CANCELED:
+        return (
+          <div>
+            {statusBlock(localize[lang].SYNC_CANCELED)}
+            <div className={classNameForSync}>
+              {localize[lang].LAST_DATE_RUNNING}: {moment(dateWithTimeZone).format('DD.MM.YYYY hh:mm')}
+            </div>
+          </div>
+        );
+      case syncStatuses.PENDING:
+        return (
+          <div>
+            {statusBlock(localize[lang].SYNC_PENDING)}
+            <div className={classNameForSync}>
               {localize[lang].LAST_DATE_RUNNING}: {moment(dateWithTimeZone).format('DD.MM.YYYY HH:MM')}
             </div>
           </div>
