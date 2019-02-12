@@ -12,6 +12,7 @@ import roundNum from '../../../../utils/roundNum';
 
 class Table extends React.Component {
   static propTypes = {
+    canEditPlan: PropTypes.bool,
     entities: PropTypes.array,
     grantActiveYear: PropTypes.string,
     grantYearDecrement: PropTypes.func.isRequired,
@@ -116,7 +117,7 @@ class Table extends React.Component {
   }
 
   renderSprintLabel(sprint, i) {
-    const { onClickSprint, isProjectAdmin, openSprintEditModal, isExternal, lang } = this.props;
+    const { onClickSprint, isProjectAdmin, openSprintEditModal, isExternal, lang, canEditPlan } = this.props;
 
     return (
       <div
@@ -139,7 +140,7 @@ class Table extends React.Component {
 
         <div className={classnames(css.name, { [css.nameMargin]: isProjectAdmin })}>{sprint.name}</div>
 
-        {!isExternal ? (
+        {!isExternal && canEditPlan ? (
           <IconEdit
             className={classnames(css.edit, 'edit')}
             data-tip={localize[lang].EDIT}
@@ -151,7 +152,7 @@ class Table extends React.Component {
   }
 
   renderMilestoneLabel(milestone, i) {
-    const { openMilestoneEditModal, isExternal, onDeleteMilestone, lang } = this.props;
+    const { openMilestoneEditModal, isExternal, onDeleteMilestone, lang, canEditPlan } = this.props;
 
     return (
       <div key={`milestone-${i}`} className={css.sprintsListLine}>
@@ -164,14 +165,14 @@ class Table extends React.Component {
 
         <div className={classnames(css.name, { [css.nameMargin]: false })}>{milestone.name}</div>
 
-        {!isExternal ? (
+        {!isExternal && canEditPlan ? (
           <IconEdit
             className={classnames(css.edit, 'edit')}
             data-tip={localize[lang].EDIT}
             onClick={openMilestoneEditModal(milestone)}
           />
         ) : null}
-        {!isExternal ? (
+        {!isExternal && canEditPlan ? (
           <IconDelete
             className={classnames(css.delete, 'delete')}
             data-tip={localize[lang].DELETE}

@@ -34,6 +34,14 @@ function Tasks(state = InitialState, action) {
         isReceiving: false
       };
 
+    case TasksActions.FILTER_CURRENT_PROJECT_AND_TASKS_DEVOPS:
+      const newTask = state.tasks.filter(item => item.isDevOps === true);
+      return {
+        ...state,
+        tasks: newTask,
+        isReceiving: false
+      };
+
     case ProjectActions.TASK_CREATE_REQUEST_SUCCESS:
       return {
         ...state,
