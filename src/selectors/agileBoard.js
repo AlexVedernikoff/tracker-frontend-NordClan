@@ -131,6 +131,7 @@ const agileBoardSelector = state => {
     typeOptions: getTypeOptions(state),
     authorOptions: getAuthorOptions(state),
     noTagData: getNoTagData(state),
+    isProjectInfoReceiving: state.Project.isProjectInfoReceiving,
     lastCreatedTask: state.Project.lastCreatedTask,
     lastUpdatedTask: state.Task.lastUpdatedTask,
     sprintTasks: state.Tasks.tasks,
