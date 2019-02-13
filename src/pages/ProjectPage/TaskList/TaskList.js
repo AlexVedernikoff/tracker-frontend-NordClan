@@ -625,6 +625,19 @@ class TaskList extends Component {
   onChangeDateToFilter = option => this.handleDayChange(option, 'dateTo');
   onChangePerformerFilter = option => this.changeSingleFilter(option, 'performerId');
   onChangeTagFilter = options => this.changeMultiFilter(options, 'tags');
+  sortedAuthorOptions = () => {
+    const { project } = this.props;
+    const authorOptions = this.createOptions(project.users, 'fullNameRu');
+    return authorOptions
+      ? authorOptions.sort((a, b) => {
+          if (a.label < b.label) {
+            return -1;
+          } else if (a.label > b.label) {
+            return 1;
+          }
+        })
+      : null;
+  };
 
   render() {
     const { tasksList: tasks, statuses, taskTypes, project, isReceiving, lang, sprints } = this.props;
@@ -650,7 +663,7 @@ class TaskList extends Component {
 
     const statusOptions = this.createOptions(statuses);
     const typeOptions = this.createOptions(taskTypes);
-    const authorOptions = this.createOptions(project.users, 'fullNameRu');
+
     const isFilter = this.isFilters();
     const isLoading = isReceiving && !tasks.length;
     const isExternal = this.props.globalRole === EXTERNAL_USER;
@@ -739,7 +752,7 @@ class TaskList extends Component {
                     onChange={this.onChangeAuthorFilter}
                     onInputChange={removeNumChars}
                     noResultsText={localize[lang].NO_RESULTS}
-                    options={authorOptions}
+                    options={this.sortedAuthorOptions()}
                   />
                 </Col>
                 <Col xs={12} sm={3}>
