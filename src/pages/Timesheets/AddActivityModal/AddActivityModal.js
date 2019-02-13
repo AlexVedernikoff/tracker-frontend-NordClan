@@ -173,6 +173,7 @@ class AddActivityModal extends Component {
   };
 
   handleChangeProject = option => {
+    this.handleChangeSprint(null);
     this.props.changeProject(option);
     this.loadTasks('', option ? option.value : null);
     if (this.isNoTaskProjectActivity() && (option && option.value !== 0)) {
