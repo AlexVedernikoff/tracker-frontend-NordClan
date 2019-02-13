@@ -24,11 +24,6 @@ const initialState = {
       error: false,
       serverError: false,
       text: ''
-    },
-    expiredDate: {
-      error: false,
-      serverError: false,
-      text: ''
     }
   }
 };
