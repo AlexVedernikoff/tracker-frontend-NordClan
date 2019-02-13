@@ -7,7 +7,7 @@
     "SUCCESS": "Synchronized",
     "SYNC_FAILED": "Synchronization error",
     "LAST_SYNC": "Last sync date",
-    "NOT_SYNC": "not synchronized",
+    "NOT_SYNC": "Not synchronized",
     "LAST_DATE_RUNNING": "Sync start date",
     "SYNC_RUNNING": "Sync in progress",
     "SYNC_CANCELED": "Sync canceled",

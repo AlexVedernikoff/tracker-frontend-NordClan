@@ -48,7 +48,7 @@ class JiraCard extends Component {
       [css.failedStatus]: status === syncStatuses.FAILED
     });
 
-    const statusBlock = (clazz, statusText) => <div className={clazz}>{statusText}</div>;
+    const statusBlock = statusText => <div className={classNameForSync}>{statusText}</div>;
 
     const lastDateSyncBlock = (clazz, date) => (
       <div className={clazz}>
@@ -60,7 +60,7 @@ class JiraCard extends Component {
       case syncStatuses.SUCCESS:
         return (
           <div>
-            {statusBlock(classNameForSync, localize[lang].SUCCESS)}
+            {statusBlock(localize[lang].SUCCESS)}
             {lastDateSyncBlock(classNameForSync, dateWithTimeZone)}
           </div>
         );
@@ -76,7 +76,7 @@ class JiraCard extends Component {
           <div>
             {statusBlock(localize[lang].SYNC_RUNNING)}
             <div className={classNameForSync}>
-              {localize[lang].LAST_DATE_RUNNING}: {moment(dateWithTimeZone).format('DD.MM.YYYY hh:mm')}
+              {localize[lang].LAST_DATE_RUNNING}: {moment(dateWithTimeZone).format('DD.MM.YYYY')}
             </div>
           </div>
         );
@@ -85,7 +85,7 @@ class JiraCard extends Component {
           <div>
             {statusBlock(localize[lang].SYNC_CANCELED)}
             <div className={classNameForSync}>
-              {localize[lang].LAST_DATE_RUNNING}: {moment(dateWithTimeZone).format('DD.MM.YYYY hh:mm')}
+              {localize[lang].LAST_DATE_RUNNING}: {moment(dateWithTimeZone).format('DD.MM.YYYY')}
             </div>
           </div>
         );
@@ -94,7 +94,7 @@ class JiraCard extends Component {
           <div>
             {statusBlock(localize[lang].SYNC_PENDING)}
             <div className={classNameForSync}>
-              {localize[lang].LAST_DATE_RUNNING}: {moment(dateWithTimeZone).format('DD.MM.YYYY HH:MM')}
+              {localize[lang].LAST_DATE_RUNNING}: {moment(dateWithTimeZone).format('DD.MM.YYYY')}
             </div>
           </div>
         );
@@ -121,9 +121,7 @@ class JiraCard extends Component {
               </a>
             </div>
           </div>
-          {simtrackProject.status ? (
-            <div className={css.syncStatus}>{this.getStatusInfo(simtrackProject.status)}</div>
-          ) : null}
+          <div className={css.syncStatus}>{this.getStatusInfo(simtrackProject.status)}</div>
         </div>
         <div onClick={this.toggleConfirm} className={css.deleteProject}>
           <IconClose data-tip={localize[lang].CANSEL_CONNECT} />
