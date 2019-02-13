@@ -35,7 +35,8 @@ class PerformerOptions extends Component {
       options: this.optionsList,
       loggedTime: 0,
       selectedPerformer: props.defaultOption || null,
-      commentText: ''
+      commentText: '',
+      inputValue: ''
     };
   }
 
@@ -144,6 +145,33 @@ class PerformerOptions extends Component {
     this.setState({ disabledBtn: !evt.target.value || evt.target.value.trim() === '' });
   };
 
+  handleInputChange = e => {
+    const { inputValue } = this.state;
+    if (!inputValue && e) {
+      this.addRestUsersToOptions();
+    } else if (inputValue && !e) {
+      this.removeRestUsersFromOptions();
+    }
+
+    this.setState({ inputValue: e });
+  };
+
+  addRestUsersToOptions = () => {
+    const { options, canBeNotSelected, restUsers } = this.props;
+    const newOptions = this.getOptionsList([...options, ...restUsers], canBeNotSelected);
+    this.setState({ options: newOptions }, () => {
+      this.optionsList = newOptions;
+    });
+  };
+
+  removeRestUsersFromOptions = () => {
+    const { options, canBeNotSelected } = this.props;
+    const newOptions = this.getOptionsList(options, canBeNotSelected);
+    this.setState({ options: newOptions }, () => {
+      this.optionsList = newOptions;
+    });
+  };
+
   render() {
     const { title, lang, task, activeUser, isTshAndCommentsHidden } = this.props;
     const { options } = this.state;
@@ -170,6 +198,7 @@ class PerformerOptions extends Component {
                     onChange={this.handlePerformerChange}
                     noResultsText={localize[lang].NO_RESULTS}
                     options={options}
+                    onInputChange={this.handleInputChange}
                     autofocus
                   />
                 </Col>
@@ -252,6 +281,7 @@ PerformerOptions.propTypes = {
   projectUsers: PropTypes.array,
   publishComment: PropTypes.func,
   removeCurOptionTip: PropTypes.string,
+  restUsers: PropTypes.array,
   startingDay: PropTypes.object,
   task: PropTypes.object,
   taskId: PropTypes.number,
