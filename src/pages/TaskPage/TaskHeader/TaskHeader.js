@@ -256,8 +256,6 @@ class TaskHeader extends Component {
     switch (this.state.clickedStatus) {
       case 'Develop':
         unionPerformers = _.union(
-          task.isDevOps ? devOpsUsers : [],
-          task.isDevOps ? users.devops : [],
           users.pm,
           users.teamLead,
           users.account,
@@ -288,8 +286,6 @@ class TaskHeader extends Component {
         break;
       default:
         unionPerformers = _.union(
-          task.isDevOps ? devOpsUsers : [],
-          task.isDevOps ? users.devops : [],
           users.pm,
           users.teamLead,
           users.account,
@@ -302,6 +298,10 @@ class TaskHeader extends Component {
           users.android,
           users.qa
         );
+    }
+
+    if (task.isDevOps) {
+      unionPerformers = _.union(devOpsUsers, users.devops, unionPerformers);
     }
 
     const restUsers = differenceBy(unsortedUsers, unionPerformers, 'id');
