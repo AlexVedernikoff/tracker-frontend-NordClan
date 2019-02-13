@@ -170,6 +170,7 @@ class PerformerOptions extends Component {
                     onChange={this.handlePerformerChange}
                     noResultsText={localize[lang].NO_RESULTS}
                     options={options}
+                    autofocus
                   />
                 </Col>
               </Row>
