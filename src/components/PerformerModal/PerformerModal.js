@@ -4,7 +4,7 @@ import PerformerOptions from '../PerformerOptions';
 import localize from './PerformerModal.json';
 
 const PerformerModal = ({
-  // defaultUser,
+  defaultUser,
   users,
   onClose,
   onChoose,
@@ -16,7 +16,7 @@ const PerformerModal = ({
   ...other
 }) => (
   <PerformerOptions
-    // defaultOption={defaultUser}
+    defaultOption={defaultUser}
     options={users}
     inputPlaceholder={localize[lang].ENTER_PERFORMER_NAME}
     removeCurOptionTip={localize[lang].CANCEL_CURRENT_PERFORMER}

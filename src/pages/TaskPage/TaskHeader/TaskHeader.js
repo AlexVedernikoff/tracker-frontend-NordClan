@@ -305,7 +305,6 @@ class TaskHeader extends Component {
     }
 
     const restUsers = differenceBy(unsortedUsers, unionPerformers, 'id');
-
     return (
       <div>
         {task.parentTask ? (
@@ -435,7 +434,9 @@ class TaskHeader extends Component {
 
         {this.state.isPerformerModalOpen ? (
           <PerformerModal
-            defaultUser={task.performer ? task.performer.id : null}
+            defaultUser={
+              task.performer && unionPerformers.find(user => user.id === task.performer.id) ? task.performer.id : null
+            }
             onChoose={this.changePerformer}
             onClose={this.handleCloseModal}
             title={this.state.modalTitle}
