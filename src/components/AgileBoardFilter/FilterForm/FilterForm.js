@@ -207,6 +207,7 @@ class FilterForm extends React.Component {
               onInputChange={removeNumChars}
               noResultsText={localize[lang].NO_RESULTS}
               options={this.props.authorOptions}
+              filterOption={layoutAgnosticFilter}
             />
           </Col>
           <Col className={css.filterButtonCol}>
