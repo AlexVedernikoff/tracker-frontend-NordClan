@@ -15,6 +15,7 @@ import { isTimesheetsCanBeChanged } from '../../utils/Timesheets';
 import Button from '../Button';
 import localize from './PerformerOptions.json';
 import { TASK_STATUSES } from '../../constants/TaskStatuses';
+import union from 'lodash/union';
 
 import { prepairCommentForEdit, stringifyCommentForSend } from '../../pages/TaskPage/Comments/Mentions/mentionService';
 import moment from 'moment';
@@ -86,6 +87,15 @@ class PerformerOptions extends Component {
   };
 
   handlePerformerChange = selectedPerformer => {
+    let newOptions = [...this.state.options];
+    if (selectedPerformer && !newOptions.find(opt => opt.value === selectedPerformer.value)) {
+      newOptions = union(newOptions, [selectedPerformer]);
+      this.setState({
+        options: newOptions
+      });
+    } else {
+      this.removeRestUsersFromOptions();
+    }
     this.setState({
       selectedPerformer: selectedPerformer ? selectedPerformer.value : null
     });
@@ -158,7 +168,7 @@ class PerformerOptions extends Component {
 
   addRestUsersToOptions = () => {
     const { options, canBeNotSelected, restUsers } = this.props;
-    const newOptions = this.getOptionsList([...options, ...restUsers], canBeNotSelected);
+    const newOptions = this.getOptionsList(union(options, restUsers), canBeNotSelected);
     this.setState({ options: newOptions }, () => {
       this.optionsList = newOptions;
     });
