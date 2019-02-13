@@ -27,9 +27,9 @@ const startTagsDelete = () => ({
   type: TagsActions.TAGS_DELETE_START
 });
 
-const tagsDeleteSuccess = tags => ({
+const tagsDeleteSuccess = data => ({
   type: TagsActions.TAGS_DELETE_SUCCESS,
-  data: tags
+  data
 });
 
 const tagsDeleteError = err => ({
@@ -100,15 +100,8 @@ export const deleteTag = (tag, taggable, taggableId) => {
     dispatch(startLoading());
     axios
       .delete(URL)
-      .then(res => {
-        if (!res.data) return;
-
-        dispatch(
-          tagsDeleteSuccess({
-            taggableId: taggableId,
-            tags: res.data
-          })
-        );
+      .then(() => {
+        dispatch(tagsDeleteSuccess({ tag }));
       })
       .catch(error => {
         dispatch(tagsDeleteError(error));

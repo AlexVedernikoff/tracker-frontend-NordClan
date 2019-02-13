@@ -129,6 +129,9 @@ class TaskList extends Component {
   };
 
   makeFiltersObject = (name, value) => {
+    const { project } = this.props;
+    const { sprints } = project;
+    const currentSprint = sprints ? sprints.filter(item => item.statusId === 2)[0].id : 0;
     let processedValue;
     const defaultValue = emptyFilters[name];
     if (['sprintId', 'performerId', 'statusId', 'typeId', 'tags'].indexOf(name) !== -1) {
@@ -139,6 +142,9 @@ class TaskList extends Component {
       } else {
         processedValue = this.multipleQueries(value, defaultValue);
       }
+    }
+    if (name === 'sprintId' && !value) {
+      processedValue = currentSprint > 0 ? [currentSprint] : [0];
     }
 
     return { [name]: processedValue };
@@ -427,7 +433,8 @@ class TaskList extends Component {
       {
         nameInputValue: '',
         changedFilters: {
-          projectId: this.props.params.projectId
+          projectId: this.props.params.projectId,
+          sprintId: [0]
         }
       },
       this.loadTasks
@@ -716,7 +723,7 @@ class TaskList extends Component {
                       multi
                       searchable
                       clearable
-                      value={sprintId}
+                      value={sprintId || [0]}
                       onChange={this.onChangeSprintFilter}
                       options={sprints}
                       useId

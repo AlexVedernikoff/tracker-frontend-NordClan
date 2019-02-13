@@ -40,7 +40,7 @@ class ParticipantEditor extends Component {
       isModalOpenAddUser: false,
       isModalOpenAddExternal: false,
       isModalOpenWizard: false,
-      tabIndex: 0,
+      tabIndex: 1,
       ...getEmptyState()
     };
     this.ROLES_FULL_NAME = [
@@ -79,12 +79,12 @@ class ParticipantEditor extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.id !== this.props.id) {
       this.props.getProjectUsers(nextProps.id, true);
-      this.handleChangeTab(0);
+      this.handleChangeTab(1);
     }
     if (nextProps.gitlabProjects.length && this.state.tabIndex === 1) {
-      this.handleChangeTab(0);
-    } else if (!nextProps.gitlabProjects.length && this.state.tabIndex === 0) {
       this.handleChangeTab(1);
+    } else if (!nextProps.gitlabProjects.length && this.state.tabIndex === 0) {
+      this.handleChangeTab(0);
     }
   }
 
@@ -313,6 +313,13 @@ class ParticipantEditor extends Component {
           </Col>
           <Col xs={9}>
             <div className={css.tabs}>
+              <div
+                className={classnames(css.tab, { [css.tabActive]: this.state.tabIndex === 1 })}
+                onClick={() => this.handleChangeTab(1)}
+              >
+                <p>SimTrack</p>
+                <small>{localize[lang].PROJECT_ROLES}</small>
+              </div>
               {gitlabProjects.length ? (
                 <div
                   className={classnames(css.tab, { [css.tabActive]: this.state.tabIndex === 0 })}
@@ -322,13 +329,6 @@ class ParticipantEditor extends Component {
                   <small>{localize[lang].ACCESS_REP}</small>
                 </div>
               ) : null}
-              <div
-                className={classnames(css.tab, { [css.tabActive]: this.state.tabIndex === 1 })}
-                onClick={() => this.handleChangeTab(1)}
-              >
-                <p>SimTrack</p>
-                <small>{localize[lang].PROJECT_ROLES}</small>
-              </div>
             </div>
           </Col>
         </Row>
