@@ -94,7 +94,7 @@ class GitLabEditor extends Component {
   };
 
   saveProject = value => {
-    if (isNaN(value)) {
+    if (!isNaN(value)) {
       this.props.addGitlabProjectByName(this.props.project.id, value);
     } else {
       const { gitlabProjectIds } = this.props.project;

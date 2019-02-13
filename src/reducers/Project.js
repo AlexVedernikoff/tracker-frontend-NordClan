@@ -19,7 +19,8 @@ const InitialState = {
     error: false,
     validationError: null,
     metrics: [],
-    notProcessedGitlabUsers: []
+    notProcessedGitlabUsers: [],
+    gitlabProjectIds: []
   },
   TitleIsEditing: false,
   DescriptionIsEditing: false,
@@ -241,7 +242,10 @@ export default function Project(state = InitialState, action) {
         ...state,
         project: {
           ...state.project,
-          gitlabProjectIds: [...state.project.gitlabProjectIds, action.project.gitlabProject.id],
+          gitlabProjectIds: [
+            ...(state.project.gitlabProjectIds ? state.project.gitlabProjectIds : []),
+            action.project.gitlabProject.id
+          ],
           gitlabProjects: [...state.project.gitlabProjects, action.project.gitlabProject],
           users: action.project.projectUsers,
           notProcessedGitlabUsers: action.project.notProcessedGitlabUsers
