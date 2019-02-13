@@ -105,7 +105,7 @@ class PerformerOptions extends Component {
     e.preventDefault();
     const commentText = stringifyCommentForSend(this.state.commentText, this.users);
     const { id } = this.props;
-    this.props.onChoose(this.state.selectedPerformer);
+    this.props.onChoose(this.state.selectedPerformer || 0);
     if (commentText) {
       this.props.publishComment(id, {
         text: commentText

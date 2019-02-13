@@ -435,7 +435,7 @@ class TaskHeader extends Component {
         {this.state.isPerformerModalOpen ? (
           <PerformerModal
             defaultUser={
-              task.performer && unionPerformers.find(user => user.id === task.performer.id) ? task.performer.id : null
+              task.performer && unionPerformers.find(user => user.id === task.performer.id) ? task.performer.id : 0
             }
             onChoose={this.changePerformer}
             onClose={this.handleCloseModal}
