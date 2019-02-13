@@ -24,6 +24,11 @@ const initialState = {
       error: false,
       serverError: false,
       text: ''
+    },
+    expiredDate: {
+      error: false,
+      serverError: false,
+      text: ''
     }
   }
 };
@@ -85,7 +90,7 @@ class AddExternalUser extends Component {
 
   validateForm() {
     const { name, email, expiredDate } = this.state;
-    return name.length >= 2 && this.validateEmail(email) && expiredDate;
+    return name.length >= 2 && this.validateEmail(email) && moment().diff(expiredDate, 'days') < 0;
   }
 
   addUser = () => {
@@ -268,7 +273,7 @@ class AddExternalUser extends Component {
                       />
                     ),
                     'exUserDate',
-                    !expiredDate
+                    !expiredDate || moment().diff(expiredDate, 'days') > 0
                   )}
                 </Col>
               </Row>
