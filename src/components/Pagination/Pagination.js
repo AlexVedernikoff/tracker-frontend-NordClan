@@ -14,7 +14,7 @@ const paginationConfig = {
 const SkipItem = () => <PaginationItem active={false} index={paginationConfig.skipChar} clickable={false} />;
 
 const Pagination = props => {
-  const { itemsCount, activePage, onItemClick, prevText, nextText } = props;
+  const { itemsCount, activePage, onItemClick, prevText, nextText, from = 1, to = itemsCount } = props;
 
   const PrevDisabled = activePage === 1;
   const NextDisabled = activePage === itemsCount;
@@ -87,7 +87,7 @@ const Pagination = props => {
   let items = [];
 
   if (!needCut) {
-    items = [...fillItems(0, itemsCount)];
+    items = [...fillItems(from - 1, to)];
   } else if (isMiddle) {
     items = [
       startPageItem,
@@ -142,10 +142,12 @@ const Pagination = props => {
 Pagination.propTypes = {
   activePage: PropTypes.number.isRequired,
   className: PropTypes.string,
+  from: PropTypes.number,
   itemsCount: PropTypes.number.isRequired,
   nextText: PropTypes.string,
   onItemClick: PropTypes.func.isRequired,
-  prevText: PropTypes.string
+  prevText: PropTypes.string,
+  to: PropTypes.number
 };
 
 export default Pagination;
