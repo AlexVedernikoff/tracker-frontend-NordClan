@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-// import { Row, Col } from 'react-flexbox-grid/lib/index';
+
 import Sprint from './Sprint';
-
-// import SprintColumnHeader from '../Planning/SprintColumnHeader/';
-// import SprintColumn from '../Planning/SprintColumn';
-
-// import * as css from '../Planning/Planning.sccs';
 import Task from './Task';
 
 const globalStart = '2018-09-17T00:00:00.000Z';
