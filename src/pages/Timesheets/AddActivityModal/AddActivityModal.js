@@ -223,6 +223,7 @@ class AddActivityModal extends Component {
       right: 7
     };
     this.getSprintOptions(2);
+    console.log(this.props.selectedProject);
     return (
       <Modal isOpen onRequestClose={this.props.onClose} contentLabel="Modal" closeTimeoutMS={200}>
         <form className={css.addActivityForm}>
@@ -278,6 +279,24 @@ class AddActivityModal extends Component {
                           placeholder={localize[lang].SELECT_PROJECT}
                           onChange={this.handleChangeProject}
                           options={this.state.projects}
+                        />
+                      </Col>
+                    </Row>
+                  </label>
+                ) : null,
+                this.props.selectedProject && this.props.selectedProject.value !== 0 ? (
+                  <label className={css.formField} key="noTaskActivitySprint">
+                    <Row>
+                      <Col xs={12} sm={formLayout.left}>
+                        {localize[lang].SPRINT}
+                      </Col>
+                      <Col xs={12} sm={formLayout.right}>
+                        <SelectDropdown
+                          multi={false}
+                          value={this.state.selectedSprint}
+                          placeholder={localize[lang].SELECT_SPRINT}
+                          onChange={this.handleChangeSprint}
+                          options={this.getSprintOptions()}
                         />
                       </Col>
                     </Row>
