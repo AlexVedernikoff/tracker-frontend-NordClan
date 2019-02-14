@@ -27,10 +27,6 @@ const requestTasksChange = () => ({
   type: TaskAction.TASK_CHANGE_REQUEST_SENT
 });
 
-const filterListTaskDevelop = () => ({
-  type: TaskActions.FILTER_CURRENT_PROJECT_AND_TASKS_DEVOPS
-});
-
 // const successTaskChange = changedFields => ({
 //   type: TaskAction.TASK_CHANGE_REQUEST_SUCCESS,
 //   changedFields
@@ -71,9 +67,6 @@ const getTasks = (options, onlyTaskListUpdate = false) => {
           dispatch(tasksListReceived(response.data));
         } else {
           dispatch(tasksReceived(response.data));
-          /* if (options.isDevOps) {
-            dispatch(filterListTaskDevelop());
-          }*/
         }
       }
       dispatch(finishLoading());
@@ -111,8 +104,4 @@ export default getTasks;
 
 export const clearCurrentProjectAndTasks = () => ({
   type: TaskActions.CLEAR_CURRENT_PROJECT_AND_TASKS
-});
-
-export const filterCurrentProjectAndTaskDevOps = () => ({
-  type: TaskActions.FILTER_CURRENT_PROJECT_AND_TASKS_DEVOPS
 });
