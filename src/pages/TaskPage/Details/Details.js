@@ -32,6 +32,7 @@ import { addActivity } from '../../../actions/Timesheets';
 import { alphabeticallyComparatorLang, devOpsUsersSelector } from '../../../utils/sortPerformer';
 import { sortedUsersSelector, usersSelector } from '../../../selectors/Project';
 import { checkIsAdminInProject } from '../../../utils/isAdmin';
+import { IconEdit } from '../../../components/Icons';
 
 import union from 'lodash/union';
 
