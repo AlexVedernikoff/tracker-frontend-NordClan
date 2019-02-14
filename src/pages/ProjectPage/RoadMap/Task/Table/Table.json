@@ -1,0 +1,48 @@
+{
+  "en": {
+    "MONTHS": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
+    "PLAN": "Plan",
+    "FACT": "Fact",
+    "EDIT": "Edit",
+    "DELETE": "Delete",
+    "UNCOMPLETED": "Not completed",
+    "COMPLETED": "Completed",
+    "TOTAL": "Total"
+  },
+  "ru": {
+    "MONTHS": [
+      "Январь",
+      "Февраль",
+      "Март",
+      "Апрель",
+      "Май",
+      "Июнь",
+      "Июль",
+      "Август",
+      "Сентябрь",
+      "Октябрь",
+      "Ноябрь",
+      "Декабрь"
+    ],
+    "PLAN": "План",
+    "FACT": "Факт",
+    "EDIT": "Редактировать",
+    "DELETE": "Удалить",
+    "UNCOMPLETED": "Не выполнено",
+    "COMPLETED": "Выполнено",
+    "TOTAL": "Итого"
+  }
+}

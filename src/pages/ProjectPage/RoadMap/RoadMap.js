@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-
+// import { Row, Col } from 'react-flexbox-grid/lib/index';
 import Sprint from './Sprint';
+
+// import SprintColumnHeader from '../Planning/SprintColumnHeader/';
+// import SprintColumn from '../Planning/SprintColumn';
+
+// import * as css from '../Planning/Planning.sccs';
+import Task from './Task';
 
 const globalStart = '2018-09-17T00:00:00.000Z';
 const globalEnd = '2018-10-28T00:00:00.000Z';
-//
+
 // const mock = [
 //   {
 //     id: 3,
@@ -192,12 +198,16 @@ class RoadMap extends Component {
   }
 
   render() {
-    console.log('!', this.props.sprints, this.props.project);
-    //const sprints = mock.map(sprint => <Sprint item={sprint} key={sprint.id} {...{ globalEnd, globalStart }} />);
+    // const sprints = mock.map(sprint => <Sprint item={sprint} key={sprint.id} {...{ globalEnd, globalStart }} />);
     const sprints = this.props.sprints.map(sprint => (
       <Sprint item={sprint} key={sprint.id} {...{ globalEnd, globalStart }} />
     ));
-    return <div>{sprints}</div>;
+    return (
+      <div>
+        {sprints}
+        <Task />
+      </div>
+    );
   }
 }
 
