@@ -130,7 +130,8 @@ class TaskList extends Component {
   makeFiltersObject = (name, value) => {
     const { project } = this.props;
     const { sprints } = project;
-    const currentSprint = sprints ? sprints.filter(item => item.statusId === 2)[0].id : 0;
+    let currentSprint = sprints ? sprints.filter(item => item.statusId === 2)[0] : 0;
+    currentSprint = currentSprint ? currentSprint.id : 0;
     let processedValue;
     const defaultValue = emptyFilters[name];
     if (['sprintId', 'performerId', 'statusId', 'typeId', 'tags'].indexOf(name) !== -1) {
