@@ -255,7 +255,7 @@ class CreateTaskModal extends Component {
                     />
                   ),
                   'taskName',
-                  this.state.taskName.length < 4 || this.state.taskName.length > 256
+                  this.state.taskName.length < 4 || this.state.taskName.length > 255
                 )}
               </Col>
             </Row>

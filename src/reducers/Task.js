@@ -56,7 +56,7 @@ export default function Task(state = InitialState, action) {
         ...state,
         task: {
           ...state.task,
-          tags: action.data.tags
+          tags: state.task.tags.filter(tag => tag.name !== action.data.tag)
         }
       };
 

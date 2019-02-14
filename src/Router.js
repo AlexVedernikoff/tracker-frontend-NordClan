@@ -18,6 +18,7 @@ import Metrics from './pages/ProjectPage/Metrics';
 import TaskList from './pages/ProjectPage/TaskList';
 import ProjectTimesheets from './pages/ProjectPage/ProjectTimesheets';
 import MyTasks from './pages/MyTasks';
+import MyTaskDevOps from './pages/MyTasksDevOps';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
 import Projects from './pages/Projects';
@@ -112,6 +113,7 @@ class AppRouter extends Component {
           <Route path="timesheets" component={Timesheets} onEnter={this.notExternal} />
           <Route path="roles" component={UsersRoles} onEnter={this.requareAdmin} />
           <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
+          <Route path="tasks-devops" component={MyTaskDevOps} onLeave={this.props.clearCurrentProjectAndTasks} />
           <Route path="projects" component={Projects} />
           <Route path="externalUsers" component={ExternalUsers} onEnter={this.requareAdmin} />
           <Route path="projects/:projectId" component={ProjectPage} scrollToTop>
