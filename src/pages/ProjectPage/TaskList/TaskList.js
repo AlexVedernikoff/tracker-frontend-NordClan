@@ -37,6 +37,7 @@ import * as css from './TaskList.scss';
 import localize from './taskList.json';
 import { BACKLOG_ID } from '../../../constants/Sprint';
 import { IN_PROGRESS } from '../../../constants/SprintStatuses';
+import ScrollTop from '../../../components/ScrollTop';
 
 const dateFormat = 'DD.MM.YYYY';
 
@@ -911,6 +912,7 @@ class TaskList extends Component {
             defaultPerformerId={performerId}
           />
         ) : null}
+        <ScrollTop />
       </div>
     );
   }
