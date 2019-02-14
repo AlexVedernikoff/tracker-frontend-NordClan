@@ -32,9 +32,7 @@ class JiraEditor extends Component {
   };
 
   createBatch = (headers, pid) => {
-    return this.props.createBatch(headers, pid).then(() => {
-      this.onRequestClose();
-    });
+    return this.props.createBatch(headers, pid);
   };
 
   synchronizeWithJira = () => {

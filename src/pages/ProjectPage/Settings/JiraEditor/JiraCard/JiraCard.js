@@ -41,18 +41,24 @@ class JiraCard extends Component {
 
   getStatusInfo = status => {
     const { lang, simtrackProject } = this.props;
-    const dateWithTimeZone = moment.utc(simtrackProject.lastSyncDate).local();
+    const offset = new Date(simtrackProject.lastSyncDate).getTimezoneOffset() / 60;
+    const utcDate = moment.utc(simtrackProject.lastSyncDate);
 
     const classNameForSync = cn(css.syncStatus, {
       [css.successStatus]: status === syncStatuses.SUCCESS,
       [css.failedStatus]: status === syncStatuses.FAILED
     });
 
+    const localDate = utcDate
+      .local()
+      .subtract('hours', offset)
+      .format('DD-MM-YYYY HH:mm');
+
     const statusBlock = statusText => <div className={classNameForSync}>{statusText}</div>;
 
     const lastDateSyncBlock = (clazz, date) => (
       <div className={clazz}>
-        {localize[lang].LAST_SYNC}: {moment(date).format('DD.MM.YYYY')}
+        {localize[lang].LAST_SYNC}: {date}
       </div>
     );
 
@@ -61,14 +67,14 @@ class JiraCard extends Component {
         return (
           <div>
             {statusBlock(localize[lang].SUCCESS)}
-            {lastDateSyncBlock(classNameForSync, dateWithTimeZone)}
+            {lastDateSyncBlock(classNameForSync, localDate)}
           </div>
         );
       case syncStatuses.FAILED:
         return (
           <div>
             {statusBlock(localize[lang].SYNC_FAILED)}
-            {lastDateSyncBlock(classNameForSync, dateWithTimeZone)}
+            {lastDateSyncBlock(classNameForSync, localDate)}
           </div>
         );
       case syncStatuses.RUNNING:
@@ -76,7 +82,7 @@ class JiraCard extends Component {
           <div>
             {statusBlock(localize[lang].SYNC_RUNNING)}
             <div className={classNameForSync}>
-              {localize[lang].LAST_DATE_RUNNING}: {moment(dateWithTimeZone).format('DD.MM.YYYY')}
+              {localize[lang].LAST_DATE_RUNNING}: {localDate}
             </div>
           </div>
         );
@@ -85,7 +91,7 @@ class JiraCard extends Component {
           <div>
             {statusBlock(localize[lang].SYNC_CANCELED)}
             <div className={classNameForSync}>
-              {localize[lang].LAST_DATE_RUNNING}: {moment(dateWithTimeZone).format('DD.MM.YYYY')}
+              {localize[lang].LAST_DATE_RUNNING}: {localDate}
             </div>
           </div>
         );
@@ -94,7 +100,7 @@ class JiraCard extends Component {
           <div>
             {statusBlock(localize[lang].SYNC_PENDING)}
             <div className={classNameForSync}>
-              {localize[lang].LAST_DATE_RUNNING}: {moment(dateWithTimeZone).format('DD.MM.YYYY')}
+              {localize[lang].LAST_DATE_RUNNING}: {localDate}
             </div>
           </div>
         );
