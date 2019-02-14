@@ -45,6 +45,9 @@ const filterListTaskDevelop = () => ({
 const getTasks = (options, onlyTaskListUpdate = false) => {
   const URL = `${API_URL}/task`;
   options.queryId = Date.now().toString();
+  if (options.isDevOps && (options.performerId === null || options.performerId.length === 0)) {
+    options.performerId = 0;
+  }
 
   const generateConfig = dispatch => ({
     reqConfig: {
@@ -68,9 +71,9 @@ const getTasks = (options, onlyTaskListUpdate = false) => {
           dispatch(tasksListReceived(response.data));
         } else {
           dispatch(tasksReceived(response.data));
-          if (options.isDevOps) {
+          /* if (options.isDevOps) {
             dispatch(filterListTaskDevelop());
-          }
+          }*/
         }
       }
       dispatch(finishLoading());
