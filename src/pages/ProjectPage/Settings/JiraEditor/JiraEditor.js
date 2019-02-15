@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import JiraCard from './JiraCard/JiraCard';
 import { cleanJiraAssociation, createBatch } from '../../../../actions/Jira';
 import JiraSynchronizeModal from './jiraSynchronizeModal';
+import { checkIsAdminInProject } from '../../../../utils/isAdmin';
 
 class JiraEditor extends Component {
   static propTypes = {
@@ -22,7 +23,8 @@ class JiraEditor extends Component {
     lang: PropTypes.string,
     openJiraWizard: PropTypes.func,
     simtrackProject: PropTypes.object,
-    startSynchronize: PropTypes.bool
+    startSynchronize: PropTypes.bool,
+    user: PropTypes.object
   };
 
   state = {
@@ -30,9 +32,7 @@ class JiraEditor extends Component {
   };
 
   createBatch = (headers, pid) => {
-    return this.props.createBatch(headers, pid).then(() => {
-      this.onRequestClose();
-    });
+    return this.props.createBatch(headers, pid);
   };
 
   synchronizeWithJira = () => {
@@ -45,24 +45,35 @@ class JiraEditor extends Component {
     this.setState({ startSynchronize: !this.state.startSynchronize });
   };
 
+  userCanSynchronize = () => {
+    return (
+      checkIsAdminInProject(this.props.user, this.props.simtrackProject.id) ||
+      this.props.user.usersProjects.some(
+        project =>
+          project.roles.some(role => role.projectRoleId === 1 || role.projectRoleId === 2) &&
+          project.projectId === project.id
+      )
+    );
+  };
+
   render() {
     const { lang, simtrackProject, jiraExternalId, jiraToken } = this.props;
     const { startSynchronize } = this.state;
     return (
       <div className={css.jiraCard}>
         <h2>{localize[lang].SYNCHRONIZATION_WITH_JIRA}</h2>
-        {!jiraExternalId ? (
+        {!jiraExternalId && this.userCanSynchronize() ? (
           <Link to={`/projects/${simtrackProject.id}/jira-wizard`}>
             <Button text={localize[lang].ASSOCIATE_PROJECT_WITH_JIRA} type="primary" icon="IconPlus" />
           </Link>
-        ) : (
+        ) : this.userCanSynchronize() ? (
           <Button
             onClick={this.toggleConfirm}
             text={localize[lang].SYNCHRONIZATION_WITH_JIRA}
             type="primary"
             icon="IconPlus"
           />
-        )}
+        ) : null}
         {jiraExternalId ? (
           <JiraCard
             simtrackProjectId={simtrackProject.id}
@@ -92,7 +103,8 @@ const mapStateToProps = state => ({
   jiraProjects: state.Jira.projects,
   simtrackProject: state.Project.project,
   token: state.Jira.token,
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  user: state.Auth.user
 });
 
 const mapDispatchToProps = {

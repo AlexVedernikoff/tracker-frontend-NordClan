@@ -39,7 +39,11 @@ class FilterForm extends React.Component {
   }
 
   onPrioritiesFilterChange = option =>
-    this.props.setFilterValue('prioritiesId', option.prioritiesId, this.updateListsAndTasks);
+    this.props.setFilterValue(
+      'prioritiesId',
+      option.prioritiesId ? option.prioritiesId : null,
+      this.updateListsAndTasks
+    );
   onSprintsFilterChange = options => {
     this.props.setFilterValue('changedSprint', this.getSprintValue(options), this.updateListsAndTasks);
     storage.setItem('sprintFilterChanged', 1);
@@ -157,6 +161,7 @@ class FilterForm extends React.Component {
             <PerformerFilter
               onPerformerSelect={this.onPerformerFilterChange}
               selectedPerformerId={this.props.filters.performerId}
+              filterOption={layoutAgnosticFilter}
             />
           </Col>
           <Col xs={12} sm={3}>
@@ -171,6 +176,7 @@ class FilterForm extends React.Component {
               options={this.props.typeOptions}
               onChange={this.onTypeFilterChange}
               canClear
+              filterOption={layoutAgnosticFilter}
               onClear={() => this.clearFilters('typeId')}
             />
           </Col>
@@ -205,6 +211,7 @@ class FilterForm extends React.Component {
               onInputChange={removeNumChars}
               noResultsText={localize[lang].NO_RESULTS}
               options={this.props.authorOptions}
+              filterOption={layoutAgnosticFilter}
             />
           </Col>
           <Col className={css.filterButtonCol}>
