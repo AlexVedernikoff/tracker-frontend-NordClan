@@ -92,6 +92,19 @@ class FilterForm extends React.Component {
     }
   };
 
+  sortedAuthorOptions = () => {
+    const { authorOptions } = this.props;
+    return authorOptions
+      ? authorOptions.sort((a, b) => {
+          if (a.label < b.label) {
+            return -1;
+          } else if (a.label > b.label) {
+            return 1;
+          }
+        })
+      : null;
+  };
+
   render() {
     const { filters, lang, user, project } = this.props;
     return (
@@ -210,7 +223,7 @@ class FilterForm extends React.Component {
               onChange={this.onAuthorFilterChange}
               onInputChange={removeNumChars}
               noResultsText={localize[lang].NO_RESULTS}
-              options={this.props.authorOptions}
+              options={this.sortedAuthorOptions()}
               filterOption={layoutAgnosticFilter}
             />
           </Col>
