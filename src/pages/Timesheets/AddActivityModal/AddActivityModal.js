@@ -170,16 +170,16 @@ class AddActivityModal extends Component {
 
   handleChangeProject = option => {
     this.handleChangeSprint(null);
+    this.props.changeTask(null);
     this.props.changeProject(option);
     this.loadTasks('', option ? option.value : null);
     if (this.isNoTaskProjectActivity() && (option && option.value !== 0)) {
-      console.log('hoba');
       this.props.getProjectSprints(option.value);
     }
   };
 
-  loadTasks = (name = '', projectId = null) => {
-    this.props.getTasksForSelect(name, projectId).then(options => this.setState({ tasks: options.options }));
+  loadTasks = (name = '', projectId = null, sprintId = null) => {
+    this.props.getTasksForSelect(name, projectId, sprintId).then(options => this.setState({ tasks: options.options }));
   };
 
   loadProjects = activityType => {
@@ -190,7 +190,14 @@ class AddActivityModal extends Component {
   };
 
   handleChangeSprint = option => {
-    this.setState({ selectedSprint: option });
+    this.setState({ selectedSprint: option }, () => {
+      if (this.state.activityType === activityTypes.IMPLEMENTATION) {
+        this.loadTasks(null, null, option ? option.value.id : null);
+        if (option) {
+          this.props.changeTask(null);
+        }
+      }
+    });
   };
 
   handleChangeActivity = option => {
@@ -204,7 +211,6 @@ class AddActivityModal extends Component {
 
   getSprintOptions = () => {
     const { sprints } = this.props;
-    console.log(sprints);
     return sprints
       ? sprints.map(sprint => {
           return {
@@ -214,6 +220,7 @@ class AddActivityModal extends Component {
         })
       : null;
   };
+
   render() {
     const { lang } = this.props;
     const formLayout = {
@@ -221,9 +228,6 @@ class AddActivityModal extends Component {
       right: 7
     };
     this.getSprintOptions(2);
-    // console.log(this.props.selectedProject);
-    // const sprints = this.getSprintOptions();
-    // console.log(sprints);
     return (
       <Modal isOpen onRequestClose={this.props.onClose} contentLabel="Modal" closeTimeoutMS={200}>
         <form className={css.addActivityForm}>
@@ -297,6 +301,8 @@ class AddActivityModal extends Component {
                           placeholder={localize[lang].SELECT_SPRINT}
                           onChange={this.handleChangeSprint}
                           options={this.getSprintOptions()}
+                          onClear={() => this.handleChangeSprint(null)}
+                          canClear
                         />
                       </Col>
                     </Row>
