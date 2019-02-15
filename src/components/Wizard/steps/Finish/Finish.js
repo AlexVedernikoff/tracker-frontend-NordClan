@@ -19,19 +19,6 @@ class FinishForm extends Component {
     token: PropTypes.string
   };
 
-  async componentDidMount() {
-    const { jiraHostName, simtrackProjectId, jiraProjectId, associationState } = this.props;
-    const { issueTypesAssociation, statusesAssociation, userEmailAssociation } = associationState;
-    await this.props.associateWithJiraProject(this.props.token, {
-      jiraHostName,
-      simtrackProjectId,
-      jiraProjectId,
-      issueTypesAssociation,
-      statusesAssociation,
-      userEmailAssociation
-    });
-  }
-
   render() {
     const { lang, nextStep, previousStep, synchronizeNow } = this.props;
     return (
