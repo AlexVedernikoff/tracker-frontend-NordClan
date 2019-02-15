@@ -66,7 +66,7 @@ class Sprint extends Component {
       }
     });
 
-  handleAddGoal = sprintId => _ => {
+  handleAddGoal = sprintId => () => {
     const { forms } = this.state;
     this.setState({ showModal: false });
     this.props.create({
