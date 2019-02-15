@@ -37,6 +37,8 @@ import * as css from './TaskList.scss';
 import localize from './taskList.json';
 import { BACKLOG_ID } from '../../../constants/Sprint';
 import { IN_PROGRESS } from '../../../constants/SprintStatuses';
+import ScrollTop from '../../../components/ScrollTop';
+import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
 
 const dateFormat = 'DD.MM.YYYY';
 
@@ -130,7 +132,8 @@ class TaskList extends Component {
   makeFiltersObject = (name, value) => {
     const { project } = this.props;
     const { sprints } = project;
-    const currentSprint = sprints ? sprints.filter(item => item.statusId === 2)[0].id : 0;
+    let currentSprint = sprints ? sprints.filter(item => item.statusId === 2)[0] : 0;
+    currentSprint = currentSprint ? currentSprint.id : 0;
     let processedValue;
     const defaultValue = emptyFilters[name];
     if (['sprintId', 'performerId', 'statusId', 'typeId', 'tags'].indexOf(name) !== -1) {
@@ -740,10 +743,15 @@ class TaskList extends Component {
                     onInputChange={removeNumChars}
                     noResultsText={localize[lang].NO_RESULTS}
                     options={authorOptions}
+                    filterOption={layoutAgnosticFilter}
                   />
                 </Col>
                 <Col xs={12} sm={3}>
-                  <PerformerFilter onPerformerSelect={this.onChangePerformerFilter} selectedPerformerId={performerId} />
+                  <PerformerFilter
+                    onPerformerSelect={this.onChangePerformerFilter}
+                    selectedPerformerId={performerId}
+                    filterOption={layoutAgnosticFilter}
+                  />
                 </Col>
                 <Col xs={12} sm={3}>
                   <TagsFilter
@@ -768,6 +776,7 @@ class TaskList extends Component {
                     canClear
                     onClear={() => this.clearFilter('statusId')}
                     onChange={this.onChangeStatusFilter}
+                    filterOption={layoutAgnosticFilter}
                   />
                 </Col>
                 <Col xs={6} sm={3}>
@@ -783,6 +792,7 @@ class TaskList extends Component {
                     canClear
                     onClear={() => this.clearFilter('typeId')}
                     onChange={this.onChangeTypeFilter}
+                    filterOption={layoutAgnosticFilter}
                   />
                 </Col>
                 <Col xs={6} sm={3}>
@@ -876,13 +886,11 @@ class TaskList extends Component {
                 />
               ))}
           {!isLoading && tasks.length === 0 ? <div className={css.notFound}>{localize[lang].NOTHING_FOUND}</div> : null}
-          {this.props.pagesCount > 1 ? (
-            <Pagination
-              itemsCount={this.props.pagesCount}
-              activePage={this.state.activePage}
-              onItemClick={this.handlePaginationClick}
-            />
-          ) : null}
+          <Pagination
+            itemsCount={this.props.pagesCount}
+            activePage={this.state.activePage}
+            onItemClick={this.handlePaginationClick}
+          />
         </section>
         {this.state.isPerformerModalOpen ? (
           <PerformerModal
@@ -911,6 +919,7 @@ class TaskList extends Component {
             defaultPerformerId={performerId}
           />
         ) : null}
+        <ScrollTop />
       </div>
     );
   }

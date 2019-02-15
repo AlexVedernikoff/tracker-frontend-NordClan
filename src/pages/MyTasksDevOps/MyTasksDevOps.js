@@ -13,7 +13,7 @@ class MyTasksDevOps extends Component {
         <Title render={`SimTrack - ${localize[this.props.lang].MY_TASKS}`} />
         <h1>{localize[this.props.lang].MY_TASKS}</h1>
         <hr />
-        <AgileBoard myTaskBoard isDevOps {...this.props} />
+        <AgileBoard isDevOps {...this.props} />
         <ScrollTop />
       </div>
     );

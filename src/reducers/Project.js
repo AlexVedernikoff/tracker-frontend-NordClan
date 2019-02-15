@@ -106,7 +106,7 @@ export default function Project(state = InitialState, action) {
         ...state,
         project: {
           ...state.project,
-          tags: state.project.tags.filter(tag => tag.name !== action.data.tag)
+          tags: state.project.tags.filter(tag => (tag.name || tag) !== action.data.tag)
         }
       };
 

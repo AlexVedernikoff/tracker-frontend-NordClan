@@ -11,3 +11,5 @@ export const SPRINTS_EDIT_SUCCESS = 'SPRINTS_EDIT_SUCCESS';
 export const SPRINTS_EDIT_ERROR = 'SPRINTS_EDIT_ERROR';
 
 export const BACKLOG_ID = 0;
+
+export const BUDGET_MAX_CHARS_LENGTH = 8;
