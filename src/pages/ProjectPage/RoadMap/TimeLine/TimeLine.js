@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-
+import cn from 'classnames';
 import styles from './TimeLine.scss';
 import { IconArrowDown } from '../../../../components/Icons';
 
 class TimeLine extends Component {
   static propTypes = {
-    globalEnd: PropTypes.string,
-    globalStart: PropTypes.string,
+    globalEnd: PropTypes.number,
+    globalStart: PropTypes.number,
     sprintEnd: PropTypes.string,
     sprintStart: PropTypes.string
   };
@@ -23,11 +23,11 @@ class TimeLine extends Component {
   }
 
   get lineStart() {
-    return moment(this.props.globalStart);
+    return moment([this.props.globalStart, 0, 1]);
   }
 
   get lineEnd() {
-    return moment(this.props.globalEnd);
+    return moment([this.props.globalEnd, 11, 30]);
   }
 
   get sprintStart() {
@@ -80,6 +80,7 @@ class TimeLine extends Component {
   }
 
   render() {
+    const diffSprintByDay = this.sprintEnd.diff(this.sprintStart, 'days');
     return (
       <div className={styles.lineContainer}>
         <div className={styles.timeline}>
@@ -88,7 +89,9 @@ class TimeLine extends Component {
               <span className={styles.date}>{this.sprintStart.format('DD.MM.YYYY')}</span>
             </div>
             <div className={styles.end}>
-              <span className={styles.date}>{this.sprintEnd.format('DD.MM.YYYY')}</span>
+              <span className={cn(styles.date, { [styles.down]: diffSprintByDay < 15 })}>
+                {this.sprintEnd.format('DD.MM.YYYY')}
+              </span>
             </div>
           </div>
         </div>

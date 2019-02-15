@@ -33,7 +33,6 @@ import { alphabeticallyComparatorLang, devOpsUsersSelector } from '../../../util
 import { sortedUsersSelector, usersSelector } from '../../../selectors/Project';
 import { checkIsAdminInProject } from '../../../utils/isAdmin';
 import { IconEdit } from '../../../components/Icons';
-
 import union from 'lodash/union';
 
 const spentRequestStatus = {

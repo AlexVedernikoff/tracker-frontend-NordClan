@@ -9,8 +9,8 @@ import Goal from '../Goal';
 
 class Sprint extends Component {
   static propTypes = {
-    globalEnd: PropTypes.string,
-    globalStart: PropTypes.string,
+    globalEnd: PropTypes.number,
+    globalStart: PropTypes.number,
     item: PropTypes.shape({
       id: PropTypes.number,
       name: PropTypes.string
