@@ -74,7 +74,7 @@ class SprintCard extends Component {
   };
 
   render() {
-    const { sprint, project, inFocus, isExternal, lang, onMouseOver, onMouseOut } = this.props;
+    const { sprint, project, inFocus, isExternal, lang, onMouseOver, onMouseOut, canEditPlan } = this.props;
     const onMouse = { onMouseOut, onMouseOver };
     return (
       <div
@@ -85,8 +85,10 @@ class SprintCard extends Component {
         })}
         {...onMouse}
       >
-        {!isExternal ? <IconClose className={css.iconClose} onClick={this.openConfirmDeleteModal} /> : null}
-        <p className={css.sprintTitle} onClick={this.handleOpenModal} title={sprint.name}>
+        {!isExternal && canEditPlan ? (
+          <IconClose className={css.iconClose} onClick={this.openConfirmDeleteModal} />
+        ) : null}
+        <p className={css.sprintTitle} onClick={canEditPlan ? this.handleOpenModal : null} title={sprint.name}>
           {sprint.name}
         </p>
         <p className={css.sprintMeta}>
@@ -108,7 +110,7 @@ class SprintCard extends Component {
           <span>{localize[lang].DONE}</span>
           <span>{sprint.countDoneTasks || 0}</span>
         </p>
-        {!isExternal
+        {!isExternal && canEditPlan
           ? [
               <p key="qaPercent" className={css.sprintMeta}>
                 <span>
@@ -132,7 +134,7 @@ class SprintCard extends Component {
               </p>
             ]
           : null}
-        {!isExternal ? (
+        {!isExternal && canEditPlan ? (
           <div className={css.status}>
             <SprintStartControl sprint={sprint} />
           </div>
