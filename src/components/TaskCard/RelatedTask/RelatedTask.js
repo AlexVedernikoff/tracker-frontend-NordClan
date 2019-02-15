@@ -5,6 +5,7 @@ import { Link } from 'react-router';
 import { IconFileTree, IconLink } from '../../Icons';
 import { scrollTo } from '../../../utils/scroll';
 import localize from './relatedTask.json';
+import { TASK_STATUSES_TITLES } from '../../../constants/TaskStatuses';
 
 const CARD_IS_FOCUSED = true;
 
@@ -20,27 +21,30 @@ class componentName extends PureComponent {
   };
 
   getOptions = mode => {
-    const { lang } = this.props;
+    const { lang, task } = this.props;
     switch (mode) {
       case 'parent':
         return {
           icon: <IconFileTree />,
           className: css.parentTask,
-          dataTip: localize[lang].PARENT_TASK
+          dataTip: localize[lang].PARENT_TASK,
+          title: task.name
         };
 
       case 'linked':
         return {
           icon: <IconLink />,
           className: css.linkedTask,
-          dataTip: localize[lang].LINKED_TASK
+          dataTip: localize[lang].LINKED_TASK,
+          title: `${TASK_STATUSES_TITLES[task.statusId]} | ${task.name}`
         };
 
       case 'sub':
         return {
           icon: <IconFileTree />,
           className: css.subTask,
-          dataTip: localize[lang].SUB_TASK
+          dataTip: localize[lang].SUB_TASK,
+          title: task.name
         };
 
       default:
@@ -62,7 +66,7 @@ class componentName extends PureComponent {
 
   render() {
     const { task, isLighted, mode, prefix, projectId } = this.props;
-    const { className, icon, dataTip } = this.getOptions(mode);
+    const { className, icon, dataTip, title } = this.getOptions(mode);
 
     return (
       <div
@@ -72,7 +76,7 @@ class componentName extends PureComponent {
         onClick={this.scrollToTask}
       >
         {isLighted ? <div className={css.lightedBorder} /> : null}
-        <div className="ellipsis" title={task.name}>
+        <div className="ellipsis" title={title}>
           <span className={css.shortNumber} data-tip={dataTip}>
             <span className={css.relatedTaskIcon}>{icon}</span>
             {prefix}-{task.id}:

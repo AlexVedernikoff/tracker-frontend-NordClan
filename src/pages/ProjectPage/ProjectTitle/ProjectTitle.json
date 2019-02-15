@@ -3,12 +3,16 @@
     "EDIT": "Edit",
     "SAVE": "Save",
     "PROJECT_NAME_MESSAGE": "Project name must contain from 4 to 255 characters",
-    "PROJECT_PREFIX_MESSAGE": "Prefix must be from 2 to 8 characters"
+    "PROJECT_PREFIX_MESSAGE": "Prefix must be from 2 to 8 characters",
+    "PREFIX_NOT_UNIQUE_ERROR_MESSAGE": "This prefix is already in use. Please enter another one",
+    "VALIDATION_ERROR_MESSAGE": "Invalid data"
   },
   "ru": {
     "EDITING": "Редактировать",
     "SAVE": "Сохранить",
     "PROJECT_NAME_MESSAGE": "Имя проекта должно содержать от 4 до 255 символов",
-    "PROJECT_PREFIX_MESSAGE": "Префикс должен содержать от 2 до 8 символов"
+    "PROJECT_PREFIX_MESSAGE": "Префикс должен содержать от 2 до 8 символов",
+    "PREFIX_NOT_UNIQUE_ERROR_MESSAGE": "Префикс занят. Введите новый префикс для проекта",
+    "VALIDATION_ERROR_MESSAGE": "Введены некорректные данные"
   }
 }

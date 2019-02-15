@@ -12,6 +12,7 @@ import { createSprint } from '../../../actions/Sprint';
 import { getSprintsDateRange } from '../../../selectors/getSprintsDateRange';
 import localize from './CreateSprintModal.json';
 import parseInteger from '../../../utils/parseInteger';
+import { BUDGET_MAX_CHARS_LENGTH } from '../../../constants/Sprint';
 
 class CreateSprintModal extends Component {
   constructor(props) {
@@ -28,15 +29,19 @@ class CreateSprintModal extends Component {
   }
 
   onChangeBudget = e => {
-    if (this.validateNumbers(e.target.value)) {
+    if (this.validateNumbers(e.target.value) && !this.budgetIsTooLong(e.target.value)) {
       this.setState({ budget: e.target.value });
     }
   };
 
   onChangeRiskBudget = e => {
-    if (this.validateNumbers(e.target.value)) {
+    if (this.validateNumbers(e.target.value) && !this.budgetIsTooLong(e.target.value)) {
       this.setState({ riskBudget: e.target.value });
     }
+  };
+
+  budgetIsTooLong = value => {
+    return value && value.length > BUDGET_MAX_CHARS_LENGTH;
   };
 
   onChangeTimeQA = e => {
