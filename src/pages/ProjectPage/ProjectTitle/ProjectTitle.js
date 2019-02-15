@@ -18,6 +18,7 @@ import {
 } from '../../../actions/Project';
 import localize from './ProjectTitle.json';
 import classnames from 'classnames';
+import get from 'lodash/get';
 
 class ProjectTitle extends Component {
   static propTypes = {
@@ -127,7 +128,7 @@ class ProjectTitle extends Component {
             prefix: this.state.prefix
           },
           'Title'
-        );
+        ).catch(this.handleChangeProjectError);
       }
     );
   }
@@ -146,6 +147,18 @@ class ProjectTitle extends Component {
     } else {
       this.submitInput();
     }
+  };
+
+  handleChangeProjectError = error => {
+    const errors = get(error, 'message.errors', []);
+    const prefixNotUnique = errors.some(({ param, type }) => param === 'prefix' && type === 'unique violation');
+    const message =
+      localize[this.props.lang][prefixNotUnique ? 'PREFIX_NOT_UNIQUE_ERROR_MESSAGE' : 'VALIDATION_ERROR_MESSAGE'];
+
+    this.props.showNotification({
+      message,
+      type: 'error'
+    });
   };
 
   handleKeyPress = event => {

@@ -225,15 +225,9 @@ class Planning extends Component {
     this.props.openCreateTaskModal();
   };
 
-  onMouseOverRow = (type, id) => {
-    return () => {
-      this.setState({ typeHovered: type, typeIdHovered: id });
-    };
-  };
+  onMouseOverRow = (type, id) => () => this.setState({ typeHovered: type, typeIdHovered: id });
 
-  onMouseOutRow = () => {
-    this.setState({ typeHovered: null, idHovered: null });
-  };
+  onMouseOutRow = () => this.setState({ typeHovered: null, idHovered: null });
 
   onClickSprint = sprintId => {
     return () => {
@@ -545,12 +539,8 @@ class Planning extends Component {
           />
           <Table
             entities={entities}
-            typeIdHovered={typeIdHovered}
-            typeHovered={typeHovered}
             isProjectAdmin={isProjectAdmin}
             isExternal={isExternal}
-            onMouseOverRow={this.onMouseOverRow}
-            onMouseOutRow={this.onMouseOutRow}
             grantYearDecrement={this.grantYearDecrement}
             grantYearIncrement={this.grantYearIncrement}
             grantActiveYear={grantActiveYear}
