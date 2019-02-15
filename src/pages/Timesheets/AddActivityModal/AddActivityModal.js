@@ -165,11 +165,7 @@ class AddActivityModal extends Component {
 
   isNoTaskProjectActivity = () => {
     const { activityType } = this.state;
-    return (
-      activityType !== activityTypes.IMPLEMENTATION &&
-      activityType !== activityTypes.VACATION &&
-      activityType !== activityTypes.HOSPITAL
-    );
+    return activityType !== activityTypes.VACATION && activityType !== activityTypes.HOSPITAL;
   };
 
   handleChangeProject = option => {
@@ -177,6 +173,7 @@ class AddActivityModal extends Component {
     this.props.changeProject(option);
     this.loadTasks('', option ? option.value : null);
     if (this.isNoTaskProjectActivity() && (option && option.value !== 0)) {
+      console.log('hoba');
       this.props.getProjectSprints(option.value);
     }
   };
@@ -207,6 +204,7 @@ class AddActivityModal extends Component {
 
   getSprintOptions = () => {
     const { sprints } = this.props;
+    console.log(sprints);
     return sprints
       ? sprints.map(sprint => {
           return {
@@ -223,7 +221,9 @@ class AddActivityModal extends Component {
       right: 7
     };
     this.getSprintOptions(2);
-    console.log(this.props.selectedProject);
+    // console.log(this.props.selectedProject);
+    // const sprints = this.getSprintOptions();
+    // console.log(sprints);
     return (
       <Modal isOpen onRequestClose={this.props.onClose} contentLabel="Modal" closeTimeoutMS={200}>
         <form className={css.addActivityForm}>
