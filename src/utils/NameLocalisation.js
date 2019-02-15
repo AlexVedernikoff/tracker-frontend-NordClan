@@ -26,8 +26,8 @@ const firstRu = 'firstNameRu';
 const lastEn = 'lastNameEn';
 const lastRu = 'lastNameRu';
 
-const notFoundEn = 'User Not Found';
-const notFoundRu = 'Пользователь не найден';
+export const notFoundEn = 'User Not Found';
+export const notFoundRu = 'Пользователь не найден';
 
 const config = {
   en: { full: fullEn, altFull: fullRu, first: firstEn, last: lastEn, altFirst: firstRu, altLast: lastRu },

@@ -52,7 +52,7 @@ class AgileBoard extends Component {
   }
 
   componentDidMount() {
-    if (this.props.myTaskBoard) {
+    if (this.props.myTaskBoard || this.props.isDevOps) {
       this.getTasks();
     }
     if (!this.props.devOpsUsers) this.props.getDevOpsUsers();
@@ -95,7 +95,7 @@ class AgileBoard extends Component {
           name: filters.name || null,
           tags: filters.filterTags,
           performerId: filters.performerId || null,
-          isDevOps: this.props.isDevOps || false
+          isDevOps: this.props.isDevOps || null
         };
     this.props.getTasks(options);
   };
@@ -394,15 +394,16 @@ class AgileBoard extends Component {
         users: uniqWith(this.props.project.users.concat(this.props.devOpsUsers), isEqual)
       }
     };
-    const filtersComponent = this.props.myTaskBoard ? null : (
-      <AgileBoardFilter
-        {...agileFilterProps}
-        getTasks={this.getTasks}
-        initialFilters={initialFilters}
-        tags={[noTagData].concat(tags)}
-        setFilterValue={this.setFilterValue}
-      />
-    );
+    const filtersComponent =
+      this.props.myTaskBoard || this.props.isDevOps ? null : (
+        <AgileBoardFilter
+          {...agileFilterProps}
+          getTasks={this.getTasks}
+          initialFilters={initialFilters}
+          tags={[noTagData].concat(tags)}
+          setFilterValue={this.setFilterValue}
+        />
+      );
 
     if (this.state.fromTaskCore) {
       this.sortPerformersListForTaskCore(users);
