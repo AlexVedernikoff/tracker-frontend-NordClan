@@ -39,7 +39,11 @@ class FilterForm extends React.Component {
   }
 
   onPrioritiesFilterChange = option =>
-    this.props.setFilterValue('prioritiesId', option.prioritiesId, this.updateListsAndTasks);
+    this.props.setFilterValue(
+      'prioritiesId',
+      option.prioritiesId ? option.prioritiesId : null,
+      this.updateListsAndTasks
+    );
   onSprintsFilterChange = options => {
     this.props.setFilterValue('changedSprint', this.getSprintValue(options), this.updateListsAndTasks);
     storage.setItem('sprintFilterChanged', 1);
