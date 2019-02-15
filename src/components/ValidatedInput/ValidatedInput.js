@@ -21,6 +21,12 @@ class ValidatedInput extends Component {
     };
   }
 
+  componentDidMount = () => {
+    if (this.props.onRef) {
+      this.props.onRef(this.elemRef);
+    }
+  };
+
   componentWillReceiveProps(nextProps) {
     if (this.state.isError !== nextProps.shouldMarkError) {
       this.setState({ isError: nextProps.shouldMarkError });
@@ -48,6 +54,7 @@ class ValidatedInput extends Component {
         <input
           type="text"
           {...other}
+          ref={elem => (this.elemRef = elem)}
           onBlur={this.removeFocus}
           onFocus={this.onFocus}
           className={classnames(css.input, {

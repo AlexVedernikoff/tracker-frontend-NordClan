@@ -303,7 +303,7 @@ class ParticipantEditor extends Component {
   }
 
   render() {
-    const { lang, gitlabProjects, gitlabRoles } = this.props;
+    const { lang, gitlabProjects, gitlabRoles, projectCompletedAt } = this.props;
     const isProjectAdmin = this.checkIsAdminInProject();
     return (
       <div className={css.property}>
@@ -476,7 +476,9 @@ class ParticipantEditor extends Component {
                             value={
                               this.getGitlabRoleParam(id, 'expiresAt')
                                 ? moment(this.getGitlabRoleParam(id, 'expiresAt')).format('DD.MM.YYYY')
-                                : ''
+                                : projectCompletedAt
+                                  ? moment(projectCompletedAt).format('DD.MM.YYYY')
+                                  : ''
                             }
                             onDayChange={this.selectGitlabRoleParam(id, 'expiresAt')}
                             placeholder={localize[lang].SELECT_DATA}
@@ -540,6 +542,7 @@ ParticipantEditor.propTypes = {
   id: PropTypes.number,
   lang: PropTypes.string.isRequired,
   projectAuthorId: PropTypes.number,
+  projectCompletedAt: PropTypes.string,
   user: PropTypes.object.isRequired,
   users: PropTypes.array.isRequired
 };
@@ -550,6 +553,7 @@ const mapStateToProps = state => ({
   externalUsers: state.Project.project.externalUsers,
   user: state.Auth.user,
   projectAuthorId: state.Project.project.authorId,
+  projectCompletedAt: state.Project.project.completedAt,
   lang: state.Localize.lang,
   gitlabProjects: gitLabProjectsSelector(state),
   gitlabRoles: localizedGitlabRolesSelector(state)

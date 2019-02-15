@@ -470,6 +470,8 @@ class Planning extends Component {
     const qaPercent = project.qaPercent;
     const unfinishedLeftTasksCount = this.getUnfinishedLeftTasks().length;
 
+    const canEditPlan = this.userCanEditPlan() || this.checkIsAdminInProject();
+
     return (
       <div>
         <section>
@@ -536,6 +538,7 @@ class Planning extends Component {
             onMouseOutRow={this.onMouseOutRow}
             lang={lang}
             isProjectAdmin={isProjectAdmin}
+            canEditPlan={canEditPlan}
           />
           <Table
             entities={entities}
@@ -544,7 +547,7 @@ class Planning extends Component {
             grantYearDecrement={this.grantYearDecrement}
             grantYearIncrement={this.grantYearIncrement}
             grantActiveYear={grantActiveYear}
-            canEditPlan={this.userCanEditPlan() || this.checkIsAdminInProject()}
+            canEditPlan={canEditPlan}
             onClickSprint={this.onClickSprint}
             openSprintEditModal={this.openSprintEditModal}
             openMilestoneEditModal={this.openMilestoneEditModal}

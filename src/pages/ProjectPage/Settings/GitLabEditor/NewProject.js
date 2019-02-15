@@ -59,6 +59,20 @@ class NewProject extends Component {
     this.props.onSubmit(projectId);
   };
 
+  handlePaste = e => {
+    e.preventDefault();
+    const value = e.clipboardData && e.clipboardData.getData('text');
+    const trimmedValue = value.replace(/\.git+$/, '');
+    this.changeValue({
+      target: {
+        value: trimmedValue
+      }
+    });
+    if (this.inputRef) {
+      this.inputRef.value = trimmedValue;
+    }
+  };
+
   render() {
     const { lang } = this.props;
     const { errorCode } = this.state;
@@ -70,10 +84,12 @@ class NewProject extends Component {
           (handleBlur, shouldMarkError) => (
             <ValidatedInput
               autoFocus
+              onPaste={this.handlePaste}
               name="projectId"
               placeholder={localize[lang].PLACEHOLDER}
               onChange={this.changeValue}
               onBlur={handleBlur}
+              onRef={elem => (this.inputRef = elem)}
               shouldMarkError={shouldMarkError}
               errorText={localize[lang][errorCode || 'ERROR_TEXT']}
             />
@@ -81,6 +97,7 @@ class NewProject extends Component {
           'projectId',
           invalid
         )}
+
         <RoundButton
           style={{ marginLeft: '0.5rem' }}
           onClick={this.submit}
