@@ -14,6 +14,7 @@ import { IconArrowDown, IconArrowRight } from '../../../../components/Icons';
 
 class SprintList extends React.Component {
   static propTypes = {
+    canEditPlan: PropTypes.bool,
     isExternal: PropTypes.bool.isRequired,
     isProjectAdmin: PropTypes.bool.isRequired,
     lang: PropTypes.string.isRequired,
