@@ -111,7 +111,7 @@ const settings = {
     disableHostCheck: true,
     proxy: {
       '/api/': {
-        target,
+        target: 'http://localhost:9000',
         changeOrigin: true,
         secure: false,
         ws: true

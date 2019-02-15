@@ -1,0 +1,20 @@
+{
+  "ru": {
+    "ADD_GOAL": "Добавить цель",
+    "INPUT_GOAL": "Название цели",
+    "ENTER_GOAL_NAME": "Введите название цели",
+    "DESCRIPTION_GOAL": "Описание",
+    "ENTER_DESCRIPTION_GOAL": "Введите описание цели",
+    "IS_VISIBLE": "Видимость",
+    "PLANNED_EXECUTION_TIME": "Планируемое время завершения"
+  },
+  "en": {
+    "ADD_GOAL": "Add goal",
+    "INPUT_GOAL": "Goal name",
+    "ENTER_GOAL_NAME": "Enter the name of the goal",
+    "DESCRIPTION_GOAL": "Description",
+    "ENTER_DESCRIPTION_GOAL": "Enter a description of the goal.",
+    "IS_VISIBLE": "Is visible",
+    "PLANNED_EXECUTION_TIME": "Planned execution time"
+  }
+}

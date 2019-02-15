@@ -2,7 +2,9 @@ import * as GoalsActions from '../constants/Goals';
 
 const InitialState = {
   goals: [],
-  isReceiving: false
+  isReceiving: false,
+  isSuccessCreate: false,
+  isErrorCreateGoal: null
 };
 
 function Goals(state = InitialState, action) {
@@ -23,6 +25,30 @@ function Goals(state = InitialState, action) {
     case GoalsActions.CLEAR_GOALS:
       return {
         ...InitialState
+      };
+
+    case GoalsActions.CREATE_GOAL_START:
+      return {
+        ...state,
+        isSuccessCreate: false,
+        isErrorCreateGoal: null
+      };
+
+    case GoalsActions.CREATE_GOAL:
+      const { goals } = state;
+      goals.push(action.data);
+      return {
+        ...state,
+        goals,
+        isSuccessCreate: true,
+        isErrorCreateGoal: null
+      };
+
+    case GoalsActions.CREATE_GOAL_ERROR:
+      return {
+        ...state,
+        isSuccessCreate: false,
+        isErrorCreateGoal: action.error
       };
 
     default:

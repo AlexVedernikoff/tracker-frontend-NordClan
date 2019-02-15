@@ -44,3 +44,14 @@ export const getGoalsByProject = projectId => {
 export const clearGoals = () => ({
   type: GoalsActions.CLEAR_GOALS
 });
+
+export const create = data => {
+  const URL = `${API_URL}/goal`;
+  return dispatch => {
+    dispatch({ type: GoalsActions.CREATE_GOAL_START });
+    axios
+      .post(URL, data)
+      .then(response => dispatch({ type: GoalsActions.CREATE_GOAL, response }))
+      .catch(error => dispatch({ type: GoalsActions.CREATE_GOAL_ERROR, error }));
+  };
+};
