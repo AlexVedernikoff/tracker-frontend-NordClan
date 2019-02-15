@@ -260,7 +260,7 @@ class Table extends React.Component {
   }
 
   renderMilestone(milestone, i) {
-    const { grantActiveYear } = this.props;
+    const { grantActiveYear, canEditPlan } = this.props;
     return (
       <div key={`milestone-${i}`} className={css.tr}>
         <div
@@ -274,7 +274,7 @@ class Table extends React.Component {
           style={this.getMilestoneBlock(milestone.date, grantActiveYear)}
           data-tip={this.getMilestoneLabel(milestone)}
         >
-          <div onClick={this.props.openMilestoneEditModal(milestone)} />
+          <div onClick={canEditPlan ? this.props.openMilestoneEditModal(milestone) : null} />
         </div>
       </div>
     );
