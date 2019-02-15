@@ -7,8 +7,8 @@ import { IconArrowDown } from '../../../../components/Icons';
 
 class TimeLine extends Component {
   static propTypes = {
-    globalEnd: PropTypes.string,
-    globalStart: PropTypes.string,
+    globalEnd: PropTypes.number,
+    globalStart: PropTypes.number,
     sprintEnd: PropTypes.string,
     sprintStart: PropTypes.string
   };

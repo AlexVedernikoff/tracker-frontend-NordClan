@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import Sprint from './Sprint';
 import Pagination from '../../../components/Pagination';
+import Task from './Task';
 
 // const globalStart = '2017-09-17T00:00:00.000Z';
 // const globalEnd = '2018-10-28T00:00:00.000Z';
@@ -276,6 +277,7 @@ class RoadMap extends Component {
           activePage={activePage}
           onItemClick={this.handlePaginationClick}
         />
+        <Task />
       </div>
     );
   }
