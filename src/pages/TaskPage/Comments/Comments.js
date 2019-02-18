@@ -245,13 +245,14 @@ class Comments extends Component {
     this.props.uploadAttachments(this.props.taskId, files);
   };
 
-  handleRemoveAttachment = index => {
+  handleRemoveAttachment = (index, id) => {
     const attachments = this.state.attachments.map((item, key) => {
       if (index === key && this.addedAttachments[key]) {
         delete this.addedAttachments[key];
       }
       return index === key ? { ...item, display: false } : item;
     });
+    this.props.removeAttachment(this.props.taskId, id);
     this.setState({ attachments: attachments });
   };
 
@@ -263,7 +264,10 @@ class Comments extends Component {
           <a target="_blank" href={`/${attachment.path}`} onClick={e => this.handleAttachmentLinksClick(e, file)}>
             {attachment.fileName}
           </a>
-          <IconClose className={css.removeAttachIcon} onClick={() => this.handleRemoveAttachment(index)} />
+          <IconClose
+            className={css.removeAttachIcon}
+            onClick={() => this.handleRemoveAttachment(index, attachment.id ? attachment.id : null)}
+          />
         </li>
       );
     }
