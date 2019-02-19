@@ -171,6 +171,22 @@ class Timesheets extends React.Component {
       return { ...element, timeSheets };
     });
 
+    tasks = tasks.reduce(
+      (acc, task) => {
+        if (acc.map[task.id]) {
+          // если данный таск уже был ничего не делаем, возвращаем уже собранное
+          return acc;
+        }
+        acc.map[task.id] = true; // помечаем таск, как обработанный
+        acc.tasks.push(task); // добавляем объект в массив
+        return acc; // возвращаем собранное
+      },
+      {
+        map: {}, // отмечаются обработанные таски
+        tasks: [] // массив уникальных тасков
+      }
+    ).tasks;
+
     sortBy(tasks, ['name']);
 
     const taskRows = tasks.map(item => (
