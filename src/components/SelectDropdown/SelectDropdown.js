@@ -62,6 +62,16 @@ class SelectDropdown extends Component {
     this.setState({ isHovered: false });
   }
 
+  isEmpty = value => {
+    if (typeof value === 'object') {
+      return isEmpty(value);
+    } else if (value === 0) {
+      return false;
+    } else {
+      return !value;
+    }
+  };
+
   render() {
     const { name, options, thisClassName, lang, canClear, ...other } = this.props;
     return (
@@ -79,7 +89,7 @@ class SelectDropdown extends Component {
         />
 
         {canClear &&
-          !isEmpty(other.value) &&
+          !this.isEmpty(other.value) &&
           this.state.isHovered && (
             <span className="ClearValue" onClick={() => this.onClear()}>
               ×
