@@ -58,6 +58,11 @@
   max-width: 100%;
 }
 
+.Select-custom-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .Select--single .Select-multi-value-wrapper .Select-value,
 .Select--single .Select-multi-value-wrapper .Select-value .Select-value-label,
 .Select-input {
