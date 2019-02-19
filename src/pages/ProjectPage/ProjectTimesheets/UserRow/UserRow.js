@@ -21,9 +21,7 @@ class UserRow extends React.Component {
 
     this.state = {
       isOpen: props.user.isOpen ? props.user.isOpen : false,
-      user: props.user,
-      activityRows: props.items,
-      timeCells: this.getTimeCells(props.user.timesheets)
+      activityRows: props.items
     };
   }
 
@@ -46,9 +44,10 @@ class UserRow extends React.Component {
   };
 
   render() {
-    const { user, isOpen } = this.state;
-    const { userName } = this.props;
+    const { isOpen } = this.state;
+    const { userName, user } = this.props;
     const totalTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.spentTime), 2);
+    const timeCellsValues = this.getTimeCells(user.timesheets);
     const timeCells = user.timesheets.map((tsh, i) => {
       return (
         <td
@@ -60,7 +59,7 @@ class UserRow extends React.Component {
             [css.weekend]: i === 5 || i === 6
           })}
         >
-          <div>{this.state.timeCells[i]}</div>
+          <div>{timeCellsValues[i]}</div>
         </td>
       );
     });
