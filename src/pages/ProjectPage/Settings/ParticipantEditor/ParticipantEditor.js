@@ -40,7 +40,7 @@ class ParticipantEditor extends Component {
       isModalOpenAddUser: false,
       isModalOpenAddExternal: false,
       isModalOpenWizard: false,
-      tabIndex: 0,
+      tabIndex: 1,
       ...getEmptyState()
     };
     this.ROLES_FULL_NAME = [
@@ -79,12 +79,12 @@ class ParticipantEditor extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.id !== this.props.id) {
       this.props.getProjectUsers(nextProps.id, true);
-      this.handleChangeTab(0);
+      this.handleChangeTab(1);
     }
     if (nextProps.gitlabProjects.length && this.state.tabIndex === 1) {
-      this.handleChangeTab(0);
-    } else if (!nextProps.gitlabProjects.length && this.state.tabIndex === 0) {
       this.handleChangeTab(1);
+    } else if (!nextProps.gitlabProjects.length && this.state.tabIndex === 0) {
+      this.handleChangeTab(0);
     }
   }
 
@@ -303,7 +303,7 @@ class ParticipantEditor extends Component {
   }
 
   render() {
-    const { lang, gitlabProjects, gitlabRoles } = this.props;
+    const { lang, gitlabProjects, gitlabRoles, projectCompletedAt } = this.props;
     const isProjectAdmin = this.checkIsAdminInProject();
     return (
       <div className={css.property}>
@@ -313,6 +313,13 @@ class ParticipantEditor extends Component {
           </Col>
           <Col xs={9}>
             <div className={css.tabs}>
+              <div
+                className={classnames(css.tab, { [css.tabActive]: this.state.tabIndex === 1 })}
+                onClick={() => this.handleChangeTab(1)}
+              >
+                <p>SimTrack</p>
+                <small>{localize[lang].PROJECT_ROLES}</small>
+              </div>
               {gitlabProjects.length ? (
                 <div
                   className={classnames(css.tab, { [css.tabActive]: this.state.tabIndex === 0 })}
@@ -322,13 +329,6 @@ class ParticipantEditor extends Component {
                   <small>{localize[lang].ACCESS_REP}</small>
                 </div>
               ) : null}
-              <div
-                className={classnames(css.tab, { [css.tabActive]: this.state.tabIndex === 1 })}
-                onClick={() => this.handleChangeTab(1)}
-              >
-                <p>SimTrack</p>
-                <small>{localize[lang].PROJECT_ROLES}</small>
-              </div>
             </div>
           </Col>
         </Row>
@@ -476,7 +476,9 @@ class ParticipantEditor extends Component {
                             value={
                               this.getGitlabRoleParam(id, 'expiresAt')
                                 ? moment(this.getGitlabRoleParam(id, 'expiresAt')).format('DD.MM.YYYY')
-                                : ''
+                                : projectCompletedAt
+                                  ? moment(projectCompletedAt).format('DD.MM.YYYY')
+                                  : ''
                             }
                             onDayChange={this.selectGitlabRoleParam(id, 'expiresAt')}
                             placeholder={localize[lang].SELECT_DATA}
@@ -540,6 +542,7 @@ ParticipantEditor.propTypes = {
   id: PropTypes.number,
   lang: PropTypes.string.isRequired,
   projectAuthorId: PropTypes.number,
+  projectCompletedAt: PropTypes.string,
   user: PropTypes.object.isRequired,
   users: PropTypes.array.isRequired
 };
@@ -550,6 +553,7 @@ const mapStateToProps = state => ({
   externalUsers: state.Project.project.externalUsers,
   user: state.Auth.user,
   projectAuthorId: state.Project.project.authorId,
+  projectCompletedAt: state.Project.project.completedAt,
   lang: state.Localize.lang,
   gitlabProjects: gitLabProjectsSelector(state),
   gitlabRoles: localizedGitlabRolesSelector(state)

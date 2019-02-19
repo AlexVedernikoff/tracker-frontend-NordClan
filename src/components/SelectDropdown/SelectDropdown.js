@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
+import { Option, Value } from './CustomComponents';
 import './SelectDropdown.css';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -82,6 +83,8 @@ class SelectDropdown extends Component {
           noResultsText={localize[lang].NO_RESULTS}
           onFocus={e => e.stopPropagation()}
           clearValueText={localize[lang].CLEAR}
+          valueComponent={Value}
+          optionComponent={Option}
           {...other}
         />
 

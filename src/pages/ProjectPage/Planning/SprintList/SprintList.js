@@ -14,6 +14,7 @@ import { IconArrowDown, IconArrowRight } from '../../../../components/Icons';
 
 class SprintList extends React.Component {
   static propTypes = {
+    canEditPlan: PropTypes.bool,
     isExternal: PropTypes.bool.isRequired,
     isProjectAdmin: PropTypes.bool.isRequired,
     lang: PropTypes.string.isRequired,
@@ -53,7 +54,7 @@ class SprintList extends React.Component {
   };
 
   render() {
-    const { lang, sprints, typeHovered, typeIdHovered, isExternal, isProjectAdmin } = this.props;
+    const { lang, sprints, typeHovered, typeIdHovered, isExternal, isProjectAdmin, canEditPlan } = this.props;
 
     if (!sprints) {
       return null;
@@ -94,6 +95,7 @@ class SprintList extends React.Component {
                     onMouseOver={this.props.onMouseOverRow('sprint', element.id)}
                     onMouseOut={this.props.onMouseOutRow}
                     isExternal={isExternal}
+                    canEditPlan={canEditPlan}
                   />
                 </Col>
               ))}

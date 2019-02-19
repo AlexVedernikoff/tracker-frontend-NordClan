@@ -20,7 +20,8 @@
     "VACATION": "Vacation",
     "BUSINESS_TRIP": "Business trip",
     "CONTROL": "Managment",
-    "HOSPITAL": "On sick leave"
+    "HOSPITAL": "On sick leave",
+    "ACTIVITY_ALREADY_EXISTS": "This activity already exists"
   },
   "ru": {
     "ACTIVITY_TYPE": "Тип активности",
@@ -43,6 +44,7 @@
     "VACATION": "Отпуск",
     "BUSINESS_TRIP": "Командировка",
     "CONTROL": "Управление",
-    "HOSPITAL": "Больничный"
+    "HOSPITAL": "Больничный",
+    "ACTIVITY_ALREADY_EXISTS": "Такая активность уже существует"
   }
 }

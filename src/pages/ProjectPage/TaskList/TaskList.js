@@ -37,6 +37,8 @@ import * as css from './TaskList.scss';
 import localize from './taskList.json';
 import { BACKLOG_ID } from '../../../constants/Sprint';
 import { IN_PROGRESS } from '../../../constants/SprintStatuses';
+import ScrollTop from '../../../components/ScrollTop';
+import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
 
 const dateFormat = 'DD.MM.YYYY';
 
@@ -128,6 +130,10 @@ class TaskList extends Component {
   };
 
   makeFiltersObject = (name, value) => {
+    const { project } = this.props;
+    const { sprints } = project;
+    let currentSprint = sprints ? sprints.filter(item => item.statusId === 2)[0] : 0;
+    currentSprint = currentSprint ? currentSprint.id : 0;
     let processedValue;
     const defaultValue = emptyFilters[name];
     if (['sprintId', 'performerId', 'statusId', 'typeId', 'tags'].indexOf(name) !== -1) {
@@ -138,6 +144,9 @@ class TaskList extends Component {
       } else {
         processedValue = this.multipleQueries(value, defaultValue);
       }
+    }
+    if (name === 'sprintId' && !value) {
+      processedValue = currentSprint > 0 ? [currentSprint] : [0];
     }
 
     return { [name]: processedValue };
@@ -427,7 +436,8 @@ class TaskList extends Component {
       {
         nameInputValue: '',
         changedFilters: {
-          projectId: this.props.params.projectId
+          projectId: this.props.params.projectId,
+          sprintId: [0]
         }
       },
       this.loadTasks
@@ -619,6 +629,19 @@ class TaskList extends Component {
   onChangeDateToFilter = option => this.handleDayChange(option, 'dateTo');
   onChangePerformerFilter = option => this.changeSingleFilter(option, 'performerId');
   onChangeTagFilter = options => this.changeMultiFilter(options, 'tags');
+  sortedAuthorOptions = () => {
+    const { project } = this.props;
+    const authorOptions = this.createOptions(project.users, 'fullNameRu');
+    return authorOptions
+      ? authorOptions.sort((a, b) => {
+          if (a.label < b.label) {
+            return -1;
+          } else if (a.label > b.label) {
+            return 1;
+          }
+        })
+      : null;
+  };
 
   render() {
     const { tasksList: tasks, statuses, taskTypes, project, isReceiving, lang, sprints } = this.props;
@@ -644,7 +667,7 @@ class TaskList extends Component {
 
     const statusOptions = this.createOptions(statuses);
     const typeOptions = this.createOptions(taskTypes);
-    const authorOptions = this.createOptions(project.users, 'fullNameRu');
+
     const isFilter = this.isFilters();
     const isLoading = isReceiving && !tasks.length;
     const isExternal = this.props.globalRole === EXTERNAL_USER;
@@ -718,7 +741,7 @@ class TaskList extends Component {
                       multi
                       searchable
                       clearable
-                      value={sprintId}
+                      value={sprintId || [0]}
                       onChange={this.onChangeSprintFilter}
                       options={sprints}
                       useId
@@ -735,7 +758,8 @@ class TaskList extends Component {
                     onChange={this.onChangeAuthorFilter}
                     onInputChange={removeNumChars}
                     noResultsText={localize[lang].NO_RESULTS}
-                    options={authorOptions}
+                    options={this.sortedAuthorOptions()}
+                    filterOption={layoutAgnosticFilter}
                     canClear
                     onClear={() => this.clearFilter('authorId')}
                   />
@@ -744,6 +768,7 @@ class TaskList extends Component {
                   <PerformerFilter
                     onPerformerSelect={this.onChangePerformerFilter}
                     selectedPerformerId={performerId}
+                    filterOption={layoutAgnosticFilter}
                     canClear
                     onClear={() => this.clearFilter('performerId')}
                   />
@@ -771,6 +796,7 @@ class TaskList extends Component {
                     canClear
                     onClear={() => this.clearFilter('statusId')}
                     onChange={this.onChangeStatusFilter}
+                    filterOption={layoutAgnosticFilter}
                   />
                 </Col>
                 <Col xs={6} sm={3}>
@@ -786,6 +812,7 @@ class TaskList extends Component {
                     canClear
                     onClear={() => this.clearFilter('typeId')}
                     onChange={this.onChangeTypeFilter}
+                    filterOption={layoutAgnosticFilter}
                   />
                 </Col>
                 <Col xs={6} sm={3}>
@@ -885,13 +912,11 @@ class TaskList extends Component {
                 />
               ))}
           {!isLoading && tasks.length === 0 ? <div className={css.notFound}>{localize[lang].NOTHING_FOUND}</div> : null}
-          {this.props.pagesCount > 1 ? (
-            <Pagination
-              itemsCount={this.props.pagesCount}
-              activePage={this.state.activePage}
-              onItemClick={this.handlePaginationClick}
-            />
-          ) : null}
+          <Pagination
+            itemsCount={this.props.pagesCount}
+            activePage={this.state.activePage}
+            onItemClick={this.handlePaginationClick}
+          />
         </section>
         {this.state.isPerformerModalOpen ? (
           <PerformerModal
@@ -920,6 +945,7 @@ class TaskList extends Component {
             defaultPerformerId={performerId}
           />
         ) : null}
+        <ScrollTop />
       </div>
     );
   }

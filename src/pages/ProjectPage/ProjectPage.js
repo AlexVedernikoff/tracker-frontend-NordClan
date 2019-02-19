@@ -14,6 +14,7 @@ import { ADMIN, EXTERNAL_USER } from '../../constants/Roles';
 import { checkIsViewer } from '../../helpers/RoleValidator';
 import localize from './projectPage.json';
 import Title from 'react-title-component';
+import ScrollTop from '../../components/ScrollTop';
 
 class ProjectPage extends Component {
   static propTypes = {
@@ -148,6 +149,7 @@ class ProjectPage extends Component {
             onConfirm={this.handleCloseProjectConfirmModal}
           />
         ) : null}
+        <ScrollTop />
       </div>
     );
   }

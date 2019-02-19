@@ -8,6 +8,7 @@ import cn from 'classnames';
 
 class Mentions extends Component {
   static propTypes = {
+    autoFocus: PropTypes.bool,
     className: PropTypes.string,
     currentComment: PropTypes.string,
     disabled: PropTypes.bool,
@@ -38,11 +39,11 @@ class Mentions extends Component {
   };
 
   render() {
-    const { suggestions, currentComment, className } = this.props;
+    const { suggestions, currentComment, className, autoFocus = true } = this.props;
     return (
       <MentionsInput
         className={cn([css.mentions, className])}
-        autoFocus
+        autoFocus={autoFocus}
         disabled={this.props.disabled}
         placeholder={this.props.placeholder}
         onChange={this.typeComment}

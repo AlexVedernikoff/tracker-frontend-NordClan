@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import localize from './MyTasks.json';
+import localize from './MyTasksDevOps.json';
 
 import AgileBoard from '../ProjectPage/AgileBoard';
 import Title from 'react-title-component';
 import ScrollTop from '../../components/ScrollTop';
 
-class MyTasks extends Component {
+class MyTasksDevOps extends Component {
   render() {
     return (
       <div>
         <Title render={`SimTrack - ${localize[this.props.lang].MY_TASKS}`} />
         <h1>{localize[this.props.lang].MY_TASKS}</h1>
         <hr />
-        <AgileBoard myTaskBoard {...this.props} />
+        <AgileBoard isDevOps {...this.props} />
         <ScrollTop />
       </div>
     );
@@ -27,4 +27,4 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   null
-)(MyTasks);
+)(MyTasksDevOps);

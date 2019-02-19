@@ -4,9 +4,11 @@ import { connect } from 'react-redux';
 import cn from 'classnames';
 import localize from './JiraCard.json';
 import * as css from './JiraCard.scss';
-import { IconJira } from '../../../../../components/Icons';
+import { IconClose, IconJira } from '../../../../../components/Icons';
 import { getJiraSyncInfo } from '../../../../../actions/Jira';
 import moment from 'moment';
+import ConfirmModal from '../../../../../components/ConfirmModal/ConfirmModal';
+import * as syncStatuses from './syncStatus';
 
 class JiraCard extends Component {
   static propTypes = {
@@ -33,13 +35,83 @@ class JiraCard extends Component {
     this.props.getJiraSyncInfo(this.props.simtrackProject.id);
   }
 
-  render() {
-    const { project, lang, simtrackProject } = this.props;
+  toggleConfirm = () => {
+    this.setState({ isConfirm: !this.state.isConfirm });
+  };
+
+  getStatusInfo = status => {
+    const { lang, simtrackProject } = this.props;
+    const offset = new Date(simtrackProject.lastSyncDate).getTimezoneOffset() / 60;
+    const utcDate = moment.utc(simtrackProject.lastSyncDate);
 
     const classNameForSync = cn(css.syncStatus, {
-      [css.failedStatus]: simtrackProject.status === 'FAILED',
-      [css.successStatus]: simtrackProject.status === 'SUCCESS'
+      [css.successStatus]: status === syncStatuses.SUCCESS,
+      [css.failedStatus]: status === syncStatuses.FAILED
     });
+
+    const localDate = utcDate
+      .local()
+      .subtract('hours', offset)
+      .format('DD-MM-YYYY HH:mm');
+
+    const statusBlock = statusText => <div className={classNameForSync}>{statusText}</div>;
+
+    const lastDateSyncBlock = (clazz, date) => (
+      <div className={clazz}>
+        {localize[lang].LAST_SYNC}: {date}
+      </div>
+    );
+
+    switch (status) {
+      case syncStatuses.SUCCESS:
+        return (
+          <div>
+            {statusBlock(localize[lang].SUCCESS)}
+            {lastDateSyncBlock(classNameForSync, localDate)}
+          </div>
+        );
+      case syncStatuses.FAILED:
+        return (
+          <div>
+            {statusBlock(localize[lang].SYNC_FAILED)}
+            {lastDateSyncBlock(classNameForSync, localDate)}
+          </div>
+        );
+      case syncStatuses.RUNNING:
+        return (
+          <div>
+            {statusBlock(localize[lang].SYNC_RUNNING)}
+            <div className={classNameForSync}>
+              {localize[lang].LAST_DATE_RUNNING}: {localDate}
+            </div>
+          </div>
+        );
+      case syncStatuses.CANCELED:
+        return (
+          <div>
+            {statusBlock(localize[lang].SYNC_CANCELED)}
+            <div className={classNameForSync}>
+              {localize[lang].LAST_DATE_RUNNING}: {localDate}
+            </div>
+          </div>
+        );
+      case syncStatuses.PENDING:
+        return (
+          <div>
+            {statusBlock(localize[lang].SYNC_PENDING)}
+            <div className={classNameForSync}>
+              {localize[lang].LAST_DATE_RUNNING}: {localDate}
+            </div>
+          </div>
+        );
+      default:
+        return <div>{statusBlock(localize[lang].NOT_SYNC)}</div>;
+    }
+  };
+
+  render() {
+    const { isConfirm } = this.state;
+    const { project, lang, simtrackProject, simtrackProjectId } = this.props;
 
     return (
       <div className={css.projectCard}>
@@ -55,21 +127,21 @@ class JiraCard extends Component {
               </a>
             </div>
           </div>
-          {simtrackProject.status ? (
-            <div className={css.syncInfo}>
-              {simtrackProject.status === 'SUCCESS' ? (
-                <div className={classNameForSync}>{localize[lang].SUCCESS}</div>
-              ) : (
-                <div className={classNameForSync}>{localize[lang].SYNC_FAILED}</div>
-              )}
-              <div className={classNameForSync}>
-                {localize[lang].LAST_SYNC}: {moment(simtrackProject.lastSyncDate).format('DD.MM.YYYY')}
-              </div>
-            </div>
-          ) : (
-            <div className={css.statusNotSync}>{localize[lang].NOT_SYNC}</div>
-          )}
+          <div className={css.syncStatus}>{this.getStatusInfo(simtrackProject.status)}</div>
         </div>
+        <div onClick={this.toggleConfirm} className={css.deleteProject}>
+          <IconClose data-tip={localize[lang].CANSEL_CONNECT} />
+        </div>
+        {isConfirm ? (
+          <ConfirmModal
+            isOpen
+            contentLabel="modal"
+            text={`${localize[lang].CONFIRM_CANSEL} ${project.name}?`}
+            onCancel={this.toggleConfirm}
+            onConfirm={() => this.props.deleteProject(simtrackProjectId)}
+            onRequestClose={this.toggleConfirm}
+          />
+        ) : null}
       </div>
     );
   }

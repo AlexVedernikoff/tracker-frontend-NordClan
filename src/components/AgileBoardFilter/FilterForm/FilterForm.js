@@ -39,7 +39,11 @@ class FilterForm extends React.Component {
   }
 
   onPrioritiesFilterChange = option =>
-    this.props.setFilterValue('prioritiesId', option.prioritiesId, this.updateListsAndTasks);
+    this.props.setFilterValue(
+      'prioritiesId',
+      option.prioritiesId ? option.prioritiesId : null,
+      this.updateListsAndTasks
+    );
   onSprintsFilterChange = options => {
     this.props.setFilterValue('changedSprint', this.getSprintValue(options), this.updateListsAndTasks);
     storage.setItem('sprintFilterChanged', 1);
@@ -73,7 +77,7 @@ class FilterForm extends React.Component {
     return sprintIds && sprintIds.length && this.props.sprints && this.props.sprints.length
       ? sprintIds.map(sprintId => {
           const sprintData = this.props.sprints.find(data => data.id === +sprintId) || {};
-          return `${sprintData.spentTime || 0} / ${sprintData.riskBudget || 0}`;
+          return `${sprintData.spentTime || 0} / ${sprintData.budget || 0}`;
         })
       : [];
   }
@@ -90,6 +94,19 @@ class FilterForm extends React.Component {
 
   resetName = () => {
     this.taskNameRef.value = '';
+  };
+
+  sortedAuthorOptions = () => {
+    const { authorOptions } = this.props;
+    return authorOptions
+      ? authorOptions.sort((a, b) => {
+          if (a.label < b.label) {
+            return -1;
+          } else if (a.label > b.label) {
+            return 1;
+          }
+        })
+      : null;
   };
 
   render() {
@@ -166,6 +183,7 @@ class FilterForm extends React.Component {
             <PerformerFilter
               onPerformerSelect={this.onPerformerFilterChange}
               selectedPerformerId={this.props.filters.performerId}
+              filterOption={layoutAgnosticFilter}
               canClear
               onClear={() => this.clearFilters('performerId')}
             />
@@ -182,6 +200,7 @@ class FilterForm extends React.Component {
               options={this.props.typeOptions}
               onChange={this.onTypeFilterChange}
               canClear
+              filterOption={layoutAgnosticFilter}
               onClear={() => this.clearFilters('typeId')}
             />
           </Col>
@@ -215,7 +234,8 @@ class FilterForm extends React.Component {
               onChange={this.onAuthorFilterChange}
               onInputChange={removeNumChars}
               noResultsText={localize[lang].NO_RESULTS}
-              options={this.props.authorOptions}
+              options={this.sortedAuthorOptions()}
+              filterOption={layoutAgnosticFilter}
               canClear
               onClear={() => this.props.setFilterValue('authorId', null, this.updateListsAndTasks)}
             />
