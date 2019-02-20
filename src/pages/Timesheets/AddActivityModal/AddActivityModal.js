@@ -97,17 +97,18 @@ class AddActivityModal extends Component {
   };
 
   activityAlreadyExists = (selectedTask, taskStatusId, timesheetsCurrentList) => {
-    const {
-      body: { id, typeId }
-    } = selectedTask;
-    const _taskStatusId = getStopStatusByGroup(taskStatusId);
-    for (let i = 0; i < timesheetsCurrentList.length; i++) {
-      const item = timesheetsCurrentList[i];
-      if (item.task.id === id && item.typeId === typeId && item.taskStatusId === _taskStatusId) {
-        return true;
+    if (selectedTask) {
+      const {
+        body: { id, typeId }
+      } = selectedTask;
+      const _taskStatusId = getStopStatusByGroup(taskStatusId);
+      for (let i = 0; i < timesheetsCurrentList.length; i++) {
+        const item = timesheetsCurrentList[i];
+        if (item.task && item.task.id === id && item.typeId === typeId && item.taskStatusId === _taskStatusId) {
+          return true;
+        }
       }
     }
-
     return false;
   };
 
