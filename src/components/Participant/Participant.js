@@ -46,6 +46,7 @@ class Participant extends React.Component {
   }
 
   componentWillMount = () => {
+    console.clear();
     this.setState({ sendRoles: this.setRoles(this.props) });
   };
 
@@ -101,9 +102,16 @@ class Participant extends React.Component {
 
   getProjectUserGitlabRole(projectId) {
     const { user, gitlabRoles } = this.props;
-    const isExpired = moment(user.gitlabRoles[0].expiresAt) - moment(new Date()) < 0;
     const defaultLabel = localize[this.props.lang].UNSET_GITLAB_USER_ROLE;
     if (user.gitlabRoles && user.gitlabRoles.length) {
+      const userRole = user.gitlabRoles.find(role => role.gitlabProjectId === projectId);
+      let isExpired = null;
+      if (userRole && userRole.expiresAt) {
+        isExpired = moment(userRole.expiresAt) - moment(new Date()) < 0;
+      } else {
+        isExpired = moment(user.gitlabRoles[0].expiresAt) - moment(new Date()) < 0;
+      }
+
       const userGitlabRole = user.gitlabRoles.find(({ gitlabProjectId }) => gitlabProjectId === projectId) || {};
       const { label, ...gitlabRoleParams } =
         gitlabRoles.find(({ value }) => value === userGitlabRole.accessLevel) || {};
