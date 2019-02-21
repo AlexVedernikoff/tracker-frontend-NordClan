@@ -38,3 +38,17 @@
   left: 0.75rem;
   max-width: calc(100% - 1.5rem);
 }
+
+.inputWrapper {
+  position: relative;
+  width: 100%;
+  input + span {
+    display: none;
+  }
+
+  &:hover {
+    input:not([value='']) + span {
+      display: block;
+    }
+  }
+}
