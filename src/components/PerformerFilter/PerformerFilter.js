@@ -41,6 +41,7 @@ class PerformerFilter extends React.Component {
     const { lang } = this.props;
     return (
       <SelectDropdown
+        {...this.props}
         name="performer"
         placeholder={localize[lang].CHANGE_PERFORMER}
         multi

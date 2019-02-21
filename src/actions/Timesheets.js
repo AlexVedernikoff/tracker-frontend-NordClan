@@ -278,7 +278,7 @@ export const filterProjects = projects => ({
 });
 
 // Поиск по задачам
-export const getTasksForSelect = (name = '', projectId) => {
+export const getTasksForSelect = (name = '', projectId, sprintId) => {
   return dispatch => {
     return axios
       .get(
@@ -286,7 +286,7 @@ export const getTasksForSelect = (name = '', projectId) => {
         {
           params: {
             name,
-            ...{ projectId },
+            ...{ projectId, sprintId },
             fields:
               'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId,prefix'
           }

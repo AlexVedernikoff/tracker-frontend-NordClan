@@ -38,7 +38,11 @@ class NewProject extends Component {
   }
 
   changeValue = e => {
-    this.setState({ projectId: e.target.value, errorCode: null });
+    const trimmedValue = this.removeWhitespaces(e.target.value);
+    this.setState({ projectId: trimmedValue, errorCode: null });
+    if (this.inputRef) {
+      this.inputRef.value = trimmedValue;
+    }
   };
 
   cancelBound = () => {
@@ -49,7 +53,7 @@ class NewProject extends Component {
     const projectId = this.state.projectId;
     if (!projectId.trim()) return this.setState({ errorCode: validErrorCodes.EmptyValue });
     if (isNaN(projectId)) {
-      if (!/^[\.a-zA-Z0-9\-]+\/[\.a-zA-Z0-9\-]+$/.test(projectId)) {
+      if (!/^[\.a-zA-Z0-9\-\_]+\/[\.a-zA-Z0-9\-\_]+$/.test(projectId)) {
         // checks if projectId (as path) is in form of namespace/project-name
         return this.setState({ errorCode: validErrorCodes.NotFullPath });
       }
@@ -62,7 +66,8 @@ class NewProject extends Component {
   handlePaste = e => {
     e.preventDefault();
     const value = e.clipboardData && e.clipboardData.getData('text');
-    const trimmedValue = value.replace(/\.git+$/, '');
+    if (!value) return;
+    const trimmedValue = this.removeWhitespaces(value).replace(/\.git+$/, '');
     this.changeValue({
       target: {
         value: trimmedValue
@@ -71,6 +76,11 @@ class NewProject extends Component {
     if (this.inputRef) {
       this.inputRef.value = trimmedValue;
     }
+  };
+
+  removeWhitespaces = value => {
+    if (!value) return '';
+    return value.trim().replace(/\s/g, '');
   };
 
   render() {

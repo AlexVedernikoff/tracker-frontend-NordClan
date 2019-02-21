@@ -335,6 +335,7 @@ class TaskList extends Component {
         if (state.changedFilters[name]) {
           const filters = state.changedFilters;
           delete filters[name];
+          this.changeUrl(filters);
           return { changedFilters: filters };
         }
       },
@@ -708,6 +709,8 @@ class TaskList extends Component {
                     placeholder={localize[lang].ENTER_TITLE_TASK}
                     value={this.state.nameInputValue || ''}
                     onChange={this.changeNameFilter}
+                    canClear
+                    onClear={() => this.changeNameFilter({ target: { value: '' } })}
                   />
                 </Col>
                 <Col xs={6} sm={2}>
@@ -757,6 +760,8 @@ class TaskList extends Component {
                     noResultsText={localize[lang].NO_RESULTS}
                     options={this.sortedAuthorOptions()}
                     filterOption={layoutAgnosticFilter}
+                    canClear
+                    onClear={() => this.clearFilter('authorId')}
                   />
                 </Col>
                 <Col xs={12} sm={3}>
@@ -764,6 +769,8 @@ class TaskList extends Component {
                     onPerformerSelect={this.onChangePerformerFilter}
                     selectedPerformerId={performerId}
                     filterOption={layoutAgnosticFilter}
+                    canClear
+                    onClear={() => this.clearFilter('performerId')}
                   />
                 </Col>
                 <Col xs={12} sm={3}>
@@ -823,6 +830,8 @@ class TaskList extends Component {
                     onDayChange={this.onChangeDateFromFilter}
                     placeholder={localize[lang].FROM}
                     format={dateFormat}
+                    canClear
+                    onClear={() => this.clearFilter('dateFrom')}
                   />
                 </Col>
                 <Col xs={6} sm={3}>
@@ -840,6 +849,8 @@ class TaskList extends Component {
                     ]}
                     placeholder={localize[lang].TO}
                     format={dateFormat}
+                    canClear
+                    onClear={() => this.clearFilter('dateTo')}
                   />
                 </Col>
               </Row>
@@ -859,6 +870,8 @@ class TaskList extends Component {
                       placeholder={localize[lang].ENTER_TITLE_TASK}
                       value={this.state.nameInputValue || ''}
                       onChange={this.changeNameFilter}
+                      canClear
+                      onClear={() => this.changeNameFilter({ target: { value: '' } })}
                     />
                   </Col>
                 )}

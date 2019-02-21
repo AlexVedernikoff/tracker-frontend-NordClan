@@ -100,6 +100,7 @@ class AddExternalUser extends Component {
       })
       .then(() => {
         this.setState({ ...initialState });
+        this.validator.resetTouched();
       })
       .catch(message => {
         this.setState({ errorMessage: this.getServerErrorMessage(message.message) });
@@ -265,6 +266,7 @@ class AddExternalUser extends Component {
                         disabledDataRanges={[{ before: new Date() }]}
                         placeholder={localize[lang].ENTER_DATE}
                         shouldMarkError={shouldMarkError}
+                        errorText={localize[lang].MUST_BE_FILLED}
                       />
                     ),
                     'exUserDate',

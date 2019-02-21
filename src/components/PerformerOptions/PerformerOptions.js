@@ -247,6 +247,7 @@ class PerformerOptions extends Component {
                         getTextAreaNode={this.getTextAreaNode}
                         toggleBtn={this.setComment}
                         suggestions={users}
+                        autoFocus={false}
                       />
                     </Col>
                   </Row>

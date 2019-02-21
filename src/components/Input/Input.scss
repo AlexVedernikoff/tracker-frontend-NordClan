@@ -24,6 +24,10 @@
   }
 }
 
+.error {
+  color: $color-red;
+}
+
 .message {
   font-size: $font-size-small;
   display: inline-block;
@@ -33,4 +37,18 @@
   top: calc(100% - 6px);
   left: 0.75rem;
   max-width: calc(100% - 1.5rem);
+}
+
+.inputWrapper {
+  position: relative;
+  width: 100%;
+  input + span {
+    display: none;
+  }
+
+  &:hover {
+    input:not([value='']) + span {
+      display: block;
+    }
+  }
 }

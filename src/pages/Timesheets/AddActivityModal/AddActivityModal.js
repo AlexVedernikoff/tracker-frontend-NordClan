@@ -10,6 +10,7 @@ import SelectDropdown from '../../../components/SelectDropdown';
 import * as css from '../Timesheets.scss';
 import Checkbox from '../../../components/Checkbox/Checkbox';
 import { getProjectSprints } from '../../../actions/Project';
+import { showNotification } from '../../../actions/Notifications';
 import {
   changeTask,
   changeProject,
@@ -43,9 +44,12 @@ class AddActivityModal extends Component {
     selectedProject: PropTypes.object,
     selectedTask: PropTypes.object,
     selectedTaskStatusId: PropTypes.number,
+    showNotification: PropTypes.func,
     sprints: PropTypes.array,
     startingDay: PropTypes.object,
     taskStatuses: PropTypes.array,
+    tempTimesheetsList: PropTypes.array,
+    timesheetsList: PropTypes.array,
     userId: PropTypes.number
   };
 
@@ -92,12 +96,48 @@ class AddActivityModal extends Component {
     }
   };
 
+  activityAlreadyExists = (selectedTask, taskStatusId, timesheetsCurrentList) => {
+    if (selectedTask) {
+      const {
+        body: { id, typeId }
+      } = selectedTask;
+      const _taskStatusId = getStopStatusByGroup(taskStatusId);
+      for (let i = 0; i < timesheetsCurrentList.length; i++) {
+        const item = timesheetsCurrentList[i];
+        if (item.task && item.task.id === id && item.typeId === typeId && item.taskStatusId === _taskStatusId) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
   addActivity = e => {
     e.preventDefault();
 
-    const { selectedTask, selectedActivityType, selectedProject, selectedTaskStatusId, startingDay } = this.props;
+    const {
+      selectedTask,
+      selectedActivityType,
+      selectedProject,
+      selectedTaskStatusId,
+      startingDay,
+      timesheetsList,
+      tempTimesheetsList
+    } = this.props;
     const { selectedSprint } = this.state;
     const taskStatusId = selectedTask ? selectedTaskStatusId : null;
+    if (
+      this.activityAlreadyExists(selectedTask, taskStatusId, timesheetsList) ||
+      this.activityAlreadyExists(selectedTask, taskStatusId, tempTimesheetsList)
+    ) {
+      this.props.showNotification(
+        {
+          message: localize[this.props.lang].ACTIVITY_ALREADY_EXISTS,
+          type: 'error'
+        },
+        4000
+      );
+    }
 
     const getSprint = () => {
       if (this.isNoTaskProjectActivity() && selectedSprint) {
@@ -165,15 +205,12 @@ class AddActivityModal extends Component {
 
   isNoTaskProjectActivity = () => {
     const { activityType } = this.state;
-    return (
-      activityType !== activityTypes.IMPLEMENTATION &&
-      activityType !== activityTypes.VACATION &&
-      activityType !== activityTypes.HOSPITAL
-    );
+    return activityType !== activityTypes.VACATION && activityType !== activityTypes.HOSPITAL;
   };
 
   handleChangeProject = option => {
     this.handleChangeSprint(null);
+    this.props.changeTask(null);
     this.props.changeProject(option);
     this.loadTasks('', option ? option.value : null);
     if (this.isNoTaskProjectActivity() && (option && option.value !== 0)) {
@@ -181,8 +218,8 @@ class AddActivityModal extends Component {
     }
   };
 
-  loadTasks = (name = '', projectId = null) => {
-    this.props.getTasksForSelect(name, projectId).then(options => this.setState({ tasks: options.options }));
+  loadTasks = (name = '', projectId = null, sprintId = null) => {
+    this.props.getTasksForSelect(name, projectId, sprintId).then(options => this.setState({ tasks: options.options }));
   };
 
   loadProjects = activityType => {
@@ -193,7 +230,14 @@ class AddActivityModal extends Component {
   };
 
   handleChangeSprint = option => {
-    this.setState({ selectedSprint: option });
+    this.setState({ selectedSprint: option }, () => {
+      if (this.state.activityType === activityTypes.IMPLEMENTATION) {
+        this.loadTasks(null, null, option ? option.value.id : null);
+        if (option) {
+          this.props.changeTask(null);
+        }
+      }
+    });
   };
 
   handleChangeActivity = option => {
@@ -216,6 +260,7 @@ class AddActivityModal extends Component {
         })
       : null;
   };
+
   render() {
     const { lang } = this.props;
     const formLayout = {
@@ -278,6 +323,26 @@ class AddActivityModal extends Component {
                           placeholder={localize[lang].SELECT_PROJECT}
                           onChange={this.handleChangeProject}
                           options={this.state.projects}
+                        />
+                      </Col>
+                    </Row>
+                  </label>
+                ) : null,
+                this.props.selectedProject && this.props.selectedProject.value !== 0 ? (
+                  <label className={css.formField} key="noTaskActivitySprint">
+                    <Row>
+                      <Col xs={12} sm={formLayout.left}>
+                        {localize[lang].SPRINT}
+                      </Col>
+                      <Col xs={12} sm={formLayout.right}>
+                        <SelectDropdown
+                          multi={false}
+                          value={this.state.selectedSprint}
+                          placeholder={localize[lang].SELECT_SPRINT}
+                          onChange={this.handleChangeSprint}
+                          options={this.getSprintOptions()}
+                          onClear={() => this.handleChangeSprint(null)}
+                          canClear
                         />
                       </Col>
                     </Row>
@@ -390,7 +455,9 @@ const mapStateToProps = state => ({
   filteredTasks: state.Timesheets.filteredTasks,
   sprints: state.Project.project.sprints,
   userId: state.Auth.user.id,
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  timesheetsList: state.Timesheets.list,
+  tempTimesheetsList: state.Timesheets.tempTimesheets
 });
 
 const mapDispatchToProps = {
@@ -401,7 +468,8 @@ const mapDispatchToProps = {
   changeActivityType,
   getTasksForSelect,
   getProjectsForSelect,
-  getProjectSprints
+  getProjectSprints,
+  showNotification
 };
 
 export default connect(
