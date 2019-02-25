@@ -73,8 +73,7 @@
 .taskName {
   display: inline-block;
   margin-bottom: 8px;
-  word-break: break-all;
-  word-break: break-word;
+  word-break: normal;
   @include link-reset;
   transition: $transition;
 
