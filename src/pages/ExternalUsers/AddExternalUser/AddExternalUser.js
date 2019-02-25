@@ -85,7 +85,7 @@ class AddExternalUser extends Component {
 
   validateForm() {
     const { name, email, expiredDate } = this.state;
-    return name.length >= 2 && this.validateEmail(email) && moment().diff(expiredDate, 'days') < 0;
+    return name.length >= 2 && this.validateEmail(email) && moment().diff(expiredDate, 'days') <= 0;
   }
 
   addUser = () => {
