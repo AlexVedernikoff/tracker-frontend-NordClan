@@ -16,13 +16,20 @@ class Budget extends Component {
 
     this.state = {
       isEditing: false,
-      value: undefined
+      value: props.value || 0
     };
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     ReactTooltip.rebuild();
+    this.updateValue(prevProps.value);
   }
+
+  updateValue = prevValue => {
+    if (prevValue !== this.props.value) {
+      this.setState({ value: this.props.value });
+    }
+  };
 
   toggleEditing = e => {
     e.preventDefault();
@@ -47,6 +54,7 @@ class Budget extends Component {
   };
 
   saveBudget = () => {
+    if (this.state.value === this.props.value) return;
     const { onEditSubmit } = this.props;
     onEditSubmit(this.state.value);
   };
@@ -73,8 +81,7 @@ class Budget extends Component {
 
   render() {
     const { header, lang } = this.props;
-    const { isEditing } = this.state;
-    const value = this.state.value !== undefined ? this.state.value : this.props.value || '';
+    const { isEditing, value } = this.state;
     const saveDataTip = this.state.value ? localize[lang].SAVE : localize[lang].ENTER_NUMBER;
     return (
       <div className={css.budget}>
