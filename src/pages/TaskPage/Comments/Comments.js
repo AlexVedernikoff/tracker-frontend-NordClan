@@ -295,8 +295,8 @@ class Comments extends Component {
     this.reply = node;
   };
 
-  getCommentList = () =>
-    this.props.comments.map(comment => {
+  getCommentList = () => {
+    return this.props.comments.map(comment => {
       return (
         <Comment
           key={comment.id} /*используются id чтобы правильно работал маунт и анмаунт*/
@@ -312,6 +312,24 @@ class Comments extends Component {
         />
       );
     });
+  };
+
+  allCommentsAreEmpty = () => {
+    const allEmpty = this.props.comments.every(comment => {
+      if (comment.text) {
+        return false;
+      }
+
+      if (!comment.attachmentIds) {
+        return true;
+      }
+
+      return !this.props.attachments.find(attachment => {
+        return comment.attachmentIds.indexOf(attachment.id) !== -1;
+      });
+    });
+    return allEmpty;
+  };
 
   render() {
     const { lang, isCommentsReceived, isProjectInfoReceiving } = this.props;
@@ -415,7 +433,9 @@ class Comments extends Component {
               </ul>
             ) : null}
           </div>
-          {this.props.comments.length && this.props.users.length ? this.getCommentList() : withoutComments}
+          {this.props.comments.length && this.props.users.length && !this.allCommentsAreEmpty()
+            ? this.getCommentList()
+            : withoutComments}
         </ul>
         {this.state.commentToDelete ? (
           <ConfirmModal
