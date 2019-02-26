@@ -1,31 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
-import { Row, Col } from 'react-flexbox-grid/lib/index';
-import moment from 'moment';
-
 import { IconPlus, IconDownload, IconArrowRight, IconArrowDown } from '../../../../components/Icons';
-import Modal from '../../../../components/Modal';
-import Input from '../../../../components/Input';
-import TextArea from '../../../../components/TextArea';
-import DatepickerDropdown from '../../../../components/DatepickerDropdown';
-import Checkbox from '../../../../components/Checkbox';
-import Button from '../../../../components/Button';
 import TimeLine from '../TimeLine';
-import styles from './Sprint.scss';
-import * as css from '../Task/CreateMilestoneModal/CreateMilestoneModal.scss';
 import Goal from '../Goal';
-import localize from './Sprint.json';
+import AddGoal from '../AddGoal/AddGoal';
 
-const formLayout = {
-  firstCol: 4,
-  secondCol: 8
-};
+import localize from './Sprint.json';
+import styles from './Sprint.scss';
 
 class Sprint extends Component {
   static propTypes = {
     create: PropTypes.func,
+    edit: PropTypes.func,
     globalEnd: PropTypes.number,
     globalStart: PropTypes.number,
     item: PropTypes.shape({
@@ -40,13 +27,8 @@ class Sprint extends Component {
     this.state = {
       collapsed: true,
       showModal: false,
-      forms: {
-        sprintId: null,
-        name: '',
-        description: '',
-        visible: true,
-        plannedExecutionTime: ''
-      }
+      isEdit: false,
+      goal: {}
     };
   }
 
@@ -58,33 +40,21 @@ class Sprint extends Component {
     this.setState(state => ({ collapsed: !state.collapsed }));
   };
 
-  handleChangeGoalForms = name => ({ target: { value } }) =>
-    this.setState({
-      forms: {
-        ...this.state.forms,
-        [name]: value
-      }
-    });
+  addGoal = () => this.setState({ isEdit: false, showModal: true });
 
-  handleAddGoal = sprintId => () => {
-    const { forms } = this.state;
-    this.setState({ showModal: false });
-    this.props.create({
-      ...forms,
-      sprintId,
-      plannedExecutionTime: moment(forms.plannedExecutionTime).unix()
+  editGoal = goalItem => () => {
+    this.setState({
+      goalItem,
+      isEdit: true,
+      showModal: true
     });
   };
 
   render() {
     const { item, globalStart, globalEnd, lang } = this.props;
-    const {
-      collapsed,
-      showModal,
-      forms: { visible }
-    } = this.state;
+    const { collapsed, showModal, isEdit, goalItem } = this.state;
 
-    const goals = item.goals.map(goal => <Goal key={goal.id} item={goal} />);
+    const goals = item.goals.map(goal => <Goal editGoal={this.editGoal(goal)} key={goal.id} item={goal} />);
     const meta = (
       <div className={styles.meta}>
         <div className={styles.metaItem}>{item.budget} ч.</div>
@@ -96,9 +66,9 @@ class Sprint extends Component {
       </div>
     );
     const goalsContainer = (
-      <div className={styles.goals} onClick={() => this.setState({ showModal: true })}>
+      <div className={styles.goals}>
         <div>{goals}</div>
-        <div className={styles.addingButton}>
+        <div className={styles.addingButton} onClick={this.addGoal}>
           <span className={styles.addingIcon}>
             <IconPlus />
           </span>
@@ -124,80 +94,18 @@ class Sprint extends Component {
           />
           {!collapsed && goalsContainer}
         </div>
-        <Modal isOpen={showModal} onRequestClose={() => this.setState({ showModal: false })} contentLabel="modal">
-          <div>
-            <form className={css.createSprintForm}>
-              <Row className={css.inputRow}>
-                <Col xs={12}>
-                  <h3>{localize[lang].ADD_GOAL}</h3>
-                  <hr />
-                </Col>
-              </Row>
-
-              <Row className={css.inputRow}>
-                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>{localize[lang].INPUT_GOAL}</p>
-                </Col>
-                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                  <Input placeholder={localize[lang].ENTER_GOAL_NAME} onChange={this.handleChangeGoalForms('name')} />
-                </Col>
-              </Row>
-
-              <Row className={css.inputRow}>
-                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>{localize[lang].DESCRIPTION_GOAL}</p>
-                </Col>
-                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                  <TextArea
-                    onChange={this.handleChangeGoalForms('description')}
-                    placeholder={localize[lang].ENTER_DESCRIPTION_GOAL}
-                  />
-                </Col>
-              </Row>
-
-              <Row className={css.inputRow}>
-                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>{localize[lang].IS_VISIBLE}</p>
-                </Col>
-                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                  <Checkbox onChange={() => this.handleChangeGoalForms('visible')({ target: { value: !visible } })} />
-                </Col>
-              </Row>
-
-              <Row className={css.inputRow}>
-                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>{localize[lang].PLANNED_EXECUTION_TIME}</p>
-                </Col>
-                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                  <DatepickerDropdown
-                    name="plannedExecutionTime"
-                    placeholder={localize[lang].PLANNED_EXECUTION_TIME}
-                    disabledDataRanges={[{ before: new Date() }]}
-                    onDayChange={date =>
-                      this.handleChangeGoalForms('plannedExecutionTime')({
-                        target: { value: +moment(date).format('X') }
-                      })
-                    }
-                  />
-                </Col>
-              </Row>
-              <Button
-                text={localize[lang].ADD_GOAL}
-                type="green-lighten"
-                onClick={this.handleAddGoal(item.id)}
-                disabled={false}
-                style={{ width: '100%' }}
-              />
-            </form>
-          </div>
-        </Modal>
+        <AddGoal
+          showModal={showModal}
+          closeModal={() => this.setState({ showModal: false })}
+          item={item}
+          create={this.props.create}
+          edit={this.props.edit}
+          isEdit={isEdit}
+          goalItem={goalItem}
+        />
       </div>
     );
   }
 }
 
-const mapStateToProps = state => ({
-  lang: state.Localize.lang
-});
-
-export default connect(mapStateToProps)(Sprint);
+export default Sprint;

@@ -15,8 +15,17 @@ class SprintColumnHeader extends Component {
     name: PropTypes.string.isRequired,
     onCreateTaskClick: PropTypes.func.isRequired,
     onSprintChange: PropTypes.func.isRequired,
+    projectSprints: PropTypes.array.isRequired,
     selectedSprintValue: PropTypes.number,
     sprints: PropTypes.array.isRequired
+  };
+
+  getSprintTime = sprintIds => {
+    const { projectSprints } = this.props;
+    if (sprintIds && projectSprints && projectSprints.length) {
+      const sprintData = projectSprints.find(data => data.id === +sprintIds) || {};
+      return `${sprintData.spentTime || 0} / ${sprintData.budget || 0}`;
+    } else return '';
   };
 
   render() {
@@ -44,6 +53,13 @@ class SprintColumnHeader extends Component {
               noResultsText={localize[lang].NO_RESULTS}
               options={sprints}
             />
+            <div className={css.sprintTimeWrapper}>
+              {!this.isExternal ? (
+                <span key={selectedSprintValue} className={css.sprintTime}>
+                  {this.getSprintTime(selectedSprintValue)}
+                </span>
+              ) : null}
+            </div>
           </div>
           <Button
             onClick={onCreateTaskClick}
@@ -70,7 +86,8 @@ class SprintColumnHeader extends Component {
 }
 
 const mapStateToProps = state => ({
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  projectSprints: state.Project.project.sprints
 });
 
 export default connect(

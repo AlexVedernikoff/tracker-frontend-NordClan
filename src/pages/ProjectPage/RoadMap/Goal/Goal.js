@@ -11,6 +11,7 @@ import styles from './Goal.scss';
 
 class Sprint extends Component {
   static propTypes = {
+    editGoal: PropTypes.func,
     item: PropTypes.shape({
       id: PropTypes.number,
       name: PropTypes.string
@@ -52,7 +53,7 @@ class Sprint extends Component {
           {!removedToSprint && (
             <span className={styles.actionButtons}>
               <IconPlus className={styles.actionIcon} data-tip="Добавить задачу в цель" />
-              <IconEdit className={styles.actionIcon} data-tip="Изменить цель" />
+              <IconEdit className={styles.actionIcon} data-tip="Изменить цель" onClick={this.props.editGoal} />
               <IconDelete className={styles.actionIcon} data-tip="Удалить цель" />
               <IconArrowRight className={styles.actionIcon} data-tip="Перенести в следующий спринт" />
             </span>

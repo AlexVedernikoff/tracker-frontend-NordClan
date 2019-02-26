@@ -3,6 +3,7 @@ import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
+import { gettingProjectSprintsSuccess } from './Project';
 
 const startGoalsReceive = () => ({
   type: GoalsActions.GOALS_RECEIVE_START
@@ -51,7 +52,23 @@ export const create = data => {
     dispatch({ type: GoalsActions.CREATE_GOAL_START });
     axios
       .post(URL, data)
-      .then(response => dispatch({ type: GoalsActions.CREATE_GOAL, response }))
-      .catch(error => dispatch({ type: GoalsActions.CREATE_GOAL_ERROR, error }));
+      .then(response => {
+        dispatch({ type: GoalsActions.CREATE_GOAL, response });
+        // dispatch(getGoalsByProject(2));
+      })
+      .catch(error => dispatch(showNotification({ message: error.message, type: 'error' })));
+  };
+};
+
+export const edit = data => {
+  const URL = `${API_URL}/goal/${data.sprintId}`;
+  return dispatch => {
+    dispatch({ type: GoalsActions.EDIT_GOAL_START });
+    axios
+      .put(URL, data)
+      .then(response => {
+        dispatch({ type: GoalsActions.EDIT__GOAL, data: response.data });
+      })
+      .catch(error => dispatch(showNotification({ message: error.message, type: 'error' })));
   };
 };

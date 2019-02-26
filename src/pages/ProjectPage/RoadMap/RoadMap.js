@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { create } from '../../../actions/Goals';
+import { create, edit, getGoalsByProject } from '../../../actions/Goals';
+import { getProjectInfo } from '../../../actions/Project';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import Sprint from './Sprint';
@@ -9,19 +10,20 @@ import Task from './Task';
 
 class RoadMap extends Component {
   static propTypes = {
+    isSuccessAddGoal: PropTypes.bool,
+    lang: PropTypes.string,
     project: PropTypes.object,
     sprints: PropTypes.array.isRequired
   };
 
   state = {
     activePage: new Date().getFullYear(),
-    isErrorCreateGoal: null
+    isSuccessAddGoal: false
   };
 
   componentWillReceiveProps(nextProps) {
-    const { isErrorCreateGoal = null } = nextProps;
-    console.log('componentWillReceiveProps', nextProps);
-    this.setState({ isErrorCreateGoal });
+    const { isSuccessAddGoal } = nextProps;
+    this.setState({ isSuccessAddGoal });
   }
 
   handlePaginationClick = ({ activePage }) => this.setState({ activePage });
@@ -29,8 +31,9 @@ class RoadMap extends Component {
   filteredByYear = date => +moment(date).format('YYYY') === this.state.activePage;
 
   render() {
-    const { activePage, isErrorCreateGoal } = this.state;
+    const { activePage, isSuccessAddGoal } = this.state;
     const {
+      lang,
       sprints,
       project: { createdAt, completedAt }
     } = this.props;
@@ -38,18 +41,19 @@ class RoadMap extends Component {
     const createdYear = +moment(createdAt).format('YYYY');
     const completedYear = +moment(completedAt || new Date()).format('YYYY');
     const rangeTimeline = { globalStart: activePage, globalEnd: activePage };
-
     return (
       <div>
         {sprints
           .filter(sprint => this.filteredByYear(sprint.factStartDate) || this.filteredByYear(sprint.factFinishDate))
           .map(sprint => (
             <Sprint
+              isSuccessAddGoal={isSuccessAddGoal}
               key={sprint.id}
               item={sprint}
+              lang={lang}
               create={this.props.create}
+              edit={this.props.edit}
               {...rangeTimeline}
-              isErrorCreateGoal={isErrorCreateGoal}
             />
           ))}
         <Pagination
@@ -66,12 +70,17 @@ class RoadMap extends Component {
 }
 
 const mapStateToProps = state => ({
+  lang: state.Localize.lang,
   sprints: state.Project.project.sprints,
-  project: state.Project.project
+  project: state.Project.project,
+  isSuccessAddGoal: state.Goals.isSuccess
 });
 
 const mapDispatchToProps = {
-  create
+  create,
+  edit,
+  getGoalsByProject,
+  getProjectInfo
 };
 
 export default connect(

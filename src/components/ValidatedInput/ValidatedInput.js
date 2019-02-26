@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
+import TextArea from '../../components/TextArea';
 import * as css from '../Input/Input.scss';
 import * as validateCss from './ValidatedInput.scss';
 
@@ -20,6 +21,12 @@ class ValidatedInput extends Component {
       isFocused: false
     };
   }
+
+  componentDidMount = () => {
+    if (this.props.onRef) {
+      this.props.onRef(this.elemRef);
+    }
+  };
 
   componentWillReceiveProps(nextProps) {
     if (this.state.isError !== nextProps.shouldMarkError) {
@@ -48,6 +55,7 @@ class ValidatedInput extends Component {
         <input
           type="text"
           {...other}
+          ref={elem => (this.elemRef = elem)}
           onBlur={this.removeFocus}
           onFocus={this.onFocus}
           className={classnames(css.input, {
@@ -65,6 +73,17 @@ class ValidatedInput extends Component {
             error: (isError || backendErrorText) && !isFocused
           })}
         />
+      ),
+      textarea: (
+        <TextArea
+          {...other}
+          ref={elem => (this.elemRef = elem)}
+          onBlur={this.removeFocus}
+          onFocus={this.onFocus}
+          className={classnames(css.input, {
+            [css.inputError]: (isError || backendErrorText) && !isFocused
+          })}
+        />
       )
     };
 
@@ -78,7 +97,7 @@ class ValidatedInput extends Component {
     return (
       <div className={validateCss.fullWrapper}>
         {this.elem}
-        {isError && !isFocused && <span className={css.message}>{errorText}</span>}
+        {isError && !isFocused && <span className={classnames(css.message, css.error)}>{errorText}</span>}
         {backendErrorText && !isFocused && <span>{backendErrorText}</span>}
       </div>
     );

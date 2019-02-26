@@ -60,6 +60,7 @@ export default class AttachedImage extends React.Component {
     return (
       <li
         className={css.attachment}
+        data-attachment-id={this.props.id}
         onClick={() => {
           open(index);
         }}

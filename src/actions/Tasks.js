@@ -42,6 +42,9 @@ const requestTasksChange = () => ({
 const getTasks = (options, onlyTaskListUpdate = false) => {
   const URL = `${API_URL}/task`;
   options.queryId = Date.now().toString();
+  if (options.isDevOps && (options.performerId === null || options.performerId.length === 0)) {
+    options.performerId = 0;
+  }
   const generateConfig = dispatch => ({
     reqConfig: {
       method: 'GET',

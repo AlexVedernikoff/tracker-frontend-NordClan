@@ -19,6 +19,7 @@ import { getFullName } from '../../utils/NameLocalisation';
 import { storageType } from '../FiltrersManager/helpers';
 import { isOnlyDevOps } from '../../utils/isDevOps';
 import { checkIsAdminInProject } from '../../utils/isAdmin';
+import { BACKLOG_ID } from '../../constants/Sprint';
 
 const storage = storageType === 'local' ? localStorage : sessionStorage;
 
@@ -39,9 +40,9 @@ class AgileBoardFilter extends React.Component {
   componentDidUpdate = prevProps => {
     ReactTooltip.rebuild();
 
-    const { currentSprint } = this.props;
+    const { currentSprint, isProjectInfoReceiving } = this.props;
 
-    if (this.isActiveSprintsChanged) {
+    if (!isProjectInfoReceiving && prevProps.isProjectInfoReceiving && this.isActiveSprintsChanged) {
       this.props.setFilterValue('changedSprint', currentSprint.map(s => s.value), this.updateFilterList);
     }
 
@@ -74,7 +75,7 @@ class AgileBoardFilter extends React.Component {
     const isSprintFilterChanged = +storage.getItem('sprintFilterChanged');
 
     return (
-      !this.isSprintFilterEmpty &&
+      this.isSprintFilterEmpty &&
       currentSprint &&
       currentSprint.length &&
       !isEqual(currentSprint.map(s => s.value), filters.changedSprint) &&
@@ -90,15 +91,13 @@ class AgileBoardFilter extends React.Component {
       !this.isSprintFilterEmpty &&
       currentSprint &&
       !currentSprint.length &&
-      filters.changedSprint[0] !== 0 &&
+      !filters.changedSprint.filter(sprint => sprint !== BACKLOG_ID).length &&
       !isSprintFilterChanged
     );
   }
 
   get isSprintFilterEmpty() {
-    const {
-      filters: { changedSprint }
-    } = this.props;
+    const changedSprint = this.props.filters.changedSprint.filter(item => item !== BACKLOG_ID);
     return !changedSprint.length;
   }
 

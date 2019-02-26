@@ -52,9 +52,7 @@ class SetAssociationForm extends Component {
       const associations = {};
       this.sortJiraData(jiraAssociations);
       this.props.setAssociation(associations, jiraAssociations, this.state.currentStep);
-      console.log('jiraAssociations', jiraAssociations);
     } catch (e) {
-      console.log(e);
       defaultErrorHandler(e);
     }
   }
@@ -164,8 +162,11 @@ class SetAssociationForm extends Component {
   };
 
   createAssociation = value => {
-    const { associationType, createAssociation, oneToOne } = this.associationConfig[this.state.currentStep];
-    const associations = [...this.props.associationState[associationType]];
+    const { associationType, createAssociation, oneToOne, externalAssociationKey, jiraKey } = this.associationConfig[
+      this.state.currentStep
+    ];
+    let associations = [...this.props.associationState[associationType]];
+    const { selectedJiraCol } = this.props.associationState;
 
     const foundAssociationIndex = oneToOne
       ? this.findAssociationForSelectedSimtrackCol(value)
@@ -173,6 +174,12 @@ class SetAssociationForm extends Component {
 
     if (foundAssociationIndex !== -1) {
       associations.splice(foundAssociationIndex, 1);
+    }
+
+    if (oneToOne && selectedJiraCol) {
+      associations = associations.filter(association => {
+        return association[externalAssociationKey] !== selectedJiraCol[jiraKey];
+      });
     }
 
     const newAssociation = createAssociation(this.props.associationState.selectedJiraCol, value);
@@ -229,7 +236,6 @@ class SetAssociationForm extends Component {
   renderJiraRow(entity) {
     const { jiraKey, jiraDisplayField } = this.associationConfig[this.state.currentStep];
     const id = entity[jiraKey];
-    console.log('id', id);
 
     return (
       <tr key={id} onClick={this.selectJiraCol(entity)}>

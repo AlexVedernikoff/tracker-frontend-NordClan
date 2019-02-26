@@ -18,7 +18,7 @@ import * as css from './TaskCard.scss';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import localize from './TaskCore.json';
-import { getFullName } from '../../utils/NameLocalisation';
+import { getFullName, notFoundEn, notFoundRu } from '../../utils/NameLocalisation';
 
 const taskCardSource = {
   beginDrag(props) {
@@ -152,7 +152,11 @@ class TaskCore extends PureComponent {
     } = this.props;
 
     const prefix = task.prefix ? task.prefix : this.getPrefixFromProject();
-    const performer = getFullName(this.getUserFromProject(task.performerId));
+    let performer = getFullName(this.getUserFromProject(task.performerId));
+
+    if (performer === notFoundEn || performer === notFoundRu) {
+      performer = getFullName(this.props.task.performer);
+    }
 
     return connectDragSource(
       <div

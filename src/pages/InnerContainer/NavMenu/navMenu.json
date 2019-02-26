@@ -4,13 +4,15 @@
     "EXTERNAL_USERS": "External users",
     "TIMESHEETS": "Time reports",
     "MY_PROJECTS": "My projects",
-    "MY_TASKS": "My tasks"
+    "MY_TASKS": "My tasks",
+    "MY_TASKS_DEVOPS": "Tasks DevOps"
   },
   "ru": {
     "USERS": "Пользователи",
     "EXTERNAL_USERS": "Внешние пользователи",
     "TIMESHEETS": "Отчеты по времени",
     "MY_PROJECTS": "Мои проекты",
-    "MY_TASKS": "Мои задачи"
+    "MY_TASKS": "Мои задачи",
+    "MY_TASKS_DEVOPS": "Задачи DevOps"
   }
 }

@@ -6,6 +6,7 @@ import { history } from '../../../../../History';
 import { updateDraft, updateTimesheet } from '../../../../../actions/TimesheetPlayer';
 import debounce from 'lodash/debounce';
 import find from 'lodash/find';
+import get from 'lodash/get';
 import * as css from '../Playlist.scss';
 import * as timesheetsConstants from '../../../../../constants/Timesheets';
 import getMaIcon from '../../../../../constants/MagicActivityIcons';
@@ -113,6 +114,17 @@ class PlaylistItem extends Component {
     return activity ? localize[lang][activity.codename] : localize[lang].UNDEFINED;
   };
 
+  getSprintName = () => {
+    const { task, sprint } = this.props.item;
+    const defaultSprint = 'Backlog';
+
+    if (task) {
+      return get(task, 'sprint.name') ? task.sprint.name : defaultSprint;
+    }
+
+    return get(sprint, 'name') ? sprint.name : defaultSprint;
+  };
+
   goToDetailPage = () => {
     const { task, project } = this.props.item;
     if (task) {
@@ -132,7 +144,6 @@ class PlaylistItem extends Component {
       taskStatus: createDraftStatus,
       isDraft,
       isVisible,
-      sprint,
       statusId,
       spentTime
     } = this.props.item;
@@ -166,11 +177,7 @@ class PlaylistItem extends Component {
             <div className={css.meta}>
               {task && task.prefix ? <span>{task.prefix}</span> : null}
               <span className={css.proName}>{project ? project.name : localize[lang].WITHOUT_PROJECT}</span>
-              {task ? (
-                <span>{task.sprint && task.sprint.name ? task.sprint.name : 'Backlog'}</span>
-              ) : (
-                <span>{sprint && sprint.name ? sprint.name : 'Backlog'}</span>
-              )}
+              <span title={this.getSprintName()}>{this.getSprintName()}</span>
               {status ? (
                 <span>
                   {createDraftStatus ? (
@@ -217,7 +224,7 @@ class PlaylistItem extends Component {
             </div>
             <div className={classnames(css.taskName, css.listItem)}>
               {taskLabel ? <span>{taskLabel}</span> : null}
-              {taskName}
+              <span title={taskName}>{taskName}</span>
             </div>
           </div>
           <div className={css.phoneVisibleToggle}>

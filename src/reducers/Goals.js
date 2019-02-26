@@ -3,8 +3,10 @@ import * as GoalsActions from '../constants/Goals';
 const InitialState = {
   goals: [],
   isReceiving: false,
-  isSuccessCreate: false,
-  isErrorCreateGoal: null
+  isFetching: false,
+  isSuccess: false,
+  errorCreateGoal: [],
+  errorsMessage: {}
 };
 
 function Goals(state = InitialState, action) {
@@ -27,11 +29,13 @@ function Goals(state = InitialState, action) {
         ...InitialState
       };
 
+    case GoalsActions.EDIT_GOAL_START:
     case GoalsActions.CREATE_GOAL_START:
       return {
         ...state,
-        isSuccessCreate: false,
-        isErrorCreateGoal: null
+        isFetching: true,
+        isSuccess: false,
+        errorCreateGoal: []
       };
 
     case GoalsActions.CREATE_GOAL:
@@ -40,17 +44,33 @@ function Goals(state = InitialState, action) {
       return {
         ...state,
         goals,
-        isSuccessCreate: true,
-        isErrorCreateGoal: null
+        isFetching: false,
+        isSuccess: true,
+        errorCreateGoal: []
       };
 
     case GoalsActions.CREATE_GOAL_ERROR:
+      const errorsMessage = {};
+      action.error.forEach(item => {
+        errorsMessage[item.type] = item.msg;
+      });
       return {
         ...state,
-        isSuccessCreate: false,
-        isErrorCreateGoal: action.error
+        isFetching: false,
+        isSuccess: false,
+        errorCreateGoal: errorsMessage
       };
 
+    case GoalsActions.EDIT__GOAL:
+      const { data } = action;
+      console.log('data', data);
+      return {
+        ...state,
+        goals: state.goals.map(goal => (goal.id === data.id ? data : goal)),
+        isFetching: false,
+        isSuccess: true,
+        errorCreateGoal: []
+      };
     default:
       return state;
   }

@@ -5,6 +5,7 @@
 }
 
 .headerColumn {
+  position: relative;
   display: flex;
   margin-bottom: 1rem;
 
@@ -25,6 +26,22 @@
       margin-bottom: 1rem;
       width: auto;
       max-width: none;
+    }
+  }
+  .sprintTimeWrapper {
+    pointer-events: none;
+    position: absolute;
+    top: 5px;
+    right: 200px;
+
+    .sprintTime {
+      display: block;
+      text-align: right;
+      line-height: 1rem;
+      margin: 4px 0 14px;
+      @include phone {
+        display: none;
+      }
     }
   }
 }

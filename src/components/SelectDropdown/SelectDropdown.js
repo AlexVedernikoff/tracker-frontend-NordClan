@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
+import { Option, Value } from './CustomComponents';
 import './SelectDropdown.css';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -61,6 +62,16 @@ class SelectDropdown extends Component {
     this.setState({ isHovered: false });
   }
 
+  isEmpty = value => {
+    if (typeof value === 'object') {
+      return isEmpty(value);
+    } else if (value === 0) {
+      return false;
+    } else {
+      return !value;
+    }
+  };
+
   render() {
     const { name, options, thisClassName, lang, canClear, ...other } = this.props;
     return (
@@ -72,11 +83,13 @@ class SelectDropdown extends Component {
           noResultsText={localize[lang].NO_RESULTS}
           onFocus={e => e.stopPropagation()}
           clearValueText={localize[lang].CLEAR}
+          valueComponent={Value}
+          optionComponent={Option}
           {...other}
         />
 
         {canClear &&
-          !isEmpty(other.value) &&
+          !this.isEmpty(other.value) &&
           this.state.isHovered && (
             <span className="ClearValue" onClick={() => this.onClear()}>
               ×

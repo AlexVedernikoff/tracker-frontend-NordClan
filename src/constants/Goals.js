@@ -4,3 +4,5 @@ export const CLEAR_GOALS = 'CLEAR_GOALS';
 export const CREATE_GOAL_START = 'CREATE_GOAL_START';
 export const CREATE_GOAL = 'CREATE_GOAL';
 export const CREATE_GOAL_ERROR = 'CREATE_GOAL_ERROR';
+export const EDIT_GOAL_START = 'EDIT_GOAL_START';
+export const EDIT__GOAL = 'EDIT__GOAL';

@@ -398,7 +398,7 @@ const changeProject = (changedProperties, target) => {
     dispatch(startProjectChange());
     dispatch(startLoading());
 
-    axios
+    return axios
       .put(URL, changedProperties, {
         withCredentials: true
       })
@@ -410,15 +410,16 @@ const changeProject = (changedProperties, target) => {
         dispatch(finishLoading());
       })
       .catch(error => {
+        dispatch(finishLoading());
         if (error.response.data.name === 'ValidationError') {
           dispatch(projectChangeFailValidation(error.response.data));
+          throw error.response.data;
         } else {
           const errorCode = error.response.data.message;
           const message = localize[langSelector(getState())][errorCode] || errorCode || error.message;
 
           dispatch(showNotification({ message, type: 'error' }));
         }
-        dispatch(finishLoading());
       });
   };
 };

@@ -28,6 +28,7 @@ import Title from 'react-title-component';
 import TypeFilter from './TypeFilter';
 import { IconPreloader } from '../../components/Icons';
 import InlineHolder from '../../components/InlineHolder';
+import ScrollTop from '../../components/ScrollTop';
 
 import 'moment/locale/ru';
 
@@ -475,6 +476,7 @@ class Projects extends Component {
           onTypeSelect={this.handleModalTypeSelected}
           selectedType={this.state.selectedType}
         />
+        <ScrollTop />
       </div>
     );
   }
