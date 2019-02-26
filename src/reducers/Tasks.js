@@ -1,6 +1,7 @@
 import * as TasksActions from '../constants/Tasks';
 import * as TaskActions from '../constants/Task';
 import * as ProjectActions from '../constants/Project';
+import { isEmpty } from 'lodash';
 
 const InitialState = {
   tasks: [],
@@ -41,15 +42,72 @@ function Tasks(state = InitialState, action) {
       };
 
     case TaskActions.TASK_CHANGE_REQUEST_SUCCESS:
-      const tasks = state.tasks.map(
-        task =>
-          task.id === action.changedFields.id
-            ? {
-                ...task,
-                ...action.changedFields
+      const tasksToUpdate = {};
+      const addTaskToUpdate = (tasks, connectionType) => {
+        tasks.forEach(task => {
+          tasksToUpdate[task.id] = connectionType;
+        });
+      };
+
+      if (Array.isArray(action.changedFields.linkedTasks)) {
+        addTaskToUpdate(action.changedFields.linkedTasks, 'linkedTasks');
+      }
+
+      if (action.changedFields.parentTask) {
+        addTaskToUpdate(action.changedFields.parentTask, 'parentTask');
+      }
+
+      if (Array.isArray(action.changedFields.subTasks)) {
+        addTaskToUpdate(action.changedFields.subTasks, 'subTasks');
+      }
+
+      let tasks = [];
+
+      if (isEmpty(tasksToUpdate)) {
+        tasks = state.tasks.map(
+          task =>
+            task.id === action.changedFields.id
+              ? {
+                  ...task,
+                  ...action.changedFields
+                }
+              : task
+        );
+      } else {
+        tasks = state.tasks.map(task => {
+          if (task.id === action.changedFields.id) {
+            return {
+              ...task,
+              ...action.changedFields
+            };
+          } else if (tasksToUpdate[task.id]) {
+            const key = tasksToUpdate[task.id];
+            if (Array.isArray(task[key])) {
+              const taskIndex = task[key].findIndex(t => (t.id = action.changedFields.id));
+              if (taskIndex !== -1) {
+                return {
+                  ...task,
+                  [key]: [
+                    ...task[key].slice(0, taskIndex),
+                    { ...task[key], ...action.changedFields },
+                    ...task[key].slice(taskIndex + 1)
+                  ]
+                };
               }
-            : task
-      );
+            } else if (task[key]) {
+              return {
+                ...task,
+                [key]: {
+                  ...task[key],
+                  ...action.changedFields
+                }
+              };
+            }
+          }
+
+          return task;
+        });
+      }
 
       return {
         ...state,
