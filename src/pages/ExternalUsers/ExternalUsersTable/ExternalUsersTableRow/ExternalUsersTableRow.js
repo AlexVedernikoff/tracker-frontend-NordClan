@@ -191,6 +191,7 @@ class ExternalUsersTableRow extends Component {
             isEditing={isEditing}
             onValueChange={this.onEditValues('description')}
             isValid={isValid.description}
+            noLengthConstraints
           />
         </div>
         <div className={classnames(css.TableCell, css.TableCellActivity)}>
