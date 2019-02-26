@@ -44,9 +44,13 @@ function Tasks(state = InitialState, action) {
     case TaskActions.TASK_CHANGE_REQUEST_SUCCESS:
       const tasksToUpdate = {};
       const addTaskToUpdate = (tasks, connectionType) => {
-        tasks.forEach(task => {
-          tasksToUpdate[task.id] = connectionType;
-        });
+        if (Array.isArray(tasks)) {
+          tasks.forEach(task => {
+            tasksToUpdate[task.id] = connectionType;
+          });
+        } else {
+          tasksToUpdate[tasks.id] = connectionType;
+        }
       };
 
       if (Array.isArray(action.changedFields.linkedTasks)) {
@@ -54,11 +58,11 @@ function Tasks(state = InitialState, action) {
       }
 
       if (action.changedFields.parentTask) {
-        addTaskToUpdate(action.changedFields.parentTask, 'parentTask');
+        addTaskToUpdate(action.changedFields.parentTask, 'subTasks');
       }
 
       if (Array.isArray(action.changedFields.subTasks)) {
-        addTaskToUpdate(action.changedFields.subTasks, 'subTasks');
+        addTaskToUpdate(action.changedFields.subTasks, 'parentTask');
       }
 
       let tasks = [];
@@ -89,7 +93,7 @@ function Tasks(state = InitialState, action) {
                   ...task,
                   [key]: [
                     ...task[key].slice(0, taskIndex),
-                    { ...task[key], ...action.changedFields },
+                    { ...task[key][taskIndex], ...action.changedFields },
                     ...task[key].slice(taskIndex + 1)
                   ]
                 };
