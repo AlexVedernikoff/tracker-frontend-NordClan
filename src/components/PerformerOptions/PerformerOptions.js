@@ -200,6 +200,7 @@ class PerformerOptions extends Component {
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   <SelectDropdown
+                    autoFocus
                     name="performer"
                     placeholder={localize[lang].PERFORMER_PLACEHOLDER}
                     multi={false}
