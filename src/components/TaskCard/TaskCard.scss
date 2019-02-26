@@ -14,11 +14,9 @@
   transition-duration: 0.2s;
   background-color: white;
   cursor: grab;
-
   &:hover {
     border-color: darken($color-gray, 10%);
   }
-
   .priorityMarker {
     content: '';
     display: block;
@@ -72,11 +70,13 @@
 
 .taskName {
   display: inline-block;
+  width: 100%;
   margin-bottom: 8px;
   word-break: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
   @include link-reset;
   transition: $transition;
-
   &:hover {
     color: lighten($color-dark, 30%);
     transition: $transition;
@@ -85,7 +85,6 @@
 
 .taskNum {
   transition: $transition;
-
   &:hover {
     color: lighten($color-dark, 30%);
     transition: $transition;
@@ -217,7 +216,6 @@ svg.red {
 .unassigned {
   color: lighten($color-black, 40%);
   border-bottom: 1px lighten($color-black, 40%) dashed;
-
   &:hover {
     color: lighten($color-dark, 30%);
     transition: $transition;
@@ -227,17 +225,14 @@ svg.red {
 .performer {
   cursor: pointer;
   transition: $transition;
-
   &:hover {
     color: lighten($color-dark, 30%);
     transition: $transition;
-
     .preformerEditIcon {
       opacity: 0.7;
       transition: $transition;
     }
   }
-
   .preformerEditIcon {
     opacity: 0;
     display: inline-block;
@@ -249,7 +244,6 @@ svg.red {
 }
 
 // Related tasks =>
-
 .parentTask,
 .subTask,
 .linkedTask {
@@ -261,7 +255,6 @@ svg.red {
   border: 1px solid darken($color-gray, 10%);
   transition: $transition;
   cursor: pointer;
-
   &:hover,
   &.lighted {
     background-color: darken($color-lightgray, 5%);
@@ -273,6 +266,7 @@ svg.red {
 .linkedTask {
   margin-top: -1px;
 }
+
 .parentTask {
   margin-bottom: -1px;
 }
@@ -280,6 +274,7 @@ svg.red {
 .subTask {
   margin-left: 0.5rem;
 }
+
 .parentTask {
   margin-left: -0.5rem;
 }
@@ -292,7 +287,6 @@ svg.red {
 
 .shortNumber {
   color: $color-dark-gray;
-
   &:hover {
     color: lighten($color-dark, 30%);
   }
@@ -300,7 +294,6 @@ svg.red {
 
 .relatedTaskName {
   text-decoration: none;
-
   &:hover {
     text-decoration: underline;
   }
@@ -313,6 +306,7 @@ svg.red {
 .lightedCard {
   background-color: black;
 }
+
 .subTasksButton {
   cursor: pointer;
   position: relative;
@@ -337,23 +331,25 @@ svg.red {
     transition: transform 0.3s;
   }
 }
+
 .subTasksButtonClose {
   svg {
     transform: rotate(0deg);
     transition: transform 0.3s;
   }
 }
+
 .subTasksBlock {
   max-height: 0;
   transition: 0.2s;
   overflow: hidden;
 }
+
 .subTasksShow {
   max-height: 500px;
 }
 
 $borderOffset: -0.25rem;
-
 @keyframes lightedBorderRise {
   from {
     transform: scale(1.2, 1.3);
