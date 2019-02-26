@@ -912,11 +912,13 @@ class TaskList extends Component {
                 />
               ))}
           {!isLoading && tasks.length === 0 ? <div className={css.notFound}>{localize[lang].NOTHING_FOUND}</div> : null}
-          <Pagination
-            itemsCount={this.props.pagesCount}
-            activePage={this.state.activePage}
-            onItemClick={this.handlePaginationClick}
-          />
+          {tasks.length > 0 && (
+            <Pagination
+              itemsCount={this.props.pagesCount}
+              activePage={this.state.activePage}
+              onItemClick={this.handlePaginationClick}
+            />
+          )}
         </section>
         {this.state.isPerformerModalOpen ? (
           <PerformerModal
