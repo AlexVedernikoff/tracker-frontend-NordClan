@@ -3,7 +3,6 @@ import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
-import { gettingProjectSprintsSuccess } from './Project';
 
 const startGoalsReceive = () => ({
   type: GoalsActions.GOALS_RECEIVE_START
@@ -54,7 +53,6 @@ export const create = data => {
       .post(URL, data)
       .then(response => {
         dispatch({ type: GoalsActions.CREATE_GOAL, response });
-        // dispatch(getGoalsByProject(2));
       })
       .catch(error => dispatch(showNotification({ message: error.message, type: 'error' })));
   };
