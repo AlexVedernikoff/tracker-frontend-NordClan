@@ -6,7 +6,7 @@
   },
   "ru": {
     "JIRA_SYNHRONIZE_AUTHORIZATION": "Авторизация",
-    "JIRA_SYNHRONIZE_CONFIRM": "Хотите синхронизировать данные проектов?",
-    "JIRA_SYNHRONIZE": "Подтверждение синхронизации"
+    "JIRA_SYNHRONIZE": "Хотите синхронизировать данные проектов?",
+    "JIRA_SYNHRONIZE_CONFIRM": "Подтверждение синхронизации"
   }
 }

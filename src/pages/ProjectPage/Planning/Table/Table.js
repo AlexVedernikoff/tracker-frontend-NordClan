@@ -129,6 +129,8 @@ class Table extends React.Component {
         })}
       >
         <span
+          data-tip={sprint.name}
+          data-place="bottom"
           className={classnames({
             [css.selection]: true
           })}
