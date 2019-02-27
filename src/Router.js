@@ -117,7 +117,7 @@ class AppRouter extends Component {
           <Route path="projects" component={Projects} />
           <Route path="externalUsers" component={ExternalUsers} onEnter={this.requareAdmin} />
           <Route path="projects/:projectId" component={ProjectPage} scrollToTop>
-            <IndexRoute component={AgileBoard} />
+            <IndexRoute component={AgileBoard} fullHeight />
             <Route path="info" component={Info} />
             <Route path="property" component={Settings} />
             <Route path="planning" component={Planning} />
