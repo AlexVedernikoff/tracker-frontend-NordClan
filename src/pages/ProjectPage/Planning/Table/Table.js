@@ -101,7 +101,7 @@ class Table extends React.Component {
     const { entities, lang } = this.props;
 
     if (!entities.length) {
-      return null;
+      return <div className={css.sprintNames} />;
     }
 
     return (
