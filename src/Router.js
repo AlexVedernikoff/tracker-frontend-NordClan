@@ -112,8 +112,13 @@ class AppRouter extends Component {
           <Route path="dashboard" component={Dashboard} />
           <Route path="timesheets" component={Timesheets} onEnter={this.notExternal} />
           <Route path="roles" component={UsersRoles} onEnter={this.requareAdmin} />
-          <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
-          <Route path="tasks-devops" component={MyTaskDevOps} onLeave={this.props.clearCurrentProjectAndTasks} />
+          <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} fullHeight />
+          <Route
+            path="tasks-devops"
+            component={MyTaskDevOps}
+            onLeave={this.props.clearCurrentProjectAndTasks}
+            fullHeight
+          />
           <Route path="projects" component={Projects} />
           <Route path="externalUsers" component={ExternalUsers} onEnter={this.requareAdmin} />
           <Route path="projects/:projectId" component={ProjectPage} scrollToTop>

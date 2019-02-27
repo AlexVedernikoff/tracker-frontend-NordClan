@@ -102,3 +102,12 @@
     flex-grow: 1;
   }
 }
+
+.agileBoard,
+.boardContainer {
+  @include fullHeight;
+}
+
+.agileBoardRow {
+  flex-grow: 1;
+}
