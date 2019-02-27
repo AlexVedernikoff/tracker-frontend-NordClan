@@ -142,8 +142,8 @@ class PerformerOptions extends Component {
     }
     return [
       { id: 'all', fullNameEn: localize.en.ALL, fullNameRu: localize.ru.ALL },
-      ...projectUsers.map(u => u.user),
-      ...externalUsers.map(u => u.user)
+      ...(Array.isArray(projectUsers) && projectUsers.map(u => u.user)),
+      ...(Array.isArray(externalUsers) && externalUsers.map(u => u.user))
     ];
   }
 
