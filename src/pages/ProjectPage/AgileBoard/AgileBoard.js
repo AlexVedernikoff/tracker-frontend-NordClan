@@ -116,7 +116,7 @@ class AgileBoard extends Component {
         task.statusId,
         phase,
         undefined,
-        undefined,
+        taskProps.isDevOps,
         isTshAndCommentsHidden
       );
     } else {
