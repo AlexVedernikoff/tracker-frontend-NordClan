@@ -79,6 +79,10 @@
   line-height: 16px;
 }
 
+.Select--canClear .Select-control {
+  padding-right: 20px;
+}
+
 .Select.is-focused {
   border-color: #d8d8d8;
   transition: 0.3s ease-out 0s;
