@@ -12,6 +12,7 @@ class RoadMap extends Component {
   static propTypes = {
     isSuccessAddGoal: PropTypes.bool,
     lang: PropTypes.string,
+    modifyGoalId: PropTypes.number,
     project: PropTypes.object,
     sprints: PropTypes.array.isRequired
   };
@@ -35,7 +36,8 @@ class RoadMap extends Component {
     const {
       lang,
       sprints,
-      project: { createdAt, completedAt }
+      project: { createdAt, completedAt },
+      modifyGoalId
     } = this.props;
 
     const createdYear = +moment(createdAt).format('YYYY');
@@ -51,6 +53,7 @@ class RoadMap extends Component {
               key={sprint.id}
               item={sprint}
               lang={lang}
+              modifyGoalId={modifyGoalId}
               create={this.props.create}
               edit={this.props.edit}
               {...rangeTimeline}
@@ -73,7 +76,8 @@ const mapStateToProps = state => ({
   lang: state.Localize.lang,
   sprints: state.Project.project.sprints,
   project: state.Project.project,
-  isSuccessAddGoal: state.Goals.isSuccess
+  isSuccessAddGoal: state.Goals.isSuccess,
+  modifyGoalId: state.Goals.modifyId
 });
 
 const mapDispatchToProps = {

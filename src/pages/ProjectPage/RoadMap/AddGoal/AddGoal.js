@@ -70,9 +70,11 @@ class AddGoal extends Component {
           name: goalItem.name,
           description: goalItem.description,
           visible: goalItem.visible,
-          plannedExecutionTime: goalItem.plannedExecutionTime
+          plannedExecutionTime: moment.unix(goalItem.plannedExecutionTime * 100).format('DD.MM.YYYY')
         }
       });
+    } else {
+      this.setState({ forms: initState.forms });
     }
     if (!isFetching && isSuccess && !this.state.isClose) {
       this.setState(
@@ -130,12 +132,20 @@ class AddGoal extends Component {
     this.validationCreateGoal(() => {
       if (this.state.isError) return;
       const { forms } = this.state;
-      const { isEdit, edit, create } = this.props;
+      const {
+        isEdit,
+        edit,
+        create,
+        item: { projectId }
+      } = this.props;
+      const plannedExecutionTime = +moment(forms.plannedExecutionTime, 'DD.MM.YYYY').format('X') / 100;
       const data = {
         ...forms,
         sprintId,
-        plannedExecutionTime: moment(forms.plannedExecutionTime).unix()
+        projectId,
+        plannedExecutionTime
       };
+      this.props.closeModal();
       return isEdit ? edit(data) : create(data);
     });
 
@@ -144,7 +154,7 @@ class AddGoal extends Component {
       forms: { name, visible, plannedExecutionTime, description },
       errors
     } = this.state;
-    const { showModal, lang, item, closeModal, isFetching, errorCreateGoal } = this.props;
+    const { showModal, lang, item, closeModal, isFetching, errorCreateGoal, isEdit, goalItem } = this.props;
     return (
       <div>
         <Modal isOpen={showModal} onRequestClose={closeModal} contentLabel="modal">
@@ -219,13 +229,13 @@ class AddGoal extends Component {
                       <ValidatedInput
                         elementType="date"
                         placeholder={localize[lang].PLANNED_EXECUTION_TIME}
-                        value={plannedExecutionTime ? moment.unix(plannedExecutionTime).format('DD.MM.YYYY') : ''}
+                        value={plannedExecutionTime || ''}
                         onBlur={handleBlur}
                         shouldMarkError={shouldMarkError}
                         disabledDataRanges={[{ before: new Date() }]}
                         onDayChange={date =>
                           this.handleChangeGoalForms('plannedExecutionTime')({
-                            target: { value: +moment(date).format('X') }
+                            target: { value: date }
                           })
                         }
                         errorText={errorCreateGoal.plannedExecutionTime || localize[lang].PLANNED_EXECUTION_TIME}
@@ -239,7 +249,7 @@ class AddGoal extends Component {
               <Button
                 text={localize[lang].ADD_GOAL}
                 type="green-lighten"
-                onClick={this.handleAddGoal(item.id)}
+                onClick={this.handleAddGoal(isEdit ? goalItem.id : item.id)}
                 disabled={false}
                 style={{ width: '100%' }}
               />

@@ -19,7 +19,8 @@ class Sprint extends Component {
       id: PropTypes.number,
       name: PropTypes.string
     }),
-    lang: PropTypes.string
+    lang: PropTypes.string,
+    modifyGoalId: PropTypes.number
   };
 
   constructor(props) {
@@ -51,10 +52,12 @@ class Sprint extends Component {
   };
 
   render() {
-    const { item, globalStart, globalEnd, lang } = this.props;
+    const { item, globalStart, globalEnd, lang, modifyGoalId } = this.props;
     const { collapsed, showModal, isEdit, goalItem } = this.state;
 
-    const goals = item.goals.map(goal => <Goal editGoal={this.editGoal(goal)} key={goal.id} item={goal} />);
+    const goals = item.goals.map(goal => (
+      <Goal editGoal={this.editGoal(goal)} key={goal.id} item={goal} modifyGoalId={modifyGoalId} />
+    ));
     const meta = (
       <div className={styles.meta}>
         <div className={styles.metaItem}>{item.budget} ч.</div>

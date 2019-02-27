@@ -24,8 +24,8 @@ class Sprint extends Component {
   }
 
   render() {
-    const { item } = this.props;
-    const { budget, tasksCount, removedFromSprint, removedToSprint } = item;
+    const { item, modifyGoalId } = this.props;
+    const { id, budget, tasksCount, removedFromSprint, removedToSprint } = item;
     const metaProps = {
       budget,
       tasksCount,
@@ -34,8 +34,9 @@ class Sprint extends Component {
       item
     };
 
+    const modifyItem = modifyGoalId === id ? styles.modify : null;
     return (
-      <div className={styles.goal}>
+      <div className={cn(styles.goal, modifyItem)}>
         <div className={styles.mainContainer}>
           {!removedToSprint && <VisibleControl visible={item.visible} />}
           {!removedToSprint && (

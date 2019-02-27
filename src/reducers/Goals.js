@@ -6,7 +6,8 @@ const InitialState = {
   isFetching: false,
   isSuccess: false,
   errorCreateGoal: [],
-  errorsMessage: {}
+  errorsMessage: {},
+  modifyId: null
 };
 
 function Goals(state = InitialState, action) {
@@ -35,18 +36,19 @@ function Goals(state = InitialState, action) {
         ...state,
         isFetching: true,
         isSuccess: false,
-        errorCreateGoal: []
+        errorCreateGoal: [],
+        modifyId: null
       };
 
     case GoalsActions.CREATE_GOAL:
       const { goals } = state;
-      goals.push(action.data);
       return {
         ...state,
-        goals,
+        goals: goals.concat(action.data),
         isFetching: false,
         isSuccess: true,
-        errorCreateGoal: []
+        errorCreateGoal: [],
+        modifyId: action.data.id
       };
 
     case GoalsActions.CREATE_GOAL_ERROR:
@@ -63,13 +65,13 @@ function Goals(state = InitialState, action) {
 
     case GoalsActions.EDIT__GOAL:
       const { data } = action;
-      console.log('data', data);
       return {
         ...state,
         goals: state.goals.map(goal => (goal.id === data.id ? data : goal)),
         isFetching: false,
         isSuccess: true,
-        errorCreateGoal: []
+        errorCreateGoal: [],
+        modifyId: data.id
       };
     default:
       return state;
