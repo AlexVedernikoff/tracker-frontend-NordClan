@@ -212,7 +212,7 @@
     }
   }
   .today {
-    font-size: 16px;
+    font-size: 12px;
     margin-bottom: 0.3rem;
     .input {
       width: 100%;
@@ -230,6 +230,7 @@
       width: 100%;
       border: none;
       text-align: center;
+      font-size: 12px;
       &.filled {
         background: lighten($color-dark, 15%);
         color: rgba(white, 0.7);
