@@ -62,6 +62,11 @@ class Budget extends Component {
   onChangeValue = e => {
     const { percents } = this.props;
     const value = e.target.value;
+
+    if (value.includes(',')) {
+      return;
+    }
+
     if (percents) {
       if (validateNumber(value) && value <= 100) {
         this.setState({
