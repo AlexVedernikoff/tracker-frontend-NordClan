@@ -508,6 +508,7 @@ class Planning extends Component {
                     onEditSubmit={this.onBudgetSubmit}
                     header={localize[lang].WO_RISK_RESERVE}
                     value={budget}
+                    max={riskBudget}
                     isProjectAdmin={isProjectAdmin}
                   />
                   {!!budget && !!riskBudget && <div className={css.riskMarker}>{localize[lang].RISK_RESERVE}</div>}

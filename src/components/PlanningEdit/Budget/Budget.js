@@ -60,7 +60,7 @@ class Budget extends Component {
   };
 
   onChangeValue = e => {
-    const { percents } = this.props;
+    const { percents, max } = this.props;
     const value = e.target.value;
     if (percents) {
       if (validateNumber(value) && value <= 100) {
@@ -69,8 +69,12 @@ class Budget extends Component {
         });
       }
     } else if (validateNumber(value)) {
+      let adjustedValue = value;
+      if (+max && +adjustedValue > +max) {
+        adjustedValue = max;
+      }
       this.setState({
-        value: this.props.integerOnly ? parseInteger(value) : value
+        value: this.props.integerOnly ? parseInteger(adjustedValue) : adjustedValue
       });
     }
   };
@@ -117,6 +121,8 @@ Budget.propTypes = {
   integerOnly: PropTypes.bool,
   isProjectAdmin: PropTypes.bool,
   lang: PropTypes.string,
+  max: PropTypes.number,
+  min: PropTypes.number,
   onEditSubmit: PropTypes.func.isRequired,
   percents: PropTypes.bool,
   value: PropTypes.number
