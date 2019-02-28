@@ -20,7 +20,10 @@ class Sprint extends Component {
       name: PropTypes.string
     }),
     lang: PropTypes.string,
-    modifyGoalId: PropTypes.number
+    modifyGoalId: PropTypes.number,
+    openCreateTaskModal: PropTypes.func,
+    remove: PropTypes.func,
+    transfer: PropTypes.func
   };
 
   constructor(props) {
@@ -51,12 +54,29 @@ class Sprint extends Component {
     });
   };
 
+  removeGoal = id => () => this.props.remove(id, this.item.projectId);
+
+  addTask = goalItem => () => {
+    const { id: goalId, activeSprintId: sprintId } = goalItem;
+    this.props.openCreateTaskModal({ goalId, sprintId });
+  };
+
+  transferGoal = (goalId, createdAt) => () => this.props.transfer(goalId, createdAt);
+
   render() {
     const { item, globalStart, globalEnd, lang, modifyGoalId } = this.props;
     const { collapsed, showModal, isEdit, goalItem } = this.state;
 
     const goals = item.goals.map(goal => (
-      <Goal editGoal={this.editGoal(goal)} key={goal.id} item={goal} modifyGoalId={modifyGoalId} />
+      <Goal
+        key={goal.id}
+        item={goal}
+        addTask={this.addTask(goal)}
+        editGoal={this.editGoal(goal)}
+        removeGoal={this.removeGoal(goal.id)}
+        transferGoal={this.transferGoal(goal.id, item.createdAt)}
+        modifyGoalId={modifyGoalId}
+      />
     ));
     const meta = (
       <div className={styles.meta}>

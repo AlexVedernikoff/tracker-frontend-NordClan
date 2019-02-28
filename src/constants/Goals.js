@@ -6,3 +6,7 @@ export const CREATE_GOAL = 'CREATE_GOAL';
 export const CREATE_GOAL_ERROR = 'CREATE_GOAL_ERROR';
 export const EDIT_GOAL_START = 'EDIT_GOAL_START';
 export const EDIT__GOAL = 'EDIT__GOAL';
+export const REMOVE_GOAL_START = 'REMOVE_GOAL_START';
+export const REMOVE__GOAL = 'REMOVE__GOAL';
+export const TRANSGER_GOAL_START = 'TRANSGER_GOAL_START';
+export const TRANSGER__GOAL = 'TRANSGER__GOAL';

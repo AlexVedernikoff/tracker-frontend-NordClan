@@ -11,11 +11,14 @@ import styles from './Goal.scss';
 
 class Sprint extends Component {
   static propTypes = {
+    addTask: PropTypes.func,
     editGoal: PropTypes.func,
     item: PropTypes.shape({
       id: PropTypes.number,
       name: PropTypes.string
-    })
+    }),
+    removeGoal: PropTypes.func,
+    transferGoal: PropTypes.func
   };
 
   constructor(props) {
@@ -53,10 +56,14 @@ class Sprint extends Component {
           <Meta {...metaProps} />
           {!removedToSprint && (
             <span className={styles.actionButtons}>
-              <IconPlus className={styles.actionIcon} data-tip="Добавить задачу в цель" />
+              <IconPlus className={styles.actionIcon} data-tip="Добавить задачу в цель" onClick={this.props.addTask} />
               <IconEdit className={styles.actionIcon} data-tip="Изменить цель" onClick={this.props.editGoal} />
-              <IconDelete className={styles.actionIcon} data-tip="Удалить цель" />
-              <IconArrowRight className={styles.actionIcon} data-tip="Перенести в следующий спринт" />
+              <IconDelete className={styles.actionIcon} data-tip="Удалить цель" onClick={this.props.removeGoal} />
+              <IconArrowRight
+                className={styles.actionIcon}
+                data-tip="Перенести в следующий спринт"
+                onClick={this.props.transferGoal}
+              />
             </span>
           )}
         </div>
