@@ -279,7 +279,10 @@ class PlaylistItem extends Component {
           </div>
           <div className={classnames({ [css.other]: true, [css.exceeded]: redColorForTime })}>
             <span
-              data-tip={`${roundNum(task.factExecutionTime, 2)}/${roundNum(task.plannedExecutionTime, 2)}`}
+              data-tip={`${roundNum(task && task.factExecutionTime, 2)}/${roundNum(
+                task && task.plannedExecutionTime,
+                2
+              )}`}
               data-place="bottom"
             >
               {task
