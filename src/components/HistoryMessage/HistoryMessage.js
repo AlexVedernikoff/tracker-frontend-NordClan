@@ -95,7 +95,7 @@ export default class HistoryMessage extends React.Component {
       case 'sprint':
       case 'prevSprint':
         return (
-          <Link to={`/projects/${projectId}/sprint${entities[addition].id}/tasks`} key={key}>
+          <Link to={`/projects/${projectId}/tasks?sprintId=${entities[addition].id}`} key={key}>
             {entities[addition].name}
           </Link>
         );
