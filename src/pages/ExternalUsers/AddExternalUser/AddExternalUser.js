@@ -51,8 +51,18 @@ class AddExternalUser extends Component {
     this.setError(field, '', false, false);
   };
   handleDayToChange = date => {
+    let _date;
+    if (!date) {
+      _date = '';
+    } else {
+      _date = moment(date);
+      if (_date.isBefore(new Date(), 'day')) {
+        _date = moment();
+      }
+      _date = _date.format('YYYY-MM-DD');
+    }
     this.setState({
-      expiredDate: date ? moment(date).format('YYYY-MM-DD') : ''
+      expiredDate: _date
     });
   };
   validateEmail = email => {
