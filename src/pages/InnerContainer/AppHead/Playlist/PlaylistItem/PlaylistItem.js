@@ -278,15 +278,23 @@ class PlaylistItem extends Component {
             />
           </div>
           <div className={classnames({ [css.other]: true, [css.exceeded]: redColorForTime })}>
-            <span data-tip={localize[lang].TOTAL_SPENT} data-place="bottom">
-              {task ? roundNum(task.factExecutionTime, 2) : null}
+            <span
+              data-tip={`${roundNum(task.factExecutionTime, 2)}/${roundNum(task.plannedExecutionTime, 2)}`}
+              data-place="bottom"
+            >
+              {task
+                ? Math.trunc(roundNum(task.factExecutionTime, 2)) === roundNum(task.factExecutionTime, 2)
+                  ? roundNum(task.factExecutionTime, 2)
+                  : `~${Math.floor(roundNum(task.factExecutionTime, 2))}`
+                : null}
             </span>
             {task ? (
               <span>
-                {' '}
-                /{' '}
+                /
                 <span data-tip={localize[lang].SCHEDULED} data-place="bottom">
-                  {roundNum(task.plannedExecutionTime, 2)}
+                  {Math.trunc(roundNum(task.plannedExecutionTime, 2)) === roundNum(task.plannedExecutionTime, 2)
+                    ? roundNum(task.plannedExecutionTime, 2)
+                    : Math.floor(roundNum(task.plannedExecutionTime, 2))}
                 </span>
               </span>
             ) : null}
