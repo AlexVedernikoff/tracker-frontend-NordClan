@@ -307,11 +307,12 @@ class TaskList extends Component {
       state => {
         const filterValue = options.map(option => option.value);
         const changedFilters = { ...state.changedFilters };
-
         if (filterValue.length) {
           changedFilters[name] = filterValue;
         } else if (emptyFilters[name] && emptyFilters[name].length) {
           changedFilters[name] = [...emptyFilters[name]];
+        } else if (name === 'sprintId') {
+          changedFilters[name] = [0];
         } else {
           delete changedFilters[name];
         }
