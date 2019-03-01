@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
-import { IconPlus, IconDownload, IconArrowRight, IconArrowDown } from '../../../../components/Icons';
+import { IconPlus, IconEdit, IconDownload, IconArrowRight, IconArrowDown } from '../../../../components/Icons';
 import TimeLine from '../TimeLine';
 import Goal from '../Goal';
 import AddGoal from '../AddGoal/AddGoal';
@@ -13,11 +13,13 @@ class Sprint extends Component {
   static propTypes = {
     create: PropTypes.func,
     edit: PropTypes.func,
+    editSprint: PropTypes.func,
     globalEnd: PropTypes.number,
     globalStart: PropTypes.number,
     item: PropTypes.shape({
       id: PropTypes.number,
-      name: PropTypes.string
+      name: PropTypes.string,
+      projectId: PropTypes.number
     }),
     lang: PropTypes.string,
     modifyGoalId: PropTypes.number,
@@ -54,7 +56,7 @@ class Sprint extends Component {
     });
   };
 
-  removeGoal = id => () => this.props.remove(id, this.item.projectId);
+  removeGoal = id => () => this.props.remove(id);
 
   addTask = goalItem => () => {
     const { id: goalId, activeSprintId: sprintId } = goalItem;
@@ -62,6 +64,8 @@ class Sprint extends Component {
   };
 
   transferGoal = (goalId, createdAt) => () => this.props.transfer(goalId, createdAt);
+
+  hanldeEditSprint = () => this.props.editSprint(this.props.item);
 
   render() {
     const { item, globalStart, globalEnd, lang, modifyGoalId } = this.props;
@@ -85,6 +89,7 @@ class Sprint extends Component {
         <div className={styles.metaItem}>{item.qaPercent}% на QA</div>
         <div className={`${styles.metaItem}, ${styles.export}`}>
           <IconDownload data-tip="Выгрузить спринт" />
+          <IconEdit className={styles.actionIcon} data-tip="Редактировать цель" onClick={this.hanldeEditSprint} />
         </div>
       </div>
     );

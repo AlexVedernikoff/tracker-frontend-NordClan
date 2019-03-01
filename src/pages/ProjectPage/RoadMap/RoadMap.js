@@ -2,15 +2,20 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { create, edit, remove, transfer, getGoalsByProject } from '../../../actions/Goals';
 import { getProjectInfo, openCreateTaskModal } from '../../../actions/Project';
+import { editSprint } from '../../../actions/Sprint';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import Sprint from './Sprint';
 import CreateTaskModal from '../../../components/CreateTaskModal';
 import Pagination from '../../../components/Pagination';
+import ConfirmModal from '../../../components/ConfirmModal';
+import SprintEditModal from '../../../components/SprintEditModal';
 import Task from './Task';
+import localize from './RoadMap.json';
 
 class RoadMap extends Component {
   static propTypes = {
+    editSprint: PropTypes.func,
     isCreateTaskModalOpen: PropTypes.bool,
     isSuccessAddGoal: PropTypes.bool,
     lang: PropTypes.string,
@@ -22,8 +27,11 @@ class RoadMap extends Component {
 
   state = {
     activePage: new Date().getFullYear(),
+    isConfirmDeleteGoal: false,
     isSuccessAddGoal: null,
-    goalId: null
+    isOpenSprintEditModal: false,
+    goalId: null,
+    sprint: {}
   };
 
   componentWillReceiveProps(nextProps) {
@@ -50,6 +58,33 @@ class RoadMap extends Component {
     }
   };
 
+  handleSetRemoveGoal = goalId => this.setState({ goalId, isConfirmDeleteGoal: true });
+
+  handleRemoveGoal = () => {
+    this.setState({ isConfirmDeleteGoal: false });
+    this.props.remove(this.state.goalId, this.props.project.id);
+  };
+
+  editSprint = sprint => {
+    this.editSprint.data = sprint;
+    this.setState({ isOpenSprintEditModal: true });
+  };
+
+  handleEditSprint = sprint => {
+    this.setState({ isOpenSprintEditModal: false });
+    console.log('handleEditSprint');
+    this.props.editSprint(
+      sprint.id,
+      null,
+      sprint.sprintName.trim(),
+      sprint.dateFrom,
+      sprint.dateTo,
+      sprint.budget,
+      sprint.riskBudget,
+      sprint.qaPercent
+    );
+  };
+
   render() {
     const { activePage, isSuccessAddGoal, sprintId, goalId } = this.state;
     const {
@@ -58,7 +93,6 @@ class RoadMap extends Component {
       project: { createdAt, completedAt },
       modifyGoalId
     } = this.props;
-
     const createdYear = +moment(createdAt).format('YYYY');
     const completedYear = +moment(completedAt || new Date()).format('YYYY');
     const rangeTimeline = { globalStart: activePage, globalEnd: activePage };
@@ -75,9 +109,10 @@ class RoadMap extends Component {
               modifyGoalId={modifyGoalId}
               create={this.props.create}
               edit={this.props.edit}
-              remove={this.props.remove}
+              remove={this.handleSetRemoveGoal}
               openCreateTaskModal={this.openCreateTaskModal}
               transfer={this.transfer}
+              editSprint={this.editSprint}
               {...rangeTimeline}
             />
           ))}
@@ -91,6 +126,24 @@ class RoadMap extends Component {
         <Task />
         {goalId && this.props.isCreateTaskModalOpen ? (
           <CreateTaskModal selectedSprintValue={sprintId} project={this.props.project} goalId={goalId} />
+        ) : null}
+        {this.state.isOpenSprintEditModal ? (
+          <SprintEditModal
+            project={this.props.project}
+            sprint={this.editSprint.data}
+            handleEditSprint={this.handleEditSprint}
+            handleCloseModal={() => this.setState({ isOpenSprintEditModal: false })}
+          />
+        ) : null}
+        {this.state.isConfirmDeleteGoal ? (
+          <ConfirmModal
+            isOpen
+            contentLabel="modal"
+            text={localize[this.props.lang].CONFIRM_DELETE}
+            onCancel={() => this.setState({ isConfirmDeleteGoal: false })}
+            onConfirm={this.handleRemoveGoal}
+            onRequestClose={() => this.setState({ isConfirmDeleteGoal: false })}
+          />
         ) : null}
       </div>
     );
@@ -113,7 +166,8 @@ const mapDispatchToProps = {
   getProjectInfo,
   remove,
   openCreateTaskModal,
-  transfer
+  transfer,
+  editSprint
 };
 
 export default connect(
