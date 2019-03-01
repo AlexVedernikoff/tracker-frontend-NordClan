@@ -250,6 +250,7 @@ class AgileBoard extends Component {
         break;
       case 'Code Review':
         this.unionPerformers = union(
+          users.pm,
           users.teamLead,
           users.account,
           users.analyst,
@@ -262,7 +263,11 @@ class AgileBoard extends Component {
         );
         break;
       case 'QA':
-        this.unionPerformers = union(users.qa, this.props.unsortedUsers.sort(alphabeticallyComparatorLang(lang)));
+        this.unionPerformers = union(
+          users.pm,
+          users.qa,
+          this.props.unsortedUsers.sort(alphabeticallyComparatorLang(lang))
+        );
         break;
       default:
         this.unionPerformers = union(

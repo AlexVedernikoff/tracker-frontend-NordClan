@@ -274,6 +274,7 @@ class Details extends Component {
 
       case TASK_STATUSES.CODE_REVIEW_PLAY:
         unionPerformers = _.union(
+          users.pm,
           users.teamLead,
           users.account,
           users.analyst,
@@ -288,6 +289,7 @@ class Details extends Component {
 
       case TASK_STATUSES.CODE_REVIEW_STOP:
         unionPerformers = _.union(
+          users.pm,
           users.teamLead,
           users.account,
           users.analyst,
@@ -302,7 +304,7 @@ class Details extends Component {
 
       case TASK_STATUSES.QA_STOP:
       case TASK_STATUSES.QA_PLAY:
-        unionPerformers = union(users.qa, unsortedUsers.sort(alphabeticallyComparatorLang(lang)));
+        unionPerformers = union(users.pm, users.qa, unsortedUsers.sort(alphabeticallyComparatorLang(lang)));
         break;
 
       default:
