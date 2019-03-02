@@ -101,7 +101,7 @@ class Participant extends React.Component {
 
   getProjectUserGitlabRole(projectId) {
     const { user, gitlabRoles } = this.props;
-    const isExpired = moment(user.gitlabRoles[0].expiresAt) - moment(new Date()) < 0;
+    const isExpired = user.gitlabRoles.length && moment(user.gitlabRoles[0].expiresAt) - moment(new Date()) < 0;
     const defaultLabel = localize[this.props.lang].UNSET_GITLAB_USER_ROLE;
     if (user.gitlabRoles && user.gitlabRoles.length) {
       const userGitlabRole = user.gitlabRoles.find(({ gitlabProjectId }) => gitlabProjectId === projectId) || {};
