@@ -5,6 +5,7 @@ import { Link } from 'react-router';
 import { IconFileTree, IconLink } from '../../Icons';
 import { scrollTo } from '../../../utils/scroll';
 import localize from './relatedTask.json';
+import { TASK_STATUSES_TITLES } from '../../../constants/TaskStatuses';
 
 const CARD_IS_FOCUSED = true;
 
@@ -48,6 +49,12 @@ class componentName extends PureComponent {
     }
   };
 
+  get taskTitle() {
+    const { task } = this.props;
+
+    return `${TASK_STATUSES_TITLES[task.statusId]} | ${task.name}`;
+  }
+
   scrollToTask = () => {
     const {
       task: { id }
@@ -72,7 +79,7 @@ class componentName extends PureComponent {
         onClick={this.scrollToTask}
       >
         {isLighted ? <div className={css.lightedBorder} /> : null}
-        <div className="ellipsis" title={task.name}>
+        <div className="ellipsis" title={this.taskTitle}>
           <span className={css.shortNumber} data-tip={dataTip}>
             <span className={css.relatedTaskIcon}>{icon}</span>
             {prefix}-{task.id}:

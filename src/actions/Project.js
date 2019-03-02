@@ -270,7 +270,7 @@ const getProjectUsers = (id, isExternal = false) => {
   };
 };
 
-export const bindUserToProject = (projectId, userId, rolesIds) => {
+export const bindUserToProject = (projectId, userId, rolesIds, gitlabRoles = []) => {
   const URL = `${API_URL}/project/${projectId}/users`;
   const isExternal = rolesIds.split(',').includes('11');
   return dispatch => {
@@ -279,7 +279,8 @@ export const bindUserToProject = (projectId, userId, rolesIds) => {
     axios
       .post(URL, {
         userId: userId,
-        rolesIds: rolesIds || '0'
+        rolesIds: rolesIds || '0',
+        gitlabRoles
       })
       .then(response => {
         if (response.data) {
@@ -396,7 +397,7 @@ const changeProject = (changedProperties, target) => {
     dispatch(startProjectChange());
     dispatch(startLoading());
 
-    axios
+    return axios
       .put(URL, changedProperties, {
         withCredentials: true
       })
@@ -408,15 +409,16 @@ const changeProject = (changedProperties, target) => {
         dispatch(finishLoading());
       })
       .catch(error => {
+        dispatch(finishLoading());
         if (error.response.data.name === 'ValidationError') {
           dispatch(projectChangeFailValidation(error.response.data));
+          throw error.response.data;
         } else {
           const errorCode = error.response.data.message;
           const message = localize[langSelector(getState())][errorCode] || errorCode || error.message;
 
           dispatch(showNotification({ message, type: 'error' }));
         }
-        dispatch(finishLoading());
       });
   };
 };

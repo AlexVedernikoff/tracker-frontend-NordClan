@@ -7,7 +7,7 @@ import { Col, Row } from 'react-flexbox-grid';
 import moment from 'moment';
 import classnames from 'classnames';
 import sortBy from 'lodash/sortBy';
-
+import isEqual from 'lodash/isEqual';
 import Modal from '../../components/Modal';
 import Button from '../Button';
 import SelectDropdown from '../SelectDropdown';
@@ -27,6 +27,7 @@ import Tag from '../../components/Tag';
 import Tags from '../../components/Tags';
 import { getFullName } from '../../utils/NameLocalisation';
 import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
+import uniqWith from 'lodash/uniqWith';
 
 const MAX_DESCRIPTION_LENGTH = 25000;
 
@@ -75,12 +76,12 @@ class CreateTaskModal extends Component {
     });
   };
 
-  getDevOpsInputRef = el => {
-    this.devOpsInput = el;
-  };
-
   getIsByClientRef = el => {
     this.byClientInput = el;
+  };
+
+  toggleDevOpsCheckbox = event => {
+    this.setState({ isDevOps: event.target.checked });
   };
 
   handlePriorityChange = priorityId => this.setState({ prioritiesId: +priorityId });
@@ -108,7 +109,7 @@ class CreateTaskModal extends Component {
           plannedExecutionTime: this.state.plannedExecutionTime,
           parentId: this.props.parentTaskId,
           isTaskByClient: this.byClientInput.checked,
-          isDevOps: this.devOpsInput.checked
+          isDevOps: this.state.isDevOps
         },
         this.state.openTaskPage,
         this.props.column
@@ -116,6 +117,10 @@ class CreateTaskModal extends Component {
       .then(id => {
         if (this.state.tags.length) {
           this.props.createTags(this.state.tags.join(), 'task', id);
+        }
+
+        if (this.props.afterCreate) {
+          this.props.afterCreate();
         }
       });
   };
@@ -161,7 +166,10 @@ class CreateTaskModal extends Component {
   };
 
   getUsers = () => {
-    return this.props.project.users
+    return uniqWith(
+      this.props.project.users.concat(this.props.devOpsUsers && this.state.isDevOps ? this.props.devOpsUsers : []),
+      isEqual
+    )
       .sort((a, b) => {
         if (a.fullNameRu < b.fullNameRu) return -1;
         else if (a.fullNameRu > b.fullNameRu) return 1;
@@ -251,7 +259,7 @@ class CreateTaskModal extends Component {
                     />
                   ),
                   'taskName',
-                  this.state.taskName.length < 4 || this.state.taskName.length > 256
+                  this.state.taskName.length < 4 || this.state.taskName.length > 255
                 )}
               </Col>
             </Row>
@@ -330,7 +338,7 @@ class CreateTaskModal extends Component {
                 <p>{localize[lang].DEV_OPS}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
-                <Checkbox refCallback={this.getDevOpsInputRef} />
+                <Checkbox checked={this.state.isDevOps} onChange={this.toggleDevOpsCheckbox} />
               </Col>
             </Row>
           </label>
@@ -425,11 +433,13 @@ class CreateTaskModal extends Component {
 }
 
 CreateTaskModal.propTypes = {
+  afterCreate: PropTypes.func,
   closeCreateTaskModal: PropTypes.func.isRequired,
   column: PropTypes.string,
   createTags: PropTypes.func.isRequired,
   createTask: PropTypes.func.isRequired,
   defaultPerformerId: PropTypes.oneOfType([PropTypes.array, PropTypes.number]),
+  devOpsUsers: PropTypes.array,
   isCreateChildTaskModalOpen: PropTypes.bool,
   isCreateTaskModalOpen: PropTypes.bool,
   isCreateTaskRequestInProgress: PropTypes.bool,
@@ -448,6 +458,7 @@ const getTaskTypes = dictionaryTypes =>
   }));
 
 const mapStateToProps = state => ({
+  devOpsUsers: state.UserList.devOpsUsers,
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
   isCreateChildTaskModalOpen: state.Project.isCreateChildTaskModalOpen,
   taskTypes: getTaskTypes(getLocalizedTaskTypes(state)),

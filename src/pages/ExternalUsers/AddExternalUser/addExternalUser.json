@@ -16,7 +16,8 @@
     "ADD_USER": "Add user",
     "UNIQUE_VIOLATION": "is already taken",
     "ADD_EXTERNAL_USER_TITLE": "Add external user",
-    "MUST_BE_FILLED": "Field must be filled"
+    "MUST_BE_FILLED": "Field must be filled",
+    "ACTIVE_BEFORE": "Active to"
   },
   "ru": {
     "ACTIVE_PASSWORD_INFO": "Для активации придумайте пароль. Пароль должен содержать не менее 8 символов.",
@@ -35,6 +36,7 @@
     "DESCRIPTION_MAXLENGTH": "Слишом большое описание. Поле должно содержать не больше 5000 символов.",
     "ADD_USER": "Добавить пользователя",
     "UNIQUE_VIOLATION": "уже занят",
-    "ADD_EXTERNAL_USER_TITLE": "Добавить внешнего пользователя"
+    "ADD_EXTERNAL_USER_TITLE": "Добавить внешнего пользователя",
+    "ACTIVE_BEFORE": "Активен до"
   }
 }

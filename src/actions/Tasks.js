@@ -1,12 +1,12 @@
 import * as TaskActions from '../constants/Tasks';
 import * as TaskAction from '../constants/Task';
 import { API_URL } from '../constants/Settings';
-import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
 // import { stopTaskEditing } from './Task';
 import { PUT, REST_API } from '../constants/RestApi';
 import { defaultErrorHandler, defaultExtra as extra, withFinishLoading, withStartLoading } from './Common';
+import { createCancelableRequest } from '../utils/cancelableRequest';
 
 const startTasksReceive = id => ({
   type: TaskActions.TASKS_RECEIVE_START,
@@ -41,38 +41,44 @@ const requestTasksChange = () => ({
 const getTasks = (options, onlyTaskListUpdate = false) => {
   const URL = `${API_URL}/task`;
   options.queryId = Date.now().toString();
-  return dispatch => {
-    dispatch(startTasksReceive(options.queryId));
-    dispatch(startLoading());
-    axios
-      .get(
-        URL,
-        {
-          params: {
-            //pageSize: 25,
-            currentPage: 0,
-            ...options,
-            fields:
-              'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId,prefix'
-          }
-        },
-        { withCredentials: true }
-      )
-      .then(response => {
-        if (response) {
-          if (onlyTaskListUpdate) {
-            dispatch(tasksListReceived(response.data));
-          } else {
-            dispatch(tasksReceived(response.data));
-          }
+  if (options.isDevOps && (options.performerId === null || options.performerId.length === 0)) {
+    options.performerId = 0;
+  }
+
+  const generateConfig = dispatch => ({
+    reqConfig: {
+      method: 'GET',
+      url: URL,
+      params: {
+        //pageSize: 25,
+        currentPage: 0,
+        ...options,
+        fields: 'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId,prefix'
+      },
+      withCredentials: true
+    },
+    onStart: () => {
+      dispatch(startTasksReceive(options.queryId));
+      dispatch(startLoading());
+    },
+    onSuccess: response => {
+      if (response) {
+        if (onlyTaskListUpdate) {
+          dispatch(tasksListReceived(response.data));
+        } else {
+          dispatch(tasksReceived(response.data));
         }
-        dispatch(finishLoading());
-      })
-      .catch(error => {
-        dispatch(finishLoading());
-        dispatch(showNotification({ message: error.message, type: 'error' }));
-      });
-  };
+      }
+      dispatch(finishLoading());
+    },
+    onError: error => {
+      dispatch(finishLoading());
+      dispatch(showNotification({ message: error.message, type: 'error' }));
+    },
+    onFinishLoading: () => dispatch(finishLoading())
+  });
+
+  return dispatch => createCancelableRequest(dispatch, generateConfig);
 };
 
 export const changeTasks = (ChangedTasksProperties, callback) => {

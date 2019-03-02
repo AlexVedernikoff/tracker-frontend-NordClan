@@ -1,6 +1,6 @@
 @import '../../../styles/variables.scss';
 
-$input-width: 5.5rem;
+$input-width: 6.5rem;
 
 .projectDate {
   position: relative;
@@ -25,6 +25,10 @@ $input-width: 5.5rem;
     width: $input-width;
     padding: calc(0.25rem - 1px);
     margin-left: 0.25rem;
+
+    &.disabled {
+      border: 1px solid $color-red;
+    }
   }
 }
 

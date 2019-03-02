@@ -17,6 +17,8 @@ import {
   closePortfolioModal
 } from '../../../actions/Project';
 import localize from './ProjectTitle.json';
+import classnames from 'classnames';
+import get from 'lodash/get';
 
 class ProjectTitle extends Component {
   static propTypes = {
@@ -126,7 +128,7 @@ class ProjectTitle extends Component {
             prefix: this.state.prefix
           },
           'Title'
-        );
+        ).catch(this.handleChangeProjectError);
       }
     );
   }
@@ -145,6 +147,18 @@ class ProjectTitle extends Component {
     } else {
       this.submitInput();
     }
+  };
+
+  handleChangeProjectError = error => {
+    const errors = get(error, 'message.errors', []);
+    const prefixNotUnique = errors.some(({ param, type }) => param === 'prefix' && type === 'unique violation');
+    const message =
+      localize[this.props.lang][prefixNotUnique ? 'PREFIX_NOT_UNIQUE_ERROR_MESSAGE' : 'VALIDATION_ERROR_MESSAGE'];
+
+    this.props.showNotification({
+      message,
+      type: 'error'
+    });
   };
 
   handleKeyPress = event => {
@@ -184,7 +198,7 @@ class ProjectTitle extends Component {
         ) : (
           <IconPreloader style={{ color: 'silver', fontSize: '3rem', marginRight: 10 }} />
         )}
-        <div>
+        <div className={css.projectTitle__text}>
           {this.props.portfolio ? (
             <span className={css.portfolio}>
               <Link to={`/projects/portfolio/${this.props.portfolio.id}`}>{this.props.portfolio.name}</Link>
@@ -194,7 +208,7 @@ class ProjectTitle extends Component {
           <h1>
             <span
               id="projectName"
-              className={this.state.nameIsIncorrect ? css.wrong : ''}
+              className={classnames({ [css.wrong]: this.state.nameIsIncorrect })}
               ref={ref => (this.projectName = ref)}
               onKeyDown={this.handleKeyPress}
               contentEditable={this.props.titleIsEditing}

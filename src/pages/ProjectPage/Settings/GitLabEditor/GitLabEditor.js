@@ -16,7 +16,9 @@ import { ADMIN } from '../../../../constants/Roles';
 import localize from './GitLabEditor.json';
 
 import Modal from '../../../../components/Modal';
-import SelectDropdown from '../../../../components/SelectDropdown';
+import CreatableMulti from '../../../../components/CreatableMulti';
+import ConfirmModal from '../../../../components/ConfirmModal/ConfirmModal';
+import { getFullName } from '../../../../utils/NameLocalisation';
 
 class GitLabEditor extends Component {
   static propTypes = {
@@ -35,6 +37,7 @@ class GitLabEditor extends Component {
     this.state = {
       isAdding: false,
       isModalOpenCreateGitlabProject: false,
+      isNotProcessedUsersModalOpen: false,
       projectName: ''
     };
   }
@@ -49,6 +52,11 @@ class GitLabEditor extends Component {
     }
     if (get(newProps, 'project.gitlabProjects.length') !== get(this, 'props.project.gitlabProjects.length')) {
       this.setState({ isAdding: false });
+    }
+    if (!get(newProps, 'project.notProcessedGitlabUsers.length')) {
+      this.setState({ isNotProcessedUsersModalOpen: false });
+    } else if (!get(this.props, 'project.notProcessedGitlabUsers.length')) {
+      this.setState({ isNotProcessedUsersModalOpen: true });
     }
   }
 
@@ -66,6 +74,10 @@ class GitLabEditor extends Component {
     });
   };
 
+  handleCloseloseNotProcessedModal = () => {
+    this.setState({ isNotProcessedUsersModalOpen: false });
+  };
+
   handleCloseModalAddGitlabProject = () => {
     this.setState({
       isModalOpenCreateGitlabProject: false,
@@ -74,8 +86,15 @@ class GitLabEditor extends Component {
     });
   };
 
+  handleNamespacesSearch = name => {
+    clearTimeout(this.namespacesTimeout);
+    this.namespacesTimeout = setTimeout(() => {
+      this.props.getNamespaces(name);
+    }, 200);
+  };
+
   saveProject = value => {
-    if (isNaN(value)) {
+    if (value) {
       this.props.addGitlabProjectByName(this.props.project.id, value);
     } else {
       const { gitlabProjectIds } = this.props.project;
@@ -117,7 +136,13 @@ class GitLabEditor extends Component {
   };
 
   selectProjectName = e => {
-    this.setState({ projectName: e.target.value });
+    const pattern = /^[A-Za-zА-Яа-я0-9_]*$/;
+    const result = pattern.test(e.target.value);
+    if (result === true) {
+      this.setState({
+        projectName: e.target.value
+      });
+    }
   };
 
   createProject = () => {
@@ -130,6 +155,7 @@ class GitLabEditor extends Component {
     const { isAdding } = this.state;
     const isProjects = get(project, 'gitlabProjects.length', false);
     const isProjectAdmin = this.checkIsAdminInProject();
+    const notProcessedGitlabUsers = project.notProcessedGitlabUsers || [];
 
     return (
       <div className={css.gitLabEditor}>
@@ -165,14 +191,16 @@ class GitLabEditor extends Component {
             <form className={css.createGitlabProject}>
               <h3>{localize[lang].CREATE_REPO}</h3>
               <div className={css.modalContainer}>
-                <SelectDropdown
+                <CreatableMulti
                   name="member"
+                  noResultsText={localize[lang].NO_RESULTS}
+                  options={this.getNamespaces()}
                   placeholder={localize[lang].NAMESPACE}
+                  autoFocus
                   multi={false}
                   value={this.state.namespace}
                   onChange={this.selectNamespace('namespace')}
-                  options={this.getNamespaces()}
-                  autofocus
+                  backspaceToRemoveMessage={''}
                 />
                 <div>
                   <Input
@@ -191,6 +219,31 @@ class GitLabEditor extends Component {
               </div>
             </form>
           </Modal>
+        ) : null}
+        {this.state.isNotProcessedUsersModalOpen ? (
+          <ConfirmModal
+            isOpen
+            notification
+            contentLabel="modal"
+            text={
+              <div className={css.modalWarningContent}>
+                <span>{localize[lang].GITLAB_WARNING_POPUP_CAPTION}:</span>
+                <ul>
+                  {notProcessedGitlabUsers.map(({ user, data: { gitlabProjectId }, error }) => {
+                    const gitlabProject = project.gitlabProjects.find(({ id }) => id === gitlabProjectId);
+                    return (
+                      <li>
+                        {getFullName(user)} ({gitlabProject && gitlabProject.name}
+                        ): {error}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            }
+            lang={lang}
+            onCancel={this.handleCloseloseNotProcessedModal}
+          />
         ) : null}
         {isProjects ? <ProjectList deleteProject={this.deleteProject} projects={project.gitlabProjects} /> : null}
       </div>

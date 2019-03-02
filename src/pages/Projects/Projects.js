@@ -28,6 +28,7 @@ import Title from 'react-title-component';
 import TypeFilter from './TypeFilter';
 import { IconPreloader } from '../../components/Icons';
 import InlineHolder from '../../components/InlineHolder';
+import ScrollTop from '../../components/ScrollTop';
 
 import 'moment/locale/ru';
 
@@ -44,6 +45,7 @@ class Projects extends Component {
       activePage: 1,
       filterSelectedTypes: [],
       filterRequestTypes: [],
+      wasTouchedAfterRequest: undefined,
       selectedType: 1,
       ...projectListFilters
     };
@@ -204,9 +206,10 @@ class Projects extends Component {
   handleModalChange = event => {
     const { target } = event;
     const { name } = event.target;
-    this.setState({
-      [name]: target.value.trim()
-    });
+    this.setState(prevState => ({
+      [name]: target.value.trim(),
+      wasTouchedAfterRequest: prevState.wasTouchedAfterRequest !== undefined ? true : undefined
+    }));
   };
 
   handleModalTypeSelected = type => {
@@ -233,6 +236,9 @@ class Projects extends Component {
       },
       this.state.openProjectPage
     );
+    this.setState({
+      wasTouchedAfterRequest: false
+    });
   };
 
   sendRequestAndOpen = () => {
@@ -344,7 +350,15 @@ class Projects extends Component {
 
   render() {
     const { lang, isProjectsReceived, pagesCount } = this.props;
-    const { filteredInProgress, filteredInHold, filteredFinished, filterSelectedTypes, dateFrom, dateTo } = this.state;
+    const {
+      filteredInProgress,
+      filteredInHold,
+      filteredFinished,
+      filterSelectedTypes,
+      dateFrom,
+      dateTo,
+      wasTouchedAfterRequest
+    } = this.state;
     const formattedDayFrom = dateFrom ? moment(dateFrom).format('DD.MM.YYYY') : '';
     const formattedDayTo = dateTo ? moment(dateTo).format('DD.MM.YYYY') : '';
     const isAdmin = this.props.globalRole === ADMIN;
@@ -366,7 +380,7 @@ class Projects extends Component {
                 <div>
                   <Button
                     onClick={this.handleModal}
-                    text={localize[lang].CREATE_PROJECT}
+                    text={localize[lang].SELECT_JIRA_PROJECT}
                     type="primary"
                     icon="IconPlus"
                   />
@@ -456,12 +470,13 @@ class Projects extends Component {
           handleCheckBox={this.handleModalCheckBoxChange}
           onPortfolioSelect={this.handlePortfolioChange}
           selectedPortfolio={this.state.selectedPortfolio}
-          validateProjectName={this.state.projectName.length > 3}
-          validateProjectPrefix={this.state.projectPrefix.length > 1}
-          prefixErrorText={this.getFieldError('prefix')}
+          projectName={this.state.projectName}
+          projectPrefix={this.state.projectPrefix}
+          prefixErrorText={!wasTouchedAfterRequest ? this.getFieldError('prefix') : null}
           onTypeSelect={this.handleModalTypeSelected}
           selectedType={this.state.selectedType}
         />
+        <ScrollTop />
       </div>
     );
   }

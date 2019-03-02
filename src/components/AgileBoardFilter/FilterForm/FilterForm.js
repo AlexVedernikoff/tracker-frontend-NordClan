@@ -17,6 +17,7 @@ import SprintSelector from '../../SprintSelector';
 import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
 import { storageType } from '../../FiltrersManager/helpers';
 import { isOnlyDevOps } from '../../../utils/isDevOps';
+import { removeNumChars } from '../../../utils/formatter';
 
 const storage = storageType === 'local' ? localStorage : sessionStorage;
 
@@ -38,7 +39,11 @@ class FilterForm extends React.Component {
   }
 
   onPrioritiesFilterChange = option =>
-    this.props.setFilterValue('prioritiesId', option.prioritiesId, this.updateListsAndTasks);
+    this.props.setFilterValue(
+      'prioritiesId',
+      option.prioritiesId ? option.prioritiesId : null,
+      this.updateListsAndTasks
+    );
   onSprintsFilterChange = options => {
     this.props.setFilterValue('changedSprint', this.getSprintValue(options), this.updateListsAndTasks);
     storage.setItem('sprintFilterChanged', 1);
@@ -72,7 +77,7 @@ class FilterForm extends React.Component {
     return sprintIds && sprintIds.length && this.props.sprints && this.props.sprints.length
       ? sprintIds.map(sprintId => {
           const sprintData = this.props.sprints.find(data => data.id === +sprintId) || {};
-          return `${sprintData.spentTime || 0} / ${sprintData.riskBudget || 0}`;
+          return `${sprintData.spentTime || 0} / ${sprintData.budget || 0}`;
         })
       : [];
   }
@@ -80,11 +85,28 @@ class FilterForm extends React.Component {
   clearFilters = type => {
     if (type === 'sprints') {
       this.props.clearFilters({ changedSprint: [0] }, this.updateListsAndTasks);
-      this.taskNameRef.value = '';
+      this.resetName();
       storage.setItem('sprintFilterChanged', 1);
     } else {
       this.props.setFilterValue(type, [], this.updateListsAndTasks);
     }
+  };
+
+  resetName = () => {
+    this.taskNameRef.value = '';
+  };
+
+  sortedAuthorOptions = () => {
+    const { authorOptions } = this.props;
+    return authorOptions
+      ? authorOptions.sort((a, b) => {
+          if (a.label < b.label) {
+            return -1;
+          } else if (a.label > b.label) {
+            return 1;
+          }
+        })
+      : null;
   };
 
   render() {
@@ -150,12 +172,20 @@ class FilterForm extends React.Component {
               defaultValue={filters.name || ''}
               onChange={this.onNameFilterChange}
               inputRef={ref => (this.taskNameRef = ref)}
+              canClear
+              onClear={() => {
+                this.resetName();
+                this.props.setFilterValue('name', '', this.updateListsAndTasks);
+              }}
             />
           </Col>
           <Col xs={12} sm={3}>
             <PerformerFilter
               onPerformerSelect={this.onPerformerFilterChange}
               selectedPerformerId={this.props.filters.performerId}
+              filterOption={layoutAgnosticFilter}
+              canClear
+              onClear={() => this.clearFilters('performerId')}
             />
           </Col>
           <Col xs={12} sm={3}>
@@ -170,6 +200,7 @@ class FilterForm extends React.Component {
               options={this.props.typeOptions}
               onChange={this.onTypeFilterChange}
               canClear
+              filterOption={layoutAgnosticFilter}
               onClear={() => this.clearFilters('typeId')}
             />
           </Col>
@@ -201,8 +232,12 @@ class FilterForm extends React.Component {
               multi={false}
               value={filters.authorId}
               onChange={this.onAuthorFilterChange}
+              onInputChange={removeNumChars}
               noResultsText={localize[lang].NO_RESULTS}
-              options={this.props.authorOptions}
+              options={this.sortedAuthorOptions()}
+              filterOption={layoutAgnosticFilter}
+              canClear
+              onClear={() => this.props.setFilterValue('authorId', null, this.updateListsAndTasks)}
             />
           </Col>
           <Col className={css.filterButtonCol}>

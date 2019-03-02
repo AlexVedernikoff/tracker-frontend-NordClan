@@ -18,6 +18,32 @@ class CreateProject extends Component {
     this.validator = new Validator();
   }
 
+  getErrorText = () => {
+    const { lang } = this.props;
+    const projectNameMoreSymbol = this.props.projectName.length > 255;
+    const projectNameLessSymbol = this.props.projectName.length < 4;
+    const projectNameTextError = projectNameLessSymbol
+      ? localize[lang].ERROR_NAME_LESS_SYMBOL_TEXT
+      : projectNameMoreSymbol
+        ? localize[lang].ERROR_NAME_MORE_SYMBOL_TEXT
+        : null;
+    const projectPrefixLessSymbols = this.props.projectPrefix.length < 2;
+    const projectPrefixMoreSymbols = this.props.projectPrefix.length > 8;
+    const projectPrefixTextError = projectPrefixLessSymbols
+      ? localize[lang].ERROR_PREFIX_TEXT_LESS
+      : projectPrefixMoreSymbols
+        ? localize[lang].ERROR_PREFIX_TEXT_MORE
+        : null;
+    return {
+      projectNameMoreSymbol,
+      projectNameLessSymbol,
+      projectNameTextError,
+      projectPrefixLessSymbols,
+      projectPrefixMoreSymbols,
+      projectPrefixTextError
+    };
+  };
+
   render() {
     const { isOpen, onRequestClose, prefixErrorText, projectTypes = [], lang } = this.props;
 
@@ -32,6 +58,14 @@ class CreateProject extends Component {
     }));
 
     const options = projectTypes.map(type => ({ value: type.id, label: localize[lang][type.codename] }));
+    const {
+      projectNameMoreSymbol,
+      projectNameLessSymbol,
+      projectNameTextError,
+      projectPrefixLessSymbols,
+      projectPrefixMoreSymbols,
+      projectPrefixTextError
+    } = this.getErrorText();
 
     return (
       <Modal
@@ -55,16 +89,16 @@ class CreateProject extends Component {
                   (handleBlur, shouldMarkError) => (
                     <ValidatedInput
                       autoFocus
-                      onChange={this.props.onChange}
                       name="projectName"
                       placeholder={localize[lang].NAME_PLACEHOLDER}
+                      onChange={this.props.onChange}
                       onBlur={handleBlur}
                       shouldMarkError={shouldMarkError}
-                      errorText={localize[lang].ERROR_NAME_TEXT}
+                      errorText={projectNameTextError}
                     />
                   ),
                   'projectName',
-                  !this.props.validateProjectName
+                  projectNameMoreSymbol || projectNameLessSymbol
                 )}
               </Col>
             </Row>
@@ -83,12 +117,12 @@ class CreateProject extends Component {
                       placeholder={localize[lang].PREFIX_PLACEHOLDER}
                       onBlur={handleBlur}
                       shouldMarkError={shouldMarkError}
-                      errorText={localize[lang].ERROR_PREFIX_TEXT}
+                      errorText={projectPrefixTextError}
                       backendErrorText={prefixErrorText}
                     />
                   ),
                   'projectPrefix',
-                  !this.props.validateProjectPrefix
+                  projectPrefixLessSymbols || projectPrefixMoreSymbols
                 )}
               </Col>
             </Row>
@@ -140,13 +174,17 @@ class CreateProject extends Component {
               type="green"
               htmlType="submit"
               onClick={this.props.onSubmit}
-              disabled={!(this.props.validateProjectName && this.props.validateProjectPrefix)}
+              disabled={
+                projectNameMoreSymbol || projectNameLessSymbol || projectPrefixLessSymbols || projectPrefixMoreSymbols
+              }
             />
             <Button
               text={localize[lang].CREATE_AND_OPEN}
               type="green-lighten"
               onClick={this.props.onSubmitAndOpen}
-              disabled={!(this.props.validateProjectName && this.props.validateProjectPrefix)}
+              disabled={
+                projectNameMoreSymbol || projectNameLessSymbol || projectPrefixLessSymbols || projectPrefixMoreSymbols
+              }
             />
           </div>
         </form>
@@ -167,11 +205,11 @@ CreateProject.propTypes = {
   onTypeSelect: PropTypes.func,
   portfolios: PropTypes.array,
   prefixErrorText: PropTypes.string,
+  projectName: PropTypes.string,
+  projectPrefix: PropTypes.string,
   projectTypes: PropTypes.array,
   selectedPortfolio: PropTypes.object,
-  selectedType: PropTypes.number,
-  validateProjectName: PropTypes.bool,
-  validateProjectPrefix: PropTypes.bool
+  selectedType: PropTypes.number
 };
 
 const mapStateToProps = state => ({

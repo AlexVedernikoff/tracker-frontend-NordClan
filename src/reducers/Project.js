@@ -4,6 +4,7 @@ import * as SprintActions from '../constants/Sprint';
 import * as TasksActions from '../constants/Tasks';
 import * as MilestoneActions from '../constants/Milestone';
 import * as GitlabActions from '../constants/Gitlab';
+import * as JiraActions from '../constants/Jira';
 
 const InitialState = {
   project: {
@@ -17,7 +18,9 @@ const InitialState = {
     },
     error: false,
     validationError: null,
-    metrics: []
+    metrics: [],
+    notProcessedGitlabUsers: [],
+    gitlabProjectIds: []
   },
   TitleIsEditing: false,
   DescriptionIsEditing: false,
@@ -103,7 +106,7 @@ export default function Project(state = InitialState, action) {
         ...state,
         project: {
           ...state.project,
-          tags: action.data.tags
+          tags: state.project.tags.filter(tag => (tag.name || tag) !== action.data.tag)
         }
       };
 
@@ -226,22 +229,46 @@ export default function Project(state = InitialState, action) {
         }
       };
 
+    case GitlabActions.ADDING_GITLAB_PROJECT_START:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          notProcessedGitlabUsers: []
+        }
+      };
     case GitlabActions.ADDING_GITLAB_PROJECT_SUCCESS:
       return {
         ...state,
         project: {
           ...state.project,
-          gitlabProjects: [...state.project.gitlabProjects, action.project]
+          gitlabProjectIds: [
+            ...(state.project.gitlabProjectIds ? state.project.gitlabProjectIds : []),
+            action.project.gitlabProject.id
+          ],
+          gitlabProjects: [...state.project.gitlabProjects, action.project.gitlabProject],
+          users: action.project.projectUsers,
+          notProcessedGitlabUsers: action.project.notProcessedGitlabUsers
         }
       };
 
+    case GitlabActions.CREATE_GITLAB_PROJECT_START:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          notProcessedGitlabUsers: []
+        }
+      };
     case GitlabActions.CREATE_GITLAB_PROJECT_SUCCESS:
       return {
         ...state,
         project: {
           ...state.project,
-          gitlabProjectIds: [...state.project.gitlabProjectIds, action.project.id],
-          gitlabProjects: [...state.project.gitlabProjects, action.project]
+          gitlabProjectIds: [...state.project.gitlabProjectIds, action.project.gitlabProject.id],
+          gitlabProjects: [...state.project.gitlabProjects, action.project.gitlabProject],
+          users: action.project.projectUsers,
+          notProcessedGitlabUsers: action.project.notProcessedGitlabUsers
         }
       };
 
@@ -463,6 +490,48 @@ export default function Project(state = InitialState, action) {
           milestones: delelteMilestones
         }
       };
+
+    case JiraActions.JIRA_ASSOCIATE_PROJECT_SUCCESS:
+      if (action.project.simtrackProjectId === state.project.id) {
+        return {
+          ...state,
+          project: {
+            ...state.project,
+            jiraHostname: action.project.jiraHostName,
+            jiraProjectName: action.project.jiraProjectName,
+            externalId: action.project.id
+          }
+        };
+      }
+      return state;
+
+    case JiraActions.CLEAN_JIRA_ASSOCIATION_SUCCESS:
+      if (action.id === state.project.id) {
+        return {
+          ...state,
+          project: {
+            ...state.project,
+            jiraHostname: null,
+            jiraProjectName: null,
+            externalId: null
+          }
+        };
+      }
+      return state;
+
+    case JiraActions.JIRA_STATUS_RECEIVE_INFO:
+      if (action.data.length > 0) {
+        return {
+          ...state,
+          project: {
+            ...state.project,
+            lastSyncDate: action.data[0].date,
+            status: action.data[0].status
+          }
+        };
+      }
+      return state;
+
     default:
       return {
         ...state

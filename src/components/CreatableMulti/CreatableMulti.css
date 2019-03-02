@@ -17,6 +17,18 @@
   cursor: not-allowed;
 }
 
+.tagWrapper {
+  display: inline-block;
+  max-width: 100%;
+}
+
+.Select-value-label {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .Select-control {
   padding: 7px 15px;
   padding-right: 0px;

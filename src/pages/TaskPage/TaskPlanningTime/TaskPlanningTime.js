@@ -7,6 +7,8 @@ import { connect } from 'react-redux';
 import { startTaskEditing, stopTaskEditing, changeTask } from '../../../actions/Task';
 import roundNum from '../../../utils/roundNum';
 
+const TIME_MAX = 99;
+
 class TaskPlanningTime extends Component {
   constructor(props) {
     super(props);
@@ -39,7 +41,8 @@ class TaskPlanningTime extends Component {
 
   validateAndSubmit = () => {
     this.taskPlanningTime.innerText = this.taskPlanningTime.innerText.replace(',', '.').trim();
-    if (!/^\d+(\.\d{0,})?$/.test(this.taskPlanningTime.innerText)) {
+
+    if (!/^\d+(\.\d{0,})?$/.test(this.taskPlanningTime.innerText) || this.taskPlanningTime.innerText > TIME_MAX) {
       this.setState({ submitError: true });
     } else {
       this.setState(
@@ -79,11 +82,16 @@ class TaskPlanningTime extends Component {
     }
   };
 
+  onBlur = () => {
+    this.stopEditing();
+    this.validateAndSubmit();
+  };
+
   render() {
     return (
       <div
         className={classnames([css.wrapper, { [css.isEdit]: this.props.timeIsEditing }])}
-        onClick={this.props.timeIsEditing ? null : this.editIconClickHandler}
+        onClick={!this.props.canEdit || this.props.timeIsEditing ? null : this.editIconClickHandler}
       >
         <span
           key={this.props.key}
@@ -96,7 +104,7 @@ class TaskPlanningTime extends Component {
           ref={ref => (this.taskPlanningTime = ref)}
           contentEditable={this.props.timeIsEditing}
           suppressContentEditableWarning
-          onBlur={this.validateAndSubmit}
+          onBlur={this.onBlur}
           onPaste={this.onTextPaste}
           onKeyDown={this.handleKeyPress}
           {...(this.props.tooltip

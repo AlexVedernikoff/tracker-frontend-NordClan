@@ -71,12 +71,16 @@ const addGitlabProjectByName = (projectId, path) => {
   };
 };
 
-const getNamespaces = () => {
+const getNamespaces = search => {
   const URL = `${API_URL}/project/gitLab/getGitlabNamespaces`;
   return dispatch => {
     dispatch(startLoading());
     axios
-      .get(URL)
+      .get(URL, {
+        params: {
+          search
+        }
+      })
       .then(response => {
         if (response && response.status === 200) {
           dispatch(getNamespacesSuccess(response.data));

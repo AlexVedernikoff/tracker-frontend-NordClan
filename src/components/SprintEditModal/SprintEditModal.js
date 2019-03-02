@@ -10,6 +10,7 @@ import moment from 'moment';
 import localize from './SprintEditModal.json';
 import { connect } from 'react-redux';
 import parseInteger from '../../utils/parseInteger';
+import { BUDGET_MAX_CHARS_LENGTH } from '../../constants/Sprint';
 import validateNumber from '../../utils/validateNumber';
 import * as commonUtils from '../../utils/common';
 
@@ -38,6 +39,17 @@ class SprintEditModal extends Component {
       }
     };
   }
+
+  componentDidMount = () => {
+    const { sprint } = this.props;
+    if (sprint.factStartDate) {
+      this.handleDayFromChange(sprint.factStartDate);
+    }
+
+    if (sprint.factFinishDate) {
+      this.handleDayToChange(sprint.factFinishDate);
+    }
+  };
 
   checkNullInputs = () => {
     return !!(
@@ -72,7 +84,7 @@ class SprintEditModal extends Component {
 
   onChangeBudget = e => {
     const value = e.target.value;
-    if (validateNumber(value)) {
+    if (validateNumber(value) && !this.budgetIsTooLong(value)) {
       this.setState(state => ({
         sprint: {
           ...state.sprint,
@@ -82,9 +94,13 @@ class SprintEditModal extends Component {
     }
   };
 
+  budgetIsTooLong = value => {
+    return parseInteger(value).toString().length > BUDGET_MAX_CHARS_LENGTH;
+  };
+
   onChangeRiskBudget = e => {
     const value = e.target.value;
-    if (validateNumber(value)) {
+    if (validateNumber(value) && !this.budgetIsTooLong(value)) {
       this.setState(state => ({
         sprint: {
           ...state.sprint,
@@ -133,7 +149,7 @@ class SprintEditModal extends Component {
   };
 
   validateAllFields = () => {
-    return !this.checkNullInputs();
+    return !this.checkNullInputs() || !this.validateDates();
   };
 
   render() {
@@ -195,6 +211,9 @@ class SprintEditModal extends Component {
                     name="dateFrom"
                     value={formattedDayFrom}
                     onDayChange={this.handleDayFromChange}
+                    disabledDataRanges={[
+                      { after: this.state.sprint.dateTo && moment(this.state.sprint.dateTo).toDate() }
+                    ]}
                     placeholder={moment(sprint.factStartDate).format('DD.MM.YYYY')}
                   />
                 </Col>
@@ -210,6 +229,9 @@ class SprintEditModal extends Component {
                     name="dateTo"
                     value={formattedDayTo}
                     onDayChange={this.handleDayToChange}
+                    disabledDataRanges={[
+                      { before: this.state.sprint.dateFrom && moment(this.state.sprint.dateFrom).toDate() }
+                    ]}
                     placeholder={moment(sprint.factFinishDate).format('DD.MM.YYYY')}
                   />
                 </Col>

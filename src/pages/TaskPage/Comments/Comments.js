@@ -29,6 +29,7 @@ import FileUpload from '../../../components/FileUpload';
 import InlineHolder from '../../../components/InlineHolder';
 import { IconPreloader } from '../../../components/Icons';
 import { getFullName } from '../../../utils/NameLocalisation';
+import { isImage } from '../../../components/Attachments/Attachments';
 
 import {
   prepairCommentForEdit,
@@ -148,7 +149,6 @@ class Comments extends Component {
         this.addedAttachments[length - 1] = { file: attachments[length - 1] };
         length--;
       }
-
       this.setState({ attachments: attachments, isAttachedToComment: false });
     }
   };
@@ -255,17 +255,31 @@ class Comments extends Component {
     this.setState({ attachments: attachments });
   };
 
-  getAttachment = index => {
+  getAttachment = (index, file) => {
     const attachment = this.props.attachments[index];
     if (attachment && !attachment.uploading && !attachment.deleting) {
       return (
         <li key={index} className={css.attachmentsItemWrap}>
-          <a target="_blank" href={attachment.path}>
+          <a target="_blank" href={`/${attachment.path}`} onClick={e => this.handleAttachmentLinksClick(e, file)}>
             {attachment.fileName}
           </a>
           <IconClose className={css.removeAttachIcon} onClick={() => this.handleRemoveAttachment(index)} />
         </li>
       );
+    }
+  };
+
+  handleAttachmentLinksClick = (e, file) => {
+    const { type, id } = file;
+    if (!id || !isImage(type)) return;
+    e.preventDefault();
+    try {
+      const attachment = document.querySelector(`[data-attachment-id='${id}']`);
+      if (attachment) {
+        attachment.click();
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -281,8 +295,8 @@ class Comments extends Component {
     this.reply = node;
   };
 
-  getCommentList = () =>
-    this.props.comments.map(comment => {
+  getCommentList = () => {
+    return this.props.comments.map(comment => {
       return (
         <Comment
           key={comment.id} /*используются id чтобы правильно работал маунт и анмаунт*/
@@ -298,6 +312,24 @@ class Comments extends Component {
         />
       );
     });
+  };
+
+  allCommentsAreEmpty = () => {
+    const allEmpty = this.props.comments.every(comment => {
+      if (comment.text) {
+        return false;
+      }
+
+      if (!comment.attachmentIds) {
+        return true;
+      }
+
+      return !this.props.attachments.find(attachment => {
+        return comment.attachmentIds.indexOf(attachment.id) !== -1;
+      });
+    });
+    return allEmpty;
+  };
 
   render() {
     const { lang, isCommentsReceived, isProjectInfoReceiving } = this.props;
@@ -394,10 +426,16 @@ class Comments extends Component {
           </form>
           <div className={css.attachmentWrap}>
             {this.state.attachments.length ? (
-              <ul>{this.state.attachments.map((item, index) => (item.display ? this.getAttachment(index) : null))}</ul>
+              <ul>
+                {this.state.attachments.map((item, index) => {
+                  return item.display ? this.getAttachment(index, this.props.attachments[index]) : null;
+                })}
+              </ul>
             ) : null}
           </div>
-          {this.props.comments.length && this.props.users.length ? this.getCommentList() : withoutComments}
+          {this.props.comments.length && this.props.users.length && !this.allCommentsAreEmpty()
+            ? this.getCommentList()
+            : withoutComments}
         </ul>
         {this.state.commentToDelete ? (
           <ConfirmModal

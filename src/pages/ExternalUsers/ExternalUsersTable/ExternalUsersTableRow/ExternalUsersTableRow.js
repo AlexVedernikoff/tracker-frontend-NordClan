@@ -14,6 +14,7 @@ import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
 import localize from './externalUsersTableRow.json';
 import { getFirstName } from '../../../../utils/NameLocalisation';
+import moment from 'moment';
 
 class ExternalUsersTableRow extends Component {
   constructor(props) {
@@ -36,7 +37,7 @@ class ExternalUsersTableRow extends Component {
         }
         return true;
       },
-      email: value => {
+      login: value => {
         const re = /\S+@\S+\.\S+/;
         if (!re.test(value)) {
           this.props.showNotification({
@@ -48,7 +49,7 @@ class ExternalUsersTableRow extends Component {
         return true;
       },
       expiredDate: value => {
-        if (!value) {
+        if (moment().diff(value, 'days') > 0) {
           this.props.showNotification({
             message: localize[lang].SPECIFY_DATE,
             type: 'error'
@@ -99,6 +100,8 @@ class ExternalUsersTableRow extends Component {
         const re = /\S+@\S+\.\S+/;
         return !re.test(value);
       }
+      case 'date':
+        return moment().diff(value, 'days') > 0;
       default:
         return false;
     }
@@ -108,21 +111,14 @@ class ExternalUsersTableRow extends Component {
     const { id } = this.props.exUser;
     const changedFields = this.state.tempValues;
     if (!Object.keys(changedFields).length) {
-      this.setState(
-        {
-          isEditing: false
-        },
-        () => ReactTooltip.hide()
-      );
+      this.setState({ isEditing: false }, ReactTooltip.hide);
       return;
-    }
-    if (
-      (changedFields.firstNameRu !== undefined && !this.validation.name(changedFields.firstNameRu)) ||
-      (changedFields.login !== undefined && !this.validation.email(changedFields.login)) ||
-      (changedFields.expiredDate !== undefined && !this.validation.expiredDate(changedFields.expiredDate)) ||
-      (changedFields.description !== undefined && !this.validation.description(changedFields.description))
-    ) {
-      return;
+    } else {
+      for (const field in changedFields) {
+        if (this.validation[field] && !this.validation[field](changedFields[field])) {
+          return;
+        }
+      }
     }
     this.setState(
       {
@@ -170,6 +166,7 @@ class ExternalUsersTableRow extends Component {
   render() {
     const { lang, exUser } = this.props;
     const { isEditing, isValid } = this.state;
+
     return (
       <div className={css.TableRow}>
         <div className={classnames(css.TableCell, css.TableCellName)}>
@@ -194,6 +191,7 @@ class ExternalUsersTableRow extends Component {
             isEditing={isEditing}
             onValueChange={this.onEditValues('description')}
             isValid={isValid.description}
+            noLengthConstraints
           />
         </div>
         <div className={classnames(css.TableCell, css.TableCellActivity)}>
@@ -208,7 +206,8 @@ class ExternalUsersTableRow extends Component {
           <ExternalUserExpiredDate
             value={exUser.expiredDate}
             isEditing={isEditing}
-            onValueChange={this.onEditValues('expiredDate')}
+            onValueChange={this.onEditValues('expiredDate', 'date')}
+            isValid={isValid.expiredDate}
           />
         </div>
         <div className={css.TableCellEdit}>

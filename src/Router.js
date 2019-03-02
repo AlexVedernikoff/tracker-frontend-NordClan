@@ -18,6 +18,7 @@ import Metrics from './pages/ProjectPage/Metrics';
 import TaskList from './pages/ProjectPage/TaskList';
 import ProjectTimesheets from './pages/ProjectPage/ProjectTimesheets';
 import MyTasks from './pages/MyTasks';
+import MyTaskDevOps from './pages/MyTasksDevOps';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
 import Projects from './pages/Projects';
@@ -36,6 +37,7 @@ import { setRedirectPath } from './actions/Authentication';
 import isAdmin from './utils/isAdmin';
 import { EXTERNAL_USER } from './constants/Roles';
 import TaskTimeReports from './pages/TaskPage/TaskTimeReports/TaskTimeReports';
+import JiraWizard from './components/Wizard';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
@@ -111,6 +113,7 @@ class AppRouter extends Component {
           <Route path="timesheets" component={Timesheets} onEnter={this.notExternal} />
           <Route path="roles" component={UsersRoles} onEnter={this.requareAdmin} />
           <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
+          <Route path="tasks-devops" component={MyTaskDevOps} onLeave={this.props.clearCurrentProjectAndTasks} />
           <Route path="projects" component={Projects} />
           <Route path="externalUsers" component={ExternalUsers} onEnter={this.requareAdmin} />
           <Route path="projects/:projectId" component={ProjectPage} scrollToTop>
@@ -125,6 +128,7 @@ class AppRouter extends Component {
             <Route path="history" component={ProjectHistory} />
             <Route path="(sprint:sprintId/)tasks" component={TaskList} />
           </Route>
+          <Route path="projects/:projectId/jira-wizard" component={JiraWizard} scrollToTop />
 
           <Route path="projects/portfolio/:portfolioId" component={Portfolio} scrollToTop />
 

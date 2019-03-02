@@ -1,0 +1,30 @@
+{
+  "en": {
+    "REPOSITORY_ADDRESS": "Repository address",
+    "COPY_ADDRESS": "Copy address (ssh)",
+    "CANSEL_CONNECT": "Cancel connection",
+    "CONFIRM_CANSEL": "Are you sure you want to disconnect jira project",
+    "SUCCESS": "Synchronized",
+    "SYNC_FAILED": "Synchronization error",
+    "LAST_SYNC": "Last sync date",
+    "NOT_SYNC": "Not synchronized",
+    "LAST_DATE_RUNNING": "Sync start date",
+    "SYNC_RUNNING": "Sync in progress",
+    "SYNC_CANCELED": "Sync canceled",
+    "SYNC_PENDING": "Synchronization in the queue for execution"
+  },
+  "ru": {
+    "REPOSITORY_ADDRESS": "Адрес репозитория",
+    "COPY_ADDRESS": "Скопировать адрес (ssh)",
+    "CANSEL_CONNECT": "Отменить связь",
+    "CONFIRM_CANSEL": "Вы действительно хотите отвязать проект от jira",
+    "SUCCESS": "Синхронизированно",
+    "SYNC_FAILED": "Ошибка синхронизации",
+    "LAST_SYNC": "Дата последней синхронизации",
+    "NOT_SYNC": "Не синхронизировано",
+    "LAST_DATE_RUNNING": "Дата запуска синхронизации",
+    "SYNC_RUNNING": "Выполняется синхронизация",
+    "SYNC_CANCELED": "Синхронизация отменена",
+    "SYNC_PENDING": "Синхронизация в очереди на выполнение"
+  }
+}

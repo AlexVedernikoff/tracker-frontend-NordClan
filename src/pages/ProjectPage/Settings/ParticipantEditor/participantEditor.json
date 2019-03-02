@@ -16,7 +16,12 @@
     "ADD": "Add",
     "PARTICIPANTS": "Participants",
     "CREATE_PROJECT_WITH_JIRA": "Create project with Jira",
-    "SYNCHRONIZATION_WITH_JIRA": "Synchronization with Jira"
+    "SYNCHRONIZATION_WITH_JIRA": "Synchronization with Jira",
+    "SELECT_GITLAB_PROJECT": "Select Gitlab repository",
+    "SELECT_GITLAB_ROLE": "Select role",
+    "SELECT_DATA": "Expires at",
+    "ACCESS_REP": "Access to repositories",
+    "PROJECT_ROLES": "Project Roles"
   },
   "ru": {
     "FULL_ACCESS": "Полный доступ к проекту. <br/>Доступны все действия на уровне проекта: <br/>Ведение задач, планирование, настройки проекта и команды, аналитика <br/>Полная рассылка по проекту.",
@@ -35,6 +40,11 @@
     "ADD": "Добавить",
     "PARTICIPANTS": "Участники:",
     "CREATE_PROJECT_WITH_JIRA": "Создать проект с Jira",
-    "SYNCHRONIZATION_WITH_JIRA": "Синхронизация с Jira"
+    "SYNCHRONIZATION_WITH_JIRA": "Синхронизация с Jira",
+    "SELECT_GITLAB_PROJECT": "Выберите репозиторий Gitlab",
+    "SELECT_GITLAB_ROLE": "Выберите роль",
+    "SELECT_DATA": "Дата истечения",
+    "ACCESS_REP": "Доступ к репозиториям",
+    "PROJECT_ROLES": "Роли проекта"
   }
 }

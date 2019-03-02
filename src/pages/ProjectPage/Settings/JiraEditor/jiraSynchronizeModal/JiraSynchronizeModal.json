@@ -1,0 +1,12 @@
+{
+  "en": {
+    "JIRA_SYNHRONIZE_AUTHORIZATION": "Authorization",
+    "JIRA_SYNHRONIZE": "Want to sync project data?",
+    "JIRA_SYNHRONIZE_CONFIRM": "Sync confirmation"
+  },
+  "ru": {
+    "JIRA_SYNHRONIZE_AUTHORIZATION": "Авторизация",
+    "JIRA_SYNHRONIZE": "Хотите синхронизировать данные проектов?",
+    "JIRA_SYNHRONIZE_CONFIRM": "Подтверждение синхронизации"
+  }
+}

@@ -4,6 +4,7 @@ import localize from './MyTasks.json';
 
 import AgileBoard from '../ProjectPage/AgileBoard';
 import Title from 'react-title-component';
+import ScrollTop from '../../components/ScrollTop';
 
 class MyTasks extends Component {
   render() {
@@ -13,6 +14,7 @@ class MyTasks extends Component {
         <h1>{localize[this.props.lang].MY_TASKS}</h1>
         <hr />
         <AgileBoard myTaskBoard {...this.props} />
+        <ScrollTop />
       </div>
     );
   }

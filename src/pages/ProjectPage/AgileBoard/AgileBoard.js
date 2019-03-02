@@ -52,7 +52,7 @@ class AgileBoard extends Component {
   }
 
   componentDidMount() {
-    if (this.props.myTaskBoard) {
+    if (this.props.myTaskBoard || this.props.isDevOps) {
       this.getTasks();
     }
     if (!this.props.devOpsUsers) this.props.getDevOpsUsers();
@@ -94,7 +94,8 @@ class AgileBoard extends Component {
           typeId: filters.typeId || null,
           name: filters.name || null,
           tags: filters.filterTags,
-          performerId: filters.performerId || null
+          performerId: filters.performerId || null,
+          isDevOps: this.props.isDevOps || null
         };
     this.props.getTasks(options);
   };
@@ -107,7 +108,17 @@ class AgileBoard extends Component {
       });
       const performerId = taskProps.performerId || null;
       const projectId = taskProps.projectId || null;
-      this.openPerformerModal(task, performerId, projectId, task.statusId, phase);
+      const isTshAndCommentsHidden = task.statusId === TASK_STATUSES.NEW;
+      this.openPerformerModal(
+        task,
+        performerId,
+        projectId,
+        task.statusId,
+        phase,
+        undefined,
+        taskProps.isDevOps,
+        isTshAndCommentsHidden
+      );
     } else {
       this.changeStatus(task.id, task.statusId, phase);
     }
@@ -239,6 +250,7 @@ class AgileBoard extends Component {
         break;
       case 'Code Review':
         this.unionPerformers = union(
+          users.pm,
           users.teamLead,
           users.account,
           users.analyst,
@@ -251,7 +263,11 @@ class AgileBoard extends Component {
         );
         break;
       case 'QA':
-        this.unionPerformers = union(users.qa, this.props.unsortedUsers.sort(alphabeticallyComparatorLang(lang)));
+        this.unionPerformers = union(
+          users.pm,
+          users.qa,
+          this.props.unsortedUsers.sort(alphabeticallyComparatorLang(lang))
+        );
         break;
       default:
         this.unionPerformers = union(
@@ -393,15 +409,16 @@ class AgileBoard extends Component {
         users: uniqWith(this.props.project.users.concat(this.props.devOpsUsers), isEqual)
       }
     };
-    const filtersComponent = this.props.myTaskBoard ? null : (
-      <AgileBoardFilter
-        {...agileFilterProps}
-        getTasks={this.getTasks}
-        initialFilters={initialFilters}
-        tags={[noTagData].concat(tags)}
-        setFilterValue={this.setFilterValue}
-      />
-    );
+    const filtersComponent =
+      this.props.myTaskBoard || this.props.isDevOps ? null : (
+        <AgileBoardFilter
+          {...agileFilterProps}
+          getTasks={this.getTasks}
+          initialFilters={initialFilters}
+          tags={[noTagData].concat(tags)}
+          setFilterValue={this.setFilterValue}
+        />
+      );
 
     if (this.state.fromTaskCore) {
       this.sortPerformersListForTaskCore(users);
@@ -440,6 +457,7 @@ class AgileBoard extends Component {
         ) : null}
         {this.props.isCreateTaskModalOpen ? (
           <CreateTaskModal
+            afterCreate={this.getTasks}
             selectedSprintValue={this.singleSprint}
             project={this.props.project}
             defaultPerformerId={this.state.performer}
@@ -463,6 +481,7 @@ AgileBoard.propTypes = {
   getTasks: PropTypes.func.isRequired,
   globalRole: PropTypes.string,
   isCreateTaskModalOpen: PropTypes.bool,
+  isDevOps: PropTypes.bool,
   lang: PropTypes.string,
   lastCreatedTask: PropTypes.object,
   lastUpdatedTask: PropTypes.object,

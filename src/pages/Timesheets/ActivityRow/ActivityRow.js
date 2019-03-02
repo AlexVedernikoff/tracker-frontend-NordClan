@@ -124,6 +124,7 @@ class ActivityRow extends React.Component {
   };
 
   updateTimesheet = (i, sheetId, comment) => {
+    const { item } = this.props;
     const value = this.state.timeCells[i].toString().replace(',', '.');
     const { userId, startingDay } = this.props;
     if (!value && !comment) {
@@ -133,7 +134,8 @@ class ActivityRow extends React.Component {
     this.props.updateTimesheet(
       {
         sheetId,
-        spentTime: +value
+        spentTime: +value,
+        taskId: item.id
       },
       userId,
       startingDay
@@ -282,6 +284,11 @@ class ActivityRow extends React.Component {
     this.setState({ isProjectEditModalOpen: false });
   };
 
+  formatStatus = status => {
+    const index = status.search(/ play|stop/i);
+    return index === -1 ? status : status.substring(0, index);
+  };
+
   deleteActivity = ids => {
     const { userId, startingDay } = this.props;
     const realSheetIds = ids.filter(id => !~id.toString().indexOf('temp'));
@@ -428,7 +435,7 @@ class ActivityRow extends React.Component {
             <div className={css.meta}>
               {getProjectName()}
               {getSprintName()}
-              {status ? <span>{status.name}</span> : null}
+              {status ? <span>{this.formatStatus(status.name)}</span> : null}
             </div>
             <div>
               {task && <Link to={`/projects/${item.projectId}/tasks/${item.id}`}>{item.name}</Link>}

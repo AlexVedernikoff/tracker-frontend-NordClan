@@ -12,6 +12,7 @@ import { createSprint } from '../../../actions/Sprint';
 import { getSprintsDateRange } from '../../../selectors/getSprintsDateRange';
 import localize from './CreateSprintModal.json';
 import parseInteger from '../../../utils/parseInteger';
+import { BUDGET_MAX_CHARS_LENGTH } from '../../../constants/Sprint';
 
 class CreateSprintModal extends Component {
   constructor(props) {
@@ -28,15 +29,19 @@ class CreateSprintModal extends Component {
   }
 
   onChangeBudget = e => {
-    if (this.validateNumbers(e.target.value)) {
+    if (this.validateNumbers(e.target.value) && !this.budgetIsTooLong(e.target.value)) {
       this.setState({ budget: e.target.value });
     }
   };
 
   onChangeRiskBudget = e => {
-    if (this.validateNumbers(e.target.value)) {
+    if (this.validateNumbers(e.target.value) && !this.budgetIsTooLong(e.target.value)) {
       this.setState({ riskBudget: e.target.value });
     }
+  };
+
+  budgetIsTooLong = value => {
+    return value && value.length > BUDGET_MAX_CHARS_LENGTH;
   };
 
   onChangeTimeQA = e => {
@@ -46,7 +51,12 @@ class CreateSprintModal extends Component {
   };
 
   onChangeName = e => {
-    this.setState({ sprintName: e.target.value.trim() });
+    const value = e.target.value;
+    if (value.length <= 255) {
+      this.setState({ sprintName: e.target.value.trim() });
+    } else {
+      e.target.value = this.state.sprintName;
+    }
   };
 
   handleDayFromChange = date => {
@@ -113,8 +123,9 @@ class CreateSprintModal extends Component {
 
   render() {
     const { lang } = this.props;
-    const formattedDayFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('DD.MM.YYYY') : '';
-    const formattedDayTo = this.state.dateTo ? moment(this.state.dateTo).format('DD.MM.YYYY') : '';
+    const { dateFrom, dateTo } = this.state;
+    const formattedDayFrom = dateFrom ? moment(dateFrom).format('DD.MM.YYYY') : '';
+    const formattedDayTo = dateTo ? moment(dateTo).format('DD.MM.YYYY') : '';
 
     const formLayout = {
       firstCol: 4,
@@ -157,7 +168,7 @@ class CreateSprintModal extends Component {
                   value={formattedDayFrom}
                   onDayChange={this.handleDayFromChange}
                   placeholder={localize[lang].ENTER_START_DATE}
-                  // disabledDataRanges={this.props.sprintsDateRanges}
+                  disabledDataRanges={[{ after: dateTo && moment(dateTo).toDate() }]}
                 />
               </Col>
             </Row>
@@ -171,7 +182,7 @@ class CreateSprintModal extends Component {
                   value={formattedDayTo}
                   onDayChange={this.handleDayToChange}
                   placeholder={localize[lang].ENTER_END_DATE}
-                  //disabledDataRanges={this.props.sprintsDateRanges}
+                  disabledDataRanges={[{ before: dateFrom && moment(dateFrom).toDate() }]}
                 />
               </Col>
             </Row>

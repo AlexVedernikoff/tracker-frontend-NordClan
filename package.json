@@ -39,6 +39,7 @@
     "draft-js-export-html": "^1.2.0",
     "draft-js-import-html": "^1.2.1",
     "exact-math": "^1.0.0",
+    "keycloak-js": "^4.8.2",
     "lodash": "^4.17.10",
     "moment": "^2.22.2",
     "normalize.css": "^7.0.0",
@@ -73,7 +74,8 @@
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1",
     "shortid": "^2.2.13",
-    "socket.io-client": "^2.1.1"
+    "socket.io-client": "^2.1.1",
+    "universal-cookie": "^3.0.7"
   },
   "devDependencies": {
     "autoprefixer": "^7.2.6",

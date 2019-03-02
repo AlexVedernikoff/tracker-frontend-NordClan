@@ -4,6 +4,10 @@ import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
 import { projectIdSelector } from '../selectors/Project';
+import { langSelector } from '../selectors/Localize';
+import get from 'lodash/get';
+
+import localize from './Tags.i18n.json';
 
 const startTagsCreate = () => ({
   type: TagsActions.TAGS_CREATE_START
@@ -23,9 +27,9 @@ const startTagsDelete = () => ({
   type: TagsActions.TAGS_DELETE_START
 });
 
-const tagsDeleteSuccess = tags => ({
+const tagsDeleteSuccess = data => ({
   type: TagsActions.TAGS_DELETE_SUCCESS,
-  data: tags
+  data
 });
 
 const tagsDeleteError = err => ({
@@ -49,7 +53,7 @@ const TagsFilterError = err => ({
 
 export const createTags = (tags, taggable, taggableId) => {
   const URL = `${API_URL}/${taggable}/${taggableId}/tag`;
-  return dispatch => {
+  return (dispatch, getState) => {
     dispatch(startTagsCreate());
     dispatch(startLoading());
     axios
@@ -69,6 +73,20 @@ export const createTags = (tags, taggable, taggableId) => {
         );
       })
       .catch(error => {
+        const lang = langSelector(getState());
+        let message = localize[lang].TAG_CREATE_ERROR;
+
+        if (error.response.status === 400) {
+          // lodash.get is used just in case api validation error handling changes
+          const errors = get(error.response.data, 'message.errors', []);
+          const isTagLengthError = errors.some(({ param }) => param === 'tag');
+
+          if (isTagLengthError) {
+            message = localize[lang].TAG_NAME_LENGTH_ERROR;
+          }
+        }
+
+        dispatch(showNotification({ message, type: 'error' }));
         dispatch(tagsCreateError(error));
       })
       .finally(() => dispatch(finishLoading()));
@@ -82,15 +100,8 @@ export const deleteTag = (tag, taggable, taggableId) => {
     dispatch(startLoading());
     axios
       .delete(URL)
-      .then(res => {
-        if (!res.data) return;
-
-        dispatch(
-          tagsDeleteSuccess({
-            taggableId: taggableId,
-            tags: res.data
-          })
-        );
+      .then(() => {
+        dispatch(tagsDeleteSuccess({ tag }));
       })
       .catch(error => {
         dispatch(tagsDeleteError(error));
@@ -118,7 +129,6 @@ export const getTagsFilter = (tagName, filterFor) => {
 
     return requestedTagsList
       .then(data => {
-        dispatch(finishLoading());
         if (!data) return;
 
         dispatch(

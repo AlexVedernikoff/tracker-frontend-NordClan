@@ -15,6 +15,7 @@ class ProjectDate extends Component {
 
     this.state = {
       isEditing: false,
+      disabled: false,
       value: props.value
     };
   }
@@ -55,10 +56,17 @@ class ProjectDate extends Component {
     onEditSubmit(this.state.value);
   };
 
-  handleDayToChange = date => {
+  handleDayToChange = (date, modifiers) => {
+    if (modifiers.disabled) {
+      return this.setState({
+        disabled: true
+      });
+    }
+
     this.setState(
       {
-        value: moment(date).format()
+        disabled: false,
+        value: date ? moment(date).format() : null
       },
       this.toggleEditing
     );
@@ -66,7 +74,7 @@ class ProjectDate extends Component {
 
   render() {
     const { header, disabledDataRanges, lang } = this.props;
-    const { value } = this.state;
+    const { disabled, value } = this.state;
     const formattedDay = moment(value).format('DD.MM.YYYY');
     return (
       <div className={css.projectDate}>
@@ -75,6 +83,9 @@ class ProjectDate extends Component {
         <div className={css.editor}>
           {this.state.isEditing ? (
             <DatepickerDropdown
+              className={classnames({
+                [css.disabled]: disabled
+              })}
               name="date"
               autoFocus
               value={value ? formattedDay : ''}

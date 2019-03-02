@@ -23,7 +23,8 @@ export const findTimesheet = (timesheetList, targetTimesheet) =>
       : null;
 
 // Проходит по массиву таймшитов и возвращает false если хотябы один таймшит засабмичен или апрувед
-export const isTimesheetsCanBeChanged = (timesheetList, startingDay) => {
+// Для случая с кнопкой для добавления активности при наличии апрувед и реджектед таймшитом используется флаг isRejectedTimesheetsAllowed=true
+export const isTimesheetsCanBeChanged = (timesheetList, startingDay, isRejectedTimesheetsAllowed = false) => {
   if (!Array.isArray(timesheetList)) {
     return true;
   }
@@ -37,10 +38,19 @@ export const isTimesheetsCanBeChanged = (timesheetList, startingDay) => {
     return startingMoment.add(index, 'days').format('DD.MM.YY');
   });
 
-  return !timesheetList.find(
-    tsh =>
-      weekDays.indexOf(moment(tsh.onDate).format('DD.MM.YY')) !== -1 &&
-      (tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
-        tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED)
-  );
+  if (isRejectedTimesheetsAllowed) {
+    return !timesheetList.every(
+      tsh =>
+        weekDays.indexOf(moment(tsh.onDate).format('DD.MM.YY')) !== -1 &&
+        (tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
+          tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED)
+    );
+  } else {
+    return !timesheetList.find(
+      tsh =>
+        weekDays.indexOf(moment(tsh.onDate).format('DD.MM.YY')) !== -1 &&
+        (tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
+          tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED)
+    );
+  }
 };
