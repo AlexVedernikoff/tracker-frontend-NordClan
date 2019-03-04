@@ -28,6 +28,10 @@ class Tag extends React.Component {
     ReactTooltip.rebuild();
   };
 
+  componentWillUnmount() {
+    ReactTooltip.hide();
+  }
+
   deleteTag = () => {
     if (this.props.deleteHandler) {
       this.props.deleteHandler();
