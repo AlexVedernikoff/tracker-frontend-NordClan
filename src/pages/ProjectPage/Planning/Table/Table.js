@@ -198,9 +198,11 @@ class Table extends React.Component {
         {entities.map((entity, i) => {
           if (this.detectType(entity) === 'sprint') {
             timeSumm += !isExternal ? +entity[type === 'PLAN' ? 'budget' : 'spentTime'] : 0;
+            const timeValue = !isExternal ? roundNum(entity[type === 'PLAN' ? 'budget' : 'spentTime'], 2) : '';
+
             return (
-              <span key={`sprint-${i}`} className={css.name}>
-                {!isExternal ? roundNum(entity[type === 'PLAN' ? 'budget' : 'spentTime'], 2) : ''}
+              <span key={`sprint-${i}`} className={css.name} title={timeValue}>
+                <div className={css.timeValue}>{timeValue}</div>
               </span>
             );
           }
@@ -210,7 +212,12 @@ class Table extends React.Component {
             </span>
           );
         })}
-        {entities.length ? <span className={classnames(css.name, css.resultTime)}>{roundNum(timeSumm, 2)}</span> : null}
+
+        {entities.length ? (
+          <span className={classnames(css.name, css.resultTime)} title={roundNum(timeSumm, 2)}>
+            <div className={css.timeValue}>{roundNum(timeSumm, 2)}</div>{' '}
+          </span>
+        ) : null}
       </div>
     );
   }
