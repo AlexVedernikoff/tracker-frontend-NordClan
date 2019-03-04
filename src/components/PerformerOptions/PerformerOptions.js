@@ -218,7 +218,7 @@ class PerformerOptions extends Component {
             {!isTshAndCommentsHidden &&
               task.statusId !== TASK_STATUSES.NEW &&
               activeUser.id === task.performerId && (
-                <label className={css.formField}>
+                <div className={css.formField}>
                   <Row className={css.taskFormRow}>
                     <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                       <p className={css.label}>{localize[lang].TIMESHEETS}</p>
@@ -228,7 +228,7 @@ class PerformerOptions extends Component {
                       <TaskTimesheet userId={activeUser.id} />
                     </Col>
                   </Row>
-                </label>
+                </div>
               )}
 
             {!isTshAndCommentsHidden &&
