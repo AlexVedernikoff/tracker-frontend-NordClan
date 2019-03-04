@@ -1,0 +1,18 @@
+{
+  "en": {
+    "ADD_TASK_TO_TARGET": "Add task to target",
+    "CHANGE_TARGET": "Change target",
+    "REMOVE_GOAL": "Remove goal",
+    "MOVE_TO_NEXT_SPRINT": "Move to next sprint",
+    "VISIBLE_GOAL": "Visible goal",
+    "HIDDEN_GOAL": "hidden goal"
+  },
+  "ru": {
+    "ADD_TASK_TO_TARGET": "Добавить задачу в цель",
+    "CHANGE_TARGET": "Изменить цель",
+    "REMOVE_GOAL": "Удалить цель",
+    "MOVE_TO_NEXT_SPRINT": "Перенести в следующий сприн",
+    "VISIBLE_GOAL": "Видимая цель",
+    "HIDDEN_GOAL": "Скрытая цель"
+  }
+}

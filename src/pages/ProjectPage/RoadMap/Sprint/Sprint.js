@@ -25,6 +25,8 @@ class Sprint extends Component {
     modifyGoalId: PropTypes.number,
     openCreateTaskModal: PropTypes.func,
     remove: PropTypes.func,
+    toggleStatus: PropTypes.func,
+    toggleVisible: PropTypes.func,
     transfer: PropTypes.func
   };
 
@@ -67,6 +69,10 @@ class Sprint extends Component {
 
   hanldeEditSprint = () => this.props.editSprint(this.props.item);
 
+  toggleVisible = (id, visible) => () => this.props.toggleVisible(id, !visible);
+
+  toggleStatus = id => checked => this.props.toggleStatus(id, checked);
+
   render() {
     const { item, globalStart, globalEnd, lang, modifyGoalId } = this.props;
     const { collapsed, showModal, isEdit, goalItem } = this.state;
@@ -75,11 +81,14 @@ class Sprint extends Component {
       <Goal
         key={goal.id}
         item={goal}
+        lang={lang}
         addTask={this.addTask(goal)}
         editGoal={this.editGoal(goal)}
         removeGoal={this.removeGoal(goal.id)}
         transferGoal={this.transferGoal(goal.id, item.createdAt)}
         modifyGoalId={modifyGoalId}
+        toggleVisible={this.toggleVisible(goal.id, goal.visible)}
+        toggleStatus={this.toggleStatus(goal.id)}
       />
     ));
     const meta = (
@@ -88,8 +97,12 @@ class Sprint extends Component {
         <div className={styles.metaItem}>{item.riskBudget} ч. - риск.</div>
         <div className={styles.metaItem}>{item.qaPercent}% на QA</div>
         <div className={`${styles.metaItem}, ${styles.export}`}>
-          <IconDownload data-tip="Выгрузить спринт" />
-          <IconEdit className={styles.actionIcon} data-tip="Редактировать цель" onClick={this.hanldeEditSprint} />
+          <IconDownload data-tip={localize[lang].UNLOAD_SPRINT} />
+          <IconEdit
+            className={styles.actionIcon}
+            data-tip={localize[lang].CHANGE_SPRINT}
+            onClick={this.hanldeEditSprint}
+          />
         </div>
       </div>
     );

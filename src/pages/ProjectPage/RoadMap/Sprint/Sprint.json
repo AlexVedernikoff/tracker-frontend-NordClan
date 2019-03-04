@@ -6,7 +6,9 @@
     "DESCRIPTION_GOAL": "Описание",
     "ENTER_DESCRIPTION_GOAL": "Введите описание цели",
     "IS_VISIBLE": "Видимость",
-    "PLANNED_EXECUTION_TIME": "Планируемое время завершения"
+    "PLANNED_EXECUTION_TIME": "Планируемое время завершения",
+    "UNLOAD_SPRINT": "Выгрузить спринт",
+    "CHANGE_SPRINT": "Редактировать цель"
   },
   "en": {
     "ADD_GOAL": "Add goal",
@@ -15,6 +17,8 @@
     "DESCRIPTION_GOAL": "Description",
     "ENTER_DESCRIPTION_GOAL": "Enter a description of the goal.",
     "IS_VISIBLE": "Is visible",
-    "PLANNED_EXECUTION_TIME": "Planned execution time"
+    "PLANNED_EXECUTION_TIME": "Planned execution time",
+    "UNLOAD_SPRINT": "Unload sprint",
+    "CHANGE_SPRINT": "Change sprint"
   }
 }

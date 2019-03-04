@@ -7,9 +7,10 @@ import VisibleControl from './VisibleControl';
 import Meta from './Meta';
 import { IconArrowLeft, IconEdit, IconDelete, IconPlus, IconArrowRight } from '../../../../components/Icons';
 
+import localize from './localize.json';
 import styles from './Goal.scss';
 
-class Sprint extends Component {
+class Goal extends Component {
   static propTypes = {
     addTask: PropTypes.func,
     editGoal: PropTypes.func,
@@ -17,17 +18,25 @@ class Sprint extends Component {
       id: PropTypes.number,
       name: PropTypes.string
     }),
+    lang: PropTypes.string,
     removeGoal: PropTypes.func,
+    toggleStatus: PropTypes.func,
+    toggleVisible: PropTypes.func,
     transferGoal: PropTypes.func
   };
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      checked: props.item.status === 'done'
+    };
   }
 
+  handleChangeStatus = ({ target: { checked } }) => this.setState({ checked }, () => this.props.toggleStatus(checked));
+
   render() {
-    const { item, modifyGoalId } = this.props;
+    const { checked } = this.state;
+    const { item, modifyGoalId, lang } = this.props;
     const { id, budget, tasksCount, removedFromSprint, removedToSprint } = item;
     const metaProps = {
       budget,
@@ -41,10 +50,10 @@ class Sprint extends Component {
     return (
       <div className={cn(styles.goal, modifyItem)}>
         <div className={styles.mainContainer}>
-          {!removedToSprint && <VisibleControl visible={item.visible} />}
+          {!removedToSprint && <VisibleControl visible={item.visible} onClick={this.props.toggleVisible} lang={lang} />}
           {!removedToSprint && (
             <span className={styles.checkbox}>
-              <Checkbox checked={item.done} />
+              <Checkbox checked={checked} onChange={this.handleChangeStatus} />
             </span>
           )}
           {!!removedToSprint && (
@@ -56,12 +65,24 @@ class Sprint extends Component {
           <Meta {...metaProps} />
           {!removedToSprint && (
             <span className={styles.actionButtons}>
-              <IconPlus className={styles.actionIcon} data-tip="Добавить задачу в цель" onClick={this.props.addTask} />
-              <IconEdit className={styles.actionIcon} data-tip="Изменить цель" onClick={this.props.editGoal} />
-              <IconDelete className={styles.actionIcon} data-tip="Удалить цель" onClick={this.props.removeGoal} />
+              <IconPlus
+                className={styles.actionIcon}
+                data-tip={localize[lang].ADD_TASK_TO_TARGET}
+                onClick={this.props.addTask}
+              />
+              <IconEdit
+                className={styles.actionIcon}
+                data-tip={localize[lang].CHANGE_TARGET}
+                onClick={this.props.editGoal}
+              />
+              <IconDelete
+                className={styles.actionIcon}
+                data-tip={localize[lang].REMOVE_GOAL}
+                onClick={this.props.removeGoal}
+              />
               <IconArrowRight
                 className={styles.actionIcon}
-                data-tip="Перенести в следующий спринт"
+                data-tip={localize[lang].MOVE_TO_NEXT_SPRINT}
                 onClick={this.props.transferGoal}
               />
             </span>
@@ -73,4 +94,4 @@ class Sprint extends Component {
   }
 }
 
-export default Sprint;
+export default Goal;

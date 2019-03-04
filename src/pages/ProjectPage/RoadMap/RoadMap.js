@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { create, edit, remove, transfer, getGoalsByProject } from '../../../actions/Goals';
+import { create, edit, remove, transfer, getGoalsByProject, toggleVisible, toggleStatus } from '../../../actions/Goals';
 import { getProjectInfo, openCreateTaskModal } from '../../../actions/Project';
 import { editSprint } from '../../../actions/Sprint';
 import PropTypes from 'prop-types';
@@ -22,6 +22,8 @@ class RoadMap extends Component {
     modifyGoalId: PropTypes.number,
     project: PropTypes.object,
     sprints: PropTypes.array.isRequired,
+    toggleStatus: PropTypes.func,
+    toggleVisible: PropTypes.func,
     transfer: PropTypes.func
   };
 
@@ -72,7 +74,6 @@ class RoadMap extends Component {
 
   handleEditSprint = sprint => {
     this.setState({ isOpenSprintEditModal: false });
-    console.log('handleEditSprint');
     this.props.editSprint(
       sprint.id,
       null,
@@ -84,6 +85,10 @@ class RoadMap extends Component {
       sprint.qaPercent
     );
   };
+
+  toggleVisible = (id, visible) => this.props.toggleVisible(id, visible, this.props.project.id);
+
+  toggleStatus = (id, status) => this.props.toggleStatus(id, status, this.props.project.id);
 
   render() {
     const { activePage, isSuccessAddGoal, sprintId, goalId } = this.state;
@@ -113,6 +118,8 @@ class RoadMap extends Component {
               openCreateTaskModal={this.openCreateTaskModal}
               transfer={this.transfer}
               editSprint={this.editSprint}
+              toggleVisible={this.toggleVisible}
+              toggleStatus={this.toggleStatus}
               {...rangeTimeline}
             />
           ))}
@@ -167,7 +174,9 @@ const mapDispatchToProps = {
   remove,
   openCreateTaskModal,
   transfer,
-  editSprint
+  editSprint,
+  toggleVisible,
+  toggleStatus
 };
 
 export default connect(
