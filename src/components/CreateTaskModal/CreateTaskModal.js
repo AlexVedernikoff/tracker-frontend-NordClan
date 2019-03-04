@@ -322,7 +322,7 @@ class CreateTaskModal extends Component {
               </Col>
             </Row>
           </label>
-          <label className={css.formField}>
+          <div className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>{localize[lang].FROM_CLIENT}</p>
@@ -331,8 +331,8 @@ class CreateTaskModal extends Component {
                 <Checkbox refCallback={this.getIsByClientRef} />
               </Col>
             </Row>
-          </label>
-          <label className={css.formField}>
+          </div>
+          <div className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>{localize[lang].DEV_OPS}</p>
@@ -341,7 +341,7 @@ class CreateTaskModal extends Component {
                 <Checkbox checked={this.state.isDevOps} onChange={this.toggleDevOpsCheckbox} />
               </Col>
             </Row>
-          </label>
+          </div>
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
