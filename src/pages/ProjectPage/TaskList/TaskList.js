@@ -38,7 +38,7 @@ import localize from './taskList.json';
 import { BACKLOG_ID } from '../../../constants/Sprint';
 import { IN_PROGRESS } from '../../../constants/SprintStatuses';
 import ScrollTop from '../../../components/ScrollTop';
-import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
+import { layoutAgnosticFilterGlobal } from '../../../utils/layoutAgnosticFilter';
 
 const dateFormat = 'DD.MM.YYYY';
 
@@ -760,7 +760,7 @@ class TaskList extends Component {
                     onInputChange={removeNumChars}
                     noResultsText={localize[lang].NO_RESULTS}
                     options={this.sortedAuthorOptions()}
-                    filterOption={layoutAgnosticFilter}
+                    filterOption={layoutAgnosticFilterGlobal}
                     canClear
                     onClear={() => this.clearFilter('authorId')}
                   />
@@ -769,7 +769,7 @@ class TaskList extends Component {
                   <PerformerFilter
                     onPerformerSelect={this.onChangePerformerFilter}
                     selectedPerformerId={performerId}
-                    filterOption={layoutAgnosticFilter}
+                    filterOption={layoutAgnosticFilterGlobal}
                     canClear
                     onClear={() => this.clearFilter('performerId')}
                   />
@@ -797,7 +797,7 @@ class TaskList extends Component {
                     canClear
                     onClear={() => this.clearFilter('statusId')}
                     onChange={this.onChangeStatusFilter}
-                    filterOption={layoutAgnosticFilter}
+                    filterOption={layoutAgnosticFilterGlobal}
                   />
                 </Col>
                 <Col xs={6} sm={3}>
@@ -813,7 +813,7 @@ class TaskList extends Component {
                     canClear
                     onClear={() => this.clearFilter('typeId')}
                     onChange={this.onChangeTypeFilter}
-                    filterOption={layoutAgnosticFilter}
+                    filterOption={layoutAgnosticFilterGlobal}
                   />
                 </Col>
                 <Col xs={6} sm={3}>
