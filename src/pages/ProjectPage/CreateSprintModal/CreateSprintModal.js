@@ -171,7 +171,7 @@ class CreateSprintModal extends Component {
                 <p>{localize[lang].SPRINT_NAME}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input placeholder={localize[lang].ENTER_SPRINT_NAME} onChange={this.onChangeName} />
+                <Input autoFocus placeholder={localize[lang].ENTER_SPRINT_NAME} onChange={this.onChangeName} />
               </Col>
             </Row>
             <Row className={css.inputRow}>

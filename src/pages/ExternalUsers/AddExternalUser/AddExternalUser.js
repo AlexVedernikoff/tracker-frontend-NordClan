@@ -171,7 +171,7 @@ class AddExternalUser extends Component {
           isOpen={isModalOpen}
           closeTimeoutMS={200}
         >
-          <div className={css.container}>
+          <form className={css.container}>
             <h3 style={{ margin: 0 }}>{localize[lang].ADD_EXTERNAL_USER_TITLE}</h3>
             <hr />
             {errorNotice}
@@ -281,11 +281,12 @@ class AddExternalUser extends Component {
                   type="green"
                   text={localize[lang].ADD_USER}
                   disabled={!this.validateForm()}
+                  htmlType="submit"
                   onClick={this.addUser}
                 />
               </Col>
             </Row>
-          </div>
+          </form>
         </Modal>
       </div>
     );
