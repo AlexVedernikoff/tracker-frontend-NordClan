@@ -435,7 +435,7 @@ class AgileBoard extends Component {
       <section className={css.agileBoard}>
         {filtersComponent}
         <div className={css.boardContainer}>
-          <Row>
+          <Row className={css.agileBoardRow}>
             <PhaseColumn onDrop={this.dropTask} section={tasksKey} title={'New'} tasks={tasksList.new} />
             <PhaseColumn onDrop={this.dropTask} section={tasksKey} title={'Dev'} tasks={tasksList.dev} />
             <PhaseColumn onDrop={this.dropTask} section={tasksKey} title={'Code Review'} tasks={tasksList.codeReview} />
