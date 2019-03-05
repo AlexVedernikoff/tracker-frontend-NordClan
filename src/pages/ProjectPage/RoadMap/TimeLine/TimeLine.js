@@ -81,21 +81,32 @@ class TimeLine extends Component {
 
   render() {
     const diffSprintByDay = this.sprintEnd.diff(this.sprintStart, 'days');
+    const { left, right } = this.progressPosition;
+    const leftInt = parseInt(left);
+    const rightInt = parseInt(right);
+    const progressPositionStyles = {
+      left: leftInt > 0 ? left : 0,
+      right: rightInt > 0 ? right : 0
+    };
     return (
       <div className={styles.lineContainer}>
         <div className={styles.timeline}>
           <div className={styles.currentSprint} style={this.sprintPosition}>
-            <div className={styles.start}>
-              <span className={styles.date}>{this.sprintStart.format('DD.MM.YYYY')}</span>
-            </div>
-            <div className={styles.end}>
-              <span className={cn(styles.date, { [styles.down]: diffSprintByDay < 15 })}>
-                {this.sprintEnd.format('DD.MM.YYYY')}
-              </span>
-            </div>
+            {leftInt > 0 ? (
+              <div className={styles.start}>
+                <span className={styles.date}>{this.sprintStart.format('DD.MM.YYYY')}</span>
+              </div>
+            ) : null}
+            {rightInt > 0 ? (
+              <div className={styles.end}>
+                <span className={cn(styles.date, { [styles.down]: diffSprintByDay < 15 })}>
+                  {this.sprintEnd.format('DD.MM.YYYY')}
+                </span>
+              </div>
+            ) : null}
           </div>
         </div>
-        {this.isProgress && <div className={styles.progress} style={this.progressPosition} />}
+        {this.isProgress && <div className={styles.progress} style={progressPositionStyles} />}
         {this.isCurrentSprint && <IconArrowDown className={styles.today} style={this.todayPosition} />}
       </div>
     );
