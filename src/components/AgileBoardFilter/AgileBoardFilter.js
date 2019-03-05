@@ -27,7 +27,8 @@ class AgileBoardFilter extends React.Component {
 
   state = {
     isOpened: false,
-    allFilters: []
+    allFilters: [],
+    isQueryHasSprints: !!this.props.location.query['changedSprint[]']
   };
 
   componentDidMount() {
@@ -41,7 +42,12 @@ class AgileBoardFilter extends React.Component {
 
     const { currentSprint, isProjectInfoReceiving } = this.props;
 
-    if (!isProjectInfoReceiving && prevProps.isProjectInfoReceiving && this.isActiveSprintsChanged) {
+    if (
+      !isProjectInfoReceiving &&
+      prevProps.isProjectInfoReceiving &&
+      this.isActiveSprintsChanged &&
+      !this.state.isQueryHasSprints
+    ) {
       this.props.setFilterValue('changedSprint', currentSprint.map(s => s.value), this.updateFilterList);
     }
 
@@ -49,7 +55,7 @@ class AgileBoardFilter extends React.Component {
       this.props.setFilterValue('changedSprint', [0], this.updateFilterList);
     }
 
-    if (currentSprint !== prevProps.currentSprint && this.isSprintFilterEmpty) {
+    if (currentSprint !== prevProps.currentSprint && this.isSprintFilterEmpty && !this.state.isQueryHasSprints) {
       const sprintValue = currentSprint && currentSprint.length ? currentSprint.map(s => s.value) : [0];
       this.props.setFilterValue('changedSprint', sprintValue, this.updateFilterList);
     }
