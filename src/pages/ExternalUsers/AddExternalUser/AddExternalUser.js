@@ -101,12 +101,15 @@ class AddExternalUser extends Component {
   addUser = () => {
     const { name, email, description, expiredDate } = this.state;
     this.setState({ errorMessage: null });
+
+    const expireDateRequest = moment(moment(expiredDate).format('x') - 24 * 60 * 60 * 1000).format('YYYY-MM-DD');
+
     this.props
       .addExternalUser({
         firstNameRu: name,
         login: email,
         description: description,
-        expiredDate
+        expiredDate: expireDateRequest
       })
       .then(() => {
         this.setState({ ...initialState });
