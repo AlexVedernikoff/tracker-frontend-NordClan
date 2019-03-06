@@ -54,7 +54,7 @@ export const create = data => {
       .post(URL, data)
       .then(response => {
         dispatch({ type: GoalsActions.CREATE_GOAL, data: response.data });
-        dispatch(getProjectInfo(2));
+        dispatch(getProjectInfo(data.projectId));
       })
       .catch(error => dispatch(showNotification({ message: error.message, type: 'error' })));
   };
@@ -68,7 +68,63 @@ export const edit = data => {
       .put(URL, data)
       .then(response => {
         dispatch({ type: GoalsActions.EDIT__GOAL, data: response.data });
-        dispatch(getProjectInfo(2));
+        dispatch(getProjectInfo(data.projectId));
+      })
+      .catch(error => dispatch(showNotification({ message: error.message, type: 'error' })));
+  };
+};
+
+export const remove = (id, projectId) => {
+  const URL = `${API_URL}/goal/${id}`;
+  return dispatch => {
+    dispatch({ type: GoalsActions.REMOVE_GOAL_START });
+    axios
+      .delete(URL)
+      .then(response => {
+        dispatch({ type: GoalsActions.REMOVE__GOAL, data: response.data });
+        dispatch(getProjectInfo(projectId));
+      })
+      .catch(error => dispatch(showNotification({ message: error.message, type: 'error' })));
+  };
+};
+
+export const transfer = (gloalId, sprintId, projectId) => {
+  const URL = `${API_URL}/goal/${gloalId}/sprint`;
+  return dispatch => {
+    dispatch({ type: GoalsActions.TRANSGER_GOAL_START });
+    axios
+      .put(URL, { sprintId })
+      .then(response => {
+        dispatch({ type: GoalsActions.TRANSGER__GOAL, data: response.data });
+        dispatch(getProjectInfo(projectId));
+      })
+      .catch(error => dispatch(showNotification({ message: error.message, type: 'error' })));
+  };
+};
+
+export const toggleVisible = (gloalId, visible, projectId) => {
+  const URL = `${API_URL}/goal/${gloalId}/visible`;
+  return dispatch => {
+    dispatch({ type: GoalsActions.TOGGLE_VISIBLE_GOAL_START });
+    axios
+      .put(URL, { visible })
+      .then(response => {
+        dispatch({ type: GoalsActions.TOGGLE_VISIBLE_GOAL_SUCCESS, data: response.data });
+        dispatch(getProjectInfo(projectId));
+      })
+      .catch(error => dispatch(showNotification({ message: error.message, type: 'error' })));
+  };
+};
+
+export const toggleStatus = (gloalId, status, projectId) => {
+  const URL = `${API_URL}/goal/${gloalId}/status`;
+  return dispatch => {
+    dispatch({ type: GoalsActions.TOGGLE_STATUS_GOAL_START });
+    axios
+      .put(URL, { status })
+      .then(response => {
+        dispatch({ type: GoalsActions.TOGGLE_STATUS_GOAL_SUCCES, data: response.data });
+        dispatch(getProjectInfo(projectId));
       })
       .catch(error => dispatch(showNotification({ message: error.message, type: 'error' })));
   };

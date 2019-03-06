@@ -35,7 +35,6 @@
 .rightBlock {
   flex-basis: 100%;
   position: relative;
-  overflow: hidden;
 }
 
 .goals {
@@ -68,4 +67,8 @@
   margin-top: 0.5rem;
   font-size: 1rem;
   cursor: pointer;
+
+  & > svg:not(:first-child) {
+    margin-left: 0.4rem;
+  }
 }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
-import { IconPlus, IconDownload, IconArrowRight, IconArrowDown } from '../../../../components/Icons';
+import { IconPlus, IconEdit, IconDownload, IconArrowRight, IconArrowDown } from '../../../../components/Icons';
 import TimeLine from '../TimeLine';
 import Goal from '../Goal';
 import AddGoal from '../AddGoal/AddGoal';
@@ -13,14 +13,21 @@ class Sprint extends Component {
   static propTypes = {
     create: PropTypes.func,
     edit: PropTypes.func,
+    editSprint: PropTypes.func,
     globalEnd: PropTypes.number,
     globalStart: PropTypes.number,
     item: PropTypes.shape({
       id: PropTypes.number,
-      name: PropTypes.string
+      name: PropTypes.string,
+      projectId: PropTypes.number
     }),
     lang: PropTypes.string,
-    modifyGoalId: PropTypes.number
+    modifyGoalId: PropTypes.number,
+    openCreateTaskModal: PropTypes.func,
+    remove: PropTypes.func,
+    toggleStatus: PropTypes.func,
+    toggleVisible: PropTypes.func,
+    transfer: PropTypes.func
   };
 
   constructor(props) {
@@ -51,12 +58,38 @@ class Sprint extends Component {
     });
   };
 
+  removeGoal = id => () => this.props.remove(id);
+
+  addTask = goalItem => () => {
+    const { id: goalId, activeSprintId: sprintId } = goalItem;
+    this.props.openCreateTaskModal({ goalId, sprintId });
+  };
+
+  transferGoal = (goalId, createdAt) => () => this.props.transfer(goalId, createdAt);
+
+  hanldeEditSprint = () => this.props.editSprint(this.props.item);
+
+  toggleVisible = (id, visible) => () => this.props.toggleVisible(id, !visible);
+
+  toggleStatus = id => checked => this.props.toggleStatus(id, checked);
+
   render() {
     const { item, globalStart, globalEnd, lang, modifyGoalId } = this.props;
     const { collapsed, showModal, isEdit, goalItem } = this.state;
 
     const goals = item.goals.map(goal => (
-      <Goal editGoal={this.editGoal(goal)} key={goal.id} item={goal} modifyGoalId={modifyGoalId} />
+      <Goal
+        key={goal.id}
+        item={goal}
+        lang={lang}
+        addTask={this.addTask(goal)}
+        editGoal={this.editGoal(goal)}
+        removeGoal={this.removeGoal(goal.id)}
+        transferGoal={this.transferGoal(goal.id, item.createdAt)}
+        modifyGoalId={modifyGoalId}
+        toggleVisible={this.toggleVisible(goal.id, goal.visible)}
+        toggleStatus={this.toggleStatus(goal.id)}
+      />
     ));
     const meta = (
       <div className={styles.meta}>
@@ -64,7 +97,12 @@ class Sprint extends Component {
         <div className={styles.metaItem}>{item.riskBudget} ч. - риск.</div>
         <div className={styles.metaItem}>{item.qaPercent}% на QA</div>
         <div className={`${styles.metaItem}, ${styles.export}`}>
-          <IconDownload data-tip="Выгрузить спринт" />
+          <IconDownload data-tip={localize[lang].UNLOAD_SPRINT} />
+          <IconEdit
+            className={styles.actionIcon}
+            data-tip={localize[lang].CHANGE_SPRINT}
+            onClick={this.hanldeEditSprint}
+          />
         </div>
       </div>
     );

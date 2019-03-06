@@ -246,13 +246,18 @@ class AddGoal extends Component {
                   )}
                 </Col>
               </Row>
-              <Button
-                text={localize[lang].ADD_GOAL}
-                type="green-lighten"
-                onClick={this.handleAddGoal(isEdit ? goalItem.id : item.id)}
-                disabled={false}
-                style={{ width: '100%' }}
-              />
+              <Row className={css.createButton} center="xs">
+                <Col xs>
+                  <Button
+                    text={localize[lang].ADD_GOAL}
+                    type="green"
+                    htmlType="submit"
+                    onClick={this.handleAddGoal(isEdit ? goalItem.id : item.id)}
+                    disabled={false}
+                    style={{ width: '100%' }}
+                  />
+                </Col>
+              </Row>
             </form>
           </div>
         </Modal>
