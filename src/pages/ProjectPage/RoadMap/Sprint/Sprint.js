@@ -1,26 +1,35 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
-
 import { IconPlus, IconDownload, IconArrowRight, IconArrowDown } from '../../../../components/Icons';
 import TimeLine from '../TimeLine';
-import styles from './Sprint.scss';
 import Goal from '../Goal';
+import AddGoal from '../AddGoal/AddGoal';
+
+import localize from './Sprint.json';
+import styles from './Sprint.scss';
 
 class Sprint extends Component {
   static propTypes = {
+    create: PropTypes.func,
+    edit: PropTypes.func,
     globalEnd: PropTypes.number,
     globalStart: PropTypes.number,
     item: PropTypes.shape({
       id: PropTypes.number,
       name: PropTypes.string
-    })
+    }),
+    lang: PropTypes.string,
+    modifyGoalId: PropTypes.number
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      collapsed: true
+      collapsed: true,
+      showModal: false,
+      isEdit: false,
+      goal: {}
     };
   }
 
@@ -32,10 +41,23 @@ class Sprint extends Component {
     this.setState(state => ({ collapsed: !state.collapsed }));
   };
 
+  addGoal = () => this.setState({ isEdit: false, showModal: true });
+
+  editGoal = goalItem => () => {
+    this.setState({
+      goalItem,
+      isEdit: true,
+      showModal: true
+    });
+  };
+
   render() {
-    const { item, globalStart, globalEnd } = this.props;
-    const { collapsed } = this.state;
-    const goals = item.goals.map(goal => <Goal key={goal.id} item={goal} />);
+    const { item, globalStart, globalEnd, lang, modifyGoalId } = this.props;
+    const { collapsed, showModal, isEdit, goalItem } = this.state;
+
+    const goals = item.goals.map(goal => (
+      <Goal editGoal={this.editGoal(goal)} key={goal.id} item={goal} modifyGoalId={modifyGoalId} />
+    ));
     const meta = (
       <div className={styles.meta}>
         <div className={styles.metaItem}>{item.budget} ч.</div>
@@ -49,11 +71,11 @@ class Sprint extends Component {
     const goalsContainer = (
       <div className={styles.goals}>
         <div>{goals}</div>
-        <div className={styles.addingButton}>
+        <div className={styles.addingButton} onClick={this.addGoal}>
           <span className={styles.addingIcon}>
             <IconPlus />
           </span>
-          Добавить цель
+          {localize[lang].ADD_GOAL}
         </div>
       </div>
     );
@@ -75,6 +97,15 @@ class Sprint extends Component {
           />
           {!collapsed && goalsContainer}
         </div>
+        <AddGoal
+          showModal={showModal}
+          closeModal={() => this.setState({ showModal: false })}
+          item={item}
+          create={this.props.create}
+          edit={this.props.edit}
+          isEdit={isEdit}
+          goalItem={goalItem}
+        />
       </div>
     );
   }

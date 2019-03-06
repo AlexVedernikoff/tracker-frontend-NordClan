@@ -69,3 +69,25 @@
     }
   }
 }
+
+.modify {
+  animation: activeGoal 1s linear forwards;
+}
+
+@keyframes activeGoal {
+  0% {
+    margin-left: 0px;
+  }
+  30% {
+    background-color: #f2b866;
+  }
+  50% {
+    margin-left: 100px;
+  }
+  70% {
+    background-color: none;
+  }
+  100% {
+    margin-left: 0px;
+  }
+}

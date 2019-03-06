@@ -225,15 +225,9 @@ class Planning extends Component {
     this.props.openCreateTaskModal();
   };
 
-  onMouseOverRow = (type, id) => {
-    return () => {
-      this.setState({ typeHovered: type, typeIdHovered: id });
-    };
-  };
+  onMouseOverRow = (type, id) => () => this.setState({ typeHovered: type, typeIdHovered: id });
 
-  onMouseOutRow = () => {
-    this.setState({ typeHovered: null, idHovered: null });
-  };
+  onMouseOutRow = () => this.setState({ typeHovered: null, idHovered: null });
 
   onClickSprint = sprintId => {
     return () => {
@@ -300,6 +294,14 @@ class Planning extends Component {
   checkIsAdminInProject = () => {
     return (
       this.props.user.projectsRoles.admin.indexOf(this.props.project.id) !== -1 || this.props.user.globalRole === ADMIN
+    );
+  };
+
+  userCanEditPlan = () => {
+    return this.props.user.usersProjects.some(
+      project =>
+        project.roles.some(role => role.projectRoleId === 1 || role.projectRoleId === 2) &&
+        project.projectId === project.id
     );
   };
 
@@ -468,6 +470,8 @@ class Planning extends Component {
     const qaPercent = project.qaPercent;
     const unfinishedLeftTasksCount = this.getUnfinishedLeftTasks().length;
 
+    const canEditPlan = this.userCanEditPlan() || this.checkIsAdminInProject();
+
     return (
       <div>
         <section>
@@ -534,18 +538,16 @@ class Planning extends Component {
             onMouseOutRow={this.onMouseOutRow}
             lang={lang}
             isProjectAdmin={isProjectAdmin}
+            canEditPlan={canEditPlan}
           />
           <Table
             entities={entities}
-            typeIdHovered={typeIdHovered}
-            typeHovered={typeHovered}
             isProjectAdmin={isProjectAdmin}
             isExternal={isExternal}
-            onMouseOverRow={this.onMouseOverRow}
-            onMouseOutRow={this.onMouseOutRow}
             grantYearDecrement={this.grantYearDecrement}
             grantYearIncrement={this.grantYearIncrement}
             grantActiveYear={grantActiveYear}
+            canEditPlan={canEditPlan}
             onClickSprint={this.onClickSprint}
             openSprintEditModal={this.openSprintEditModal}
             openMilestoneEditModal={this.openMilestoneEditModal}
@@ -575,7 +577,7 @@ class Planning extends Component {
                 estimates={leftEstimates}
                 sprints={leftColumnSprints}
                 selectedSprintValue={leftColumn}
-                onSprintChange={e => this.selectValue(e !== null ? e.value : null, 'leftColumn')}
+                onSprintChange={e => this.selectValue(e !== null ? e.value : BACKLOG_ID, 'leftColumn')}
                 onCreateTaskClick={this.openModal}
               />
               <ConfirmModal
@@ -596,7 +598,7 @@ class Planning extends Component {
                 estimates={rightEstimates}
                 sprints={rightColumnSprints}
                 selectedSprintValue={rightColumn}
-                onSprintChange={e => this.selectValue(e !== null ? e.value : null, 'rightColumn')}
+                onSprintChange={e => this.selectValue(e !== null ? e.value : BACKLOG_ID, 'rightColumn')}
                 onCreateTaskClick={this.openModal}
               />
               <Col xs={12} sm={6}>

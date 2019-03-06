@@ -9,6 +9,7 @@ import classnames from 'classnames';
 import * as MetricTypes from '../../../../constants/Metrics';
 const dateFormat = 'DD.MM.YYYY';
 import findLastIndex from 'lodash/findLastIndex';
+import { getFullName } from '../../../../utils/NameLocalisation';
 
 const filterMetrics = (id, metrics) => {
   return metrics ? metrics.filter(metric => metric.typeId === id) : [];
@@ -121,7 +122,7 @@ class TeamMetrics extends Component {
                 return (
                   <tr key={teamMetric.sprintId + '_' + item.user.id}>
                     <td>
-                      <span>{item.user.fullNameRu}</span>
+                      <span>{getFullName(item.user)}</span>
                     </td>
                     <td>{item.taskDoneCount}</td>
                     <td>{item.taskReturnCount}</td>

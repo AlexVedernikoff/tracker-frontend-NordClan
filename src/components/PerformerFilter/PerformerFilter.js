@@ -26,6 +26,13 @@ class PerformerFilter extends React.Component {
       value: user.id,
       label: getFullName(user)
     }));
+    users.sort((a, b) => {
+      if (a.label < b.label) {
+        return -1;
+      } else if (a.label > b.label) {
+        return 1;
+      }
+    });
     users.unshift({ value: '0', label: localize[this.props.lang].NOT_CHANGED });
     return users;
   };
@@ -34,6 +41,7 @@ class PerformerFilter extends React.Component {
     const { lang } = this.props;
     return (
       <SelectDropdown
+        {...this.props}
         name="performer"
         placeholder={localize[lang].CHANGE_PERFORMER}
         multi
@@ -43,6 +51,7 @@ class PerformerFilter extends React.Component {
         noResultsText={localize[lang].NO_RESULTS}
         options={this.getUsers()}
         backspaceToRemoveMessage={''}
+        {...this.props}
       />
     );
   }

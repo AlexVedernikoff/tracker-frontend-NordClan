@@ -156,7 +156,7 @@ class Metrics extends Component {
         'Account',
         'PM',
         'UX',
-        'Аналитик',
+        'Analyst',
         'Back',
         'Front',
         'Mobile',

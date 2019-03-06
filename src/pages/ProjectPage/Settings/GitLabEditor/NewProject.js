@@ -38,7 +38,11 @@ class NewProject extends Component {
   }
 
   changeValue = e => {
-    this.setState({ projectId: e.target.value, errorCode: null });
+    const trimmedValue = this.removeWhitespaces(e.target.value);
+    this.setState({ projectId: trimmedValue, errorCode: null });
+    if (this.inputRef) {
+      this.inputRef.value = trimmedValue;
+    }
   };
 
   cancelBound = () => {
@@ -49,7 +53,7 @@ class NewProject extends Component {
     const projectId = this.state.projectId;
     if (!projectId.trim()) return this.setState({ errorCode: validErrorCodes.EmptyValue });
     if (isNaN(projectId)) {
-      if (!/^[\.a-zA-Z0-9\-]+\/[\.a-zA-Z0-9\-]+$/.test(projectId)) {
+      if (!/^[\.a-zA-Z0-9\-\_]+\/[\.a-zA-Z0-9\-\_]+$/.test(projectId)) {
         // checks if projectId (as path) is in form of namespace/project-name
         return this.setState({ errorCode: validErrorCodes.NotFullPath });
       }
@@ -57,6 +61,26 @@ class NewProject extends Component {
       return this.setState({ errorCode: validErrorCodes.AlreadyLinked });
     }
     this.props.onSubmit(projectId);
+  };
+
+  handlePaste = e => {
+    e.preventDefault();
+    const value = e.clipboardData && e.clipboardData.getData('text');
+    if (!value) return;
+    const trimmedValue = this.removeWhitespaces(value).replace(/\.git+$/, '');
+    this.changeValue({
+      target: {
+        value: trimmedValue
+      }
+    });
+    if (this.inputRef) {
+      this.inputRef.value = trimmedValue;
+    }
+  };
+
+  removeWhitespaces = value => {
+    if (!value) return '';
+    return value.trim().replace(/\s/g, '');
   };
 
   render() {
@@ -70,10 +94,12 @@ class NewProject extends Component {
           (handleBlur, shouldMarkError) => (
             <ValidatedInput
               autoFocus
+              onPaste={this.handlePaste}
               name="projectId"
               placeholder={localize[lang].PLACEHOLDER}
               onChange={this.changeValue}
               onBlur={handleBlur}
+              onRef={elem => (this.inputRef = elem)}
               shouldMarkError={shouldMarkError}
               errorText={localize[lang][errorCode || 'ERROR_TEXT']}
             />
@@ -81,6 +107,7 @@ class NewProject extends Component {
           'projectId',
           invalid
         )}
+
         <RoundButton
           style={{ marginLeft: '0.5rem' }}
           onClick={this.submit}

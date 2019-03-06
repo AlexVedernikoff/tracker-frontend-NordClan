@@ -19,7 +19,7 @@ import { DragDropContextProvider } from 'react-dnd';
 import { AppContainer } from 'react-hot-loader';
 const rootEl = document.getElementById('app');
 
-const channels = ['task', 'project', 'timesheet', 'comments'];
+const channels = ['task', 'project', 'timesheet', 'comments', 'jira'];
 const socket = new SocketAdapter(store, channels);
 
 window.log = require('./utils/logger');

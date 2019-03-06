@@ -11,7 +11,7 @@ const target =
       }
     : {
         // TODO:
-        host: 'simtrack-dev.simbirsoft', // localhost
+        host: 'simtrack-dev.docker.simbirsoft', // localhost
         protocol: 'https:', // http:
         port: 443 // 8000
       };
@@ -111,7 +111,7 @@ const settings = {
     disableHostCheck: true,
     proxy: {
       '/api/': {
-        target,
+        target: 'http://localhost:9000',
         changeOrigin: true,
         secure: false,
         ws: true

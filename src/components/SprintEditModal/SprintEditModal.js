@@ -10,6 +10,7 @@ import moment from 'moment';
 import localize from './SprintEditModal.json';
 import { connect } from 'react-redux';
 import parseInteger from '../../utils/parseInteger';
+import { BUDGET_MAX_CHARS_LENGTH } from '../../constants/Sprint';
 import validateNumber from '../../utils/validateNumber';
 import * as commonUtils from '../../utils/common';
 
@@ -83,7 +84,7 @@ class SprintEditModal extends Component {
 
   onChangeBudget = e => {
     const value = e.target.value;
-    if (validateNumber(value)) {
+    if (validateNumber(value) && !this.budgetIsTooLong(value)) {
       this.setState(state => ({
         sprint: {
           ...state.sprint,
@@ -93,9 +94,13 @@ class SprintEditModal extends Component {
     }
   };
 
+  budgetIsTooLong = value => {
+    return parseInteger(value).toString().length > BUDGET_MAX_CHARS_LENGTH;
+  };
+
   onChangeRiskBudget = e => {
     const value = e.target.value;
-    if (validateNumber(value)) {
+    if (validateNumber(value) && !this.budgetIsTooLong(value)) {
       this.setState(state => ({
         sprint: {
           ...state.sprint,
