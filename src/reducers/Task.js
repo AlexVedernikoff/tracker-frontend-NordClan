@@ -482,6 +482,10 @@ export default function Task(state = InitialState, action) {
     case TaskActions.TASK_ATTACHMENT_UPLOAD_FAIL: {
       return {
         ...state,
+        task: {
+          ...state.task,
+          attachments: state.task.attachments.filter(({ id }) => id !== action.attachment.id)
+        },
         isUploadingAttachment: false
       };
     }
