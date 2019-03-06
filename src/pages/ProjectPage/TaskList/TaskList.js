@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { uniqBy, debounce } from 'lodash';
+import { uniqBy, debounce, uniqWith, isEqual } from 'lodash';
 import ReactTooltip from 'react-tooltip';
 
 import TaskRow from '../../../components/TaskRow';
@@ -593,15 +593,19 @@ class TaskList extends Component {
   createFilterLabel = filterName => {
     const {
       lang,
-      project: { users }
+      project: { users, authorsTasksUniq }
     } = this.props;
+    const usersOption = uniqBy(
+      [...users, ...(authorsTasksUniq && authorsTasksUniq.length ? authorsTasksUniq : [])],
+      'id'
+    );
     const { changedFilters } = this.state;
     switch (filterName) {
       case 'prioritiesId':
         return `${getPriorityById(changedFilters.prioritiesId)}`;
       case 'authorId':
         return `${localize[lang].AUTHOR}: ${
-          users.length ? getFullName(users.find(user => user.id === changedFilters.authorId)) : ''
+          usersOption.length ? getFullName(usersOption.find(user => user.id === +changedFilters.authorId)) : ''
         }`;
       case 'name':
         return `${changedFilters.name}`;
@@ -632,7 +636,15 @@ class TaskList extends Component {
   onChangeTagFilter = options => this.changeMultiFilter(options, 'tags');
   sortedAuthorOptions = () => {
     const { project } = this.props;
-    const authorOptions = this.createOptions(project.users, 'fullNameRu');
+    const authorOptions = uniqWith(
+      [
+        ...this.createOptions(project.users, 'fullNameRu'),
+        ...(project.authorsTasksUniq && project.authorsTasksUniq.length
+          ? this.createOptions(project.authorsTasksUniq, 'fullNameRu')
+          : [])
+      ],
+      isEqual
+    );
     return authorOptions
       ? authorOptions.sort((a, b) => {
           if (a.label < b.label) {
