@@ -443,9 +443,7 @@ class Comments extends Component {
               </ul>
             ) : null}
           </div>
-          {this.props.comments.length && this.props.users.length && !this.allCommentsAreEmpty()
-            ? this.getCommentList()
-            : withoutComments}
+          {this.props.comments.length && !this.allCommentsAreEmpty() ? this.getCommentList() : withoutComments}
         </ul>
         {this.state.commentToDelete ? (
           <ConfirmModal
