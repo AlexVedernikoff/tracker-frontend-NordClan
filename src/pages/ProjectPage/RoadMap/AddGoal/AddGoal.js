@@ -23,7 +23,7 @@ const initState = {
     sprintId: null,
     name: '',
     description: '',
-    visible: true,
+    status: true,
     plannedExecutionTime: ''
   },
   errors: {
@@ -70,7 +70,7 @@ class AddGoal extends Component {
         forms: {
           name: goalItem.name,
           description: goalItem.description,
-          visible: goalItem.visible,
+          status: goalItem.status,
           plannedExecutionTime: moment.unix(goalItem.plannedExecutionTime * 100).format('DD.MM.YYYY')
         }
       });
@@ -121,7 +121,7 @@ class AddGoal extends Component {
 
   render() {
     const {
-      forms: { name, visible, plannedExecutionTime, description },
+      forms: { name, status, plannedExecutionTime, description },
       errors
     } = this.state;
     const { showModal, lang, item, closeModal, isFetching, isEdit, goalItem } = this.props;
@@ -187,7 +187,7 @@ class AddGoal extends Component {
                   <p>{localize[lang].IS_VISIBLE}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                  <Checkbox onChange={() => this.handleChangeGoalForms('visible')({ target: { value: !visible } })} />
+                  <Checkbox onChange={() => this.handleChangeGoalForms('status')({ target: { value: !status } })} />
                 </Col>
               </Row>
               <Row className={css.inputRow}>
