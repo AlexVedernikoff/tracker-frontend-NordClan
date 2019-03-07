@@ -22,7 +22,6 @@ class Sprint extends Component {
       projectId: PropTypes.number
     }),
     lang: PropTypes.string,
-    modifyGoalId: PropTypes.number,
     openCreateTaskModal: PropTypes.func,
     remove: PropTypes.func,
     toggleStatus: PropTypes.func,
@@ -74,7 +73,7 @@ class Sprint extends Component {
   toggleStatus = id => checked => this.props.toggleStatus(id, checked);
 
   render() {
-    const { item, globalStart, globalEnd, lang, modifyGoalId } = this.props;
+    const { item, globalStart, globalEnd, lang } = this.props;
     const { collapsed, showModal, isEdit, goalItem } = this.state;
 
     const goals = item.goals.map(goal => (
@@ -86,7 +85,6 @@ class Sprint extends Component {
         editGoal={this.editGoal(goal)}
         removeGoal={this.removeGoal(goal.id)}
         transferGoal={this.transferGoal(goal.id, item.createdAt)}
-        modifyGoalId={modifyGoalId}
         toggleVisible={this.toggleVisible(goal.id, goal.visible)}
         toggleStatus={this.toggleStatus(goal.id)}
       />
@@ -119,12 +117,12 @@ class Sprint extends Component {
     );
     return (
       <div className={styles.sprint}>
-        <div className={styles.collapseIcon} onClick={this.toggleCollapse}>
-          {collapsed ? <IconArrowRight /> : <IconArrowDown />}
-        </div>
-        <div className={styles.leftBlock}>
-          <h2>{item.name}</h2>
-          {!collapsed && meta}
+        <div className={styles.wrapClickableCollapse} onClick={this.toggleCollapse}>
+          <div className={styles.collapseIcon}>{collapsed ? <IconArrowRight /> : <IconArrowDown />}</div>
+          <div className={styles.leftBlock}>
+            <h2>{item.name}</h2>
+            {!collapsed && meta}
+          </div>
         </div>
         <div className={styles.rightBlock}>
           <TimeLine

@@ -19,7 +19,6 @@ class RoadMap extends Component {
     isCreateTaskModalOpen: PropTypes.bool,
     isSuccessAddGoal: PropTypes.bool,
     lang: PropTypes.string,
-    modifyGoalId: PropTypes.number,
     project: PropTypes.object,
     sprints: PropTypes.array.isRequired,
     toggleStatus: PropTypes.func,
@@ -95,8 +94,7 @@ class RoadMap extends Component {
     const {
       lang,
       sprints,
-      project: { createdAt, completedAt },
-      modifyGoalId
+      project: { createdAt, completedAt }
     } = this.props;
     const createdYear = +moment(createdAt).format('YYYY');
     const completedYear = +moment(completedAt || new Date()).format('YYYY');
@@ -111,7 +109,6 @@ class RoadMap extends Component {
               key={sprint.id}
               item={sprint}
               lang={lang}
-              modifyGoalId={modifyGoalId}
               create={this.props.create}
               edit={this.props.edit}
               remove={this.handleSetRemoveGoal}
@@ -162,8 +159,7 @@ const mapStateToProps = state => ({
   lang: state.Localize.lang,
   sprints: state.Project.project.sprints,
   project: state.Project.project,
-  isSuccessAddGoal: state.Goals.isSuccess,
-  modifyGoalId: state.Goals.modifyId
+  isSuccessAddGoal: state.Goals.isSuccess
 });
 
 const mapDispatchToProps = {

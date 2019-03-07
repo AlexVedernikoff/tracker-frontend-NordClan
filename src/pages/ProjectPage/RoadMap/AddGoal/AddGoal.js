@@ -42,6 +42,7 @@ class AddGoal extends Component {
     goalItem: PropTypes.object,
     isEdit: PropTypes.bool,
     isFetching: PropTypes.bool,
+    isSuccess: PropTypes.bool,
     item: PropTypes.shape({
       id: PropTypes.number,
       name: PropTypes.string
@@ -60,6 +61,31 @@ class AddGoal extends Component {
     };
 
     this.validator = new Validator();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { isFetching, isSuccess, isEdit, goalItem } = nextProps;
+    if (isEdit) {
+      this.setState({
+        forms: {
+          name: goalItem.name,
+          description: goalItem.description,
+          visible: goalItem.visible,
+          plannedExecutionTime: moment.unix(goalItem.plannedExecutionTime * 100).format('DD.MM.YYYY')
+        }
+      });
+    } else {
+      this.setState({ forms: initState.forms });
+    }
+    if (!isFetching && isSuccess && !this.state.isClose) {
+      this.setState(
+        {
+          forms: initState.forms,
+          isClose: true
+        },
+        this.props.closeModal
+      );
+    }
   }
 
   handleChangeGoalForms = name => ({ target: { value } }) =>
@@ -214,7 +240,8 @@ class AddGoal extends Component {
 
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
-  isFetching: state.Goals.isFetching
+  isFetching: state.Goals.isFetching,
+  isSuccess: state.Goals.isSuccess
 });
 
 export default connect(mapStateToProps)(AddGoal);
