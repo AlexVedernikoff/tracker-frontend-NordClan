@@ -104,7 +104,7 @@ class CreateTaskModal extends Component {
     this.props
       .createTask(
         {
-          name: this.state.taskName,
+          name: this.state.taskName.trim(),
           projectId: this.props.project.id,
           description: stateToHTML(this.TextEditor.state.editorState.getCurrentContent()),
           performerId: this.state.selectedPerformer,
@@ -114,8 +114,8 @@ class CreateTaskModal extends Component {
           prioritiesId: this.state.prioritiesId,
           plannedExecutionTime: this.state.plannedExecutionTime,
           parentId: this.props.parentTaskId,
-          isTaskByClient: this.byClientInput.checked,
-          isDevOps: this.devOpsInput.checked,
+          isTaskByClient: this.state.isTaskByClient,
+          isDevOps: this.state.isDevOps,
           goalId: this.props.goalId
         },
         this.state.openTaskPage,
@@ -189,7 +189,7 @@ class CreateTaskModal extends Component {
   };
 
   handleChange = field => event => {
-    this.setState({ [field]: event.target.value.trim() });
+    this.setState({ [field]: event.target.value });
   };
 
   handleChangePlannedTime = plannedExecutionTime => {
@@ -218,7 +218,7 @@ class CreateTaskModal extends Component {
   };
 
   generateError = () => {
-    return this.state.taskName.length < 4
+    return this.state.taskName.trim().length < 4
       ? localize[this.props.lang].NAME_ERROR_LESS_SYMBOLS
       : localize[this.props.lang].NAME_ERROR_MORE_SYMBOLS;
   };
@@ -299,7 +299,7 @@ class CreateTaskModal extends Component {
                     />
                   ),
                   'taskName',
-                  this.state.taskName.length < 4 || this.state.taskName.length > 255
+                  this.state.taskName.trim().length < 4 || this.state.taskName.trim().length > 255
                 )}
               </Col>
             </Row>
