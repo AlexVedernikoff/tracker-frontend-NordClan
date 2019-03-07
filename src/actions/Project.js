@@ -10,7 +10,7 @@ import getPlanningTasks from './PlanningTasks';
 import { getTask } from './Task';
 import { withFinishLoading, withStartLoading, withdefaultExtra } from './Common';
 import { langSelector } from '../selectors/Localize';
-
+import { getGoalsByProject } from './Goals';
 import localize from './Project.i18n.json';
 
 const gettingProjectInfoStart = () => ({
@@ -320,6 +320,7 @@ const getProjectInfo = id => {
   return dispatch => {
     dispatch(gettingProjectInfoStart());
     dispatch(startLoading());
+    dispatch(getGoalsByProject(id));
     axios
       .get(URL, {}, { withCredentials: true })
       .then(response => {

@@ -18,6 +18,7 @@ import { VISOR } from '../../constants/Roles';
 import { getFullName } from '../../utils/NameLocalisation';
 import { storageType } from '../FiltrersManager/helpers';
 import { isOnlyDevOps } from '../../utils/isDevOps';
+import { checkIsAdminInProject } from '../../utils/isAdmin';
 import { BACKLOG_ID } from '../../constants/Sprint';
 
 const storage = storageType === 'local' ? localStorage : sessionStorage;
@@ -139,6 +140,8 @@ class AgileBoardFilter extends React.Component {
         return this.props.sortedSprints.find(el => el.value === value).label;
       case 'typeId':
         return typeOptions.find(el => el.value === value).label;
+      case 'goal':
+        return this.props.goals.find(el => el.id === value).name;
       default:
         return value;
     }
@@ -229,15 +232,18 @@ class AgileBoardFilter extends React.Component {
       }
       return result;
     }, []);
-
+    const filtersState = [
+      ...selectedFilters,
+      ...this.createSelectedOption([], filters.changedSprint, 'changedSprint'),
+      ...this.createSelectedOption([], filters.typeId, 'typeId'),
+      ...this.createSelectedOption([], filters.performerId, 'performerId'),
+      ...this.createSelectedOption([], filters.filterTags, 'filterTags')
+    ];
+    if (checkIsAdminInProject(this.props.user, this.props.project.id)) {
+      filtersState.push(...this.createSelectedOption([], filters.goal, 'goal'));
+    }
     this.setState({
-      allFilters: [
-        ...selectedFilters,
-        ...this.createSelectedOption([], filters.changedSprint, 'changedSprint'),
-        ...this.createSelectedOption([], filters.typeId, 'typeId'),
-        ...this.createSelectedOption([], filters.performerId, 'performerId'),
-        ...this.createSelectedOption([], filters.filterTags, 'filterTags')
-      ]
+      allFilters: filtersState
     });
   };
 

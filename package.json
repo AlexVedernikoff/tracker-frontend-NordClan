@@ -75,7 +75,8 @@
     "reselect": "^3.0.1",
     "shortid": "^2.2.13",
     "socket.io-client": "^2.1.1",
-    "universal-cookie": "^3.0.7"
+    "universal-cookie": "^3.0.7",
+    "yup": "^0.26.10"
   },
   "devDependencies": {
     "autoprefixer": "^7.2.6",
