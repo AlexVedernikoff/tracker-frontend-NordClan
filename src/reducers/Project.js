@@ -19,7 +19,9 @@ const InitialState = {
     error: false,
     validationError: null,
     metrics: [],
-    notProcessedGitlabUsers: []
+    notProcessedGitlabUsers: [],
+    gitlabProjectIds: [],
+    authorsTasksUniq: []
   },
   TitleIsEditing: false,
   DescriptionIsEditing: false,
@@ -105,7 +107,7 @@ export default function Project(state = InitialState, action) {
         ...state,
         project: {
           ...state.project,
-          tags: action.data.tags
+          tags: state.project.tags.filter(tag => (tag.name || tag) !== action.data.tag)
         }
       };
 
@@ -241,7 +243,10 @@ export default function Project(state = InitialState, action) {
         ...state,
         project: {
           ...state.project,
-          gitlabProjectIds: [...state.project.gitlabProjectIds, action.project.gitlabProject.id],
+          gitlabProjectIds: [
+            ...(state.project.gitlabProjectIds ? state.project.gitlabProjectIds : []),
+            action.project.gitlabProject.id
+          ],
           gitlabProjects: [...state.project.gitlabProjects, action.project.gitlabProject],
           users: action.project.projectUsers,
           notProcessedGitlabUsers: action.project.notProcessedGitlabUsers
@@ -510,6 +515,19 @@ export default function Project(state = InitialState, action) {
             jiraHostname: null,
             jiraProjectName: null,
             externalId: null
+          }
+        };
+      }
+      return state;
+
+    case JiraActions.JIRA_STATUS_RECEIVE_INFO:
+      if (action.data.length > 0) {
+        return {
+          ...state,
+          project: {
+            ...state.project,
+            lastSyncDate: action.data[0].date,
+            status: action.data[0].status
           }
         };
       }

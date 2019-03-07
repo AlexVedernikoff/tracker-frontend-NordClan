@@ -7,6 +7,7 @@ import { history } from '../../History';
 import RouteTabs from '../../components/RouteTabs';
 import HttpError from '../../components/HttpError';
 import * as css from './ProjectPage.scss';
+import { fullHeight as fullHeightClass } from '../../styles/App.scss';
 import ProjectTitle from './ProjectTitle';
 
 import { getProjectInfo as getProject, changeProject } from '../../actions/Project';
@@ -14,6 +15,7 @@ import { ADMIN, EXTERNAL_USER } from '../../constants/Roles';
 import { checkIsViewer } from '../../helpers/RoleValidator';
 import localize from './projectPage.json';
 import Title from 'react-title-component';
+import ScrollTop from '../../components/ScrollTop';
 
 class ProjectPage extends Component {
   static propTypes = {
@@ -126,7 +128,7 @@ class ProjectPage extends Component {
     return this.props.project.error ? (
       <HttpError error={this.props.project.error} />
     ) : (
-      <div id="project-page">
+      <div id="project-page" className={fullHeightClass}>
         <Title render={`SimTrack - ${this.props.project.name || ''}`} />
         <ProjectTitle
           portfolio={this.props.project.portfolio}
@@ -148,6 +150,7 @@ class ProjectPage extends Component {
             onConfirm={this.handleCloseProjectConfirmModal}
           />
         ) : null}
+        <ScrollTop />
       </div>
     );
   }

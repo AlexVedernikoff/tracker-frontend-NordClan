@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { uniqBy, debounce } from 'lodash';
+import { uniqBy, debounce, uniqWith, isEqual } from 'lodash';
 import ReactTooltip from 'react-tooltip';
 
 import TaskRow from '../../../components/TaskRow';
@@ -37,6 +37,8 @@ import * as css from './TaskList.scss';
 import localize from './taskList.json';
 import { BACKLOG_ID } from '../../../constants/Sprint';
 import { IN_PROGRESS } from '../../../constants/SprintStatuses';
+import ScrollTop from '../../../components/ScrollTop';
+import { layoutAgnosticFilterGlobal } from '../../../utils/layoutAgnosticFilter';
 
 const dateFormat = 'DD.MM.YYYY';
 
@@ -128,6 +130,10 @@ class TaskList extends Component {
   };
 
   makeFiltersObject = (name, value) => {
+    const { project } = this.props;
+    const { sprints } = project;
+    let currentSprint = sprints ? sprints.filter(item => item.statusId === 2)[0] : 0;
+    currentSprint = currentSprint ? currentSprint.id : 0;
     let processedValue;
     const defaultValue = emptyFilters[name];
     if (['sprintId', 'performerId', 'statusId', 'typeId', 'tags'].indexOf(name) !== -1) {
@@ -138,6 +144,9 @@ class TaskList extends Component {
       } else {
         processedValue = this.multipleQueries(value, defaultValue);
       }
+    }
+    if (name === 'sprintId' && !value) {
+      processedValue = currentSprint > 0 ? [currentSprint] : [0];
     }
 
     return { [name]: processedValue };
@@ -298,11 +307,12 @@ class TaskList extends Component {
       state => {
         const filterValue = options.map(option => option.value);
         const changedFilters = { ...state.changedFilters };
-
         if (filterValue.length) {
           changedFilters[name] = filterValue;
         } else if (emptyFilters[name] && emptyFilters[name].length) {
           changedFilters[name] = [...emptyFilters[name]];
+        } else if (name === 'sprintId') {
+          changedFilters[name] = [0];
         } else {
           delete changedFilters[name];
         }
@@ -326,6 +336,7 @@ class TaskList extends Component {
         if (state.changedFilters[name]) {
           const filters = state.changedFilters;
           delete filters[name];
+          this.changeUrl(filters);
           return { changedFilters: filters };
         }
       },
@@ -426,7 +437,8 @@ class TaskList extends Component {
       {
         nameInputValue: '',
         changedFilters: {
-          projectId: this.props.params.projectId
+          projectId: this.props.params.projectId,
+          sprintId: [0]
         }
       },
       this.loadTasks
@@ -581,15 +593,19 @@ class TaskList extends Component {
   createFilterLabel = filterName => {
     const {
       lang,
-      project: { users }
+      project: { users, authorsTasksUniq }
     } = this.props;
+    const usersOption = uniqBy(
+      [...users, ...(authorsTasksUniq && authorsTasksUniq.length ? authorsTasksUniq : [])],
+      'id'
+    );
     const { changedFilters } = this.state;
     switch (filterName) {
       case 'prioritiesId':
         return `${getPriorityById(changedFilters.prioritiesId)}`;
       case 'authorId':
         return `${localize[lang].AUTHOR}: ${
-          users.length ? getFullName(users.find(user => user.id === changedFilters.authorId)) : ''
+          usersOption.length ? getFullName(usersOption.find(user => user.id === +changedFilters.authorId)) : ''
         }`;
       case 'name':
         return `${changedFilters.name}`;
@@ -618,6 +634,27 @@ class TaskList extends Component {
   onChangeDateToFilter = option => this.handleDayChange(option, 'dateTo');
   onChangePerformerFilter = option => this.changeSingleFilter(option, 'performerId');
   onChangeTagFilter = options => this.changeMultiFilter(options, 'tags');
+  sortedAuthorOptions = () => {
+    const { project } = this.props;
+    const authorOptions = uniqWith(
+      [
+        ...this.createOptions(project.users, 'fullNameRu'),
+        ...(project.authorsTasksUniq && project.authorsTasksUniq.length
+          ? this.createOptions(project.authorsTasksUniq, 'fullNameRu')
+          : [])
+      ],
+      isEqual
+    );
+    return authorOptions
+      ? authorOptions.sort((a, b) => {
+          if (a.label < b.label) {
+            return -1;
+          } else if (a.label > b.label) {
+            return 1;
+          }
+        })
+      : null;
+  };
 
   render() {
     const { tasksList: tasks, statuses, taskTypes, project, isReceiving, lang, sprints } = this.props;
@@ -643,7 +680,7 @@ class TaskList extends Component {
 
     const statusOptions = this.createOptions(statuses);
     const typeOptions = this.createOptions(taskTypes);
-    const authorOptions = this.createOptions(project.users, 'fullNameRu');
+
     const isFilter = this.isFilters();
     const isLoading = isReceiving && !tasks.length;
     const isExternal = this.props.globalRole === EXTERNAL_USER;
@@ -685,6 +722,8 @@ class TaskList extends Component {
                     placeholder={localize[lang].ENTER_TITLE_TASK}
                     value={this.state.nameInputValue || ''}
                     onChange={this.changeNameFilter}
+                    canClear
+                    onClear={() => this.changeNameFilter({ target: { value: '' } })}
                   />
                 </Col>
                 <Col xs={6} sm={2}>
@@ -715,7 +754,7 @@ class TaskList extends Component {
                       multi
                       searchable
                       clearable
-                      value={sprintId}
+                      value={sprintId || [0]}
                       onChange={this.onChangeSprintFilter}
                       options={sprints}
                       useId
@@ -732,11 +771,20 @@ class TaskList extends Component {
                     onChange={this.onChangeAuthorFilter}
                     onInputChange={removeNumChars}
                     noResultsText={localize[lang].NO_RESULTS}
-                    options={authorOptions}
+                    options={this.sortedAuthorOptions()}
+                    filterOption={layoutAgnosticFilterGlobal}
+                    canClear
+                    onClear={() => this.clearFilter('authorId')}
                   />
                 </Col>
                 <Col xs={12} sm={3}>
-                  <PerformerFilter onPerformerSelect={this.onChangePerformerFilter} selectedPerformerId={performerId} />
+                  <PerformerFilter
+                    onPerformerSelect={this.onChangePerformerFilter}
+                    selectedPerformerId={performerId}
+                    filterOption={layoutAgnosticFilterGlobal}
+                    canClear
+                    onClear={() => this.clearFilter('performerId')}
+                  />
                 </Col>
                 <Col xs={12} sm={3}>
                   <TagsFilter
@@ -761,6 +809,7 @@ class TaskList extends Component {
                     canClear
                     onClear={() => this.clearFilter('statusId')}
                     onChange={this.onChangeStatusFilter}
+                    filterOption={layoutAgnosticFilterGlobal}
                   />
                 </Col>
                 <Col xs={6} sm={3}>
@@ -776,6 +825,7 @@ class TaskList extends Component {
                     canClear
                     onClear={() => this.clearFilter('typeId')}
                     onChange={this.onChangeTypeFilter}
+                    filterOption={layoutAgnosticFilterGlobal}
                   />
                 </Col>
                 <Col xs={6} sm={3}>
@@ -793,6 +843,8 @@ class TaskList extends Component {
                     onDayChange={this.onChangeDateFromFilter}
                     placeholder={localize[lang].FROM}
                     format={dateFormat}
+                    canClear
+                    onClear={() => this.clearFilter('dateFrom')}
                   />
                 </Col>
                 <Col xs={6} sm={3}>
@@ -810,6 +862,8 @@ class TaskList extends Component {
                     ]}
                     placeholder={localize[lang].TO}
                     format={dateFormat}
+                    canClear
+                    onClear={() => this.clearFilter('dateTo')}
                   />
                 </Col>
               </Row>
@@ -829,6 +883,8 @@ class TaskList extends Component {
                       placeholder={localize[lang].ENTER_TITLE_TASK}
                       value={this.state.nameInputValue || ''}
                       onChange={this.changeNameFilter}
+                      canClear
+                      onClear={() => this.changeNameFilter({ target: { value: '' } })}
                     />
                   </Col>
                 )}
@@ -869,13 +925,13 @@ class TaskList extends Component {
                 />
               ))}
           {!isLoading && tasks.length === 0 ? <div className={css.notFound}>{localize[lang].NOTHING_FOUND}</div> : null}
-          {this.props.pagesCount > 1 ? (
+          {tasks.length > 0 && (
             <Pagination
               itemsCount={this.props.pagesCount}
               activePage={this.state.activePage}
               onItemClick={this.handlePaginationClick}
             />
-          ) : null}
+          )}
         </section>
         {this.state.isPerformerModalOpen ? (
           <PerformerModal
@@ -904,6 +960,7 @@ class TaskList extends Component {
             defaultPerformerId={performerId}
           />
         ) : null}
+        <ScrollTop />
       </div>
     );
   }

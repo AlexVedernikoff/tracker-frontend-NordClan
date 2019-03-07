@@ -273,11 +273,16 @@
         background: rgba($color-black, 0.05);
       }
 
-      &.hover {
+      &:hover {
         opacity: 1;
       }
     }
   }
+}
+
+.timeValue {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .spentTime {
@@ -414,6 +419,13 @@ $tooltip-border: 1px solid lighten(black, 85%);
         left: -1px;
         border: 6px solid transparent;
         border-top: 10px solid $color-red;
+      }
+    }
+  }
+  &.done {
+    > div {
+      &:after {
+        border-top-color: $color-green;
       }
     }
   }

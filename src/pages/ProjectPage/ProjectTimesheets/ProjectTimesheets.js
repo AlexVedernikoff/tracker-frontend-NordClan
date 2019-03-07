@@ -290,7 +290,9 @@ class ProjectTimesheets extends React.Component {
           user={user}
           userName={userName} //fix bug with names
           items={[
-            ...user.tasks.map(task => <ActivityRow key={`${task.id}-${startingDay}-task`} task item={task} />),
+            ...user.tasks.map(task => (
+              <ActivityRow key={`${task.id}-${task.taskStatusId}-${startingDay}-task`} task item={task} />
+            )),
             ...user.ma.map(task => (
               <ActivityRow
                 key={`${user.id}-${startingDay}-${task.typeId}-${task.sprint ? task.sprint.id : 0}-ma`}

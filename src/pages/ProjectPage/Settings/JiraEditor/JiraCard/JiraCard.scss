@@ -1,5 +1,36 @@
 @import '../../../../../styles/variables.scss';
 
+.statusNotSync {
+  padding: 5px 8px 0px 30px;
+}
+
+.syncDate {
+  white-space: nowrap;
+  padding: 0 4px 4px 10px;
+}
+
+.syncStatus {
+  white-space: nowrap;
+  padding: 3px 4px 4px 10px;
+}
+
+.failedStatus {
+  color: red;
+}
+
+.successStatus {
+  color: #36be36;
+}
+
+.cardContentContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.jiraInfo {
+  position: relative;
+}
+
 .projectList {
   display: flex;
   flex-wrap: wrap;
@@ -17,7 +48,7 @@
 .projectCard {
   position: relative;
   width: 100%;
-  max-width: 16rem;
+  max-width: 19rem;
   padding: 1rem;
   border: 1px solid darken($color-gray, 5%);
   background-color: $color-lightgray;

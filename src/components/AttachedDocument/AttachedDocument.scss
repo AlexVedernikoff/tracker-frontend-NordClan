@@ -104,4 +104,7 @@
 .attachmentName {
   word-wrap: break-word;
   width: 100px;
+  height: 43px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

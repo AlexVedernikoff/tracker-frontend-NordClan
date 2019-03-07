@@ -68,6 +68,8 @@ class AuthForm extends Component {
     return errors;
   }
 
+  renderElementWithTip = (text, tooltipText) => <p data-tip={tooltipText}>{text}</p>;
+
   render() {
     const {
       lang,
@@ -166,13 +168,8 @@ class AuthForm extends Component {
         {excludeFields.indexOf('email') === -1 && (
           <label className={css.formField}>
             <Row>
-              <Col
-                xs={12}
-                sm={formLayout.firstCol}
-                className={classnames(css.leftColumn, css.emailLabel)}
-                data-tip={localize[lang].EMAIL_FIELD_TIP}
-              >
-                {localize[lang].EMAIL}
+              <Col xs={12} sm={formLayout.firstCol} className={classnames(css.leftColumn, css.emailLabel)}>
+                {this.renderElementWithTip(localize[lang].EMAIL, localize[lang].EMAIL_FIELD_TIP)}
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 {this.validator.validate(

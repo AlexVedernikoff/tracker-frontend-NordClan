@@ -58,6 +58,11 @@
   max-width: 100%;
 }
 
+.Select-custom-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .Select--single .Select-multi-value-wrapper .Select-value,
 .Select--single .Select-multi-value-wrapper .Select-value .Select-value-label,
 .Select-input {
@@ -72,6 +77,10 @@
   padding-bottom: 5px;
   padding-left: 13px;
   line-height: 16px;
+}
+
+.Select--canClear .Select-control {
+  padding-right: 20px;
 }
 
 .Select.is-focused {
@@ -130,6 +139,10 @@
   text-overflow: ellipsis;
   cursor: pointer;
   transition: 0.3s ease-out 0s;
+}
+
+.Select-option.is-selected {
+  background-color: #f1f1f1;
 }
 
 .Select-option.is-focused {

@@ -3,6 +3,7 @@ import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
+import { langSelector } from '../selectors/Localize';
 import { DELETE, GET, POST, REST_API } from '../constants/RestApi';
 import {
   defaultErrorHandler,
@@ -12,6 +13,8 @@ import {
   defaultExtra as extra,
   withdefaultExtra
 } from './Common';
+import get from 'lodash/get';
+import localize from './Task.i18n.json';
 
 const getTaskStart = () => ({
   type: TaskActions.GET_TASK_REQUEST_SENT
@@ -394,7 +397,7 @@ const uploadAttachments = (taskId, attachments) => {
     return () => {};
   }
 
-  return dispatch => {
+  return (dispatch, getState) => {
     attachments.map(file => {
       const data = new FormData();
       data.append('file', file);
@@ -417,7 +420,19 @@ const uploadAttachments = (taskId, attachments) => {
         }),
         start: () => withStartLoading(attachmentUploadStarted, true)(dispatch)(taskId, attachment),
         response: result => withFinishLoading(attachmentUploadSuccess, true)(dispatch)(taskId, attachment, result),
-        error: error => withFinishLoading(attachmentUploadFail, true)(dispatch)(taskId, attachment, error)
+        error: error => {
+          if (error.response.status === 400) {
+            const errors = get(error.response.data, 'message.errors', []);
+            const isFileNameLengthError = errors.some(({ param }) => param === 'path' || param === 'fileName');
+
+            if (isFileNameLengthError) {
+              const lang = langSelector(getState());
+              dispatch(showNotification({ type: 'error', message: localize[lang].MAX_FILE_LENGTH_ERROR }));
+            }
+          }
+
+          withFinishLoading(attachmentUploadFail, true)(dispatch)(taskId, attachment, error);
+        }
       });
     });
   };

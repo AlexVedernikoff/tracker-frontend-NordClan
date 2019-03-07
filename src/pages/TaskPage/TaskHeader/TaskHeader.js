@@ -18,13 +18,13 @@ import localize from './TaskHeader.json';
 import { getFullName } from '../../../utils/NameLocalisation';
 import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
 import { createSelector } from 'reselect';
-import sortPerformer, { alphabeticallyComparatorLang } from '../../../utils/sortPerformer';
+import sortPerformer from '../../../utils/sortPerformer';
 import { addActivity } from '../../../actions/Timesheets';
 import moment from 'moment';
 import shortid from 'shortid';
 import { isOnlyDevOps } from '../../../utils/isDevOps';
 import { devOpsUsersSelector } from '../../../utils/sortPerformer';
-import union from 'lodash/union';
+import differenceBy from 'lodash/differenceBy';
 
 const usersSelector = state => state.Project.project.users;
 
@@ -242,6 +242,13 @@ class TaskHeader extends Component {
     }
   };
 
+  getUsersFullNames = users => {
+    return users.map(item => ({
+      value: item.user ? item.user.id : item.id,
+      label: item.user ? getFullName(item.user) : getFullName(item)
+    }));
+  };
+
   render() {
     const { task, taskTypes, canEdit, lang, users, unsortedUsers, devOpsUsers } = this.props;
     const css = require('./TaskHeader.scss');
@@ -249,8 +256,6 @@ class TaskHeader extends Component {
     switch (this.state.clickedStatus) {
       case 'Develop':
         unionPerformers = _.union(
-          task.isDevOps ? devOpsUsers : [],
-          task.isDevOps ? users.devops : [],
           users.pm,
           users.teamLead,
           users.account,
@@ -265,6 +270,7 @@ class TaskHeader extends Component {
         break;
       case 'Code Review':
         unionPerformers = _.union(
+          users.pm,
           users.teamLead,
           users.account,
           users.analyst,
@@ -277,12 +283,10 @@ class TaskHeader extends Component {
         );
         break;
       case 'QA':
-        unionPerformers = union(users.qa, unsortedUsers.sort(alphabeticallyComparatorLang(lang)));
+        unionPerformers = _.union(users.pm, users.qa);
         break;
       default:
         unionPerformers = _.union(
-          task.isDevOps ? devOpsUsers : [],
-          task.isDevOps ? users.devops : [],
           users.pm,
           users.teamLead,
           users.account,
@@ -296,12 +300,12 @@ class TaskHeader extends Component {
           users.qa
         );
     }
-    unionPerformers = _.union(unionPerformers, unsortedUsers);
-    const usersFullNames = unionPerformers.map(item => ({
-      value: item.user ? item.user.id : item.id,
-      label: item.user ? getFullName(item.user) : getFullName(item)
-    }));
 
+    if (task.isDevOps) {
+      unionPerformers = _.union(devOpsUsers, users.devops, unionPerformers);
+    }
+
+    const restUsers = differenceBy(unsortedUsers, unionPerformers, 'id');
     return (
       <div>
         {task.parentTask ? (
@@ -431,11 +435,14 @@ class TaskHeader extends Component {
 
         {this.state.isPerformerModalOpen ? (
           <PerformerModal
-            defaultUser={task.performer ? task.performer.id : null}
+            defaultUser={
+              task.performer && unionPerformers.find(user => user.id === task.performer.id) ? task.performer.id : 0
+            }
             onChoose={this.changePerformer}
             onClose={this.handleCloseModal}
             title={this.state.modalTitle}
-            users={usersFullNames}
+            users={this.getUsersFullNames(unionPerformers)}
+            restUsers={this.getUsersFullNames(restUsers)}
             id={task.id}
           />
         ) : null}

@@ -97,11 +97,6 @@ textarea {
 /* <=== Animations */
 
 /* Modal ===> */
-@media screen and (max-height: 700px) {
-  .ReactModal__Overlay {
-    align-items: flex-start !important;
-  }
-}
 .ReactModal__Overlay .ReactModal__Content {
   animation-name: fadeIn;
   animation-duration: 0.2s;

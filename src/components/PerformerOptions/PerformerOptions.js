@@ -15,6 +15,7 @@ import { isTimesheetsCanBeChanged } from '../../utils/Timesheets';
 import Button from '../Button';
 import localize from './PerformerOptions.json';
 import { TASK_STATUSES } from '../../constants/TaskStatuses';
+import union from 'lodash/union';
 
 import { prepairCommentForEdit, stringifyCommentForSend } from '../../pages/TaskPage/Comments/Mentions/mentionService';
 import moment from 'moment';
@@ -35,7 +36,8 @@ class PerformerOptions extends Component {
       options: this.optionsList,
       loggedTime: 0,
       selectedPerformer: props.defaultOption || null,
-      commentText: ''
+      commentText: '',
+      inputValue: ''
     };
   }
 
@@ -85,6 +87,15 @@ class PerformerOptions extends Component {
   };
 
   handlePerformerChange = selectedPerformer => {
+    let newOptions = [...this.state.options];
+    if (selectedPerformer && !newOptions.find(opt => opt.value === selectedPerformer.value)) {
+      newOptions = union(newOptions, [selectedPerformer]);
+      this.setState({
+        options: newOptions
+      });
+    } else {
+      this.removeRestUsersFromOptions();
+    }
     this.setState({
       selectedPerformer: selectedPerformer ? selectedPerformer.value : null
     });
@@ -94,7 +105,7 @@ class PerformerOptions extends Component {
     e.preventDefault();
     const commentText = stringifyCommentForSend(this.state.commentText, this.users);
     const { id } = this.props;
-    this.props.onChoose(this.state.selectedPerformer);
+    this.props.onChoose(this.state.selectedPerformer || 0);
     if (commentText) {
       this.props.publishComment(id, {
         text: commentText
@@ -131,8 +142,8 @@ class PerformerOptions extends Component {
     }
     return [
       { id: 'all', fullNameEn: localize.en.ALL, fullNameRu: localize.ru.ALL },
-      ...projectUsers.map(u => u.user),
-      ...externalUsers.map(u => u.user)
+      ...(Array.isArray(projectUsers) && projectUsers.map(u => u.user)),
+      ...(Array.isArray(externalUsers) && externalUsers.map(u => u.user))
     ];
   }
 
@@ -142,6 +153,33 @@ class PerformerOptions extends Component {
 
   toggleBtn = evt => {
     this.setState({ disabledBtn: !evt.target.value || evt.target.value.trim() === '' });
+  };
+
+  handleInputChange = e => {
+    const { inputValue } = this.state;
+    if (!inputValue && e) {
+      this.addRestUsersToOptions();
+    } else if (inputValue && !e) {
+      this.removeRestUsersFromOptions();
+    }
+
+    this.setState({ inputValue: e });
+  };
+
+  addRestUsersToOptions = () => {
+    const { options, canBeNotSelected, restUsers } = this.props;
+    const newOptions = this.getOptionsList(union(options, restUsers), canBeNotSelected);
+    this.setState({ options: newOptions }, () => {
+      this.optionsList = newOptions;
+    });
+  };
+
+  removeRestUsersFromOptions = () => {
+    const { options, canBeNotSelected } = this.props;
+    const newOptions = this.getOptionsList(options, canBeNotSelected);
+    this.setState({ options: newOptions }, () => {
+      this.optionsList = newOptions;
+    });
   };
 
   render() {
@@ -162,6 +200,7 @@ class PerformerOptions extends Component {
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   <SelectDropdown
+                    autoFocus
                     name="performer"
                     placeholder={localize[lang].PERFORMER_PLACEHOLDER}
                     multi={false}
@@ -170,6 +209,8 @@ class PerformerOptions extends Component {
                     onChange={this.handlePerformerChange}
                     noResultsText={localize[lang].NO_RESULTS}
                     options={options}
+                    onInputChange={this.handleInputChange}
+                    autofocus
                   />
                 </Col>
               </Row>
@@ -178,7 +219,7 @@ class PerformerOptions extends Component {
             {!isTshAndCommentsHidden &&
               task.statusId !== TASK_STATUSES.NEW &&
               activeUser.id === task.performerId && (
-                <label className={css.formField}>
+                <div className={css.formField}>
                   <Row className={css.taskFormRow}>
                     <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                       <p className={css.label}>{localize[lang].TIMESHEETS}</p>
@@ -188,7 +229,7 @@ class PerformerOptions extends Component {
                       <TaskTimesheet userId={activeUser.id} />
                     </Col>
                   </Row>
-                </label>
+                </div>
               )}
 
             {!isTshAndCommentsHidden &&
@@ -207,6 +248,7 @@ class PerformerOptions extends Component {
                         getTextAreaNode={this.getTextAreaNode}
                         toggleBtn={this.setComment}
                         suggestions={users}
+                        autoFocus={false}
                       />
                     </Col>
                   </Row>
@@ -251,6 +293,7 @@ PerformerOptions.propTypes = {
   projectUsers: PropTypes.array,
   publishComment: PropTypes.func,
   removeCurOptionTip: PropTypes.string,
+  restUsers: PropTypes.array,
   startingDay: PropTypes.object,
   task: PropTypes.object,
   taskId: PropTypes.number,

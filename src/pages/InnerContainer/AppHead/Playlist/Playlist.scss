@@ -131,7 +131,8 @@
   }
   .proName {
     max-width: 95px;
-    overflow-x: hidden;
+    overflow: hidden;
+    text-overflow: ellipsis;
     vertical-align: middle;
   }
 }
@@ -211,13 +212,16 @@
     }
   }
   .today {
-    font-size: 16px;
+    font-size: 12px;
     margin-bottom: 0.3rem;
     .input {
       width: 100%;
       background-color: rgba(black, 0.05);
       border: none;
       text-align: center;
+      &.non-editable {
+        cursor: default;
+      }
       &.editable {
         box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.17);
       }
@@ -226,6 +230,7 @@
       width: 100%;
       border: none;
       text-align: center;
+      font-size: 12px;
       &.filled {
         background: lighten($color-dark, 15%);
         color: rgba(white, 0.7);
@@ -372,6 +377,8 @@
   border: 1px solid rgba(black, 0.05);
   transition: $transition;
   cursor: pointer;
+  position: relative;
+  z-index: 1;
   &:hover {
     background-color: rgba(black, 0.05);
     transition: $transition;

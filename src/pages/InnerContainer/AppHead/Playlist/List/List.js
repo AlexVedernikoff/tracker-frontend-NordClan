@@ -43,6 +43,15 @@ class List extends Component {
     );
   };
 
+  shouldShowEmpty = invisible => {
+    const { isDraftShow } = this.state;
+    if (isDraftShow) {
+      return !(invisible && invisible.length);
+    }
+
+    return true;
+  };
+
   render() {
     const { isDraftShow } = this.state;
     const { tracks, textInfo, textShowHidden, textHide } = this.props;
@@ -67,10 +76,10 @@ class List extends Component {
 
     const invisible = tracks && tracks.filter(item => !item.isVisible).map(this.playlistItem);
     const nothingToShow = <div className={cn(['text-info', css.nothingToShow])}>{textInfo}</div>;
-
+    const shouldShowEmpty = this.shouldShowEmpty(invisible);
     return (
       <div>
-        {visible.length ? visible : nothingToShow}
+        {visible.length ? visible : shouldShowEmpty && nothingToShow}
         {invisible && invisible.length > 0 ? (
           <div
             className={css.showMore}

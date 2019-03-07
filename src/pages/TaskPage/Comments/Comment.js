@@ -159,9 +159,16 @@ class Comment extends PureComponent {
     return imageTypes.indexOf(type) !== -1;
   };
 
-  getAttachments = attachmentIds => {
+  getFiles = attachmentIds => {
+    if (!attachmentIds) {
+      return [];
+    }
     const { attachments } = this.props;
     const files = attachments.filter(i => attachmentIds.indexOf(i.id) !== -1);
+    return files;
+  };
+
+  getAttachments = files => {
     return (
       <div className={css.commentAttachmentWrap}>
         <Attachments attachments={files} canEdit={false} style={{ paddingLeft: 0, paddingTop: 10 }} />
@@ -175,7 +182,10 @@ class Comment extends PureComponent {
       comment,
       lang
     } = this.props;
-
+    const files = this.getFiles(attachmentIds);
+    if (!text && !files.length) {
+      return null;
+    }
     let typoAvatar = '';
     const { firstName, lastName, fullName } = Comment.getNames(author);
     if (!author.photo) {
@@ -239,7 +249,7 @@ class Comment extends PureComponent {
                 (t, i) => (typeof t === 'string' ? <span key={t + i} dangerouslySetInnerHTML={{ __html: t }} /> : t)
               )}
             </div>
-            {attachmentIds ? this.getAttachments(attachmentIds) : null}
+            {attachmentIds ? this.getAttachments(files) : null}
             <div className={css.commentAction}>
               {!comment.deleting ? (
                 <a onClick={() => this.props.reply(comment.id)} href="#reply">

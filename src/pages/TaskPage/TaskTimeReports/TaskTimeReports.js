@@ -14,6 +14,7 @@ import RadioGroup from '../../../components/RadioGroup';
 import TimeSheetsHistory from './TimeSheetsHistory.js';
 import localize from './taskTimeReports.json';
 import { getLocalizedTaskStatuses, getLocalizedRoles } from '../../../selectors/dictionaries';
+import { uniq } from 'lodash';
 
 class TaskTimeReports extends React.Component {
   constructor(props) {
@@ -46,8 +47,17 @@ class TaskTimeReports extends React.Component {
   componentWillReceiveProps(nextProps) {
     this.getStageData(nextProps.timeSpent);
     this.getUserData(nextProps.userTimeSpent);
-    this.getRoleData(nextProps.roleTimeSpent);
+    this.getRoleData(this.getRolesIdsWithoutDublicates(nextProps.roleTimeSpent));
   }
+
+  getRolesIdsWithoutDublicates = roles => {
+    const obj = {};
+    for (const i in roles) {
+      const ids = i.match(/\d+/g);
+      obj[`[${uniq(ids)}]`] = roles[i];
+    }
+    return obj;
+  };
 
   getStageData = timeSpent => {
     const stages = [];
@@ -107,7 +117,6 @@ class TaskTimeReports extends React.Component {
     const rolesColors = [];
 
     getColor.reset();
-
     if (timeSpent && this.props.roles) {
       for (const role in timeSpent) {
         if (timeSpent.hasOwnProperty(role)) {
@@ -152,7 +161,6 @@ class TaskTimeReports extends React.Component {
     const { stagesDataSet, stages, stagesColors } = this.state.stageData;
     const { usersDataSet, users, usersColors } = this.state.userData;
     const { rolesDataSet, roles, rolesColors } = this.state.roleData;
-
     const { timesheets, project, task, taskStatuses, lang, user: currentUser, preloaders } = this.props;
 
     const isStagesDataSet = stagesDataSet.length !== 0;

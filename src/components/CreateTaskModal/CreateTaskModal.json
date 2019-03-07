@@ -4,7 +4,7 @@
     "NAME": "Task name:",
     "NAME_PLACEHOLDER": "Enter the task name",
     "NAME_ERROR_LESS_SYMBOLS": "Length less than 4 characters",
-    "NAME_ERROR_MORE_SYMBOLS": "Length more than 256 characters",
+    "NAME_ERROR_MORE_SYMBOLS": "Length more than 255 characters",
     "DESCRIPTION": "Description:",
     "PLACEHOLDER_DESCRIPTION": "Enter the task description",
     "TYPE": "Task type:",
@@ -23,14 +23,15 @@
     "CREATE_AND_OPEN": "Create and open",
     "DEV_OPS": "DevOps",
     "TAGS": "Tags:",
-    "HOURS": "h."
+    "HOURS": "h.",
+    "REQUEST_TO_DEVOPS_SERVICE": "Request to DevOps service"
   },
   "ru": {
     "CREATE_TASK": "Создать задачу",
     "NAME": "Название задачи:",
     "NAME_PLACEHOLDER": "Введите название задачи",
     "NAME_ERROR_LESS_SYMBOLS": "Длина менее 4 символов",
-    "NAME_ERROR_MORE_SYMBOLS": "Длина более 256 символов",
+    "NAME_ERROR_MORE_SYMBOLS": "Длина более 255 символов",
     "DESCRIPTION": "Описание:",
     "PLACEHOLDER_DESCRIPTION": "Введите описание задачи",
     "TYPE": "Тип задачи:",
@@ -49,6 +50,7 @@
     "CREATE_AND_OPEN": "Создать и открыть",
     "DEV_OPS": "DevOps",
     "TAGS": "Теги:",
-    "HOURS": "ч."
+    "HOURS": "ч.",
+    "REQUEST_TO_DEVOPS_SERVICE": "Обращение в DevOps службу"
   }
 }

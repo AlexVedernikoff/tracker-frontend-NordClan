@@ -16,13 +16,20 @@ class Budget extends Component {
 
     this.state = {
       isEditing: false,
-      value: undefined
+      value: props.value || 0
     };
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     ReactTooltip.rebuild();
+    this.updateValue(prevProps.value);
   }
+
+  updateValue = prevValue => {
+    if (prevValue !== this.props.value) {
+      this.setState({ value: this.props.value });
+    }
+  };
 
   toggleEditing = e => {
     e.preventDefault();
@@ -47,13 +54,19 @@ class Budget extends Component {
   };
 
   saveBudget = () => {
+    if (this.state.value === this.props.value) return;
     const { onEditSubmit } = this.props;
     onEditSubmit(this.state.value);
   };
 
   onChangeValue = e => {
-    const { percents } = this.props;
+    const { percents, max } = this.props;
     const value = e.target.value;
+
+    if (value.includes(',')) {
+      return;
+    }
+
     if (percents) {
       if (validateNumber(value) && value <= 100) {
         this.setState({
@@ -61,8 +74,12 @@ class Budget extends Component {
         });
       }
     } else if (validateNumber(value)) {
+      let adjustedValue = value;
+      if (+max && +adjustedValue > +max) {
+        adjustedValue = max;
+      }
       this.setState({
-        value: this.props.integerOnly ? parseInteger(value) : value
+        value: this.props.integerOnly ? parseInteger(adjustedValue) : adjustedValue
       });
     }
   };
@@ -73,8 +90,7 @@ class Budget extends Component {
 
   render() {
     const { header, lang } = this.props;
-    const { isEditing } = this.state;
-    const value = this.state.value !== undefined ? this.state.value : this.props.value || '';
+    const { isEditing, value } = this.state;
     const saveDataTip = this.state.value ? localize[lang].SAVE : localize[lang].ENTER_NUMBER;
     return (
       <div className={css.budget}>
@@ -110,6 +126,8 @@ Budget.propTypes = {
   integerOnly: PropTypes.bool,
   isProjectAdmin: PropTypes.bool,
   lang: PropTypes.string,
+  max: PropTypes.number,
+  min: PropTypes.number,
   onEditSubmit: PropTypes.func.isRequired,
   percents: PropTypes.bool,
   value: PropTypes.number

@@ -236,6 +236,7 @@ class Wizard extends Component {
         jiraHostName: server,
         simtrackProjectId: this.props.params.projectId,
         jiraProjectId: this.state.selectJiraProjectState.jiraProjectId,
+        jiraToken: this.props.token,
         issueTypesAssociation,
         statusesAssociation,
         userEmailAssociation

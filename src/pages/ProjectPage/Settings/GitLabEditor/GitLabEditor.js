@@ -16,7 +16,7 @@ import { ADMIN } from '../../../../constants/Roles';
 import localize from './GitLabEditor.json';
 
 import Modal from '../../../../components/Modal';
-import SelectDropdown from '../../../../components/SelectDropdown';
+import CreatableMulti from '../../../../components/CreatableMulti';
 import ConfirmModal from '../../../../components/ConfirmModal/ConfirmModal';
 import { getFullName } from '../../../../utils/NameLocalisation';
 
@@ -94,7 +94,7 @@ class GitLabEditor extends Component {
   };
 
   saveProject = value => {
-    if (isNaN(value)) {
+    if (value) {
       this.props.addGitlabProjectByName(this.props.project.id, value);
     } else {
       const { gitlabProjectIds } = this.props.project;
@@ -136,7 +136,7 @@ class GitLabEditor extends Component {
   };
 
   selectProjectName = e => {
-    const pattern = /^[A-Za-zА-Яа-я0-9 _]*$/;
+    const pattern = /^[A-Za-z0-9_]*$/;
     const result = pattern.test(e.target.value);
     if (result === true) {
       this.setState({
@@ -191,15 +191,16 @@ class GitLabEditor extends Component {
             <form className={css.createGitlabProject}>
               <h3>{localize[lang].CREATE_REPO}</h3>
               <div className={css.modalContainer}>
-                <SelectDropdown
+                <CreatableMulti
                   name="member"
+                  noResultsText={localize[lang].NO_RESULTS}
+                  options={this.getNamespaces()}
                   placeholder={localize[lang].NAMESPACE}
+                  autoFocus
                   multi={false}
                   value={this.state.namespace}
                   onChange={this.selectNamespace('namespace')}
-                  options={this.getNamespaces()}
-                  onInputChange={this.handleNamespacesSearch}
-                  autofocus
+                  backspaceToRemoveMessage={''}
                 />
                 <div>
                   <Input

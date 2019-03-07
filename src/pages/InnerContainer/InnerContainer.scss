@@ -7,6 +7,17 @@
   overflow-y: scroll;
 }
 
+.fullHeight {
+  display: flex;
+  flex-direction: column;
+
+  .content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
 .content {
   max-width: 1264px;
   min-width: 960px;
