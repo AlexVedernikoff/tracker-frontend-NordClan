@@ -187,7 +187,7 @@ class Planning extends Component {
       };
       return {
         summary: `${localize[lang].TOTAL_TIME} ${sprintSpentTime} ${
-          sprintEstimate ? localize[lang].OF + sprintEstimate : ''
+          sprintEstimate ? localize[lang].OF + ' ' + sprintEstimate : ''
         } ${localize[lang].H}`,
         width: `${width(ratio)}%`,
         active: sprintEstimate !== 0,
