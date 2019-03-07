@@ -100,6 +100,7 @@ class CreateTaskModal extends Component {
     if (!this.state.selectedType || !this.state.selectedType.value) {
       return;
     }
+
     this.props
       .createTask(
         {
@@ -113,8 +114,9 @@ class CreateTaskModal extends Component {
           prioritiesId: this.state.prioritiesId,
           plannedExecutionTime: this.state.plannedExecutionTime,
           parentId: this.props.parentTaskId,
-          isTaskByClient: this.state.isTaskByClient,
-          isDevOps: this.state.isDevOps
+          isTaskByClient: this.byClientInput.checked,
+          isDevOps: this.devOpsInput.checked,
+          goalId: this.props.goalId
         },
         this.state.openTaskPage,
         this.props.column
@@ -472,6 +474,7 @@ CreateTaskModal.propTypes = {
   createTask: PropTypes.func.isRequired,
   defaultPerformerId: PropTypes.oneOfType([PropTypes.array, PropTypes.number]),
   devOpsUsers: PropTypes.array,
+  goalId: PropTypes.number,
   isCreateChildTaskModalOpen: PropTypes.bool,
   isCreateTaskModalOpen: PropTypes.bool,
   isCreateTaskRequestInProgress: PropTypes.bool,
