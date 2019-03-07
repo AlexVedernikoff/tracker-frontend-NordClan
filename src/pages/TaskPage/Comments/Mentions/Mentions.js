@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { updateCurrentCommentText } from '../../../../actions/Task';
 import * as css from './Mentions.scss';
 import cn from 'classnames';
+const ru = require('convert-layout/ru');
 
 class Mentions extends Component {
   static propTypes = {
@@ -34,7 +35,15 @@ class Mentions extends Component {
 
   typeComment = event => {
     const { value } = event.target;
-    this.props.updateCurrentCommentText(value);
+    const { lang } = this.props;
+    const correctValue = value.split('@');
+    if (lang === 'ru' && correctValue[1].length) {
+      correctValue[1] = ru.fromEn(correctValue[1]);
+    }
+    if (lang === 'en' && correctValue[1].length) {
+      correctValue[1] = ru.toEn(correctValue[1]);
+    }
+    this.props.updateCurrentCommentText(correctValue.join('@'));
     this.props.toggleBtn(event);
   };
 
