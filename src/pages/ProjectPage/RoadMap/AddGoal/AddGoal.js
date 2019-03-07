@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import schema from './schema';
 import moment from 'moment';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import Modal from '../../../../components/Modal';
@@ -41,7 +42,6 @@ class AddGoal extends Component {
     goalItem: PropTypes.object,
     isEdit: PropTypes.bool,
     isFetching: PropTypes.bool,
-    isSuccess: PropTypes.bool,
     item: PropTypes.shape({
       id: PropTypes.number,
       name: PropTypes.string
@@ -62,31 +62,6 @@ class AddGoal extends Component {
     this.validator = new Validator();
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { isFetching, isSuccess, isEdit, goalItem } = nextProps;
-    if (isEdit) {
-      this.setState({
-        forms: {
-          name: goalItem.name,
-          description: goalItem.description,
-          visible: goalItem.visible,
-          plannedExecutionTime: moment.unix(goalItem.plannedExecutionTime * 100).format('DD.MM.YYYY')
-        }
-      });
-    } else {
-      this.setState({ forms: initState.forms });
-    }
-    if (!isFetching && isSuccess && !this.state.isClose) {
-      this.setState(
-        {
-          forms: initState.forms,
-          isClose: true
-        },
-        this.props.closeModal
-      );
-    }
-  }
-
   handleChangeGoalForms = name => ({ target: { value } }) =>
     this.setState({
       forms: {
@@ -99,62 +74,32 @@ class AddGoal extends Component {
       }
     });
 
-  validationCreateGoal = cb => {
-    const {
-      forms: { name, description, plannedExecutionTime }
-    } = this.state;
-    this.setState(
-      {
-        errors: {
-          ...this.state.errors,
-          ...{
-            name: name.length < 2,
-            description: description.length < 2,
-            plannedExecutionTime: !plannedExecutionTime
-          }
-        }
-      },
-      () => {
-        const { errors } = this.state;
-        let isError = false;
-        for (const key in errors) {
-          if (errors[key]) {
-            isError = true;
-            break;
-          }
-        }
-        this.setState({ isError }, cb);
-      }
-    );
-  };
-
   handleAddGoal = sprintId => () =>
-    this.validationCreateGoal(() => {
-      if (this.state.isError) return;
-      const { forms } = this.state;
-      const {
-        isEdit,
-        edit,
-        create,
-        item: { projectId }
-      } = this.props;
-      const plannedExecutionTime = +moment(forms.plannedExecutionTime, 'DD.MM.YYYY').format('X') / 100;
-      const data = {
-        ...forms,
-        sprintId,
-        projectId,
-        plannedExecutionTime
-      };
-      this.props.closeModal();
-      return isEdit ? edit(data) : create(data);
-    });
+    schema(this.props.lang)
+      .validate(this.state.forms, { abortEarly: false })
+      .then(values => {
+        const {
+          isEdit,
+          item: { projectId }
+        } = this.props;
+        const plannedExecutionTime = +moment(values.plannedExecutionTime, 'DD.MM.YYYY').format('X') / 100;
+        const data = { ...values, plannedExecutionTime, projectId, sprintId };
+        this.props.closeModal();
+        return isEdit ? this.props.edit(data) : this.props.create(data);
+      })
+      .catch(({ inner }) =>
+        this.setState({
+          errors: Object.assign({}, ...inner.map(({ path, message }) => ({ [path]: message })))
+        })
+      );
 
   render() {
     const {
       forms: { name, visible, plannedExecutionTime, description },
       errors
     } = this.state;
-    const { showModal, lang, item, closeModal, isFetching, errorCreateGoal, isEdit, goalItem } = this.props;
+    const { showModal, lang, item, closeModal, isFetching, isEdit, goalItem } = this.props;
+    const { fields } = schema(this.props.lang).describe();
     return (
       <div>
         <Modal isOpen={showModal} onRequestClose={closeModal} contentLabel="modal">
@@ -173,14 +118,14 @@ class AddGoal extends Component {
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   {this.validator.validate(
-                    (handleBlur, shouldMarkError) => (
+                    handleBlur => (
                       <ValidatedInput
-                        placeholder={localize[lang].ENTER_GOAL_NAME}
+                        placeholder={fields.name.label}
                         onChange={this.handleChangeGoalForms('name')}
                         value={name}
                         onBlur={handleBlur}
-                        shouldMarkError={shouldMarkError}
-                        errorText={errorCreateGoal.name || localize[lang].ENTER_GOAL_NAME}
+                        shouldMarkError={!!errors.name}
+                        errorText={errors.name}
                       />
                     ),
                     'name',
@@ -195,15 +140,15 @@ class AddGoal extends Component {
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   {this.validator.validate(
-                    (handleBlur, shouldMarkError) => (
+                    handleBlur => (
                       <ValidatedInput
                         elementType="textarea"
-                        placeholder={localize[lang].ENTER_DESCRIPTION_GOAL}
+                        placeholder={fields.description.label}
                         onChange={this.handleChangeGoalForms('description')}
                         value={description}
                         onBlur={handleBlur}
-                        shouldMarkError={shouldMarkError}
-                        errorText={errorCreateGoal.description || localize[lang].ENTER_DESCRIPTION_GOAL}
+                        shouldMarkError={!!errors.description}
+                        errorText={errors.description}
                       />
                     ),
                     'description',
@@ -225,20 +170,20 @@ class AddGoal extends Component {
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   {this.validator.validate(
-                    (handleBlur, shouldMarkError) => (
+                    handleBlur => (
                       <ValidatedInput
                         elementType="date"
-                        placeholder={localize[lang].PLANNED_EXECUTION_TIME}
+                        placeholder={fields.plannedExecutionTime.label}
                         value={plannedExecutionTime || ''}
                         onBlur={handleBlur}
-                        shouldMarkError={shouldMarkError}
+                        shouldMarkError={!!errors.plannedExecutionTime}
                         disabledDataRanges={[{ before: new Date() }]}
                         onDayChange={date =>
                           this.handleChangeGoalForms('plannedExecutionTime')({
                             target: { value: date }
                           })
                         }
-                        errorText={errorCreateGoal.plannedExecutionTime || localize[lang].PLANNED_EXECUTION_TIME}
+                        errorText={errors.plannedExecutionTime}
                       />
                     ),
                     'plannedExecutionTime',
@@ -269,9 +214,7 @@ class AddGoal extends Component {
 
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
-  isFetching: state.Goals.isFetching,
-  isSuccess: state.Goals.isSuccess,
-  errorCreateGoal: state.Goals.errorCreateGoal
+  isFetching: state.Goals.isFetching
 });
 
 export default connect(mapStateToProps)(AddGoal);
