@@ -26,6 +26,8 @@ class InnerContainer extends Component {
     user: PropTypes.object
   };
 
+  static childContextTypes = { scrollTop: PropTypes.func };
+
   constructor(props) {
     super(props);
 
@@ -37,6 +39,10 @@ class InnerContainer extends Component {
 
     this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
     this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
+  }
+
+  getChildContext() {
+    return { scrollTop: this.scrollTop };
   }
 
   componentWillMount() {
@@ -58,6 +64,18 @@ class InnerContainer extends Component {
     this.state.mql.removeListener(this.mediaQueryChanged);
     this.unlistenHistory();
   }
+
+  scrollTop = element => {
+    if (this.contentWrapper) {
+      this.contentWrapper.scroll(0, 0);
+      this.contentWrapper.scroll(
+        0,
+        Math.round(element.getBoundingClientRect().top) - element.getBoundingClientRect().height - 50
+      );
+    }
+  };
+
+  getRef = ref => (this.contentWrapper = ref);
 
   mediaQueryChanged = () => {
     this.setState({ sidebarDocked: this.state.mql.matches, sidebarOpen: this.state.mql.matches });
@@ -141,6 +159,7 @@ class InnerContainer extends Component {
             />
             <ScrollContainer scrollKey={'innerContainer'} shouldUpdateScroll={this.shouldUpdateScroll}>
               <div
+                ref={this.getRef}
                 className={classnames({
                   [css.contentWrapper]: true,
                   [css.fullHeight]: isFullHeight
