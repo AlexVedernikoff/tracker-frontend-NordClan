@@ -28,10 +28,6 @@ class InnerContainer extends Component {
 
   static childContextTypes = { scrollTop: PropTypes.func };
 
-  getChildContext() {
-    return { scrollTop: this.scrollTop };
-  }
-
   constructor(props) {
     super(props);
 
@@ -43,6 +39,10 @@ class InnerContainer extends Component {
 
     this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
     this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
+  }
+
+  getChildContext() {
+    return { scrollTop: this.scrollTop };
   }
 
   componentWillMount() {
