@@ -99,7 +99,7 @@ class TimeLine extends Component {
             ) : null}
             {rightInt > 0 ? (
               <div className={styles.end}>
-                <span className={cn(styles.date, { [styles.down]: diffSprintByDay < 15 })}>
+                <span className={cn(styles.date, { [styles.down]: diffSprintByDay < 20 })}>
                   {this.sprintEnd.format('DD.MM.YYYY')}
                 </span>
               </div>
