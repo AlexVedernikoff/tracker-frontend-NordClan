@@ -4,8 +4,8 @@ import localize from '../Sprint/Sprint.json';
 
 yup.addMethod(yup.date, 'handleDate', function(formats) {
   return this.transform(function(value, originalValue) {
-    value = moment(originalValue, formats);
-    return value.isValid() ? value.toDate() : new Date('');
+    const date = moment(originalValue, formats);
+    return date.isValid() ? date.toDate() : new Date('');
   });
 });
 

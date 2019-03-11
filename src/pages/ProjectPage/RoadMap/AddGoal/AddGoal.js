@@ -23,7 +23,6 @@ const initState = {
     sprintId: null,
     name: '',
     description: '',
-    status: true,
     plannedExecutionTime: ''
   },
   errors: {
@@ -121,7 +120,7 @@ class AddGoal extends Component {
 
   render() {
     const {
-      forms: { name, status, visible, plannedExecutionTime, description },
+      forms: { name, visible, plannedExecutionTime, description },
       errors
     } = this.state;
     const { showModal, lang, item, closeModal, isFetching, isEdit, goalItem } = this.props;
