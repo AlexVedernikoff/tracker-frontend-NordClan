@@ -13,6 +13,7 @@ import Pagination from '../../components/Pagination';
 import moment from 'moment';
 import TagsFilter from '../../components/TagsFilter';
 import uniqBy from 'lodash/uniqBy';
+import debounce from 'lodash/debounce';
 
 import CreateProject from './CreateProject';
 import getProjects, {
@@ -49,6 +50,8 @@ class Projects extends Component {
       selectedType: 1,
       ...projectListFilters
     };
+
+    this.debouncedFormatDateAndLoadProjects = debounce(this.formatDateAndLoadProjects, 400);
   }
 
   componentDidMount() {
@@ -140,12 +143,14 @@ class Projects extends Component {
         filterByName: event.target.value,
         activePage: this.state.filterByName !== event.target.value ? 1 : this.state.activePage
       },
-      () => {
-        const dateFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('YYYY-MM-DD') : '';
-        const dateTo = this.state.dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
-        this.loadProjects(dateFrom, dateTo);
-      }
+      this.debouncedFormatDateAndLoadProjects
     );
+  };
+
+  formatDateAndLoadProjects = () => {
+    const dateFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('YYYY-MM-DD') : '';
+    const dateTo = this.state.dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
+    this.loadProjects(dateFrom, dateTo);
   };
 
   handleDayFromChange = dateFrom => {
