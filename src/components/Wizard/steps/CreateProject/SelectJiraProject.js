@@ -22,7 +22,8 @@ class CreateProjectForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      jiraProjectId: ''
+      jiraProjectId: '',
+      jiraProjectAlreadyLinked: null
     };
   }
 
@@ -31,8 +32,11 @@ class CreateProjectForm extends Component {
   }
 
   onChange = (name, e) => {
+    const currentProject = this.props.jiraProjects.find(project => e.value === project.id);
+    const linkedProjectId = currentProject ? currentProject.linkedProject : null;
     this.setState({
-      [name]: e ? e.value : ''
+      [name]: e ? e.value : '',
+      jiraProjectAlreadyLinked: linkedProjectId
     });
   };
 
@@ -72,6 +76,9 @@ class CreateProjectForm extends Component {
                 options={this.getJiraProjects()}
                 autofocus
               />
+              {this.state.jiraProjectAlreadyLinked && (
+                <div className={css.jiraCaptchaLink}>{localize[lang].JIRA_PROJECT_IS_ALREADY_USE}</div>
+              )}
             </Col>
           </Row>
         </label>

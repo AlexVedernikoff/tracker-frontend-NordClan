@@ -2,7 +2,8 @@
   "en": {
     "SELECT_JIRA_PROJECT": "Creacte Project",
     "JIRA_PROJECT": "Проект в Jira",
-    "PREFIX": "Префикс"
+    "PREFIX": "Префикс",
+    "JIRA_PROJECT_IS_ALREADY_USE": "Проект уже привязан к проекту"
   },
 
   "ru": {
