@@ -190,6 +190,7 @@ class Details extends Component {
   };
 
   changeIsTaskByClient = event => {
+    event.persist();
     this.props.onChange(
       {
         id: this.props.task.id,
@@ -200,6 +201,7 @@ class Details extends Component {
   };
 
   changeDevOpsAttribute = event => {
+    event.persist();
     this.props.onChange(
       {
         id: this.props.task.id,
