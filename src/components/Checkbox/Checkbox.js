@@ -21,7 +21,6 @@ class Checkbox extends React.Component {
   }
 
   handleOnChange = event => {
-    console.log('event.target.checked --- ', event.target.checked);
     const { onChange } = this.props;
     if (onChange) {
       this.setState(
@@ -34,7 +33,7 @@ class Checkbox extends React.Component {
   };
 
   render() {
-    const { disabled, label, className, refCallback, ...other } = this.props;
+    const { disabled, label, className, ...other } = this.props;
     const { isChecked } = this.state;
     const type = 'checkbox';
     const baseProps = { type, disabled, onChange: this.handleOnChange };
