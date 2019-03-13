@@ -80,7 +80,7 @@ export default class AttachedImage extends React.Component {
           <img src={`/${previewPath}`} alt="" className={css.screen} />
         </div>
         <div className={css.attachmentName} title={fileName}>
-          {fileName}
+          {fileName.length > 30 ? `${fileName.slice(0, 30)} ...` : fileName}
         </div>
 
         {this.state.isConfirmDeleteOpen ? (
