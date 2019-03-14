@@ -36,8 +36,8 @@ class Goal extends Component {
 
   render() {
     const { checked } = this.state;
-    const { item, modifyGoalId, lang } = this.props;
-    const { id, budget, tasksCount, removedFromSprint, removedToSprint } = item;
+    const { item, lang } = this.props;
+    const { budget, tasksCount, removedFromSprint, removedToSprint } = item;
     const metaProps = {
       budget,
       tasksCount,
@@ -46,9 +46,8 @@ class Goal extends Component {
       item
     };
 
-    const modifyItem = modifyGoalId === id ? styles.modify : null;
     return (
-      <div className={cn(styles.goal, modifyItem)}>
+      <div className={styles.goal}>
         <div className={styles.mainContainer}>
           {!removedToSprint && <VisibleControl visible={item.visible} onClick={this.props.toggleVisible} lang={lang} />}
           {!removedToSprint && (
