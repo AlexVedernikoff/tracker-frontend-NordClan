@@ -25,7 +25,8 @@ const schema = lang =>
       .handleDate('DD.MM.YYYY')
       .typeError(localize[lang].MUST_ENTER_EXECUTION_TIME)
       .label(localize[lang].PLANNED_EXECUTION_TIME)
-      .required(localize[lang].MUST_ENTER_EXECUTION_TIME)
+      .required(localize[lang].MUST_ENTER_EXECUTION_TIME),
+    info: yup.string().label(localize[lang].ENTER_INFO)
   });
 
 export default schema;

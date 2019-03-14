@@ -111,7 +111,7 @@ class Sprint extends Component {
           <span className={styles.addingIcon}>
             <IconPlus />
           </span>
-          {localize[lang].ADD_GOAL}
+          {localize[lang].ADD_EPIC}
         </div>
       </div>
     );
