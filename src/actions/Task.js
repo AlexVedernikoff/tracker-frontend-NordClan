@@ -300,6 +300,7 @@ const getTaskSpent = id => {
 };
 
 const changeTask = (ChangedProperties, target, callback) => {
+  alert('CB1');
   if (!ChangedProperties.id) {
     return;
   }

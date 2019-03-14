@@ -16,7 +16,10 @@ class PerformerFilter extends React.Component {
   };
 
   getUsers = () => {
-    const users = this.props.users.map(user => ({
+    const sourceUsers =
+      this.props.devOpsUsers && this.props.devOpsUsers.length ? this.props.devOpsUsers : this.props.users;
+
+    const users = sourceUsers.map(user => ({
       value: user.id,
       label: getFullName(user)
     }));
