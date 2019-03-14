@@ -46,7 +46,6 @@ class Participant extends React.Component {
   }
 
   componentWillMount = () => {
-    console.clear();
     this.setState({ sendRoles: this.setRoles(this.props) });
   };
 
