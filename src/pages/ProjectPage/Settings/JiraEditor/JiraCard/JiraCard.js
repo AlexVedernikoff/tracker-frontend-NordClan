@@ -41,18 +41,14 @@ class JiraCard extends Component {
 
   getStatusInfo = status => {
     const { lang, simtrackProject } = this.props;
-    const offset = new Date(simtrackProject.lastSyncDate).getTimezoneOffset() / 60;
-    const utcDate = moment.utc(simtrackProject.lastSyncDate);
+    const utcDate = moment(simtrackProject.lastSyncDate);
 
     const classNameForSync = cn(css.syncStatus, {
       [css.successStatus]: status === syncStatuses.SUCCESS,
       [css.failedStatus]: status === syncStatuses.FAILED
     });
 
-    const localDate = utcDate
-      .local()
-      .subtract('hours', offset)
-      .format('DD-MM-YYYY HH:mm');
+    const localDate = utcDate.format('DD-MM-YYYY HH:mm');
 
     const statusBlock = statusText => <div className={classNameForSync}>{statusText}</div>;
 

@@ -342,7 +342,13 @@ class ParticipantEditor extends Component {
                       <h4>
                         <div className={`${css.cell} ${css.gitlabProjectTableCaptionWrap}`}>
                           <div className={css.gitlabProjectTableCaption} data-tip={project.name}>
-                            <span>{project.name}</span>
+                            <span>
+                              {gitlabProjects
+                                .filter(item => item !== project)
+                                .filter(item => item.name === project.name).length
+                                ? project.name_with_namespace
+                                : project.name}
+                            </span>
                           </div>
                         </div>
                       </h4>

@@ -13,6 +13,8 @@ import parseInteger from '../../utils/parseInteger';
 import { BUDGET_MAX_CHARS_LENGTH } from '../../constants/Sprint';
 import validateNumber from '../../utils/validateNumber';
 import * as commonUtils from '../../utils/common';
+import ValidatedInput from '../ValidatedInput';
+import Validator from '../ValidatedInput/Validator';
 
 class SprintEditModal extends Component {
   static propTypes = {
@@ -38,6 +40,7 @@ class SprintEditModal extends Component {
         riskBudget: this.props.sprint.riskBudget || '0.00'
       }
     };
+    this.validator = new Validator();
   }
 
   componentDidMount = () => {
@@ -152,10 +155,15 @@ class SprintEditModal extends Component {
     return !this.checkNullInputs() || !this.validateDates();
   };
 
+  validateBudgets = () => {
+    return +this.state.sprint.budget <= +this.state.sprint.riskBudget;
+  };
+
   render() {
     const { sprint, lang } = this.props;
     let formattedDayFrom = '';
     let formattedDayTo = '';
+    const validateBudgets = this.validateBudgets();
 
     if (this.state.sprint.dateFrom) {
       formattedDayFrom = moment(this.state.sprint.dateFrom).format('DD.MM.YYYY');
@@ -259,11 +267,20 @@ class SprintEditModal extends Component {
                   <p>{localize[lang].WO_RISK}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                  <Input
-                    value={this.state.sprint.budget}
-                    placeholder={localize[lang].WO_RISK_PLACEHOLDER}
-                    onChange={this.onChangeBudget}
-                  />
+                  {this.validator.validate(
+                    (handleBlur, shouldMarkError) => (
+                      <ValidatedInput
+                        value={this.state.sprint.budget}
+                        placeholder={localize[lang].WO_RISK_PLACEHOLDER}
+                        onChange={this.onChangeBudget}
+                        errorText={localize[lang].BUDGET_MORE_THAN_RISK_BUDGET}
+                        onBlur={handleBlur}
+                        shouldMarkError={shouldMarkError}
+                      />
+                    ),
+                    'budget',
+                    !validateBudgets
+                  )}
                 </Col>
               </Row>
             </label>
@@ -289,7 +306,7 @@ class SprintEditModal extends Component {
                   type="green"
                   htmlType="submit"
                   text={localize[lang].CHANGE}
-                  disabled={this.validateAllFields()}
+                  disabled={this.validateAllFields() || !validateBudgets}
                   onClick={this.handleEditSprint}
                 />
               </Col>

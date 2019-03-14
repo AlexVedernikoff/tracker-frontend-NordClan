@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { uniqBy, debounce } from 'lodash';
+import { uniqBy, debounce, uniqWith, isEqual } from 'lodash';
 import ReactTooltip from 'react-tooltip';
 
 import TaskRow from '../../../components/TaskRow';
@@ -38,7 +38,7 @@ import localize from './taskList.json';
 import { BACKLOG_ID } from '../../../constants/Sprint';
 import { IN_PROGRESS } from '../../../constants/SprintStatuses';
 import ScrollTop from '../../../components/ScrollTop';
-import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
+import { layoutAgnosticFilterGlobal } from '../../../utils/layoutAgnosticFilter';
 
 const dateFormat = 'DD.MM.YYYY';
 
@@ -307,11 +307,12 @@ class TaskList extends Component {
       state => {
         const filterValue = options.map(option => option.value);
         const changedFilters = { ...state.changedFilters };
-
         if (filterValue.length) {
           changedFilters[name] = filterValue;
         } else if (emptyFilters[name] && emptyFilters[name].length) {
           changedFilters[name] = [...emptyFilters[name]];
+        } else if (name === 'sprintId') {
+          changedFilters[name] = [0];
         } else {
           delete changedFilters[name];
         }
@@ -592,15 +593,19 @@ class TaskList extends Component {
   createFilterLabel = filterName => {
     const {
       lang,
-      project: { users }
+      project: { users, authorsTasksUniq }
     } = this.props;
+    const usersOption = uniqBy(
+      [...users, ...(authorsTasksUniq && authorsTasksUniq.length ? authorsTasksUniq : [])],
+      'id'
+    );
     const { changedFilters } = this.state;
     switch (filterName) {
       case 'prioritiesId':
         return `${getPriorityById(changedFilters.prioritiesId)}`;
       case 'authorId':
         return `${localize[lang].AUTHOR}: ${
-          users.length ? getFullName(users.find(user => user.id === changedFilters.authorId)) : ''
+          usersOption.length ? getFullName(usersOption.find(user => user.id === +changedFilters.authorId)) : ''
         }`;
       case 'name':
         return `${changedFilters.name}`;
@@ -631,7 +636,15 @@ class TaskList extends Component {
   onChangeTagFilter = options => this.changeMultiFilter(options, 'tags');
   sortedAuthorOptions = () => {
     const { project } = this.props;
-    const authorOptions = this.createOptions(project.users, 'fullNameRu');
+    const authorOptions = uniqWith(
+      [
+        ...this.createOptions(project.users, 'fullNameRu'),
+        ...(project.authorsTasksUniq && project.authorsTasksUniq.length
+          ? this.createOptions(project.authorsTasksUniq, 'fullNameRu')
+          : [])
+      ],
+      isEqual
+    );
     return authorOptions
       ? authorOptions.sort((a, b) => {
           if (a.label < b.label) {
@@ -759,7 +772,7 @@ class TaskList extends Component {
                     onInputChange={removeNumChars}
                     noResultsText={localize[lang].NO_RESULTS}
                     options={this.sortedAuthorOptions()}
-                    filterOption={layoutAgnosticFilter}
+                    filterOption={layoutAgnosticFilterGlobal}
                     canClear
                     onClear={() => this.clearFilter('authorId')}
                   />
@@ -768,7 +781,7 @@ class TaskList extends Component {
                   <PerformerFilter
                     onPerformerSelect={this.onChangePerformerFilter}
                     selectedPerformerId={performerId}
-                    filterOption={layoutAgnosticFilter}
+                    filterOption={layoutAgnosticFilterGlobal}
                     canClear
                     onClear={() => this.clearFilter('performerId')}
                   />
@@ -796,7 +809,7 @@ class TaskList extends Component {
                     canClear
                     onClear={() => this.clearFilter('statusId')}
                     onChange={this.onChangeStatusFilter}
-                    filterOption={layoutAgnosticFilter}
+                    filterOption={layoutAgnosticFilterGlobal}
                   />
                 </Col>
                 <Col xs={6} sm={3}>
@@ -812,7 +825,7 @@ class TaskList extends Component {
                     canClear
                     onClear={() => this.clearFilter('typeId')}
                     onChange={this.onChangeTypeFilter}
-                    filterOption={layoutAgnosticFilter}
+                    filterOption={layoutAgnosticFilterGlobal}
                   />
                 </Col>
                 <Col xs={6} sm={3}>
@@ -912,11 +925,13 @@ class TaskList extends Component {
                 />
               ))}
           {!isLoading && tasks.length === 0 ? <div className={css.notFound}>{localize[lang].NOTHING_FOUND}</div> : null}
-          <Pagination
-            itemsCount={this.props.pagesCount}
-            activePage={this.state.activePage}
-            onItemClick={this.handlePaginationClick}
-          />
+          {tasks.length > 0 && (
+            <Pagination
+              itemsCount={this.props.pagesCount}
+              activePage={this.state.activePage}
+              onItemClick={this.handlePaginationClick}
+            />
+          )}
         </section>
         {this.state.isPerformerModalOpen ? (
           <PerformerModal

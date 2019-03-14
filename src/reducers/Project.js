@@ -20,7 +20,8 @@ const InitialState = {
     validationError: null,
     metrics: [],
     notProcessedGitlabUsers: [],
-    gitlabProjectIds: []
+    gitlabProjectIds: [],
+    authorsTasksUniq: []
   },
   TitleIsEditing: false,
   DescriptionIsEditing: false,

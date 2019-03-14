@@ -9,6 +9,7 @@ import TaskPlanningTime from '../TaskPlanningTime';
 import PerformerModal from '../../../components/PerformerModal';
 import SprintModal from '../../../components/SprintModal';
 import TaskTypeModal from '../../../components/TaskTypeModal';
+import TaskGoalModal from '../../../components/TaskGoalModal';
 import Checkbox from '../../../components/Checkbox/Checkbox';
 import EditableRow from './EditableRow';
 import getTypeById from '../../../utils/TaskTypes';
@@ -30,6 +31,8 @@ import shortid from 'shortid';
 import { addActivity } from '../../../actions/Timesheets';
 import { alphabeticallyComparatorLang, devOpsUsersSelector } from '../../../utils/sortPerformer';
 import { sortedUsersSelector, usersSelector } from '../../../selectors/Project';
+import { checkIsAdminInProject } from '../../../utils/isAdmin';
+import { IconEdit } from '../../../components/Icons';
 import union from 'lodash/union';
 
 const spentRequestStatus = {
@@ -49,6 +52,7 @@ class Details extends Component {
     getProjectUsers: PropTypes.func.isRequired,
     getTask: PropTypes.func.isRequired,
     getTaskSpent: PropTypes.func.isRequired,
+    goals: PropTypes.array,
     isExternal: PropTypes.bool,
     lang: PropTypes.string,
     onChange: PropTypes.func.isRequired,
@@ -72,7 +76,8 @@ class Details extends Component {
       isTaskTypeModalOpen: false,
       spentRequestStatus: spentRequestStatus.READY,
       isPerformerChanged: false,
-      plannedExecutionTime: 0
+      plannedExecutionTime: 0,
+      isTaskGoalModalOpen: false
     };
   }
 
@@ -185,6 +190,7 @@ class Details extends Component {
   };
 
   changeIsTaskByClient = event => {
+    event.persist();
     this.props.onChange(
       {
         id: this.props.task.id,
@@ -195,6 +201,7 @@ class Details extends Component {
   };
 
   changeDevOpsAttribute = event => {
+    event.persist();
     this.props.onChange(
       {
         id: this.props.task.id,
@@ -202,6 +209,26 @@ class Details extends Component {
       },
       null
     );
+  };
+
+  // Действия с целью
+  openTaskGoalModal = () => {
+    this.setState({ isTaskGoalModalOpen: true });
+  };
+
+  closeTaskGoalModal = () => {
+    this.setState({ isTaskGoalModalOpen: false });
+  };
+
+  changeGoal = goalId => {
+    this.props.onChange(
+      {
+        id: this.props.task.id,
+        goalId: goalId
+      },
+      this.props.task.id
+    );
+    this.closeTaskGoalModal();
   };
 
   spentTooltipRender(spents) {
@@ -274,6 +301,7 @@ class Details extends Component {
 
       case TASK_STATUSES.CODE_REVIEW_PLAY:
         unionPerformers = _.union(
+          users.pm,
           users.teamLead,
           users.account,
           users.analyst,
@@ -288,6 +316,7 @@ class Details extends Component {
 
       case TASK_STATUSES.CODE_REVIEW_STOP:
         unionPerformers = _.union(
+          users.pm,
           users.teamLead,
           users.account,
           users.analyst,
@@ -302,7 +331,7 @@ class Details extends Component {
 
       case TASK_STATUSES.QA_STOP:
       case TASK_STATUSES.QA_PLAY:
-        unionPerformers = union(users.qa, unsortedUsers.sort(alphabeticallyComparatorLang(lang)));
+        unionPerformers = union(users.pm, users.qa, unsortedUsers.sort(alphabeticallyComparatorLang(lang)));
         break;
 
       default:
@@ -334,6 +363,18 @@ class Details extends Component {
     ) : (
       <span className={css.unassigned}>{localize[lang].NOT_SPECIFIED}</span>
     );
+
+    const goals = this.props.goals.map(item => ({
+      value: item.id,
+      label: item.name
+    }));
+
+    const goalTag =
+      task.goals && task.goals[0] ? (
+        task.goals[0].name
+      ) : (
+        <span className={css.unassigned}>{localize[lang].NOT_SPECIFIED}</span>
+      );
 
     const executeTimeTooltip =
       this.state.spentRequestStatus === spentRequestStatus.RECEIVED ? (
@@ -436,6 +477,22 @@ class Details extends Component {
             />
 
             <tr>
+              <td>{localize[lang].GOAL}</td>
+              <td>
+                {checkIsAdminInProject(user, this.props.task.projectId) &&
+                this.props.task.statusId !== TASK_STATUSES.CLOSED ? (
+                  <span onClick={this.openTaskGoalModal} className={css.editableCell}>
+                    {goalTag}
+                    <span className={css.editIcon}>
+                      <IconEdit />
+                    </span>
+                  </span>
+                ) : (
+                  <span>{goalTag}</span>
+                )}
+              </td>
+            </tr>
+            <tr>
               <td>{localize[lang].DATE_OF_CREATE}</td>
               <td>{moment(this.props.task.createdAt).format('DD.MM.YYYY')}</td>
             </tr>
@@ -524,6 +581,15 @@ class Details extends Component {
             onClose={this.closeTaskTypeModal}
           />
         ) : null}
+        {this.state.isTaskGoalModalOpen ? (
+          <TaskGoalModal
+            defaultGoal={task.goals && task.goals[0] ? task.goals[0].id : null}
+            onChoose={this.changeGoal}
+            onClose={this.closeTaskGoalModal}
+            title={localize[lang].CHANGE_GOAL}
+            goals={goals}
+          />
+        ) : null}
       </div>
     );
   }
@@ -538,6 +604,7 @@ const mapStateToProps = state => ({
   task: state.Task.task,
   taskTypes: getLocalizedTaskTypes(state),
   plannedExecutionTime: state.Task.task.plannedExecutionTime,
+  goals: state.Goals.goals,
   PlanningTimeIsEditing: state.Task.PlanningTimeIsEditing,
   startingDay: state.Timesheets.startingDay,
   ExecutionTimeIsEditing: state.Task.ExecutionTimeIsEditing,

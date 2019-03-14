@@ -95,6 +95,7 @@ class AgileBoard extends Component {
           name: filters.name || null,
           tags: filters.filterTags,
           performerId: filters.performerId || null,
+          goalId: filters.goal || null,
           isDevOps: this.props.isDevOps || null
         };
     this.props.getTasks(options);
@@ -108,7 +109,17 @@ class AgileBoard extends Component {
       });
       const performerId = taskProps.performerId || null;
       const projectId = taskProps.projectId || null;
-      this.openPerformerModal(task, performerId, projectId, task.statusId, phase);
+      const isTshAndCommentsHidden = task.statusId === TASK_STATUSES.NEW;
+      this.openPerformerModal(
+        task,
+        performerId,
+        projectId,
+        task.statusId,
+        phase,
+        undefined,
+        taskProps.isDevOps,
+        isTshAndCommentsHidden
+      );
     } else {
       this.changeStatus(task.id, task.statusId, phase);
     }
@@ -240,6 +251,7 @@ class AgileBoard extends Component {
         break;
       case 'Code Review':
         this.unionPerformers = union(
+          users.pm,
           users.teamLead,
           users.account,
           users.analyst,
@@ -252,7 +264,11 @@ class AgileBoard extends Component {
         );
         break;
       case 'QA':
-        this.unionPerformers = union(users.qa, this.props.unsortedUsers.sort(alphabeticallyComparatorLang(lang)));
+        this.unionPerformers = union(
+          users.pm,
+          users.qa,
+          this.props.unsortedUsers.sort(alphabeticallyComparatorLang(lang))
+        );
         break;
       default:
         this.unionPerformers = union(
@@ -420,7 +436,7 @@ class AgileBoard extends Component {
       <section className={css.agileBoard}>
         {filtersComponent}
         <div className={css.boardContainer}>
-          <Row>
+          <Row className={css.agileBoardRow}>
             <PhaseColumn onDrop={this.dropTask} section={tasksKey} title={'New'} tasks={tasksList.new} />
             <PhaseColumn onDrop={this.dropTask} section={tasksKey} title={'Dev'} tasks={tasksList.dev} />
             <PhaseColumn onDrop={this.dropTask} section={tasksKey} title={'Code Review'} tasks={tasksList.codeReview} />
@@ -465,6 +481,7 @@ AgileBoard.propTypes = {
   getProjectUsers: PropTypes.func,
   getTasks: PropTypes.func.isRequired,
   globalRole: PropTypes.string,
+  goals: PropTypes.array,
   isCreateTaskModalOpen: PropTypes.bool,
   isDevOps: PropTypes.bool,
   lang: PropTypes.string,
@@ -498,7 +515,8 @@ AgileBoard.propTypes = {
 const mapStateToProps = state => ({
   ...agileBoardSelector(state),
   sortedUsers: sortedUsersSelector(state),
-  unsortedUsers: usersSelector(state)
+  unsortedUsers: usersSelector(state),
+  goals: state.Goals.goals
 });
 
 const mapDispatchToProps = {

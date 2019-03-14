@@ -33,7 +33,7 @@ class EditActivityProjectModal extends Component {
     if (option) {
       this.props.getProjectSprints(option.value);
     }
-    this.setState({ projectValue: option });
+    this.setState({ projectValue: option, selectedSprint: null });
   };
 
   loadTasks = (name = '', projectId = null) => {
@@ -41,15 +41,24 @@ class EditActivityProjectModal extends Component {
   };
 
   onConfirm = () => {
+    const { selectedSprint } = this.state;
+    const defaultSprint = {
+      name: 'Backlog'
+    };
     const updatedFields = {
       project: {
         id: this.state.projectValue.body.id,
         name: this.state.projectValue.body.name,
         prefix: this.state.projectValue.body.prefix
       },
-      sprint: { name: this.state.selectedSprint ? this.state.selectedSprint.label : 'Backlog' }
+      sprint: !selectedSprint
+        ? defaultSprint
+        : {
+            name: selectedSprint.label,
+            id: selectedSprint.value.id
+          },
+      sprintId: selectedSprint ? selectedSprint.value.id : null
     };
-
     this.props.onCancel();
     this.props.onConfirm(updatedFields);
   };

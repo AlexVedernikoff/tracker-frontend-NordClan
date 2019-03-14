@@ -70,7 +70,9 @@ export default class AttachedDocument extends React.Component {
           <div className={css.attachmentIcon}>
             {/\.pdf$/.test(fileName) ? <IconFilePdf style={iconStyles} /> : <IconFileDocument style={iconStyles} />}
           </div>
-          <div className={css.attachmentName}>{fileName}</div>
+          <div className={css.attachmentName} title={fileName}>
+            {fileName}
+          </div>
         </a>
 
         {this.state.isConfirmDeleteOpen ? (

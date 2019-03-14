@@ -50,6 +50,7 @@ class Comments extends Component {
     highlighted: PropTypes.object,
     isCommentsReceived: PropTypes.bool,
     isProjectInfoReceiving: PropTypes.bool,
+    isUploadingAttachment: PropTypes.bool,
     lang: PropTypes.string,
     location: PropTypes.object,
     params: PropTypes.object,
@@ -211,7 +212,11 @@ class Comments extends Component {
     newComment.text = stringifyCommentForSend(newComment.text, this.users);
     newComment.attachmentIds = this.state.attachments.length ? this.getAttachmentIds() : null;
     const { ctrlKey, keyCode } = evt;
-    if (((ctrlKey && keyCode === ENTER) || evt.button === 0) && this.state.disabledBtn === false) {
+    if (
+      ((ctrlKey && keyCode === ENTER) || evt.button === 0) &&
+      this.state.disabledBtn === false &&
+      !this.props.isUploadingAttachment
+    ) {
       if (newComment.id) {
         if (!Comment.isExpiredForUpdate(newComment.createdAt)) {
           this.props.editComment(this.props.taskId, newComment.id, newComment.text, newComment.attachmentIds);
@@ -245,13 +250,14 @@ class Comments extends Component {
     this.props.uploadAttachments(this.props.taskId, files);
   };
 
-  handleRemoveAttachment = index => {
+  handleRemoveAttachment = (index, id) => {
     const attachments = this.state.attachments.map((item, key) => {
       if (index === key && this.addedAttachments[key]) {
         delete this.addedAttachments[key];
       }
       return index === key ? { ...item, display: false } : item;
     });
+    this.props.removeAttachment(this.props.taskId, id);
     this.setState({ attachments: attachments });
   };
 
@@ -263,7 +269,10 @@ class Comments extends Component {
           <a target="_blank" href={`/${attachment.path}`} onClick={e => this.handleAttachmentLinksClick(e, file)}>
             {attachment.fileName}
           </a>
-          <IconClose className={css.removeAttachIcon} onClick={() => this.handleRemoveAttachment(index)} />
+          <IconClose
+            className={css.removeAttachIcon}
+            onClick={() => this.handleRemoveAttachment(index, attachment.id ? attachment.id : null)}
+          />
         </li>
       );
     }
@@ -295,8 +304,8 @@ class Comments extends Component {
     this.reply = node;
   };
 
-  getCommentList = () =>
-    this.props.comments.map(comment => {
+  getCommentList = () => {
+    return this.props.comments.map(comment => {
       return (
         <Comment
           key={comment.id} /*используются id чтобы правильно работал маунт и анмаунт*/
@@ -312,9 +321,27 @@ class Comments extends Component {
         />
       );
     });
+  };
+
+  allCommentsAreEmpty = () => {
+    const allEmpty = this.props.comments.every(comment => {
+      if (comment.text) {
+        return false;
+      }
+
+      if (!comment.attachmentIds) {
+        return true;
+      }
+
+      return !this.props.attachments.find(attachment => {
+        return comment.attachmentIds.indexOf(attachment.id) !== -1;
+      });
+    });
+    return allEmpty;
+  };
 
   render() {
-    const { lang, isCommentsReceived, isProjectInfoReceiving } = this.props;
+    const { lang, isCommentsReceived, isProjectInfoReceiving, isUploadingAttachment } = this.props;
     const withoutComments =
       isCommentsReceived && !isProjectInfoReceiving ? (
         <div className={css.noCommentsYet}>
@@ -334,6 +361,7 @@ class Comments extends Component {
         </div>
       );
     const users = this.users.map(u => ({ id: u.id, display: getFullName(u) }));
+    const isSendButtonDisabled = this.state.disabledBtn || isUploadingAttachment;
     return (
       <div className={css.comments}>
         <ul className={css.commentList}>
@@ -395,11 +423,11 @@ class Comments extends Component {
                 <FileUpload onDrop={this.hanldeAttachedFiles} isMinimal />
               </span>
               <span
-                onClick={!this.state.disabledBtn ? this.publishComment : null}
+                onClick={!isSendButtonDisabled ? this.publishComment : null}
                 data-tip={localize[lang].SEND}
                 className={classnames({
                   [css.sendIcon]: true,
-                  [css.disabled]: this.state.disabledBtn
+                  [css.disabled]: isSendButtonDisabled
                 })}
               >
                 <IconSend />
@@ -415,7 +443,9 @@ class Comments extends Component {
               </ul>
             ) : null}
           </div>
-          {this.props.comments.length && this.props.users.length ? this.getCommentList() : withoutComments}
+          {this.props.comments.length && this.props.users.length && !this.allCommentsAreEmpty()
+            ? this.getCommentList()
+            : withoutComments}
         </ul>
         {this.state.commentToDelete ? (
           <ConfirmModal
@@ -437,7 +467,8 @@ const mapStateToProps = ({
     comments,
     currentComment,
     highlighted,
-    isCommentsReceived
+    isCommentsReceived,
+    isUploadingAttachment
   },
   Auth: {
     user: { id: userId }
@@ -459,7 +490,8 @@ const mapStateToProps = ({
   projectUsers,
   externalUsers,
   isCommentsReceived,
-  isProjectInfoReceiving
+  isProjectInfoReceiving,
+  isUploadingAttachment
 });
 
 const mapDispatchToProps = {

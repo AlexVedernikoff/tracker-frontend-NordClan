@@ -79,7 +79,9 @@ export default class AttachedImage extends React.Component {
         <div className={css.imagePreview}>
           <img src={`/${previewPath}`} alt="" className={css.screen} />
         </div>
-        <div className={css.attachmentName}>{fileName}</div>
+        <div className={css.attachmentName} title={fileName}>
+          {fileName}
+        </div>
 
         {this.state.isConfirmDeleteOpen ? (
           <ConfirmModal

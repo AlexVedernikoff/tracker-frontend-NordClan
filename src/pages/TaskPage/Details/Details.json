@@ -16,7 +16,9 @@
     "CHANGE_SPRINT": "Change sprint:",
     "NOT_SPECIFIED": "Not specified",
     "DEV_OPS": "DevOps",
-    "H": "h."
+    "H": "h.",
+    "GOAL": "Goal:",
+    "CHANGE_GOAL": "Change goal of task:"
   },
   "ru": {
     "LOADING": "Загрузка...",
@@ -35,6 +37,8 @@
     "CHANGE_SPRINT": "Изменить спринт:",
     "NOT_SPECIFIED": "Не указано",
     "DEV_OPS": "DevOps",
-    "H": "ч."
+    "H": "ч.",
+    "GOAL": "Цель:",
+    "CHANGE_GOAL": "Изменить цель задачи:"
   }
 }

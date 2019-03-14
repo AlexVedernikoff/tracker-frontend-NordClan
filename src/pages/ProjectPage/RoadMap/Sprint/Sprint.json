@@ -1,0 +1,32 @@
+{
+  "ru": {
+    "ADD_GOAL": "Добавить цель",
+    "INPUT_GOAL": "Название цели",
+    "ENTER_GOAL_NAME": "Введите название цели",
+    "DESCRIPTION_GOAL": "Описание",
+    "ENTER_DESCRIPTION_GOAL": "Введите описание цели",
+    "MUST_ENTER_GOAL_NAME": "Необходимо ввести имя цели",
+    "MUST_ENTER_DESCRIPTION": "Необходимо ввести описание",
+    "MUST_ENTER_EXECUTION_TIME": "Необходимо ввести время завершения",
+    "CANNOT_SELECT_PAST_DATE": "Нельзя выбрать прошедшею дату",
+    "IS_VISIBLE": "Видимость",
+    "PLANNED_EXECUTION_TIME": "Планируемое время завершения",
+    "UNLOAD_SPRINT": "Выгрузить спринт",
+    "CHANGE_SPRINT": "Редактировать цель"
+  },
+  "en": {
+    "ADD_GOAL": "Add goal",
+    "INPUT_GOAL": "Goal name",
+    "ENTER_GOAL_NAME": "Enter the name of the goal",
+    "DESCRIPTION_GOAL": "Description",
+    "ENTER_DESCRIPTION_GOAL": "Enter a description of the goal.",
+    "MUST_ENTER_GOAL_NAME": "Must enter a goal name",
+    "MUST_ENTER_DESCRIPTION": "Must enter a description",
+    "MUST_ENTER_EXECUTION_TIME": "Must enter an execution time",
+    "CANNOT_SELECT_PAST_DATE": "Cannot select past date",
+    "IS_VISIBLE": "Is visible",
+    "PLANNED_EXECUTION_TIME": "Planned execution time",
+    "UNLOAD_SPRINT": "Unload sprint",
+    "CHANGE_SPRINT": "Change sprint"
+  }
+}

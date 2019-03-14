@@ -212,6 +212,9 @@ class AddActivityModal extends Component {
     this.handleChangeSprint(null);
     this.props.changeTask(null);
     this.props.changeProject(option);
+    this.setState({
+      projectId: option && option.value
+    });
     this.loadTasks('', option ? option.value : null);
     if (this.isNoTaskProjectActivity() && (option && option.value !== 0)) {
       this.props.getProjectSprints(option.value);
@@ -232,7 +235,7 @@ class AddActivityModal extends Component {
   handleChangeSprint = option => {
     this.setState({ selectedSprint: option }, () => {
       if (this.state.activityType === activityTypes.IMPLEMENTATION) {
-        this.loadTasks(null, null, option ? option.value.id : null);
+        this.loadTasks(null, this.state.projectId, option ? option.value.id : null);
         if (option) {
           this.props.changeTask(null);
         }

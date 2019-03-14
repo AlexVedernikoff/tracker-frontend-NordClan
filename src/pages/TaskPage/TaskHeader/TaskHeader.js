@@ -270,6 +270,7 @@ class TaskHeader extends Component {
         break;
       case 'Code Review':
         unionPerformers = _.union(
+          users.pm,
           users.teamLead,
           users.account,
           users.analyst,
@@ -282,7 +283,7 @@ class TaskHeader extends Component {
         );
         break;
       case 'QA':
-        unionPerformers = users.qa;
+        unionPerformers = _.union(users.pm, users.qa);
         break;
       default:
         unionPerformers = _.union(
