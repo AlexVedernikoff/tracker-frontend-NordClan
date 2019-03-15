@@ -19,6 +19,7 @@
 }
 
 .buttonsContainer {
+  padding-top: 3rem;
   margin-top: 2rem;
   text-align: center;
   button {
@@ -37,10 +38,12 @@
   }
 }
 
+.rightColumn {
+  position: relative;
+}
+
 .jiraCaptchaLink {
-  margin-top: 1rem;
   border: 1px solid $color-red;
-  padding: 10px 15px;
   max-width: 266px;
 
   a {
@@ -51,4 +54,13 @@
       text-decoration: underline;
     }
   }
+}
+
+.errorText {
+  padding: 2px;
+  position: absolute;
+  top: calc(100% - 9px);
+  color: $color-red;
+  left: 1rem;
+  background-color: white;
 }

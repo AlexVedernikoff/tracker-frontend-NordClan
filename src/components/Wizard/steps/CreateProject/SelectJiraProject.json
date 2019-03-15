@@ -3,12 +3,13 @@
     "SELECT_JIRA_PROJECT": "Creacte Project",
     "JIRA_PROJECT": "Проект в Jira",
     "PREFIX": "Префикс",
-    "JIRA_PROJECT_IS_ALREADY_USE": "Проект уже привязан к проекту"
+    "SELECT_PROJECT_IN_USE": "The project is already associated with"
   },
 
   "ru": {
     "SELECT_JIRA_PROJECT": "Создать проект",
     "JIRA_PROJECT": "Jira Project",
-    "PREFIX": "Prefix"
+    "PREFIX": "Prefix",
+    "SELECT_PROJECT_IN_USE": "Проект уже связан с"
   }
 }
