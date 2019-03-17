@@ -5,6 +5,7 @@ import { IconPlus, IconEdit, IconDownload, IconArrowRight, IconArrowDown } from 
 import TimeLine from '../TimeLine';
 import Goal from '../Goal';
 import AddGoal from '../AddGoal/AddGoal';
+import { If } from '../../../../utils/jsx';
 
 import localize from './Sprint.json';
 import styles from './Sprint.scss';
@@ -106,7 +107,9 @@ class Sprint extends Component {
     );
     const goalsContainer = (
       <div className={styles.goals}>
-        <div>{goals}</div>
+        <If condition={goals.length}>
+          <div className={styles.goals__items}>{goals}</div>
+        </If>
         <div className={styles.addingButton} onClick={this.addGoal}>
           <span className={styles.addingIcon}>
             <IconPlus />
