@@ -49,6 +49,7 @@ import { getDevOpsUsers } from '../../actions/Users';
 class TaskPage extends Component {
   static propTypes = {
     DescriptionIsEditing: PropTypes.bool,
+    TitleIsEditing: PropTypes.bool,
     changeTask: PropTypes.func.isRequired,
     children: PropTypes.object,
     clearError: PropTypes.func,
@@ -81,7 +82,6 @@ class TaskPage extends Component {
     startTaskEditing: PropTypes.func.isRequired,
     stopTaskEditing: PropTypes.func.isRequired,
     task: PropTypes.object,
-    TitleIsEditing: PropTypes.bool,
     unlinkTask: PropTypes.func.isRequired,
     uploadAttachments: PropTypes.func.isRequired,
     user: PropTypes.object
