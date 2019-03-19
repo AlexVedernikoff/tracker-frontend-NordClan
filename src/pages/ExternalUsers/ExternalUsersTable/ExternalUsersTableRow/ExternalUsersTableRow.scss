@@ -6,6 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  word-wrap: break-word;
 }
 
 .TableCellName {
@@ -13,20 +14,20 @@
   max-width: 20%;
 }
 .TableCellLogin {
-  flex-basis: 21%;
-  max-width: 21%;
+  flex-basis: 12%;
+  max-width: 12%;
 }
 .TableCellDesc {
-  flex-basis: 23%;
-  max-width: 23%;
+  flex-basis: 20%;
+  max-width: 20%;
 }
 .TableCellDate {
   flex-basis: 13%;
   max-width: 13%;
 }
 .TableCellActivity {
-  flex-basis: 8%;
-  max-width: 8%;
+  flex-basis: 10%;
+  max-width: 10%;
   justify-content: center;
 }
 .TableCellEdit {

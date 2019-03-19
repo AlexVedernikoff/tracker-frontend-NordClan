@@ -109,7 +109,8 @@ class AddExternalUser extends Component {
         firstNameRu: name,
         login: email,
         description: description,
-        expiredDate: expireDateRequest
+        expiredDate: expireDateRequest,
+        isActive: 1
       })
       .then(() => {
         this.setState({ ...initialState });

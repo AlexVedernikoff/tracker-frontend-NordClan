@@ -21,6 +21,7 @@ class Checkbox extends React.Component {
   }
 
   handleOnChange = event => {
+    event.persist();
     const { onChange } = this.props;
     if (onChange) {
       this.setState(

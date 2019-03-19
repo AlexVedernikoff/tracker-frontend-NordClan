@@ -185,6 +185,14 @@ class ExternalUsersTableRow extends Component {
             isValid={isValid.login}
           />
         </div>
+        <div className={classnames(css.TableCell, css.TableCellActivity)}>
+          <ExternalUserActivity
+            checked={!!exUser.active}
+            isEditing={false}
+            isLoading={false}
+            onValueChange={() => {}}
+          />
+        </div>
         <div className={classnames(css.TableCell, css.TableCellDesc)}>
           <ExternalUserInput
             value={exUser.description}
