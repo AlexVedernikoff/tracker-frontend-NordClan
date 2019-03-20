@@ -55,6 +55,7 @@ class TaskList extends Component {
       isPerformerModalOpen: false,
       isSprintModalOpen: false,
       nameInputValue: null,
+      tags: [],
       ...this.getQueryFilters()
     };
     this.debouncedSubmitNameFilter = debounce(this.submitNameFilter, 1000);
@@ -376,8 +377,9 @@ class TaskList extends Component {
   };
 
   onClickTag = tag => {
+    const tags = this.state.tags || [];
     const sortedTags = uniqBy(
-      this.state.tags.concat({
+      tags.concat({
         value: tag,
         label: tag
       }),
@@ -389,7 +391,7 @@ class TaskList extends Component {
         tags: sortedTags,
         changedFilters: {
           ...state.changedFilters,
-          tags: sortedTags.map(el => el.value).join(',')
+          tags: sortedTags.map(el => el.value)
         }
       }),
       this.loadTasks

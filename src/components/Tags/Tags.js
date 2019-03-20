@@ -175,7 +175,7 @@ Tags.defaultProps = {
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
   project: state.Project.project.id,
-  tagsFromTasks: state.Project.tags
+  tagsFromTasks: state.Project.project.tags
 });
 
 const mapDispatchToProps = {
