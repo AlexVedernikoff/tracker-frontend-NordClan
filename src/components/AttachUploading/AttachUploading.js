@@ -8,14 +8,14 @@ export default class AttachUploading extends React.Component {
     progress: PropTypes.number
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       isConfirmDeleteOpen: false
     };
   }
 
-  render () {
+  render() {
     const css = require('./AttachUploading.scss');
 
     const iconStyles = {
@@ -32,7 +32,7 @@ export default class AttachUploading extends React.Component {
         <div className={css.attachmentIcon}>
           <IconCircleProgressBar style={iconStyles} progress={progress} />
         </div>
-        <div className={css.attachmentName}>
+        <div className={css.attachmentName} title={fileName}>
           {fileName}
         </div>
       </li>

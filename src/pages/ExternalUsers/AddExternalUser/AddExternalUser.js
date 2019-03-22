@@ -51,8 +51,18 @@ class AddExternalUser extends Component {
     this.setError(field, '', false, false);
   };
   handleDayToChange = date => {
+    let _date;
+    if (!date) {
+      _date = '';
+    } else {
+      _date = moment(date);
+      if (_date.isBefore(new Date(), 'day')) {
+        _date = moment();
+      }
+      _date = _date.format('YYYY-MM-DD');
+    }
     this.setState({
-      expiredDate: date ? moment(date).format('YYYY-MM-DD') : ''
+      expiredDate: _date
     });
   };
   validateEmail = email => {
@@ -91,12 +101,16 @@ class AddExternalUser extends Component {
   addUser = () => {
     const { name, email, description, expiredDate } = this.state;
     this.setState({ errorMessage: null });
+
+    const expireDateRequest = moment(moment(expiredDate).format('x') - 24 * 60 * 60 * 1000).format('YYYY-MM-DD');
+
     this.props
       .addExternalUser({
         firstNameRu: name,
         login: email,
         description: description,
-        expiredDate
+        expiredDate: expireDateRequest,
+        isActive: 1
       })
       .then(() => {
         this.setState({ ...initialState });

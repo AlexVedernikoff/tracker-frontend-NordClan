@@ -45,6 +45,8 @@ class ActivityRow extends React.Component {
     userId: PropTypes.number
   };
 
+  static contextTypes = { scrollTop: PropTypes.func };
+
   constructor(props) {
     super(props);
 
@@ -66,7 +68,7 @@ class ActivityRow extends React.Component {
     if (nextProps.item.hilight && !this.state.hl) {
       this.setState({ hl: true }, () => setTimeout(() => this.setState({ hl: false }), 1000));
       if (this.row) {
-        this.row.scrollIntoView();
+        this.context.scrollTop(this.row);
       }
     }
     if (this.props.item !== nextProps.item) {

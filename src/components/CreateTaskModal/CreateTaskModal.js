@@ -27,6 +27,7 @@ import Tag from '../../components/Tag';
 import Tags from '../../components/Tags';
 import { getFullName } from '../../utils/NameLocalisation';
 import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
+import { If } from '../../utils/jsx';
 import uniqWith from 'lodash/uniqWith';
 
 const MAX_DESCRIPTION_LENGTH = 25000;
@@ -35,24 +36,26 @@ class CreateTaskModal extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      selectedSprint: this.getInitialSprint(props),
-      selectedPerformer: props.defaultPerformerId || null,
-      taskName: '',
-      description: '',
-      plannedExecutionTime: 0,
-      openTaskPage: false,
-      prioritiesId: 3,
-      selectedType: this.props.taskTypes[0],
-      selectedTypeError: this.props.taskTypes.length === 0,
-      isTaskByClient: false,
-      isDevOps: false,
-      descriptionInvalid: false,
-      tags: []
-    };
+    this.state = this.getInitialState(props);
 
     this.validator = new Validator();
   }
+
+  getInitialState = props => ({
+    selectedSprint: this.getInitialSprint(props),
+    selectedPerformer: props.defaultPerformerId || null,
+    taskName: '',
+    description: '',
+    plannedExecutionTime: 0,
+    openTaskPage: false,
+    prioritiesId: 3,
+    selectedType: this.props.taskTypes[0],
+    selectedTypeError: this.props.taskTypes.length === 0,
+    isTaskByClient: false,
+    isDevOps: false,
+    descriptionInvalid: false,
+    tags: []
+  });
 
   getInitialSprint = ({ selectedSprintValue, sprints }) => {
     if (selectedSprintValue) {
@@ -76,12 +79,14 @@ class CreateTaskModal extends Component {
     });
   };
 
-  getIsByClientRef = el => {
-    this.byClientInput = el;
-  };
+  toggleIsByClient = event => {
+    const {
+      target: { checked }
+    } = event;
 
-  toggleDevOpsCheckbox = event => {
-    this.setState({ isDevOps: event.target.checked });
+    this.setState({
+      isTaskByClient: checked
+    });
   };
 
   handlePriorityChange = priorityId => this.setState({ prioritiesId: +priorityId });
@@ -95,10 +100,11 @@ class CreateTaskModal extends Component {
     if (!this.state.selectedType || !this.state.selectedType.value) {
       return;
     }
+
     this.props
       .createTask(
         {
-          name: this.state.taskName,
+          name: this.state.taskName.trim(),
           projectId: this.props.project.id,
           description: stateToHTML(this.TextEditor.state.editorState.getCurrentContent()),
           performerId: this.state.selectedPerformer,
@@ -108,8 +114,9 @@ class CreateTaskModal extends Component {
           prioritiesId: this.state.prioritiesId,
           plannedExecutionTime: this.state.plannedExecutionTime,
           parentId: this.props.parentTaskId,
-          isTaskByClient: this.byClientInput.checked,
-          isDevOps: this.state.isDevOps
+          isTaskByClient: this.state.isTaskByClient,
+          isDevOps: this.state.isDevOps,
+          goalId: this.props.goalId
         },
         this.state.openTaskPage,
         this.props.column
@@ -182,7 +189,7 @@ class CreateTaskModal extends Component {
   };
 
   handleChange = field => event => {
-    this.setState({ [field]: event.target.value.trim() });
+    this.setState({ [field]: event.target.value });
   };
 
   handleChangePlannedTime = plannedExecutionTime => {
@@ -211,10 +218,33 @@ class CreateTaskModal extends Component {
   };
 
   generateError = () => {
-    return this.state.taskName.length < 4
+    return this.state.taskName.trim().length < 4
       ? localize[this.props.lang].NAME_ERROR_LESS_SYMBOLS
       : localize[this.props.lang].NAME_ERROR_MORE_SYMBOLS;
   };
+
+  get modalTitle() {
+    const { lang } = this.props;
+    return this.state.isDevOps ? localize[lang].REQUEST_TO_DEVOPS_SERVICE : localize[lang].CREATE_TASK;
+  }
+
+  toggleDevOpsTaskMode = () => {
+    this.setState(
+      {
+        ...this.getInitialState(this.props),
+        isDevOps: true
+      },
+      this.resetDescription
+    );
+  };
+
+  resetDescription = () => {
+    if (this.TextEditor) {
+      this.TextEditor.resetState();
+    }
+  };
+
+  projectHasDevOpsUsers = () => !!(this.props.devOpsUsers && this.props.devOpsUsers.length);
 
   render() {
     const formLayout = {
@@ -236,7 +266,16 @@ class CreateTaskModal extends Component {
         contentLabel="Modal"
       >
         <form className={css.createTaskForm}>
-          <h3>{localize[lang].CREATE_TASK}</h3>
+          <h3>{this.modalTitle}</h3>
+
+          <If condition={!this.state.isDevOps}>
+            <div className={css.requestToDevOps}>
+              <span className={css.requestToDevOps__link} onClick={this.toggleDevOpsTaskMode}>
+                {localize[lang].REQUEST_TO_DEVOPS_SERVICE}
+              </span>
+            </div>
+          </If>
+
           <hr />
           <label className={css.formField}>
             <Row>
@@ -256,10 +295,11 @@ class CreateTaskModal extends Component {
                       onEnter={this.validateAndSubmit}
                       shouldMarkError={shouldMarkError}
                       errorText={this.generateError()}
+                      value={this.state.taskName}
                     />
                   ),
                   'taskName',
-                  this.state.taskName.length < 4 || this.state.taskName.length > 255
+                  this.state.taskName.trim().length < 4 || this.state.taskName.trim().length > 255
                 )}
               </Col>
             </Row>
@@ -277,7 +317,6 @@ class CreateTaskModal extends Component {
                   editorClassName={css.taskDescription}
                   ref={ref => (this.TextEditor = ref)}
                   content={''}
-                  validator={this.validateDescription}
                 />
               </Col>
             </Row>
@@ -301,47 +340,40 @@ class CreateTaskModal extends Component {
               </Col>
             </Row>
           </label>
-          <label className={css.formField}>
-            <Row>
-              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>{localize[lang].TYPE}</p>
-              </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Select
-                  multi={false}
-                  ignoreCase
-                  placeholder={localize[lang].TYPE_PLACEHOLDER}
-                  options={taskTypes}
-                  className={css.selectSprint}
-                  value={this.state.selectedType}
-                  onChange={this.onTypeChange}
-                  noResultsText={localize[lang].NO_RESULTS}
-                  clearable={false}
-                />
-                {this.state.selectedTypeError && <span>{localize[lang].GET_DATA_ERROR}</span>}
-              </Col>
-            </Row>
-          </label>
+          <If condition={!this.state.isDevOps}>
+            <label className={css.formField}>
+              <Row>
+                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                  <p>{localize[lang].TYPE}</p>
+                </Col>
+                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                  <Select
+                    multi={false}
+                    ignoreCase
+                    placeholder={localize[lang].TYPE_PLACEHOLDER}
+                    options={taskTypes}
+                    className={css.selectSprint}
+                    value={this.state.selectedType}
+                    onChange={this.onTypeChange}
+                    noResultsText={localize[lang].NO_RESULTS}
+                    clearable={false}
+                  />
+                  {this.state.selectedTypeError && <span>{localize[lang].GET_DATA_ERROR}</span>}
+                </Col>
+              </Row>
+            </label>
+          </If>
           <div className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>{localize[lang].FROM_CLIENT}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
-                <Checkbox refCallback={this.getIsByClientRef} />
+                <Checkbox checked={this.state.isTaskByClient} onChange={this.toggleIsByClient} />
               </Col>
             </Row>
           </div>
-          <div className={css.formField}>
-            <Row>
-              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>{localize[lang].DEV_OPS}</p>
-              </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
-                <Checkbox checked={this.state.isDevOps} onChange={this.toggleDevOpsCheckbox} />
-              </Col>
-            </Row>
-          </div>
+
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
@@ -352,25 +384,27 @@ class CreateTaskModal extends Component {
               </Col>
             </Row>
           </label>
-          <label className={css.formField}>
-            <Row>
-              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>{localize[lang].PERFORMER}</p>
-              </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <SelectDropdown
-                  name="performer"
-                  placeholder={localize[lang].PERFORMER_PLACEHOLDER}
-                  multi={false}
-                  className={css.selectPerformer}
-                  value={this.state.selectedPerformer}
-                  onChange={this.handlePerformerChange}
-                  noResultsText={localize[lang].NO_RESULTS}
-                  options={this.getUsers()}
-                />
-              </Col>
-            </Row>
-          </label>
+          <If condition={!this.state.isDevOps || this.projectHasDevOpsUsers()}>
+            <label className={css.formField}>
+              <Row>
+                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                  <p>{localize[lang].PERFORMER}</p>
+                </Col>
+                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                  <SelectDropdown
+                    name="performer"
+                    placeholder={localize[lang].PERFORMER_PLACEHOLDER}
+                    multi={false}
+                    className={css.selectPerformer}
+                    value={this.state.selectedPerformer}
+                    onChange={this.handlePerformerChange}
+                    noResultsText={localize[lang].NO_RESULTS}
+                    options={this.getUsers()}
+                  />
+                </Col>
+              </Row>
+            </label>
+          </If>
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
@@ -440,6 +474,7 @@ CreateTaskModal.propTypes = {
   createTask: PropTypes.func.isRequired,
   defaultPerformerId: PropTypes.oneOfType([PropTypes.array, PropTypes.number]),
   devOpsUsers: PropTypes.array,
+  goalId: PropTypes.number,
   isCreateChildTaskModalOpen: PropTypes.bool,
   isCreateTaskModalOpen: PropTypes.bool,
   isCreateTaskRequestInProgress: PropTypes.bool,

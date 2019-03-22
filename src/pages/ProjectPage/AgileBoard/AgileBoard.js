@@ -95,6 +95,7 @@ class AgileBoard extends Component {
           name: filters.name || null,
           tags: filters.filterTags,
           performerId: filters.performerId || null,
+          goalId: filters.goal || null,
           isDevOps: this.props.isDevOps || null
         };
     this.props.getTasks(options);
@@ -480,6 +481,7 @@ AgileBoard.propTypes = {
   getProjectUsers: PropTypes.func,
   getTasks: PropTypes.func.isRequired,
   globalRole: PropTypes.string,
+  goals: PropTypes.array,
   isCreateTaskModalOpen: PropTypes.bool,
   isDevOps: PropTypes.bool,
   lang: PropTypes.string,
@@ -513,7 +515,8 @@ AgileBoard.propTypes = {
 const mapStateToProps = state => ({
   ...agileBoardSelector(state),
   sortedUsers: sortedUsersSelector(state),
-  unsortedUsers: usersSelector(state)
+  unsortedUsers: usersSelector(state),
+  goals: state.Goals.goals
 });
 
 const mapDispatchToProps = {

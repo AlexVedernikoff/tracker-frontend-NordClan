@@ -18,6 +18,7 @@ import { VISOR } from '../../constants/Roles';
 import { getFullName } from '../../utils/NameLocalisation';
 import { storageType } from '../FiltrersManager/helpers';
 import { isOnlyDevOps } from '../../utils/isDevOps';
+import { checkIsAdminInProject } from '../../utils/isAdmin';
 import { BACKLOG_ID } from '../../constants/Sprint';
 
 const storage = storageType === 'local' ? localStorage : sessionStorage;
@@ -27,7 +28,8 @@ class AgileBoardFilter extends React.Component {
 
   state = {
     isOpened: false,
-    allFilters: []
+    allFilters: [],
+    isQueryHasSprints: !!this.props.location.query['changedSprint[]']
   };
 
   componentDidMount() {
@@ -41,7 +43,12 @@ class AgileBoardFilter extends React.Component {
 
     const { currentSprint, isProjectInfoReceiving } = this.props;
 
-    if (!isProjectInfoReceiving && prevProps.isProjectInfoReceiving && this.isActiveSprintsChanged) {
+    if (
+      !isProjectInfoReceiving &&
+      prevProps.isProjectInfoReceiving &&
+      this.isActiveSprintsChanged &&
+      !this.state.isQueryHasSprints
+    ) {
       this.props.setFilterValue('changedSprint', currentSprint.map(s => s.value), this.updateFilterList);
     }
 
@@ -49,7 +56,7 @@ class AgileBoardFilter extends React.Component {
       this.props.setFilterValue('changedSprint', [0], this.updateFilterList);
     }
 
-    if (currentSprint !== prevProps.currentSprint && this.isSprintFilterEmpty) {
+    if (currentSprint !== prevProps.currentSprint && this.isSprintFilterEmpty && !this.state.isQueryHasSprints) {
       const sprintValue = currentSprint && currentSprint.length ? currentSprint.map(s => s.value) : [0];
       this.props.setFilterValue('changedSprint', sprintValue, this.updateFilterList);
     }
@@ -133,6 +140,8 @@ class AgileBoardFilter extends React.Component {
         return this.props.sortedSprints.find(el => el.value === value).label;
       case 'typeId':
         return typeOptions.find(el => el.value === value).label;
+      case 'goal':
+        return this.props.goals.find(el => el.id === value).name;
       default:
         return value;
     }
@@ -223,15 +232,18 @@ class AgileBoardFilter extends React.Component {
       }
       return result;
     }, []);
-
+    const filtersState = [
+      ...selectedFilters,
+      ...this.createSelectedOption([], filters.changedSprint, 'changedSprint'),
+      ...this.createSelectedOption([], filters.typeId, 'typeId'),
+      ...this.createSelectedOption([], filters.performerId, 'performerId'),
+      ...this.createSelectedOption([], filters.filterTags, 'filterTags')
+    ];
+    if (checkIsAdminInProject(this.props.user, this.props.project.id)) {
+      filtersState.push(...this.createSelectedOption([], filters.goal, 'goal'));
+    }
     this.setState({
-      allFilters: [
-        ...selectedFilters,
-        ...this.createSelectedOption([], filters.changedSprint, 'changedSprint'),
-        ...this.createSelectedOption([], filters.typeId, 'typeId'),
-        ...this.createSelectedOption([], filters.performerId, 'performerId'),
-        ...this.createSelectedOption([], filters.filterTags, 'filterTags')
-      ]
+      allFilters: filtersState
     });
   };
 
