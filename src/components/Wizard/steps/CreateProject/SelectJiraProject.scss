@@ -1,3 +1,5 @@
+@import '../../../../styles/variables.scss';
+
 .mainContainer {
   min-width: 330px;
   max-width: 500px;
@@ -17,6 +19,7 @@
 }
 
 .buttonsContainer {
+  padding-top: 3rem;
   margin-top: 2rem;
   text-align: center;
   button {
@@ -33,4 +36,31 @@
   p {
     margin: 0;
   }
+}
+
+.rightColumn {
+  position: relative;
+}
+
+.jiraCaptchaLink {
+  border: 1px solid $color-red;
+  max-width: 266px;
+
+  a {
+    color: $color-red;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.errorText {
+  padding: 2px;
+  position: absolute;
+  top: calc(100% - 9px);
+  color: $color-red;
+  left: 1rem;
+  background-color: white;
 }
