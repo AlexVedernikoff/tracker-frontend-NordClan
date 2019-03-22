@@ -27,8 +27,9 @@ class Checkbox extends React.Component {
       this.setState(
         {
           isChecked: !this.state.isChecked
-        },
-        () => onChange(event)
+        }
+        // Необходимо проверить необходимость ручного вызова колбека, есть ли в этом необходимость
+        //() => onChange(event)
       );
     }
   };
