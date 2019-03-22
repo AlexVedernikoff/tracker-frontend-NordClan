@@ -380,7 +380,12 @@ class CreateTaskModal extends Component {
                 <p>{localize[lang].PRIORITY}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
-                <Priority priority={this.state.prioritiesId} onPrioritySet={this.handlePriorityChange} text={''} />
+                <Priority
+                  priority={this.state.prioritiesId}
+                  onPrioritySet={this.handlePriorityChange}
+                  text={''}
+                  canEdit
+                />
               </Col>
             </Row>
           </label>

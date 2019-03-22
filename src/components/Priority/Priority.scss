@@ -44,11 +44,11 @@
         border-left: 3px solid transparent;
         border-right: 3px solid transparent;
       }
-    }
 
-    &:hover:not(.canEdit) {
-      &:after {
-        display: none;
+      &:not(.canEdit) {
+        &:after {
+          display: none;
+        }
       }
     }
 
