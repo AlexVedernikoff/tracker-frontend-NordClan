@@ -49,6 +49,7 @@ import { getDevOpsUsers } from '../../actions/Users';
 class TaskPage extends Component {
   static propTypes = {
     DescriptionIsEditing: PropTypes.bool,
+    TitleIsEditing: PropTypes.bool,
     changeTask: PropTypes.func.isRequired,
     children: PropTypes.object,
     clearError: PropTypes.func,
@@ -125,7 +126,7 @@ class TaskPage extends Component {
   }
 
   routerWillLeave = nextLocation => {
-    if (this.props.DescriptionIsEditing) {
+    if (this.props.DescriptionIsEditing || this.props.TitleIsEditing) {
       if (this.state.leaveConfirmed) return true;
       this.setState({
         isLeaveConfirmModalOpen: true,
@@ -433,6 +434,7 @@ const mapStateToProps = state => ({
   projectTasks: state.Tasks.tasks,
   task: state.Task.task,
   DescriptionIsEditing: state.Task.DescriptionIsEditing,
+  TitleIsEditing: state.Task.TitleIsEditing,
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
   isCreateChildTaskModalOpen: state.Project.isCreateChildTaskModalOpen,
   globalRole: state.Auth.user.globalRole,
