@@ -29,6 +29,7 @@ import { getFullName } from '../../utils/NameLocalisation';
 import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
 import { If } from '../../utils/jsx';
 import uniqWith from 'lodash/uniqWith';
+import { removeNumChars } from '../../utils/formatter';
 
 const MAX_DESCRIPTION_LENGTH = 25000;
 
@@ -403,6 +404,7 @@ class CreateTaskModal extends Component {
                     className={css.selectPerformer}
                     value={this.state.selectedPerformer}
                     onChange={this.handlePerformerChange}
+                    onInputChange={removeNumChars}
                     noResultsText={localize[lang].NO_RESULTS}
                     options={this.getUsers()}
                   />
