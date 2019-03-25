@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { uniqBy, debounce, uniqWith, isEqual } from 'lodash';
+
+import { uniqBy, debounce, get, uniqWith, isEqual } from 'lodash';
+
 import ReactTooltip from 'react-tooltip';
 
 import TaskRow from '../../../components/TaskRow';
@@ -27,6 +29,7 @@ import getPriorityById from '../../../utils/TaskPriority';
 
 import { getFullName, getDictionaryName } from '../../../utils/NameLocalisation';
 import { removeNumChars } from '../../../utils/formatter';
+import { showNotification } from '../../../actions/Notifications';
 import { openCreateTaskModal } from '../../../actions/Project';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { getLocalizedTaskTypes, getLocalizedTaskStatuses } from '../../../selectors/dictionaries';
@@ -624,6 +627,12 @@ class TaskList extends Component {
 
   formatDate = date => date && moment(date).format(dateFormat);
 
+  parseDate = date => date && moment(date, dateFormat);
+
+  showInvalidDateRangeMsg = () => {
+    this.props.showNotification({ message: localize[this.props.lang].INVALID_DATE_RANGE_MESSAGE, type: 'error' });
+  };
+
   onChangePrioritiesFilter = option => {
     ReactTooltip.hide();
     return this.changeSingleFilter(option, 'prioritiesId');
@@ -632,8 +641,24 @@ class TaskList extends Component {
   onChangeStatusFilter = options => this.changeMultiFilter(options, 'statusId');
   onChangeAuthorFilter = option => this.changeSingleFilter(option, 'authorId');
   onChangeSprintFilter = options => this.changeMultiFilter(options, 'sprintId');
-  onChangeDateFromFilter = option => this.handleDayChange(option, 'dateFrom');
-  onChangeDateToFilter = option => this.handleDayChange(option, 'dateTo');
+  onChangeDateFromFilter = option => {
+    const dateTo = this.parseDate(get(this.state.changedFilters, 'dateTo'));
+
+    if (option && option.isAfter(dateTo)) {
+      return this.showInvalidDateRangeMsg();
+    }
+
+    this.handleDayChange(option, 'dateFrom');
+  };
+  onChangeDateToFilter = option => {
+    const dateFrom = this.parseDate(get(this.state.changedFilters, 'dateFrom'));
+
+    if (option && option.isBefore(dateFrom)) {
+      return this.showInvalidDateRangeMsg();
+    }
+
+    this.handleDayChange(option, 'dateTo');
+  };
   onChangePerformerFilter = option => this.changeSingleFilter(option, 'performerId');
   onChangeTagFilter = options => this.changeMultiFilter(options, 'tags');
   sortedAuthorOptions = () => {
@@ -985,6 +1010,7 @@ TaskList.propTypes = {
   params: PropTypes.object,
   project: PropTypes.object.isRequired,
   setFilterValue: PropTypes.func,
+  showNotification: PropTypes.func,
   sprints: PropTypes.arrayOf(PropTypes.object),
   startTaskEditing: PropTypes.func.isRequired,
   statuses: PropTypes.array,
@@ -1008,7 +1034,7 @@ const mapStateToProps = state => ({
   sprints: getSortedSprints(state)
 });
 
-const mapDispatchToProps = { getTasks, startTaskEditing, changeTask, openCreateTaskModal };
+const mapDispatchToProps = { getTasks, startTaskEditing, changeTask, openCreateTaskModal, showNotification };
 
 export default connect(
   mapStateToProps,
