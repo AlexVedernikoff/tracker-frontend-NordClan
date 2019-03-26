@@ -23,7 +23,8 @@ const initState = {
     sprintId: null,
     name: '',
     description: '',
-    plannedExecutionTime: ''
+    plannedExecutionTime: '',
+    visible: false
   },
   errors: {
     name: false,
@@ -99,7 +100,7 @@ class AddGoal extends Component {
       }
     });
 
-  handleAddGoal = sprintId => () =>
+  handleAddGoal = sprintId => () => {
     schema(this.props.lang)
       .validate(this.state.forms, { abortEarly: false })
       .then(values => {
@@ -117,6 +118,7 @@ class AddGoal extends Component {
           errors: Object.assign({}, ...inner.map(({ path, message }) => ({ [path]: message })))
         })
       );
+  };
 
   render() {
     const {
