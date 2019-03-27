@@ -12,7 +12,8 @@
     "IS_VISIBLE": "Видимость",
     "PLANNED_EXECUTION_TIME": "Планируемое время завершения",
     "UNLOAD_SPRINT": "Выгрузить спринт",
-    "CHANGE_SPRINT": "Редактировать цель"
+    "CHANGE_SPRINT": "Редактировать спринт",
+    "CHANGE_GOAL": "Редактировать цель"
   },
   "en": {
     "ADD_GOAL": "Add goal",
@@ -27,6 +28,7 @@
     "IS_VISIBLE": "Is visible",
     "PLANNED_EXECUTION_TIME": "Planned execution time",
     "UNLOAD_SPRINT": "Unload sprint",
-    "CHANGE_SPRINT": "Change sprint"
+    "CHANGE_SPRINT": "Change sprint",
+    "CHANGE_GOAL": "Change goal"
   }
 }
