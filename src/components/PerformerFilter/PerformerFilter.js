@@ -6,12 +6,14 @@ import { getTagsFilter } from '../../actions/Tags';
 import localize from './PerformerFilter.json';
 import { getFullName } from '../../utils/NameLocalisation';
 import { removeNumChars } from '../../utils/formatter';
+import { projectPerformersSelector } from '../../selectors/Project';
 
 class PerformerFilter extends React.Component {
   static propTypes = {
     lang: PropTypes.string,
     onPerformerSelect: PropTypes.func.isRequired,
     selectedPerformerId: PropTypes.oneOfType([PropTypes.array, PropTypes.number]),
+    test: PropTypes.string,
     users: PropTypes.array
   };
 
@@ -53,7 +55,7 @@ class PerformerFilter extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    users: state.Project.project.users,
+    users: projectPerformersSelector(state),
     lang: state.Localize.lang
   };
 };
