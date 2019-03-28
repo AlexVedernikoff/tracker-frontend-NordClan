@@ -120,6 +120,7 @@ class AppRouter extends Component {
             fullHeight
           />
           <Route path="projects" component={Projects} />
+          <Route path="projects-archive" component={Projects} />
           <Route path="externalUsers" component={ExternalUsers} onEnter={this.requareAdmin} />
           <Route path="projects/:projectId" component={ProjectPage} scrollToTop>
             <IndexRoute component={AgileBoard} fullHeight />
