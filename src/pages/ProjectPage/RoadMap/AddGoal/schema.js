@@ -13,6 +13,7 @@ const schema = lang =>
   yup.object({
     name: yup
       .string()
+      .trim()
       .label(localize[lang].ENTER_GOAL_NAME)
       .required(localize[lang].MUST_ENTER_GOAL_NAME),
     description: yup
