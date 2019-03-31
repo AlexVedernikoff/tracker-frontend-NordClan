@@ -195,16 +195,24 @@ export default function Project(state = InitialState, action) {
       };
     case ProjectActions.PROJECT_SPRINTS_RECEIVE_START:
       return {
-        ...state
+        ...state,
+        isSprintsReceiving: true
       };
 
     case ProjectActions.PROJECT_SPRINTS_RECEIVE_SUCCESS:
       return {
         ...state,
+        isSprintsReceiving: false,
         project: {
           ...state.project,
           sprints: action.sprints
         }
+      };
+
+    case ProjectActions.PROJECT_SPRINTS_RECEIVE_ERROR:
+      return {
+        ...state,
+        isSprintsReceiving: false
       };
 
     case ProjectActions.PROJECT_CHANGE_START:
