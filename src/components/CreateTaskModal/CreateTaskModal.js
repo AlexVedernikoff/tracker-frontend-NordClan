@@ -46,6 +46,7 @@ class CreateTaskModal extends Component {
   getInitialState = props => ({
     selectedSprint: this.getInitialSprint(props),
     selectedPerformer: props.defaultPerformerId || null,
+    goalId: props.goalId || undefined,
     taskName: '',
     description: '',
     plannedExecutionTime: 0,
