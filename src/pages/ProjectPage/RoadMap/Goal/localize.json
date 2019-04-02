@@ -1,18 +1,18 @@
 {
   "en": {
-    "ADD_TASK_TO_TARGET": "Add task to target",
-    "CHANGE_TARGET": "Change target",
-    "REMOVE_GOAL": "Remove goal",
+    "ADD_TASK_TO_TARGET": "Add task to Epic",
+    "CHANGE_TARGET": "Change Epic",
+    "REMOVE_GOAL": "Remove Epic",
     "MOVE_TO_NEXT_SPRINT": "Move to next sprint",
-    "VISIBLE_GOAL": "Visible goal",
-    "HIDDEN_GOAL": "hidden goal"
+    "VISIBLE_GOAL": "Visible Epic",
+    "HIDDEN_GOAL": "hidden Epic"
   },
   "ru": {
-    "ADD_TASK_TO_TARGET": "Добавить задачу в цель",
-    "CHANGE_TARGET": "Изменить цель",
-    "REMOVE_GOAL": "Удалить цель",
-    "MOVE_TO_NEXT_SPRINT": "Перенести в следующий сприн",
-    "VISIBLE_GOAL": "Видимая цель",
-    "HIDDEN_GOAL": "Скрытая цель"
+    "ADD_TASK_TO_TARGET": "Добавить задачу в Epic",
+    "CHANGE_TARGET": "Изменить Epic",
+    "REMOVE_GOAL": "Удалить Epic",
+    "MOVE_TO_NEXT_SPRINT": "Перенести в следующий спринт",
+    "VISIBLE_GOAL": "Видимый Epic",
+    "HIDDEN_GOAL": "Скрытый Epic"
   }
 }
