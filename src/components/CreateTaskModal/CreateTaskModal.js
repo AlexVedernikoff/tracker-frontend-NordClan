@@ -30,6 +30,7 @@ import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
 import { If } from '../../utils/jsx';
 import uniqWith from 'lodash/uniqWith';
 import { removeNumChars } from '../../utils/formatter';
+import GoalSelector from '../GoalSelector';
 
 const MAX_DESCRIPTION_LENGTH = 25000;
 
@@ -117,7 +118,7 @@ class CreateTaskModal extends Component {
           parentId: this.props.parentTaskId,
           isTaskByClient: this.state.isTaskByClient,
           isDevOps: this.state.isDevOps,
-          goalId: this.props.goalId
+          goalId: this.state.goalId
         },
         this.state.openTaskPage,
         this.props.column
@@ -436,6 +437,24 @@ class CreateTaskModal extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>{localize[lang].GOAL}</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                <GoalSelector
+                  searchable
+                  clearable={false}
+                  value={this.state.goalId}
+                  onChange={value => {
+                    this.handleChange('goalId')({ target: { value: value.value } });
+                  }}
+                  options={this.props.goals}
+                />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.formField}>
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                 <p>{localize[lang].TIMING}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
@@ -482,6 +501,7 @@ CreateTaskModal.propTypes = {
   defaultPerformerId: PropTypes.oneOfType([PropTypes.array, PropTypes.number]),
   devOpsUsers: PropTypes.array,
   goalId: PropTypes.number,
+  goals: PropTypes.array,
   isCreateChildTaskModalOpen: PropTypes.bool,
   isCreateTaskModalOpen: PropTypes.bool,
   isCreateTaskRequestInProgress: PropTypes.bool,
@@ -506,7 +526,8 @@ const mapStateToProps = state => ({
   taskTypes: getTaskTypes(getLocalizedTaskTypes(state)),
   isCreateTaskRequestInProgress: state.Project.isCreateTaskRequestInProgress,
   lang: state.Localize.lang,
-  sprints: state.Project.project.sprints
+  sprints: state.Project.project.sprints,
+  goals: state.Goals.goals
 });
 
 const mapDispatchToProps = {

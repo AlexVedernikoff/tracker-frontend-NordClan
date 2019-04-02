@@ -72,7 +72,11 @@ export default class GoalSelector extends Component {
     });
 
     return (
-      <div className="goal-dropdown">
+      <div
+        className={classnames({
+          [css['goal-dropdown']]: true
+        })}
+      >
         {toShowMagnifier && <IconSearch style={taskListClass ? taskListIconSearchStyle : boardIconSearchStyle} />}
         <SelectDropdown
           name="goal"
