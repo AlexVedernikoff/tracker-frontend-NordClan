@@ -89,7 +89,7 @@ class Tags extends Component {
       sliceTags = this.state.tags.slice(0, this.state.maxLength);
     }
     const options = tagsFromTasks
-      ? Object.values(tagsFromTasks).map(tag => ({ value: tag.name, label: tag.name }))
+      ? Object.values(tagsFromTasks).map(tag => ({ value: tag.name || tag, label: tag.name || tag }))
       : [];
     const filtred = options.filter(option => !tags.includes(option.value));
     return (

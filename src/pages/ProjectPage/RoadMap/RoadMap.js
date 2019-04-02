@@ -120,13 +120,15 @@ class RoadMap extends Component {
               {...rangeTimeline}
             />
           ))}
-        <Pagination
-          itemsCount={completedYear - createdYear}
-          from={createdYear}
-          to={completedYear}
-          activePage={activePage}
-          onItemClick={this.handlePaginationClick}
-        />
+        {createdYear !== completedYear && (
+          <Pagination
+            itemsCount={completedYear - createdYear}
+            from={createdYear}
+            to={completedYear}
+            activePage={activePage}
+            onItemClick={this.handlePaginationClick}
+          />
+        )}
         <Task />
         {goalId && this.props.isCreateTaskModalOpen ? (
           <CreateTaskModal selectedSprintValue={sprintId} project={this.props.project} goalId={goalId} />
