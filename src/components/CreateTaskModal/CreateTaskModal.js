@@ -445,6 +445,7 @@ class CreateTaskModal extends Component {
                   searchable
                   clearable={false}
                   value={this.state.goalId}
+                  sprintId={this.state.selectedSprint}
                   onChange={value => {
                     this.handleChange('goalId')({ target: { value: value.value } });
                   }}

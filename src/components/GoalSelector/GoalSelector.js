@@ -16,6 +16,7 @@ export default class GoalSelector extends Component {
     goals: PropTypes.array,
     lang: PropTypes.string,
     onChange: PropTypes.func,
+    sprintId: PropTypes.string,
     useId: PropTypes.bool,
     value: PropTypes.oneOfType([PropTypes.object, PropTypes.number, PropTypes.array])
   };
@@ -35,8 +36,8 @@ export default class GoalSelector extends Component {
   };
 
   getOptions = goals => {
-    const { multi } = this.props;
-    const options = goals.map(goal => ({
+    const { multi, sprintId } = this.props;
+    let options = goals.map(goal => ({
       ...goal,
       label: goal.name,
       value: goal.id,
@@ -48,6 +49,11 @@ export default class GoalSelector extends Component {
       }),
       disabled: !multi && this.isOptionPicked(goal.value)
     }));
+
+    if (sprintId !== undefined) {
+      options = options.filter(option => option.activeSprintId === sprintId);
+    }
+
     return options;
   };
 
