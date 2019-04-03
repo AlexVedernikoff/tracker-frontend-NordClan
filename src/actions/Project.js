@@ -280,7 +280,8 @@ export const bindUserToProject = (projectId, userId, rolesIds, gitlabRoles = [])
       .post(URL, {
         userId: userId,
         rolesIds: rolesIds || '0',
-        gitlabRoles
+        gitlabRoles,
+        isExternal
       })
       .then(response => {
         if (response.data) {
