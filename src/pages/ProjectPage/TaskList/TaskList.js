@@ -42,6 +42,7 @@ import { BACKLOG_ID } from '../../../constants/Sprint';
 import { IN_PROGRESS } from '../../../constants/SprintStatuses';
 import ScrollTop from '../../../components/ScrollTop';
 import { layoutAgnosticFilterGlobal } from '../../../utils/layoutAgnosticFilter';
+import GoalSelector from '../../../components/GoalSelector';
 
 const dateFormat = 'DD.MM.YYYY';
 
@@ -140,7 +141,7 @@ class TaskList extends Component {
     currentSprint = currentSprint ? currentSprint.id : 0;
     let processedValue;
     const defaultValue = emptyFilters[name];
-    if (['sprintId', 'performerId', 'statusId', 'typeId', 'tags'].indexOf(name) !== -1) {
+    if (['sprintId', 'performerId', 'statusId', 'typeId', 'tags', 'goalId'].indexOf(name) !== -1) {
       processedValue = this.multipleQueries(value, defaultValue);
     } else if (value) {
       if (!Array.isArray(value)) {
@@ -169,7 +170,8 @@ class TaskList extends Component {
       isOnlyMine,
       changedSprint,
       dateFrom,
-      dateTo
+      dateTo,
+      goalId
     } = (this.props.location && this.props.location.query) || {};
     return {
       ...this.makeFiltersObject('performerId', performerId),
@@ -183,7 +185,8 @@ class TaskList extends Component {
       ...this.makeFiltersObject('changedSprint', changedSprint),
       ...this.makeFiltersObject('statusId', statusId),
       ...this.makeFiltersObject('dateFrom', dateFrom),
-      ...this.makeFiltersObject('dateTo', dateTo)
+      ...this.makeFiltersObject('dateTo', dateTo),
+      ...this.makeFiltersObject('goalId', goalId)
     };
   };
 
@@ -493,7 +496,8 @@ class TaskList extends Component {
       project: { users, sprints },
       taskTypes,
       statuses,
-      lang
+      lang,
+      goals
     } = this.props;
     switch (label) {
       case 'performerId':
@@ -509,6 +513,10 @@ class TaskList extends Component {
         return taskTypes.find(el => el.id === value).name;
       case 'statusId':
         return statuses.find(el => el.id === value).name;
+      case 'goalId':
+        const goal = goals.find(_goal => _goal.id === value);
+        if (goal) return goal.name;
+        break;
       default:
         return value;
     }
@@ -543,12 +551,14 @@ class TaskList extends Component {
         ...this.createSelectedOption([], filters.typeId, 'typeId'),
         ...this.createSelectedOption([], filters.performerId, 'performerId'),
         ...this.createSelectedOption([], filters.statusId, 'statusId'),
+        ...this.createSelectedOption([], filters.goalId, 'goalId'),
         ...this.createSelectedOption([], filters.tags, 'tags')
       ]
     });
   };
 
   createSelectedOption = (optionList, selectedOption, optionLabel = 'name') => {
+    if (optionLabel === 'goalId') debugger;
     const { lang } = this.props;
     if (Array.isArray(selectedOption)) {
       if (optionLabel === 'tags') {
@@ -660,6 +670,9 @@ class TaskList extends Component {
     this.handleDayChange(option, 'dateTo');
   };
   onChangePerformerFilter = option => this.changeSingleFilter(option, 'performerId');
+  onChangeGoalFilter = option => {
+    this.changeMultiFilter(option, 'goalId');
+  };
   onChangeTagFilter = options => this.changeMultiFilter(options, 'tags');
   sortedAuthorOptions = () => {
     const { project } = this.props;
@@ -696,7 +709,7 @@ class TaskList extends Component {
         />
       );
     });
-    const { prioritiesId, typeId, statusId, sprintId, performerId, authorId } = this.state.changedFilters;
+    const { prioritiesId, typeId, statusId, sprintId, performerId, authorId, goalId } = this.state.changedFilters;
 
     let tags = this.state.changedFilters.tags;
     if (tags && Array.isArray(tags)) {
@@ -732,7 +745,6 @@ class TaskList extends Component {
         </Row>
       </div>
     );
-
     return (
       <div>
         <section>
@@ -894,6 +906,17 @@ class TaskList extends Component {
                   />
                 </Col>
               </Row>
+              <Row className={css.search}>
+                <Col xs={6} sm={3}>
+                  <GoalSelector
+                    multi
+                    options={this.props.goals}
+                    name="goalId"
+                    value={goalId}
+                    onChange={this.onChangeGoalFilter}
+                  />
+                </Col>
+              </Row>
             </div>
             <Row className={css.search} top="xs">
               <Col xs={12} sm={8}>
@@ -999,6 +1022,7 @@ TaskList.propTypes = {
   filters: PropTypes.array,
   getTasks: PropTypes.func.isRequired,
   globalRole: PropTypes.string,
+  goals: PropTypes.array,
   isCreateTaskModalOpen: PropTypes.bool,
   isProjectReceiving: PropTypes.bool,
   isReceiving: PropTypes.bool,
@@ -1031,7 +1055,8 @@ const mapStateToProps = state => ({
   statuses: getLocalizedTaskStatuses(state),
   taskTypes: getLocalizedTaskTypes(state),
   lang: state.Localize.lang,
-  sprints: getSortedSprints(state)
+  sprints: getSortedSprints(state),
+  goals: state.Goals.goals
 });
 
 const mapDispatchToProps = { getTasks, startTaskEditing, changeTask, openCreateTaskModal, showNotification };
