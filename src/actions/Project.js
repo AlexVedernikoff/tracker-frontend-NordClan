@@ -292,6 +292,10 @@ export const bindUserToProject = (projectId, userId, rolesIds, gitlabRoles = [])
           }
         }
         dispatch(finishLoading());
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        dispatch(finishLoading());
       });
   };
 };
