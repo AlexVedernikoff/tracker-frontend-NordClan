@@ -116,7 +116,7 @@ class PlaylistItem extends Component {
   getSprintName = (shouldCutName = false) => {
     const { task, sprint } = this.props.item;
     const defaultSprint = 'Backlog';
-    const name = task ? task.sprint.name : sprint.name;
+    const name = task ? task.sprint.name : sprint ? sprint.name : '';
     const abbreviatedName = shouldCutName && name && name.length > 20 ? `${name.slice(0, 20)}...` : null;
 
     return abbreviatedName || (name || defaultSprint);
