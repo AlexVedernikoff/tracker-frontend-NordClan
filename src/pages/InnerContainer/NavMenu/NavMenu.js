@@ -235,7 +235,6 @@ class NavMenu extends Component {
         ) : null}
       </div>
     );
-
     return (
       <div className={this.props.sidebarOpened ? css.navigation : css.navigationMenuClosed}>
         {sidebarHeader}
