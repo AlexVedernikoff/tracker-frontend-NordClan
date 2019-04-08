@@ -2,7 +2,7 @@ import * as ACTIONS from '../constants/Sidebar';
 
 const initialState = {
   isOpen: true,
-  isDocked: false
+  isDocked: true
 };
 
 const Sidebar = (state = initialState, action) => {
