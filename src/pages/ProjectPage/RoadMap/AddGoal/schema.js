@@ -13,6 +13,7 @@ const schema = lang =>
   yup.object({
     name: yup
       .string()
+      .trim()
       .label(localize[lang].ENTER_GOAL_NAME)
       .required(localize[lang].MUST_ENTER_GOAL_NAME),
     description: yup
@@ -25,7 +26,8 @@ const schema = lang =>
       .handleDate('DD.MM.YYYY')
       .typeError(localize[lang].MUST_ENTER_EXECUTION_TIME)
       .label(localize[lang].PLANNED_EXECUTION_TIME)
-      .required(localize[lang].MUST_ENTER_EXECUTION_TIME)
+      .required(localize[lang].MUST_ENTER_EXECUTION_TIME),
+    info: yup.string().label(localize[lang].ENTER_INFO)
   });
 
 export default schema;

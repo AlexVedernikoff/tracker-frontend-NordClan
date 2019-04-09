@@ -6,9 +6,10 @@ import TimeLine from '../TimeLine';
 import Goal from '../Goal';
 import AddGoal from '../AddGoal/AddGoal';
 import { If } from '../../../../utils/jsx';
-
+import { API_URL } from '../../../../constants/Settings';
 import localize from './Sprint.json';
 import styles from './Sprint.scss';
+import getUnloadReportQuery from '../../../../utils/getUnloadReportQuery';
 
 class Sprint extends Component {
   static propTypes = {
@@ -69,6 +70,7 @@ class Sprint extends Component {
 
   hanldeEditSprint = e => {
     e.stopPropagation();
+    ReactTooltip.hide();
     this.props.editSprint(this.props.item);
   };
 
@@ -99,7 +101,14 @@ class Sprint extends Component {
         <div className={styles.metaItem}>{item.riskBudget} ч. - риск.</div>
         <div className={styles.metaItem}>{item.qaPercent}% на QA</div>
         <div className={`${styles.metaItem}, ${styles.export}`}>
-          <IconDownload data-tip={localize[lang].UNLOAD_SPRINT} />
+          <a
+            href={`${API_URL}/project/${item.projectId}/reports/period?${getUnloadReportQuery(item, { lang })}`}
+            onClick={e => {
+              e.stopPropagation();
+            }}
+          >
+            <IconDownload data-tip={localize[lang].UNLOAD_SPRINT} />
+          </a>
           <IconEdit
             className={styles.actionIcon}
             data-tip={localize[lang].CHANGE_SPRINT}
@@ -117,7 +126,7 @@ class Sprint extends Component {
           <span className={styles.addingIcon}>
             <IconPlus />
           </span>
-          {localize[lang].ADD_GOAL}
+          {localize[lang].ADD_EPIC}
         </div>
       </div>
     );

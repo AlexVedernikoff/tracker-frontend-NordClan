@@ -8,6 +8,7 @@ import classnames from 'classnames';
 import InlineHolder from '../../../../components/InlineHolder';
 import * as css from './PhaseColumn.scss';
 import localize from './PhaseColumn.json';
+import { LOADING_FINISH } from '../../../../constants/Loading';
 
 const columnTarget = {
   canDrop(props, monitor) {
@@ -52,7 +53,8 @@ class PhaseColumn extends React.Component {
       isTasksLoad,
       allTasksLength,
       isProjectLoading,
-      lang
+      lang,
+      isLoading
     } = this.props;
 
     return connectDropTarget(
@@ -66,7 +68,7 @@ class PhaseColumn extends React.Component {
         <h4>{`${title} (${tasks.length})`}</h4>
         {tasks.length ? (
           tasks
-        ) : (isTasksLoad || isProjectLoading) && !allTasksLength ? (
+        ) : isLoading && !allTasksLength ? (
           <div className={css.cardHolder}>
             <InlineHolder length="70%" />
             <InlineHolder length="100%" />
@@ -83,6 +85,7 @@ class PhaseColumn extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  isLoading: state.Loading.loading,
   isTasksLoad: state.Tasks.isReceiving,
   isProjectLoading: state.Project.isProjectInfoReceiving,
   allTasksLength: state.Tasks.tasks.length,

@@ -48,6 +48,7 @@ class Projects extends Component {
       filterRequestTypes: [],
       wasTouchedAfterRequest: undefined,
       selectedType: 1,
+      projectsArchiveMode: props.route.path === 'projects-archive',
       ...projectListFilters
     };
 
@@ -57,6 +58,11 @@ class Projects extends Component {
   componentDidMount() {
     this.loadProjects();
     this.props.getPortfolios();
+    this.historyUnlisten = this.props.router.listen(this.checkProjectsArchiveMode);
+  }
+
+  componentWillUnmount() {
+    this.historyUnlisten();
   }
 
   initialFilters = {
@@ -70,6 +76,13 @@ class Projects extends Component {
     projectName: ''
   };
 
+  checkProjectsArchiveMode = e => {
+    const newMode = e.pathname === '/projects-archive';
+    if (newMode !== this.state.projectsArchiveMode) {
+      this.setState({ projectsArchiveMode: newMode }, this.loadProjects);
+    }
+  };
+
   selectType = filterSelectedTypes => {
     const filterRequestTypes = filterSelectedTypes.map(type => type.value);
     this.setState({ filterSelectedTypes, filterRequestTypes }, () => {
@@ -80,10 +93,16 @@ class Projects extends Component {
   loadProjects = (dateFrom, dateTo) => {
     const tags = this.state.filterTags.map(el => el.value).join(',');
     const typeId = this.state.filterRequestTypes.join(',');
-    const statuses = [];
-    if (this.state.filteredInProgress) statuses.push(1);
-    if (this.state.filteredInHold) statuses.push(2);
-    if (this.state.filteredFinished) statuses.push(3);
+    let statuses = [];
+    const { filteredInProgress, filteredInHold, projectsArchiveMode } = this.state;
+    if (projectsArchiveMode) {
+      statuses = [3];
+    } else if (!filteredInProgress && !filteredInHold) {
+      statuses = [1, 2];
+    } else {
+      if (this.state.filteredInProgress) statuses.push(1);
+      if (this.state.filteredInHold) statuses.push(2);
+    }
 
     this.props.getProjects(
       20,
@@ -358,11 +377,11 @@ class Projects extends Component {
     const {
       filteredInProgress,
       filteredInHold,
-      filteredFinished,
       filterSelectedTypes,
       dateFrom,
       dateTo,
-      wasTouchedAfterRequest
+      wasTouchedAfterRequest,
+      projectsArchiveMode
     } = this.state;
     const formattedDayFrom = dateFrom ? moment(dateFrom).format('DD.MM.YYYY') : '';
     const formattedDayTo = dateTo ? moment(dateTo).format('DD.MM.YYYY') : '';
@@ -376,11 +395,15 @@ class Projects extends Component {
 
     return (
       <div>
-        <Title render={`SimTrack - ${localize[lang].MY_PROJECTS}`} />
+        <Title
+          render={`SimTrack - ${!projectsArchiveMode ? localize[lang].MY_PROJECTS : localize[lang].PROJECTS_ARCHIVE}`}
+        />
         <section>
           <header className={css.title}>
-            <h1 className={css.title}>{localize[lang].MY_PROJECTS}</h1>
-            {isAdmin ? (
+            <h1 className={css.title}>
+              {!projectsArchiveMode ? localize[lang].MY_PROJECTS : localize[lang].PROJECTS_ARCHIVE}
+            </h1>
+            {isAdmin && !projectsArchiveMode ? (
               <div>
                 <div>
                   <Button
@@ -397,32 +420,26 @@ class Projects extends Component {
           <div className={css.projectsHeader}>
             <Row>
               <Col xs={12} sm={8}>
-                <div className={css.statusFilters}>
-                  <StatusCheckbox
-                    type="INPROGRESS"
-                    checked={filteredInProgress}
-                    onClick={() => {
-                      this.check('filteredInProgress', this.handleFilterChange);
-                    }}
-                    label={localize[lang].INPROGRESS}
-                  />
-                  <StatusCheckbox
-                    type="INHOLD"
-                    checked={filteredInHold}
-                    onClick={() => {
-                      this.check('filteredInHold', this.handleFilterChange);
-                    }}
-                    label={localize[lang].INHOLD}
-                  />
-                  <StatusCheckbox
-                    type="FINISHED"
-                    checked={filteredFinished}
-                    onClick={() => {
-                      this.check('filteredFinished', this.handleFilterChange);
-                    }}
-                    label={localize[lang].FINISHED}
-                  />
-                </div>
+                {!projectsArchiveMode && (
+                  <div className={css.statusFilters}>
+                    <StatusCheckbox
+                      type="INPROGRESS"
+                      checked={filteredInProgress}
+                      onClick={() => {
+                        this.check('filteredInProgress', this.handleFilterChange);
+                      }}
+                      label={localize[lang].INPROGRESS}
+                    />
+                    <StatusCheckbox
+                      type="INHOLD"
+                      checked={filteredInHold}
+                      onClick={() => {
+                        this.check('filteredInHold', this.handleFilterChange);
+                      }}
+                      label={localize[lang].INHOLD}
+                    />
+                  </div>
+                )}
               </Col>
               <Col xs={12} sm={4}>
                 <TypeFilter onChange={this.selectType} value={filterSelectedTypes} />
@@ -491,6 +508,7 @@ Projects.propTypes = {
   getPortfolios: PropTypes.func.isRequired,
   getProjects: PropTypes.func.isRequired,
   globalRole: PropTypes.string.isRequired,
+  history: PropTypes.object,
   isCreateProjectModalOpen: PropTypes.bool.isRequired,
   isProjectsReceived: PropTypes.bool,
   lang: PropTypes.string,
@@ -500,7 +518,9 @@ Projects.propTypes = {
   projectError: PropTypes.object,
   projectList: PropTypes.array.isRequired,
   projectTypes: PropTypes.array,
-  requestProjectCreate: PropTypes.func
+  requestProjectCreate: PropTypes.func,
+  route: PropTypes.object,
+  router: PropTypes.object
 };
 
 const mapStateToProps = state => ({
