@@ -22,7 +22,7 @@ const schema = lang =>
       .required(localize[lang].MUST_ENTER_DESCRIPTION),
     plannedExecutionTime: yup
       .date()
-      .min(moment(), localize[lang].CANNOT_SELECT_PAST_DATE)
+      .min(moment().subtract(1, 'days'), localize[lang].CANNOT_SELECT_PAST_DATE)
       .handleDate('DD.MM.YYYY')
       .typeError(localize[lang].MUST_ENTER_EXECUTION_TIME)
       .label(localize[lang].PLANNED_EXECUTION_TIME)
