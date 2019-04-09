@@ -60,6 +60,12 @@
   }
 }
 
+.metaItem {
+  a {
+    color: inherit;
+  }
+}
+
 .addingIcon {
   color: $color-dark-gray;
   margin-right: 0.5rem;

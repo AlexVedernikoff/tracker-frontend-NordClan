@@ -33,7 +33,6 @@ class CreateSprintModal extends Component {
   }
 
   getAdjustedBudgetValue = value => {
-    console.log(value);
     if (!this.state.riskBudget) return value;
     return +value > +this.state.riskBudget ? this.state.riskBudget : value;
   };

@@ -22,29 +22,31 @@ import Gitlab from './Gitlab';
 import UserList from './Users';
 import Jira from './Jira';
 import Goals from './Goals';
+import Sidebar from './Sidebar';
 
 const rootReducer = combineReducers({
   Auth,
+  Dictionaries,
+  ExternalUsers,
+  Gitlab,
+  Goals,
+  Jira,
   Loading,
+  Localize,
   Notifications,
   PlanningTasks,
+  Portfolio,
   Portfolios,
   Project,
   Projects,
-  Tasks,
-  TaskList,
+  Sidebar,
   Task,
-  Portfolio,
-  Timesheets,
+  TaskList,
+  Tasks,
   TimesheetPlayer,
-  Dictionaries,
-  UsersRoles,
+  Timesheets,
   UserList,
-  ExternalUsers,
-  Localize,
-  Gitlab,
-  Jira,
-  Goals,
+  UsersRoles,
   routing: routerReducer
 });
 
