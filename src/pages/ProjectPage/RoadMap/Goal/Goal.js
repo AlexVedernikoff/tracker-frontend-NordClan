@@ -5,7 +5,15 @@ import cn from 'classnames';
 import Checkbox from '../../../../components/Checkbox';
 import VisibleControl from './VisibleControl';
 import Meta from './Meta';
-import { IconArrowLeft, IconEdit, IconDelete, IconPlus, IconArrowRight } from '../../../../components/Icons';
+import {
+  IconArrowLeft,
+  IconEdit,
+  IconDelete,
+  IconPlus,
+  IconArrowRight,
+  IconArrowDown,
+  IconArrowUp
+} from '../../../../components/Icons';
 
 import localize from './localize.json';
 import styles from './Goal.scss';
@@ -28,14 +36,19 @@ class Goal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      checked: props.item.status === 'done'
+      checked: props.item.status === 'done',
+      isOpen: false
     };
   }
 
   handleChangeStatus = ({ target: { checked } }) => this.setState({ checked }, () => this.props.toggleStatus(checked));
 
+  toggleOpen = () => {
+    this.setState(prevState => ({ isOpen: !prevState.isOpen }));
+  };
+
   render() {
-    const { checked } = this.state;
+    const { checked, isOpen } = this.state;
     const { item, lang } = this.props;
     const { budget, tasksCount, removedFromSprint, removedToSprint } = item;
     const metaProps = {
@@ -45,7 +58,6 @@ class Goal extends Component {
       removedToSprint,
       item
     };
-
     return (
       <div className={styles.goal}>
         <div className={styles.mainContainer}>
@@ -60,7 +72,16 @@ class Goal extends Component {
               <IconArrowLeft />
             </span>
           )}
-          <span className={cn(styles.name, { [styles.removed]: !!removedToSprint })}>{item.name}</span>
+          <span onClick={this.toggleOpen} className={cn(styles.name, { [styles.removed]: !!removedToSprint })}>
+            {item.name}
+          </span>
+          <span
+            data-tip={!isOpen ? localize[lang].SHOW_GOAL_INFO : localize[lang].HIDE_GOAL_INFO}
+            className={styles.openButton}
+            onClick={this.toggleOpen}
+          >
+            {!isOpen ? <IconArrowDown /> : <IconArrowUp />}
+          </span>
           <Meta {...metaProps} />
           {!removedToSprint && (
             <span className={styles.actionButtons}>
@@ -87,7 +108,14 @@ class Goal extends Component {
             </span>
           )}
         </div>
-        <div className={styles.description}>{item.description}</div>
+        {isOpen && (
+          <div className={styles.description}>
+            <h5>{localize[lang].ACCEPTANCE_CRITERIONS}</h5>
+            <p>{item.description}</p>
+            <h5>{localize[lang].REQUIRED_OF_CLIENT}</h5>
+            <p>{item.description}</p>
+          </div>
+        )}
       </div>
     );
   }
