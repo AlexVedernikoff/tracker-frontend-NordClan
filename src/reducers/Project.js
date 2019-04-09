@@ -460,6 +460,15 @@ export default function Project(state = InitialState, action) {
       };
     }
 
+    case ProjectActions.PROJECT_ATTACHMENT_UPLOAD_FAIL:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          attachments: state.project.attachments.filter(({ id }) => id !== action.attachment.id)
+        }
+      };
+
     case ProjectActions.GET_METRICS_SUCCESS:
       return {
         ...state,
