@@ -81,7 +81,7 @@ class EditActivityProjectModal extends Component {
   };
 
   render() {
-    const { closeTimeoutMS, text, onCancel, lang, ...other } = this.props;
+    const { closeTimeoutMS, text, onCancel, lang, isSprintsReceiving, ...other } = this.props;
 
     const formLayout = {
       firstCol: 4,
@@ -126,6 +126,7 @@ class EditActivityProjectModal extends Component {
                   placeholder={localize[lang].SPRINT_PLACEHOLDER}
                   onChange={this.handleChangeSprint}
                   options={this.getSprintOptions()}
+                  disabled={isSprintsReceiving}
                 />
               </Col>
             </Row>
@@ -133,7 +134,7 @@ class EditActivityProjectModal extends Component {
 
           <Button
             text={localize[lang].CONFIRM}
-            disabled={!this.state.projectValue}
+            disabled={!this.state.projectValue || isSprintsReceiving}
             type="green"
             style={{ width: '50%' }}
             onClick={this.onConfirm}
@@ -150,6 +151,7 @@ EditActivityProjectModal.propTypes = {
   closeTimeoutMS: PropTypes.number,
   error: PropTypes.object,
   getProjectsForSelect: PropTypes.func,
+  isSprintsReceiving: PropTypes.bool,
   onCancel: PropTypes.func,
   onConfirm: PropTypes.func,
   onRequestClose: PropTypes.func,
@@ -161,7 +163,8 @@ EditActivityProjectModal.propTypes = {
 const mapStateToProps = state => ({
   sprints: state.Project.project.sprints,
   lang: state.Localize.lang,
-  projects: state.Timesheets.projects
+  projects: state.Timesheets.projects,
+  isSprintsReceiving: state.Project.isSprintsReceiving
 });
 
 const mapDispatchToProps = {

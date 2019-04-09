@@ -14,7 +14,7 @@ import {
   IconList
 } from '../../../components/Icons';
 import isAdmin from '../../../utils/isAdmin';
-import { DEV_OPS, EXTERNAL_USER } from '../../../constants/Roles';
+import { DEV_OPS, EXTERNAL_USER, ADMIN } from '../../../constants/Roles';
 import Toggle from '../../../components/LanguageToggle';
 import { setLocalize } from '../../../actions/localize';
 import localize from './navMenu.json';
@@ -146,6 +146,26 @@ class NavMenu extends Component {
         </li>
       ) : null;
 
+    const projectsArchiveButton =
+      this.props.user.globalRole === ADMIN ? (
+        <li key="projectsArchive">
+          <Link className={css.sidebarLinkClosed} activeClassName={css.activeLink} to="/projects-archive">
+            <IconPortfolio style={{ ...iconStyles, opacity: 0.3 }} />
+          </Link>
+        </li>
+      ) : null;
+    const projectsArchiveLink =
+      this.props.user.globalRole === ADMIN ? (
+        <li key="projectsArchive" className={css.sidebarItem}>
+          <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/projects-archive">
+            <button>
+              <IconPortfolio style={{ ...iconStyles, opacity: 0.3 }} />
+            </button>
+            <span>{localize[lang].PROJECTS_ARCHIVE}</span>
+          </Link>
+        </li>
+      ) : null;
+
     const toggleButton = mqlMatches ? (
       <button
         key="toggle_btn"
@@ -179,7 +199,8 @@ class NavMenu extends Component {
       timesheetsLink,
       usersRolesLink,
       externalUsersLink,
-      toggleButton
+      toggleButton,
+      projectsArchiveLink
     ];
 
     const buttons = [
@@ -197,7 +218,8 @@ class NavMenu extends Component {
       timesheetsLinkButton,
       usersRolesLinkButton,
       externalUsersLinkButton,
-      toggleButton
+      toggleButton,
+      projectsArchiveButton
     ];
 
     const links_vs_buttons = this.props.sidebarOpened ? links : buttons;
@@ -213,7 +235,6 @@ class NavMenu extends Component {
         ) : null}
       </div>
     );
-
     return (
       <div className={this.props.sidebarOpened ? css.navigation : css.navigationMenuClosed}>
         {sidebarHeader}

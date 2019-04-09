@@ -13,8 +13,7 @@ import {
   defaultExtra as extra,
   withdefaultExtra
 } from './Common';
-import get from 'lodash/get';
-import localize from './Task.i18n.json';
+import { getUploadAttachmentsErrorMessage } from './utils/attachments';
 
 const getTaskStart = () => ({
   type: TaskActions.GET_TASK_REQUEST_SENT
@@ -421,15 +420,12 @@ const uploadAttachments = (taskId, attachments) => {
         start: () => withStartLoading(attachmentUploadStarted, true)(dispatch)(taskId, attachment),
         response: result => withFinishLoading(attachmentUploadSuccess, true)(dispatch)(taskId, attachment, result),
         error: error => {
-          if (error.response.status === 400) {
-            const errors = get(error.response.data, 'message.errors', []);
-            const isFileNameLengthError = errors.some(({ param }) => param === 'path' || param === 'fileName');
-
-            if (isFileNameLengthError) {
-              const lang = langSelector(getState());
-              dispatch(showNotification({ type: 'error', message: localize[lang].MAX_FILE_LENGTH_ERROR }));
-            }
-          }
+          dispatch(
+            showNotification({
+              type: 'error',
+              message: getUploadAttachmentsErrorMessage(error, langSelector(getState()))
+            })
+          );
 
           withFinishLoading(attachmentUploadFail, true)(dispatch)(taskId, attachment, error);
         }
