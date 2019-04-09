@@ -6,6 +6,7 @@ import AttachDeletion from '../AttachDeletion';
 import AttachUploading from '../AttachUploading';
 import FileUpload from '../FileUpload';
 import Lightbox from 'react-image-lightbox';
+import localize from './Attachments.json';
 import 'react-image-lightbox/style.css';
 
 const imageTypes = ['image' /*fallback for old attachments*/, 'image/jpeg', 'image/png', 'image/pjpeg'];
@@ -16,13 +17,33 @@ export default class Attachments extends Component {
     attachments: []
   };
 
+  static maxFileSize = 1024 * 1024 * 1024; // 1gb
+
   state = {
     photoIndex: 0,
     isOpen: false
   };
 
   onDrop = acceptedFiles => {
+    if (!this.filesMaxSizeValid(acceptedFiles)) {
+      return this.showError(localize[this.props.lang].FILE_SIZE_ERROR);
+    }
+
     this.props.uploadAttachments(acceptedFiles);
+  };
+
+  filesMaxSizeValid = files => {
+    for (const file of files) {
+      if (file.size > Attachments.maxFileSize) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  showError = message => {
+    this.props.showNotification({ message, type: 'error' }, 3000);
   };
 
   getAttachmentsNextImageIndex = index => {
@@ -170,6 +191,8 @@ export default class Attachments extends Component {
 Attachments.propTypes = {
   attachments: PropTypes.array,
   canEdit: PropTypes.bool,
+  lang: PropTypes.string,
   removeAttachment: PropTypes.func,
+  showNotification: PropTypes.func,
   uploadAttachments: PropTypes.func
 };

@@ -1,0 +1,10 @@
+{
+  "en": {
+    "MAX_FILE_LENGTH_ERROR": "File name is too long",
+    "FILE_UPLOAD_ERROR": "Error occured while uploading file"
+  },
+  "ru": {
+    "MAX_FILE_LENGTH_ERROR": "Слишком длинное имя файла",
+    "FILE_UPLOAD_ERROR": "Возникла ошибка при загрузке файла"
+  }
+}

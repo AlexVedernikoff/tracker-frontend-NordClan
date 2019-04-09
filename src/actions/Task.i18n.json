@@ -1,8 +1,0 @@
-{
-  "en": {
-    "MAX_FILE_LENGTH_ERROR": "File name is too long"
-  },
-  "ru": {
-    "MAX_FILE_LENGTH_ERROR": "Слишком длинное имя файла"
-  }
-}

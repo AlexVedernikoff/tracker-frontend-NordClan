@@ -71,7 +71,8 @@ class AddGoal extends Component {
           name: goalItem.name,
           description: goalItem.description,
           visible: goalItem.visible,
-          plannedExecutionTime: moment.unix(goalItem.plannedExecutionTime * 100).format('DD.MM.YYYY')
+          plannedExecutionTime: moment.unix(goalItem.plannedExecutionTime * 100).format('DD.MM.YYYY'),
+          info: goalItem.info
         }
       });
     } else {
@@ -122,7 +123,7 @@ class AddGoal extends Component {
 
   render() {
     const {
-      forms: { name, visible, plannedExecutionTime, description },
+      forms: { name, visible, plannedExecutionTime, description, info },
       errors
     } = this.state;
     const { showModal, lang, item, closeModal, isFetching, isEdit, goalItem } = this.props;
@@ -134,14 +135,14 @@ class AddGoal extends Component {
             <form className={css.createSprintForm}>
               <Row className={css.inputRow}>
                 <Col xs={12}>
-                  <h3>{localize[lang].ADD_GOAL}</h3>
+                  <h3>{localize[lang].ADD_EPIC}</h3>
                   <hr />
                 </Col>
               </Row>
 
               <Row className={css.inputRow}>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>{localize[lang].INPUT_GOAL}</p>
+                  <p>{localize[lang].INPUT_EPIC}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   {this.validator.validate(
@@ -221,10 +222,32 @@ class AddGoal extends Component {
                   )}
                 </Col>
               </Row>
+              <Row className={css.inputRow}>
+                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                  <p>{localize[lang].ENTER_INFO}</p>
+                </Col>
+                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                  {this.validator.validate(
+                    handleBlur => (
+                      <ValidatedInput
+                        elementType="textarea"
+                        placeholder={fields.info.label}
+                        onChange={this.handleChangeGoalForms('info')}
+                        value={info}
+                        onBlur={handleBlur}
+                        shouldMarkError={!!errors.info}
+                        errorText={errors.info}
+                      />
+                    ),
+                    'info',
+                    errors.info
+                  )}
+                </Col>
+              </Row>
               <Row className={css.createButton} center="xs">
                 <Col xs>
                   <Button
-                    text={localize[lang].ADD_GOAL}
+                    text={localize[lang].ADD_EPIC}
                     type="green"
                     htmlType="submit"
                     onClick={this.handleAddGoal(isEdit ? goalItem.id : item.id)}

@@ -13,6 +13,7 @@ const schema = lang =>
   yup.object({
     name: yup
       .string()
+      .trim()
       .label(localize[lang].ENTER_GOAL_NAME)
       .required(localize[lang].MUST_ENTER_GOAL_NAME),
     description: yup
@@ -26,7 +27,8 @@ const schema = lang =>
       .typeError(localize[lang].MUST_ENTER_EXECUTION_TIME)
       .label(localize[lang].PLANNED_EXECUTION_TIME)
       .required(localize[lang].MUST_ENTER_EXECUTION_TIME),
-    visible: yup.bool().label(localize[lang].IS_VISIBLE)
+    visible: yup.bool().label(localize[lang].IS_VISIBLE),
+    info: yup.string().label(localize[lang].ENTER_INFO)
   });
 
 export default schema;
