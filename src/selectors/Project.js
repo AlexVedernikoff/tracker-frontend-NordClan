@@ -29,7 +29,7 @@ export const projectPerformersSelector = createSelector(
   state => {
     return state.Project.project.performersTasksUniq;
   },
-  (users, performers) => {
+  (users = [], performers = []) => {
     return uniqBy([...users, ...performers], 'id');
   }
 );
