@@ -658,9 +658,10 @@ class MyTasksDevOps extends Component {
 MyTasksDevOps.propTypes = {
   changeTask: PropTypes.func.isRequired,
   checkFilterItemEmpty: PropTypes.func,
+  devOpsUsers: PropTypes.array.isRequired,
   filters: PropTypes.array,
-  getTasks: PropTypes.func.isRequired,
   getDevOpsUsers: PropTypes.func.isRequired,
+  getTasks: PropTypes.func.isRequired,
   globalRole: PropTypes.string,
   isCreateTaskModalOpen: PropTypes.bool,
   isReceiving: PropTypes.bool,
@@ -673,7 +674,6 @@ MyTasksDevOps.propTypes = {
   statuses: PropTypes.array,
   taskTypes: PropTypes.array,
   tasksList: PropTypes.array.isRequired,
-  devOpsUsers: PropTypes.array.isRequired,
   typeOptions: PropTypes.array
 };
 

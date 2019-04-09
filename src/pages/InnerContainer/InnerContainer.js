@@ -11,11 +11,13 @@ import * as dictionaryActions from '../../actions/Dictionaries';
 import { ScrollContainer } from 'react-router-scroll';
 import { history } from '../../History';
 import classnames from 'classnames';
+import { setSidebarState } from '../../actions/Sidebar';
 
 const mql = window.matchMedia(`(min-width: ${cssVariables.tabletWidth})`);
 
 class InnerContainer extends Component {
   static propTypes = {
+    Sidebar: PropTypes.object,
     children: PropTypes.object,
     getMagicActivityTypes: PropTypes.func,
     getMilestoneTypes: PropTypes.func,
@@ -23,6 +25,7 @@ class InnerContainer extends Component {
     getTaskStatuses: PropTypes.func,
     getTaskTypes: PropTypes.func,
     routes: PropTypes.array,
+    setSidebarState: PropTypes.func,
     user: PropTypes.object
   };
 
@@ -46,8 +49,9 @@ class InnerContainer extends Component {
   }
 
   componentWillMount() {
+    this.props.setSidebarState({ isDocked: mql.matches, isOpen: mql.matches });
     mql.addListener(this.mediaQueryChanged);
-    this.setState({ mql: mql, sidebarDocked: mql.matches });
+    this.setState({ mql: mql });
     this.props.getMagicActivityTypes();
     this.props.getTaskStatuses();
     this.props.getTaskTypes();
@@ -78,7 +82,8 @@ class InnerContainer extends Component {
   getRef = ref => (this.contentWrapper = ref);
 
   mediaQueryChanged = () => {
-    this.setState({ sidebarDocked: this.state.mql.matches, sidebarOpen: this.state.mql.matches });
+    const matches = this.state.mql.matches;
+    this.props.setSidebarState({ isDocked: matches, isOpen: matches });
   };
 
   listenHistory = () => {
@@ -92,13 +97,11 @@ class InnerContainer extends Component {
   };
 
   toggleMenu = () => {
-    this.setState({
-      sidebarOpen: !this.state.sidebarOpen
-    });
+    this.props.setSidebarState({ isOpen: !this.props.Sidebar.isOpen });
   };
 
   onSetSidebarOpen = open => {
-    this.setState({ sidebarOpen: open });
+    this.props.setSidebarState({ isOpen: open });
   };
 
   shouldUpdateScroll = (prevLocation, { routes }) => {
@@ -120,16 +123,14 @@ class InnerContainer extends Component {
   };
 
   render() {
+    const sidebarOpen = this.props.Sidebar.isOpen;
+    const sidebarDocked = this.props.Sidebar.isDocked;
     const sidebar = (
-      <NavMenu
-        toggleMenu={this.toggleMenu}
-        mqlMatches={!!this.state.mql.matches}
-        sidebarOpened={this.state.sidebarOpen}
-      />
+      <NavMenu toggleMenu={this.toggleMenu} mqlMatches={!!this.state.mql.matches} sidebarOpened={sidebarOpen} />
     );
     const sidebarStyles = {
       sidebar: {
-        width: this.state.sidebarOpen ? 240 : 60,
+        width: sidebarOpen ? 240 : 60,
         zIndex: cssVariables.zSidebarLayer
       },
       content: {
@@ -138,7 +139,7 @@ class InnerContainer extends Component {
         flexDirection: 'column'
       }
     };
-    const { sidebarDocked, sidebarOpen } = this.state;
+
     const isFullHeight = this.isFullHeight();
     return (
       <div>
@@ -176,11 +177,16 @@ class InnerContainer extends Component {
   }
 }
 
+const mapStateToProps = ({ Sidebar: _Sidebar }) => ({
+  Sidebar: _Sidebar
+});
+
 const mapDispatchToProps = {
-  ...dictionaryActions
+  ...dictionaryActions,
+  setSidebarState
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(InnerContainer);
