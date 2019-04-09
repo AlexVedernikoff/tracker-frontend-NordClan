@@ -68,7 +68,8 @@ class Sprint extends Component {
 
   transferGoal = (goalId, createdAt) => () => this.props.transfer(goalId, createdAt);
 
-  hanldeEditSprint = () => {
+  hanldeEditSprint = e => {
+    e.stopPropagation();
     ReactTooltip.hide();
     this.props.editSprint(this.props.item);
   };
