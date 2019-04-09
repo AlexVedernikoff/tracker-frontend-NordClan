@@ -135,7 +135,7 @@ class AddGoal extends Component {
             <form className={css.createSprintForm}>
               <Row className={css.inputRow}>
                 <Col xs={12}>
-                  <h3>{localize[lang].ADD_EPIC}</h3>
+                  <h3>{!isEdit ? localize[lang].ADD_EPIC : localize[lang].CHANGE_GOAL}</h3>
                   <hr />
                 </Col>
               </Row>
@@ -247,7 +247,7 @@ class AddGoal extends Component {
               <Row className={css.createButton} center="xs">
                 <Col xs>
                   <Button
-                    text={localize[lang].ADD_EPIC}
+                    text={!isEdit ? localize[lang].ADD_EPIC : localize[lang].CHANGE_GOAL}
                     type="green"
                     htmlType="submit"
                     onClick={this.handleAddGoal(isEdit ? goalItem.id : item.id)}

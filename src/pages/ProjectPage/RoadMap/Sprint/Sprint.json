@@ -13,6 +13,7 @@
     "PLANNED_EXECUTION_TIME": "Планируемое время завершения",
     "UNLOAD_SPRINT": "Выгрузить спринт",
     "CHANGE_SPRINT": "Редактировать спринт",
+    "CHANGE_GOAL": "Редактировать цель",
     "ENTER_INFO": "Требуемая информация от заказчика",
     "MUST_ENTER_INFO": "Необходимо ввести информацию от заказчика"
   },
@@ -30,6 +31,7 @@
     "PLANNED_EXECUTION_TIME": "Planned execution time",
     "UNLOAD_SPRINT": "Unload sprint",
     "CHANGE_SPRINT": "Change sprint",
+    "CHANGE_GOAL": "Change goal",
     "ENTER_INFO": "Information from Customer",
     "MUST_ENTER_INFO": "Information from Customer is required"
   }
