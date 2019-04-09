@@ -245,7 +245,11 @@ class CreateTaskModal extends Component {
     }
   };
 
-  projectHasDevOpsUsers = () => !!(this.props.devOpsUsers && this.props.devOpsUsers.length);
+  projectHasDevOpsUsers = () => {
+    const { users } = this.props.project;
+    const globalDevopsExist = !!(this.props.devOpsUsers && this.props.devOpsUsers.length);
+    return globalDevopsExist || users.some(user => !!user.roles.devops);
+  };
 
   render() {
     const formLayout = {
