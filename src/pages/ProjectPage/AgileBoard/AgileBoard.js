@@ -228,6 +228,8 @@ class AgileBoard extends Component {
         case 8:
           grouped.done.push(task);
           break;
+        default:
+          break;
       }
     });
     return grouped;
@@ -527,6 +529,7 @@ AgileBoard.propTypes = {
   authorOptions: PropTypes.array,
   changeTask: PropTypes.func.isRequired,
   currentSprint: PropTypes.array,
+  filteredTasks: PropTypes.array,
   filters: PropTypes.object.isRequired,
   getProjectInfo: PropTypes.func,
   getProjectUsers: PropTypes.func,
@@ -545,6 +548,7 @@ AgileBoard.propTypes = {
     label: PropTypes.string,
     value: PropTypes.string
   }),
+  onStatusChange: PropTypes.func,
   openCreateTaskModal: PropTypes.func.isRequired,
   params: PropTypes.object,
   project: PropTypes.object,
@@ -553,11 +557,9 @@ AgileBoard.propTypes = {
   sprintTasks: PropTypes.array,
   sprints: PropTypes.array,
   startTaskEditing: PropTypes.func,
-  onStatusChange: PropTypes.func,
   statuses: PropTypes.array,
   tags: PropTypes.array,
   taskTypes: PropTypes.array,
-  filteredTasks: PropTypes.array,
   tasks: PropTypes.object,
   tracksChange: PropTypes.number,
   typeOptions: PropTypes.array,

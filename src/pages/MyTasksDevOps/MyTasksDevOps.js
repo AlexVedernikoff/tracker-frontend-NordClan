@@ -11,13 +11,9 @@ import ReactTooltip from 'react-tooltip';
 import AgileBoard from '../ProjectPage/AgileBoard';
 import Priority from '../../components/Priority';
 import Button from '../../components/Button';
-import SelectDropdown from '../../components/SelectDropdown';
 import Input from '../../components/Input';
-import TagsFilter from '../../components/TagsFilter';
 import PerformerFilter from '../../components/PerformerFilter';
-import CollapsibleRow from '../../components/CollapsibleRow';
-import DatepickerDropdown from '../../components/DatepickerDropdown';
-import Tag from '../../components/Tag';
+// import Tag from '../../components/Tag';
 import getPriorityById from '../../utils/TaskPriority';
 import { getFullName, getDictionaryName } from '../../utils/NameLocalisation';
 import { changeTask, startTaskEditing } from '../../actions/Task';
@@ -451,29 +447,31 @@ class MyTasksDevOps extends Component {
   onChangeTagFilter = options => this.changeMultiFilter(options, 'tags');
 
   render() {
-    const { tasksList: tasks, statuses, taskTypes, lang, devOpsUsers } = this.props;
-    const filterTags = this.state.allFilters.map(filter => {
-      return (
-        <Tag
-          name={filter.label}
-          deleteHandler={filter.deleteHandler}
-          key={`${filter.name}_${filter.label}`}
-          unclickable
-          blocked={filter.name === 'changedSprint'}
-        />
-      );
-    });
-    const { prioritiesId, typeId, statusId, performerId } = this.state.changedFilters;
+    // const { tasksList: tasks, statuses, taskTypes, lang, devOpsUsers } = this.props;
+    const { tasksList: tasks, lang, devOpsUsers } = this.props;
+    // const filterTags = this.state.allFilters.map(filter => {
+    //   return (
+    //     <Tag
+    //       name={filter.label}
+    //       deleteHandler={filter.deleteHandler}
+    //       key={`${filter.name}_${filter.label}`}
+    //       unclickable
+    //       blocked={filter.name === 'changedSprint'}
+    //     />
+    //   );
+    // });
+    // const { prioritiesId, typeId, statusId, performerId } = this.state.changedFilters;
+    const { prioritiesId, performerId } = this.state.changedFilters;
 
     let tags = this.state.changedFilters.tags;
     if (tags && Array.isArray(tags)) {
       tags = tags.map(el => ({ label: el, value: el }));
     }
 
-    const { isOpened } = this.state;
+    // const { isOpened } = this.state;
 
-    const statusOptions = this.createOptions(statuses);
-    const typeOptions = this.createOptions(taskTypes);
+    // const statusOptions = this.createOptions(statuses);
+    // const typeOptions = this.createOptions(taskTypes);
     const isFilter = this.isFilters();
 
     return (

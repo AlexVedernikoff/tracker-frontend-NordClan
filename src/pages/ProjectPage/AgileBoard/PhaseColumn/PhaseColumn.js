@@ -8,7 +8,6 @@ import classnames from 'classnames';
 import InlineHolder from '../../../../components/InlineHolder';
 import * as css from './PhaseColumn.scss';
 import localize from './PhaseColumn.json';
-import { LOADING_FINISH } from '../../../../constants/Loading';
 
 const columnTarget = {
   canDrop(props, monitor) {
@@ -33,6 +32,7 @@ class PhaseColumn extends React.Component {
     allTasksLength: PropTypes.number.isRequired,
     canDrop: PropTypes.bool.isRequired,
     connectDropTarget: PropTypes.func.isRequired,
+    isLoading: PropTypes.bool,
     isOver: PropTypes.bool.isRequired,
     isProjectLoading: PropTypes.bool,
     isTasksLoad: PropTypes.bool,
@@ -44,18 +44,7 @@ class PhaseColumn extends React.Component {
   };
 
   render() {
-    const {
-      tasks,
-      title,
-      connectDropTarget,
-      canDrop,
-      isOver,
-      isTasksLoad,
-      allTasksLength,
-      isProjectLoading,
-      lang,
-      isLoading
-    } = this.props;
+    const { tasks, title, connectDropTarget, canDrop, isOver, allTasksLength, lang, isLoading } = this.props;
 
     return connectDropTarget(
       <div
