@@ -7,7 +7,7 @@ class ExternalUserActivity extends Component {
   }
 
   onActivityChange = event => {
-    this.props.onValueChange(event.target.value === 'true' ? 1 : 0);
+    this.props.onValueChange(event.target.value === 'true' ? 0 : 1);
   };
 
   render() {
