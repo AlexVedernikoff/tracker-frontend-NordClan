@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { IconCircleProgressBar } from '../Icons';
+import { getTruncatedFilename } from '../Attachments/Attachments';
 
 export default class AttachUploading extends React.Component {
   static propTypes = {
@@ -33,7 +34,7 @@ export default class AttachUploading extends React.Component {
           <IconCircleProgressBar style={iconStyles} progress={progress} />
         </div>
         <div className={css.attachmentName} title={fileName}>
-          {fileName}
+          {getTruncatedFilename(fileName)}
         </div>
       </li>
     );
