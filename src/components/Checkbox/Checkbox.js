@@ -14,11 +14,13 @@ class Checkbox extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.checked !== this.props.checked) {
-      this.setState({
-        isChecked: this.props.checked
-      });
+      this.setChecked(this.props.checked);
     }
   }
+
+  setChecked = isChecked => {
+    this.setState({ isChecked });
+  };
 
   handleOnChange = event => {
     event.persist();

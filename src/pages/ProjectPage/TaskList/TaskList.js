@@ -557,7 +557,6 @@ class TaskList extends Component {
   };
 
   createSelectedOption = (optionList, selectedOption, optionLabel = 'name') => {
-    if (optionLabel === 'goalId') debugger;
     const { lang } = this.props;
     if (Array.isArray(selectedOption)) {
       if (optionLabel === 'tags') {
