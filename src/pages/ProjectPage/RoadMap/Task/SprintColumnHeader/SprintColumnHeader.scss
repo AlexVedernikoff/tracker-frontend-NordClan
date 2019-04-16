@@ -16,10 +16,7 @@
     flex-grow: 1;
     max-width: 433px;
     margin-right: 1rem;
-
-    @include tablet {
-      min-width: 0;
-    }
+    min-width: 0;
 
     @include phone {
       margin-bottom: 1rem;

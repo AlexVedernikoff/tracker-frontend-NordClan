@@ -6,6 +6,7 @@ import classnames from 'classnames';
 import * as css from './SprintColumnHeader.scss';
 import localize from './SprintColumnHeader.json';
 import { connect } from 'react-redux';
+import SprintCustomValueComponent from '../../../../../components/SprintSelector/SprintCustomValueComponent';
 
 class SprintColumnHeader extends Component {
   static propTypes = {
@@ -15,6 +16,7 @@ class SprintColumnHeader extends Component {
     name: PropTypes.string.isRequired,
     onCreateTaskClick: PropTypes.func.isRequired,
     onSprintChange: PropTypes.func.isRequired,
+    projectSprints: PropTypes.array,
     selectedSprintValue: PropTypes.number,
     sprints: PropTypes.array.isRequired
   };
@@ -28,7 +30,8 @@ class SprintColumnHeader extends Component {
       onSprintChange,
       sprints,
       onCreateTaskClick,
-      estimates
+      estimates,
+      projectSprints
     } = this.props;
 
     return (
@@ -43,6 +46,13 @@ class SprintColumnHeader extends Component {
               onChange={onSprintChange}
               noResultsText={localize[lang].NO_RESULTS}
               options={sprints}
+              valueComponent={props => (
+                <SprintCustomValueComponent
+                  {...props}
+                  sprintIds={selectedSprintValue}
+                  projectSprints={projectSprints}
+                />
+              )}
             />
           </div>
           <Button
@@ -70,7 +80,8 @@ class SprintColumnHeader extends Component {
 }
 
 const mapStateToProps = state => ({
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  projectSprints: state.Project.project.sprints
 });
 
 export default connect(
