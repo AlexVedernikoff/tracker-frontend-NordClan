@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { history } from '../../../../../History';
 import { updateDraft, updateTimesheet } from '../../../../../actions/TimesheetPlayer';
 import debounce from 'lodash/debounce';
+import get from 'lodash/get';
 import find from 'lodash/find';
 import * as css from '../Playlist.scss';
 import * as timesheetsConstants from '../../../../../constants/Timesheets';
@@ -116,7 +117,7 @@ class PlaylistItem extends Component {
   getSprintName = (shouldCutName = false) => {
     const { task, sprint } = this.props.item;
     const defaultSprint = 'Backlog';
-    const name = task ? task.sprint.name : sprint ? sprint.name : '';
+    const name = task ? get(task, 'sprint.name') : sprint ? sprint.name : '';
     const abbreviatedName = shouldCutName && name && name.length > 20 ? `${name.slice(0, 20)}...` : null;
 
     return abbreviatedName || (name || defaultSprint);
