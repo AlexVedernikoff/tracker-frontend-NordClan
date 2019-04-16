@@ -53,8 +53,9 @@ class NewProject extends Component {
     const projectId = this.state.projectId;
     if (!projectId.trim()) return this.setState({ errorCode: validErrorCodes.EmptyValue });
     if (isNaN(projectId)) {
-      if (!/^([\.a-zA-Z0-9\-\_]+\/?)+$/.test(projectId)) {
-        // checks if projectId (as path) is in form of namespace/project-name
+      if (!/^[\.a-zA-Z0-9\-\_]+(\/[\.a-zA-Z0-9\-\_]+){1,}$/.test(projectId)) {
+        // checks if projectId (as path) is in form of namespace/project-name/project-name/...
+        // there must be at least one project-name
         return this.setState({ errorCode: validErrorCodes.NotFullPath });
       }
     } else if (_.includes(this.props.projectIds, +projectId)) {
@@ -70,12 +71,9 @@ class NewProject extends Component {
     const trimmedValue = this.removeWhitespaces(value).replace(/\.git+$/, '');
     this.changeValue({
       target: {
-        value: trimmedValue
+        value: `${this.inputRef.value}${trimmedValue}`
       }
     });
-    if (this.inputRef) {
-      this.inputRef.value = trimmedValue;
-    }
   };
 
   removeWhitespaces = value => {
