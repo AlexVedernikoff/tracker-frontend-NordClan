@@ -106,9 +106,11 @@ export default class HistoryMessage extends React.Component {
           </Link>
         ) : null;
       case 'plannedExecutionTime':
-        return entities.plannedExecutionTime;
+        const { plannedExecutionTime } = entities;
+        return plannedExecutionTime !== null && Number(plannedExecutionTime).toFixed(2);
       case 'prevPlannedExecutionTime':
-        return entities.prevPlannedExecutionTime;
+        const { prevPlannedExecutionTime } = entities;
+        return prevPlannedExecutionTime !== null && Number(prevPlannedExecutionTime).toFixed(2);
       case 'file':
         // реализовать потом
         break;
