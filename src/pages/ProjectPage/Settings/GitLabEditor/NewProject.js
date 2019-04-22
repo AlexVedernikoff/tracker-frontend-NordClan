@@ -71,7 +71,7 @@ class NewProject extends Component {
     const trimmedValue = this.removeWhitespaces(value).replace(/\.git+$/, '');
     this.changeValue({
       target: {
-        value: `${this.inputRef.value}${trimmedValue}`
+        value: `${this.inputRef ? this.inputRef.value : ''}${trimmedValue}`
       }
     });
   };

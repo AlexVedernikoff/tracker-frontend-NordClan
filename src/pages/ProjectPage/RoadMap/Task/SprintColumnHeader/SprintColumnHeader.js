@@ -6,7 +6,8 @@ import classnames from 'classnames';
 import * as css from './SprintColumnHeader.scss';
 import localize from './SprintColumnHeader.json';
 import { connect } from 'react-redux';
-import SprintCustomValueComponent from '../../../../../components/SprintSelector/SprintCustomValueComponent';
+import SprintSelectorValueWithBudget from '../../../../../components/SprintSelector/SprintSelectorValueWithBudget';
+import { projectSprintsSelector } from '../../../../../selectors/Project';
 
 class SprintColumnHeader extends Component {
   static propTypes = {
@@ -33,7 +34,6 @@ class SprintColumnHeader extends Component {
       estimates,
       projectSprints
     } = this.props;
-
     return (
       <div className={classnames(css.headerColumnWrapper, className)}>
         <div className={css.headerColumn}>
@@ -47,9 +47,9 @@ class SprintColumnHeader extends Component {
               noResultsText={localize[lang].NO_RESULTS}
               options={sprints}
               valueComponent={props => (
-                <SprintCustomValueComponent
+                <SprintSelectorValueWithBudget
                   {...props}
-                  sprintIds={selectedSprintValue}
+                  sprintId={selectedSprintValue}
                   projectSprints={projectSprints}
                 />
               )}
@@ -81,7 +81,7 @@ class SprintColumnHeader extends Component {
 
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
-  projectSprints: state.Project.project.sprints
+  projectSprints: projectSprintsSelector(state)
 });
 
 export default connect(
