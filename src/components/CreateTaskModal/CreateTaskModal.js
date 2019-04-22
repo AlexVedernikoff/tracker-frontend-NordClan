@@ -61,7 +61,7 @@ class CreateTaskModal extends Component {
   });
 
   getInitialSprint = ({ selectedSprintValue, sprints }) => {
-    if (selectedSprintValue) {
+    if (selectedSprintValue !== undefined) {
       return selectedSprintValue;
     }
 

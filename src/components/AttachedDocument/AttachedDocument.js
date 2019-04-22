@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { IconFileDocument, IconFilePdf, IconDelete, IconDownload } from '../Icons';
 import ConfirmModal from '../ConfirmModal';
 import localize from './AttachedDocument.json';
+import { getTruncatedFilename } from '../Attachments/Attachments';
 
 export default class AttachedDocument extends React.Component {
   static propTypes = {
@@ -71,7 +72,7 @@ export default class AttachedDocument extends React.Component {
             {/\.pdf$/.test(fileName) ? <IconFilePdf style={iconStyles} /> : <IconFileDocument style={iconStyles} />}
           </div>
           <div className={css.attachmentName} title={fileName}>
-            {fileName}
+            {getTruncatedFilename(fileName)}
           </div>
         </a>
 

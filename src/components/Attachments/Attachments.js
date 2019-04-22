@@ -12,6 +12,8 @@ import 'react-image-lightbox/style.css';
 const imageTypes = ['image' /*fallback for old attachments*/, 'image/jpeg', 'image/png', 'image/pjpeg'];
 export const isImage = t => imageTypes.indexOf(t) !== -1;
 
+export const getTruncatedFilename = fileName => (fileName.length > 30 ? `${fileName.slice(0, 30)} ...` : fileName);
+
 export default class Attachments extends Component {
   static defaultProps = {
     attachments: []

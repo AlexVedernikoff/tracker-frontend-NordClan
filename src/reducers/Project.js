@@ -103,6 +103,9 @@ export default function Project(state = InitialState, action) {
       };
 
     case TagsActions.TAGS_DELETE_SUCCESS:
+      if (action.data.taggable === 'task') {
+        return state;
+      }
       return {
         ...state,
         project: {
@@ -112,6 +115,9 @@ export default function Project(state = InitialState, action) {
       };
 
     case TagsActions.TAGS_CREATE_SUCCESS:
+      if (action.data.taggable === 'task') {
+        return state;
+      }
       return {
         ...state,
         project: {

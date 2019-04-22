@@ -238,7 +238,7 @@ class Details extends Component {
         spentsList.push(
           <div className={css.timeString} key={status}>
             <span>{status}:</span>
-            {spentTime || 0} {localize[this.props.lang].H}.
+            {spentTime.toFixed(2) || 0} {localize[this.props.lang].H}.
           </div>
         );
       },
