@@ -33,3 +33,12 @@ export const projectPerformersSelector = createSelector(
     return uniqBy([...users, ...performers], 'id');
   }
 );
+
+export const projectSprintsSelector = createSelector(
+  state => {
+    return state.Project.project;
+  },
+  project => {
+    return project.sprints;
+  }
+);
