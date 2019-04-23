@@ -1,0 +1,12 @@
+{
+  "en": {
+    "TEXT": "There are timesheets created in PS. Continue anyway?",
+    "YES": "Yes",
+    "NO": "No"
+  },
+  "ru": {
+    "TEXT": "Найдены созданные в PS таймшиты. Все равно продолжить?",
+    "YES": "Да",
+    "NO": "Нет"
+  }
+}

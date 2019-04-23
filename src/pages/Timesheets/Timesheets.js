@@ -17,6 +17,9 @@ import exactMath from 'exact-math';
 import localize from './timesheets.json';
 import Title from 'react-title-component';
 import { isTimesheetsCanBeChanged } from '../../utils/Timesheets';
+import Button from '../../components/Button';
+
+import ForceSubmitConfirmationModal from './ForceSubmitConfirmationModal';
 
 class Timesheets extends React.Component {
   static propTypes = {
@@ -29,6 +32,7 @@ class Timesheets extends React.Component {
     list: PropTypes.array,
     showNotification: PropTypes.func,
     startingDay: PropTypes.object,
+    submitTimesheets: PropTypes.func,
     tempTimesheets: PropTypes.array,
     userId: PropTypes.number
   };
@@ -65,6 +69,8 @@ class Timesheets extends React.Component {
       changeWeek(moment(day), userId);
     });
   };
+
+  submitTimesheets = () => this.props.submitTimesheets(this.props.dateBegin);
 
   render() {
     const { isCalendarOpen } = this.state;
@@ -353,7 +359,10 @@ class Timesheets extends React.Component {
       <div>
         <Title render={`SimTrack - ${localize[lang].TIMESHEETS_REPORT}`} />
         <section>
-          <h1>{localize[lang].TIMESHEETS_REPORT}</h1>
+          <h1 className={css.mainHeader}>
+            {localize[lang].TIMESHEETS_REPORT}
+            <Button type="primary" text="Submit" onClick={this.submitTimesheets} />
+          </h1>
           <hr />
           <table className={css.timeSheetsTable}>
             <thead>
@@ -406,6 +415,7 @@ class Timesheets extends React.Component {
             ) : null}
           </table>
         </section>
+        <ForceSubmitConfirmationModal />
         {this.state.isModalOpen ? <AddActivityModal onClose={() => this.setState({ isModalOpen: false })} /> : null}
       </div>
     );
