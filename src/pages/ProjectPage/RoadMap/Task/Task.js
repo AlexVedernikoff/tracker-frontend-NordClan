@@ -175,13 +175,19 @@ class Task extends Component {
           return ratioValue * 100;
         }
       };
+      const totalPlannedTime = sprint.totalPlannedTime;
+      const totalWidth = totalPlannedTime + sprintEstimate;
       return {
         summary: `${localize[lang].TOTAL_TIME} ${sprintSpentTime} ${
           sprintEstimate ? `${localize[lang].OF} ${sprintEstimate}` : ''
-        } ${localize[lang].H}`,
-        width: `${width(ratio)}%`,
+        } (${+totalPlannedTime || 0}) ${localize[lang].H}`,
+        sprintSpentTime: width(ratio),
+        sprintEstimate,
         active: sprintEstimate !== 0,
-        exceeded: ratio > 1
+        exceeded: ratio > 1,
+        sprintSpentTimeWidth: width(ratio),
+        sprintEstimateWidth: (sprintEstimate * 100) / totalWidth,
+        totalPlannedTimeWidth: (totalPlannedTime * 100) / totalWidth
       };
     }
   };

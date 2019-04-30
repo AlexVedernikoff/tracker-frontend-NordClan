@@ -34,6 +34,7 @@ class SprintColumnHeader extends Component {
       estimates,
       projectSprints
     } = this.props;
+
     return (
       <div className={classnames(css.headerColumnWrapper, className)}>
         <div className={css.headerColumn}>
@@ -66,12 +67,21 @@ class SprintColumnHeader extends Component {
           />
         </div>
         <div className={css.progressBarWrapper} data-tip={estimates.summary}>
+          <div style={{ width: `${estimates.sprintEstimateWidth}%` }}>
+            <div
+              className={classnames({
+                [css.progressBar]: estimates.active,
+                [css.exceeded]: estimates.exceeded
+              })}
+              style={{ width: `${estimates.sprintSpentTime}%` }}
+            />
+          </div>
           <div
             className={classnames({
-              [css.progressBar]: estimates.active,
-              [css.exceeded]: estimates.exceeded
+              [css.progressBar]: true,
+              [css.total]: true
             })}
-            style={{ width: estimates.width }}
+            style={{ width: `${estimates.totalPlannedTimeWidth}%` }}
           />
         </div>
       </div>
