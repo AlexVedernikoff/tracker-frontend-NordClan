@@ -10,7 +10,8 @@
     "COMMENTS_IS_EXISTS": "No comments yet",
     "BE_FIRST": "You can be the first!",
     "REMOVE_COMMENT": "Are you sure you want to delete the comment?",
-    "ALL": "All"
+    "ALL": "All",
+    "CONFIRM_LEAVE_PAGE": "Do you really want to leave the page?"
   },
   "ru": {
     "ENTER_COMMENT": "Введите текст комментария",
@@ -23,6 +24,7 @@
     "COMMENTS_IS_EXISTS": "Комментариев еще нет",
     "BE_FIRST": "Вы можете стать первым!",
     "REMOVE_COMMENT": "Вы действительно хотите удалить комментарий?",
-    "ALL": "Всем"
+    "ALL": "Всем",
+    "CONFIRM_LEAVE_PAGE": "Вы действительно хотите покинуть страницу?"
   }
 }
